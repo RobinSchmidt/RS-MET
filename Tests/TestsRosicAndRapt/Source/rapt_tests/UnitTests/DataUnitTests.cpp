@@ -294,10 +294,25 @@ bool binaryHeapUnitTest()
 
   rsDoubleHeap2<int> D2;
   D2.setData(A, B);
+  int min = 2147483648;
+  int k;
+  k = D2.indexToKey(0); r &= k == 0;
+  i = D2.keyToIndex(0); r &= i == 0;
+  k = D2.indexToKey(1); r &= k == 1;
+  i = D2.keyToIndex(1); r &= i == 1;
+  k = D2.indexToKey(2); r &= k == 2;
+  i = D2.keyToIndex(2); r &= i == 2;
+  k = D2.indexToKey(3); r &= k == min+0;
+  i = D2.keyToIndex(k); r &= i == 3;
+  k = D2.indexToKey(4); r &= k == min+1;
+  i = D2.keyToIndex(k); r &= i == 4;
+  k = D2.indexToKey(5); r &= k == min+2;
+  i = D2.keyToIndex(k); r &= i == 5;
+
   int v;
-  v = D2[0];
-  v = D2[1];
-  v = D2[2];
+  v = D2.atKey(0);
+  v = D2.atKey(1);
+  v = D2.atKey(2);
   //v = D2[3]; // these are access violations because rsDoubleHeap2 uses a different way to
   //v = D2[4]; // indicate a value from the large heap
   //v = D2[5];

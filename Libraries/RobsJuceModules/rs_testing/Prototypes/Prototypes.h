@@ -1188,6 +1188,14 @@ public:
   interface as the subclass. */
   T& atKey(int k) { return atIndex(k); }
 
+  /** Conversion from index to key. */
+  int indexToKey(int i) { return i; }
+
+  /** Conversion from key to index. */
+  int keyToIndex(int k) { return k; }
+
+
+
   bool isIndexValid(int i)
   {
     return i >= 0 && i < small.getSize() + large.getSize();
@@ -1261,19 +1269,22 @@ convenient, but we need it when we want to deal with a dynamically changing nS -
 indicator that is independent from nS, because otherwise, the stored indices in the quantile 
 filter become meaningless after a change of the heap-sizes. */
 template<class T>
-class rsDoubleHeap2 : public rsDoubleHeap<T>
+class rsDoubleHeap2 : public rsDoubleHeap<T> 
 {
+
+// maybe get rid of the subclass an implement everything in the baseclass - maybe have functions
+// replaceByIndex, replaceByKey
 
 public:
 
   int replace(int key, const T& newValue)
   {
-    rsAssert(isIndexValid(key), "Key out of range");
+    rsAssert(isKeyValid(key), "Key out of range");
 
     int i  = key;  // maybe get rid of index and use only i
  
     // The actual replacement:
-    if(isInLargeHeap(i)) {
+    if(isKeyInLargeHeap(i)) {
       i  = large.replace(rawLargeHeapIndex(i), newValue);
       i |= firstBitOnly; }
     else
@@ -1285,7 +1296,7 @@ public:
       small.swap(small[0], large[0]);
       int is = small.floatDown(0);
       int il = large.floatDown(0);
-      if(isInLargeHeap(key)) // new value was in large and is now in small heap
+      if(isKeyInLargeHeap(key)) // new value was in large and is now in small heap
         i = is;
       else
         i = il | firstBitOnly;
@@ -1296,39 +1307,63 @@ public:
   // maybe we should stop calling it "index" and use "key" instead - with the bit-twiddling, it's
   // not really an index anymore
 
-  T& operator[](int i)  
+
+  T& atKey(int k) 
   { 
     int m1 = allBits;
     int m2 = firstBitOnly;
     int m3 = allBitsButFirst;
 
-    rsAssert(isIndexValid(i), "Index out of range");
-    if(isInLargeHeap(i))
-      return large[rawLargeHeapIndex(i)];   
+    rsAssert(isKeyValid(k), "Key out of range");
+    if(isKeyInLargeHeap(k))
+      return large[rawLargeHeapIndex(k)];   
     else
-      return small[i];
+      return small[k];
   }
-  // maybe we should get rid of this and use a function atKey(int k) instead for access and
-  // another atIndex for real indexed access - client code should be explicit, if it wants access
-  // by index or by key
 
-  bool isIndexValid(int i) const 
+  bool isKeyValid(int k) const 
   {
-    if(isInLargeHeap(i)) 
-      return rawLargeHeapIndex(i) < large.getSize();
+    if(isKeyInLargeHeap(k)) 
+      return rawLargeHeapIndex(k) < large.getSize();
     else
-      return i                    < small.getSize();
+      return k                    < small.getSize();
   }
 
-  static inline bool isInLargeHeap(int i) 
+  static inline bool isKeyInLargeHeap(int k) 
   { 
-    return i & firstBitOnly; 
+    return k & firstBitOnly; 
   }
 
-  static inline int rawLargeHeapIndex(int i)
+  static inline int rawLargeHeapIndex(int k) // rename to largeHeapKeyToIndex
   {
-    return i & allBitsButFirst;
+    return k & allBitsButFirst;
   }
+
+  int indexToKey(int i) 
+  { 
+    int nS = small.getSize();
+    if(i < nS)
+      return i;
+    else
+      return (i-nS) | firstBitOnly;
+  }
+  // needs test
+
+  int keyToIndex(int k) 
+  { 
+    if(isKeyInLargeHeap(k))
+    {
+      int i = rawLargeHeapIndex(k);
+      return i + small.getSize();
+    }
+    else
+      return k;
+  }
+  // needs test
+
+
+
+  // maybe have functions to convert back and forth between key and indices
 
   // have static const members for the masks that separate the first bit and remove the first
   // bit
@@ -1471,11 +1506,11 @@ public:
   T getSample(T x)
   {
     // buffer update:
-    int hi = buf[bufIdx];            // heap-key of oldest sample
-    int bi = dblHp.atKey(hi).bufIdx; // buffer-index of oldest sample
-    bufIdx = (bufIdx+1) % L;         // updates the position in circular buffer of indices
-    dblHp.replace(hi, Node(x, bi));  // will reshuffle the content of the double-heap, the content 
-                                     // of buf will also be reshuffled accordingly
+    int k = buf[bufIdx];           // heap-key of oldest sample
+    int i = dblHp.atKey(k).bufIdx; // buffer-index of oldest sample
+    bufIdx = (bufIdx+1) % L;       // updates the position in circular buffer of indices
+    dblHp.replace(k, Node(x, i));  // will reshuffle the content of the double-heap, the content 
+                                   // of buf will also be reshuffled accordingly
 
     // sample readout:
     T yS = dblHp.getLargestSmallValue().value;   // smaller value
@@ -1489,8 +1524,11 @@ public:
   {
     for(int n = 0; n < L; n++) {
       dblHp.atIndex(n).value  = T(0);
-      dblHp.atIndex(n).bufIdx = n;
-      buf[n]          = n; }
+      dblHp.atIndex(n).bufIdx = n;  
+      buf[n] = dblHp.indexToKey(n);   
+      //buf[n] = n;                        // old
+    
+    }
     bufIdx = 0;
   }
 
