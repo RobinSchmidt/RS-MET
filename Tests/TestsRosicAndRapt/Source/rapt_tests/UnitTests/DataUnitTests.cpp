@@ -180,94 +180,8 @@ public:
   }
 
 
-  // move these to baseclass when finished:
 
-
-
-  void remove(int i)
-  {
-    swap(data[i], data[size-1]);
-    size--;
-    floatIntoPlace(i);
-  }
-
-
-  void remove1(int i)
-  {
-    data[i] =  1000;
-    i = floatUp(i);    // should result in i == 0, it should end up at the root
-    data[i] = -1000;
-    i = floatDown(i);  
-    // should result in i == size, it should end up in the final position - this does not work - 
-    // maybe we need to make sure that in floatDown, whenever it has the choice to let it float
-    // down either left or right, it should choose right
-
-    size--;
-  }
-
-  /** Removes the element at given index i from the heap and re-orders the remaining elements to
-  maintain the heap-property. */
-  void remove2(int i, T& sentinel)
-  {
-    //bool done = false; 
-    while(true)
-    {
-      int l = left(i);
-      int r = right(i);
-      if(l >= size)
-      {
-        // node i is leaf - nothing to do
-        swap(data[i], sentinel);
-        break;
-        //return;
-      }
-      if(r >= size)
-      {
-        // node i has only a left child - promote it directly and break:
-        swap(data[i], data[l]);
-        break;
-        //return;
-      }
-
-      // typical case, where node has two children - we promote the larger of the two children and
-      // in case of a tie, we promote the left node (by convention..what difference does it make? 
-      // maybe we should give the user the option to control that by a boolean parameter?)
-
-      if(less(data[r], data[l]))
-      {
-        // right child is greater than left child - promote right child:
-
-        swap(data[i], data[r]);
-        i = r;
-
-      }
-      else
-      {
-        swap(data[i], data[l]);
-        i = l;
-      }
-
-      int dummy = 0;
-    }
-
-    size--;
-
-
-    // remove it and replace the slot with either the left or right child, then replace the child 
-    // that was promoted up with either it left or right child and so on, i.e. remove and promote
-    // children
-  }
-  // removing of element i should work as follows:
-  // -check, which of the two child-nodes should get promoted to the position i
-  // -move left(i) or right(i) up and apply the same process to its children (i.e check, which of 
-  //  its children should get promoted up)
-  // -and so on all the way to the bottom
-  // -decrement size
-  // -noo - that seems wrong - how about: 
-  //  -set it to the maximum possible value (+inf) and let it float up and when it's at the root,
-  //   set it to the minimum possible value and let it float down - this should make it end up
-  //   in the final position from which it can be deleted
-
+  // removing:
   // http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/heap-delete.html
   // https://www.geeksforgeeks.org/insertion-and-deletion-in-heaps/
 
@@ -328,30 +242,24 @@ bool binaryHeapUnitTest()
     r &= H.isMaxHeap();
   }
 
-  /*
-  // temporary:
-  A = Vec({9,8,7,8,6,6,5,6,7,3,4,2,5,4,5});
-  N = (int) A.size();
-  H.setData(&A[0], N, N);
-  r &= H.isMaxHeap();
-  H.remove(4);
-  r &= H.isMaxHeap();
-  int dummy = 0;
-  */
-
   // test removing:
-  int sentinel = 0;
   for(int i = 1; i <= numTests; i++)
   {
     int oldSize  = H.getSize();
     int remIndex = ng.getSampleRaw() % H.getSize();
-    //H.remove(remIndex, sentinel);
     H.remove(remIndex);
     r &= H.getSize() == oldSize - 1;
     r &= H.isMaxHeap();
   }
-  // hmm...this still fails..i'm not sure, if swapping makes sense here...maybe we should swap with
-  // some sort of sentinel element in the last step
+
+  // test removing last element - it could be that we need to treat that case as special case - but 
+  // maybe not:
+  N = H.getSize();
+  H.remove(N-1);  // try to remove last element
+  r &= H.getSize() == N-1;
+  r &= H.isMaxHeap();
+  // ...it seems to work - in this case - todo: test more cases
+
 
 
 
@@ -369,12 +277,6 @@ bool binaryHeapUnitTest()
   i = D.replace(5, 4);  // replace 8 by 4, float to front of large, exchange
   r &= i == 1 && A == Vec({5,4,3}) && B ==  Vec({6,7,6});
   // do more tests, using larger heaps, maybe check property in a loop
-
-
-
-
-
-
 
 
 
