@@ -1252,17 +1252,14 @@ class rsDoubleHeap2 : public rsDoubleHeap<T>
 
 public:
 
-  //static const int one = 1;
-
-  //int replace(int index, const T& newValue)
-
-
-
   T& operator[](size_t i)  
   { 
-    //i += one;
-    //return small[i];
+    size_t m1 = allBits;
+    size_t m2 = firstBitOnly;
+    size_t m3 = allBitsButFirst;
 
+
+    rsAssert(isIndexValid(i), "Index out of range");
     if(i & firstBitOnly)  {
       i &= allBitsButFirst;
       return large[i];   
@@ -1271,7 +1268,14 @@ public:
       return small[i];
   }
 
-  //bool isIndexValid(int i)
+  bool isIndexValid(size_t i)
+  {
+    if(i & firstBitOnly)  {
+      i &= allBitsButFirst;
+      return i < large.getSize(); }
+    else
+      return i < small.getSize();
+  }
 
   // have static const members for the masks that separate the first bit and remove the first
   // bit

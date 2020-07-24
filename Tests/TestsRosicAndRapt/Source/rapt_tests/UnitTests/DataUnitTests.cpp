@@ -298,9 +298,9 @@ bool binaryHeapUnitTest()
   v = D2[0];
   v = D2[1];
   v = D2[2];
-  v = D2[3];
-  v = D2[4];
-  v = D2[5];
+  //v = D2[3]; // these are access violations because rsDoubleHeap2 uses a different way to
+  //v = D2[4]; // indicate a value from the large heap
+  //v = D2[5];
 
 
 
