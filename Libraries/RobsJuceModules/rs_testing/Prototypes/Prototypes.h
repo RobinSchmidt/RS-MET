@@ -1241,7 +1241,7 @@ track of by the circular buffer, such that it always points to the oldest sample
 double-heap.  */
 
 template<class T>
-class rsMovingQuantileFilterCore  // maybe rename to rsMovingQuantileFilterCore
+class rsMovingQuantileFilterCore  // maybe rename to rsQuantileFilterCore
 {
 
 public:
@@ -1263,7 +1263,13 @@ public:
   {
     small.reserve(newMaxLength);
     large.reserve(newMaxLength);
+    // maybe use resize - the size of small and large should be always equal to what can fit in - 
+    // that makes the code for dynamic modulation of the length and position more straightforward
+
     buf.reserve(newMaxLength);
+    // for this we use indeed reserve and not resize because we want to use buf.size() for the
+    // modulo operation for the wrap-around
+
     updateBuffers();   // maybe have a function initBuffers
   }
   // maybe try to optimize the memory usage - we actually just need one nodes array of length
@@ -1272,11 +1278,7 @@ public:
   // have to move around more data, when the length changes (i guess) - we'll see
 
   /** Sets the length of the filter, i.e. the number of past samples that we look at. */
-  void setLength(int newLength)
-  {
-    setLengthAndReadPosition(newLength, p);
-    //updateBuffers();
-  }
+  void setLength(int newLength) { setLengthAndReadPosition(newLength, p); }
 
   /** Sets the read position in the sorted array of stored past values. This array does not exist 
   literally but only conceptually (in the naive implementation, this actually exists literally). In 
@@ -1284,20 +1286,11 @@ public:
   values in our double-heap. So what this function actually does is to update the sizes of the 
   max-heap (of small values) and the min-heap (of large values) in the double-heap. But 
   conceptually, think about it simple as the readout index in an array of stored past values. */
-  void setReadPosition(int newPosition)
-  {
-    setLengthAndReadPosition(L, newPosition);
-    //p = newPosition;
-    //updateBuffers();
-  }
+  void setReadPosition(int newPosition) { setLengthAndReadPosition(L, newPosition); }
 
   /** Sets length and read-position at once. */
-  void setLengthAndReadPosition(int newLength, int newPosition)
-  {
-    L = newLength;
-    p = newPosition;
-    updateBuffers();
-  }
+  void setLengthAndReadPosition(int newLength, int newPosition);
+  //{ L = newLength; p = newPosition; updateBuffers(); }
   // maybe we should implement this in the cpp file and do all the business directly instead of
   // calling updateBuffers
 
@@ -1355,111 +1348,8 @@ protected:
 
   /** Updates the lengths of the double-heap and circular buffer according to the settings of 
   L and q. */
-  void updateBuffers()
-  {
-    rsAssert(L <= getCapacity(), "Length cannot exceed capacity");
-    rsAssert(L >= 2,             "If L < 2, we get access violations");
-    rsAssert(p >= 1,             "If p < 1, we get access violations");
+  void updateBuffers();
 
-    //int C = getCapacity(); 
-
-    /*
-    // new implementation - under construction - goal is to make L,p modulatable - if you want the 
-    // old implementtion, comment this out:
-    int nSo = (int) small.size();  // old number of small samples
-    int nLo = (int) large.size();  // old number of large samples
-    int nS  = p;                   // new number of small samples
-    int nL  = L-p;                 // new number of large samples
-    if(nS+nL == nSo+nLo)
-    {
-      // total length stays the same - we may need to re-distribute data from the min-heap to the
-      // max-heap or vice versa
-
-      int nSi = nSo;  // current number of small samples
-      int nLi = nLo;  // current number of large samples
-      if(nS > nSo)
-      {
-        // number of small samples grows - redistribute from large to small
-
-        while(nSi < nS)
-        {
-          // move one sample from large heap to small heap
-          dblHp.moveFirstLargeToSmall();
-          nSi++; nLi--;
-        }
-
-
-
-      }
-      else if(nS < nSo)
-      {
-        // number of large samples grows - redistribute from small to large
-
-        while(nLi < nL)
-        {
-          // move one sample from small heap to large heap
-          dblHp.moveFirstSmallToLarge();
-          nSi--; nLi++;
-        }
-      }
-      else
-      {
-        //return; // nothing has changed
-      }
-
-      int dummy = 0;
-    }
-    else if(nS+nL < nSo+nLo)
-    {
-      // total length shrinks - we must discard some of the old datapoints in addition to possibly
-      // redistribute data
-
-
-      int dummy = 0;
-    }
-    else
-    {
-      // total length grows - we must fill up missing data in addition to possibly redistribute 
-      // data
-
-
-      int dummy = 0;
-    }
-    */
- 
-   
-
-
-    // old implementation which resets, i.e. is non-modulatable - to use it, comment out new 
-    // implementation above:
-    buf.resize(L);
-    small.resize(p);
-    large.resize(L-p);
-    dblHp.setData(&small[0], p, p, &large[0], L-p, L-p);
-    reset();
-
-    // In order to increase the length on the fly, we may need to insert some older samples which 
-    // we do have stored anywhere here yet - to do so, we may have to use a circular buffer of old 
-    // input values that has a length equal to C...maybe that should be done in a subclass - this 
-    // buffer could at the same time by used to implement a highpass version - or maybe we store 
-    // here a pointer to an rsRingBuffer which is null by default and if it's non-null, we use it 
-    // here to fill up the missing past samples and if it's null, we just fill up with zeros or 
-    // with the mean of the currently stored old values
-
-    // We may need to distinguish between a couple of cases:
-    // case 1: length does not change - we need to only redistribute values between the heaps
-    //  subcase 1.1: quantile decreases: redistribute from small to large
-    //  subcase 1.2: quantile increases: redistribute from large to small
-    // case 2: length decreases: we must discard some values (and possibly redistribute)
-    // case 3: length increases: we must fill up the heaps (and possibly redistribute), ideally we
-    //   should fill up with actual older signal values (to have them available, we may need and 
-    //   additional ringbuffer to just store past values), if they are not available, we could use
-    //   zeros, of the most recent value or the current quantile - maybe implement variations
-
-    // Can the handling be unified? Or maybe we can reduce it to two cases for each of the two 
-    // sub-heaps, i.e. nS grows or shrinks, nL grows or shrinks
-
-  }
 
   /** A node stores an incoming signal value together with its index in the circular buffer. The 
   "less-than" comparison is based on the signal value. */

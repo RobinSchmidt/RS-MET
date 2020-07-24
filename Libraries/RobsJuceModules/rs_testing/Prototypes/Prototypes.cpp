@@ -770,7 +770,6 @@ void rsModalFilterFloatSSE2::setParameters(double w, double A, double p,
 
 //=================================================================================================
 
-/*
 template<class T>
 void rsMovingQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPosition)
 {
@@ -778,7 +777,116 @@ void rsMovingQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int 
   p = newPosition;
   updateBuffers();
 }
-*/
+
+#undef small // this is #defined in some silly windows header - WTF?
+
+template<class T>
+void rsMovingQuantileFilterCore<T>::updateBuffers()
+{
+  //int C = getCapacity();  // maybe use later
+
+  rsAssert(L <= getCapacity(), "Length cannot exceed capacity");
+  rsAssert(L >= 2,             "If L < 2, we get access violations");
+  rsAssert(p >= 1,             "If p < 1, we get access violations");
+
+
+  /*
+  // new implementation - under construction - goal is to make L,p modulatable - if you want the 
+  // old implementtion, comment this out:
+  int nSo = (int) small.size();  // old number of small samples
+  int nLo = (int) large.size();  // old number of large samples
+  int nS  = p;                   // new number of small samples
+  int nL  = L-p;                 // new number of large samples
+  if(nS+nL == nSo+nLo)
+  {
+    // total length stays the same - we may need to re-distribute data from the min-heap to the
+    // max-heap or vice versa
+
+    int nSi = nSo;  // current number of small samples
+    int nLi = nLo;  // current number of large samples
+    if(nS > nSo)
+    {
+      // number of small samples grows - redistribute from large to small
+
+      while(nSi < nS)
+      {
+        // move one sample from large heap to small heap
+        dblHp.moveFirstLargeToSmall();
+        nSi++; nLi--;
+      }
+
+
+
+    }
+    else if(nS < nSo)
+    {
+      // number of large samples grows - redistribute from small to large
+
+      while(nLi < nL)
+      {
+        // move one sample from small heap to large heap
+        dblHp.moveFirstSmallToLarge();
+        nSi--; nLi++;
+      }
+    }
+    else
+    {
+      //return; // nothing has changed
+    }
+
+    int dummy = 0;
+  }
+  else if(nS+nL < nSo+nLo)
+  {
+    // total length shrinks - we must discard some of the old datapoints in addition to possibly
+    // redistribute data
+
+
+    int dummy = 0;
+  }
+  else
+  {
+    // total length grows - we must fill up missing data in addition to possibly redistribute 
+    // data
+
+
+    int dummy = 0;
+  }
+  */
+
+
+
+  // old implementation which resets, i.e. is non-modulatable - to use it, comment out new 
+  // implementation above:
+  buf.resize(L);
+  small.resize(p);
+  large.resize(L-p);
+  dblHp.setData(&small[0], p, p, &large[0], L-p, L-p);
+  reset();
+
+  // In order to increase the length on the fly, we may need to insert some older samples which 
+  // we do have stored anywhere here yet - to do so, we may have to use a circular buffer of old 
+  // input values that has a length equal to C...maybe that should be done in a subclass - this 
+  // buffer could at the same time by used to implement a highpass version - or maybe we store 
+  // here a pointer to an rsRingBuffer which is null by default and if it's non-null, we use it 
+  // here to fill up the missing past samples and if it's null, we just fill up with zeros or 
+  // with the mean of the currently stored old values
+
+  // We may need to distinguish between a couple of cases:
+  // case 1: length does not change - we need to only redistribute values between the heaps
+  //  subcase 1.1: quantile decreases: redistribute from small to large
+  //  subcase 1.2: quantile increases: redistribute from large to small
+  // case 2: length decreases: we must discard some values (and possibly redistribute)
+  // case 3: length increases: we must fill up the heaps (and possibly redistribute), ideally we
+  //   should fill up with actual older signal values (to have them available, we may need and 
+  //   additional ringbuffer to just store past values), if they are not available, we could use
+  //   zeros, of the most recent value or the current quantile - maybe implement variations
+
+  // Can the handling be unified? Or maybe we can reduce it to two cases for each of the two 
+  // sub-heaps, i.e. nS grows or shrinks, nL grows or shrinks
+
+}
+
 
 
 //=================================================================================================
