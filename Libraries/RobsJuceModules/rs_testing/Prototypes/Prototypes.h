@@ -1113,20 +1113,22 @@ public:
   }
 
 
-  /** Replaces the element at index i with the given new values and returns the the index where the
+  /** Replaces the element at given key  with the given new value and return the the key where the
   new element actual ended up after doing all the floating up/down and potential swapping business.
+
+  out of date:
   If nS is the size of the small heap, we use the convention that indices i < nS are direct indices 
   into the small heap, and when i >= nS, we use i-nS as heap index into the large heap (as seen 
   from the class rsBinaryHeap). The same holds for the return value. */
-  int replace(int index, const T& newValue)
+  int replace(int key, const T& newValue)  // rename index to key
   {
-    rsAssert(isIndexValid(index), "Index out of range");
+    rsAssert(isIndexValid(key), "Key out of range");
 
-    int i  = index;  // maybe get rid of index and use only i
+    int i  = key;  // maybe get rid of index and use only i
     int nS = small.getSize();
 
     // The actual replacement, taking place in one of our two heaps:
-    if(index < small.getSize())
+    if(key < small.getSize())
       i = small.replace(i,    newValue);
     else
       i = large.replace(i-nS, newValue) + nS;
@@ -1137,7 +1139,7 @@ public:
       small.swap(small[0], large[0]);
       int is = small.floatDown(0);
       int il = large.floatDown(0);
-      if(index < nS)   // we replaced in small heap, then swapped, so newValue is now in large heap
+      if(key < nS)     // we replaced in small heap, then swapped, so newValue is now in large heap
         i = il + nS;
       else
         i = is;
@@ -1165,10 +1167,7 @@ public:
   // return value should always be small.getSize(), size measured after the operation
 
 
-  T& operator[](int i)
-  {
-    return atIndex(i);
-  }
+  //T& operator[](int i) { return atIndex(i); }
   // get rid or make private - client code should use either atIndex or atKey
 
   /** Element access via an integer index. If nS is the number of values in the small heap, indices
@@ -1187,10 +1186,7 @@ public:
   /** Element access via an integer key. In this class, the key and index are the same thing, but 
   not in subclass rsDoubleHeap2. We implement the atKey function here too, to have the same 
   interface as the subclass. */
-  T& atKey(int k)
-  {
-    return (*this)[i];
-  }
+  T& atKey(int k) { return atIndex(k); }
 
   bool isIndexValid(int i)
   {
@@ -1270,11 +1266,11 @@ class rsDoubleHeap2 : public rsDoubleHeap<T>
 
 public:
 
-  int replace(int index, const T& newValue)
+  int replace(int key, const T& newValue)
   {
-    rsAssert(isIndexValid(index), "Index out of range");
+    rsAssert(isIndexValid(key), "Key out of range");
 
-    int i  = index;  // maybe get rid of index and use only i
+    int i  = key;  // maybe get rid of index and use only i
  
     // The actual replacement:
     if(isInLargeHeap(i)) {
@@ -1289,7 +1285,7 @@ public:
       small.swap(small[0], large[0]);
       int is = small.floatDown(0);
       int il = large.floatDown(0);
-      if(isInLargeHeap(index)) // new value was in large and is now in small heap
+      if(isInLargeHeap(key)) // new value was in large and is now in small heap
         i = is;
       else
         i = il | firstBitOnly;
@@ -1475,8 +1471,8 @@ public:
   T getSample(T x)
   {
     // buffer update:
-    int hi = buf[bufIdx];            // heap-index of oldest sample
-    int bi = dblHp[hi].bufIdx;       // buffer-index of oldest sample
+    int hi = buf[bufIdx];            // heap-key of oldest sample
+    int bi = dblHp.atKey(hi).bufIdx; // buffer-index of oldest sample
     bufIdx = (bufIdx+1) % L;         // updates the position in circular buffer of indices
     dblHp.replace(hi, Node(x, bi));  // will reshuffle the content of the double-heap, the content 
                                      // of buf will also be reshuffled accordingly
@@ -1492,8 +1488,8 @@ public:
   void reset()
   {
     for(int n = 0; n < L; n++) {
-      dblHp[n].value  = T(0);
-      dblHp[n].bufIdx = n;
+      dblHp.atIndex(n).value  = T(0);
+      dblHp.atIndex(n).bufIdx = n;
       buf[n]          = n; }
     bufIdx = 0;
   }
@@ -1540,7 +1536,7 @@ protected:
   std::vector<Node>  small, large; // storage arrays of the nodes
   rsDoubleHeap<Node> dblHp;        // maintains large/small as double-heap
   //rsDoubleHeap2<Node> dblHp;        // maintains large/small as double-heap
-  std::vector<int>   buf;          // circular buffer of heap indices
+  std::vector<int>   buf;          // circular buffer of heap keys
 
   int bufIdx = 0;  // current index into into the circular buffer
   int L = 2;       // total length of filter

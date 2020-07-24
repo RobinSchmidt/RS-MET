@@ -886,7 +886,7 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   int  i  = dblHp.moveFirstLargeToSmall();    // should be 0
   rsAssert(i  == 0);
 
-  Node n2 = dblHp[i];                         // should be same as n1
+  Node n2 = dblHp.atKey(i);                         // should be same as n1
   rsAssert(n1 == n2);
 
 
@@ -894,7 +894,9 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   int bc2 = buf[bi2];
   rsAssert(bc2 == i);
 
-  rsAssert(isIndexPermutation(&buf[0], L));
+  //rsAssert(isIndexPermutation(&buf[0], L));
+  // doe not work anymore when we use keys
+
   rsAssert(dblHp.isDoubleHeap());
 
   // the buffer buf stores heap-indices - but the heap-index of a node changes when we move
@@ -903,6 +905,9 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   //buf[bi] -= nSo;  
   // is that correct? or should we do that before calling  dblHp.moveFirstLargeToSmall(); does
   // that make a difference? or will it mess up the swapping...it's a mess!!
+
+  // aftermoving the node over, we must change the stored key in the buf to make it now refer to
+  // a positive index
 
 
 
