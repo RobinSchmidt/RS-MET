@@ -504,10 +504,7 @@ Idea:
 
 //=================================================================================================
 
-/** Baseclass for rsBinaryHeap and rsBinarySearchTree...
-
-*/
-
+/** Baseclass for rsBinaryHeap and rsBinarySearchTree... */
 
 template<class T>
 class rsBinaryTree
@@ -531,7 +528,6 @@ public:
     data = newData;
     size = newSize;
     capacity = newCapacity;
-    //buildTree();   // maybe make this call optional
   }
 
   void setData(std::vector<T>& newData)
@@ -542,19 +538,15 @@ public:
   /** Sets the comparison function to be used. If it implements "less-than", you'll get a max-heap
   and if it implements "greater-than", you'll get a min-heap. By default, it's assigned to a 
   less-than function based on the < operator. */
-  void setCompareFunction(const std::function<bool(const T&, const T&)>& newFunc)
-  {
-    less = newFunc;
-  }
+  void setCompareFunction(const std::function<bool(const T&, const T&)>& newFunc) 
+  { less = newFunc; }
   // question: what happens, if we use a less-or-equal or greater-or-equal function for this?
 
   /** Sets the function used to swap two elements. By default, it just uses rsSwap but you may want
   to do something extra whenever a swap takes place in certain circumstances, for example, to keep 
   track of when items get moved around (see rsMovingQuantileFilter for an example). */
   void setSwapFunction(const std::function<void(T&, T&)>& newFunc)
-  {
-    swap = newFunc;
-  }
+  { swap = newFunc; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -577,75 +569,8 @@ public:
     return data[i]; 
   }
 
-  //-----------------------------------------------------------------------------------------------
-  /** \name Data Manipulation */
-
-  /** Replaces the element at index i with the new given element x and rebalances the heap to 
-  maintain the heap-property which amounts to floating the new element x up or down. The return 
-  value is the array index, where the new element actually ended up. */
-  int replace(int i, const T& x)
-  {
-    data[i] = x;
-    return floatIntoPlace(i);
-  }
-  // should perhaps also be moved to rsBinaryHeap again - the replacement in the rsBinarySearchTree
-  // needs a different approach (i think)....yeah -  i think, this can't be generalized this way - 
-  // each sort of tree may need a different operation - maybe the floatUp/Down should also be moved
-  // there
-
-  /*
-  // todo: 
-  int insert(const T& x)
-  {
-  rsAssert(size < capacity, "Capacity exceeded");
-  // ...maybe in this case, we should return -1 immediately
-
-  data[size] = x;
-  size++;
-  return floatUp(size-1);
-  }
-  // not yet tested
-  */
-
-  // int insert(const T& x); // returns insertion index
-  // void remove(int);       // removes item at index i
-  // removing of element i should work as follows:
-  // -check, which of the two child-nodes should get promoted to the position i
-  // -move left(i) or right(i) up and apply the same process to its children (i.e check, which of 
-  //  its children should get promoted up)
-  // -and so on all the way to the bottom
-  // -decrement size
-
-
-  /** Lets the node at index i float up or down into its appropriate place and returns the 
-  resulting new array index. */
-  int floatIntoPlace(int i) { return floatUp(floatDown(i)); }
-  // -maybe rename to rebalanceNode
-  // -why is this public? can we move it into the protected section? hmm, rsMovingPercentileFilter
-  //  calls it directly - can this be avoided?
-
-  // get rid - the user should call buildHeap or buildSearchTree explicitly
-  /*
-  void buildTree()
-  {
-    for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
-      floatDown(i);
-  }
-  */
-  // Runs in O(N). From the code, it would appear as having O(N*log(N)) complexity because we call
-  // an O(log(N)) function inside the loop. However, for heaps and binary search trees, the runtime
-  // of floatDown depends on the argument i in such a way to give an overall O(N) behavior (see 
-  // reference (1)). The memory complexity is O(1).
 
 protected:
-
-  /** Must be implemented by subclasses to let node with array index i float up, if necessarry. It 
-  should return the new array index of the node. */
-  virtual int floatUp(int i) = 0;
-
-  /** Must be implemented by subclasses to let node with array index i float down, if 
-  necessarry. It should return the new array index of the node. */
-  virtual int floatDown(int i) = 0;
 
   /** Index of parent of node i. */
   static inline int parent(int i) { return (i-1) / 2; }
@@ -658,7 +583,8 @@ protected:
 
   /** Returns true, iff index i is the index of a left child node. */
   static inline bool isLeft(int i) { return i == left(parent(i)); }
-  // needs test
+  // needs test - i think, we can do it simpler: the odd indices are left children and the even 
+  // indices are right children...verify that
 
   /** Returns true, iff index i is the index of a right child node. */
   static inline bool isRight(int i) { return i == right(parent(i)); }
@@ -670,21 +596,13 @@ protected:
   int capacity = 0;
 
   // Comparison and swapping functions:
-  //std::function<bool(const T&, const T&)> less;  // rename to comp
-  //std::function<void(T&, T&)> swap;
-
-
-  // maybe these should be references?
   std::function<bool(const T&, const T&)> 
-    less = [](const T& a, const T& b)->bool 
-  { 
-    return a < b; 
-  };
-
+    less = [](const T& a, const T& b)->bool { return a < b;  };
   std::function<void(T&, T&)> 
     swap = [](T& a, T& b) { rsSwap(a, b); };
+  // maybe these should be references?
 
-
+  // Some related classes need direct acces to our members:
   template<class U> friend class rsDoubleHeap;
 
 };
@@ -754,6 +672,48 @@ public:
   // size of the tree...but that places a burden on subclasses having to implement the virtual
   // function - not good!
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data Manipulation */
+
+  /** Replaces the element at index i with the new given element x and rebalances the heap to 
+  maintain the heap-property which amounts to floating the new element x up or down. The return 
+  value is the array index, where the new element actually ended up. */
+  int replace(int i, const T& x)
+  {
+    data[i] = x;
+    return floatIntoPlace(i);
+  }
+
+  /*
+  // todo: 
+  int insert(const T& x)
+  {
+  rsAssert(size < capacity, "Capacity exceeded");
+  // ...maybe in this case, we should return -1 immediately
+
+  data[size] = x;
+  size++;
+  return floatUp(size-1);
+  }
+  // not yet tested
+  */
+
+  // int insert(const T& x); // returns insertion index
+  // void remove(int);       // removes item at index i
+  // removing of element i should work as follows:
+  // -check, which of the two child-nodes should get promoted to the position i
+  // -move left(i) or right(i) up and apply the same process to its children (i.e check, which of 
+  //  its children should get promoted up)
+  // -and so on all the way to the bottom
+  // -decrement size
+
+  /** Lets the node at index i float up or down into its appropriate place and returns the 
+  resulting new array index. */
+  int floatIntoPlace(int i) { return floatUp(floatDown(i)); }
+  // -maybe rename to rebalanceNode
+  // -why is this public? can we move it into the protected section? hmm, 
+  //  rsMovingQuantileFilterCore calls it directly - can this be avoided?
+
 
 protected:
 
@@ -761,7 +721,7 @@ protected:
 
   /** Lets the node at index i float up the tree if its parent violates the heap property. Returns 
   the new array index. */
-  int floatUp(int i) override
+  int floatUp(int i)
   {
     while(i > 0) {
       int p = parent(i);
@@ -828,7 +788,7 @@ protected:
   // ..but it seems buggy and i had to make some changes - it seems to work now but needs more 
   // thorough testing
 
-  int floatDown(int i) override
+  int floatDown(int i)
   {
     //return floatDownRec(i);  // calls recursive version - change that!
     return floatDownIt(i);
@@ -961,7 +921,9 @@ public:
 
 protected:
 
-  int floatUp(int i) override
+  int floatIntoPlace(int i) { return floatUp(floatDown(i)); }
+
+  int floatUp(int i)
   {
     while(i > 0) {
       int p = parent(i);
@@ -978,8 +940,6 @@ protected:
       i = p; }
     return i;
   }
-
-
 
   int floatDown1(int i)
   {
@@ -1066,7 +1026,7 @@ protected:
     // i,l,r. if s==l and b==r, the node i should stay where it is
   }
 
-  int floatDown(int i) override
+  int floatDown(int i)
   {
     return floatDown1(i);
     //return floatDown2(i);
