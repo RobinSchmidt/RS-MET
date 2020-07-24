@@ -1363,20 +1363,81 @@ protected:
 
     //int C = getCapacity(); 
 
-    // old - comment out to use the new implementation below:
+
+    // new implementation - under construction - goal is to make L,p modulatable - if you want the 
+    // old implementtion, comment this out:
+    /*
+    int nSo = (int) small.size();  // old number of small samples
+    int nLo = (int) large.size();  // old number of large samples
+    int nS  = p;                   // new number of small samples
+    int nL  = L-p;                 // new number of large samples
+    if(nS+nL == nSo+nLo)
+    {
+      // total length stays the same - we may need to re-distribute data from the min-heap to the
+      // max-heap or vice versa
+
+      int nSi = nSo;  // current number of small samples
+      int nLi = nLo;  // current number of large samples
+      if(nS > nSo)
+      {
+        // number of small samples grows - redistribute from large to small
+
+        while(nSi < nS)
+        {
+          // todo: move one sample from large heap to small heap
+
+          nSi++; nLi--;
+        }
+
+
+
+      }
+      else if(nS < nSo)
+      {
+        // number of large samples grows - redistribute from small to large
+
+        while(nLi < nL)
+        {
+          // todo: move one sample from small heap to large heap
+
+          nSi--; nLi++;
+        }
+      }
+      else
+      {
+        //return; // nothing has changed
+      }
+
+
+
+      int dummy = 0;
+    }
+    else if(nS+nL < nSo+nLo)
+    {
+      // total length shrinks - we must discard some of the old datapoints in addition to possibly
+      // redistribute data
+
+
+      int dummy = 0;
+    }
+    else
+    {
+      // total length grows - we must fill up missing data in addition to possibly redistribute 
+      // data
+
+
+      int dummy = 0;
+    }
+    */
+
+
+    // old implementation which resets, i.e. is non-modulatable - to use it, comment out new 
+    // implementation above:
     buf.resize(L);
     small.resize(p);
     large.resize(L-p);
     dblHp.setData(&small[0], p, p, &large[0], L-p, L-p);
     reset();
-    return;
-
-    // new - under construction - goal is to make L,p modulatable:
-    int nSo = (int) small.size();
-    int nLo = (int) large.size();
-   
-
-    int dummy = 0;
 
     // In order to increase the length on the fly, we may need to insert some older samples which 
     // we do have stored anywhere here yet - to do so, we may have to use a circular buffer of old 

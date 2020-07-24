@@ -343,7 +343,7 @@ bool testMovingQuantileModulation()
     int nS;
     int nL;
   };
-  std::vector<Settings> settings ={ {0, 5, 7}, {20, 7, 5}, {40, 5, 7}, {80, 7, 7}, {80, 5, 5} };
+  std::vector<Settings> settings ={ {0, 5, 7}, {20, 7, 5}, {40, 5, 7}, {60, 7, 7}, {80, 5, 5} };
 
 
   rsMovingQuantileFilterNaive<double> fltN(maxLength, maxLength);
@@ -361,8 +361,7 @@ bool testMovingQuantileModulation()
       int nS = settings[i].nS;
       int nL = settings[i].nL;
       fltN.setLengths(nS, nL);
-      fltH.setLength(nS + nL);
-      fltH.setReadPosition(nS);
+      fltH.setLengthAndReadPosition(nS+nL, nS);
       i++;  
     }
     y[n] = fltH.getSample(x[n]);
