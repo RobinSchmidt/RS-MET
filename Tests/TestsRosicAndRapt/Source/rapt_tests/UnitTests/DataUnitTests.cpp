@@ -185,12 +185,64 @@ public:
 
   /** Removes the element at given index i from the heap and re-orders the remaining elements to
   maintain the heap-property. */
-  void remove(int i)
+  void remove(int i, T& sentinel)
   {
+    //bool done = false; 
+    while(true)
+    {
+      int l = left(i);
+      int r = right(i);
+      if(l >= size)
+      {
+        // node i is leaf - nothing to do
+        swap(data[i], sentinel);
+        break;
+        //return;
+      }
+      if(r >= size)
+      {
+        // node i has only a left child - promote it directly and break:
+        swap(data[i], data[l]);
+        break;
+        //return;
+      }
+
+      // typical case, where node has two children - we promote the larger of the two children and
+      // in case of a tie, we promote the left node (by convention..what difference does it make? 
+      // maybe we should give the user the option to control that by a boolean parameter?)
+
+      if(less(data[r], data[l]))
+      {
+        // right child is greater than left child - promote right child:
+
+        swap(data[i], data[r]);
+        i = r;
+
+      }
+      else
+      {
+        swap(data[i], data[l]);
+        i = l;
+      }
+
+      int dummy = 0;
+    }
+
+    size--;
+
+
     // remove it and replace the slot with either the left or right child, then replace the child 
     // that was promoted up with either it left or right child and so on, i.e. remove and promote
     // children
   }
+  // removing of element i should work as follows:
+  // -check, which of the two child-nodes should get promoted to the position i
+  // -move left(i) or right(i) up and apply the same process to its children (i.e check, which of 
+  //  its children should get promoted up)
+  // -and so on all the way to the bottom
+  // -decrement size
+  // -what if we have overflow in the l,r values - should we handle that? or maybe restrict the
+  //  capacity to values which ensure that no overflow occurs? yes, that seems sensible
 
   void sort()
   {
@@ -247,17 +299,17 @@ bool binaryHeapUnitTest()
   }
 
   // test removing:
-
-
-
-
-
-  //N = (int) A.size();
-
-
-  
-  
-
+  int sentinel = 0;
+  for(int i = 1; i <= numTests; i++)
+  {
+    int oldSize  = H.getSize();
+    int remIndex = ng.getSampleRaw() % H.getSize();
+    H.remove(remIndex, sentinel);
+    r &= H.getSize() == oldSize - 1;
+    r &= H.isMaxHeap();
+  }
+  // hmm...this still fails..i'm not sure, if swapping makes sense here...maybe we should swap with
+  // some sort of sentinel element in the last step
 
 
 
