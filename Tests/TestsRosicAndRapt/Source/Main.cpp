@@ -147,7 +147,7 @@ int main(int argc, char* argv[])
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
   //poleZeroPrototype();  // new implementation - but we don't need that
   //seriesConnectionDecay();
-  quantileFilter();
+//  quantileFilter();
 
   // Physics:
   //doublePendulum(); // takes long
@@ -362,9 +362,9 @@ int main(int argc, char* argv[])
   //fakeResoDifferentDelays();
 
   // Modal Filters/Synthesis:
-  modalFilter();        // impulse response of decaying-sine filter
-  modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
-  attackDecayFilter();  // ...hmm..almost redundant
+  //modalFilter();        // impulse response of decaying-sine filter
+  //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
+  //attackDecayFilter();  // ...hmm..almost redundant
   //modalTwoModes();
   //dampedSineFilterDesign();
   //dampedSineFilterImpResp();
@@ -527,9 +527,9 @@ int main(int argc, char* argv[])
   //createPiano1();
 
   // sample-map creations (they take long):
-  createBass1();
-  createGong1();
-  createPluck1();
+  //createBass1();
+  //createGong1();
+  //createPluck1();
 
   //===============================================================================================
   // RoSiC tests:

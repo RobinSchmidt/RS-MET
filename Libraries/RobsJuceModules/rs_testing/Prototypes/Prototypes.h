@@ -1258,6 +1258,8 @@ protected:
 
   rsBinaryHeap<T> small, large;  // the two heaps for the small and large numbers
 
+  template<class U> friend class rsMovingQuantileFilterCore; // temporary
+
 };
 
 
@@ -1281,39 +1283,39 @@ public:
   {
     rsAssert(isKeyValid(key), "Key out of range");
 
-    int i  = key;  // maybe get rid of index and use only i
+    int k = key;
  
     // The actual replacement:
-    if(isKeyInLargeHeap(i)) {
-      i  = large.replace(rawLargeHeapIndex(i), newValue);
-      i |= firstBitOnly; }
+    if(isKeyInLargeHeap(k)) {
+      k  = large.replace(toLargeHeapIndex(k), newValue);
+      k |= firstBitOnly; }  
+    // should we do  (k - largeIndexOffset) | firstBitOnly?
     else
-      i = small.replace(i, newValue);
+      k = small.replace(k, newValue);
 
     // The potential swap:
     if(small.less(large[0], small[0]))  
     {
       small.swap(small[0], large[0]);
-      int is = small.floatDown(0);
-      int il = large.floatDown(0);
+      int ks = small.floatDown(0);
+      int kl = large.floatDown(0);
       if(isKeyInLargeHeap(key)) // new value was in large and is now in small heap
-        i = is;
+        k = ks;
       else
-        i = il | firstBitOnly;
+        k = kl | firstBitOnly;
+        // should we do  (kl - largeIndexOffset) | firstBitOnly?
     }
 
-    return i;
+    return k;
   }
-  // maybe we should stop calling it "index" and use "key" instead - with the bit-twiddling, it's
-  // not really an index anymore
+
 
 
   T& atKey(int k) 
   { 
     rsAssert(isKeyValid(k), "Key out of range");
     if(isKeyInLargeHeap(k))
-      return large[rawLargeHeapIndex(k) + largeIndexOffset];
-      //return large[keyToIndex(k)];
+      return large[toLargeHeapIndex(k)];
     else
       return small[k];
   }
@@ -1321,7 +1323,7 @@ public:
   bool isKeyValid(int k) const 
   {
     if(isKeyInLargeHeap(k)) 
-      return rawLargeHeapIndex(k) + largeIndexOffset < large.getSize();
+      return toLargeHeapIndex(k) < large.getSize();
     else
       return k < small.getSize();
   }
@@ -1331,13 +1333,12 @@ public:
     return k & firstBitOnly; 
   }
 
-  static inline int rawLargeHeapIndex(int k) // rename to largeHeapKeyToIndex
-  {
-    return k & allBitsButFirst;
-  }
-  // returns the raw lerge-heap index, which is the key k with the first bit shaved off
-  // maybe make a function toLargeHeapIndex(int k) which also includes the offset
 
+
+  inline int toLargeHeapIndex(int k) const
+  {
+    return rawLargeHeapIndex(k) + largeIndexOffset;
+  }
 
   int indexToKey(int i) 
   { 
@@ -1356,7 +1357,7 @@ public:
   { 
     if(isKeyInLargeHeap(k))
     {
-      int i = rawLargeHeapIndex(k);
+      int i = rawLargeHeapIndex(k);  // no offset is needed here?
       return i + small.getSize();
     }
     else
@@ -1408,8 +1409,19 @@ public:
   int largeIndexOffset = 0;
   // i think, to make everything consistent, whenever we use an offset to read a value, we should 
   // add the offet to the raw computed index and whenever we return a computed key, we should 
-  // compute it after subtracting the offset - will that work? could the sign change cause 
-  // problems and maybe an unsigned int type may be better?
+  // compute it after subtracting the offset - will that work? oh - no - i think, the offset is to 
+  // be used *only* for reading and replacing but we should not include the offset in returned 
+  // values, right? could the sign change cause problems and maybe an unsigned int type may be 
+  // better?
+
+private:
+
+  static inline int rawLargeHeapIndex(int k) // rename to largeHeapKeyToIndex
+  {
+    return k & allBitsButFirst;
+  }
+  // returns the raw lerge-heap index, which is the key k with the first bit shaved off
+  // maybe make a function toLargeHeapIndex(int k) which also includes the offset
 
 };
 

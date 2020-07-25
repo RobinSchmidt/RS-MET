@@ -872,34 +872,49 @@ void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength,
 template<class T>
 void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
 {
-  //dblHp.moveFirstLargeToSmall();
-  //return;
-
-
-
-  //int nS  = dblHp.getNumSmallValues();
-
+  // peek the node that we want to move - mainly to figure out, what bufIdx it has stored, so we 
+  // can adapt the stored key-value at that bufIdx (the key will change, due to the move):
   Node n1 = dblHp.getSmallestLargeValue();    // this is the node we want to move
   int  bi = n1.bufIdx;                        // buffer index of to be moved node
-  int  bc = buf[bi];                          // buffer content at index - is the new node index
 
-  rsAssert(bc < 0);  
+  // a sanity check:
+  int  bc = buf[bi];  // buffer content at index - is the node's key
+  rsAssert(bc < 0, "we expect an index into the large heap");
 
-  // i think, at this point, we should convert buf[bi] from a large-heap-index into a 
-  // small-heap-index by masking away this first bit or no - we must give it the index 
-  // small.getSize() because when we insert it, we first put it at the end and the let it float
-  // up
-  buf[bi] = dblHp.getNumSmallValues();  // very experimental....
+  // store the new key at appropriate position in buffer - the new key is preliminarily the current
+  // number of elements in the small heap because heap-insertion first inserts at the end and then 
+  // let's the element float up:
+  buf[bi] = dblHp.getNumSmallValues();
 
-  int  i  = dblHp.moveFirstLargeToSmall();    // should be 0
-  rsAssert(i  == 0);
+  // all large-heap indices (not the keys!) get decremented by one, bcs. they move one index 
+  // position forward - this is realized as a global offset stored in the dblHp object:
+  dblHp.decrementLargeIndexOffset();
+
+  // move the first node of the large heap into the small heap:
+  Node n = dblHp.large.extractFirst();  // shuffles large heap and buf
+  int  i = dblHp.small.insert(n);       // shuffles small heap and buf
+  rsAssert(i  == 0);                    // it should end up at the front
+  // bcs extractFirst already shuffles buf, we need to first peek the first element of the large
+  // heap to obtain its stored bufIndex there - after the call to extract, it's invalid
+
+  // We did the move by hand. Alternatively, we could have called  dblHp.moveFirstLargeToSmall().
+  // This should perhaps be done, when it all works and then the friend declaration in
+  // rsDoubleHeap should be removed (we access a protected member in the by-hand move).
+
+
+  // ...that should be it - but it doesn't seem to work. :-( i suspect, that in the last operation,
+  // the actual move, the keys in the buf are nor correctly re-shuffled. Maybe the swapNodes call
+  // that occurs during the node extraction is wrong?
+
+  // with decrementing the 1,3 filter switch to a 2,2 filter, we don't get index errors anymore, 
+  // but the output signal is wrong. also, when switching again to 3,1, we get index errors again
+
+
+  // Some more sanity checks:
 
   //Node n2 = dblHp.atKey(i);                         // should be same as n1
   Node n2 = dblHp.atIndex(i);                         // should be same as n1
-
   rsAssert(n1 == n2);
-
-
   int bi2 = n2.bufIdx; 
   int bc2 = buf[bi2];
   rsAssert(bc2 == i);
