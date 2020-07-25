@@ -880,13 +880,23 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   //int nS  = dblHp.getNumSmallValues();
 
   Node n1 = dblHp.getSmallestLargeValue();    // this is the node we want to move
-  int  bi = n1.bufIdx;                        // buffer index
+  int  bi = n1.bufIdx;                        // buffer index of to be moved node
   int  bc = buf[bi];                          // buffer content at index - is the new node index
+
+  rsAssert(bc < 0);  
+
+  // i think, at this point, we should convert buf[bi] from a large-heap-index into a 
+  // small-heap-index by masking away this first bit or no - we must give it the index 
+  // small.getSize() because when we insert it, we first put it at the end and the let it float
+  // up
+  buf[bi] = dblHp.getNumSmallValues();  // very experimental....
 
   int  i  = dblHp.moveFirstLargeToSmall();    // should be 0
   rsAssert(i  == 0);
 
-  Node n2 = dblHp.atKey(i);                         // should be same as n1
+  //Node n2 = dblHp.atKey(i);                         // should be same as n1
+  Node n2 = dblHp.atIndex(i);                         // should be same as n1
+
   rsAssert(n1 == n2);
 
 
@@ -909,8 +919,15 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   // aftermoving the node over, we must change the stored key in the buf to make it now refer to
   // a positive index
 
+  // but no - the strategy withe the key doesn't work either because all large buffer keys become 
+  // invalid after the move - actually it seems, we should decrement them all by one, but: that's
+  // actually the same as incrementing an subtractive offset - which is preciely what we did before
+  // with the i-nS convention - but maybe we need both: a flag (per key) to indicate the large heap 
+  // and a global offset for the large heap keys - here, the global offset gest decremented
 
 
+  // maybe to streamline it, copy the code from moveFirstLargeToSmall() to here and maybe
+  // simplify, if possible
 
   int dummy = 0;
 }

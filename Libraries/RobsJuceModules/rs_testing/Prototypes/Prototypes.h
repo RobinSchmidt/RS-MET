@@ -1310,13 +1310,10 @@ public:
 
   T& atKey(int k) 
   { 
-    int m1 = allBits;
-    int m2 = firstBitOnly;
-    int m3 = allBitsButFirst;
-
     rsAssert(isKeyValid(k), "Key out of range");
     if(isKeyInLargeHeap(k))
-      return large[rawLargeHeapIndex(k)];   
+      return large[rawLargeHeapIndex(k) + largeIndexOffset];
+      //return large[keyToIndex(k)];
     else
       return small[k];
   }
@@ -1324,9 +1321,9 @@ public:
   bool isKeyValid(int k) const 
   {
     if(isKeyInLargeHeap(k)) 
-      return rawLargeHeapIndex(k) < large.getSize();
+      return rawLargeHeapIndex(k) + largeIndexOffset < large.getSize();
     else
-      return k                    < small.getSize();
+      return k < small.getSize();
   }
 
   static inline bool isKeyInLargeHeap(int k) 
@@ -1338,6 +1335,9 @@ public:
   {
     return k & allBitsButFirst;
   }
+  // returns the raw lerge-heap index, which is the key k with the first bit shaved off
+  // maybe make a function toLargeHeapIndex(int k) which also includes the offset
+
 
   int indexToKey(int i) 
   { 
@@ -1345,8 +1345,11 @@ public:
     if(i < nS)
       return i;
     else
-      return (i-nS) | firstBitOnly;
+      return (i-nS) | firstBitOnly;  
+    // do we need " + largeIndexOffset" here too? if so, is should be done before the "or". or 
+    // maybe we need to subtract it? but no...
   }
+  // takes the double-heap index from 0....nS+nL-1
   // needs test
 
   int keyToIndex(int k) 
@@ -1359,6 +1362,7 @@ public:
     else
       return k;
   }
+  // returns the double-heap index from 0....nS+nL-1
   // needs test
 
 
@@ -1369,31 +1373,43 @@ public:
   // bit
 
 
-  // todo: use constexpr and maybe move to somewhere else - could be useful in other contexts
+
 
 
   // maybe use int instead of size_t because otherwise, when convertig indices to int, the 
   // indicator bit gets cut off ...but maybe we should take care to avoid such conversions
 
+
+
+  // todo: move to somewhere else - could be useful in other contexts:
+  static constexpr int allBits = -1;                                      // all bits are 1
+  static constexpr int allBitsButFirst = std::numeric_limits<int>::max(); // only 1st bit is 1
+  static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 1st bit is 0
+
+  // for unsiged int types, the bit fiddling is different:
   //static size_t allBits = std::numeric_limits<size_t>::max();
-  // nope - for a signed integer, that doesn't work
-
   //static size_t firstBitOnly = allBits - (allBits >> 1);
-  // only the first bit should be set
-
   //static size_t allBitsButFirst= allBits ^ firstBitOnly;
 
 
-  static const int allBits = -1; 
-
-  static const int allBitsButFirst = std::numeric_limits<int>::max();
-
-  static const int firstBitOnly = allBits ^ allBitsButFirst;
 
 
 
-  // all bits except the first should be set
 
+  // experimental: try to use a variable offset for the indices in the large buffer - the goal is
+  // to keep the ofsetted large-heap indices valid, even after the size of the small heap has been
+  // changed. currently, changing this size (by moving an lement from the large to the small heap),
+  // make the previously returned large-heap keys invalid, when translated to indices. Each such 
+  // move from large to small means that all the previously returned large-heap keys will now map
+  // to an idex that is too high by one, so such a move should be accompanied by a decrement of the
+  // offset. In the functions to compute the index from the key, the offset gets added:
+  void incrementLargeIndexOffset() { largeIndexOffset++; }
+  void decrementLargeIndexOffset() { largeIndexOffset--; }
+  int largeIndexOffset = 0;
+  // i think, to make everything consistent, whenever we use an offset to read a value, we should 
+  // add the offet to the raw computed index and whenever we return a computed key, we should 
+  // compute it after subtracting the offset - will that work? could the sign change cause 
+  // problems and maybe an unsigned int type may be better?
 
 };
 
