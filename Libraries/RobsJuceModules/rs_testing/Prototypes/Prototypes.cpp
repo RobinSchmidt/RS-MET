@@ -872,6 +872,12 @@ void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength,
 template<class T>
 void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
 {
+  //// test - if uncommented, uncomment the reset at the bottom of the function, too:
+  //auto swapNodes2 = [&](Node& a, Node& b) { this->swapNodes2(a, b); };
+  //dblHp.setSwapFunction(swapNodes2);
+
+  rsAssert(isStateConsistent());
+
   // peek the node that we want to move - mainly to figure out, what bufIdx it has stored, so we 
   // can adapt the stored key-value at that bufIdx (the key will change, due to the move):
   Node n1 = dblHp.getSmallestLargeValue();    // this is the node we want to move
@@ -904,7 +910,9 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
 
   // ...that should be it - but it doesn't seem to work. :-( i suspect, that in the last operation,
   // the actual move, the keys in the buf are nor correctly re-shuffled. Maybe the swapNodes call
-  // that occurs during the node extraction is wrong?
+  // that occurs during the node extraction is wrong? Maybe the dblHp.decrement.. call should be 
+  // done after movement? Should that make any difference, i.e. is the offset used during 
+  // extract/insert? Nope!
 
   // with decrementing the 1,3 filter switch to a 2,2 filter, we don't get index errors anymore, 
   // but the output signal is wrong. also, when switching again to 3,1, we get index errors again
@@ -912,15 +920,19 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
 
   // Some more sanity checks:
 
+  /*
   //Node n2 = dblHp.atKey(i);                         // should be same as n1
   Node n2 = dblHp.atIndex(i);                         // should be same as n1
   rsAssert(n1 == n2);
   int bi2 = n2.bufIdx; 
   int bc2 = buf[bi2];
   rsAssert(bc2 == i);
+  */
 
   //rsAssert(isIndexPermutation(&buf[0], L));
   // doe not work anymore when we use keys
+
+  rsAssert(isStateConsistent(), "state inconsistent");
 
   rsAssert(dblHp.isDoubleHeap());
 
@@ -944,6 +956,10 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   // maybe to streamline it, copy the code from moveFirstLargeToSmall() to here and maybe
   // simplify, if possible
 
+
+  //auto swapNodes = [&](Node& a, Node& b) { this->swapNodes(a, b); };
+  //dblHp.setSwapFunction(swapNodes);
+
   int dummy = 0;
 }
 // this does not work yet - i think, we may have to do something with the stored bufIndex
@@ -959,6 +975,20 @@ void rsMovingQuantileFilterCore<T>::moveFirstSmallToLarge(int nSo)
 {
   dblHp.moveFirstSmallToLarge();
 }
+
+template<class T>
+bool rsMovingQuantileFilterCore<T>::isStateConsistent()
+{
+  bool r = true;
+  for(size_t i = 0; i < buf.size(); i++)
+  {
+    int  k = buf[i];         // key of node in i-th buffer slot
+    Node n = dblHp.atKey(k); // retrieve the node
+    r &= n.bufIdx == i;
+  }
+  return r;
+}
+
 
 
 //=================================================================================================

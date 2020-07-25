@@ -1526,6 +1526,7 @@ public:
     // maybe use small.size() - we keep the vector sizes now fixed
   }
 
+  bool isStateConsistent(); // a self-test for debugging
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -1539,6 +1540,9 @@ public:
     bufIdx = (bufIdx+1) % L;       // updates the position in circular buffer of indices
     dblHp.replace(k, Node(x, i));  // will reshuffle the content of the double-heap, the content 
                                    // of buf will also be reshuffled accordingly
+
+    // sanity check for debug:
+    rsAssert(isStateConsistent());
 
     // sample readout:
     T yS = dblHp.getLargestSmallValue().value;   // smaller value
@@ -1571,7 +1575,6 @@ protected:
 
   void moveFirstSmallToLarge(int oldNumSmallValues);
 
-
   /** A node stores an incoming signal value together with its index in the circular buffer. The 
   "less-than" comparison is based on the signal value. */
   struct Node
@@ -1595,6 +1598,17 @@ protected:
     rsSwap(a, b);
     rsSwap(buf[a.bufIdx], buf[b.bufIdx]);
   }
+
+  // experimental - we may (or may not) have to use a different swapping algorithm in
+  // moveFirstLargeToSmall:
+  /*
+  void swapNodes2(Node& a, Node& b)
+  {
+    //rsSwap(a.value, b.value);
+    rsSwap(a, b);
+    rsSwap(buf[a.bufIdx], buf[b.bufIdx]);
+  }
+  */
 
 
   // Data:
