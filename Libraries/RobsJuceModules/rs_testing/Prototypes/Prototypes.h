@@ -708,8 +708,8 @@ public:
   maintain the heap-property. */
   void remove(int i)
   {
-    //swap(data[i], data[size-1]);
-    rsSwap(data[i], data[size-1]);  // test
+    swap(data[i], data[size-1]);
+    //rsSwap(data[i], data[size-1]);  // test
     size--;
     floatIntoPlace(i);
   }
@@ -1586,8 +1586,8 @@ protected:
   "less-than" comparison is based on the signal value. */
   struct Node
   {
-    int bufIdx = 0;
     T value = T(0);
+    int bufIdx = 0;
 
     Node(T v = T(0), int i = 0) { value = v; bufIdx = i; }
 
@@ -1603,9 +1603,9 @@ protected:
   void swapNodes(Node& a, Node& b)
   {
     // debug:
-    bool a_ok_pre = isBufferSlotConsistent(a.bufIdx);
-    bool b_ok_pre = isBufferSlotConsistent(b.bufIdx);
-    rsAssert(a_ok_pre && b_ok_pre);
+    //bool a_ok_pre = isBufferSlotConsistent(a.bufIdx);
+    //bool b_ok_pre = isBufferSlotConsistent(b.bufIdx);
+    //rsAssert(a_ok_pre && b_ok_pre);
 
     // the actual action:
     rsSwap(a, b);
@@ -1613,9 +1613,9 @@ protected:
 
 
     // debug:
-    bool a_ok_post = isBufferSlotConsistent(a.bufIdx);
-    bool b_ok_post = isBufferSlotConsistent(b.bufIdx);
-    rsAssert(a_ok_post && b_ok_post);
+    //bool a_ok_post = isBufferSlotConsistent(a.bufIdx);
+    //bool b_ok_post = isBufferSlotConsistent(b.bufIdx);
+    //rsAssert(a_ok_post && b_ok_post);
   }
 
   // experimental - we may (or may not) have to use a different swapping algorithm in

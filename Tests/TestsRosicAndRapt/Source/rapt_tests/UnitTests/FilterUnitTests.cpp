@@ -333,7 +333,7 @@ bool testMovingQuantileModulation()
 {
   bool r = true;
 
-  int maxLength = 3;
+  int maxLength = 4;
   int N = 200;           // number of samples
 
   // create vector of settings, each with a timestamp:
@@ -348,15 +348,15 @@ bool testMovingQuantileModulation()
   //std::vector<Settings> settings ={ {0, 5, 7}, {50, 7, 5}, {150, 5, 7} };
   //std::vector<Settings> settings ={ {0, 5, 7}, {50, 6, 6}, {150, 5, 7} };
   //std::vector<Settings> settings ={ {0, 3, 1}, {20, 2, 2}, {40, 1, 3}, {60, 3, 1} };
-  //std::vector<Settings> settings ={ {0, 1, 3}, {20, 2, 2} };
-  //std::vector<Settings> settings ={ {0, 1, 4}, {20, 2, 3} };
-  std::vector<Settings> settings ={ {0, 1, 2}, {20, 2, 1} };
+  std::vector<Settings> settings ={ {0, 1, 3}, {6, 2, 2} };
+  //std::vector<Settings> settings ={ {0, 1, 4}, {40, 2, 3} };
+  //std::vector<Settings> settings ={ {0, 1, 2}, {20, 2, 1} };
   //std::vector<Settings> settings ={ {0, 1, 4}, {20, 3, 2} };
   //std::vector<Settings> settings ={ {0, 1, 4}, {20, 2, 3}/*, {40, 3, 1} , {60, 3, 1} */ };
-  //std::vector<Settings> settings ={ {0, 2, 4}, {20, 3, 3}/*, {40, 3, 1} , {60, 3, 1} */ };
+  //std::vector<Settings> settings ={ {0, 2, 4}, {20, 3, 3}, {40, 3, 1} /*, {60, 3, 1} */ };
   //std::vector<Settings> settings ={ {0, 1, 2}, {20, 2, 1} };
-  //std::vector<Settings> settings ={ {0, 5, 7}, {20, 6, 6} };
-  //std::vector<Settings> settings ={ {0, 5, 7}, {20, 7, 5} };
+  //std::vector<Settings> settings ={ {0, 5, 7}, {40, 6, 6} };
+  //std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5} };
 
 
 

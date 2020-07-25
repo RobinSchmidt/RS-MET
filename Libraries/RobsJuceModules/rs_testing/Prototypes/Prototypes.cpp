@@ -872,13 +872,17 @@ void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength,
 template<class T>
 void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
 {
+  //dblHp.moveFirstLargeToSmall();
+  //return;
+
+
   //// test - if uncommented, uncomment the reset at the bottom of the function, too:
   //auto swapNodes2 = [&](Node& a, Node& b) { this->swapNodes2(a, b); };
   //dblHp.setSwapFunction(swapNodes2);
 
   bool ok = true;
 
-  rsAssert(isStateConsistent());
+  //rsAssert(isStateConsistent(), "state inconsistent");
 
   // peek the node that we want to move - mainly to figure out, what bufIdx it has stored, so we 
   // can adapt the stored key-value at that bufIdx (the key will change, due to the move):
@@ -896,9 +900,11 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
 
   // move the first node of the large heap into the small heap:
   Node n = dblHp.large.extractFirst();  // shuffles large heap and buf
+  //rsAssert(isStateConsistent(), "state inconsistent"); // trigees key/index out of range but not itself
   int  i = dblHp.small.insert(n);       // shuffles small heap and buf
+  //rsAssert(isStateConsistent(), "state inconsistent");
   rsAssert(i  == 0);                    // it should end up at the front
-  ok &= isNodeConsistent(n);
+  //ok &= isNodeConsistent(n);
   // bcs extractFirst already shuffles buf, we need to first peek the first element of the large
   // heap to obtain its stored bufIndex there - after the call to extract, it's invalid
 
@@ -1002,6 +1008,9 @@ template<class T>
 void rsMovingQuantileFilterCore<T>::moveFirstSmallToLarge(int nSo)
 {
   dblHp.moveFirstSmallToLarge();
+
+  // this seems to magically work already, although it shouldn't - we don't update the buffer
+  // content and don't increment the offset yet...more tests needed...
 }
 
 template<class T>
@@ -1048,7 +1057,8 @@ bool rsMovingQuantileFilterCore<T>::isBufferSlotConsistent(int i)
 {
   int  k = buf[i];         // key of node in i-th buffer slot
   Node n = dblHp.atKey(k); // retrieve the node
-  return n.bufIdx == i;
+  bool result = n.bufIdx == i;
+  return result;
 }
 
 
