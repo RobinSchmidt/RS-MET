@@ -1212,16 +1212,15 @@ public:
     return (int) large.getSize();
   }
 
-  T getLargestSmallValue()
-  {
-    return small[0];
-  }
-
-  T getSmallestLargeValue()
-  {
-    return large[0];
-  }
+  T getLargestSmallValue()   { return small[0]; }
+  T getSmallestLargeValue()  { return large[0]; }
+  T getLastSmalltValue()     { return small[small.getSize()-1]; }
+  T getLastLargeValue()      { return large[large.getSize()-1]; }
   // make them const
+  // rename to getFirstSmallValue getLast.. the last is not necessarily the largest or smallest
+  // the children are both larger/smaller but their order is not defined...hmm - can we define 
+  // it to give a heap even more structure?
+
 
   /*
   T getMean()

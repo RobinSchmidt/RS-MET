@@ -896,13 +896,39 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   // store the new key at appropriate position in buffer - the new key is preliminarily the current
   // number of elements in the small heap because heap-insertion first inserts at the end and then 
   // let's the element float up:
-  buf[bi] = dblHp.getNumSmallValues();
+  int newKey1 = dblHp.getNumSmallValues();
+  buf[bi] = newKey1;
+  //ok = isStateConsistent();
+  
+  /*
+  // very experimental - i think, this code should be used only without the 
+  // dblHp.decrementLargeIndexOffset() call below, maybe it can even be used with the i-nS 
+  // convention:
+  Node n2  = dblHp.getLastLargeValue();    // this is the node that gets its key invalidated (right?)
+  int  bi2 = n2.bufIdx;
+  //int newKey2 = dblHp.indexToKey(dblHp.getNumSmallValues()+2); // does that make sense?
+  int newKey2 = dblHp.indexToKey(dblHp.getNumSmallValues());
+  buf[bi2] = newKey2;   // we must to re-assign the key to something - but what?
+  ok = isStateConsistent();
+  // something like toKey(dblHp.getNumLargeValues()-2) ..bcs the old key is 
+  // toKey(dblHp.getNumLargeValues()-1)...but there already exists some other node with that key
+  // but we have just freed the key for the 0th node in the large heap, because we just re-keyed
+  // the node with that key - maybe it should get that? so would that be
+  // toKey( dblHp.getNumSmallValues()+1 )
+  // hmm..maybe that has to be done *after* the extract/insert because this operations does swaps
+  // whose effect depends on the content of buf - but i think, we need to figure out which node will 
+  // get invalidated before re-shuffling - afterwards, it will be hard to find
+  */
+ 
+ 
+
+
 
   // move the first node of the large heap into the small heap:
   Node n = dblHp.large.extractFirst();  // shuffles large heap and buf
-  //rsAssert(isStateConsistent(), "state inconsistent"); // trigees key/index out of range but not itself
+  //ok = isStateConsistent();// triggers key/index out of range but not itself
   int  i = dblHp.small.insert(n);       // shuffles small heap and buf
-  //rsAssert(isStateConsistent(), "state inconsistent");
+  //ok = isStateConsistent();
   rsAssert(i  == 0);                    // it should end up at the front
   //ok &= isNodeConsistent(n);
   // bcs extractFirst already shuffles buf, we need to first peek the first element of the large
