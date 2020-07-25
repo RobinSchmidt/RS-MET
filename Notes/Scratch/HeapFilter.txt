@@ -103,6 +103,79 @@ invalidated node get? It'S the node 6,1 that originally was at the end of the la
 before we switched it with the front element 4,3. Should it get the L0 key, i.e. -8? I 
 think, we may have to re-key it before floating it down?
 
+Hmmmm...i think, the whole idea may be doomed to fail - i actually think, all indices or
+keys are invalidated...hmm...or not?
+
+-----------------------------------------------------------------------------------------
+
+OK - let's try the same case with the i-nS convention for the large heap indexing:
+
+pre:
+   n    0    1    2    3
+S: 1   3,2  X,X  X,X  X,X
+L: 3   4,3  5,0  6,1  X,X
+B: 4    2    3    0    1
+
+(1) swap 4,3 with 6,1 (leads to a swap of buffer cells 1,3, i.e. values 3,1):
+   n    0    1    2    3
+S: 1   3,2  X,X  X,X  X,X
+L: 3   6,1  5,0  4,3  X,X
+B: 4    2    1    0    3      -> consistent
+
+(2) float down 6,1 - this swaps it with 5,0, buffer cells 0,1 get swapped
+   n    0    1    2    3
+S: 1   3,2  X,X  X,X  X,X
+L: 3   5,0  6,1  4,3  X,X
+B: 4    1    2    0    3      -> consistent
+
+(3) place 4,3 at end of small heap:
+   n    0    1    2    3
+S: 2   3,2  4,3  X,X  X,X
+L: 2   5,0  6,1  X,X  X,X
+B: 4    1    2    0    3      -> INconsistent
+
+(4) float up the 4,3 - this swaps it with 3,2
+   n    0    1    2    3
+S: 2   4,3  3,2  X,X  X,X
+L: 2   5,0  6,1  X,X  X,X
+B: 4    1    2    3    0 
+
+In the desired state, we again want that each key/index in the buffer points to the 
+same node as before in the pre-state, so we want:
+   n    0    1    2    3
+S: 2   4,3  3,2  X,X  X,X
+L: 2   5,0  6,1  X,X  X,X
+B: 4    2    3    1    0
+
+We must do some sort of fix up before and/or after step 3, but i don't know what and if 
+it's even possible to find a rule that works in general. It could also be that one step 
+is to be applied around step 1 and another around step 3. Let's see , how a consistent 
+state 3 should look like:
+   n    0    1    2    3
+S: 2   3,2  4,3  X,X  X,X
+L: 2   5,0  6,1  X,X  X,X
+B: 4    1    2    0    3      actual
+D: 4    2    3    0    1      desired
+Maybe we should follow 4,3 to buf[3], fix the value and follow the previous key, 
+fix the value there, too, etc. until we reach a consistent node? But what's the 
+worst case runtime for that? Naively it's linear but maye it's guranteed to stop 
+earlier And is this guaranteed to fix all wrong keys or could we come accross a 
+consistent node before all are fixed?
+
+
+But i think, the inconsistency 
+is due to the re-interpretation of all keys/indices. All keys in the large heap change 
+their meaning, so there's no way that the nodes that are keyed but such keys with new
+meaninig have stored the correct back-link without modifying them all. That's why i 
+introduced the key-scheme that does not rely on subtracting nS - this avoids the 
+meaning change of the keys...to some extent
+
+A brute force O(N) method to restore consistency would be to loop through all the 
+nodes n in the double-heap, thereby determining their key k and setting the value 
+buf[n.bufIdx] to k. Write a function restoreConsistency
+
+Could another level of indirection help?
+
 
 
 

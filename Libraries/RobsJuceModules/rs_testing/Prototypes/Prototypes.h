@@ -839,6 +839,9 @@ protected:
 // -in the old RSLib codebase, i did some sort of linked-tree - maybe that could be dragged in as
 //  rsLinkedTree or rsDynamicTree or something like that - all the different trees could be in
 //  a file Trees.h/cpp
+// -i think, currently, the order of the children of a node is undefined - both children are <=
+//  the parent, but maybe we could impose additional useful structure, if we also have 
+//  left <= right - would that be easy to implement and/or useful?
 
 //=================================================================================================
 
@@ -1202,15 +1205,9 @@ public:
     return i >= 0 && i < small.getSize() + large.getSize();
   }
 
-  int getNumSmallValues() const
-  {
-    return (int) small.getSize();
-  }
-
-  int getNumLargeValues() const
-  {
-    return (int) large.getSize();
-  }
+  int getNumSmallValues() const { return (int) small.getSize(); }
+  int getNumLargeValues() const { return (int) large.getSize(); }
+  int getNumValues()      const { return (int) (small.getSize() + large.getSize()); }
 
   T getLargestSmallValue()   { return small[0]; }
   T getSmallestLargeValue()  { return large[0]; }
@@ -1632,8 +1629,8 @@ protected:
   // Data:
 
   std::vector<Node>  small, large; // storage arrays of the nodes
-  //rsDoubleHeap<Node> dblHp;        // maintains large/small as double-heap
-  rsDoubleHeap2<Node> dblHp;        // maintains large/small as double-heap
+  rsDoubleHeap<Node> dblHp;        // maintains large/small as double-heap
+  //rsDoubleHeap2<Node> dblHp;        // maintains large/small as double-heap
   std::vector<int>   buf;          // circular buffer of heap keys
 
   int bufIdx = 0;  // current index into into the circular buffer
@@ -1642,6 +1639,11 @@ protected:
   T   w = T(1);    // weight for smallest large value in the linear interpolation
 
   bool modulatable = false;
+
+  // some scaffolding code
+  //int getNodeKey(Node node);
+  //void fixInconsistentBufferKeys(Node startNode);
+  void makeBufferConsistent();
 
   // self-tests for debugging:
   bool isStateConsistent(); 

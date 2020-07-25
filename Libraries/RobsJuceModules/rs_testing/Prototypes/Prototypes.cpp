@@ -880,7 +880,7 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   //auto swapNodes2 = [&](Node& a, Node& b) { this->swapNodes2(a, b); };
   //dblHp.setSwapFunction(swapNodes2);
 
-  bool ok = true;
+  bool ok = isStateConsistent();
 
   //rsAssert(isStateConsistent(), "state inconsistent");
 
@@ -891,14 +891,16 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
 
   // a sanity check:
   int  bc = buf[bi];  // buffer content at index - is the node's key
-  rsAssert(bc < 0, "we expect an index into the large heap");
+  //rsAssert(bc < 0, "we expect an index into the large heap");
+  // make a function isKeyInLargeHeap(int k), so we can swap between rsDoubleHeap/2
 
   // store the new key at appropriate position in buffer - the new key is preliminarily the current
   // number of elements in the small heap because heap-insertion first inserts at the end and then 
   // let's the element float up:
+  int oldKey1 = buf[bi];
   int newKey1 = dblHp.getNumSmallValues();
   buf[bi] = newKey1;
-  //ok = isStateConsistent();
+  ok = isStateConsistent();
   
   /*
   // very experimental - i think, this code should be used only without the 
@@ -906,8 +908,9 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   // convention:
   Node n2  = dblHp.getLastLargeValue();    // this is the node that gets its key invalidated (right?)
   int  bi2 = n2.bufIdx;
-  //int newKey2 = dblHp.indexToKey(dblHp.getNumSmallValues()+2); // does that make sense?
-  int newKey2 = dblHp.indexToKey(dblHp.getNumSmallValues());
+  int oldKey2 = buf[bi2];
+  int newKey2 = dblHp.indexToKey(dblHp.getNumSmallValues()+1); // does that make sense?
+  //int newKey2 = dblHp.indexToKey(dblHp.getNumSmallValues());
   buf[bi2] = newKey2;   // we must to re-assign the key to something - but what?
   ok = isStateConsistent();
   // something like toKey(dblHp.getNumLargeValues()-2) ..bcs the old key is 
@@ -919,16 +922,15 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   // whose effect depends on the content of buf - but i think, we need to figure out which node will 
   // get invalidated before re-shuffling - afterwards, it will be hard to find
   */
- 
- 
-
+  
 
 
   // move the first node of the large heap into the small heap:
   Node n = dblHp.large.extractFirst();  // shuffles large heap and buf
   //ok = isStateConsistent();// triggers key/index out of range but not itself
+  //fixInconsistentBufferKeys(n);   // test
   int  i = dblHp.small.insert(n);       // shuffles small heap and buf
-  //ok = isStateConsistent();
+  ok = isStateConsistent();
   rsAssert(i  == 0);                    // it should end up at the front
   //ok &= isNodeConsistent(n);
   // bcs extractFirst already shuffles buf, we need to first peek the first element of the large
@@ -936,8 +938,7 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
 
   // all large-heap indices (not the keys!) get decremented by one, bcs. they move one index 
   // position forward - this is realized as a global offset stored in the dblHp object:
-  dblHp.decrementLargeIndexOffset();
-
+  //dblHp.decrementLargeIndexOffset();
 
 
   //// test - i have the hunch that we need some sort of dummy-swap between extract and insert:
@@ -949,10 +950,10 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
 
 
 
+  makeBufferConsistent();
+  ok = isStateConsistent();
 
-
-
-
+  int dummy = 0;
 
   // We did the move by hand. Alternatively, we could have called  dblHp.moveFirstLargeToSmall().
   // This should perhaps be done, when it all works and then the friend declaration in
@@ -1019,8 +1020,6 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
 
   //auto swapNodes = [&](Node& a, Node& b) { this->swapNodes(a, b); };
   //dblHp.setSwapFunction(swapNodes);
-
-  int dummy = 0;
 }
 // this does not work yet - i think, we may have to do something with the stored bufIndex
 // values, too
@@ -1038,6 +1037,61 @@ void rsMovingQuantileFilterCore<T>::moveFirstSmallToLarge(int nSo)
   // this seems to magically work already, although it shouldn't - we don't update the buffer
   // content and don't increment the offset yet...more tests needed...
 }
+
+/*
+template<class T>
+int rsMovingQuantileFilterCore<T>::getNodeKey(rsMovingQuantileFilterCore<T>::Node n)
+{
+  for(int i = 0; i < dblHp.getSize(); i++)
+  {
+    Node n2 = dblHp.atIndex(i);
+    if(n2 == n)
+      return dblHp.indexToKey(i);
+  }
+  return 666; // indicate failure
+}
+
+template<class T>
+void rsMovingQuantileFilterCore<T>::fixInconsistentBufferKeys(
+  rsMovingQuantileFilterCore<T>::Node n)
+{
+  Node n2;
+  int i, k;
+  while(1)
+  {
+    i  = n.bufIdx;         // buffer index stored in node n
+    k  = buf[i];           // node key stored in buffer at i
+    n2 = dblHp.atKey(k);   // retrieve the node at key k
+    if(n2 == n)
+    {
+      break; // we found a node that is consistent
+    }
+    else
+    {
+      // node is inconsistent - fix the key stored in the buffer and continue with the new node:
+      buf[i] = k; // getKey(n)...but figuring out a node's key is O(n) 
+      n = n2;
+    }
+  }
+  int dummy = 0;
+}
+*/
+
+// modifies the values in the buffer to make them consistent
+template<class T>
+void rsMovingQuantileFilterCore<T>::makeBufferConsistent()
+{
+  for(int i = 0; i < dblHp.getNumValues(); i++)
+  {
+    int  k  = dblHp.indexToKey(i);
+    Node n  = dblHp.atIndex(i);
+    int  bi = n.bufIdx;
+    buf[bi] = k;
+  }
+}
+
+// maybe hae a similar function that establishes consistency by modifying the stored bufIdx fields
+// in the nodes in the dblHp
 
 template<class T>
 bool rsMovingQuantileFilterCore<T>::isStateConsistent()
