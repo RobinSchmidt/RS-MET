@@ -708,7 +708,8 @@ public:
   maintain the heap-property. */
   void remove(int i)
   {
-    swap(data[i], data[size-1]);
+    //swap(data[i], data[size-1]);
+    rsSwap(data[i], data[size-1]);  // test
     size--;
     floatIntoPlace(i);
   }
@@ -1357,7 +1358,8 @@ public:
   { 
     if(isKeyInLargeHeap(k))
     {
-      int i = rawLargeHeapIndex(k);  // no offset is needed here?
+      //int i = rawLargeHeapIndex(k);  // no offset is needed here?
+      int i = toLargeHeapIndex(k);  // no offset is needed here?
       return i + small.getSize();
     }
     else
@@ -1526,7 +1528,8 @@ public:
     // maybe use small.size() - we keep the vector sizes now fixed
   }
 
-  bool isStateConsistent(); // a self-test for debugging
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -1542,7 +1545,7 @@ public:
                                    // of buf will also be reshuffled accordingly
 
     // sanity check for debug:
-    rsAssert(isStateConsistent());
+    //rsAssert(isStateConsistent());
 
     // sample readout:
     T yS = dblHp.getLargestSmallValue().value;   // smaller value
@@ -1575,6 +1578,10 @@ protected:
 
   void moveFirstSmallToLarge(int oldNumSmallValues);
 
+
+
+
+
   /** A node stores an incoming signal value together with its index in the circular buffer. The 
   "less-than" comparison is based on the signal value. */
   struct Node
@@ -1595,8 +1602,20 @@ protected:
   buffer keep track of what gets swapped. */ 
   void swapNodes(Node& a, Node& b)
   {
+    // debug:
+    bool a_ok_pre = isBufferSlotConsistent(a.bufIdx);
+    bool b_ok_pre = isBufferSlotConsistent(b.bufIdx);
+    rsAssert(a_ok_pre && b_ok_pre);
+
+    // the actual action:
     rsSwap(a, b);
     rsSwap(buf[a.bufIdx], buf[b.bufIdx]);
+
+
+    // debug:
+    bool a_ok_post = isBufferSlotConsistent(a.bufIdx);
+    bool b_ok_post = isBufferSlotConsistent(b.bufIdx);
+    rsAssert(a_ok_post && b_ok_post);
   }
 
   // experimental - we may (or may not) have to use a different swapping algorithm in
@@ -1624,6 +1643,11 @@ protected:
   T   w = T(1);    // weight for smallest large value in the linear interpolation
 
   bool modulatable = false;
+
+  // self-tests for debugging:
+  bool isStateConsistent(); 
+  bool isNodeConsistent(const Node& n);
+  bool isBufferSlotConsistent(int i);
 
 };
 
