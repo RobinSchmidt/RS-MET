@@ -1475,8 +1475,8 @@ public:
   bool isKeyValid(int k) const
   {
     if(isKeyInLargeHeap(k)) {
-       k = toLargeHeapIndex(k);
-       return k < large.getSize(); }
+      k = toLargeHeapIndex(k);
+      return k < large.getSize(); }
     else
       return k < small.getSize();
   }
