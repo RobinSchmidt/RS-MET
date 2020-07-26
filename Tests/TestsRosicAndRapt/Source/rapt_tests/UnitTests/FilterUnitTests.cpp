@@ -360,6 +360,8 @@ bool testMovingQuantileModulation()
   //std::vector<Settings> settings ={ {0, 5, 7}, {40, 6, 6} };
   std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5}, {60, 5, 7} };
 
+  //std::vector<Settings> settings ={ {0, 4, 5}, {9, 3, 2} };
+
 
 
   rsMovingQuantileFilterNaive<double> fltN(maxLength, maxLength);

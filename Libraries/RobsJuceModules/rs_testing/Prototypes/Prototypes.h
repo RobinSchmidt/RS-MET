@@ -1646,9 +1646,19 @@ protected:
   /** Under construction... */
   void modulateLengthAndReadPosition(int newLength, int newPosition);
 
-  void moveFirstLargeToSmall(int oldNumSmallValues);
+  /** Moves the first (smallest) value of the large heap over to the small heap, such that it 
+  becomes the new largest element of the small heap. This decreases the size of the large heap by 
+  one and increases the size of the small heap by one. The return value informs whether this was 
+  successful - it will fail when the large heap has only one element in it because both heaps must
+  always contain at least one element. */
+  bool moveFirstLargeToSmall();
 
-  void moveFirstSmallToLarge(int oldNumSmallValues);
+  bool moveFirstSmallToLarge();
+
+  // maybe we need also an insertToLarge and insertToSmall function...or just insert - it can 
+  // determine itself wher to insert...hmm...or maybe not - we need both functions and if we see 
+  // that the new element is too large or small, we may have to move the heap values between the 
+  // heaps
 
 
 

@@ -808,15 +808,15 @@ void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength,
   {
     // total length stays the same - we may need to re-distribute data from the min-heap to the
     // max-heap or vice versa
-    int nSi = nSo;                  // current number of small samples
-    int nLi = nLo;                  // current number of large samples
-    if(nS > nSo) {                  // i think, the if/else is redundant with the whiles 
-      while(nSi < nS) {             // number of small samples grows, redistribute from large to small
-        moveFirstLargeToSmall(nSo); // move one sample from large heap to small heap
+    int nSi = nSo;               // current number of small samples
+    int nLi = nLo;               // current number of large samples
+    if(nS > nSo) {               // i think, the if/else is redundant with the whiles 
+      while(nSi < nS) {          // number of small samples grows, redistribute from large to small
+        moveFirstLargeToSmall(); // move one sample from large heap to small heap
         nSi++; nLi--; }}
     else if(nS < nSo) {
-      while(nLi < nL)  {            // number of large samples grows, redistribute from small to large
-        moveFirstSmallToLarge(nSo); // move one sample from small heap to large heap
+      while(nLi < nL)  {         // number of large samples grows, redistribute from small to large
+        moveFirstSmallToLarge(); // move one sample from small heap to large heap
         nSi--; nLi++; }}
     // else: nothing to do at all
 
@@ -870,25 +870,31 @@ void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength,
 }
 
 template<class T>
-void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
+bool rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall()
 {
+  if(dblHp.getNumLargeValues() <= 1)
+    return false;
   Node n = dblHp.getSmallestLargeValue();   // this is the node we want to move
   int i = n.bufIdx;                         // buffer index of to be moved node
   int k = dblHp.getNumSmallValues();        // the new key for the moved node
   n  = dblHp.large.extractFirst();          // shuffles large heap and buf
   buf[i] = k;                               // set one key value in buf 
   dblHp.small.insert(n);                    // shuffles small heap and buf
+  return true;
 }
 
 template<class T>
-void rsMovingQuantileFilterCore<T>::moveFirstSmallToLarge(int nSo)
+bool rsMovingQuantileFilterCore<T>::moveFirstSmallToLarge()
 {
+  if(dblHp.getNumSmallValues() <= 1)
+    return false;
   Node n = dblHp.getLargestSmallValue();
   int i = n.bufIdx;
   int k = dblHp.getNumLargeValues() | dblHp.firstBitOnly; // set the 1st bit to indicate L-key
   n  = dblHp.small.extractFirst();
   buf[i] = k;
   dblHp.large.insert(n);
+  return true;
 }
 
 /*
