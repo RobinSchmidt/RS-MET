@@ -278,23 +278,62 @@ B: 6    2    3    4    1    0    5      -> inconsistent
 D:      3    4    5    1    0    2      -> desired
 
 3 types of buffer keys:
-(1) keys refering to the small heap (0,1): 
+(S) keys refering to the small heap (0,1): 
     -they are unchanged and remain valid
-(2) keys refering to the large heap (2,3,4): 
+(L) keys refering to the large heap (2,3,4): 
     -they are to small by one
     -fix by incrementing offset for large heap indices
-(3) key refering to the moved node 6,5 (5): 
+(M) key refering to the moved node 6,5 (5): 
     -"randomly" (?) off
     -fix by setting it directly to desired value nS = 2
 
+-----------------------------------------------------------------------------------------
+an even larger example:
 
+std::vector<Settings> settings ={ {0, 3, 5}, {9, 4, 4} };
+Vec x = rsLinearRangeVector(N, 1, N);
 
+(0) pre:
+   n    0    1    2    3    4    5    6    7
+S: 3   4,3  3,2  2,1  _,_  _,_  _,_  _,_  _,_
+L: 5   5,4  6,5  8,7  9,0  7,6  _,_  _,_  _,_
+B: 8    6    2    1    0    3    4    7    5
 
+(1) swap 5,4 with 7,6 and associated buffer values:
+   n    0    1    2    3    4    5    6    7
+S: 3   4,3  3,2  2,1  _,_  _,_  _,_  _,_  _,_
+L: 5   7,6  6,5  8,7  9,0  5,4  _,_  _,_  _,_
+B: 8    6    2    1    0    7    4    3    5
 
+(2) float down 7,6 - swaps it with 6,5 with associated buffer swap:
+   n    0    1    2    3    4    5    6    7
+S: 3   4,3  3,2  2,1  _,_  _,_  _,_  _,_  _,_
+L: 5   6,5  7,6  8,7  9,0  5,4  _,_  _,_  _,_
+B: 8    6    2    1    0    7    3    4    5      -> consistent
 
+(3) place 5,4 at end of small heap:
+   n    0    1    2    3    4    5    6    7
+S: 4   4,3  3,2  2,1  5,4  _,_  _,_  _,_  _,_
+L: 4   6,5  7,6  8,7  9,0  _,_  _,_  _,_  _,_
+B: 8    6    2    1    0    7    3    4    5      -> incosistent
+D: 8    7    2    1    0    3    4    5    6      -> desired
+T:      L    S    S    S    M    L    L    L      -> type
 
+(4) float up the 5,4:
+   n    0    1    2    3    4    5    6    7
+S: 4   4,3  3,2  2,1  5,4  _,_  _,_  _,_  _,_
+L: 4   6,5  7,6  8,7  9,0  _,_  _,_  _,_  _,_
+B: 8    6    2    3    1    0    3    4    5
 
+problem:  the key 3 appears twice in the buffer - we can't really use the size of 
+          the number to identify large-heap keys (L-keys)
+solution: use (again) the negative flag to indicate large-heap indices, we 
+          can't rely on the number itself to make that distinction
+ 
+so the full solution seems to be:
+-use the sign bit to indicate large-heap keys (L-keys)
+-use an offset for L-keys that gets incremented after step (2) (or 
+ decremented if the signed representation is taken into account)
+-set the buffer entry of the M-key after step (2)
 
-
-
-
+let's play the same scenario through with this strategy...
