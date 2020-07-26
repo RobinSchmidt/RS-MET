@@ -1211,7 +1211,7 @@ public:
 
   T getLargestSmallValue()   { return small[0]; }
   T getSmallestLargeValue()  { return large[0]; }
-  T getLastSmalltValue()     { return small[small.getSize()-1]; }
+  T getLastSmallValue()      { return small[small.getSize()-1]; }
   T getLastLargeValue()      { return large[large.getSize()-1]; }
   // make them const
   // rename to getFirstSmallValue getLast.. the last is not necessarily the largest or smallest
@@ -1239,16 +1239,16 @@ public:
       return T(0.5) * (getLargestSmallValue() + getSmallestLargeValue());
   }
   // wait - no - this is only the median, if small.size() == large.size() or the difference is only
-  // one..
+  // one..maybe
   */
 
+  /** Returns true, iff this object satisfies the double-heap property. Meant mostly for testing 
+  and debugging (costly!). */
   bool isDoubleHeap()
   {
-    return small.isHeap() && large.isHeap();
+    return small.isHeap() && large.isHeap()   
+      && !(small.less(large[0], small[0]));  // last condition means small[0] <= large[0]
   }
-  // mostly for test/debug
-
-  // todo: getMedian, getMean
 
 
 protected:
@@ -1258,7 +1258,6 @@ protected:
   template<class U> friend class rsMovingQuantileFilterCore; // temporary
 
 };
-
 
 /** Subclass that uses a different convention how the indices are interpreted. Instead of 
 interpreting indices i >= nS (nS = number of small values) as i-nS into the large buffer, we use
@@ -1306,8 +1305,6 @@ public:
     return k;
   }
 
-
-
   T& atKey(int k) 
   { 
     rsAssert(isKeyValid(k), "Key out of range");
@@ -1329,8 +1326,6 @@ public:
   { 
     return k & firstBitOnly; 
   }
-
-
 
   inline int toLargeHeapIndex(int k) const
   {
@@ -1371,10 +1366,6 @@ public:
   // have static const members for the masks that separate the first bit and remove the first
   // bit
 
-
-
-
-
   // maybe use int instead of size_t because otherwise, when convertig indices to int, the 
   // indicator bit gets cut off ...but maybe we should take care to avoid such conversions
 
@@ -1389,10 +1380,6 @@ public:
   //static size_t allBits = std::numeric_limits<size_t>::max();
   //static size_t firstBitOnly = allBits - (allBits >> 1);
   //static size_t allBitsButFirst= allBits ^ firstBitOnly;
-
-
-
-
 
 
   // experimental: try to use a variable offset for the indices in the large buffer - the goal is
@@ -1422,6 +1409,39 @@ private:
   // maybe make a function toLargeHeapIndex(int k) which also includes the offset
 
 };
+
+/** Yet another variant. This uses again the convention to use i-nS as larhe-heap-index if 
+i >= nS, but uses the offset as in rsDoubleHeap2 as well. ....i'm trying out some stuff to figure 
+out what could work to make modulation of L,p possible in rsMovingQuantileFilterCore... */
+
+template<class T>
+class rsDoubleHeap3 : public rsDoubleHeap<T>
+{
+
+public:
+
+  //int replace(int key, const T& newValue);
+  //T& atKey(int k);
+  //int indexToKey(int i);
+  //int keyToIndex(int k);
+
+
+
+
+
+  void incrementLargeIndexOffset() { largeIndexOffset++; }
+  void decrementLargeIndexOffset() { largeIndexOffset--; }
+
+protected:
+
+  inline bool isKeyInLargeHeap(int k) const { return k >= small.getSize(); }
+  inline int  toLargeHeapIndex(int k) const { return (k + largeIndexOffset) - small.getSize(); }
+
+
+  int largeIndexOffset = 0;
+};
+
+
 
 
 

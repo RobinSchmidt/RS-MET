@@ -852,7 +852,7 @@ void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength,
   // buffer could at the same time by used to implement a highpass version - or maybe we store 
   // here a pointer to an rsRingBuffer which is null by default and if it's non-null, we use it 
   // here to fill up the missing past samples and if it's null, we just fill up with zeros or 
-  // with the mean of the currently stored old values
+  // with the mean of the currently stored old values or maybe use the previous output sample
 
   // We may need to distinguish between a couple of cases:
   // case 1: length does not change - we need to only redistribute values between the heaps
