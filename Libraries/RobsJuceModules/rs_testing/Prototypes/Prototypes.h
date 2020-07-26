@@ -1410,24 +1410,61 @@ private:
 
 };
 
-/** Yet another variant. This uses again the convention to use i-nS as larhe-heap-index if 
+/** Yet another variant. This uses again the convention to use i-nS as large-heap-index if 
 i >= nS, but uses the offset as in rsDoubleHeap2 as well. ....i'm trying out some stuff to figure 
 out what could work to make modulation of L,p possible in rsMovingQuantileFilterCore... */
 
 template<class T>
-class rsDoubleHeap3 : public rsDoubleHeap<T>
+class rsDoubleHeap3 : private rsDoubleHeap<T>
 {
+
+  // we use private inheritance to make atIndex, etc. unavailable...maybe override them instead
+  // ...
 
 public:
 
-  //int replace(int key, const T& newValue);
-  //T& atKey(int k);
-  //int indexToKey(int i);
-  //int keyToIndex(int k);
+  int replace(int key, const T& newValue)
+  {
+    rsAssert(isKeyValid(k), "Invalid key");
+    int i  = key; 
+    int nS = small.getSize();
 
+    // replacement:
+    if(isKeyInLargeHeap(i))
+      i = large.replace(toLargeHeapIndex(i), newValue);
+    else
+      i = small.replace(i, newValue);
 
+    // potential swap:
+    if(small.less(large[0], small[0])) {
+      small.swap(small[0], large[0]);
+      int is = small.floatDown(0);
+      int il = large.floatDown(0);
+      if(isKeyInLargeHeap(key))
+        i = is; // replacement took place in large, then we swapped, now it's in small
+      else
+        i = il + nS; }
 
+    return i;   // return the new key/index
+  }
+  
+  T& atKey(int k)
+  {
+    rsAssert(isKeyValid(k), "Invalid key");
+    if(isKeyInLargeHeap(k))
+      return large[toLargeHeapIndex(k)]
+    else
+      return small[k];
+  }
 
+  bool isKeyValid(int k) const
+  {
+    if(isKeyInLargeHeap(k)) {
+       k = toLargeHeapIndex(k);
+       return k < large.getSize(); }
+    else
+      return k < small.getSize();
+  }
 
   void incrementLargeIndexOffset() { largeIndexOffset++; }
   void decrementLargeIndexOffset() { largeIndexOffset--; }
@@ -1437,10 +1474,10 @@ protected:
   inline bool isKeyInLargeHeap(int k) const { return k >= small.getSize(); }
   inline int  toLargeHeapIndex(int k) const { return (k + largeIndexOffset) - small.getSize(); }
 
-
   int largeIndexOffset = 0;
 };
-
+// maybe, if it works and is not too much extra code, absorb in baseclass..but maybe not - it's 
+// kinda weird stuff and perhaps not always useful
 
 
 
