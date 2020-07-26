@@ -334,7 +334,7 @@ bool testMovingQuantileModulation()
   bool r = true;
 
   int maxLength = 12;
-  int N = 200;           // number of samples
+  int N = 100;           // number of samples
 
   // create vector of settings, each with a timestamp:
   struct Settings
@@ -359,8 +359,8 @@ bool testMovingQuantileModulation()
   //std::vector<Settings> settings ={ {0, 1, 2}, {20, 2, 1} };
   //std::vector<Settings> settings ={ {0, 5, 7}, {40, 6, 6} };
   std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5}, {60, 5, 7} };
-
   //std::vector<Settings> settings ={ {0, 4, 5}, {9, 3, 2} };
+
 
 
 
@@ -403,6 +403,8 @@ bool testMovingQuantileModulation()
   // -try longer filters with more drastic switches, say: med, min, max, very-short, very long
 
   // 20: 7,89,7,17,18,76,70,68,60,7,83,52 -> 7,7,7,17,18,52,60,68,70,76,83,89 -> 68
+
+  r &= y == z;
 
   rsPlotVectors(y, z);  // uncomment to see the result
   return r;

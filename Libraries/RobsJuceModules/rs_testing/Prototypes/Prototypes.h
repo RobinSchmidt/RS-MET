@@ -31,6 +31,18 @@ in the production-code versions, and to create reference output for the unit-tes
 code. */
 
 
+// todo: move to somewhere else - could be useful in other contexts:
+static constexpr int allBits = -1;                                      // all bits are 1
+static constexpr int allBitsButFirst = std::numeric_limits<int>::max(); // only 1st bit is 1
+static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 1st bit is 0
+
+// for unsiged int types, the bit twiddling is different:
+//static size_t allBits = std::numeric_limits<size_t>::max();
+//static size_t firstBitOnly = allBits - (allBits >> 1);
+//static size_t allBitsButFirst= allBits ^ firstBitOnly;
+
+
+
 /** Solves a pentadiagonal linear system of equations with given diagonals and right-hand side 
 using a simple algorithm without pivot-search. lowerDiag1 is the one directly below the main 
 diagonal, lowerDiag2 the one below lowerDiag1 - and similarly for upperDiag1/upperDiag2. In the 
@@ -1377,42 +1389,18 @@ public:
 
 
 
-  // todo: move to somewhere else - could be useful in other contexts:
-  static constexpr int allBits = -1;                                      // all bits are 1
-  static constexpr int allBitsButFirst = std::numeric_limits<int>::max(); // only 1st bit is 1
-  static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 1st bit is 0
-
-  // for unsiged int types, the bit fiddling is different:
-  //static size_t allBits = std::numeric_limits<size_t>::max();
-  //static size_t firstBitOnly = allBits - (allBits >> 1);
-  //static size_t allBitsButFirst= allBits ^ firstBitOnly;
-
-
-  // experimental: try to use a variable offset for the indices in the large buffer - the goal is
-  // to keep the ofsetted large-heap indices valid, even after the size of the small heap has been
-  // changed. currently, changing this size (by moving an lement from the large to the small heap),
-  // make the previously returned large-heap keys invalid, when translated to indices. Each such 
-  // move from large to small means that all the previously returned large-heap keys will now map
-  // to an idex that is too high by one, so such a move should be accompanied by a decrement of the
-  // offset. In the functions to compute the index from the key, the offset gets added:
-  void incrementLargeIndexOffset() { largeIndexOffset++; }
-  void decrementLargeIndexOffset() { largeIndexOffset--; }
-  int largeIndexOffset = 0;
-  // i think, to make everything consistent, whenever we use an offset to read a value, we should 
-  // add the offet to the raw computed index and whenever we return a computed key, we should 
-  // compute it after subtracting the offset - will that work? oh - no - i think, the offset is to 
-  // be used *only* for reading and replacing but we should not include the offset in returned 
-  // values, right? could the sign change cause problems and maybe an unsigned int type may be 
-  // better?
 
 private:
 
+
+  /** Returns the raw large-heap index, which is the key k with the first bit shaved off. */
   static inline int rawLargeHeapIndex(int k) // rename to largeHeapKeyToIndex
   {
     return k & allBitsButFirst;
   }
-  // returns the raw lerge-heap index, which is the key k with the first bit shaved off
-  // maybe make a function toLargeHeapIndex(int k) which also includes the offset
+  // maybe make a function toLargeHeapIndex(int k) 
+
+  int largeIndexOffset = 0; // get rid
 
 };
 
@@ -1492,8 +1480,11 @@ protected:
 
   inline bool isKeyInLargeHeap(int k) const { return k >= small.getSize(); }
   inline int  toLargeHeapIndex(int k) const { return (k + largeIndexOffset) - small.getSize(); }
-
   int largeIndexOffset = 0;
+  // the offset turned out to be not needed after all - delete it after the implementation of 
+  // modulation of L,p is complete (maybe it will turn out that we will need it again, but i don't
+  // think so
+
 };
 // maybe, if it works and is not too much extra code, absorb in baseclass..but maybe not - it's 
 // kinda weird stuff and perhaps not always useful
@@ -1612,12 +1603,8 @@ public:
     // buffer update:
     int k = buf[bufIdx];           // heap-key of oldest sample
     int i = dblHp.atKey(k).bufIdx; // buffer-index of oldest sample
+    dblHp.replace(k, Node(x, i));  // reshuffles content of the double-heap and  buf
     bufIdx = (bufIdx+1) % L;       // updates the position in circular buffer of indices
-    dblHp.replace(k, Node(x, i));  // will reshuffle the content of the double-heap, the content 
-                                   // of buf will also be reshuffled accordingly
-
-    // sanity check for debug:
-    //rsAssert(isStateConsistent());
 
     // sample readout:
     T yS = dblHp.getLargestSmallValue().value;   // smaller value
@@ -1632,10 +1619,7 @@ public:
     for(int n = 0; n < L; n++) {
       dblHp.atIndex(n).value  = T(0);
       dblHp.atIndex(n).bufIdx = n;  
-      buf[n] = dblHp.indexToKey(n);   
-      //buf[n] = n;                        // old
-    
-    }
+      buf[n] = dblHp.indexToKey(n); }
     bufIdx = 0;
   }
 
@@ -1654,6 +1638,16 @@ protected:
   bool moveFirstLargeToSmall();
 
   bool moveFirstSmallToLarge();
+
+  /** Discards the oldest sample. This will shrink one of the two heaps, wherever the oldest sample
+  happens to be. This will also shrink the circular buffer by one. */
+  //void discardOldestSample();
+
+  /** Adds a (dummy) sample to one of the heaps as new oldest sample. This will also grow the 
+  circular buffer by one. */
+  //void addOlderSample();
+  // oh damn! shrinking and growing the circular buffer is O(N) with a simple array. We need a real
+  // circular buffer for that
 
   // maybe we need also an insertToLarge and insertToSmall function...or just insert - it can 
   // determine itself wher to insert...hmm...or maybe not - we need both functions and if we see 
@@ -1684,40 +1678,16 @@ protected:
   buffer keep track of what gets swapped. */ 
   void swapNodes(Node& a, Node& b)
   {
-    // debug:
-    //bool a_ok_pre = isBufferSlotConsistent(a.bufIdx);
-    //bool b_ok_pre = isBufferSlotConsistent(b.bufIdx);
-    //rsAssert(a_ok_pre && b_ok_pre);
-
-    // the actual action:
-    rsSwap(a, b);
-    rsSwap(buf[a.bufIdx], buf[b.bufIdx]);
-
-
-    // debug:
-    //bool a_ok_post = isBufferSlotConsistent(a.bufIdx);
-    //bool b_ok_post = isBufferSlotConsistent(b.bufIdx);
-    //rsAssert(a_ok_post && b_ok_post);
-  }
-
-  // experimental - we may (or may not) have to use a different swapping algorithm in
-  // moveFirstLargeToSmall:
-  /*
-  void swapNodes2(Node& a, Node& b)
-  {
-    //rsSwap(a.value, b.value);
     rsSwap(a, b);
     rsSwap(buf[a.bufIdx], buf[b.bufIdx]);
   }
-  */
+
 
 
   // Data:
 
   std::vector<Node>  small, large; // storage arrays of the nodes
-  //rsDoubleHeap<Node> dblHp;        // maintains large/small as double-heap
-  rsDoubleHeap2<Node> dblHp;        // maintains large/small as double-heap
-  //rsDoubleHeap3<Node> dblHp;
+  rsDoubleHeap2<Node> dblHp;       // maintains large/small as double-heap
   std::vector<int>   buf;          // circular buffer of heap keys
 
   int bufIdx = 0;  // current index into into the circular buffer
@@ -1738,6 +1708,9 @@ protected:
   bool isBufferSlotConsistent(int i);
 
 };
+
+
+
 
 
 // this is a more user-friendly, audio-oriented, plugin-ready wrapper around the core algorithm

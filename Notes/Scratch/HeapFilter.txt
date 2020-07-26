@@ -405,6 +405,55 @@ std::vector<Settings> settings ={ {0, 4, 5}, {9, 3, 2} };
 -maybe they should returna bool,if a value could be moved over - if the source heap has
  only one element left, it will fail because both heaps must always contain at least
  one element
+ 
+In order to efficiently implement modulation of the total length, i think, we must go 
+back to the circular buffer instead of using a simple array. This is because length 
+modulation with a circular buffer just needs to adjust the read pointer whereas with a 
+regular array, it would require moving the buffered data around (in linear time). The 
+nodes should then not store the delay but the actual index in the underlying data buffer.
+attention: rsRingBuffer implements the [] operator taking a delay as input - but for this,
+this is not suitable. The nodes do not store a delay but an actual, direct memory location.
+
+the current getSample does:
+-retrieve key of oldest node from the buffer
+-retrieve the oldest node from the double-heap using the key
+-figure out the buffer index from the node
+-create a new node with the new value and the same buffer index
+-replace the node in the double heap at the key with the new node
+-increment buffer index (with wrap)
+
+the new getSample must do:
+-retrieve key of oldest node from circular buffer (almost the same)
+-increment buffer indices (with wrap) 
+ ...these two can be done by a simple call to 
+ int k = buf.getSample(dummy)
+-create a new node with the new value and a new bufIdx pointing to the current write 
+ location in the circular buffer:
+ Node n(x, buf.getCurrentWriteIndex())
+-replace the node in the double heap at the key with the new node and retrieve the new key
+ k = dblHp.replace(k, n)
+-write the new key at the current location into the circular buffer:
+ buf.writeWithoutIncrement(k)
+
+we must also adapt moveFirstLargeToSmall/SmallToLarge: instead of setting
+
+  buf[i] = k;
+
+we must do something to the effect of
+
+  buf.data[i] = k;
+  
+when buf is not a regular array anymore but a rsRingBuffer because there, [] operator takes
+a delay rather than an index into the underlying data array, which is totally not what we 
+want here. Also, anywhere else where there is a buf[i] access, we need to adapt this to
+buf.data[i] ...or we just implement the [] operator in that way - the current implementation
+could be moved to a subclass rsDelayLine or rsDelayBuffer
+
+
+i actually think, it would be cool to visualize the content of the ringbuffer over time - 
+maybe make a movie of that
+
+
 
 
 

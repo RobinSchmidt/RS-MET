@@ -790,6 +790,24 @@ void rsMovingQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int 
     reset(); }
 }
 
+
+/*
+template<class T>
+void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
+{
+  while(L > newLength) {
+    discardOldestSample();
+    L--; }
+
+  //// todo:
+  //while(L < newLength) {
+  //  addOlderSample(0.0); // instead of 0.0, we may keep a circular buffer of older samples
+  //  L++;    }            // around to insert actually correct values
+}
+*/
+
+
+
 template<class T>
 void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
 {
@@ -890,12 +908,21 @@ bool rsMovingQuantileFilterCore<T>::moveFirstSmallToLarge()
     return false;
   Node n = dblHp.getLargestSmallValue();
   int i = n.bufIdx;
-  int k = dblHp.getNumLargeValues() | dblHp.firstBitOnly; // set the 1st bit to indicate L-key
+  int k = dblHp.getNumLargeValues() | firstBitOnly; // set the 1st bit to indicate L-key
   n  = dblHp.small.extractFirst();
   buf[i] = k;
   dblHp.large.insert(n);
   return true;
 }
+
+/*
+template<class T>
+void rsMovingQuantileFilterCore<T>::discardOldestSample()
+{
+  int k = buf[bufIdx];           // heap-key of oldest sample
+  dblHp.remove(k);
+}
+*/
 
 /*
 template<class T>
