@@ -955,8 +955,8 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
 
 
 
-  makeBufferConsistent();
-  ok = isStateConsistent();
+  //makeBufferConsistent();
+  //ok = isStateConsistent();
 
   int dummy = 0;
 

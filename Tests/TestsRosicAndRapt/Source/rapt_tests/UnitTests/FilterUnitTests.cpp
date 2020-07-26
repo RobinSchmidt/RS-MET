@@ -333,7 +333,7 @@ bool testMovingQuantileModulation()
 {
   bool r = true;
 
-  int maxLength = 8;
+  int maxLength = 12;
   int N = 200;           // number of samples
 
   // create vector of settings, each with a timestamp:
@@ -350,7 +350,7 @@ bool testMovingQuantileModulation()
   //std::vector<Settings> settings ={ {0, 3, 1}, {20, 2, 2}, {40, 1, 3}, {60, 3, 1} };
   //std::vector<Settings> settings ={ {0, 1, 3}, {6, 2, 2} };
   //std::vector<Settings> settings ={ {0, 2, 4}, {9, 3, 3} };
-  std::vector<Settings> settings ={ {0, 3, 5}, {9, 4, 4} };
+  //std::vector<Settings> settings ={ {0, 3, 5}, {9, 4, 4} };
   //std::vector<Settings> settings ={ {0, 1, 4}, {40, 2, 3} };
   //std::vector<Settings> settings ={ {0, 1, 2}, {20, 2, 1} };
   //std::vector<Settings> settings ={ {0, 1, 4}, {20, 3, 2} };
@@ -358,7 +358,7 @@ bool testMovingQuantileModulation()
   //std::vector<Settings> settings ={ {0, 2, 4}, {20, 3, 3}, {40, 3, 1} /*, {60, 3, 1} */ };
   //std::vector<Settings> settings ={ {0, 1, 2}, {20, 2, 1} };
   //std::vector<Settings> settings ={ {0, 5, 7}, {40, 6, 6} };
-  //std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5} };
+  std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5} };
 
 
 
@@ -368,8 +368,8 @@ bool testMovingQuantileModulation()
   fltH.setModulatable(true);
 
   using Vec = std::vector<double>;
-  //Vec x = rsRandomIntVector(N, 0, 99);
-  Vec x = rsLinearRangeVector(N, 1, N);
+  Vec x = rsRandomIntVector(N, 0, 99);
+  //Vec x = rsLinearRangeVector(N, 1, N);
   Vec y(N), z(N);
   int i = 0; // index of the settings that we choose next
   for(int n = 0; n < N; n++)
