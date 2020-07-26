@@ -1863,7 +1863,7 @@ public:
   void prepareSortedDelayBuffer(T x)
   {
     T y = buf.getSample(x);
-    buf.copyTo(&tmp[0]);
+    buf.copyTo(&tmp[0], true);
     rsHeapSort(&tmp[0], getLength());
   }
 

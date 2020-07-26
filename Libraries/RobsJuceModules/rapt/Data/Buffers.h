@@ -22,19 +22,19 @@ public:
   // is this correct? or do we need to subtract 1? -> do unit test!
 
 
-  std::vector<T> data;  // temporarily moved to public
+  std::vector<T> data;
+  // temporarily moved to public - but maybe it should really be public
 
 protected:
 
   /** Wraparound */
   inline size_t wrap(size_t i) const { return i & mask; }
 
-
   size_t mask;
 
 };
 // maybe this class should be named rsRingBuffer or rsCircularBuffer or rsRingBufferBase and the
-// class below should be named rsDelayLine
+// class below should be named rsDelayLine or rsDelayBuffer
 
 //=================================================================================================
 
@@ -97,19 +97,16 @@ public:
     rightIndex = this->wrap(rightIndex - amount);
     leftIndex  = this->wrap(leftIndex  - amount);
   }
+  // needs test
 
 
   // Return samples from the buffer without updating anything
 
-  inline T getOldest() const
-  {
-    return this->data[leftIndex];
-  }
+  inline T getOldest() const { return this->data[wrap(leftIndex+1)]; }  // why +1?
 
-  inline T getNewest() const
-  {
-    return this->data[rightIndex];
-  }
+  inline T getNewest() const { return this->data[rightIndex];        }
+
+
 
   size_t getIndexFromOldest(size_t i) const
   {
@@ -117,7 +114,7 @@ public:
     //if(i > length)    i -= length;  // should never happen
     //if(i < leftIndex) i += getCapacity();  
 
-    return this->wrap(leftIndex + i);
+    return this->wrap(leftIndex + i + 1); // why do we need +1?
   }
   // needs test - maybe we have to do something similar as in getIndexFromNewest ..maybe 
   // if(i < leftIndex) i += getCapacity()  ?
@@ -140,6 +137,12 @@ public:
   }
   // maybe make protected
 
+
+
+  T& fromNewest(size_t i) { return data[getIndexFromNewest(i)]; }
+  T& fromOldest(size_t i) { return data[getIndexFromOldest(i)]; }
+
+
   /*
   void swapValues(int i, int j)
   {
@@ -153,19 +156,26 @@ public:
   /** Returns a reference to the value inside the buffer at the given delay i, for read and write 
   access. So if you pass i = 0, you get the most recently written, newest value and for 
   i = length-1, you get the oldest value. */
-  inline T& operator[](size_t i)
-  {
-    size_t j = getIndexFromNewest(i);
-    return data[j];
-  }
-  // i indicates the amount of delay
+  //inline T& operator[](size_t i)
+  //{
+  //  size_t j = getIndexFromNewest(i);
+  //  return data[j];
+  //}
+  //// i indicates the amount of delay
 
 
-  /** Writes the content of this circular buffer into the given linear buffer */
-  void copyTo(T* buffer)
+  /** Writes the content of this circular buffer into the given linear buffer in either chronological 
+  or reverse chronological order. */
+  void copyTo(T* buffer, bool newestFirst)  // maybe provide false as default
   {
-    for(size_t i = 0; i < getLength(); i++)
-      buffer[i] = (*this)[i];
+    if(newestFirst)
+      for(size_t i = 0; i < getLength(); i++)
+        buffer[i] = fromNewest(i);
+    else
+      for(size_t i = 0; i < getLength(); i++)
+        buffer[i] = fromOldest(i);
+    //for(size_t i = 0; i < getLength(); i++)
+    //  buffer[i] = (*this)[i];
   }
 
 

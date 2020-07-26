@@ -458,26 +458,35 @@ bool ringBufferUnitTest()
   using Vec = std::vector<double>;
   Vec B(5);
 
-  double y;
+  double y, z;
 
   // test getSample and copying the buffer content:
-  y = b.getSample( 1); r &= y ==  0; b.copyTo(&B[0]); r &= B == Vec({  1,  0,  0,  0,  0 });
-  y = b.getSample( 2); r &= y ==  0; b.copyTo(&B[0]); r &= B == Vec({  2,  1,  0,  0,  0 });
-  y = b.getSample( 3); r &= y ==  0; b.copyTo(&B[0]); r &= B == Vec({  3,  2,  1,  0,  0 });
-  y = b.getSample( 4); r &= y ==  0; b.copyTo(&B[0]); r &= B == Vec({  4,  3,  2,  1,  0 });
-  y = b.getSample( 5); r &= y ==  0; b.copyTo(&B[0]); r &= B == Vec({  5,  4,  3,  2,  1 });
-  y = b.getSample( 6); r &= y ==  1; b.copyTo(&B[0]); r &= B == Vec({  6,  5,  4,  3,  2 });
-  y = b.getSample( 7); r &= y ==  2; b.copyTo(&B[0]); r &= B == Vec({  7,  6,  5,  4,  3 });
-  y = b.getSample( 8); r &= y ==  3; b.copyTo(&B[0]); r &= B == Vec({  8,  7,  6,  5,  4 });
-  y = b.getSample( 9); r &= y ==  4; b.copyTo(&B[0]); r &= B == Vec({  9,  8,  7,  6,  5 });
-  y = b.getSample(10); r &= y ==  5; b.copyTo(&B[0]); r &= B == Vec({ 10,  9,  8,  7,  6 });
-  y = b.getSample(11); r &= y ==  6; b.copyTo(&B[0]); r &= B == Vec({ 11, 10,  9,  8,  7 });
-  y = b.getSample(12); r &= y ==  7; b.copyTo(&B[0]); r &= B == Vec({ 12, 11, 10,  9,  8 });
-  y = b.getSample(13); r &= y ==  8; b.copyTo(&B[0]); r &= B == Vec({ 13, 12, 11, 10,  9 });
-  y = b.getSample(14); r &= y ==  9; b.copyTo(&B[0]); r &= B == Vec({ 14, 13, 12, 11, 10 });
-  y = b.getSample(15); r &= y == 10; b.copyTo(&B[0]); r &= B == Vec({ 15, 14, 13, 12, 11 });
-  y = b.getSample(16); r &= y == 11; b.copyTo(&B[0]); r &= B == Vec({ 16, 15, 14, 13, 12 });
+  y = b.getSample( 1); r &= y ==  0; b.copyTo(&B[0], true ); r &= B == Vec({  1,  0,  0,  0,  0 });
+  y = b.getSample( 2); r &= y ==  0; b.copyTo(&B[0], true ); r &= B == Vec({  2,  1,  0,  0,  0 });
+  y = b.getSample( 3); r &= y ==  0; b.copyTo(&B[0], true ); r &= B == Vec({  3,  2,  1,  0,  0 });
+  y = b.getSample( 4); r &= y ==  0; b.copyTo(&B[0], true ); r &= B == Vec({  4,  3,  2,  1,  0 });
+  y = b.getSample( 5); r &= y ==  0; b.copyTo(&B[0], true ); r &= B == Vec({  5,  4,  3,  2,  1 });
+  y = b.getSample( 6); r &= y ==  1; b.copyTo(&B[0], true ); r &= B == Vec({  6,  5,  4,  3,  2 });
+  y = b.getSample( 7); r &= y ==  2; b.copyTo(&B[0], true ); r &= B == Vec({  7,  6,  5,  4,  3 });
+  y = b.getSample( 8); r &= y ==  3; b.copyTo(&B[0], true ); r &= B == Vec({  8,  7,  6,  5,  4 });
+  y = b.getSample( 9); r &= y ==  4; b.copyTo(&B[0], true ); r &= B == Vec({  9,  8,  7,  6,  5 });
+  y = b.getSample(10); r &= y ==  5; b.copyTo(&B[0], true ); r &= B == Vec({ 10,  9,  8,  7,  6 });
+  y = b.getSample(11); r &= y ==  6; b.copyTo(&B[0], true ); r &= B == Vec({ 11, 10,  9,  8,  7 });
 
+  y = b.getSample(12); r &= y ==  7; b.copyTo(&B[0], true ); r &= B == Vec({ 12, 11, 10,  9,  8 });
+                                     b.copyTo(&B[0], false); r &= B == Vec({  8,  9, 10, 11, 12 });
+  y = b.getSample(13); r &= y ==  8; b.copyTo(&B[0], true ); r &= B == Vec({ 13, 12, 11, 10,  9 });
+                                     b.copyTo(&B[0], false); r &= B == Vec({  9, 10, 11, 12, 13 });
+  y = b.getSample(14); r &= y ==  9; b.copyTo(&B[0], true ); r &= B == Vec({ 14, 13, 12, 11, 10 });
+                                     b.copyTo(&B[0], false); r &= B == Vec({ 10, 11, 12, 13, 14 });
+  y = b.getSample(15); r &= y == 10; b.copyTo(&B[0], true ); r &= B == Vec({ 15, 14, 13, 12, 11 });
+                                     b.copyTo(&B[0], false); r &= B == Vec({ 11, 12, 13, 14, 15 });
+  y = b.getSample(16); r &= y == 11; b.copyTo(&B[0], true ); r &= B == Vec({ 16, 15, 14, 13, 12 });
+                                     b.copyTo(&B[0], false); r &= B == Vec({ 12, 13, 14, 15, 16 });
+  // todo: complete this - test forward and reverse copy (true/false) after each getSample
+
+  z = b.getNewest(); y = b.fromNewest(0); r &= y == z;
+  z = b.getOldest(); y = b.fromOldest(0); r &= y == z;
 
   b.reset();
   size_t i = 0, j;
