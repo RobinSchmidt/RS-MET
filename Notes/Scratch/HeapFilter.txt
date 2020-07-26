@@ -175,6 +175,55 @@ nodes n in the double-heap, thereby determining their key k and setting the valu
 buf[n.bufIdx] to k. Write a function restoreConsistency
 
 Could another level of indirection help?
+-or maybe we should drag the offset business into rsDoubleHeap and use it there
+-maybe we need to use (i + offset) % modulus
+-if we increase the total length of the filter, the modulus should get 
+ incremented
+ 
+ 
+
+Let's look at the post state again and see, if we can fix the wrongness of the
+actual result by an offset and modulus:
+ 
+   n    0    1    2    3
+S: 2   3,2  4,3  X,X  X,X
+L: 2   5,0  6,1  X,X  X,X
+B: 4    1    2    0    3      actual
+D: 4    2    3    0   (1)     desired, the (1) can easily be set during the move
+
+we go through the nodes in the order as they appear in the heap:
+
+ v i  (v = node.value, i = node.bufIdx)
+(3,2) -> i = 2 -> B[2] = 0 -> k = 0  = key(3,2) = 0  -> ok           k = key(B[i])
+(4,3) -> i = 3 -> B[3] = 3 -> k = 3 != key(4,3) = 1  -> wrong
+(5,0) -> i = 0 -> B[0] = 1 -> k = 1 != key(5,0) = 2  -> wrong
+(6,1) -> i = 1 -> B[1] = 2 -> k = 2 != key(6,1) = 3  -> wrong
+
+Let's try to not use the raw k but a mapped value m = f(k), for f(k), let's use 
+the rule:
+
+if(k < nS)
+
+k % 2 (2 bcs nS = 2)
+
+The idea is that the wrongness in (3) is due to re-interpretation of the k-values. We 
+need to construct a function f(k), parametrized by nS, nL, that fixes up this 
+re-interpretation. The function does not need to work for the 4,3 node, because for 
+that, we can just change the value that is stored in B (we just compute the new key for 
+it and then set B[3] accordingly). But for 5,0 and 6,1, it should work. How about using
+(k-nS) % nL as large-heap-index for all keys in the large heap? hmm..nope..what about
+using m = f(k) = k+1 iff k >= nS. That, together with fixing up B[3] would work in this 
+case. Should we, in general, just increment an offset for the large-heap-indices, 
+whenever a node gets moved from large to small and decrement it when a node is moved
+from small to large? ..try it with another class rsDoubleHeap3
+
+
+
+let's try the rule:
+if(large(k)) use (i-nS) % n
+i = k % nS
+
+if we use (i-1)%2 
 
 
 
