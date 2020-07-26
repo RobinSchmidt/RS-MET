@@ -336,4 +336,20 @@ so the full solution seems to be:
  decremented if the signed representation is taken into account)
 -set the buffer entry of the M-key after step (2)
 
-let's play the same scenario through with this strategy...
+let's play the same scenario through with this strategy:
+
+(0) pre:
+   n    0    1    2    3    4    5    6    7
+S: 3   4,3  3,2  2,1  _,_  _,_  _,_  _,_  _,_
+L: 5   5,4  6,5  8,7  9,0  7,6  _,_  _,_  _,_
+B: 8   -5    2    1    0    3   -7   -4   -6
+
+(3) after dblHp.incrementLargeIndexOffset(), assuming, we did buf[bi] = newKey1 after
+   n    0    1    2    3    4    5    6    7
+S: 4   4,3  3,2  2,1  5,4  _,_  _,_  _,_  _,_
+L: 4   6,5  7,6  8,7  9,0  _,_  _,_  _,_  _,_
+B: 8   -5    2    1    0    3   -8   -7   -6  
+T:     L3   S2   S1   S0   S3   L0   L1   L2    -> meaning
+
+yay! that's consistent!!! :-) ..even without offset! how can that be?
+

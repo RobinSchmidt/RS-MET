@@ -1706,8 +1706,8 @@ protected:
 
   std::vector<Node>  small, large; // storage arrays of the nodes
   //rsDoubleHeap<Node> dblHp;        // maintains large/small as double-heap
-  //rsDoubleHeap2<Node> dblHp;        // maintains large/small as double-heap
-  rsDoubleHeap3<Node> dblHp;
+  rsDoubleHeap2<Node> dblHp;        // maintains large/small as double-heap
+  //rsDoubleHeap3<Node> dblHp;
   std::vector<int>   buf;          // circular buffer of heap keys
 
   int bufIdx = 0;  // current index into into the circular buffer

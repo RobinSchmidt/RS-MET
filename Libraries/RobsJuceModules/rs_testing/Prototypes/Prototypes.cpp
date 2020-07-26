@@ -899,8 +899,8 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   // let's the element float up:
   int oldKey1 = buf[bi];
   int newKey1 = dblHp.getNumSmallValues();
-  buf[bi] = newKey1;
-  ok = isStateConsistent();
+  //buf[bi] = newKey1;
+  //ok = isStateConsistent();
   
   /*
   // very experimental - i think, this code should be used only without the 
@@ -930,7 +930,7 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   //ok = isStateConsistent();// triggers key/index out of range but not itself
   //fixInconsistentBufferKeys(n);   // test
 
-  dblHp.incrementLargeIndexOffset();
+  //dblHp.incrementLargeIndexOffset();
   buf[bi] = newKey1;
 
 
