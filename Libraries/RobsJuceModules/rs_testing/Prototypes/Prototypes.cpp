@@ -872,22 +872,27 @@ void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength,
 template<class T>
 void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
 {
-  Node n1 = dblHp.getSmallestLargeValue();    // this is the node we want to move
-  int  bi = n1.bufIdx;                        // buffer index of to be moved node
-  int newKey1 = dblHp.getNumSmallValues();
-  Node n  = dblHp.large.extractFirst();       // shuffles large heap and buf
-  buf[bi] = newKey1;                          // set one value in buf 
-  dblHp.small.insert(n);                      // shuffles small heap and buf
+  Node n = dblHp.getSmallestLargeValue();   // this is the node we want to move
+  int i = n.bufIdx;                         // buffer index of to be moved node
+  int k = dblHp.getNumSmallValues();        // the new key for the moved node
+  n  = dblHp.large.extractFirst();          // shuffles large heap and buf
+  buf[i] = k;                               // set one key value in buf 
+  dblHp.small.insert(n);                    // shuffles small heap and buf
 }
 
 
 template<class T>
 void rsMovingQuantileFilterCore<T>::moveFirstSmallToLarge(int nSo)
 {
-  dblHp.moveFirstSmallToLarge();
-
-  // this seems to magically work already, although it shouldn't - we don't update the buffer
-  // content and don't increment the offset yet...more tests needed...
+  bool ok = isStateConsistent();
+  Node n = dblHp.getLargestSmallValue();
+  int i = n.bufIdx;
+  int k = dblHp.getNumLargeValues() | dblHp.firstBitOnly; // we must set the 1st bit also
+  n  = dblHp.small.extractFirst();
+  buf[i] = k;
+  dblHp.large.insert(n);
+  ok = isStateConsistent();
+  int dummy = 0;
 }
 
 /*
