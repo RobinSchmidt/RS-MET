@@ -880,19 +880,15 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   dblHp.small.insert(n);                    // shuffles small heap and buf
 }
 
-
 template<class T>
 void rsMovingQuantileFilterCore<T>::moveFirstSmallToLarge(int nSo)
 {
-  bool ok = isStateConsistent();
   Node n = dblHp.getLargestSmallValue();
   int i = n.bufIdx;
-  int k = dblHp.getNumLargeValues() | dblHp.firstBitOnly; // we must set the 1st bit also
+  int k = dblHp.getNumLargeValues() | dblHp.firstBitOnly; // set the 1st bit to indicate L-key
   n  = dblHp.small.extractFirst();
   buf[i] = k;
   dblHp.large.insert(n);
-  ok = isStateConsistent();
-  int dummy = 0;
 }
 
 /*
