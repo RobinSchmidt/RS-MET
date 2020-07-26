@@ -929,6 +929,11 @@ void rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall(int nSo)
   Node n = dblHp.large.extractFirst();  // shuffles large heap and buf
   //ok = isStateConsistent();// triggers key/index out of range but not itself
   //fixInconsistentBufferKeys(n);   // test
+
+  dblHp.incrementLargeIndexOffset();
+  buf[bi] = newKey1;
+
+
   int  i = dblHp.small.insert(n);       // shuffles small heap and buf
   ok = isStateConsistent();
   rsAssert(i  == 0);                    // it should end up at the front

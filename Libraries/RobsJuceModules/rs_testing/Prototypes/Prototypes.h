@@ -829,6 +829,10 @@ protected:
 
   template<class U> friend class rsDoubleHeap;
   template<class U> friend class rsDoubleHeap2;
+  template<class U> friend class rsDoubleHeap3;
+  // get rid of these - we have them to get access to the less and swap functions - maybe store 
+  // references to them there - that's more elegant anyway. ...or maybe use references in 
+  // rsBinaryTree and the actual function object in rsDoubleHeap/2/3
 
 };
 // -maybe make also a class rsBinarySearchTree where the left child is <= and the right child is >=
@@ -1249,6 +1253,8 @@ public:
     return small.isHeap() && large.isHeap()   
       && !(small.less(large[0], small[0]));  // last condition means small[0] <= large[0]
   }
+  // maybe we should store references to the less and swap functions here too and also provide a
+  // setLessFunction function - then we may get rid of the friend declarations in rsBinaryHeap
 
 
 protected:
@@ -1415,7 +1421,7 @@ i >= nS, but uses the offset as in rsDoubleHeap2 as well. ....i'm trying out som
 out what could work to make modulation of L,p possible in rsMovingQuantileFilterCore... */
 
 template<class T>
-class rsDoubleHeap3 : private rsDoubleHeap<T>
+class rsDoubleHeap3 : public rsDoubleHeap<T>
 {
 
   // we use private inheritance to make atIndex, etc. unavailable...maybe override them instead
@@ -1425,7 +1431,7 @@ public:
 
   int replace(int key, const T& newValue)
   {
-    rsAssert(isKeyValid(k), "Invalid key");
+    rsAssert(isKeyValid(key), "Invalid key");
     int i  = key; 
     int nS = small.getSize();
 
@@ -1448,11 +1454,20 @@ public:
     return i;   // return the new key/index
   }
   
-  T& atKey(int k)
+  T& atIndex(int i)
   {
+    rsAssert(isIndexValid(i), "Invalid index");
+    if(isKeyInLargeHeap(i))  // works, because keys and indices are the same thing
+      return large[i-small.getSize()];
+    else
+      return small[i];
+  }
+
+  T& atKey(int k) 
+  { 
     rsAssert(isKeyValid(k), "Invalid key");
     if(isKeyInLargeHeap(k))
-      return large[toLargeHeapIndex(k)]
+      return large[toLargeHeapIndex(k)];
     else
       return small[k];
   }
@@ -1465,6 +1480,10 @@ public:
     else
       return k < small.getSize();
   }
+
+  //int indexToKey(int i) { return i; } 
+  //int keyToIndex(int k) { return k; }
+  // not needed - the inherited versions do the same
 
   void incrementLargeIndexOffset() { largeIndexOffset++; }
   void decrementLargeIndexOffset() { largeIndexOffset--; }
@@ -1686,8 +1705,9 @@ protected:
   // Data:
 
   std::vector<Node>  small, large; // storage arrays of the nodes
-  rsDoubleHeap<Node> dblHp;        // maintains large/small as double-heap
+  //rsDoubleHeap<Node> dblHp;        // maintains large/small as double-heap
   //rsDoubleHeap2<Node> dblHp;        // maintains large/small as double-heap
+  rsDoubleHeap3<Node> dblHp;
   std::vector<int>   buf;          // circular buffer of heap keys
 
   int bufIdx = 0;  // current index into into the circular buffer
