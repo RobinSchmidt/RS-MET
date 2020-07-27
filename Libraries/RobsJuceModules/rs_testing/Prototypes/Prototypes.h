@@ -1614,31 +1614,55 @@ public:
     keyBuf.reset();
     for(int n = 0; n < L; n++) {
       dblHp.atIndex(n).value  = T(0);
-      dblHp.atIndex(n).bufIdx = n;
-      keyBuf.data[n] = dblHp.indexToKey(n);
-      buf[n] = dblHp.indexToKey(n); }
+      int k = dblHp.indexToKey(n);
+
+      if(useRingBuffer)
+      {
+        dblHp.atIndex(n).bufIdx = n; // we need something else here
+        keyBuf.setNextReturnSample(k, n);
+        int dummy = 0;
+      }
+      else
+      {
+        dblHp.atIndex(n).bufIdx = n;
+        buf[n] = k;
+      }
+
+    }
     bufIdx = 0;
   }
 
 
+  bool useRingBuffer = false; // for a simple compile-time switch during development
+
 protected:
+
+  void acceptNewInput(T x)
+  {
+    if(useRingBuffer) acceptNewInputNew(x);
+    else              acceptNewInputOld(x);
+  }
 
   /** Accepts a new input sample and updates our internal buffers accordingly. This will have 
   (conceptually) the effect that the oldest input sample will be remvoved from the double-heap and 
   the new input will be inserted.  */
-  void acceptNewInput(T x)
+  void acceptNewInputOld(T x)
   {
+    rsAssert(isStateConsistent());
     int k = buf[bufIdx];           // heap-key of oldest sample
     int i = dblHp.atKey(k).bufIdx; // buffer-index of oldest sample
     dblHp.replace(k, Node(x, i));  // reshuffles content of the double-heap and  buf
     bufIdx = (bufIdx+1) % L;       // updates the position in circular buffer of indices
+    rsAssert(isStateConsistent());
   }
-  void acceptNewInput2(T x)
+  void acceptNewInputNew(T x)
   {
+    rsAssert(isStateConsistent());
     int k = keyBuf.getSample(0);        // retrieve heap-key of oldest sample, 0 is just a dummy
     Node n(x, (int)keyBuf.getWriteIndex());
     k = dblHp.replace(k, n);
     keyBuf.setNewest(k);                // replace the zero-dummy by the actual new key
+    rsAssert(isStateConsistent());
   }
   // to switch between the old and new implementation (using std::vector and rsRingBuffer 
   // respectively) just swap the names of acceptNewInput and acceptNewInput2
@@ -1734,6 +1758,7 @@ protected:
   T   w = T(1);    // weight for smallest large value in the linear interpolation
 
   bool modulatable = false;  // set it to true by default - or maybe remove the switch entirely
+
 
   // some scaffolding code
   //int getNodeKey(Node node);

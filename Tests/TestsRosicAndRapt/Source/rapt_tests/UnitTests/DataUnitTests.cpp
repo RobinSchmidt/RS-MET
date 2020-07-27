@@ -563,6 +563,10 @@ bool doubleEndedQueueUnitTest()
 
   r &= q.isFull();
 
+  // create a deque where tail > head and test, if getLength works for that case, too:
+
+  // i actually think, the maxLength is size-1 and not size-2!
+
 
   //// this triggers an assertion but actually still works - however, the MovingMax filter does not
   //// work properly anymore when we fill the deque up to bufferSize-1
@@ -572,7 +576,8 @@ bool doubleEndedQueueUnitTest()
   //r &= q.readTail()  == 1;
 
 
-
+  // maybe getLength is flawed and returns the correct length only in certain situations?
+  // -> do more tests!
 
   //// this does not work anymore due to overflow:
   //q.pushFront(8);                // [1 2 3 4 5 6 7 8]

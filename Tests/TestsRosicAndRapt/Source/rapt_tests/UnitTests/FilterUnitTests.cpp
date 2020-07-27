@@ -221,7 +221,7 @@ bool testMovingMaxFilter(rsMovingMaximumFilter<int>& flt, const std::vector<int>
   flt.setLength(L);
   flt.reset();
   for(size_t n = 0; n < x.size(); n++) 
-    result[n] = flt.getSample(x[n]);  // remove the "Naive" later
+    result[n] = flt.getSample(x[n]);
 
   return result == target;
 }
@@ -247,10 +247,19 @@ bool movingMaximumUnitTest()
   r &= testMovingMaxFilter(flt, v, 4);
   r &= testMovingMaxFilter(flt, v, 5);
   r &= testMovingMaxFilter(flt, v, 6);
-  //r &= testMovingMaxFilter(flt, v, 7);
+  //r &= testMovingMaxFilter(flt, v, 7); // i thin, that should work, too
   //r &= testMovingMaxFilter(flt, v, 8);
   // 8 doesn't work - maybe it needs to be strictly less than capacity
   // ...maybe write a loop for these tests
+  // 7 and 8 are supposed to not work because the capacity is only 6. However, with 6, there's
+  // something strange going on: when we implement rsDoubleEndedQueue::isFull() as
+  // getLength() >= getMaxLength(), which seems to be correct, we trigger an assert to try to
+  // push onto a full deque. when we use getLength() > getMaxLength() (which is supposed to be 
+  // wrong), the test passes just fine - hmm. it's not surprising that pushing and popping to/from
+  // the deque still works - we actually can use one memory slot more than the nominal maximum 
+  // length - the head/tail arithmetic doesn't care - it's just that when we do this, the length 
+  // computation will compute wrong results
+
 
   std::vector<int> vMax3_Nayuki = computeSlidingWindowMinOrMax(v, 3, true);
   // seems to compute a maximum where the window is centered over the current datapoint
@@ -369,6 +378,7 @@ bool testMovingQuantileModulation()
   rsQuantileFilterCore<double>  fltH;      // H for heap-based implementation
   fltH.setMaxLength(maxLength);
   //fltH.setModulatable(true);    // test will return false, if this is commented
+  //fltH.useRingBuffer = true;
 
   using Vec = std::vector<double>;
   //Vec x = rsRandomIntVector(N, 0, 99);
@@ -390,13 +400,8 @@ bool testMovingQuantileModulation()
     z[n] = fltN.getSample(x[n]);
     int dummy = 0;
   }
-
   // heap-based version shows the resets to zero at the switches
 
-  // sample 40 is still correct, at sample 41 it gets wrong and stays wrong up to sample 84 at 
-  // which point it becomes correct again - unless we comment out the switch at sample 80 - in this
-  // case, it stays wrong even after that - how is this possible? this far after the switch, any
-  // influence of it should have died away anyway
 
   // todo: 
   // -check manually correctness of results, specially at the the switch samples

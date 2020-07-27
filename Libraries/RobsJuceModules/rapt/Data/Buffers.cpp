@@ -35,9 +35,14 @@ void rsRingBuffer<T>::reset()
   // maybe zero is not best because in getSample, we increment first which means that the first
   // retrieved value after reset will be the value data[1]. it may be more convenient, when the
   // first returned value is data[0]...although, client code should actually not care at all - if 
-  // it does, this points to a design flaw
+  // it does, this points to a design flaw. for debugging, it would probably be most convenient, if
+  // the first input sample gets written in data[0], so maybe we should init writeIndex to 
+  // length-1...baaah - this pre-increment in getSample creates more problems than it solves!
+  // i should really switch to post-increment - but that needs serious unit testing - it may be
+  // that some code relies on the pre-increment (which really shouldn't be the case!). check the 
+  // rsDoubleEndedQueue and rsMinMaxFilter
 
-  updateLeftIndex();
+  adjustReadIndex();
 }
 
 

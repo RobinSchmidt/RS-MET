@@ -1006,10 +1006,14 @@ bool rsQuantileFilterCore<T>::isStateConsistent()
     r &= isBufferSlotConsistent((int)i);
 
   // Check that each key occurs in the buf exactly once:
-  std::vector<int> tmp(L);
-  for(size_t i = 0; i < L; i++)
-    tmp[i] = dblHp.keyToIndex(buf[i]); // use keyBuf.data[i]
-  r &= isIndexPermutation(&tmp[0], (int) tmp.size());
+  if(!useRingBuffer)
+  {
+    std::vector<int> tmp(L);
+    for(size_t i = 0; i < L; i++)
+      tmp[i] = dblHp.keyToIndex(buf[i]); // use keyBuf.data[i]
+    r &= isIndexPermutation(&tmp[0], (int)tmp.size());
+  }
+  // else ....
 
   // todo: 
   // -check that the sum of the heap sizes matches the buffer size
@@ -1035,7 +1039,11 @@ bool rsQuantileFilterCore<T>::isNodeConsistent(const rsQuantileFilterCore<T>::No
 template<class T>
 bool rsQuantileFilterCore<T>::isBufferSlotConsistent(int i)
 {
-  int  k = buf[i];         // key of node in i-th buffer slot, use keyBuf.data[i]
+  int k;         // key of node in i-th buffer slot, use keyBuf.data[i]
+  if(useRingBuffer)
+    k = keyBuf.data[i];
+  else
+    k = buf[i];
   Node n = dblHp.atKey(k); // retrieve the node
   bool result = n.bufIdx == i;
   return result;

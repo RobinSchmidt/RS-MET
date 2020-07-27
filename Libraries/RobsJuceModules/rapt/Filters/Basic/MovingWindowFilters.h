@@ -68,6 +68,9 @@ public:
   /** Computes and returns an output sample.  */
   inline T getSample(T in)
   {
+    // debug - so we can see the length when we hit an assert in pushBack:
+    size_t L = maxDeque.getLength();
+
     // accept new incoming sample - this corresponds to
     // Nayuki's Step 2 - "increment the array range’s right endpoint"
     while(!maxDeque.isEmpty() && greater(in, maxDeque.readTail()) )
@@ -80,6 +83,8 @@ public:
     // maybe using a "greater" function instead of a > operator is not such a good idea,
     // performance-wise - we should do performance tests and maybe for production code, provide
     // a version of getSample that just uses >
+
+
 
     // update delayline (forget oldest sample and remember current sample for later), this
     // corresponds to Nayuki's Step 3 - "increment the array range’s left endpoint":

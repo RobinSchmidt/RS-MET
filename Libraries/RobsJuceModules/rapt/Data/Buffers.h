@@ -64,7 +64,7 @@ public:
 
     //length = newLength; // old
     length = rsMin(newLength, this->getCapacity()); // new
-    updateLeftIndex();
+    adjustReadIndex();
   }
   // maybe rename to setDelay
 
@@ -74,11 +74,17 @@ public:
 
   inline T getSample(T in)
   {
-    writeIndex = this->wrap(writeIndex+1); // increment before write/read to allow further operations
-    readIndex  = this->wrap(readIndex+1);  // after getSample (indices must be still valid)
-    // call advancePointers
+    // We increment the indices before the actual read/write operations to allow further operations
+    // after getSample (where the indices must be still valid):
+    incrementIndices(1);
+    // BUT: if client code actually relies on this, this points to a design flaw. We should 
+    // provide a method to modify the most recently stored value - we already have such a method:
+    // setNewest. Client code should be forced to used this, if it wants to modify the stored 
+    // value after calling getSample. Then we are free here to use pre- or post-increment however
+    // we want without affecting client code - we just would have to adapt getNewest if we switch 
+    // to post-increment
 
-
+    // The actual read/write operations
     this->data[writeIndex] = in;           // right index is write index
     T out = this->data[readIndex];         // left index is read index
     return out;
@@ -87,11 +93,12 @@ public:
   // name getSample...any maybe merge class with rsDoubleEndedQueue
 
   /** Advances our read- and write pointers by the given number of positions. */
-  inline void advancePointers(size_t amount = 1)
+  inline void incrementIndices(size_t amount = 1)
   {
     writeIndex = this->wrap(writeIndex + amount);
     readIndex  = this->wrap(readIndex  + amount);
   }
+  // maybe rename to incrementIndices, make protected
 
   /*
   inline void retractPointers(size_t amount = 1)
@@ -116,6 +123,15 @@ public:
   void setNewest(T x) { this->data[writeIndex] = x; }
 
   //void setOldest(T x) { this->data[wrap(leftIndex+1)] = x } // seems useless
+
+  /** Sets the sample that should be returned in the next call to getSample or in the delay-th call
+  after that. */
+  void setNextReturnSample(T x, size_t delay = 0) { this->data[wrap(readIndex+delay+1)] = x; }
+  // the +1 is due to the use of pre-increment in getSample
+
+
+
+
 
   size_t getReadIndex()  const { return readIndex; }
   size_t getWriteIndex() const { return writeIndex; }
@@ -156,29 +172,11 @@ public:
   T& fromOldest(size_t i) { return data[getIndexFromOldest(i)]; }
 
 
-  /*
-  void swapValues(int i, int j)
-  {
-
-  }
-  */
-
-  // the returned index from getIndexFromOldest and getIndexFromNewest should always be in between
-  // leftIndex and rightIndex...maybe except, if rightIndex < leftIndex
-
-  /** Returns a reference to the value inside the buffer at the given delay i, for read and write 
-  access. So if you pass i = 0, you get the most recently written, newest value and for 
-  i = length-1, you get the oldest value. */
-  //inline T& operator[](size_t i)
-  //{
-  //  size_t j = getIndexFromNewest(i);
-  //  return data[j];
-  //}
-  //// i indicates the amount of delay
 
 
-  /** Writes the content of this circular buffer into the given linear buffer in either chronological 
-  or reverse chronological order. */
+
+  /** Writes the content of this circular buffer into the given linear buffer in either 
+  chronological or reverse chronological order. */
   void copyTo(T* buffer, bool newestFirst)  // maybe provide false as default
   {
     if(newestFirst)
@@ -187,13 +185,11 @@ public:
     else
       for(size_t i = 0; i < getLength(); i++)
         buffer[i] = fromOldest(i);
-    //for(size_t i = 0; i < getLength(); i++)
-    //  buffer[i] = (*this)[i];
   }
 
 
   /** Returns the maximum value in the range between the two pointers. Mostly for testing 
-  purposes - not efficient. */
+  purposes (the moving-max filter) - not efficient, takes time O(L) where L is the length. */
   T getMaximum()
   {
     size_t i = writeIndex;
@@ -211,8 +207,9 @@ public:
 protected:
 
   /** Updates the current left index according right index and length. */
-  void updateLeftIndex()  { readIndex = this->wrap(writeIndex - length); }
-  // rename to updateReadIndex
+  void adjustReadIndex()  { readIndex = this->wrap(writeIndex - length); }
+  // rename to updateReadIndex or adjustReadIndex - does the formula always work, even when
+  // writeIndex - length is nagtive? we are using unsigned integers here
 
   /** Updates the current right index according left index and length. */
   //void updateRightIndex() { rightIndex = wrap(leftIndex + length); }
@@ -256,7 +253,7 @@ public:
 
   /** Constructor. Allocates enough memory for an internal buffer to hold the "capacity" number of
   queued values. The memory allocated for the buffer will be the smallest power of two that is
-  greater or equal to the desired capacity plus 1 (two additional and unusable index values are
+  greater or equal to the desired capacity plus 2 (two additional and unusable index values are
   required to make the index arithmetic work right). */
   rsDoubleEndedQueue(size_t capacity) : rsBuffer<T>(capacity+2) {}
 
@@ -314,11 +311,11 @@ public:
   clearing of the queue itself just resets some pointers/indices, turning the data into
   inaccessible garbage - but it should have no effect for the functionality of the queue whether
   this data buffer is uninitialized/garbage or all zeros. */
-  void clear(bool cleanGarbage = false)
+  void clear(bool clearGarbage = false)
   {
     head = 1;
     tail = 0;
-    if(cleanGarbage)
+    if(clearGarbage)
       this->initBufferValues(0);
   }
 
@@ -326,12 +323,19 @@ public:
   /** \name Inquiry */
 
   /** Returns the number of values that are currently in the queue. */
-  inline size_t getLength() const { return this->wrap(head - tail - 1); }
+  inline size_t getLength() const 
+  { 
+    size_t L = wrap(head - tail - 1);   // for debug
+    rsAssert(L <= getMaxLength());
+
+    return this->wrap(head - tail - 1); 
+  }
 
   /** Returns the maximum allowed length for the queue. Due to the way, the head- and tail pointers
   operate, the usable length is 2 less than the size of the underlying data buffer. */
-  //inline size_t getMaxLength() const { return data.size()-1; } //
-  inline size_t getMaxLength() const { return this->data.size()-2; } //
+  inline size_t getMaxLength() const { return this->data.size()-1; } //
+  //inline size_t getMaxLength() const { return this->data.size()-2; } //
+  // hmm..i think, we can actually use size()-1 memory locations
 
   /** Returns true if the queue is empty. */
   inline bool isEmpty() const { return getLength() == 0; }
@@ -341,6 +345,8 @@ public:
   inline bool isFull() const { return getLength() > getMaxLength(); }
   // shouldn't that be >= ? ...somehow it seems, it can actually take one more entry ...but only
   // under certain conditions? more tests needed....
+  // it seems >= is the right one, but if we use it, we trigger an assert in movingMaximumUnitTest
+  // although the test actually passes
 
 
 protected:
