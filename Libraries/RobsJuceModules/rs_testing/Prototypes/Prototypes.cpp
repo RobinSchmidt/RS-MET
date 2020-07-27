@@ -774,7 +774,7 @@ void rsModalFilterFloatSSE2::setParameters(double w, double A, double p,
 #undef small // this is #defined in some silly windows header - WTF?
 
 template<class T>
-void rsMovingQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPosition)
+void rsQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPosition)
 {
   int C = getCapacity();
   rsAssert(newLength   <= C, "Length cannot exceed capacity");
@@ -793,7 +793,7 @@ void rsMovingQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int 
 
 /*
 template<class T>
-void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
+void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
 {
   while(L > newLength) {
     discardOldestSample();
@@ -809,7 +809,7 @@ void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength,
 
 
 template<class T>
-void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
+void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
 {
   int C = getCapacity();
 
@@ -888,7 +888,7 @@ void rsMovingQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength,
 }
 
 template<class T>
-bool rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall()
+bool rsQuantileFilterCore<T>::moveFirstLargeToSmall()
 {
   if(dblHp.getNumLargeValues() <= 1)
     return false;
@@ -902,7 +902,7 @@ bool rsMovingQuantileFilterCore<T>::moveFirstLargeToSmall()
 }
 
 template<class T>
-bool rsMovingQuantileFilterCore<T>::moveFirstSmallToLarge()
+bool rsQuantileFilterCore<T>::moveFirstSmallToLarge()
 {
   if(dblHp.getNumSmallValues() <= 1)
     return false;
@@ -916,14 +916,14 @@ bool rsMovingQuantileFilterCore<T>::moveFirstSmallToLarge()
 }
 
 template<class T>
-void rsMovingQuantileFilterCore<T>::discardOldestSample()
+void rsQuantileFilterCore<T>::discardOldestSample()
 {
   //int k = buf[bufIdx];           // heap-key of oldest sample
   //dblHp.remove(k);
 }
 
 template<class T>
-void rsMovingQuantileFilterCore<T>::addOlderSample()
+void rsQuantileFilterCore<T>::addOlderSample()
 {
    // use the most recent output as preliminary value - that should reduce the artifacts but won't
    // eliminate them. what we really need is a (reference/pointer to) a buffer of actual delayed 
@@ -935,7 +935,7 @@ void rsMovingQuantileFilterCore<T>::addOlderSample()
 
 /*
 template<class T>
-int rsMovingQuantileFilterCore<T>::getNodeKey(rsMovingQuantileFilterCore<T>::Node n)
+int rsQuantileFilterCore<T>::getNodeKey(rsMovingQuantileFilterCore<T>::Node n)
 {
   for(int i = 0; i < dblHp.getSize(); i++)
   {
@@ -947,8 +947,7 @@ int rsMovingQuantileFilterCore<T>::getNodeKey(rsMovingQuantileFilterCore<T>::Nod
 }
 
 template<class T>
-void rsMovingQuantileFilterCore<T>::fixInconsistentBufferKeys(
-  rsMovingQuantileFilterCore<T>::Node n)
+void rsQuantileFilterCore<T>::fixInconsistentBufferKeys(rsQuantileFilterCore<T>::Node n)
 {
   Node n2;
   int i, k;
@@ -974,7 +973,7 @@ void rsMovingQuantileFilterCore<T>::fixInconsistentBufferKeys(
 
 // modifies the values in the buffer to make them consistent
 template<class T>
-void rsMovingQuantileFilterCore<T>::makeBufferConsistent()
+void rsQuantileFilterCore<T>::makeBufferConsistent()
 {
   for(int i = 0; i < dblHp.getNumValues(); i++)
   {
@@ -989,7 +988,7 @@ void rsMovingQuantileFilterCore<T>::makeBufferConsistent()
 // in the nodes in the dblHp
 
 template<class T>
-bool rsMovingQuantileFilterCore<T>::isStateConsistent()
+bool rsQuantileFilterCore<T>::isStateConsistent()
 {
   bool r = true;
 
@@ -1013,8 +1012,7 @@ bool rsMovingQuantileFilterCore<T>::isStateConsistent()
 }
 
 template<class T>
-bool rsMovingQuantileFilterCore<T>::isNodeConsistent(
-  const rsMovingQuantileFilterCore<T>::Node& n)
+bool rsQuantileFilterCore<T>::isNodeConsistent(const rsQuantileFilterCore<T>::Node& n)
 {
   bool r = true;
 
@@ -1028,7 +1026,7 @@ bool rsMovingQuantileFilterCore<T>::isNodeConsistent(
 }
 
 template<class T>
-bool rsMovingQuantileFilterCore<T>::isBufferSlotConsistent(int i)
+bool rsQuantileFilterCore<T>::isBufferSlotConsistent(int i)
 {
   int  k = buf[i];         // key of node in i-th buffer slot
   Node n = dblHp.atKey(k); // retrieve the node

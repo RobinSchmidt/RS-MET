@@ -1351,7 +1351,7 @@ void quantileFilter()
   int    L  = 7;     // filter length in samples
 
 
-  rsMovingQuantileFilter<double> flt;
+  rsQuantileFilter<double> flt;
 
   // we should have a combined setMaxLengthAndSampleRate function to avoid re-allocating twice:
   flt.setMaxLength(20);
@@ -1390,7 +1390,7 @@ void quantileFilter()
   // so, for even lengths, t is lagging one sample
 
   // let's try it with the naive implementation of rsQuantileFilter
-  rsMovingQuantileFilterNaive<double> fltN(nS, nL);
+  rsQuantileFilterNaive<double> fltN(nS, nL);
   Vec z(N);
   for(int n = 0; n < N; n++)
   {

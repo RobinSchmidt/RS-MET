@@ -1273,7 +1273,7 @@ protected:
 
   rsBinaryHeap<T> small, large;  // the two heaps for the small and large numbers
 
-  template<class U> friend class rsMovingQuantileFilterCore; // temporary
+  template<class U> friend class rsQuantileFilterCore; // temporary - try to get rid
 
 };
 
@@ -1406,7 +1406,9 @@ private:
 
 /** Yet another variant. This uses again the convention to use i-nS as large-heap-index if 
 i >= nS, but uses the offset as in rsDoubleHeap2 as well. ....i'm trying out some stuff to figure 
-out what could work to make modulation of L,p possible in rsMovingQuantileFilterCore... */
+out what could work to make modulation of L,p possible in rsMovingQuantileFilterCore... 
+
+OK - rsDoubleHeap2 works now - this renders this code obsolete - delete it*/
 
 template<class T>
 class rsDoubleHeap3 : public rsDoubleHeap<T>
@@ -1517,13 +1519,13 @@ track of by the circular buffer, such that it always points to the oldest sample
 double-heap.  */
 
 template<class T>
-class rsMovingQuantileFilterCore  // maybe rename to rsQuantileFilterCore
+class rsQuantileFilterCore
 {
 
 public:
 
 
-  rsMovingQuantileFilterCore(int maxLength = 2)
+  rsQuantileFilterCore(int maxLength = 2)
   { 
     rsAssert(maxLength >= 2, "A maxLength of at least 2 is needed");
     auto swapNodes = [&](Node& a, Node& b) { this->swapNodes(a, b); };
@@ -1731,12 +1733,12 @@ protected:
 // this is a more user-friendly, audio-oriented, plugin-ready wrapper around the core algorithm
 // of the moving quantile filter
 template<class T>
-class rsMovingQuantileFilter  // maybe rename to rsQuantileFilter
+class rsQuantileFilter  // maybe rename to rsQuantileFilter
 {
 
 public:
 
-  rsMovingQuantileFilter()
+  rsQuantileFilter()
   {
     allocateResources();
     dirty = true;
@@ -1839,7 +1841,7 @@ protected:
 
   // internal data:
   std::atomic<bool> dirty = true;
-  rsMovingQuantileFilterCore<T> core;
+  rsQuantileFilterCore<T> core;
 
 };
 // todo: make a highpass version by subtracting the result from a (delayed) original signal - maybe
@@ -1849,17 +1851,17 @@ protected:
 
 
 /** This is a naive implementattion of (the core of) a moving quantile filter and meant only for 
-producing test outputs to compare the production version of the rsMovingQuantileFilter against. 
+producing test outputs to compare the production version of the rsQuantileFilterCore against. 
 It's horribly inefficient - the cost per sample is O(N*log(N)) whereas the production version 
 should run in O(log(N)). ..maybe move to unit tests.. */
 
 template<class T>
-class rsMovingQuantileFilterNaive
+class rsQuantileFilterNaive
 {
 
 public:
 
-  rsMovingQuantileFilterNaive(int numSmaller = 20, int numLarger = 20)
+  rsQuantileFilterNaive(int numSmaller = 20, int numLarger = 20)
     : buf(numSmaller+numLarger)
   {
     setLengths(numSmaller, numLarger);

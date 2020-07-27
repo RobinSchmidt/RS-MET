@@ -308,12 +308,12 @@ bool testMovingQuantileCore(int maxLength, int smallLength, int largeLength, int
 
   bool r = true;
 
-  rsMovingQuantileFilterCore<double> fltH;      // H for heap-based implementation
+  rsQuantileFilterCore<double> fltH;      // H for heap-based implementation
   fltH.setMaxLength(maxLength);
   fltH.setLength(smallLength + largeLength);
   fltH.setReadPosition(smallLength);
 
-  rsMovingQuantileFilterNaive<double> fltN(smallLength, largeLength); // N for naive implementation
+  rsQuantileFilterNaive<double> fltN(smallLength, largeLength); // N for naive implementation
 
   // Create output signals of the naive and heap based implementation using as input signal random
   // numbers between 0 and 99 and along the way, check, if both outputs match
@@ -364,8 +364,8 @@ bool testMovingQuantileModulation()
 
 
 
-  rsMovingQuantileFilterNaive<double> fltN(maxLength, maxLength);
-  rsMovingQuantileFilterCore<double>  fltH;      // H for heap-based implementation
+  rsQuantileFilterNaive<double> fltN(maxLength, maxLength);
+  rsQuantileFilterCore<double>  fltH;      // H for heap-based implementation
   fltH.setMaxLength(maxLength);
   fltH.setModulatable(true);
 
