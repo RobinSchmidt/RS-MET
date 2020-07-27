@@ -434,6 +434,14 @@ the new getSample must do:
  k = dblHp.replace(k, n)
 -write the new key at the current location into the circular buffer:
  buf.writeWithoutIncrement(k)
+ 
+or let's do the incremet ourselves - it's really inconvenient to work around the 
+pre-increment in getSample:
+
+k = keyBuf.getValueAtReadIndex();
+
+
+
 
 we must also adapt moveFirstLargeToSmall/SmallToLarge: instead of setting
 

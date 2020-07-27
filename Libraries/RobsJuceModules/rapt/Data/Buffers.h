@@ -129,7 +129,14 @@ public:
   void setNextReturnSample(T x, size_t delay = 0) { this->data[wrap(readIndex+delay+1)] = x; }
   // the +1 is due to the use of pre-increment in getSample
 
-
+  /** Sets the object up in such a way that the in the call to getSample, data[0] will be 
+  returned. */
+  void setNextReadIndex(size_t i)
+  {
+    if(i > 0) readIndex = this->wrap(i-1);
+    else      readIndex = this->data.size()-1; // == mask?
+    adjustWriteIndex();
+  }
 
 
 
@@ -210,6 +217,8 @@ protected:
   void adjustReadIndex()  { readIndex = this->wrap(writeIndex - length); }
   // rename to updateReadIndex or adjustReadIndex - does the formula always work, even when
   // writeIndex - length is nagtive? we are using unsigned integers here
+
+  void adjustWriteIndex()  { writeIndex = this->wrap(readIndex + length); }
 
   /** Updates the current right index according left index and length. */
   //void updateRightIndex() { rightIndex = wrap(leftIndex + length); }

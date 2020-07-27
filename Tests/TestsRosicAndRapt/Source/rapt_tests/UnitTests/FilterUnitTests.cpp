@@ -382,7 +382,7 @@ bool testMovingQuantileModulation()
   rsQuantileFilterCore<double>  fltH;      // H for heap-based implementation
   fltH.setMaxLength(maxLength);
   //fltH.setModulatable(true);    // test will return false, if this is commented
-  //fltH.useRingBuffer = true;
+  fltH.useRingBuffer = true;
 
   using Vec = std::vector<double>;
   //Vec x = rsRandomIntVector(N, 0, 99);

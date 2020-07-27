@@ -1612,14 +1612,16 @@ public:
   void reset()
   {
     keyBuf.reset();
+    keyBuf.setNextReadIndex(0);
     for(int n = 0; n < L; n++) {
       dblHp.atIndex(n).value  = T(0);
       int k = dblHp.indexToKey(n);
 
       if(useRingBuffer)
       {
-        dblHp.atIndex(n).bufIdx = n; // we need something else here
+        dblHp.atIndex(n).bufIdx = n;
         keyBuf.setNextReturnSample(k, n);
+        keyBuf.data[n] = k;
         int dummy = 0;
       }
       else
@@ -1648,22 +1650,42 @@ protected:
   the new input will be inserted.  */
   void acceptNewInputOld(T x)
   {
-    rsAssert(isStateConsistent());
+    rsAssert(isStateConsistent(), "inconsistent state");
     int k = buf[bufIdx];           // heap-key of oldest sample
     int i = dblHp.atKey(k).bufIdx; // buffer-index of oldest sample
     dblHp.replace(k, Node(x, i));  // reshuffles content of the double-heap and  buf
     bufIdx = (bufIdx+1) % L;       // updates the position in circular buffer of indices
-    rsAssert(isStateConsistent());
+    rsAssert(isStateConsistent(), "inconsistent state");
   }
+
   void acceptNewInputNew(T x)
   {
-    rsAssert(isStateConsistent());
-    int k = keyBuf.getSample(0);        // retrieve heap-key of oldest sample, 0 is just a dummy
-    Node n(x, (int)keyBuf.getWriteIndex());
+    bool ok = isStateConsistent();
+
+    //rsAssert(isStateConsistent(), "inconsistent state");
+    int k = keyBuf.getSample(0);    // retrieve heap-key of oldest sample, 0 is just a dummy
+    int i = (int) keyBuf.getWriteIndex();
+    Node n(x, i);
     k = dblHp.replace(k, n);
-    keyBuf.setNewest(k);                // replace the zero-dummy by the actual new key
-    rsAssert(isStateConsistent());
+    keyBuf.setNewest(k);
+    ok = isStateConsistent();
+    //rsAssert(isStateConsistent(), "inconsistent state");
+
+
+    int dummy = 0;
   }
+
+  //void acceptNewInputNew(T x)
+  //{
+  //  rsAssert(isStateConsistent(), "inconsistent state");
+  //  int k = keyBuf.getSample(0);        // retrieve heap-key of oldest sample, 0 is just a dummy
+  //  int i = (int) keyBuf.getWriteIndex();
+  //  Node n(x, i);
+  //  k = dblHp.replace(k, n);
+  //  rsAssert(isStateConsistent(), "inconsistent state");
+  //  keyBuf.setNewest(k);                // replace the zero-dummy by the actual new key
+  //  rsAssert(isStateConsistent(), "inconsistent state");
+  //}
   // to switch between the old and new implementation (using std::vector and rsRingBuffer 
   // respectively) just swap the names of acceptNewInput and acceptNewInput2
 
