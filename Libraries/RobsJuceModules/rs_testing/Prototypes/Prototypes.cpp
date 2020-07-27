@@ -844,32 +844,18 @@ void rsQuantileFilterCore<T>::discardOldestSample()
 template<class T>
 void rsQuantileFilterCore<T>::addOlderSample()
 {
-  // use the most recent output as preliminary value - that should reduce the artifacts but won't
-  // eliminate them. what we really need is a (reference/pointer to) a buffer of actual delayed 
-  // signal values. it should be a pointer to allow sharing among instances, because we later want
-  // to build highpass and bandpass versions which need their own
-
-  T x = readOutSample();  // somewhat ad-hoc, we need some value
-  if(sigBuf)
-    x = sigBuf->fromNewest(L);  // or L+1? needs test, sigBuf must be driven by client code
-  bufIdx--;               // we need to go a step backward
-  if(bufIdx < 0)
-    bufIdx = (int)buf.size() - 1;  // wrap around
+  T x;
+  if(sigBuf) x = sigBuf->fromNewest(L); // use actual old sample, if possible/available
+  else       x = readOutSample();       // otherwise make up something based on stored values
+  bufIdx--;                             // we need to go a step backward
+  if(bufIdx < 0) 
+    bufIdx = (int)buf.size() - 1;       // backward wrap around at 0
   Node n(x, bufIdx);
-  int k = dblHp.getPreliminaryKey(n); 
-  buf[bufIdx] = k;       // this may get changed during the actual insert
-  k = dblHp.insert(n);
+  int k = dblHp.getPreliminaryKey(n);   // corresponds to the end of one the heaps
+  buf[bufIdx] = k;                      // this may get changed during the actual insert
+  k = dblHp.insert(n);                  // lets the new noe float up, modifies buf
   L++;
 }
-// In order to increase the length on the fly, we may need to insert some older samples which 
-// we do have stored anywhere here yet - to do so, we may have to use a circular buffer of old 
-// input values that has a length equal to C...maybe that should be done in a subclass - this 
-// buffer could at the same time by used to implement a highpass version - or maybe we store 
-// here a pointer to an rsRingBuffer which is null by default and if it's non-null, we use it 
-// here to fill up the missing past samples and if it's null, we just fill up with zeros or 
-// with the mean of the currently stored old values or maybe use the previous output sample
-
-
 
 /*
 template<class T>

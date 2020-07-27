@@ -1616,10 +1616,7 @@ public:
   samples are available via such a buffer, these artifacts can be avoided. As said, client code 
   is supposed to feed/drive this buffer because this will also facilitate sharing of such buffers 
   to create highpass and bandpass versions...  */
-  void setModulationBuffer(rsRingBuffer<T>* newBuffer)
-  {
-    sigBuf = newBuffer;
-  }
+  void setModulationBuffer(rsRingBuffer<T>* newBuffer) { sigBuf = newBuffer; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1627,12 +1624,7 @@ public:
 
   int getLength() const { return L; }
 
-  int getCapacity() const
-  {
-    return (int) small.size(); // large.size() == buf.size();
-    //return (int) small.capacity(); // large.capacity() == buf.capacity();
-    // maybe use small.size() - we keep the vector sizes now fixed
-  }
+  int getCapacity() const { return (int) small.size(); } // large.size() == buf.size();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -1662,6 +1654,7 @@ protected:
   {    
     acceptNewInput2(x);
   }
+  // rename to storeInput
 
   /** Accepts a new input sample and updates our internal buffers accordingly. This will have 
   (conceptually) the effect that the oldest input sample will be remvoved from the double-heap and 
@@ -1675,6 +1668,7 @@ protected:
     bufIdx = (bufIdx+1) % L;       // updates the position in circular buffer of indices
     rsAssert(isStateConsistent(), "inconsistent state");
   }
+  // obsolete
 
   void acceptNewInput2(T x)
   {
@@ -1699,6 +1693,7 @@ protected:
     T y  = (T(1)-w)*yS + w*yL;                   // linear interpolation
     return y;
   }
+  // rename to readOutput
 
   /** Under construction... */
   void modulateLengthAndReadPosition(int newLength, int newPosition);
@@ -1719,13 +1714,9 @@ protected:
   /** Adds a (dummy) sample to one of the heaps as new oldest sample. This will also grow the 
   circular buffer by one. */
   void addOlderSample();
-  // oh damn! shrinking and growing the circular buffer is O(N) with a simple array. We need a real
-  // circular buffer for that
+t
 
-  // maybe we need also an insertToLarge and insertToSmall function...or just insert - it can 
-  // determine itself wher to insert...hmm...or maybe not - we need both functions and if we see 
-  // that the new element is too large or small, we may have to move the heap values between the 
-  // heaps
+
 
   /** Conversion froma coneceptual buffer index in the range 0..L-1 to the actual index in the 
   range 0..buf.size()-1 */
