@@ -896,7 +896,8 @@ bool rsQuantileFilterCore<T>::moveFirstLargeToSmall()
   int i = n.bufIdx;                         // buffer index of to be moved node
   int k = dblHp.getNumSmallValues();        // the new key for the moved node
   n  = dblHp.large.extractFirst();          // shuffles large heap and buf
-  buf[i] = k;                               // set one key value in buf 
+  buf[i] = k;                               // set one key value in buf
+  keyBuf.data[i] = k;
   dblHp.small.insert(n);                    // shuffles small heap and buf
   return true;
 }
@@ -911,6 +912,7 @@ bool rsQuantileFilterCore<T>::moveFirstSmallToLarge()
   int k = dblHp.getNumLargeValues() | firstBitOnly; // set the 1st bit to indicate L-key
   n  = dblHp.small.extractFirst();
   buf[i] = k;
+  keyBuf.data[i] = k;
   dblHp.large.insert(n);
   return true;
 }
@@ -981,6 +983,7 @@ void rsQuantileFilterCore<T>::makeBufferConsistent()
     Node n  = dblHp.atIndex(i);
     int  bi = n.bufIdx;
     buf[bi] = k;
+    keyBuf.data[bi] = k;
   }
 }
 
@@ -1001,7 +1004,7 @@ bool rsQuantileFilterCore<T>::isStateConsistent()
   // Check that each key occurs in the buf exactly once:
   std::vector<int> tmp(L);
   for(size_t i = 0; i < L; i++)
-    tmp[i] = dblHp.keyToIndex(buf[i]);
+    tmp[i] = dblHp.keyToIndex(buf[i]); // use keyBuf.data[i]
   r &= isIndexPermutation(&tmp[0], (int) tmp.size());
 
   // todo: 
@@ -1017,7 +1020,7 @@ bool rsQuantileFilterCore<T>::isNodeConsistent(const rsQuantileFilterCore<T>::No
   bool r = true;
 
   for(size_t i = 0; i < buf.size(); i++) {
-    int  k  = buf[i];         // key of node in i-th buffer slot
+    int  k  = buf[i];         // key of node in i-th buffer slot, use keyBuf.data[i]
     Node n2 = dblHp.atKey(k); // retrieve the node
     if(n2 == n)
       r &= n.bufIdx == i; }
@@ -1028,7 +1031,7 @@ bool rsQuantileFilterCore<T>::isNodeConsistent(const rsQuantileFilterCore<T>::No
 template<class T>
 bool rsQuantileFilterCore<T>::isBufferSlotConsistent(int i)
 {
-  int  k = buf[i];         // key of node in i-th buffer slot
+  int  k = buf[i];         // key of node in i-th buffer slot, use keyBuf.data[i]
   Node n = dblHp.atKey(k); // retrieve the node
   bool result = n.bufIdx == i;
   return result;

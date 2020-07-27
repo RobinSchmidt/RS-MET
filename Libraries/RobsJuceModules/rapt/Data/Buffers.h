@@ -76,6 +76,9 @@ public:
   {
     rightIndex = this->wrap(rightIndex+1); // increment before write/read to allow further operations
     leftIndex  = this->wrap(leftIndex+1);  // after getSample (indices must be still valid)
+    // call advancePointers
+
+
     this->data[rightIndex] = in;           // right index is write index
     T out = this->data[leftIndex];         // left index is read index
     return out;
@@ -104,8 +107,15 @@ public:
 
   // Return samples from the buffer without updating anything
 
-  inline T getOldest() const { return this->data[wrap(leftIndex+1)]; }  // why +1?
-  inline T getNewest() const { return this->data[rightIndex];        }
+  T getOldest() const { return this->data[wrap(leftIndex+1)]; }  // why +1?
+  T getNewest() const { return this->data[rightIndex];        }
+
+
+  /** Sets/replaces the newest sample stored in the buffer. If you need to modify the most recently
+  stored sample after you have already called getSample(), this function is your friend. */
+  void setNewest(T x) { this->data[rightIndex] = x }
+
+  //void setOldest(T x) { this->data[wrap(leftIndex+1)] = x } // seems useless
 
   size_t getReadIndex()  const { return leftIndex; }
   size_t getWriteIndex() const { return rightIndex; }

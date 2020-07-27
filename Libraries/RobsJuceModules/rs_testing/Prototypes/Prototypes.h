@@ -1542,6 +1542,7 @@ public:
     small.resize(newMaxLength);
     large.resize(newMaxLength);
     buf.resize(newMaxLength);
+    keyBuf.setCapacity(newMaxLength);
     setLengthAndReadPosition(L, p);
   }
   // maybe try to optimize the memory usage - we actually just need one nodes array of length
@@ -1606,9 +1607,11 @@ public:
   /** Resets the filter into its initial state. */
   void reset()
   {
+    keyBuf.reset();
     for(int n = 0; n < L; n++) {
       dblHp.atIndex(n).value  = T(0);
-      dblHp.atIndex(n).bufIdx = n;  
+      dblHp.atIndex(n).bufIdx = n;
+      keyBuf.data[n] = dblHp.indexToKey(n);
       buf[n] = dblHp.indexToKey(n); }
     bufIdx = 0;
   }
@@ -1625,6 +1628,15 @@ protected:
     int i = dblHp.atKey(k).bufIdx; // buffer-index of oldest sample
     dblHp.replace(k, Node(x, i));  // reshuffles content of the double-heap and  buf
     bufIdx = (bufIdx+1) % L;       // updates the position in circular buffer of indices
+  }
+
+  void acceptNewInput2(T x)
+  {
+    T dummy = T(0);
+    int k = keyBuf.getSample(dummy);
+    Node n(x, keyBuf.getWriteIndex());
+    k = dblHp.replace(k, n);
+    keyBuf.setNewest(k);
   }
 
   /** Produces the current ouput sample by reading out the largest of the small values and the 
@@ -1700,13 +1712,17 @@ protected:
 
   std::vector<Node>  small, large; // storage arrays of the nodes
   rsDoubleHeap2<Node> dblHp;       // maintains large/small as double-heap
+
+  // obsolete soon:
   std::vector<int>   buf;          // circular buffer of heap keys -remove when keyBuf works
-
-  //rsRingBuffer<int>  keyBuf;        // for later use - replaces buf
-  //rsRingBuffer<T>*   sigBuf = nullptr;  // (possibly shared) buffer of delayed input samples
-
-
   int bufIdx = 0;  // current index into into the circular buffer - remove when keyBuf works
+
+  // new replacement of buf:
+  rsRingBuffer<int>  keyBuf;            // for later use - replaces buf
+  rsRingBuffer<T>*   sigBuf = nullptr;  // (possibly shared) buffer of delayed input samples
+
+
+
 
   int L = 2;       // total length of filter
   int p = 1;       // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
