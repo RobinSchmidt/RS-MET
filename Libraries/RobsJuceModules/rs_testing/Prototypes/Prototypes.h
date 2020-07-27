@@ -1609,6 +1609,18 @@ public:
   // maybe get rid of that at some point and just have it modulatable all the time...or maybe have
   // different modulation modes: 0: reset, 1: fillWithLastQuantile, etc...
 
+  /** Sets a pointer to a signal buffer that is driven by client code to facilitate artifact-free
+  modulation of the length. If you leave this unassigned, you may see artifacts when the length
+  of the filter is switched to a higher value, due to the fact that we don't know the older 
+  samples here and just have to make up some values to store in the heaps. When the true old 
+  samples are available via such a buffer, these artifacts can be avoided. As said, client code 
+  is supposed to feed/drive this buffer because this will also facilitate sharing of such buffers 
+  to create highpass and bandpass versions...  */
+  void setModulationBuffer(rsRingBuffer<T>* newBuffer)
+  {
+    sigBuf = newBuffer;
+  }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
