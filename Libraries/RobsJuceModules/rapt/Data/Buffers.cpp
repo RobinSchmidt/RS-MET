@@ -30,7 +30,13 @@ template<class T>
 void rsRingBuffer<T>::reset()
 {
   this->initBufferValues(0);
-  rightIndex = 0;
+
+  writeIndex = 0;
+  // maybe zero is not best because in getSample, we increment first which means that the first
+  // retrieved value after reset will be the value data[1]. it may be more convenient, when the
+  // first returned value is data[0]...although, client code should actually not care at all - if 
+  // it does, this points to a design flaw
+
   updateLeftIndex();
 }
 

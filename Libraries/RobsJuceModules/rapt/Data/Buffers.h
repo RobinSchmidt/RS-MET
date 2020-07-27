@@ -74,13 +74,13 @@ public:
 
   inline T getSample(T in)
   {
-    rightIndex = this->wrap(rightIndex+1); // increment before write/read to allow further operations
-    leftIndex  = this->wrap(leftIndex+1);  // after getSample (indices must be still valid)
+    writeIndex = this->wrap(writeIndex+1); // increment before write/read to allow further operations
+    readIndex  = this->wrap(readIndex+1);  // after getSample (indices must be still valid)
     // call advancePointers
 
 
-    this->data[rightIndex] = in;           // right index is write index
-    T out = this->data[leftIndex];         // left index is read index
+    this->data[writeIndex] = in;           // right index is write index
+    T out = this->data[readIndex];         // left index is read index
     return out;
   }
   // rename to pushRightPopLeft maybe make a subclass delayline that defines an alias function
@@ -89,8 +89,8 @@ public:
   /** Advances our read- and write pointers by the given number of positions. */
   inline void advancePointers(size_t amount = 1)
   {
-    rightIndex = this->wrap(rightIndex + amount);
-    leftIndex  = this->wrap(leftIndex  + amount);
+    writeIndex = this->wrap(writeIndex + amount);
+    readIndex  = this->wrap(readIndex  + amount);
   }
 
   /*
@@ -107,18 +107,18 @@ public:
 
   // Return samples from the buffer without updating anything
 
-  T getOldest() const { return this->data[wrap(leftIndex+1)]; }  // why +1?
-  T getNewest() const { return this->data[rightIndex];        }
+  T getOldest() const { return this->data[wrap(readIndex+1)]; }  // why +1?
+  T getNewest() const { return this->data[writeIndex];        }
 
 
   /** Sets/replaces the newest sample stored in the buffer. If you need to modify the most recently
   stored sample after you have already called getSample(), this function is your friend. */
-  void setNewest(T x) { this->data[rightIndex] = x; }
+  void setNewest(T x) { this->data[writeIndex] = x; }
 
   //void setOldest(T x) { this->data[wrap(leftIndex+1)] = x } // seems useless
 
-  size_t getReadIndex()  const { return leftIndex; }
-  size_t getWriteIndex() const { return rightIndex; }
+  size_t getReadIndex()  const { return readIndex; }
+  size_t getWriteIndex() const { return writeIndex; }
 
 
   size_t getIndexFromOldest(size_t i) const
@@ -127,7 +127,7 @@ public:
     //if(i > length)    i -= length;  // should never happen
     //if(i < leftIndex) i += getCapacity();  
 
-    return this->wrap(leftIndex + i + 1); // why do we need +1?
+    return this->wrap(readIndex + i + 1); // why do we need +1?
   }
   // needs test - maybe we have to do something similar as in getIndexFromNewest ..maybe 
   // if(i < leftIndex) i += getCapacity()  ?
@@ -140,13 +140,13 @@ public:
   i samples ago. */
   size_t getIndexFromNewest(size_t i) const
   {
-    if(i > rightIndex)
+    if(i > writeIndex)
       i += getCapacity();  
     // do this branchless: i += (i > rightIndex) * getCapacity();
     // is this even needed or will underflow in the subtraction below produce the correct result as
     // well? -> figure out and test. we do it to get negative numbers in the rightIndex-i operation
 
-    return this->wrap(rightIndex - i);
+    return this->wrap(writeIndex - i);
   }
   // maybe make protected
 
@@ -196,9 +196,9 @@ public:
   purposes - not efficient. */
   T getMaximum()
   {
-    size_t i = rightIndex;
+    size_t i = writeIndex;
     T ex = this->data[i];
-    while(i != leftIndex) {
+    while(i != readIndex) {
       i = this->wrap(i-1);
       if(this->data[i] > ex)  // or >= or maybe use a comparison function and rename function to
         ex = this->data[i];   // getOptimum/Extremum
@@ -211,16 +211,19 @@ public:
 protected:
 
   /** Updates the current left index according right index and length. */
-  void updateLeftIndex()  { leftIndex = this->wrap(rightIndex - length); }
+  void updateLeftIndex()  { readIndex = this->wrap(writeIndex - length); }
+  // rename to updateReadIndex
 
   /** Updates the current right index according left index and length. */
   //void updateRightIndex() { rightIndex = wrap(leftIndex + length); }
   // maybe uncomment if needed - it's not typically used
 
-  size_t rightIndex = 0, leftIndex = 0; // rename back to writeIndex, readIndex
+  size_t writeIndex = 0, readIndex = 0;
   size_t length = 0; // rename to capacity ..or use data.size() - nope it's the current length
   // maybe name them generally rightEnd, leftEnd or something ... rgt, lft. L,R - then we may
   // also make rsDoubleEndedQueue a subclass and inherit the data and wrap function
+
+  // maybe use w,r,L for writeIndex, readIndex, length
 
 
   //template<class U> friend class rsMovingQuantileFilter; // try to get rid

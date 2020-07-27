@@ -1633,7 +1633,6 @@ protected:
     dblHp.replace(k, Node(x, i));  // reshuffles content of the double-heap and  buf
     bufIdx = (bufIdx+1) % L;       // updates the position in circular buffer of indices
   }
-
   void acceptNewInput2(T x)
   {
     int k = keyBuf.getSample(0);        // retrieve heap-key of oldest sample, 0 is just a dummy
@@ -1641,6 +1640,8 @@ protected:
     k = dblHp.replace(k, n);
     keyBuf.setNewest(k);                // replace the zero-dummy by the actual new key
   }
+  // to switch between the old and new implementation (using std::vector and rsRingBuffer 
+  // respectively) just swap the names of acceptNewInput and acceptNewInput2
 
   /** Produces the current ouput sample by reading out the largest of the small values and the 
   smallest of the large values and forming a linear combination. Has been factored out from 
@@ -1706,7 +1707,8 @@ protected:
   void swapNodes(Node& a, Node& b)
   {
     rsSwap(a, b);
-    rsSwap(buf[a.bufIdx], buf[b.bufIdx]);
+    rsSwap(buf[a.bufIdx], buf[b.bufIdx]);                  // to make old code work
+    rsSwap(keyBuf.data[a.bufIdx], keyBuf.data[b.bufIdx]);  // to make new code work
   }
 
 

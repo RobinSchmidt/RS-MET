@@ -786,6 +786,7 @@ void rsQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPos
   else {
     L = newLength;
     p = newPosition;
+    keyBuf.setLength(L);
     dblHp.setData(&small[0], p, C, &large[0], L-p, C);
     reset(); }
 }
@@ -821,6 +822,9 @@ void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int n
   p = newPosition;
   int nS  = p;         // new number of small samples
   int nL  = L-p;       // new number of large samples
+
+  keyBuf.setLength(L); // or should we do this after the code below? does it matter? 
+                       // i don't think so.
 
   if(nS+nL == nSo+nLo)
   {
