@@ -381,12 +381,12 @@ bool testMovingQuantileModulation()
   rsQuantileFilterNaive<double> fltN(maxLength, maxLength);
   rsQuantileFilterCore<double>  fltH;      // H for heap-based implementation
   fltH.setMaxLength(maxLength);
-  //fltH.setModulatable(true);    // test will return false, if this is commented
-  fltH.useRingBuffer = true;
+  fltH.setModulatable(true);    // test will return false, if this is commented
+  //fltH.useRingBuffer = true;
 
   using Vec = std::vector<double>;
-  //Vec x = rsRandomIntVector(N, 0, 99);
-  Vec x = rsLinearRangeVector(N, 1, N);
+  Vec x = rsRandomIntVector(N, 0, 99);
+  //Vec x = rsLinearRangeVector(N, 1, N);
   //Vec x = rsLinearRangeVector(N, -1, -N);
   Vec y(N), z(N);
   int i = 0; // index of the settings that we choose next
@@ -416,7 +416,7 @@ bool testMovingQuantileModulation()
 
   r &= y == z;
 
-  //rsPlotVectors(y, z);  // uncomment to see the result
+  rsPlotVectors(y, z);  // uncomment to see the result
   return r;
 }
 

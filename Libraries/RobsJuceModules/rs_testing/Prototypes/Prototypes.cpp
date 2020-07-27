@@ -999,13 +999,13 @@ bool rsQuantileFilterCore<T>::isStateConsistent()
 {
   bool r = true;
 
-  int offset = (keyBuf.getReadIndex() + 1) % keyBuf.getCapacity();
+  size_t offset = (keyBuf.getReadIndex() + 1) % keyBuf.getCapacity();
 
   // Check that all nodes in the double-heap have the correct back-link to their index in the 
   // delay-buffer. This back-link is needed to update the delay-buffer when nodes in the heap are
   // swapped during floatUp/Down:
   for(size_t i = 0; i < L; i++)
-    r &= isBufferSlotConsistent((int)i + offset);
+    r &= isBufferSlotConsistent((int)(i + offset));
 
   // wrong - we need (i + sampleCount) % capacity or i + offset wher offset is readIndex in the 
   // ringbuffer

@@ -1641,14 +1641,16 @@ protected:
 
   void acceptNewInput(T x)
   {
-    if(useRingBuffer) acceptNewInputNew(x);
-    else              acceptNewInputOld(x);
+    if(useRingBuffer) 
+      acceptNewInputRngBuf(x);
+    else              
+      acceptNewInput2(x);
   }
 
   /** Accepts a new input sample and updates our internal buffers accordingly. This will have 
   (conceptually) the effect that the oldest input sample will be remvoved from the double-heap and 
   the new input will be inserted.  */
-  void acceptNewInputOld(T x)
+  void acceptNewInput1(T x)
   {
     rsAssert(isStateConsistent(), "inconsistent state");
     int k = buf[bufIdx];           // heap-key of oldest sample
@@ -1658,7 +1660,18 @@ protected:
     rsAssert(isStateConsistent(), "inconsistent state");
   }
 
-  void acceptNewInputNew(T x)
+  void acceptNewInput2(T x)
+  {
+    int C = (int)buf.capacity();
+    int k = buf[bufIdx]; 
+    int w = (bufIdx + L) % C;
+    buf[w] = k;
+    k = dblHp.replace(k, Node(x, w));
+    //buf[w] = k;
+    bufIdx = (bufIdx + 1) % C;
+  }
+
+  void acceptNewInputRngBuf(T x)
   {
     bool ok = isStateConsistent();
 
