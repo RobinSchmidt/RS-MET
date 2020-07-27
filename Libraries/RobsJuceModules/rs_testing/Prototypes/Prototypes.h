@@ -1569,6 +1569,10 @@ public:
     small.resize(newMaxLength);
     large.resize(newMaxLength);
     buf.resize(newMaxLength);
+
+    int C = getCapacity();
+    dblHp.setData(&small[0], 1, C, &large[0], 1, C); 
+
     setLengthAndReadPosition(L, p);
   }
   // maybe try to optimize the memory usage - we actually just need one nodes array of length

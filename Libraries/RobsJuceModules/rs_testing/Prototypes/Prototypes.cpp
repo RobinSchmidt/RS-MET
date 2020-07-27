@@ -813,9 +813,8 @@ void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int n
 {
   int C = getCapacity();
 
-
-
   // still experimental:
+  /*
   if(newLength > L)
   {
     // preliminary, until addOlderSample works:
@@ -825,6 +824,7 @@ void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int n
     reset();
     return;
   }
+  */
   int numSmall = newPosition;
   int numLarge = newLength - numSmall;
   while(L > newLength)
@@ -836,59 +836,7 @@ void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int n
   while(dblHp.getNumLargeValues() < numLarge)
     moveFirstSmallToLarge();
   p = dblHp.getNumSmallValues();
-  return;
 
-
-
-
-  int nSo = p;         // old number of small samples
-  int nLo = L-p;       // old number of large samples
-  L = newLength;
-  p = newPosition;
-  int nS  = p;         // new number of small samples
-  int nL  = L-p;       // new number of large samples
-
-  if(nS+nL == nSo+nLo)
-  {
-    // total length stays the same - we may need to re-distribute data from the min-heap to the
-    // max-heap or vice versa
-    int nSi = nSo;               // current number of small samples
-    int nLi = nLo;               // current number of large samples
-    if(nS > nSo) {               // i think, the if/else is redundant with the whiles 
-      while(nSi < nS) {          // number of small samples grows, redistribute from large to small
-        moveFirstLargeToSmall(); // move one sample from large heap to small heap
-        nSi++; nLi--; }}
-    else if(nS < nSo) {
-      while(nLi < nL)  {         // number of large samples grows, redistribute from small to large
-        moveFirstSmallToLarge(); // move one sample from small heap to large heap
-        nSi--; nLi++; }}
-    // else: nothing to do at all
-
-
-    //dblHp.setData(&small[0], p, C, &large[0], L-p, C);
-    // we should not need that, should we? yes - seems to make no difference
-
-  }
-  else if(nS+nL < nSo+nLo)
-  {
-    // total length shrinks - we must discard some of the old datapoints in addition to possibly
-    // redistribute data
-
-    // preliminary - copied from non-modulatable code:
-    dblHp.setData(&small[0], p, C, &large[0], L-p, C); 
-    reset();
-    int dummy = 0;
-  }
-  else
-  {
-    // total length grows - we must fill up missing data in addition to possibly redistribute 
-    // data
-
-    // preliminary - copied from non-modulatable code:
-    dblHp.setData(&small[0], p, C, &large[0], L-p, C); 
-    reset();
-    int dummy = 0;
-  }
 
   // In order to increase the length on the fly, we may need to insert some older samples which 
   // we do have stored anywhere here yet - to do so, we may have to use a circular buffer of old 
@@ -966,7 +914,7 @@ void rsQuantileFilterCore<T>::addOlderSample()
   Node n(x, bufIdx);
   int k = dblHp.getPreliminaryKey(n); 
   buf[bufIdx] = k;       // this may get changed during the actual insert
-  k = dblHp.insert(k);
+  k = dblHp.insert(n);
   L++;
 }
 // nope this doesnt work. we would need to write something into buf[bufIdx] but we don't know what.
