@@ -90,6 +90,7 @@ public:
     leftIndex  = this->wrap(leftIndex  + amount);
   }
 
+  /*
   inline void retractPointers(size_t amount = 1)
   {
     if(amount > rightIndex) rightIndex += getCapacity();
@@ -98,14 +99,16 @@ public:
     leftIndex  = this->wrap(leftIndex  - amount);
   }
   // needs test
+  */
 
 
   // Return samples from the buffer without updating anything
 
   inline T getOldest() const { return this->data[wrap(leftIndex+1)]; }  // why +1?
-
   inline T getNewest() const { return this->data[rightIndex];        }
 
+  size_t getReadIndex()  const { return leftIndex; }
+  size_t getWriteIndex() const { return rightIndex; }
 
 
   size_t getIndexFromOldest(size_t i) const

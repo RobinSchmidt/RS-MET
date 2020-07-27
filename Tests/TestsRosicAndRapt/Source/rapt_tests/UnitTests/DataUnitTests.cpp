@@ -472,7 +472,6 @@ bool ringBufferUnitTest()
   y = b.getSample( 9); r &= y ==  4; b.copyTo(&B[0], true ); r &= B == Vec({  9,  8,  7,  6,  5 });
   y = b.getSample(10); r &= y ==  5; b.copyTo(&B[0], true ); r &= B == Vec({ 10,  9,  8,  7,  6 });
   y = b.getSample(11); r &= y ==  6; b.copyTo(&B[0], true ); r &= B == Vec({ 11, 10,  9,  8,  7 });
-
   y = b.getSample(12); r &= y ==  7; b.copyTo(&B[0], true ); r &= B == Vec({ 12, 11, 10,  9,  8 });
                                      b.copyTo(&B[0], false); r &= B == Vec({  8,  9, 10, 11, 12 });
   y = b.getSample(13); r &= y ==  8; b.copyTo(&B[0], true ); r &= B == Vec({ 13, 12, 11, 10,  9 });

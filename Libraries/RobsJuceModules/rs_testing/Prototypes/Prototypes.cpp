@@ -781,7 +781,7 @@ void rsMovingQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int 
   rsAssert(newLength   >= 2, "If L < 2, we get access violations");
   rsAssert(newPosition >= 1, "If p < 1, we get access violations");
 
-  if( modulatable )
+  if( modulatable )  // maybe this should be a parameter rather than a member (defaulting to true)
     modulateLengthAndReadPosition(newLength, newPosition);
   else {
     L = newLength;
@@ -915,14 +915,23 @@ bool rsMovingQuantileFilterCore<T>::moveFirstSmallToLarge()
   return true;
 }
 
-/*
 template<class T>
 void rsMovingQuantileFilterCore<T>::discardOldestSample()
 {
-  int k = buf[bufIdx];           // heap-key of oldest sample
-  dblHp.remove(k);
+  //int k = buf[bufIdx];           // heap-key of oldest sample
+  //dblHp.remove(k);
 }
-*/
+
+template<class T>
+void rsMovingQuantileFilterCore<T>::addOlderSample()
+{
+   // use the most recent output as preliminary value - that should reduce the artifacts but won't
+   // eliminate them. what we really need is a (reference/pointer to) a buffer of actual delayed 
+   // signal values. it should be a pointer to allow sharing among instances, because we later want
+   // to build highpass and bandpass versions which need their own
+
+}
+
 
 /*
 template<class T>

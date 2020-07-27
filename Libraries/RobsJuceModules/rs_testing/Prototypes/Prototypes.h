@@ -1591,26 +1591,14 @@ public:
     // maybe use small.size() - we keep the vector sizes now fixed
   }
 
-
-
-
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
   /** Computes an output sample from a given input sample x. */
   T getSample(T x)
   {
-    // buffer update:
-    int k = buf[bufIdx];           // heap-key of oldest sample
-    int i = dblHp.atKey(k).bufIdx; // buffer-index of oldest sample
-    dblHp.replace(k, Node(x, i));  // reshuffles content of the double-heap and  buf
-    bufIdx = (bufIdx+1) % L;       // updates the position in circular buffer of indices
-
-    // sample readout:
-    T yS = dblHp.getLargestSmallValue().value;   // smaller value
-    T yL = dblHp.getSmallestLargeValue().value;  // larger value
-    T y  = (T(1)-w)*yS + w*yL;                   // linear interpolation
-    return y;
+    acceptNewInput(x);         // buffer update
+    return readOutSample();    // sample readout
   }
 
   /** Resets the filter into its initial state. */
@@ -1626,6 +1614,28 @@ public:
 
 protected:
 
+  /** Accepts a new input sample and updates our internal buffers accordingly. This will have 
+  (conceptually) the effect that the oldest input sample will be remvoved from the double-heap and 
+  the new input will be inserted.  */
+  void acceptNewInput(T x)
+  {
+    int k = buf[bufIdx];           // heap-key of oldest sample
+    int i = dblHp.atKey(k).bufIdx; // buffer-index of oldest sample
+    dblHp.replace(k, Node(x, i));  // reshuffles content of the double-heap and  buf
+    bufIdx = (bufIdx+1) % L;       // updates the position in circular buffer of indices
+  }
+
+  /** Produces the current ouput sample by reading out the largest of the small values and the 
+  smallest of the large values and forming a linear combination. Has been factored out from 
+  getSample because it's also needed for modulating the length when no delay-buffer of old samples 
+  is available (i.e. when sigBuffer == nullptr because the user has not assigned it). */
+  T readOutSample()
+  {
+    T yS = dblHp.getLargestSmallValue().value;   // smaller value
+    T yL = dblHp.getSmallestLargeValue().value;  // larger value
+    T y  = (T(1)-w)*yS + w*yL;                   // linear interpolation
+    return y;
+  }
 
   /** Under construction... */
   void modulateLengthAndReadPosition(int newLength, int newPosition);
@@ -1641,11 +1651,11 @@ protected:
 
   /** Discards the oldest sample. This will shrink one of the two heaps, wherever the oldest sample
   happens to be. This will also shrink the circular buffer by one. */
-  //void discardOldestSample();
+  void discardOldestSample();
 
   /** Adds a (dummy) sample to one of the heaps as new oldest sample. This will also grow the 
   circular buffer by one. */
-  //void addOlderSample();
+  void addOlderSample();
   // oh damn! shrinking and growing the circular buffer is O(N) with a simple array. We need a real
   // circular buffer for that
 
@@ -1688,14 +1698,19 @@ protected:
 
   std::vector<Node>  small, large; // storage arrays of the nodes
   rsDoubleHeap2<Node> dblHp;       // maintains large/small as double-heap
-  std::vector<int>   buf;          // circular buffer of heap keys
+  std::vector<int>   buf;          // circular buffer of heap keys -remove when keyBuf works
 
-  int bufIdx = 0;  // current index into into the circular buffer
+  //rsRingBuffer<int>  keyBuf;        // for later use - replaces buf
+  //rsRingBuffer<T>*   sigBuf = nullptr;  // (possibly shared) buffer of delayed input samples
+
+
+  int bufIdx = 0;  // current index into into the circular buffer - remove when keyBuf works
+
   int L = 2;       // total length of filter
   int p = 1;       // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
   T   w = T(1);    // weight for smallest large value in the linear interpolation
 
-  bool modulatable = false;
+  bool modulatable = false;  // set it to true by default - or maybe remove the switch entirely
 
   // some scaffolding code
   //int getNodeKey(Node node);

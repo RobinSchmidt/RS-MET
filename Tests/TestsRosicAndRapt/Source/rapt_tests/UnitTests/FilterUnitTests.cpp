@@ -406,7 +406,7 @@ bool testMovingQuantileModulation()
 
   r &= y == z;
 
-  rsPlotVectors(y, z);  // uncomment to see the result
+  //rsPlotVectors(y, z);  // uncomment to see the result
   return r;
 }
 
