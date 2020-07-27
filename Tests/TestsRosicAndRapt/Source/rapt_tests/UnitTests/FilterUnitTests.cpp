@@ -333,7 +333,7 @@ bool testMovingQuantileModulation()
 {
   bool r = true;
 
-  int maxLength = 12;
+  int maxLength = 8;
   int N = 100;           // number of samples
 
   // create vector of settings, each with a timestamp:
@@ -358,8 +358,9 @@ bool testMovingQuantileModulation()
   //std::vector<Settings> settings ={ {0, 2, 4}, {20, 3, 3}, {40, 3, 1} /*, {60, 3, 1} */ };
   //std::vector<Settings> settings ={ {0, 1, 2}, {20, 2, 1} };
   //std::vector<Settings> settings ={ {0, 5, 7}, {40, 6, 6} };
-  std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5}, {60, 5, 7} };
+  //std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5}, {60, 5, 7} };
   //std::vector<Settings> settings ={ {0, 4, 5}, {9, 3, 2} };
+  std::vector<Settings> settings ={ {0, 3, 2} };
 
 
 
@@ -367,7 +368,7 @@ bool testMovingQuantileModulation()
   rsQuantileFilterNaive<double> fltN(maxLength, maxLength);
   rsQuantileFilterCore<double>  fltH;      // H for heap-based implementation
   fltH.setMaxLength(maxLength);
-  fltH.setModulatable(true);
+  fltH.setModulatable(true);    // test will return false, if this is commented
 
   using Vec = std::vector<double>;
   Vec x = rsRandomIntVector(N, 0, 99);
@@ -406,7 +407,7 @@ bool testMovingQuantileModulation()
 
   r &= y == z;
 
-  //rsPlotVectors(y, z);  // uncomment to see the result
+  rsPlotVectors(y, z);  // uncomment to see the result
   return r;
 }
 

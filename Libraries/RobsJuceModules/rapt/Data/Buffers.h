@@ -113,7 +113,7 @@ public:
 
   /** Sets/replaces the newest sample stored in the buffer. If you need to modify the most recently
   stored sample after you have already called getSample(), this function is your friend. */
-  void setNewest(T x) { this->data[rightIndex] = x }
+  void setNewest(T x) { this->data[rightIndex] = x; }
 
   //void setOldest(T x) { this->data[wrap(leftIndex+1)] = x } // seems useless
 

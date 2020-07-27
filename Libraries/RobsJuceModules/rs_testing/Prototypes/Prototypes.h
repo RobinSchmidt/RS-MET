@@ -1542,7 +1542,11 @@ public:
     small.resize(newMaxLength);
     large.resize(newMaxLength);
     buf.resize(newMaxLength);
+
     keyBuf.setCapacity(newMaxLength);
+    keyBuf.setLength(newMaxLength);   // maybe this should (optionally) automatically increase the
+    // capacity, if needed, so we can get rid of calling setCapacity explicitly
+
     setLengthAndReadPosition(L, p);
   }
   // maybe try to optimize the memory usage - we actually just need one nodes array of length
@@ -1632,11 +1636,10 @@ protected:
 
   void acceptNewInput2(T x)
   {
-    T dummy = T(0);
-    int k = keyBuf.getSample(dummy);
-    Node n(x, keyBuf.getWriteIndex());
+    int k = keyBuf.getSample(0);        // retrieve heap-key of oldest sample, 0 is just a dummy
+    Node n(x, (int)keyBuf.getWriteIndex());
     k = dblHp.replace(k, n);
-    keyBuf.setNewest(k);
+    keyBuf.setNewest(k);                // replace the zero-dummy by the actual new key
   }
 
   /** Produces the current ouput sample by reading out the largest of the small values and the 
@@ -1687,7 +1690,7 @@ protected:
   struct Node
   {
     T value = T(0);
-    int bufIdx = 0;
+    int bufIdx = 0;   // maybe use size_t for better compatibility with rsRingBuffer
 
     Node(T v = T(0), int i = 0) { value = v; bufIdx = i; }
 
