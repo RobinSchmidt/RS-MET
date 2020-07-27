@@ -786,7 +786,6 @@ void rsQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPos
   else {
     L = newLength;
     p = newPosition;
-    keyBuf.setLength(L);
     dblHp.setData(&small[0], p, C, &large[0], L-p, C);
     reset(); }
 }
@@ -822,9 +821,6 @@ void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int n
   p = newPosition;
   int nS  = p;         // new number of small samples
   int nL  = L-p;       // new number of large samples
-
-  keyBuf.setLength(L); // or should we do this after the code below? does it matter? 
-                       // i don't think so.
 
   if(nS+nL == nSo+nLo)
   {
@@ -901,7 +897,6 @@ bool rsQuantileFilterCore<T>::moveFirstLargeToSmall()
   int k = dblHp.getNumSmallValues();        // the new key for the moved node
   n  = dblHp.large.extractFirst();          // shuffles large heap and buf
   buf[i] = k;                               // set one key value in buf
-  keyBuf.data[i] = k;
   dblHp.small.insert(n);                    // shuffles small heap and buf
   return true;
 }
@@ -916,7 +911,6 @@ bool rsQuantileFilterCore<T>::moveFirstSmallToLarge()
   int k = dblHp.getNumLargeValues() | firstBitOnly; // set the 1st bit to indicate L-key
   n  = dblHp.small.extractFirst();
   buf[i] = k;
-  keyBuf.data[i] = k;
   dblHp.large.insert(n);
   return true;
 }
@@ -999,27 +993,20 @@ bool rsQuantileFilterCore<T>::isStateConsistent()
 {
   bool r = true;
 
-  size_t offset = (keyBuf.getReadIndex() + 1) % keyBuf.getCapacity();
+  // for converting the loop variable to a buffer index:
+  auto convert = [=](int i)->int{ return (i + bufIdx) % (int)buf.capacity(); };
 
   // Check that all nodes in the double-heap have the correct back-link to their index in the 
   // delay-buffer. This back-link is needed to update the delay-buffer when nodes in the heap are
   // swapped during floatUp/Down:
-  for(size_t i = 0; i < L; i++)
-    r &= isBufferSlotConsistent((int)(i + offset));
-
-  // wrong - we need (i + sampleCount) % capacity or i + offset wher offset is readIndex in the 
-  // ringbuffer
-
+  for(int i = 0; i < L; i++)
+    r &= isBufferSlotConsistent(convert(i));
 
   // Check that each key occurs in the buf exactly once:
-  if(!useRingBuffer)
-  {
-    std::vector<int> tmp(L);
-    for(size_t i = 0; i < L; i++)
-      tmp[i] = dblHp.keyToIndex(buf[i]); // use keyBuf.data[i]
-    r &= isIndexPermutation(&tmp[0], (int)tmp.size());
-  }
-  // else ....
+  std::vector<int> tmp(L);
+  for(int i = 0; i < L; i++)
+    tmp[i] = dblHp.keyToIndex(buf[convert(i)]); 
+  r &= isIndexPermutation(&tmp[0], (int)tmp.size());
 
   // todo: 
   // -check that the sum of the heap sizes matches the buffer size
@@ -1045,9 +1032,7 @@ bool rsQuantileFilterCore<T>::isNodeConsistent(const rsQuantileFilterCore<T>::No
 template<class T>
 bool rsQuantileFilterCore<T>::isBufferSlotConsistent(int i)
 {
-  int k;         // key of node in i-th buffer slot, use keyBuf.data[i]
-  if(useRingBuffer) k = keyBuf.data[i]; 
-  else              k = buf[i];
+  int k = buf[i];
   Node n = dblHp.atKey(k); // retrieve the node
   bool result = n.bufIdx == i;
   return result;

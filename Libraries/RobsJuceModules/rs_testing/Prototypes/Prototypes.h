@@ -1542,11 +1542,6 @@ public:
     small.resize(newMaxLength);
     large.resize(newMaxLength);
     buf.resize(newMaxLength);
-
-    keyBuf.setCapacity(newMaxLength);
-    keyBuf.setLength(newMaxLength);   // maybe this should (optionally) automatically increase the
-    // capacity, if needed, so we can get rid of calling setCapacity explicitly
-
     setLengthAndReadPosition(L, p);
   }
   // maybe try to optimize the memory usage - we actually just need one nodes array of length
@@ -1611,40 +1606,20 @@ public:
   /** Resets the filter into its initial state. */
   void reset()
   {
-    keyBuf.reset();
-    keyBuf.setNextReadIndex(0);
     for(int n = 0; n < L; n++) {
       dblHp.atIndex(n).value  = T(0);
       int k = dblHp.indexToKey(n);
-
-      if(useRingBuffer)
-      {
-        dblHp.atIndex(n).bufIdx = n;
-        keyBuf.setNextReturnSample(k, n);
-        keyBuf.data[n] = k;
-        int dummy = 0;
-      }
-      else
-      {
-        dblHp.atIndex(n).bufIdx = n;
-        buf[n] = k;
-      }
-
-    }
+      dblHp.atIndex(n).bufIdx = n;
+      buf[n] = k; }
     bufIdx = 0;
   }
 
 
-  bool useRingBuffer = false; // for a simple compile-time switch during development
-
 protected:
 
   void acceptNewInput(T x)
-  {
-    if(useRingBuffer) 
-      acceptNewInputRngBuf(x);
-    else              
-      acceptNewInput2(x);
+  {    
+    acceptNewInput2(x);
   }
 
   /** Accepts a new input sample and updates our internal buffers accordingly. This will have 
@@ -1662,45 +1637,15 @@ protected:
 
   void acceptNewInput2(T x)
   {
+    rsAssert(isStateConsistent(), "inconsistent state");
     int C = (int)buf.capacity();
     int k = buf[bufIdx]; 
     int w = (bufIdx + L) % C;
     buf[w] = k;
     k = dblHp.replace(k, Node(x, w));
-    //buf[w] = k;
     bufIdx = (bufIdx + 1) % C;
+    rsAssert(isStateConsistent(), "inconsistent state");
   }
-
-  void acceptNewInputRngBuf(T x)
-  {
-    bool ok = isStateConsistent();
-
-    //rsAssert(isStateConsistent(), "inconsistent state");
-    int k = keyBuf.getSample(0);    // retrieve heap-key of oldest sample, 0 is just a dummy
-    int i = (int) keyBuf.getWriteIndex();
-    Node n(x, i);
-    k = dblHp.replace(k, n);
-    keyBuf.setNewest(k);
-    ok = isStateConsistent();
-    //rsAssert(isStateConsistent(), "inconsistent state");
-
-
-    int dummy = 0;
-  }
-
-  //void acceptNewInputNew(T x)
-  //{
-  //  rsAssert(isStateConsistent(), "inconsistent state");
-  //  int k = keyBuf.getSample(0);        // retrieve heap-key of oldest sample, 0 is just a dummy
-  //  int i = (int) keyBuf.getWriteIndex();
-  //  Node n(x, i);
-  //  k = dblHp.replace(k, n);
-  //  rsAssert(isStateConsistent(), "inconsistent state");
-  //  keyBuf.setNewest(k);                // replace the zero-dummy by the actual new key
-  //  rsAssert(isStateConsistent(), "inconsistent state");
-  //}
-  // to switch between the old and new implementation (using std::vector and rsRingBuffer 
-  // respectively) just swap the names of acceptNewInput and acceptNewInput2
 
   /** Produces the current ouput sample by reading out the largest of the small values and the 
   smallest of the large values and forming a linear combination. Has been factored out from 
@@ -1766,8 +1711,7 @@ protected:
   void swapNodes(Node& a, Node& b)
   {
     rsSwap(a, b);
-    rsSwap(buf[a.bufIdx], buf[b.bufIdx]);                  // to make old code work
-    rsSwap(keyBuf.data[a.bufIdx], keyBuf.data[b.bufIdx]);  // to make new code work
+    rsSwap(buf[a.bufIdx], buf[b.bufIdx]);
   }
 
 
@@ -1781,11 +1725,7 @@ protected:
   std::vector<int>   buf;          // circular buffer of heap keys -remove when keyBuf works
   int bufIdx = 0;  // current index into into the circular buffer - remove when keyBuf works
 
-  // new replacement of buf:
-  rsRingBuffer<int>  keyBuf;            // for later use - replaces buf
   rsRingBuffer<T>*   sigBuf = nullptr;  // (possibly shared) buffer of delayed input samples
-
-
 
 
   int L = 2;       // total length of filter

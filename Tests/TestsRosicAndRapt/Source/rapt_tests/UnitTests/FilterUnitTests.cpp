@@ -376,7 +376,7 @@ bool testMovingQuantileModulation()
   std::vector<Settings> settings ={ {0, 3, 2} };
 
 
-
+  //int tmp = -1 % 8;
 
   rsQuantileFilterNaive<double> fltN(maxLength, maxLength);
   rsQuantileFilterCore<double>  fltH;      // H for heap-based implementation
