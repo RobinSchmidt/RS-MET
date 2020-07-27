@@ -1308,7 +1308,7 @@ public:
       k = small.replace(k, newValue);
 
     // The potential swap:
-    if(small.less(large[0], small[0]))  
+    if(small.less(large[0], small[0]))
     {
       small.swap(small[0], large[0]);
       int ks = small.floatDown(0);
@@ -1322,6 +1322,16 @@ public:
 
     return k;
   }
+
+  void remove(int key)
+  {
+    rsAssert(isKeyValid(key), "Key out of range");
+    if(isKeyInLargeHeap(key))
+      large.remove(toLargeHeapIndex(key));
+    else
+      small.remove(key);
+  }
+
 
   T& atKey(int k) 
   { 
@@ -1640,10 +1650,10 @@ protected:
     rsAssert(isStateConsistent(), "inconsistent state");
     int C = (int)buf.capacity();
     int k = buf[bufIdx]; 
-    int w = (bufIdx + L) % C;
+    int w = (bufIdx + L) % C; // use wrap 
     buf[w] = k;
     k = dblHp.replace(k, Node(x, w));
-    bufIdx = (bufIdx + 1) % C;
+    bufIdx = (bufIdx + 1) % C;     // use wrap 
     rsAssert(isStateConsistent(), "inconsistent state");
   }
 
@@ -1686,6 +1696,15 @@ protected:
   // that the new element is too large or small, we may have to move the heap values between the 
   // heaps
 
+  /** Conversion froma coneceptual buffer index in the range 0..L-1 to the actual index in the 
+  range 0..buf.size()-1 */
+  //int convertBufIndex(int indexFromOldest)
+  //{
+  //  return (indexFromOldest + bufIdx) % (int)buf.size();
+  //}
+
+  /** Wraparound for the bufIdx */
+  int wrap(int i) { return i % (int)buf.capacity();  }
 
 
 

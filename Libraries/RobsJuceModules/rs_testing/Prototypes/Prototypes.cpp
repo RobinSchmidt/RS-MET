@@ -813,7 +813,33 @@ void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int n
 {
   int C = getCapacity();
 
-  //rsError("not yet implemented");
+
+
+  // still experimental:
+  if(newLength > L)
+  {
+    // preliminary, until addOlderSample works:
+    L = newLength;
+    p = newPosition;
+    dblHp.setData(&small[0], p, C, &large[0], L-p, C); 
+    reset();
+    return;
+  }
+  int numSmall = newPosition;
+  int numLarge = newLength - numSmall;
+  while(L > newLength)
+    discardOldestSample();
+  while(L < newLength)
+    addOlderSample();
+  while(dblHp.getNumSmallValues() < numSmall)
+    moveFirstLargeToSmall();
+  while(dblHp.getNumLargeValues() < numLarge)
+    moveFirstSmallToLarge();
+  p = dblHp.getNumSmallValues();
+  return;
+
+
+
 
   int nSo = p;         // old number of small samples
   int nLo = L-p;       // old number of large samples
@@ -918,8 +944,11 @@ bool rsQuantileFilterCore<T>::moveFirstSmallToLarge()
 template<class T>
 void rsQuantileFilterCore<T>::discardOldestSample()
 {
-  //int k = buf[bufIdx];           // heap-key of oldest sample
-  //dblHp.remove(k);
+  rsAssert(L > 2); if(L <= 2) return;
+  int k = buf[bufIdx];
+  dblHp.remove(k);
+  bufIdx = wrap(bufIdx+1);  // we need to do step forward
+  L--;
 }
 
 template<class T>
@@ -929,7 +958,6 @@ void rsQuantileFilterCore<T>::addOlderSample()
    // eliminate them. what we really need is a (reference/pointer to) a buffer of actual delayed 
    // signal values. it should be a pointer to allow sharing among instances, because we later want
    // to build highpass and bandpass versions which need their own
-
 }
 
 
