@@ -1592,10 +1592,7 @@ public:
   void setReadPosition(int newPosition) { setLengthAndReadPosition(L, newPosition); }
 
   /** Sets length and read-position at once. */
-  void setLengthAndReadPosition(int newLength, int newPosition);
-  //{ L = newLength; p = newPosition; updateBuffers(); }
-  // maybe we should implement this in the cpp file and do all the business directly instead of
-  // calling updateBuffers
+  void setLengthAndReadPosition(int newLength, int newPosition/*, bool hard = false*/);
 
   /** When a higher level class wants to implement non-integer readout positions, we need to do a 
   linear interpolation between the values at sorted-array positions to the left and to the right of 
@@ -1620,7 +1617,8 @@ public:
 
   int getCapacity() const
   {
-    return (int) small.capacity(); // large.capacity() == buf.capacity();
+    return (int) small.size(); // large.size() == buf.size();
+    //return (int) small.capacity(); // large.capacity() == buf.capacity();
     // maybe use small.size() - we keep the vector sizes now fixed
   }
 

@@ -782,6 +782,7 @@ void rsQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPos
   rsAssert(newPosition >= 1, "If p < 1, we get access violations");
 
   if( modulatable )  // maybe this should be a parameter rather than a member (defaulting to true)
+                     // or maybe call it resetFilter and default to false
     modulateLengthAndReadPosition(newLength, newPosition);
   else {
     L = newLength;
@@ -790,75 +791,16 @@ void rsQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPos
     reset(); }
 }
 
-
-/*
 template<class T>
 void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
 {
-  while(L > newLength) {
-    discardOldestSample();
-    L--; }
-
-  //// todo:
-  //while(L < newLength) {
-  //  addOlderSample(0.0); // instead of 0.0, we may keep a circular buffer of older samples
-  //  L++;    }            // around to insert actually correct values
-}
-*/
-
-
-
-template<class T>
-void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
-{
-  int C = getCapacity();
-
-  // still experimental:
-  /*
-  if(newLength > L)
-  {
-    // preliminary, until addOlderSample works:
-    L = newLength;
-    p = newPosition;
-    dblHp.setData(&small[0], p, C, &large[0], L-p, C); 
-    reset();
-    return;
-  }
-  */
   int numSmall = newPosition;
   int numLarge = newLength - numSmall;
-  while(L > newLength)
-    discardOldestSample();
-  while(L < newLength)
-    addOlderSample();
-  while(dblHp.getNumSmallValues() < numSmall)
-    moveFirstLargeToSmall();
-  while(dblHp.getNumLargeValues() < numLarge)
-    moveFirstSmallToLarge();
+  while(L > newLength) discardOldestSample();
+  while(L < newLength) addOlderSample();
+  while(dblHp.getNumSmallValues() < numSmall) moveFirstLargeToSmall();
+  while(dblHp.getNumLargeValues() < numLarge) moveFirstSmallToLarge();
   p = dblHp.getNumSmallValues();
-
-
-  // In order to increase the length on the fly, we may need to insert some older samples which 
-  // we do have stored anywhere here yet - to do so, we may have to use a circular buffer of old 
-  // input values that has a length equal to C...maybe that should be done in a subclass - this 
-  // buffer could at the same time by used to implement a highpass version - or maybe we store 
-  // here a pointer to an rsRingBuffer which is null by default and if it's non-null, we use it 
-  // here to fill up the missing past samples and if it's null, we just fill up with zeros or 
-  // with the mean of the currently stored old values or maybe use the previous output sample
-
-  // We may need to distinguish between a couple of cases:
-  // case 1: length does not change - we need to only redistribute values between the heaps
-  //  subcase 1.1: quantile decreases: redistribute from small to large
-  //  subcase 1.2: quantile increases: redistribute from large to small
-  // case 2: length decreases: we must discard some values (and possibly redistribute)
-  // case 3: length increases: we must fill up the heaps (and possibly redistribute), ideally we
-  //   should fill up with actual older signal values (to have them available, we may need and 
-  //   additional ringbuffer to just store past values), if they are not available, we could use
-  //   zeros, of the most recent value or the current quantile - maybe implement variations
-
-  // Can the handling be unified? Or maybe we can reduce it to two cases for each of the two 
-  // sub-heaps, i.e. nS grows or shrinks, nL grows or shrinks
-
 }
 
 template<class T>
@@ -908,6 +850,8 @@ void rsQuantileFilterCore<T>::addOlderSample()
   // to build highpass and bandpass versions which need their own
 
   T x = readOutSample();  // somewhat ad-hoc, we need some value
+  if(sigBuf)
+    x = sigBuf->fromNewest(L);  // or L+1? needs test, sigBuf must be driven by client code
   bufIdx--;               // we need to go a step backward
   if(bufIdx < 0)
     bufIdx = (int)buf.size() - 1;  // wrap around
@@ -917,10 +861,13 @@ void rsQuantileFilterCore<T>::addOlderSample()
   k = dblHp.insert(n);
   L++;
 }
-// nope this doesnt work. we would need to write something into buf[bufIdx] but we don't know what.
-// what we really have to do is tofigure out here, if it belongs into the small or large heap, 
-// place the new  Node at the end (it gets the key one after the current last), write this key 
-// into buf[bufIdx] and then float it up
+// In order to increase the length on the fly, we may need to insert some older samples which 
+// we do have stored anywhere here yet - to do so, we may have to use a circular buffer of old 
+// input values that has a length equal to C...maybe that should be done in a subclass - this 
+// buffer could at the same time by used to implement a highpass version - or maybe we store 
+// here a pointer to an rsRingBuffer which is null by default and if it's non-null, we use it 
+// here to fill up the missing past samples and if it's null, we just fill up with zeros or 
+// with the mean of the currently stored old values or maybe use the previous output sample
 
 
 
@@ -975,6 +922,7 @@ void rsQuantileFilterCore<T>::makeBufferConsistent()
     keyBuf.data[bi] = k;
   }
 }
+// not needed anymore
 
 // maybe hae a similar function that establishes consistency by modifying the stored bufIdx fields
 // in the nodes in the dblHp

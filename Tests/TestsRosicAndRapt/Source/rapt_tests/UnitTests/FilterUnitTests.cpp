@@ -356,8 +356,8 @@ bool testMovingQuantileModulation()
     int nS;
     int nL;
   };
-  std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5}, {80, 5, 7}, {120, 6, 4}, {160, 7, 5} };
-  //std::vector<Settings> settings ={ {0, 7, 5}, {40, 5, 7}, {80, 7, 5}, {120, 7, 7}, {160, 5, 5} };
+  //std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5}, {80, 5, 7}, {120, 6, 4}, {160, 7, 5} };
+  std::vector<Settings> settings ={ {0, 3, 2}, {40, 5, 7}, {80, 1, 2}, {120, 7, 5}, {160, 5, 3} };
   //std::vector<Settings> settings ={ {0, 5, 7}, {50, 7, 5}, {150, 5, 7} };
   //std::vector<Settings> settings ={ {0, 5, 7}, {50, 6, 6}, {150, 5, 7} };
   //std::vector<Settings> settings ={ {0, 3, 1}, {20, 2, 2}, {40, 1, 3}, {60, 3, 1} };
@@ -374,6 +374,10 @@ bool testMovingQuantileModulation()
   //std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5}, {60, 5, 7} };
   //std::vector<Settings> settings ={ {0, 4, 5}, {9, 3, 2} };
   //std::vector<Settings> settings ={ {0, 3, 2} };
+
+  // when the settings contain jumps where the total length increases, the test may still fail due
+  // to the (expected) artifacts. we need a circluar buffer to store actual past signal values to 
+  // fix this
 
 
   //int tmp = -1 % 8;
