@@ -13,15 +13,8 @@
 // add binary search functions (there's an implementation elsewhere in the library - where? - 
 // there's one in MathExperiments.cpp but that's outside the library
 
-
 // maybe implement https://en.wikipedia.org/wiki/Smoothsort see also 
 // http://www.cs.utexas.edu/users/EWD/ewd07xx/EWD796a.PDF
-
-/** Default less-than comparison function used in sorting. It's based on the less-than operator of 
-type T and returns true if left < right, false otherwise. */
-template <class T>
-bool defaultLess(const T& left, const T& right);
-// move to basics, rename to rsLess
 
 /** Re-orders the elements in the array such that they fullfill the max-heap property. A max-heap
 is a binary tree which is completely filled on all levels except possibly the lowest which is
@@ -55,7 +48,7 @@ O(n*log(n)).
 Reference: Introduction to Algorithms, 2nd Ed, p. 136 */
 template <class T>
 void rsHeapSort(T *buffer, int length, 
-  bool (*lessThen)(const T& left, const T& right) = defaultLess);
+  bool (*lessThen)(const T& left, const T& right) = rsLess);
 // maybe rename parameter "lessThan" to the more general "comesBefore"
 // todo: try to change the recursive calls (to maxHeapify) into iterations, avoiding usage of 
 // O(log(N)) stack space

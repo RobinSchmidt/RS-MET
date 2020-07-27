@@ -125,7 +125,8 @@ T rsAbsSquared(const T& x)
 */
 
 
-
+template<class T> bool rsGreater(const T& a, const T& b) { return a > b; }
+template<class T> bool rsLess(const T& a, const T& b)    { return a < b; }
 
 /** Returns true, iff "left" has greater absolute value than "right" */
 template <class T>

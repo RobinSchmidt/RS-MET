@@ -1,7 +1,7 @@
 #pragma once
 
 template<class T>
-class rsBuffer
+class rsBuffer    // rename to rsRingBuffer
 {
 
 public:
@@ -39,7 +39,7 @@ protected:
 //=================================================================================================
 
 template<class T>
-class rsRingBuffer : public rsBuffer<T>
+class rsRingBuffer : public rsBuffer<T>  // rename to rsDelayBuffer
 {
 
 public:
@@ -229,12 +229,6 @@ protected:
 
 //=================================================================================================
 
-template<class T>
-bool rsGreater(const T& a, const T& b);
-
-template<class T>
-bool rsLess(const T& a, const T& b);  // merge with function in RAPT...SortAndSearch
-
 /** Implements the double-ended queue data structure. This implementation provides a static, finite
 capacity that has to be passed at construction time. Due to implementation details, the actual
 capacity is always a power of two minus one, so when you pass an arbitrary number to the
@@ -253,8 +247,8 @@ public:
 
   /** Constructor. Allocates enough memory for an internal buffer to hold the "capacity" number of
   queued values. The memory allocated for the buffer will be the smallest power of two that is
-  greater or equal to the desired capacity plus 2 (two additional and unusable index values are
-  required to make the index arithmetic work right). */
+  greater or equal to the desired capacity plus 1 (an additional index value is required to make 
+  the index arithmetic work right). */
   rsDoubleEndedQueue(size_t capacity) : rsBuffer<T>(capacity+1) {}
 
   //-----------------------------------------------------------------------------------------------
@@ -305,7 +299,8 @@ public:
     RAPT::rsAssert(!isEmpty(), "Trying to read from empty deque");
     return this->data[this->wrap(tail+1)];
   }
-  // or maybe readFirst/Last Front/Back or peekFront/peekBack
+  // or maybe readFirst/Last Front/Back or peekFront/peekBack, maybe also provide 
+  // writeFront/writeBack
 
   /** Clears the queue and optionally resets the data in the underlying buffer to all zeros. The
   clearing of the queue itself just resets some pointers/indices, turning the data into
@@ -323,54 +318,28 @@ public:
   /** \name Inquiry */
 
   /** Returns the number of values that are currently in the queue. */
-  inline size_t getLength() const 
-  { 
-    //size_t L = wrap(head - tail - 1);   // for debug
-    //rsAssert(L <= getMaxLength());
-
-    //rsAssert(head != tail);
-    // the length formula works only for head !=
-
-    // this should never happen, the leng
-
-    return this->wrap(head - tail - 1); 
-  }
+  inline size_t getLength() const { return this->wrap(head - tail - 1); }
 
   /** Returns the maximum allowed length for the queue. Due to the way, the head- and tail pointers
   operate, the usable length is 2 less than the size of the underlying data buffer. */
   inline size_t getMaxLength() const { return this->data.size()-1; } //
-  //inline size_t getMaxLength() const { return this->data.size()-2; } //
-  // hmm..i think, we can actually use size()-1 memory locations
 
   /** Returns true if the queue is empty. */
   inline bool isEmpty() const { return getLength() == 0; }
 
   /** Returns true, if the queue is full. */
   inline bool isFull() const { return getLength() >= getMaxLength(); }
-  //inline bool isFull() const { return getLength() > getMaxLength(); }
-  // shouldn't that be >= ? ...somehow it seems, it can actually take one more entry ...but only
-  // under certain conditions? more tests needed....
-  // it seems >= is the right one, but if we use it, we trigger an assert in movingMaximumUnitTest
-  // although the test actually passes
 
 
 protected:
 
-  size_t head = 1, tail = 0; // check out correct terminology in the literature
-  // The head-pointer is always one position to the right of rightmost value and the tail pointer
-  // is always one position to the left of the leftmost value (both with wraparound). This is
-  // required in order to compute the length of the queue from the head/tail indices. Placing them
-  // directly ON the leftmost/rightmost values would not allow to distiguish between an empty
-  // and one-element queue (in both cases, we would have head == tail). So the actual queued values
-  // are at indices i with: tail < i < head, not: tail <= i <= head and when head = tail + 1, the
-  // queue is empty because no index i fits in between tail and head
+  size_t head = 1, tail = 0; // a.k.a front/back, first/last
+  // the actual data is stored at data[wrap(head-1)] and data[wrap(tail+1)]
+
 };
 
 /*
 ToDo:
--allow to dynamically resize the capacity at runtime - but such resize operations should be an
- absolute exception in realtime code (only a last resort - they actually should be considered user
- errors)
 -maybe provide push-functions that take a vector argument and pop-functions that pop a range of
  values at once
 -maybe provide some sort of random access functions:
@@ -379,6 +348,8 @@ ToDo:
 -maybe binary index search functions (at which index, counted from front (or back) does the value
  in the que get greater than some value
  size_t searchFromFront...this may become relevant for optimizing the moving maximum filter
+-maybe factor out an rsDoubleEndedQueueView that just stores a pointer to an array somewhere
+ ..but may that's not so useful after all
 */
 
 // maybe make convenience subclasses rsQueue and rsStack - both datastructures have different

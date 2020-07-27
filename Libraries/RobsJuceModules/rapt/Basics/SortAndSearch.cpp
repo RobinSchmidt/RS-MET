@@ -1,8 +1,3 @@
-template <class T>
-bool defaultLess(const T& left, const T& right)
-{
-  return left < right;
-}
 
 template <class T>
 void rsMaxHeapify(T *buffer, int length, int i, int heapSize, 

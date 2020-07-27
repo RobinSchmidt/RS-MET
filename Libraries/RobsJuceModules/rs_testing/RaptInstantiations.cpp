@@ -48,10 +48,7 @@ template class rsMovingMaximumFilter<int>;
 template class rsMovingMaximumFilter<double>;
 template class rsQuantileFilter<double>;
 
-
-
-template bool RAPT::defaultLess(const int& left, const int& right);
-
+template bool RAPT::rsLess(const int& left, const int& right);
 
 template void RAPT::rsHeapSort(int *buffer, int length,
   bool (*lessThen)(const int& left, const int& right));
