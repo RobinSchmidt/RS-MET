@@ -239,7 +239,8 @@ bool movingMaximumUnitTest()
   std::vector<int> vMax4 = movingMax(v, 4);
   std::vector<int> vMax5 = movingMax(v, 5);
 
-  rsMovingMaximumFilter<int> flt(6);
+  //rsMovingMaximumFilter<int> flt(6);
+  rsMovingMaximumFilter<int> flt(7);
   r &= testMovingMaxFilter(flt, v, 0); 
   r &= testMovingMaxFilter(flt, v, 1);
   r &= testMovingMaxFilter(flt, v, 2);
@@ -247,7 +248,10 @@ bool movingMaximumUnitTest()
   r &= testMovingMaxFilter(flt, v, 4);
   r &= testMovingMaxFilter(flt, v, 5);
   r &= testMovingMaxFilter(flt, v, 6);
-  //r &= testMovingMaxFilter(flt, v, 7); // i thin, that should work, too
+
+  //r &= testMovingMaxFilter(flt, v, 7);
+  // this triggers an assert and fails - pushes on a full deque - why?
+
   //r &= testMovingMaxFilter(flt, v, 8);
   // 8 doesn't work - maybe it needs to be strictly less than capacity
   // ...maybe write a loop for these tests

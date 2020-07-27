@@ -503,8 +503,8 @@ bool doubleEndedQueueUnitTest()
 
   rsDoubleEndedQueue<int> q(5);  // []
 
-  r &= q.getMaxLength() == 6;     // a power of 2 minus 2, >= requested size
-  //r &= q.getMaxLength() == 7;     // a power of 2 minus 1, >= requested size
+  //r &= q.getMaxLength() == 6;     // a power of 2 minus 2, >= requested size
+  r &= q.getMaxLength() == 7;     // a power of 2 minus 1, >= requested size
 
   r &= q.isEmpty();
   r &= q.getLength() == 0;
@@ -561,23 +561,23 @@ bool doubleEndedQueueUnitTest()
   r &= q.readHead()  == 6;
   r &= q.readTail()  == 1;
 
+  // this triggers an assertion but actually still works - however, the MovingMax filter does not
+  // work properly anymore when we fill the deque up to bufferSize-1
+  q.pushFront(7);                // [1 2 3 4 5 6 7]
+  r &= q.getLength() == 7;
+  r &= q.readHead()  == 7;
+  r &= q.readTail()  == 1;
+
   r &= q.isFull();
 
-  // create a deque where tail > head and test, if getLength works for that case, too:
-
-  // i actually think, the maxLength is size-1 and not size-2!
-
-
-  //// this triggers an assertion but actually still works - however, the MovingMax filter does not
-  //// work properly anymore when we fill the deque up to bufferSize-1
-  //q.pushFront(7);                // [1 2 3 4 5 6 7]
-  //r &= q.getLength() == 7;
-  //r &= q.readHead()  == 7;
-  //r &= q.readTail()  == 1;
+  // maybe provide writeHead/writeTail function that overwrite the current data in head/tail
 
 
   // maybe getLength is flawed and returns the correct length only in certain situations?
   // -> do more tests!
+  // i actually think, the maxLength is size-1 and not size-2!
+
+  // i think, the getLength formula works only for h != t
 
   //// this does not work anymore due to overflow:
   //q.pushFront(8);                // [1 2 3 4 5 6 7 8]

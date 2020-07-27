@@ -237,9 +237,9 @@ bool rsLess(const T& a, const T& b);  // merge with function in RAPT...SortAndSe
 
 /** Implements the double-ended queue data structure. This implementation provides a static, finite
 capacity that has to be passed at construction time. Due to implementation details, the actual
-capacity is always a power of two minus two, so when you pass an arbitrary number to the
-constructor that is not of the form 2^k - 2 the smallest possible k will be chosen such that
-2^k - 2 is greater than or equal to your requested capacity.
+capacity is always a power of two minus one, so when you pass an arbitrary number to the
+constructor that is not of the form 2^k - 1 the smallest possible k will be chosen such that
+2^k - 1 is greater than or equal to your requested capacity.
 
 The implementation is based on a circular buffer. Wikipedia says, the C++ std::deque class uses a
 multiple-array implementation which is probably not so good for realtime purposes:
@@ -255,7 +255,7 @@ public:
   queued values. The memory allocated for the buffer will be the smallest power of two that is
   greater or equal to the desired capacity plus 2 (two additional and unusable index values are
   required to make the index arithmetic work right). */
-  rsDoubleEndedQueue(size_t capacity) : rsBuffer<T>(capacity+2) {}
+  rsDoubleEndedQueue(size_t capacity) : rsBuffer<T>(capacity+1) {}
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data Access */
@@ -325,8 +325,13 @@ public:
   /** Returns the number of values that are currently in the queue. */
   inline size_t getLength() const 
   { 
-    size_t L = wrap(head - tail - 1);   // for debug
-    rsAssert(L <= getMaxLength());
+    //size_t L = wrap(head - tail - 1);   // for debug
+    //rsAssert(L <= getMaxLength());
+
+    //rsAssert(head != tail);
+    // the length formula works only for head !=
+
+    // this should never happen, the leng
 
     return this->wrap(head - tail - 1); 
   }
@@ -341,8 +346,8 @@ public:
   inline bool isEmpty() const { return getLength() == 0; }
 
   /** Returns true, if the queue is full. */
-  //inline bool isFull() const { return getLength() >= getMaxLength(); }
-  inline bool isFull() const { return getLength() > getMaxLength(); }
+  inline bool isFull() const { return getLength() >= getMaxLength(); }
+  //inline bool isFull() const { return getLength() > getMaxLength(); }
   // shouldn't that be >= ? ...somehow it seems, it can actually take one more entry ...but only
   // under certain conditions? more tests needed....
   // it seems >= is the right one, but if we use it, we trigger an assert in movingMaximumUnitTest
