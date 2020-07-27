@@ -1323,6 +1323,14 @@ public:
     return k;
   }
 
+  int insert(const T& newValue)
+  {
+    if(small.less(newValue, large[0]))
+      return small.insert(newValue);
+    else
+      return large.insert(newValue) | firstBitOnly;
+  }
+
   void remove(int key)
   {
     rsAssert(isKeyValid(key), "Key out of range");
@@ -1332,7 +1340,6 @@ public:
       small.remove(key);
   }
 
-
   T& atKey(int k) 
   { 
     rsAssert(isKeyValid(k), "Key out of range");
@@ -1340,6 +1347,16 @@ public:
       return large[toLargeHeapIndex(k)];
     else
       return small[k];
+  }
+
+  /** Returns a preliminary key which is a key from the end of either the small or large heap. 
+  This is needed in rsQuantileFilterCore for appending nodes */
+  int getPreliminaryKey(const T& newValue)
+  {
+    if(small.less(newValue, large[0]))
+      return small.getSize();
+    else
+      return large.getSize() | firstBitOnly;
   }
 
   bool isKeyValid(int k) const 
@@ -1703,9 +1720,14 @@ protected:
   //  return (indexFromOldest + bufIdx) % (int)buf.size();
   //}
 
-  /** Wraparound for the bufIdx */
-  int wrap(int i) { return i % (int)buf.capacity();  }
-
+  /** Wraparound for the bufIdx (handles only forward wraparound, i.e. input should be 
+  non-negative). */
+  int wrap(int i) 
+  { 
+    rsAssert(i >= 0);
+    return i % (int)buf.capacity();  
+  }
+ 
 
 
 

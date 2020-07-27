@@ -954,11 +954,26 @@ void rsQuantileFilterCore<T>::discardOldestSample()
 template<class T>
 void rsQuantileFilterCore<T>::addOlderSample()
 {
-   // use the most recent output as preliminary value - that should reduce the artifacts but won't
-   // eliminate them. what we really need is a (reference/pointer to) a buffer of actual delayed 
-   // signal values. it should be a pointer to allow sharing among instances, because we later want
-   // to build highpass and bandpass versions which need their own
+  // use the most recent output as preliminary value - that should reduce the artifacts but won't
+  // eliminate them. what we really need is a (reference/pointer to) a buffer of actual delayed 
+  // signal values. it should be a pointer to allow sharing among instances, because we later want
+  // to build highpass and bandpass versions which need their own
+
+  T x = readOutSample();  // somewhat ad-hoc, we need some value
+  bufIdx--;               // we need to go a step backward
+  if(bufIdx < 0)
+    bufIdx = (int)buf.size() - 1;  // wrap around
+  Node n(x, bufIdx);
+  int k = dblHp.getPreliminaryKey(n); 
+  buf[bufIdx] = k;       // this may get changed during the actual insert
+  k = dblHp.insert(k);
+  L++;
 }
+// nope this doesnt work. we would need to write something into buf[bufIdx] but we don't know what.
+// what we really have to do is tofigure out here, if it belongs into the small or large heap, 
+// place the new  Node at the end (it gets the key one after the current last), write this key 
+// into buf[bufIdx] and then float it up
+
 
 
 /*
@@ -1023,6 +1038,7 @@ bool rsQuantileFilterCore<T>::isStateConsistent()
 
   // for converting the loop variable to a buffer index:
   auto convert = [=](int i)->int{ return (i + bufIdx) % (int)buf.capacity(); };
+  // use size instead of capacity
 
   // Check that all nodes in the double-heap have the correct back-link to their index in the 
   // delay-buffer. This back-link is needed to update the delay-buffer when nodes in the heap are
