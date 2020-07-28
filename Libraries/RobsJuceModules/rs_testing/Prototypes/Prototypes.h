@@ -565,6 +565,7 @@ public:
     if(r < size) result &= !less(data[i], data[r]) && isHeap(r);
     return result;
   }
+  // move to cpp file
 
 
   //-----------------------------------------------------------------------------------------------
@@ -584,11 +585,7 @@ public:
   /** Replaces the element at index i with the new given element x and rebalances the heap to 
   maintain the heap-property which amounts to floating the new element x up or down. The return 
   value is the array index, where the new element actually ended up. */
-  int replace(int i, const T& x)
-  {
-    data[i] = x;
-    return floatIntoPlace(i);
-  }
+  int replace(int i, const T& x) { data[i] = x; return floatIntoPlace(i); }
 
   /** Inserts the element x into the heap at the correct position to maintain the heap-property and 
   returns the array-index where it was inserted. */
@@ -607,39 +604,30 @@ public:
 
   /** Removes the element at given index i from the heap and re-orders the remaining elements to
   maintain the heap-property. */
-  void remove(int i)
-  {
-    swap(data[i], data[size-1]);
-    size--;
+  void remove(int i) 
+  { 
+    rsAssert(i >= 0 && i < size, "Index out of range");
+    if(i < 0 || i >= size)
+      return;  // ...it's also a client code bug to try to remove a non-existent item.
+    swap(data[i], data[size-1]); 
+    size--; 
     floatIntoPlace(i);
   }
-  // what if the last element is removed? should we treat that as special case? because otherwise, 
-  // in this case, floatIntoPlace would be called with an i that is invalid after size-- ... check
-  // this case in a unit test!
-  // could the return value from floatIntoPlace be interesting for the caller? It is the position
-  // where the fomerly last heap element ended up after all the re-ordering business
+  // Could the return value of floatIntoPlace be interesting for the caller? It is the position
+  // where the fomerly last heap element ended up after all the re-ordering business - we'll see
 
   /** Removes the first element from the heap */
   void removeFirst() { remove(0); }
-  // needs test
-  // maybe we should have a special implementation to remove the front element? i think, in this case,
-  // we may simply call floatDown instead of floatIntoPlace
-  // or maybe we need a function getAndRemoveFirst()...or popFirst(), extractMax, extractFirst
+  // maybe we should have a special implementation to remove the front element? i think, in this 
+  // case, we may simply call floatDown instead of floatIntoPlace
 
   /** Removes the first element and returns it */
-  T extractFirst()
-  {
-    T first = data[0];
-    removeFirst();
-    return first;
-  }
-  // needs test
+  T extractFirst() { T first = data[0]; removeFirst(); return first; }
 
 
 protected:
 
   /** Functions to establish or maintain the heap-property of the underlying data array. */
-
 
   /** Lets the node at index i float up or down into its appropriate place and returns the 
   resulting new array index. */
@@ -658,6 +646,7 @@ protected:
         return i; }
     return i;
   }
+  // move to cpp file
 
   /** Assuming that the subtrees rooted at left(i) and right(i) satisfy the heap property, this 
   function makes sure that node/index i also satifies the heap property. If it doesn't already 
@@ -681,15 +670,12 @@ protected:
     }
     return i;
   }
+  // move to cpp file
 
 
   // todo: implement functions:  T peek(int i), extractMax, increaseKey, heapMax, see (1)
 
   template<class U> friend class rsDoubleHeap;
-  template<class U> friend class rsDoubleHeap2;
-  // get rid of these - we have them to get access to the less and swap functions - maybe store 
-  // references to them there - that's more elegant anyway. ...or maybe use references in 
-  // rsBinaryTree and the actual function object in rsDoubleHeap/2/3
 
 };
 // -maybe make also a class rsBinarySearchTree where the left child is <= and the right child is >=
@@ -965,6 +951,10 @@ public:
     // use the more generic name comp for "compare" in rsBinaryTree for the comparison function
   }
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
   /** Sets the data arrays that actually hold the underlying data. The lifetime of these is the
   responsibility of client code. */
   void setData(T* newSmallData, int newSmallSize, int newSmallCapacity,
@@ -987,6 +977,57 @@ public:
     small.setSwapFunction(newFunc);
     large.setSwapFunction(newFunc);
   }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  bool isKeyValid(int k) const 
+  {
+    if(isKeyInLargeHeap(k)) 
+      return toLargeHeapIndex(k) < large.getSize();
+    else
+      return k < small.getSize();
+  }
+
+  bool isIndexValid(int i) { return i >= 0 && i < small.getSize() + large.getSize(); }
+
+
+  int getNumSmallValues() const { return (int) small.getSize(); }
+  int getNumLargeValues() const { return (int) large.getSize(); }
+  int getNumValues()      const { return (int) (small.getSize() + large.getSize()); }
+
+  T getLargestSmallValue()  const { return small.at(0); }
+  T getSmallestLargeValue() const { return large.at(0); }
+  T getLastSmallValue()     const { return small.at(small.getSize()-1); }
+  T getLastLargeValue()     const { return large,at(large.getSize()-1); }
+  // rename to getFirstSmallValue getLast.. the last is not necessarily the largest or smallest
+  // the children are both larger/smaller but their order is not defined...hmm - can we define 
+  // it to give a heap even more structure? could that be usefu?
+
+
+  /** Returns a preliminary key which is a key from the end of either the small or large heap. 
+  This is needed in rsQuantileFilterCore for appending nodes. */
+  int getPreliminaryKey(const T& newValue)
+  {
+    if(small.less(newValue, large[0]))
+      return small.getSize();
+    else
+      return large.getSize() | firstBitOnly;
+  }
+  // maybe rename to something more meaningful - but what?
+
+  /** Returns true, iff this object satisfies the double-heap property. Meant mostly for testing 
+  and debugging (costly!). */
+  bool isDoubleHeap()
+  {
+    return small.isHeap() && large.isHeap()   
+      && !(small.less(large[0], small[0]));  // last condition means small[0] <= large[0]
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data access */
 
   /** Replaces the element at given key with the given new value and returns the the key where the
   new element actually ended up after doing all the floating up/down and potential swapping 
@@ -1072,10 +1113,8 @@ public:
   int indexToKey(int i) 
   { 
     int nS = small.getSize();
-    if(i < nS)
-      return i;
-    else
-      return (i-nS) | firstBitOnly;  
+    if(i < nS) return i;
+    else       return (i-nS) | firstBitOnly;  
   }
   // takes the double-heap index from 0....nS+nL-1
   // needs test
@@ -1093,69 +1132,20 @@ public:
   // needs test
 
 
-
-
-
-  bool isKeyValid(int k) const 
-  {
-    if(isKeyInLargeHeap(k)) 
-      return toLargeHeapIndex(k) < large.getSize();
-    else
-      return k < small.getSize();
-  }
-
-  bool isIndexValid(int i)
-  {
-    return i >= 0 && i < small.getSize() + large.getSize();
-  }
-
-
-
-  static bool isKeyInLargeHeap(int k) { return k & firstBitOnly;  }
-
-  int toLargeHeapIndex(int k)  const { return rawLargeHeapIndex(k); }
-
-  /** Returns a preliminary key which is a key from the end of either the small or large heap. 
-  This is needed in rsQuantileFilterCore for appending nodes. */
-  int getPreliminaryKey(const T& newValue)
-  {
-    if(small.less(newValue, large[0]))
-      return small.getSize();
-    else
-      return large.getSize() | firstBitOnly;
-  }
-
-
-  int getNumSmallValues() const { return (int) small.getSize(); }
-  int getNumLargeValues() const { return (int) large.getSize(); }
-  int getNumValues()      const { return (int) (small.getSize() + large.getSize()); }
-
-  T getLargestSmallValue()  const { return small.at(0); }
-  T getSmallestLargeValue() const { return large.at(0); }
-  T getLastSmallValue()     const { return small.at(small.getSize()-1); }
-  T getLastLargeValue()     const { return large,at(large.getSize()-1); }
-  // rename to getFirstSmallValue getLast.. the last is not necessarily the largest or smallest
-  // the children are both larger/smaller but their order is not defined...hmm - can we define 
-  // it to give a heap even more structure? could that be usefu?
-
-
-  /** Returns true, iff this object satisfies the double-heap property. Meant mostly for testing 
-  and debugging (costly!). */
-  bool isDoubleHeap()
-  {
-    return small.isHeap() && large.isHeap()   
-      && !(small.less(large[0], small[0]));  // last condition means small[0] <= large[0]
-  }
-
-
 protected:
 
-  rsBinaryHeap<T> small, large;  // the two heaps for the small and large numbers
-
+  //-----------------------------------------------------------------------------------------------
+  /** \name Internal */
 
   /** Returns the raw large-heap index, which is the key k with the first bit shaved off. */
   static inline int rawLargeHeapIndex(int k) // rename to largeHeapKeyToIndex
   { return k & allBitsButFirst; }
+
+  int toLargeHeapIndex(int k)  const { return rawLargeHeapIndex(k); }
+
+  static bool isKeyInLargeHeap(int k) { return k & firstBitOnly;  }
+
+  rsBinaryHeap<T> small, large;  // the two heaps for the small and large numbers
 
 
   template<class U> friend class rsQuantileFilterCore; // temporary - try to get rid
