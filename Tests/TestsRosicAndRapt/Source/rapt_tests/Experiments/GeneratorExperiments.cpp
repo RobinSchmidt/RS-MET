@@ -152,51 +152,7 @@ void noise()
   // testNoiseGen(int numSamples, int order, bool plotHistogram, bool writeWaveFile)
 }
 
-template<class T>
-class rsNoiseGeneratorTriModal
-{
 
-public:
-
-  rsNoiseGeneratorTriModal()
-  {
-    selector.setRange(-1, +1);
-    ng1.setRange(-1.0, -0.3);
-    ng2.setRange(-0.3, +0.3);
-    ng3.setRange(+0.3, +1.0);
-    setOrder(7);
-  }
-
-  void setOrder(int newOrder)
-  {
-    ng1.setOrder(newOrder);
-    ng2.setOrder(newOrder);
-    ng3.setOrder(newOrder);
-  }
-
-  inline T getSample()
-  {
-    T s = selector.getSample();
-    s = selectorLowpass.getSample(s);
-    if(s < thresh1)
-      return ng1.getSample();
-    if(s < thresh2)
-      return ng2.getSample();
-    return ng3.getSample();
-  }
-
-  rsOnePoleFilter<T, T> selectorLowpass;
-  // the selector is lowpassed such that successive samples tend to be selected from the same 
-  // distribution
-
-
-protected:
-
-  rsNoiseGenerator<T> selector;
-  rsNoiseGenerator2<T> ng1, ng2, ng3;
-  T thresh1 = -0.2, thresh2 = +0.2;
-
-};
 
 
 void noiseTriModal()

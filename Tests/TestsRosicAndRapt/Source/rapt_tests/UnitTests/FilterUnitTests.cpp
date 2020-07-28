@@ -440,12 +440,20 @@ bool movingQuantileUnitTest()
   r &= testMovingQuantileCore(64, 40,  1, N);
   r &= testMovingQuantileCore(64,  1, 40, N);
 
-  // these do not work - the heap size of either the small or the large heap goes to zero and we
-  // get index-out-of-range errors:
-  //r &= testMovingQuantile(64, 40,  0, N);
-  //r &= testMovingQuantile(64,  0, 40, N);
-  //r &= testMovingQuantile(64, 64,  0, N);
-  //r &= testMovingQuantile(64,  0, 64, N);
+
+  // try to extrak the maximum over the last 8 samples:
+  using Vec = std::vector<double>;
+  Vec x = Vec({ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });  // input
+  Vec t = Vec({ 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 });  // target output
+  N = (int) x.size();
+  Vec y(N);
+  rsQuantileFilterCore<double>  flt;
+  flt.setMaxLength(8);
+  flt.setLengthAndReadPosition(8, 7);  // should read the maximum
+  for(int n = 0; n < N; n++)
+    y[n] = flt.getSample(x[n]);
+  r &= y == t;
+
 
 
 

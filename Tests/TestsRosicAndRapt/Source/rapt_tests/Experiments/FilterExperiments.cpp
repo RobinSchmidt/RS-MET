@@ -1348,19 +1348,21 @@ void quantileFilter()
 {
   double fs = 1;     // sample rate
   int    N  = 500;   // number of samples
-  int    L  = 10;    // filter length in samples (can we make this a double, too?)
-  double q  = 1.0;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
+  int    L  = 8;    // filter length in samples (can we make this a double, too?)
+  double q  = 0.9;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
 
 
-  rsQuantileFilter<double> flt;
+
+  using QF = rsQuantileFilter<double>;
+  QF flt;
 
   // we should have a combined setMaxLengthAndSampleRate function to avoid re-allocating twice:
   flt.setMaxLength(L);
   flt.setSampleRate(1);
-  //flt.setLength(L);
+  //flt.setLength(L);      // should not be used anymore
   flt.setFrequency(1.0/L);
   flt.setQuantile1(q);
-
+  flt.setMode(QF::Mode::lowpass);
   //flt.setFrequency(100.0);
   //flt.setFeedback(0.0);    // later
   //flt.setQuantile(0.5);
@@ -1373,7 +1375,23 @@ void quantileFilter()
   //Vec x = rsRandomVector(N, -1.0, +1.0, 0);  // try sinusoids, too
   //Vec x = rsRandomIntVector(N, 1, 9, 0);  // looks not random at all - very periodic!
   //Vec x = rsRandomIntVector(N, 0, 16, 0);   // periodic with period 16
-  Vec x = rsRandomIntVector(N, 1, 99, 0);
+
+  //Vec x = rsRandomIntVector(N, 1, 99, 0);
+  // todo: use a irwin-hall generator - we can see it better when the distribution is more skewed
+  // toward the middle
+
+  Vec x(N);
+
+  rsNoiseGeneratorTriModal<double> ng;
+  ng.setOrder(7);
+  ng.selectorLowpass.setSampleRate(1.0);
+  ng.selectorLowpass.setCutoff(0.08);
+  for(int n = 0; n < N; n++)
+    x[n] = ng.getSample();
+
+
+  //x = Vec({ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }); N = (int) x.size(); // test
+
   //AT::cumulativeSum(&x[0], &x[0], N);
   Vec y(N);
   for(int n = 0; n < N; n++)
@@ -1407,7 +1425,13 @@ void quantileFilter()
   //rsPlotVectors(t, z);
   //rsPlotVectors(t, z, y);
   //rsPlotVectors(z, y);  // for even lengths, z is the better reference - t has a delay there
-  rsPlotVectors(x, y);
+  //rsPlotVectors(x, y);
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0]);
+  plt.addDataArrays(N, &y[0]);
+  plt.setPixelSize(1600, 400);
+  plt.plot();
 
   int dummy = 0;
 
@@ -1419,13 +1443,19 @@ void quantileFilter()
 
   // how about using 4 of them in series and building the feedback loop around the whole thing?
 
+  // Observations:
+  // -the outputs generally have a sort of "sample-and-hold" character
+  // -the highpass signal has strong components at the Nyquist freq when q=0 or q=1
 
   // ToDo:
-  // -it should also work with q = 0.0 and q = 1.0 which should give moving min/max filters
-  //  ..ok 0 works, but 1 does not (it hangs :-O), with 0.999, it works and really gives the 
-  //  maximum - the problem has to do with the fact that floor(q') == ceil(q'), where q' is the
-  //  readout position
-  // -the length seems to be one sample too short - easy to test with quantiles 0 or 1
+  // -let the user set up the parameters for both filters individually instead of trying to
+  //  introduce higher level parameters such as bandwidth - it does make sense to let both filters
+  //  have the same length and mix them when they have different quantiles - for example, one
+  //  could compute a mix between min and max. it should be possible to:
+  //  -mix outputs of both filters where both receive the same input
+  //  -feed scaled output of filter 1 into filter 2
+  //  -feed scaled delayed by delay1 input into filter 2
+
   // -the length should be set up in a physical unit like seconds, thenwe may define a cutoff 
   //  frequency which is inversely proportional - needs a sample-rate - wrap this into a subclass
   //  or use composition

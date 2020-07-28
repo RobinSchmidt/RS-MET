@@ -1914,30 +1914,30 @@ protected:
   introduced delay (verify!) */
   void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w, T* q)
   {
-    *L  = (int) round(length * sampleRate);  // length
+    rsAssert(quantile >= T(0) && quantile <= T(1), "Quantile needs to be between 0 and 1");
+    *L  = (int) round(length * sampleRate);  // length of filter in samples
+    *L  = rsMax(*L, 2);                      // ...needs to be at least 2
     *q  = quantile * sampleRate * (*L - 1);  // readout position in sorted array
     *p  = (int) floor(*q);                   // integer part (floor)
     *w  = *q - *p;                           // fractional part
-    *p += 1;                                 // algo wants the ceil
+    *p += 1;                                 // algo wants the next one
     if(*p > *L - 1) {                        // quantile == 1 (maximum) needs special care
       *p = *L - 1; *w = T(1);  }
   }
 
-
+  /** Updates the internal algorithm parameters and embedded objects according to the user 
+  parameters. */
   void updateInternals()
   {
     // compute internal core parameters:
     int L, p; T w;
     convertParameters(length1, quantile1, sampleRate, &L, &p, &w, &delay1);
-    // we need to use length1, qunatile1
 
     // Set the core up:
     core1.setLengthAndReadPosition(L, p);
     core1.setRightWeight(w);
 
     // todo: set up a second core (for bandpass mode) 
-
-
 
     dirty = false;
   }
@@ -2055,6 +2055,56 @@ protected:
 
 };
 
+//=================================================================================================
+
+template<class T>
+class rsNoiseGeneratorTriModal
+{
+
+public:
+
+  rsNoiseGeneratorTriModal()
+  {
+    selectorLowpass.setMode(selectorLowpass.LOWPASS_IIT);
+    selectorLowpass.setSampleRate(1);
+    selectorLowpass.setCutoff(0.1);
+    selector.setRange(-1, +1);
+    ng1.setRange(-1.0, -0.3);
+    ng2.setRange(-0.3, +0.3);
+    ng3.setRange(+0.3, +1.0);
+    setOrder(7);
+  }
+
+  void setOrder(int newOrder)
+  {
+    ng1.setOrder(newOrder);
+    ng2.setOrder(newOrder);
+    ng3.setOrder(newOrder);
+  }
+
+  inline T getSample()
+  {
+    T s = selector.getSample();
+    s = selectorLowpass.getSample(s);
+    if(s < thresh1)
+      return ng1.getSample();
+    if(s < thresh2)
+      return ng2.getSample();
+    return ng3.getSample();
+  }
+
+  rsOnePoleFilter<T, T> selectorLowpass;
+  // the selector is lowpassed such that successive samples tend to be selected from the same 
+  // distribution
+
+
+protected:
+
+  rsNoiseGenerator<T> selector;
+  rsNoiseGenerator2<T> ng1, ng2, ng3;
+  T thresh1 = -0.2, thresh2 = +0.2;
+
+};
 
 //=================================================================================================
 
