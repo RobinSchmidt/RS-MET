@@ -548,22 +548,10 @@ public:
 
   using rsBinaryTree::rsBinaryTree;  // inherit constructors
 
-
-  void buildHeap()
-  {
-    for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
-      floatDown(i);
-  }
-  // Runs in O(N). From the code, it would appear as having O(N*log(N)) complexity because we call
-  // an O(log(N)) function inside the loop. However, for heaps and binary search trees, the runtime
-  // of floatDown depends on the argument i in such a way to give an overall O(N) behavior (see 
-  // reference (1)). The memory complexity is O(1).
-
-
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  /** Return true, iff the underyling data array currently satisfies the heap property. The 
+  /** Returns true, iff the underyling data array currently satisfies the heap property. The 
   function is meant mostly for testing and debugging purposes and is currently implemented 
   recursively (i.e. inefficiently). */
   bool isHeap(int i = 0) const
@@ -577,14 +565,21 @@ public:
     if(r < size) result &= !less(data[i], data[r]) && isHeap(r);
     return result;
   }
-  // maybe convert recursion to iteration
-  // maybe factor out to baseclass and rename to isTree, maybe we need to call a virtual function
-  // satisfiesTreeProperty(int i) that take a (parent) node index and then iterate through half of
-  // size of the tree...but that places a burden on subclasses having to implement the virtual
-  // function - not good!
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data Manipulation */
+
+  /** Reorders the underlying data array so as to satisfy the heap property. Runs in O(N) time. 
+  From the code, it would appear as having O(N*log(N)) complexity because we call an O(log(N)) 
+  function inside the loop. However, for heaps and binary search trees, the runtime of floatDown 
+  depends on the argument i in such a way to give an overall O(N) behavior (see reference (1)). 
+  The memory complexity is O(1). */
+  void buildHeap()
+  {
+    for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
+      floatDown(i);
+  }
 
   /** Replaces the element at index i with the new given element x and rebalances the heap to 
   maintain the heap-property which amounts to floating the new element x up or down. The return 
@@ -601,8 +596,9 @@ public:
   {
     rsAssert(size < capacity, "Capacity exceeded");
     if( size == capacity ) return -1; 
-    // Trying to insert an item when the heap is already full is a bug on client code side. We return
-    // -1 early here, to avoid an access violation, if client code has this bug in a release version.
+    // Trying to insert an item when the heap is already full is a bug on client code side. We 
+    // return -1 early here, to avoid an access violation if client code has this bug in a 
+    // release version.
 
     data[size] = x;
     size++;
@@ -614,7 +610,6 @@ public:
   void remove(int i)
   {
     swap(data[i], data[size-1]);
-    //rsSwap(data[i], data[size-1]);  // test
     size--;
     floatIntoPlace(i);
   }
@@ -624,15 +619,14 @@ public:
   // could the return value from floatIntoPlace be interesting for the caller? It is the position
   // where the fomerly last heap element ended up after all the re-ordering business
 
-  void removeFirst()
-  {
-    remove(0);
-  }
+  /** Removes the first element from the heap */
+  void removeFirst() { remove(0); }
   // needs test
   // maybe we should have a special implementation to remove the front element? i think, in this case,
   // we may simply call floatDown instead of floatIntoPlace
   // or maybe we need a function getAndRemoveFirst()...or popFirst(), extractMax, extractFirst
 
+  /** Removes the first element and returns it */
   T extractFirst()
   {
     T first = data[0];
@@ -642,17 +636,14 @@ public:
   // needs test
 
 
-  /** Lets the node at index i float up or down into its appropriate place and returns the 
-  resulting new array index. */
-  int floatIntoPlace(int i) { return floatUp(floatDown(i)); }
-  // -maybe rename to rebalanceNode
-  // -why is this public? can we move it into the protected section? hmm, 
-  //  rsMovingQuantileFilterCore calls it directly - can this be avoided?
-
-
 protected:
 
   /** Functions to establish or maintain the heap-property of the underlying data array. */
+
+
+  /** Lets the node at index i float up or down into its appropriate place and returns the 
+  resulting new array index. */
+  int floatIntoPlace(int i) { return floatUp(floatDown(i)); }
 
   /** Lets the node at index i float up the tree if its parent violates the heap property. Returns 
   the new array index. */
@@ -673,28 +664,7 @@ protected:
   satisfy it, the function lets the value at i float down the subtree rooted at i. It has a time
   complexity of O(log(N)) and memory complexity of O(1). The return value is the new array index of
   the value that was previously located at index i. */
-  int floatDownRec(int i)
-  {
-    int l = left(i);
-    int r = right(i);
-    int b = i;         // b for "big"
-    if(l < size && less(data[i], data[l])) b = l;
-    if(r < size && less(data[b], data[r])) b = r; 
-    if(b != i) { swap(data[i], data[b]); return floatDown(b); }
-    return i;
-  }
-  // a.k.a. maxHeapify
-  // That's the recursive implementation from (1) page 130. When the iterative version is ready,
-  // move it to the rsBinaryHeapTest subclass - we don't need it anymore in production code, then. 
-  // But it may be interesting to figure out, if the recursion actually incurs an overhead since 
-  // it's tail recursion and smart compilers might be able to translate it to iteration themselves.
-  // We also may want to keep it as reference for unit tests (to test, if the iterative version 
-  // really does the same thing).
-  // maybe move to subclass rsBinaryHeapTest in the unit test section - we don't need it in 
-  // production code, when the iterative version works (which seems to be the case)
-
-
-  int floatDownIt(int i)
+  int floatDown(int i)
   {
     while(i < size-1)   // check if we should use size
     {
@@ -708,33 +678,15 @@ protected:
         i = b;  }
       else
         return i;
-        // really? hmm..without, we get a hang. i think it's safe to return here, because when 
-        // data[i] >= data[l] and data[i] >= data[r], i.e. if the heap condition holds at node i, 
-        // it will automatically hold for all its children (because that's what we assume as 
-        // precondition), so have nothing more to do here. The heap condition can only be violated 
-        // at a child node of i, if we actually *did* a swap - if we didn't have to do a swap, we 
-        // are done.
     }
     return i;
   }
-  // iterative (i.e. non-recursive) implementation - needs tests
-  // code adapted from here:
-  // https://sites.math.rutgers.edu/~ajl213/CLRS/Ch6.pdf
-  // ..but it seems buggy and i had to make some changes - it seems to work now but needs more 
-  // thorough testing
 
-  int floatDown(int i)
-  {
-    //return floatDownRec(i);  // calls recursive version - change that!
-    return floatDownIt(i);
-  }
 
-  // todo: implement functions: int insert(T*), void remove(int), extractMax,
-  // increaseKey, heapMax
+  // todo: implement functions:  T peek(int i), extractMax, increaseKey, heapMax, see (1)
 
   template<class U> friend class rsDoubleHeap;
   template<class U> friend class rsDoubleHeap2;
-  template<class U> friend class rsDoubleHeap3;
   // get rid of these - we have them to get access to the less and swap functions - maybe store 
   // references to them there - that's more elegant anyway. ...or maybe use references in 
   // rsBinaryTree and the actual function object in rsDoubleHeap/2/3
@@ -1159,40 +1111,35 @@ template<class T>
 class rsDoubleHeap2 : public rsDoubleHeap<T> 
 {
 
-  // maybe get rid of the subclass an implement everything in the baseclass - maybe have functions
-  // replaceByIndex, replaceByKey
-  // maybe it would be a more natural convention to indicate small-heap keys by a minus sign
+  // -maybe get rid of the subclass an implement everything in the baseclass - i really don't think
+  //  there is any use of the i-nS convention - we need a criterion that is independent from nS
+  // -maybe it would be a more natural convention to indicate small-heap keys by a minus sign
 
 public:
 
   int replace(int key, const T& newValue)
   {
     rsAssert(isKeyValid(key), "Key out of range");
-
     int k = key;
  
     // The actual replacement:
     if(isKeyInLargeHeap(k)) {
       k  = large.replace(toLargeHeapIndex(k), newValue);
       k |= firstBitOnly; }  
-    // should we do  (k - largeIndexOffset) | firstBitOnly?
     else
       k = small.replace(k, newValue);
 
     // The potential swap:
-    if(small.less(large[0], small[0]))
-    {
+    if(small.less(large[0], small[0])) {
       small.swap(small[0], large[0]);
       int ks = small.floatDown(0);
       int kl = large.floatDown(0);
       if(isKeyInLargeHeap(key)) // new value was in large and is now in small heap
         k = ks;
       else
-        k = kl | firstBitOnly;
-        // should we do  (kl - largeIndexOffset) | firstBitOnly?
-    }
+        k = kl | firstBitOnly;  }
 
-    return k;
+    return k; // return the new key where the replacement node ended up
   }
 
   int insert(const T& newValue)
@@ -1287,19 +1234,6 @@ private:
 };
 
 //=================================================================================================
-
-inline bool isIndexPermutation(int* b, int L)
-{
-  for(int i = 0; i < L; i++)
-    if( !rsArrayTools::contains(b, L, i) )
-      return false;
-  return true;
-}
-// Returns true, iff b contains every number from 0 to L-1. Since b is of length L, this implies
-// that every number is contained exactly once, so b is a permutation of the numbers 0...L-1.
-// used here only for debug -  move elsewhere
-
-
 
 /** Class to exctract moving quantiles (such as the median) from a signal in realtime. If the 
 quantile runs over N samples, the filter takes O(log(N)) operations per sample. It achieves this

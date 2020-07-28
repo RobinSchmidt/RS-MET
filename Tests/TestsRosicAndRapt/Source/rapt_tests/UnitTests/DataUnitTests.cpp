@@ -179,7 +179,25 @@ public:
     return result;
   }
 
-
+  int floatDownRec(int i)
+  {
+    int l = left(i);
+    int r = right(i);
+    int b = i;         // b for "big"
+    if(l < size && less(data[i], data[l])) b = l;
+    if(r < size && less(data[b], data[r])) b = r; 
+    if(b != i) { swap(data[i], data[b]); return floatDown(b); }
+    return i;
+  }
+  // a.k.a. maxHeapify
+  // That's the recursive implementation from (1) page 130. When the iterative version is ready,
+  // move it to the rsBinaryHeapTest subclass - we don't need it anymore in production code, then. 
+  // But it may be interesting to figure out, if the recursion actually incurs an overhead since 
+  // it's tail recursion and smart compilers might be able to translate it to iteration themselves.
+  // We also may want to keep it as reference for unit tests (to test, if the iterative version 
+  // really does the same thing).
+  // maybe move to subclass rsBinaryHeapTest in the unit test section - we don't need it in 
+  // production code, when the iterative version works (which seems to be the case)
 
   // removing:
   // http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/heap-delete.html

@@ -4,8 +4,10 @@
 /** This file contains tree based data structures. */
 
 
-/** Baseclass for amost complete binary tree data-structures such as rsBinaryHeap (and later maybe
-rsBinarySearchTree, which is still under construction in the prototypes section).  */
+/** Baseclass for almost complete binary tree data-structures that are stored in an external array,
+i.e. this class acts like "view" or "wrapper" around an already existing data array. Examples are
+the subclass rsBinaryHeap (and later maybe rsBinarySearchTree), which are still under construction 
+in the prototypes section.  */
 
 template<class T>
 class rsBinaryTree
@@ -31,10 +33,8 @@ public:
     capacity = newCapacity;
   }
 
-  void setData(std::vector<T>& newData)
-  {
-    setData(&newData[0], (int)newData.size(), (int)newData.size());
-  }
+  void setData(std::vector<T>& newData) 
+  { setData(&newData[0], (int)newData.size(), (int)newData.size()); }
 
   /** Sets the comparison function to be used. If it implements "less-than", you'll get a max-heap
   and if it implements "greater-than", you'll get a min-heap. By default, it's assigned to a 
@@ -103,9 +103,9 @@ protected:
   int capacity = 0;
 
   // Comparison and swapping functions:
-  std::function<bool(const T&, const T&)> 
+  std::function<bool(const T&, const T&)>
     less = [](const T& a, const T& b)->bool { return a < b;  };
-  std::function<void(T&, T&)> 
+  std::function<void(T&, T&)>
     swap = [](T& a, T& b) { rsSwap(a, b); };
   // maybe these should be references?
 
