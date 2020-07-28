@@ -41,6 +41,8 @@ public:
   less-than function based on the < operator. */
   void setCompareFunction(const std::function<bool(const T&, const T&)>& newFunc) 
   { less = newFunc; }
+  // maybe that should be in the subclass rsBinaryHeap - there may be trees with other properties
+  // that do not rely on a less-than comparison
   // question: what happens, if we use a less-or-equal or greater-or-equal function for this?
 
   /** Sets the function used to swap two elements. By default, it just uses rsSwap but you may want
@@ -76,6 +78,13 @@ public:
     return data[i]; 
   }
 
+  const T& at(int i) const
+  {
+    rsAssert((int) i < size, "Index out of range");
+    return data[i]; 
+  }
+  // get rid of the duplication
+
 
 protected:
 
@@ -107,10 +116,7 @@ protected:
     less = [](const T& a, const T& b)->bool { return a < b;  };
   std::function<void(T&, T&)>
     swap = [](T& a, T& b) { rsSwap(a, b); };
-  // maybe these should be references?
-
-  // Some related classes need direct acces to our members:
-  //template<class U> friend class rsDoubleHeap;
+  // maybe these should be references? hmm..that would make the class inconveninient to use
 
 };
 

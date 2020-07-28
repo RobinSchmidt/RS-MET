@@ -938,7 +938,18 @@ of values into two groups: the small values and the large values. The two heaps 
 property that all values in the small heap are less-or-equal to all values in the large heap. The 
 small values are held in a max-heap such that the largest of them can be extracted in O(1) time and 
 the large values are held in a min-heap such that the smallest of them can also be extracted in 
-O(1) time. This facilitates to exctract the median or other quantiles. tbc....  */
+O(1) time. This facilitates to extract the median or other quantiles. 
+
+Heap items can referred to by an integer that serves as key. We use the convention that when the
+sign bit is zero, the number is treated directly as index into the small heap and if it's one,
+it's an index into the large heap given by whatever number results when the sign bit is masked 
+away. But client code should really not care about this implementation detail and just treat the 
+keys as opaque identifiers. But note that any manipulations such as insertion, removal or 
+replacement of heap elements will invalidate the keys. If you want to refer to an item later, you
+need to keep track of how its key changes due to any heap operations that may have occured in
+the meantime. You may do this by implementing the swap function in a way that allow you to track 
+where an item floats to in the double-heap (and therefore, how its key changes). See 
+rsQuantileFilterCore for an example how this may work.  */
 
 template<class T>
 class rsDoubleHeap
@@ -948,15 +959,14 @@ public:
 
   rsDoubleHeap() 
   {
-    large.less = [](const T& a, const T& b)->bool 
-    { 
-      return b < a;
-    };
+    large.less = [](const T& a, const T& b)->bool { return b < a;  };
     // large.less is actually a greater-than function which we obtain from the less-than operator 
     // by swapping the arguments - this turns large into a min-heap rather than a max-heap. todo: 
     // use the more generic name comp for "compare" in rsBinaryTree for the comparison function
   }
 
+  /** Sets the data arrays that actually hold the underlying data. The lifetime of these is the
+  responsibility of client code. */
   void setData(T* newSmallData, int newSmallSize, int newSmallCapacity,
                T* newLargeData, int newLargeSize, int newLargeCapacity)
   {
@@ -964,164 +974,28 @@ public:
     large.setData(newLargeData, newLargeSize, newLargeCapacity);
   }
 
+  /** Convenience function. */
   void setData(std::vector<T>& newSmall, std::vector<T>& newLarge)
   {
     setData(&newSmall[0], (int) newSmall.size(), (int) newSmall.size(),
             &newLarge[0], (int) newLarge.size(), (int) newLarge.size());
   }
 
-  
+  /** Sets the function to be used to swap two heap elements. */
   void setSwapFunction(const std::function<void(T&, T&)>& newFunc)
   {
     small.setSwapFunction(newFunc);
     large.setSwapFunction(newFunc);
   }
 
-
-  /** Replaces the element at given key  with the given new value and return the the key where the
-  new element actual ended up after doing all the floating up/down and potential swapping business.
-
-  out of date:
-  If nS is the size of the small heap, we use the convention that indices i < nS are direct indices 
-  into the small heap, and when i >= nS, we use i-nS as heap index into the large heap (as seen 
-  from the class rsBinaryHeap). The same holds for the return value. */
-  int replace(int key, const T& newValue)  // rename index to key
-  {
-    rsAssert(isIndexValid(key), "Key out of range");
-
-    int i  = key;  // maybe get rid of index and use only i
-    int nS = small.getSize();
-
-    // The actual replacement, taking place in one of our two heaps:
-    if(key < small.getSize())
-      i = small.replace(i,    newValue);
-    else
-      i = large.replace(i-nS, newValue) + nS;
-
-    // The potential swap of the front elements (i.e. max and min) of both heaps:
-    if( small.less(large[0], small[0]) )  // means: if(large[0] < small[0])
-    {
-      small.swap(small[0], large[0]);
-      int is = small.floatDown(0);
-      int il = large.floatDown(0);
-      if(key < nS)     // we replaced in small heap, then swapped, so newValue is now in large heap
-        i = il + nS;
-      else
-        i = is;
-    }
-
-    return i;
-  }
-  // we use the convention that when i < nS, the datum gets inserted into the small heap and when 
-  // i >= nS, the datum gets inserted into the large heap at i-nS, tbc....
-
-  /** Transfers the smallest of the large values to the heap of small values and returns the index
-  where it ended up. This will shrink the large heap and grow the large heap by one element. */
-  int moveFirstLargeToSmall()
-  {
-    T e = large.extractFirst();
-    return small.insert(e);
-  }
-  // hmm - return value should be always 0 anyway
-
-  int moveFirstSmallToLarge()
-  {
-    T e = small.extractFirst();
-    return large.insert(e) + small.getSize();
-  }
-  // return value should always be small.getSize(), size measured after the operation
-
-
-  //T& operator[](int i) { return atIndex(i); }
-  // get rid or make private - client code should use either atIndex or atKey
-
-  /** Element access via an integer index. If nS is the number of values in the small heap, indices
-  i < nS refer directly to samples in the small heap with that same small-heap-index i, whereas 
-  indices >= nS are interpreted as large-heap-index i-nS into the large heap. */
-  T& atIndex(int i)
-  {
-    rsAssert(isIndexValid(i), "Index out of range");
-    int nS = small.getSize();
-    if(i < nS)
-      return small[i];
-    else
-      return large[i-nS];
-  }
-
-  /** Element access via an integer key. In this class, the key and index are the same thing, but 
-  not in subclass rsDoubleHeap2. We implement the atKey function here too, to have the same 
-  interface as the subclass. */
-  T& atKey(int k) { return atIndex(k); }
-
-  /** Conversion from index to key. */
-  int indexToKey(int i) { return i; }
-
-  /** Conversion from key to index. */
-  int keyToIndex(int k) { return k; }
-
-
-
-  bool isIndexValid(int i)
-  {
-    return i >= 0 && i < small.getSize() + large.getSize();
-  }
-
-  int getNumSmallValues() const { return (int) small.getSize(); }
-  int getNumLargeValues() const { return (int) large.getSize(); }
-  int getNumValues()      const { return (int) (small.getSize() + large.getSize()); }
-
-  T getLargestSmallValue()   { return small[0]; }
-  T getSmallestLargeValue()  { return large[0]; }
-  T getLastSmallValue()      { return small[small.getSize()-1]; }
-  T getLastLargeValue()      { return large[large.getSize()-1]; }
-  // make them const
-  // rename to getFirstSmallValue getLast.. the last is not necessarily the largest or smallest
-  // the children are both larger/smaller but their order is not defined...hmm - can we define 
-  // it to give a heap even more structure?
-
-
-
-  /** Returns true, iff this object satisfies the double-heap property. Meant mostly for testing 
-  and debugging (costly!). */
-  bool isDoubleHeap()
-  {
-    return small.isHeap() && large.isHeap()   
-      && !(small.less(large[0], small[0]));  // last condition means small[0] <= large[0]
-  }
-  // maybe we should store references to the less and swap functions here too and also provide a
-  // setLessFunction function - then we may get rid of the friend declarations in rsBinaryHeap
-
-
-protected:
-
-  rsBinaryHeap<T> small, large;  // the two heaps for the small and large numbers
-
-  template<class U> friend class rsQuantileFilterCore; // temporary - try to get rid
-
-};
-
-/** Subclass that uses a different convention how the indices are interpreted. Instead of 
-interpreting indices i >= nS (nS = number of small values) as i-nS into the large buffer, we use
-unsigned indices and use the first bit as indicator, if an element from the large heap is meant,
-in which case we use the remaining bits as actual index. This may be less natural and less 
-convenient, but we need it when we want to deal with a dynamically changing nS - we need some
-indicator that is independent from nS, because otherwise, the stored indices in the quantile 
-filter become meaningless after a change of the heap-sizes. */
-template<class T>
-class rsDoubleHeap2 : public rsDoubleHeap<T> 
-{
-
-  // -maybe get rid of the subclass an implement everything in the baseclass - i really don't think
-  //  there is any use of the i-nS convention - we need a criterion that is independent from nS
-  // -maybe it would be a more natural convention to indicate small-heap keys by a minus sign
-
-public:
-
+  /** Replaces the element at given key with the given new value and returns the the key where the
+  new element actually ended up after doing all the floating up/down and potential swapping 
+  business. */
   int replace(int key, const T& newValue)
   {
     rsAssert(isKeyValid(key), "Key out of range");
     int k = key;
- 
+
     // The actual replacement:
     if(isKeyInLargeHeap(k)) {
       k  = large.replace(toLargeHeapIndex(k), newValue);
@@ -1142,6 +1016,7 @@ public:
     return k; // return the new key where the replacement node ended up
   }
 
+  /** Inserts a new item and returns the key that indicates, where it ended up. */
   int insert(const T& newValue)
   {
     if(small.less(newValue, large[0]))
@@ -1150,6 +1025,7 @@ public:
       return large.insert(newValue) | firstBitOnly;
   }
 
+  /** Removes the item at the given key. */
   void remove(int key)
   {
     rsAssert(isKeyValid(key), "Key out of range");
@@ -1159,6 +1035,7 @@ public:
       small.remove(key);
   }
 
+  /** Element access via an integer key.  */
   T& atKey(int k) 
   { 
     rsAssert(isKeyValid(k), "Key out of range");
@@ -1168,28 +1045,30 @@ public:
       return small[k];
   }
 
-  /** Returns a preliminary key which is a key from the end of either the small or large heap. 
-  This is needed in rsQuantileFilterCore for appending nodes. */
-  int getPreliminaryKey(const T& newValue)
+  /** Element access via an integer index. If nS is the number of values in the small heap, indices
+  i < nS refer directly to samples in the small heap with that same small-heap-index i, whereas 
+  indices >= nS are interpreted as large-heap-index i-nS into the large heap. */
+  T& atIndex(int i)
   {
-    if(small.less(newValue, large[0]))
-      return small.getSize();
+    rsAssert(isIndexValid(i), "Index out of range");
+    int nS = small.getSize();
+    if(i < nS)
+      return small[i];
     else
-      return large.getSize() | firstBitOnly;
+      return large[i-nS];
   }
 
-  bool isKeyValid(int k) const 
-  {
-    if(isKeyInLargeHeap(k)) 
-      return toLargeHeapIndex(k) < large.getSize();
-    else
-      return k < small.getSize();
-  }
+  /** Transfers the smallest of the large values to the heap of small values and returns the key
+  where it ended up. This will shrink the large heap and grow the large heap by one element. */
+  int moveFirstLargeToSmall() { T e = large.extractFirst(); return small.insert(e); }
+  // hmm - return value should be always 0 anyway
 
-  static bool isKeyInLargeHeap(int k) { return k & firstBitOnly;  }
+  int moveFirstSmallToLarge() 
+  { T e = small.extractFirst(); return large.insert(e) + small.getSize(); }
+  // return value should always be small.getSize(), size measured after the operation
 
-  int toLargeHeapIndex(int k)  const { return rawLargeHeapIndex(k); }
 
+  /** Conversion from index to key. */
   int indexToKey(int i) 
   { 
     int nS = small.getSize();
@@ -1201,6 +1080,7 @@ public:
   // takes the double-heap index from 0....nS+nL-1
   // needs test
 
+  /** Conversion from key to index. */
   int keyToIndex(int k) 
   { 
     if(isKeyInLargeHeap(k)) {
@@ -1213,25 +1093,76 @@ public:
   // needs test
 
 
-  // maybe have functions to convert back and forth between key and indices
-
-  // have static const members for the masks that separate the first bit and remove the first
-  // bit
-
-  // maybe use int instead of size_t because otherwise, when convertig indices to int, the 
-  // indicator bit gets cut off ...but maybe we should take care to avoid such conversions
 
 
-private:
+
+  bool isKeyValid(int k) const 
+  {
+    if(isKeyInLargeHeap(k)) 
+      return toLargeHeapIndex(k) < large.getSize();
+    else
+      return k < small.getSize();
+  }
+
+  bool isIndexValid(int i)
+  {
+    return i >= 0 && i < small.getSize() + large.getSize();
+  }
+
+
+
+  static bool isKeyInLargeHeap(int k) { return k & firstBitOnly;  }
+
+  int toLargeHeapIndex(int k)  const { return rawLargeHeapIndex(k); }
+
+  /** Returns a preliminary key which is a key from the end of either the small or large heap. 
+  This is needed in rsQuantileFilterCore for appending nodes. */
+  int getPreliminaryKey(const T& newValue)
+  {
+    if(small.less(newValue, large[0]))
+      return small.getSize();
+    else
+      return large.getSize() | firstBitOnly;
+  }
+
+
+  int getNumSmallValues() const { return (int) small.getSize(); }
+  int getNumLargeValues() const { return (int) large.getSize(); }
+  int getNumValues()      const { return (int) (small.getSize() + large.getSize()); }
+
+  T getLargestSmallValue()  const { return small.at(0); }
+  T getSmallestLargeValue() const { return large.at(0); }
+  T getLastSmallValue()     const { return small.at(small.getSize()-1); }
+  T getLastLargeValue()     const { return large,at(large.getSize()-1); }
+  // rename to getFirstSmallValue getLast.. the last is not necessarily the largest or smallest
+  // the children are both larger/smaller but their order is not defined...hmm - can we define 
+  // it to give a heap even more structure? could that be usefu?
+
+
+  /** Returns true, iff this object satisfies the double-heap property. Meant mostly for testing 
+  and debugging (costly!). */
+  bool isDoubleHeap()
+  {
+    return small.isHeap() && large.isHeap()   
+      && !(small.less(large[0], small[0]));  // last condition means small[0] <= large[0]
+  }
+
+
+protected:
+
+  rsBinaryHeap<T> small, large;  // the two heaps for the small and large numbers
 
 
   /** Returns the raw large-heap index, which is the key k with the first bit shaved off. */
   static inline int rawLargeHeapIndex(int k) // rename to largeHeapKeyToIndex
-  {
-    return k & allBitsButFirst;
-  }
+  { return k & allBitsButFirst; }
+
+
+  template<class U> friend class rsQuantileFilterCore; // temporary - try to get rid
 
 };
+// clean this up - order the functions according to the usual scheme and add documentation
+
 
 //=================================================================================================
 
@@ -1445,10 +1376,10 @@ protected:
     rsSwap(keyBuf[a.bufIdx], keyBuf[b.bufIdx]);
   }
 
-  std::vector<Node>   small, large;     // storage arrays of the nodes
-  rsDoubleHeap2<Node> dblHp;            // maintains large/small as double-heap
-  std::vector<int>    keyBuf;           // circular buffer of heap keys - rename to keyBuf
-  rsDelayBuffer<T>*   sigBuf = nullptr; // (possibly shared) buffer of delayed input samples
+  std::vector<Node>  small, large;     // storage arrays of the nodes
+  rsDoubleHeap<Node> dblHp;            // maintains large/small as double-heap
+  std::vector<int>   keyBuf;           // circular buffer of heap keys - rename to keyBuf
+  rsDelayBuffer<T>*  sigBuf = nullptr; // (possibly shared) buffer of delayed input samples
 
   int bufIdx = 0;    // index into keyBuf, mayb rename to keyIdx
   int L      = 2;    // total length of filter
