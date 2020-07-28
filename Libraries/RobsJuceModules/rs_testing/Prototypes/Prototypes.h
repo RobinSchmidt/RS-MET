@@ -1568,7 +1568,7 @@ public:
   {
     small.resize(newMaxLength);
     large.resize(newMaxLength);
-    buf.resize(newMaxLength);
+    keyBuf.resize(newMaxLength);
 
     int C = getCapacity();
     dblHp.setData(&small[0], 1, C, &large[0], 1, C); // now redundant with the call below?
@@ -1589,7 +1589,7 @@ public:
   practice it's the largest of the small values, i.e. the front element of the min-heap of large 
   values in our double-heap. So what this function actually does is to update the sizes of the 
   max-heap (of small values) and the min-heap (of large values) in the double-heap. But 
-  conceptually, think about it simple as the readout index in an array of stored past values. */
+  conceptually, think about it simply as the readout index in an array of stored past values. */
   void setReadPosition(int newPosition, bool hard = false) 
   { setLengthAndReadPosition(L, newPosition, hard); }
 
@@ -1602,11 +1602,6 @@ public:
   weight for the value to the left is the 1-w. By default, w = 1, so we give full weight to the 
   sample to the right which is the smallest of the large values. */
   void setRightWeight(T newWeight) { w = newWeight; }
-
-
-  //void setModulatable(bool shouldBeModulatable) { modulatable = shouldBeModulatable; }
-  // maybe get rid of that at some point and just have it modulatable all the time...or maybe have
-  // different modulation modes: 0: reset, 1: fillWithLastQuantile, etc...
 
   /** Sets a pointer to a signal buffer that is driven by client code to facilitate artifact-free
   modulation of the length. If you leave this unassigned, you may see artifacts when the length
@@ -1622,9 +1617,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  /** Returns the length of the filter in samples. */
   int getLength() const { return L; }
 
+  /** Returns the readout position in the (conceptual, not actually existent) array of sorted past
+  input samples. */
+  int getReadPosition() const { return p; }
+
+  /** Returns the maximum length (in samples) that the filter currently supports, i.e. the capacity
+  of the allocated memory for the buffers and heaps. */
   int getCapacity() const { return (int) small.size(); } // large.size() == buf.size();
+  // rename to getMaxLength
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -1632,8 +1635,8 @@ public:
   /** Computes an output sample from a given input sample x. */
   T getSample(T x)
   {
-    acceptNewInput(x);         // buffer update
-    return readOutSample();    // sample readout
+    storeInput(x);       // updates double-heap and key-buffer
+    return readOutput(); // sample readout
   }
 
   /** Resets the filter into its initial state. */
@@ -1643,40 +1646,40 @@ public:
       dblHp.atIndex(n).value  = T(0);
       int k = dblHp.indexToKey(n);
       dblHp.atIndex(n).bufIdx = n;
-      buf[n] = k; }
+      keyBuf[n] = k; }
     bufIdx = 0;
   }
 
 
 protected:
 
-  void acceptNewInput(T x)
+  void storeInput(T x)
   {    
-    acceptNewInput2(x);
+    storeInput2(x);
   }
   // rename to storeInput
 
   /** Accepts a new input sample and updates our internal buffers accordingly. This will have 
   (conceptually) the effect that the oldest input sample will be remvoved from the double-heap and 
   the new input will be inserted.  */
-  void acceptNewInput1(T x)
+  void storeInput1(T x)
   {
     rsAssert(isStateConsistent(), "inconsistent state");
-    int k = buf[bufIdx];           // heap-key of oldest sample
+    int k = keyBuf[bufIdx];        // heap-key of oldest sample
     int i = dblHp.atKey(k).bufIdx; // buffer-index of oldest sample
     dblHp.replace(k, Node(x, i));  // reshuffles content of the double-heap and  buf
     bufIdx = (bufIdx+1) % L;       // updates the position in circular buffer of indices
     rsAssert(isStateConsistent(), "inconsistent state");
   }
-  // obsolete
+  // obsolete - move comments to storeInput2, rename it to storeInput
 
-  void acceptNewInput2(T x)
+  void storeInput2(T x)
   {
     rsAssert(isStateConsistent(), "inconsistent state");
-    int C = (int)buf.capacity();
-    int k = buf[bufIdx]; 
+    int C = (int)keyBuf.capacity();
+    int k = keyBuf[bufIdx]; 
     int w = (bufIdx + L) % C; // use wrap 
-    buf[w] = k;
+    keyBuf[w] = k;
     k = dblHp.replace(k, Node(x, w));
     bufIdx = (bufIdx + 1) % C;     // use wrap 
     rsAssert(isStateConsistent(), "inconsistent state");
@@ -1686,16 +1689,19 @@ protected:
   smallest of the large values and forming a linear combination. Has been factored out from 
   getSample because it's also needed for modulating the length when no delay-buffer of old samples 
   is available (i.e. when sigBuffer == nullptr because the user has not assigned it). */
-  T readOutSample()
+  T readOutput()
   {
     T yS = dblHp.getLargestSmallValue().value;   // smaller value
     T yL = dblHp.getSmallestLargeValue().value;  // larger value
     T y  = (T(1)-w)*yS + w*yL;                   // linear interpolation
     return y;
   }
-  // rename to readOutput
 
-  /** Under construction... */
+  /** This is called from setLengthAndReadPosition when its "hard" parameter is false. Instead of
+  setting up a new length and position immediately and doing a hard reset, this function adapts the 
+  sizes of the two heaps by removing or inserting data into the heaps and/or moving data between
+  the small and large heap. If N is the number of nodes that need to be removed/moved/inserted, 
+  the cost of this function is O(N*log(N)). */
   void modulateLengthAndReadPosition(int newLength, int newPosition);
 
   /** Moves the first (smallest) value of the large heap over to the small heap, such that it 
@@ -1705,6 +1711,7 @@ protected:
   always contain at least one element. */
   bool moveFirstLargeToSmall();
 
+  /** Analog to moveFirstLargeToSmall. */
   bool moveFirstSmallToLarge();
 
   /** Discards the oldest sample. This will shrink one of the two heaps, wherever the oldest sample
@@ -1726,7 +1733,7 @@ protected:
 
   /** Wraparound for the bufIdx (handles only forward wraparound, i.e. input should be 
   non-negative). */
-  int wrap(int i) { rsAssert(i >= 0); return i % (int)buf.capacity(); }
+  int wrap(int i) { rsAssert(i >= 0); return i % (int)keyBuf.capacity(); } // use size()
  
 
 
@@ -1752,31 +1759,24 @@ protected:
   void swapNodes(Node& a, Node& b)
   {
     rsSwap(a, b);
-    rsSwap(buf[a.bufIdx], buf[b.bufIdx]);
+    rsSwap(keyBuf[a.bufIdx], keyBuf[b.bufIdx]);
   }
 
 
 
   // Data:
 
-  std::vector<Node>  small, large; // storage arrays of the nodes
-  rsDoubleHeap2<Node> dblHp;       // maintains large/small as double-heap
+  std::vector<Node>   small, large;     // storage arrays of the nodes
+  rsDoubleHeap2<Node> dblHp;            // maintains large/small as double-heap
+  std::vector<int>    keyBuf;           // circular buffer of heap keys - rename to keyBuf
+  rsRingBuffer<T>*    sigBuf = nullptr; // (possibly shared) buffer of delayed input samples
 
-  // obsolete soon:
-  std::vector<int>   buf;          // circular buffer of heap keys -remove when keyBuf works
-  int bufIdx = 0;  // current index into into the circular buffer - remove when keyBuf works
+  int bufIdx = 0;    // index into keyBuf, mayb rename to keyIdx
+  int L      = 2;    // total length of filter
+  int p      = 1;    // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
+  T   w      = T(1); // weight for smallest large value in the linear interpolation
 
-  rsRingBuffer<T>*   sigBuf = nullptr;  // (possibly shared) buffer of delayed input samples
-
-
-  int L = 2;       // total length of filter
-  int p = 1;       // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
-  T   w = T(1);    // weight for smallest large value in the linear interpolation
-
-  //bool modulatable = false;  // set it to true by default - or maybe remove the switch entirely
-
-
-  // some scaffolding code
+  // some scaffolding code for development:
   //int getNodeKey(Node node);
   //void fixInconsistentBufferKeys(Node startNode);
   void makeBufferConsistent();

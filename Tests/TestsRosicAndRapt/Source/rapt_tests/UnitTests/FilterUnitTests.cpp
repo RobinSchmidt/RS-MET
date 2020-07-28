@@ -386,7 +386,6 @@ bool testMovingQuantileModulation()
   rsQuantileFilterNaive<double> fltN(maxLength, maxLength);
   rsQuantileFilterCore<double>  fltH;      // H for heap-based implementation
   fltH.setMaxLength(maxLength);
-  //fltH.setModulatable(true);    // test will return false, if this is commented
   fltH.setModulationBuffer(&rngBuf);   // for artifact free modulation of length
 
   using Vec = std::vector<double>;
@@ -423,7 +422,7 @@ bool testMovingQuantileModulation()
 
   r &= y == z;
 
-  rsPlotVectors(y, z);  // uncomment to see the result
+  //rsPlotVectors(y, z);  // uncomment to see the result
   return r;
 }
 

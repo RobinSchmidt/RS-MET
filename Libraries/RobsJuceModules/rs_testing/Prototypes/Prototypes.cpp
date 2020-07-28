@@ -810,7 +810,7 @@ bool rsQuantileFilterCore<T>::moveFirstLargeToSmall()
   int i = n.bufIdx;                         // buffer index of to be moved node
   int k = dblHp.getNumSmallValues();        // the new key for the moved node
   n  = dblHp.large.extractFirst();          // shuffles large heap and buf
-  buf[i] = k;                               // set one key value in buf
+  keyBuf[i] = k;                            // set one key value in keyBuf
   dblHp.small.insert(n);                    // shuffles small heap and buf
   return true;
 }
@@ -824,7 +824,7 @@ bool rsQuantileFilterCore<T>::moveFirstSmallToLarge()
   int i = n.bufIdx;
   int k = dblHp.getNumLargeValues() | firstBitOnly; // set the 1st bit to indicate L-key
   n  = dblHp.small.extractFirst();
-  buf[i] = k;
+  keyBuf[i] = k;
   dblHp.large.insert(n);
   return true;
 }
@@ -833,9 +833,9 @@ template<class T>
 void rsQuantileFilterCore<T>::discardOldestSample()
 {
   rsAssert(L > 2); if(L <= 2) return;
-  int k = buf[bufIdx];
+  int k = keyBuf[bufIdx];
   dblHp.remove(k);
-  bufIdx = wrap(bufIdx+1);  // we need to do step forward
+  bufIdx = wrap(bufIdx+1);              // we need to do a step forward
   L--;
 }
 
@@ -844,13 +844,13 @@ void rsQuantileFilterCore<T>::addOlderSample()
 {
   T x;
   if(sigBuf) x = sigBuf->fromNewest(L); // use actual old sample, if possible/available
-  else       x = readOutSample();       // otherwise make up something based on stored values
+  else       x = readOutput();          // otherwise make up something based on stored values
   bufIdx--;                             // we need to go a step backward
   if(bufIdx < 0) 
-    bufIdx = (int)buf.size() - 1;       // backward wrap around at 0
+    bufIdx = (int)keyBuf.size() - 1;    // backward wrap around at 0
   Node n(x, bufIdx);
   int k = dblHp.getPreliminaryKey(n);   // corresponds to the end of one the heaps
-  buf[bufIdx] = k;                      // this may get changed during the actual insert
+  keyBuf[bufIdx] = k;                   // this may get changed during the actual insert
   k = dblHp.insert(n);                  // lets the new noe float up, modifies buf
   L++;
 }
@@ -902,8 +902,8 @@ void rsQuantileFilterCore<T>::makeBufferConsistent()
     int  k  = dblHp.indexToKey(i);
     Node n  = dblHp.atIndex(i);
     int  bi = n.bufIdx;
-    buf[bi] = k;
-    keyBuf.data[bi] = k;
+    keyBuf[bi] = k;
+    //keyBuf.data[bi] = k; // why did this compile
   }
 }
 // not needed anymore
@@ -917,7 +917,7 @@ bool rsQuantileFilterCore<T>::isStateConsistent()
   bool r = true;
 
   // for converting the loop variable to a buffer index:
-  auto convert = [=](int i)->int{ return (i + bufIdx) % (int)buf.capacity(); };
+  auto convert = [=](int i)->int{ return (i + bufIdx) % (int)keyBuf.capacity(); };
   // use size instead of capacity
 
   // Check that all nodes in the double-heap have the correct back-link to their index in the 
@@ -929,7 +929,7 @@ bool rsQuantileFilterCore<T>::isStateConsistent()
   // Check that each key occurs in the buf exactly once:
   std::vector<int> tmp(L);
   for(int i = 0; i < L; i++)
-    tmp[i] = dblHp.keyToIndex(buf[convert(i)]); 
+    tmp[i] = dblHp.keyToIndex(keyBuf[convert(i)]); 
   r &= isIndexPermutation(&tmp[0], (int)tmp.size());
 
   // todo: 
@@ -945,7 +945,7 @@ bool rsQuantileFilterCore<T>::isNodeConsistent(const rsQuantileFilterCore<T>::No
   bool r = true;
 
   for(size_t i = 0; i < buf.size(); i++) {
-    int  k  = buf[i];         // key of node in i-th buffer slot, use keyBuf.data[i]
+    int  k  = keyBuf[i];      // key of node in i-th buffer slot, use keyBuf.data[i]
     Node n2 = dblHp.atKey(k); // retrieve the node
     if(n2 == n)
       r &= n.bufIdx == i; }
@@ -956,7 +956,7 @@ bool rsQuantileFilterCore<T>::isNodeConsistent(const rsQuantileFilterCore<T>::No
 template<class T>
 bool rsQuantileFilterCore<T>::isBufferSlotConsistent(int i)
 {
-  int k = buf[i];
+  int k = keyBuf[i];
   Node n = dblHp.atKey(k); // retrieve the node
   bool result = n.bufIdx == i;
   return result;

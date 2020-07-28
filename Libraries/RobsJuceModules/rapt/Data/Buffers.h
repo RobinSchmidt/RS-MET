@@ -349,6 +349,9 @@ protected:
 
 /*
 ToDo:
+-test it more thoroughly when it's completely full - there are some hickups with the moving-max 
+ filter when it operates at full capacity. at capacity-1, it still works well. but the problem
+ is more likely the moving-max filter itself
 -maybe provide push-functions that take a vector argument and pop-functions that pop a range of
  values at once
 -maybe provide some sort of random access functions:
