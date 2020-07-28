@@ -375,11 +375,6 @@ bool testMovingQuantileModulation()
   //std::vector<Settings> settings ={ {0, 4, 5}, {9, 3, 2} };
   //std::vector<Settings> settings ={ {0, 3, 2} };
 
-  // when the settings contain jumps where the total length increases, the test may still fail due
-  // to the (expected) artifacts. we need a circluar buffer to store actual past signal values to 
-  // fix this
-
-
   rsRingBuffer<double> rngBuf;
   rngBuf.setCapacity(maxLength);
 
@@ -408,13 +403,12 @@ bool testMovingQuantileModulation()
     rngBuf.getSample(x[n]);       // we must drive the modulation buffer
     y[n] = fltH.getSample(x[n]);
     z[n] = fltN.getSample(x[n]);
-    int dummy = 0;
   }
-  // heap-based version shows the resets to zero at the switches
 
 
   // todo: 
-  // -check manually correctness of results, specially at the the switch samples
+  // -test edge cases
+  // -do randomized tests
   // -use a heap-based filter and compare the results
   // -try longer filters with more drastic switches, say: med, min, max, very-short, very long
 

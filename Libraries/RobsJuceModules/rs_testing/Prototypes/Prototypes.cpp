@@ -776,7 +776,7 @@ void rsModalFilterFloatSSE2::setParameters(double w, double A, double p,
 template<class T>
 void rsQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPosition, bool hard)
 {
-  int C = getCapacity();
+  int C = getMaxLength();    // capacity
   rsAssert(newLength   <= C, "Length cannot exceed capacity");
   rsAssert(newLength   >= 2, "If L < 2, we get access violations");
   rsAssert(newPosition >= 1, "If p < 1, we get access violations");
@@ -806,8 +806,8 @@ bool rsQuantileFilterCore<T>::moveFirstLargeToSmall()
 {
   if(dblHp.getNumLargeValues() <= 1)
     return false;
-  Node n = dblHp.getSmallestLargeValue();   // this is the node we want to move
-  int i = n.bufIdx;                         // buffer index of to be moved node
+  Node n = dblHp.getSmallestLargeValue();   // the node we want to move
+  int i = n.bufIdx;                         // index in keyBuf of to-be-moved node
   int k = dblHp.getNumSmallValues();        // the new key for the moved node
   n  = dblHp.large.extractFirst();          // shuffles large heap and buf
   keyBuf[i] = k;                            // set one key value in keyBuf

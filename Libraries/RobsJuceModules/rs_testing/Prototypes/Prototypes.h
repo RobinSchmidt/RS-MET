@@ -1566,13 +1566,12 @@ public:
   /** Sets the maximum length of the filter. This may re-allocate memory. */
   void setMaxLength(int newMaxLength)
   {
+    // newMaxLength = rsNextPowerOfTwo(newMaxLength); // use later for optimizing wraparounds
+    // mask = newMaxLength-1;
+
     small.resize(newMaxLength);
     large.resize(newMaxLength);
     keyBuf.resize(newMaxLength);
-
-    int C = getCapacity();
-    dblHp.setData(&small[0], 1, C, &large[0], 1, C); // now redundant with the call below?
-
     setLengthAndReadPosition(L, p, true);
   }
   // maybe try to optimize the memory usage - we actually just need one nodes array of length
@@ -1626,8 +1625,8 @@ public:
 
   /** Returns the maximum length (in samples) that the filter currently supports, i.e. the capacity
   of the allocated memory for the buffers and heaps. */
-  int getCapacity() const { return (int) small.size(); } // large.size() == buf.size();
-  // rename to getMaxLength
+  int getMaxLength() const { return (int) small.size(); } // large.size() == buf.size();
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -1653,36 +1652,22 @@ public:
 
 protected:
 
-  void storeInput(T x)
-  {    
-    storeInput2(x);
-  }
-  // rename to storeInput
+  //-----------------------------------------------------------------------------------------------
+  /** \name Internals */
 
   /** Accepts a new input sample and updates our internal buffers accordingly. This will have 
   (conceptually) the effect that the oldest input sample will be remvoved from the double-heap and 
-  the new input will be inserted.  */
-  void storeInput1(T x)
+  the new input will be inserted (what actually happens is a replacement, but that's an 
+  implementation detail). */
+  void storeInput(T x)
   {
-    rsAssert(isStateConsistent(), "inconsistent state");
+    //rsAssert(isStateConsistent(), "inconsistent state");
     int k = keyBuf[bufIdx];        // heap-key of oldest sample
-    int i = dblHp.atKey(k).bufIdx; // buffer-index of oldest sample
-    dblHp.replace(k, Node(x, i));  // reshuffles content of the double-heap and  buf
-    bufIdx = (bufIdx+1) % L;       // updates the position in circular buffer of indices
-    rsAssert(isStateConsistent(), "inconsistent state");
-  }
-  // obsolete - move comments to storeInput2, rename it to storeInput
-
-  void storeInput2(T x)
-  {
-    rsAssert(isStateConsistent(), "inconsistent state");
-    int C = (int)keyBuf.capacity();
-    int k = keyBuf[bufIdx]; 
-    int w = (bufIdx + L) % C; // use wrap 
-    keyBuf[w] = k;
-    k = dblHp.replace(k, Node(x, w));
-    bufIdx = (bufIdx + 1) % C;     // use wrap 
-    rsAssert(isStateConsistent(), "inconsistent state");
+    int w = wrap(bufIdx + L);      // (write) index of new node in keyBuf
+    keyBuf[w] = k;                 // store preliminary key (== old node's key) in kexBuf at w
+    dblHp.replace(k, Node(x, w));  // replace the old node, reshuffles heaps and keyBuf
+    bufIdx = wrap(bufIdx + 1);     // update position in circular buffer of keys
+    //rsAssert(isStateConsistent(), "inconsistent state");
   }
 
   /** Produces the current ouput sample by reading out the largest of the small values and the 
@@ -1722,21 +1707,19 @@ protected:
   circular buffer by one. */
   void addOlderSample();
 
-
-
-  /** Conversion froma coneceptual buffer index in the range 0..L-1 to the actual index in the 
+  /** Conversion from a coneceptual buffer index in the range 0..L-1 to the actual index in the 
   range 0..buf.size()-1 */
   //int convertBufIndex(int indexFromOldest)
-  //{
-  //  return (indexFromOldest + bufIdx) % (int)buf.size();
-  //}
+  //{ return (indexFromOldest + bufIdx) % (int)buf.size(); }
 
   /** Wraparound for the bufIdx (handles only forward wraparound, i.e. input should be 
   non-negative). */
-  int wrap(int i) { rsAssert(i >= 0); return i % (int)keyBuf.capacity(); } // use size()
+  int wrap(int i) { rsAssert(i >= 0); return i % (int)keyBuf.size(); }
+  // todo: optimize using a bitmask -> restrict buffer-sizes to powers of two
  
 
-
+  //-----------------------------------------------------------------------------------------------
+  /** \name Data */
 
   /** A node stores an incoming signal value together with its index in the circular buffer. The 
   "less-than" comparison is based on the signal value. */
@@ -1762,10 +1745,6 @@ protected:
     rsSwap(keyBuf[a.bufIdx], keyBuf[b.bufIdx]);
   }
 
-
-
-  // Data:
-
   std::vector<Node>   small, large;     // storage arrays of the nodes
   rsDoubleHeap2<Node> dblHp;            // maintains large/small as double-heap
   std::vector<int>    keyBuf;           // circular buffer of heap keys - rename to keyBuf
@@ -1775,6 +1754,10 @@ protected:
   int L      = 2;    // total length of filter
   int p      = 1;    // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
   T   w      = T(1); // weight for smallest large value in the linear interpolation
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Scaffolding (may be removed when class is finished) */
 
   // some scaffolding code for development:
   //int getNodeKey(Node node);
@@ -1862,18 +1845,16 @@ public:
 
 protected:
 
-  void updateInternals()
+  /** Computes filter algorithm parameters length L, readout point p (both in samples) and weight 
+  w for the linear interpolation from user parameters length (in seconds), quantile 
+  (normalized 0..1) and sampleRate. */
+  void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w)
   {
-    // Compute length, readout point the weight for the linear interpolation:
-    int L = (int) round(length * sampleRate); // length
-    T   p = quantile * sampleRate * (L-1);    // readout position in sorted array
-    int i = (int) floor(p);                   // integer part
-    T   f = p - i;                            // fractional part
-
-    // Set the core up:
-    core.setLengthAndReadPosition(L, i+1);    // i+1 points to smallest large value
-    core.setRightWeight(f);                   // ...which must be weighted by f
-
+    *L  = (int) round(length * sampleRate);  // length
+    T q = quantile * sampleRate * (*L - 1);  // readout position in sorted array
+    *p  = (int) floor(q);                    // integer part (floor)
+    *w  = q - *p;                            // fractional part
+    *p += 1;                                 // algo wants the ceil
     // ...we may need to take some special care when i == 0 or i == L-1 because it would make one
     // of the heaps get a zero length - do some unit tests - check especially quantile == 0 and
     // quantile == 1, for both even and odd lengths - this should give min and max filters - we 
@@ -1882,10 +1863,26 @@ protected:
     // modulatable without harsh artifacts - try to fix that - instead of hard resetting, we should
     // just redistribute the data between the heaps, possibly discard some or fill up with zeros - 
     // it may be tricky to handle the update of the circular buffer
+    // todo: check, if it also works when p is integer, i.e. floor(p) == ceil(p)
+  }
 
+
+  void updateInternals()
+  {
+    // compute internal core parameters:
+    int L, p; T w;
+    convertParameters(length, quantile, sampleRate, &L, &p, &w);
+
+    // Set the core up:
+    core.setLengthAndReadPosition(L, p);
+    core.setRightWeight(w);
+
+    // todo: perhaps set up a second core (for bandpass mode) and a delay-buffer
 
     dirty = false;
   }
+  // when we want to have two filters for implementing bandpass, etc. we may need a function to 
+  // compute L,p,w from length,sampleRate,quantile
 
   void allocateResources()
   {

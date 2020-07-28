@@ -1348,7 +1348,7 @@ void quantileFilter()
 {
   double fs = 1;     // sample rate
   int    N  = 200;   // number of samples
-  int    L  = 7;     // filter length in samples
+  int    L  = 8;     // filter length in samples
 
 
   rsQuantileFilter<double> flt;
