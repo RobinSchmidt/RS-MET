@@ -1778,7 +1778,7 @@ of the moving quantile filter. It uses a more intuitive, audio-friendly parametr
 adds features such as highpass mode, .... */
 
 template<class T>
-class rsQuantileFilter  // maybe rename to rsQuantileFilter
+class rsQuantileFilter
 {
 
 public:
@@ -1789,6 +1789,7 @@ public:
     core1.setModulationBuffer(&delayLine);
     core2.setModulationBuffer(&delayLine);
     dirty = true;
+    //updateInternals(); // hangs - why?
   }
 
 
@@ -1817,7 +1818,7 @@ public:
 
   void setFrequency(T newFrequency)
   {
-    setLength(T(1) / newFrequency); 
+    setLength1(T(1) / newFrequency); 
     // maybe experiment with proportionality factors - figure out, where the cutoff frequency is
     // for a median filter by feeding sinusoidal inputs and measure the output amplitude (the 
     // output may be a distorted sine? or maybe it will be zero, when the length is exactly one
@@ -1840,17 +1841,12 @@ public:
     dirty = true;
   }
 
-  void setLength(T newLength)
-  {
-    length = newLength;
-    dirty = true;
-  }
+  void setLength1(T newLength) { length1 = newLength; dirty = true; }
+  // get rid - user should use setFrequency
 
-  void setQuantile(T newQuantile)
-  {
-    quantile = newQuantile;
-    dirty = true;
-  }
+  void setQuantile1(T newQuantile1) { quantile1 = newQuantile1; dirty = true; }
+
+  //void setQuantile2(T newQuantile2) { quantile2 = newQuantile2; dirty = true; }
 
 
   // getDelay()...but what should it return in bandpass mode? or maybe have two functions
@@ -1923,16 +1919,8 @@ protected:
     *p  = (int) floor(*q);                   // integer part (floor)
     *w  = *q - *p;                           // fractional part
     *p += 1;                                 // algo wants the ceil
-    // ...we may need to take some special care when p == 0 or p == L-1 because it would make one
-    // of the heaps get a zero length - do some unit tests - check especially quantile == 0 and
-    // quantile == 1, for both even and odd lengths - this should give min and max filters - we 
-    // still need two heaps with nonzero size
-    // todo: core.setLengthAndReadPosition resets the core which implies that nothing is 
-    // modulatable without harsh artifacts - try to fix that - instead of hard resetting, we should
-    // just redistribute the data between the heaps, possibly discard some or fill up with zeros - 
-    // it may be tricky to handle the update of the circular buffer
-    // todo: check, if it also works when p is integer, i.e. floor(p) == ceil(p)
-    // todo: maybe compute also the delay for the delayline/ringbuffer
+    if(*p > *L - 1) {                        // quantile == 1 (maximum) needs special care
+      *p = *L - 1; *w = T(1);  }
   }
 
 
@@ -1940,7 +1928,7 @@ protected:
   {
     // compute internal core parameters:
     int L, p; T w;
-    convertParameters(length, quantile, sampleRate, &L, &p, &w, &delay1);
+    convertParameters(length1, quantile1, sampleRate, &L, &p, &w, &delay1);
     // we need to use length1, qunatile1
 
     // Set the core up:
@@ -1968,8 +1956,8 @@ protected:
   //T feedback   = 0.0;
   T sampleRate = 44100;         // in Hz
   T maxLength  = 0.1;           // in seconds
-  T length     = 0.01;          // in seconds
-  T quantile   = 0.5;           // in 0..1, 0.5 is median
+  T length1    = 0.01;          // in seconds  ...move to algo parameters or get rid
+  T quantile1  = 0.5;           // in 0..1, 0.5 is median
   T bandwidth  = 1.0;           // in octaves
   Mode mode    = Mode::lowpass;
 
@@ -1979,10 +1967,8 @@ protected:
   T delay2 = 0.0;
   std::atomic<bool> dirty = true;  // flag to indicate that algo params must be recalculated
 
-  // rename hpDelay to delay1
-
   // embedded objects:
-  rsQuantileFilterCore<T> core1, core2;  // todo: have core1, core2 to facilitate bandpass mode, etc.
+  rsQuantileFilterCore<T> core1, core2;
   rsDelayBuffer<T> delayLine;
 
 };

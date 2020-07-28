@@ -1347,18 +1347,19 @@ void seriesConnectionDecay()
 void quantileFilter()
 {
   double fs = 1;     // sample rate
-  int    N  = 200;   // number of samples
-  int    L  = 5;     // filter length in samples (can we make this a double, too?)
-  double q  = 0.5;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
+  int    N  = 500;   // number of samples
+  int    L  = 10;    // filter length in samples (can we make this a double, too?)
+  double q  = 1.0;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
 
 
   rsQuantileFilter<double> flt;
 
   // we should have a combined setMaxLengthAndSampleRate function to avoid re-allocating twice:
-  flt.setMaxLength(16);
+  flt.setMaxLength(L);
   flt.setSampleRate(1);
-  flt.setLength(L);
-  flt.setQuantile(q);
+  //flt.setLength(L);
+  flt.setFrequency(1.0/L);
+  flt.setQuantile1(q);
 
   //flt.setFrequency(100.0);
   //flt.setFeedback(0.0);    // later
@@ -1405,7 +1406,8 @@ void quantileFilter()
   //rsPlotVectors(y, t);
   //rsPlotVectors(t, z);
   //rsPlotVectors(t, z, y);
-  rsPlotVectors(z, y);  // for even lengths, z is the better reference - t has a delay there
+  //rsPlotVectors(z, y);  // for even lengths, z is the better reference - t has a delay there
+  rsPlotVectors(x, y);
 
   int dummy = 0;
 
@@ -1419,8 +1421,11 @@ void quantileFilter()
 
 
   // ToDo:
-  // -parametrize in terms of length and a real number for the quantile between 0..1
-  // -it should also work with 0.0 and 1.0 which should give moving min/max filters
+  // -it should also work with q = 0.0 and q = 1.0 which should give moving min/max filters
+  //  ..ok 0 works, but 1 does not (it hangs :-O), with 0.999, it works and really gives the 
+  //  maximum - the problem has to do with the fact that floor(q') == ceil(q'), where q' is the
+  //  readout position
+  // -the length seems to be one sample too short - easy to test with quantiles 0 or 1
   // -the length should be set up in a physical unit like seconds, thenwe may define a cutoff 
   //  frequency which is inversely proportional - needs a sample-rate - wrap this into a subclass
   //  or use composition
@@ -1433,4 +1438,6 @@ void quantileFilter()
   //   compute the non-integer read position q as:
   //     T q = quantile * sampleRate * (*L - 1);
   //   maybe we can just use this formula as is but with the non-integer L?
+  // -i think, this filter could be especially interesting to create filtered noises, it tends
+  //  to some sort of "sample-and-hold" behavior - maybe try in conjunction with the TriModalNoise
 }
