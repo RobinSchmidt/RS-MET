@@ -386,8 +386,8 @@ bool testMovingQuantileModulation()
   rsQuantileFilterNaive<double> fltN(maxLength, maxLength);
   rsQuantileFilterCore<double>  fltH;      // H for heap-based implementation
   fltH.setMaxLength(maxLength);
-  fltH.setModulatable(true);    // test will return false, if this is commented
-  fltH.setModulationBuffer(&rngBuf);
+  //fltH.setModulatable(true);    // test will return false, if this is commented
+  fltH.setModulationBuffer(&rngBuf);   // for artifact free modulation of length
 
   using Vec = std::vector<double>;
   Vec x = rsRandomIntVector(N, 0, 99);
@@ -406,7 +406,7 @@ bool testMovingQuantileModulation()
       rngBuf.setLength(nS+nL);
       i++;  
     }
-    rngBuf.getSample(x[n]);
+    rngBuf.getSample(x[n]);       // we must drive the modulation buffer
     y[n] = fltH.getSample(x[n]);
     z[n] = fltN.getSample(x[n]);
     int dummy = 0;

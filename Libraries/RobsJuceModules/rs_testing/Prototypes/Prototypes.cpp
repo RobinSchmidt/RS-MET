@@ -774,21 +774,19 @@ void rsModalFilterFloatSSE2::setParameters(double w, double A, double p,
 #undef small // this is #defined in some silly windows header - WTF?
 
 template<class T>
-void rsQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPosition)
+void rsQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPosition, bool hard)
 {
   int C = getCapacity();
   rsAssert(newLength   <= C, "Length cannot exceed capacity");
   rsAssert(newLength   >= 2, "If L < 2, we get access violations");
   rsAssert(newPosition >= 1, "If p < 1, we get access violations");
-
-  if( modulatable )  // maybe this should be a parameter rather than a member (defaulting to true)
-                     // or maybe call it resetFilter and default to false
-    modulateLengthAndReadPosition(newLength, newPosition);
-  else {
+  if(hard) {
     L = newLength;
     p = newPosition;
     dblHp.setData(&small[0], p, C, &large[0], L-p, C);
-    reset(); }
+    reset();  }
+  else 
+    modulateLengthAndReadPosition(newLength, newPosition);
 }
 
 template<class T>

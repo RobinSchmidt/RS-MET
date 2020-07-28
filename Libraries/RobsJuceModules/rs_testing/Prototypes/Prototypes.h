@@ -1571,17 +1571,18 @@ public:
     buf.resize(newMaxLength);
 
     int C = getCapacity();
-    dblHp.setData(&small[0], 1, C, &large[0], 1, C); 
+    dblHp.setData(&small[0], 1, C, &large[0], 1, C); // now redundant with the call below?
 
-    setLengthAndReadPosition(L, p);
+    setLengthAndReadPosition(L, p, true);
   }
   // maybe try to optimize the memory usage - we actually just need one nodes array of length
   // newMaxLength of which one part is used for the min-heap and the other for the max-heap - but 
   // maybe that would make modulating the length more difficult - if we use only one buffer, we may 
-  // have to move around more data, when the length changes (i guess) - we'll see
+  // have to move around more data, when the length changes (i guess) - we'll see - hmm maybe not
 
   /** Sets the length of the filter, i.e. the number of past samples that we look at. */
-  void setLength(int newLength) { setLengthAndReadPosition(newLength, p); }
+  void setLength(int newLength, bool hard = false) 
+  { setLengthAndReadPosition(newLength, p, hard); }
 
   /** Sets the read position in the sorted array of stored past values. This array does not exist 
   literally but only conceptually (in the naive implementation, this actually exists literally). In 
@@ -1589,10 +1590,11 @@ public:
   values in our double-heap. So what this function actually does is to update the sizes of the 
   max-heap (of small values) and the min-heap (of large values) in the double-heap. But 
   conceptually, think about it simple as the readout index in an array of stored past values. */
-  void setReadPosition(int newPosition) { setLengthAndReadPosition(L, newPosition); }
+  void setReadPosition(int newPosition, bool hard = false) 
+  { setLengthAndReadPosition(L, newPosition, hard); }
 
   /** Sets length and read-position at once. */
-  void setLengthAndReadPosition(int newLength, int newPosition/*, bool hard = false*/);
+  void setLengthAndReadPosition(int newLength, int newPosition, bool hard = false);
 
   /** When a higher level class wants to implement non-integer readout positions, we need to do a 
   linear interpolation between the values at sorted-array positions to the left and to the right of 
@@ -1602,20 +1604,18 @@ public:
   void setRightWeight(T newWeight) { w = newWeight; }
 
 
-  void setModulatable(bool shouldBeModulatable)
-  {
-    modulatable = shouldBeModulatable;
-  }
+  //void setModulatable(bool shouldBeModulatable) { modulatable = shouldBeModulatable; }
   // maybe get rid of that at some point and just have it modulatable all the time...or maybe have
   // different modulation modes: 0: reset, 1: fillWithLastQuantile, etc...
 
   /** Sets a pointer to a signal buffer that is driven by client code to facilitate artifact-free
   modulation of the length. If you leave this unassigned, you may see artifacts when the length
-  of the filter is switched to a higher value, due to the fact that we don't know the older 
-  samples here and just have to make up some values to store in the heaps. When the true old 
+  of the filter is switched from a lower to a higher value, due to the fact that we don't know the 
+  older samples here and just have to make up some values to fill up the heaps. When the true old 
   samples are available via such a buffer, these artifacts can be avoided. As said, client code 
   is supposed to feed/drive this buffer because this will also facilitate sharing of such buffers 
-  to create highpass and bandpass versions...  */
+  to create highpass and bandpass versions. That means before calling getSample on this object, 
+  client code should have called getSample on the buffer. */
   void setModulationBuffer(rsRingBuffer<T>* newBuffer) { sigBuf = newBuffer; }
 
 
@@ -1714,7 +1714,6 @@ protected:
   /** Adds a (dummy) sample to one of the heaps as new oldest sample. This will also grow the 
   circular buffer by one. */
   void addOlderSample();
-t
 
 
 
@@ -1727,11 +1726,7 @@ t
 
   /** Wraparound for the bufIdx (handles only forward wraparound, i.e. input should be 
   non-negative). */
-  int wrap(int i) 
-  { 
-    rsAssert(i >= 0);
-    return i % (int)buf.capacity();  
-  }
+  int wrap(int i) { rsAssert(i >= 0); return i % (int)buf.capacity(); }
  
 
 
@@ -1778,7 +1773,7 @@ t
   int p = 1;       // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
   T   w = T(1);    // weight for smallest large value in the linear interpolation
 
-  bool modulatable = false;  // set it to true by default - or maybe remove the switch entirely
+  //bool modulatable = false;  // set it to true by default - or maybe remove the switch entirely
 
 
   // some scaffolding code
