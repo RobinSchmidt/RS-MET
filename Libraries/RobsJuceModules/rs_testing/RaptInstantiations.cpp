@@ -46,6 +46,11 @@ template bool RAPT::rsLess(const double&, const double&);
 
 template class rsMovingMaximumFilter<int>;
 template class rsMovingMaximumFilter<double>;
+
+//template RAPT::rsBinaryHeap<rsQuantileFilterCore<double>::Node>;
+template rsBinaryHeap<rsQuantileFilterCore<double>::Node>; // temporary
+template rsDoubleHeap<rsQuantileFilterCore<double>::Node>; // ...get rid asap
+
 template class rsQuantileFilter<double>;
 
 template bool RAPT::rsLess(const int& left, const int& right);
@@ -148,8 +153,8 @@ template double rsArrayTools::maxAbs(const std::complex<double> *buffer, int len
 // rsArrayTools<rosic::rsFloat32x4>
 //template void rsArrayTools::fillWithRandomValues(rosic::rsFloat32x4* x, int N, double min, double max, int seed);
 
-
-
+template RAPT::rsBinaryHeap<int>;
+template RAPT::rsDoubleHeap<int>;
 
 
 template void rsMatrixTools::initMatrix(double** A, int N, int M, double value);

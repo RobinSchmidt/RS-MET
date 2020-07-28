@@ -33,8 +33,6 @@ using namespace rotes;
 // passed &= runUnitTest(&triangleRasterization,  "Triangle Rasterization");
 // in UnitTests.cpp
 
-
-
 int main(int argc, char* argv[])
 {
   // Here, a lot of experimentation and test functions are called. It's for research and 
