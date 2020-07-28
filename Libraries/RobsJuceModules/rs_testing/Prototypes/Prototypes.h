@@ -1608,8 +1608,9 @@ public:
   older samples here and just have to make up some values to fill up the heaps. When the true old 
   samples are available via such a buffer, these artifacts can be avoided. As said, client code 
   is supposed to feed/drive this buffer because this will also facilitate sharing of such buffers 
-  to create highpass and bandpass versions. That means before calling getSample on this object, 
-  client code should have called getSample on the buffer. */
+  between a bunch of parallel quantile filters or to create a highpass version. That means before
+  calling setLength (and then getSample) on this object, client code should have called getSample
+  on the buffer object. */
   void setModulationBuffer(rsDelayBuffer<T>* newBuffer) { sigBuf = newBuffer; }
 
 
@@ -1711,6 +1712,7 @@ protected:
   range 0..buf.size()-1 */
   //int convertBufIndex(int indexFromOldest)
   //{ return (indexFromOldest + bufIdx) % (int)buf.size(); }
+  // we don't really need this anymore - this was meant for scaffold code
 
   /** Wraparound for the bufIdx (handles only forward wraparound, i.e. input should be 
   non-negative). */
@@ -1748,11 +1750,11 @@ protected:
   std::vector<Node>   small, large;     // storage arrays of the nodes
   rsDoubleHeap2<Node> dblHp;            // maintains large/small as double-heap
   std::vector<int>    keyBuf;           // circular buffer of heap keys - rename to keyBuf
-  rsDelayBuffer<T>*    sigBuf = nullptr; // (possibly shared) buffer of delayed input samples
+  rsDelayBuffer<T>*   sigBuf = nullptr; // (possibly shared) buffer of delayed input samples
 
   int bufIdx = 0;    // index into keyBuf, mayb rename to keyIdx
   int L      = 2;    // total length of filter
-  int p      = 1;    // readout position as value 0 <= q < L (is 0 and L-1 actually allowed? test!)
+  int p      = 1;    // readout position, 1 <= p <= L-1
   T   w      = T(1); // weight for smallest large value in the linear interpolation
 
 
@@ -1760,7 +1762,7 @@ protected:
   /** \name Scaffolding (may be removed when class is finished) */
 
   // some scaffolding code for development:
-  //int getNodeKey(Node node);
+  //int getNodeKey(Node node);  // O(N)
   //void fixInconsistentBufferKeys(Node startNode);
   void makeBufferConsistent();
 
@@ -1768,6 +1770,7 @@ protected:
   bool isStateConsistent(); 
   bool isNodeConsistent(const Node& n);
   bool isBufferSlotConsistent(int i);
+  // maybe don't delete them, these are nice for documentation purposes
 
 };
 

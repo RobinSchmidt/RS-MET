@@ -477,6 +477,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\StandardContainerTools.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Trees.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2473,6 +2476,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\MultiArray.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Range.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\StandardContainerTools.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Trees.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\OnePoleFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.h"/>
@@ -3157,7 +3161,6 @@
     <None Include="..\..\Source\rosic_tests\PortedFromRSLib\Experiments\ConicsURLs.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\License.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\ReadMe.txt"/>
-    <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\temp.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Modulators\Ideas.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\romos\TestSuite\InputSequences.txt"/>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\romos\Documentation.txt"/>

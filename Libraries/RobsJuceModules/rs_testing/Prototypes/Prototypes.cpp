@@ -776,10 +776,11 @@ void rsModalFilterFloatSSE2::setParameters(double w, double A, double p,
 template<class T>
 void rsQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPosition, bool hard)
 {
-  int C = getMaxLength();    // capacity
-  rsAssert(newLength   <= C, "Length cannot exceed capacity");
-  rsAssert(newLength   >= 2, "If L < 2, we get access violations");
-  rsAssert(newPosition >= 1, "If p < 1, we get access violations");
+  int C = getMaxLength(); // capacity
+  rsAssert(newLength   <= C,           "Length cannot exceed capacity");
+  rsAssert(newLength   >= 2,           "We require L >= 2");
+  rsAssert(newPosition >= 1,           "We require p <= 1");
+  rsAssert(newPosition <= newLength-1, "We require p <= L-1");
   if(hard) {
     L = newLength;
     p = newPosition;
@@ -847,7 +848,7 @@ void rsQuantileFilterCore<T>::addOlderSample()
   else       x = readOutput();          // otherwise make up something based on stored values
   bufIdx--;                             // we need to go a step backward
   if(bufIdx < 0) 
-    bufIdx = (int)keyBuf.size() - 1;    // backward wrap around at 0
+    bufIdx = (int)keyBuf.size() - 1;    // backward wrap-around at 0
   Node n(x, bufIdx);
   int k = dblHp.getPreliminaryKey(n);   // corresponds to the end of one the heaps
   keyBuf[bufIdx] = k;                   // this may get changed during the actual insert
@@ -903,7 +904,6 @@ void rsQuantileFilterCore<T>::makeBufferConsistent()
     Node n  = dblHp.atIndex(i);
     int  bi = n.bufIdx;
     keyBuf[bi] = k;
-    //keyBuf.data[bi] = k; // why did this compile
   }
 }
 // not needed anymore

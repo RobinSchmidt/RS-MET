@@ -5,7 +5,8 @@ max-value. The template type must define an appropriate '-' operator (subtractio
 comparison operators.
 
 \todo: express all comparisons internally in terms of the "<=" operator, such that the
-type only needs to define this single comparison operator  */
+type only needs to define this single comparison operator  
+maybe rename to interval */
 
 template<class T>
 class rsRange

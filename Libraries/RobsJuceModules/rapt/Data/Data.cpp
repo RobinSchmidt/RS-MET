@@ -8,5 +8,6 @@ namespace RAPT
 #include "StandardContainerTools.cpp"
 #include "Buffers.cpp"
 #include "MultiArray.cpp"
+#include "Trees.cpp"
 
 }

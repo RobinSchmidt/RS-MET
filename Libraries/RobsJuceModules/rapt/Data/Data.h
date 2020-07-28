@@ -10,6 +10,8 @@ namespace RAPT
 #include "Buffers.h"
 #include "Range.h"
 #include "MultiArray.h"
+#include "Trees.h"
+
 
 }
 

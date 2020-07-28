@@ -1349,7 +1349,7 @@ void quantileFilter()
   double fs = 1;     // sample rate
   int    N  = 500;   // number of samples
   int    L  = 8;    // filter length in samples (can we make this a double, too?)
-  double q  = 0.9;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
+  double q  = 0.0;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
 
 
 

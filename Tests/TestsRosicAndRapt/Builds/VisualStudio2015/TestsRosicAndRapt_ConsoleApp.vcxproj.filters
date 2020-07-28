@@ -721,6 +721,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\StandardContainerTools.cpp">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Trees.cpp">
+      <Filter>JUCE Modules\rapt\Data</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.cpp">
       <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
     </ClCompile>
@@ -2910,6 +2913,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\StandardContainerTools.h">
       <Filter>JUCE Modules\rapt\Data</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Trees.h">
+      <Filter>JUCE Modules\rapt\Data</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.h">
       <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
     </ClInclude>
@@ -4957,9 +4963,6 @@
     </None>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\LinearAlgebra\LaPackCPP\ReadMe.txt">
       <Filter>JUCE Modules\rapt\Math\LinearAlgebra\LaPackCPP</Filter>
-    </None>
-    <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\temp.txt">
-      <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </None>
     <None Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Modulators\Ideas.txt">
       <Filter>JUCE Modules\rapt\Modulators</Filter>
