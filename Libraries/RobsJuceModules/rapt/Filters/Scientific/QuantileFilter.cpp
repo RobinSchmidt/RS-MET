@@ -1,0 +1,135 @@
+#undef small
+
+template<class T>
+void rsQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPosition, bool hard)
+{
+  int C = getMaxLength(); // capacity
+  rsAssert(newLength   <= C,           "Length cannot exceed capacity");
+  rsAssert(newLength   >= 2,           "We require L >= 2");
+  rsAssert(newPosition >= 1,           "We require p <= 1");
+  rsAssert(newPosition <= newLength-1, "We require p <= L-1");
+  if(hard) {
+    L = newLength;
+    p = newPosition;
+    dblHp.setData(&small[0], p, C, &large[0], L-p, C);
+    reset();  }
+  else 
+    modulateLengthAndReadPosition(newLength, newPosition);
+}
+
+template<class T>
+void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
+{
+  int numSmall = newPosition;
+  int numLarge = newLength - numSmall;
+  while(L > newLength) discardOldestSample();
+  while(L < newLength) addOlderSample();
+  while(dblHp.getNumSmallValues() < numSmall) moveFirstLargeToSmall();
+  while(dblHp.getNumLargeValues() < numLarge) moveFirstSmallToLarge();
+  p = dblHp.getNumSmallValues();
+}
+
+template<class T>
+bool rsQuantileFilterCore<T>::moveFirstLargeToSmall()
+{
+  if(dblHp.getNumLargeValues() <= 1)
+    return false;
+  Node n = dblHp.getSmallestLargeValue();   // the node we want to move
+  int i = n.bufIdx;                         // index in keyBuf of to-be-moved node
+  int k = dblHp.getNumSmallValues();        // the new key for the moved node
+  n  = dblHp.large.extractFirst();          // shuffles large heap and buf
+  keyBuf[i] = k;                            // set one key value in keyBuf
+  dblHp.small.insert(n);                    // shuffles small heap and buf
+  return true;
+}
+
+template<class T>
+bool rsQuantileFilterCore<T>::moveFirstSmallToLarge()
+{
+  if(dblHp.getNumSmallValues() <= 1)
+    return false;
+  Node n = dblHp.getLargestSmallValue();
+  int i = n.bufIdx;
+  int k = dblHp.getNumLargeValues() | firstBitOnly; // set the 1st bit to indicate L-key
+  n  = dblHp.small.extractFirst();
+  keyBuf[i] = k;
+  dblHp.large.insert(n);
+  return true;
+}
+
+template<class T>
+void rsQuantileFilterCore<T>::discardOldestSample()
+{
+  rsAssert(L > 2); if(L <= 2) return;
+  int k = keyBuf[bufIdx];
+  dblHp.remove(k);
+  bufIdx = wrap(bufIdx+1);              // we need to do a step forward
+  L--;
+}
+
+template<class T>
+void rsQuantileFilterCore<T>::addOlderSample()
+{
+  T x;
+  if(sigBuf) x = sigBuf->fromNewest(L); // use actual old sample, if possible/available
+  else       x = readOutput();          // otherwise make up something based on stored values
+  bufIdx--;                             // we need to go a step backward
+  if(bufIdx < 0) 
+    bufIdx = (int)keyBuf.size() - 1;    // backward wrap-around at 0
+  Node n(x, bufIdx);
+  int k = dblHp.getPreliminaryKey(n);   // corresponds to the end of one the heaps
+  keyBuf[bufIdx] = k;                   // this may get changed during the actual insert
+  k = dblHp.insert(n);                  // lets the new noe float up, modifies buf
+  L++;
+}
+
+template<class T>
+bool rsQuantileFilterCore<T>::isStateConsistent()
+{
+  bool r = true;
+
+  // for converting the loop variable to a buffer index:
+  auto convert = [=](int i)->int{ return (i + bufIdx) % (int)keyBuf.capacity(); };
+  // use size instead of capacity
+
+  // Check that all nodes in the double-heap have the correct back-link to their index in the 
+  // delay-buffer. This back-link is needed to update the delay-buffer when nodes in the heap are
+  // swapped during floatUp/Down:
+  for(int i = 0; i < L; i++)
+    r &= isBufferSlotConsistent(convert(i));
+
+  // Check that each key occurs in the buf exactly once:
+  std::vector<int> tmp(L);
+  for(int i = 0; i < L; i++)
+    tmp[i] = dblHp.keyToIndex(keyBuf[convert(i)]); 
+  r &= isIndexPermutation(&tmp[0], (int)tmp.size());
+
+  // todo: 
+  // -check that the sum of the heap sizes matches the buffer size
+  // -check that each buffer index occurs in the heap exactly once
+
+  return r;
+}
+
+template<class T>
+bool rsQuantileFilterCore<T>::isNodeConsistent(const rsQuantileFilterCore<T>::Node& n)
+{
+  bool r = true;
+
+  for(size_t i = 0; i < buf.size(); i++) {
+    int  k  = keyBuf[i];      // key of node in i-th buffer slot, use keyBuf.data[i]
+    Node n2 = dblHp.atKey(k); // retrieve the node
+    if(n2 == n)
+      r &= n.bufIdx == i; }
+
+  return r;
+}
+
+template<class T>
+bool rsQuantileFilterCore<T>::isBufferSlotConsistent(int i)
+{
+  int k = keyBuf[i];
+  Node n = dblHp.atKey(k); // retrieve the node
+  bool result = n.bufIdx == i;
+  return result;
+}

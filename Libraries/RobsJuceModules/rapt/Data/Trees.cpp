@@ -73,6 +73,8 @@ int rsBinaryHeap<T>::floatDown(int i)
 
 //=================================================================================================
 
+#undef small
+
 template<class T>
 int rsDoubleHeap<T>::replace(int key, const T& newValue)
 {
