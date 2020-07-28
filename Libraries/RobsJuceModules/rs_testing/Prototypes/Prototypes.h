@@ -1786,13 +1786,27 @@ public:
   rsQuantileFilter()
   {
     allocateResources();
-    core.setModulationBuffer(&delayLine);
+    core1.setModulationBuffer(&delayLine);
+    core2.setModulationBuffer(&delayLine);
     dirty = true;
   }
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
+
+  /** Enumeration of availabel filter modes. */
+  enum class Mode
+  {
+    lowpass,
+    highpass,
+    bandpass,
+    bandstop  
+    // todo: lowshelf, highshelf, bandshelf
+  };
+
+  /** Sets the mode of the filter. @see Mode */
+  void setMode(Mode newMode) { mode = newMode; }
 
   void setSampleRate(T newSampleRate)
   {
@@ -1839,18 +1853,48 @@ public:
   }
 
 
+  // getDelay()...but what should it return in bandpass mode? or maybe have two functions
+  // getDelay1, getDelay2
+
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
   T getSample(T x)
   {
+    delayLine.getSample(x);
+    // Must be called *before* updateInternals because in updateInternals, we may modulate the
+    // length and the artifact-avoidance strategy for the modulation assumes that we have already
+    // called getSample on the delay buffer. At this point, we are not (yet) interested in the 
+    // output of the delayline - we will retrieve ouputs later via random access using the [] 
+    // operator
+
     if(dirty) 
       updateInternals();
-    delayLine.getSample(x);
-    y = core.getSample(x + feedback * y);
+
+    T y1 = core1.getSample(x);
+    if(mode == Mode::lowpass)
+      y = y1;
+    else if(mode == Mode::highpass)
+      y = delayLine[delay1] - y;      // highpass = delayed_input - lowpass
+    else if(mode == Mode::bandpass)
+    {
+      y = delayLine[delay1] - y;      // use core1 as highpass...
+      y = core2.getSample(y);         // ...feeding core2 which is the lowpass
+    }
+    else if(mode == Mode::bandstop)
+    {
+      T y2 = core2.getSample(x);
+      y2 = delayLine[delay2] - y2;
+      y = y1 + y2;
+    }
+
+    //y2 = core2.getSample(x);
+
 
     // experimental: highpass mode:
-    y = delayLine[hpDelay] - y;   // highpass = delayed_input - lowpass
+    //
+
+    //y = y1;  // preliminary
 
     return y;
   }
@@ -1859,7 +1903,8 @@ public:
 
   void reset()
   {
-    core.reset();
+    core1.reset();
+    core2.reset();
     delayLine.reset();
     y = T(0);
   }
@@ -1895,13 +1940,16 @@ protected:
   {
     // compute internal core parameters:
     int L, p; T w;
-    convertParameters(length, quantile, sampleRate, &L, &p, &w, &hpDelay);
+    convertParameters(length, quantile, sampleRate, &L, &p, &w, &delay1);
+    // we need to use length1, qunatile1
 
     // Set the core up:
-    core.setLengthAndReadPosition(L, p);
-    core.setRightWeight(w);
+    core1.setLengthAndReadPosition(L, p);
+    core1.setRightWeight(w);
 
-    // todo: perhaps set up a second core (for bandpass mode) and a delay-buffer
+    // todo: set up a second core (for bandpass mode) 
+
+
 
     dirty = false;
   }
@@ -1911,26 +1959,30 @@ protected:
   void allocateResources()
   {
     int mL = (int) ceil(maxLength * sampleRate);
-    core.setMaxLength(mL);
+    core1.setMaxLength(mL);
+    core2.setMaxLength(mL);
     delayLine.setCapacity(mL);
   }
 
   // user parameters:
-  T feedback   = 0.0;
-  T sampleRate = 44100;            // in Hz
-  T maxLength  = 0.1;              // in seconds
-  T length     = 0.01;             // in seconds
-  T quantile   = 0.5;              // in 0..1, 0.5 is median
-  //T bandwidth = 1.0; // in octaves
-  //Mode mode = Mode::lowpass;
+  //T feedback   = 0.0;
+  T sampleRate = 44100;         // in Hz
+  T maxLength  = 0.1;           // in seconds
+  T length     = 0.01;          // in seconds
+  T quantile   = 0.5;           // in 0..1, 0.5 is median
+  T bandwidth  = 1.0;           // in octaves
+  Mode mode    = Mode::lowpass;
 
   // filter state, algo parameters, infrastructure:
   T y = 0.0;                       // previous output sample (for feedback)
-  T hpDelay = 0.0;                 // required delay to implement highpass by subtraction
+  T delay1 = 0.0;                  // required delay to implement highpass by subtraction
+  T delay2 = 0.0;
   std::atomic<bool> dirty = true;  // flag to indicate that algo params must be recalculated
 
+  // rename hpDelay to delay1
+
   // embedded objects:
-  rsQuantileFilterCore<T> core;  // todo: have core1, core2 to facilitate bandpass mode, etc.
+  rsQuantileFilterCore<T> core1, core2;  // todo: have core1, core2 to facilitate bandpass mode, etc.
   rsDelayBuffer<T> delayLine;
 
 };
