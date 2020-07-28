@@ -1348,15 +1348,17 @@ void quantileFilter()
 {
   double fs = 1;     // sample rate
   int    N  = 200;   // number of samples
-  int    L  = 8;     // filter length in samples
+  int    L  = 5;     // filter length in samples (can we make this a double, too?)
+  double q  = 0.5;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
 
 
   rsQuantileFilter<double> flt;
 
   // we should have a combined setMaxLengthAndSampleRate function to avoid re-allocating twice:
-  flt.setMaxLength(20);
+  flt.setMaxLength(16);
   flt.setSampleRate(1);
   flt.setLength(L);
+  flt.setQuantile(q);
 
   //flt.setFrequency(100.0);
   //flt.setFeedback(0.0);    // later
@@ -1416,31 +1418,19 @@ void quantileFilter()
   // how about using 4 of them in series and building the feedback loop around the whole thing?
 
 
-
-
-
-
   // ToDo:
-  // -clean up the rsDelayBuffer class - i introduced some functions there that don't seem to make 
-  //  sense anymore
-  // -clean up the tree/heap classes and move them to RAPT
   // -parametrize in terms of length and a real number for the quantile between 0..1
   // -it should also work with 0.0 and 1.0 which should give moving min/max filters
   // -the length should be set up in a physical unit like seconds, thenwe may define a cutoff 
   //  frequency which is inversely proportional - needs a sample-rate - wrap this into a subclass
   //  or use composition
-  // -try to make the quantile and length modulatable 
-  //  -modulating q will involve moving over a number of samples from small to larger or the other
-  //   way around
-  //  -modulating will (additionaly?) involve growing or shrinking the size of the rsDoubleHeap,
-  //   when doing this, we must ensure to throw away the oldest samples
   // -how about introducing feedback?
-  // Notes:
-  // -The old implementation using rsDelayBuffer instead of std::vector for the circular buffer 
-  //  worked only when nS = nL = 2^k for some k and mL = nS + nL. This probably had to do with the
-  //  weird indexing of rsDelayBuffer - perhaps try to make it work, but if it's too tricky, we may 
-  //  just leave it using std::vector
-
-
-
+  // -can the filter length somehow be made a non-integer, too? what would it mean to take the 
+  //  median over 10.7 samples? maybe something like 0.3 * median_over_10 + 0.7 * median_over_11?
+  //  -maybe the double-heap should use the ceil and the calulation would not only use the front
+  //   element but also one of the children? ...or should a non-integer length somehow go into 
+  //   the calculation of the interpolation weight w? or should we use a modified quantile? we 
+  //   compute the non-integer read position q as:
+  //     T q = quantile * sampleRate * (*L - 1);
+  //   maybe we can just use this formula as is but with the non-integer L?
 }

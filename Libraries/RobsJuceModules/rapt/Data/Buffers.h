@@ -183,7 +183,15 @@ public:
   T& fromNewest(size_t i) { return data[getIndexFromNewest(i)]; }
   T& fromOldest(size_t i) { return data[getIndexFromOldest(i)]; }
 
-
+  // readout at given delay d
+  T operator[](T d)
+  {
+    size_t i = (size_t) d;
+    T f  = d-i;
+    T y0 = fromNewest(i);
+    T y1 = fromNewest(i+1);
+    return (1-f)*y0 + f*y1;  // lerp
+  }
 
 
 

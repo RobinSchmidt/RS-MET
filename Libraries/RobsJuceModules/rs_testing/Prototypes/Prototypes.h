@@ -1771,12 +1771,12 @@ protected:
 
 };
 
+//=================================================================================================
 
+/** This is a more user-friendly, audio-oriented, plugin-ready wrapper around the core algorithm
+of the moving quantile filter. It uses a more intuitive, audio-friendly parametrization and also 
+adds features such as highpass mode, .... */
 
-
-
-// this is a more user-friendly, audio-oriented, plugin-ready wrapper around the core algorithm
-// of the moving quantile filter
 template<class T>
 class rsQuantileFilter  // maybe rename to rsQuantileFilter
 {
@@ -1786,8 +1786,13 @@ public:
   rsQuantileFilter()
   {
     allocateResources();
+    core.setModulationBuffer(&delayLine);
     dirty = true;
   }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
 
   void setSampleRate(T newSampleRate)
   {
@@ -1827,19 +1832,36 @@ public:
     dirty = true;
   }
 
+  void setQuantile(T newQuantile)
+  {
+    quantile = newQuantile;
+    dirty = true;
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
   T getSample(T x)
   {
     if(dirty) 
       updateInternals();
+    delayLine.getSample(x);
     y = core.getSample(x + feedback * y);
+
+    // experimental: highpass mode:
+    y = delayLine[hpDelay] - y;   // highpass = delayed_input - lowpass
+
     return y;
   }
+  // maybe make a function to produce lowpass and highpass at the same time - client code may find
+  // that useful
 
   void reset()
   {
     core.reset();
-    y = 0.0;
+    delayLine.reset();
+    y = T(0);
   }
 
 
@@ -1847,15 +1869,16 @@ protected:
 
   /** Computes filter algorithm parameters length L, readout point p (both in samples) and weight 
   w for the linear interpolation from user parameters length (in seconds), quantile 
-  (normalized 0..1) and sampleRate. */
-  void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w)
+  (normalized 0..1) and sampleRate. ...q is the non-integer read-position which is equal to the
+  introduced delay (verify!) */
+  void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w, T* q)
   {
     *L  = (int) round(length * sampleRate);  // length
-    T q = quantile * sampleRate * (*L - 1);  // readout position in sorted array
-    *p  = (int) floor(q);                    // integer part (floor)
-    *w  = q - *p;                            // fractional part
+    *q  = quantile * sampleRate * (*L - 1);  // readout position in sorted array
+    *p  = (int) floor(*q);                   // integer part (floor)
+    *w  = *q - *p;                           // fractional part
     *p += 1;                                 // algo wants the ceil
-    // ...we may need to take some special care when i == 0 or i == L-1 because it would make one
+    // ...we may need to take some special care when p == 0 or p == L-1 because it would make one
     // of the heaps get a zero length - do some unit tests - check especially quantile == 0 and
     // quantile == 1, for both even and odd lengths - this should give min and max filters - we 
     // still need two heaps with nonzero size
@@ -1872,7 +1895,7 @@ protected:
   {
     // compute internal core parameters:
     int L, p; T w;
-    convertParameters(length, quantile, sampleRate, &L, &p, &w);
+    convertParameters(length, quantile, sampleRate, &L, &p, &w, &hpDelay);
 
     // Set the core up:
     core.setLengthAndReadPosition(L, p);
@@ -1889,19 +1912,26 @@ protected:
   {
     int mL = (int) ceil(maxLength * sampleRate);
     core.setMaxLength(mL);
+    delayLine.setCapacity(mL);
   }
 
-  // filter state and user parameters:
-  T y          = 0.0;
+  // user parameters:
   T feedback   = 0.0;
   T sampleRate = 44100;            // in Hz
   T maxLength  = 0.1;              // in seconds
   T length     = 0.01;             // in seconds
   T quantile   = 0.5;              // in 0..1, 0.5 is median
+  //T bandwidth = 1.0; // in octaves
+  //Mode mode = Mode::lowpass;
 
-  // internal data:
-  std::atomic<bool> dirty = true;
-  rsQuantileFilterCore<T> core;
+  // filter state, algo parameters, infrastructure:
+  T y = 0.0;                       // previous output sample (for feedback)
+  T hpDelay = 0.0;                 // required delay to implement highpass by subtraction
+  std::atomic<bool> dirty = true;  // flag to indicate that algo params must be recalculated
+
+  // embedded objects:
+  rsQuantileFilterCore<T> core;  // todo: have core1, core2 to facilitate bandpass mode, etc.
+  rsDelayBuffer<T> delayLine;
 
 };
 // todo: make a highpass version by subtracting the result from a (delayed) original signal - maybe
