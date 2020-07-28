@@ -1,14 +1,16 @@
 #pragma once
 
+/** Implements (the basis for) a circular buffer */
+
 template<class T>
-class rsBuffer    // rename to rsRingBuffer
+class rsRingBuffer
 {
 
 public:
 
   /** Creates a buffer with a given initial capacity. The actual capacity will be the next power of
   two of given value. */
-  rsBuffer(size_t capacity);
+  rsRingBuffer(size_t capacity);
 
   /** Sets a new capacity for this buffer. The actual capacity will be the next power of two of 
   given value. */
@@ -19,7 +21,7 @@ public:
 
   /** Returns the capacity of this buffer. */
   size_t getCapacity() const { return data.size(); }
-  // is this correct? or do we need to subtract 1? -> do unit test!
+  // is this correct? or do we need to subtract 1? no - i don't think so. -> do unit test!
 
 
   std::vector<T> data;
@@ -33,19 +35,22 @@ protected:
   size_t mask;
 
 };
-// maybe this class should be named rsRingBuffer or rsCircularBuffer or rsRingBufferBase and the
-// class below should be named rsDelayLine or rsDelayBuffer
+// todo:
+// -maybe implement [] operator as: return data[i & mask]
 
 //=================================================================================================
 
+/** Subclass of rsRingBuffer that adds some features to make it more convenient to use as 
+delay-buffer or delay-line in signal processing applications. */
+
 template<class T>
-class rsRingBuffer : public rsBuffer<T>  // rename to rsDelayBuffer
+class rsDelayBuffer : public rsRingBuffer<T>
 {
 
 public:
 
 
-  rsRingBuffer(size_t capacity = 0) : rsBuffer<T>(capacity) {}
+  rsDelayBuffer(size_t capacity = 0) : rsRingBuffer<T>(capacity) {}
   // todo: make a default constructor creating a buffer with capacity 0 and provide a setCapacity
   // function
 
@@ -249,7 +254,7 @@ multiple-array implementation which is probably not so good for realtime purpose
 https://en.wikipedia.org/wiki/Double-ended_queue */
 
 template<class T>
-class rsDoubleEndedQueue : public rsBuffer<T>
+class rsDoubleEndedQueue : public rsRingBuffer<T>
 {
 
 public:
@@ -258,7 +263,7 @@ public:
   queued values. The memory allocated for the buffer will be the smallest power of two that is
   greater or equal to the desired capacity plus 1 (an additional index value is required to make 
   the index arithmetic work right). */
-  rsDoubleEndedQueue(size_t capacity) : rsBuffer<T>(capacity+1) {}
+  rsDoubleEndedQueue(size_t capacity) : rsRingBuffer<T>(capacity+1) {}
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data Access */

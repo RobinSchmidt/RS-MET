@@ -1421,7 +1421,7 @@ void quantileFilter()
 
 
   // ToDo:
-  // -clean up the rsRingBuffer class - i introduced some functions there that don't seem to make 
+  // -clean up the rsDelayBuffer class - i introduced some functions there that don't seem to make 
   //  sense anymore
   // -clean up the tree/heap classes and move them to RAPT
   // -parametrize in terms of length and a real number for the quantile between 0..1
@@ -1436,9 +1436,9 @@ void quantileFilter()
   //   when doing this, we must ensure to throw away the oldest samples
   // -how about introducing feedback?
   // Notes:
-  // -The old implementation using rsRingBuffer instead of std::vector for the circular buffer 
+  // -The old implementation using rsDelayBuffer instead of std::vector for the circular buffer 
   //  worked only when nS = nL = 2^k for some k and mL = nS + nL. This probably had to do with the
-  //  weird indexing of rsRingBuffer - perhaps try to make it work, but if it's too tricky, we may 
+  //  weird indexing of rsDelayBuffer - perhaps try to make it work, but if it's too tricky, we may 
   //  just leave it using std::vector
 
 

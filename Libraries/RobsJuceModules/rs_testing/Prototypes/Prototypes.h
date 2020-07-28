@@ -1610,7 +1610,7 @@ public:
   is supposed to feed/drive this buffer because this will also facilitate sharing of such buffers 
   to create highpass and bandpass versions. That means before calling getSample on this object, 
   client code should have called getSample on the buffer. */
-  void setModulationBuffer(rsRingBuffer<T>* newBuffer) { sigBuf = newBuffer; }
+  void setModulationBuffer(rsDelayBuffer<T>* newBuffer) { sigBuf = newBuffer; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1726,7 +1726,7 @@ protected:
   struct Node
   {
     T value = T(0);
-    int bufIdx = 0;   // maybe use size_t for better compatibility with rsRingBuffer
+    int bufIdx = 0;   // maybe use size_t for better compatibility with rsDelayBuffer
 
     Node(T v = T(0), int i = 0) { value = v; bufIdx = i; }
 
@@ -1748,7 +1748,7 @@ protected:
   std::vector<Node>   small, large;     // storage arrays of the nodes
   rsDoubleHeap2<Node> dblHp;            // maintains large/small as double-heap
   std::vector<int>    keyBuf;           // circular buffer of heap keys - rename to keyBuf
-  rsRingBuffer<T>*    sigBuf = nullptr; // (possibly shared) buffer of delayed input samples
+  rsDelayBuffer<T>*    sigBuf = nullptr; // (possibly shared) buffer of delayed input samples
 
   int bufIdx = 0;    // index into keyBuf, mayb rename to keyIdx
   int L      = 2;    // total length of filter
@@ -1864,6 +1864,7 @@ protected:
     // just redistribute the data between the heaps, possibly discard some or fill up with zeros - 
     // it may be tricky to handle the update of the circular buffer
     // todo: check, if it also works when p is integer, i.e. floor(p) == ceil(p)
+    // todo: maybe compute also the delay for the delayline/ringbuffer
   }
 
 
@@ -1980,7 +1981,7 @@ protected:
     //reset();
   }
 
-  rsRingBuffer<T> buf;   // circular buffer
+  rsDelayBuffer<T> buf;   // circular buffer
   std::vector<T> tmp;
   int nS = 0, nL = 0;    // maybe use size_t
 

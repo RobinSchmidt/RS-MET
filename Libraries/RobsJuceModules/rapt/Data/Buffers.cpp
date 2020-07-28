@@ -2,13 +2,13 @@
 
 
 template<class T>
-rsBuffer<T>::rsBuffer(size_t capacity)
+rsRingBuffer<T>::rsRingBuffer(size_t capacity)
 {
   setCapacity(capacity);
 }
 
 template<class T>
-void rsBuffer<T>::setCapacity(size_t newCapacity)
+void rsRingBuffer<T>::setCapacity(size_t newCapacity)
 {
   size_t c = RAPT::rsNextPowerOfTwo(newCapacity);
   data.resize(c);
@@ -16,7 +16,7 @@ void rsBuffer<T>::setCapacity(size_t newCapacity)
 }
 
 template<class T>
-void rsBuffer<T>::initBufferValues(T value)
+void rsRingBuffer<T>::initBufferValues(T value)
 {
   RAPT::rsArrayTools::fillWithValue(&data[0], (int)data.size(), value);
 }
@@ -24,7 +24,7 @@ void rsBuffer<T>::initBufferValues(T value)
 
 
 template<class T>
-void rsRingBuffer<T>::reset()
+void rsDelayBuffer<T>::reset()
 {
   this->initBufferValues(0);
 

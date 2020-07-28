@@ -119,7 +119,7 @@ public:
 
 protected:
 
-  rsRingBuffer<T> delayLine;
+  rsDelayBuffer<T> delayLine;
   rsDoubleEndedQueue<T> maxDeque;
 
   bool (*greater)(const T&, const T&) = &rsGreater;

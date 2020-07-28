@@ -452,7 +452,7 @@ bool ringBufferUnitTest()
 {
   bool r = true;
 
-  rsRingBuffer<double> b(8);
+  rsDelayBuffer<double> b(8);
   b.setLength(5);
 
   using Vec = std::vector<double>;

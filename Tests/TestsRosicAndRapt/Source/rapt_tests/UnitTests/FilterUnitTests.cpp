@@ -375,7 +375,7 @@ bool testMovingQuantileModulation()
   //std::vector<Settings> settings ={ {0, 4, 5}, {9, 3, 2} };
   //std::vector<Settings> settings ={ {0, 3, 2} };
 
-  rsRingBuffer<double> rngBuf;
+  rsDelayBuffer<double> rngBuf;
   rngBuf.setCapacity(maxLength);
 
   rsQuantileFilterNaive<double> fltN(maxLength, maxLength);
