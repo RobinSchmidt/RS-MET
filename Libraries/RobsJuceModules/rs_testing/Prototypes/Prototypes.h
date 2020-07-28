@@ -516,114 +516,7 @@ Idea:
 
 //=================================================================================================
 
-/** Baseclass for rsBinaryHeap and rsBinarySearchTree... */
 
-template<class T>
-class rsBinaryTree
-{
-
-public:
-
-  rsBinaryTree(T* newData = nullptr, int newSize = 0, int newCapacity = 0)
-  {
-    setData(newData, newSize, newCapacity);
-  }
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Setup */
-
-  /** Sets the data that should be treated as tree. The object does not take ownership of the data.
-  Instead, it acts pretty much like a "view" (as in rsMatrixView) - it just operates on an existing
-  data array whose lifetime is managed elsewhere. */
-  void setData(T* newData, int newSize, int newCapacity)
-  {
-    data = newData;
-    size = newSize;
-    capacity = newCapacity;
-  }
-
-  void setData(std::vector<T>& newData)
-  {
-    setData(&newData[0], (int)newData.size(), (int)newData.size());
-  }
-
-  /** Sets the comparison function to be used. If it implements "less-than", you'll get a max-heap
-  and if it implements "greater-than", you'll get a min-heap. By default, it's assigned to a 
-  less-than function based on the < operator. */
-  void setCompareFunction(const std::function<bool(const T&, const T&)>& newFunc) 
-  { less = newFunc; }
-  // question: what happens, if we use a less-or-equal or greater-or-equal function for this?
-
-  /** Sets the function used to swap two elements. By default, it just uses rsSwap but you may want
-  to do something extra whenever a swap takes place in certain circumstances, for example, to keep 
-  track of when items get moved around (see rsMovingQuantileFilter for an example). */
-  void setSwapFunction(const std::function<void(T&, T&)>& newFunc)
-  { swap = newFunc; }
-
-
-  //-----------------------------------------------------------------------------------------------
-  /** \name Inquiry */
-
-  /** Returns the number of nodes in the tree. */
-  int getSize() const { return size; }
-  // maybe make a version that takes a node-index as parameter
-
-  /** Returns the capacity, i.e. the maxumum number of nodes that can be stored in the underlying 
-  data array. */
-  int getCapacity() const { return capacity; }
-
-  /** Read/write access to elements. Warning: overwriting elements may destroy the defining 
-  property (heap, binary-search, etc.) of the tree, so it should be used only if you know what you 
-  are doing. */
-  T& operator[](int i)
-  {
-    rsAssert(i >= 0 && i < size, "Index out of range");
-    return data[i]; 
-  }
-
-  T& operator[](size_t i)
-  {
-    rsAssert((int) i < size, "Index out of range");
-    return data[i]; 
-  }
-
-
-protected:
-
-  /** Index of parent of node i. */
-  static inline int parent(int i) { return (i-1) / 2; }
-
-  /** Index of left child of node i. */
-  static inline int left(int i)   { return 2*i + 1; }
-
-  /** Index of right child of node i. */
-  static inline int right(int i)  { return 2*i + 2; }
-
-  /** Returns true, iff index i is the index of a left child node. */
-  static inline bool isLeft(int i) { return i == left(parent(i)); }
-  // needs test - i think, we can do it simpler: the odd indices are left children and the even 
-  // indices are right children...verify that
-
-  /** Returns true, iff index i is the index of a right child node. */
-  static inline bool isRight(int i) { return i == right(parent(i)); }
-  // needs test
-
-  // The actual data array:
-  T* data = nullptr;
-  int size = 0;
-  int capacity = 0;
-
-  // Comparison and swapping functions:
-  std::function<bool(const T&, const T&)> 
-    less = [](const T& a, const T& b)->bool { return a < b;  };
-  std::function<void(T&, T&)> 
-    swap = [](T& a, T& b) { rsSwap(a, b); };
-  // maybe these should be references?
-
-  // Some related classes need direct acces to our members:
-  template<class U> friend class rsDoubleHeap;
-
-};
 
 
 //=================================================================================================
@@ -1235,28 +1128,6 @@ public:
   // it to give a heap even more structure?
 
 
-  /*
-  T getMean()
-  {
-
-
-  }
-  */
-
-  /*
-  T getMedian()
-  {
-    int L = small.getSize() + large.getSize();
-    if(rsIsOdd(L))
-    {
-      return getSmallestLargeValue();
-    }
-    else
-      return T(0.5) * (getLargestSmallValue() + getSmallestLargeValue());
-  }
-  // wait - no - this is only the median, if small.size() == large.size() or the difference is only
-  // one..maybe
-  */
 
   /** Returns true, iff this object satisfies the double-heap property. Meant mostly for testing 
   and debugging (costly!). */
@@ -1288,8 +1159,9 @@ template<class T>
 class rsDoubleHeap2 : public rsDoubleHeap<T> 
 {
 
-// maybe get rid of the subclass an implement everything in the baseclass - maybe have functions
-// replaceByIndex, replaceByKey
+  // maybe get rid of the subclass an implement everything in the baseclass - maybe have functions
+  // replaceByIndex, replaceByKey
+  // maybe it would be a more natural convention to indicate small-heap keys by a minus sign
 
 public:
 
@@ -1350,7 +1222,7 @@ public:
   }
 
   /** Returns a preliminary key which is a key from the end of either the small or large heap. 
-  This is needed in rsQuantileFilterCore for appending nodes */
+  This is needed in rsQuantileFilterCore for appending nodes. */
   int getPreliminaryKey(const T& newValue)
   {
     if(small.less(newValue, large[0]))
@@ -1367,15 +1239,9 @@ public:
       return k < small.getSize();
   }
 
-  static inline bool isKeyInLargeHeap(int k) 
-  { 
-    return k & firstBitOnly; 
-  }
+  static bool isKeyInLargeHeap(int k) { return k & firstBitOnly;  }
 
-  inline int toLargeHeapIndex(int k) const
-  {
-    return rawLargeHeapIndex(k) + largeIndexOffset;
-  }
+  int toLargeHeapIndex(int k)  const { return rawLargeHeapIndex(k); }
 
   int indexToKey(int i) 
   { 
@@ -1384,26 +1250,20 @@ public:
       return i;
     else
       return (i-nS) | firstBitOnly;  
-    // do we need " + largeIndexOffset" here too? if so, is should be done before the "or". or 
-    // maybe we need to subtract it? but no...
   }
   // takes the double-heap index from 0....nS+nL-1
   // needs test
 
   int keyToIndex(int k) 
   { 
-    if(isKeyInLargeHeap(k))
-    {
-      //int i = rawLargeHeapIndex(k);  // no offset is needed here?
-      int i = toLargeHeapIndex(k);  // no offset is needed here?
-      return i + small.getSize();
-    }
+    if(isKeyInLargeHeap(k)) {
+      int i = toLargeHeapIndex(k);
+      return i + small.getSize(); }
     else
       return k;
   }
   // returns the double-heap index from 0....nS+nL-1
   // needs test
-
 
 
   // maybe have functions to convert back and forth between key and indices
@@ -1415,8 +1275,6 @@ public:
   // indicator bit gets cut off ...but maybe we should take care to avoid such conversions
 
 
-
-
 private:
 
 
@@ -1425,104 +1283,10 @@ private:
   {
     return k & allBitsButFirst;
   }
-  // maybe make a function toLargeHeapIndex(int k) 
-
-  int largeIndexOffset = 0; // get rid
 
 };
-
-/** Yet another variant. This uses again the convention to use i-nS as large-heap-index if 
-i >= nS, but uses the offset as in rsDoubleHeap2 as well. ....i'm trying out some stuff to figure 
-out what could work to make modulation of L,p possible in rsMovingQuantileFilterCore... 
-
-OK - rsDoubleHeap2 works now - this renders this code obsolete - delete it*/
-
-template<class T>
-class rsDoubleHeap3 : public rsDoubleHeap<T>
-{
-
-  // we use private inheritance to make atIndex, etc. unavailable...maybe override them instead
-  // ...
-
-public:
-
-  int replace(int key, const T& newValue)
-  {
-    rsAssert(isKeyValid(key), "Invalid key");
-    int i  = key; 
-    int nS = small.getSize();
-
-    // replacement:
-    if(isKeyInLargeHeap(i))
-      i = large.replace(toLargeHeapIndex(i), newValue);
-    else
-      i = small.replace(i, newValue);
-
-    // potential swap:
-    if(small.less(large[0], small[0])) {
-      small.swap(small[0], large[0]);
-      int is = small.floatDown(0);
-      int il = large.floatDown(0);
-      if(isKeyInLargeHeap(key))
-        i = is; // replacement took place in large, then we swapped, now it's in small
-      else
-        i = il + nS; }
-
-    return i;   // return the new key/index
-  }
-  
-  T& atIndex(int i)
-  {
-    rsAssert(isIndexValid(i), "Invalid index");
-    if(isKeyInLargeHeap(i))  // works, because keys and indices are the same thing
-      return large[i-small.getSize()];
-    else
-      return small[i];
-  }
-
-  T& atKey(int k) 
-  { 
-    rsAssert(isKeyValid(k), "Invalid key");
-    if(isKeyInLargeHeap(k))
-      return large[toLargeHeapIndex(k)];
-    else
-      return small[k];
-  }
-
-  bool isKeyValid(int k) const
-  {
-    if(isKeyInLargeHeap(k)) {
-      k = toLargeHeapIndex(k);
-      return k < large.getSize(); }
-    else
-      return k < small.getSize();
-  }
-
-  //int indexToKey(int i) { return i; } 
-  //int keyToIndex(int k) { return k; }
-  // not needed - the inherited versions do the same
-
-  void incrementLargeIndexOffset() { largeIndexOffset++; }
-  void decrementLargeIndexOffset() { largeIndexOffset--; }
-
-protected:
-
-  inline bool isKeyInLargeHeap(int k) const { return k >= small.getSize(); }
-  inline int  toLargeHeapIndex(int k) const { return (k + largeIndexOffset) - small.getSize(); }
-  int largeIndexOffset = 0;
-  // the offset turned out to be not needed after all - delete it after the implementation of 
-  // modulation of L,p is complete (maybe it will turn out that we will need it again, but i don't
-  // think so
-
-};
-// maybe, if it works and is not too much extra code, absorb in baseclass..but maybe not - it's 
-// kinda weird stuff and perhaps not always useful
-
-
-
 
 //=================================================================================================
-
 
 inline bool isIndexPermutation(int* b, int L)
 {
