@@ -1348,8 +1348,8 @@ void quantileFilter()
 {
   double fs = 1;     // sample rate
   int    N  = 500;   // number of samples
-  int    L  = 8;    // filter length in samples (can we make this a double, too?)
-  double q  = 0.8;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
+  int    L  = 7;    // filter length in samples (can we make this a double, too?)
+  double q  = 1.0;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
 
 
 
@@ -1359,13 +1359,14 @@ void quantileFilter()
   // we should have a combined setMaxLengthAndSampleRate function to avoid re-allocating twice:
   flt.setMaxLength(L);
   flt.setSampleRate(1);
-  //flt.setLength(L);      // should not be used anymore
+  //flt.setLength(L);
   flt.setFrequency(1.0/L);
   flt.setQuantile(q);
   flt.setLowpassGain(1.0);
-  flt.setHighpassGain(0.0);
+  flt.setHighpassGain(1.0);
   //flt.setFrequency(100.0);
   //flt.setFeedback(0.0);    // later
+  flt.updateInternals();  // so we have a non-dirty state to look at
 
 
   using Vec = std::vector<double>;
@@ -1392,10 +1393,15 @@ void quantileFilter()
 
   //x = Vec({ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }); N = (int) x.size(); // test
 
+  AT::fillWithImpulse(&x[0], N, 1.0, 100);
+  double delay = flt.getDelayInSamples(); // has not been computed yet
+
   //AT::cumulativeSum(&x[0], &x[0], N);
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = flt.getSample(x[n]);
+
+
 
 
   // create a median-filtered version of x:
@@ -1448,17 +1454,16 @@ void quantileFilter()
   // -the highpass signal has strong components at the Nyquist freq when q=0 or q=1
 
   // ToDo:
-  // -let the user set up the parameters for both filters individually instead of trying to
-  //  introduce higher level parameters such as bandwidth - it does make sense to let both filters
-  //  have the same length and mix them when they have different quantiles - for example, one
-  //  could compute a mix between min and max. it should be possible to:
-  //  -mix outputs of both filters where both receive the same input
-  //  -feed scaled output of filter 1 into filter 2
-  //  -feed scaled delayed by delay1 input into filter 2
-
-  // -the length should be set up in a physical unit like seconds, thenwe may define a cutoff 
-  //  frequency which is inversely proportional - needs a sample-rate - wrap this into a subclass
-  //  or use composition
+  // -test, if the delay computation is correct - use an impulse at sample 100 - a non-delayed
+  //  maximum should have a 1 at samples 98,99,100,101,102 - that's our reference. the filter
+  //  output will have ones at 100..104, so the computed delay should be 2 
+  //  -it's most easy to test when using loGain = hiGain = 1, in which case the filter produces
+  //   a pure delay
+  // -test modulation
+  // -figure out if we should use a scale factor when converting from frequency to length (it 
+  //  seems mathematically natural to just use length = 1/freq, but maybe that's not a good choice
+  //  in practice) - maybe look at frequency responses of moving-average filters to find the
+  //  cutoff freq as function of filter length
   // -how about introducing feedback?
   // -can the filter length somehow be made a non-integer, too? what would it mean to take the 
   //  median over 10.7 samples? maybe something like 0.3 * median_over_10 + 0.7 * median_over_11?
@@ -1468,6 +1473,8 @@ void quantileFilter()
   //   compute the non-integer read position q as:
   //     T q = quantile * sampleRate * (*L - 1);
   //   maybe we can just use this formula as is but with the non-integer L?
+  // -support of non-integer length would allow for a smoother modulation of the cutoff freq, so
+  //  it may be a worthwhile feature
   // -i think, this filter could be especially interesting to create filtered noises, it tends
   //  to some sort of "sample-and-hold" behavior - maybe try in conjunction with the TriModalNoise
 }

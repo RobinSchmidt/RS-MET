@@ -89,8 +89,7 @@ bool rsQuantileFilterCore<T>::isStateConsistent()
   bool r = true;
 
   // for converting the loop variable to a buffer index:
-  auto convert = [=](int i)->int{ return (i + bufIdx) % (int)keyBuf.capacity(); };
-  // use size instead of capacity
+  auto convert = [=](int i)->int{ return (i + bufIdx) % (int)keyBuf.size(); };
 
   // Check that all nodes in the double-heap have the correct back-link to their index in the 
   // delay-buffer. This back-link is needed to update the delay-buffer when nodes in the heap are
@@ -132,6 +131,15 @@ bool rsQuantileFilterCore<T>::isBufferSlotConsistent(int i)
   Node n = dblHp.atKey(k); // retrieve the node
   bool result = n.bufIdx == i;
   return result;
+  // The keyBuf at index i contains a key to a node in the double-heap. That node contains a 
+  // buffer-index and the buffer index stored in the node should always match the index i. If it
+  // doesn't, something is wrong, i.e. the state is inconsistent. This is the way, we map back and
+  // forth between heap-nodes sorted by age (in the keyBuf, which is essentially a delayline) and 
+  // partially sorted by value (in the double-heap). We must be able to figure out, where a node 
+  // with a given delay is in the heap (to be able to replace the oldest node, when a new sample 
+  // comes in) and we must also be able to figure out, where a given heap-node's key is in the 
+  // delay-buffer in order to reshuffle the delay-buffer along, when the heap gets reshuffled due
+  // to the replaced node floating up or down.
 }
 
 //=================================================================================================
@@ -149,4 +157,5 @@ void rsQuantileFilter<T>::convertParameters(
   *p += 1;                                 // algo wants the next one
   if(*p > *L - 1) {                        // quantile == 1 (maximum) needs special care
     *p = *L - 1; *w = T(1);  }
+  *q *= 0.5;                               // found empirically - verify this!
 }

@@ -19,7 +19,7 @@ todo:
 */
 
 template<class T>
-class rsMovingMaximumFilter  // rename to rsExtremumFilter
+class rsMovingMaximumFilter  // rename to rsExtremumFilter, maybe move to Scientific
 {
 
 public:
@@ -33,14 +33,13 @@ public:
   void setLength(size_t newLength)
   {
     delayLine.setLength(newLength);
-
-
     reset();
     // preliminary - we need to put the filter into its initial state on length changes, so the
-    // length cannot yet be
+    // length cannot yet be modulated
     // todo: we may have to update the content of the maxDeque - when this is called during running
-    // the filter and new length is shorter than the old, some values that are currently in the deque
-    // will never be removed - so we should remove them in the moment, when the length changes
+    // the filter and new length is shorter than the old, some values that are currently in the 
+    // deque will never be removed - so we should remove them in the moment, when the length 
+    // changes
   }
 
   // todo: add function setMaxLength
@@ -50,9 +49,9 @@ public:
   that implements a less-than comparison in which case the whole filter turns into a moving-minimum
   filter. */
   void setGreaterThanFunction(bool (*greaterThan)(const T&, const T&))
-  {
-    greater = greaterThan;
-  }
+  { greater = greaterThan; }
+
+  // maybe use std::function instead of plain function pointer:
   //void setComparisonFunction(const std::function<bool(const T&, const T&)>& greaterThan)
   //{ greater = greaterThan; }
 

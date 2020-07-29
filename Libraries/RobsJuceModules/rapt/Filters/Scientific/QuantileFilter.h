@@ -222,23 +222,19 @@ protected:
   int L      = 2;    // total length of filter
   int p      = 1;    // readout position, 1 <= p <= L-1
   T   w      = T(1); // weight for smallest large value in the linear interpolation
-  // maybe use size_t instead of int - consistent with rsMovingMaximumFilter, better compatible
-  // with rsDelayBuffer
+  // Maybe use size_t instead of int. That would be consistent with rsMovingMaximumFilter and 
+  // better compatible with rsDelayBuffer - but: size_t is 64 bit and int only 32, so int has lower
+  // memory consumption...so maybe not..but wait: we dont use arrays of this type, so that may be
+  // irrelevant. For the heap-keys, we'll use int anyway.
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Scaffolding (may be removed when class is finished) */
+  /** \name Scaffolding. For self-tests for debugging. May be removed when class is finished.
+  ...but maybe let's keep them because they are nice for documenting the algorithm as well. */
 
-  // some scaffolding code for development:
-  //int getNodeKey(Node node);  // O(N)
-  //void fixInconsistentBufferKeys(Node startNode);
-  //void makeBufferConsistent();
-
-  // self-tests for debugging:
-  bool isStateConsistent(); 
-  bool isNodeConsistent(const Node& n);
-  bool isBufferSlotConsistent(int i);
-  // maybe don't delete them, these are nice for documentation purposes
+  bool isStateConsistent();               // O(N)
+  bool isNodeConsistent(const Node& n);   // O(N)
+  bool isBufferSlotConsistent(int i);     // O(1)
 
 };
 
@@ -266,6 +262,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
+  /** Sets the sample rate at which this filter should operate. May re-allocate memory. */
   void setSampleRate(T newSampleRate)
   {
     sampleRate = newSampleRate;
@@ -273,6 +270,29 @@ public:
     dirty = true;
   }
 
+  /** Sets the maximum length (in seconds) for this filter. May re-allocate memory. */
+  void setMaxLength(T newMaxLength)
+  {
+    maxLength = newMaxLength;
+    allocateResources();
+    dirty = true;
+  }
+
+  /** Sets sample rate and maximum length at the same time. May re-allocate memory. */
+  void setSampleRateAndMaxLength(T newSampleRate, T newMaxLength)
+  {
+    sampleRate = newSampleRate;
+    maxLength  = newMaxLength;
+    allocateResources();
+    dirty = true;
+  }
+
+  /** Sets the length of the filter in seconds. */
+  void setLength(T newLength) { length = newLength; dirty = true; }
+
+  /** Sets some sort of pseudo cutoff frequency which we just define as the reciprocal of the 
+  length. The filter is actually very nonlinear, so the notion of cutoff frequency does not 
+  really apply. */
   void setFrequency(T newFrequency)
   {
     setLength(T(1) / newFrequency); 
@@ -283,38 +303,39 @@ public:
     // going to be some weird ass nonlinear filter!)
   }
 
-  void setMaxLength(T newMaxLength)
-  {
-    maxLength = newMaxLength;
-    allocateResources();
-    dirty = true;
-  }
-
-  void setSampleRateAndMaxLength(T newSampleRate, T newMaxLength)
-  {
-    sampleRate = newSampleRate;
-    maxLength  = newMaxLength;
-    dirty = true;
-  }
-
-  void setLength(T newLength) { length = newLength; dirty = true; }
-
+  /** Sets the quantile that should be extracted. 0.0 gives the minimum, 1.0 gives the maximum, 
+  0.5 gives the median, etc. */
   void setQuantile(T newQuantile1) { quantile = newQuantile1; dirty = true; }
 
+  /** Sets the gain (as raw scale factor) for the actual filter output (which is lowpass'ish in 
+  character, which is why we call this parameter lowpass gain). */
   void setLowpassGain(T newGain) { loGain = newGain; }
 
+  /** Sets the gain for a highpass signal that is obtained by subtracting the (lowpass) filter 
+  output from an appropriately delayed input signal. */
   void setHighpassGain(T newGain) { hiGain = newGain; }
 
+  // void setDelayScaler(T newScaler) { delayScl = newScaler; }
+  // typical range should be 0..2
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  T getDelay() const { return delay; }
+  /** Returns the delay that this filter introduces (in samples). */
+  T getDelayInSamples() const { return delay; }
+  // hmm...actually, the returned value is not yet up to date when this is called before getSample
+  // because getSample may recalculate the delay before actually producing a sample - so if client 
+  // code calls this before getSample, it will always work with a value that is lagging behind
+  // by one sample...hmmm...if client code wants to avoid this, it could call updateInternals
+  // itself before calling getSample...but that's very inconvenient, API wise
+  // maybe we should add to the documentation, that the returned value applies to the sample that
+  // *was* produced most recently, not to the sample that *will be* produced next
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
+  /** Produces one output sample from agiven input sample. */
   T getSample(T x)
   {
     delayLine.getSample(x);
@@ -322,18 +343,20 @@ public:
     // length and the artifact-avoidance strategy for the modulation assumes that we have already
     // called getSample on the delay buffer. At this point, we are not (yet) interested in the 
     // output of the delayline - we will retrieve its ouput later via random access using the [] 
-    // operator
+    // operator. Actually, it would not make sense to try to retrieve an output sample before 
+    // calling updateInternals anyway, because that call also updates the delay which we need to
+    // read out the delayline at the correct position.
 
-    if(dirty) 
-      updateInternals();
+    if(dirty) updateInternals();
     T yL = core.getSample(x);
-    T yH = delayLine[delay] - yL;
+    T yH = delayLine[delayScl*delay] - yL;
     return loGain * yL + hiGain * yH;
   }
   // maybe factor out a function to produce lowpass and highpass getSampleLoHi or something at the 
   // same time - client code may find that useful - or mayb getOutputs to be consistent with 
   // rsStateVariableFilter
 
+  /** Resets the filter into its initial state. */
   void reset()
   {
     core.reset();
@@ -341,31 +364,9 @@ public:
     //y = T(0);
   }
 
-
-protected:
-
-  /** Computes filter algorithm parameters length L, readout point p (both in samples) and weight 
-  w for the linear interpolation from user parameters length (in seconds), quantile 
-  (normalized 0..1) and sampleRate. ...q is the non-integer read-position which is equal to the
-  introduced delay (verify!) */
-  static void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w, T* q);
-  /*
-  {
-    rsAssert(quantile >= T(0) && quantile <= T(1), "Quantile needs to be between 0 and 1");
-    *L  = (int) round(length * sampleRate);  // length of filter in samples
-    *L  = rsMax(*L, 2);                      // ...needs to be at least 2
-    *q  = quantile * sampleRate * (*L - 1);  // readout position in sorted array
-    *p  = (int) floor(*q);                   // integer part (floor)
-    *w  = *q - *p;                           // fractional part
-    *p += 1;                                 // algo wants the next one
-    if(*p > *L - 1) {                        // quantile == 1 (maximum) needs special care
-      *p = *L - 1; *w = T(1);  }
-  }
-  // move to cpp
-  */
-
   /** Updates the internal algorithm parameters and embedded objects according to the user 
-  parameters. */
+  parameters. This is called in getSample, if the state is dirty but sometimes it may be 
+  convenient to call it from client code too */
   void updateInternals()
   {
     // compute internal and set up core parameters:
@@ -377,6 +378,18 @@ protected:
   }
   // (maybe) move to cpp
 
+
+protected:
+
+  /** Computes filter algorithm parameters length L, readout point p (both in samples) and weight 
+  w for the linear interpolation from user parameters length (in seconds), quantile 
+  (normalized 0..1) and sampleRate. ...q is the non-integer read-position which is equal to the
+  introduced delay (verify!) */
+  static void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w, T* d);
+
+
+
+  /** Allocates the memory used for the delay-buffers, heaps, etc. */
   void allocateResources()
   {
     int mL = (int) ceil(maxLength * sampleRate);
@@ -392,6 +405,7 @@ protected:
   T quantile   = 0.5;   // in 0..1, 0.5 is median
   T loGain     = 1.0;   // gain for the filter output (which kinda lowpass)
   T hiGain     = 0.0;   // gain for delayed input minus filter output (kinda highpass)
+  T delayScl   = 1.0;   // scaler for the delay for the input signal
 
   // filter state, algo parameters, infrastructure:
   //T y     = 0.0;   // previous output sample (for feedback)
@@ -403,6 +417,18 @@ protected:
   rsDelayBuffer<T> delayLine;
 
 };
+
+// Notes:
+// I'm trying to make the class thread-safe by itself in a typical plugin scenario by using an 
+// atomic flag to indicate that internal algorithm parameters need to be re-calculated, which is
+// then done in getSample (supposed to be called on the audio thread). However, this does not apply
+// to the loGain and hiGain variables - they are set directly. However, if the type T is a type 
+// for which load and store operations actually are atomic, modifying them (from a different 
+// thread, like the gui thread) should be safe, too. I'm not yet sure what to do - if i use
+// std::atomic<T>, it may lock mutexes which is also undesirable...so, even though i attempt to
+// give thread safety, at the time being, it's better to assume, it's not and client code should
+// implement its own synchronization scheme, if it deems it necessarry. See:
+// https://stackoverflow.com/questions/36624881/why-is-integer-assignment-on-a-naturally-aligned-variable-atomic-on-x86/36685056#36685056
 
 
 

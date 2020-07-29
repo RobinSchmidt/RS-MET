@@ -293,9 +293,11 @@ public:
   template<class T, class F>
   static void fill(T* a, int N, F indexToValueFunction);
 
-  /** Fills the passed array with a unit impulse. */
+  /** Fills the passed array with an impulse, i.e. all samples except one are zero. You can 
+  optionally set the value of the impulse and its sample location (by default, an impulse of 
+  height one occurs at sample zero - that's the so called unit impulse in DSP jargon). */
   template <class T>
-  static inline void fillWithImpulse(T *buffer, int length);
+  static inline void fillWithImpulse(T *buffer, int length, T value = T(1), int position = 0);
 
   /** Fills the passed array with the values of the indices - the type T must have a
   constructor that takes an int and performs appropriate conversion. */
@@ -906,10 +908,11 @@ inline void rsArrayTools::fill(T* a, int N, F indexToValueFunction)
 }
 
 template <class T>
-inline void rsArrayTools::fillWithImpulse(T *buffer, int length)
+inline void rsArrayTools::fillWithImpulse(T *buffer, int length, T value, int position)
 {
+  rsAssert(position >= 0 && position < length, "Impulse location out of range");
   fillWithZeros(buffer, length);
-  buffer[0] = T(1);
+  buffer[position] = value;
 }
 
 template <class T>
