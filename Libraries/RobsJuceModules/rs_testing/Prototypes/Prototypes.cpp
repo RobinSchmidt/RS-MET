@@ -761,77 +761,10 @@ void rsModalFilterFloatSSE2::setParameters(double w, double A, double p,
 }
 */
 
-
 // Idea have a ModalSynth class that lets the user insert different types of mode filters
 // simple decaying sines, attack/decay-sines, 4-env-sines, nonlinear modes (perhaps with amplitude
 // dependent frequency - they should have a second "sidechain" input where we feed back the total
 // summed output - so the nonlinear effects may depend on the total output value
-
-
-//=================================================================================================
-// may be deletd soon:
-
-//#undef small // this is #defined in some silly windows header - WTF?
-
-/*
-template<class T>
-int rsQuantileFilterCore<T>::getNodeKey(rsMovingQuantileFilterCore<T>::Node n)
-{
-  for(int i = 0; i < dblHp.getSize(); i++)
-  {
-    Node n2 = dblHp.atIndex(i);
-    if(n2 == n)
-      return dblHp.indexToKey(i);
-  }
-  return 666; // indicate failure
-}
-
-template<class T>
-void rsQuantileFilterCore<T>::fixInconsistentBufferKeys(rsQuantileFilterCore<T>::Node n)
-{
-  Node n2;
-  int i, k;
-  while(1)
-  {
-    i  = n.bufIdx;         // buffer index stored in node n
-    k  = buf[i];           // node key stored in buffer at i
-    n2 = dblHp.atKey(k);   // retrieve the node at key k
-    if(n2 == n)
-    {
-      break; // we found a node that is consistent
-    }
-    else
-    {
-      // node is inconsistent - fix the key stored in the buffer and continue with the new node:
-      buf[i] = k; // getKey(n)...but figuring out a node's key is O(n) 
-      n = n2;
-    }
-  }
-  int dummy = 0;
-}
-*/
-/*
-// modifies the values in the buffer to make them consistent
-template<class T>
-void rsQuantileFilterCore<T>::makeBufferConsistent()
-{
-  for(int i = 0; i < dblHp.getNumValues(); i++)
-  {
-    int  k  = dblHp.indexToKey(i);
-    Node n  = dblHp.atIndex(i);
-    int  bi = n.bufIdx;
-    keyBuf[bi] = k;
-  }
-}
-// not needed anymore
-*/
-
-// maybe hae a similar function that establishes consistency by modifying the stored bufIdx fields
-// in the nodes in the dblHp
-
-
-
-
 
 //=================================================================================================
 

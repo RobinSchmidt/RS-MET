@@ -427,98 +427,7 @@ protected:
 
 };
 
-
-
-
-
-
-
-
-
-
-
-
-//-------------------------------------------------------------------------------------------------
-
-/** This is currently just a vague idea.... */
-
-template<class T>
-class rsMovingMedianFilter
-{
-
-public:
-
-
-
-
-
-  T getSample(T x)
-  {
-    insert(Node(x));        // O(log(N))
-    remove(oldestNode);     // O(log(N))
-    return nodeHeap[0].val;
-  }
-
-protected:
-
-
-  struct Node
-  {
-    Node(T value) : val(value) {}
-    T val;
-    Node *newer; 
-    //Node *older;  // we'll see, if we need this
-  };
-
-  /** ...Will also update our newestNode pointer */
-  void insert(Node node)
-  {
-    //newestNode->newer = ...  // update "newer" pointer of current newest node
-    // ...
-  }
-
-  /** ...Will also update our oldestNode pointer. */
-  void remove(Node node)
-  {
-    Node* tmp = oldestNode->newer;
-    oldestNode = tmp;
-    // more to do
-  }
-
-
-
-  std::vector<Node> nodeHeap;
-
-  Node *oldestNode;
-  Node *newestNode;   // we'll see, if we need this
-
-};
-
-/*
-Idea:
--a naive median filter would at each sample have to sort an array of delayed values and return the
- middle value of that sorted array
--sorting is an O(N*log(N)) process, so that would be the complexity per sample, which is bad
--a better implementation would insert the new incoming sample into an already sorted array - but 
- that involves shifting a lot of data around which is still O(N) - still bad
--instead, we keep the delayed samples organized as a max-heap, i.e. a binary tree that has the 
- property that for each node, the right child has the value >= and the left child a value <= the 
- value of the node in question
--inserting a new value and removing an old value from such a heap is O(log(N)) (i think, verify)
--the root of the tree/heap is always our desired output sample representing the current median
--when a new sample comes in, it has to be inserted into the heap and the oldest sample has to be 
- removed
--to do this, the filter keeps a pointer to the oldest node...
-
-
-*/
-
-
 //=================================================================================================
-
-
-
-
 
 // -maybe make also a class rsBinarySearchTree where the left child is <= and the right child is >=
 //  the parent
@@ -533,9 +442,7 @@ Idea:
 //  left <= right - would that be easy to implement and/or useful?
 // -maybe implement also a MinMaxHeap https://en.wikipedia.org/wiki/Min-max_heap
 
-//=================================================================================================
-
-/** Works similar to rsBinaryHeap just that the property satified by the nodes is different. 
+/** Works similar to rsBinaryHeap just that the property satisfied by the nodes is different. 
 Here, it holds that:
 
    A[left(i)]  <= A[i]    and
@@ -756,19 +663,9 @@ protected:
     //return floatDown2(i);
   }
 
-
-
 };
 
-
-
 //=================================================================================================
-
-
-
-
-
-
 
 /** This is a naive implementation of (the core of) a moving quantile filter and meant only for 
 producing test outputs to compare the production version of the rsQuantileFilterCore against. 

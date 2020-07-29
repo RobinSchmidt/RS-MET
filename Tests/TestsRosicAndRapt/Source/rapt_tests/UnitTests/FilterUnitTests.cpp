@@ -405,14 +405,11 @@ bool testMovingQuantileModulation()
     z[n] = fltN.getSample(x[n]);
   }
 
-
   // todo: 
   // -test edge cases
-  // -do randomized tests
-  // -use a heap-based filter and compare the results
+  // -do randomized tests - maybe make a function that takes a vector of settings - maybe it should
+  //  be a lmabda function implemented directly here
   // -try longer filters with more drastic switches, say: med, min, max, very-short, very long
-
-  // 20: 7,89,7,17,18,76,70,68,60,7,83,52 -> 7,7,7,17,18,52,60,68,70,76,83,89 -> 68
 
   r &= y == z;
 
@@ -420,14 +417,12 @@ bool testMovingQuantileModulation()
   return r;
 }
 
-
 bool movingQuantileUnitTest()
 {
   bool r = true;
 
   // Notation: nS: length of small heap, nL: length of large heap, mL: max length, L: length, 
   // q: quantile
-
 
   r &= testMovingQuantileModulation();
 
@@ -440,8 +435,7 @@ bool movingQuantileUnitTest()
   r &= testMovingQuantileCore(64, 40,  1, N);
   r &= testMovingQuantileCore(64,  1, 40, N);
 
-
-  // try to extrak the maximum over the last 8 samples:
+  // try to extract the maximum over the last 8 samples:
   using Vec = std::vector<double>;
   Vec x = Vec({ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });  // input
   Vec t = Vec({ 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0 });  // target output
@@ -453,52 +447,6 @@ bool movingQuantileUnitTest()
   for(int n = 0; n < N; n++)
     y[n] = flt.getSample(x[n]);
   r &= y == t;
-
-
-
-
-
-
-  return r;
-
-
-  /*
-  // maybe move this into an experiment later:
-
-  int nS = 8;
-  int nL = 9;
-  flt.setLengths(nS, nL);
-
-  // re-activate later:
-  rsMovingQuantileFilterNaive<double> fltN(nS, nL);
-
-  using Vec = std::vector<double>;
-
-  int N = 200;  // number of samples
-
-  Vec y(N), z(N), t(N);
-
-  Vec x = rsRandomVector(N, -1.0, +1.0);
-
-  flt.reset();
-  for(int n = 0; n < N; n++)
-  {
-    y[n] = flt.getSample(x[n]);
-    z[n] = fltN.getSample(x[n]);
-  }
-
-  for(int n = nS; n < N-nL; n++)
-    t[n+nS] = rsArrayTools::median(&x[n-nS], nS+nL); 
-    // why t[n+nS]?
-
-
-  //rsPlotVectors(x, t, z);
-  //rsPlotVectors(t, z); // match from sample 16 onwards...ok
-
-  // now the big task is to make y match z...
-  rsPlotVectors(y, z); // ..of course, this does not yet work
-  */
-
 
   return r;
 }

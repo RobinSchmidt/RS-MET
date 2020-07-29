@@ -18,6 +18,17 @@ void rsQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPos
 }
 
 template<class T>
+void rsQuantileFilterCore<T>::reset()
+{
+  for(int n = 0; n < L; n++) {
+    dblHp.atIndex(n).value  = T(0);
+    int k = dblHp.indexToKey(n);
+    dblHp.atIndex(n).bufIdx = n;
+    keyBuf[n] = k; }
+  bufIdx = 0;
+}
+
+template<class T>
 void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
 {
   int numSmall = newPosition;
@@ -157,5 +168,5 @@ void rsQuantileFilter<T>::convertParameters(
   *p += 1;                                 // algo wants the next one
   if(*p > *L - 1) {                        // quantile == 1 (maximum) needs special care
     *p = *L - 1; *w = T(1);  }
-  *q *= 0.5;                               // found empirically - verify this theoretically!
+  *q *= 0.5;                               // found empirically - todo: verify theoretically!
 }

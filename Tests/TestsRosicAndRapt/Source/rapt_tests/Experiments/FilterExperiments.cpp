@@ -1344,10 +1344,25 @@ void seriesConnectionDecay()
   // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=533696
 }
 
+
+
+void createSineSweep(double* x, int N, double f1, double f2, double fs = 1, double a = 1)
+{
+  double k = 2*PI/fs;  // conversion factor from frequency to omega
+  double w = k*f1;
+  double p = 0;
+  for(int n = 0; n < N; n++)
+  {
+    x[n] = a * sin(p);
+    w  = k * rsLinToLin(double(n), 0.0, N-1.0, f1, f2);
+    p += w;
+  }
+}
+
 void quantileFilter()
 {
   double fs = 1;     // sample rate
-  int    N  = 600;   // number of samples
+  int    N  = 1000;  // number of samples
   int    L  = 21;    // filter length in samples (can we make this a double, too?)
   double q  = 1.0;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
 
@@ -1358,13 +1373,12 @@ void quantileFilter()
 
   // we should have a combined setMaxLengthAndSampleRate function to avoid re-allocating twice:
   flt.setMaxLength(L);
-  flt.setSampleRate(1);
+  flt.setSampleRate(fs);
   //flt.setLength(L);
   flt.setFrequency(1.0/L);
   flt.setQuantile(q);
   flt.setLowpassGain(1.0);
   flt.setHighpassGain(0.0);
-  //flt.setFrequency(100.0);
   //flt.setFeedback(0.0);    // later
   flt.updateInternals();  // so we have a non-dirty state to look at
 
@@ -1389,6 +1403,9 @@ void quantileFilter()
   ng.selectorLowpass.setCutoff(0.08);
   for(int n = 0; n < N; n++)
     x[n] = ng.getSample();
+
+  //createWaveform(&x[0], N, 0, 1.0/L, 1.0);  // sine wave
+  //createSineSweep(&x[0], N, 0.0/L, 2.0/L);
 
 
   //x = Vec({ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }); N = (int) x.size(); // test
@@ -1465,7 +1482,10 @@ void quantileFilter()
   //  output will have ones at 100..104, so the computed delay should be 2 
   //  -it's most easy to test when using loGain = hiGain = 1, in which case the filter produces
   //   a pure delay
-  // -test modulation
+  // -test modulation 
+  //  -switch done - looks good
+  //  -try sweeping 
+  // -try a sine-sweep as input - looks weird, but that's expected
   // -figure out if we should use a scale factor when converting from frequency to length (it 
   //  seems mathematically natural to just use length = 1/freq, but maybe that's not a good choice
   //  in practice) - maybe look at frequency responses of moving-average filters to find the
@@ -1483,4 +1503,11 @@ void quantileFilter()
   //  it may be a worthwhile feature
   // -i think, this filter could be especially interesting to create filtered noises, it tends
   //  to some sort of "sample-and-hold" behavior - maybe try in conjunction with the TriModalNoise
+  // -maybe re-introduce the second core and give it similar parameters - it may make sense to 
+  //  form a linear combination of min and max, for example
+  //  ...maybe it makes sense to give presets in ToolChain and its submodules an Info field which
+  //  can be edited in the plugins - there, we could store a text that explains what this preset
+  //  does and hwo it should be used - a short info could be displayed in the info field when
+  //  the mouse is over the preset field and a longer info coul be displayed in a popup text
+  //  editor on right-click
 }

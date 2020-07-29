@@ -48,11 +48,12 @@ public:
   { setLengthAndReadPosition(newLength, p, hard); }
 
   /** Sets the read position in the sorted array of stored past values. This array does not exist 
-  literally but only conceptually (in the naive implementation, this actually exists literally). In 
-  practice it's the largest of the small values, i.e. the front element of the min-heap of large 
-  values in our double-heap. So what this function actually does is to update the sizes of the 
-  max-heap (of small values) and the min-heap (of large values) in the double-heap. But 
-  conceptually, think about it simply as the readout index in an array of stored past values. */
+  literally but only conceptually (in the naive implementation in the prototypes section, this 
+  actually exists literally). In practice it's the largest of the small values, i.e. the front 
+  element of the min-heap of large alues in our double-heap. So what this function actually does is
+  to update the sizes of the max-heap (of small values) and the min-heap (of large values) in the 
+  double-heap. But conceptually, think about it simply as the readout index in an array of stored 
+  past values. */
   void setReadPosition(int newPosition, bool hard = false) 
   { setLengthAndReadPosition(L, newPosition, hard); }
 
@@ -62,19 +63,19 @@ public:
   /** When a higher level class wants to implement non-integer readout positions, we need to do a 
   linear interpolation between the values at sorted-array positions to the left and to the right of 
   actual requested non-integer position. This sets the weight w for the value to the right, the 
-  weight for the value to the left is the 1-w. By default, w = 1, so we give full weight to the 
+  weight for the value to the left is then 1-w. By default, w = 1, so we give full weight to the 
   sample to the right which is the smallest of the large values. */
   void setRightWeight(T newWeight) { w = newWeight; }
 
   /** Sets a pointer to a signal buffer that is driven by client code to facilitate artifact-free
   modulation of the length. If you leave this unassigned, you may see artifacts when the length
   of the filter is switched from a lower to a higher value, due to the fact that we don't know the 
-  older samples here and just have to make up some values to fill up the heaps. When the true old 
-  samples are available via such a buffer, these artifacts can be avoided. As said, client code 
-  is supposed to feed/drive this buffer because this will also facilitate sharing of such buffers 
-  between a bunch of parallel quantile filters or to create a highpass version. That means before
-  calling setLength (and then getSample) on this object, client code should have called getSample
-  on the buffer object. */
+  older samples here and just have to make up some values heuristically to fill up the heaps. When
+  the true old samples are available via such a buffer, these artifacts can be avoided. As said, 
+  client code is supposed to feed/drive this buffer because this will also facilitate sharing of 
+  such buffers between a bunch of parallel quantile filters or to create a highpass version. That 
+  means before calling setLength (and then getSample) on this object, client code should have 
+  called getSample on the buffer object. */
   void setModulationBuffer(rsDelayBuffer<T>* newBuffer) { sigBuf = newBuffer; }
 
 
@@ -102,17 +103,12 @@ public:
     storeInput(x);       // updates double-heap and key-buffer
     return readOutput(); // sample readout
   }
+  // maybe move to cpp file (also the two functions that are called) - it's perhaps better to not
+  // inline this to keep binaries small (it does enough stuff to make the calling-overhead probably
+  // preferable over the inlining-bloat) - maybe do benchmarks
 
   /** Resets the filter into its initial state. */
-  void reset()
-  {
-    for(int n = 0; n < L; n++) {
-      dblHp.atIndex(n).value  = T(0);
-      int k = dblHp.indexToKey(n);
-      dblHp.atIndex(n).bufIdx = n;
-      keyBuf[n] = k; }
-    bufIdx = 0;
-  }
+  void reset();
 
 
 protected:
@@ -168,15 +164,12 @@ protected:
   happens to be. This will also shrink the circular buffer by one. */
   void discardOldestSample();
 
-  /** Adds a (dummy) sample to one of the heaps as new oldest sample. This will also grow the 
-  circular buffer by one. */
+  /** Adds a sample to one of the heaps as new oldest sample. The sample to be added is either a 
+  true older sample (if the user has assigned our past-signal-values buffer via 
+  setModulationBuffer and correctly keeps it up to date) or else, we will just heuristically invent 
+  a sample value to insert (choosing the most recent output value for that). This will also grow 
+  the circular buffer by one. */
   void addOlderSample();
-
-  /** Conversion from a coneceptual buffer index in the range 0..L-1 to the actual index in the 
-  range 0..buf.size()-1 */
-  //int convertBufIndex(int indexFromOldest)
-  //{ return (indexFromOldest + bufIdx) % (int)buf.size(); }
-  // we don't really need this anymore - this was meant for scaffold code
 
   /** Wraparound for the bufIdx (handles only forward wraparound, i.e. input should be 
   non-negative). */
@@ -287,7 +280,8 @@ public:
     dirty = true;
   }
 
-  /** Sets the length of the filter in seconds. */
+  /** Sets the length of the filter in seconds, i.e. the time interval of the samples that we 
+  look at. */
   void setLength(T newLength) { length = newLength; dirty = true; }
 
   /** Sets some sort of pseudo cutoff frequency which we just define as the reciprocal of the 
@@ -304,7 +298,7 @@ public:
   }
 
   /** Sets the quantile that should be extracted. 0.0 gives the minimum, 1.0 gives the maximum, 
-  0.5 gives the median, etc. */
+  0.5 gives the median, 0.25 the lower quartile, 0.75 the upper quartile, etc. */
   void setQuantile(T newQuantile1) { quantile = newQuantile1; dirty = true; }
 
   /** Sets the gain (as raw scale factor) for the actual filter output (which is lowpass'ish in 
@@ -312,11 +306,14 @@ public:
   void setLowpassGain(T newGain) { loGain = newGain; }
 
   /** Sets the gain for a highpass signal that is obtained by subtracting the (lowpass) filter 
-  output from an appropriately delayed input signal. */
+  output from an appropriately delayed input signal. Highpass and lowpass gain can be used to 
+  obtain different response types. The default is lo = 1, hi = 0 giving a lowpass filter, 
+  lo = 0, hi = 1 gives a highpass filter, lo = 1, hi = 1 gives a pure delay, lo = 1, hi = 2 gives
+  a high frequency boost, etc. */
   void setHighpassGain(T newGain) { hiGain = newGain; }
 
   // void setDelayScaler(T newScaler) { delayScl = newScaler; }
-  // typical range should be 0..2
+  // typical range should be 0..2....i'm not yet sure, if that's useful as a user parameter...
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -335,7 +332,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  /** Produces one output sample from agiven input sample. */
+  /** Produces one output sample from a given input sample. */
   T getSample(T x)
   {
     delayLine.getSample(x);
@@ -348,8 +345,8 @@ public:
     // read out the delayline at the correct position.
 
     if(dirty) updateInternals();
-    T yL = core.getSample(x);
-    T yH = delayLine[delayScl*delay] - yL;
+    T yL = core.getSample(x);               // lowpass part
+    T yH = delayLine[delayScl*delay] - yL;  // highpass part
     return loGain * yL + hiGain * yH;
   }
   // maybe factor out a function to produce lowpass and highpass getSampleLoHi or something at the 
