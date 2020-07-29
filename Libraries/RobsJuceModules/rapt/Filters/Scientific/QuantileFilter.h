@@ -381,13 +381,10 @@ public:
 
 protected:
 
-  /** Computes filter algorithm parameters length L, readout point p (both in samples) and weight 
-  w for the linear interpolation from user parameters length (in seconds), quantile 
-  (normalized 0..1) and sampleRate. ...q is the non-integer read-position which is equal to the
-  introduced delay (verify!) */
+  /** Computes filter algorithm parameters length L, readout point p (both in samples), weight 
+  w for the linear interpolation and the delay d from user parameters length (in seconds), quantile
+  (normalized 0..1) and sampleRate. */
   static void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w, T* d);
-
-
 
   /** Allocates the memory used for the delay-buffers, heaps, etc. */
   void allocateResources()

@@ -157,5 +157,5 @@ void rsQuantileFilter<T>::convertParameters(
   *p += 1;                                 // algo wants the next one
   if(*p > *L - 1) {                        // quantile == 1 (maximum) needs special care
     *p = *L - 1; *w = T(1);  }
-  *q *= 0.5;                               // found empirically - verify this!
+  *q *= 0.5;                               // found empirically - verify this theoretically!
 }

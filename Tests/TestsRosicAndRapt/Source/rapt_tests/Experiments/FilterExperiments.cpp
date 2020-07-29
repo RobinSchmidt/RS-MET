@@ -1347,8 +1347,8 @@ void seriesConnectionDecay()
 void quantileFilter()
 {
   double fs = 1;     // sample rate
-  int    N  = 500;   // number of samples
-  int    L  = 7;    // filter length in samples (can we make this a double, too?)
+  int    N  = 600;   // number of samples
+  int    L  = 21;    // filter length in samples (can we make this a double, too?)
   double q  = 1.0;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
 
 
@@ -1363,7 +1363,7 @@ void quantileFilter()
   flt.setFrequency(1.0/L);
   flt.setQuantile(q);
   flt.setLowpassGain(1.0);
-  flt.setHighpassGain(1.0);
+  flt.setHighpassGain(0.0);
   //flt.setFrequency(100.0);
   //flt.setFeedback(0.0);    // later
   flt.updateInternals();  // so we have a non-dirty state to look at
@@ -1393,13 +1393,17 @@ void quantileFilter()
 
   //x = Vec({ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }); N = (int) x.size(); // test
 
-  AT::fillWithImpulse(&x[0], N, 1.0, 100);
+  //AT::fillWithImpulse(&x[0], N, 1.0, 100);  // for testing the delay
   double delay = flt.getDelayInSamples(); // has not been computed yet
 
   //AT::cumulativeSum(&x[0], &x[0], N);
   Vec y(N);
   for(int n = 0; n < N; n++)
+  {
+    if(n ==   N/3) flt.setLength(L/2+1);  // switch to shorter length
+    if(n == 2*N/3) flt.setLength(L);      // switch back to longer length
     y[n] = flt.getSample(x[n]);
+  }
 
 
 
@@ -1451,7 +1455,9 @@ void quantileFilter()
 
   // Observations:
   // -the outputs generally have a sort of "sample-and-hold" character
-  // -the highpass signal has strong components at the Nyquist freq when q=0 or q=1
+  // -the highpass signal has strong components at the Nyquist freq when q=0 or q=1...this seems
+  //  to have disappeared - may have been due to the false delay computation (delay was off by
+  //  a factor of 1/2
 
   // ToDo:
   // -test, if the delay computation is correct - use an impulse at sample 100 - a non-delayed
