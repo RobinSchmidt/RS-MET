@@ -133,3 +133,20 @@ bool rsQuantileFilterCore<T>::isBufferSlotConsistent(int i)
   bool result = n.bufIdx == i;
   return result;
 }
+
+//=================================================================================================
+
+template<class T>
+void rsQuantileFilter<T>::convertParameters(
+  T length, T quantile, T sampleRate, int* L, int* p, T* w, T* q)
+{
+  rsAssert(quantile >= T(0) && quantile <= T(1), "Quantile needs to be between 0 and 1");
+  *L  = (int) round(length * sampleRate);  // length of filter in samples
+  *L  = rsMax(*L, 2);                      // ...needs to be at least 2
+  *q  = quantile * sampleRate * (*L - 1);  // readout position in sorted array
+  *p  = (int) floor(*q);                   // integer part (floor)
+  *w  = *q - *p;                           // fractional part
+  *p += 1;                                 // algo wants the next one
+  if(*p > *L - 1) {                        // quantile == 1 (maximum) needs special care
+    *p = *L - 1; *w = T(1);  }
+}

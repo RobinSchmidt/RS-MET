@@ -19,7 +19,7 @@ todo:
 */
 
 template<class T>
-class rsMovingMaximumFilter
+class rsMovingMaximumFilter  // rename to rsExtremumFilter
 {
 
 public:

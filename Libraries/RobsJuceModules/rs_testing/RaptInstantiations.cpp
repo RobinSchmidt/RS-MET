@@ -46,11 +46,6 @@ template bool RAPT::rsLess(const double&, const double&);
 
 template class rsMovingMaximumFilter<int>;
 template class rsMovingMaximumFilter<double>;
-
-//template RAPT::rsBinaryHeap<rsQuantileFilterCore<double>::Node>;
-template rsBinaryHeap<rsQuantileFilterCore<double>::Node>; // temporary
-template rsDoubleHeap<rsQuantileFilterCore<double>::Node>; // ...get rid asap
-
 template class rsQuantileFilter<double>;
 
 template bool RAPT::rsLess(const int& left, const int& right);

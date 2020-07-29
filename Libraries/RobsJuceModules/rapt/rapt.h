@@ -35,6 +35,7 @@
 //#include <string>
 #include <cstring>
 #include <climits>
+#include <atomic>
 //#include <xmmintrin.h>
 //#include <emmintrin.h>    // SSE2 - should be included by rosic
 //#include <iostream>       // only for printing debug info
