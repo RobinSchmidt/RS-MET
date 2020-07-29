@@ -1361,11 +1361,11 @@ void quantileFilter()
   flt.setSampleRate(1);
   //flt.setLength(L);      // should not be used anymore
   flt.setFrequency(1.0/L);
-  flt.setQuantile1(q);
-  flt.setMode(QF::Mode::lowpass);
+  flt.setQuantile(q);
+  flt.setLowpassGain(1.0);
+  flt.setHighpassGain(0.0);
   //flt.setFrequency(100.0);
   //flt.setFeedback(0.0);    // later
-  //flt.setQuantile(0.5);
 
 
   using Vec = std::vector<double>;

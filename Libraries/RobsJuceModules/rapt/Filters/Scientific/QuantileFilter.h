@@ -222,6 +222,7 @@ protected:
   int L      = 2;    // total length of filter
   int p      = 1;    // readout position, 1 <= p <= L-1
   T   w      = T(1); // weight for smallest large value in the linear interpolation
+  // maybe use size_t instead of int
 
 
   //-----------------------------------------------------------------------------------------------

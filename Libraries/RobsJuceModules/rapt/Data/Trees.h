@@ -324,7 +324,7 @@ public:
   // maybe rename to something more meaningful - but what?
 
   /** Returns true, iff this object satisfies the double-heap property. Meant mostly for testing 
-  and debugging (costly!). */
+  and debugging (is costly to call!). */
   bool isDoubleHeap()
   {
     return small.isHeap() && large.isHeap()   

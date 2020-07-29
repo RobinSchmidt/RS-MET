@@ -781,8 +781,7 @@ public:
   rsQuantileFilter()
   {
     allocateResources();
-    core1.setModulationBuffer(&delayLine);
-    core2.setModulationBuffer(&delayLine);
+    core.setModulationBuffer(&delayLine);
     dirty = true;
     //updateInternals(); // hangs - why?
   }
@@ -790,19 +789,6 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
-
-  /** Enumeration of availabel filter modes. */
-  enum class Mode
-  {
-    lowpass,
-    highpass,
-    bandpass,
-    bandstop  
-    // todo: lowshelf, highshelf, bandshelf
-  };
-
-  /** Sets the mode of the filter. @see Mode */
-  void setMode(Mode newMode) { mode = newMode; }
 
   void setSampleRate(T newSampleRate)
   {
@@ -813,14 +799,13 @@ public:
 
   void setFrequency(T newFrequency)
   {
-    setLength1(T(1) / newFrequency); 
+    setLength(T(1) / newFrequency); 
     // maybe experiment with proportionality factors - figure out, where the cutoff frequency is
     // for a median filter by feeding sinusoidal inputs and measure the output amplitude (the 
     // output may be a distorted sine? or maybe it will be zero, when the length is exactly one
     // cycle?...yeah - that makes sense and the same is true for any symmetric waveform - that's 
     // going to be some weird ass nonlinear filter!)
   }
-
 
   void setMaxLength(T newMaxLength)
   {
@@ -836,16 +821,20 @@ public:
     dirty = true;
   }
 
-  void setLength1(T newLength) { length1 = newLength; dirty = true; }
-  // get rid - user should use setFrequency
+  void setLength(T newLength) { length = newLength; dirty = true; }
 
-  void setQuantile1(T newQuantile1) { quantile1 = newQuantile1; dirty = true; }
+  void setQuantile(T newQuantile1) { quantile = newQuantile1; dirty = true; }
 
-  //void setQuantile2(T newQuantile2) { quantile2 = newQuantile2; dirty = true; }
+  void setLowpassGain(T newGain) { loGain = newGain; }
+
+  void setHighpassGain(T newGain) { hiGain = newGain; }
 
 
-  // getDelay()...but what should it return in bandpass mode? or maybe have two functions
-  // getDelay1, getDelay2
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  T getDelay() const { return delay; }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -861,41 +850,17 @@ public:
 
     if(dirty) 
       updateInternals();
-
-    T y1 = core1.getSample(x);
-    if(mode == Mode::lowpass)
-      y = y1;
-    else if(mode == Mode::highpass)
-      y = delayLine[delay1] - y;      // highpass = delayed_input - lowpass
-    else if(mode == Mode::bandpass)
-    {
-      y = delayLine[delay1] - y;      // use core1 as highpass...
-      y = core2.getSample(y);         // ...feeding core2 which is the lowpass
-    }
-    else if(mode == Mode::bandstop)
-    {
-      T y2 = core2.getSample(x);
-      y2 = delayLine[delay2] - y2;
-      y = y1 + y2;
-    }
-
-    //y2 = core2.getSample(x);
-
-
-    // experimental: highpass mode:
-    //
-
-    //y = y1;  // preliminary
-
-    return y;
+    T yL = core.getSample(x);
+    T yH = delayLine[delay] - yL;
+    return loGain * yL + hiGain * yH;
   }
-  // maybe make a function to produce lowpass and highpass at the same time - client code may find
-  // that useful
+  // maybe factor out a function to produce lowpass and highpass getSampleLoHi or something at the 
+  // same time - client code may find that useful - or mayb getOutputs to be consistent with 
+  // rsStateVariableFilter
 
   void reset()
   {
-    core1.reset();
-    core2.reset();
+    core.reset();
     delayLine.reset();
     y = T(0);
   }
@@ -907,7 +872,7 @@ protected:
   w for the linear interpolation from user parameters length (in seconds), quantile 
   (normalized 0..1) and sampleRate. ...q is the non-integer read-position which is equal to the
   introduced delay (verify!) */
-  void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w, T* q)
+  static void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w, T* q)
   {
     rsAssert(quantile >= T(0) && quantile <= T(1), "Quantile needs to be between 0 and 1");
     *L  = (int) round(length * sampleRate);  // length of filter in samples
@@ -919,51 +884,45 @@ protected:
     if(*p > *L - 1) {                        // quantile == 1 (maximum) needs special care
       *p = *L - 1; *w = T(1);  }
   }
+  // move to cpp
 
   /** Updates the internal algorithm parameters and embedded objects according to the user 
   parameters. */
   void updateInternals()
   {
-    // compute internal core parameters:
+    // compute internal and set up core parameters:
     int L, p; T w;
-    convertParameters(length1, quantile1, sampleRate, &L, &p, &w, &delay1);
-
-    // Set the core up:
-    core1.setLengthAndReadPosition(L, p);
-    core1.setRightWeight(w);
-
-    // todo: set up a second core (for bandpass mode) 
-
+    convertParameters(length, quantile, sampleRate, &L, &p, &w, &delay);
+    core.setLengthAndReadPosition(L, p);
+    core.setRightWeight(w);
     dirty = false;
   }
-  // when we want to have two filters for implementing bandpass, etc. we may need a function to 
-  // compute L,p,w from length,sampleRate,quantile
+  // (maybe) move to cpp
 
   void allocateResources()
   {
     int mL = (int) ceil(maxLength * sampleRate);
-    core1.setMaxLength(mL);
-    core2.setMaxLength(mL);
+    core.setMaxLength(mL);
     delayLine.setCapacity(mL);
   }
 
   // user parameters:
   //T feedback   = 0.0;
-  T sampleRate = 44100;         // in Hz
-  T maxLength  = 0.1;           // in seconds
-  T length1    = 0.01;          // in seconds  ...move to algo parameters or get rid
-  T quantile1  = 0.5;           // in 0..1, 0.5 is median
-  T bandwidth  = 1.0;           // in octaves
-  Mode mode    = Mode::lowpass;
+  T sampleRate = 44100; // in Hz
+  T maxLength  = 0.1;   // in seconds
+  T length     = 0.01;  // in seconds  ...move to algo parameters or get rid
+  T quantile   = 0.5;   // in 0..1, 0.5 is median
+  T loGain     = 1.0;   // gain for the filter output (which kinda lowpass)
+  T hiGain     = 0.0;   // gain for delayed input minus filter output (kinda highpass)
+
 
   // filter state, algo parameters, infrastructure:
-  T y = 0.0;                       // previous output sample (for feedback)
-  T delay1 = 0.0;                  // required delay to implement highpass by subtraction
-  T delay2 = 0.0;
+  T y     = 0.0;   // previous output sample (for feedback)
+  T delay = 0.0;   // required delay to implement highpass by subtraction
   std::atomic<bool> dirty = true;  // flag to indicate that algo params must be recalculated
 
   // embedded objects:
-  rsQuantileFilterCore<T> core1, core2;
+  rsQuantileFilterCore<T> core;
   rsDelayBuffer<T> delayLine;
 
 };
@@ -973,7 +932,7 @@ protected:
 
 
 
-/** This is a naive implementattion of (the core of) a moving quantile filter and meant only for 
+/** This is a naive implementation of (the core of) a moving quantile filter and meant only for 
 producing test outputs to compare the production version of the rsQuantileFilterCore against. 
 It's horribly inefficient - the cost per sample is O(N*log(N)) whereas the production version 
 should run in O(log(N)). ..maybe move to unit tests.. */
@@ -1003,8 +962,8 @@ public:
   void prepareSortedDelayBuffer(T x)
   {
     T y = buf.getSample(x);
-    buf.copyTo(&tmp[0], true);
-    rsHeapSort(&tmp[0], getLength());
+    buf.copyTo(&tmp[0], true);          // O(N)
+    rsHeapSort(&tmp[0], getLength());   // O(N*log(N))
   }
 
   T getSample(T x)
