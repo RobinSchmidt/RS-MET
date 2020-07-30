@@ -665,6 +665,89 @@ protected:
 
 };
 
+
+
+/** Extends rsQuantileFilter by a second core allowing to do more interesting stuff such as forming
+linear combinations of lower an upper quantiles (such as min and max), etc. Using a second core 
+instead of just using two rsQuantileFilter objects is more economical because the delayline can be
+shared between the cores. */
+
+template<class T>
+class rsDualQuantileFilter : public rsQuantileFilter<T>
+{
+
+public:
+
+  rsDualQuantileFilter()
+  {
+    allocateResources();
+    core.setModulationBuffer(&delayLine);
+    core2.setModulationBuffer(&delayLine);
+    dirty = true;
+  }
+
+
+  // setters for the parameters of the second core
+  void setFrequency2(   T newFrequency) { setLength2(T(1) / newFrequency); }
+  void setLength2(      T newLength)    { length2   = newLength;    dirty = true; }
+  void setQuantile2(    T newQuantile1) { quantile2 = newQuantile1; dirty = true; }
+  void setLowpassGain2( T newGain)      { loGain2   = newGain; }
+  void setHighpassGain2(T newGain)      { hiGain2   = newGain; }
+
+
+  T getSample(T x)
+  {
+    delayLine.getSample(x);
+    if(dirty) 
+      updateInternals();
+    T yL1 = core.getSample(x);
+    T yH1 = delayLine[delayScl*delay] - yL1;
+    T yL2 = core2.getSample(x);
+    T yH2 = delayLine[delayScl2*delay2] - yL2;
+    return loGain * yL1 + hiGain * yH1 + loGain2 * yL2 + hiGain2 * yH2;
+  }
+
+  void reset() { core.reset(); core2.reset(); delayLine.reset(); }
+
+  virtual void updateInternals() override
+  {
+    // compute internal and set up core parameters:
+    int L, p; T w;
+
+    convertParameters(length, quantile, sampleRate, &L, &p, &w, &delay);
+    core.setLengthAndReadPosition(L, p);
+    core.setRightWeight(w);
+
+    convertParameters(length2, quantile2, sampleRate, &L, &p, &w, &delay2);
+    core.setLengthAndReadPosition(L, p);
+    core.setRightWeight(w);
+
+    dirty = false;
+  }
+
+
+protected:
+
+  virtual void allocateResources() override
+  {
+    int mL = (int) ceil(maxLength * sampleRate);
+    core.setMaxLength(mL);
+    core2.setMaxLength(mL);
+    delayLine.setCapacity(mL);
+  }
+
+
+  // the 2nd core and its set of parameters:
+  rsQuantileFilterCore<T> core2;
+  T length2   = 0.0;
+  T quantile2 = 0.5;
+  T loGain2   = 0.0;
+  T hiGain2   = 0.0;
+  T delayScl2 = 1.0;
+  T delay2    = 0.0; 
+
+};
+
 //=================================================================================================
 
 /** This is a naive implementation of (the core of) a moving quantile filter and meant only for 

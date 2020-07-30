@@ -1344,21 +1344,6 @@ void seriesConnectionDecay()
   // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=533696
 }
 
-
-
-void createSineSweep(double* x, int N, double f1, double f2, double fs = 1, double a = 1)
-{
-  double k = 2*PI/fs;  // conversion factor from frequency to omega
-  double w = k*f1;
-  double p = 0;
-  for(int n = 0; n < N; n++)
-  {
-    x[n] = a * sin(p);
-    w  = k * rsLinToLin(double(n), 0.0, N-1.0, f1, f2);
-    p += w;
-  }
-}
-
 void quantileFilter()
 {
   double fs = 1;     // sample rate
@@ -1368,6 +1353,7 @@ void quantileFilter()
 
 
 
+  //using QF = rsDualQuantileFilter<double>;  // does not yet work
   using QF = rsQuantileFilter<double>;
   QF flt;
 
@@ -1504,7 +1490,9 @@ void quantileFilter()
   // -i think, this filter could be especially interesting to create filtered noises, it tends
   //  to some sort of "sample-and-hold" behavior - maybe try in conjunction with the TriModalNoise
   // -maybe re-introduce the second core and give it similar parameters - it may make sense to 
-  //  form a linear combination of min and max, for example
+  //  form a linear combination of min and max, for example - but maybe do this in a subclass
+  //  rsDualQuantileFilter
+
   //  ...maybe it makes sense to give presets in ToolChain and its submodules an Info field which
   //  can be edited in the plugins - there, we could store a text that explains what this preset
   //  does and hwo it should be used - a short info could be displayed in the info field when

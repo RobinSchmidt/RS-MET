@@ -75,15 +75,6 @@ public:
     while(!maxDeque.isEmpty() && greater(in, maxDeque.readTail()) )
       maxDeque.popBack();
     maxDeque.pushBack(in);
-    // maybe we could further reduce the worst case processing cost by using binary search to
-    // adjust the new tail-pointer instead of linearly popping elements one by one? search
-    // between tail and head for the first element that is >= in (or not < in) - but maybe that
-    // would destroy the amortized O(1) cost? ...but actually, i don't think so
-    // maybe using a "greater" function instead of a > operator is not such a good idea,
-    // performance-wise - we should do performance tests and maybe for production code, provide
-    // a version of getSample that just uses >
-
-
 
     // update delayline (forget oldest sample and remember current sample for later), this
     // corresponds to Nayuki's Step 3 - "increment the array range’s left endpoint":

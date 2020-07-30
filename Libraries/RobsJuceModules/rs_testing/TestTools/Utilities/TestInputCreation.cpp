@@ -194,6 +194,19 @@ void createSineWave(double *x, int N, double *f, double a, double fs)
   }
 }
 
+void createSineSweep(double* x, int N, double f1, double f2, double fs, double a)
+{
+  double k = 2*PI/fs;  // conversion factor from frequency to omega
+  double w = k*f1;
+  double p = 0;
+  for(int n = 0; n < N; n++)
+  {
+    x[n] = a * sin(p);
+    w  = k * rsLinToLin(double(n), 0.0, N-1.0, f1, f2);
+    p += w;
+  }
+}
+
 void createSumOfSines(double* x, int numSamples, int numSines, double fs,
   double *f, double *a, double *p)
 {

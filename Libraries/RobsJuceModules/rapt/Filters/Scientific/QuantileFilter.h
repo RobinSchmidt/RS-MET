@@ -285,17 +285,13 @@ public:
   void setLength(T newLength) { length = newLength; dirty = true; }
 
   /** Sets some sort of pseudo cutoff frequency which we just define as the reciprocal of the 
-  length. The filter is actually very nonlinear, so the notion of cutoff frequency does not 
-  really apply. */
-  void setFrequency(T newFrequency)
-  {
-    setLength(T(1) / newFrequency); 
-    // maybe experiment with proportionality factors - figure out, where the cutoff frequency is
-    // for a median filter by feeding sinusoidal inputs and measure the output amplitude (the 
-    // output may be a distorted sine? or maybe it will be zero, when the length is exactly one
-    // cycle?...yeah - that makes sense and the same is true for any symmetric waveform - that's 
-    // going to be some weird ass nonlinear filter!)
-  }
+  length. The filter is actually very nonlinear, so the notion of a cutoff frequency or even just 
+  of a frequency response does not really apply. Instead, if you consider a periodic waveform and 
+  pass it through a quantile filter whose length matches the wave's period, the output will be a
+  constant. This can be understood from the fact, that the array of sorted input values will be 
+  the same, no matter, at which phase you pick the starting point of the cycle. (todo: verify this
+  empricially) */
+  void setFrequency(T newFrequency) { setLength(T(1) / newFrequency); }
 
   /** Sets the quantile that should be extracted. 0.0 gives the minimum, 1.0 gives the maximum, 
   0.5 gives the median, 0.25 the lower quartile, 0.75 the upper quartile, etc. */
@@ -364,7 +360,7 @@ public:
   /** Updates the internal algorithm parameters and embedded objects according to the user 
   parameters. This is called in getSample, if the state is dirty but sometimes it may be 
   convenient to call it from client code too */
-  void updateInternals()
+  virtual void updateInternals()
   {
     // compute internal and set up core parameters:
     int L, p; T w;
@@ -384,7 +380,7 @@ protected:
   static void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w, T* d);
 
   /** Allocates the memory used for the delay-buffers, heaps, etc. */
-  void allocateResources()
+  virtual void allocateResources()
   {
     int mL = (int) ceil(maxLength * sampleRate);
     core.setMaxLength(mL);
@@ -406,7 +402,7 @@ protected:
   T delay = 0.0;   // required delay to implement highpass by subtraction
   std::atomic<bool> dirty = true;  // flag to indicate that algo params must be recalculated
 
-                                   // embedded objects:
+  // embedded objects:
   rsQuantileFilterCore<T> core;
   rsDelayBuffer<T> delayLine;
 

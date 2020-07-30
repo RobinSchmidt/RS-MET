@@ -56,6 +56,7 @@ sample and an amplitude given by a, at samplerate fs. */
 void createSineWave(double *x, int N, double *f, double a, double fs);
 // make order of parameters consistent with other createSineWave functions
 
+void createSineSweep(double* x, int N, double f1, double f2, double fs = 1, double a = 1);
 
 
 

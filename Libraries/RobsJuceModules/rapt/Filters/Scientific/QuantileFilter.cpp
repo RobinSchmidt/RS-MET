@@ -90,7 +90,7 @@ void rsQuantileFilterCore<T>::addOlderSample()
   Node n(x, bufIdx);
   int k = dblHp.getPreliminaryKey(n);   // corresponds to the end of one the heaps
   keyBuf[bufIdx] = k;                   // this may get changed during the actual insert
-  k = dblHp.insert(n);                  // lets the new noe float up, modifies buf
+  k = dblHp.insert(n);                  // lets the new node float up, modifies keyBuf
   L++;
 }
 

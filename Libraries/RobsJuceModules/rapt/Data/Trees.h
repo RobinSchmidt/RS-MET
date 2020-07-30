@@ -5,12 +5,11 @@
 
 
 /** Baseclass for almost complete binary tree data-structures that are stored in an external array,
-i.e. this class acts like "view" or "wrapper" around an already existing data array. Examples are
-the subclass rsBinaryHeap (and later maybe rsBinarySearchTree), which are still under construction 
-in the prototypes section.  */
+i.e. this class acts like "view" or "wrapper" around an already existing data array. An sxamples is
+the subclass rsBinaryHeap.   */
 
 template<class T>
-class rsBinaryTree
+class rsBinaryTree  // maybe rename to rsImplicitBinaryTree
 {
 
 public:
@@ -176,7 +175,7 @@ public:
   value is the array index, where the new element actually ended up. */
   int replace(int i, const T& x) { data[i] = x; return floatIntoPlace(i); }
 
-  /** Inserts the element x into the heap at the correct position to maintain the heap-property and 
+  /** Inserts the element x into the heap at the correct position to maintain the heap-property and
   returns the array-index where it was inserted. */
   int insert(const T& x);
 
@@ -303,9 +302,17 @@ public:
   int getNumLargeValues() const { return (int) large.getSize(); }
   int getNumValues()      const { return (int) (small.getSize() + large.getSize()); }
 
+  /** Returns the largest (i.e. first) element from our max-heap of small values. */
   T getLargestSmallValue()  const { return small.at(0); }
+
+  /** Returns the smallest (i.e. first) element from our min-heap of large values  */
   T getSmallestLargeValue() const { return large.at(0); }
+
+  /** Returns the last element from our max-heap of small values (this is not  necessarily the 
+  smalles value, because in a heap, the order of the children of a node is unspecified). */
   T getLastSmallValue()     const { return small.at(small.getSize()-1); }
+
+
   T getLastLargeValue()     const { return large.at(large.getSize()-1); }
   // rename to getFirstSmallValue getLast.. the last is not necessarily the largest or smallest
   // the children are both larger/smaller but their order is not defined...hmm - can we define 
