@@ -1347,14 +1347,14 @@ void seriesConnectionDecay()
 void quantileFilter()
 {
   double fs = 1;     // sample rate
-  int    N  = 1000;  // number of samples
+  int    N  = 100000;  // number of samples
   int    L  = 21;    // filter length in samples (can we make this a double, too?)
   double q  = 1.0;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
 
 
 
-  //using QF = rsDualQuantileFilter<double>;  // does not yet work
-  using QF = rsQuantileFilter<double>;
+  using QF = rsDualQuantileFilter<double>;  // does not yet work
+  //using QF = rsQuantileFilter<double>;
   QF flt;
 
   // we should have a combined setMaxLengthAndSampleRate function to avoid re-allocating twice:
@@ -1366,6 +1366,7 @@ void quantileFilter()
   flt.setLowpassGain(1.0);
   flt.setHighpassGain(0.0);
   //flt.setFeedback(0.0);    // later
+  //flt.setCore2Complementary();
   flt.updateInternals();  // so we have a non-dirty state to look at
 
 
@@ -1386,9 +1387,10 @@ void quantileFilter()
   rsNoiseGeneratorTriModal<double> ng;
   ng.setOrder(7);
   ng.selectorLowpass.setSampleRate(1.0);
-  ng.selectorLowpass.setCutoff(0.08);
+  //ng.selectorLowpass.setCutoff(0.08);
+  ng.selectorLowpass.setCutoff(0.02);
   for(int n = 0; n < N; n++)
-    x[n] = ng.getSample();
+    x[n] = 0.5 * ng.getSample();
 
   //createWaveform(&x[0], N, 0, 1.0/L, 1.0);  // sine wave
   //createSineSweep(&x[0], N, 0.0/L, 2.0/L);
@@ -1432,6 +1434,9 @@ void quantileFilter()
     z[n] = fltN.getSampleMedian(x[n]);
   }
 
+  rosic::writeToMonoWaveFile("QuantileFilterInput.wav",  &x[0], N, 44100);
+  rosic::writeToMonoWaveFile("QuantileFilterOutput.wav", &y[0], N, 44100);
+
 
   //rsPlotVectors(x, y, t);
   //rsPlotVectors(y, t);
@@ -1440,11 +1445,13 @@ void quantileFilter()
   //rsPlotVectors(z, y);  // for even lengths, z is the better reference - t has a delay there
   //rsPlotVectors(x, y);
 
+  /*
   GNUPlotter plt;
   plt.addDataArrays(N, &x[0]);
   plt.addDataArrays(N, &y[0]);
   plt.setPixelSize(1600, 400);
   plt.plot();
+  */
 
   int dummy = 0;
 
@@ -1468,9 +1475,10 @@ void quantileFilter()
   //  output will have ones at 100..104, so the computed delay should be 2 
   //  -it's most easy to test when using loGain = hiGain = 1, in which case the filter produces
   //   a pure delay
+  // -benchmark against naive implementation
   // -test modulation 
   //  -switch done - looks good
-  //  -try sweeping 
+  //  -try sweeping the freq exponentially
   // -try a sine-sweep as input - looks weird, but that's expected
   // -figure out if we should use a scale factor when converting from frequency to length (it 
   //  seems mathematically natural to just use length = 1/freq, but maybe that's not a good choice

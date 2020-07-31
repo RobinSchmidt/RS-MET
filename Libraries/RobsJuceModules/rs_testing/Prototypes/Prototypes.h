@@ -694,6 +694,26 @@ public:
   void setLowpassGain2( T newGain)      { loGain2   = newGain; }
   void setHighpassGain2(T newGain)      { hiGain2   = newGain; }
 
+  void setCore2Equal()
+  {
+    length2   = length;
+    quantile2 = quantile;
+    loGain2   = loGain;
+    hiGain2   = hiGain;
+    delayScl2 = delayScl;
+    dirty = true;
+  }
+
+  void setCore2Complementary()
+  {
+    setCore2Equal();
+    quantile2 = T(1) - quantile;
+    dirty = true;
+  }
+
+
+  // maybe have a setCore2Complementary which uses the same settings for core2 as core2 except the
+  // quantile, for which we use: quantile2 = 1-quantile
 
   T getSample(T x)
   {
@@ -719,8 +739,8 @@ public:
     core.setRightWeight(w);
 
     convertParameters(length2, quantile2, sampleRate, &L, &p, &w, &delay2);
-    core.setLengthAndReadPosition(L, p);
-    core.setRightWeight(w);
+    core2.setLengthAndReadPosition(L, p);
+    core2.setRightWeight(w);
 
     dirty = false;
   }
