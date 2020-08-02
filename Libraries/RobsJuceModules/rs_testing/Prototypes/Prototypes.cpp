@@ -796,8 +796,6 @@ rsGroupString rsGroupString::operator+(const rsGroupString &rhs) const
   // annihilator - maybe use pairings that are unnatural for an actual language
 }
 
-
-
 rsGroupString2::rsGroupString2(const char* inStr)
 {
   size_t len = strlen(inStr);

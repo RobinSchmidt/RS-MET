@@ -665,7 +665,65 @@ protected:
 
 };
 
+//=================================================================================================
 
+// a max-function based on the < operator (rather than >)
+template <class T>
+inline T rsMaxViaLess(T in1, T in2)
+{
+  if(in2 < in1)
+    return in1;
+  else
+    return in2;
+}
+
+
+template<class T>
+class rsQuantileFilterCore2 : public rsQuantileFilterCore<T>
+{
+
+public:
+
+  /** Produces a sample that would have been produced, if the length L of the filter had been 
+  longer by one sample. This is used to implement non-integer length filters by crossfading 
+  between the outputs of two filters whose lengths differ by one. It needs as input the sample 
+  input sample that has been fed to getSample. */
+  T readOutputLongerBy1(T x)
+  {
+    T p1 = p * T(L) / T(L-1); // but wait - p is an integer - should we use p+w or p+(1-w)?
+    T w1 = p1 - floor(p1);
+    T yS, yL;
+    Node nx(x, 0); // we need to create a node
+
+    return T(0);  // preliminary
+
+    /*
+    if(dblHp.small.isLess(nx, dblHp.large[0]))  // means: if(x < large[0])
+    {
+      // x belongs in small heap
+      yS = dblHp.get2ndLargestSmallValue().value;
+      yS = rsMaxViaLess(yS, x);  //
+      yL = dblHp.getLargestSmallValue().value;
+    }
+    else
+    {
+      // x belongs in large heap
+      yL = dblHp.get2ndSmallestLargeValue().value;
+      yL = rsMin(yL, x);
+      yS = dblHp.getSmallestLargeValue().value;
+    }
+    T y = (T(1)-w1)*yS + w*yL;
+    return y;
+    */
+  }
+  // needs test - compare against signal that has beed produced by a baseclass filter that actually
+  // is one sample longer
+
+protected:
+
+};
+
+//=================================================================================================
 
 /** Extends rsQuantileFilter by a second core allowing to do more interesting stuff such as forming
 linear combinations of lower an upper quantiles (such as min and max), etc. Using a second core 

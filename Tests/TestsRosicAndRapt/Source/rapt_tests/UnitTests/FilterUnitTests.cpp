@@ -347,7 +347,7 @@ bool testMovingQuantileModulation()
   bool r = true;
 
   int maxLength = 12;
-  int N = 200;           // number of samples
+  int N = 200;           // number of samples - make parameter
 
   // create vector of settings, each with a timestamp:
   struct Settings
@@ -374,6 +374,8 @@ bool testMovingQuantileModulation()
   //std::vector<Settings> settings ={ {0, 5, 7}, {40, 7, 5}, {60, 5, 7} };
   //std::vector<Settings> settings ={ {0, 4, 5}, {9, 3, 2} };
   //std::vector<Settings> settings ={ {0, 3, 2} };
+
+  // todo: use a longer list of settings covering more cases - should include edge cases as well
 
   rsDelayBuffer<double> rngBuf;
   rngBuf.setCapacity(maxLength);
@@ -417,6 +419,59 @@ bool testMovingQuantileModulation()
   return r;
 }
 
+// tests computing an output from a length L filter that would have been produced by a length
+// L+1 filter
+bool oneLongerQuantileUnitTest(int L)
+{
+  bool r = true;
+
+  int N = 100;  // number of samples - maybe make parameter
+
+
+
+  using Vec = std::vector<double>;
+
+  // we test the filter with these quantiles:
+  Vec quantiles({0.0, 0.25, 0.5, 0.75, 1.0});
+
+
+  rsQuantileFilterCore<double> fltR;   // the reference filter
+  fltR.setMaxLength(L+1);
+  fltR.setLength(L+1, true);
+
+  rsQuantileFilterCore2<double> fltT;  // to be tested filter
+  fltT.setMaxLength(L);
+  fltT.setLength(L, true);
+
+
+  Vec x = rsRandomIntVector(N, 0, 99);
+  Vec yR(N), yT(N);  // reference and test output
+
+  for(size_t i = 0; i < quantiles.size(); i++)
+  {
+    // compute output of reference filter - this filter actually is one sample longer than our 
+    // nominal L:
+    double pR = quantiles[i] * L;
+    for(int n = 0; n < N; n++)
+      yR[n] = fltR.getSample(x[n]);
+
+
+    // compute output of tested filter - this filter is set to length L and computes the output of
+    // a length L+1 filter by additional trickery
+    double pT = quantiles[i] * (L-1); // readout position in test filter
+    for(int n = 0; n < N; n++)
+    {
+      double dummy = fltT.getSample(x[n]);     // we are not actually interested in that value
+      yT[n] = fltT.readOutputLongerBy1(x[n]);  // ...this is what we are interested in
+    }
+
+    r &= yT == yR;
+    rsPlotVectors(yR, yT);
+  }
+
+  return r;
+}
+
 bool movingQuantileUnitTest()
 {
   bool r = true;
@@ -424,9 +479,10 @@ bool movingQuantileUnitTest()
   // Notation: nS: length of small heap, nL: length of large heap, mL: max length, L: length, 
   // q: quantile
 
-  r &= testMovingQuantileModulation();
+  int N = 500;  // number of samples for the tests
 
-  int N = 500;  // number of samples
+
+  // test the general operation:
   r &= testMovingQuantileCore(64, 32, 32, N);
   r &= testMovingQuantileCore(64, 50, 14, N);  // nS + nL = 50 + 14 = 64
   r &= testMovingQuantileCore(64, 30, 14, N);
@@ -434,6 +490,17 @@ bool movingQuantileUnitTest()
   r &= testMovingQuantileCore(64,  1, 63, N);
   r &= testMovingQuantileCore(64, 40,  1, N);
   r &= testMovingQuantileCore(64,  1, 40, N);
+
+  // test modulatability (setting new parameters during operation):
+  r &= testMovingQuantileModulation();
+
+  // test the read out of a filter one sample longer than nominal length:
+  r &= oneLongerQuantileUnitTest(2);
+  r &= oneLongerQuantileUnitTest(3);
+  r &= oneLongerQuantileUnitTest(4);
+  r &= oneLongerQuantileUnitTest(5);
+
+
 
   // try to extract the maximum over the last 8 samples:
   using Vec = std::vector<double>;

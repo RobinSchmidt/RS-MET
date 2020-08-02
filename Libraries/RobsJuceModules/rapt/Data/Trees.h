@@ -84,6 +84,12 @@ public:
   }
   // get rid of the duplication
 
+  /** Returns true, if a is less than b as defined by our less function as et by 
+  setCompareFunction. */
+  bool isLess(const T& a, const T& b) const { return less(a, b); }
+  // maybe rename to comesBefore to reflect that the comparision function not necessarily a 
+  // less-than function
+
 
 protected:
 
@@ -308,6 +314,22 @@ public:
   /** Returns the smallest (i.e. first) element from our min-heap of large values  */
   T getSmallestLargeValue() const { return large.at(0); }
 
+  /** Returns the second largest element from our max-heap of small values. */
+  T get2ndLargestSmallValue() const
+  {
+    if(small.getSize() >= 3) return rsMax(small.at(1), small.at(2));
+    if(small.getSize() >= 2) return small.at(1);
+    return small.at(0);  // does this make sense?
+  }
+
+  /** Returns the second smallest element from our min-heap of large values. */
+  T get2ndSmallestLargeValue() const
+  {
+    if(large.getSize() >= 3) return rsMin(large.at(1), large.at(2));
+    if(large.getSize() >= 2) return large.at(1);
+    return large.at(0);  // does this make sense?
+  }
+
   /** Returns the last element from our max-heap of small values (this is not  necessarily the 
   smalles value, because in a heap, the order of the children of a node is unspecified). */
   T getLastSmallValue()     const { return small.at(small.getSize()-1); }
@@ -441,6 +463,7 @@ protected:
   static bool isKeyInLargeHeap(int k) { return k & firstBitOnly;  }
 
 
+  //template<class U> friend class rsQuantileFilterCore2; // preliminary - try to get rid
 
 };
 // clean this up - order the functions according to the usual scheme and add documentation

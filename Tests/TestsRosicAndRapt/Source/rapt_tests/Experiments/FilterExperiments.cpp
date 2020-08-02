@@ -1346,27 +1346,34 @@ void seriesConnectionDecay()
 
 void quantileFilter()
 {
-  double fs = 1;     // sample rate
-  int    N  = 100000;  // number of samples
-  int    L  = 21;    // filter length in samples (can we make this a double, too?)
-  double q  = 1.0;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
+  double fs = 44100;  // sample rate
+  int    N  = 200000; // number of samples
+  int    L  = 21;     // filter length in samples (can we make this a double, too?)
+  double q  = 0.5;    // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
 
 
+  double f1 = fs/2;
+  double f2 = fs/100;  // fs/256 is a nice end value for a sweep
 
-  using QF = rsDualQuantileFilter<double>;  // does not yet work
+  double maxLength = ceil(rsMax(1/f1, 1/f2)); // required maximum length
+
+
+  using QF = rsDualQuantileFilter<double>;
   //using QF = rsQuantileFilter<double>;
   QF flt;
 
   // we should have a combined setMaxLengthAndSampleRate function to avoid re-allocating twice:
-  flt.setMaxLength(L);
-  flt.setSampleRate(fs);
+  flt.setSampleRateAndMaxLength(fs, maxLength);
+  //flt.setMaxLength(0.1);
+  //flt.setSampleRate(fs);
   //flt.setLength(L);
-  flt.setFrequency(1.0/L);
+  //flt.setFrequency(1.0/L);
+  flt.setFrequency(f1);
   flt.setQuantile(q);
   flt.setLowpassGain(1.0);
   flt.setHighpassGain(0.0);
   //flt.setFeedback(0.0);    // later
-  //flt.setCore2Complementary();
+  flt.setCore2Complementary();
   flt.updateInternals();  // so we have a non-dirty state to look at
 
 
@@ -1395,6 +1402,9 @@ void quantileFilter()
   //createWaveform(&x[0], N, 0, 1.0/L, 1.0);  // sine wave
   //createSineSweep(&x[0], N, 0.0/L, 2.0/L);
 
+  Vec f(N);
+  AT::fillWithRangeExponential(&f[0], N, f1, f2);
+
 
   //x = Vec({ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }); N = (int) x.size(); // test
 
@@ -1405,21 +1415,20 @@ void quantileFilter()
   Vec y(N);
   for(int n = 0; n < N; n++)
   {
-    if(n ==   N/3) flt.setLength(L/2+1);  // switch to shorter length
-    if(n == 2*N/3) flt.setLength(L);      // switch back to longer length
+    //if(n ==   N/3) flt.setLength(L/2+1);  // switch to shorter length
+    //if(n == 2*N/3) flt.setLength(L);      // switch back to longer length
+
+    flt.setFrequency(f[n]);
+    flt.setCore2Complementary();
     y[n] = flt.getSample(x[n]);
   }
 
-
-
-
   // create a median-filtered version of x:
-  Vec t(N);
   int nS = L/2;    // floor division
   int nL = L-nS;
-  for(int n = nS; n < N-nL; n++)
-    t[n+nS] = rsArrayTools::median(&x[n-nS], nS+nL); 
-  // why t[n+nS]?
+  Vec t(N);
+  //for(int n = nS; n < N-nL; n++)
+  //  t[n+nS] = rsArrayTools::median(&x[n-nS], nS+nL); // why t[n+nS]?
   
   // 7: 36,67,76,41,82,45,74 -> 36,41,45,67,74,76,82 -> 67
   // 6: 36,67,76,41,82,45    -> 36,41,45,67,76,82    -> (45+67)/2 = 56 ..but occurs at sample 101 - why?
@@ -1428,11 +1437,8 @@ void quantileFilter()
   // let's try it with the naive implementation of rsQuantileFilter
   rsQuantileFilterNaive<double> fltN(nS, nL);
   Vec z(N);
-  for(int n = 0; n < N; n++)
-  {
-    //z[n] = fltN.getSample(x[n]);
-    z[n] = fltN.getSampleMedian(x[n]);
-  }
+  //for(int n = 0; n < N; n++)
+  //  z[n] = fltN.getSampleMedian(x[n]);
 
   rosic::writeToMonoWaveFile("QuantileFilterInput.wav",  &x[0], N, 44100);
   rosic::writeToMonoWaveFile("QuantileFilterOutput.wav", &y[0], N, 44100);
@@ -1465,17 +1471,25 @@ void quantileFilter()
 
   // Observations:
   // -the outputs generally have a sort of "sample-and-hold" character
+  // -when sweeping the freq, there are audible artifacts that sound like switching to a new
+  //  settings - could the be because of the rounding? it's especially obvious for very small 
+  //  lengths - yes, it happens most obviously when the (rounded) length L switches from 2 to 3 
+  //  -> maybe we need indeed implement some sort of support for non-integer length
   // -the highpass signal has strong components at the Nyquist freq when q=0 or q=1...this seems
   //  to have disappeared - may have been due to the false delay computation (delay was off by
   //  a factor of 1/2
+  // 
 
   // ToDo:
+  // -setMaxLength call takes really long - figure out why and fix it! ah - it was because it
+  //  wants its input in seconds and i assumed samples and passed an unreasonably large value
   // -test, if the delay computation is correct - use an impulse at sample 100 - a non-delayed
   //  maximum should have a 1 at samples 98,99,100,101,102 - that's our reference. the filter
   //  output will have ones at 100..104, so the computed delay should be 2 
   //  -it's most easy to test when using loGain = hiGain = 1, in which case the filter produces
   //   a pure delay
   // -benchmark against naive implementation
+  // -try putting a regular bandpass in front
   // -test modulation 
   //  -switch done - looks good
   //  -try sweeping the freq exponentially
@@ -1493,6 +1507,11 @@ void quantileFilter()
   //   compute the non-integer read position q as:
   //     T q = quantile * sampleRate * (*L - 1);
   //   maybe we can just use this formula as is but with the non-integer L?
+  //  ...but no: the artifacts also appear when q = 0 or q = 1, so adjusting q seems not to be the 
+  //  solution - we really need soem sort of formula/algo that computes the quantile over L and 
+  //  over L+1 samples and crossfade between them - how can we do this? maybe we need to look not 
+  //  only at the front samples of the heaps but also to the first child-nodes *and* at at a sample
+  //  at L+1 to figure out, where fits in? between the middle samples
   // -support of non-integer length would allow for a smoother modulation of the cutoff freq, so
   //  it may be a worthwhile feature
   // -i think, this filter could be especially interesting to create filtered noises, it tends
