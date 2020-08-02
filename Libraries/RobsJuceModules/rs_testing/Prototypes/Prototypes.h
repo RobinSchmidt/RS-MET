@@ -667,27 +667,18 @@ protected:
 
 //=================================================================================================
 
-// a max-function based on the < operator (rather than >)
-template <class T>
-inline T rsMaxViaLess(T in1, T in2)
-{
-  if(in2 < in1)
-    return in1;
-  else
-    return in2;
-}
-
-
 template<class T>
 class rsQuantileFilterCore2 : public rsQuantileFilterCore<T>
 {
 
 public:
 
-  /** Produces a sample that would have been produced, if the length L of the filter had been 
-  longer by one sample. This is used to implement non-integer length filters by crossfading 
-  between the outputs of two filters whose lengths differ by one. It needs as input the sample 
-  input sample that has been fed to getSample. */
+  /** Produces a sample that would have been produced, if the length L of the filter would be 
+  longer by one sample, i.e. L+1. This is used to implement non-integer length filters by 
+  crossfading between the outputs of two filters whose lengths differ by one. It needs as input the
+  same input sample that has been fed to getSample and it should be called after getSample. From 
+  the values returned by the regular getSample call and the call to this afterwards, a non-integer
+  length filter sample can be computed by crossfading. */
   T readOutputLongerBy1(T x)
   {
     T p1 = p * T(L) / T(L-1); // but wait - p is an integer - should we use p+w or p+(1-w)?
@@ -695,9 +686,6 @@ public:
     T yS, yL;
     Node nx(x, 0); // we need to create a node
 
-    return T(0);  // preliminary
-
-    /*
     if(dblHp.small.isLess(nx, dblHp.large[0]))  // means: if(x < large[0])
     {
       // x belongs in small heap
@@ -714,7 +702,6 @@ public:
     }
     T y = (T(1)-w1)*yS + w*yL;
     return y;
-    */
   }
   // needs test - compare against signal that has beed produced by a baseclass filter that actually
   // is one sample longer

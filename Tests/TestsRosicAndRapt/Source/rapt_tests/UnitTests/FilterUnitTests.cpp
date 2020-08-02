@@ -421,18 +421,14 @@ bool testMovingQuantileModulation()
 
 // tests computing an output from a length L filter that would have been produced by a length
 // L+1 filter
-bool oneLongerQuantileUnitTest(int L)
+bool oneLongerQuantileUnitTest(int L, int N)
 {
   bool r = true;
 
-  int N = 100;  // number of samples - maybe make parameter
-
-
-
-  using Vec = std::vector<double>;
-
   // we test the filter with these quantiles:
+  using Vec = std::vector<double>;
   Vec quantiles({0.0, 0.25, 0.5, 0.75, 1.0});
+  // maye also include 0.000001, 0.99999
 
 
   rsQuantileFilterCore<double> fltR;   // the reference filter
@@ -443,22 +439,26 @@ bool oneLongerQuantileUnitTest(int L)
   fltT.setMaxLength(L);
   fltT.setLength(L, true);
 
-
-  Vec x = rsRandomIntVector(N, 0, 99);
-  Vec yR(N), yT(N);  // reference and test output
-
+  // compute test and reference output and compare them:
+  Vec x = rsRandomIntVector(N, 0, 99);  // input
+  Vec yR(N), yT(N);                     // reference and test output
   for(size_t i = 0; i < quantiles.size(); i++)
   {
     // compute output of reference filter - this filter actually is one sample longer than our 
     // nominal L:
     double pR = quantiles[i] * L;
+    double wR = pR - floor(pR);
+    fltR.setReadPosition(1 + (int) pR, true);
+    fltR.setRightWeight(wR);
     for(int n = 0; n < N; n++)
       yR[n] = fltR.getSample(x[n]);
-
 
     // compute output of tested filter - this filter is set to length L and computes the output of
     // a length L+1 filter by additional trickery
     double pT = quantiles[i] * (L-1); // readout position in test filter
+    double wT = pT - floor(pT);
+    fltT.setReadPosition(1 + (int) pT, true);
+    fltT.setRightWeight(wT);
     for(int n = 0; n < N; n++)
     {
       double dummy = fltT.getSample(x[n]);     // we are not actually interested in that value
@@ -468,6 +468,7 @@ bool oneLongerQuantileUnitTest(int L)
     r &= yT == yR;
     rsPlotVectors(yR, yT);
   }
+  // this does not yet work - also, we trigger an assert for quantile = 1
 
   return r;
 }
@@ -495,10 +496,10 @@ bool movingQuantileUnitTest()
   r &= testMovingQuantileModulation();
 
   // test the read out of a filter one sample longer than nominal length:
-  r &= oneLongerQuantileUnitTest(2);
-  r &= oneLongerQuantileUnitTest(3);
-  r &= oneLongerQuantileUnitTest(4);
-  r &= oneLongerQuantileUnitTest(5);
+  r &= oneLongerQuantileUnitTest(2, N);
+  r &= oneLongerQuantileUnitTest(3, N);
+  r &= oneLongerQuantileUnitTest(4, N);
+  r &= oneLongerQuantileUnitTest(5, N);
 
 
 

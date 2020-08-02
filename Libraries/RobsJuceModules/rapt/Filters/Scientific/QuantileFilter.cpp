@@ -6,7 +6,7 @@ void rsQuantileFilterCore<T>::setLengthAndReadPosition(int newLength, int newPos
   int C = getMaxLength(); // capacity
   rsAssert(newLength   <= C,           "Length cannot exceed capacity");
   rsAssert(newLength   >= 2,           "We require L >= 2");
-  rsAssert(newPosition >= 1,           "We require p <= 1");
+  rsAssert(newPosition >= 1,           "We require p >= 1");
   rsAssert(newPosition <= newLength-1, "We require p <= L-1");
   if(hard) {
     L = newLength;

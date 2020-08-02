@@ -317,7 +317,7 @@ public:
   /** Returns the second largest element from our max-heap of small values. */
   T get2ndLargestSmallValue() const
   {
-    if(small.getSize() >= 3) return rsMax(small.at(1), small.at(2));
+    if(small.getSize() >= 3) return rsMaxViaLess(small.at(1), small.at(2));
     if(small.getSize() >= 2) return small.at(1);
     return small.at(0);  // does this make sense?
   }
