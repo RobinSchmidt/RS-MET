@@ -675,29 +675,46 @@ public:
 
   /** Produces a sample that would have been produced, if the length L of the filter would be 
   longer by one sample, i.e. L+1. This is used to implement non-integer length filters by 
-  crossfading between the outputs of two filters whose lengths differ by one. It needs as input the
-  same input sample that has been fed to getSample and it should be called after getSample. From 
+  crossfading between the outputs of two filters whose lengths differ by one. 
+  
+  wrong:
+  It needs as input the
+  same input sample that has been fed to getSample and it should be called after getSample. 
+
+  correct again:
+  From 
   the values returned by the regular getSample call and the call to this afterwards, a non-integer
   length filter sample can be computed by crossfading. */
-  T readOutputLongerBy1(T x)
+
+
+
+  T readOutputLongerBy1()
+  {
+    rsAssert(sigBuf != nullptr, "To use this feature, the input buffer must be assigned.");
+    T xL = (*sigBuf)[L];   // should be x[n-L], client code must assure this
+    return readOutputWithOneMoreInput(xL);
+  }
+
+
+  T readOutputWithOneMoreInput(T xL)
   {
     T p1 = p * T(L) / T(L-1); // but wait - p is an integer - should we use p+w or p+(1-w)?
     T w1 = p1 - floor(p1);
-    T yS, yL;
-    Node nx(x, 0); // we need to create a node
+    T yS, yL; // hmm...yL means yLarge but xL means x[n-L] - notational clash!
+    Node nx(xL, 0); // we need to create a node
 
     if(dblHp.small.isLess(nx, dblHp.large[0]))  // means: if(x < large[0])
     {
       // x belongs in small heap
       yS = dblHp.get2ndLargestSmallValue().value;
-      yS = rsMaxViaLess(yS, x);  //
+      yS = rsMaxViaLess(yS, xL);  //
       yL = dblHp.getLargestSmallValue().value;
     }
     else
     {
       // x belongs in large heap
       yL = dblHp.get2ndSmallestLargeValue().value;
-      yL = rsMin(yL, x);
+      yL = rsMin(yL, xL);
       yS = dblHp.getSmallestLargeValue().value;
     }
     T y = (T(1)-w1)*yS + w*yL;
@@ -705,6 +722,9 @@ public:
   }
   // needs test - compare against signal that has beed produced by a baseclass filter that actually
   // is one sample longer
+  // this is wrong - it should not take as input the sample x[n] (that is stored already in the 
+  // heaps after getSample). instead, it needs x[n-L] maybe make a function 
+  // readOutputWithAdditionalInput
 
 protected:
 

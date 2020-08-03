@@ -77,6 +77,7 @@ public:
   means before calling setLength (and then getSample) on this object, client code should have 
   called getSample on the buffer object. */
   void setModulationBuffer(rsDelayBuffer<T>* newBuffer) { sigBuf = newBuffer; }
+  // maybe rename to setSignalBuffer or setInputBuffer - it's used for other things, too
 
 
   //-----------------------------------------------------------------------------------------------

@@ -427,20 +427,26 @@ bool oneLongerQuantileUnitTest(int L, int N)
 
   // we test the filter with these quantiles:
   using Vec = std::vector<double>;
-  Vec quantiles({0.0, 0.25, 0.5, 0.75, 1.0});
-  // maye also include 0.000001, 0.99999
+  //Vec quantiles({0.0, 0.25, 0.5, 0.75, 1.0});
+  Vec quantiles({ 0.25 });
+  // maye also include 0.000001, 0.99999..or maybe eps, 1-eps
 
 
   rsQuantileFilterCore<double> fltR;   // the reference filter
   fltR.setMaxLength(L+1);
   fltR.setLength(L+1, true);
 
+  rsDelayBuffer<double> delayLine;
+  delayLine.setCapacity(L+1);
+
   rsQuantileFilterCore2<double> fltT;  // to be tested filter
   fltT.setMaxLength(L);
   fltT.setLength(L, true);
+  fltT.setModulationBuffer(&delayLine);
 
   // compute test and reference output and compare them:
-  Vec x = rsRandomIntVector(N, 0, 99);  // input
+  //Vec x = rsRandomIntVector(N, 0, 99);  // input
+  Vec x = rsLinearRangeVector(N, 1, N);
   Vec yR(N), yT(N);                     // reference and test output
   for(size_t i = 0; i < quantiles.size(); i++)
   {
@@ -461,8 +467,9 @@ bool oneLongerQuantileUnitTest(int L, int N)
     fltT.setRightWeight(wT);
     for(int n = 0; n < N; n++)
     {
-      double dummy = fltT.getSample(x[n]);     // we are not actually interested in that value
-      yT[n] = fltT.readOutputLongerBy1(x[n]);  // ...this is what we are interested in
+      delayLine.getSample(x[n]);           // feed delayline (output irrelevant)
+      fltT.getSample(x[n]);                // feed filter (output irrelevant)
+      yT[n] = fltT.readOutputLongerBy1();  // ...this is what we are interested in
     }
 
     r &= yT == yR;
