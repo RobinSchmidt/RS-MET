@@ -118,6 +118,31 @@ bool testArrayFiltering()
   return r;
 }
 
+bool testArrayMisc()
+{
+  bool r = true;
+  typedef std::vector<int> Vec;
+  typedef RAPT::rsArrayTools AT;
+  Vec x6, x7, x8, y6, y7, y8;
+
+  // test reversal:
+  x6 = Vec({1,2,3,4,5,6});
+  x7 = Vec({1,2,3,4,5,6,7});
+  x8 = Vec({1,2,3,4,5,6,7,8});
+  y6 = x6; AT::reverse(&y6[0], 6); r &= y6 == Vec({6,5,4,3,2,1});
+  y7 = x7; AT::reverse(&y7[0], 7); r &= y7 == Vec({7,6,5,4,3,2,1});
+
+  // test circular shift:
+  y7 = x7; rsCircularShift(&y7[0], 7, 3); r &= y7 == Vec({5,6,7,1,2,3,4});
+  y8 = x8; rsCircularShift(&y8[0], 8, 3); r &= y8 == Vec({6,7,8,1,2,3,4,5});
+
+
+
+
+
+  return r;
+}
+
 bool arrayUnitTest()
 {
   bool r = true;      // test result
@@ -138,6 +163,7 @@ bool arrayUnitTest()
 
 
   r &= testArrayFiltering();
+  r &= testArrayMisc();
 
   // int s = sum(3, &u[0]); // sum function doesn't compile
 

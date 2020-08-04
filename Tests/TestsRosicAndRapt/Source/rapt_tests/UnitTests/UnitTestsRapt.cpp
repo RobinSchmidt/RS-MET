@@ -23,7 +23,7 @@ bool runUnitTestsRapt()
   passed &= runUnitTest(&testSortAndSearch,        "SortAndSearch");
   passed &= runUnitTest(&binaryHeapUnitTest,       "rsBinaryHeap");
   passed &= runUnitTest(&ringBufferUnitTest,       "rsDelayBuffer");
-  passed &= runUnitTest(&doubleEndedQueueUnitTest, "rsDoubleEndedQueue");   // fails! -> fix that!
+  passed &= runUnitTest(&doubleEndedQueueUnitTest, "rsDoubleEndedQueue");
   passed &= runUnitTest(&float64x2UnitTest,        "rsFloat64x2");
   passed &= runUnitTest(&float32x4UnitTest,        "rsFloat32x4");
   passed &= runUnitTest(&complexFloat64x2UnitTest, "std::complex<rsFloat64x2>");

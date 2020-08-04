@@ -547,8 +547,19 @@ else:                                                 # else (i.e. M is even)
     w = np.concatenate((w[n - 1:0:-1], w[1:n]))       #     apply circular shift
 */
 
-
-
+void rsCircularShift(int* a, int N, int k)
+{
+  rsAssert(k > 0 && k < N, "other cases are not handled yet");
+  using AT = rsArrayTools;
+  AT::reverse(a, N);
+  AT::reverse(a, k);
+  AT::reverse(&a[k], N-k);
+}
+// if it works, templatize and replace the implementation in rsArrayTools, but keep the old version
+// somewhere else...or maybe tunr the olde version into a workspace-based implementation...and then
+// do benchmarks, which one ist faster
+// todo: handle cases, where k >= N, k < 0, k <= -N, ... i think, currently, it only works for
+// 0 < k < N
 
 //=================================================================================================
 

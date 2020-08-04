@@ -428,7 +428,8 @@ bool oneLongerQuantileUnitTest(int L, int N)
   // we test the filter with these quantiles:
   using Vec = std::vector<double>;
   //Vec quantiles({0.0, 0.25, 0.5, 0.75, 1.0});
-  Vec quantiles({ 0.25 });
+  Vec quantiles({ 0.5 });
+  //Vec quantiles({ 0.25 });
   // maye also include 0.000001, 0.99999..or maybe eps, 1-eps
 
 
@@ -446,7 +447,7 @@ bool oneLongerQuantileUnitTest(int L, int N)
 
   // compute test and reference output and compare them:
   //Vec x = rsRandomIntVector(N, 0, 99);  // input
-  Vec x = rsLinearRangeVector(N, 1, N);
+  Vec x = rsLinearRangeVector(N, 1+5, N+5); // use 5 as offset to make some things more obvious
   Vec yR(N), yT(N);                     // reference and test output
   for(size_t i = 0; i < quantiles.size(); i++)
   {
@@ -468,12 +469,12 @@ bool oneLongerQuantileUnitTest(int L, int N)
     for(int n = 0; n < N; n++)
     {
       delayLine.getSample(x[n]);           // feed delayline (output irrelevant)
-      fltT.getSample(x[n]);                // feed filter (output irrelevant)
-      yT[n] = fltT.readOutputLongerBy1();  // ...this is what we are interested in
+      yT[n] = fltT.getSample(x[n]);                // feed filter (output irrelevant)
+      //yT[n] = fltT.readOutputLongerBy1();  // ...this is what we are interested in
     }
 
     r &= yT == yR;
-    rsPlotVectors(yR, yT);
+    rsPlotVectors(x, yR, yT);
   }
   // this does not yet work - also, we trigger an assert for quantile = 1
 
@@ -503,10 +504,10 @@ bool movingQuantileUnitTest()
   r &= testMovingQuantileModulation();
 
   // test the read out of a filter one sample longer than nominal length:
-  r &= oneLongerQuantileUnitTest(2, N);
-  r &= oneLongerQuantileUnitTest(3, N);
+  //r &= oneLongerQuantileUnitTest(2, N);
+  //r &= oneLongerQuantileUnitTest(3, N);
   r &= oneLongerQuantileUnitTest(4, N);
-  r &= oneLongerQuantileUnitTest(5, N);
+  //r &= oneLongerQuantileUnitTest(5, N);
 
 
 
