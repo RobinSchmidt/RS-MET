@@ -852,7 +852,7 @@ bool testRationalNumber()
 {
   bool res = true;
 
-  using R = rsRationalNumber<int>;
+  using R = rsFraction<int>;
 
   R p, q, r;
 

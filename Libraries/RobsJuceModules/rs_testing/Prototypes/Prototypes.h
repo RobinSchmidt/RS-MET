@@ -985,58 +985,50 @@ simplify the implementation of +,-
 autoreduce..or maybe that should be decided at compile time..or maybe have a special class 
 rsReducedRatioalNumber...or use the name rsUnreducedRationalNumber for the unreduced case
 
-todo: maybe templatize to allow big integers 
-maybe rename to rsFraction
+
 
 */
 
 template<class T>  // T should be a signed int type
-struct rsRationalNumber
+struct rsFraction
 {
 
-  T num, den;  // maybe make protected
+  T num, den;  
+  // maybe make protected to enforce canonical representation - client code cannot just set the
+  // numbers into a non-canonical state - enforced canonical representation is important for the 
+  // == operator to work properly...but maybe it should be implemented in a way that admits 
+  // non-canonical representations? a/b == c/d  <->  a*d == b*c
 
-  //using RatNum = rsRationalNumber; // maybe use as shorthand
 
-
-
-  rsRationalNumber(T numerator = T(0), T denominator = T(1))
-    : num(numerator), den(denominator)
+  rsFraction(T numerator = T(0), T denominator = T(1)) : num(numerator), den(denominator)
   { canonicalize(); }
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Arithmetic operators
 
-  rsRationalNumber operator+(const rsRationalNumber& b) const
-  { return rsRationalNumber(num*b.den + b.num*den, den * b.den); }
+  rsFraction operator+(const rsFraction& b) const
+  { return rsFraction(num*b.den + b.num*den, den * b.den); }
 
-  rsRationalNumber operator-(const rsRationalNumber& b) const
-  { return rsRationalNumber(num*b.den - b.num*den, den * b.den); }
+  rsFraction operator-(const rsFraction& b) const
+  { return rsFraction(num*b.den - b.num*den, den * b.den); }
 
-  rsRationalNumber operator*(const rsRationalNumber& b) const 
-  { return rsRationalNumber(num * b.num, den * b.den); }
+  rsFraction operator*(const rsFraction& b) const 
+  { return rsFraction(num * b.num, den * b.den); }
 
-  rsRationalNumber operator/(const rsRationalNumber& b) const 
-  { return rsRationalNumber(num * b.den, den * b.num); }
+  rsFraction operator/(const rsFraction& b) const 
+  { return rsFraction(num * b.den, den * b.num); }
 
-  rsRationalNumber operator+(const T& b) const 
-  { return rsRationalNumber(num + b*den, den); }
-
-  rsRationalNumber operator-(const T& b) const 
-  { return rsRationalNumber(num - b*den, den); }
-
-  rsRationalNumber operator*(const T& b) const 
-  { return rsRationalNumber(num * b, den); }
-
-  rsRationalNumber operator/(const T& b) const 
-  { return rsRationalNumber(num, den * b); }
+  rsFraction operator+(const T& b) const { return rsFraction(num + b*den, den); }
+  rsFraction operator-(const T& b) const { return rsFraction(num - b*den, den); }
+  rsFraction operator*(const T& b) const { return rsFraction(num * b, den); }
+  rsFraction operator/(const T& b) const { return rsFraction(num, den * b); }
 
   // boilerplate:
-  rsRationalNumber& operator+=(const rsRationalNumber& b) { return *this = (*this) + b; }
-  rsRationalNumber& operator-=(const rsRationalNumber& b) { return *this = (*this) - b; }
-  rsRationalNumber& operator*=(const rsRationalNumber& b) { return *this = (*this) * b; }
-  rsRationalNumber& operator/=(const rsRationalNumber& b) { return *this = (*this) / b; }
+  rsFraction& operator+=(const rsFraction& b) { return *this = (*this) + b; }
+  rsFraction& operator-=(const rsFraction& b) { return *this = (*this) - b; }
+  rsFraction& operator*=(const rsFraction& b) { return *this = (*this) * b; }
+  rsFraction& operator/=(const rsFraction& b) { return *this = (*this) / b; }
 
 
   // maybe try to use algorithms that make overflow less likely (divide by gcd before computing 
@@ -1054,20 +1046,12 @@ struct rsRationalNumber
 
   /** Tests, if two rational numbers are equal. This is not a test for mathematical equivalence but
   a direct comparison of all member variables, so 1/3 and 2/6 would not be considered equal. */
-  bool operator==(const rsRationalNumber& b) const 
-  { return num == b.num && den == b.den; }
-
-  bool operator<(const rsRationalNumber& b) const
-  { return a.num * b.den < b.num * a.den; }
-
-  bool operator<=(const rsRationalNumber& b) const
-  { return a.num * b.den <= b.num * a.den; }
-
-  bool operator>(const rsRationalNumber& b) const
-  { return a.num * b.den > b.num * a.den; }
-
-  bool operator>=(const rsRationalNumber& b) const
-  { return a.num * b.den >= b.num * a.den; }
+  bool operator==(const rsFraction& b) const { return num == b.num && den == b.den; }
+  bool operator!=(const rsFraction& b) const { return !(*this == b) }
+  bool operator< (const rsFraction& b) const { return a.num * b.den <  b.num * a.den; }
+  bool operator<=(const rsFraction& b) const { return a.num * b.den <= b.num * a.den; }
+  bool operator> (const rsFraction& b) const { return a.num * b.den >  b.num * a.den; }
+  bool operator>=(const rsFraction& b) const { return a.num * b.den >= b.num * a.den; }
 
 
 
