@@ -60,10 +60,6 @@ inline void normalizeLength(T* vx, T* vy)
 //template<class T> inline bool rsLess(   const T& x, const T& y) { return x < y; }
 //template<class T> inline bool rsGreater(const T& x, const T& y) { return x > y; }
 
-
-// move elsewhere:
-
-
 // move to Basics.h:
 template<class T> 
 inline bool rsLess(const std::complex<T>& x, const std::complex<T>& y) // maybe have a tolerance
@@ -149,6 +145,12 @@ void rsLinearAlgebra::eigenvector2x2_2(T a, T b, T c, T d, T* vx, T* vy, bool no
   } 
 }
 
+// ToDo: 
+// -get rid of the code duplication by refactoring
+// -maybe write a function that computes both eigenvalues and eigenvectors at once - a lot of 
+//  intermediate results are used in all formules -> optimization
+// -make it work also for real matrices with complex eigenvalues (but make sure to not mess it up
+//  for complex matrices)
 
 // the same sqrt appears in all 4 formulas - what's its significance? maybe its worth to factor out 
 // and give it a name? maybe eigenSqrt2x2 ...or has it to do with the determinant? i think, it's a 

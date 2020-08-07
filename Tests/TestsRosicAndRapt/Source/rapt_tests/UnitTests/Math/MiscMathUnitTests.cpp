@@ -848,7 +848,7 @@ bool testMultiLayerPerceptron(std::string &reportString)
 }
 
 
-bool testRationalNumber()
+bool testFraction()  // maybe move up
 {
   bool res = true;
 
@@ -868,23 +868,34 @@ bool testRationalNumber()
 
   // test arithmetic operators:
   p = R(2,5), q = R(3,7); 
-  r = p + q; res &= r == R(29,35); // (2/5) + (3/7) = 29/35
-  r = p - q; res &= r == R(-1,35); // (2/5) - (3/7) = -1/35
-  r = p * q; res &= r == R( 6,35); // (2/5) * (3/7) =  6/35
-  r = p / q; res &= r == R(14,15); // (2/5) / (3/7) = 14/15
-
-  r = p + 3; res &= r == R(17, 5); // (2/5) + 3     = 17/5
-
-  r = p - 3; res &= r == R(-13,5);
-
-
-  r = p * 3; res &= r == R(6, 5);
-  r = 3 * p; res &= r == R(6, 5);
-
-
+  r = p + q; res &= r == R( 29, 35); // (2/5) + (3/7) = 29/35
+  r = p - q; res &= r == R( -1, 35); // (2/5) - (3/7) = -1/35
+  r = p * q; res &= r == R(  6, 35); // (2/5) * (3/7) =  6/35
+  r = p / q; res &= r == R( 14, 15); // (2/5) / (3/7) = 14/15
+  r = p + 3; res &= r == R( 17,  5); // (2/5) + 3     = 17/5
+  r = 3 + p; res &= r == R( 17,  5);
+  r = p - 3; res &= r == R(-13,  5);
+  r = 3 - p; res &= r == R( 13,  5);
+  r = p * 3; res &= r == R(  6,  5);
+  r = 3 * p; res &= r == R(  6,  5);
+  r = p / 3; res &= r == R(  2, 15);
+  r = 3 / p; res &= r == R( 15,  2);
 
   // test comparison operators:
-  // ...
+  res &=   R(3,5) == R(3,5);
+  res &=   R(3,5) <= R(3,5);
+  res &=   R(3,5) >= R(3,5);
+  res &= !(R(3,5) <  R(3,5));
+  res &= !(R(3,5) >  R(3,5));
+  res &=   R(3,5) != R(4,5);
+  res &=   R(3,5) <  R(4,5); 
+  res &=   R(3,5) <= R(4,5);
+  res &= !(R(3,5) >  R(4,5));
+  res &= !(R(3,5) >= R(4,5));
+  // are all cases covered? or are more tests needed?
+
+
+
 
 
   // test using vectors and matrices of rational numbers
@@ -894,6 +905,8 @@ bool testRationalNumber()
   Vec v({a,b,c,d});
   Mat A(2, 2, &v[0]);
   Mat A2 = A*A;
+  // todo: test solving a system of linear equations with rational numbers
+  // -pivoting is actually not necessary, but it should not hurt either
 
   // todo: test converting a double/float to a fraction via continued fraction expansion - make a 
   // function rsFraction rationalApproximant(double x, int precision)...or maybe the precision 
@@ -902,13 +915,26 @@ bool testRationalNumber()
   // todo: implement function to produce Bernoulli numbers
 
 
-  // in python, this code:
-  //   from fractions import Fraction
-  //   p = Fraction(8, 12)
-  //   print(p)
-  // produces as output:
-  //   2/3
-  // so python auto-reduces
+
+  // try to produce the continued fraction expansion of pi:
+  rsContinuedFractionGenerator<int, double> cfg(PI);
+  int N = 20;
+  std::vector<int> cfe(N);
+  for(int n = 0; n < N; n++)
+    cfe[n] = cfg.getNext();
+  // with double, it's only correct up to index 12 - is this roundoff error? with float, it's only 
+  // correct up to index 3 - the roundoff error seems to become apparent very quickly! or is the 
+  // algorithm too simple?
+
+  // [3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14,  2, 1, 1, 2, 2, 2, 2, ...]
+  //                                            | from here, it gets wrong
+  // convergents:
+  // 3, 22/7, 333/106, 355/113, 103993/33102, 104348/33215
+  // https://mathworld.wolfram.com/PiContinuedFraction.html
+  // https://oeis.org/A002485
+  // https://oeis.org/A002486
+
+
 
   return res;
 }
@@ -919,7 +945,7 @@ bool testMiscMath()
 
   bool testResult = true;
 
-  testResult &= testRationalNumber();
+  testResult &= testFraction();
   testResult &= testExponentialCurveFitting(  dummy);
   testResult &= testRootFinding(              dummy);
   testResult &= testGradientBasedOptimization(dummy);

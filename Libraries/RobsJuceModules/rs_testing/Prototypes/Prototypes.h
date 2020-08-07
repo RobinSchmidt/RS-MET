@@ -986,9 +986,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  void set(T newNumerator, T newDenominator) 
-  { num = newNumerator; den = newDenominator; canonicalize(); }
+  void set(T numerator, T denominator) { num = numerator; den = denominator; canonicalize(); }
 
+  //void setToApproximant(double x, int order);
+  // should implement continued fraction approxmation...
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -996,40 +997,50 @@ public:
   T getNumerator()   const { return num; }
   T getDenominator() const { return den; }
 
+  double toDouble() const { return double(num) / double(den); }
+
   //-----------------------------------------------------------------------------------------------
   // \name Arithmetic operators
 
-  // both arguments fractions:
+  // unary minus:
+  rsFraction operator-() const { return rsFraction(-num, den); }
+  // optimization: this should avoid calling canonicalize()
+
+  // +,-,*,/ where both arguments are fractions:
   rsFraction operator+(const rsFraction& b) const { return rsFraction(num*b.den + b.num*den, den * b.den); }
   rsFraction operator-(const rsFraction& b) const { return rsFraction(num*b.den - b.num*den, den * b.den); }
   rsFraction operator*(const rsFraction& b) const { return rsFraction(num * b.num, den * b.den); }
   rsFraction operator/(const rsFraction& b) const { return rsFraction(num * b.den, den * b.num); }
 
-  // integer right argument:
+  // ..same for integer right arguments:
   rsFraction operator+(const T& b) const { return rsFraction(num + b*den, den); }
   rsFraction operator-(const T& b) const { return rsFraction(num - b*den, den); }
   rsFraction operator*(const T& b) const { return rsFraction(num * b, den); }
   rsFraction operator/(const T& b) const { return rsFraction(num, den * b); }
 
-  // boilerplate:
+  // boilerplate for the +=, -=, *=, /= operators:
   rsFraction& operator+=(const rsFraction& b) { return *this = (*this) + b; }
   rsFraction& operator-=(const rsFraction& b) { return *this = (*this) - b; }
   rsFraction& operator*=(const rsFraction& b) { return *this = (*this) * b; }
   rsFraction& operator/=(const rsFraction& b) { return *this = (*this) / b; }
+  rsFraction& operator+=(const T& b) { return *this = (*this) + b; }
+  rsFraction& operator-=(const T& b) { return *this = (*this) - b; }
+  rsFraction& operator*=(const T& b) { return *this = (*this) * b; }
+  rsFraction& operator/=(const T& b) { return *this = (*this) / b; }
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Comparison operators
 
-  /** Tests, if two rational numbers are equal. This is not a test for mathematical equivalence but
-  a direct comparison of all member variables, so 1/3 and 2/6 would not be considered equal. */
   bool operator==(const rsFraction& b) const { return num == b.num && den == b.den; }
-  bool operator!=(const rsFraction& b) const { return !(*this == b) }
-  bool operator< (const rsFraction& b) const { return a.num * b.den <  b.num * a.den; }
-  bool operator<=(const rsFraction& b) const { return a.num * b.den <= b.num * a.den; }
-  bool operator> (const rsFraction& b) const { return a.num * b.den >  b.num * a.den; }
-  bool operator>=(const rsFraction& b) const { return a.num * b.den >= b.num * a.den; }
+  bool operator!=(const rsFraction& b) const { return !(*this == b); }
+  bool operator< (const rsFraction& b) const { return num * b.den <  b.num * den; }
+  bool operator<=(const rsFraction& b) const { return num * b.den <= b.num * den; }
+  bool operator> (const rsFraction& b) const { return num * b.den >  b.num * den; }
+  bool operator>=(const rsFraction& b) const { return num * b.den >= b.num * den; }
 
+
+protected:
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc
@@ -1041,23 +1052,33 @@ public:
   void canonicalize() { reduce(); if(den < 0) { num = -num; den = -den; }  }
 
 
-protected:
-
-  T num, den;  // numerator and denominator
+  T num, den;  // numerator and denominator (they are always kept canonical)
 
 };
 
 // operators for integer left argument:
 template<class T>
+rsFraction<T> operator+(const T& i, const rsFraction<T>& r)
+{ return rsFraction<T>(i * r.getDenominator() + r.getNumerator(), r.getDenominator()); }
+
+template<class T>
+rsFraction<T> operator-(const T& i, const rsFraction<T>& r)
+{ return rsFraction<T>(i * r.getDenominator() - r.getNumerator(), r.getDenominator()); }
+
+template<class T>
 rsFraction<T> operator*(const T& i, const rsFraction<T>& r)
 { return rsFraction<T>(i * r.getNumerator(), r.getDenominator()); }
 
-
+template<class T>
+rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
+{ return rsFraction<T>(i * r.getDenominator(), r.getNumerator()); }
 
 // ToDo:
 // -maybe use algorithms for the arithmetic operators that make overflow less likely (divide by gcd 
 //  before computing products, use lcm in + and - instead of just computing products, etc.).
-// -implement operators for the case when left argument is integer (outside the class)
+// -implement some functions like pow (with integer exponent)..maybe using the ^ operator - but 
+//  care has to be taken to parenthesize expressions like (r^i) inside longer expressions due to 
+//  C++ precendence rules
 // -maybe detect if overflow will happen and trigger an assert
 // -implement functions to convert to double or float
 // -find best rational approximation of a double or float by using continued fractions 
@@ -1076,6 +1097,31 @@ rsFraction<T> operator*(const T& i, const rsFraction<T>& r)
 //  a/b == c/d  <->  a*d == b*c
 
 
+
+template<class TInt, class TFloat>
+class rsContinuedFractionGenerator
+{
+
+public:
+
+  rsContinuedFractionGenerator(TFloat number) : state(number) {}
+
+  TInt getNext()
+  {
+    TFloat flr = floor(state);
+    state = TFloat(1) / (state - flr);
+    return (TInt) flr; 
+  }
+  // needs test
+
+
+protected:
+
+  TFloat state;
+
+};
+
+// https://www.youtube.com/watch?v=CaasbfdJdJg
 
 
 //=================================================================================================
