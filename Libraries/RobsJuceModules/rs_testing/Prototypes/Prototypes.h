@@ -988,11 +988,20 @@ struct rsRationalNumber
 {
 
   rsUint64 num, den;
-  bool minus;
+
+
+  bool minus;  
+  // hmmm...i think, it's a bad idea - maybe use signed ints for num and den. it gives up one bit 
+  // in den but makes arithmetic much more convenient to implement and efficient to perform
+  // maybe have a function canonicalize that reduces and ensures that the sign is in the num
+  // ...maybe it even opens the possibility to encode special values (inf, nan, etc.) in numbers 
+  // where the den has a negative sign (which should not normally occur)...but inf can be 
+  // represented a 1/0, -inf as -1/0, nan as 0/0
 
 
   rsRationalNumber(rsUint64 numerator = 0, rsUint64 denominator = 1, bool isNegative = false)
-    : num(numerator), den(denominator), minus(isNegative) {}
+    : num(numerator), den(denominator), minus(isNegative) 
+  { reduce(); }
 
 
 
@@ -1033,7 +1042,8 @@ struct rsRationalNumber
   { 
     return rsRationalNumber(num*b.den + b.num*den, den * b.den); 
   }
-  // works only when both are positive
+  // works only when both are positive - maybe do:
+  // if(!minus && b.minus
 
   rsRationalNumber operator-(const rsRationalNumber& b) const
   { 
@@ -1048,8 +1058,9 @@ struct rsRationalNumber
   rsRationalNumber operator/(const rsRationalNumber& b) const 
   { return rsRationalNumber(num * b.den, den * b.num, rsXor(minus, b.minus)); }
 
-  // maybe try to algorithms that make overflow less likely (dived by gcd before computing 
-  // products, etc.)
+  // maybe try to algorithms that make overflow less likely (divide by gcd before computing 
+  // products, etc.)....maybe we should always reduce - otherwise the denominators will blow up
+  // really quickly in any computation - maybe already in the constructor
 
 
   /** Reduces this number to lowest terms. */
