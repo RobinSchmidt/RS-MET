@@ -233,7 +233,7 @@ bool testNumDiffStencils()
   // code embedded
 
   bool r = true;
-  typedef std::vector<double> Vec;
+  typedef std::vector<double> Vec;  // use rsRationalNumber
   Vec s;
 
   // symmetric, equidistant 3-point stencil -1,0,1:
@@ -862,6 +862,9 @@ bool testRationalNumber()
   p = R(-8, -12); q = R( 2, 3); res &= p == q;
   p = R( 8, -12); q = R(-2, 3); res &= p == q;
   p = R(-8,  12); q = R(-2, 3); res &= p == q;
+  // seems like the GCD algo works also with negative numbers - maybe that's the reason why the 
+  // modulo operation works the way it does in C++ (it doesn't conform to mathematical conventions
+  // of modular arithmetic when negative numbers are involved - it may return negative numbers)
 
   // test arithmetic operators:
   p = R(2,5), q = R(3,7); 
@@ -869,9 +872,21 @@ bool testRationalNumber()
   r = p - q; res &= r == R(-1,35); // (2/5) - (3/7) = -1/35
   r = p * q; res &= r == R( 6,35); // (2/5) * (3/7) =  6/35
   r = p / q; res &= r == R(14,15); // (2/5) / (3/7) = 14/15
+  r = p + 3; res &= r == R(17, 5); // (2/5) + 3     = 17/5
+  r = p - 3; res &= r == R(-13,5);
+
 
   // test comparison operators:
   // ...
+
+
+  // test using vectors and matrices of rational numbers
+  using Mat = rsMatrix<R>;
+  using Vec = std::vector<R>;
+  R a(1,2), b(2,3), c(3,4), d(4,5);
+  Vec v({a,b,c,d});
+  Mat A(2, 2, &v[0]);
+  Mat A2 = A*A;
 
 
   // in python, this code:

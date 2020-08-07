@@ -968,8 +968,11 @@ protected:
 
 //=================================================================================================
 
-/** Structure for representing rational numbers. Numerator and denominator are kept as unsigned 
-integers "num", "den" and a boolean "minus" flag is used to indicate a negative number. 
+/** Structure for representing rational numbers a.k.a. fractions. Numerator and denominator are 
+kept as signed integers "num", "den". On construction and in arithmetic operations, fractions are
+always put into a canonical representation which is a reduced form where the minus sign (if any) is
+put into the numerator.
+
 
 hmm...should we always automatically reduce the number? maybe it's sometimes convenient to have
 it in unreduced form - it may be easier to spot patterns in sequences of unreduced rational numbers
@@ -982,7 +985,10 @@ simplify the implementation of +,-
 autoreduce..or maybe that should be decided at compile time..or maybe have a special class 
 rsReducedRatioalNumber...or use the name rsUnreducedRationalNumber for the unreduced case
 
-todo: maybe templatize to allow big integers */
+todo: maybe templatize to allow big integers 
+maybe rename to rsFraction
+
+*/
 
 template<class T>  // T should be a signed int type
 struct rsRationalNumber
@@ -990,7 +996,7 @@ struct rsRationalNumber
 
   T num, den;  // maybe make protected
 
-
+  //using RatNum = rsRationalNumber; // maybe use as shorthand
 
 
 
@@ -1014,8 +1020,34 @@ struct rsRationalNumber
   rsRationalNumber operator/(const rsRationalNumber& b) const 
   { return rsRationalNumber(num * b.den, den * b.num); }
 
-  // maybe try to algorithms that make overflow less likely (divide by gcd before computing 
-  // products, etc.).
+  rsRationalNumber operator+(const T& b) const 
+  { return rsRationalNumber(num + b*den, den); }
+
+  rsRationalNumber operator-(const T& b) const 
+  { return rsRationalNumber(num - b*den, den); }
+
+  rsRationalNumber operator*(const T& b) const 
+  { return rsRationalNumber(num * b, den); }
+
+  rsRationalNumber operator/(const T& b) const 
+  { return rsRationalNumber(num, den * b); }
+
+  // boilerplate:
+  rsRationalNumber& operator+=(const rsRationalNumber& b) { return *this = (*this) + b; }
+  rsRationalNumber& operator-=(const rsRationalNumber& b) { return *this = (*this) - b; }
+  rsRationalNumber& operator*=(const rsRationalNumber& b) { return *this = (*this) * b; }
+  rsRationalNumber& operator/=(const rsRationalNumber& b) { return *this = (*this) / b; }
+
+
+  // maybe try to use algorithms that make overflow less likely (divide by gcd before computing 
+  // products, use lcm in + and - instead of just computing products, etc.).
+
+  // todo: implement operators for the case when one argument (left or right) is an integer 
+  // (type T)
+
+  // todo: maybe detect if overflow will happen and trigger an assert
+  // todo: find best rational approximation of a double or float by using continued fractions 
+  // maybe have a function rsRationalNumber<T> findApproximant(TFloat x)
 
   //-----------------------------------------------------------------------------------------------
   // \name Comparison operators
@@ -1046,21 +1078,10 @@ struct rsRationalNumber
   // \name Misc
 
   /** Reduces this number to lowest terms. */
-  void reduce()
-  {
-    T gcd = rsGcd(num, den);
-    num /= gcd;
-    den /= gcd;
-  }
+  void reduce() { T gcd = rsGcd(num, den); num /= gcd; den /= gcd; }
 
   /** Reduces to lowest terms and ensures that denominator is nonnegative. */
-  void canonicalize()
-  {
-    reduce();
-    if(den < 0) {
-      num = -num;
-      den = -den; }
-  }
+  void canonicalize() { reduce(); if(den < 0) { num = -num; den = -den; }  }
 
 };
 

@@ -130,7 +130,7 @@ public:
 
   // todo: left multiplication w = v^H * A
 
-  // todo: operators that take a scalar as left or right argument
+  // todo: operators that take a scalar as left or right argument, +=, -=, *=, /=
 
 
   //-----------------------------------------------------------------------------------------------
