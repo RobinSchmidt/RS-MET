@@ -854,13 +854,25 @@ bool testRationalNumber()
 
   using R = rsRationalNumber;
 
-  R p(8, 12);
-  p.reduce();
 
-  R q(2, 3);
 
-  res &= p == q;
+  R p(8, 12); p.reduce(); R q(2, 3); res &= p == q;       // reduce 8/12 to 2/3
+  p = R(2,5), q = R(3,7); 
+  R r;
 
+  r = p+q; res &= r == R(29,35); // (2/5) + (3/7) = 29/35
+  r = p*q; res &= r == R( 6,35); // (2/5) * (3/7) =  6/35
+  r = p/q; res &= r == R(14,15); // (2/5) / (3/7) = 14/15
+
+
+
+  // in python, this code:
+  //   from fractions import Fraction
+  //   p = Fraction(8, 12)
+  //   print(p)
+  // produces as output:
+  //   2/3
+  // so python auto-reduces
 
   return res;
 }

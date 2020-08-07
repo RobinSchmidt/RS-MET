@@ -973,8 +973,14 @@ integers "num", "den" and a boolean "minus" flag is used to indicate a negative 
 
 hmm...should we always automatically reduce the number? maybe it's sometimes convenient to have
 it in unreduced form - it may be easier to spot patterns in sequences of unreduced rational numbers
-that come from some computation...maybe instead of a bool use rsFlags8 and have a flag for 
-autoreduce
+that come from some computation....but if we care about such tracebilty, then maybe we should used 
+signed integers, so we can also trace where a minus signa comes from, if any - it will also 
+simplify the implementation of +,-
+
+
+...maybe instead of a bool use rsFlags8 and have a flag for 
+autoreduce..or maybe that should be decided at compile time..or maybe have a special class 
+rsReducedRatioalNumber...or use the name rsUnreducedRationalNumber for the unreduced case
 
 todo: maybe templatize to allow big integers */
 
@@ -985,7 +991,7 @@ struct rsRationalNumber
   bool minus;
 
 
-  rsRationalNumber(rsUint64 numerator, rsUint64 denominator, bool isNegative = false)
+  rsRationalNumber(rsUint64 numerator = 0, rsUint64 denominator = 1, bool isNegative = false)
     : num(numerator), den(denominator), minus(isNegative) {}
 
 
@@ -998,12 +1004,52 @@ struct rsRationalNumber
 
 
 
-  rsRationalNumber operator*(const rsRationalNumber& b) const 
-  {
-    rsRationalNumber r(num * b.num, den * b.den, rsXor(minus, b.minus));
-    return r;
+  /** Returns true, iff a has a smaller absolute value than b. */
+  static bool lessAbs(const rsRationalNumber& a, const rsRationalNumber& b) 
+  { return a.num * b.den < b.num * a.den; }
+
+  /** Returns true, iff a has a greater absolute value than b. */
+  static bool greaterAbs(const rsRationalNumber& a, const rsRationalNumber& b) 
+  { return a.num * b.den > b.num * a.den; }
+  // a/b > c/d  <->  a*d > b*c if a,b,c,d are all positive
+
+  bool operator>(const rsRationalNumber& b) const 
+  { 
+    if(!minus && !b.minus && greaterAbs(*this, b))
+      return true;  // both are positive and this has greater absolute value
+    if(minus && b.minus && lessAbs(*this, b))
+      return true;  // both are negative and this has smaller absolute value
+    if(!minus && b.minus)
+      return true;  // this is nonnegative and b is negative
+    return false;
   }
-  // maybe try to find algorithm that makes overflow less likely
+  // does this cover all cases? what about (plus/minus) zero? this is the 3rd branch - but it
+  // should actually return false...or should it? maybe it's useful to consider -0 < +0...like
+  // in limiting processes? ...check, how the class Fraction in python works and replicate that
+  // ...maybe also with respect to reduction - python auto-reduces
+
+
+  rsRationalNumber operator+(const rsRationalNumber& b) const
+  { 
+    return rsRationalNumber(num*b.den + b.num*den, den * b.den); 
+  }
+  // works only when both are positive
+
+  rsRationalNumber operator-(const rsRationalNumber& b) const
+  { 
+    return rsRationalNumber(num*b.den - b.num*den, den * b.den); 
+  }
+  // works only if this is greater than b
+
+
+  rsRationalNumber operator*(const rsRationalNumber& b) const 
+  { return rsRationalNumber(num * b.num, den * b.den, rsXor(minus, b.minus)); }
+
+  rsRationalNumber operator/(const rsRationalNumber& b) const 
+  { return rsRationalNumber(num * b.den, den * b.num, rsXor(minus, b.minus)); }
+
+  // maybe try to algorithms that make overflow less likely (dived by gcd before computing 
+  // products, etc.)
 
 
   /** Reduces this number to lowest terms. */
@@ -1013,8 +1059,6 @@ struct rsRationalNumber
     num /= gcd;
     den /= gcd;
   }
-
-
 
 };
 
