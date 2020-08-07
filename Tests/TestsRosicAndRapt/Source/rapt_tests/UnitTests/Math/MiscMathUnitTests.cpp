@@ -848,12 +848,30 @@ bool testMultiLayerPerceptron(std::string &reportString)
 }
 
 
+bool testRationalNumber()
+{
+  bool res = true;
+
+  using R = rsRationalNumber;
+
+  R p(8, 12);
+  p.reduce();
+
+  R q(2, 3);
+
+  res &= p == q;
+
+
+  return res;
+}
+
 bool testMiscMath()
 {
   std::string dummy;    // get rid
 
   bool testResult = true;
 
+  testResult &= testRationalNumber();
   testResult &= testExponentialCurveFitting(  dummy);
   testResult &= testRootFinding(              dummy);
   testResult &= testGradientBasedOptimization(dummy);

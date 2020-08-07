@@ -292,16 +292,14 @@ template bool RAPT::rsCurveFitter::fitExponentialSum(double* y, int numValues, d
 template rsUint32 RAPT::rsBinomialCoefficient(rsUint32 n, rsUint32 k);
 template rsUint32 RAPT::rsBinomialCoefficientUpTo20(rsUint32 n, rsUint32 k);
 template int RAPT::rsMultinomialCoefficient(int* n, int k);
+template rsUint64 RAPT::rsGcd(rsUint64 x, rsUint64 y);
 template rsUint32 RAPT::rsLcm(rsUint32, rsUint32);
 template rsUint32 RAPT::rsMultinomialCoefficient(rsUint32* n, rsUint32 k);
 template rsUint32 RAPT::rsMultinomialCoefficientUpTo12(rsUint32* n, rsUint32 k);
 template int RAPT::rsLeviCivita(int indices[], int N);
 
 template void RAPT::rsStirlingNumbersFirstKind(int **s, int nMax);
-
 template void RAPT::rsFillPrimeTable(int*, rsUint32, rsUint32);
-
-
 template void RAPT::rsEGCD(int x, int y, int& a, int& b, int& g);
 template int RAPT::rsModularInverse(const int& x, const int& m);
 template int RAPT::rsPrimeModularInverse(const int& x, const int& p);

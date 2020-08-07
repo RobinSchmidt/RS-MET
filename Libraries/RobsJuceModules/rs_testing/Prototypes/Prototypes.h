@@ -968,6 +968,59 @@ protected:
 
 //=================================================================================================
 
+/** Structure for representing rational numbers. Numerator and denominator are kept as unsigned 
+integers "num", "den" and a boolean "minus" flag is used to indicate a negative number. 
+
+hmm...should we always automatically reduce the number? maybe it's sometimes convenient to have
+it in unreduced form - it may be easier to spot patterns in sequences of unreduced rational numbers
+that come from some computation...maybe instead of a bool use rsFlags8 and have a flag for 
+autoreduce
+
+todo: maybe templatize to allow big integers */
+
+struct rsRationalNumber
+{
+
+  rsUint64 num, den;
+  bool minus;
+
+
+  rsRationalNumber(rsUint64 numerator, rsUint64 denominator, bool isNegative = false)
+    : num(numerator), den(denominator), minus(isNegative) {}
+
+
+
+
+  /** Tests, if two rational numbers are equal. This is not a test for mathematical equivalence but
+  a direct comparison of all member variables, so 1/3 and 2/6 would not be considered equal. */
+  bool operator==(const rsRationalNumber& b) const 
+  { return num == b.num && den == b.den && minus == b.minus; }
+
+
+
+  rsRationalNumber operator*(const rsRationalNumber& b) const 
+  {
+    rsRationalNumber r(num * b.num, den * b.den, rsXor(minus, b.minus));
+    return r;
+  }
+  // maybe try to find algorithm that makes overflow less likely
+
+
+  /** Reduces this number to lowest terms. */
+  void reduce()
+  {
+    rsUint64 gcd = rsGcd(num, den);
+    num /= gcd;
+    den /= gcd;
+  }
+
+
+
+};
+
+
+//=================================================================================================
+
 template<class T>
 void fitQuadratic(T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
 {

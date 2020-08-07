@@ -38,7 +38,8 @@ bool runUnitTestsRapt()
   passed &= runUnitTest(&rootFinderUnitTest,             "rsRootFinder");
   passed &= runUnitTest(&correlationUnitTest,            "correlation");
   passed &= runUnitTest(&testVector,                     "rsVector");
-  passed &= runUnitTest(&testMatrix,                     "rsMatrixOld");
+  passed &= runUnitTest(&testMatrix,                     "rsMatrix");
+  //passed &= runUnitTest(&testRationalNumber,             "rsRationalNumber"); // is in misc math tests
   passed &= runUnitTest(&testMiscMath,                   "misc math");  // fails on linux ("illegal instruction") - encounters a singular matrix
   passed &= runUnitTest(&testLinearAlgebra,              "rsLinearAlgebra");  // fails on linux ("illegal instruction")
   passed &= runUnitTest(&testPolynomial,                 "rsPolynomial");
