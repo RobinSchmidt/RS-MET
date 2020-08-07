@@ -854,13 +854,17 @@ bool testRationalNumber()
 
   using R = rsRationalNumber<int>;
 
+  R p, q, r;
 
 
-  R p(8, -12); R q(-2, 3); res &= p == q;       // canonicalize 8/-12 to -2/3
-  p = R(2,5), q = R(3,7); 
-  R r;
+  // test canonicalization:
+  p = R( 8,  12); q = R( 2, 3); res &= p == q;
+  p = R(-8, -12); q = R( 2, 3); res &= p == q;
+  p = R( 8, -12); q = R(-2, 3); res &= p == q;
+  p = R(-8,  12); q = R(-2, 3); res &= p == q;
 
   // test arithmetic operators:
+  p = R(2,5), q = R(3,7); 
   r = p + q; res &= r == R(29,35); // (2/5) + (3/7) = 29/35
   r = p - q; res &= r == R(-1,35); // (2/5) - (3/7) = -1/35
   r = p * q; res &= r == R( 6,35); // (2/5) * (3/7) =  6/35

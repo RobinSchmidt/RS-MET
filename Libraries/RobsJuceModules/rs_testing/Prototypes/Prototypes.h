@@ -988,16 +988,10 @@ template<class T>  // T should be a signed int type
 struct rsRationalNumber
 {
 
-  T num, den;
+  T num, den;  // maybe make protected
 
 
-  //bool minus;  
-  // hmmm...i think, it's a bad idea - maybe use signed ints for num and den. it gives up one bit 
-  // in den but makes arithmetic much more convenient to implement and efficient to perform
-  // maybe have a function canonicalize that reduces and ensures that the sign is in the num
-  // ...maybe it even opens the possibility to encode special values (inf, nan, etc.) in numbers 
-  // where the den has a negative sign (which should not normally occur)...but inf can be 
-  // represented a 1/0, -inf as -1/0, nan as 0/0
+
 
 
   rsRationalNumber(T numerator = T(0), T denominator = T(1))
@@ -1005,41 +999,8 @@ struct rsRationalNumber
   { canonicalize(); }
 
 
-
-
-  /** Tests, if two rational numbers are equal. This is not a test for mathematical equivalence but
-  a direct comparison of all member variables, so 1/3 and 2/6 would not be considered equal. */
-  bool operator==(const rsRationalNumber& b) const 
-  { return num == b.num && den == b.den; }
-
-
-
-  /** Returns true, iff a has a smaller absolute value than b. */
-  //static bool lessAbs(const rsRationalNumber& a, const rsRationalNumber& b) 
-  //{ return a.num * b.den < b.num * a.den; }
-
-  /** Returns true, iff a has a greater absolute value than b. */
-  //static bool greaterAbs(const rsRationalNumber& a, const rsRationalNumber& b) 
-  //{ return a.num * b.den > b.num * a.den; }
-  // a/b > c/d  <->  a*d > b*c if a,b,c,d are all positive
-
-  /*
-  bool operator>(const rsRationalNumber& b) const 
-  { 
-    if(!minus && !b.minus && greaterAbs(*this, b))
-      return true;  // both are positive and this has greater absolute value
-    if(minus && b.minus && lessAbs(*this, b))
-      return true;  // both are negative and this has smaller absolute value
-    if(!minus && b.minus)
-      return true;  // this is nonnegative and b is negative
-    return false;
-  }
-  */
-  // does this cover all cases? what about (plus/minus) zero? this is the 3rd branch - but it
-  // should actually return false...or should it? maybe it's useful to consider -0 < +0...like
-  // in limiting processes? ...check, how the class Fraction in python works and replicate that
-  // ...maybe also with respect to reduction - python auto-reduces
-
+  //-----------------------------------------------------------------------------------------------
+  // \name Arithmetic operators
 
   rsRationalNumber operator+(const rsRationalNumber& b) const
   { return rsRationalNumber(num*b.den + b.num*den, den * b.den); }
@@ -1056,6 +1017,33 @@ struct rsRationalNumber
   // maybe try to algorithms that make overflow less likely (divide by gcd before computing 
   // products, etc.).
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Comparison operators
+
+  /** Tests, if two rational numbers are equal. This is not a test for mathematical equivalence but
+  a direct comparison of all member variables, so 1/3 and 2/6 would not be considered equal. */
+  bool operator==(const rsRationalNumber& b) const 
+  { return num == b.num && den == b.den; }
+
+  bool operator<(const rsRationalNumber& b) const
+  { return a.num * b.den < b.num * a.den; }
+
+  bool operator<=(const rsRationalNumber& b) const
+  { return a.num * b.den <= b.num * a.den; }
+
+  bool operator>(const rsRationalNumber& b) const
+  { return a.num * b.den > b.num * a.den; }
+
+  bool operator>=(const rsRationalNumber& b) const
+  { return a.num * b.den >= b.num * a.den; }
+
+
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
 
   /** Reduces this number to lowest terms. */
   void reduce()
