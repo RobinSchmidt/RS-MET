@@ -984,13 +984,14 @@ rsReducedRatioalNumber...or use the name rsUnreducedRationalNumber for the unred
 
 todo: maybe templatize to allow big integers */
 
+template<class T>  // T should be a signed int type
 struct rsRationalNumber
 {
 
-  rsUint64 num, den;
+  T num, den;
 
 
-  bool minus;  
+  //bool minus;  
   // hmmm...i think, it's a bad idea - maybe use signed ints for num and den. it gives up one bit 
   // in den but makes arithmetic much more convenient to implement and efficient to perform
   // maybe have a function canonicalize that reduces and ensures that the sign is in the num
@@ -999,9 +1000,9 @@ struct rsRationalNumber
   // represented a 1/0, -inf as -1/0, nan as 0/0
 
 
-  rsRationalNumber(rsUint64 numerator = 0, rsUint64 denominator = 1, bool isNegative = false)
-    : num(numerator), den(denominator), minus(isNegative) 
-  { reduce(); }
+  rsRationalNumber(T numerator = T(0), T denominator = T(1))
+    : num(numerator), den(denominator)
+  { canonicalize(); }
 
 
 
@@ -1009,19 +1010,20 @@ struct rsRationalNumber
   /** Tests, if two rational numbers are equal. This is not a test for mathematical equivalence but
   a direct comparison of all member variables, so 1/3 and 2/6 would not be considered equal. */
   bool operator==(const rsRationalNumber& b) const 
-  { return num == b.num && den == b.den && minus == b.minus; }
+  { return num == b.num && den == b.den; }
 
 
 
   /** Returns true, iff a has a smaller absolute value than b. */
-  static bool lessAbs(const rsRationalNumber& a, const rsRationalNumber& b) 
-  { return a.num * b.den < b.num * a.den; }
+  //static bool lessAbs(const rsRationalNumber& a, const rsRationalNumber& b) 
+  //{ return a.num * b.den < b.num * a.den; }
 
   /** Returns true, iff a has a greater absolute value than b. */
-  static bool greaterAbs(const rsRationalNumber& a, const rsRationalNumber& b) 
-  { return a.num * b.den > b.num * a.den; }
+  //static bool greaterAbs(const rsRationalNumber& a, const rsRationalNumber& b) 
+  //{ return a.num * b.den > b.num * a.den; }
   // a/b > c/d  <->  a*d > b*c if a,b,c,d are all positive
 
+  /*
   bool operator>(const rsRationalNumber& b) const 
   { 
     if(!minus && !b.minus && greaterAbs(*this, b))
@@ -1032,6 +1034,7 @@ struct rsRationalNumber
       return true;  // this is nonnegative and b is negative
     return false;
   }
+  */
   // does this cover all cases? what about (plus/minus) zero? this is the 3rd branch - but it
   // should actually return false...or should it? maybe it's useful to consider -0 < +0...like
   // in limiting processes? ...check, how the class Fraction in python works and replicate that
@@ -1039,36 +1042,36 @@ struct rsRationalNumber
 
 
   rsRationalNumber operator+(const rsRationalNumber& b) const
-  { 
-    return rsRationalNumber(num*b.den + b.num*den, den * b.den); 
-  }
-  // works only when both are positive - maybe do:
-  // if(!minus && b.minus
+  { return rsRationalNumber(num*b.den + b.num*den, den * b.den); }
 
   rsRationalNumber operator-(const rsRationalNumber& b) const
-  { 
-    return rsRationalNumber(num*b.den - b.num*den, den * b.den); 
-  }
-  // works only if this is greater than b
-
+  { return rsRationalNumber(num*b.den - b.num*den, den * b.den); }
 
   rsRationalNumber operator*(const rsRationalNumber& b) const 
-  { return rsRationalNumber(num * b.num, den * b.den, rsXor(minus, b.minus)); }
+  { return rsRationalNumber(num * b.num, den * b.den); }
 
   rsRationalNumber operator/(const rsRationalNumber& b) const 
-  { return rsRationalNumber(num * b.den, den * b.num, rsXor(minus, b.minus)); }
+  { return rsRationalNumber(num * b.den, den * b.num); }
 
   // maybe try to algorithms that make overflow less likely (divide by gcd before computing 
-  // products, etc.)....maybe we should always reduce - otherwise the denominators will blow up
-  // really quickly in any computation - maybe already in the constructor
+  // products, etc.).
 
 
   /** Reduces this number to lowest terms. */
   void reduce()
   {
-    rsUint64 gcd = rsGcd(num, den);
+    T gcd = rsGcd(num, den);
     num /= gcd;
     den /= gcd;
+  }
+
+  /** Reduces to lowest terms and ensures that denominator is nonnegative. */
+  void canonicalize()
+  {
+    reduce();
+    if(den < 0) {
+      num = -num;
+      den = -den; }
   }
 
 };
