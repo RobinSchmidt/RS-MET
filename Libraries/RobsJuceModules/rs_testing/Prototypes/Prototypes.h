@@ -968,57 +968,44 @@ protected:
 
 //=================================================================================================
 
-/** Structure for representing rational numbers a.k.a. fractions. Numerator and denominator are 
-kept as signed integers "num", "den". On construction and in arithmetic operations, fractions are
-always put into a canonical representation which is a reduced form where the minus sign (if any) is
-put into the numerator.
-
-
-hmm...should we always automatically reduce the number? maybe it's sometimes convenient to have
-it in unreduced form - it may be easier to spot patterns in sequences of unreduced rational numbers
-that come from some computation....but if we care about such tracebilty, then maybe we should used 
-signed integers, so we can also trace where a minus signa comes from, if any - it will also 
-simplify the implementation of +,-
-
-
-...maybe instead of a bool use rsFlags8 and have a flag for 
-autoreduce..or maybe that should be decided at compile time..or maybe have a special class 
-rsReducedRatioalNumber...or use the name rsUnreducedRationalNumber for the unreduced case
-
-
-
-*/
+/** Class for representing fractions a.k.a. rational numbers, i.e. ratios of two integers. 
+Numerator and denominator are kept as signed integers "num", "den". On construction and in 
+arithmetic operations, fractions are always put into a canonical representation which is a reduced
+form where the minus sign (if any) is put into the numerator. */
 
 template<class T>  // T should be a signed int type
-struct rsFraction
+class rsFraction
 {
 
-  T num, den;  
-  // maybe make protected to enforce canonical representation - client code cannot just set the
-  // numbers into a non-canonical state - enforced canonical representation is important for the 
-  // == operator to work properly...but maybe it should be implemented in a way that admits 
-  // non-canonical representations? a/b == c/d  <->  a*d == b*c
-
+public:
 
   rsFraction(T numerator = T(0), T denominator = T(1)) : num(numerator), den(denominator)
   { canonicalize(); }
 
 
   //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  void set(T newNumerator, T newDenominator) 
+  { num = newNumerator; den = newDenominator; canonicalize(); }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  T getNumerator()   const { return num; }
+  T getDenominator() const { return den; }
+
+  //-----------------------------------------------------------------------------------------------
   // \name Arithmetic operators
 
-  rsFraction operator+(const rsFraction& b) const
-  { return rsFraction(num*b.den + b.num*den, den * b.den); }
+  // both arguments fractions:
+  rsFraction operator+(const rsFraction& b) const { return rsFraction(num*b.den + b.num*den, den * b.den); }
+  rsFraction operator-(const rsFraction& b) const { return rsFraction(num*b.den - b.num*den, den * b.den); }
+  rsFraction operator*(const rsFraction& b) const { return rsFraction(num * b.num, den * b.den); }
+  rsFraction operator/(const rsFraction& b) const { return rsFraction(num * b.den, den * b.num); }
 
-  rsFraction operator-(const rsFraction& b) const
-  { return rsFraction(num*b.den - b.num*den, den * b.den); }
-
-  rsFraction operator*(const rsFraction& b) const 
-  { return rsFraction(num * b.num, den * b.den); }
-
-  rsFraction operator/(const rsFraction& b) const 
-  { return rsFraction(num * b.den, den * b.num); }
-
+  // integer right argument:
   rsFraction operator+(const T& b) const { return rsFraction(num + b*den, den); }
   rsFraction operator-(const T& b) const { return rsFraction(num - b*den, den); }
   rsFraction operator*(const T& b) const { return rsFraction(num * b, den); }
@@ -1030,16 +1017,6 @@ struct rsFraction
   rsFraction& operator*=(const rsFraction& b) { return *this = (*this) * b; }
   rsFraction& operator/=(const rsFraction& b) { return *this = (*this) / b; }
 
-
-  // maybe try to use algorithms that make overflow less likely (divide by gcd before computing 
-  // products, use lcm in + and - instead of just computing products, etc.).
-
-  // todo: implement operators for the case when one argument (left or right) is an integer 
-  // (type T)
-
-  // todo: maybe detect if overflow will happen and trigger an assert
-  // todo: find best rational approximation of a double or float by using continued fractions 
-  // maybe have a function rsRationalNumber<T> findApproximant(TFloat x)
 
   //-----------------------------------------------------------------------------------------------
   // \name Comparison operators
@@ -1054,10 +1031,6 @@ struct rsFraction
   bool operator>=(const rsFraction& b) const { return a.num * b.den >= b.num * a.den; }
 
 
-
-
-
-
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 
@@ -1067,7 +1040,42 @@ struct rsFraction
   /** Reduces to lowest terms and ensures that denominator is nonnegative. */
   void canonicalize() { reduce(); if(den < 0) { num = -num; den = -den; }  }
 
+
+protected:
+
+  T num, den;  // numerator and denominator
+
 };
+
+// operators for integer left argument:
+template<class T>
+rsFraction<T> operator*(const T& i, const rsFraction<T>& r)
+{ return rsFraction<T>(i * r.getNumerator(), r.getDenominator()); }
+
+
+
+// ToDo:
+// -maybe use algorithms for the arithmetic operators that make overflow less likely (divide by gcd 
+//  before computing products, use lcm in + and - instead of just computing products, etc.).
+// -implement operators for the case when left argument is integer (outside the class)
+// -maybe detect if overflow will happen and trigger an assert
+// -implement functions to convert to double or float
+// -find best rational approximation of a double or float by using continued fractions 
+//  maybe have a function rsFraction<T> findApproximant(TFloat x)
+// -maybe there are more interesting things we can do with continued fractions......maybe a 
+//  function getContinuedFractionExpansion that returns an array of integers?
+//
+// Notes:
+// -maybe it's sometimes convenient to keep it in unreduced form - it may be easier to spot 
+//  patterns in sequences of unreduced rational numbers that come from some computation
+// -but this will be relevant only for research code, not production code
+// -maybe we could introduce a compile-time switch (maybe a boolen template parameter) that 
+//  controls if we canonicalize or not
+// -enforced canonical representation is important for the == operator to work properly...maybe it 
+//  should be implemented in a way that admits non-canonical representations? 
+//  a/b == c/d  <->  a*d == b*c
+
+
 
 
 //=================================================================================================

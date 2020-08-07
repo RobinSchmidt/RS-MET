@@ -872,8 +872,15 @@ bool testRationalNumber()
   r = p - q; res &= r == R(-1,35); // (2/5) - (3/7) = -1/35
   r = p * q; res &= r == R( 6,35); // (2/5) * (3/7) =  6/35
   r = p / q; res &= r == R(14,15); // (2/5) / (3/7) = 14/15
+
   r = p + 3; res &= r == R(17, 5); // (2/5) + 3     = 17/5
+
   r = p - 3; res &= r == R(-13,5);
+
+
+  r = p * 3; res &= r == R(6, 5);
+  r = 3 * p; res &= r == R(6, 5);
+
 
 
   // test comparison operators:
@@ -887,6 +894,12 @@ bool testRationalNumber()
   Vec v({a,b,c,d});
   Mat A(2, 2, &v[0]);
   Mat A2 = A*A;
+
+  // todo: test converting a double/float to a fraction via continued fraction expansion - make a 
+  // function rsFraction rationalApproximant(double x, int precision)...or maybe the precision 
+  // should be double, too? or it should be (optionally) automatically determined?
+
+  // todo: implement function to produce Bernoulli numbers
 
 
   // in python, this code:
