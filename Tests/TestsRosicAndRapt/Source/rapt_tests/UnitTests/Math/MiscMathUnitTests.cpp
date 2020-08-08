@@ -895,9 +895,6 @@ bool testFraction()  // maybe move up
   // are all cases covered? or are more tests needed?
 
 
-
-
-
   // test using vectors and matrices of rational numbers
   using Mat = rsMatrix<R>;
   using Vec = std::vector<R>;
@@ -915,7 +912,6 @@ bool testFraction()  // maybe move up
   // todo: implement function to produce Bernoulli numbers
 
 
-
   // try to produce the continued fraction expansion of pi:
   rsContinuedFractionGenerator<int, double> cfg(PI);
   int N = 13; // 13 is as high as we may go with double precision
@@ -931,8 +927,7 @@ bool testFraction()  // maybe move up
   // convergents:
   // 3, 22/7, 333/106, 355/113, 103993/33102, 104348/33215
   // https://mathworld.wolfram.com/PiContinuedFraction.html
-  // https://oeis.org/A002485
-  // https://oeis.org/A002486
+
 
   // test compiling for x86-32 - it has the 80 bit long double type - doesn't make any difference
   // it seems, the long double type is also just the regular double type. wtf? where's the 
@@ -947,10 +942,14 @@ bool testFraction()  // maybe move up
   // previous iteration (which is the convergent of less accuracy) - but this is not production 
   // code
 
-  //int n = 3; // number of terms - later use a loop
-  //r = rsContinuedFractionConvergent(&cfe[0], n);
+  std::vector<R> target({ R(0,1), R(3,1), R(22,7), R(333,106), R(355,113), R(103993,33102), 
+    R(104348,33215), R(208341,66317), R(312689,99532), R(833719,265381), R(1146408,364913 ), 
+    R(4272943,1360120), R(5419351,1725033)});
+    // target values taken from: https://oeis.org/A002485 https://oeis.org/A002486
 
-
+  res &= convergents == target;
+  // ok - it seems, computing convergents from the continued fraction coeffs does not introduce
+  // additional error (i.e. no overflow - roundoff is no issue here anymore)
 
 
   return res;

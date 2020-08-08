@@ -1097,6 +1097,10 @@ rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
 //  a/b == c/d  <->  a*d == b*c
 
 
+/** A class for generating the (integer) continued fraction expansion coefficients of a given 
+(floating point) number. You pass the number to the constructor and after that, you can pull out 
+successive cofficients via getNext(). */
+
 template<class TInt, class TFloat>
 class rsContinuedFractionGenerator
 {
@@ -1111,7 +1115,7 @@ public:
     state = TFloat(1) / (state - flr);
     return (TInt) flr; 
   }
-  // needs test
+  // maybe rename to getNextCoeff ...or whatever these numbers are called
 
 
 protected:
@@ -1137,6 +1141,13 @@ rsFraction<T> rsContinuedFractionConvergent(T* a, int N)
 // this can actually be done directly using the generator, without the need for explicitly 
 // computing and storing the array a
 // maybe move into class rsContinuedFractionGenerator...maybe as static method
+// ..but i don't think that this continued fraction stuff should go into rsFraction - it's stuff
+// on top of it
+// implement also the algo from cfrat.c ...maybe that could indeed go into rsFraction
+//
+// can we somehow figure out, how many of the CFE coeffs are correct without knowing the correct
+// CFE? maybe by converting the convergents back to double and only add more coeffs as long as
+// the back-converted number actually gets closer to the original number?
 
 
 //=================================================================================================
