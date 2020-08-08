@@ -922,6 +922,8 @@ bool testFraction()  // maybe move up
   // correct up to index 3 - the roundoff error seems to become apparent very quickly! or is the 
   // algorithm too simple?
 
+  //res &= cfe == std::vector<int>({ 3, 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14  });
+
   // [3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14,  2, 1, 1, 2, 2, 2, 2, ...]
   //                                            | from here, it gets wrong
   // convergents:
