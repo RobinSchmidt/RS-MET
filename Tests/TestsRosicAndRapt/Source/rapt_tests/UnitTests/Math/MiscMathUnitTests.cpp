@@ -905,35 +905,19 @@ bool testFraction()  // maybe move up
   // todo: test solving a system of linear equations with rational numbers
   // -pivoting is actually not necessary, but it should not hurt either
 
-  // todo: test converting a double/float to a fraction via continued fraction expansion - make a 
-  // function rsFraction rationalApproximant(double x, int precision)...or maybe the precision 
-  // should be double, too? or it should be (optionally) automatically determined?
 
   // todo: implement function to produce Bernoulli numbers
 
 
-  // try to produce the continued fraction expansion of pi:
+  // produce the continued fraction expansion of pi:
   rsContinuedFractionGenerator<int, double> cfg(PI);
   int N = 13; // 13 is as high as we may go with double precision
   std::vector<int> cfe(N);
   for(int n = 0; n < N; n++)
     cfe[n] = cfg.getNext();
-  // with double, it's only correct up to index 12 - is this roundoff error? with float, it's only 
-  // correct up to index 3 - the roundoff error seems to become apparent very quickly! or is the 
-  // algorithm too simple?
-
-  //res &= cfe == std::vector<int>({ 3, 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14  });
-
-  // [3; 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14,  2, 1, 1, 2, 2, 2, 2, ...]
-  //                                            | from here, it gets wrong
-  // convergents:
-  // 3, 22/7, 333/106, 355/113, 103993/33102, 104348/33215
+  res &= cfe == std::vector<int>({ 3, 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14 });
+  // target values taken from:
   // https://mathworld.wolfram.com/PiContinuedFraction.html
-
-
-  // test compiling for x86-32 - it has the 80 bit long double type - doesn't make any difference
-  // it seems, the long double type is also just the regular double type. wtf? where's the 
-  // extended precision? ...maybe try it with rsBigFloat
 
   // compute convergents from the continued fraction expansion:
   std::vector<R> convergents(N);
@@ -943,16 +927,13 @@ bool testFraction()  // maybe move up
   // of increasing accuracy, we should really have a function that re-uses the results from the
   // previous iteration (which is the convergent of less accuracy) - but this is not production 
   // code
-
   std::vector<R> target({ R(0,1), R(3,1), R(22,7), R(333,106), R(355,113), R(103993,33102), 
     R(104348,33215), R(208341,66317), R(312689,99532), R(833719,265381), R(1146408,364913 ), 
     R(4272943,1360120), R(5419351,1725033)});
-    // target values taken from: https://oeis.org/A002485 https://oeis.org/A002486
-
   res &= convergents == target;
+  // target values taken from: https://oeis.org/A002485 https://oeis.org/A002486
   // ok - it seems, computing convergents from the continued fraction coeffs does not introduce
   // additional error (i.e. no overflow - roundoff is no issue here anymore)
-
 
   return res;
 }
