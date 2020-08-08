@@ -917,8 +917,8 @@ bool testFraction()  // maybe move up
 
 
   // try to produce the continued fraction expansion of pi:
-  rsContinuedFractionGenerator<int, long double> cfg(PI);
-  int N = 20;
+  rsContinuedFractionGenerator<int, double> cfg(PI);
+  int N = 13; // 13 is as high as we may go with double precision
   std::vector<int> cfe(N);
   for(int n = 0; n < N; n++)
     cfe[n] = cfg.getNext();
@@ -934,7 +934,15 @@ bool testFraction()  // maybe move up
   // https://oeis.org/A002485
   // https://oeis.org/A002486
 
-  // test compiling for x86-32 - it has the 80 bit long double type
+  // test compiling for x86-32 - it has the 80 bit long double type - doesn't make any difference
+  // it seems, the long double type is also just the regular double type. wtf? where's the 
+  // extended precision? ...maybe try it with rsBigFloat
+
+  // compute convergents from the continued fraction expansion:
+  int n = 3; // number of terms - later use a loop
+  r = rsContinuedFractionConvergent(&cfe[0], n);
+
+
 
 
   return res;
