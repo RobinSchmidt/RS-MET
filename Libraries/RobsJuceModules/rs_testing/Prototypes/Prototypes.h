@@ -1124,25 +1124,19 @@ protected:
 template<class T>
 rsFraction<T> rsContinuedFractionConvergent(T* a, int N)
 {
-  T p0, p1, p2, q0, q1, q2;
-  p0 = 0;
-  p1 = 1;
-  q0 = 1;
-  q1 = 0;
-
-  for(int i = 0; i < N; ++i)
-  {
+  T p0 = 0, p1 = 1, p2;
+  T q0 = 1, q1 = 0, q2;
+  for(int i = 0; i < N; ++i) {
     p2 = a[i]*p1 + p0;
     q2 = a[i]*q1 + q0;
-    p0 = p1;
-    p1 = p2;
-    q0 = q1;
-    q1 = q2;
-  }
-
-  rsFraction<T> r(p2, q2);
-  return r; 
+    p0 = p1; p1 = p2;
+    q0 = q1; q1 = q2; }
+  return rsFraction<T>(p2, q2);
 }
+// algorithm adapted from cfcv.c (by Hollos)
+// this can actually be done directly using the generator, without the need for explicitly 
+// computing and storing the array a
+// maybe move into class rsContinuedFractionGenerator...maybe as static method
 
 
 //=================================================================================================

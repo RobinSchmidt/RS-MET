@@ -939,8 +939,16 @@ bool testFraction()  // maybe move up
   // extended precision? ...maybe try it with rsBigFloat
 
   // compute convergents from the continued fraction expansion:
-  int n = 3; // number of terms - later use a loop
-  r = rsContinuedFractionConvergent(&cfe[0], n);
+  std::vector<R> convergents(N);
+  for(int n = 0; n < N; n++)
+    convergents[n] = rsContinuedFractionConvergent(&cfe[0], n); 
+  // note that this is a "Shlemiel the painter" algorithm - to compute a whole bunch of convergents
+  // of increasing accuracy, we should really have a function that re-uses the results from the
+  // previous iteration (which is the convergent of less accuracy) - but this is not production 
+  // code
+
+  //int n = 3; // number of terms - later use a loop
+  //r = rsContinuedFractionConvergent(&cfe[0], n);
 
 
 
