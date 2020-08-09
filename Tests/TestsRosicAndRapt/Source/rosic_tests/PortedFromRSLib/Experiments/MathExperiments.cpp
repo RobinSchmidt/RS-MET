@@ -2820,6 +2820,7 @@ void stirlingNumbers()
 
 
 /** Returns the Bernoulli number for the given n (using the convention that B1 = -1/2). */
+/*
 double rsBernoulliNumber(rsUint32 n)
 {
   if( n == 1 )
@@ -2836,16 +2837,40 @@ double rsBernoulliNumber(rsUint32 n)
   double result = A[0];
   delete[] A;
   return result;
-  // hmm - this algorithm seems to be quite imprecise numerically (it's taken form wikipedia)
+  // hmm - this algorithm seems to be quite imprecise numerically (it's taken from wikipedia)
   // maybe we should use this algorithm with exact representations of rational numbers
 }
+*/
+
+rsFraction<int> rsBernoulliNumber(int n)
+{
+  if( n == 1 )     return rsFraction<int>(-1, 2);
+  if( rsIsOdd(n) ) return rsFraction<int>( 0, 1);
+  rsFraction<int> *A = new rsFraction<int>[n+1];
+  for(int m = 0; m <= n; m++) {
+    A[m] = rsFraction<int>(1, m+1);
+    for(int j = m; j >= 1; j--)
+      A[j-1] = j * (A[j-1] - A[j]); }
+  rsFraction<int> result = A[0];
+  delete[] A;
+  return result;
+}
+// todo: figure out the maximum n that can be used for int32 and int64 wihtout running into 
+// overflow/garbage territory
+
 void bernoulliNumbers()
 {
-  static const int nMax = 10;
-  double b[nMax+1]; 
+  static const int nMax = 20;
+  rsFraction<int> b[nMax+1]; 
   for(int n = 0; n <= nMax; n++)
-    b[n] = rsBernoulliNumber(n);
+    b[n] = rsBernoulliNumber(n);  // shlemiel the painter? ..hmm...maybe not
+
+  int dummy = 0;
 }
+
+
+
+
 
 void sequenceSquareRoot()
 {

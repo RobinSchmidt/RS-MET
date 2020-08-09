@@ -1094,6 +1094,8 @@ rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
 //  should be implemented in a way that admits non-canonical representations? 
 //  a/b == c/d  <->  a*d == b*c
 
+//=================================================================================================
+// continued fraction stuff:
 
 /** A class for generating the (integer) continued fraction expansion coefficients of a given 
 (floating point) number. You pass the number to the constructor and after that, you can pull out 
@@ -1140,17 +1142,19 @@ rsFraction<T> rsContinuedFractionConvergent(T* a, int N)
 // maybe move into class rsContinuedFractionGenerator...maybe as static method
 // ..but i don't think that this continued fraction stuff should go into rsFraction - it's stuff
 // on top of it
-// implement also the algo from cfrat.c ...maybe that could indeed go into rsFraction
+
 //
 // can we somehow figure out, how many of the CFE coeffs are correct without knowing the correct
 // CFE? maybe by converting the convergents back to double and only add more coeffs as long as
 // the back-converted number actually gets closer to the original number?
-// -maybe rename to rsContinuedToRegularFraction - it jsut converts an array of (simple) continued
+// -maybe rename to rsContinuedToRegularFraction - it just converts an array of (simple) continued
 //  fraction coeffs to a normal, regular fraction - it doesn't really matter whether or not the
 //  coefficient array is supposed to converge to some irrational number or if it's just another
 //  representation of a fraction
-// -maybe also implement a generalization that does not assume a *simple* continued frcation (i.e.
+// -maybe also implement a generalization that does not assume a *simple* continued fraction (i.e.
 //  one where all numerators are 1 and there are no minusses)
+// https://en.wikipedia.org/wiki/Continued_fraction
+// https://en.wikipedia.org/wiki/Generalized_continued_fraction
 
 // returns the (simple) continued fraction coeffs of the given rational number
 template<class T>
@@ -1166,9 +1170,7 @@ std::vector<T> rsContinuedFraction(rsFraction<T> x)
     c.push_back(a); }
   return c;
 }
-
-
-
+// algo adapted from from cfrat.c 
 
 //=================================================================================================
 

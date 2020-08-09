@@ -474,7 +474,7 @@ bool oneLongerQuantileUnitTest(int L, int N)
     }
 
     r &= yT == yR;
-    rsPlotVectors(x, yR, yT);
+    //rsPlotVectors(x, yR, yT);
   }
   // this does not yet work - also, we trigger an assert for quantile = 1
 
