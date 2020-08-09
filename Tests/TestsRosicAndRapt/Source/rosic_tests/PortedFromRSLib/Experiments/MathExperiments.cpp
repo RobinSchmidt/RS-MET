@@ -2818,37 +2818,41 @@ void stirlingNumbers()
   RAPT::rsArrayTools::deAllocateSquareArray2D(tmp, nMax+1);
 }
 
+/** Returns the Bernoulli number for the given n (using the convention that B1 = -1/2). The type T 
+should be a signe integer type. For 32 bit integers, wrong results due to internal overflow occurs 
+for n >= 18 and for 64 bit for n >= 32. 
+
+References:
+  https://en.wikipedia.org/wiki/Bernoulli_number
+  https://mathworld.wolfram.com/BernoulliNumber.html
+  https://oeis.org/A164555 https://oeis.org/A027642  */
 
 template<class T>  // T should be a signed integer type
 rsFraction<T> rsBernoulliNumber(T n)
 {
-  if( n == 1 )     return rsFraction<T>(-1, 2);
-  if( rsIsOdd(n) ) return rsFraction<T>( 0, 1);
+  if( n == 1 )     return rsFraction<T>(T(-1), T(2));
+  if( rsIsOdd(n) ) return rsFraction<T>(T( 0), T(1));
   rsFraction<T> *A = new rsFraction<T>[n+1];
-  for(T m = 0; m <= n; m++) {         // try to use int instead of T for the loop index
-    A[m] = rsFraction<T>(1, m+1);
-    for(T j = m; j >= 1; j--)
-      A[j-1] = j * (A[j-1] - A[j]); }
+  for(int m = 0; m <= n; m++) {           // we don't want big-integers for the loop index
+    A[m] = rsFraction<T>(T(1), T(m+1));
+    for(int j = m; j >= 1; j--)
+      A[j-1] = T(j) * (A[j-1] - A[j]); }
   rsFraction<T> result = A[0];
   delete[] A;
   return result;
 }
-// with int32, it gets wrong for n >= 18 and with int64 it gets wrong for n >= 32
-// https://en.wikipedia.org/wiki/Bernoulli_number
-// https://mathworld.wolfram.com/BernoulliNumber.html
 
 void bernoulliNumbers()
 {
   static const int nMax = 32;  // the 32th will be the 1st wrong result due to overflow
   rsFraction<long long> b[nMax+1];
   for(long long n = 0; n <= nMax; n++)
-    b[n] = rsBernoulliNumber(n);  
-  // is this a shlemiel the painter algo? can it be optimized to produce the array in a way that
-  // re-uses results from previous iterations?
+    b[n] = rsBernoulliNumber(n);
+  // Producing this array is O(nMax^3) - can we do better? Is this a Shlemiel the painter algo? Can
+  // it be optimized to produce the array in a way that re-uses results from previous iterations?
 
   int dummy = 0;
 }
-// numerators and denominators: https://oeis.org/A164555 https://oeis.org/A027642
 // maybe move to unit tests
 
 // todo: implement Faulhaber's formula using the Bernoulli numbers:
