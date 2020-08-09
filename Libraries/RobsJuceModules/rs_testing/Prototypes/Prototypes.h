@@ -988,8 +988,6 @@ public:
 
   void set(T numerator, T denominator) { num = numerator; den = denominator; canonicalize(); }
 
-  //void setToApproximant(double x, int order);
-  // should implement continued fraction approxmation...
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -1125,6 +1123,7 @@ protected:
 };
 // https://www.youtube.com/watch?v=CaasbfdJdJg
 
+
 template<class T>
 rsFraction<T> rsContinuedFractionConvergent(T* a, int N)
 {
@@ -1146,6 +1145,29 @@ rsFraction<T> rsContinuedFractionConvergent(T* a, int N)
 // can we somehow figure out, how many of the CFE coeffs are correct without knowing the correct
 // CFE? maybe by converting the convergents back to double and only add more coeffs as long as
 // the back-converted number actually gets closer to the original number?
+// -maybe rename to rsContinuedToRegularFraction - it jsut converts an array of (simple) continued
+//  fraction coeffs to a normal, regular fraction - it doesn't really matter whether or not the
+//  coefficient array is supposed to converge to some irrational number or if it's just another
+//  representation of a fraction
+// -maybe also implement a generalization that does not assume a *simple* continued frcation (i.e.
+//  one where all numerators are 1 and there are no minusses)
+
+// returns the (simple) continued fraction coeffs of the given rational number
+template<class T>
+std::vector<T> rsContinuedFraction(rsFraction<T> x)
+{
+  std::vector<T> c;
+  T p = x.getNumerator();
+  T q = x.getDenominator();
+  T a = p/q, b;
+  c.push_back(a);
+  while(p > q*a) {
+    b = p - q*a; p = q; q = b; a = p/q;
+    c.push_back(a); }
+  return c;
+}
+
+
 
 
 //=================================================================================================

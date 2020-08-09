@@ -909,6 +909,9 @@ bool testFraction()  // maybe move up
   // todo: implement function to produce Bernoulli numbers
 
 
+
+
+
   // produce the continued fraction expansion of pi:
   rsContinuedFractionGenerator<int, double> cfg(PI);
   int N = 13; // 13 is as high as we may go with double precision
@@ -934,6 +937,15 @@ bool testFraction()  // maybe move up
   // target values taken from: https://oeis.org/A002485 https://oeis.org/A002486
   // ok - it seems, computing convergents from the continued fraction coeffs does not introduce
   // additional error (i.e. no overflow - roundoff is no issue here anymore)
+
+  // test continued fraction expansion of a rational number:
+  p = R(1473,50);
+  cfe = rsContinuedFraction(p);
+  res &= cfe == std::vector<int>({29, 2, 5, 1, 3});
+
+  // convert back to rational:
+  q = rsContinuedFractionConvergent(&cfe[0], (int) cfe.size());
+  res &= q == p;
 
   return res;
 }
