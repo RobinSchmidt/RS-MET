@@ -2819,56 +2819,43 @@ void stirlingNumbers()
 }
 
 
-/** Returns the Bernoulli number for the given n (using the convention that B1 = -1/2). */
-/*
-double rsBernoulliNumber(rsUint32 n)
+template<class T>  // T should be a signed integer type
+rsFraction<T> rsBernoulliNumber(T n)
 {
-  if( n == 1 )
-    return -0.5;
-  if( rsIsOdd(n) )
-    return 0.0;
-  double *A = new double[n+1];
-  for(rsUint32 m = 0; m <= n; m++)
-  {
-    A[m] = 1.0 / (m+1);
-    for(rsUint32 j = m; j >= 1; j--)
-      A[j-1] = j * (A[j-1] - A[j]);
-  }
-  double result = A[0];
-  delete[] A;
-  return result;
-  // hmm - this algorithm seems to be quite imprecise numerically (it's taken from wikipedia)
-  // maybe we should use this algorithm with exact representations of rational numbers
-}
-*/
-
-rsFraction<int> rsBernoulliNumber(int n)
-{
-  if( n == 1 )     return rsFraction<int>(-1, 2);
-  if( rsIsOdd(n) ) return rsFraction<int>( 0, 1);
-  rsFraction<int> *A = new rsFraction<int>[n+1];
-  for(int m = 0; m <= n; m++) {
-    A[m] = rsFraction<int>(1, m+1);
-    for(int j = m; j >= 1; j--)
+  if( n == 1 )     return rsFraction<T>(-1, 2);
+  if( rsIsOdd(n) ) return rsFraction<T>( 0, 1);
+  rsFraction<T> *A = new rsFraction<T>[n+1];
+  for(T m = 0; m <= n; m++) {         // try to use int instead of T for the loop index
+    A[m] = rsFraction<T>(1, m+1);
+    for(T j = m; j >= 1; j--)
       A[j-1] = j * (A[j-1] - A[j]); }
-  rsFraction<int> result = A[0];
+  rsFraction<T> result = A[0];
   delete[] A;
   return result;
 }
-// todo: figure out the maximum n that can be used for int32 and int64 wihtout running into 
-// overflow/garbage territory
+// with int32, it gets wrong for n >= 18 and with int64 it gets wrong for n >= 32
+// https://en.wikipedia.org/wiki/Bernoulli_number
+// https://mathworld.wolfram.com/BernoulliNumber.html
 
 void bernoulliNumbers()
 {
-  static const int nMax = 20;
-  rsFraction<int> b[nMax+1]; 
-  for(int n = 0; n <= nMax; n++)
-    b[n] = rsBernoulliNumber(n);  // shlemiel the painter? ..hmm...maybe not
+  static const int nMax = 32;  // the 32th will be the 1st wrong result due to overflow
+  rsFraction<long long> b[nMax+1];
+  for(long long n = 0; n <= nMax; n++)
+    b[n] = rsBernoulliNumber(n);  
+  // is this a shlemiel the painter algo? can it be optimized to produce the array in a way that
+  // re-uses results from previous iterations?
 
   int dummy = 0;
 }
+// numerators and denominators: https://oeis.org/A164555 https://oeis.org/A027642
+// maybe move to unit tests
 
-
+// todo: implement Faulhaber's formula using the Bernoulli numbers:
+// https://en.wikipedia.org/wiki/Faulhaber%27s_formula
+// maybe try to avoid using fractions as much as possible - try to multiply everything through by
+// a suitable number to get rid of denominators - the result must be an integer, so it's somehow
+// dissatisfying to have to turn to fractions within the computation
 
 
 
