@@ -2523,6 +2523,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\SlewRateLimiterLinear.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\AudioBasics\AudioBasics.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\AudioBasics\AudioFunctions.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\BasicFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\Basics.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\Constants.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\DebugTools.h"/>

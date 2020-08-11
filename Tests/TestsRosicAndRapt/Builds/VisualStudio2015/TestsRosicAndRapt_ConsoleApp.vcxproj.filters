@@ -2871,6 +2871,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\AudioBasics\AudioFunctions.h">
       <Filter>JUCE Modules\rapt\AudioBasics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\BasicFunctions.h">
+      <Filter>JUCE Modules\rapt\Basics</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Basics\Basics.h">
       <Filter>JUCE Modules\rapt\Basics</Filter>
     </ClInclude>

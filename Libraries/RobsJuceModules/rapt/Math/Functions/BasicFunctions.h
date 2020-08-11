@@ -1,5 +1,10 @@
-#ifndef RAPT_BASICFUNCTIONS_H_INCLUDED
-#define RAPT_BASICFUNCTIONS_H_INCLUDED
+#ifndef RAPT_BASICMATHFUNCTIONS_H_INCLUDED
+#define RAPT_BASICMATHFUNCTIONS_H_INCLUDED
+
+// todo: rename the file - we have now a name clash with Basics/BasicFunctions.h - maybe the new 
+// name should be BasicMathFunctions.h/cpp ...but maybe the content could also be absorbed into
+// RealFunctions.h/cpp ...maybe some could be even moved into Basics/BasicFunctions.h
+
 
 /** Returns the absolute value of the input argument. It is intended to replace the standard
 "abs" and "fabs" c-functions where genericity is desired. */

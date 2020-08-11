@@ -8,10 +8,11 @@ namespace RAPT
 #include "TypeDefinitions.h"
 #include "MacroDefinitions.h"
 #include "DebugTools.h"
+#include "BasicFunctions.h"
 //#include "MathBasics.h"  // add from RSLib
 #include "SortAndSearch.h"
 
-// move to some other file (BasicFunctions or something):
+// move to some other file (BasicFunctions or something - and include before SortAndSearch):
 
 /** Swaps x and y via copy assignment operator. */
 template<class T>
