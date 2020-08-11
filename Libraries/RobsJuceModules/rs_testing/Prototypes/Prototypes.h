@@ -472,8 +472,8 @@ public:
     bool result = true;
     int l = this->left(i);
     int r = this->right(i);
-    if(l < this->size) result &= !less(this->data[i], this->data[l]) && isSearchTree(l);
-    if(r < this->size) result &= !less(this->data[r], this->data[i]) && isSearchTree(r);
+    if(l < this->size) result &= !this->less(this->data[i], this->data[l]) && isSearchTree(l);
+    if(r < this->size) result &= !this->less(this->data[r], this->data[i]) && isSearchTree(r);
     return result;
   }
   // actually, this test is not enough - it says yes to the "pseudotree"
@@ -506,8 +506,8 @@ public:
     if(l >= this->size) return;       // node is leaf
     int r = this->right(i);
     if(r >= this->size) {             // node has only left child - make sure, the data at the
-      if(less(this->data[i], this->data[l]))      // parent i is not less than at left child l - if it is: swap
-        swap(this->data[i], this->data[l]);
+      if(this->less(this->data[i], this->data[l]))      // parent i is not less than at left child l - if it is: swap
+        this->swap(this->data[i], this->data[l]);
       return; }
 
     // ok - we have a node that has both children - we must figure out which of the 3 nodes i,l,r
@@ -520,16 +520,16 @@ public:
     //if(less(data[r], data[m])) m = r;
 
     // fix order of children:
-    if(less(this->data[r], this->data[l]))
-      swap(this->data[l], this->data[r]);
+    if(this->less(this->data[r], this->data[l]))
+      this->swap(this->data[l], this->data[r]);
 
     // fix order of i,l:
-    if(less(this->data[i], this->data[l]))
-      swap(this->data[l], this->data[i]);
+    if(this->less(this->data[i], this->data[l]))
+      this->swap(this->data[l], this->data[i]);
 
     // fix order of i,r:
-    if(less(this->data[r], this->data[i]))
-      swap(this->data[r], this->data[i]);
+    if(this->less(this->data[r], this->data[i]))
+      this->swap(this->data[r], this->data[i]);
 
     // try to do this only with 2 comparisons and one swap
 
@@ -544,10 +544,10 @@ public:
     // we insert it (preliminarily) either at i or at the sibling of i:
     int p = this->parent(i);
     if(this->isLeft(i))
-      if(less(this->data[p], x))
+      if(this->less(this->data[p], x))
         i = this->right(p);   // right sibling
     else
-      if(less(x, this->data[p]))
+      if(this->less(x, this->data[p]))
         i = this->left(p);    // left sibling
     this->data[i] = x;
     return floatIntoPlace(i);
@@ -563,13 +563,13 @@ protected:
     while(i > 0) {
       int p = this->parent(i);
       if(this->isLeft(i)) {
-        if(less(this->data[p], this->data[i]))
-          swap(this->data[i], this->data[p]);
+        if(this->less(this->data[p], this->data[i]))
+          this->swap(this->data[i], this->data[p]);
         else
           return i; }
       else {
-        if(less(this->data[i], this->data[p]))      // i and p are swapped compared to left nodes
-          swap(this->data[i], this->data[p]);
+        if(this->less(this->data[i], this->data[p]))      // i and p are swapped compared to left nodes
+          this->swap(this->data[i], this->data[p]);
         else
           return i;   }
       i = p; }
@@ -580,13 +580,13 @@ protected:
   {
     int l = this->left(i);
     if(l >= this->size) return i;
-    if(less(this->data[i], this->data[l])) {
-      swap(this->data[i], this->data[l]);
+    if(this->less(this->data[i], this->data[l])) {
+      this->swap(this->data[i], this->data[l]);
       return floatDown(l); }
     int r = this->right(i);
     if(r >= this->size) return i;
-    if(less(this->data[r], this->data[i])) {
-      swap(this->data[i], this->data[r]);
+    if(this->less(this->data[r], this->data[i])) {
+      this->swap(this->data[i], this->data[r]);
       return floatDown(r); }
     return i;
   }

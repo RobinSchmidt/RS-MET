@@ -2463,7 +2463,8 @@
 
 1597160113 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\range.h
 
-1597159619 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\math.h
+1597167717 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\math.h
+	"Functions/IntegerFunctions.h"
 	"LinearAlgebra/BandDiagonalSolver.hpp"
 	"LinearAlgebra/LinearAlgebra.h"
 	"Types/Vector.h"
@@ -2476,7 +2477,6 @@
 	"Misc/CurveFitting.h"
 	"Misc/RatioGenerator.h"
 	"Functions/BasicMathFunctions.h"
-	"Functions/IntegerFunctions.h"
 	"Functions/InterpolatingFunction.h"
 	"Functions/NodeBasedFunction.h"
 	"Functions/RealFunctions.h"
@@ -5360,7 +5360,7 @@
 
 1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\partialdifferentialequations.h
 
-1597162529 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.h
+1597167439 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.h
 	"rosic/rosic.h"
 	"FilterDesign/PoleZeroPrototype.h"
 	"FilterDesign/PoleZeroMapper.h"
@@ -5527,8 +5527,9 @@
 1597164165 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\raptinstantiations.cpp
 	"../rapt/rapt_templates.cpp"
 
-1570815254 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\experiments\experiments.cpp
+1595712067 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\experiments\experiments.cpp
 	"Experiments.h"
+	"../rapt_tests/Experiments/ScratchPad.cpp"
 	"../rapt_tests/Experiments/MathExperiments.cpp"
 	"../rapt_tests/Experiments/FilterExperiments.cpp"
 	"../rapt_tests/Experiments/GeneratorExperiments.cpp"
@@ -5549,12 +5550,12 @@
 	"../rosic_tests/PortedFromRSLib/Experiments/ResamplingExperiments.cpp"
 	"../rosic_tests/PortedFromRSLib/Experiments/SaturationExperiments.cpp"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\experiments\experiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\experiments\experiments.h
 	<rs_testing/rs_testing.h>
 	"../rosic_tests/PortedFromRSLib/RSLib/Core/RSCore.h"
 	"../rosic_tests/PortedFromRSLib/ExperimentsRSLib.h"
 
-1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\rscore.h
+1597156866 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\rscore.h
 	"Definitions/Setup.h"
 	"Definitions/StandardHeaders.h"
 	"Definitions/ConstantDefinitions.h"
@@ -5589,9 +5590,9 @@
 	"Misc/Callback.h"
 	"Misc/Parameter.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\definitions\setup.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\definitions\setup.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\definitions\standardheaders.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\definitions\standardheaders.h
 	<ctype.h>
 	<float.h>
 	<limits.h>
@@ -5608,69 +5609,69 @@
 	<string>
 	<vector>
 
-1571789154 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\definitions\constantdefinitions.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\definitions\constantdefinitions.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\definitions\typedefinitions.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\definitions\typedefinitions.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\definitions\macrodefinitions.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\definitions\macrodefinitions.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\errorhandling.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\errorhandling.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\numbermanipulations.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\numbermanipulations.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\mathbasics.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\mathbasics.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\mathbasics.inl
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\mathbasics.inl
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\arrayfunctions.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\arrayfunctions.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\arrayfunctions.inl
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\arrayfunctions.inl
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\sortandsearch.inl
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\sortandsearch.inl
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\matrixfunctions.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\matrixfunctions.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\matrixfunctions.inl
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\utilities\matrixfunctions.inl
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\array.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\array.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\flags.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\flags.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\range.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\range.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\infinitedatastream.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\infinitedatastream.h
 
-1572519141 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\keyvaluemap.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\keyvaluemap.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\list.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\list.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\tree.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\containers\tree.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\text\string.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\text\string.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\text\keyvaluestringpair.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\text\keyvaluestringpair.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\text\keyvaluestringarray.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\text\keyvaluestringarray.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\text\keyvaluestringtree.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\text\keyvaluestringtree.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\files\file.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\files\file.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\files\filestream.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\files\filestream.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\files\wavefile.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\files\wavefile.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\files\fileinputoutput.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\files\fileinputoutput.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\logger.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\logger.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\systeminformation.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\systeminformation.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\callback.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\callback.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\parameter.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\rslib\core\misc\parameter.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experimentsrslib.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experimentsrslib.h
 	"Experiments/MathExperiments.h"
 	"Experiments/AnalysisExperiments.h"
 	"Experiments/CellularExperiments.h"
@@ -5686,87 +5687,87 @@
 	"Experiments/ResamplingExperiments.h"
 	"Experiments/SaturationExperiments.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\mathexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\mathexperiments.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\analysisexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\analysisexperiments.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\cellularexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\cellularexperiments.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\delayexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\delayexperiments.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\filterexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\filterexperiments.h
 
-1571516215 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\miscaudioexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\miscaudioexperiments.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\modalexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\modalexperiments.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\modulatorexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\modulatorexperiments.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\oscillatorexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\oscillatorexperiments.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\partialextractionexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\partialextractionexperiments.h
 
-1572358895 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\phasevocoderexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\phasevocoderexperiments.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\physicsexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\physicsexperiments.h
 
-1571163850 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\resamplingexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\resamplingexperiments.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\saturationexperiments.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\saturationexperiments.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\mathexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\mathexperiments.cpp
 
-1572294625 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\filterexperiments.cpp
+1596285063 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\filterexperiments.cpp
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\generatorexperiments.cpp
+1595942429 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\generatorexperiments.cpp
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\modulatorexperiments.cpp
+1597167327 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\modulatorexperiments.cpp
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\graphicsexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\graphicsexperiments.cpp
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\mathexperiments.cpp
+1597155110 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\mathexperiments.cpp
 	"MathExperiments.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\analysisexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\analysisexperiments.cpp
 	"AnalysisExperiments.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\cellularexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\cellularexperiments.cpp
 	"CellularExperiments.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\delayexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\delayexperiments.cpp
 	"DelayExperiments.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\filterexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\filterexperiments.cpp
 	"FilterExperiments.h"
 
-1571527003 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\miscaudioexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\miscaudioexperiments.cpp
 	"MiscAudioExperiments.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\modalexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\modalexperiments.cpp
 	"ModalExperiments.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\modulatorexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\modulatorexperiments.cpp
 	"ModulatorExperiments.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\oscillatorexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\oscillatorexperiments.cpp
 	"OscillatorExperiments.h"
 
-1571786366 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\partialextractionexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\partialextractionexperiments.cpp
 	"PartialExtractionExperiments.h"
 
-1572369668 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\phasevocoderexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\phasevocoderexperiments.cpp
 	"PhaseVocoderExperiments.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\physicsexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\physicsexperiments.cpp
 	"PhysicsExperiments.h"
 
-1571531957 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\resamplingexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\resamplingexperiments.cpp
 	"ResamplingExperiments.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\saturationexperiments.cpp
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\saturationexperiments.cpp
 	"SaturationExperiments.h"
 
-1572434979 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\main.cpp
+1597000985 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\main.cpp
 	"../JuceLibraryCode/JuceHeader.h"
 	"rapt_tests/RaptTests.h"
 	"Experiments/Experiments.h"
@@ -5775,56 +5776,56 @@
 	"Misc/Misc.h"
 	"../../../Libraries/RobsJuceModules/romos/TestSuite/TestsMain.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\juceheader.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\juceheader.h
 	"AppConfig.h"
 	<rapt/rapt.h>
 	<romos/romos.h>
 	<rosic/rosic.h>
 	<rs_testing/rs_testing.h>
 
-1572129615 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\rapttests.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\rapttests.h
 	"UnitTests/UnitTestsRapt.h"
 
-1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\unittestsrapt.h
+1597156866 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\unittestsrapt.h
 
-1571176447 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\unittestsrosic.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\unittestsrosic.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\performancetests\performancetests.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\performancetests\performancetests.h
 	<rs_testing/rs_testing.h>
 	"../rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetestsrslib.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetestsrslib.h
 	"PerformanceTests/AnalysisTests.h"
 	"PerformanceTests/CoreTests.h"
 	"PerformanceTests/MathTests.h"
 	"PerformanceTests/MiscAudioTests.h"
 	"PerformanceTests/ModalTests.h"
 
-1572519886 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\analysistests.h
+1597156865 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\analysistests.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\coretests.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\coretests.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\mathtests.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\mathtests.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\miscaudiotests.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\miscaudiotests.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\modaltests.h
+1595712068 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\performancetests\modaltests.h
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\misc\misc.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\misc\misc.h
 	"../rosic_tests/PortedFromRSLib/ExamplesRSLib.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\examplesrslib.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\examplesrslib.h
 	"Examples/ModalExamples.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\examples\modalexamples.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\examples\modalexamples.h
 	<iostream>
 	"SampleMapGenerator.h"
 
-1570815254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\examples\samplemapgenerator.h
+1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\examples\samplemapgenerator.h
 	<rapt/rapt.h>
 	"../RSLib/Core/RSCore.h"
 
-1570815251 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testsmain.h
+1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testsmain.h
 
 1570815254 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\misc\misc.cpp
 	"Misc.h"
@@ -6149,4 +6150,6 @@
 1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\legacy\multilayerperceptron.cpp
 
 1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\sineparameterestimator.cpp
+
+1597167560 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\scratchpad.cpp
 
