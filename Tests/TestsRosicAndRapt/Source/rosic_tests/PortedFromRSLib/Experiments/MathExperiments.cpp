@@ -2819,7 +2819,7 @@ void stirlingNumbers()
 }
 
 /** Returns the Bernoulli number for the given n (using the convention that B1 = -1/2). The type T 
-should be a signe integer type. For 32 bit integers, wrong results due to internal overflow occurs 
+should be a signed integer type. For 32 bit integers, wrong results due to internal overflow occur 
 for n >= 18 and for 64 bit for n >= 32. 
 
 References:
@@ -2841,6 +2841,29 @@ rsFraction<T> rsBernoulliNumber(T n)
   delete[] A;
   return result;
 }
+// allocates - not suitable for realtime use. it's rather expensive anyway, namely O(n^2), but it 
+// will overflow for larger n anyway, so when it's used in the safe range of small n, it may be ok.
+// Can we produce an array all Bernoulli numbers from 0 up to n also in O(n^2), i.e. is this likely
+// to lead to a "Shlemiel the painter" algo, when called in a loop to fill an array? If so, make
+// a function to create the whole array
+// see also:
+// https://en.wikipedia.org/wiki/Bernoulli_number#An_algorithmic_view:_the_Seidel_triangle
+// https://en.wikipedia.org/wiki/Bernoulli_number#Efficient_computation_of_Bernoulli_numbers
+// https://projecteuclid.org/download/pdf_1/euclid.pja/1195510576
+// where did i get this algo from? i think, wikipedia but i don't find it there anymore. oh - it
+// seems to have been removed:
+// https://en.wikipedia.org/w/index.php?title=Bernoulli_number&oldid=789762667#Recursive_definition
+// it's the Akiyama–Tanigawa algorithm
+// https://rosettacode.org/wiki/Bernoulli_numbers
+// with a table of binomial coeffs, we could use this formula
+// https://de.wikipedia.org/wiki/Bernoulli-Zahl#Rekursionsformeln
+//   B[n] = (-1/(n+1)) * sum_{k=0}^{n-1} C(n+1,k) B[k]
+// where B[n] is the n-th Bernoulli number and C(n+1,k) is the binomial coeff (n+1)-choose-k. Maybe
+// such a table of binomial coeffs should be stored globally somewhere...maybe as lazy-initialized
+// singleton that starts empty and grows as needed
+//
+// https://web.maths.unsw.edu.au/~davidharvey/talks/bernoulli.pdf
+
 
 void bernoulliNumbers()
 {

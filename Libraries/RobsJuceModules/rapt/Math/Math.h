@@ -11,6 +11,7 @@ namespace RAPT
 #include "Types/Vector.h"  // move to LinearAlgebra
 #include "Types/Matrix.h"
 #include "Types/Polynomial.h"
+#include "Types/Fraction.h"
 #include "LinearAlgebra/LinearAlgebra.h"
 #include "LinearAlgebra/LinearAlgebraNew.h"
 // maybe matrices, vectors, tensors, polynomials and rational functions should be in an "Algebra"
@@ -46,10 +47,12 @@ namespace RAPT
 #include "Numerics/Optimization.h"
 // todo: Optimizer, CurveFitter, Interpolator, Differentiator, InitialValueSolver, 
 
-#include "Functions/WindowFunctions.h"   // may use FFT stuff for Dolph/Chebychev window later
+#include "Functions/WindowFunctions.h"
 
-#include "Functions/FunctionOperators.h" // may use stuff from NumericCalculus later - move it down, then
-                                         // perhaps this should not yet be in the library
+#include "Functions/FunctionOperators.h" 
+// may use stuff from NumericCalculus later - move it down, then perhaps this should not yet be in
+// the library but rather in the prototypes section - it's not yet used anywhere anyway and perhaps
+// never will
 
 
 }

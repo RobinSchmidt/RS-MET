@@ -1171,6 +1171,15 @@ std::vector<T> rsContinuedFraction(rsFraction<T> x)
   return c;
 }
 // algo adapted from from cfrat.c 
+// i think, this is some variation of the Euclidean algorithm
+
+// Wikipedia says: "Even-numbered convergents are smaller than the original number, while 
+// odd-numbered ones are larger."
+// https://en.wikipedia.org/wiki/Continued_fraction#Infinite_continued_fractions_and_convergents
+// ...verify this. Knowing this could be useful
+
+// other fun stuff that can be done with fractions:
+// https://en.wikipedia.org/wiki/Egyptian_fraction
 
 //=================================================================================================
 
