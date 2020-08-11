@@ -313,7 +313,7 @@ public:
 
 
   /** Returns true, iff one of the columns of the matrix consists of all zeros. */
-  template<class T>
+  //template<class T>
   bool containsZeroColumn(T tol) const
   {
     for(int j = 0; j < numCols; j++)
@@ -368,7 +368,7 @@ public:
   T getTrace() const
   {
     T t = T(0);
-    for(int i = 0; i < rsMin(numRows, numCols); ++i)
+    for(int i = 0; i < rsMin(this->numRows, this->numCols); ++i)
       t = t + this->at(i, i);   // use +=
     return t;
   }
@@ -377,7 +377,7 @@ public:
   T getDiagonalProduct() const
   {
     T p = T(1);
-    for(int i = 0; i < rsMin(numRows, numCols); ++i)
+    for(int i = 0; i < rsMin(this->numRows, this->numCols); ++i)
       p = p * this->at(i, i);
     return p;
   }
@@ -408,7 +408,7 @@ public:
   the top- or left square submatrix will be affected. */
   void setDiagonalValues(T value)
   {
-    for(int i = 0; i < rsMin(numRows, numCols); i++)
+    for(int i = 0; i < rsMin(this->numRows, this->numCols); i++)
       dataPointer[i*numCols + i] = value;
   }
   // needs test
@@ -417,7 +417,7 @@ public:
   length min(numRows, numColumns). */
   void setDiagonalValues(T* values)
   {
-    for(int i = 0; i < rsMin(numRows, numCols); i++)
+    for(int i = 0; i < rsMin(this->numRows, this->numCols); i++)
       dataPointer[i*numCols + i] = values[i];
   }
   // needs test
@@ -856,7 +856,7 @@ public:
   void copyDataFrom(const rsMatrixView<T2>& A)
   {
     setSize(A.getNumRows(), A.getNumColumns());
-    rsArrayTools::convert(A.getDataPointerConst(), this->dataPointer, getSize());
+    rsArrayTools::convert(A.getDataPointerConst(), this->dataPointer, this->getSize());
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -869,10 +869,10 @@ public:
   case of square-matrices and row- and column vectors. */
   void transpose()
   {
-    if(isSquare()) { rsMatrixView<T>::transposeSquare(this); return; }
-    if(isVector()) { rsSwap(this->numRows, this->numCols); return; }
+    if(this->isSquare()) { rsMatrixView<T>::transposeSquare(this); return; }
+    if(this->isVector()) { rsSwap(this->numRows, this->numCols); return; }
 
-    std::vector<T> v(getSize());    // the general case needs reallocation...
+    std::vector<T> v(this->getSize());    // the general case needs reallocation...
     numHeapAllocations++;
     rsMatrixView<T> B(this->numCols, this->numRows, &v[0]);
     rsMatrixView<T>::transpose(*this, &B);

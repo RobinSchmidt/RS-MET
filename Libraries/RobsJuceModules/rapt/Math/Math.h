@@ -11,14 +11,19 @@ namespace RAPT
 
 //#include "LinearAlgebra/LaPackCPP/LaPack.hpp"
 #include "LinearAlgebra/BandDiagonalSolver.hpp"
+#include "LinearAlgebra/LinearAlgebra.h"
+
 #include "Types/Vector.h"  // move to LinearAlgebra
 #include "Types/Matrix.h"
 #include "Types/Polynomial.h"
 #include "Types/Fraction.h"
-#include "LinearAlgebra/LinearAlgebra.h"
+
 #include "LinearAlgebra/LinearAlgebraNew.h"
-// maybe matrices, vectors, tensors, polynomials and rational functions should be in an "Algebra"
-// folder
+// the required order of the includes is a bit messy - maybe matrices, vectors, tensors, 
+// polynomials and rational functions should be in an "Algebra" folder
+
+
+
 
 #include "Misc/FourierTransformer.h"
 #include "Misc/Statistics.h"
