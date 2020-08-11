@@ -723,7 +723,7 @@ public:
   rsMatrix(int numRows, int numColumns, const T* data)
   {
     setSize(numRows, numColumns);
-    rsArrayTools::copy(data, this->getDataPointer(), getSize());
+    rsArrayTools::copy(data, this->getDataPointer(), this->getSize());
   }
 
   /** Constructor to create a matrix from an array-of-arrays - mostly for conveniently converting
@@ -856,7 +856,7 @@ public:
   void copyDataFrom(const rsMatrixView<T2>& A)
   {
     setSize(A.getNumRows(), A.getNumColumns());
-    rsArrayTools::convert(A.getDataPointerConst(), dataPointer, getSize());
+    rsArrayTools::convert(A.getDataPointerConst(), this->dataPointer, getSize());
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -876,7 +876,7 @@ public:
     numHeapAllocations++;
     rsMatrixView<T> B(this->numCols, this->numRows, &v[0]);
     rsMatrixView<T>::transpose(*this, &B);
-    rsSwap(numRows, numCols);
+    rsSwap(this->numRows, this->numCols);
     data = v;
     // don't we have to call updateDataPointer()? -> check, if there's a unit test
   }
@@ -1023,9 +1023,9 @@ public:
   {
     rsAssert((int) x.size() == this->numCols, "vector incompatible for left multiply by matrix");
     std::vector<T> y(this->numRows);
-    for(int i = 0; i < numRows; i++) {
+    for(int i = 0; i < this->numRows; i++) {
       y[i] = T(0);
-      for(int j = 0; j < numCols; j++)
+      for(int j = 0; j < this->numCols; j++)
         y[i] += this->at(i, j) * x[j]; }
     return y;
   }

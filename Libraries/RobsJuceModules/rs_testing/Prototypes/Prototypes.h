@@ -30,8 +30,8 @@ of optimizations), for tweaking an algorithm's internal parameters which might n
 in the production-code versions, and to create reference output for the unit-tests for production 
 code. */
 
-
-// todo: move to somewhere else - could be useful in other contexts:
+/*
+moved to rapt:
 static constexpr int allBits = -1;                                      // all bits are 1
 static constexpr int allBitsButFirst = std::numeric_limits<int>::max(); // only 1st bit is 1
 static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 1st bit is 0
@@ -40,6 +40,7 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //static size_t allBits = std::numeric_limits<size_t>::max();
 //static size_t firstBitOnly = allBits - (allBits >> 1);
 //static size_t allBitsButFirst= allBits ^ firstBitOnly;
+*/
 
 
 
