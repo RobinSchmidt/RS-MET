@@ -2535,7 +2535,7 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\sincostable.h
 
-1597159864 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.h
+1597163902 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.h
 
@@ -2986,7 +2986,7 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.cpp
+1597164618 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\vector.cpp
 
@@ -5312,12 +5312,15 @@
 	"FFT.h"
 	<algorithm>
 
-1570815254 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\include_rs_testing.cpp
+1595712067 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\include_rs_testing.cpp
 	"AppConfig.h"
 	<rs_testing/rs_testing.cpp>
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\rs_testing.cpp
+1595712064 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\rs_testing.cpp
 	"rs_testing.h"
+	"Legacy/FunctionObjects.cpp"
+	"Legacy/GradientBasedMinimizer.cpp"
+	"Legacy/MultiLayerPerceptron.cpp"
 	"TestTools/Utilities/FileWriting.cpp"
 	"TestTools/Utilities/PerformanceTestTools.cpp"
 	"TestTools/Utilities/TestInputCreation.cpp"
@@ -5335,9 +5338,12 @@
 	"Misc/TestClasses.cpp"
 	"RaptInstantiations.cpp"
 
-1572025380 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\rs_testing.h
+1595712064 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\rs_testing.h
 	<rapt/rapt.h>
 	<rosic/rosic.h>
+	"Legacy/FunctionObjects.h"
+	"Legacy/GradientBasedMinimizer.h"
+	"Legacy/MultiLayerPerceptron.h"
 	"Prototypes/OscDrivers.h"
 	"Prototypes/PartialDifferentialEquations.h"
 	"Prototypes/Prototypes.h"
@@ -5350,11 +5356,11 @@
 	"Experiments/MiscExperiments.h"
 	"Misc/TestClasses.h"
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\oscdrivers.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\oscdrivers.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\partialdifferentialequations.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\partialdifferentialequations.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.h
+1597162529 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.h
 	"rosic/rosic.h"
 	"FilterDesign/PoleZeroPrototype.h"
 	"FilterDesign/PoleZeroMapper.h"
@@ -5369,48 +5375,49 @@
 	"Drawing.h"
 	"QuantumSystems.h"
 	"Relativity.h"
+	"SineParameterEstimator.h"
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezeroprototype.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezeroprototype.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezeromapper.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezeromapper.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezerodesigneranalog.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezerodesigneranalog.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezerodesignerdigital.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezerodesignerdigital.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\complementaryfilters.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\complementaryfilters.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\modalanalyzer.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\modalanalyzer.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\particlebouncer.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\particlebouncer.h
 	"rosic/rosic.h"
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\probability.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\probability.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\projection3dto2d.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\projection3dto2d.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\polygon.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\polygon.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\drawing.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\drawing.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\quantumsystems.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\quantumsystems.h
 
-1572518221 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\relativity.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\relativity.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\dspplotters.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\dspplotters.h
 	"../../../Libraries/RobsJuceModules/rosic/rosic.h"
 
-1572518361 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\plotting.h
+1595712064 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\plotting.h
 	"rapt/rapt.h"
 	"rosic/rosic.h"
 	"rs_testing/rs_testing.h"
 
-1572359810 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testinputcreation.h
+1596037074 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testinputcreation.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\filewriting.h
+1595712064 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\filewriting.h
 	"rosic/rosic.h"
 
-1572521166 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\performancetesttools.h
+1595712064 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\performancetesttools.h
 	<iostream>
 	<string>
 	<vector>
@@ -5418,34 +5425,34 @@
 	<intrin.h>
 	<WTypesbase.h>
 
-1572518713 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testutilities.h
+1595959515 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testutilities.h
 	"rosic/rosic.h"
 	"rs_testing/rs_testing.h"
 	"jura_framework/control/jura_Callbacks.h"
 
-1570815250 e:\programming\c++\rs-met\libraries\robsjucemodules\jura_framework\control\jura_callbacks.h
+1595712061 e:\programming\c++\rs-met\libraries\robsjucemodules\jura_framework\control\jura_callbacks.h
 
-1571534649 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\experiments\miscexperiments.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\experiments\miscexperiments.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\misc\testclasses.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\misc\testclasses.h
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\filewriting.cpp
+1595712064 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\filewriting.cpp
 	"FileWriting.h"
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\performancetesttools.cpp
+1595712064 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\performancetesttools.cpp
 	"PerformanceTestTools.h"
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testinputcreation.cpp
+1596037151 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testinputcreation.cpp
 	"TestInputCreation.h"
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testutilities.cpp
+1595712064 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testutilities.cpp
 	"TestUtilities.h"
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\oscdrivers.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\oscdrivers.cpp
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\partialdifferentialequations.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\partialdifferentialequations.cpp
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.cpp
+1596549813 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.cpp
 	"Prototypes.h"
 	"FilterDesign/PoleZeroPrototype.cpp"
 	"FilterDesign/PoleZeroMapper.cpp"
@@ -5459,64 +5466,65 @@
 	"Drawing.cpp"
 	"QuantumSystems.cpp"
 	"Relativity.cpp"
+	"SineParameterEstimator.cpp"
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezeroprototype.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezeroprototype.cpp
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezeromapper.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezeromapper.cpp
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezerodesigneranalog.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezerodesigneranalog.cpp
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezerodesignerdigital.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\polezerodesignerdigital.cpp
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\complementaryfilters.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\filterdesign\complementaryfilters.cpp
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\modalanalyzer.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\modalanalyzer.cpp
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\probability.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\probability.cpp
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\projection3dto2d.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\projection3dto2d.cpp
 
-1571532609 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\polygon.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\polygon.cpp
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\drawing.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\drawing.cpp
 
-1571162521 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\quantumsystems.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\quantumsystems.cpp
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\relativity.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\relativity.cpp
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\finiteautomaton.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\finiteautomaton.cpp
 	"FiniteAutomaton.h"
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\finiteautomaton.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\finiteautomaton.h
 	<vector>
 	<string>
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\particlebouncer.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\particlebouncer.cpp
 	"ParticleBouncer.h"
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\particlesystem.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\particlesystem.cpp
 	"ParticleSystem.h"
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\particlesystem.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\particlesystem.h
 	"rapt/rapt.h"
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\tensor.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\tensor.cpp
 	"Tensor.h"
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\tensor.h
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\tensor.h
 	<vector>
 
-1572518785 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\dspplotters.cpp
+1597162743 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\dspplotters.cpp
 	"DSPPlotters.h"
 
-1572049087 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\plotting.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\plotting.cpp
 	"Plotting.h"
 
-1572511210 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\experiments\miscexperiments.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\experiments\miscexperiments.cpp
 
-1570815252 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\misc\testclasses.cpp
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\misc\testclasses.cpp
 
-1572521651 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\raptinstantiations.cpp
+1597164165 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\raptinstantiations.cpp
 	"../rapt/rapt_templates.cpp"
 
 1570815254 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\experiments\experiments.cpp
@@ -6074,11 +6082,11 @@
 1570815254 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\builds\codeblockswindows\resources.rc
 	<windows.h>
 
-1597160028 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\basicfunctions.h
+1597164445 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\basicfunctions.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\multiarray.h
 
-1597163723 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\trees.h
+1597163969 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\trees.h
 
 1597155706 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\fraction.h
 
@@ -6086,11 +6094,11 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\fouriertransformer.h
 
-1597160709 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\basicmathfunctions.h
+1597164445 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\basicmathfunctions.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\windowfunctions.h
 
-1596466942 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quantilefilter.h
+1597164649 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quantilefilter.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagegenerator.h
 
@@ -6102,7 +6110,7 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\multiarray.cpp
 
-1597163672 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\trees.cpp
+1597163907 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\trees.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\linearalgebranew.cpp
 
@@ -6112,7 +6120,7 @@
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\oourafft\fft4g.cpp
 	<math.h>
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\basicmathfunctions.cpp
+1597164492 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\basicmathfunctions.cpp
 
 1597160471 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\windowfunctions.cpp
 
@@ -6125,4 +6133,20 @@
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\miscspectral.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\_deprecated\multiarray.cpp
+
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\legacy\functionobjects.h
+
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\legacy\gradientbasedminimizer.h
+
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\legacy\multilayerperceptron.h
+
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\sineparameterestimator.h
+
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\legacy\functionobjects.cpp
+
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\legacy\gradientbasedminimizer.cpp
+
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\legacy\multilayerperceptron.cpp
+
+1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\sineparameterestimator.cpp
 

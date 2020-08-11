@@ -1,12 +1,12 @@
 #ifndef RAPT_QUANTILEFILTER_H
 #define RAPT_QUANTILEFILTER_H
 
-/** Class to exctract moving quantiles (such as the median) from a signal in realtime. If the 
+/** Class to exctract moving quantiles (such as the median) from a signal in realtime. If the
 quantile runs over N samples, the filter takes O(log(N)) operations per sample. It achieves this
-by using an rsDoubleHeap together with a circular buffer of indices into that double-heap. The 
-process that takes place in getSample is to replace the oldest sample in the double-heap with the 
-new incoming sample. The potential re-ordering of the heaps due to such an replacement is kept 
-track of by the circular buffer, such that it always points to the oldest sample in the 
+by using an rsDoubleHeap together with a circular buffer of indices into that double-heap. The
+process that takes place in getSample is to replace the oldest sample in the double-heap with the
+new incoming sample. The potential re-ordering of the heaps due to such an replacement is kept
+track of by the circular buffer, such that it always points to the oldest sample in the
 double-heap.  */
 
 template<class T>
@@ -17,7 +17,7 @@ public:
 
 
   rsQuantileFilterCore(int maxLength = 2)
-  { 
+  {
     rsAssert(maxLength >= 2, "A maxLength of at least 2 is needed");
     auto swapNodes = [&](Node& a, Node& b) { this->swapNodes(a, b); };
     dblHp.setSwapFunction(swapNodes);
@@ -39,42 +39,42 @@ public:
     setLengthAndReadPosition(L, p, true);
   }
   // maybe try to optimize the memory usage - we actually just need one nodes array of length
-  // newMaxLength of which one part is used for the min-heap and the other for the max-heap - but 
-  // maybe that would make modulating the length more difficult - if we use only one buffer, we may 
+  // newMaxLength of which one part is used for the min-heap and the other for the max-heap - but
+  // maybe that would make modulating the length more difficult - if we use only one buffer, we may
   // have to move around more data, when the length changes (i guess) - we'll see - hmm maybe not
 
   /** Sets the length of the filter, i.e. the number of past samples that we look at. */
-  void setLength(int newLength, bool hard = false) 
+  void setLength(int newLength, bool hard = false)
   { setLengthAndReadPosition(newLength, p, hard); }
 
-  /** Sets the read position in the sorted array of stored past values. This array does not exist 
-  literally but only conceptually (in the naive implementation in the prototypes section, this 
-  actually exists literally). In practice it's the largest of the small values, i.e. the front 
+  /** Sets the read position in the sorted array of stored past values. This array does not exist
+  literally but only conceptually (in the naive implementation in the prototypes section, this
+  actually exists literally). In practice it's the largest of the small values, i.e. the front
   element of the min-heap of large alues in our double-heap. So what this function actually does is
-  to update the sizes of the max-heap (of small values) and the min-heap (of large values) in the 
-  double-heap. But conceptually, think about it simply as the readout index in an array of stored 
+  to update the sizes of the max-heap (of small values) and the min-heap (of large values) in the
+  double-heap. But conceptually, think about it simply as the readout index in an array of stored
   past values. */
-  void setReadPosition(int newPosition, bool hard = false) 
+  void setReadPosition(int newPosition, bool hard = false)
   { setLengthAndReadPosition(L, newPosition, hard); }
 
   /** Sets length and read-position at once. */
   void setLengthAndReadPosition(int newLength, int newPosition, bool hard = false);
 
-  /** When a higher level class wants to implement non-integer readout positions, we need to do a 
-  linear interpolation between the values at sorted-array positions to the left and to the right of 
-  actual requested non-integer position. This sets the weight w for the value to the right, the 
-  weight for the value to the left is then 1-w. By default, w = 1, so we give full weight to the 
+  /** When a higher level class wants to implement non-integer readout positions, we need to do a
+  linear interpolation between the values at sorted-array positions to the left and to the right of
+  actual requested non-integer position. This sets the weight w for the value to the right, the
+  weight for the value to the left is then 1-w. By default, w = 1, so we give full weight to the
   sample to the right which is the smallest of the large values. */
   void setRightWeight(T newWeight) { w = newWeight; }
 
   /** Sets a pointer to a signal buffer that is driven by client code to facilitate artifact-free
   modulation of the length. If you leave this unassigned, you may see artifacts when the length
-  of the filter is switched from a lower to a higher value, due to the fact that we don't know the 
+  of the filter is switched from a lower to a higher value, due to the fact that we don't know the
   older samples here and just have to make up some values heuristically to fill up the heaps. When
-  the true old samples are available via such a buffer, these artifacts can be avoided. As said, 
-  client code is supposed to feed/drive this buffer because this will also facilitate sharing of 
-  such buffers between a bunch of parallel quantile filters or to create a highpass version. That 
-  means before calling setLength (and then getSample) on this object, client code should have 
+  the true old samples are available via such a buffer, these artifacts can be avoided. As said,
+  client code is supposed to feed/drive this buffer because this will also facilitate sharing of
+  such buffers between a bunch of parallel quantile filters or to create a highpass version. That
+  means before calling setLength (and then getSample) on this object, client code should have
   called getSample on the buffer object. */
   void setModulationBuffer(rsDelayBuffer<T>* newBuffer) { sigBuf = newBuffer; }
   // maybe rename to setSignalBuffer or setInputBuffer - it's used for other things, too
@@ -117,9 +117,9 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Internals */
 
-  /** Accepts a new input sample and updates our internal buffers accordingly. This will have 
-  (conceptually) the effect that the oldest input sample will be remvoved from the double-heap and 
-  the new input will be inserted (what actually happens is a replacement, but that's an 
+  /** Accepts a new input sample and updates our internal buffers accordingly. This will have
+  (conceptually) the effect that the oldest input sample will be remvoved from the double-heap and
+  the new input will be inserted (what actually happens is a replacement, but that's an
   implementation detail). */
   void storeInput(T x)
   {
@@ -132,9 +132,9 @@ protected:
     //rsAssert(isStateConsistent(), "inconsistent state");
   }
 
-  /** Produces the current ouput sample by reading out the largest of the small values and the 
-  smallest of the large values and forming a linear combination. Has been factored out from 
-  getSample because it's also needed for modulating the length when no delay-buffer of old samples 
+  /** Produces the current ouput sample by reading out the largest of the small values and the
+  smallest of the large values and forming a linear combination. Has been factored out from
+  getSample because it's also needed for modulating the length when no delay-buffer of old samples
   is available (i.e. when sigBuffer == nullptr because the user has not assigned it). */
   T readOutput()
   {
@@ -145,15 +145,15 @@ protected:
   }
 
   /** This is called from setLengthAndReadPosition when its "hard" parameter is false. Instead of
-  setting up a new length and position immediately and doing a hard reset, this function adapts the 
+  setting up a new length and position immediately and doing a hard reset, this function adapts the
   sizes of the two heaps by removing or inserting data into the heaps and/or moving data between
-  the small and large heap. If N is the number of nodes that need to be removed/moved/inserted, 
+  the small and large heap. If N is the number of nodes that need to be removed/moved/inserted,
   the cost of this function is O(N*log(N)). */
   void modulateLengthAndReadPosition(int newLength, int newPosition);
 
-  /** Moves the first (smallest) value of the large heap over to the small heap, such that it 
-  becomes the new largest element of the small heap. This decreases the size of the large heap by 
-  one and increases the size of the small heap by one. The return value informs whether this was 
+  /** Moves the first (smallest) value of the large heap over to the small heap, such that it
+  becomes the new largest element of the small heap. This decreases the size of the large heap by
+  one and increases the size of the small heap by one. The return value informs whether this was
   successful - it will fail when the large heap has only one element in it because both heaps must
   always contain at least one element. */
   bool moveFirstLargeToSmall();
@@ -165,25 +165,25 @@ protected:
   happens to be. This will also shrink the circular buffer by one. */
   void discardOldestSample();
 
-  /** Adds a sample to one of the heaps as new oldest sample. The sample to be added is either a 
-  true older sample (if the user has assigned our past-signal-values buffer via 
-  setModulationBuffer and correctly keeps it up to date) or else, we will just heuristically invent 
-  a sample value to insert (choosing the most recent output value for that). This will also grow 
+  /** Adds a sample to one of the heaps as new oldest sample. The sample to be added is either a
+  true older sample (if the user has assigned our past-signal-values buffer via
+  setModulationBuffer and correctly keeps it up to date) or else, we will just heuristically invent
+  a sample value to insert (choosing the most recent output value for that). This will also grow
   the circular buffer by one. */
   void addOlderSample();
 
-  /** Wraparound for the bufIdx (handles only forward wraparound, i.e. input should be 
+  /** Wraparound for the bufIdx (handles only forward wraparound, i.e. input should be
   non-negative). */
   int wrap(int i) { rsAssert(i >= 0); return i % (int)keyBuf.size(); }
   // todo: optimize using a bitmask -> restrict buffer-sizes to powers of two
- 
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  /** A node stores an incoming signal value together with its index in the circular buffer. The 
+  /** A node stores an incoming signal value together with its index in the circular buffer. The
   circular buffer, in turn, stores the double-heap key of the node. Via these links, we can refer
-  back and forth from buffer-indices and node-keys. The "less-than" comparison is based on the 
+  back and forth from buffer-indices and node-keys. The "less-than" comparison is based on the
   signal value. */
   struct Node
   {
@@ -192,15 +192,15 @@ protected:
 
     Node(T v = T(0), int i = 0) { value = v; bufIdx = i; }
 
-    bool operator<(const Node& b) const 
+    bool operator<(const Node& b) const
     { return this->value < b.value; }
 
-    bool operator==(const Node& b) const 
+    bool operator==(const Node& b) const
     { return this->value == b.value && this->bufIdx == b.bufIdx; }
   };
 
   /** The swapping for nodes must do the actual swap of a and b as usual but also let the circular
-  buffer keep track of what gets swapped. */ 
+  buffer keep track of what gets swapped. */
   void swapNodes(Node& a, Node& b)
   {
     rsSwap(a, b);
@@ -216,7 +216,7 @@ protected:
   int L      = 2;    // total length of filter
   int p      = 1;    // readout position, 1 <= p <= L-1
   T   w      = T(1); // weight for smallest large value in the linear interpolation
-  // Maybe use size_t instead of int. That would be consistent with rsMovingMaximumFilter and 
+  // Maybe use size_t instead of int. That would be consistent with rsMovingMaximumFilter and
   // better compatible with rsDelayBuffer - but: size_t is 64 bit and int only 32, so int has lower
   // memory consumption...so maybe not..but wait: we dont use arrays of this type, so that may be
   // irrelevant. For the heap-keys, we'll use int anyway.
@@ -235,7 +235,7 @@ protected:
 //=================================================================================================
 
 /** This is a more user-friendly, audio-oriented, plugin-ready wrapper around the core algorithm
-of the moving quantile filter. It uses a more intuitive, audio-friendly parametrization and also 
+of the moving quantile filter. It uses a more intuitive, audio-friendly parametrization and also
 adds features such as highpass mode, .... */
 
 template<class T>
@@ -244,11 +244,11 @@ class rsQuantileFilter
 
 public:
 
-  rsQuantileFilter()
+  rsQuantileFilter() : dirty(true)
   {
     allocateResources();
     core.setModulationBuffer(&delayLine);
-    dirty = true;
+    //dirty = true;
     //updateInternals(); // hangs - why?
   }
 
@@ -281,30 +281,30 @@ public:
     dirty = true;
   }
 
-  /** Sets the length of the filter in seconds, i.e. the time interval of the samples that we 
+  /** Sets the length of the filter in seconds, i.e. the time interval of the samples that we
   look at. */
   void setLength(T newLength) { length = newLength; dirty = true; }
 
-  /** Sets some sort of pseudo cutoff frequency which we just define as the reciprocal of the 
-  length. The filter is actually very nonlinear, so the notion of a cutoff frequency or even just 
-  of a frequency response does not really apply. Instead, if you consider a periodic waveform and 
+  /** Sets some sort of pseudo cutoff frequency which we just define as the reciprocal of the
+  length. The filter is actually very nonlinear, so the notion of a cutoff frequency or even just
+  of a frequency response does not really apply. Instead, if you consider a periodic waveform and
   pass it through a quantile filter whose length matches the wave's period, the output will be a
-  constant. This can be understood from the fact, that the array of sorted input values will be 
+  constant. This can be understood from the fact, that the array of sorted input values will be
   the same, no matter, at which phase you pick the starting point of the cycle. (todo: verify this
   empricially) */
   void setFrequency(T newFrequency) { setLength(T(1) / newFrequency); }
 
-  /** Sets the quantile that should be extracted. 0.0 gives the minimum, 1.0 gives the maximum, 
+  /** Sets the quantile that should be extracted. 0.0 gives the minimum, 1.0 gives the maximum,
   0.5 gives the median, 0.25 the lower quartile, 0.75 the upper quartile, etc. */
   void setQuantile(T newQuantile1) { quantile = newQuantile1; dirty = true; }
 
-  /** Sets the gain (as raw scale factor) for the actual filter output (which is lowpass'ish in 
+  /** Sets the gain (as raw scale factor) for the actual filter output (which is lowpass'ish in
   character, which is why we call this parameter lowpass gain). */
   void setLowpassGain(T newGain) { loGain = newGain; }
 
-  /** Sets the gain for a highpass signal that is obtained by subtracting the (lowpass) filter 
-  output from an appropriately delayed input signal. Highpass and lowpass gain can be used to 
-  obtain different response types. The default is lo = 1, hi = 0 giving a lowpass filter, 
+  /** Sets the gain for a highpass signal that is obtained by subtracting the (lowpass) filter
+  output from an appropriately delayed input signal. Highpass and lowpass gain can be used to
+  obtain different response types. The default is lo = 1, hi = 0 giving a lowpass filter,
   lo = 0, hi = 1 gives a highpass filter, lo = 1, hi = 1 gives a pure delay, lo = 1, hi = 2 gives
   a high frequency boost, etc. */
   void setHighpassGain(T newGain) { hiGain = newGain; }
@@ -318,7 +318,7 @@ public:
   /** Returns the delay that this filter introduces (in samples). */
   T getDelayInSamples() const { return delay; }
   // hmm...actually, the returned value is not yet up to date when this is called before getSample
-  // because getSample may recalculate the delay before actually producing a sample - so if client 
+  // because getSample may recalculate the delay before actually producing a sample - so if client
   // code calls this before getSample, it will always work with a value that is lagging behind
   // by one sample...hmmm...if client code wants to avoid this, it could call updateInternals
   // itself before calling getSample...but that's very inconvenient, API wise
@@ -335,9 +335,9 @@ public:
     delayLine.getSample(x);
     // Must be called *before* updateInternals because in updateInternals, we may modulate the
     // length and the artifact-avoidance strategy for the modulation assumes that we have already
-    // called getSample on the delay buffer. At this point, we are not (yet) interested in the 
-    // output of the delayline - we will retrieve its ouput later via random access using the [] 
-    // operator. Actually, it would not make sense to try to retrieve an output sample before 
+    // called getSample on the delay buffer. At this point, we are not (yet) interested in the
+    // output of the delayline - we will retrieve its ouput later via random access using the []
+    // operator. Actually, it would not make sense to try to retrieve an output sample before
     // calling updateInternals anyway, because that call also updates the delay which we need to
     // read out the delayline at the correct position.
 
@@ -346,8 +346,8 @@ public:
     T yH = delayLine[delayScl*delay] - yL;  // highpass part
     return loGain * yL + hiGain * yH;
   }
-  // maybe factor out a function to produce lowpass and highpass getSampleLoHi or something at the 
-  // same time - client code may find that useful - or mayb getOutputs to be consistent with 
+  // maybe factor out a function to produce lowpass and highpass getSampleLoHi or something at the
+  // same time - client code may find that useful - or mayb getOutputs to be consistent with
   // rsStateVariableFilter
 
   /** Resets the filter into its initial state. */
@@ -358,8 +358,8 @@ public:
     //y = T(0);
   }
 
-  /** Updates the internal algorithm parameters and embedded objects according to the user 
-  parameters. This is called in getSample, if the state is dirty but sometimes it may be 
+  /** Updates the internal algorithm parameters and embedded objects according to the user
+  parameters. This is called in getSample, if the state is dirty but sometimes it may be
   convenient to call it from client code too */
   virtual void updateInternals()
   {
@@ -375,7 +375,7 @@ public:
 
 protected:
 
-  /** Computes filter algorithm parameters length L, readout point p (both in samples), weight 
+  /** Computes filter algorithm parameters length L, readout point p (both in samples), weight
   w for the linear interpolation and the delay d from user parameters length (in seconds), quantile
   (normalized 0..1) and sampleRate. */
   static void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w, T* d);
@@ -410,11 +410,11 @@ protected:
 };
 
 // Notes:
-// I'm trying to make the class thread-safe by itself in a typical plugin scenario by using an 
+// I'm trying to make the class thread-safe by itself in a typical plugin scenario by using an
 // atomic flag to indicate that internal algorithm parameters need to be re-calculated, which is
 // then done in getSample (supposed to be called on the audio thread). However, this does not apply
-// to the loGain and hiGain variables - they are set directly. However, if the type T is a type 
-// for which load and store operations actually are atomic, modifying them (from a different 
+// to the loGain and hiGain variables - they are set directly. However, if the type T is a type
+// for which load and store operations actually are atomic, modifying them (from a different
 // thread, like the gui thread) should be safe, too. I'm not yet sure what to do - if i use
 // std::atomic<T>, it may lock mutexes which is also undesirable...so, even though i attempt to
 // give thread safety, at the time being, it's better to assume, it's not and client code should
