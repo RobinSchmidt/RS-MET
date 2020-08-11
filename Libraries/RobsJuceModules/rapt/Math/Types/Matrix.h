@@ -4,7 +4,7 @@
 
 /** A class for representing 2x2 matrices. They are treated as a special case because a lot of
 things which are impractical in the general case can be done for the 2x2 case. For example, it's
-possible to compute eigenvalues and eigenvectors via closed form formulas where in the general 
+possible to compute eigenvalues and eigenvectors via closed form formulas where in the general
 case numerical algorithms are needed. */
 
 template<class T>
@@ -79,8 +79,8 @@ public:
   /** Computes n-th power of matrix using closed form formula from:
   https://people.math.carleton.ca/~williams/papers/pdf/175.pdf , Eq. 2
   https://distill.pub/2017/momentum/ (section "Dynamics of momentum")
-  ...it has been tested with real matrices with real eigenvalues (distinct and equal) - but what 
-  about real matrices with complex eigenvalues? The function won't work for them, i guess - try 
+  ...it has been tested with real matrices with real eigenvalues (distinct and equal) - but what
+  about real matrices with complex eigenvalues? The function won't work for them, i guess - try
   it!  */
   rsMatrix2x2<T> getPower(int n)
   {
@@ -168,9 +168,9 @@ inline rsMatrix2x2<T> operator*(const T& s, const rsMatrix2x2<T>& A)
 //=================================================================================================
 
 /** This is a class for treating raw C-arrays as matrices. It does not store/own the actual matrix
-data. It just acts as wrapper around an existing array for conveniently accessing and manipulating 
+data. It just acts as wrapper around an existing array for conveniently accessing and manipulating
 matrix elements via row/column indicies using the () operator with two integers. */
-// todo: 
+// todo:
 // -create benchmarks for and optimize elementary row- and column operations
 
 template<class T>
@@ -185,7 +185,7 @@ public:
   /** Default constructor. */
   rsMatrixView() {}
 
-  /** Creates a matrix view with the given number of rows and columns for the given raw array of 
+  /** Creates a matrix view with the given number of rows and columns for the given raw array of
   values in "data". The view will *not* take ownership over the data. */
   rsMatrixView(int numRows, int numColumns, T* data)
   {
@@ -199,7 +199,7 @@ public:
   /** \name Setup */
 
   /** Re-interprets the arrangement of the underlying array as having the new given numbers of rows
-  and columns. Their product must remain the same, though. For example, you can reshape a 3x4 
+  and columns. Their product must remain the same, though. For example, you can reshape a 3x4
   matrix into 4x3, 2x6, 6x2, 1x12, 12x1 but nothing else. ..todo: maybe lift that restriction? */
   void setShape(int newNumRows, int newNumColumns)
   {
@@ -207,10 +207,10 @@ public:
     numRows = newNumRows;
     numCols = newNumColumns;
   }
-  // maybe rename to setShape for consistency with the rest of the library...otoh, reshape is 
+  // maybe rename to setShape for consistency with the rest of the library...otoh, reshape is
   // consistent with NumPy
 
-  /** Resets the number of rows and columns to zero and the dataPointer to nullptr. Should be called 
+  /** Resets the number of rows and columns to zero and the dataPointer to nullptr. Should be called
   whenever you need to invalidate our pointer member. */
   void reset()
   {
@@ -222,12 +222,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  /** Returns true, iff matrices A and B have the same number of rows and columns, such that 
+  /** Returns true, iff matrices A and B have the same number of rows and columns, such that
   their sum A+B and difference A-B can be formed. */
   static bool areSameShape(const rsMatrixView<T>& A, const rsMatrixView<T>& B)
   { return A.numRows == B.numRows && A.numCols == B.numCols; }
 
-  /** Returns true, iff the matrices A and B have dimensions, such that the matrix-matrix product 
+  /** Returns true, iff the matrices A and B have dimensions, such that the matrix-matrix product
   A*B can be formed. */
   static bool areMultiplicable(const rsMatrixView<T>& A, const rsMatrixView<T>& B)
   { return A.numCols == B.numRows; }
@@ -235,7 +235,7 @@ public:
   /** Returns true, iff the rhs matrix is equal to this matrix with an optional tolerance. */
   bool equals(const rsMatrixView<T>& rhs, T tolerance = T(0)) const
   {
-    return areSameShape(*this, rhs) 
+    return areSameShape(*this, rhs)
       && rsArrayTools::almostEqual(dataPointer, rhs.dataPointer, getSize(), tolerance);
   }
 
@@ -266,7 +266,7 @@ public:
   /** Returns true, iff this matrix is either a row-vector or column-vector. */
   bool isVector() const { return isRowVector() || isColumnVector(); }
 
-  /** Returns true, iff this matrix is a square matrix, i.e. has the same number of rows and 
+  /** Returns true, iff this matrix is a square matrix, i.e. has the same number of rows and
   columns. */
   bool isSquare() const { return numRows == numCols; }
 
@@ -280,9 +280,9 @@ public:
   bool isZero() const { return rsArrayTools::isAllZeros(dataPointer, getSize()); }
   // todo: allow for a tolerance ..or maybe have a function isAlmostZero for that
 
-  bool isZero(T tol) const 
-  { 
-    return rsArrayTools::isAllZeros(dataPointer, getSize(), tol); 
+  bool isZero(T tol) const
+  {
+    return rsArrayTools::isAllZeros(dataPointer, getSize(), tol);
   }
 
   bool isRowZero(int rowIndex, T tol) const
@@ -342,13 +342,13 @@ public:
   /** Returns a const pointer to a given row. */
   const T* getRowPointerConst(int rowIndex) const { return &dataPointer[rowIndex*numCols]; }
 
-  /** Return the number of data entries that overlap in matrix-views A and B. For many 
-  computations, it is required, that A and B have non-overlapping data, so this function can be 
+  /** Return the number of data entries that overlap in matrix-views A and B. For many
+  computations, it is required, that A and B have non-overlapping data, so this function can be
   used to check, if those operations can be done on two particular matrices. */
   /*
   static size_t getDataOverlap(const rsMatrixView<T>& A, const rsMatrixView<T>& B)
   {
-    if(B.dataPointer < A.dataPointer)  // A's data must start before or at the same memory 
+    if(B.dataPointer < A.dataPointer)  // A's data must start before or at the same memory
       return getDataOverlap(B, A);     // location as B's data - otherwise use swapped arguments
 
     size_t safeStartForB = A.dataPointer + A.getSize(); // 1 position after A's last slot
@@ -391,8 +391,8 @@ public:
   /** Sets all matrix elements to zero. */
   void setToZero() { rsArrayTools::fillWithZeros(dataPointer, getSize()); }
 
-  /** Sets the matrix elements to the identity matrix, i.e. fills the main diagonal with ones and 
-  the rest with zeros. If the matrix is not square, then the overhanging portion to the right or 
+  /** Sets the matrix elements to the identity matrix, i.e. fills the main diagonal with ones and
+  the rest with zeros. If the matrix is not square, then the overhanging portion to the right or
   bottom will be all zeros as well (-> verify this). */
   void setToIdentity() { setToZero(); setDiagonalValues(T(1)); }
   // needs test
@@ -413,7 +413,7 @@ public:
   }
   // needs test
 
-  /** Sets the elements on the main diagonal to the values in the given array which must be of 
+  /** Sets the elements on the main diagonal to the values in the given array which must be of
   length min(numRows, numColumns). */
   void setDiagonalValues(T* values)
   {
@@ -448,11 +448,11 @@ public:
     for(int j = 0; j < numCols; ++j)
       rsSwap((*this)(i1, j), (*this)(i2, j));
   }
-  // may be optimized by using fixed base-pointers to each row and loop increment 1 - no 
+  // may be optimized by using fixed base-pointers to each row and loop increment 1 - no
   // recompuation of the row-start in te iterations - the (i,j) operator always does a
   // multiplication
 
-  /** Adds a multiple of the row with index iSrc to the row with index iDst. The multiplier is 
+  /** Adds a multiple of the row with index iSrc to the row with index iDst. The multiplier is
   given by weight. */
   void addWeightedRowToOther(int iSrc, int iDst, T weight)
   {
@@ -462,8 +462,8 @@ public:
   }
   // optimize using base-pointers
 
-  /** Like above but does it only for the column-indices in between minCol and maxCol (both 
-  ends inclusive). This is mainly for optimizing row operations when it is known that beyond 
+  /** Like above but does it only for the column-indices in between minCol and maxCol (both
+  ends inclusive). This is mainly for optimizing row operations when it is known that beyond
   minCol...maxCol only zeros occur in the source-row (this occurs in Gaussian elimination). */
   void addWeightedRowToOther(int iSrc, int iDst, T weight, int minCol, int maxCol)
   {
@@ -471,7 +471,7 @@ public:
     rsAssert(isValidColumnIndex(minCol) && isValidColumnIndex(maxCol), "column index out of range");
 
     //rsAssert(minCol >= 0 && maxCol < numCols, "column index out of range");
-    // minCol > numCols is allowed - in this case, the loop is not entered (Gaussian elimination 
+    // minCol > numCols is allowed - in this case, the loop is not entered (Gaussian elimination
     // may produce such values)
 
     for(int j = minCol; j <= maxCol; ++j)
@@ -487,8 +487,8 @@ public:
     for(int i = 0; i < numRows; ++i)
       (*this)(i, columnIndex) *= scaler;
   }
-  // needs test, maybe use rsArrayTools::scale (needs to be generalized to accept an optional 
-  // stride parameter that defaults to 1 - but generalizing like that may slow it down for the 
+  // needs test, maybe use rsArrayTools::scale (needs to be generalized to accept an optional
+  // stride parameter that defaults to 1 - but generalizing like that may slow it down for the
   // common case -> benchmark)
 
   /** Swaps the two columns with given indices j1 and j2. */
@@ -507,14 +507,14 @@ public:
     for(int i = 0; i < numRows; ++i)
       (*this)(i, jDst) += weight * (*this)(i, jSrc);
   }
-  // can also be optimized with something like: 
+  // can also be optimized with something like:
   // T* s = flatIndex(0, jSrc);
   // T* d = flatIndex(0, jDst);
   // int stride = numCols
   // for(int i = 0; i < numRows; ++i) {
   //   *d += weight * *s; s += stride; d += stride; }
 
-  // optimize at least the elementary row-operations because these occur frequently in matrix 
+  // optimize at least the elementary row-operations because these occur frequently in matrix
   // algorithms like Gaussian elimination
 
 
@@ -564,7 +564,7 @@ public:
         for(int k = 0; k < A.numCols; k++)
           (*C)(i, j) += A.at(i, k) * B.at(k, j); }}
   }
-  // maybe implement matrixDivide: A/B := A * inverse(B) 
+  // maybe implement matrixDivide: A/B := A * inverse(B)
 
 
   /** Computes the matrix product C = A^T * B. */
@@ -590,12 +590,12 @@ public:
   // adapt code from rsMatrixTools
 
 
-  /** Fills the matrix B with the transpose of matrix A. Assumes that A and B have compatible 
+  /** Fills the matrix B with the transpose of matrix A. Assumes that A and B have compatible
   shapes. Matrix A and B must point to non-overlapping arrays */
   static void transpose(const rsMatrixView<T>& A, rsMatrixView<T>* B)
   {
-    //rsAssert(A.dataPointer != B->dataPointer, "can't be used in place"); 
-    //rsAssert(getDataOverlap(A, *B) == 0, "can't be used with overlapping matrices"); 
+    //rsAssert(A.dataPointer != B->dataPointer, "can't be used in place");
+    //rsAssert(getDataOverlap(A, *B) == 0, "can't be used with overlapping matrices");
     rsAssert(A.numRows == B->numCols);
     rsAssert(A.numCols == B->numRows);
     for(int i = 0; i < A.numRows; i++)
@@ -614,8 +614,8 @@ public:
         rsSwap((*A)(i,j), (*A)(j,i));
   }
 
-  /** Computes the Kronecker product between matrices A and B and stores the result in C. Assumes, 
-  that C has the right dimensions. For more info, see the documentation of 
+  /** Computes the Kronecker product between matrices A and B and stores the result in C. Assumes,
+  that C has the right dimensions. For more info, see the documentation of
   rsMatrix::getKroneckerProduct. */
   static void kroneckerProduct(
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
@@ -631,8 +631,8 @@ public:
             (*C)(startRow+ib, startCol+jb) = A.at(ia,ja) * B.at(ib, jb); }}}}
   }
 
-  /** Computes the matrix-vector product y = A*x of this matrix with the given vector x and stores 
-  the result in y where x and y are given as raw arrays. The length of x must match the number of 
+  /** Computes the matrix-vector product y = A*x of this matrix with the given vector x and stores
+  the result in y where x and y are given as raw arrays. The length of x must match the number of
   columns and the length of y must match the number of rows. */
   void productWith(const T* x, T* y) const
   {
@@ -643,7 +643,7 @@ public:
         y[i] += at(i, j) * x[j]; }
   }
 
-  /** Convenience function to compute matrix-vector product y = A*x, taking a raw array for x as 
+  /** Convenience function to compute matrix-vector product y = A*x, taking a raw array for x as
   input and producing the result as a std::vector. */
   std::vector<T> productWith(const T* x) const
   { std::vector<T> y(getNumRows()); productWith(x, &y[0]); return y; }
@@ -697,10 +697,10 @@ protected:
 
 //=================================================================================================
 
-/** This is a class for representing matrices and doing mathematical operations with them. It's 
-implemented as subclass of rsMatrixView and stores the actual matrix data in a std::vector. Copy- 
-and move constructors and -assignment operators have been implemented in order to avoid 
-unnecessary heap allocations in arithmetic expressions with matrices (return value copy 
+/** This is a class for representing matrices and doing mathematical operations with them. It's
+implemented as subclass of rsMatrixView and stores the actual matrix data in a std::vector. Copy-
+and move constructors and -assignment operators have been implemented in order to avoid
+unnecessary heap allocations in arithmetic expressions with matrices (return value copy
 elision). */
 
 template<class T>
@@ -723,7 +723,7 @@ public:
   rsMatrix(int numRows, int numColumns, const T* data)
   {
     setSize(numRows, numColumns);
-    rsArrayTools::copy(data, getDataPointer(), getSize());
+    rsArrayTools::copy(data, this->getDataPointer(), getSize());
   }
 
   /** Constructor to create a matrix from an array-of-arrays - mostly for conveniently converting
@@ -752,7 +752,7 @@ public:
     updateDataPointer();
   }
 
-  /** Creates matrix from an unnamed/temporary/rvalue std::vector - convenient to initialize 
+  /** Creates matrix from an unnamed/temporary/rvalue std::vector - convenient to initialize
   elements. You can initialize matrices like this:
     rsMatrix<double> A(2, 3, {1.,2.,3., 4.,5.,6.});   */
   rsMatrix(int numRows, int numColumns, std::vector<T>&& newData) : data(std::move(newData))
@@ -822,11 +822,11 @@ public:
 
 
   /** Creates a zero matrix with given number of rows and columns. */
-  static rsMatrix<T> zero(int numRows, int numColumns) 
+  static rsMatrix<T> zero(int numRows, int numColumns)
   { rsMatrix<T> Z(numRows, numColumns); Z.setToZero(); return Z; }
 
   /** Creates an identity matrix of given size. */
-  static rsMatrix<T> identity(int size) 
+  static rsMatrix<T> identity(int size)
   { rsMatrix<T> E(size, size); E.setToIdentity(); return E; }
 
   // todo: diag(int size, T* data), diag(int size, T value)
@@ -865,16 +865,16 @@ public:
 
 
 
-  /** Transposes this matrix, i.e. the rows become columns and vice versa. Avoids reallocation in 
+  /** Transposes this matrix, i.e. the rows become columns and vice versa. Avoids reallocation in
   case of square-matrices and row- and column vectors. */
   void transpose()
   {
     if(isSquare()) { rsMatrixView<T>::transposeSquare(this); return; }
-    if(isVector()) { rsSwap(numRows, numCols); return; } 
+    if(isVector()) { rsSwap(this->numRows, this->numCols); return; }
 
     std::vector<T> v(getSize());    // the general case needs reallocation...
     numHeapAllocations++;
-    rsMatrixView<T> B(numCols, numRows, &v[0]);
+    rsMatrixView<T> B(this->numCols, this->numRows, &v[0]);
     rsMatrixView<T>::transpose(*this, &B);
     rsSwap(numRows, numCols);
     data = v;
@@ -890,7 +890,7 @@ public:
   /** Returns a const reference to the std::vector that stores the data. Mostly for unit tests. */
   const std::vector<T>& getDataVectorConst() const { return data; }
 
-  // todo: getDeterminant, getInverse, getFrobeniusNorm, get[Other]Norm, isPositiveDefinite, 
+  // todo: getDeterminant, getInverse, getFrobeniusNorm, get[Other]Norm, isPositiveDefinite,
   // getEigenvalues, getTrace, isUpperLeftTriangular, getTransposed, getConjugateTransposed
 
 
@@ -904,14 +904,14 @@ public:
               |a31*B a32*B|
 
   Where each entry aij*B is a submatrix of dimensions of B with the entries of B scaled by the
-  respective element from A. This product is also sometimes called tensor product, but i think, 
+  respective element from A. This product is also sometimes called tensor product, but i think,
   Kronecker product is more appropriate, as it explicitly deals with matrices rather than vector
-  spaces. Also, in the context of tensor algebra, the tensor product of two rank-2 tensors 
+  spaces. Also, in the context of tensor algebra, the tensor product of two rank-2 tensors
   (i.e. matrices) would give a rank-4 tensor (with 4 indicies), whereas this product here still has
   just 2 indices - it is again a matrix and not some 4-dimensional "block". See here:
   https://en.wikipedia.org/wiki/Kronecker_product
   https://en.wikipedia.org/wiki/Tensor_product     */
-  static rsMatrix<T> getKroneckerProduct(const rsMatrix<T>& A, const rsMatrix<T>& B) 
+  static rsMatrix<T> getKroneckerProduct(const rsMatrix<T>& A, const rsMatrix<T>& B)
   {
     rsMatrix<T> C(A.numRows*B.numRows, A.numCols*B.numCols);
     rsMatrixView<T>::kroneckerProduct(A, B, &C);
@@ -921,11 +921,11 @@ public:
   /** Returns a matrix that is the element-wise product of this matrix an the right operand. */
   rsMatrix<T> getElementwiseProduct(const rsMatrixView<T>& rightOperand) const
   {
-    rsMatrix<T> result(numRows, numCols);
+    rsMatrix<T> result(this->numRows, this->numCols);
     rsMatrixView<T>::elementwiseMultiply(*this, rightOperand, &result);
     return result;
   }
-  // it's intentional that the rsMatrixView method is called multiply and this here is called 
+  // it's intentional that the rsMatrixView method is called multiply and this here is called
   // product - the view method just does something (-> use a verb), the method here returns an
   // objcet (-> use a noun)
 
@@ -934,7 +934,7 @@ public:
   /** Returns a transposed version of this matrix. */
   rsMatrix<T> getTranspose() const
   {
-    rsMatrix<T> t(numCols, numRows);
+    rsMatrix<T> t(this->numCols, this->numRows);
     rsMatrixView<T>::transpose(*this, &t);
     return t;
   }
@@ -980,12 +980,12 @@ public:
 
   /** Multiplies two matrices: C = A * B. */
   rsMatrix<T> operator*(const rsMatrix<T>& B) const
-  { 
+  {
     //if(!areMultiplicable(*this, B))
     //  return rsMatrix<T>(0, 0); // return empty matrix when attempting to multiply incompatible matrices
-    rsMatrix<T> C(this->numRows, B.numCols); 
-    this->matrixMultiply(*this, B, &C); 
-    return C; 
+    rsMatrix<T> C(this->numRows, B.numCols);
+    this->matrixMultiply(*this, B, &C);
+    return C;
   }
   // maybe it should return an empty matrix, when attempting to multiply incompatible matrices
   // ...or maybe we should throw an exception in such cases?
@@ -999,10 +999,10 @@ public:
   rsMatrix<T>& operator-=(const rsMatrix<T>& B)
   { this->subtract(*this, B, this); return *this; }
 
-  /** Multiplies this matrix by another and returns the result. This is not an in-place process, i.e. it 
+  /** Multiplies this matrix by another and returns the result. This is not an in-place process, i.e. it
   will allocate temporary heap-memory. */
   rsMatrix<T>& operator*=(const rsMatrix<T>& B)
-  { *this = *this * B; return *this; } 
+  { *this = *this * B; return *this; }
 
   /** Multiplies this matrix with a scalar s: B = A*s. The scalar is to the right of the matrix. */
   rsMatrix<T> operator*(const T& s) const
@@ -1020,9 +1020,9 @@ public:
 
   /** Multiplies a matrix with a std::vector to give another vector: y = A * x. */
   std::vector<T> operator*(const std::vector<T>& x) const
-  { 
-    rsAssert((int) x.size() == numCols, "vector incompatible for left multiply by matrix");
-    std::vector<T> y(numRows);
+  {
+    rsAssert((int) x.size() == this->numCols, "vector incompatible for left multiply by matrix");
+    std::vector<T> y(this->numRows);
     for(int i = 0; i < numRows; i++) {
       y[i] = T(0);
       for(int j = 0; j < numCols; j++)
@@ -1072,8 +1072,8 @@ inline rsMatrix<T> operator*(const T& s, const rsMatrix<T>& A)
 
 /** Multiplies a row vector x with a matrix: y = x * A. The result y is another row vector. */
 template<class T>
-std::vector<T> operator*(const std::vector<T>& x, const rsMatrix<T>& A) 
-{ 
+std::vector<T> operator*(const std::vector<T>& x, const rsMatrix<T>& A)
+{
   rsAssert((int) x.size() == A.getNumRows(), "vector incompatible for right multiply by matrix");
   std::vector<T> y(A.getNumColumns());
   for(int i = 0; i < A.getNumColumns(); i++) {
@@ -1137,8 +1137,8 @@ rsMatrix<TOut> matrixFunction(const rsMatrix<TIn>& A, F func)
 //  -the little storage overhead of std::vector becomes negligible for all but the smallest
 //   matrices - on the other hand, very small matrices may be common
 //  -maybe use std::vector in debug builds and new/delete in release builds
-//  -maybe the numHeapAllocations variable can also be used only in debug builds? i guess we may 
-//   need to define some function incrementAllocationCounter that reduces to no-op in release 
+//  -maybe the numHeapAllocations variable can also be used only in debug builds? i guess we may
+//   need to define some function incrementAllocationCounter that reduces to no-op in release
 //   builds
 //  -in expressions like rsMatrix<float> C = B*(A + B) + B; we want to avoid copying the data
 //   unnecessarily - i.e. avoid that the temporaries that occur inside this expression use heap
@@ -1155,14 +1155,14 @@ rsMatrix<TOut> matrixFunction(const rsMatrix<TIn>& A, F func)
 //   return it to the caller, there would be *another* (copy?)constructor call - ...right? and that
 //   second call is what we want to get rid of
 
-// ToDo: 
+// ToDo:
 //  -maybe rename to rsMatrixOnHeap and have a similar class rsMatrixOnStack (maybe using
-//   std::dynarray instead of std::vector)...or by defining the size via template parameters at 
+//   std::dynarray instead of std::vector)...or by defining the size via template parameters at
 //   compile time ...maybe the std::vector vs std::dynarrray distinction can determined by passing
 //   the storage container as template argument like so:
 //   template<class ElemType, class ContainerType>
 //   class rsMatrix { ContainerType<ElemType> data; };
-//  -maybe make subclasses rsRowVector, rsColumnVector with a simplified element access operator 
+//  -maybe make subclasses rsRowVector, rsColumnVector with a simplified element access operator
 //   that takes only one index
 
 

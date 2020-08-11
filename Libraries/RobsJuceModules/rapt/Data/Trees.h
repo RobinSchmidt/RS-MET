@@ -5,7 +5,7 @@
 
 
 /** Baseclass for almost complete binary tree data-structures that are stored in an external array,
-i.e. this class acts like "view" or "wrapper" around an already existing data array. An sxamples is
+i.e. this class acts like "view" or "wrapper" around an already existing data array. An example is
 the subclass rsBinaryHeap.   */
 
 template<class T>
@@ -32,20 +32,20 @@ public:
     capacity = newCapacity;
   }
 
-  void setData(std::vector<T>& newData) 
+  void setData(std::vector<T>& newData)
   { setData(&newData[0], (int)newData.size(), (int)newData.size()); }
 
   /** Sets the comparison function to be used. If it implements "less-than", you'll get a max-heap
-  and if it implements "greater-than", you'll get a min-heap. By default, it's assigned to a 
+  and if it implements "greater-than", you'll get a min-heap. By default, it's assigned to a
   less-than function based on the < operator. */
-  void setCompareFunction(const std::function<bool(const T&, const T&)>& newFunc) 
+  void setCompareFunction(const std::function<bool(const T&, const T&)>& newFunc)
   { less = newFunc; }
   // maybe that should be in the subclass rsBinaryHeap - there may be trees with other properties
   // that do not rely on a less-than comparison
   // question: what happens, if we use a less-or-equal or greater-or-equal function for this?
 
   /** Sets the function used to swap two elements. By default, it just uses rsSwap but you may want
-  to do something extra whenever a swap takes place in certain circumstances, for example, to keep 
+  to do something extra whenever a swap takes place in certain circumstances, for example, to keep
   track of when items get moved around (see rsMovingQuantileFilter for an example). */
   void setSwapFunction(const std::function<void(T&, T&)>& newFunc)
   { swap = newFunc; }
@@ -58,36 +58,36 @@ public:
   int getSize() const { return size; }
   // maybe make a version that takes a node-index as parameter
 
-  /** Returns the capacity, i.e. the maxumum number of nodes that can be stored in the underlying 
+  /** Returns the capacity, i.e. the maxumum number of nodes that can be stored in the underlying
   data array. */
   int getCapacity() const { return capacity; }
 
-  /** Read/write access to elements. Warning: overwriting elements may destroy the defining 
-  property (heap, binary-search, etc.) of the tree, so it should be used only if you know what you 
+  /** Read/write access to elements. Warning: overwriting elements may destroy the defining
+  property (heap, binary-search, etc.) of the tree, so it should be used only if you know what you
   are doing. */
   T& operator[](int i)
   {
     rsAssert(i >= 0 && i < size, "Index out of range");
-    return data[i]; 
+    return data[i];
   }
 
   T& operator[](size_t i)
   {
     rsAssert((int) i < size, "Index out of range");
-    return data[i]; 
+    return data[i];
   }
 
   const T& at(int i) const
   {
     rsAssert((int) i < size, "Index out of range");
-    return data[i]; 
+    return data[i];
   }
   // get rid of the duplication
 
-  /** Returns true, if a is less than b as defined by our less function as et by 
+  /** Returns true, if a is less than b as defined by our less function as et by
   setCompareFunction. */
   bool isLess(const T& a, const T& b) const { return less(a, b); }
-  // maybe rename to comesBefore to reflect that the comparision function not necessarily a 
+  // maybe rename to comesBefore to reflect that the comparision function not necessarily a
   // less-than function
 
 
@@ -104,7 +104,7 @@ protected:
 
   /** Returns true, iff index i is the index of a left child node. */
   static inline bool isLeft(int i) { return i == left(parent(i)); }
-  // needs test - i think, we can do it simpler: the odd indices are left children and the even 
+  // needs test - i think, we can do it simpler: the odd indices are left children and the even
   // indices are right children...verify that
 
   /** Returns true, iff index i is the index of a right child node. */
@@ -127,7 +127,7 @@ protected:
 
 //=================================================================================================
 
-/** Class for representing an array A of data as binary heap with functions for establishing and 
+/** Class for representing an array A of data as binary heap with functions for establishing and
 maintaining the heap-property. To understand what that property means, we must first interpret the
 flat array A as a binary tree in the following way:
 
@@ -135,12 +135,12 @@ flat array A as a binary tree in the following way:
   reight(i) = 2*i + 2          right child index of index i
   parent(i) = (i-1) / 2        parent index of index i
 
-Given that, the heap property says that for every node with index i (except the root), it holds 
-that: 
+Given that, the heap property says that for every node with index i (except the root), it holds
+that:
 
   A[parent(i)] >= A[i]
 
-Instead of >=, we could have also used <=. In the former case, we are dealing with a max-heap in 
+Instead of >=, we could have also used <=. In the former case, we are dealing with a max-heap in
 the latter with a min-heap.
 
 References:
@@ -152,13 +152,14 @@ class rsBinaryHeap : public rsBinaryTree<T>
 
 public:
 
-  using rsBinaryTree::rsBinaryTree;  // inherit constructors
+  using rsBinaryTree::rsBinaryTree;  // inherit constructors - gcc complains
+  //using rsBinaryTree<T>::rsBinaryTree<T>;  // inherit constructors - doesn't work either
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  /** Returns true, iff the underyling data array currently satisfies the heap property. The 
-  function is meant mostly for testing and debugging purposes and is currently implemented 
+  /** Returns true, iff the underyling data array currently satisfies the heap property. The
+  function is meant mostly for testing and debugging purposes and is currently implemented
   recursively (i.e. inefficiently). */
   bool isHeap(int i = 0) const;
 
@@ -166,20 +167,20 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Data Manipulation */
 
-  /** Reorders the underlying data array so as to satisfy the heap property. Runs in O(N) time. 
-  From the code, it would appear as having O(N*log(N)) complexity because we call an O(log(N)) 
-  function inside the loop. However, the runtime of floatDown depends on the argument i in such 
+  /** Reorders the underlying data array so as to satisfy the heap property. Runs in O(N) time.
+  From the code, it would appear as having O(N*log(N)) complexity because we call an O(log(N))
+  function inside the loop. However, the runtime of floatDown depends on the argument i in such
   a way to give an overall O(N) behavior (see reference (1)). The memory complexity is O(1). */
   void buildHeap()
   {
-    for(int i = size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
+    for(int i = this->size/2-1; i >= 0; i--)  // or should we use (size-1)/2 ?
       floatDown(i);
   }
 
-  /** Replaces the element at index i with the new given element x and rebalances the heap to 
-  maintain the heap-property which amounts to floating the new element x up or down. The return 
+  /** Replaces the element at index i with the new given element x and rebalances the heap to
+  maintain the heap-property which amounts to floating the new element x up or down. The return
   value is the array index, where the new element actually ended up. */
-  int replace(int i, const T& x) { data[i] = x; return floatIntoPlace(i); }
+  int replace(int i, const T& x) { this->data[i] = x; return floatIntoPlace(i); }
 
   /** Inserts the element x into the heap at the correct position to maintain the heap-property and
   returns the array-index where it was inserted. */
@@ -191,27 +192,27 @@ public:
 
   /** Removes the first element from the heap */
   void removeFirst() { remove(0); }
-  // maybe we should have a special implementation to remove the front element? i think, in this 
+  // maybe we should have a special implementation to remove the front element? i think, in this
   // case, we may simply call floatDown instead of floatIntoPlace
 
   /** Removes the first element and returns it */
-  T extractFirst() { T first = data[0]; removeFirst(); return first; }
+  T extractFirst() { T first = this->data[0]; removeFirst(); return first; }
 
 
 protected:
 
   /** Functions to establish or maintain the heap-property of the underlying data array. */
 
-  /** Lets the node at index i float up or down into its appropriate place and returns the 
+  /** Lets the node at index i float up or down into its appropriate place and returns the
   resulting new array index. */
   int floatIntoPlace(int i) { return floatUp(floatDown(i)); }
 
-  /** Lets the node at index i float up the tree if its parent violates the heap property. Returns 
+  /** Lets the node at index i float up the tree if its parent violates the heap property. Returns
   the new array index. */
   int floatUp(int i);
 
-  /** Assuming that the subtrees rooted at left(i) and right(i) satisfy the heap property, this 
-  function makes sure that node/index i also satifies the heap property. If it doesn't already 
+  /** Assuming that the subtrees rooted at left(i) and right(i) satisfy the heap property, this
+  function makes sure that node/index i also satifies the heap property. If it doesn't already
   satisfy it, the function lets the value at i float down the subtree rooted at i. It has a time
   complexity of O(log(N)) and memory complexity of O(1). The return value is the new array index of
   the value that was previously located at index i. */
@@ -227,21 +228,21 @@ protected:
 //=================================================================================================
 
 /** Data structure that combines a max-heap with a min-heap for the purpose of splitting a bunch
-of values into two groups: the small values and the large values. The two heaps satisfy the 
-property that all values in the small heap are less-or-equal to all values in the large heap. The 
-small values are held in a max-heap such that the largest of them can be extracted in O(1) time and 
-the large values are held in a min-heap such that the smallest of them can also be extracted in 
-O(1) time. This facilitates to extract the median or other quantiles. 
+of values into two groups: the small values and the large values. The two heaps satisfy the
+property that all values in the small heap are less-or-equal to all values in the large heap. The
+small values are held in a max-heap such that the largest of them can be extracted in O(1) time and
+the large values are held in a min-heap such that the smallest of them can also be extracted in
+O(1) time. This facilitates to extract the median or other quantiles.
 
 Heap items can referred to by an integer that serves as key. We use the convention that when the
 sign bit is zero, the number is treated directly as index into the small heap and if it's one,
-it's an index into the large heap given by whatever number results when the sign bit is masked 
-away. But client code should really not care about this implementation detail and just treat the 
-keys as opaque identifiers. But note that any manipulations such as insertion, removal or 
+it's an index into the large heap given by whatever number results when the sign bit is masked
+away. But client code should really not care about this implementation detail and just treat the
+keys as opaque identifiers. But note that any manipulations such as insertion, removal or
 replacement of heap elements will invalidate the keys. If you want to refer to an item later, you
 need to keep track of how its key changes due to any heap operations that may have occured in
-the meantime. You may do this by implementing the swap function in a way that allow you to track 
-where an item floats to in the double-heap (and therefore, how its key changes). Basically, what 
+the meantime. You may do this by implementing the swap function in a way that allow you to track
+where an item floats to in the double-heap (and therefore, how its key changes). Basically, what
 you need to do when swapping items is to just swap your stored keys, too. For this, an item needs
 a way to know, where its key is stored. See rsQuantileFilterCore for an example how this may work.
 It's a bit tricky (and maybe you don't need that feature anyway). */
@@ -254,11 +255,11 @@ class rsDoubleHeap
 
 public:
 
-  rsDoubleHeap() 
+  rsDoubleHeap()
   {
     large.less = [](const T& a, const T& b)->bool { return b < a;  };
-    // large.less is actually a greater-than function which we obtain from the less-than operator 
-    // by swapping the arguments - this turns large into a min-heap rather than a max-heap. todo: 
+    // large.less is actually a greater-than function which we obtain from the less-than operator
+    // by swapping the arguments - this turns large into a min-heap rather than a max-heap. todo:
     // use the more generic name comp for "compare" in rsBinaryTree for the comparison function
   }
 
@@ -293,9 +294,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  bool isKeyValid(int k) const 
+  bool isKeyValid(int k) const
   {
-    if(isKeyInLargeHeap(k)) 
+    if(isKeyInLargeHeap(k))
       return toLargeHeapIndex(k) < large.getSize();
     else
       return k < small.getSize();
@@ -330,18 +331,18 @@ public:
     return large.at(0);  // does this make sense?
   }
 
-  /** Returns the last element from our max-heap of small values (this is not  necessarily the 
+  /** Returns the last element from our max-heap of small values (this is not  necessarily the
   smalles value, because in a heap, the order of the children of a node is unspecified). */
   T getLastSmallValue()     const { return small.at(small.getSize()-1); }
 
 
   T getLastLargeValue()     const { return large.at(large.getSize()-1); }
   // rename to getFirstSmallValue getLast.. the last is not necessarily the largest or smallest
-  // the children are both larger/smaller but their order is not defined...hmm - can we define 
+  // the children are both larger/smaller but their order is not defined...hmm - can we define
   // it to give a heap even more structure? could that be usefu?
 
 
-  /** Returns a preliminary key which is a key from the end of either the small or large heap. 
+  /** Returns a preliminary key which is a key from the end of either the small or large heap.
   This is needed in rsQuantileFilterCore for appending nodes. */
   int getPreliminaryKey(const T& newValue)
   {
@@ -352,11 +353,11 @@ public:
   }
   // maybe rename to something more meaningful - but what?
 
-  /** Returns true, iff this object satisfies the double-heap property. Meant mostly for testing 
+  /** Returns true, iff this object satisfies the double-heap property. Meant mostly for testing
   and debugging (is costly to call!). */
   bool isDoubleHeap()
   {
-    return small.isHeap() && large.isHeap()   
+    return small.isHeap() && large.isHeap()
       && !(small.less(large[0], small[0]));  // last condition means small[0] <= large[0]
   }
 
@@ -365,7 +366,7 @@ public:
   /** \name Data access */
 
   /** Replaces the element at given key with the given new value and returns the the key where the
-  new element actually ended up after doing all the floating up/down and potential swapping 
+  new element actually ended up after doing all the floating up/down and potential swapping
   business. */
   int replace(int key, const T& newValue);
 
@@ -389,8 +390,8 @@ public:
   }
 
   /** Element access via an integer key.  */
-  T& atKey(int k) 
-  { 
+  T& atKey(int k)
+  {
     rsAssert(isKeyValid(k), "Key out of range");
     if(isKeyInLargeHeap(k))
       return large[toLargeHeapIndex(k)];
@@ -399,7 +400,7 @@ public:
   }
 
   /** Element access via an integer index. If nS is the number of values in the small heap, indices
-  i < nS refer directly to samples in the small heap with that same small-heap-index i, whereas 
+  i < nS refer directly to samples in the small heap with that same small-heap-index i, whereas
   indices >= nS are interpreted as large-heap-index i-nS into the large heap. */
   T& atIndex(int i)
   {
@@ -416,24 +417,24 @@ public:
   int moveFirstLargeToSmall() { T e = large.extractFirst(); return small.insert(e); }
   // hmm - return value should be always 0 anyway
 
-  int moveFirstSmallToLarge() 
+  int moveFirstSmallToLarge()
   { T e = small.extractFirst(); return large.insert(e) + small.getSize(); }
   // return value should always be small.getSize(), size measured after the operation
 
 
   /** Conversion from index to key. */
-  int indexToKey(int i) 
-  { 
+  int indexToKey(int i)
+  {
     int nS = small.getSize();
     if(i < nS) return i;
-    else       return (i-nS) | firstBitOnly;  
+    else       return (i-nS) | firstBitOnly;
   }
   // takes the double-heap index from 0....nS+nL-1
   // needs test
 
   /** Conversion from key to index. */
-  int keyToIndex(int k) 
-  { 
+  int keyToIndex(int k)
+  {
     if(isKeyInLargeHeap(k)) {
       int i = toLargeHeapIndex(k);
       return i + small.getSize(); }

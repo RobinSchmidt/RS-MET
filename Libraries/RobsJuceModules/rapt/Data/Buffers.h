@@ -12,7 +12,7 @@ public:
   two of given value. */
   rsRingBuffer(size_t capacity);
 
-  /** Sets a new capacity for this buffer. The actual capacity will be the next power of two of 
+  /** Sets a new capacity for this buffer. The actual capacity will be the next power of two of
   given value. */
   void setCapacity(size_t newCapacity);
 
@@ -40,7 +40,7 @@ protected:
 
 //=================================================================================================
 
-/** Subclass of rsRingBuffer that adds some features to make it more convenient to use as 
+/** Subclass of rsRingBuffer that adds some features to make it more convenient to use as
 delay-buffer or delay-line in signal processing applications. */
 
 template<class T>
@@ -82,11 +82,11 @@ public:
     // We increment the indices before the actual read/write operations to allow further operations
     // after getSample (where the indices must be still valid):
     incrementIndices(1);
-    // BUT: if client code actually relies on this, this points to a design flaw. We should 
+    // BUT: if client code actually relies on this, this points to a design flaw. We should
     // provide a method to modify the most recently stored value - we already have such a method:
-    // setNewest. Client code should be forced to used this, if it wants to modify the stored 
+    // setNewest. Client code should be forced to used this, if it wants to modify the stored
     // value after calling getSample. Then we are free here to use pre- or post-increment however
-    // we want without affecting client code - we just would have to adapt getNewest if we switch 
+    // we want without affecting client code - we just would have to adapt getNewest if we switch
     // to post-increment
 
     // The actual read/write operations
@@ -119,7 +119,7 @@ public:
 
   // Return samples from the buffer without updating anything
 
-  T getOldest() const { return this->data[wrap(readIndex+1)]; }  // why +1?
+  T getOldest() const { return this->data[this->wrap(readIndex+1)]; }  // why +1?
   T getNewest() const { return this->data[writeIndex];        }
 
 
@@ -131,10 +131,10 @@ public:
 
   /** Sets the sample that should be returned in the next call to getSample or in the delay-th call
   after that. */
-  void setNextReturnSample(T x, size_t delay = 0) { this->data[wrap(readIndex+delay+1)] = x; }
+  void setNextReturnSample(T x, size_t delay = 0) { this->data[this->wrap(readIndex+delay+1)] = x; }
   // the +1 is due to the use of pre-increment in getSample
 
-  /** Sets the object up in such a way that the in the call to getSample, data[0] will be 
+  /** Sets the object up in such a way that the in the call to getSample, data[0] will be
   returned. */
   void setNextReadIndex(size_t i)
   {
@@ -153,13 +153,13 @@ public:
   {
     // is this correct? -> make unit tests:
     //if(i > length)    i -= length;  // should never happen
-    //if(i < leftIndex) i += getCapacity();  
+    //if(i < leftIndex) i += getCapacity();
 
     return this->wrap(readIndex + i + 1); // why do we need +1?
   }
-  // needs test - maybe we have to do something similar as in getIndexFromNewest ..maybe 
+  // needs test - maybe we have to do something similar as in getIndexFromNewest ..maybe
   // if(i < leftIndex) i += getCapacity()  ?
-  // and/or maybe we have to take the length into account? it seems to work only when 
+  // and/or maybe we have to take the length into account? it seems to work only when
   // length == capacity
   // but actually, we do the i += stuff below only to avoid negative numbers when we do
   // rightIndex-i - but negative number cannot happen here because we do not subtract
@@ -169,7 +169,7 @@ public:
   size_t getIndexFromNewest(size_t i) const
   {
     if(i > writeIndex)
-      i += getCapacity();  
+      i += this->getCapacity();
     // do this branchless: i += (i > rightIndex) * getCapacity();
     // is this even needed or will underflow in the subtraction below produce the correct result as
     // well? -> figure out and test. we do it to get negative numbers in the rightIndex-i operation
@@ -180,8 +180,8 @@ public:
 
 
 
-  T& fromNewest(size_t i) { return data[getIndexFromNewest(i)]; }
-  T& fromOldest(size_t i) { return data[getIndexFromOldest(i)]; }
+  T& fromNewest(size_t i) { return this->data[getIndexFromNewest(i)]; }
+  T& fromOldest(size_t i) { return this->data[getIndexFromOldest(i)]; }
 
   // readout at given delay d
   T operator[](T d)
@@ -195,7 +195,7 @@ public:
 
 
 
-  /** Writes the content of this circular buffer into the given linear buffer in either 
+  /** Writes the content of this circular buffer into the given linear buffer in either
   chronological or reverse chronological order. */
   void copyTo(T* buffer, bool newestFirst)  // maybe provide false as default
   {
@@ -208,7 +208,7 @@ public:
   }
 
 
-  /** Returns the maximum value in the range between the two pointers. Mostly for testing 
+  /** Returns the maximum value in the range between the two pointers. Mostly for testing
   purposes (the moving-max filter) - not efficient, takes time O(L) where L is the length. */
   T getMaximum()
   {
@@ -269,7 +269,7 @@ public:
 
   /** Constructor. Allocates enough memory for an internal buffer to hold the "capacity" number of
   queued values. The memory allocated for the buffer will be the smallest power of two that is
-  greater or equal to the desired capacity plus 1 (an additional index value is required to make 
+  greater or equal to the desired capacity plus 1 (an additional index value is required to make
   the index arithmetic work right). */
   rsDoubleEndedQueue(size_t capacity) : rsRingBuffer<T>(capacity+1) {}
 
@@ -321,7 +321,7 @@ public:
     RAPT::rsAssert(!isEmpty(), "Trying to read from empty deque");
     return this->data[this->wrap(tail+1)];
   }
-  // or maybe readFirst/Last Front/Back or peekFront/peekBack, maybe also provide 
+  // or maybe readFirst/Last Front/Back or peekFront/peekBack, maybe also provide
   // writeFront/writeBack
 
   /** Clears the queue and optionally resets the data in the underlying buffer to all zeros. The
@@ -362,7 +362,7 @@ protected:
 
 /*
 ToDo:
--test it more thoroughly when it's completely full - there are some hickups with the moving-max 
+-test it more thoroughly when it's completely full - there are some hickups with the moving-max
  filter when it operates at full capacity. at capacity-1, it still works well. but the problem
  is more likely the moving-max filter itself
 -maybe provide push-functions that take a vector argument and pop-functions that pop a range of
@@ -380,7 +380,7 @@ ToDo:
 // maybe make convenience subclasses rsQueue and rsStack - both datastructures have different
 // subsets of functionality of the double ended queue actually, but the convenience functions could
 // have more stacky or queuey names like push/pop/top, enqueue/dequeue/front/back - they should
-// use protected inheritance and use delegation, like Stack::push delegates to Base::pushFront, 
+// use protected inheritance and use delegation, like Stack::push delegates to Base::pushFront,
 // etc.
 
 
