@@ -294,7 +294,7 @@ public:
     return true;
   }
 
-  template<class T>
+  //template<class T>
   bool areRowsZero(int startRow, int endRow, T tol) const
   {
     for(int i = startRow; i <= endRow; ++i)

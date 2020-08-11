@@ -181,4 +181,13 @@ return left > right;
 */
 
 
+/** Checks, if x is even. */
+template<class T>
+inline bool rsIsEven(T x) { return x % 2 == 0; } // maybe use bit-mask
+
+/** Checks, if x is odd. */
+template<class T>
+inline bool rsIsOdd(T x) { return x % 2 != 0; }
+
+
 #endif

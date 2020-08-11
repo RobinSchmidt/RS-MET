@@ -111,7 +111,7 @@ void rsArrayTools::circularShift(T *buffer, const int length, const int numPosit
   }
   delete[] tmp;
 }
-// this article describes an algo ("rotate") based on reversals that doesn't need auxiuliary 
+// this article describes an algo ("rotate") based on reversals that doesn't need auxiuliary
 // memory: https://en.wikipedia.org/wiki/Block_sort
 
 template <class T>
@@ -861,7 +861,7 @@ T rsArrayTools::maxAbs(const T *buffer, int length)
 // maybe optimize such that rsAbs is called only once
 
 template <class T>
-static T rsArrayTools::maxAbs(const std::complex<T>* buffer, int length)
+T rsArrayTools::maxAbs(const std::complex<T>* buffer, int length)
 {
   T maxSquared = T(0);
   for(int i = 0; i < length; ++i) {
@@ -996,7 +996,7 @@ T rsArrayTools::median(const T *buffer, int length)
     //med = (T)(0.5 * (tmpBuffer[length/2] + tmpBuffer[length/2-1]));
     med = T(0.5) * (tmpBuffer[length/2] + tmpBuffer[length/2-1]);
   }
-    // todo: use T(0.5) * (tmpBuffer[length/2] + tmpBuffer[length/2-1]) - don't enforce conversion 
+    // todo: use T(0.5) * (tmpBuffer[length/2] + tmpBuffer[length/2-1]) - don't enforce conversion
     // to double in intermeidate result
 
   delete[] tmpBuffer;
@@ -1014,7 +1014,7 @@ void rsArrayTools::movingAverage3pt(const T* x, int N, T* y, bool endsFixed)
   T t1 = x[0];
   T t2 = x[1];
 
-  if(endsFixed) 
+  if(endsFixed)
     y[0] = t1;
   else
     y[0] = T(1/2.) * (t1 + t2);
@@ -1194,7 +1194,7 @@ void rsArrayTools::shift(T *buffer, int length, int numPlaces)
 }
 
 template <class T>
-static T rsArrayTools::shiftToMakeMinimumZero(const T* x, int N, T* y)
+T rsArrayTools::shiftToMakeMinimumZero(const T* x, int N, T* y)
 {
   T minVal = minValue(x, N);
   add(x, -minVal, y, N);

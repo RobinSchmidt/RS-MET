@@ -1,11 +1,11 @@
 #pragma once
 
 /** This class can be used to represent ranges that begin at some min-value and end at some
-max-value. The template type must define an appropriate '-' operator (subtraction) as well as 
+max-value. The template type must define an appropriate '-' operator (subtraction) as well as
 comparison operators.
 
 \todo: express all comparisons internally in terms of the "<=" operator, such that the
-type only needs to define this single comparison operator  
+type only needs to define this single comparison operator
 maybe rename to interval */
 
 template<class T>
@@ -17,7 +17,7 @@ public:
 
   /** \name Construction/Destruction */
 
-  /** Constructor. You may pass the (initial) values for min and max - if you don't pass anything, 
+  /** Constructor. You may pass the (initial) values for min and max - if you don't pass anything,
   it will default to the empty range/interval from 0 to 0 (i.e. min = max = 0). */
   rsRange(T minValue = T(0), T maxValue = T(0))
   {
@@ -84,7 +84,7 @@ public:
   /** Compares two ranges for equality. */
   bool operator==(const rsRange<T>& r2) const
   {
-    return r2.min == min && r2.max == max
+    return r2.min == min && r2.max == max;
 
     /*
     if(r2.min == min && r2.max == max)
@@ -113,7 +113,7 @@ protected:
 
 //===============================================================================================
 
-/** This class is used to represent 2-dimensional ranges, for example minimum and maximum values 
+/** This class is used to represent 2-dimensional ranges, for example minimum and maximum values
 for x and y in a coordinate system. */
 
 template<class T>

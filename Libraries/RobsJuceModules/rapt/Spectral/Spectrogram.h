@@ -4,11 +4,11 @@
 //=================================================================================================
 
 /** A class for representing complex spectrograms. These are 2-dimensional arrays of complex values
-where each value represents the short time Fourier transform at a particular time-instant and 
-frequency. The data is accessed via the regular matrix(i, j) syntax of matrices. The first index 
-i is the frame-index and the second index j is the bin index within FFT frame i. 
+where each value represents the short time Fourier transform at a particular time-instant and
+frequency. The data is accessed via the regular matrix(i, j) syntax of matrices. The first index
+i is the frame-index and the second index j is the bin index within FFT frame i.
 
-class is not yet used - shall be used for the return type of 
+class is not yet used - shall be used for the return type of
 rsSpectrogramPocessor::getComplexSpectrogram */
 
 template<class T>
@@ -22,7 +22,7 @@ public:
   rsComplexSpectrogram(int numFrames, int numBins) : stftData(numFrames, numBins) {}
 
 
-  rsComplexSpectrogram(rsMatrix<std::complex<T>>&& newData) : stftData(std::move(newData));
+  rsComplexSpectrogram(rsMatrix<std::complex<T>>&& newData) : stftData(std::move(newData)) {}
   // should be invoked in arithmetic operators +,-,etc. when client code writes:
   // rsComplexSpectrogram<double> specSum = spec1 + spec1;
   // -> test this
@@ -44,14 +44,14 @@ public:
   inline int getNumBins() const { return stftData->getNumColumns(); }
 
   /** Read and write access to STFT value at the given frame- and bin-index. */
-  inline T& operator()(const int frameIndex, const int binIndex) 
+  inline T& operator()(const int frameIndex, const int binIndex)
   { return stftData(frameIndex, binIndex); }
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Manipulation
 
-  /** Scales the data at given binIndex by the given scaleFactor in all frames. The type for the 
+  /** Scales the data at given binIndex by the given scaleFactor in all frames. The type for the
   scale factor should either be T or std::complex<T>. */
   template<class TScaler>
   void scaleBin(int binIndex, TScaler scaleFactor)
@@ -69,10 +69,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Operators
 
-  bool operator==(const rsComplexSpectrogram<T>& rhs) const 
+  bool operator==(const rsComplexSpectrogram<T>& rhs) const
   { return this->stftData == rhs.stftData; }
 
-  bool operator!=(const rsComplexSpectrogram<T>& rhs) const 
+  bool operator!=(const rsComplexSpectrogram<T>& rhs) const
   { return this->stftData != rhs.stftData; }
 
   rsComplexSpectrogram<T> operator+(const rsComplexSpectrogram<T>& rightOperand) const
@@ -86,7 +86,7 @@ public:
   rsComplexSpectrogram<T> operator*(const rsComplexSpectrogram<T>& rightOperand) const
   {  return rsComplexSpectrogram<T>(stftData.getElementwiseProduct(rightOperand.stftData)); }
   // having the multiplication operator do element-wise multiplication is one of the reasons why
-  // we don't just inherit from rsMatrix and instead use a matrix as member variable - matrix 
+  // we don't just inherit from rsMatrix and instead use a matrix as member variable - matrix
   // multiplication would make no sense for spectrograms
 
   //rsComplexSpectrogram<T> operator/(const rsComplexSpectrogram<T>& rightOperand) const
@@ -102,11 +102,11 @@ protected:
   rsMatrix<std::complex<T>> stftData;
 
   // maybe this should also have additional data-members for hopSize, blockSize, sampleRate - these
-  // values are needed in order to correctly interpret the data - but maybe not - it would not be 
-  // clear from which of the two object the result of +,-,.. etc. would get their values and we 
+  // values are needed in order to correctly interpret the data - but maybe not - it would not be
+  // clear from which of the two object the result of +,-,.. etc. would get their values and we
   // don't want to be restricted to add,subtract,... spectrograms with matching block/hopSizes
   // ...or do we? it may most likely be an error trying to combine spectrograms with non-matched
-  // values - maybe be a bit too restrictive - we may always relax restrictions later but not 
+  // values - maybe be a bit too restrictive - we may always relax restrictions later but not
   // tighten them when client code already relies on certain things
   // hmm - i think hopSize and blockSize should be members but sampleRate probably not
 
@@ -116,10 +116,10 @@ protected:
 
 /** This is .... under construction ...
 
--maybe rename to rsSpectrogramProcessor - a spectrogram itself is actually just a matrix of 
- complex values...or magnitude/phase values....but what about re-assignment? there may be 
+-maybe rename to rsSpectrogramProcessor - a spectrogram itself is actually just a matrix of
+ complex values...or magnitude/phase values....but what about re-assignment? there may be
  re-assigned spectrograms
--maybe let rsComplexSpectrogram be a private subclass of rsMatrix<double<T>>, implement the () 
+-maybe let rsComplexSpectrogram be a private subclass of rsMatrix<double<T>>, implement the ()
  operator as simple delegation and replace getNumRows/getNumColumns with getNumFrames/getNumBins
 -i think, i have implemented analysis and (re)synthesis in a single class rather than two separate
  classes (like with the sinusoidal model) in order to allow for identity resynthesis with arbitrary
@@ -145,11 +145,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  /** Sets the size (in samples) of the blocks/frames for analysis and synthesis (todo: allow 
+  /** Sets the size (in samples) of the blocks/frames for analysis and synthesis (todo: allow
   different sizes for analysis and synthesis) */
   void setBlockSize(int newBlockSize);
 
-  /** Sets the FFT size to be used. It should be >= the block size. If it's greater, the blocks 
+  /** Sets the FFT size to be used. It should be >= the block size. If it's greater, the blocks
   will be zero padded to the desired FFT size. */
   void setTrafoSize(int newSize);
 
@@ -164,15 +164,15 @@ public:
   void setHopSize(int newHopSize) { hopSize = newHopSize; }
 
   /** Should be one of the type in RAPT::rsWindowFunction::windowTypes */
-  void setAnalysisWindowType(rsWindowFunction::WindowType newType) 
-  { 
-    analysisWindowType = newType; 
+  void setAnalysisWindowType(rsWindowFunction::WindowType newType)
+  {
+    analysisWindowType = newType;
     updateAnalysisWindow();
   }
 
-  void setSynthesisWindowType(rsWindowFunction::WindowType newType) 
-  { 
-    synthesisWindowType = newType; 
+  void setSynthesisWindowType(rsWindowFunction::WindowType newType)
+  {
+    synthesisWindowType = newType;
     updateSynthesisWindow();
   }
 
@@ -180,28 +180,28 @@ public:
 
   //updateAnalysisWindow();
 
-  /** Sets the time origin for each analysis window to the center of the respective window. This is 
-  relevant for the phase spectrum. The natural time origin for each DFT buffer is the sample zero 
-  of the buffer - but the center often seems more meaningful. By default, this option is set to 
+  /** Sets the time origin for each analysis window to the center of the respective window. This is
+  relevant for the phase spectrum. The natural time origin for each DFT buffer is the sample zero
+  of the buffer - but the center often seems more meaningful. By default, this option is set to
   true. */
   void setTimeOriginAtWindowCenter(bool shouldBeAtCenter)
   {
     timeOriginAtWindowCenter = shouldBeAtCenter;
   }
 
-  /** Selects whether or not the output signal should be demodulated by the product of the 
+  /** Selects whether or not the output signal should be demodulated by the product of the
   analysis- and synthesis window. When this product does not add up to unity when summed over all
-  blocks, the raw resynthesized output will show an amplitude modulation given by these summed 
-  window products. The demodulation step is for undoing this modulation such that an identity 
-  analysis/resynthesis roundtrip is possible even with windows that do not satsify these nice 
-  "add up to unity" properties. With, for example, the (the "zn" version of) the Hanning window 
+  blocks, the raw resynthesized output will show an amplitude modulation given by these summed
+  window products. The demodulation step is for undoing this modulation such that an identity
+  analysis/resynthesis roundtrip is possible even with windows that do not satsify these nice
+  "add up to unity" properties. With, for example, the (the "zn" version of) the Hanning window
   and a hop-size equal to blockSize/4, such demodulation should not be necessarry because in this
-  case, the windows indeed do add up to unity, so you may save some computation time by not doing 
-  this step. That's why it can be switched on and off by client code - and for testing purposes. 
+  case, the windows indeed do add up to unity, so you may save some computation time by not doing
+  this step. That's why it can be switched on and off by client code - and for testing purposes.
 
-  ToDo: even with the zn-hanning window it doesn't yet work right because it currently seems to 
-  add up not to unity but to some other constant (1.5 in case of H = B/4 - we seem to miss a 
-  scaling somewhere..... also, at the moment, there are transient artifacts at the start and 
+  ToDo: even with the zn-hanning window it doesn't yet work right because it currently seems to
+  add up not to unity but to some other constant (1.5 in case of H = B/4 - we seem to miss a
+  scaling somewhere..... also, at the moment, there are transient artifacts at the start and
   end (fade in/out due to not overlapping enough windows): workaround: prepend and append one
   block-length of zero samples (which can be removed after resynthesis). */
   void setOutputDemodulation(bool shouldDemodulate)
@@ -225,16 +225,16 @@ public:
 
   int getHopSize() const { return hopSize; }
 
-  /** Converts a physical frequency in Hz to an FFT bin index for the given sample-rate. This 
-  depends on our trafoSize setting and will return a real number. Client code should round the 
+  /** Converts a physical frequency in Hz to an FFT bin index for the given sample-rate. This
+  depends on our trafoSize setting and will return a real number. Client code should round the
   returned itself as appropriate. */
   T frequencyToBinIndex(T freq, T sampleRate) const { return trafoSize*freq/sampleRate; }
 
-  /** Returns the amplitude scale factor by which the outputs of shortTimeSpectrum() has to be 
-  scaled to obtain the actual amplitude of a real sinusoid. This is used internally but made 
+  /** Returns the amplitude scale factor by which the outputs of shortTimeSpectrum() has to be
+  scaled to obtain the actual amplitude of a real sinusoid. This is used internally but made
   available mostly for testing purposes. */
   T getAnalysisScaler() const { return 2. / rsArrayTools::sum(&analysisWindow[0], blockSize); }
-    // the factor two comes from the fact that two complex sinusoids sum up to one real sinusoid 
+    // the factor two comes from the fact that two complex sinusoids sum up to one real sinusoid
     // and we count only one of the two symmetric magnitude values
 
   /** Computes the required number of frames, given the length of the signal and the hopsize.
@@ -250,7 +250,7 @@ public:
   static T getWindowSum(T *wa, T *ws, int B, int H);
 
 
-  /** Computes the number of required zero valued samples to prepend and append for given block 
+  /** Computes the number of required zero valued samples to prepend and append for given block
   size and transform size. We use a zero-padding such that the actual audio data sits in the middle
   of a transform buffer with zero padding to the left and right */
   static void getLeftRightPaddingAmount(int blockSize, int trafoSize, int* left, int* right);
@@ -268,10 +268,10 @@ public:
 
 
   /** Computes a short-time FFT spectrum ... */
-  void shortTimeSpectrum(const T* signal, int numSamples, int blockCenter, 
+  void shortTimeSpectrum(const T* signal, int numSamples, int blockCenter,
     std::complex<T>* spectrum);
 
-  /** Writes a segment from the signal x (assumend to be of length N) centered at n into the 
+  /** Writes a segment from the signal x (assumend to be of length N) centered at n into the
   complex buffer X - completely with windowing, zero-padding and shifting (if applicable), ready
   to pass to the FFT routine. Used internally by shortTimeSpectrum. */
   void prepareTrafoBuffer(const T* x, int N, int n, std::complex<T> *X);
@@ -317,8 +317,8 @@ public:
 
   //static void highpass(rsMatrix<std::complex<T>>& spectrogram, T cutoffBin);
 
-  /** Zeroes out all bin-values values except those in the range lowBin <= bin <= highBin. If 
-  lowBin == 0 or highBin == numBins-1, you can also get lowpass- and highpass-filters, 
+  /** Zeroes out all bin-values values except those in the range lowBin <= bin <= highBin. If
+  lowBin == 0 or highBin == numBins-1, you can also get lowpass- and highpass-filters,
   respectively. */
   static void bandpass(rsMatrix<std::complex<T>>& spectrogram, int lowBin, int highBin);
 
@@ -354,8 +354,8 @@ public:
 
   /** Used inside synthesize() - this is the raw resynthesis in the sense that any amplitude
   modulation artifacts that result from overlapping grains that don't sum up to unity are not
-  yet compensated for. If you want that compensation, use synthesize(). For properly chosen 
-  analysis and synthesis windows and hop-size and block-size, the demodulation step can be 
+  yet compensated for. If you want that compensation, use synthesize(). For properly chosen
+  analysis and synthesis windows and hop-size and block-size, the demodulation step can be
   legitimately skipped because the overlapped windows add up to unity - but this is not the case
   in general. */
   std::vector<T> synthesizeRaw(const rsMatrix<std::complex<T>> &spectrogram);
@@ -380,17 +380,17 @@ protected:
 
   static void fillWindowArray(T* w, int length, rsWindowFunction::WindowType type);
 
-  /** Given a buffer of complex values, this functions swaps the first and second half which is the 
-  same as a circular shift by half of the buffer size. This shifts the time-origin of buffer from 
-  sample zero to the center of the buffer. That means that the center of the buffer becomes the 
-  reference for measuring the phase - a sinusoid that starts at the center sample will have zero 
+  /** Given a buffer of complex values, this functions swaps the first and second half which is the
+  same as a circular shift by half of the buffer size. This shifts the time-origin of buffer from
+  sample zero to the center of the buffer. That means that the center of the buffer becomes the
+  reference for measuring the phase - a sinusoid that starts at the center sample will have zero
   phase. This function is applied before transforming a windowed grain to the frequency domain and
   after syntehsizing a grain from a short time spectrum. */
   void swapForZeroPhase(std::complex<T>* X, int length);
   // todo: comment about the even/odd window size issue, maybe rename to shiftOriginToCenter or
   // something
   // make a unit test that ensures that applying this function twice gives an identity operation
-  // -if this is not the case for odd windows, we may have to use two functions - one for forward, 
+  // -if this is not the case for odd windows, we may have to use two functions - one for forward,
   // the other for backward shift ..maybe shiftZeroToCenter, shiftCenterToZero
   // or applyAnalysisPhaseAdjustment, applySynthesisPhaseAdjustment ..or TimeAdjustment
   // of shiftForAnalysis, shiftForSynthesis
@@ -405,7 +405,7 @@ protected:
   /** \name Data */
 
   int trafoSize = 0;    // FFT size - initialized in constructor
-  int blockSize = 0;    // initialized in constructor which also generates the window functions   
+  int blockSize = 0;    // initialized in constructor which also generates the window functions
   int hopSize   = 128;
   // maybe we should also distiguish between analysis and synthesis hop- and block-size
 
