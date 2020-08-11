@@ -324,6 +324,7 @@ bool binaryHeapUnitTest()
   // test the double heap:
 
   rsDoubleHeap<int> D;
+  int min = 2147483648;
   Vec B;
   int i;
   A = Vec({5,2,3});
@@ -331,16 +332,14 @@ bool binaryHeapUnitTest()
   D.setData(A, B);
   i = D.replace(1, 6);  // replace 2 by 6, float up to front of small, no exchange
   r &= i == 0 && A == Vec({6,5,3}) && B ==  Vec({6,7,8});
-
-  // old, out of date:
-  //i = D.replace(5, 4);  // replace 8 by 4, float to front of large, exchange
-  //r &= i == 1 && A == Vec({5,4,3}) && B ==  Vec({6,7,6});
+  i = D.replace(min+2, 4);  // replace 8 by 4, float to front of large, exchange
+  r &= i == 1 && A == Vec({5,4,3}) && B ==  Vec({6,7,6});
   // do more tests, using larger heaps, maybe check property in a loop
 
 
   rsDoubleHeap<int> D2;
   D2.setData(A, B);
-  int min = 2147483648;
+
   int k;
   k = D2.indexToKey(0); r &= k == 0;
   i = D2.keyToIndex(0); r &= i == 0;

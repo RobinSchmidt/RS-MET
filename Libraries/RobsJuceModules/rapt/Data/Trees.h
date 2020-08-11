@@ -296,7 +296,22 @@ public:
   bool isKeyValid(int k) const
   {
     if(isKeyInLargeHeap(k))
+    {
+      // for debuging a weird bug in gcc:
+      int lhi = toLargeHeapIndex(k);
+      int lhs = large.getSize();
+      int shs = small.getSize();  // just for info
+      rsAssert(lhi < lhs);
+      // we need a test for rsDoubleHeap that fills up both heaps up to their capacity. somehow,
+      // with gcc, it tries to add an element to the large heap when it's already full. this
+      // happens also when the size of the heap is well below the allocated capacity. It happens
+      // only with the random int and linearly descending vector, not with the linearly ascending
+      // one
+      // could it be that rsQuantileFilterCore::wrap behaves differently in different compilers, i.e.
+      // the modulo operator behaves differently for negative inputs?
+
       return toLargeHeapIndex(k) < large.getSize();
+    }
     else
       return k < small.getSize();
   }

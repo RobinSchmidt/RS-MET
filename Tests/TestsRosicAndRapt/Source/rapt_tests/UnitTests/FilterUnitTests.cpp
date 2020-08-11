@@ -27,7 +27,7 @@ bool prototypeDesignUnitTest()
   pd.setApproximationMethod(PD::PAPOULIS);
   pd.setPrototypeMode(PD::LOWPASS_PROTOTYPE);
   pd.setOrder(5);                                               // 5th order lowpass
-  pd.getPolesAndZeros(&p[0], &z[0]);              
+  pd.getPolesAndZeros(&p[0], &z[0]);
   r &= isCloseTo(p[0], CF(-0.153586745f, 0.968145967f), tol);
   r &= isCloseTo(p[1], CF(-0.388139844f, 0.588632464f), tol);
   r &= isCloseTo(p[2], CF(-0.468089849f, 0.f),          tol);
@@ -38,7 +38,7 @@ bool prototypeDesignUnitTest()
   r &= pd.getNumFiniteZeros() == 0;
   pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);                  // 5th order low-boost
   pd.setGain(+6);
-  pd.getPolesAndZeros(&p[0], &z[0]);              
+  pd.getPolesAndZeros(&p[0], &z[0]);
   r &= isCloseTo(p[0], CF(-0.147757247f, 0.931399286f), tol);
   r &= isCloseTo(p[1], CF(-0.373407722f, 0.566290498f), tol);
   r &= isCloseTo(p[2], CF(-0.450323164f, 0.f),          tol);
@@ -48,7 +48,7 @@ bool prototypeDesignUnitTest()
   r &= pd.getNumFinitePoles() == 5;
   r &= pd.getNumFiniteZeros() == 5;
   pd.setGain(-6);                                               // 5th order low-cut
-  pd.getPolesAndZeros(&p[0], &z[0]); 
+  pd.getPolesAndZeros(&p[0], &z[0]);
   r &= isCloseTo(p[0], CF(-0.185926169f, 0.996051848f), tol);
   r &= isCloseTo(p[1], CF(-0.481426001f, 0.611809969f), tol);
   r &= isCloseTo(p[2], CF(-0.590867400f, 0.f),          tol);
@@ -70,7 +70,7 @@ bool prototypeDesignUnitTest()
   r &= pd.getNumFiniteZeros() == 0;
   pd.setPrototypeMode(PD::LOWSHELV_PROTOTYPE);                  // 6th order low-boost
   pd.setGain(+6);
-  pd.getPolesAndZeros(&p[0], &z[0]);  
+  pd.getPolesAndZeros(&p[0], &z[0]);
   r &= isCloseTo(p[0], CF(-0.111895919f, 0.949936688f), tol);
   r &= isCloseTo(p[1], CF(-0.300119370f, 0.678187668f), tol);
   r &= isCloseTo(p[2], CF(-0.426341325f, 0.233113691f), tol);
@@ -89,7 +89,7 @@ bool prototypeDesignUnitTest()
   r &= isCloseTo(z[0], CF(-0.750605762f, 1.34034932f),  tol);
   r &= isCloseTo(z[1], CF(-1.11451340f,  0.783524334f), tol);
   r &= isCloseTo(z[2], CF(-1.26746202f,  0.258809835f), tol);
-	
+
 	return r;
 }
 
@@ -130,7 +130,7 @@ bool filterSpecUnitTest()
   // now, we convert back from ba to zpk and check, if we get our original zpk specifiction
   // properly reconstructed:
   ZPK zpkTmp = ba32.toZPK();
-  r &= zpkTmp.equals(zpk32); 
+  r &= zpkTmp.equals(zpk32);
 
   // Digital case:
   //             (1-q1/z)*(1-q2/z)*(1-q3/z)     b0 + b1/z + b2/z^2 + b3/z^3
@@ -139,10 +139,10 @@ bool filterSpecUnitTest()
   // multiplying out the zpk representation gives:
   Complex b0 = k, b1 = -k*(q1+q2+q3), b2 = k*(q1*q2+q1*q3+q2*q3), b3 = -k*q1*q2*q3;
   Complex a0 = 1, a1 = -(p1+p2), a2 = p1*p2;
-  // The coeffs are the same as in the analog case but in reverse order because in the digital 
+  // The coeffs are the same as in the analog case but in reverse order because in the digital
   // domain, we multiply inverse powers of z (instead of regular powers of s in the analog domain)
 
-  // We re-interpret the zpk32 specification as a digital one by setting the sample-rate to 
+  // We re-interpret the zpk32 specification as a digital one by setting the sample-rate to
   // some finite value (1 in this case):
   zpk32.sampleRate = 1;
   // ...and now do the same tests as we did in the analog case:
@@ -159,7 +159,7 @@ bool filterSpecUnitTest()
 
   // BA -> ZPK:
   zpkTmp = ba32.toZPK();
-  r &= zpkTmp.equals(zpk32); 
+  r &= zpkTmp.equals(zpk32);
 
   // test of conversions is done - now we evaluate the transfer-function at a couple of randomly
   // selected values for s or z an see, if both representations (ZPK and BA) give the same results:
@@ -199,14 +199,14 @@ bool filterSpecUnitTest()
 
 // (naive) reference implementation of moving maximum "filter":
 #undef min
-#undef max 
+#undef max
 std::vector<int> movingMax(const std::vector<int>& x, int L)
 {
   std::vector<int> r(x.size());
   for(int i = 0; i < (int)r.size(); i++) {
     int max = x[i];
     for(int k = 1; k <= L; k++) {
-      if(i-k < 0) 
+      if(i-k < 0)
         break;
       if(x[i-k] > max)
         max = x[i-k]; }
@@ -220,7 +220,7 @@ bool testMovingMaxFilter(rsMovingMaximumFilter<int>& flt, const std::vector<int>
   std::vector<int> result(x.size());
   flt.setLength(L);
   flt.reset();
-  for(size_t n = 0; n < x.size(); n++) 
+  for(size_t n = 0; n < x.size(); n++)
     result[n] = flt.getSample(x[n]);
 
   return result == target;
@@ -229,7 +229,7 @@ bool testMovingMaxFilter(rsMovingMaximumFilter<int>& flt, const std::vector<int>
 
 bool movingMaximumUnitTest()
 {
-  bool r = true;   
+  bool r = true;
 
   //std::vector<int> v = { 1,2,6,8,3,2,7,3,2,6,7,2,5,8,8,4,3,1,5,7,8,4,3,2,5,7,8,6 };
   std::vector<int> v = { 1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2,1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2,1 };
@@ -241,7 +241,7 @@ bool movingMaximumUnitTest()
 
   //rsMovingMaximumFilter<int> flt(6);
   rsMovingMaximumFilter<int> flt(7);
-  r &= testMovingMaxFilter(flt, v, 0); 
+  r &= testMovingMaxFilter(flt, v, 0);
   r &= testMovingMaxFilter(flt, v, 1);
   r &= testMovingMaxFilter(flt, v, 2);
   r &= testMovingMaxFilter(flt, v, 3);
@@ -258,10 +258,10 @@ bool movingMaximumUnitTest()
   // 7 and 8 are supposed to not work because the capacity is only 6. However, with 6, there's
   // something strange going on: when we implement rsDoubleEndedQueue::isFull() as
   // getLength() >= getMaxLength(), which seems to be correct, we trigger an assert to try to
-  // push onto a full deque. when we use getLength() > getMaxLength() (which is supposed to be 
+  // push onto a full deque. when we use getLength() > getMaxLength() (which is supposed to be
   // wrong), the test passes just fine - hmm. it's not surprising that pushing and popping to/from
-  // the deque still works - we actually can use one memory slot more than the nominal maximum 
-  // length - the head/tail arithmetic doesn't care - it's just that when we do this, the length 
+  // the deque still works - we actually can use one memory slot more than the nominal maximum
+  // length - the head/tail arithmetic doesn't care - it's just that when we do this, the length
   // computation will compute wrong results
 
 
@@ -300,7 +300,7 @@ bool movingMaximumUnitTest()
 /*
                    10                  20                  30
 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0  2n digit of index
-1 2 3 4 5 6 7 8 9 8 7 6 5 4 3 2 1 2 3 4 5 6 7 8 9 8 7 6 5 4 3     v 
+1 2 3 4 5 6 7 8 9 8 7 6 5 4 3 2 1 2 3 4 5 6 7 8 9 8 7 6 5 4 3     v
 1 2 3 4 5 6 7 8 9 9 8 7 6 5 4 3 2 2 3 4 5 6 7 8 9 9 8 7 6 5 4     vMax2
 1 2 3 4 5 6 7 8 9 9 9 9 8 8 7 5 4 3
 
@@ -314,7 +314,7 @@ https://www.nayuki.io/res/sliding-window-minimum-maximum-algorithm/SlidingWindow
 */
 
 
-bool testMovingQuantileCore(int maxLength, int smallLength, int largeLength, int numSamples, 
+bool testMovingQuantileCore(int maxLength, int smallLength, int largeLength, int numSamples,
   int seed = 0)
 {
   rsAssert(maxLength >= smallLength + largeLength);
@@ -331,12 +331,32 @@ bool testMovingQuantileCore(int maxLength, int smallLength, int largeLength, int
   // Create output signals of the naive and heap based implementation using as input signal random
   // numbers between 0 and 99 and along the way, check, if both outputs match
   using Vec = std::vector<double>;
-  Vec x = rsRandomIntVector(numSamples, 0, 99, seed);
+  //Vec x = rsRandomIntVector(numSamples, 0, 99, seed);
+  //Vec x = rsLinearRangeVector(numSamples, 1, numSamples);
+  Vec x = rsLinearRangeVector(numSamples, -1, -numSamples);
   Vec y(numSamples), z(numSamples);
   for(int n = 0; n < numSamples; n++)  {
-    double q = y[n] = fltH.getSample(x[n]);
+    double q = y[n] = fltH.getSample(x[n]); // triggers "Key out of range" at n=64 in gcc
     double p = z[n] = fltN.getSample(x[n]);
     r &= p == q; }
+
+  // at sample n = 18, we have different behavior in gcc from msc:
+  //gcc:
+  //n   = 18
+  //key = -2147483628
+  //lhi = 20
+  //lhs = 20
+  //
+  //msc:
+  //n   = 18
+  //key = -2147483648
+  //lhi = 0
+  //lhs = 20
+
+  // they key is already off by 20, which is the size of the large heap in the test (also of the
+  // small heap, but that's probably not relevant). could it have to do with different behavior of 
+  // the modulo operator in th wrap operation?
+
 
   //rsPlotVectors(y, z);  // uncomment to see the result
   return r;
@@ -400,14 +420,14 @@ bool testMovingQuantileModulation()
       fltN.setLengths(nS, nL);
       fltH.setLengthAndReadPosition(nS+nL, nS);
       rngBuf.setLength(nS+nL);
-      i++;  
+      i++;
     }
     rngBuf.getSample(x[n]);       // we must drive the modulation buffer
     y[n] = fltH.getSample(x[n]);
     z[n] = fltN.getSample(x[n]);
   }
 
-  // todo: 
+  // todo:
   // -test edge cases
   // -do randomized tests - maybe make a function that takes a vector of settings - maybe it should
   //  be a lmabda function implemented directly here
@@ -451,7 +471,7 @@ bool oneLongerQuantileUnitTest(int L, int N)
   Vec yR(N), yT(N);                     // reference and test output
   for(size_t i = 0; i < quantiles.size(); i++)
   {
-    // compute output of reference filter - this filter actually is one sample longer than our 
+    // compute output of reference filter - this filter actually is one sample longer than our
     // nominal L:
     double pR = quantiles[i] * L;
     double wR = pR - floor(pR);
@@ -485,13 +505,17 @@ bool movingQuantileUnitTest()
 {
   bool r = true;
 
-  // Notation: nS: length of small heap, nL: length of large heap, mL: max length, L: length, 
+  // Notation: nS: length of small heap, nL: length of large heap, mL: max length, L: length,
   // q: quantile
 
   int N = 500;  // number of samples for the tests
 
 
   // test the general operation:
+  r &= testMovingQuantileCore(64, 20, 20, N);
+  r &= testMovingQuantileCore(64, 31, 31, N);
+  r &= testMovingQuantileCore(64, 31, 32, N);
+  r &= testMovingQuantileCore(64, 32, 31, N);
   r &= testMovingQuantileCore(64, 32, 32, N);
   r &= testMovingQuantileCore(64, 50, 14, N);  // nS + nL = 50 + 14 = 64
   r &= testMovingQuantileCore(64, 30, 14, N);
