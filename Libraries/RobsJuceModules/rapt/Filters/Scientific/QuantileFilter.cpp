@@ -112,7 +112,10 @@ bool rsQuantileFilterCore<T>::isStateConsistent()
   std::vector<int> tmp(L);
   for(int i = 0; i < L; i++)
     tmp[i] = dblHp.keyToIndex(keyBuf[convert(i)]);
-  r &= isIndexPermutation(&tmp[0], (int)tmp.size());
+  // r &= isIndexPermutation(&tmp[0], (int)tmp.size()); 
+  // commented bcs isIndexPermutation is still in the test-section, not in the library - can be
+  // re-activated, when it's dragged over - but this isStateConsistent function was scaffolding 
+  // anyway (i.e. only relevant during construction of the class)
 
   // todo:
   // -check that the sum of the heap sizes matches the buffer size

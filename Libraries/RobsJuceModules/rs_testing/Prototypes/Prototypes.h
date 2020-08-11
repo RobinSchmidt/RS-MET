@@ -24,10 +24,10 @@ using namespace RAPT;
 #include "Relativity.h"
 #include "SineParameterEstimator.h"
 
-/** This file contains prototypical implementations of algorithms. These prototypes are not meant 
-to be used for production code but are useful for a more readable proof-of-concept (because of lack 
-of optimizations), for tweaking an algorithm's internal parameters which might not be even exposed 
-in the production-code versions, and to create reference output for the unit-tests for production 
+/** This file contains prototypical implementations of algorithms. These prototypes are not meant
+to be used for production code but are useful for a more readable proof-of-concept (because of lack
+of optimizations), for tweaking an algorithm's internal parameters which might not be even exposed
+in the production-code versions, and to create reference output for the unit-tests for production
 code. */
 
 /*
@@ -44,63 +44,63 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 
 
 
-/** Solves a pentadiagonal linear system of equations with given diagonals and right-hand side 
-using a simple algorithm without pivot-search. lowerDiag1 is the one directly below the main 
-diagonal, lowerDiag2 the one below lowerDiag1 - and similarly for upperDiag1/upperDiag2. In the 
+/** Solves a pentadiagonal linear system of equations with given diagonals and right-hand side
+using a simple algorithm without pivot-search. lowerDiag1 is the one directly below the main
+diagonal, lowerDiag2 the one below lowerDiag1 - and similarly for upperDiag1/upperDiag2. In the
 process of the computations, the right hand side vector is destroyed. the same is true for mainDiag
-and the two inner sub/superdiagonals lowerDiag1, upperDiag1. Note also that you can't use the same 
+and the two inner sub/superdiagonals lowerDiag1, upperDiag1. Note also that you can't use the same
 array for lowerDiag1 and upperDiag1, even if your matrix is symmetric.
 
-..What about lowerDiag2/upperDiag2? are these preserved and may these point to the same vector? 
-It's probably safest to assume that everything may get messed up and all arrays should be 
+..What about lowerDiag2/upperDiag2? are these preserved and may these point to the same vector?
+It's probably safest to assume that everything may get messed up and all arrays should be
 distinct. */
 std::vector<double> solvePentaDiagonalSystem(
   std::vector<double>& lowerDiag2, std::vector<double>& lowerDiag1,
-  std::vector<double>& mainDiag, 
+  std::vector<double>& mainDiag,
   std::vector<double>& upperDiag1, std::vector<double>& upperDiag2,
   std::vector<double>& righHandSide);
 
 /** Multiplies a pentadiagonal matrix with a vector...  */
 std::vector<double> pentaDiagMatVecMul(
   std::vector<double>& lowerDiag2, std::vector<double>& lowerDiag1,
-  std::vector<double>& mainDiag, 
+  std::vector<double>& mainDiag,
   std::vector<double>& upperDiag1, std::vector<double>& upperDiag2,
   std::vector<double>& input);
 
-/** Minimizes the sum of squared differences between adjacent array elements under the constraint 
-that the sums of adjacent array elements must be equal to given values. The input array s is the 
+/** Minimizes the sum of squared differences between adjacent array elements under the constraint
+that the sums of adjacent array elements must be equal to given values. The input array s is the
 length N-1 array of the desired sums, the output array v is the length N value array, such that
-v[i] + v[i+1] = s[i] and sum_i (v[i+1] - v[i])^2 = min. You may optionally pass an array of 
-weights for the squared differences in the cost function - if you do, the w array must have the 
-same length as s, if you don't, unit weights will be used for each squared difference. With 
+v[i] + v[i+1] = s[i] and sum_i (v[i+1] - v[i])^2 = min. You may optionally pass an array of
+weights for the squared differences in the cost function - if you do, the w array must have the
+same length as s, if you don't, unit weights will be used for each squared difference. With
 weights, we will minimize sum_i w[i] * (v[i+1] - v[i])^2 subject to the (same) constraints that
 v[i] + v[i+1] = s[i] for all i = 0,..,N-2 */
 std::vector<double> rsMinSqrDifFixSum(
-  const std::vector<double>& s, 
+  const std::vector<double>& s,
   const std::vector<double>& w = std::vector<double>() );
 
 std::vector<double> rsMinSqrCrvFixSum(
-  const std::vector<double>& s, 
+  const std::vector<double>& s,
   const std::vector<double>& w = std::vector<double>() );
 
 
 
-/** Prototype for rsResampler::signalValueViaSincAt(). It provides as additional parameters for 
-tweaking: 
+/** Prototype for rsResampler::signalValueViaSincAt(). It provides as additional parameters for
+tweaking:
 -pointer to a window-function
 -parameter for the window (if applicable)
--switch for normalizing the output by the sum of the tap weights 
+-switch for normalizing the output by the sum of the tap weights
 */
 double signalValueViaSincAt(double *x, int N, double t, double sincLength, double stretch,
-  //FunctionPointer3DoublesToDouble windowFunction = rsExactBlackmanWindow, 
+  //FunctionPointer3DoublesToDouble windowFunction = rsExactBlackmanWindow,
   double (*windowFunction)(double,double,double) = &RAPT::rsWindowFunction::exactBlackman,
   double windowParameter = 0.0, bool normalizeDC = true);
 
-/** Generates polynomial coefficients of the polynomial used in Halpern filters. It's the T^2(w) 
+/** Generates polynomial coefficients of the polynomial used in Halpern filters. It's the T^2(w)
 polynomial in Eq. 8.18 in Paarmann: Design and Analysis of Analog Filters. */
 void halpernT2(double *c, int N);
 
-/** Generates polynomial coefficients of the polynomial used in Papoulis filters. It's the L^2(w) 
+/** Generates polynomial coefficients of the polynomial used in Papoulis filters. It's the L^2(w)
 polynomial in Eq. 8.14 in Paarmann: Design and Analysis of Analog Filters */
 void papoulisL2(double *c, int N);
 
@@ -113,16 +113,16 @@ void rsDampedSineFilterAnalysis(double b0, double b1, double a1, double a2, doub
 void rsDampedSineFilterAnalysis2(double b0, double b1, double a1, double a2, double* w, double* A,
   double* d, double* p); // other algorithm for the same thing
 
-void rsDampedSineFilterResidueAndPole(double b0, double b1, double a1, double a2, 
+void rsDampedSineFilterResidueAndPole(double b0, double b1, double a1, double a2,
   std::complex<double>* residue, std::complex<double>* pole);
 
 
 /** Calculates a chebyshev window of size N, store coeffs in out as in Antoniou
-  -out should be array of size N 
-  -atten is the required sidelobe attenuation (e.g. if you want -60dB atten, use '60') 
+  -out should be array of size N
+  -atten is the required sidelobe attenuation (e.g. if you want -60dB atten, use '60')
 Dolph-Chebychev window generation code from here:
 http://practicalcryptography.com/miscellaneous/machine-learning/implementing-dolph-chebyshev-window/
-not recommended for production use because the complexity is O(N^2) - instead use an iFFT 
+not recommended for production use because the complexity is O(N^2) - instead use an iFFT
 approach
 References:
 [1] Lyons, R., "Understanding Digital Signal Processing", Prentice Hall, 2004.
@@ -137,11 +137,11 @@ void rsCircularShift(int* a, int N, int k);
 
 /** Simulates the dynamics of a rotating rigid body around its three pricipal axes of intertia. If
 they are all different, when it initially rotates around the axis of the middle/intermediate moment
-of inertia with some small perturbation of having a rotational component around any of the other 
-two axes, the rotation axis periodically flips over. This is known as the "tennis racket effect" 
-because it also occurs when throwing up a tennis racket in a particular way. It is due to the 
+of inertia with some small perturbation of having a rotational component around any of the other
+two axes, the rotation axis periodically flips over. This is known as the "tennis racket effect"
+because it also occurs when throwing up a tennis racket in a particular way. It is due to the
 rotation around the intermediate axis being an unstable equilibrium of the dynamic equations that
-describe the rotation. Rotation around any of the other two principal axes (those with maximum and 
+describe the rotation. Rotation around any of the other two principal axes (those with maximum and
 minimum moment of inertia) are stable equlibria.
 
 
@@ -257,19 +257,19 @@ protected:
 
 /** A second order (2 poles, 2 zeros) filter implementation, whose internal state is represented as
 a 2D vector, i.e. a point in the xy-plane. The state is updated by multiplying the current state
-vector by a matrix (and adding the input value to both components). The output is computed as a 
-linear combination of the state-vector's coordinates and the input. The state update matrix will 
+vector by a matrix (and adding the input value to both components). The output is computed as a
+linear combination of the state-vector's coordinates and the input. The state update matrix will
 have one of these two general forms:
 
-  |p1 0 |     or:     r * |cos(w)  -sin(w)| 
+  |p1 0 |     or:     r * |cos(w)  -sin(w)|
   |0  p2|                 |sin(w)   cos(w)|
 
-where in the first case, p1 and p2 are the two real poles and the x and y states decay 
+where in the first case, p1 and p2 are the two real poles and the x and y states decay
 exponentially and independently from each other when the input is switched off. In the second case,
-the numbers r*cos(w), r*sin(w) are the real and imaginary parts of a pair of complex conjugate 
+the numbers r*cos(w), r*sin(w) are the real and imaginary parts of a pair of complex conjugate
 poles and we will see a spiraling/decaying rotation of the states when there's no input (anymore).
-The filter structure can realize almost any biquad transfer function - the singular problematic 
-case is when there are two equal real poles - in this case, they will be made artificially distinct 
+The filter structure can realize almost any biquad transfer function - the singular problematic
+case is when there are two equal real poles - in this case, they will be made artificially distinct
 by fudging them a bit. The effect of that fudging on the transfer function will be miniscule. The
 advanatge of that filter structure is that it (presumably) responds well to modulation. */
 
@@ -284,14 +284,14 @@ public:
   /** Sets up the filter coefficients to simulate a biquad filter with given coeffs. */
   void setupFromBiquad(CRPar b0, CRPar b1, CRPar b2, CRPar a1, CRPar a2);
 
-  /** Sets up the two poles of this filter. You need to pass real and imaginary parts of both 
-  poles separately. If there are two real poles, the imaginary parts p1im, p2im should both be zero 
-  and if there's a complex pair, the imaginary parts should be negatives of each other, i.e p2im 
+  /** Sets up the two poles of this filter. You need to pass real and imaginary parts of both
+  poles separately. If there are two real poles, the imaginary parts p1im, p2im should both be zero
+  and if there's a complex pair, the imaginary parts should be negatives of each other, i.e p2im
   should be -p1im. The poles determine the coefficients in the state update matrix. */
   void setPoles(CRPar p1re, CRPar p1im, CRPar p2re, CRPar p2im);
 
-  /** Assuming the poles are already fixed, this function computes the mixing coefficients such 
-  that the first 3 samples of the impulse response will equal what you pass to this function. This 
+  /** Assuming the poles are already fixed, this function computes the mixing coefficients such
+  that the first 3 samples of the impulse response will equal what you pass to this function. This
   is used to compute the mixing coefficients after the poles have been determined. */
   void setImpulseResponseStart(TPar h[3]);
 
@@ -321,9 +321,9 @@ protected:
     y = yx*t + yy*y + in;   // update y
   }
 
-  /** This is a function to fudge with the poles in cases where they are (almost) equal. Such a 
-  case cannot be represented exactly by this filter structure (a singular matrix in the mixing 
-  coefficient calculation would occur), so we use distinct poles close to the originally desired 
+  /** This is a function to fudge with the poles in cases where they are (almost) equal. Such a
+  case cannot be represented exactly by this filter structure (a singular matrix in the mixing
+  coefficient calculation would occur), so we use distinct poles close to the originally desired
   poles. The effect is a slight misadjustment of the filter in these particular cases. */
   void makePolesDistinct();
    // maybe return a bool to inform, if the poles were modified, maybe also return a bool from
@@ -347,15 +347,15 @@ References
 -maybe rename to rsExplicitInitialValueSolver (and provide also an implicit one)
 -maybe factor out a solver that doesn't carry around x and where f only depends on y - or maybe
  subsume systems that depend explicitly on x by incorporating an identity function into the vector
- of functions f(y), i.e. f(y1, y2, y3, ...) = (y1, f2(y1,y2,y3..), f3(y1,y2,y3..), ...), the 
- derivative of y1 is always 1, so x += h translates to y1 += 1*h in the new notation. that would 
- simplify interface and implementation but requires more understanding from the user and does not 
+ of functions f(y), i.e. f(y1, y2, y3, ...) = (y1, f2(y1,y2,y3..), f3(y1,y2,y3..), ...), the
+ derivative of y1 is always 1, so x += h translates to y1 += 1*h in the new notation. that would
+ simplify interface and implementation but requires more understanding from the user and does not
  allow to have a different datatype for x
 -maybe move the state variables to a subclass (rsMultiStepInitialValueSolver or something)
 */
 
 template<class Tx, class Ty>
-class rsInitialValueSolver 
+class rsInitialValueSolver
 {
 
 public:
@@ -435,25 +435,25 @@ protected:
 
 // -maybe make also a class rsBinarySearchTree where the left child is <= and the right child is >=
 //  the parent
-// -pehaps we could implement a general function: needsSwap(int parentIndex, int childIndex) - in 
-//  the case of a search tree, it would first have to figure out, if the childIndex is a left or 
+// -pehaps we could implement a general function: needsSwap(int parentIndex, int childIndex) - in
+//  the case of a search tree, it would first have to figure out, if the childIndex is a left or
 //  right child and order the arguments of the comparison according to that
 // -in the old RSLib codebase, i did some sort of linked-tree - maybe that could be dragged in as
 //  rsLinkedTree or rsDynamicTree or something like that - all the different trees could be in
 //  a file Trees.h/cpp
 // -i think, currently, the order of the children of a node is undefined - both children are <=
-//  the parent, but maybe we could impose additional useful structure, if we also have 
+//  the parent, but maybe we could impose additional useful structure, if we also have
 //  left <= right - would that be easy to implement and/or useful?
 // -maybe implement also a MinMaxHeap https://en.wikipedia.org/wiki/Min-max_heap
 
-/** Works similar to rsBinaryHeap just that the property satisfied by the nodes is different. 
+/** Works similar to rsBinaryHeap just that the property satisfied by the nodes is different.
 Here, it holds that:
 
    A[left(i)]  <= A[i]    and
    A[right(i)] >= A[i]
 
 As a reminder, for a (max)heap, the property was A[left(i)] <= A[i] and A[right(i)] <= A[i], i.e.
-both children must have values less-or-equal than the parent. Here, the left node must be 
+both children must have values less-or-equal than the parent. Here, the left node must be
 less-or-equal and the right node must be greater-or-equal. */
 
 template<class T>
@@ -462,22 +462,22 @@ class rsBinarySearchTree : public rsBinaryTree<T>
 
 public:
 
-  using rsBinaryTree::rsBinaryTree;  // inherit constructors
+  using rsBinaryTree<T>::rsBinaryTree;  // inherit constructors
 
 
   bool isSearchTree(int i = 0) const
   {
-    if(i >= size)
+    if(i >= this->size)
       return true;
     bool result = true;
-    int l = left(i);
-    int r = right(i);
-    if(l < size) result &= !less(data[i], data[l]) && isSearchTree(l);
-    if(r < size) result &= !less(data[r], data[i]) && isSearchTree(r);
+    int l = this->left(i);
+    int r = this->right(i);
+    if(l < this->size) result &= !less(this->data[i], this->data[l]) && isSearchTree(l);
+    if(r < this->size) result &= !less(this->data[r], this->data[i]) && isSearchTree(r);
     return result;
   }
-  // actually, this test is not enough - it says yes to the "pseudotree" 
-  // 50,20,80,10,60,30,90 - it satisfies the property at each node with respect to direct 
+  // actually, this test is not enough - it says yes to the "pseudotree"
+  // 50,20,80,10,60,30,90 - it satisfies the property at each node with respect to direct
   // parents/children but not for the full subtrees - however - maybe for maintaining the
   // property, it's enough to check that? can replace create pseudotrees? ..oh - yes - that seems
   // to be the case! damn! maybe the whole idea of using the same structure as for the binary heap
@@ -502,17 +502,17 @@ public:
   {
     //floatIntoPlace(i);  // does not work
 
-    int l = left(i);
-    if(l >= size) return;             // node is leaf
-    int r = right(i);
-    if(r >= size) {                   // node has only left child - make sure, the data at the
-      if(less(data[i], data[l]))      // parent i is not less than at left child l - if it is: swap
-        swap(data[i], data[l]);
+    int l = this->left(i);
+    if(l >= this->size) return;       // node is leaf
+    int r = this->right(i);
+    if(r >= this->size) {             // node has only left child - make sure, the data at the
+      if(less(this->data[i], this->data[l]))      // parent i is not less than at left child l - if it is: swap
+        swap(this->data[i], this->data[l]);
       return; }
 
     // ok - we have a node that has both children - we must figure out which of the 3 nodes i,l,r
-    // is the middle element m and if m is not already i, then do a swap. we must also make sure 
-    // that data[l] <= data[r]. we have 3 possible swapping scenarios: swap(i,l), swap(i,r), 
+    // is the middle element m and if m is not already i, then do a swap. we must also make sure
+    // that data[l] <= data[r]. we have 3 possible swapping scenarios: swap(i,l), swap(i,r),
     // swap(l,r) ...plus, of course, the no-swap scenario
 
     //int m = i;                           // index of mid element, preliminary set to i
@@ -520,16 +520,16 @@ public:
     //if(less(data[r], data[m])) m = r;
 
     // fix order of children:
-    if(less(data[r], data[l]))
-      swap(data[l], data[r]);
+    if(less(this->data[r], this->data[l]))
+      swap(this->data[l], this->data[r]);
 
     // fix order of i,l:
-    if(less(data[i], data[l]))
-      swap(data[l], data[i]);
+    if(less(this->data[i], this->data[l]))
+      swap(this->data[l], this->data[i]);
 
     // fix order of i,r:
-    if(less(data[r], data[i]))
-      swap(data[r], data[i]);
+    if(less(this->data[r], this->data[i]))
+      swap(this->data[r], this->data[i]);
 
     // try to do this only with 2 comparisons and one swap
 
@@ -544,12 +544,12 @@ public:
     // we insert it (preliminarily) either at i or at the sibling of i:
     int p = parent(i);
     if(isLeft(i))
-      if(less(data[p], x)) 
+      if(less(data[p], x))
         i = right(p);   // right sibling
     else
-      if(less(x, data[p])) 
+      if(less(x, data[p]))
         i = left(p);    // left sibling
-    data[i] = x; 
+    data[i] = x;
     return floatIntoPlace(i);
   }
 
@@ -595,7 +595,7 @@ protected:
 
   int floatDown2(int i)
   {
-    while(i < size-1) 
+    while(i < size-1)
     {
       int l = left(i);
       if(l >= size) return i;              // node i is a leaf
@@ -641,7 +641,7 @@ protected:
         */
 
 
-      //// no - this is wrong: we need to consider 3 cases: 
+      //// no - this is wrong: we need to consider 3 cases:
       ////   swap l with i, swap r with i, swap r with l
       //// see  the heap implementation
       //if(l < size && less(data[i], data[l])) {
@@ -651,9 +651,9 @@ protected:
       //  swap(data[i], data[r]);
       //  i = r; }
       //else
-      //  return i; 
+      //  return i;
 
-    
+
     }
     return i;
 
@@ -677,16 +677,16 @@ class rsQuantileFilterCore2 : public rsQuantileFilterCore<T>
 
 public:
 
-  /** Produces a sample that would have been produced, if the length L of the filter would be 
-  longer by one sample, i.e. L+1. This is used to implement non-integer length filters by 
-  crossfading between the outputs of two filters whose lengths differ by one. 
-  
+  /** Produces a sample that would have been produced, if the length L of the filter would be
+  longer by one sample, i.e. L+1. This is used to implement non-integer length filters by
+  crossfading between the outputs of two filters whose lengths differ by one.
+
   wrong:
   It needs as input the
-  same input sample that has been fed to getSample and it should be called after getSample. 
+  same input sample that has been fed to getSample and it should be called after getSample.
 
   correct again:
-  From 
+  From
   the values returned by the regular getSample call and the call to this afterwards, a non-integer
   length filter sample can be computed by crossfading. */
 
@@ -726,8 +726,8 @@ public:
   }
   // needs test - compare against signal that has beed produced by a baseclass filter that actually
   // is one sample longer
-  // this is wrong - it should not take as input the sample x[n] (that is stored already in the 
-  // heaps after getSample). instead, it needs x[n-L] maybe make a function 
+  // this is wrong - it should not take as input the sample x[n] (that is stored already in the
+  // heaps after getSample). instead, it needs x[n-L] maybe make a function
   // readOutputWithAdditionalInput
 
 protected:
@@ -737,7 +737,7 @@ protected:
 //=================================================================================================
 
 /** Extends rsQuantileFilter by a second core allowing to do more interesting stuff such as forming
-linear combinations of lower an upper quantiles (such as min and max), etc. Using a second core 
+linear combinations of lower an upper quantiles (such as min and max), etc. Using a second core
 instead of just using two rsQuantileFilter objects is more economical because the delayline can be
 shared between the cores. */
 
@@ -787,7 +787,7 @@ public:
   T getSample(T x)
   {
     delayLine.getSample(x);
-    if(dirty) 
+    if(dirty)
       updateInternals();
     T yL1 = core.getSample(x);
     T yH1 = delayLine[delayScl*delay] - yL1;
@@ -833,15 +833,15 @@ protected:
   T loGain2   = 0.0;
   T hiGain2   = 0.0;
   T delayScl2 = 1.0;
-  T delay2    = 0.0; 
+  T delay2    = 0.0;
 
 };
 
 //=================================================================================================
 
-/** This is a naive implementation of (the core of) a moving quantile filter and meant only for 
-producing test outputs to compare the production version of the rsQuantileFilterCore against. 
-It's horribly inefficient - the cost per sample is O(N*log(N)) whereas the production version 
+/** This is a naive implementation of (the core of) a moving quantile filter and meant only for
+producing test outputs to compare the production version of the rsQuantileFilterCore against.
+It's horribly inefficient - the cost per sample is O(N*log(N)) whereas the production version
 should run in O(log(N)). ..maybe move to unit tests.. */
 
 template<class T>
@@ -955,7 +955,7 @@ public:
   }
 
   rsOnePoleFilter<T, T> selectorLowpass;
-  // the selector is lowpassed such that successive samples tend to be selected from the same 
+  // the selector is lowpassed such that successive samples tend to be selected from the same
   // distribution
 
 
@@ -970,8 +970,8 @@ protected:
 //=================================================================================================
 // continued fraction stuff:
 
-/** A class for generating the (integer) continued fraction expansion coefficients of a given 
-(floating point) number. You pass the number to the constructor and after that, you can pull out 
+/** A class for generating the (integer) continued fraction expansion coefficients of a given
+(floating point) number. You pass the number to the constructor and after that, you can pull out
 successive cofficients via getNext(). */
 
 template<class TInt, class TFloat>
@@ -986,7 +986,7 @@ public:
   {
     TFloat flr = floor(state);
     state = TFloat(1) / (state - flr);
-    return (TInt) flr; 
+    return (TInt) flr;
   }
   // maybe rename to getNextCoeff ...or whatever these numbers are called
 
@@ -1010,7 +1010,7 @@ rsFraction<T> rsContinuedFractionConvergent(T* a, int N)
   return rsFraction<T>(p2, q2);
 }
 // algorithm adapted from cfcv.c (by Hollos) - i don't really know, why it works
-// this can actually be done directly using the generator, without the need for explicitly 
+// this can actually be done directly using the generator, without the need for explicitly
 // computing and storing the array a
 // maybe move into class rsContinuedFractionGenerator...maybe as static method
 // ..but i don't think that this continued fraction stuff should go into rsFraction - it's stuff
@@ -1045,10 +1045,10 @@ std::vector<T> rsContinuedFraction(rsFraction<T> x)
     c.push_back(a); }
   return c;
 }
-// algo adapted from from cfrat.c 
+// algo adapted from from cfrat.c
 // i think, this is some variation of the Euclidean algorithm
 
-// Wikipedia says: "Even-numbered convergents are smaller than the original number, while 
+// Wikipedia says: "Even-numbered convergents are smaller than the original number, while
 // odd-numbered ones are larger."
 // https://en.wikipedia.org/wiki/Continued_fraction#Infinite_continued_fractions_and_convergents
 // ...verify this. Knowing this could be useful
@@ -1075,17 +1075,17 @@ void fitQuadratic(T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
   *a1  = b1 + b2 + b3;  // coeff for x^1
   *a0  = c1 + c2 + c3;  // coeff for x^0
 
-  // Formulas were derived from setting up 3 polynomials in product form, where each has zeros at 
-  // all but one of the datapoints, say xi, and to have value yi at xi and then adding them up 
+  // Formulas were derived from setting up 3 polynomials in product form, where each has zeros at
+  // all but one of the datapoints, say xi, and to have value yi at xi and then adding them up
   // (idea due to Lagrange):
   //   p1(x) = k1*(x-x2)*(x-x3)       p1 has zeros at at x2,x3
   //   p2(x) = k2*(x-x1)*(x-x3)       p2 has zeros at at x1,x3
   //   p3(x) = k3*(x-x1)*(x-x2)       p3 has zeros at at x1,x2
   // Require:
   //   p1(x1) = y1, p2(x2) = y2, p3(x3) = y3
-  // Solve these for the ki, i.e. k1,k2,k3. For example, k1 = y1 / ((x1-x2)*(x1-x3)). Plug, for 
-  // example, k1 back into the p1 equation and multiply it out to obtain its coeffs - do the same 
-  // for p2 and p3 and then obtain the final polynomial coeffs by adding the corresponding  coeffs 
+  // Solve these for the ki, i.e. k1,k2,k3. For example, k1 = y1 / ((x1-x2)*(x1-x3)). Plug, for
+  // example, k1 back into the p1 equation and multiply it out to obtain its coeffs - do the same
+  // for p2 and p3 and then obtain the final polynomial coeffs by adding the corresponding  coeffs
   // of each of the partial polynomials.
 
   // operations: add: 9, sub: 6, mul: 12, div: 3, neg: 3, ass: 12, tmp: 9
@@ -1094,12 +1094,12 @@ void fitQuadratic(T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
 //=================================================================================================
 // the stuff below is just for playing around - maybe move code elsewhere, like the research-repo:
 
-/** A class for representing a particular kind of string with which we can do some computations 
-just like with numbers. The set of all such strings forms a group (see group theory). The group 
+/** A class for representing a particular kind of string with which we can do some computations
+just like with numbers. The set of all such strings forms a group (see group theory). The group
 operation (which we call addition here) is to concatenate two strings and then delete all pairs of
-equal characters, i.e. the string "aaab" would be reduced to "ab", one "aa" pair is deleted. The 
-inverse element to each string is obtained by reversing it. Adding "cba" to "abc" like abc+cba 
-results in abccba wich would subsequently be reduced to the empty string (the rule of deleting 
+equal characters, i.e. the string "aaab" would be reduced to "ab", one "aa" pair is deleted. The
+inverse element to each string is obtained by reversing it. Adding "cba" to "abc" like abc+cba
+results in abccba wich would subsequently be reduced to the empty string (the rule of deleting
 equal pairs is used as often as applicable). The additive neutral element is the empty string. */
 
 class rsGroupString
@@ -1113,14 +1113,14 @@ public:
 
   rsGroupString(int length) { s.resize(length); }
 
-  // define operator =, 
+  // define operator =,
   // maybe: < (lexicographical order), * (i still have to invent a suitable multiplication rule)
 
   bool operator==(const rsGroupString& t) const { return t.s == s; }
 
 
-  /** Adds two GroupString objects. This addition is the group operation and is (conceptually) 
-  performed by concatenating two strings and then deleting all doublets (iteratively, as often as 
+  /** Adds two GroupString objects. This addition is the group operation and is (conceptually)
+  performed by concatenating two strings and then deleting all doublets (iteratively, as often as
   necessary to eliminate all of them). */
   rsGroupString operator+(const rsGroupString &rhs) const;
 
@@ -1133,9 +1133,9 @@ public:
   /** Read/write access to i-th character. */
   unsigned int& operator[](int i) { return s[i]; }
 
-  unsigned int last() const 
-  { 
-    if(s.size() > 0) return s[s.size()-1]; 
+  unsigned int last() const
+  {
+    if(s.size() > 0) return s[s.size()-1];
     else             return 0; // is this reasonable? or should we use a special "error" signal
   }
 
@@ -1154,7 +1154,7 @@ public:
 
   /** Returns the (additive) inverse which is just the string in reversed order. */
   rsGroupString inverse() const;
-   // maybe later (when we have multiplication), rename to additiveInverse and implement a 
+   // maybe later (when we have multiplication), rename to additiveInverse and implement a
    // multiplicativeInverse, too
    // then the class should be renamed to fieldString
 
@@ -1175,14 +1175,14 @@ protected:
 
   std::vector<unsigned int> s;  // we represent the characters as unsigned integers
 
-  //int modulus = 26;    
-  // the modulus, we use the 26 lowercase letters, but that is tweakable...but we don't need that 
+  //int modulus = 26;
+  // the modulus, we use the 26 lowercase letters, but that is tweakable...but we don't need that
   // yet but maybe later when we do operations on individual characters
 
 };
 
 /** Subclass of rsGroupString that lets use more conveniently work with strings over the alphabet
-a,b,c,..,x,y,z. The class provides the conversions from/to std::string comparison operators etc. 
+a,b,c,..,x,y,z. The class provides the conversions from/to std::string comparison operators etc.
 But all these convenenience functions have nothing to do with the actual algebraic structure, which
 is why they have been factored out to keep the baseclass pure. */
 
@@ -1191,7 +1191,7 @@ class rsGroupString2 : public rsGroupString
 
 public:
 
-  /** Convenience function meant to be used for strings over the aplhabet a,b,c,...,x,y,z. We 
+  /** Convenience function meant to be used for strings over the aplhabet a,b,c,...,x,y,z. We
   represent 'a' as 0 and then count up to 'z' = 25. */
   rsGroupString2(const char* initialString);
 
