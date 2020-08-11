@@ -558,7 +558,7 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\VariousOscillators.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BasicFunctions.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BasicMathFunctions.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BellFunctions.cpp">
@@ -2508,7 +2508,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\Oscillator3D.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\RayBouncer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\VariousOscillators.h"/>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BasicFunctions.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BasicMathFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BellFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\ComplexFunctions.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\FunctionIterators.h"/>

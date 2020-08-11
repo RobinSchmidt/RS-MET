@@ -1672,13 +1672,13 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Math/Functions/BasicFunctions.cpp">
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Math/Functions/BasicMathFunctions.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Math/Functions/BasicFunctions.h">
+    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Math/Functions/BasicMathFunctions.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option compile="0"/>

@@ -1,9 +1,8 @@
 #ifndef RAPT_BASICMATHFUNCTIONS_H_INCLUDED
 #define RAPT_BASICMATHFUNCTIONS_H_INCLUDED
 
-// todo: rename the file - we have now a name clash with Basics/BasicFunctions.h - maybe the new 
-// name should be BasicMathFunctions.h/cpp ...but maybe the content could also be absorbed into
-// RealFunctions.h/cpp ...maybe some could be even moved into Basics/BasicFunctions.h
+// todo: but maybe the content could also be absorbed into RealFunctions.h/cpp and
+// Basics/BasicFunctions.h (the min/max stuff could go into Basics)
 
 
 /** Returns the absolute value of the input argument. It is intended to replace the standard
@@ -189,6 +188,7 @@ inline T rsSquare(T x);
 /** Swaps two objects of class T. */
 template <class T>
 inline void rsSwap(T &in1, T &in2);
+// merge with Basics
 
 /** Returns a unity value of the given type. The idea is to use this template function to create
 a unity-value inside other template functions where it might be required that the unity-value is
@@ -199,6 +199,7 @@ as the size of "value"). If no explicit instantiation exists for the given type,
 back to the default implementation, which returns T(1). */
 template<class T>
 inline T rsUnityValue(T value);
+// Merge with Basics
 
 /** Wraps the number to the interval 0...length. */
 inline double rsWrapAround(double numberToWrap, double length);
@@ -217,6 +218,7 @@ inline double rsZeroFunction(double x);
 /** Returns a zero value of the given type. @see rsUnityValue */
 template<class T>
 inline T rsZeroValue(T value);
+// Merge with basics
 
 // \todo - is it somehow possible to get rid of the inlining?
 

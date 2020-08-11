@@ -802,7 +802,7 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\VariousOscillators.cpp">
       <Filter>JUCE Modules\rapt\Generators</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BasicFunctions.cpp">
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BasicMathFunctions.cpp">
       <Filter>JUCE Modules\rapt\Math\Functions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BellFunctions.cpp">
@@ -3003,7 +3003,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Generators\VariousOscillators.h">
       <Filter>JUCE Modules\rapt\Generators</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BasicFunctions.h">
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BasicMathFunctions.h">
       <Filter>JUCE Modules\rapt\Math\Functions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Functions\BellFunctions.h">
