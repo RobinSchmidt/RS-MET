@@ -197,9 +197,13 @@ template class RAPT::rsPolynomial<std::complex<double>>;
 
 template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, double, double*);
   // needs separate instantiation because function itself has a (second) template parameter
-template void RAPT::rsPolynomial<std::complex<double>>::subtract(
-  const std::complex<double>* p, int pN, const std::complex<double>* q, int qN,
-  std::complex<double>* r);
+
+//template void RAPT::rsPolynomial<std::complex<double>>::subtract(
+//  const std::complex<double>* p, int pN, const std::complex<double>* q, int qN,
+//  std::complex<double>* r);
+// duplicate explicit instantiation in gcc
+
+
 template void  RAPT::rsPolynomial<float>::rootsQuadraticComplex(
   const std::complex<float>& a0, const std::complex<float>& a1, const std::complex<float>& a2,
   std::complex<float>* x1, std::complex<float>* x2);

@@ -180,6 +180,63 @@ return left > right;
 }
 */
 
+/** The maximum of two objects on which the ">"-operator is defined. */
+template <class T>
+inline T rsMax(T in1, T in2)
+{
+  if(in1 > in2)
+    return in1;
+  else
+    return in2;
+}
+
+/** The maximum of three objects on which the ">"-operator is defined. */
+template <class T>
+inline T rsMax(T in1, T in2, T in3)
+{
+  return rsMax(rsMax(in1, in2), in3);
+}
+
+/** The maximum of four objects on which the ">"-operator is defined. */
+template <class T>
+inline T rsMax(T in1, T in2, T in3, T in4)
+{
+  return rsMax(rsMax(in1, in2), rsMax(in3, in4));
+}
+
+/** Like rsMax but based on the "<" operator and swapping arguments (rather than using ">"). */
+template <class T>
+inline T rsMaxViaLess(T in1, T in2)
+{
+  if(in2 < in1)
+    return in1;
+  else
+    return in2;
+}
+
+/** The minimum of two objects on which the "<"-operator is defined. */
+template <class T>
+inline T rsMin(T in1, T in2)
+{
+  if(in1 < in2)
+    return in1;
+  else
+    return in2;
+}
+
+/** The minimum of three objects on which the "<"-operator is defined. */
+template <class T>
+inline T rsMin(T in1, T in2, T in3)
+{
+  return rsMin(rsMin(in1, in2), in3);
+}
+
+/** The minimum of four objects on which the "<"-operator is defined. */
+template <class T>
+inline T rsMin(T in1, T in2, T in3, T in4)
+{
+  return rsMin(rsMin(in1, in2), rsMin(in3, in4));
+}
 
 /** Checks, if x is even. */
 template<class T>

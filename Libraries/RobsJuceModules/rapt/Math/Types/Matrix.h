@@ -1010,11 +1010,11 @@ public:
 
   /** Multiplies this matrix by a scalar and returns the result. */
   rsMatrix<T>& operator*=(const T& s)
-  { scale(s); return *this; }
+  { this->scale(s); return *this; }
 
   /** Divides this matrix by a scalar and returns the result. */
   rsMatrix<T>& operator/=(const T& s)
-  { scale(T(1)/s); return *this; }
+  { this->scale(T(1)/s); return *this; }
 
 
 

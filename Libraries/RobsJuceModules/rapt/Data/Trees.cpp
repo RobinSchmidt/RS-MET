@@ -44,7 +44,7 @@ int rsBinaryHeap<T>::floatUp(int i)
 {
   while(i > 0) {
     int p = this->parent(i);
-    if(less(this->data[p], this->data[i]))  {
+    if(this->less(this->data[p], this->data[i]))  {
       swap(this->data[i], this->data[p]);
       i = p; }
     else

@@ -86,33 +86,7 @@ offsetted value so as to hit the outMax correctly. */
 template<class T>
 inline T rsLinToExpWithOffset(T in, T inMin, T inMax, T outMin, T outMax, T offset = 0.0);
 
-/** The maximum of two objects on which the ">"-operator is defined. */
-template <class T>
-inline T rsMax(T in1, T in2);
 
-/** The maximum of three objects on which the ">"-operator is defined. */
-template <class T>
-inline T rsMax(T in1, T in2, T in3);
-
-/** The maximum of four objects on which the ">"-operator is defined. */
-template <class T>
-inline T rsMax(T in1, T in2, T in3, T in4);
-
-/** Like rsMax but based on the "<" operator and swapping arguments (rather than using ">"). */
-template <class T>
-inline T rsMaxViaLess(T in1, T in2);
-
-/** The minimum of two objects on which the "<"-operator is defined. */
-template <class T>
-inline T rsMin(T in1, T in2);
-
-/** The minimum of three objects on which the "<"-operator is defined. */
-template <class T>
-inline T rsMin(T in1, T in2, T in3);
-
-/** The minimum of four objects on which the "<"-operator is defined. */
-template <class T>
-inline T rsMin(T in1, T in2, T in3, T in4);
 
 /** Computes the median of 3 values. */
 template<class T>
@@ -296,57 +270,6 @@ inline T rsLinToExpWithOffset(T in, T inMin, T inMax, T outMin, T outMax, T offs
   tmp += offset;
   tmp *= outMax / (outMax + offset);
   return tmp;
-}
-
-template <class T>
-inline T rsMax(T in1, T in2)
-{
-  if(in1 > in2)
-    return in1;
-  else
-    return in2;
-}
-
-template <class T>
-inline T rsMax(T in1, T in2, T in3)
-{
-  return rsMax(rsMax(in1, in2), in3);
-}
-
-template <class T>
-inline T rsMax(T in1, T in2, T in3, T in4)
-{
-  return rsMax(rsMax(in1, in2), rsMax(in3, in4));
-}
-
-template <class T>
-inline T rsMaxViaLess(T in1, T in2)
-{
-  if(in2 < in1)
-    return in1;
-  else
-    return in2;
-}
-
-template <class T>
-inline T rsMin(T in1, T in2)
-{
-  if(in1 < in2)
-    return in1;
-  else
-    return in2;
-}
-
-template <class T>
-inline T rsMin(T in1, T in2, T in3)
-{
-  return rsMin(rsMin(in1, in2), in3);
-}
-
-template <class T>
-inline T rsMin(T in1, T in2, T in3, T in4)
-{
-  return rsMin(rsMin(in1, in2), rsMin(in3, in4));
 }
 
 template<class T>

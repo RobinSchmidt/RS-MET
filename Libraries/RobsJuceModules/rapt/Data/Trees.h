@@ -325,8 +325,8 @@ public:
   /** Returns the second smallest element from our min-heap of large values. */
   T get2ndSmallestLargeValue() const
   {
-    if(large.getSize() >= 3) return rsMin(large.at(1), large.at(2));
-    if(large.getSize() >= 2) return large.at(1);
+    if(this->large.getSize() >= 3) return rsMin(this->large.at(1), this->large.at(2));
+    if(this->large.getSize() >= 2) return this->large.at(1);
     return large.at(0);  // does this make sense?
   }
 

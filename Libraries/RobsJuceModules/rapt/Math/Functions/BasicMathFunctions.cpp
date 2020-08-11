@@ -201,49 +201,6 @@ inline double rsLinToExpWithOffset(double in, double inMin, double inMax, double
   return tmp;
 }
 */
-/*
-template <class T>
-inline T rsMax(T in1, T in2)
-{
-  if(in1 > in2)
-    return in1;
-  else
-    return in2;
-}
-
-template <class T>
-inline T rsMax(T in1, T in2, T in3)
-{
-  return rsMax(rsMax(in1, in2), in3);
-}
-
-template <class T>
-inline T rsMax(T in1, T in2, T in3, T in4)
-{
-  return rsMax(rsMax(in1, in2), rsMax(in3, in4));
-}
-
-template <class T>
-inline T rsMin(T in1, T in2)
-{
-  if(in1 < in2)
-    return in1;
-  else
-    return in2;
-}
-
-template <class T>
-inline T rsMin(T in1, T in2, T in3)
-{
-  return rsMin(rsMin(in1, in2), in3);
-}
-
-template <class T>
-inline T rsMin(T in1, T in2, T in3, T in4)
-{
-  return rsMin(rsMin(in1, in2), rsMin(in3, in4));
-}
-*/
 
 template <class T>
 inline T rsNextEvenNumber(T x)
