@@ -485,7 +485,7 @@ public:
 
   void buildSearchTree()
   {
-    for(int i = size-1; i >= 0; i--)
+    for(int i = this->size-1; i >= 0; i--)
     {
       //floatUp(i);
       //floatIntoPlace(i);
@@ -542,14 +542,14 @@ public:
     // data[i] = x; return floatIntoPlace(i); // this is what the heap needs
 
     // we insert it (preliminarily) either at i or at the sibling of i:
-    int p = parent(i);
-    if(isLeft(i))
-      if(less(data[p], x))
-        i = right(p);   // right sibling
+    int p = this->parent(i);
+    if(this->isLeft(i))
+      if(less(this->data[p], x))
+        i = this->right(p);   // right sibling
     else
-      if(less(x, data[p]))
-        i = left(p);    // left sibling
-    data[i] = x;
+      if(less(x, this->data[p]))
+        i = this->left(p);    // left sibling
+    this->data[i] = x;
     return floatIntoPlace(i);
   }
 
@@ -561,15 +561,15 @@ protected:
   int floatUp(int i)
   {
     while(i > 0) {
-      int p = parent(i);
-      if(isLeft(i)) {
-        if(less(data[p], data[i]))
-          swap(data[i], data[p]);
+      int p = this->parent(i);
+      if(this->isLeft(i)) {
+        if(less(this->data[p], this->data[i]))
+          swap(this->data[i], this->data[p]);
         else
           return i; }
       else {
-        if(less(data[i], data[p]))      // i and p are swapped compared to left nodes
-          swap(data[i], data[p]);
+        if(less(this->data[i], this->data[p]))      // i and p are swapped compared to left nodes
+          swap(this->data[i], this->data[p]);
         else
           return i;   }
       i = p; }
@@ -578,15 +578,15 @@ protected:
 
   int floatDown1(int i)
   {
-    int l = left(i);
-    if(l >= size) return i;
-    if(less(data[i], data[l])) {
-      swap(data[i], data[l]);
+    int l = this->left(i);
+    if(l >= this->size) return i;
+    if(less(this->data[i], this->data[l])) {
+      swap(this->data[i], this->data[l]);
       return floatDown(l); }
-    int r = right(i);
-    if(r >= size) return i;
-    if(less(data[r], data[i])) {
-      swap(data[i], data[r]);
+    int r = this->right(i);
+    if(r >= this->size) return i;
+    if(less(this->data[r], this->data[i])) {
+      swap(this->data[i], this->data[r]);
       return floatDown(r); }
     return i;
   }
@@ -595,13 +595,13 @@ protected:
 
   int floatDown2(int i)
   {
-    while(i < size-1)
+    while(i < this->size-1)
     {
-      int l = left(i);
-      if(l >= size) return i;              // node i is a leaf
+      int l = this->left(i);
+      if(l >= this->size) return i;              // node i is a leaf
       int m = i;                           // index of mid element, preliminary set to i
-      if(less(data[i], data[l])) m = l;    // left child is bigger than i, so mid index goes to l
-      int r = right(i);
+      if(less(this->data[i], this->data[l])) m = l;    // left child is bigger than i, so mid index goes to l
+      int r = this->right(i);
 
       /*
       if(r >= size)
@@ -622,10 +622,10 @@ protected:
       }
       */
 
-      if(r < size && less(data[r], data[m])) m = r;
+      if(r < this->size && less(this->data[r], this->data[m])) m = r;
 
       if(m != i) {
-        swap(data[m], data[i]);
+        swap(this->data[m], this->data[i]);
         i = m;  }
       else
         return i;
@@ -677,6 +677,8 @@ class rsQuantileFilterCore2 : public rsQuantileFilterCore<T>
 
 public:
 
+  using Base = rsQuantileFilterCore<T>;
+
   /** Produces a sample that would have been produced, if the length L of the filter would be
   longer by one sample, i.e. L+1. This is used to implement non-integer length filters by
   crossfading between the outputs of two filters whose lengths differ by one.
@@ -694,34 +696,34 @@ public:
 
   T readOutputLongerBy1()
   {
-    rsAssert(sigBuf != nullptr, "To use this feature, the input buffer must be assigned.");
-    T xL = (*sigBuf)[L];   // should be x[n-L], client code must assure this
+    rsAssert(this->sigBuf != nullptr, "To use this feature, the input buffer must be assigned.");
+    T xL = (*this->sigBuf)(this->L);   // should be x[n-L], client code must assure this
     return readOutputWithOneMoreInput(xL);
   }
 
 
   T readOutputWithOneMoreInput(T xL)
   {
-    T p1 = p * T(L) / T(L-1); // but wait - p is an integer - should we use p+w or p+(1-w)?
+    T p1 = this->p * T(this->L) / T(this->L-1); // but wait - p is an integer - should we use p+w or p+(1-w)?
     T w1 = p1 - floor(p1);
     T yS, yL; // hmm...yL means yLarge but xL means x[n-L] - notational clash!
-    Node nx(xL, 0); // we need to create a node
+    class Base::Node nx(xL, 0); // we need to create a node
 
-    if(dblHp.small.isLess(nx, dblHp.large[0]))  // means: if(x < large[0])
+    if(this->dblHp.small.isLess(nx, this->dblHp.large[0]))  // means: if(x < large[0])
     {
       // x belongs in small heap
-      yS = dblHp.get2ndLargestSmallValue().value;
+      yS = this->dblHp.get2ndLargestSmallValue().value;
       yS = rsMaxViaLess(yS, xL);  //
-      yL = dblHp.getLargestSmallValue().value;
+      yL = this->dblHp.getLargestSmallValue().value;
     }
     else
     {
       // x belongs in large heap
-      yL = dblHp.get2ndSmallestLargeValue().value;
+      yL = this->dblHp.get2ndSmallestLargeValue().value;
       yL = rsMin(yL, xL);
-      yS = dblHp.getSmallestLargeValue().value;
+      yS = this->dblHp.getSmallestLargeValue().value;
     }
-    T y = (T(1)-w1)*yS + w*yL;
+    T y = (T(1)-w1)*yS + w1*yL;
     return y;
   }
   // needs test - compare against signal that has beed produced by a baseclass filter that actually
@@ -750,34 +752,34 @@ public:
   rsDualQuantileFilter()
   {
     allocateResources();
-    core.setModulationBuffer(&delayLine);
-    core2.setModulationBuffer(&delayLine);
-    dirty = true;
+    this->core.setModulationBuffer(&this->delayLine);
+    this->core2.setModulationBuffer(&this->delayLine);
+    this->dirty = true;
   }
 
 
   // setters for the parameters of the second core
   void setFrequency2(   T newFrequency) { setLength2(T(1) / newFrequency); }
-  void setLength2(      T newLength)    { length2   = newLength;    dirty = true; }
-  void setQuantile2(    T newQuantile1) { quantile2 = newQuantile1; dirty = true; }
+  void setLength2(      T newLength)    { length2   = newLength;    this->dirty = true; }
+  void setQuantile2(    T newQuantile1) { quantile2 = newQuantile1; this->dirty = true; }
   void setLowpassGain2( T newGain)      { loGain2   = newGain; }
   void setHighpassGain2(T newGain)      { hiGain2   = newGain; }
 
   void setCore2Equal()
   {
-    length2   = length;
-    quantile2 = quantile;
-    loGain2   = loGain;
-    hiGain2   = hiGain;
-    delayScl2 = delayScl;
-    dirty = true;
+    length2   = this->length;
+    quantile2 = this->quantile;
+    loGain2   = this->loGain;
+    hiGain2   = this->hiGain;
+    delayScl2 = this->delayScl;
+    this->dirty = true;
   }
 
   void setCore2Complementary()
   {
     setCore2Equal();
-    quantile2 = T(1) - quantile;
-    dirty = true;
+    quantile2 = T(1) - this->quantile;
+    this->dirty = true;
   }
 
 
@@ -786,32 +788,32 @@ public:
 
   T getSample(T x)
   {
-    delayLine.getSample(x);
-    if(dirty)
+    this->delayLine.getSample(x);
+    if(this->dirty)
       updateInternals();
-    T yL1 = core.getSample(x);
-    T yH1 = delayLine[delayScl*delay] - yL1;
+    T yL1 = this->core.getSample(x);
+    T yH1 = this->delayLine[this->delayScl*this->delay] - yL1;
     T yL2 = core2.getSample(x);
-    T yH2 = delayLine[delayScl2*delay2] - yL2;
-    return loGain * yL1 + hiGain * yH1 + loGain2 * yL2 + hiGain2 * yH2;
+    T yH2 = this->delayLine[delayScl2*delay2] - yL2;
+    return this->loGain * yL1 + this->hiGain * yH1 + loGain2 * yL2 + hiGain2 * yH2;
   }
 
-  void reset() { core.reset(); core2.reset(); delayLine.reset(); }
+  void reset() { this->core.reset(); core2.reset(); this->delayLine.reset(); }
 
   virtual void updateInternals() override
   {
     // compute internal and set up core parameters:
     int L, p; T w;
 
-    convertParameters(length, quantile, sampleRate, &L, &p, &w, &delay);
-    core.setLengthAndReadPosition(L, p);
-    core.setRightWeight(w);
+    convertParameters(this->length, this->quantile, this->sampleRate, &L, &p, &w, &this->delay);
+    this->core.setLengthAndReadPosition(L, p);
+    this->core.setRightWeight(w);
 
-    convertParameters(length2, quantile2, sampleRate, &L, &p, &w, &delay2);
+    convertParameters(length2, quantile2, this->sampleRate, &L, &p, &w, &delay2);
     core2.setLengthAndReadPosition(L, p);
     core2.setRightWeight(w);
 
-    dirty = false;
+    this->dirty = false;
   }
 
 
@@ -819,10 +821,10 @@ protected:
 
   virtual void allocateResources() override
   {
-    int mL = (int) ceil(maxLength * sampleRate);
-    core.setMaxLength(mL);
+    int mL = (int) ceil(this->maxLength * this->sampleRate);
+    this->core.setMaxLength(mL);
     core2.setMaxLength(mL);
-    delayLine.setCapacity(mL);
+    this->delayLine.setCapacity(mL);
   }
 
 

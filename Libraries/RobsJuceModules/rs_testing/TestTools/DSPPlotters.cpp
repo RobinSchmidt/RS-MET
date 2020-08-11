@@ -537,7 +537,7 @@ void SinusoidalModelPlotter<T>::plotInterpolatedPhases(
   const RAPT::rsSinusoidalPartial<T>& partial, T sampleRate)
 {
   typedef std::vector<T> Vec;
-  typedef rsSinusoidalSynthesizer<T>::PhaseInterpolationMethod PIM;
+  typedef typename rsSinusoidalSynthesizer<T>::PhaseInterpolationMethod PIM;
 
   // create and set up the synth and synthesize (and plot) the sound:
   rsSinusoidalModel<T>       model; model.addPartial(partial);
@@ -549,7 +549,7 @@ void SinusoidalModelPlotter<T>::plotInterpolatedPhases(
   int N = (int) x.size();
   Vec td = partial.getTimeArray();         // time axis at datapoint rate
   Vec t(N);                                // time axis at sample rate
-  for(size_t n = 0; n < N; n++)  
+  for(size_t n = 0; n < N; n++)
     t[n] = n / sampleRate;
 
   // let the synth generate the phases:
@@ -579,8 +579,8 @@ void SinusoidalModelPlotter<T>::plotInterpolatedPhases(
   //pd = synth.unwrapPhase(td, fd, pd);
   //RAPT::rsArrayTools::unwrap(&pd[0], M, 2*PI);
 
-  Vec dp = (0.5/PI) * (pc-pq); 
-  // normalized difference between cubic and quinitc algorithms - at the datapoints, it must be an 
+  Vec dp = (0.5/PI) * (pc-pq);
+  // normalized difference between cubic and quinitc algorithms - at the datapoints, it must be an
   // integer corresponding to the k in the formula pu = p + k*2*PI
 
 

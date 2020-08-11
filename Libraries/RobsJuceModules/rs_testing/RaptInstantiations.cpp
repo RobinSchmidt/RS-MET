@@ -148,8 +148,8 @@ template double rsArrayTools::maxAbs(const std::complex<double> *buffer, int len
 // rsArrayTools<rosic::rsFloat32x4>
 //template void rsArrayTools::fillWithRandomValues(rosic::rsFloat32x4* x, int N, double min, double max, int seed);
 
-template RAPT::rsBinaryHeap<int>;
-template RAPT::rsDoubleHeap<int>;
+template class RAPT::rsBinaryHeap<int>;
+template class RAPT::rsDoubleHeap<int>;
 
 
 template void rsMatrixTools::initMatrix(double** A, int N, int M, double value);
@@ -207,8 +207,8 @@ template float RAPT::rsPolynomial<float>::cubicDiscriminant(
   const float& a0, const float& a1, const float& a2, const float& a3);
 
 template void RAPT::rsPolynomial<float>::rootsCubicComplex(
-  std::complex<float> a0, std::complex<float> a1, 
-  std::complex<float> a2, std::complex<float> a3, 
+  std::complex<float> a0, std::complex<float> a1,
+  std::complex<float> a2, std::complex<float> a3,
   std::complex<float>* r1, std::complex<float>* r2, std::complex<float>* r3);
 
 
@@ -235,16 +235,16 @@ template std::vector<double> RAPT::rsLinearAlgebraNew::solve(
 
 
 template std::vector<std::complex<double>> RAPT::rsLinearAlgebraNew::solve(
-  const rsMatrixView<std::complex<double>>& A, 
+  const rsMatrixView<std::complex<double>>& A,
   const std::vector<std::complex<double>>& B);
 
 // doesn't compile because the > comparison in the pivoting doesn't work with complex numbers
 // possible solution: implement a > operator for std::complex numbers - compare real parts first,
 // then imag
-// or replace 
-//  if(rsAbs(A(j, i)) > maxAbs) 
+// or replace
+//  if(rsAbs(A(j, i)) > maxAbs)
 // with
-//  if(rsAbs(A(j, i)) > rsAbs(maxAbs)) 
+//  if(rsAbs(A(j, i)) > rsAbs(maxAbs))
 // or use comparison function rsGreater with an explicit specialization for complex<double>
 // or use rsGreaterAbs
 
@@ -256,7 +256,7 @@ template std::vector<std::complex<double>> RAPT::rsLinearAlgebraNew::solve(
 
 /*
 template void RAPT::rsLinearAlgebraNew::makeTriangularNoPivot(
-  rsMatrixView<RAPT::rsRationalFunction<double>>& A, 
+  rsMatrixView<RAPT::rsRationalFunction<double>>& A,
   rsMatrixView<RAPT::rsRationalFunction<double>>& B);
   */
 
@@ -441,7 +441,7 @@ template class RAPT::rsEnvelopeFollower2<double>;
 
 // Visualization:
 template class RAPT::rsImage<float>;
-template class RAPT::rsImage<rsPixelRGB>; 
+template class RAPT::rsImage<rsPixelRGB>;
 template class RAPT::rsAlphaMask<float>;
 template class RAPT::rsImagePainter<float, float, float>;
 template class RAPT::rsImageDrawer<float, float, float>;
@@ -498,7 +498,7 @@ template void RAPT::rsRecreateSineWithPhaseCatch(double *x, double *y, int N, do
 template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0, double w);
 template double RAPT::rsSineShiftAmount(double *x, int N, int n0, double p0);
 template double RAPT::rsEnvelopeMatchOffset(const double* x, int Nx, const double* y, int Ny, int D);
-template std::vector<double> RAPT::rsExpDecayTail(const RAPT::rsSinusoidalPartial<double>& partial, 
+template std::vector<double> RAPT::rsExpDecayTail(const RAPT::rsSinusoidalPartial<double>& partial,
   int spliceIndex, double sampleRate);
 
 // move to rsFilterAnalyzer:

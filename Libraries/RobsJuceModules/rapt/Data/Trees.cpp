@@ -7,8 +7,8 @@ bool rsBinaryHeap<T>::isHeap(int i) const
   bool result = true;
   int l = this->left(i);
   int r = this->right(i);
-  if(l < this->size) result &= !less(this->data[i], this->data[l]) && isHeap(l);
-  if(r < this->size) result &= !less(this->data[i], this->data[r]) && isHeap(r);
+  if(l < this->size) result &= !this->less(this->data[i], this->data[l]) && this->isHeap(l);
+  if(r < this->size) result &= !this->less(this->data[i], this->data[r]) && isHeap(r);
   return result;
 }
 
@@ -60,8 +60,8 @@ int rsBinaryHeap<T>::floatDown(int i)
     int l = this->left(i);
     int r = this->right(i);  // == l+1  ->  optimize (but maybe parallel is actually better than serial?)
     int b = i;
-    if(l < this->size && less(this->data[i], this->data[l])) b = l;
-    if(r < this->size && less(this->data[b], this->data[r])) b = r;
+    if(l < this->size && this->less(this->data[i], this->data[l])) b = l;
+    if(r < this->size && this->less(this->data[b], this->data[r])) b = r;
     if(b != i) {
       swap(this->data[i], this->data[b]);
       i = b;  }
