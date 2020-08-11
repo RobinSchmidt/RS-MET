@@ -152,8 +152,7 @@ class rsBinaryHeap : public rsBinaryTree<T>
 
 public:
 
-  using rsBinaryTree::rsBinaryTree;  // inherit constructors - gcc complains
-  //using rsBinaryTree<T>::rsBinaryTree<T>;  // inherit constructors - doesn't work either
+  using rsBinaryTree<T>::rsBinaryTree;  // inherit constructors
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
