@@ -805,11 +805,11 @@ public:
     // compute internal and set up core parameters:
     int L, p; T w;
 
-    convertParameters(this->length, this->quantile, this->sampleRate, &L, &p, &w, &this->delay);
+    this->convertParameters(this->length, this->quantile, this->sampleRate, &L, &p, &w, &this->delay);
     this->core.setLengthAndReadPosition(L, p);
     this->core.setRightWeight(w);
 
-    convertParameters(length2, quantile2, this->sampleRate, &L, &p, &w, &delay2);
+    this->convertParameters(length2, quantile2, this->sampleRate, &L, &p, &w, &delay2);
     core2.setLengthAndReadPosition(L, p);
     core2.setRightWeight(w);
 

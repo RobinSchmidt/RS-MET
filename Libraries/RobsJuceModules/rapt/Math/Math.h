@@ -7,7 +7,9 @@ namespace RAPT
 // make a nested namespace Math
 
 // Why does it compile with Fraction.h being included before IntegerFunctions.h? rsFraction needs
-// rsGcd...Try it in gcc as well...
+// rsGcd...Try it in gcc as well...yeah...in gcc, it fails
+
+#include "Functions/IntegerFunctions.h"
 
 //#include "LinearAlgebra/LaPackCPP/LaPack.hpp"
 #include "LinearAlgebra/BandDiagonalSolver.hpp"
@@ -31,7 +33,7 @@ namespace RAPT
 #include "Misc/RatioGenerator.h"
 
 #include "Functions/BasicMathFunctions.h"
-#include "Functions/IntegerFunctions.h"
+//#include "Functions/IntegerFunctions.h"  // moved up bcs rsFraction needs rsGcd
 #include "Functions/InterpolatingFunction.h"
 #include "Functions/NodeBasedFunction.h"
 #include "Functions/RealFunctions.h"
