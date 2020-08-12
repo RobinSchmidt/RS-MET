@@ -562,6 +562,43 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
   return testResult;
 }
 
+/** Implements Newton's algorithm suing diveded difference to find the polynomial interpolant 
+through the N points (x[n], y[n]), n = 0,...,N-1.  */
+template<class T>
+void interpolantNewton(T* a, const T* x, const T* y, int N)
+{
+  std::vector<T> c(N+1), b(N+1);  // workspace
+
+  using AT = rsArrayTools;
+  int i, j;
+
+  // compute coeffs for Newton polynomials using divided differences::
+  for(i = 0; i <= N; i++)
+    c[i] = y[i];
+  for(i = 0; i <= N; i++)
+    for(j = i+1; j <= N; j++)
+      c[j] = (c[j] - c[j-1]) / (x[j] - x[0]);
+
+  // convert to normal polynomial coeffs:
+  AT::fillWithZeros(a, N+1);
+  a[0] = c[0];
+  b[0] = 1;     // b is our convolutive accumulator
+  for(i = 0; i <= N; i++)
+  {
+    AT::convolveWithTwoElems(&b[0], i+1, -x[i], T(1), &b[0]);
+    for(j = 0; j <= i; j++)
+      a[j] += c[i] * b[j];
+
+  }
+
+  int dummy = 0;
+}
+// under construction - not yet tested - may still be wrong
+// move this to rsPolynomial
+// maybe make a class rsVectorTools that just contains convenience functions for the functions from
+// rsArrayTools, such that we don't need the ugly &b[0] syntax and maybe can get rid of the length
+// parameters (because vectors know their lengths)...but maybe it should also include
+
 bool testPolynomialInterpolation(std::string &reportString)
 {
   std::string testName = "PolynomialInterpolation";
@@ -589,6 +626,8 @@ bool testPolynomialInterpolation(std::string &reportString)
     testResult &= rsIsCloseTo(yc[n], y[n], tol);
   }
 
+  //interpolantNewton(a, x, y, N); // still wrong - writes into invalid address
+
   // test function for equidistant abscissa values:
   double x0 = -3.2;
   double dx =  1.1;
@@ -601,6 +640,8 @@ bool testPolynomialInterpolation(std::string &reportString)
 
   return testResult;
 }
+// todo: test the different algorithms (Vandermonde-matrix, Lagrange, Newton) to see, if they give 
+// the same results
 
 bool testPolynomialRootFinder(std::string &reportString)
 {

@@ -204,7 +204,8 @@ inline T rsMax(T in1, T in2, T in3, T in4)
   return rsMax(rsMax(in1, in2), rsMax(in3, in4));
 }
 
-/** Like rsMax but based on the "<" operator and swapping arguments (rather than using ">"). */
+/** Like rsMax but based on the "<" operator and swapping arguments (rather than using ">"). Can be
+useful when a type just defines "<" but not ">". */
 template <class T>
 inline T rsMaxViaLess(T in1, T in2)
 {

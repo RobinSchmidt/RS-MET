@@ -984,7 +984,6 @@ void rsPolynomial<T>::interpolant(T *a, const T *x, const T *y, int N)
 template<class T>
 void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N)
 {
-  //std::vector<T> wrk(N+1);            // allocates - maybe use new/delete
   T* wrk = new T[N+1];
   interpolant(a, x, y, N, &wrk[0]);
   delete[] wrk;
@@ -1014,6 +1013,10 @@ void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N, T* wrk)
       a[k] += num[k] * s;
   }
 }
+
+// ToDo: implement Newton's formula using divided differences. I think, it needs a workspace of 
+// size 2N (twice as much as Lagrange, but it's still O(N)) and is O(N^2) in time (compared to 
+// O(N^3) for the Lagrange algorithm
 
 template<class T>
 void rsPolynomial<T>::interpolant(T *a, const T& x0, const T& dx, const T *y, int N)

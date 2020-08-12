@@ -2601,6 +2601,7 @@ int minimizeNewton(const F& f, T* x, int N, const T* h, T tol)
 
 
 
+
 //=================================================================================================
 
 /** Class for representing floating point numbers as fractional and integer part to avoid

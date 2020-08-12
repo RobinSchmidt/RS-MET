@@ -353,9 +353,9 @@ bool testMovingQuantileCore(int maxLength, int smallLength, int largeLength, int
   //lhi = 0
   //lhs = 20
 
-  // they key is already off by 20, which is the size of the large heap in the test (also of the
+  // the key is already off by 20, which is the size of the large heap in the test (also of the
   // small heap, but that's probably not relevant). could it have to do with different behavior of 
-  // the modulo operator in th wrap operation?
+  // the modulo operator in th wrap operation? the msc behavior is the desired one
 
 
   //rsPlotVectors(y, z);  // uncomment to see the result
