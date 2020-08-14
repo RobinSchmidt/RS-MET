@@ -858,6 +858,7 @@ inline void rsArrayTools::convert(const T1 *source, T2 *destination, const int l
 template <class T>
 inline void rsArrayTools::convolveWithTwoElems(const T* x, const int xLength, const T* h, T* y)
 {
+  rsAssert(xLength > 0, "Input length must be > 0");
   y[xLength] = x[xLength-1]*h[1];
   for(int n = xLength-1; n > 0; n--)
     y[n] = x[n]*h[0] + x[n-1]*h[1];
@@ -868,6 +869,7 @@ template <class T>
 inline void rsArrayTools::convolveWithTwoElems(
   const T* x, const int xLength, const T h0, const T h1, T* y) 
 {
+  rsAssert(xLength > 0, "Input length must be > 0");
   y[xLength] = x[xLength-1]*h1;
   for(int n = xLength-1; n > 0; n--)
     y[n] = x[n]*h0 + x[n-1]*h1;

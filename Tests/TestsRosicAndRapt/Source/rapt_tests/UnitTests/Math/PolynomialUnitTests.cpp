@@ -583,9 +583,11 @@ void interpolantNewton(T* a, const T* x, const T* y, int N)
   AT::fillWithZeros(a, N+1);
   a[0] = c[0];
   b[0] = 1;     // b is our convolutive accumulator
-  for(i = 0; i <= N; i++)
+  //for(i = 0; i <= N; i++)
+  for(i = 1; i <= N; i++)
   {
-    AT::convolveWithTwoElems(&b[0], i+1, -x[i], T(1), &b[0]);
+    //AT::convolveWithTwoElems(&b[0], i+1, -x[i], T(1), &b[0]);
+    AT::convolveWithTwoElems(&b[0], i, -x[i], T(1), &b[0]);  // doesn't work for i == 0
     for(j = 0; j <= i; j++)
       a[j] += c[i] * b[j];
 
@@ -593,11 +595,30 @@ void interpolantNewton(T* a, const T* x, const T* y, int N)
 
   int dummy = 0;
 }
-// under construction - not yet tested - may still be wrong
-// move this to rsPolynomial
+// under construction - is still wrong
+// -split function into newtonPolyCoeffs, newtonToPowerCoeffs
+// -implement evaluateNewtonPoly
+// move this to rsPolynomial (when it works)
 // maybe make a class rsVectorTools that just contains convenience functions for the functions from
 // rsArrayTools, such that we don't need the ugly &b[0] syntax and maybe can get rid of the length
 // parameters (because vectors know their lengths)...but maybe it should also include
+
+/** Evaluates the Newton polynomial:
+  p(x) = c[0] + c[1]*(x-r[0]) + c[2]*(x-r[0])*(x-r[1]) + ... + cN*(x-r[0])*...*(x-r[N-1])
+with the Newton coeffs c[0],...,c[N] and roots r[0],...,r[N-1].  */
+template<class T>
+void evalNewtonPoly(T x, const T* c, const T* r, int N)
+{
+  T pi = T(1);   // accumulator for Newton basis polynomials
+  T y  = c[0];   // accumulator for result
+  for(int i = 0; i < N; i++) {
+    pi *= x - r[i];
+    y  += c[i+1] * pi; }
+  return y;
+}
+// c is of length N+1, r is of length N
+// needs test
+
 
 bool testPolynomialInterpolation(std::string &reportString)
 {
@@ -626,7 +647,7 @@ bool testPolynomialInterpolation(std::string &reportString)
     testResult &= rsIsCloseTo(yc[n], y[n], tol);
   }
 
-  //interpolantNewton(a, x, y, N); // still wrong - writes into invalid address
+  interpolantNewton(a, x, y, N); // still wrong - totally wrong numbers
 
   // test function for equidistant abscissa values:
   double x0 = -3.2;

@@ -109,7 +109,7 @@ the previous row and rows of all zeros are at the bottom. */
 template<class T>
 void rowEchelon(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)
 {
-  //bool reduced = false; // make parameter
+  //bool reduced = false; // make parameter - switch for producing *reduced* row echelon form
 
   int i = 0;
   int j = 0;
@@ -147,6 +147,17 @@ void rowEchelon(rsMatrixView<T>& A, rsMatrixView<T>& B, T tol)
 }
 // we are finished when no pivots can found in the current row anymore
 // needs test
+// todo: 
+// -maybe let the function getPivotRow be a functor that can be passed in by client code
+// -we may want to use different pivot-search strategies dependign on the type T - if it's a 
+//  floating point type, we want to use the element with largest absolute value to reduce roundoff
+//  error, for rsFraction, we want to use a nonzero number with small denominator to avoid blowup
+//  and overflow of num and den (that can also be solved by providing explicit specializations for 
+//  different types T - however, using a functor is more flexible - it allows client code to change
+//  the strategy)
+// -maybe implement a version that does full pivoting...i think, that turns the algo form O(N^3) to
+//  O(N^4)...right? or not? no! it makes the pivot search O(N^2) and that is called in a simple
+//  loop - so we remain at O(N^3), just get a larger constant factor
 
 template<class T>
 void rowEchelon(rsMatrixView<T>& A, T tol)
