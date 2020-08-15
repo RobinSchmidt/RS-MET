@@ -571,25 +571,35 @@ void newtonPolyCoeffs(T* c, const T* x, const T* y, int N)
     for(int j = i+1; j < N; j++)
       c[j] = (c[j] - c[i]) / (x[j] - x[i]);
 }
-// c is allowed to be equal to y (but not to x)
+// c is allowed to be equal to y (but not to x ...or can it?)
 // change order of parameters (inputs x,y first, then output c), move to rsPolynomial
 // https://en.wikipedia.org/wiki/Polynomial_interpolation#Non-Vandermonde_solutions
 // https://en.wikipedia.org/wiki/Neville%27s_algorithm
 
 template<class T>
-void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a)
+void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a, T* b)
 {
   using AT = rsArrayTools;
-  std::vector<T> b(N);           // workspace
-  AT::fillWithZeros(a, N);
-  AT::fillWithZeros(&b[0], N);
+  AT::fillWithZeros(b, N);
   b[0] = 1;                      // b is our convolutive accumulator
   a[0] = c[0];
   for(int i = 1; i < N; i++) {
-    AT::convolveWithTwoElems(&b[0], i, -x[i-1], T(1), &b[0]);
-    for(int j = 0; j <= i; j++)
-      a[j] += c[i] * b[j]; }
+    AT::convolveWithTwoElems(b, i, -x[i-1], T(1), b);
+    for(int j = 0; j < i; j++)
+      a[j] += c[i] * b[j];
+    a[i] = c[i]; }
 }
+// -try to avoid pre-filling b with zeros
+// -try to make it possible that a and c can be the same - i think it's possible now
+
+template<class T>
+void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a)
+{
+  std::vector<T> b(N);   // workspace
+  newtonToMonomialCoeffs(c, x, N, a, &b[0]);
+}
+
+
 // c: Newton basis coeffs, x: x-coordinates of evaluation/data points, a: monomial basis coeffs, 
 // N: number of data points, i.e. length of x,c,a 
 // todo: make order of arguments consistent: inputs first, outputs last...also make the meaning of
@@ -663,6 +673,7 @@ bool testPolynomialInterpolation(std::string &reportString)
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
   // test converting coeffs for Newton basis into monomial basis:
+  rsArrayTools::fillWithNaN(a, N);
   newtonToMonomialCoeffs(c, x, N, a);
   for(n = 0; n < N; n++) {
     yc[n] = Poly::evaluate(x[n], a, N-1);

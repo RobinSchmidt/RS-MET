@@ -984,10 +984,12 @@ void rsPolynomial<T>::interpolant(T *a, const T *x, const T *y, int N)
 template<class T>
 void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N)
 {
-  T* wrk = new T[N+1];
+  T* wrk = new T[N+1];  // do we really need N+1? isn't N enough?
   interpolant(a, x, y, N, &wrk[0]);
   delete[] wrk;
 }
+
+
 template<class T>
 void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N, T* wrk)
 {
