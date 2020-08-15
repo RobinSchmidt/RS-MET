@@ -566,7 +566,7 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
 template<class T>
 void newtonPolyCoeffs(T* c, const T* x, const T* y, int N)
 {
-  rsArrayTools::copy(y, c, N+1);
+  rsArrayTools::copy(y, c, N);
   for(int i = 0; i < N; i++)
     for(int j = i+1; j < N; j++)
       c[j] = (c[j] - c[i]) / (x[j] - x[i]);
@@ -591,42 +591,21 @@ void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a)
   }
 }
 // c: Newton basis coeffs, x: x-coordinates of evaluation/data points, a: monomial basis coeffs, 
-// N: number of data points, i.e. length of x, c,a are also of length N
+// N: number of data points, i.e. length of x,c,a 
 // todo: make order of arguments consistent: inputs first, outputs last...also make the meaning of
 // N consistent with typical use in rsPolynomial
-
-
+// -try to get rid of the +1 for b - extract the last iteration of the loop and don't do a 
+//  convolution for the extracted iteration
 
 /** Implements Newton's algorithm using diveded difference to find the polynomial interpolant 
 through the N points (x[n], y[n]), n = 0,...,N-1.  */
 template<class T>
 void interpolantNewton(T* a, const T* x, const T* y, int N)
 {
-  std::vector<T> c(N+1), b(N+1);  // workspace
-
-  using AT = rsArrayTools;
-
+  std::vector<T> c(N+1);  // workspace - do we need N+1?
   newtonPolyCoeffs(&c[0], x, y, N);
-
-  // convert to normal polynomial coeffs:
-  AT::fillWithZeros(a, N+1);
-  a[0] = c[0];
-  b[0] = 1;     // b is our convolutive accumulator
-  //for(i = 0; i <= N; i++)
-  for(int i = 1; i <= N; i++)
-  {
-    AT::convolveWithTwoElems(&b[0], i+1, -x[i], T(1), &b[0]);
-    //AT::convolveWithTwoElems(&b[0], i, -x[i], T(1), &b[0]);
-    for(int j = 0; j <= i; j++)
-      a[j] += c[i] * b[j];
-  }
-
-  int dummy = 0;
+  newtonToMonomialCoeffs(&c[0], x, N, a);
 }
-// under construction - is still wrong
-// -split function into newtonPolyCoeffs, newtonToPowerCoeffs
-// -implement evaluateNewtonPoly
-// move this to rsPolynomial (when it works)
 // maybe make a class rsVectorTools that just contains convenience functions for the functions from
 // rsArrayTools, such that we don't need the ugly &b[0] syntax and maybe can get rid of the length
 // parameters (because vectors know their lengths)...but maybe it should also include
@@ -662,21 +641,6 @@ bool testPolynomialInterpolation(std::string &reportString)
   double x[N] = {-0.5, 1.0, 0.7, 1.5, -2.0, -1.3, 2.2};
   double y[N] = { 1.2, 1.4, 0.2, 2.5, -1.7, -2.3, 1.3};
 
-  //// temporary - for test with hand-calculation
-  //static const int N = 3;  // N is number of data points, not polynomial degree!
-  //double x[N] = { 1, 2, 3 };
-  //double y[N] = { 5, 4, 6 };
-
-  //static const int N = 1;  // N is number of data points, not polynomial degree!
-  //double x[N] = { 1 };
-  //double y[N] = { 5 };
-
-  //static const int N = 2;  // N is number of data points, not polynomial degree!
-  //double x[N] = { 1, 2 };
-  //double y[N] = { 5, 4 };
-
-
-
   // get polynomial coefficients:
   double a[N];
   Poly::interpolant(a, x, y, N);
@@ -701,9 +665,6 @@ bool testPolynomialInterpolation(std::string &reportString)
     yc[n] = Poly::evaluate(x[n], a, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
-
-
-  //interpolantNewton(a, x, y, N); // still wrong - totally wrong numbers
 
   // test function for equidistant abscissa values:
   double x0 = -3.2;
