@@ -571,6 +571,8 @@ void newtonPolyCoeffs(T* c, const T* x, const T* y, int N)
     for(int j = i+1; j < N; j++)
       c[j] = (c[j] - c[i]) / (x[j] - x[i]);
 }
+// c is allowed to be equal to y (but not to x)
+// change order of parameters (inputs x,y first, then output c), move to rsPolynomial
 // https://en.wikipedia.org/wiki/Polynomial_interpolation#Non-Vandermonde_solutions
 // https://en.wikipedia.org/wiki/Neville%27s_algorithm
 
@@ -596,8 +598,6 @@ void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a)
 // -in a higher level implementation (like interpolantNewton below), we could use the passed 
 //  y-array to be used as workspace during conversion, if it's ok to destroy the y-array
 
-
-
 /** Implements Newton's algorithm using diveded difference to find the polynomial interpolant 
 through the N points (x[n], y[n]), n = 0,...,N-1.  */
 template<class T>
@@ -605,6 +605,10 @@ void interpolantNewton(T* a, const T* x, const T* y, int N)
 {
   std::vector<T> c(N);                    // workspace
   newtonPolyCoeffs(&c[0], x, y, N);
+
+  // from this point on, the y-array is not need anymore - maybe, it can be re-used as workspace in
+  // the following steps to avoid allocating extra space, when it's ok to destroy the y-array
+
   newtonToMonomialCoeffs(&c[0], x, N, a);
 }
 // maybe make a class rsVectorTools that just contains convenience functions for the functions from
@@ -625,8 +629,6 @@ T evalNewtonPoly(T x, const T* c, const T* r, int N)
   return y;
 }
 // c is of length N+1, r is of length N
-// needs test
-
 
 bool testPolynomialInterpolation(std::string &reportString)
 {
@@ -676,11 +678,9 @@ bool testPolynomialInterpolation(std::string &reportString)
   double x0 = -3.2;
   double dx =  1.1;
   Poly::interpolant(a, x0, dx, y, N);
-  for(n = 0; n < N; n++)
-  {
+  for(n = 0; n < N; n++) {
     yc[n] = Poly::evaluate(x0+n*dx, a, N-1);
-    testResult &= rsIsCloseTo(yc[n], y[n], tol);
-  }
+    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
   return testResult;
 }
