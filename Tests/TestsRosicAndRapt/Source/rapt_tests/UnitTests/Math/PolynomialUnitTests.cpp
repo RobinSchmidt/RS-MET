@@ -578,17 +578,14 @@ template<class T>
 void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a)
 {
   using AT = rsArrayTools;
-  std::vector<T> b(N+1);       // workspace
-  AT::fillWithZeros(a, N+1);
-  a[0] = c[0];
+  std::vector<T> b(N+1);       // workspace  ..why N+1? beacue of the convolution - can this be avoided?
+  AT::fillWithZeros(a, N);
+  AT::fillWithZeros(&b[0], N+1);
   b[0] = 1;                    // b is our convolutive accumulator
-  for(int i = 1; i < N; i++)  // should it be < or <= N?
+  a[0] = c[0];
+  for(int i = 1; i < N; i++)
   {
-    //rsPolynomial<T>::rootsToCoeffs(x, &b[0], i); // shlemiel!
-    //AT::convolveWithTwoElems(&b[0], i, -x[i-1], T(1), &b[0]); // same result, no shlemiel!
-
-    AT::convolveWithTwoElems(&b[0], i, -x[i], T(1), &b[0]);
-
+    AT::convolveWithTwoElems(&b[0], i, -x[i-1], T(1), &b[0]);
     for(int j = 0; j <= i; j++)
       a[j] += c[i] * b[j];
   }
@@ -661,9 +658,9 @@ bool testPolynomialInterpolation(std::string &reportString)
   using Poly = rsPolynomial<double>;
 
   // establish dataset to interpolate:
-  //static const int N = 7;  // N is number of data points, not polynomial degree!
-  //double x[N] = {-0.5, 1.0, 0.7, 1.5, -2.0, -1.3, 2.2};
-  //double y[N] = { 1.2, 1.4, 0.2, 2.5, -1.7, -2.3, 1.3};
+  static const int N = 7;  // N is number of data points, not polynomial degree!
+  double x[N] = {-0.5, 1.0, 0.7, 1.5, -2.0, -1.3, 2.2};
+  double y[N] = { 1.2, 1.4, 0.2, 2.5, -1.7, -2.3, 1.3};
 
   //// temporary - for test with hand-calculation
   //static const int N = 3;  // N is number of data points, not polynomial degree!
@@ -674,9 +671,9 @@ bool testPolynomialInterpolation(std::string &reportString)
   //double x[N] = { 1 };
   //double y[N] = { 5 };
 
-  static const int N = 2;  // N is number of data points, not polynomial degree!
-  double x[N] = { 1, 2 };
-  double y[N] = { 5, 4 };
+  //static const int N = 2;  // N is number of data points, not polynomial degree!
+  //double x[N] = { 1, 2 };
+  //double y[N] = { 5, 4 };
 
 
 
@@ -699,10 +696,11 @@ bool testPolynomialInterpolation(std::string &reportString)
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
   // test converting coeffs for Newton basis into monomial basis:
-  //newtonToMonomialCoeffs(c, x, 0, a);
-  //newtonToMonomialCoeffs(c, x, 1, a);
-  //newtonToMonomialCoeffs(c, x, 2, a);
-  newtonToMonomialCoeffs(c, x, N, a); // wrong!
+  newtonToMonomialCoeffs(c, x, N, a);
+  for(n = 0; n < N; n++) {
+    yc[n] = Poly::evaluate(x[n], a, N-1);
+    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
+
 
 
   //interpolantNewton(a, x, y, N); // still wrong - totally wrong numbers
