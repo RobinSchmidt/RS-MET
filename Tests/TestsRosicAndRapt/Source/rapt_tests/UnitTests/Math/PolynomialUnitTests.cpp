@@ -562,7 +562,20 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
   return testResult;
 }
 
-/** Implements Newton's algorithm suing diveded difference to find the polynomial interpolant 
+/** Computes coefficients for Newton basis polynomials using divided differences tbc... */
+template<class T>
+void newtonPolyCoeffs(T* c, const T* x, const T* y, int N)
+{
+  rsArrayTools::copy(y, c, N+1);
+  for(int i = 0; i <= N; i++)       // or i < N?
+    for(int j = i+1; j <= N; j++)   // or j < N?
+      c[j] = (c[j] - c[j-1]) / (x[j] - x[i]);
+}
+// does not yet seem to work
+// https://en.wikipedia.org/wiki/Polynomial_interpolation#Non-Vandermonde_solutions
+// https://en.wikipedia.org/wiki/Neville%27s_algorithm
+
+/** Implements Newton's algorithm using diveded difference to find the polynomial interpolant 
 through the N points (x[n], y[n]), n = 0,...,N-1.  */
 template<class T>
 void interpolantNewton(T* a, const T* x, const T* y, int N)
@@ -570,25 +583,19 @@ void interpolantNewton(T* a, const T* x, const T* y, int N)
   std::vector<T> c(N+1), b(N+1);  // workspace
 
   using AT = rsArrayTools;
-  int i, j;
 
-  // compute coeffs for Newton polynomials using divided differences::
-  for(i = 0; i <= N; i++)
-    c[i] = y[i];
-  for(i = 0; i <= N; i++)
-    for(j = i+1; j <= N; j++)
-      c[j] = (c[j] - c[j-1]) / (x[j] - x[0]);
+  newtonPolyCoeffs(&c[0], x, y, N);
 
   // convert to normal polynomial coeffs:
   AT::fillWithZeros(a, N+1);
   a[0] = c[0];
   b[0] = 1;     // b is our convolutive accumulator
   //for(i = 0; i <= N; i++)
-  for(i = 1; i <= N; i++)
+  for(int i = 1; i <= N; i++)
   {
     //AT::convolveWithTwoElems(&b[0], i+1, -x[i], T(1), &b[0]);
     AT::convolveWithTwoElems(&b[0], i, -x[i], T(1), &b[0]);  // doesn't work for i == 0
-    for(j = 0; j <= i; j++)
+    for(int j = 0; j <= i; j++)
       a[j] += c[i] * b[j];
 
   }
@@ -607,7 +614,7 @@ void interpolantNewton(T* a, const T* x, const T* y, int N)
   p(x) = c[0] + c[1]*(x-r[0]) + c[2]*(x-r[0])*(x-r[1]) + ... + cN*(x-r[0])*...*(x-r[N-1])
 with the Newton coeffs c[0],...,c[N] and roots r[0],...,r[N-1].  */
 template<class T>
-void evalNewtonPoly(T x, const T* c, const T* r, int N)
+T evalNewtonPoly(T x, const T* c, const T* r, int N)
 {
   T pi = T(1);   // accumulator for Newton basis polynomials
   T y  = c[0];   // accumulator for result
@@ -630,7 +637,7 @@ bool testPolynomialInterpolation(std::string &reportString)
   using Poly = rsPolynomial<double>;
 
   // establish dataset to interpolate:
-  static const int N = 7;
+  static const int N = 7;  // N is number of data points, not polynomial degree!
   double x[N] = {-0.5, 1.0, 0.7, 1.5, -2.0, -1.3, 2.2};
   double y[N] = { 1.2, 1.4, 0.2, 2.5, -1.7, -2.3, 1.3};
 
@@ -641,13 +648,28 @@ bool testPolynomialInterpolation(std::string &reportString)
   // check, if the polynomial really matches the data:
   double yc[N];
   int n;
-  for(n = 0; n < N; n++)
-  {
+  for(n = 0; n < N; n++) {
     yc[n] = Poly::evaluate(x[n], a, N-1);
-    testResult &= rsIsCloseTo(yc[n], y[n], tol);
-  }
+    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
-  interpolantNewton(a, x, y, N); // still wrong - totally wrong numbers
+
+  // test computing coeffs for Newton basis polynomials and evaluation of Newton polynomial:
+  //int N2 = N;
+  rsArrayTools::fillWithZeros(&a[0],  N);
+  rsArrayTools::fillWithZeros(&yc[0], N);
+  int N2 = 2;
+  newtonPolyCoeffs(a, x, y, N2);
+  for(n = 0; n < N2; n++) {
+    //yc[n] = evalNewtonPoly(x[n], a, x, N2);
+    yc[n] = evalNewtonPoly(x[n], a, x, N2-1);
+    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
+  // nope! result is wrong! ..for N2 = 2, it still works but for N2 = 3, it gets wrong..i think, the 
+  // confusion may be due to interpreting N as polynomial degree while it's actually the number of
+  // data points? Even if N2 == 1, it computes 2 coeffs in a[0],a[1] - only a[0] should be filled
+
+
+
+  //interpolantNewton(a, x, y, N); // still wrong - totally wrong numbers
 
   // test function for equidistant abscissa values:
   double x0 = -3.2;
