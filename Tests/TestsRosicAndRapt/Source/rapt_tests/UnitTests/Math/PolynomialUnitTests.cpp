@@ -567,9 +567,9 @@ template<class T>
 void newtonPolyCoeffs(T* c, const T* x, const T* y, int N)
 {
   rsArrayTools::copy(y, c, N+1);
-  for(int i = 0; i <= N; i++)       // or i < N?
-    for(int j = i+1; j <= N; j++)   // or j < N?
-      c[j] = (c[j] - c[j-1]) / (x[j] - x[i]);
+  for(int i = 0; i < N; i++)
+    for(int j = i+1; j < N; j++)
+      c[j] = (c[j] - c[i]) / (x[j] - x[i]);
 }
 // does not yet seem to work
 // https://en.wikipedia.org/wiki/Polynomial_interpolation#Non-Vandermonde_solutions
@@ -657,7 +657,7 @@ bool testPolynomialInterpolation(std::string &reportString)
   //int N2 = N;
   rsArrayTools::fillWithZeros(&a[0],  N);
   rsArrayTools::fillWithZeros(&yc[0], N);
-  int N2 = 2;
+  int N2 = N;
   newtonPolyCoeffs(a, x, y, N2);
   for(n = 0; n < N2; n++) {
     //yc[n] = evalNewtonPoly(x[n], a, x, N2);
