@@ -571,9 +571,34 @@ void newtonPolyCoeffs(T* c, const T* x, const T* y, int N)
     for(int j = i+1; j < N; j++)
       c[j] = (c[j] - c[i]) / (x[j] - x[i]);
 }
-// does not yet seem to work
 // https://en.wikipedia.org/wiki/Polynomial_interpolation#Non-Vandermonde_solutions
 // https://en.wikipedia.org/wiki/Neville%27s_algorithm
+
+template<class T>
+void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a)
+{
+  using AT = rsArrayTools;
+  std::vector<T> b(N+1);       // workspace
+  AT::fillWithZeros(a, N+1);
+  a[0] = c[0];
+  b[0] = 1;                    // b is our convolutive accumulator
+  for(int i = 1; i < N; i++)  // should it be < or <= N?
+  {
+    //rsPolynomial<T>::rootsToCoeffs(x, &b[0], i); // shlemiel!
+    //AT::convolveWithTwoElems(&b[0], i, -x[i-1], T(1), &b[0]); // same result, no shlemiel!
+
+    AT::convolveWithTwoElems(&b[0], i, -x[i], T(1), &b[0]);
+
+    for(int j = 0; j <= i; j++)
+      a[j] += c[i] * b[j];
+  }
+}
+// c: Newton basis coeffs, x: x-coordinates of evaluation/data points, a: monomial basis coeffs, 
+// N: number of data points, i.e. length of x, c,a are also of length N
+// todo: make order of arguments consistent: inputs first, outputs last...also make the meaning of
+// N consistent with typical use in rsPolynomial
+
+
 
 /** Implements Newton's algorithm using diveded difference to find the polynomial interpolant 
 through the N points (x[n], y[n]), n = 0,...,N-1.  */
@@ -593,11 +618,10 @@ void interpolantNewton(T* a, const T* x, const T* y, int N)
   //for(i = 0; i <= N; i++)
   for(int i = 1; i <= N; i++)
   {
-    //AT::convolveWithTwoElems(&b[0], i+1, -x[i], T(1), &b[0]);
-    AT::convolveWithTwoElems(&b[0], i, -x[i], T(1), &b[0]);  // doesn't work for i == 0
+    AT::convolveWithTwoElems(&b[0], i+1, -x[i], T(1), &b[0]);
+    //AT::convolveWithTwoElems(&b[0], i, -x[i], T(1), &b[0]);
     for(int j = 0; j <= i; j++)
       a[j] += c[i] * b[j];
-
   }
 
   int dummy = 0;
@@ -637,9 +661,24 @@ bool testPolynomialInterpolation(std::string &reportString)
   using Poly = rsPolynomial<double>;
 
   // establish dataset to interpolate:
-  static const int N = 7;  // N is number of data points, not polynomial degree!
-  double x[N] = {-0.5, 1.0, 0.7, 1.5, -2.0, -1.3, 2.2};
-  double y[N] = { 1.2, 1.4, 0.2, 2.5, -1.7, -2.3, 1.3};
+  //static const int N = 7;  // N is number of data points, not polynomial degree!
+  //double x[N] = {-0.5, 1.0, 0.7, 1.5, -2.0, -1.3, 2.2};
+  //double y[N] = { 1.2, 1.4, 0.2, 2.5, -1.7, -2.3, 1.3};
+
+  //// temporary - for test with hand-calculation
+  //static const int N = 3;  // N is number of data points, not polynomial degree!
+  //double x[N] = { 1, 2, 3 };
+  //double y[N] = { 5, 4, 6 };
+
+  //static const int N = 1;  // N is number of data points, not polynomial degree!
+  //double x[N] = { 1 };
+  //double y[N] = { 5 };
+
+  static const int N = 2;  // N is number of data points, not polynomial degree!
+  double x[N] = { 1, 2 };
+  double y[N] = { 5, 4 };
+
+
 
   // get polynomial coefficients:
   double a[N];
@@ -652,21 +691,18 @@ bool testPolynomialInterpolation(std::string &reportString)
     yc[n] = Poly::evaluate(x[n], a, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
-
   // test computing coeffs for Newton basis polynomials and evaluation of Newton polynomial:
-  //int N2 = N;
-  rsArrayTools::fillWithZeros(&a[0],  N);
-  rsArrayTools::fillWithZeros(&yc[0], N);
-  int N2 = N;
-  newtonPolyCoeffs(a, x, y, N2);
-  for(n = 0; n < N2; n++) {
-    //yc[n] = evalNewtonPoly(x[n], a, x, N2);
-    yc[n] = evalNewtonPoly(x[n], a, x, N2-1);
+  double c[N];
+  newtonPolyCoeffs(c, x, y, N);
+  for(n = 0; n < N; n++) {
+    yc[n] = evalNewtonPoly(x[n], c, x, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
-  // nope! result is wrong! ..for N2 = 2, it still works but for N2 = 3, it gets wrong..i think, the 
-  // confusion may be due to interpreting N as polynomial degree while it's actually the number of
-  // data points? Even if N2 == 1, it computes 2 coeffs in a[0],a[1] - only a[0] should be filled
 
+  // test converting coeffs for Newton basis into monomial basis:
+  //newtonToMonomialCoeffs(c, x, 0, a);
+  //newtonToMonomialCoeffs(c, x, 1, a);
+  //newtonToMonomialCoeffs(c, x, 2, a);
+  newtonToMonomialCoeffs(c, x, N, a); // wrong!
 
 
   //interpolantNewton(a, x, y, N); // still wrong - totally wrong numbers
