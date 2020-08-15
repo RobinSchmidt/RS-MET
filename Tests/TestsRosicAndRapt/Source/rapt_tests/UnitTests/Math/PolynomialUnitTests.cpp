@@ -578,31 +578,32 @@ template<class T>
 void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a)
 {
   using AT = rsArrayTools;
-  std::vector<T> b(N+1);       // workspace  ..why N+1? beacue of the convolution - can this be avoided?
+  std::vector<T> b(N);           // workspace
   AT::fillWithZeros(a, N);
-  AT::fillWithZeros(&b[0], N+1);
-  b[0] = 1;                    // b is our convolutive accumulator
+  AT::fillWithZeros(&b[0], N);
+  b[0] = 1;                      // b is our convolutive accumulator
   a[0] = c[0];
-  for(int i = 1; i < N; i++)
-  {
+  for(int i = 1; i < N; i++) {
     AT::convolveWithTwoElems(&b[0], i, -x[i-1], T(1), &b[0]);
     for(int j = 0; j <= i; j++)
-      a[j] += c[i] * b[j];
-  }
+      a[j] += c[i] * b[j]; }
 }
 // c: Newton basis coeffs, x: x-coordinates of evaluation/data points, a: monomial basis coeffs, 
 // N: number of data points, i.e. length of x,c,a 
 // todo: make order of arguments consistent: inputs first, outputs last...also make the meaning of
 // N consistent with typical use in rsPolynomial
-// -try to get rid of the +1 for b - extract the last iteration of the loop and don't do a 
-//  convolution for the extracted iteration
+// -let the use pass a workspace - avoid allocating memory for b
+// -in a higher level implementation (like interpolantNewton below), we could use the passed 
+//  y-array to be used as workspace during conversion, if it's ok to destroy the y-array
+
+
 
 /** Implements Newton's algorithm using diveded difference to find the polynomial interpolant 
 through the N points (x[n], y[n]), n = 0,...,N-1.  */
 template<class T>
 void interpolantNewton(T* a, const T* x, const T* y, int N)
 {
-  std::vector<T> c(N+1);  // workspace - do we need N+1?
+  std::vector<T> c(N);                    // workspace
   newtonPolyCoeffs(&c[0], x, y, N);
   newtonToMonomialCoeffs(&c[0], x, N, a);
 }
@@ -665,6 +666,11 @@ bool testPolynomialInterpolation(std::string &reportString)
     yc[n] = Poly::evaluate(x[n], a, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
+  // test computing the monomial coeffs via Newton basis:
+  interpolantNewton(a, x, y, N);
+  for(n = 0; n < N; n++) {
+    yc[n] = Poly::evaluate(x[n], a, N-1);
+    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
   // test function for equidistant abscissa values:
   double x0 = -3.2;
