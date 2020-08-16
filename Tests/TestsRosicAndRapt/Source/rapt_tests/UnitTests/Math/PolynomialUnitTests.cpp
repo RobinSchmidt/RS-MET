@@ -571,7 +571,8 @@ void newtonPolyCoeffs(T* c, const T* x, const T* y, int N)
     for(int j = i+1; j < N; j++)
       c[j] = (c[j] - c[i]) / (x[j] - x[i]);
 }
-// c is allowed to be equal to y (but not to x ...or can it?)
+// -c is allowed to be equal to y (but not to x ...or can it?)
+// -maybe use a single I/O array for c and y - this also gets rid of the copy
 // change order of parameters (inputs x,y first, then output c), move to rsPolynomial
 // https://en.wikipedia.org/wiki/Polynomial_interpolation#Non-Vandermonde_solutions
 // https://en.wikipedia.org/wiki/Neville%27s_algorithm
@@ -579,18 +580,17 @@ void newtonPolyCoeffs(T* c, const T* x, const T* y, int N)
 template<class T>
 void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a, T* b)
 {
-  using AT = rsArrayTools;
-  AT::fillWithZeros(b, N);
-  b[0] = 1;                      // b is our convolutive accumulator
+  b[0] = 1;     // b is our convolutive accumulator
   a[0] = c[0];
   for(int i = 1; i < N; i++) {
-    AT::convolveWithTwoElems(b, i, -x[i-1], T(1), b);
+    rsArrayTools::convolveWithTwoElems(b, i, -x[i-1], T(1), b);
     for(int j = 0; j < i; j++)
       a[j] += c[i] * b[j];
     a[i] = c[i]; }
 }
-// -try to avoid pre-filling b with zeros
-// -try to make it possible that a and c can be the same - i think it's possible now
+// -a is allowed to be the same array as c
+// -maybe use a single array for I/O, i.e. c/a - then we can also remove the a[0] = c[0] and
+//  a[i] = c[i] statements
 
 template<class T>
 void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a)
@@ -616,8 +616,12 @@ void interpolantNewton(T* a, const T* x, const T* y, int N)
   std::vector<T> c(N);                    // workspace
   newtonPolyCoeffs(&c[0], x, y, N);
 
-  // from this point on, the y-array is not need anymore - maybe, it can be re-used as workspace in
-  // the following steps to avoid allocating extra space, when it's ok to destroy the y-array
+  // -from this point on, the y-array is not need anymore - maybe, it can be re-used as workspace 
+  //  in the following steps to avoid allocating extra space, when it's ok to destroy the y-array
+  // -or we could re-use y for the c-array above, like:
+  //    newtonPolyCoeffs(y, x, y, N);
+  //    newtonToMonomialCoeffs(y, x, N, y);
+  //  then y would contain the y-values on entry and the polynomial coeffs on exit
 
   newtonToMonomialCoeffs(&c[0], x, N, a);
 }
@@ -679,11 +683,19 @@ bool testPolynomialInterpolation(std::string &reportString)
     yc[n] = Poly::evaluate(x[n], a, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
+  // test in-place conversion:
+  rsArrayTools::copy(c, a, N);
+  newtonToMonomialCoeffs(a, x, N, a);
+  for(n = 0; n < N; n++) {
+    yc[n] = Poly::evaluate(x[n], a, N-1);
+    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
+
   // test computing the monomial coeffs via Newton basis:
   interpolantNewton(a, x, y, N);
   for(n = 0; n < N; n++) {
     yc[n] = Poly::evaluate(x[n], a, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
+    // this is the 5th time, this loop occurs -> wrap into (lambda)function
 
   // test function for equidistant abscissa values:
   double x0 = -3.2;
