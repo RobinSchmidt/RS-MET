@@ -562,18 +562,15 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
   return testResult;
 }
 
-/** Computes coefficients for Newton basis polynomials using divided differences tbc... */
+/** Computes coefficients for Newton basis polynomials using divided differences from N (x,y) 
+pairs x[i],y[i] i = 0,...N-1. It overwrites the y-array with the coefficients. */
 template<class T>
-void newtonPolyCoeffs(T* c, const T* x, const T* y, int N)
+void newtonPolyCoeffs(const T* x, T* y, int N)
 {
-  rsArrayTools::copy(y, c, N);
   for(int i = 0; i < N; i++)
     for(int j = i+1; j < N; j++)
-      c[j] = (c[j] - c[i]) / (x[j] - x[i]);
+      y[j] = (y[j] - y[i]) / (x[j] - x[i]);
 }
-// -c is allowed to be equal to y (but not to x ...or can it?)
-// -maybe use a single I/O array for c and y - this also gets rid of the copy
-// change order of parameters (inputs x,y first, then output c), move to rsPolynomial
 // https://en.wikipedia.org/wiki/Polynomial_interpolation#Non-Vandermonde_solutions
 // https://en.wikipedia.org/wiki/Neville%27s_algorithm
 
@@ -619,8 +616,7 @@ template<class T>
 void interpolantNewton(T* a, const T* x, const T* y, int N)
 {
   rsArrayTools::copy(y, a, N);
-
-  newtonPolyCoeffs(a, x, y, N);
+  newtonPolyCoeffs(x, a, N);
 
   // -from this point on, the y-array is not need anymore - maybe, it can be re-used as workspace 
   //  in the following steps to avoid allocating extra space, when it's ok to destroy the y-array
@@ -677,7 +673,8 @@ bool testPolynomialInterpolation(std::string &reportString)
 
   // test computing coeffs for Newton basis polynomials and evaluation of Newton polynomial:
   double c[N];
-  newtonPolyCoeffs(c, x, y, N);
+  rsArrayTools::copy(y, c, N);
+  newtonPolyCoeffs(x, c, N);
   for(n = 0; n < N; n++) {
     yc[n] = evalNewtonPoly(x[n], c, x, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
