@@ -894,6 +894,19 @@ void rsPolynomial<T>::rootsToCoeffs(const T* r, T* a, int N, T scaler)
     rsArrayTools::convolveWithTwoElems(a, n, -r[n-1], T(1), a);
 }
 
+template<class T>
+void rsPolynomial<T>::newtonToMonomialCoeffs(T* x, T* a, int N)
+{
+  T x0 = x[0]; 
+  x[0] = T(1);     // x is re-used as our convolutive accumulator (and destroyed in the process)
+  for(int i = 1; i < N; i++) {
+    T x1 = x[i];                                            // save x[i] because the next line..
+    rsArrayTools::convolveWithTwoElems(x, i, -x0, T(1), x); // ..overwrites x up to x[i] but we..
+    x0 = x1;                                                // ..still need it in next iteration
+    for(int j = 0; j < i; j++)
+      a[j] += a[i] * x[j]; }
+}
+
 
 //-------------------------------------------------------------------------------------------------
 // fitting:

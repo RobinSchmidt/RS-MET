@@ -331,6 +331,11 @@ public:
   //static int actualDegree(T* p, int maxDegree, T tol = T(0));
   // maybe move to an "Inquiry" section ...or "Misc"
 
+  // maybe abbreviate evaluate with eval, add evaluation functions for evaluating polynomials in
+  // different bases, for example, using chebychev polynomials as basis (instead of the regular
+  // monomial basis x^0,x^1,x^2,x^3,... use T0(x),T1(x),T2(x),T3(x),...) - also for Newton 
+  // polynomials (they are additionally parametrized by a set of roots)
+
   //-----------------------------------------------------------------------------------------------
   /** \name Arithmetic */
 
@@ -622,8 +627,17 @@ public:
 
   static void rootsToCoeffs(const T* r, T* a, int N, T scaler = T(1));
 
-  // drag the ..shiftArgument function in this group
+  /** Given the coefficents for the Newton basis polynomials 1,(x-x[0]),(x-x[0])*(x-x[1]),... in 
+  a[i], i = 0,..,N-1, this function converts the coefficients to the monomial basis, i.e. into 
+  regular polynomial coefficients. The result is stored in the same array a. The array x is 
+  destroyed during the process - it's re-used internally as temporary buffer for intermediate 
+  results to allow higher level code optimize memory usage (otherwise, the function would need an 
+  additional buffer of length N - if desired, the caller can create this additional buffer itself 
+  and copy the x-values into it and then use this function). */
+  static void newtonToMonomialCoeffs(T* x, T* a, int N);
 
+
+  // drag the ..shiftArgument function in this group
 
   //-----------------------------------------------------------------------------------------------
   /** \name Fitting/Interpolation */
@@ -769,7 +783,8 @@ public:
   // allocates heap memory
   // todo: maybe use rsPolynomialRecursion inside
   // rename to bessel (we are already inside class rsPolynomial, so the "Polynomial" part is 
-  // redundant)
+  // redundant), or maybe besselCoeffs or coeffsBessel (having coeffs first orders the functions
+  // more meaningfully alphabetically)
 
   /** Fills the array with coefficients for a Legendre-polynomial (of the 1st kind) of given
   degree. */
@@ -817,6 +832,7 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   // Evaluation of special polynomials
+  // maybe move into the Evaluation section
 
   // move the evaluateHermite function here - use consistent naming - either they should all start
   // with "evaluate" or none should
@@ -830,6 +846,7 @@ public:
       tn = T(2)*x*t1 - t0; t0 = t1; t1 = tn; }
     return t0;
   }
+  // maybe rename to evalChebyRecursive, have also a function coeffsCheby
 
   /** Evaluates the N-th degree Chebychev polynomial T_N(x) at x by means of acos and cos or 
   acosh and cosh. */
