@@ -600,8 +600,6 @@ void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a)
   std::vector<T> b(N);   // workspace
   newtonToMonomialCoeffs(c, x, N, a, &b[0]);
 }
-
-
 // c: Newton basis coeffs, x: x-coordinates of evaluation/data points, a: monomial basis coeffs, 
 // N: number of data points, i.e. length of x,c,a 
 // todo: make order of arguments consistent: inputs first, outputs last...also make the meaning of
@@ -630,6 +628,18 @@ void interpolantNewton(T* a, const T* x, const T* y, int N)
 // maybe make a class rsVectorTools that just contains convenience functions for the functions from
 // rsArrayTools, such that we don't need the ugly &b[0] syntax and maybe can get rid of the length
 // parameters (because vectors know their lengths)...but maybe it should also include
+
+/** In place version. Overwrites x,y arrays during the process. On return, y will contain the 
+polynomial coeffs and x will contain garbage (more specifically, x will contain the coefficients of
+the unique monic polynomial that has roots at the given original x-values - i don't think that's 
+useful for the caller, but anyway). */
+template<class T>
+void interpolantNewtonInPlace(T* x, T* y, int N)
+{
+  newtonPolyCoeffs(x, y, N);              // will overwrite y
+  newtonToMonomialCoeffs(y, x, N, y);     // will overwrite y again
+}
+// is not yet in place - we need to pass x as last arguemnt to 2nd call to use as workspace there
 
 /** Evaluates the Newton polynomial:
   p(x) = c[0] + c[1]*(x-r[0]) + c[2]*(x-r[0])*(x-r[1]) + ... + cN*(x-r[0])*...*(x-r[N-1])
@@ -699,6 +709,16 @@ bool testPolynomialInterpolation(std::string &reportString)
     yc[n] = Poly::evaluate(x[n], a, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
     // this is the 5th time, this loop occurs -> wrap into (lambda)function
+
+  // test in-place implementation:
+  rsArrayTools::copy(x, c, N);
+  rsArrayTools::copy(y, a, N);
+  interpolantNewtonInPlace(c, a, N);  // after the call, a will conatin the desired coeffs 
+  for(n = 0; n < N; n++) {
+    yc[n] = Poly::evaluate(x[n], a, N-1);
+    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
+  // maybe also check, if c contains coeffs of polynomial with roots at the original x[n]
+
 
   // test function for equidistant abscissa values:
   double x0 = -3.2;
