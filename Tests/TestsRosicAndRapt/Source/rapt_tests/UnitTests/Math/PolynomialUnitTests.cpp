@@ -591,6 +591,11 @@ void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a, T* b)
 // -a is allowed to be the same array as c
 // -maybe use a single array for I/O, i.e. c/a - then we can also remove the a[0] = c[0] and
 //  a[i] = c[i] statements
+// -is it possible to implement it in a way that allows b to be equal to x? would that be useful?
+//  we could do xi = x[0] before the loop, in the loop convolve with xi instead of x[i-1] and 
+//  re-assign xi = x[i] after convolution
+// -this way, we could implement the whol algo using only 2 arrays of length N: x,y which would 
+//  contain g,a after return (where g stands for garbage, a for the coeffs)
 
 template<class T>
 void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a)
@@ -613,8 +618,9 @@ through the N points (x[n], y[n]), n = 0,...,N-1.  */
 template<class T>
 void interpolantNewton(T* a, const T* x, const T* y, int N)
 {
-  std::vector<T> c(N);                    // workspace
-  newtonPolyCoeffs(&c[0], x, y, N);
+  rsArrayTools::copy(y, a, N);
+
+  newtonPolyCoeffs(a, x, y, N);
 
   // -from this point on, the y-array is not need anymore - maybe, it can be re-used as workspace 
   //  in the following steps to avoid allocating extra space, when it's ok to destroy the y-array
@@ -623,7 +629,7 @@ void interpolantNewton(T* a, const T* x, const T* y, int N)
   //    newtonToMonomialCoeffs(y, x, N, y);
   //  then y would contain the y-values on entry and the polynomial coeffs on exit
 
-  newtonToMonomialCoeffs(&c[0], x, N, a);
+  newtonToMonomialCoeffs(a, x, N, a);
 }
 // maybe make a class rsVectorTools that just contains convenience functions for the functions from
 // rsArrayTools, such that we don't need the ugly &b[0] syntax and maybe can get rid of the length
