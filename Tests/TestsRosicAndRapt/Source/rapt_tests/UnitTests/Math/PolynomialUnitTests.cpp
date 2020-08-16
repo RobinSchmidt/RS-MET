@@ -593,6 +593,7 @@ void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a, T* b)
 //  re-assign xi = x[i] after convolution
 // -this way, we could implement the whol algo using only 2 arrays of length N: x,y which would 
 //  contain g,a after return (where g stands for garbage, a for the coeffs)
+// -maybe get rid (or call the in-place version)
 
 template<class T>
 void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a)
@@ -607,6 +608,12 @@ void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a)
 // -let the use pass a workspace - avoid allocating memory for b
 // -in a higher level implementation (like interpolantNewton below), we could use the passed 
 //  y-array to be used as workspace during conversion, if it's ok to destroy the y-array
+// -get rid! use in place versions only!
+
+
+
+
+
 
 /** Implements Newton's algorithm using diveded difference to find the polynomial interpolant 
 through the N points (x[n], y[n]), n = 0,...,N-1.  */
@@ -629,17 +636,34 @@ void interpolantNewton(T* a, const T* x, const T* y, int N)
 // rsArrayTools, such that we don't need the ugly &b[0] syntax and maybe can get rid of the length
 // parameters (because vectors know their lengths)...but maybe it should also include
 
+/** Given the coefficents for the Newton basis polynomials in a[i], i = 0,..,N-1, this function 
+converts the coefficients to the monomial basis, i.e. into regular polynomial coefficients. The 
+result is stored in the same array a. The array x is destroyed during the process - it's re-used 
+internally as temporary buffer for intermediate results to allow higher level code optimize memory
+usage (otherwise, the function would need an additional buffer of length N). */
+template<class T>
+void newtonToMonomialCoeffs(T* x, T* a, int N)
+{
+  T x0 = x[0]; 
+  x[0] = T(1);                   // x is re-used as our convolutive accumulator
+  for(int i = 1; i < N; i++) {
+    T x1 = x[i];                                            // save x[i] because the next line..
+    rsArrayTools::convolveWithTwoElems(x, i, -x0, T(1), x); // ..overwrites x up to x[i] but we..
+    x0 = x1;                                                // ..still need it in next iteration
+    for(int j = 0; j < i; j++)
+      a[j] += a[i] * x[j]; }
+}
+
 /** In place version. Overwrites x,y arrays during the process. On return, y will contain the 
 polynomial coeffs and x will contain garbage (more specifically, x will contain the coefficients of
 the unique monic polynomial that has roots at the given original x-values - i don't think that's 
-useful for the caller, but anyway). */
+useful for the caller, but anyway). ...verify this! i think, the last root may be missing. */
 template<class T>
 void interpolantNewtonInPlace(T* x, T* y, int N)
 {
-  newtonPolyCoeffs(x, y, N);              // will overwrite y
-  newtonToMonomialCoeffs(y, x, N, y);     // will overwrite y again
+  newtonPolyCoeffs(x, y, N);         // will overwrite y
+  newtonToMonomialCoeffs(x, y, N);   // will overwrite y again and also x
 }
-// is not yet in place - we need to pass x as last arguemnt to 2nd call to use as workspace there
 
 /** Evaluates the Newton polynomial:
   p(x) = c[0] + c[1]*(x-r[0]) + c[2]*(x-r[0])*(x-r[1]) + ... + cN*(x-r[0])*...*(x-r[N-1])
