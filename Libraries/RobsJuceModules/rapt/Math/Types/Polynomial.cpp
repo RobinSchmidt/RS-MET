@@ -916,7 +916,7 @@ void rsPolynomial<T>::newtonToMonomialCoeffs(T* x, T* a, int N)
     rsArrayTools::convolveWithTwoElems(x, i, -x0, T(1), x); // ..overwrites x up to x[i] but we..
     x0 = x1;                                                // ..still need it in next iteration
     for(int j = 0; j < i; j++)
-      a[j] += a[i] * x[j]; }
+      a[j] += a[i] * x[j]; }                                // accumulation of final coeffs
 }
 
 
@@ -1198,42 +1198,31 @@ void rsPolynomial<T>::besselPolynomial(T *a, int degree)
   for(n=0; n<=degree; n++)
     a[n] = 0.0;
 
-  if( degree == 0 )
-  {
+  if( degree == 0 ) {
     a[0] = 1.0;
-    return;
-  }
-  else if( degree == 1 )
-  {
+    return; }
+  else if( degree == 1 )  {
     a[0] = 1.0;
     a[1] = 1.0;
-    return;
-  }
+    return; }
 
   // the general case is treated by recursion:
-  a[0]       = 1.0;
-  T *b1 = new T[degree+1];
+  a[0]  = 1.0;
+  T *b1 = new T[degree+1]; // why +1?
   T *b2 = new T[degree+1];
-  b2[0]      = 1.0;
-  b2[1]      = 0.0;
-  b1[0]      = 1.0;
-  b1[1]      = 1.0;
-  for(n=2; n<=degree; n++)
-  {
+  b2[0] = 1.0; b2[1] = 0.0;
+  b1[0] = 1.0; b1[1] = 1.0;
+  for(n = 2; n <= degree; n++) {
     T c = (T) (2*n-1);
-    for(m=n; m>0; m--)
-      a[m] = c*b1[m-1];
+    for(m = n; m >  0; m--)   a[m]  = c*b1[m-1];
     a[0] = 0;
-    for(m=0; m<n-1; m++)
-      a[m] += b2[m];
-    for(m=0; m<n; m++)
-      b2[m] = b1[m];
-    for(m=0; m<=n; m++)
-      b1[m] = a[m];
-  }
+    for(m = 0; m <  n-1; m++) a[m] += b2[m];
+    for(m = 0; m <  n;   m++) b2[m] = b1[m];
+    for(m = 0; m <= n;   m++) b1[m] = a[m];  }
   delete[] b1;
   delete[] b2;
 }
+// can this be optimized? i think so
 
 template<class T>
 template<class R>

@@ -719,12 +719,8 @@ public:
   return, y will contain the polynomial coeffs and x will contain garbage. (More specifically, x 
   will contain the coefficients of the unique monic polynomial of degree N-1 that has roots at the 
   given original x-values, except the last one. I don't think that's any useful for the caller, 
-  but just for info). */
+  but just for info). The time complexity is O(N^2) and space complexity is O(1). */
   static void interpolantViaNewtonInPlace(T* x, T* y, int N);
-  //...wait ...that means, y must be of length N+1? what about x? ...test and document this!!!
-  // oh - no - length n should be enough - the degree of the interpolating polynomial is N-1, so it
-  // has N coefficients
-
 
 
   // \todo void quinticCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy,
@@ -854,6 +850,7 @@ public:
   polynomials are used in Papoulis filters. */
   template<class R>
   static void maxSlopeMonotonic(R *a, int N);
+  // rename to coeffsMaxSlopeMonotonic
   // allocates heap memory
 
   // \todo for Halpern filters:
@@ -866,6 +863,7 @@ public:
   static void coeffsNewton(const T* x, T* y, int N);
   // todo: make a version that doesn't overwrite the y-array and instead accepts another array
   // for the coeffs to write into
+  // maybe rename to coeffsNewtonInPlace
 
   //-----------------------------------------------------------------------------------------------
   // Evaluation of special polynomials
