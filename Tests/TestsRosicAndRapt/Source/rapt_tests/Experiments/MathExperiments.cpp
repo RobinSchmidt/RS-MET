@@ -2270,38 +2270,39 @@ void ratiosLargeLcm()
   RAPT::rsMatrixTools::deallocateMatrix(lcmMatrix, N, N);
 }
 
-
 void ratiosEquidistantPowers()
 {
-  int numRatios = 7;     // number of ratios (i.e. "density")
+  // We produce ratios in the following way: the user gives a minimum and maximum value a,b. Then,
+  // we produce equidistant values between A := a^p and B := b^p with some user parameter p. Then,
+  // we take the p-th root of the so produced values.
+
+  int numRatios = 11;    // number of ratios (i.e. "density")
   int numParams = 200;   // number of sample values for the parameter of the ratio algo
-
-  double pMin   = 0.5;
-  double pMax   = 2.0;
-
+  double pMin   = 0.25;  // lower value of the exponent parameter
+  double pMax   = 4.0;   // upper value of the exponent parameter
   double a      = 10.0;  // lower frequency or period
   double b      = 20.0;  // upper frequency or period
 
-  //using Vec = std::vector<double>;
-  //Vec r(numRatios)
+  //pMin = -4.0; pMax = -0.25; // test
 
   rsMatrix<double> R(numRatios, numParams);
-  for(int j = 0; j < numParams; j++)
-  {
-    double p = rsLinToLin(double(j), 0.0, double(numParams-1), pMin, pMax);
+  for(int j = 0; j < numParams; j++) {
+    double p = rsLinToExp(double(j), 0.0, double(numParams-1), pMin, pMax);
     double A = pow(a, p);
     double B = pow(b, p);
-    for(int i = 0; i < numRatios; i++) 
-    {
+    for(int i = 0; i < numRatios; i++) {
       double r = rsLinToLin(double(i), 0.0, double(numRatios-1), A, B);
-      r = pow(r, 1.0/p); // needs special treatment when p == 0
-      R(i,j) = r;
-    }
-  }
+      r = pow(r, 1.0/p); 
+      R(i,j) = r; }} 
 
-  plotMatrixRows(R);
+  plotMatrixRows(R); // maybe x-axis should be log-scaled
 
-  int dummy = 0;
+  // Notes:
+  // We need a special treatment when p == 0. I think, we should produce exp-spaced values in this 
+  // case (verify this!)..because that's also how the generalized mean works, when the exponent is 
+  // 0 - it becomes the geometric mean.
+  // Maybe we should somehow make a bipolar version of that - use different (but related) formulas 
+  // for the lower and upper half.
 }
 
 
