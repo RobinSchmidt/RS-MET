@@ -96,6 +96,7 @@ void probabilityLogic();
 void productLogPlot();
 void ratioGenerator();
 void ratiosLargeLcm();
+void ratiosEquidistantPowers();
 void ratiosMetallic();
 void sinCosTable();
 void expBipolar();

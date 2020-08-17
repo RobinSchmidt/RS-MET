@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  passed &= runUnitTestsRapt();
+  //passed &= runUnitTestsRapt();
   //passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
@@ -119,6 +119,7 @@ int main(int argc, char* argv[])
   //productLogPlot();
   //ratioGenerator();
   //ratiosLargeLcm();
+  ratiosEquidistantPowers();
   //ratiosMetallic();
   //sinCosTable();
   //twoParamRemap();
@@ -172,8 +173,8 @@ int main(int argc, char* argv[])
   //blit();
   //blep();
   //polyBlep();
-  //superBlep();
-  //superSawStereo();
+  superBlep();
+  superSawStereo();
   //twoPieceOsc();
   //syncSweep();
   //syncPhasor();

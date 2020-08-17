@@ -2270,6 +2270,41 @@ void ratiosLargeLcm()
   RAPT::rsMatrixTools::deallocateMatrix(lcmMatrix, N, N);
 }
 
+
+void ratiosEquidistantPowers()
+{
+  int numRatios = 7;     // number of ratios (i.e. "density")
+  int numParams = 200;   // number of sample values for the parameter of the ratio algo
+
+  double pMin   = 0.5;
+  double pMax   = 2.0;
+
+  double a      = 10.0;  // lower frequency or period
+  double b      = 20.0;  // upper frequency or period
+
+  //using Vec = std::vector<double>;
+  //Vec r(numRatios)
+
+  rsMatrix<double> R(numRatios, numParams);
+  for(int j = 0; j < numParams; j++)
+  {
+    double p = rsLinToLin(double(j), 0.0, double(numParams-1), pMin, pMax);
+    double A = pow(a, p);
+    double B = pow(b, p);
+    for(int i = 0; i < numRatios; i++) 
+    {
+      double r = rsLinToLin(double(i), 0.0, double(numRatios-1), A, B);
+      r = pow(r, 1.0/p); // needs special treatment when p == 0
+      R(i,j) = r;
+    }
+  }
+
+  plotMatrixRows(R);
+
+  int dummy = 0;
+}
+
+
 void ratiosMetallic()
 {
   // The metallic ratio rn for integer n is given by (n + sqrt(n^2+4))/2 - so the ratio of two
