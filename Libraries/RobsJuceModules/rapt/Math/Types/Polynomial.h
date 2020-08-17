@@ -708,18 +708,18 @@ public:
 
   /** Implements Newton's algorithm using diveded difference to find the polynomial interpolant 
   through the N points (x[n], y[n]), n = 0,...,N-1. It stores the polynomial coefficients in "a" 
-  and it needs a workspace array of length N. */
+  and it needs a workspace array of length N. All arrays should be of length N. */
   static void interpolantViaNewton(T* a, const T* x, const T* y, int N, T* workspace);
   // make similar functions interpolantViaLagrange, interpolantViaVandermode - interpolant may call 
   // any of these ...maybe the Lagrange version should have 2 variants - one using the "master"
   // polynomial and dividing out one root at a time - this leads to an O(N^2) algo as well - we may
   // then compare it to the Newton algo
 
-  /** In place version. Overwrites x,y arrays during the process. On return, y will contain the 
-  polynomial coeffs and x will contain garbage (more specifically, x will contain the coefficients 
-  of the unique monic polynomial that has roots at the given original x-values - i don't think 
-  that's useful for the caller, but anyway...verify this! i think, the last root may be 
-  missing...which would be weird). */
+  /** In place version of interpolantViaNewton. Overwrites the x,y arrays during the process. On 
+  return, y will contain the polynomial coeffs and x will contain garbage. (More specifically, x 
+  will contain the coefficients of the unique monic polynomial of degree N-1 that has roots at the 
+  given original x-values, except the last one. I don't think that's any useful for the caller, 
+  but just for info). */
   static void interpolantViaNewtonInPlace(T* x, T* y, int N);
   //...wait ...that means, y must be of length N+1? what about x? ...test and document this!!!
   // oh - no - length n should be enough - the degree of the interpolating polynomial is N-1, so it

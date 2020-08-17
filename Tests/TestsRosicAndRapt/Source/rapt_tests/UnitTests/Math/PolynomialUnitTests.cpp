@@ -562,38 +562,6 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
   return testResult;
 }
 
-
-
-
-// these should go into rsPolynomial:
-
-/** In place version. Overwrites x,y arrays during the process. On return, y will contain the 
-polynomial coeffs and x will contain garbage (more specifically, x will contain the coefficients of
-the unique monic polynomial that has roots at the given original x-values - i don't think that's 
-useful for the caller, but anyway). ...verify this! i think, the last root may be missing. */
-/*
-template<class T>
-void interpolantViaNewtonInPlace(T* x, T* y, int N)
-{
-  rsPolynomial<T>::coeffsNewton(          x, y, N);   // overwrites y
-  rsPolynomial<T>::newtonToMonomialCoeffs(x, y, N);   // overwrites y again and also x
-}
-*/
-// should got Fitting/Interpolation section
-
-/** Implements Newton's algorithm using diveded difference to find the polynomial interpolant 
-through the N points (x[n], y[n]), n = 0,...,N-1.  */
-/*
-template<class T>
-void interpolantViaNewton(T* a, const T* x, const T* y, int N, T* w)
-{
-  rsArrayTools::copy(x, w, N);
-  rsArrayTools::copy(y, a, N);
-  interpolantViaNewtonInPlace(w, a, int N)
-}
-*/
-
-
 bool testPolynomialInterpolation(std::string &reportString)
 {
   std::string testName = "PolynomialInterpolation";
@@ -628,14 +596,20 @@ bool testPolynomialInterpolation(std::string &reportString)
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
   // test in-place implementation of finding polynomial coeffs via Newton expansion:
-  rsArrayTools::copy(x, c, N);
-  rsArrayTools::copy(y, a, N);
-  Poly::interpolantViaNewtonInPlace(c, a, N);  // after the call, a will conatin the desired coeffs 
+  Poly::interpolantViaNewton(a, x, y, N, c); // after the call, a will contain the desired coeffs 
   for(n = 0; n < N; n++) {
     yc[n] = Poly::evaluate(x[n], a, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
-  // maybe also check, if c contains coeffs of polynomial with roots at the original x[n]
 
+  // check, if the workspace c contains coeffs of polynomial with roots at the original x[n] - but
+  // only the values up to x[N-2] are roots - the last original x is not a root (this is weird - 
+  // but obviously, the polynomial can only have N-1 roots because it's of degree N-1):
+  for(n = 0; n < N-1; n++) {   // loop only up to N-1 because x[N-1] is not a root of c
+    yc[n] = Poly::evaluate(x[n], c, N-1);
+    testResult &= rsIsCloseTo(yc[n], 0.0, tol); }
+  // what are the implications of the fact that the last x is not a root - does it mean, the order
+  // of stored x-values (and associated y-values) can have an impact on the roundoff error? i 
+  // think so...it probably has anyway
 
   // test function for equidistant abscissa values:
   double x0 = -3.2;
