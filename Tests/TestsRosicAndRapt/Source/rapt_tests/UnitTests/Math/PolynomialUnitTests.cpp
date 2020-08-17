@@ -567,22 +567,6 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
 
 // these should go into rsPolynomial:
 
-/** Evaluates the Newton polynomial:
-  p(x) = c[0] + c[1]*(x-r[0]) + c[2]*(x-r[0])*(x-r[1]) + ... + cN*(x-r[0])*...*(x-r[N-1])
-with the Newton coeffs c[0],...,c[N] and roots r[0],...,r[N-1].  */
-template<class T>
-T evaluateNewton(const T& x, const T* c, const T* r, int N)
-{
-  T pi = T(1);   // accumulator for Newton basis polynomials
-  T y  = c[0];   // accumulator for result
-  for(int i = 0; i < N; i++) {
-    pi *= x - r[i];
-    y  += c[i+1] * pi; }
-  return y;
-}
-// c is of length N+1, r is of length N...verify this!
-// should go to Evaluation section
-
 /** Computes coefficients for Newton basis polynomials 1,(x-x[0]),(x-x[0])*(x-x[1]),... using 
 divided differences from N pairs (x[i],y[i]), i = 0,...N-1. It overwrites the y-array with the 
 coefficients. @see evaluateNewton. */
@@ -657,7 +641,7 @@ bool testPolynomialInterpolation(std::string &reportString)
   rsArrayTools::copy(y, c, N);
   coeffsNewton(x, c, N);
   for(n = 0; n < N; n++) {
-    yc[n] = evaluateNewton(x[n], c, x, N-1);
+    yc[n] = Poly::evaluateNewton(x[n], c, x, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
 

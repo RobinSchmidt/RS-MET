@@ -186,7 +186,19 @@ T rsPolynomial<T>::evaluateHermite(const T& x, int n)
   return h1;
 }
 // this is the physicist's version of Hermite polynomials, the probabilist's version would use the
-// recursion: tmp = x*h1 - i*h0. ...without the factor two
+// recursion: tmp = x*h1 - i*h0. ...without the factor two - maybe make the recursion factor 
+// another parameter
+
+template<class T>
+T rsPolynomial<T>::evaluateNewton(const T& x, const T* c, const T* r, int N)
+{
+  T p = T(1);   // accumulator for Newton basis polynomials
+  T y = c[0];   // accumulator for result
+  for(int i = 0; i < N; i++) {
+    p *= x - r[i];
+    y += c[i+1] * p; }
+  return y;
+}
 
 /*
 template<class T>

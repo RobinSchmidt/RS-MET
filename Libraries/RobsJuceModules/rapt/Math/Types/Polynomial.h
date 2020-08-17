@@ -325,6 +325,13 @@ public:
 
   // todo: evaluateDerivative, evaluateIntegral (or AntiDerivative)
 
+  /** Evaluates the Newton polynomial with the Newton expansion coeffs c[0],...,c[N] and roots 
+  r[0],...,r[N-1] given by:
+    p(x) = c[0] + c[1]*(x-r[0]) + c[2]*(x-r[0])*(x-r[1]) + ... + c[N]*(x-r[0])*...*(x-r[N-1])
+  at the given input x. Array c is of length N+1, r is of length N. */
+  static T evaluateNewton(const T& x, const T* c, const T* r, int N);
+
+
   /** Given a coefficient array p of length maxDegree+1, this function returns the actual degree
   of the polynomial - meaning that trailing zeros in the array don't count. So it's the degree 
   that takes only into account the non-zero coefficients. */
@@ -674,7 +681,9 @@ public:
   // ...do stuff with matrix A
   rsDeAllocateSquareArray2D(A, N);  */
   static T** vandermondeMatrix(const T *x, int N);
-    // move to rsMatrixOld, deprecate!
+  // move to rsMatrixOld, deprecate! ..implement the algo with the new rsMatrix/rsLinearAlgebra
+  // implementation - the implementation is actually just for reference anyway - for production 
+  // code, the algorithm using the Newton polynomials should be used
 
   /** Computes coefficients a[0],..., a[N-1] for a polynomial of degree N-1 that goes through the N
   data points (x[0], y[0]),...,(x[N-1], y[N-1]). 
