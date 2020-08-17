@@ -563,7 +563,9 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
 }
 
 
-// these 4 should go into rsPolynomial:
+
+
+// these should go into rsPolynomial:
 
 /** Evaluates the Newton polynomial:
   p(x) = c[0] + c[1]*(x-r[0]) + c[2]*(x-r[0])*(x-r[1]) + ... + cN*(x-r[0])*...*(x-r[N-1])
@@ -585,7 +587,7 @@ T evaluateNewton(const T& x, const T* c, const T* r, int N)
 divided differences from N pairs (x[i],y[i]), i = 0,...N-1. It overwrites the y-array with the 
 coefficients. @see evaluateNewton. */
 template<class T>
-void newtonCoeffs(const T* x, T* y, int N)
+void coeffsNewton(const T* x, T* y, int N)
 {
   for(int i = 0; i < N; i++)
     for(int j = i+1; j < N; j++)
@@ -595,110 +597,32 @@ void newtonCoeffs(const T* x, T* y, int N)
 // https://en.wikipedia.org/wiki/Polynomial_interpolation#Non-Vandermonde_solutions
 // https://en.wikipedia.org/wiki/Neville%27s_algorithm
 
-/** Given the coefficents for the Newton basis polynomials in a[i], i = 0,..,N-1, this function 
-converts the coefficients to the monomial basis, i.e. into regular polynomial coefficients. The 
-result is stored in the same array a. The array x is destroyed during the process - it's re-used 
-internally as temporary buffer for intermediate results to allow higher level code optimize memory
-usage (otherwise, the function would need an additional buffer of length N). */
-/*
-template<class T>
-void newtonToMonomialCoeffs(T* x, T* a, int N)
-{
-  T x0 = x[0]; 
-  x[0] = T(1);                   // x is re-used as our convolutive accumulator
-  for(int i = 1; i < N; i++) {
-    T x1 = x[i];                                            // save x[i] because the next line..
-    rsArrayTools::convolveWithTwoElems(x, i, -x0, T(1), x); // ..overwrites x up to x[i] but we..
-    x0 = x1;                                                // ..still need it in next iteration
-    for(int j = 0; j < i; j++)
-      a[j] += a[i] * x[j]; }
-}
-// should go to Conversions section
-*/
 
 /** In place version. Overwrites x,y arrays during the process. On return, y will contain the 
 polynomial coeffs and x will contain garbage (more specifically, x will contain the coefficients of
 the unique monic polynomial that has roots at the given original x-values - i don't think that's 
 useful for the caller, but anyway). ...verify this! i think, the last root may be missing. */
 template<class T>
-void interpolantNewtonInPlace(T* x, T* y, int N)
+void interpolantViaNewtonInPlace(T* x, T* y, int N)
 {
-  newtonCoeffs(      x, y, N);   // overwrites y
+  coeffsNewton(      x, y, N);   // overwrites y
   rsPolynomial<T>::newtonToMonomialCoeffs(x, y, N);   // overwrites y again and also x
 }
 // should got Fitting/Interpolation section
 
-
-// stuff below should be replaced by convenience functions that make use of the functions above or 
-// maybe removed:
-
-/*
-template<class T>
-void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a, T* b)
-{
-  b[0] = 1;     // b is our convolutive accumulator
-  a[0] = c[0];
-  for(int i = 1; i < N; i++) {
-    rsArrayTools::convolveWithTwoElems(b, i, -x[i-1], T(1), b);
-    for(int j = 0; j < i; j++)
-      a[j] += c[i] * b[j];
-    a[i] = c[i]; }
-}
-*/
-// -a is allowed to be the same array as c
-// -maybe use a single array for I/O, i.e. c/a - then we can also remove the a[0] = c[0] and
-//  a[i] = c[i] statements
-// -is it possible to implement it in a way that allows b to be equal to x? would that be useful?
-//  we could do xi = x[0] before the loop, in the loop convolve with xi instead of x[i-1] and 
-//  re-assign xi = x[i] after convolution
-// -this way, we could implement the whol algo using only 2 arrays of length N: x,y which would 
-//  contain g,a after return (where g stands for garbage, a for the coeffs)
-// -maybe get rid (or call the in-place version)
-
-/*
-template<class T>
-void newtonToMonomialCoeffs(const T* c, const T* x, int N, T* a)
-{
-  std::vector<T> b(N);   // workspace
-  newtonToMonomialCoeffs(c, x, N, a, &b[0]);
-}
-*/
-// c: Newton basis coeffs, x: x-coordinates of evaluation/data points, a: monomial basis coeffs, 
-// N: number of data points, i.e. length of x,c,a 
-// todo: make order of arguments consistent: inputs first, outputs last...also make the meaning of
-// N consistent with typical use in rsPolynomial
-// -let the use pass a workspace - avoid allocating memory for b
-// -in a higher level implementation (like interpolantNewton below), we could use the passed 
-//  y-array to be used as workspace during conversion, if it's ok to destroy the y-array
-// -get rid! use in place versions only!
-
-
-
-
-
-
 /** Implements Newton's algorithm using diveded difference to find the polynomial interpolant 
 through the N points (x[n], y[n]), n = 0,...,N-1.  */
 template<class T>
-void interpolantNewton(T* a, const T* x, const T* y, int N)
+void interpolantViaNewton(T* a, const T* x, const T* y, int N, T* w)
 {
+  rsArrayTools::copy(x, w, N);
   rsArrayTools::copy(y, a, N);
-  newtonPolyCoeffs(x, a, N);
-
-  // -from this point on, the y-array is not need anymore - maybe, it can be re-used as workspace 
-  //  in the following steps to avoid allocating extra space, when it's ok to destroy the y-array
-  // -or we could re-use y for the c-array above, like:
-  //    newtonPolyCoeffs(y, x, y, N);
-  //    newtonToMonomialCoeffs(y, x, N, y);
-  //  then y would contain the y-values on entry and the polynomial coeffs on exit
-
-  newtonToMonomialCoeffs(a, x, N, a);
+  interpolantViaNewtonInPlace(w, a, int N)
 }
-// maybe make a class rsVectorTools that just contains convenience functions for the functions from
-// rsArrayTools, such that we don't need the ugly &b[0] syntax and maybe can get rid of the length
-// parameters (because vectors know their lengths)...but maybe it should also include
-
-
+// make similar functions interpolantViaLagrange, interpolantViaVandermode - interpolant may call 
+// any of these ...maybe the Lagrange version should have 2 variants - one using the "master"
+// polynomial and dividing out one root at a time - this leads to an O(N^2) algo as well - we may
+// then compare it to the Newton algo
 
 
 
@@ -731,38 +655,16 @@ bool testPolynomialInterpolation(std::string &reportString)
   // test computing coeffs for Newton basis polynomials and evaluation of Newton polynomial:
   double c[N];
   rsArrayTools::copy(y, c, N);
-  newtonCoeffs(x, c, N);
+  coeffsNewton(x, c, N);
   for(n = 0; n < N; n++) {
     yc[n] = evaluateNewton(x[n], c, x, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
-  /*
-  // test converting coeffs for Newton basis into monomial basis:
-  rsArrayTools::fillWithNaN(a, N);
-  Poly::newtonToMonomialCoeffs(c, x, N, a);
-  for(n = 0; n < N; n++) {
-    yc[n] = Poly::evaluate(x[n], a, N-1);
-    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
-
-  // test in-place conversion:
-  rsArrayTools::copy(c, a, N);
-  newtonToMonomialCoeffs(a, x, N, a);
-  for(n = 0; n < N; n++) {
-    yc[n] = Poly::evaluate(x[n], a, N-1);
-    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
-
-  // test computing the monomial coeffs via Newton basis:
-  interpolantNewton(a, x, y, N);
-  for(n = 0; n < N; n++) {
-    yc[n] = Poly::evaluate(x[n], a, N-1);
-    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
-    // this is the 5th time, this loop occurs -> wrap into (lambda)function
-  */
 
   // test in-place implementation of finding polynomial coeffs via Newton expansion:
   rsArrayTools::copy(x, c, N);
   rsArrayTools::copy(y, a, N);
-  interpolantNewtonInPlace(c, a, N);  // after the call, a will conatin the desired coeffs 
+  interpolantViaNewtonInPlace(c, a, N);  // after the call, a will conatin the desired coeffs 
   for(n = 0; n < N; n++) {
     yc[n] = Poly::evaluate(x[n], a, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
