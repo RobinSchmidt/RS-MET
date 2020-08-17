@@ -571,16 +571,19 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
 polynomial coeffs and x will contain garbage (more specifically, x will contain the coefficients of
 the unique monic polynomial that has roots at the given original x-values - i don't think that's 
 useful for the caller, but anyway). ...verify this! i think, the last root may be missing. */
+/*
 template<class T>
 void interpolantViaNewtonInPlace(T* x, T* y, int N)
 {
   rsPolynomial<T>::coeffsNewton(          x, y, N);   // overwrites y
   rsPolynomial<T>::newtonToMonomialCoeffs(x, y, N);   // overwrites y again and also x
 }
+*/
 // should got Fitting/Interpolation section
 
 /** Implements Newton's algorithm using diveded difference to find the polynomial interpolant 
 through the N points (x[n], y[n]), n = 0,...,N-1.  */
+/*
 template<class T>
 void interpolantViaNewton(T* a, const T* x, const T* y, int N, T* w)
 {
@@ -588,12 +591,7 @@ void interpolantViaNewton(T* a, const T* x, const T* y, int N, T* w)
   rsArrayTools::copy(y, a, N);
   interpolantViaNewtonInPlace(w, a, int N)
 }
-// make similar functions interpolantViaLagrange, interpolantViaVandermode - interpolant may call 
-// any of these ...maybe the Lagrange version should have 2 variants - one using the "master"
-// polynomial and dividing out one root at a time - this leads to an O(N^2) algo as well - we may
-// then compare it to the Newton algo
-
-
+*/
 
 
 bool testPolynomialInterpolation(std::string &reportString)
@@ -629,11 +627,10 @@ bool testPolynomialInterpolation(std::string &reportString)
     yc[n] = Poly::evaluateNewton(x[n], c, x, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
-
   // test in-place implementation of finding polynomial coeffs via Newton expansion:
   rsArrayTools::copy(x, c, N);
   rsArrayTools::copy(y, a, N);
-  interpolantViaNewtonInPlace(c, a, N);  // after the call, a will conatin the desired coeffs 
+  Poly::interpolantViaNewtonInPlace(c, a, N);  // after the call, a will conatin the desired coeffs 
   for(n = 0; n < N; n++) {
     yc[n] = Poly::evaluate(x[n], a, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }

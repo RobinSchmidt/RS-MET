@@ -1056,6 +1056,21 @@ void rsPolynomial<T>::interpolant(T *a, const T& x0, const T& dx, const T *y, in
 }
 
 template<class T>
+void rsPolynomial<T>::interpolantViaNewton(T* a, const T* x, const T* y, int N, T* w)
+{
+  rsArrayTools::copy(x, w, N);
+  rsArrayTools::copy(y, a, N);
+  interpolantViaNewtonInPlace(w, a, N);
+}
+
+template<class T>
+void rsPolynomial<T>::interpolantViaNewtonInPlace(T* x, T* y, int N)
+{
+  coeffsNewton(          x, y, N);   // overwrites y
+  newtonToMonomialCoeffs(x, y, N);   // overwrites y again and also x
+}
+
+template<class T>
 void rsPolynomial<T>::fitQuadraticDirect(T *a, const T *x, const T *y)
 {
   T k1 = y[1] - y[0];
