@@ -839,6 +839,13 @@ public:
   //void jacobiPolynomial(T *a, int degree); // the U-polynomials
   //void maximallyDivergingMonotonicPolynomial(T *a, int degree); // the T-polynomial
 
+  /** Computes coefficients for Newton basis polynomials 1,(x-x[0]),(x-x[0])*(x-x[1]),... using 
+  divided differences from N pairs (x[i],y[i]), i = 0,...N-1. It overwrites the y-array with the 
+  coefficients. @see evaluateNewton. */
+  static void coeffsNewton(const T* x, T* y, int N);
+  // todo: make a version that doesn't overwrite the y-array and instead accepts another array
+  // for the coeffs to write into
+
   //-----------------------------------------------------------------------------------------------
   // Evaluation of special polynomials
   // maybe move into the Evaluation section

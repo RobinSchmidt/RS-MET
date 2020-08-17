@@ -567,21 +567,6 @@ bool testPolynomialIntegrationWithPolynomialLimits(std::string &reportString)
 
 // these should go into rsPolynomial:
 
-/** Computes coefficients for Newton basis polynomials 1,(x-x[0]),(x-x[0])*(x-x[1]),... using 
-divided differences from N pairs (x[i],y[i]), i = 0,...N-1. It overwrites the y-array with the 
-coefficients. @see evaluateNewton. */
-template<class T>
-void coeffsNewton(const T* x, T* y, int N)
-{
-  for(int i = 0; i < N; i++)
-    for(int j = i+1; j < N; j++)
-      y[j] = (y[j] - y[i]) / (x[j] - x[i]);
-}
-// should go to Coefficient generation section
-// https://en.wikipedia.org/wiki/Polynomial_interpolation#Non-Vandermonde_solutions
-// https://en.wikipedia.org/wiki/Neville%27s_algorithm
-
-
 /** In place version. Overwrites x,y arrays during the process. On return, y will contain the 
 polynomial coeffs and x will contain garbage (more specifically, x will contain the coefficients of
 the unique monic polynomial that has roots at the given original x-values - i don't think that's 
@@ -589,7 +574,7 @@ useful for the caller, but anyway). ...verify this! i think, the last root may b
 template<class T>
 void interpolantViaNewtonInPlace(T* x, T* y, int N)
 {
-  coeffsNewton(      x, y, N);   // overwrites y
+  rsPolynomial<T>::coeffsNewton(          x, y, N);   // overwrites y
   rsPolynomial<T>::newtonToMonomialCoeffs(x, y, N);   // overwrites y again and also x
 }
 // should got Fitting/Interpolation section
@@ -639,7 +624,7 @@ bool testPolynomialInterpolation(std::string &reportString)
   // test computing coeffs for Newton basis polynomials and evaluation of Newton polynomial:
   double c[N];
   rsArrayTools::copy(y, c, N);
-  coeffsNewton(x, c, N);
+  Poly::coeffsNewton(x, c, N);
   for(n = 0; n < N; n++) {
     yc[n] = Poly::evaluateNewton(x[n], c, x, N-1);
     testResult &= rsIsCloseTo(yc[n], y[n], tol); }

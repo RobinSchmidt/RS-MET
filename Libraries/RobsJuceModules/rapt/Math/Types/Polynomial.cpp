@@ -1437,6 +1437,17 @@ void rsPolynomial<T>::maxSlopeMonotonic(R *w, int n)
   delete [] s;
   delete [] a;
 }
+// optimize this - less allocations
+
+template<class T>
+void rsPolynomial<T>::coeffsNewton(const T* x, T* y, int N)
+{
+  for(int i = 0; i < N; i++)
+    for(int j = i+1; j < N; j++)
+      y[j] = (y[j] - y[i]) / (x[j] - x[i]);
+}
+// https://en.wikipedia.org/wiki/Polynomial_interpolation#Non-Vandermonde_solutions
+// https://en.wikipedia.org/wiki/Neville%27s_algorithm
 
 /*
 ToDo:
