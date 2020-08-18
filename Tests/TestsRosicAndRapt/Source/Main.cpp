@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
   //productLogPlot();
   //ratioGenerator();
   //ratiosLargeLcm();
-  ratiosEquidistantPowers();
+  //ratiosEquidistantPowers();
   //ratiosMetallic();
   //sinCosTable();
   //twoParamRemap();
@@ -168,13 +168,14 @@ int main(int argc, char* argv[])
   //tennisRacketFreq();
 
   // Generators:
+  waveformFractalization();
   //noise();
   //noiseTriModal();
   //blit();
   //blep();
   //polyBlep();
-  superBlep();
-  superSawStereo();
+  //superBlep();
+  //superSawStereo();
   //twoPieceOsc();
   //syncSweep();
   //syncPhasor();

@@ -1,5 +1,49 @@
 using namespace RAPT;
 
+void fractalize(double* x, double* y, int N, int a = 2, int b = 0)
+{
+  int inc = 1;
+  while(inc <= N/2)  // is this the right condition?
+  {
+    double amp = 1.0 / double(inc);  // amplitude - maybe raise this to a power p
+
+    for(int n = 0; n < N; n++)
+      y[n] += amp * x[(inc*n)%N];
+
+
+    inc = a*inc + b;
+  }
+}
+// todo: make anothenr version that doesn't multiply by 2 in each iteration but adds 1...or maybe
+// in general: have a factor a and offset b and the the next freq is fNew = a*fOld + b. That would
+// cover both cases and many more
+// -apply the function recursively to the fractalized wave
+
+void waveformFractalization()
+{
+  static const int N = 2048;  // period length of prototype wave in samples
+  double x[N], y[N];
+
+  // render prototype waveform:
+  double w = 2*PI/N;
+  for(int n = 0; n < N; n++)
+  {
+    //x[n] = sin(w*n);   // todo: allow other prototype waveforms later
+    x[n] = rsSawWave(w*n);
+    //x[n] = rsSqrWave(w*n);  // fractalized with a=2,b=0 gives saw wave
+    //x[n] = rsTriWave(w*n);
+  }
+
+  // fractalize it:
+  rsArrayTools::fillWithZeros(y, N); // maybe rename to clear - or make alias
+  fractalize(x, y, N, 2, 0);
+
+  // plot:
+  //rsPlotArray(x, N);
+  //rsPlotArray(y, N);
+  rsPlotArrays(N, x, y);
+}
+
 void plotHistogram(const std::vector<double>& data, int numBins, double min, double max)
 {
   // under construction - it's kinda ugly but at least, it works

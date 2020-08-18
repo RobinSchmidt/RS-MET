@@ -31,6 +31,7 @@ void seriesConnectionDecay();
 
 // Generator Experiments:
 
+void waveformFractalization();
 void noise();
 void noiseTriModal();
 void blit();
