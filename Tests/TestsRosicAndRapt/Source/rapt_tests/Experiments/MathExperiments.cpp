@@ -2285,17 +2285,38 @@ void ratiosEquidistantPowers()
 
   //pMin = -4.0; pMax = -0.25; // test
 
+  // todo: create array of p-values (parameters)
+
+  std::vector<double> p(numParams);
+  rsArrayTools::fillWithRangeExponential(&p[0], numParams, pMin, pMax);
+
   rsMatrix<double> R(numRatios, numParams);
   for(int j = 0; j < numParams; j++) {
-    double p = rsLinToExp(double(j), 0.0, double(numParams-1), pMin, pMax);
-    double A = pow(a, p);
-    double B = pow(b, p);
+    //double p = rsLinToExp(double(j), 0.0, double(numParams-1), pMin, pMax);
+    double A = pow(a, p[j]);
+    double B = pow(b, p[j]);
     for(int i = 0; i < numRatios; i++) {
       double r = rsLinToLin(double(i), 0.0, double(numRatios-1), A, B);
-      r = pow(r, 1.0/p); 
+      r = pow(r, 1.0/p[j]); 
       R(i,j) = r; }} 
 
-  plotMatrixRows(R); // maybe x-axis should be log-scaled
+  plotMatrixRows(R, &p[0]); // maybe x-axis should be log-scaled
+
+
+  // plot the generalized mean of a,b and of the produced column:
+  std::vector<double> col(numRatios);   // to hold one matrix column at a time
+  std::vector<double> gmc(numParams);   // generalized mean of current column
+  std::vector<double> gmab(numParams);  // generalized mean of a and b
+  for(int i = 0; i < numParams; i++) {
+    R.copyColumn(i, &col[0]);
+    gmc[i]  = rsGeneralizedMean(&col[0], numRatios, p[i]);
+    gmab[i] = pow(0.5*(pow(a,p[i]) + pow(b,p[i])), 1.0/p[i]); }
+  rsPlotVectorsXY(p, gmc, gmab);
+  // OK - gmc and gmab do match indeed
+  // maybe plot also the regular mean - maybe we should somehow "fix" the mean such that the 
+  // perceived pitch always stays the same, regardless of p
+
+
 
   // Notes:
   // We need a special treatment when p == 0. I think, we should produce exp-spaced values in this 

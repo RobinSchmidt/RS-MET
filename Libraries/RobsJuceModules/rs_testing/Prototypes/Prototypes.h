@@ -133,6 +133,9 @@ void cheby_win(double *out, int N, double atten);
 void rsCircularShift(int* a, int N, int k);
 // circular shift without additional memory (using 3 reversals) - needs test
 
+
+double rsGeneralizedMean(double* x, int N, double p = 1);
+
 //=================================================================================================
 
 /** Simulates the dynamics of a rotating rigid body around its three pricipal axes of intertia. If

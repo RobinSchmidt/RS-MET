@@ -197,6 +197,8 @@ void plotMatrixRows(const RAPT::rsMatrix<T>& A)
   plt.plot();
 }
 
+/** Like the function above but with custom x-axis. The length of x should be equal to the number 
+of columns in the matrix. */
 template<class T>
 void plotMatrixRows(const RAPT::rsMatrix<T>& A, T* x)
 {

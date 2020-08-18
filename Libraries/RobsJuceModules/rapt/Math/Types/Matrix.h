@@ -385,6 +385,21 @@ public:
 
   // todo: getTrace(), getDiagonalProduct()
 
+  /** Copies data of i-th row into given array arr which should be of length numCols. */
+  void copyRow(int i, T* arr) const
+  {
+    rsArrayTools::copy(getRowPointerConst(i), arr, numCols);
+  }
+  // needs test
+
+  /** Copies data of j-th column into given array arr which should be of length numRows. */
+  void copyColumn(int j, T* arr) const
+  {
+    for(int i = 0; i < numRows; i++)
+      arr[i] = at(i, j);
+  }
+  // needs test
+
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulation */
 

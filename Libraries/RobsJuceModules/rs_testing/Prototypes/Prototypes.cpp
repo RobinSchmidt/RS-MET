@@ -561,6 +561,21 @@ void rsCircularShift(int* a, int N, int k)
 // todo: handle cases, where k >= N, k < 0, k <= -N, ... i think, currently, it only works for
 // 0 < k < N
 
+double rsGeneralizedMean(double* x, int N, double p)
+{
+  double m = 0;
+  for(int i = 0; i < N; i++)
+    m += pow(x[i], p);
+  m /= N;
+  m = pow(m, 1/p);
+  return m;
+}
+// todo: 
+// -treat case p == 0 specially
+// -maybe use m += exp(p * log(x[i]) ..might be more effient than pow
+// https://en.wikipedia.org/wiki/Generalized_mean
+
+
 //=================================================================================================
 
 template<class TSig, class TPar>
