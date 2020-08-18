@@ -221,6 +221,7 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
+  // maybe split out a Retrieval section (copyRow, getRowPointer, getDataPointer, etc.)
 
   /** Returns true, iff matrices A and B have the same number of rows and columns, such that
   their sum A+B and difference A-B can be formed. */
@@ -436,6 +437,19 @@ public:
       dataPointer[i*numCols + i] = values[i];
   }
   // needs test
+
+  void setRow(int i, T* values)
+  {
+    rsArrayTools::copy(values, getRowPointer(i), numCols);
+  }
+  // needs test
+
+  void setColumn(int j, T* values)
+  {
+    for(int i = 0; i < numRows; i++)
+      (*this)(i, j) = values[i];
+  }
+  // needs test..maybe rsArrayTools::copy should have a version with srcStride, dstStride
 
 
   /** Scales all elements in the matrix by a given factor. */

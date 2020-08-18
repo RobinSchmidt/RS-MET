@@ -2270,6 +2270,30 @@ void ratiosLargeLcm()
   RAPT::rsMatrixTools::deallocateMatrix(lcmMatrix, N, N);
 }
 
+template<class T>
+void fillWithRangePowerRule(T* x, int N, T xMin, T xMax, T p)
+{
+  if(p == T(0))  // needs some tolerance based on epsilon
+  {
+    rsArrayTools::fillWithRangeExponential(x, N, xMin, xMax);
+    return;
+  }
+  rsArrayTools::fillWithRangeLinear(x, N, pow(xMin, p), pow(xMax, p));
+  for(int i = 0; i < N; i++)
+    x[i] = pow(x[i], T(1)/p);
+}
+// generalizes fillWithRangeLinear (p = 1) and fillWithRangeExponential (p = 0)
+// needs tests/experiments - especially with regard to, if the special case handling for p = 0 is
+// the right thing to do. we should have the property that the generalized mean of the produced
+// array matches the generalized mean of xMin, xMax - for p = 1, that's the arithmetic mean, for
+// p = 0: geometric mean, p = -1: harmonic mean, p=2: quadratic mean - that can be checked in a 
+// unit test
+// i think, when used for frequency ratios in a supersaw, we should see heavy beating at the 
+// integers and (hopefully) little beating at the half-integers...maybe p = 0.5 could be especially
+// useful - it's halfway in between geometric and arithmetic mean, both of which make musical sense
+// in different ways...hey what about the AGM (arithmetic-geometric mean) - i think, it's something
+// different but perhaps also useful?
+
 void ratiosEquidistantPowers()
 {
   // We produce ratios in the following way: the user gives a minimum and maximum value a,b. Then,
@@ -2278,35 +2302,29 @@ void ratiosEquidistantPowers()
 
   int numRatios = 11;    // number of ratios (i.e. "density")
   int numParams = 200;   // number of sample values for the parameter of the ratio algo
-  double pMin   = 0.25;  // lower value of the exponent parameter
-  double pMax   = 4.0;   // upper value of the exponent parameter
+  double pMin   = -4.0;  // lower value of the exponent parameter
+  double pMax   = +6.0;  // upper value of the exponent parameter
   double a      = 10.0;  // lower frequency or period
   double b      = 20.0;  // upper frequency or period
 
   //pMin = -4.0; pMax = -0.25; // test
 
-  // todo: create array of p-values (parameters)
+  using Vec = std::vector<double>;
+  Vec col(numRatios);  // holds one matrix column at a time
+  Vec p(numParams);    // hold the array of parameter values 
+  rsArrayTools::fillWithRangeLinear(&p[0], numParams, pMin, pMax);
 
-  std::vector<double> p(numParams);
-  rsArrayTools::fillWithRangeExponential(&p[0], numParams, pMin, pMax);
-
+  // create the matrix for plotting:
   rsMatrix<double> R(numRatios, numParams);
   for(int j = 0; j < numParams; j++) {
-    //double p = rsLinToExp(double(j), 0.0, double(numParams-1), pMin, pMax);
-    double A = pow(a, p[j]);
-    double B = pow(b, p[j]);
-    for(int i = 0; i < numRatios; i++) {
-      double r = rsLinToLin(double(i), 0.0, double(numRatios-1), A, B);
-      r = pow(r, 1.0/p[j]); 
-      R(i,j) = r; }} 
-
+    fillWithRangePowerRule(&col[0], numRatios, a, b, p[j]);
+    R.setColumn(j, &col[0]); } 
   plotMatrixRows(R, &p[0]); // maybe x-axis should be log-scaled
 
 
-  // plot the generalized mean of a,b and of the produced column:
-  std::vector<double> col(numRatios);   // to hold one matrix column at a time
-  std::vector<double> gmc(numParams);   // generalized mean of current column
-  std::vector<double> gmab(numParams);  // generalized mean of a and b
+  // plot the generalized mean of a,b and of the produced columns:
+  Vec gmc(numParams);   // generalized mean of current column
+  Vec gmab(numParams);  // generalized mean of a and b
   for(int i = 0; i < numParams; i++) {
     R.copyColumn(i, &col[0]);
     gmc[i]  = rsGeneralizedMean(&col[0], numRatios, p[i]);
@@ -2315,8 +2333,6 @@ void ratiosEquidistantPowers()
   // OK - gmc and gmab do match indeed
   // maybe plot also the regular mean - maybe we should somehow "fix" the mean such that the 
   // perceived pitch always stays the same, regardless of p
-
-
 
   // Notes:
   // We need a special treatment when p == 0. I think, we should produce exp-spaced values in this 
