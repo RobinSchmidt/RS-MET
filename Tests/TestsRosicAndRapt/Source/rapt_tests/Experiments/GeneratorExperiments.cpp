@@ -22,26 +22,50 @@ void fractalize(double* x, double* y, int N, int a = 2, int b = 0)
 void waveformFractalization()
 {
   static const int N = 2048;  // period length of prototype wave in samples
-  double x[N], y[N];
+  int a = 3;  // must be at least 1
+  int b = 0;
+
+  double x[N], y1[N], y2[N];
 
   // render prototype waveform:
   double w = 2*PI/N;
   for(int n = 0; n < N; n++)
   {
     //x[n] = sin(w*n);   // todo: allow other prototype waveforms later
-    x[n] = rsSawWave(w*n);
-    //x[n] = rsSqrWave(w*n);  // fractalized with a=2,b=0 gives saw wave
+    //x[n] = rsSawWave(w*n);
+    x[n] = rsSqrWave(w*n);  // fractalized with a=2,b=0 gives saw wave
     //x[n] = rsTriWave(w*n);
   }
 
   // fractalize it:
-  rsArrayTools::fillWithZeros(y, N); // maybe rename to clear - or make alias
-  fractalize(x, y, N, 2, 0);
+  rsArrayTools::fillWithZeros(y1, N); // maybe rename to clear - or make alias
+  fractalize(x, y1, N, a, b);
+
+  // fractalize the fractalized wave again:
+  rsArrayTools::fillWithZeros(y2, N);
+  fractalize(y1, y2, N, a, b);
+
 
   // plot:
   //rsPlotArray(x, N);
   //rsPlotArray(y, N);
-  rsPlotArrays(N, x, y);
+  rsPlotArrays(N, y1);
+  //rsPlotArrays(N, x, y1, y2);
+  // todo: make the plot nicer - introduce a time-axis from 0 to 1, normalize the waveform, let
+  // y-axis range from -1.1 to +1.1
+
+  // Observations:
+  // -a=2, b=0: good for saw, square becomes saw
+  // -a=2, b=1: nice irregularities for saw
+  // -a=1, b=1: sine becomes saw, square also interesting
+  // -a=3, b=0: good for square
+  // -fractalizing the fractalized wave again seems to emphasize the higher frequencies but doesn't
+  //  seem to bring something qualitatively new (or does it? ...more experiments needed - maybe 
+  //  compare results with using an exponent on the amplitudes to make them fall off more slowly)
+
+  // todo: try, hwo it looks like on an xy-oscilloscope when we introduce a phase-shift between
+  // left and right (maybe that phase shift can be time-varying)...this can be done in 
+  // straighliner
 }
 
 void plotHistogram(const std::vector<double>& data, int numBins, double min, double max)
