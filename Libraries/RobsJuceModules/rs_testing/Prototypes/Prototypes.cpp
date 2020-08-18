@@ -561,8 +561,23 @@ void rsCircularShift(int* a, int N, int k)
 // todo: handle cases, where k >= N, k < 0, k <= -N, ... i think, currently, it only works for
 // 0 < k < N
 
+double rsGeometricMean(double* x, int N)
+{
+  double m = 0;
+  for(int i = 0; i < N; i++)
+    m += log(x[i]);
+  m /= N;
+  m = exp(m);
+  return m;
+}
+// i think, it's numerically better behaved to sum up the logarithms and take the exp at the and 
+// rather than accumulating multiplicatively and extracting the N-th root - but that should be 
+// verified experimentally...
+
 double rsGeneralizedMean(double* x, int N, double p)
 {
+  if( p == 0 ) // needs tolerance
+    return rsGeometricMean(x, N);
   double m = 0;
   for(int i = 0; i < N; i++)
     m += pow(x[i], p);

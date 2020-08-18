@@ -2301,13 +2301,12 @@ void ratiosEquidistantPowers()
   // we take the p-th root of the so produced values.
 
   int numRatios = 11;    // number of ratios (i.e. "density")
-  int numParams = 200;   // number of sample values for the parameter of the ratio algo
+  int numParams = 201;   // number of sample values for the parameter of the ratio algo
   double pMin   = -4.0;  // lower value of the exponent parameter
   double pMax   = +6.0;  // upper value of the exponent parameter
   double a      = 10.0;  // lower frequency or period
   double b      = 20.0;  // upper frequency or period
 
-  //pMin = -4.0; pMax = -0.25; // test
 
   using Vec = std::vector<double>;
   Vec col(numRatios);  // holds one matrix column at a time
@@ -2319,16 +2318,16 @@ void ratiosEquidistantPowers()
   for(int j = 0; j < numParams; j++) {
     fillWithRangePowerRule(&col[0], numRatios, a, b, p[j]);
     R.setColumn(j, &col[0]); } 
-  plotMatrixRows(R, &p[0]); // maybe x-axis should be log-scaled
-
+  plotMatrixRows(R, &p[0]);
 
   // plot the generalized mean of a,b and of the produced columns:
   Vec gmc(numParams);   // generalized mean of current column
   Vec gmab(numParams);  // generalized mean of a and b
   for(int i = 0; i < numParams; i++) {
     R.copyColumn(i, &col[0]);
-    gmc[i]  = rsGeneralizedMean(&col[0], numRatios, p[i]);
-    gmab[i] = pow(0.5*(pow(a,p[i]) + pow(b,p[i])), 1.0/p[i]); }
+    gmc[i] = rsGeneralizedMean(&col[0], numRatios, p[i]);
+    col[0] = a; col[1] = b;
+    gmab[i] = rsGeneralizedMean(&col[0], 2, p[i]); }
   rsPlotVectorsXY(p, gmc, gmab);
   // OK - gmc and gmab do match indeed
   // maybe plot also the regular mean - maybe we should somehow "fix" the mean such that the 
@@ -2337,7 +2336,7 @@ void ratiosEquidistantPowers()
   // Notes:
   // We need a special treatment when p == 0. I think, we should produce exp-spaced values in this 
   // case (verify this!)..because that's also how the generalized mean works, when the exponent is 
-  // 0 - it becomes the geometric mean.
+  // 0 - it becomes the geometric mean. ..yep - works - but we need a tolerance
   // Maybe we should somehow make a bipolar version of that - use different (but related) formulas 
   // for the lower and upper half.
 }
