@@ -489,34 +489,37 @@ void rsArrayTools::fillWithValue(T *buffer, int length, T value)
 }
 
 template <class T>
-void rsArrayTools::fillWithRangeExponential(T *buffer, int length, T min, T max)
+void rsArrayTools::fillWithRangeExponential(T *x, int N, T min, T max)
 {
+  rsAssert(N >= 2);
   if(min == max)
-    fillWithValue(buffer, length, min);
+    fillWithValue(x, N, min);
   else {
-    for(int i = 0; i < length; i++)
-      buffer[i] = (T)rsLinToExp((T)i, (T)0, (T)(length-1), min, max); }
+    for(int i = 0; i < N; i++)
+      x[i] = (T)rsLinToExp((T)i, (T)0, (T)(N-1), min, max); }
 }
+// ...can(?) be optimized to avoid calling rsLinToExp for each i by precomputing some variables
 
 template <class T>
-void rsArrayTools::fillWithRangeLinear(T *buffer, int length, T min, T max)
+void rsArrayTools::fillWithRangeLinear(T *x, int N, T min, T max)
 {
+  rsAssert(N >= 2);
   if(min == max)
-    fillWithValue(buffer, length, min);
+    fillWithValue(x, N, min);
   else {
-    double factor = (max-min) / (double)(length-1); // why not T?
-    for(int i = 0; i < length; i++)
-      buffer[i] = (T)(factor * T(i) + min); }
+    T factor = (max-min) / (T)(N-1);
+    for(int i = 0; i < N; i++)
+      x[i] = (T)(factor * T(i) + min); }
 }
 
 template<class T>
-void rsArrayTools::fillWithRange(T* x, int N, T xMin, T xMax, T p)
+void rsArrayTools::fillWithRange(T* x, int N, T min, T max, T p)
 {
-  const T tol = (T)pow(2, 10) * RS_EPS(T); // found empirically
+  static const T tol = (T)pow(2, 10) * RS_EPS(T); // found empirically
   if(rsAbs(p) <= tol) {
-    fillWithRangeExponential(x, N, xMin, xMax);
+    fillWithRangeExponential(x, N, min, max);
     return; }
-  fillWithRangeLinear(x, N, pow(xMin, p), pow(xMax, p));
+  fillWithRangeLinear(x, N, pow(min, p), pow(max, p));
   for(int i = 0; i < N; i++)
     x[i] = pow(x[i], T(1)/p);
 }
@@ -711,7 +714,7 @@ T rsArrayTools::geometricMean(const T* x, int N)
 template<class T>
 T rsArrayTools::generalizedMean(const T* x, int N, T p)
 {
-  const T tol = (T)pow(2, 10) * RS_EPS(T); // found empirically
+  static const T tol = (T)pow(2, 10) * RS_EPS(T); // found empirically
   if(rsAbs(p) <= tol) 
     return geometricMean(x, N);
   T m = T(0);
