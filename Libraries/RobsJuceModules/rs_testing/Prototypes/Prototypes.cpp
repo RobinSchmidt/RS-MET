@@ -556,12 +556,13 @@ void rsCircularShift(int* a, int N, int k)
   AT::reverse(&a[k], N-k);
 }
 // if it works, templatize and replace the implementation in rsArrayTools, but keep the old version
-// somewhere else...or maybe tunr the olde version into a workspace-based implementation...and then
+// somewhere else...or maybe turn the old version into a workspace-based implementation...and then
 // do benchmarks, which one ist faster
 // todo: handle cases, where k >= N, k < 0, k <= -N, ... i think, currently, it only works for
 // 0 < k < N
 
 
+// obsolete - moved to rsArrayTools:
 template<class T>
 T rsGeometricMean(T* x, int N)
 {
@@ -572,14 +573,12 @@ T rsGeometricMean(T* x, int N)
   m = exp(m);
   return m;
 }
-// i think, it's numerically better behaved to sum up the logarithms and take the exp at the and 
-// rather than accumulating multiplicatively and extracting the N-th root - but that should be 
-// verified experimentally...
-
 template<class T>
 T rsGeneralizedMean(T* x, int N, T p)
 {
-  if( p == 0 ) // needs tolerance
+  const T tol = (T)pow(2, 10) * RS_EPS(T); // found empirically
+  //if( p == 0 ) // needs tolerance
+  if(rsAbs(p) <= tol) 
     return rsGeometricMean(x, N);
   T m = 0;
   for(int i = 0; i < N; i++)
@@ -590,10 +589,8 @@ T rsGeneralizedMean(T* x, int N, T p)
 }
 template float  rsGeneralizedMean(float*  x, int N, float  p);
 template double rsGeneralizedMean(double* x, int N, double p);
-// todo: 
-// -treat case p == 0 specially
-// -maybe use m += exp(p * log(x[i]) ..might be more effient than pow
-// https://en.wikipedia.org/wiki/Generalized_mean
+// -maybe use m += exp(p * log(x[i]) ..might be more effient than pow - but also less precise
+
 
 
 //=================================================================================================

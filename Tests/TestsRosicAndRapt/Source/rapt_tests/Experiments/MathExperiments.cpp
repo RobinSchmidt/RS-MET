@@ -2270,30 +2270,6 @@ void ratiosLargeLcm()
   RAPT::rsMatrixTools::deallocateMatrix(lcmMatrix, N, N);
 }
 
-template<class T>
-void fillWithRangePowerRule(T* x, int N, T xMin, T xMax, T p)
-{
-  const T tol = (T)pow(2, 10) * RS_EPS(T); // found empirically
-  if(rsAbs(p) <= tol) {
-    rsArrayTools::fillWithRangeExponential(x, N, xMin, xMax);
-    return; }
-  rsArrayTools::fillWithRangeLinear(x, N, pow(xMin, p), pow(xMax, p));
-  for(int i = 0; i < N; i++)
-    x[i] = pow(x[i], T(1)/p);
-}
-// todo: figure out what a suitable value for the tolerance is (in terms of epsilon)
-// generalizes fillWithRangeLinear (p = 1) and fillWithRangeExponential (p = 0)
-// needs tests/experiments - especially with regard to, if the special case handling for p = 0 is
-// the right thing to do. we should have the property that the generalized mean of the produced
-// array matches the generalized mean of xMin, xMax - for p = 1, that's the arithmetic mean, for
-// p = 0: geometric mean, p = -1: harmonic mean, p=2: quadratic mean - that can be checked in a 
-// unit test
-// i think, when used for frequency ratios in a supersaw, we should see heavy beating at the 
-// integers and (hopefully) little beating at the half-integers...maybe p = 0.5 could be especially
-// useful - it's halfway in between geometric and arithmetic mean, both of which make musical sense
-// in different ways...hey what about the AGM (arithmetic-geometric mean) - i think, it's something
-// different but perhaps also useful?
-
 void ratiosEquidistantPowers()
 {
   // We produce ratios in the following way: the user gives a minimum and maximum value a,b. Then,
@@ -2302,8 +2278,9 @@ void ratiosEquidistantPowers()
 
   using Real = float;   // to switch between float and double at compile time
   using Vec  = std::vector<Real>;
+  using AT   = rsArrayTools;
 
-  int numRatios = 11;    // number of ratios (i.e. "density")
+  int numRatios = 21;    // number of ratios (i.e. "density")
   int numParams = 201;   // number of sample values for the parameter of the ratio algo
   Real pMin     = -4.0;  // lower value of the exponent parameter
   Real pMax     = +6.0;  // upper value of the exponent parameter
@@ -2313,18 +2290,17 @@ void ratiosEquidistantPowers()
   // for testing a suitable threshold/tolerance for the absolute value of p for treating it as 
   // zero:
   Real smalll = 2000 * RS_EPS(Real);  // should be around twice the tolerance for good plot
-  //pMax = smalll; pMin = -pMax;
-
+  //pMax = smalll; pMin = -pMax;      // uncomment to test the edge case of p ~= 0
 
 
   Vec col(numRatios);  // holds one matrix column at a time
   Vec p(numParams);    // hold the array of parameter values 
-  rsArrayTools::fillWithRangeLinear(&p[0], numParams, pMin, pMax);
+  AT::fillWithRangeLinear(&p[0], numParams, pMin, pMax);
 
   // create the matrix for plotting:
   rsMatrix<Real> R(numRatios, numParams);
   for(int j = 0; j < numParams; j++) {
-    fillWithRangePowerRule(&col[0], numRatios, a, b, p[j]);
+    AT::fillWithRange(&col[0], numRatios, a, b, p[j]);
     R.setColumn(j, &col[0]); } 
   plotMatrixRows(R, &p[0]);
 
@@ -2333,22 +2309,25 @@ void ratiosEquidistantPowers()
   Vec gmab(numParams);  // generalized mean of a and b
   for(int i = 0; i < numParams; i++) {
     R.copyColumn(i, &col[0]);
-    gmc[i] = rsGeneralizedMean(&col[0], numRatios, p[i]);
+    gmc[i] = rsGeneralizedMean(&col[0], numRatios, p[i]); // move to rsArrayTools
     col[0] = a; col[1] = b;
     gmab[i] = rsGeneralizedMean(&col[0], 2, p[i]); }
-  //rsPlotVectorsXY(p, gmc, gmab);
+  rsPlotVectorsXY(p, gmc, gmab);
   // OK - gmc and gmab do match indeed
   // maybe plot also the regular mean - maybe we should somehow "fix" the mean such that the 
   // perceived pitch always stays the same, regardless of p
 
   // Notes:
-  // We need a special treatment when p == 0. I think, we should produce exp-spaced values in this 
-  // case (verify this!)..because that's also how the generalized mean works, when the exponent is 
-  // 0 - it becomes the geometric mean. ..yep - works - but we need a tolerance
-  // Maybe we should somehow make a bipolar version of that - use different (but related) formulas 
-  // for the lower and upper half.
+  // Maybe we should somehow make a bipolar version of the shape - use different (but related) 
+  // formulas for the lower and upper half.
+  // ToDo: figure out which values of lead to the least phasiness when used for frequencies in the
+  // supersaw...maybe p = 0.5 is nice because it's "halfway" between linear and exponential 
+  // spacing, both of which are musically meaningful in their own way (but both of which lead to
+  // heavy phasing when sued for supersaw) ...maybe -0.5 is also interesting - we should really 
+  // make this a user parameter...
+  // -figure out, if we can use the AGM (arithmetic-geometric mean) in this context in a 
+  //  meaningful way
 }
-
 
 void ratiosMetallic()
 {

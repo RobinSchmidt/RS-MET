@@ -92,8 +92,6 @@ template void rsArrayTools::fillWithZeros(rsUint32 *buffer, int length);
 template rsUint32 rsArrayTools::maxValue(const rsUint32 *x, int length);
 
 // rsArrayTools<float>
-//template void rsArrayTools::fillWithRangeLinear(     float* x, int N, float min, float max);
-//template void rsArrayTools::fillWithRangeExponential(float* x, int N, float min, float max);
 template void rsArrayTools::fillWithRange(float* x, int N, float min, float max, float shape);
 template void rsArrayTools::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
 template float rsArrayTools::minValue(const float *x, int length);
@@ -110,8 +108,9 @@ template void rsArrayTools::deConvolve(const double *y, int yLength, const doubl
 template void rsArrayTools::deInterleave(double*, int, int);
 template void rsArrayTools::difference(double *buffer, int length, int order, bool periodic);
 template void rsArrayTools::divide(const double *buffer1, const double *buffer2, double *result, int length);
-template void rsArrayTools::fillWithRangeLinear(double* x, int N, double min, double max);
-template void rsArrayTools::fillWithRangeExponential(double* x, int N, double min, double max);
+//template void rsArrayTools::fillWithRangeLinear(double* x, int N, double min, double max);
+//template void rsArrayTools::fillWithRangeExponential(double* x, int N, double min, double max);
+template void rsArrayTools::fillWithRange(double* x, int N, double min, double max, double shape);
 template void rsArrayTools::fillWithRandomValues(double* x, int N, double min, double max, int seed);
 template void rsArrayTools::filter(const double *x, int xLength, double *y, int yLength,
   const double *b, int bOrder, const double *a, int aOrder);

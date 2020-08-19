@@ -694,6 +694,35 @@ void rsArrayTools::fitIntoRange(T *buffer, int length, T min, T max)
   add(buffer, offset, buffer, length);
 }
 
+template<class T>
+T rsArrayTools::geometricMean(T* x, int N)
+{
+  T m = T(0);
+  for(int i = 0; i < N; i++)
+    m += log(x[i]);
+  m /= T(N);
+  m = exp(m);
+  return m;
+}
+// I think, it's numerically better behaved to sum up the logarithms and take the exp at the and 
+// rather than accumulating multiplicatively and extracting the N-th root - but that should be 
+// verified experimentally.
+
+template<class T>
+T rsArrayTools::generalizedMean(T* x, int N, T p)
+{
+  const T tol = (T)pow(2, 10) * RS_EPS(T); // found empirically
+  if(rsAbs(p) <= tol) 
+    return rsGeometricMean(x, N);
+  T m = T(0);
+  for(int i = 0; i < N; i++)
+    m += pow(x[i], p);
+  m /= T(N);
+  m = pow(m, T(1)/p);
+  return m;
+}
+// Maybe use m += exp(p * log(x[i]) - might be more effient than pow - but also less precise.
+
 template <class T>
 void rsArrayTools::impulseResponse(T *h, int hLength, const T *b, int bOrder, const T *a, int aOrder)
 {

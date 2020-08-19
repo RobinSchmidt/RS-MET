@@ -315,12 +315,12 @@ public:
   static void fillWithRandomValues(T *buffer, int length, double min, double max, int seed);
 
   /** Fills the buffer with values ranging (exponentially scaled) from min to max (both end-values
-  inclusive). */
+  inclusive). The logs of the values are equidistant. */
   template <class T>
   static void fillWithRangeExponential(T *buffer, int length, T min, T max);
 
-  /** Fills the buffer with values ranging from min to max (both end-values inclusive). 
-  \todo: rename min/max into start/end  */
+  /** Fills the buffer with equidistant values ranging from min to max (both end-values 
+  inclusive). \todo: rename min/max into start/end or x0,x1  */
   template <class T>
   static void fillWithRangeLinear(T *buffer, int length, T min, T max);
   // corresponds to std::iota? and/or NumPy's linspace
@@ -328,12 +328,13 @@ public:
   /** Generalizes fillWithRangeLinear (shape == 1) and fillWithRangeExponential (shape == 0) and 
   allows for shapes between and beyond 0 and 1. It uses a power rule as follows: If shape != 0, it 
   fills the array with equidistant values between min^shape and max^shape and then takes the 
-  shape-th root of the array values. For shape == 0 (with some tolerance),  we can't take the 0-th 
-  root, so we fill the array using fillWithRangeExponential, which is the correct limit. The filled
-  array has the property that its genrealized mean with parameter p == shape is equal to the same 
-  generalized mean of min and max. @see generalizedMean. */
+  shape-th root of the array values. For shape == 0 (with some tolerance), this breaks down because
+  we can't take the 0-th root, so we fill the array using fillWithRangeExponential, which is the 
+  correct limit. The filled array has the property that its generalized mean with parameter 
+  p == shape is equal to the same generalized mean of min and max. @see generalizedMean. */
   template <class T>
   static void fillWithRange(T *buffer, int length, T min, T max, T shape);
+  // todo: make a unit test, avoid roundoff error at endpoints
 
   /** Fills the passed array with one value at all indices. */
   template <class T>
@@ -413,12 +414,22 @@ public:
   template <class T>
   static int firstIndexWithNonZeroValue(const T *buffer, int length);
 
-
-
   /** Scales and offsets the passed buffer such that the minimum value hits 'min' and the
   maximum value hits 'max'. */
   template <class T>
   static void fitIntoRange(T *buffer, int length, T min, T max);
+
+
+  template<class T>
+  static T geometricMean(T* x, int N);
+
+  /**
+  https://en.wikipedia.org/wiki/Generalized_mean
+  */
+  template<class T>
+  static T generalizedMean(T* x, int N, T p);
+
+
 
   /** Fills the array h with the impulse of the filter specified by the direct form coefficients
   given in b and a. \todo comment on the sign of the a-coeffs, whether or not an a0 is included,
