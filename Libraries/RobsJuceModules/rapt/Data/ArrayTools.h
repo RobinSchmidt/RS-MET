@@ -325,6 +325,16 @@ public:
   static void fillWithRangeLinear(T *buffer, int length, T min, T max);
   // corresponds to std::iota? and/or NumPy's linspace
 
+  /** Generalizes fillWithRangeLinear (shape == 1) and fillWithRangeExponential (shape == 0) and 
+  allows for shapes between and beyond 0 and 1. It uses a power rule as follows: If shape != 0, it 
+  fills the array with equidistant values between min^shape and max^shape and then takes the 
+  shape-th root of the array values. For shape == 0 (with some tolerance),  we can't take the 0-th 
+  root, so we fill the array using fillWithRangeExponential, which is the correct limit. The filled
+  array has the property that its genrealized mean with parameter p == shape is equal to the same 
+  generalized mean of min and max. @see generalizedMean. */
+  template <class T>
+  static void fillWithRange(T *buffer, int length, T min, T max, T shape);
+
   /** Fills the passed array with one value at all indices. */
   template <class T>
   static void fillWithValue(T *buffer, int length, T value);

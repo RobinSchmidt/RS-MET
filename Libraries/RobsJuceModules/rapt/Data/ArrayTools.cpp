@@ -504,10 +504,26 @@ void rsArrayTools::fillWithRangeLinear(T *buffer, int length, T min, T max)
   if(min == max)
     fillWithValue(buffer, length, min);
   else {
-    double factor = (max-min) / (double)(length-1);
+    double factor = (max-min) / (double)(length-1); // why not T?
     for(int i = 0; i < length; i++)
       buffer[i] = (T)(factor * T(i) + min); }
 }
+
+template<class T>
+void rsArrayTools::fillWithRange(T* x, int N, T xMin, T xMax, T p)
+{
+  const T tol = (T)pow(2, 10) * RS_EPS(T); // found empirically
+  if(rsAbs(p) <= tol) {
+    fillWithRangeExponential(x, N, xMin, xMax);
+    return; }
+  fillWithRangeLinear(x, N, pow(xMin, p), pow(xMax, p));
+  for(int i = 0; i < N; i++)
+    x[i] = pow(x[i], T(1)/p);
+}
+// maybe we should set x[0] = min and x[N-1] = max to avoid roundoff error at the endpoints - the
+// loop should run only for(i = 1; i < N-1; i++)...also in the inner functions...but this needs
+// tests - especially when called with N=0 and N=1
+
 
 template <class T>
 void rsArrayTools::filter(const T *x, int xLength, T *y, int yLength, const T *b, int bOrder, const T *a, int aOrder)
