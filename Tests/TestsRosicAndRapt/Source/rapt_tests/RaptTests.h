@@ -39,6 +39,7 @@ void blep();
 //void blamp();
 void polyBlep();
 void superBlep();
+void superSawDensitySweep();
 void superSawStereo();
 void twoPieceOsc();
 void syncSweep();

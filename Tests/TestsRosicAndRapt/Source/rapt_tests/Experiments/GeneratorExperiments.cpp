@@ -878,7 +878,7 @@ void superBlep()
   // progression and then add some irrational offsets?
   // or: recursively split the interval between fl, fu at a "midpoint" that is not exactly in the 
   // middle but at a user defined ratio - maybe apply the ratio and 1-ratio alternatingly to avoid
-  // skeing the whole distribution ...iirc, that was what my odl algos were also doing
+  // skeing the whole distribution ...iirc, that was what my old algos were also doing
 
   // todo: tune the freq-ratios by ear: implement a superosc in ToolChain, set it to 3 oscs - the 
   // outer two have fixed freqs, tune the inner one until it sounds best, then introduce a 4th saw,
@@ -896,6 +896,63 @@ void superBlep()
   //  maybe something like the bipolar rational map ...maybe the unipolar version can be used
   //  to introduce skew - maybe have pre-skew -> contract/spread -> post-skew
 }
+
+void superSawDensitySweep()
+{
+  // We try to implement a continuos sweep of the density. For simplicity, we use an array of 
+  // rsBlepSawOsc. Production code should probably optimize this (share the blep object, etc.).
+
+  int maxDensity = 7;
+  int N = 1000000;          // number of samples
+
+  double fMin = 95;
+  double fMax = 105;
+  double sampleRate = 44100;
+  double p = -1.5;  // shape of distribution of frequencies
+
+
+  std::vector<rsBlepSawOsc<double>> oscs(maxDensity);
+
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
+
+  Vec freqs(maxDensity), amps(maxDensity);  // frequencies and amplitudes
+
+  Vec y(N);
+
+  //for(int i = 0; i < maxDensity; i++)
+  //  oscs[i].reset(i / double(maxDensity));
+
+  for(int n = 0; n < N; n++)
+  {
+    int D = maxDensity;  // instantaneous density - preliminary
+
+    AT::fillWithRange(&freqs[0], D, fMin, fMax, p);
+    AT::fillWithRange(&amps[0],  D, 1.0,  1.0,  1.0); // preliminary - all 1
+
+    y[n] = 0;
+    for(int i = 0; i < D; i++)
+    {
+      oscs[i].setPhaseIncrement(freqs[i]/sampleRate);
+
+
+      y[n] += oscs[i].getSample();
+    }
+  }
+
+  AT::normalize(&y[0], N);
+  //rosic::writeToMonoWaveFile("SuperSawDensitySweep.wav", &y[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("SuperSaw.wav", &y[0], N, sampleRate);
+
+
+  std::cout << "Done";
+  //rsPlotVector(y);
+
+  int dummy = 0;
+}
+// idea to randomize the frequencies:
+// -pass output thorugfh bandpass, tuned to center frequency
+// -use that output as LFO for the oscillators - alternatingly up and down
 
 void superSawStereo()
 {
@@ -950,7 +1007,7 @@ void superSawStereo()
   // D = 7: L = 2,0,2,1,0,2,0,_   R = 0,2,0,1,2,0,2,_
   // D = 8: L = 2,0,2,0,2,0,2,0   R = 0,2,0,2,0,2,0,2
   // and for stereoSpread = -1, the roles of L and R should be reversed - these numbers are only 
-  // valid fo a linear pan - but currently an (approximate) contant power law is used
+  // valid for a linear pan - but currently an (approximate) contant power law is used
 
   osc.initAmpArrays(); osc.setDensity(1);  // ok
   osc.initAmpArrays(); osc.setDensity(2);  // ok

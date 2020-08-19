@@ -1095,6 +1095,45 @@ void fitQuadratic(T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
 }
 
 //=================================================================================================
+
+/** Sawtooth oscillator based on a PolyBlep. Convenience class that also demonstrates, how the 
+bleps are supposed to be used in a quite minimal setting. */
+
+template<class T>
+class rsBlepSawOsc : protected rsBlepReadyOsc<T>
+{
+
+public:
+
+  using Base = rsBlepReadyOsc<T>;
+
+  void setPhaseIncrement(T newInc) { Base::setPhaseIncrement(newInc); }
+
+  T getSample()
+  {
+    T stepDelay, stepAmp;
+    T y = Base::getSampleSaw(&stepDelay, &stepAmp); // todo: maybe switch waveform later
+    if(stepAmp != 0.0)
+      blep.prepareForStep(stepDelay, stepAmp);
+    return blep.getSample(y);
+  }
+
+  void reset(T start = T(0))
+  {
+    Base::resetPhase(start);
+    blep.reset();
+  }
+
+protected:
+
+  rsPolyBlep2<T, T> blep;
+
+};
+
+
+
+
+//=================================================================================================
 // the stuff below is just for playing around - maybe move code elsewhere, like the research-repo:
 
 /** A class for representing a particular kind of string with which we can do some computations

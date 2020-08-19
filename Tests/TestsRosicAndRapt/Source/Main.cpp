@@ -119,7 +119,7 @@ int main(int argc, char* argv[])
   //productLogPlot();
   //ratioGenerator();
   //ratiosLargeLcm();
-  ratiosEquidistantPowers();
+  //ratiosEquidistantPowers();
   //ratiosMetallic();
   //sinCosTable();
   //twoParamRemap();
@@ -175,6 +175,7 @@ int main(int argc, char* argv[])
   //blep();
   //polyBlep();
   //superBlep();
+  superSawDensitySweep();
   //superSawStereo();
   //twoPieceOsc();
   //syncSweep();
