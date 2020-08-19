@@ -908,10 +908,19 @@ void superSawDensitySweep()
   double fMin = 95;
   double fMax = 105;
   double sampleRate = 44100;
-  double p = -1.5;  // shape of distribution of frequencies
+  double p = 0.5;  // shape of distribution of frequencies
 
+  double modAmount = 0.3;
 
   std::vector<rsBlepSawOsc<double>> oscs(maxDensity);
+
+  // filter for modulating the frequencies
+  rosic::TwoPoleFilter flt;
+  flt.setBandwidth(0.25); // maybe that should be set in Hz, not octaves
+  flt.setFrequency(0.25*(fMin+fMax));
+  flt.setMode(flt.BANDPASS);
+  flt.setSampleRate(sampleRate);
+
 
   using Vec = std::vector<double>;
   using AT  = rsArrayTools;
@@ -920,8 +929,10 @@ void superSawDensitySweep()
 
   Vec y(N);
 
-  //for(int i = 0; i < maxDensity; i++)
-  //  oscs[i].reset(i / double(maxDensity));
+  for(int i = 0; i < maxDensity; i++)
+    oscs[i].reset(i / double(maxDensity));
+
+  double mod = 0;  // modulation signal
 
   for(int n = 0; n < N; n++)
   {
@@ -933,11 +944,18 @@ void superSawDensitySweep()
     y[n] = 0;
     for(int i = 0; i < D; i++)
     {
-      oscs[i].setPhaseIncrement(freqs[i]/sampleRate);
+      double fi = freqs[i];
+      if(rsIsEven(i))
+        fi += modAmount*mod*fi;
+      else
+        fi -= modAmount*mod*fi;
 
+      oscs[i].setPhaseIncrement(fi/sampleRate);
 
       y[n] += oscs[i].getSample();
     }
+
+    mod = flt.getSample(y[n]);
   }
 
   AT::normalize(&y[0], N);
@@ -952,6 +970,7 @@ void superSawDensitySweep()
 }
 // idea to randomize the frequencies:
 // -pass output thorugfh bandpass, tuned to center frequency
+//  ..or an octave below is also very interesting
 // -use that output as LFO for the oscillators - alternatingly up and down
 
 void superSawStereo()
