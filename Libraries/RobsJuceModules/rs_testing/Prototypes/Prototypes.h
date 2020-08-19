@@ -134,7 +134,8 @@ void rsCircularShift(int* a, int N, int k);
 // circular shift without additional memory (using 3 reversals) - needs test
 
 
-double rsGeneralizedMean(double* x, int N, double p = 1);
+template<class T>
+T rsGeneralizedMean(T* x, int N, T p = 1);
 
 //=================================================================================================
 

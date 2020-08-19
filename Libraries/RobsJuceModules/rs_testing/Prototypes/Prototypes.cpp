@@ -561,9 +561,11 @@ void rsCircularShift(int* a, int N, int k)
 // todo: handle cases, where k >= N, k < 0, k <= -N, ... i think, currently, it only works for
 // 0 < k < N
 
-double rsGeometricMean(double* x, int N)
+
+template<class T>
+T rsGeometricMean(T* x, int N)
 {
-  double m = 0;
+  T m = 0;
   for(int i = 0; i < N; i++)
     m += log(x[i]);
   m /= N;
@@ -574,17 +576,20 @@ double rsGeometricMean(double* x, int N)
 // rather than accumulating multiplicatively and extracting the N-th root - but that should be 
 // verified experimentally...
 
-double rsGeneralizedMean(double* x, int N, double p)
+template<class T>
+T rsGeneralizedMean(T* x, int N, T p)
 {
   if( p == 0 ) // needs tolerance
     return rsGeometricMean(x, N);
-  double m = 0;
+  T m = 0;
   for(int i = 0; i < N; i++)
     m += pow(x[i], p);
   m /= N;
   m = pow(m, 1/p);
   return m;
 }
+template float  rsGeneralizedMean(float*  x, int N, float  p);
+template double rsGeneralizedMean(double* x, int N, double p);
 // todo: 
 // -treat case p == 0 specially
 // -maybe use m += exp(p * log(x[i]) ..might be more effient than pow

@@ -2273,15 +2273,15 @@ void ratiosLargeLcm()
 template<class T>
 void fillWithRangePowerRule(T* x, int N, T xMin, T xMax, T p)
 {
-  if(p == T(0))  // needs some tolerance based on epsilon
-  {
+  const T tol = (T)pow(2, 10) * RS_EPS(T); // found empirically
+  if(rsAbs(p) <= tol) {
     rsArrayTools::fillWithRangeExponential(x, N, xMin, xMax);
-    return;
-  }
+    return; }
   rsArrayTools::fillWithRangeLinear(x, N, pow(xMin, p), pow(xMax, p));
   for(int i = 0; i < N; i++)
     x[i] = pow(x[i], T(1)/p);
 }
+// todo: figure out what a suitable value for the tolerance is (in terms of epsilon)
 // generalizes fillWithRangeLinear (p = 1) and fillWithRangeExponential (p = 0)
 // needs tests/experiments - especially with regard to, if the special case handling for p = 0 is
 // the right thing to do. we should have the property that the generalized mean of the produced
@@ -2300,21 +2300,29 @@ void ratiosEquidistantPowers()
   // we produce equidistant values between A := a^p and B := b^p with some user parameter p. Then,
   // we take the p-th root of the so produced values.
 
+  using Real = float;   // to switch between float and double at compile time
+  using Vec  = std::vector<Real>;
+
   int numRatios = 11;    // number of ratios (i.e. "density")
   int numParams = 201;   // number of sample values for the parameter of the ratio algo
-  double pMin   = -4.0;  // lower value of the exponent parameter
-  double pMax   = +6.0;  // upper value of the exponent parameter
-  double a      = 10.0;  // lower frequency or period
-  double b      = 20.0;  // upper frequency or period
+  Real pMin     = -4.0;  // lower value of the exponent parameter
+  Real pMax     = +6.0;  // upper value of the exponent parameter
+  Real a        = 10.0;  // lower frequency or period
+  Real b        = 20.0;  // upper frequency or period
+
+  // for testing a suitable threshold/tolerance for the absolute value of p for treating it as 
+  // zero:
+  Real smalll = 2000 * RS_EPS(Real);  // should be around twice the tolerance for good plot
+  //pMax = smalll; pMin = -pMax;
 
 
-  using Vec = std::vector<double>;
+
   Vec col(numRatios);  // holds one matrix column at a time
   Vec p(numParams);    // hold the array of parameter values 
   rsArrayTools::fillWithRangeLinear(&p[0], numParams, pMin, pMax);
 
   // create the matrix for plotting:
-  rsMatrix<double> R(numRatios, numParams);
+  rsMatrix<Real> R(numRatios, numParams);
   for(int j = 0; j < numParams; j++) {
     fillWithRangePowerRule(&col[0], numRatios, a, b, p[j]);
     R.setColumn(j, &col[0]); } 
@@ -2328,7 +2336,7 @@ void ratiosEquidistantPowers()
     gmc[i] = rsGeneralizedMean(&col[0], numRatios, p[i]);
     col[0] = a; col[1] = b;
     gmab[i] = rsGeneralizedMean(&col[0], 2, p[i]); }
-  rsPlotVectorsXY(p, gmc, gmab);
+  //rsPlotVectorsXY(p, gmc, gmab);
   // OK - gmc and gmab do match indeed
   // maybe plot also the regular mean - maybe we should somehow "fix" the mean such that the 
   // perceived pitch always stays the same, regardless of p
