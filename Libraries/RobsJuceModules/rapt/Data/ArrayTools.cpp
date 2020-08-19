@@ -695,7 +695,7 @@ void rsArrayTools::fitIntoRange(T *buffer, int length, T min, T max)
 }
 
 template<class T>
-T rsArrayTools::geometricMean(T* x, int N)
+T rsArrayTools::geometricMean(const T* x, int N)
 {
   T m = T(0);
   for(int i = 0; i < N; i++)
@@ -709,11 +709,11 @@ T rsArrayTools::geometricMean(T* x, int N)
 // verified experimentally.
 
 template<class T>
-T rsArrayTools::generalizedMean(T* x, int N, T p)
+T rsArrayTools::generalizedMean(const T* x, int N, T p)
 {
   const T tol = (T)pow(2, 10) * RS_EPS(T); // found empirically
   if(rsAbs(p) <= tol) 
-    return rsGeometricMean(x, N);
+    return geometricMean(x, N);
   T m = T(0);
   for(int i = 0; i < N; i++)
     m += pow(x[i], p);
@@ -721,7 +721,9 @@ T rsArrayTools::generalizedMean(T* x, int N, T p)
   m = pow(m, T(1)/p);
   return m;
 }
-// Maybe use m += exp(p * log(x[i]) - might be more effient than pow - but also less precise.
+// Maybe use m += exp(p * log(x[i]) - might be more effient than pow - but also less precise. Maybe
+// take the min or max for abs(p) > thresh for some threshold...but that threshold must also be
+// obtained empirically...and reasonable values may depend on the array values
 
 template <class T>
 void rsArrayTools::impulseResponse(T *h, int hLength, const T *b, int bOrder, const T *a, int aOrder)

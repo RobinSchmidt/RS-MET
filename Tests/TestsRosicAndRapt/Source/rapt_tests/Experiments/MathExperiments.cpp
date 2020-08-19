@@ -2280,12 +2280,12 @@ void ratiosEquidistantPowers()
   using Vec  = std::vector<Real>;
   using AT   = rsArrayTools;
 
-  int numRatios = 21;    // number of ratios (i.e. "density")
-  int numParams = 201;   // number of sample values for the parameter of the ratio algo
-  Real pMin     = -4.0;  // lower value of the exponent parameter
-  Real pMax     = +6.0;  // upper value of the exponent parameter
-  Real a        = 10.0;  // lower frequency or period
-  Real b        = 20.0;  // upper frequency or period
+  int numRatios = 11;     // number of ratios (i.e. "density")
+  int numParams = 201;    // number of sample values for the parameter of the ratio algo
+  Real pMin     = -10.0;  // lower value of the exponent parameter
+  Real pMax     = +12.0;  // upper value of the exponent parameter
+  Real a        = 10.0;   // lower frequency or period
+  Real b        = 20.0;   // upper frequency or period
 
   // for testing a suitable threshold/tolerance for the absolute value of p for treating it as 
   // zero:
@@ -2309,13 +2309,16 @@ void ratiosEquidistantPowers()
   Vec gmab(numParams);  // generalized mean of a and b
   for(int i = 0; i < numParams; i++) {
     R.copyColumn(i, &col[0]);
-    gmc[i] = rsGeneralizedMean(&col[0], numRatios, p[i]); // move to rsArrayTools
+    gmc[i] = AT::generalizedMean(&col[0], numRatios, p[i]);
     col[0] = a; col[1] = b;
-    gmab[i] = rsGeneralizedMean(&col[0], 2, p[i]); }
+    gmab[i] = AT::generalizedMean(&col[0], 2, p[i]); }
   rsPlotVectorsXY(p, gmc, gmab);
-  // OK - gmc and gmab do match indeed
-  // maybe plot also the regular mean - maybe we should somehow "fix" the mean such that the 
-  // perceived pitch always stays the same, regardless of p
+  // -OK - gmc and gmab do match indeed
+  // -the curve looks a bit like atan - could it be atan indeed?
+  // -maybe plot also the regular mean - maybe we should somehow "fix" the mean such that the 
+  //  perceived pitch always stays the same, regardless of p
+  // -figure out, how it behaves when the the minimum is neagtive...it probably will not work in
+  //  any resonable way...what would we actually want/expect in such a case?
 
   // Notes:
   // Maybe we should somehow make a bipolar version of the shape - use different (but related) 

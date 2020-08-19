@@ -561,38 +561,6 @@ void rsCircularShift(int* a, int N, int k)
 // todo: handle cases, where k >= N, k < 0, k <= -N, ... i think, currently, it only works for
 // 0 < k < N
 
-
-// obsolete - moved to rsArrayTools:
-template<class T>
-T rsGeometricMean(T* x, int N)
-{
-  T m = 0;
-  for(int i = 0; i < N; i++)
-    m += log(x[i]);
-  m /= N;
-  m = exp(m);
-  return m;
-}
-template<class T>
-T rsGeneralizedMean(T* x, int N, T p)
-{
-  const T tol = (T)pow(2, 10) * RS_EPS(T); // found empirically
-  //if( p == 0 ) // needs tolerance
-  if(rsAbs(p) <= tol) 
-    return rsGeometricMean(x, N);
-  T m = 0;
-  for(int i = 0; i < N; i++)
-    m += pow(x[i], p);
-  m /= N;
-  m = pow(m, 1/p);
-  return m;
-}
-template float  rsGeneralizedMean(float*  x, int N, float  p);
-template double rsGeneralizedMean(double* x, int N, double p);
-// -maybe use m += exp(p * log(x[i]) ..might be more effient than pow - but also less precise
-
-
-
 //=================================================================================================
 
 template<class TSig, class TPar>

@@ -94,6 +94,7 @@ template rsUint32 rsArrayTools::maxValue(const rsUint32 *x, int length);
 // rsArrayTools<float>
 template void rsArrayTools::fillWithRange(float* x, int N, float min, float max, float shape);
 template void rsArrayTools::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
+template float rsArrayTools::generalizedMean(const float *x, int length, float p);
 template float rsArrayTools::minValue(const float *x, int length);
 template float rsArrayTools::maxValue(const float *x, int length);
 template float rsArrayTools::maxDeviation(const float *buffer1, const float *buffer2, int length);
@@ -116,6 +117,7 @@ template void rsArrayTools::filter(const double *x, int xLength, double *y, int 
   const double *b, int bOrder, const double *a, int aOrder);
 template void rsArrayTools::filterBiDirectional(const double *x, int xLength, double *y, int yLength,
   const double *b, int bOrder, const double *a, int aOrder, int numRingOutSamples);
+template double rsArrayTools::generalizedMean(const double *x, int length, double p);
 template double rsArrayTools::maxAbs(const double *x, int length);
 template int rsArrayTools::maxAbsIndex(const double* const buffer, int length);
 template double rsArrayTools::maxValue(const double *x, int length);

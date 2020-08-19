@@ -134,9 +134,6 @@ void rsCircularShift(int* a, int N, int k);
 // circular shift without additional memory (using 3 reversals) - needs test
 
 
-template<class T>
-T rsGeneralizedMean(T* x, int N, T p = 1);
-
 //=================================================================================================
 
 /** Simulates the dynamics of a rotating rigid body around its three pricipal axes of intertia. If

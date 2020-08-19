@@ -419,17 +419,24 @@ public:
   template <class T>
   static void fitIntoRange(T *buffer, int length, T min, T max);
 
-
+  /** Computes the geometric mean of the values in array x. This is the N-th root of the product of 
+  all values. Due to the identity log(a*b) = log(a) + log(b) (which generalizes to products of 
+  more than two factors in the obvious way), this can also be seen as taking the arithmetic average 
+  of the logarithms of the values and then exponentiating that result (which is, in fact, the way 
+  it is implemented because taking products of a great number of factors tends to create numerical 
+  overflow or underflow problems). */
   template<class T>
-  static T geometricMean(T* x, int N);
+  static T geometricMean(const T* x, int N);
 
-  /**
-  https://en.wikipedia.org/wiki/Generalized_mean
-  */
+  /** Computes the generalized mean with exponent p of the numbers in array x. The generalized mean
+  is the p-th root of the arithmetic mean of all values raised to the p-th power. For p = 1, this 
+  reduces to the usual arithmetic mean, for p = 2, it is the root-mean-square, for p = -1, it's the
+  harmonic mean etc. The case p = 0 is a special case which, in the limit, becomes the geometric 
+  mean. For p going to minus or plus infinity, it tends to the minimum or the maximum of all values
+  respectively (...has not been tested yet for very large absolute values of p...use reasonable 
+  values - like -10..+10 or something!). https://en.wikipedia.org/wiki/Generalized_mean */
   template<class T>
-  static T generalizedMean(T* x, int N, T p);
-
-
+  static T generalizedMean(const T* x, int N, T p);
 
   /** Fills the array h with the impulse of the filter specified by the direct form coefficients
   given in b and a. \todo comment on the sign of the a-coeffs, whether or not an a0 is included,
