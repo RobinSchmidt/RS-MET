@@ -23,6 +23,7 @@ inline void rsSwapViaMove(T& x, T& y)
 template<class T>
 inline void rsSwap(T& x, T& y)
 {
+  //rsSwapNaive(x, y);  // temporary, for debug
   rsSwapViaMove(x, y);
 }
 

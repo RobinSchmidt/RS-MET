@@ -343,7 +343,7 @@ bool testMovingQuantileCore(int maxLength, int smallLength, int largeLength, int
   // at sample n = 18, we have different behavior in gcc from msc:
   //gcc:
   //n   = 18
-  //key = -2147483628
+  //key = -2147483628   ...wrong! off by 20
   //lhi = 20
   //lhs = 20
   //
@@ -353,9 +353,14 @@ bool testMovingQuantileCore(int maxLength, int smallLength, int largeLength, int
   //lhi = 0
   //lhs = 20
 
-  // the key is already off by 20, which is the size of the large heap in the test (also of the
-  // small heap, but that's probably not relevant). could it have to do with different behavior of 
-  // the modulo operator in th wrap operation? the msc behavior is the desired one
+  // the key is already off by 20, which is the size of the large heap in the test when 
+  // testMovingQuantileCore(64, 20, 20, N); is called (also of the small heap, but that's probably 
+  // not relevant). could it have to do with different behavior of the modulo operator in the wrap
+  // operation? the msc behavior is the desired one - nope - that doesn't seem to be the case - i 
+  // added a test to testGcdAndCo which checks the behavior of % with negative inputs and the 
+  // behavior is the same in msc and gcc
+  // apparently, the custom swapNodes function does not get called in gcc ..it calls std::swap
+  // instead of this->swap!
 
 
   //rsPlotVectors(y, z);  // uncomment to see the result
@@ -512,6 +517,7 @@ bool movingQuantileUnitTest()
 
 
   // test the general operation:
+  r &= testMovingQuantileCore(64, 10, 10, N);
   r &= testMovingQuantileCore(64, 20, 20, N);
   r &= testMovingQuantileCore(64, 31, 31, N);
   r &= testMovingQuantileCore(64, 31, 32, N);

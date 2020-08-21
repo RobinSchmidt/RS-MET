@@ -48,7 +48,7 @@ int rsSumOfProducts(int n, int m)
 }
 // without the outer loop, see: https://www.youtube.com/watch?v=-2PA7SbWoJ0&t=27m
 // move to IntegerFunctions.h, but we use different meaning for n - here, n is the number of terms
-// whereas in the video, it's the upper summation index for a sum starting at 0, so there are n+1 
+// whereas in the video, it's the upper summation index for a sum starting at 0, so there are n+1
 // terms in total in the sums in the video
 // how about a formula for sum_i prod_j (i+j) for i=iMin..iMax and j=jMin..jMax...the iMin..iMax
 // can be realized by subtracting two evaluations of our existing function:
@@ -86,13 +86,13 @@ bool testSumAndProduct()
 
   // todo: implement this formula for a rsSumOfProducts function:
   // https://www.youtube.com/watch?v=-2PA7SbWoJ0&t=27m
-  //   sum_{k=0}^n prod_{i=1}^m (k+i) 
+  //   sum_{k=0}^n prod_{i=1}^m (k+i)
   // = sum_{k=0}^n prod_{i=k+1}^{k+m} i
   // = (1/(m+1)) prod_{i=1}^{m+1} (n+i)
   // = (1/(m+1)) prod_{i=n+1}^{n+m+1} i
 
-  // should take n,m as parameters - can this be generalized to use different start-values for k 
-  // and i? 
+  // should take n,m as parameters - can this be generalized to use different start-values for k
+  // and i?
 
   // n = 4, m = 3: 3 terms and each term has 3 factors:
   // 1*2*3 + 2*3*4 + 3*4*5 + 4*5*6 = 210
@@ -118,7 +118,7 @@ bool testSumAndProduct()
   // 3*4*5 + 4*5*6 + 5*6*7 + 6*7*8 = 726
 
   y = rsSumOfProducts1(2, 5, 4, 6);
-  // (2+4)*(2+5)*(2+6) + (3+4)*(3+5)*(3+6) + (4+4)*(4+5)*(4+6) + (5+4)*(5+5)*(5+6) 
+  // (2+4)*(2+5)*(2+6) + (3+4)*(3+5)*(3+6) + (4+4)*(4+5)*(4+6) + (5+4)*(5+5)*(5+6)
   // 6*7*8 + 7*8*9 + 8*9*10 + 9*10*11 = 2550
 
 
@@ -307,15 +307,28 @@ bool testLeviCivita(std::string &reportString)
   return testResult;
 }
 
+int rsSignedMod(int a, int b)
+{
+  return a % b; // this perhaps only works with msc? -> test! nope - works in gcc, too
+}
+// maybe move to rapt ..compare to srem (used in the elliptic function code, i think)
+
 // gcd, lcm, egcd, ...
 bool testGcdAndCo()
 {
   bool r = true;
 
   int y;
+
+  // test behavior of signed modulo operation:
+  y = rsSignedMod(+23, +10); r &= y == +3;
+  y = rsSignedMod(+23, -10); r &= y == +3;
+  y = rsSignedMod(-23, +10); r &= y == -3;
+  y = rsSignedMod(-23, -10); r &= y == -3;
+
+
   y = rsGcd(12, 15); r &= y == 3;
   y = rsLcm(36, 48); r &= y == 144;
-
 
   return r;
 }

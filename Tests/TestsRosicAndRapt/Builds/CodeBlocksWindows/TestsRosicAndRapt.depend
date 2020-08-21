@@ -2398,7 +2398,8 @@
 	<functional>
 	<algorithm>
 
-1596014426 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\rapt.h
+1598002907 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\rapt.h
+	<iostream>
 	<cstdio>
 	<complex>
 	<vector>
@@ -2434,7 +2435,7 @@
 	"BasicFunctions.h"
 	"SortAndSearch.h"
 
-1597158557 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\constants.h
+1597256667 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\constants.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\typedefinitions.h
 
@@ -2453,7 +2454,7 @@
 	"MultiArray.h"
 	"Trees.h"
 
-1596021101 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.h
+1597843321 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\matrixtools.h
 
@@ -2535,9 +2536,9 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\sincostable.h
 
-1597163902 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.h
+1597731803 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.h
+1597701239 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\vector.h
 
@@ -2893,7 +2894,7 @@
 	"MultiArray.cpp"
 	"Trees.cpp"
 
-1597160224 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.cpp
+1597844007 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\matrixtools.cpp
 
@@ -2964,7 +2965,7 @@
 
 1570815251 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\basicfunctions.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\integerfunctions.cpp
+1597996919 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\integerfunctions.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\interpolatingfunction.cpp
 
@@ -2986,7 +2987,7 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.cpp
 
-1597164618 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.cpp
+1597700955 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\vector.cpp
 
@@ -5360,7 +5361,7 @@
 
 1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\partialdifferentialequations.h
 
-1597168418 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.h
+1597848919 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.h
 	"rosic/rosic.h"
 	"FilterDesign/PoleZeroPrototype.h"
 	"FilterDesign/PoleZeroMapper.h"
@@ -5407,7 +5408,7 @@
 1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\dspplotters.h
 	"../../../Libraries/RobsJuceModules/rosic/rosic.h"
 
-1595712064 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\plotting.h
+1597714152 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\plotting.h
 	"rapt/rapt.h"
 	"rosic/rosic.h"
 	"rs_testing/rs_testing.h"
@@ -5450,9 +5451,9 @@
 
 1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\oscdrivers.cpp
 
-1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\partialdifferentialequations.cpp
+1597702087 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\partialdifferentialequations.cpp
 
-1596549813 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.cpp
+1597843121 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.cpp
 	"Prototypes.h"
 	"FilterDesign/PoleZeroPrototype.cpp"
 	"FilterDesign/PoleZeroMapper.cpp"
@@ -5524,7 +5525,7 @@
 
 1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\misc\testclasses.cpp
 
-1597164165 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\raptinstantiations.cpp
+1597996682 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\raptinstantiations.cpp
 	"../rapt/rapt_templates.cpp"
 
 1595712067 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\experiments\experiments.cpp
@@ -5715,11 +5716,11 @@
 
 1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\saturationexperiments.h
 
-1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\mathexperiments.cpp
+1597843227 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\mathexperiments.cpp
 
 1596285063 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\filterexperiments.cpp
 
-1595942429 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\generatorexperiments.cpp
+1597902555 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\generatorexperiments.cpp
 
 1597167327 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\modulatorexperiments.cpp
 
@@ -5767,7 +5768,7 @@
 1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\saturationexperiments.cpp
 	"SaturationExperiments.h"
 
-1597000985 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\main.cpp
+1597996172 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\main.cpp
 	"../JuceLibraryCode/JuceHeader.h"
 	"rapt_tests/RaptTests.h"
 	"Experiments/Experiments.h"
@@ -5783,7 +5784,7 @@
 	<rosic/rosic.h>
 	<rs_testing/rs_testing.h>
 
-1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\rapttests.h
+1597847803 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\rapttests.h
 	"UnitTests/UnitTestsRapt.h"
 
 1597156866 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\unittestsrapt.h
@@ -5944,7 +5945,7 @@
 
 1597182351 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\dataunittests.cpp
 
-1597181254 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\filterunittests.cpp
+1598003397 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\filterunittests.cpp
 	"../../../../Libraries/ThirdParty/Nayuki/SlidingWindowMinMax.hpp"
 
 1595712064 e:\programming\c++\rs-met\libraries\thirdparty\nayuki\slidingwindowminmax.hpp
@@ -5974,7 +5975,7 @@
 
 1597156866 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\linearalgebraunittests.cpp
 
-1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\polynomialunittests.cpp
+1597630663 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\polynomialunittests.cpp
 
 1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\vectorunittests.cpp
 
@@ -5984,7 +5985,7 @@
 
 1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\differentialequationtests.cpp
 
-1597156866 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\integerfunctiontests.cpp
+1597998710 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\integerfunctiontests.cpp
 
 1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\math\moebiustransformtests.cpp
 
@@ -6083,13 +6084,13 @@
 1595712067 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\builds\codeblockswindows\resources.rc
 	<windows.h>
 
-1597164445 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\basicfunctions.h
+1598003371 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\basicfunctions.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\multiarray.h
 
 1597183820 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\trees.h
 
-1597155706 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\fraction.h
+1597997258 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\fraction.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\linearalgebranew.h
 
@@ -6099,7 +6100,7 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\windowfunctions.h
 
-1597164649 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quantilefilter.h
+1598003461 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quantilefilter.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagegenerator.h
 
@@ -6151,5 +6152,5 @@
 
 1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\sineparameterestimator.cpp
 
-1597167560 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\scratchpad.cpp
+1597429593 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\scratchpad.cpp
 

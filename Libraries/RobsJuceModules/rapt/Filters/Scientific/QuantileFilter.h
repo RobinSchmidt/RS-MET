@@ -124,6 +124,14 @@ protected:
   void storeInput(T x)
   {
     //rsAssert(isStateConsistent(), "inconsistent state");
+
+    // for debug in gcc:
+    int i = bufIdx;
+    int L = this->L;
+    int S = (int)keyBuf.size();
+    int test = (i+L) % S;
+
+
     int k = keyBuf[bufIdx];        // heap-key of oldest sample
     int w = wrap(bufIdx + L);      // (write) index of new node in keyBuf
     keyBuf[w] = k;                 // store preliminary key (== old node's key) in kexBuf at w
@@ -203,6 +211,7 @@ protected:
   buffer keep track of what gets swapped. */
   void swapNodes(Node& a, Node& b)
   {
+    std::cout << "swapping nodes\n"; // debug - seems like the function is not called with gcc
     rsSwap(a, b);
     rsSwap(keyBuf[a.bufIdx], keyBuf[b.bufIdx]);
   }

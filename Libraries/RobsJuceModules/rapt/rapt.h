@@ -26,6 +26,7 @@
 
 // maybe these standard library includes should go somewhere else?
 //#include <ctgmath>       // template generic math?
+#include <iostream>      // only needed when printing debug info to cout in gcc
 #include <cstdio>        // to fix warning in gcc when using printf
 #include <complex>       // included already by ctgmath ...but not on gcc/windows?
 #include <vector>
