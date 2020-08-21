@@ -307,6 +307,20 @@ bool testLeviCivita(std::string &reportString)
   return testResult;
 }
 
+// gcd, lcm, egcd, ...
+bool testGcdAndCo()
+{
+  bool r = true;
+
+  int y;
+  y = rsGcd(12, 15); r &= y == 3;
+  y = rsLcm(36, 48); r &= y == 144;
+
+
+  return r;
+}
+
+
 bool testIntegerFunctions()
 {
   std::string testName = "rsIntegerFunctions";
@@ -319,6 +333,7 @@ bool testIntegerFunctions()
   testResult &= testMultinomialCoefficients(dummy);
   testResult &= testMultinomialFormula(dummy);
   testResult &= testLeviCivita(dummy);
+  testResult &= testGcdAndCo();
 
   //appendTestResultToReport(reportString, testName, testResult);
   return testResult;

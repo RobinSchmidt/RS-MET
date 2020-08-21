@@ -897,7 +897,7 @@ void superBlep()
   //  to introduce skew - maybe have pre-skew -> contract/spread -> post-skew
 }
 
-void superSawDensitySweep()
+void superSawDensitySweep() // rename to SuperSawFeedbackFM
 {
   // We try to implement a continuos sweep of the density. For simplicity, we use an array of 
   // rsBlepSawOsc. Production code should probably optimize this (share the blep object, etc.).
@@ -910,7 +910,7 @@ void superSawDensitySweep()
   double sampleRate = 44100;
   double p = 0.5;  // shape of distribution of frequencies
 
-  double modAmount = 0.3;
+  double modAmount = 0.0;
 
   std::vector<rsBlepSawOsc<double>> oscs(maxDensity);
 
@@ -920,6 +920,10 @@ void superSawDensitySweep()
   flt.setFrequency(0.25*(fMin+fMax));
   flt.setMode(flt.BANDPASS);
   flt.setSampleRate(sampleRate);
+
+  // test - altenrtively use a subsonic lowpass:
+  flt.setMode(flt.LOWPASS12);
+  flt.setFrequency(7.0);
 
 
   using Vec = std::vector<double>;
@@ -945,17 +949,21 @@ void superSawDensitySweep()
     for(int i = 0; i < D; i++)
     {
       double fi = freqs[i];
-      if(rsIsEven(i))
-        fi += modAmount*mod*fi;
-      else
-        fi -= modAmount*mod*fi;
+
+      if(rsIsEven(i)) fi += modAmount*mod*fi;
+      else            fi -= modAmount*mod*fi;
 
       oscs[i].setPhaseIncrement(fi/sampleRate);
 
-      y[n] += oscs[i].getSample();
+      // test: invert every other saw:
+      if(rsIsEven(i)) y[n] += oscs[i].getSample();
+      else            y[n] -= oscs[i].getSample();
+
+      //y[n] += oscs[i].getSample();  // without inversion
     }
 
-    mod = flt.getSample(y[n]);
+    //mod = flt.getSample(y[n]);   // for bandpass
+    mod = flt.getSample(y[n] * y[n]);  // for lowpass
   }
 
   AT::normalize(&y[0], N);
@@ -969,9 +977,12 @@ void superSawDensitySweep()
   int dummy = 0;
 }
 // idea to randomize the frequencies:
-// -pass output thorugfh bandpass, tuned to center frequency
+// -pass output through bandpass, tuned to center frequency
 //  ..or an octave below is also very interesting
 // -use that output as LFO for the oscillators - alternatingly up and down
+// -alternatively to a bandpass: use a lowpass with subsonic cutoff freq on the squared output
+// -maybe as an alternative spacing strategy: strat from equidistant frequencies and offset them
+//  alternatingly by some user adjustable amount
 
 void superSawStereo()
 {

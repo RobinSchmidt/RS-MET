@@ -300,7 +300,8 @@ template rsUint32 RAPT::rsBinomialCoefficient(rsUint32 n, rsUint32 k);
 template rsUint32 RAPT::rsBinomialCoefficientUpTo20(rsUint32 n, rsUint32 k);
 template int RAPT::rsMultinomialCoefficient(int* n, int k);
 template long long RAPT::rsGcd(long long x, long long y);  // maybe use rsInt64
-template int RAPT::rsGcd(int, int);
+//template int RAPT::rsGcd(int, int);
+template int RAPT::rsLcm(int, int);
 template rsUint32 RAPT::rsLcm(rsUint32, rsUint32);
 template rsUint32 RAPT::rsMultinomialCoefficient(rsUint32* n, rsUint32 k);
 template rsUint32 RAPT::rsMultinomialCoefficientUpTo12(rsUint32* n, rsUint32 k);
