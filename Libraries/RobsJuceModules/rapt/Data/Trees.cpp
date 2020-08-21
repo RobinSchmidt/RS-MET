@@ -32,7 +32,7 @@ void rsBinaryHeap<T>::remove(int i)
   rsAssert(i >= 0 && i < this->size, "Index out of range");
   if(i < 0 || i >= this->size)
     return;  // ...it's also a client code bug to try to remove a non-existent item.
-  swap(this->data[i], this->data[this->size-1]);
+  this->swap(this->data[i], this->data[this->size-1]);
   this->size--;
   floatIntoPlace(i);
 }
@@ -45,7 +45,7 @@ int rsBinaryHeap<T>::floatUp(int i)
   while(i > 0) {
     int p = this->parent(i);
     if(this->less(this->data[p], this->data[i]))  {
-      swap(this->data[i], this->data[p]);
+      this->swap(this->data[i], this->data[p]);
       i = p; }
     else
       return i; }
@@ -63,7 +63,7 @@ int rsBinaryHeap<T>::floatDown(int i)
     if(l < this->size && this->less(this->data[i], this->data[l])) b = l;
     if(r < this->size && this->less(this->data[b], this->data[r])) b = r;
     if(b != i) {
-      swap(this->data[i], this->data[b]);
+      this->swap(this->data[i], this->data[b]);
       i = b;  }
     else
       return i;

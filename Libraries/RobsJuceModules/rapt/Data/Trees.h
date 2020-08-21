@@ -48,7 +48,7 @@ public:
   to do something extra whenever a swap takes place in certain circumstances, for example, to keep
   track of when items get moved around (see rsMovingQuantileFilter for an example). */
   void setSwapFunction(const std::function<void(T&, T&)>& newFunc)
-  { swap = newFunc; }
+  { this->swap = newFunc; }
 
 
   //-----------------------------------------------------------------------------------------------

@@ -536,7 +536,7 @@ bool movingQuantileUnitTest()
   // test the read out of a filter one sample longer than nominal length:
   //r &= oneLongerQuantileUnitTest(2, N);
   //r &= oneLongerQuantileUnitTest(3, N);
-  r &= oneLongerQuantileUnitTest(4, N);
+  //r &= oneLongerQuantileUnitTest(4, N);
   //r &= oneLongerQuantileUnitTest(5, N);
 
 

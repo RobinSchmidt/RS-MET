@@ -211,7 +211,7 @@ protected:
   buffer keep track of what gets swapped. */
   void swapNodes(Node& a, Node& b)
   {
-    std::cout << "swapping nodes\n"; // debug - seems like the function is not called with gcc
+    //std::cout << "swapping nodes\n"; // debug - seems like the function is not called with gcc
     rsSwap(a, b);
     rsSwap(keyBuf[a.bufIdx], keyBuf[b.bufIdx]);
   }

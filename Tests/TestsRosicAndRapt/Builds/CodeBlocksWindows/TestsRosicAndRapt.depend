@@ -2385,7 +2385,7 @@
 	"GNUPlotter.cpp"
 	"../rapt.h"
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\gnuplotter.cpp
+1598005390 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\gnuplotter.cpp
 	"GNUPlotter.h"
 	<fstream>
 	<iostream>
@@ -5945,7 +5945,7 @@
 
 1597182351 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\dataunittests.cpp
 
-1598003397 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\filterunittests.cpp
+1598007073 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\filterunittests.cpp
 	"../../../../Libraries/ThirdParty/Nayuki/SlidingWindowMinMax.hpp"
 
 1595712064 e:\programming\c++\rs-met\libraries\thirdparty\nayuki\slidingwindowminmax.hpp
@@ -6088,7 +6088,7 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\multiarray.h
 
-1597183820 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\trees.h
+1598005859 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\trees.h
 
 1597997258 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\fraction.h
 
@@ -6100,7 +6100,7 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\windowfunctions.h
 
-1598003461 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quantilefilter.h
+1598006641 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quantilefilter.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagegenerator.h
 
@@ -6112,7 +6112,7 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\multiarray.cpp
 
-1597163907 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\trees.cpp
+1598005859 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\trees.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\linearalgebranew.cpp
 
