@@ -270,7 +270,7 @@ void SampleTailExtender::setSignalToZeroBelowThreshold (std::vector<double>& sig
     int thresholdPoint = -1;
     int blockSize = 4096;
     
-    for (size_t i = 0; i < signal.size() - blockSize; i += blockSize)
+    for (int i = 0; i < (int)signal.size() - blockSize; i += blockSize)
     {
         double peakEnergy = 0.;
         for (int j = 0; j < blockSize; j++)
@@ -290,7 +290,7 @@ void SampleTailExtender::setSignalToZeroBelowThreshold (std::vector<double>& sig
     
     if (thresholdPoint != -1)
     {
-        for (size_t i = thresholdPoint; i < signal.size(); i++)
+        for (int i = thresholdPoint; i < (int)signal.size(); i++)
         {
             int j = i - thresholdPoint;
             

@@ -513,7 +513,7 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
 
   // exctract envelopes:
   std::vector<double> e1(x1.size()), e2(x2.size());
-  size_t n;
+  int n;
   for(n = 0; n < x1.size(); n++) e1[n] = ef.getSample(x1[n]);
   ef.reset();
   for(n = 0; n < x2.size(); n++) e2[n] = ef.getSample(x2[n]);
@@ -582,9 +582,9 @@ void testEnvelopeMatching2(std::vector<double>& x1, std::vector<double>& x2)
   ef.setReleaseTime(200.0);
   Vec e1(x1.size()), e2(x2.size());
   size_t n;
-  for(n = 0; n < x1.size(); n++) e1[n] = ef.getSample(x1[n]);
+  for(n = 0; n < (int)x1.size(); n++) e1[n] = ef.getSample(x1[n]);
   ef.reset();
-  for(n = 0; n < x2.size(); n++) e2[n] = ef.getSample(x2[n]);
+  for(n = 0; n < (int)x2.size(); n++) e2[n] = ef.getSample(x2[n]);
 
   // find match offset:
   double dt = 0;
@@ -596,8 +596,8 @@ void testEnvelopeMatching2(std::vector<double>& x1, std::vector<double>& x2)
   Vec e1d = rsDecimateViaMean(e1, D);
   Vec e2d = rsDecimateViaMean(e2, D);  
   Vec t1d(e1d.size()), t2d(e2d.size());
-  for(n = 0; n < t1d.size(); n++)  t1d[n] = n * D;
-  for(n = 0; n < t2d.size(); n++)  t2d[n] = n * D + dt;
+  for(n = 0; n < (int)t1d.size(); n++)  t1d[n] = double(n*D);
+  for(n = 0; n < (int)t2d.size(); n++)  t2d[n] = double(n*D) + dt;
 
   // plot:
   GNUPlotter plt;

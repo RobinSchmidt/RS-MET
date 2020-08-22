@@ -119,8 +119,8 @@ protected:
 private:
 
   // copy and assignment - not possible:
-  AtomicModule(const AtomicModule &other) {}
-  AtomicModule& operator=(const AtomicModule &other) { return *this; }
+  AtomicModule(const AtomicModule& /*other*/) {}
+  AtomicModule& operator=(const AtomicModule& /*other*/) { return *this; }
 
 };
 
@@ -163,7 +163,7 @@ public:
 
   /** Internal callback that is triggered from setParameter - you may override it when you need to 
   re-compute some internal variables when a parameter was changed. */
-  virtual void parameterChanged(int index) { }
+  virtual void parameterChanged(int /*index*/) { }
 
   //-----------------------------------------------------------------------------------------------
   // inquiry:
@@ -229,8 +229,8 @@ protected:
 private:
 
   // copy and assignment - not possible:
-  ModuleWithParameters(const ModuleWithParameters &other) {}
-  ModuleWithParameters& operator=(const ModuleWithParameters &other) { return *this; }
+  ModuleWithParameters(const ModuleWithParameters& /*other*/) {}
+  ModuleWithParameters& operator=(const ModuleWithParameters& /*other*/) { return *this; }
 
 };
 

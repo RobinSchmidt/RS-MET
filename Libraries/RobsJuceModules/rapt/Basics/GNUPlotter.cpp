@@ -928,7 +928,6 @@ void GNUPlotter::invokeGNUPlot()
   systemCall(callString);
   // is it possible to call GNUPlot in a separate process? - this is actually already the case
   // ...but we have to close it to call it again - i.e. we can't do multiple plots at once
-  int dummy = 0;
 }
 
 //-------------------------------------------------------------------------------------------------

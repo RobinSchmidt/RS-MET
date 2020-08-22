@@ -19,9 +19,19 @@ rsBiquadCascade<TSig, TCoef>::rsBiquadCascade(int newMaxNumStages)
   y1 = new TSig[maxNumStages];
   y2 = new TSig[maxNumStages];
 
-  initBiquadCoeffs();        
-  reset();                   
-  numStages = maxNumStages; 
+  // maybe do:
+  // a1 = new TCoef[9*maxNumStages];
+  // a2 = &a1[1*maxNumStages];
+  // b0 = &a1[2*maxNumStages];
+  // ...
+  // to optimize class instantiation (less calls to new, it also ensures contiguous memory)
+  // in the destructor, we then need to only delete a1
+  // ..oh - no we need 2 calls to new bcs TCoef and TSig may be different - but 2 is still better 
+  // than 9
+
+  initBiquadCoeffs();
+  reset();
+  numStages = maxNumStages;
 }
 
 template<class TSig, class TCoef>

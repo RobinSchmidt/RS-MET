@@ -201,7 +201,7 @@ void rsSinusoidalProcessor<T>::refineFreqsViaPhaseDerivative(rsSinusoidalModel<T
 template<class T>
 void rsSinusoidalProcessor<T>::fixPartialFrequency(rsSinusoidalPartial<T>& p, T f, T pickPhaseAt)
 {
-  for(size_t i = 0; i < p.getNumDataPoints(); i++)
+  for(int i = 0; i < (int)p.getNumDataPoints(); i++)
     p.setFrequency(i, f);
   makePhasesConsistentWithFreqs(p, (int) round(pickPhaseAt * (p.getNumDataPoints()-1)) );
 }

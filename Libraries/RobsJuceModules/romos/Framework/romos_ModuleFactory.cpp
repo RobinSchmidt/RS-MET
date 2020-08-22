@@ -71,7 +71,7 @@ int ModuleFactory::getModuleId(const std::string& fullTypeName)
   ensureTypeInfoArrayAllocated();
   for(size_t i = 0; i < typeInfos->size(); i++)
     if((*typeInfos)[i]->fullName == fullTypeName)
-      return i;
+      return (int)i;
   return -1;
 }
 

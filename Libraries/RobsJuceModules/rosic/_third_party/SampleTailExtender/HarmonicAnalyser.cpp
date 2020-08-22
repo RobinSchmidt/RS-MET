@@ -66,7 +66,7 @@ std::vector<int> HarmonicAnalyser::getIndicesOfMajorHarmonics (std::vector<doubl
     
     std::vector<int> harmonics;
     
-    for (size_t i = 2; i < (magnitudeSpectrum.size() / 2) - 2; i++)
+    for (int i = 2; i < ((int)magnitudeSpectrum.size() / 2) - 2; i++)
     {
         bool condition1 = magnitudeSpectrum[i] > magnitudeSpectrum[i - 1];
         bool condition2 = magnitudeSpectrum[i] > magnitudeSpectrum[i - 2];
@@ -134,7 +134,7 @@ void HarmonicAnalyser::analyseBeating (int audioFrameSize, int hopSize, double s
         std::vector<int> peakArray;
         peakArray.push_back (0); // consider first sample a peak
         
-        for (size_t i = 2; i < flattenedHarmonicAmplitudeCurve.size() - 2; i++)
+        for (int i = 2; i < (int)flattenedHarmonicAmplitudeCurve.size() - 2; i++)
         {
             bool condition1 = flattenedHarmonicAmplitudeCurve[i] > flattenedHarmonicAmplitudeCurve[i - 1];
             bool condition2 = flattenedHarmonicAmplitudeCurve[i] > flattenedHarmonicAmplitudeCurve[i - 2];

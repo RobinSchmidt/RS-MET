@@ -111,7 +111,7 @@ public:
 
   /** Preliminary - todo: disallow editing for certain simple modules such as adders, unit-delays,
   etc - see old implementation. */
-  bool isModuleNameEditable(int id) { return true; } 
+  bool isModuleNameEditable(int /*id*/) { return true; } 
   // maybe we should have a nameEditable flag in the Module baseclass that defaults to true
 
   bool hasModuleTypeEditor(size_t id) { return (*typeInfos)[id]->hasEditor; }

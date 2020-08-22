@@ -35,7 +35,7 @@ void PoleZeroPrototype<T>::butterworth(size_t N, T G0, T G, T* k, Complex* p, Co
 
   // poles/zeros/gain:
   T phi, s, c;
-  for(int i = 0; i < L; i++)
+  for(size_t i = 0; i < L; i++)
   {
     phi = T(2*i-1)*T(PI) / T(2*N);           // (2),Eq.95
     s   = sin(phi);                          // (2),Eq.95
