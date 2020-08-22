@@ -478,7 +478,8 @@ bool oneLongerQuantileUnitTest(int L, int N)
     }
 
     r &= yT == yR;
-    rsPlotVectors(x, yR, yT);
+    //rsPlotVectors(x, yR, yT);
+    rsPlotVectors(yR, yT);
   }
   // this does not yet work - also, we trigger an assert for quantile = 1
 
@@ -514,11 +515,15 @@ bool movingQuantileUnitTest()
 
   // test the read out of a filter one sample longer than nominal length:
   //r &= oneLongerQuantileUnitTest(2, N); // works
-  r &= oneLongerQuantileUnitTest(3, N); // fails
+  //r &= oneLongerQuantileUnitTest(3, N); // fails
   //r &= oneLongerQuantileUnitTest(4, N); // fails
-  //r &= oneLongerQuantileUnitTest(5, N); // fails
+  r &= oneLongerQuantileUnitTest(5, N); // fails
+  //r &= oneLongerQuantileUnitTest(6, N); // fails
+  r &= oneLongerQuantileUnitTest(7, N); // fails
+  //r &= oneLongerQuantileUnitTest(8, N); // fails
   // but those which fail look partially ok - seems like only the lower branch is false
-
+  // hmm..but something seems wrong with L=4 in the upper branch, too ..it seems that upper branch
+  // works for odd L and L = 2
 
 
   // try to extract the maximum over the last 8 samples:

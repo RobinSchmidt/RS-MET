@@ -719,17 +719,57 @@ public:
 
     if(this->dblHp.small.isLess(nx, this->dblHp.large[0]))  // means: if(x < large[0])
     {
-      // x belongs in small heap
+      // xL belongs in small heap, so we use xL together with the 2 first values of the small heap
+      // (?)
       yS = this->dblHp.get2ndLargestSmallValue().value;
       yS = rsMaxViaLess(yS, xL);  //
       yL = this->dblHp.getLargestSmallValue().value;
+
+
+      // new:
+      T y0 = this->dblHp.getLargestSmallValue().value;
+      T y1 = this->dblHp.get2ndLargestSmallValue().value;
+      if(xL > y0)
+      {
+        // xL belongs right to the 2 largest small values 
+        // -> interpolate between largest small and xL:
+        yS = y0;
+        yL = xL;
+      }
+      else if(xL < y1)
+      {
+        // xL belongs left to the 2 largest small values
+        // -> interpolate between 2nd largest small and largest small:
+        yS = y1;
+        yL = y0;
+      }
+      else
+      {
+        // xL belongs in between the 2 largest small values
+        // -> interpolate between xL and largest small:
+        yS = xL;
+        yL = y1;
+      }
+
+      // let y0 = small[0], y1 = small[1]
+
+      /*
+      if(this->dblHp.small.isLess(nx, this->dblHp.small[0]))
+      {
+
+      }
+      */
+
+      //return 0;  // test
     }
     else
     {
       // x belongs in large heap
-      yL = this->dblHp.get2ndSmallestLargeValue().value;
-      yL = rsMin(yL, xL);
-      yS = this->dblHp.getSmallestLargeValue().value;
+      yS = this->dblHp.get2ndSmallestLargeValue().value;
+      yS = rsMin(yS, xL);
+      yL = this->dblHp.getSmallestLargeValue().value;
+
+      return 0;// for test/debug - this branch seems to be still wrong
     }
     T y = (T(1)-w1)*yS + w1*yL;
     return y;
