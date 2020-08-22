@@ -1,6 +1,8 @@
 #ifndef romos_FormulaModules_h
 #define romos_FormulaModules_h
 
+//namespace rsTestRomos {} // forward declaration - needed to declare friends in classes below
+
 namespace romos
 {
 

@@ -4,7 +4,7 @@
 //#include "romos_ModularSystemTest.h"
 //#include "romos_GenerateDesiredOutput.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
   /**

@@ -1,5 +1,5 @@
 #include "romos_ConcreteModularSystemTests.h"
-using namespace romos;
+using namespace rsTestRomos; // try to get rid
 
 
 

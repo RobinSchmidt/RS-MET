@@ -1,5 +1,6 @@
 #include "romos_ContainerManipulationTests.h"
 using namespace romos;
+using namespace rsTestRomos;
 
 
 Containerize01::Containerize01() : ContainerManipulationTest("ContainerizationTest01")
@@ -167,12 +168,12 @@ bool OutputModuleDeletion::runTest()
 
   ContainerModule *outerContainer = (ContainerModule*) moduleToTest;
   ContainerModule *innerContainer = (ContainerModule*) outerContainer->getChildModule(0);
-  Module          *out1           = innerContainer->getChildModule(3);
-  Module          *out2           = innerContainer->getChildModule(4);
-  Module          *out3           = innerContainer->getChildModule(5);
-  Module          *minus1         = outerContainer->getChildModule(1);
-  Module          *minus2         = outerContainer->getChildModule(2);
-  Module          *minus3         = outerContainer->getChildModule(3);
+  romos::Module   *out1           = innerContainer->getChildModule(3);
+  romos::Module   *out2           = innerContainer->getChildModule(4);
+  romos::Module   *out3           = innerContainer->getChildModule(5);
+  romos::Module   *minus1         = outerContainer->getChildModule(1);
+  romos::Module   *minus2         = outerContainer->getChildModule(2);
+  romos::Module   *minus3         = outerContainer->getChildModule(3);
 
   // delete the middle output module of the 3:
   innerContainer->deleteChildModule(out2);

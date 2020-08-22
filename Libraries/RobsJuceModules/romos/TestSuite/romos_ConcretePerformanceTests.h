@@ -3,7 +3,7 @@
 
 //#include "romos_PerformanceTest.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
 /** This file contains concrete subclasses of PerformanceTest. 
