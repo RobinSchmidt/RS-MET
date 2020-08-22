@@ -1,5 +1,5 @@
 #include "romos_GlobalFrameworkTests.h"
-using namespace romos;
+using namespace rsTestRomos;
 
 
 

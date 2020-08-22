@@ -1,5 +1,5 @@
 #include "romos_ModuleBuildCodeGenerator.h"
-using namespace romos;
+using namespace rsTestRomos;
  
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // code generation:
@@ -99,7 +99,7 @@ rosic::rsString ModuleBuildCodeGenerator::getCodeForModule(romos::Module *module
     child = container->getChildModule(i);
     for(unsigned int pinIndex = 0; pinIndex < child->getNumInputPins(); pinIndex++)
     {
-      Module *sourceModule = child->inputPins[pinIndex].sourceModule;
+      romos::Module *sourceModule = child->inputPins[pinIndex].sourceModule;
       if( sourceModule != NULL )
       {
         // when the source is an output module, we actually want the hosting container:

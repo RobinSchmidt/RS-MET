@@ -3,7 +3,7 @@
 
 //#include "../framework/romos_ContainerModule.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
   /**

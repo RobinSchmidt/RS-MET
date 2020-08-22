@@ -1,5 +1,5 @@
 #include "romos_TestModuleBuilder.h"
-using namespace romos;
+using namespace rsTestRomos;
 
 romos::Module* TestModuleBuilder::createWrappedAdder(const rosic::rsString &name, int x, int y, 
   bool polyphonic)

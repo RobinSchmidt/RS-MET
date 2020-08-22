@@ -7,7 +7,7 @@
 //#include "romos_UnitTest.h"
 //#include "../romos.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
   /**
@@ -35,7 +35,7 @@ namespace romos
 
     /** Accepts a vector of events that will be triggered during the processing functions. These events should be passed before calling
     runTests. */
-    virtual void setEventsToOccurDuringProcessing(const std::vector<NoteEvent> eventsToOccur)
+    virtual void setEventsToOccurDuringProcessing(const std::vector<romos::NoteEvent> eventsToOccur)
     {
       events = eventsToOccur;
     }
@@ -108,7 +108,7 @@ namespace romos
 
     virtual void processOutputSignal(bool useSinglePrecision);
 
-    virtual void handleEvent(NoteEvent eventToHandle);
+    virtual void handleEvent(romos::NoteEvent eventToHandle);
 
 
 
@@ -133,7 +133,7 @@ namespace romos
     romos::AudioInputModule  *inModuleL,  *inModuleR;   // pointers to input modules inside the topLevelModule
     romos::AudioOutputModule *outModuleL, *outModuleR;  // pointers to output modules inside the topLevelModule
 
-    std::vector<NoteEvent> events;
+    std::vector<romos::NoteEvent> events;
 
     double inputs        [maxNumInputChannels] [maxSignalLength];
     double outputs       [maxNumOutputChannels][maxSignalLength]; 

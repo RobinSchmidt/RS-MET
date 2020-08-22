@@ -5,7 +5,7 @@
 //#include "../Framework/romos_NoteEvent.h"
 //#include "../Algorithms/romos_FilterDesign.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
 /** This class can generate the desired correct output signals that the romos-modules should match.
@@ -43,7 +43,7 @@ public:
 
   static void forFilterBlip(int N, double frequency, double q, double *desiredOutput);
 
-  static void forGatedNoteFrequencies(int N, std::vector<NoteEvent> *events, double ***d,
+  static void forGatedNoteFrequencies(int N, std::vector<romos::NoteEvent> *events, double ***d,
     bool containerIsPolyphonic, bool noteFreqModuleIsPolyphonic);
 
 };

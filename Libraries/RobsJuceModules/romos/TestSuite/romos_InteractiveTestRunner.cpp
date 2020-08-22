@@ -1,5 +1,5 @@
 #include "romos_InteractiveTestRunner.h"
-using namespace romos;
+using namespace rsTestRomos;
 
 InteractiveTestRunner::InteractiveTestRunner()
 {

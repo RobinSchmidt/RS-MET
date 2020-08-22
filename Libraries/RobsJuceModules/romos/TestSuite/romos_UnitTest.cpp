@@ -1,5 +1,5 @@
 #include "romos_UnitTest.h"
-using namespace romos;
+using namespace rsTestRomos;
 
 #include <cstring>
 #include "stdio.h"

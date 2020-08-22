@@ -3,7 +3,7 @@
 
 //#include "romos_InteractivePlottingTests.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
   /**

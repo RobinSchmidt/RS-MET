@@ -6,7 +6,7 @@
 //#include "romos_TestEventGenerator.h"
 //#include "romos_UnitTest.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
 /** This class is the baseclass for all processing test classes (i.e. test, that produce signals) 
@@ -34,7 +34,7 @@ public:
 
   /** Accepts a vector of events that will be triggered during the processing functions. These events should be passed before calling
   runTests. */
-  virtual void setEventsToOccurDuringProcessing(const std::vector<NoteEvent> eventsToOccur)
+  virtual void setEventsToOccurDuringProcessing(const std::vector<romos::NoteEvent> eventsToOccur)
   {
     events = eventsToOccur;
   }
@@ -176,7 +176,7 @@ protected:
 
   //bool monoInFramesPassed, monoInBlocksPassed, polyInFramesPassed, polyInBlocksPassed;
 
-  std::vector<NoteEvent> events;
+  std::vector<romos::NoteEvent> events;
 
 
 

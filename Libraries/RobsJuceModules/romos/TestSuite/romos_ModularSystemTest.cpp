@@ -1,5 +1,5 @@
 #include "romos_ModularSystemTest.h"
-using namespace romos;
+using namespace rsTestRomos;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

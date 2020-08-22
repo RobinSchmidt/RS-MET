@@ -1,5 +1,5 @@
 #include "romos_ProcessingTest.h"
-using namespace romos;
+using namespace rsTestRomos;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -225,7 +225,7 @@ void ProcessingTest::processModuleInFrames()
     int numEventsHandled = 0;
     while( frameIndex < numFramesToProcess )
     {
-      NoteEvent e                 = events.at(numEventsHandled);
+      romos::NoteEvent e = events.at(numEventsHandled);
       int numFramesUntilNextEvent = e.getDeltaFrames() - frameIndex;
       processModuleInFramesNoEvents(numFramesUntilNextEvent, frameIndex);        // process chunk until the next event
         // there, process 1st frame, reset the trigger flags and then process other frames
@@ -259,7 +259,7 @@ void ProcessingTest::processModuleInBlocks()
     int numEventsHandled = 0;
     while( blockStart < numFramesToProcess )
     {
-      NoteEvent e                 = events.at(numEventsHandled);
+      romos::NoteEvent e = events.at(numEventsHandled);
       int numFramesUntilNextEvent = e.getDeltaFrames() - blockStart;
       processModuleInBlocksNoEvents(numFramesUntilNextEvent, blockStart);
       voiceAllocator.noteOn(e.getKey(), e.getVelocity());

@@ -1,5 +1,6 @@
 #include "romos_GenerateDesiredOutput.h"
-using namespace romos;
+using namespace rsTestRomos;
+//using namespace romos;
 
 void GenerateDesiredOutput::forImpulse(int N, double *x)
 {
@@ -140,7 +141,7 @@ void GenerateDesiredOutput::forFilterBlip(int N, double frequency, double q, dou
 }
 
 /*
-void GenerateDesiredOutput::forGatedNoteFrequencies(int N, std::vector<NoteEvent> *events, double ***desiredOutputs,                                           
+void GenerateDesiredOutput::forGatedNoteFrequencies(int N, std::vector<romos::NoteEvent> *events, double ***desiredOutputs,                                           
                                                      bool containerIsPolyphonic, bool noteFreqModuleIsPolyphonic)
 {
   std::vector<NoteEvent> noteOns;

@@ -1,5 +1,5 @@
 #include "romos_UnitTestRunner.h"
-using namespace romos;
+using namespace rsTestRomos;
 
 UnitTestRunner::UnitTestRunner()
 {

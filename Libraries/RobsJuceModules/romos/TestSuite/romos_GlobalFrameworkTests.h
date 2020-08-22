@@ -8,7 +8,7 @@
 //#include "../framework/romos_ModuleFactory.h"
 //#include "../romos.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
   /**

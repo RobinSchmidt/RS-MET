@@ -1,5 +1,5 @@
 #include "romos_PerformanceTest.h"
-using namespace romos;
+using namespace rsTestRomos;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

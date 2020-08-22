@@ -1,5 +1,5 @@
 #include "romos_InteractivePlottingTests.h"
-using namespace romos;
+using namespace rsTestRomos;
 
 
 

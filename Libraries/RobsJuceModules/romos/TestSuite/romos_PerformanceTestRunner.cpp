@@ -1,5 +1,5 @@
 #include "romos_PerformanceTestRunner.h"
-using namespace romos;
+using namespace rsTestRomos;
 
 PerformanceTestRunner::PerformanceTestRunner()
 {
@@ -69,7 +69,7 @@ rosic::rsString PerformanceTestRunner::runAtomicModulePerformanceTests()
   return report;
 }
 
-double romos::dummyFunction(double x)
+double rsTestRomos::dummyFunction(double x)
 {
   return x;
 }

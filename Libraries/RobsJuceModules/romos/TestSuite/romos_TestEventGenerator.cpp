@@ -1,5 +1,5 @@
 #include "romos_TestEventGenerator.h"
-using namespace romos;
+using namespace rsTestRomos;
 
 std::vector<NoteEvent> TestEventGenerator::generateNoteOnOffPair(unsigned int key, unsigned int velocity,                                        
                                                                  unsigned int deltaFramesForNoteOn, unsigned int durationInFrames)

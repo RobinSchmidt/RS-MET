@@ -6,7 +6,7 @@
 
 bool runModularUnitTests()
 {
-  romos::UnitTestRunner testRunner;
+  rsTestRomos::UnitTestRunner testRunner;
 
   printf("%s", "Running unit tests for romos...\n");
 
@@ -24,7 +24,7 @@ bool runModularUnitTests()
 
 void runModularPerformanceTests(bool createLogFile)
 {
-  romos::PerformanceTestRunner testRunner;
+  rsTestRomos::PerformanceTestRunner testRunner;
   testRunner.runAllTestsAndPrintResultsToConsole(createLogFile);
 }
 
@@ -49,16 +49,16 @@ void testModularCodeGenerator()
   // here we choose what kind of module to create (and genreate code for):
   //romos::Module *testModule = createSumDiffModule(NULL);
   //romos::Module *testModule = createWrappedSumDiffModule(NULL);
-  romos::Module *testModule = romos::TestModuleBuilder::createTestFilter1("TestFilter1", 0, 0, false);
+  romos::Module *testModule = rsTestRomos::TestModuleBuilder::createTestFilter1("TestFilter1", 0, 0, false);
 
-  rosic::rsString codeForModule = romos::ModuleBuildCodeGenerator::getCodeForModule(testModule);
+  rosic::rsString codeForModule = rsTestRomos::ModuleBuildCodeGenerator::getCodeForModule(testModule);
   codeForModule.printToStandardOutput();
   romos::moduleFactory.deleteModule(testModule);
 }
 
 void runModularInteractiveTests()
 {
-  romos::InteractiveTestRunner testRunner;
+  rsTestRomos::InteractiveTestRunner testRunner;
   testRunner.runTests();
 
 
