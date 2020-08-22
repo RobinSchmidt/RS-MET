@@ -814,9 +814,13 @@ T rsInterpolateCubicHermite(T x1, T x2, T x3, T x4, T y1, T y2, T y3, T y4, T x)
 
 void chebyRoots(double* r, int N)
 {
-
+  for(int i = 0; i < N; i++) {
+    int k = i+1;
+    r[i] = cos( (2*k-1)*PI / (2*N) ); }
 }
 // implement also chebyExtrema, move to rsPolynomial
+// Roots:    x_k = cos( (2k-1)*pi/(2n) ), k = 1,..,n
+// Extrema:  x_k = cos( k*pi/n ),         k = 0,..,n
 
 // todo: interpolate the function f(x) = 1 / (1 + x^2) with a single high order polynomial with the
 // goal to show Runge's phenomenon - also use nonequidistant sample points (especially the roots of
@@ -829,30 +833,40 @@ void chebychevInterpolant()
   double xMin = -5.0;
   double xMax = +5.0;
 
-  double x1[N], y1[N], x2[N], y2[2];
-
   using AT   = rsArrayTools;
   using Poly = rsPolynomial<double>;
   using Vec  = std::vector<double>;
+
+  double x1[N], y1[N], x2[N], y2[N];
+  double a1[N], a2[N], wrk[N];
+
+  Vec xi(M), yi1(M), yi2(M), yt(M);
+  AT::fillWithRangeLinear(&xi[0], M, xMin, xMax);
+  for(int i = 0; i < M; i++)
+    yt[i] = 1 / (1 + xi[i]*xi[i]);
 
   // create interpolant from equidistant data:
   AT::fillWithRangeLinear(x1, N, xMin, xMax);
   for(int i = 0; i < N; i++)
     y1[i] = 1 / (1 + x1[i]*x1[i]); // f(x) = 1 / (1 + x^2)
-  double a1[N], wrk[N];
   Poly::interpolantViaNewton(a1, x1, y1, N, wrk);
-  Vec xi(M), yi1(M);
-  AT::fillWithRangeLinear(&xi[0], M, xMin, xMax);
   for(int i = 0; i < M; i++)
-    yi1[i] = Poly::evaluate(xi[i], a1, N-1);
+    yi1[i] = Poly::evaluate(xi[i], a1, N);
 
-  // todo: create non-equidistant sample points at (suitably scaled and shifted) roots of 
-  // Chebychev polynomials and interpolate those - this should avoid Runge's phenomenon
+  // create non-equidistant sample points at (suitably scaled and shifted) roots of 
+  // Chebychev polynomials and interpolate those - this should avoid Runge's phenomenon:
+  chebyRoots(x2, N);
+  AT::transformRange(x2, x2, N, xMin, xMax);
+  for(int i = 0; i < N; i++)
+    y2[i] = 1 / (1 + x2[i]*x2[i]);
+  Poly::interpolantViaNewton(a2, x2, y2, N, wrk);
+  for(int i = 0; i < M; i++)
+    yi2[i] = Poly::evaluate(xi[i], a2, N);
 
+  rsPlotVectorsXY(xi, yt, yi1, yi2);  
+  // yi1 shows clearly Runge's phenomenon, yi2 is a lot better but still not really great. However,
+  // yi2 gets better with more datapoints whereas yi1 gets worse. Compare N=5, N=11, N=17
 
-  rsPlotVectorsXY(xi, yi1);  // shows clearly Runge's phenomenon
-
-  //rsPlotArraysXY(N, x1, y1);
 }
 
 

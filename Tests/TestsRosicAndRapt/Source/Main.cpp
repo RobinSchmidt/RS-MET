@@ -242,7 +242,7 @@ int main(int argc, char* argv[])
   //sineParameters();
   //bandLimitedStep();
 
-  chebychevInterpolant();
+  chebychevInterpolant();  // under construction
   //naturalCubicSpline();
   //naturalCubicSpline2();
   //cubicInterpolationNonEquidistant();   // move to unit tests
