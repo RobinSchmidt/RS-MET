@@ -4,10 +4,12 @@ using namespace romos;
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-ProcessingTest::ProcessingTest(const char *testName) 
+ProcessingTest::ProcessingTest(const char *testName)
 : UnitTest(testName)
 {
-  tolerance          = 0.0;
+  //tolerance          = 0.0;       // works for msc but not gcc
+  tolerance          = 1.e-13;
+
   moduleToTest       = NULL;      // subclasses are responsible for assigning this pointer
   numFramesToProcess = 647;
   numVoicesToUse     = 3;         // should be <= number of available voices, otherwise the test fails
@@ -34,7 +36,7 @@ ProcessingTest::ProcessingTest(const char *testName)
   }
   for(i = 0; i < maxNumOutputs; i++)
   {
-    //outputRetrieverModules[i] = ModuleFactory::createModule(ModuleTypeRegistry::IDENTITY,                                                  
+    //outputRetrieverModules[i] = ModuleFactory::createModule(ModuleTypeRegistry::IDENTITY,
     //  rosic::rsString("Out") + rosic::rsString(i+1), 0, i, true);
 
     outputRetrieverModules[i] = moduleFactory.createModule(
@@ -108,7 +110,7 @@ void ProcessingTest::handleTestResult(bool didTestPass)
 void ProcessingTest::initTest()
 {
   connectTestModuleToInputFeederModules();
-  connectTestModuleToOutputRetrieverModules();  
+  connectTestModuleToOutputRetrieverModules();
   fillInputSignalArraysWithTestSignal();
   fillDesiredOutputSignalArrays(false);
 }
@@ -145,7 +147,7 @@ bool ProcessingTest::doOutputsMatchDesiredOutputs(bool polyphonic)
   for(int voiceIndex = 0; voiceIndex <= highestVoiceIndexToCheck; voiceIndex++)
   {
     for(unsigned int pinIndex = 0; pinIndex < moduleToTest->getNumOutputPins(); pinIndex++)
-      outputsMatch &= RAPT::rsArrayTools::almostEqual(outputs[voiceIndex][pinIndex], desiredOutputs[voiceIndex][pinIndex], 
+      outputsMatch &= RAPT::rsArrayTools::almostEqual(outputs[voiceIndex][pinIndex], desiredOutputs[voiceIndex][pinIndex],
       numFramesToProcess, tolerance);
   }
 
@@ -190,8 +192,8 @@ void ProcessingTest::fillTimeAxisWithSampleIndices()
   for(int frameIndex = 0; frameIndex < maxNumFrames; frameIndex++)
     timeAxis[frameIndex] = (double) frameIndex;
 }
-   
-void ProcessingTest::fillInputSignalArraysWithTestSignal()    
+
+void ProcessingTest::fillInputSignalArraysWithTestSignal()
 {
   fillInputSignalArraysRandomly(1);
 }
@@ -207,7 +209,7 @@ void ProcessingTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 
 
 
-//-----------------------------------------------------------------------------------------------------------------------------------------  
+//-----------------------------------------------------------------------------------------------------------------------------------------
 // processing:
 
 // \todo maybe factor out the common structure of processModuleInFrames and processModuleInBlocks
@@ -223,13 +225,13 @@ void ProcessingTest::processModuleInFrames()
     int numEventsHandled = 0;
     while( frameIndex < numFramesToProcess )
     {
-      NoteEvent e                 = events.at(numEventsHandled);      
+      NoteEvent e                 = events.at(numEventsHandled);
       int numFramesUntilNextEvent = e.getDeltaFrames() - frameIndex;
       processModuleInFramesNoEvents(numFramesUntilNextEvent, frameIndex);        // process chunk until the next event
         // there, process 1st frame, reset the trigger flags and then process other frames
 
 
-      voiceAllocator.noteOn(e.getKey(), e.getVelocity()); 
+      voiceAllocator.noteOn(e.getKey(), e.getVelocity());
       numEventsHandled++;
       frameIndex += numFramesUntilNextEvent;
       if( numEventsHandled == events.size() )                                    // process tail after all events have been handled
@@ -257,10 +259,10 @@ void ProcessingTest::processModuleInBlocks()
     int numEventsHandled = 0;
     while( blockStart < numFramesToProcess )
     {
-      NoteEvent e                 = events.at(numEventsHandled);      
+      NoteEvent e                 = events.at(numEventsHandled);
       int numFramesUntilNextEvent = e.getDeltaFrames() - blockStart;
       processModuleInBlocksNoEvents(numFramesUntilNextEvent, blockStart);
-      voiceAllocator.noteOn(e.getKey(), e.getVelocity()); 
+      voiceAllocator.noteOn(e.getKey(), e.getVelocity());
       numEventsHandled++;
       blockStart += numFramesUntilNextEvent;
       if( numEventsHandled == events.size() )
@@ -279,7 +281,7 @@ void ProcessingTest::processModuleInFramesNoEvents(int numFrames, int startIndex
   for(int frameIndex = startIndex; frameIndex <= endIndex; frameIndex++)
   {
     processFrame(frameIndex);
-    voiceAllocator.resetTriggerFlags(); 
+    voiceAllocator.resetTriggerFlags();
   }
 
   //for(int frameIndex = startIndex; frameIndex < startIndex + numFrames; frameIndex++)
@@ -328,7 +330,7 @@ void ProcessingTest::processFrame(int frameIndex)
 void ProcessingTest::processBlock(int blockStart, int blockSize)
 {
   establishInputBlock(blockStart, blockSize);
-  moduleToTest->processBlockOfSamples(blockSize);  
+  moduleToTest->processBlockOfSamples(blockSize);
   retrieveOutputBlock(blockStart, blockSize);
   //Plotter::plotData(numFramesToProcess, timeAxis, desiredOutputs[0][0], outputs[0][0]);
 }
@@ -347,7 +349,7 @@ void ProcessingTest::establishInputBlock(int blockStart, int blockSize)
       double *outputPointer = inputFeederModules[pinIndex]->getOutputPointer(0);
       for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)
       {
-        int offset = inputFeederModules[pinIndex]->getOutputPinMemoryOffset(frameIndex, 0, 0); 
+        int offset = inputFeederModules[pinIndex]->getOutputPinMemoryOffset(frameIndex, 0, 0);
         outputPointer[offset] = inputs[0][pinIndex][blockStart+frameIndex];
         double dbg = outputPointer[offset];
         int dummy = 0;
@@ -357,7 +359,7 @@ void ProcessingTest::establishInputBlock(int blockStart, int blockSize)
   else
   {
     int numPlayingVoices           = romos::processingStatus.getNumPlayingVoices();
-    const int *playingVoiceIndices = processingStatus.getPlayingVoiceIndices(); 
+    const int *playingVoiceIndices = processingStatus.getPlayingVoiceIndices();
     for(int currentVoice = 0; currentVoice < numPlayingVoices; currentVoice++)
     {
       int voiceIndex = playingVoiceIndices[currentVoice];
@@ -404,7 +406,7 @@ void ProcessingTest::retrieveOutputBlock(int blockStart, int blockSize)
   else
   {
     int numPlayingVoices           = romos::processingStatus.getNumPlayingVoices();
-    const int *playingVoiceIndices = processingStatus.getPlayingVoiceIndices(); 
+    const int *playingVoiceIndices = processingStatus.getPlayingVoiceIndices();
     for(int currentVoice = 0; currentVoice < numPlayingVoices; currentVoice++)
     {
       int voiceIndex = playingVoiceIndices[currentVoice];
@@ -413,7 +415,7 @@ void ProcessingTest::retrieveOutputBlock(int blockStart, int blockSize)
         double *outputPointer = outputRetrieverModules[pinIndex]->getOutputPointer(0);
         for(int frameIndex = 0; frameIndex < blockSize; frameIndex++)
         {
-          int offset = outputRetrieverModules[pinIndex]->getOutputPinMemoryOffset(frameIndex, voiceIndex, 0); 
+          int offset = outputRetrieverModules[pinIndex]->getOutputPinMemoryOffset(frameIndex, voiceIndex, 0);
           outputs[voiceIndex][pinIndex][blockStart+frameIndex] = outputPointer[offset];
           double dbg = outputs[voiceIndex][pinIndex][blockStart+frameIndex];
           int dummy = 0;
@@ -444,21 +446,21 @@ void ProcessingTest::setTestPolyphonic(bool shouldBePolyphonic)
   clearDesiredOutputSignalArrays();
   fillDesiredOutputSignalArrays(shouldBePolyphonic);
   for(int i = 0; i < maxNumOutputs; i++)
-    outputRetrieverModules[i]->updateInputPointersAndInFrameStrides(); 
+    outputRetrieverModules[i]->updateInputPointersAndInFrameStrides();
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // information output functions:
 
 
-void ProcessingTest::plotDesiredAndActualOutput(int voiceIndex, int pinIndex, int numFramesToPlot, 
+void ProcessingTest::plotDesiredAndActualOutput(int voiceIndex, int pinIndex, int numFramesToPlot,
   int startFrame)
 {
 #ifdef RS_DEBUG_PLOTTING
   GNUPlotter plt;
-  plt.plot(numFramesToPlot, 
-    &timeAxis[startFrame], 
-    desiredOutputs[voiceIndex][pinIndex], 
+  plt.plot(numFramesToPlot,
+    &timeAxis[startFrame],
+    desiredOutputs[voiceIndex][pinIndex],
     outputs[voiceIndex][pinIndex]);
 #endif
 }

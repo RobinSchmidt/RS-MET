@@ -549,7 +549,7 @@ int main(int argc, char* argv[])
   testRosicNonRealTime();
   testRosicOthers();
   testAllRosicClasses();
-  // hmm...maybe of those are actually not unit tests but experiments - disentangle that...
+  // hmm...maybe some of those are actually not unit tests but experiments - disentangle that...
   */
 
   //-----------------------------------------------------------------------------------------------
@@ -607,7 +607,7 @@ int main(int argc, char* argv[])
   //===============================================================================================
   // Modular:
 
-  //runModularUnitTests();
+  runModularUnitTests();
   //runModularPerformanceTests(true);  // produces a memleak
   //testModularCodeGenerator();
   //runModularInteractiveTests();  // triggers assert due to plotting code

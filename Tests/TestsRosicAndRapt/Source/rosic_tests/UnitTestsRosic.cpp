@@ -30,9 +30,7 @@ bool runUnitTestsRosic()
   std::cout << "Running unit tests for rosic\n";
 
   passed &= runUnitTest(&testTypeSizes,          "TypeSizes");
-  passed &= runUnitTest(&testExponentExtraction, "ExponentExtraction"); // is part of numberManipulations
-  passed &= runUnitTest(&testNumberManipulations,"NumberManipulations"); // fails due to rounding -> figure out
-
+  passed &= runUnitTest(&testNumberManipulations,"NumberManipulations");
 
   passed &= runUnitTest(&testFilterPolynomials,  "FilterPolynomials");
   passed &= runUnitTest(&testHighOrderFilter,    "HighOrderFilter");

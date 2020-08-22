@@ -7,6 +7,9 @@
 bool runModularUnitTests()
 {
   romos::UnitTestRunner testRunner;
+
+  printf("%s", "Running unit tests for romos...\n");
+
   bool testsPassed = testRunner.runAllTestsAndPrintResultsToConsole();
 
   if( testsPassed == false )

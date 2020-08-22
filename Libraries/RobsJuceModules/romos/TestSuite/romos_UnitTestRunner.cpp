@@ -12,7 +12,7 @@ bool UnitTestRunner::runAllTestsAndPrintResultsToConsole()
 
   result &= runMiscTests();
   result &= runGlobalFrameworkTests();
-  result &= runProcessingTests();  // causes memleak
+  result &= runProcessingTests();  // causes memleak, fails with gcc
   result &= runContainerManipulationTests();
   result &= runSystemTests();
 
@@ -21,11 +21,11 @@ bool UnitTestRunner::runAllTestsAndPrintResultsToConsole()
 
 bool UnitTestRunner::runGlobalFrameworkTests()
 {
-  const char *testName = "GlobalFrameworkTests"; 
+  const char *testName = "GlobalFrameworkTests";
   printf("%s %s", testName, ":\n");
 
-  UnitTest *test; 
-  bool testsPassed = true; 
+  UnitTest *test;
+  bool testsPassed = true;
 
   test = new TopLevelModuleTest();  testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new VoiceAllocatorTest();  testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
@@ -38,11 +38,11 @@ bool UnitTestRunner::runGlobalFrameworkTests()
 
 bool UnitTestRunner::runProcessingTests()
 {
-  const char *testName = "ProcessingTests"; 
+  const char *testName = "ProcessingTests";
   printf("%s %s", testName, ":\n");
 
-  UnitTest *test; 
-  bool testsPassed = true; 
+  UnitTest *test;
+  bool testsPassed = true;
 
   test = new Formula_N_1Test();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
 
@@ -53,7 +53,7 @@ bool UnitTestRunner::runProcessingTests()
   test = new Adder5Test();                     testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new SubtractorTest();                 testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new UnitDelayTest();                  testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
-  test = new NoiseGeneratorTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test;  
+  test = new NoiseGeneratorTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new WrappedAdderTest();               testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new SumDiffProdTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new WrappedSumDiffProdTest();         testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
@@ -65,13 +65,13 @@ bool UnitTestRunner::runProcessingTests()
   test = new LeakyIntegratorDoubleDelayTest(); testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new TestFilter1Test();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new BiquadMacroTest();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
-  test = new BiquadAtomicTest();               testsPassed &= test->runTestAndPrintResultToConsole(); delete test; 
-  test = new BiquadFormulaTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test; 
+  test = new BiquadAtomicTest();               testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
+  test = new BiquadFormulaTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new BlipTest();                       testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new MonoToPolyTest();                 testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new VoiceCombinerTest();              testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new Formula1In1OutTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
-  
+
   //test = new PolyBlipStereoTest();             testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   //test = new GateAndKillTest();  testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
 
@@ -81,11 +81,11 @@ bool UnitTestRunner::runProcessingTests()
 
 bool UnitTestRunner::runContainerManipulationTests()
 {
-  const char *testName = "ContainerManipulationTests"; 
+  const char *testName = "ContainerManipulationTests";
   printf("%s %s", testName, ":\n");
 
-  UnitTest *test; 
-  bool testsPassed = true; 
+  UnitTest *test;
+  bool testsPassed = true;
 
 
   test = new Containerize01();                     testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
@@ -98,15 +98,15 @@ bool UnitTestRunner::runContainerManipulationTests()
   printTestResultToConsole(testsPassed, testName);
   return testsPassed;
 }
- 
-    
+
+
 bool UnitTestRunner::runSystemTests()
 {
-  const char *testName = "SystemTests"; 
+  const char *testName = "SystemTests";
   printf("%s %s", testName, ":\n");
 
-  UnitTest *test; 
-  bool testsPassed = true; 
+  UnitTest *test;
+  bool testsPassed = true;
 
   test = new BypassTest();          testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
   test = new BypassWithChildTest(); testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
@@ -119,8 +119,8 @@ bool UnitTestRunner::runSystemTests()
 
 bool UnitTestRunner::runMiscTests()
 {
-  bool testsPassed = true; 
-  const char *testName = "MiscTests"; 
+  bool testsPassed = true;
+  const char *testName = "MiscTests";
   printf("%s %s", testName, ":\n");
 
   testsPassed &= testFormulaModules();
