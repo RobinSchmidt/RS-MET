@@ -706,12 +706,15 @@ public:
 
   T readOutputWithOneMoreInput(T xL)
   {
-    T p1 = this->p * T(this->L) / T(this->L-1); 
+    //T p1 = this->p * T(this->L) / T(this->L-1); 
     // but wait - p is an integer - should we use p+w or p+(1-w)?
 
-    T w1 = p1 - floor(p1);
+    T w1; // = p1 - floor(p1);
     T yS, yL; // hmm...yL means yLarge but xL means x[n-L] - notational clash!
     struct Base::Node nx(xL, 0); // we need to create a node
+
+    int p1;
+    lengthAndQuantileToPositionAndWeight(8, 0.5, &p1, &w1); // preliminary
 
     if(this->dblHp.small.isLess(nx, this->dblHp.large[0]))  // means: if(x < large[0])
     {

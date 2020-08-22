@@ -550,5 +550,10 @@ bool movingQuantileUnitTest()
   r &= testQuantileComputation(8, 7, 1.0,  1.0);  // minimum
   // the weights for the quartiles seem counterintuitive...hmmm
 
+  int p; 
+  double w;
+  flt.lengthAndQuantileToPositionAndWeight(8, 0.25, &p, &w);
+  //rsQuantileFilterCore<double>::lengthAndQuantileToPositionAndWeight(8, 0.25, &p, &w);
+
   return r;
 }

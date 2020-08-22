@@ -119,6 +119,19 @@ public:
   void reset();
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Misc */
+
+  static void lengthAndQuantileToPositionAndWeight(int L, T q, int* p, T* w)
+  {
+    T P = q * (L-1);            // non-integer read position
+    *w  = P - floor(P);         // weight for value right to P
+    *p  = (int)floor(P) + 1;    // +1 because p is actually the value to the right of P
+    if(*p > L-1) {              // quantile == 1 (maximum) needs special care
+      *p = L-1; *w = T(1);  }
+  }
+  // i get linker errors when trying moving this into the cpp file -> fix this
+
 protected:
 
   //-----------------------------------------------------------------------------------------------

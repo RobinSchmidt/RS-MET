@@ -28,6 +28,20 @@ void rsQuantileFilterCore<T>::reset()
   bufIdx = 0;
 }
 
+/*
+template<class T>
+void rsQuantileFilterCore<T>::lengthAndQuantileToPositionAndWeight(int L, T q, int* p, T* w)
+{
+  T P = q * (L-1);            // non-integer read position
+  *w  = P - floor(P);         // weight for value right to P
+  *p  = floor(P) + 1;         // +1 because p is actually the value to the right of P
+  if(*p > L-1) {              // quantile == 1 (maximum) needs special care
+    *p = L-1; *w = T(1);  }
+}
+*/
+// needs test
+// todo: optimize - don't call floor twice
+
 template<class T>
 void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
 {

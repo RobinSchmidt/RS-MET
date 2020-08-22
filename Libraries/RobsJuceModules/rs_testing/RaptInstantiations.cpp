@@ -427,7 +427,7 @@ template class RAPT::rsDirectFormFilter<float, float>;
 template class RAPT::rsEllipticSubBandFilter<float, float>;
 template class RAPT::rsEllipticSubBandFilterDirectForm<float, float>;
 template class RAPT::rsQuadratureNetwork<float, float>;
-
+//template class RAPT::rsQuantileFilter<double>;
 template void RAPT::rsBiDirectionalFilter::applyLowpass(
   const double *x, double *y, int N, double fc, double fs, int numPasses, double gc);
 
