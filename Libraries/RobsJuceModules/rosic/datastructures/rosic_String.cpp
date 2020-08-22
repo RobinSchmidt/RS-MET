@@ -435,7 +435,7 @@ std::vector<std::string> rosic::tokenize(const std::string& str, const char spli
 {
   std::vector<std::string> result;
   int start = 0;
-  while(start < str.size()) {
+  while(start < (int)str.size()) {
 
     int delta = findIndexOf(&str[start], splitChar, (int)str.size()-start);
     // use http://www.cplusplus.com/reference/string/string/find/

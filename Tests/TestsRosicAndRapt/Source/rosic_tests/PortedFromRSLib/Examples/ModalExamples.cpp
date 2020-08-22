@@ -125,7 +125,7 @@ double combAmplitude(double frequency, double notchDistance, double notchOffset 
 std::vector<double> applyCombWeighting(std::vector<double> v, std::vector<double> f, 
   double notchDistance, double notchOffset = 0, double ampFloor = 0, double shape = 1)
 {
-  for(int i = 0; i < f.size(); i++)
+  for(size_t i = 0; i < f.size(); i++)
     v[i] = v[i] * combAmplitude(f[i], notchDistance, notchOffset, ampFloor, shape);
   return v;
 }

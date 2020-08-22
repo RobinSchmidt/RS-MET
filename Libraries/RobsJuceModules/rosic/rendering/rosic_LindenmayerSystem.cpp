@@ -23,7 +23,7 @@ std::string LindenmayerSystem::apply(char c)
 std::string LindenmayerSystem::apply(const std::string& s)
 {
   std::string r; // result
-  for(int i = 0; i < s.length(); i++)
+  for(size_t i = 0; i < s.length(); i++)
     r += apply(s[i]);
   return r;
 }

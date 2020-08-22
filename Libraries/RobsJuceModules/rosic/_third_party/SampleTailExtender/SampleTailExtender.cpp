@@ -74,7 +74,7 @@ std::vector<double> SampleTailExtender::extendSample (std::vector<double> inputS
                 applyHarmonicBeatingToSinusoid (sinusoid, sampleRate, beatingStrength * harmonicAnalyser.beatingAmount[h], harmonicAnalyser.beatingFrequency[h]);
             }
             
-            for (int i = 0; i < synthesisedSignal.size(); i++)
+            for (size_t i = 0; i < synthesisedSignal.size(); i++)
             {
                 synthesisedSignal[i] += sinusoid[i] * (decayEnvelope[i] * mag);
             }
@@ -87,11 +87,11 @@ std::vector<double> SampleTailExtender::extendSample (std::vector<double> inputS
     // synthesise new signal
     std::vector<double> outputSignal (synthesisStartPointInSamples, 0);
     
-    for (int i = 0; i < outputSignal.size(); i++)
+    for (size_t i = 0; i < outputSignal.size(); i++)
         outputSignal[i] = inputSignal[i];
 
     // do crossfade
-    for (int i = 0; i < crossfadeLength; i++)
+    for (size_t i = 0; i < crossfadeLength; i++)
     {
         double alpha = (double)i / (double)crossfadeLength;
         double fadeInEnvelope = cos ( (1. - alpha) * M_PI) * 0.5 + 0.5;
@@ -104,7 +104,7 @@ std::vector<double> SampleTailExtender::extendSample (std::vector<double> inputS
     }
 
     // add synthesised signal to the end
-    for (int i = crossfadeLength; i < synthesisedSignal.size(); i++)
+    for (size_t i = crossfadeLength; i < synthesisedSignal.size(); i++)
         outputSignal.push_back (synthesisedSignal[i]);
     
     return outputSignal;
@@ -270,7 +270,7 @@ void SampleTailExtender::setSignalToZeroBelowThreshold (std::vector<double>& sig
     int thresholdPoint = -1;
     int blockSize = 4096;
     
-    for (int i = 0; i < signal.size() - blockSize; i += blockSize)
+    for (size_t i = 0; i < signal.size() - blockSize; i += blockSize)
     {
         double peakEnergy = 0.;
         for (int j = 0; j < blockSize; j++)
@@ -290,7 +290,7 @@ void SampleTailExtender::setSignalToZeroBelowThreshold (std::vector<double>& sig
     
     if (thresholdPoint != -1)
     {
-        for (int i = thresholdPoint; i < signal.size(); i++)
+        for (size_t i = thresholdPoint; i < signal.size(); i++)
         {
             int j = i - thresholdPoint;
             

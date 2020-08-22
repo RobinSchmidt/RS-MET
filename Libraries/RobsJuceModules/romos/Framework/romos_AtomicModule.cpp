@@ -41,7 +41,7 @@ void AtomicModule::initInputPins(int numberOfPins, const char*, ...)
 */
 void AtomicModule::initInputPins(const std::vector<std::string>& pinNames)
 {
-  for(int i = 0; i < pinNames.size(); i++)
+  for(size_t i = 0; i < pinNames.size(); i++)
   {
     rosic::appendElement(audioInputNames, rosic::rsString(pinNames[i]));
     rosic::appendElement(inputPins,       AudioInputPinData());
@@ -61,7 +61,7 @@ void AtomicModule::initOutputPins(int numberOfPins, const char*, ...)
 */
 void AtomicModule::initOutputPins(const std::vector<std::string>& pinNames)
 {
-  for(int i = 0; i < pinNames.size(); i++)
+  for(size_t i = 0; i < pinNames.size(); i++)
     rosic::appendElement(audioOutputNames, rosic::rsString(pinNames[i]));
   outFrameStride += (int) pinNames.size();
 }

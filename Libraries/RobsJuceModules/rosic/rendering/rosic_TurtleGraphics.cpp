@@ -99,7 +99,7 @@ void TurtleGraphics::translate(const std::string& str,
   vy.push_back(getY()); 
 
   // loop through the string and add vertices as needed:
-  for(int i = 0; i < str.size(); i++) {
+  for(size_t i = 0; i < str.size(); i++) {
     if(interpretCharacter(str[i])) {
       vx.push_back(getX()); 
       vy.push_back(getY()); 
@@ -155,7 +155,7 @@ bool TurtleGraphics::interpretCharacter(char c)
 std::string TurtleGraphics::extractCommands(const std::string& s)
 {
   std::string tmp;
-  for(int i = 0; i < s.size(); i++)
+  for(size_t i = 0; i < s.size(); i++)
     if(isCommand(s[i])) tmp += s[i];
   return tmp;
 }
@@ -173,7 +173,7 @@ bool TurtleGraphics::isLineCommand(char c)
 int TurtleGraphics::getNumberOfLines(const std::string& s)
 {
   int n = 0;
-  for(int i = 0; i < s.size(); i++)
+  for(size_t i = 0; i < s.size(); i++)
     if(isLineCommand(s[i])) n++;
     //if(s[i] == 'F' || s[i] == 'G') n++;
   return n;

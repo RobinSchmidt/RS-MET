@@ -63,7 +63,7 @@ void FFT::performFFT (std::vector<double> audioFrame)
     }
 
     // calculate magnitude and phase
-    for (int i = 0; i < magnitude.size(); i++)
+    for (size_t i = 0; i < magnitude.size(); i++)
     {
         magnitude[i] = sqrt ((real[i] * real[i]) + (imag[i] * imag[i]));
         phase[i] = atan2 (imag[i], real[i]);

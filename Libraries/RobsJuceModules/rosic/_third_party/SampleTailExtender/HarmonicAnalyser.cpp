@@ -38,7 +38,7 @@ void HarmonicAnalyser::analyseHarmonics (std::vector<double>& audioSignal, doubl
         const std::vector<double>& magnitude = fft.getMagnitude();
         
         // store the harmonic energy for the given frame
-        for (int j = 0; j < harmonics.size(); j++)
+        for (size_t j = 0; j < harmonics.size(); j++)
             harmonicAmplitudeProfiles[j].push_back (magnitude[harmonics[j]]);
         
         i += hopSize;
@@ -58,7 +58,7 @@ std::vector<int> HarmonicAnalyser::getIndicesOfMajorHarmonics (std::vector<doubl
 
     std::vector<double> magnitudeSpectrum = fft.getMagnitude();
     
-    for (int i = 0; i < magnitudeSpectrum.size(); i++)
+    for (size_t i = 0; i < magnitudeSpectrum.size(); i++)
         magnitudeSpectrum[i] = magnitudeSpectrum[i] / ((double)audioFrameSize / 2.);
     
     double decibelThreshold = -60.;
@@ -66,7 +66,7 @@ std::vector<int> HarmonicAnalyser::getIndicesOfMajorHarmonics (std::vector<doubl
     
     std::vector<int> harmonics;
     
-    for (int i = 2; i < (magnitudeSpectrum.size() / 2) - 2; i++)
+    for (size_t i = 2; i < (magnitudeSpectrum.size() / 2) - 2; i++)
     {
         bool condition1 = magnitudeSpectrum[i] > magnitudeSpectrum[i - 1];
         bool condition2 = magnitudeSpectrum[i] > magnitudeSpectrum[i - 2];
@@ -84,7 +84,7 @@ std::vector<int> HarmonicAnalyser::getIndicesOfMajorHarmonics (std::vector<doubl
 //=================================================================================
 void HarmonicAnalyser::resetHarmonicAmplitudeProfiles()
 {
-    for (int i = 0; i < harmonicAmplitudeProfiles.size(); i++)
+    for (size_t i = 0; i < harmonicAmplitudeProfiles.size(); i++)
         harmonicAmplitudeProfiles[i].clear();
     
     harmonicAmplitudeProfiles.clear();
@@ -99,7 +99,7 @@ void HarmonicAnalyser::analyseBeating (int audioFrameSize, int hopSize, double s
     beatingFrequency.resize (audioFrameSize);
     std::fill (beatingFrequency.begin(), beatingFrequency.end(), 0.);
     
-    for (int h = 0; h < harmonics.size(); h++)
+    for (size_t h = 0; h < harmonics.size(); h++)
     {
         double frequencyOfBeating;
         double amountOfBeating;
@@ -112,7 +112,7 @@ void HarmonicAnalyser::analyseBeating (int audioFrameSize, int hopSize, double s
         int positiveChangeCount = 0;
         
         // calculate the difference and count how many instances have positive change
-        for (int i = 1; i < harmonicAmplitudeProfiles[h].size(); i++)
+        for (size_t i = 1; i < harmonicAmplitudeProfiles[h].size(); i++)
         {
             double difference = harmonicAmplitudeProfiles[h][i] - harmonicAmplitudeProfiles[h][i - 1];
             
@@ -128,13 +128,13 @@ void HarmonicAnalyser::analyseBeating (int audioFrameSize, int hopSize, double s
         std::vector<double> flattenedHarmonicAmplitudeCurve;
         
         // apply some flattening to the curve before measuring peaks (we don't want the downwards trend to make some peaks unrecognised)
-        for (int i = 0; i < harmonicAmplitudeProfiles[h].size(); i++)
+        for (size_t i = 0; i < harmonicAmplitudeProfiles[h].size(); i++)
             flattenedHarmonicAmplitudeCurve.push_back (harmonicAmplitudeProfiles[h][i] * (1. + 0.01 * static_cast<double> (i)));
         
         std::vector<int> peakArray;
         peakArray.push_back (0); // consider first sample a peak
         
-        for (int i = 2; i < flattenedHarmonicAmplitudeCurve.size() - 2; i++)
+        for (size_t i = 2; i < flattenedHarmonicAmplitudeCurve.size() - 2; i++)
         {
             bool condition1 = flattenedHarmonicAmplitudeCurve[i] > flattenedHarmonicAmplitudeCurve[i - 1];
             bool condition2 = flattenedHarmonicAmplitudeCurve[i] > flattenedHarmonicAmplitudeCurve[i - 2];
@@ -152,7 +152,7 @@ void HarmonicAnalyser::analyseBeating (int audioFrameSize, int hopSize, double s
         {
             double sumVal = 0.;
             
-            for (int k = 1; k < peakArray.size(); k++)
+            for (size_t k = 1; k < peakArray.size(); k++)
                 sumVal += (peakArray[k] - peakArray[k - 1]);
             
             double meanDifference = sumVal / static_cast<double> (peakArray.size());

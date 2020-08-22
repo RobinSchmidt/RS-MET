@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
   // Unit tests:
   bool passed = true;
   passed &= runUnitTestsRapt();
-  passed &= runUnitTestsRosic();
+  passed &= runUnitTestsRosic();  // some tests there are still commendted out
   //passed = passed;  // dummy
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
@@ -535,22 +535,6 @@ int main(int argc, char* argv[])
   //===============================================================================================
   // RoSiC tests:
 
-  //-----------------------------------------------------------------------------------------------
-  // Unit tests - tese need to be adapted: 
-  /*
-  testRosicAnalysis();
-  testRosicBasics();
-  testRosicFile();
-  testRosicEffects();
-  testRosicGenerators();
-  testRosicFilter();
-  testRosicNumerical();
-  testRosicMath();
-  testRosicNonRealTime();
-  testRosicOthers();
-  testAllRosicClasses();
-  // hmm...maybe some of those are actually not unit tests but experiments - disentangle that...
-  */
 
   //-----------------------------------------------------------------------------------------------
   // Experiments:

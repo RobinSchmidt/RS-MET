@@ -474,7 +474,7 @@ TPar rsModalFilterBank<TSig, TPar>::getLength(TPar decayLevel)
 {
   TPar max = 0.0;
   TPar tmp;
-  for(int m = 0; m < decayTimes.size(); m++)
+  for(size_t m = 0; m < decayTimes.size(); m++)
   {
     tmp = modalFilters[m].getLength(decayLevel, sampleRate);
     if( tmp > max )
@@ -511,7 +511,7 @@ void rsModalFilterBank<TSig, TPar>::calculateModalFilterCoefficients()
 {
   size_t nm = rsMin((size_t)numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
   nm = rsMin(nm, startPhases.size());
-  for(int m = 0; m < nm; m++)
+  for(size_t m = 0; m < nm; m++)
   {
     modalFilters[m].setModalParameters(
       referenceFrequency * frequencies[m], 
@@ -578,17 +578,17 @@ template<class TSig, class TPar>
 std::vector<TPar> rsModalFilterBank<TSig, TPar>::modeDecayTimes(std::vector<TPar> f, TPar fc, TPar p)
 {
   std::vector<TPar> d(f.size());
-  for(int n = 0; n < d.size(); n++)
+  for(size_t n = 0; n < d.size(); n++)
     d[n] = modeDecayTime(f[n], fc, p);
   return d;
 }
 
 template<class TSig, class TPar>
-std::vector<TPar> rsModalFilterBank<TSig, TPar>::scaleAtIntervals(std::vector<TPar> v,                 
+std::vector<TPar> rsModalFilterBank<TSig, TPar>::scaleAtIntervals(std::vector<TPar> v,
   int startIndex, int interval, TPar scaler)
 {
   std::vector<TPar> r = v;
-  for(int n = startIndex; n < r.size(); n += interval)
+  for(size_t n = startIndex; n < r.size(); n += interval)
     r[n] *= scaler;
   return r;
 }
