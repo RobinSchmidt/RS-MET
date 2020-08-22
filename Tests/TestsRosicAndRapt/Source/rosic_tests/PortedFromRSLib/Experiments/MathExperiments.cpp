@@ -189,7 +189,7 @@ void pentaDiagnonalMatrix()
   // the 2nd algo gives also a wrong result - but a different one - double-check everything!
   // psi[0] is wrong
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -197,7 +197,7 @@ void pentaDiagnonalMatrix2()
 {
   typedef std::vector<double> Vec;
 
-  int N = 9;
+  //int N = 9;
   Vec d = { 2,0,4,0,4,0,4,0,2 };
   Vec u = { 1,1,1,1,1,1,1,1   };
   Vec v = {-2,0,-2,0,-2,0,-2  };
@@ -230,7 +230,7 @@ void pentaDiagnonalMatrix2()
   // elminination solver for comparison - to figure out, if it's worth to implement pivoting for
   // freq-estimation
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 // for production code later use plain c-arrays..
@@ -440,7 +440,7 @@ void minSqrdDifsForFixSums()
   // one end would increase the error at the other in just the right way that the overall cost 
   // remains constant
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // Observations:
 
@@ -538,7 +538,7 @@ void minSqrdCurvForFixSums()
   rsPlotVectors(u, v, u-v);
   // they are not exactly the same, but very similar and their difference shows a clear alternating 
   // pattern
-  int dummy = 0;
+  //int dummy = 0;
 
   // maybe we should include an error term for the difference between first and last datapoint - 
   // that may work at least in case of odd N (then the function is odd and the ends are far apart
@@ -667,7 +667,7 @@ void sineParameters()
 
   w2 = rsSineFrequency(y0, y1, y2);
   rsSineAmplitudeAndPhase(y0, y1, w2, &A2, &p2);
-  int dummy = 0;
+  //int dummy = 0;
 
   /*
   // We also have:
@@ -1042,7 +1042,7 @@ void rationalInterpolation()
 
   // ....
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 // move to RAPT:
@@ -1409,7 +1409,7 @@ void numericDifferentiation()
 
     err[i] = fabs(t-a);                         // error
     logErr[i] = rsLog2(err[i]);
-    int dummy = 0;
+    //int dummy = 0;
   }
 
   double a, b;
@@ -1466,7 +1466,7 @@ void numericIntegration()
   I = integrateSimpson(    f, a, b);
 
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void nonUniformArrayDiffAndInt()
@@ -1921,7 +1921,7 @@ void monotonicPolynomials()
   // http://cran.r-project.org/web/packages/MonoPoly/MonoPoly.pdf
   // http://www.cse.ucla.edu/products/overheads/IMPS2013/Falk20130722.pdf
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void parametricBell()
@@ -2086,7 +2086,7 @@ void partialFractionExpansion()
 bool checkPartialFractionInputs(
   const RAPT::rsPolynomial<double>& B,
   const RAPT::rsPolynomial<double>& A,
-  const std::vector<double>& p,
+  const std::vector<double>& /*p*/,  // why is this not used?
   const std::vector<int>& m)
 {
   bool r = true;
@@ -2231,7 +2231,7 @@ void partialFractionExpansion2()
 
 
 
-  int dummy = 0; 
+  //int dummy = 0; 
 
   // todo: 
   // -move partialFractions/2 functions to Prototypes.h/cpp in rs_testing module
@@ -2320,7 +2320,7 @@ void partialFractionExpansion3()
 
   // ok - this seems to work - polyCoeffs come out as 7,-2,3 and pfeCoeffs as 3,-4,2,5,-3
   // todo: turn into unit test
-  int dummy = 0;  
+  //int dummy = 0;  
 }
 /*
 void partialFractionExpansion4()
@@ -2597,7 +2597,7 @@ void partialFractionExpansionQuadratic()
 
 
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -2764,7 +2764,7 @@ void dampedSineEnergy()
 
 void sineIntegral()
 {
-  double test = rsSineIntegral(3.0);
+  //double test = rsSineIntegral(3.0);
   double tMin = -20.0;
   double tMax = +20.0;
   static const int N = 1000;
@@ -2874,7 +2874,7 @@ void bernoulliNumbers()
   // Producing this array is O(nMax^3) - can we do better? Is this a Shlemiel the painter algo? Can
   // it be optimized to produce the array in a way that re-uses results from previous iterations?
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 // maybe move to unit tests
 
@@ -2950,7 +2950,7 @@ void sequenceSquareRoot()
   RAPT::rsArrayTools::convolve(r, N+1, r, N+1, R);  // R should match D
                                   // ...yes but only the 1st 3 values - which makes sense because
                                   // r has only 3 degrees of freedom - hmmm.....
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -3163,7 +3163,7 @@ void conicSystem()
   // completing the square can be applied to both equations (i'm actually not sure, if this really 
   // works out, it's just an idea).
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void logisticMapNoise()
@@ -3425,7 +3425,7 @@ void bigFloatErrors()
   // 77_8 = 72_10. convert that temporary value into an rsBigInt in the default base and return 
   // that value.
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void primeRecursion()
@@ -3803,7 +3803,7 @@ void primeSieveAtkin()
       if( x > y && n <= limit && n % 12 == 11 )
         isPrime[n] = !isPrime[n];
 
-      int dummy = 0;
+      //int dummy = 0;
     }
   }
 
@@ -3924,7 +3924,7 @@ void primeSieve()
         c[ib] = 0;
       }
     }
-    int dummy = 0;
+    //int dummy = 0;
   }
 
 
@@ -4054,7 +4054,7 @@ void primeSieve()
 
 
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 /*
 let's have a look at the prime-numbers with a prepended 1:
@@ -4173,7 +4173,7 @@ rsUint32 powModular(rsUint32 base, rsUint32 exponent, rsUint32 modulus)
     result = (result * base) % modulus;
   return result;
 }
-rsUint32 inverseElement(rsUint32 element, rsUint32 modulus)
+rsUint32 inverseElement(rsUint32 /*element*/, rsUint32 /*modulus*/)
 {
   // the inverse element is ensured to exist, when the modulus is prime. otherwise, it may or may 
   // not exist. if it doesn't, we return 0
@@ -4266,7 +4266,7 @@ void numberTheoreticTransform()
     inverseOrders[k] = powModular(orders[k], maxOrder-1, M);
   }
 
-  int dummy = 0;
+  //int dummy = 0;
 
   rsUint32 test = 1;
   for(i = 1; i <= 5; i++)

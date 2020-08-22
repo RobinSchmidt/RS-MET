@@ -1,16 +1,18 @@
 //#include "romos_ModuleTypeRegistry.h"
 using namespace romos;
 
-void ModuleTypeInfo::addInputPinInfo(const char* shortName, const char* fullName,
-  const char* description)
+void ModuleTypeInfo::addInputPinInfo(
+  const char* shortName, const char* fullName, const char* description)
 {
   inputShortNames.push_back(shortName);
   inputFullNames.push_back(fullName);
   inputDescriptions.push_back(description);
 }
+// rename parameters to shortPinName, fullPinName, pinDescription to fix 
+// "hides class member" warning
 
-void ModuleTypeInfo::addOutputPinInfo(const char* shortName, const char* fullName,
-  const char* description)
+void ModuleTypeInfo::addOutputPinInfo(
+  const char* shortName, const char* fullName, const char* description)
 {
   outputShortNames.push_back(shortName);
   outputFullNames.push_back(fullName);

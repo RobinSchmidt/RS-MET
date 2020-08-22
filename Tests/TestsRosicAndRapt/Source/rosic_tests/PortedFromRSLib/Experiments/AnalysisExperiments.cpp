@@ -105,7 +105,7 @@ void autoCorrelation()
   //plotData(50, t, buffer, acf);
   plotData(bufferSize, t, acf, uacf);
   //plotData(40, t, buffer, acf, sacf);
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 

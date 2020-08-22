@@ -158,7 +158,7 @@ int VoiceAllocator::getFirstFreeVoice()
   return -1;
 }
 
-int VoiceAllocator::getPlayingIndexToSteal(int key)
+int VoiceAllocator::getPlayingIndexToSteal(int /*key*/)
 {
   switch( stealingMode )
   {

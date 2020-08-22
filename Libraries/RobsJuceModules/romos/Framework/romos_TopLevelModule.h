@@ -50,8 +50,8 @@ public:
   }
 
   /** Overriden to avoid adding of audio outputs to the toplevel module. */
-  virtual Module* addAudioOutputModule(rosic::rsString name = rosic::rsString(), int x = 1, 
-    int y = 1,  bool /*sortModuleArrayAfterInsertion*/ = true)
+  virtual Module* addAudioOutputModule(rosic::rsString /*name*/ = rosic::rsString(), int /*x*/ = 1, 
+    int /*y*/ = 1,  bool /*sortModuleArrayAfterInsertion*/ = true)
   {
     return NULL;
   }

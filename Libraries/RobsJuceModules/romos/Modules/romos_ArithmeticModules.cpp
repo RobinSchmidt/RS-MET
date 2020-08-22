@@ -11,7 +11,7 @@ void ConstantModule::initialize()
   audioOutputs   = &value;
   outFrameStride = 0;
 }
-void ConstantModule::processMonoFrame(Module *module, int voiceIndex)
+void ConstantModule::processMonoFrame(Module* /*module*/, int /*voiceIndex*/)
 {
   // nothing to do - the constant sits just there in the output pin
 }
