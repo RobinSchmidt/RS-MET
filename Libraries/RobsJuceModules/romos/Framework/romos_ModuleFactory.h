@@ -1,8 +1,8 @@
 #ifndef romos_ModuleTypeRegistry_h
 #define romos_ModuleTypeRegistry_h
 
-namespace romos
-{
+//namespace romos
+//{
 
 /** A data structure to store information about the various available module types. Conatins also
 (pointer to) a factory function "createModule" that is supposed to be used to instantiate modules
@@ -234,6 +234,6 @@ UpSample, DownSample
 
 */
 
-}
+//}
 
 #endif

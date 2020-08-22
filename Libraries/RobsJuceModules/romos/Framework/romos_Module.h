@@ -1,8 +1,8 @@
 #ifndef romos_Module_h
 #define romos_Module_h
 
-namespace romos
-{
+//namespace romos
+//{
 
 enum connectionKinds
 {
@@ -688,6 +688,6 @@ the error text and give the user the option to write the message into a logfile.
 void triggerRuntimeError(const char *errorMessage);
 
 
-} // end namespace romos
+//} // end namespace romos
 
 #endif

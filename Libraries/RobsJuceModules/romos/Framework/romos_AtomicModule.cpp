@@ -1,7 +1,7 @@
 //#include "romos_AtomicModule.h"
 //#include "romos_AudioConnection.h" 
 //#include "romos_ContainerModule.h"
-using namespace romos;
+//using namespace romos;
 
 //=========================================================================================================================================
 // AtomicModule:
@@ -9,13 +9,13 @@ using namespace romos;
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-romos::AtomicModule::AtomicModule(const std::string& name, int x, int y, bool polyphonic) 
+AtomicModule::AtomicModule(const std::string& name, int x, int y, bool polyphonic) 
 : Module(name, x, y, polyphonic)
 {
 
 }
 
-romos::AtomicModule::~AtomicModule()
+AtomicModule::~AtomicModule()
 {
 
 }
@@ -101,7 +101,7 @@ void romos::AtomicModule::setNumAudioOutputs(int newNumber)
 //-----------------------------------------------------------------------------------------------------------------------------------------    
 // inquiry about pins:
 
-rosic::rsString romos::AtomicModule::getPinName(int kind, int direction, int pinIndex) const
+rosic::rsString AtomicModule::getPinName(int kind, int direction, int pinIndex) const
 {
   if( direction == romos::INCOMING )
     return audioInputNames.at(pinIndex);
@@ -115,7 +115,7 @@ rosic::rsString romos::AtomicModule::getPinName(int kind, int direction, int pin
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // others:
 
-void romos::AtomicModule:: addAudioInput(const char* shortName, const char* longName, 
+void AtomicModule::addAudioInput(const char* shortName, const char* longName, 
   const char* description)
 {
   rosic::appendElement(audioInputNames,        rosic::rsString(shortName));
@@ -126,7 +126,7 @@ void romos::AtomicModule:: addAudioInput(const char* shortName, const char* long
   updateInputPointersAndInFrameStrides();
 }
 
-void romos::AtomicModule::addAudioOutput(const char* pinName)
+void AtomicModule::addAudioOutput(const char* pinName)
 {
   rosic::appendElement(audioOutputNames, rosic::rsString(pinName));
 
@@ -166,7 +166,7 @@ void romos::AtomicModule::deleteAudioInput(int index)
   */
 }
 
-void romos::AtomicModule::deleteAudioOutput(int index)
+void AtomicModule::deleteAudioOutput(int index)
 {
   DEBUG_BREAK;
 
@@ -200,7 +200,7 @@ void romos::AtomicModule::deleteAudioOutput(int index)
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // setup:
 
-bool romos::ParameterMixIn::setParameter(const rosic::rsString &parameterName, const rosic::rsString &newValue, bool callInternalCallback)
+bool ParameterMixIn::setParameter(const rosic::rsString &parameterName, const rosic::rsString &newValue, bool callInternalCallback)
 {
   int index = findIndexOfParameterWithName(parameterName);
   if( index != -1 )
@@ -212,7 +212,7 @@ bool romos::ParameterMixIn::setParameter(const rosic::rsString &parameterName, c
     return false;
 }
 
-void romos::ParameterMixIn::setParameter(int index, const rosic::rsString &newValue, bool callInternalCallback)
+void ParameterMixIn::setParameter(int index, const rosic::rsString &newValue, bool callInternalCallback)
 {
   rassert( index >= 0 && index < getNumParameters() );
   parameters[index].value = newValue;  
@@ -220,7 +220,7 @@ void romos::ParameterMixIn::setParameter(int index, const rosic::rsString &newVa
     parameterChanged(index);
 }
 
-void romos::ParameterMixIn::addParameter(const rosic::rsString &parameterName, const rosic::rsString &defaultValue)
+void ParameterMixIn::addParameter(const rosic::rsString &parameterName, const rosic::rsString &defaultValue)
 {
   Parameter p;
   p.name         = parameterName;
@@ -232,19 +232,19 @@ void romos::ParameterMixIn::addParameter(const rosic::rsString &parameterName, c
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // inquiry:
 
-rosic::rsString romos::ParameterMixIn::getParameterName(int index) const
+rosic::rsString ParameterMixIn::getParameterName(int index) const
 {
   rassert( index >= 0 && index < getNumParameters() );
   return parameters[index].name;
 }
     
-rosic::rsString romos::ParameterMixIn::getParameterValue(int index) const
+rosic::rsString ParameterMixIn::getParameterValue(int index) const
 {
   rassert( index >= 0 && index < getNumParameters() );
   return parameters[index].value;
 }
 
-rosic::rsString romos::ParameterMixIn::getParameterValue(const rosic::rsString &parameterName) const
+rosic::rsString ParameterMixIn::getParameterValue(const rosic::rsString &parameterName) const
 {
   int index = findIndexOfParameterWithName(parameterName);
   if( index != -1 )
@@ -253,13 +253,13 @@ rosic::rsString romos::ParameterMixIn::getParameterValue(const rosic::rsString &
     return 0.0;
 }
 
-rosic::rsString romos::ParameterMixIn::getParameterDefaultValue(int index) const
+rosic::rsString ParameterMixIn::getParameterDefaultValue(int index) const
 {
   rassert( index >= 0 && index < getNumParameters() );
   return parameters[index].defaultValue;
 }
 
-int romos::ParameterMixIn::findIndexOfParameterWithName(const rosic::rsString &nameToFind) const
+int ParameterMixIn::findIndexOfParameterWithName(const rosic::rsString &nameToFind) const
 {
   for(int i = 0; i < (int) parameters.size(); i++)
   {
@@ -289,18 +289,18 @@ int romos::ParameterMixIn::findIndexOfParameterWithName(const rosic::rsString &n
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-romos::ModuleProxy::ModuleProxy(const std::string& name, int x, int y, bool polyphonic) 
+ModuleProxy::ModuleProxy(const std::string& name, int x, int y, bool polyphonic) 
 : AtomicModule(name, x, y, polyphonic)
 {
 
 }
 
-romos::ModuleProxy::~ModuleProxy()
+ModuleProxy::~ModuleProxy()
 {
 
 }
 
-void romos::ModuleProxy::initialize()
+void ModuleProxy::initialize()
 { 
   initInputPins({ "" });
   initOutputPins({ "" });

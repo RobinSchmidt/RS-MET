@@ -1,8 +1,8 @@
 #ifndef romos_AtomicModule_h
 #define romos_AtomicModule_h
 
-namespace romos
-{
+//namespace romos
+//{
 
 // maybe rename file to ModuleBaseClasses - we have more specific baseclasses here too
 // or better: move those subclasses into some file in the "Modules" folder
@@ -280,6 +280,6 @@ private:
 
 };
 
-} // end namespace romos
+//} // end namespace romos
 
 #endif 

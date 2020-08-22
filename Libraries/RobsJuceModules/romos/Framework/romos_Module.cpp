@@ -1,7 +1,7 @@
 //#include "romos_Module.h"
 //#include "romos_ContainerModule.h"
 //#include "romos_AudioConnection.h"
-using namespace romos;
+//using namespace romos;
 
 //=================================================================================================
 // class AudioInputPinData:

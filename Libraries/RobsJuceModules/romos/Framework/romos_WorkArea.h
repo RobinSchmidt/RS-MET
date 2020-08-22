@@ -3,8 +3,6 @@
 
 #define MAX(x,y) (((x)>(y))?(x):(y))  // move somewhere else - or replace by std::max or rsMax
 
-namespace romos
-{
 
 /** This class is used internally inside the DSP code to store some temporary data. We don't want 
 to allocate memory dynamically in the DSP code, that's why we use a global work area for this. */
@@ -47,6 +45,5 @@ struct WorkArea
 //extern WorkArea workArea;
 
 
-}
 
 #endif

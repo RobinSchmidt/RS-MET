@@ -1,8 +1,8 @@
 #ifndef romos_ContainerModule_h
 #define romos_ContainerModule_h
 
-namespace romos
-{
+//namespace romos
+//{
 
 // declarations to satisfy gcc:
 void processContainerBlockFrameWiseMixed(Module *moduleAsVoid, int blockSize);
@@ -471,6 +471,6 @@ public:
 };
 
 
-} // end namespace romos
+//} // end namespace romos
 
 #endif

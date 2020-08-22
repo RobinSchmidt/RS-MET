@@ -40,7 +40,6 @@ namespace romos
 {
 #include "Algorithms/romos_FilterDesign.h"
 #include "Algorithms/romos_Interpolation.h"
-} // todo: absorb code below also into this namespace dclaration
 
 #include "Framework/romos_AudioConnection.h"
 #include "Framework/romos_ModuleFactory.h"
@@ -52,6 +51,11 @@ namespace romos
 #include "Framework/romos_NoteEvent.h"
 #include "Framework/romos_TopLevelModule.h"
 #include "Framework/romos_WorkArea.h"
+
+
+
+} // todo: absorb code below also into this namespace dclaration
+
 
 #include "Modules/romos_ModuleDefinitionMacros.h"
 #include "Modules/romos_ArithmeticModules.h"

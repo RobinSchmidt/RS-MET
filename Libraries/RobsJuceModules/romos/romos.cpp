@@ -25,10 +25,8 @@ namespace romos
 {
 #include "Algorithms/romos_FilterDesign.cpp"
 #include "Algorithms/romos_Interpolation.cpp"
-}
 
 #include "Framework/romos_AudioConnection.cpp"
-#include "Framework/romos_Liberty.cpp"
 #include "Framework/romos_Module.cpp"
 #include "Framework/romos_AtomicModule.cpp"
 #include "Framework/romos_ContainerModule.cpp"
@@ -39,6 +37,9 @@ namespace romos
 #include "Framework/romos_VoiceAllocator.cpp"
 #include "Framework/romos_WorkArea.cpp"
 
+
+}
+
 #include "Modules/romos_ArithmeticModules.cpp"
 #include "Modules/romos_DelayModules.cpp"
 #include "Modules/romos_FilterModules.cpp"
@@ -47,6 +48,9 @@ namespace romos
 #include "Modules/romos_InfrastructuralModules.cpp"
 #include "Modules/romos_ModulationModules.cpp"
 #include "Modules/romos_SoundGeneratorModules.cpp"
+
+#include "Framework/romos_Liberty.cpp"
+
 
 #include "TestSuite/AutomaticTests.cpp"
 #include "TestSuite/InteractiveTests.cpp"

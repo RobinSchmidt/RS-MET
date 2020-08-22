@@ -1,8 +1,6 @@
 #ifndef romos_TopLevelModule_h
 #define romos_TopLevelModule_h
 
-namespace romos
-{
 
 // maybe we need a class TopLevelModuleObserver to take care of focusedModuleChanged callbacks
 // and/or removal of submodules...but maybe this appaly to any kind of modules
@@ -256,6 +254,5 @@ INLINE void TopLevelModule::getBlockOfSampleFramesStereo(SampleType *inOutL,
   }
 }
 
-} // end namespace romos
 
 #endif 
