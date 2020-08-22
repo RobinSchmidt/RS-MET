@@ -78,7 +78,7 @@ void rsMultiBandSplitter<TSig, TPar>::setSplitFrequency(int bandIndex, CRPar new
 {
   //if(bandIndex <= getNumActiveBands()-1)
   //  return;  // a bit kludgy to avoid crash on MultiComp startup
-  rsAssert(bandIndex >= 0 && bandIndex < splitFreqs.size());
+  rsAssert(bandIndex >= 0 && bandIndex < (int)splitFreqs.size());
 
   splitFreqs[bandIndex] = newFreq;
   splitters[bandIndex]->setOmega(TPar(2*PI)*newFreq/sampleRate);
@@ -241,7 +241,7 @@ void rsMultiBandSplitter<TSig, TPar>::clearArrays()
 template<class TSig, class TPar>
 void rsMultiBandSplitter<TSig, TPar>::updateSplitters()
 {
-  int k;
+  size_t k;
   if(splitters.size() < splitFreqs.size())
     for(k = 0; k < splitters.size(); k++)
       delete splitters[k];

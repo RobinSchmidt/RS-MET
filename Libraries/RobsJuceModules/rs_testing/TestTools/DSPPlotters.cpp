@@ -55,9 +55,9 @@ void FilterPlotter<T>::addFilterSpecificationBA(int numeratorOrder, T* numerator
   spec.b.resize(numeratorOrder+1);
   spec.a.resize(denominatorOrder+1);
   spec.sampleRate = sampleRate;
-  for(size_t i = 0; i <= numeratorOrder; i++)
+  for(int i = 0; i <= numeratorOrder; i++)
     spec.b[i] = numeratorCoeffs[i];
-  for(size_t i = 0; i <= denominatorOrder; i++)
+  for(int i = 0; i <= denominatorOrder; i++)
     spec.a[i] = denominatorCoeffs[i];
   addFilterSpecificationBA(spec);
 }
@@ -144,7 +144,7 @@ vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T>& 
   //bool isDigital = spec.sampleRate != inf;
   complex<T> j(0.0, 1.0);                          // imaginary unit
   vector<complex<T>> H(f.size());                  // frequency response
-  for(int k = 0; k < f.size(); k++) {
+  for(size_t k = 0; k < f.size(); k++) {
     complex<T> s = j * complex<T>(freqScale*f[k]); // value on s-plane where we evaluate H
     if(spec.isDigital())
       s = exp(s/spec.sampleRate);                  // conversion of analog "s" to digital "z"
@@ -164,7 +164,7 @@ template <class T>
 vector<T> FilterPlotter<T>::getMagnitudes(vector<complex<T>>& H)
 {
   vector<T> mag(H.size());
-  for(int k = 0; k < H.size(); k++)
+  for(size_t k = 0; k < H.size(); k++)
     mag[k] = abs(H[k]);
   return mag;
 }
@@ -173,7 +173,7 @@ template <class T>
 complex<T> FilterPlotter<T>::polynomialByRoots(complex<T> z, vector<complex<T>>& r)
 {
   complex<T> w = 1;
-  for(int i = 0; i < r.size(); i++)
+  for(size_t i = 0; i < r.size(); i++)
     w *= z-r[i];
   return w;
 }
@@ -281,8 +281,8 @@ void FilterPlotter<T>::drawMultiplicities(const vector<complex<T>>& z, T thresh)
   vector<complex<T>> zd(N);  // collected distinct values
   vector<int> m(N);          // m[i] = multiplicity of value zd[i]
   vector<bool> done(N);      // vector of flags, if z[i] was already absorbed into zd
-  int i, j;
-  int k = 0;
+  size_t i, j;
+  size_t k = 0;
 
   // collect distinct values and their multiplicities:
   for(i = 0; i < N; i++) {
@@ -306,7 +306,7 @@ template <class T>
 double FilterPlotter<T>::maxAbsReIm(const vector<complex<T>>& x)
 {
   double m = 0.0;
-  for(int i = 0; i < x.size(); i++)
+  for(size_t i = 0; i < x.size(); i++)
   {
     if(fabs(x[i].real()) > m)
       m = fabs(x[i].real());
@@ -365,7 +365,7 @@ void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const
     // this may be not quite correct at DC (i think, because we need to incorporate the value
     // at fftSize/2 or something?)
     T compFactor = T(fftSize) / T(signalLength);
-    for(size_t k = 0; k < N; k++)
+    for(int k = 0; k < N; k++)
       dB[k] = RAPT::rsAmpToDbWithCheck(compFactor * abs(tmp[k]), ampFloor);
 
     addDataArrays(maxBin, &f[0], &dB[0]);
@@ -549,7 +549,7 @@ void SinusoidalModelPlotter<T>::plotInterpolatedPhases(
   int N = (int) x.size();
   Vec td = partial.getTimeArray();         // time axis at datapoint rate
   Vec t(N);                                // time axis at sample rate
-  for(size_t n = 0; n < N; n++)
+  for(int n = 0; n < N; n++)
     t[n] = n / sampleRate;
 
   // let the synth generate the phases:

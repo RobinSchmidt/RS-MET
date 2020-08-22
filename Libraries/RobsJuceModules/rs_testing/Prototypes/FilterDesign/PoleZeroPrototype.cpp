@@ -10,7 +10,7 @@ void PoleZeroPrototype<T>::butterworth(size_t N, T* k, Complex* p, Complex* z)
   T ep_pow = pow(ep, T(-1)/T(N));
 
   // poles/zeros/gain:
-  for(int i = 0; i < L; i++)
+  for(size_t i = 0; i < L; i++)
   {
     Complex u_i  = (T) (2*i-1) / (T) N;     // Eq.69
     p[i] = ep_pow*j*exp(j*u_i*T(PI*0.5));   // Eq.70

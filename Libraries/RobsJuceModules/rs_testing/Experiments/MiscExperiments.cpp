@@ -255,7 +255,7 @@ void getPaddedSignals(double* xIn, int Nx,
     nf = -nf;
     x.resize(Nx+nf);
     for(n = 0; n < nf; n++)        x[n] = 0;
-    for(n = nf; n < x.size(); n++) x[n] = xIn[n-nf];
+    for(n = nf; n < (int) x.size(); n++) x[n] = xIn[n-nf];
   }
   else {
     RAPT::rsPadLeft(y, nf, 0.0);       // prepend zeros to y, if nf > 0

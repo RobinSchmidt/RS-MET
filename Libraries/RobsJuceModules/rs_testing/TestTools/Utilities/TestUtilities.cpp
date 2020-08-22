@@ -64,7 +64,7 @@ std::vector<double> rsApplyFunction(const std::vector<double>& v, double p,
   double (*f) (double, double))
 {
   std::vector<double> r(v.size());
-  for(int i = 0; i < r.size(); i++)
+  for(size_t i = 0; i < r.size(); i++)
     r[i] = f(v[i], p);
   return r;
 }

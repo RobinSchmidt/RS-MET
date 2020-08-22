@@ -313,7 +313,7 @@ template<class T>
 void rsHarmonicAnalyzer<T>::convertTimeUnit(RAPT::rsSinusoidalModel<T>& mdl)
 {
   for(size_t hi = 0; hi < mdl.getNumPartials(); hi++)
-    for(size_t di = 0; di < getNumDataPoints(); di++)
+    for(int di = 0; di < getNumDataPoints(); di++)
       mdl.getDataRef(hi, di).time /= sampleRate;
 }
 

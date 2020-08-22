@@ -97,7 +97,7 @@ std::vector<double> SampleTailExtender::extendSample (std::vector<double> inputS
         double fadeInEnvelope = cos ( (1. - alpha) * M_PI) * 0.5 + 0.5;
         double fadeOutEnvelope = cos (alpha * M_PI) * 0.5 + 0.5;
 
-		if (splicePoint + i > outputSignal.size()-1 || synthesisedSignal.size() == 0 || i > synthesisedSignal.size()-1)
+		if (splicePoint + i > (int) outputSignal.size()-1 || synthesisedSignal.size() == 0 || i > (int) synthesisedSignal.size()-1)
 			break;
 
         outputSignal[splicePoint + i] = fadeOutEnvelope * outputSignal[splicePoint + i] + fadeInEnvelope * synthesisedSignal[i];
