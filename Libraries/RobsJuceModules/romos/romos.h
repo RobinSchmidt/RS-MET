@@ -31,7 +31,7 @@
 
 //#ifdef _MSC_VER  // it currently doesn't compile on gcc
 
-#include <rosic/rosic.h> // for dsp algorithms
+#include <rosic/rosic.h> // for dsp algorithms - maybe include it in the cpp file?
 //#include <map>           // for std::map, used to save/restore module states
 
 //#define RS_BUILD_OLD_MODULE_FACTORY    // for transition to new factory implementation

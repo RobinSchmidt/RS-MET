@@ -60,8 +60,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  passed &= runUnitTestsRapt();
-  passed &= runUnitTestsRosic();  // some tests there are still commented out
+  //passed &= runUnitTestsRapt();
+  //passed &= runUnitTestsRosic();  // some tests there are still commented out
   //passed = passed;  // dummy
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
@@ -241,6 +241,8 @@ int main(int argc, char* argv[])
   //binomialDistribution();
   //sineParameters();
   //bandLimitedStep();
+
+  chebychevInterpolant();
   //naturalCubicSpline();
   //naturalCubicSpline2();
   //cubicInterpolationNonEquidistant();   // move to unit tests
@@ -591,7 +593,7 @@ int main(int argc, char* argv[])
   //===============================================================================================
   // Modular:
 
-  runModularUnitTests();
+  //runModularUnitTests();
   //runModularPerformanceTests(true);  // produces a memleak
   //testModularCodeGenerator();
   //runModularInteractiveTests();  // triggers assert due to plotting code

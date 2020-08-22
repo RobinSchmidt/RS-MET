@@ -22,6 +22,7 @@ void binomialDistribution();
 void sineParameters();
 void bandLimitedStep();
 void cubicInterpolationNonEquidistant();   // move to unit tests
+void chebychevInterpolant();
 void naturalCubicSpline();
 void naturalCubicSpline2();
 void hyperbolicFunctions(); 

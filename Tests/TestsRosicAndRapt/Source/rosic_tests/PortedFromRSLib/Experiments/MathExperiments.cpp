@@ -812,6 +812,50 @@ T rsInterpolateCubicHermite(T x1, T x2, T x3, T x4, T y1, T y2, T y3, T y4, T x)
 }
 */
 
+void chebyRoots(double* r, int N)
+{
+
+}
+// implement also chebyExtrema, move to rsPolynomial
+
+// todo: interpolate the function f(x) = 1 / (1 + x^2) with a single high order polynomial with the
+// goal to show Runge's phenomenon - also use nonequidistant sample points (especially the roots of
+// a Chebychev polynomial) in an attempt to reduce this phenomenon
+void chebychevInterpolant()
+{
+  static const int N = 11;  // number of nodes
+  int M = 500; // number of data points for plot
+
+  double xMin = -5.0;
+  double xMax = +5.0;
+
+  double x1[N], y1[N], x2[N], y2[2];
+
+  using AT   = rsArrayTools;
+  using Poly = rsPolynomial<double>;
+  using Vec  = std::vector<double>;
+
+  // create interpolant from equidistant data:
+  AT::fillWithRangeLinear(x1, N, xMin, xMax);
+  for(int i = 0; i < N; i++)
+    y1[i] = 1 / (1 + x1[i]*x1[i]); // f(x) = 1 / (1 + x^2)
+  double a1[N], wrk[N];
+  Poly::interpolantViaNewton(a1, x1, y1, N, wrk);
+  Vec xi(M), yi1(M);
+  AT::fillWithRangeLinear(&xi[0], M, xMin, xMax);
+  for(int i = 0; i < M; i++)
+    yi1[i] = Poly::evaluate(xi[i], a1, N-1);
+
+  // todo: create non-equidistant sample points at (suitably scaled and shifted) roots of 
+  // Chebychev polynomials and interpolate those - this should avoid Runge's phenomenon
+
+
+  rsPlotVectorsXY(xi, yi1);  // shows clearly Runge's phenomenon
+
+  //rsPlotArraysXY(N, x1, y1);
+}
+
+
 void naturalCubicSpline()
 {
   // Tests the natural cubic spline interpolation using the test function 1/(1+x^2).
