@@ -1,6 +1,8 @@
 #include "TestHelpers.h"
-using namespace rosic;
+using namespace rosic;  // get rid!
 using namespace romos;
+
+//wrap into namespace rsTestRomos
 
 bool runUnitTests();
 

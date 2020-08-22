@@ -1,7 +1,7 @@
 
-using namespace RAPT;
+using namespace RAPT;  // get rid
 
-bool testBandDiagonalSolver(std::string &reportString)
+bool testBandDiagonalSolver()
 {
   //std::string testName = "BandDiagonalSolver";
   bool testResult = true;
@@ -65,7 +65,7 @@ bool testBandDiagonalSolver(std::string &reportString)
   return testResult;
 }
 
-bool testMatrix2x2(std::string& reportString)
+bool testMatrix2x2()
 {
   std::string testName = "Matrix2x2";
   bool testResult = true;
@@ -208,7 +208,7 @@ bool testMatrix2x2(std::string& reportString)
   return testResult;
 }
 
-bool testLinearSystem2x2(std::string &reportString)
+bool testLinearSystem2x2()
 {
   std::string testName = "LinearSystem2x2";
   bool testResult = true;
@@ -226,7 +226,7 @@ bool testLinearSystem2x2(std::string &reportString)
   return testResult;
 }
 
-bool testLinearSystem3x3(std::string &reportString)
+bool testLinearSystem3x3()
 {
   std::string testName = "LinearSystem3x3";
   bool testResult = true;
@@ -246,7 +246,7 @@ bool testLinearSystem3x3(std::string &reportString)
   return testResult;
 }
 
-bool testLinearSystemViaGauss(std::string &reportString)
+bool testLinearSystemViaGauss()
 {
   std::string testName = "LinearSystemViaGauss";
   bool testResult = true;
@@ -273,7 +273,7 @@ bool testLinearSystemViaGauss(std::string &reportString)
   return testResult;
 }
 
-bool testGaussJordanInversion(std::string &reportString)
+bool testGaussJordanInversion()
 {
   std::string testName = "GaussJordanInversion";
   bool testResult = true;
@@ -308,7 +308,7 @@ bool testGaussJordanInversion(std::string &reportString)
   return testResult;
 }
 
-bool testTridiagonalSystem(std::string &reportString)
+bool testTridiagonalSystem()
 {
   std::string testName = "TridiagonalSystem";
   bool testResult = true;
@@ -343,7 +343,7 @@ bool testTridiagonalSystem(std::string &reportString)
 }
 
 
-bool testSquareMatrixTranspose(std::string &reportString)
+bool testSquareMatrixTranspose()
 {
   std::string testName = "SquareMatrixTranspose";
   bool testResult = true;
@@ -384,7 +384,7 @@ bool testSquareMatrixTranspose(std::string &reportString)
 // todo: Gram-Schmidt orthogonalization of a set of basis vectors
 
 
-bool testMatrixVectorMultiply(std::string &reportString)
+bool testMatrixVectorMultiply()
 {
   std::string testName = "MatrixVectorMultiply";
   bool testResult = true;
@@ -589,7 +589,7 @@ bool testMatrixMultiply3x3()
   return testResult;
 }
 
-bool testMatrixMultiply(std::string &reportString)
+bool testMatrixMultiply()
 {
   std::string testName = "MatrixMultiply";
   bool testResult = testMatrixMultiply3x3();
@@ -660,7 +660,7 @@ bool testMatrixMultiply(std::string &reportString)
   return testResult;
 }
 
-bool testChangeOfBasis(std::string &reportString)
+bool testChangeOfBasis()
 {
   std::string testName = "ChangeOfBasis";
   bool testResult = true;
@@ -843,22 +843,19 @@ bool testLinearAlgebra()
   std::string reportString = "LinearAlgebra"; // dummy-string - delete later
   bool testResult = true;
 
-  //testResult &= testBandDiagonalSolver(   reportString);  // fails with gcc
-  testResult &= testMatrix2x2(            reportString);
-  testResult &= testLinearSystem2x2(      reportString);
-  testResult &= testLinearSystem3x3(      reportString);
-  testResult &= testLinearSystemViaGauss( reportString);
-  testResult &= testGaussJordanInversion( reportString);
-  testResult &= testTridiagonalSystem(    reportString);
-  testResult &= testSquareMatrixTranspose(reportString);
-  testResult &= testMatrixVectorMultiply( reportString);
-  testResult &= testMatrixMultiply(       reportString);
-  testResult &= testChangeOfBasis(        reportString);
-
-
+  //testResult &= testBandDiagonalSolver();  // fails with gcc
+  testResult &= testMatrix2x2();
+  testResult &= testLinearSystem2x2();
+  testResult &= testLinearSystem3x3();
+  testResult &= testLinearSystemViaGauss();
+  testResult &= testGaussJordanInversion();
+  testResult &= testTridiagonalSystem();
+  testResult &= testSquareMatrixTranspose();
+  testResult &= testMatrixVectorMultiply();
+  testResult &= testMatrixMultiply();
+  testResult &= testChangeOfBasis();
   testResult &= testNullSpace();
   testResult &= testLinearSystemViaGauss2();
-
 
   return testResult;
 }
