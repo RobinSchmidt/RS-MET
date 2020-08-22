@@ -1344,8 +1344,20 @@ void seriesConnectionDecay()
   // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=533696
 }
 
+// some throw-away code for figuring out the handling of readOutputWithOneMoreInput
+void quantileFilter1()
+{
+  rsQuantileFilterCore2<double> flt;
+
+
+
+}
+
+
 void quantileFilter()
 {
+  quantileFilter1();
+
   double fs = 44100;  // sample rate
   int    N  = 200000; // number of samples
   int    L  = 21;     // filter length in samples (can we make this a double, too?)

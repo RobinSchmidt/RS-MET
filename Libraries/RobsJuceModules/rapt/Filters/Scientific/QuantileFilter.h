@@ -67,6 +67,13 @@ public:
   sample to the right which is the smallest of the large values. */
   void setRightWeight(T newWeight) { w = newWeight; }
 
+  void setLengthAndQuantile(int newLength, T newQuantile, bool hard = false)
+  {
+    lengthAndQuantileToPositionAndWeight(newLength, newQuantile, &p, &w);
+    setLengthAndReadPosition(newLength, p, hard);
+  }
+  // needs test
+
   /** Sets a pointer to a signal buffer that is driven by client code to facilitate artifact-free
   modulation of the length. If you leave this unassigned, you may see artifacts when the length
   of the filter is switched from a lower to a higher value, due to the fact that we don't know the

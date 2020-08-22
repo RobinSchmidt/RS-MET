@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
   //poleZeroPrototype();  // new implementation - but we don't need that
   //seriesConnectionDecay();
-//  quantileFilter();
+  quantileFilter();
 
   // Physics:
   //doublePendulum(); // takes long

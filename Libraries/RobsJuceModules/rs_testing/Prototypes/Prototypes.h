@@ -704,14 +704,14 @@ public:
   }
 
 
-  T readOutputWithOneMoreInput(T xL)
+  T readOutputWithOneMoreInput(T xOld)
   {
     //T p1 = this->p * T(this->L) / T(this->L-1); 
     // but wait - p is an integer - should we use p+w or p+(1-w)?
 
     T w1; // = p1 - floor(p1);
     T yS, yL; // hmm...yL means yLarge but xL means x[n-L] - notational clash!
-    struct Base::Node nx(xL, 0); // we need to create a node
+    struct Base::Node nx(xOld, 0); // we need to create a node
 
     T q = getQuantile();
     int p1;
@@ -721,22 +721,22 @@ public:
     {
       // xL belongs in small heap, so we use xL together with the 2 first values of the small heap
       // (?)
-      yS = this->dblHp.get2ndLargestSmallValue().value;
-      yS = rsMaxViaLess(yS, xL);  //
-      yL = this->dblHp.getLargestSmallValue().value;
+      //yS = this->dblHp.get2ndLargestSmallValue().value;
+      //yS = rsMaxViaLess(yS, xL);  //
+      //yL = this->dblHp.getLargestSmallValue().value;
 
 
       // new:
       T y0 = this->dblHp.getLargestSmallValue().value;
       T y1 = this->dblHp.get2ndLargestSmallValue().value;
-      if(xL > y0)
+      if(xOld > y0)
       {
         // xL belongs right to the 2 largest small values 
         // -> interpolate between largest small and xL:
         yS = y0;
-        yL = xL;
+        yL = xOld;
       }
-      else if(xL < y1)
+      else if(xOld < y1)
       {
         // xL belongs left to the 2 largest small values
         // -> interpolate between 2nd largest small and largest small:
@@ -747,7 +747,7 @@ public:
       {
         // xL belongs in between the 2 largest small values
         // -> interpolate between xL and largest small:
-        yS = xL;
+        yS = xOld;
         yL = y1;
       }
 
@@ -765,11 +765,33 @@ public:
     else
     {
       // x belongs in large heap
-      yS = this->dblHp.get2ndSmallestLargeValue().value;
-      yS = rsMin(yS, xL);
-      yL = this->dblHp.getSmallestLargeValue().value;
+      //yS = this->dblHp.get2ndSmallestLargeValue().value;
+      //yS = rsMin(yS, xL);
+      //yL = this->dblHp.getSmallestLargeValue().value;
 
-      return 0;// for test/debug - this branch seems to be still wrong
+      T y0 = this->dblHp.getSmallestLargeValue().value;
+      T y1 = this->dblHp.get2ndSmallestLargeValue().value;
+
+
+
+      if(xOld < y0)
+      {
+        yS = xOld;
+        yL = y0;
+      }
+      else if(xOld > y1)
+      {
+        yS = y0;
+        yL = y1;
+      }
+      else
+      {
+        yS = y0;
+        yL = xOld;
+      }
+
+
+      //return 0;// for test/debug - this branch seems to be still wrong
     }
     T y = (T(1)-w1)*yS + w1*yL;
     return y;
@@ -779,6 +801,7 @@ public:
   // this is wrong - it should not take as input the sample x[n] (that is stored already in the
   // heaps after getSample). instead, it needs x[n-L] maybe make a function
   // readOutputWithAdditionalInput
+  // maybe we also need to switch depending on if p1 is less, equal or greater than p?
 
 protected:
 

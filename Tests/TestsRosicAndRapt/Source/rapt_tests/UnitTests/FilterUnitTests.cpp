@@ -450,26 +450,29 @@ bool oneLongerQuantileUnitTest(int L, int N)
   fltT.setModulationBuffer(&delayLine);
 
   // compute test and reference output and compare them:
-  Vec x = rsRandomIntVector(N, 0, 99);  // input
+  //Vec x = rsRandomIntVector(N, 0, 99);  // input
   //Vec x = rsLinearRangeVector(N, 1+5, N+5); // use 5 as offset to make some things more obvious
+  Vec x = rsLinearRangeVector(N, -1-5, -N-5);
   Vec yR(N), yT(N);                     // reference and test output
   for(size_t i = 0; i < quantiles.size(); i++)
   {
     // compute output of reference filter - this filter actually is one sample longer than our
     // nominal L:
-    double pR = quantiles[i] * L;
-    double wR = pR - floor(pR);
-    fltR.setReadPosition(1 + (int) pR, true);
-    fltR.setRightWeight(wR);
+    //double pR = quantiles[i] * L;
+    //double wR = pR - floor(pR);
+    //fltR.setReadPosition(1 + (int) pR, true);
+    //fltR.setRightWeight(wR);
+    fltR.setLengthAndQuantile(L+1, quantiles[i]); // should replace code above
     for(int n = 0; n < N; n++)
       yR[n] = fltR.getSample(x[n]);
 
     // compute output of tested filter - this filter is set to length L and computes the output of
     // a length L+1 filter by additional trickery
-    double pT = quantiles[i] * (L-1); // readout position in test filter
-    double wT = pT - floor(pT);
-    fltT.setReadPosition(1 + (int) pT, true);
-    fltT.setRightWeight(wT);
+    //double pT = quantiles[i] * (L-1); // readout position in test filter
+    //double wT = pT - floor(pT);
+    //fltT.setReadPosition(1 + (int) pT, true);
+    //fltT.setRightWeight(wT);
+    fltT.setLengthAndQuantile(L, quantiles[i]); // should replace code above
     for(int n = 0; n < N; n++)
     {
       delayLine.getSample(x[n]);           // feed delayline (output irrelevant)
@@ -514,13 +517,18 @@ bool movingQuantileUnitTest()
   r &= testMovingQuantileModulation();
 
   // test the read out of a filter one sample longer than nominal length:
-  //r &= oneLongerQuantileUnitTest(2, N); // works
-  //r &= oneLongerQuantileUnitTest(3, N); // fails
-  //r &= oneLongerQuantileUnitTest(4, N); // fails
+  r &= oneLongerQuantileUnitTest(2, N); // works
+  r &= oneLongerQuantileUnitTest(3, N); // fails
+  r &= oneLongerQuantileUnitTest(4, N); // fails
   r &= oneLongerQuantileUnitTest(5, N); // fails
-  //r &= oneLongerQuantileUnitTest(6, N); // fails
+  r &= oneLongerQuantileUnitTest(6, N); // fails
   r &= oneLongerQuantileUnitTest(7, N); // fails
   //r &= oneLongerQuantileUnitTest(8, N); // fails
+
+  // the upper branch seems to be wrong whenever there are two equal input samples samples - 
+  // maybe, we somewher need <= instead of < ...hmm - doesn't seem to help
+
+
   // but those which fail look partially ok - seems like only the lower branch is false
   // hmm..but something seems wrong with L=4 in the upper branch, too ..it seems that upper branch
   // works for odd L and L = 2
