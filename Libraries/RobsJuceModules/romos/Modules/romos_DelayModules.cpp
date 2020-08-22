@@ -1,9 +1,5 @@
 //#include "romos_DelayModules.h"
 
-namespace romos
-{
-
-
   void UnitDelayModule::initialize()
   { 
     initInputPins({ "" });
@@ -35,4 +31,3 @@ namespace romos
   }
   CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_1(UnitDelayModule); 
 
-}

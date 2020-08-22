@@ -16,7 +16,7 @@ PerformanceTest::PerformanceTest(const char* testName)
 
 PerformanceTest::~PerformanceTest()
 {
-  moduleFactory.deleteModule(moduleToTest);
+  romos::moduleFactory.deleteModule(moduleToTest);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -34,10 +34,10 @@ rosic::rsString PerformanceTest::runTestsAndGetReport()
 
   // \todo set inputs to random values....
 
-  voiceAllocator.reset();
-  voiceAllocator.noteOn(81, 64);
-  voiceAllocator.noteOn(93, 64);
-  voiceAllocator.noteOn(105, 64);
+  romos::voiceAllocator.reset();
+  romos::voiceAllocator.noteOn(81, 64);
+  romos::voiceAllocator.noteOn(93, 64);
+  romos::voiceAllocator.noteOn(105, 64);
 
   setTestPolyphonic(false);
   report += runFrameWiseTestAndGetReport();
@@ -47,7 +47,7 @@ rosic::rsString PerformanceTest::runTestsAndGetReport()
   report += runFrameWiseTestAndGetReport();
   report += runBlockWiseTestAndGetReport();
 
-  int numPlayingVoices = voiceAllocator.getNumPlayingVoices();
+  int numPlayingVoices = romos::voiceAllocator.getNumPlayingVoices();
 
   report.printToStandardOutput();
   report += "\n";
@@ -57,7 +57,7 @@ rosic::rsString PerformanceTest::runTestsAndGetReport()
 void PerformanceTest::setTestPolyphonic(bool shouldBePolyphonic)
 {
   if(moduleToTest->isContainerModule())
-    ((ContainerModule*)moduleToTest)->setPolyphonicRecursively(shouldBePolyphonic);
+    ((romos::ContainerModule*)moduleToTest)->setPolyphonicRecursively(shouldBePolyphonic);
   else
     moduleToTest->setPolyphonic(shouldBePolyphonic);
 }
@@ -76,7 +76,7 @@ rosic::rsString PerformanceTest::runFrameWiseTestAndGetReport()
   }
 
   if(moduleToTest->isPolyphonic())
-    minCyclesPerFrame /= voiceAllocator.getNumPlayingVoices();
+    minCyclesPerFrame /= romos::voiceAllocator.getNumPlayingVoices();
   char charBuffer[32];
   sprintf(charBuffer, "%.2f", minCyclesPerFrame);
   rosic::rsString cyclesString = rosic::rsString(charBuffer);
@@ -86,7 +86,7 @@ rosic::rsString PerformanceTest::runFrameWiseTestAndGetReport()
 
 rosic::rsString PerformanceTest::runBlockWiseTestAndGetReport()
 {
-  int blockSize       = processingStatus.getBufferSize();
+  int blockSize       = romos::processingStatus.getBufferSize();
   int numBlocksPerRun = numFramesPerRun / blockSize;
   int lastBlockSize   = numFramesPerRun - numBlocksPerRun*blockSize;
   double minCyclesPerFrame = pow(10.0, 100.0);
@@ -103,7 +103,7 @@ rosic::rsString PerformanceTest::runBlockWiseTestAndGetReport()
   }
 
   if(moduleToTest->isPolyphonic())
-    minCyclesPerFrame /= voiceAllocator.getNumPlayingVoices();
+    minCyclesPerFrame /= romos::voiceAllocator.getNumPlayingVoices();
   char charBuffer[32];
   sprintf(charBuffer, "%.2f", minCyclesPerFrame);
   rosic::rsString cyclesString = rosic::rsString(charBuffer);

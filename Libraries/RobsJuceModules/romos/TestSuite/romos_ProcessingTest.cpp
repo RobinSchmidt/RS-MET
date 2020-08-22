@@ -21,7 +21,7 @@ ProcessingTest::ProcessingTest(const char *testName)
   clearOutputSignalArrays();
   clearDesiredOutputSignalArrays();
   fillTimeAxisWithSampleIndices();
-  voiceAllocator.reset();  // maybe use a function initialize which is even stronger (resets even more state variables)
+  romos::voiceAllocator.reset();  // maybe use a function initialize which is even stronger (resets even more state variables)
 
   events = TestEventGenerator::generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToUse, 12);
 
@@ -33,7 +33,7 @@ ProcessingTest::ProcessingTest(const char *testName)
     //inputFeederModules[i] = ModuleFactory::createModule(
     //  ModuleTypeRegistry::IDENTITY, rosic::rsString("In") + rosic::rsString(i+1), 0, i, true);
 
-    inputFeederModules[i] = moduleFactory.createModule(
+    inputFeederModules[i] = romos::moduleFactory.createModule(
       "Identity", std::string("In") + std::to_string(i+1), 0, i, true);
     // shouldn't we use a proper AudioInput module isntead?
   }
@@ -42,18 +42,18 @@ ProcessingTest::ProcessingTest(const char *testName)
     //outputRetrieverModules[i] = ModuleFactory::createModule(ModuleTypeRegistry::IDENTITY,
     //  rosic::rsString("Out") + rosic::rsString(i+1), 0, i, true);
 
-    outputRetrieverModules[i] = moduleFactory.createModule(
+    outputRetrieverModules[i] = romos::moduleFactory.createModule(
       "Identity", std::string("Out") + std::to_string(i+1), 0, i, true);
   }
 }
 
 ProcessingTest::~ProcessingTest()
 {
-  moduleFactory.deleteModule(moduleToTest);
+  romos::moduleFactory.deleteModule(moduleToTest);
   for(int i = 0; i < maxNumInputs; i++)
-    moduleFactory.deleteModule(inputFeederModules[i]);
+    romos::moduleFactory.deleteModule(inputFeederModules[i]);
   for(int i = 0; i < maxNumOutputs; i++)
-    moduleFactory.deleteModule(outputRetrieverModules[i]);
+    romos::moduleFactory.deleteModule(outputRetrieverModules[i]);
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -219,7 +219,7 @@ void ProcessingTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 
 void ProcessingTest::processModuleInFrames()
 {
-  voiceAllocator.reset();
+  romos::voiceAllocator.reset();
   if( events.empty() )
     processModuleInFramesNoEvents(numFramesToProcess, 0);
   else
@@ -234,7 +234,7 @@ void ProcessingTest::processModuleInFrames()
         // there, process 1st frame, reset the trigger flags and then process other frames
 
 
-      voiceAllocator.noteOn(e.getKey(), e.getVelocity());
+      romos::voiceAllocator.noteOn(e.getKey(), e.getVelocity());
       numEventsHandled++;
       frameIndex += numFramesUntilNextEvent;
       if( numEventsHandled == events.size() )                                    // process tail after all events have been handled
@@ -252,7 +252,7 @@ void ProcessingTest::processModuleInFrames()
 
 void ProcessingTest::processModuleInBlocks()
 {
-  voiceAllocator.reset();
+  romos::voiceAllocator.reset();
   if( events.empty() )
     processModuleInBlocksNoEvents(numFramesToProcess, 0);
   else
@@ -265,7 +265,7 @@ void ProcessingTest::processModuleInBlocks()
       romos::NoteEvent e = events.at(numEventsHandled);
       int numFramesUntilNextEvent = e.getDeltaFrames() - blockStart;
       processModuleInBlocksNoEvents(numFramesUntilNextEvent, blockStart);
-      voiceAllocator.noteOn(e.getKey(), e.getVelocity());
+      romos::voiceAllocator.noteOn(e.getKey(), e.getVelocity());
       numEventsHandled++;
       blockStart += numFramesUntilNextEvent;
       if( numEventsHandled == events.size() )
@@ -284,7 +284,7 @@ void ProcessingTest::processModuleInFramesNoEvents(int numFrames, int startIndex
   for(int frameIndex = startIndex; frameIndex <= endIndex; frameIndex++)
   {
     processFrame(frameIndex);
-    voiceAllocator.resetTriggerFlags();
+    romos::voiceAllocator.resetTriggerFlags();
   }
 
   //for(int frameIndex = startIndex; frameIndex < startIndex + numFrames; frameIndex++)
@@ -362,7 +362,7 @@ void ProcessingTest::establishInputBlock(int blockStart, int blockSize)
   else
   {
     int numPlayingVoices           = romos::processingStatus.getNumPlayingVoices();
-    const int *playingVoiceIndices = processingStatus.getPlayingVoiceIndices();
+    const int *playingVoiceIndices = romos::processingStatus.getPlayingVoiceIndices();
     for(int currentVoice = 0; currentVoice < numPlayingVoices; currentVoice++)
     {
       int voiceIndex = playingVoiceIndices[currentVoice];
@@ -409,7 +409,7 @@ void ProcessingTest::retrieveOutputBlock(int blockStart, int blockSize)
   else
   {
     int numPlayingVoices           = romos::processingStatus.getNumPlayingVoices();
-    const int *playingVoiceIndices = processingStatus.getPlayingVoiceIndices();
+    const int *playingVoiceIndices = romos::processingStatus.getPlayingVoiceIndices();
     for(int currentVoice = 0; currentVoice < numPlayingVoices; currentVoice++)
     {
       int voiceIndex = playingVoiceIndices[currentVoice];
@@ -438,7 +438,7 @@ void ProcessingTest::retrieveOutputBlock(int blockStart, int blockSize)
 void ProcessingTest::setTestModulePolyphonyRecursively(bool shouldBePolyphonic)
 {
   if( moduleToTest->isContainerModule() )
-    ((ContainerModule*) moduleToTest)->setPolyphonicRecursively(shouldBePolyphonic);
+    ((romos::ContainerModule*) moduleToTest)->setPolyphonicRecursively(shouldBePolyphonic);
   else
     moduleToTest->setPolyphonic(shouldBePolyphonic);
 }

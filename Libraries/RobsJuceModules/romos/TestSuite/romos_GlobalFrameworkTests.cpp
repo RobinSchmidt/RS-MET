@@ -25,9 +25,9 @@ bool VoiceAllocatorTest::runTest()
 
 bool VoiceAllocatorTest::testStealOldestWithoutRetrigger()
 {
-  VoiceAllocator voiceAllocator;
+  romos::VoiceAllocator voiceAllocator;
   voiceAllocator.setNumVoices(3);
-  voiceAllocator.setVoiceStealingMode(VoiceAllocator::STEAL_OLDEST_VOICE);
+  voiceAllocator.setVoiceStealingMode(romos::VoiceAllocator::STEAL_OLDEST_VOICE);
   voiceAllocator.setRetriggerMode(false);
   const int* playingVoiceIndices = voiceAllocator.getPlayingVoiceIndices();
 
@@ -114,9 +114,9 @@ bool VoiceAllocatorTest::testStealOldestWithoutRetrigger()
 }
 bool VoiceAllocatorTest::testStealOldestWithRetrigger()
 {
-  VoiceAllocator voiceAllocator;
+  romos::VoiceAllocator voiceAllocator;
   voiceAllocator.setNumVoices(3);
-  voiceAllocator.setVoiceStealingMode(VoiceAllocator::STEAL_OLDEST_VOICE);
+  voiceAllocator.setVoiceStealingMode(romos::VoiceAllocator::STEAL_OLDEST_VOICE);
   voiceAllocator.setRetriggerMode(true);
   const int* playingVoiceIndices = voiceAllocator.getPlayingVoiceIndices();
 
@@ -194,14 +194,14 @@ bool VoiceAllocatorTest::testStealOldestWithRetrigger()
 
   return testPassed;
 }
-bool VoiceAllocatorTest::areAllNoteOnTriggerFlagsUnchecked(const VoiceAllocator& voiceAllocator)
+bool VoiceAllocatorTest::areAllNoteOnTriggerFlagsUnchecked(const romos::VoiceAllocator& voiceAllocator)
 {
   bool result = true;
   for(int i = 0; i < voiceAllocator.getNumVoices(); i++)
     result &= voiceAllocator.getNoteOnTriggerFlag(i) == false;
   return result;
 }
-bool VoiceAllocatorTest::isNoteOnTriggerFlagCheckedExclusively(const VoiceAllocator& voiceAllocator, int voiceIndexThatShouldHaveFlagSet)
+bool VoiceAllocatorTest::isNoteOnTriggerFlagCheckedExclusively(const romos::VoiceAllocator& voiceAllocator, int voiceIndexThatShouldHaveFlagSet)
 {
   bool result = true;
   for(int i = 0; i < voiceAllocator.getNumVoices(); i++)
@@ -213,7 +213,7 @@ bool VoiceAllocatorTest::isNoteOnTriggerFlagCheckedExclusively(const VoiceAlloca
   }
   return result;
 }
-bool VoiceAllocatorTest::isNoteOffTriggerFlagCheckedExclusively(const VoiceAllocator& voiceAllocator, int voiceIndexThatShouldHaveFlagSet)
+bool VoiceAllocatorTest::isNoteOffTriggerFlagCheckedExclusively(const romos::VoiceAllocator& voiceAllocator, int voiceIndexThatShouldHaveFlagSet)
 {
   bool result = true;
   for(int i = 0; i < voiceAllocator.getNumVoices(); i++)
@@ -233,8 +233,8 @@ TriggerAndKillTest::TriggerAndKillTest()
 {
   triggerAndKillModule = TestModuleBuilder::createTriggerAndKill("TriggerAndKill", 20, 10, true);
   //moduleToTest         = ModuleFactory::createModule(ModuleTypeRegistry::TOP_LEVEL_MODULE);
-  moduleToTest = moduleFactory.createModule("TopLevelModule");
-  ((ContainerModule*)moduleToTest)->addChildModule(moduleToTest);
+  moduleToTest = romos::moduleFactory.createModule("TopLevelModule");
+  ((romos::ContainerModule*)moduleToTest)->addChildModule(moduleToTest);
 
 
 
@@ -249,7 +249,7 @@ bool TriggerAndKillTest::runTest()
 {
   //initTest();
 
-  std::vector<NoteEvent> events = TestEventGenerator::generateNoteOnOffPair(1, 64, 10, 100);
+  std::vector<romos::NoteEvent> events = TestEventGenerator::generateNoteOnOffPair(1, 64, 10, 100);
   events = TestEventGenerator::mergeEvents(events, TestEventGenerator::generateNoteOnOffPair(2, 64, 20, 100));
   events = TestEventGenerator::mergeEvents(events, TestEventGenerator::generateNoteOnOffPair(3, 64, 80, 100));
   events = TestEventGenerator::mergeEvents(events, TestEventGenerator::generateNoteOnOffPair(4, 64, 120, 100));
@@ -287,11 +287,11 @@ TopLevelModuleTest::TopLevelModuleTest()
 {
   //moduleToTest = (TopLevelModule*) ModuleFactory::createModule(ModuleTypeRegistry::TOP_LEVEL_MODULE);
   //moduleToTest = (TopLevelModule*) moduleFactory.createModule("TopLevelModule");
-  moduleToTest = moduleFactory.createTopLevelModule();
+  moduleToTest = romos::moduleFactory.createTopLevelModule();
 }
 TopLevelModuleTest::~TopLevelModuleTest()
 {
-  moduleFactory.deleteModule(moduleToTest);
+  romos::moduleFactory.deleteModule(moduleToTest);
 }
 bool TopLevelModuleTest::runTest()
 {

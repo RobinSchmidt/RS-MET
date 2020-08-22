@@ -1,9 +1,6 @@
 #ifndef romos_DelayModules_h
 #define romos_DelayModules_h
 
-namespace romos
-{
-
 //-------------------------------------------------------------------------------------------------
 
 class UnitDelayModule : public AtomicModule
@@ -41,7 +38,5 @@ public:
 // MultiTapDelay: x[n-N1], x[n-N2], ...
 // Inputs: Audio-In, Delay-times
 // Outputs: delayed audio signals
-
-}
 
 #endif 

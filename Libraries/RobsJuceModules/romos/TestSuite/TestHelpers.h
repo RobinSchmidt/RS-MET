@@ -37,29 +37,29 @@ extern double **ppd[maxNumVoices];
 
 /** Returns a vector containing a note-on and a corresponding note-off (indicated by velocity == 0).
 If zero is passed as duration, it will return an empty vector. */
-std::vector<NoteEvent> generateNoteOnOffPair(unsigned int key, unsigned int velocity,                                            
+std::vector<romos::NoteEvent> generateNoteOnOffPair(unsigned int key, unsigned int velocity,                                            
   unsigned int deltaFramesForNoteOn, unsigned int durationInFrames);
 
 /** Generates a bunch of simultaneous notes with equal spacing between the individual notes, given 
 by noteSpacing. */
-std::vector<NoteEvent> generateSimultaneousNotes(unsigned int key, unsigned int velocity, 
+std::vector<romos::NoteEvent> generateSimultaneousNotes(unsigned int key, unsigned int velocity, 
   unsigned int deltaFramesForNoteOn, unsigned int durationInFrames, 
   unsigned int numNotes, unsigned int noteSpacing);
 
 /** Merges two vectors of events. The result will be sorted by the time of occurence of the events. Simlutaneous events may occur in any
 order wihtin the array (\todo maybe have well defined ordering criterions in these cases, too). */
-std::vector<NoteEvent> mergeEvents(const std::vector<NoteEvent> &eventArray1, const std::vector<NoteEvent> &eventArray2);
+std::vector<romos::NoteEvent> mergeEvents(const std::vector<romos::NoteEvent> &eventArray1, const std::vector<romos::NoteEvent> &eventArray2);
 
 /** Converts an array of note-on events with corresponding note-off events into an array that contains only the note-ons and another array 
 that contains the corresponding durations (in sample-frames). */
-void convertNoteEventsToStartsAndDurations(const std::vector<NoteEvent> &events, std::vector<NoteEvent> &noteOns, 
+void convertNoteEventsToStartsAndDurations(const std::vector<romos::NoteEvent> &events, std::vector<romos::NoteEvent> &noteOns, 
                                            std::vector<int> &durations);
 
 /** Given a vector of note-events and a particular note-on event, this function returns the index of the note-off event that corresponds to
 the given note-on event. If none is found, -1 will be returned. */
-int findIndexOfMatchingNoteOff(const std::vector<NoteEvent> &events, NoteEvent noteOnEvent);
+int findIndexOfMatchingNoteOff(const std::vector<romos::NoteEvent> &events, romos::NoteEvent noteOnEvent);
 
-void sortEventsByTimeOfOccurence(const std::vector<NoteEvent> eventArray);
+void sortEventsByTimeOfOccurence(const std::vector<romos::NoteEvent> eventArray);
 
 // get rid - replace with own prng
 inline double random(double min, double max)
@@ -119,36 +119,36 @@ in x, where the indexing is: x[voiceIndex][pinIndex][frameIndex]. Likewise, you 
 are to be stored and a pointer d containing the desired outputs.  */
 bool checkProcessingFunctionsAndPrintResults(romos::Module *module, int numVoicesToCheck, int numFrames, 
                                              double ***x, double ***y, double ***d, 
-                                             double tolerance, char *testName, std::vector<NoteEvent> *events = NULL);
+                                             double tolerance, char *testName, std::vector<romos::NoteEvent> *events = NULL);
 
 /** Checks the per-frame, monophonic processing function and prints the result to the console. */
 bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, double ***y, double ***d, 
-                                               double tolerance, char *testName, std::vector<NoteEvent> *events = NULL);
+                                               double tolerance, char *testName, std::vector<romos::NoteEvent> *events = NULL);
 
 /** Checks the per-block, monophonic processing function and prints the result to the console.. */
 bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, double ***y, double ***d, 
-                                               double tolerance, char *testName, std::vector<NoteEvent> *events = NULL);
+                                               double tolerance, char *testName, std::vector<romos::NoteEvent> *events = NULL);
 
 /** Checks the per-frame, polyphonic processing function and prints the result to the console.. */
 bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoicesToCheck, int numFrames, 
                                                double ***x, double ***y, double ***d, 
-                                               double tolerance, char *testName, std::vector<NoteEvent> *events = NULL);
+                                               double tolerance, char *testName, std::vector<romos::NoteEvent> *events = NULL);
 
 /** Checks the per-block, polyphonic processing function and prints the result to the console.. */
 bool checkProcessingInBlocksPolyAndPrintResult(romos::Module *module, int numVoicesToCheck, int numFrames, 
                                                double ***x, double ***y, double ***d, 
-                                               double tolerance, char *testName, std::vector<NoteEvent> *events = NULL);
+                                               double tolerance, char *testName, std::vector<romos::NoteEvent> *events = NULL);
 
 /** Sets the passed module into poly- or monophonic mode and lets it process a number of sample-frames using the module's processFrame 
 function pointer (which, at this point, should resolve to the appropriate processPoly or processMono function). The input-signals and 
 memory for the output-signals must be passed as pointers using the indexing convention inputs[voiceIndex][pinIndex][frameIndex], 
 likewise for outputs. In the monophonic case, the 0th voice will be used only. */
-void processModuleInFrames(romos::Module *module, int numFrames, double ***inputs, double ***outputs, std::vector<NoteEvent> *events, 
+void processModuleInFrames(romos::Module *module, int numFrames, double ***inputs, double ***outputs, std::vector<romos::NoteEvent> *events, 
                            bool polyphonic);
 
 /** Similar to processModuleInFrames, but uses the processBlock function pointer. The sizes of the individual block will be chosen 
 randomly between 1 and the maximum possible blocksize (as determined by the allocated memory for I/O blocks). */
-void processModuleInBlocks(romos::Module *module, int numFrames, double ***inputs, double ***outputs, std::vector<NoteEvent> *events, 
+void processModuleInBlocks(romos::Module *module, int numFrames, double ***inputs, double ***outputs, std::vector<romos::NoteEvent> *events, 
                            bool polyphonic);
 
 void exchangeModulePositions(romos::Module *module1, romos::Module *module2);

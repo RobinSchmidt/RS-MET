@@ -168,8 +168,8 @@ bool OutputModuleDeletion::runTest()
 {
   bool result = true;
 
-  ContainerModule* outerContainer = (ContainerModule*)moduleToTest;
-  ContainerModule* innerContainer = (ContainerModule*)outerContainer->getChildModule(0);
+  romos::ContainerModule* outerContainer = (romos::ContainerModule*)moduleToTest;
+  romos::ContainerModule* innerContainer = (romos::ContainerModule*)outerContainer->getChildModule(0);
   romos::Module* out1           = innerContainer->getChildModule(3);
   romos::Module* out2           = innerContainer->getChildModule(4);
   romos::Module* out3           = innerContainer->getChildModule(5);
@@ -342,7 +342,7 @@ bool PinSortingTest::runTest()
   //fillDesiredOutputSignalArrays();
 
   // retrieve pointers to some embedded modules (assumes certain order):
-  romos::ContainerModule* inner = dynamic_cast<romos::ContainerModule*> (((ContainerModule*)moduleToTest)->getChildModule(3));
+  romos::ContainerModule* inner = dynamic_cast<romos::ContainerModule*> (((romos::ContainerModule*)moduleToTest)->getChildModule(3));
   rassert(inner != NULL);
   romos::Module* in1   = inner->getAudioInputModule(0);
   romos::Module* in2   = inner->getAudioInputModule(1);

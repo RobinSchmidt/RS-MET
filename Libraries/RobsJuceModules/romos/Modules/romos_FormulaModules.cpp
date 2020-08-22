@@ -1,5 +1,3 @@
-namespace romos
-{
 
 //-------------------------------------------------------------------------------------------------
 
@@ -418,7 +416,6 @@ void FormulaModule_N_M::restoreOutputVariableConnections(
 
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_N(FormulaModule_N_M);
 
-}
 
 /*
 Ideas:

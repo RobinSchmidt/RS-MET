@@ -52,11 +52,6 @@ namespace romos
 #include "Framework/romos_TopLevelModule.h"
 #include "Framework/romos_WorkArea.h"
 
-
-
-} // todo: absorb code below also into this namespace dclaration
-
-
 #include "Modules/romos_ModuleDefinitionMacros.h"
 #include "Modules/romos_ArithmeticModules.h"
 #include "Modules/romos_DelayModules.h"
@@ -67,7 +62,10 @@ namespace romos
 #include "Modules/romos_ModulationModules.h"
 #include "Modules/romos_SoundGeneratorModules.h"
 
-#include "Framework/romos_Liberty.h"  // should not be in the framework folder
+#include "Framework/romos_Liberty.h"  // should not be in the framework folder - maybe top-level
+
+}
+
 
 
 // maybe these should go into a separate include file:

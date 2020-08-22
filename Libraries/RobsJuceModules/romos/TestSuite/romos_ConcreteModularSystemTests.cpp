@@ -49,7 +49,7 @@ PolyBlipStereoTest::PolyBlipStereoTest()
 }
 void PolyBlipStereoTest::createAndConnectTestChildModules()
 {
-  polyBlipStereo = (ContainerModule*)TestModuleBuilder::createPolyBlipStereo("PolyBlipStereo", 10, 10, false);
+  polyBlipStereo = (romos::ContainerModule*)TestModuleBuilder::createPolyBlipStereo("PolyBlipStereo", 10, 10, false);
 
   topLevelModule->addChildModule(polyBlipStereo, true);
   topLevelModule->addAudioConnection(polyBlipStereo, 0, outModuleL, 0);
@@ -57,7 +57,7 @@ void PolyBlipStereoTest::createAndConnectTestChildModules()
 
   // this action is here to expose a bug that occurred in ModuleConatiner updateHasDelayedConnectionsFlag() - the flag was set to true even 
   // when weren't any delayed connections:
-  ContainerModule* in1Out2 = (ContainerModule*)polyBlipStereo->getChildModule(1);
+  romos::ContainerModule* in1Out2 = (romos::ContainerModule*)polyBlipStereo->getChildModule(1);
   in1Out2->sortChildModuleArray();
 }
 void PolyBlipStereoTest::fillDesiredOutputSignalArrays()
@@ -76,7 +76,7 @@ NoiseFluteTest::NoiseFluteTest()
 }
 void NoiseFluteTest::createAndConnectTestChildModules()
 {
-  noiseFlute = (ContainerModule*)TestModuleBuilder::createNoiseFlute("NoiseFlute", 10, 10, false);
+  noiseFlute = (romos::ContainerModule*)TestModuleBuilder::createNoiseFlute("NoiseFlute", 10, 10, false);
 
   topLevelModule->addChildModule(noiseFlute, true);
   topLevelModule->addAudioConnection(noiseFlute, 0, outModuleL, 0);

@@ -47,7 +47,7 @@ namespace rsTestRomos
   protected: 
     virtual void createAndConnectTestChildModules();
     virtual void fillDesiredOutputSignalArrays();
-    ContainerModule *polyBlipStereo;
+    romos::ContainerModule *polyBlipStereo;
   };
 
 
@@ -59,7 +59,7 @@ namespace rsTestRomos
   protected: 
     virtual void createAndConnectTestChildModules();
     virtual void fillDesiredOutputSignalArrays();
-    ContainerModule *noiseFlute;
+    romos::ContainerModule *noiseFlute;
   };
 
 

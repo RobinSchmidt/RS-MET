@@ -7,7 +7,7 @@ namespace rsTestRomos
 romos::Module* TestModuleBuilder::createWrappedAdder(const rosic::rsString &name, int x, int y, 
   bool polyphonic)
 {
-  ContainerModule* m = (ContainerModule*) moduleFactory.createModule("Container", 
+  romos::ContainerModule* m = (romos::ContainerModule*) romos::moduleFactory.createModule("Container", 
     name.asStdString(), x, y, polyphonic);
 
   // change argument order to: typeID, name, x, y, poly, sort - pass as last argument not the polyphonic
@@ -26,7 +26,7 @@ romos::Module* TestModuleBuilder::createWrappedAdder(const rosic::rsString &name
 
 romos::Module* TestModuleBuilder::createGain(const rosic::rsString &name, int x, int y, bool polyphonic)
 {
-  ContainerModule* m = (ContainerModule*) moduleFactory.createModule("Container", 
+  romos::ContainerModule* m = (romos::ContainerModule*) romos::moduleFactory.createModule("Container", 
     name.asStdString(), x, y, polyphonic);
 
   romos::Module *audioInput1  = m->addChildModule("AudioInput",  "In",   1,  2, false, false);

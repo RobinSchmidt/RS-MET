@@ -35,7 +35,7 @@ BandlimitedImpulseTrainPlotTest::BandlimitedImpulseTrainPlotTest()
 {
   numFramesToProcess = 4000;
   //moduleToTest       = ModuleFactory::createModule(ModuleTypeRegistry::BANDLIMITED_IMPULSE_TRAIN);
-  moduleToTest = moduleFactory.createModule("BandlimitedImpulseTrain");
+  moduleToTest = romos::moduleFactory.createModule("BandlimitedImpulseTrain");
 }
 void BandlimitedImpulseTrainPlotTest::fillInputSignalArraysWithTestSignal()
 {
@@ -87,11 +87,11 @@ SawOscillatorPlotTest::SawOscillatorPlotTest(const char* testName)
 {
   numFramesToProcess = 4000;
   //moduleToTest       = ModuleFactory::createModule(ModuleTypeRegistry::BLIT_SAW_OSCILLATOR);
-  moduleToTest = moduleFactory.createModule("BlitOscillator");
+  moduleToTest = romos::moduleFactory.createModule("BlitOscillator");
 }
 void SawOscillatorPlotTest::fillInputSignalArraysWithTestSignal()
 {
-  double fs = processingStatus.getSystemSampleRate();
+  double fs = romos::processingStatus.getSystemSampleRate();
 
 
   initForConstantFreq(22.04, 0.505); // seems to cause problems becaus it hitsb the cosine branch sometimes
@@ -277,9 +277,9 @@ DualBlitSawOscillatorPlotTest::DualBlitSawOscillatorPlotTest()
 {
   numFramesToProcess = 4000;
 
-  moduleFactory.deleteModule(moduleToTest);
+  romos::moduleFactory.deleteModule(moduleToTest);
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::DUAL_BLIT_SAW_OSCILLATOR);
-  moduleToTest = moduleFactory.createModule("BlitOscillator");
+  moduleToTest = romos::moduleFactory.createModule("BlitOscillator");
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
@@ -288,7 +288,7 @@ EnvelopeADSRPlotTest::EnvelopeADSRPlotTest()
   : InteractivePlotTest("EnvelopeADSRPlot")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ENVELOPE_ADSR);
-  moduleToTest = moduleFactory.createModule("ADSR-Envelope");
+  moduleToTest = romos::moduleFactory.createModule("ADSR-Envelope");
 
   sustainValue = 0.2;
   attackShape  = 0.0;
@@ -387,7 +387,7 @@ void EnvelopeADSRPlotTest::setTimesInSecondsFromTimesInSamples()
 {
   noteLength = attackSamples + decaySamples + sustainSamples;
 
-  double fs = processingStatus.getSystemSampleRate();
+  double fs = romos::processingStatus.getSystemSampleRate();
   attackSeconds  = attackSamples  / fs;
   decaySeconds   = decaySamples   / fs;
   sustainSeconds = sustainSamples / fs;
@@ -463,9 +463,9 @@ BiquadDesignerPlotTest::BiquadDesignerPlotTest()
 {
   numFramesToProcess = 801;   // index == 400 -> f = 0 Hz, index == 600 -> f = fs/2
   //moduleToTest       = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD_DESIGNER);
-  moduleToTest = moduleFactory.createModule("BiquadDesigner");
-  fMin               = -processingStatus.getSystemSampleRate();
-  fMax               = +processingStatus.getSystemSampleRate();
+  moduleToTest = romos::moduleFactory.createModule("BiquadDesigner");
+  fMin               = -romos::processingStatus.getSystemSampleRate();
+  fMax               = +romos::processingStatus.getSystemSampleRate();
 }
 void BiquadDesignerPlotTest::fillInputSignalArraysWithTestSignal()  // override initTest instead
 {

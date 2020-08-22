@@ -28,9 +28,9 @@ namespace rsTestRomos
     virtual bool testStealOldestWithoutRetrigger();
     virtual bool testStealOldestWithRetrigger();
 
-    virtual bool areAllNoteOnTriggerFlagsUnchecked(const VoiceAllocator &voiceAllocator);
-    virtual bool isNoteOnTriggerFlagCheckedExclusively( const VoiceAllocator &voiceAllocator, int voiceIndexThatShouldHaveFlagSet);
-    virtual bool isNoteOffTriggerFlagCheckedExclusively(const VoiceAllocator &voiceAllocator, int voiceIndexThatShouldHaveFlagSet);
+    virtual bool areAllNoteOnTriggerFlagsUnchecked(const romos::VoiceAllocator &voiceAllocator);
+    virtual bool isNoteOnTriggerFlagCheckedExclusively( const romos::VoiceAllocator &voiceAllocator, int voiceIndexThatShouldHaveFlagSet);
+    virtual bool isNoteOffTriggerFlagCheckedExclusively(const romos::VoiceAllocator &voiceAllocator, int voiceIndexThatShouldHaveFlagSet);
   };
 
 

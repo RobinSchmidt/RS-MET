@@ -18,12 +18,12 @@ ModularSystemTest::ModularSystemTest(const char* testName)
   blockSize         = 200;
 
   topLevelModule    = modularSystem.getTopLevelModule();
-  inModuleL         = (AudioInputModule*)topLevelModule->getChildModule(0);
-  inModuleR         = (AudioInputModule*)topLevelModule->getChildModule(1);
-  outModuleL        = (AudioOutputModule*)topLevelModule->getChildModule(2);
-  outModuleR        = (AudioOutputModule*)topLevelModule->getChildModule(3);
+  inModuleL         = (romos::AudioInputModule*)topLevelModule->getChildModule(0);
+  inModuleR         = (romos::AudioInputModule*)topLevelModule->getChildModule(1);
+  outModuleL        = (romos::AudioOutputModule*)topLevelModule->getChildModule(2);
+  outModuleR        = (romos::AudioOutputModule*)topLevelModule->getChildModule(3);
 
-  voiceAllocator.reset();  // maybe use a function initialize which is even stronger (resets even more state variables)
+  romos::voiceAllocator.reset();  // maybe use a function initialize which is even stronger (resets even more state variables)
 
   fillInputSignalArraysRandomly(1);
   clearOutputSignalArrays();
@@ -166,7 +166,7 @@ void ModularSystemTest::processOutputSignal(bool useSinglePrecision)
       tmpBlockSize            = RAPT::rsMin(numFramesUntilNextEvent, blockSize);
       if(numFramesUntilNextEvent == 0)
       {
-        NoteEvent currentEvent = events[0];
+        romos::NoteEvent currentEvent = events[0];
         handleEvent(currentEvent);
         rosic::removeElementByIndex(events, 0);
       }
@@ -189,7 +189,7 @@ void ModularSystemTest::processOutputSignal(bool useSinglePrecision)
   }
 }
 
-void ModularSystemTest::handleEvent(NoteEvent eventToHandle)
+void ModularSystemTest::handleEvent(romos::NoteEvent eventToHandle)
 {
   if(eventToHandle.getVelocity() == 0)
     modularSystem.noteOff(eventToHandle.getKey());

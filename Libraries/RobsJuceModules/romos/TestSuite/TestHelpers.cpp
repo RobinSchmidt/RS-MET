@@ -35,22 +35,22 @@ double **ppd[maxNumVoices];
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // generation of test event-arrays:
 
-std::vector<NoteEvent> generateNoteOnOffPair(unsigned int key, unsigned int velocity,
+std::vector<romos::NoteEvent> generateNoteOnOffPair(unsigned int key, unsigned int velocity,
                                              unsigned int deltaFramesForNoteOn, unsigned int durationInFrames)
 {
-  std::vector<NoteEvent> result;
+  std::vector<romos::NoteEvent> result;
   if( durationInFrames == 0 )
     return result; // return an empty vector - note-ons with simultaneous note-offs are discarded
-  result.push_back(NoteEvent(deltaFramesForNoteOn,                    key, velocity));
-  result.push_back(NoteEvent(deltaFramesForNoteOn + durationInFrames, key, 0));
+  result.push_back(romos::NoteEvent(deltaFramesForNoteOn,                    key, velocity));
+  result.push_back(romos::NoteEvent(deltaFramesForNoteOn + durationInFrames, key, 0));
   return result;
 }
 
-std::vector<NoteEvent> generateSimultaneousNotes(unsigned int key, unsigned int velocity,
+std::vector<romos::NoteEvent> generateSimultaneousNotes(unsigned int key, unsigned int velocity,
                                                  unsigned int deltaFramesForNoteOn, unsigned int durationInFrames,
                                                  unsigned int numNotes, unsigned int noteSpacing)
 {
-  std::vector<NoteEvent> result;
+  std::vector<romos::NoteEvent> result;
   unsigned int currentKey = key;
   for(unsigned int i = 1; i <= numNotes; i++)
   {
@@ -60,20 +60,20 @@ std::vector<NoteEvent> generateSimultaneousNotes(unsigned int key, unsigned int 
   return result;
 }
 
-std::vector<NoteEvent> mergeEvents(const std::vector<NoteEvent> &eventArray1, const std::vector<NoteEvent> &eventArray2)
+std::vector<romos::NoteEvent> mergeEvents(const std::vector<romos::NoteEvent> &eventArray1, const std::vector<romos::NoteEvent> &eventArray2)
 {
-  std::vector<NoteEvent> result;
+  std::vector<romos::NoteEvent> result;
   result.reserve(eventArray1.size() + eventArray2.size());
   unsigned int i;
   for(i = 0; i < eventArray1.size(); i++)
     result.push_back(eventArray1[i]);
   for(i = 0; i < eventArray2.size(); i++)
     result.push_back(eventArray2[i]);
-  std::sort(result.begin(), result.end(), noteEventLessByDeltaFrames);
+  std::sort(result.begin(), result.end(), romos::noteEventLessByDeltaFrames);
   return result;
 }
 
-void convertNoteEventsToStartsAndDurations(const std::vector<NoteEvent> &events, std::vector<NoteEvent> &noteOns, std::vector<int> &durations)
+void convertNoteEventsToStartsAndDurations(const std::vector<romos::NoteEvent> &events, std::vector<romos::NoteEvent> &noteOns, std::vector<int> &durations)
 {
   unsigned int i;
   noteOns.clear();
@@ -94,7 +94,7 @@ void convertNoteEventsToStartsAndDurations(const std::vector<NoteEvent> &events,
   }
 }
 
-int findIndexOfMatchingNoteOff(const std::vector<NoteEvent> &events, NoteEvent noteOnEvent)
+int findIndexOfMatchingNoteOff(const std::vector<romos::NoteEvent> &events, romos::NoteEvent noteOnEvent)
 {
   unsigned int i;
   unsigned int startIndex = rosic::findElement(events, noteOnEvent) + 1;
@@ -319,7 +319,7 @@ void getDesiredOutputForFilterBlip(int N, double frequency, double q, double *de
 void setModulePolyphony(romos::Module *module, bool shouldBePolyphonic, bool recursivelyForChildren)
 {
   if( module->isContainerModule() && recursivelyForChildren == true )
-    ((ContainerModule*) module)->setPolyphonicRecursively(shouldBePolyphonic);
+    ((romos::ContainerModule*) module)->setPolyphonicRecursively(shouldBePolyphonic);
   else
     module->setPolyphonic(shouldBePolyphonic);
 }
@@ -353,7 +353,7 @@ bool checkBlockProcessingAndPrintResult(romos::Module *module, double ***x, doub
 
   // we need to trigger a note in order to mark voice with index 0 as active - todo: maybe leave voice 0 (optionally) always active
   // for effects:
-  voiceAllocator.noteOn(69, 64);
+  romos::voiceAllocator.noteOn(69, 64);
 
   // now the actual block processing test with different (randomized) number of frames per block:
   module->resetStateForAllVoices();
@@ -367,20 +367,20 @@ bool checkBlockProcessingAndPrintResult(romos::Module *module, double ***x, doub
     resultCorrect = checkResult(y[0], d[0], module->getNumOutputPins(), numFramesToProcess, tolerance);
     if( !resultCorrect )
     {
-      voiceAllocator.killVoice(voiceAllocator.noteOff(69));
+      romos::voiceAllocator.killVoice(romos::voiceAllocator.noteOff(69));
       printf("%s %s %s", "!!! ", testName, " failed !!!\n");
       return false;
     }
   }
 
-  voiceAllocator.killVoice(voiceAllocator.noteOff(69));
+  romos::voiceAllocator.killVoice(romos::voiceAllocator.noteOff(69));
   printf("%s %s", testName, "passed\n");
   return true;
 }
 
 bool checkProcessingFunctionsAndPrintResults(romos::Module *module, int numVoicesToCheck, int numFrames,
                                              double ***x, double ***y, double ***d,
-                                             double tolerance, char *testName, std::vector<NoteEvent> *events)
+                                             double tolerance, char *testName, std::vector<romos::NoteEvent> *events)
 {
   bool result = true;
 
@@ -396,7 +396,7 @@ bool checkProcessingFunctionsAndPrintResults(romos::Module *module, int numVoice
 }
 
 bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, double ***y, double ***d,
-                                               double tolerance, char *testName, std::vector<NoteEvent> *events)
+                                               double tolerance, char *testName, std::vector<romos::NoteEvent> *events)
 {
   module->resetStateForAllVoices();
   RAPT::rsArrayTools::fillWithZeros(y[0][0], numFrames);
@@ -415,7 +415,7 @@ bool checkProcessingInFramesMonoAndPrintResult(romos::Module *module, int numFra
 }
 
 bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFrames, double ***x, double ***y, double ***d,
-                                               double tolerance, char *testName, std::vector<NoteEvent> *events)
+                                               double tolerance, char *testName, std::vector<romos::NoteEvent> *events)
 {
   module->resetStateForAllVoices();
   RAPT::rsArrayTools::fillWithZeros(y[0][0], numFrames);
@@ -435,7 +435,7 @@ bool checkProcessingInBlocksMonoAndPrintResult(romos::Module *module, int numFra
 
 bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoicesToCheck, int numFrames,
                                                double ***x, double ***y, double ***d,
-                                               double tolerance, char *testName, std::vector<NoteEvent> *events)
+                                               double tolerance, char *testName, std::vector<romos::NoteEvent> *events)
 {
   module->resetStateForAllVoices();
   int v;
@@ -460,7 +460,7 @@ bool checkProcessingInFramesPolyAndPrintResult(romos::Module *module, int numVoi
 
 bool checkProcessingInBlocksPolyAndPrintResult(romos::Module *module, int numVoicesToCheck, int numFrames,
                                                double ***x, double ***y, double ***d,
-                                               double tolerance, char *testName, std::vector<NoteEvent> *events)
+                                               double tolerance, char *testName, std::vector<romos::NoteEvent> *events)
 {
   module->resetStateForAllVoices();
   int v;
@@ -545,8 +545,8 @@ void retrieveOutputBlock(romos::Module *module, double ***outputs, int blockStar
   }
   else
   {
-    int numPlayingVoices           = processingStatus.getNumPlayingVoices();
-    const int *playingVoiceIndices = processingStatus.getPlayingVoiceIndices();
+    int numPlayingVoices           = romos::processingStatus.getNumPlayingVoices();
+    const int *playingVoiceIndices = romos::processingStatus.getPlayingVoiceIndices();
     for(int v = 0; v < numPlayingVoices; v++)
     {
       int voiceIndex = playingVoiceIndices[v];
@@ -578,7 +578,7 @@ void processModuleInFramesNoEvents(romos::Module *module, int numFrames, double 
 void processModuleInFrames(romos::Module *module, int numFrames, double ***inputs, double ***outputs, std::vector<NoteEvent> *events,
                            bool polyphonic)
 {
-  voiceAllocator.reset();
+  romos::voiceAllocator.reset();
   module->setPolyphonic(polyphonic);
 
   if( events == NULL || events->size() == 0 )
@@ -589,13 +589,13 @@ void processModuleInFrames(romos::Module *module, int numFrames, double ***input
     int numEventsHandled = 0;
     while( frameIndex < numFrames )
     {
-      NoteEvent e                 = events->at(numEventsHandled);
+      romos::NoteEvent e                 = events->at(numEventsHandled);
       int numFramesUntilNextEvent = e.getDeltaFrames() - frameIndex;
 
       // process chunk until the next event:
       processModuleInFramesNoEvents(module, numFramesUntilNextEvent, inputs, outputs, frameIndex);
 
-      voiceAllocator.noteOn(e.getKey(), e.getVelocity());
+      romos::voiceAllocator.noteOn(e.getKey(), e.getVelocity());
 
       numEventsHandled++;
       frameIndex += numFramesUntilNextEvent;
@@ -619,7 +619,7 @@ void processBlock(romos::Module *module, double ***inputs, double ***outputs, in
 
 void processModuleInBlocksNoEvents(romos::Module *module, int numFrames, double ***inputs, double ***outputs, int startIndex)
 {
-  int maxBlockSize = processingStatus.getBufferSize();
+  int maxBlockSize = romos::processingStatus.getBufferSize();
   int blockStart   = startIndex;
   while( blockStart < startIndex + numFrames )
   {
@@ -631,28 +631,28 @@ void processModuleInBlocksNoEvents(romos::Module *module, int numFrames, double 
   }
 }
 
-void processModuleInBlocks(romos::Module *module, int numFrames, double ***inputs, double ***outputs, std::vector<NoteEvent> *events,
+void processModuleInBlocks(romos::Module *module, int numFrames, double ***inputs, double ***outputs, std::vector<romos::NoteEvent> *events,
                            bool polyphonic)
 {
-  voiceAllocator.reset();
+  romos::voiceAllocator.reset();
   module->setPolyphonic(polyphonic);
 
   if( events == NULL || events->size() == 0 )
     processModuleInBlocksNoEvents(module, numFrames, inputs, outputs, 0);
   else
   {
-    int maxBlockSize     = processingStatus.getBufferSize();
+    int maxBlockSize     = romos::processingStatus.getBufferSize();
     int blockStart       = 0;
     int numEventsHandled = 0;
     while( blockStart < numFrames )
     {
-      NoteEvent e                 = events->at(numEventsHandled);
+      romos::NoteEvent e                 = events->at(numEventsHandled);
       int numFramesUntilNextEvent = e.getDeltaFrames() - blockStart;
 
       // process chunk until the next event:
       processModuleInBlocksNoEvents(module, numFramesUntilNextEvent, inputs, outputs, blockStart);
 
-      voiceAllocator.noteOn(e.getKey(), e.getVelocity());
+      romos::voiceAllocator.noteOn(e.getKey(), e.getVelocity());
       numEventsHandled++;
 
       blockStart += numFramesUntilNextEvent;

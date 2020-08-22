@@ -1,8 +1,5 @@
 //#include "romos_ArithmeticModules.h"
 
-namespace romos // move this namespace wrapping into romos.cpp
-{
-
 void ConstantModule::initialize()
 {
   initOutputPins({ "" });
@@ -277,5 +274,3 @@ void AdderNModule::disconnectInputPin(int inputPinIndex)
   }
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_N(AdderNModule);
-
-}

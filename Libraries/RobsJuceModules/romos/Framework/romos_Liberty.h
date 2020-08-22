@@ -1,8 +1,6 @@
 #ifndef romos_Liberty_h
 #define romos_Liberty_h
 
-namespace romos
-{
 
 /** Liberty is a modular synthesizer */
 
@@ -102,6 +100,6 @@ INLINE void Liberty::getBlockOfSampleFramesStereo(SampleType *inOutL, SampleType
   topLevelModule->getBlockOfSampleFramesStereo(inOutL, inOutR, numFrames);
 }
 */
-} // end namespace romos
+
 
 #endif // Liberty_h

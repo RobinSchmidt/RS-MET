@@ -4,22 +4,22 @@
 namespace rsTestRomos
 {
 
-std::vector<NoteEvent> TestEventGenerator::generateNoteOnOffPair(unsigned int key, unsigned int velocity,
+std::vector<romos::NoteEvent> TestEventGenerator::generateNoteOnOffPair(unsigned int key, unsigned int velocity,
   unsigned int deltaFramesForNoteOn, unsigned int durationInFrames)
 {
-  std::vector<NoteEvent> result;
+  std::vector<romos::NoteEvent> result;
   if(durationInFrames == 0)
     return result; // return an empty vector - note-ons with simultaneous note-offs are discarded
-  result.push_back(NoteEvent(deltaFramesForNoteOn, key, velocity));
-  result.push_back(NoteEvent(deltaFramesForNoteOn + durationInFrames, key, 0));
+  result.push_back(romos::NoteEvent(deltaFramesForNoteOn, key, velocity));
+  result.push_back(romos::NoteEvent(deltaFramesForNoteOn + durationInFrames, key, 0));
   return result;
 }
 
-std::vector<NoteEvent> TestEventGenerator::generateSimultaneousNotes(unsigned int key, unsigned int velocity,
+std::vector<romos::NoteEvent> TestEventGenerator::generateSimultaneousNotes(unsigned int key, unsigned int velocity,
   unsigned int deltaFramesForNoteOn, unsigned int durationInFrames,
   unsigned int numNotes, unsigned int noteSpacing)
 {
-  std::vector<NoteEvent> result;
+  std::vector<romos::NoteEvent> result;
   unsigned int currentKey = key;
   for(unsigned int i = 1; i <= numNotes; i++)
   {
@@ -29,10 +29,10 @@ std::vector<NoteEvent> TestEventGenerator::generateSimultaneousNotes(unsigned in
   return result;
 }
 
-std::vector<NoteEvent> TestEventGenerator::mergeEvents(const std::vector<NoteEvent>& eventArray1,
-  const std::vector<NoteEvent>& eventArray2)
+std::vector<romos::NoteEvent> TestEventGenerator::mergeEvents(const std::vector<romos::NoteEvent>& eventArray1,
+  const std::vector<romos::NoteEvent>& eventArray2)
 {
-  std::vector<NoteEvent> result;
+  std::vector<romos::NoteEvent> result;
   result.reserve(eventArray1.size() + eventArray2.size());
   unsigned int i;
   for(i = 0; i < eventArray1.size(); i++)
@@ -43,8 +43,8 @@ std::vector<NoteEvent> TestEventGenerator::mergeEvents(const std::vector<NoteEve
   return result;
 }
 
-void TestEventGenerator::convertNoteEventsToStartsAndDurations(const std::vector<NoteEvent>& events,
-  std::vector<NoteEvent>& noteOns, std::vector<int>& durations)
+void TestEventGenerator::convertNoteEventsToStartsAndDurations(const std::vector<romos::NoteEvent>& events,
+  std::vector<romos::NoteEvent>& noteOns, std::vector<int>& durations)
 {
   unsigned int i;
   noteOns.clear();
@@ -65,7 +65,7 @@ void TestEventGenerator::convertNoteEventsToStartsAndDurations(const std::vector
   }
 }
 
-int TestEventGenerator::findIndexOfMatchingNoteOff(const std::vector<NoteEvent>& events, NoteEvent noteOnEvent)
+int TestEventGenerator::findIndexOfMatchingNoteOff(const std::vector<romos::NoteEvent>& events, romos::NoteEvent noteOnEvent)
 {
   unsigned int i;
   unsigned int startIndex = rosic::findElement(events, noteOnEvent) + 1;

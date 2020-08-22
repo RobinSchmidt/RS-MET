@@ -20,7 +20,7 @@ IdentityTest::IdentityTest()
   : ProcessingTest("Identity")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::IDENTITY);
-  moduleToTest = moduleFactory.createModule("Identity");
+  moduleToTest = romos::moduleFactory.createModule("Identity");
 }
 void IdentityTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -33,7 +33,7 @@ AdderTest::AdderTest()
   : ProcessingTest("Adder")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
-  moduleToTest = moduleFactory.createModule("Adder");
+  moduleToTest = romos::moduleFactory.createModule("Adder");
 }
 void AdderTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -46,7 +46,7 @@ Adder3Test::Adder3Test()
   : ProcessingTest("Adder3")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER_3);
-  moduleToTest = moduleFactory.createModule("Adder3");
+  moduleToTest = romos::moduleFactory.createModule("Adder3");
 }
 void Adder3Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -62,7 +62,7 @@ Adder4Test::Adder4Test()
   : ProcessingTest("Adder4")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER_4);
-  moduleToTest = moduleFactory.createModule("Adder4");
+  moduleToTest = romos::moduleFactory.createModule("Adder4");
 }
 void Adder4Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -78,7 +78,7 @@ Adder5Test::Adder5Test()
   : ProcessingTest("Adder5")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER_5);
-  moduleToTest = moduleFactory.createModule("Adder5");
+  moduleToTest = romos::moduleFactory.createModule("Adder5");
 }
 void Adder5Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -107,7 +107,7 @@ SubtractorTest::SubtractorTest()
   : ProcessingTest("Subtractor")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::SUBTRACTOR);
-  moduleToTest = moduleFactory.createModule("Subtractor");
+  moduleToTest = romos::moduleFactory.createModule("Subtractor");
 }
 void SubtractorTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -120,7 +120,7 @@ UnitDelayTest::UnitDelayTest()
   : ProcessingTest("UnitDelay")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::UNIT_DELAY);
-  moduleToTest = moduleFactory.createModule("UnitDelay");
+  moduleToTest = romos::moduleFactory.createModule("UnitDelay");
 }
 void UnitDelayTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -134,7 +134,7 @@ NoiseGeneratorTest::NoiseGeneratorTest()
   : ProcessingTest("NoiseGeneratorTest")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::WHITE_NOISE);
-  moduleToTest = moduleFactory.createModule("WhiteNoise");
+  moduleToTest = romos::moduleFactory.createModule("WhiteNoise");
 }
 void NoiseGeneratorTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -212,18 +212,18 @@ bool WrappedAdderNTest::runTest()
 }
 void WrappedAdderNTest::removeConnection(int index)
 {
-  romos::Module* audioInput = ((ContainerModule*)moduleToTest)->getChildModule(0);
-  romos::Module* adderN     = ((ContainerModule*)moduleToTest)->getChildModule(1);
-  ((ContainerModule*)moduleToTest)->deleteAudioConnection(audioInput, 0, adderN, index);
+  romos::Module* audioInput = ((romos::ContainerModule*)moduleToTest)->getChildModule(0);
+  romos::Module* adderN     = ((romos::ContainerModule*)moduleToTest)->getChildModule(1);
+  ((romos::ContainerModule*)moduleToTest)->deleteAudioConnection(audioInput, 0, adderN, index);
 }
 int WrappedAdderNTest::getAdderNumInputPins()
 {
-  romos::Module* adderN = ((ContainerModule*)moduleToTest)->getChildModule(1);
+  romos::Module* adderN = ((romos::ContainerModule*)moduleToTest)->getChildModule(1);
   return adderN->getNumInputPins();
 }
 int WrappedAdderNTest::getAdderNumConnectedInputPins()
 {
-  romos::Module* adderN = ((ContainerModule*)moduleToTest)->getChildModule(1);
+  romos::Module* adderN = ((romos::ContainerModule*)moduleToTest)->getChildModule(1);
   int result = 0;
   for(unsigned int i = 0; i < adderN->getNumInputPins(); i++)
   {
@@ -301,7 +301,7 @@ LeakyIntegratorDoubleDelayTest::LeakyIntegratorDoubleDelayTest()
   moduleToTest = TestModuleBuilder::createLeakyIntegrator(name, 0, 0, false);
 
   //romos::Module *identity = ((ContainerModule*) moduleToTest)->getChildModulesWithTypeOld(ModuleTypeRegistry::IDENTITY).at(0);
-  romos::Module* identity = ((ContainerModule*)moduleToTest)->getChildModulesWithType("Identity").at(0);
+  romos::Module* identity = ((romos::ContainerModule*)moduleToTest)->getChildModulesWithType("Identity").at(0);
 
   identity->setPositionXY(17, 2);
 }
@@ -341,7 +341,7 @@ BiquadAtomicTest::BiquadAtomicTest() : ProcessingTest("BiquadAtomic")
 {
   tolerance    = 1.e-14;
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
-  moduleToTest = moduleFactory.createModule("Biquad");
+  moduleToTest = romos::moduleFactory.createModule("Biquad");
 }
 void BiquadAtomicTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
@@ -354,8 +354,8 @@ void BiquadAtomicTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic
 
 BiquadFormulaTest::BiquadFormulaTest() : ProcessingTest("BiquadFormula")
 {
-  FormulaModule_N_1* formulaModule =
-    (FormulaModule_N_1*)moduleFactory.createModule("Formula_N_1");
+  romos::FormulaModule_N_1* formulaModule =
+    (romos::FormulaModule_N_1*)romos::moduleFactory.createModule("Formula_N_1");
 
   formulaModule->setInputVariables("x,b0,b1,b2,a1,a2");
   //formulaModule->setOutputVariables("x,y,z");
@@ -378,9 +378,9 @@ void BiquadFormulaTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphoni
 Formula1In1OutTest::Formula1In1OutTest() : ProcessingTest("Formula_1_1")
 {
   tolerance    = 1.e-14;  // shouldn't 0 also work?
-  moduleFactory.registerModuleType(new FormulaModule_1_1TypeInfo);
-  moduleToTest = moduleFactory.createModule("Formula_1_1");
-  FormulaModule_1_1* formulaModule = static_cast<FormulaModule_1_1*> (moduleToTest);
+  romos::moduleFactory.registerModuleType(new romos::FormulaModule_1_1TypeInfo);
+  moduleToTest = romos::moduleFactory.createModule("Formula_1_1");
+  romos::FormulaModule_1_1* formulaModule = static_cast<romos::FormulaModule_1_1*> (moduleToTest);
   formulaModule->setFormula("tanh(2*x^2)");
 }
 void Formula1In1OutTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
@@ -394,15 +394,15 @@ void Formula1In1OutTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphon
 
 Formula_N_1Test::Formula_N_1Test() : ProcessingTest("Formula_N_1")
 {
-  moduleFactory.registerModuleType(new FormulaModule_N_1TypeInfo);
-  moduleToTest = moduleFactory.createModule("Formula_N_1");
-  FormulaModule_N_1* formulaModule = static_cast<FormulaModule_N_1*> (moduleToTest);
+  romos::moduleFactory.registerModuleType(new romos::FormulaModule_N_1TypeInfo);
+  moduleToTest = romos::moduleFactory.createModule("Formula_N_1");
+  romos::FormulaModule_N_1* formulaModule = static_cast<romos::FormulaModule_N_1*> (moduleToTest);
   formulaModule->setFormula("tanh(2*x^2)");
 }
 bool Formula_N_1Test::runTest()
 {
   bool result = true;
-  FormulaModule_N_1* formulaModule = static_cast<FormulaModule_N_1*> (moduleToTest);
+  romos::FormulaModule_N_1* formulaModule = static_cast<romos::FormulaModule_N_1*> (moduleToTest);
 
 
   //formulaModule->setFormula("x1 + x2");

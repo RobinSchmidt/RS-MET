@@ -1,8 +1,5 @@
 //#include "romos_FunctionModules.h"
 
-namespace romos
-{
-
 //-------------------------------------------------------------------------------------------------
 
 void ClipperModule::initialize()
@@ -78,7 +75,3 @@ INLINE void SaturatorModule::process(Module *module, double *In, double *Width, 
   //*out = sat->sigmoid(*In);  // preliminary
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_3(SaturatorModule);
-
-
-
-}

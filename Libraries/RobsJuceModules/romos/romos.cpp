@@ -37,9 +37,6 @@ namespace romos
 #include "Framework/romos_VoiceAllocator.cpp"
 #include "Framework/romos_WorkArea.cpp"
 
-
-}
-
 #include "Modules/romos_ArithmeticModules.cpp"
 #include "Modules/romos_DelayModules.cpp"
 #include "Modules/romos_FilterModules.cpp"
@@ -50,6 +47,12 @@ namespace romos
 #include "Modules/romos_SoundGeneratorModules.cpp"
 
 #include "Framework/romos_Liberty.cpp"
+}
+
+
+
+
+using namespace romos; // get rid
 
 
 #include "TestSuite/AutomaticTests.cpp"
