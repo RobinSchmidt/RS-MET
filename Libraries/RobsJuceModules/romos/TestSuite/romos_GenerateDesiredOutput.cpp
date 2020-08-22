@@ -1,16 +1,19 @@
 #include "romos_GenerateDesiredOutput.h"
-using namespace rsTestRomos;
+//using namespace rsTestRomos;
 //using namespace romos;
 
-void GenerateDesiredOutput::forImpulse(int N, double *x)
+namespace rsTestRomos
+{
+
+void GenerateDesiredOutput::forImpulse(int N, double* x)
 {
   x[0] = 1.0;
   for(int n = 1; n < N; n++)
     x[n] = 0.0;
 }
 
-void GenerateDesiredOutput::forWhiteNoiseUniform(int N, double  *d, unsigned long seed)
-{ 
+void GenerateDesiredOutput::forWhiteNoiseUniform(int N, double* d, unsigned long seed)
+{
   unsigned long state = seed;
   for(int n = 0; n < N; n++)
   {
@@ -19,14 +22,14 @@ void GenerateDesiredOutput::forWhiteNoiseUniform(int N, double  *d, unsigned lon
   }
 }
 
-void GenerateDesiredOutput::forUnitDelay(int N, double *x, double *d)
+void GenerateDesiredOutput::forUnitDelay(int N, double* x, double* d)
 {
   d[0] = 0.0;
   for(int n = 1; n < N; n++)
     d[n] = x[n-1];
 }
 
-void GenerateDesiredOutput::forSummedDiffs(int N, double **x, double **d)
+void GenerateDesiredOutput::forSummedDiffs(int N, double** x, double** d)
 {
   double d1, d2, d3, d4;
   for(int n = 0; n < N; n++)
@@ -42,47 +45,47 @@ void GenerateDesiredOutput::forSummedDiffs(int N, double **x, double **d)
   }
 }
 
-void GenerateDesiredOutput::forMovingAverage(int N, double *x, double *b0, double *b1, double *d)
+void GenerateDesiredOutput::forMovingAverage(int N, double* x, double* b0, double* b1, double* d)
 {
   d[0] = b0[0]*x[0] + b1[0]*0.0;  // assumes 0.0 as initial state of x[n-1] buffer
   for(int n = 1; n < N; n++)
-    d[n] = b0[n]*x[n] + b1[n]*x[n-1]; 
+    d[n] = b0[n]*x[n] + b1[n]*x[n-1];
 }
 
-void GenerateDesiredOutput::forLeakyIntegrator(int N, double *x, double *c, double *d)
+void GenerateDesiredOutput::forLeakyIntegrator(int N, double* x, double* c, double* d)
 {
   d[0] = c[0]*x[0] + (1.0-c[0])*0.0;  // assumes 0.0 as initial state of y[n-1] buffer
   for(int n = 1; n < N; n++)
-    d[n] = c[n]*x[n] + (1.0-c[n])*d[n-1]; 
+    d[n] = c[n]*x[n] + (1.0-c[n])*d[n-1];
 }
 
-void GenerateDesiredOutput::forLeakyIntegratorDoubleDelay(int N, double *x, double *c, double *d)
+void GenerateDesiredOutput::forLeakyIntegratorDoubleDelay(int N, double* x, double* c, double* d)
 {
   d[0] = c[0] * x[0] + (1.0 - c[0]) * 0.0;  // assumes 0.0 as initial state of y[n-1] buffer
   d[1] = c[1] * x[1] + (1.0 - c[1]) * 0.0;  // assumes 0.0 as initial state of y[n-2] buffer
   for(int n = 2; n < N; n++)
-    d[n] = c[n]*x[n] + (1.0-c[n])*d[n-2]; 
+    d[n] = c[n]*x[n] + (1.0-c[n])*d[n-2];
 }
 
-void GenerateDesiredOutput::forTestFilter1(int N, double *x, double *b0, double *b1, double *c, 
-                                            double *dSum, double *dDiff, double *dProd)
-{  
-  double *dMovAv   = new double[N];
-  double *dLeakInt = new double[N];
-  GenerateDesiredOutput::forMovingAverage(  N, x, b0, b1, dMovAv);
-  GenerateDesiredOutput::forLeakyIntegrator(N, x, c,      dLeakInt);
-  RAPT::rsArrayTools::add(     dMovAv, dLeakInt, dSum,  N);
+void GenerateDesiredOutput::forTestFilter1(int N, double* x, double* b0, double* b1, double* c,
+  double* dSum, double* dDiff, double* dProd)
+{
+  double* dMovAv   = new double[N];
+  double* dLeakInt = new double[N];
+  GenerateDesiredOutput::forMovingAverage(N, x, b0, b1, dMovAv);
+  GenerateDesiredOutput::forLeakyIntegrator(N, x, c, dLeakInt);
+  RAPT::rsArrayTools::add(dMovAv, dLeakInt, dSum, N);
   RAPT::rsArrayTools::subtract(dMovAv, dLeakInt, dDiff, N);
   RAPT::rsArrayTools::multiply(dMovAv, dLeakInt, dProd, N);
   delete[] dLeakInt;
   delete[] dMovAv;
 }
 
-void GenerateDesiredOutput::forBiquad(int N, double *x, double *b0, double *b1, double *b2, double *a1, double *a2, double *y)
+void GenerateDesiredOutput::forBiquad(int N, double* x, double* b0, double* b1, double* b2, double* a1, double* a2, double* y)
 {
   /*
   // assumes 0.0 as initial values of all buffers:
-  y[0] = b0[0]*x[0];  
+  y[0] = b0[0]*x[0];
   y[1] = b0[1]*x[1] + b1[1]*x[0] - a1[1]*y[0];
   for(int n = 2; n < N; n++)
     y[n] = b0[n]*x[n] + b1[n]*x[n-1] + b2[n]*x[n-2] - a1[n]*y[n-1] - a2[n]*y[n-2];
@@ -105,16 +108,16 @@ void GenerateDesiredOutput::forBiquad(int N, double *x, double *b0, double *b1, 
 }
 
 
-void GenerateDesiredOutput::forBiquadWithFixedCoeffs(int N, double  *x, double  b0, double  b1, 
-  double  b2, double  a1, double  a2, double *d)
+void GenerateDesiredOutput::forBiquadWithFixedCoeffs(int N, double* x, double  b0, double  b1,
+  double  b2, double  a1, double  a2, double* d)
 {
-  double *b0a = new double[N];  RAPT::rsArrayTools::fillWithValue(b0a, N, b0);
-  double *b1a = new double[N];  RAPT::rsArrayTools::fillWithValue(b1a, N, b1);
-  double *b2a = new double[N];  RAPT::rsArrayTools::fillWithValue(b2a, N, b2);
-  double *a1a = new double[N];  RAPT::rsArrayTools::fillWithValue(a1a, N, a1);
-  double *a2a = new double[N];  RAPT::rsArrayTools::fillWithValue(a2a, N, a2);
+  double* b0a = new double[N];  RAPT::rsArrayTools::fillWithValue(b0a, N, b0);
+  double* b1a = new double[N];  RAPT::rsArrayTools::fillWithValue(b1a, N, b1);
+  double* b2a = new double[N];  RAPT::rsArrayTools::fillWithValue(b2a, N, b2);
+  double* a1a = new double[N];  RAPT::rsArrayTools::fillWithValue(a1a, N, a1);
+  double* a2a = new double[N];  RAPT::rsArrayTools::fillWithValue(a2a, N, a2);
 
-  GenerateDesiredOutput::forBiquad(N, x, b0a, b1a, b2a, a1a, a2a, d); 
+  GenerateDesiredOutput::forBiquad(N, x, b0a, b1a, b2a, a1a, a2a, d);
 
   delete[] b0a;
   delete[] b1a;
@@ -123,25 +126,25 @@ void GenerateDesiredOutput::forBiquadWithFixedCoeffs(int N, double  *x, double  
   delete[] a2a;
 }
 
-void GenerateDesiredOutput::forFormula1In1Out(int N, double *x, double *d)
+void GenerateDesiredOutput::forFormula1In1Out(int N, double* x, double* d)
 {
-  for(int n = 0; n < N; n++) 
+  for(int n = 0; n < N; n++)
     d[n] = tanh(2 * x[n]*x[n]); // tanh(2*x^2) is our example formula
 }
 
 
-void GenerateDesiredOutput::forFilterBlip(int N, double frequency, double q, double *desiredOutput)
+void GenerateDesiredOutput::forFilterBlip(int N, double frequency, double q, double* desiredOutput)
 {
-  double *x = new double[N];  
-  double coeffs[5];  
-  romos::biquadBandpassConstSkirtCoeffs(coeffs, frequency, q);  
-  GenerateDesiredOutput::forImpulse(              N, x);
+  double* x = new double[N];
+  double coeffs[5];
+  romos::biquadBandpassConstSkirtCoeffs(coeffs, frequency, q);
+  GenerateDesiredOutput::forImpulse(N, x);
   GenerateDesiredOutput::forBiquadWithFixedCoeffs(N, x, coeffs[0], coeffs[1], coeffs[2], coeffs[3], coeffs[4], desiredOutput);
   delete[] x;
 }
 
 /*
-void GenerateDesiredOutput::forGatedNoteFrequencies(int N, std::vector<romos::NoteEvent> *events, double ***desiredOutputs,                                           
+void GenerateDesiredOutput::forGatedNoteFrequencies(int N, std::vector<romos::NoteEvent> *events, double ***desiredOutputs,
                                                      bool containerIsPolyphonic, bool noteFreqModuleIsPolyphonic)
 {
   std::vector<NoteEvent> noteOns;
@@ -151,8 +154,8 @@ void GenerateDesiredOutput::forGatedNoteFrequencies(int N, std::vector<romos::No
 
   zeroDesiredOutputs();
 
-  // in the generation of the desired output signals, we assume here that the note-ons do not exceed the number of available voices, i.e. 
-  // we don't consider voice-stealing and we also use a new voice for each of the notes, regardless whether the notes are actually 
+  // in the generation of the desired output signals, we assume here that the note-ons do not exceed the number of available voices, i.e.
+  // we don't consider voice-stealing and we also use a new voice for each of the notes, regardless whether the notes are actually
   // simultaneous or not
   // \todo use the romos::ProcessingStatus object to do actual voice-allocation as the synth would
   // write separate tests for the ProcessingStatus object
@@ -211,5 +214,4 @@ void GenerateDesiredOutput::forGatedNoteFrequencies(int N, std::vector<romos::No
 }
 */
 
-
-
+}

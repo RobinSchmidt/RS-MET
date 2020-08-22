@@ -1,5 +1,8 @@
 #include "romos_TestModuleBuilder.h"
-using namespace rsTestRomos;
+//using namespace rsTestRomos;
+
+namespace rsTestRomos
+{
 
 romos::Module* TestModuleBuilder::createWrappedAdder(const rosic::rsString &name, int x, int y, 
   bool polyphonic)
@@ -1530,3 +1533,5 @@ romos::Module* romos::createAudioPinSortingTestModule(ModuleProperties *properti
   return testModule;
 }
 */
+
+}

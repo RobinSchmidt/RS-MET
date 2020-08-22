@@ -1,5 +1,8 @@
 #include "romos_UnitTestRunner.h"
-using namespace rsTestRomos;
+//using namespace rsTestRomos;
+
+namespace rsTestRomos
+{
 
 UnitTestRunner::UnitTestRunner()
 {
@@ -21,10 +24,10 @@ bool UnitTestRunner::runAllTestsAndPrintResultsToConsole()
 
 bool UnitTestRunner::runGlobalFrameworkTests()
 {
-  const char *testName = "GlobalFrameworkTests";
+  const char* testName = "GlobalFrameworkTests";
   printf("%s %s", testName, ":\n");
 
-  UnitTest *test;
+  UnitTest* test;
   bool testsPassed = true;
 
   test = new TopLevelModuleTest();  testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
@@ -38,10 +41,10 @@ bool UnitTestRunner::runGlobalFrameworkTests()
 
 bool UnitTestRunner::runProcessingTests()
 {
-  const char *testName = "ProcessingTests";
+  const char* testName = "ProcessingTests";
   printf("%s %s", testName, ":\n");
 
-  UnitTest *test;
+  UnitTest* test;
   bool testsPassed = true;
 
   test = new Formula_N_1Test();                testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
@@ -81,10 +84,10 @@ bool UnitTestRunner::runProcessingTests()
 
 bool UnitTestRunner::runContainerManipulationTests()
 {
-  const char *testName = "ContainerManipulationTests";
+  const char* testName = "ContainerManipulationTests";
   printf("%s %s", testName, ":\n");
 
-  UnitTest *test;
+  UnitTest* test;
   bool testsPassed = true;
 
 
@@ -102,10 +105,10 @@ bool UnitTestRunner::runContainerManipulationTests()
 
 bool UnitTestRunner::runSystemTests()
 {
-  const char *testName = "SystemTests";
+  const char* testName = "SystemTests";
   printf("%s %s", testName, ":\n");
 
-  UnitTest *test;
+  UnitTest* test;
   bool testsPassed = true;
 
   test = new BypassTest();          testsPassed &= test->runTestAndPrintResultToConsole(); delete test;
@@ -120,7 +123,7 @@ bool UnitTestRunner::runSystemTests()
 bool UnitTestRunner::runMiscTests()
 {
   bool testsPassed = true;
-  const char *testName = "MiscTests";
+  const char* testName = "MiscTests";
   printf("%s %s", testName, ":\n");
 
   testsPassed &= testFormulaModules();
@@ -131,10 +134,13 @@ bool UnitTestRunner::runMiscTests()
 }
 
 
-void UnitTestRunner::printTestResultToConsole(bool testPassed, const char *testName)
+void UnitTestRunner::printTestResultToConsole(bool testPassed, const char* testName)
 {
-  if( testPassed )
+  if(testPassed)
     printf("%s %s", testName, " passed.\n\n");
   else
     printf("%s %s %s", "!!! ", testName, " FAILED !!!\n\n");
+}
+
+
 }

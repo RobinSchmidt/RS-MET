@@ -6,7 +6,7 @@
 //#include "romos_TestEventGenerator.h"
 //#include "romos_GenerateDesiredOutput.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
 /** This file contains concrete subclasses of ProcessingTest. 

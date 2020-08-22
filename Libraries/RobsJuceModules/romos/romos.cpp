@@ -12,7 +12,7 @@ header files that the compiler may be using.
 
 #include "romos.h"
 
-using namespace rosic;
+using namespace rosic;  // get rid
 
 //romos::PostExitMemLeakChecker romos::postExitMemLeakChecker;
 
@@ -21,8 +21,11 @@ using namespace rosic;
 // just include all files in alphabetical order - it's impractical to try to include them in
 // dependency order due to a messy dependency network
 
+namespace romos
+{
 #include "Algorithms/romos_FilterDesign.cpp"
 #include "Algorithms/romos_Interpolation.cpp"
+}
 
 #include "Framework/romos_AudioConnection.cpp"
 #include "Framework/romos_Liberty.cpp"

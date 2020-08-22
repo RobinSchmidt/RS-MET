@@ -1,5 +1,9 @@
 #include "romos_ConcreteProcessingTests.h"
-using namespace romos;
+//using namespace rsTestRomos;
+
+namespace rsTestRomos
+{
+
 
 /*
 PolyphonicProcessingTest::PolyphonicProcessingTest(const char *testName)
@@ -13,40 +17,40 @@ PolyphonicProcessingTest::PolyphonicProcessingTest(const char *testName)
 
 
 IdentityTest::IdentityTest()
-: ProcessingTest("Identity")
+  : ProcessingTest("Identity")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::IDENTITY);
   moduleToTest = moduleFactory.createModule("Identity");
 }
 void IdentityTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
     RAPT::rsArrayTools::copy(inputs[v][0], desiredOutputs[v][0], numFramesToProcess);
 }
 
 
 AdderTest::AdderTest()
-: ProcessingTest("Adder")
+  : ProcessingTest("Adder")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
   moduleToTest = moduleFactory.createModule("Adder");
 }
 void AdderTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
     RAPT::rsArrayTools::add(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
 }
 
 
 Adder3Test::Adder3Test()
-: ProcessingTest("Adder3")
+  : ProcessingTest("Adder3")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER_3);
   moduleToTest = moduleFactory.createModule("Adder3");
 }
 void Adder3Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
   {
     for(int n = 0; n < numFramesToProcess; n++)
       desiredOutputs[v][0][n] = inputs[v][0][n] + inputs[v][1][n] + inputs[v][2][n];
@@ -55,65 +59,65 @@ void Adder3Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 
 
 Adder4Test::Adder4Test()
-: ProcessingTest("Adder4")
+  : ProcessingTest("Adder4")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER_4);
   moduleToTest = moduleFactory.createModule("Adder4");
 }
 void Adder4Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
   {
     for(int n = 0; n < numFramesToProcess; n++)
-      desiredOutputs[v][0][n] = inputs[v][0][n] + inputs[v][1][n] + inputs[v][2][n] + inputs[v][3][n]; 
+      desiredOutputs[v][0][n] = inputs[v][0][n] + inputs[v][1][n] + inputs[v][2][n] + inputs[v][3][n];
   }
 }
 
 
 Adder5Test::Adder5Test()
-: ProcessingTest("Adder5")
+  : ProcessingTest("Adder5")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::ADDER_5);
   moduleToTest = moduleFactory.createModule("Adder5");
 }
 void Adder5Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
   {
     for(int n = 0; n < numFramesToProcess; n++)
-      desiredOutputs[v][0][n] = inputs[v][0][n] + inputs[v][1][n] + inputs[v][2][n] + inputs[v][3][n] + inputs[v][4][n]; 
+      desiredOutputs[v][0][n] = inputs[v][0][n] + inputs[v][1][n] + inputs[v][2][n] + inputs[v][3][n] + inputs[v][4][n];
   }
 }
 
 
 
 WrappedAdderTest::WrappedAdderTest()
-: ProcessingTest("WrappedAdder")
+  : ProcessingTest("WrappedAdder")
 {
   moduleToTest = TestModuleBuilder::createWrappedAdder("WrappedAdder", 0, 0, true);
 }
 void WrappedAdderTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
     RAPT::rsArrayTools::add(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
 }
 
 
 SubtractorTest::SubtractorTest()
-: ProcessingTest("Subtractor")
+  : ProcessingTest("Subtractor")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::SUBTRACTOR);
   moduleToTest = moduleFactory.createModule("Subtractor");
 }
 void SubtractorTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
     RAPT::rsArrayTools::subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
 }
 
 
 UnitDelayTest::UnitDelayTest()
-: ProcessingTest("UnitDelay")
+  : ProcessingTest("UnitDelay")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::UNIT_DELAY);
   moduleToTest = moduleFactory.createModule("UnitDelay");
@@ -127,7 +131,7 @@ void UnitDelayTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 
 
 NoiseGeneratorTest::NoiseGeneratorTest()
-: ProcessingTest("NoiseGeneratorTest")
+  : ProcessingTest("NoiseGeneratorTest")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::WHITE_NOISE);
   moduleToTest = moduleFactory.createModule("WhiteNoise");
@@ -141,15 +145,15 @@ void NoiseGeneratorTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphon
 
 
 SumDiffProdTest::SumDiffProdTest()
-: ProcessingTest("SumDiffProd")
+  : ProcessingTest("SumDiffProd")
 {
   moduleToTest = TestModuleBuilder::createSumDiffProd("SumDiffProd", 0, 0, true);
 }
 void SumDiffProdTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
   {
-    RAPT::rsArrayTools::add(     inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArrayTools::add(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
     RAPT::rsArrayTools::subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][1], numFramesToProcess);
     RAPT::rsArrayTools::multiply(inputs[v][0], inputs[v][1], desiredOutputs[v][2], numFramesToProcess);
   }
@@ -157,15 +161,15 @@ void SumDiffProdTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 
 
 WrappedSumDiffProdTest::WrappedSumDiffProdTest()
-: ProcessingTest("WrappedSumDiffProd")
+  : ProcessingTest("WrappedSumDiffProd")
 {
   moduleToTest = TestModuleBuilder::createWrappedSumDiffProd("WrappedSumDiffProd", 0, 0, true);
 }
 void WrappedSumDiffProdTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
   {
-    RAPT::rsArrayTools::add(     inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArrayTools::add(inputs[v][0], inputs[v][1], desiredOutputs[v][0], numFramesToProcess);
     RAPT::rsArrayTools::subtract(inputs[v][0], inputs[v][1], desiredOutputs[v][1], numFramesToProcess);
     RAPT::rsArrayTools::multiply(inputs[v][0], inputs[v][1], desiredOutputs[v][2], numFramesToProcess);
   }
@@ -173,18 +177,18 @@ void WrappedSumDiffProdTest::fillDesiredOutputSignalArrays(bool testModuleIsPoly
 
 
 WrappedAdderNTest::WrappedAdderNTest()
-: ProcessingTest("WrappedAdderN")
+  : ProcessingTest("WrappedAdderN")
 {
   moduleToTest = TestModuleBuilder::createWrappedAdderN("WrappedAdderN", 0, 0, true);
 }
 void WrappedAdderNTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
   {
-    RAPT::rsArrayTools::copy(inputs[v][0],  desiredOutputs[v][0], numFramesToProcess);
-    RAPT::rsArrayTools::scale(desiredOutputs[v][0], desiredOutputs[v][0], numFramesToProcess, (double) getAdderNumConnectedInputPins());
+    RAPT::rsArrayTools::copy(inputs[v][0], desiredOutputs[v][0], numFramesToProcess);
+    RAPT::rsArrayTools::scale(desiredOutputs[v][0], desiredOutputs[v][0], numFramesToProcess, (double)getAdderNumConnectedInputPins());
   }
-}  
+}
 bool WrappedAdderNTest::runTest()
 {
   bool result = true;
@@ -193,19 +197,19 @@ bool WrappedAdderNTest::runTest()
   result &= ProcessingTest::runTest();
 
   // remove a connection from the middle - should not remove the input pin:
-  removeConnection(5);  
+  removeConnection(5);
   result &= getAdderNumInputPins() == 11;
   result &= ProcessingTest::runTest();
 
   // remove last connection (index 9) - should remove the last input pin (which is currently at index 9+1 = 10) and reduce the number of 
   // pins to input pins to 10:
-  removeConnection(9);  
+  removeConnection(9);
   result &= getAdderNumInputPins() == 10;
   result &= ProcessingTest::runTest();
 
   int dummy = 0;
   return result;
-}   
+}
 void WrappedAdderNTest::removeConnection(int index)
 {
   romos::Module* audioInput = ((ContainerModule*)moduleToTest)->getChildModule(0);
@@ -223,21 +227,21 @@ int WrappedAdderNTest::getAdderNumConnectedInputPins()
   int result = 0;
   for(unsigned int i = 0; i < adderN->getNumInputPins(); i++)
   {
-    if( adderN->isInputPinConnected(i) )
+    if(adderN->isInputPinConnected(i))
       result++;
   }
   return result;
 }
 
 SummedDiffsTest::SummedDiffsTest()
-: ProcessingTest("SummedDiffs")
+  : ProcessingTest("SummedDiffs")
 {
   moduleToTest = TestModuleBuilder::createSummedDiffs(name, 0, 0, false);
 }
 void SummedDiffsTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   double d1, d2, d3, d4;
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
   {
     for(int n = 0; n < numFramesToProcess; n++)
     {
@@ -255,49 +259,49 @@ void SummedDiffsTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 
 
 MovingAverageTest::MovingAverageTest()
-: ProcessingTest("MovingAverage")
+  : ProcessingTest("MovingAverage")
 {
   moduleToTest = TestModuleBuilder::createMovingAverage(name, 0, 0, false);
 }
 void MovingAverageTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
     GenerateDesiredOutput::forMovingAverage(numFramesToProcess, inputs[v][0], inputs[v][1], inputs[v][2], desiredOutputs[v][0]);
 }
 
 
 
 DelayedConnectionTest::DelayedConnectionTest()
-: ProcessingTest("DelayedConnection")
+  : ProcessingTest("DelayedConnection")
 {
   moduleToTest = TestModuleBuilder::createDelayedConnection("DelayedConnection", 0, 0, false);
 }
 void DelayedConnectionTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
     GenerateDesiredOutput::forUnitDelay(numFramesToProcess, inputs[v][0], desiredOutputs[v][0]);
 }
 
 
 LeakyIntegratorTest::LeakyIntegratorTest()
-: ProcessingTest("LeakyIntegrator")
+  : ProcessingTest("LeakyIntegrator")
 {
   moduleToTest = TestModuleBuilder::createLeakyIntegrator("LeakyIntegrator", 0, 0, false);
 }
 void LeakyIntegratorTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
     GenerateDesiredOutput::forLeakyIntegrator(numFramesToProcess, inputs[v][0], inputs[v][1], desiredOutputs[v][0]);
 }
 
 
 LeakyIntegratorDoubleDelayTest::LeakyIntegratorDoubleDelayTest()
-: ProcessingTest("LeakyIntegratorDoubleDelay")
+  : ProcessingTest("LeakyIntegratorDoubleDelay")
 {
   moduleToTest = TestModuleBuilder::createLeakyIntegrator(name, 0, 0, false);
 
   //romos::Module *identity = ((ContainerModule*) moduleToTest)->getChildModulesWithTypeOld(ModuleTypeRegistry::IDENTITY).at(0);
-  romos::Module *identity = ((ContainerModule*) moduleToTest)->getChildModulesWithType("Identity").at(0);
+  romos::Module* identity = ((ContainerModule*)moduleToTest)->getChildModulesWithType("Identity").at(0);
 
   identity->setPositionXY(17, 2);
 }
@@ -309,15 +313,15 @@ void LeakyIntegratorDoubleDelayTest::fillDesiredOutputSignalArrays(bool testModu
 
 
 TestFilter1Test::TestFilter1Test()
-: ProcessingTest("TestFilter1")
+  : ProcessingTest("TestFilter1")
 {
   moduleToTest = TestModuleBuilder::createTestFilter1(name, 0, 0, false);
 }
 void TestFilter1Test::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++)
-    GenerateDesiredOutput::forTestFilter1(numFramesToProcess, inputs[v][0], inputs[v][1], inputs[v][2], inputs[v][3], 
-                                          desiredOutputs[v][0], desiredOutputs[v][1], desiredOutputs[v][2]);
+    GenerateDesiredOutput::forTestFilter1(numFramesToProcess, inputs[v][0], inputs[v][1], inputs[v][2], inputs[v][3],
+      desiredOutputs[v][0], desiredOutputs[v][1], desiredOutputs[v][2]);
 }
 
 
@@ -329,7 +333,7 @@ BiquadMacroTest::BiquadMacroTest() : ProcessingTest("BiquadMacro")
 void BiquadMacroTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++)
-    GenerateDesiredOutput::forBiquad(numFramesToProcess, inputs[v][0], inputs[v][1], inputs[v][2], 
+    GenerateDesiredOutput::forBiquad(numFramesToProcess, inputs[v][0], inputs[v][1], inputs[v][2],
       inputs[v][3], inputs[v][4], inputs[v][5], desiredOutputs[v][0]);
 }
 
@@ -342,16 +346,16 @@ BiquadAtomicTest::BiquadAtomicTest() : ProcessingTest("BiquadAtomic")
 void BiquadAtomicTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
   for(int v = 0; v < numVoicesToUse; v++)
-    GenerateDesiredOutput::forBiquad(numFramesToProcess, 
-      inputs[v][0], inputs[v][1], inputs[v][2], inputs[v][3], inputs[v][4], inputs[v][5], 
+    GenerateDesiredOutput::forBiquad(numFramesToProcess,
+      inputs[v][0], inputs[v][1], inputs[v][2], inputs[v][3], inputs[v][4], inputs[v][5],
       desiredOutputs[v][0]);
 }
 
 
 BiquadFormulaTest::BiquadFormulaTest() : ProcessingTest("BiquadFormula")
 {
-  FormulaModule_N_1* formulaModule = 
-    (FormulaModule_N_1*) moduleFactory.createModule("Formula_N_1");
+  FormulaModule_N_1* formulaModule =
+    (FormulaModule_N_1*)moduleFactory.createModule("Formula_N_1");
 
   formulaModule->setInputVariables("x,b0,b1,b2,a1,a2");
   //formulaModule->setOutputVariables("x,y,z");
@@ -363,8 +367,8 @@ void BiquadFormulaTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphoni
 {
   // function is the same in all 3 biquad test classes - factor it out into a BiquadTest baseclass
   for(int v = 0; v < numVoicesToUse; v++)
-    GenerateDesiredOutput::forBiquad(numFramesToProcess, 
-      inputs[v][0], inputs[v][1], inputs[v][2], inputs[v][3], inputs[v][4], inputs[v][5], 
+    GenerateDesiredOutput::forBiquad(numFramesToProcess,
+      inputs[v][0], inputs[v][1], inputs[v][2], inputs[v][3], inputs[v][4], inputs[v][5],
       desiredOutputs[v][0]);
 }
 // make a test for a lorenz-system
@@ -374,7 +378,7 @@ void BiquadFormulaTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphoni
 Formula1In1OutTest::Formula1In1OutTest() : ProcessingTest("Formula_1_1")
 {
   tolerance    = 1.e-14;  // shouldn't 0 also work?
-  moduleFactory.registerModuleType(new FormulaModule_1_1TypeInfo); 
+  moduleFactory.registerModuleType(new FormulaModule_1_1TypeInfo);
   moduleToTest = moduleFactory.createModule("Formula_1_1");
   FormulaModule_1_1* formulaModule = static_cast<FormulaModule_1_1*> (moduleToTest);
   formulaModule->setFormula("tanh(2*x^2)");
@@ -390,7 +394,7 @@ void Formula1In1OutTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphon
 
 Formula_N_1Test::Formula_N_1Test() : ProcessingTest("Formula_N_1")
 {
-  moduleFactory.registerModuleType(new FormulaModule_N_1TypeInfo); 
+  moduleFactory.registerModuleType(new FormulaModule_N_1TypeInfo);
   moduleToTest = moduleFactory.createModule("Formula_N_1");
   FormulaModule_N_1* formulaModule = static_cast<FormulaModule_N_1*> (moduleToTest);
   formulaModule->setFormula("tanh(2*x^2)");
@@ -442,7 +446,7 @@ protected:
 
 
 BlipTest::BlipTest()
-: ProcessingTest("Blip")
+  : ProcessingTest("Blip")
 {
   tolerance          = 1.e-14;
   moduleToTest       = TestModuleBuilder::createBlip("Blip", 0, 0, false);
@@ -466,47 +470,47 @@ void BlipTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 
 
 MonoToPolyTest::MonoToPolyTest()
-: ProcessingTest("MonoToPoly")
+  : ProcessingTest("MonoToPoly")
 {
   moduleToTest = TestModuleBuilder::createMonoToPoly("MonoToPoly", 0, 0, false);
 }
 void MonoToPolyTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  for(int v = 0; v < numVoicesToUse; v++) 
+  for(int v = 0; v < numVoicesToUse; v++)
     RAPT::rsArrayTools::fillWithValue(desiredOutputs[v][0], numFramesToProcess, -1.0);
 }
 
 
 
 VoiceCombinerTest::VoiceCombinerTest()
-: ProcessingTest("VoiceCombiner")
+  : ProcessingTest("VoiceCombiner")
 {
   moduleToTest = TestModuleBuilder::createVoiceCombiner("VoiceCombiner", 0, 0, false);
 }
 void VoiceCombinerTest::fillDesiredOutputSignalArrays(bool testModuleIsPolyphonic)
 {
-  if( testModuleIsPolyphonic )
+  if(testModuleIsPolyphonic)
   {
     // 0-th voice output contains the sum ( == numvoicesToUse), other voices are referred to the same value (because our output
     // is monophonic) - so all voices contain numVoicesToUse in this case:
-    for(int v = 0; v < numVoicesToUse; v++) 
-      RAPT::rsArrayTools::fillWithValue(desiredOutputs[v][0], numFramesToProcess, (double) numVoicesToUse);
+    for(int v = 0; v < numVoicesToUse; v++)
+      RAPT::rsArrayTools::fillWithValue(desiredOutputs[v][0], numFramesToProcess, (double)numVoicesToUse);
   }
   else
   {
     // 0-th voice output contains the passed through 0-th voice (unity), other voices are referred to the same value (because our output
     // is monophonic) - so all voices contaim unity in this case:
-    for(int v = 0; v < numVoicesToUse; v++) 
+    for(int v = 0; v < numVoicesToUse; v++)
       RAPT::rsArrayTools::fillWithValue(desiredOutputs[v][0], numFramesToProcess, 1.0);
   }
 }
 
 GateAndKillTest::GateAndKillTest()
-: ProcessingTest("GateAndKill")
+  : ProcessingTest("GateAndKill")
 {
   moduleToTest       = TestModuleBuilder::createGateAndKill("GateAndKill", 0, 0, true);
   numFramesToProcess = 400;
-  
+
   events = TestEventGenerator::generateNoteOnOffPair(1, 64, 10, 100);
   //events = TestEventGenerator::mergeEvents(events, TestEventGenerator::generateNoteOnOffPair(2, 64,  25, 100));
   //events = TestEventGenerator::mergeEvents(events, TestEventGenerator::generateNoteOnOffPair(3, 64,  50, 100));
@@ -522,3 +526,5 @@ void GateAndKillTest::runTest()
 
 }
 */
+
+}

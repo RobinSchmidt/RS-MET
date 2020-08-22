@@ -1,5 +1,8 @@
 #include "romos_PerformanceTestRunner.h"
-using namespace rsTestRomos;
+//using namespace rsTestRomos;
+
+namespace rsTestRomos
+{
 
 PerformanceTestRunner::PerformanceTestRunner()
 {
@@ -20,7 +23,7 @@ void PerformanceTestRunner::runAllTestsAndPrintResultsToConsole(bool createLogFi
   report += runFrameworkPerformanceTests();
   report += runAtomicModulePerformanceTests();
 
-  if( createLogFile == true )
+  if(createLogFile == true)
     rosic::writeStringToFile("E:/TmpData/RomosPerformanceLog.txt", report.getRawString());
 }
 
@@ -28,8 +31,8 @@ void PerformanceTestRunner::runAllTestsAndPrintResultsToConsole(bool createLogFi
 rosic::rsString PerformanceTestRunner::runFrameworkPerformanceTests()
 {
   rosic::rsString report;
-  PerformanceTest *test; 
-  
+  PerformanceTest* test;
+
   rosic::rsString header = "Framework:\n";
   header.printToStandardOutput();
   report += header;
@@ -48,7 +51,7 @@ rosic::rsString PerformanceTestRunner::runFrameworkPerformanceTests()
 rosic::rsString PerformanceTestRunner::runAtomicModulePerformanceTests()
 {
   rosic::rsString report;
-  PerformanceTest *test; 
+  PerformanceTest* test;
 
   rosic::rsString header = "Atomic Modules:\n";
   header.printToStandardOutput();
@@ -69,7 +72,7 @@ rosic::rsString PerformanceTestRunner::runAtomicModulePerformanceTests()
   return report;
 }
 
-double rsTestRomos::dummyFunction(double x)
+double dummyFunction(double x)
 {
   return x;
 }
@@ -164,15 +167,16 @@ rosic::rsString PerformanceTestRunner::runInternalFunctionPerformanceTests()
 
     }
 
-    double cyclesPerCall = (double) counter.getNumCyclesSinceInit() / (double) numCalls;
-    if( cyclesPerCall < minCyclesPerCall && cyclesPerCall > 0.0 )
+    double cyclesPerCall = (double)counter.getNumCyclesSinceInit() / (double)numCalls;
+    if(cyclesPerCall < minCyclesPerCall && cyclesPerCall > 0.0)
       minCyclesPerCall = cyclesPerCall;
   }
 
-  printf("%s %.2f %s", "Cycles per call:", minCyclesPerCall ,"\n");
+  printf("%s %.2f %s", "Cycles per call:", minCyclesPerCall, "\n");
 
 
   printf("%s", "\n");
   return report;
 }
 
+}

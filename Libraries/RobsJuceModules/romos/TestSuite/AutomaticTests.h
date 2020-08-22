@@ -1,8 +1,7 @@
-#include "TestHelpers.h"
-using namespace rosic;  // get rid!
-using namespace romos;
+#include "TestHelpers.h"  // get rid!
+//using namespace rosic;  // get rid!
+//using namespace romos;
 
-//wrap into namespace rsTestRomos
 namespace rsTestRomos
 {
 

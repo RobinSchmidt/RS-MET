@@ -1,8 +1,8 @@
 #ifndef romos_Interpolation_h
 #define romos_Interpolation_h
 
-namespace romos
-{
+//namespace romos
+//{
 
 //-------------------------------------------------------------------------------------------------
 
@@ -21,6 +21,6 @@ References:
  -Moore: Elements of Computer Music, page 184 */
 double interpolateExponentially(double x, double xL, double yL, double xR, double yR, double shape);
 
-}
+//}
 
 #endif

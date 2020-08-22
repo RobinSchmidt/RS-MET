@@ -1,12 +1,13 @@
 #include "romos_ConcreteModularSystemTests.h"
-using namespace rsTestRomos; // try to get rid
+//using namespace rsTestRomos; // try to get rid
 
 
+namespace rsTestRomos
+{
 
-
-BypassTest::BypassTest(const char *testName)
-: ModularSystemTest(testName)
-{    
+BypassTest::BypassTest(const char* testName)
+  : ModularSystemTest(testName)
+{
   tolerance = 1.e-7;  // weird - this high tolerance is needed in release builds - why so huge? it's just a bypass....
 }
 void BypassTest::createAndConnectTestChildModules()
@@ -24,15 +25,15 @@ void BypassTest::fillDesiredOutputSignalArrays()
 
 
 BypassWithChildTest::BypassWithChildTest()
-: BypassTest("BypassWithChildTest")
-{  
+  : BypassTest("BypassWithChildTest")
+{
 
 }
 void BypassWithChildTest::createAndConnectTestChildModules()
 {
   BypassTest::createAndConnectTestChildModules();
   //topLevelModule->addChildModule(getTypeId("UnitDelay"), "D",  10,  4, false, true);
-  topLevelModule->addChildModule("UnitDelay", "D",  10,  4, false, true);
+  topLevelModule->addChildModule("UnitDelay", "D", 10, 4, false, true);
 }
 
 
@@ -40,15 +41,15 @@ void BypassWithChildTest::createAndConnectTestChildModules()
 
 
 PolyBlipStereoTest::PolyBlipStereoTest()
-: ModularSystemTest("PolyBlipStereoTest")
-{  
+  : ModularSystemTest("PolyBlipStereoTest")
+{
   //events = TestEventGenerator::generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToUse, 12);
   events    = TestEventGenerator::generateSimultaneousNotes(81, 64, 0, signalLength-1, 1, 12);
   tolerance = 1.e-8;
 }
 void PolyBlipStereoTest::createAndConnectTestChildModules()
 {
-  polyBlipStereo = (ContainerModule*) TestModuleBuilder::createPolyBlipStereo("PolyBlipStereo", 10, 10, false);
+  polyBlipStereo = (ContainerModule*)TestModuleBuilder::createPolyBlipStereo("PolyBlipStereo", 10, 10, false);
 
   topLevelModule->addChildModule(polyBlipStereo, true);
   topLevelModule->addAudioConnection(polyBlipStereo, 0, outModuleL, 0);
@@ -56,7 +57,7 @@ void PolyBlipStereoTest::createAndConnectTestChildModules()
 
   // this action is here to expose a bug that occurred in ModuleConatiner updateHasDelayedConnectionsFlag() - the flag was set to true even 
   // when weren't any delayed connections:
-  ContainerModule *in1Out2 = (ContainerModule*) polyBlipStereo->getChildModule(1);
+  ContainerModule* in1Out2 = (ContainerModule*)polyBlipStereo->getChildModule(1);
   in1Out2->sortChildModuleArray();
 }
 void PolyBlipStereoTest::fillDesiredOutputSignalArrays()
@@ -67,15 +68,15 @@ void PolyBlipStereoTest::fillDesiredOutputSignalArrays()
 
 
 NoiseFluteTest::NoiseFluteTest()
-: ModularSystemTest("NoiseFluteTest")
-{  
+  : ModularSystemTest("NoiseFluteTest")
+{
   //events = TestEventGenerator::generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToUse, 12);
-  events    = TestEventGenerator::generateSimultaneousNotes(81, 64, 0, signalLength, 1, 12);  
+  events    = TestEventGenerator::generateSimultaneousNotes(81, 64, 0, signalLength, 1, 12);
   tolerance = 2.e-8;
 }
 void NoiseFluteTest::createAndConnectTestChildModules()
 {
-  noiseFlute = (ContainerModule*) TestModuleBuilder::createNoiseFlute("NoiseFlute", 10, 10, false);
+  noiseFlute = (ContainerModule*)TestModuleBuilder::createNoiseFlute("NoiseFlute", 10, 10, false);
 
   topLevelModule->addChildModule(noiseFlute, true);
   topLevelModule->addAudioConnection(noiseFlute, 0, outModuleL, 0);
@@ -86,13 +87,14 @@ void NoiseFluteTest::fillDesiredOutputSignalArrays()
 {
   GenerateDesiredOutput::forWhiteNoiseUniform(signalLength, desiredOutputs[0], 0);
   GenerateDesiredOutput::forWhiteNoiseUniform(signalLength, desiredOutputs[1], 1);
-  double coeffs[5];  
+  double coeffs[5];
   romos::biquadBandpassConstSkirtCoeffs(coeffs, 880.0, 50.0);
-  GenerateDesiredOutput::forBiquadWithFixedCoeffs(signalLength, desiredOutputs[0], coeffs[0],  coeffs[1],  coeffs[2],  coeffs[3],  
-                                                  coeffs[4], desiredOutputs[0]);
-  GenerateDesiredOutput::forBiquadWithFixedCoeffs(signalLength, desiredOutputs[1], coeffs[0],  coeffs[1],  coeffs[2],  coeffs[3],  
-                                                  coeffs[4], desiredOutputs[1]);
+  GenerateDesiredOutput::forBiquadWithFixedCoeffs(signalLength, desiredOutputs[0], coeffs[0], coeffs[1], coeffs[2], coeffs[3],
+    coeffs[4], desiredOutputs[0]);
+  GenerateDesiredOutput::forBiquadWithFixedCoeffs(signalLength, desiredOutputs[1], coeffs[0], coeffs[1], coeffs[2], coeffs[3],
+    coeffs[4], desiredOutputs[1]);
   RAPT::rsArrayTools::scale(desiredOutputs[0], desiredOutputs[0], signalLength, 0.125);
   RAPT::rsArrayTools::scale(desiredOutputs[1], desiredOutputs[1], signalLength, 0.125);
 }
 
+}

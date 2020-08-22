@@ -1,38 +1,39 @@
 #include "romos_ConcretePerformanceTests.h"
-using namespace rsTestRomos;  // try to get rid
+//using namespace rsTestRomos;  // try to get rid
 
+namespace rsTestRomos
+{
 
-
-BiquadMacroPerformanceTest::BiquadMacroPerformanceTest() 
-: PerformanceTest("BiquadMacro")
+BiquadMacroPerformanceTest::BiquadMacroPerformanceTest()
+  : PerformanceTest("BiquadMacro")
 {
   moduleToTest = TestModuleBuilder::createBiquadMacro(name, 0, 0, false);
 }
 
 
-IdentityChainPerformanceTest::IdentityChainPerformanceTest() 
-: PerformanceTest("IdentityChain")
+IdentityChainPerformanceTest::IdentityChainPerformanceTest()
+  : PerformanceTest("IdentityChain")
 {
   moduleToTest = TestModuleBuilder::createIdentityChain(name, 0, 0, false);
 }
 
 
-IdentityChainWithFeedbackPerformanceTest::IdentityChainWithFeedbackPerformanceTest() 
-: PerformanceTest("IdentityChainWithFeedback")
+IdentityChainWithFeedbackPerformanceTest::IdentityChainWithFeedbackPerformanceTest()
+  : PerformanceTest("IdentityChainWithFeedback")
 {
   moduleToTest = TestModuleBuilder::createIdentityChainWithFeedback(name, 0, 0, false);
 }
 
 
-AdderChainPerformanceTest::AdderChainPerformanceTest() 
-: PerformanceTest("AdderChain")
+AdderChainPerformanceTest::AdderChainPerformanceTest()
+  : PerformanceTest("AdderChain")
 {
   moduleToTest = TestModuleBuilder::createAdderChain(name, 0, 0, false);
 }
 
 
-AdderChainWithFeedbackPerformanceTest::AdderChainWithFeedbackPerformanceTest() 
-: PerformanceTest("AdderChainWithFeedback")
+AdderChainWithFeedbackPerformanceTest::AdderChainWithFeedbackPerformanceTest()
+  : PerformanceTest("AdderChainWithFeedback")
 {
   moduleToTest = TestModuleBuilder::createAdderChainWithFeedback(name, 0, 0, false);
 }
@@ -40,37 +41,39 @@ AdderChainWithFeedbackPerformanceTest::AdderChainWithFeedbackPerformanceTest()
 
 
 
-FirstOrderFilterPerformanceTest::FirstOrderFilterPerformanceTest() 
-: PerformanceTest("FirstOrderFilter")
+FirstOrderFilterPerformanceTest::FirstOrderFilterPerformanceTest()
+  : PerformanceTest("FirstOrderFilter")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::FIRST_ORDER_FILTER);
   moduleToTest = moduleFactory.createModule("FirstOrderFilter");
 }
 
-BiquadPerformanceTest::BiquadPerformanceTest() 
-: PerformanceTest("Biquad")
+BiquadPerformanceTest::BiquadPerformanceTest()
+  : PerformanceTest("Biquad")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
   moduleToTest = moduleFactory.createModule("Biquad");
 }
 
-BiquadDesignerPerformanceTest::BiquadDesignerPerformanceTest() 
-: PerformanceTest("BiquadDesigner")
+BiquadDesignerPerformanceTest::BiquadDesignerPerformanceTest()
+  : PerformanceTest("BiquadDesigner")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD_DESIGNER);
   moduleToTest = moduleFactory.createModule("BiquadDesigner");
 }
 
-BandlimitedImpulseTrainPerformanceTest::BandlimitedImpulseTrainPerformanceTest() 
-: PerformanceTest("BandlimitedImpulseTrain")
+BandlimitedImpulseTrainPerformanceTest::BandlimitedImpulseTrainPerformanceTest()
+  : PerformanceTest("BandlimitedImpulseTrain")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::BANDLIMITED_IMPULSE_TRAIN);
   moduleToTest = moduleFactory.createModule("BandlimitedImpulseTrain");
 }
 
-SawOscillatorPerformanceTest::SawOscillatorPerformanceTest() 
-: PerformanceTest("SawOscillator")
+SawOscillatorPerformanceTest::SawOscillatorPerformanceTest()
+  : PerformanceTest("SawOscillator")
 {
   //moduleToTest = ModuleFactory::createModule(ModuleTypeRegistry::BLIT_SAW_OSCILLATOR);
   moduleToTest = moduleFactory.createModule("BlitOscillator");
+}
+
 }

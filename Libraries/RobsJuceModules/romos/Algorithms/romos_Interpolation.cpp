@@ -1,8 +1,8 @@
 //#include "romos_Interpolation.h"
 //#include <math.h>
-using namespace romos;
+//using namespace romos;
 
-double romos::interpolateExponentially(double x, double xL, double yL, double xR, double yR, double shape)
+double interpolateExponentially(double x, double xL, double yL, double xR, double yR, double shape)
 {
   double p = (x-xL) / (xR-xL);  // proportion of passedLength/fullLength (Eq.3-30)
   if( shape == 0.0 )

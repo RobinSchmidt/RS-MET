@@ -36,8 +36,12 @@
 
 //#define RS_BUILD_OLD_MODULE_FACTORY    // for transition to new factory implementation
 
+namespace romos
+{
 #include "Algorithms/romos_FilterDesign.h"
 #include "Algorithms/romos_Interpolation.h"
+} // todo: absorb code below also into this namespace dclaration
+
 #include "Framework/romos_AudioConnection.h"
 #include "Framework/romos_ModuleFactory.h"
 #include "Framework/romos_VoiceAllocator.h"

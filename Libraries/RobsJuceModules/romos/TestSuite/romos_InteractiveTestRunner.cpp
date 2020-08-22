@@ -1,5 +1,8 @@
 #include "romos_InteractiveTestRunner.h"
-using namespace rsTestRomos;
+//using namespace rsTestRomos;
+
+namespace rsTestRomos
+{
 
 InteractiveTestRunner::InteractiveTestRunner()
 {
@@ -8,8 +11,8 @@ InteractiveTestRunner::InteractiveTestRunner()
 
 void InteractiveTestRunner::runTests()
 {
-    
-  InteractivePlotTest *plotTest; 
+
+  InteractivePlotTest* plotTest;
 
 
   //plotTest = new BandlimitedImpulseTrainPlotTest();   plotTest->runTestAndPlotResults(); delete plotTest;
@@ -27,3 +30,4 @@ void InteractiveTestRunner::runTests()
   int dummy = 0;
 }
 
+}

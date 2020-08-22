@@ -1,8 +1,8 @@
 #ifndef romos_FilterDesign_h
 #define romos_FilterDesign_h
 
-namespace romos
-{
+//namespace romos
+//{
 
 // todo: re-implement this using RAPT::rsLadderFilter, RAPT::rsBiquad - consolidate all formulas 
 // there
@@ -79,6 +79,6 @@ self-oscillation) and "ag" is the amount of automatic gain compensation that cou
 loss at high resonances (1.0 means full compensation) */
 void ladderCoeffs(double *coeffs, int mode, double f, double r, double ag);
 
-}
+//}
 
 #endif

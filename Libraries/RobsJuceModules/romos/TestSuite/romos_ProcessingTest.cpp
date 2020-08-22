@@ -1,5 +1,8 @@
 #include "romos_ProcessingTest.h"
-using namespace rsTestRomos;
+//using namespace rsTestRomos;
+
+namespace rsTestRomos
+{
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
@@ -468,3 +471,4 @@ void ProcessingTest::plotDesiredAndActualOutput(int voiceIndex, int pinIndex, in
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // internal functions:
 
+}

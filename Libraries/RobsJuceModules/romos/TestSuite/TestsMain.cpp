@@ -2,7 +2,7 @@
 //#include "InteractiveTests.h"
 //#include "PerformanceTests.h"
 
-#include "../romos.h"
+#include "../romos.h"  // try to get rid
 
 bool runModularUnitTests()
 {

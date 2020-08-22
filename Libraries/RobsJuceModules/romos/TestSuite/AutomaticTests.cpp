@@ -1,4 +1,4 @@
-#include "AutomaticTests.h"
+#include "AutomaticTests.h" // get rid!
 //using namespace rsTestRomos;
 
 namespace rsTestRomos

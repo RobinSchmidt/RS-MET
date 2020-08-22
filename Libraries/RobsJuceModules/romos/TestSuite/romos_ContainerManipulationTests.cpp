@@ -1,7 +1,9 @@
 #include "romos_ContainerManipulationTests.h"
-using namespace romos;
-using namespace rsTestRomos;
+//using namespace romos;
+//using namespace rsTestRomos;
 
+namespace rsTestRomos
+{
 
 Containerize01::Containerize01() : ContainerManipulationTest("ContainerizationTest01")
 {
@@ -19,8 +21,8 @@ bool Containerize01::runTest()
   romos::Module* output2Level0             = containerLevel0->getChildModule(3);
 
   // check if child modules have the right types:
-  result &= inputLevel0  ->getTypeName() == "AudioInput";
-  result &= minus        ->getTypeName() == "UnaryMinus";
+  result &= inputLevel0->getTypeName() == "AudioInput";
+  result &= minus->getTypeName() == "UnaryMinus";
   result &= output1Level0->getTypeName() == "AudioOutput";
   result &= output2Level0->getTypeName() == "AudioOutput";
 
@@ -38,26 +40,26 @@ bool Containerize01::runTest()
 
   // check if parent-relation is correct:
   result &= containerLevel1->getParentModule()    == containerLevel0;
-  result &= inputLevel0    ->getParentModule()    == containerLevel0;
-  result &= minus          ->getParentModule()    == containerLevel1;
-  result &= output1Level0  ->getParentModule()    == containerLevel0;
-  result &= output2Level0  ->getParentModule()    == containerLevel0;
+  result &= inputLevel0->getParentModule()    == containerLevel0;
+  result &= minus->getParentModule()    == containerLevel1;
+  result &= output1Level0->getParentModule()    == containerLevel0;
+  result &= output2Level0->getParentModule()    == containerLevel0;
 
   // check the created container's external connections:
   result &= containerLevel1->inputPins[0].sourceModule == inputLevel0;
-  result &= output1Level0  ->inputPins[0].sourceModule == containerLevel1;
-  result &= output1Level0  ->inputPins[0].outputIndex  == 0;
-  result &= output2Level0  ->inputPins[0].sourceModule == containerLevel1;
-  result &= output2Level0  ->inputPins[0].outputIndex  == 0;
+  result &= output1Level0->inputPins[0].sourceModule == containerLevel1;
+  result &= output1Level0->inputPins[0].outputIndex  == 0;
+  result &= output2Level0->inputPins[0].sourceModule == containerLevel1;
+  result &= output2Level0->inputPins[0].outputIndex  == 0;
 
   // check the created container's internal connections:
   romos::Module* inputLevel1  = containerLevel1->getChildModule(0);
   romos::Module* outputLevel1 = containerLevel1->getChildModule(2);
-  result &= minus       ->inputPins[0].sourceModule == inputLevel1;
+  result &= minus->inputPins[0].sourceModule == inputLevel1;
   result &= outputLevel1->inputPins[0].sourceModule == minus;
 
 
-    
+
   //printModuleStructure(moduleToTest);
 
   return result;
@@ -108,47 +110,47 @@ bool Containerize02::runTest()
   romos::Module* output3Level1          = containerLevel1->getChildModule(7);
 
   // check, if outer container is parent of the modules when it should be:
-  result &= constant1      ->getParentModule() == containerLevel0;
-  result &= constant2      ->getParentModule() == containerLevel0;
+  result &= constant1->getParentModule() == containerLevel0;
+  result &= constant2->getParentModule() == containerLevel0;
   result &= containerLevel1->getParentModule() == containerLevel0;
-  result &= multiplier     ->getParentModule() == containerLevel0;
-  result &= output1Level0  ->getParentModule() == containerLevel0;
-  result &= output2Level0  ->getParentModule() == containerLevel0;
-  result &= output3Level0  ->getParentModule() == containerLevel0;
+  result &= multiplier->getParentModule() == containerLevel0;
+  result &= output1Level0->getParentModule() == containerLevel0;
+  result &= output2Level0->getParentModule() == containerLevel0;
+  result &= output3Level0->getParentModule() == containerLevel0;
 
   // check, if inner container is parent of the modules when it should be:
-  result &= constant3     ->getParentModule() == containerLevel1;
+  result &= constant3->getParentModule() == containerLevel1;
   result &= biquadDesigner->getParentModule() == containerLevel1;
-  result &= adder         ->getParentModule() == containerLevel1;
+  result &= adder->getParentModule() == containerLevel1;
 
   // check the created container's external connections:
   result &= containerLevel1->inputPins[0].sourceModule == constant1;
   result &= containerLevel1->inputPins[1].sourceModule == constant2;
-  result &= multiplier     ->inputPins[0].sourceModule == containerLevel1;
-  result &= multiplier     ->inputPins[0].outputIndex  == 2;
-  result &= output1Level0  ->inputPins[0].sourceModule == containerLevel1;
-  result &= output1Level0  ->inputPins[0].outputIndex  == 0;
-  result &= output2Level0  ->inputPins[0].sourceModule == containerLevel1;
-  result &= output2Level0  ->inputPins[0].outputIndex  == 1;
-  result &= output3Level0  ->inputPins[0].sourceModule == constant2;
-  result &= output3Level0  ->inputPins[0].outputIndex  == 0;
+  result &= multiplier->inputPins[0].sourceModule == containerLevel1;
+  result &= multiplier->inputPins[0].outputIndex  == 2;
+  result &= output1Level0->inputPins[0].sourceModule == containerLevel1;
+  result &= output1Level0->inputPins[0].outputIndex  == 0;
+  result &= output2Level0->inputPins[0].sourceModule == containerLevel1;
+  result &= output2Level0->inputPins[0].outputIndex  == 1;
+  result &= output3Level0->inputPins[0].sourceModule == constant2;
+  result &= output3Level0->inputPins[0].outputIndex  == 0;
 
   // check the created container's internal connections:
   result &= biquadDesigner->inputPins[0].sourceModule  == input1Level1;
   result &= biquadDesigner->inputPins[1].sourceModule  == constant3;
   result &= biquadDesigner->inputPins[2].sourceModule  == input2Level1;
-  result &= adder         ->inputPins[0].sourceModule  == biquadDesigner;
-  result &= adder         ->inputPins[0].outputIndex   == 3;
-  result &= adder         ->inputPins[0].outputPointer == biquadDesigner->audioOutputs + 3;
-  result &= output1Level1 ->inputPins[0].sourceModule  == biquadDesigner;
-  result &= output1Level1 ->inputPins[0].outputIndex   == 0;
-  result &= output1Level1 ->inputPins[0].outputPointer == biquadDesigner->audioOutputs;
-  result &= output2Level1 ->inputPins[0].sourceModule  == biquadDesigner;
-  result &= output2Level1 ->inputPins[0].outputIndex   == 1;
-  result &= output2Level1 ->inputPins[0].outputPointer == biquadDesigner->audioOutputs + 1;
-  result &= output3Level1 ->inputPins[0].sourceModule  == biquadDesigner;
-  result &= output3Level1 ->inputPins[0].outputIndex   == 2;
-  result &= output3Level1 ->inputPins[0].outputPointer == biquadDesigner->audioOutputs + 2;
+  result &= adder->inputPins[0].sourceModule  == biquadDesigner;
+  result &= adder->inputPins[0].outputIndex   == 3;
+  result &= adder->inputPins[0].outputPointer == biquadDesigner->audioOutputs + 3;
+  result &= output1Level1->inputPins[0].sourceModule  == biquadDesigner;
+  result &= output1Level1->inputPins[0].outputIndex   == 0;
+  result &= output1Level1->inputPins[0].outputPointer == biquadDesigner->audioOutputs;
+  result &= output2Level1->inputPins[0].sourceModule  == biquadDesigner;
+  result &= output2Level1->inputPins[0].outputIndex   == 1;
+  result &= output2Level1->inputPins[0].outputPointer == biquadDesigner->audioOutputs + 1;
+  result &= output3Level1->inputPins[0].sourceModule  == biquadDesigner;
+  result &= output3Level1->inputPins[0].outputIndex   == 2;
+  result &= output3Level1->inputPins[0].outputPointer == biquadDesigner->audioOutputs + 2;
 
   //printModuleStructure(moduleToTest);
 
@@ -166,14 +168,14 @@ bool OutputModuleDeletion::runTest()
 {
   bool result = true;
 
-  ContainerModule *outerContainer = (ContainerModule*) moduleToTest;
-  ContainerModule *innerContainer = (ContainerModule*) outerContainer->getChildModule(0);
-  romos::Module   *out1           = innerContainer->getChildModule(3);
-  romos::Module   *out2           = innerContainer->getChildModule(4);
-  romos::Module   *out3           = innerContainer->getChildModule(5);
-  romos::Module   *minus1         = outerContainer->getChildModule(1);
-  romos::Module   *minus2         = outerContainer->getChildModule(2);
-  romos::Module   *minus3         = outerContainer->getChildModule(3);
+  ContainerModule* outerContainer = (ContainerModule*)moduleToTest;
+  ContainerModule* innerContainer = (ContainerModule*)outerContainer->getChildModule(0);
+  romos::Module* out1           = innerContainer->getChildModule(3);
+  romos::Module* out2           = innerContainer->getChildModule(4);
+  romos::Module* out3           = innerContainer->getChildModule(5);
+  romos::Module* minus1         = outerContainer->getChildModule(1);
+  romos::Module* minus2         = outerContainer->getChildModule(2);
+  romos::Module* minus3         = outerContainer->getChildModule(3);
 
   // delete the middle output module of the 3:
   innerContainer->deleteChildModule(out2);
@@ -224,7 +226,7 @@ bool OutputModuleDeletion::runTest()
 
 
 ContainerizationAddedConstantsTest::ContainerizationAddedConstantsTest()
-: ProcessingTest("ContainerizationAddedConstants")
+  : ProcessingTest("ContainerizationAddedConstants")
 {
   moduleToTest = TestModuleBuilder::createAddedConstants("AddedConstants", 0, 0, false);
 }
@@ -238,21 +240,21 @@ bool ContainerizationAddedConstantsTest::runTest()
   fillDesiredOutputSignalArrays(false);
 
 
-  moduleToTest->resetStateForAllVoices();   
+  moduleToTest->resetStateForAllVoices();
   processModuleInFrames();
-  if( !RAPT::rsArrayTools::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
+  if(!RAPT::rsArrayTools::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess))
     return false;
 
   containerizeSum();
-  moduleToTest->resetStateForAllVoices();   
+  moduleToTest->resetStateForAllVoices();
   processModuleInFrames();
-  if( !RAPT::rsArrayTools::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
+  if(!RAPT::rsArrayTools::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess))
     return false;
 
   unContainerizeSum();
-  moduleToTest->resetStateForAllVoices();   
+  moduleToTest->resetStateForAllVoices();
   processModuleInFrames();
-  if( !RAPT::rsArrayTools::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
+  if(!RAPT::rsArrayTools::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess))
     return false;
 
   static const int numIterations = 50;
@@ -260,12 +262,12 @@ bool ContainerizationAddedConstantsTest::runTest()
   for(int i = 1; i <= numIterations; i++)
   {
     randomizeContainment();
-    moduleToTest->resetStateForAllVoices(); 
+    moduleToTest->resetStateForAllVoices();
     processModuleInFrames();
 
     //printModuleStructure(moduleToTest, 0);
 
-    if( !RAPT::rsArrayTools::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess) )
+    if(!RAPT::rsArrayTools::equal(outputs[0][0], desiredOutputs[0][0], numFramesToProcess))
     {
       printModuleStructure(moduleToTest, 0);
       RAPT::rsAssert(false, "plotting code needs update");
@@ -278,7 +280,7 @@ bool ContainerizationAddedConstantsTest::runTest()
 }
 void ContainerizationAddedConstantsTest::containerizeSum()
 {
-  romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (moduleToTest);
+  romos::ContainerModule* container = dynamic_cast<romos::ContainerModule*> (moduleToTest);
   std::vector<romos::Module*> childModules = container->getChildModules();
   std::vector<romos::Module*> sumInVector;
   sumInVector.push_back(childModules[16]);
@@ -286,7 +288,7 @@ void ContainerizationAddedConstantsTest::containerizeSum()
 }
 void ContainerizationAddedConstantsTest::unContainerizeSum()
 {
-  romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (moduleToTest);
+  romos::ContainerModule* container = dynamic_cast<romos::ContainerModule*> (moduleToTest);
   std::vector<romos::Module*> childModules = container->getChildModules();
   std::vector<romos::Module*> containerizedSumInVector;
   containerizedSumInVector.push_back(childModules[16]);
@@ -294,8 +296,8 @@ void ContainerizationAddedConstantsTest::unContainerizeSum()
 }
 void ContainerizationAddedConstantsTest::randomizeContainment()
 {
-  romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (moduleToTest);
-  if( container != NULL )
+  romos::ContainerModule* container = dynamic_cast<romos::ContainerModule*> (moduleToTest);
+  if(container != NULL)
   {
     std::vector<romos::Module*> childModules    = container->getChildModules();
     std::vector<romos::Module*> toBeContainerized;
@@ -303,18 +305,18 @@ void ContainerizationAddedConstantsTest::randomizeContainment()
     for(unsigned int i = 0; i < childModules.size(); i++)
     {
       //if( childModules[i]->getTypeIdentifierOld() == ModuleTypeRegistry::CONSTANT || childModules[i]->isContainerModule() )
-      if( childModules[i]->getTypeName() == "Constant" || childModules[i]->isContainerModule() )
+      if(childModules[i]->getTypeName() == "Constant" || childModules[i]->isContainerModule())
       {
         double randomNumber = rsTestRomos::random(0.0, 1.0);
-        if( randomNumber < 1.0/3.0 )
+        if(randomNumber < 1.0/3.0)
           toBeContainerized.push_back(childModules[i]);
-        else if( randomNumber < 2.0/3.0 )
-          toBeUnContainerized.push_back(childModules[i]);  
+        else if(randomNumber < 2.0/3.0)
+          toBeUnContainerized.push_back(childModules[i]);
         else
         {
           // do nothing
         }
-      } 
+      }
     }
     container->containerizeModules(toBeContainerized);
     container->unContainerizeModules(toBeUnContainerized);
@@ -323,7 +325,7 @@ void ContainerizationAddedConstantsTest::randomizeContainment()
 
 
 PinSortingTest::PinSortingTest()
-: ProcessingTest("PinSorting")
+  : ProcessingTest("PinSorting")
 {
   moduleToTest = TestModuleBuilder::createPinSortTest("PinSorting", 0, 0, false);
 }
@@ -340,14 +342,14 @@ bool PinSortingTest::runTest()
   //fillDesiredOutputSignalArrays();
 
   // retrieve pointers to some embedded modules (assumes certain order):
-  romos::ContainerModule *inner = dynamic_cast<romos::ContainerModule*> ( ((ContainerModule*)moduleToTest)->getChildModule(3)); 
-  rassert( inner != NULL );
-  romos::Module *in1   = inner->getAudioInputModule(0);
-  romos::Module *in2   = inner->getAudioInputModule(1);
-  romos::Module *in3   = inner->getAudioInputModule(2);
-  romos::Module *out1  = inner->getAudioOutputModule(0);
-  romos::Module *out2  = inner->getAudioOutputModule(1);
-  romos::Module *out3  = inner->getAudioOutputModule(2);
+  romos::ContainerModule* inner = dynamic_cast<romos::ContainerModule*> (((ContainerModule*)moduleToTest)->getChildModule(3));
+  rassert(inner != NULL);
+  romos::Module* in1   = inner->getAudioInputModule(0);
+  romos::Module* in2   = inner->getAudioInputModule(1);
+  romos::Module* in3   = inner->getAudioInputModule(2);
+  romos::Module* out1  = inner->getAudioOutputModule(0);
+  romos::Module* out2  = inner->getAudioOutputModule(1);
+  romos::Module* out3  = inner->getAudioOutputModule(2);
 
   bool result = true;
 
@@ -391,7 +393,7 @@ bool PinSortingTest::runTest()
 
   return result;
 }
-void PinSortingTest::exchangeModulePositions(romos::Module *module1, romos::Module *module2)
+void PinSortingTest::exchangeModulePositions(romos::Module* module1, romos::Module* module2)
 {
   int x1 = module1->getPositionX();
   int y1 = module1->getPositionY();
@@ -399,5 +401,4 @@ void PinSortingTest::exchangeModulePositions(romos::Module *module1, romos::Modu
   module2->setPositionXY(x1, y1);
 }
 
-
-
+}

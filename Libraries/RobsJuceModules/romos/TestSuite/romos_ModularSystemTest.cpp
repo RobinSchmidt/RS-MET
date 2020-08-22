@@ -1,11 +1,14 @@
 #include "romos_ModularSystemTest.h"
-using namespace rsTestRomos;
+//using namespace rsTestRomos;
+
+namespace rsTestRomos
+{
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
 
-ModularSystemTest::ModularSystemTest(const char *testName) 
-: UnitTest(testName)
+ModularSystemTest::ModularSystemTest(const char* testName)
+  : UnitTest(testName)
 {
   tolerance         = 0.0;
   signalLength      = 1000;
@@ -15,10 +18,10 @@ ModularSystemTest::ModularSystemTest(const char *testName)
   blockSize         = 200;
 
   topLevelModule    = modularSystem.getTopLevelModule();
-  inModuleL         = (AudioInputModule*)  topLevelModule->getChildModule(0);
-  inModuleR         = (AudioInputModule*)  topLevelModule->getChildModule(1);
-  outModuleL        = (AudioOutputModule*) topLevelModule->getChildModule(2);
-  outModuleR        = (AudioOutputModule*) topLevelModule->getChildModule(3);
+  inModuleL         = (AudioInputModule*)topLevelModule->getChildModule(0);
+  inModuleR         = (AudioInputModule*)topLevelModule->getChildModule(1);
+  outModuleL        = (AudioOutputModule*)topLevelModule->getChildModule(2);
+  outModuleR        = (AudioOutputModule*)topLevelModule->getChildModule(3);
 
   voiceAllocator.reset();  // maybe use a function initialize which is even stronger (resets even more state variables)
 
@@ -38,7 +41,7 @@ ModularSystemTest::~ModularSystemTest()
 
 bool ModularSystemTest::runTest()
 {
-  initTest();  
+  initTest();
   fillDesiredOutputSignalArrays();
   bool testPassed = false;
 
@@ -68,7 +71,7 @@ bool ModularSystemTest::doOutputsMatchDesiredOutputs()
   {
     RAPT::rsArrayTools::subtract(outputs[channelIndex], desiredOutputs[channelIndex], outputErrors[channelIndex], signalLength);
     double maxErrorInChannel = RAPT::rsArrayTools::maxAbs(outputErrors[channelIndex], signalLength);
-    if( maxErrorInChannel > maxError )
+    if(maxErrorInChannel > maxError)
       maxError = maxErrorInChannel;
   }
   //printf("%e %s", maxError, "\n");
@@ -78,7 +81,7 @@ bool ModularSystemTest::doOutputsMatchDesiredOutputs()
   {
     for(int frameIndex = 0; frameIndex < signalLength; frameIndex++)
     {
-      outputsMatch &= fabs((float) outputs[channelIndex][frameIndex] - (float) desiredOutputs[channelIndex][frameIndex]) <= tolerance;
+      outputsMatch &= fabs((float)outputs[channelIndex][frameIndex] - (float)desiredOutputs[channelIndex][frameIndex]) <= tolerance;
       //outputsMatch &= (float) outputs[channelIndex][frameIndex] == (float) desiredOutputs[channelIndex][frameIndex];
     }
   }
@@ -94,7 +97,7 @@ void ModularSystemTest::fillInputSignalArraysRandomly(int seed)
   for(int channelIndex = 0; channelIndex < numInputChannels; channelIndex++)
   {
     for(int frameIndex = 0; frameIndex < signalLength; frameIndex++)
-      inputs[channelIndex][frameIndex] = RAPT::rsRandomUniform(-1.0, 1.0); 
+      inputs[channelIndex][frameIndex] = RAPT::rsRandomUniform(-1.0, 1.0);
   }
 
   RAPT::rsArrayTools::convert(inputs[0], inputsFloat[0], signalLength);
@@ -119,10 +122,10 @@ void ModularSystemTest::clearDesiredOutputSignalArrays()
 void ModularSystemTest::fillTimeAxisWithSampleIndices()
 {
   for(int frameIndex = 0; frameIndex < maxSignalLength; frameIndex++)
-    timeAxis[frameIndex] = (double) frameIndex;
+    timeAxis[frameIndex] = (double)frameIndex;
 }
-   
-void ModularSystemTest::fillInputSignalArraysWithTestSignal()    
+
+void ModularSystemTest::fillInputSignalArraysWithTestSignal()
 {
   fillInputSignalArraysRandomly(1);
 }
@@ -143,8 +146,8 @@ void ModularSystemTest::fillDesiredOutputSignalArrays()
 
 void ModularSystemTest::processOutputSignal(bool useSinglePrecision)
 {
-  RAPT::rsArrayTools::copy(inputs[0],      outputs[0],      signalLength);
-  RAPT::rsArrayTools::copy(inputs[1],      outputs[1],      signalLength);
+  RAPT::rsArrayTools::copy(inputs[0], outputs[0], signalLength);
+  RAPT::rsArrayTools::copy(inputs[1], outputs[1], signalLength);
   RAPT::rsArrayTools::copy(inputsFloat[0], outputsFloat[0], signalLength);
   RAPT::rsArrayTools::copy(inputsFloat[1], outputsFloat[1], signalLength);
 
@@ -152,16 +155,16 @@ void ModularSystemTest::processOutputSignal(bool useSinglePrecision)
   int remainingFrames = signalLength;
   int tmpBlockSize    = blockSize;
 
-  while( remainingFrames > 0 )
+  while(remainingFrames > 0)
   {
     tmpBlockSize = blockSize;  // shrink to match size until next event later
 
     int numFramesUntilNextEvent = INT_MAX;
-    if( events.size() > 0 )
+    if(events.size() > 0)
     {
       numFramesUntilNextEvent = events[0].getDeltaFrames() - blockStart;
       tmpBlockSize            = RAPT::rsMin(numFramesUntilNextEvent, blockSize);
-      if( numFramesUntilNextEvent == 0 )
+      if(numFramesUntilNextEvent == 0)
       {
         NoteEvent currentEvent = events[0];
         handleEvent(currentEvent);
@@ -169,17 +172,17 @@ void ModularSystemTest::processOutputSignal(bool useSinglePrecision)
       }
     }
 
-    if( useSinglePrecision == true )
+    if(useSinglePrecision == true)
       modularSystem.getBlockOfSampleFramesStereo(&(outputsFloat[0][blockStart]), &(outputsFloat[1][blockStart]), tmpBlockSize);
     else
-      modularSystem.getBlockOfSampleFramesStereo(&(outputs[0][blockStart]),      &(outputs[1][blockStart]),      tmpBlockSize);
+      modularSystem.getBlockOfSampleFramesStereo(&(outputs[0][blockStart]), &(outputs[1][blockStart]), tmpBlockSize);
 
     blockStart      += tmpBlockSize;
     remainingFrames -= tmpBlockSize;
   }
 
 
-  if( useSinglePrecision == true )
+  if(useSinglePrecision == true)
   {
     RAPT::rsArrayTools::convert(outputsFloat[0], outputs[0], signalLength);
     RAPT::rsArrayTools::convert(outputsFloat[1], outputs[1], signalLength);
@@ -188,7 +191,7 @@ void ModularSystemTest::processOutputSignal(bool useSinglePrecision)
 
 void ModularSystemTest::handleEvent(NoteEvent eventToHandle)
 {
-  if( eventToHandle.getVelocity() == 0 )
+  if(eventToHandle.getVelocity() == 0)
     modularSystem.noteOff(eventToHandle.getKey());
   else
     modularSystem.noteOn(eventToHandle.getKey(), eventToHandle.getVelocity());
@@ -224,3 +227,4 @@ void ModularSystemTest::plotOutputErrors(int numFramesToPlot, int startFrame)
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // internal functions:
 
+}
