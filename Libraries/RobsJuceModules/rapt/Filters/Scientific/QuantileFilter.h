@@ -94,6 +94,13 @@ public:
   of the allocated memory for the buffers and heaps. */
   int getMaxLength() const { return (int) small.size(); } // large.size() == buf.size();
 
+  /** Returns the quantile that this filter produces. */
+  T getQuantile() const { return (p-1+w) / (L-1); }
+  // formula needs to be verified
+  // maybe have also a setLengthAndQuantile function that sets up L,p,w from L,q - more convenient
+  // for the user - i'm currently doing the required computations in the embedding class 
+  // rsQuantileFilter, but maybe they should be moved into this class
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -223,7 +230,7 @@ protected:
 
   int bufIdx = 0;    // index into keyBuf, mayb rename to keyIdx
   int L      = 2;    // total length of filter
-  int p      = 1;    // readout position, 1 <= p <= L-1
+  int p      = 1;    // readout position in imagined sorted array, 1 <= p <= L-1
   T   w      = T(1); // weight for smallest large value in the linear interpolation
   // Maybe use size_t instead of int. That would be consistent with rsMovingMaximumFilter and
   // better compatible with rsDelayBuffer - but: size_t is 64 bit and int only 32, so int has lower

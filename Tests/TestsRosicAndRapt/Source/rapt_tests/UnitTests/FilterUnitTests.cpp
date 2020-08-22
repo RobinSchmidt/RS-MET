@@ -337,31 +337,9 @@ bool testMovingQuantileCore(int maxLength, int smallLength, int largeLength, int
   Vec x = rsLinearRangeVector(numSamples, -1, -numSamples);
   Vec y(numSamples), z(numSamples);
   for(int n = 0; n < numSamples; n++)  {
-    double q = y[n] = fltH.getSample(x[n]); // triggers "Key out of range" at n=64 in gcc
+    double q = y[n] = fltH.getSample(x[n]);
     double p = z[n] = fltN.getSample(x[n]);
     r &= p == q; }
-
-  // at sample n = 18, we have different behavior in gcc from msc:
-  //gcc:
-  //n   = 18
-  //key = -2147483628   ...wrong! off by 20
-  //lhi = 20
-  //lhs = 20
-  //
-  //msc:
-  //n   = 18
-  //key = -2147483648
-  //lhi = 0
-  //lhs = 20
-
-  // the key is already off by 20, which is the size of the large heap in the test when 
-  // testMovingQuantileCore(64, 20, 20, N); is called (also of the small heap, but that's probably 
-  // not relevant). could it have to do with different behavior of the modulo operator in the wrap
-  // operation? the msc behavior is the desired one - nope - that doesn't seem to be the case - i 
-  // added a test to testGcdAndCo which checks the behavior of % with negative inputs and the 
-  // behavior is the same in msc and gcc
-  // apparently, the custom swapNodes function does not get called in gcc ..it calls std::swap
-  // instead of this->swap!
 
 
   //rsPlotVectors(y, z);  // uncomment to see the result
@@ -495,8 +473,8 @@ bool oneLongerQuantileUnitTest(int L, int N)
     for(int n = 0; n < N; n++)
     {
       delayLine.getSample(x[n]);           // feed delayline (output irrelevant)
-      yT[n] = fltT.getSample(x[n]);                // feed filter (output irrelevant)
-      //yT[n] = fltT.readOutputLongerBy1();  // ...this is what we are interested in
+      yT[n] = fltT.getSample(x[n]);        // feed filter (output irrelevant)
+      yT[n] = fltT.readOutputLongerBy1();  // ...this is what we are interested in
     }
 
     r &= yT == yR;
@@ -535,10 +513,10 @@ bool movingQuantileUnitTest()
   r &= testMovingQuantileModulation();
 
   // test the read out of a filter one sample longer than nominal length:
-  //r &= oneLongerQuantileUnitTest(2, N);
-  //r &= oneLongerQuantileUnitTest(3, N);
-  //r &= oneLongerQuantileUnitTest(4, N);
-  //r &= oneLongerQuantileUnitTest(5, N);
+  r &= oneLongerQuantileUnitTest(2, N);
+  r &= oneLongerQuantileUnitTest(3, N);
+  r &= oneLongerQuantileUnitTest(4, N);
+  r &= oneLongerQuantileUnitTest(5, N);
 
 
 
@@ -554,6 +532,23 @@ bool movingQuantileUnitTest()
   for(int n = 0; n < N; n++)
     y[n] = flt.getSample(x[n]);
   r &= y == t;
+
+
+
+  // test computing the quantile from the internal algo parameters:
+  auto testQuantileComputation = [&](int L, int p, double w, double q)->bool
+  { 
+    flt.setLengthAndReadPosition(L, p); 
+    flt.setRightWeight(w);
+    double qc = flt.getQuantile();
+    return q == qc;
+  };
+  r &= testQuantileComputation(8, 1, 0.0,  0.0);  // minimum
+  r &= testQuantileComputation(8, 2, 0.75, 0.25); // lower quartile
+  r &= testQuantileComputation(8, 4, 0.5,  0.5);  // median
+  r &= testQuantileComputation(8, 6, 0.25, 0.75); // upper quartile
+  r &= testQuantileComputation(8, 7, 1.0,  1.0);  // minimum
+  // the weights for the quartiles seem counterintuitive...hmmm
 
   return r;
 }

@@ -173,3 +173,4 @@ void rsQuantileFilter<T>::convertParameters(
     *p = *L - 1; *w = T(1);  }
   *q *= 0.5;                               // found empirically - todo: verify theoretically!
 }
+// It's confusing to use q here - the output *q is actually the delay

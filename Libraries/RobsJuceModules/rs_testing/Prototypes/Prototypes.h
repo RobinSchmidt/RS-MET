@@ -698,17 +698,20 @@ public:
   T readOutputLongerBy1()
   {
     rsAssert(this->sigBuf != nullptr, "To use this feature, the input buffer must be assigned.");
-    T xL = (*this->sigBuf)(this->L);   // should be x[n-L], client code must assure this
+    //T xL = (*this->sigBuf)(this->L);   // should be x[n-L], client code must assure this
+    T xL = (*this->sigBuf)[this->L];   // should be x[n-L], client code must assure this
     return readOutputWithOneMoreInput(xL);
   }
 
 
   T readOutputWithOneMoreInput(T xL)
   {
-    T p1 = this->p * T(this->L) / T(this->L-1); // but wait - p is an integer - should we use p+w or p+(1-w)?
+    T p1 = this->p * T(this->L) / T(this->L-1); 
+    // but wait - p is an integer - should we use p+w or p+(1-w)?
+
     T w1 = p1 - floor(p1);
     T yS, yL; // hmm...yL means yLarge but xL means x[n-L] - notational clash!
-    class Base::Node nx(xL, 0); // we need to create a node
+    struct Base::Node nx(xL, 0); // we need to create a node
 
     if(this->dblHp.small.isLess(nx, this->dblHp.large[0]))  // means: if(x < large[0])
     {
