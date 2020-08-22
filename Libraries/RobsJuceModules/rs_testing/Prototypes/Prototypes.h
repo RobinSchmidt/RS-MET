@@ -713,8 +713,9 @@ public:
     T yS, yL; // hmm...yL means yLarge but xL means x[n-L] - notational clash!
     struct Base::Node nx(xL, 0); // we need to create a node
 
+    T q = getQuantile();
     int p1;
-    lengthAndQuantileToPositionAndWeight(8, 0.5, &p1, &w1); // preliminary
+    lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
 
     if(this->dblHp.small.isLess(nx, this->dblHp.large[0]))  // means: if(x < large[0])
     {

@@ -450,8 +450,8 @@ bool oneLongerQuantileUnitTest(int L, int N)
   fltT.setModulationBuffer(&delayLine);
 
   // compute test and reference output and compare them:
-  //Vec x = rsRandomIntVector(N, 0, 99);  // input
-  Vec x = rsLinearRangeVector(N, 1+5, N+5); // use 5 as offset to make some things more obvious
+  Vec x = rsRandomIntVector(N, 0, 99);  // input
+  //Vec x = rsLinearRangeVector(N, 1+5, N+5); // use 5 as offset to make some things more obvious
   Vec yR(N), yT(N);                     // reference and test output
   for(size_t i = 0; i < quantiles.size(); i++)
   {
@@ -478,7 +478,7 @@ bool oneLongerQuantileUnitTest(int L, int N)
     }
 
     r &= yT == yR;
-    //rsPlotVectors(x, yR, yT);
+    rsPlotVectors(x, yR, yT);
   }
   // this does not yet work - also, we trigger an assert for quantile = 1
 
@@ -513,10 +513,11 @@ bool movingQuantileUnitTest()
   r &= testMovingQuantileModulation();
 
   // test the read out of a filter one sample longer than nominal length:
-  r &= oneLongerQuantileUnitTest(2, N);
-  r &= oneLongerQuantileUnitTest(3, N);
-  r &= oneLongerQuantileUnitTest(4, N);
-  r &= oneLongerQuantileUnitTest(5, N);
+  //r &= oneLongerQuantileUnitTest(2, N); // works
+  r &= oneLongerQuantileUnitTest(3, N); // fails
+  //r &= oneLongerQuantileUnitTest(4, N); // fails
+  //r &= oneLongerQuantileUnitTest(5, N); // fails
+  // but those which fail look partially ok - seems like only the lower branch is false
 
 
 
