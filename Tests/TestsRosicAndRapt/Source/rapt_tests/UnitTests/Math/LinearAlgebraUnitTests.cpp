@@ -77,25 +77,27 @@ bool testMatrix2x2(std::string& reportString)
   double ev, ex, ey, d;
   bool nrm = false;   // normalize eigenvectors to unit length
 
+  double tol = 1.e-16;
+
   ev = LA::eigenvalue2x2_1(-4.0, 6.0, -3.0, 5.0);                // -1
   LA::eigenvector2x2_1(    -4.0, 6.0, -3.0, 5.0, &ex, &ey, nrm); // k*(2,1) - is (1,0.5), so k=0.5
-  testResult &= ev    == -1;
-  testResult &= ex/ey ==  2;
+  testResult &= rsIsCloseTo(ev,   -1.0, tol);
+  testResult &= rsIsCloseTo(ex/ey, 2.0, tol);
 
   ev = LA::eigenvalue2x2_2(-4.0, 6.0, -3.0, 5.0);                // 2
   LA::eigenvector2x2_2(    -4.0, 6.0, -3.0, 5.0, &ex, &ey, nrm); // k*(1,1), is (1,1), so k=1
-  testResult &= ev    == 2;
-  testResult &= ex/ey == 1;
+  testResult &= rsIsCloseTo(ev,    2.0, tol);
+  testResult &= rsIsCloseTo(ex/ey, 1.0, tol);
 
   ev = LA::eigenvalue2x2_1(4.0, 1.0, 6.0, 3.0);
   LA::eigenvector2x2_1(    4.0, 1.0, 6.0, 3.0, &ex, &ey, nrm);
-  testResult &= ev    == 1;
-  testResult &= ex/ey == -1/3.;
+  testResult &= rsIsCloseTo(ev,     1.0,  tol);
+  testResult &= rsIsCloseTo(ex/ey, -1/3., tol);
 
   ev = LA::eigenvalue2x2_2(4.0, 1.0, 6.0, 3.0);
   LA::eigenvector2x2_2(    4.0, 1.0, 6.0, 3.0, &ex, &ey, nrm);
-  testResult &= ev    == 6;
-  testResult &= ex/ey == 1/2.;
+  testResult &= rsIsCloseTo(ev,    6., tol);
+  testResult &= rsIsCloseTo(ex/ey, 1/2., tol);
 
   // try special cases with b = 0:
 
@@ -103,35 +105,43 @@ bool testMatrix2x2(std::string& reportString)
 
   ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, 5.0);                // -4
   LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, 5.0, &ex, &ey, nrm); // (1,1/3)
-  testResult &= ev    == -4;
-  testResult &= ex/ey ==  3.;
+  testResult &= rsIsCloseTo(ev,   -4.0, tol);
+  testResult &= rsIsCloseTo(ex/ey,  3., tol);
 
   ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, 5.0);                // 5
   LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, 5.0, &ex, &ey, nrm); // (0,1)
-  testResult &= ev == 5 && ex == 0 && ey == 1; // maybe when we normalize, check only for ey > 0
+  testResult &= rsIsCloseTo(ev, 5.0, tol) 
+             && rsIsCloseTo(ex, 0.0, tol) 
+             && rsIsCloseTo(ey, 1.0, tol); // maybe when we normalize, check only for ey > 0
 
 
   // b = 0, a > d:
 
   ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, -5.0);                // -5
   LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, -5.0, &ex, &ey, nrm); // (0,1)
-  testResult &= ev == -5 && ex == 0 && ey == 1;
+  testResult &= rsIsCloseTo(ev, -5.0, tol) 
+             && rsIsCloseTo(ex,  0.0, tol) 
+             && rsIsCloseTo(ey,  1.0, tol);
 
   ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, -5.0);                // -4
   LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, -5.0, &ex, &ey, nrm); // (1,-3)
-  testResult &= ev    == -4;
-  testResult &= ex/ey == -1/3.;
+  testResult &= rsIsCloseTo(ev,    -4.0,  tol);
+  testResult &= rsIsCloseTo(ex/ey, -1/3., tol);
 
 
   // b = 0, a = d:
 
   ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, -4.0);                // -4
   LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, -4.0, &ex, &ey, nrm); // (0,1)
-  testResult &= ev == -4 && ex == 0 && ey == 1;
+  testResult &= rsIsCloseTo(ev, -4.0, tol) 
+             && rsIsCloseTo(ex,  0.0, tol) 
+             && rsIsCloseTo(ey,  1.0, tol);
 
   ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, -4.0);                // -4
   LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, -4.0, &ex, &ey, nrm); // (0,1)
-  testResult &= ev == -4 && ex == 0 && ey == 1;
+  testResult &= rsIsCloseTo(ev, -4.0, tol) 
+             && rsIsCloseTo(ex,  0.0, tol) 
+             && rsIsCloseTo(ey,  1.0, tol);
 
   // todo: try the special cases with complex numbers - we may also need tolerances in the
   // comparisons
@@ -164,15 +174,8 @@ bool testMatrix2x2(std::string& reportString)
   testResult &= C == D;
 
 
-
-
-
-
-
-
-
   /*
-  // no, let's try some complex matrices
+  // now, let's try some complex matrices
   typedef std::complex<double> Cmplx;
   typedef rsMatrix2x2<Cmplx>   MatC;
   typedef rsVector2D<Cmplx>    VecC;
