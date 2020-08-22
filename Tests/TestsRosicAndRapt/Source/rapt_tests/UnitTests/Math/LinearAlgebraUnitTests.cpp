@@ -110,8 +110,8 @@ bool testMatrix2x2(std::string& reportString)
 
   ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, 5.0);                // 5
   LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, 5.0, &ex, &ey, nrm); // (0,1)
-  testResult &= rsIsCloseTo(ev, 5.0, tol) 
-             && rsIsCloseTo(ex, 0.0, tol) 
+  testResult &= rsIsCloseTo(ev, 5.0, tol)
+             && rsIsCloseTo(ex, 0.0, tol)
              && rsIsCloseTo(ey, 1.0, tol); // maybe when we normalize, check only for ey > 0
 
 
@@ -119,8 +119,8 @@ bool testMatrix2x2(std::string& reportString)
 
   ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, -5.0);                // -5
   LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, -5.0, &ex, &ey, nrm); // (0,1)
-  testResult &= rsIsCloseTo(ev, -5.0, tol) 
-             && rsIsCloseTo(ex,  0.0, tol) 
+  testResult &= rsIsCloseTo(ev, -5.0, tol)
+             && rsIsCloseTo(ex,  0.0, tol)
              && rsIsCloseTo(ey,  1.0, tol);
 
   ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, -5.0);                // -4
@@ -133,14 +133,14 @@ bool testMatrix2x2(std::string& reportString)
 
   ev = LA::eigenvalue2x2_1(-4.0, 0.0, -3.0, -4.0);                // -4
   LA::eigenvector2x2_1(    -4.0, 0.0, -3.0, -4.0, &ex, &ey, nrm); // (0,1)
-  testResult &= rsIsCloseTo(ev, -4.0, tol) 
-             && rsIsCloseTo(ex,  0.0, tol) 
+  testResult &= rsIsCloseTo(ev, -4.0, tol)
+             && rsIsCloseTo(ex,  0.0, tol)
              && rsIsCloseTo(ey,  1.0, tol);
 
   ev = LA::eigenvalue2x2_2(-4.0, 0.0, -3.0, -4.0);                // -4
   LA::eigenvector2x2_2(    -4.0, 0.0, -3.0, -4.0, &ex, &ey, nrm); // (0,1)
-  testResult &= rsIsCloseTo(ev, -4.0, tol) 
-             && rsIsCloseTo(ex,  0.0, tol) 
+  testResult &= rsIsCloseTo(ev, -4.0, tol)
+             && rsIsCloseTo(ex,  0.0, tol)
              && rsIsCloseTo(ey,  1.0, tol);
 
   // todo: try the special cases with complex numbers - we may also need tolerances in the
@@ -163,7 +163,7 @@ bool testMatrix2x2(std::string& reportString)
   C = B/A; testResult &= C == Mat(-1,  2, -2, 3);
   C = A*A*A*A*A;
   D = A.getPower(5);
-  testResult &= C == D;
+  testResult &= C == D; // maybe also do a comparison with tolerance
 
   // test getPower with a matrix with 2 equal eigenvalues:
   // https://web.calpoly.edu/~brichert/teaching/oldclass/f2002217/solutions/solutions9.pdf
@@ -171,7 +171,7 @@ bool testMatrix2x2(std::string& reportString)
   A = Mat({5,0,3,5});
   C = A*A*A*A*A;
   D = A.getPower(5);
-  testResult &= C == D;
+  testResult &= C == D; // maybe also do a comparison with tolerance
 
 
   /*
