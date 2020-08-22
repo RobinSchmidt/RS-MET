@@ -106,6 +106,7 @@ bool filterSpecUnitTest()
   Complex p1(-0.5, +0.5), p2(-0.5, -0.5);
   Complex k = 4.0;
   double inf = RS_INF(double);
+  double tol = 1.e-14;
   ZPK zpk32({ q1, q2, q3 }, { p1, p2}, k, inf); // sampleRate = inf -> analog filter
 
   // Analog case:
@@ -130,7 +131,7 @@ bool filterSpecUnitTest()
   // now, we convert back from ba to zpk and check, if we get our original zpk specifiction
   // properly reconstructed:
   ZPK zpkTmp = ba32.toZPK();
-  r &= zpkTmp.equals(zpk32);
+  r &= zpkTmp.equals(zpk32, tol);
 
   // Digital case:
   //             (1-q1/z)*(1-q2/z)*(1-q3/z)     b0 + b1/z + b2/z^2 + b3/z^3
@@ -159,7 +160,7 @@ bool filterSpecUnitTest()
 
   // BA -> ZPK:
   zpkTmp = ba32.toZPK();
-  r &= zpkTmp.equals(zpk32);
+  r &= zpkTmp.equals(zpk32, tol);
 
   // test of conversions is done - now we evaluate the transfer-function at a couple of randomly
   // selected values for s or z an see, if both representations (ZPK and BA) give the same results:
@@ -167,7 +168,7 @@ bool filterSpecUnitTest()
   RAPT::rsNoiseGenerator<double> prng;
   prng.setRange(-2.0, +2.0);
   Complex z, s, H_zpk, H_ba, d;
-  double tol = 1.e-10; // seems like we need a quite high tolerance - check for numeric issues
+  tol = 1.e-10; // seems like we need a quite high tolerance - check for numeric issues
   int i;
 
   // digital transfer function computation:
