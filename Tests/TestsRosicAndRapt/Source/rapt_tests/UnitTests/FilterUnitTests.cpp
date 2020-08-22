@@ -419,7 +419,7 @@ bool testMovingQuantileModulation()
   for(int n = 0; n < N; n++)
   {
     // switch settings, if desired:
-    if(i < settings.size() && n == settings[i].time) {
+    if(i < (int)settings.size() && n == settings[i].time) {
       int nS = settings[i].nS;
       int nL = settings[i].nL;
       fltN.setLengths(nS, nL);

@@ -203,6 +203,20 @@ bool pixelCoverage(std::string &reportString)
   float a;                  // computed area
   bool q;
 
+  // this test fails with gcc - we need a tolerance for the a==t comparisons - maybe make a lambda 
+  // function taking two vectors (or 4 coordinates) a target area and a target values for the bool
+  // and returns a bool, for passing the test
+
+  auto testArea = [=](float x1, float y1, float x2, float y2, 
+    float targetArea, bool targetFlag)->bool
+  { 
+    bool   q;
+    float  a = unitSquareCut(V(x1,y1), V(x2,y2), q);
+    return a == targetArea && q == targetFlag;
+  };
+
+
+
   // cut off triangles at the corners:
   a = unitSquareCut(V( 1.5f,1.5f), V(  -1,0.25f), q);  r &= a == t; r &= q == false; // top-left
   a = unitSquareCut(V( 1.5f,0.5f), V(   0,1.25f), q);  r &= a == t; r &= q == false; // top-right

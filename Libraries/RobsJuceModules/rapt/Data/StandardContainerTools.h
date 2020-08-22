@@ -539,7 +539,7 @@ inline std::vector<T> operator-(const std::vector<T>& x, const std::vector<T>& y
   size_t Nmax = std::max(x.size(), y.size());
   size_t Nmin = std::min(x.size(), y.size());
   std::vector<T> result(Nmax);
-  for(int i = 0; i < Nmin; i++)
+  for(size_t i = 0; i < Nmin; i++)
     result[i] = x[i] - y[i];
   return result;
 }
