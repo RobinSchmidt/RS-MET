@@ -61,6 +61,8 @@
 
 #include "Framework/romos_Liberty.h"  // should not be in the framework folder
 
+
+// maybe these should go into a separate include file:
 #include "TestSuite/romos_TestEventGenerator.h"
 #include "TestSuite/romos_UnitTest.h"
 #include "TestSuite/romos_ProcessingTest.h"

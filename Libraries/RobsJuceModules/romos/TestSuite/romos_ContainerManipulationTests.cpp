@@ -304,7 +304,7 @@ void ContainerizationAddedConstantsTest::randomizeContainment()
       //if( childModules[i]->getTypeIdentifierOld() == ModuleTypeRegistry::CONSTANT || childModules[i]->isContainerModule() )
       if( childModules[i]->getTypeName() == "Constant" || childModules[i]->isContainerModule() )
       {
-        double randomNumber = random(0.0, 1.0);
+        double randomNumber = rsTestRomos::random(0.0, 1.0);
         if( randomNumber < 1.0/3.0 )
           toBeContainerized.push_back(childModules[i]);
         else if( randomNumber < 2.0/3.0 )

@@ -5,13 +5,13 @@
 //#include "../romos.h"
 //#include "../../../romos/modules/romos_ModuleCreation.h"
 
-using namespace rosic;
-using namespace romos;
+//using namespace rosic;  // get rid!
+//using namespace romos;
 
-
-// arrays for I/O signals:
 namespace rsTestRomos
 {
+
+// arrays for I/O signals:
 static const int maxNumVoices = 8;
 static const int maxNumIns    = 10;
 static const int maxNumOuts   = 10;
@@ -32,7 +32,7 @@ extern double *pd[maxNumVoices][maxNumOuts];                 // pointers to the 
 extern double **ppx[maxNumVoices];
 extern double **ppy[maxNumVoices];
 extern double **ppd[maxNumVoices];
-}
+// why extern?
 
 
 /** Returns a vector containing a note-on and a corresponding note-off (indicated by velocity == 0).
@@ -68,8 +68,6 @@ inline double random(double min, double max)
   return RAPT::rsLinToLin(tmp, 0.0, 1.0, min, max);
 }
 
-
-
 // generation of test input signals:
 
 void initializeInputSequences(); 
@@ -98,9 +96,6 @@ void getDesiredOutputForFilterBlip(int N, double frequency, double q, double *de
   // -NoteFreq mono / output mono -> only first voice gets the first frequency
   
 
-
-
-
 // others:
 
 /** Sets the polyphony flag for the passed module and optionally recursively for its child-modules (if any) */
@@ -117,9 +112,6 @@ bool checkAndPrintResult(double **y, double **d, int numChannels, int numFrames,
 bool checkBlockProcessingAndPrintResult(romos::Module *module, double ***x, double ***y, double ***d, int maxNumFramesToProcess, 
                                         int numTests, char *testName, double tolerance);
   // is this function redundant now?
-
-
-
 
 
 /** Checks all 4 processing functions and prints the results of the test to the console. You need to pass the input signals for the voices 
@@ -163,5 +155,8 @@ void exchangeModulePositions(romos::Module *module1, romos::Module *module2);
 
 void randomizeContainment(romos::Module *module);
 void printModuleStructure(romos::Module *module, int indent);
+
+}
+
 
 #endif

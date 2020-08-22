@@ -29,8 +29,8 @@ double *pd[maxNumVoices][maxNumOuts];                 // pointers to the outputs
 double **ppx[maxNumVoices];
 double **ppy[maxNumVoices];
 double **ppd[maxNumVoices];
-}
-//using namespace rsTestRomos;  // try to get rid of this!
+
+
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // generation of test event-arrays:
@@ -740,3 +740,6 @@ void printModuleStructure(romos::Module *module, int indent)
       printModuleStructure(container->getChildModule(i), indent+1);
   }
 }
+
+
+} // end of namespace
