@@ -27,15 +27,19 @@ bool runUnitTestsRosic()
 {
   bool passed = true;  // test result
 
+  std::cout << "Running unit tests for rosic\n";
 
   passed &= runUnitTest(&testTypeSizes,          "TypeSizes");
-  passed &= runUnitTest(&testExponentExtraction, "ExponentExtraction"); // is oart of numberManipulations
+  passed &= runUnitTest(&testExponentExtraction, "ExponentExtraction"); // is part of numberManipulations
+  passed &= runUnitTest(&testNumberManipulations,"NumberManipulations"); // fails due to rounding -> figure out
+
+
   passed &= runUnitTest(&testFilterPolynomials,  "FilterPolynomials");
   passed &= runUnitTest(&testHighOrderFilter,    "HighOrderFilter");
   passed &= runUnitTest(&testModalFilter2,        "ModalFilter2");
   passed &= runUnitTest(&testModalSynth,          "ModalSynth");  // doesn't do anything useful
   passed &= runUnitTest(&testAutoCorrelationPitchDetector, "AutoCorrPitchDetect");
-  passed &= runUnitTest(&testNumberManipulations,          "NumberManipulations"); // fails due to rounding -> figure out
+
 
   // these need to be adapted
   //testAllRosicClasses();
@@ -50,6 +54,6 @@ bool runUnitTestsRosic()
   //testRosicNonRealTime();
   //testRosicOthers();
 
-
+  std::cout << "\n";
   return passed;
 }

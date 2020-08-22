@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
   // Unit tests:
   bool passed = true;
   passed &= runUnitTestsRapt();
-  //passed &= runUnitTestsRosic();
+  passed &= runUnitTestsRosic();
   //passed = passed;  // dummy
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
@@ -266,7 +266,7 @@ int main(int argc, char* argv[])
   //sineIntegral();
   //logarithmQuotient();
   //stirlingNumbers();
-  bernoulliNumbers();
+  //bernoulliNumbers();
   //sequenceSquareRoot();
   //conicSystem();
   ////logisticMapNoise(); // takes long to compute

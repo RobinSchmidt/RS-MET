@@ -11,9 +11,8 @@ bool testDoubleIntConversions()
   x = roundToInt( 2.5); testResult &= (x==3);
   x = roundToInt(-1.2); testResult &= (x==-1);
   x = roundToInt(-1.8); testResult &= (x==-2);
-  x = roundToInt(-1.5); testResult &= (x==-1);  // fails - is -2
-  x = roundToInt(-2.5); testResult &= (x==-2);  // fails - is -3
-  // figure out what is the desired rounding behavior - maybe change the test criterion
+  x = roundToInt(-1.5); testResult &= (x==-2);
+  x = roundToInt(-2.5); testResult &= (x==-3);
 
   x = floorInt( 1.2); testResult &= (x==1);
   x = floorInt( 1.8); testResult &= (x==1);

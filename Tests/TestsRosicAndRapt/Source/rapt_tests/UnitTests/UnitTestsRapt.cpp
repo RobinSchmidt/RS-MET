@@ -17,6 +17,8 @@ bool runUnitTestsRapt()
 {
   bool passed = true;  // test result
 
+  std::cout << "Running unit tests for RAPT\n";
+
   // Data:
   passed &= runUnitTest(&arrayUnitTest,            "rsArrayTools and std::vector stuff");
   passed &= runUnitTest(&testBufferFunctions,      "BufferFunctions");  // merge with rsArrayTools tests
@@ -84,5 +86,6 @@ bool runUnitTestsRapt()
   //...
   //...more to come...
 
+  std::cout << "\n";
   return passed;
 }
