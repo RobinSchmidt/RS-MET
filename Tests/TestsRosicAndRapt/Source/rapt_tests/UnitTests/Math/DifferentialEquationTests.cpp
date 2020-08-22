@@ -6,7 +6,6 @@ static const int maxNumDimensions = 3;
 static const int numValues         = 1000;
 double x[numValues], y[maxNumDimensions][numValues], error[maxNumDimensions][numValues];
 }
-using namespace rsTestODE;
 
 class rsLorentzSystem : public rsDifferentialEquationSystemDbl
 {
@@ -157,9 +156,9 @@ public:
 
 void retrieveVariables(rsDifferentialEquationSystemDbl &theSystem, int n)
 {
-  x[n] = theSystem.getX();
+  rsTestODE::x[n] = theSystem.getX();
   for(int d = 0; d < theSystem.getNumDimensions(); d++)
-    y[d][n] = theSystem.getElementOfY(d);
+    rsTestODE::y[d][n] = theSystem.getElementOfY(d);
 }
 
 enum integrationMethods
@@ -193,7 +192,7 @@ void iterateState(rsDifferentialEquationSystemDbl &theSystem, int integrationMet
 void runDifferentialEquationSystem(rsDifferentialEquationSystemDbl &theSystem,
                                    int integrationMethod, double h)
 {
-  for(int n = 0; n < numValues; n++)
+  for(int n = 0; n < rsTestODE::numValues; n++)
   {
     retrieveVariables(theSystem, n);
     iterateState(theSystem, integrationMethod, h);
@@ -242,10 +241,10 @@ void testTestSystem1()
 
 
   // compare this to the analytical solution:
-  for(int i = 0; i < numValues; i++)
+  for(int i = 0; i < rsTestODE::numValues; i++)
   {
     double x = i*h;
-    error[0][i] = exp(x) - y[0][i];
+    rsTestODE::error[0][i] = exp(x) - rsTestODE::y[0][i];
   }
 
 

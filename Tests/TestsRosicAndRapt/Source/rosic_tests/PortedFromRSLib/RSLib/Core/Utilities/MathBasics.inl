@@ -14,8 +14,8 @@ namespace RSLib
   }
   inline double  rsAbs(double  x) { return fabs(x); }
   inline float   rsAbs(float   x) { return fabs(x); }
-  inline rsInt8  rsAbs(rsInt8  x) { return  abs(x); }
-  inline rsInt16 rsAbs(rsInt16 x) { return  abs(x); }
+  inline rsInt8  rsAbs(rsInt8  x) { return (rsInt8)  abs(x); } // not good - converts to int and back
+  inline rsInt16 rsAbs(rsInt16 x) { return (rsInt16) abs(x); } // dito
   inline rsInt32 rsAbs(rsInt32 x) { return  abs(x); }
   //inline rsInt64 rsAbs(rsInt64 x) { return  abs(x); } // doesn't work with MinGW gcc 4.7
 

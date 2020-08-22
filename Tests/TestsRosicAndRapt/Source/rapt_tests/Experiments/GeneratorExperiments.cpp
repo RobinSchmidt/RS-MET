@@ -973,8 +973,6 @@ void superSawDensitySweep() // rename to SuperSawFeedbackFM
 
   std::cout << "Done";
   //rsPlotVector(y);
-
-  int dummy = 0;
 }
 // idea to randomize the frequencies:
 // -pass output through bandpass, tuned to center frequency
@@ -1047,7 +1045,7 @@ void superSawStereo()
   osc.initAmpArrays(); osc.setDensity(6);  // ok
   osc.initAmpArrays(); osc.setDensity(7);  // ok
   osc.initAmpArrays(); osc.setDensity(8);  // ok
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 // computes algorithm parameters for the two-pice oscillator from user parameters

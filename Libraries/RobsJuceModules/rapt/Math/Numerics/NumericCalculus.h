@@ -169,7 +169,7 @@ public:
   https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Res-casts-const
   https://visualstudiomagazine.com/articles/2016/04/26/dont-cast-away-const-in-cpp.aspx  */
   template<class F>
-  static T partialDerivative(const F& f, T* x, int N, int n, const T h)
+  static T partialDerivative(const F& f, T* x, int /*N*/, int n, const T h)
   {
     T t  = x[n];                  // temporary
     x[n] = t + h; T fp = f(x);    // fp = f(x0,x1,..,xn+h,..,x_M)
@@ -178,6 +178,7 @@ public:
     x[n] = t;                     // restore x[n]
     return f1;
   }
+  // get rid of parameter N
 
   /** Computes the partial derivative of the multivariate (N inputs) scalar function f with respect 
   to the n-th coordinate and also the diagonal element H(n,n) of the Hessian matrix, i.e. the 2nd 
@@ -185,7 +186,7 @@ public:
   partialDerivative, the x-array is const from the caller's perspective but we can't declare it 
   const because we need to wiggle it temporarily internally. */
   template<class F>
-  static void partialDerivativesUpTo2(const F& f, T* x, int N, int n, const T h, 
+  static void partialDerivativesUpTo2(const F& f, T* x, int /*N*/, int n, const T h, 
     T* f0, T* f1, T* f2)
   {
     *f0  = f(x);                             // f0 = f(x0,x1,..,x_M)    where M := N-1
@@ -196,6 +197,7 @@ public:
     *f2  = (fm - T(2)*(*f0) + fp) / (h*h);   // d2f/dxn2
     x[n] = t;                                // restore input
   }
+  // get rid of parameter N
 
   /** Computes a central difference approximation of the gradient of a scalar-valued function 
   y = f(x) at the given N-dimensional position vector x by a central difference and stores the 

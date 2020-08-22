@@ -454,8 +454,8 @@ protected:
 private:
 
   // copy and assignment - not possible:
-  ContainerModule(const ContainerModule &other) {}
-  ContainerModule& operator=(const ContainerModule &other) { return *this; }
+  ContainerModule(const ContainerModule& /*other*/) {}
+  ContainerModule& operator=(const ContainerModule& /*other*/) { return *this; }
 
 };
 class ContainerModuleTypeInfo : public ModuleTypeInfo

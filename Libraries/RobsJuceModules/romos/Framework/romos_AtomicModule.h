@@ -254,11 +254,11 @@ public:
   /** Assigns dummy functions that do nothing. */
   virtual void assignProcessingFunctions();
 
-  static void processFrameDummy(Module *module, int voiceIndex)
+  static void processFrameDummy(Module* /*module*/, int /*voiceIndex*/)
   {
     //DEBUG_BREAK; // dummy function - should not be called
   }
-  static void processBlockDummy(Module *module, int voiceIndex, int blockSize)
+  static void processBlockDummy(Module* /*module*/, int /*voiceIndex*/, int /*blockSize*/)
   {
     //DEBUG_BREAK; // dummy function - should not be called
   }
@@ -275,8 +275,8 @@ protected:
 private:
 
   // copy and assignment - not possible:
-  ModuleProxy(const ModuleProxy &other) {}
-  ModuleProxy& operator=(const ModuleProxy &other) { return *this; }
+  ModuleProxy(const ModuleProxy& /*other*/) {}
+  ModuleProxy& operator=(const ModuleProxy& /*other*/) { return *this; }
 
 };
 

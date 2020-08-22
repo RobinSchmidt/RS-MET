@@ -30,7 +30,7 @@ double **ppx[maxNumVoices];
 double **ppy[maxNumVoices];
 double **ppd[maxNumVoices];
 }
-using namespace rsTestRomos;  // try to get rid of this!
+//using namespace rsTestRomos;  // try to get rid of this!
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // generation of test event-arrays:

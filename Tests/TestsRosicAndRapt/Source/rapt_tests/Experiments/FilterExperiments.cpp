@@ -1274,7 +1274,7 @@ void poleZeroPrototype()
 
   // something is wrong...
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void seriesConnectionDecay()  
@@ -1459,7 +1459,7 @@ void quantileFilter()
   plt.plot();
   */
 
-  int dummy = 0;
+  //int dummy = 0;
 
 
 

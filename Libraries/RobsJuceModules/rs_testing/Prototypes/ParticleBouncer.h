@@ -58,7 +58,7 @@ public:
   if there's none, you'll get a wrong result. Also, if there's one intersection, there's typically
   another one (unless the line just touches the ellipse) - the function returns the one with the
   larger value. */
-  double getLineEllipseIntersectionParameter(double x, double y, double dx, double dy,
+  static double getLineEllipseIntersectionParameter(double x, double y, double dx, double dy,
     double a2r, double b2r);
   // todo: maybe make this a protected member function and do not pass a2r, b2r - instead make them
   // member variables

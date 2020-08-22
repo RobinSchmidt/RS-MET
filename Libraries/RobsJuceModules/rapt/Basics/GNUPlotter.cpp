@@ -309,7 +309,7 @@ void GNUPlotter::setGrid(bool x, bool y, bool x2, bool y2, bool z)
   addCommand(s);
 }
 
-void GNUPlotter::setLogScale(std::string axes, double base, bool shouldBeLogarithmic)
+void GNUPlotter::setLogScale(std::string axes, double /*base*/, bool shouldBeLogarithmic)
 {
   std::string s;
   if( !shouldBeLogarithmic )
@@ -317,6 +317,7 @@ void GNUPlotter::setLogScale(std::string axes, double base, bool shouldBeLogarit
   s += "set logscale " + axes + "\n";
   addCommand(s);
 }
+// todo: use base or get rid of the parameter
 
 void GNUPlotter::setRange(double xMin, double xMax, double yMin, double yMax, double zMin,
   double zMax)

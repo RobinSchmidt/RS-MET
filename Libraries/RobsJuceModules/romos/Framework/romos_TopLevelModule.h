@@ -31,13 +31,13 @@ public:
   void disconnectAudioOutputModules();
 
   /** Overriden to avoid changing the polyphony (a toplevel-module is always monophonic). */
-  virtual void setPolyphonic(bool shouldBePolyphonic)
+  virtual void setPolyphonic(bool /*shouldBePolyphonic*/)
   {
     // do nothing
   }
 
   /** Overriden to avoid changing the polyphony (a toplevel-module is always monophonic). */
-  virtual void setPolyphonicRecursively(bool shouldBePolyphonic)
+  virtual void setPolyphonicRecursively(bool /*shouldBePolyphonic*/)
   {
     // do nothing 
   }
@@ -51,7 +51,7 @@ public:
 
   /** Overriden to avoid adding of audio outputs to the toplevel module. */
   virtual Module* addAudioOutputModule(rosic::rsString name = rosic::rsString(), int x = 1, 
-    int y = 1,  bool sortModuleArrayAfterInsertion = true)
+    int y = 1,  bool /*sortModuleArrayAfterInsertion*/ = true)
   {
     return NULL;
   }

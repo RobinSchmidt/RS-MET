@@ -56,7 +56,7 @@ void characteristicPolynomial()
   // should also be a member of the set - is this in some way a "special" member? Maybe another
   // special member is the one whose eigenvectors are the canoncial basis vectors.
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // This Sage code:
   // A = matrix([[-4,6],[-3,5]])
@@ -166,7 +166,7 @@ void determinant()
   // functions - only class rsPolynomial itself is needed -> compare both ways. For this way, we 
   // must promote the matrix to a matrix of polynomials instead of rational functions.
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -559,7 +559,7 @@ void linearCombinations()
   // how can we find the coefficients of the linear combinations - that must also be a linear 
   // system -> figure out, how to set it up
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void linearIndependence()
@@ -599,7 +599,7 @@ void linearIndependence()
   // vector in the set is dependent on some others - a3 cannot be expressed as linear combination
   // of a1,a2, for example ...is that because it has coefficient zero?
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -733,7 +733,7 @@ void eigenstuff()
 
 
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // Some Notes
   // -x_i is an eigenvalue of matrix A, iff (A - x_i * I) * v = 0 has solutions v different from 
@@ -783,7 +783,7 @@ void linearSolverPrecision()
 
   // ok - but we can see the numerical error increase with the size
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -1363,7 +1363,7 @@ void gaussianRegression()
   // we need to define an error function and optimize the amplitudes, frequencies and widths with 
   // that initial guess - so we need to do an optimization in and 21-dimensional space
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 /** Error function for the approximation of a Butterworth function by a sum of Gaussians.. */
@@ -1512,7 +1512,7 @@ void butterworthViaGaussians()
 
   errFunc.plot(pFinal);
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // ToDo: move the old minimization code into the rs_testing module - it's not good enough for the
   // library yet
@@ -1723,7 +1723,7 @@ void numericOptimization()
 {
   testNumericMinimization();
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -1970,7 +1970,7 @@ void probabilityLogic()
   // from this, we may build a general continuous "and" formula that incorporates correlation
   // ...and from that, we can also create an "or" formula
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 double productLog(const double z) 
@@ -2289,7 +2289,7 @@ void ratiosEquidistantPowers()
 
   // for testing a suitable threshold/tolerance for the absolute value of p for treating it as 
   // zero:
-  Real smalll = 2000 * RS_EPS(Real);  // should be around twice the tolerance for good plot
+  //Real smalll = 2000 * RS_EPS(Real);  // should be around twice the tolerance for good plot
   //pMax = smalll; pMin = -pMax;      // uncomment to test the edge case of p ~= 0
 
 
@@ -2340,7 +2340,7 @@ void ratiosMetallic()
   //  coefficients
 
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -2406,7 +2406,7 @@ void expBipolar()
   double f1  = a * exp(b * 1) + c;
   double fp0 = a * b;
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void expGaussBell()
@@ -2905,7 +2905,7 @@ void arithmeticDerivative()
     x[i] = i;
     d[i] = numDeriv(i);
   }
-  int dummy = 0;
+  //int dummy = 0;
 }
 /*
 https://oeis.org/A003415/list
