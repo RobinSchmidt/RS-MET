@@ -968,7 +968,7 @@ void superSawDensitySweep() // rename to SuperSawFeedbackFM
 
   AT::normalize(&y[0], N);
   //rosic::writeToMonoWaveFile("SuperSawDensitySweep.wav", &y[0], N, sampleRate);
-  rosic::writeToMonoWaveFile("SuperSaw.wav", &y[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("SuperSaw.wav", &y[0], N, (int)sampleRate);
 
 
   std::cout << "Done";
@@ -1979,7 +1979,7 @@ void circleFractals()
   r = { 1, .5, .25,};
   w = { 1,  5,  25};
 
-  for(size_t n = 0; n < N; n++)
+  for(int n = 0; n < N; n++)
   {
     x[n] = y[n] = 0;
     for(size_t k = 0; k < r.size(); k++)

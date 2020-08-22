@@ -230,7 +230,7 @@ void rotes::testTurtleReverse()
   // forward part:
   x.push_back(tg.getX());
   y.push_back(tg.getY());
-  int i = 0;
+  size_t i = 0;
   while(i < commands.size()) {
     if(tg.interpretCharacter(commands[i])) {
       x.push_back(tg.getX());

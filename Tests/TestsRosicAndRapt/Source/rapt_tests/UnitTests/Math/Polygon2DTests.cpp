@@ -201,7 +201,7 @@ bool pixelCoverage(std::string &reportString)
   typedef rsVector2DF V;    // for convenience
   float t = 1.f/16.f;       // target area
   float a;                  // computed area
-  float tol = 1.e-8;        // tolerance - needed for gcc
+  float tol = 1.e-8f;       // tolerance - needed for gcc
 
 
 

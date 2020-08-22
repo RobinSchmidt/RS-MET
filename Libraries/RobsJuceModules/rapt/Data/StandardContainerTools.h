@@ -473,7 +473,7 @@ template<class T>
 inline std::vector<T> operator*(const T& x, const std::vector<T>& v)
 {
   std::vector<T> result(v.size());
-  for(int i = 0; i < v.size(); i++)
+  for(size_t i = 0; i < v.size(); i++)
     result[i] = x * v[i];
   return result;
 }
@@ -483,7 +483,7 @@ template<class T>
 inline std::vector<T> operator/(const std::vector<T>& v, const T& x)
 {
   std::vector<T> result(v.size());
-  for(int i = 0; i < v.size(); i++)
+  for(size_t i = 0; i < v.size(); i++)
     result[i] = v[i] / x;
   return result;
 }
@@ -505,7 +505,7 @@ template<class T>
 inline std::vector<T> operator+(const std::vector<T>& v, const T& x)
 {
   std::vector<T> result(v.size());
-  for(int i = 0; i < v.size(); i++)
+  for(size_t i = 0; i < v.size(); i++)
     result[i] = v[i] + x;
   return result;
 }
@@ -515,7 +515,7 @@ template<class T>
 inline std::vector<T> operator-(const std::vector<T>& v, const T& x)
 {
   std::vector<T> result(v.size());
-  for(int i = 0; i < v.size(); i++)
+  for(size_t i = 0; i < v.size(); i++)
     result[i] = v[i] - x;
   return result;
 }
@@ -527,7 +527,7 @@ inline std::vector<T> operator+(const std::vector<T>& x, const std::vector<T>& y
   size_t Nmax = std::max(x.size(), y.size());
   size_t Nmin = std::min(x.size(), y.size());
   std::vector<T> result(Nmax);
-  for(int i = 0; i < Nmin; i++)
+  for(size_t i = 0; i < Nmin; i++)
     result[i] = x[i] + y[i];
   return result;
 }

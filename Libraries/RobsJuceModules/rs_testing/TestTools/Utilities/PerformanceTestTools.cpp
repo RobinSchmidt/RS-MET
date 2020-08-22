@@ -58,7 +58,7 @@ void PerformanceAnalyzer::runTests()
   initResultArray();
   for(size_t i = 0; i < tests.size(); i++) {
     for(size_t j = 0; j < inputSizes.size(); j++) {
-      for(size_t k = 0; k < numRuns; k++) {
+      for(int k = 0; k < numRuns; k++) {
         cpuCounter.init();
         (*tests[i])((int)inputSizes[j]);  // run test i with input size (indexed by) j
         double cycles = (double)cpuCounter.getNumCyclesSinceInit();

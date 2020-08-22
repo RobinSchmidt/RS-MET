@@ -516,7 +516,7 @@ rsModalBankParametersD SampleMapGeneratorModal::interpolateParameters(
   r.gain      = rsWeightedGeometricMean(p1.gain,      p2.gain,      w1);
   r.attack    = rsWeightedGeometricMean(p1.attack,    p2.attack,    w1);
   r.decay     = rsWeightedGeometricMean(p1.decay,     p2.decay,     w1);
-  for(int i = 0; i < r.g.size(); i++)
+  for(size_t i = 0; i < r.g.size(); i++)
   {
     r.f[i] = rsWeightedGeometricMean(p1.f[i], p2.f[i], w1);
     r.g[i] = rsWeightedGeometricMean(p1.g[i], p2.g[i], w1);
@@ -541,8 +541,7 @@ rsModalBankParametersD SampleMapGeneratorModal::removeModesAbove(
   rsModalBankParametersD r = p;
 
   int cutoffIndex = 0;
-  int i;
-  for(i = 0; i < p.f.size(); i++)
+  for(size_t i = 0; i < p.f.size(); i++)
   {
     if( p.frequency * p.f[i] < cutoff )
       cutoffIndex++;

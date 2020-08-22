@@ -249,7 +249,7 @@ void getPaddedSignals(double* xIn, int Nx,
   y = synth.synthesize(model);
   int nf = model.getStartSampleIndex(synth.getSampleRate()); // # fade-in samples
 
-  size_t n;
+  int n;
   if(nf < 0) {
     // obtain a version of x with an appropriate number of zeros prepended
     nf = -nf;
@@ -513,10 +513,10 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
 
   // exctract envelopes:
   std::vector<double> e1(x1.size()), e2(x2.size());
-  int n;
-  for(n = 0; n < (int )x1.size(); n++) e1[n] = ef.getSample(x1[n]);
+  size_t n;
+  for(n = 0; n < x1.size(); n++) e1[n] = ef.getSample(x1[n]);
   ef.reset();
-  for(n = 0; n < (int )x2.size(); n++) e2[n] = ef.getSample(x2[n]);
+  for(n = 0; n < x2.size(); n++) e2[n] = ef.getSample(x2[n]);
 
   //rsPlotVectors(x2, e2);
 
@@ -581,10 +581,10 @@ void testEnvelopeMatching2(std::vector<double>& x1, std::vector<double>& x2)
   ef.setAttackTime(0.0);    // in ms?
   ef.setReleaseTime(200.0);
   Vec e1(x1.size()), e2(x2.size());
-  int n;
-  for(n = 0; n < (int )x1.size(); n++) e1[n] = ef.getSample(x1[n]);
+  size_t n;
+  for(n = 0; n < x1.size(); n++) e1[n] = ef.getSample(x1[n]);
   ef.reset();
-  for(n = 0; n < (int )x2.size(); n++) e2[n] = ef.getSample(x2[n]);
+  for(n = 0; n < x2.size(); n++) e2[n] = ef.getSample(x2[n]);
 
   // find match offset:
   double dt = 0;

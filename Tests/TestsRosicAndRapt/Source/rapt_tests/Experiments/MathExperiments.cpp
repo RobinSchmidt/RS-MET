@@ -2889,7 +2889,7 @@ rsUint32 numDeriv(rsUint32 n)  // number derivative
   RAPT::rsPrimeFactors(n, p, e);
 
   double s = 0; // sum of fractions - use a rational number class later
-  for(int i = 0; i < p.size(); i++)
+  for(size_t i = 0; i < p.size(); i++)
     s += (double)e[i] / (double)p[i];
 
   double ns = n*s;

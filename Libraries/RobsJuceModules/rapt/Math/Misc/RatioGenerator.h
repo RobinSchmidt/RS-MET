@@ -78,7 +78,7 @@ public:
   inline T primePower(int n) 
   { 
     rsAssert(primeTable != nullptr);
-    rsAssert(n < primeTable->size());
+    rsAssert(n < (int) primeTable->size());
     return pow(T(primeTable->at(n)), p1);
   }
 

@@ -681,9 +681,9 @@ void crossfadeUnflatteningSpeeds(vector<double>* speeds1, vector<double> *speeds
   vector<double> s = linearCrossfade(*speeds1, *speeds2, *start, *end, *shift);
   rsVariableSpeedPlayerDD vsp;
   vsp.setInputAndSpeed(nullptr, &s[0], (int) s.size());
-  for(int n = 0; n < speeds1->size(); n++)
+  for(size_t n = 0; n < speeds1->size(); n++)
     (*speeds1)[n] = 1 / (vsp.warpTime(n+1) - vsp.warpTime(n));
-  for(int n = 0; n < speeds2->size(); n++)
+  for(size_t n = 0; n < speeds2->size(); n++)
     (*speeds2)[n] = 1 / (vsp.warpTime(n+1+*shift) - vsp.warpTime(n+*shift));
   *start = (int) vsp.warpTime(*start);
   *end   = (int) vsp.warpTime(*end);

@@ -21,16 +21,16 @@ void lineDrawing()
   rsImagePainterFFF painter(&image, nullptr);
   float x0 = margin;
   float y0 = margin;
-  int i;
+  //int i;
 
   // create arrays for line endpoints:
   vector<float> x1, y1;
-  for(i = 0; i < numLines; i++){    // flat, horizontal'ish
+  for(int i = 0; i < numLines; i++){    // flat, horizontal'ish
     x1.push_back(imageWidth - margin);
     y1.push_back(margin + i * (imageHeight - margin) / numLines); }
   x1.push_back(imageWidth -margin); // 45° diagonal
   y1.push_back(imageHeight-margin);
-  for(i = 0; i < numLines; i++){    // steep, vertical'ish
+  for(int i = 0; i < numLines; i++){    // steep, vertical'ish
     x1.push_back(margin + i * (imageWidth - margin) / numLines);
     y1.push_back(imageHeight - margin); }
 
@@ -41,14 +41,14 @@ void lineDrawing()
 
   // Wu algorithm:
   image.clear();
-  for(i = 0; i < x1.size(); i++)
+  for(size_t i = 0; i < x1.size(); i++)
     painter.drawLineWu(x0, y0, x1[i], y1[i], brightness);
     //drawLineWuPrototype(image, x0, y0, x1[i], y1[i], brightness);
   writeImageToFilePPM(image, "LinesWu.ppm");
 
   // Bresenham algorithm:
   image.clear();
-  for(i = 0; i < x1.size(); i++)
+  for(size_t i = 0; i < x1.size(); i++)
     drawLineBresenham(image, rsRoundToInt(x0), rsRoundToInt(y0), 
       rsRoundToInt(x1[i]), rsRoundToInt(y1[i]), brightness);
   writeImageToFilePPM(image, "LinesBresenham.ppm");

@@ -783,7 +783,7 @@ rsGroupString rsGroupString::inverse() const
 {
   size_t len = s.size();
   std::vector<unsigned int> r(len);
-  for(int i = 0; i < len; i++)
+  for(size_t i = 0; i < len; i++)
     r[i] = s[len-1-i];
   return r;
 }
@@ -791,7 +791,7 @@ rsGroupString rsGroupString::inverse() const
 rsGroupString rsGroupString::operator+(const rsGroupString &rhs) const
 {
   std::vector<unsigned int> r = s;
-  for(int i = 0; i < rhs.s.size(); i++) {
+  for(size_t i = 0; i < rhs.s.size(); i++) {
     if(r.size() > 0 && r[r.size()-1] != rhs.s[i])
       r.push_back(rhs.s[i]);
     else if(r.size() > 0)     // avoid popping on empty vector
@@ -837,7 +837,7 @@ std::string rsGroupString2::toString() const
 bool rsGroupString2::checkCharacters() const
 {
   bool r = true;
-  for(int i = 0; i < s.size(); i++)
+  for(size_t i = 0; i < s.size(); i++)
     r &= s[i] >= 0 && s[i] <= 25;
   return r;
 }

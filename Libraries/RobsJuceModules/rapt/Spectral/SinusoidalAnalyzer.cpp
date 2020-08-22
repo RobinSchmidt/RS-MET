@@ -187,7 +187,7 @@ void rsSinusoidalAnalyzer<T>::applyContinuations(
                   // aliveTracks array to not mess up the indices inside the loop
 
   // continue matched tracks with new peaks:
-  for(i = 0; i < continuations.size(); i++) {
+  for(i = 0; i < (int)continuations.size(); i++) {
     trkIdx = continuations[i].first;
     pkIdx  = continuations[i].second;
     aliveTracks[trkIdx].appendDataPoint(newPeaks[pkIdx]);
@@ -215,7 +215,7 @@ void rsSinusoidalAnalyzer<T>::applyContinuations(
 
   // create new tracks by creating a fresh track from the peaks that should give birth and also 
   // prepend a "fade-in" datapoint:
-  for(i = 0; i < births.size(); i++) {
+  for(i = 0; i < (int) births.size(); i++) {
     pkIdx  = births[i];
     params = newPeaks[pkIdx];
     RAPT::rsSinusoidalPartial<T> newTrack;
@@ -443,7 +443,7 @@ void rsSinusoidalAnalyzer<T>::cleanUpModel(rsSinusoidalModel<T>& model) const
 
   // de-bias the frequency estimates in the remaining, non-spurious partials:
   if(forceFreqPhaseConsistency)
-    for(int i = 0; i < model.getNumPartials(); i++)
+    for(size_t i = 0; i < model.getNumPartials(); i++)
     {
       rsSinusoidalProcessor<T>::makeFreqsConsistentWithPhases(model.getModifiablePartialRef(i));
 
