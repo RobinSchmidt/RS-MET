@@ -1360,19 +1360,20 @@ void quantileFilter1()
   // to left/right respectively. Consider the old inputs for 5 different cases: xOld = 1,3,5,7,9
   // and cosider finding the minimum, maximum, median and quartiles for L = 3, L+1 = 4
 
-  double q = 0.0; // quantile
-  int    L = 3;    // length of non-elongated filter
+  double q = 0.25;   // quantile
+  int    L = 8;    // length of non-elongated filter
 
   using Vec = std::vector<double>;
   Vec x;
   // x = Vec({ 2,4,6,8 });
   // x = Vec({ 0,2,4,6,8,10,12,14 });
   x = Vec({2,4,6,8,6,4,2,0,-2,-4,-6,-8,-6,-4,-2,0,2,4,6,8,6,4,2,0,-2,-4,-6});
+  //x = rsRandomIntVector(100, -9, +9, 0);
   int N = (int) x.size();   // number of samples
 
 
   rsQuantileFilterCore2<double> flt;
-  flt.setMaxLength(8);
+  flt.setMaxLength(32);
 
   // produce a target signal with a filter that actually *is* one sample longer than L:
   flt.setLengthAndQuantile(L+1, q);
@@ -1400,7 +1401,7 @@ void quantileFilter1()
   double xOld = dly[L];
   double tmp  = flt.readOutputWithOneMoreInput(xOld);
 
-
+  //rsPlotVectors(t, z, err);
   rsPlotVectors(x, t, z, err);
 
   // Observations:
@@ -1424,6 +1425,12 @@ void quantileFilter1()
   //   q=0.0: xS,xL = S0,S1 or S0,xOld
   //   q=1.0: xS,xL = L0,L1 or L0,xOld
   //   q=0.5: 
+
+  // Maybe we should first figure out which of the two heaps (small or large) would be increased
+  // by one in length. We can detect this by comparing p to p1. If p1 == p, the length of the large
+  // hep would increase by one, If p1 == p1, the length of the small heap would increase by one.
+  // Then, instead of retrieving the regular front element of the elongated heap, we should take 
+  // the min or max of the front element with the xOld value
 }
 
 

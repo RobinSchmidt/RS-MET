@@ -714,6 +714,33 @@ public:
 
   T readOutputWithOneMoreInput(T xOld)  // xOld = x[n-L]
   {
+    T q = getQuantile();
+    int p1;     
+    T w1, xS, xL;
+    lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
+
+    if(p1 == p)
+    {
+      // large heap would be increased by one
+      xS = small[0].value;
+      xL = rsMin(xOld, large[0].value);
+    }
+    else
+    {
+      // large heap would be increased by one
+      rsAssert(p1 == p+1);
+      xL = large[0].value;
+      xS = rsMax(xOld, small[0].value);
+    }
+    T y = (T(1)-w1)*xS + w1*xL;
+    return y;
+  }
+  // still wrong - i think, we need an inner condition, like 
+  // if(xOld < small[1])
+
+
+  T readOutputWithOneMoreInput2(T xOld)  // xOld = x[n-L]
+  {
     T w1, xS, xL;
     T q = getQuantile();
     int p1;
