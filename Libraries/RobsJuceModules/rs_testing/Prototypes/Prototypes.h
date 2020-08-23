@@ -733,7 +733,11 @@ public:
       rsAssert(p1 == p+1);
       xL = large[0].value;
       xS = rsMax(xOld, small[0].value);
+      if(xL < xS)
+        rsSwap(xL, xS);
     }
+
+
     T y = (T(1)-w1)*xS + w1*xL;
     return y;
   }

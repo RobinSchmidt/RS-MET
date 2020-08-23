@@ -1360,8 +1360,8 @@ void quantileFilter1()
   // to left/right respectively. Consider the old inputs for 5 different cases: xOld = 1,3,5,7,9
   // and cosider finding the minimum, maximum, median and quartiles for L = 3, L+1 = 4
 
-  double q = 0.0;   // quantile
-  int    L = 3;    // length of non-elongated filter
+  double q = 0.5;   // quantile
+  int    L = 5;     // length of non-elongated filter
 
   using Vec = std::vector<double>;
   Vec x;
@@ -1405,6 +1405,11 @@ void quantileFilter1()
   rsPlotVectors(x, t, z, err);
 
   // Observations:
+  // -It works for L=20,q=0.75 but not for L=20,q=0.33, for q=0 and q=1, it seems to work for all
+  //  lengths
+
+
+  // old:
   // -with L=3, q=0.0...0.33, it works, for 0.34...1.0, it doesn't - it has to do with dp = p-p1
   //  switching from 0 to -1 at q = 1./3 (i think)
   // -with L=5, q=0.0...0.19 works, with L=4, q=0.0...0.24 - i think, in general, it works up to
