@@ -733,7 +733,12 @@ public:
       // compare xOld to 2nd largest small:
       xL = xS;
       xS = this->dblHp.get2ndLargestSmallValue().value;
-      xS = rsMax(xS, xOld);
+      //xS = rsMax(xS, xOld);
+      xS = rsMin(xS, xOld);
+
+      // maybe whether we should take min or max should depend on w1? if w1 < 0.5, 
+      // take min else take max? ..what if w1 == 0.5?...that doesn't seem right
+
     }
     else
     {

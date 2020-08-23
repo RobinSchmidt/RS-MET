@@ -1389,7 +1389,7 @@ void quantileFilter1()
   {
     dly.getSample(x[n]);       // feed the delayline
     y[n] = flt.getSample(x[n]);
-    //z[n] = flt.readOutputWithOneMoreInput(dly[L]);
+    z[n] = flt.readOutputWithOneMoreInput(dly[L]);
   }
 
   double xOld = dly[L];
