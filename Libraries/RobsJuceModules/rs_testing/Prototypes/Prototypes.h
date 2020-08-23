@@ -711,7 +711,42 @@ public:
   
 
 
+
   T readOutputWithOneMoreInput(T xOld)  // xOld = x[n-L]
+  {
+    T w1, xS, xL;
+    T q = getQuantile();
+    int p1;
+    lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
+    xS = this->dblHp.getLargestSmallValue().value;
+    xL = this->dblHp.getSmallestLargeValue().value;
+
+    if(xOld > xL)
+    {
+      // compare xOld to 2nd smallest large:
+      xS = xL;
+      xL = this->dblHp.get2ndSmallestLargeValue().value;
+      xL = rsMin(xL, xOld);
+    }
+    else if(xOld < xS)
+    {
+      // compare xOld to 2nd largest small:
+      xL = xS;
+      xS = this->dblHp.get2ndLargestSmallValue().value;
+      xS = rsMax(xS, xOld);
+    }
+    else
+    {
+      xS = xL = 0; // preliminary
+    }
+
+
+    T y = (T(1)-w1)*xS + w1*xL;
+    return y;
+  }
+
+  // didi not really work out - try again above
+  T readOutputWithOneMoreInput1(T xOld)  // xOld = x[n-L]
   {
     T w1, yS, yL; // use xS, yL
     T q = getQuantile();

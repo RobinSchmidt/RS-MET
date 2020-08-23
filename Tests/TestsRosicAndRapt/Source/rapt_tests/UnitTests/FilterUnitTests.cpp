@@ -482,7 +482,9 @@ bool oneLongerQuantileUnitTest(int L, int N)
     rsPlotVectors(x, yR, yT);
     //rsPlotVectors(yR, yT);
   }
-  // this does not yet work - also, we trigger an assert for quantile = 1
+  // this does not yet work
+
+  // for q = 0, the lowest branch fails
 
   return r;
 }
