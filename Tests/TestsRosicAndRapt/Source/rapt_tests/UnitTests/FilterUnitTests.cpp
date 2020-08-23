@@ -432,7 +432,9 @@ bool oneLongerQuantileUnitTest(int L, int N)
   // we test the filter with these quantiles:
   using Vec = std::vector<double>;
   //Vec quantiles({0.0, 0.25, 0.5, 0.75, 1.0});
-  Vec quantiles({ 0.5 });
+  Vec quantiles({ 0.0 });
+  //Vec quantiles({ 0.5 });
+  //Vec quantiles({ 1.0 });
   //Vec quantiles({ 0.25 });
   // maye also include 0.000001, 0.99999..or maybe eps, 1-eps
 
@@ -450,28 +452,24 @@ bool oneLongerQuantileUnitTest(int L, int N)
   fltT.setModulationBuffer(&delayLine);
 
   // compute test and reference output and compare them:
-  //Vec x = rsRandomIntVector(N, 0, 99);  // input
+  Vec x = rsRandomIntVector(N, 0, 99);  // input
   //Vec x = rsLinearRangeVector(N, 1+5, N+5); // use 5 as offset to make some things more obvious
-  Vec x = rsLinearRangeVector(N, -1-5, -N-5);
+  //Vec x = rsLinearRangeVector(N, -1-5, -N-5);
+
+  //x = Vec({2,4,6,8,6,4,2,0,-2,-4,-6,-8,-6,-8,-6,-4,-2,0,2,4,6,8,6,4,2,0}); N = (int) x.size();
+  x = Vec({2,4,6,8,6,4,2,0,-2,-4,-6,-8,-6,-4,-2,0,2,4,6,8,6,4,2,0,-2,-4,-6}); N = (int) x.size();
+
   Vec yR(N), yT(N);                     // reference and test output
   for(size_t i = 0; i < quantiles.size(); i++)
   {
     // compute output of reference filter - this filter actually is one sample longer than our
     // nominal L:
-    //double pR = quantiles[i] * L;
-    //double wR = pR - floor(pR);
-    //fltR.setReadPosition(1 + (int) pR, true);
-    //fltR.setRightWeight(wR);
     fltR.setLengthAndQuantile(L+1, quantiles[i]); // should replace code above
     for(int n = 0; n < N; n++)
       yR[n] = fltR.getSample(x[n]);
 
     // compute output of tested filter - this filter is set to length L and computes the output of
     // a length L+1 filter by additional trickery
-    //double pT = quantiles[i] * (L-1); // readout position in test filter
-    //double wT = pT - floor(pT);
-    //fltT.setReadPosition(1 + (int) pT, true);
-    //fltT.setRightWeight(wT);
     fltT.setLengthAndQuantile(L, quantiles[i]); // should replace code above
     for(int n = 0; n < N; n++)
     {
@@ -481,8 +479,8 @@ bool oneLongerQuantileUnitTest(int L, int N)
     }
 
     r &= yT == yR;
-    //rsPlotVectors(x, yR, yT);
-    rsPlotVectors(yR, yT);
+    rsPlotVectors(x, yR, yT);
+    //rsPlotVectors(yR, yT);
   }
   // this does not yet work - also, we trigger an assert for quantile = 1
 
@@ -523,7 +521,7 @@ bool movingQuantileUnitTest()
   r &= oneLongerQuantileUnitTest(5, N); // fails
   r &= oneLongerQuantileUnitTest(6, N); // fails
   r &= oneLongerQuantileUnitTest(7, N); // fails
-  //r &= oneLongerQuantileUnitTest(8, N); // fails
+  r &= oneLongerQuantileUnitTest(8, N); // fails
 
   // the upper branch seems to be wrong whenever there are two equal input samples samples - 
   // maybe, we somewher need <= instead of < ...hmm - doesn't seem to help

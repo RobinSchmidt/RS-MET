@@ -704,95 +704,52 @@ public:
   }
 
 
-  T readOutputWithOneMoreInput(T xOld)
+  
+  bool isLess(struct Base::Node x, struct Base::Node y) 
+  { return this->dblHp.small.isLess(x, y); }
+  // convenience function - maybe make lmabda function in function below
+  
+
+
+  T readOutputWithOneMoreInput(T xOld)  // xOld = x[n-L]
   {
-    //T p1 = this->p * T(this->L) / T(this->L-1); 
-    // but wait - p is an integer - should we use p+w or p+(1-w)?
-
-    T w1; // = p1 - floor(p1);
-    T yS, yL; // hmm...yL means yLarge but xL means x[n-L] - notational clash!
-    struct Base::Node nx(xOld, 0); // we need to create a node
-
+    T w1, yS, yL; // use xS, yL
     T q = getQuantile();
     int p1;
     lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
-
-    if(this->dblHp.small.isLess(nx, this->dblHp.large[0]))  // means: if(x < large[0])
+    struct Base::Node nx(xOld, 0); // we need to create a node
+    if( isLess(nx, this->dblHp.large[0]) )  // means: if(x < large[0])
     {
-      // xL belongs in small heap, so we use xL together with the 2 first values of the small heap
-      // (?)
-      //yS = this->dblHp.get2ndLargestSmallValue().value;
-      //yS = rsMaxViaLess(yS, xL);  //
-      //yL = this->dblHp.getLargestSmallValue().value;
+      //return -10; // test
 
-
-      // new:
-      T y0 = this->dblHp.getLargestSmallValue().value;
-      T y1 = this->dblHp.get2ndLargestSmallValue().value;
-      if(xOld > y0)
+      
+      if(isLess(nx, this->dblHp.small[0]))
       {
-        // xL belongs right to the 2 largest small values 
-        // -> interpolate between largest small and xL:
-        yS = y0;
-        yL = xOld;
-      }
-      else if(xOld < y1)
-      {
-        // xL belongs left to the 2 largest small values
-        // -> interpolate between 2nd largest small and largest small:
-        yS = y1;
-        yL = y0;
+        // xOld belongs in small heap
+        yL = this->dblHp.getLargestSmallValue().value;
+        yS = this->dblHp.get2ndLargestSmallValue().value;
       }
       else
       {
-        // xL belongs in between the 2 largest small values
-        // -> interpolate between xL and largest small:
-        yS = xOld;
-        yL = y1;
+        // xOld belongs between small and large heap
+        //return -10; // test
+        yS = this->dblHp.getLargestSmallValue().value;
+        yL = this->dblHp.getSmallestLargeValue().value;
       }
-
-      // let y0 = small[0], y1 = small[1]
-
-      /*
-      if(this->dblHp.small.isLess(nx, this->dblHp.small[0]))
-      {
-
-      }
-      */
-
-      //return 0;  // test
     }
     else
     {
-      // x belongs in large heap
-      //yS = this->dblHp.get2ndSmallestLargeValue().value;
-      //yS = rsMin(yS, xL);
-      //yL = this->dblHp.getSmallestLargeValue().value;
-
-      T y0 = this->dblHp.getSmallestLargeValue().value;
-      T y1 = this->dblHp.get2ndSmallestLargeValue().value;
-
-
-
-      if(xOld < y0)
-      {
-        yS = xOld;
-        yL = y0;
-      }
-      else if(xOld > y1)
-      {
-        yS = y0;
-        yL = y1;
-      }
-      else
-      {
-        yS = y0;
-        yL = xOld;
-      }
-
-
-      //return 0;// for test/debug - this branch seems to be still wrong
+      // xOld belongs in large heap
+      yS = this->dblHp.getSmallestLargeValue().value;
+      yL = this->dblHp.get2ndSmallestLargeValue().value;
     }
+    // maybe the 1st branch should have a 2nd (nested) comparison that figures out, if 
+    // xOld > small[0], and if so, we should assign yS to largestSmall and yL to smallestlarge?
+
+      
+    yS = rsMin(yS, yL, xOld);
+    yL = rsMax(yS, yL, xOld);
+
     T y = (T(1)-w1)*yS + w1*yL;
     return y;
   }
