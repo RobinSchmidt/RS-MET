@@ -1346,6 +1346,8 @@ void seriesConnectionDecay()
 
 void quantileFilter1()
 {
+  // Under construction - does not yet work
+
   // We try to produce a sample that a length L+1 *would have* produced with a length L filter.
   // Consider the case when the sorted array looks like:
   //
@@ -1358,7 +1360,7 @@ void quantileFilter1()
   // to left/right respectively. Consider the old inputs for 5 different cases: xOld = 1,3,5,7,9
   // and cosider finding the minimum, maximum, median and quartiles for L = 3, L+1 = 4
 
-  double q = 0.34; // quantile - 0.33 (dp==0,w1=0.99) works, 0.34 (dp==-1,w1==0.02) doesn't
+  double q = 0.50; // quantile - 0.33 (dp==0,w1=0.99) works, 0.34 (dp==-1,w1==0.02) doesn't
   int    L = 3;    // length of non-elongated filter
 
   using Vec = std::vector<double>;
@@ -1380,8 +1382,8 @@ void quantileFilter1()
   dly.setCapacity(L+1);
   dly.setLength(L+1);
 
-  flt.setLengthAndQuantile(L, q);
   flt.reset();
+  flt.setLengthAndQuantile(L, q);
   Vec y(N);  // normal output of filter
   Vec z(N);  // output of elongated filter - should match t
   for(int n = 0; n < N; n++)
@@ -1402,6 +1404,8 @@ void quantileFilter1()
   // -with L=3, q=0.0...0.33, it works, for 0.34...1.0, it doesn't - it has to do with dp = p-p1
   //  switching from 0 to -1 at q = 1./3 (i think)
   // -i think we will always have p1 >= p, either p1 == p or p1 == p+1
+  // -oh - the check if p1 == p does not really work. check L=3, q=0.49 vs q=0.5 - at q = 0.5, the 
+  //  p goes one up and dp goes back to zero - but the results are still wrong
 
   // ToDo: check with L=3, q=0.5,0.34,... the error seems to be 2*w1 at the end
 }
