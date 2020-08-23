@@ -1359,7 +1359,7 @@ void quantileFilter1()
   // to left/right respectively. Consider the old inputs for 5 different cases: xOld = 1,3,5,7,9
   // and cosider finding the minimum, maximum, median and quartiles for L = 3, L+1 = 4
 
-  double q = 0.0;  // quantile
+  double q = 0.34;  // quantile - 0.33 (dp==0,w1=0.99) works, 0.34 (dp==-1,w1==0.02) doesn't
   int    L = 3;    // length of non-elongated filter
 
   using Vec = std::vector<double>;
@@ -1391,11 +1391,13 @@ void quantileFilter1()
     y[n] = flt.getSample(x[n]);
     z[n] = flt.readOutputWithOneMoreInput(dly[L]);
   }
+  Vec err = t-z;
 
   double xOld = dly[L];
   double tmp  = flt.readOutputWithOneMoreInput(xOld);
 
 
+  rsPlotVectors(x, t, z, err);
 }
 
 
