@@ -1347,8 +1347,53 @@ void seriesConnectionDecay()
 // some throw-away code for figuring out the handling of readOutputWithOneMoreInput
 void quantileFilter1()
 {
-  rsQuantileFilterCore2<double> flt;
+  // We try to produce a sample that a length L+1 *would have* produced with a length L filter.
+  // Consider the case when the sorted array looks like:
+  //
+  //      <---S|L--->
+  // ...X X 2 4|6 8 X X...
+  //
+  // where X stands for irrelevant (and inaccessible) values, 4 is the largest small, 2 is the 2nd
+  // largest small,, 6 is the smallest large, 8 is the 2nd smallest large value. S stands for the 
+  // part of the heap/array with small values, L for the part  with large values and the continue 
+  // to left/right respectively. Consider the old inputs for 5 different cases: xOld = 1,3,5,7,9
+  // and cosider finding the minimum, maximum, median and quartiles for L = 3, L+1 = 4
 
+  double q = 0.0;  // quantile
+  int    L = 3;    // length of non-elongated filter
+
+  using Vec = std::vector<double>;
+  Vec x = Vec({ 2,4,6,8 });
+  int N = (int) x.size();   // number of samples
+
+
+  rsQuantileFilterCore2<double> flt;
+  flt.setMaxLength(8);
+
+  // produce a target signal with a filter that actually *is* one sample longer than L:
+  flt.setLengthAndQuantile(L+1, q);
+  Vec t(N); // t for target
+  for(int n = 0; n < N; n++)
+    t[n] = flt.getSample(x[n]);
+
+
+  rsDelayBuffer<double> dly;
+  dly.setCapacity(L+1);
+  dly.setLength(L+1);
+
+  flt.setLengthAndQuantile(L, q);
+  flt.reset();
+  Vec y(N);  // normal output of filter
+  Vec z(N);  // output of elongated filter - should match t
+  for(int n = 0; n < N; n++)
+  {
+    dly.getSample(x[n]);       // feed the delayline
+    y[n] = flt.getSample(x[n]);
+    //z[n] = flt.readOutputWithOneMoreInput(dly[L]);
+  }
+
+  double xOld = dly[L];
+  double tmp  = flt.readOutputWithOneMoreInput(xOld);
 
 
 }
