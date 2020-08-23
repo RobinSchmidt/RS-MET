@@ -721,7 +721,7 @@ public:
     xS = this->dblHp.getLargestSmallValue().value;
     xL = this->dblHp.getSmallestLargeValue().value;
 
-    int dp = p - p1; // don't knwo if we will need it
+    int dp = p - p1; // don't know if we will need it
 
     if(xOld > xL)
     {
@@ -733,11 +733,20 @@ public:
     else if(xOld < xS)
     {
       // compare xOld to 2nd largest small:
-      //if(w1 <= 0.5) {
+      if(p1 == p) {
         xL = xS;
         xS = this->dblHp.get2ndLargestSmallValue().value;
         xS = rsMin(xS, xOld);
-      //} else  { xS = xL = 0; } // preliminary
+      } 
+      else 
+      { 
+        // that is wrong:
+        xL = xS;
+        xS = this->dblHp.get2ndLargestSmallValue().value;
+        xS = rsMax(xS, xOld);
+        
+        //xS = xL = 0; 
+      } // preliminary
 
       //xS = rsMax(xS, xOld);
 

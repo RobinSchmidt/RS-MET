@@ -1344,7 +1344,6 @@ void seriesConnectionDecay()
   // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=533696
 }
 
-// some throw-away code for figuring out the handling of readOutputWithOneMoreInput
 void quantileFilter1()
 {
   // We try to produce a sample that a length L+1 *would have* produced with a length L filter.
@@ -1359,7 +1358,7 @@ void quantileFilter1()
   // to left/right respectively. Consider the old inputs for 5 different cases: xOld = 1,3,5,7,9
   // and cosider finding the minimum, maximum, median and quartiles for L = 3, L+1 = 4
 
-  double q = 0.34;  // quantile - 0.33 (dp==0,w1=0.99) works, 0.34 (dp==-1,w1==0.02) doesn't
+  double q = 0.34; // quantile - 0.33 (dp==0,w1=0.99) works, 0.34 (dp==-1,w1==0.02) doesn't
   int    L = 3;    // length of non-elongated filter
 
   using Vec = std::vector<double>;
@@ -1398,6 +1397,13 @@ void quantileFilter1()
 
 
   rsPlotVectors(x, t, z, err);
+
+  // Observations:
+  // -with L=3, q=0.0...0.33, it works, for 0.34...1.0, it doesn't - it has to do with dp = p-p1
+  //  switching from 0 to -1 at q = 1./3 (i think)
+  // -i think we will always have p1 >= p, either p1 == p or p1 == p+1
+
+  // ToDo: check with L=3, q=0.5,0.34,... the error seems to be 2*w1 at the end
 }
 
 
