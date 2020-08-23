@@ -719,23 +719,86 @@ public:
     T w1, xS, xL;
     lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
 
+    T S0 = small[0].value;
+    T S1 = small[1].value;
+    T L0 = large[0].value;
+    T L1 = large[1].value;
+    if(     xOld > L1)  
+    {  
+      xS = L0;   xL = L1;   
+    }
+    else if(xOld > L0)  
+    {  
+      xS = L0;   xL = xOld; 
+    }
+    else if(xOld > S0)  
+    {  
+      xS = S0;   xL = xOld; 
+    }
+    else if(xOld > S1)  
+    {  
+      xS = xOld; xL = S0;   
+    }
+    else                
+    {  
+      xS = S1;   xL = S0;   
+    }
+    // some branches seem to work (3,4,5), others not (1,2)
+
+    T y = (T(1)-w1)*xS + w1*xL;
+    return y;
+  }
+
+
+  T readOutputWithOneMoreInput3(T xOld)  // xOld = x[n-L]
+  {
+    T q = getQuantile();
+    int p1;     
+    T w1, xS, xL;
+    lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
+
     if(p1 == p)
     {
-      // large heap would be increased by one
+      // large heap would be increased by one, so xOld could potentially ended up in the large heap
+
+      //xS = rsMax(xOld, small[0].value);
       xS = small[0].value;
       xL = rsMin(xOld, large[0].value);
-      if(xL < xS)
-        rsSwap(xL, xS);
+
+      // new:
+      T s0 = small[0].value;
+      T l0 = large[0].value;
+      if(xOld >= l0)
+      {
+        // xOld would have ended up in large
+        xS = l0;
+        xL = xOld;
+      }
+      else if(xOld < s0)
+      {
+        // xOld would have ended up in small
+        xS = s0;
+        xL = l0;
+      }
+      else
+      {
+        xS = s0;
+        xL = xOld;
+      }
+
+
     }
     else
     {
       // large heap would be increased by one
       rsAssert(p1 == p+1);
+      //xL = rsMin(xOld, large[0].value);
       xL = large[0].value;
       xS = rsMax(xOld, small[0].value);
-      if(xL < xS)
-        rsSwap(xL, xS);
     }
+
+    //if(xL < xS)
+    //  rsSwap(xL, xS); // maybe this is not the right thing?
 
 
     T y = (T(1)-w1)*xS + w1*xL;
