@@ -724,6 +724,8 @@ public:
       // large heap would be increased by one
       xS = small[0].value;
       xL = rsMin(xOld, large[0].value);
+      if(xL < xS)
+        rsSwap(xL, xS);
     }
     else
     {
