@@ -719,17 +719,20 @@ public:
     T w1, xS, xL;
     lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
 
-    T S0 = small[0].value;
-    T S1 = small[1].value;
-    T L0 = large[0].value;
-    T L1 = large[1].value;
+    T S1 = this->dblHp.get2ndLargestSmallValue().value;
+    T S0 = this->dblHp.getLargestSmallValue().value;
+    T L0 = this->dblHp.getSmallestLargeValue().value;
+    T L1 = this->dblHp.get2ndSmallestLargeValue().value;
     if(     xOld > L1)  
     {  
-      xS = L0;   xL = L1;   
+      xS = L0;   xL = L1;
+      //xS = L1;   xL = L0;
+      //xS = xL = 0; 
     }
     else if(xOld > L0)  
     {  
       xS = L0;   xL = xOld; 
+      //xS = xL = 0; 
     }
     else if(xOld > S0)  
     {  

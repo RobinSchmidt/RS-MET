@@ -1401,8 +1401,8 @@ void quantileFilter1()
   double xOld = dly[L];
   double tmp  = flt.readOutputWithOneMoreInput(xOld);
 
-  //rsPlotVectors(t, z, err);
-  rsPlotVectors(x, t, z, err);
+  rsPlotVectors(t, z, err);
+  //rsPlotVectors(x, t, z, err);
 
   // Observations:
   // -It works for L=20,q=0.75 but not for L=20,q=0.33, for q=0 and q=1, it seems to work for all
