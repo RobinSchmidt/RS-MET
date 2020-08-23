@@ -743,7 +743,8 @@ public:
         // that is wrong:
         xL = xS;
         xS = this->dblHp.get2ndLargestSmallValue().value;
-        xS = rsMax(xS, xOld);
+        xS = rsMin(xS, xOld);
+        //xS = rsMax(xS, xOld);
         
         //xS = xL = 0; 
       } // preliminary

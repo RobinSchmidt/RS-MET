@@ -1360,11 +1360,14 @@ void quantileFilter1()
   // to left/right respectively. Consider the old inputs for 5 different cases: xOld = 1,3,5,7,9
   // and cosider finding the minimum, maximum, median and quartiles for L = 3, L+1 = 4
 
-  double q = 0.50; // quantile - 0.33 (dp==0,w1=0.99) works, 0.34 (dp==-1,w1==0.02) doesn't
+  double q = 0.0; // quantile
   int    L = 3;    // length of non-elongated filter
 
   using Vec = std::vector<double>;
-  Vec x = Vec({ 2,4,6,8 });
+  Vec x;
+  // x = Vec({ 2,4,6,8 });
+  // x = Vec({ 0,2,4,6,8,10,12,14 });
+  x = Vec({2,4,6,8,6,4,2,0,-2,-4,-6,-8,-6,-4,-2,0,2,4,6,8,6,4,2,0,-2,-4,-6});
   int N = (int) x.size();   // number of samples
 
 
@@ -1403,11 +1406,24 @@ void quantileFilter1()
   // Observations:
   // -with L=3, q=0.0...0.33, it works, for 0.34...1.0, it doesn't - it has to do with dp = p-p1
   //  switching from 0 to -1 at q = 1./3 (i think)
+  // -with L=5, q=0.0...0.19 works, with L=4, q=0.0...0.24 - i think, in general, it works up to
+  //  q=0...1/L or a little less
+  // -oh - it seems to "work" only for the short section at the beginning :-(
   // -i think we will always have p1 >= p, either p1 == p or p1 == p+1
   // -oh - the check if p1 == p does not really work. check L=3, q=0.49 vs q=0.5 - at q = 0.5, the 
   //  p goes one up and dp goes back to zero - but the results are still wrong
 
   // ToDo: check with L=3, q=0.5,0.34,... the error seems to be 2*w1 at the end
+
+  // ...i think we need to treat the 5 cases for where xOld may fall between or beyond
+  // small[0],small[1],large[0],large[1] differently and it also depends on whether p1 == p or not
+  // ..that would multiply to 10 cases! :-O 
+  // let's call S0 = = small[0], S1 = small[1], L0 = large[0], L1 = large[1]. We have as inputs:
+  // S0,S1,L0,L1,xOld,q,p,p1,L,w,w1 (not all may be needed) and must produce xS,xL as output
+  // special cases:
+  //   q=0.0: xS,xL = S0,S1 or S0,xOld
+  //   q=1.0: xS,xL = L0,L1 or L0,xOld
+  //   q=0.5: 
 }
 
 
