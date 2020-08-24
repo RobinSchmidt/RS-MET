@@ -72,7 +72,6 @@ public:
     lengthAndQuantileToPositionAndWeight(newLength, newQuantile, &p, &w);
     setLengthAndReadPosition(newLength, p, hard);
   }
-  // needs test
 
   /** Sets a pointer to a signal buffer that is driven by client code to facilitate artifact-free
   modulation of the length. If you leave this unassigned, you may see artifacts when the length
@@ -134,10 +133,12 @@ public:
     T P = q * (L-1);            // non-integer read position
     *w  = P - floor(P);         // weight for value right to P
     *p  = (int)floor(P) + 1;    // +1 because p is actually the value to the right of P
-    if(*p > L-1) {              // quantile == 1 (maximum) needs special care
+    if(*p > L-1) {              // quantile q == 1 (maximum) needs special care
       *p = L-1; *w = T(1);  }
   }
-  // i get linker errors when trying moving this into the cpp file -> fix this
+  // i get linker errors in visual studio (msc) when trying  to move this into the cpp file 
+  // -> move code to .cpp and fix this
+  // optimize: avoid calling floor twice
 
 protected:
 

@@ -696,24 +696,50 @@ public:
     return readOutputWithOneMoreInput(xL);
   }
 
+  T getS1(T x)
+  {
+    //struct Base::Node nx(x, 0);
+    // no - just x may be wrong - maybe it should be the min (or max) between x and the 
+    // largest
+
+    T val = this->dblHp.get2ndLargestSmallValue().value;
+    if(this->dblHp.getNumSmallValues() == 1)  // maybe have an optimized function isSmallLengthOne() that avoids conversion to int
+      val = x; // or rsMax(val, x) or rsMin(val, x)?
+    return val;
+  }
+  // it seems to work, but why should val = x be the right thing? shouldn't it be max(val, x)
+  // or min(val, x)...try everything, figure out theoretically and explain...
+
+
+  T getL1(T x)
+  {
+    //struct Base::Node nx(x, 0);
+    //return this->dblHp.get2ndSmallestLargeValue().value;
+
+    T val = this->dblHp.get2ndSmallestLargeValue().value;
+    if(this->dblHp.getNumLargeValues() == 1)
+      val = x; // or rsMax(val, x) or rsMin(val, x)?
+    return val;
+  }
+
   /** Used internally by readOutputLongerBy1 in which case x[n-L] is passed as x. */
   T readOutputWithOneMoreInput(T x)
   {
-    int p1;               // read position
-    T w1, xS, xL;         // weight, xLarge, xSmall
+    int p1;                                                 // read position
+    T w1, xS, xL;                                           // weight, xLarge, xSmall
     T q = getQuantile();
     lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
     T S0 = this->dblHp.getLargestSmallValue().value;
     T L0 = this->dblHp.getSmallestLargeValue().value;
-    if(p1 == p) {
-      T S1 = this->dblHp.get2ndLargestSmallValue().value;
+    if(p1 == p) {                                           // additional slot is in the large heap
+      T S1 = getS1(x);
       if(     x > L0) { xS = S0; xL = L0; }
       else if(x > S0) { xS = S0; xL = x;  }
       else if(x > S1) { xS = x;  xL = S0; }
       else            { xS = S1; xL = S0; } }
-    else {
-      rsAssert(p1 == p+1);  // sanity check during development
-      T L1 = this->dblHp.get2ndSmallestLargeValue().value;
+    else {                                                  // additional slot is in the small heap
+      rsAssert(p1 == p+1);                                  // sanity check
+      T L1 = getL1(x);
       if(     x < S0) { xS = S0; xL = L0; }
       else if(x < L0) { xS = x;  xL = L0; }
       else if(x < L1) { xS = L0; xL = x;  }

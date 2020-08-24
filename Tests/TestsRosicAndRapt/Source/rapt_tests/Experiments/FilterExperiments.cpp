@@ -1360,8 +1360,8 @@ void quantileFilter1()
   // to left/right respectively. Consider the old inputs for 5 different cases: xOld = 1,3,5,7,9
   // and cosider finding the minimum, maximum, median and quartiles for L = 3, L+1 = 4
 
-  double q = 0.53;   // quantile
-  int    L = 20;     // length of non-elongated filter
+  double q = 0.8;    // quantile
+  int    L = 2;      // length of non-elongated filter
 
   using Vec = std::vector<double>;
   Vec x;
@@ -1399,14 +1399,20 @@ void quantileFilter1()
   Vec err = t-z;
 
   double xOld = dly[L];
-  double branch;
+  //double branch;
   double tmp  = flt.readOutputWithOneMoreInput(xOld);
 
   //rsPlotVectors(t, z, err);
   rsPlotVectors(x, t, z, err);
 
   // Observations:
-  // -if, p1==p and xOld falls into the large heap, we just need to use xS = S0; xL = L0; as usual
+  // -L=2: q=0 fails, q=0.25 fails (errors are downward), q=0.5 works, 0.75 fails (errors are 
+  //  upward) - seems like when we sweep q from 0 to 1, it starts with lerge downward errors that 
+  //  get smaller as q sweeps up, reach zero when q=0.5 and above 0.5, the error increases again
+  //  but in the upward direction.
+  // -try to fix the simplest case L=2,q=0 first then see, if that fixes the other cases, too
+  // move explanantion into comment in readOutputWithOneMoreInput
+  // -if p1==p and xOld falls into the large heap, we just need to use xS = S0; xL = L0; as usual
   //  because xOld the large heap can actually admit for xOld as additional sample, because it's
   //  one sample longer - no data would have to be moved from large to small. If, on the other 
   //  hand, xold falls into the small heap, we have to take into account that a datapoint from
@@ -1416,37 +1422,7 @@ void quantileFilter1()
   //  required. try L=5, q= 0.6
 
 
-  // old:
-  // -It works for L=20,q=0.75 but not for L=20,q=0.33, for q=0 and q=1, it seems to work for all
-  //  lengths
 
-  // older:
-  // -with L=3, q=0.0...0.33, it works, for 0.34...1.0, it doesn't - it has to do with dp = p-p1
-  //  switching from 0 to -1 at q = 1./3 (i think)
-  // -with L=5, q=0.0...0.19 works, with L=4, q=0.0...0.24 - i think, in general, it works up to
-  //  q=0...1/L or a little less
-  // -oh - it seems to "work" only for the short section at the beginning :-(
-  // -i think we will always have p1 >= p, either p1 == p or p1 == p+1
-  // -oh - the check if p1 == p does not really work. check L=3, q=0.49 vs q=0.5 - at q = 0.5, the 
-  //  p goes one up and dp goes back to zero - but the results are still wrong
-
-  // ToDo: check with L=3, q=0.5,0.34,... the error seems to be 2*w1 at the end
-
-  // ...i think we need to treat the 5 cases for where xOld may fall between or beyond
-  // small[0],small[1],large[0],large[1] differently and it also depends on whether p1 == p or not
-  // ..that would multiply to 10 cases! :-O 
-  // let's call S0 = = small[0], S1 = small[1], L0 = large[0], L1 = large[1]. We have as inputs:
-  // S0,S1,L0,L1,xOld,q,p,p1,L,w,w1 (not all may be needed) and must produce xS,xL as output
-  // special cases:
-  //   q=0.0: xS,xL = S0,S1 or S0,xOld
-  //   q=1.0: xS,xL = L0,L1 or L0,xOld
-  //   q=0.5: 
-
-  // Maybe we should first figure out which of the two heaps (small or large) would be increased
-  // by one in length. We can detect this by comparing p to p1. If p1 == p, the length of the large
-  // hep would increase by one, If p1 == p1, the length of the small heap would increase by one.
-  // Then, instead of retrieving the regular front element of the elongated heap, we should take 
-  // the min or max of the front element with the xOld value
 }
 
 

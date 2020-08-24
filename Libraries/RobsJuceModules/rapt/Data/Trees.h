@@ -330,20 +330,26 @@ public:
   T getSmallestLargeValue() const { return large.at(0); }
 
   /** Returns the second largest element from our max-heap of small values. */
-  T get2ndLargestSmallValue() const
+  T get2ndLargestSmallValue(/*T retValWhenHeapLengthIs1*/) const
   {
     if(this->small.getSize() >= 3) return rsMaxViaLess(this->small.at(1), this->small.at(2));
     if(this->small.getSize() >= 2) return this->small.at(1);
-    return small.at(0);  // does this make sense?
+    return small.at(0);  // does this make sense? ...nope!
+    //return retValWhenHeapLengthIs1;
   }
 
   /** Returns the second smallest element from our min-heap of large values. */
-  T get2ndSmallestLargeValue() const
+  T get2ndSmallestLargeValue(/*T retValWhenHeapLengthIs1*/) const
   {
     if(this->large.getSize() >= 3) return rsMin(this->large.at(1), this->large.at(2));
     if(this->large.getSize() >= 2) return this->large.at(1);
-    return large.at(0);  // does this make sense?
+    return large.at(0);
+    //return retValWhenHeapLengthIs1;
   }
+  // ..returning large.at(0) when the length is 1 does not seem to be the right thing to do in
+  // rsQuantileFilterCore::readOutputWithOneMoreInput - instead, maybe the caller should specify
+  // what should be returned in this case
+  // maybe return const references instead of variables by value
 
   /** Returns the last element from our max-heap of small values (this is not  necessarily the
   smalles value, because in a heap, the order of the children of a node is unspecified). */

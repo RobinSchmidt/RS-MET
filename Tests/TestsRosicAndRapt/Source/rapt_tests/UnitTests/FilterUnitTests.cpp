@@ -525,13 +525,15 @@ bool movingQuantileUnitTest()
   r &= testMovingQuantileModulation();
 
   // test the read out of a filter one sample longer than nominal length:
-  r &= oneLongerQuantileUnitTest(2, N); // fails
-  r &= oneLongerQuantileUnitTest(3, N); // fails with q=0.25, works with q=0.6
+  r &= oneLongerQuantileUnitTest(2, N); // works
+  r &= oneLongerQuantileUnitTest(3, N); // works
   r &= oneLongerQuantileUnitTest(4, N); // works
   r &= oneLongerQuantileUnitTest(5, N); // works
   r &= oneLongerQuantileUnitTest(6, N); // works
   r &= oneLongerQuantileUnitTest(7, N); // works
   r &= oneLongerQuantileUnitTest(8, N); // works
+  // could the fails with L=2,3 be related to dblHp.get2nd... not returning proper values when 
+  // there is no 2nd largest, i.e. when the heap size is 1?
 
   // try to extract the maximum over the last 8 samples:
   using Vec = std::vector<double>;
