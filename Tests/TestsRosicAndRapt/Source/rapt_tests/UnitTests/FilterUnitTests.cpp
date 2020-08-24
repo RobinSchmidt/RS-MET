@@ -423,8 +423,9 @@ bool testMovingQuantileModulation()
   return r;
 }
 
-// tests computing an output from a length L filter that would have been produced by a length
-// L+1 filter
+// Tests using a length L filter to produce an output that would have been produced by a length
+// L+1 filter (that's a preliminary for supporting non-integer lengths by crossfading between a
+// length L and L+1 filter - we don't want to literally run 2 filters):
 bool oneLongerQuantileUnitTest(int L, int N)
 {
   bool r = true;
@@ -432,20 +433,8 @@ bool oneLongerQuantileUnitTest(int L, int N)
   // we test the filter with these quantiles:
   using Vec = std::vector<double>;
   double eps = RS_EPS(double);
-  //Vec quantiles({0.0, 0.25, 0.5, 0.75, 1.0});
-  //Vec quantiles({ 0.0 });
-  //Vec quantiles({ 0.5 });
-  //Vec quantiles({ 1.0 });
-  //Vec quantiles({ 0.25 });
-  //Vec quantiles({ 0.6 });
-  //Vec quantiles({0.0, 0.25, 0.5, 0.75, 1.0});
+  double tol = 1000*eps;
   Vec quantiles({0.0, eps, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0-eps, 1.0});
-  //Vec quantiles({0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0-eps, 1.0});
-  //Vec quantiles({ eps });
-  // maye also include 0.000001, 0.99999..or maybe eps, 1-eps
-
-
-
 
   rsQuantileFilterCore<double> fltR;   // the reference filter
   fltR.setMaxLength(L+1);
@@ -461,12 +450,6 @@ bool oneLongerQuantileUnitTest(int L, int N)
 
   // compute test and reference output and compare them:
   Vec x = rsRandomIntVector(N, 0, 99);  // input
-  //Vec x = rsLinearRangeVector(N, 1+5, N+5); // use 5 as offset to make some things more obvious
-  //Vec x = rsLinearRangeVector(N, -1-5, -N-5);
-
-  //x = Vec({2,4,6,8,6,4,2,0,-2,-4,-6,-8,-6,-8,-6,-4,-2,0,2,4,6,8,6,4,2,0}); N = (int) x.size();
-  //x = Vec({2,4,6,8,6,4,2,0,-2,-4,-6,-8,-6,-4,-2,0,2,4,6,8,6,4,2,0,-2,-4,-6}); N = (int) x.size();
-
   Vec yR(N), yT(N);                     // reference and test output
   for(size_t i = 0; i < quantiles.size(); i++)
   {
@@ -486,17 +469,20 @@ bool oneLongerQuantileUnitTest(int L, int N)
       yT[n] = fltT.readOutputLongerBy1();  // ...this is what we are interested in
     }
 
-    r &= yT == yR;
+    r &= rsAreVectorsEqual(yT, yR, tol);
     //rsPlotVectors(x, yR, yT);
-    //rsPlotVectors(yR, yT);
   }
+  return r;
 
-  // todo:
+  // Notes:
+  // -We need a tolerance probably because we recompute the quantile q from L,p,w 
+  //  rsQuantileFilterCore::getQuantile whereas in the reference filter, we directly use the 
+  //  original value from our array in the computations for. So, that means, the w1 value in 
+  //  rsQuantileFilterCore2 may differ slightly from the w value in rsQuantileFilterCore.
+  // ToDo:
   // -make sure to cover all branches in readOutputWithOneMoreInput with all lengths
   // -maybe make a higher level test that continuously sweeps L and/or q and compares the result
   //  to a filter that literally uses two cores with length L and L+1
-
-  return r;
 }
 
 bool movingQuantileUnitTest()
@@ -529,7 +515,7 @@ bool movingQuantileUnitTest()
   // test the read out of a filter one sample longer than nominal length:
   r &= oneLongerQuantileUnitTest(2, N);
   r &= oneLongerQuantileUnitTest(3, N);
-  r &= oneLongerQuantileUnitTest(4, N);
+  r &= oneLongerQuantileUnitTest(4, N);  // fails
   r &= oneLongerQuantileUnitTest(5, N);
   r &= oneLongerQuantileUnitTest(6, N);
   r &= oneLongerQuantileUnitTest(7, N);

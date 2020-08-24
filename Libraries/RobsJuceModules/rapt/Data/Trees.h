@@ -322,6 +322,9 @@ public:
   int getNumSmallValues() const { return (int) small.getSize(); }
   int getNumLargeValues() const { return (int) large.getSize(); }
   int getNumValues()      const { return (int) (small.getSize() + large.getSize()); }
+  bool isSmallSizeOne()   const { return small.getSize() == 1; }
+  bool isLargeSizeOne()   const { return large.getSize() == 1; }
+
 
   /** Returns the largest (i.e. first) element from our max-heap of small values. */
   T getLargestSmallValue()  const { return small.at(0); }

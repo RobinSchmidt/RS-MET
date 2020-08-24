@@ -683,12 +683,15 @@ public:
 
   using Base = rsQuantileFilterCore<T>;
 
-  /** Produces a sample that would have been produced, if the length L of the filter would be
-  longer by one sample, i.e. L+1. This is used to implement non-integer length filters by
-  crossfading between the outputs of two filters whose lengths differ by one. From the values 
-  returned by the regular getSample call and the call to this afterwards, a non-integer length 
-  filter sample can be computed by crossfading. To use this feature, the input buffer must be 
-  assigned. */
+
+  /** Produces a sample that would have been produced, if the length of the filter would be
+  longer by one sample, i.e. L+1 instead of L. This can be used to implement non-integer length 
+  filters by crossfading between the outputs of two filters whose lengths are L and L+1 without 
+  literally running a second filter of length L+1. The output of the L+1 filter is simulated by 
+  doing some trickery. From the values returned by the regular getSample call and the call to this
+  function afterwards, a non-integer length filter sample can be computed by crossfading. To use 
+  this feature, the input buffer (delayline) must be assigned, because the x[n-L] sample is not in
+  the heaps, so we must retrieve it from the delayline. */
   T readOutputLongerBy1()
   {
     rsAssert(this->sigBuf != nullptr, "To use this feature, the input buffer must be assigned.");
@@ -696,47 +699,10 @@ public:
     return readOutputWithOneMoreInput(xL);
   }
 
-  T getS1(T x)
-  {
-    //struct Base::Node nx(x, 0);
-    // no - just x may be wrong - maybe it should be the min (or max) between x and the 
-    // largest
-
-    T val = this->dblHp.get2ndLargestSmallValue().value;
-    if(this->dblHp.getNumSmallValues() == 1)  // maybe have an optimized function isSmallLengthOne() that avoids conversion to int
-    {
-      val = x;                // seems to work - but maybe by coincidence? try other settings
-      //val = rsMax(val, x);  // fails
-      //val = rsMin(val, x);    // works, too
-
-      //if(x < val)
-      //  val = x;
-      //else
-      //  int dummy = 0;
-    }
-    return val;
-  }
-  // it seems to work, but why should val = x be the right thing? shouldn't it be max(val, x)
-  // or min(val, x)...try everything, figure out theoretically and explain...
-  // val = x and val = rsMin(val, x) seem to work both - is this because x coincidently happens to
-  // always be the min in our random test data? ...that would seem like an unlikely coincidence
-  // ...try to break it with val = x by ensuring that test data covers the case where 
-  // x != min(val, x)...ok - done. i think, returning x works because of the outer conditionals 
-  // that are done in readOutputWithOneMoreInput - maybe rename to get_S1_or_x(T x)
-
-
-  T getL1(T x)
-  {
-    //struct Base::Node nx(x, 0);
-    //return this->dblHp.get2ndSmallestLargeValue().value;
-
-    T val = this->dblHp.get2ndSmallestLargeValue().value;
-    if(this->dblHp.getNumLargeValues() == 1)
-      val = x;
-    return val;
-  }
-
-  /** Used internally by readOutputLongerBy1 in which case x[n-L] is passed as x. */
+  /** After calling getSample, this function may be called to produce an output that getSample 
+  would have produced when the length would have been one sample longer, i.e. L+1 instead of L and 
+  at some time within this larger time interval, the value x would have been fed into the filter. 
+  Used internally by readOutputLongerBy1 in which case x[n-L] is passed as x. */
   T readOutputWithOneMoreInput(T x)
   {
     int p1;                                                 // read position
@@ -746,14 +712,14 @@ public:
     T S0 = this->dblHp.getLargestSmallValue().value;
     T L0 = this->dblHp.getSmallestLargeValue().value;
     if(p1 == p) {                                           // additional slot is in the large heap
-      T S1 = getS1(x);
+      T S1 = get2ndLargestSmallOrX(x);
       if(     x > L0) { xS = S0; xL = L0; }
       else if(x > S0) { xS = S0; xL = x;  }
       else if(x > S1) { xS = x;  xL = S0; }
       else            { xS = S1; xL = S0; } }
     else {                                                  // additional slot is in the small heap
       rsAssert(p1 == p+1);                                  // sanity check
-      T L1 = getL1(x);
+      T L1 = get2ndSmallestLargeOrX(x);
       if(     x < S0) { xS = S0; xL = L0; }
       else if(x < L0) { xS = x;  xL = L0; }
       else if(x < L1) { xS = L0; xL = x;  }
@@ -761,11 +727,31 @@ public:
     T y = (T(1)-w1)*xS + w1*xL;
     return y;
   }
+  // maybe make protected
   // move to cpp file, maybe refactor such that a subclass can save time by avoiding calling 
   // lengthAndQuantileToPositionAndWeight (it's expensive) and the p1,w1 change only when the 
   // settings change, so they could be cached - readOutputWithOneMoreInput(T x, int p1, T w1);
 
 protected:
+
+  /** Returns either the 2nd largest value of the small values (in the typical case) or - in the 
+  edge case where the length of the small heap is 1 such that it doesn't have such a value - the 
+  passed input value x. It's used in readOutputWithOneMoreInput to handle these edge cases. I'm 
+  not totally sure, why it works to return x in these cases, but i think, it's because of the 
+  conditionals that are done in this function. (ToDo: figure out and explain) */
+  T get2ndLargestSmallOrX(T x)
+  {
+    if(this->dblHp.isSmallSizeOne()) return x;
+    return this->dblHp.get2ndLargestSmallValue().value;
+  }
+
+  /** Analogous to get2ndLargestSmallOrX */
+  T get2ndSmallestLargeOrX(T x)
+  {
+    if(this->dblHp.isLargeSizeOne()) return x;
+    return this->dblHp.get2ndSmallestLargeValue().value;
+  }
+
 
   // additional member variables to avoid recomputation of them in readOutputWithOneMoreInput
   // int p1;  // readout position used in readOutputWithOneMoreInput
