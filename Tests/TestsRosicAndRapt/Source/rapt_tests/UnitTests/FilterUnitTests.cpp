@@ -387,7 +387,7 @@ bool testMovingQuantileModulation()
   rsQuantileFilterNaive<double> fltN(maxLength, maxLength);
   rsQuantileFilterCore<double>  fltH;      // H for heap-based implementation
   fltH.setMaxLength(maxLength);
-  fltH.setModulationBuffer(&rngBuf);   // for artifact free modulation of length
+  fltH.setDelayBuffer(&rngBuf);   // for artifact free modulation of length
 
   using Vec = std::vector<double>;
   Vec x = rsRandomIntVector(N, 0, 99);
@@ -446,7 +446,7 @@ bool oneLongerQuantileUnitTest(int L, int N)
   rsQuantileFilterCore<double> fltT;  // to be tested filter
   fltT.setMaxLength(L);
   fltT.setLength(L, true);
-  fltT.setModulationBuffer(&delayLine);
+  fltT.setDelayBuffer(&delayLine);
 
   // compute test and reference output and compare them:
   Vec x = rsRandomIntVector(N, 0, 99);  // input

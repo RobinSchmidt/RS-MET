@@ -672,24 +672,17 @@ protected:
 
 //=================================================================================================
 
-
-/** Facilitates non-integer lengths... */
+/** Subclass of rsQuantileFilterCore that facilitates smoother sweeps of the filter length by 
+supporting non-integer filters lengths. These are implemented by means of crossfading between a 
+filter of length L and L+1, where L is the floor of the desired length and the crossfade is done
+via its fractional part. The filter of length L+1 is not actually a second filter - instead we 
+simulate such a second filter with the heaps we already have and some additional trickery. */
 
 template<class T>
 class rsQuantileFilterCore2 : protected rsQuantileFilterCore<T>
 {
 
 public:
-
-  using Base = rsQuantileFilterCore<T>;
-
-
-  void setMaxLength(int newMaxLength) { Base::setMaxLength(newMaxLength); }
-
-  void setModulationBuffer(rsDelayBuffer<T>* newBuffer) 
-  { 
-    Base::setModulationBuffer(newBuffer);
-  }
 
 
   void setLengthAndQuantile(T newLength, T newQuantile)
@@ -701,32 +694,29 @@ public:
     Base::setLengthAndQuantile(L, quantile);
   }
 
-
   T getSample(T x)
   {
-    if(this->sigBuf)  // && allowFractionalLength...maybe...or maybe not
+    if(this->sigBuf)
     {
       T x0 = Base::getSample(x);
       T x1 = Base::readOutputLongerBy1();  // rename to getElongatedOutput
       T f  = lengthFrac;
-      //return (T(1)-f)*x1 + f*x0;     // test - should be wrong
       return (T(1)-f)*x0 + f*x1;           // crossfade between length L and L+1
     }
     else
       return Base::getSample(x);
   }
 
-  void reset()
-  {
-    Base::reset();
-  }
+  // some delegations to the basclass:
+  using Base = rsQuantileFilterCore<T>;
+  void setMaxLength(int newMaxLength) { Base::setMaxLength(newMaxLength); }
+  void setDelayBuffer(rsDelayBuffer<T>* newBuffer) { Base::setDelayBuffer(newBuffer); }
+  void reset() { Base::reset(); }
 
 
 protected:
 
-
   // additional member variables to avoid recomputation of them in readOutputWithOneMoreInput
-
 
   // algo parameters - use later for optimization:
   //int p1;      // readout position used in readOutputWithOneMoreInput
@@ -756,8 +746,8 @@ public:
   rsDualQuantileFilter()
   {
     allocateResources();
-    this->core.setModulationBuffer(&this->delayLine);
-    this->core2.setModulationBuffer(&this->delayLine);
+    this->core.setDelayBuffer(&this->delayLine);
+    this->core2.setDelayBuffer(&this->delayLine);
     this->dirty = true;
   }
 

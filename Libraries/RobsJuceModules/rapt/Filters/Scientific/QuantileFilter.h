@@ -82,7 +82,7 @@ public:
   such buffers between a bunch of parallel quantile filters or to create a highpass version. That
   means before calling setLength (and then getSample) on this object, client code should have
   called getSample on the buffer object. */
-  void setModulationBuffer(rsDelayBuffer<T>* newBuffer) { sigBuf = newBuffer; }
+  void setDelayBuffer(rsDelayBuffer<T>* newBuffer) { sigBuf = newBuffer; }
   // maybe rename to setSignalBuffer, setDelayBuffer or setInputBuffer - it's used for other 
   // things, too
 
@@ -141,6 +141,10 @@ public:
     return readOutputWithOneMoreInput(xL);
   }
   // maybe rename to readElongatedOutput, getElongatedOutput, getProlongedOutput
+  // maybe also implement a function getShortenedOutput that produces the sample that would have 
+  // resulted whne the filter would be 1 sample shorter. this has the advantage that it doesn't 
+  // need to retrive the older sample from the delayline...could we even go down to a filter of 
+  // length 1 by crossfading between a length 2 filter and the original input?
 
   /** After calling getSample, this function may be called to produce an output that getSample 
   would have produced when the length would have been one sample longer, i.e. L+1 instead of L and 
@@ -350,7 +354,7 @@ public:
   rsQuantileFilter() : dirty(true)
   {
     allocateResources();
-    core.setModulationBuffer(&delayLine);
+    core.setDelayBuffer(&delayLine);
     //dirty = true;
     //updateInternals(); // hangs - why?
   }

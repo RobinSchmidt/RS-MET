@@ -1440,7 +1440,7 @@ void quantileFilterSweep()
   // Create and assign the delay-buffer and produce a smooth sweep:
   rsDelayBuffer<double> delayLine;
   delayLine.setCapacity((int)ceil(maxLength) + 1); // +1 for the 1 extra elongation sample 
-  flt.setModulationBuffer(&delayLine);
+  flt.setDelayBuffer(&delayLine);
   flt.reset();
   for(int n = 0; n < N; n++) {
     delayLine.getSample(x[n]);
