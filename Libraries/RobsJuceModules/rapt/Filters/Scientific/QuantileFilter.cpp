@@ -26,6 +26,8 @@ void rsQuantileFilterCore<T>::reset()
     dblHp.atIndex(n).bufIdx = n;
     keyBuf[n] = k; }
   bufIdx = 0;
+  if(sigBuf)
+    sigBuf->reset();
 }
 
 /*

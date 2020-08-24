@@ -431,12 +431,17 @@ bool oneLongerQuantileUnitTest(int L, int N)
 
   // we test the filter with these quantiles:
   using Vec = std::vector<double>;
+  double eps = RS_EPS(double);
   //Vec quantiles({0.0, 0.25, 0.5, 0.75, 1.0});
   //Vec quantiles({ 0.0 });
   //Vec quantiles({ 0.5 });
   //Vec quantiles({ 1.0 });
-  Vec quantiles({ 0.25 });
+  //Vec quantiles({ 0.25 });
   //Vec quantiles({ 0.6 });
+  //Vec quantiles({0.0, 0.25, 0.5, 0.75, 1.0});
+  Vec quantiles({0.0, eps, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0-eps, 1.0});
+  //Vec quantiles({0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0-eps, 1.0});
+  //Vec quantiles({ eps });
   // maye also include 0.000001, 0.99999..or maybe eps, 1-eps
 
 
@@ -467,13 +472,13 @@ bool oneLongerQuantileUnitTest(int L, int N)
   {
     // compute output of reference filter - this filter actually is one sample longer than our
     // nominal L:
-    fltR.setLengthAndQuantile(L+1, quantiles[i]); // should replace code above
+    fltR.setLengthAndQuantile(L+1, quantiles[i], true); // true: hard reset
     for(int n = 0; n < N; n++)
       yR[n] = fltR.getSample(x[n]);
 
     // compute output of tested filter - this filter is set to length L and computes the output of
     // a length L+1 filter by additional trickery
-    fltT.setLengthAndQuantile(L, quantiles[i]); // should replace code above
+    fltT.setLengthAndQuantile(L, quantiles[i], true);
     for(int n = 0; n < N; n++)
     {
       delayLine.getSample(x[n]);           // feed delayline (output irrelevant)
@@ -486,11 +491,8 @@ bool oneLongerQuantileUnitTest(int L, int N)
     //rsPlotVectors(yR, yT);
   }
 
-  // -the lowest branch fails for very low L (2 and 3)
   // todo:
-  // -fix problem with low L
-  // -make sure to cover all branches in readOutputWithOneMoreInput with all lengths, also
-  //  ensure to cover edge cases for q (q=0, q=1)
+  // -make sure to cover all branches in readOutputWithOneMoreInput with all lengths
   // -maybe make a higher level test that continuously sweeps L and/or q and compares the result
   //  to a filter that literally uses two cores with length L and L+1
 
@@ -525,15 +527,14 @@ bool movingQuantileUnitTest()
   r &= testMovingQuantileModulation();
 
   // test the read out of a filter one sample longer than nominal length:
-  r &= oneLongerQuantileUnitTest(2, N); // works
-  r &= oneLongerQuantileUnitTest(3, N); // works
-  r &= oneLongerQuantileUnitTest(4, N); // works
-  r &= oneLongerQuantileUnitTest(5, N); // works
-  r &= oneLongerQuantileUnitTest(6, N); // works
-  r &= oneLongerQuantileUnitTest(7, N); // works
-  r &= oneLongerQuantileUnitTest(8, N); // works
-  // could the fails with L=2,3 be related to dblHp.get2nd... not returning proper values when 
-  // there is no 2nd largest, i.e. when the heap size is 1?
+  r &= oneLongerQuantileUnitTest(2, N);
+  r &= oneLongerQuantileUnitTest(3, N);
+  r &= oneLongerQuantileUnitTest(4, N);
+  r &= oneLongerQuantileUnitTest(5, N);
+  r &= oneLongerQuantileUnitTest(6, N);
+  r &= oneLongerQuantileUnitTest(7, N);
+  r &= oneLongerQuantileUnitTest(8, N);
+
 
   // try to extract the maximum over the last 8 samples:
   using Vec = std::vector<double>;
@@ -562,11 +563,6 @@ bool movingQuantileUnitTest()
   r &= testQuantileComputation(8, 6, 0.25, 0.75); // upper quartile
   r &= testQuantileComputation(8, 7, 1.0,  1.0);  // minimum
   // the weights for the quartiles seem counterintuitive...hmmm
-
-  //int p; 
-  //double w;
-  //flt.lengthAndQuantileToPositionAndWeight(8, 0.25, &p, &w);
-  //rsQuantileFilterCore<double>::lengthAndQuantileToPositionAndWeight(8, 0.25, &p, &w);
 
   return r;
 }

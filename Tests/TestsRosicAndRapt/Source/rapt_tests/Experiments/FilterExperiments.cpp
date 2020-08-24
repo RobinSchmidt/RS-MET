@@ -1360,7 +1360,7 @@ void quantileFilter1()
   // to left/right respectively. Consider the old inputs for 5 different cases: xOld = 1,3,5,7,9
   // and cosider finding the minimum, maximum, median and quartiles for L = 3, L+1 = 4
 
-  double q = 0.8;    // quantile
+  double q = 0.2;    // quantile
   int    L = 2;      // length of non-elongated filter
 
   using Vec = std::vector<double>;

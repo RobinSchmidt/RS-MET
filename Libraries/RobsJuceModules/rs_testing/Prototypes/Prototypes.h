@@ -704,11 +704,25 @@ public:
 
     T val = this->dblHp.get2ndLargestSmallValue().value;
     if(this->dblHp.getNumSmallValues() == 1)  // maybe have an optimized function isSmallLengthOne() that avoids conversion to int
-      val = x; // or rsMax(val, x) or rsMin(val, x)?
+    {
+      val = x;                // seems to work - but maybe by coincidence? try other settings
+      //val = rsMax(val, x);  // fails
+      //val = rsMin(val, x);    // works, too
+
+      //if(x < val)
+      //  val = x;
+      //else
+      //  int dummy = 0;
+    }
     return val;
   }
   // it seems to work, but why should val = x be the right thing? shouldn't it be max(val, x)
   // or min(val, x)...try everything, figure out theoretically and explain...
+  // val = x and val = rsMin(val, x) seem to work both - is this because x coincidently happens to
+  // always be the min in our random test data? ...that would seem like an unlikely coincidence
+  // ...try to break it with val = x by ensuring that test data covers the case where 
+  // x != min(val, x)...ok - done. i think, returning x works because of the outer conditionals 
+  // that are done in readOutputWithOneMoreInput - maybe rename to get_S1_or_x(T x)
 
 
   T getL1(T x)
@@ -718,7 +732,7 @@ public:
 
     T val = this->dblHp.get2ndSmallestLargeValue().value;
     if(this->dblHp.getNumLargeValues() == 1)
-      val = x; // or rsMax(val, x) or rsMin(val, x)?
+      val = x;
     return val;
   }
 
