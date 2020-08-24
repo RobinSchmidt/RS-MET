@@ -1424,6 +1424,29 @@ void quantileFilterSweep()
   Vec lengths(N), quantiles(N);
   AT::fillWithRangeExponential(&lengths[0],   N, minLength,   maxLength);
   AT::fillWithRangeExponential(&quantiles[0], N, minQuantile, maxQuantile);
+  Vec x = rsRandomVector(N, -1.0, 1.0, 0);  // input to the filter
+  Vec y1(N), y2(N); // non-smooth and smooth sweep
+
+
+  // Create filter and produce the non-smooth sweep - it's not smooth because we do not yet 
+  // assigned the delay buffer, which is a requirement to make a smooth sweep work:
+  rsQuantileFilterCore2<double> flt;
+  flt.setMaxLength((int)ceil(maxLength));
+  for(int n = 0; n < N; n++)
+  {
+    flt.setLengthAndQuantile(lengths[n], quantiles[n]);
+    y1[n] = flt.getSample(x[n]);
+  }
+
+  // Create and assign the delay-buffer and produce a smooth sweep:
+
+
+
+  // plot both sweeps:
+  rsPlotVectors(y1, y2);
+
+
+  // write both sweeps to files:
 
 
 
