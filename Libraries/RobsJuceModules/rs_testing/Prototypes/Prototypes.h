@@ -686,6 +686,11 @@ public:
 
   void setMaxLength(int newMaxLength) { Base::setMaxLength(newMaxLength); }
 
+  void setModulationBuffer(rsDelayBuffer<T>* newBuffer) 
+  { 
+    Base::setModulationBuffer(newBuffer);
+  }
+
 
   void setLengthAndQuantile(T newLength, T newQuantile)
   {
@@ -704,6 +709,7 @@ public:
       T x0 = Base::getSample(x);
       T x1 = Base::readOutputLongerBy1();  // rename to getElongatedOutput
       T f  = lengthFrac;
+      //return (T(1)-f)*x1 + f*x0;     // test - should be wrong
       return (T(1)-f)*x0 + f*x1;           // crossfade between length L and L+1
     }
     else

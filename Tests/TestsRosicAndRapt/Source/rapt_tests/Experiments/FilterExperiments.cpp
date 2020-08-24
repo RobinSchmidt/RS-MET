@@ -1407,51 +1407,52 @@ void quantileFilterElongation()
 
 void quantileFilterSweep()
 {
-  // tests non-integer length quatile filter
-  // maybe make a continuous sweep of the length and/or the quantile and write it to a wavefile to
-  // see if the sweep is smooth - we generate a non-smooth sweep as well for comparsion
+  // We test the non-integer length quantile filter by making a continuous sweep of the length 
+  // (and/or the quantile, but that's not really relevant for this test) and write the result to 
+  // a wavefile. For comparison, we also generate a signal with a filter that is restricted to
+  // integer lengths.
 
+  // user parameters:
   double fs          = 44100;    // sample rate
-  int    N           = 2000;     // number of samples
+  int    N           = 200000;   // number of samples
   double minLength   = 2.0;      // minimum length in sweep
-  double maxLength   = 100.0;    // maximum length in sweep
+  double maxLength   = 20.0;     // maximum length in sweep
   double minQuantile = 0.5;
   double maxQuantile = 0.5;
-  //bool   smoothSweep = true;     // set to false for comparison
 
+  // Create lengs and quantile sweep and in- and output signals:
   using Vec = std::vector<double>;
   using AT  = rsArrayTools;
   Vec lengths(N), quantiles(N);
   AT::fillWithRangeExponential(&lengths[0],   N, minLength,   maxLength);
   AT::fillWithRangeExponential(&quantiles[0], N, minQuantile, maxQuantile);
   Vec x = rsRandomVector(N, -1.0, 1.0, 0);  // input to the filter
-  Vec y1(N), y2(N); // non-smooth and smooth sweep
-
+  Vec y1(N), y2(N);                         // rough and smooth sweep
 
   // Create filter and produce the non-smooth sweep - it's not smooth because we do not yet 
-  // assigned the delay buffer, which is a requirement to make a smooth sweep work:
+  // assign the delay buffer, which is a requirement to make a smooth sweep work:
   rsQuantileFilterCore2<double> flt;
   flt.setMaxLength((int)ceil(maxLength));
-  for(int n = 0; n < N; n++)
-  {
+  for(int n = 0; n < N; n++) {
     flt.setLengthAndQuantile(lengths[n], quantiles[n]);
-    y1[n] = flt.getSample(x[n]);
-  }
+    y1[n] = flt.getSample(x[n]); }
 
   // Create and assign the delay-buffer and produce a smooth sweep:
-
-
+  rsDelayBuffer<double> delayLine;
+  delayLine.setCapacity((int)ceil(maxLength) + 1); // +1 for the 1 extra elongation sample 
+  flt.setModulationBuffer(&delayLine);
+  flt.reset();
+  for(int n = 0; n < N; n++) {
+    delayLine.getSample(x[n]);
+    flt.setLengthAndQuantile(lengths[n], quantiles[n]);
+    y2[n] = flt.getSample(x[n]); }
 
   // plot both sweeps:
-  rsPlotVectors(y1, y2);
-
+  //rsPlotVectors(y1, y2);
 
   // write both sweeps to files:
-
-
-
-
-  int dummy = 0;
+  rosic::writeToMonoWaveFile("QuantileFilterSweepRough.wav",  &y1[0], N, 44100);
+  rosic::writeToMonoWaveFile("QuantileFilterSweepSmooth.wav", &y2[0], N, 44100);
 }
 
 void quantileFilterDual()

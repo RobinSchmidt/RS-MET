@@ -83,7 +83,8 @@ public:
   means before calling setLength (and then getSample) on this object, client code should have
   called getSample on the buffer object. */
   void setModulationBuffer(rsDelayBuffer<T>* newBuffer) { sigBuf = newBuffer; }
-  // maybe rename to setSignalBuffer or setInputBuffer - it's used for other things, too
+  // maybe rename to setSignalBuffer, setDelayBuffer or setInputBuffer - it's used for other 
+  // things, too
 
 
   //-----------------------------------------------------------------------------------------------
@@ -130,9 +131,9 @@ public:
   and L+1 without literally running a second filter of length L+1. The output of the L+1 filter is 
   simulated by doing some trickery. From the values returned by the regular getSample call and the 
   call to this function afterwards, a non-integer length filter sample can be computed by 
-  crossfading. To use this feature, the input buffer (delayline) must be assigned and properly fed
-  by client code, because the x[n-L] sample is not in the heaps, so we must retrieve it from the 
-  delayline. */
+  crossfading. To use this feature, the input buffer (delayline) must be assigned and properly 
+  driven by client code, because the x[n-L] sample is not in the heaps, so we must retrieve it from
+  the delayline. */
   T readOutputLongerBy1()
   {
     rsAssert(this->sigBuf != nullptr, "To use this feature, the input buffer must be assigned.");
