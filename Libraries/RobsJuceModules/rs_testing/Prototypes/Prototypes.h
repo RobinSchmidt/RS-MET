@@ -672,6 +672,9 @@ protected:
 
 //=================================================================================================
 
+/** Augments rsQuantileFilterCore by a feature that allows client code to prod
+*/
+
 template<class T>
 class rsQuantileFilterCore2 : public rsQuantileFilterCore<T>
 {
@@ -693,38 +696,41 @@ public:
     return readOutputWithOneMoreInput(xL);
   }
 
-  /** Used internally by readOutputLongerBy1 */
-  T readOutputWithOneMoreInput(T xOld)  // xOld = x[n-L]
+  /** Used internally by readOutputLongerBy1 in which case x[n-L] is passed as x. */
+  T readOutputWithOneMoreInput(T x)
   {
-    int p1; 
-    T w1, xS, xL;
+    int p1;               // read position
+    T w1, xS, xL;         // weight, xLarge, xSmall
     T q = getQuantile();
     lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
     T S0 = this->dblHp.getLargestSmallValue().value;
     T L0 = this->dblHp.getSmallestLargeValue().value;
     if(p1 == p) {
       T S1 = this->dblHp.get2ndLargestSmallValue().value;
-      if(     xOld > L0) { xS = S0;   xL = L0;   }
-      else if(xOld > S0) { xS = S0;   xL = xOld; }
-      else if(xOld > S1) { xS = xOld; xL = S0;   }
-      else               { xS = S1;   xL = S0;   } }
+      if(     x > L0) { xS = S0; xL = L0; }
+      else if(x > S0) { xS = S0; xL = x;  }
+      else if(x > S1) { xS = x;  xL = S0; }
+      else            { xS = S1; xL = S0; } }
     else {
       rsAssert(p1 == p+1);  // sanity check during development
       T L1 = this->dblHp.get2ndSmallestLargeValue().value;
-      if(     xOld < S0) { xS = S0;   xL = L0;   }
-      else if(xOld < L0) { xS = xOld; xL = L0;   }
-      else if(xOld < L1) { xS = L0;   xL = xOld; }
-      else               { xS = L0;   xL = L1;   } }
+      if(     x < S0) { xS = S0; xL = L0; }
+      else if(x < L0) { xS = x;  xL = L0; }
+      else if(x < L1) { xS = L0; xL = x;  }
+      else            { xS = L0; xL = L1; } }
     T y = (T(1)-w1)*xS + w1*xL;
     return y;
   }
-  // move to cpp file, maybe absorb into baseclass, maybe refactor such that a subclass can save
-  // time by avoiding calling lengthAndQuantileToPositionAndWeight (it's expensive) and the p1,w1
-  // change only when the settings change, so they could be cached
+  // move to cpp file, maybe refactor such that a subclass can save time by avoiding calling 
+  // lengthAndQuantileToPositionAndWeight (it's expensive) and the p1,w1 change only when the 
+  // settings change, so they could be cached - readOutputWithOneMoreInput(T x, int p1, T w1);
 
 protected:
 
-  // int p1, T w1; // to avoid recomputation at each sample
+  // additional member variables to avoid recomputation of them in readOutputWithOneMoreInput
+  // int p1;  // readout position used in readOutputWithOneMoreInput
+  // T w1;    // weight used in readOutputWithOneMoreInput
+  // q;       // quantile
 
 };
 

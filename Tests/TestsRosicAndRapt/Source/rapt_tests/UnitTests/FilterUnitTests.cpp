@@ -432,11 +432,14 @@ bool oneLongerQuantileUnitTest(int L, int N)
   // we test the filter with these quantiles:
   using Vec = std::vector<double>;
   //Vec quantiles({0.0, 0.25, 0.5, 0.75, 1.0});
-  Vec quantiles({ 0.0 });
+  //Vec quantiles({ 0.0 });
   //Vec quantiles({ 0.5 });
   //Vec quantiles({ 1.0 });
-  //Vec quantiles({ 0.25 });
+  Vec quantiles({ 0.25 });
+  //Vec quantiles({ 0.6 });
   // maye also include 0.000001, 0.99999..or maybe eps, 1-eps
+
+
 
 
   rsQuantileFilterCore<double> fltR;   // the reference filter
@@ -457,7 +460,7 @@ bool oneLongerQuantileUnitTest(int L, int N)
   //Vec x = rsLinearRangeVector(N, -1-5, -N-5);
 
   //x = Vec({2,4,6,8,6,4,2,0,-2,-4,-6,-8,-6,-8,-6,-4,-2,0,2,4,6,8,6,4,2,0}); N = (int) x.size();
-  x = Vec({2,4,6,8,6,4,2,0,-2,-4,-6,-8,-6,-4,-2,0,2,4,6,8,6,4,2,0,-2,-4,-6}); N = (int) x.size();
+  //x = Vec({2,4,6,8,6,4,2,0,-2,-4,-6,-8,-6,-4,-2,0,2,4,6,8,6,4,2,0,-2,-4,-6}); N = (int) x.size();
 
   Vec yR(N), yT(N);                     // reference and test output
   for(size_t i = 0; i < quantiles.size(); i++)
@@ -479,12 +482,17 @@ bool oneLongerQuantileUnitTest(int L, int N)
     }
 
     r &= yT == yR;
-    rsPlotVectors(x, yR, yT);
+    //rsPlotVectors(x, yR, yT);
     //rsPlotVectors(yR, yT);
   }
-  // this does not yet work
 
-  // for q = 0, the lowest branch fails
+  // -the lowest branch fails for very low L (2 and 3)
+  // todo:
+  // -fix problem with low L
+  // -make sure to cover all branches in readOutputWithOneMoreInput with all lengths, also
+  //  ensure to cover edge cases for q (q=0, q=1)
+  // -maybe make a higher level test that continuously sweeps L and/or q and compares the result
+  //  to a filter that literally uses two cores with length L and L+1
 
   return r;
 }
@@ -496,7 +504,7 @@ bool movingQuantileUnitTest()
   // Notation: nS: length of small heap, nL: length of large heap, mL: max length, L: length,
   // q: quantile
 
-  int N = 500;  // number of samples for the tests
+  int N = 500;  // number of samples for the tests - small value for plots - bump up later
 
 
   // test the general operation:
@@ -517,22 +525,13 @@ bool movingQuantileUnitTest()
   r &= testMovingQuantileModulation();
 
   // test the read out of a filter one sample longer than nominal length:
-  r &= oneLongerQuantileUnitTest(2, N); // works
-  r &= oneLongerQuantileUnitTest(3, N); // fails
-  r &= oneLongerQuantileUnitTest(4, N); // fails
-  r &= oneLongerQuantileUnitTest(5, N); // fails
-  r &= oneLongerQuantileUnitTest(6, N); // fails
-  r &= oneLongerQuantileUnitTest(7, N); // fails
-  r &= oneLongerQuantileUnitTest(8, N); // fails
-
-  // the upper branch seems to be wrong whenever there are two equal input samples samples - 
-  // maybe, we somewher need <= instead of < ...hmm - doesn't seem to help
-
-
-  // but those which fail look partially ok - seems like only the lower branch is false
-  // hmm..but something seems wrong with L=4 in the upper branch, too ..it seems that upper branch
-  // works for odd L and L = 2
-
+  r &= oneLongerQuantileUnitTest(2, N); // fails
+  r &= oneLongerQuantileUnitTest(3, N); // fails with q=0.25, works with q=0.6
+  r &= oneLongerQuantileUnitTest(4, N); // works
+  r &= oneLongerQuantileUnitTest(5, N); // works
+  r &= oneLongerQuantileUnitTest(6, N); // works
+  r &= oneLongerQuantileUnitTest(7, N); // works
+  r &= oneLongerQuantileUnitTest(8, N); // works
 
   // try to extract the maximum over the last 8 samples:
   using Vec = std::vector<double>;
@@ -546,8 +545,6 @@ bool movingQuantileUnitTest()
   for(int n = 0; n < N; n++)
     y[n] = flt.getSample(x[n]);
   r &= y == t;
-
-
 
   // test computing the quantile from the internal algo parameters:
   auto testQuantileComputation = [&](int L, int p, double w, double q)->bool
@@ -564,9 +561,9 @@ bool movingQuantileUnitTest()
   r &= testQuantileComputation(8, 7, 1.0,  1.0);  // minimum
   // the weights for the quartiles seem counterintuitive...hmmm
 
-  int p; 
-  double w;
-  flt.lengthAndQuantileToPositionAndWeight(8, 0.25, &p, &w);
+  //int p; 
+  //double w;
+  //flt.lengthAndQuantileToPositionAndWeight(8, 0.25, &p, &w);
   //rsQuantileFilterCore<double>::lengthAndQuantileToPositionAndWeight(8, 0.25, &p, &w);
 
   return r;
