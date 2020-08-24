@@ -1458,12 +1458,12 @@ void quantileFilterSweep()
 void quantileFilterDual()
 {
   double fs = 44100;  // sample rate
-  int    N  = 200000; // number of samples
-  int    L  = 21;     // filter length in samples (can we make this a double, too?)
+  int    N  = 2000;   // number of samples
+  int    L  = 100;    // filter length in samples (can we make this a double, too?)
   double q  = 0.5;    // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
 
 
-  double f1 = fs/2;
+  double f1 = fs/100;
   double f2 = fs/100;  // fs/256 is a nice end value for a sweep
 
   double maxLength = ceil(rsMax(1/f1, 1/f2)); // required maximum length
@@ -1479,10 +1479,10 @@ void quantileFilterDual()
   //flt.setSampleRate(fs);
   //flt.setLength(L);
   //flt.setFrequency(1.0/L);
-  flt.setFrequency(f1);
+  //flt.setFrequency(f1);
   flt.setQuantile(q);
   flt.setLowpassGain(1.0);
-  flt.setHighpassGain(0.0);
+  flt.setHighpassGain(1.0);
   //flt.setFeedback(0.0);    // later
   flt.setCore2Complementary();
   flt.updateInternals();  // so we have a non-dirty state to look at
@@ -1531,6 +1531,7 @@ void quantileFilterDual()
 
     flt.setFrequency(f[n]);
     flt.setCore2Complementary();
+
     y[n] = flt.getSample(x[n]);
   }
 
@@ -1551,10 +1552,12 @@ void quantileFilterDual()
   //for(int n = 0; n < N; n++)
   //  z[n] = fltN.getSampleMedian(x[n]);
 
-  rosic::writeToMonoWaveFile("QuantileFilterInput.wav",  &x[0], N, 44100);
-  rosic::writeToMonoWaveFile("QuantileFilterOutput.wav", &y[0], N, 44100);
+  //rosic::writeToMonoWaveFile("QuantileFilterInput.wav",  &x[0], N, 44100);
+  //rosic::writeToMonoWaveFile("QuantileFilterOutput.wav", &y[0], N, 44100);
 
 
+  rsPlotVectors(x, y);
+  //rsPlotVectors(y);
   //rsPlotVectors(x, y, t);
   //rsPlotVectors(y, t);
   //rsPlotVectors(t, z);
@@ -1572,6 +1575,11 @@ void quantileFilterDual()
 
   //int dummy = 0;
 
+  // ToDo: 
+  // -replace the old implementation of convertParameters (it seems buggy anyway) - it should make 
+  //  use of core.setLengthAndQuantile or something
+  // -replace the cores by rsQuantileFilter2
+  // -make
 
 
   // maybe try it with a square-wave with period 100, set the length also to 100 - this is an even
@@ -1642,6 +1650,6 @@ void quantileFilterDual()
 void quantileFilter()
 {
   //quantileFilterElongation();  // tests producing the length L+1 output by length L filter
-  quantileFilterSweep();  // tests non-integer length quatile filter
-  //quantileFilterDual();  // tests the dual-quantile filter (with highpass mode, etc.)
+  //quantileFilterSweep();  // tests non-integer length quatile filter
+  quantileFilterDual();  // tests the dual-quantile filter (with highpass mode, etc.)
 }

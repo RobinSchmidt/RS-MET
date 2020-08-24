@@ -672,66 +672,6 @@ protected:
 
 //=================================================================================================
 
-/** Subclass of rsQuantileFilterCore that facilitates smoother sweeps of the filter length by 
-supporting non-integer filters lengths. These are implemented by means of crossfading between a 
-filter of length L and L+1, where L is the floor of the desired length and the crossfade is done
-via its fractional part. The filter of length L+1 is not actually a second filter - instead we 
-simulate such a second filter with the heaps we already have and some additional trickery. */
-
-template<class T>
-class rsQuantileFilterCore2 : protected rsQuantileFilterCore<T>
-{
-
-public:
-
-
-  void setLengthAndQuantile(T newLength, T newQuantile)
-  {
-    length     = newLength;
-    quantile   = newQuantile;
-    int L      = (int) floor(newLength);
-    lengthFrac = length - L;
-    Base::setLengthAndQuantile(L, quantile);
-  }
-
-  T getSample(T x)
-  {
-    if(this->sigBuf)
-    {
-      T x0 = Base::getSample(x);
-      T x1 = Base::getElongatedOutput();
-      T f  = lengthFrac;
-      return (T(1)-f)*x0 + f*x1;           // crossfade between length L and L+1
-    }
-    else
-      return Base::getSample(x);
-  }
-
-  // some delegations to the basclass:
-  using Base = rsQuantileFilterCore<T>;
-  void setMaxLength(int newMaxLength) { Base::setMaxLength(newMaxLength); }
-  void setDelayBuffer(rsDelayBuffer<T>* newBuffer) { Base::setDelayBuffer(newBuffer); }
-  void reset() { Base::reset(); }
-
-
-protected:
-
-  // additional member variables to avoid recomputation of them in readOutputWithOneMoreInput
-
-  // algo parameters - use later for optimization:
-  //int p1;      // readout position used in readOutputWithOneMoreInput
-  //T w1;        // weight used in readOutputWithOneMoreInput
-
-  // user parameters:
-  T length     = 2.0;  // non-integer length, at least 2.0
-  T lengthFrac = 0.0;  // fractional part of length
-  T quantile   = 0.5;  // quantile (median by default)
-
-};
-
-
-//=================================================================================================
-
 /** Extends rsQuantileFilter by a second core allowing to do more interesting stuff such as forming
 linear combinations of lower an upper quantiles (such as min and max), etc. Using a second core
 instead of just using two rsQuantileFilter objects is more economical because the delayline can be

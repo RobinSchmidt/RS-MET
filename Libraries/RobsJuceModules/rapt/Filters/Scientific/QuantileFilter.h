@@ -140,11 +140,11 @@ public:
     T xL = (*this->sigBuf)[this->L];   // should be x[n-L], client code must assure this
     return getElongatedOutput(xL);
   }
-  // maybe rename to readElongatedOutput, getElongatedOutput, getProlongedOutput
   // maybe also implement a function getShortenedOutput that produces the sample that would have 
-  // resulted whne the filter would be 1 sample shorter. this has the advantage that it doesn't 
-  // need to retrive the older sample from the delayline...could we even go down to a filter of 
-  // length 1 by crossfading between a length 2 filter and the original input?
+  // resulted when the filter would be 1 sample shorter. this has the advantage that it doesn't 
+  // need to retrieve the older sample from the delayline...could we even go down to a filter of 
+  // length 1 by crossfading between a length 2 filter and the original input? That would allow
+  // a neutral setting of the filter...and it may also be simpler to implement...maybe
 
   /** After calling getSample, this function may be called to produce an output that getSample 
   would have produced when the length would have been one sample longer, i.e. L+1 instead of L and 
@@ -261,7 +261,7 @@ protected:
 
   /** Returns either the 2nd largest value of the small values (in the typical case) or - in the 
   edge case where the length of the small heap is 1 such that it doesn't have such a value - the 
-  passed input value x. It's used in readOutputWithOneMoreInput to handle these edge cases. I'm 
+  passed input value x. It's used in getElongatedOutput to handle these edge cases. I'm 
   not totally sure, why it works to return x in these cases, but i think, it's because of the 
   conditionals that are done in this function. (ToDo: figure out and explain) */
   T get2ndLargestSmallOrX(T x)
@@ -329,6 +329,65 @@ protected:
   bool isStateConsistent();               // O(N)
   bool isNodeConsistent(const Node& n);   // O(N)
   bool isBufferSlotConsistent(int i);     // O(1)
+
+};
+
+//=================================================================================================
+
+/** Subclass of rsQuantileFilterCore that facilitates smoother sweeps of the filter length by 
+supporting non-integer filters lengths. These are implemented by means of crossfading between a 
+filter of length L and L+1, where L is the floor of the desired length and the crossfade is done
+via its fractional part. The filter of length L+1 is not actually a second filter - instead we 
+simulate such a second filter with the heaps we already have and some additional trickery. */
+
+template<class T>
+class rsQuantileFilterCore2 : protected rsQuantileFilterCore<T>
+{
+
+public:
+
+  using Base = rsQuantileFilterCore<T>;
+
+  void setLengthAndQuantile(T newLength, T newQuantile)
+  {
+    length     = newLength;
+    quantile   = newQuantile;
+    int L      = (int) floor(newLength);
+    lengthFrac = length - L;
+    Base::setLengthAndQuantile(L, quantile);
+  }
+
+  T getSample(T x)
+  {
+    if(this->sigBuf)
+    {
+      T x0 = Base::getSample(x);
+      T x1 = Base::getElongatedOutput();
+      T f  = lengthFrac;
+      return (T(1)-f)*x0 + f*x1;           // crossfade between length L and L+1
+    }
+    else
+      return Base::getSample(x);
+  }
+
+  // some delegations to the basclass:
+  void setMaxLength(int newMaxLength) { Base::setMaxLength(newMaxLength); }
+  void setDelayBuffer(rsDelayBuffer<T>* newBuffer) { Base::setDelayBuffer(newBuffer); }
+  void reset() { Base::reset(); }
+
+
+protected:
+
+  // additional member variables to avoid recomputation of them in readOutputWithOneMoreInput
+
+  // algo parameters - use later for optimization:
+  //int p1;      // readout position used in readOutputWithOneMoreInput
+  //T w1;        // weight used in readOutputWithOneMoreInput
+
+  // user parameters:
+  T length     = 2.0;  // non-integer length, at least 2.0
+  T lengthFrac = 0.0;  // fractional part of length
+  T quantile   = 0.5;  // quantile (median by default)
 
 };
 
@@ -466,8 +525,16 @@ public:
     // compute internal and set up core parameters:
     int L, p; T w;
     convertParameters(length, quantile, sampleRate, &L, &p, &w, &delay);
+    // the implementation there is partially obsolete.
+
+    // old:
     core.setLengthAndReadPosition(L, p);
     core.setRightWeight(w);
+
+    // new:
+    //core.setLengthAndQuantile(L+p, quantile);
+
+
     dirty = false;
   }
   // (maybe) move to cpp
