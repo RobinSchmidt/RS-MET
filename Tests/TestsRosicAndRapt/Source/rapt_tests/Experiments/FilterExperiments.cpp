@@ -1390,23 +1390,20 @@ void quantileFilter1()
   flt.setLengthAndQuantile(L, q);
   Vec y(N);  // normal output of filter
   Vec z(N);  // output of elongated filter - should match t
-  Vec b(N);  // branches, for info/debug
   for(int n = 0; n < N; n++)
   {
     dly.getSample(x[n]);       // feed the delayline
     y[n] = flt.getSample(x[n]);
-    z[n] = flt.readOutputWithOneMoreInput(dly[L], b[n]);
+    z[n] = flt.readOutputWithOneMoreInput(dly[L]);
   }
   Vec err = t-z;
 
   double xOld = dly[L];
   double branch;
-  double tmp  = flt.readOutputWithOneMoreInput(xOld, branch);
+  double tmp  = flt.readOutputWithOneMoreInput(xOld);
 
-  rsPlotVectors(t, z, err);
-  //rsPlotVectors(t, z, err, b);
-  //rsPlotVectors(err, b);
-  //rsPlotVectors(x, t, z, err);
+  //rsPlotVectors(t, z, err);
+  rsPlotVectors(x, t, z, err);
 
   // Observations:
   // -if, p1==p and xOld falls into the large heap, we just need to use xS = S0; xL = L0; as usual

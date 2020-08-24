@@ -682,242 +682,49 @@ public:
 
   /** Produces a sample that would have been produced, if the length L of the filter would be
   longer by one sample, i.e. L+1. This is used to implement non-integer length filters by
-  crossfading between the outputs of two filters whose lengths differ by one.
-
-  wrong:
-  It needs as input the
-  same input sample that has been fed to getSample and it should be called after getSample.
-
-  correct again:
-  From
-  the values returned by the regular getSample call and the call to this afterwards, a non-integer
-  length filter sample can be computed by crossfading. */
-
-
-
+  crossfading between the outputs of two filters whose lengths differ by one. From the values 
+  returned by the regular getSample call and the call to this afterwards, a non-integer length 
+  filter sample can be computed by crossfading. To use this feature, the input buffer must be 
+  assigned. */
   T readOutputLongerBy1()
   {
     rsAssert(this->sigBuf != nullptr, "To use this feature, the input buffer must be assigned.");
-    //T xL = (*this->sigBuf)(this->L);   // should be x[n-L], client code must assure this
     T xL = (*this->sigBuf)[this->L];   // should be x[n-L], client code must assure this
-    T branch; // dummy - delete later
-    return readOutputWithOneMoreInput(xL, branch);
+    return readOutputWithOneMoreInput(xL);
   }
 
-
-  
-  bool isLess(struct Base::Node x, struct Base::Node y) 
-  { return this->dblHp.small.isLess(x, y); }
-  // convenience function - maybe make lmabda function in function below
-  
-
-
-
-  T readOutputWithOneMoreInput(T xOld, T& branch)  // xOld = x[n-L]
+  /** Used internally by readOutputLongerBy1 */
+  T readOutputWithOneMoreInput(T xOld)  // xOld = x[n-L]
   {
-    T q = getQuantile();
-    int p1;     
+    int p1; 
     T w1, xS, xL;
+    T q = getQuantile();
     lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
-
-    T S1 = this->dblHp.get2ndLargestSmallValue().value;
     T S0 = this->dblHp.getLargestSmallValue().value;
     T L0 = this->dblHp.getSmallestLargeValue().value;
-    T L1 = this->dblHp.get2ndSmallestLargeValue().value;
-
-    if(p1 == p)
-    {
-      // L1 not needed in this branch
+    if(p1 == p) {
+      T S1 = this->dblHp.get2ndLargestSmallValue().value;
       if(     xOld > L0) { xS = S0;   xL = L0;   }
       else if(xOld > S0) { xS = S0;   xL = xOld; }
       else if(xOld > S1) { xS = xOld; xL = S0;   }
-      else               { xS = S1;   xL = S0;   } 
-    }
-    else
-    {
-      // S1 not needed in this branch
-      rsAssert(p1 == p+1);
-
+      else               { xS = S1;   xL = S0;   } }
+    else {
+      rsAssert(p1 == p+1);  // sanity check during development
+      T L1 = this->dblHp.get2ndSmallestLargeValue().value;
       if(     xOld < S0) { xS = S0;   xL = L0;   }
       else if(xOld < L0) { xS = xOld; xL = L0;   }
       else if(xOld < L1) { xS = L0;   xL = xOld; }
-      else               { xS = L0;   xL = L1;   } 
-
-      //xS = xL = 0;  // preliminary - todo: we need a similar logic as above
-    }
-
-    // to optimize, retrieve S1, L1 only when needed (it's not free to retrieve them)
-
-
+      else               { xS = L0;   xL = L1;   } }
     T y = (T(1)-w1)*xS + w1*xL;
     return y;
   }
-
-
-  T readOutputWithOneMoreInput3(T xOld)  // xOld = x[n-L]
-  {
-    T q = getQuantile();
-    int p1;     
-    T w1, xS, xL;
-    lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
-
-    if(p1 == p)
-    {
-      // large heap would be increased by one, so xOld could potentially ended up in the large heap
-
-      //xS = rsMax(xOld, small[0].value);
-      xS = small[0].value;
-      xL = rsMin(xOld, large[0].value);
-
-      // new:
-      T s0 = small[0].value;
-      T l0 = large[0].value;
-      if(xOld >= l0)
-      {
-        // xOld would have ended up in large
-        xS = l0;
-        xL = xOld;
-      }
-      else if(xOld < s0)
-      {
-        // xOld would have ended up in small
-        xS = s0;
-        xL = l0;
-      }
-      else
-      {
-        xS = s0;
-        xL = xOld;
-      }
-
-
-    }
-    else
-    {
-      // large heap would be increased by one
-      rsAssert(p1 == p+1);
-      //xL = rsMin(xOld, large[0].value);
-      xL = large[0].value;
-      xS = rsMax(xOld, small[0].value);
-    }
-
-    //if(xL < xS)
-    //  rsSwap(xL, xS); // maybe this is not the right thing?
-
-
-    T y = (T(1)-w1)*xS + w1*xL;
-    return y;
-  }
-  // still wrong - i think, we need an inner condition, like 
-  // if(xOld < small[1])
-
-
-  T readOutputWithOneMoreInput2(T xOld)  // xOld = x[n-L]
-  {
-    T w1, xS, xL;
-    T q = getQuantile();
-    int p1;
-    lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
-    xS = this->dblHp.getLargestSmallValue().value;
-    xL = this->dblHp.getSmallestLargeValue().value;
-
-    int dp = p - p1; // don't know if we will need it
-
-    if(xOld > xL)
-    {
-      // compare xOld to 2nd smallest large:
-      xS = xL;
-      xL = this->dblHp.get2ndSmallestLargeValue().value;
-      xL = rsMin(xL, xOld);
-    }
-    else if(xOld < xS)
-    {
-      // compare xOld to 2nd largest small:
-      if(p1 == p) {
-        xL = xS;
-        xS = this->dblHp.get2ndLargestSmallValue().value;
-        xS = rsMin(xS, xOld);
-      } 
-      else 
-      { 
-        // that is wrong:
-        xL = xS;
-        xS = this->dblHp.get2ndLargestSmallValue().value;
-        xS = rsMin(xS, xOld);
-        //xS = rsMax(xS, xOld);
-        
-        //xS = xL = 0; 
-      } // preliminary
-
-      //xS = rsMax(xS, xOld);
-
-
-      // maybe whether we should take min or max should depend on w1? if w1 < 0.5, 
-      // take min else take max? ..what if w1 == 0.5?...that doesn't seem right
-      // or maybe switch depending on if  p1 > p, p1 < p, p1 == 1
-
-    }
-    else
-    {
-      xS = xL = 0; // preliminary
-    }
-
-
-    T y = (T(1)-w1)*xS + w1*xL;
-    return y;
-  }
-
-  // didi not really work out - try again above
-  T readOutputWithOneMoreInput1(T xOld)  // xOld = x[n-L]
-  {
-    T w1, yS, yL; // use xS, yL
-    T q = getQuantile();
-    int p1;
-    lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
-    struct Base::Node nx(xOld, 0); // we need to create a node
-    if( isLess(nx, this->dblHp.large[0]) )  // means: if(x < large[0])
-    {
-      //return -10; // test
-
-      
-      if(isLess(nx, this->dblHp.small[0]))
-      {
-        // xOld belongs in small heap
-        yL = this->dblHp.getLargestSmallValue().value;
-        yS = this->dblHp.get2ndLargestSmallValue().value;
-      }
-      else
-      {
-        // xOld belongs between small and large heap
-        //return -10; // test
-        yS = this->dblHp.getLargestSmallValue().value;
-        yL = this->dblHp.getSmallestLargeValue().value;
-      }
-    }
-    else
-    {
-      // xOld belongs in large heap
-      yS = this->dblHp.getSmallestLargeValue().value;
-      yL = this->dblHp.get2ndSmallestLargeValue().value;
-    }
-    // maybe the 1st branch should have a 2nd (nested) comparison that figures out, if 
-    // xOld > small[0], and if so, we should assign yS to largestSmall and yL to smallestlarge?
-
-      
-    yS = rsMin(yS, yL, xOld);
-    yL = rsMax(yS, yL, xOld);
-
-    T y = (T(1)-w1)*yS + w1*yL;
-    return y;
-  }
-  // needs test - compare against signal that has beed produced by a baseclass filter that actually
-  // is one sample longer
-  // this is wrong - it should not take as input the sample x[n] (that is stored already in the
-  // heaps after getSample). instead, it needs x[n-L] maybe make a function
-  // readOutputWithAdditionalInput
-  // maybe we also need to switch depending on if p1 is less, equal or greater than p?
+  // move to cpp file, maybe absorb into baseclass, maybe refactor such that a subclass can save
+  // time by avoiding calling lengthAndQuantileToPositionAndWeight (it's expensive) and the p1,w1
+  // change only when the settings change, so they could be cached
 
 protected:
+
+  // int p1, T w1; // to avoid recomputation at each sample
 
 };
 
