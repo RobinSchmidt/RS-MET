@@ -1381,13 +1381,13 @@ void quantileFilterElongation()
   {
     dly.getSample(x[n]);       // feed the delayline
     y[n] = flt.getSample(x[n]);
-    z[n] = flt.readOutputWithOneMoreInput(dly[L]);
+    z[n] = flt.getElongatedOutput(dly[L]);
   }
   Vec err = t-z;
 
   double xOld = dly[L];
   //double branch;
-  double tmp  = flt.readOutputWithOneMoreInput(xOld);
+  double tmp  = flt.getElongatedOutput(xOld);
 
   //rsPlotVectors(t, z, err);
   rsPlotVectors(x, t, z, err);

@@ -134,11 +134,11 @@ public:
   crossfading. To use this feature, the input buffer (delayline) must be assigned and properly 
   driven by client code, because the x[n-L] sample is not in the heaps, so we must retrieve it from
   the delayline. */
-  T readOutputLongerBy1()
+  T getElongatedOutput()
   {
     rsAssert(this->sigBuf != nullptr, "To use this feature, the input buffer must be assigned.");
     T xL = (*this->sigBuf)[this->L];   // should be x[n-L], client code must assure this
-    return readOutputWithOneMoreInput(xL);
+    return getElongatedOutput(xL);
   }
   // maybe rename to readElongatedOutput, getElongatedOutput, getProlongedOutput
   // maybe also implement a function getShortenedOutput that produces the sample that would have 
@@ -149,9 +149,10 @@ public:
   /** After calling getSample, this function may be called to produce an output that getSample 
   would have produced when the length would have been one sample longer, i.e. L+1 instead of L and 
   at some time within this larger time interval, the value x would have been fed into the filter. 
-  Used internally by readOutputLongerBy1 in which case x[n-L] is passed as x. Used by 
-  readOutputLongerBy1 */
-  T readOutputWithOneMoreInput(T x)
+  Used internally by getElongatedOutput() in which case the input sample from L samples ago is 
+  passed as x (which is the first (most recent, newest) value which we don't have in the heaps 
+  anymore). */
+  T getElongatedOutput(T x)
   {
     int p1;                                                 // read position
     T w1, xS, xL;                                           // weight, xLarge, xSmall
@@ -205,14 +206,6 @@ protected:
   void storeInput(T x)
   {
     //rsAssert(isStateConsistent(), "inconsistent state");
-
-    // for debug in gcc:
-    int i = bufIdx;
-    int L = this->L;
-    int S = (int)keyBuf.size();
-    int test = (i+L) % S;
-
-
     int k = keyBuf[bufIdx];        // heap-key of oldest sample
     int w = wrap(bufIdx + L);      // (write) index of new node in keyBuf
     keyBuf[w] = k;                 // store preliminary key (== old node's key) in kexBuf at w

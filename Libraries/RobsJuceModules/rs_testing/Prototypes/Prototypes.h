@@ -699,7 +699,7 @@ public:
     if(this->sigBuf)
     {
       T x0 = Base::getSample(x);
-      T x1 = Base::readOutputLongerBy1();  // rename to getElongatedOutput
+      T x1 = Base::getElongatedOutput();
       T f  = lengthFrac;
       return (T(1)-f)*x0 + f*x1;           // crossfade between length L and L+1
     }

@@ -466,7 +466,7 @@ bool oneLongerQuantileUnitTest(int L, int N)
     {
       delayLine.getSample(x[n]);           // feed delayline (output irrelevant)
       yT[n] = fltT.getSample(x[n]);        // feed filter (output irrelevant)
-      yT[n] = fltT.readOutputLongerBy1();  // ...this is what we are interested in
+      yT[n] = fltT.getElongatedOutput();  // ...this is what we are interested in
     }
 
     r &= rsAreVectorsEqual(yT, yR, tol);
