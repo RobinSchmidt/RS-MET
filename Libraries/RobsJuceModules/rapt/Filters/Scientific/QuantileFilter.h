@@ -124,6 +124,53 @@ public:
   /** Resets the filter into its initial state. */
   void reset();
 
+  /** Produces a sample that would have been produced, if the length of the filter would be
+  longer by one sample, i.e. L+1 instead of L. This can be used to implement non-integer length 
+  filters at a higher level by crossfading between the outputs of two filters whose lengths are L 
+  and L+1 without literally running a second filter of length L+1. The output of the L+1 filter is 
+  simulated by doing some trickery. From the values returned by the regular getSample call and the 
+  call to this function afterwards, a non-integer length filter sample can be computed by 
+  crossfading. To use this feature, the input buffer (delayline) must be assigned and properly fed
+  by client code, because the x[n-L] sample is not in the heaps, so we must retrieve it from the 
+  delayline. */
+  T readOutputLongerBy1()
+  {
+    rsAssert(this->sigBuf != nullptr, "To use this feature, the input buffer must be assigned.");
+    T xL = (*this->sigBuf)[this->L];   // should be x[n-L], client code must assure this
+    return readOutputWithOneMoreInput(xL);
+  }
+
+  /** After calling getSample, this function may be called to produce an output that getSample 
+  would have produced when the length would have been one sample longer, i.e. L+1 instead of L and 
+  at some time within this larger time interval, the value x would have been fed into the filter. 
+  Used internally by readOutputLongerBy1 in which case x[n-L] is passed as x. Used by 
+  readOutputLongerBy1 */
+  T readOutputWithOneMoreInput(T x)
+  {
+    int p1;                                                 // read position
+    T w1, xS, xL;                                           // weight, xLarge, xSmall
+    T q = getQuantile();
+    lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
+    T S0 = this->dblHp.getLargestSmallValue().value;        // do we need the "this->"?
+    T L0 = this->dblHp.getSmallestLargeValue().value;
+    if(p1 == p) {                                           // additional slot is in the large heap
+      T S1 = get2ndLargestSmallOrX(x);
+      if(     x > L0) { xS = S0; xL = L0; }
+      else if(x > S0) { xS = S0; xL = x;  }
+      else if(x > S1) { xS = x;  xL = S0; }
+      else            { xS = S1; xL = S0; } }
+    else {                                                  // additional slot is in the small heap
+      rsAssert(p1 == p+1);                                  // sanity check
+      T L1 = get2ndSmallestLargeOrX(x);
+      if(     x < S0) { xS = S0; xL = L0; }
+      else if(x < L0) { xS = x;  xL = L0; }
+      else if(x < L1) { xS = L0; xL = x;  }
+      else            { xS = L0; xL = L1; } }
+    T y = (T(1)-w1)*xS + w1*xL;
+    return y;
+  }
+  // i get linker errors in visual studio (msc) when trying  to move this into the cpp file 
+  // -> move code to .cpp and fix this - the functionis already there but commented out
 
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */
@@ -136,8 +183,7 @@ public:
     if(*p > L-1) {              // quantile q == 1 (maximum) needs special care
       *p = L-1; *w = T(1);  }
   }
-  // i get linker errors in visual studio (msc) when trying  to move this into the cpp file 
-  // -> move code to .cpp and fix this
+  // same linker error as for readOutputWithOneMoreInput
   // optimize: avoid calling floor twice
 
 protected:
@@ -213,6 +259,23 @@ protected:
   int wrap(int i) { rsAssert(i >= 0); return i % (int)keyBuf.size(); }
   // todo: optimize using a bitmask -> restrict buffer-sizes to powers of two
 
+  /** Returns either the 2nd largest value of the small values (in the typical case) or - in the 
+  edge case where the length of the small heap is 1 such that it doesn't have such a value - the 
+  passed input value x. It's used in readOutputWithOneMoreInput to handle these edge cases. I'm 
+  not totally sure, why it works to return x in these cases, but i think, it's because of the 
+  conditionals that are done in this function. (ToDo: figure out and explain) */
+  T get2ndLargestSmallOrX(T x)
+  {
+    if(this->dblHp.isSmallSizeOne()) return x;
+    return this->dblHp.get2ndLargestSmallValue().value;
+  }
+
+  /** Analogous to get2ndLargestSmallOrX */
+  T get2ndSmallestLargeOrX(T x)
+  {
+    if(this->dblHp.isLargeSizeOne()) return x;
+    return this->dblHp.get2ndSmallestLargeValue().value;
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */

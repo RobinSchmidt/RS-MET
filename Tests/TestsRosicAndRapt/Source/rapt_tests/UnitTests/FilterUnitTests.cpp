@@ -443,7 +443,7 @@ bool oneLongerQuantileUnitTest(int L, int N)
   rsDelayBuffer<double> delayLine;
   delayLine.setCapacity(L+1);
 
-  rsQuantileFilterCore2<double> fltT;  // to be tested filter
+  rsQuantileFilterCore<double> fltT;  // to be tested filter
   fltT.setMaxLength(L);
   fltT.setLength(L, true);
   fltT.setModulationBuffer(&delayLine);

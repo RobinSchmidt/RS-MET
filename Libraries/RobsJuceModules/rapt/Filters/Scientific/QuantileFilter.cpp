@@ -32,6 +32,56 @@ void rsQuantileFilterCore<T>::reset()
 
 /*
 template<class T>
+T rsQuantileFilterCore<T>::readOutputLongerBy1()
+{
+  rsAssert(this->sigBuf != nullptr, "To use this feature, the input buffer must be assigned.");
+  T xL = (*this->sigBuf)[this->L];   // should be x[n-L], client code must assure this
+  return readOutputWithOneMoreInput(xL);
+}
+// Seems like some member functions are not instantiated when we do the instantiation in the
+// rs_testing module because they are never called from there. They are called, however, in the
+// test project - but that's apparently too late - the rs_testing module is compiled before that.
+// https://stackoverflow.com/questions/31157196/template-member-function-is-instantiated-only-if-called
+*/
+
+/*
+template<class T>
+T rsQuantileFilterCore<T>::readOutputWithOneMoreInput(T x)
+{
+  int p1;                                                 // read position
+  T w1, xS, xL;                                           // weight, xLarge, xSmall
+  T q = getQuantile();
+  lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
+  T S0 = this->dblHp.getLargestSmallValue().value;        // do we need the "this->"?
+  T L0 = this->dblHp.getSmallestLargeValue().value;
+  if(p1 == p) {                                           // additional slot is in the large heap
+    T S1 = get2ndLargestSmallOrX(x);
+    if(     x > L0) { xS = S0; xL = L0; }
+    else if(x > S0) { xS = S0; xL = x;  }
+    else if(x > S1) { xS = x;  xL = S0; }
+    else            { xS = S1; xL = S0; } }
+  else {                                                  // additional slot is in the small heap
+    rsAssert(p1 == p+1);                                  // sanity check
+    T L1 = get2ndSmallestLargeOrX(x);
+    if(     x < S0) { xS = S0; xL = L0; }
+    else if(x < L0) { xS = x;  xL = L0; }
+    else if(x < L1) { xS = L0; xL = x;  }
+    else            { xS = L0; xL = L1; } }
+  T y = (T(1)-w1)*xS + w1*xL;
+  return y;
+}
+*/
+// ToDo: maybe refactor such that a subclass can save time by avoiding calling 
+// lengthAndQuantileToPositionAndWeight (it's expensive) when the p1,w1 did not change between 
+// samples. They change only when the settings L,w (or L,q) change, so these values could be 
+// computed once when the setting is changed and then cached in member variables of a subclass. 
+// This can be supported by factoring out a function readOutputWithOneMoreInput(T x, int p1, T w1);
+// do we need the "this->"?
+
+
+
+/*
+template<class T>
 void rsQuantileFilterCore<T>::lengthAndQuantileToPositionAndWeight(int L, T q, int* p, T* w)
 {
   T P = q * (L-1);            // non-integer read position
@@ -41,8 +91,9 @@ void rsQuantileFilterCore<T>::lengthAndQuantileToPositionAndWeight(int L, T q, i
     *p = L-1; *w = T(1);  }
 }
 */
-// needs test
 // todo: optimize - don't call floor twice
+
+
 
 template<class T>
 void rsQuantileFilterCore<T>::modulateLengthAndReadPosition(int newLength, int newPosition)
@@ -190,3 +241,7 @@ void rsQuantileFilter<T>::convertParameters(
   *q *= 0.5;                               // found empirically - todo: verify theoretically!
 }
 // It's confusing to use q here - the output *q is actually the delay
+//
+// part of the code is now implemented in
+// rsQuantileFilterCore<T>::lengthAndQuantileToPositionAndWeight, so we should try to get rid of 
+// the duplications here

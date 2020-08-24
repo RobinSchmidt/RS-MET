@@ -672,6 +672,8 @@ protected:
 
 //=================================================================================================
 
+#ifdef BLAH
+
 /** Augments rsQuantileFilterCore by a feature that allows client code to prod
 */
 
@@ -692,17 +694,20 @@ public:
   function afterwards, a non-integer length filter sample can be computed by crossfading. To use 
   this feature, the input buffer (delayline) must be assigned, because the x[n-L] sample is not in
   the heaps, so we must retrieve it from the delayline. */
+  /*
   T readOutputLongerBy1()
   {
     rsAssert(this->sigBuf != nullptr, "To use this feature, the input buffer must be assigned.");
     T xL = (*this->sigBuf)[this->L];   // should be x[n-L], client code must assure this
     return readOutputWithOneMoreInput(xL);
   }
+  */
 
   /** After calling getSample, this function may be called to produce an output that getSample 
   would have produced when the length would have been one sample longer, i.e. L+1 instead of L and 
   at some time within this larger time interval, the value x would have been fed into the filter. 
   Used internally by readOutputLongerBy1 in which case x[n-L] is passed as x. */
+  /*
   T readOutputWithOneMoreInput(T x)
   {
     int p1;                                                 // read position
@@ -727,6 +732,7 @@ public:
     T y = (T(1)-w1)*xS + w1*xL;
     return y;
   }
+  */
   // maybe make protected
   // move to cpp file, maybe refactor such that a subclass can save time by avoiding calling 
   // lengthAndQuantileToPositionAndWeight (it's expensive) and the p1,w1 change only when the 
@@ -734,23 +740,7 @@ public:
 
 protected:
 
-  /** Returns either the 2nd largest value of the small values (in the typical case) or - in the 
-  edge case where the length of the small heap is 1 such that it doesn't have such a value - the 
-  passed input value x. It's used in readOutputWithOneMoreInput to handle these edge cases. I'm 
-  not totally sure, why it works to return x in these cases, but i think, it's because of the 
-  conditionals that are done in this function. (ToDo: figure out and explain) */
-  T get2ndLargestSmallOrX(T x)
-  {
-    if(this->dblHp.isSmallSizeOne()) return x;
-    return this->dblHp.get2ndLargestSmallValue().value;
-  }
 
-  /** Analogous to get2ndLargestSmallOrX */
-  T get2ndSmallestLargeOrX(T x)
-  {
-    if(this->dblHp.isLargeSizeOne()) return x;
-    return this->dblHp.get2ndSmallestLargeValue().value;
-  }
 
 
   // additional member variables to avoid recomputation of them in readOutputWithOneMoreInput
@@ -759,6 +749,8 @@ protected:
   // q;       // quantile
 
 };
+
+#endif
 
 //=================================================================================================
 

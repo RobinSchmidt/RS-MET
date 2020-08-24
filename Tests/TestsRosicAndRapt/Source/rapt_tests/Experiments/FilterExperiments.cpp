@@ -1372,7 +1372,7 @@ void quantileFilter1()
   int N = (int) x.size();   // number of samples
 
 
-  rsQuantileFilterCore2<double> flt;
+  rsQuantileFilterCore<double> flt;
   flt.setMaxLength(32);
 
   // produce a target signal with a filter that actually *is* one sample longer than L:
