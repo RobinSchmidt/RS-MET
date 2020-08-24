@@ -1390,26 +1390,32 @@ void quantileFilter1()
   flt.setLengthAndQuantile(L, q);
   Vec y(N);  // normal output of filter
   Vec z(N);  // output of elongated filter - should match t
+  Vec b(N);  // branches, for info/debug
   for(int n = 0; n < N; n++)
   {
     dly.getSample(x[n]);       // feed the delayline
     y[n] = flt.getSample(x[n]);
-    z[n] = flt.readOutputWithOneMoreInput(dly[L]);
+    z[n] = flt.readOutputWithOneMoreInput(dly[L], b[n]);
   }
   Vec err = t-z;
 
   double xOld = dly[L];
-  double tmp  = flt.readOutputWithOneMoreInput(xOld);
+  double branch;
+  double tmp  = flt.readOutputWithOneMoreInput(xOld, branch);
 
-  rsPlotVectors(t, z, err);
+  //rsPlotVectors(t, z, err, b);
+  rsPlotVectors(err, b);
   //rsPlotVectors(x, t, z, err);
 
   // Observations:
-  // -It works for L=20,q=0.75 but not for L=20,q=0.33, for q=0 and q=1, it seems to work for all
-  //  lengths
+  // -brnahces 1,2 cause errors (always downward, i.e. output z is larger than target t)
 
 
   // old:
+  // -It works for L=20,q=0.75 but not for L=20,q=0.33, for q=0 and q=1, it seems to work for all
+  //  lengths
+
+  // older:
   // -with L=3, q=0.0...0.33, it works, for 0.34...1.0, it doesn't - it has to do with dp = p-p1
   //  switching from 0 to -1 at q = 1./3 (i think)
   // -with L=5, q=0.0...0.19 works, with L=4, q=0.0...0.24 - i think, in general, it works up to

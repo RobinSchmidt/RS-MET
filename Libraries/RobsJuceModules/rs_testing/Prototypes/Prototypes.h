@@ -700,7 +700,8 @@ public:
     rsAssert(this->sigBuf != nullptr, "To use this feature, the input buffer must be assigned.");
     //T xL = (*this->sigBuf)(this->L);   // should be x[n-L], client code must assure this
     T xL = (*this->sigBuf)[this->L];   // should be x[n-L], client code must assure this
-    return readOutputWithOneMoreInput(xL);
+    T branch; // dummy - delete later
+    return readOutputWithOneMoreInput(xL, branch);
   }
 
 
@@ -712,7 +713,7 @@ public:
 
 
 
-  T readOutputWithOneMoreInput(T xOld)  // xOld = x[n-L]
+  T readOutputWithOneMoreInput(T xOld, T& branch)  // xOld = x[n-L]
   {
     T q = getQuantile();
     int p1;     
@@ -725,26 +726,38 @@ public:
     T L1 = this->dblHp.get2ndSmallestLargeValue().value;
     if(     xOld > L1)  
     {  
-      xS = L0;   xL = L1;
-      //xS = L1;   xL = L0;
+      xS = L0;   xL = L1;      // this is how i think it should be - but doesn't work
+      //xS = L0;   xL = xOld;      // copied from branch 2
+      //xS = S0;   xL = xOld;      // copied from branch 3
+      //xS = xOld; xL = S0;      // copied from branch 4
+      //xS = S1;   xL = S0;      // copied from branch 5
       //xS = xL = 0; 
+      branch = 1;
     }
     else if(xOld > L0)  
     {  
-      xS = L0;   xL = xOld; 
+      //xS = L0;   xL = xOld;  // this is how i think it should be - but doesn't work
+      //xS = S0;   xL = xOld;  // copied from branch 3
+      //xS = xOld; xL = S0;    // copied from branch 4 - gives negative error
+      //xS = S1;   xL = S0;    // copied from branch 5 - gives positive error
+      xS = S0; xL = L0;       // test - looks good!
       //xS = xL = 0; 
+      branch = 2;
     }
     else if(xOld > S0)  
     {  
       xS = S0;   xL = xOld; 
+      branch = 3;
     }
     else if(xOld > S1)  
     {  
-      xS = xOld; xL = S0;   
+      xS = xOld; xL = S0;
+      branch = 4;
     }
     else                
     {  
-      xS = S1;   xL = S0;   
+      xS = S1;   xL = S0;
+      branch = 5;
     }
     // some branches seem to work (3,4,5), others not (1,2)
 
