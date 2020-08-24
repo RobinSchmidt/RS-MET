@@ -732,6 +732,7 @@ public:
       //xS = xOld; xL = S0;      // copied from branch 4
       //xS = S1;   xL = S0;      // copied from branch 5
       //xS = xL = 0; 
+      xS = S0; xL = L0;  // test
       branch = 1;
     }
     else if(xOld > L0)  
@@ -759,7 +760,8 @@ public:
       xS = S1;   xL = S0;
       branch = 5;
     }
-    // some branches seem to work (3,4,5), others not (1,2)
+    // seems to work for p1 == p now - todo: check, if it also works for p1 == p+1 - nope - try
+    // L=5, q= 0.6
 
     T y = (T(1)-w1)*xS + w1*xL;
     return y;

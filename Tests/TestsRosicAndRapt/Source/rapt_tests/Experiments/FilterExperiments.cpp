@@ -1368,7 +1368,7 @@ void quantileFilter1()
   // x = Vec({ 2,4,6,8 });
   // x = Vec({ 0,2,4,6,8,10,12,14 });
   //x = Vec({2,4,6,8,6,4,2,0,-2,-4,-6,-8,-6,-4,-2,0,2,4,6,8,6,4,2,0,-2,-4,-6});
-  x = rsRandomIntVector(100, -9, +9, 0);
+  x = rsRandomIntVector(200, -9, +9, 0);
   int N = (int) x.size();   // number of samples
 
 
@@ -1403,12 +1403,20 @@ void quantileFilter1()
   double branch;
   double tmp  = flt.readOutputWithOneMoreInput(xOld, branch);
 
+  rsPlotVectors(t, z, err);
   //rsPlotVectors(t, z, err, b);
-  rsPlotVectors(err, b);
+  //rsPlotVectors(err, b);
   //rsPlotVectors(x, t, z, err);
 
   // Observations:
-  // -brnahces 1,2 cause errors (always downward, i.e. output z is larger than target t)
+  // -if, p1==p and xOld falls into the large heap, we just need to use xS = S0; xL = L0; as usual
+  //  because xOld the large heap can actually admit for xOld as additional sample, because it's
+  //  one sample longer - no data would have to be moved from large to small. If, on the other 
+  //  hand, xold falls into the small heap, we have to take into account that a datapoint from
+  //  the front of the small heap would have to be moved over to the large heap.
+  // -if p1==p+1, the situation is reversed: when xOld falls into the small heap, we use 
+  //  xS = S0; xL = L0; as usual and if xOld falls inot the large heap, some additional logic is
+  //  required.
 
 
   // old:
