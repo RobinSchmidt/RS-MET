@@ -1360,8 +1360,8 @@ void quantileFilter1()
   // to left/right respectively. Consider the old inputs for 5 different cases: xOld = 1,3,5,7,9
   // and cosider finding the minimum, maximum, median and quartiles for L = 3, L+1 = 4
 
-  double q = 0.5;   // quantile
-  int    L = 5;     // length of non-elongated filter
+  double q = 0.53;   // quantile
+  int    L = 20;     // length of non-elongated filter
 
   using Vec = std::vector<double>;
   Vec x;
@@ -1416,7 +1416,7 @@ void quantileFilter1()
   //  the front of the small heap would have to be moved over to the large heap.
   // -if p1==p+1, the situation is reversed: when xOld falls into the small heap, we use 
   //  xS = S0; xL = L0; as usual and if xOld falls inot the large heap, some additional logic is
-  //  required.
+  //  required. try L=5, q= 0.6
 
 
   // old:

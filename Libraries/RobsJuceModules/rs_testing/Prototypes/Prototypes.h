@@ -724,44 +724,30 @@ public:
     T S0 = this->dblHp.getLargestSmallValue().value;
     T L0 = this->dblHp.getSmallestLargeValue().value;
     T L1 = this->dblHp.get2ndSmallestLargeValue().value;
-    if(     xOld > L1)  
-    {  
-      xS = L0;   xL = L1;      // this is how i think it should be - but doesn't work
-      //xS = L0;   xL = xOld;      // copied from branch 2
-      //xS = S0;   xL = xOld;      // copied from branch 3
-      //xS = xOld; xL = S0;      // copied from branch 4
-      //xS = S1;   xL = S0;      // copied from branch 5
-      //xS = xL = 0; 
-      xS = S0; xL = L0;  // test
-      branch = 1;
+
+    if(p1 == p)
+    {
+      // L1 not needed in this branch
+      if(     xOld > L0) { xS = S0;   xL = L0;   }
+      else if(xOld > S0) { xS = S0;   xL = xOld; }
+      else if(xOld > S1) { xS = xOld; xL = S0;   }
+      else               { xS = S1;   xL = S0;   } 
     }
-    else if(xOld > L0)  
-    {  
-      //xS = L0;   xL = xOld;  // this is how i think it should be - but doesn't work
-      //xS = S0;   xL = xOld;  // copied from branch 3
-      //xS = xOld; xL = S0;    // copied from branch 4 - gives negative error
-      //xS = S1;   xL = S0;    // copied from branch 5 - gives positive error
-      xS = S0; xL = L0;       // test - looks good!
-      //xS = xL = 0; 
-      branch = 2;
+    else
+    {
+      // S1 not needed in this branch
+      rsAssert(p1 == p+1);
+
+      if(     xOld < S0) { xS = S0;   xL = L0;   }
+      else if(xOld < L0) { xS = xOld; xL = L0;   }
+      else if(xOld < L1) { xS = L0;   xL = xOld; }
+      else               { xS = L0;   xL = L1;   } 
+
+      //xS = xL = 0;  // preliminary - todo: we need a similar logic as above
     }
-    else if(xOld > S0)  
-    {  
-      xS = S0;   xL = xOld; 
-      branch = 3;
-    }
-    else if(xOld > S1)  
-    {  
-      xS = xOld; xL = S0;
-      branch = 4;
-    }
-    else                
-    {  
-      xS = S1;   xL = S0;
-      branch = 5;
-    }
-    // seems to work for p1 == p now - todo: check, if it also works for p1 == p+1 - nope - try
-    // L=5, q= 0.6
+
+    // to optimize, retrieve S1, L1 only when needed (it's not free to retrieve them)
+
 
     T y = (T(1)-w1)*xS + w1*xL;
     return y;
