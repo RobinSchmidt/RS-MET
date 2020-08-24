@@ -672,13 +672,11 @@ protected:
 
 //=================================================================================================
 
-#ifdef BLAH
 
-/** Augments rsQuantileFilterCore by a feature that allows client code to prod
-*/
+/** Facilitates non-integer lengths... */
 
 template<class T>
-class rsQuantileFilterCore2 : public rsQuantileFilterCore<T>
+class rsQuantileFilterCore2 : protected rsQuantileFilterCore<T>
 {
 
 public:
@@ -686,71 +684,55 @@ public:
   using Base = rsQuantileFilterCore<T>;
 
 
-  /** Produces a sample that would have been produced, if the length of the filter would be
-  longer by one sample, i.e. L+1 instead of L. This can be used to implement non-integer length 
-  filters by crossfading between the outputs of two filters whose lengths are L and L+1 without 
-  literally running a second filter of length L+1. The output of the L+1 filter is simulated by 
-  doing some trickery. From the values returned by the regular getSample call and the call to this
-  function afterwards, a non-integer length filter sample can be computed by crossfading. To use 
-  this feature, the input buffer (delayline) must be assigned, because the x[n-L] sample is not in
-  the heaps, so we must retrieve it from the delayline. */
-  /*
-  T readOutputLongerBy1()
-  {
-    rsAssert(this->sigBuf != nullptr, "To use this feature, the input buffer must be assigned.");
-    T xL = (*this->sigBuf)[this->L];   // should be x[n-L], client code must assure this
-    return readOutputWithOneMoreInput(xL);
-  }
-  */
+  void setMaxLength(int newMaxLength) { Base::setMaxLength(newMaxLength); }
 
-  /** After calling getSample, this function may be called to produce an output that getSample 
-  would have produced when the length would have been one sample longer, i.e. L+1 instead of L and 
-  at some time within this larger time interval, the value x would have been fed into the filter. 
-  Used internally by readOutputLongerBy1 in which case x[n-L] is passed as x. */
-  /*
-  T readOutputWithOneMoreInput(T x)
+
+  void setLengthAndQuantile(T newLength, T newQuantile)
   {
-    int p1;                                                 // read position
-    T w1, xS, xL;                                           // weight, xLarge, xSmall
-    T q = getQuantile();
-    lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
-    T S0 = this->dblHp.getLargestSmallValue().value;
-    T L0 = this->dblHp.getSmallestLargeValue().value;
-    if(p1 == p) {                                           // additional slot is in the large heap
-      T S1 = get2ndLargestSmallOrX(x);
-      if(     x > L0) { xS = S0; xL = L0; }
-      else if(x > S0) { xS = S0; xL = x;  }
-      else if(x > S1) { xS = x;  xL = S0; }
-      else            { xS = S1; xL = S0; } }
-    else {                                                  // additional slot is in the small heap
-      rsAssert(p1 == p+1);                                  // sanity check
-      T L1 = get2ndSmallestLargeOrX(x);
-      if(     x < S0) { xS = S0; xL = L0; }
-      else if(x < L0) { xS = x;  xL = L0; }
-      else if(x < L1) { xS = L0; xL = x;  }
-      else            { xS = L0; xL = L1; } }
-    T y = (T(1)-w1)*xS + w1*xL;
-    return y;
+    length     = newLength;
+    quantile   = newQuantile;
+    int L      = (int) floor(newLength);
+    lengthFrac = length - L;
+    Base::setLengthAndQuantile(L, quantile);
   }
-  */
-  // maybe make protected
-  // move to cpp file, maybe refactor such that a subclass can save time by avoiding calling 
-  // lengthAndQuantileToPositionAndWeight (it's expensive) and the p1,w1 change only when the 
-  // settings change, so they could be cached - readOutputWithOneMoreInput(T x, int p1, T w1);
+
+
+  T getSample(T x)
+  {
+    if(this->sigBuf)  // && allowFractionalLength...maybe...or maybe not
+    {
+      T x0 = Base::getSample(x);
+      T x1 = Base::readOutputLongerBy1();  // rename to getElongatedOutput
+      T f  = lengthFrac;
+      return (T(1)-f)*x0 + f*x1;           // crossfade between length L and L+1
+    }
+    else
+      return Base::getSample(x);
+  }
+
+  void reset()
+  {
+    Base::reset();
+  }
+
 
 protected:
 
 
-
-
   // additional member variables to avoid recomputation of them in readOutputWithOneMoreInput
-  // int p1;  // readout position used in readOutputWithOneMoreInput
-  // T w1;    // weight used in readOutputWithOneMoreInput
-  // q;       // quantile
+
+
+  // algo parameters - use later for optimization:
+  //int p1;      // readout position used in readOutputWithOneMoreInput
+  //T w1;        // weight used in readOutputWithOneMoreInput
+
+  // user parameters:
+  T length     = 2.0;  // non-integer length, at least 2.0
+  T lengthFrac = 0.0;  // fractional part of length
+  T quantile   = 0.5;  // quantile (median by default)
 
 };
 
-#endif
 
 //=================================================================================================
 

@@ -139,6 +139,7 @@ public:
     T xL = (*this->sigBuf)[this->L];   // should be x[n-L], client code must assure this
     return readOutputWithOneMoreInput(xL);
   }
+  // maybe rename to readElongatedOutput, getElongatedOutput, getProlongedOutput
 
   /** After calling getSample, this function may be called to produce an output that getSample 
   would have produced when the length would have been one sample longer, i.e. L+1 instead of L and 
@@ -170,7 +171,8 @@ public:
     return y;
   }
   // i get linker errors in visual studio (msc) when trying  to move this into the cpp file 
-  // -> move code to .cpp and fix this - the functionis already there but commented out
+  // -> move code to .cpp and fix this - the function is already there but commented out
+  // maybe when we call it in rsQuantileFilter, the problem will disappear - we'll see
 
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */

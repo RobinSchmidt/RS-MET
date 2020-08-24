@@ -1344,21 +1344,9 @@ void seriesConnectionDecay()
   // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=533696
 }
 
-void quantileFilter1()
+void quantileFilterElongation()
 {
-  // Under construction - does not yet work
-
   // We try to produce a sample that a length L+1 *would have* produced with a length L filter.
-  // Consider the case when the sorted array looks like:
-  //
-  //      <---S|L--->
-  // ...X X 2 4|6 8 X X...
-  //
-  // where X stands for irrelevant (and inaccessible) values, 4 is the largest small, 2 is the 2nd
-  // largest small,, 6 is the smallest large, 8 is the 2nd smallest large value. S stands for the 
-  // part of the heap/array with small values, L for the part  with large values and the continue 
-  // to left/right respectively. Consider the old inputs for 5 different cases: xOld = 1,3,5,7,9
-  // and cosider finding the minimum, maximum, median and quartiles for L = 3, L+1 = 4
 
   double q = 0.2;    // quantile
   int    L = 2;      // length of non-elongated filter
@@ -1370,7 +1358,6 @@ void quantileFilter1()
   //x = Vec({2,4,6,8,6,4,2,0,-2,-4,-6,-8,-6,-4,-2,0,2,4,6,8,6,4,2,0,-2,-4,-6});
   x = rsRandomIntVector(200, -9, +9, 0);
   int N = (int) x.size();   // number of samples
-
 
   rsQuantileFilterCore<double> flt;
   flt.setMaxLength(32);
@@ -1405,13 +1392,9 @@ void quantileFilter1()
   //rsPlotVectors(t, z, err);
   rsPlotVectors(x, t, z, err);
 
-  // Observations:
-  // -L=2: q=0 fails, q=0.25 fails (errors are downward), q=0.5 works, 0.75 fails (errors are 
-  //  upward) - seems like when we sweep q from 0 to 1, it starts with lerge downward errors that 
-  //  get smaller as q sweeps up, reach zero when q=0.5 and above 0.5, the error increases again
-  //  but in the upward direction.
-  // -try to fix the simplest case L=2,q=0 first then see, if that fixes the other cases, too
-  // move explanantion into comment in readOutputWithOneMoreInput
+  // Observations: it works
+
+  // todo: move explanation into comment in readOutputWithOneMoreInput
   // -if p1==p and xOld falls into the large heap, we just need to use xS = S0; xL = L0; as usual
   //  because xOld the large heap can actually admit for xOld as additional sample, because it's
   //  one sample longer - no data would have to be moved from large to small. If, on the other 
@@ -1420,16 +1403,36 @@ void quantileFilter1()
   // -if p1==p+1, the situation is reversed: when xOld falls into the small heap, we use 
   //  xS = S0; xL = L0; as usual and if xOld falls inot the large heap, some additional logic is
   //  required. try L=5, q= 0.6
-
-
-
 }
 
-
-void quantileFilter()
+void quantileFilterSweep()
 {
-  quantileFilter1();
+  // tests non-integer length quatile filter
+  // maybe make a continuous sweep of the length and/or the quantile and write it to a wavefile to
+  // see if the sweep is smooth - we generate a non-smooth sweep as well for comparsion
 
+  double fs          = 44100;    // sample rate
+  int    N           = 2000;     // number of samples
+  double minLength   = 2.0;      // minimum length in sweep
+  double maxLength   = 100.0;    // maximum length in sweep
+  double minQuantile = 0.5;
+  double maxQuantile = 0.5;
+  //bool   smoothSweep = true;     // set to false for comparison
+
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
+  Vec lengths(N), quantiles(N);
+  AT::fillWithRangeExponential(&lengths[0],   N, minLength,   maxLength);
+  AT::fillWithRangeExponential(&quantiles[0], N, minQuantile, maxQuantile);
+
+
+
+
+  int dummy = 0;
+}
+
+void quantileFilterDual()
+{
   double fs = 44100;  // sample rate
   int    N  = 200000; // number of samples
   int    L  = 21;     // filter length in samples (can we make this a double, too?)
@@ -1609,4 +1612,12 @@ void quantileFilter()
   //  does and hwo it should be used - a short info could be displayed in the info field when
   //  the mouse is over the preset field and a longer info coul be displayed in a popup text
   //  editor on right-click
+
+}
+
+void quantileFilter()
+{
+  //quantileFilterElongation();  // tests producing the length L+1 output by length L filter
+  quantileFilterSweep();  // tests non-integer length quatile filter
+  //quantileFilterDual();  // tests the dual-quantile filter (with highpass mode, etc.)
 }
