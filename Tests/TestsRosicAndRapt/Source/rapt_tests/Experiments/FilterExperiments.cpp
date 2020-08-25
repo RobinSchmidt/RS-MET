@@ -1455,14 +1455,55 @@ void quantileFilterSweep()
   rosic::writeToMonoWaveFile("QuantileFilterSweepSmooth.wav", &y2[0], N, 44100);
 }
 
-/*
 void quantileFilterDelay()
 {
-  int N = 500;
-  double L = 50;
+  int    N  = 300;    // number of samples for plot
+  double L  = 50;     // length of filter
+  double lo = 1.0;    // lowpass gain
+  double hi = 0.0;    // highpass gain
+  double P  = 100.0;  // period of input wave
 
+  // quantiles:
+  using  Vec = std::vector<double>;
+  //Vec q({0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0});
+  Vec q({0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0});
+  //Vec q({0.0, 0.25, 0.5, 0.75, 1.0});
+  //Vec q({0.5});
+
+  // Create and set up rsQuantileFilter object:
+  rsQuantileFilter<double> flt;
+  int maxLength = (int) ceil(L);
+  flt.setMaxLength(maxLength);
+  flt.setSampleRate(1.0);
+  flt.setFrequency(1.0/L);
+  flt.setLowpassGain(lo);
+  flt.setHighpassGain(hi);
+  flt.updateInternals();        // because we want to retrieve the delay below
+
+  // Create input waveform and delayed version of it:
+  Vec x(N); createWaveform(&x[0], N, 0, 1./P, 1.0);
+  rsDelayBuffer<double> dly(maxLength);
+  double d = flt.getDelayInSamples();
+  Vec xd(N);
+  for(int n = 0; n < N; n++) {
+    dly.getSample(x[n]);
+    xd[n] = dly[d]; }
+
+  // create filtered outputs for various quantile settings and plot them along with the 
+  // delayed input:
+  GNUPlotter plt;
+  plt.addDataArrays(N, &xd[0]);  
+  Vec y(N);
+  for(size_t i = 0; i < q.size(); i++)
+  {
+    flt.setQuantile(q[i]);
+    flt.reset();
+    for(int n = 0; n < N; n++)
+      y[n] = flt.getSample(x[n]);
+    plt.addDataArrays(N, &y[0]);
+  }
+  plt.plot();
 }
-*/
 
 void quantileFilterDual()
 {
@@ -1660,5 +1701,6 @@ void quantileFilter()
 {
   //quantileFilterElongation();  // tests producing the length L+1 output by length L filter
   //quantileFilterSweep();  // tests non-integer length quatile filter
-  quantileFilterDual();  // tests the dual-quantile filter (with highpass mode, etc.)
+  quantileFilterDelay();
+  //quantileFilterDual();  // tests the dual-quantile filter (with highpass mode, etc.)
 }
