@@ -1552,14 +1552,7 @@ void quantileFilterDual()
   //createWaveform(&x[0], N, 0, 1.0/L, 1.0);  // sine wave
   //createSineSweep(&x[0], N, 0.0/L, 2.0/L);
   //AT::fillWithImpulse(&x[0], N, 1.0, 100);  // for testing the delay
-  Vec x(N);
-  rsNoiseGeneratorTriModal<double> ng;
-  ng.setOrder(7);
-  ng.selectorLowpass.setSampleRate(1.0);
-  ng.selectorLowpass.setCutoff(0.02);
-  for(int n = 0; n < N; n++)
-    x[n] = 0.5 * ng.getSample();
-  // maybe factor out into a getCrackleNoise(double cutoff = 0.02, int order = 7) function
+  Vec x = createCrackle(N, 0.02);
 
   // Create frequency sweep and oupput signal:
   Vec f(N), y(N);

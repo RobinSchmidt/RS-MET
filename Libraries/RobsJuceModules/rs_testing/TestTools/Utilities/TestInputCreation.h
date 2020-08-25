@@ -73,6 +73,9 @@ double sineSum(double p, double *A, double N);
 template<class T>
 std::vector<T> createNoise(int numSamples, T min, T max, int seed = 0);
 
+template<class T>
+std::vector<T> createCrackle(int numSamples, T cutoff = 0.02, int order = 7/*, int seed = 0*/);
+
 /** Returns an array of sampling instants with random time-differences dt between them. */
 template<class T>
 std::vector<T> randomSampleInstants(int numSamples, T dtMin, T dtMax, int seed = 0);

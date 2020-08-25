@@ -243,6 +243,21 @@ template std::vector<float> createNoise(int numSamples, float min, float max, in
 template std::vector<double> createNoise(int numSamples, double min, double max, int seed);
 
 template<class T>
+std::vector<T> createCrackle(int numSamples, T cutoff, int order/*, int seed*/)
+{
+  std::vector<T> x(numSamples);
+  rsNoiseGeneratorTriModal<double> ng;
+  ng.setOrder(order);
+  //ng.setSeed(seed);
+  ng.selectorLowpass.setSampleRate(1.0);
+  ng.selectorLowpass.setCutoff(cutoff);
+  for(int n = 0; n < numSamples; n++)
+    x[n] = 0.5 * ng.getSample();
+  return x;
+}
+template std::vector<double> createCrackle(int numSamples, double cutoff, int order/*, int seed*/);
+
+template<class T>
 std::vector<T> randomSampleInstants(int N, T dtMin, T dtMax, int seed)
 {
   std::vector<T> t(N);
