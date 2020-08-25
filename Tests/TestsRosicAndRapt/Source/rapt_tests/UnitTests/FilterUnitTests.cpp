@@ -436,21 +436,28 @@ bool testQuantileElongation(int L, int N)
   double tol = 1000*eps;
   Vec quantiles({0.0, eps, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0-eps, 1.0});
 
-  rsQuantileFilterCore<double> fltR;   // the reference filter
+  rsQuantileFilterCore<double> fltR;   // reference filter
   fltR.setMaxLength(L+1);
   fltR.setLength(L+1, true);
 
   rsDelayBuffer<double> delayLine;
   delayLine.setCapacity(L+1);
 
-  rsQuantileFilterCore<double> fltT;  // to be tested filter
-  fltT.setMaxLength(L);
-  fltT.setLength(L, true);
-  fltT.setDelayBuffer(&delayLine);
+  rsQuantileFilterCore<double> fltE;  // elongated filter
+  fltE.setMaxLength(L);
+  fltE.setLength(L, true);
+  fltE.setDelayBuffer(&delayLine);
+
+  rsQuantileFilterCore<double> fltS;  // shortened filter
+  fltS.setMaxLength(L+2);
+  fltS.setLength(L+2, true);
+  fltS.setDelayBuffer(&delayLine);
+
+
 
   // compute test and reference output and compare them:
   Vec x = rsRandomIntVector(N, 0, 99);  // input
-  Vec yR(N), yT(N);                     // reference and test output
+  Vec yR(N), yE(N), yS(N);               // reference, elngated and shortened output
   for(size_t i = 0; i < quantiles.size(); i++)
   {
     // compute output of reference filter - this filter actually is one sample longer than our
@@ -459,19 +466,30 @@ bool testQuantileElongation(int L, int N)
     for(int n = 0; n < N; n++)
       yR[n] = fltR.getSample(x[n]);
 
-    // compute output of tested filter - this filter is set to length L and computes the output of
-    // a length L+1 filter by additional trickery
-    fltT.setLengthAndQuantile(L, quantiles[i], true);
-    for(int n = 0; n < N; n++)
-    {
+    // compute output of elongated filter - this filter is set to length L and computes the output
+    // of a length L+1 filter by additional trickery
+    fltE.setLengthAndQuantile(L, quantiles[i], true);
+    for(int n = 0; n < N; n++) {
       delayLine.getSample(x[n]);           // feed delayline (output irrelevant)
-      yT[n] = fltT.getSample(x[n]);        // feed filter (output irrelevant)
-      yT[n] = fltT.getElongatedOutput();  // ...this is what we are interested in
+      yE[n] = fltE.getSample(x[n]);        // feed filter (output irrelevant)
+      yE[n] = fltE.getElongatedOutput();   // ...this is what we are interested in
     }
 
-    r &= rsAreVectorsEqual(yT, yR, tol);
-    //rsPlotVectors(x, yR, yT);
+    // compute output of shortened filter - this filter is set to length L+2 and computes the
+    // output of a length L+1 filter by additional trickery
+    fltS.setLengthAndQuantile(L+2, quantiles[i], true);
+    for(int n = 0; n < N; n++) {
+      yS[n] = fltS.getSample(x[n]);
+      yS[n] = fltS.getShortenedOutput();
+    }
+
+    r &= rsAreVectorsEqual(yE, yR, tol);
+    //r &= rsAreVectorsEqual(yS, yR, tol);
+
+    rsPlotVectors(yR, yE, yS);
+    //rsPlotVectors(x, yR, yE, yS);
   }
+
   return r;
 
   // Notes:

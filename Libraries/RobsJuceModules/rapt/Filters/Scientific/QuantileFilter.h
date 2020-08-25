@@ -185,6 +185,27 @@ public:
   // maybe when we call it in rsQuantileFilter, the problem will disappear - we'll see.
 
 
+  /** Under construction - not yet working. 
+  After calling getSample, this function may be called to produce an output that getSample 
+  would have produced when the length would have been one sample shorter, i.e. L-1 instead of L. */
+  T getShortenedOutput()
+  {
+    int p1;                                                 // read position
+    T w1, xS, xL;                                           // weight, xLarge, xSmall
+    T q = getQuantile();
+    lengthAndQuantileToPositionAndWeight(L-1, q, &p1, &w1);
+    if(p1 == p) {
+      xS = dblHp.getLargestSmallValue().value; 
+      xL = dblHp.getSmallestLargeValue().value; }
+    else {
+      rsAssert(p1 == p-1);                                  // sanity check
+      xS = get2ndLargestSmallOrX(readOutput());             // is that correct?
+      xL = dblHp.getLargestSmallValue().value;  }
+    T y = (T(1)-w1)*xS + w1*xL;
+    return y;
+  }
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */
 
@@ -340,7 +361,7 @@ protected:
 //=================================================================================================
 
 /** Subclass of rsQuantileFilterCore that facilitates smoother sweeps of the filter length by 
-supporting non-integer filters lengths. These are implemented by means of crossfading between a 
+supporting non-integer filter lengths. These are implemented by means of crossfading between a 
 filter of length L and L+1, where L is the floor of the desired length and the crossfade is done
 via its fractional part. The filter of length L+1 is not actually a second filter - instead we 
 simulate such a second filter with the heaps we already have and some additional trickery. */
