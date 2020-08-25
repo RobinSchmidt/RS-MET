@@ -502,19 +502,41 @@ bool testQuantileDelay(double L, double q, int N)
   flt.setSampleRate(1.0);
   flt.setFrequency(1.0/L);  // verify that
   flt.setLowpassGain(1.0);
-  flt.setHighpassGain(1.0);
+  flt.setHighpassGain(0.0);
+  flt.updateInternals();
+
+  //double d = q*(L-1)/2;
+  double d = q*(L-1);  // works for q = 0.5
+  // why is this the right value? ..it's the value that rsQuantileFilter uses, but why should this 
+  // value make snese to obtain a highpass signal? ..maybe comprae original input with lowpass 
+  // output
+
 
   using Vec = std::vector<double>;
-  Vec x = rsRandomIntVector(N, 0, 99);  // input
+  Vec x = rsRandomVector(N, -1, 1);   // input
+  //rsArrayTools::cumulativeSum(&x[0], &x[0], N);
+  rsArrayTools::fillWithImpulse(&x[0], N, 1.0, 2*L);
+
+  // maybe a triangle wave is most suitable to assess the delay
+  createWaveform(&x[0], N, 0, 1./100, 1.0);
+
+
   Vec yD(N), yF(N);                     // delayed and filtered output
   for(int n = 0; n < N; n++) 
   {
     yF[n] = flt.getSample(x[n]);
-    dly.getSample(x[n]); yD[n] = dly[L];
+    dly.getSample(x[n]); yD[n] = dly[d];
+
+    //dly.getSample(x[n]); yD[n] = dly[L/4];
+
+    // why L/4 and not L/2? is it 0.5*q?
+
+    //dly.getSample(x[n]); yD[n] = dly[24.75]; // works with L=100 - is the delay q*(L-1)/2?
   }
 
 
-  rsPlotVectors(yD, yF);
+  //rsPlotVectors(x, yF);
+  rsPlotVectors(x, yD, yF);
 
   return r;
 }
@@ -555,7 +577,7 @@ bool movingQuantileUnitTest()
   r &= testQuantileElongation(7, N);
   r &= testQuantileElongation(8, N);
 
-  r &= testQuantileDelay(100.0, 0.5, N);
+  r &= testQuantileDelay(50.0, 0.5, N);
 
 
 
