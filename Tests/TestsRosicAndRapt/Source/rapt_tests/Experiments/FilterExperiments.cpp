@@ -1521,12 +1521,13 @@ void quantileFilterDelay()
 void quantileFilterDual()
 {
   double fs = 44100;  // sample rate
-  int    N  = 400000; // number of samples
+  int    N  = 1000; // number of samples
   int    L  = 100;    // filter length in samples (can we make this a double, too?)
-  double q  = 0.5;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
+  double q  = 1.0;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
   double f1 = fs/2;
   double f2 = fs/500;  // fs/256 is a nice end value for a sweep
 
+  f1 = f2 = fs/50;
 
   // Create and set up filter:
   using QF  = rsDualQuantileFilter<double>;
@@ -1551,16 +1552,18 @@ void quantileFilterDual()
   // toward the middle
   //createWaveform(&x[0], N, 0, 1.0/L, 1.0);  // sine wave
   //createSineSweep(&x[0], N, 0.0/L, 2.0/L);
-  //AT::fillWithImpulse(&x[0], N, 1.0, 100);  // for testing the delay
-  Vec x = createCrackle(N, 0.02);
+  Vec x(N); AT::fillWithImpulse(&x[0], N/2, 1.0, 100);  // for testing the delay
+  //Vec x = createCrackle(N, 0.02);
 
   // Create frequency sweep and oupput signal:
   Vec f(N), y(N);
   AT::fillWithRangeExponential(&f[0], N, f1, f2);
-  //double delay = flt.getDelayInSamples(); // maybe use later to compare output with delayed input
+  double delay;   // maybe use later to compare output with delayed input
   for(int n = 0; n < N; n++) {
     flt.setFrequency(f[n]);
     flt.setCore2Complementary();
+    flt.updateInternals();
+    delay = flt.getDelayInSamples();
     y[n] = flt.getSample(x[n]); }
 
 
@@ -1584,11 +1587,11 @@ void quantileFilterDual()
   */
 
 
-  rosic::writeToMonoWaveFile("QuantileFilterInput.wav",  &x[0], N, 44100);
-  rosic::writeToMonoWaveFile("QuantileFilterOutput.wav", &y[0], N, 44100);
-  std::cout << "Files written.";
+  //rosic::writeToMonoWaveFile("QuantileFilterInput.wav",  &x[0], N, 44100);
+  //rosic::writeToMonoWaveFile("QuantileFilterOutput.wav", &y[0], N, 44100);
+  //std::cout << "Files written.";
 
-  //rsPlotVectors(x, y);
+  rsPlotVectors(x, y);
   //rsPlotVectors(y);
   //rsPlotVectors(x, y, t);
   //rsPlotVectors(y, t);
@@ -1597,17 +1600,10 @@ void quantileFilterDual()
   //rsPlotVectors(z, y);  // for even lengths, z is the better reference - t has a delay there
   //rsPlotVectors(x, y);
 
-  /*
-  GNUPlotter plt;
-  plt.addDataArrays(N, &x[0]);
-  plt.addDataArrays(N, &y[0]);
-  plt.setPixelSize(1600, 400);
-  plt.plot();
-  */
 
-  //int dummy = 0;
 
   // ToDo: 
+  // -check, if the computed delay corresponds to what we see in the plots
 
   // maybe try it with a square-wave with period 100, set the length also to 100 - this is an even
   // number, so we should get an interpolation coeff of 0.5 - i think, the output should be a 
