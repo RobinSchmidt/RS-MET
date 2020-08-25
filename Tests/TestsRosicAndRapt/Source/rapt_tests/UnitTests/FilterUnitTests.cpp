@@ -490,21 +490,17 @@ bool testQuantileDelay(double L, double q, int N)
   // tests, if the delay computation is correct by using an rsQuantileFilter instance (the 
   // high-level convenience class) with lowGain = highGain = 1 - this should result in a pure 
   // delay, if everything is right.
-  // ToDo: make an experiment that shows plots for different quantiles and a given length
-
 
   bool r = true;
 
   int maxLength = (int) ceil(L);
-
   rsDelayBuffer<double> dly(maxLength);
   rsQuantileFilter<double> flt;
-  flt.setMaxLength(maxLength);
-  flt.setSampleRate(1.0);
-  flt.setFrequency(1.0/L);  // verify that
+  flt.setSampleRateAndMaxLength(1.0, maxLength);
+  flt.setFrequency(1.0/L);
   flt.setQuantile(q);
   flt.setLowpassGain(1.0);
-  flt.setHighpassGain(0.0);
+  flt.setHighpassGain(1.0);
   flt.updateInternals();
 
   double d = flt.getDelayInSamples();
@@ -513,16 +509,12 @@ bool testQuantileDelay(double L, double q, int N)
   using Vec = std::vector<double>;
   Vec x(N); createWaveform(&x[0], N, 0, 1./100, 1.0);
   Vec yD(N), yF(N);              // delayed and filtered output
-  for(int n = 0; n < N; n++) 
-  {
+  for(int n = 0; n < N; n++) {
     yF[n] = flt.getSample(x[n]);
-    dly.getSample(x[n]); yD[n] = dly[d];
-  }
+    dly.getSample(x[n]); yD[n] = dly[d]; }
 
-  //rsPlotVectors(x, yF);
-  rsPlotVectors(yD, yF);
-  //rsPlotVectors(x, yD, yF);
-
+  //rsPlotVectors(yD, yF);
+  r &= rsIsCloseTo(yD, yF, 1.e-13);
   return r;
 }
 

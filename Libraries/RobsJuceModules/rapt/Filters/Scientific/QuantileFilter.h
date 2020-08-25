@@ -436,7 +436,9 @@ public:
     dirty = true;
   }
 
-  /** Sets sample rate and maximum length at the same time. May re-allocate memory. */
+  /** Sets sample rate and maximum length at the same time. May re-allocate memory. This may avoid
+  some re-allocations compared to using setSampleRate followed by setMaxLength (or vice versa), 
+  depending on the situation - so, if possible, it's recommended to set both at the same time. */
   void setSampleRateAndMaxLength(T newSampleRate, T newMaxLength)
   {
     sampleRate = newSampleRate;
@@ -528,21 +530,11 @@ public:
   virtual void updateInternals()
   {
     // compute internal and set up core parameters:
-
-    /*
-    // old, obsolete:
-    int L, p; T w;
-    convertParameters(length, quantile, sampleRate, &L, &p, &w, &delay);
-    core.setLengthAndReadPosition(L, p);
-    core.setRightWeight(w);
-    */
-
     double L = length*sampleRate;  // length in samples
     core.setLengthAndQuantile(length*sampleRate, quantile);
     delay = T(0.5)*(L-1);
     dirty = false;
   }
-  // (maybe) move to cpp
 
 
 protected:

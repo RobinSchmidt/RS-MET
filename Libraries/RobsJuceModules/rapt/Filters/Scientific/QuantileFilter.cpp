@@ -255,3 +255,11 @@ void rsQuantileFilter<T>::convertParameters(
 // part of the code is now implemented in
 // rsQuantileFilterCore<T>::lengthAndQuantileToPositionAndWeight, so we should try to get rid of 
 // the duplications here
+
+/*
+
+todo: 
+-implement a getShortenedOutput similar to getElongatedOutput - this may simplify the 
+ implementation of non-integer lengths and even allow for lengths < 2 (down to L=1)
+
+*/

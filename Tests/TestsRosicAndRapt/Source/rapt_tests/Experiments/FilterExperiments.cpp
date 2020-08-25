@@ -1461,8 +1461,8 @@ void quantileFilterDelay()
   // settings of the quantile and plots the results together with a suitable delayed version of the
   // input. 
 
-  int    N  = 400;    // number of samples for plot
-  double L  = 120;    // length of filter
+  int    N  = 500;    // number of samples for plot
+  double L  = 251;    // length of filter
   double lo = 1.0;    // lowpass gain
   double hi = 0.0;    // highpass gain
   double P  = 100.0;  // period of input wave
@@ -1477,8 +1477,7 @@ void quantileFilterDelay()
   // Create and set up rsQuantileFilter object:
   rsQuantileFilter<double> flt;
   int maxLength = (int) ceil(L);
-  flt.setMaxLength(maxLength);
-  flt.setSampleRate(1.0);
+  flt.setSampleRateAndMaxLength(1.0, maxLength);
   flt.setFrequency(1.0/L);
   flt.setLowpassGain(lo);
   flt.setHighpassGain(hi);
@@ -1513,8 +1512,10 @@ void quantileFilterDelay()
   // -L=50,lo=1,hi=0: higher and lower quantiles bulge out the top or bottom halfwaves respectively
   //  and narrow the other halfwaves - the corresponding "highpass" waves (lo=0,hi=1) look quite 
   //  interesting
-  // -L=P=100,lo=1,hi=0: the outputs become contants - increasing L to 120, we see weird small-scale 
-  //  wiggles in the output (why? that seems strange! is that a bug?)
+  // -L=P=100,lo=1,hi=0: the outputs become contants - increasing L to 120, we see weird 
+  //  small-scale wiggles in the output (why? that seems strange! is that a bug?)
+  //  -the effect is even more pronounce for odd L, like 121 or 151 - the output stays contant over
+  //   3 samples, leading to stairsteps - with L = 251, the steps are 5 samples wide
 }
 
 void quantileFilterDual()
