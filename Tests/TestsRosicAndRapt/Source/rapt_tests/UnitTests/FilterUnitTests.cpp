@@ -494,19 +494,25 @@ bool testQuantileDelay(double L, double q, int N)
 
   bool r = true;
 
-  int maxLength = ceil(L);
+  int maxLength = (int) ceil(L);
 
   rsDelayBuffer<double> dly(maxLength);
   rsQuantileFilter<double> flt;
   flt.setMaxLength(maxLength);
   flt.setSampleRate(1.0);
   flt.setFrequency(1.0/L);  // verify that
-  flt.setLowpassGain(1.0);
-  flt.setHighpassGain(0.0);
+  flt.setQuantile(q);
+  flt.setLowpassGain(0.0);
+  flt.setHighpassGain(1.0);
   flt.updateInternals();
 
   //double d = q*(L-1)/2;
-  double d = q*(L-1);  // works for q = 0.5
+  //double d = q*(L-1);  // works for q = 0.5
+  double d = 0.5*(L-1);  // this seems to be the best formula -> use it in the filter!
+  //double d = 0.5*(0.5 + q) * (L-1);
+
+
+
   // why is this the right value? ..it's the value that rsQuantileFilter uses, but why should this 
   // value make snese to obtain a highpass signal? ..maybe comprae original input with lowpass 
   // output
@@ -515,7 +521,7 @@ bool testQuantileDelay(double L, double q, int N)
   using Vec = std::vector<double>;
   Vec x = rsRandomVector(N, -1, 1);   // input
   //rsArrayTools::cumulativeSum(&x[0], &x[0], N);
-  rsArrayTools::fillWithImpulse(&x[0], N, 1.0, 2*L);
+  //rsArrayTools::fillWithImpulse(&x[0], N, 1.0, 2*L);
 
   // maybe a triangle wave is most suitable to assess the delay
   createWaveform(&x[0], N, 0, 1./100, 1.0);
@@ -536,7 +542,8 @@ bool testQuantileDelay(double L, double q, int N)
 
 
   //rsPlotVectors(x, yF);
-  rsPlotVectors(x, yD, yF);
+  rsPlotVectors(yD, yF);
+  //rsPlotVectors(x, yD, yF);
 
   return r;
 }
@@ -577,7 +584,18 @@ bool movingQuantileUnitTest()
   r &= testQuantileElongation(7, N);
   r &= testQuantileElongation(8, N);
 
+
+
+  r &= testQuantileDelay(50.0, 0.0, N);
+  r &= testQuantileDelay(50.0, 0.1, N);
+  r &= testQuantileDelay(50.0, 0.2, N);
+  r &= testQuantileDelay(50.0, 0.4, N);
   r &= testQuantileDelay(50.0, 0.5, N);
+  r &= testQuantileDelay(50.0, 0.6, N);
+  r &= testQuantileDelay(50.0, 0.7, N);
+  r &= testQuantileDelay(50.0, 0.8, N);
+  r &= testQuantileDelay(50.0, 0.9, N);
+  r &= testQuantileDelay(50.0, 1.0, N);
 
 
 

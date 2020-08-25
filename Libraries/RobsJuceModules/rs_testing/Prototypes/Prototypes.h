@@ -736,6 +736,9 @@ public:
 
   virtual void updateInternals() override
   {
+    rsError("has to be updated");
+    // 
+    /*
     // compute internal and set up core parameters:
     int L, p; T w;
 
@@ -746,6 +749,8 @@ public:
     this->convertParameters(length2, quantile2, this->sampleRate, &L, &p, &w, &delay2);
     core2.setLengthAndReadPosition(L, p);
     core2.setRightWeight(w);
+    */
+
 
     this->dirty = false;
   }

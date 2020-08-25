@@ -1455,6 +1455,15 @@ void quantileFilterSweep()
   rosic::writeToMonoWaveFile("QuantileFilterSweepSmooth.wav", &y2[0], N, 44100);
 }
 
+/*
+void quantileFilterDelay()
+{
+  int N = 500;
+  double L = 50;
+
+}
+*/
+
 void quantileFilterDual()
 {
   double fs = 44100;  // sample rate

@@ -196,7 +196,7 @@ public:
     if(*p > L-1) {              // quantile q == 1 (maximum) needs special care
       *p = L-1; *w = T(1);  }
   }
-  // same linker error as for readOutputWithOneMoreInput
+  // same linker error as for getElongatedOutput
   // optimize: avoid calling floor twice
 
 protected:
@@ -527,6 +527,7 @@ public:
   convenient to call it from client code too */
   virtual void updateInternals()
   {
+    /*
     // compute internal and set up core parameters:
     int L, p; T w;
     convertParameters(length, quantile, sampleRate, &L, &p, &w, &delay);
@@ -535,9 +536,15 @@ public:
     // old:
     core.setLengthAndReadPosition(L, p);
     core.setRightWeight(w);
+    */
 
     // new:
     //core.setLengthAndQuantile(L+p, quantile);
+
+    double L = length*sampleRate;  // length in samples
+    core.setLengthAndQuantile(length*sampleRate, quantile);
+    delay = T(0.5)*(L-1);
+   
 
 
     dirty = false;
@@ -576,7 +583,8 @@ protected:
   std::atomic<bool> dirty = true;  // flag to indicate that algo params must be recalculated
 
   // embedded objects:
-  rsQuantileFilterCore<T> core;
+  rsQuantileFilterCore2<T> core;
+  //rsQuantileFilterCore<T> core;
   rsDelayBuffer<T> delayLine;
 
 };
