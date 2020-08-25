@@ -527,26 +527,19 @@ public:
   convenient to call it from client code too */
   virtual void updateInternals()
   {
-    /*
     // compute internal and set up core parameters:
+
+    /*
+    // old, obsolete:
     int L, p; T w;
     convertParameters(length, quantile, sampleRate, &L, &p, &w, &delay);
-    // the implementation there is partially obsolete.
-
-    // old:
     core.setLengthAndReadPosition(L, p);
     core.setRightWeight(w);
     */
 
-    // new:
-    //core.setLengthAndQuantile(L+p, quantile);
-
     double L = length*sampleRate;  // length in samples
     core.setLengthAndQuantile(length*sampleRate, quantile);
     delay = T(0.5)*(L-1);
-   
-
-
     dirty = false;
   }
   // (maybe) move to cpp
@@ -557,7 +550,8 @@ protected:
   /** Computes filter algorithm parameters length L, readout point p (both in samples), weight
   w for the linear interpolation and the delay d from user parameters length (in seconds), quantile
   (normalized 0..1) and sampleRate. */
-  static void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w, T* d);
+  //static void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w, T* d);
+  // obsolete - delete soon
 
   /** Allocates the memory used for the delay-buffers, heaps, etc. */
   virtual void allocateResources()

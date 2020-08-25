@@ -225,6 +225,7 @@ bool rsQuantileFilterCore<T>::isBufferSlotConsistent(int i)
 
 //=================================================================================================
 
+/*
 template<class T>
 void rsQuantileFilter<T>::convertParameters(
   T length, T quantile, T sampleRate, int* L, int* p, T* w, T* q)
@@ -247,6 +248,8 @@ void rsQuantileFilter<T>::convertParameters(
   *q *= 0.5;                               // found empirically - todo: verify theoretically!
   //*q *= 0.5 * sampleRate;     // needs test
 }
+// obsolete - can be deleted soon
+*/
 // It's confusing to use q here - the output *q is actually the delay
 //
 // part of the code is now implemented in

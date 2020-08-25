@@ -490,6 +490,7 @@ bool testQuantileDelay(double L, double q, int N)
   // tests, if the delay computation is correct by using an rsQuantileFilter instance (the 
   // high-level convenience class) with lowGain = highGain = 1 - this should result in a pure 
   // delay, if everything is right.
+  // ToDo: make an experiment that shows plots for different quantiles and a given length
 
 
   bool r = true;
@@ -502,44 +503,21 @@ bool testQuantileDelay(double L, double q, int N)
   flt.setSampleRate(1.0);
   flt.setFrequency(1.0/L);  // verify that
   flt.setQuantile(q);
-  flt.setLowpassGain(0.0);
-  flt.setHighpassGain(1.0);
+  flt.setLowpassGain(1.0);
+  flt.setHighpassGain(0.0);
   flt.updateInternals();
 
-  //double d = q*(L-1)/2;
-  //double d = q*(L-1);  // works for q = 0.5
-  double d = 0.5*(L-1);  // this seems to be the best formula -> use it in the filter!
-  //double d = 0.5*(0.5 + q) * (L-1);
-
-
-
-  // why is this the right value? ..it's the value that rsQuantileFilter uses, but why should this 
-  // value make snese to obtain a highpass signal? ..maybe comprae original input with lowpass 
-  // output
-
+  double d = flt.getDelayInSamples();
+  r &= d == 0.5*(L-1);
 
   using Vec = std::vector<double>;
-  Vec x = rsRandomVector(N, -1, 1);   // input
-  //rsArrayTools::cumulativeSum(&x[0], &x[0], N);
-  //rsArrayTools::fillWithImpulse(&x[0], N, 1.0, 2*L);
-
-  // maybe a triangle wave is most suitable to assess the delay
-  createWaveform(&x[0], N, 0, 1./100, 1.0);
-
-
-  Vec yD(N), yF(N);                     // delayed and filtered output
+  Vec x(N); createWaveform(&x[0], N, 0, 1./100, 1.0);
+  Vec yD(N), yF(N);              // delayed and filtered output
   for(int n = 0; n < N; n++) 
   {
     yF[n] = flt.getSample(x[n]);
     dly.getSample(x[n]); yD[n] = dly[d];
-
-    //dly.getSample(x[n]); yD[n] = dly[L/4];
-
-    // why L/4 and not L/2? is it 0.5*q?
-
-    //dly.getSample(x[n]); yD[n] = dly[24.75]; // works with L=100 - is the delay q*(L-1)/2?
   }
-
 
   //rsPlotVectors(x, yF);
   rsPlotVectors(yD, yF);
@@ -585,17 +563,20 @@ bool movingQuantileUnitTest()
   r &= testQuantileElongation(8, N);
 
 
-
-  r &= testQuantileDelay(50.0, 0.0, N);
-  r &= testQuantileDelay(50.0, 0.1, N);
-  r &= testQuantileDelay(50.0, 0.2, N);
-  r &= testQuantileDelay(50.0, 0.4, N);
-  r &= testQuantileDelay(50.0, 0.5, N);
-  r &= testQuantileDelay(50.0, 0.6, N);
-  r &= testQuantileDelay(50.0, 0.7, N);
-  r &= testQuantileDelay(50.0, 0.8, N);
-  r &= testQuantileDelay(50.0, 0.9, N);
-  r &= testQuantileDelay(50.0, 1.0, N);
+  double L = 51.0; // try: 50, 51, 60, 100
+  //L = 50.5;
+  L = 120;  // lowpass part looks strange
+  //L = 20*PI;  // results look very different
+  r &= testQuantileDelay(L, 0.0, N);
+  r &= testQuantileDelay(L, 0.1, N);
+  r &= testQuantileDelay(L, 0.2, N);
+  r &= testQuantileDelay(L, 0.4, N);
+  r &= testQuantileDelay(L, 0.5, N);
+  r &= testQuantileDelay(L, 0.6, N);
+  r &= testQuantileDelay(L, 0.7, N);
+  r &= testQuantileDelay(L, 0.8, N);
+  r &= testQuantileDelay(L, 0.9, N);
+  r &= testQuantileDelay(L, 1.0, N);
 
 
 
