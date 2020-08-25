@@ -176,9 +176,14 @@ public:
     T y = (T(1)-w1)*xS + w1*xL;
     return y;
   }
-  // i get linker errors in visual studio (msc) when trying  to move this into the cpp file 
+  // I get "unresolved external symbol" linker errors in visual studio (msc) when trying to move 
+  // this into the cpp file. I think, it has to do with member functions only being instantiated 
+  // when they are actually called - which this function obviously is (otherwise the linker would 
+  // have nothing to complain about) - but maybe it's called in a compilation unit that is compiled 
+  // too late...or something
   // -> move code to .cpp and fix this - the function is already there but commented out
-  // maybe when we call it in rsQuantileFilter, the problem will disappear - we'll see
+  // maybe when we call it in rsQuantileFilter, the problem will disappear - we'll see.
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */

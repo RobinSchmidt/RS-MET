@@ -315,7 +315,7 @@ https://www.nayuki.io/res/sliding-window-minimum-maximum-algorithm/SlidingWindow
 */
 
 
-bool testMovingQuantileCore(int maxLength, int smallLength, int largeLength, int numSamples,
+bool testQuantileCore(int maxLength, int smallLength, int largeLength, int numSamples,
   int seed = 0)
 {
   rsAssert(maxLength >= smallLength + largeLength);
@@ -346,7 +346,7 @@ bool testMovingQuantileCore(int maxLength, int smallLength, int largeLength, int
   return r;
 }
 
-bool testMovingQuantileModulation()
+bool testQuantileModulation()
 {
   bool r = true;
 
@@ -426,7 +426,7 @@ bool testMovingQuantileModulation()
 // Tests using a length L filter to produce an output that would have been produced by a length
 // L+1 filter (that's a preliminary for supporting non-integer lengths by crossfading between a
 // length L and L+1 filter - we don't want to literally run 2 filters):
-bool oneLongerQuantileUnitTest(int L, int N)
+bool testQuantileElongation(int L, int N)
 {
   bool r = true;
 
@@ -485,6 +485,40 @@ bool oneLongerQuantileUnitTest(int L, int N)
   //  to a filter that literally uses two cores with length L and L+1
 }
 
+bool testQuantileDelay(double L, double q, int N)
+{
+  // tests, if the delay computation is correct by using an rsQuantileFilter instance (the 
+  // high-level convenience class) with lowGain = highGain = 1 - this should result in a pure 
+  // delay, if everything is right.
+
+
+  bool r = true;
+
+  int maxLength = ceil(L);
+
+  rsDelayBuffer<double> dly(maxLength);
+  rsQuantileFilter<double> flt;
+  flt.setMaxLength(maxLength);
+  flt.setSampleRate(1.0);
+  flt.setFrequency(1.0/L);  // verify that
+  flt.setLowpassGain(1.0);
+  flt.setHighpassGain(1.0);
+
+  using Vec = std::vector<double>;
+  Vec x = rsRandomIntVector(N, 0, 99);  // input
+  Vec yD(N), yF(N);                     // delayed and filtered output
+  for(int n = 0; n < N; n++) 
+  {
+    yF[n] = flt.getSample(x[n]);
+    dly.getSample(x[n]); yD[n] = dly[L];
+  }
+
+
+  rsPlotVectors(yD, yF);
+
+  return r;
+}
+
 bool movingQuantileUnitTest()
 {
   bool r = true;
@@ -495,31 +529,34 @@ bool movingQuantileUnitTest()
   int N = 500;  // number of samples for the tests - small value for plots - bump up later
 
 
-  // test the general operation:
-  r &= testMovingQuantileCore(64, 10, 10, N);
-  r &= testMovingQuantileCore(64, 20, 20, N);
-  r &= testMovingQuantileCore(64, 31, 31, N);
-  r &= testMovingQuantileCore(64, 31, 32, N);
-  r &= testMovingQuantileCore(64, 32, 31, N);
-  r &= testMovingQuantileCore(64, 32, 32, N);
-  r &= testMovingQuantileCore(64, 50, 14, N);  // nS + nL = 50 + 14 = 64
-  r &= testMovingQuantileCore(64, 30, 14, N);
-  r &= testMovingQuantileCore(64, 63,  1, N);
-  r &= testMovingQuantileCore(64,  1, 63, N);
-  r &= testMovingQuantileCore(64, 40,  1, N);
-  r &= testMovingQuantileCore(64,  1, 40, N);
+  // test the general operation of the core:
+  r &= testQuantileCore(64, 10, 10, N);
+  r &= testQuantileCore(64, 20, 20, N);
+  r &= testQuantileCore(64, 31, 31, N);
+  r &= testQuantileCore(64, 31, 32, N);
+  r &= testQuantileCore(64, 32, 31, N);
+  r &= testQuantileCore(64, 32, 32, N);
+  r &= testQuantileCore(64, 50, 14, N);  // nS + nL = 50 + 14 = 64
+  r &= testQuantileCore(64, 30, 14, N);
+  r &= testQuantileCore(64, 63,  1, N);
+  r &= testQuantileCore(64,  1, 63, N);
+  r &= testQuantileCore(64, 40,  1, N);
+  r &= testQuantileCore(64,  1, 40, N);
 
   // test modulatability (setting new parameters during operation):
-  r &= testMovingQuantileModulation();
+  r &= testQuantileModulation();
 
   // test the read out of a filter one sample longer than nominal length:
-  r &= oneLongerQuantileUnitTest(2, N);
-  r &= oneLongerQuantileUnitTest(3, N);
-  r &= oneLongerQuantileUnitTest(4, N);  // fails
-  r &= oneLongerQuantileUnitTest(5, N);
-  r &= oneLongerQuantileUnitTest(6, N);
-  r &= oneLongerQuantileUnitTest(7, N);
-  r &= oneLongerQuantileUnitTest(8, N);
+  r &= testQuantileElongation(2, N);
+  r &= testQuantileElongation(3, N);
+  r &= testQuantileElongation(4, N);
+  r &= testQuantileElongation(5, N);
+  r &= testQuantileElongation(6, N);
+  r &= testQuantileElongation(7, N);
+  r &= testQuantileElongation(8, N);
+
+  r &= testQuantileDelay(100.0, 0.5, N);
+
 
 
   // try to extract the maximum over the last 8 samples:
