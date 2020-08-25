@@ -1457,8 +1457,12 @@ void quantileFilterSweep()
 
 void quantileFilterDelay()
 {
-  int    N  = 300;    // number of samples for plot
-  double L  = 50;     // length of filter
+  // Creates a sinewave and applies an rsQuantilefilter to it with a given length and various 
+  // settings of the quantile and plots the results together with a suitable delayed version of the
+  // input. 
+
+  int    N  = 400;    // number of samples for plot
+  double L  = 120;    // length of filter
   double lo = 1.0;    // lowpass gain
   double hi = 0.0;    // highpass gain
   double P  = 100.0;  // period of input wave
@@ -1503,6 +1507,14 @@ void quantileFilterDelay()
     plt.addDataArrays(N, &y[0]);
   }
   plt.plot();
+
+  // Observations:
+  // -when lo = hi = 1, the output matches the delayed input, as it should
+  // -L=50,lo=1,hi=0: higher and lower quantiles bulge out the top or bottom halfwaves respectively
+  //  and narrow the other halfwaves - the corresponding "highpass" waves (lo=0,hi=1) look quite 
+  //  interesting
+  // -L=P=100,lo=1,hi=0: the outputs become contants - increasing L to 120, we see weird small-scale 
+  //  wiggles in the output (why? that seems strange! is that a bug?)
 }
 
 void quantileFilterDual()
