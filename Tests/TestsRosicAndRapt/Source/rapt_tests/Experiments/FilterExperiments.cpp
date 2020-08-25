@@ -1521,90 +1521,64 @@ void quantileFilterDelay()
 void quantileFilterDual()
 {
   double fs = 44100;  // sample rate
-  int    N  = 2000;   // number of samples
+  int    N  = 400000; // number of samples
   int    L  = 100;    // filter length in samples (can we make this a double, too?)
-  double q  = 0.5;    // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
+  double q  = 0.5;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
+  double f1 = fs/2;
+  double f2 = fs/500;  // fs/256 is a nice end value for a sweep
 
 
-  double f1 = fs/100;
-  double f2 = fs/100;  // fs/256 is a nice end value for a sweep
-
+  // Create and set up filter:
+  using QF  = rsDualQuantileFilter<double>;
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
   double maxLength = ceil(rsMax(1/f1, 1/f2)); // required maximum length
-
-
-  using QF = rsDualQuantileFilter<double>;
-  //using QF = rsQuantileFilter<double>;
   QF flt;
-
-  // we should have a combined setMaxLengthAndSampleRate function to avoid re-allocating twice:
   flt.setSampleRateAndMaxLength(fs, maxLength);
-  //flt.setMaxLength(0.1);
-  //flt.setSampleRate(fs);
-  //flt.setLength(L);
-  //flt.setFrequency(1.0/L);
-  //flt.setFrequency(f1);
   flt.setQuantile(q);
-  flt.setLowpassGain(1.0);
-  flt.setHighpassGain(1.0);
-  //flt.setFeedback(0.0);    // later
+  flt.setLowpassGain(0.5);
+  flt.setHighpassGain(0.0);
+  //flt.setFeedback(0.0);    // later - maybe
   flt.setCore2Complementary();
   flt.updateInternals();  // so we have a non-dirty state to look at
 
-
-  using Vec = std::vector<double>;
-  using AT  = rsArrayTools;
-
-
+  // Create input signal:
   //Vec x = rsRandomVector(N, -1.0, +1.0, 0);  // try sinusoids, too
   //Vec x = rsRandomIntVector(N, 1, 9, 0);  // looks not random at all - very periodic!
   //Vec x = rsRandomIntVector(N, 0, 16, 0);   // periodic with period 16
-
   //Vec x = rsRandomIntVector(N, 1, 99, 0);
   // todo: use a irwin-hall generator - we can see it better when the distribution is more skewed
   // toward the middle
-
+  //createWaveform(&x[0], N, 0, 1.0/L, 1.0);  // sine wave
+  //createSineSweep(&x[0], N, 0.0/L, 2.0/L);
+  //AT::fillWithImpulse(&x[0], N, 1.0, 100);  // for testing the delay
   Vec x(N);
-
   rsNoiseGeneratorTriModal<double> ng;
   ng.setOrder(7);
   ng.selectorLowpass.setSampleRate(1.0);
-  //ng.selectorLowpass.setCutoff(0.08);
   ng.selectorLowpass.setCutoff(0.02);
   for(int n = 0; n < N; n++)
     x[n] = 0.5 * ng.getSample();
+  // maybe factor out into a getCrackleNoise(double cutoff = 0.02, int order = 7) function
 
-  //createWaveform(&x[0], N, 0, 1.0/L, 1.0);  // sine wave
-  //createSineSweep(&x[0], N, 0.0/L, 2.0/L);
-
-  Vec f(N);
+  // Create frequency sweep and oupput signal:
+  Vec f(N), y(N);
   AT::fillWithRangeExponential(&f[0], N, f1, f2);
-
-
-  //x = Vec({ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }); N = (int) x.size(); // test
-
-  //AT::fillWithImpulse(&x[0], N, 1.0, 100);  // for testing the delay
-  double delay = flt.getDelayInSamples(); // has not been computed yet
-
-  //AT::cumulativeSum(&x[0], &x[0], N);
-  Vec y(N);
-  for(int n = 0; n < N; n++)
-  {
-    //if(n ==   N/3) flt.setLength(L/2+1);  // switch to shorter length
-    //if(n == 2*N/3) flt.setLength(L);      // switch back to longer length
-
+  //double delay = flt.getDelayInSamples(); // maybe use later to compare output with delayed input
+  for(int n = 0; n < N; n++) {
     flt.setFrequency(f[n]);
     flt.setCore2Complementary();
+    y[n] = flt.getSample(x[n]); }
 
-    y[n] = flt.getSample(x[n]);
-  }
 
-  // create a median-filtered version of x:
+  /*
+  // create a median-filtered version of x (obsolete):
   int nS = L/2;    // floor division
   int nL = L-nS;
   Vec t(N);
   //for(int n = nS; n < N-nL; n++)
   //  t[n+nS] = rsArrayTools::median(&x[n-nS], nS+nL); // why t[n+nS]?
-  
+
   // 7: 36,67,76,41,82,45,74 -> 36,41,45,67,74,76,82 -> 67
   // 6: 36,67,76,41,82,45    -> 36,41,45,67,76,82    -> (45+67)/2 = 56 ..but occurs at sample 101 - why?
   // so, for even lengths, t is lagging one sample
@@ -1614,12 +1588,14 @@ void quantileFilterDual()
   Vec z(N);
   //for(int n = 0; n < N; n++)
   //  z[n] = fltN.getSampleMedian(x[n]);
-
-  //rosic::writeToMonoWaveFile("QuantileFilterInput.wav",  &x[0], N, 44100);
-  //rosic::writeToMonoWaveFile("QuantileFilterOutput.wav", &y[0], N, 44100);
+  */
 
 
-  rsPlotVectors(x, y);
+  rosic::writeToMonoWaveFile("QuantileFilterInput.wav",  &x[0], N, 44100);
+  rosic::writeToMonoWaveFile("QuantileFilterOutput.wav", &y[0], N, 44100);
+  std::cout << "Files written.";
+
+  //rsPlotVectors(x, y);
   //rsPlotVectors(y);
   //rsPlotVectors(x, y, t);
   //rsPlotVectors(y, t);
@@ -1639,11 +1615,6 @@ void quantileFilterDual()
   //int dummy = 0;
 
   // ToDo: 
-  // -replace the old implementation of convertParameters (it seems buggy anyway) - it should make 
-  //  use of core.setLengthAndQuantile or something
-  // -replace the cores by rsQuantileFilter2
-  // -make
-
 
   // maybe try it with a square-wave with period 100, set the length also to 100 - this is an even
   // number, so we should get an interpolation coeff of 0.5 - i think, the output should be a 
@@ -1714,6 +1685,6 @@ void quantileFilter()
 {
   //quantileFilterElongation();  // tests producing the length L+1 output by length L filter
   //quantileFilterSweep();  // tests non-integer length quatile filter
-  quantileFilterDelay();
-  //quantileFilterDual();  // tests the dual-quantile filter (with highpass mode, etc.)
+  //quantileFilterDelay();
+  quantileFilterDual();  // tests the dual-quantile filter (with highpass mode, etc.)
 }

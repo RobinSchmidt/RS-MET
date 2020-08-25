@@ -736,7 +736,7 @@ public:
 
   virtual void updateInternals() override
   {
-    rsError("has to be updated");
+    // rsError("has to be updated");
     // 
     /*
     // compute internal and set up core parameters:
@@ -751,6 +751,17 @@ public:
     core2.setRightWeight(w);
     */
 
+    // update inherited baseclass members:
+    T L = this->length * this->sampleRate;
+    this->core.setLengthAndQuantile(L, this->quantile);
+    this->delay = T(0.5)*(L-1);
+    //this->delay = T(1.0) * (L-1) * this->quantile;  // experimental
+
+    // update new subclass members:
+    L = length2 * this->sampleRate;
+    core2.setLengthAndQuantile(L, quantile2);
+    delay2 = T(0.5)*(L-1);
+    //delay2 = T(1.0) * (L-1) * quantile2;   // experimental
 
     this->dirty = false;
   }
@@ -768,7 +779,7 @@ protected:
 
 
   // the 2nd core and its set of parameters:
-  rsQuantileFilterCore<T> core2;
+  rsQuantileFilterCore2<T> core2;
   T length2   = 0.0;
   T quantile2 = 0.5;
   T loGain2   = 0.0;

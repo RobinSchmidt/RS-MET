@@ -531,7 +531,7 @@ public:
   {
     // compute internal and set up core parameters:
     double L = length*sampleRate;  // length in samples
-    core.setLengthAndQuantile(length*sampleRate, quantile);
+    core.setLengthAndQuantile(L, quantile);
     delay = T(0.5)*(L-1);
     dirty = false;
   }
