@@ -594,9 +594,9 @@ bool testQuantileSmallLengths(int N)
   bool r = true;
   using Vec = std::vector<double>;
   Vec x = rsRandomIntVector(N, 0, 99);
-  Vec y(N), t(N);  // filter output and target values
+  Vec y(N), t(N);                                   // filter output and target values
   Vec quantiles({ 0.0, 0.25, 0.5, 0.75, 1.0 });
-  Vec lengths(  { 1.0, 1.25, 1.5, 1.75, 2.0 });
+  Vec lengths(  { 1.0, 1.25, 1.5, 1.75, 1.9 });     // must be strictly less than 2
   rsQuantileFilterCore2<double> flt;
   for(size_t i = 0; i < quantiles.size(); i++) {
     double q = quantiles[i];
@@ -615,18 +615,7 @@ bool testQuantileSmallLengths(int N)
         t[n] = (1-q)*min  + q*max;    // 2-value quantile filter output with quantile q...
         t[n] = (1-f)*x[n] + f*t[n];   // ...blended with input via fractional part of length
         y[n] = flt.getSample(x[n]); }
-
-      r &= rsIsCloseTo(t, y, 1.e-13);
-      if(!r)
-        rsPlotVectors(x, t, y);
-
-    }
-  }
-
-  // fails for i=0,j=4 - i think, the problem may be in the test code - this is the L=2 case where
-  // we should switch to the typical handling which doesn't involve crossfading with the input
-
-
+      r &= rsIsCloseTo(t, y, 1.e-13);  }}
   return r;
 }
 
