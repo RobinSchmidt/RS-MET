@@ -513,8 +513,8 @@ public:
         if(k == 0)   { xS = S0; xL = L1; }      // xOld == L0
         else         { xS = S0; xL = L0; } }    // xOld above L0
       else {
-        if(k == 0)   { xS = S1; xL = L0; }      // xOld == S0
-        else         { xS = L0; xL = L1; } }    // xOld below So
+        if(k == 0)   { xS = L0; xL = L1; }      // xOld == S0
+        else         { xS = L0; xL = L1; } }    // xOld below S0
     }
     else 
     {
