@@ -438,28 +438,24 @@ public:
     T q = getQuantile();
     lengthAndQuantileToPositionAndWeight(L-1, q, &p1, &w1);
 
-    T S0 = dblHp.getLargestSmallValue().value; 
-    T L0 = dblHp.getSmallestLargeValue().value;
     int k = keyBuf[bufIdx];                     // heap-key of oldest sample xOld
     bool kInUpper = dblHp.isKeyInLargeHeap(k);  // indicates, if oldest sample is in upper heap
     if(kInUpper)
       k = dblHp.toLargeHeapIndex(k);
 
     if(p1 == p) {
-      T L1 = get2ndSmallestLargeOrX(0);         // 0 is preliminary - maybe use most recent input
       if(kInUpper) {
-        if(k == 0) { xS = S0; xL = L1; }        // xOld == L0
-        else       { xS = S0; xL = L0; }}       // xOld >  L0
+        if(k == 0) { xS = getS0(); xL = getL1(0); }        // xOld == L0
+        else       { xS = getS0(); xL = getL0();  }}       // xOld >  L0
       else {
-        if(k == 0) { xS = L0; xL = L1; }        // xOld == S0
-        else       { xS = L0; xL = L1; }}}      // xOld <  S0
+        if(k == 0) { xS = getL0(); xL = getL1(0); }        // xOld == S0
+        else       { xS = getL0(); xL = getL1(0); }}}      // xOld <  S0
     else {
       rsAssert(p1 == p-1);
-      T S1 = get2ndLargestSmallOrX(0);          // 0 is preliminary
-      if(kInUpper) { xS = S1; xL = S0; }        // xOld >= L0
+      if(kInUpper) { xS = getS1(0); xL = getS0(); }        // xOld >= L0
       else {
-        if(k == 0) { xS = S1; xL = L0; }        // xOld == S0
-        else       { xS = S0; xL = L0; }}}      // xOld <  S0
+        if(k == 0) { xS = getS1(0); xL = getL0(); }        // xOld == S0
+        else       { xS = getS0();  xL = getL0(); }}}      // xOld <  S0
 
     return (T(1)-w1)*xS + w1*xL;
   }

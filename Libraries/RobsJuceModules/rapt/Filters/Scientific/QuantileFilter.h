@@ -158,23 +158,21 @@ public:
     T w1, xS, xL;                                           // weight, xLarge, xSmall
     T q = getQuantile();
     lengthAndQuantileToPositionAndWeight(L+1, q, &p1, &w1);
-    T S0 = this->dblHp.getLargestSmallValue().value;        // do we need the "this->"?
-    T L0 = this->dblHp.getSmallestLargeValue().value;
+    T S0 = getS0(), L0 = getL0();
     if(p1 == p) {                                           // additional slot is in the large heap
-      T S1 = get2ndLargestSmallOrX(x);
+      T S1 = getS1(x);
       if(     x > L0) { xS = S0; xL = L0; }
       else if(x > S0) { xS = S0; xL = x;  }
       else if(x > S1) { xS = x;  xL = S0; }
       else            { xS = S1; xL = S0; } }
     else {                                                  // additional slot is in the small heap
       rsAssert(p1 == p+1);                                  // sanity check
-      T L1 = get2ndSmallestLargeOrX(x);
+      T L1 = getL1(x);
       if(     x < S0) { xS = S0; xL = L0; }
       else if(x < L0) { xS = x;  xL = L0; }
       else if(x < L1) { xS = L0; xL = x;  }
       else            { xS = L0; xL = L1; } }
-    T y = (T(1)-w1)*xS + w1*xL;
-    return y;
+    return (T(1)-w1)*xS + w1*xL;
   }
   // I get "unresolved external symbol" linker errors in visual studio (msc) when trying to move 
   // this into the cpp file. I think, it has to do with member functions only being instantiated 
@@ -295,19 +293,23 @@ protected:
   passed input value x. It's used in getElongatedOutput to handle these edge cases. I'm 
   not totally sure, why it works to return x in these cases, but i think, it's because of the 
   conditionals that are done in this function. (ToDo: figure out and explain) */
-  T get2ndLargestSmallOrX(T x)
+  T getS1(T x) const
   {
     if(this->dblHp.isSmallSizeOne()) return x;
     return this->dblHp.get2ndLargestSmallValue().value;
   }
 
   /** Analogous to get2ndLargestSmallOrX */
-  T get2ndSmallestLargeOrX(T x)
+  T getL1(T x) const
   {
     if(this->dblHp.isLargeSizeOne()) return x;
     return this->dblHp.get2ndSmallestLargeValue().value;
   }
 
+  T getS0() const { return dblHp.getLargestSmallValue().value;  }
+  T getL0() const { return dblHp.getSmallestLargeValue().value; }
+
+  
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
