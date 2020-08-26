@@ -592,51 +592,39 @@ bool testQuantileSmallLengths(int N)
   // becomes a 2-point moving average.
 
   bool r = true;
-
-
-
   using Vec = std::vector<double>;
   Vec x = rsRandomIntVector(N, 0, 99);
   Vec y(N), t(N);  // filter output and target values
-
-
-  Vec lengths({ 1.5 });
-  Vec quantiles({ 0.5 });
-
+  Vec quantiles({ 0.0, 0.25, 0.5, 0.75, 1.0 });
+  Vec lengths(  { 1.0, 1.25, 1.5, 1.75, 2.0 });
   rsQuantileFilterCore2<double> flt;
-
-
-
-  for(size_t i = 0; i < quantiles.size(); i++)
-  {
+  for(size_t i = 0; i < quantiles.size(); i++) {
     double q = quantiles[i];
-
-    for(size_t j = 0; j < lengths.size(); j++)
-    {
+    for(size_t j = 0; j < lengths.size(); j++) {
       flt.setLengthAndQuantile(lengths[j], q);
+      flt.reset();
       double f   = lengths[j] - floor(lengths[j]);  // fractional part of length
       double min = rsMin(0.0, x[0]); 
       double max = rsMax(0.0, x[0]);
       t[0] = (1-q)*min  + q*max;
       t[0] = (1-f)*x[0] + f*t[0];
       y[0] = flt.getSample(x[0]);
-      for(int n = 1; n < N; n++)
-      {
+      for(int n = 1; n < N; n++)  {
         min  = rsMin(x[n-1], x[n]); 
         max  = rsMax(x[n-1], x[n]);
-        t[n] = (1-q)*min  + q*max;   // 2-value quantile filter output with quantile q...
-        t[n] = (1-f)*x[n] + f*t[n];  // ...blended with input via fractional part of length
-        y[n] = flt.getSample(x[n]);
-      }
+        t[n] = (1-q)*min  + q*max;    // 2-value quantile filter output with quantile q...
+        t[n] = (1-f)*x[n] + f*t[n];   // ...blended with input via fractional part of length
+        y[n] = flt.getSample(x[n]); }
 
-      rsPlotVectors(x, t, y);
+      r &= rsIsCloseTo(t, y, 1.e-13);
+      if(!r)
+        rsPlotVectors(x, t, y);
 
     }
   }
 
-
-
-
+  // fails for i=0,j=4 - i think, the problem may be in the test code - this is the L=2 case where
+  // we should switch to the typical handling which doesn't involve crossfading with the input
 
 
   return r;
