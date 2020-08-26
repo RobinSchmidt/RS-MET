@@ -433,45 +433,44 @@ public:
   // under construction:
   T getShortenedOutput()
   {
-    int p1;                                                 // read position
-    int k = keyBuf[bufIdx];                                 // heap-key of oldest sample
-    T w1, xS = 0, xL = 0;                                   // weight, xLarge, xSmall
+    int p1;                                     // read position
+    T w1, xS = 0, xL = 0;                       // weight, xLarge, xSmall
     T q = getQuantile();
     lengthAndQuantileToPositionAndWeight(L-1, q, &p1, &w1);
 
     T S0 = dblHp.getLargestSmallValue().value; 
     T L0 = dblHp.getSmallestLargeValue().value;
-
+    int k = keyBuf[bufIdx];                     // heap-key of oldest sample xOld
     bool kInUpper = dblHp.isKeyInLargeHeap(k);  // indicates, if oldest sample is in upper heap
     if(kInUpper)
       k = dblHp.toLargeHeapIndex(k);
 
-    if(p1 == p) 
-    {
-      T L1 = get2ndSmallestLargeOrX(0);  // 0 is preliminary
+    if(p1 == p) {
+      T L1 = get2ndSmallestLargeOrX(0);         // 0 is preliminary - maybe use most recent input
       if(kInUpper) {
-        if(k == 0)   { xS = S0; xL = L1; }      // xOld == L0
-        else         { xS = S0; xL = L0; } }    // xOld above L0
+        if(k == 0) { xS = S0; xL = L1; }        // xOld == L0
+        else       { xS = S0; xL = L0; }}       // xOld >  L0
       else {
-        if(k == 0)   { xS = L0; xL = L1; }      // xOld == S0
-        else         { xS = L0; xL = L1; } }    // xOld below S0
-    }
-    else 
-    {
-      T S1 = get2ndLargestSmallOrX(0);   // 0 is preliminary
+        if(k == 0) { xS = L0; xL = L1; }        // xOld == S0
+        else       { xS = L0; xL = L1; }}}      // xOld <  S0
+    else {
       rsAssert(p1 == p-1);
-      if(kInUpper) {
-        if(k == 0)   { xS = S1; xL = S0;   }      // xOld == L0
-        else         { xS = S1; xL = S0;   } }    // xOld above L0
+      T S1 = get2ndLargestSmallOrX(0);          // 0 is preliminary
+      if(kInUpper) { xS = S1; xL = S0; }        // xOld >= L0
       else {
-        if(k == 0)   { xS = S1; xL = L0;   }      // xOld == S0
-        else         { xS = S0; xL = L0;   } }    // xOld below S0
-    }
+        if(k == 0) { xS = S1; xL = L0; }        // xOld == S0
+        else       { xS = S0; xL = L0; }}}      // xOld <  S0
 
-
-    T y = (T(1)-w1)*xS + w1*xL;
-    return y;
+    return (T(1)-w1)*xS + w1*xL;
   }
+  // it works in the typical cases but maybe not in edge cases - todo: figure out, what is the 
+  // right value to pass to get2ndSmallestLargeOrX, get2ndLargestSmallOrX as return value in cases
+  // when the large ot small heap do not have a 2nd largest element, i.e. when their size is 1.
+  // we can test this with quantiles 0 and 1
+  // It's actually *not* simpler than getElongatedOutput() but rather slightly more complex
+  // Maybe this can be optimized by retrieving the values S0,L0,S1,L1 really only when they are 
+  // needed - we may introduce member functions getS1(T x), getS0(), getL0(), getL1(T x) for this. 
+  // this will also make the code shorter by 4 lines
 
 
 };
@@ -489,8 +488,8 @@ bool testQuantileElongation(int L, int N)
   using QF  = rsQuantileFilterCoreTest<double>;
   double eps = RS_EPS(double);
   double tol = 1000*eps;
-  //Vec quantiles({0.0, eps, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0-eps, 1.0});
-  Vec quantiles({0.5}); // for debug - 0.5 goes int p1==p-1 branch, 0.6 into p1==p branch
+  Vec quantiles({0.0, eps, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0-eps, 1.0});
+  //Vec quantiles({0.0}); // for debug - 0.5 goes int p1==p-1 branch, 0.6 into p1==p branch
 
 
   QF fltR; // reference filter
@@ -539,9 +538,9 @@ bool testQuantileElongation(int L, int N)
     }
 
     r &= rsAreVectorsEqual(yE, yR, tol);
-    //r &= rsAreVectorsEqual(yS, yR, tol);
+    r &= rsAreVectorsEqual(yS, yR, tol);
 
-    rsPlotVectors(yR, yS);
+    //rsPlotVectors(yR, yS);
     //rsPlotVectors(yR, yE, yS);
     //rsPlotVectors(x, yR, yE, yS);
   }
@@ -620,8 +619,7 @@ bool movingQuantileUnitTest()
   r &= testQuantileModulation();
 
   // test the read out of a filter one sample longer than nominal length:
-  r &= testQuantileElongation(7, N);
-
+  //r &= testQuantileElongation(7, N);
   r &= testQuantileElongation(2, N);
   r &= testQuantileElongation(3, N);
   r &= testQuantileElongation(4, N);
