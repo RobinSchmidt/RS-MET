@@ -389,18 +389,25 @@ public:
     lengthFrac = length - L;
     Base::setLengthAndQuantile(L, quantile);
   }
+  // ToDo: catch case where L < 2 - need to crossfade between input and the 2-point moving average 
+  // output of the length 2 median filter (a length 2 median becomes a 2-point mean). support of 
+  // L < 2 would be another additional feature of the subclass - in this case, we need to 
+  // configure the baseclass object with a length of 2 and set up our blend parameter 
+  // blend = frac where frac is the fractional part of length = 1.frac (otherwise: blend = 1)
+
 
   T getSample(T x)
   {
-    if(this->sigBuf)
-    {
-      T x0 = Base::getSample(x);
-      T x1 = Base::getElongatedOutput();
+    T y;
+    if(this->sigBuf) {
+      T y0 = Base::getSample(x);
+      T y1 = Base::getElongatedOutput();
       T f  = lengthFrac;
-      return (T(1)-f)*x0 + f*x1;           // crossfade between length L and L+1
-    }
+      y    = (T(1)-f)*y0 + f*y1; }         // crossfade between length L and L+1
     else
-      return Base::getSample(x);
+      y = Base::getSample(x);
+
+    return (T(1)-blend)*x + blend*y;
   }
 
   // some delegations to the basclass:
@@ -416,11 +423,14 @@ protected:
   // algo parameters - use later for optimization:
   //int p1;      // readout position used in readOutputWithOneMoreInput
   //T w1;        // weight used in readOutputWithOneMoreInput
+  T blend      = 1.0;  // blend between filter output and input (1.0: only output)
+                       // used to implement lengths L less than 2
 
   // user parameters:
   T length     = 2.0;  // non-integer length, at least 2.0
   T lengthFrac = 0.0;  // fractional part of length
   T quantile   = 0.5;  // quantile (median by default)
+  // maybe we only need to keep lengthFrac as member
 
 };
 
