@@ -429,65 +429,6 @@ class rsQuantileFilterCoreTest : public RAPT::rsQuantileFilterCore<T>
 
 public:
 
-  /*
-  T getShortenedOutput()
-  {
-    int p1;                                                 // read position
-    T w1, xS, xL;                                           // weight, xLarge, xSmall
-    T q = getQuantile();
-    lengthAndQuantileToPositionAndWeight(L-1, q, &p1, &w1);
-    if(p1 == p) {
-      xS = dblHp.getLargestSmallValue().value; 
-      xL = dblHp.getSmallestLargeValue().value; }
-    else {
-      rsAssert(p1 == p-1);                                  // sanity check
-      xS = get2ndLargestSmallOrX(readOutput());             // is that correct?
-      xL = dblHp.getLargestSmallValue().value;  }
-    T y = (T(1)-w1)*xS + w1*xL;
-    return y;
-  }// wrong!
-  */
-
-  /*
-  T getShortenedOutput()
-  {
-    int p1;                                                 // read position
-    T w1, xS, xL;                                           // weight, xLarge, xSmall
-    int k = keyBuf[bufIdx];                                 // heap-key of oldest sample
-    T q = getQuantile();
-    lengthAndQuantileToPositionAndWeight(L-1, q, &p1, &w1);
-
-    // under construction:
-    if(dblHp->isKeyInLargeHeap(k))
-    {
-      k  = dblHp->toLargeHeapIndex(k);
-      xS = dblHp.getLargestSmallValue().value;
-      if(k == 0) xL = get2ndSmallestLargeOrX(0);             // 0 is preliminary
-      else       xL = dblHp.getSmallestLargeValue().value;
-    }
-    else
-    {
-      xL = dblHp.getLargestSmallValue().value;
-
-      //p1 += 1;
-      if(k == 0)
-      {
-        xS = get2ndLargestSmallOrX(0)      // 0 is preliminary
-      }
-      else if(k == 1)
-      {
-
-      }
-      else
-      {
-
-      }
-    }
-
-    T y = (T(1)-w1)*xS + w1*xL;
-    return y;
-  }
-  */
 
   // under construction:
   T getShortenedOutput()
@@ -497,11 +438,9 @@ public:
     T w1, xS = 0, xL = 0;                                   // weight, xLarge, xSmall
     T q = getQuantile();
     lengthAndQuantileToPositionAndWeight(L-1, q, &p1, &w1);
-    T S1 = get2ndLargestSmallOrX(0);   // 0 is preliminary
+
     T S0 = dblHp.getLargestSmallValue().value; 
     T L0 = dblHp.getSmallestLargeValue().value;
-    T L1 = get2ndSmallestLargeOrX(0);  // 0 is preliminary
-
 
     bool kInUpper = dblHp.isKeyInLargeHeap(k);  // indicates, if oldest sample is in upper heap
     if(kInUpper)
@@ -509,6 +448,7 @@ public:
 
     if(p1 == p) 
     {
+      T L1 = get2ndSmallestLargeOrX(0);  // 0 is preliminary
       if(kInUpper) {
         if(k == 0)   { xS = S0; xL = L1; }      // xOld == L0
         else         { xS = S0; xL = L0; } }    // xOld above L0
@@ -518,13 +458,14 @@ public:
     }
     else 
     {
+      T S1 = get2ndLargestSmallOrX(0);   // 0 is preliminary
       rsAssert(p1 == p-1);
       if(kInUpper) {
-        if(k == 0)   {      }
-        else         {      } }
+        if(k == 0)   { xS = S1; xL = S0;   }      // xOld == L0
+        else         { xS = S1; xL = S0;   } }    // xOld above L0
       else {
-        if(k == 0)   {      }
-        else         {      } }
+        if(k == 0)   { xS = S1; xL = L0;   }      // xOld == S0
+        else         { xS = S0; xL = L0;   } }    // xOld below S0
     }
 
 
@@ -549,7 +490,7 @@ bool testQuantileElongation(int L, int N)
   double eps = RS_EPS(double);
   double tol = 1000*eps;
   //Vec quantiles({0.0, eps, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0-eps, 1.0});
-  Vec quantiles({0.6}); // for debug
+  Vec quantiles({0.5}); // for debug - 0.5 goes int p1==p-1 branch, 0.6 into p1==p branch
 
 
   QF fltR; // reference filter
