@@ -371,7 +371,9 @@ protected:
 supporting non-integer filter lengths. These are implemented by means of crossfading between a 
 filter of length L and L+1, where L is the floor of the desired length and the crossfade is done
 via its fractional part. The filter of length L+1 is not actually a second filter - instead we 
-simulate such a second filter with the heaps we already have and some additional trickery. */
+simulate such a second filter with the heaps we already have and some additional trickery. It 
+supports also filter lengths less than 2. This is implemented by crossfading between a length 2
+quantile filter and the input. */
 
 template<class T>
 class rsQuantileFilterCore2 : protected rsQuantileFilterCore<T>
@@ -381,57 +383,34 @@ public:
 
   using Base = rsQuantileFilterCore<T>;
 
-  void setLengthAndQuantile(T newLength, T newQuantile)
+  /** Sets the new length and quantile. The length can be a non-integer number >= 1 (smaller 
+  values are clipped from below at 1). The quantile should be a number between 0 and 1 (both 
+  ends inclusive). */
+  void setLengthAndQuantile(T L, T q)
   {
-    // maybe get rid of these members:
-    length   = newLength;
-    quantile = newQuantile;
-
-    // old:
-    /*
-    L = (int) floor(newLength);
-    lengthFrac = length - L;
-    Base::setLengthAndQuantile(L, quantile);
-    */
-
-
-    // new - supports length less than 2 - needs test:
-    if(newLength < T(2))
-    {
-      newLength = rsMax(newLength, T(1));  // 1 is really the lower limit for the length
-      T fL = floor(newLength);
-      blend = newLength - fL;
-      lengthFrac = newQuantile;  // wait - no - that seems wrong
-      Base::setLengthAndQuantile(2, newQuantile);
-    }
-    else
-    {
-      T fL = floor(newLength);
-      lengthFrac = length - fL;
+    rsAssert(q >= T(0) && q <= T(1), "Quantiles must be values between 0 and 1.");
+    if(L < T(2)) {
+      L = rsMax(L, T(1));     // 1 is really the lower limit for the length
+      blend = L - floor(L);
+      frac  = q;
+      Base::setLengthAndQuantile(2, q); }
+    else {
       blend = T(1);
-      Base::setLengthAndQuantile((int)fL, newQuantile);
-    }
-
+      frac  = L - floor(L);
+      Base::setLengthAndQuantile((int)L, q); }
   }
-  // ToDo: catch case where L < 2 - need to crossfade between input and the 2-point moving average 
-  // output of the length 2 median filter (a length 2 median becomes a 2-point mean). support of 
-  // L < 2 would be another additional feature of the subclass - in this case, we need to 
-  // configure the baseclass object with a length of 2 and set up our blend parameter 
-  // blend = frac where frac is the fractional part of length = 1.frac (otherwise: blend = 1)
 
-
+  /** Prodcues one sample at a time. */
   T getSample(T x)
   {
     T y;
     if(this->sigBuf) {
-      T y0 = Base::getSample(x);
-      T y1 = Base::getElongatedOutput();
-      T f  = lengthFrac;
-      y    = (T(1)-f)*y0 + f*y1; }         // crossfade between length L and L+1
+      T y0 = Base::getSample(x);          // output of filter of length L
+      T y1 = Base::getElongatedOutput();  // output of filter of length L+1
+      y = (T(1)-frac)*y0 + frac*y1; }     // crossfade between length L and L+1
     else
       y = Base::getSample(x);
-
-    return (T(1)-blend)*x + blend*y;
+    return (T(1)-blend)*x + blend*y;      // crossfade betwenn input and output for L < 2 case
   }
 
   // some delegations to the basclass:
@@ -444,17 +423,13 @@ protected:
 
   // additional member variables to avoid recomputation of them in readOutputWithOneMoreInput
 
-  // algo parameters - use later for optimization:
-  //int p1;      // readout position used in readOutputWithOneMoreInput
-  //T w1;        // weight used in readOutputWithOneMoreInput
-  T blend      = 1.0;  // blend between filter output and input (1.0: only output)
-                       // used to implement lengths L less than 2
-
-  // user parameters:
-  T length     = 2.0;  // non-integer length, at least 2.0
-  T lengthFrac = 0.0;  // fractional part of length
-  T quantile   = 0.5;  // quantile (median by default)
-  // maybe we only need to keep lengthFrac as member - we don't need to cache length and quantile
+  // algo parameters:
+  T frac  = T(0);  // fractional part of length
+  T blend = T(1);  // blend between filter output and input (1.0: only output)
+  //int p1;      // readout position used in getElongatedOutput
+  //T w1;        // weight used in getElongatedOutput
+  // cached w1, p1 values can later be used for optimization purposes (they need to be recomputed
+  // only when the settings change, not necessarily per sample as is currently done)
 
 };
 
