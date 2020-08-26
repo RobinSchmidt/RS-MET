@@ -429,12 +429,11 @@ class rsQuantileFilterCoreTest : public RAPT::rsQuantileFilterCore<T>
 
 public:
 
-
   // under construction:
   T getShortenedOutput()
   {
     int p1;                                     // read position
-    T w1, xS = 0, xL = 0;                       // weight, xLarge, xSmall
+    T w1, xS, xL;                               // weight, xLarge, xSmall
     T q = getQuantile();
     lengthAndQuantileToPositionAndWeight(L-1, q, &p1, &w1);
 
@@ -461,11 +460,9 @@ public:
   // right value to pass to getS1, getL1 as return value in cases when the large ot small heap do 
   // not have a 2nd largest element, i.e. when their size is 1. we can test this with quantiles 0 
   // and 1 ...done - hmm - it actually seems to work! :-)
+  // ok - seems like it's done and can be moved into the baseclass in the libray - but maybe first
+  // figure out, how to put the getElongatedOutput function into the cpp file
   // It's actually *not* simpler than getElongatedOutput() but rather slightly more complex
-  // Maybe this can be optimized by retrieving the values S0,L0,S1,L1 really only when they are 
-  // needed - we may introduce member functions getS1(T x), getS0(), getL0(), getL1(T x) for this. 
-  // this will also make the code shorter by 4 lines
-
 
 };
 
@@ -585,6 +582,66 @@ bool testQuantileDelay(double L, double q, int N)
   return r;
 }
 
+bool testQuantileSmallLengths(int N)
+{
+  // Tests, if rsQuantileFilterCore2 does the right thing for very small filter lengths, i.e. 
+  // lengths < 2. This is an atypical case that we treat specially by crossfading between a 
+  // length 2 quantile filter and the input. The length 2 quantile filter itself outputs a 
+  // weighted sum between the minimum and maximum of the current and previous sample with weights
+  // given by 1-q and q, where q is the quantile. So, in the case of the median (q=0.5), it 
+  // becomes a 2-point moving average.
+
+  bool r = true;
+
+
+
+  using Vec = std::vector<double>;
+  Vec x = rsRandomIntVector(N, 0, 99);
+  Vec y(N), t(N);  // filter output and target values
+
+
+  Vec lengths({ 1.5 });
+  Vec quantiles({ 0.5 });
+
+  rsQuantileFilterCore2<double> flt;
+
+
+
+  for(size_t i = 0; i < quantiles.size(); i++)
+  {
+    double q = quantiles[i];
+
+    for(size_t j = 0; j < lengths.size(); j++)
+    {
+      flt.setLengthAndQuantile(lengths[j], q);
+      double f   = lengths[j] - floor(lengths[j]);  // fractional part of length
+      double min = rsMin(0.0, x[0]); 
+      double max = rsMax(0.0, x[0]);
+      t[0] = (1-q)*min  + q*max;
+      t[0] = (1-f)*x[0] + f*t[0];
+      y[0] = flt.getSample(x[0]);
+      for(int n = 1; n < N; n++)
+      {
+        min  = rsMin(x[n-1], x[n]); 
+        max  = rsMax(x[n-1], x[n]);
+        t[n] = (1-q)*min  + q*max;   // 2-value quantile filter output with quantile q...
+        t[n] = (1-f)*x[n] + f*t[n];  // ...blended with input via fractional part of length
+        y[n] = flt.getSample(x[n]);
+      }
+
+      rsPlotVectors(x, t, y);
+
+    }
+  }
+
+
+
+
+
+
+  return r;
+}
+
 bool movingQuantileUnitTest()
 {
   bool r = true;
@@ -638,6 +695,9 @@ bool movingQuantileUnitTest()
   r &= testQuantileDelay(L, 0.9, N);
   r &= testQuantileDelay(L, 1.0, N);
 
+
+
+  r &= testQuantileSmallLengths(N);
 
 
   // try to extract the maximum over the last 8 samples:

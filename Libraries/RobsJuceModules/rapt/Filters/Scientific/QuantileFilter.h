@@ -383,11 +383,35 @@ public:
 
   void setLengthAndQuantile(T newLength, T newQuantile)
   {
-    length     = newLength;
-    quantile   = newQuantile;
-    int L      = (int) floor(newLength);
+    // maybe get rid of these members:
+    length   = newLength;
+    quantile = newQuantile;
+
+    // old:
+    /*
+    L = (int) floor(newLength);
     lengthFrac = length - L;
     Base::setLengthAndQuantile(L, quantile);
+    */
+
+
+    // new - supports length less than 2 - needs test:
+    if(newLength < T(2))
+    {
+      newLength = rsMax(newLength, T(1));  // 1 is really the lower limit for the length
+      T fL = floor(newLength);
+      blend = newLength - fL;
+      lengthFrac = newQuantile;  // wait - no - that seems wrong
+      Base::setLengthAndQuantile(2, newQuantile);
+    }
+    else
+    {
+      T fL = floor(newLength);
+      lengthFrac = length - fL;
+      blend = T(1);
+      Base::setLengthAndQuantile((int)fL, newQuantile);
+    }
+
   }
   // ToDo: catch case where L < 2 - need to crossfade between input and the 2-point moving average 
   // output of the length 2 median filter (a length 2 median becomes a 2-point mean). support of 
@@ -430,7 +454,7 @@ protected:
   T length     = 2.0;  // non-integer length, at least 2.0
   T lengthFrac = 0.0;  // fractional part of length
   T quantile   = 0.5;  // quantile (median by default)
-  // maybe we only need to keep lengthFrac as member
+  // maybe we only need to keep lengthFrac as member - we don't need to cache length and quantile
 
 };
 
