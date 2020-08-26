@@ -385,6 +385,15 @@ public:
   }
 
 
+  static bool isKeyInLargeHeap(int k) { return k & firstBitOnly;  }
+
+  /** Returns the raw large-heap index, which is the key k with the first bit shaved off. */
+  static inline int rawLargeHeapIndex(int k) // rename to largeHeapKeyToIndex
+  { return k & allBitsButFirst; }
+
+  int toLargeHeapIndex(int k)  const { return rawLargeHeapIndex(k); }
+  // get rid
+
   //-----------------------------------------------------------------------------------------------
   /** \name Data access */
 
@@ -478,13 +487,9 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Internal */
 
-  /** Returns the raw large-heap index, which is the key k with the first bit shaved off. */
-  static inline int rawLargeHeapIndex(int k) // rename to largeHeapKeyToIndex
-  { return k & allBitsButFirst; }
 
-  int toLargeHeapIndex(int k)  const { return rawLargeHeapIndex(k); }
 
-  static bool isKeyInLargeHeap(int k) { return k & firstBitOnly;  }
+
 
 
   //template<class U> friend class rsQuantileFilterCore2; // preliminary - try to get rid
