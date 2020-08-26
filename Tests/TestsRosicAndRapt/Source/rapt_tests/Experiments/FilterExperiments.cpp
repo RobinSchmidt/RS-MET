@@ -1572,7 +1572,7 @@ void quantileFilterDual()
   Vec f(N), y(N), xd(N);
   AT::fillWithRangeExponential(&f[0], N, f1, f2);
   double delay;   // maybe use later to compare output with delayed input
-  rsDelayBuffer<double> dly(ceil(maxLength*fs));
+  rsDelayBuffer<double> dly((size_t)ceil(maxLength*fs));
   for(int n = 0; n < N; n++) {
     flt.setFrequency(f[n]);
     flt.setCore2Complementary();

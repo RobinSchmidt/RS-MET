@@ -423,6 +423,31 @@ bool testQuantileModulation()
   return r;
 }
 
+template<class T>
+class rsQuantileFilterCoreTest : public RAPT::rsQuantileFilterCore<T>
+{
+
+public:
+
+  T getShortenedOutput()
+  {
+    int p1;                                                 // read position
+    T w1, xS, xL;                                           // weight, xLarge, xSmall
+    T q = getQuantile();
+    lengthAndQuantileToPositionAndWeight(L-1, q, &p1, &w1);
+    if(p1 == p) {
+      xS = dblHp.getLargestSmallValue().value; 
+      xL = dblHp.getSmallestLargeValue().value; }
+    else {
+      rsAssert(p1 == p-1);                                  // sanity check
+      xS = get2ndLargestSmallOrX(readOutput());             // is that correct?
+      xL = dblHp.getLargestSmallValue().value;  }
+    T y = (T(1)-w1)*xS + w1*xL;
+    return y;
+  }
+
+};
+
 // Tests using a length L filter to produce an output that would have been produced by a length
 // L+1 filter (that's a preliminary for supporting non-integer lengths by crossfading between a
 // length L and L+1 filter - we don't want to literally run 2 filters):
@@ -432,32 +457,32 @@ bool testQuantileElongation(int L, int N)
 
   // we test the filter with these quantiles:
   using Vec = std::vector<double>;
+  //using QF  = RAPT::rsQuantileFilterCore<double>;
+  using QF  = rsQuantileFilterCoreTest<double>;
   double eps = RS_EPS(double);
   double tol = 1000*eps;
   Vec quantiles({0.0, eps, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0-eps, 1.0});
 
-  rsQuantileFilterCore<double> fltR;   // reference filter
+  QF fltR; // reference filter
   fltR.setMaxLength(L+1);
   fltR.setLength(L+1, true);
 
+  QF fltE; // elongated filter
   rsDelayBuffer<double> delayLine;
   delayLine.setCapacity(L+1);
-
-  rsQuantileFilterCore<double> fltE;  // elongated filter
   fltE.setMaxLength(L);
   fltE.setLength(L, true);
   fltE.setDelayBuffer(&delayLine);
 
-  rsQuantileFilterCore<double> fltS;  // shortened filter
+  QF fltS; // shortened filter
   fltS.setMaxLength(L+2);
   fltS.setLength(L+2, true);
   fltS.setDelayBuffer(&delayLine);
 
 
-
-  // compute test and reference output and compare them:
+  // compute outputs and compare them:
   Vec x = rsRandomIntVector(N, 0, 99);  // input
-  Vec yR(N), yE(N), yS(N);               // reference, elngated and shortened output
+  Vec yR(N), yE(N), yS(N);               // reference, elongated and shortened output
   for(size_t i = 0; i < quantiles.size(); i++)
   {
     // compute output of reference filter - this filter actually is one sample longer than our
@@ -486,7 +511,7 @@ bool testQuantileElongation(int L, int N)
     r &= rsAreVectorsEqual(yE, yR, tol);
     //r &= rsAreVectorsEqual(yS, yR, tol);
 
-    rsPlotVectors(yR, yE, yS);
+    //rsPlotVectors(yR, yE, yS);
     //rsPlotVectors(x, yR, yE, yS);
   }
 

@@ -188,6 +188,7 @@ public:
   /** Under construction - not yet working. 
   After calling getSample, this function may be called to produce an output that getSample 
   would have produced when the length would have been one sample shorter, i.e. L-1 instead of L. */
+  /*
   T getShortenedOutput()
   {
     int p1;                                                 // read position
@@ -204,6 +205,10 @@ public:
     T y = (T(1)-w1)*xS + w1*xL;
     return y;
   }
+  */
+  // no - that is wrong! i need to figure out, if the oldest sample is in the small or large heap 
+  // and do different things in both cases - if it is in the large heap, the logic above seems ok 
+  // but if it's in the small heap, we need to increase p1 by 1 ...or something
 
 
   //-----------------------------------------------------------------------------------------------
