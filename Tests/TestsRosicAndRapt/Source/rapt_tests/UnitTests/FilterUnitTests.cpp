@@ -445,24 +445,22 @@ public:
 
     if(p1 == p) {
       if(kInUpper) {
-        if(k == 0) { xS = getS0(); xL = getL1(0); }        // xOld == L0
-        else       { xS = getS0(); xL = getL0();  }}       // xOld >  L0
-      else {
-        if(k == 0) { xS = getL0(); xL = getL1(0); }        // xOld == S0
-        else       { xS = getL0(); xL = getL1(0); }}}      // xOld <  S0
+        if(k == 0) { xS = getS0();  xL = getL1(0); }   // xOld == L0
+        else       { xS = getS0();  xL = getL0();  }}  // xOld >  L0
+      else         { xS = getL0();  xL = getL1(0); } } // xOld <= S0
     else {
-      rsAssert(p1 == p-1);
-      if(kInUpper) { xS = getS1(0); xL = getS0(); }        // xOld >= L0
+      rsAssert(p1 == p-1);                             // sanity check
+      if(kInUpper) { xS = getS1(0); xL = getS0();  }   // xOld >= L0
       else {
-        if(k == 0) { xS = getS1(0); xL = getL0(); }        // xOld == S0
-        else       { xS = getS0();  xL = getL0(); }}}      // xOld <  S0
+        if(k == 0) { xS = getS1(0); xL = getL0();  }   // xOld == S0
+        else       { xS = getS0();  xL = getL0();  }}} // xOld <  S0
 
     return (T(1)-w1)*xS + w1*xL;
   }
   // it works in the typical cases but maybe not in edge cases - todo: figure out, what is the 
-  // right value to pass to get2ndSmallestLargeOrX, get2ndLargestSmallOrX as return value in cases
-  // when the large ot small heap do not have a 2nd largest element, i.e. when their size is 1.
-  // we can test this with quantiles 0 and 1
+  // right value to pass to getS1, getL1 as return value in cases when the large ot small heap do 
+  // not have a 2nd largest element, i.e. when their size is 1. we can test this with quantiles 0 
+  // and 1 ...done - hmm - it actually seems to work! :-)
   // It's actually *not* simpler than getElongatedOutput() but rather slightly more complex
   // Maybe this can be optimized by retrieving the values S0,L0,S1,L1 really only when they are 
   // needed - we may introduce member functions getS1(T x), getS0(), getL0(), getL1(T x) for this. 
