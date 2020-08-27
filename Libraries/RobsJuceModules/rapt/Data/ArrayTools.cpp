@@ -112,7 +112,7 @@ void rsArrayTools::circularShift(T *buffer, const int length, const int numPosit
   delete[] tmp;
 }
 // this article describes an algo ("rotate") based on reversals that doesn't need auxiuliary
-// memory: https://en.wikipedia.org/wiki/Block_sort
+// memory: https://en.wikipedia.org/wiki/Block_sort - there's an implementation in Prototypes.cpp
 
 template <class T>
 void rsArrayTools::circularShiftInterpolated(T *buffer, const int length, const double numPositions)

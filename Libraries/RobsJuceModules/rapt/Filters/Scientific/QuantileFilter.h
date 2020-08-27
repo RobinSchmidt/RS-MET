@@ -202,15 +202,15 @@ public:
 
     if(p1 == p) {
       if(kInUpper) {
-        if(k == 0) { xS = getS0();  xL = getL1(0); }   // xOld == L0
-        else       { xS = getS0();  xL = getL0();  }}  // xOld >  L0
-      else         { xS = getL0();  xL = getL1(0); } } // xOld <= S0
+        if(k == 0)  { xS = getS0();  xL = getL1(0); }   // xOld == L0
+        else        { xS = getS0();  xL = getL0();  }}  // xOld >  L0
+      else         {  xS = getL0();  xL = getL1(0); } } // xOld <= S0
     else {
-      rsAssert(p1 == p-1);                             // sanity check
-      if(kInUpper) { xS = getS1(0); xL = getS0();  }   // xOld >= L0
-      else {
-        if(k == 0) { xS = getS1(0); xL = getL0();  }   // xOld == S0
-        else       { xS = getS0();  xL = getL0();  }}} // xOld <  S0
+      rsAssert(p1 == p-1);                              // sanity check
+      if(kInUpper) {  xS = getS1(0); xL = getS0();  }   // xOld >= L0
+      else         {
+        if(k == 0)  { xS = getS1(0); xL = getL0(); }    // xOld == S0
+        else        { xS = getS0();  xL = getL0(); }}}  // xOld <  S0
 
     return (T(1)-w1)*xS + w1*xL;
   }

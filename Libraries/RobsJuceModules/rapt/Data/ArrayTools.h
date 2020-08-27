@@ -49,6 +49,7 @@ public:
   static void addCircularShiftedCopy(T *buffer, const int length, const double offset, 
     const T weight);
   // allocates heap memory - todo: use a workspace parameter
+  // why is the offset a double and not T? is this a bug? if yes - fix, if not, document why
 
   /** Adds length-L array y into length-N array x starting at n (in x), taking care of not reading 
   beyond the limits of y and writing beyond the limits of x */
