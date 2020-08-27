@@ -423,49 +423,6 @@ bool testQuantileModulation()
   return r;
 }
 
-template<class T>
-class rsQuantileFilterCoreTest : public RAPT::rsQuantileFilterCore<T>
-{
-
-public:
-
-  // under construction:
-  T getShortenedOutput()
-  {
-    int p1;                                     // read position
-    T w1, xS, xL;                               // weight, xLarge, xSmall
-    T q = getQuantile();
-    lengthAndQuantileToPositionAndWeight(L-1, q, &p1, &w1);
-
-    int k = keyBuf[bufIdx];                     // heap-key of oldest sample xOld
-    bool kInUpper = dblHp.isKeyInLargeHeap(k);  // indicates, if oldest sample is in upper heap
-    if(kInUpper)
-      k = dblHp.toLargeHeapIndex(k);
-
-    if(p1 == p) {
-      if(kInUpper) {
-        if(k == 0) { xS = getS0();  xL = getL1(0); }   // xOld == L0
-        else       { xS = getS0();  xL = getL0();  }}  // xOld >  L0
-      else         { xS = getL0();  xL = getL1(0); } } // xOld <= S0
-    else {
-      rsAssert(p1 == p-1);                             // sanity check
-      if(kInUpper) { xS = getS1(0); xL = getS0();  }   // xOld >= L0
-      else {
-        if(k == 0) { xS = getS1(0); xL = getL0();  }   // xOld == S0
-        else       { xS = getS0();  xL = getL0();  }}} // xOld <  S0
-
-    return (T(1)-w1)*xS + w1*xL;
-  }
-  // it works in the typical cases but maybe not in edge cases - todo: figure out, what is the 
-  // right value to pass to getS1, getL1 as return value in cases when the large ot small heap do 
-  // not have a 2nd largest element, i.e. when their size is 1. we can test this with quantiles 0 
-  // and 1 ...done - hmm - it actually seems to work! :-)
-  // ok - seems like it's done and can be moved into the baseclass in the libray - but maybe first
-  // figure out, how to put the getElongatedOutput function into the cpp file
-  // It's actually *not* simpler than getElongatedOutput() but rather slightly more complex
-
-};
-
 // Tests using a length L filter to produce an output that would have been produced by a length
 // L+1 filter (that's a preliminary for supporting non-integer lengths by crossfading between a
 // length L and L+1 filter - we don't want to literally run 2 filters):
@@ -475,8 +432,7 @@ bool testQuantileElongation(int L, int N)
 
   // we test the filter with these quantiles:
   using Vec = std::vector<double>;
-  //using QF  = RAPT::rsQuantileFilterCore<double>;
-  using QF  = rsQuantileFilterCoreTest<double>;
+  using QF  = RAPT::rsQuantileFilterCore<double>;
   double eps = RS_EPS(double);
   double tol = 1000*eps;
   Vec quantiles({0.0, eps, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0-eps, 1.0});
@@ -596,7 +552,7 @@ bool testQuantileSmallLengths(int N)
   Vec x = rsRandomIntVector(N, 0, 99);
   Vec y(N), t(N);                                   // filter output and target values
   Vec quantiles({ 0.0, 0.25, 0.5, 0.75, 1.0 });
-  Vec lengths(  { 1.0, 1.25, 1.5, 1.75, 1.9 });     // must be strictly less than 2
+  Vec lengths(  { 1.0, 1.25, 1.5, 1.75, 1.9 });     // all must be strictly less than 2
   rsQuantileFilterCore2<double> flt;
   for(size_t i = 0; i < quantiles.size(); i++) {
     double q = quantiles[i];

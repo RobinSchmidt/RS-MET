@@ -182,31 +182,40 @@ public:
   // -> move code to .cpp and fix this - the function is already there but commented out
   // maybe when we call it in rsQuantileFilter, the problem will disappear - we'll see.
 
-
-  /** Under construction - not yet working. 
-  After calling getSample, this function may be called to produce an output that getSample 
-  would have produced when the length would have been one sample shorter, i.e. L-1 instead of L. */
-  /*
+  /** After calling getSample, this function may be called to produce an output that getSample 
+  would have produced when the length would have been one sample shorter, i.e. L-1 instead of L. 
+  This is complementary to getElongatedOutput and can also be used to implement filters with 
+  non-integer length by configuring the filter to have a length floor(length)+1 and blend the 
+  regular output the filter obtained from getSample with an output obtained from this function. 
+  The advantage is that it doesn't need the delay buffer to be assigned. */
   T getShortenedOutput()
   {
-    int p1;                                                 // read position
-    T w1, xS, xL;                                           // weight, xLarge, xSmall
+    int p1;                                     // read position
+    T w1, xS, xL;                               // weight, xLarge, xSmall
     T q = getQuantile();
     lengthAndQuantileToPositionAndWeight(L-1, q, &p1, &w1);
+
+    int k = keyBuf[bufIdx];                     // heap-key of oldest sample xOld
+    bool kInUpper = dblHp.isKeyInLargeHeap(k);  // indicates, if oldest sample is in upper heap
+    if(kInUpper)
+      k = dblHp.toLargeHeapIndex(k);
+
     if(p1 == p) {
-      xS = dblHp.getLargestSmallValue().value; 
-      xL = dblHp.getSmallestLargeValue().value; }
+      if(kInUpper) {
+        if(k == 0) { xS = getS0();  xL = getL1(0); }   // xOld == L0
+        else       { xS = getS0();  xL = getL0();  }}  // xOld >  L0
+      else         { xS = getL0();  xL = getL1(0); } } // xOld <= S0
     else {
-      rsAssert(p1 == p-1);                                  // sanity check
-      xS = get2ndLargestSmallOrX(readOutput());             // is that correct?
-      xL = dblHp.getLargestSmallValue().value;  }
-    T y = (T(1)-w1)*xS + w1*xL;
-    return y;
+      rsAssert(p1 == p-1);                             // sanity check
+      if(kInUpper) { xS = getS1(0); xL = getS0();  }   // xOld >= L0
+      else {
+        if(k == 0) { xS = getS1(0); xL = getL0();  }   // xOld == S0
+        else       { xS = getS0();  xL = getL0();  }}} // xOld <  S0
+
+    return (T(1)-w1)*xS + w1*xL;
   }
-  */
-  // no - that is wrong! i need to figure out, if the oldest sample is in the small or large heap 
-  // and do different things in both cases - if it is in the large heap, the logic above seems ok 
-  // but if it's in the small heap, we need to increase p1 by 1 ...or something
+  // todo: benchmark getElongatedOutput vs getShortenedOutput and use the more efficient version to
+  // implement non-integer lengths
 
 
   //-----------------------------------------------------------------------------------------------
@@ -335,7 +344,6 @@ protected:
   buffer keep track of what gets swapped. */
   void swapNodes(Node& a, Node& b)
   {
-    //std::cout << "swapping nodes\n"; // debug - seems like the function is not called with gcc
     rsSwap(a, b);
     rsSwap(keyBuf[a.bufIdx], keyBuf[b.bufIdx]);
   }
@@ -607,7 +615,6 @@ protected:
 
   // embedded objects:
   rsQuantileFilterCore2<T> core;
-  //rsQuantileFilterCore<T> core;
   rsDelayBuffer<T> delayLine;
 
 };
