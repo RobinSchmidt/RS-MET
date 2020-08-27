@@ -1,5 +1,5 @@
 //#include "romos_VoiceAllocator.h"
-using namespace romos;
+//using namespace romos;
  
 VoiceAllocator romos::voiceAllocator;  // definition of the global object
 
@@ -158,7 +158,7 @@ int VoiceAllocator::getFirstFreeVoice()
   return -1;
 }
 
-int VoiceAllocator::getPlayingIndexToSteal(int key)
+int VoiceAllocator::getPlayingIndexToSteal(int /*key*/)
 {
   switch( stealingMode )
   {

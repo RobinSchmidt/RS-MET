@@ -1,0 +1,386 @@
+Suppose, we know the signal value of a sinusoid y0 at some sample instant n0: y0 = y[n0] and its 
+right neighbour yR = y[n0+1] and we also know the normalized radian frequency w of the sine. We 
+want to compute its instantaneous amplitude a and phase p at n0, so we need solve the nonlinear 
+system of 2 equations:
+
+  y0 = a * sin(p)
+  yR = a * sin(p+w)
+  
+with known y0, yR, w for a and p. It's actually nonlinear only in p, so that's the difficult 
+variable. Once p is known, we can compute a like:
+
+  a = y0 / sin(p) = yR / sin(p+w)
+  
+which of the two possible equations is used should depend on in which case we get a nonzero 
+denominator. To find p, we use the addition theorem:
+
+  sin(p+w) = sin(p)*cos(w) + cos(p)*sin(w)
+  
+which gives:
+  
+  y0 / sin(p) = yR / ( sin(p)*cos(w) + cos(p)*sin(w) )
+  
+  sin(p) / y0 = ( sin(p)*cos(w) + cos(p)*sin(w) ) / yR    | / sin(p), * yR
+  yR/y0 = ( sin(p)*cos(w) + cos(p)*sin(w) ) / sin(p)
+  yR/y0 = sin(p)*cos(w)/sin(p) + cos(p)*sin(w)/sin(p)
+  yR/y0 = cos(w) + cos(p)*sin(w)/sin(p)
+  yR/y0 - cos(w) = cos(p)*sin(w)/sin(p)
+  yR/y0 - cos(w) = sin(w)/tan(p)
+  tan(p) = sin(w) / (yR/y0 - cos(w))
+  
+We finally arrive at:
+  
+  p = atan2(sin(w), yR/y0 - cos(w))         | multiply both arguments by y0 - does not change the angle
+    = atan2(y0*sin(w), yR - y0*cos(w))
+
+Instead of the current value y0 and its right neighbour yR, we could also have used y0 and its left
+neighbour - let's denote it by yL - getting a backward looking formula:
+
+  yL = a * sin(p-w)
+  y0 = a * sin(p)
+
+The addition theorem works also with both plusses replaced by minusses, so:
+
+  p = atan2(-y0*sin(w), yL - y0*cos(w))
+
+---------------------------------------------------------------------------------------------------
+
+What, if w is unknown?
+
+  yL = a * sin(p-w)
+  y0 = a * sin(p)
+  yR = a * sin(p+w)
+  
+Define sw := sin(w), cw := cos(w)
+  
+  p = atan2(y0*sw, yR - y0*cw) = atan2(-y0*sw, yL - y0*cw) 
+  
+  (y0*sw) / (yR - y0*cw) = (-y0*sw) / (yL - y0*cw)
+  
+  yR - y0*cw = -(yL - y0*cw) = -yL + y0*cw
+  
+  yL + yR = 2*y0*cw
+  
+  cw = (yL+yR)/(2*y0)
+  w  =  acos(0.5*(yL+yR)/y0)
+  
+...but the formula has problems: 
+(1) if y0 is zero, we have a division by zero
+(2) if 0.5*(yL+yR)/y0 is outside -1..+1, we take an undefined acos
+The first problem can be seen as an ill-definition of the problem - if y0 is zero, then yL and yR
+are point-symmetrically distributed around y0 (if the signal is indeed a sinewave) - and from that
+we can't know, how the values come about form frequency and amplitude - we could pick any nonzero 
+frequency and just adjust the amplitude accordingly to get any set of (symmetric) neighbour values.
+Maybe, we need to incorporate information from more than 3 samples...
+
+---------------------------------------------------------------------------------------------------
+
+...stuff below is under construction - it's horribly messy and i'm not sure, if a neat solution
+can be found at all - another idea could be to use the 3-sample formula at n0-1,n0,n0+1 and use 
+some sort of averaging (maybe weighted by the conditioning as measured by y0/(yL+yR)?)...and/or 
+maybe try to find the minimum numerically - or maybe with respect to p,w numerically and with 
+respect to a analytically
+
+  yLL = a * sin(p-2*w)
+  yL  = a * sin(p-w)
+  y0  = a * sin(p)
+  yR  = a * sin(p+w)
+  yRR = a * sin(p+2*w)
+
+and minimize
+
+  E =   (yLL - a*sin(p-2*w))^2
+      + (yL  - a*sin(p-w)  )^2
+      + (y0  - a*sin(p)    )^2
+      + (yR  - a*sin(p+w)  )^2
+      + (yRR - a*sin(p+2*w))^2
+      
+with respect to a,p,w. The partial derivatives are:
+      
+  dE/da =   2*(yLL - a*sin(p-2*w)) * (-sin(p-2*w))
+          + 2*(yL  - a*sin(p-w)  ) * (-sin(p-w))
+          + 2*(y0  - a*sin(p)    ) * (-sin(p))
+          + 2*(yR  - a*sin(p+w)  ) * (-sin(p+w))
+          + 2*(yRR - a*sin(p+2*w)) * (-sin(p+2*w))
+          
+  dE/dp =   2*(yLL - a*sin(p-2*w)) * (-a * cos(p-2*w))
+          + 2*(yL  - a*sin(p-w)  ) * (-a * cos(p-w))
+          + 2*(y0  - a*sin(p)    ) * (-a * cos(p))
+          + 2*(yR  - a*sin(p+w)  ) * (-a * cos(p+w))
+          + 2*(yRR - a*sin(p+2*w)) * (-a * cos(p+2*w))
+          
+  dE/dw =   2*(yLL - a*sin(p-2*w)) * ( 2*a * cos(p-2*w))
+          + 2*(yL  - a*sin(p-w)  ) * (   a * cos(p-w))
+          + 2*(yR  - a*sin(p+w)  ) * (  -a * cos(p+w))
+          + 2*(yRR - a*sin(p+2*w)) * (-2*a * cos(p+2*w))
+
+Setting dE/dw = 0:
+
+  0 =    (yLL - a*sin(p-2*w)) * ( 2*a * cos(p-2*w))
+       + (yL  - a*sin(p-w)  ) * (   a * cos(p-w))
+       + (yR  - a*sin(p+w)  ) * (  -a * cos(p+w))
+       + (yRR - a*sin(p+2*w)) * (-2*a * cos(p+2*w))
+       
+use: sin(p +- w) = sin(p)*cos(w) +- cos(p)*sin(w):
+       
+  0 = (yLL - a*sin(p-2*w)) * ( 2*a * cos(p-2*w))
+  
+          
+Ideas for simplification:
+  -addition theorems
+  -double-angle formulas
+  -sum-to-product formulas
+  -transformation of sin/cos to tan
+  -express sines and cosines via complex exponentials - that may be advantageous because it may
+   decouple some stuff due to introducing the i to the sine terms
+  -tangent half-angle substitution
+  -see https://en.wikipedia.org/wiki/List_of_trigonometric_identities
+          
+Maybe try first
+https://en.wikipedia.org/wiki/List_of_trigonometric_identities#Tangent_half-angle_substitution
+because it gets rid of all the sines and cosines and replaces them by algebraic terms
+
+  with t = tan(x/2): sin(x) = 2*t / (1+t^2), cos(x) = (1-t^2) / (1+t^2)
+          
+Notation:
+
+  tLL = tan( (p-2*w)/2 ) = tan( p/2 - w   )
+  tL  = tan( (p-  w)/2 ) = tan( p/2 - w/2 )
+  t0  = tan(  p     /2 ) = tan( p/2       )
+  tR  = tan( (p+  w)/2 ) = tan( p/2 + w/2 )
+  tRR = tan( (p+2*w)/2 ) = tan( p/2 + w   )
+
+We may then use tan(a +- b) = (tan(a) +- tan(b)) / (1 -+ tan(a)*tan(b))
+..i think, we may turn this into a set of quadratic equations in the two variables tp, tw 
+where tp = tan(p/2), tw = tan(w/2), i.e. something of the form (maybe two of these):
+
+  A*tp^2 + B*tp*tw + C*tw^2 + D*tp + E*tw + F = 0
+  
+  
+  
+  
+  
+Maybe, it makes sense to transform everything into terms of sin(p),sin(w),cos(p),cos(w), like so:
+
+var("yLL, yL, y0, yR, yRR, a, p, w")
+dEda = 2*(yLL-a*sin(p-2*w))*(-sin(p-2*w)) + 2*(yL-a*sin(p-w))*(-sin(p-w)) + 2*(y0-a*sin(p))*(-sin(p)) + 2*(yR-a*sin(p+w))*(-sin(p+w)) + 2*(yRR-a*sin(p+2*w))*(-sin(p+2*w))
+dEda.trig_expand().simplify_full()  
+
+
+
+
+
+
+consider only the y0 terms in dE/da, call the "partial function" z0:
+...
+
+
+consider only the yL and yR terms in dE/da, call the "partial function" z1:
+
+  z1 =   (yL  - a*sin(p-w)  ) * (-sin(p-w))
+       + (yR  - a*sin(p+w)  ) * (-sin(p+w))
+  z1 =   (a*sin(p-w) - yL) * (sin(p-w))
+       + (a*sin(p+w) - yR) * (sin(p+w))
+
+   
+  use: sin(p+w) = (sin(p)*cos(w) + cos(p)*sin(w))
+       sin(p-w) = (sin(p)*cos(w) - cos(p)*sin(w)):
+  
+  z1 =   (a*(sin(p)*cos(w) - cos(p)*sin(w)) - yL) * (sin(p)*cos(w) - cos(p)*sin(w))
+       + (a*(sin(p)*cos(w) + cos(p)*sin(w)) - yR) * (sin(p)*cos(w) + cos(p)*sin(w))
+      
+var("yLL, yL, y0, yR, yRR, a, p, w")
+z = (a*(sin(p)*cos(w) - cos(p)*sin(w)) - yL) * (sin(p)*cos(w) - cos(p)*sin(w)) + (a*(sin(p)*cos(w) + cos(p)*sin(w)) - yR) * (sin(p)*cos(w) + cos(p)*sin(w))
+z.simplify_full()
+
+  z1 =   2*a * cos(w)^2 * sin(p)^2 
+       + 2*a * cos(p)^2 * sin(w)^2 
+       - (cos(w)*sin(p) - cos(p)*sin(w))*yL 
+       - (cos(w)*sin(p) + cos(p)*sin(w))*yR
+  
+would we have done the same only with yLL, yRR terms, we would geta 2nd partial function z2, where
+each occurrence of w is replaced by 2*w written as 2w:
+
+  z2 =   2*a * cos(2w)^2 * sin(p )^2 
+       + 2*a * cos(p )^2 * sin(2w)^2 
+       - (cos(2w)*sin(p) - cos(p)*sin(2w))*yL 
+       - (cos(2w)*sin(p) + cos(p)*sin(2w))*yR
+  
+  use: sin(2w) = (2*sin(w)*cos(w)), cos(2w) = (cos(w)^2 - sin(w)^2):
+  
+  
+  
+  
+  
+  sLL = sin(p-2*w), sL = sin(p-w), s0 = sin(p), sR = sin(p+w), sRR = sin(p+2*w)
+  cLL = cos(p-2*w), cL = cos(p-w), c0 = cos(p), cR = cos(p+w), sRR = cos(p+2*w)
+
+          
+          
+          
+          
+---------------------------------------------------------------------------------------------------
+...temporary: verifying the derivatives with sage...
+      
+var("yLL, yL, y0, yR, yRR, a, p, w")
+E = (yLL-a*sin(p-2*w))^2 + (yL-a*sin(p-w))^2 + (y0-a*sin(p))^2 + (yR-a*sin(p+w))^2 + (yRR-a*sin(p+2*w))^2
+diff(E, a)
+
++ 2*(a*sin(p-2*w) - yLL) * sin(p-2*w)
++ 2*(a*sin(p-w)   - yL ) * sin(p-w)
++ 2*(a*sin(p)     - y0 ) * sin(p)
++ 2*(a*sin(p+2*w) - yRR) * sin(p+2*w)
++ 2*(a*sin(p+w)   - yR ) * sin(p+w) 
+
+var("yLL, yL, y0, yR, yRR, a, p, w")
+E = (yLL-a*sin(p-2*w))^2 + (yL-a*sin(p-w))^2 + (y0-a*sin(p))^2 + (yR-a*sin(p+w))^2 + (yRR-a*sin(p+2*w))^2
+diff(E, p)
+
++ 2*(a*sin(p-2*w) - yLL) * a*cos(p-2*w) 
++ 2*(a*sin(p-w)   - yL ) * a*cos(p-w) 
++ 2*(a*sin(p)     - y0 ) * a*cos(p)
++ 2*(a*sin(p+w)   - yR ) * a*cos(p+w) 
++ 2*(a*sin(p+2*w) - yRR) * a*cos(p+2*w) 
+
+var("yLL, yL, y0, yR, yRR, a, p, w")
+E = (yLL-a*sin(p-2*w))^2 + (yL-a*sin(p-w))^2 + (y0-a*sin(p))^2 + (yR-a*sin(p+w))^2 + (yRR-a*sin(p+2*w))^2
+diff(E, w)
+
+- 4*(a*sin(p-2*w) - yLL) * a*cos(p-2*w)
+- 2*(a*sin(p-w)   - yL ) * a*cos(p-w) 
++ 2*(a*sin(p+w)   - yR ) * a*cos(p+w) 
++ 4*(a*sin(p+2*w) - yRR) * a*cos(p+2*w)
+
+maybe verify them also numerically by comparing them to finite difference approximations
+
+---------------------------------------------------------------------------------------------------
+
+Computing phase p given amp a, freq w and two samples
+
+  x0 = a * sin(p)
+  xR = a * sin(p+w)
+  
+  x0 / sin(p) = xR / sin(p+w)
+  
+  x0 / xR = sin(p) / sin(p+w)     | use sin(p+w) = sin(p)*cos(w) + cos(p)*sin(w)
+  
+  x0 / xR = sin(p) / ( sin(p)*cos(w) + cos(p)*sin(w)  )
+  
+  xR / x0 = ( sin(p)*cos(w) + cos(p)*sin(w)  ) / sin(p)
+          = cos(w) + cos(p)*sin(w)/sin(p)
+          = cos(w) + sin(w)*tan(p)
+   ((xR/x0)-cos(w)) / sin(w) = tan(p)
+   p = atan2(sin(w), ((xR/x0)-cos(w))) = atan2(x0*sin(w), xR-x0*cos(w))
+   
+oh - that's the same formula again - seems we don't need the amplitude at all to compute the phase
+...but what if a and p is known - can we find formula for the frequency?
+
+   xR/a = sin(p+w) -> asin(xR/a) = p + w -> w = asin(xR/a) - p
+   
+---------------------------------------------------------------------------------------------------
+
+Computing freq and phase from known signal values and amplitudes:
+
+  xL = aL * sin(p-w)
+  x0 = a0 * sin(p)
+  xR = aR * sin(p+w)
+
+this is overdetermined - we have 3 equations but only 2 degrees of freedom (p,w). Possibilities:
+(1) use only the xL or xR equation together with the x0 equation (or both seperately and take an
+average) or (2) combine the xL,xR equations into one: 
+
+  (xL - aL*sin(p-w))^2 + (xR - aR*sin(p+w))^2 = min
+
+(1):
+
+  xL = aL * sin(p-wL)     ->   wL = p - asin(xL/aL)     = p - pL
+  x0 = a0 * sin(p)        ->   p  =     asin(x0/a0)
+  xR = aR * sin(p+wR)     ->   wR =     asin(xR/aR) - p = pR - p 
+  w = (wL+wR)/2
+
+ (2):
+
+  E = (xL - a*sin(p-w))^2 + (xR - a*sin(p+w))^2 = min  (we use only a single a here)
+  
+  dE/da = 
+  
+
+var("xL, x0, xR, a, p, w")
+E  = (xL - a*sin(p-w))^2 + (xR - a*sin(p+w))^2
+Ea = diff(E, a)
+Ep = diff(E, p)
+Ew = diff(E, w)
+Ea, Ep, Ew
+
+Ea = 2*(a*sin(p + w) - xR)*sin(p + w) + 2*(a*sin(p - w) - xL)*sin(p - w)
+Ep = 2*(a*sin(p + w) - xR)*a*cos(p + w) + 2*(a*sin(p - w) - xL)*a*cos(p - w)
+Ew = 2*(a*sin(p + w) - xR)*a*cos(p + w) - 2*(a*sin(p - w) - xL)*a*cos(p - w)
+
+We may now either set Ew = Ea = 0, solve for w,a and use the middle equation to compute 
+p = asin(x0/a) or set Ew = Ep = 0, solve for a,p and compute a0 = x0/sin(p) - whatever seems
+eaiser to solve (or do both and test, what gives better results in practice). When using 
+p = asin(x0/a), we'll also have to do phase-unreflection, so maybe it's better to avoid that. On the other hand, using a0 = x0/sin(p) may result in negative amplitudes - but maybe that can be 
+fixed by detecting it and inverting amp and phase, whenever it occurs. Oh wait - here we assume 
+that w is already known, so we just have to solve the Ep or Ea equation. Let's try to solve Ep = 0:
+
+  0 =   2*(a*sin(p + w) - xR)*a*cos(p + w) 
+      + 2*(a*sin(p - w) - xL)*a*cos(p - w)
+
+use: 
+
+  sp := sin(p), cp := cos(p), sw := sin(w), cw := cos(w)
+  sin(p+w) = sin(p)*cos(w) + cos(p)*sin(w)
+  sin(p-w) = sin(p)*cos(w) - cos(p)*sin(w)
+  cos(p+w) = cos(p)*cos(w) - sin(p)*sin(w)
+  cos(p-w) = cos(p)*cos(w) + sin(p)*sin(w)
+  
+  
+  0 =   2*(a*(sin(p)*cos(w) + cos(p)*sin(w)) - xR)*a*(cos(p)*cos(w) - sin(p)*sin(w))
+      + 2*(a*(sin(p)*cos(w) - cos(p)*sin(w)) - xL)*a*(cos(p)*cos(w) + sin(p)*sin(w))
+  0 =   2*(a*(sp*cw + cp*sw) - xR)*a*(cp*cw - sp*sw)
+      + 2*(a*(sp*cw - cp*sw) - xL)*a*(cp*cw + sp*sw)
+      
+use a = (x0/sp):
+
+  0 =   2*((x0/sp)*(sp*cw + cp*sw) - xR)*(x0/sp)*(cp*cw - sp*sw)
+      + 2*((x0/sp)*(sp*cw - cp*sw) - xL)*(x0/sp)*(cp*cw + sp*sw)
+      
+define tp := sp/cp = tan(p) = sin(p)/cos(p):
+
+  0 =   2*(x0*(cw + sw/tp) - xR) * x0*(cw/tp - sw)
+      + 2*(x0*(cw - sw/tp) - xL) * x0*(cw/tp + sw)
+
+solve for tp:
+
+var("xL, x0, xR, tp, sw, cw")
+eq1 = 0 == 2*(x0*(cw+sw/tp) - xR) * x0*(cw/tp - sw) + 2*(x0*(cw-sw/tp) - xL) * x0*(cw/tp + sw)
+solve([eq1],[tp])
+
+  tp = (2*(cw^2 - sw^2)*x0 - cw*xL - cw*xR) / (sw*xL - sw*xR)
+  p  = atan2(sw*xL - sw*xR, 2*(cw^2-sw^2)*x0 - cw*xL - cw*xR)
+      
+      
+      
+      
+      
+      
+      
+divide by cp, define tp = sp/cp = tan(p) = sin(p)/cos(p) - this turns the cp into 1 and the sp 
+into tp in of of the two factors in each term (we choose the 2nd):
+
+  0 =   2*(a*(sp*cw + cp*sw) - xR)*a*(cw - tp*sw)
+      + 2*(a*(sp*cw - cp*sw) - xL)*a*(cw + tp*sw)
+      
+
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      

@@ -1,9 +1,6 @@
 #ifndef romos_AudioConnection_h
 #define romos_AudioConnection_h
 
-namespace romos
-{
-
 /** This class represents a connection from one Module to another over which audio signals are
 transmitted. 
 
@@ -234,7 +231,5 @@ INLINE void AudioConnection::accumulatePolyphonicToPolyphonic()
     *(getTargetPointer() + inStride*playingVoiceIndices[v]) += *(getSourcePointer() + outStride*playingVoiceIndices[v]);
 }
 */
-
-}
 
 #endif

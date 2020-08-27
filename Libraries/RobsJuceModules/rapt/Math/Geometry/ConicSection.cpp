@@ -5,20 +5,6 @@ rsConicSection<T>::rsConicSection(T _A, T _B, T _C, T _D, T _E, T _F)
 
 }
 
-/*
-// move to Polynomial
-template<class T>
-void rsSolveQuadraticEquation(T a, T b, T c, T* x1, T* x2)
-{
-  // Solutions: t_1,2 = (-b +- sqrt(b^2-4*a*c)) / (2*a):
-  T s = T(1) / (2*a);         // scaler
-  T d = b*b - 4*a*c;          // discriminant
-  d   = sqrt(rsMax(d, T(0))); // we return the real part of the complex conjugate pair in case of
-  *x1 = (-b-d) * s;           // a negative discriminant 
-  *x2 = (-b+d) * s;           // return roots in ascending order
-}
-*/
-
 template<class T>
 void rsConicSection<T>::lineIntersectionParameter(T x, T dx, T y, T dy, T* t1, T* t2) const
 {
@@ -26,7 +12,6 @@ void rsConicSection<T>::lineIntersectionParameter(T x, T dx, T y, T dy, T* t1, T
   T a = A*dx*dx + B*dx*dy + C*dy*dy;
   T b = 2*A*x*dx + B*(x*dy+y*dx) + 2*C*y*dy + D*dx + E*dy;
   T c = A*x*x + B*x*y + C*y*y + D*x + E*y + F;
-  //rsSolveQuadraticEquation(a, b, c, t1, t2);
   rsPolynomial<T>::rootsQuadraticReal(c, b, a, t1, t2);
 }
 
@@ -46,3 +31,11 @@ void rsConicSection<T>::getTangentCoeffs(T x, T y, T* a, T* b, T* c) const
   // formula derived from:
   // https://en.wikipedia.org/wiki/Implicit_curve#Tangent_and_normal_vector
 }
+
+/*
+
+see this video for conics that go through given points or touch given lines and more:
+https://www.youtube.com/watch?v=X83vac2uTUs
+https://github.com/HackerPoet/Conics   code to accompany the video
+
+*/

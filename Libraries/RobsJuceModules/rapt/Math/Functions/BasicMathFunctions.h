@@ -1,5 +1,9 @@
-#ifndef RAPT_BASICFUNCTIONS_H_INCLUDED
-#define RAPT_BASICFUNCTIONS_H_INCLUDED
+#ifndef RAPT_BASICMATHFUNCTIONS_H_INCLUDED
+#define RAPT_BASICMATHFUNCTIONS_H_INCLUDED
+
+// todo: but maybe the content could also be absorbed into RealFunctions.h/cpp and
+// Basics/BasicFunctions.h (the min/max stuff could go into Basics)
+
 
 /** Returns the absolute value of the input argument. It is intended to replace the standard
 "abs" and "fabs" c-functions where genericity is desired. */
@@ -40,14 +44,6 @@ inline T rsExpToLinWithOffset(T in, T inMin, T inMax, T outMin, T outMax, T offs
 template<class T>
 //inline bool rsIsCloseTo(T x, T targetValue, double tolerance);
 inline bool rsIsCloseTo(T x, T targetValue, T tolerance);
-
-/** Checks, if x is even. */
-template<class T>
-inline bool rsIsEven(T x) { return x % 2 == 0; } // maybe use bit-mask
-
-/** Checks, if x is odd. */
-template<class T>
-inline bool rsIsOdd(T x) { return x % 2 != 0; }
 
 /** Checks, if x is a power of 2. */
 inline bool rsIsPowerOfTwo(unsigned int x);
@@ -90,29 +86,11 @@ offsetted value so as to hit the outMax correctly. */
 template<class T>
 inline T rsLinToExpWithOffset(T in, T inMin, T inMax, T outMin, T outMax, T offset = 0.0);
 
-/** The maximum of two objects on which the ">"-operator is defined. */
-template <class T>
-inline T rsMax(T in1, T in2);
 
-/** The maximum of three objects on which the ">"-operator is defined. */
-template <class T>
-inline T rsMax(T in1, T in2, T in3);
 
-/** The maximum of four objects on which the ">"-operator is defined. */
-template <class T>
-inline T rsMax(T in1, T in2, T in3, T in4);
-
-/** The minimum of two objects on which the "<"-operator is defined. */
-template <class T>
-inline T rsMin(T in1, T in2);
-
-/** The minimum of three objects on which the "<"-operator is defined. */
-template <class T>
-inline T rsMin(T in1, T in2, T in3);
-
-/** The minimum of four objects on which the "<"-operator is defined. */
-template <class T>
-inline T rsMin(T in1, T in2, T in3, T in4);
+/** Computes the median of 3 values. */
+template<class T>
+inline T rsMedian(T x1, T x2, T x3);
 
 /** Returns x if x is even, else x+1. */
 template <class T>
@@ -128,8 +106,8 @@ inline T rsNextPowerOfTwo(T x);
 repeated squaring which has a complexity of O(log(exponent)).
 for details, see: Jörg Arndt - Matters Computational, Ch.28.5
 \todo bring back the naive implementation, to be used for small powers (there, it may be more
-efficient), in rsPow, switch between rsPowSmall, rsPowBig depending on the size of the exponent
-*/
+efficient - well..will it? questionable!), in rsPow, switch between rsPowSmall, rsPowBig 
+depending on the size of the exponent */
 template <class T>
 T rsPow(const T& base, int exponent);
 
@@ -176,6 +154,7 @@ inline T rsSquare(T x);
 /** Swaps two objects of class T. */
 template <class T>
 inline void rsSwap(T &in1, T &in2);
+// merge with Basics
 
 /** Returns a unity value of the given type. The idea is to use this template function to create
 a unity-value inside other template functions where it might be required that the unity-value is
@@ -186,6 +165,7 @@ as the size of "value"). If no explicit instantiation exists for the given type,
 back to the default implementation, which returns T(1). */
 template<class T>
 inline T rsUnityValue(T value);
+// Merge with Basics
 
 /** Wraps the number to the interval 0...length. */
 inline double rsWrapAround(double numberToWrap, double length);
@@ -204,6 +184,7 @@ inline double rsZeroFunction(double x);
 /** Returns a zero value of the given type. @see rsUnityValue */
 template<class T>
 inline T rsZeroValue(T value);
+// Merge with basics
 
 // \todo - is it somehow possible to get rid of the inlining?
 
@@ -291,47 +272,20 @@ inline T rsLinToExpWithOffset(T in, T inMin, T inMax, T outMin, T outMax, T offs
   return tmp;
 }
 
-template <class T>
-inline T rsMax(T in1, T in2)
+template<class T>
+inline T rsMedian(T x1, T x2, T x3)
 {
-  if(in1 > in2)
-    return in1;
-  else
-    return in2;
+  if(x1 >= x2 && x1 >= x3) return rsMax(x2, x3);  // x1 is greatest
+  if(x2 >= x1 && x2 >= x3) return rsMax(x1, x3);  // x2 is greatest
+  if(x3 >= x1 && x3 >= x2) return rsMax(x1, x2);  // x3 is greatest
+  rsError("we should always take one of the branches above");
+  return 0;
 }
+// todo: test with all permutations of 1,2,3 and 1,2,2
+// we could also do: if(x3>x2) swap(x2,x3); if(x2>x1) swap(x1,x2); return x2; ...that would
+// amount to doing a 3-value bubble-sort and returning the middle - we would trade 9 
+// comparisons for 2 comparisons and 2 swaps - maybe benchmark, which is better
 
-template <class T>
-inline T rsMax(T in1, T in2, T in3)
-{
-  return rsMax(rsMax(in1, in2), in3);
-}
-
-template <class T>
-inline T rsMax(T in1, T in2, T in3, T in4)
-{
-  return rsMax(rsMax(in1, in2), rsMax(in3, in4));
-}
-
-template <class T>
-inline T rsMin(T in1, T in2)
-{
-  if(in1 < in2)
-    return in1;
-  else
-    return in2;
-}
-
-template <class T>
-inline T rsMin(T in1, T in2, T in3)
-{
-  return rsMin(rsMin(in1, in2), in3);
-}
-
-template <class T>
-inline T rsMin(T in1, T in2, T in3, T in4)
-{
-  return rsMin(rsMin(in1, in2), rsMin(in3, in4));
-}
 
 // general fallback version:
 template<class T>

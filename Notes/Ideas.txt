@@ -1,7 +1,7 @@
 
 -------------------------------------------------------------------------------
 make a class rsChoices where a 64-bit integer is used to represent a couple of
-choice (i.e enum) parameters, for example, the lowes 3 bits could be used for
+choice (i.e enum) parameters, for example, the lowest 3 bits could be used for
 a parameter that has at most 8 values, the next 4 bits for a parameter with up
 to 16 values etc. use a similar idea as for the rsFlags class in RSLib - with
 bit-shifting and masking. that can be used for very economically storing a 
@@ -43,7 +43,7 @@ Concepts:
    template<SignalType TSig, ParamType TPar> MyClass { /* stuff */ };
  where SignalType and ParamType would be concepts that specify, which 
  constraints the two types must satisfy
--we could use #defines for both which evaluate to the respective conept in 
+-we could use #defines for both which evaluate to the respective concept in 
  C++20 and to "typename" or "class" in pre C++20
 -a concept is more than a "type of a type" - it may also encode relationships 
  between two (or more) types. in our case, we would require (besides other 
@@ -204,5 +204,8 @@ protected:
   to avoid juce-dependency for file loading...or maybe it wouldn't read in the
   files itself but also rely on the data being passed via a function
   setSampleData(...)
+  
+-------------------------------------------------------------------------------
+
 
  

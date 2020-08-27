@@ -67,15 +67,13 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   T maxLength = rsMaxValue(cycleLengths);
   //maxLength   = rsMax(maxLength, cycleMarks[0]);             // delta between 0 and 1st mark
   //maxLength   = rsMax(maxLength, (Nx-1)-rsLast(cycleMarks)); // delta between end and last mark
-
   rsAssert(maxLength >= 2);                      // at least 2 samples per cycle
   if(maxLength < 2) return false;                // report failure
 
-  cycleLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
-  setCycleLength(cycleLength);  // does also some buffer-re-allocation
+  // determine analysis cycle length, i.e. the fixed length to which all cycles will be stretched:
+  setMaxMeasuredCycleLength(maxLength); // does also some buffer-re-allocation 
   //rsPlotVector(cycleLengths);
   //rsPlotVector(sampleRate/cycleLengths);
-
 
   // Create the mapping function for the time instants of the cycle marks:
   int mapLength = (int) cycleMarks.size() + 2;  // +2 for t = 0 and t = N-1
@@ -93,8 +91,7 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
   // fixed length:
   for(int i = 2; i < mapLength-1; i++) {
     tIn[i]  = cycleMarks[i-1];
-    tOut[i] = tOut[i-1] + cycleLength;
-  }
+    tOut[i] = tOut[i-1] + cycleLength; }
 
   // The end time instant is mapped such that the final partial cycle is stretched by the same 
   // amount as the last full cycle:
@@ -117,8 +114,35 @@ bool rsHarmonicAnalyzer<T>::flattenPitch(T* x, int Nx)
 }
 
 template<class T>
+void rsHarmonicAnalyzer<T>::setMaxMeasuredCycleLength(T maxLength)
+{
+  // old - allows ony powers of two for cyclesPerBlock:
+  cycleLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
+  blockSize   = cyclesPerBlock * cycleLength;
+
+  // new - allows arbitrary values for cyclesPerBlock (should be integer, though):
+  // ...something to do...
+  // blockSize = nextPowerOfTwo(cyclesPerBlock * maxLength);  // should work for float inputs(?)
+  // cycleLength = T(blockSize) / T(cyclesPerBlock);
+
+
+  sig.resize(blockSize); 
+  wnd.resize(blockSize);
+  fillWindow();
+  trafoSize = zeroPad * blockSize;
+  sigPadded.resize(trafoSize);
+  mag.resize(trafoSize); 
+  phs.resize(trafoSize);
+  trafo.setBlockSize(trafoSize);
+}
+
+// can this be deleted sometime soon?
+template<class T>
 void rsHarmonicAnalyzer<T>::analyzeHarmonicsOld(RAPT::rsSinusoidalModel<T>& mdl)
 {
+  // maybe, if we want to keep the simpler algo around, we should assert that numCyclesPÜerBlock==1
+  // and the window is rectangular
+
   // Initialize the model (create all datapoints, to filled with actual data later):
   mdl.init(getNumHarmonics(), getNumDataPoints());
 
@@ -168,10 +192,6 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
 {
   // Initialize the model (create all datapoints, to filled with actual data later):
   mdl.init(getNumHarmonics(), getNumDataPoints());
-
-  //typedef RAPT::rsArrayTools AR;
-
-  //int numFrames = getNumFrames();  //
   int over = (blockSize - cycleLength) / 2; // amount of overhanging of block with respect to cycle
   for(int m = 0; m < getNumFrames(); m++)
   {
@@ -199,7 +219,6 @@ void rsHarmonicAnalyzer<T>::analyzeHarmonics(RAPT::rsSinusoidalModel<T>& mdl)
       // maybe we should pass the "delta" from above and use it to adjust the phase values like
       // phase += delta*omega or something
   }
-
 }
 
 
@@ -255,7 +274,7 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
   //T endTime = rsLast(tOut);
   T endTime = rsLast(tIn);
   rsInstantaneousSineParams<T> params;
-  for(k = 0; k < mdl.getNumPartials(); k++) 
+  for(k = 0; k < (int) mdl.getNumPartials(); k++) 
   {
     // fill first datapoint:
     params  = mdl.getPartial(k).getDataPoint(1);  
@@ -293,9 +312,9 @@ void rsHarmonicAnalyzer<T>::handleEdges(RAPT::rsSinusoidalModel<T>& mdl)
 template<class T>
 void rsHarmonicAnalyzer<T>::convertTimeUnit(RAPT::rsSinusoidalModel<T>& mdl)
 {
-  for(int hi = 0; hi < mdl.getNumPartials(); hi++)
+  for(size_t hi = 0; hi < mdl.getNumPartials(); hi++)
     for(int di = 0; di < getNumDataPoints(); di++)
-      mdl.getDataRef(hi, di).time /= sampleRate;
+      mdl.getDataRef((int)hi, di).time /= sampleRate;
 }
 
 template<class T>
@@ -306,21 +325,6 @@ void rsHarmonicAnalyzer<T>::refineFrequencies(RAPT::rsSinusoidalModel<T>& mdl)
 
   if(freqsPhaseConsistent)
     mdl.makeFreqsConsistentWithPhases(); // use rsSinusoidalProcessor
-}
-
-template<class T>
-void rsHarmonicAnalyzer<T>::setCycleLength(int newLength)
-{
-  cycleLength = newLength;
-  blockSize   = cyclesPerBlock * cycleLength;
-  sig.resize(blockSize); 
-  wnd.resize(blockSize);
-  fillWindow();
-  trafoSize = zeroPad * blockSize;
-  sigPadded.resize(trafoSize);
-  mag.resize(trafoSize); 
-  phs.resize(trafoSize);
-  trafo.setBlockSize(trafoSize);
 }
 
 template<class T>
@@ -370,7 +374,10 @@ template<class T>
 int rsHarmonicAnalyzer<T>::getSpectralPeakSearchWidth()
 {
   //T peakSearchWidth = T(1); // maybe make user parameter later
-  T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, T(0));
+  //T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, T(0));  // old
+  //T mainlobeWidth = rsWindowFunction::getMainLobeWidth(windowType, getWindowParameter());
+  T mainlobeWidth = rsWindowFunction::getMainLobeWidth(
+    windowType, getWindowParameter(), blockSize);
 
   //T s = T(0.5);  
   // old: 1.0 - works for hamming, blackman needs around 0.5 (numCycles=4) - when the mainlobe is
@@ -594,13 +601,17 @@ bool rsHarmonicAnalyzer<T>::isPeakPartial(std::vector<T>& v, int peakBin)
   //return true;   // test
 
   // minWidth can be precomputed:
-  T mainlobeWidth = zeroPad * rsWindowFunction::getMainLobeWidth(windowType, T(0));
+  //T mainlobeWidth = zeroPad * rsWindowFunction::getMainLobeWidth(windowType, T(0)); // old
+  T mainlobeWidth = zeroPad * rsWindowFunction::getMainLobeWidth(
+    windowType, getWindowParameter(), blockSize);
+
   T minWidth1     = minPeakToMainlobeWidthRatio*mainlobeWidth;
 
   T harmonicWidth = zeroPad * cyclesPerBlock;
   T minWidth2     = minPeakToHarmonicWidthRatio*harmonicWidth;
 
   int minWidth    = (int) round( rsMin(minWidth1, minWidth2) );
+    // ...this needs some serious consideration - if it's really a good idea to do it like this...
 
 
 
@@ -653,6 +664,70 @@ void rsHarmonicAnalyzer<T>::prepareBuffer(const std::vector<T>& sig, std::vector
 template<class T>
 void rsHarmonicAnalyzer<T>::fillWindow()
 {
-  rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, true);
-  //rsWindowFunction::createWindow(&wnd[0], (int) wnd.size(), windowType, false);
+  rsWindowFunction::createWindow(
+    &wnd[0], (int) wnd.size(), windowType, true, getWindowParameter());
 }
+
+
+/*
+
+Ideas:
+
+Currently, we stretch every cycle of the input signal to some fixed cycleLength (the power of two
+greater or equal to the length of the longest cycle in the input). The number nc of cycles per 
+block must be a power of two because we want the blockSize to be a power of two for the FFT 
+friendliness.. However, having nc to be restricted to powers of two is quite restrictive, so here
+is an idea to lift that restriction while still using power-of-2 blocksizes: Instead of stretching 
+every cycle separately to a given cycleLength, we may stretch groups of cycles to the desired 
+blockSize. Consider an example that has cycle lengths like:
+
+  98,101,102,99,97,100,102,101,99,97,100,102
+
+the current implementation would stretch all of them indiviudally to a length of 128. If nc=2, we 
+would take 2 of these length 128 cycles for every block. Instead we, could group the cycles in 
+pairs:
+
+  98,101, 102,99,  97,100,  102,101,  99,97,  100,102
+    199     201     197       203      196      202    -> stretch all these pairs to length 256
+
+and stretch every such pair of cycles to length 256. The advantage is that it readily generalizes 
+to using any number of cycles for such a group and using as blocksize the power of two that is 
+greater or equal to the length of the longest group. For example, with nc=3:
+
+  98,101,102, 99,97,100, 102,101,99, 97,100,102
+     301         296         302        299            -> stretch all these triples to length 512
+
+...wait - the pitch-flattening is not restricted to stretch every cycle to an integer number of 
+samples. If we want to fit 3 cycles into a block of 512 samples, we could just stretch every cycle 
+to 512/3 = 170.666... samples. I think, the required changes are in flattenPitch:
+
+  cycleLength = RAPT::rsNextPowerOfTwo((int) ceil(maxLength));
+  setCycleLength(cycleLength); 
+
+should be replaced by:
+
+  blockSize = nextPowerOfTwo(cyclesPerBlock * maxLength);  // should work for float inputs(?)
+  cycleLength = T(blockSize) / T(cyclesPerBlock);
+  setCycleLength(cycleLength); 
+
+where the type of the member cycleLength should be changed from int to T. setCycleLength will 
+(again) set the blockSize - that line should probably be removed then. Or we do all assignments in
+setCycleLength which should then take the measured maxLength as parameter. Maybe a (protected) 
+function setMaxMeasuredCycleLength should be introduced which does everything....
+Maybe cyclesPerBlock could then be type T, too - i.e. non-integer. i don't know if it's useful to 
+use a non-integer number of cycles per block - probably not, but maybe for strongly inharmonic 
+signals, but we could experiment with that...
+
+
+
+ToDo: 
+
+Figure out, if there's any advantage in any circumstances to use Blackman or Hamming or other 
+windows as opposed to the Dolph-Chebychev - i think, the Dolph-Cheby window is actually optimal for 
+this kind of sinusoidal analysis, so we may not need any others anymore and could throw them out at
+some point to clean up the interface...but who knows - for the time being, i'll leave them in, just 
+in case...maybe at a later stage, the usage of other windows can be retained in an experimental 
+subclass somewhere outside the main library
+
+
+*/

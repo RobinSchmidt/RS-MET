@@ -28,7 +28,7 @@ void rsEnvelopeFollower2<T>::setSampleRate(T newSampleRate)
 
   preFilter.setSampleRate(sampleRate);
   preFilter.setFrequency(sampleRate/T(6));
-  // maybe instead of usinga fixed fraction of the sample-rate, we should use a fixed absolute
+  // maybe instead of using a fixed fraction of the sample-rate, we should use a fixed absolute
   // frequency? ...but maybe not - the test uses a sample-rate of 2kHz, so a fixed freq would end 
   // up above fs/2
 
@@ -68,4 +68,7 @@ void rsEnvelopeFollower2<T>::updateSmoothingFilters()
   T rel = T(1000 * 10.0) * inputPeriod;   // release in milliseconds (10 cycles)
   slewLimiter.setAttackTime(att);
   slewLimiter.setReleaseTime(rel);
+
+  // todo: make the hard-coded 0.1 and 10.0 factors accessible to client code, also use the hold
+  // parameter of slewLimiter and make it accessible from client code
 }

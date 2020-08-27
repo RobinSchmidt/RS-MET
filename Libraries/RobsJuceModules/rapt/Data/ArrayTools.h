@@ -49,6 +49,7 @@ public:
   static void addCircularShiftedCopy(T *buffer, const int length, const double offset, 
     const T weight);
   // allocates heap memory - todo: use a workspace parameter
+  // why is the offset a double and not T? is this a bug? if yes - fix, if not, document why
 
   /** Adds length-L array y into length-N array x starting at n (in x), taking care of not reading 
   beyond the limits of y and writing beyond the limits of x */
@@ -276,6 +277,7 @@ public:
   operation will be performed iteratively on the respective result of the previous pass.  */
   template <class T>
   static void difference(T *buffer, int length, int order = 1, bool periodic = false);
+  // maybe rename to backwardDifference
 
   /** Divides the elements of 'buffer1' and 'buffer2' - type must define operator '/'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
@@ -292,9 +294,11 @@ public:
   template<class T, class F>
   static void fill(T* a, int N, F indexToValueFunction);
 
-  /** Fills the passed array with a unit impulse. */
+  /** Fills the passed array with an impulse, i.e. all samples except one are zero. You can 
+  optionally set the value of the impulse and its sample location (by default, an impulse of 
+  height one occurs at sample zero - that's the so called unit impulse in DSP jargon). */
   template <class T>
-  static inline void fillWithImpulse(T *buffer, int length);
+  static inline void fillWithImpulse(T *buffer, int length, T value = T(1), int position = 0);
 
   /** Fills the passed array with the values of the indices - the type T must have a
   constructor that takes an int and performs appropriate conversion. */
@@ -312,15 +316,26 @@ public:
   static void fillWithRandomValues(T *buffer, int length, double min, double max, int seed);
 
   /** Fills the buffer with values ranging (exponentially scaled) from min to max (both end-values
-  inclusive). */
+  inclusive). The logs of the values are equidistant. */
   template <class T>
   static void fillWithRangeExponential(T *buffer, int length, T min, T max);
 
-  /** Fills the buffer with values ranging from min to max (both end-values inclusive). 
-  \todo: rename min/max into start/end  */
+  /** Fills the buffer with equidistant values ranging from min to max (both end-values 
+  inclusive). \todo: rename min/max into start/end or x0,x1  */
   template <class T>
   static void fillWithRangeLinear(T *buffer, int length, T min, T max);
   // corresponds to std::iota? and/or NumPy's linspace
+
+  /** Generalizes fillWithRangeLinear (shape == 1) and fillWithRangeExponential (shape == 0) and 
+  allows for shapes between and beyond 0 and 1. It uses a power rule as follows: If shape != 0, it 
+  fills the array with equidistant values between min^shape and max^shape and then takes the 
+  shape-th root of the array values. For shape == 0 (with some tolerance), this breaks down because
+  we can't take the 0-th root, so we fill the array using fillWithRangeExponential, which is the 
+  correct limit. The filled array has the property that its generalized mean with parameter 
+  p == shape is equal to the same generalized mean of min and max. @see generalizedMean. */
+  template <class T>
+  static void fillWithRange(T *buffer, int length, T min, T max, T shape);
+  // todo: make a unit test, avoid roundoff error at endpoints
 
   /** Fills the passed array with one value at all indices. */
   template <class T>
@@ -400,12 +415,29 @@ public:
   template <class T>
   static int firstIndexWithNonZeroValue(const T *buffer, int length);
 
-
-
   /** Scales and offsets the passed buffer such that the minimum value hits 'min' and the
   maximum value hits 'max'. */
   template <class T>
   static void fitIntoRange(T *buffer, int length, T min, T max);
+
+  /** Computes the geometric mean of the values in array x. This is the N-th root of the product of 
+  all values. Due to the identity log(a*b) = log(a) + log(b) (which generalizes to products of 
+  more than two factors in the obvious way), this can also be seen as taking the arithmetic average 
+  of the logarithms of the values and then exponentiating that result (which is, in fact, the way 
+  it is implemented because taking products of a great number of factors tends to create numerical 
+  overflow or underflow problems). */
+  template<class T>
+  static T geometricMean(const T* x, int N);
+
+  /** Computes the generalized mean with exponent p of the numbers in array x. The generalized mean
+  is the p-th root of the arithmetic mean of all values raised to the p-th power. For p = 1, this 
+  reduces to the usual arithmetic mean, for p = 2, it is the root-mean-square, for p = -1, it's the
+  harmonic mean etc. The case p = 0 is a special case which, in the limit, becomes the geometric 
+  mean. For p going to minus or plus infinity, it tends to the minimum or the maximum of all values
+  respectively (...has not been tested yet for very large absolute values of p...use reasonable 
+  values - like -10..+10 or something!). https://en.wikipedia.org/wiki/Generalized_mean */
+  template<class T>
+  static T generalizedMean(const T* x, int N, T p);
 
   /** Fills the array h with the impulse of the filter specified by the direct form coefficients
   given in b and a. \todo comment on the sign of the a-coeffs, whether or not an a0 is included,
@@ -422,6 +454,8 @@ public:
   the position is out of range, 0 is returned. */
   template<class T>
   static T interpolatedValueAt(const T *buffer, int length, double position);
+    // Why is position a double? T may be bad if T is a vector or complex type - but maybe some 
+    // generic TPos would be better?
 
   /** Returns a linearly interpolated value from the array at the given (non-integer) position. If
   the position is out of range, the output is clamped to the end values of the array. */
@@ -565,6 +599,12 @@ public:
   // trajectory that should be smoothed, but the start- and enpoints should not change - maybe
   // have a boolean parameter "fixEnds"
   // -maybe include a stride parameter - needed when this is used to filter nD arrays like images
+  // there's a 5 point version under construction near the unit test of this, so if one is needed,
+  // look there first
+
+  template<class T>
+  static void movingMedian3pt(const T* x, int N, T* y);
+
 
   /** Multiplies the elements of 'buffer1' and 'buffer2' - type must define operator '*'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
@@ -738,6 +778,7 @@ public:
   period 2*pi. */
   template<class T>
   static void unwrap(T* a, int N, T p);
+  // ToDo: check, if we have unit-test in place - it doesn't seem to always work...
 
   /** Returns the sum-over-i w[i]*x[i]. */
   template <class T>
@@ -846,6 +887,7 @@ inline void rsArrayTools::convert(const T1 *source, T2 *destination, const int l
 template <class T>
 inline void rsArrayTools::convolveWithTwoElems(const T* x, const int xLength, const T* h, T* y)
 {
+  rsAssert(xLength > 0, "Input length must be > 0");
   y[xLength] = x[xLength-1]*h[1];
   for(int n = xLength-1; n > 0; n--)
     y[n] = x[n]*h[0] + x[n-1]*h[1];
@@ -856,6 +898,7 @@ template <class T>
 inline void rsArrayTools::convolveWithTwoElems(
   const T* x, const int xLength, const T h0, const T h1, T* y) 
 {
+  rsAssert(xLength > 0, "Input length must be > 0");
   y[xLength] = x[xLength-1]*h1;
   for(int n = xLength-1; n > 0; n--)
     y[n] = x[n]*h0 + x[n-1]*h1;
@@ -896,10 +939,11 @@ inline void rsArrayTools::fill(T* a, int N, F indexToValueFunction)
 }
 
 template <class T>
-inline void rsArrayTools::fillWithImpulse(T *buffer, int length)
+inline void rsArrayTools::fillWithImpulse(T *buffer, int length, T value, int position)
 {
+  rsAssert(position >= 0 && position < length, "Impulse location out of range");
   fillWithZeros(buffer, length);
-  buffer[0] = T(1);
+  buffer[position] = value;
 }
 
 template <class T>

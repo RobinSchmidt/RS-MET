@@ -296,7 +296,7 @@ bool spectrogramUnitTest()
 
   // why do we need to scale the output of the ifft? in getComplexSpectrogram, there is already a 
   // scaling by 2 / rsArrayTools::sum(w, B); ...aahh - but it's applied to the STFT matrix *after* the
-  // STFT has been computed - so, we should probably use no nromalziation
+  // STFT has been computed - so, we should probably use no normalziation
 
   // how it should work:
   // -on forward FFT, scale spectral values by 1 / sum(window) (or 2 / sum(..) bcs of negative 
@@ -315,36 +315,568 @@ bool spectrogramUnitTest()
   return r;
 }
 
-bool sineModelingUnitTest()
+bool harmonicAnalyzerUnitTest()
 {
   bool r = true;      // test result
 
   // test filling the FFT buffer (with zero-apdding and shifting for zero-phase at center):
 
-  typedef std::vector<double> Vec;
+  using Vec = std::vector<double>;
+  using AT  = RAPT::rsArrayTools;
+  using HA  = RAPT::rsHarmonicAnalyzer<double>;
+
   Vec sig = { 1,2,3,4,5,6,7,8 };  // 8 elements
 
   // test with zero-padding factor = 4:
   Vec buf(32);
-  RAPT::rsArrayTools::fillWithNaN(&buf[0], (int) buf.size());
-  rsHarmonicAnalyzer<double>::prepareBuffer(sig, buf);
+  AT::fillWithNaN(&buf[0], (int) buf.size());
+  HA::prepareBuffer(sig, buf);
   Vec target = { 5,6,7,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,3,4 };
   r &= buf == target;
 
   // test with zero-padding factor = 2:
   buf.resize(16);
-  RAPT::rsArrayTools::fillWithNaN(&buf[0], (int) buf.size());
-  rsHarmonicAnalyzer<double>::prepareBuffer(sig, buf);
+  AT::fillWithNaN(&buf[0], (int) buf.size());
+  HA::prepareBuffer(sig, buf);
   target = { 5,6,7,8,0,0,0,0,0,0,0,0,1,2,3,4 };
   r &= buf == target;
 
   // test with zero-padding factor = 1:
   buf.resize(8);
-  RAPT::rsArrayTools::fillWithNaN(&buf[0], (int) buf.size());
-  rsHarmonicAnalyzer<double>::prepareBuffer(sig, buf);
+  AT::fillWithNaN(&buf[0], (int) buf.size());
+  HA::prepareBuffer(sig, buf);
   target = { 5,6,7,8,1,2,3,4 };
   r &= buf == target;
 
+  return r;
+}
+
+// note that this may change the settings of the ssm
+bool testSingleSineIdentityResynthesis(
+  rsSingleSineModeler<double>& ssm, const std::vector<double>& x, double tol)
+{
+  bool r = true;
+
+  using Vec = std::vector<double>;
+
+  int N = (int) x.size();
+  Vec a(N), w(N), p(N), pm(N);           // analysis data
+  Vec y(N);                              // resynthesized signal
+  Vec err;
+  //double tol = 1.e-12;  // tolerance for identity resynthesis
+
+
+  // Test resynthesis from amp and phase:
+  ssm.analyzeAmpAndPhase(&x[0], N, &a[0], &p[0]);
+  ssm.synthesizeFromAmpAndPhase(&a[0], &p[0], N, &y[0]);
+  r &= rsAreVectorsEqual(x, y, tol);
+  err = x-y;  // for inspection
+  //rsPlotVectors(err);
+
+  // Test resynthesis from amp and freq:
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  ssm.synthesizeFromAmpAndFreq(&a[0], &w[0], N, &y[0]);
+  r &= rsAreVectorsEqual(x, y, tol);
+  err = x-y;  // for inspection
+  //rsPlotVectors(err);
+
+  // Test resynthesis with (smoothed) freq and phase-modulation:
+  ssm.setFreqSmoothing(1, 3);
+  ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
+  ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
+  r &= rsAreVectorsEqual(x, y, tol);
+  err = x-y;  // for inspection
+  //rsPlotVectors(err);
+
+  // Set the freq-smoothing in ssm to zero and check, if the pm comes out as zero in this 
+  // case:
+  ssm.setFreqSmoothing(0, 0);
+  ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
+  ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
+  r &= rsAreVectorsEqual(x, y, tol);
+  r &= rsMaxAbs(pm) <= tol;
+  err = x-y;  // for inspection
+  //rsPlotVectors(err);
+
+  // Test resynthesis with arbitrary content of the w-array - we need to compute a pm-array
+  // that exactly compensates whatever the conent of the w-array is:
+  rsArrayTools::fillWithRandomValues(&w[0], N, -10.0, +10.0, 0);
+  ssm.phaseAndFreqToPhaseMod(&p[0], &w[0], N, &pm[0]); 
+  ssm.synthesizeFromAmpFreqAndPhaseMod(&a[0], &w[0], &pm[0], N, &y[0]);
+  r &= rsAreVectorsEqual(x, y, tol);
+  err = x-y;  // for inspection
+  //rsPlotVectors(err);
+
+  return r;
+}
+
+bool testSingleSineResynthesisAlgos(
+  rsSingleSineModeler<double>& ssm, const std::vector<double>& x, double tol)
+{
+  bool r = true;
+
+  using SSM = rsSingleSineModeler<double>;
+  using PUA = SSM::PhaseUnreflectAlgorithm;
+
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
+  r &= testSingleSineIdentityResynthesis(ssm, x, tol);
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaZeros);
+  r &= testSingleSineIdentityResynthesis(ssm, x, tol);
+
+
+
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
+  ssm.setPhaseUnreflectAlgorithm(PUA::fromSignalSlope); 
+  r &= testSingleSineIdentityResynthesis(ssm, x, tol);
+
+  ssm.setPhaseUnreflectAlgorithm(PUA::fromFreq);
+  r &= testSingleSineIdentityResynthesis(ssm, x, tol);
+
+  ssm.setPhaseUnreflectAlgorithm(PUA::fromSigAmpAndFreq);
+  r &= testSingleSineIdentityResynthesis(ssm, x, tol);
+
+
+  return r;
+}
+
+bool testSingleSineFormulas()
+{
+  bool r = true;
+  rsSingleSineModeler<double> ssm;
+
+  double tol = 1.e-10;   // tolerance for the error
+
+  // This is incomplete - the automatic checks are missing
+  // test edge cases for the freq-formula:
+  double w;
+  w = ssm.freqFormula( 0,  0,  0);  // returns nan, should return 0 
+  w = ssm.freqFormula(+1, +1, +1);  // returns 0  -> correct
+  w = ssm.freqFormula(-1, -1, -1);  // returns 0  -> correct
+  w = ssm.freqFormula(+1, -1, +1);  // returns pi -> correct? nyquist-freq?
+  w = ssm.freqFormula(-1, +1, -1);  // returns also pi ..can we actually get -pi?
+  w = ssm.freqFormula( 0, +1,  0);  // returns pi/2
+  w = ssm.freqFormula(-1,  0, +1);  // returns nan, should return
+  w = ssm.freqFormula( 0, +1, +2);  // returns 0
+  w = ssm.freqFormula(+1, +2, +3);  // returns 0
+  w = ssm.freqFormula(+1, +2, +1);  // returns 1.0471975511965979
+  // maybe check the derivation - did we assume something that does not always hold?
+  // todo: check results...
+  // how do we get negative frequencies? do we want them actually?
+
+  // todo: test edge cases for phaseAndAmpFormulaForward/Backward/Central
+
+
+
+  // A function to test whether amplitude a and phase p can be retrieved from a sinusoid via the
+  // forward formula. For edge cases, we can't compute correct amplitudes and phases anymore, but
+  // we can still compute phases and amplitudes that would produce the same pair of output samples.
+  // This is because of the ambiguity, how to distribute the degrees of freedom to phase and 
+  // amplitude in the edge cases. At the Nyquist freq, the phase can not be estimated from two 
+  // samples because phase-shifts just lead to an amplitude decrease of the alternating values.
+  // At DC the phase is clamped to pi/2 - a cosine wave (or is it?). So in these cases, we use a
+  // less strict test:
+  auto testForwardFormula = [=](double a, double p, double w, bool isEdgeCase = false)->bool
+  { 
+    double y0 = a * sin(p);
+    double yR = a * sin(p + w);
+    double a2, p2;  // computed values for amplitude and phase
+    ssm.phaseAndAmpFormulaForward(y0, yR, w, &a2, &p2);
+    if(!isEdgeCase)
+      return rsIsCloseTo(a, a2, tol) && rsIsCloseTo(p, p2, tol);
+    else {
+      double y02 = a2 * sin(p2);
+      double yR2 = a2 * sin(p2 + w);
+      return rsIsCloseTo(y0, y02, tol) && rsIsCloseTo(yR, yR2, tol); }
+  };
+  auto testBackwardFormula = [=](double a, double p, double w, bool isEdgeCase = false)->bool
+  {
+    double y0 = a * sin(p);
+    double yL = a * sin(p - w);
+    double a2, p2;
+    ssm.phaseAndAmpFormulaBackward(y0, yL, w, &a2, &p2);
+    if(!isEdgeCase)
+      return rsIsCloseTo(a, a2, tol) && rsIsCloseTo(p, p2, tol);
+    else {
+      double y02 = a2 * sin(p2);
+      double yL2 = a2 * sin(p2 - w);
+      return rsIsCloseTo(y0, y02, tol) && rsIsCloseTo(yL, yL2, tol); }
+  };
+  auto testCentralFormula = [=](double a, double p, double w, bool isEdgeCase = false)->bool
+  {
+    double yL = a * sin(p - w);
+    double y0 = a * sin(p);
+    double yR = a * sin(p + w);
+    double a2, p2;
+    ssm.phaseAndAmpFormulaCentral1(yL, y0, yR, w, &a2, &p2);
+    if(!isEdgeCase)
+      return rsIsCloseTo(a, a2, tol) && rsIsCloseTo(p, p2, tol);
+    else {
+      double yL2 = a2 * sin(p2 - w);
+      double y02 = a2 * sin(p2);
+      double yR2 = a2 * sin(p2 + w);
+      return rsIsCloseTo(y0, y02, tol) && rsIsCloseTo(yL, yL2, tol) && rsIsCloseTo(yR, yR2, tol); }
+  };
+
+  // A test function for the forward-formula using target values for amp and phase at, pt:
+  auto testForwardFormula2 = [=](double y0, double yR, double w, double at, double pt)->bool
+  {
+    double a, p;
+    ssm.phaseAndAmpFormulaForward(y0, yR, w, &a, &p);
+    return a == at && p == pt;
+  };
+
+
+
+
+  double e300 = 1.e-300;
+  double pi2 = PI/2;
+  r &= testForwardFormula(3, 2,  e300, true);   // if not handled, it still returns correct values
+  r &= testForwardFormula(3, 2, -e300, true);
+  r &= testForwardFormula(3, 2,     0, true);
+  r &= testForwardFormula(3, 2,     1, false);
+  r &= testForwardFormula(3, 2,    PI, true);
+  r &= testForwardFormula(3, 2,   -PI, true);   // no special handler for that but it works
+
+  r &= testBackwardFormula(3, 2,  e300, true); 
+  r &= testBackwardFormula(3, 2, -e300, true);
+  r &= testBackwardFormula(3, 2,     0, true); // a2 gets extremely large, but the end-result is still ok
+  r &= testBackwardFormula(3, 2,     1, false);
+  r &= testBackwardFormula(3, 2,    PI, true);
+  r &= testBackwardFormula(3, 2,   -PI, true);
+
+  r &= testCentralFormula(3, 2,  e300, true); 
+  r &= testCentralFormula(3, 2, -e300, true);
+  r &= testCentralFormula(3, 2,     0, true);
+  r &= testCentralFormula(3, 2,     1, false);
+  r &= testCentralFormula(3, 2,    PI, true);
+  r &= testCentralFormula(3, 2,   -PI, true);
+
+  // Test cases where w is close to a multiple of pi: w = k*pi - they are handled as special cases. 
+  for(int k = -5; k <= 5; k++)
+  {
+    // forward:
+    r &= testForwardFormula2( 0, 0, k*PI, 0,  0);
+    r &= testForwardFormula2( 0, 1, k*PI, 0,  0);
+    r &= testForwardFormula2( 1, 1, k*PI, 1,  pi2);
+    r &= testForwardFormula2( 1, 0, k*PI, 1,  pi2);
+    r &= testForwardFormula2( 1, 2, k*PI, 1,  pi2);
+    r &= testForwardFormula2( 1,-1, k*PI, 1,  pi2);
+    r &= testForwardFormula2( 2, 1, k*PI, 2,  pi2);
+    r &= testForwardFormula2(-1, 1, k*PI, 1, -pi2);
+    r &= testForwardFormula2(-2, 1, k*PI, 2, -pi2);
+
+    // backward:
+    // ...
+
+
+    // central:
+    // ...
+  }
+
+  w = 0.5;
+  double a = 1.5;
+  double p = 0.3;
+  double yL;
+  double y0 = a * sin(p);
+  double yR = a * sin(p + w);
+  double a2, p2;
+  ssm.phaseAndAmpFormulaForward(y0, yR, w, &a2, &p2);
+  yR = y0*cos(w); // causes atan2(y0*sin(w), 0) - no problem, atan2 handles zero denoms
+  ssm.phaseAndAmpFormulaForward(y0, yR, w, &a2, &p2);
+
+  // todo: testBackwardFormula, testCentralFormula
+
+
+
+  // test formulas with random values:
+  int numTests = 1000;
+  rsNoiseGenerator<double> ng;
+  ng.setRange(0.0, 1.0);
+  for(int i = 0; i < numTests; i++)
+  {
+    // compute random values for freq, phase and amp:
+    w = PI   * ng.getSample();
+    p = 2*PI * ng.getSample() - PI;
+    a = 5    * ng.getSample();
+
+    // compute 3 successive signal samples:
+    yL = a * sin(p - w);
+    y0 = a * sin(p);
+    yR = a * sin(p + w);
+
+    // try to reconstruct w,p,a from signal samples using the various formulas:
+
+    double w2, p2, a2;
+    w2 = ssm.freqFormula(yL, y0, yR);
+    r &= rsIsCloseTo(w, w2, tol);
+
+    // central formula 1:
+    ssm.phaseAndAmpFormulaCentral1(yL, y0, yR, w, &a2, &p2);
+    r &= rsIsCloseTo(a, a2, tol);
+    r &= rsIsCloseTo(p, p2, tol);
+
+    // central formula 2:
+    ssm.phaseAndAmpFormulaCentral2(yL, y0, yR, w, &a2, &p2);
+    r &= rsIsCloseTo(a, a2, tol);
+    r &= rsIsCloseTo(p, p2, tol);
+    // this formula needs a larger error tolerance of 1.e-10 as opposed to the above which needs
+    // only 1.e-13 - does that mean, the formula above is better, i.e. more accurate? but what if
+    // the input is not a pure sinusoid? ...more tests needed!
+    // problems seem to occur when w is close to 0,pi/2,pi - this is the case when we divide by 
+    // number close to zero - maybe we need to take some special care of that case
+
+    // forward formula:
+    ssm.phaseAndAmpFormulaForward(y0, yR, w, &a, &p);
+    r &= rsIsCloseTo(a, a2, tol);
+    r &= rsIsCloseTo(p, p2, tol);
+
+    // backward formula:
+    ssm.phaseAndAmpFormulaBackward(y0, yL, w, &a, &p);
+    r &= rsIsCloseTo(a, a2, tol);
+    r &= rsIsCloseTo(p, p2, tol);
+
+    rsAssert(r);
+    int dummy = 0;
+  }
+
+
+  return r;
+}
+
+bool testSingleSinePhaseUnreflection(int N, double w1)
+{
+  bool r = true;
+
+  using Vec = std::vector<double>;
+  using SSM = rsSingleSineModeler<double>;
+
+  //static const int N = 800;
+
+  //double w1 = 0.5;
+
+  //w1 = PI/4; // yes - we should test such cases - power-of-2 fractions of PI
+
+  //w1 *= 1 - RS_EPS(double);
+  //w1 *= 1 + RS_EPS(double);
+
+  Vec pt(N);   // true phase
+  Vec pr(N);   // reflected phase
+  Vec pu1(N);  // unreflected phase via algo 1 - should undo the replection and match true phase
+  Vec pu2(N);  // unreflected phase via algo 2
+  Vec x(N);    // sinusoidal signal
+
+  Vec w(N);
+
+  double tol = 1.e-12;
+  double err;
+
+
+  for(int n = 0; n < N; n++) {
+    w[n]  = w1;
+    pt[n] = rsWrapToInterval(w[n]*n, -PI, PI);
+    // todo: when w is non-constant, we need to use a running sum (...later...)
+
+    x[n]  = sin(pt[n]);
+    pr[n] = asin(x[n]);
+    pu1[n] = pu2[n] = pr[n];
+  }
+
+  SSM::unreflectPhaseFromSig(&x[0], &pu1[0], N);
+  err = rsArrayTools::maxDeviation(&pt[0], &pu1[0], N);
+  r &= err <= tol;
+
+
+  SSM::unreflectPhase2(&w[0], &pu2[0], N);
+  err = rsArrayTools::maxDeviation(&pt[0], &pu2[0], N);
+  r &= err <= tol;
+
+
+
+  // compare pu1 and pu2 to pt - they should match:
+  //rsPlotVectors(x, pt, pr, pu1);
+  //rsPlotVectors(x, pt, pr, pu2);
+  rsPlotVectors(pt-pu1, pt-pu2);
+
+
+
+  // with w1 = pi/16, the 2nd algo sometimes fails to do the wrap-arounds - when it's ever so 
+  // slightly off from that value (like multiplied by 1-eps or 1+eps), the problem disappears
+  // at sample 16, there ought to be a wraparound from pi to -pi - but instead, it jumps only down 
+  // to 0. with w1 = pi/8, there's also a different kind of error at sample 344 - the jump occurs
+  // one sample too late
+  // test exact fractions of pi, like pi/4, pi/8, pi/16 and values just slightly off from these
+
+  return r;
+}
+
+
+bool singleSineModelerUnitTest()
+{
+  bool r = true;
+
+  using Vec = std::vector<double>;
+  using SSM = rsSingleSineModeler<double>;
+  using PUA = SSM::PhaseUnreflectAlgorithm;
+
+  int N = 1000;         // number of samples in test signal
+  double tol = 1.e-12;  // tolerance for identity resynthesis
+  // the higher N, the higher the tolerance must be - we have accumulating errors for longer
+  // signals. For N = 1000, 1.e-12 works but 1.e-13 not. ToDo: try to minimize the error 
+  // accumulation...i think, it comes from phase-unwrapping and/or the amplitude maxima locations
+  // becoming less precise because the precision is eaten up by the integer part of the sample
+  // index
+
+  // Test to resynthesize white noise - the analysis data may be meaningless in this case, but 
+  // identity resynthesis should work nevertheless:
+  Vec x = rsRandomVector(N, -1.0, 1.0);  // input signal
+  Vec a(N), w(N), p(N), pm(N);           // analysis data
+  //Vec y(N);                              // resynthesized signal
+  //Vec err;
+  SSM ssm;
+
+
+  r &= testSingleSineFormulas();
+  r &= testSingleSineResynthesisAlgos(ssm, x, tol);
+
+
+  // todo: test to analyze a perfect sinewave and see, if the analysis data makes sense....then 
+  // maybe make it more difficult by introducing a frequency sweep, amplitude fade, etc....
+
+  double as = 0.2;   // amplitude of the sine
+  double ws = 0.1;   // omega of the sine
+  double ps = 0.5;   // start phase
+
+  //ws = 0.5; // test: high freq
+
+  for(int n = 0; n < N; n++)
+    x[n] = as * sin(ws*n + ps);
+
+  r &= testSingleSineResynthesisAlgos(ssm, x, tol);
+
+  rsAssert(r); // to ring a bell when some setting gives no resynthesis
+
+
+  // the code below should be either moved into an experiment or we should add some automatic 
+  // checks, if the resulting analysis data is meaningful - or maybe kinda both - for the time 
+  // being, we return early because in its current state, the code is more experiment than 
+  // unit-test:
+  return r;
+
+  //ssm.setFreqSmoothing(1, 3);
+
+  ssm.setAmpPrecision(1); // with 2, we trigger an assert (amplitude undershoots signal)
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
+  ssm.setPhaseUnreflectAlgorithm(PUA::fromSignalSlope);
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  rsPlotVectors(x, a, w); 
+  // looks good - todo: check automatically, if result is good
+  // ..although, there's a big freq-spike at sample 1 
+  // in the range before before the first maximum of the sine, the amp-env follows the sinusoidal
+  // wave and the freq is estimated as zero - this is because amp-estimation only considers the 
+  // peaks - maybe we should extrapolate the amp-env instead of just connecting the first peak to
+  // zero
+  // it's also kind of bad that the first sample of the freq-array is actually the start-phase.
+  // this is convenient for synthesis but will be inconvenient for manipulating the frequency
+  // data - the first sample will always have to be handled seperately. maybe we should indeed
+  // have a separate start-phase variable when synthesizing from frequency. we do not necessarily
+  // change the convention to sum frequencies up to n (we just need to adapt the start-phase 
+  // accordingly) ...but we may also adopt a convention to sum up to n-1...whichever makes more 
+  // sense - i think, summing to n-1 is more convenient. ..hmm...but actually, it's not too bad
+  // to handle the 0th sample in the freq-array seperately - it's just a matter of ignoring it, 
+  // i.g. for filtering the freq-array we would do: filter(&w[1], N-1) instead of filter(w, N)
+
+  // test the new unreflection algos:
+  ssm.setPhaseUnreflectAlgorithm(PUA::fromFreq);
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  rsPlotVectors(x, a, w);
+
+  ssm.setPhaseUnreflectAlgorithm(PUA::fromSigAmpAndFreq);
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  rsPlotVectors(x, a, w);
+
+
+
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaFormula);
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  rsPlotVectors(x, a, w);
+  // looks even better - first sample of frew is zero - but it has to be that way because the
+  // signal starts at zero phase
+
+  ssm.setAnalysisAlgorithm(SSM::Algorithm::freqViaZeros);
+  ssm.analyzeAmpAndFreq(&x[0], N, &a[0], &w[0]);
+  rsPlotVectors(x, a, w);
+  // also freq-spikes at the zero-crossings
+  // strangely, they don't get smoothed when using ssm.setFreqSmoothing(1, 3);
+
+  //ssm.setAnalysisAlgorithm(SSM::Algorithm::ampViaPeaks);
+
+  //ssm.setFreqSmoothing(1, 3);
+  //ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a[0], &w[0], &pm[0]);
+  //rsPlotVectors(x, a, w, pm);
+  // looks also good - we need some automatic check for this, too
+
+
+  /*
+  // tests for new phase-unreflection algos - they do not yet work:
+  // low freqs:
+  r &= testSingleSinePhaseUnreflection(N, 0.125*PI);
+  r &= testSingleSinePhaseUnreflection(N, 0.25*PI);
+  r &= testSingleSinePhaseUnreflection(N, 0.5);
+  //r &= testSingleSinePhaseUnreflection(N, 0.49*PI);  // algo 1 fails
+  //r &= testSingleSinePhaseUnreflection(N, 0.51*PI);  // both algos fail
+  //r &= testSingleSinePhaseUnreflection(N, 0.501*PI);   // algo1 fails
+  r &= testSingleSinePhaseUnreflection(N, 0.7*PI);      // both fail
+  r &= testSingleSinePhaseUnreflection(N, PI);           // fails
+  r &= testSingleSinePhaseUnreflection(N, 0.75*PI);      // fails
+  r &= testSingleSinePhaseUnreflection(N, 0.5*PI);       // fails
+  */
+
+
+  // test with DC, all-zeros, sine at nyquist freq, maybe other special freqs, a signal that has
+  // exact zero crossings at sample-instants...things like x[n-1] = -0.5, x[n] = 0, x[n+1] = +0.5
+  // but also asymmetric ones - maybe test the omega-formula and amp/phase formulas with such 
+  // "difficult" values
+
+  // ToDo (as experiment, not unit test): try analyzing a (lowpassed) sawtooth wave, a 
+  // freq- or phase-modulated sine (see, if we can retrieve and/or convert the modulation signal)
+  // a "plucked" sound, etc...
+
+  // with w = 3 (i.e. close to th Nyquist limit pi), and ampViaPeaks, we get an alternating 
+  // frequency between -3 and 3 as analysis result - could this be due to a wrong 
+  // phase-unreflection? the amplitude estimate looks very good. with w = pi/2, we also see strong
+  // alternation with ampViaPeaks, with freqsViaFormula, everything comes out zero(!), freqViaZeros
+  // works well. 3pi/4 is also weird - the alternation pattern is spiky and asymmetric. With 
+  // w = 0.5 and ampViaPeaks, we see some error in the freq-estimate - with increased precision 
+  // to 2,we get amplitudes less than signal values (raising an assert), but the overall freq 
+  // looks smoother
+
+  // -with the amp-env first based algorithms, we get some small frequency-errors around the peaks
+  //  of the sine (they are visibile onyl when zoomed in - they are small, but it may be worth to
+  //  to figure out why the happen anyway)
+
+  // -with the freq-first algorithms, the results look even better - only the very first sample of 
+  //  the freq trajectory is off - but for freq-only synthesis, it has to be because it's the 
+  //  start-phase - for freq-and-pm synthesis, we use the pm signal for adjusting the start-phase 
+  //  and try to fix the freq at the first sample (maybe by extrapolating from 2nd and 3rd)
+
+  // Conclusion:
+  // -freqViaFormula and freqViaZeros both work really well, ampViaPeaks not so much - so we should
+  //  probably really use the freq-first algotithms - the idea with estimating amplitude first may
+  //  have been not such a great idea after all.
+
+  return r;
+}
+
+bool sineModelingUnitTest()
+{
+  bool r = true;
+
+  r &= harmonicAnalyzerUnitTest();
+  r &= singleSineModelerUnitTest();
 
   return r;
 }

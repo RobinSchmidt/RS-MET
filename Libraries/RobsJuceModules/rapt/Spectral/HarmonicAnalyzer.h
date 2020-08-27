@@ -22,6 +22,11 @@ true for the analyzed signal, of course). The algorithm works as follows:
  -move time instants of datapoints according to the inverse time-warping map
  -modify frequencies according to the applied stretch factors
 
+...this is a bit out of date - this was the first version of the algo - it has been refined 
+since - but maybe we should actually keep that simpler and easier to understand algo for 
+reference...
+
+
 The so obtained model models any inharmonicity, transients and noise in the input signal as fast 
 variations of instantaneous frequencies and amplitudes of the partials - when the envelopes
 are lowpass-filtered before resynthesis, we can resynthesize only the quasi-harmonic part of the 
@@ -70,7 +75,7 @@ public:
 
   rsHarmonicAnalyzer();
 
-
+  //---------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets up the sample-rate. This determines the values of the frequencies that will be written
@@ -106,13 +111,23 @@ public:
   // rename to setZeroPadFactor
 
   /** Sets the number of cycles in each analyzed block. Must be a power of two. */
-  void setNumCyclesPerBlock(int newNumCycles)
-  {
-    cyclesPerBlock = newNumCycles;
-  }
+  void setNumCyclesPerBlock(int newNumCycles) { cyclesPerBlock = newNumCycles; }
 
   /** Sets the type of window to be used. */
-  void setWindowType(rsWindowFunction::WindowType newType) { windowType = newType; }
+  void setWindowType(rsWindowFunction::WindowType newType)
+  { 
+    rsAssert(isWindowTypeSupported(newType), "Desired window type not supported");
+    windowType = newType; 
+  }
+
+  /** Window sidelobe-rejection parameter in dB, applicable only when windowType is dolphChebychev.
+  40 dB is hamming-like, 60 dB is blackman-like. */
+  void setSidelobeRejection(T rejection) { sidelobeRejection = rejection; }
+  // the number of cycles per block should be increased when the rejection is increased (i think, 
+  // this is because of the wider mainlobe-width) - todo: figure out, how exactly - also allow all
+  // integers, not just powers of two, for allowing the desired functional dependency to be 
+  // realized more accurately
+
 
   /** Sets up, whether or not inharmonic partials should be expected. If this is set to true (and 
   the number cycles per block is > 1), the algorithm tries to find the actual partial frequency by
@@ -136,6 +151,10 @@ public:
   order to be considered a partial - if its narrower, we assume a sidelobe peak and discard the 
   peak. Default value is 0.75 (maybe 0.5 would be better? ...tests needed...) */
   void setMinPeakToMainlobeWidthRatio(T newWidth) { minPeakToMainlobeWidthRatio = newWidth; }
+  // i think, the optimal value should depend on the ratio of mainlobe-width to the width of the 
+  // widest sidelobe - if the widest sidelobe is 0.5 times as wide as the mainlobe, we should use a 
+  // factor > 0.5 or something - maybe measure this ratio for the Chebychev window - it will 
+  // probably depend on the length and certainly on the attenuation
 
   void setMinPeakToHarmonicWidthRatio(T newWidth) { minPeakToHarmonicWidthRatio = newWidth; }
 
@@ -177,8 +196,32 @@ public:
     freqsPhaseConsistent = shouldBeConsistent;
   }
 
-
+  //---------------------------------------------------------------------------------------------
   /** \name Inquiry */
+
+  /** Returns true, iff the given desired window type is one of our supported window types. */
+  bool isWindowTypeSupported(rsWindowFunction::WindowType desiredType)
+  { 
+    typedef rsWindowFunction::WindowType WT;
+    WT dt = desiredType;
+    return dt == WT::rectangular || dt == WT::hamming || dt == WT::blackman 
+        || dt == WT::blackmanHarris || dt == WT::dolphChebychev;
+  }
+  // todo: support more types. For the non-parameterized types, this is trivial - just add it to 
+  // the or-chain. But for other parameterized types (such as Kaiser), we need to expose the 
+  // relevant parameter via a setter and have to do a switch in fillWindow because for different
+  // window types, the parameter may have different meanings....
+
+  /** If a parameterized window function is used, this returns the numeric value of the window's
+  parameter. For a Dolph-Chebychev window, this parameter means the attenuation of the sidelobes
+  in dB. */
+  T getWindowParameter() const
+  {
+    return sidelobeRejection;
+    // If we want to use other parameterized windows later, we may need a switch here - currently, 
+    // the only supported parameterized window is the Dolph-Chebychev window
+  }
+
 
   std::vector<T> getOriginalTimeStamps() { return tIn; }
 
@@ -188,7 +231,7 @@ public:
   cycle-marks for the time-warping, to give client code access to its settings. */
   rsCycleMarkFinder<T>& getCycleFinder() { return cycleFinder; }
 
-
+  //---------------------------------------------------------------------------------------------
   /** \name Processing */
 
   /** Analyzes the given input sound and returns the sinusoidal model object that models the given 
@@ -219,6 +262,12 @@ protected:
   marks). */
   bool flattenPitch(T* sampleData, int numSamples);
 
+  /** Sets the maximum cycle length that was measured in the original, unflattened signal and does
+  all the required adjustments of blockSize, trafoSize, etc. and re-allocates our buffers, and 
+  re-creates the window and so on, if necessary. Called from flattenPitch during the 
+  pre-processing step. */
+  void setMaxMeasuredCycleLength(T maxLength);
+
   /** The second step in the analysis algo is to perform an FFT on each cycle of pitch-flattened
   signal. Because the pitch is now flat, each cycle has the same length (which was chosen to be
   a power of two, greater or equal to the length of the longest cycle in the input signal). This
@@ -241,6 +290,8 @@ protected:
   zero amplitude or not - we don't want them in the model - their mere existence is an artifact
   of the downshifting step. */
   void removeAliasing(RAPT::rsSinusoidalModel<T>& mdl);
+  // todo: prevent them from being produces in the first place - this will speed up the analysis
+  // because we will have to analyze fewer partials
 
   /** Fills the initial datapoint at time zero and the final datapoint at time 
   (numSamples-1)/sampleRate - these are treated separately. */
@@ -251,12 +302,9 @@ protected:
   as final step to convert all values. */
   void convertTimeUnit(RAPT::rsSinusoidalModel<T>& mdl);
 
-  /** Refines the frequency estimates in the model, if the respective options are set to true. */
+  /** Refines the frequency estimates in the model, if the respective options are set to true (this
+  step is optional). */
   void refineFrequencies(RAPT::rsSinusoidalModel<T>& mdl);
-
-  /** Sets the length of one cycle in samples and re-allocates buffers, if necessarry. */
-  void setCycleLength(int newLength);
-  // rename to setCycleLength
 
   /** Returns length of time-warping map (sampled at cycle marks). */
   int getMapLength() const { return (int) tIn.size(); }
@@ -336,7 +384,7 @@ protected:
 
 
   /** Fills our window function array. */
-  void fillWindow(); // just a stub atm
+  void fillWindow();
 
 
 
@@ -347,8 +395,15 @@ protected:
 
 
   // block/transform buffer sizes:
-  int cycleLength    = 0;  // length of one cycle in samples
-  int cyclesPerBlock = 1;  // number of cycles per block/window, power of 2 ..not yet used
+
+  // old: 
+  int cycleLength    = 0;  // length of one cycle in samples (after pitch-flattening)
+  int cyclesPerBlock = 1;  // number of cycles per block/window, power of 2
+
+  // new:
+  //T   cycleLength    = T(0);  // length of one cycle in samples (after pitch-flattening)
+  //T   cyclesPerBlock = T(1);  // number of cycles per block/window
+
   int blockSize      = 0;  // analysis block size == cycleLength * cyclesPerBlock
   int zeroPad        = 1;  // zero padding factor for FFT, power of 2
   int trafoSize      = 0;  // FFT size == blockSize * zeroPad
@@ -356,8 +411,14 @@ protected:
   
   typedef rsWindowFunction::WindowType WindowType;
   WindowType windowType = WindowType::rectangular;
+  // todo: switch to the Dolph-Chebychev window and let the user adjust its parameter - either in 
+  // terms of the sidelobe-rejection (in dB) or in mainlobe-width (in bins? or Hz? or some other 
+  // normalized unit?). there are some rules, how the number-of-cycles per block should be related
+  // to the mainlobe-width - wider mainlobes (i.e. higher sidelobe-rejection) require more cycles 
+  // per block - document these things...
+  T sidelobeRejection = 40; // sidelobe-rejection parameter in dB, applicable only when windowType 
+                            // is dolphChebychev, 40 dB is hamming-like, 60 blackman-like
 
-  //int window = rectangular;  // type of window function
 
   bool antiAlias   = false;
 

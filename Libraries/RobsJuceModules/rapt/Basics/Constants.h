@@ -62,4 +62,18 @@
 #define RS_TINY RS_MIN(float)
 
 
+
+static constexpr int allBits = -1;                                      // all bits are 1
+static constexpr int allBitsButFirst = std::numeric_limits<int>::max(); // only 1st bit is 1
+static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 1st bit is 0
+// todo: use rs-prefix or better: move into a class rsBitMasks which should sit in a file
+// BitTwiddling.h which also contains various shift, rotation, etc. functions - maybe also the
+// bit-reversed ordering that is needed for FFT algorithms
+
+// for unsiged int types, the bit twiddling is different:
+//static size_t allBits = std::numeric_limits<size_t>::max();
+//static size_t firstBitOnly = allBits - (allBits >> 1);
+//static size_t allBitsButFirst= allBits ^ firstBitOnly;
+
+
 #endif

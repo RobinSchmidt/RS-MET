@@ -17,11 +17,15 @@ bool runUnitTestsRapt()
 {
   bool passed = true;  // test result
 
+  std::cout << "Running unit tests for RAPT\n";
+
   // Data:
   passed &= runUnitTest(&arrayUnitTest,            "rsArrayTools and std::vector stuff");
   passed &= runUnitTest(&testBufferFunctions,      "BufferFunctions");  // merge with rsArrayTools tests
   passed &= runUnitTest(&testSortAndSearch,        "SortAndSearch");
-  passed &= runUnitTest(&doubleEndedQueueUnitTest, "rsDoubleEndedQueue");   // fails! -> fix that!
+  passed &= runUnitTest(&binaryHeapUnitTest,       "rsBinaryHeap");
+  passed &= runUnitTest(&ringBufferUnitTest,       "rsDelayBuffer");
+  passed &= runUnitTest(&doubleEndedQueueUnitTest, "rsDoubleEndedQueue");
   passed &= runUnitTest(&float64x2UnitTest,        "rsFloat64x2");
   passed &= runUnitTest(&float32x4UnitTest,        "rsFloat32x4");
   passed &= runUnitTest(&complexFloat64x2UnitTest, "std::complex<rsFloat64x2>");
@@ -36,7 +40,8 @@ bool runUnitTestsRapt()
   passed &= runUnitTest(&rootFinderUnitTest,             "rsRootFinder");
   passed &= runUnitTest(&correlationUnitTest,            "correlation");
   passed &= runUnitTest(&testVector,                     "rsVector");
-  passed &= runUnitTest(&testMatrix,                     "rsMatrixOld");
+  passed &= runUnitTest(&testMatrix,                     "rsMatrix");
+  //passed &= runUnitTest(&testRationalNumber,             "rsRationalNumber"); // is in misc math tests
   passed &= runUnitTest(&testMiscMath,                   "misc math");  // fails on linux ("illegal instruction") - encounters a singular matrix
   passed &= runUnitTest(&testLinearAlgebra,              "rsLinearAlgebra");  // fails on linux ("illegal instruction")
   passed &= runUnitTest(&testPolynomial,                 "rsPolynomial");
@@ -55,8 +60,9 @@ bool runUnitTestsRapt()
 
   // Filters:
   //passed &= runUnitTest(&prototypeDesignUnitTest, "rsPrototypeDesigner"); // why commented?
-  passed &= runUnitTest(&filterSpecUnitTest,    "rsFilterSpecification (BA/ZPK)");
-  passed &= runUnitTest(&movingMaximumUnitTest, "moving maximum filter");
+  passed &= runUnitTest(&filterSpecUnitTest,     "rsFilterSpecification (BA/ZPK)");
+  passed &= runUnitTest(&movingMaximumUnitTest,  "moving maximum filter");
+  passed &= runUnitTest(&movingQuantileUnitTest, "moving quantile filter"); // under construction
 
 
   // Visualization:
@@ -80,5 +86,6 @@ bool runUnitTestsRapt()
   //...
   //...more to come...
 
+  std::cout << "\n";
   return passed;
 }

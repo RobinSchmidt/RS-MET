@@ -1,9 +1,6 @@
 //#include "romos_ModulationModules.h"
 //#include "../Algorithms/romos_Interpolation.h"
 
-namespace romos
-{
-
 //-------------------------------------------------------------------------------------------------
 
 void EnvelopeADSR::initialize()
@@ -147,6 +144,3 @@ void EnvelopeADSR::freeMemory()
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_7(EnvelopeADSR);
 
 //-------------------------------------------------------------------------------------------------
-
-
-}

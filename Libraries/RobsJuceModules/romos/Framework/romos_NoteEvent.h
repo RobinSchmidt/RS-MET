@@ -1,8 +1,6 @@
 #ifndef romos_NoteEvent_h
 #define romos_NoteEvent_h
 
-namespace romos
-{
 
   /**
 
@@ -80,6 +78,5 @@ namespace romos
   re-triggered). If velocities are also equal, the key will be considered, where lower keys precede higher ones. */
   bool noteEventLessByDeltaFrames(NoteEvent left, NoteEvent right); 
 
-}
 
 #endif

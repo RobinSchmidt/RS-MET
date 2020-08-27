@@ -61,5 +61,7 @@ void fakeResonance();
 void fakeResoLowpassResponse();
 void fakeResoDifferentDelays();
 
+void quantileFilter();
+
 
 #endif

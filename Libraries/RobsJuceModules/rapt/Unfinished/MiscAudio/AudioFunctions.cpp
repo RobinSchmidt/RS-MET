@@ -70,23 +70,41 @@ void rsSineAmplitudeAndPhase(T y0, T y1, T w, T *a, T *p)
   // less efficient than commented version above (always computes sin(*p + w) instead of just when
   // necessarry) - but might be more accurate numerically? ...tests are needed
 }
+// Sage can't solve this:
+// var("y0, y1, a, p, w")
+// eq1 = y0 == a * sin(p)
+// eq2 = y1 == a * sin(p+w)
+// solve([eq1,eq2],[p,a])
+// ..i solved it by hand, i think using an addition theorem somewhere...document the derivation...
+// Wolfram alpha can:
+//   solve y0 = a*sin(p), y1 = a*sin(p+w) for a,p
+// but the result looks different - in fact, it's a horrible mess compared to the formulas above
 
 
 // i get weird compiler errors when compiling include_rosic.cpp when these are not commented - wtf?
 template<class T>
 T rsSineFrequency(T y0, T y1, T y2, T smalll)
 {
-  rsAssert( fabs(y1) > smalll * (fabs(y0)+fabs(y2)), "y1 (numerically) zero is not allowed");
+  //rsAssert( fabs(y1) >= smalll * (fabs(y0)+fabs(y2)), "y1 (numerically) zero is not allowed");
+
+  if( rsAbs(y1) <= smalll * (rsAbs(y0)+rsAbs(y2)) )
+  {
+    rsError("y1 (too close to) zero is not allowed");
+    return T(0);
+  }
+
 
   // There's a recursion for the sine y[n] = a1*y[n-1] - y[n-2] where a1 = 2*cos(w) and the states
   // y[n-1], y[n-2] are initialized as y[n-1] = A * sin(p - w), y[n-2] = A * sin(p - 2*w) which in
   // our notation here translates to y2 = a1*y1 - y0. This leads to a1 = (y0+y2)/y1 and
   // w = acos(a1/2):
-  return acos(0.5*(y0+y2)/y1);
+  //return acos(0.5*(y0+y2)/y1);  // maybe we should clip the input to the acos to -1..+1
+
+  return acos(rsClip(0.5*(y0+y2)/y1, T(-1), T(+1))); 
 }
 
 template<class T>
-T rsSineFrequencyAtCore(T *x, int N, int n0, T smalll)
+T rsSineFrequencyAtCore(const T *x, int N, int n0, T smalll)
 {
   if( n0 <= 0 )
     n0 = 1;
@@ -104,7 +122,7 @@ T rsSineFrequencyAtCore(T *x, int N, int n0, T smalll)
 
 
 template<class T>
-T refineFrequencyEstimate(T *x, int N, int n, T w)
+T refineFrequencyEstimate(const T *x, int N, int n, T w)
 {
   T c = 2.0 / 3.0;  // found empirically
   T w1;             // w measured with 1 sample offset
@@ -142,7 +160,7 @@ T refineFrequencyEstimate(T *x, int N, int n, T w)
 }
 
 template<class T>
-T rsSineFrequencyAt(T *x, int N, int n0, bool refine)
+T rsSineFrequencyAt(const T *x, int N, int n0, bool refine)
 {
   // find indices of maxima/minima before and after the sample-index in question, taking into
   // account cases where our index n0 is not surrounded by peaks/valley in which case we take the

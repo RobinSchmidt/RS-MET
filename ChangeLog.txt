@@ -4,6 +4,8 @@ that break client code.
 
 Client-Code-Breaking Changes:
 
+2020/07/28: renamed rsRingBuffer to rsDelayBuffer
+            renamed rsBuffer to rsRingBuffer
 2020/05/08: rsOnePoleFilter::applyBidirectionally: renamed to applyForwardBackward
 2019/11/26: renamed rsSpectrogram to rsSpectrogramProcessor
 2019/10/20: rsLine2D: changed output parameters from references to pointers

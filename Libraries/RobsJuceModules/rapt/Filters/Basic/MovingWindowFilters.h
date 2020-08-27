@@ -10,10 +10,16 @@ see: https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
 
 see also here:
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=465829 
+
+todo: 
+-maybe implement detection of intersample-peaks by fitting a parabola to triplets of samples
+ and sloving for its peaks in cases, where a peak is detected - that could actually be a useful
+ feature for any kind of envelope detector
+
 */
 
 template<class T>
-class rsMovingMaximumFilter
+class rsMovingMaximumFilter  // rename to rsExtremumFilter, maybe move to Scientific
 {
 
 public:
@@ -27,14 +33,13 @@ public:
   void setLength(size_t newLength)
   {
     delayLine.setLength(newLength);
-
-
     reset();
     // preliminary - we need to put the filter into its initial state on length changes, so the
-    // length cannot yet be
+    // length cannot yet be modulated
     // todo: we may have to update the content of the maxDeque - when this is called during running
-    // the filter and new length is shorter than the old, some values that are currently in the deque
-    // will never be removed - so we should remove them in the moment, when the length changes
+    // the filter and new length is shorter than the old, some values that are currently in the 
+    // deque will never be removed - so we should remove them in the moment, when the length 
+    // changes
   }
 
   // todo: add function setMaxLength
@@ -44,9 +49,9 @@ public:
   that implements a less-than comparison in which case the whole filter turns into a moving-minimum
   filter. */
   void setGreaterThanFunction(bool (*greaterThan)(const T&, const T&))
-  {
-    greater = greaterThan;
-  }
+  { greater = greaterThan; }
+
+  // maybe use std::function instead of plain function pointer:
   //void setComparisonFunction(const std::function<bool(const T&, const T&)>& greaterThan)
   //{ greater = greaterThan; }
 
@@ -62,18 +67,14 @@ public:
   /** Computes and returns an output sample.  */
   inline T getSample(T in)
   {
+    // debug - so we can see the length when we hit an assert in pushBack:
+    size_t L = maxDeque.getLength();
+
     // accept new incoming sample - this corresponds to
     // Nayuki's Step 2 - "increment the array range’s right endpoint"
     while(!maxDeque.isEmpty() && greater(in, maxDeque.readTail()) )
       maxDeque.popBack();
     maxDeque.pushBack(in);
-    // maybe we could further reduce the worst case processing cost by using binary search to
-    // adjust the new tail-pointer instead of linearly popping elements one by one? search
-    // between tail and head for the first element that is >= in (or not < in) - but maybe that
-    // would destroy the amortized O(1) cost? ...but actually, i don't think so
-    // maybe using a "greater" function instead of a > operator is not such a good idea,
-    // performance-wise - we should do performance tests and maybe for production code, provide
-    // a version of getSample that just uses >
 
     // update delayline (forget oldest sample and remember current sample for later), this
     // corresponds to Nayuki's Step 3 - "increment the array range’s left endpoint":
@@ -108,7 +109,7 @@ public:
 
 protected:
 
-  rsRingBuffer<T> delayLine;
+  rsDelayBuffer<T> delayLine;
   rsDoubleEndedQueue<T> maxDeque;
 
   bool (*greater)(const T&, const T&) = &rsGreater;

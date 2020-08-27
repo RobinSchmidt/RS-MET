@@ -233,7 +233,7 @@ bool testNumDiffStencils()
   // code embedded
 
   bool r = true;
-  typedef std::vector<double> Vec;
+  typedef std::vector<double> Vec;  // use rsRationalNumber
   Vec s;
 
   // symmetric, equidistant 3-point stencil -1,0,1:
@@ -848,12 +848,115 @@ bool testMultiLayerPerceptron(std::string &reportString)
 }
 
 
+bool testFraction()  // maybe move up
+{
+  bool res = true;
+
+  using R = rsFraction<int>;
+
+  R p, q, r;
+
+
+  // test canonicalization:
+  p = R( 8,  12); q = R( 2, 3); res &= p == q;
+  p = R(-8, -12); q = R( 2, 3); res &= p == q;
+  p = R( 8, -12); q = R(-2, 3); res &= p == q;
+  p = R(-8,  12); q = R(-2, 3); res &= p == q;
+  // seems like the GCD algo works also with negative numbers - maybe that's the reason why the 
+  // modulo operation works the way it does in C++ (it doesn't conform to mathematical conventions
+  // of modular arithmetic when negative numbers are involved - it may return negative numbers)
+
+  // test arithmetic operators:
+  p = R(2,5), q = R(3,7); 
+  r = p + q; res &= r == R( 29, 35); // (2/5) + (3/7) = 29/35
+  r = p - q; res &= r == R( -1, 35); // (2/5) - (3/7) = -1/35
+  r = p * q; res &= r == R(  6, 35); // (2/5) * (3/7) =  6/35
+  r = p / q; res &= r == R( 14, 15); // (2/5) / (3/7) = 14/15
+  r = p + 3; res &= r == R( 17,  5); // (2/5) + 3     = 17/5
+  r = 3 + p; res &= r == R( 17,  5);
+  r = p - 3; res &= r == R(-13,  5);
+  r = 3 - p; res &= r == R( 13,  5);
+  r = p * 3; res &= r == R(  6,  5);
+  r = 3 * p; res &= r == R(  6,  5);
+  r = p / 3; res &= r == R(  2, 15);
+  r = 3 / p; res &= r == R( 15,  2);
+
+  // test comparison operators:
+  res &=   R(3,5) == R(3,5);
+  res &=   R(3,5) <= R(3,5);
+  res &=   R(3,5) >= R(3,5);
+  res &= !(R(3,5) <  R(3,5));
+  res &= !(R(3,5) >  R(3,5));
+  res &=   R(3,5) != R(4,5);
+  res &=   R(3,5) <  R(4,5); 
+  res &=   R(3,5) <= R(4,5);
+  res &= !(R(3,5) >  R(4,5));
+  res &= !(R(3,5) >= R(4,5));
+  // are all cases covered? or are more tests needed?
+
+
+  // test using vectors and matrices of rational numbers
+  using Mat = rsMatrix<R>;
+  using Vec = std::vector<R>;
+  R a(1,2), b(2,3), c(3,4), d(4,5);
+  Vec v({a,b,c,d});
+  Mat A(2, 2, &v[0]);
+  Mat A2 = A*A;
+  // todo: test solving a system of linear equations with rational numbers
+  // -pivoting is actually not necessary, but it should not hurt either
+
+
+  // todo: implement function to produce Bernoulli numbers
+
+
+
+
+
+  // produce the continued fraction expansion of pi:
+  rsContinuedFractionGenerator<int, double> cfg(PI);
+  int N = 13; // 13 is as high as we may go with double precision
+  std::vector<int> cfe(N);
+  for(int n = 0; n < N; n++)
+    cfe[n] = cfg.getNext();
+  res &= cfe == std::vector<int>({ 3, 7, 15, 1, 292, 1, 1, 1, 2, 1, 3, 1, 14 });
+  // target values taken from:
+  // https://mathworld.wolfram.com/PiContinuedFraction.html
+
+  // compute convergents from the continued fraction expansion:
+  std::vector<R> convergents(N);
+  for(int n = 0; n < N; n++)
+    convergents[n] = rsContinuedFractionConvergent(&cfe[0], n); 
+  // note that this is a "Shlemiel the painter" algorithm - to compute a whole bunch of convergents
+  // of increasing accuracy, we should really have a function that re-uses the results from the
+  // previous iteration (which is the convergent of less accuracy) - but this is not production 
+  // code
+  std::vector<R> target({ R(0,1), R(3,1), R(22,7), R(333,106), R(355,113), R(103993,33102), 
+    R(104348,33215), R(208341,66317), R(312689,99532), R(833719,265381), R(1146408,364913 ), 
+    R(4272943,1360120), R(5419351,1725033)});
+  res &= convergents == target;
+  // target values taken from: https://oeis.org/A002485 https://oeis.org/A002486
+  // ok - it seems, computing convergents from the continued fraction coeffs does not introduce
+  // additional error (i.e. no overflow - roundoff is no issue here anymore)
+
+  // test continued fraction expansion of a rational number:
+  p = R(1473,50);
+  cfe = rsContinuedFraction(p);
+  res &= cfe == std::vector<int>({29, 2, 5, 1, 3});
+
+  // convert back to rational:
+  q = rsContinuedFractionConvergent(&cfe[0], (int) cfe.size());
+  res &= q == p;
+
+  return res;
+}
+
 bool testMiscMath()
 {
   std::string dummy;    // get rid
 
   bool testResult = true;
 
+  testResult &= testFraction();
   testResult &= testExponentialCurveFitting(  dummy);
   testResult &= testRootFinding(              dummy);
   testResult &= testGradientBasedOptimization(dummy);

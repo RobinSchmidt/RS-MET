@@ -1,8 +1,5 @@
 //#include "romos_ArithmeticModules.h"
 
-namespace romos // move this namespace wrapping into romos.cpp
-{
-
 void ConstantModule::initialize()
 {
   initOutputPins({ "" });
@@ -11,7 +8,7 @@ void ConstantModule::initialize()
   audioOutputs   = &value;
   outFrameStride = 0;
 }
-void ConstantModule::processMonoFrame(Module *module, int voiceIndex)
+void ConstantModule::processMonoFrame(Module* /*module*/, int /*voiceIndex*/)
 {
   // nothing to do - the constant sits just there in the output pin
 }
@@ -277,5 +274,3 @@ void AdderNModule::disconnectInputPin(int inputPinIndex)
   }
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_N(AdderNModule);
-
-}

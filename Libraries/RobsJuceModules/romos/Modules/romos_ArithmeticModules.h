@@ -1,8 +1,8 @@
 #ifndef romos_ArithmeticModules_h
 #define romos_ArithmeticModules_h
 
-namespace romos
-{
+//namespace romos
+//{
 
 //-------------------------------------------------------------------------------------------------
 
@@ -361,7 +361,7 @@ public:
 //OFFSET            // y = x+c
 //MATRIX,      // dynamic Ins/Outs
 
-
-}
+//
+//}
 
 #endif 

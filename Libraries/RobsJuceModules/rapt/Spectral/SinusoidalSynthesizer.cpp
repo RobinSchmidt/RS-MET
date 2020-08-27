@@ -77,7 +77,7 @@ void rsSinusoidalSynthesizer<T>::synthesizePartial(
   td = td + timeShift; // todo: implement vector += scalar operator and use: td += timeShift;
   T Ts = T(1) / sampleRate;  // sampling interval
   std::vector<T> t(N);
-  for(size_t n = 0; n < N; n++)          // fill time-array
+  for(int n = 0; n < N; n++)          // fill time-array
     t[n] = (nStart + n) * Ts;
 
   std::vector<T> a = getInterpolatedAmplitudes(partial, td, t);
@@ -90,7 +90,7 @@ void rsSinusoidalSynthesizer<T>::synthesizePartial(
 
   // synthesize the sinusoid and add it to what's already there:
   std::vector<T> s(N); // needed here only for plotting, remove for production code
-  for(size_t n = 0; n < N; n++)
+  for(int n = 0; n < N; n++)
     s[n] = x[nStart+n] += a[n] * cos(p[n]);
   // we use the cosine (not the sine) because that's what's used in the literature - probably 
   // because it's consistent with representing real sinusoids as the real part of complex

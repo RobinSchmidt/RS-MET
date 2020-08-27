@@ -569,36 +569,60 @@ bool testPolynomialInterpolation(std::string &reportString)
 
   double tol = 1.e-13; // error tolerance
 
+  using Poly = rsPolynomial<double>;
+
   // establish dataset to interpolate:
-  static const int N = 7;
+  static const int N = 7;  // N is number of data points, not polynomial degree!
   double x[N] = {-0.5, 1.0, 0.7, 1.5, -2.0, -1.3, 2.2};
   double y[N] = { 1.2, 1.4, 0.2, 2.5, -1.7, -2.3, 1.3};
 
   // get polynomial coefficients:
   double a[N];
-  rsPolynomial<double>::interpolant(a, x, y, N);
+  Poly::interpolant(a, x, y, N);
 
   // check, if the polynomial really matches the data:
   double yc[N];
   int n;
-  for(n = 0; n < N; n++)
-  {
-    yc[n] = rsPolynomial<double>::evaluate(x[n], a, N-1);
-    testResult &= rsIsCloseTo(yc[n], y[n], tol);
-  }
+  for(n = 0; n < N; n++) {
+    yc[n] = Poly::evaluate(x[n], a, N-1);
+    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
+
+  // test computing coeffs for Newton basis polynomials and evaluation of Newton polynomial:
+  double c[N];
+  rsArrayTools::copy(y, c, N);
+  Poly::coeffsNewton(x, c, N);
+  for(n = 0; n < N; n++) {
+    yc[n] = Poly::evaluateNewton(x[n], c, x, N-1);
+    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
+
+  // test in-place implementation of finding polynomial coeffs via Newton expansion:
+  Poly::interpolantViaNewton(a, x, y, N, c); // after the call, a will contain the desired coeffs 
+  for(n = 0; n < N; n++) {
+    yc[n] = Poly::evaluate(x[n], a, N-1);
+    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
+
+  // check, if the workspace c contains coeffs of polynomial with roots at the original x[n] - but
+  // only the values up to x[N-2] are roots - the last original x is not a root (this is weird - 
+  // but obviously, the polynomial can only have N-1 roots because it's of degree N-1):
+  for(n = 0; n < N-1; n++) {   // loop only up to N-1 because x[N-1] is not a root of c
+    yc[n] = Poly::evaluate(x[n], c, N-1);
+    testResult &= rsIsCloseTo(yc[n], 0.0, tol); }
+  // what are the implications of the fact that the last x is not a root - does it mean, the order
+  // of stored x-values (and associated y-values) can have an impact on the roundoff error? i 
+  // think so...it probably has anyway
 
   // test function for equidistant abscissa values:
   double x0 = -3.2;
   double dx =  1.1;
-  rsPolynomial<double>::interpolant(a, x0, dx, y, N);
-  for(n = 0; n < N; n++)
-  {
-    yc[n] = rsPolynomial<double>::evaluate(x0+n*dx, a, N-1);
-    testResult &= rsIsCloseTo(yc[n], y[n], tol);
-  }
+  Poly::interpolant(a, x0, dx, y, N);
+  for(n = 0; n < N; n++) {
+    yc[n] = Poly::evaluate(x0+n*dx, a, N-1);
+    testResult &= rsIsCloseTo(yc[n], y[n], tol); }
 
   return testResult;
 }
+// todo: test the different algorithms (Vandermonde-matrix, Lagrange, Newton) to see, if they give 
+// the same results
 
 bool testPolynomialRootFinder(std::string &reportString)
 {
@@ -932,6 +956,7 @@ double rsEvaluateChebychevPolynomial(double x, int n)
   }
   return t0;
 }
+// move to rsPolynomial - done - use it everywhere and delete this here
 
 double rsEvaluateChebychevExpansion(double x, double *a, int N)
 {
@@ -1157,7 +1182,7 @@ bool testJacobiPolynomials(std::string &reportString)
 
   // L1 and L2 now contain Legendre polynomials of orders 0 and 1, we compute Legendre polynomial
   // of successively higher orders using recursion, using the two arrays alternately for the
-  // in-plce computed results:
+  // in-place computed results:
   rsPolynomial<double>::legendreRecursion(L1, 2, L2, L1);
   rsPolynomial<double>::legendreRecursion(L2, 3, L1, L2);
   rsPolynomial<double>::legendreRecursion(L1, 4, L2, L1);
@@ -1170,6 +1195,51 @@ bool testJacobiPolynomials(std::string &reportString)
      && L2[5]==-43.3125 && L2[6]==0  && L2[7]==26.8125;
 
   return testResult;
+}
+
+bool testSpecialPolynomials()
+{
+  bool r = true;
+
+  using Poly = rsPolynomial<double>;
+
+  double y1, y2;
+  double tol = 1.e-10; 
+  // we need a rather high tolerance and for high-degree polynomials we need more tolerance than 
+  // for lower degree - i think, it is because for the high degree, the values at the evaluation 
+  // point +-2 become large, so the absolute error gets large there too - or something
+
+  // Compare recursive vs driect evaluation of Chebychev polynomials:
+  int nMax = 8;  // maximum degree
+  for(int n = 0; n < nMax; n++)
+  {
+    y1 = Poly::chebychevRecursive(-0.5, n);
+    y2 = Poly::chebychevDirect(   -0.5, n);
+    r &= rsIsCloseTo(y1, y2, tol);
+
+    y1 = Poly::chebychevRecursive(+0.5, n);
+    y2 = Poly::chebychevDirect(   +0.5, n);
+    r &= rsIsCloseTo(y1, y2, tol);
+
+    y1 = Poly::chebychevRecursive(-1.0, n);
+    y2 = Poly::chebychevDirect(   -1.0, n);
+    r &= rsIsCloseTo(y1, y2, tol);
+
+    y1 = Poly::chebychevRecursive(+1.0, n);
+    y2 = Poly::chebychevDirect(   +1.0, n);
+    r &= rsIsCloseTo(y1, y2, tol);
+
+    y1 = Poly::chebychevRecursive(-2.0, n);
+    y2 = Poly::chebychevDirect(   -2.0, n);
+    r &= rsIsCloseTo(y1, y2, tol);
+
+    y1 = Poly::chebychevRecursive(+2.0, n);
+    y2 = Poly::chebychevDirect(   +2.0, n);
+    r &= rsIsCloseTo(y1, y2, tol);
+    //rsAssert(r);
+  }
+
+  return r;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -1303,6 +1373,37 @@ bool testRationalFunction(std::string& reportString)
   return testResult;
 }
 
+bool testQuadraticTo3Points()
+{
+  bool r = true;
+
+  using Poly = rsPolynomial<double>;
+
+  // test prototype fitQuadratic:
+  double x1 =  1, y1 = 4;
+  double x2 =  2, y2 = 9;
+  double x3 = -1, y3 = 6;
+  double a0, a1, a2;
+  fitQuadratic(x1, y1, x2, y2, x3, y3, &a0, &a1, &a2);
+  double z1 = a0 + a1*x1 + a2*x1*x1;
+  double z2 = a0 + a1*x2 + a2*x2*x2;
+  double z3 = a0 + a1*x3 + a2*x3*x3;
+  r &= z1 == y1 && z2 == y2 && z3 == y3;  // zi should be equal to yi
+
+  // test Poly::fitQuadraticDirect:
+  double a[3];
+  double x[3] ={ x1,x2,x3 }, y[3] ={y1,y2,y3};
+  Poly::fitQuadraticDirect(a, x, y);
+  r &= a[0] == a0 && a[1] == a1 && a[2] == a2;
+
+  // test Poly::fitQuadraticLagrange:
+  Poly::fitQuadraticLagrange(a, x, y);
+  r &= a[0] == a0 && a[1] == a1 && a[2] == a2;
+
+  return r;
+}
+
+
 //bool testPolynomial(std::string &reportString)
 bool testPolynomial()
 {
@@ -1327,6 +1428,8 @@ bool testPolynomial()
   testResult &= testPolynomialBaseChange(                     reportString);
   testResult &= testPolynomialRecursion(                      reportString);
   testResult &= testJacobiPolynomials(                        reportString);
+  testResult &= testSpecialPolynomials();
+  testResult &= testQuadraticTo3Points();
 
   // under construction:
   testResult &= testPowersChebychevExpansionConversion(       reportString);

@@ -1,8 +1,8 @@
 #ifndef romos_Module_h
 #define romos_Module_h
 
-namespace romos
-{
+//namespace romos
+//{
 
 enum connectionKinds
 {
@@ -349,14 +349,14 @@ public:
   modulePointer/pinIndex manipulations will end when it arrives at an elementary non-proxy module - 
   this is then the actual modulePointer/pinIndex pair that will be used by the signal processing 
   code. */
-  virtual void mapApparentSourceToProcessingSource(Module * &sourceModule,
-    int &sourceOutputPinIndex) { }
+  virtual void mapApparentSourceToProcessingSource(Module* /*&sourceModule*/,
+    int /*&sourceOutputPinIndex*/) { }
 
   /** Given a modulePointer/pinIndex pair, this function will possibly modify the pair such that it
   represents the module/index pair as apparent on the GUI. This realizes the inverse mapping of 
   mapApparentSourceToProcessingSource - see explanation there for more details. */
-  virtual void mapProcessingSourceToSourceApparent(Module * &sourceModule, 
-    int &sourceOutputPinIndex) { }
+  virtual void mapProcessingSourceToSourceApparent(Module* /*&sourceModule*/, 
+    int /*&sourceOutputPinIndex*/) { }
 
   // oevrride both of these in ModuleProxy and ContainerModule
 
@@ -648,8 +648,8 @@ protected:
 private:
 
   // copy and assignment - not possible:
-  Module(const Module &other) {}
-  Module& operator=(const Module &other) { return *this; }
+  Module(const Module& /*other*/) {}
+  Module& operator=(const Module& /*other*/) { return *this; }
 
 };
 
@@ -688,6 +688,6 @@ the error text and give the user the option to write the message into a logfile.
 void triggerRuntimeError(const char *errorMessage);
 
 
-} // end namespace romos
+//} // end namespace romos
 
 #endif

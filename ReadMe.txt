@@ -51,7 +51,7 @@ generally available for freelance work on audio DSP algorithms with special
 interest in musical DSP.
 
 for a quick overview for what i'm planning for rapt library, you may take a 
-look at this totally incomplete, skeletal document:
+look at this horribly incomplete, outdated, skeletal document:
 https://github.com/RobinSchmidt/RS-MET/blob/master/Documentation/RAPT/LaTeX/UserManual/UserManual.pdf
 
 

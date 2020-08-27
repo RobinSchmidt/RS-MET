@@ -69,12 +69,12 @@ std::vector<double> SampleTailExtender::extendSample (std::vector<double> inputS
             std::vector<double> sinusoid = synthesiseSinusoid (numSynthesisSamples, 1.0, phase, frequency, sampleRate);
             
             // if there is harmonic beating to be applied
-            if (h < harmonicAnalyser.beatingAmount.size() && harmonicAnalyser.beatingAmount[h] > 0.0)
+            if (h < (int)harmonicAnalyser.beatingAmount.size() && harmonicAnalyser.beatingAmount[h] > 0.0)
             {
                 applyHarmonicBeatingToSinusoid (sinusoid, sampleRate, beatingStrength * harmonicAnalyser.beatingAmount[h], harmonicAnalyser.beatingFrequency[h]);
             }
             
-            for (int i = 0; i < synthesisedSignal.size(); i++)
+            for (size_t i = 0; i < synthesisedSignal.size(); i++)
             {
                 synthesisedSignal[i] += sinusoid[i] * (decayEnvelope[i] * mag);
             }
@@ -87,7 +87,7 @@ std::vector<double> SampleTailExtender::extendSample (std::vector<double> inputS
     // synthesise new signal
     std::vector<double> outputSignal (synthesisStartPointInSamples, 0);
     
-    for (int i = 0; i < outputSignal.size(); i++)
+    for (size_t i = 0; i < outputSignal.size(); i++)
         outputSignal[i] = inputSignal[i];
 
     // do crossfade
@@ -97,14 +97,14 @@ std::vector<double> SampleTailExtender::extendSample (std::vector<double> inputS
         double fadeInEnvelope = cos ( (1. - alpha) * M_PI) * 0.5 + 0.5;
         double fadeOutEnvelope = cos (alpha * M_PI) * 0.5 + 0.5;
 
-		if (splicePoint + i > outputSignal.size()-1 || synthesisedSignal.size() == 0 || i > synthesisedSignal.size()-1)
+		if (splicePoint + i > (int) outputSignal.size()-1 || synthesisedSignal.size() == 0 || i > (int) synthesisedSignal.size()-1)
 			break;
 
         outputSignal[splicePoint + i] = fadeOutEnvelope * outputSignal[splicePoint + i] + fadeInEnvelope * synthesisedSignal[i];
     }
 
     // add synthesised signal to the end
-    for (int i = crossfadeLength; i < synthesisedSignal.size(); i++)
+    for (size_t i = crossfadeLength; i < synthesisedSignal.size(); i++)
         outputSignal.push_back (synthesisedSignal[i]);
     
     return outputSignal;
@@ -270,7 +270,7 @@ void SampleTailExtender::setSignalToZeroBelowThreshold (std::vector<double>& sig
     int thresholdPoint = -1;
     int blockSize = 4096;
     
-    for (int i = 0; i < signal.size() - blockSize; i += blockSize)
+    for (int i = 0; i < (int)signal.size() - blockSize; i += blockSize)
     {
         double peakEnergy = 0.;
         for (int j = 0; j < blockSize; j++)
@@ -290,7 +290,7 @@ void SampleTailExtender::setSignalToZeroBelowThreshold (std::vector<double>& sig
     
     if (thresholdPoint != -1)
     {
-        for (int i = thresholdPoint; i < signal.size(); i++)
+        for (int i = thresholdPoint; i < (int)signal.size(); i++)
         {
             int j = i - thresholdPoint;
             
@@ -314,7 +314,7 @@ void SampleTailExtender::applyHarmonicBeatingToSinusoid (std::vector<double>& si
     double minValueForBeatingEnvelope = 1. - beatingAmount;
     double rangeOfBeatingEnvelope = 1. - minValueForBeatingEnvelope;
     
-    for (int i = 0; i < sinusoid.size(); i++)
+    for (size_t i = 0; i < sinusoid.size(); i++)
     {
         double x = static_cast<double> (i) / static_cast<double> (sinusoid.size());
         double y = cos (2. * M_PI * x * beatingFrequency * numSeconds);

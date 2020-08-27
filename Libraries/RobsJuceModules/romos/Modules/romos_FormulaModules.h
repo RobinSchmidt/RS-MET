@@ -1,9 +1,6 @@
 #ifndef romos_FormulaModules_h
 #define romos_FormulaModules_h
 
-namespace romos
-{
-
 //-------------------------------------------------------------------------------------------------
 
 /** A module that a applies a user defined formula y = f(x) with one input and one output. */
@@ -179,13 +176,5 @@ public:
     createModule =  []()->Module* { return new FormulaModule_N_M; };
   }
 };
-
-
-
-
-
-
-
-}
 
 #endif 

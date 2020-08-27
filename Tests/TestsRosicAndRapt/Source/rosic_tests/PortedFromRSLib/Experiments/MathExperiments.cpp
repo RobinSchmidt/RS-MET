@@ -189,7 +189,7 @@ void pentaDiagnonalMatrix()
   // the 2nd algo gives also a wrong result - but a different one - double-check everything!
   // psi[0] is wrong
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -197,7 +197,7 @@ void pentaDiagnonalMatrix2()
 {
   typedef std::vector<double> Vec;
 
-  int N = 9;
+  //int N = 9;
   Vec d = { 2,0,4,0,4,0,4,0,2 };
   Vec u = { 1,1,1,1,1,1,1,1   };
   Vec v = {-2,0,-2,0,-2,0,-2  };
@@ -230,7 +230,7 @@ void pentaDiagnonalMatrix2()
   // elminination solver for comparison - to figure out, if it's worth to implement pivoting for
   // freq-estimation
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 // for production code later use plain c-arrays..
@@ -440,7 +440,7 @@ void minSqrdDifsForFixSums()
   // one end would increase the error at the other in just the right way that the overall cost 
   // remains constant
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // Observations:
 
@@ -538,7 +538,7 @@ void minSqrdCurvForFixSums()
   rsPlotVectors(u, v, u-v);
   // they are not exactly the same, but very similar and their difference shows a clear alternating 
   // pattern
-  int dummy = 0;
+  //int dummy = 0;
 
   // maybe we should include an error term for the difference between first and last datapoint - 
   // that may work at least in case of odd N (then the function is odd and the ends are far apart
@@ -667,7 +667,7 @@ void sineParameters()
 
   w2 = rsSineFrequency(y0, y1, y2);
   rsSineAmplitudeAndPhase(y0, y1, w2, &A2, &p2);
-  int dummy = 0;
+  //int dummy = 0;
 
   /*
   // We also have:
@@ -811,6 +811,64 @@ T rsInterpolateCubicHermite(T x1, T x2, T x3, T x4, T y1, T y2, T y3, T y4, T x)
   return evaluatePolynomialAt(s*(x-x2), a, 3);
 }
 */
+
+void chebyRoots(double* r, int N)
+{
+  for(int i = 0; i < N; i++) {
+    int k = i+1;
+    r[i] = cos( (2*k-1)*PI / (2*N) ); }
+}
+// implement also chebyExtrema, move to rsPolynomial
+// Roots:    x_k = cos( (2k-1)*pi/(2n) ), k = 1,..,n
+// Extrema:  x_k = cos( k*pi/n ),         k = 0,..,n
+
+// todo: interpolate the function f(x) = 1 / (1 + x^2) with a single high order polynomial with the
+// goal to show Runge's phenomenon - also use nonequidistant sample points (especially the roots of
+// a Chebychev polynomial) in an attempt to reduce this phenomenon
+void chebychevInterpolant()
+{
+  static const int N = 11;  // number of nodes
+  int M = 500; // number of data points for plot
+
+  double xMin = -5.0;
+  double xMax = +5.0;
+
+  using AT   = rsArrayTools;
+  using Poly = rsPolynomial<double>;
+  using Vec  = std::vector<double>;
+
+  double x1[N], y1[N], x2[N], y2[N];
+  double a1[N], a2[N], wrk[N];
+
+  Vec xi(M), yi1(M), yi2(M), yt(M);
+  AT::fillWithRangeLinear(&xi[0], M, xMin, xMax);
+  for(int i = 0; i < M; i++)
+    yt[i] = 1 / (1 + xi[i]*xi[i]);
+
+  // create interpolant from equidistant data:
+  AT::fillWithRangeLinear(x1, N, xMin, xMax);
+  for(int i = 0; i < N; i++)
+    y1[i] = 1 / (1 + x1[i]*x1[i]); // f(x) = 1 / (1 + x^2)
+  Poly::interpolantViaNewton(a1, x1, y1, N, wrk);
+  for(int i = 0; i < M; i++)
+    yi1[i] = Poly::evaluate(xi[i], a1, N);
+
+  // create non-equidistant sample points at (suitably scaled and shifted) roots of 
+  // Chebychev polynomials and interpolate those - this should avoid Runge's phenomenon:
+  chebyRoots(x2, N);
+  AT::transformRange(x2, x2, N, xMin, xMax);
+  for(int i = 0; i < N; i++)
+    y2[i] = 1 / (1 + x2[i]*x2[i]);
+  Poly::interpolantViaNewton(a2, x2, y2, N, wrk);
+  for(int i = 0; i < M; i++)
+    yi2[i] = Poly::evaluate(xi[i], a2, N);
+
+  rsPlotVectorsXY(xi, yt, yi1, yi2);  
+  // yi1 shows clearly Runge's phenomenon, yi2 is a lot better but still not really great. However,
+  // yi2 gets better with more datapoints whereas yi1 gets worse. Compare N=5, N=11, N=17
+
+}
+
 
 void naturalCubicSpline()
 {
@@ -1042,7 +1100,7 @@ void rationalInterpolation()
 
   // ....
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 // move to RAPT:
@@ -1343,74 +1401,8 @@ double forwardDifference(const F& f, double x, double h)
   return (f(x+h) - f(x)) / h;
 }
 
-// move to rsPolynomial
-template<class T>
-void fitQuadratic(T x1, T y1, T x2, T y2, T x3, T y3, T* a0, T* a1, T* a2)
-{
-  T k1 = y1 / ((x1-x2)*(x1-x3));
-  T k2 = y2 / ((x2-x1)*(x2-x3));
-  T k3 = y3 / ((x3-x1)*(x3-x2));
-  T b1 = -k1*(x2+x3);
-  T b2 = -k2*(x1+x3);
-  T b3 = -k3*(x1+x2);
-  T c1 = k1*x2*x3;
-  T c2 = k2*x1*x3;
-  T c3 = k3*x1*x2;
-  *a2  = k1 + k2 + k3;  // coeff for x^2
-  *a1  = b1 + b2 + b3;  // coeff for x^1
-  *a0  = c1 + c2 + c3;  // coeff for x^0
-
-  // Formulas were derived from setting up 3 polynomials in product form, where each has zeros at 
-  // all but one of the datapoints, say xi, and to have value yi at xi and then adding them up 
-  // (idea due to Lagrange):
-  //   p1(x) = k1*(x-x2)*(x-x3)       p1 has zeros at at x2,x3
-  //   p2(x) = k2*(x-x1)*(x-x3)       p2 has zeros at at x1,x3
-  //   p3(x) = k3*(x-x1)*(x-x2)       p3 has zeros at at x1,x2
-  // Require:
-  //   p1(x1) = y1, p2(x2) = y2, p3(x3) = y3
-  // Solve these for the ki, i.e. k1,k2,k3. For example, k1 = y1 / ((x1-x2)*(x1-x3)). Plug, for 
-  // example, k1 back into the p1 equation and multiply it out to obtain its coeffs - do the same 
-  // for p2 and p3 and then obtain the final polynomial coeffs by adding the corresponding  coeffs 
-  // of each of the partial polynomials.
-
-  // operations: add: 9, sub: 6, mul: 12, div: 3, neg: 3
-}
-// maybe derive simplified formulas for the xas x1 = -1, x2 = 0, x3 = +1
-
-// move to unit test:
-bool testQuadraticTo3Points()
-{
-  bool r = true;
-
-  double x1 =  1, y1 = 4;
-  double x2 =  2, y2 = 9;
-  double x3 = -1, y3 = 6;
-  double a0, a1, a2;
-  fitQuadratic(x1, y1, x2, y2, x3, y3, &a0, &a1, &a2); // add: 9, sub: 6, mul: 12, div: 3, neg: 3
-  double z1 = a0 + a1*x1 + a2*x1*x1;
-  double z2 = a0 + a1*x2 + a2*x2*x2;
-  double z3 = a0 + a1*x3 + a2*x3*x3;
-  r &= z1 == y1 && z2 == y2 && z3 == y3;  // zi should be equal to yi - yep - works
-
-  // compare results to rsPolynomial<T>::fitQuadratic:
-  double a[3];
-  double x[3] ={ x1,x2,x3 }, y[3] ={y1,y2,y3};
-  rsPolynomial<double>::fitQuadratic(a, x, y); // add: 4, sub: 8, mul: 9, div: 4
-  r &= a[0] == a0 && a[1] == a1 && a[2] == a2;
-
-  // Maybe make some benchmarks, which formula is more efficient. The one derived by Lagrange's 
-  // method certainly has the computations organized in a much more orderly manner - but is it more 
-  // efficient? And what about numeric precision?
-
-  return r;
-}
-
 void numericDifferentiation()
 {
-
-  testQuadraticTo3Points();
-
-
   // When using numerical differentiation formulas, there are two sources of error: the error 
   // coming from the approximation itself and the roundoff error due to finite precision 
   // arithmetic. The first error decreases with decreasing approximation stepsize h, whereas the 
@@ -1475,7 +1467,7 @@ void numericDifferentiation()
 
     err[i] = fabs(t-a);                         // error
     logErr[i] = rsLog2(err[i]);
-    int dummy = 0;
+    //int dummy = 0;
   }
 
   double a, b;
@@ -1532,10 +1524,10 @@ void numericIntegration()
   I = integrateSimpson(    f, a, b);
 
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
-void numericDiffAndInt()
+void nonUniformArrayDiffAndInt()
 {
   // Test numerical differentiation and integration routines. We sample a sinewave at 
   // nonequidistant sample points and find the numeric derivative and  integral at these sample
@@ -1571,6 +1563,165 @@ void numericDiffAndInt()
   // plot function, true derivative and numeric derivative:
   //plotData(N, x, y, yd, ydn);
   plotData(N, x, y, yd, ydn, yi, yin);
+}
+
+
+/*
+template<class T>
+void integrateTrapezoidal(T* x, T* y, int N, T y0 = T(0))
+{
+  T x1 = x[0];
+  y[0] = y0;
+  for(int n = 1; n < N; n++)
+  {
+    y[n] = y[n-1]
+  }
+}
+// test, if this works also in place - it should! ..maybe make a separate function to work in place
+// which takes only one input array
+*/
+
+// move to rsNumericIntegrator/Differentiator, maybe provide an implementation that can be used in 
+// place (which should use only a single array for input and output):
+template<class T>
+void integrateTrapezoidal(const T* x, T* y, int N, T y0 = T(0))
+{
+  rsAssert(y != x, "This function does not work in place");
+  y[0] = y0;
+  for(int n = 1; n < N; n++)
+    y[n] = y[n-1] + T(0.5) * (x[n-1] + x[n]);
+}
+template<class T>
+void differentiateTrapezoidal(const T* x, T* y, int N, T y0 = T(0))
+{
+  rsAssert(y != x, "This function does not work in place");
+  y[0] = y0;
+  for(int n = 1; n < N; n++)
+    y[n] = T(2) * (x[n] - x[n-1]) - y[n-1];
+}
+
+
+
+
+// plots the signal x together with the responses of the cumulative-sum and trapezoidal 
+// integrators:
+void plotIntegratorResponses(double* x, int N)
+{
+  std::vector<double> y(N), z(N);
+  RAPT::rsArrayTools::cumulativeSum(x, &y[0], N);
+  integrateTrapezoidal(x, &z[0], N);
+  rsPlotArrays(N, x, &y[0], &z[0]);
+}
+
+// fn = f/fs: normalized freq
+void plotIntegratorCosineResponses(double fn, int N)
+{
+  std::vector<double> x(N);
+  createSineWave(&x[0], N, fn, 1.0, 1.0, PI/2); // params: freq, amp, sample-rate, phase
+  plotIntegratorResponses(&x[0], N);
+  // todo: plot also the analytically correct integral for comparison
+}
+
+void uniformArrayDiffAndInt()
+{
+  // todo: 
+  // -create array of random numbers x[n]
+  // -compute cumulative sum
+  // -compute difference of cumulative sum - should give back original array
+  // -compute trapezoidal integration of x[n]
+  // -compute an inverse of trapezoidal integration ("trapezoidal differentiation"?)
+  // ...maybe this should become a unit test...
+
+  // trapezoidal integration: 
+  //   y[0] = y0;                              // y0 is integration constant
+  //   y[n] = y[n-1] + 0.5*(x[n-1] + x[n]);
+  // trapezoidal differentiation:
+  //   x[0] = x0
+  //   x[n] = 2*(y[n] - y[n-1]) - x[n-1]
+
+
+  bool result = true;
+
+  static const int N = 100;
+
+  using AT = RAPT::rsArrayTools;
+
+  double x[N];  // input signal
+  double y[N];  // integrator output signal
+  double z[N];  // differentiator output signal
+  double e[N];  // error
+
+  // test cumulative sum and backward difference:
+  AT::fillWithRandomValues(x, N, -1.0, +1.0, 0);
+  AT::cumulativeSum(x, y, N);
+  AT::copy(y, z, N);
+  AT::difference(z, N);  // todo: make a function that works not in place
+  AT::subtract(x, z, e, N);
+  result &= AT::isAllZeros(e, N);  
+  //rsPlotArrays(N, x, y, z, e);  // ok - looks good
+
+
+  // test trapezoidal integration and differentiation:
+  double y0 = 3;
+  integrateTrapezoidal(x, y, N, y0);
+  differentiateTrapezoidal(y, z, N, x[0]);
+  AT::subtract(x, z, e, N);
+  result &= AT::isAllZeros(e, N);  
+  //rsPlotArrays(N, x, y, z, e);
+
+
+
+  // Plot responses of both integrators for various input signals:
+  AT::fillWithRandomValues(x, N, -1.0, +1.0, 0); plotIntegratorResponses(x, N); // noise responses
+  AT::fillWithRandomValues(x, N, -1.0, +1.0, 1); plotIntegratorResponses(x, N); // ..other seed
+
+  // (co)sine responses:
+  plotIntegratorCosineResponses(0.25/sqrt(2), N); // irrational freq - nonperiodic samples
+  plotIntegratorCosineResponses(0.0125, N);
+  plotIntegratorCosineResponses(0.025,  N);
+  plotIntegratorCosineResponses(0.05,   N);
+  plotIntegratorCosineResponses(0.1,    N);
+  plotIntegratorCosineResponses(0.2,    N);
+  plotIntegratorCosineResponses(0.25,   N);
+  plotIntegratorCosineResponses(0.3,    N);
+  plotIntegratorCosineResponses(0.4,    N);
+  plotIntegratorCosineResponses(0.5,    N);
+
+  // impulse- and step responses:
+  int n = 10;  // plot range, should be <= N
+  AT::fillWithImpulse(x, N);    plotIntegratorResponses(x, n);  // impulse response
+  AT::fillWithValue(x, N, 1.0); plotIntegratorResponses(x, n);  // step responses
+
+
+
+
+
+
+  // Observations:
+  // -the trapezoidal integral looks smoother and delayed compared to the cumulative sum - i think,
+  //  the trapezoidal integrator is basically a cumulative sum of data that was passed through a 
+  //  2-point moving average which explains both effects
+  //  todo: try with an impulse input to figure out the amount of the delay - is it half a sample?
+  //  try also a constant function, a linear, and sinuosids of various frequencies (including
+  //  the Nyquist freq, i.e. an alternating signal)
+  //  -> impulse response of sum i just flat 1, starting at sample 0, imp-resp of trapez jumps to 
+  //    0.5 at sample 1
+  //  -> step responses are both straight lines, sum starts at 1, trapez starts at 0 (an raises
+  //     to 1 within 1 sample)
+  // -AT::difference does indeed undo AT::cumulativeSum
+  // -differentiateTrapezoidal undoes integrateTrapezoidal only, if we pass the correct value x[0]
+  //  for the initial state - otherwise, we see an error that oscillates at the Nyquist freq 
+  //  -passing x[0]-a for some a > 0 gives an error alternating between a and -a starting at +a and 
+  //   passing x[0]+a gives alternating error starting at -a
+  //  -whatever we pass as y0 to the integrator doesn't matter
+  // -i think, the greater smoothness of the trapezoidal integral implies that the trapezoidal
+  //  differentiator introduces more jaggies than the simple differencer - so it may actually be
+  //  undesirable to use trapezoidal differentiation for obtaining instantaneous frequencies from
+  //  instantaneous phases, for example in rsSingleSineModeler - i think, if we use it there, it
+  //  should be optional
+
+
+  rsAssert(result == true);  // maybe turn into unit test and return the result
 }
 
 // ToDo: implement a numerical differentiation algorithm that is the inverse operation of 
@@ -1828,7 +1979,7 @@ void monotonicPolynomials()
   // http://cran.r-project.org/web/packages/MonoPoly/MonoPoly.pdf
   // http://www.cse.ucla.edu/products/overheads/IMPS2013/Falk20130722.pdf
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void parametricBell()
@@ -1993,7 +2144,7 @@ void partialFractionExpansion()
 bool checkPartialFractionInputs(
   const RAPT::rsPolynomial<double>& B,
   const RAPT::rsPolynomial<double>& A,
-  const std::vector<double>& p,
+  const std::vector<double>& /*p*/,  // why is this not used?
   const std::vector<int>& m)
 {
   bool r = true;
@@ -2138,7 +2289,7 @@ void partialFractionExpansion2()
 
 
 
-  int dummy = 0; 
+  //int dummy = 0; 
 
   // todo: 
   // -move partialFractions/2 functions to Prototypes.h/cpp in rs_testing module
@@ -2227,7 +2378,7 @@ void partialFractionExpansion3()
 
   // ok - this seems to work - polyCoeffs come out as 7,-2,3 and pfeCoeffs as 3,-4,2,5,-3
   // todo: turn into unit test
-  int dummy = 0;  
+  //int dummy = 0;  
 }
 /*
 void partialFractionExpansion4()
@@ -2504,7 +2655,7 @@ void partialFractionExpansionQuadratic()
 
 
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -2671,7 +2822,7 @@ void dampedSineEnergy()
 
 void sineIntegral()
 {
-  double test = rsSineIntegral(3.0);
+  //double test = rsSineIntegral(3.0);
   double tMin = -20.0;
   double tMax = +20.0;
   static const int N = 1000;
@@ -2725,34 +2876,73 @@ void stirlingNumbers()
   RAPT::rsArrayTools::deAllocateSquareArray2D(tmp, nMax+1);
 }
 
+/** Returns the Bernoulli number for the given n (using the convention that B1 = -1/2). The type T 
+should be a signed integer type. For 32 bit integers, wrong results due to internal overflow occur 
+for n >= 18 and for 64 bit for n >= 32. 
 
-/** Returns the Bernoulli number for the given n (using the convention that B1 = -1/2). */
-double rsBernoulliNumber(rsUint32 n)
+References:
+  https://en.wikipedia.org/wiki/Bernoulli_number
+  https://mathworld.wolfram.com/BernoulliNumber.html
+  https://oeis.org/A164555 https://oeis.org/A027642  */
+
+template<class T>  // T should be a signed integer type
+rsFraction<T> rsBernoulliNumber(T n)
 {
-  if( n == 1 )
-    return -0.5;
-  if( rsIsOdd(n) )
-    return 0.0;
-  double *A = new double[n+1];
-  for(rsUint32 m = 0; m <= n; m++)
-  {
-    A[m] = 1.0 / (m+1);
-    for(rsUint32 j = m; j >= 1; j--)
-      A[j-1] = j * (A[j-1] - A[j]);
-  }
-  double result = A[0];
+  if( n == 1 )     return rsFraction<T>(T(-1), T(2));
+  if( rsIsOdd(n) ) return rsFraction<T>(T( 0), T(1));
+  rsFraction<T> *A = new rsFraction<T>[n+1];
+  for(int m = 0; m <= n; m++) {           // we don't want big-integers for the loop index
+    A[m] = rsFraction<T>(T(1), T(m+1));
+    for(int j = m; j >= 1; j--)
+      A[j-1] = T(j) * (A[j-1] - A[j]); }
+  rsFraction<T> result = A[0];
   delete[] A;
   return result;
-  // hmm - this algorithm seems to be quite imprecise numerically (it's taken form wikipedia)
-  // maybe we should use this algorithm with exact representations of rational numbers
 }
+// allocates - not suitable for realtime use. it's rather expensive anyway, namely O(n^2), but it 
+// will overflow for larger n anyway, so when it's used in the safe range of small n, it may be ok.
+// Can we produce an array all Bernoulli numbers from 0 up to n also in O(n^2), i.e. is this likely
+// to lead to a "Shlemiel the painter" algo, when called in a loop to fill an array? If so, make
+// a function to create the whole array
+// see also:
+// https://en.wikipedia.org/wiki/Bernoulli_number#An_algorithmic_view:_the_Seidel_triangle
+// https://en.wikipedia.org/wiki/Bernoulli_number#Efficient_computation_of_Bernoulli_numbers
+// https://projecteuclid.org/download/pdf_1/euclid.pja/1195510576
+// where did i get this algo from? i think, wikipedia but i don't find it there anymore. oh - it
+// seems to have been removed:
+// https://en.wikipedia.org/w/index.php?title=Bernoulli_number&oldid=789762667#Recursive_definition
+// it's the Akiyama–Tanigawa algorithm
+// https://rosettacode.org/wiki/Bernoulli_numbers
+// with a table of binomial coeffs, we could use this formula
+// https://de.wikipedia.org/wiki/Bernoulli-Zahl#Rekursionsformeln
+//   B[n] = (-1/(n+1)) * sum_{k=0}^{n-1} C(n+1,k) B[k]
+// where B[n] is the n-th Bernoulli number and C(n+1,k) is the binomial coeff (n+1)-choose-k. Maybe
+// such a table of binomial coeffs should be stored globally somewhere...maybe as lazy-initialized
+// singleton that starts empty and grows as needed
+//
+// https://web.maths.unsw.edu.au/~davidharvey/talks/bernoulli.pdf
+
+
 void bernoulliNumbers()
 {
-  static const int nMax = 10;
-  double b[nMax+1]; 
-  for(int n = 0; n <= nMax; n++)
+  static const int nMax = 32;  // the 32th will be the 1st wrong result due to overflow
+  rsFraction<long long> b[nMax+1];
+  for(long long n = 0; n <= nMax; n++)
     b[n] = rsBernoulliNumber(n);
+  // Producing this array is O(nMax^3) - can we do better? Is this a Shlemiel the painter algo? Can
+  // it be optimized to produce the array in a way that re-uses results from previous iterations?
+
+  //int dummy = 0;
 }
+// maybe move to unit tests
+
+// todo: implement Faulhaber's formula using the Bernoulli numbers:
+// https://en.wikipedia.org/wiki/Faulhaber%27s_formula
+// maybe try to avoid using fractions as much as possible - try to multiply everything through by
+// a suitable number to get rid of denominators - the result must be an integer, so it's somehow
+// dissatisfying to have to turn to fractions within the computation
+
+
 
 void sequenceSquareRoot()
 {
@@ -2818,7 +3008,7 @@ void sequenceSquareRoot()
   RAPT::rsArrayTools::convolve(r, N+1, r, N+1, R);  // R should match D
                                   // ...yes but only the 1st 3 values - which makes sense because
                                   // r has only 3 degrees of freedom - hmmm.....
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -3031,7 +3221,7 @@ void conicSystem()
   // completing the square can be applied to both equations (i'm actually not sure, if this really 
   // works out, it's just an idea).
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void logisticMapNoise()
@@ -3293,7 +3483,7 @@ void bigFloatErrors()
   // 77_8 = 72_10. convert that temporary value into an rsBigInt in the default base and return 
   // that value.
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void primeRecursion()
@@ -3671,7 +3861,7 @@ void primeSieveAtkin()
       if( x > y && n <= limit && n % 12 == 11 )
         isPrime[n] = !isPrime[n];
 
-      int dummy = 0;
+      //int dummy = 0;
     }
   }
 
@@ -3792,7 +3982,7 @@ void primeSieve()
         c[ib] = 0;
       }
     }
-    int dummy = 0;
+    //int dummy = 0;
   }
 
 
@@ -3922,7 +4112,7 @@ void primeSieve()
 
 
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 /*
 let's have a look at the prime-numbers with a prepended 1:
@@ -4041,7 +4231,7 @@ rsUint32 powModular(rsUint32 base, rsUint32 exponent, rsUint32 modulus)
     result = (result * base) % modulus;
   return result;
 }
-rsUint32 inverseElement(rsUint32 element, rsUint32 modulus)
+rsUint32 inverseElement(rsUint32 /*element*/, rsUint32 /*modulus*/)
 {
   // the inverse element is ensured to exist, when the modulus is prime. otherwise, it may or may 
   // not exist. if it doesn't, we return 0
@@ -4134,7 +4324,7 @@ void numberTheoreticTransform()
     inverseOrders[k] = powModular(orders[k], maxOrder-1, M);
   }
 
-  int dummy = 0;
+  //int dummy = 0;
 
   rsUint32 test = 1;
   for(i = 1; i <= 5; i++)

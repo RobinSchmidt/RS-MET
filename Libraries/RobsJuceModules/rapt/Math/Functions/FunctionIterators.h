@@ -5,7 +5,7 @@
 values of the same function at equidistant abscissa values, like: y[n] = f(x0 + n*dx), starting
 at some x-axis value x0, giving y0 and then computing the successive values of y[n] at the other
 x[n] by means of some recursive formula that doesn't require the full re-evaluation of the
-function at each x-value. Such recrusion formulas are available for the complex exponential and
+function at each x-value. Such recursion formulas are available for the complex exponential and
 thus also for sine/cosine and the real exponential, etc. */
 
 
@@ -104,6 +104,7 @@ rsExponentialIterator, rsLinearIterator, rsQuadraticIterator, rsCubicIterator,
 rsPolynomialIterator,
 for the polynomial iterators, see Salomon - Computer Graphics, page 275ff ("Fast Calculation of the 
 Curve" and page 698 ("Forward Differences")
+other functions: sinh, cosh, tanh, 1/cosh, 1/cosh^2 (gaussian-like?)
 
 here's an interesting thread about a recursive sine oscillator:
 https://dsp.stackexchange.com/questions/124/how-to-implement-a-digital-oscillator

@@ -17,14 +17,14 @@ create a special project for that. Maybe it can be made part of the Liberty test
 // copy-constructor, assignment operator and destructor protected and to declare the ModuleFactor 
 // as friend in order to enforce creation/deletion through the ModuleFactory class - maybe make 
 // them even private later:
-#define ENFORCE_FACTORY_USAGE(ClassName)                               \
-  public:                                                              \
-    ClassName() {}                                                     \
-  protected:                                                           \
-    ClassName(const ClassName &other) {}                               \
-    virtual ~ClassName() {}                                            \
-    ClassName& operator=(const ClassName &other) { return *this; }     \
-    friend class ModuleFactory;                                        \
+#define ENFORCE_FACTORY_USAGE(ClassName)                      \
+  public:                                                     \
+    ClassName() {}                                            \
+  protected:                                                  \
+    ClassName(const ClassName&) {}                            \
+    virtual ~ClassName() {}                                   \
+    ClassName& operator=(const ClassName&) { return *this; }  \
+    friend class ModuleFactory;                               \
 
 /* // old - doesn't work with new type registry:
 #define ENFORCE_FACTORY_USAGE(ClassName)                               \

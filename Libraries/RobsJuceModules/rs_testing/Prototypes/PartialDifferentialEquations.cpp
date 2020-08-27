@@ -586,7 +586,35 @@ p or the velocity potential V:
   Lap(p) = p_tt / c^2    Eq. 1.17
   Lap(V) = V_tt / c^2    Eq. 1.16
 where Lap(...) means the Laplacian operator: Lap(p) = p_xx + p_yy + p_zz
-  
+
+
+-In 1 time step, an impulse can travel at most 1 spatial step. That implies that if space is sampled 
+ so densely that a physical wave would travel multiple space intervals in one time step, i can't work
+ anymore. And that's the inuitive reason why instabilities occur - we have to increase the temporal
+ sample-rate as well, wehn we want to increase the spatial sampling density.
+
+-A PDE solver could be parametrized by a function (or better: functor) that can compute partial 
+ derivatives.
+
+-Maybe implement the finite volume method with rectangular cells - the function u(x,t) that 
+ represents the conserved quantity could be seen as a fluid density.
+
+-To approximate the Laplacian numerically, we could take a weighted average of the straight 
+ approximant and the diagonal approximant with weights inversely proprtional to distance, i.e.
+ 1 and 1/sqrt(2).
+
+-We could implement an explicit scheme by keeping track of the physical variables v(x,t), a(x,t) 
+ for velocity and acceleration. Such a scheme could perhaps be artificially stabilized by computing
+ the total energy and then scaling velocity and displacement so as to keep that constant..or we 
+ could actually apply an arbitrary external envelope to the total energy. ...but this energy 
+ normalization will not suppress oscillations at the Nyquits freq. If such oscillation occur in 
+ space and time, it would probably make most sense to suppress them with a Nyquist blocker in the 
+ time domain (i've already experimented with applying such a filter in the spatial domain with the
+ Schrödinger equation - but time domain seems to be the better approach - it would replace Euler 
+ steps with trapezoidal steps, i think)
+
+
+
   
 by
 

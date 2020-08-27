@@ -22,6 +22,8 @@ void instantaneousPhase();
 void maxShortTimeRMS();
 void arrayRMS();
 
+void peakFinder();
+
 void zeroCrossingFinder();
 void zeroCrossingFinder2();
 void zeroCrossingFinder3();

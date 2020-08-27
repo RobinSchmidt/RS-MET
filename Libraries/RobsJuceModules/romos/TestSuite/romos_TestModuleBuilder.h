@@ -3,7 +3,7 @@
 
 //#include "../framework/romos_ContainerModule.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
 /** This class contains a bunch of static functions that create and return a pointer to modules 

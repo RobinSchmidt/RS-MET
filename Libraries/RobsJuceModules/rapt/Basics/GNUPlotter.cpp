@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <algorithm>
-using namespace std;
+//using namespace std; // bad idea when including it in rapt.cpp
 
 GNUPlotter::GNUPlotter()
 {
@@ -95,7 +95,8 @@ template void GNUPlotter::plotSurface(const std::function<float(float, float)>& 
 template void GNUPlotter::plotSurface(const std::function<double(double, double)>& fx, const std::function<double(double, double)>& fy, const std::function<double(double, double)>& fz, int Nu, double uMin, double uMax, int Nv, double vMin, double vMax);
 
 template<class T>
-void GNUPlotter::plotVectorField2D(const function<T(T, T)>& fx, const function<T(T, T)>& fy,
+void GNUPlotter::plotVectorField2D(
+  const std::function<T(T, T)>& fx, const std::function<T(T, T)>& fy,
   int Nx, T xMin, T xMax, int Ny, T yMin, T yMax)
 {
   GNUPlotter p;
@@ -104,24 +105,24 @@ void GNUPlotter::plotVectorField2D(const function<T(T, T)>& fx, const function<T
   p.plot();
   // maybe try a black background (and invert the colormap)
 }
-template void GNUPlotter::plotVectorField2D(const function<int(int, int)>& fx, const function<int(int, int)>& fy, int Nx, int xMin, int xMax, int Ny, int yMin, int yMax);
-template void GNUPlotter::plotVectorField2D(const function<float(float, float)>& fx, const function<float(float, float)>& fy, int Nx, float xMin, float xMax, int Ny, float yMin, float yMax);
-template void GNUPlotter::plotVectorField2D(const function<double(double, double)>& fx, const function<double(double, double)>& fy, int Nx, double xMin, double xMax, int Ny, double yMin, double yMax);
+template void GNUPlotter::plotVectorField2D(const std::function<int(int, int)>& fx, const std::function<int(int, int)>& fy, int Nx, int xMin, int xMax, int Ny, int yMin, int yMax);
+template void GNUPlotter::plotVectorField2D(const std::function<float(float, float)>& fx, const std::function<float(float, float)>& fy, int Nx, float xMin, float xMax, int Ny, float yMin, float yMax);
+template void GNUPlotter::plotVectorField2D(const std::function<double(double, double)>& fx, const std::function<double(double, double)>& fy, int Nx, double xMin, double xMax, int Ny, double yMin, double yMax);
 
 
 template<class T>
-void GNUPlotter::plotComplexVectorField(const function<complex<T>(complex<T>)>& f,
+void GNUPlotter::plotComplexVectorField(const std::function<std::complex<T>(std::complex<T>)>& f,
   int Nr, T rMin, T rMax, int Ni, T iMin, T iMax, bool conj)
 {
   T sign = T(1); if(conj) sign = T(-1);
   std::function<T(T, T)> fx, fy;
-  fx = [&] (T re, T im) { return        real(f(complex<T>(re, im))); };
-  fy = [&] (T re, T im) { return sign * imag(f(complex<T>(re, im))); };
+  fx = [&] (T re, T im) { return        real(f(std::complex<T>(re, im))); };
+  fy = [&] (T re, T im) { return sign * imag(f(std::complex<T>(re, im))); };
   plotVectorField2D(fx, fy, Nr, rMin, rMax, Ni, iMin, iMax);
 }
-template void GNUPlotter::plotComplexVectorField(const function<complex<int>(complex<int>)>& f, int Nr, int rMin, int rMax, int Ni, int iMin, int iMax, bool conj);
-template void GNUPlotter::plotComplexVectorField(const function<complex<float>(complex<float>)>& f, int Nr, float rMin, float rMax, int Ni, float iMin, float iMax, bool conj);
-template void GNUPlotter::plotComplexVectorField(const function<complex<double>(complex<double>)>& f, int Nr, double rMin, double rMax, int Ni, double iMin, double iMax, bool conj);
+template void GNUPlotter::plotComplexVectorField(const std::function<std::complex<int>(std::complex<int>)>& f, int Nr, int rMin, int rMax, int Ni, int iMin, int iMax, bool conj);
+template void GNUPlotter::plotComplexVectorField(const std::function<std::complex<float>(std::complex<float>)>& f, int Nr, float rMin, float rMax, int Ni, float iMin, float iMax, bool conj);
+template void GNUPlotter::plotComplexVectorField(const std::function<std::complex<double>(std::complex<double>)>& f, int Nr, double rMin, double rMax, int Ni, double iMin, double iMax, bool conj);
 
 
 //-------------------------------------------------------------------------------------------------
@@ -219,7 +220,7 @@ template void GNUPlotter::plotBivariateFunction(int Nx, int xMin, int xMax, int 
 //-------------------------------------------------------------------------------------------------
 // style setup:
 
-void GNUPlotter::addCommand(string command)
+void GNUPlotter::addCommand(std::string command)
 {
   // factor out into a function "withNewLine":
   const char *n = "\n";
@@ -257,7 +258,7 @@ void GNUPlotter::setLegends(CSR l0, CSR l1, CSR l2, CSR l3, CSR l4, CSR l5, CSR 
   setStringVector(graphTitles, l0, l1, l2, l3, l4, l5, l6, l7, l8, l9);
 }
 
-void GNUPlotter::setLegends(CVR<string> legends)
+void GNUPlotter::setLegends(CVR<std::string> legends)
 {
   graphTitles = legends;
 }
@@ -265,12 +266,12 @@ void GNUPlotter::setLegends(CVR<string> legends)
 void GNUPlotter::setGraphColors(CSR c0, CSR c1, CSR c2, CSR c3, CSR c4, CSR c5, CSR c6, CSR c7,
   CSR c8, CSR c9)
 {
-  vector<string> v;
+  std::vector<std::string> v;
   setStringVector(v, c0, c1, c2, c3, c4, c5, c6, c7, c8, c9);
   setGraphColors(v);
 }
 
-void GNUPlotter::setGraphColors(CVR<string> c)
+void GNUPlotter::setGraphColors(CVR<std::string> c)
 {
   for(unsigned int i = 0; i < c.size(); i++)
     setGraphColor(i+1, c[i]);
@@ -292,7 +293,7 @@ void GNUPlotter::setGraphStyles(CSR s0, CSR s1, CSR s2, CSR s3, CSR s4, CSR s5, 
   setStringVector(graphStyles, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9);
 }
 
-void GNUPlotter::setGraphStyles(CVR<string> styles)
+void GNUPlotter::setGraphStyles(CVR<std::string> styles)
 {
   graphStyles = styles;
 }
@@ -308,14 +309,15 @@ void GNUPlotter::setGrid(bool x, bool y, bool x2, bool y2, bool z)
   addCommand(s);
 }
 
-void GNUPlotter::setLogScale(string axes, double base, bool shouldBeLogarithmic)
+void GNUPlotter::setLogScale(std::string axes, double /*base*/, bool shouldBeLogarithmic)
 {
-  string s;
+  std::string s;
   if( !shouldBeLogarithmic )
     s += "un";
   s += "set logscale " + axes + "\n";
   addCommand(s);
 }
+// todo: use base or get rid of the parameter
 
 void GNUPlotter::setRange(double xMin, double xMax, double yMin, double yMax, double zMin,
   double zMax)
@@ -350,9 +352,9 @@ void GNUPlotter::setDataPrecision(unsigned int n)
 }
 
 template <class T>
-void GNUPlotter::addDataBlockLineColumn(const vector<vector<vector<T>>>& d)
+void GNUPlotter::addDataBlockLineColumn(const std::vector<std::vector<std::vector<T>>>& d)
 {
-  ofstream out(dataPath, ofstream::app);
+  std::ofstream out(dataPath, std::ofstream::app);
   for(size_t i = 0; i < d.size(); i++) {           // loop over blocks
     for(size_t j = 0; j < d[i].size(); j++) {      // loop over rows in current block
       for(size_t k = 0; k < d[i][j].size(); k++)   // loop over columns in current row
@@ -366,14 +368,14 @@ void GNUPlotter::addDataBlockLineColumn(const vector<vector<vector<T>>>& d)
   dataInfo.push_back(DataInfo(d.size(), d[0].size())); // keep track of written data
 }
 // explicit instantiations for double, float and int:
-template void GNUPlotter::addDataBlockLineColumn(const vector<vector<vector<double>>>& d);
-template void GNUPlotter::addDataBlockLineColumn(const vector<vector<vector<float>>>& d);
-template void GNUPlotter::addDataBlockLineColumn(const vector<vector<vector<int>>>& d);
+template void GNUPlotter::addDataBlockLineColumn(const std::vector<std::vector<std::vector<double>>>& d);
+template void GNUPlotter::addDataBlockLineColumn(const std::vector<std::vector<std::vector<float>>>& d);
+template void GNUPlotter::addDataBlockLineColumn(const std::vector<std::vector<std::vector<int>>>& d);
 
 template <class T>
 void GNUPlotter::addDataBlockColumnLine(const std::vector<std::vector<std::vector<T>>>& d)
 {
-  ofstream out(dataPath, ofstream::app);
+  std::ofstream out(dataPath, std::ofstream::app);
   for(size_t i = 0; i < d.size(); i++) {           // loop over blocks
     for(size_t j = 0; j < d[i][0].size(); j++) {   // loop over columns
       for(size_t k = 0; k < d[i].size(); k++)      // loop over lines
@@ -386,14 +388,14 @@ void GNUPlotter::addDataBlockColumnLine(const std::vector<std::vector<std::vecto
   out.close();
   dataInfo.push_back(DataInfo(d.size(), d[0][0].size()));
 }
-template void GNUPlotter::addDataBlockColumnLine(const vector<vector<vector<double>>>& d);
-template void GNUPlotter::addDataBlockColumnLine(const vector<vector<vector<float>>>& d);
-template void GNUPlotter::addDataBlockColumnLine(const vector<vector<vector<int>>>& d);
+template void GNUPlotter::addDataBlockColumnLine(const std::vector<std::vector<std::vector<double>>>& d);
+template void GNUPlotter::addDataBlockColumnLine(const std::vector<std::vector<std::vector<float>>>& d);
+template void GNUPlotter::addDataBlockColumnLine(const std::vector<std::vector<std::vector<int>>>& d);
 
 template <class T>
 void GNUPlotter::addData(int numBlocks, int *blockLengths, int numColumns, T **data)
 {
-  ofstream out(dataPath, ofstream::app);
+  std::ofstream out(dataPath, std::ofstream::app);
   int offset = 0;
   for(int i = 0; i < numBlocks; i++)           // loop over blocks
   {
@@ -418,9 +420,9 @@ void GNUPlotter::addData(int numRows, int numColumns, T **data)
 }
 
 template <class T>
-void GNUPlotter::addDataComplex(const vector<complex<T>>& d)
+void GNUPlotter::addDataComplex(const std::vector<std::complex<T>>& d)
 {
-  ofstream out(dataPath, ofstream::app);
+  std::ofstream out(dataPath, std::ofstream::app);
   for(size_t i = 0; i < d.size(); i++)
   {
     out << sd(d[i].real()) + " " + sd(d[i].imag()) + " ";
@@ -430,14 +432,14 @@ void GNUPlotter::addDataComplex(const vector<complex<T>>& d)
   out.close();
   dataInfo.push_back(DataInfo(1, 2));
 }
-template void GNUPlotter::addDataComplex(const vector<complex<int>>& d);
-template void GNUPlotter::addDataComplex(const vector<complex<float>>& d);
-template void GNUPlotter::addDataComplex(const vector<complex<double>>& d);
+template void GNUPlotter::addDataComplex(const std::vector<std::complex<int>>& d);
+template void GNUPlotter::addDataComplex(const std::vector<std::complex<float>>& d);
+template void GNUPlotter::addDataComplex(const std::vector<std::complex<double>>& d);
 
 template <class T>
 void GNUPlotter::addDataArrays(int N, T *x, int M, T **y)
 {
-  ofstream out(dataPath, ofstream::app);
+  std::ofstream out(dataPath, std::ofstream::app);
   for(int i = 0; i < N; i++)
   {
     out << sd(x[i]) + " ";
@@ -457,7 +459,7 @@ template <class T>
 void GNUPlotter::addDataArrays(int N, const T *c0, const T *c1, const T *c2, const T *c3, 
   const T *c4, const T *c5, const T *c6, const T *c7, const T *c8, const T *c9)
 {
-  const vector<const T*> v = collectLeadingNonNullArguments(c0, c1, c2, c3, c4, c5, c6, c7, c8, c9);
+  const std::vector<const T*> v = collectLeadingNonNullArguments(c0, c1, c2, c3, c4, c5, c6, c7, c8, c9);
   const T* a[10];
   for(size_t i = 0; i < v.size(); i++)
     a[i] = v[i];
@@ -469,7 +471,7 @@ void GNUPlotter::addDataFunctions(int N, T *x, T (*f0)(T), T (*f1)(T), T (*f2)(T
   T (*f4)(T), T (*f5)(T), T (*f6)(T), T (*f7)(T), T (*f8)(T), T (*f9)(T))
 {
   int i, j;
-  vector<T(*)(T)> f = collectLeadingNonNullArguments(f0, f1, f2, f3, f4, f5, f6, f7, f8, f9);
+  std::vector<T(*)(T)> f = collectLeadingNonNullArguments(f0, f1, f2, f3, f4, f5, f6, f7, f8, f9);
 
   // allocate data matrix (1st index is column, 2nd ist row):
   int M = (int)f.size()+1;
@@ -520,7 +522,7 @@ template void GNUPlotter::addDataFunctions(int N, int xMin, int xMax,
 template <class T>
 void GNUPlotter::addDataGrid(int Nx, int Ny, T *x, T *y, T **z)
 {
-  ofstream out(dataPath, ofstream::app);
+  std::ofstream out(dataPath, std::ofstream::app);
   for(int i = 0; i < Nx; i++)
   {
     for(int j = 0; j < Ny; j++)
@@ -538,7 +540,7 @@ template void GNUPlotter::addDataGrid(int Nx, int Ny, double *x, double *y, doub
 template <class T>
 void GNUPlotter::addDataMatrix(int Nx, int Ny, T *x, T *y, T **z)
 {
-  ofstream out(dataPath, ofstream::app);
+  std::ofstream out(dataPath, std::ofstream::app);
   int i, j;
   out << sd(T(Nx));
   for(i = 0; i < Nx; i++)
@@ -586,7 +588,7 @@ template <class T>
 void GNUPlotter::addDataCurve2D(const std::function<T(T)>& fx, const std::function<T(T)>& fy,
   int Nt, T tMin, T tMax, bool writeT)
 {
-  vector<T> t(Nt), x(Nt), y(Nt);
+  std::vector<T> t(Nt), x(Nt), y(Nt);
   rangeLinear(&t[0], Nt, tMin, tMax);
   for(int i = 0; i < Nt; i++) {
     x[i] = fx(t[i]);
@@ -609,14 +611,14 @@ void GNUPlotter::addDataCurve2D(const std::function<T(T)>& fx, const std::functi
 
 
 template <class T>
-void GNUPlotter::addDataSurface(
-  const function<T(T, T)>& fx, const function<T(T, T)>& fy, const function<T(T, T)>& fz,
+void GNUPlotter::addDataSurface(const std::function<T(T, T)>& fx, 
+  const std::function<T(T, T)>& fy, const std::function<T(T, T)>& fz,
   int Nu, T uMin, T uMax, int Nv, T vMin, T vMax)
 {
   // The outer index runs over the indices for parameter u, the middle index runs over v and the 
   // innermost vector index runs from 0...2 giving a 3-vector containing x, y, z coordinates for 
   // each point:
-  vector<vector<vector<T>>> d;                   // doubly nested vector of data
+  std::vector<std::vector<std::vector<T>>> d;    // doubly nested vector of data
   T uStep = (uMax-uMin) / T(Nu-1);               // step size for u
   T vStep = (vMax-vMin) / T(Nv-1);               // step size for v
   d.resize(Nu);                                  // we have Nu blocks of data
@@ -679,14 +681,15 @@ void GNUPlotter::addDataBivariateFunction(int Nx, T xMin, T xMax, int Ny, T yMin
 }
 
 template <class T>
-void GNUPlotter::addDataVectorField2D(const function<T(T, T)>& fx, const function<T(T, T)>& fy,
-  int Nx, T xMin, T xMax, int Ny, T yMin, T yMax)
+void GNUPlotter::addDataVectorField2D(const std::function<T(T, T)>& fx, 
+  const std::function<T(T, T)>& fy, int Nx, T xMin, T xMax, int Ny, T yMin, T yMax)
 {
   int Nv = Nx*Ny;                                // number of vectors to draw
-  vector<T> x(Nv), y(Nv), dx(Nv), dy(Nv), c(Nv); // arrays to hold our data
+  std::vector<T> 
+    x(Nv), y(Nv), dx(Nv), dy(Nv), c(Nv);         // arrays to hold our data
   T xStep = (xMax-xMin) / T(Nx-1);               // step size for x
   T yStep = (yMax-yMin) / T(Ny-1);               // step size for y
-  T arrowLength = min(xStep, yStep);             // length of arrows to draw
+  T arrowLength = std::min(xStep, yStep);        // length of arrows to draw
   T s;                                           // length scaler
   for(int i = 0; i < Nx; i++) {                  // loop over x-samples
     for(int j = 0; j < Ny; j++) {                // loop over y-samples
@@ -744,12 +747,12 @@ void GNUPlotter::addGraph(CSR descriptor)
 // addData + addGraph:
 
 template <class T>
-void GNUPlotter::addVectorField2D(const function<T(T, T)>& fx, const function<T(T, T)>& fy,
-  int Nx, T xMin, T xMax, int Ny, T yMin, T yMax)
+void GNUPlotter::addVectorField2D(const std::function<T(T, T)>& fx, 
+  const std::function<T(T, T)>& fy, int Nx, T xMin, T xMax, int Ny, T yMin, T yMax)
 {
   addDataVectorField2D(fx, fy, Nx, xMin, xMax, Ny, yMin, yMax);
-  addGraph(string("index ") + to_string(dataInfo.size()-1) + 
-    string(" using 1:2:3:4:5 with vectors head filled size 0.08,15 ls 2 lc palette notitle"));
+  addGraph(std::string("index ") + std::to_string(dataInfo.size()-1) + 
+    std::string(" using 1:2:3:4:5 with vectors head filled size 0.08,15 ls 2 lc palette notitle"));
 }
 
 template<class T>
@@ -757,7 +760,7 @@ void GNUPlotter::addFieldLine2D(const std::function<T(T, T)>& fx, const std::fun
   T x0, T y0, T stepSize, int numPoints, int oversampling)
 {
   addDataFieldLine2D(fx, fy, x0, y0, stepSize, numPoints, oversampling);
-  addGraph("index " + to_string(dataInfo.size()-1) + " using 1:2 with lines lt 1 notitle");
+  addGraph("index " + std::to_string(dataInfo.size()-1) + " using 1:2 with lines lt 1 notitle");
 }
 template void GNUPlotter::addFieldLine2D(const std::function<float(float, float)>& fx, const std::function<float(float, float)>& fy, float x0, float y0, float stepSize, int numPoints, int oversampling);
 template void GNUPlotter::addFieldLine2D(const std::function<double(double, double)>& fx, const std::function<double(double, double)>& fy, double x0, double y0, double stepSize, int numPoints, int oversampling);
@@ -832,7 +835,7 @@ void GNUPlotter::drawEllipse(const std::string& attr,
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 
-string GNUPlotter::getDataPath()
+std::string GNUPlotter::getDataPath()
 {
   return dataPath;
 }
@@ -915,7 +918,7 @@ void GNUPlotter::invokeGNUPlot()
   // create the callstring and invoke GNUPlot:
   //string callString = "\"" + gnuplotPath + "\" " + commandPath + " -";
   //string callString = "\"" + gnuplotPath + "\" " + commandPath;
-  string callString = "\"" + gnuplotPath + "\" " + commandPath + " -persist";
+  std::string callString = "\"" + gnuplotPath + "\" " + commandPath + " -persist";
 
   // wrapping gnuplotPath into quotes is required to handle installation paths with whitespaces,
   // but it doesn't seem to be possible to handle a commandPath with whitespaces (i tried
@@ -926,7 +929,6 @@ void GNUPlotter::invokeGNUPlot()
   systemCall(callString);
   // is it possible to call GNUPlot in a separate process? - this is actually already the case
   // ...but we have to close it to call it again - i.e. we can't do multiple plots at once
-  int dummy = 0;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -934,7 +936,7 @@ void GNUPlotter::invokeGNUPlot()
 
 void GNUPlotter::initFile(const std::string &path)
 {
-  ofstream out(path);
+  std::ofstream out(path);
   out.close();
 }
 
@@ -1019,7 +1021,7 @@ std::string GNUPlotter::sd(double x)
 
 std::string GNUPlotter::sd(int x)
 {
-  return to_string(x);
+  return std::to_string(x);
 }
 
 // internal functions
@@ -1045,7 +1047,7 @@ void GNUPlotter::addPlotCommand(bool splot)
 
   // Initialize the plot command:
   int i;
-  string pc;
+  std::string pc;
   addCommand("\n# Plotting:");
   if( splot == true )
     pc = "splot \\\n";  // 3D plots
@@ -1095,17 +1097,17 @@ T GNUPlotter::nullValue(T)
   return T(0);
 }
 
-string GNUPlotter::nullValue(string)
+std::string GNUPlotter::nullValue(std::string)
 {
   return "";
 }
 
 template<class T>
-const vector<T> GNUPlotter::collectLeadingNonNullArguments(const T a0, const T a1, const T a2, 
+const std::vector<T> GNUPlotter::collectLeadingNonNullArguments(const T a0, const T a1, const T a2, 
   const T a3, const T a4, const T a5, const T a6, const T a7, const T a8, const T a9)
 {
   T null = nullValue(a0);
-  vector<T> v;
+  std::vector<T> v;
   if(a0 != null) v.push_back(a0); else return v;
   if(a1 != null) v.push_back(a1); else return v;
   if(a2 != null) v.push_back(a2); else return v;
@@ -1120,7 +1122,7 @@ const vector<T> GNUPlotter::collectLeadingNonNullArguments(const T a0, const T a
 }
 
 template<class T>
-void GNUPlotter::append(vector<T>& v, const vector<T>& appendix)
+void GNUPlotter::append(std::vector<T>& v, const std::vector<T>& appendix)
 {
   v.reserve(v.size() + appendix.size());
   for(size_t i = 0; i < appendix.size(); i++)
@@ -1128,11 +1130,11 @@ void GNUPlotter::append(vector<T>& v, const vector<T>& appendix)
 }
 
 template<class T>
-vector<vector<T>> GNUPlotter::wrapIntoVectors(int N, const T *a0, const T *a1, const T *a2, 
+std::vector<std::vector<T>> GNUPlotter::wrapIntoVectors(int N, const T *a0, const T *a1, const T *a2, 
   const T *a3, const T *a4, const T *a5, const T *a6, const T *a7, const T *a8, const T *a9)
 {
-  vector<T*> pointers = collectLeadingNonNullArguments(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
-  vector<vector<T>> v;
+  std::vector<T*> pointers = collectLeadingNonNullArguments(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9);
+  std::vector<std::vector<T>> v;
   v.resize(pointers.size());
   for(int i = 0; i < v.size(); i++)
   {
@@ -1143,14 +1145,14 @@ vector<vector<T>> GNUPlotter::wrapIntoVectors(int N, const T *a0, const T *a1, c
   return v;
 }
 
-void GNUPlotter::addToStringVector(vector<string>& v, CSR s0, CSR s1, CSR s2, CSR s3, CSR s4,
-  CSR s5, CSR s6, CSR s7, CSR s8, CSR s9)
+void GNUPlotter::addToStringVector(std::vector<std::string>& v, CSR s0, CSR s1, CSR s2, CSR s3, 
+  CSR s4, CSR s5, CSR s6, CSR s7, CSR s8, CSR s9)
 {
   append(v, collectLeadingNonNullArguments(s0, s1, s2, s3, s4, s5, s6, s7, s8, s9));
 }
 
-void GNUPlotter::setStringVector(vector<string>& v, CSR s0, CSR s1, CSR s2, CSR s3, CSR s4, CSR s5,
-  CSR s6, CSR s7, CSR s8, CSR s9)
+void GNUPlotter::setStringVector(std::vector<std::string>& v, CSR s0, CSR s1, CSR s2, CSR s3, 
+  CSR s4, CSR s5, CSR s6, CSR s7, CSR s8, CSR s9)
 {
   v.clear();
   addToStringVector(v, s0, s1, s2, s3, s4, s5, s6, s7, s8, s9);

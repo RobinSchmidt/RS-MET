@@ -1,9 +1,6 @@
 #ifndef romos_SoundGeneratorModules_h
 #define romos_SoundGeneratorModules_h
 
-namespace romos
-{
-
 //-------------------------------------------------------------------------------------------------
 
 /** Generates noise that is spectrally white and has uniform distribution between -1 and +1.
@@ -275,7 +272,5 @@ public:
 // SineOscBank, QuadratureOscBank -> let user enter relative frequencies on the GUI
 
 // PHASE_MODULATION_2OPS, PHASE_MODULATION_3OPS, PHASE_MODULATION_4OPS, 
-
-}
 
 #endif 

@@ -18,7 +18,7 @@ namespace RAPT
 #include "Misc/CurveFitting.cpp"
 #include "Misc/RatioGenerator.cpp"
 
-#include "Functions/BasicFunctions.cpp"
+#include "Functions/BasicMathFunctions.cpp"
 #include "Functions/IntegerFunctions.cpp"
 #include "Functions/InterpolatingFunction.cpp"
 #include "Functions/NodeBasedFunction.cpp"

@@ -12,20 +12,19 @@ header files that the compiler may be using.
 
 #include "romos.h"
 
-using namespace rosic;
+using namespace rosic;  // get rid
 
 //romos::PostExitMemLeakChecker romos::postExitMemLeakChecker;
-
-//namespace romos { // it'S still all wrapped into a namespace inside the included files
 
 // just include all files in alphabetical order - it's impractical to try to include them in
 // dependency order due to a messy dependency network
 
+namespace romos
+{
 #include "Algorithms/romos_FilterDesign.cpp"
 #include "Algorithms/romos_Interpolation.cpp"
 
 #include "Framework/romos_AudioConnection.cpp"
-#include "Framework/romos_Liberty.cpp"
 #include "Framework/romos_Module.cpp"
 #include "Framework/romos_AtomicModule.cpp"
 #include "Framework/romos_ContainerModule.cpp"
@@ -44,6 +43,15 @@ using namespace rosic;
 #include "Modules/romos_InfrastructuralModules.cpp"
 #include "Modules/romos_ModulationModules.cpp"
 #include "Modules/romos_SoundGeneratorModules.cpp"
+
+#include "Framework/romos_Liberty.cpp"
+}
+
+using namespace romos; 
+// get rid - it's still needed in the code below
+
+// todo: wrap the includes below alos into a namespace and get rid of the namespace declarations 
+// in all the files:
 
 #include "TestSuite/AutomaticTests.cpp"
 #include "TestSuite/InteractiveTests.cpp"
@@ -68,42 +76,3 @@ using namespace rosic;
 #include "TestSuite/TestFilter.cpp"    // these two do not yet compile - maybe they use old
 #include "TestSuite/TestHelpers.cpp"   // functions that have been removed
 #include "TestSuite/TestsMain.cpp"
-
-//#endif
-
-
-
-
-
-
-//#include "Framework/romos_ModuleTypeRegistry.cpp"
-//#include "Framework/romos_ProcessingStatus.cpp"
-
-//// if everything else is commented, up to here, we get no linker errors when building
-//
-//#include "Framework/romos_AudioConnection.cpp"
-//#include "Framework/romos_VoiceAllocator.cpp"
-//#include "Framework/romos_WorkArea.cpp"
-//#include "Framework/romos_Module.cpp"
-//#include "Framework/romos_ContainerModule.cpp"
-//#include "Framework/romos_AtomicModule.cpp"
-//
-//#include "Modules/romos_ArithmeticModules.cpp"
-//#include "Modules/romos_DelayModules.cpp"
-//#include "Modules/romos_FilterModules.cpp"
-//#include "Modules/romos_FunctionModules.cpp"
-//#include "Modules/romos_InfrastructuralModules.cpp"
-//#include "Modules/romos_ModulationModules.cpp"
-//#include "Modules/romos_SoundGeneratorModules.cpp"
-//
-//
-//
-//#include "TestSuite/romos_TestModuleBuilder.cpp"  // seems to need all the atomic modules
-//#include "Framework/romos_ModuleFactory.cpp"      // need TestModuleBuilder
-
-
-
-//#include "Framework/romos_TopLevelModule.cpp"
-
-
-//}

@@ -605,13 +605,69 @@ void cosSumWindow5(double* w, int N) // 5 term
 // don't count the constant term a0 as term - reduce all numbers in the names by 1
 
 
+
+/**
+a ~= 0.95 seems to be the (lower) limit for which we see no local maxima (sidelobes) - with that 
+value, we see a sort of staircase of saddle-points, the first ocurring at around -30 dB. Higher 
+values tend to smooth out the saddles more and more
+
+*/
+void hannPoissonWindow(double* w, int N, double a)
+{
+  int M = N-1;
+  for(int n = 0; n < N; n++)
+  {
+    //double hann    = 0.5 * (1 - cos(2*PI*n / N));   // ZN version - an NN version would be better
+    //double hann    = 0.5 * (1 - cos(2*PI*n / M));   // ZZ version - at least, it's symmetric
+    //double hann    = 0.5 * (1 - cos(2*PI*(n+1) / N)); // NZ version
+    double hann    = 0.5 * (1 - cos(2*PI*(n+1) / (N+1)));  // NN version
+    double poisson = exp(-a*rsAbs(M-2*n) / M);
+
+    //w[n] = hann;
+    //w[n] = poisson;
+    w[n] = hann * poisson;
+  }
+  // verify conventions (n from 0..N-1 or from 0..N? etc.)
+  // https://en.wikipedia.org/wiki/Window_function#Hann%E2%80%93Poisson_window
+  // https://ccrma.stanford.edu/~jos/sasp/Hann_Poisson_Window.html
+  // the poisson part is slightly asymmetrical (at least for even N) - investigate by plotting
+  // the poisson part only
+
+  // todo: experiment with multiplying poisson by cosSumWindow3 etc. - will that give other windows
+  // with no sidelobes? ...and maybe with stepper slopes?
+
+  rsArrayTools::normalizeMean(w, N);  
+}
+
+void cosSumPoissonWindow5(double* w, int N, double a)
+{
+  cosSumWindow5(w, N);  // we need an NN version here - i think, it produces a ZN version
+  //int M = N-1;
+  //for(int n = 0; n < N; n++)
+  //  w[n] *= exp(-a*rsAbs(M-2*n) / M);
+  RAPT::rsArrayTools::normalizeMean(w, N);
+}
+
 void windowFunctionSpectra()
 {
+  //int windowLength = 10;
   //int windowLength = 11;
   //int windowLength = 128;
-  int windowLength = 32;
+  //int windowLength = 129;
+  //int windowLength = 20;
+  //int windowLength = 32;
+  //int windowLength = 37;
+  //int windowLength = 45;
+  //int windowLength = 38;
+  int windowLength = 64;
+  //int windowLength = 255;
+  //int windowLength = 8192;
 
-  int fftSize = 8192;
+
+  //int fftSize = windowLength;  // makes sense to read off the mainlobe-widths
+  int fftSize = 20*windowLength; // this even more - just divide the read off value by 10
+  //int fftSize = 200*windowLength;  // more precise - divide by 100 - but slower
+  //int fftSize = 8192;
   //int fftSize = 16384;
 
   // create various window functions:
@@ -624,7 +680,8 @@ void windowFunctionSpectra()
     salFlatTopFast3(N), salFlatTopFast4(N), salFlatTopFast5(N),
     salFlatTopMin3(N),  salFlatTopMin4(N),  salFlatTopMin5(N),
     hrsFlatTop70(N), hrsFlatTop95(N), hrsFlatTop90D(N), hrsFlatTop116D(N), hrsFlatTop144D(N),
-    hrsFlatTop169D(N), hrsFlatTop196D(N), hrsFlatTop223D(N),  hrsFlatTop248D(N);
+    hrsFlatTop169D(N), hrsFlatTop196D(N), hrsFlatTop223D(N), hrsFlatTop248D(N),
+    hannPoisson1(N), hannPoisson2(N), hannPoisson3(N), hannPoisson4(N), hannPoisson5(N);
 
   WF::createWindow(&rectangular[0],    N, WT::rectangular, true);
   WF::createWindow(&triangular[0],     N, WT::triangularNN,  true);
@@ -667,59 +724,58 @@ void windowFunctionSpectra()
   cosSumWindow4(&cosSumWnd4[0], N);
   cosSumWindow5(&cosSumWnd5[0], N);
 
+
+  hannPoissonWindow(&hannPoisson1[0], N, 0.95);
+  hannPoissonWindow(&hannPoisson2[0], N, 2.0);
+  hannPoissonWindow(&hannPoisson3[0], N, 3.0);
+  hannPoissonWindow(&hannPoisson4[0], N, 4.0);
+  hannPoissonWindow(&hannPoisson5[0], N, 5.0);
+  // increasing values of a tend to make the window narrower with a corresponding wider spectrum, 
+  // a = 0.95 seems to be around the limit where we don't see any sidelobes...sort of optimal 
+  // value?
+
+  // test:
+  //cosSumPoissonWindow5(&hannPoisson1[0], N, 0.04);
+  // this is interesting! do more research in combining the poisson window with cosine-sum windows
+  // ...we may get useful windows without sidelobes from this - the optimal value of a depends on 
+  // how many cosine terms we use
+
+
+
   std::vector<double> chebyTweak(N), cheby20(N), cheby40(N), cheby60(N), cheby80(N), cheby100(N);
-  cheby_win(&cheby20[0], N,  20);
-  cheby_win(&cheby40[0], N,  40);
-  cheby_win(&cheby60[0], N,  60);
-  cheby_win(&cheby80[0], N,  80);
-  cheby_win(&cheby100[0], N, 100);
-  cheby_win(&chebyTweak[0], N, 17.5); // tweakable
+  //cheby_win(&cheby20[0], N,  20.0);  // old - uses prototype implementation with O(N^2) complexity
+  WF::dolphChebychev(&cheby20[0],  N,  20.);
+  WF::dolphChebychev(&cheby40[0],  N,  40.);
+  WF::dolphChebychev(&cheby60[0],  N,  60.);
+  WF::dolphChebychev(&cheby80[0],  N,  80.);
+  WF::dolphChebychev(&cheby100[0], N, 100.);
+  WF::dolphChebychev(&chebyTweak[0], N, 17.5); // tweakable
   // 17.5: mainlobe-width matches rectangular window
   // 46.5: matches cosSumWnd2
+  // They have spikes at the ends which get more pronounced with longer lengths and with lower
+  // sidelobe attenuation - maybe try what happens, if we remove these spikes, maybe by replacing
+  // the last window-value by linearly extrapolating from the 2nd-to and 3rd-to last or using half
+  // of the 2nd-to last or something - in some context, these spikes may be bad...maybe call it
+  // "modified Dolph-Chebychev" or something ..or maybe "de-spiked ..." ...but that may defeat the 
+  // purpose of the equiripples...we'll see
 
-  // compute chebychev window mainlobe width:
-  // https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window_Main_Lobe_Width.html
-  double r  = rsDbToAmp(-17.5);   // plug attenuation here - the formula should give a width of around 2 at 17.5
-  double x0 = cosh(acosh(1/r) / (N-1)); // == chebyPoly(1/r, 1/(N-1))?
-  double wc = 2*acos(1/x0);
-  double w0Rect = 2*PI/N; // first zero of rectangular window for reference
-  //double B  = 2*wc;
-  double k = N*wc/(2*PI); // see below
-  // hmm...these formulas seem to compute the cutoff frequency in radians dependning on N and give
-  // a too small value - we actually want a value independent of N - maybe just leave out the 
-  // division by N-1? ...try it:
-  //double r  = rsDbToAmp(-17.5);   // plug attenuation here
-  //double x0 = cosh(acosh(1/r));  // == 1/r - this is the identity function
-  //double wc = 2*acos(1/x0);
-  //double B  = 2*wc;
-  // no - that doesn't seem to work, for an attenuation of 17.5 dB, we should get a value of 2 but 
-  // get 5.7 - more research needed - try to figure out, how the equations above were derived - 
-  // maybe they can be reverse engineered to give the normalized mainlobe width in terms of DFT 
-  // bins - or maybe we can from the normalized frequency wc compute the bin-index..
-  // see also here - the window has impulses at its endpoints:
-  // https://ccrma.stanford.edu/~jos/sasp/Example_Chebyshev_Windows_Transforms.html
-
-  // i think, w = 2*pi*f/fs together with f = k*fs/N gives a bin index k = M*w/2pi where k is 
-  // actually our desired bin-width B and w is equal to wc above...soo we get the equation
-  // wc = B*2pi/N = 2*acos(1/x0) = 2*acos(1/cosh(acosh(1/r) / (N-1))) for N - is that correct?
-  // maybe let the SpectrumPlotter scale the frequency axis in different ways - in particular,
-  // let it go from 0...PI and see if the formula above for wc gives the right value on that axis
-
-  // oookay - i think, for the rectangular window, the mainlobe width is defined as the first zero 
-  // of the spectrum which occurs at 2*PI/N radians
-  // for the chebycev window, the cutoff is measured at the point where the mainlobe crosses the
-  // attenuation for the first time - that's a little bit below the first zero, but for a rough
-  // computation of mainlobe width, it should be good enough - but maybe we can find a formula
-  // for the zeros of the chebychev spectrum - it's defined in the freq-domain anyway - i think, 
-  // we need a formula for the zeros of chebychev polynomials
-  // Tn(x) = cos(n*acos(x)) for x < 1, so we need to solve cos(n*acos(x)) = 0 for x 
-  // let u = acos(x), the solve cos(n*u) = 0 to find u = pi/2n -> x = acos(u) = acos(pi/2n)
-
-
-
-
+  // measurements of the mainlobe-widths of the cheby window for N=64
+  // attenuation:  20     40     60     80     100
+  // first cross:  1.935  3.423  4.9037 6.379  7.845
+  // first zero:   2.19   3.57   5.01   6.46   7.91
+  double cw20, cw40, cw60, cw80, cw100;
+  cw20  = WF::dolphChebychevMainLobeWidth(N, -20.0);
+  cw40  = WF::dolphChebychevMainLobeWidth(N, -40.0);
+  cw60  = WF::dolphChebychevMainLobeWidth(N, -60.0);
+  cw80  = WF::dolphChebychevMainLobeWidth(N, -80.0);
+  cw100 = WF::dolphChebychevMainLobeWidth(N, -100.0); // linker error
+  // these values look ok - now do more precise numerical tests with short windows (like 10, 11)
 
   // maybe optionally plot the window functions themselves
+  // note that gnuplot issues an error when we try to plot the window itself and immediately 
+  // thereafter its spectrum, because the in-between call of the convenience function messes up
+  // the datafile - we need to do one plot at a time - ah - but it works, if plot the spectrum 
+  // first and then the time-domain window
 
   typedef SpectrumPlotter<double> SP;
   typedef SP::FreqAxisUnits FU;
@@ -727,37 +783,51 @@ void windowFunctionSpectra()
   SpectrumPlotter<double> plt;
   plt.setFftSize(fftSize);
   plt.setFloorLevel(-180);
-  //plt.setFreqAxisUnit(FU::binIndex);
+  plt.setFreqAxisUnit(FU::binIndex);
   //plt.setFreqAxisUnit(FU::normalized);
-  plt.setFreqAxisUnit(FU::omega);
+  //plt.setFreqAxisUnit(FU::omega);
   //plt.setShowPhase(true);
-  //plt.setZoom(); // show only low portion up to 1/zoom of the spectrum
+  //plt.setZoom(); // show only low portion up to 1/zoom of the spectrum..maybe setLowFreqZoom
+                   // ...or, more generally, allow a bandpass-like setting
 
-  //rsPlotVectors(rectangular, triangular, hanning, hamming);
   //plt.plotDecibelSpectra(N, &rectangular[0], &triangular[0], &hanning[0], &hamming[0]);
+  //rsPlotVectors(rectangular, triangular, hanning, hamming);
 
-  //rsPlotVectors(rectangular, blackman, blackmanHarris, blackmanNutall, nutall);
   //plt.plotDecibelSpectra(N, &rectangular[0], &blackman[0], &blackmanHarris[0], &blackmanNutall[0], &nutall[0]);
+  //rsPlotVectors(rectangular, blackman, blackmanHarris, blackmanNutall, nutall);
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &truncGauss2[0], &truncGauss3[0], &truncGauss4[0], &truncGauss5[0]);
 
-  rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
   //plt.plotDecibelSpectra(N, &rectangular[0], &cosSumWnd2[0], &cosSumWnd3[0], &cosSumWnd4[0], &cosSumWnd5[0]);
+  //rsPlotVectors(rectangular, cosSumWnd2, cosSumWnd3, cosSumWnd4, cosSumWnd5); // ZN
 
-  //rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
-  //plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
 
-  //rsPlotVectors(salFlatTopFast3, salFlatTopFast4, salFlatTopFast5); 
+  //plt.plotDecibelSpectra(N, &hannPoisson1[0], &hannPoisson2[0], &hannPoisson3[0], 
+  //  &hannPoisson4[0], &hannPoisson5[0]);
+  //rsPlotVectors(hannPoisson1, hannPoisson2, hannPoisson3, hannPoisson4, hannPoisson5);
+
+  //plt.plotDecibelSpectra(N, &cheby20[0], &rectangular[0]);// compare rectangular and cheby20
+  //plt.plotDecibelSpectra(N, &cheby40[0], &hamming[0]);  // compare hamming and cheby40
+  //plt.plotDecibelSpectra(N, &cheby60[0], &blackman[0]); // compare blackman and cheby60
+  //plt.plotDecibelSpectra(N, &cheby100[0], &blackmanHarris[0]); // compare blackmanHarris and cheby100
+
+
+  plt.plotDecibelSpectra(N, &cheby20[0], &cheby40[0], &cheby60[0], &cheby80[0], &cheby100[0]);
+  rsPlotVectors(cheby20, cheby40, cheby60, cheby80, cheby100); // 1st value repeated as last (NN)
+
+  //plt.plotDecibelSpectra(N, &cheby60[0], &cheby60_2[0]);
+
   //plt.plotDecibelSpectra(N, &salFlatTopFast3[0], &salFlatTopFast4[0], &salFlatTopFast5[0]);
+  //rsPlotVectors(salFlatTopFast3, salFlatTopFast4, salFlatTopFast5);
 
-  //rsPlotVectors(salFlatTopMin3, salFlatTopMin4, salFlatTopMin5); 
   //plt.plotDecibelSpectra(N, &salFlatTopMin3[0], &salFlatTopMin4[0], &salFlatTopMin5[0]);
+  //rsPlotVectors(salFlatTopMin3, salFlatTopMin4, salFlatTopMin5); 
 
-  //rsPlotVectors(hrsFlatTop70, hrsFlatTop95, hrsFlatTop90D, hrsFlatTop116D, hrsFlatTop144D, 
-  //  hrsFlatTop169D, hrsFlatTop196D, hrsFlatTop223D, hrsFlatTop248D); 
   //plt.plotDecibelSpectra(N, &hrsFlatTop70[0], &hrsFlatTop95[0], &hrsFlatTop90D[0], 
   //  &hrsFlatTop116D[0], &hrsFlatTop144D[0], &hrsFlatTop169D[0], &hrsFlatTop196D[0], 
   //  &hrsFlatTop223D[0], &hrsFlatTop248D[0]);
+  //rsPlotVectors(hrsFlatTop70, hrsFlatTop95, hrsFlatTop90D, hrsFlatTop116D, hrsFlatTop144D, 
+  //  hrsFlatTop169D, hrsFlatTop196D, hrsFlatTop223D, hrsFlatTop248D); 
   // hmm, it seems like the sidelobes are always around 5-6 dB higher than the specifications says
   // not normalizing the windows doesn't change anything (seems, they already are normalized even 
   // without explicitly doing so)
@@ -765,6 +835,22 @@ void windowFunctionSpectra()
 
   //plt.plotDecibelSpectra(N, &rectangular[0], &chebyTweak[0]);
   //plt.plotDecibelSpectra(N, &cosSumWnd2[0], &chebyTweak[0]);
+
+
+
+  // Observations:
+  // To read off the mainlobe width from spectrum plot, it makes sense to use 
+  // fftSize == windowLength and plt.setFreqAxisUnit(FU::binIndex). In this case, the mainlobe 
+  // width is twice the value that is read off from the spectrum (twice, because the mainlobe goes 
+  // from minus to plus that value). For example, the rectangular and triangular windows have their
+  // first zero at 1 or 2 respectively, so their widths (if we define them at the first zero) are 2 
+  // or 4 which is what rsWindowFunction::getMainLobeWidth returns for these windows. For Hann and 
+  // Hamming window, the slope has a kink at 2. When using an fftSize == 20*windowSize, we see the
+  // structure of the sidelobes better and we can also directly read off the mainblobe-width by 
+  // dividing the read-off value by 10.
+
+  // ToDo:
+  // Figure out a formula
 };
 
 

@@ -13,6 +13,7 @@
 #include "Drawing.cpp"
 #include "QuantumSystems.cpp"
 #include "Relativity.cpp"
+#include "SineParameterEstimator.cpp"
 
 //#include "SinusoidalModeling.cpp" // moved to rapt
 
@@ -442,15 +443,14 @@ void rsDampedSineFilterResidueAndPole(double b0, double b1, double a1, double a2
 }
 
 
-double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x)
+double cheby_poly(int n, double x) // Chebyshev polyomial T_n(x), does NOT work for x < -1
 {
-  double res;
-  if (fabs(x) <= 1) res = cos(n*acos(x));
-  else              res = cosh(n*acosh(x));
-  return res;
+  if(fabs(x) <= 1) return cos( n*acos( x));
+  else             return cosh(n*acosh(x)); 
 }
 void cheby_win(double *out, int N, double atten)
 {
+  // Prototype implementation with O(N^2) scaling of the computational cost
   int nn, i;
   double M, n, sum = 0; // max=0;
   double tg = pow(10,atten/20);         // 1/r term [2], 10^gamma [2]
@@ -461,21 +461,105 @@ void cheby_win(double *out, int N, double atten)
     n = nn-M;
     sum = 0;
     for(i=1; i<=M; i++){
-      sum += cheby_poly(N-1,x0*cos(PI*i/N))*cos(2.0*n*PI*i/N);
-    }
+      sum += cheby_poly(N-1,x0*cos(PI*i/N))*cos(2.0*n*PI*i/N); }
     out[nn] = tg + 2*sum;
-    out[N-nn-1] = out[nn];
-    //if(out[nn]>max)max=out[nn];
-  }
-  //for(nn=0; nn<N; nn++) out[nn] /= max; // normalise everything
+    out[N-nn-1] = out[nn]; }
   RAPT::rsArrayTools::normalizeMean(out, N);
-  return;
 }
 
+/*
+
+The code above was adapted from here:
+http://practicalcryptography.com/miscellaneous/machine-learning/implementing-dolph-chebyshev-window/
+
+For more info about doing an FFT based implementation, see:
+
+https://www.dsprelated.com/freebooks/sasp/Dolph_Chebyshev_Window.html
+https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window.html
+https://en.wikipedia.org/wiki/Window_function#Dolph%E2%80%93Chebyshev_window
+https://octave.sourceforge.io/signal/function/chebwin.html
+
+This paper is good: The Dolph–Chebyshev Window: A Simple Optimal Filter (Lynch)
+http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.77.5098&rep=rep1&type=pdf
+
+https://docs.scipy.org/doc/scipy-0.19.0/reference/generated/scipy.signal.chebwin.html
+https://github.com/scipy/scipy/blob/v0.19.0/scipy/signal/windows.py#L1293-L1416
+
+This code can be entered directly into sage:
 
 
+# Plot the window and its frequency response:
+
+N = 21 # window length
+
+from scipy import signal
+from scipy.fftpack import fft, fftshift
+import matplotlib.pyplot as plt
+import numpy as np
+
+window = signal.chebwin(N, at=100)
+plt.plot(window)
+plt.title("Dolph-Chebyshev window (100 dB)")
+plt.ylabel("Amplitude")
+plt.xlabel("Sample")
+plt.show()
+
+plt.figure()
+A = fft(window, 2048) / (len(window)/2.0)
+freq = np.linspace(-0.5, 0.5, len(A))
+response = 20 * np.log10(np.abs(fftshift(A / abs(A).max())))
+plt.plot(freq, response)
+plt.axis([-0.5, 0.5, -120, 0])
+plt.title("Frequency response of the Dolph-Chebyshev window (100 dB)")
+plt.ylabel("Normalized magnitude [dB]")
+plt.xlabel("Normalized frequency [cycles per sample]")
+plt.show()
 
 
+The relevant fragment of the implementation (with added comments) of signal.chebwin in scipy looks 
+like this:
+
+order = M - 1.0
+beta = np.cosh(1.0 / order * np.arccosh(10 ** (np.abs(at) / 20.)))
+k = np.r_[0:M] * 1.0
+x = beta * np.cos(np.pi * k / M)
+p = np.zeros(x.shape)
+
+# when x > 1, use cosh/acosh:
+p[x > 1] = np.cosh(order * np.arccosh(x[x > 1]))
+
+# when x < -1, use cosh/acosh or 0, depending on order being even or odd:
+p[x < -1] = (1 - 2 * (order % 2)) * np.cosh(order * np.arccosh(-x[x < -1]))
+
+# when |x| <= 1, use cos/acos:
+p[np.abs(x) <= 1] = np.cos(order * np.arccos(x[np.abs(x) <= 1]))
+
+# Appropriate IDFT and filling up depending on even/odd M
+if M % 2:                                             # if length M is odd
+    w = np.real(fftpack.fft(p))                       #     do the FFT: w = fft(p) - why no ifft?
+    n = (M + 1) // 2                                  #     compute shift amount
+    w = w[:n]                                         #     ääähh - what does this do?
+    w = np.concatenate((w[n - 1:0:-1], w))            #     apply circular shift by n?
+else:                                                 # else (i.e. M is even)
+    p = p * np.exp(1.j * np.pi / M * np.r_[0:M])      #     additional modulation of p required?
+    w = np.real(fftpack.fft(p))                       #     w = fft(p)
+    n = M // 2 + 1                                    #     compute shift amount
+    w = np.concatenate((w[n - 1:0:-1], w[1:n]))       #     apply circular shift
+*/
+
+void rsCircularShift(int* a, int N, int k)
+{
+  rsAssert(k > 0 && k < N, "other cases are not handled yet");
+  using AT = rsArrayTools;
+  AT::reverse(a, N);
+  AT::reverse(a, k);
+  AT::reverse(&a[k], N-k);
+}
+// if it works, templatize and replace the implementation in rsArrayTools, but keep the old version
+// somewhere else...or maybe turn the old version into a workspace-based implementation...and then
+// do benchmarks, which one ist faster
+// todo: handle cases, where k >= N, k < 0, k <= -N, ... i think, currently, it only works for
+// 0 < k < N
 
 //=================================================================================================
 
@@ -688,12 +772,10 @@ void rsModalFilterFloatSSE2::setParameters(double w, double A, double p,
 }
 */
 
-
 // Idea have a ModalSynth class that lets the user insert different types of mode filters
 // simple decaying sines, attack/decay-sines, 4-env-sines, nonlinear modes (perhaps with amplitude
 // dependent frequency - they should have a second "sidechain" input where we feed back the total
 // summed output - so the nonlinear effects may depend on the total output value
-
 
 //=================================================================================================
 
@@ -701,7 +783,7 @@ rsGroupString rsGroupString::inverse() const
 {
   size_t len = s.size();
   std::vector<unsigned int> r(len);
-  for(int i = 0; i < len; i++)
+  for(size_t i = 0; i < len; i++)
     r[i] = s[len-1-i];
   return r;
 }
@@ -709,7 +791,7 @@ rsGroupString rsGroupString::inverse() const
 rsGroupString rsGroupString::operator+(const rsGroupString &rhs) const
 {
   std::vector<unsigned int> r = s;
-  for(int i = 0; i < rhs.s.size(); i++) {
+  for(size_t i = 0; i < rhs.s.size(); i++) {
     if(r.size() > 0 && r[r.size()-1] != rhs.s[i])
       r.push_back(rhs.s[i]);
     else if(r.size() > 0)     // avoid popping on empty vector
@@ -724,8 +806,6 @@ rsGroupString rsGroupString::operator+(const rsGroupString &rhs) const
   // that defines an "annihilator" for each character. at the moment, each character is it own
   // annihilator - maybe use pairings that are unnatural for an actual language
 }
-
-
 
 rsGroupString2::rsGroupString2(const char* inStr)
 {
@@ -757,7 +837,7 @@ std::string rsGroupString2::toString() const
 bool rsGroupString2::checkCharacters() const
 {
   bool r = true;
-  for(int i = 0; i < s.size(); i++)
+  for(size_t i = 0; i < s.size(); i++)
     r &= s[i] >= 0 && s[i] <= 25;
   return r;
 }

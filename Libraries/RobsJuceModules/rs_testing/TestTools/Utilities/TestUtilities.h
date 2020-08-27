@@ -36,6 +36,7 @@ inline void checkForMemoryLeaksOnExit()
 std::vector<double> rsLinearRangeVector(     int N, double min, double max);
 std::vector<double> rsExponentialRangeVector(int N, double min, double max);
 std::vector<double> rsRandomVector(          int N, double min, double max, int seed = 0);
+std::vector<double> rsRandomIntVector(       int N, int    min, int    max, int seed = 0);
 std::vector<double> rsApplyFunction(const std::vector<double>& v, double p,
   double (*f) (double, double));
 
@@ -84,7 +85,6 @@ std::vector<std::complex<T>> rsComplexRandomVector(int N, T min, T max, unsigned
   return x;
 }
 
-
 template<class T>
 T rsMaxComplexError(std::complex<T>* target, std::complex<T>* actual, size_t N)
 {
@@ -102,6 +102,16 @@ bool rsAlmostEqual(std::vector<std::complex<T>>& x, std::vector<std::complex<T>>
   return maxErr <= tolerance;
 }
 
+inline bool isIndexPermutation(int* b, int L)
+{
+  for(int i = 0; i < L; i++)
+    if( !rsArrayTools::contains(b, L, i) )
+      return false;
+  return true;
+}
+// Returns true, iff b contains every number from 0 to L-1. Since b is of length L, this implies
+// that every number is contained exactly once, so b is a permutation of the numbers 0...L-1.
+// used here only for debug -  move elsewhere
 
 /** Applies the inner function to the value x and then the outer function to the result of that
 inner function and returns the final result. This is known as function composition in

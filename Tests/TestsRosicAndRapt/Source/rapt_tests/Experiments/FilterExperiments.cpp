@@ -1274,7 +1274,7 @@ void poleZeroPrototype()
 
   // something is wrong...
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void seriesConnectionDecay()  
@@ -1342,4 +1342,355 @@ void seriesConnectionDecay()
   //  peak-amplitude?
   //
   // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=533696
+}
+
+void quantileFilterElongation()
+{
+  // We try to produce a sample that a length L+1 *would have* produced with a length L filter.
+
+  double q = 0.2;    // quantile
+  int    L = 2;      // length of non-elongated filter
+
+  using Vec = std::vector<double>;
+  Vec x;
+  // x = Vec({ 2,4,6,8 });
+  // x = Vec({ 0,2,4,6,8,10,12,14 });
+  //x = Vec({2,4,6,8,6,4,2,0,-2,-4,-6,-8,-6,-4,-2,0,2,4,6,8,6,4,2,0,-2,-4,-6});
+  x = rsRandomIntVector(200, -9, +9, 0);
+  int N = (int) x.size();   // number of samples
+
+  rsQuantileFilterCore<double> flt;
+  flt.setMaxLength(32);
+
+  // produce a target signal with a filter that actually *is* one sample longer than L:
+  flt.setLengthAndQuantile(L+1, q);
+  Vec t(N); // t for target
+  for(int n = 0; n < N; n++)
+    t[n] = flt.getSample(x[n]);
+
+
+  rsDelayBuffer<double> dly;
+  dly.setCapacity(L+1);
+  dly.setLength(L+1);
+
+  flt.reset();
+  flt.setLengthAndQuantile(L, q);
+  Vec y(N);  // normal output of filter
+  Vec z(N);  // output of elongated filter - should match t
+  for(int n = 0; n < N; n++)
+  {
+    dly.getSample(x[n]);       // feed the delayline
+    y[n] = flt.getSample(x[n]);
+    z[n] = flt.getElongatedOutput(dly[L]);
+  }
+  Vec err = t-z;
+
+  double xOld = dly[L];
+  //double branch;
+  double tmp  = flt.getElongatedOutput(xOld);
+
+  //rsPlotVectors(t, z, err);
+  rsPlotVectors(x, t, z, err);
+
+  // Observations: it works
+
+  // todo: move explanation into comment in readOutputWithOneMoreInput
+  // -if p1==p and xOld falls into the large heap, we just need to use xS = S0; xL = L0; as usual
+  //  because xOld the large heap can actually admit for xOld as additional sample, because it's
+  //  one sample longer - no data would have to be moved from large to small. If, on the other 
+  //  hand, xold falls into the small heap, we have to take into account that a datapoint from
+  //  the front of the small heap would have to be moved over to the large heap.
+  // -if p1==p+1, the situation is reversed: when xOld falls into the small heap, we use 
+  //  xS = S0; xL = L0; as usual and if xOld falls inot the large heap, some additional logic is
+  //  required. try L=5, q= 0.6
+}
+
+void quantileFilterSweep()
+{
+  // We test the non-integer length quantile filter by making a continuous sweep of the length 
+  // (and/or the quantile, but that's not really relevant for this test) and write the result to 
+  // a wavefile. For comparison, we also generate a signal with a filter that is restricted to
+  // integer lengths.
+
+  // user parameters:
+  double fs          = 44100;    // sample rate
+  int    N           = 200000;   // number of samples
+  double minLength   = 2.0;      // minimum length in sweep
+  double maxLength   = 20.0;     // maximum length in sweep
+  double minQuantile = 0.5;
+  double maxQuantile = 0.5;
+
+  // Create lengs and quantile sweep and in- and output signals:
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
+  Vec lengths(N), quantiles(N);
+  AT::fillWithRangeExponential(&lengths[0],   N, minLength,   maxLength);
+  AT::fillWithRangeExponential(&quantiles[0], N, minQuantile, maxQuantile);
+  Vec x = rsRandomVector(N, -1.0, 1.0, 0);  // input to the filter
+  Vec y1(N), y2(N);                         // rough and smooth sweep
+
+  // Create filter and produce the non-smooth sweep - it's not smooth because we do not yet 
+  // assign the delay buffer, which is a requirement to make a smooth sweep work:
+  rsQuantileFilterCore2<double> flt;
+  flt.setMaxLength((int)ceil(maxLength));
+  for(int n = 0; n < N; n++) {
+    flt.setLengthAndQuantile(lengths[n], quantiles[n]);
+    y1[n] = flt.getSample(x[n]); }
+
+  // Create and assign the delay-buffer and produce a smooth sweep:
+  rsDelayBuffer<double> delayLine;
+  delayLine.setCapacity((int)ceil(maxLength) + 1); // +1 for the 1 extra elongation sample 
+  flt.setDelayBuffer(&delayLine);
+  flt.reset();
+  for(int n = 0; n < N; n++) {
+    delayLine.getSample(x[n]);
+    flt.setLengthAndQuantile(lengths[n], quantiles[n]);
+    y2[n] = flt.getSample(x[n]); }
+
+  // plot both sweeps:
+  //rsPlotVectors(y1, y2);
+
+  // write both sweeps to files:
+  rosic::writeToMonoWaveFile("QuantileFilterSweepRough.wav",  &y1[0], N, 44100);
+  rosic::writeToMonoWaveFile("QuantileFilterSweepSmooth.wav", &y2[0], N, 44100);
+}
+
+void quantileFilterDelay()
+{
+  // Creates a sinewave and applies an rsQuantilefilter to it with a given length and various 
+  // settings of the quantile and plots the results together with a suitable delayed version of the
+  // input. 
+
+  int    N  = 500;    // number of samples for plot
+  double L  = 251;    // length of filter
+  double lo = 1.0;    // lowpass gain
+  double hi = 0.0;    // highpass gain
+  double P  = 100.0;  // period of input wave
+
+  // quantiles:
+  using  Vec = std::vector<double>;
+  //Vec q({0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0});
+  Vec q({0.0, 0.2, 0.4, 0.5, 0.6, 0.8, 1.0});
+  //Vec q({0.0, 0.25, 0.5, 0.75, 1.0});
+  //Vec q({0.5});
+
+  // Create and set up rsQuantileFilter object:
+  rsQuantileFilter<double> flt;
+  int maxLength = (int) ceil(L);
+  flt.setSampleRateAndMaxLength(1.0, maxLength);
+  flt.setFrequency(1.0/L);
+  flt.setLowpassGain(lo);
+  flt.setHighpassGain(hi);
+  flt.updateInternals();        // because we want to retrieve the delay below
+
+  // Create input waveform and delayed version of it:
+  Vec x(N); createWaveform(&x[0], N, 0, 1./P, 1.0);
+  rsDelayBuffer<double> dly(maxLength);
+  double d = flt.getDelayInSamples();
+  Vec xd(N);
+  for(int n = 0; n < N; n++) {
+    dly.getSample(x[n]);
+    xd[n] = dly[d]; }
+
+  // create filtered outputs for various quantile settings and plot them along with the 
+  // delayed input:
+  GNUPlotter plt;
+  plt.addDataArrays(N, &xd[0]);  
+  Vec y(N);
+  for(size_t i = 0; i < q.size(); i++)
+  {
+    flt.setQuantile(q[i]);
+    flt.reset();
+    for(int n = 0; n < N; n++)
+      y[n] = flt.getSample(x[n]);
+    plt.addDataArrays(N, &y[0]);
+  }
+  plt.plot();
+
+  // Observations:
+  // -when lo = hi = 1, the output matches the delayed input, as it should
+  // -L=50,lo=1,hi=0: higher and lower quantiles bulge out the top or bottom halfwaves respectively
+  //  and narrow the other halfwaves - the corresponding "highpass" waves (lo=0,hi=1) look quite 
+  //  interesting
+  // -L=P=100,lo=1,hi=0: the outputs become contants - increasing L to 120, we see weird 
+  //  small-scale wiggles in the output (why? that seems strange! is that a bug?)
+  //  -the effect is even more pronounce for odd L, like 121 or 151 - the output stays contant over
+  //   3 samples, leading to stairsteps - with L = 251, the steps are 5 samples wide
+}
+
+// nove to test uitilities:
+std::vector<double> applyDelay(const std::vector<double>& x, double delay)
+{
+  size_t N = x.size(); // maybe optionally use N + ceil(delay)
+  rsDelayBuffer<double> dly((int)ceil(delay));
+  std::vector<double> y(N);
+  for(size_t n = 0; n < N; n++) {
+    dly.getSample(x[n]);  
+    y[n] = dly[delay];   }
+  return y;
+}
+
+
+void quantileFilterDual()
+{
+  double fs = 44100;  // sample rate
+  int    N  = 1000; // number of samples
+  int    L  = 100;    // filter length in samples (can we make this a double, too?)
+  double q  = 1.0;   // filter quantile, 0.0: minimum, 0.5: median, 1.0: maximum
+  double f1 = fs/2;
+  double f2 = fs/500;  // fs/256 is a nice end value for a sweep
+
+  f1 = f2 = fs/51;
+
+  // Create and set up filter:
+  using QF  = rsDualQuantileFilter<double>;
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
+  double maxLength = ceil(rsMax(1/f1, 1/f2)); // required maximum length
+  QF flt;
+  flt.setSampleRateAndMaxLength(fs, maxLength);
+  flt.setQuantile(q);
+  flt.setLowpassGain(0.5);
+  flt.setHighpassGain(0.0);
+  //flt.setFeedback(0.0);    // later - maybe
+  flt.setCore2Complementary();
+  flt.updateInternals();  // so we have a non-dirty state to look at
+
+  // Create input signal:
+  //Vec x = rsRandomVector(N, -1.0, +1.0, 0);  // try sinusoids, too
+  //Vec x = rsRandomIntVector(N, 1, 9, 0);  // looks not random at all - very periodic!
+  //Vec x = rsRandomIntVector(N, 0, 16, 0);   // periodic with period 16
+  //Vec x = rsRandomIntVector(N, 1, 99, 0);
+  // todo: use a irwin-hall generator - we can see it better when the distribution is more skewed
+  // toward the middle
+  //createWaveform(&x[0], N, 0, 1.0/L, 1.0);  // sine wave
+  //createSineSweep(&x[0], N, 0.0/L, 2.0/L);
+  Vec x(N); AT::fillWithImpulse(&x[0], N, 1.0, N/2);  // for testing the delay
+  //Vec x = createCrackle(N, 0.02);
+
+  // Create frequency sweep, delayed input and output signal:
+  Vec f(N), y(N), xd(N);
+  AT::fillWithRangeExponential(&f[0], N, f1, f2);
+  double delay;   // maybe use later to compare output with delayed input
+  rsDelayBuffer<double> dly((size_t)ceil(maxLength*fs));
+  for(int n = 0; n < N; n++) {
+    flt.setFrequency(f[n]);
+    flt.setCore2Complementary();
+    flt.updateInternals();
+    delay = flt.getDelayInSamples();
+    dly.getSample(x[n]);
+    xd[n] = dly[delay];
+    y[n] = flt.getSample(x[n]); }
+
+
+  /*
+  // create a median-filtered version of x (obsolete):
+  int nS = L/2;    // floor division
+  int nL = L-nS;
+  Vec t(N);
+  //for(int n = nS; n < N-nL; n++)
+  //  t[n+nS] = rsArrayTools::median(&x[n-nS], nS+nL); // why t[n+nS]?
+
+  // 7: 36,67,76,41,82,45,74 -> 36,41,45,67,74,76,82 -> 67
+  // 6: 36,67,76,41,82,45    -> 36,41,45,67,76,82    -> (45+67)/2 = 56 ..but occurs at sample 101 - why?
+  // so, for even lengths, t is lagging one sample
+
+  // let's try it with the naive implementation of rsQuantileFilter
+  rsQuantileFilterNaive<double> fltN(nS, nL);
+  Vec z(N);
+  //for(int n = 0; n < N; n++)
+  //  z[n] = fltN.getSampleMedian(x[n]);
+  */
+
+
+  //rosic::writeToMonoWaveFile("QuantileFilterInput.wav",  &x[0], N, 44100);
+  //rosic::writeToMonoWaveFile("QuantileFilterOutput.wav", &y[0], N, 44100);
+  //std::cout << "Files written.";
+
+  //rsPlotVectors(x, y);
+  rsPlotVectors(x, xd, y);
+  //rsPlotVectors(y);
+  //rsPlotVectors(x, y, t);
+  //rsPlotVectors(y, t);
+  //rsPlotVectors(t, z);
+  //rsPlotVectors(t, z, y);
+  //rsPlotVectors(z, y);  // for even lengths, z is the better reference - t has a delay there
+  //rsPlotVectors(x, y);
+
+
+
+  // ToDo: 
+  // -check, if the computed delay corresponds to what we see in the plots - ok - looks good
+
+  // maybe try it with a square-wave with period 100, set the length also to 100 - this is an even
+  // number, so we should get an interpolation coeff of 0.5 - i think, the output should be a 
+  // triangle wave
+
+  // how about using 4 of them in series and building the feedback loop around the whole thing?
+
+  // Observations:
+  // -the outputs generally have a sort of "sample-and-hold" character
+  // -when sweeping the freq, there are audible artifacts that sound like switching to a new
+  //  settings - could the be because of the rounding? it's especially obvious for very small 
+  //  lengths - yes, it happens most obviously when the (rounded) length L switches from 2 to 3 
+  //  -> maybe we need indeed implement some sort of support for non-integer length
+  // -the highpass signal has strong components at the Nyquist freq when q=0 or q=1...this seems
+  //  to have disappeared - may have been due to the false delay computation (delay was off by
+  //  a factor of 1/2
+  // 
+
+  // ToDo:
+  // -setMaxLength call takes really long - figure out why and fix it! ah - it was because it
+  //  wants its input in seconds and i assumed samples and passed an unreasonably large value
+  // -test, if the delay computation is correct - use an impulse at sample 100 - a non-delayed
+  //  maximum should have a 1 at samples 98,99,100,101,102 - that's our reference. the filter
+  //  output will have ones at 100..104, so the computed delay should be 2 
+  //  -it's most easy to test when using loGain = hiGain = 1, in which case the filter produces
+  //   a pure delay
+  // -benchmark against naive implementation
+  // -try putting a regular bandpass in front
+  // -test modulation 
+  //  -switch done - looks good
+  //  -try sweeping the freq exponentially
+  // -try a sine-sweep as input - looks weird, but that's expected
+  // -figure out if we should use a scale factor when converting from frequency to length (it 
+  //  seems mathematically natural to just use length = 1/freq, but maybe that's not a good choice
+  //  in practice) - maybe look at frequency responses of moving-average filters to find the
+  //  cutoff freq as function of filter length
+  // -how about introducing feedback?
+  // -can the filter length somehow be made a non-integer, too? what would it mean to take the 
+  //  median over 10.7 samples? maybe something like 0.3 * median_over_10 + 0.7 * median_over_11?
+  //  -maybe the double-heap should use the ceil and the calulation would not only use the front
+  //   element but also one of the children? ...or should a non-integer length somehow go into 
+  //   the calculation of the interpolation weight w? or should we use a modified quantile? we 
+  //   compute the non-integer read position q as:
+  //     T q = quantile * sampleRate * (*L - 1);
+  //   maybe we can just use this formula as is but with the non-integer L?
+  //  ...but no: the artifacts also appear when q = 0 or q = 1, so adjusting q seems not to be the 
+  //  solution - we really need soem sort of formula/algo that computes the quantile over L and 
+  //  over L+1 samples and crossfade between them - how can we do this? maybe we need to look not 
+  //  only at the front samples of the heaps but also to the first child-nodes *and* at at a sample
+  //  at L+1 to figure out, where fits in? between the middle samples
+  // -support of non-integer length would allow for a smoother modulation of the cutoff freq, so
+  //  it may be a worthwhile feature
+  // -i think, this filter could be especially interesting to create filtered noises, it tends
+  //  to some sort of "sample-and-hold" behavior - maybe try in conjunction with the TriModalNoise
+  // -maybe re-introduce the second core and give it similar parameters - it may make sense to 
+  //  form a linear combination of min and max, for example - but maybe do this in a subclass
+  //  rsDualQuantileFilter
+
+  //  ...maybe it makes sense to give presets in ToolChain and its submodules an Info field which
+  //  can be edited in the plugins - there, we could store a text that explains what this preset
+  //  does and hwo it should be used - a short info could be displayed in the info field when
+  //  the mouse is over the preset field and a longer info coul be displayed in a popup text
+  //  editor on right-click
+
+}
+
+void quantileFilter()
+{
+  //quantileFilterElongation();  // tests producing the length L+1 output by length L filter
+  //quantileFilterSweep();  // tests non-integer length quatile filter
+  //quantileFilterDelay();
+  quantileFilterDual();  // tests the dual-quantile filter (with highpass mode, etc.)
 }

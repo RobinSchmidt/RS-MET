@@ -1,8 +1,5 @@
 //#include "romos_SoundGeneratorModules.h"
 
-namespace romos
-{
-
 //-------------------------------------------------------------------------------------------------
 
 void WhiteNoise::initialize()
@@ -473,11 +470,3 @@ void DualBlitSaw::freeMemory()
   BlitSaw::freeMemory();
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_4(DualBlitSaw);
-
-
-
-
-
-
-
-}

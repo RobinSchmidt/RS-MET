@@ -39,7 +39,7 @@ void movingAverage5pt(const T* x, int N, T* y)
 // this is still under construction
 // maybe make a fixed-ends version of that using: y[0] = x[0], y[1] = (x[0]+x[1]+x[2])/3 - so
 // the first output equals the first input and the second output uses a symmetric 3-point average
-// ...i think, that scheme generalizes more nicely to M-point smoothers without introducing 
+// ...i think, that scheme generalizes more nicely to M-point smoothers without introducing
 // asymmetric averaging at the endpoints - also, fixed endpoints may themselves be a desirable
 // feature - for example when smoothing parameter trajectories
 
@@ -70,7 +70,7 @@ void movingAverage(const T* x, int N, T* y, int order)
 // under construction...
 
 
-// this code here: 
+// this code here:
 // https://stackoverflow.com/questions/21128981/finding-gcd-of-array-code-c-language
 // uses a signature like: int gcd_a(int n, int a[n])
 // ...that's actually pretty nice - perhaps i should use this for array functions as well. does the n
@@ -95,14 +95,50 @@ bool testArrayFiltering()
   Vec x,y;
 
   x = Vec({1,3,2,-2,3,5,1});
-  AR::movingAverage3pt(&x[0], (int)x.size(), &x[0], false);
+  y.resize(x.size());
+  AR::movingAverage3pt(&x[0], (int)x.size(), &y[0], false);  // out-of-place
+  r &= y == Vec({2,2,1,1,2,3,3});
+  AR::movingAverage3pt(&x[0], (int)x.size(), &x[0], false);  // in-place
   r &= x == Vec({2,2,1,1,2,3,3});
   // todo: test edge cases (arrays of length 0,1,2), test with endsFixed condition true
+
+  // test moving median:
+  x = Vec({1,3,2,-2,3,5,1});
+  AR::movingMedian3pt(&x[0], (int)x.size(), &y[0]);
+  r &= y == Vec({ 2,2,2,2,3,3,3 });
+  AR::movingMedian3pt(&x[0], (int)x.size(), &x[0]);
+  r &= x == Vec({ 2,2,2,2,3,3,3 });
+
 
   x = Vec({60,120,-60,180,120,-120,60,240,120});
   y = x;
   movingAverage5pt(&y[0], (int)y.size(), &y[0]);
   r &= y == Vec({40,75,84,48,36,96,84,75,140});
+
+  return r;
+}
+
+bool testArrayMisc()
+{
+  bool r = true;
+  typedef std::vector<int> Vec;
+  typedef RAPT::rsArrayTools AT;
+  Vec x6, x7, x8, y6, y7, y8;
+
+  // test reversal:
+  x6 = Vec({1,2,3,4,5,6});
+  x7 = Vec({1,2,3,4,5,6,7});
+  x8 = Vec({1,2,3,4,5,6,7,8});
+  y6 = x6; AT::reverse(&y6[0], 6); r &= y6 == Vec({6,5,4,3,2,1});
+  y7 = x7; AT::reverse(&y7[0], 7); r &= y7 == Vec({7,6,5,4,3,2,1});
+
+  // test circular shift:
+  y7 = x7; rsCircularShift(&y7[0], 7, 3); r &= y7 == Vec({5,6,7,1,2,3,4});
+  y8 = x8; rsCircularShift(&y8[0], 8, 3); r &= y8 == Vec({6,7,8,1,2,3,4,5});
+
+
+
+
 
   return r;
 }
@@ -127,6 +163,7 @@ bool arrayUnitTest()
 
 
   r &= testArrayFiltering();
+  r &= testArrayMisc();
 
   // int s = sum(3, &u[0]); // sum function doesn't compile
 
@@ -134,16 +171,385 @@ bool arrayUnitTest()
   return r;
 }
 
+
+template<class T>
+class rsBinaryHeapTest : public rsBinaryHeap<T>
+{
+
+public:
+
+  using rsBinaryHeap<T>::rsBinaryHeap;
+
+
+  bool isMinHeap(int i = 0) const
+  {
+    if(i >= this->size)
+      return true;
+    bool result = true;
+    int l = this->left(i);
+    int r = this->right(i);
+    if(l < this->size) result &= this->data[i] <= this->data[l] && isMinHeap(l);
+    if(r < this->size) result &= this->data[i] <= this->data[r] && isMinHeap(r);
+    return result;
+  }
+
+  bool isMaxHeap(int i = 0) const
+  {
+    if(i >= this->size)
+      return true;
+    bool result = true;
+    int l = this->left(i);
+    int r = this->right(i);
+    if(l < this->size) result &= this->data[i] >= this->data[l] && isMaxHeap(l);
+    if(r < this->size) result &= this->data[i] >= this->data[r] && isMaxHeap(r);
+    return result;
+  }
+
+  int floatDownRec(int i)
+  {
+    int l = this->left(i);
+    int r = this->right(i);
+    int b = i;         // b for "big"
+    if(l < this->size && this->less(this->data[i], this->data[l])) b = l;
+    if(r < this->size && this->less(this->data[b], this->data[r])) b = r;
+    if(b != i) { swap(this->data[i], this->data[b]); return floatDownRec(b); }
+    return i;
+  }
+  // a.k.a. maxHeapify
+  // That's the recursive implementation from (1) page 130. When the iterative version is ready,
+  // move it to the rsBinaryHeapTest subclass - we don't need it anymore in production code, then.
+  // But it may be interesting to figure out, if the recursion actually incurs an overhead since
+  // it's tail recursion and smart compilers might be able to translate it to iteration themselves.
+  // We also may want to keep it as reference for unit tests (to test, if the iterative version
+  // really does the same thing).
+  // maybe move to subclass rsBinaryHeapTest in the unit test section - we don't need it in
+  // production code, when the iterative version works (which seems to be the case)
+
+  // removing:
+  // http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/heap-delete.html
+  // https://www.geeksforgeeks.org/insertion-and-deletion-in-heaps/
+
+  // -what if we have overflow in the l,r values - should we handle that? or maybe restrict the
+  //  capacity to values which ensure that no overflow occurs? yes, that seems sensible
+
+  void sort()
+  {
+
+  }
+  // todo: implement heap-sort in this class an test it with various random arrays
+
+};
+
+bool binaryHeapUnitTest()
+{
+
+  //int a;
+  //unsigned int b = 5;
+  //int c = -10;
+  //a = b + c;  // 5 - -10 = 15
+  ////<signed int> = <unsigned int> <op> <signed int>
+  //// https://github.com/fish-shell/fish-shell/issues/3493
+
+  // maybe rename to binaryTreeUnitTest and integrate tests for rsBinarySearchTree
+
+  bool r = true;
+
+  using Vec = std::vector<int>;
+
+  Vec A = {2,8,14,16,4,1,7,9,10,3};
+  int N = (int) A.size();
+
+
+
+  rsBinaryHeapTest<int> H;
+  r &= H.getSize() == 0;
+  H.setData(&A[0], N, N);
+  H.buildHeap();
+  r &= H.getSize() == 10;
+  r &= H.isMaxHeap();
+
+  // test replacing:
+  H.replace(7, 15);
+  r &= H.isMaxHeap();
+  int numTests = 100;
+  rsNoiseGenerator<double> ng;
+  for(int i = 1; i <= numTests; i++)
+  {
+    int newIndex = ng.getSampleRaw() % H.getSize();
+    int newValue = ng.getSampleRaw() % 100;
+    int k = H.replace(newIndex, newValue);
+    r &= H.isMaxHeap();
+  }
+
+  // test inserting:
+  A.resize(N + numTests);            // make space - re-allocates and fill up with zeros
+  H.setData(&A[0], N, N + numTests); // size is N, capacity is N + numTests
+  r &= H.getSize() == N;
+  r &= H.isMaxHeap();
+  for(int i = 1; i <= numTests; i++)
+  {
+    int newValue = ng.getSampleRaw() % 100;
+    int k = H.insert(newValue);              // index where the value ended up
+    r &= H.getSize() == N + i;
+    r &= H.isMaxHeap();
+  }
+
+  // test removing:
+  for(int i = 1; i <= numTests; i++)
+  {
+    int oldSize  = H.getSize();
+    int remIndex = ng.getSampleRaw() % H.getSize();
+    H.remove(remIndex);
+    r &= H.getSize() == oldSize - 1;
+    r &= H.isMaxHeap();
+  }
+
+  // test removing last element - it could be that we need to treat that case as special case - but
+  // maybe not:
+  N = H.getSize();
+  H.remove(N-1);  // try to remove last element
+  r &= H.getSize() == N-1;
+  r &= H.isMaxHeap();
+  // ...it seems to work - in this case - todo: test more cases
+
+  // try to remove 0th element:
+  H.remove(0);
+  r &= H.getSize() == N-2;
+  r &= H.isMaxHeap();
+
+
+
+
+
+  // test the double heap:
+
+  rsDoubleHeap<int> D;
+  int min = 2147483648;
+  Vec B;
+  int i;
+  A = Vec({5,2,3});
+  B = Vec({6,7,8});
+  D.setData(A, B);
+  i = D.replace(1, 6);  // replace 2 by 6, float up to front of small, no exchange
+  r &= i == 0 && A == Vec({6,5,3}) && B ==  Vec({6,7,8});
+  i = D.replace(min+2, 4);  // replace 8 by 4, float to front of large, exchange
+  r &= i == 1 && A == Vec({5,4,3}) && B ==  Vec({6,7,6});
+  // do more tests, using larger heaps, maybe check property in a loop
+
+
+  rsDoubleHeap<int> D2;
+  D2.setData(A, B);
+
+  int k;
+  k = D2.indexToKey(0); r &= k == 0;
+  i = D2.keyToIndex(0); r &= i == 0;
+  k = D2.indexToKey(1); r &= k == 1;
+  i = D2.keyToIndex(1); r &= i == 1;
+  k = D2.indexToKey(2); r &= k == 2;
+  i = D2.keyToIndex(2); r &= i == 2;
+  k = D2.indexToKey(3); r &= k == min+0;
+  i = D2.keyToIndex(k); r &= i == 3;
+  k = D2.indexToKey(4); r &= k == min+1;
+  i = D2.keyToIndex(k); r &= i == 4;
+  k = D2.indexToKey(5); r &= k == min+2;
+  i = D2.keyToIndex(k); r &= i == 5;
+
+  int v;
+  v = D2.atKey(0);
+  v = D2.atKey(1);
+  v = D2.atKey(2);
+  //v = D2[3]; // these are access violations because rsDoubleHeap2 uses a different way to
+  //v = D2[4]; // indicate a value from the large heap
+  //v = D2[5];
+  i = D2.replace(0, 9); r &= i < 1000;
+  // should go into large heap - index should be a large neagtive number
+
+  i = D2.replace(i, 2); // this brings it back to the small heap again
+
+
+
+
+
+
+
+
+  // test the binary search tree:
+
+  // maybe test with the small array 1,2,3 in all permutations, test also 1,2,2 and 1,1,2 in all
+  // possible permuations ...and 1,1,1
+  rsBinarySearchTree<int> T;
+
+
+
+
+  A = Vec({50,20,80,10,30,60,100,5,15,25,40,55,70});
+  T.setData(A);
+  r &= T.isSearchTree();
+  T.replace(5, 35);   // the 60 becomes a 35
+  r &= T.isSearchTree();  // 50,20,80,10,30,55,100,5,15,40,35,70
+  T.replace(5, 65);
+  r &= T.isSearchTree();
+  A = Vec({50,20,80,10,30,60,100,5,15,25,40,55,70});
+  T.setData(A);
+  T.replace(1, 70);
+  r &= T.isSearchTree();
+  T.replace(4, 20);
+  r &= T.isSearchTree();
+  A = Vec({50,20,80,10,60,30,90});
+  T.setData(A);
+  r &= T.isSearchTree();
+
+  A = Vec({50,20,80,10,30,60,100,5,15,25,40,55,70});
+  T.setData(A);
+  r &= T.isSearchTree();
+  for(int i = 1; i <= numTests; i++)
+  {
+    int newIndex = ng.getSampleRaw() % H.getSize();
+    int newValue = ng.getSampleRaw() % 100;
+    int k = T.replace(newIndex, newValue);
+    r &= T.isSearchTree();
+    // does not work yet - i think the first thing that needs to be done after replacement is to
+    // compare and possibly swap with the sibling? but no, if we replace a right node, and its
+    // now less than its sibling, it will be also less than its parent...ah - but nevertheless,
+    // we may have to swap with the sibling..or maybe binary search trees are not so similar to
+    // heaps after all?
+  }
+
+
+
+
+  A = Vec({1,2,3}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });
+  A = Vec({2,1,3}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });
+  A = Vec({3,1,2}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });
+  A = Vec({1,3,2}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });
+  A = Vec({2,3,1}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });
+  A = Vec({3,2,1}); T.setData(A); T.buildSearchTree(); r &= A == Vec({ 2,1,3 });
+  // The 3 cases where the left child of the root node is greater than the right child (1,3,2 (3>2),
+  // 2,3,1 (3>1), 3,2,1 (2>1))- previously failed when we were using a function similar to
+  // builHeap. When the left child of a node is greater than the right child, floating down the
+  // parent cannot fix the order properly - instead, we would have to swap the children (possibly
+  // in addition to swapping with the parent - maybe the general buildTree is misguided and we
+  // need to do something different to build the tree. However, to maintain the tree property when
+  // we replace an element, we may assume that the left and right child are not in violation of the
+  // property - the only node that may be in violation is the replaced node - so the data structure
+  // may still be useful for the moving quantile filter. However we cannot reuse the buildHeap
+  // function as general buildTree function - that simply doesn't work - we need a different
+  // implementation for the search trees (i think). Perhaps looping through all elements calling
+  // floatIntoPlace
+
+
+
+
+
+  // ...oookay - that seems to work - at least in this very small case - now we need to test some
+  // bigger cases...
+  // hmm i think, etsblishing the property from an array of random values may be not so easy - but
+  // maintaining it, when a node is replaced should work exactly as in the heap
+
+
+  /*
+  int maxN = 100;
+  A.resize(maxN);
+  for(int i = 1; i <= numTests; i++)
+  {
+    N = ng.getSampleRaw() % maxN;
+    A.resize(N);
+    for(int n = 0; n < N; n++)
+      A[n] = ng.getSampleRaw() % 100;
+    T.setData(A);
+    T.buildSearchTree();
+    bool isTree = T.isSearchTree();
+    r &= T.isSearchTree();
+  }
+  */
+
+
+
+
+  /*
+  T.setData(A);
+  r &= T.getSize() == 3;
+  r &= A == Vec({ 2,1,3 });      // desired array order is 2,1,3
+  r &= T.isSearchTree();
+  */
+
+
+
+
+
+
+
+
+  /*
+  rsBinarySearchTree<int> T;
+  T.setData(&A[0], N, N);
+  r &= T.getSize() == 10;
+  r &= T.isSearchTree();
+  */
+
+
+  return r;
+}
+
+
+
+bool ringBufferUnitTest()
+{
+  bool r = true;
+
+  rsDelayBuffer<double> b(8);
+  b.setLength(5);
+
+  using Vec = std::vector<double>;
+  Vec B(5);
+
+  double y, z;
+
+  // test getSample and copying the buffer content:
+  y = b.getSample( 1); r &= y ==  0; b.copyTo(&B[0], true ); r &= B == Vec({  1,  0,  0,  0,  0 });
+  y = b.getSample( 2); r &= y ==  0; b.copyTo(&B[0], true ); r &= B == Vec({  2,  1,  0,  0,  0 });
+  y = b.getSample( 3); r &= y ==  0; b.copyTo(&B[0], true ); r &= B == Vec({  3,  2,  1,  0,  0 });
+  y = b.getSample( 4); r &= y ==  0; b.copyTo(&B[0], true ); r &= B == Vec({  4,  3,  2,  1,  0 });
+  y = b.getSample( 5); r &= y ==  0; b.copyTo(&B[0], true ); r &= B == Vec({  5,  4,  3,  2,  1 });
+  y = b.getSample( 6); r &= y ==  1; b.copyTo(&B[0], true ); r &= B == Vec({  6,  5,  4,  3,  2 });
+  y = b.getSample( 7); r &= y ==  2; b.copyTo(&B[0], true ); r &= B == Vec({  7,  6,  5,  4,  3 });
+  y = b.getSample( 8); r &= y ==  3; b.copyTo(&B[0], true ); r &= B == Vec({  8,  7,  6,  5,  4 });
+  y = b.getSample( 9); r &= y ==  4; b.copyTo(&B[0], true ); r &= B == Vec({  9,  8,  7,  6,  5 });
+  y = b.getSample(10); r &= y ==  5; b.copyTo(&B[0], true ); r &= B == Vec({ 10,  9,  8,  7,  6 });
+  y = b.getSample(11); r &= y ==  6; b.copyTo(&B[0], true ); r &= B == Vec({ 11, 10,  9,  8,  7 });
+  y = b.getSample(12); r &= y ==  7; b.copyTo(&B[0], true ); r &= B == Vec({ 12, 11, 10,  9,  8 });
+                                     b.copyTo(&B[0], false); r &= B == Vec({  8,  9, 10, 11, 12 });
+  y = b.getSample(13); r &= y ==  8; b.copyTo(&B[0], true ); r &= B == Vec({ 13, 12, 11, 10,  9 });
+                                     b.copyTo(&B[0], false); r &= B == Vec({  9, 10, 11, 12, 13 });
+  y = b.getSample(14); r &= y ==  9; b.copyTo(&B[0], true ); r &= B == Vec({ 14, 13, 12, 11, 10 });
+                                     b.copyTo(&B[0], false); r &= B == Vec({ 10, 11, 12, 13, 14 });
+  y = b.getSample(15); r &= y == 10; b.copyTo(&B[0], true ); r &= B == Vec({ 15, 14, 13, 12, 11 });
+                                     b.copyTo(&B[0], false); r &= B == Vec({ 11, 12, 13, 14, 15 });
+  y = b.getSample(16); r &= y == 11; b.copyTo(&B[0], true ); r &= B == Vec({ 16, 15, 14, 13, 12 });
+                                     b.copyTo(&B[0], false); r &= B == Vec({ 12, 13, 14, 15, 16 });
+  // todo: complete this - test forward and reverse copy (true/false) after each getSample
+
+  z = b.getNewest(); y = b.fromNewest(0); r &= y == z;
+  z = b.getOldest(); y = b.fromOldest(0); r &= y == z;
+
+  b.reset();
+  size_t i = 0, j;
+  j = b.getIndexFromNewest(i);
+  j = b.getIndexFromOldest(i);
+
+  return r;
+}
+
 bool doubleEndedQueueUnitTest()
 {
-  bool r = true; 
+  bool r = true;
 
   //rsDoubleEndedQueue<int> q(8);  // []
 
   rsDoubleEndedQueue<int> q(5);  // []
 
-  r &= q.getMaxLength() == 6;     // a power of 2 minus 2, >= requested size
-  //r &= q.getMaxLength() == 7;     // a power of 2 minus 1, >= requested size
+  //r &= q.getMaxLength() == 6;     // a power of 2 minus 2, >= requested size
+  r &= q.getMaxLength() == 7;     // a power of 2 minus 1, >= requested size
 
   r &= q.isEmpty();
   r &= q.getLength() == 0;
@@ -200,18 +606,23 @@ bool doubleEndedQueueUnitTest()
   r &= q.readHead()  == 6;
   r &= q.readTail()  == 1;
 
+  // this triggers an assertion but actually still works - however, the MovingMax filter does not
+  // work properly anymore when we fill the deque up to bufferSize-1
+  q.pushFront(7);                // [1 2 3 4 5 6 7]
+  r &= q.getLength() == 7;
+  r &= q.readHead()  == 7;
+  r &= q.readTail()  == 1;
+
   r &= q.isFull();
 
-
-  //// this triggers an assertion but actually still works - however, the MovingMax filter does not
-  //// work properly anymore when we fill the deque up to bufferSize-1
-  //q.pushFront(7);                // [1 2 3 4 5 6 7]
-  //r &= q.getLength() == 7;
-  //r &= q.readHead()  == 7;
-  //r &= q.readTail()  == 1;
+  // maybe provide writeHead/writeTail function that overwrite the current data in head/tail
 
 
+  // maybe getLength is flawed and returns the correct length only in certain situations?
+  // -> do more tests!
+  // i actually think, the maxLength is size-1 and not size-2!
 
+  // i think, the getLength formula works only for h != t
 
   //// this does not work anymore due to overflow:
   //q.pushFront(8);                // [1 2 3 4 5 6 7 8]
@@ -325,7 +736,7 @@ bool float32x4UnitTest()
   rsFloat32x4 x1(a);  r &= x1[0] == a && x1[1] == a && x1[2] == a && x1[3] == a;
 
   // construct from 4 floats:
-  rsFloat32x4 x2(a, b, c, d); 
+  rsFloat32x4 x2(a, b, c, d);
   r &= x2[0] == a && x2[1] == b && x2[2] == c && x2[3] == d;
 
   // construct from array of floats:

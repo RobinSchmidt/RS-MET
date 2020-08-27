@@ -3,7 +3,7 @@
 
 //#include "romos_PerformanceTest.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
 /** This file contains concrete subclasses of PerformanceTest. 
@@ -93,7 +93,7 @@ public:
     // may have to be re-activated if the unit-tests are not run before the performance tests
     // ...find a better solution..
 
-    moduleToTest = moduleFactory.createModule("Formula_1_1"); 
+    moduleToTest = romos::moduleFactory.createModule("Formula_1_1"); 
 
   }
 };
@@ -107,7 +107,7 @@ public:
     // may have to be re-activated if the unit-tests are not run before the performance tests
     // ...find a better solution..
 
-    moduleToTest = moduleFactory.createModule("Formula_N_1"); 
+    moduleToTest = romos::moduleFactory.createModule("Formula_N_1"); 
   }
 };
 
@@ -115,7 +115,7 @@ class FormulaNMPerformanceTest : public PerformanceTest
 {
 public:
   FormulaNMPerformanceTest() : PerformanceTest("Formula_N_M")
-  { moduleToTest = moduleFactory.createModule("Formula"); }
+  { moduleToTest = romos::moduleFactory.createModule("Formula"); }
 };
 
 // The performance penalty for using FormulaNM instead of Formula11 is about 10% (for a trivial

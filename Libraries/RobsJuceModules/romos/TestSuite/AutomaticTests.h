@@ -1,6 +1,9 @@
-#include "TestHelpers.h"
-using namespace rosic;
-using namespace romos;
+#include "TestHelpers.h"  // get rid!
+//using namespace rosic;  // get rid!
+//using namespace romos;
+
+namespace rsTestRomos
+{
 
 bool runUnitTests();
 
@@ -12,7 +15,7 @@ bool testWrappedSumDiff(bool verboseOutput);
 bool testSummedDiffs(bool verboseOutput);
 bool testMovingAverage(bool verboseOutput);
 bool testLeakyIntegrator(bool verboseOutput);
-bool testLeakyIntegratorDoubleDelay(bool verboseOutput); 
+bool testLeakyIntegratorDoubleDelay(bool verboseOutput);
 bool testTestFilter1(bool verboseOutput);
 bool testBiquadMacro(bool verboseOutput);
 bool testBiquadAtomic(bool verboseOutput);
@@ -51,3 +54,4 @@ bool testProcessSubtractorBlock();
 //bool testContainerizationWithBiquad();
 */
 
+}

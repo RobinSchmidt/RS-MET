@@ -211,7 +211,7 @@ void ratPolyNest(
   nr = { po[0] };   // numerator of result
   dr = { T(1)  };   // denominator of result
   nt = ni;          // temporary numerator (for convolutive accumulation)
-  for(int k = 1; k < po.size(); k++) {
+  for(size_t k = 1; k < po.size(); k++) {
     dr = polyMul(dr, di, tol);  
     nr = polyMul(nr, di, tol);
     nr = polyAdd(nr, nt, tol, T(1), po[k]);

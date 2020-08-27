@@ -201,26 +201,37 @@ bool pixelCoverage(std::string &reportString)
   typedef rsVector2DF V;    // for convenience
   float t = 1.f/16.f;       // target area
   float a;                  // computed area
-  bool q;
+  float tol = 1.e-8f;       // tolerance - needed for gcc
+
+
+
+  auto testArea = [=](float x1, float y1, float x2, float y2, 
+    float targetArea, bool targetFlag)->bool
+  { 
+    bool   q;
+    float  a = unitSquareCut(V(x1,y1), V(x2,y2), q);
+    return rsIsCloseTo(a, targetArea, tol) && q == targetFlag;
+  };
 
   // cut off triangles at the corners:
-  a = unitSquareCut(V( 1.5f,1.5f), V(  -1,0.25f), q);  r &= a == t; r &= q == false; // top-left
-  a = unitSquareCut(V( 1.5f,0.5f), V(   0,1.25f), q);  r &= a == t; r &= q == false; // top-right
-  a = unitSquareCut(V(-0.5f,0.5f), V(1.5f,-0.5f), q);  r &= a == t; r &= q == false; // bottom-left
-  a = unitSquareCut(V(-1.0f,-0.75f), V(1.5f,0.5f), q); r &= a == t; r &= q == false; // bottom-right
+  r &= testArea( 1.5f,1.5f,  -1,0.25f,    t, false);  // top-left
+  r &= testArea( 1.5f,0.5f,   0,1.25f,    t, false);  // top-right
+  r &= testArea(-0.5f,0.5f,   1.5f,-0.5f, t, false);  // bottom-left
+  r &= testArea(-1.0f,-0.75f, 1.5f,0.5f,  t, false);  // bottom-right
 
   // cut off quadrilaterals:
   t = 6.f/16.f;
-  a = unitSquareCut(V(2,1), V(-1,0.25f),q);  r &= a == t; r &= q == true;  // top
-  a = unitSquareCut(V(0.75,2), V(0,-1),q);   r &= a == t; r &= q == true;  // left
-  a = unitSquareCut(V(-1,0.75), V(2,0),q);   r &= a == t; r &= q == true;  // bottom
-  a = unitSquareCut(V(0,-2), V(1,2),q);      r &= a == t; r &= q == true;  // right
+  r &= testArea(2,1,    -1,0.25f, t, true);  // top
+  r &= testArea(0.75,2,  0,-1,    t, true);  // left
+  r &= testArea(-1,0.75, 2,0,     t, true);  // bottom
+  r &= testArea(0,-2,    1,2,     t, true);  // right
   // for quads, the direction is important  
 
   //  non-intersecting edge:
-  a = unitSquareCut(V(0,-1), V(2,0),q);  r &= a == 0; r &= q == false;
+  r &= testArea(0,-1, 2,0,  0, false);
 
   // edges through corners:
+  bool q;
   a = unitSquareCut(V(0,0), V(0.5f,1), q);  // (0,0), top-center    0.25 fails
   a = unitSquareCut(V(0,0), V(1   ,1), q);  // (0,0), (1,1)         0.5
   a = unitSquareCut(V(0,0), V(1,0.5f), q);  // (0,0), right-center: 0.25

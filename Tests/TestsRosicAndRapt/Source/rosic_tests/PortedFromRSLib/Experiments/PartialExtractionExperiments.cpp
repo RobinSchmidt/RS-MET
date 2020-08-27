@@ -657,12 +657,12 @@ void sineRecreation()
   plotData(N, 0, 1/fs, x, y);  // input and output sine
 
   // Observations:
-  // with smooth 0.0, we see a little modulation in the measured envelope, with smooth = 1.0, it's
-  // supressed reasonably but still visible, with smooth = 2.0, the envelope is very smooth indeed but 
-  // might be already oversmoothed. Maybe 1.5 is the sweet spot
+  // With smooth 0.0, we see a little modulation in the measured envelope, with smooth = 1.0, it's
+  // supressed reasonably but still visible, with smooth = 2.0, the envelope is very smooth indeed 
+  // but might be already oversmoothed. Maybe 1.5 is the sweet spot.
   // The algorithm based on the formula seems to give better results than the one based on the
   // quadrature signal. The output of the algo using the quadrature signal seems to be a bit 
-  // time-shifted (to the left)
+  // time-shifted (to the left).
 
   delete[] x;
   delete[] xq;
@@ -670,6 +670,503 @@ void sineRecreation()
   delete[] em;
   delete[] em2;
   delete[] y;
+}
+
+
+template<class T>
+void rsSineAmplitudeAndPhase(T yL, T y0, T yR, T w, T* a, T* p)
+{
+  T sw = sin(w);
+  T cw = cos(w);
+
+  T pR = atan2( y0*sw, yR - y0*cw);       // phase estimate at y0 using right neighbour yR
+
+  T pL = atan2(-y0*sw, yL - y0*cw) + PI;  // phase estimate at y0 using left neighbour yL
+  // get rid of the addition of pi by rotating the input to atan2 by 180° (negate both inputs)
+  pL = atan2(y0*sw, y0*cw - yL);
+
+
+  int dummy = 0;
+}
+// when the phase has been computed, to decide, which of the 3 values we want to use to compute the
+// amplitude, we want to use the one with the largest absolute value of: 
+//   sL = sin(p-w), s0 = sin(p), sR = sin(p+w) 
+// and then do:
+//   a = yL/sL or a = y0/s0 or a = yR/sR. 
+// where we should use the value, where the argument for the sine is farthest away from a multiple
+// of pi (i think, only -pi, 0, pi need to be considered). hmm...but is perfect resynthesisi 
+// guaranteed in all 3 cases or only in the case of using s0?
+
+
+
+// like rsSineAmplitudeAndPhase in rapt, but uses left neighbour of y0 instead of right neighbour
+template<class T>
+void rsSineAmplitudeAndPhaseL(T y0, T yL, T w, T* a, T* p)
+{
+  T sw = sin(w);
+  T cw = cos(w);
+
+  *p = atan2(-y0*sw, yL-y0*cw) + PI;
+  *a = y0 / sin(*p);
+
+  int dummy = 0;
+  // ...not yet finished...needs a switch to avoid div-by-zero
+}
+// now implemted in rsSingleSineModeler::phaseAndAmpFormulaBackward
+
+bool testSineAmpAndPhaseEstimation2()
+{
+  bool r = true;
+  double tol = 1.e-13;
+
+
+  double a = 0.3;  // actual amplitude
+  double p = 1.0;  // actual phase
+  double w = 0.5;  // normalized radian freq
+
+
+  // the three sample values:
+  double yL = a*sin(p - w);
+  double y0 = a*sin(p);
+  double yR = a*sin(p + w);
+
+  // measurements:
+  double aR, pR, aL, pL;
+  rsSineAmplitudeAndPhase(y0, yR, w, &aR, &pR); // old library function
+  r &= rsIsCloseTo(aR, a, tol);
+  r &= rsIsCloseTo(pR, p, tol);
+  rsSineAmplitudeAndPhaseL(y0, yL, w, &aL, &pL);
+  r &= rsIsCloseTo(aL, a, tol);
+  r &= rsIsCloseTo(pL, p, tol);
+
+  return r;
+}
+
+void testSineAmpAndPhaseEstimation()
+{
+  double y0 = 0.2;
+  double y1 = 0.3;
+  double w  = 0.5;
+  double a, p;
+
+  rsSineAmplitudeAndPhase(y0, y1, w, &a, &p);
+
+  // try new formula - it's simpler but has a division in the phase-computation:
+  double sw = sin(w);
+  double cw = cos(w);
+  double p2 = atan2(y0*sw, y1 - y0*cw);   // ...that should fix it
+  double a2 = y0 / sin(p2);               // what if p2 == 0?
+
+  // try left-looking formula - should give the same amplitude but the phase should be incremented
+  // by w:
+  double p3 = atan2(-y1*sw, y0-y1*cw);
+  double a3 = y1 / sin(p3);
+  // hmm..we get a negative amplitude - the absolute value is correct, though - hmm..so let's flip
+  // phase and amplitude:
+  p3 += PI;
+  a3  = -a3;
+  // i think, we could get the same effect by rotating the input to atan2 by 180°
+
+  double w2 = p3-p2; // should reconstruct w
+
+  // ok - it works in this case - but we should really test many more cases with different values
+  // for y0, y1, w - maybe this should become a unit test, like this...
+  double tol = 1.e-13;
+  bool r = true;
+  r &= rsIsCloseTo(p2+w, p3, tol);
+  r &= rsIsCloseTo(a2,   a3, tol);
+  r &= rsIsCloseTo(w,    w2, tol);
+
+  int dummy = 0;
+}
+// in practice, use both formulas, compute an average of the phases and compute the amplitude for
+// exact resynthesis
+
+// Computes the error function - see SineParameters.txt
+template<class T>
+T rsSineParametersError(T yLL, T yL, T y0, T yR, T yRR, T a, T p, T w)
+{
+  T sLL = sin(p-2*w);
+  T sL  = sin(p-w);
+  T s0  = sin(p);
+  T sR  = sin(p+w);
+  T sRR = sin(p+2*w);
+
+  T eLL = yLL - a*sLL;
+  T eL  = yL  - a*sL;
+  T e0  = y0  - a*s0;
+  T eR  = yR  - a*sR;
+  T eRR = yRR - a*sRR;
+
+  return eLL*eLL + eL*eL + e0*e0 + eR*eR + eRR*eRR;
+}
+// todo: minimize this function numerically with respect to a,p,w - maybe an analytic solution is
+// possible, but it involves solving a messy nonlinear system of equations...
+// maybe define a function that computes also the gradient - it can re-use the sLL,.. stuff - but we 
+// will need the cosines, too
+
+// numerically optimizes a,p,w so as to minimize the error function given above - returns the 
+// number of function evaluations
+template<class T>
+int rsOptimizeSineParameters(T yLL, T yL, T y0, T yR, T yRR, T* a, T* p, T* w)
+{
+  double params[3];
+  params[0] = *a;
+  params[1] = *p;
+  params[2] = *w;
+  std::function<double(double*)> f = [&](double* params)->double
+  { 
+    double err = rsSineParametersError(yLL, yL, y0, yR, yRR, params[0], params[1], params[2]);
+    return err;
+  };
+  double tol = 1.e-12;
+  double h[3] = { pow(2.0,-15), pow(2.0,-15), pow(2.0,-15) };
+
+  int evals = minimizePartialParabolic(f, params, 3, h, tol); 
+  // todo: use better algo - maybe gradient descent with analytic gradient?
+
+  *a = params[0];
+  *p = params[1];
+  *w = params[2];
+
+  return evals;
+}
+
+// get rid of that:
+template<class T>
+void phaseToFreq(const T* p, int N, T* w, int smooth = 3)
+{
+  rsSingleSineModeler<T>::phaseToFreq(p, N, w);
+  using AT = rsArrayTools;
+  if(smooth > 0)
+  {
+    AT::movingMedian3pt(w, N, w);
+    for(int i = 0; i < smooth; i++)
+      AT::movingAverage3pt(w, N, w, false);
+  }
+  rsPlotArrays(N, w);
+}
+
+// get rid of that:
+template<class T>
+void phaseAndFreqToPhaseMod(const T* p, const T* w, int N, T* pm)
+{
+  rsSingleSineModeler<T>::phaseAndFreqToPhaseMod(p, w, N, pm);
+}
+
+template<class T>
+void synthesizeFromAmpFreqPhaseMod(const T* a, const T* w, const T* pm, int N, T* y)
+{
+  rsSingleSineModeler<T>::synthesizeFromAmpFreqAndPhaseMod(a, w, pm, N, y);
+}
+// may be delayed...
+
+
+void testSineParameterEstimation()
+{
+  testSineAmpAndPhaseEstimation();
+  testSineAmpAndPhaseEstimation2();
+  // make it a unit test
+
+  using SSM = rsSingleSineModeler<double>;
+  using Vec = std::vector<double>;
+
+  Vec x = Vec({10,11,5,0,1,0});  // shows undershooting problem with parabolicTime
+  Vec a = x;
+  SSM::sigToAmpsViaPeaks(&x[0], (int) x.size(), &a[0]); // try to use it in place with a = x
+  //rsPlotVectors(x, a);
+
+  x = Vec({10,11,0,0,10,0}); 
+  SSM::sigToAmpsViaPeaks(&x[0], (int) x.size(), &a[0]); // not interesting
+  //rsPlotVectors(x, a);
+}
+
+void sineRecreationBandpassNoise()
+{
+  testSineParameterEstimation();
+
+  // under construction
+
+  // We create a bandpass noise and try to re-create it with a frequency-, phase-, and amplitude 
+  // modulated sinusoid
+
+  // once with instantaneous freq-estimation and once with known instantaneous frequency
+
+  int N  = 2000;
+  int fs = 44100;
+  double f1  = 5000;    // center frequency of input sine at start
+  double f2  = 2000;    // center frequency of input sine at end
+  double bw1 = f1/20;  // bandwidth in Hz at start
+  double bw2 = f2/20;  // bandwidth in Hz at end
+  double amp = 0.25;   // maximum amplitude of noise (the normalization level)
+  int numPasses = 2;
+
+
+  using Vec = std::vector<double>;
+  using Flt = rsStateVariableFilter<double, double>;
+
+  // generate the sweeping bandpass noise:
+  Vec x(N), fa(N);
+  rsNoiseGenerator<double> ng;
+  Flt flt;
+  flt.setSampleRate(fs);
+  flt.setMode(Flt::BANDPASS_PEAK);
+  int n;
+  for(n = 0; n < N; n++) {
+    fa[n] = rsLinToLin(double(n), 0.0, N-1.0, f1, f2);  // actual instantaneous center freq
+    x[n]  = ng.getSample();
+  }
+  for(int m = 0; m < numPasses; m++) {
+    flt.reset();
+    for(n = 0; n < N; n++) {
+      double bw = rsLinToLin(double(n), 0.0, N-1.0, bw1, bw2); // instantaneous bandwidth
+      double bwOct = rsBandwidthConverter::absoluteBandwidthToOctaves(bw, fa[n]);
+      flt.setFrequency(fa[n]);
+      flt.setBandwidth(bwOct);
+      x[n] = flt.getSample(x[n]);
+    }
+  }
+  rsArrayTools::normalize(&x[0], N, amp, true);
+  // maybe (optionally) use two equal filters in series
+
+
+
+  using SSM = rsSingleSineModeler<double>;
+  SSM ssm;
+
+
+  // measure instantaneous frequency (with algo 1 - sine recursion formula):
+  Vec fm1(N);
+  SSM::sigToFreqViaFormula(&x[0], N, &fm1[0]);
+  fm1 = (fs/(2*PI)) * fm1;
+
+  // Create cleaned up version via 3-point median filter:
+  Vec fm1c(N);
+  for(n = 1; n < N-1; n++)
+    fm1c[n] = rsMedian(fm1[n-1], fm1[n], fm1[n+1]);
+
+  // Measure instantaneous frequency (with algo 2):
+  Vec fm2(N);
+  for(n = 0; n < N; n++)
+    fm2[n] = rsSineFrequencyAt(&x[0], N, n, false) * (fs/(2*PI));
+
+  // Create a median-filtered version of that also:
+  Vec fm2c(N);
+  for(n = 1; n < N-1; n++)
+    fm2c[n] = rsMedian(fm2[n-1], fm2[n], fm2[n+1]);
+  // first an last value look wrong - for the moment, just repeat 2nd and 2nd-to-last:
+  fm2c[0]   = fm2c[1];
+  fm2c[N-1] = fm2c[N-2];
+  // ...until we find a better solution...actually, the median-filtering does not change the 
+  // estimates very much anyway - at least when numPasses = 2 - ok, with a single pass, the 
+  // difference is more obvious
+
+
+  // For what follows, we need an array of instantaneous frequencies (or omegas):
+  Vec f;
+  //f = fa;     // use prefectly correct data
+  //f = fm1;  // use data from measurement with algo 1
+  //f = fm1c;
+  //f = fm2;  // use data from measurement with algo 2
+  f = fm2c;   // use cleaned up data from measurement with algo 2
+  Vec w = (2*PI/fs) * f;
+
+  // Interestingly, for perfect resynthesis, the content of the f- and w-arrays is actually 
+  // irrelevant - it could be anything, even noise (->test this). Of course, if it would be 
+  // meaningless data, the content of the p- and a-arrays (measured below in the next step) 
+  // would be equally meaningless - their meaning would then be only to compensate for the 
+  // nonsense of the f-array....
+  // w = rsRandomVector(N, -10.0, 10.0); // test -> yep, resynthesis is still perfect
+
+
+  // measure instantaneous phase and amplitude:
+  Vec p(N), a(N);  // maybe use a1, p1
+  for(n = 0; n < N-1; n++)
+    rsSineAmplitudeAndPhase(x[n], x[n+1], w[n], &a[n], &p[n]);
+  // todo: use a symmetric estimation - looking forard and backward and using an average
+  // what about the last sample? should we use extrapolation? or is there a similar formula that 
+  // uses the current and the previous sample rather than the current and the next?
+
+  // optimize amp-, freq-, and phase-measurements jointly using numeric optimization:
+  Vec ao = a, wo = w, po = p;
+  //for(n = 2; n < N-2; n++)
+  //  rsOptimizeSineParameters(x[n-2], x[n-1], x[n], x[n+1], x[n+2], &ao[n], &po[n], &wo[n]);
+  Vec fo = (fs/(2*PI)) * wo;
+  // ahh - but with the optimized parameters, we may not get exact resynthesis because it fits the
+  // best lesat-squares-model to 5 samples instead of an exact model to 3 samples - if we want 
+  // exact resynthesis, we should only optimize w and compute a,p as above
+  // whoa - the optimization fails when using only one pass of the bandpass
+
+
+  // re-create the bandpass noise by a freq-, phase- and amp-modulated sine:
+  Vec y(N);   // recreated signal 1 - rename to y1
+  for(n = 0; n < N; n++)
+    y[n] = a[n] * sin(p[n]);
+
+  // Now we want to use the w-array for synthesis, too:
+  Vec wi(N);  // integrated w
+  Vec pm(N);  // modified p
+  rsArrayTools::cumulativeSum(&w[0], &wi[0], N);  // maybe try trapezoidal integration instead
+  for(n = 0; n < N; n++)
+    pm[n] = rsWrapToInterval(p[n]-wi[n], -PI, PI);
+
+  // actual resynthesis
+  Vec z(N);   // recreated signal 2 - rename to y2
+  for(int n = 0; n < N; n++)
+    z[n] = a[n] * sin(wi[n] + pm[n]);
+
+
+  // Use algo that estimates the amp-envelope first and bases everything else on that:
+  Vec a3(N), p3(N), w3(N), pm3(N);
+  ssm.analyzeAmpAndPhase(&x[0], N, &a3[0], &p3[0]);
+
+
+
+
+
+  ssm.analyzeAmpFreqAndPhaseMod(&x[0], N, &a3[0], &w3[0], &pm3[0]);
+
+  // pm3 should be zero, when no freq-smoothing is selected - but the first value is nonzero
+  // i think, we should use the convention that the w-array must be summed up to n rather than 
+  // n-1 because then w[0] may serve as a start-phase in cases where resynthesis is done with an 
+  // w-array but without a pm array - that should be possible, too
+  
+
+  //// when uncommented, no identity resynthesis:
+  //for(int i = 0; i < 1000; i++)
+  //  rsArrayTools::movingAverage3pt(&pm3[0], N, &pm3[0]); 
+
+  // resynthesize from analysis with algo 3:
+  Vec y3(N);
+  synthesizeFromAmpFreqPhaseMod(&a3[0], &w3[0], &pm3[0], N, &y3[0]);
+  rsPlotVectors(pm3);
+  Vec err3 = y3-x; 
+  rsPlotVectors(x, y3, err3, a3);
+  // first sample is (slightly) wrong, first sample of y3 is 0
+
+
+
+  Vec fm3c = (fs/(2*PI)) * w3;  // this actually is already cleaned up by a median-filter
+  // get rid
+
+
+
+  //rsPlotVectors(fa, fm1, fm1c); // actual and estimated instantaneous freq
+  //rsPlotVectors(fa-fm1, 5000.0*x);  // estimation error together with signal for reference
+
+  //rsPlotVectors(test2, fo);
+
+  //rsPlotVectors(fa, fm1, fm1c);
+  //rsPlotVectors(fa, fm2, fm2c);
+  rsPlotVectors(fa, fm1c, fm2c, fm3c); // compare all 3 freq-estimates
+
+  //rsPlotVectors(x, a, a3);  
+  // todo: make a1 and a2 arrays to compare all 3, plot the abs of x instead of x itself
+  // ...a3 looks definitely much better...but maybe that's because we are using bad frequency
+  // estimates in the other
+
+
+  //rsPlotVectors(fa, fm2c, fo);
+  //rsPlotVectors(fa-fm2, 1000.0*x);
+  //rsPlotVectors(fa-fm2);
+
+  //rsPlotVectors(fa, fm1c, fo);
+  //rsPlotVectors(fa, fm1_2, fo); // this looks close to the "optimal" local approximation
+
+
+
+  //rsPlotVectors(fa, fm1, fm2);
+
+  //rsPlotVectors(a, p);
+
+  Vec err1 = x-y;
+  Vec err2 = x-z;
+  //rsPlotVectors(err1, err2);
+
+  //rsPlotVectors(x, y, x-y, a);  // last sample wrong
+  //rsPlotVectors(x, z, x-z, a);  // dito
+
+
+  //writeToMonoWaveFile("BandpassNoiseOriginal.wav",  &x[0], N, (int) fs, 16);
+  //writeToMonoWaveFile("BandpassNoiseRecreated.wav", &y[0], N, (int) fs, 16);
+
+
+  // Observations:
+  // -With numPasses = 1, we get a very erratic (raw) estimate of the instantaneous frequency with 
+  //  the whole range of values from zero up to the Nyquist freq - it gets better with more passes
+  //  which is what we should expect. It could make sense to set up an upper bound for the estimate
+  //  and/or apply a smoothing lowpass to the data.
+  // -The frequency estimation errors of algo 1 do not really look like white noise but more like 
+  //  spikes around the true frequency. The maxima of the estimation error seem to be at the 
+  //  zero-crossings of the pseudo-sine. Maybe the problem is more ill-conditioned around 
+  //  zero-crossings - that would make sense. Maybe around zero-crossings, we should distrust the
+  //  estimator and tend to just hold the previous value. Actually, the error spikes seem to be one
+  //  sample before the zero-crossings - maybe we should use:
+  //     wn = rsSineFrequency(x[n-1], x[n], x[n+1]);
+  //  for a more symmetric formula? Maybe we get 1 sample latency with the way we are doing it now?
+  //  ...done - yep - look at sample 2485
+  // -We should perhaps have a reliability measure based on the ratio of the middle sample and the 
+  //  average of left and right sample...this should be between 0 and 1 and if it's 1, we use the 
+  //  value as is and if it's zero, we use the estimate from the previous sample and if it's in 
+  //  between we use a weighted sum...or something
+  // -the freq-estimation errors are largest in region where the overall amplitude is low - for 
+  //  both algorithms
+  // -we could also estimate the freq from the zero-crossings and interpolate
+  // -I wonder, why we never see negatiev estimates to the instantaneous freq - is the formula such
+  //  that this can't occur? If so - why?
+  // -The numerically optimized frequency trajectory closely resembles the cleaned up algo-1 
+  //  trajectory, even when the algo-2 output was for the initial guess (!) - with algo-2 
+  //  (zero-crossings), the freq-trajectory is smoother (which does not necessarily mean better - 
+  //  maybe the noise *should* be in the freq-trajectory and it's oversmoothed with algo-2?). The 
+  //  conclusion is that the algo-1 indeed captures the local frequency better - which is not 
+  //  surprising since it's based on local information. So, maybe after all, the 3-sample 
+  //  estimation with some clean-up is not such a bad idea - the numerical optimization chooses
+  //  similar frequencies (and is actually even more erratic). I think, fm1_2 is closest to the 
+  //  local optimimum - but fm2c is closer to the underlying actual frequency - so both are better
+  //  by different measures. maybe use algo1 with some additional smoothing of the freq (before)
+  //  computing a and p.
+  // -algo1 has a very distinctive zizag pattern - in each half-cycle of the input, the error
+  //  zigzags through one full cycle - could it be related to the ratio of first and second 
+  //  derivative?
+  // -An entirely different algo could estimate the amplitude first (take abs, connect peaks, etc.)
+  //  and compute instantaneous phase by y[n] = a[n] * sin(p[n]) -> p[n] = asin(y[n]/a[n]). The 
+  //  instantaneous phase could then be unwrapped and split into instantaneous frequency and
+  //  a phase-modulation component: p[n] = sum_k=0^n(w[k]) + pm[k] (maybe the upper limit of the 
+  //  sum should be n-1?). This split could be done by a lowpass filter.
+  //  -the amplitude seems easier to estimate and may be more "fundamental"
+  //  -when we plot the current amplitude estimates, they look kinda jaggy
+  //
+  // If we use for resynthesis:
+  //   y[n] = a[n] * sin(w*n + p[n]);
+  // y is totally different from x - why? there seems to be strong aliasing going on - there's a 
+  // very audible sweep in the opposite direction. When we use a fixed frequency, the recreated
+  // signal is an octave higher when the phase term is included - without the phase-term, the
+  // frequency is correct. But when we leave the phase-term out, the sweep is recreated wrongly.
+  // OK - when using *only* the phase-term, we get perfect resynthesis. ...hmmm....maybe we should
+  // modify the instantaneos phase measurements to take into account the instantaneous frequency
+  // measurements? maybe by subtracting the integrated freq-measurements? The perfect resynthesis 
+  // works also, if we use the measured frequency in the analysis of amplitude and phase - in fact,
+  // we can use *any* frequency value - as long as we take the formual
+  //   y[n] = a[n] * sin(p[n])
+  // for resynthesis (i.e. without using the frequency information in resynthesis), we get perfect
+  // resyntesis. 
+  // ToDo: figure out, how the freq-information can be included into the resynthesis without 
+  // breaking perfect resynthesis. We want to use the first formula for resynthesis and have to 
+  // modify the phase data in such a way that we can. ...wait no: the first formula is wrong! 
+  // Instead of using w[n]*n (where w[n] = 2*PI*f[n]/fs) we should use the integral of w[n] up to n
+
+  // Notes:
+  // In the case of using amplitude as primary (i.e. first estimated) variable, we need to look in 
+  // the neighbourhood of peaks for other peaks. When frequency is the primary variable, we need to
+  // look for other zero crossing in the neighborhood of zero-crossings (at least, when the 
+  // zero-crossing based freq estimation is used). When we use local information only, like just
+  // the two neighbouring samples of each sample, we have the "most localized" estimation algo.
+  // ...move all this stuff into a class rsSineParameterEstimator...this function may be called
+  // signalToAmp and we should also have signalToFreq1, signalToFreq2, signalAndFreqToAmpAndPhase, 
+  // etc.
+
+  //rsPlotVectors(x);
+  //rsPlotVectors(x, y1, y2);
 }
 
 void sineWithPhaseCatchUp()

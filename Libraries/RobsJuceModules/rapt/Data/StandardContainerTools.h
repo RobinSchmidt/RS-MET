@@ -9,6 +9,15 @@ library (STL), such as std::vector, std::map, etc. */
 
 // maybe wrap into a class rsVectorTools
 
+template<class T>
+inline std::vector<T> rsAbs(const std::vector<T>& v)
+{
+  std::vector<T> va(v.size());
+  for(size_t i = 0; i < v.size(); i++)
+    va[i] = rsAbs(v[i]);
+  return va;
+}
+
 /** Wraps iterator syntax to simplify calls to std::all_of. */
 template<class T, class UnaryPredicate >
 bool rsAllOf(const std::vector<T>& v, UnaryPredicate p)
@@ -385,6 +394,14 @@ T rsMaxValue(const std::vector<T>& x) { return rsArrayTools::maxValue(&x[0], (in
 template<class T>
 T rsMaxAbs(const std::vector<T>& x) { return rsArrayTools::maxAbs(&x[0], (int) x.size()); }
 
+template<class T>
+bool rsIsCloseTo(const std::vector<T>& x, const std::vector<T>& y, T tol)
+{
+  if(x.size() != y.size()) 
+    return false;
+  return rsArrayTools::almostEqual(&x[0], &y[0], (int) x.size(), tol);
+}
+
 //template<class T>
 //T rsMaxValue(const std::vector<T>& x)
 //{
@@ -456,7 +473,7 @@ template<class T>
 inline std::vector<T> operator*(const T& x, const std::vector<T>& v)
 {
   std::vector<T> result(v.size());
-  for(int i = 0; i < v.size(); i++)
+  for(size_t i = 0; i < v.size(); i++)
     result[i] = x * v[i];
   return result;
 }
@@ -466,7 +483,7 @@ template<class T>
 inline std::vector<T> operator/(const std::vector<T>& v, const T& x)
 {
   std::vector<T> result(v.size());
-  for(int i = 0; i < v.size(); i++)
+  for(size_t i = 0; i < v.size(); i++)
     result[i] = v[i] / x;
   return result;
 }
@@ -488,7 +505,7 @@ template<class T>
 inline std::vector<T> operator+(const std::vector<T>& v, const T& x)
 {
   std::vector<T> result(v.size());
-  for(int i = 0; i < v.size(); i++)
+  for(size_t i = 0; i < v.size(); i++)
     result[i] = v[i] + x;
   return result;
 }
@@ -498,7 +515,7 @@ template<class T>
 inline std::vector<T> operator-(const std::vector<T>& v, const T& x)
 {
   std::vector<T> result(v.size());
-  for(int i = 0; i < v.size(); i++)
+  for(size_t i = 0; i < v.size(); i++)
     result[i] = v[i] - x;
   return result;
 }
@@ -510,7 +527,7 @@ inline std::vector<T> operator+(const std::vector<T>& x, const std::vector<T>& y
   size_t Nmax = std::max(x.size(), y.size());
   size_t Nmin = std::min(x.size(), y.size());
   std::vector<T> result(Nmax);
-  for(int i = 0; i < Nmin; i++)
+  for(size_t i = 0; i < Nmin; i++)
     result[i] = x[i] + y[i];
   return result;
 }
@@ -522,7 +539,7 @@ inline std::vector<T> operator-(const std::vector<T>& x, const std::vector<T>& y
   size_t Nmax = std::max(x.size(), y.size());
   size_t Nmin = std::min(x.size(), y.size());
   std::vector<T> result(Nmax);
-  for(int i = 0; i < Nmin; i++)
+  for(size_t i = 0; i < Nmin; i++)
     result[i] = x[i] - y[i];
   return result;
 }

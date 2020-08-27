@@ -12,9 +12,6 @@ References:
      "Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including 
       a comprehensive list of window functions and some new flat-top windows"  */
 
-// i think, i need to double all values of the mainlobe width - because the lobe is two-sided and 
-// here, i only considered the right half...done? -> check this
-
 class rsWindowFunction
 {
 
@@ -49,6 +46,8 @@ public:
     blackmanNutall, // NN
     nutall,         // ZZ
 
+    dolphChebychev,
+
     /*
     //wkpdFlatTop
 
@@ -73,6 +72,8 @@ public:
     */
 
 
+
+
     truncatedGaussian
   };
 
@@ -82,7 +83,8 @@ public:
   values in enum windowTypes. If normalizeMean is true, the window values will be scaled such that 
   they have a mean value of unity. This will give the window function unit gain at DC which is 
   often desirable. Some windows have an adjustable parameter - for these, the value of this 
-  parameter is passed in param. */
+  parameter is passed in param. The meaning of the parameter may vary from one window to 
+  another. */
   template<class T>
   static void createWindow(T* w, int N, WindowType type, bool normalizeMean, T param = 0);
 
@@ -92,7 +94,7 @@ public:
   value, so the compiler can figure out the template type. ...later it may be used to compute 
   mainlobe widths for parametrized windows but this is not yet implemented */
   template<class T>
-  static T getMainLobeWidth(WindowType type, T param);
+  static T getMainLobeWidth(WindowType type, T param, int length);
 
   /** Returns the level (in decibels) of the highest sidelobe of the given window (just as the 
   mainlobe width, these values are also just rule-of-thumb values). The mainlobe is supposed to be
@@ -127,11 +129,11 @@ public:
   template<class T>
   static T raisedCosine(T x, T length, T p = 0.0);
 
-  /** Retruns a value of the "exact" Blackman window. Compared to the unqualified "Blackman"
-  window, this exact version uses coefficients for the terms that place place zeros at the third
-  and fourth sidelobes, thereby reducing the sidelobe levels further. The third parameter is just a
-  dummy to make the function suitable for usage with function pointers that generally may point to
-  parametrized windows.
+  /** Returns a value of the "exact" Blackman window. Compared to the unqualified "Blackman"
+  window, this exact version uses coefficients for the terms that place zeros at the third and 
+  fourth sidelobes, thereby reducing the sidelobe levels further at the expense of the sidelobe 
+  rolloff. The third parameter is just a dummy to make the function suitable for usage with 
+  function pointers that generally may point to parametrized windows.
   References:
   http://en.wikipedia.org/wiki/Window_function#Blackman_windows  */
   template<class T>
@@ -271,6 +273,25 @@ public:
   template<class T>
   static void triangular(T *window, int length);
 
+  /** Dolph-Chebychev window with a given attenuation of the sidelobes in dB (it can be given with
+  or without the minus sign). This window has equiripple sidebands and achieves the lowest sidelobe
+  level for a given mainlobe width - or the narrowest mainlobe width for a given sidelobe level. */
+  template<class T>
+  static void dolphChebychev(T *window, int length, T attenuation);
+  // allocates temporary heap-memory
+
+  // maybe provide a function dolphChebychevByWidth in which the parameter gives the mainlobe width
+
+  // todo: should compute the mainlobe-width from the sidelobe attenuation (length may not be 
+  // needed when the width is normalized somehow, we'll see)
+
+  /** Computes the width of the mainlobe of the Dolph-Chebychev window, given its length and 
+  attenuation in dB. The width is measured at the point, where the mainlobe crosses the attenuation
+  value. */
+  template<class T>
+  static T dolphChebychevMainLobeWidth(int length, T attenuation);
+
+
   /** Returns the value of a cosine-squared windowed (normalized) sinc function. It has nonzero
   values in the range -length/2...+length/2 and zero crossings at integer multiples of the
   "stretch" parameter. */
@@ -281,6 +302,9 @@ public:
 };
 
 // todo:
+// -implement Hann-Poisson window - it has no sidelobes(!!!) - that may be a useful feature for the 
+//  sinusoidal analysis:
+//  https://en.wikipedia.org/wiki/Window_function#Hann%E2%80%93Poisson_window
 // -Generalize this to make a generic sum-of-cosines window where the Hanning- and Hamming windows
 //  are a special case. This class includes also Blackman, Nutall, etc. windows. We may be able to
 //  come up with other window shapes that supress sidebands even more than the existing standard

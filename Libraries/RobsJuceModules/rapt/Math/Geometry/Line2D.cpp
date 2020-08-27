@@ -26,3 +26,21 @@ void rsLine2D<T>::reflectPointInLine(T x, T y, T A, T B, T C, T *xr, T *yr)
 
   // maybe make a version that assumes A^2 + B^2 = 1 so we can get rid of the division
 }
+
+/*
+Ideas:
+
+-Provide functions to "construct" new points from a set of given points, as in the "synthetic
+ geometry" of the ancient greeks. There, the allowed things to construct new points was to connect 
+ any pair from a given set of points with a straight line (also, to continue the line as long as 
+ desired) and taking distances between points with a compass and drawing circles centered at any of 
+ the given points with radius being any of the distances that can be picked up somewhere. Any 
+ intersections of these so formed lines and/or circles could be used as new points and added to the
+ set (and the process could be applied recursively to the enlarged set).
+-We could allow more constructions, like drawing an ellipse with its foci being two of the points 
+ and the sum of the two strings being any of the distances that we can get. Or maybe parabolas and 
+ hyperbolas with foci and directrix obtained from existing points/lines. Anything for which we can
+ solve the intersection-equations in closed form. We could also find circles that pass through 3 
+ given points (and maybe ellipses that pass through 4)?
+
+*/

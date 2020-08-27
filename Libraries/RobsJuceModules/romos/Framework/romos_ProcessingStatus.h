@@ -7,8 +7,8 @@
 //#define NUM_ALLOCATED_VOICES processingStatus.getNumAllocatedVoices()
 //#define ALLOCATED_BLOCKSIZE processingStatus.getBufferSize()
 
-namespace romos
-{
+//namespace romos
+//{
 
 /** This class represents the ProcessingStatus in which the modular system is used. Modules can 
 inquire information about their processing ProcessingStatus by accessing the global object 
@@ -118,6 +118,6 @@ private:
 
 extern ProcessingStatus processingStatus;
 
-}
+//}
 
 #endif

@@ -111,6 +111,8 @@ void rsArrayTools::circularShift(T *buffer, const int length, const int numPosit
   }
   delete[] tmp;
 }
+// this article describes an algo ("rotate") based on reversals that doesn't need auxiuliary
+// memory: https://en.wikipedia.org/wiki/Block_sort - there's an implementation in Prototypes.cpp
 
 template <class T>
 void rsArrayTools::circularShiftInterpolated(T *buffer, const int length, const double numPositions)
@@ -487,25 +489,44 @@ void rsArrayTools::fillWithValue(T *buffer, int length, T value)
 }
 
 template <class T>
-void rsArrayTools::fillWithRangeExponential(T *buffer, int length, T min, T max)
+void rsArrayTools::fillWithRangeExponential(T *x, int N, T min, T max)
 {
+  rsAssert(N >= 2);
   if(min == max)
-    fillWithValue(buffer, length, min);
+    fillWithValue(x, N, min);
   else {
-    for(int i = 0; i < length; i++)
-      buffer[i] = (T)rsLinToExp((T)i, (T)0, (T)(length-1), min, max); }
+    for(int i = 0; i < N; i++)
+      x[i] = (T)rsLinToExp((T)i, (T)0, (T)(N-1), min, max); }
 }
+// ...can(?) be optimized to avoid calling rsLinToExp for each i by precomputing some variables
 
 template <class T>
-void rsArrayTools::fillWithRangeLinear(T *buffer, int length, T min, T max)
+void rsArrayTools::fillWithRangeLinear(T *x, int N, T min, T max)
 {
+  rsAssert(N >= 2);
   if(min == max)
-    fillWithValue(buffer, length, min);
+    fillWithValue(x, N, min);
   else {
-    double factor = (max-min) / (double)(length-1);
-    for(int i = 0; i < length; i++)
-      buffer[i] = (T)(factor * T(i) + min); }
+    T factor = (max-min) / (T)(N-1);
+    for(int i = 0; i < N; i++)
+      x[i] = (T)(factor * T(i) + min); }
 }
+
+template<class T>
+void rsArrayTools::fillWithRange(T* x, int N, T min, T max, T p)
+{
+  static const T tol = (T)pow(2, 10) * RS_EPS(T); // found empirically
+  if(rsAbs(p) <= tol) {
+    fillWithRangeExponential(x, N, min, max);
+    return; }
+  fillWithRangeLinear(x, N, pow(min, p), pow(max, p));
+  for(int i = 0; i < N; i++)
+    x[i] = pow(x[i], T(1)/p);
+}
+// maybe we should set x[0] = min and x[N-1] = max to avoid roundoff error at the endpoints - the
+// loop should run only for(i = 1; i < N-1; i++)...also in the inner functions...but this needs
+// tests - especially when called with N=0 and N=1
+
 
 template <class T>
 void rsArrayTools::filter(const T *x, int xLength, T *y, int yLength, const T *b, int bOrder, const T *a, int aOrder)
@@ -675,6 +696,37 @@ void rsArrayTools::fitIntoRange(T *buffer, int length, T min, T max)
   scale(buffer, length, scaleFactor);
   add(buffer, offset, buffer, length);
 }
+
+template<class T>
+T rsArrayTools::geometricMean(const T* x, int N)
+{
+  T m = T(0);
+  for(int i = 0; i < N; i++)
+    m += log(x[i]);
+  m /= T(N);
+  m = exp(m);
+  return m;
+}
+// I think, it's numerically better behaved to sum up the logarithms and take the exp at the and 
+// rather than accumulating multiplicatively and extracting the N-th root - but that should be 
+// verified experimentally.
+
+template<class T>
+T rsArrayTools::generalizedMean(const T* x, int N, T p)
+{
+  static const T tol = (T)pow(2, 10) * RS_EPS(T); // found empirically
+  if(rsAbs(p) <= tol) 
+    return geometricMean(x, N);
+  T m = T(0);
+  for(int i = 0; i < N; i++)
+    m += pow(x[i], p);
+  m /= T(N);
+  m = pow(m, T(1)/p);
+  return m;
+}
+// Maybe use m += exp(p * log(x[i]) - might be more effient than pow - but also less precise. Maybe
+// take the min or max for abs(p) > thresh for some threshold...but that threshold must also be
+// obtained empirically...and reasonable values may depend on the array values
 
 template <class T>
 void rsArrayTools::impulseResponse(T *h, int hLength, const T *b, int bOrder, const T *a, int aOrder)
@@ -859,7 +911,7 @@ T rsArrayTools::maxAbs(const T *buffer, int length)
 // maybe optimize such that rsAbs is called only once
 
 template <class T>
-static T rsArrayTools::maxAbs(const std::complex<T>* buffer, int length)
+T rsArrayTools::maxAbs(const std::complex<T>* buffer, int length)
 {
   T maxSquared = T(0);
   for(int i = 0; i < length; ++i) {
@@ -990,7 +1042,12 @@ T rsArrayTools::median(const T *buffer, int length)
   if(rsIsOdd(length))
     med = tmpBuffer[(length-1)/2];
   else
-    med = (T)(0.5 * (tmpBuffer[length/2] + tmpBuffer[length/2-1]));
+  {
+    //med = (T)(0.5 * (tmpBuffer[length/2] + tmpBuffer[length/2-1]));
+    med = T(0.5) * (tmpBuffer[length/2] + tmpBuffer[length/2-1]);
+  }
+    // todo: use T(0.5) * (tmpBuffer[length/2] + tmpBuffer[length/2-1]) - don't enforce conversion
+    // to double in intermeidate result
 
   delete[] tmpBuffer;
   return med;
@@ -1007,21 +1064,38 @@ void rsArrayTools::movingAverage3pt(const T* x, int N, T* y, bool endsFixed)
   T t1 = x[0];
   T t2 = x[1];
 
-  if(endsFixed) 
+  if(endsFixed)
     y[0] = t1;
   else
     y[0] = T(1/2.) * (t1 + t2);
 
   for(int n = 2; n < N; n++) {
-    y[n-1] = T(1/3.) * (t1 + t2 + y[n]);
+    y[n-1] = T(1/3.) * (t1 + t2 + x[n]);
     t1 = t2;
-    t2 = y[n]; }
+    t2 = x[n]; }
 
   if(endsFixed)
     y[N-1] = t2;
   else
     y[N-1] = T(1/2.) * (t1 + t2);
 }
+
+template<class T>
+void rsArrayTools::movingMedian3pt(const T* x, int N, T* y)
+{
+  T x1 = x[0];  // x[n-1]
+  for(int n = 1; n < N-1; n++) {
+    T xn = x[n];
+    y[n] = rsMedian(x1, xn, x[n+1]);
+    x1   = xn; }
+  y[0]   = y[1];    // does this make sense?
+  y[N-1] = y[N-2];
+  // i think, it would use the 3pt forward median for y[0] and the 3pt backward median for y[N-1]
+  // the two-point mediat would be the same as the two point average (even order medians use the
+  // average of the middle two samples)...hmmm...
+  // or maybe we should use linear extrapolation?
+}
+
 
 template <class T1, class T2, class TR>
 void rsArrayTools::multiply(const T1 *buffer1, const T2 *buffer2, TR *result, int length)
@@ -1170,7 +1244,7 @@ void rsArrayTools::shift(T *buffer, int length, int numPlaces)
 }
 
 template <class T>
-static T rsArrayTools::shiftToMakeMinimumZero(const T* x, int N, T* y)
+T rsArrayTools::shiftToMakeMinimumZero(const T* x, int N, T* y)
 {
   T minVal = minValue(x, N);
   add(x, -minVal, y, N);
@@ -1252,15 +1326,10 @@ void rsArrayTools::transposeSquareArray(T **A, int N)
 template<class T>
 void rsArrayTools::unwrap(T* a, int N, T p)
 {
-  for(int n = 1; n < N; n++)
-  {
-    int k = 0;
-    while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k+1)*p))-a[n-1]))
-      k++;
-    while(fabs((a[n]+(k*p))-a[n-1]) > fabs((a[n]+((k-1)*p))-a[n-1]))
-      k--;
-    a[n] += k*p;
-  }
+  int k = 0; // k-factor in newValue = oldValue + k * period
+  for(int n = 1; n < N; n++) {
+    k = rsUnwrapFactor(a[n], a[n-1], p, k);
+    a[n] += k*p; }
 }
 
 template <class T>
@@ -1283,6 +1352,16 @@ void rsArrayTools::weightedSum(const T *buffer1, const T *buffer2, T *result, in
 
 
 /*
+
+todo:
+isFreeOf - like contains but inverse
+containsOnce - finds element like contains and then uses isFreeOf on rest of array
+isPermutationOf - uses containsOnce on the first array for each element of a second array
+
+maybe make a class rsVectorTools that just contains convenience functions for the functions from
+rsArrayTools, such that we don't need the ugly &b[0] syntax and maybe can get rid of the length
+parameters (because vectors know their lengths)...but maybe it should also include
+
 
 maybe for more ideas what could be useful, see:
 

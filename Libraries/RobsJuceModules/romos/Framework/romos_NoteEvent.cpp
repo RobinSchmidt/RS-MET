@@ -1,5 +1,5 @@
 //#include "romos_NoteEvent.h"
-using namespace romos;
+//using namespace romos;
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:

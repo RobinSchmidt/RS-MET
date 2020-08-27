@@ -7,11 +7,13 @@
 // includes for unity build:
 //#include "Shared/Shared.h"
 
+
 #include "rapt_tests/RaptTests.h"
 
 // get rid of these includes - the best would be, to move all that stuff into the rs_testing juce
 // module:
 #include "Experiments/Experiments.h"
+
 
 #include "rosic_tests/UnitTestsRosic.h"
 using namespace rotes;
@@ -30,8 +32,6 @@ using namespace rotes;
 // to
 // passed &= runUnitTest(&triangleRasterization,  "Triangle Rasterization");
 // in UnitTests.cpp
-
-
 
 int main(int argc, char* argv[])
 {
@@ -60,8 +60,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  //passed &= runUnitTestsRapt();
-  //passed &= runUnitTestsRosic();
+  passed &= runUnitTestsRapt();
+  //passed &= runUnitTestsRosic();  // some tests there are still commented out
   //passed = passed;  // dummy
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
@@ -119,6 +119,7 @@ int main(int argc, char* argv[])
   //productLogPlot();
   //ratioGenerator();
   //ratiosLargeLcm();
+  //ratiosEquidistantPowers();
   //ratiosMetallic();
   //sinCosTable();
   //twoParamRemap();
@@ -145,13 +146,14 @@ int main(int argc, char* argv[])
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
   //poleZeroPrototype();  // new implementation - but we don't need that
   //seriesConnectionDecay();
+  quantileFilter();
 
   // Physics:
   //doublePendulum(); // takes long
   //heatEquation1D();
   //waveEquation1D();
   //rectangularMembrane();
-//  rectangularRoom();
+  //rectangularRoom();
   //particleForceDistanceLaw();
   //particleSystem();
   //quantumSpinMeasurement();  // move to unit tests
@@ -166,12 +168,14 @@ int main(int argc, char* argv[])
   //tennisRacketFreq();
 
   // Generators:
+  //waveformFractalization();
   //noise();
   //noiseTriModal();
   //blit();
   //blep();
   //polyBlep();
   //superBlep();
+  //superSawDensitySweep();
   //superSawStereo();
   //twoPieceOsc();
   //syncSweep();
@@ -237,6 +241,8 @@ int main(int argc, char* argv[])
   //binomialDistribution();
   //sineParameters();
   //bandLimitedStep();
+
+  //chebychevInterpolant();
   //naturalCubicSpline();
   //naturalCubicSpline2();
   //cubicInterpolationNonEquidistant();   // move to unit tests
@@ -247,7 +253,8 @@ int main(int argc, char* argv[])
 
   //numericDifferentiation();
   //numericIntegration(); // a.k.a. numeric "quadrature"
-  //numericDiffAndInt();  // numeric differentiation and integration - rename to nonUniformArrayDiffAndInt
+  //nonUniformArrayDiffAndInt();  // numeric differentiation and integration of sampled data
+//  uniformArrayDiffAndInt();  // under construction
 
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
@@ -289,6 +296,7 @@ int main(int argc, char* argv[])
   ////instantaneousPhase();  // triggers assert (there's something not yet implemented)
   //maxShortTimeRMS();
   //arrayRMS();
+  //peakFinder();
   //zeroCrossingFinder();
   //zeroCrossingFinder2();
   //zeroCrossingFinder3();
@@ -306,7 +314,7 @@ int main(int argc, char* argv[])
   // Filter:
   //bandwidthScaling();
   //butterworthEnergy();
-  //stateVariableFilter();
+//  stateVariableFilter();
   //stateVariableFilterMorph();
   //stateVectorFilter();   // just a stub, at the moment
   //biquadModulation();   // compares modulation properties of various biquad structures
@@ -359,8 +367,8 @@ int main(int argc, char* argv[])
   // Modal Filters/Synthesis:
   //modalFilter();        // impulse response of decaying-sine filter
   //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
-  //modalTwoModes();
   //attackDecayFilter();  // ...hmm..almost redundant
+  //modalTwoModes();
   //dampedSineFilterDesign();
   //dampedSineFilterImpResp();
   //biquadImpulseResponseDesign();
@@ -368,7 +376,7 @@ int main(int argc, char* argv[])
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope
   //modalWithFancyEnv();
   //modalSynthSpectra();
-//  modalDecayFit();
+  //modalDecayFit();
   //modalAnalysis1();
   //modalAnalysisPluck();
   //modalPartialResynthesis();
@@ -386,7 +394,7 @@ int main(int argc, char* argv[])
   //taperedFourierSeries();
   //transientModeling();
   //windowFunctionsContinuous();
-  //windowFunctionSpectra();
+  //windowFunctionSpectra(); // todo: try bump-function and piecewise window using integrated bump tapers
   //windowedSinc();
   //waveMorph();  // under construction
 
@@ -406,10 +414,11 @@ int main(int argc, char* argv[])
 
   // Partial Extraction:
   //biDirectionalFilter();    // maybe move to filter tests
-//  beatingSines();
+  //beatingSines();
   //envelopeDeBeating();
-  //sineRecreation();         // maybe move elsewhere
-  //sineWithPhaseCatchUp();   // dito
+  //sineRecreation();               // maybe move elsewhere
+//  sineRecreationBandpassNoise();
+  //sineWithPhaseCatchUp();       // dito
   //partialExtractionTriple();
   //partialExtractionViaBiquadTriple();
   ////partialExtractionBell();  // crashes because sample not available
@@ -431,7 +440,7 @@ int main(int argc, char* argv[])
   //sinusoidalAnalysis3();
   //phaseFreqConsistency();
 
-  harmonicDetection2Sines();
+  //harmonicDetection2Sines();
   //harmonicDetection3Sines();
   //harmonicDetection5Sines();
   //harmonicAnalysis1();
@@ -528,22 +537,6 @@ int main(int argc, char* argv[])
   //===============================================================================================
   // RoSiC tests:
 
-  //-----------------------------------------------------------------------------------------------
-  // Unit tests - tese need to be adapted: 
-  /*
-  testRosicAnalysis();
-  testRosicBasics();
-  testRosicFile();
-  testRosicEffects();
-  testRosicGenerators();
-  testRosicFilter();
-  testRosicNumerical();
-  testRosicMath();
-  testRosicNonRealTime();
-  testRosicOthers();
-  testAllRosicClasses();
-  // hmm...maybe of those are actually not unit tests but experiments - disentangle that...
-  */
 
   //-----------------------------------------------------------------------------------------------
   // Experiments:

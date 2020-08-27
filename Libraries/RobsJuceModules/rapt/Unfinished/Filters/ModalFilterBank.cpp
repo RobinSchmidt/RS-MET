@@ -36,7 +36,7 @@ T findDecayScalerLess1(T c)
   // Newton iteration:
   T g, gp;      // g(k), g'(k)
   T kOld = 2*k; // ensure to enter the loop
-  while(fabs(k-kOld) > k*eps && i < 1000)
+  while(fabs(k-kOld) > k*eps && i < 1000)  // whoa! 1000? that seems way too high for production code!
   {
     kOld = k;
     g    = log(k) + c*(1-k); // g(k)
@@ -52,6 +52,13 @@ T findDecayScalerLess1(T c)
 
   // \todo find a refined formula for the initial guess by plotting the output against the input in
   // the range 0...1 and fit a polynomial (or other suitable function) to the data
+
+  // ...i think, the goal should be that the Newton iteration converges in 2 or 3 steps - maybe we 
+  // can then switch to a fixed number of steps, maybe we could also try Halley iteration instead,
+  // where g''(k) = -1/k^2 - compute: kr = 1/k, gp = kr - c, gpp = -kr*kr
+  // See:
+  // https://en.wikipedia.org/wiki/Halley%27s_method
+  // http://numbers.computation.free.fr/Constants/Algorithms/newton.html
 }
 
 template<class T>
@@ -467,7 +474,7 @@ TPar rsModalFilterBank<TSig, TPar>::getLength(TPar decayLevel)
 {
   TPar max = 0.0;
   TPar tmp;
-  for(int m = 0; m < decayTimes.size(); m++)
+  for(size_t m = 0; m < decayTimes.size(); m++)
   {
     tmp = modalFilters[m].getLength(decayLevel, sampleRate);
     if( tmp > max )
@@ -504,7 +511,7 @@ void rsModalFilterBank<TSig, TPar>::calculateModalFilterCoefficients()
 {
   size_t nm = rsMin((size_t)numModes, frequencies.size(), amplitudes.size(), decayTimes.size());
   nm = rsMin(nm, startPhases.size());
-  for(int m = 0; m < nm; m++)
+  for(size_t m = 0; m < nm; m++)
   {
     modalFilters[m].setModalParameters(
       referenceFrequency * frequencies[m], 
@@ -571,17 +578,17 @@ template<class TSig, class TPar>
 std::vector<TPar> rsModalFilterBank<TSig, TPar>::modeDecayTimes(std::vector<TPar> f, TPar fc, TPar p)
 {
   std::vector<TPar> d(f.size());
-  for(int n = 0; n < d.size(); n++)
+  for(size_t n = 0; n < d.size(); n++)
     d[n] = modeDecayTime(f[n], fc, p);
   return d;
 }
 
 template<class TSig, class TPar>
-std::vector<TPar> rsModalFilterBank<TSig, TPar>::scaleAtIntervals(std::vector<TPar> v,                 
+std::vector<TPar> rsModalFilterBank<TSig, TPar>::scaleAtIntervals(std::vector<TPar> v,
   int startIndex, int interval, TPar scaler)
 {
   std::vector<TPar> r = v;
-  for(int n = startIndex; n < r.size(); n += interval)
+  for(size_t n = startIndex; n < r.size(); n += interval)
     r[n] *= scaler;
   return r;
 }

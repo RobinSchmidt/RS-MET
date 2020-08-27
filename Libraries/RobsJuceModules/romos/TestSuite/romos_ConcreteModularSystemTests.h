@@ -4,7 +4,7 @@
 //#include "romos_ModularSystemTest.h"
 //#include "romos_GenerateDesiredOutput.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
   /**
@@ -47,7 +47,7 @@ namespace romos
   protected: 
     virtual void createAndConnectTestChildModules();
     virtual void fillDesiredOutputSignalArrays();
-    ContainerModule *polyBlipStereo;
+    romos::ContainerModule *polyBlipStereo;
   };
 
 
@@ -59,7 +59,7 @@ namespace romos
   protected: 
     virtual void createAndConnectTestChildModules();
     virtual void fillDesiredOutputSignalArrays();
-    ContainerModule *noiseFlute;
+    romos::ContainerModule *noiseFlute;
   };
 
 

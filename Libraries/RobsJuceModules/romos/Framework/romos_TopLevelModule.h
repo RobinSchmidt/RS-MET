@@ -1,8 +1,6 @@
 #ifndef romos_TopLevelModule_h
 #define romos_TopLevelModule_h
 
-namespace romos
-{
 
 // maybe we need a class TopLevelModuleObserver to take care of focusedModuleChanged callbacks
 // and/or removal of submodules...but maybe this appaly to any kind of modules
@@ -31,13 +29,13 @@ public:
   void disconnectAudioOutputModules();
 
   /** Overriden to avoid changing the polyphony (a toplevel-module is always monophonic). */
-  virtual void setPolyphonic(bool shouldBePolyphonic)
+  virtual void setPolyphonic(bool /*shouldBePolyphonic*/)
   {
     // do nothing
   }
 
   /** Overriden to avoid changing the polyphony (a toplevel-module is always monophonic). */
-  virtual void setPolyphonicRecursively(bool shouldBePolyphonic)
+  virtual void setPolyphonicRecursively(bool /*shouldBePolyphonic*/)
   {
     // do nothing 
   }
@@ -50,8 +48,8 @@ public:
   }
 
   /** Overriden to avoid adding of audio outputs to the toplevel module. */
-  virtual Module* addAudioOutputModule(rosic::rsString name = rosic::rsString(), int x = 1, 
-    int y = 1,  bool sortModuleArrayAfterInsertion = true)
+  virtual Module* addAudioOutputModule(rosic::rsString /*name*/ = rosic::rsString(), int /*x*/ = 1, 
+    int /*y*/ = 1,  bool /*sortModuleArrayAfterInsertion*/ = true)
   {
     return NULL;
   }
@@ -256,6 +254,5 @@ INLINE void TopLevelModule::getBlockOfSampleFramesStereo(SampleType *inOutL,
   }
 }
 
-} // end namespace romos
 
 #endif 

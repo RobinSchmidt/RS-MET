@@ -4829,7 +4829,7 @@ int laswp(integer *n, T *a, integer *lda, integer *k1, integer *k2, integer *ipi
 
 //-------------------------------------------------------------------------------------------------
 
-/* from  dlatbs_ - LAPACK auxiliary routine (version 3.7.0) */
+/* from dlatbs_ - LAPACK auxiliary routine (version 3.7.0) */
 template<class T>
 int latbs(char *uplo, char *trans, char *diag, char *normin, integer *n, integer *kd, T *ab,
   integer *ldab, T *x, T *scale, T *cnorm, integer *info, ftnlen uplo_len, ftnlen trans_len,
@@ -5495,16 +5495,16 @@ int latbs(char *uplo, char *trans, char *diag, char *normin, integer *n, integer
 //-------------------------------------------------------------------------------------------------
 
 //  drscl - LAPACK auxiliary routine (version 3.8.0)
-int rscl(integer *n, doublereal *sa, doublereal *sx,
-  integer *incx)
+template<class T>
+int rscl(integer *n, T *sa, T *sx, integer *incx)
 {
-  static doublereal mul, cden;
+  static T mul, cden;
   static logical done;
-  static doublereal cnum, cden1, cnum1;
+  static T cnum, cden1, cnum1;
   //extern /* Subroutine */ int dscal_(integer *, doublereal *, doublereal *,
   //  integer *), dlabad_(doublereal *, doublereal *);
   //extern doublereal dlamch_(char *, ftnlen);
-  static doublereal bignum, smlnum;
+  static T bignum, smlnum;
 
   /* Parameter adjustments */
   --sx;

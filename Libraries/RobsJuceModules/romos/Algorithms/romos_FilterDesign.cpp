@@ -1,8 +1,8 @@
 //#include "romos_FilterDesign.h"
 //#include "../Modules/romos_FilterModules.h"
-using namespace romos;
+//using namespace romos;
 
-void romos::biquadBypassCoeffs(double *coeffs)
+void biquadBypassCoeffs(double *coeffs)
 {
   coeffs[0] = 1.0;    // b0
   coeffs[1] = 0.0;    // b1
@@ -11,7 +11,7 @@ void romos::biquadBypassCoeffs(double *coeffs)
   coeffs[4] = 0.0;    // a2
 }
 
-void romos::biquadLowpassCoeffsBilinear1(double *coeffs, double f)
+void biquadLowpassCoeffsBilinear1(double *coeffs, double f)
 {
   f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
 
@@ -27,7 +27,7 @@ void romos::biquadLowpassCoeffsBilinear1(double *coeffs, double f)
   coeffs[2]             = 0.0;                                              // b2
 }
 
-void romos::biquadHighpassCoeffsBilinear1(double *coeffs, double f)
+void biquadHighpassCoeffsBilinear1(double *coeffs, double f)
 {
   f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
 
@@ -43,7 +43,7 @@ void romos::biquadHighpassCoeffsBilinear1(double *coeffs, double f)
   coeffs[2]             = 0.0;
 }
 
-void romos::biquadLowShelfCoeffsBilinear1(double *coeffs, double f, double g)
+void biquadLowShelfCoeffsBilinear1(double *coeffs, double f, double g)
 {
   f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   g = RAPT::rsMax(g, NANO);
@@ -59,7 +59,7 @@ void romos::biquadLowShelfCoeffsBilinear1(double *coeffs, double f, double g)
   coeffs[4] = 0.0;         // a2 
 }
 
-void romos::biquadHighShelfCoeffsBilinear1(double *coeffs, double f, double g)
+void biquadHighShelfCoeffsBilinear1(double *coeffs, double f, double g)
 {
   f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   g = RAPT::rsMax(g, NANO);
@@ -76,7 +76,7 @@ void romos::biquadHighShelfCoeffsBilinear1(double *coeffs, double f, double g)
   coeffs[4] = 0.0;         // a2 
 }
 
-void romos::biquadAllpassCoeffsBilinear1(double *coeffs, double f)
+void biquadAllpassCoeffsBilinear1(double *coeffs, double f)
 {
   double t = tan(PI * f * processingStatus.getSystemSamplePeriod());
   double c = (t-1.0) / (t+1.0);
@@ -88,7 +88,7 @@ void romos::biquadAllpassCoeffsBilinear1(double *coeffs, double f)
   coeffs[4] = 0.0;  // a2
 }
 
-void romos::biquadLowpassCoeffsBilinear2(double *coeffs, double f, double q)
+void biquadLowpassCoeffsBilinear2(double *coeffs, double f, double q)
 {
   f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = RAPT::rsMax(q, NANO);
@@ -106,7 +106,7 @@ void romos::biquadLowpassCoeffsBilinear2(double *coeffs, double f, double q)
   coeffs[2] = coeffs[0];            // b2
 }
 
-void romos::biquadHighpassCoeffsBilinear2(double *coeffs, double f, double q)
+void biquadHighpassCoeffsBilinear2(double *coeffs, double f, double q)
 {
   f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = RAPT::rsMax(q, NANO);
@@ -124,7 +124,7 @@ void romos::biquadHighpassCoeffsBilinear2(double *coeffs, double f, double q)
   coeffs[2] = coeffs[0];             // b2
 }
 
-void romos::biquadBandpassConstSkirtCoeffs(double *coeffs, double f, double q)
+void biquadBandpassConstSkirtCoeffs(double *coeffs, double f, double q)
 {    
   f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = RAPT::rsMax(q, NANO);
@@ -142,7 +142,7 @@ void romos::biquadBandpassConstSkirtCoeffs(double *coeffs, double f, double q)
   coeffs[2] = -coeffs[0];          // b2
 }
 
-void romos::biquadBandpassConstPeakCoeffs(double *coeffs, double f, double q)
+void biquadBandpassConstPeakCoeffs(double *coeffs, double f, double q)
 {    
   f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = RAPT::rsMax(q, NANO);
@@ -160,7 +160,7 @@ void romos::biquadBandpassConstPeakCoeffs(double *coeffs, double f, double q)
   coeffs[2] = -coeffs[0];          // b2
 }
 
-void romos::biquadBandrejectCoeffs(double *coeffs, double f, double q)
+void biquadBandrejectCoeffs(double *coeffs, double f, double q)
 {
   f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = RAPT::rsMax(q, NANO);
@@ -178,7 +178,7 @@ void romos::biquadBandrejectCoeffs(double *coeffs, double f, double q)
   coeffs[2] = 1.0          * a0r;  // b2
 }
 
-void romos::biquadPeakCoeffs(double *coeffs, double f, double q, double g)
+void biquadPeakCoeffs(double *coeffs, double f, double q, double g)
 {
   f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = RAPT::rsMax(q, NANO);
@@ -199,7 +199,7 @@ void romos::biquadPeakCoeffs(double *coeffs, double f, double q, double g)
   coeffs[2] = (1.0-alpha*A) * a0r;  // b2
 }
 
-void romos::biquadLowShelfCoeffsBilinear2(double *coeffs, double f, double q, double g)
+void biquadLowShelfCoeffsBilinear2(double *coeffs, double f, double q, double g)
 {
   f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = RAPT::rsMax(q, NANO);
@@ -219,7 +219,7 @@ void romos::biquadLowShelfCoeffsBilinear2(double *coeffs, double f, double q, do
   coeffs[2] =         A * ( (A+1.0) - (A-1.0)*c - beta*s ) * a0r;  // b2
 }
 
-void romos::biquadHighShelfCoeffsBilinear2(double *coeffs, double f, double q, double g)
+void biquadHighShelfCoeffsBilinear2(double *coeffs, double f, double q, double g)
 {
   f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = RAPT::rsMax(q, NANO);
@@ -239,7 +239,7 @@ void romos::biquadHighShelfCoeffsBilinear2(double *coeffs, double f, double q, d
   coeffs[2] =        A * ( (A+1.0) + (A-1.0)*c - beta*s ) * a0r;  // b2
 }
 
-void romos::biquadAllpassCoeffsBilinear2(double *coeffs, double f, double q)
+void biquadAllpassCoeffsBilinear2(double *coeffs, double f, double q)
 {
   f = RAPT::rsClip(f, NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   q = RAPT::rsMax(q, NANO);
@@ -257,7 +257,7 @@ void romos::biquadAllpassCoeffsBilinear2(double *coeffs, double f, double q)
   coeffs[2] = (1.0+alpha) * a0r;
 }
 
-void romos::ladderCoeffs(double *coeffs, int mode, double f, double r, double ag)
+void ladderCoeffs(double *coeffs, int mode, double f, double r, double ag)
 {
   f  = RAPT::rsClip(f,  NANO, 0.5*processingStatus.getSystemSampleRate()-NANO);
   ag = RAPT::rsMax(ag, 0.0);

@@ -3,7 +3,7 @@
 
 //#include "romos_ConcretePerformanceTests.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
   /**

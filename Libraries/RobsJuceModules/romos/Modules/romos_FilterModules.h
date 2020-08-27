@@ -1,9 +1,6 @@
 #ifndef romos_FilterModules_h
 #define romos_FilterModules_h
 
-namespace romos
-{
-
 //-------------------------------------------------------------------------------------------------
 
 /** A first order lowpass filter in direct form 1 with 1 pole and 1 zero realizing the difference 
@@ -229,7 +226,5 @@ public:
 // audio inputs: fundamental/reference frequency, decay, 
 // maybe freq-offset/shift -> shifts all partials by a constant (->FM)
 // maybe use the StateVectorFilter for the implementation
-
-}
 
 #endif 

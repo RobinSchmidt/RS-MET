@@ -1,7 +1,9 @@
 #ifndef RAPT_AUDIOFUNCTIONS_H
 #define RAPT_AUDIOFUNCTIONS_H
 
+// make functions const-correct
 // todo: maybe wrap into class, get rid of redundant implementations
+// ...many of the functions here should go into class rsSineParameterEstimator
 // merge with other AudioFunctions.h file make another file AudioAnalysisFunctions
 
   /** Converts a raw amplitude value/factor to a value in decibels. */
@@ -35,6 +37,8 @@ this function computes the amplitude a and initial phase p which are passed as p
 parameters to the function. The computed phase is in the range -PI...PI */
 template<class T>
 void rsSineAmplitudeAndPhase(T y0, T y1, T w, T *a, T *p);
+// maybe rename to rsSineAmplitudeAndPhaseR indicating that we use the right neighbour for the 
+// estimation - make a similar function that uses the left neighbour
 
 /** Given 3 successive sample values of a sinusoidal function with arbitrary amplitude a and
 initial phase p, such that
@@ -49,10 +53,12 @@ actually are, we could assign any arbitrary value to the frequency w and adjust 
 in a way, to compensate - so, indeed, there's no unique solution in this case, unless the
 amplitude is known in which case w = asin(|y2|/a) = asin(|y0|/a) [verify this]. The last
 parameter "small" determines how close y1 may be to 0 until the computations are considered to be
-too error-prone. */
+too error-prone. For a sine with changing frequency, the estimate should be considered to be the
+instantaneous value at the center sample, i.e. at y1. */
 template<class T>
 T rsSineFrequency(T y0, T y1, T y2, T smalll = 1.e-8);
- // "smalll" because "small" is defined as "char" somewhere leading to weird compiler errors
+// "smalll" because "small" is defined as "char" somewhere leading to weird compiler errors
+// maybe rename y0,y1,y2 to yL,yC,yR (for left,center,right)
 
 /** Assuming a sinusoidal input signal x of length N (and unknown frequency), this function
 computes the sinusoid's instantaneous normalized radian frequency at sample-instant n0. The value
@@ -63,7 +69,7 @@ of n0 is close to zero), the actual measurement point might be shifted (by at mo
 which should be inconsequential, if the sinuosoid has a stable frequency. The function is used
 internally by rsSineFrequencyAt which is probably the function, you want to use instead. */
 template<class T>
-T rsSineFrequencyAtCore(T *x, int N, int n0, T smalll = 1.e-8);
+T rsSineFrequencyAtCore(const T *x, int N, int n0, T smalll = 1.e-8);
   // find a better name
 
 /** Assuming a sinusoidal input signal x of length N (and unknown frequency), this function
@@ -76,7 +82,7 @@ used and the frequency value will be linearly extrapolated. This implies, for th
 work, the caller must make sure that there are at least one peak and one valley in the input
 signal. */
 template<class T>
-T rsSineFrequencyAt(T *x, int N, int n0, bool refine = false);
+T rsSineFrequencyAt(const T *x, int N, int n0, bool refine = false);
  // todo: give the function another parameter that crosfades between arithmetic and geometric 
  // mean/extrapolation
 

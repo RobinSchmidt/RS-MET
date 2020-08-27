@@ -31,6 +31,7 @@ void seriesConnectionDecay();
 
 // Generator Experiments:
 
+void waveformFractalization();
 void noise();
 void noiseTriModal();
 void blit();
@@ -38,6 +39,7 @@ void blep();
 //void blamp();
 void polyBlep();
 void superBlep();
+void superSawDensitySweep();
 void superSawStereo();
 void twoPieceOsc();
 void syncSweep();
@@ -96,6 +98,7 @@ void probabilityLogic();
 void productLogPlot();
 void ratioGenerator();
 void ratiosLargeLcm();
+void ratiosEquidistantPowers();
 void ratiosMetallic();
 void sinCosTable();
 void expBipolar();

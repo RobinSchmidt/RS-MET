@@ -1,8 +1,8 @@
 #ifndef romos_ContainerModule_h
 #define romos_ContainerModule_h
 
-namespace romos
-{
+//namespace romos
+//{
 
 // declarations to satisfy gcc:
 void processContainerBlockFrameWiseMixed(Module *moduleAsVoid, int blockSize);
@@ -454,8 +454,8 @@ protected:
 private:
 
   // copy and assignment - not possible:
-  ContainerModule(const ContainerModule &other) {}
-  ContainerModule& operator=(const ContainerModule &other) { return *this; }
+  ContainerModule(const ContainerModule& /*other*/) {}
+  ContainerModule& operator=(const ContainerModule& /*other*/) { return *this; }
 
 };
 class ContainerModuleTypeInfo : public ModuleTypeInfo
@@ -471,6 +471,6 @@ public:
 };
 
 
-} // end namespace romos
+//} // end namespace romos
 
 #endif

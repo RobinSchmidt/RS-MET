@@ -1,5 +1,5 @@
 //#include "romos_WorkArea.h"
-using namespace romos;
+//using namespace romos;
 
 double  WorkArea::tmpInFrame [maxNumPins];
 double  WorkArea::tmpOutFrame[maxNumPins];

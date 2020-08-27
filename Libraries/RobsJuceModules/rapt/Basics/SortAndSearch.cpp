@@ -1,8 +1,3 @@
-template <class T>
-bool defaultLess(const T& left, const T& right)
-{
-  return left < right;
-}
 
 template <class T>
 void rsMaxHeapify(T *buffer, int length, int i, int heapSize, 
@@ -24,6 +19,11 @@ void rsMaxHeapify(T *buffer, int length, int i, int heapSize,
     rsMaxHeapify(buffer, length, largest, heapSize, less); 
   }
 }
+// todo: try to get rid of the recursive call to itself -> convert to iteration, see Numerical
+// Recipies or solution to excercies 6.2-5:
+// https://sites.math.rutgers.edu/~ajl213/CLRS/Ch6.pdf ...but this is wrong - but i have some
+// working code in the Prototypes section - it's actually tail recursion, so perhaps the compiler
+// can optimize this itself - but better not rely on it
 
 template <class T>
 void rsBuildMaxHeap(T *buffer, int length, 
@@ -44,29 +44,6 @@ void rsHeapSort(T *buffer, int length, bool (*less)(const T& left, const T& righ
     rsMaxHeapify(buffer, length, 0, heapSize, less);
   }
 }
-
-/*
-template <class T>
-bool rsIsSortedAscending(T *buffer, int length)
-{
-  for(int i = 0; i < length-1; i++) {
-    if(!(buffer[i] <= buffer[i+1]))
-      return false;
-  }
-  return true;
-}
-
-template <class T>
-bool rsIsSortedStrictlyAscending(T *buffer, int length)
-{
-  for(int i = 0; i < length-1; i++) {
-    if(!(buffer[i] < buffer[i+1]))
-      return false;
-  }
-  return true;
-}
-*/
-// moved to rsArrayTools
 
 template <class T>
 std::vector<int> rsFindAllOccurencesOf(T* buffer, int bufferLength,

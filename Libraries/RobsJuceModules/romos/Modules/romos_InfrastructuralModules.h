@@ -1,9 +1,6 @@
 #ifndef romos_InfrastructuralModules_h
 #define romos_InfrastructuralModules_h
 
-namespace romos
-{
-
 //-------------------------------------------------------------------------------------------------
 
 /** We use identity modules to realize input and output - but we make some special subclasses in 
@@ -387,6 +384,5 @@ class ParameterModule : public NumberModule
 // \todo: NoteOnTrigger, NoteOffTrigger, NoteOnTriggerIfVoiceWasSilentBefore, NoteKey, 
 // VoiceKiller -> Threshold, TimeOut, In
 
-}
 
 #endif 

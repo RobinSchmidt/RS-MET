@@ -69,7 +69,7 @@ TUInt rsGcd(TUInt m, TUInt n)
 // gcd(a,b,c) == gcd(gcd(a,b),c)? seems plausible because the gcd of a,b,c cannot be greater than 
 // the gcd of a,b. if it's true, that relation could be used to implement the array version 
 // efficiently like: g = a[0]; for(int i = 1; i < N; i++) g = gcd(g, a[i]); return g;
-// -> figure out -> sey, seems to be the case:
+// -> figure out -> yes, seems to be the case:
 // https://www.geeksforgeeks.org/gcd-two-array-numbers/
 // https://stackoverflow.com/questions/21128981/finding-gcd-of-array-code-c-language
 
@@ -161,9 +161,9 @@ TInt rsLeviCivita(TInt indices[], TInt N)
 template<class TUInt>
 TUInt rsLcm(TUInt m, TUInt n)
 {
-  return n*m / rsGcd(n, m);
+  return n*(m/rsGcd(n, m)); // == m*(n/rsGcd(n, m)) == (n*m)/rsGcd(n, m) but the last is more
+                            // prone to internal overflow
 }
-
 
 template<class TInt>
 void rsStirlingNumbersFirstKind(TInt **s, TInt nMax)

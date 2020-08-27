@@ -97,6 +97,30 @@ T rsConsistentUnwrappedValue(T preliminaryUnwrappedValue, T targetWrappedValue,
 /** ..as above but supposes rangeMin to be zero. Uses a different algorithm based on fmod */
 template<class T>
 T rsConsistentUnwrappedValue0(T preliminaryUnwrappedValue, T targetWrappedValue, T rangeSize);
+// rename to rsUnwrap
+
+/** Computes the integer factor k such that abs(v+k*p - t) becomes smallest. It uses a loop trying
+different values of k, so to keep the loop short, you should pass an initial guess for k that is 
+likely close to the actually desired k. Parameters: v: value, t: target, p: period, k: guess. */
+template<class T>
+int rsUnwrapFactor(T v, T t, T p, int k)
+{
+  while(rsAbs((v+(k*p))-t) > rsAbs((v+((k+1)*p))-t))  k++;
+  while(rsAbs((v+(k*p))-t) > rsAbs((v+((k-1)*p))-t))  k--;
+  return k;
+}
+
+/** Phase distance between given phase p and given target phase t. That's the absolute value of
+p-t or (p+2pi)-t or (p-2pi)-t or generally of (p+2*k*pi)-t for a k chosen such that the absolute
+value of that difference becomes a minimum. */
+template<class T>
+T rsPhaseDistance(T p, T t)
+{
+  int k = rsUnwrapFactor(p, t, 2*PI, 0);
+  return rsAbs(p+2*k*PI - t);
+}
+// needs test
+
 
 /** Converts a frequency in Hz into a MIDI-note value. It can be used also for tunings different 
 than the default the 440 Hz. */

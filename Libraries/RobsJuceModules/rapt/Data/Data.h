@@ -1,6 +1,7 @@
 #ifndef RAPT_DATA_H_INCLUDED
 #define RAPT_DATA_H_INCLUDED
 
+
 namespace RAPT
 {
 
@@ -10,6 +11,8 @@ namespace RAPT
 #include "Buffers.h"
 #include "Range.h"
 #include "MultiArray.h"
+#include "Trees.h"
+
 
 }
 

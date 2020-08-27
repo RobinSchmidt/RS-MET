@@ -22,6 +22,7 @@ void binomialDistribution();
 void sineParameters();
 void bandLimitedStep();
 void cubicInterpolationNonEquidistant();   // move to unit tests
+void chebychevInterpolant();
 void naturalCubicSpline();
 void naturalCubicSpline2();
 void hyperbolicFunctions(); 
@@ -30,7 +31,8 @@ void rationalInterpolation();
 void splineInterpolationAreaNormalized();
 void numericDifferentiation();
 void numericIntegration();
-void numericDiffAndInt();  // 
+void nonUniformArrayDiffAndInt();
+void uniformArrayDiffAndInt();
 void iteratedNumDiff();
 
 

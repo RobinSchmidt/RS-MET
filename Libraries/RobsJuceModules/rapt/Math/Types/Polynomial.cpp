@@ -80,7 +80,7 @@ template<class T>
 std::complex<T> rsPolynomial<T>::evaluateFromRoots(const std::complex<T>& s,
   const std::complex<T>* r, int N)
 {
-  std::complex<T> result = 1.0;
+  std::complex<T> result = T(1);
   for(int i = 0; i < N; i++) {
     if(!isInfinite(r[i]))
       result *= (s - r[i]);
@@ -110,7 +110,7 @@ template<class T>
 T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N, int n)
 {
   rsAssert(n >= 0, "derivative order must be non-negative");
-  if(n > N) 
+  if(n > N)
     return T(0); // avoid evaluating products including zero (starting at negative indices)
   T y = T(rsProduct(N-n+1, N)) * a[N];
   for(int i = N-1; i >= n; i--)
@@ -119,7 +119,7 @@ T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N, int n)
 }
 // runtime: (N-n)*n? ..the number of terms in each product is n, the i-loop runs N-n times
 // we could probably also init y to 0 and run the loop from N to n - maybe the code would be neater
-// but we would add a 0*x term - so we would have have one extra multiplication and one extra 
+// but we would add a 0*x term - so we would have have one extra multiplication and one extra
 // addition that doesn't really do anything useful
 
 template <class T>
@@ -186,7 +186,19 @@ T rsPolynomial<T>::evaluateHermite(const T& x, int n)
   return h1;
 }
 // this is the physicist's version of Hermite polynomials, the probabilist's version would use the
-// recursion: tmp = x*h1 - i*h0. ...without the factor two
+// recursion: tmp = x*h1 - i*h0. ...without the factor two - maybe make the recursion factor 
+// another parameter
+
+template<class T>
+T rsPolynomial<T>::evaluateNewton(const T& x, const T* c, const T* r, int N)
+{
+  T p = T(1);   // accumulator for Newton basis polynomials
+  T y = c[0];   // accumulator for result
+  for(int i = 0; i < N; i++) {
+    p *= x - r[i];
+    y += c[i+1] * p; }
+  return y;
+}
 
 /*
 template<class T>
@@ -231,7 +243,7 @@ void rsPolynomial<T>::divide(const T *p, int pDegree, const T *d, int dDegree, T
       r[j] -= q[k] * d[j-k];
   }
   rsArrayTools::fillWithZeros(&r[dDegree], pDegree-dDegree+1);
-  // maybe return the degree of the quotient, the degree of the remainder is then 
+  // maybe return the degree of the quotient, the degree of the remainder is then
   // pDegree-qDegree - ...what if dDegree > pDegree? the most sensibe thing in this case would be,
   // if the remainder is equal to p ...and the quotient should be 0 ...i think, the model is:
   // p(x) = q(x)*d(x) + r(x)
@@ -293,20 +305,19 @@ void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c)
   T* an  = new T[cN+1];  // array for the successive powers of a[]
   an[0]  = T(1);         // initialize to a[]^0
 
-                         // accumulation:
+  // accumulation:
   rsArrayTools::fillWithZeros(c, cN+1);
   c[0] = b[0];
   int K = 1;
-  for(int n = 1; n <= bN; n++)
-  {
+  for(int n = 1; n <= bN; n++) {
     rsArrayTools::convolveInPlace(an, K, a, aN+1);
     K += aN;
     for(int k = 0; k < K; k++)
-      c[k] += b[n] * an[k];
-  }
+      c[k] += b[n] * an[k]; }
 
   delete[] an;
 }
+// maybe make a version that uses a workspace
 
 template <class T>
 void rsPolynomial<T>::coeffsForNegativeArgument(const T *a, T *am, int N)
@@ -603,7 +614,7 @@ void rsPolynomial<T>::rootsQuadraticReal(const R& c, const R& b, const R& a, R* 
 template<class T>
 template<class R>
 void rsPolynomial<T>::rootsQuadraticComplex(
-  const std::complex<R>& c, const std::complex<R>& b, const std::complex<R>& a, 
+  const std::complex<R>& c, const std::complex<R>& b, const std::complex<R>& a,
   std::complex<R>* x1, std::complex<R>* x2)
 {
   std::complex<R> s = R(1) / (R(2)*a);
@@ -743,8 +754,8 @@ T rsCubeRoot(T x)
 template<class T>
 template<class R>
 void rsPolynomial<T>::rootsCubicComplex(
-  std::complex<R> a0, std::complex<R> a1, 
-  std::complex<R> a2, std::complex<R> a3, 
+  std::complex<R> a0, std::complex<R> a1,
+  std::complex<R> a2, std::complex<R> a3,
   std::complex<R>* r1, std::complex<R>* r2, std::complex<R>* r3)
 {
   //rsAssert(false); // does not yet work - produces wrong results when roots are not real
@@ -771,7 +782,7 @@ void rsPolynomial<T>::rootsCubicComplex(
 
 template<class T>
 template<class R>
-R rsPolynomial<T>::cubicRootNear(R x, const R& a, const R& b, const R& c, const R& d, 
+R rsPolynomial<T>::cubicRootNear(R x, const R& a, const R& b, const R& c, const R& d,
   const R& min, const R& max, int maxIterations)
 {
   R f    = ((a*x+b)*x+c)*x+d;
@@ -791,7 +802,7 @@ R rsPolynomial<T>::cubicRootNear(R x, const R& a, const R& b, const R& c, const 
 
 template<class T>
 template<class R>
-R rsPolynomial<T>::rootNear(R x, const R* a, int degree, const R& min, const R& max, 
+R rsPolynomial<T>::rootNear(R x, const R* a, int degree, const R& min, const R& max,
   int maxIterations)
 {
   // Newton/Raphson iteration:
@@ -856,12 +867,12 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, std::complex<T>* a
       std::complex<T> rM = rF[M-1];
       for(int n = M-1; n >= 1; n--)
         a[n] = a[n-1] - rM*a[n];
-      a[0] = -rM*a[0]; 
+      a[0] = -rM*a[0];
     }
   }
   delete[] rF;
   // todo: avoid memory allocation - check against infinity on the fly and skip the root, if it is
-  // infinite, also - the function should not care whether the template type is real or complex - 
+  // infinite, also - the function should not care whether the template type is real or complex -
   // the algo is the same in both cases
 }
 // why is this so complicated anyway? can'T we just use the version
@@ -877,13 +888,13 @@ void rsPolynomial<T>::complexRootsToRealCoeffs(const std::complex<R>* r, R* a, i
   for(int n = 0; n <= N; n++)
   {
     constexpr R tol = R(1000) * RS_EPS(R);
-    rsAssert(rsIsCloseTo(ac[n].imag(), R(0), tol), 
+    rsAssert(rsIsCloseTo(ac[n].imag(), R(0), tol),
       "roots do not occur in complex conjugate pairs");
     a[n] = ac[n].real();
   }
   delete[] ac;
 }
-// rename to complexRootsToRealCoeffs, assert that the imaginary parts are numerically close to 
+// rename to complexRootsToRealCoeffs, assert that the imaginary parts are numerically close to
 // zero
 
 template<class T>
@@ -893,6 +904,19 @@ void rsPolynomial<T>::rootsToCoeffs(const T* r, T* a, int N, T scaler)
   a[0] = scaler;
   for(int n = 1; n <= N; n++)
     rsArrayTools::convolveWithTwoElems(a, n, -r[n-1], T(1), a);
+}
+
+template<class T>
+void rsPolynomial<T>::newtonToMonomialCoeffs(T* x, T* a, int N)
+{
+  T x0 = x[0]; 
+  x[0] = T(1);     // x is re-used as our convolutive accumulator (and destroyed in the process)
+  for(int i = 1; i < N; i++) {
+    T x1 = x[i];                                            // save x[i] because the next line..
+    rsArrayTools::convolveWithTwoElems(x, i, -x0, T(1), x); // ..overwrites x up to x[i] but we..
+    x0 = x1;                                                // ..still need it in next iteration
+    for(int j = 0; j < i; j++)
+      a[j] += a[i] * x[j]; }                                // accumulation of final coeffs
 }
 
 
@@ -913,7 +937,7 @@ void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *x, const
   T s    = T(1)/(-x1_3+k1-T(3)*x0_2*x[1]+x0_3);  // scaler
 
   a[0] =  s*(x0_2*(x1_2*k3+k2) + x0_3*(y[1]-x[1]*dy[1]) + x[0]*x1_3*dy[0] + y[0]*(-x1_3+k1));
-  a[1] = -s*(x[0]*(x1_2*(T(2)*dy[1]+dy[0])-T(6)*x[1]*y[1]) - x0_3*dy[1] 
+  a[1] = -s*(x[0]*(x1_2*(T(2)*dy[1]+dy[0])-T(6)*x[1]*y[1]) - x0_3*dy[1]
              + x0_2*x[1]*(-dy[1]-T(2)*dy[0]) + x1_3*dy[0] + T(6)*x[0]*x[1]*y[0]);
   a[2] =  s*(x[0]*(x[1]*k3-T(3)*y[1]) + x1_2*(dy[1]+T(2)*dy[0]) + x0_2*(-dy[0]-T(2)*dy[1]) + k2
              + y[0]*(T(3)*x[1]+T(3)*x[0]));
@@ -938,6 +962,7 @@ void rsPolynomial<T>::cubicCoeffsFourPoints(T *a, const T *y)
   a[1] = T(0.5)*(y[1]-y[-1]-T(2)*a[3]);
 }
 
+// move to a function rsMatrixView:vandermonde(const T* x, int N, T* V)
 template<class T>
 T** rsPolynomial<T>::vandermondeMatrix(const T *x, int N)
 {
@@ -951,6 +976,8 @@ T** rsPolynomial<T>::vandermondeMatrix(const T *x, int N)
   return A;
 }
 
+/*
+// Old implementation using Gaussian elimination with the Vandermonde matrix:
 template<class T>
 void rsPolynomial<T>::interpolant(T *a, const T *x, const T *y, int N)
 {
@@ -966,9 +993,57 @@ void rsPolynomial<T>::interpolant(T *a, const T *x, const T *y, int N)
   // a-coefficients for powers of x and finally, we could denormalize using rsShiftPolynomial,
   // rsStretchPolynomial (for x-denormalization) and scaling the coeffs and adding an offset to
   // a[0] for y-denormalization
-
-  // and/or there's actually a O(N) algo available - what we do here is O(N^3) -> very bad!
 }
+*/
+
+// New implementation, using Lagrange's idea - uses only O(N) memory ..i think, the runtime is
+// still O(N^3) - we have a loop nesting level of 2 here and one of the inner loops calls an O(N)
+// convolution (with only two elements, that's why it's only O(N)). I think, we can reduce this by
+// getting rid of the convolution inside the loop - just build up the product of all factors up
+// front once (without leaving out the n-th linear factor) - then, inside the loop, just divide
+// out the n-th factor again - this one call to dividePolynomialByMonomial which has O(N) instead
+// of O(N^2) for the multiplicative accumulation loop - so the overall runtime would be O(N^2)...
+// but roundoff error might be higher due to first multiplying in and then later dividing out
+// linear factors
+
+template<class T>
+void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N)
+{
+  T* wrk = new T[N+1];  // do we really need N+1? isn't N enough?
+  interpolant(a, x, y, N, &wrk[0]);
+  delete[] wrk;
+}
+
+
+template<class T>
+void rsPolynomial<T>::interpolant(T* a, const T* x, const T* y, int N, T* wrk)
+{
+  using AT = rsArrayTools;
+  AT::fillWithZeros(a, N);
+  T* num = &wrk[0];
+  for(int n = 0; n < N; n++)
+  {
+    // init num and den to 1:
+    AT::fillWithZeros(num, N);
+    num[0] = 1;
+    T den = 1;
+
+    // convolutive and multiplicative accumulation of num and den:
+    for(int k = 0; k < N; k++) {
+      if(k != n) {
+        AT::convolveWithTwoElems(num, k+1, -x[k], T(1), num);
+        den *= x[n] - x[k];  }}
+
+    // accumulate this result additively into coeff-array:
+    T s =  y[n]/den;
+    for(int k = 0; k < N; k++)
+      a[k] += num[k] * s;
+  }
+}
+
+// ToDo: implement Newton's formula using divided differences. I think, it needs a workspace of 
+// size 2N (twice as much as Lagrange, but it's still O(N)) and is O(N^2) in time (compared to 
+// O(N^3) for the Lagrange algorithm
 
 template<class T>
 void rsPolynomial<T>::interpolant(T *a, const T& x0, const T& dx, const T *y, int N)
@@ -981,7 +1056,22 @@ void rsPolynomial<T>::interpolant(T *a, const T& x0, const T& dx, const T *y, in
 }
 
 template<class T>
-void rsPolynomial<T>::fitQuadratic(T *a, const T *x, const T *y)
+void rsPolynomial<T>::interpolantViaNewton(T* a, const T* x, const T* y, int N, T* w)
+{
+  rsArrayTools::copy(x, w, N);
+  rsArrayTools::copy(y, a, N);
+  interpolantViaNewtonInPlace(w, a, N);
+}
+
+template<class T>
+void rsPolynomial<T>::interpolantViaNewtonInPlace(T* x, T* y, int N)
+{
+  coeffsNewton(          x, y, N);   // overwrites y
+  newtonToMonomialCoeffs(x, y, N);   // overwrites y again and also x
+}
+
+template<class T>
+void rsPolynomial<T>::fitQuadraticDirect(T *a, const T *x, const T *y)
 {
   T k1 = y[1] - y[0];
   T k2 = x[0]*x[0] - x[1]*x[1];
@@ -993,11 +1083,33 @@ void rsPolynomial<T>::fitQuadratic(T *a, const T *x, const T *y)
   a[1] = (k1+k2*a[2])/k3;
   a[0] = y[0]-a[2]*x[0]*x[0]-a[1]*x[0];
 
-  // add: 4, sub: 8, mul: 9, div: 4
+  // operations: add: 4, sub: 8, mul: 9, div: 4, ass: 8, tmp: 5
 }
-// this formula is complicated! i think, it was obtained by solving the 3x3 system: 
-//   y[i] = a0 + a1*x[i] + a2*x[i]^2   i = 0,1,2 
-// todo: use the Lagrange interpolation formula!
+// todo: benchmark against fitQuadraticLagrange and also compare numeric accuracy of both
+
+template<class T>
+void rsPolynomial<T>::fitQuadraticLagrange(T* a, const T* x, const T* y)
+{
+  T k1 = y[0] / ((x[0]-x[1])*(x[0]-x[2]));
+  T k2 = y[1] / ((x[1]-x[0])*(x[1]-x[2]));
+  T k3 = y[2] / ((x[2]-x[0])*(x[2]-x[1]));
+  T b1 = -k1*(x[1]+x[2]);
+  T b2 = -k2*(x[0]+x[2]);
+  T b3 = -k3*(x[0]+x[1]);
+  T c1 = k1*x[1]*x[2];
+  T c2 = k2*x[0]*x[2];
+  T c3 = k3*x[0]*x[1];
+  a[2] = k1 + k2 + k3;
+  a[1] = b1 + b2 + b3;
+  a[0] = c1 + c2 + c3;
+
+  // operations: add: 9, sub: 6, mul: 12, div: 3, neg: 3, ass: 12, tmp: 9
+}
+// todo: optimize out the b and c variables so we need only 3 temporaries and 6 assignments, but
+// i guess, the compiler can do this, too - check at godbolt.org
+// maybe derive and implement simplified formulas for the common special case
+// x1 = -1, x2 = 0, x3 = +1...hmm - but i think, we will not get formulas any better than what we
+// already have below:
 
 template<class T>
 void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, const T *y)
@@ -1018,7 +1130,7 @@ void rsPolynomial<T>::fitQuadratic_m1_0_1(T *a, const T *y)
 template<class T>
 T rsPolynomial<T>::quadraticExtremumPosition(const T *a)
 {
-  return T(-0.5) * a[1]/a[2];
+  return T(-0.5) * a[1]/a[2]; // it's the client's responsibility to ensure that a[2] is nonzero
 }
 
 template<class T>
@@ -1065,7 +1177,7 @@ bool rsPolynomial<T>::areRootsOnOrInsideUnitCircle(const R& a0, const R& a1, con
 // coefficient generation for special polynomials:
 
 template <class T>
-void rsPolynomial<T>::threeTermRecursion(T* a, const T& w0, int degree, const T* a1, const T& w1, 
+void rsPolynomial<T>::threeTermRecursion(T* a, const T& w0, int degree, const T* a1, const T& w1,
   const T& w1x, const T* a2, const T& w2)
 {
   rsAssert(degree >= 2);
@@ -1086,42 +1198,31 @@ void rsPolynomial<T>::besselPolynomial(T *a, int degree)
   for(n=0; n<=degree; n++)
     a[n] = 0.0;
 
-  if( degree == 0 )
-  {
+  if( degree == 0 ) {
     a[0] = 1.0;
-    return;
-  }
-  else if( degree == 1 )
-  {
+    return; }
+  else if( degree == 1 )  {
     a[0] = 1.0;
     a[1] = 1.0;
-    return;
-  }
+    return; }
 
   // the general case is treated by recursion:
-  a[0]       = 1.0;
-  T *b1 = new T[degree+1];
+  a[0]  = 1.0;
+  T *b1 = new T[degree+1]; // why +1?
   T *b2 = new T[degree+1];
-  b2[0]      = 1.0;
-  b2[1]      = 0.0;
-  b1[0]      = 1.0;
-  b1[1]      = 1.0;
-  for(n=2; n<=degree; n++)
-  {
+  b2[0] = 1.0; b2[1] = 0.0;
+  b1[0] = 1.0; b1[1] = 1.0;
+  for(n = 2; n <= degree; n++) {
     T c = (T) (2*n-1);
-    for(m=n; m>0; m--)
-      a[m] = c*b1[m-1];
+    for(m = n; m >  0; m--)   a[m]  = c*b1[m-1];
     a[0] = 0;
-    for(m=0; m<n-1; m++)
-      a[m] += b2[m];
-    for(m=0; m<n; m++)
-      b2[m] = b1[m];
-    for(m=0; m<=n; m++)
-      b1[m] = a[m];
-  }
+    for(m = 0; m <  n-1; m++) a[m] += b2[m];
+    for(m = 0; m <  n;   m++) b2[m] = b1[m];
+    for(m = 0; m <= n;   m++) b1[m] = a[m];  }
   delete[] b1;
   delete[] b2;
 }
+// can this be optimized? i think so
 
 template<class T>
 template<class R>
@@ -1340,12 +1441,23 @@ void rsPolynomial<T>::maxSlopeMonotonic(R *w, int n)
   delete [] s;
   delete [] a;
 }
+// optimize this - less allocations
+
+template<class T>
+void rsPolynomial<T>::coeffsNewton(const T* x, T* y, int N)
+{
+  for(int i = 0; i < N; i++)
+    for(int j = i+1; j < N; j++)
+      y[j] = (y[j] - y[i]) / (x[j] - x[i]);
+}
+// https://en.wikipedia.org/wiki/Polynomial_interpolation#Non-Vandermonde_solutions
+// https://en.wikipedia.org/wiki/Neville%27s_algorithm
 
 /*
 ToDo:
 -check the rootsToCoeffs functions - these can (should!) be improved
 
--for those static functions that explicitly expect real or complex parameters, use a different 
+-for those static functions that explicitly expect real or complex parameters, use a different
  template parameter - not T - but rather R for real and complex<R> for complex values
  -this prepares the class to be instantiated for real and complex coefficient types
  -see rootsQuadraticReal for how this works

@@ -3,7 +3,12 @@
 // comment below is not actually true anymore - but i think, i should make it true....or take care
 // to manually remove or comment out all plotting code before making a release - actually, plotting
 // commands in library code should be injected only temporarily for debugging anyway
-/** Plotting functions - if the macro RS_PLOTTING is defined in you project, they will compile to
+
+/** These are convenience functions for quickly plotting some data from anywhere in the code for 
+debugging purposes. The code is not really a part of the RAPT library but rather a tool for its 
+development.
+
+Plotting functions - if the macro RS_PLOTTING is defined in you project, they will compile to
 actual invocations of GNUPlotter and plot stuff. If it is not defined, they will compile to empty
 dummy no-op functions that will get optimized away. With this mechanism, we can simply inject calls
 to functions like rsPlotVector() anywhere in RAPT code for debugging purposes which will get 

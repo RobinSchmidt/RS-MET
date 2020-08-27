@@ -1,5 +1,8 @@
-#include "AutomaticTests.h"
-using namespace rsTestRomos;
+#include "AutomaticTests.h" // get rid!
+//using namespace rsTestRomos;
+
+namespace rsTestRomos
+{
 
 bool runUnitTests()
 {
@@ -17,17 +20,17 @@ bool testSorting(bool verboseOutput)
   unsigned int numChildrenToCreate = 50;
 
   //ContainerModule *testModule = (ContainerModule*) ModuleFactory::createModule(ModuleTypeRegistry::CONTAINER);
-  ContainerModule *testModule = (ContainerModule*) moduleFactory.createModule("Container");
+  romos::ContainerModule* testModule = (romos::ContainerModule*)romos::moduleFactory.createModule("Container");
 
   unsigned int i;
   int x, y;
-  RAPT::rsRandomUniform((double) xMin, (double) xMax, 1);
+  RAPT::rsRandomUniform((double)xMin, (double)xMax, 1);
   for(i = 0; i < numChildrenToCreate; i++)
   {
     //romos::Module *childModule = ModuleFactory::createModule(ModuleTypeRegistry::UNIT_DELAY);
-    romos::Module *childModule = moduleFactory.createModule("UnitDelay");
-    x = (int) RAPT::rsRandomUniform((double) xMin, (double) xMax);
-    y = (int) RAPT::rsRandomUniform((double) yMin, (double) yMax);
+    romos::Module* childModule = romos::moduleFactory.createModule("UnitDelay");
+    x = (int)RAPT::rsRandomUniform((double)xMin, (double)xMax);
+    y = (int)RAPT::rsRandomUniform((double)yMin, (double)yMax);
     childModule->setModuleName(std::string("Delay ") + std::to_string((int)i)); // to keep track of insertion order
     childModule->setPositionXY(x, y);
     testModule->addChildModule(childModule, false);
@@ -48,7 +51,7 @@ bool testSorting(bool verboseOutput)
   //childModulesArray.toVectorSTL(childModulesVectorSorted);
 
   // output to the console (comment out, if not desired):
-  if( verboseOutput == true )
+  if(verboseOutput == true)
   {
     printf("%s", "Unsorted:\n");
     for(i=0; i<childModulesVectorUnsorted.size(); i++)
@@ -76,15 +79,15 @@ bool testSorting(bool verboseOutput)
     y  = childModulesVectorSorted[i]->getPositionY();
     x1 = childModulesVectorSorted[i+1]->getPositionX();
     y1 = childModulesVectorSorted[i+1]->getPositionY();
-    if( x > x1 )
+    if(x > x1)
       result = false;
-    if( x == x1 && y > y1 )
+    if(x == x1 && y > y1)
       result = false;
   }
 
   // cleanup and return:
-  moduleFactory.deleteModule(testModule);
-  if( result == false )
+  romos::moduleFactory.deleteModule(testModule);
+  if(result == false)
     printf("%s", "!!! Sorting failed !!!\n");
   else
     printf("%s", "Sorting passed\n");
@@ -102,115 +105,115 @@ bool testModuleTypeRegistry()
 
 bool testGain(bool verboseOutput)
 {
-  romos::Module *testModule = TestModuleBuilder::createGain("Gain", 0, 0, false);
+  romos::Module* testModule = TestModuleBuilder::createGain("Gain", 0, 0, false);
   RAPT::rsArrayTools::multiply(x[0][0], x[0][1], d[0][0], N);  // create desired output
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
 
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, N, "Gain", 0.0);
 }
 
 bool testSumDiff(bool verboseOutput)
 {
-  romos::Module *testModule = TestModuleBuilder::createSumDiff("SumDiff", 0, 0, false);
-  RAPT::rsArrayTools::add(     x[0][0], x[0][1], d[0][0], N);
+  romos::Module* testModule = TestModuleBuilder::createSumDiff("SumDiff", 0, 0, false);
+  RAPT::rsArrayTools::add(x[0][0], x[0][1], d[0][0], N);
   RAPT::rsArrayTools::subtract(x[0][0], x[0][1], d[0][1], N);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 2, N, "SumDiff", 0.0);
 }
 
 bool testWrappedSumDiff(bool verboseOutput)
 {
-  romos::Module *testModule = TestModuleBuilder::createSumDiff("WrappedSumDiff", 0, 0, false);
-  RAPT::rsArrayTools::add(     x[0][0], x[0][1], d[0][0], N);
+  romos::Module* testModule = TestModuleBuilder::createSumDiff("WrappedSumDiff", 0, 0, false);
+  RAPT::rsArrayTools::add(x[0][0], x[0][1], d[0][0], N);
   RAPT::rsArrayTools::subtract(x[0][0], x[0][1], d[0][1], N);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 2, N, "WrappedSumDiff", 0.0);
 }
 
 bool testSummedDiffs(bool verboseOutput)
 {
-  romos::Module *testModule = TestModuleBuilder::createSummedDiffs("SummedDiffs", 0, 0, false);
+  romos::Module* testModule = TestModuleBuilder::createSummedDiffs("SummedDiffs", 0, 0, false);
   getDesiredOutputForSummedDiffs(N, px0, pd0);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 4, N, "SummedDiffs", 0.0);
 }
 
 bool testMovingAverage(bool verboseOutput)
 {
-  romos::Module *testModule = TestModuleBuilder::createMovingAverage("MovingAverage", 0, 0, false);
+  romos::Module* testModule = TestModuleBuilder::createMovingAverage("MovingAverage", 0, 0, false);
   getDesiredOutputForMovingAverage(N, x[0][0], x[0][1], x[0][2], d[0][0]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, N, "MovingAverage", 0.0);
 }
 
 bool testLeakyIntegrator(bool verboseOutput)
 {
-  romos::Module *testModule = TestModuleBuilder::createLeakyIntegrator("LeakyIntegrator", 0, 0, false);
+  romos::Module* testModule = TestModuleBuilder::createLeakyIntegrator("LeakyIntegrator", 0, 0, false);
   getDesiredOutputForLeakyIntegrator(N, x[0][0], x[0][1], d[0][0]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, N, "LeakyIntegrator", 0.0);
 }
 
 bool testLeakyIntegratorDoubleDelay(bool verboseOutput)
 {
-  romos::Module *testModule = TestModuleBuilder::createLeakyIntegrator("LeakyIntegratorDoubleDelay", 0, 0, false);
+  romos::Module* testModule = TestModuleBuilder::createLeakyIntegrator("LeakyIntegratorDoubleDelay", 0, 0, false);
   getDesiredOutputForLeakyIntegratorDoubleDelay(N, x[0][0], x[0][1], d[0][0]);
   //romos::Module *identity = ((ContainerModule*) testModule)->getChildModulesWithTypeOld(ModuleTypeRegistry::IDENTITY).at(0);
-  romos::Module *identity = ((ContainerModule*) testModule)->getChildModulesWithType("Identity").at(0);
+  romos::Module* identity = ((romos::ContainerModule*)testModule)->getChildModulesWithType("Identity").at(0);
   identity->setPositionXY(17, 2);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, N, "LeakyIntegratorDoubleDelay", 0.0);
 }
 
 bool testTestFilter1(bool verboseOutput)
 {
-  romos::Module *testModule = TestModuleBuilder::createTestFilter1("TestFilter1", 0, 0, false);
+  romos::Module* testModule = TestModuleBuilder::createTestFilter1("TestFilter1", 0, 0, false);
   getDesiredOutputForTestFilter1(N, x[0][0], x[0][1], x[0][2], x[0][3], d[0][0], d[0][1], d[0][2]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[2][0], y[2][0]);
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 3, N, "TestFilter1", 0.0);
 }
 
 bool testBiquadMacro(bool verboseOutput)
 {
-  romos::Module *testModule = TestModuleBuilder::createBiquadMacro("BiquadMacro", 0, 0, false);
+  romos::Module* testModule = TestModuleBuilder::createBiquadMacro("BiquadMacro", 0, 0, false);
   getDesiredOutputForBiquad(N, x[0][0], x[0][1], x[0][2], x[0][3], x[0][4], x[0][5], d[0][0]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, N, "BiquadMacro", 0.0);
 }
 
 bool testBiquadAtomic(bool verboseOutput)
 {
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
-  romos::Module *testModule = moduleFactory.createModule("Biquad");
+  romos::Module* testModule = romos::moduleFactory.createModule("Biquad");
   getDesiredOutputForBiquad(N, x[0][0], x[0][1], x[0][2], x[0][3], x[0][4], x[0][5], d[0][0]);
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, N, "BiquadAtomic", 1.e-13); // use test with tolerance
 }
 
 bool testContainerizationAddedConstants(bool verboseOutput)
 {
-  static const int numIterations = 50;  
+  static const int numIterations = 50;
 
-  romos::Module *testModule = TestModuleBuilder::createAddedConstants("AddedConstants", 0, 0, false);
+  romos::Module* testModule = TestModuleBuilder::createAddedConstants("AddedConstants", 0, 0, false);
 
   //testModule->resetState();  
   testModule->resetStateForAllVoices();
@@ -222,39 +225,39 @@ bool testContainerizationAddedConstants(bool verboseOutput)
     randomizeContainment(testModule);
     //testModule->resetState();  // resetting the state lets the test fail
     processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
-    if( verboseOutput == true )
+    if(verboseOutput == true)
       printModuleStructure(testModule, 0);
-    if( !RAPT::rsArrayTools::equal(y[0][0], d[0][0], N) )
+    if(!RAPT::rsArrayTools::equal(y[0][0], d[0][0], N))
     {
       printf("%s", "!!! ContainerizationAddedConstants failed !!!\n");
       //printModuleStructure(testModule, 0);
       //Plotter::plotData(N, t, d[0][0], y[0][0]);
-      moduleFactory.deleteModule(testModule);
+      romos::moduleFactory.deleteModule(testModule);
       return false;
     }
   }
 
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   printf("%s", "ContainerizationAddedConstants passed\n");
   return true;
 }
 
 bool testPinSorting(bool verboseOutput)
 {
-  romos::Module *testModule = TestModuleBuilder::createPinSortTest("PinSorting", 0, 0, false);
- 
+  romos::Module* testModule = TestModuleBuilder::createPinSortTest("PinSorting", 0, 0, false);
+
   processModuleInFrames(testModule, N, ppx, ppy, NULL, false);
   processModuleInFrames(testModule, N, ppx, ppd, NULL, false);
 
   // retrieve pointers to some embedded modules (assumes certain order):
-  romos::ContainerModule *inner = dynamic_cast<romos::ContainerModule*> ( ((ContainerModule*)testModule)->getChildModule(3)); 
-  rassert( inner != NULL );
-  romos::Module *in1   = inner->getAudioInputModule(0);
-  romos::Module *in2   = inner->getAudioInputModule(1);
-  romos::Module *in3   = inner->getAudioInputModule(2);
-  romos::Module *out1  = inner->getAudioOutputModule(0);
-  romos::Module *out2  = inner->getAudioOutputModule(1);
-  romos::Module *out3  = inner->getAudioOutputModule(2);
+  romos::ContainerModule* inner = dynamic_cast<romos::ContainerModule*> (((romos::ContainerModule*)testModule)->getChildModule(3));
+  rassert(inner != NULL);
+  romos::Module* in1   = inner->getAudioInputModule(0);
+  romos::Module* in2   = inner->getAudioInputModule(1);
+  romos::Module* in3   = inner->getAudioInputModule(2);
+  romos::Module* out1  = inner->getAudioOutputModule(0);
+  romos::Module* out2  = inner->getAudioOutputModule(1);
+  romos::Module* out3  = inner->getAudioOutputModule(2);
 
   bool result = true;
 
@@ -298,8 +301,8 @@ bool testPinSorting(bool verboseOutput)
 
   //Plotter::plotData(N, t, d[0][0], y[0][0]);
 
-  moduleFactory.deleteModule(testModule);
-  if( result == false )
+  romos::moduleFactory.deleteModule(testModule);
+  if(result == false)
     printf("%s", "!!! PinSorting failed !!!\n");
   else
     printf("%s", "PinSorting passed\n");
@@ -309,34 +312,34 @@ bool testPinSorting(bool verboseOutput)
 bool testAdderBlock(bool verboseOutput)
 {
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
-  romos::Module *testModule = moduleFactory.createModule("Adder");
+  romos::Module* testModule = romos::moduleFactory.createModule("Adder");
   RAPT::rsArrayTools::add(x[0][0], x[0][1], d[0][0], maxNumFrames);  // establish desired result
   bool result = checkBlockProcessingAndPrintResult(testModule, ppx, ppy, ppd, maxNumFrames, 50, "AdderBlock", 0.0);
-  moduleFactory.deleteModule(testModule);
-  return result; 
+  romos::moduleFactory.deleteModule(testModule);
+  return result;
 }
 
 bool testBiquadAtomicBlock(bool verboseOutput)
 {
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::BIQUAD);
-  romos::Module *testModule = moduleFactory.createModule("Biquad");
+  romos::Module* testModule = romos::moduleFactory.createModule("Biquad");
   getDesiredOutputForBiquad(maxNumFrames, x[0][0], x[0][1], x[0][2], x[0][3], x[0][4], x[0][5], d[0][0]);
   bool result = checkBlockProcessingAndPrintResult(testModule, ppx, ppy, ppd, maxNumFrames, 50, "BiquadAtomicBlock", 1.e-13);
   //Plotter::plotData(200, t, d[0][0], y[0][0]);
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return result;
 }
 
 bool testBlip(bool verboseOutput)
 {
-  romos::Module *testModule = TestModuleBuilder::createBlip("Blip", 0, 0, false);
+  romos::Module* testModule = TestModuleBuilder::createBlip("Blip", 0, 0, false);
 
-  std::vector<NoteEvent> events = generateNoteOnOffPair(81, 64, 0, maxNumFrames-1);
+  std::vector<romos::NoteEvent> events = generateNoteOnOffPair(81, 64, 0, maxNumFrames-1);
   processModuleInFrames(testModule, maxNumFrames, ppx, ppy, &events, false);
 
   getDesiredOutputForFilterBlip(maxNumFrames, 880.0, 20.0, d[0][0]);
   //Plotter::plotData(maxNumFrames, t, d[0][0], y[0][0]);
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return checkAndPrintResult(py0, pd0, 1, maxNumFrames, "Blip", 0.0);
 }
 
@@ -347,7 +350,7 @@ bool testBlipOneNote(bool verboseOutput)
   getDesiredOutputForFilterBlip(maxNumFrames, 880.0, 20.0, d[0][0]);
   fillWithZeros(y[0][0], maxNumFrames);  // to make sure that it doesnt' contain the desired result from a previous test
 
-  romos::ModularSynth *modularSynth = new romos::ModularSynth();  
+  romos::ModularSynth *modularSynth = new romos::ModularSynth();
   romos::Module *testModule     = TestModuleBuilder::createBlip("Blip", 20, 4, false);
   romos::Module *outputModuleL  = modularSynth->getTopLevelModule()->getAudioOutputModule(0);
 
@@ -380,7 +383,7 @@ bool testBlipTwoNotes(bool verboseOutput)
   getDesiredOutputForFilterBlip(maxNumFrames, 1760.0, 20.0, d[0][1]);
   add(d[0][0], d[0][1], d[0][0], maxNumFrames);
 
-  romos::ModularSynth *modularSynth = new romos::ModularSynth();  
+  romos::ModularSynth *modularSynth = new romos::ModularSynth();
   romos::Module *testModule     = TestModuleBuilder::createBlip("Blip", 20, 4, false);
 
   romos::Module *outputModuleL  = modularSynth->getTopLevelModule()->getAudioOutputModule(0);
@@ -393,7 +396,7 @@ bool testBlipTwoNotes(bool verboseOutput)
 
   std::vector<romos::Module*> childModuleVector = modularSynth->getTopLevelModule()->getChildModules();
 
-  //std::vector<romos::Module*> childModuleVector;  
+  //std::vector<romos::Module*> childModuleVector;
   //modularSynth->getTopLevelModule()->getChildModules().toVectorSTL(childModuleVector);
 
   double inOutL = 0.0;
@@ -421,75 +424,75 @@ bool testBlipTwoNotes(bool verboseOutput)
 bool testAdderProcessingFunctions(int numVoicesToCheck)
 {
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::ADDER);
-  romos::Module *testModule = moduleFactory.createModule("Adder");
+  romos::Module* testModule = romos::moduleFactory.createModule("Adder");
 
-  for(int v = 0; v < numVoicesToCheck; v++) 
+  for(int v = 0; v < numVoicesToCheck; v++)
     RAPT::rsArrayTools::add(x[v][0], x[v][1], d[v][0], maxNumFrames);
 
-  std::vector<NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
+  std::vector<romos::NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
   bool result = checkProcessingFunctionsAndPrintResults(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, "Adder", &events);
 
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return result;
 }
 
 bool testUnitDelayProcessingFunctions(int numVoicesToCheck)
 {
   //romos::Module *testModule = ModuleFactory::createModule(ModuleTypeRegistry::UNIT_DELAY);
-  romos::Module *testModule = moduleFactory.createModule("UnitDelay");
-  for(int v = 0; v < numVoicesToCheck; v++) 
+  romos::Module* testModule = romos::moduleFactory.createModule("UnitDelay");
+  for(int v = 0; v < numVoicesToCheck; v++)
     getDesiredOutputForUnitDelay(maxNumFrames, x[v][0], d[v][0]);
-  std::vector<NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
-  bool result = checkProcessingFunctionsAndPrintResults(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, 
+  std::vector<romos::NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
+  bool result = checkProcessingFunctionsAndPrintResults(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0,
     "UnitDelay", &events);
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return result;
 }
 
 bool testWrappedAdderProcessingFunctions(int numVoicesToCheck)
 {
-  romos::Module *testModule =  TestModuleBuilder::createWrappedAdder("WrappedAdder", 0, 0, false);
-  for(int v = 0; v < numVoicesToCheck; v++) 
+  romos::Module* testModule =  TestModuleBuilder::createWrappedAdder("WrappedAdder", 0, 0, false);
+  for(int v = 0; v < numVoicesToCheck; v++)
     RAPT::rsArrayTools::add(x[v][0], x[v][1], d[v][0], maxNumFrames);
-  std::vector<NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
-  bool result = checkProcessingFunctionsAndPrintResults(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, 
+  std::vector<romos::NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
+  bool result = checkProcessingFunctionsAndPrintResults(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0,
     "WrappedAdder", &events);
   //Plotter::plotData(maxNumFrames, t, d[0][0], y[0][0]);
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return result;
 }
 
 bool testMonoToPoly(int numVoicesToCheck)
 {
-  romos::Module *testModule =  TestModuleBuilder::createMonoToPoly("MonoToPoly", 0, 0, true);
+  romos::Module* testModule =  TestModuleBuilder::createMonoToPoly("MonoToPoly", 0, 0, true);
 
-  for(int v = 0; v < numVoicesToCheck; v++) 
+  for(int v = 0; v < numVoicesToCheck; v++)
     RAPT::rsArrayTools::fillWithValue(d[v][0], maxNumFrames, -1.0);
 
   bool result = true;
 
 
-  std::vector<NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
+  std::vector<romos::NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
 
   // the container itself is polyphonic:
-  result &= checkProcessingInFramesPolyAndPrintResult(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, 
+  result &= checkProcessingInFramesPolyAndPrintResult(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0,
     "MonoToPoly, Container Poly", &events);
-  result &= checkProcessingInBlocksPolyAndPrintResult(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, 
+  result &= checkProcessingInBlocksPolyAndPrintResult(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0,
     "MonoToPoly, Container Poly", &events);
 
   // now make the container monophonic (and adapt the 0th desired output accordingly):
-  RAPT::rsArrayTools::fillWithValue(d[0][0], maxNumFrames, (double) -numVoicesToCheck);
+  RAPT::rsArrayTools::fillWithValue(d[0][0], maxNumFrames, (double)-numVoicesToCheck);
   testModule->setPolyphonic(false);
-  result &= checkProcessingInFramesMonoAndPrintResult(testModule, maxNumFrames, ppx, ppy, ppd, 0.0, 
+  result &= checkProcessingInFramesMonoAndPrintResult(testModule, maxNumFrames, ppx, ppy, ppd, 0.0,
     "MonoToPoly, Container Mono", &events);
-  result &= checkProcessingInBlocksMonoAndPrintResult(testModule, maxNumFrames, ppx, ppy, ppd, 0.0, 
+  result &= checkProcessingInBlocksMonoAndPrintResult(testModule, maxNumFrames, ppx, ppy, ppd, 0.0,
     "MonoToPoly, Container Mono", &events);
     // seems that we need to trigger notes - otherwise the polyphonic modules will output silence
 
 
   // introduce a delayed connection and test again (uses frame-wise processing)
 
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return result;
 }
 
@@ -499,7 +502,7 @@ bool testPolyToMono(int numVoicesToCheck)
 {
   romos::Module *testModule =  TestModuleBuilder::createPolyToMono("PolyToMono", 0, 0, true);
 
-  for(int v = 0; v < numVoicesToCheck; v++) 
+  for(int v = 0; v < numVoicesToCheck; v++)
     fillWithValue(d[v][0], maxNumFrames, (double) -numVoicesToCheck);
 
   bool result = true;
@@ -507,16 +510,16 @@ bool testPolyToMono(int numVoicesToCheck)
   std::vector<NoteEvent> events = generateSimultaneousNotes(81, 64, 0, maxNumFrames-1, numVoicesToCheck, 12);
 
   // the container itself is polyphonic:
-  result &= checkProcessingInFramesPolyAndPrintResult(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, 
+  result &= checkProcessingInFramesPolyAndPrintResult(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0,
     "PolyToMono, Container Poly", &events);
-  result &= checkProcessingInBlocksPolyAndPrintResult(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, 
+  result &= checkProcessingInBlocksPolyAndPrintResult(testModule, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0,
     "PolyToMono, Container Poly", &events);
 
   // now make the container monophonic (0th desired output stays the same here):
   testModule->setPolyphonic(false);
-  result &= checkProcessingInFramesMonoAndPrintResult(testModule, maxNumFrames, ppx, ppy, ppd, 0.0, 
+  result &= checkProcessingInFramesMonoAndPrintResult(testModule, maxNumFrames, ppx, ppy, ppd, 0.0,
     "PolyToMono, Container Mono", &events);
-  result &= checkProcessingInBlocksMonoAndPrintResult(testModule, maxNumFrames, ppx, ppy, ppd, 0.0, 
+  result &= checkProcessingInBlocksMonoAndPrintResult(testModule, maxNumFrames, ppx, ppy, ppd, 0.0,
     "PolyToMono, Container Mono", &events);
 
   moduleFactory.deleteModule(testModule);
@@ -526,17 +529,17 @@ bool testPolyToMono(int numVoicesToCheck)
 
 bool testGatedNoteFrequency(int numVoicesToCheck)
 {
-  romos::ContainerModule *testModule = 
-    (romos::ContainerModule *) TestModuleBuilder::createGatedNoteFrequency("GatedNoteFrequency", 0, 0, true);
+  romos::ContainerModule* testModule =
+    (romos::ContainerModule*) TestModuleBuilder::createGatedNoteFrequency("GatedNoteFrequency", 0, 0, true);
 
-  int noteLengthInFrames = 20;  
-  std::vector<NoteEvent> events = generateSimultaneousNotes(81, 64, 0, 20, numVoicesToCheck, 12);
+  int noteLengthInFrames = 20;
+  std::vector<romos::NoteEvent> events = generateSimultaneousNotes(81, 64, 0, 20, numVoicesToCheck, 12);
 
   bool result = false;
 
   /*
   getDesiredOutputForGatedNoteFrequencies(maxNumFrames, &events, ppd, false, false);
-  result &= checkProcessingInFramesMonoAndPrintResult(testModule, maxNumFrames, ppx, ppy, ppd, 0.0, 
+  result &= checkProcessingInFramesMonoAndPrintResult(testModule, maxNumFrames, ppx, ppy, ppd, 0.0,
     "GatedNoteFrequency, Mono", &events);
 
   //... more to come..
@@ -545,18 +548,18 @@ bool testGatedNoteFrequency(int numVoicesToCheck)
   RAPT::rsAssert(false, "plotting code needs update");
   //Plotter::plotData(50, t, d[0][0], y[0][0]);
 
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return result;
 }
 
 bool testTriggerAndKill(int numVoicesToCheck)
 {
-  romos::ContainerModule *testModule = 
-    (ContainerModule*) TestModuleBuilder::createTriggerAndKill("TriggerAndKill", 0, 0, true);
+  romos::ContainerModule* testModule =
+    (romos::ContainerModule*)TestModuleBuilder::createTriggerAndKill("TriggerAndKill", 0, 0, true);
 
   //int frameIndex, voiceIndex, pinIndex; // frameIndex, voiceIndex, pinIndex
 
-  for(int v = 0; v < numVoicesToCheck; v++) 
+  for(int v = 0; v < numVoicesToCheck; v++)
     RAPT::rsArrayTools::fillWithValue(d[v][0], maxNumFrames, 0.0);
 
   /*
@@ -569,8 +572,8 @@ bool testTriggerAndKill(int numVoicesToCheck)
   checkProcessingInFramesMonoAndPrintResult(module, numVoicesToCheck, maxNumFrames, ppx, ppy, ppd, 0.0, "TriggerAndKill", events);
 
 
-  processModuleInFramesMono(testModule, maxNumFrames, 
-  
+  processModuleInFramesMono(testModule, maxNumFrames,
+
   int nextEventFrame = events[0].deltaFrames;
 
   for(frameIndex = 0; frameIndex < maxNumFrames; frameIndex++)
@@ -607,10 +610,9 @@ bool testTriggerAndKill(int numVoicesToCheck)
   bool result = false;  // preliminary
 
 
-  moduleFactory.deleteModule(testModule);
+  romos::moduleFactory.deleteModule(testModule);
   return result;
 }
-
 
 
 /*
@@ -627,20 +629,10 @@ bool testBlipBlock(bool verboseOutput)
 }
 */
 
-
-
-
-
-
-
-
-
-
-
 /*
 bool testContainerizationWithConstant()
 {
-  ContainerModule *testModule = new ContainerModule(NULL);  
+  ContainerModule *testModule = new ContainerModule(NULL);
   testModule->setModuleName("Test Module");
 
   ConstantModule *unity = new ConstantModule(NULL);
@@ -656,3 +648,5 @@ bool testContainerizationWithConstant()
   return true;
 }
 */
+
+} // end of namespace

@@ -31,13 +31,16 @@
 
 //#ifdef _MSC_VER  // it currently doesn't compile on gcc
 
-#include <rosic/rosic.h> // for dsp algorithms
+#include <rosic/rosic.h> // for dsp algorithms - maybe include it in the cpp file?
 //#include <map>           // for std::map, used to save/restore module states
 
 //#define RS_BUILD_OLD_MODULE_FACTORY    // for transition to new factory implementation
 
+namespace romos
+{
 #include "Algorithms/romos_FilterDesign.h"
 #include "Algorithms/romos_Interpolation.h"
+
 #include "Framework/romos_AudioConnection.h"
 #include "Framework/romos_ModuleFactory.h"
 #include "Framework/romos_VoiceAllocator.h"
@@ -59,8 +62,13 @@
 #include "Modules/romos_ModulationModules.h"
 #include "Modules/romos_SoundGeneratorModules.h"
 
-#include "Framework/romos_Liberty.h"  // should not be in the framework folder
+#include "Framework/romos_Liberty.h"  // should not be in the framework folder - maybe top-level
 
+}
+
+
+
+// maybe these should go into a separate include file:
 #include "TestSuite/romos_TestEventGenerator.h"
 #include "TestSuite/romos_UnitTest.h"
 #include "TestSuite/romos_ProcessingTest.h"

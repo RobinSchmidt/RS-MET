@@ -6,7 +6,7 @@
 //#include "romos_ContainerManipulationTests.h"
 //#include "romos_ConcreteModularSystemTests.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
 /** This class serves as the high-level interface for running all the unit-tests for the romos 

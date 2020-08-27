@@ -1,5 +1,3 @@
-namespace romos
-{
 
 //-------------------------------------------------------------------------------------------------
 
@@ -99,7 +97,7 @@ bool FormulaModule_1_1::setFormula(const std::string& newFormula)
 
 void FormulaModule_1_1::updateEvaluatorFormulas()
 {
-  for(int i = 0; i < evaluators.size(); i++)
+  for(size_t i = 0; i < evaluators.size(); i++)
   {
     evaluators[i]->initVariableList();  // without it, the evaluator may still remember old input
                                         // variables from previous formulas - maybe that can be
@@ -112,7 +110,7 @@ void FormulaModule_1_1::updateEvaluatorFormulas()
 void FormulaModule_1_1::updateInputVariables()
 {
   RAPT::rsAssert(inVariables.size() == evaluators.size());
-  for(int i = 0; i < evaluators.size(); i++)
+  for(size_t i = 0; i < evaluators.size(); i++)
     inVariables[i] = evaluators[i]->getVariableAddress("x");
 }
 
@@ -418,7 +416,6 @@ void FormulaModule_N_M::restoreOutputVariableConnections(
 
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_N(FormulaModule_N_M);
 
-}
 
 /*
 Ideas:

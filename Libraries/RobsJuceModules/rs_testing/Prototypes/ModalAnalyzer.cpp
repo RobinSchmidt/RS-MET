@@ -33,7 +33,7 @@ std::vector<rsModalFilterParameters<T>> rsModalAnalyzer<T>::getModalModel(
   const RAPT::rsSinusoidalModel<T>& model)
 {
   std::vector<rsModalFilterParameters<T>> p(model.getNumPartials());
-  for(int i = 0; i < model.getNumPartials(); i++)
+  for(size_t i = 0; i < model.getNumPartials(); i++)
   {
     p[i] = getModalModel(model.getPartial(i));
 
@@ -219,7 +219,7 @@ template<class T>
 T rsModalAnalyzer<T>::estimatePhaseAt(
   const RAPT::rsSinusoidalPartial<T>& partial, int i, T f, T t)
 {
-  rsAssert(i >= 0 && i < partial.getNumDataPoints()-1);
+  rsAssert(i >= 0 && i < (int) partial.getNumDataPoints()-1);
   T ti = partial.getTime(i);   // time stamp at datapoint i
 
   // test - phase data is estimated halfway between two datapoints (i think):

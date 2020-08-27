@@ -1,20 +1,20 @@
 ﻿#ifndef RAPT_NOISEGENERATOR_H_INCLUDED
 #define RAPT_NOISEGENERATOR_H_INCLUDED
 
-/** A simple noise generator based on the linear congruential method. It generates uniformly 
-distributed random number in the range that you can set up via setRange. By default, the range is 
-between -1 and +1 (not 0 and 1 because this is meant for audio). The underlying integer pseudo 
-random number generator is a linear congruential with period length of 2^32. It is based on 
-Numerical Recipies in C (2nd edition), page 284. 
+/** A simple noise generator based on the linear congruential method. It generates uniformly
+distributed random number in the range that you can set up via setRange. By default, the range is
+between -1 and +1 (not 0 and 1 because this is meant for audio). The underlying integer pseudo
+random number generator is a linear congruential with period length of 2^32. It is based on
+Numerical Recipies in C (2nd edition), page 284.
 
-\todo 
+\todo
 -make subclasses that produce random numbers with different distributions, for example by adding
  outputs of the underlying basic generator and/or using waveshaping (maybe atanh, sinh could be
  useful shaping functions - something with low slope around the origina would contract values
  near the origin - high slope far away from the origin spreads them out - or maybe the rational
  mapping could be nice - try with FuncShaper - maybe we need a histogram analyzer for that)
 -make a colored noise generator by using the SlopeFilter (in rosic - needs to be dragged to rapt)
--maybe make implementations that use different values for the factor and offset (but only such 
+-maybe make implementations that use different values for the factor and offset (but only such
  values that guarantee the maximum possible period - look up the conditions that must be sasisfied)
 
 */
@@ -49,8 +49,8 @@ public:
   {
     state = (1664525*state + 1013904223) & 4294967295;
     // These numbers are taken from Numerical Recipies in C, 2nd Ed, page 284. The bitmask performs
-    // the modulo operation. When unsigned long is 32 bit, it's not necesarry because then the mod 
-    // occurs implicitly due to overflow, but when it's 64 bit we need to do it explicitly (on mac 
+    // the modulo operation. When unsigned long is 32 bit, it's not necesarry because then the mod
+    // occurs implicitly due to overflow, but when it's 64 bit we need to do it explicitly (on mac
     // it is required);
   }
 
@@ -59,6 +59,12 @@ public:
   {
     updateState();
     return scale * state + shift;
+  }
+
+  inline unsigned long getSampleRaw()
+  {
+    updateState();
+    return state;
   }
 
 protected:
@@ -73,10 +79,10 @@ protected:
 //=================================================================================================
 
 /** Subclass of rsNoiseGenerator that creates the noise by adding up several noise samples in order
-to approach a gaussian distribution. The order parameter determines how many noise samples are 
-added - with only 1: you get the uniform distribution, 2: triangular (piecewise linear), 3: sort of 
+to approach a gaussian distribution. The order parameter determines how many noise samples are
+added - with only 1: you get the uniform distribution, 2: triangular (piecewise linear), 3: sort of
 parabolic spline, 4: cubic spline - looks already rather gaussianish. Note that with higher orders,
-the samples concentrate more toward the center, such that the overall variance goes down with the 
+the samples concentrate more toward the center, such that the overall variance goes down with the
 order.
 
 In general, we get the Irwin-Hall distribution, see:
@@ -84,7 +90,7 @@ https://en.wikipedia.org/wiki/Irwin%E2%80%93Hall_distribution
 https://en.wikipedia.org/wiki/Bates_distribution
 https://www.youtube.com/watch?v=-2PA7SbWoJ0&t=17m50s (german)
 
-...i have also a sympy notebook somewhere, that computes the convolutions and gives the 
+...i have also a sympy notebook somewhere, that computes the convolutions and gives the
 distributions as piecewise polynomials
 
 maybe rename to rsNoiseGeneratorIrwinHall  */
@@ -112,8 +118,8 @@ protected:
 
   void updateCoeffs()
   {
-    scale = T( (max-min) / (order*4294967296.0) );
-    shift = min;
+    this->scale = T( (max-min) / (order*4294967296.0) );
+    this->shift = min;
   }
 
   unsigned long order = 1;
@@ -121,7 +127,7 @@ protected:
 
 };
 
-// todo: maybe allow to create correlated noise by doing only one state-update per sample and 
+// todo: maybe allow to create correlated noise by doing only one state-update per sample and
 // doing the sum over the past N states, like:
 //   accu -= state;   // subtract old state
 //   updateState();   // compute new state
@@ -130,7 +136,7 @@ protected:
 // where accu is remembered between calls to getSample
 
 // todo: allow for bi-, tri- and multimodal distributions: for example to get 3 bells at -1, 0, 1,
-// first select (according to some probability), which bell is 
+// first select (according to some probability), which bell is
 
 // getSampleTriModal
 //   double selector = selectorGenerator.getSample(); // in 0..1
@@ -138,18 +144,18 @@ protected:
 //   if(selector < thresh1)
 //     return randomVal + offset1;
 //   if(selector > thresh2)
-//     return randomVal + offset2; 
+//     return randomVal + offset2;
 //   return randomVal
 
-// thresh1/2 would determine the weights of the 3 modes, for example with thresh1 = 0.3, 
+// thresh1/2 would determine the weights of the 3 modes, for example with thresh1 = 0.3,
 // thresh2 = 0.7, we would have a 30% chance to get a sample of the low mode a 40% chance for the
 // middle mode and again a 30% chance for the high mode - we could give the user parameters
 // modeCenter, modeSpread, modeSkew
-// In the modal synthesizer, we could make these chances dependent on the output signal to 
+// In the modal synthesizer, we could make these chances dependent on the output signal to
 // establish a nonlinear, probabilistic feedback loop interaction between exciter and resonator
-// when the output signal value is strongly negative, we should have a high chance of getting a 
-// positive excitation impulse value (i.e. choose the generator with positive center) and vice 
-// versa - this sort of simulates the probability for slip/slide events in abowed string - if the 
+// when the output signal value is strongly negative, we should have a high chance of getting a
+// positive excitation impulse value (i.e. choose the generator with positive center) and vice
+// versa - this sort of simulates the probability for slip/slide events in abowed string - if the
 // string is under tension in one direction it has a higher chance to slip into the other direction
 // ....well, loosely speaking
 

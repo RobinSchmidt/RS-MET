@@ -225,7 +225,7 @@ bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRad
 bool testFourierTrafoArbitrary(int N)
 {
   bool r = true;
-  double tol = 1.e-13; // 1.e-13 works up to N=32
+  double tol = 1.e-12; // 1.e-13 works up to N=32 in msc, gcc needs 1.e-12
   typedef RAPT::rsArrayTools AR;
   typedef RAPT::rsFourierTransformerRadix2<double> FTR2;
   typedef RAPT::rsFourierTransformerBluestein<double> FTB;
@@ -262,6 +262,9 @@ bool testFourierTrafoArbitrary(int N)
   ft.transformComplexBuffer(&T[0], &x[0]);
   r &= rsAlmostEqual(t, x, tol);
 
+  ft.transformComplexBufferInPlace(&T[0]);
+  r &= rsAlmostEqual(t, T, tol);
+
   return r;
 }
 
@@ -270,8 +273,8 @@ bool testVariousFourierTransforms(std::string &reportString)
   std::string testName = "various Fourier transforms";
   bool testResult = true;
 
-  // We create random complex signal buffers of various lengths and transform them to the 
-  // frequency domain using various implementations and compare the results - they should 
+  // We create random complex signal buffers of various lengths and transform them to the
+  // frequency domain using various implementations and compare the results - they should
   // all be the same. Then we also compare the corresponding inverse FFT implementations.
 
   // ToDo: maybe test also for single-precision, i.e. templatize the functions called in the loops
@@ -282,11 +285,11 @@ bool testVariousFourierTransforms(std::string &reportString)
 
 
   // test radix-2 transforms:
-  for(int i = minTrafoSize; i <= maxTrafoSize; i *= 2) 
+  for(int i = minTrafoSize; i <= maxTrafoSize; i *= 2)
     testResult &= testFourierTrafoRadix2(i);
 
   // test arbitrary size transforms:
-  for(int i = minTrafoSize; i <= maxTrafoSize; i++) 
+  for(int i = minTrafoSize; i <= maxTrafoSize; i++)
     testResult &= testFourierTrafoArbitrary(i);
 
   appendTestResultToReport(reportString, testName, testResult);
@@ -437,7 +440,7 @@ bool testLinearSystem3x3(std::string &reportString)
 bool testTransforms()
 {
   std::string testName = "Transforms";
-  std::string dummy; 
+  std::string dummy;
   bool testResult = true;
 
   // test FFT routines:

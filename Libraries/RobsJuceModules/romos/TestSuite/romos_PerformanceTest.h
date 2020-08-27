@@ -3,7 +3,7 @@
 
 //#include "romos_ProcessingTest.h"
 
-namespace romos
+namespace rsTestRomos
 {
 
   /**

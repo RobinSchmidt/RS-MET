@@ -1,7 +1,19 @@
 #ifndef RAPT_POLYNOMIAL_H
 #define RAPT_POLYNOMIAL_H
 
-/** A class for representing polynomials and doing computations with them. 
+/** A class for representing polynomials and doing computations with them. Much of the code is 
+implemented as static member functions that operate directly on arrays of the type T, so you don't
+have to create an instance of class rsPolynomial to use its functionality. However, for 
+convenience, you may also instantiate polynomial objects and then you can do arithemetic operations
+with these objects directly, for example writing code like:
+
+  rsPolynomial<float> r = p*q;
+
+where p and q are both polynomials and so is r - and the * operator implements polynomial 
+multiplication. But doing it this way is recommended mostly for prototyping only because creating
+polynomials involves dynamic memory allocations. For production (especially real-time) code, it's 
+better to operate on pre-allocated arrays with the static functions - this makes the code harder to 
+read but more efficient.
 
 There are some static functions that use their own template parameter types independent from the 
 "T" that is used to instantiate the class. That's the case, for example, for functions that expect 
@@ -9,13 +21,17 @@ real inputs and produce complex outputs (like root-finders) which then use "R" f
 and std::complex<R> for the complex type. This is done because this class template should be able
 to be instantiated for real and complex types "T", so using the same template parameter could lead
 to confusion like the compiler using a nested complex type which makes no sense
-....under construction....tbc...
-
-
-*/
+....under construction....tbc...  */
 
 // todo: 
-
+// -use consistently input arrays as first and output arrays as last parameters for example in
+//  interpolant, fitQuadraticDirect -> this will silenty break client code, so be extra careful to
+//  adapt the code at *every* call site - it should be a consistent pattern through the library:
+//  inputs first, then outputs...hmm - but that doesn't really work well when we want to have some
+//  inputs optional - optional parameters must come last...hmmmm....maybe use:
+//  required inputs, outputs, optional inputs - what about optional outputs? (for example, when we
+//  fill an output-array only when a non-nullptr is passed?)...see what rsArrayTools does...
+//  ...or maybe such an enforced consistency might not be a good idea, after all?
 // -implement greatest common divisor algorithm (maybe the one for the integers can be
 //  used as is?)
 // -implement missing operators:
@@ -23,7 +39,7 @@ to confusion like the compiler using a nested complex type which makes no sense
 //   nesting)
 //  -arithmetic operators that take a number as second (left or right) argument
 //  -maybe we could meaningfully define <,<=, ...? look at how python or other scientific libraries
-//   handle that - in my own python polynoamial class, i'm taking the asymptotic behavior
+//   handle that - in my own python polynomial class, i'm taking the asymptotic behavior
 
 
 template<class T>
@@ -49,6 +65,9 @@ public:
   /** Promotes a number to a 0th degree polynomial. */
   rsPolynomial(const T& number)
   { coeffs.resize(1); coeffs[0] = number; }
+
+  // todo: make a constructor that accepts an initializer list ...or can the one taking the vector
+  // be used, i.e. will an initializer list be implicitly converted toa std::vector?
 
 
   //-----------------------------------------------------------------------------------------------
@@ -83,7 +102,7 @@ public:
 
   /** Returns the degree of the polynomial, defined as... */
   int getDegree() const { return (int)coeffs.size()-1; }
-  // should take into account traling zeros ..or maybe have a boolean flag
+  // should take into account trailing zeros ..or maybe have a boolean flag
   // "takeZeroCoeffsIntoAccount" which defaults to false...or maybe it shouldn't have any default
   // value - client code must be explicit...or maybe have functions getAllocatedDegree, 
   // getActualDegree(tolerance)...or getDegree has an optional parameter for the tolerance 
@@ -96,8 +115,8 @@ public:
 
   /** Returns a pointer to our coefficient array - breaks encapsulation - use with care! */
   T* getCoeffPointer() { return &coeffs[0]; }
-  // nope! when we really need low-level access to the coeff-array, we declare the 
-  // functions/classes that need it as friends. comment this out later
+  // Try to get rid of this - when we really need low-level access to the coeff-array, we declare 
+  // the functions/classes that need it as friends. Comment this out later
 
   const T* getCoeffPointerConst() const { return &coeffs[0]; }
 
@@ -302,14 +321,27 @@ public:
   Hermite polynomials with leading coefficient 2^n. The probabilist would use those with leading 
   coeff 1. */
   static T evaluateHermite(const T& x, int degree);
+  // maybe also implement evaluateHermiteMonic which should be the probabilist's version
 
   // todo: evaluateDerivative, evaluateIntegral (or AntiDerivative)
+
+  /** Evaluates the Newton polynomial with the Newton expansion coeffs c[0],...,c[N] and roots 
+  r[0],...,r[N-1] given by:
+    p(x) = c[0] + c[1]*(x-r[0]) + c[2]*(x-r[0])*(x-r[1]) + ... + c[N]*(x-r[0])*...*(x-r[N-1])
+  at the given input x. Array c is of length N+1, r is of length N. */
+  static T evaluateNewton(const T& x, const T* c, const T* r, int N);
+
 
   /** Given a coefficient array p of length maxDegree+1, this function returns the actual degree
   of the polynomial - meaning that trailing zeros in the array don't count. So it's the degree 
   that takes only into account the non-zero coefficients. */
   //static int actualDegree(T* p, int maxDegree, T tol = T(0));
   // maybe move to an "Inquiry" section ...or "Misc"
+
+  // maybe abbreviate evaluate with eval, add evaluation functions for evaluating polynomials in
+  // different bases, for example, using chebychev polynomials as basis (instead of the regular
+  // monomial basis x^0,x^1,x^2,x^3,... use T0(x),T1(x),T2(x),T3(x),...) - also for Newton 
+  // polynomials (they are additionally parametrized by a set of roots)
 
   //-----------------------------------------------------------------------------------------------
   /** \name Arithmetic */
@@ -602,8 +634,17 @@ public:
 
   static void rootsToCoeffs(const T* r, T* a, int N, T scaler = T(1));
 
-  // drag the ..shiftArgument function in this group
+  /** Given the coefficents for the Newton basis polynomials 1,(x-x[0]),(x-x[0])*(x-x[1]),... in 
+  a[i], i = 0,..,N-1, this function converts the coefficients to the monomial basis, i.e. into 
+  regular polynomial coefficients. The result is stored in the same array a. The array x is 
+  destroyed during the process - it's re-used internally as temporary buffer for intermediate 
+  results to allow higher level code optimize memory usage (otherwise, the function would need an 
+  additional buffer of length N - if desired, the caller can create this additional buffer itself 
+  and copy the x-values into it and then use this function). */
+  static void newtonToMonomialCoeffs(T* x, T* a, int N);
 
+
+  // drag the ..shiftArgument function in this group
 
   //-----------------------------------------------------------------------------------------------
   /** \name Fitting/Interpolation */
@@ -634,40 +675,95 @@ public:
   //   think, this is more convenient in the content of interpolating in realtime as in the 
   //   pitch-detector?
 
-  /** Allocates and fills an NxN matrix A wher A[i][j] are given by x[i]^j. The caller is
+  /** Allocates and fills an NxN matrix A where A[i][j] are given by x[i]^j. The caller is
   responsible for deallocation. So it's used like:
   T **A = rsVandermondeMatrix(x, N);
   // ...do stuff with matrix A
   rsDeAllocateSquareArray2D(A, N);  */
   static T** vandermondeMatrix(const T *x, int N);
-    // move to rsMatrixOld, deprecate!
+  // move to rsMatrixOld, deprecate! ..implement the algo with the new rsMatrix/rsLinearAlgebra
+  // implementation - the implementation is actually just for reference anyway - for production 
+  // code, the algorithm using the Newton polynomials should be used
 
   /** Computes coefficients a[0],..., a[N-1] for a polynomial of degree N-1 that goes through the N
-  data points (x[0], y[0]),...,(x[N-1], y[N-1]). */
-  static void interpolant(T *a, const T *x, const T *y, int N);
-    // maybe move to Interplation
+  data points (x[0], y[0]),...,(x[N-1], y[N-1]). 
+  Note that N here is the number of datapoints, not the degree (which is one less)...that's a bit 
+  quirky....  */
+  static void interpolant(T *a, const T *x, const T *y, int numDataPoints);
+  // maybe move to Interplation
+  // the meaning of N here is inconsistent with the rest of the class - it's the number of 
+  // datapoints - maybe move interpolant into some interpolator class where its conventional to 
+  // pass the number of datapoints.
+
+  /** Version of interpolant that avoids memory allocation by letting use pass a workspace - this
+  must be at least of length N+1. */
+  static void interpolant(T* a, const T* x, const T* y, int N, T* workspace);
 
   /** Like rsInterpolatingPolynomial(T *a, T *x, T *y, int N), but instead of
   passing an x-array, you should pass a start value x0 and an increment dx and it will use x-values
   given by x0, x0+dx, x0+2*dx,...,x0+(N-1)*dx, so this function assumes equidisant abscissa
   values. */
-  static void interpolant(T *a, const T& x0, const T& dx, const T *y, int N);
+  static void interpolant(T *a, const T& x0, const T& dx, const T *y, int numDataPoints);
   // allocates heap memory
+
+  /** Implements Newton's algorithm using diveded difference to find the polynomial interpolant 
+  through the N points (x[n], y[n]), n = 0,...,N-1. It stores the polynomial coefficients in "a" 
+  and it needs a workspace array of length N. All arrays should be of length N. */
+  static void interpolantViaNewton(T* a, const T* x, const T* y, int N, T* workspace);
+  // make similar functions interpolantViaLagrange, interpolantViaVandermode - interpolant may call 
+  // any of these ...maybe the Lagrange version should have 2 variants - one using the "master"
+  // polynomial and dividing out one root at a time - this leads to an O(N^2) algo as well - we may
+  // then compare it to the Newton algo
+
+  /** In place version of interpolantViaNewton. Overwrites the x,y arrays during the process. On 
+  return, y will contain the polynomial coeffs and x will contain garbage. (More specifically, x 
+  will contain the coefficients of the unique monic polynomial of degree N-1 that has roots at the 
+  given original x-values, except the last one. I don't think that's any useful for the caller, 
+  but just for info). The time complexity is O(N^2) and space complexity is O(1). */
+  static void interpolantViaNewtonInPlace(T* x, T* y, int N);
+
 
   // \todo void quinticCoeffsTwoPointsAndDerivatives(T *a, T *x, T *y, T *dy,
   //                                                 T *d2y);
 
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
   3 points (x[0],y[0]), (x[1],y[1]), (x[2],y[2]). */
-  static void fitQuadratic(T *a, const T *x, const T *y);
+  static void fitQuadratic(T* a, const T* x, const T* y)
+  { fitQuadraticDirect(a, x, y); }
+  // todo: figure which formula is better, the direct or the Lagrange-formula - choose the better
+  // one
+
+  /** Uses a formula that resulted from setting up the 3x3 linear system of equations 
+        y[i] = a0 + a1*x[i] + a2*x[i]^2   i = 0,1,2 
+  and solving it directly. */
+  static void fitQuadraticDirect(T *a, const T *x, const T *y);
+
+  /** Computes the same thing as fitQuadraticDirect but uses formulas derived from setting up 3 
+  polynomials in product form, where each has zeros at all but one of the datapoints, say xi, and
+  to have value yi at xi and then adding them up (idea due to Lagrange):
+     p1(x) = k1*(x-x2)*(x-x3)       p1 has zeros at at x2,x3
+     p2(x) = k2*(x-x1)*(x-x3)       p2 has zeros at at x1,x3
+     p3(x) = k3*(x-x1)*(x-x2)       p3 has zeros at at x1,x2
+  Require:
+     p1(x1) = y1, p2(x2) = y2, p3(x3) = y3
+  Solve these for the ki, i.e. k1,k2,k3. For example, k1 = y1 / ((x1-x2)*(x1-x3)). Plug, for 
+  example, k1 back into the p1 equation and multiply it out to obtain its coeffs - do the same 
+  for p2 and p3 and then obtain the final polynomial coeffs by adding the corresponding  coeffs 
+  of each of the partial polynomials. This organizes the computations in a more orderly manner but
+  i'm not yet sure if it's more numerically accurate and/or efficient than the direct way - tests 
+  are needed. */
+  static void fitQuadraticLagrange(T *a, const T *x, const T *y);
 
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
   3 points (0,y[0]), (1,y[1]), (2,y[2]). */
   static void fitQuadratic_0_1_2(T *a, const T *y);
+    // can this be used in place, i.e. a==y? if so, document that! ...i think so
 
   /** Fits the quadratic parabola defined by y(x) = a[2]*x^2 + a[1]*x + a[0] to the
   3 points (-1,y[0]), (0,y[1]), (1,y[2]). */
   static void fitQuadratic_m1_0_1(T *a, const T *y);
+    // can this be used in place, i.e. a==y? if so, document that! ...i don't think so but maybe it
+    // can be modified for use in place
 
   /** Returns the position (i.e. the x-coordinate) of the extremum (minimum or maximum) of the 
   quadratic parabola y(x) = a[2]*x^2 + a[1]*x + a[0]. Note that a[2] must be nonzero, otherwise the
@@ -712,6 +808,9 @@ public:
   static void besselPolynomial(T *a, int degree);
   // allocates heap memory
   // todo: maybe use rsPolynomialRecursion inside
+  // rename to bessel (we are already inside class rsPolynomial, so the "Polynomial" part is 
+  // redundant), or maybe besselCoeffs or coeffsBessel (having coeffs first orders the functions
+  // more meaningfully alphabetically)
 
   /** Fills the array with coefficients for a Legendre-polynomial (of the 1st kind) of given
   degree. */
@@ -720,6 +819,7 @@ public:
   // allocates heap memory
     // todo: maybe use rsPolynomialRecursion - or maybe get rid of the function
     // (move to prototypes)
+  // rename to legendre ("Polynomial" is redundant)
 
   /** Computes the recursion coefficients (as used in rsPolynomialRecursion) for the Jacobi
   polynomial of degree n (n >= 2) with parameters a and b. */
@@ -750,11 +850,58 @@ public:
   polynomials are used in Papoulis filters. */
   template<class R>
   static void maxSlopeMonotonic(R *a, int N);
+  // rename to coeffsMaxSlopeMonotonic
   // allocates heap memory
 
   // \todo for Halpern filters:
   //void jacobiPolynomial(T *a, int degree); // the U-polynomials
   //void maximallyDivergingMonotonicPolynomial(T *a, int degree); // the T-polynomial
+
+  /** Computes coefficients for Newton basis polynomials 1,(x-x[0]),(x-x[0])*(x-x[1]),... using 
+  divided differences from N pairs (x[i],y[i]), i = 0,...N-1. It overwrites the y-array with the 
+  coefficients. @see evaluateNewton. */
+  static void coeffsNewton(const T* x, T* y, int N);
+  // todo: make a version that doesn't overwrite the y-array and instead accepts another array
+  // for the coeffs to write into
+  // maybe rename to coeffsNewtonInPlace
+
+  //-----------------------------------------------------------------------------------------------
+  // Evaluation of special polynomials
+  // maybe move into the Evaluation section
+
+  // move the evaluateHermite function here - use consistent naming - either they should all start
+  // with "evaluate" or none should
+
+  /** Evaluates the N-th degree Chebychev polynomial T_N(x) at x by recursion. */
+  static T chebychevRecursive(T x, int N)
+  {
+    rsAssert(N >= 0, "polynomial degree must be non-negative");
+    T t0 = T(1); T t1 = x; T tn = T(1);
+    for(int i = 0; i < N; i++) {
+      tn = T(2)*x*t1 - t0; t0 = t1; t1 = tn; }
+    return t0;
+  }
+  // maybe rename to evalChebyRecursive, have also a function coeffsCheby
+
+  /** Evaluates the N-th degree Chebychev polynomial T_N(x) at x by means of acos and cos or 
+  acosh and cosh. */
+  template<class U>
+  static U chebychevDirect(U x, int N)
+  {
+    rsAssert(N >= 0, "polynomial degree must be non-negative");
+    if(rsAbs(x) <= U(1)) return  cos( U(N)*acos ( x));
+    if(      x  >  U(1)) return  cosh(U(N)*acosh( x));
+    if(rsIsEven(N))      return  cosh(U(N)*acosh(-x));
+    else                 return -cosh(U(N)*acosh(-x));
+  }
+  // we can't use template parameter T here because of compiler errors when instantiating 
+  // rsPolynomial for std::complex
+
+  // todo: figure out for which N which of the two functions is faster and/or more accurate - maybe
+  // provide a dispatcher function - it seems, at least for lower degrees, the recursion is more 
+  // accurate - well, at least for inputs that are exactly representable (like not-too-large 
+  // integers), which is expected because it just does basic arithmetic - as long as every 
+  // intermediate result is exactly representable, the recursion will give exact results
 
 
 
@@ -781,7 +928,7 @@ protected:
 
 // todo: implement polynomial GCD (i.e. adapt the integer gcd for polynomials)
 
-// \todo implement funcitons to construct coefficient arrays for certain recursively defined
+// \todo implement functions to construct coefficient arrays for certain recursively defined
 // polynomials, such as Chebychev, etc. provide functions to evaluate linear combinations of
 // them efficiently (maybe look up Clenshaw algorithm)
 

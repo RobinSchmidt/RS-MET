@@ -1,8 +1,8 @@
 #ifndef romos_AtomicModule_h
 #define romos_AtomicModule_h
 
-namespace romos
-{
+//namespace romos
+//{
 
 // maybe rename file to ModuleBaseClasses - we have more specific baseclasses here too
 // or better: move those subclasses into some file in the "Modules" folder
@@ -119,8 +119,8 @@ protected:
 private:
 
   // copy and assignment - not possible:
-  AtomicModule(const AtomicModule &other) {}
-  AtomicModule& operator=(const AtomicModule &other) { return *this; }
+  AtomicModule(const AtomicModule& /*other*/) {}
+  AtomicModule& operator=(const AtomicModule& /*other*/) { return *this; }
 
 };
 
@@ -163,7 +163,7 @@ public:
 
   /** Internal callback that is triggered from setParameter - you may override it when you need to 
   re-compute some internal variables when a parameter was changed. */
-  virtual void parameterChanged(int index) { }
+  virtual void parameterChanged(int /*index*/) { }
 
   //-----------------------------------------------------------------------------------------------
   // inquiry:
@@ -229,8 +229,8 @@ protected:
 private:
 
   // copy and assignment - not possible:
-  ModuleWithParameters(const ModuleWithParameters &other) {}
-  ModuleWithParameters& operator=(const ModuleWithParameters &other) { return *this; }
+  ModuleWithParameters(const ModuleWithParameters& /*other*/) {}
+  ModuleWithParameters& operator=(const ModuleWithParameters& /*other*/) { return *this; }
 
 };
 
@@ -254,11 +254,11 @@ public:
   /** Assigns dummy functions that do nothing. */
   virtual void assignProcessingFunctions();
 
-  static void processFrameDummy(Module *module, int voiceIndex)
+  static void processFrameDummy(Module* /*module*/, int /*voiceIndex*/)
   {
     //DEBUG_BREAK; // dummy function - should not be called
   }
-  static void processBlockDummy(Module *module, int voiceIndex, int blockSize)
+  static void processBlockDummy(Module* /*module*/, int /*voiceIndex*/, int /*blockSize*/)
   {
     //DEBUG_BREAK; // dummy function - should not be called
   }
@@ -275,11 +275,11 @@ protected:
 private:
 
   // copy and assignment - not possible:
-  ModuleProxy(const ModuleProxy &other) {}
-  ModuleProxy& operator=(const ModuleProxy &other) { return *this; }
+  ModuleProxy(const ModuleProxy& /*other*/) {}
+  ModuleProxy& operator=(const ModuleProxy& /*other*/) { return *this; }
 
 };
 
-} // end namespace romos
+//} // end namespace romos
 
 #endif 

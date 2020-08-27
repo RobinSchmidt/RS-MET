@@ -46,11 +46,25 @@ std::vector<double> rsRandomVector(int N, double min, double max, int seed)
   return v;
 }
 
+std::vector<double> rsRandomIntVector(int N, int min, int max, int seed)
+{
+  std::vector<double> v(N);
+  rsNoiseGenerator<double> ng;
+  ng.setSeed(seed);
+  for(int i = 0; i < N; i++)
+  {
+    unsigned long raw = ng.getSampleRaw();
+    int iVal = raw % (max-min) + min;
+    v[i] = (double) iVal;
+  }
+  return v;
+}
+
 std::vector<double> rsApplyFunction(const std::vector<double>& v, double p, 
   double (*f) (double, double))
 {
   std::vector<double> r(v.size());
-  for(int i = 0; i < r.size(); i++)
+  for(size_t i = 0; i < r.size(); i++)
     r[i] = f(v[i], p);
   return r;
 }
@@ -114,6 +128,7 @@ RAPT::rsWindowFunction::WindowType stringToWindowType(const std::string& wt)
   if(wt == "hm") return WT::hamming;
   if(wt == "bm") return WT::blackman;
   if(wt == "bh") return WT::blackmanHarris;
+  if(wt == "dc") return WT::dolphChebychev;
   RAPT::rsError("Unknown window type");
   return WT::rectangular;
 }

@@ -27,15 +27,17 @@ bool runUnitTestsRosic()
 {
   bool passed = true;  // test result
 
+  std::cout << "Running unit tests for rosic\n";
 
   passed &= runUnitTest(&testTypeSizes,          "TypeSizes");
-  passed &= runUnitTest(&testExponentExtraction, "ExponentExtraction"); // is oart of numberManipulations
+  passed &= runUnitTest(&testNumberManipulations,"NumberManipulations");
+
   passed &= runUnitTest(&testFilterPolynomials,  "FilterPolynomials");
   passed &= runUnitTest(&testHighOrderFilter,    "HighOrderFilter");
   passed &= runUnitTest(&testModalFilter2,        "ModalFilter2");
   passed &= runUnitTest(&testModalSynth,          "ModalSynth");  // doesn't do anything useful
   passed &= runUnitTest(&testAutoCorrelationPitchDetector, "AutoCorrPitchDetect");
-  passed &= runUnitTest(&testNumberManipulations,          "NumberManipulations"); // fails due to rounding -> figure out
+
 
   // these need to be adapted
   //testAllRosicClasses();
@@ -49,7 +51,9 @@ bool runUnitTestsRosic()
   //testRosicMath();
   //testRosicNonRealTime();
   //testRosicOthers();
+  // hmm...maybe some of those are actually not unit tests but experiments - disentangle that...
 
 
+  std::cout << "\n";
   return passed;
 }

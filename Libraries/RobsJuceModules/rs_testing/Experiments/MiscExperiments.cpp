@@ -42,6 +42,21 @@ void setupHarmonicAnalyzerFor(RAPT::rsHarmonicAnalyzer<double>& analyzer,
   analyzer.setSpectralPeakSearchWidth(0.5);       // default: 1 - blackman needs a value less than 1
   analyzer.setMinPeakToMainlobeWidthRatio(0.75);  // default: 0.75
 
+
+  //analyzer.setMinPeakToMainlobeWidthRatio(2.5);
+  //analyzer.setMinPeakToMainlobeWidthRatio(0.125);
+  //analyzer.setMinPeakToMainlobeWidthRatio(0.0);
+  // test - trying to reduce gap-artifacts - smaller values for this should reduce the gappiness - 
+  // todo:
+  // figure out, how low we can go without introducing other artifacts due to picking up on 
+  // sidelobes - wtf - this doesn't seem to have much influence
+  // -even with a zero value, we still get gaps with the rhodes - is there some other criterion 
+  //  that discards the partial?
+  // -even if we immediately retrun true in isPeakPartial, we get a gap - but it's narrower
+  //  -> check all branches that return -1 in findPeakBinNear
+  // -test this as follows: create a sine with strong beating - the amp-envelope of the partial 
+  //  that shows this artifact really drops to almost zero - maybe use sines at 100, 199, 201, 300
+
   //analyzer.setFreqsByPhaseDerivative(true);
   //analyzer.setFreqPhaseConsistency(true);
   // todo: maybe provide different freq-refinement methods (not necessarily mutually exclusive)
@@ -234,13 +249,13 @@ void getPaddedSignals(double* xIn, int Nx,
   y = synth.synthesize(model);
   int nf = model.getStartSampleIndex(synth.getSampleRate()); // # fade-in samples
 
-  size_t n;
+  int n;
   if(nf < 0) {
     // obtain a version of x with an appropriate number of zeros prepended
     nf = -nf;
     x.resize(Nx+nf);
     for(n = 0; n < nf; n++)        x[n] = 0;
-    for(n = nf; n < x.size(); n++) x[n] = xIn[n-nf];
+    for(n = nf; n < (int) x.size(); n++) x[n] = xIn[n-nf];
   }
   else {
     RAPT::rsPadLeft(y, nf, 0.0);       // prepend zeros to y, if nf > 0
@@ -499,9 +514,9 @@ void testEnvelopeMatching(std::vector<double>& x1, std::vector<double>& x2)
   // exctract envelopes:
   std::vector<double> e1(x1.size()), e2(x2.size());
   int n;
-  for(n = 0; n < (int )x1.size(); n++) e1[n] = ef.getSample(x1[n]);
+  for(n = 0; n < x1.size(); n++) e1[n] = ef.getSample(x1[n]);
   ef.reset();
-  for(n = 0; n < (int )x2.size(); n++) e2[n] = ef.getSample(x2[n]);
+  for(n = 0; n < x2.size(); n++) e2[n] = ef.getSample(x2[n]);
 
   //rsPlotVectors(x2, e2);
 
@@ -566,10 +581,10 @@ void testEnvelopeMatching2(std::vector<double>& x1, std::vector<double>& x2)
   ef.setAttackTime(0.0);    // in ms?
   ef.setReleaseTime(200.0);
   Vec e1(x1.size()), e2(x2.size());
-  int n;
-  for(n = 0; n < (int )x1.size(); n++) e1[n] = ef.getSample(x1[n]);
+  size_t n;
+  for(n = 0; n < (int)x1.size(); n++) e1[n] = ef.getSample(x1[n]);
   ef.reset();
-  for(n = 0; n < (int )x2.size(); n++) e2[n] = ef.getSample(x2[n]);
+  for(n = 0; n < (int)x2.size(); n++) e2[n] = ef.getSample(x2[n]);
 
   // find match offset:
   double dt = 0;
@@ -581,8 +596,8 @@ void testEnvelopeMatching2(std::vector<double>& x1, std::vector<double>& x2)
   Vec e1d = rsDecimateViaMean(e1, D);
   Vec e2d = rsDecimateViaMean(e2, D);  
   Vec t1d(e1d.size()), t2d(e2d.size());
-  for(n = 0; n < t1d.size(); n++)  t1d[n] = n * D;
-  for(n = 0; n < t2d.size(); n++)  t2d[n] = n * D + dt;
+  for(n = 0; n < (int)t1d.size(); n++)  t1d[n] = double(n*D);
+  for(n = 0; n < (int)t2d.size(); n++)  t2d[n] = double(n*D) + dt;
 
   // plot:
   GNUPlotter plt;

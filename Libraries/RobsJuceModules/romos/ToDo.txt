@@ -1,3 +1,7 @@
+-clean up the #includes - includes should ideally occur only in the unity build file
+-get rid of using namespace declarations - warp the code itself into the appropriate namespace
+ in the unity build file
+
 -get rid of using rosic::rsString - use std::string consistently
 
 -change meaning for the shape-parameter in the ADSR - make it range from -1..+1

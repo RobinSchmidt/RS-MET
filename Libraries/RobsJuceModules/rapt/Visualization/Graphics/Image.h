@@ -7,8 +7,10 @@ the color, so it can be used to represent monochrome, RGB, RGBA, HLS, HLSA and w
 images. 
 
 \todo: 
-move some more functions into cpp file
-implement access operators (x, y), [row][column] */
+-move some more functions into cpp file
+-implement access operators (x, y), [row][column] 
+-maybe factor out a common baseclass rsArray2D from rsImage and rsMatrix
+*/
 
 template<class TPix>  // pixel type
 class rsImage

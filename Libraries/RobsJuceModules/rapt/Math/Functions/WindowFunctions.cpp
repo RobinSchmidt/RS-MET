@@ -4,23 +4,26 @@ void rsWindowFunction::createWindow(T* w, int N, WindowType type, bool normalize
   typedef WindowType WT;
   switch( type )
   {
-  case WT::rectangular:  rectangular(w, N); break;
+  case WT::rectangular:    rectangular(w, N); break;
   case WT::triangularNN:   triangular( w, N); break;
     // insert other polynomial windows here...
+  case WT::hanningZZ:      hanning(       w, N); break; // ZZ windows are useless in practice!
+  case WT::hanningZN:      hanningZN(     w, N); break;
+  case WT::hamming:        hamming(       w, N); break;
+  case WT::blackman:       blackman(      w, N); break;
+  case WT::blackmanHarris: blackmanHarris(w, N); break;
+  case WT::blackmanNutall: blackmanNutall(w, N); break;
+  case WT::nutall:         nutall(        w, N); break;
 
-  case WT::hanningZZ:      hanning(    w, N); break;
-  case WT::hanningZN:   hanningZN(  w, N); break;
-  case WT::hamming:      hamming(    w, N); break;
+  // parameterized windows:
+  case WT::truncatedGaussian: truncatedGaussian(w, N, p); break; // p is the sigma
+  case WT::dolphChebychev:    dolphChebychev(   w, N, p); break; // p is sidelobe attenuation
 
-  case WT::blackman:     blackman(      w, N); break;
-  case WT::blackmanHarris:     blackmanHarris(w, N); break;
-  case WT::blackmanNutall:     blackmanNutall(w, N); break;
-  case WT::nutall:              nutall(        w, N); break;
-
-  case WT::truncatedGaussian:  truncatedGaussian(w, N, p); break; // p is the sigma
-
-    // more types to come...
-  default: rectangular(w, N);
+  default:
+  {
+    rsError("not yet implemented");    // more types to come...
+    rectangular(w, N);
+  }
   }
 
   if(normalizeMean) {
@@ -31,24 +34,34 @@ void rsWindowFunction::createWindow(T* w, int N, WindowType type, bool normalize
 
 
 template<class T>
-T rsWindowFunction::getMainLobeWidth(WindowType type, T param)
+T rsWindowFunction::getMainLobeWidth(WindowType type, T p, int N)
 {
   typedef WindowType WT;
   switch( type )
   {
-  case WT::rectangular:  return T(2);
+  case WT::rectangular:    return T(2);
+  case WT::triangularNN:   return T(4);
 
-  //case triangularNN:   return T(4);  // not sure yet -> plot and verify
   case WT::hanningZZ:      return T(4);
-  case WT::hanningZN:   return T(4);
-  case WT::hamming:      return T(4);
+  case WT::hanningZN:      return T(4);
+  case WT::hamming:        return T(4);
 
-  case WT::blackman:     return T(6);
+  case WT::blackman:       return T(6);
 
-  case WT::blackmanHarris:     return T(8);
-  case WT::blackmanNutall:     return T(8);
+  case WT::blackmanHarris: return T(8);
+  case WT::blackmanNutall: return T(8);
 
-  default: 
+  case WT::dolphChebychev: return dolphChebychevMainLobeWidth(N, p);
+
+
+  //case WT::dolphChebychev: return rsAbs(p) / T(10);
+  // verify this formula! this is a very coarse ad-hoc approximation based on the observation that
+  // with p=60 we get a roughly Blackman-like and with p=40 a roughly Hamming-like window
+  // we need also the window-length for the formula
+
+
+
+  default:
   {
     rsAssert(false); // not yet implemented for the given window type
     return T(0);
@@ -62,26 +75,39 @@ T rsWindowFunction::getSideLobeLevel(WindowType type, T param)
   typedef WindowType WT;
   switch( type )
   {
-  case WT::rectangular:  return T(-13.2);
+  // piecewise polynomial:
+  case WT::rectangular:    return T(-13.3);
+  case WT::triangularNN:   return T(-26.6);
 
-  case WT::triangularNN:   return T(-26.5);
-
+  // 2 term cosine sum :
   case WT::hanningZZ:      return T(-31.5);
-  case WT::hanningZN:   return T(-31.5);
-  case WT::hamming:      return T(-42.7);
+  case WT::hanningZN:      return T(-31.5);
+  case WT::hamming:        return T(-42.4);
 
-  case WT::blackman:     return T(-58);
+  // 3 term cosine sum:
+  case WT::blackman:       return T(-58.1);
 
-  case WT::blackmanHarris:     return T(-92);
-  case WT::blackmanNutall:     return T(-96.8);
+  // 4 term cosine sum:
+  case WT::blackmanHarris: return T(-92.1);
+  case WT::blackmanNutall: return T(-93.8);
+  case WT::nutall:         return T(-93.3);
 
-  default: 
+  default:
   {
     rsAssert(false); // not yet implemented for the given window type
     return T(0);
   }
   }
-  // todo: verify these values in plots
+
+  // The values have been obtained by creating a length 64 window with normalized DC gain (mean of
+  // the window values = 1) and doing a length 16384 FFT and reading off the value of the 2nd
+  // largest maximum and rounding it to 1 digit after the point.
+  // ToDo:
+  // -automate that process by writing a function getSideLobeLevel(T* w, int N, int fftSize)
+  // -maybe give two figures after the point (maybe use a larger FFT size to get more precise
+  //  readouts)
+  // -figure out, if the values change, if we use other window-lengths (they shouldn't)
+  // -implement it for the missing window types
 }
 
 template<class T>
@@ -266,7 +292,7 @@ void rsWindowFunction::hrsFlatTop144D(T* w, int N, bool norm)
 template<class T>
 void rsWindowFunction::hrsFlatTop169D(T* w, int N, bool norm)
 {
-  T c[8] = { 1, -1.97441842, 1.65409888, -0.95788186, 0.33673420, -0.06364621, 0.00521942, 
+  T c[8] = { 1, -1.97441842, 1.65409888, -0.95788186, 0.33673420, -0.06364621, 0.00521942,
     -0.00010599 };
   cosineSum(w, N, c, 8, norm);
 }
@@ -283,7 +309,7 @@ void rsWindowFunction::hrsFlatTop196D(T* w, int N, bool norm)
 template<class T>
 void rsWindowFunction::hrsFlatTop223D(T* w, int N, bool norm)
 {
-  T c[10] = { 1, -1.98298997309, 1.75556083063, -1.19037717712, 0.56155440797, -0.17296769663, 
+  T c[10] = { 1, -1.98298997309, 1.75556083063, -1.19037717712, 0.56155440797, -0.17296769663,
     0.03233247087, -0.00324954578, 0.00013801040, -0.00000132725 };
   cosineSum(w, N, c, 10, norm);
 }
@@ -304,10 +330,10 @@ void rsWindowFunction::truncatedGaussian(T* w, int N, T sigma)
     T t = (n-m)/(sigma*m);
     w[n] = exp(T(-0.5) * t*t);
   }
-  // https://en.wikipedia.org/wiki/Window_function#Gaussian_window 
+  // https://en.wikipedia.org/wiki/Window_function#Gaussian_window
 }
 
-// todo: confined gaussian: 
+// todo: confined gaussian:
 // https://en.wikipedia.org/wiki/Window_function#Confined_Gaussian_window
 
 
@@ -368,27 +394,120 @@ void rsWindowFunction::triangular(T *w, int N)
 }
 
 template<class T>
+void rsWindowFunction::dolphChebychev(T* w, int M, T atten)
+{
+  int order = M-1;
+  T beta = cosh(acosh(pow(T(10), (rsAbs(atten)/T(20)))) / order);
+    // the rsAbs here allows for the attenuation to be given with or without the minus sign
+
+  // Compute the complex spectrum of the window:
+  std::vector<std::complex<T>> p(M);    // heap allocation
+  for(int k = 0; k < M; k++) {
+    T x = beta * cos(k*PI/M);
+    p[k] = rsPolynomial<T>::chebychevDirect(x, order); }
+
+  // Compute window by FFT (shouldn't it be an IFFT? maybe that just gives rise to a shift?):
+  using Trafo = rsFourierTransformerBluestein<T>;
+  int shift;
+  if(rsIsOdd(M)) {
+    Trafo::fft(&p[0], M, false);       // heap allocation
+    shift = (M+1) / 2; }
+  else {
+    std::complex<T> j(T(0), T(1));
+    for(int k = 0; k < M; k++)
+      p[k] *= exp(j*(k*PI/M));         // additional modulation required for even lengths
+    Trafo::fft(&p[0], M, false);       // heap allocation
+    shift = (M/2) + 1; }
+
+  // Apply a circular shift to the window and store it in the output array:
+  for(int k = 0; k < M; k++)
+    w[k] = p[(k+shift)%M].real();
+
+  rsArrayTools::normalizeMean(w, M);
+  // maybe make normalization optional - but if we don't normalize at all, what will we get? maybe
+  // we should normalize the peak if "normalize mean" is not desired?
+  // seems like with 60 dB attenuation, we get a mean of 1000...figure out!
+}
+// This implementation follows the one from scipy
+// https://github.com/scipy/scipy/blob/v0.19.0/scipy/signal/windows.py#L1293-L1416
+// i'm not quite sure, why they use the forward FFT and not an inverse FFT - the difference is
+// probably just a phase-shift and does not matter in this case because we shift the result later
+// anyway?
+
+template<class T>
+T rsWindowFunction::dolphChebychevMainLobeWidth(int N, T a)
+{
+  rsAssert(N > 0);  // maybe we should assert a longer length?
+
+  T r  = rsDbToAmp(rsAbs(a));      // linear attenuation (as divisor)
+  T x0 = cosh(acosh(r) / T(N-1));  // cheby-poly input value?
+  T wc = 2*acos(T(1)/x0);          // radian cutoff freq?
+  return T(N)*wc / T(PI);          // width in bins
+  // see: https://ccrma.stanford.edu/~jos/sasp/Dolph_Chebyshev_Window_Main_Lobe_Width.html
+}
+// ToDo:
+// Maybe we can find a formula for the zeros of the chebychev spectrum - it's defined in the
+// freq-domain anyway - i think, we need a formula for the zeros of chebychev polynomials
+//   Tn(x) = cos(n*acos(x)) for x < 1, so we need to solve cos(n*acos(x)) = 0 for x
+//   let u = acos(x), the solve cos(n*u) = 0 to find u = pi/2n -> x = acos(u) = acos(pi/2n)
+// then we could define the mainlobe-width also in terms of the first zero in the spectrum. But
+// maybe that's not so useful anyway...
+
+template<class T>
 T rsWindowFunction::windowedSinc(T x, T length, T stretch)
 {
   return rsNormalizedSinc(x/stretch) * cosineSquared(x, length);
 }
 
-// ideas:
+/*
+
+The formulas for the ZZ, NZ, ZN, NN variants of the Hann window are:
+
+  0.5 * (1 - cos(2*PI*n     /  N));     // ZN
+  0.5 * (1 - cos(2*PI*n     / (N-1)));  // ZZ
+  0.5 * (1 - cos(2*PI*(n+1) /  N));     // NZ
+  0.5 * (1 - cos(2*PI*(n+1) / (N+1)));  // NN
+
+and similarly for other window types (ZZ is probably useless, but for the sake of completeness - or
+maybe it's useful for plots for comparison purposes but not for practical usage). Maybe use the
+general formula:
+
+  0.5 * (1 - cos(2*PI*(n+k1) / (N+k2)));
+
+where k1 = 0 or 1, k2 = -1 or 0 or +1 - use this for all cosine-sum windows
+
+
+*/
+
+/*
+
+ToDo:
+-implement "exact" and "optimal" variants of Hamming (a0=25/46, a1=1-a0) and Blackman (see
+ Wikipedia)
+
+// Ideas:
+
+
+-try a bump-function (infinitely often diffable at the junction) and a piecewise window using
+ integrated bump tapers with adjustable-length flat section in the middle - look up planck-window
+ ...might be useful as window for correlation analysis? -> try it!
+ -maybe this can also be generated recursiveyl as we do in windowed-sinc interpolation? it involves
+  the exp-function which can be generated recursively
 
 // implement minimax optimized windows that have the minimum (maximum) sidelobe level
-// for a 2-term window, use Hamming as starting point, for 3-term start with blackman and 
+// for a 2-term window, use Hamming as starting point, for 3-term start with blackman and
 // 4-term with blackman-nutall -> this can probably done in SciPy using the optimizer
 // povide them here under the names MiniMax2, MiniMax3, etc.
 // or MinSideLobe2, etc. - or maybe we should start numbering at 0 - a rectangular window is
-// 0th order, hanning/hamming windows are 1st order, blackman is 2nd order, blackman-harris 3rd, 
+// 0th order, hanning/hamming windows are 1st order, blackman is 2nd order, blackman-harris 3rd,
 // etc. ...maybe we can have a similar hirarchy for polynomial windows: rectangular is 0th order,
-// triangular is 1st order, parabolic (aka Welch) 2nd, etc. - for the even order windows, also 
+// triangular is 1st order, parabolic (aka Welch) 2nd, etc. - for the even order windows, also
 // provide their inverses ...or maybe have two indexes that determine the smoothness at the center
-// 0 and the endpoints +-1. like polyWindow23 is 2nd order smooth at the center and 3rd order 
+// 0 and the endpoints +-1. like polyWindow23 is 2nd order smooth at the center and 3rd order
 // smooth at +-1
 // drag over the cosine-sum windows from the prototypes that satisfy smoothness constraints
-// hmm - here, it looks like that the flat-top window is also equiripple, so maybe the minimax 
-// optimized windows all will end up being flat-top? (bcs i think minimax and equiripple conditions 
+// hmm - here, it looks like that the flat-top window is also equiripple, so maybe the minimax
+// optimized windows all will end up being flat-top? (bcs i think minimax and equiripple conditions
 // imply each other - verify that):
 // https://www.mathworks.com/help/signal/ug/generalized-cosine-windows.html
 
@@ -399,20 +518,20 @@ T rsWindowFunction::windowedSinc(T x, T length, T stretch)
 // here is a paper:
 // http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.77.5098&rep=rep1&type=pdf
 
-// this has c-code - but should probably be used only for a reference prototype since the 
+// this has c-code - but should probably be used only for a reference prototype since the
 // computation has complexity O(N^2)
 // http://practicalcryptography.com/miscellaneous/machine-learning/implementing-dolph-chebyshev-window/
 
 // but the Dolph-Chebychev window is not a sum-of-cosines type, so maybe we should obtain coeffs
-// for optimized sum-of-cosine types anyway as they can be used for efficient windowed-sinc 
+// for optimized sum-of-cosine types anyway as they can be used for efficient windowed-sinc
 // interpolation via trig-recursions
 
-// can we also somehow optimize the mainlobe? maybe, if we put a constraint on the maximum 
+// can we also somehow optimize the mainlobe? maybe, if we put a constraint on the maximum
 // sidelobe-level, i.e. find the window that has the smallest mainlobe width given a maximum
 // sidelobe-level -> a constrained optimization problem? maybe use the min-sidelobe windows as
-// starting points. if it works out, maybe provide the resulting windows for several selected 
-// sidelobe levels, like -20, -30, -40, ... - but: which order (i.e. number of cosine terms) should 
-// we use for that? that should probably depend on the desired sidelobe level. maybe make an 
+// starting points. if it works out, maybe provide the resulting windows for several selected
+// sidelobe levels, like -20, -30, -40, ... - but: which order (i.e. number of cosine terms) should
+// we use for that? that should probably depend on the desired sidelobe level. maybe make an
 // interact in the notebook where the user can enter the desired parameters
 
 // add closed form formulas for the window spectra, where such formulas are available - for example
@@ -420,8 +539,10 @@ T rsWindowFunction::windowedSinc(T x, T length, T stretch)
 
 
 // see also the paper:
-// "Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a 
+// "Spectrum and spectral density estimation by the Discrete Fourier transform (DFT), including a
 // comprehensive list of window functions and some new flat-top windows"
 // http://edoc.mpg.de/395068
 // it has *many* windows - especially the flat-top ones may be interesting
+
+*/
 

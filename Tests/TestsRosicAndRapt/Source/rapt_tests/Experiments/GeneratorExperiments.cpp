@@ -1,5 +1,73 @@
 using namespace RAPT;
 
+void fractalize(double* x, double* y, int N, int a = 2, int b = 0)
+{
+  int inc = 1;
+  while(inc <= N/2)  // is this the right condition?
+  {
+    double amp = 1.0 / double(inc);  // amplitude - maybe raise this to a power p
+
+    for(int n = 0; n < N; n++)
+      y[n] += amp * x[(inc*n)%N];
+
+
+    inc = a*inc + b;
+  }
+}
+// todo: make anothenr version that doesn't multiply by 2 in each iteration but adds 1...or maybe
+// in general: have a factor a and offset b and the the next freq is fNew = a*fOld + b. That would
+// cover both cases and many more
+// -apply the function recursively to the fractalized wave
+
+void waveformFractalization()
+{
+  static const int N = 2048;  // period length of prototype wave in samples
+  int a = 3;  // must be at least 1
+  int b = 0;
+
+  double x[N], y1[N], y2[N];
+
+  // render prototype waveform:
+  double w = 2*PI/N;
+  for(int n = 0; n < N; n++)
+  {
+    //x[n] = sin(w*n);   // todo: allow other prototype waveforms later
+    //x[n] = rsSawWave(w*n);
+    x[n] = rsSqrWave(w*n);  // fractalized with a=2,b=0 gives saw wave
+    //x[n] = rsTriWave(w*n);
+  }
+
+  // fractalize it:
+  rsArrayTools::fillWithZeros(y1, N); // maybe rename to clear - or make alias
+  fractalize(x, y1, N, a, b);
+
+  // fractalize the fractalized wave again:
+  rsArrayTools::fillWithZeros(y2, N);
+  fractalize(y1, y2, N, a, b);
+
+
+  // plot:
+  //rsPlotArray(x, N);
+  //rsPlotArray(y, N);
+  rsPlotArrays(N, y1);
+  //rsPlotArrays(N, x, y1, y2);
+  // todo: make the plot nicer - introduce a time-axis from 0 to 1, normalize the waveform, let
+  // y-axis range from -1.1 to +1.1
+
+  // Observations:
+  // -a=2, b=0: good for saw, square becomes saw
+  // -a=2, b=1: nice irregularities for saw
+  // -a=1, b=1: sine becomes saw, square also interesting
+  // -a=3, b=0: good for square
+  // -fractalizing the fractalized wave again seems to emphasize the higher frequencies but doesn't
+  //  seem to bring something qualitatively new (or does it? ...more experiments needed - maybe 
+  //  compare results with using an exponent on the amplitudes to make them fall off more slowly)
+
+  // todo: try, hwo it looks like on an xy-oscilloscope when we introduce a phase-shift between
+  // left and right (maybe that phase shift can be time-varying)...this can be done in 
+  // straighliner
+}
+
 void plotHistogram(const std::vector<double>& data, int numBins, double min, double max)
 {
   // under construction - it's kinda ugly but at least, it works
@@ -152,51 +220,7 @@ void noise()
   // testNoiseGen(int numSamples, int order, bool plotHistogram, bool writeWaveFile)
 }
 
-template<class T>
-class rsNoiseGeneratorTriModal
-{
 
-public:
-
-  rsNoiseGeneratorTriModal()
-  {
-    selector.setRange(-1, +1);
-    ng1.setRange(-1.0, -0.3);
-    ng2.setRange(-0.3, +0.3);
-    ng3.setRange(+0.3, +1.0);
-    setOrder(7);
-  }
-
-  void setOrder(int newOrder)
-  {
-    ng1.setOrder(newOrder);
-    ng2.setOrder(newOrder);
-    ng3.setOrder(newOrder);
-  }
-
-  inline T getSample()
-  {
-    T s = selector.getSample();
-    s = selectorLowpass.getSample(s);
-    if(s < thresh1)
-      return ng1.getSample();
-    if(s < thresh2)
-      return ng2.getSample();
-    return ng3.getSample();
-  }
-
-  rsOnePoleFilter<T, T> selectorLowpass;
-  // the selector is lowpassed such that successive samples tend to be selected from the same 
-  // distribution
-
-
-protected:
-
-  rsNoiseGenerator<T> selector;
-  rsNoiseGenerator2<T> ng1, ng2, ng3;
-  T thresh1 = -0.2, thresh2 = +0.2;
-
-};
 
 
 void noiseTriModal()
@@ -854,7 +878,7 @@ void superBlep()
   // progression and then add some irrational offsets?
   // or: recursively split the interval between fl, fu at a "midpoint" that is not exactly in the 
   // middle but at a user defined ratio - maybe apply the ratio and 1-ratio alternatingly to avoid
-  // skeing the whole distribution ...iirc, that was what my odl algos were also doing
+  // skeing the whole distribution ...iirc, that was what my old algos were also doing
 
   // todo: tune the freq-ratios by ear: implement a superosc in ToolChain, set it to 3 oscs - the 
   // outer two have fixed freqs, tune the inner one until it sounds best, then introduce a 4th saw,
@@ -872,6 +896,91 @@ void superBlep()
   //  maybe something like the bipolar rational map ...maybe the unipolar version can be used
   //  to introduce skew - maybe have pre-skew -> contract/spread -> post-skew
 }
+
+void superSawDensitySweep() // rename to SuperSawFeedbackFM
+{
+  // We try to implement a continuos sweep of the density. For simplicity, we use an array of 
+  // rsBlepSawOsc. Production code should probably optimize this (share the blep object, etc.).
+
+  int maxDensity = 7;
+  int N = 1000000;          // number of samples
+
+  double fMin = 95;
+  double fMax = 105;
+  double sampleRate = 44100;
+  double p = 0.5;  // shape of distribution of frequencies
+
+  double modAmount = 0.0;
+
+  std::vector<rsBlepSawOsc<double>> oscs(maxDensity);
+
+  // filter for modulating the frequencies
+  rosic::TwoPoleFilter flt;
+  flt.setBandwidth(0.25); // maybe that should be set in Hz, not octaves
+  flt.setFrequency(0.25*(fMin+fMax));
+  flt.setMode(flt.BANDPASS);
+  flt.setSampleRate(sampleRate);
+
+  // test - altenrtively use a subsonic lowpass:
+  flt.setMode(flt.LOWPASS12);
+  flt.setFrequency(7.0);
+
+
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
+
+  Vec freqs(maxDensity), amps(maxDensity);  // frequencies and amplitudes
+
+  Vec y(N);
+
+  for(int i = 0; i < maxDensity; i++)
+    oscs[i].reset(i / double(maxDensity));
+
+  double mod = 0;  // modulation signal
+
+  for(int n = 0; n < N; n++)
+  {
+    int D = maxDensity;  // instantaneous density - preliminary
+
+    AT::fillWithRange(&freqs[0], D, fMin, fMax, p);
+    AT::fillWithRange(&amps[0],  D, 1.0,  1.0,  1.0); // preliminary - all 1
+
+    y[n] = 0;
+    for(int i = 0; i < D; i++)
+    {
+      double fi = freqs[i];
+
+      if(rsIsEven(i)) fi += modAmount*mod*fi;
+      else            fi -= modAmount*mod*fi;
+
+      oscs[i].setPhaseIncrement(fi/sampleRate);
+
+      // test: invert every other saw:
+      if(rsIsEven(i)) y[n] += oscs[i].getSample();
+      else            y[n] -= oscs[i].getSample();
+
+      //y[n] += oscs[i].getSample();  // without inversion
+    }
+
+    //mod = flt.getSample(y[n]);   // for bandpass
+    mod = flt.getSample(y[n] * y[n]);  // for lowpass
+  }
+
+  AT::normalize(&y[0], N);
+  //rosic::writeToMonoWaveFile("SuperSawDensitySweep.wav", &y[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("SuperSaw.wav", &y[0], N, (int)sampleRate);
+
+
+  std::cout << "Done";
+  //rsPlotVector(y);
+}
+// idea to randomize the frequencies:
+// -pass output through bandpass, tuned to center frequency
+//  ..or an octave below is also very interesting
+// -use that output as LFO for the oscillators - alternatingly up and down
+// -alternatively to a bandpass: use a lowpass with subsonic cutoff freq on the squared output
+// -maybe as an alternative spacing strategy: strat from equidistant frequencies and offset them
+//  alternatingly by some user adjustable amount
 
 void superSawStereo()
 {
@@ -926,7 +1035,7 @@ void superSawStereo()
   // D = 7: L = 2,0,2,1,0,2,0,_   R = 0,2,0,1,2,0,2,_
   // D = 8: L = 2,0,2,0,2,0,2,0   R = 0,2,0,2,0,2,0,2
   // and for stereoSpread = -1, the roles of L and R should be reversed - these numbers are only 
-  // valid fo a linear pan - but currently an (approximate) contant power law is used
+  // valid for a linear pan - but currently an (approximate) contant power law is used
 
   osc.initAmpArrays(); osc.setDensity(1);  // ok
   osc.initAmpArrays(); osc.setDensity(2);  // ok
@@ -936,7 +1045,7 @@ void superSawStereo()
   osc.initAmpArrays(); osc.setDensity(6);  // ok
   osc.initAmpArrays(); osc.setDensity(7);  // ok
   osc.initAmpArrays(); osc.setDensity(8);  // ok
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 // computes algorithm parameters for the two-pice oscillator from user parameters
@@ -1868,7 +1977,7 @@ void circleFractals()
   r = { 1, .5, .25,};
   w = { 1,  5,  25};
 
-  for(size_t n = 0; n < N; n++)
+  for(int n = 0; n < N; n++)
   {
     x[n] = y[n] = 0;
     for(size_t k = 0; k < r.size(); k++)

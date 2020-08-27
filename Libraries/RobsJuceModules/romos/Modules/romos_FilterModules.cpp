@@ -1,5 +1,3 @@
-namespace romos
-{
 
 //-------------------------------------------------------------------------------------------------
 
@@ -354,5 +352,3 @@ void LadderFilter::freeMemory()
   oldParameters = NULL;
 }
 CREATE_AND_ASSIGN_PROCESSING_FUNCTIONS_4(LadderFilter);
-
-}

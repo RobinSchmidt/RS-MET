@@ -30,10 +30,15 @@ INLINE int toInt(double x)
   return (a);
 }
 
-/** Assuming, that the FPU is in 'to nearest even integer' rounding mode (which is the default),
+// out of date:
+/* Assuming, that the FPU is in 'to nearest even integer' rounding mode (which is the default),
 this function rounds to the nearest integer using upward rounding when the argument is exactly
 halfway between two integers (instead of returning the nearest even integer in this case).
 Argument x must satify (INT_MIN/2)ñ1.0 < x < (INT_MAX/2)+1.0.  */
+
+/** Rounds the value x and converts it to an integer. It uses the standard library function round 
+which rounds away from zero when the fractional part is 0.5. 
+see http://www.cplusplus.com/reference/cmath/round/  */
 INLINE int roundToInt(double x)
 {
   return (int) round(x);
@@ -62,6 +67,9 @@ INLINE int roundToInt(double x)
   return (i);
 */
 }
+// ..maybe rename roundToInt to roundAwayFromZero and maybe have also versions roundToEven, 
+// roundToOdd...but these names could be mistaken for functions that always return even or odd
+// numbers...hmmm
 
 INLINE int floorInt(double x)
 {

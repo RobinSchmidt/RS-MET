@@ -1,16 +1,18 @@
 //#include "romos_ModuleTypeRegistry.h"
-using namespace romos;
+//using namespace romos;
 
-void ModuleTypeInfo::addInputPinInfo(const char* shortName, const char* fullName,
-  const char* description)
+void ModuleTypeInfo::addInputPinInfo(
+  const char* shortName, const char* fullName, const char* description)
 {
   inputShortNames.push_back(shortName);
   inputFullNames.push_back(fullName);
   inputDescriptions.push_back(description);
 }
+// rename parameters to shortPinName, fullPinName, pinDescription to fix 
+// "hides class member" warning
 
-void ModuleTypeInfo::addOutputPinInfo(const char* shortName, const char* fullName,
-  const char* description)
+void ModuleTypeInfo::addOutputPinInfo(
+  const char* shortName, const char* fullName, const char* description)
 {
   outputShortNames.push_back(shortName);
   outputFullNames.push_back(fullName);
@@ -35,7 +37,7 @@ romos::Module* ModuleFactory::createModule(int id, const std::string& name, int 
   bool polyphonic)
 {
   ensureTypeInfoArrayAllocated();
-  rassert(id >= 0 && id < typeInfos->size());  // id out of range
+  rassert(id >= 0 && id < (int)typeInfos->size());  // id out of range
   // todo: if the id is out of range, return some kind of "Error" dummy module, maybe just a 
   // constant module outputting a 0, named "Error"? ..if that's possible
 
@@ -69,16 +71,16 @@ void ModuleFactory::deleteModule(romos::Module* moduleToDelete)
 int ModuleFactory::getModuleId(const std::string& fullTypeName)
 {
   ensureTypeInfoArrayAllocated();
-  for(int i = 0; i < typeInfos->size(); i++)
+  for(size_t i = 0; i < typeInfos->size(); i++)
     if((*typeInfos)[i]->fullName == fullTypeName)
-      return i;
+      return (int)i;
   return -1;
 }
 
 ModuleTypeInfo* ModuleFactory::getModuleTypeInfo(const std::string& fullTypeName)
 {
   ensureTypeInfoArrayAllocated();
-  for(int i = 0; i < typeInfos->size(); i++)
+  for(size_t i = 0; i < typeInfos->size(); i++)
     if((*typeInfos)[i]->fullName == fullTypeName)
       return (*typeInfos)[i];
   return nullptr;
@@ -202,7 +204,7 @@ void ModuleFactory::registerPreBuiltContainers()
 void ModuleFactory::clearRegisteredTypes()
 {
   ensureTypeInfoArrayAllocated();
-  for(int i = 0; i < typeInfos->size(); i++)
+  for(size_t i = 0; i < typeInfos->size(); i++)
     delete (*typeInfos)[i];
   typeInfos->clear();
   delete typeInfos;

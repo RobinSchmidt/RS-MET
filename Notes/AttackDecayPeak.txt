@@ -1,0 +1,82 @@
+We consider a filter that creates its impulse response as the difference of two exponential decay
+filters, one with a slower decay and one withe the faster - the fast decaying exponential is 
+subtracted from the slowly decaying exponential to get a smooth attack/decay shape for an envelope
+generator. The expressions for the impulse responses are
+
+  dn := d[n] = d0 * cd^n      decay
+  an := a[n] = a0 * ca^n      attack
+  en := e[n] = s*(dn-an)      envelope
+  
+where d0,a0 are the initial states that we assume to be given as
+  
+  d0 = x + yd
+  a0 = x + ya
+  
+we assume x to be an input impulse and we assume that the filter's remembered state variables
+d[n-1], a[n-1] are stored in yd,ya respectively. We want to figure out, how high the impulse x 
+must be, so as to reach a peak value of 1, regardless of what the internal state yd,ya is. That is,
+we want to find a suitable way to scale ot modify the input impulses to avoid accumulation of 
+peak-heights when the enevlope generator receives multiple note-ons in quick succession (a 
+"machine gun" of note-on events). To finde the location of the peak, we take the derivative of en 
+with respect to n and set it to zero:
+
+  den/dn = d/dn [ s*(d0*cd^n - a0*ca^n)  ]
+           s * (d0*log(cd)*cd^n - a0*log(ca)*ca^n) = 0
+
+Define: D := d0*log(cd), A := a0*log(ca)
+
+  0 = D*cd^n - A*ca^n -> D*cd^n = A*ca^n
+  A / D = cd^n / ca^n
+  
+Define: R := cd/ca
+
+  A/D = R^n -> n = logR(A/D)
+  
+that sample instant n the peak location. We now plug that into the equation for en and set that to 1:
+
+  1 = s*(dn-an)
+    = s*(d0*cd^n - a0*ca^n)
+    = s*((x + yd)*cd^n - (x + ya)*ca^n)
+  
+  1/s = (x + yd)*cd^n - (x + ya)*ca^n
+      = (x+yd)*cd^(logR(A/D))                           - (x+ya)*ca^(logR(A/D))
+      = (x+yd)*cd^(logR(A/D))                           - (x+ya)*ca^(logR(A/D))
+      = (x+yd)*cd^(logR((a0*log(ca))/(d0*log(cd))))     - (x+ya)*ca^(logR((a0*log(ca))/(d0*log(cd))))
+      = (x+yd)*cd^(logR(((x+ya)*log(ca))/((x+yd)*log(cd)))) 
+       -(x+ya)*ca^(logR(((x+ya)*log(ca))/((x+yd)*log(cd))))
+  
+This ugly mess has now to be solved for x - if it's not possible to do this explicitly, we need to 
+set up an interative algorithm to find x (Newton iteration or similar). Maybe verify, if the 
+equation is correct by plotting s times the RHS and see, if the actual peak height comes out, 
+assuming that ca,cd,ya,yd,s,x are given
+
+try to simplify this partial expression:
+
+  kd := cd^(  logR(((x+ya)*log(ca))/((x+yd)*log(cd)))  )
+      = cd^(  log(((x+ya)*log(ca))/((x+yd)*log(cd)))/log(R)  )
+      = cd^(  log(((x+ya)*log(ca))/((x+yd)*log(cd)))/log(cd/ca)  )   r := 1/log(R)
+      = cd^(r*log(((x+ya)*log(ca))/((x+yd)*log(cd))) )               la := log(ca), ld := log(cd)
+      = cd^(r*log( ((x+ya)*la) / ((x+yd)*ld) ))
+      = cd^(r*( log((x+ya)*la) - log((x+yd)*ld) )  )
+      = cd^(r*( log(x+ya) + log(la) - log(x+yd) + log(ld)))
+      = cd^(r*( log(x+ya) + log(la) - log(x+yd) + log(ld)))
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

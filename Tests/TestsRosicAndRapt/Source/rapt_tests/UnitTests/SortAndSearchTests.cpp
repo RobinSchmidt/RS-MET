@@ -9,15 +9,17 @@ bool testHeapSort()
   int testArray[length];
   for(int i=0; i<numTests; i++)
   {
-    RAPT::rsArrayTools::fillWithRandomValues(testArray, length, -100, +100, 1);
+    RAPT::rsArrayTools::fillWithRandomValues(testArray, length, -100, +100, i);
     rsHeapSort(testArray, length);
     testResult &= rsArrayTools::isSortedAscending(testArray, length);
 
     // check odd lengths by just sorting the subarray up to length-1:
-    RAPT::rsArrayTools::fillWithRandomValues(testArray, length, -100, +100, 1);
+    RAPT::rsArrayTools::fillWithRandomValues(testArray, length, -100, +100, i);
     rsHeapSort(testArray, length-1);
     testResult &= rsArrayTools::isSortedAscending(testArray, length-1);
   }
+
+  // todo: test with short lengths: 0,1,2,3 - maybe the length should be the loop index?
 
   return testResult;
 }

@@ -125,7 +125,7 @@ double combAmplitude(double frequency, double notchDistance, double notchOffset 
 std::vector<double> applyCombWeighting(std::vector<double> v, std::vector<double> f, 
   double notchDistance, double notchOffset = 0, double ampFloor = 0, double shape = 1)
 {
-  for(int i = 0; i < f.size(); i++)
+  for(size_t i = 0; i < f.size(); i++)
     v[i] = v[i] * combAmplitude(f[i], notchDistance, notchOffset, ampFloor, shape);
   return v;
 }
@@ -134,7 +134,8 @@ std::vector<double> applyCombWeighting(std::vector<double> v, std::vector<double
 std::vector<double> pseudoHarmonicRatios12TET(int numPartials) // only 0..20
 {
   double tmp[21];
-  long double s = pow(2.0, 1.0/12.0); // basis
+  //long double s = pow(2.0, 1.0/12.0); // basis
+  double s = pow(2.0, 1.0/12.0); // basis
 
                          // #    ratio
   tmp[0]  = pow(s,  0);  //  1    1.0
@@ -169,8 +170,8 @@ std::vector<double> ratios12TET(int numPartials)
 {  
   double tmp[21];
   std::vector<double> r(numPartials);
-  long double s = pow(2.0, 1.0/12.0); // basis
-
+  //long double s = pow(2.0, 1.0/12.0); // basis
+  double s = pow(2.0, 1.0/12.0); // basis
                          //  #    ratio
   tmp[0]  = pow(s,  0);  //  1    1.0
   tmp[1]  = pow(s, 12);  //  2    2.0
@@ -614,9 +615,6 @@ void createPiano1()
 
   int dummy = 0;
 }
-
-
-
 
 
 

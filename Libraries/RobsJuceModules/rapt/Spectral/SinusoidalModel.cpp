@@ -461,6 +461,12 @@ std::vector<rsInstantaneousSineParams<T>> rsSinusoidalModel<T>::getInvalidDataPo
 
 Ideas:
 
+-maybe have an ampSlope field rsInstantaneousSineParams - for the phase, we have the frequency as
+ slope which can be used for Hermite interpolation - maybe it would be nice to have something like
+ that for the amplitude, too - maybe its value can be computed via the time-reassignment formula?
+ ...this formula computes something like where the "mass" of the partial resides which can perhaps
+ be related to the slope by a simple formula?
+
 -frequency estimation:
 -to find the actual frequency of a partial in an FFT frame, often parabolic interpolation of the
  log magnitude is used (the frequency is to be taken the maximum of the parabola that goes through

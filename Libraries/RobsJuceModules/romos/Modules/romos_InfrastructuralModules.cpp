@@ -1,8 +1,5 @@
 //#include "romos_InfrastructuralModules.h"
 
-namespace romos
-{
-
 // why is this commented out?
 /*
 void AudioInputModule::initialize()
@@ -502,10 +499,4 @@ double ParameterModule::unmapToNormalizedValue(double mappedValue)
   case EXPONENTIAL_MAPPING: return RAPT::rsExpToLin(mappedValue, minValue, maxValue, 0.0, 1.0);
   default:                  return RAPT::rsLinToLin(mappedValue, minValue, maxValue, 0.0, 1.0);
   }
-}
-
-
-
-
-
 }

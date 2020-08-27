@@ -105,7 +105,7 @@ void autoCorrelation()
   //plotData(50, t, buffer, acf);
   plotData(bufferSize, t, acf, uacf);
   //plotData(40, t, buffer, acf, sacf);
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -642,7 +642,58 @@ void arrayRMS()
   int dummy = 0;
 }
 
+void peakFinder()
+{
+  // ...under construction...
+  // Create a sinuosid and find its peaks with subsample precision
+  // ...maybe create one with oversampling so we may see the actual peaks
 
+  int N = 50;
+  int oversampling = 40;
+  int precision = 4;
+  double w = 1.5;  // omega
+
+  // create the test signal:
+  int No = N*oversampling;
+  using Vec = std::vector<double>;
+  Vec t(N), to(No);
+  Vec x(N), xo(No);
+  for(int n = 0; n < N; n++)  {
+    t[n] = n;
+    x[n] = sin(w*t[n]); }
+  for(int n = 0; n < No; n++) {
+    to[n] = n;
+    to[n] /= oversampling;
+    xo[n] = sin(w*to[n]);  }
+
+  // find the peaks:
+  using SSM = rsSingleSineModeler<double>;
+  using AT  = rsArrayTools;
+  Vec peakPositions, peakHeights;
+  double pos, height;
+  //SPE::exactPeakPositionAndHeight(&x[0], N, 27, precision, &pos, &height);
+  for(int n = 1; n < N-1; n++) {
+    if( AT::isPeakOrValley(&x[0], n) )
+    {
+      SSM::exactPeakPositionAndHeight(&x[0], N, n, precision, &pos, &height);
+      peakPositions.push_back(pos);
+      peakHeights.push_back(height); 
+    }
+  }
+
+
+  GNUPlotter plt;
+  plt.addDataArrays(N,  &t[ 0], &x[ 0]);
+  plt.addDataArrays(No, &to[0], &xo[0]);
+  plt.addDataArrays((int)peakHeights.size(), &peakPositions[0], &peakHeights[0]);
+  plt.setGraphStyles("lines", "lines", "points");
+  plt.setPixelSize(1200, 400);
+  plt.plot();
+
+  // Observations:
+  // -With precision = 1 (parabolic) an w = 1, the height error is around 2%, with precision = 0
+  //  around 10% - the eestimation error indeed decreases with increasing precision - it works!
+}
 
 // convenience function to make the zero-crossing finding work for plain arrays (as required for
 // plotting)
@@ -795,6 +846,8 @@ void zeroCrossingFinder2()
 
 void zeroCrossingFinder3()
 {
+  // Demonstrates the edge-case where we have sequences of many zeros in the signal.
+
   // user parameters:
   static const int N  = 20000;  // number of samples
   double fs = 44100;            // samplerate in Hz
@@ -816,6 +869,10 @@ void zeroCrossingFinder3()
   plt.setGraphStyles("lines", "points");
   plt.setPixelSize(1000, 300);
   plt.plot();
+
+  // Observations:
+  // -the detected zero-marks are at the starts of the zero-sequences
+  // ..we may want them in the centers...
 }
 
 // todo: create a contrived test signal consisting of 2 inharmonic sines and use:

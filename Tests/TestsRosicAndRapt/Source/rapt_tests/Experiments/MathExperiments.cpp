@@ -56,7 +56,7 @@ void characteristicPolynomial()
   // should also be a member of the set - is this in some way a "special" member? Maybe another
   // special member is the one whose eigenvectors are the canoncial basis vectors.
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // This Sage code:
   // A = matrix([[-4,6],[-3,5]])
@@ -166,7 +166,7 @@ void determinant()
   // functions - only class rsPolynomial itself is needed -> compare both ways. For this way, we 
   // must promote the matrix to a matrix of polynomials instead of rational functions.
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -559,7 +559,7 @@ void linearCombinations()
   // how can we find the coefficients of the linear combinations - that must also be a linear 
   // system -> figure out, how to set it up
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void linearIndependence()
@@ -599,7 +599,7 @@ void linearIndependence()
   // vector in the set is dependent on some others - a3 cannot be expressed as linear combination
   // of a1,a2, for example ...is that because it has coefficient zero?
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -733,7 +733,7 @@ void eigenstuff()
 
 
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // Some Notes
   // -x_i is an eigenvalue of matrix A, iff (A - x_i * I) * v = 0 has solutions v different from 
@@ -783,7 +783,7 @@ void linearSolverPrecision()
 
   // ok - but we can see the numerical error increase with the size
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -1363,7 +1363,7 @@ void gaussianRegression()
   // we need to define an error function and optimize the amplitudes, frequencies and widths with 
   // that initial guess - so we need to do an optimization in and 21-dimensional space
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 /** Error function for the approximation of a Butterworth function by a sum of Gaussians.. */
@@ -1512,7 +1512,7 @@ void butterworthViaGaussians()
 
   errFunc.plot(pFinal);
 
-  int dummy = 0;
+  //int dummy = 0;
 
   // ToDo: move the old minimization code into the rs_testing module - it's not good enough for the
   // library yet
@@ -1723,7 +1723,7 @@ void numericOptimization()
 {
   testNumericMinimization();
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -1970,7 +1970,7 @@ void probabilityLogic()
   // from this, we may build a general continuous "and" formula that incorporates correlation
   // ...and from that, we can also create an "or" formula
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 double productLog(const double z) 
@@ -2270,6 +2270,68 @@ void ratiosLargeLcm()
   RAPT::rsMatrixTools::deallocateMatrix(lcmMatrix, N, N);
 }
 
+void ratiosEquidistantPowers()
+{
+  // We produce ratios in the following way: the user gives a minimum and maximum value a,b. Then,
+  // we produce equidistant values between A := a^p and B := b^p with some user parameter p. Then,
+  // we take the p-th root of the so produced values.
+
+  using Real = float;   // to switch between float and double at compile time
+  using Vec  = std::vector<Real>;
+  using AT   = rsArrayTools;
+
+  int numRatios = 11;     // number of ratios (i.e. "density")
+  int numParams = 201;    // number of sample values for the parameter of the ratio algo
+  Real pMin     = -10.0;  // lower value of the exponent parameter
+  Real pMax     = +12.0;  // upper value of the exponent parameter
+  Real a        = 10.0;   // lower frequency or period
+  Real b        = 20.0;   // upper frequency or period
+
+  // for testing a suitable threshold/tolerance for the absolute value of p for treating it as 
+  // zero:
+  //Real smalll = 2000 * RS_EPS(Real);  // should be around twice the tolerance for good plot
+  //pMax = smalll; pMin = -pMax;      // uncomment to test the edge case of p ~= 0
+
+
+  Vec col(numRatios);  // holds one matrix column at a time
+  Vec p(numParams);    // hold the array of parameter values 
+  AT::fillWithRangeLinear(&p[0], numParams, pMin, pMax);
+
+  // create the matrix for plotting:
+  rsMatrix<Real> R(numRatios, numParams);
+  for(int j = 0; j < numParams; j++) {
+    AT::fillWithRange(&col[0], numRatios, a, b, p[j]);
+    R.setColumn(j, &col[0]); } 
+  plotMatrixRows(R, &p[0]);
+
+  // plot the generalized mean of a,b and of the produced columns:
+  Vec gmc(numParams);   // generalized mean of current column
+  Vec gmab(numParams);  // generalized mean of a and b
+  for(int i = 0; i < numParams; i++) {
+    R.copyColumn(i, &col[0]);
+    gmc[i] = AT::generalizedMean(&col[0], numRatios, p[i]);
+    col[0] = a; col[1] = b;
+    gmab[i] = AT::generalizedMean(&col[0], 2, p[i]); }
+  rsPlotVectorsXY(p, gmc, gmab);
+  // -OK - gmc and gmab do match indeed
+  // -the curve looks a bit like atan - could it be atan indeed?
+  // -maybe plot also the regular mean - maybe we should somehow "fix" the mean such that the 
+  //  perceived pitch always stays the same, regardless of p
+  // -figure out, how it behaves when the the minimum is neagtive...it probably will not work in
+  //  any resonable way...what would we actually want/expect in such a case?
+
+  // Notes:
+  // Maybe we should somehow make a bipolar version of the shape - use different (but related) 
+  // formulas for the lower and upper half.
+  // ToDo: figure out which values of lead to the least phasiness when used for frequencies in the
+  // supersaw...maybe p = 0.5 is nice because it's "halfway" between linear and exponential 
+  // spacing, both of which are musically meaningful in their own way (but both of which lead to
+  // heavy phasing when sued for supersaw) ...maybe -0.5 is also interesting - we should really 
+  // make this a user parameter...
+  // -figure out, if we can use the AGM (arithmetic-geometric mean) in this context in a 
+  //  meaningful way
+}
+
 void ratiosMetallic()
 {
   // The metallic ratio rn for integer n is given by (n + sqrt(n^2+4))/2 - so the ratio of two
@@ -2278,7 +2340,7 @@ void ratiosMetallic()
   //  coefficients
 
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 
@@ -2344,7 +2406,7 @@ void expBipolar()
   double f1  = a * exp(b * 1) + c;
   double fp0 = a * b;
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void expGaussBell()
@@ -2827,7 +2889,7 @@ rsUint32 numDeriv(rsUint32 n)  // number derivative
   RAPT::rsPrimeFactors(n, p, e);
 
   double s = 0; // sum of fractions - use a rational number class later
-  for(int i = 0; i < p.size(); i++)
+  for(size_t i = 0; i < p.size(); i++)
     s += (double)e[i] / (double)p[i];
 
   double ns = n*s;
@@ -2843,7 +2905,7 @@ void arithmeticDerivative()
     x[i] = i;
     d[i] = numDeriv(i);
   }
-  int dummy = 0;
+  //int dummy = 0;
 }
 /*
 https://oeis.org/A003415/list

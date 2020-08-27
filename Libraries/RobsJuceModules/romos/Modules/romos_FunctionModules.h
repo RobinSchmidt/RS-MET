@@ -1,8 +1,6 @@
 #ifndef romos_FunctionModules_h
 #define romos_FunctionModules_h
 
-namespace romos
-{
 
 //-------------------------------------------------------------------------------------------------
 
@@ -118,7 +116,5 @@ public:
 // especially for the Formulas field, it would be nice to be multi-line
 // the class should automatically assign the names for the pins according to the Inputs/Outputs
 
-
-}
 
 #endif 

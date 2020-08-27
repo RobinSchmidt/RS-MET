@@ -9,9 +9,8 @@ typedef std::complex<double> rsComplexDbl; // get rid
 //}
 //// move to RSLib
 
-bool testAbsAndSign(std::string &reportString)
+bool testAbsAndSign()
 {
-  std::string testName = "rsAbsAndSign";
   bool testResult = true;
 
 
@@ -30,13 +29,11 @@ bool testAbsAndSign(std::string &reportString)
   // todo: test denormals, infinities, nans...
 
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
-bool testHyperbolicFunctions(std::string &reportString)
+bool testHyperbolicFunctions()
 {
-  std::string testName = "rsHyperbolicFunctions";
   bool testResult = true;
 
   double xMin = -2000.0;
@@ -85,13 +82,11 @@ bool testHyperbolicFunctions(std::string &reportString)
 
   }
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
-bool testSinc(std::string &reportString)
+bool testSinc()
 {
-  std::string testName = "rsSinc";
   bool testResult = true;
 
   double x, y;
@@ -128,7 +123,6 @@ bool testSinc(std::string &reportString)
   y = rsNormalizedSinc(x);
   testResult &= rsAbs(y) < EPS;
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -188,9 +182,8 @@ bool testSineIterator(double w, double p, double a)
     return false;
 }
 
-bool testFunctionIterators(std::string &reportString)
+bool testFunctionIterators()
 {
-  std::string testName = "FunctionIterators";
   bool testResult = true;
 
   // test complex exponential iterator with different values of z corresponding to decaying spiral
@@ -203,7 +196,6 @@ bool testFunctionIterators(std::string &reportString)
   testResult &= testSineIterator(2.5,  0.3, 1.2);
   testResult &= testSineIterator(2.5, -0.3, 1.2);
 
-  appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -248,9 +240,8 @@ bool testFunctionIterators(std::string &reportString)
 }
 */
 
-bool testWrap(std::string &reportString)
+bool testWrap()
 {
-  std::string testName = "WrapAround";
   bool r = true;
 
   double d;
@@ -271,22 +262,73 @@ bool testWrap(std::string &reportString)
   r &= (d = RAPT::rsInterpolateWrapped(9.0, 3.0, 0.5, 0.0, 10.0)) ==  1.0;
   r &= (d = RAPT::rsInterpolateWrapped(3.0, 9.0, 0.5, 0.0, 10.0)) ==  1.0;
 
-  appendTestResultToReport(reportString, testName, r);
+  return r;
+}
+
+bool testWindowFunctions(int N)
+{
+  bool r = true;
+
+  using Vec = std::vector<double>;
+  using WF = rsWindowFunction;
+  using WT = rsWindowFunction::WindowType;
+
+  Vec w(N);  // actual window produced by library code
+  Vec v(N);  // reference window produced by prototype code
+  double tol = 1.e-14;
+
+  // compare prototype and production code implementation of Dolph-Chebychev window with various 
+  // attenuations:
+  WF::dolphChebychev(&w[0], N, 20.); cheby_win(&v[0], N, 20.); r &= rsIsCloseTo(w, v, tol);
+  WF::dolphChebychev(&w[0], N, 40.); cheby_win(&v[0], N, 40.); r &= rsIsCloseTo(w, v, tol);
+  WF::dolphChebychev(&w[0], N, 60.); cheby_win(&v[0], N, 60.); r &= rsIsCloseTo(w, v, tol);
+  WF::dolphChebychev(&w[0], N, 80.); cheby_win(&v[0], N, 80.); r &= rsIsCloseTo(w, v, tol);
+
+  return r;
+}  
+
+bool testWindowFunctions()
+{
+  bool r = true;
+
+  r &= testWindowFunctions(16);  // N is a power of two
+  r &= testWindowFunctions(17);  // N is odd
+  r &= testWindowFunctions(18);  // N is even but not a power of two
+
+  return r;
+}
+
+
+bool testPeriodicDistance()
+{
+  bool r = true;
+
+  // should all be 1:
+  r &= rsDistanceToMultipleOf(  1.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf( -1.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf(  9.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf( -9.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf( 11.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf(-11.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf( 19.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf(-19.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf( 21.0, 10.0) == 1.0;
+  r &= rsDistanceToMultipleOf(-21.0, 10.0) == 1.0;
+
   return r;
 }
 
 bool testRealFunctions()
 {
-  std::string testName = "rsRealFunctions";
-  std::string dummy;
   bool testResult = true;
 
-  testResult &= testAbsAndSign(         dummy);
-  //testResult &= testHyperbolicFunctions(dummy); // test doesn't pass
-  testResult &= testSinc(               dummy);
-  testResult &= testFunctionIterators(  dummy);
-  testResult &= testWrap(               dummy);
+  testResult &= testAbsAndSign();
+  //testResult &= testHyperbolicFunctions(); // test doesn't pass
+  testResult &= testSinc();
+  testResult &= testFunctionIterators();
+  testResult &= testWrap();
+  testResult &= testWindowFunctions();
+  testResult &= testPeriodicDistance();
 
-  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }

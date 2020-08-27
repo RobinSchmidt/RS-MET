@@ -197,6 +197,8 @@ void plotMatrixRows(const RAPT::rsMatrix<T>& A)
   plt.plot();
 }
 
+/** Like the function above but with custom x-axis. The length of x should be equal to the number 
+of columns in the matrix. */
 template<class T>
 void plotMatrixRows(const RAPT::rsMatrix<T>& A, T* x)
 {
@@ -204,6 +206,16 @@ void plotMatrixRows(const RAPT::rsMatrix<T>& A, T* x)
   for(int i = 0; i < A.getNumRows(); i++)
     plt.addDataArrays(A.getNumColumns(), x, A.getRowPointerConst(i));
   plt.plot();
+}
+
+template<class T>
+void plotPolynomial(const T* a, int degree, T min, T max, int numPoints = 200)
+{
+  std::vector<T> x(numPoints), y(numPoints);
+  rsArrayTools::fillWithRangeLinear(&x[0], numPoints, min, max);
+  for(int i = 0; i < numPoints; i++)
+    y[i] = rsPolynomial<T>::evaluate(x[i], a, degree);
+  rsPlotArraysXY(numPoints, &x[0], &y[0]);
 }
 
 

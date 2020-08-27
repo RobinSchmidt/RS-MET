@@ -152,6 +152,12 @@ public:
     updateCoeffs();
   }
 
+  // todo: provide a helper function that computes the coefficients a,b, such that:
+  //   a * sinh(b*x1) = y1
+  //   a * sinh(b*x2) = y2
+  // for some user-given input points (x1,y1),(x2,y2). This leads to:
+  //   a = y1/sinh(b*x1) = y2/sinh(b*x2) -> y1/y2 = sinh(b*x1) / sinh(b*x2) -> solve for b...
+
 protected:
 
   void updateCoeffs()

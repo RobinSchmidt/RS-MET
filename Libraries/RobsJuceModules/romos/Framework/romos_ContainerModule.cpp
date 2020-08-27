@@ -1,5 +1,5 @@
 //#include "romos_ContainerModule.h"
-using namespace romos;
+//using namespace romos;
 
 //-------------------------------------------------------------------------------------------------
 // the processing functions:
@@ -512,7 +512,7 @@ void ContainerModule::deleteChildModule(Module *moduleToDelete, bool updateHasDe
         {
           if( targetModule->inputPins[pinIndex].sourceModule == this )
           {
-            if( targetModule->inputPins[pinIndex].outputIndex == outputIndex )
+            if( (int)targetModule->inputPins[pinIndex].outputIndex == outputIndex )
               targetModule->disconnectInputPin(pinIndex);
             else if( (int) targetModule->inputPins[pinIndex].outputIndex > outputIndex )
             {
@@ -644,7 +644,7 @@ ContainerModule* ContainerModule::containerizeModules(std::vector<Module*> modul
 
         // connect the input pin of the container that corresponds to the new input module to the original source-module:
         container->connectInputPinTo(numContainerInputs-1, sourceModule, sourceOutIndex);
-        int dummy  = 0;
+        //int dummy  = 0;
       }
     }
 
@@ -675,7 +675,7 @@ ContainerModule* ContainerModule::containerizeModules(std::vector<Module*> modul
               int tmpOutIndex = targetModule->inputPins[targetInputIndex].outputIndex;
               outputModule->connectInputPinTo(0, module, tmpOutIndex);
               targetModule->connectInputPinTo(targetInputIndex, container, numContainerOutputs-1);
-              int dummy = 0;
+              //int dummy = 0;
             }
           }
         }
@@ -790,7 +790,7 @@ void ContainerModule::addAudioConnection(AudioConnection *connectionToAdd)
                      connectionToAdd->getTargetModule(), connectionToAdd->getTargetInputIndex());
 }
 
-bool ContainerModule::deleteAudioConnection(Module *sourceModule, int outputIndex, Module *targetModule, int inputIndex)
+bool ContainerModule::deleteAudioConnection(Module* /*sourceModule*/, int /*outputIndex*/, Module* targetModule, int inputIndex)
 {
   targetModule->disconnectInputPin(inputIndex);
   updateHasDelayedConnectionsFlag();
@@ -1171,7 +1171,7 @@ void ContainerModule::resetVoiceState(int voiceIndex)
   for(unsigned int i = 0; i < childModules.size(); i++)
     childModules[i]->resetVoiceState(voiceIndex);
 
-  int dummy = 0;
+  //int dummy = 0;
 }
 
 void romos::ContainerModule::freeMemory()
@@ -1324,7 +1324,7 @@ void romos::ContainerModule::assignProcessingFunctions()
   }
 }
 
-void romos::ContainerModule::outputsWereReAllocated(Module *moduleThatHasReAllocated)
+void romos::ContainerModule::outputsWereReAllocated(Module* /*moduleThatHasReAllocated*/)
 {
   for(unsigned int i = 0; i < childModules.size(); i++)
     childModules[i]->updateInputPointersAndInFrameStrides();
@@ -1413,7 +1413,7 @@ void ContainerModule::sortChildModuleArray()
         {
           if( targetModule->inputPins[pinIndex].outputIndex == oldIndex )
             targetModule->connectInputPinTo(pinIndex, this, newIndex);
-          int dummy = 0;
+          //int dummy = 0;
         }
       }
     }
@@ -1448,7 +1448,7 @@ void ContainerModule::mapApparentSourceToProcessingSource(Module * &sourceModule
   }
 }
 
-void ContainerModule::mapProcessingSourceToSourceApparent(Module * &sourceModule, int &sourceOutputPinIndex)
+void ContainerModule::mapProcessingSourceToSourceApparent(Module*& /*sourceModule*/, int& /*sourceOutputPinIndex*/)
 {
   DEBUG_BREAK; // not yet implemented
 }

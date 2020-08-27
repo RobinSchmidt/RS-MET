@@ -149,6 +149,11 @@ void rsImagePainter<TPix, TWgt, TCor>::paintDot3x3(TCor x, TCor y, TPix color, T
   // case, if we first de-interpolate horizontally and then vertically or the other way around?
   // ...if this works well, use a polynomial approximation - this might be even less costly than
   // renormalizing with the sqrt as we do now
+  // -ToDo: this strategy makes sense when the painting color is white and the background is black, 
+  //  but what if it's the other way around? -> figure out. for black-on-white painting, we perhaps 
+  //  want an inverted curve (i.e. one minus original curve) and in general, we may need some 
+  //  strategy that figures out the brightness of the background and paint color and choose a curve 
+  //  that depends on their brightness difference or ratio.
 
   //sum = a+b+c+d;  // 1, when (x,y) = (0.5,0.5) and 0.5 when (x,y) = (0,0)
   // can we find a formula that returns 1 in "both" cases? what about 

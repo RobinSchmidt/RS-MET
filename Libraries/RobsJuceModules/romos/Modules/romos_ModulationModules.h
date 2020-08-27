@@ -1,10 +1,6 @@
 #ifndef romos_ModulationModules_h
 #define romos_ModulationModules_h
 
-
-namespace romos
-{
-
 //-------------------------------------------------------------------------------------------------
 
 /** Under Construction - the shape parameter does not yet work right
@@ -67,13 +63,5 @@ public:
 };
 
 //-------------------------------------------------------------------------------------------------
-
-
-
-
-
-
-
-}
 
 #endif 

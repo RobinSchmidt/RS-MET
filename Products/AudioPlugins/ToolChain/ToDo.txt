@@ -1,0 +1,5 @@
+  Bugs:
+  -here, someone says, that the sequencer in AcidDevil always runs at 140 bpm
+   https://www.kvraudio.com/forum/viewtopic.php?p=7257577#p7257577
+  -Quadrifex: set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red 
+   that shouldn't

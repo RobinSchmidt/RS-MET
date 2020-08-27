@@ -1,0 +1,12 @@
+
+to make debugging work in CodeBlock on windows, one has to go to:
+
+  Setting -> Debugger
+  
+go on the "Default" tree item and set the path to the debugger, in my case:
+
+  C:\Program Files (x86)\CodeBlocks\MinGW\bin\gdb32.exe
+  
+for debugging 32 bit builds. Debugger type is set to GDB. It's also important to 
+uncheck the "Disable startup scripts (-nx) (GDB only)" checkbox in order to be able
+to see the contents of a std::vector
