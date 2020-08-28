@@ -401,7 +401,7 @@ void ToolChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
       m->setSampleRate(sampleRate);
       //m->setMetaParameterManager(metaParamManager);      // so, the meta-mapping gets recalled
       setupManagers(m);
-      XmlElement *moduleState = slotState->getChildElement(0);
+      auto moduleState = slotState->getChildElement(0);
       m->setStateFromXml(*moduleState, "", markAsClean); // set the state of the module before...
       addModule(m);                                      // ...adding it, so the newly created
       i++;                                               // editor has correct initial state
@@ -413,7 +413,7 @@ void ToolChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
 void ToolChain::recallModulationsFromXml(const XmlElement &xmlState)
 {
   modManager.removeAllConnections();
-  XmlElement* modXml = xmlState.getChildByName("Modulations");
+  auto modXml = xmlState.getChildByName("Modulations");
   if(modXml != nullptr)
     modManager.setStateFromXml(*modXml);  // recall modulation settings
 }

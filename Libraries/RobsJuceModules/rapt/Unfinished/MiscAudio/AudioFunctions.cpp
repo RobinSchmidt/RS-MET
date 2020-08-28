@@ -100,7 +100,7 @@ T rsSineFrequency(T y0, T y1, T y2, T smalll)
   // w = acos(a1/2):
   //return acos(0.5*(y0+y2)/y1);  // maybe we should clip the input to the acos to -1..+1
 
-  return acos(rsClip(0.5*(y0+y2)/y1, T(-1), T(+1))); 
+  return acos(rsClip<T>(0.5*(y0+y2)/y1, T(-1), T(+1))); 
 }
 
 template<class T>

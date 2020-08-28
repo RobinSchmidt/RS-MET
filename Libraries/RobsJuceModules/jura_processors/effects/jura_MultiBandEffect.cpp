@@ -137,7 +137,7 @@ void MultiBandEffect::setStateFromXml(const XmlElement& xml, const juce::String&
 
   // restore the states of the per-band modules:
   for(size_t i = 0; i < numBands; i++) {
-    XmlElement* childXml = xml.getChildByName(effectTypeString + String(i+1));
+   auto childXml = xml.getChildByName(effectTypeString + String(i+1));
     if(childXml != nullptr)
       perBandModules[i]->setStateFromXml(*childXml, "", markAsClean);
   }

@@ -198,7 +198,7 @@ XmlElement* samplePlayerStateToXml(SamplePlayer* player, XmlElement* xmlElementT
 bool samplePlayerStateFromXml(SamplePlayer* player, const XmlElement &xmlState)
 {
 
-  XmlElement* playbackParametersState = xmlState.getChildByName("PlaybackParameters");
+  auto playbackParametersState = xmlState.getChildByName("PlaybackParameters");
   if( playbackParametersState == NULL )
     return false;
 

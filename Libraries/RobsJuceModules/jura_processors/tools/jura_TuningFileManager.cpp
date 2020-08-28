@@ -138,11 +138,10 @@ bool TuningFileManager::loadTuningFromFile(const juce::File &fileToLoadFrom)
 
   if( fileToLoadFrom.hasFileExtension(juce::String("xml")) )
   {
-    XmlElement* xmlTuning = getXmlFromFile(fileToLoadFrom);
+    auto xmlTuning = getXmlFromFile(fileToLoadFrom);
     if( xmlTuning == NULL  )
       return false;
     tuningTableStateFromXml(theTable, *xmlTuning);
-    delete xmlTuning;
   }
   else if( fileToLoadFrom.hasFileExtension(juce::String("tun")) )
   {

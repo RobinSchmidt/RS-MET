@@ -61,7 +61,7 @@ void StraightlinerAudioModule::setStateFromXml(const XmlElement &xmlState,
   {
     // in the old versions, we has the 4 oscillators each as child AudioModule, whereas in newer 
     // versions we have the whole oscillatro-section as one child module ....
-    XmlElement* oscState = xmlState.getChildByName("Osc1");
+    auto oscState = xmlState.getChildByName("Osc1");
     if( oscState != NULL )
       oscSectionModule->osc1Module->setStateFromXml(*oscState, juce::String(), markAsClean);
 

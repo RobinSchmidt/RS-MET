@@ -285,7 +285,7 @@ void PhaseScope::setStateFromXml(const XmlElement& xmlState, const juce::String&
   bool markAsClean)
 {
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
-  XmlElement* xmlColorMap = xmlState.getChildByName("ColorMap");
+ auto xmlColorMap = xmlState.getChildByName("ColorMap");
   if(xmlColorMap != nullptr)
     colorMap.setFromXml(*xmlColorMap);
 }

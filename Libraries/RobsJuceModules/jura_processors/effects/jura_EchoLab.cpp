@@ -425,7 +425,7 @@ void EchoLabAudioModule::setStateFromXml(const XmlElement& xmlState,
   {
     if( xmlState.getChildElement(i)->hasTagName(juce::String("DelayLine")) )
     {
-      juce::XmlElement *delayLineState = xmlState.getChildElement(i);
+      auto delayLineState = xmlState.getChildElement(i);
       double delayTime = delayLineState->getDoubleAttribute(juce::String("DelayTime"), 1.0);
       double amplitude = delayLineState->getDoubleAttribute(juce::String("Amplitude"), 0.5);
       addDelayLine(delayTime, amplitude);
