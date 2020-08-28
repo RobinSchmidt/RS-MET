@@ -491,7 +491,7 @@ ToDo:
 -try a bump-function (infinitely often diffable at the junction) and a piecewise window using
  integrated bump tapers with adjustable-length flat section in the middle - look up planck-window
  ...might be useful as window for correlation analysis? -> try it!
- -maybe this can also be generated recursiveyl as we do in windowed-sinc interpolation? it involves
+ -maybe this can also be generated recursively as we do in windowed-sinc interpolation? it involves
   the exp-function which can be generated recursively
 
 // implement minimax optimized windows that have the minimum (maximum) sidelobe level

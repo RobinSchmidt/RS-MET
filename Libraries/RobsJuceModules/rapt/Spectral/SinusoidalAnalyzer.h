@@ -1,6 +1,8 @@
 #pragma once
 
-/** Creates a sinusoidal model of an input sound by means of identifying and tracking stable 
+/** Under construction
+
+Creates a sinusoidal model of an input sound by means of identifying and tracking stable 
 sinusoidal partials in its spectrogram. */
 
 template<class T>
@@ -53,21 +55,24 @@ public:
 
   /** Sets FFT size and block size for the underlying spectrogram at the same time (setting them 
   simultaneously avoids potential temporary violations of trafoSize >= blockSize (which triggers an
-  assertion) during setup). */
+  assertion) during setup). ToDo: get rid of setTrafoSize, setBlockSize */
   inline void setBlockAndTrafoSize(int newBlockSize, int newTrafoSize)
-  {
-    sp.setBlockAndTrafoSize(newBlockSize, newTrafoSize);
-  }
+  { sp.setBlockAndTrafoSize(newBlockSize, newTrafoSize); }
   
   /** Sets the hop size for the underlying spectrogram analysis. Should typically be some fraction 
   of the block size (such as 1/2, 1/4 or something). */
   inline void setHopSize(int newHopSize)     { sp.setHopSize(newHopSize); }
 
   /** Sets the analysis window type for the underlying spectrogram analysis. Should be one of the 
-  type in RAPT::rsWindowFunction::windowTypes. The window type affects the time-frequency tradeoff
+  types in RAPT::rsWindowFunction::windowTypes. The window type affects the time-frequency tradeoff
   and the precision of the partial frequency estimation.... */
   inline void setWindowType(rsWindowFunction::WindowType newType) 
   { sp.setAnalysisWindowType(newType); }
+  // ToDo: maybe switch to always using the Dolph-Chebychev window and let the user set up the 
+  // sidelobe level in dB ..i think (-> verify!), we do only care about the mainlobe-width vs 
+  // sidelobe-level tradeoff here and not about other features (sidelobe rolloff, adding up to 
+  // unity, etc.) and if these are the only features, we care about, then Dolph-Chebychev is 
+  // optimal
 
   // void setContinuationAlgorithm
 
@@ -192,7 +197,7 @@ protected:
    track in activeTracks
   -when no partner is found, create a new track ("birth"), i.e. start a new track in activeTracks
   -all active tracks that have not been used in this continuation are killed (i.e. moved to 
-   finishedTracks */
+   finishedTracks) */
   void continuePartialTracks1(
     std::vector<RAPT::rsInstantaneousSineParams<T>>& newPeakData,
     std::vector<RAPT::rsSinusoidalPartial<T>>& activeTracks,
