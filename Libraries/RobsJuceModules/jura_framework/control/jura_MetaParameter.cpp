@@ -279,7 +279,7 @@ void MetaControlledParameter::saveToXml(XmlElement* xml) const
 
 void MetaControlledParameter::recallFromXml(const XmlElement& xml) 
 {
-  XmlElement* mapXml = xml.getChildByName(getName() + "ParameterMap");
+  auto mapXml = xml.getChildByName(getName() + "ParameterMap");
   if(mapXml != nullptr) {
     metaMapper.setStateFromXml(*mapXml);
     double normVal = mapXml->getDoubleAttribute("NormalizedValue", getNormalizedDefaultValue());

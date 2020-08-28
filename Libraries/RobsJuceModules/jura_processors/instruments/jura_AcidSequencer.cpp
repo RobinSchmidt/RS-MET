@@ -46,14 +46,14 @@ void AcidSequencerAudioModule::setStateFromXml(const XmlElement &xmlState,
     {
       AcidPattern *pattern = wrappedAcidSequencer->getPattern(p);
       pattern->clear();
-      XmlElement *xmlPattern = xmlState.getChildByName(juce::String("Pattern") + juce::String(p));
+      auto xmlPattern = xmlState.getChildByName(juce::String("Pattern") + juce::String(p));
       if( xmlPattern != NULL )
       {
         pattern->setStepLength(xmlPattern->getDoubleAttribute("StepLength", 0.5));
         for(int s=0; s<pattern->getMaxNumSteps(); s++)
         {
           AcidNote   *note    = pattern->getNote(s);
-          XmlElement *xmlStep = xmlPattern->getChildByName(juce::String("Step") + juce::String(s));
+          auto xmlStep = xmlPattern->getChildByName(juce::String("Step") + juce::String(s));
           if( xmlStep != NULL )
           {
             note->gate   = xmlStep->getBoolAttribute("Gate",   false);

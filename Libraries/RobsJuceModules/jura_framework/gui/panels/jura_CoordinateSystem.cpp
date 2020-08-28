@@ -910,7 +910,7 @@ void CoordinateSystem::addTextToSvgDrawing(XmlElement* theSVG, String theText, f
     return;
 
   XmlElement* textContainer = new XmlElement(String("text"));
-  XmlElement* text          = XmlElement::createTextElement(theText);
+  auto text          = XmlElement::createTextElement(theText);
 
   String jString = String();
   if( justification.getFlags() == Justification::centredLeft )

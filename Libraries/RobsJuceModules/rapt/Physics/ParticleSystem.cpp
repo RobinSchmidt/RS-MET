@@ -359,7 +359,9 @@ like: f(d) = 1 / (c+d^p), f(d) = 1 / (c+d)^p = (1/(c+d))^p, f(d) = ((c+1)/(c+d))
 for some parameters c,p. If c = 0, p = 3, we get the old law. With c > 0, we can avoid 
 divisions-by-zero and with p != 3, we can have different asymptotic force-dependencies on the 
 distance. The asymptotic dependence is given by d * f(d) which reduces to d/d^3 = 1/d^2 for
-c = 0, p = 3.
+c = 0, p = 3. With c = 0, p = -1, we get f(d) = d which is like Hooke's law of linear springs. 
+Maybe, it's more convenient to use 1 / (c + d^-p) such that we get Hooke's law for p = 1
+..oh - wait - is that actually correct?
 
 Questions: 
 -Which of the above formulas is best?

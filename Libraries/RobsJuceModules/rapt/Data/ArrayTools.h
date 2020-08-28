@@ -21,6 +21,15 @@ todo:
 -inline, where it makes sense (trivial functions like copy/convert)
 -use workspace pointers instead of heap allocation, where applicable, keep the functions with 
  heap-allocations as convenience functions (create workspace -> call worker -> delete workspace)
+-maybe introduce another template parameters for the index-type such that it can be used with int 
+ or size_t (the former is used throughout much of my own code but size_t is used by std::vector
+ ...this incompatibility actually kinda sucks anyway). But be careful with functions that return an 
+ index (like find...) where we use the convention that -1 indicates failure ("not found"). Maybe 
+ define constants rsNone(T) that resolves to -1 or whatever else is appropriate...but maybe when we
+ just keep using -1 and let it be converted to size_t, it will map to the maximum (that's what 
+ 2-complement does for unsigned integers, right?) which actually is a reasonable convention to 
+ encode "not found" (although, std::find uses v.size() and not max(size_t)) - so it *may* just work 
+ fine without any further ado (unit tests would be needed)
 
 
 

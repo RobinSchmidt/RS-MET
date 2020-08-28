@@ -1130,7 +1130,7 @@ void addTextToSvgDrawing(XmlElement* svg, juce::String theText, float x, float y
   Justification justification, Colour color)
 {
   XmlElement* textContainer = new XmlElement(String("text"));
-  XmlElement* text = XmlElement::createTextElement(theText);
+ auto text = XmlElement::createTextElement(theText);
 
   String jString = String();
   if( justification.getFlags() == Justification::centredLeft )

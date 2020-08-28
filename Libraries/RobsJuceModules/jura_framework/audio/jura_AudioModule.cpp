@@ -395,7 +395,7 @@ void AudioModule::recallChildModulesFromXml(const XmlElement &xml, bool markAsCl
   {
     childModules[c]->setStateToDefaults();
     int indexAmongNameSakes = getIndexAmongNameSakes(childModules[c]);
-    XmlElement* childState = getChildElementByNameAndIndexAmongNameSakes(
+    auto childState = getChildElementByNameAndIndexAmongNameSakes(
       xml, childModules[c]->moduleName, indexAmongNameSakes);
     if( childState != NULL )
     {
@@ -408,7 +408,7 @@ void AudioModule::recallChildModulesFromXml(const XmlElement &xml, bool markAsCl
 void AudioModule::recallMidiMappingFromXml(const XmlElement &xml)
 {
   revertToDefaultMapping(); // rename to revertToDefaultMidiMapping
-  XmlElement* xmlMapping = xml.getChildByName("MidiMapping");
+  auto xmlMapping = xml.getChildByName("MidiMapping");
   if( xmlMapping == nullptr )
     return; // no mapping stored, nothing to do
   forEachXmlChildElement(*xmlMapping, xmlParamSetup) {
@@ -423,7 +423,7 @@ void AudioModule::recallMidiMappingFromXml(const XmlElement &xml)
 void AudioModule::recallMetaMappingFromXml(const XmlElement &xml)
 {
   detachMetaParameters();
-  XmlElement* xmlMapping = xml.getChildByName("MetaMapping");
+ auto xmlMapping = xml.getChildByName("MetaMapping");
   if( xmlMapping == nullptr )
     return; // no mapping stored, nothing to do
   forEachXmlChildElement(*xmlMapping, xmlParamSetup) {
@@ -438,7 +438,7 @@ void AudioModule::recallMetaValuesFromXml(const XmlElement &xml)
 {
   if(saveAndRecallMetas == true && metaParamManager != nullptr) {
     metaParamManager->resetAllToDefaults();
-    XmlElement* xmlValues = xml.getChildByName("MetaParameterValues");
+    auto xmlValues = xml.getChildByName("MetaParameterValues");
     if(xmlValues == nullptr)
       return;
     for(int i = 0; i < xmlValues->getNumAttributes(); i++) {
@@ -994,14 +994,10 @@ void AudioModuleEditor::loadPreferencesFromFile()
  auto xmlPreferences = getXmlFromFile( getPreferencesFileName() );
   if( xmlPreferences == nullptr )
     return;
-  XmlElement *xmlColors = xmlPreferences->getChildByName(juce::String("ColorScheme"));
+  auto xmlColors = xmlPreferences->getChildByName(juce::String("ColorScheme"));
   if(xmlColors == nullptr)
-  {
-    xmlPreferences.release(); // new - needs test
     return;
-  }
   setColourSchemeFromXml(*xmlColors);
-  xmlPreferences.release();
 }
 
 void AudioModuleEditor::savePreferencesToFile()

@@ -188,7 +188,7 @@ void AudioPlugin::setStateInformation(const void* data, int sizeInBytes)
   {
     // todo: retrieve values of the MetaParameters
 
-    auto xml = getXmlFromBinary(data, sizeInBytes);
+    auto const xml = getXmlFromBinary(data, sizeInBytes);
     //ParameterObserver::globalAutomationSwitch = false; // why this - threading problems? -> interferes with total recall in quadrifex
     ParameterObserver::setGuiAutomationSwitch(false);
     wrappedAudioModule->setStateFromXml(*xml, "recalled by host", false);
@@ -196,7 +196,6 @@ void AudioPlugin::setStateInformation(const void* data, int sizeInBytes)
     editorHeight = xml->getIntAttribute("EditorHeight", 0);
     ParameterObserver::setGuiAutomationSwitch(true);
     //ParameterObserver::globalAutomationSwitch = true;
-    xml.release();
 
     // some hosts (Tracktion) seem to keep and re-use an open GUI when a new project is loaded, so
     // we must make sure, that this re-used GUI is updated according to the new recalled state - we

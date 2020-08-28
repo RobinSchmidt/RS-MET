@@ -3,8 +3,9 @@
 /** A class to create a sinusoidal model for quasi-harmonic signals. The assumed harmonic 
 relationship between the partials allows for a different analysis algorithm that is tailored 
 specifically for harmonic signals and is supposed to give better results than a more general
-sinusoidal analysis algorithm that doesn't make such an assumption (if the assumption indeed holds
-true for the analyzed signal, of course). The algorithm works as follows:
+sinusoidal analysis algorithm (like in rsSinusoidalAnalyzer) that doesn't make such an assumption 
+(if the assumption indeed holds true for the analyzed signal, of course). The algorithm works as 
+follows:
 
 -pre-process audio (pitch flattening):
  -obtain cycle marks
@@ -17,7 +18,7 @@ true for the analyzed signal, of course). The algorithm works as follows:
   estimated, they are known in advance
  -only amplitude and phase have to be measured (i.e. simply read off from the FFT data)
  -update: now the FFT size is equal to some power-of-2 multiple of the cycle-length, if it's > 1,
-  then again partial frequecies must be estimated (but we know roughly where to look for them)
+  then again partial frequencies must be estimated (but we know roughly where to look for them)
 -post-process model data (account for pitch flattening):
  -move time instants of datapoints according to the inverse time-warping map
  -modify frequencies according to the applied stretch factors
@@ -244,6 +245,7 @@ public:
   /** Copies the content of the given signal block into the given transform buffer, appropriately
   padding with zeros, if necessary. Made static to enable it to be conveniently tested. */
   static void prepareBuffer(const std::vector<T>& signalBlock, std::vector<T>& trafoBuffer);
+  // todo: move to protected - this is a low-level internal function
 
 
   bool useOldCode = false; 

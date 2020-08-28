@@ -396,37 +396,38 @@ void rsWindowFunction::triangular(T *w, int N)
 template<class T>
 void rsWindowFunction::dolphChebychev(T* w, int M, T atten)
 {
-  int order = M-1;
-  T beta = cosh(acosh(pow(T(10), (rsAbs(atten)/T(20)))) / order);
-    // the rsAbs here allows for the attenuation to be given with or without the minus sign
+  rsAssertFalse();
+  //int order = M-1;
+  //T beta = cosh(acosh(pow(T(10), (rsAbs(atten)/T(20)))) / order);
+  //  // the rsAbs here allows for the attenuation to be given with or without the minus sign
 
-  // Compute the complex spectrum of the window:
-  std::vector<std::complex<T>> p(M);    // heap allocation
-  for(int k = 0; k < M; k++) {
-    T x = beta * cos(k*PI/M);
-    p[k] = rsPolynomial<T>::chebychevDirect(x, order); }
+  //// Compute the complex spectrum of the window:
+  //std::vector<std::complex<T>> p(M);    // heap allocation
+  //for(int k = 0; k < M; k++) {
+  //  T x = beta * cos(k*PI/M);
+  //  p[k] = rsPolynomial<T>::chebychevDirect(x, order); }
 
-  // Compute window by FFT (shouldn't it be an IFFT? maybe that just gives rise to a shift?):
-  using Trafo = rsFourierTransformerBluestein<T>;
-  int shift;
-  if(rsIsOdd(M)) {
-    Trafo::fft(&p[0], M, false);       // heap allocation
-    shift = (M+1) / 2; }
-  else {
-    std::complex<T> j(T(0), T(1));
-    for(int k = 0; k < M; k++)
-      p[k] *= exp(j*(k*PI/M));         // additional modulation required for even lengths
-    Trafo::fft(&p[0], M, false);       // heap allocation
-    shift = (M/2) + 1; }
+  //// Compute window by FFT (shouldn't it be an IFFT? maybe that just gives rise to a shift?):
+  //using Trafo = rsFourierTransformerBluestein<T>;
+  //int shift;
+  //if(rsIsOdd(M)) {
+  //  Trafo::fft(&p[0], M, false);       // heap allocation
+  //  shift = (M+1) / 2; }
+  //else {
+  //  std::complex<T> j(T(0), T(1));
+  //  for(int k = 0; k < M; k++)
+  //    p[k] *= exp(j*(k*PI/M));         // additional modulation required for even lengths
+  //  Trafo::fft(&p[0], M, false);       // heap allocation
+  //  shift = (M/2) + 1; }
 
-  // Apply a circular shift to the window and store it in the output array:
-  for(int k = 0; k < M; k++)
-    w[k] = p[(k+shift)%M].real();
+  //// Apply a circular shift to the window and store it in the output array:
+  //for(int k = 0; k < M; k++)
+  //  w[k] = p[(k+shift)%M].real();
 
-  rsArrayTools::normalizeMean(w, M);
-  // maybe make normalization optional - but if we don't normalize at all, what will we get? maybe
-  // we should normalize the peak if "normalize mean" is not desired?
-  // seems like with 60 dB attenuation, we get a mean of 1000...figure out!
+  //rsArrayTools::normalizeMean(w, M);
+  //// maybe make normalization optional - but if we don't normalize at all, what will we get? maybe
+  //// we should normalize the peak if "normalize mean" is not desired?
+  //// seems like with 60 dB attenuation, we get a mean of 1000...figure out!
 }
 // This implementation follows the one from scipy
 // https://github.com/scipy/scipy/blob/v0.19.0/scipy/signal/windows.py#L1293-L1416
@@ -491,7 +492,7 @@ ToDo:
 -try a bump-function (infinitely often diffable at the junction) and a piecewise window using
  integrated bump tapers with adjustable-length flat section in the middle - look up planck-window
  ...might be useful as window for correlation analysis? -> try it!
- -maybe this can also be generated recursiveyl as we do in windowed-sinc interpolation? it involves
+ -maybe this can also be generated recursively as we do in windowed-sinc interpolation? it involves
   the exp-function which can be generated recursively
 
 // implement minimax optimized windows that have the minimum (maximum) sidelobe level

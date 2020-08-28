@@ -79,7 +79,7 @@ XmlElement* getChildElementByNameAndIndexAmongNameSakes(const XmlElement& xml,
   else
   {
     int i = 0;
-    XmlElement* child = xml.getChildByName(name);
+    auto child = xml.getChildByName(name);
     while(child != NULL && i < index)
     {
       child = child->getNextElement();

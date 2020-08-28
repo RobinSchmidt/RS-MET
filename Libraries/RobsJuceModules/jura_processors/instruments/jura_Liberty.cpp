@@ -164,7 +164,7 @@ void LibertyAudioModule::createAndSetupEmbeddedModulesFromXml(const XmlElement& 
   if(  module->isContainerModule() || module->isTopLevelModule() ) {
     romos::ContainerModule *container = dynamic_cast<romos::ContainerModule*> (module);
     for(int i=0; i<xmlState.getNumChildElements(); i++) {
-      XmlElement* childState = xmlState.getChildElement(i);
+      auto childState = xmlState.getChildElement(i);
       rosic::rsString moduleTypeName = juceToRosic(childState->getTagName()); // get rid of that intermediate format
 
       int typeIdentifier = romos::moduleFactory.getModuleId(moduleTypeName.asStdString());
@@ -257,7 +257,7 @@ void LibertyAudioModule::createConnectionsFromXml(const XmlElement& xmlState, ro
   {
     for(unsigned int i=0; i<container->getNumChildModules(); i++)
     {
-      XmlElement    *childState  = xmlState.getChildElement(i);
+      auto childState  = xmlState.getChildElement(i);
       romos::Module *childModule = container->getChildModule(i);
       if( childState != NULL )
         createConnectionsFromXml(*childState, childModule);
@@ -297,7 +297,7 @@ void LibertyAudioModule::setStateFromXml(const XmlElement& xmlState, const juce:
   topLevelModule->deleteAllChildModules();       
   topLevelModule->disconnectAudioOutputModules();
 
-  XmlElement* topLevelModuleState = xmlState.getChildByName("TopLevelModule");
+  auto topLevelModuleState = xmlState.getChildByName("TopLevelModule");
   if( topLevelModuleState != nullptr )
     setModuleStateFromXml(*topLevelModuleState, topLevelModule);
   restoreTopLevelInOutStates(*topLevelModuleState);
@@ -1505,7 +1505,6 @@ void ModularBlockDiagramPanel::openContainerLoadDialog()
       getInterfaceMediator()->getContainerShownInDiagram()->addChildModule(newModule, true);
       //getInterfaceMediator()->sendModuleChangeNotification(getInterfaceMediator()->getContainerShownInDiagram(), NUM_CHILDREN);
       notifyMediator(NUM_CHILDREN);
-      xmlState.release();
     }
   }
   WRITE_TO_LOGFILE("ModularBlockDiagramPanel::openContainerLoadDialog finished\n");

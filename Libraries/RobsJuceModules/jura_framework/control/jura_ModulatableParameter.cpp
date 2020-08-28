@@ -544,7 +544,7 @@ void ModulationManager::setStateFromXml(const XmlElement& xmlState)
 
   // recall range limits:
   //resetAllTargetRangeLimits();
-  XmlElement* xmlLimits = xmlState.getChildByName("RangeLimits");
+  auto xmlLimits = xmlState.getChildByName("RangeLimits");
   if(xmlLimits != nullptr)
   {
     forEachXmlChildElement(*xmlLimits, targetLimitsXml)

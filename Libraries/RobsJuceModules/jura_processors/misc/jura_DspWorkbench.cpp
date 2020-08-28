@@ -107,7 +107,7 @@ void DspWorkbenchAudioModule::setStateFromXml(const XmlElement& xmlState,
   */
 
   // set up the parameters:
-  XmlElement* xmlParameters = xmlState.getChildByName("Parameters");
+  auto xmlParameters = xmlState.getChildByName("Parameters");
   XmlElement* xmlParameterSettings;
   double min, max, value;
   juce::String nameString;

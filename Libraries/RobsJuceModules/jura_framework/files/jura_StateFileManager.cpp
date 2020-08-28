@@ -49,7 +49,6 @@ bool StateFileManager::loadStateFromXmlFile(const File& fileToLoadFrom)
     {
       setStateFromXml(*xmlState, fileToLoadFrom.getFileNameWithoutExtension(), true);
       updateFileList();
-      xmlState.release();
       setStateName(fileToLoadFrom.getFileNameWithoutExtension(), true);
       //markStateAsClean();
       return true;
