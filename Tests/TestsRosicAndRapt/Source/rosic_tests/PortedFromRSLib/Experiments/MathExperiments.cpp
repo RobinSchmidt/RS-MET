@@ -1565,19 +1565,69 @@ void intervalIntegral()
   double I_trap = (H/2) * (f(b)+f(a));               // trapezoidal
   double I_simp = (H/6) * (f(a)+4*f((a+b)/2)+f(b));  // Simpson
 
-  // now with 4 values at x1 = a, x2 = a+h/3, x3 = a+2*h/3, x4 = b:
+  // now with 4 values at x1 = a, x2 = a+h/3, x3 = a+2*h/3, x4 = b and Simpson's 3/8 rule:
   double x0,x1,x2,x3,x4, f0,f1,f2,f3,f4;
   double h = (b-a)/3;                                     // size of subintervals
   x0 = a;      x1 = a + h;  x2 = a+2*h;  x3 = b;
   f0 = f(x0);  f1 = f(x1);  f2 = f(x2);  f3 = f(x3);
   double I_simp38 = (3*h/8) * (f0 + 3*(f1+f2) + f3);      // Simpson's 3/8 rule
 
+  // now Boole's rule:
+  h = (b-a)/4;
+  x0 = a;      x1 = a + h;  x2 = a+2*h;  x3 = a+3*h;  x4 = b;
+  f0 = f(x0);  f1 = f(x1);  f2 = f(x2);  f3 = f(x3);  f4 = f(x4);
+  double I_bool = (2*h/45) * (7*(f0+f4) + 32*(f1+f3) + 12*f2);
+
+  // now the new, experimental rule that uses derivatives at the endpoints a,b:
+  double d0, d1;
+  x0 = a;      x1 = b; 
+  f0 = f(x0);  f1 = f(x1);
+  d0 = fd(x0); d1 = fd(x1);
+
+  double y0[2], y1[2], c[4]; // c are the polynomial coeffs
+
+  y0[0] = f0; y0[1] = d0 * H;  // value and derivative at x = 0
+  y1[0] = f1; y1[1] = d1 * H;  // value and derivative at x = 1
+  // we need to scale the derivatives, see rsInterpolateSpline
+
+  getHermiteCoeffs1(y0, y1, c);
+
+  using Poly = rsPolynomial<double>;
+  using Vec  = std::vector<double>;
+
+
+  // plot the original function and the polynomial:
+  Vec x(N), y(N), z(N);
+  rsArrayTools::fillWithRangeLinear(&x[0], N, a, b);
+  for(int n = 0; n < N; n++)
+  {
+    y[n] = f(x[n]);
+    z[n] = Poly::evaluate((x[n]-a)/H, c, 3);
+  }
+  rsPlotVectorsXY(x, y, z);
+  // The interpolant matches at the nedpoints and has also a matching derivative there but it does
+  // not even remotely resemble the original function in between - so it seems to be not a workable
+  // approach for numeric integration...maybe it gets better when the sample-points are closer,
+  // but still. ..or maybe check the behavior with other functions like exp and sin
+
+  // todo: integrate the polynomial and evaluate it at a and b and let the Hermite integral be
+  // I_herm = P(b) - P(a) where P is the integral of the polynomial with coeffs c.
+
+  // other idea: use trapezoidal interpolation on a smoothed array
+
+
+
+
+
+
+
 
   // see:
   // https://en.wikipedia.org/wiki/Newton%E2%80%93Cotes_formulas#Closed_Newton%E2%80%93Cotes_formulas
-
-
   // https://www.wolframalpha.com/input/?i=integrate+1%2Fx+from+0.5+to+3
+
+  // todo: implement these as well:
+  // http://www.holoborodko.com/pavel/numerical-methods/numerical-integration/stable-newton-cotes-formulas/
 
   int dummy = 0;
 }
