@@ -224,11 +224,12 @@ public:
   "destination". If "copyStart" is less than 0 and/or the desired "copyLength" is such that the end 
   of the copied section is beyond the end of the source-array, the head and tail of "destination" 
   will be filled with zeros appropriately, i.e. we assume "source" to contain zero values for 
-  indices < 0 and indices >= sourceLength. */
+  indices < 0 and indices >= sourceLength. The types of the elements of the source and destination
+  arrays can be different, in which case a type conversion will be performed. */
   template<class T1, class T2>
   static void copySection(const T1 *source, int sourceLength, T2 *destination, 
     int copyStart, int copyLength);
-  // rename to convertSection
+  // what if the destination array is too short?
 
   // old - without type conversion
   //template<class T>
@@ -761,6 +762,9 @@ public:
   /** Swaps the contents of of buffer1 and buffer2 using an auxiliary buffer bufferTmp. All buffers
   are assumed to have a size of sizeInBytes. */
   static void swapDataBuffers(void *buffer1, void *buffer2, void *bufferTmp, int sizeInBytes);
+  // rename to swapContent, make a version that operates in place. maybe this function should not
+  // be in rsArrayTools - the void-pointers and byte-size do not really follow the general 
+  // pattern here
 
   /** Applies an affine tranform y = a*x + b to the array x, where a and b are chosen such that the
   transformed values span a range from targetMin to targetMax. Note that this works only, if the

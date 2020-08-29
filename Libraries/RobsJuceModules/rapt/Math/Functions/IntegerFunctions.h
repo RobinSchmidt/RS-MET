@@ -77,6 +77,7 @@ RS_INLINE TUInt rsPascalTriangle(TUInt *pascalTriangle, TUInt n, TUInt k)
 {
   return pascalTriangle[((n*(n+1))>>1)+k];
 }
+// rename to rsReadTriangularMatrix
 // \todo provide general functions triangleArrayRead/Write/Allocate/Free
 
 /** Returns one line of the Pascal triangle in the c-array which must be of length n+1,

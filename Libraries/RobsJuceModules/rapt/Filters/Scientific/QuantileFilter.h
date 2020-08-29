@@ -350,7 +350,7 @@ protected:
 
   std::vector<Node>  small, large;     // storage arrays of the nodes
   rsDoubleHeap<Node> dblHp;            // maintains large/small as double-heap
-  std::vector<int>   keyBuf;           // circular buffer of heap keys - rename to keyBuf
+  std::vector<int>   keyBuf;           // circular buffer of heap keys
   rsDelayBuffer<T>*  sigBuf = nullptr; // (possibly shared) buffer of delayed input samples
 
   int bufIdx = 0;    // index into keyBuf, mayb rename to keyIdx
@@ -558,7 +558,7 @@ public:
     return loGain * yL + hiGain * yH;
   }
   // maybe factor out a function to produce lowpass and highpass getSampleLoHi or something at the
-  // same time - client code may find that useful - or mayb getOutputs to be consistent with
+  // same time - client code may find that useful - or maybe getOutputs to be consistent with
   // rsStateVariableFilter
 
   /** Resets the filter into its initial state. */
@@ -571,7 +571,7 @@ public:
 
   /** Updates the internal algorithm parameters and embedded objects according to the user
   parameters. This is called in getSample, if the state is dirty but sometimes it may be
-  convenient to call it from client code too */
+  convenient to call it from client code, too. */
   virtual void updateInternals()
   {
     // compute internal and set up core parameters:

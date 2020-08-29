@@ -132,7 +132,7 @@ maintaining the heap-property. To understand what that property means, we must f
 flat array A as a binary tree in the following way:
 
   left(i)   = 2*i + 1          left child index of index i
-  reight(i) = 2*i + 2          right child index of index i
+  right(i)  = 2*i + 2          right child index of index i
   parent(i) = (i-1) / 2        parent index of index i
 
 Given that, the heap property says that for every node with index i (except the root), it holds

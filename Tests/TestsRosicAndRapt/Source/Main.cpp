@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  passed &= runUnitTestsRapt();
+  //passed &= runUnitTestsRapt();
   //passed &= runUnitTestsRosic();  // some tests there are still commented out
   //passed = passed;  // dummy
 
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
   //poleZeroPrototype();  // new implementation - but we don't need that
   //seriesConnectionDecay();
-  quantileFilter();
+  //quantileFilter();
 
   // Physics:
   //doublePendulum(); // takes long
@@ -253,7 +253,7 @@ int main(int argc, char* argv[])
 
   //numericDifferentiation();
   //numericIntegration(); // a.k.a. numeric "quadrature"
-  //nonUniformArrayDiffAndInt();  // numeric differentiation and integration of sampled data
+  nonUniformArrayDiffAndInt();  // numeric differentiation and integration of sampled data
 //  uniformArrayDiffAndInt();  // under construction
 
   //shiftPolynomial();

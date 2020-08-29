@@ -1294,8 +1294,8 @@ inline void rsArrayTools::swapDataBuffers(void *buffer1, void *buffer2, void *bu
 template<class T>
 void rsArrayTools::transformRange(const T* x, T* y, int N, T targetMin, T targetMax)
 {
-  T currentMin = rsArrayTools::minValue(x, N);
-  T currentMax = rsArrayTools::maxValue(x, N);
+  T currentMin = minValue(x, N);
+  T currentMax = maxValue(x, N);
   T a = (targetMin - targetMax) / (currentMin - currentMax);
   T b = (currentMax*targetMin - currentMin*targetMax) / (currentMax - currentMin);
   affineTrafo(x, y, N, a, b);
@@ -1315,12 +1315,10 @@ template<class T>
 void rsArrayTools::transposeSquareArray(T **A, int N)
 {
   int k = 1;
-  for(int i = k-1; i < N-1; i++)
-  {
+  for(int i = k-1; i < N-1; i++) {
     for(int j = k; j < N; j++)
       rsSwap(A[i][j], A[j][i]);
-    k++;
-  }
+    k++; }
 }
 
 template<class T>

@@ -3,8 +3,8 @@
 
 /** Class for representing fractions a.k.a. rational numbers, i.e. ratios of two integers. 
 Numerator and denominator are kept as signed integers "num", "den". On construction and in 
-arithmetic operations, fractions are always put into a canonical representation which is a reduced
-form where the minus sign (if any) is put into the numerator. */
+arithmetic operations, fractions are always put into a canonical representation which is a 
+reduced form where the minus sign (if any) is put into the numerator. */
 
 template<class T>  // T should be a signed int type
 class rsFraction

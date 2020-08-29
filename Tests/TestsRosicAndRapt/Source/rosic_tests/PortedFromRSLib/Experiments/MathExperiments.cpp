@@ -1765,6 +1765,21 @@ void uniformArrayDiffAndInt()
 // https://en.wikipedia.org/wiki/PID_controller ..maybe such a thing can be used for dynamics 
 // processors?
 
+// Other idea for numerical integration (of tabulated values):
+// -obtain estimates of derivative at each datapoint by a central difference
+// -pass a 3rd order Hermite interpolation polynomial between each pair of datapoints
+// -integrate that polynomial
+// -the end points are treated using a 2nd order polynomial that doesn't prescribe a derivative 
+//  value at that point (because those could be obtained only with 1st order accuracy...unless we
+//  do extrapolation or use an asymmetric formula)
+// -to find the integral of the polynomial, obtain the corresponding polynomial for the transformed
+//  range x0..x1 -> 0..1, y0..y1 -> 0..1. The intgral over this polynomial from 0 to 1 is just
+//  a0 + a1/2 + a2/3 + a3/4 (i think, the derivatives must also be transformed before computing the 
+//  coeffs)...the result of that must be tranformed back to the original ranges
+// -try it with the function 1/x whose integral is ln(x) and derivative -1/x^2 - maybe try to 
+//  estimate the integral from 0.5 to 2 using just one interval to figure out, if the transformation 
+//  works - compare to results using 4 sampled points using equal spacing and spacing according to
+//  roots of Chebychev polynomial
 
 
 void shiftPolynomial()
