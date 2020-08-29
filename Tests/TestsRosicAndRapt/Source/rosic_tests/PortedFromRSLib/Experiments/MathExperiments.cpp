@@ -1527,8 +1527,66 @@ void numericIntegration()
   //int dummy = 0;
 }
 
+// Other idea for numerical integration (of tabulated values):
+// -obtain estimates of derivative at each datapoint by a central difference
+// -pass a 3rd order Hermite interpolation polynomial between each pair of datapoints
+// -integrate that polynomial
+// -the end points are treated using a 2nd order polynomial that doesn't prescribe a derivative 
+//  value at that point (because those could be obtained only with 1st order accuracy...unless we
+//  do extrapolation or use an asymmetric formula)
+// -to find the integral of the polynomial, obtain the corresponding polynomial for the transformed
+//  range x0..x1 -> 0..1, y0..y1 -> 0..1. The intgral over this polynomial from 0 to 1 is just
+//  a0 + a1/2 + a2/3 + a3/4 (i think, the derivatives must also be transformed before computing the 
+//  coeffs)...the result of that must be tranformed back to the original ranges
+// -try it with the function 1/x whose integral is ln(x) and derivative -1/x^2 - maybe try to 
+//  estimate the integral from 0.5 to 2 using just one interval to figure out, if the transformation 
+//  works - compare to results using 4 sampled points using equal spacing and spacing according to
+//  roots of Chebychev polynomial
+void intervalIntegral() 
+{
+  // Tests various formulas for the partial integral inside a signel interval. These formulas can 
+  // then be used per interval in an actual composite quadrature routine.
+
+  static const int N = 100;   // number of sample points for plot of inteprolants
+  double a = 0.5;             // left interval end
+  double b = 2.5;             // right interval end
+
+  // our function, its derivative and antiderivative
+  auto f  = [](double x)->double{ return 1/x;      };  // function
+  auto fd = [](double x)->double{ return -1/(x*x); };  // derivative
+  auto fi = [](double x)->double{ return log(x);   };  // antiderivative or integral
+
+  double I_true = fi(b) - fi(a);  // the exact value of the integral
+
+  // compute integral with various formulas using only function values at end- and/or center 
+  // points:
+  double H = b-a;                                    // size of the whole interval
+  double I_mid  =  H    * f((a+b)/2);                // midpoint
+  double I_trap = (H/2) * (f(b)+f(a));               // trapezoidal
+  double I_simp = (H/6) * (f(a)+4*f((a+b)/2)+f(b));  // Simpson
+
+  // now with 4 values at x1 = a, x2 = a+h/3, x3 = a+2*h/3, x4 = b:
+  double x0,x1,x2,x3,x4, f0,f1,f2,f3,f4;
+  double h = (b-a)/3;                                     // size of subintervals
+  x0 = a;      x1 = a + h;  x2 = a+2*h;  x3 = b;
+  f0 = f(x0);  f1 = f(x1);  f2 = f(x2);  f3 = f(x3);
+  double I_simp38 = (3*h/8) * (f0 + 3*(f1+f2) + f3);      // Simpson's 3/8 rule
+
+
+  // see:
+  // https://en.wikipedia.org/wiki/Newton%E2%80%93Cotes_formulas#Closed_Newton%E2%80%93Cotes_formulas
+
+
+  // https://www.wolframalpha.com/input/?i=integrate+1%2Fx+from+0.5+to+3
+
+  int dummy = 0;
+}
+
+
 void nonUniformArrayDiffAndInt()
 {
+  intervalIntegral();
+
   // Test numerical differentiation and integration routines. We sample a sinewave at 
   // nonequidistant sample points and find the numeric derivative and  integral at these sample
   // points and compare them to the true derivative/integral values.
@@ -1765,21 +1823,7 @@ void uniformArrayDiffAndInt()
 // https://en.wikipedia.org/wiki/PID_controller ..maybe such a thing can be used for dynamics 
 // processors?
 
-// Other idea for numerical integration (of tabulated values):
-// -obtain estimates of derivative at each datapoint by a central difference
-// -pass a 3rd order Hermite interpolation polynomial between each pair of datapoints
-// -integrate that polynomial
-// -the end points are treated using a 2nd order polynomial that doesn't prescribe a derivative 
-//  value at that point (because those could be obtained only with 1st order accuracy...unless we
-//  do extrapolation or use an asymmetric formula)
-// -to find the integral of the polynomial, obtain the corresponding polynomial for the transformed
-//  range x0..x1 -> 0..1, y0..y1 -> 0..1. The intgral over this polynomial from 0 to 1 is just
-//  a0 + a1/2 + a2/3 + a3/4 (i think, the derivatives must also be transformed before computing the 
-//  coeffs)...the result of that must be tranformed back to the original ranges
-// -try it with the function 1/x whose integral is ln(x) and derivative -1/x^2 - maybe try to 
-//  estimate the integral from 0.5 to 2 using just one interval to figure out, if the transformation 
-//  works - compare to results using 4 sampled points using equal spacing and spacing according to
-//  roots of Chebychev polynomial
+
 
 
 void shiftPolynomial()
