@@ -1527,6 +1527,39 @@ void numericIntegration()
   //int dummy = 0;
 }
 
+template<class T>
+void composeLinearWithCubic(T* inner, T* outer, T* result)
+{
+  T* a = outer;
+  T* b = inner;
+  T* c = result;
+
+  T b02 = b[0]*b[0];
+  T b12 = b[1]*b[1];
+
+  c[0] = a[3]*b[0]*b02 + a[2]*b02 + a[1]*b[0] + a[0];
+  c[1] = 3*a[3]*b02*b[1] + 2*a[2]*b[0]*b[1] + a[1]*b[1];
+  c[2] = 3*a[3]*b[0]*b12 + a[2]*b12;
+  c[3] = a[3]*b[1]*b12;
+}
+// i think, c == a is allowed - maybe it's more convenient to pass b0,b1 directly because the 
+// caller may want to use expressions for these
+
+// We can compute the coeffs of the nested polynomial easily with sage:
+//   var("a0 a1 a2 a3 b0 b1 c0 c1 c2 c3")
+//   a(x) = a0 + a1*x + a2*x^2 + a3*x^3   # outer polynomial
+//   b(x) = b0 + b1*x                     # inner polynomial
+//   c(x) = a(b(x))                       # composed polynomial
+//   (expand(c)).collect(x)
+// which gives:
+//   a3*b1^3*x^3 + a3*b0^3 + a2*b0^2 + (3*a3*b0*b1^2 + a2*b1^2)*x^2 + a1*b0 
+//   + (3*a3*b0^2*b1 + 2*a2*b0*b1 + a1*b1)*x + a0
+// so:
+//   c0 = a3*b0^3 + a2*b0^2 + a1*b0 + a0
+//   c1 = 3*a3*b0^2*b1 + 2*a2*b0*b1 + a1*b1
+//   c2 = 3*a3*b0*b1^2 + a2*b1^2
+//   c3 = a3*b1^3
+
 // Other idea for numerical integration (of tabulated values):
 // -obtain estimates of derivative at each datapoint by a central difference
 // -pass a 3rd order Hermite interpolation polynomial between each pair of datapoints
@@ -1608,6 +1641,7 @@ void intervalIntegral()
   // approach for numeric integration...maybe it gets better when the sample-points are closer,
   // but still. ..or maybe check the behavior with other functions like exp and sin
 
+
   // Integrate the polynomial and evaluate it at a and b and let the Hermite integral be
   // I_herm = P(b) - P(a) where P is the integral of the polynomial with coeffs c:
   Poly::integral(c, c, 3);
@@ -1615,6 +1649,7 @@ void intervalIntegral()
   // this is still wrong - we need to convert the coeffs from the range 0..1 to a..b - to achieve 
   // this we need to nest it with a linear polynomial as inner polynomial - maybe make a function
   // Poly::composeLinearWithCubic(T* a, T* b, T* c)
+
 
 
   // other idea: use trapezoidal interpolation on a smoothed array
