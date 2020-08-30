@@ -1528,19 +1528,14 @@ void numericIntegration()
 }
 
 template<class T>
-void composeLinearWithCubic(T* inner, T* outer, T* result)
+void composeLinearWithCubic(T* a, T* c, T b0, T b1)
 {
-  T* a = outer;
-  T* b = inner;
-  T* c = result;
-
-  T b02 = b[0]*b[0];
-  T b12 = b[1]*b[1];
-
-  c[0] = a[3]*b[0]*b02 + a[2]*b02 + a[1]*b[0] + a[0];
-  c[1] = 3*a[3]*b02*b[1] + 2*a[2]*b[0]*b[1] + a[1]*b[1];
-  c[2] = 3*a[3]*b[0]*b12 + a[2]*b12;
-  c[3] = a[3]*b[1]*b12;
+  T b02 = b0*b0;
+  T b12 = b1*b1;
+  c[0]  = a[3]*b0*b02 + a[2]*b02 + a[1]*b0 + a[0];
+  c[1]  = 3*a[3]*b02*b1 + 2*a[2]*b0*b1 + a[1]*b1;
+  c[2]  = 3*a[3]*b0*b12 + a[2]*b12;
+  c[3]  = a[3]*b1*b12;
 }
 // i think, c == a is allowed - maybe it's more convenient to pass b0,b1 directly because the 
 // caller may want to use expressions for these
@@ -1642,13 +1637,15 @@ void intervalIntegral()
   // but still. ..or maybe check the behavior with other functions like exp and sin
 
 
+  composeLinearWithCubic(c, c, -a/H, 1/H);  // verify!
+
   // Integrate the polynomial and evaluate it at a and b and let the Hermite integral be
   // I_herm = P(b) - P(a) where P is the integral of the polynomial with coeffs c:
   Poly::integral(c, c, 3);
   double I_herm = Poly::evaluate(b, c, 4) -  Poly::evaluate(a, c, 4); // P(b) - P(a)
-  // this is still wrong - we need to convert the coeffs from the range 0..1 to a..b - to achieve 
-  // this we need to nest it with a linear polynomial as inner polynomial - maybe make a function
-  // Poly::composeLinearWithCubic(T* a, T* b, T* c)
+  // looks like in the right ballpark - more tests needed - maybe test it with a cubic polynomial
+  // as f - then we should get the exact result
+
 
 
 
