@@ -1527,6 +1527,7 @@ void numericIntegration()
   //int dummy = 0;
 }
 
+/*
 template<class T>
 void composeLinearWithCubic(T* a, T* c, T b0, T b1)
 {
@@ -1537,6 +1538,7 @@ void composeLinearWithCubic(T* a, T* c, T b0, T b1)
   c[2]  = 3*a[3]*b0*b12 + a[2]*b12;
   c[3]  = a[3]*b1*b12;
 }
+*/
 // We can compute the coeffs of the nested polynomial easily with sage:
 //   var("a0 a1 a2 a3 b0 b1 c0 c1 c2 c3")
 //   a(x) = a0 + a1*x + a2*x^2 + a3*x^3   # outer polynomial
@@ -1551,6 +1553,8 @@ void composeLinearWithCubic(T* a, T* c, T b0, T b1)
 //   c1 = 3*a3*b0^2*b1 + 2*a2*b0*b1 + a1*b1
 //   c2 = 3*a3*b0*b1^2 + a2*b1^2
 //   c3 = a3*b1^3
+
+
 
 // Other idea for numerical integration (of tabulated values):
 // -obtain estimates of derivative at each datapoint by a central difference
@@ -1638,15 +1642,15 @@ void intervalIntegral()
   // approach for numeric integration...maybe it gets better when the sample-points are closer,
   // but still. ..or maybe check the behavior with other functions like exp and sin
 
-
-  composeLinearWithCubic(c, c, -a/H, 1/H);  // in general: b0 = -x0/(x1-x0), b1 = 1/(x1-x0)
-
   // Integrate the polynomial and evaluate it at a and b and let the Hermite integral be
   // I_herm = P(b) - P(a) where P is the integral of the polynomial with coeffs c:
+  Poly::composeLinearWithCubic(c, c, -a/H, 1/H);  // in general: b0 = -x0/(x1-x0), b1 = 1/(x1-x0)
   Poly::integral(c, c, 3);
   double I_herm = Poly::evaluate(b, c, 4) -  Poly::evaluate(a, c, 4); // P(b) - P(a)
   // if we use the cubic polynomial for f, all schemes based on 3rd cubic polynomials should 
   // compute the exact result up to rounding error - which seems to work
+  // ToDo: absorb the whole computation in a single function that takes as input x0, x1, y0, y1,
+  // y0d, y1d and returnd the integral
 
 
 

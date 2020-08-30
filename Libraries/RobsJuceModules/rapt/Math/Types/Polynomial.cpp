@@ -319,6 +319,31 @@ void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c)
 }
 // maybe make a version that uses a workspace
 
+template<class T>
+void rsPolynomial<T>::composeLinearWithCubic(T* a, T* c, T b0, T b1)
+{
+  T b02 = b0*b0;
+  T b12 = b1*b1;
+  c[0]  = a[3]*b0*b02 + a[2]*b02 + a[1]*b0 + a[0];
+  c[1]  = T(3)*a[3]*b02*b1 + T(2)*a[2]*b0*b1 + a[1]*b1;
+  c[2]  = T(3)*a[3]*b0*b12 + a[2]*b12;
+  c[3]  = a[3]*b1*b12;
+}
+// We can compute the coeffs of the nested polynomial easily with sage:
+//   var("a0 a1 a2 a3 b0 b1 c0 c1 c2 c3")
+//   a(x) = a0 + a1*x + a2*x^2 + a3*x^3   # outer polynomial
+//   b(x) = b0 + b1*x                     # inner polynomial
+//   c(x) = a(b(x))                       # composed polynomial
+//   (expand(c)).collect(x)
+// which gives:
+//   a3*b1^3*x^3 + a3*b0^3 + a2*b0^2 + (3*a3*b0*b1^2 + a2*b1^2)*x^2 + a1*b0 
+//   + (3*a3*b0^2*b1 + 2*a2*b0*b1 + a1*b1)*x + a0
+// so:
+//   c0 = a3*b0^3 + a2*b0^2 + a1*b0 + a0
+//   c1 = 3*a3*b0^2*b1 + 2*a2*b0*b1 + a1*b1
+//   c2 = 3*a3*b0*b1^2 + a2*b1^2
+//   c3 = a3*b1^3
+
 template <class T>
 void rsPolynomial<T>::coeffsForNegativeArgument(const T *a, T *am, int N)
 {

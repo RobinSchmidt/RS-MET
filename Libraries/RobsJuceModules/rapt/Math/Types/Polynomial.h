@@ -432,6 +432,11 @@ public:
   static void compose(const T* a, int aN, const T* b, int bN, T* c);
   // allocates heap memory
 
+  /** Composes (nests) the outer polynomial a(x) = a0 + a1*x + a2*x^2 + a3*x^3 with the inner
+  polynomial b(x) = b0 + b1*x and writes the resulting cofficients into c (which may point to the
+  same array as a for in-place use). */
+  static void composeLinearWithCubic(T* a, T* c, T b0, T b1);
+
   /** Given an array of polynomial coefficients "a" such that
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "am") the coefficients for
   a polynomial q(x) such that q(x) = p(-x). This amounts to sign-inverting all coefficients which
