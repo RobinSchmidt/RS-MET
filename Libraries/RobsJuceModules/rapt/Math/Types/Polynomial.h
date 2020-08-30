@@ -443,7 +443,7 @@ public:
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "aShifted") the coefficients
   for a polynomial q(x) such that q(x) = p(x-x0). */
   static void coeffsForShiftedArgument(const T *a, T *aShifted, int N, T x0);
-  // allocates heap memory
+  // allocates heap memory and algo is O(N^2) - can this be done better?
   // rename to shiftArgument, maybe move into "Conversions" section
 
 

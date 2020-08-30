@@ -1584,7 +1584,7 @@ void intervalIntegral()
   f0 = f(x0);  f1 = f(x1);
   d0 = fd(x0); d1 = fd(x1);
 
-  double y0[2], y1[2], c[4]; // c are the polynomial coeffs
+  double y0[2], y1[2], c[5]; // c are the polynomial coeffs, 5 because of later integration
 
   y0[0] = f0; y0[1] = d0 * H;  // value and derivative at x = 0
   y1[0] = f1; y1[1] = d1 * H;  // value and derivative at x = 1
@@ -1599,28 +1599,25 @@ void intervalIntegral()
   // plot the original function and the polynomial:
   Vec x(N), y(N), z(N);
   rsArrayTools::fillWithRangeLinear(&x[0], N, a, b);
-  for(int n = 0; n < N; n++)
-  {
+  for(int n = 0; n < N; n++) {
     y[n] = f(x[n]);
-    z[n] = Poly::evaluate((x[n]-a)/H, c, 3);
-  }
+    z[n] = Poly::evaluate((x[n]-a)/H, c, 3); }
   rsPlotVectorsXY(x, y, z);
   // The interpolant matches at the nedpoints and has also a matching derivative there but it does
   // not even remotely resemble the original function in between - so it seems to be not a workable
   // approach for numeric integration...maybe it gets better when the sample-points are closer,
   // but still. ..or maybe check the behavior with other functions like exp and sin
 
-  // todo: integrate the polynomial and evaluate it at a and b and let the Hermite integral be
-  // I_herm = P(b) - P(a) where P is the integral of the polynomial with coeffs c.
+  // Integrate the polynomial and evaluate it at a and b and let the Hermite integral be
+  // I_herm = P(b) - P(a) where P is the integral of the polynomial with coeffs c:
+  Poly::integral(c, c, 3);
+  double I_herm = Poly::evaluate(b, c, 4) -  Poly::evaluate(a, c, 4); // P(b) - P(a)
+  // this is still wrong - we need to convert the coeffs from the range 0..1 to a..b - to achieve 
+  // this we need to nest it with a linear polynomial as inner polynomial - maybe make a function
+  // Poly::composeLinearWithCubic(T* a, T* b, T* c)
+
 
   // other idea: use trapezoidal interpolation on a smoothed array
-
-
-
-
-
-
-
 
   // see:
   // https://en.wikipedia.org/wiki/Newton%E2%80%93Cotes_formulas#Closed_Newton%E2%80%93Cotes_formulas
@@ -1672,7 +1669,13 @@ void nonUniformArrayDiffAndInt()
   //plotData(N, x, y, yd, ydn);
   plotData(N, x, y, yd, ydn, yi, yin);
 }
-
+// Goal: write a numerical integration algorithm that has O(1) memory usage (no arrays are 
+// allocated internally), can be used in place (yi may overwrite y) and computes the integral over 
+// a natural cubic spline interpolant. First, we need a variant of the Thomas algorithm that 
+// doesn't need to get arrays of the diagonal elements - instead it should take 9 values: 
+// a11,a12,a21, a22,a23,a32, aNN,aMN,aNM, where M=N-1 - it is assumed that a22,a23,a32 are repeated
+// along the diagonal and only the 3 top-left, 3 repeated diagonal and 3 bottom-right elements are
+// specified. Implement a variant based on a Hermite interpolant first - because that is simpler
 
 /*
 template<class T>
