@@ -1537,9 +1537,6 @@ void composeLinearWithCubic(T* a, T* c, T b0, T b1)
   c[2]  = 3*a[3]*b0*b12 + a[2]*b12;
   c[3]  = a[3]*b1*b12;
 }
-// i think, c == a is allowed - maybe it's more convenient to pass b0,b1 directly because the 
-// caller may want to use expressions for these
-
 // We can compute the coeffs of the nested polynomial easily with sage:
 //   var("a0 a1 a2 a3 b0 b1 c0 c1 c2 c3")
 //   a(x) = a0 + a1*x + a2*x^2 + a3*x^3   # outer polynomial
@@ -1580,9 +1577,14 @@ void intervalIntegral()
   double b = 2.5;             // right interval end
 
   // our function, its derivative and antiderivative
-  auto f  = [](double x)->double{ return 1/x;      };  // function
-  auto fd = [](double x)->double{ return -1/(x*x); };  // derivative
-  auto fi = [](double x)->double{ return log(x);   };  // antiderivative or integral
+  //auto f  = [](double x)->double{ return 1/x;      };  // function
+  //auto fd = [](double x)->double{ return -1/(x*x); };  // derivative
+  //auto fi = [](double x)->double{ return log(x);   };  // antiderivative or integral
+
+  // for testing, if the polynomial is found correctly, we use a cubic polynomial as function:
+  auto f  = [](double x)->double{ return x*x*x - 2*x*x;         };  // x^3 - 2x^2
+  auto fd = [](double x)->double{ return 3*x*x - 4*x;           };  // 3x^2 - 4x
+  auto fi = [](double x)->double{ return x*x*x*x/4 - 2*x*x*x/3; };  // x^4/4 - 2x^3/3
 
   double I_true = fi(b) - fi(a);  // the exact value of the integral
 
@@ -1600,7 +1602,7 @@ void intervalIntegral()
   f0 = f(x0);  f1 = f(x1);  f2 = f(x2);  f3 = f(x3);
   double I_simp38 = (3*h/8) * (f0 + 3*(f1+f2) + f3);      // Simpson's 3/8 rule
 
-  // now Boole's rule:
+  // Boole's rule:
   h = (b-a)/4;
   x0 = a;      x1 = a + h;  x2 = a+2*h;  x3 = a+3*h;  x4 = b;
   f0 = f(x0);  f1 = f(x1);  f2 = f(x2);  f3 = f(x3);  f4 = f(x4);
@@ -1631,20 +1633,20 @@ void intervalIntegral()
     y[n] = f(x[n]);
     z[n] = Poly::evaluate((x[n]-a)/H, c, 3); }
   rsPlotVectorsXY(x, y, z);
-  // The interpolant matches at the nedpoints and has also a matching derivative there but it does
+  // The interpolant matches at the endpoints and has also a matching derivative there but it does
   // not even remotely resemble the original function in between - so it seems to be not a workable
   // approach for numeric integration...maybe it gets better when the sample-points are closer,
   // but still. ..or maybe check the behavior with other functions like exp and sin
 
 
-  composeLinearWithCubic(c, c, -a/H, 1/H);  // verify!
+  composeLinearWithCubic(c, c, -a/H, 1/H);  // in general: b0 = -x0/(x1-x0), b1 = 1/(x1-x0)
 
   // Integrate the polynomial and evaluate it at a and b and let the Hermite integral be
   // I_herm = P(b) - P(a) where P is the integral of the polynomial with coeffs c:
   Poly::integral(c, c, 3);
   double I_herm = Poly::evaluate(b, c, 4) -  Poly::evaluate(a, c, 4); // P(b) - P(a)
-  // looks like in the right ballpark - more tests needed - maybe test it with a cubic polynomial
-  // as f - then we should get the exact result
+  // if we use the cubic polynomial for f, all schemes based on 3rd cubic polynomials should 
+  // compute the exact result up to rounding error - which seems to work
 
 
 
