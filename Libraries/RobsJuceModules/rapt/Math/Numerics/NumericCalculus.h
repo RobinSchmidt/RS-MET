@@ -352,6 +352,26 @@ public:
   // wave-equation simulation in the prototypes folder - maybe provide a 1D version, too - the 
   // 1D, 2D and 3D variants can then be used to simulate strings, membranes and rooms...
 
+
+  /** Numerically estimates partial derivatives into the x- and y-direction of a function u(x,y) 
+  that is defined on an irregular mesh. This is a preliminary for generalizing finite difference 
+  based solvers for partial differential equations to irregular meshes. The inputs are a mesh of 
+  vertices (represented as a graph in which the data associated with each node represents the 
+  location of the node in the x,y plane and the edges give the connectivity of the vertices) and a
+  std::vector of function values of the function u(x,y). The length of the u-array should match the 
+  number of vertices in the mesh and contain the function values associated with the x,y 
+  coordinates for the respective vertex (i.e. the vertex with the same index). Outputs are the 
+  arrays of estimated partial derivatives of u with respect to x and y (which should also be of 
+  the same length as u) which, taken together, form the gradient. The optional "weighting" argument
+  controls, how the error should be weighted. Possible values are: 0: unweighted, 1: Manhattan 
+  distance, 2: Euclidean distance - see comments in implementation for more details what this 
+  means. */
+  //template<class T>
+  static void gradient2D(const rsGraphWithVertexData<rsVector2D<T>>& mesh, 
+    const std::vector<T>& u, std::vector<T>& u_x, std::vector<T>& u_y, int weighting = 2);
+  // todo: use Tx, Ty
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 

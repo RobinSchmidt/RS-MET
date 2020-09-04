@@ -394,6 +394,10 @@ template void RAPT::rsNumericDifferentiator<double>::hessian(
 template void RAPT::rsNumericDifferentiator<double>::derivative(
   const double *x, const double *y, double *yd, int N, bool extrapolateEnds);
 
+template void RAPT::rsNumericDifferentiator<float>::gradient2D(
+  const rsGraphWithVertexData<rsVector2D<float>>& mesh, 
+  const std::vector<float>& u, std::vector<float>& u_x, std::vector<float>& u_y, int weighting);
+
 
 template double RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(double fl, double fu);
 template double RAPT::rsBandwidthConverter::bandedgesToAbsoluteBandwidth(double fl, double fu);

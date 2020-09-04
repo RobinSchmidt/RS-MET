@@ -112,6 +112,89 @@ void rsNumericDifferentiator<T>::derivative(
 // -make a numeric derivative routine that is the inverse of the trapezoidal integrator
 //  rsDifferentiateTrapezoidal
 
+
+template<class T>
+void rsNumericDifferentiator<T>::gradient2D(
+  const RAPT::rsGraphWithVertexData<RAPT::rsVector2D<T>>& mesh, 
+  const std::vector<T>& u, std::vector<T>& u_x, std::vector<T>& u_y, int weighting)
+{
+  // Algorithm:
+  // The algorithm is based on the fact that the directional derivative into the direction of an 
+  // arbitrary vector a can be expressed as: D_a(u) = <g,a> where D_a(u) denotes the directional
+  // derivative of the function u(x,y) in the a-direction, g denotes the gradient of u and <g,a> 
+  // denotes the scalar product of vectors g and a. For each vertex, we compute numerical estimates
+  // of the directional derivatives into the directions of all its neighbors and set up the above 
+  // equation. When a vertex has more than 2 neighbors (which is the typical case), we have more 
+  // equations than degrees of freedom (g_x,g_y), so the system is overdetermined and we compute a
+  // weighted least squares solution. The weight can be given either as all one (unweighted), the 
+  // reciprocal of the Manhattan distance (between the current vertex and its current neighbor) or 
+  // the reciprocal of the Euclidean distance. The rationale of using reciprocals of distances as 
+  // weights is that we expect the values obtained by the formula to be further off from the true
+  // values, the greater the distance between the vertices, but some experimentation for what kind
+  // of weighting gives the most accurate results is encouraged.
+
+  int N = mesh.getNumVertices();
+  rsAssert((int) u.size()   == N);
+  rsAssert((int) u_x.size() == N);
+  rsAssert((int) u_y.size() == N);
+  using Vec2 = rsVector2D<T>;
+  using VecI = std::vector<int>;
+  rsFill(u_x, 0.f);
+  rsFill(u_y, 0.f);
+  rsMatrix2x2<T> A;
+  Vec2 b, g;
+  T w = T(1);
+  for(int i = 0; i < N; i++)
+  {
+    Vec2 vi  = mesh.getVertexData(i);           // vertex, at which we calculate the derivative
+    VecI nvi = mesh.getNeighbors(i);            // indices of all neighbors of vi
+    if(nvi.empty()) continue;                   // skip iteration, if vi has no neighbors
+    A.setZero();
+    b.setZero();
+    for(int j = 0; j < (int)nvi.size(); j++)    // loop over neighbors of vertex i
+    {
+      // Compute intermediate variables:
+      int  k  = nvi[j];                         // index of current neighbor of vi
+      Vec2 vk = mesh.getVertexData(k);          // current neighbor of vi
+      Vec2 dv = vk   - vi;                      // difference vector
+      T    du = u[k] - u[i];                    // difference in function value
+      if(     weighting == 1)  w = T(1) / (rsAbs(dv.x) + rsAbs(dv.y));
+      else if(weighting == 2)  w = T(1) / rsNorm(dv);
+
+      // Accumulate least-squares-matrix and right-hand-side vector:
+      A.a += w * dv.x * dv.x;
+      A.b += w * dv.x * dv.y;
+      A.d += w * dv.y * dv.y;
+      b.x += w * dv.x * du;
+      b.y += w * dv.y * du;
+    }
+    A.c = A.b;  // A.c is still zero - make A symmetric
+
+    // Compute gradient that best explains the measured directional derivatives in the least 
+    // squares sense and store it in output arrays:
+    rsMatrix2x2<T>::solve(A, g, b);  // g is the gradient vector that solves A*g = b
+    u_x[i] = g.x;
+    u_y[i] = g.y;
+  }
+}
+// todo:
+// -make it work for vertices with 1 neighbor - we currently encounter a singular matrix A in this
+//  case (which makes sense, i guess - we get infinitely many solutions - we need to pick the 
+//  minimum norm solution)
+//  -perhaps, the solve function should detect a zero determinant and switch between computing
+//   a least-squares solution in case of an inconsistent RHS and a minimum norm solution in case
+//   of a consistent RHS
+// -optimize: the VecI nvi = ... may trigger a heap allocation and copying - avoid that by
+//  using a (const) reference
+// -maybe try using references in other places as well (for Vec2, etc. - but it's not that critical
+//  because copying these is trivial
+// -the "solve" call could be omptimized - maybe we don'T even need an explicit matrix and/or may
+//  make use of the symmetry of A (maybe a special solveSymmetric function could be used)
+// -maybe avoid the rsFill - instead, set values to zero before "continue"
+
+
+
+
 template<class T>
 void rsNumericDifferentiator<T>::stencilCoeffs(const T* x, int N, int d, T* c)
 {
