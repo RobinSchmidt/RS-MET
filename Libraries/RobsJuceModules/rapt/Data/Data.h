@@ -12,7 +12,7 @@ namespace RAPT
 #include "Range.h"
 #include "MultiArray.h"
 #include "Trees.h"
-
+#include "Graphs.h"
 
 }
 
