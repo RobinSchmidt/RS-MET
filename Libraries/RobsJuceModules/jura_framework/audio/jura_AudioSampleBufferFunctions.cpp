@@ -90,10 +90,10 @@ void saveAudioSampleBufferToFile(AudioSampleBuffer* bufferToSave, File fileToSav
     return;
 
   // create a FileOutputStream to write into:
-  FileOutputStream* outputStream = fileToSaveTo.createOutputStream();
+  std::unique_ptr<FileOutputStream> outputStream = fileToSaveTo.createOutputStream();
 
   // create a writer for the stream:
-  AudioFormatWriter *writer = audioFormat->createWriterFor(outputStream, sampleRateToUse, 
+  AudioFormatWriter *writer = audioFormat->createWriterFor(outputStream.get(), sampleRateToUse, 
     bufferToSave->getNumChannels(), bitsPerSample, StringPairArray(), 0);
 
   // if we have a writer, use it, otherwise clean up and shown an error message box:
@@ -111,10 +111,6 @@ void saveAudioSampleBufferToFile(AudioSampleBuffer* bufferToSave, File fileToSav
   }
   else
   {
-    // as there was no writer to take care of the deletion of the the outputStream, we have to do 
-    // it ourselves:
-    delete outputStream;
-
     // show an error reporting message box:
     showAudioFileWriteErrorBox(fileToSaveTo.getFullPathName());
   }
