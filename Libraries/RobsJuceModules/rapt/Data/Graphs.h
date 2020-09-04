@@ -13,7 +13,7 @@ std::vector, so they can be addressed by their indices and each vertex contains 
 std::vector<int> with the indices of its connected ("neighbor") vertices, so this is basically an 
 adjacency list representation. An example use is for irregular meshes of vertices for solving 
 partial differential equations - in this case, the data type for the vertices could be 
-rsVector2D<float> or similar. */
+rsVector2D<float> or similar. @see rsNumericDifferentiator::gradient2D for an example. */
 
 template<class T>
 class rsGraphWithVertexData
@@ -48,10 +48,10 @@ public:
   /** Returns the number of neighbors that are adjacent to vertex i. */
   int getNumNeighbors(int i) const { return (int) vertices[i].neighbors.size(); }
 
-  /** Returns a const reference to the array of neighbors of vertex i */
+  /** Returns a const reference to the array of neighbors of vertex i. */
   const std::vector<int>& getNeighbors(int i) const { return vertices[i].neighbors; }
 
-  /** Returns a const pointer to the data that is associated with vertex i */
+  /** Returns a const reference to the data that is associated with vertex i. */
   const T& getVertexData(int i) const { return vertices[i].data; }
 
   //-----------------------------------------------------------------------------------------------
@@ -72,11 +72,7 @@ protected:
 
 };
 
-
-
-
-
-
+// ToDo:
 // -implement functions like isConnected(int i, int j), containsDuplicateEdges(), 
 //  containsDuplicateVertices
 // -maybe instead of sdt::vector, we could use rsSortedSet
@@ -84,8 +80,5 @@ protected:
 //  array of edges - which data-structure is better may depend on the situation and maybe it makes
 //  sense to have both variants
 // -maybe allow (optionally) data to be associated with each edge
-
-
-
 
 #endif

@@ -125,8 +125,8 @@ void rsNumericDifferentiator<T>::gradient2D(
   // denotes the scalar product of vectors g and a. For each vertex, we compute numerical estimates
   // of the directional derivatives into the directions of all its neighbors and set up the above 
   // equation. When a vertex has more than 2 neighbors (which is the typical case), we have more 
-  // equations than degrees of freedom (g_x,g_y), so the system is overdetermined and we compute a
-  // weighted least squares solution. The weight can be given either as all one (unweighted), the 
+  // equations than degrees of freedom (u_x,u_y), so the system is overdetermined and we compute a
+  // weighted least squares solution. The weights can be given either as all ones (unweighted), the 
   // reciprocal of the Manhattan distance (between the current vertex and its current neighbor) or 
   // the reciprocal of the Euclidean distance. The rationale of using reciprocals of distances as 
   // weights is that we expect the values obtained by the formula to be further off from the true
@@ -146,8 +146,8 @@ void rsNumericDifferentiator<T>::gradient2D(
   T w = T(1);
   for(int i = 0; i < N; i++)
   {
-    Vec2 vi  = mesh.getVertexData(i);           // vertex, at which we calculate the derivative
-    VecI nvi = mesh.getNeighbors(i);            // indices of all neighbors of vi
+    const Vec2& vi  = mesh.getVertexData(i);    // vertex, at which we calculate the derivative
+    const VecI& nvi = mesh.getNeighbors(i);     // indices of all neighbors of vi
     if(nvi.empty()) continue;                   // skip iteration, if vi has no neighbors
     A.setZero();
     b.setZero();
@@ -155,7 +155,7 @@ void rsNumericDifferentiator<T>::gradient2D(
     {
       // Compute intermediate variables:
       int  k  = nvi[j];                         // index of current neighbor of vi
-      Vec2 vk = mesh.getVertexData(k);          // current neighbor of vi
+      const Vec2& vk = mesh.getVertexData(k);   // current neighbor of vi
       Vec2 dv = vk   - vi;                      // difference vector
       T    du = u[k] - u[i];                    // difference in function value
       if(     weighting == 1)  w = T(1) / (rsAbs(dv.x) + rsAbs(dv.y));
@@ -184,11 +184,7 @@ void rsNumericDifferentiator<T>::gradient2D(
 //  -perhaps, the solve function should detect a zero determinant and switch between computing
 //   a least-squares solution in case of an inconsistent RHS and a minimum norm solution in case
 //   of a consistent RHS
-// -optimize: the VecI nvi = ... may trigger a heap allocation and copying - avoid that by
-//  using a (const) reference
-// -maybe try using references in other places as well (for Vec2, etc. - but it's not that critical
-//  because copying these is trivial
-// -the "solve" call could be omptimized - maybe we don'T even need an explicit matrix and/or may
+// -the "solve" call could be optimized - maybe we don't even need an explicit matrix and/or may
 //  make use of the symmetry of A (maybe a special solveSymmetric function could be used)
 // -maybe avoid the rsFill - instead, set values to zero before "continue"
 

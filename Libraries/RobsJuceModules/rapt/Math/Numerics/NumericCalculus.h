@@ -366,10 +366,9 @@ public:
   controls, how the error should be weighted. Possible values are: 0: unweighted, 1: Manhattan 
   distance, 2: Euclidean distance - see comments in implementation for more details what this 
   means. */
-  //template<class T>
   static void gradient2D(const rsGraphWithVertexData<rsVector2D<T>>& mesh, 
     const std::vector<T>& u, std::vector<T>& u_x, std::vector<T>& u_y, int weighting = 2);
-  // todo: use Tx, Ty
+  // todo: maybe use a Tx template parameter as in derivative
 
 
   //-----------------------------------------------------------------------------------------------
