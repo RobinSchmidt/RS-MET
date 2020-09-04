@@ -148,7 +148,20 @@ void rsNumericDifferentiator<T>::gradient2D(
   {
     const Vec2& vi  = mesh.getVertexData(i);    // vertex, at which we calculate the derivative
     const VecI& nvi = mesh.getNeighbors(i);     // indices of all neighbors of vi
+
     if(nvi.empty()) continue;                   // skip iteration, if vi has no neighbors
+
+    if(nvi.size() == 1)
+    {
+      int  k  = nvi[0];
+      const Vec2& vk = mesh.getVertexData(k);
+      Vec2 dv = vk   - vi;                      // difference vector
+      T    du = u[k] - u[i];                    // difference in function value
+      rsLinearAlgebra::solveMinNorm(dv.x, dv.y, du, &u_x[i], &u_y[i]);
+      continue;
+    }
+
+
     A.setZero();
     b.setZero();
     for(int j = 0; j < (int)nvi.size(); j++)    // loop over neighbors of vertex i

@@ -48,6 +48,10 @@ public:
   template<class T>
   static void eigenvector2x2_2(T a, T b, T c, T d, T* vx, T* vy, bool normalize = true);
 
+  /** Solves a*x + b*y = p subject to x^2 + y^2 = min. */
+  template<class T>
+  static void solveMinNorm(T a, T b, T p, T* x, T* y);
+
   /** Solves the linear system of equations:
   \f[ a_{00}x_0      + a_{01}x_1      + \ldots + a_{0 (N-1)}    x_{N-1} &= b_0      \f] 
   \f[ a_{10}x_0      + a_{11}x_1      + \ldots + a_{1 (N-1)}    x_{N-1} &= b_1      \f] 
