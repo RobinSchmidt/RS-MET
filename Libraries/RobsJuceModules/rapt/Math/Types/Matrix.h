@@ -38,6 +38,9 @@ public:
   /** Sets up the elements of the matrix. */
   void setValues(T a, T b, T c, T d) { this->a = a; this->b = b; this->c = c; this->d = d; }
 
+  /** Sets all elements of the matrix to zero. */
+  void setZero() { this->a = this->b = this->c = this->d = T(0); }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -88,7 +91,7 @@ public:
     T ev1 = getEigenvalue1();
     T ev2 = getEigenvalue2();
     Mat I = identity();
-    if(ev1 != ev2) {
+    if(ev1 != ev2) {       // ToDo: maybe a tolerance is needed
       T ab  = T(1) / (ev1 - ev2);
       Mat X = ab * ((*this) - ev2*I);
       Mat Y = ab * (ev1*I - (*this));
