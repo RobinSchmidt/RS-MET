@@ -153,6 +153,7 @@ T rsDot(const rsVector2D<T>& a, const rsVector2D<T>& b)
 {
   return a.x * b.x + a.y * b.y;
 }
+// allow syntax a.dot(b);
 
 /** Returns the Euclidean norm of vector a. */
 template<class T>
@@ -160,6 +161,7 @@ T rsNorm(const rsVector2D<T>& a)
 {
   return sqrt(rsDot(a, a));
 }
+// allow syntax a.norm(); have also a.squaredNorm()
 
 
 
