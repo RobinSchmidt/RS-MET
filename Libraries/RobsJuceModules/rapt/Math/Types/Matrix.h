@@ -31,16 +31,14 @@ public:
   (...try to avoid using it - prefer RAII) */
   rsMatrix2x2() {}
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
-
 
   /** Sets up the elements of the matrix. */
   void setValues(T a, T b, T c, T d) { this->a = a; this->b = b; this->c = c; this->d = d; }
 
   /** Sets all elements of the matrix to zero. */
   void setZero() { this->a = this->b = this->c = this->d = T(0); }
-
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -143,7 +141,6 @@ public:
 
   static rsMatrix2x2<T> identity() { return rsMatrix2x2<T>(T(1), T(0), T(0), T(1)); }
 
-
   /** Returns the commutator of the two matrices A and B: C = A*B - B*A. In general, matrix
   multiplication is non-commutative, but for some special cases, it may be commutative nonetheless.
   The commutator captures, how non-commutative two matrices behave when being multiplied. If the
@@ -154,6 +151,22 @@ public:
   }
   // see: https://en.wikipedia.org/wiki/Commutator#Ring_theory
   // maybe implement also the anticommutatior defined there as: {A,B} = A*B + B*A
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Misc */
+
+  /** Solves A*x = b for x. */
+  static void solve(const rsMatrix2x2<T>& A, rsVector2D<T>& x, const rsVector2D<T>& b)
+  {
+    T tol = 1000 * RS_EPS(T);
+    rsAssert(rsAbs(A.getDeterminant()) > tol, "Handling of singular matrices not implemented");
+    rsMatrix2x2<T> Ai = A.getInverse();
+    x.x = Ai.a * b.x + Ai.b * b.y;
+    x.y = Ai.c * b.x + Ai.d * b.y;
+  }
+  // todo: optimize, handle singluar matrices: in the overdetermined case, produce a least squares
+  // approximation, in the underdetermined case, produce a minimum norm solution
+  // maybe implement it without using rsVector2D - just take references to coordinates instead
 
 };
 
