@@ -4,7 +4,6 @@
 /** This file contains data structures to represent graphs in the sense of sets of vertices that
 may be connected by edges. */
 
-
 //=================================================================================================
 
 /** Class to represent a graph that may have data stored at the vertices and/or the edges. What 
@@ -105,6 +104,8 @@ public:
   /** Convenience function to add an edge with a default value of 1, possibly symmetrically. */
   void addEdge(int i, int j, bool bothWays = false) { addEdge(i, j, TEdg(1), bothWays); }
 
+  // todo: setEdgeData(int i, int j, const TEdg& data), removeEdge(i, j), removeVertex(i)
+
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
@@ -122,8 +123,8 @@ public:
 
   /** Returns the number of edges in the whole graph. Note that if there's an edge from vertex i to
   vertex j and also one from vertex j to vertex i (the same edge backwards), both are counted. So
-  if you use this class for an undirected graph by adding symmetric edges, you may want to divide 
-  by 2. */
+  if you use this class for representing undirected graph by adding symmetric edges, you may want 
+  to divide by 2. */
   int getNumEdges() const
   {
     int n = 0;
@@ -159,8 +160,18 @@ protected:
 // -maybe instead of std::vector, we could use rsSortedSet - but maybe that should be deferred to
 //  a different implementation, with similar interface but different goals (like faster 
 //  determination whether two vertices are connected)
+//  ...but maybe that could be realized by a 3rd (and 4th) template parameter which for the storage
+//  container(s) which defaults to std::vector (maybe via a partial specialization). this could 
+//  then be replaced by something like rsSortedSet, if needed. It could be desirable to keep the 
+//  vertices and/or edges within each vertex sorted - care has to be taken: when reordering 
+//  vertices, edge targets must also be updated
 // -instead of having each vertex maintain a list of adjacent vertices, we could have an explicit
 //  array of edges - which data-structure is better may depend on the situation and maybe it makes
 //  sense to have both variants
+// -maybe numEdges could be cached - but maybe in a subclass
+// -maybe make a class rsGraphAlgorithms that contain static functions that manipulate graphs, the
+//  rsGraph class itself should provide only basic barebone functionality (if the algorithms were 
+//  added as methods, the class may grow unreasonably large - the number of such algorithms is too 
+//  vast)
 
 #endif

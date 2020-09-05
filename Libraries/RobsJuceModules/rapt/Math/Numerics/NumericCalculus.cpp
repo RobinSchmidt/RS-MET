@@ -138,9 +138,7 @@ void rsNumericDifferentiator<T>::gradient2D(
   rsAssert((int) u_x.size() == N);
   rsAssert((int) u_y.size() == N);
   using Vec2 = rsVector2D<T>;
-  using VecI = std::vector<int>;
-  //rsFill(u_x, 0.f);
-  //rsFill(u_y, 0.f);
+  //using VecI = std::vector<int>;
   rsMatrix2x2<T> A;
   Vec2 b, g;
   T w = T(1);
@@ -148,7 +146,6 @@ void rsNumericDifferentiator<T>::gradient2D(
   {
     const Vec2& vi   = mesh.getVertexData(i);   // vertex, at which we calculate the derivative
     int numNeighbors = mesh.getNumEdges(i);     // number of neighbors of vertex vi
-    // or use vi.getNumEdges()
 
     // If vi has no neighbors at all, we assign zeros to the partial derivatives:
     if(numNeighbors == 0) { u_x[i] = u_y[i] = T(0); continue; }
@@ -181,8 +178,12 @@ void rsNumericDifferentiator<T>::gradient2D(
       if(     weighting == 1)  w = T(1) / (rsAbs(dv.x) + rsAbs(dv.y));
       else if(weighting == 2)  w = T(1) / rsNorm(dv);
       // maybe do instead:
-      // w = mesh.getEdgeData(i, k);
-      // ...we would precompute the weights and store them in the edges
+      // w = mesh.getEdgeData(i, j);
+      // ...we would have precompute the weights and store them in the edges - we would need to 
+      // write a function setupEdgeWeights that takes a reference to the graph - it would simplify
+      // this function but introduce a complication elsewhere but it would also add flexibility. It 
+      // would also save computations here at the expense of storing more data in the graph
+      // ...we'll see
 
       // Accumulate least-squares-matrix and right-hand-side vector:
       A.a += w * dv.x * dv.x;
