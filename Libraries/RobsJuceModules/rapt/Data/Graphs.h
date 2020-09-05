@@ -48,14 +48,15 @@ public:
   {
     Vertex(const TVtx& newData) : data(newData) {}
     TVtx data;                    // data associated with the vertex
-    std::vector<Edge> edges;
-    // new
+    std::vector<Edge> edges;      // edges emanating from this vertex
 
     int getNumEdges()              const { return (int) edges.size(); }
+    int getEdgeTarget(int j)       const { return edges[j].target;    }
     const TEdg& getEdgeData(int j) const { return edges[j].data;      }
 
 
-    std::vector<int> neighbors;   // array of vertex indices that are neighbours of this vertex
+
+    //std::vector<int> neighbors;   // array of vertex indices that are neighbours of this vertex
     // old - get rid
   };
 
@@ -73,24 +74,30 @@ public:
   // O(1)
 
 
+
+
   void addEdge(int i, int j, const TEdg& data = TEdg(1), bool bothWays = false)
   {
-    vertices[i].edges.push_back(j, data);
+    vertices[i].edges.push_back(Edge(j, data));
     if(bothWays)
-      vertices[j].edges.push_back(i, data);
+      vertices[j].edges.push_back(Edge(i, data));
   }
   // O(vertices[i].numEdges + vertices[j].numEdges)
 
+  /** Convenience function to add an edge with a default value of 1, possibly symmetrically. */
+  void addEdge(int i, int j, bool bothWays = false) { addEdge(i, j, TEdg(1), bothWays); }
 
 
   /** Connects vertex i to vertex j by an edge. If the optional boolean parameter "bothWays" is 
   true, it also adds the edge from j to i. */
+  /*
   void addEdgeOld(int i, int j, bool bothWays = false)
   { 
     vertices[i].neighbors.push_back(j);
     if(bothWays)
       vertices[j].neighbors.push_back(i);
   }
+  */
   // obsolete soon
 
 
@@ -107,7 +114,7 @@ public:
   // O(1)
 
   /** Returns the number of edges emanating from vertex i. */
-  int getNumEdges(int i) const { return (int) vertices[i].egdes.size(); }
+  int getNumEdges(int i) const { return (int) vertices[i].edges.size(); }
   // O(1)
 
   /** Returns the number of edges in the whole graph. Note that if there's an edge from vertex i to
@@ -133,16 +140,16 @@ public:
   const TEdg& getEdgeData(int i, int j) const { return vertices[i].getEdgeData(j); }
   // O(1)
 
-
-
+  /** Returns the index of the target vertex of the j-th edge emanating from vertex i. */
+  int getEdgeTarget(int i, int j) const { return vertices[i].getEdgeTarget(j); }
 
   // old - get rid:
   /** Returns the number of neighbors that are adjacent to vertex i. */
-  int getNumNeighbors(int i) const { return (int) vertices[i].neighbors.size(); }
+  //int getNumNeighbors(int i) const { return (int) vertices[i].neighbors.size(); }
   // rename to getNumEdgesFrom
 
   /** Returns a const reference to the array of neighbors of vertex i. */
-  const std::vector<int>& getNeighbors(int i) const { return vertices[i].neighbors; }
+  //const std::vector<int>& getNeighbors(int i) const { return vertices[i].neighbors; }
   // rename to getEdgesFrom
 
 

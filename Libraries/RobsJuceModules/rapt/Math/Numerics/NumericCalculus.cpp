@@ -147,16 +147,20 @@ void rsNumericDifferentiator<T>::gradient2D(
   for(int i = 0; i < N; i++)
   {
     const Vec2& vi  = mesh.getVertexData(i);    // vertex, at which we calculate the derivative
-    const VecI& nvi = mesh.getNeighbors(i);     // indices of all neighbors of vi
+    //const VecI& nvi = mesh.getNeighbors(i);     // indices of all neighbors of vi
+    int numNeighbors = mesh.getNumEdges(i);     // number of neighbors of vertex vi
 
-    if(nvi.empty()) continue;                   // skip iteration, if vi has no neighbors
+    if(numNeighbors == 0) continue;                   // skip iteration, if vi has no neighbors
 
-    if(nvi.size() == 1)
+    if(numNeighbors == 1)
     {
       // We have only one equation for our 2 degrees of freedom, so there are infinitely many 
       // solutions. I'm not sure, if the minimum norm solution is the best thing to compute in such 
       // a case, but we should at least compute *something* that is a solution to the equation.
-      int  k  = nvi[0];
+
+      //int  k  = nvi[0];
+      int k = mesh.getEdgeTarget(i, 0);
+
       const Vec2& vk = mesh.getVertexData(k);
       Vec2 dv = vk   - vi;                      // difference vector
       T    du = u[k] - u[i];                    // difference in function value
@@ -167,10 +171,14 @@ void rsNumericDifferentiator<T>::gradient2D(
 
     A.setZero();
     b.setZero();
-    for(int j = 0; j < (int)nvi.size(); j++)    // loop over neighbors of vertex i
+    //for(int j = 0; j < (int)nvi.size(); j++)    // loop over neighbors of vertex i
+    for(int j = 0; j < numNeighbors; j++)    // loop over neighbors of vertex i
     {
       // Retrieve or compute intermediate variables:
-      int  k  = nvi[j];                         // index of current neighbor of vi
+
+      //int  k  = nvi[j];                         // index of current neighbor of vi
+      int  k  =  mesh.getEdgeTarget(i, j);      // index of current neighbor of vi
+
       const Vec2& vk = mesh.getVertexData(k);   // current neighbor of vi
       Vec2 dv = vk   - vi;                      // difference vector
       T    du = u[k] - u[i];                    // difference in function value
