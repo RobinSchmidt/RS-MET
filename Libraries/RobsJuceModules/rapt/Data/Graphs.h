@@ -11,19 +11,25 @@ may be connected by edges. */
 kind of data is stored is determined by the template parameters TVtx and TEdg respectively. If you 
 don't want any data stored at vertices and/or edges, you can pass an empty struct for the 
 respective type (such as rsEmptyType) as dummy data type to satisfy the compiler without creating 
-storage overhead. ...tbc...
+storage overhead.
 
+The graph is represented as a std::vector of vertices (of type rsGraph::Vertex). Each vertex holds 
+its data (if any) and a std::vector of edges (of type rsGraph::Edge), so it's an adjacency list 
+based representation. The Edge objects themselves contain a field for the target vertex index, i.e.
+the index of the vertex (in our std::vector of vertices), this edge points to and a data field 
+(which can, for example, contain a weight, but may also be empty). Whether you want to interpret 
+these "emanating" edges for each vertex as outgoing or incoming is up to you - the class itself is 
+oblivious of such an interpretation, even though the terminology of "target", "points to" etc. may 
+suggest an outgoing interpretation. The order of the vertices in the graph and of the emanating 
+edges of each vertex is determined by the order they are added to the graph by client code. The 
+class itself enforces no particular order and client code should better not assume any.
 
-obsolete:
-has data associated with each vertex but not with the edges. An
-edge between any pair of vertices can just exist or don't exist. We keep the vertices in a 
-std::vector, so they can be addressed by their indices and each vertex contains its data and a 
-std::vector<int> with the indices of its connected ("neighbor") vertices, so this is basically an 
-adjacency list representation. An example use is for irregular meshes of vertices for solving 
-partial differential equations - in this case, the data type for the vertices could be 
-rsVector2D<float> or similar. @see rsNumericDifferentiator::gradient2D for an example. */
+An example use is for irregular meshes of vertices for solving partial differential equations. In 
+this case, the data type for the vertices TVtx could be rsVector2D<float> or similar (todo: use the 
+edge data type TEdg for the weights later). ...tbc... @see rsNumericDifferentiator::gradient2D for 
+an example. */
 
-template<class TVtx, class TEdg> // data types for vertices and edges
+template<class TVtx, class TEdg> // types for the data stored at the vertices and edges
 class rsGraph
 {
 
@@ -41,9 +47,15 @@ public:
   interpret the list of stored edges in each vertex as incoming. Each edge may also store 
   associated data, such as a weight or whatever - if you don't need any edge data, pass 
   (for example) rsEmptyType for the template parameter TEdg. */
-  struct Edge  // maybe make it a class and provide accessors
+  class Edge
   {
+  public:
     Edge(int newTarget, const TEdg& newData) : target(newTarget), data(newData) {}
+
+    int         getTarget() const { return target; }
+    const TEdg& getData()   const { return data;   }
+
+  protected:
     int target;   // index of target vertex of this edge
     TEdg data;    // data stored at this edge
   };
@@ -60,16 +72,15 @@ public:
     void setData(const TVtx& newData) { data = newData;        }
     void addEdge(const Edge& edge)    { edges.push_back(edge); }
 
-    const TVtx& getData()          const { return data;               }
-    int getNumEdges()              const { return (int) edges.size(); }
-    int getEdgeTarget(int j)       const { return edges[j].target;    }
-    const TEdg& getEdgeData(int j) const { return edges[j].data;      }  
+    const TVtx& getData()            const { return data;                 }
+    int         getNumEdges()        const { return (int) edges.size();   }
+    int         getEdgeTarget(int j) const { return edges[j].getTarget(); }
+    const TEdg& getEdgeData(int j)   const { return edges[j].getData();   }
 
   protected:
     TVtx data;               // data stored at the vertex
     std::vector<Edge> edges; // edges emanating from this vertex
   };
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
@@ -83,9 +94,6 @@ public:
   void setVertexData(int i, const TVtx& data) { vertices[i].setData(data); }
   // O(1)
 
-
-
-
   void addEdge(int i, int j, const TEdg& data = TEdg(1), bool bothWays = false)
   {
     vertices[i].addEdge(Edge(j, data));
@@ -96,7 +104,6 @@ public:
 
   /** Convenience function to add an edge with a default value of 1, possibly symmetrically. */
   void addEdge(int i, int j, bool bothWays = false) { addEdge(i, j, TEdg(1), bothWays); }
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -148,13 +155,12 @@ protected:
 
 // ToDo:
 // -implement functions like isConnected(int i, int j), containsDuplicateEdges(), 
-//  containsDuplicateVertices, isSymmetric (i.e. non-directed)
-// -maybe instead of sdt::vector, we could use rsSortedSet
+//  containsDuplicateVertices, isSymmetric (i.e. non-directed), etc.
+// -maybe instead of std::vector, we could use rsSortedSet - but maybe that should be deferred to
+//  a different implementation, with similar interface but different goals (like faster 
+//  determination whether two vertices are connected)
 // -instead of having each vertex maintain a list of adjacent vertices, we could have an explicit
 //  array of edges - which data-structure is better may depend on the situation and maybe it makes
 //  sense to have both variants
-// -maybe allow (optionally) data to be associated with each edge
-// -if we want a graph without vertex- or edge data, we can pass an empty struct for the respective
-//  template parameter
 
 #endif
