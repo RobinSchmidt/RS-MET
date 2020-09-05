@@ -97,7 +97,7 @@ void saveAudioSampleBufferToFile(AudioSampleBuffer* bufferToSave, File fileToSav
     bufferToSave->getNumChannels(), bitsPerSample, StringPairArray(), 0);
 
   // if we have a writer, use it, otherwise clean up and shown an error message box:
-  if( writer != NULL )
+  if( writer != nullptr )
   {
     // create a temporary instance of ImmediatePlaybackAudioSource for the writer to use:
     ImmediatePlaybackAudioSource source;
@@ -105,9 +105,6 @@ void saveAudioSampleBufferToFile(AudioSampleBuffer* bufferToSave, File fileToSav
 
     // write:
     writer->writeFromAudioSource(source, bufferToSave->getNumSamples());
-
-    // delete the writer:
-    delete writer; // the destructor will also delete the outputStream
   }
   else
   {
