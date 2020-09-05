@@ -139,56 +139,50 @@ void rsNumericDifferentiator<T>::gradient2D(
   rsAssert((int) u_y.size() == N);
   using Vec2 = rsVector2D<T>;
   using VecI = std::vector<int>;
-  rsFill(u_x, 0.f);
-  rsFill(u_y, 0.f);
+  //rsFill(u_x, 0.f);
+  //rsFill(u_y, 0.f);
   rsMatrix2x2<T> A;
   Vec2 b, g;
   T w = T(1);
   for(int i = 0; i < N; i++)
   {
-    const Vec2& vi  = mesh.getVertexData(i);    // vertex, at which we calculate the derivative
-    //const VecI& nvi = mesh.getNeighbors(i);     // indices of all neighbors of vi
+    const Vec2& vi   = mesh.getVertexData(i);   // vertex, at which we calculate the derivative
     int numNeighbors = mesh.getNumEdges(i);     // number of neighbors of vertex vi
+    // or use vi.getNumEdges()
 
-    if(numNeighbors == 0) continue;                   // skip iteration, if vi has no neighbors
+    // If vi has no neighbors at all, we assign zeros to the partial derivatives:
+    if(numNeighbors == 0) { u_x[i] = u_y[i] = T(0); continue; }
 
-    if(numNeighbors == 1)
-    {
-      // We have only one equation for our 2 degrees of freedom, so there are infinitely many 
-      // solutions. I'm not sure, if the minimum norm solution is the best thing to compute in such 
-      // a case, but we should at least compute *something* that is a solution to the equation.
-
-      //int  k  = nvi[0];
+    // If vi has only one neighbor, we have only one equation for our 2 degrees of freedom 
+    // u_x[i], u_y[i], so there are infinitely many solutions. I'm not sure, if the minimum norm 
+    // solution is the  best thing to compute in such a case, but we should at least compute 
+    // *something* that is a solution to the equation:
+    if(numNeighbors == 1) {
       int k = mesh.getEdgeTarget(i, 0);
-
       const Vec2& vk = mesh.getVertexData(k);
       Vec2 dv = vk   - vi;                      // difference vector
       T    du = u[k] - u[i];                    // difference in function value
       rsLinearAlgebra::solveMinNorm(dv.x, dv.y, du, &u_x[i], &u_y[i]);
-      continue;
-    }
+      continue; }
 
-
+    // The typical case is that vi has >= 2 neighbors. In this case, we have either a critically
+    // determined (numNeighbors == 2) or an overdetermined (numNeighbors > 2) system and we compute
+    // a weighted least squares solution (which, in the case of a critically determined system, 
+    // happens to be the exact solution...right?):
     A.setZero();
     b.setZero();
-    //for(int j = 0; j < (int)nvi.size(); j++)    // loop over neighbors of vertex i
     for(int j = 0; j < numNeighbors; j++)    // loop over neighbors of vertex i
     {
       // Retrieve or compute intermediate variables:
-
-      //int  k  = nvi[j];                         // index of current neighbor of vi
-      int  k  =  mesh.getEdgeTarget(i, j);      // index of current neighbor of vi
-
+      int k = mesh.getEdgeTarget(i, j);         // index of current neighbor of vi
       const Vec2& vk = mesh.getVertexData(k);   // current neighbor of vi
       Vec2 dv = vk   - vi;                      // difference vector
       T    du = u[k] - u[i];                    // difference in function value
       if(     weighting == 1)  w = T(1) / (rsAbs(dv.x) + rsAbs(dv.y));
       else if(weighting == 2)  w = T(1) / rsNorm(dv);
-
       // maybe do instead:
       // w = mesh.getEdgeData(i, k);
       // ...we would precompute the weights and store them in the edges
-
 
       // Accumulate least-squares-matrix and right-hand-side vector:
       A.a += w * dv.x * dv.x;
@@ -216,6 +210,8 @@ void rsNumericDifferentiator<T>::gradient2D(
 // -the "solve" call could be optimized - maybe we don't even need an explicit matrix and/or may
 //  make use of the symmetry of A (maybe a special solveSymmetric function could be used)
 // -maybe avoid the rsFill - instead, set values to zero before "continue"
+// Do we need special treatment for 2 neighbours? I don't think so - the solution of the least 
+// squares problem
 
 
 
