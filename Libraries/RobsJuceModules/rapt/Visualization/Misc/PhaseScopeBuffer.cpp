@@ -4,11 +4,11 @@ rsPhaseScopeBuffer<TSig, TPix, TPar>::rsPhaseScopeBuffer()
 {
   painter.setUseAlphaMask(false);
 
-  frameRate      = 25.0;
-  decayTime      = 0.5;
-  thickness      = 0.707f;
-  brightness     = 1.0;
-  scanPos = TSig(0);
+  frameRate  = 25.0;
+  decayTime  = 0.5;
+  thickness  = 0.707f;
+  brightness = 1.0;
+  scanPos    = TSig(0);
 
   updateDecayFactor();
   updateTransformCoeffs();

@@ -5,7 +5,7 @@
 algebra stuff is not included here - this is part of the math module. */
 
 // note that this code is mostly only here for legacy reasons - the now preferred approach to 
-// handle matrices ins embodied in class rsMatrix (using flat arrays instead of an array-of-arrays)
+// handle matrices is embodied in class rsMatrix (using flat arrays instead of an array-of-arrays)
 // but some older code still does it the old way, so we still need to keep it around
 // todo: move to _Deprecated folder and try to get rid of all usage by replacing it with rsMatrix
 

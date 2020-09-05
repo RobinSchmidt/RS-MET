@@ -46,7 +46,7 @@ public:
 
   /** Returns true if in the most recent call to getSample(), a reset event occurred. When calling 
   this after getSample, calling code can figure out, if the x-ccordinate was reset due the 
-  getSample call and my decide to not connect the datapoints between the old and new/current 
+  getSample call and may decide to not connect the datapoints between the old and new/current 
   sample. */
   bool resetOccurred() { return samplesSinceReset == 0; }
   // maybe we need to use samplesSinceReset == 1 because when getSample calls reset, the returned

@@ -62,6 +62,12 @@ typedef double(*FunctionPointer3DoublesToDouble) (double, double, double);
 we actually do not want any data to be stored in a field of that type. An example could be an 
 instantiation of rsGraph, where we don't need any data to be associated with edges and/or vertices. 
 We could pass the rsEmptyType for the template parameter for edge- and/or vertex data type. */
-struct rsEmptyType { };
+struct rsEmptyType 
+{ 
+  rsEmptyType()    {};
+  rsEmptyType(int) {};
+};
+// The constructors are meant to be able to define default arguments for function calls and make
+// the work also with the empty struct (todo: check, if that is actually necessarry)
 
 #endif

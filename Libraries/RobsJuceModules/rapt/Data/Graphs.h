@@ -15,36 +15,128 @@ adjacency list representation. An example use is for irregular meshes of vertice
 partial differential equations - in this case, the data type for the vertices could be 
 rsVector2D<float> or similar. @see rsNumericDifferentiator::gradient2D for an example. */
 
-template<class T, class TEdg>     // use TVtx, TEdg
+template<class TVtx, class TEdg>
 class rsGraph
 {
 
 public:
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Data
+
+  /** Structure to represent an edge between two vertices. It stores the index of the target 
+  vertex, the source vertex is given implicitly by the fact that edges are stored as adjacency 
+  lists inside the vertices themselves, so the source vertex is always the vertex that owns this 
+  edge. It's probably easiest to visualize the vertices storing their outgoing edges, but this 
+  interpretation as an edge being "outgoing" is up to client code - if it wants to, it may also 
+  interpret the list of stored edges in each vertex as incoming. Each edge may also store 
+  associated data, such as a weight or whatever - if you don't need any edge data, pass 
+  (for example) rsEmptyType for the template parameter TEdg. */
+  struct Edge
+  {
+    Edge(int newTarget, const TEdg& newData) : target(newTarget), data(newData) {}
+    int target;   // index of target vertex of this edge
+    TEdg data;    // data associated with this edge
+  };
+
+  /** Structure to hold one vertex containing its associated data and a list of edges emanating 
+  from it. You can interpret the edges as outgoing or incoming - whatever is most convenient for 
+  your particular use case. If you don't want any data stored at the vertices, you may pass (for 
+  example) rsEmptyType for the template parameter TVtx. */
+  struct Vertex  // maybe make it a class
+  {
+    Vertex(const TVtx& newData) : data(newData) {}
+    TVtx data;                    // data associated with the vertex
+    std::vector<Edge> edges;
+    // new
+
+    int getNumEdges()              const { return (int) edges.size(); }
+    const TEdg& getEdgeData(int j) const { return edges[j].data;      }
+
+
+    std::vector<int> neighbors;   // array of vertex indices that are neighbours of this vertex
+    // old - get rid
+  };
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
   /** Adds a new vertex with the given associated data. */
-  void addVertex(const T& data = T()) { vertices.push_back(Vertex(data)); }
+  void addVertex(const TVtx& data = TVtx()) { vertices.push_back(Vertex(data)); }
+  // O(?)   numEdges? in the worst case, each vertex must be copied - together with its adjacency 
+  // list
+
+  /** Modifies the data stored at vertex i. */
+  void setVertexData(int i, const TVtx& data) { vertices[i].data = data; }
+  // O(1)
+
+
+  void addEdge(int i, int j, const TEdg& data = TEdg(1), bool bothWays = false)
+  {
+    vertices[i].edges.push_back(j, data);
+    if(bothWays)
+      vertices[j].edges.push_back(i, data);
+  }
+  // O(vertices[i].numEdges + vertices[j].numEdges)
+
+
 
   /** Connects vertex i to vertex j by an edge. If the optional boolean parameter "bothWays" is 
   true, it also adds the edge from j to i. */
-  void addEdge(int i, int j, bool bothWays = false)
+  void addEdgeOld(int i, int j, bool bothWays = false)
   { 
     vertices[i].neighbors.push_back(j);
     if(bothWays)
       vertices[j].neighbors.push_back(i);
   }
+  // obsolete soon
 
-  /** Modifies the data associated with vertex i. */
-  void setVertexData(int i, const T& data) { vertices[i].data = data; }
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
   /** Returns the number of vertices. */
   int getNumVertices() const { return (int) vertices.size(); }
+  // O(1)
 
+  /** Returns a const reference to the data that is stored in vertex i. */
+  const TVtx& getVertexData(int i) const { return vertices[i].data; }
+  // O(1)
+
+  /** Returns the number of edges emanating from vertex i. */
+  int getNumEdges(int i) const { return (int) vertices[i].egdes.size(); }
+  // O(1)
+
+  /** Returns the number of edges in the whole graph. Note that if there's an edge from vertex i to
+  vertex j and also one from vertex j to vertex i (the same edge backwards), both are counted. So
+  if you use this class for an undirected graph by adding symmetric edges, you may want to divide 
+  by 2. */
+  int getNumEdges() const
+  {
+    int n = 0;
+    for(int i = 0; i < getNumVertices(); i++)
+      n += getNumEdges(i);
+    return n;
+  }
+  // O(numVertices)
+
+  /** Returns a const reference to the array of edges emanating from vertex i. */
+  const std::vector<Edge>& getEdges(int i) const { return vertices[i].edges; }
+  // O(1)
+
+  /** Returns a const reference to the data that is stored in the j-th edge emanating from vertex 
+  i. Note that j is (in general) not the index of the target vertex - it's the index at which the 
+  edge occurs in the adjacency list of vertex i. */
+  const TEdg& getEdgeData(int i, int j) const { return vertices[i].getEdgeData(j); }
+  // O(1)
+
+
+
+
+  // old - get rid:
   /** Returns the number of neighbors that are adjacent to vertex i. */
   int getNumNeighbors(int i) const { return (int) vertices[i].neighbors.size(); }
   // rename to getNumEdgesFrom
@@ -53,30 +145,9 @@ public:
   const std::vector<int>& getNeighbors(int i) const { return vertices[i].neighbors; }
   // rename to getEdgesFrom
 
-  /** Returns a const reference to the data that is associated with vertex i. */
-  const T& getVertexData(int i) const { return vertices[i].data; }
 
-  //-----------------------------------------------------------------------------------------------
-  // \name Data
 
-  /** Structure to represent an outgoing edge emanating from a vertex. */
-  struct OutgoingEdge
-  {
-    OutgoingEdge(int newTarget, const T& newData) : target(newTarget), data(newData) {}
-    int target;   // index of target vertex of this edge
-    TEdg data;    // data associated with this edge
-  };
-  // maybe rename it to just edge - whether it is interpreted as incoming or outgoing should be up 
-  // to client code
 
-  /** Structure to hold one vertex containing its associated data and a list of indices of 
-  vertices that are connected to this vertex. */
-  struct Vertex
-  {
-    Vertex(const T& newData) : data(newData) {}
-    T data;                       // data associated with the vertex
-    std::vector<int> neighbors;   // array of vertex indices that are neighbours of this vertex
-  };
 
 
 protected:
