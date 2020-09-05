@@ -153,6 +153,9 @@ void rsNumericDifferentiator<T>::gradient2D(
 
     if(nvi.size() == 1)
     {
+      // We have only one equation for our 2 degrees of freedom, so there are infinitely many 
+      // solutions. I'm not sure, if the minimum norm solution is the best thing to compute in such 
+      // a case, but we should at least compute *something* that is a solution to the equation.
       int  k  = nvi[0];
       const Vec2& vk = mesh.getVertexData(k);
       Vec2 dv = vk   - vi;                      // difference vector
@@ -166,13 +169,18 @@ void rsNumericDifferentiator<T>::gradient2D(
     b.setZero();
     for(int j = 0; j < (int)nvi.size(); j++)    // loop over neighbors of vertex i
     {
-      // Compute intermediate variables:
+      // Retrieve or compute intermediate variables:
       int  k  = nvi[j];                         // index of current neighbor of vi
       const Vec2& vk = mesh.getVertexData(k);   // current neighbor of vi
       Vec2 dv = vk   - vi;                      // difference vector
       T    du = u[k] - u[i];                    // difference in function value
       if(     weighting == 1)  w = T(1) / (rsAbs(dv.x) + rsAbs(dv.y));
       else if(weighting == 2)  w = T(1) / rsNorm(dv);
+
+      // maybe do instead:
+      // w = mesh.getEdgeData(i, k);
+      // ...we would precompute the weights and store them in the edges
+
 
       // Accumulate least-squares-matrix and right-hand-side vector:
       A.a += w * dv.x * dv.x;

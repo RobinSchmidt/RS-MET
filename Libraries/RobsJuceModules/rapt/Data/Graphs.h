@@ -15,8 +15,8 @@ adjacency list representation. An example use is for irregular meshes of vertice
 partial differential equations - in this case, the data type for the vertices could be 
 rsVector2D<float> or similar. @see rsNumericDifferentiator::gradient2D for an example. */
 
-template<class T>
-class rsGraphWithVertexData
+template<class T>             // use TVtx, TEdg
+class rsGraphWithVertexData   // rename to rsGraph
 {
 
 public:
@@ -25,11 +25,11 @@ public:
   // \name Setup
 
   /** Adds a new vertex with the given associated data. */
-  void addVertex(const T& data) { vertices.push_back(Vertex(data)); }
+  void addVertex(const T& data = T()) { vertices.push_back(Vertex(data)); }
 
   /** Connects vertex i to vertex j by an edge. If the optional boolean parameter "bothWays" is 
   true, it also adds the edge from j to i. */
-  void addEdge(int i, int j, bool bothWays = false)  
+  void addEdge(int i, int j, bool bothWays = false)
   { 
     vertices[i].neighbors.push_back(j);
     if(bothWays)
@@ -74,11 +74,13 @@ protected:
 
 // ToDo:
 // -implement functions like isConnected(int i, int j), containsDuplicateEdges(), 
-//  containsDuplicateVertices
+//  containsDuplicateVertices, isSymmetric (i.e. non-directed)
 // -maybe instead of sdt::vector, we could use rsSortedSet
 // -instead of having each vertex maintain a list of adjacent vertices, we could have an explicit
 //  array of edges - which data-structure is better may depend on the situation and maybe it makes
 //  sense to have both variants
 // -maybe allow (optionally) data to be associated with each edge
+// -if we wnat a graph without vertex- or edge data, we can pass an empty struct for the respective
+//  template parameter
 
 #endif
