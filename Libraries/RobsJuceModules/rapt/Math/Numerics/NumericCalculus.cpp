@@ -115,7 +115,7 @@ void rsNumericDifferentiator<T>::derivative(
 
 template<class T>
 void rsNumericDifferentiator<T>::gradient2D(
-  const RAPT::rsGraphWithVertexData<RAPT::rsVector2D<T>>& mesh, 
+  const RAPT::rsGraph<RAPT::rsVector2D<T>, rsEmptyType>& mesh, 
   const std::vector<T>& u, std::vector<T>& u_x, std::vector<T>& u_y, int weighting)
 {
   // Algorithm:

@@ -58,4 +58,10 @@ typedef double(*FunctionPointer3DoublesToDouble) (double, double, double);
 // intrinsic vector types. (arithmetic) operators can be defined (inline) which map directly to
 // the corresponding intrinsic vector functions
 
+/** An empty struct meant to be used in places where the compiler demands a template parameter, but 
+we actually do not want any data to be stored in a field of that type. An example could be an 
+instantiation of rsGraph, where we don't need any data to be associated with edges and/or vertices. 
+We could pass the rsEmptyType for the template parameter for edge- and/or vertex data type. */
+struct rsEmptyType { };
+
 #endif

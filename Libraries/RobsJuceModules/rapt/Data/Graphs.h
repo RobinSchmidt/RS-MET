@@ -15,8 +15,8 @@ adjacency list representation. An example use is for irregular meshes of vertice
 partial differential equations - in this case, the data type for the vertices could be 
 rsVector2D<float> or similar. @see rsNumericDifferentiator::gradient2D for an example. */
 
-template<class T>             // use TVtx, TEdg
-class rsGraphWithVertexData   // rename to rsGraph
+template<class T, class TEdg>     // use TVtx, TEdg
+class rsGraph
 {
 
 public:
@@ -47,9 +47,11 @@ public:
 
   /** Returns the number of neighbors that are adjacent to vertex i. */
   int getNumNeighbors(int i) const { return (int) vertices[i].neighbors.size(); }
+  // rename to getNumEdgesFrom
 
   /** Returns a const reference to the array of neighbors of vertex i. */
   const std::vector<int>& getNeighbors(int i) const { return vertices[i].neighbors; }
+  // rename to getEdgesFrom
 
   /** Returns a const reference to the data that is associated with vertex i. */
   const T& getVertexData(int i) const { return vertices[i].data; }
@@ -57,7 +59,15 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Data
 
-protected:
+  /** Structure to represent an outgoing edge emanating from a vertex. */
+  struct OutgoingEdge
+  {
+    OutgoingEdge(int newTarget, const T& newData) : target(newTarget), data(newData) {}
+    int target;   // index of target vertex of this edge
+    TEdg data;    // data associated with this edge
+  };
+  // maybe rename it to just edge - whether it is interpreted as incoming or outgoing should be up 
+  // to client code
 
   /** Structure to hold one vertex containing its associated data and a list of indices of 
   vertices that are connected to this vertex. */
@@ -67,6 +77,9 @@ protected:
     T data;                       // data associated with the vertex
     std::vector<int> neighbors;   // array of vertex indices that are neighbours of this vertex
   };
+
+
+protected:
 
   std::vector<Vertex> vertices;
 
@@ -80,7 +93,7 @@ protected:
 //  array of edges - which data-structure is better may depend on the situation and maybe it makes
 //  sense to have both variants
 // -maybe allow (optionally) data to be associated with each edge
-// -if we wnat a graph without vertex- or edge data, we can pass an empty struct for the respective
+// -if we want a graph without vertex- or edge data, we can pass an empty struct for the respective
 //  template parameter
 
 #endif
