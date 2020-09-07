@@ -362,10 +362,11 @@ public:
   number of vertices in the mesh and contain the function values associated with the x,y 
   coordinates for the respective vertex (i.e. the vertex with the same index). Outputs are the 
   arrays of estimated partial derivatives of u with respect to x and y (which should also be of 
-  the same length as u) which, taken together, form the gradient. The optional "weighting" argument
-  controls, how the error should be weighted. Possible values are: 0: unweighted, 1: Manhattan 
-  distance, 2: Euclidean distance - see comments in implementation for more details what this 
-  means. */
+  the same length as u) which, taken together, form the gradient. The data stored at the edges are 
+  used as weights in weighted least squares computation of the gradient in which we try to explain
+  the measured directional derivatives via the gradient. It's reasonable to use edge weights 
+  inversely proportional to the distance between the respective vertices - see comments in 
+  implementation for more details. */
   static void gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const std::vector<T>& u, 
     std::vector<T>& u_x, std::vector<T>& u_y);
   // todo: maybe use a Tx template parameter as in derivative

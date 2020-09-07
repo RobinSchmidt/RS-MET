@@ -137,10 +137,8 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
   rsAssert((int) u_x.size() == N);
   rsAssert((int) u_y.size() == N);
   using Vec2 = rsVector2D<T>;
-  //using VecI = std::vector<int>;
   rsMatrix2x2<T> A;
   Vec2 b, g;
-  T w = T(1);
   for(int i = 0; i < N; i++)
   {
     const Vec2& vi   = mesh.getVertexData(i);   // vertex, at which we calculate the derivative
@@ -174,19 +172,9 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
       const Vec2& vk = mesh.getVertexData(k);   // current neighbor of vi
       Vec2 dv = vk   - vi;                      // difference vector
       T    du = u[k] - u[i];                    // difference in function value
+      T    w  = mesh.getEdgeData(i, j);         // weight in weighted least squares
 
-
-      //if(     weighting == 1)  w = T(1) / (rsAbs(dv.x) + rsAbs(dv.y));
-      //else if(weighting == 2)  w = T(1) / rsNorm(dv);
-      // maybe do instead:
-      w = mesh.getEdgeData(i, j);
-      // ...we would have precompute the weights and store them in the edges - we would need to 
-      // write a function setupEdgeWeights that takes a reference to the graph - it would simplify
-      // this function but introduce a complication elsewhere but it would also add flexibility. It 
-      // would also save computations here at the expense of storing more data in the graph
-      // ...we'll see
-
-      // Accumulate least-squares-matrix and right-hand-side vector:
+      // Accumulate least-squares matrix and right-hand-side vector:
       A.a += w * dv.x * dv.x;
       A.b += w * dv.x * dv.y;
       A.d += w * dv.y * dv.y;
