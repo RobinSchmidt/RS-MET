@@ -1917,6 +1917,116 @@ void uniformArrayDiffAndInt()
 
 
 
+
+/** Fills edges of a graph of 2D vectors (as vertices) with a user supplied function that takes as
+input the source and target vector and returns a scalar that can be used as weight for the edge 
+between the two vertices. */
+template<class T>
+void fillEdges(rsGraph<rsVector2D<T>, T>& g, 
+  const std::function<T(rsVector2D<T>, rsVector2D<T>)>& f)
+{
+  using Vec = rsVector2D<T>;
+  for(int i = 0; i < g.getNumVertices(); i++) {
+    Vec vi = g.getVertexData(i);                 // vector stored at source vertex i
+    for(int j = 0; j < g.getNumEdges(i); j++) {
+      int k  = g.getEdgeTarget(i, j);            // index of target vertex
+      Vec vk = g.getVertexData(k);               // vector stored at target vertex k
+      T ed   = f(vi, vk);                        // compute edge data via user supplied function
+      g.setEdgeData(i, j, ed); }}                // ...and store it at the edge
+}
+
+void vertexMeshGradient()
+{
+  // We test the function rsNumericDifferentiator::gradient2D which operates on an irregular mesh 
+  // of vertices and estimates the gradient from function values known only on such a mesh.
+
+  using Vec2 = rsVector2D<float>;
+  using VecF = std::vector<float>;
+  using VecI = std::vector<int>;
+  //using Mesh = rsGraph<Vec2, rsEmptyType>;  // later use float for the edge data
+  using Mesh = rsGraph<Vec2, float>;
+  using ND   = rsNumericDifferentiator<float>;
+
+  // an (irregular) star-shaped mesh with a vertex P = (3,2) at the center and 4 vertices 
+  // Q,R,S,T surrounding it that are connected to it:
+  Mesh mesh;
+  bool sym = true;                 // select, if edges should be added symmetrically
+  mesh.addVertex(Vec2(3.f, 2.f));  // P = (3,2) at index 0
+  mesh.addVertex(Vec2(1.f, 3.f));  // Q = (1,3) at index 1
+  mesh.addVertex(Vec2(4.f, 2.f));  // R = (4,2) at index 2
+  mesh.addVertex(Vec2(2.f, 0.f));  // S = (2,0) at index 3
+  mesh.addVertex(Vec2(1.f, 1.f));  // T = (1,1) at index 4
+  mesh.addEdge(0, 1, sym);         // connect P to Q
+  mesh.addEdge(0, 2, sym);         // connect P to R
+  mesh.addEdge(0, 3, sym);         // connect P to S
+  mesh.addEdge(0, 4, sym);         // connect P to T
+
+  // Create arrays of function values and (true) partial derivatives and their numerical estimates.
+  // For the estimates, only vertices with neighbors are supposed to contain a reasonable value 
+  // afterwards, all others are supposed to contain zero:
+  int N = mesh.getNumVertices();
+  VecF u(N), u_x(N), u_y(N);     // u(x,y) and its true partial derivatives with resp. to x,y
+  VecF u_x0(N), u_y0(N);         // with weighting 0 (unweighted)
+  VecF u_x1(N), u_y1(N);         // with weighting 1 (sum of absolute values, "Manhattan distance")
+  VecF u_x2(N), u_y2(N);         // with weighting 2 (Euclidean distance)
+  VecF e_x0(N), e_y0(N);         // error of u_x0, ...
+  VecF e_x1(N), e_y1(N);         // ...etc.
+  VecF e_x2(N), e_y2(N);
+
+  // Define our test function u(x,y) and its partial derivatives:
+  // u(x,y)   =    sin(wx * x + px) *    sin(wy * y + py)
+  // u_x(x,y) = wx*cos(wx * x + px) *    sin(wy * y + py)
+  // u_y(x,y) =    sin(wx * x + px) * wy*cos(wy * y + py)
+  // and a function to fill the arrays of true partial derivatives:
+  float wx = 0.01f, px = 0.3f;
+  float wy = 0.02f, py = 0.4f;
+  auto f  = [&](float x, float y)->float { return    sin(wx * x + px) *    sin(wy * y + py); };
+  auto fx = [&](float x, float y)->float { return wx*cos(wx * x + px) *    sin(wy * y + py); };
+  auto fy = [&](float x, float y)->float { return    sin(wx * x + px) * wy*cos(wy * y + py); };
+  auto fill = [&]() 
+  { 
+    for(int i = 0; i < N; i++) {
+      Vec2 v = mesh.getVertexData(i);
+      u[i]   = f( v.x, v.y);
+      u_x[i] = fx(v.x, v.y);
+      u_y[i] = fy(v.x, v.y); }
+  };
+  // todo: later compute also 2nd derivatives u_xx, u_yy, u_xy and Laplacian u_L
+
+  // distance functions (constant, 1/Manhattan, 1/Euclidean)
+  std::function<float(Vec2, Vec2)> d0, d1, d2;
+  d0 = [&](Vec2 a, Vec2 b)->float { return 1.f; };
+  d1 = [&](Vec2 a, Vec2 b)->float { Vec2 d = b-a; return 1.f / (rsAbs(d.x) + rsAbs(d.y)); };
+  d2 = [&](Vec2 a, Vec2 b)->float { return 1.f / rsNorm(b-a); };
+
+  // P = (3,2), Q = (1,3), R = (4,2), S = (2,0), T = (1,1)
+  fill();
+  fillEdges(mesh, d0); ND::gradient2D(mesh, u, u_x0, u_y0); e_x0 = u_x-u_x0; e_y0 = u_y-u_y0;
+  fillEdges(mesh, d1); ND::gradient2D(mesh, u, u_x1, u_y1); e_x1 = u_x-u_x1; e_y1 = u_y-u_y1;
+  fillEdges(mesh, d2); ND::gradient2D(mesh, u, u_x2, u_y2); e_x2 = u_x-u_x2; e_y2 = u_y-u_y2;
+
+  // This is the regular 5-point stencil that would result from unsing a regular mesh:
+  // P = (3,2), Q = (3,3), R = (4,2), S = (3,1), T = (2,2)
+  mesh.setVertexData(0, Vec2(3.f, 2.f));   // P = (3,2)
+  mesh.setVertexData(1, Vec2(3.f, 3.f));   // Q = (3,3)
+  mesh.setVertexData(2, Vec2(4.f, 2.f));   // R = (4,2)
+  mesh.setVertexData(3, Vec2(3.f, 1.f));   // S = (3,1)
+  mesh.setVertexData(4, Vec2(2.f, 2.f));   // T = (2,2)
+  fill();                                  // compute target values
+  fillEdges(mesh, d0); ND::gradient2D(mesh, u, u_x0, u_y0); e_x0 = u_x-u_x0; e_y0 = u_y-u_y0;
+  fillEdges(mesh, d1); ND::gradient2D(mesh, u, u_x1, u_y1); e_x1 = u_x-u_x1; e_y1 = u_y-u_y1;
+  fillEdges(mesh, d2); ND::gradient2D(mesh, u, u_x2, u_y2); e_x2 = u_x-u_x2; e_y2 = u_y-u_y2;
+
+  // Observations: 
+  // -The accuracy seems to be best with using the (inverse) Manhattan distance as weights. 
+  //  Why is that? Shouldn't the Euclidean distance be better? ..the values are all very similar 
+  //  though, so this single experiment may not really mean much - more tests needed...
+  //  -maybe try the maximum norm, too
+  // -In the case of the regular grid, all estimates are the same, as they should, since all 
+  //  distances are unity.
+}
+
+
 void shiftPolynomial()
 {
   static const int order = 6;

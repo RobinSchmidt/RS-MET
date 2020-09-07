@@ -125,12 +125,13 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
   // of the directional derivatives into the directions of all its neighbors and set up the above 
   // equation. When a vertex has more than 2 neighbors (which is the typical case), we have more 
   // equations than degrees of freedom (u_x,u_y), so the system is overdetermined and we compute a
-  // weighted least squares solution. The weights can be given either as all ones (unweighted), the 
-  // reciprocal of the Manhattan distance (between the current vertex and its current neighbor) or 
-  // the reciprocal of the Euclidean distance. The rationale of using reciprocals of distances as 
-  // weights is that we expect the values obtained by the formula to be further off from the true
-  // values, the greater the distance between the vertices, but some experimentation for what kind
-  // of weighting gives the most accurate results is encouraged.
+  // weighted least squares solution where the weights are taken to be the values stored at the 
+  // edges between the respective vertices. Meaningful weights could be either all ones 
+  // (unweighted) or - probably better - something inversely proportional to the distance between
+  // the vertices. The rationale behind this is that we expect the values obtained by the formula 
+  // to be further off from the true values, the greater the distance between the vertices, but 
+  // some experimentation for what kind of weighting gives the most accurate results is encouraged
+  // (for example, if Euclidean or Manhattan distance gives better results, etc.).
 
   int N = mesh.getNumVertices();
   rsAssert((int) u.size()   == N);
@@ -149,8 +150,9 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
 
     // If vi has only one neighbor, we have only one equation for our 2 degrees of freedom 
     // u_x[i], u_y[i], so there are infinitely many solutions. I'm not sure, if the minimum norm 
-    // solution is the  best thing to compute in such a case, but we should at least compute 
-    // *something* that is a solution to the equation:
+    // solution is the best thing to compute in such a case, but we should at least compute 
+    // *something* that is *a* solution to the equation and the minimum norm solution is the only
+    // meaningfully distinguished choice (right? or wrong?):
     if(numNeighbors == 1) {
       int k = mesh.getEdgeTarget(i, 0);
       const Vec2& vk = mesh.getVertexData(k);
@@ -191,17 +193,14 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
   }
 }
 // todo:
-// -make it work for vertices with 1 neighbor - we currently encounter a singular matrix A in this
-//  case (which makes sense, i guess - we get infinitely many solutions - we need to pick the 
-//  minimum norm solution)
-//  -perhaps, the solve function should detect a zero determinant and switch between computing
-//   a least-squares solution in case of an inconsistent RHS and a minimum norm solution in case
-//   of a consistent RHS
 // -the "solve" call could be optimized - maybe we don't even need an explicit matrix and/or may
 //  make use of the symmetry of A (maybe a special solveSymmetric function could be used)
-// -maybe avoid the rsFill - instead, set values to zero before "continue"
-// Do we need special treatment for 2 neighbours? I don't think so - the solution of the least 
-// squares problem
+// -perhaps, the solve function should detect a zero determinant and switch between computing
+//  a least-squares solution in case of an inconsistent RHS and a minimum norm solution in case
+//  of a consistent RHS
+// -do we need special treatment for 2 neighbours? I don't think so - the solution of the least 
+//  squares problem should reduce to the exact solution if the number of equations equals the
+//  number of unknowns
 
 
 
