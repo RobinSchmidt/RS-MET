@@ -114,9 +114,8 @@ void rsNumericDifferentiator<T>::derivative(
 
 
 template<class T>
-void rsNumericDifferentiator<T>::gradient2D(
-  const RAPT::rsGraph<RAPT::rsVector2D<T>, rsEmptyType>& mesh, 
-  const std::vector<T>& u, std::vector<T>& u_x, std::vector<T>& u_y, int weighting)
+void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D<T>, T>& mesh, 
+  const std::vector<T>& u, std::vector<T>& u_x, std::vector<T>& u_y)
 {
   // Algorithm:
   // The algorithm is based on the fact that the directional derivative into the direction of an 
@@ -175,10 +174,12 @@ void rsNumericDifferentiator<T>::gradient2D(
       const Vec2& vk = mesh.getVertexData(k);   // current neighbor of vi
       Vec2 dv = vk   - vi;                      // difference vector
       T    du = u[k] - u[i];                    // difference in function value
-      if(     weighting == 1)  w = T(1) / (rsAbs(dv.x) + rsAbs(dv.y));
-      else if(weighting == 2)  w = T(1) / rsNorm(dv);
+
+
+      //if(     weighting == 1)  w = T(1) / (rsAbs(dv.x) + rsAbs(dv.y));
+      //else if(weighting == 2)  w = T(1) / rsNorm(dv);
       // maybe do instead:
-      // w = mesh.getEdgeData(i, j);
+      w = mesh.getEdgeData(i, j);
       // ...we would have precompute the weights and store them in the edges - we would need to 
       // write a function setupEdgeWeights that takes a reference to the graph - it would simplify
       // this function but introduce a complication elsewhere but it would also add flexibility. It 
