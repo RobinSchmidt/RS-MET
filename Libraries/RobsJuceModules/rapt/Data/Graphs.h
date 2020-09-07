@@ -51,6 +51,8 @@ public:
   public:
     Edge(int newTarget, const TEdg& newData) : target(newTarget), data(newData) {}
 
+    void setData(const TEdg& newData) { data = newData; }
+
     int         getTarget() const { return target; }
     const TEdg& getData()   const { return data;   }
 
@@ -68,8 +70,9 @@ public:
   public:
     Vertex(const TVtx& newData) : data(newData) {}
 
-    void setData(const TVtx& newData) { data = newData;        }
-    void addEdge(const Edge& edge)    { edges.push_back(edge); }
+    void setData(const TVtx& newData)         { data = newData;         }
+    void addEdge(const Edge& edge)            { edges.push_back(edge);  }
+    void setEdgeData(int j, const TEdg& data) { edges[j].setData(data); }
 
     const TVtx& getData()            const { return data;                 }
     int         getNumEdges()        const { return (int) edges.size();   }
@@ -103,6 +106,8 @@ public:
 
   /** Convenience function to add an edge with a default value of 1, possibly symmetrically. */
   void addEdge(int i, int j, bool bothWays = false) { addEdge(i, j, TEdg(1), bothWays); }
+
+  void setEdgeData(int i, int j, const TEdg& data) { vertices[i].setEdgeData(j, data); }
 
   // todo: setEdgeData(int i, int j, const TEdg& data), removeEdge(i, j), removeVertex(i)
 

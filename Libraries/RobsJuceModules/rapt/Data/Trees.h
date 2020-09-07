@@ -163,6 +163,8 @@ public:
   bool isHeap(int i = 0) const;
 
 
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Data Manipulation */
 
@@ -219,6 +221,9 @@ protected:
 
 
   // todo: implement functions:  T peek(int i), extractMax, increaseKey, heapMax, see (1)
+  // todo: implement int find(const T& x); ...should be possible in log(N) time complexity, or 
+  // maybe not? if both children are larger than our searched value, we would have to traverse
+  // two subtrees..but maybe at least O(log(N)) on average?
 
   template<class U> friend class rsDoubleHeap;
 
