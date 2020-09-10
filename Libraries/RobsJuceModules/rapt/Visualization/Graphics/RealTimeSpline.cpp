@@ -219,6 +219,17 @@ void rsRealTimeSpline<TCor, TWgt>::dotsCubic(TWgt w1, TWgt w2, int numDots)
 
 
 // Ideas:
+// -maybe let the client retrieve the polynomial coefficients, so it can produce the dot-buffers 
+//  itself if it wants to
+// -instead of the polynomial coefficients, the client shpuld also be able to retrieve a 
+//  parametrization in terms of control points as in (cubic) Bezier curves - we need functions like
+//  hermiteToBezier/bezierToHermite (converting control points from/to avlue and deribative) and/or 
+//  polyToBezier/bezierToPoly (convert cotrol points from/to polynomial coeffs). these conversion 
+//  functions may be put as static functions into a class rsCubicSpline...perhaps templatized on 
+//  the vector type (may be 2D or 3D)
+// -maybe this class could also be refactored to work with vectors - the a,b coeff arrays could be 
+//  replaced with a single, vector-valued array of coeffs - also the x,y buffers could be replaced
+//  by a single vector valued buffer
 // -try to draw the spline with short line-segments
 //  -maybe in this case, the higher density in regions of high curvature is actually is actually 
 //   beneficial, so no density compensation is required?

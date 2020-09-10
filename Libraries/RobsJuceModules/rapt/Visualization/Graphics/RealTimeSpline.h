@@ -59,7 +59,7 @@ public:
   void setDensity(TCor newDensity) { density = newDensity; }
 
   /** Sets a limit of the number of artificial datapoints that may be inserted per drawing
-  operation. This is important to keep the cpu usage under control. */
+  operation. This is important to keep the CPU usage under control. */
   void setMaxNumDotsPerSegment(int newMaxNumDots) { maxNumDots = newMaxNumDots; }
 
   /** Sets the buffers to be used for the produced points (x- and y-coordinates as well as weights
@@ -157,6 +157,6 @@ protected:
   std::vector<TCor> r, s, t, u; 
 
 };
-// maybe rename to RealTimeSplineGenerator
+// maybe rename to RealTimeSplineGenerator or Interpolator
 
 #endif
