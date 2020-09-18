@@ -115,7 +115,7 @@ protected:
   // , dotsCubic2D, ...
 
   /** After the polynomial coefficient arrays a, b have been computed, this function fills the 
-  array for the parameter t with values at which we evaluate the spline segment give by the 
+  array for the parameter t with values at which we evaluate the spline segment given by the 
   parametric equations:
   x(t) = a0 + a1*t + a2*t^2 + a3*t
   y(t) = b0 + b1*t + b2*t^2 + b3*t  

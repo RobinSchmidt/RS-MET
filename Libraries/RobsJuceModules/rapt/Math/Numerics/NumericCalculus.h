@@ -343,10 +343,11 @@ public:
   endpoints compared to simple differences, so it's probably better to use extrapolation. */
   template<class Tx>
   static void derivative(const Tx *x, const T *y, T *yd, int N, bool extrapolateEnds = true);
-  // maybe rename to weightedCentralDifference
-  // provide a version that assumes a regular spacing interval
-  // provide a function to compute the second derivative - maybe by fitting a parabola - this 
-  // paraobala could also be used for an alternative computation of the first derivative
+  // ToDo:
+  // -maybe rename to weightedCentralDifference
+  // -provide a simplified version that assumes a regular spacing interval
+  // -provide a function to compute the second derivative - maybe by fitting a parabola - this 
+  // -paraobala could also be used for an alternative computation of the first derivative
 
   // todo: drag over the code that computes the laplacian for a 2D and 3D function from the 
   // wave-equation simulation in the prototypes folder - maybe provide a 1D version, too - the 
@@ -369,7 +370,9 @@ public:
   implementation for more details. */
   static void gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const std::vector<T>& u, 
     std::vector<T>& u_x, std::vector<T>& u_y);
-  // todo: maybe use a Tx template parameter as in derivative
+  // todo: 
+  // -maybe use a Tx template parameter as in derivative
+  // -use raw arrays instead of std::vector but keep a convenience function using std::vector
 
 
   //-----------------------------------------------------------------------------------------------

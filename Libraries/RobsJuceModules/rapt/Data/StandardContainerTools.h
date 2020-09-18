@@ -468,6 +468,22 @@ inline void rsCopyToVector(const T* a, int N, std::vector<T>& v)
     v[i] = a[i];
 }
 
+// ...hmm - defining operators for std::vector could clash with other libraries that do the same
+// ...maybe i should use a wrapper rsArray or rsVector that wraps std::vector and has the same 
+// interface (plus soem extra stuff) - maybe we should wrap it into an #ifdef 
+// RS_USE_STD_VECTOR_OPERATORS
+
+
+/** Unary minus for std::vector. Negates all elements. */
+template<class T>
+inline std::vector<T> operator-(const std::vector<T>& v)
+{
+  std::vector<T> result(v.size());
+  for(size_t i = 0; i < v.size(); i++)
+    result[i] = -v[i];
+  return result;
+}
+
 /** Multiplies a scalar and a vector. */
 template<class T>
 inline std::vector<T> operator*(const T& x, const std::vector<T>& v)
@@ -477,6 +493,17 @@ inline std::vector<T> operator*(const T& x, const std::vector<T>& v)
     result[i] = x * v[i];
   return result;
 }
+
+/** Multiplies a vector and a scalar. */
+template<class T>
+inline std::vector<T> operator*(const std::vector<T>& v, const T& x)
+{
+  std::vector<T> result(v.size());
+  for(size_t i = 0; i < v.size(); i++)
+    result[i] = x * v[i];
+  return result;
+}
+
 
 /** Divides a vector by a scalar. */
 template<class T>

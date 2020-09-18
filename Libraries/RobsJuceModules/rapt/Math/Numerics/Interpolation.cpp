@@ -513,12 +513,12 @@ void quadraticOrCubicSplineArcCoeffs2D(T x0, T dx0, T y0, T dy0, T x1, T dx1, T 
 template<class T>
 void cubicSplineArcLength2D(T *a, T *b, T *t, T* s, int N)
 {
-  // The arc-length s(t) between 0 and t of the cubic spline defined by the two polynomials
-  // x(t) = a0 + a1*t + a2*t^2 + a3*t^3
-  // y(t) = b0 + b1*t + b2*t^2 + b3*t^3
-  // is given by the definite integral from 0 to t over the integrand 
-  // c(t) = sqrt( (dx/dt)^2 + (dy/dt)^2 )
-  // where the term inside the square-root is a fourth order polynomial (the derivative of a cubic
+  // The arc-length s(t) between 0 and t of the 2D cubic spline defined by the two polynomials:
+  //   x(t) = a0 + a1*t + a2*t^2 + a3*t^3
+  //   y(t) = b0 + b1*t + b2*t^2 + b3*t^3
+  // is given by the definite integral from 0 to t over the integrand:
+  //   c(t) = sqrt( (dx/dt)^2 + (dy/dt)^2 )
+  // where the term inside the square-root is a fourth degree polynomial (the derivative of a cubic
   // is a quadratic, squaring that gives a quartic and adding two quartics gives still a quartic). 
   // We evaluate the integrand at the N values t[n] and perform a numeric integration over these 
   // integrand values.
@@ -530,7 +530,7 @@ void cubicSplineArcLength2D(T *a, T *b, T *t, T* s, int N)
   PL::derivative(b, d, 3);            // d is dy/dt (b is y(t))
   PL::multiply(c, 2, c, 2, c);        // c is (dx/dt)^2
   PL::multiply(d, 2, d, 2, d);        // d is (dy/dt)^2
-  rsArrayTools::add(c, d, c, 5);           // c is (dx/dt)^2 + (dy/dt)^2
+  rsArrayTools::add(c, d, c, 5);      // c is (dx/dt)^2 + (dy/dt)^2
   // The coeffs of our desired quartic are now in our c-array.
 
   // Evaluate the integrand at the given t-values and perform numeric integration:
@@ -543,4 +543,7 @@ void cubicSplineArcLength2D(T *a, T *b, T *t, T* s, int N)
 // compute one (squared) derivative per dimension and accumulate the resulting quartics - the 
 // result will always be just a 1D quartic, regardless of the number of dimensions of the space
 // maybe make a function that can also handle higher order splines...at least quartics because
-// we want to try a quartic interpolant
+// we want to try a quartic interpolant - maybe instead of having a,b arrays of scalar 
+// coefficients, the coefficients could be vectors (2D, 3D, nD)...hmmm...but at the end, we need 
+// the c-array to be an array of scalars - i think the scalar coeff is just the sum of the 
+// "vector-coeff" elements...figure out, if that can be made to work...

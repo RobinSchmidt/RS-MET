@@ -290,6 +290,8 @@ todo:
  dimensionality - would this function then compute the Jacobian? i think, it would be natural, if
  it would -> try it using rsVector2D for Ty
 
+ see also:
+ https://github.com/wesselb/fdm
 
  for templatizing the function-type, see:
  https://stackoverflow.com/questions/1174169/function-passed-as-template-argument
