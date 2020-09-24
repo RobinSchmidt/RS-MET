@@ -1,11 +1,11 @@
 //#include "romos_ProcessingStatus.h"
 //using namespace romos;
 
-ProcessingStatus romos::processingStatus;  // definition of the global object
- 
+ProcessingStatus processingStatus;  // definition of the global object
+
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
- 
+
 ProcessingStatus::ProcessingStatus()
 {
   setSystemSampleRate(44100.0);
@@ -21,9 +21,9 @@ ProcessingStatus::~ProcessingStatus()
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // setup:
 
-void ProcessingStatus::setSystemSampleRate(double newSampleRate) 
-{ 
-  systemSampleRate   = newSampleRate; 
+void ProcessingStatus::setSystemSampleRate(double newSampleRate)
+{
+  systemSampleRate   = newSampleRate;
   systemSamplePeriod = 1.0      / systemSampleRate;
   freqToOmegaFactor  = (2.0*PI) / systemSampleRate;
 }
@@ -33,9 +33,9 @@ void ProcessingStatus::setTempo(double newTempo)
   tempo = newTempo;
 }
 
-void ProcessingStatus::setBufferSize(int newBufferSize) 
-{ 
+void ProcessingStatus::setBufferSize(int newBufferSize)
+{
   if( newBufferSize <= maxBufferSize )
-    bufferSize = newBufferSize; 
+    bufferSize = newBufferSize;
 }
-   
+

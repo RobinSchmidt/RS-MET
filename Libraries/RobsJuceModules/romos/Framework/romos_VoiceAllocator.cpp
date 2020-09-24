@@ -1,11 +1,11 @@
 //#include "romos_VoiceAllocator.h"
 //using namespace romos;
- 
-VoiceAllocator romos::voiceAllocator;  // definition of the global object
+
+VoiceAllocator voiceAllocator;  // definition of the global object
 
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
- 
+
 VoiceAllocator::VoiceAllocator()
 {
   numVoices     = 16;
@@ -56,10 +56,10 @@ void VoiceAllocator::setNoteOffTriggerFlag(int voiceIndex)
 {
   noteOffTriggerFlags |= ( maskForFlags >> voiceIndex);
 }
- 
+
 //-------------------------------------------------------------------------------------------------
 // event handling:
-    
+
 int VoiceAllocator::noteOn(int key, int velocity)
 {
   if( velocity == 0 )
@@ -74,7 +74,7 @@ int VoiceAllocator::noteOn(int key, int velocity)
     if( playingIndex != -1 )
       voiceToUse = playingVoiceIndices[playingIndex];
   }
-  
+
   if( voiceToUse == -1 )
   {
     if( numPlayingVoices < numVoices )
@@ -96,7 +96,7 @@ int VoiceAllocator::noteOn(int key, int velocity)
 
   voiceStates[voiceToUse].key                = key;
   voiceStates[voiceToUse].frequency          = RAPT::rsPitchToFreq(key);  // preliminary - use tuning tables later
-  voiceStates[voiceToUse].normalizedVelocity = velocity / 127.0;  
+  voiceStates[voiceToUse].normalizedVelocity = velocity / 127.0;
   voiceStates[voiceToUse].isPlaying          = true;
 
   setNoteOnTriggerFlag(voiceToUse);
@@ -144,7 +144,7 @@ void VoiceAllocator::resetVoice(int voiceIndex)
   voiceStates[voiceIndex].normalizedVelocity = 0.0;
   voiceStates[voiceIndex].isPlaying          = false;
 }
- 
+
 //-------------------------------------------------------------------------------------------------
 // internal functions:
 
@@ -178,15 +178,15 @@ int VoiceAllocator::getNewestPlayingVoiceIndex()
 {
   return numPlayingVoices-1;
 }
-   
-int VoiceAllocator::findAmongPlayingVoices(int key, int searchStartIndex, 
+
+int VoiceAllocator::findAmongPlayingVoices(int key, int searchStartIndex,
   bool ignoreVoicesWithZeroVelocity)
 {
   for(int i = searchStartIndex; i < numPlayingVoices; i++)
   {
     if( voiceStates[playingVoiceIndices[i]].key == key )
     {
-      if( ignoreVoicesWithZeroVelocity == true 
+      if( ignoreVoicesWithZeroVelocity == true
         && voiceStates[playingVoiceIndices[i]].normalizedVelocity == 0.0 )
       {
         // skip
@@ -213,7 +213,7 @@ void VoiceAllocator::removeFromPlayingVoices(int voiceIndex)
   rassert(numPlayingVoices > 0); // for debugg
 
   // \todo: robustify this - when there are more than one VoiceKiller modules, the same voice might
-  // be killed multiple times but maybe it's already robust due to 
+  // be killed multiple times but maybe it's already robust due to
   // "if( indexInPlayingVoices >= 0 )"? ...check this
 
   int indexInPlayingVoices = getPlayingIndexOfVoice(voiceIndex);
@@ -234,6 +234,6 @@ void VoiceAllocator::movePlayingVoiceToBottom(int playingIndex)
 
 void VoiceAllocator::moveUpPlayingVoices(int fromWhichIndex)
 {
-  for(int i = fromWhichIndex; i < numPlayingVoices; i++) 
+  for(int i = fromWhichIndex; i < numPlayingVoices; i++)
     playingVoiceIndices[i-1] = playingVoiceIndices[i];
 }

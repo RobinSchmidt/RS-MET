@@ -3,18 +3,18 @@
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // construction/destruction:
-    
-NoteEvent::NoteEvent(unsigned int _deltaFrames, unsigned int _key, unsigned int _velocity)   
+
+NoteEvent::NoteEvent(unsigned int _deltaFrames, unsigned int _key, unsigned int _velocity)
 {
   this->deltaFrames = _deltaFrames;
   this->key         = _key;
-  this->velocity    = _velocity;  
+  this->velocity    = _velocity;
 }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 // related non-member functions:
 
-bool romos::noteEventLessByDeltaFrames(NoteEvent left, NoteEvent right)
+bool noteEventLessByDeltaFrames(NoteEvent left, NoteEvent right)
 {
   if( left.getDeltaFrames() < right.getDeltaFrames() )
     return true;

@@ -8,7 +8,7 @@ void ModuleTypeInfo::addInputPinInfo(
   inputFullNames.push_back(fullName);
   inputDescriptions.push_back(description);
 }
-// rename parameters to shortPinName, fullPinName, pinDescription to fix 
+// rename parameters to shortPinName, fullPinName, pinDescription to fix
 // "hides class member" warning
 
 void ModuleTypeInfo::addOutputPinInfo(
@@ -21,7 +21,7 @@ void ModuleTypeInfo::addOutputPinInfo(
 
 //-------------------------------------------------------------------------------------------------
 
-ModuleFactory romos::moduleFactory;  // definition of the global object - causes memleak?
+ModuleFactory moduleFactory;  // definition of the global object - causes memleak?
 
 ModuleFactory::ModuleFactory()
 {
@@ -33,12 +33,12 @@ ModuleFactory::~ModuleFactory()
   clearRegisteredTypes();
 }
 
-romos::Module* ModuleFactory::createModule(int id, const std::string& name, int x, int y, 
+romos::Module* ModuleFactory::createModule(int id, const std::string& name, int x, int y,
   bool polyphonic)
 {
   ensureTypeInfoArrayAllocated();
   rassert(id >= 0 && id < (int)typeInfos->size());  // id out of range
-  // todo: if the id is out of range, return some kind of "Error" dummy module, maybe just a 
+  // todo: if the id is out of range, return some kind of "Error" dummy module, maybe just a
   // constant module outputting a 0, named "Error"? ..if that's possible
 
   romos::Module* m = (*typeInfos)[id]->createModule();
@@ -47,14 +47,14 @@ romos::Module* ModuleFactory::createModule(int id, const std::string& name, int 
   return m;
 }
 
-romos::Module* ModuleFactory::createModule(const std::string& fullTypeName, 
+romos::Module* ModuleFactory::createModule(const std::string& fullTypeName,
   const std::string& name, int x, int y, bool polyphonic)
 {
   int id = getModuleId(fullTypeName);
   return createModule(id, name, x, y, polyphonic);
 }
 
-romos::TopLevelModule* ModuleFactory::createTopLevelModule(const std::string& name, 
+romos::TopLevelModule* ModuleFactory::createTopLevelModule(const std::string& name,
   int x, int y, bool polyphonic) const
 {
   TopLevelModule* tlm = new TopLevelModule();
@@ -129,13 +129,13 @@ void ModuleFactory::registerStandardModules()
   registerModuleType(new MultiplierTypeInfo);     // a*b
   registerModuleType(new DividerTypeInfo);        // a/b
   //registerModuleType(new ScalerTypeInfo);         // a*const ...not yet finished
-  // todo: a^b, 
+  // todo: a^b,
   registerModuleType(new Adder3ModuleTypeInfo);   // a+b+c
   registerModuleType(new Adder4ModuleTypeInfo);   // a+b+c+d
   registerModuleType(new Adder5ModuleTypeInfo);   // a+b+c+d+e
   registerModuleType(new AdderNModuleTypeInfo);   // a+b+c+d+e+...
 
-  
+
   // Comparison: a<b a<=b, a>b, a>=b,
   // Logic: a&b, a|b
 
@@ -196,8 +196,8 @@ void ModuleFactory::registerStandardModules()
 void ModuleFactory::registerPreBuiltContainers()
 {
   // todo:
-  // TestModuleBuilder::createGain, createSumDiff, createWrappedSumDiff, createSummedDiffs, 
-  // createMovingAverage, createLeakyIntegrator, createTestFilter1, createBiquadMacro, 
+  // TestModuleBuilder::createGain, createSumDiff, createWrappedSumDiff, createSummedDiffs,
+  // createMovingAverage, createLeakyIntegrator, createTestFilter1, createBiquadMacro,
   // createAddedConstants, createPinSortTest, createBlip, createPolyBlipStereo, createNoiseFlute
 }
 
@@ -217,7 +217,7 @@ void ModuleFactory::ensureTypeInfoArrayAllocated()
     typeInfos = new std::vector<ModuleTypeInfo*>;
 }
 
-void ModuleFactory::setupModule(romos::Module* module, const std::string& name, 
+void ModuleFactory::setupModule(romos::Module* module, const std::string& name,
   int x, int y, bool polyphonic) const
 {
   // copied from the old ModuleFactory::createModule
@@ -227,8 +227,8 @@ void ModuleFactory::setupModule(romos::Module* module, const std::string& name,
   module->setPolyphonic(polyphonic);
   module->allocateMemory();
 
-  module->setModuleName(name); 
-  // must be called after allocateMemory because the Constant fills its output arrays with the 
+  module->setModuleName(name);
+  // must be called after allocateMemory because the Constant fills its output arrays with the
   // corresponding value
 
   module->assignProcessingFunctions();

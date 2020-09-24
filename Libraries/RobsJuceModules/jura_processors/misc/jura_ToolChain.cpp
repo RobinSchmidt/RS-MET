@@ -854,6 +854,7 @@ void ToolChainEditor::paintOverChildren(Graphics& g)
     return;
 
   g.setColour(Colour::fromFloatRGBA(0.8125f, 0.8125f, 0.8125f, 1.f));// maybe switch depending on widget color-scheme (dark-on-bright vs bright-on-dark)
+  jassert(chain->activeSlot < selectors.size()); // ..i once had a weird crash - not sure, if that was out of range
   juce::Rectangle<int> rect = selectors[chain->activeSlot]->getBounds();
   g.drawRect(rect, 2);  // 2nd param: thickness
 }

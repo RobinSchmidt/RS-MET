@@ -5,7 +5,7 @@
 // the processing functions:
 
 // fallback function to process the module in frames when necessary:
-void romos::processContainerBlockFrameWiseMono(Module *moduleAsVoid, int blockSize)
+void processContainerBlockFrameWiseMono(Module *moduleAsVoid, int blockSize)
 {
   // algorithm:
   // -adjust the input-pins of the container such that they point to some temporary input area
@@ -29,10 +29,10 @@ void romos::processContainerBlockFrameWiseMono(Module *moduleAsVoid, int blockSi
 
   // temporarily modify the input-pin data in the container's input modules:
   for(pinIndex = 0; pinIndex < inFrameSize; pinIndex++)
-    container->childModules[pinIndex]->inputPins[0].outputPointer 
+    container->childModules[pinIndex]->inputPins[0].outputPointer
     = &(WorkArea::tmpInFrame[pinIndex]);
 
-  // compute 0th frame and buffer it in temp-variable - we'll need it later to restore the 0th 
+  // compute 0th frame and buffer it in temp-variable - we'll need it later to restore the 0th
   // frame which will repeatedly be overwritten in the subsequent loop:
   for(pinIndex = 0; pinIndex < inFrameSize; pinIndex++)
     WorkArea::tmpInFrame[pinIndex] = *(container->inputPins[pinIndex].outputPointer);
@@ -62,7 +62,7 @@ void romos::processContainerBlockFrameWiseMono(Module *moduleAsVoid, int blockSi
 
   // restore the original pin data in the container's input modules:
   for(pinIndex = 0; pinIndex < inFrameSize; pinIndex++)
-    container->childModules[pinIndex]->inputPins[0].outputPointer 
+    container->childModules[pinIndex]->inputPins[0].outputPointer
     = container->inputPins[pinIndex].outputPointer;
 
 
@@ -89,7 +89,7 @@ void copyMatrix(double *source, double *destination, int numRows, int numColumns
 }
 
 // fallback function to process the module in frames when necessary:
-void romos::processContainerBlockFrameWisePoly(Module *moduleAsVoid, int blockSize)
+void processContainerBlockFrameWisePoly(Module *moduleAsVoid, int blockSize)
 {
   romos::ContainerModule *container = ((romos::ContainerModule *) moduleAsVoid);
   const int *playingVoiceIndices    = voiceAllocator.getPlayingVoiceIndices();
@@ -100,12 +100,12 @@ void romos::processContainerBlockFrameWisePoly(Module *moduleAsVoid, int blockSi
   int    inFrameSize    = container->numInputs;
   int    outFrameSize   = container->outFrameStride;
   double *outputPointer = container->getOutputPointer(0);
-  int outVoiceStride = 
+  int outVoiceStride =
     outFrameSize * processingStatus.getBufferSize() * (int) container->polyphonic;
 
-  // temporarily modify the input-pin data in the container's input modules such that they point 
+  // temporarily modify the input-pin data in the container's input modules such that they point
   // to some global memory area - we need to set the voice-strides temporarily to different values
-  // too because in the global memory area we have a lower voice-stride (because there, we don't 
+  // too because in the global memory area we have a lower voice-stride (because there, we don't
   // need to multiply with the buffersize - there's only one buffered frame in the global area):
   for(pinIndex = 0; pinIndex < inFrameSize; pinIndex++)
   {
@@ -130,7 +130,7 @@ void romos::processContainerBlockFrameWisePoly(Module *moduleAsVoid, int blockSi
     voiceIndex    = playingVoiceIndices[playIndex];
     outputPointer = container->audioOutputs + voiceIndex * outVoiceStride;
     for(pinIndex = 0; pinIndex < outFrameSize; pinIndex++)
-      WorkArea::tmpOutFramePoly[voiceIndex * WorkArea::maxNumPins + pinIndex] 
+      WorkArea::tmpOutFramePoly[voiceIndex * WorkArea::maxNumPins + pinIndex]
       = outputPointer[pinIndex];
   }
 
@@ -177,7 +177,7 @@ void romos::processContainerBlockFrameWisePoly(Module *moduleAsVoid, int blockSi
 }
 
 // gcc complains
-void romos::processContainerBlockFrameWiseMixed(Module *moduleAsVoid, int blockSize)
+void processContainerBlockFrameWiseMixed(Module *moduleAsVoid, int blockSize)
 {
 
 }
@@ -185,7 +185,7 @@ void romos::processContainerBlockFrameWiseMixed(Module *moduleAsVoid, int blockS
 
 // frame-wise processing when we have monophonic as well as polyphonic child-modules (needs dispatch-logic for the accumulation in the
 // connections):
-void romos::processContainerMixedMonoPoly(Module *module, int voiceIndex)
+void processContainerMixedMonoPoly(Module *module, int voiceIndex)
 {
   ContainerModule *container = (ContainerModule*) module;
   romos::Module   *cm;  // currently vistited child module (is also the target module of the currently visited connection in the loops)
@@ -199,7 +199,7 @@ void romos::processContainerMixedMonoPoly(Module *module, int voiceIndex)
 }
 
 // frame-wise processing when all child-modules are monophonic:
-void romos::processContainerAllMono(Module *module, int voiceIndex)
+void processContainerAllMono(Module *module, int voiceIndex)
 {
   ContainerModule *container = (ContainerModule*) module;
   romos::Module   *cm;
@@ -213,7 +213,7 @@ void romos::processContainerAllMono(Module *module, int voiceIndex)
 }
 
 // frame-wise processing when all child-modules are polyphonic:
-void romos::processContainerAllPoly(Module *module, int voiceIndex)
+void processContainerAllPoly(Module *module, int voiceIndex)
 {
   ContainerModule *container = (ContainerModule*) module;
   romos::Module   *cm;
@@ -228,7 +228,7 @@ void romos::processContainerAllPoly(Module *module, int voiceIndex)
 
 // block-wise processing when we have monophonic as well as polyphonic child-modules (needs dispatch-logic for the accumulation in the
 // connections):
-void romos::processContainerMixedMonoPolyBlock(Module *module, int voiceIndex, int blockSize)
+void processContainerMixedMonoPolyBlock(Module *module, int voiceIndex, int blockSize)
 {
   if( ((ContainerModule*) module)->hasDelayedConnections )
     processContainerBlockFrameWiseMixed(module, blockSize);
@@ -246,7 +246,7 @@ void romos::processContainerMixedMonoPolyBlock(Module *module, int voiceIndex, i
   }
 }
 
-void romos::processContainerAllMonoBlock(Module *module, int voiceIndex, int blockSize)
+void processContainerAllMonoBlock(Module *module, int voiceIndex, int blockSize)
 {
   if( ((ContainerModule*) module)->hasDelayedConnections )
     processContainerBlockFrameWiseMono(module, blockSize);
@@ -265,7 +265,7 @@ void romos::processContainerAllMonoBlock(Module *module, int voiceIndex, int blo
   }
 }
 
-void romos::processContainerAllPolyBlock(Module *module, int voiceIndex, int blockSize)
+void processContainerAllPolyBlock(Module *module, int voiceIndex, int blockSize)
 {
   if( ((ContainerModule*) module)->hasDelayedConnections )
     processContainerBlockFrameWisePoly(module, blockSize);
@@ -366,7 +366,7 @@ void ContainerModule::disconnectInputPin(int inputPinIndex)
   getAudioInputModule(inputPinIndex)->disconnectInputPin(0);
 }
 
-romos::Module* ContainerModule::addAudioInputModule(std::string name, int x, int y, 
+romos::Module* ContainerModule::addAudioInputModule(std::string name, int x, int y,
   bool sortModuleArrayAfterInsertion)
 {
   if( name.empty() )
@@ -374,7 +374,7 @@ romos::Module* ContainerModule::addAudioInputModule(std::string name, int x, int
 
   //Module *newModule = ModuleFactory::createModule(ModuleTypeRegistry::AUDIO_INPUT, name, x, y, this->isPolyphonic());
   //newModule->typeInfo = moduleFactory.getModuleTypeInfo("AudioInput");
-    // can be deleted when we create the newModule with the newFactory later (but until then, we 
+    // can be deleted when we create the newModule with the newFactory later (but until then, we
     // need to manually set the typeInfo pointer here
 
   Module *newModule = moduleFactory.createModule("AudioInput", name, x, y, this->isPolyphonic());
@@ -393,7 +393,7 @@ romos::Module* ContainerModule::addAudioInputModule(std::string name, int x, int
   return newModule;
 }
 
-romos::Module* ContainerModule::addAudioOutputModule(std::string name, int x, int y, 
+romos::Module* ContainerModule::addAudioOutputModule(std::string name, int x, int y,
   bool sortModuleArrayAfterInsertion)
 {
   if( name.empty() )
@@ -401,7 +401,7 @@ romos::Module* ContainerModule::addAudioOutputModule(std::string name, int x, in
 
   //Module *newModule = ModuleFactory::createModule(ModuleTypeRegistry::AUDIO_OUTPUT, name, x, y, this->isPolyphonic());
   //newModule->typeInfo = moduleFactory.getModuleTypeInfo("AudioOutput");
-  // can be deleted when we create the newModule with the newFactory later (but until then, we 
+  // can be deleted when we create the newModule with the newFactory later (but until then, we
   // need to manually set the typeInfo pointer here
 
   Module *newModule = moduleFactory.createModule("AudioOutput", name, x, y, this->isPolyphonic());
@@ -419,7 +419,7 @@ romos::Module* ContainerModule::addAudioOutputModule(std::string name, int x, in
   return newModule;
 }
 
-romos::Module* ContainerModule::addChildModule(Module *moduleToAdd, 
+romos::Module* ContainerModule::addChildModule(Module *moduleToAdd,
   bool sortChildModuleArrayAfterInsertion)
 {
   rassert( !hasAsDirectlyEmbeddedModule(moduleToAdd) ); // adding a child multiple times?
@@ -441,7 +441,7 @@ romos::Module* ContainerModule::addChildModule(Module *moduleToAdd,
 }
 
 /*
-romos::Module* ContainerModule::addChildModule(int moduleIdentifier, rosic::rsString name, 
+romos::Module* ContainerModule::addChildModule(int moduleIdentifier, rosic::rsString name,
   int x, int y, bool polyphonic, bool sortChildModulesAfterInsertion)
 {
   if( moduleIdentifier == ModuleTypeRegistry::AUDIO_INPUT )
@@ -450,7 +450,7 @@ romos::Module* ContainerModule::addChildModule(int moduleIdentifier, rosic::rsSt
     return addAudioOutputModule(name, x, y, true);
   else
   {
-    romos::Module *moduleToAdd = ModuleFactory::createModule(moduleIdentifier, name, x, y, 
+    romos::Module *moduleToAdd = ModuleFactory::createModule(moduleIdentifier, name, x, y,
       polyphonic);
 
     addChildModule(moduleToAdd, sortChildModulesAfterInsertion);
@@ -460,7 +460,7 @@ romos::Module* ContainerModule::addChildModule(int moduleIdentifier, rosic::rsSt
 */
 
 // new version - not yet tested:
-romos::Module* ContainerModule::addChildModule(const std::string& fullTypeName, 
+romos::Module* ContainerModule::addChildModule(const std::string& fullTypeName,
   const std::string& name, int x, int y, bool poly, bool sortChildModulesAfterInsertion)
 {
   //rassert(false); return nullptr; // does not yet work
@@ -604,7 +604,7 @@ ContainerModule* ContainerModule::containerizeModules(std::vector<Module*> modul
   getMidpointCoordinates(modulesToContainerize, x, y);
 
   //ContainerModule *container = new ContainerModule("Container", x, y, isPolyphonic()); // old
-  ContainerModule* container = 
+  ContainerModule* container =
     (ContainerModule*) moduleFactory.createModule("Container", "Container", x, y, isPolyphonic());
 
   addChildModule(container, false);
@@ -1230,7 +1230,7 @@ void romos::ContainerModule::updatePointersInInputModules()
 
     if(inModule != nullptr)
       inModule->inputPins[0] = inputPins[i];
-      // copies all the pin-data from this container's i-th input pin into the input-pin of the 
+      // copies all the pin-data from this container's i-th input pin into the input-pin of the
       // i-th input module
     else
     {
@@ -1238,7 +1238,7 @@ void romos::ContainerModule::updatePointersInInputModules()
     }
 
 
-      
+
   }
 
 

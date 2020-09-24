@@ -2437,7 +2437,7 @@
 
 1597256667 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\constants.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\typedefinitions.h
+1599320134 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\typedefinitions.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\macrodefinitions.h
 
@@ -2445,7 +2445,7 @@
 
 1595857316 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\basics\sortandsearch.h
 
-1595970195 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\data.h
+1599239091 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\data.h
 	"ArrayTools.h"
 	"MatrixTools.h"
 	"StandardContainerTools.h"
@@ -2453,12 +2453,13 @@
 	"Range.h"
 	"MultiArray.h"
 	"Trees.h"
+	"Graphs.h"
 
-1597843321 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.h
+1598623284 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\matrixtools.h
+1599312570 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\matrixtools.h
 
-1598086179 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\standardcontainertools.h
+1600467266 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\standardcontainertools.h
 
 1597157598 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\buffers.h
 
@@ -2502,7 +2503,7 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\banddiagonalsolver.hpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\linearalgebra.h
+1599255516 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\linearalgebra.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\statistics.h
 
@@ -2512,7 +2513,7 @@
 
 1570815251 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\basicfunctions.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\integerfunctions.h
+1598695767 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\integerfunctions.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\interpolatingfunction.h
 
@@ -2536,11 +2537,11 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\sincostable.h
 
-1597731803 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.h
+1599239587 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.h
 
-1597701239 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.h
+1598802919 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\vector.h
+1599227319 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\vector.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\geometry\line2d.h
 
@@ -2552,9 +2553,9 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\rootfinder.h
 
-1598092042 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\numericcalculus.h
+1599855040 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\numericcalculus.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\interpolation.h
+1598715660 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\interpolation.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\optimization.h
 
@@ -2640,7 +2641,7 @@
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\physics.h
 	"ParticleSystem.h"
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\particlesystem.h
+1598601164 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\particlesystem.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\visualization.h
 	"Graphics/Image.h"
@@ -2659,11 +2660,11 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagedrawer.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\realtimespline.h
+1599759928 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\realtimespline.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagepainter.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\scopescreenscanner.h
+1599315985 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\scopescreenscanner.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\phasescopebuffer.h
 
@@ -2852,9 +2853,9 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalsynthesizer.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalanalyzer.h
+1598600463 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\sinusoidalanalyzer.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\harmonicanalyzer.h
+1598602586 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\spectral\harmonicanalyzer.h
 
 1595712067 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\jucelibrarycode\include_rapt_templates.cpp
 	"AppConfig.h"
@@ -2894,7 +2895,7 @@
 	"MultiArray.cpp"
 	"Trees.cpp"
 
-1597844007 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.cpp
+1598623390 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\arraytools.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\matrixtools.cpp
 
@@ -2955,7 +2956,7 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\lapackcpp\lapackbanded.hpp
 
-1596830291 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\linearalgebra.cpp
+1599269100 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\linearalgebra.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\misc\statistics.cpp
 
@@ -2987,7 +2988,7 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\matrix.cpp
 
-1597700955 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.cpp
+1598804110 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\polynomial.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\vector.cpp
 
@@ -3001,9 +3002,9 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\rootfinder.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\numericcalculus.cpp
+1600364298 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\numericcalculus.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\interpolation.cpp
+1599763119 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\interpolation.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\numerics\optimization.cpp
 
@@ -3093,7 +3094,7 @@
 	"Physics.h"
 	"ParticleSystem.cpp"
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\particlesystem.cpp
+1598601135 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\physics\particlesystem.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\visualization.cpp
 	"Visualization.h"
@@ -3113,13 +3114,13 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagedrawer.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\realtimespline.cpp
+1599759798 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\realtimespline.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagepainter.cpp
+1598436494 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagepainter.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\scopescreenscanner.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\phasescopebuffer.cpp
+1599319686 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\misc\phasescopebuffer.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\generators\generators.cpp
 	"Generators.h"
@@ -3295,12 +3296,11 @@
 	"AppConfig.h"
 	<romos/romos.cpp>
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\romos.cpp
+1598103558 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\romos.cpp
 	"romos.h"
 	"Algorithms/romos_FilterDesign.cpp"
 	"Algorithms/romos_Interpolation.cpp"
 	"Framework/romos_AudioConnection.cpp"
-	"Framework/romos_Liberty.cpp"
 	"Framework/romos_Module.cpp"
 	"Framework/romos_AtomicModule.cpp"
 	"Framework/romos_ContainerModule.cpp"
@@ -3318,6 +3318,7 @@
 	"Modules/romos_InfrastructuralModules.cpp"
 	"Modules/romos_ModulationModules.cpp"
 	"Modules/romos_SoundGeneratorModules.cpp"
+	"Framework/romos_Liberty.cpp"
 	"TestSuite/AutomaticTests.cpp"
 	"TestSuite/InteractiveTests.cpp"
 	"TestSuite/romos_ConcreteModularSystemTests.cpp"
@@ -3342,7 +3343,7 @@
 	"TestSuite/TestHelpers.cpp"
 	"TestSuite/TestsMain.cpp"
 
-1598094555 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\romos.h
+1598103616 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\romos.h
 	<rosic/rosic.h>
 	"Algorithms/romos_FilterDesign.h"
 	"Algorithms/romos_Interpolation.h"
@@ -4193,49 +4194,49 @@
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rosic\_third_party\sampletailextender\harmonicanalyser.h
 	<vector>
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_filterdesign.h
+1598098527 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_filterdesign.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_interpolation.h
+1598098551 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_interpolation.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_audioconnection.h
+1598099346 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_audioconnection.h
 
-1598090930 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_modulefactory.h
+1598099428 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_modulefactory.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_voiceallocator.h
+1598099543 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_voiceallocator.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_processingstatus.h
+1598099597 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_processingstatus.h
 
-1598090930 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_module.h
+1598099703 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_module.h
 
-1598092312 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_atomicmodule.h
+1598099852 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_atomicmodule.h
 
-1598092312 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_containermodule.h
+1598099925 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_containermodule.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_noteevent.h
+1598099998 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_noteevent.h
 
-1598093150 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_toplevelmodule.h
+1598100046 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_toplevelmodule.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_workarea.h
+1598100099 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_workarea.h
 
 1598093150 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_moduledefinitionmacros.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_arithmeticmodules.h
+1598100346 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_arithmeticmodules.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_delaymodules.h
+1598100436 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_delaymodules.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_filtermodules.h
+1598100475 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_filtermodules.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_functionmodules.h
+1598100665 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_functionmodules.h
 
-1598095387 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_formulamodules.h
+1598100767 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_formulamodules.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_infrastructuralmodules.h
+1598100813 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_infrastructuralmodules.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_modulationmodules.h
+1598100888 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_modulationmodules.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_soundgeneratormodules.h
+1598100958 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_soundgeneratormodules.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_liberty.h
+1598101039 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_liberty.h
 
 1598096359 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_testeventgenerator.h
 
@@ -4261,75 +4262,75 @@
 
 1598096080 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_interactivetestrunner.h
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_filterdesign.cpp
+1598098527 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_filterdesign.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_interpolation.cpp
+1598098571 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\algorithms\romos_interpolation.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_audioconnection.cpp
+1598099393 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_audioconnection.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_liberty.cpp
+1598101058 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_liberty.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_module.cpp
+1600955688 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_module.cpp
 
-1598083444 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_atomicmodule.cpp
+1598099852 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_atomicmodule.cpp
 
-1598093601 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_containermodule.cpp
+1600955688 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_containermodule.cpp
 
-1598093601 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_modulefactory.cpp
+1600955716 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_modulefactory.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_noteevent.cpp
+1600955716 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_noteevent.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_processingstatus.cpp
+1600955716 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_processingstatus.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_toplevelmodule.cpp
+1598100052 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_toplevelmodule.cpp
 
-1598093601 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_voiceallocator.cpp
+1600955716 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_voiceallocator.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_workarea.cpp
+1598100105 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\framework\romos_workarea.cpp
 
-1598093601 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_arithmeticmodules.cpp
+1598100365 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_arithmeticmodules.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_delaymodules.cpp
+1598100446 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_delaymodules.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_filtermodules.cpp
+1598100486 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_filtermodules.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_functionmodules.cpp
+1598100673 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_functionmodules.cpp
 
-1598083443 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_formulamodules.cpp
+1598100767 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_formulamodules.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_infrastructuralmodules.cpp
+1598100813 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_infrastructuralmodules.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_modulationmodules.cpp
+1598100897 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_modulationmodules.cpp
 
-1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_soundgeneratormodules.cpp
+1598100968 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\modules\romos_soundgeneratormodules.cpp
 
-1598096977 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\automatictests.cpp
+1598101399 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\automatictests.cpp
 	"AutomaticTests.h"
 
 1598097010 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\automatictests.h
 	"TestHelpers.h"
 
-1598094969 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testhelpers.h
+1598101209 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testhelpers.h
 
-1598097011 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\interactivetests.cpp
+1598101399 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\interactivetests.cpp
 	"TestHelpers.h"
 
-1598097071 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concretemodularsystemtests.cpp
+1598101557 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concretemodularsystemtests.cpp
 	"romos_ConcreteModularSystemTests.h"
 
-1598095098 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concretemodularsystemtests.h
+1598101429 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concretemodularsystemtests.h
 
-1598097098 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteperformancetests.cpp
+1598101557 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteperformancetests.cpp
 	"romos_ConcretePerformanceTests.h"
 
-1598095576 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteperformancetests.h
+1598101557 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteperformancetests.h
 
-1598097189 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteprocessingtests.cpp
+1598101669 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteprocessingtests.cpp
 	"romos_ConcreteProcessingTests.h"
 
 1598097156 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_concreteprocessingtests.h
 
-1598097240 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_containermanipulationtests.cpp
+1598101633 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_containermanipulationtests.cpp
 	"romos_ContainerManipulationTests.h"
 
 1598095638 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_containermanipulationtests.h
@@ -4337,12 +4338,12 @@
 1598097288 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_generatedesiredoutput.cpp
 	"romos_GenerateDesiredOutput.h"
 
-1598097305 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_globalframeworktests.cpp
+1598101853 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_globalframeworktests.cpp
 	"romos_GlobalFrameworkTests.h"
 
-1598096013 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_globalframeworktests.h
+1598101669 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_globalframeworktests.h
 
-1598097355 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_interactiveplottingtests.cpp
+1598101853 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_interactiveplottingtests.cpp
 	"romos_InteractivePlottingTests.h"
 
 1598096063 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_interactiveplottingtests.h
@@ -4350,25 +4351,25 @@
 1598097381 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_interactivetestrunner.cpp
 	"romos_InteractiveTestRunner.h"
 
-1598097381 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_modularsystemtest.cpp
+1598101960 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_modularsystemtest.cpp
 	"romos_ModularSystemTest.h"
 
 1598097395 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_modulebuildcodegenerator.cpp
 	"romos_ModuleBuildCodeGenerator.h"
 
-1598097421 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_performancetest.cpp
+1598101960 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_performancetest.cpp
 	"romos_PerformanceTest.h"
 
 1598097714 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_performancetestrunner.cpp
 	"romos_PerformanceTestRunner.h"
 
-1598097447 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_processingtest.cpp
+1598101960 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_processingtest.cpp
 	"romos_ProcessingTest.h"
 
-1598097460 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_testeventgenerator.cpp
+1598102054 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_testeventgenerator.cpp
 	"romos_TestEventGenerator.h"
 
-1598097472 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_testmodulebuilder.cpp
+1598102374 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_testmodulebuilder.cpp
 	"romos_TestModuleBuilder.h"
 
 1598097493 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\romos_unittest.cpp
@@ -4383,7 +4384,7 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testfilter.cpp
 
-1598094838 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testhelpers.cpp
+1598102374 e:\programming\c++\rs-met\libraries\robsjucemodules\romos\testsuite\testhelpers.cpp
 	"AutomaticTests.h"
 	<io.h>
 	<sys/uio.h>
@@ -5361,7 +5362,7 @@
 
 1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\partialdifferentialequations.h
 
-1597848919 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.h
+1598350735 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\prototypes.h
 	"rosic/rosic.h"
 	"FilterDesign/PoleZeroPrototype.h"
 	"FilterDesign/PoleZeroMapper.h"
@@ -5413,7 +5414,7 @@
 	"rosic/rosic.h"
 	"rs_testing/rs_testing.h"
 
-1596037074 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testinputcreation.h
+1598352405 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testinputcreation.h
 
 1595712064 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\filewriting.h
 	"rosic/rosic.h"
@@ -5443,7 +5444,7 @@
 1598086314 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\performancetesttools.cpp
 	"PerformanceTestTools.h"
 
-1596037151 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testinputcreation.cpp
+1598352519 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testinputcreation.cpp
 	"TestInputCreation.h"
 
 1598086854 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\testtools\utilities\testutilities.cpp
@@ -5525,7 +5526,7 @@
 
 1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\misc\testclasses.cpp
 
-1597996682 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\raptinstantiations.cpp
+1599496347 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\raptinstantiations.cpp
 	"../rapt/rapt_templates.cpp"
 
 1595712067 source:e:\programming\c++\rs-met\tests\testsrosicandrapt\source\experiments\experiments.cpp
@@ -5688,7 +5689,7 @@
 	"Experiments/ResamplingExperiments.h"
 	"Experiments/SaturationExperiments.h"
 
-1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\mathexperiments.h
+1599499124 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\mathexperiments.h
 
 1595712067 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\analysisexperiments.h
 
@@ -5718,7 +5719,7 @@
 
 1598092043 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\mathexperiments.cpp
 
-1598092043 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\filterexperiments.cpp
+1598437136 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\filterexperiments.cpp
 
 1598092042 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\generatorexperiments.cpp
 
@@ -5726,7 +5727,7 @@
 
 1598084276 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\graphicsexperiments.cpp
 
-1598092951 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\mathexperiments.cpp
+1599499631 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\mathexperiments.cpp
 	"MathExperiments.h"
 
 1598092952 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rosic_tests\portedfromrslib\experiments\analysisexperiments.cpp
@@ -5945,7 +5946,7 @@
 
 1597182351 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\dataunittests.cpp
 
-1598073864 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\filterunittests.cpp
+1598517056 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\unittests\filterunittests.cpp
 	"../../../../Libraries/ThirdParty/Nayuki/SlidingWindowMinMax.hpp"
 
 1595712064 e:\programming\c++\rs-met\libraries\thirdparty\nayuki\slidingwindowminmax.hpp
@@ -6088,9 +6089,9 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\multiarray.h
 
-1598005859 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\trees.h
+1599450136 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\trees.h
 
-1597997258 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\fraction.h
+1598694226 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\types\fraction.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\linearalgebra\linearalgebranew.h
 
@@ -6100,7 +6101,7 @@
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\windowfunctions.h
 
-1598006641 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quantilefilter.h
+1598695163 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quantilefilter.h
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagegenerator.h
 
@@ -6124,9 +6125,9 @@
 
 1597164492 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\basicmathfunctions.cpp
 
-1597160471 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\windowfunctions.cpp
+1598604802 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\math\functions\windowfunctions.cpp
 
-1597161313 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quantilefilter.cpp
+1598348130 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\filters\scientific\quantilefilter.cpp
 
 1595712062 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\visualization\graphics\imagegenerator.cpp
 
@@ -6153,4 +6154,6 @@
 1595712063 e:\programming\c++\rs-met\libraries\robsjucemodules\rs_testing\prototypes\sineparameterestimator.cpp
 
 1597429593 e:\programming\c++\rs-met\tests\testsrosicandrapt\source\rapt_tests\experiments\scratchpad.cpp
+
+1599495269 e:\programming\c++\rs-met\libraries\robsjucemodules\rapt\data\graphs.h
 

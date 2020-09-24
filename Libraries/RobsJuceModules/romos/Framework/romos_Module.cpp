@@ -43,7 +43,7 @@ void AudioInputPinData::copyDataFrom(const AudioInputPinData &other)
   outputFrameSize   = other.outputFrameSize;
   outputVoiceStride = other.outputVoiceStride;
 
-  // in case of disconnected pins we don't want to point to the other's defaultValue but to our 
+  // in case of disconnected pins we don't want to point to the other's defaultValue but to our
   // own:
   if( other.outputPointer == &other.defaultValue )
     outputPointer = &defaultValue;
@@ -79,7 +79,7 @@ romos::Module::Module(const std::string&_name, int _x, int _y, bool _polyphonic)
 romos::Module::~Module()
 {
   rassert( !hasOutgoingAudioConnections() );
-    // before deleting a module, you should disconnect its outputs (which may otherwise still be 
+    // before deleting a module, you should disconnect its outputs (which may otherwise still be
     // referenced by other modules)
 
   // doesn't call cleanUp because that's done by moduleFactory.deleteModule before actually
@@ -115,11 +115,11 @@ void romos::Module::setPolyphonic(bool shouldBePolyphonic)
   polyphonic = shouldBePolyphonic;
   assignProcessingFunctions();
   if( parentModule != nullptr )
-    parentModule->childPolyphonyChanged(this); 
+    parentModule->childPolyphonyChanged(this);
     // containers need to keep track of the polyphony of their children
 }
 
-void romos::Module::connectInputPinTo(int inputPinIndex, Module *sourceModule, 
+void romos::Module::connectInputPinTo(int inputPinIndex, Module *sourceModule,
   int sourceOutputPinIndex)
 {
   if( inputPinIndex < 0 || inputPinIndex >= (int) inputPins.size() )
@@ -129,7 +129,7 @@ void romos::Module::connectInputPinTo(int inputPinIndex, Module *sourceModule,
   if( sourceModule != nullptr )
   {
     //sourceModule->mapApparentSourceToProcessingSource(sourceModule, sourceOutputPinIndex);
-    // after this call, sourceModule and sourceOutputPinIndex refer to the actual module from 
+    // after this call, sourceModule and sourceOutputPinIndex refer to the actual module from
     // which we drag the output data, all proxies have been resolved
 
     inputPins[inputPinIndex].sourceModule      = sourceModule;
@@ -163,12 +163,12 @@ void romos::Module::disconnectInputPinsWithInputFrom(romos::Module *sourceModule
   }
 }
 
-void romos::Module::disconnectInputPinsWithInputFrom(romos::Module *sourceModuleToDisconnect, 
+void romos::Module::disconnectInputPinsWithInputFrom(romos::Module *sourceModuleToDisconnect,
   int outputPinIndex)
 {
   for(unsigned int i = 0; i < inputPins.size(); i++)
   {
-    if( inputPins[i].sourceModule == sourceModuleToDisconnect 
+    if( inputPins[i].sourceModule == sourceModuleToDisconnect
       && inputPins[i].outputIndex == outputPinIndex )
       disconnectInputPin(i);
   }
@@ -207,8 +207,8 @@ void romos::Module::updateInputPointersAndInFrameStrides()
 
 bool romos::Module::setState(const std::map<std::string, std::string>& state)
 {
-  std::string tmp; 
- 
+  std::string tmp;
+
   // maybe we should also check here, if these keys actually exist?
   tmp = state.at(std::string("Name"));
   setModuleName(tmp);
@@ -320,12 +320,12 @@ bool romos::Module::hasIncomingConnectionFrom(const romos::Module *sourceModule)
   return false;
 }
 
-bool romos::Module::hasIncomingConnectionFrom(const romos::Module *sourceModule, 
+bool romos::Module::hasIncomingConnectionFrom(const romos::Module *sourceModule,
   int sourceOutputPinIndex) const
 {
   for(unsigned int i = 0; i < inputPins.size(); i++)
   {
-    if( inputPins[i].sourceModule == sourceModule 
+    if( inputPins[i].sourceModule == sourceModule
       && inputPins[i].outputIndex == sourceOutputPinIndex )
       return true;
   }
@@ -336,7 +336,7 @@ bool romos::Module::hasDelayedIncomingConnection() const
 {
   for(unsigned int pinIndex = 0; pinIndex < inputPins.size(); pinIndex++)
   {
-    if( inputPins[pinIndex].sourceModule != nullptr 
+    if( inputPins[pinIndex].sourceModule != nullptr
       && modulePointerLessByXY(this, inputPins[pinIndex].sourceModule) )
       return true;
   }
@@ -386,7 +386,7 @@ std::vector<AudioConnection> romos::Module::getIncomingAudioConnections()
   for(unsigned int i = 0; i < inputPins.size(); i++)
   {
     if( inputPins[i].sourceModule != nullptr )
-      rosic::appendElement(result, AudioConnection(inputPins[i].sourceModule, 
+      rosic::appendElement(result, AudioConnection(inputPins[i].sourceModule,
         inputPins[i].outputIndex, this, (int) i));
   }
   return result;
@@ -407,7 +407,7 @@ std::vector<AudioConnection> romos::Module::getOutgoingAudioConnections()
     {
       AudioInputPinData pin = sibling->getAudioInputPinData(j);
       if( pin.sourceModule == this )
-        rosic::appendElement(result, AudioConnection(this, (int) pin.outputIndex, 
+        rosic::appendElement(result, AudioConnection(this, (int) pin.outputIndex,
           sibling, (int) j) );
     }
   }
@@ -506,7 +506,7 @@ void romos::Module::allocateAudioOutputs()
 //-------------------------------------------------------------------------------------------------
 // (non-member) helper functions:
 
-bool romos::modulePointerLessByXY(const romos::Module *left, const romos::Module *right)
+bool modulePointerLessByXY(const romos::Module *left, const romos::Module *right)
 {
   // make sure that input modules come first:
   if( left->isInputModule() && !right->isInputModule() )
@@ -537,7 +537,7 @@ bool romos::modulePointerLessByXY(const romos::Module *left, const romos::Module
 }
 
 /*
-bool romos::containsModuleOfType(const std::vector<romos::Module*> &modules, int typeCode)
+bool containsModuleOfType(const std::vector<romos::Module*> &modules, int typeCode)
 {
   for(unsigned int i = 0; i < modules.size(); i++)
   {
@@ -550,7 +550,7 @@ bool romos::containsModuleOfType(const std::vector<romos::Module*> &modules, int
 */
 
 // new:
-bool romos::containsModuleOfType(const std::vector<romos::Module*> &modules,
+bool containsModuleOfType(const std::vector<romos::Module*> &modules,
   const std::string& fullTypeName)
 {
   for(unsigned int i = 0; i < modules.size(); i++)
@@ -580,7 +580,7 @@ bool romos::modulePointerLessByYX(romos::Module *modulePointer1, romos::Module *
 }
 */
 
-void romos::writeModuleStateToConsole(void *module, bool waitForKeyAfterOutput)
+void writeModuleStateToConsole(void *module, bool waitForKeyAfterOutput)
 {
   //printf("%s", "\n");
 
@@ -623,7 +623,7 @@ void romos::writeModuleStateToConsole(void *module, bool waitForKeyAfterOutput)
     getchar();
 }
 
-void romos::retrieveModuleState(void *moduleAsVoid)
+void retrieveModuleState(void *moduleAsVoid)
 {
   romos::Module* module = (romos::Module*) moduleAsVoid;
 
@@ -698,7 +698,7 @@ void romos::retrieveModuleState(void *moduleAsVoid)
   int dummy = 0;
 }
 
-void romos::triggerRuntimeError(const char *errorMessage)
+void triggerRuntimeError(const char *errorMessage)
 {
   // insert code here to open a message box....
 
