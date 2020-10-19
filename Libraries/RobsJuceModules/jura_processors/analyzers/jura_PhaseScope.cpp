@@ -118,6 +118,8 @@ void PhaseScope::createParameters()
   p = new Param("ScaleY", 0.1, 10.0, 1.0, Parameter::EXPONENTIAL);
   p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setScaleY);
   addObservedParameter(p);
+  // maybe instead of ScaleX/Y, we could have Scale and Ratio where the former scales both, x and y 
+  // and the latter modfied the aspect ratio - this could be more convenient, especially in XY mode
 
   //p = new Param("ShearX", -8.0, 8.0, 0.0, Parameter::LINEAR);
   //p->setValueChangeCallback<PhaseScope>(this, &PhaseScope::setShearX);
