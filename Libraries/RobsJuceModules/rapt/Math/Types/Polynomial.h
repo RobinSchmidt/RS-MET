@@ -100,13 +100,23 @@ public:
   //int getMaxOrder() const { return (int)coeffs.size()-1; }
   // deprecate this 
 
-  /** Returns the degree of the polynomial, defined as... */
+  /** Returns the degree of the polynomial. Mathematically, this is defined as the exponent of the 
+  highest power of x which has a nonzero coefficient....but the function currently just returns the 
+  degree as it is determined by the length of the coefficient array, not checking if that last 
+  value is zero because doing so would need some tolerance when using floating point numbers and 
+  i'm not yet sure, how to best handle that...typically, client code wants to know, how long the
+  coefficient array is anyway....tbc... */
   int getDegree() const { return (int)coeffs.size()-1; }
   // should take into account trailing zeros ..or maybe have a boolean flag
   // "takeZeroCoeffsIntoAccount" which defaults to false...or maybe it shouldn't have any default
   // value - client code must be explicit...or maybe have functions getAllocatedDegree, 
   // getActualDegree(tolerance)...or getDegree has an optional parameter for the tolerance 
   // defaulting to 0
+
+  /** Returns the number of coefficients in this polynomial. */
+  int getNumCoeffs() const { return (int)coeffs.size(); }
+  // maybe client code should preferably use this, when it wants to know the length of the coeff 
+  // array and not getDegree because of the ambiguity
 
   /** Returns the leading coefficient, i.e. the coefficient that multiplies the highest power of 
   x. */

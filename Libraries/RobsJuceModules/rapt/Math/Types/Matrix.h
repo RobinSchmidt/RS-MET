@@ -398,7 +398,7 @@ public:
       p = p * this->at(i, i);
     return p;
   }
-  // todo: use *= - (needs implementation of that operator in rsRationlaFunction)
+  // todo: use *= - (needs implementation of that operator in rsRationalFunction)
 
   // todo: getTrace(), getDiagonalProduct()
 
@@ -494,7 +494,7 @@ public:
       rsSwap((*this)(i1, j), (*this)(i2, j));
   }
   // may be optimized by using fixed base-pointers to each row and loop increment 1 - no
-  // recompuation of the row-start in te iterations - the (i,j) operator always does a
+  // recompuation of the row-start in the iterations - the (i,j) operator always does a
   // multiplication
 
   /** Adds a multiple of the row with index iSrc to the row with index iDst. The multiplier is
@@ -1152,8 +1152,8 @@ rsMatrix<T> matrixPhases(const rsMatrix<std::complex<T>>& A)
   return phases;
 }
 
-// maybe factor out common code...maybe something like applyMatrixFunction with different
-// input and output types for the template parameter:
+// maybe factor out common code (keeping the above as covenience functions)...maybe something like 
+// applyMatrixFunction with different input and output types for the template parameter:
 
 /*
 template<class TIn, class TOut, class F>
@@ -1168,6 +1168,9 @@ rsMatrix<TOut> matrixFunction(const rsMatrix<TIn>& A, F func)
   return out;
 }
 */
+
+// ...but how is the compiler supposed to infer TOut? maybe it should be a member function "apply"
+// of rsMatrix<TOut>, so TOut can be infered from that
 
 
 //-------------------------------------------------------------------------------------------------

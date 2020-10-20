@@ -82,6 +82,8 @@ public:
   protected:
     TVtx data;               // data stored at the vertex
     std::vector<Edge> edges; // edges emanating from this vertex
+
+    friend class rsGraph<TVtx, TEdg>;
   };
 
   //-----------------------------------------------------------------------------------------------
@@ -108,6 +110,13 @@ public:
   void addEdge(int i, int j, bool bothWays = false) { addEdge(i, j, TEdg(1), bothWays); }
 
   void setEdgeData(int i, int j, const TEdg& data) { vertices[i].setEdgeData(j, data); }
+
+  /** Clears the edges of all vertices. */
+  void clearEdges()
+  {
+    for(size_t i = 0; i < vertices.size(); i++)
+      vertices[i].edges.clear();
+  }
 
   // todo: setEdgeData(int i, int j, const TEdg& data), removeEdge(i, j), removeVertex(i)
 
