@@ -56,18 +56,17 @@ public:
   rsPolynomial(int degree = 0, bool initWithZeros = true);
 
   /** Creates a polynomial from a std::vector of coefficients. */
-  //rsPolynomial(const std::vector<T>& coefficients) : coeffs(coefficients) {}
-  rsPolynomial(const std::vector<T>& coefficients) 
-  {
-    setCoeffs(coefficients);
-  }
+  //rsPolynomial(const std::vector<T>& coefficients) : coeffs(coefficients) {}  // why not?
+  rsPolynomial(const std::vector<T>& coefficients) { setCoeffs(coefficients); }
+
+  /** Creates a polynomial from an initializer list for the coefficients. */
+  rsPolynomial(std::initializer_list<T> l) : coeffs(l) {}  // maybe take a reference? needs tests
 
   /** Promotes a number to a 0th degree polynomial. */
   rsPolynomial(const T& number)
   { coeffs.resize(1); coeffs[0] = number; }
 
-  // todo: make a constructor that accepts an initializer list ...or can the one taking the vector
-  // be used, i.e. will an initializer list be implicitly converted toa std::vector?
+  // make a constructor that initializes from a raw array
 
 
   //-----------------------------------------------------------------------------------------------
