@@ -1105,10 +1105,24 @@ void rsArrayTools::multiply(const T1 *buffer1, const T2 *buffer2, TR *result, in
 }
 
 template<class T>
-void rsArrayTools::negate(const T *source, T *destination, int length)
+void rsArrayTools::negate(const T *x, T *y, int N)
 {
-  for(int i = 0; i < length; i++)
-    destination[i] = -source[i];
+  for(int i = 0; i < N; i++)
+    y[i] = -x[i];
+}
+
+template<class T>
+void rsArrayTools::negateEven(const T *x, T *y, int N)
+{
+  for(int i = 0; i < N; i += 2) y[i] = -x[i];
+  for(int i = 1; i < N; i += 2) y[i] =  x[i];
+}
+
+template<class T>
+void rsArrayTools::negateOdd(const T *x, T *y, int N)
+{
+  for(int i = 0; i < N; i += 2) y[i] =  x[i];
+  for(int i = 1; i < N; i += 2) y[i] = -x[i];
 }
 
 template <class T>

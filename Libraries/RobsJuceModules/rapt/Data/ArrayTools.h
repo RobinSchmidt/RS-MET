@@ -350,11 +350,13 @@ public:
   /** Fills the passed array with one value at all indices. */
   template <class T>
   static void fillWithValue(T *buffer, int length, T value);
+  // rename to fill and/or make alias
 
   /** Fills the passed array with all zeros - the type must have a constructor that takes an int
   and initializes to the zero element when 0 is passed. */
   template <class T>
   static void fillWithZeros(T *buffer, int length);
+  // rename to clear and/or make alias
 
   /** Filters the signal in input buffer x and stores the result in output buffer y. The filter
   realizes the difference equation:
@@ -621,9 +623,21 @@ public:
   template <class T1, class T2, class TR>
   static void multiply(const T1 *buffer1, const T2 *buffer2, TR *result, int length);
 
-  /** Writes the element-wise negation of the source buffer into the destination buffer. */
+  /** Writes the element-wise negation of the source buffer into the destination buffer, i.e flips 
+  the signs. */
   template<class T>
   static void negate(const T *source, T *destination, int length);
+
+  /** Like negate but flips only signs of elements with even indices. */
+  template<class T>
+  static void negateEven(const T *source, T *destination, int length);
+  // needs test
+
+  /** Like negate but flips only signs of elements with odd indices. */
+  template<class T>
+  static void negateOdd(const T *source, T *destination, int length);
+  // needs test
+
 
   /** Normalizes the maximum absolute value of the passed array by multiplying the whole array 
   through by "maximum"/maxAbs(buffer) - where "maximum" is the passed argument and maxAbs(buffer)
