@@ -98,6 +98,9 @@ template float rsArrayTools::generalizedMean(const float *x, int length, float p
 template float rsArrayTools::minValue(const float *x, int length);
 template float rsArrayTools::maxValue(const float *x, int length);
 template float rsArrayTools::maxDeviation(const float *buffer1, const float *buffer2, int length);
+//template void rsArrayTools::negate(    const float *x, float *y, int N);
+template void rsArrayTools::negateEven(const float *x, float *y, int N);
+template void rsArrayTools::negateOdd( const float *x, float *y, int N);
 template int rsArrayTools::maxDeviationIndex(const float *buffer1, const float *buffer2, int length);
 template void rsArrayTools::reverse(const float* x, float* y, int length);
 //template void rsArrayTools::reverse(float* x, int length);
@@ -127,7 +130,7 @@ template double rsArrayTools::maxDeviation(const double *buffer1, const double *
 template double rsArrayTools::minValue(const double *x, int length);
 template void rsArrayTools::movingAverage3pt(const double* x, int N, double* y, bool endsFixed);
 template void rsArrayTools::movingMedian3pt(const double* x, int N, double* y);
-template void rsArrayTools::negate(const double *source, double *destination, int length);
+template void rsArrayTools::negate(const double *x, double *y, int N);
 template void rsArrayTools::normalize(double *buffer, int length, double maximum, bool subtractMean);
 template void rsArrayTools::normalizeMean(double *x, int N, double newMean);
 template void rsArrayTools::reverse(const double* x, double* y, int length);
