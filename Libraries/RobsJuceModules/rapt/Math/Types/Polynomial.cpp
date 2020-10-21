@@ -147,7 +147,9 @@ void rsPolynomial<T>::evaluateWithDerivatives(const T& x, const T *a, int degree
     results[0] = results[0]*x + a[i];
   }
   rsArrayTools::multiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
-  // todo: maybe lift the restriction to < 32 derivatives by computing the factorials on the fly
+  // todo: maybe lift the restriction to < 32 derivatives by computing additional factorials on 
+  // the fly, if needed - but we need to be careful about overflow - i think 31! will already 
+  // overflow int64...yep...easily
 }
 
 template<class T>

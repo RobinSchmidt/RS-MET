@@ -56,6 +56,9 @@ static double rsFactorials[rsNumFactorials] =
 // errors in both cases
 // the long double variant doesn't compile anymore when we instantiate rsPolynomial with 
 // std::complex<double>, so it has been changed to double
+// ToDo: 
+// -check, if the large values still make sense or if we get overflow problems
+// -maybe move to some Constants.h file
 
 /** A table of reciprocal values of the factorial of some integer number n, that is: 1/n!, where
 n should be between 0...31 (inclusive) - the values are tabulated and any value outside the range

@@ -505,6 +505,7 @@ public:
     for(int j = 0; j < numCols; ++j)
       (*this)(iDst, j) += weight * (*this)(iSrc, j);
   }
+  // maybe rename to addScaledRowToOther - 2 chars shorter
   // optimize using base-pointers
 
   /** Like above but does it only for the column-indices in between minCol and maxCol (both

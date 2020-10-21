@@ -166,7 +166,13 @@ order 2*smoothness+1 will be used. */
 template<class Tx, class Ty>
 void rsInterpolateSpline(const Tx *x, const Ty *y, int N, const Tx *xi, Ty *yi, int Ni, 
   int smoothness = 1);
-// rename to rsInterpolateHermite
+// -rename to rsInterpolateHermite
+// -try to avoid the oscillatory behavior by using downscaled numerical derivatives - let the user 
+//  pass a factor k between 0..1: 1 means no downscaling (take numerical derivatives as is), 0 
+//  means all derivatives are taken to be zero - maybe the 1st derivative should be multiplied by 
+//  k, the 2nd by k^2, etc. - this will happen naturally, when we just always multiply the 
+//  estimates taken form previous numercila derivatives by k (factors accumulate)...but maybe it
+//  may also make sense to have different factors for different derivatives
 
 
 /** Given arrays....
