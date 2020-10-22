@@ -78,6 +78,13 @@ public:
     int         getNumEdges()        const { return (int) edges.size();   }
     int         getEdgeTarget(int j) const { return edges[j].getTarget(); }
     const TEdg& getEdgeData(int j)   const { return edges[j].getData();   }
+    bool hasEdgeTo(int j) const 
+    { 
+      for(int k = 0; k < (int)edges.size(); k++) {
+        if(edges[k].getTarget() == j)
+          return true; }
+      return false;
+    } // needs test
 
   protected:
     TVtx data;               // data stored at the vertex
@@ -98,7 +105,10 @@ public:
   void setVertexData(int i, const TVtx& data) { vertices[i].setData(data); }
   // O(1)
 
-  void addEdge(int i, int j, const TEdg& data = TEdg(1), bool bothWays = false)
+
+  void addEdge(int i, int j) { addEdge(i, j, TEdg(1), false); }
+
+  void addEdge(int i, int j, const TEdg& data, bool bothWays = false)
   {
     vertices[i].addEdge(Edge(j, data));
     if(bothWays)
@@ -107,7 +117,11 @@ public:
   // O(vertices[i].numEdges + vertices[j].numEdges)
 
   /** Convenience function to add an edge with a default value of 1, possibly symmetrically. */
-  void addEdge(int i, int j, bool bothWays = false) { addEdge(i, j, TEdg(1), bothWays); }
+  void addEdge(int i, int j, bool bothWays) { addEdge(i, j, TEdg(1), bothWays); }
+
+
+
+
 
   void setEdgeData(int i, int j, const TEdg& data) { vertices[i].setEdgeData(j, data); }
 
@@ -117,6 +131,10 @@ public:
     for(size_t i = 0; i < vertices.size(); i++)
       vertices[i].edges.clear();
   }
+
+  /** Clears the array of vertices. Resets the graph into its initial, empty state. */
+  void clear() { vertices.clear(); }
+
 
   // todo: setEdgeData(int i, int j, const TEdg& data), removeEdge(i, j), removeVertex(i)
 
@@ -160,6 +178,21 @@ public:
 
   /** Returns the index of the target vertex of the j-th edge emanating from vertex i. */
   int getEdgeTarget(int i, int j) const { return vertices[i].getEdgeTarget(j); }
+
+  /** Returns true, iff for each edge from vertex i to j there also exists an edge from j to i. In 
+  this case, the graph can be seen as undirected. */
+  bool isSymmetric() const
+  {
+    for(int i = 0; i < (int) vertices.size(); i++) {
+      for(int j = 0; j < (int) vertices[i].edges.size(); j++) {
+        int k = getEdgeTarget(i, j);
+        if(!vertices[k].hasEdgeTo(i))
+          return false;   }}
+    return true;
+  }
+  // needs test
+  // maybe reverse roles of j and k - we should generally use i,j for vertex indices and k for the
+  // vertex-index in the edge-list of vertex i
 
 
 protected:

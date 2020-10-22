@@ -373,6 +373,11 @@ public:
   // todo: 
   // -maybe use a Tx template parameter as in derivative
   // -use raw arrays instead of std::vector but keep a convenience function using std::vector
+  // -maybe use f, f_x, f_y instead of u, u_x, u_y to avoid notational clash with the u parameter
+  //  in a parametric surface (because eventually, we want to use this to numerically solve a PDE 
+  //  on a parametric surface)
+  // -can this also be used for vector fields by just interpreting the vector field as two scalar 
+  //  fields? i think so
 
 
   //-----------------------------------------------------------------------------------------------
