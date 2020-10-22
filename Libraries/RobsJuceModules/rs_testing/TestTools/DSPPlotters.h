@@ -5,6 +5,8 @@
 //#include "../../../../Libraries/JUCE/modules/rosic/rosic.h"
 #include "../../../Libraries/RobsJuceModules/rosic/rosic.h"
 
+// rename file to Plotters.h - we have also other plotters that are not necessarily related to 
+// DSP
 
 /* Subclasses of GNUPlotter that specialize in making plots related to digital signal processing 
 (DSP). */
@@ -289,6 +291,24 @@ protected:
 };
 
 // todo: make a baseclass SpectrogramPlotter
+
+//=================================================================================================
+
+/** A class for plotting graphs in the vertices-and-edges sense. */
+
+template<class T>
+class GraphPlotter : public GNUPlotter
+{
+
+public:
+
+  /** Plots a graph in which each vertex has data that determines its location in the 2D plane. You 
+  can pass an array of vertex indices for vertices to be highlighted. These are drawn with bigger 
+  dots and thicker edges and their nighbors are also bigger than usual but not quite as big as the 
+  actually highlighted vertices. */
+  void plotGraph2D(rsGraph<rsVector2D<T>, T>& m, std::vector<int> highlight = std::vector<int>());
+
+};
 
 
 #endif

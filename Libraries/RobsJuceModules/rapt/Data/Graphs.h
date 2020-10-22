@@ -193,6 +193,7 @@ public:
   // needs test
   // maybe reverse roles of j and k - we should generally use i,j for vertex indices and k for the
   // vertex-index in the edge-list of vertex i
+  // there should not only exist the backward edge, but it should also have the same data!
 
 
 protected:

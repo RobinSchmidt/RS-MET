@@ -643,7 +643,83 @@ void SinusoidalModelPlotter<T>::plotAnalysisResult(
   plt.plot();
 }
 
+template class SinusoidalModelPlotter<double>;  // move elsewhere
+
+//=================================================================================================
+
+template <class T>
+void GraphPlotter<T>::plotGraph2D(rsGraph<rsVector2D<T>, T>& m, std::vector<int> highlight)
+{
+  GNUPlotter plt;
+
+  double dotRadius = 0.01; // can we make this absolute?
+
+
+  auto isHighlighted = [&](int i)->bool 
+  { 
+    return rsContains(highlight, i); 
+  };
+  auto hasHighlightedNeighbor = [&](int i)->bool
+  {
+    int numNeighbors = m.getNumEdges(i);
+    for(int j = 0; j < numNeighbors; j++) {
+      int k = m.getEdgeTarget(i, j);
+      if(isHighlighted(k))
+        return true;  }
+    return false;
+  };
+  auto isEdgeHighlighted = [&](int i, int k)->bool 
+  {
+    return isHighlighted(i) && hasHighlightedNeighbor(k);
+  };
 
 
 
-template class SinusoidalModelPlotter<double>;
+  for(int i = 0; i < m.getNumVertices(); i++)
+  {
+    int numNeighbors = m.getNumEdges(i);
+    for(int j = 0; j < numNeighbors; j++)
+    {
+      int k = m.getEdgeTarget(i, j);
+      rsVector2D<T> vi = m.getVertexData(i);
+      rsVector2D<T> vk = m.getVertexData(k);
+      if(isEdgeHighlighted(i, k))
+        plt.drawLine("linewidth 4", vi.x, vi.y, vk.x, vk.y);
+      else
+        plt.drawLine("", vi.x, vi.y, vk.x, vk.y);
+    }
+  }
+  // draw line thicker, if i is highlighted or has highlighted neighbor
+  // maybe use the edge-weight to determine the color of the edge...but then we should use 
+  // somehow normalized weights...maybe...find the maximum weight and divide by that
+
+  T minX = 0, maxX = 0, minY = 0, maxY = 0;
+  std::string attr = "fillcolor \"black\" fillstyle solid";
+  for(int i = 0; i < m.getNumVertices(); i++)
+  {
+    rsVector2D<T> v = m.getVertexData(i);
+
+    if(isHighlighted(i))               plt.drawCircle(attr, v.x, v.y, 3.0*dotRadius);
+    else if(hasHighlightedNeighbor(i)) plt.drawCircle(attr, v.x, v.y, 2.0*dotRadius);
+    else                               plt.drawCircle(attr, v.x, v.y,     dotRadius);
+
+    minX = rsMin(minX, v.x);
+    maxX = rsMax(maxX, v.x);
+    minY = rsMin(minY, v.y);
+    maxY = rsMax(maxY, v.y);
+  }
+  // https://stackoverflow.com/questions/11138012/drawing-a-circle-of-radius-r-around-a-point
+  // # create a black circle at center (0.5, 0.5) with radius 0.5
+  // set object 1 circle front at 0.5,0.5 size 0.5 fillcolor rgb "black" lw 1
+
+  minX -= (maxX-minX) * T(0.05);
+  maxX += (maxX-minX) * T(0.05);
+  minY -= (maxY-minY) * T(0.05);
+  maxY += (maxY-minY) * T(0.05);
+  plt.setRange(minX, maxX, minY, maxY);
+  plt.addCommand("set size square");
+  plt.setPixelSize(600, 600);
+  plt.plot();
+}
+
+template class GraphPlotter<float>;  // move elsewhere
