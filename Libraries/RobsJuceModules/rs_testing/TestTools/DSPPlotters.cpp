@@ -650,9 +650,9 @@ template class SinusoidalModelPlotter<double>;  // move elsewhere
 template <class T>
 void GraphPlotter<T>::plotGraph2D(rsGraph<rsVector2D<T>, T>& m, std::vector<int> highlight)
 {
-  GNUPlotter plt;
+  GNUPlotter plt; // get rid - use "this"
 
-  double dotRadius = 0.01; // can we make this absolute?
+  double dotRadius = 0.005; 
 
 
   auto isHighlighted = [&](int i)->bool 
@@ -674,6 +674,13 @@ void GraphPlotter<T>::plotGraph2D(rsGraph<rsVector2D<T>, T>& m, std::vector<int>
   };
 
 
+  auto drawDot = [&](const std::string& attr, double x, double y, double r)
+  {
+    plt.addCommand("set object circle at " + s(x) + "," + s(y) + " size scr " + s(r) + " " + attr);
+  };
+  // with "size scr " we determine absolute size on screen, independent of range and zoom level
+  // move to GNUPlotter
+  // https://stackoverflow.com/questions/11138012/drawing-a-circle-of-radius-r-around-a-point
 
   for(int i = 0; i < m.getNumVertices(); i++)
   {
@@ -689,7 +696,6 @@ void GraphPlotter<T>::plotGraph2D(rsGraph<rsVector2D<T>, T>& m, std::vector<int>
         plt.drawLine("", vi.x, vi.y, vk.x, vk.y);
     }
   }
-  // draw line thicker, if i is highlighted or has highlighted neighbor
   // maybe use the edge-weight to determine the color of the edge...but then we should use 
   // somehow normalized weights...maybe...find the maximum weight and divide by that
 
@@ -698,11 +704,9 @@ void GraphPlotter<T>::plotGraph2D(rsGraph<rsVector2D<T>, T>& m, std::vector<int>
   for(int i = 0; i < m.getNumVertices(); i++)
   {
     rsVector2D<T> v = m.getVertexData(i);
-
-    if(isHighlighted(i))               plt.drawCircle(attr, v.x, v.y, 3.0*dotRadius);
-    else if(hasHighlightedNeighbor(i)) plt.drawCircle(attr, v.x, v.y, 2.0*dotRadius);
-    else                               plt.drawCircle(attr, v.x, v.y,     dotRadius);
-
+    if(isHighlighted(i))               drawDot(attr, v.x, v.y, 2.0*dotRadius);
+    else if(hasHighlightedNeighbor(i)) drawDot(attr, v.x, v.y, 1.5*dotRadius);
+    else                               drawDot(attr, v.x, v.y,     dotRadius);
     minX = rsMin(minX, v.x);
     maxX = rsMax(maxX, v.x);
     minY = rsMin(minY, v.y);
