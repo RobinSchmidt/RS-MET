@@ -2046,33 +2046,34 @@ void vertexMeshGradient1()
 
 void vertexMeshGradient2()
 {
+  // We plot the error between the estimated partial derivatives and true partial derivatives as
+  // functions of the stepsize h for various numbers of neighbors. The neighbors are arranged as
+  // a regular polygon around a center vertex at the origin.
+
   using Real = double;
   using Vec2 = rsVector2D<Real>;
   using Vec  = std::vector<Real>;
   using Mesh = rsGraph<Vec2, Real>;
   using ND   = rsNumericDifferentiator<Real>;
 
-  //int Nh = 10;  // number of different h-values 
+  // Settings:
+  int minNumSides =  2; 
+  int maxNumSides =  8;
+  int Nh          = 10;  // number of stepsizes h
+  Vec2 x0(0, 0);         // position of center vertex
 
-  // Functions for evaluating f(x,y) and its exact partial derivatives:
+  // Define functions for evaluating f(x,y) and its exact partial derivatives:
   Real sx = 1.0, sy = 1.0;  // overall scale factors for inputs x and y
   Real p  = 0.01;            // sine phase
   auto  f  = [&](Real x, Real y)->Real { return    sin(sx*x+p) *    exp(sy*y); };
   auto  fx = [&](Real x, Real y)->Real { return sx*cos(sx*x+p) *    exp(sy*y); };
   auto  fy = [&](Real x, Real y)->Real { return    sin(sx*x+p) * sy*exp(sy*y); };
 
-
-  Vec2 x0(0, 0);         // position of center vertex
-  int minNumSides =  2; 
-  int maxNumSides = 10;
-  Vec h({ 0.0625f,0.125f,0.25f,0.5f,1.f });
-  Vec u, u_x, u_y, U_x, U_y;  // uppercase are used for true target value, lowercase for estimates
-
-  int Nh = 10;   // number of stepsizes
-  h.resize(Nh);
-  for(int i = 0; i < Nh; i++)
+  // Create measurement data:
+  Vec h(Nh);
+  for(int i = 0; i < Nh; i++)  // Create array of stepsizes
     h[i] = pow(0.5, i);
-
+  Vec u, u_x, u_y, U_x, U_y;   // Uppercase are used for true values, lowercase for estimates
   rsMatrix<Real> err(maxNumSides-minNumSides+1, (int)h.size());
   Mesh mesh;
   GraphPlotter<Real> meshPlotter;
@@ -2116,11 +2117,10 @@ void vertexMeshGradient2()
     }
   }
 
-
+  // We use a log-log plot: the x-axis is the (negative) power of two (we use h = ...,0.25,0.5,1.0)
+  // and the y-axis is the (negative) power of 10 that gives the order of magnitude of the error:
   //Vec hLog = RAPT::rsApplyFunction(h, &log);  // dos not compile
   Vec hLog(h.size()); for(size_t i = 0; i < h.size(); i++) hLog[i] = rsLog2(h[i]);
-
-
   plotMatrixRows(err, &hLog[0]);
 
   // Observations:
@@ -2161,10 +2161,26 @@ void vertexMeshGradient2()
   //  the option for additional weighting is only kept in for experimentation purposes
 }
 
+void vertexMeshGradient3()
+{
+  // We plot the estimation error as function of the exponent p when using a p-norm as weighting
+  // for the least-squares solver, i.e. the weight is proportional to 1/d^p where d is the distance
+  // between the vertex under consideration and its current neighbor.
+
+
+
+
+  //...
+
+
+  int dummy = 0;
+}
+
 void vertexMeshGradient()
 {
   vertexMeshGradient1();
   vertexMeshGradient2();
+  vertexMeshGradient3();
 }
 
 
