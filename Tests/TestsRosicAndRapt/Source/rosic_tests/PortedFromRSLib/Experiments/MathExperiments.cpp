@@ -2054,20 +2054,24 @@ void vertexMeshGradient2()
 
   //int Nh = 10;  // number of different h-values 
 
-  // functions for evaluating f(x,y) and its exact partial derivatives:
-  Real sx = 0.1f;  // overall scale factor for inputs x,y
-  Real sy = 0.1f;
-  auto  f  = [&](Real x, Real y)->Real { return    sin(sx*x) *    exp(sy*y); };
-  auto  fx = [&](Real x, Real y)->Real { return sx*cos(sx*x) *    exp(sy*y); };
-  auto  fy = [&](Real x, Real y)->Real { return    sin(sx*x) * sy*exp(sy*y); };
+  // Functions for evaluating f(x,y) and its exact partial derivatives:
+  Real sx = 1.0, sy = 1.0;  // overall scale factors for inputs x and y
+  Real p  = 0.01;            // sine phase
+  auto  f  = [&](Real x, Real y)->Real { return    sin(sx*x+p) *    exp(sy*y); };
+  auto  fx = [&](Real x, Real y)->Real { return sx*cos(sx*x+p) *    exp(sy*y); };
+  auto  fy = [&](Real x, Real y)->Real { return    sin(sx*x+p) * sy*exp(sy*y); };
 
 
-  Vec2 x0(0, 0);        // position of center vertex
-  int minNumSides = 3; 
-  int maxNumSides = 8;
-  Vec h({ 0.125f,0.25f,0.5f,1.f });
+  Vec2 x0(0, 0);         // position of center vertex
+  int minNumSides =  2; 
+  int maxNumSides = 10;
+  Vec h({ 0.0625f,0.125f,0.25f,0.5f,1.f });
   Vec u, u_x, u_y, U_x, U_y;  // uppercase are used for true target value, lowercase for estimates
 
+  int Nh = 10;   // number of stepsizes
+  h.resize(Nh);
+  for(int i = 0; i < Nh; i++)
+    h[i] = pow(0.5, i);
 
   rsMatrix<Real> err(maxNumSides-minNumSides+1, (int)h.size());
   Mesh mesh;
@@ -2081,12 +2085,13 @@ void vertexMeshGradient2()
       mesh.addVertex(x0);
       for(int i = 0; i < numSides; i++)
       {
-        Real a  = Real(2*i*PI / numSides);       // angle
-        Real dx = h[j]*cos(a);                   // x-distance
-        Real dy = h[j]*sin(a);                   // y-distance
-        Vec2 vi(x0.x + dx, x0.y + dy);           // position of neighbor vertex
-        mesh.addVertex(vi);                      // add the new neighbour to mesh
-        mesh.addEdge(0, i+1, 1, true);           // add edge to the new neighbor and back
+        Real a  = Real(2*i*PI / numSides); // angle
+        if(numSides == 2) a /= 2;          // special case for "2-gon": use 2 perpendiculars
+        Real dx = h[j]*cos(a);             // x-distance
+        Real dy = h[j]*sin(a);             // y-distance
+        Vec2 vi(x0.x + dx, x0.y + dy);     // position of neighbor vertex
+        mesh.addVertex(vi);                // add the new neighbour to mesh
+        mesh.addEdge(0, i+1, 1, true);     // add edge to the new neighbor and back
         int dummy = 0;
       }
       //meshPlotter.plotGraph2D(mesh);
@@ -2105,27 +2110,37 @@ void vertexMeshGradient2()
       ND::gradient2D(mesh, u, u_x, u_y);
       Vec e_x = U_x - u_x;
       Vec e_y = U_y - u_y;
-      Real e  = rsMax(e_x[0], e_y[0]);  // at index 0 is the center vertex
+      Real e  = rsMax(rsAbs(e_x[0]), rsAbs(e_y[0]));  // at index 0 is the center vertex
       err(numSides-minNumSides, j) = log10(e);
+      //err(numSides-minNumSides, j) = e;
     }
   }
 
 
-  //Vec hLog = RAPT::rsApplyFunction(h, &log);  // dos not commpile
+  //Vec hLog = RAPT::rsApplyFunction(h, &log);  // dos not compile
   Vec hLog(h.size()); for(size_t i = 0; i < h.size(); i++) hLog[i] = rsLog2(h[i]);
 
 
   plotMatrixRows(err, &hLog[0]);
 
-  // where is the green one? there are inf and nan values :-O 
-  // the red one looks good - error
-
- 
-
-
-
-
-
+  // Observations:
+  // -when using the log, we need to use a lower limt to avoid log of zero
+  // -the errors are actually really small for 5 sides upwards! the approximation seems to be very
+  //  good! is the function too easy, i.e. too smooth? maybe try a more complicated function
+  // -3 sides looks worst - that would correspond to a hexagonal mesh
+  // -6 sides looks best  - that would correspond to a triangular mesh - using 7 or 8 sides, it 
+  //  actually starts getting worse ..or no - actually not
+  // -2 sides is actually best - i think, that may mean the quality of the estimates obtained by 
+  //  that method are worse than i hoped :-( - the method does not give similar quality estimates
+  //  as on a regular grid!
+  // -todo: implement, for reference, the regular forward, backward and central difference methods 
+  //  and plot the error with respect to those - basically, what we want to do is a sort of 
+  //  least-squares approximation to those - maybe that 2nd level of approximation is what makes 
+  //  things worse
+  // -wait - no - the 2-sides solution is exactly the same as the 4-sides solution which is as it 
+  //  should be ..or should it? 2-sides is actually a forward difference and 4 sides a central 
+  //  difference...maybe they are equivalent because of the symmetry of the function - yes: with a 
+  //  small phase offset in the sine, the errors become different
 
   int dummy = 0;
 
