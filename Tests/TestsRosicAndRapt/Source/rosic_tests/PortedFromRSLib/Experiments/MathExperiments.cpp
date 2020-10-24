@@ -2046,43 +2046,32 @@ void vertexMeshGradient1()
 
 void vertexMeshGradient2()
 {
-  using Vec2 = rsVector2D<float>;
-  using Vec  = std::vector<float>;
-  using Mesh = rsGraph<Vec2, float>;
-  using ND   = rsNumericDifferentiator<float>;
+  using Real = double;
+  using Vec2 = rsVector2D<Real>;
+  using Vec  = std::vector<Real>;
+  using Mesh = rsGraph<Vec2, Real>;
+  using ND   = rsNumericDifferentiator<Real>;
 
   //int Nh = 10;  // number of different h-values 
 
   // functions for evaluating f(x,y) and its exact partial derivatives:
-  float sx = 0.1f;  // overall scale factor for inputs x,y
-  float sy = 0.1f;
-  auto  f  = [&](float x, float y)->float { return    sin(sx*x) *    exp(sy*y); };
-  auto  fx = [&](float x, float y)->float { return sx*cos(sx*x) *    exp(sy*y); };
-  auto  fy = [&](float x, float y)->float { return    sin(sx*x) * sy*exp(sy*y); };
+  Real sx = 0.1f;  // overall scale factor for inputs x,y
+  Real sy = 0.1f;
+  auto  f  = [&](Real x, Real y)->Real { return    sin(sx*x) *    exp(sy*y); };
+  auto  fx = [&](Real x, Real y)->Real { return sx*cos(sx*x) *    exp(sy*y); };
+  auto  fy = [&](Real x, Real y)->Real { return    sin(sx*x) * sy*exp(sy*y); };
 
 
   Vec2 x0(0, 0);        // position of center vertex
   int minNumSides = 3; 
-  int maxNumSides = 9;
-  //Vec h({ 1.f,0.5f,0.25f,0.125f,0.0625f }); // raises assert
-  //Vec h({ 1.f,0.5f,0.25f,0.125f });
-  //Vec h({ 0.0625f,0.125f,0.25f,0.5f,1.f });
+  int maxNumSides = 8;
   Vec h({ 0.125f,0.25f,0.5f,1.f });
-
   Vec u, u_x, u_y, U_x, U_y;  // uppercase are used for true target value, lowercase for estimates
 
-  //float h0 = 1.f;       // start value for h later: go down in a loop: 1,1/2,1/4,1/8,...
-  float w  = 1.f;       // edge weight
 
-
-
-  //Vec errX(Nh), errY(Nh);  // estimation errors for x- and y-coordinate
-
-  rsMatrix<float> err(maxNumSides-minNumSides+1, (int)h.size());
-
-  //float h = h0;
+  rsMatrix<Real> err(maxNumSides-minNumSides+1, (int)h.size());
   Mesh mesh;
-  GraphPlotter<float> meshPlotter;
+  GraphPlotter<Real> meshPlotter;
   for(int numSides = minNumSides; numSides <= maxNumSides; numSides++)
   {
     for(int j = 0; j < (int)h.size(); j++)
@@ -2092,12 +2081,12 @@ void vertexMeshGradient2()
       mesh.addVertex(x0);
       for(int i = 0; i < numSides; i++)
       {
-        float a  = float (2*i*PI / numSides);    // angle
-        float dx = h[j]*cos(a);                  // x-distance
-        float dy = h[j]*sin(a);                  // y-distance
+        Real a  = Real(2*i*PI / numSides);       // angle
+        Real dx = h[j]*cos(a);                   // x-distance
+        Real dy = h[j]*sin(a);                   // y-distance
         Vec2 vi(x0.x + dx, x0.y + dy);           // position of neighbor vertex
         mesh.addVertex(vi);                      // add the new neighbour to mesh
-        mesh.addEdge(0, i+1, w, true);           // add edge to the new neighbor and back
+        mesh.addEdge(0, i+1, 1, true);           // add edge to the new neighbor and back
         int dummy = 0;
       }
       //meshPlotter.plotGraph2D(mesh);
@@ -2116,20 +2105,22 @@ void vertexMeshGradient2()
       ND::gradient2D(mesh, u, u_x, u_y);
       Vec e_x = U_x - u_x;
       Vec e_y = U_y - u_y;
-
-      //float e = rsMax(rsMaxAbs(e_x), rsMaxAbs(e_y));
-      float e = rsMax(e_x[0], e_y[0]);  // at index 0 is the center vertex
-      // oh - no - don't take the max - take the value at 0
-
-      err(numSides-minNumSides, j) = e;
+      Real e  = rsMax(e_x[0], e_y[0]);  // at index 0 is the center vertex
+      err(numSides-minNumSides, j) = log10(e);
     }
   }
 
 
+  //Vec hLog = RAPT::rsApplyFunction(h, &log);  // dos not commpile
+  Vec hLog(h.size()); for(size_t i = 0; i < h.size(); i++) hLog[i] = rsLog2(h[i]);
 
-  plotMatrixRows(err, &h[0]);
 
-  // maybe use double - it's hard to see anything with the roundoff overlaid
+  plotMatrixRows(err, &hLog[0]);
+
+  // where is the green one? there are inf and nan values :-O 
+  // the red one looks good - error
+
+ 
 
 
 
