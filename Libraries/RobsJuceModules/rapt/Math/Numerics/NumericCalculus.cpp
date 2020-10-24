@@ -138,8 +138,8 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
   rsAssert((int) u_x.size() == N);
   rsAssert((int) u_y.size() == N);
   using Vec2 = rsVector2D<T>;
-  rsMatrix2x2<T> A;
-  Vec2 b, g;
+  rsMatrix2x2<T> A;            // maybe rename to M = ATA (== A^T * A in most textbooks)
+  Vec2 b, g;                   // maybe rename b to Mb (== A^T * b in textbooks)
   for(int i = 0; i < N; i++)
   {
     const Vec2& vi   = mesh.getVertexData(i);   // vertex, at which we calculate the derivative
@@ -208,6 +208,7 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
   }
 }
 // todo:
+// -this needs more numerical tests and verifications
 // -the "solve" call could be optimized - maybe we don't even need an explicit matrix and/or may
 //  make use of the symmetry of A (maybe a special solveSymmetric function could be used)
 // -perhaps, the solve function should detect a zero determinant and switch between computing

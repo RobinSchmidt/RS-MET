@@ -1935,7 +1935,7 @@ void fillEdges(rsGraph<rsVector2D<T>, T>& g,
       g.setEdgeData(i, j, ed); }}                // ...and store it at the edge
 }
 
-void vertexMeshGradient()
+void vertexMeshGradient1()
 {
   // We test the function rsNumericDifferentiator::gradient2D which operates on an irregular mesh 
   // of vertices and estimates the gradient from function values known only on such a mesh.
@@ -1985,6 +1985,10 @@ void vertexMeshGradient()
   auto fy = [&](float x, float y)->float { return    sin(wx * x + px) * wy*cos(wy * y + py); };
   auto fill = [&]() 
   { 
+    int N = mesh.getNumVertices();
+    u.resize(N);
+    u_x.resize(N);
+    u_y.resize(N);
     for(int i = 0; i < N; i++) {
       Vec2 v = mesh.getVertexData(i);
       u[i]   = f( v.x, v.y);
@@ -2005,7 +2009,7 @@ void vertexMeshGradient()
   fillEdges(mesh, d1); ND::gradient2D(mesh, u, u_x1, u_y1); e_x1 = u_x-u_x1; e_y1 = u_y-u_y1;
   fillEdges(mesh, d2); ND::gradient2D(mesh, u, u_x2, u_y2); e_x2 = u_x-u_x2; e_y2 = u_y-u_y2;
 
-  // This is the regular 5-point stencil that would result from unsing a regular mesh:
+  // This is the regular 5-point stencil that would result from using a regular mesh:
   // P = (3,2), Q = (3,3), R = (4,2), S = (3,1), T = (2,2)
   mesh.setVertexData(0, Vec2(3.f, 2.f));   // P = (3,2)
   mesh.setVertexData(1, Vec2(3.f, 3.f));   // Q = (3,3)
@@ -2016,6 +2020,18 @@ void vertexMeshGradient()
   fillEdges(mesh, d0); ND::gradient2D(mesh, u, u_x0, u_y0); e_x0 = u_x-u_x0; e_y0 = u_y-u_y0;
   fillEdges(mesh, d1); ND::gradient2D(mesh, u, u_x1, u_y1); e_x1 = u_x-u_x1; e_y1 = u_y-u_y1;
   fillEdges(mesh, d2); ND::gradient2D(mesh, u, u_x2, u_y2); e_x2 = u_x-u_x2; e_y2 = u_y-u_y2;
+  // Of interest are mostly the errors at index 0 because that's the only vertex which has
+  // more than 1 neighbour. The other vertices are boundary vertices that either have 1 
+  // neighbor (if sym == true) or 0 neighbors (if sym == false). It may be interesting to figure
+  // out the accuracy when there's only 1 neighbor - it should give minimum x-error and maximum 
+  // y-error when the edge is horizontal and maximum x-error and minimum y-error when the edge is
+  // vertical. I think, in these cases, the formula reduces to the one-sided difference in x- and 
+  // y-direction. The best compromise should be obtained, when the edge is at an angle of 45 
+  // degrees. For horizontale or vertical edges, the max-error may go to infinity? Division by 
+  // zero? ...figure out...
+
+
+  int dummy = 0;
 
   // Observations: 
   // -The accuracy seems to be best with using the (inverse) Manhattan distance as weights. 
@@ -2024,6 +2040,62 @@ void vertexMeshGradient()
   //  -maybe try the maximum norm, too
   // -In the case of the regular grid, all estimates are the same, as they should, since all 
   //  distances are unity.
+
+
+}
+
+void vertexMeshGradient2()
+{
+  using Vec2 = rsVector2D<float>;
+  using VecF = std::vector<float>;
+  using Mesh = rsGraph<Vec2, float>;
+  using ND   = rsNumericDifferentiator<float>;
+
+  Vec2 x0(0, 0);     // position of center vertex
+  int numSides = 4;  // later: go up in a loop:   3,4,5,6,7,8,...
+  float h = 1.f;     // later: go down in a loop: 1,1/2,1/4,1/8,...
+  float w = 1.f;     // edge weight
+
+  Mesh mesh;
+  mesh.clear();
+  mesh.addVertex(x0);
+  for(int i = 0; i < numSides; i++)
+  {
+    float a  = float (2*i*PI / numSides);    // angle
+    float dx = h*cos(a);                     // x-distance
+    float dy = h*sin(a);                     // y-distance
+    Vec2 xi(x0.x + dx, x0.y + dy);           // position of neighbor vertex
+    mesh.addVertex(xi);                      // add the new neighbour to mesh
+    mesh.addEdge(0, i+1, w);                 // add edge to the new neighbor
+    int dummy = 0;
+  }
+
+
+
+
+  int dummy = 0;
+
+  // ToDo: 
+  // -plot the log of the absolute value of error as function of the log of the neighbor distance 
+  //  for neighborhoods made from regular polygons with sides n = 2,3,4,5,6,7,8,... the n = 2 case 
+  //  should just be two neighbors at right angles (needs to be treated outside the loop over n)
+  // -also plot the error(s) as function of some exponent p when using the p-norm as weighting 
+  //  function
+  // -to figure out what the best weighting is, try it with a center vertex that has a concentric
+  //  polygonal neighborhood, i.e. nodes at distance 2 and 2h away (maybe the outer polygon can be 
+  //  at a different angle than the inner one) - with such a neighborhood, plot the error as 
+  //  function of the p in a 1/p-norm weighting for some reasonably chosen h and n=3,4,5,6,7,8
+  // -it could be, that the weighting is not yet optimally chosen in the implementation but we 
+  //  don't really noticed it yet because we do not have a proper test in place
+  // -maybe the code should be written such that eventually the user does not need to care about
+  //  assigning the edge-weights - optimal accuracy should be obtained when weights are all 1 and 
+  //  the option for additional weighting is only kept in for experimentation purposes
+}
+
+void vertexMeshGradient()
+{
+  vertexMeshGradient1();
+  vertexMeshGradient2();
 }
 
 
