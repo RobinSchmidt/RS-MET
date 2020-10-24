@@ -2047,27 +2047,28 @@ void vertexMeshGradient1()
 
 
 template<class T>
-void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh,
+void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
   int numSides, T radius, T angle = T(0))
 {
+  int N = (int)mesh.getNumVertices();
   using Vec2 = rsVector2D<T>;
-  Vec2 v0 = mesh.getVertexData(0);
-  for(int i = 0; i < numSides; i++)
+  Vec2 vi = mesh.getVertexData(i);
+  for(int j = 0; j < numSides; j++)
   {
-    T a = T(angle + 2*i*PI / numSides); // angle
+    T a = T(angle + 2*j*PI / numSides); // angle
     if(numSides == 2) a /= 2;           // special case for "2-gon": use 2 perpendiculars
     T dx = radius*cos(a);               // x-distance
     T dy = radius*sin(a);               // y-distance
-    Vec2 vi(v0.x + dx, v0.y + dy);      // position of neighbor vertex
-    mesh.addVertex(vi);                 // add the new neighbour to mesh
-    mesh.addEdge(0, i+1, 1, true);      // add edge to the new neighbor and back
+    Vec2 vj(vi.x + dx, vi.y + dy);      // position of neighbor vertex
+    mesh.addVertex(vj);                 // add the new neighbour to mesh
+    mesh.addEdge(0, j+N, 1, true);      // add edge to the new neighbor and back
   }
 }
 
 template<class T>
 void computeValueAndExactDerivatives(rsGraph<rsVector2D<T>, T>& mesh, 
   std::vector<T>& u, std::vector<T>& u_x, std::vector<T>& u_y,
-  std::function<T(T, T)>& f, std::function<T(T, T)>& f_x, std::function<T(T, T)>& f_y)  
+  std::function<T(T, T)>& f, std::function<T(T, T)>& f_x, std::function<T(T, T)>& f_y)
 {
   int N = (int)mesh.getNumVertices();
   u.resize(N); 
@@ -2082,6 +2083,21 @@ void computeValueAndExactDerivatives(rsGraph<rsVector2D<T>, T>& mesh,
   }
 }
 
+template<class T>
+T computeVertexEstimationError(rsGraph<rsVector2D<T>, T>& mesh, int i,
+  std::function<T(T, T)>& f, std::function<T(T, T)>& f_x, std::function<T(T, T)>& f_y)  
+{
+  using Vec = std::vector<T>;
+  int N = (int)mesh.getNumVertices();
+  Vec u(N), u_x(N), u_y(N), U_x(N), U_y(N);
+  computeValueAndExactDerivatives(mesh, u, U_x, U_y, f, f_x, f_y); // U_* is exact value
+  rsNumericDifferentiator<T>::gradient2D(mesh, u, u_x, u_y);       // u_* is numeric estimate
+  Vec e_x = U_x - u_x;
+  Vec e_y = U_y - u_y;
+  T   err = rsMax(rsAbs(e_x[i]), rsAbs(e_y[i]));
+  return err;
+}
+// todo: maybe instead of computing the error at a single vertex, return the error vector
 
 void vertexMeshGradient2()
 {
@@ -2126,38 +2142,12 @@ void vertexMeshGradient2()
       // Create mesh for a particular setting for numSides and stepsize h:
       mesh.clear();
       mesh.addVertex(x0);
-      addPolygonalNeighbours(mesh, numSides, h[j]);
+      addPolygonalNeighbours(mesh, 0, numSides, h[j]);
       //meshPlotter.plotGraph2D(mesh);
 
-      // Compute the function values and exact partial derivatives at the mesh vertices:
-      int N = (int)mesh.getNumVertices();
-      /*
-      u.resize(N); 
-      U_x.resize(N); 
-      U_y.resize(N);
-      for(int i = 0; i < N; i++) {
-        Vec2 vi = mesh.getVertexData(i);
-        u[i]   = f(vi.x,  vi.y);
-        U_x[i] = f_x(vi.x, vi.y);
-        U_y[i] = f_y(vi.x, vi.y); }
-      // factor out
-      */
-
-      computeValueAndExactDerivatives(mesh, u, U_x, U_y, f, f_x, f_y);
-
-      // Numerically estimate the partial derivatives and measure and record estimation error for 
-      // this mesh:
-      u_x.resize(N); 
-      u_y.resize(N);
-      ND::gradient2D(mesh, u, u_x, u_y);
-      Vec e_x = U_x - u_x;
-      Vec e_y = U_y - u_y;
-      Real e  = rsMax(rsAbs(e_x[0]), rsAbs(e_y[0]));  // at index 0 is the center vertex
-      // factor out
-
-
+      // Compute the and record the estimation error at vertex 0:
+      Real e = computeVertexEstimationError(mesh, 0, f, f_x, f_y);
       err(numSides-minNumSides, j) = log10(e);
-      //err(numSides-minNumSides, j) = e;
     }
   }
 
