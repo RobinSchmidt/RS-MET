@@ -2120,8 +2120,6 @@ void vertexMeshGradient2()
   // Define functions for evaluating f(x,y) and its exact partial derivatives:
   Real sx = 1.0, sy = 1.0;  // overall scale factors for inputs x and y
   Real p  = 0.01;            // sine phase
-
-
   std::function<Real(Real, Real)> f, f_x, f_y;
   f   = [&](Real x, Real y)->Real { return    sin(sx*x+p) *    exp(sy*y); };
   f_x = [&](Real x, Real y)->Real { return sx*cos(sx*x+p) *    exp(sy*y); };
@@ -2131,7 +2129,7 @@ void vertexMeshGradient2()
   Vec h(Nh);
   for(int i = 0; i < Nh; i++)  // Create array of stepsizes
     h[i] = pow(0.5, i);
-  Vec u, u_x, u_y, U_x, U_y;   // Uppercase are used for true values, lowercase for estimates
+  //Vec u, u_x, u_y, U_x, U_y;   // Uppercase are used for true values, lowercase for estimates
   rsMatrix<Real> err(maxNumSides-minNumSides+1, (int)h.size());
   Mesh mesh;
   GraphPlotter<Real> meshPlotter;
@@ -2201,19 +2199,44 @@ void vertexMeshGradient3()
   // for the least-squares solver, i.e. the weight is proportional to 1/d^p where d is the distance
   // between the vertex under consideration and its current neighbor.
 
+  using Vec  = std::vector<double>;
+  using Vec2 = rsVector2D<double>;
+
+  int    numSides = 4;
+  double h        = 0.25;
+  Vec2   x0(0, 0);            // position of center vertex
+  Vec    p({0,1,2,3,4});      // maybe use finer stepping
+
+  std::function<double(double, double)> f, f_x, f_y;
+  f   = [&](double x, double y)->double { return sin(x) * exp(y); };
+  f_x = [&](double x, double y)->double { return cos(x) * exp(y); };
+  f_y = [&](double x, double y)->double { return sin(x) * exp(y); };
+
+  rsGraph<Vec2, double> mesh;
+  mesh.addVertex(x0);
+  addPolygonalNeighbours(mesh, 0, numSides,   h);
+  addPolygonalNeighbours(mesh, 0, numSides, 2*h);
+  GraphPlotter<double> meshPlotter;
+  meshPlotter.plotGraph2D(mesh);
 
 
+  for(size_t i = 0; i < p.size(); i++)
+  {
+    // -recompute edge-weights with ne value of p
+    // -record estimation error
+  }
 
+
+  // plot estimation error against p
   //...
-
 
   int dummy = 0;
 }
 
 void vertexMeshGradient()
 {
-  vertexMeshGradient1();
-  vertexMeshGradient2();
+  //vertexMeshGradient1();
+  //vertexMeshGradient2();
   vertexMeshGradient3();
 }
 

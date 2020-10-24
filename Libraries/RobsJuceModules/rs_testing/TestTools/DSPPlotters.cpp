@@ -728,3 +728,4 @@ void GraphPlotter<T>::plotGraph2D(rsGraph<rsVector2D<T>, T>& m, std::vector<int>
 }
 
 template class GraphPlotter<float>;  // move elsewhere
+template class GraphPlotter<double>;  // move elsewhere
