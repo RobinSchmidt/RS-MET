@@ -2044,6 +2044,28 @@ void vertexMeshGradient1()
 
 }
 
+
+
+template<class T>
+void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, 
+  int numSides, T radius, T angle = T(0))
+{
+  using Vec2 = rsVector2D<T>;
+  Vec2 v0 = mesh.getVertexData(0);
+  for(int i = 0; i < numSides; i++)
+  {
+    T a = T(angle + 2*i*PI / numSides); // angle
+    if(numSides == 2) a /= 2;           // special case for "2-gon": use 2 perpendiculars
+    T dx = radius*cos(a);               // x-distance
+    T dy = radius*sin(a);               // y-distance
+    Vec2 vi(v0.x + dx, v0.y + dy);      // position of neighbor vertex
+    mesh.addVertex(vi);                 // add the new neighbour to mesh
+    mesh.addEdge(0, i+1, 1, true);      // add edge to the new neighbor and back
+  }
+}
+
+
+
 void vertexMeshGradient2()
 {
   // We plot the error between the estimated partial derivatives and true partial derivatives as
@@ -2084,6 +2106,11 @@ void vertexMeshGradient2()
       // Create mesh for a particular setting for numSides and stepsize h:
       mesh.clear();
       mesh.addVertex(x0);
+
+
+      addPolygonalNeighbours(mesh, numSides, h[j]);
+
+      /*
       for(int i = 0; i < numSides; i++)
       {
         Real a  = Real(2*i*PI / numSides); // angle
@@ -2095,6 +2122,11 @@ void vertexMeshGradient2()
         mesh.addEdge(0, i+1, 1, true);     // add edge to the new neighbor and back
         int dummy = 0;
       }
+      */
+     
+
+
+      // factor out into function: addPolygonalNeighbours(Mesh& mesh, T h, T angle)
       //meshPlotter.plotGraph2D(mesh);
 
       // Compute the function values and exact partial derivatives at the mesh vertices:
@@ -2105,6 +2137,7 @@ void vertexMeshGradient2()
         u[i]   = f(vi.x,  vi.y);
         U_x[i] = fx(vi.x, vi.y);
         U_y[i] = fy(vi.x, vi.y); }
+      // factor out
 
       // Numerically estimate the partial derivatives and measure and record estimation error for 
       // this mesh:
@@ -2112,6 +2145,9 @@ void vertexMeshGradient2()
       Vec e_x = U_x - u_x;
       Vec e_y = U_y - u_y;
       Real e  = rsMax(rsAbs(e_x[0]), rsAbs(e_y[0]));  // at index 0 is the center vertex
+      // factor out
+
+
       err(numSides-minNumSides, j) = log10(e);
       //err(numSides-minNumSides, j) = e;
     }
