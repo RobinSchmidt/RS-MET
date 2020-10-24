@@ -721,7 +721,8 @@ void GraphPlotter<T>::plotGraph2D(rsGraph<rsVector2D<T>, T>& m, std::vector<int>
   minY -= (maxY-minY) * T(0.05);
   maxY += (maxY-minY) * T(0.05);
   plt.setRange(minX, maxX, minY, maxY);
-  plt.addCommand("set size square");
+  //plt.addCommand("set size square");   // correct?
+  //plt.addCommand("set size ratio 1");  // aspect ratio?
   plt.setPixelSize(600, 600);
   plt.plot();
 }

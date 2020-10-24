@@ -176,12 +176,27 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
       T    du = u[k] - u[i];                    // difference in function value
       T    w  = mesh.getEdgeData(i, j);         // weight in weighted least squares
 
+      //w = T(1) / (dv.x*dv.x + dv.y*dv.y); // test - see below
+
       // Accumulate least-squares matrix and right-hand-side vector:
       A.a += w * dv.x * dv.x;
       A.b += w * dv.x * dv.y;
       A.d += w * dv.y * dv.y;
       b.x += w * dv.x * du;
       b.y += w * dv.y * du;
+      // don't we need to normalize the dv vector or is it assumed that the normalization coeff is
+      // already absorbed in the weight w? If so, maybe the weight should be the reciprocal of the 
+      // squared norm instead of the norm itself - so it works as normalizer *and* weight at the 
+      // same time...but maybe that's premature optimization...maybe, if we compute the squared 
+      // distance here, we can use an unweighted graph - or maybe use a subclass Mesh that makes
+      // sure that the edge weights are correctly set up - if we use an unweighted graph, we would
+      // need to do an additional division here but we would save one memory access for getEdgeData
+      // ..it would also make the API easier to use - client code does not need to care about 
+      // assigning the weights instead of
+      // w = mesh.getEdgeData(i, j); we would use
+      // w = T(1) / (dv.x*dv.x + dv.y*dv.y)
+      // try it before switching to an unweighted graph - it's really nice to have to divide by the
+      // distance twice (once for normalizing dv and once for the error weighting)
     }
     A.c = A.b;  // A.c is still zero - make A symmetric
 
@@ -201,6 +216,19 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
 // -do we need special treatment for 2 neighbours? I don't think so - the solution of the least 
 //  squares problem should reduce to the exact solution if the number of equations equals the
 //  number of unknowns
+
+// See also: A Guide to Numerical Methods for Transport Equations (Dmitri Kuzmin):
+// http://www.mathematik.uni-dortmund.de/~kuzmin/Transport.pdf  
+// ...on page 20, it mentions fitting a (2D?) Taylor polynomial to the neighbors on 
+// unstructured meshes. How does this relate to the directional derivative approach used here? Is 
+// it equivalent? He says, fitting the Taylor polynomial is expensive and difficult to implement. 
+// Using directional derivatives seems reasonably efficient and straightforward to implement. I 
+// think, if the mesh is in fact rectangular, my approach reduces to using a central difference.
+
+// Papers:
+// https://www.researchgate.net/publication/254225242_Development_of_Irregular-Grid_Finite_Difference_Method_IFDM_for_Governing_Equations_in_Strong_Form
+// https://www.semanticscholar.org/paper/Development-of-Irregular-Grid-Finite-Difference-(-)-GEORGE/0b8bcb2afdfee4d2fd8efc52f499a9d59f742f77
+// http://www.fluidmal.uma.es/pdfs/JCOMP_2005.pdf
 
 
 
