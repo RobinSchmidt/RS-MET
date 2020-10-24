@@ -2054,17 +2054,20 @@ void vertexMeshGradient2()
   //int Nh = 10;  // number of different h-values 
 
   // functions for evaluating f(x,y) and its exact partial derivatives:
-  float s  = 0.125f;  // overall scale factor for inputs x,y
-  auto  f  = [&](float x, float y)->float { return   sin(s*x) *   exp(s*y); };
-  auto  fx = [&](float x, float y)->float { return s*cos(s*x) *   exp(s*y); };
-  auto  fy = [&](float x, float y)->float { return   sin(s*x) * s*exp(s*y); };
+  float sx = 0.1f;  // overall scale factor for inputs x,y
+  float sy = 0.1f;
+  auto  f  = [&](float x, float y)->float { return    sin(sx*x) *    exp(sy*y); };
+  auto  fx = [&](float x, float y)->float { return sx*cos(sx*x) *    exp(sy*y); };
+  auto  fy = [&](float x, float y)->float { return    sin(sx*x) * sy*exp(sy*y); };
 
 
   Vec2 x0(0, 0);        // position of center vertex
   int minNumSides = 3; 
-  int maxNumSides = 8;
+  int maxNumSides = 9;
   //Vec h({ 1.f,0.5f,0.25f,0.125f,0.0625f }); // raises assert
-  Vec h({ 1.f,0.5f,0.25f,0.125f });
+  //Vec h({ 1.f,0.5f,0.25f,0.125f });
+  //Vec h({ 0.0625f,0.125f,0.25f,0.5f,1.f });
+  Vec h({ 0.125f,0.25f,0.5f,1.f });
 
   Vec u, u_x, u_y, U_x, U_y;  // uppercase are used for true target value, lowercase for estimates
 
@@ -2079,6 +2082,7 @@ void vertexMeshGradient2()
 
   //float h = h0;
   Mesh mesh;
+  GraphPlotter<float> meshPlotter;
   for(int numSides = minNumSides; numSides <= maxNumSides; numSides++)
   {
     for(int j = 0; j < (int)h.size(); j++)
@@ -2093,10 +2097,10 @@ void vertexMeshGradient2()
         float dy = h[j]*sin(a);                  // y-distance
         Vec2 vi(x0.x + dx, x0.y + dy);           // position of neighbor vertex
         mesh.addVertex(vi);                      // add the new neighbour to mesh
-        mesh.addEdge(0, i+1, w);                 // add edge to the new neighbor
+        mesh.addEdge(0, i+1, w, true);           // add edge to the new neighbor and back
         int dummy = 0;
       }
-      //GraphPlotter<float>::plotGraph2D(mesh); // does not yet compile
+      //meshPlotter.plotGraph2D(mesh);
 
       // Compute the function values and exact partial derivatives at the mesh vertices:
       int N = (int)mesh.getNumVertices();
@@ -2112,7 +2116,11 @@ void vertexMeshGradient2()
       ND::gradient2D(mesh, u, u_x, u_y);
       Vec e_x = U_x - u_x;
       Vec e_y = U_y - u_y;
-      float e = rsMax(rsMaxAbs(e_x), rsMaxAbs(e_y));
+
+      //float e = rsMax(rsMaxAbs(e_x), rsMaxAbs(e_y));
+      float e = rsMax(e_x[0], e_y[0]);  // at index 0 is the center vertex
+      // oh - no - don't take the max - take the value at 0
+
       err(numSides-minNumSides, j) = e;
     }
   }
@@ -2121,6 +2129,7 @@ void vertexMeshGradient2()
 
   plotMatrixRows(err, &h[0]);
 
+  // maybe use double - it's hard to see anything with the roundoff overlaid
 
 
 
