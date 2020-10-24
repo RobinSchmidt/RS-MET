@@ -2047,7 +2047,7 @@ void vertexMeshGradient1()
 
 
 template<class T>
-void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, 
+void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh,
   int numSides, T radius, T angle = T(0))
 {
   using Vec2 = rsVector2D<T>;
@@ -2064,6 +2064,23 @@ void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh,
   }
 }
 
+template<class T>
+void computeValueAndExactDerivatives(rsGraph<rsVector2D<T>, T>& mesh, 
+  std::vector<T>& u, std::vector<T>& u_x, std::vector<T>& u_y,
+  std::function<T(T, T)>& f, std::function<T(T, T)>& f_x, std::function<T(T, T)>& f_y)  
+{
+  int N = (int)mesh.getNumVertices();
+  u.resize(N); 
+  u_x.resize(N);
+  u_y.resize(N);
+  for(int i = 0; i < N; i++) 
+  {
+    rsVector2D<T> vi = mesh.getVertexData(i);
+    u[i]   = f( vi.x,  vi.y);
+    u_x[i] = f_x(vi.x, vi.y);
+    u_y[i] = f_y(vi.x, vi.y); 
+  }
+}
 
 
 void vertexMeshGradient2()
@@ -2087,9 +2104,12 @@ void vertexMeshGradient2()
   // Define functions for evaluating f(x,y) and its exact partial derivatives:
   Real sx = 1.0, sy = 1.0;  // overall scale factors for inputs x and y
   Real p  = 0.01;            // sine phase
-  auto  f  = [&](Real x, Real y)->Real { return    sin(sx*x+p) *    exp(sy*y); };
-  auto  fx = [&](Real x, Real y)->Real { return sx*cos(sx*x+p) *    exp(sy*y); };
-  auto  fy = [&](Real x, Real y)->Real { return    sin(sx*x+p) * sy*exp(sy*y); };
+
+
+  std::function<Real(Real, Real)> f, f_x, f_y;
+  f   = [&](Real x, Real y)->Real { return    sin(sx*x+p) *    exp(sy*y); };
+  f_x = [&](Real x, Real y)->Real { return sx*cos(sx*x+p) *    exp(sy*y); };
+  f_y = [&](Real x, Real y)->Real { return    sin(sx*x+p) * sy*exp(sy*y); };
 
   // Create measurement data:
   Vec h(Nh);
@@ -2106,41 +2126,29 @@ void vertexMeshGradient2()
       // Create mesh for a particular setting for numSides and stepsize h:
       mesh.clear();
       mesh.addVertex(x0);
-
-
       addPolygonalNeighbours(mesh, numSides, h[j]);
-
-      /*
-      for(int i = 0; i < numSides; i++)
-      {
-        Real a  = Real(2*i*PI / numSides); // angle
-        if(numSides == 2) a /= 2;          // special case for "2-gon": use 2 perpendiculars
-        Real dx = h[j]*cos(a);             // x-distance
-        Real dy = h[j]*sin(a);             // y-distance
-        Vec2 vi(x0.x + dx, x0.y + dy);     // position of neighbor vertex
-        mesh.addVertex(vi);                // add the new neighbour to mesh
-        mesh.addEdge(0, i+1, 1, true);     // add edge to the new neighbor and back
-        int dummy = 0;
-      }
-      */
-     
-
-
-      // factor out into function: addPolygonalNeighbours(Mesh& mesh, T h, T angle)
       //meshPlotter.plotGraph2D(mesh);
 
       // Compute the function values and exact partial derivatives at the mesh vertices:
       int N = (int)mesh.getNumVertices();
-      u.resize(N); U_x.resize(N); U_y.resize(N); u_x.resize(N); u_y.resize(N);
+      /*
+      u.resize(N); 
+      U_x.resize(N); 
+      U_y.resize(N);
       for(int i = 0; i < N; i++) {
         Vec2 vi = mesh.getVertexData(i);
         u[i]   = f(vi.x,  vi.y);
-        U_x[i] = fx(vi.x, vi.y);
-        U_y[i] = fy(vi.x, vi.y); }
+        U_x[i] = f_x(vi.x, vi.y);
+        U_y[i] = f_y(vi.x, vi.y); }
       // factor out
+      */
+
+      computeValueAndExactDerivatives(mesh, u, U_x, U_y, f, f_x, f_y);
 
       // Numerically estimate the partial derivatives and measure and record estimation error for 
       // this mesh:
+      u_x.resize(N); 
+      u_y.resize(N);
       ND::gradient2D(mesh, u, u_x, u_y);
       Vec e_x = U_x - u_x;
       Vec e_y = U_y - u_y;
