@@ -2047,28 +2047,82 @@ void vertexMeshGradient1()
 void vertexMeshGradient2()
 {
   using Vec2 = rsVector2D<float>;
-  using VecF = std::vector<float>;
+  using Vec  = std::vector<float>;
   using Mesh = rsGraph<Vec2, float>;
   using ND   = rsNumericDifferentiator<float>;
 
-  Vec2 x0(0, 0);     // position of center vertex
-  int numSides = 4;  // later: go up in a loop:   3,4,5,6,7,8,...
-  float h = 1.f;     // later: go down in a loop: 1,1/2,1/4,1/8,...
-  float w = 1.f;     // edge weight
+  //int Nh = 10;  // number of different h-values 
 
+  // functions for evaluating f(x,y) and its exact partial derivatives:
+  float s  = 0.125f;  // overall scale factor for inputs x,y
+  auto  f  = [&](float x, float y)->float { return   sin(s*x) *   exp(s*y); };
+  auto  fx = [&](float x, float y)->float { return s*cos(s*x) *   exp(s*y); };
+  auto  fy = [&](float x, float y)->float { return   sin(s*x) * s*exp(s*y); };
+
+
+  Vec2 x0(0, 0);        // position of center vertex
+  int minNumSides = 3; 
+  int maxNumSides = 8;
+  //Vec h({ 1.f,0.5f,0.25f,0.125f,0.0625f }); // raises assert
+  Vec h({ 1.f,0.5f,0.25f,0.125f });
+
+  Vec u, u_x, u_y, U_x, U_y;  // uppercase are used for true target value, lowercase for estimates
+
+  //float h0 = 1.f;       // start value for h later: go down in a loop: 1,1/2,1/4,1/8,...
+  float w  = 1.f;       // edge weight
+
+
+
+  //Vec errX(Nh), errY(Nh);  // estimation errors for x- and y-coordinate
+
+  rsMatrix<float> err(maxNumSides-minNumSides+1, (int)h.size());
+
+  //float h = h0;
   Mesh mesh;
-  mesh.clear();
-  mesh.addVertex(x0);
-  for(int i = 0; i < numSides; i++)
+  for(int numSides = minNumSides; numSides <= maxNumSides; numSides++)
   {
-    float a  = float (2*i*PI / numSides);    // angle
-    float dx = h*cos(a);                     // x-distance
-    float dy = h*sin(a);                     // y-distance
-    Vec2 xi(x0.x + dx, x0.y + dy);           // position of neighbor vertex
-    mesh.addVertex(xi);                      // add the new neighbour to mesh
-    mesh.addEdge(0, i+1, w);                 // add edge to the new neighbor
-    int dummy = 0;
+    for(int j = 0; j < (int)h.size(); j++)
+    {
+      // Create mesh for a particular setting for numSides and stepsize h:
+      mesh.clear();
+      mesh.addVertex(x0);
+      for(int i = 0; i < numSides; i++)
+      {
+        float a  = float (2*i*PI / numSides);    // angle
+        float dx = h[j]*cos(a);                  // x-distance
+        float dy = h[j]*sin(a);                  // y-distance
+        Vec2 vi(x0.x + dx, x0.y + dy);           // position of neighbor vertex
+        mesh.addVertex(vi);                      // add the new neighbour to mesh
+        mesh.addEdge(0, i+1, w);                 // add edge to the new neighbor
+        int dummy = 0;
+      }
+      //GraphPlotter<float>::plotGraph2D(mesh); // does not yet compile
+
+      // Compute the function values and exact partial derivatives at the mesh vertices:
+      int N = (int)mesh.getNumVertices();
+      u.resize(N); U_x.resize(N); U_y.resize(N); u_x.resize(N); u_y.resize(N);
+      for(int i = 0; i < N; i++) {
+        Vec2 vi = mesh.getVertexData(i);
+        u[i]   = f(vi.x,  vi.y);
+        U_x[i] = fx(vi.x, vi.y);
+        U_y[i] = fy(vi.x, vi.y); }
+
+      // Numerically estimate the partial derivatives and measure and record estimation error for 
+      // this mesh:
+      ND::gradient2D(mesh, u, u_x, u_y);
+      Vec e_x = U_x - u_x;
+      Vec e_y = U_y - u_y;
+      float e = rsMax(rsMaxAbs(e_x), rsMaxAbs(e_y));
+      err(numSides-minNumSides, j) = e;
+    }
   }
+
+
+
+  plotMatrixRows(err, &h[0]);
+
+
+
 
 
 
