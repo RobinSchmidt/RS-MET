@@ -2048,20 +2048,22 @@ void vertexMeshGradient1()
 
 template<class T>
 void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
-  int numSides, T radius, T angle = T(0))
+  int numSides, T radius, T angle = T(0), T p = T(0))
 {
   int N = (int)mesh.getNumVertices();
   using Vec2 = rsVector2D<T>;
   Vec2 vi = mesh.getVertexData(i);
+  //T p = 0; // make parameter
   for(int j = 0; j < numSides; j++)
   {
     T a = T(angle + 2*j*PI / numSides); // angle
     if(numSides == 2) a /= 2;           // special case for "2-gon": use 2 perpendiculars
     T dx = radius*cos(a);               // x-distance
     T dy = radius*sin(a);               // y-distance
+    T w  = pow(radius, -p);             // edge weight
     Vec2 vj(vi.x + dx, vi.y + dy);      // position of neighbor vertex
     mesh.addVertex(vj);                 // add the new neighbour to mesh
-    mesh.addEdge(0, j+N, 1, true);      // add edge to the new neighbor and back
+    mesh.addEdge(i, j+N, w, true);      // add edge to the new neighbor and back
   }
 }
 
@@ -2203,9 +2205,12 @@ void vertexMeshGradient3()
   using Vec2 = rsVector2D<double>;
 
   int    numSides = 4;
-  double h        = 0.25;
-  Vec2   x0(0, 0);            // position of center vertex
-  Vec    p({0,1,2,3,4});      // maybe use finer stepping
+  double h = 0.25;
+  double s = sqrt(2);             // scale factor for the far away nodes
+  double a = PI / numSides;       // rotation angle
+  Vec2   x0(0, 0);                // position of center vertex
+  Vec    p({0,1,2,3,4,5,6,7,8});  // maybe use finer stepping
+
 
   std::function<double(double, double)> f, f_x, f_y;
   f   = [&](double x, double y)->double { return sin(x) * exp(y); };
@@ -2213,22 +2218,24 @@ void vertexMeshGradient3()
   f_y = [&](double x, double y)->double { return sin(x) * exp(y); };
 
   rsGraph<Vec2, double> mesh;
-  mesh.addVertex(x0);
-  addPolygonalNeighbours(mesh, 0, numSides,   h);
-  addPolygonalNeighbours(mesh, 0, numSides, 2*h);
   GraphPlotter<double> meshPlotter;
-  meshPlotter.plotGraph2D(mesh);
-
-
+  Vec err(p.size());
   for(size_t i = 0; i < p.size(); i++)
   {
-    // -recompute edge-weights with ne value of p
-    // -record estimation error
+    mesh.clear();
+    mesh.addVertex(x0);
+    addPolygonalNeighbours(mesh, 0, numSides, h,   0.0, p[i]);
+    addPolygonalNeighbours(mesh, 0, numSides, s*h, a,   p[i]);
+    err[i] = computeVertexEstimationError(mesh, 0, f, f_x, f_y);
   }
 
 
-  // plot estimation error against p
-  //...
+  // Plot estimation error against p:
+  rsPlotVectorsXY(p, err);
+
+
+  // Observations:
+  // -the sweet spot seems to be at p = 4
 
   int dummy = 0;
 }
