@@ -178,10 +178,12 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
 
       //w = T(1) / (dv.x*dv.x + dv.y*dv.y); // test - see below
 
+      //T w2 = w*w;
+
       // Accumulate least-squares matrix and right-hand-side vector:
       A.a += w * dv.x * dv.x;  // or do we need to use w^2 here?
       A.b += w * dv.x * dv.y;  // ...and here
-      A.d += w * dv.y * dv.y;  // ...and here
+      A.d += w * dv.y * dv.y;  // ...and here  ...hmm - seems not to be the case
       b.x += w * dv.x * du;    // ...but not here
       b.y += w * dv.y * du;    // ...or here
       // don't we need to normalize the dv vector or is it assumed that the normalization coeff is

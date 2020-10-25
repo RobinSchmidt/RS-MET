@@ -2204,12 +2204,17 @@ void vertexMeshGradient3()
   using Vec  = std::vector<double>;
   using Vec2 = rsVector2D<double>;
 
-  int    numSides = 4;
+  int    numSides = 2;
+  int    Np = 2*numSides;         // number of integer p-values
   double h = 0.25;
   double s = sqrt(2);             // scale factor for the far away nodes
   double a = PI / numSides;       // rotation angle
   Vec2   x0(0, 0);                // position of center vertex
-  Vec    p({0,1,2,3,4,5,6,7,8});  // maybe use finer stepping
+
+  s = 2;
+
+  int fine = 10;
+  Vec p = rsLinearRangeVector(fine*Np+1, 0.0, double(Np));
 
 
   std::function<double(double, double)> f, f_x, f_y;
@@ -2227,15 +2232,17 @@ void vertexMeshGradient3()
     addPolygonalNeighbours(mesh, 0, numSides, h,   0.0, p[i]);
     addPolygonalNeighbours(mesh, 0, numSides, s*h, a,   p[i]);
     err[i] = computeVertexEstimationError(mesh, 0, f, f_x, f_y);
+
   }
 
-
-  // Plot estimation error against p:
+  // Plot final mesh and estimation error as function of p:
+  meshPlotter.plotGraph2D(mesh);
   rsPlotVectorsXY(p, err);
 
-
   // Observations:
-  // -the sweet spot seems to be at p = 4
+  // -the sweet spot seems to be at p == numSides, in fact, there is a sharp minimum 
+  //  ...this is a kind of unexpected result!
+  // -seems to hold only for numSides >= 3
 
   int dummy = 0;
 }
