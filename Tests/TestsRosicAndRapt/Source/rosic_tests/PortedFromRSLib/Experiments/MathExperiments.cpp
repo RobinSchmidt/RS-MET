@@ -2045,6 +2045,56 @@ void vertexMeshGradient1()
 }
 
 
+/** Computes the weight for the k-th neighbor of vertex i.
+p is the weighting exponent for the distance and q is the exponent for the dependency 
+measure. ...tbc... */
+template<class T>
+void setupNeighbourWeight(rsGraph<rsVector2D<T>, T>& mesh, int i, int k, T p, T q)
+{
+  // under construction
+
+  using Vec2 = rsVector2D<T>;
+
+  Vec2 vi  = mesh.getVertexData(i);
+  Vec2 vk  = mesh.getVertexData(k);
+  Vec2 dik = vk - vi;                 // difference vector
+
+  T r = rsNorm(dik);                  // distance or radius
+  T w = pow(radius, -p);              // weight determined by distance
+
+  // compute and set up additional weighting factor dertmined by the (in)depence of edge direction 
+  // ik from the other edge direction in, n=0,...,N-1 where N is the number of neighbors of 
+  // vertex i - the formula is heuristic and experimental:
+  int N = mesh.getNumEdges(i);  // number of neighbors of vertex i
+  T dependency(0);              // measure, how much vi is linearly dependent on the others
+  for(int n = 0; n < N; n++)
+  {
+    int  j  = mesh.getEdgeTarget(i, n);
+    Vec2 vn = mesh.getVertexData(j);
+
+    // maybe, include a test if n == i and if so, do not accumulate the term - experiment with both
+    // variants to figure out, which one works better in practice...and/or maybe try to justify it
+    // theoretically
+
+    if(n != i)  // todo: experiment with working without this condition
+    {
+      T c = rsDot(vi, vn) / (rsNorm(vi)*rsNorm(vn));  // correlation between vi and vn (right?)
+      dependency += rsAbs(c);  // should we use the absolute value? - i think so
+      // maybe the c could also be raised to a power in addition to the sum...or maybe just one or
+      // the other
+    }
+  }
+  dependency /= N;   // does this make sense?
+
+  // ok - we have our (heuristic) measure of dependency - use it as additional factor for the 
+  // weight:
+  w *= (1 - pow(dependency, q));  // this formula is also heuristic
+
+  // Set up the weight in the mesh:
+  mesh.setEdgeData(i, k, w);
+  int dummy = 0;
+}
+
 
 template<class T>
 void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
@@ -2249,7 +2299,7 @@ void vertexMeshGradient3()
   GNUPlotter plt;
   //plt.plotBivariateFunction(41, -10.0, 10.0, 11,  -1.0,  1.0, &sinX_times_expY);
   //plt.plotBivariateFunction(41, -10.0, 10.0, 11,  -1.0,  1.0, &sinX_plus_expY);
-  plt.plotBivariateFunction(41, -5.0, 5.0, 41, -5.0, 5.0, &sinX_times_cosY);
+  //plt.plotBivariateFunction(41, -5.0, 5.0, 41, -5.0, 5.0, &sinX_times_cosY);
   // todo: plot the function *and* the stencil, allow a std::function object to be passed to
   // GNUPlotter -> avoid referring to a global function by a function pointer
   // maybe using sin(x)*cos(y) with (x,y) = (1,1) is a nice test example
@@ -2319,9 +2369,67 @@ void vertexMeshGradient4()
 {
   // We try to find a formula for optimal weights that take into account the correlations between
   // the direction vectors. This formula could be used in addition to the weighting by the lengths.
+  // To this end, we create a mesh with 3 vertices, of which 2 form an orthonormal pair and the 
+  // third is swept around in a circle. we plot the estimation accuracy f as function of the angle
+  // for various choices of the weight-formula exponent.
+
+  using Vec  = std::vector<double>;
+  using Vec2 = rsVector2D<double>;
 
 
+  int numAngles = 360;  // stepping in 1 degree steps
+  double h = 0.125;     // approximation stepsize
+  Vec2   v0(2, 2);      // position of center vertex
 
+  // define example function and its partial derivatives
+  std::function<double(double, double)> f, f_x, f_y;
+  f   = [&](double x, double y)->double { return sin(x) * exp(y); };
+  f_x = [&](double x, double y)->double { return cos(x) * exp(y); };
+  f_y = [&](double x, double y)->double { return sin(x) * exp(y); };
+
+  rsGraph<Vec2, double> mesh;
+  mesh.addVertex(v0);
+  mesh.addVertex(Vec2(v0.x+h, v0.y));  // fixed vector in x-direction
+  mesh.addVertex(Vec2(v0.x, v0.y+h));  // fixed vector in y-direction
+  mesh.addVertex(v0);                  // this is our rotating vector
+  mesh.addEdge(0, 1);
+  mesh.addEdge(0, 2);
+  mesh.addEdge(0, 3);
+  // todo: try different angles for the pair of fixed vectors - does the angle matter? ...maybe we
+  // should also make a test in which we plot the accuracy as function of angle for regular polygon
+  // neighborhoods - i hope that the accuracy is angle independent...but whether or nat that's the 
+  // case that may also depend on the choice of the function and the evaluation point
+
+  // todo: maybe also experiment with the 3 vectors having different lengths - we want a formula 
+  // that gives accurate results even for weird meshes - and then in prcatice actually use good 
+  // meshes
+
+  GraphPlotter<double> meshPlotter;
+  //meshPlotter.plotGraph2D(mesh);
+  Vec angles = rsLinearRangeVector(numAngles, 0.0, 2*PI);
+  Vec errors(numAngles);
+  for(int i = 0; i < numAngles; i++)
+  {
+    double a  = angles[i];
+    double dx = cos(a);
+    double dy = sin(a);
+    mesh.setVertexData(3, Vec2(v0.x + h*dx, v0.y + h*dy));
+    errors[i] = computeVertexEstimationError(mesh, 0, f, f_x, f_y);
+    //meshPlotter.plotGraph2D(mesh);
+  }
+
+  angles = angles * (180/PI);
+  rsPlotVectorsXY(angles, errors);
+
+  // Observations:
+  // -without any weighting, the angular dependency of the error has a somwhat sharp minimum at 
+  //  around 135 degrees for v0 = (1,1) - however, that minimum is somewhere else for v0 = (2,2)
+  // -i actually expeced to see error minima whenever v3 is at at amultiple of a 45° angle and 
+  //  maxima, whenever v3 coincides with v1 or v2 - but that doesn't seem to be the case
+  //  -the reason for expecting this is that when v3 is equal to one of the other 2 vectors, we 
+  //   have effectively only 2 evalutaion points. i thought, the further away the 3rd 
+  //   evaluation point is from the other two, the more additional information gives it about the
+  //   function and that would make the estimate more accurate. ...but it doesn't seem so....
 
   int dummy = 0;
 }
@@ -2330,7 +2438,7 @@ void vertexMeshGradient()
 {
   //vertexMeshGradient1();
   //vertexMeshGradient2();
-  vertexMeshGradient3();
+  //vertexMeshGradient3();
   vertexMeshGradient4();
 }
 
