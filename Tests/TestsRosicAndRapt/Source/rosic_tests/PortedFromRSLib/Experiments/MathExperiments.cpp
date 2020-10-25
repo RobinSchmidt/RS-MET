@@ -2195,6 +2195,11 @@ void vertexMeshGradient2()
   //  the option for additional weighting is only kept in for experimentation purposes
 }
 
+// some example functions - todo: define them as lambdas and/or std::function where needed:
+double sinX_times_expY(double x, double y) { return sin(x) * exp(y); }
+double sinX_plus_expY(double x, double y)  { return sin(x) + exp(y); }
+double sinX_times_cosY(double x, double y) { return sin(x) * cos(y); }
+
 void vertexMeshGradient3()
 {
   // We plot the estimation error as function of the exponent p when using a p-norm as weighting
@@ -2219,7 +2224,6 @@ void vertexMeshGradient3()
   int fine = 10;
   Vec p = rsLinearRangeVector(fine*Np+1, 0.0, double(Np));
 
-
   std::function<double(double, double)> f, f_x, f_y;
   f   = [&](double x, double y)->double { return sin(x) * exp(y); };
   f_x = [&](double x, double y)->double { return cos(x) * exp(y); };
@@ -2241,6 +2245,21 @@ void vertexMeshGradient3()
   meshPlotter.plotGraph2D(mesh);
   rsPlotVectorsXY(p, err);
 
+  // plot the example function (choose one - plotting one after another doesn't work):
+  GNUPlotter plt;
+  //plt.plotBivariateFunction(41, -10.0, 10.0, 11,  -1.0,  1.0, &sinX_times_expY);
+  //plt.plotBivariateFunction(41, -10.0, 10.0, 11,  -1.0,  1.0, &sinX_plus_expY);
+  plt.plotBivariateFunction(41, -5.0, 5.0, 41, -5.0, 5.0, &sinX_times_cosY);
+  // todo: plot the function *and* the stencil, allow a std::function object to be passed to
+  // GNUPlotter -> avoid referring to a global function by a function pointer
+  // maybe using sin(x)*cos(y) with (x,y) = (1,1) is a nice test example
+  // ..but maybe try also functions that oscillate with very different frequencies along the
+  // two axes...to get good estimates, the grid neighbours with direction vectors pointing more
+  // toward the axis of faster oscillation should be closer to the current vertex...but that's
+  // a question of the grid generation, not of the derivative estimation formula, i think
+
+
+
   // Observations:
   // -the sweet spot seems to be at p == numSides, in fact, there is a sharp minimum 
   //  ...this is a very unexpected result!
@@ -2257,6 +2276,7 @@ void vertexMeshGradient3()
   //  if it's an artifact of the specific geometry chosen here
   // -maybe try a 3-edge stencil where the edges have different lengths (like 0.5, 1, 2)
   // -maybe try it with a lot of random lengths and angles - collect statistical evidence 
+  // -figure out what the optimal weighting is when the edges do not form a regular polygon
   // -maybe the optimal weights should also depend on the correlations between all the neighbour 
   //  edges - if two neighbors are in the same spot, they should count as one - try it with 3 
   //  neighbours, 2 of which are in the same spot...maybe the weight of a vector should be 
@@ -2272,11 +2292,34 @@ void vertexMeshGradient3()
   //   y-directions and a third v3, sweeping a circle - plot accuracy vs angle with and without 
   //   this formula
   //   -when v3==v1, we want weights: w1=w3=0.5, w2=1 - check, if the formula produces this
-  // -figure out what the optimal weighting is when the edges do not forma 
+  // -the way, the weights are currently used: 
+  //    A.a += w * dv.x * dv.x;  // or do we need to use w^2 here?
+  //    A.b += w * dv.x * dv.y;  // ...and here
+  //    A.d += w * dv.y * dv.y;  // ...and here
+  //    b.x += w * dv.x * du;    // ...but not here
+  //    b.y += w * dv.y * du;    // ...or here
+  //  they just scale the contributions to the matrix coefficients and the right-hand-side values 
+  //  in the same way...and it seems to work fine - but i think, when we use error-weighting in 
+  //  the original least squares formula (not the result formula), the weights would end up as 
+  //  w^2 for the contributions for the matrix because of the X^T * X thing with data-matrix X
+  //  ...but i tried replacing w by w^2 for the A.a += ...etc. statements and it didn't work 
+  //  -> figure out, what's going on - go back to the least-squares formula:
+  //  X^T * X * beta = X^T * Y 
+  //  from here: https://en.wikipedia.org/wiki/Linear_least_squares#Main_formulations 
+  //  what is our matrix A?...i think, it's X^T * X
 
   // Conclusion:
   // -to optimize the accuracy of the estimated derivaties, we should:
   //  -use a grid where the edges form regular polygon and use a weighting with p = numSides
+
+  int dummy = 0;
+}
+
+void vertexMeshGradient4()
+{
+  // We try to find a formula for optimal weights that take into account the correlations between
+  // the direction vectors. This formula could be used in addition to the weighting by the lengths.
+
 
 
 
@@ -2288,6 +2331,7 @@ void vertexMeshGradient()
   //vertexMeshGradient1();
   //vertexMeshGradient2();
   vertexMeshGradient3();
+  vertexMeshGradient4();
 }
 
 
