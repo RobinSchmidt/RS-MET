@@ -2136,7 +2136,7 @@ void computeValueAndExactDerivatives(rsGraph<rsVector2D<T>, T>& mesh,
 }
 
 template<class T>
-T computeVertexEstimationError(rsGraph<rsVector2D<T>, T>& mesh, int i,
+rsVector2D<T> computeVertexEstimationErrorVector(rsGraph<rsVector2D<T>, T>& mesh, int i,
   std::function<T(T, T)>& f, std::function<T(T, T)>& f_x, std::function<T(T, T)>& f_y)  
 {
   using Vec = std::vector<T>;
@@ -2146,10 +2146,31 @@ T computeVertexEstimationError(rsGraph<rsVector2D<T>, T>& mesh, int i,
   rsNumericDifferentiator<T>::gradient2D(mesh, u, u_x, u_y);       // u_* is numeric estimate
   Vec e_x = U_x - u_x;
   Vec e_y = U_y - u_y;
+  return rsVector2D<T>(e_x[i], e_y[i]);
+}
+
+// todo: call code above
+template<class T>
+T computeVertexEstimationError(rsGraph<rsVector2D<T>, T>& mesh, int i,
+  std::function<T(T, T)>& f, std::function<T(T, T)>& f_x, std::function<T(T, T)>& f_y)  
+{
+  rsVector2D<T> e = computeVertexEstimationErrorVector(mesh, i, f, f_x, f_y);
+  return rsMax(rsAbs(e.x), rsAbs(e.y));
+
+  /*
+  using Vec = std::vector<T>;
+  int N = (int)mesh.getNumVertices();
+  Vec u(N), u_x(N), u_y(N), U_x(N), U_y(N);
+  computeValueAndExactDerivatives(mesh, u, U_x, U_y, f, f_x, f_y); // U_* is exact value
+  rsNumericDifferentiator<T>::gradient2D(mesh, u, u_x, u_y);       // u_* is numeric estimate
+  Vec e_x = U_x - u_x;
+  Vec e_y = U_y - u_y;
   T   err = rsMax(rsAbs(e_x[i]), rsAbs(e_y[i]));
   return err;
+  */
 }
-// todo: maybe instead of computing the error at a single vertex, return the error vector
+// todo: maybe instead of computing the error at a single vertex, return the error vector (error
+// at all vertices) ...maybe also output the x- and y-error separately for more detailed analysis
 
 void vertexMeshGradient2()
 {
@@ -2378,8 +2399,8 @@ void vertexMeshGradient4()
 
 
   int numAngles = 360;  // stepping in 1 degree steps
-  double h = 0.125;     // approximation stepsize
-  Vec2   v0(2, 2);      // position of center vertex
+  double h = 1./8;     // approximation stepsize
+  Vec2   v0(1, 1);      // position of center vertex
 
   // define example function and its partial derivatives
   std::function<double(double, double)> f, f_x, f_y;
@@ -2408,6 +2429,7 @@ void vertexMeshGradient4()
   //meshPlotter.plotGraph2D(mesh);
   Vec angles = rsLinearRangeVector(numAngles, 0.0, 2*PI);
   Vec errors(numAngles);
+  Vec errX(numAngles), errY(numAngles);
   for(int i = 0; i < numAngles; i++)
   {
     double a  = angles[i];
@@ -2415,11 +2437,14 @@ void vertexMeshGradient4()
     double dy = sin(a);
     mesh.setVertexData(3, Vec2(v0.x + h*dx, v0.y + h*dy));
     errors[i] = computeVertexEstimationError(mesh, 0, f, f_x, f_y);
+    Vec2 err = computeVertexEstimationErrorVector(mesh, 0, f, f_x, f_y);
+    errX[i] = err.x;
+    errY[i] = err.y;
     //meshPlotter.plotGraph2D(mesh);
   }
 
   angles = angles * (180/PI);
-  rsPlotVectorsXY(angles, errors);
+  rsPlotVectorsXY(angles, errors, errX, errY);
 
   // Observations:
   // -without any weighting, the angular dependency of the error has a somwhat sharp minimum at 
@@ -2430,6 +2455,10 @@ void vertexMeshGradient4()
   //   have effectively only 2 evalutaion points. i thought, the further away the 3rd 
   //   evaluation point is from the other two, the more additional information gives it about the
   //   function and that would make the estimate more accurate. ...but it doesn't seem so....
+  // -the minima are sharp, notch-like. the maxima are smooth and wide..the whole function looks
+  //  a bit like piecewise rectified sines
+  //  -maybe these notches are due to taking the maximum of x- and y-error - todo: plot x- and
+  //   y-error separately
 
   int dummy = 0;
 }
