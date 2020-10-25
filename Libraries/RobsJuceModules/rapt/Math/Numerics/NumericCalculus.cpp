@@ -177,7 +177,6 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
       T    w  = mesh.getEdgeData(i, j);         // weight in weighted least squares
 
       //w = T(1) / (dv.x*dv.x + dv.y*dv.y); // test - see below
-
       //T w2 = w*w;
 
       // Accumulate least-squares matrix and right-hand-side vector:

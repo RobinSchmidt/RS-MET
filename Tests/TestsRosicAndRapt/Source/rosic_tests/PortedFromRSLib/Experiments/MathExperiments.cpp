@@ -2204,14 +2204,17 @@ void vertexMeshGradient3()
   using Vec  = std::vector<double>;
   using Vec2 = rsVector2D<double>;
 
-  int    numSides = 2;
-  int    Np = 2*numSides;         // number of integer p-values
+  int    numSides = 5;
+  int    Np = rsMax(2*numSides, 6); // number of integer p-values
   double h = 0.25;
-  double s = sqrt(2);             // scale factor for the far away nodes
-  double a = PI / numSides;       // rotation angle
-  Vec2   x0(0, 0);                // position of center vertex
+  double s = sqrt(2);               // scale factor for the far away nodes
+  double a = PI / numSides;         // rotation angle of the outer polygon
+  Vec2   x0(1, 1);                  // position of center vertex
 
-  s = 2;
+  s  = 2;    // test - doesn't make a difference qualitativesly
+  a *= 1.0;  // if a = PI / numSides (as as assigned above), we see a sharp minimum at p = numSides, 
+             // scaling a down shifts the minimum up and makes it less sharp, scaling it up seems to
+             // have less effect -> more research needed
 
   int fine = 10;
   Vec p = rsLinearRangeVector(fine*Np+1, 0.0, double(Np));
@@ -2232,7 +2235,6 @@ void vertexMeshGradient3()
     addPolygonalNeighbours(mesh, 0, numSides, h,   0.0, p[i]);
     addPolygonalNeighbours(mesh, 0, numSides, s*h, a,   p[i]);
     err[i] = computeVertexEstimationError(mesh, 0, f, f_x, f_y);
-
   }
 
   // Plot final mesh and estimation error as function of p:
@@ -2241,8 +2243,42 @@ void vertexMeshGradient3()
 
   // Observations:
   // -the sweet spot seems to be at p == numSides, in fact, there is a sharp minimum 
-  //  ...this is a kind of unexpected result!
-  // -seems to hold only for numSides >= 3
+  //  ...this is a very unexpected result!
+  // -seems to hold only for numSides >= 3, for 2, it seems to be slightly larger, like 2.2
+  // -seems to hold only when a = PI / numSides, choosing, for example, half that value, the 
+  //  minimum is further to the right and less sharp (at least for numSides = 5)
+  // -seems the sharp dip occurs only when a = PI / numSides, when a = 0, the function 
+  //  monotonically decreases - higher values of p tend to given more and more weight to the
+  //  closest neighbor - in the limit, the closest neighbor alone will make the decision, which 
+  //  makes sense because it has the most accurate estimate for the directional derivative
+
+  // ToDo:
+  // -figure out, if this rule also holds for less regular configurations of neighbor vertices or
+  //  if it's an artifact of the specific geometry chosen here
+  // -maybe try a 3-edge stencil where the edges have different lengths (like 0.5, 1, 2)
+  // -maybe try it with a lot of random lengths and angles - collect statistical evidence 
+  // -maybe the optimal weights should also depend on the correlations between all the neighbour 
+  //  edges - if two neighbors are in the same spot, they should count as one - try it with 3 
+  //  neighbours, 2 of which are in the same spot...maybe the weight of a vector should be 
+  //  inversely related to the sum of its projection onto all the others
+  // -maybe use as another factor in determining the weights something like:
+  //  wi *= 1 - abs(sum_k <vi,vk>)^q / N ...the term after the minus should measure, how strong
+  //  the vector vi is linearly dependent on all others (maybe the summand for k=i should not enter
+  //  the sum)
+  //  -vi: i-th direction vector, N: number of neighbours of the current node (not node i!), 
+  //   wi: weight, q: user parameter
+  //  -maybe each term should be normalized: <vi,vk>/(norm(vi)*norm(vk))
+  //  -test this formula (and maybe variations of it) with 3 edges: v1,v2 in the x- and 
+  //   y-directions and a third v3, sweeping a circle - plot accuracy vs angle with and without 
+  //   this formula
+  //   -when v3==v1, we want weights: w1=w3=0.5, w2=1 - check, if the formula produces this
+  // -figure out what the optimal weighting is when the edges do not forma 
+
+  // Conclusion:
+  // -to optimize the accuracy of the estimated derivaties, we should:
+  //  -use a grid where the edges form regular polygon and use a weighting with p = numSides
+
+
 
   int dummy = 0;
 }
