@@ -2156,18 +2156,6 @@ T computeVertexEstimationError(rsGraph<rsVector2D<T>, T>& mesh, int i,
 {
   rsVector2D<T> e = computeVertexEstimationErrorVector(mesh, i, f, f_x, f_y);
   return rsMax(rsAbs(e.x), rsAbs(e.y));
-
-  /*
-  using Vec = std::vector<T>;
-  int N = (int)mesh.getNumVertices();
-  Vec u(N), u_x(N), u_y(N), U_x(N), U_y(N);
-  computeValueAndExactDerivatives(mesh, u, U_x, U_y, f, f_x, f_y); // U_* is exact value
-  rsNumericDifferentiator<T>::gradient2D(mesh, u, u_x, u_y);       // u_* is numeric estimate
-  Vec e_x = U_x - u_x;
-  Vec e_y = U_y - u_y;
-  T   err = rsMax(rsAbs(e_x[i]), rsAbs(e_y[i]));
-  return err;
-  */
 }
 // todo: maybe instead of computing the error at a single vertex, return the error vector (error
 // at all vertices) ...maybe also output the x- and y-error separately for more detailed analysis
@@ -2213,7 +2201,10 @@ void vertexMeshGradient2()
       // Create mesh for a particular setting for numSides and stepsize h:
       mesh.clear();
       mesh.addVertex(x0);
-      addPolygonalNeighbours(mesh, 0, numSides, h[j]);
+
+      addPolygonalNeighbours(mesh, 0, numSides, h[j]);  // unweighted
+      //addPolygonalNeighbours(mesh, 0, numSides, h[j], 0.0, double(numSides)); // optimal(?) weight
+      // strangely, it doesn't seem to make a difference here, what weighting we use
       //meshPlotter.plotGraph2D(mesh);
 
       // Compute the and record the estimation error at vertex 0:
@@ -2229,27 +2220,27 @@ void vertexMeshGradient2()
   plotMatrixRows(err, &hLog[0]);
 
   // Observations:
-  // -when using the log, we need to use a lower limt to avoid log of zero
+  // -We indeed see that the slope of error increases when the number of points is increased, so 
+  //  more evaluation points do indeed lead to better orders of accuracy in this numerical 
+  //  experiment (can this theoretically be proved?)
   // -the errors are actually really small for 5 sides upwards! the approximation seems to be very
   //  good! is the function too easy, i.e. too smooth? maybe try a more complicated function
-  // -3 sides looks worst - that would correspond to a hexagonal mesh
-  // -6 sides looks best  - that would correspond to a triangular mesh - using 7 or 8 sides, it 
-  //  actually starts getting worse ..or no - actually not
-  // -2 sides is actually best - i think, that may mean the quality of the estimates obtained by 
-  //  that method are worse than i hoped :-( - the method does not give similar quality estimates
-  //  as on a regular grid!
+  // -the 2-sides solution is exactly the same as the 4-sides solution when the function is 
+  //  symmetrical around the valuation point, when we choose an evaluation point slighty off from
+  //  such a (local) center of symmetry, the two errors are slightly different (black and green)
+
+  int dummy = 0;
+
+  // ToDo:
+  // -figure out, why the error does not seem to depend on the weighting in this experiment but 
+  //  does depend on it in the other - is this because of different example functions and/or
+  //  center points?
   // -todo: implement, for reference, the regular forward, backward and central difference methods 
   //  and plot the error with respect to those - basically, what we want to do is a sort of 
   //  least-squares approximation to those - maybe that 2nd level of approximation is what makes 
   //  things worse
-  // -wait - no - the 2-sides solution is exactly the same as the 4-sides solution which is as it 
-  //  should be ..or should it? 2-sides is actually a forward difference and 4 sides a central 
-  //  difference...maybe they are equivalent because of the symmetry of the function - yes: with a 
-  //  small phase offset in the sine, the errors become different
-
-  int dummy = 0;
-
-  // ToDo: 
+  // -try using a weighting exponent equal to the number of sides - that turned out to be a good 
+  //  choice in the experiments below - hmm - it seems to make no difference here
   // -plot the log of the absolute value of error as function of the log of the neighbor distance 
   //  for neighborhoods made from regular polygons with sides n = 2,3,4,5,6,7,8,... the n = 2 case 
   //  should just be two neighbors at right angles (needs to be treated outside the loop over n)
@@ -2302,19 +2293,24 @@ void vertexMeshGradient3()
 
   rsGraph<Vec2, double> mesh;
   GraphPlotter<double> meshPlotter;
-  Vec err(p.size());
+  Vec err(p.size()), errX(p.size()), errY(p.size());
   for(size_t i = 0; i < p.size(); i++)
   {
     mesh.clear();
     mesh.addVertex(x0);
     addPolygonalNeighbours(mesh, 0, numSides, h,   0.0, p[i]);
     addPolygonalNeighbours(mesh, 0, numSides, s*h, a,   p[i]);
-    err[i] = computeVertexEstimationError(mesh, 0, f, f_x, f_y);
+    //err[i] = computeVertexEstimationError(mesh, 0, f, f_x, f_y);
+    Vec2 ev = computeVertexEstimationErrorVector(mesh, 0, f, f_x, f_y); // error vector
+    errX[i] = ev.x;
+    errY[i] = ev.y;
+    err[i]  = rsMax(rsAbs(ev.x), rsAbs(ev.y));
   }
 
-  // Plot final mesh and estimation error as function of p:
+  // Plot mesh and estimation error as function of p:
   meshPlotter.plotGraph2D(mesh);
-  rsPlotVectorsXY(p, err);
+  rsPlotVectorsXY(p, err, errX, errY);
+  //rsPlotVectorsXY(p, err);
 
   // plot the example function (choose one - plotting one after another doesn't work):
   GNUPlotter plt;
@@ -2341,6 +2337,9 @@ void vertexMeshGradient3()
   //  monotonically decreases - higher values of p tend to given more and more weight to the
   //  closest neighbor - in the limit, the closest neighbor alone will make the decision, which 
   //  makes sense because it has the most accurate estimate for the directional derivative
+  // -when plotting the error for x- and y-coordinate separately and together with the abs-max 
+  //  of both (defined as "the" error), we see that the minimum of the error occurs near but not 
+  //  exactly at the point where the two separate errors cross
 
   // ToDo:
   // -figure out, if this rule also holds for less regular configurations of neighbor vertices or
@@ -2440,16 +2439,17 @@ void vertexMeshGradient4()
     double dx = cos(a);
     double dy = sin(a);
     mesh.setVertexData(3, Vec2(v0.x + h*dx, v0.y + h*dy));
-    errors[i] = computeVertexEstimationError(mesh, 0, f, f_x, f_y);
     Vec2 err = computeVertexEstimationErrorVector(mesh, 0, f, f_x, f_y);
     errX[i] = err.x;
     errY[i] = err.y;
+    errors[i] = rsMax(rsAbs(err.x), rsAbs(err.y));
     //meshPlotter.plotGraph2D(mesh);
   }
 
   angles = angles * (180/PI);
   //rsPlotVectorsXY(angles, errors, errX, errY);
   rsPlotVectorsXY(angles, errX, errY);
+  rsPlotVectorsXY(angles, errors);
 
   // Observations:
   // -without any weighting, the angular dependency of the error has a somwhat sharp minimum at 
@@ -2486,9 +2486,9 @@ void vertexMeshGradient4()
 void vertexMeshGradient()
 {
   //vertexMeshGradient1();
-  //vertexMeshGradient2();
+  vertexMeshGradient2();
   //vertexMeshGradient3();
-  vertexMeshGradient4();
+  //vertexMeshGradient4();
 }
 
 
