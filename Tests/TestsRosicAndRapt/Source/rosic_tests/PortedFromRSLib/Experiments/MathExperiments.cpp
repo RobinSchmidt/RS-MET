@@ -1939,6 +1939,8 @@ void vertexMeshGradient1()
 {
   // We test the function rsNumericDifferentiator::gradient2D which operates on an irregular mesh 
   // of vertices and estimates the gradient from function values known only on such a mesh.
+  // ...this experiment is now somwhat obsolete because down below we have now other, more 
+  // elaborate ones in place that do the same and much more - so maybe delete it at some point
 
   using Vec2 = rsVector2D<float>;
   using VecF = std::vector<float>;
@@ -2030,7 +2032,6 @@ void vertexMeshGradient1()
   // degrees. For horizontale or vertical edges, the max-error may go to infinity? Division by 
   // zero? ...figure out...
 
-
   int dummy = 0;
 
   // Observations: 
@@ -2040,8 +2041,6 @@ void vertexMeshGradient1()
   //  -maybe try the maximum norm, too
   // -In the case of the regular grid, all estimates are the same, as they should, since all 
   //  distances are unity.
-
-
 }
 
 
@@ -2164,7 +2163,7 @@ void vertexMeshGradient2()
 {
   // We plot the error between the estimated partial derivatives and true partial derivatives as
   // functions of the stepsize h for various numbers of neighbors. The neighbors are arranged as
-  // a regular polygon around a center vertex at the origin.
+  // a regular polygon around some center vertex.
 
   using Real = double;
   using Vec2 = rsVector2D<Real>;
@@ -2173,8 +2172,8 @@ void vertexMeshGradient2()
   using ND   = rsNumericDifferentiator<Real>;
 
   // Settings:
-  int minNumSides =  2; 
-  int maxNumSides =  8;
+  int minNumSides =  2;  // minimum number of sides/neighnors (todo: try to go down to 1)
+  int maxNumSides =  8;  // maximum number of sides
   int Nh          = 10;  // number of stepsizes h
   Vec2 x0(0, 0);         // position of center vertex
 
@@ -2190,7 +2189,6 @@ void vertexMeshGradient2()
   Vec h(Nh);
   for(int i = 0; i < Nh; i++)  // Create array of stepsizes
     h[i] = pow(0.5, i);
-  //Vec u, u_x, u_y, U_x, U_y;   // Uppercase are used for true values, lowercase for estimates
   rsMatrix<Real> err(maxNumSides-minNumSides+1, (int)h.size());
   Mesh mesh;
   GraphPlotter<Real> meshPlotter;
@@ -2235,6 +2233,8 @@ void vertexMeshGradient2()
   // -figure out, why the error does not seem to depend on the weighting in this experiment but 
   //  does depend on it in the other - is this because of different example functions and/or
   //  center points?
+  // -try what happens when we just add more points in the same directions but further out than
+  //  the already existing points - will these additional points also increase the accuracy order?
   // -todo: implement, for reference, the regular forward, backward and central difference methods 
   //  and plot the error with respect to those - basically, what we want to do is a sort of 
   //  least-squares approximation to those - maybe that 2nd level of approximation is what makes 
@@ -2485,10 +2485,10 @@ void vertexMeshGradient4()
 
 void vertexMeshGradient()
 {
-  //vertexMeshGradient1();
+  //vertexMeshGradient1();  // somewhat obsolete now
   vertexMeshGradient2();
-  //vertexMeshGradient3();
-  //vertexMeshGradient4();
+  vertexMeshGradient3();
+  vertexMeshGradient4();
 }
 
 
