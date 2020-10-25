@@ -2399,7 +2399,7 @@ void vertexMeshGradient4()
 
 
   int numAngles = 360;  // stepping in 1 degree steps
-  double h = 1./8;     // approximation stepsize
+  double h = 1./16;     // approximation stepsize
   Vec2   v0(1, 1);      // position of center vertex
 
   // define example function and its partial derivatives
@@ -2421,6 +2421,10 @@ void vertexMeshGradient4()
   // neighborhoods - i hope that the accuracy is angle independent...but whether or nat that's the 
   // case that may also depend on the choice of the function and the evaluation point
 
+  // test - add a 3rd fixed vertex and edge to it at 45° angle:
+  //Vec2 v = v0 + (h/sqrt(2)) * Vec2(1,1);
+  //mesh.addVertex(v);
+  //mesh.addEdge(0, 4);
   // todo: maybe also experiment with the 3 vectors having different lengths - we want a formula 
   // that gives accurate results even for weird meshes - and then in prcatice actually use good 
   // meshes
@@ -2444,7 +2448,8 @@ void vertexMeshGradient4()
   }
 
   angles = angles * (180/PI);
-  rsPlotVectorsXY(angles, errors, errX, errY);
+  //rsPlotVectorsXY(angles, errors, errX, errY);
+  rsPlotVectorsXY(angles, errX, errY);
 
   // Observations:
   // -without any weighting, the angular dependency of the error has a somwhat sharp minimum at 
@@ -2455,10 +2460,25 @@ void vertexMeshGradient4()
   //   have effectively only 2 evalutaion points. i thought, the further away the 3rd 
   //   evaluation point is from the other two, the more additional information gives it about the
   //   function and that would make the estimate more accurate. ...but it doesn't seem so....
+  // -the x-error has 3 local maxima and minima, the y-error has 2 local maxima and minima and a 
+  //  saddle with h = 1/16 and v0 = (1,1)
+  // -the curves look generally sine-wavei'sh like a combination of 2 sines with f and 2*f?
+  // -when changing the evaluation point v0, the error curves change wildly - there does not seem
+  //  to be any particular angle that minimizes the error at all possible points
+  // -maybe try adding a 3rd fixed vector and see, if that changes the behavior - the step from 
+  //  2 to 3 is a step from critically a determined to overdetermined system, but the step from 
+  //  3 to 4 is not -> done: nope, the curves look qualitatively the same
   // -the minima are sharp, notch-like. the maxima are smooth and wide..the whole function looks
   //  a bit like piecewise rectified sines
   //  -maybe these notches are due to taking the maximum of x- and y-error - todo: plot x- and
   //   y-error separately
+
+  // Conclusion:
+  // -Trying to take into account the angles of the neighbours with respect to one another does not 
+  //  seem to be a promising idea to reduce the estimation error. For the time being, let's focus
+  //  on the lengths of the individual edges and not about their interrelations...but maybe more 
+  //  research into this at some point might be a good idea.
+
 
   int dummy = 0;
 }
