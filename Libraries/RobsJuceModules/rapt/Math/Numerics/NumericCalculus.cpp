@@ -231,7 +231,7 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
 // https://www.researchgate.net/publication/254225242_Development_of_Irregular-Grid_Finite_Difference_Method_IFDM_for_Governing_Equations_in_Strong_Form
 // https://www.semanticscholar.org/paper/Development-of-Irregular-Grid-Finite-Difference-(-)-GEORGE/0b8bcb2afdfee4d2fd8efc52f499a9d59f742f77
 // http://www.fluidmal.uma.es/pdfs/JCOMP_2005.pdf
-
+// https://www.researchgate.net/figure/Directional-derivatives-computed-using-one-sided-finite-differences-55-and-the_fig1_258919790
 
 
 

@@ -2235,6 +2235,10 @@ void vertexMeshGradient2()
       errorOrder(i,j) = (err(i,j) - err(i,j+1)) / log10(h[j]/h[j+1]);
   plotMatrixRows(errorOrder, &hLog[0]);
 
+
+
+
+
   // Observations:
   // -We indeed see that the slope of error increases when the number of points is increased, so 
   //  more evaluation points do indeed lead to better orders of accuracy in this numerical 
@@ -2286,8 +2290,10 @@ void vertexMeshGradient2()
   // Notes:
   // -In this experiment, edge weighting by distance makes no differences because all the edges 
   //  have actually the same length.
+  // -i really should write up a paper about this...maybe titled: 
+  //  "Finite Differences on Irregular Meshes based on Directional Derivatives"
 
-  int dummy = 0;
+
 
   // ToDo:
   // -try what happens when we just add more points in the same directions but further out than
@@ -2312,13 +2318,50 @@ void vertexMeshGradient2()
   // -maybe the code should be written such that eventually the user does not need to care about
   //  assigning the edge-weights - optimal accuracy should be obtained when weights are all 1 and 
   //  the option for additional weighting is only kept in for experimentation purposes
+
+
   // -compare the results to a 2D Taylor expansion of 2nd order (i.e. a conic section) around the
   //  central point:
-  //    f(x,y) = A*x^2 + B*y^2 + C*x*y + D*x + E*y + F
+  //    u = u(x,y) = a0 + a1*x + a2*y + a3*x^2 + a4*y^2 + a5*x*y
   //  estimate the 6 coeffs from the center point and 5 neighbors and compare it to the pentagonal
   //  neighborhood results - maybe they are equivalent? ...or maybe my approach is even better?
-  //  i guess, finding the taylor coeffs is quite expensive due to having to solve a 6x6 system
-  //  of linear equations...we'll see
+  //  i guess, finding the Taylor coeffs is quite expensive due to having to solve a 6x6 system
+  //  of linear equations...we'll see - the system, we need to solve is:
+  //    |u0|   |1 x0 y0 x0^2 y0^2 x0*y0|   |a0|
+  //    |..| = |     ...........       | * |..|
+  //    |u5|   |1 x5 y5 x5^2 y5^2 x5*y5|   |a5|
+  //  for the 6 datapoints (xi,yi,ui), i = 0,..,5 where index 0 refers to the center point at which 
+  //  we want to estimate the partial derivatives and indices 1..5 are the 5 neighbors - then, we 
+  //  need to evaluate the partial derivatives with respect to x and y at index 0 as:
+  //    u_x = a1 + 2*a3*x0 + a5*y0, u_y = a2 + 2*a4*y0 + a5*x0
+  mesh.clear();
+  mesh.addVertex(x0);
+  addPolygonalNeighbours(mesh, 0, 5, h[3], angle);
+  meshPlotter.plotGraph2D(mesh);
+  Vec u(6), u_x(6), u_y(6);
+  computeValueAndExactDerivatives(mesh, u, u_x, u_y, f, f_x, f_y);
+  rsMatrix<double> X(6,6), a(6,1), z(6,1);
+  for(int i = 0; i < 6; i++) {
+    Vec2 vi = mesh.getVertexData(i);
+    X(i, 0) = 1;
+    X(i, 1) = vi.x;
+    X(i, 2) = vi.y;
+    X(i, 3) = vi.x * vi.x;
+    X(i, 4) = vi.y * vi.y;
+    X(i, 5) = vi.x * vi.y;
+    z(i, 0) = u[i];
+  }
+  rsLinearAlgebraNew::solve(X, a, z);
+  double u_x0 = a(1,0) + 2*a(3,0)*x0.x + a(5,0)*x0.y; // numerical x-derivative at center point
+  double u_y0 = a(2,0) + 2*a(4,0)*x0.y + a(5,0)*x0.x; // numerical y-derivative at center point
+  double e_x0 = u_x0 - u_x[0];                          // estimation error: numerical minus exact
+  double e_y0 = u_y0 - u_y[0];
+  // todo: compare the error made by the Talyor approximation to the error made by the directional
+  // derivative approach for the given h (here h[3]) ...maybe we can later do this also in a loop 
+  // for all values of h, plot the function of h, estimate the order of the error, etc....
+  // ...however: 5 neighbors is a really inconvenient number for mesh generation
+
+  int dummy = 0;
 }
 
 // some example functions - todo: define them as lambdas and/or std::function where needed:
