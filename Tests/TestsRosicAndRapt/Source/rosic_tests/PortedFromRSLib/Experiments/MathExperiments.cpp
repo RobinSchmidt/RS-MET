@@ -2175,15 +2175,15 @@ void vertexMeshGradient2()
   int minNumSides =  2;  // minimum number of sides/neighbors (todo: try to go down to 1)
   int maxNumSides =  8;  // maximum number of sides
   int Nh          = 10;  // number of stepsizes h
-  Vec2 x0(0, 0);         // position of center vertex
+  Vec2 x0(0.015, 0);     // position of center vertex (slightly off the x-symmetry center)
 
   // Define functions for evaluating f(x,y) and its exact partial derivatives:
   Real sx = 1.0, sy = 1.0;  // overall scale factors for inputs x and y
-  Real p  = 0.01;            // sine phase
+  Real p  = 0.0;            // sine phase
   std::function<Real(Real, Real)> f, f_x, f_y;
-  f   = [&](Real x, Real y)->Real { return    sin(sx*x+p) *    exp(sy*y); };
-  f_x = [&](Real x, Real y)->Real { return sx*cos(sx*x+p) *    exp(sy*y); };
-  f_y = [&](Real x, Real y)->Real { return    sin(sx*x+p) * sy*exp(sy*y); };
+  f   = [&](Real x, Real y)->Real { return sin(x) * exp(y); };
+  f_x = [&](Real x, Real y)->Real { return cos(x) * exp(y); };
+  f_y = [&](Real x, Real y)->Real { return sin(x) * exp(y); };
 
   // Create measurement data:
   Vec h(Nh);
@@ -2213,40 +2213,26 @@ void vertexMeshGradient2()
     }
   }
 
-  // compute orders of the errors via the formula B.36 in "Finite Difference Computing with PDEs":
-  //   r_{i-1} = log(R_{i-1} / R_i) / log(h_{i-1} / h_i)
-  // where r_i is the index of the experiment ...the notation from the book translates to:
-
-  rsMatrix<Real> errorOrder(numMeshes, (int)h.size()-1);
-  for(int i = 0; i < numMeshes; i++)
-  {
-    for(int j = 0; j < (int)h.size()-1; j++)
-    {
-      errorOrder(i,j) = (err(i,j) - err(i,j+1)) / log10(h[j]/h[j+1]);
-      // Our err array is already logarithmized and division of arguments translates to subtraction
-      // of results. Also, we have the h-values in ascending order
-      // verify this!
-    }
-  }
-
-  /*
-  Vec errorOrder(Nh-1);
-  for(size_t i = 0; i < errorOrder.size()-1; i++)
-  {
-    errorOrder[i] = log10(err[i+1]/err[i]) / log10(h[i+1]/h[i]);
-  }
-  */
-
-
-
-
   // We use a log-log plot: the x-axis is the (negative) power of two (we use h = ...,0.25,0.5,1.0)
   // and the y-axis is the (negative) power of 10 that gives the order of magnitude of the error:
   //Vec hLog = RAPT::rsApplyFunction(h, &log);  // dos not compile
   Vec hLog(h.size()); for(size_t i = 0; i < h.size(); i++) hLog[i] = rsLog2(h[i]);
   plotMatrixRows(err, &hLog[0]);
 
-
+  // Numerically estimate order of the errors from two successive errors (for two successive 
+  // h-values) via the formula B.36 in "Finite Difference Computing with PDEs":
+  //   r_{i-1} = log(R_{i-1} / R_i) / log(h_{i-1} / h_i)
+  // where r_i is the index of the experiment. That is, we want to figure out by how much the 
+  // error has increased when going from one h-value to the next higher one. We make the assumption
+  // that the error R as function of h follows a power rule like R(h) ~ h^r for some exponent r and 
+  // this exponent is what we are interested in.
+  // Our err array is already logarithmized and division of arguments translates to subtraction
+  // of results. Also, we have the h-values in ascending order, so the notation from the book 
+  // translates to:
+  rsMatrix<Real> errorOrder(numMeshes, (int)h.size()-1);
+  for(int i = 0; i < numMeshes; i++)
+    for(int j = 0; j < (int)h.size()-1; j++)
+      errorOrder(i,j) = (err(i,j) - err(i,j+1)) / log10(h[j]/h[j+1]);
   plotMatrixRows(errorOrder, &hLog[0]);
 
   // Observations:
@@ -2258,6 +2244,28 @@ void vertexMeshGradient2()
   // -the 2-sides solution is exactly the same as the 4-sides solution when the function is 
   //  symmetrical around the valuation point, when we choose an evaluation point slighty off from
   //  such a (local) center of symmetry, the two errors are slightly different (black and green)
+  // -the error of the triangular neighborhood seems to follow a h^1 rule, quadrangular: h^2 rule,
+  //  pentagonal: h^3, hexagonal: h^4, etc. - in general: h^(n-2) where n is the number of sides
+  //  of the polygon. The (black) case for a 2-point estimate is interesting: for our particular 
+  //  choice of input point x0 = (0.015,0) - it follows a h^1 rule for small h but a h^2 rule for 
+  //  larger h, i.e. it seemingly gets better for larger h - i think, this an artifact arising from
+  //  the fact that our function is symmetric in the x-direction, i.e. around (0,0) - and if we sit 
+  //  exactly on a symmetry center, a one-sides rule (that has only h^1 order) *seems* to follow
+  //  the better h^2 rule. Here, we are slightly off the symmetrx center, and the larger h becomes,
+  //  the less important that slight offset becomes - so it looks like a h^2 rule for larger h due 
+  //  to the "almost symmetry" around the particular evaluation point but is actually in general 
+  //  the h^1 rule.
+  // -between h = 2^-5 and h = 2^-6, the h^6 rule breaks down for the octagonal neighborhood and 
+  //  the function becomes erratic. This indicates that at this point we have reached the numerical
+  //  precision limit and choosing even smaller h will not give any benefits anymore. This is also 
+  //  confirmed by the fact, that the error is numerially of order 10^-16 which is indeed the order 
+  //  of the machine epsilon for double precision. The same thing also happens for the heptagonal 
+  //  neighborhood between h = 2^-6 and h = 2^-7. So, for this particular function, using 
+  //  h = 2^-5 = 0.03125 with an octagonal neighborhood seems to give results that are as accurate 
+  //  as it gets...i think - octagonal neighborhoods are actually convenient to create meshes for:
+  //  we just make a rectangular mesh and take the 4 direct and diagonal neighbors...well...of 
+  //  course...with a regular mesh, we could also just use a standard-scheme except that we also 
+  //  use diagonal neighbors.
 
   int dummy = 0;
 
