@@ -2172,7 +2172,7 @@ void vertexMeshGradient2()
   using ND   = rsNumericDifferentiator<Real>;
 
   // Settings:
-  int minNumSides =  2;  // minimum number of sides/neighnors (todo: try to go down to 1)
+  int minNumSides =  2;  // minimum number of sides/neighbors (todo: try to go down to 1)
   int maxNumSides =  8;  // maximum number of sides
   int Nh          = 10;  // number of stepsizes h
   Vec2 x0(0, 0);         // position of center vertex
@@ -2189,7 +2189,8 @@ void vertexMeshGradient2()
   Vec h(Nh);
   for(int i = 0; i < Nh; i++)  // Create array of stepsizes
     h[i] = pow(0.5, i);
-  rsMatrix<Real> err(maxNumSides-minNumSides+1, (int)h.size());
+  int numMeshes = maxNumSides-minNumSides+1;
+  rsMatrix<Real> err(numMeshes, (int)h.size());
   Mesh mesh;
   GraphPlotter<Real> meshPlotter;
   for(int numSides = minNumSides; numSides <= maxNumSides; numSides++)
@@ -2203,6 +2204,7 @@ void vertexMeshGradient2()
       addPolygonalNeighbours(mesh, 0, numSides, h[j]);  // unweighted
       //addPolygonalNeighbours(mesh, 0, numSides, h[j], 0.0, double(numSides)); // optimal(?) weight
       // strangely, it doesn't seem to make a difference here, what weighting we use
+      // duh! all distances are the same, so the weighting doesn't matter!
       //meshPlotter.plotGraph2D(mesh);
 
       // Compute the and record the estimation error at vertex 0:
@@ -2211,11 +2213,41 @@ void vertexMeshGradient2()
     }
   }
 
+  // compute orders of the errors via the formula B.36 in "Finite Difference Computing with PDEs":
+  //   r_{i-1} = log(R_{i-1} / R_i) / log(h_{i-1} / h_i)
+  // where r_i is the index of the experiment ...the notation from the book translates to:
+
+  rsMatrix<Real> errorOrder(numMeshes, (int)h.size()-1);
+  for(int i = 0; i < numMeshes; i++)
+  {
+    for(int j = 0; j < (int)h.size()-1; j++)
+    {
+      errorOrder(i,j) = (err(i,j) - err(i,j+1)) / log10(h[j]/h[j+1]);
+      // Our err array is already logarithmized and division of arguments translates to subtraction
+      // of results. Also, we have the h-values in ascending order
+      // verify this!
+    }
+  }
+
+  /*
+  Vec errorOrder(Nh-1);
+  for(size_t i = 0; i < errorOrder.size()-1; i++)
+  {
+    errorOrder[i] = log10(err[i+1]/err[i]) / log10(h[i+1]/h[i]);
+  }
+  */
+
+
+
+
   // We use a log-log plot: the x-axis is the (negative) power of two (we use h = ...,0.25,0.5,1.0)
   // and the y-axis is the (negative) power of 10 that gives the order of magnitude of the error:
   //Vec hLog = RAPT::rsApplyFunction(h, &log);  // dos not compile
   Vec hLog(h.size()); for(size_t i = 0; i < h.size(); i++) hLog[i] = rsLog2(h[i]);
   plotMatrixRows(err, &hLog[0]);
+
+
+  plotMatrixRows(errorOrder, &hLog[0]);
 
   // Observations:
   // -We indeed see that the slope of error increases when the number of points is increased, so 
@@ -2232,7 +2264,8 @@ void vertexMeshGradient2()
   // ToDo:
   // -figure out, why the error does not seem to depend on the weighting in this experiment but 
   //  does depend on it in the other - is this because of different example functions and/or
-  //  center points?
+  //  center points? ...no: it's because here, all neighbours are the same distance away from the
+  //  center point, so all weights are the same
   // -try what happens when we just add more points in the same directions but further out than
   //  the already existing points - will these additional points also increase the accuracy order?
   // -todo: implement, for reference, the regular forward, backward and central difference methods 
@@ -2262,7 +2295,7 @@ double sinX_times_expY(double x, double y) { return sin(x) * exp(y); }
 double sinX_plus_expY(double x, double y)  { return sin(x) + exp(y); }
 double sinX_times_cosY(double x, double y) { return sin(x) * cos(y); }
 
-void vertexMeshGradient3()
+void vertexMeshGradient3()  // rename to vertexMeshGradientWeighting
 {
   // We plot the estimation error as function of the exponent p when using a p-norm as weighting
   // for the least-squares solver, i.e. the weight is proportional to 1/d^p where d is the distance
@@ -2330,9 +2363,15 @@ void vertexMeshGradient3()
   // Observations:
   // -the sweet spot seems to be at p == numSides, in fact, there is a sharp minimum 
   //  ...this is a very unexpected result!
+  //  -maybe when we have more information from inner neighbors available, we can more and more 
+  //   afford to discard the additional information from the outer neighbors - they just don't add
+  //   much useful information anymore
   // -seems to hold only for numSides >= 3, for 2, it seems to be slightly larger, like 2.2
   // -seems to hold only when a = PI / numSides, choosing, for example, half that value, the 
   //  minimum is further to the right and less sharp (at least for numSides = 5)
+  // -if the angle is zero (an unrealistic scenario - that would be a stupid grid!), the function
+  //  is monotonically decreasing, but the decrease gets quite shallow after p > numSides, so 
+  //  p = numSides looks like a reasonable choice in this case, too
   // -seems the sharp dip occurs only when a = PI / numSides, when a = 0, the function 
   //  monotonically decreases - higher values of p tend to given more and more weight to the
   //  closest neighbor - in the limit, the closest neighbor alone will make the decision, which 
@@ -2340,6 +2379,9 @@ void vertexMeshGradient3()
   // -when plotting the error for x- and y-coordinate separately and together with the abs-max 
   //  of both (defined as "the" error), we see that the minimum of the error occurs near but not 
   //  exactly at the point where the two separate errors cross
+  // -the weights may get really large - especially when h is small and p is large - maybe we 
+  //  should renormalize the weights such that the maximum weight is 1 - maybe write a function
+  //  normalizeWeights that is called *once after both* calls to addPolygonalNeighbours in the loop
 
   // ToDo:
   // -figure out, if this rule also holds for less regular configurations of neighbor vertices or
@@ -2487,8 +2529,8 @@ void vertexMeshGradient()
 {
   //vertexMeshGradient1();  // somewhat obsolete now
   vertexMeshGradient2();
-  vertexMeshGradient3();
-  vertexMeshGradient4();
+  //vertexMeshGradient3();
+  //vertexMeshGradient4();
 }
 
 
