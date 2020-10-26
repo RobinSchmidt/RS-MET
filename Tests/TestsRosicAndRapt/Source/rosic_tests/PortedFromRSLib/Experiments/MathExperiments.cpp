@@ -2244,17 +2244,18 @@ void vertexMeshGradient2()
   // -the 2-sides solution is exactly the same as the 4-sides solution when the function is 
   //  symmetrical around the valuation point, when we choose an evaluation point slighty off from
   //  such a (local) center of symmetry, the two errors are slightly different (black and green)
-  // -the error of the triangular neighborhood seems to follow a h^1 rule, quadrangular: h^2 rule,
+  // -the error of the triangular neighborhood seems to follow a h^1 rule, quadrilateral: h^2 rule,
   //  pentagonal: h^3, hexagonal: h^4, etc. - in general: h^(n-2) where n is the number of sides
-  //  of the polygon. The (black) case for a 2-point estimate is interesting: for our particular 
-  //  choice of input point x0 = (0.015,0) - it follows a h^1 rule for small h but a h^2 rule for 
-  //  larger h, i.e. it seemingly gets better for larger h - i think, this an artifact arising from
-  //  the fact that our function is symmetric in the x-direction, i.e. around (0,0) - and if we sit 
-  //  exactly on a symmetry center, a one-sides rule (that has only h^1 order) *seems* to follow
-  //  the better h^2 rule. Here, we are slightly off the symmetrx center, and the larger h becomes,
-  //  the less important that slight offset becomes - so it looks like a h^2 rule for larger h due 
-  //  to the "almost symmetry" around the particular evaluation point but is actually in general 
-  //  the h^1 rule.
+  //  of the polygon. 
+  // -The (black) special case for a 2-point estimate is interesting: for our particular choice of
+  //  input point x0 = (0.015,0) - it follows a h^1 rule for small h but a h^2 rule for larger h, 
+  //  i.e. it seemingly gets better for larger h - i think, this an artifact arising from the fact 
+  //  that our function is symmetric in the x-direction around (0,0) - and if we sit exactly on a 
+  //  symmetry center, a one-sided rule (that has only h^1 order) *seems* to follow the better h^2
+  //  rule only because of the symmetry of the function. Here, we are slightly off the symmetry 
+  //  center, and the larger h becomes, the less important that slight offset becomes - so it looks
+  //  like a h^2 rule for larger h due to the "almost symmetry" around the particular evaluation 
+  //  point but is actually in general the h^1 rule.
   // -between h = 2^-5 and h = 2^-6, the h^6 rule breaks down for the octagonal neighborhood and 
   //  the function becomes erratic. This indicates that at this point we have reached the numerical
   //  precision limit and choosing even smaller h will not give any benefits anymore. This is also 
@@ -2262,10 +2263,14 @@ void vertexMeshGradient2()
   //  of the machine epsilon for double precision. The same thing also happens for the heptagonal 
   //  neighborhood between h = 2^-6 and h = 2^-7. So, for this particular function, using 
   //  h = 2^-5 = 0.03125 with an octagonal neighborhood seems to give results that are as accurate 
-  //  as it gets...i think - octagonal neighborhoods are actually convenient to create meshes for:
-  //  we just make a rectangular mesh and take the 4 direct and diagonal neighbors...well...of 
+  //  as it gets...i think. Octagonal neighborhoods are actually convenient to create meshes for:
+  //  we just make a rectangular mesh and take the 4 direct and 4 diagonal neighbors...well...of 
   //  course...with a regular mesh, we could also just use a standard-scheme except that we also 
-  //  use diagonal neighbors.
+  //  use diagonal neighbors. However, when doing so, we should probably take into account that the
+  //  diagonal neighbours are further away from the evaluation point and we should take this 
+  //  account in the edge weights. In another experiment below, it was found that taking
+  //  d^(-n) as weighting gave most accurate results, where d is the distance, so d^(-8) should 
+  //  probably be used in this case -> more research necessarry.
 
   int dummy = 0;
 
