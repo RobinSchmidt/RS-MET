@@ -2163,7 +2163,8 @@ void vertexMeshGradient2()
 {
   // We plot the error between the estimated partial derivatives and true partial derivatives as
   // functions of the stepsize h for various numbers of neighbors. The neighbors are arranged as
-  // a regular polygon around some center vertex.
+  // a regular polygon around some center vertex. As example function, we use 
+  // f(x,y) = sin(x) * exp(x).
 
   using Real = double;
   using Vec2 = rsVector2D<Real>;
@@ -2175,11 +2176,10 @@ void vertexMeshGradient2()
   int minNumSides =  2;  // minimum number of sides/neighbors (todo: try to go down to 1)
   int maxNumSides =  8;  // maximum number of sides
   int Nh          = 10;  // number of stepsizes h
+  double angle    = 0.0; // rotation angle of the polygon in radians
   Vec2 x0(0.015, 0);     // position of center vertex (slightly off the x-symmetry center)
 
   // Define functions for evaluating f(x,y) and its exact partial derivatives:
-  Real sx = 1.0, sy = 1.0;  // overall scale factors for inputs x and y
-  Real p  = 0.0;            // sine phase
   std::function<Real(Real, Real)> f, f_x, f_y;
   f   = [&](Real x, Real y)->Real { return sin(x) * exp(y); };
   f_x = [&](Real x, Real y)->Real { return cos(x) * exp(y); };
@@ -2201,7 +2201,7 @@ void vertexMeshGradient2()
       mesh.clear();
       mesh.addVertex(x0);
 
-      addPolygonalNeighbours(mesh, 0, numSides, h[j]);  // unweighted
+      addPolygonalNeighbours(mesh, 0, numSides, h[j], angle);  // unweighted
       //addPolygonalNeighbours(mesh, 0, numSides, h[j], 0.0, double(numSides)); // optimal(?) weight
       // strangely, it doesn't seem to make a difference here, what weighting we use
       // duh! all distances are the same, so the weighting doesn't matter!
@@ -2249,13 +2249,19 @@ void vertexMeshGradient2()
   //  of the polygon. 
   // -The (black) special case for a 2-point estimate is interesting: for our particular choice of
   //  input point x0 = (0.015,0) - it follows a h^1 rule for small h but a h^2 rule for larger h, 
-  //  i.e. it seemingly gets better for larger h - i think, this an artifact arising from the fact 
+  //  i.e. it seemingly gets better for larger h. I think, this an artifact arising from the fact 
   //  that our function is symmetric in the x-direction around (0,0) - and if we sit exactly on a 
   //  symmetry center, a one-sided rule (that has only h^1 order) *seems* to follow the better h^2
   //  rule only because of the symmetry of the function. Here, we are slightly off the symmetry 
   //  center, and the larger h becomes, the less important that slight offset becomes - so it looks
   //  like a h^2 rule for larger h due to the "almost symmetry" around the particular evaluation 
-  //  point but is actually in general the h^1 rule.
+  //  point but is actually in general the h^1 rule. When using a different evaluation like (1,0),
+  //  the 2-neighbor stencil gives indeed the expected h^1 behavior. We also fall into the h^1
+  //  behavior, when the rotation angle is not zero (or in general, a multiple of 90°?) because
+  //  then, the direction of none of the edges is aligned with the direction along which f is 
+  //  symmetric. So, in general, 3 neighbors are no better than 2, but from 3 upwards, we get
+  //  the h^(n-2) rule - for two, the rule is still h^2 ...todo: figure out what happens when
+  //  n = 1...
   // -between h = 2^-5 and h = 2^-6, the h^6 rule breaks down for the octagonal neighborhood and 
   //  the function becomes erratic. This indicates that at this point we have reached the numerical
   //  precision limit and choosing even smaller h will not give any benefits anymore. This is also 
@@ -2263,7 +2269,12 @@ void vertexMeshGradient2()
   //  of the machine epsilon for double precision. The same thing also happens for the heptagonal 
   //  neighborhood between h = 2^-6 and h = 2^-7. So, for this particular function, using 
   //  h = 2^-5 = 0.03125 with an octagonal neighborhood seems to give results that are as accurate 
-  //  as it gets...i think. Octagonal neighborhoods are actually convenient to create meshes for:
+  //  as it gets. When using x0 = (1.015, 0) as evaluation point, the breakdown for the octagonal
+  //  neighborhood happens already between h = 2^-4 = 0.0625 and h = 2^-5, so maybe such a choice
+  //  of h is already fine enough in this case.
+  
+  
+  //  Octagonal neighborhoods are actually convenient to create meshes for:
   //  we just make a rectangular mesh and take the 4 direct and 4 diagonal neighbors...well...of 
   //  course...with a regular mesh, we could also just use a standard-scheme except that we also 
   //  use diagonal neighbors. However, when doing so, we should probably take into account that the
@@ -2272,13 +2283,13 @@ void vertexMeshGradient2()
   //  d^(-n) as weighting gave most accurate results, where d is the distance, so d^(-8) should 
   //  probably be used in this case -> more research necessarry.
 
+  // Notes:
+  // -In this experiment, edge weighting by distance makes no differences because all the edges 
+  //  have actually the same length.
+
   int dummy = 0;
 
   // ToDo:
-  // -figure out, why the error does not seem to depend on the weighting in this experiment but 
-  //  does depend on it in the other - is this because of different example functions and/or
-  //  center points? ...no: it's because here, all neighbours are the same distance away from the
-  //  center point, so all weights are the same
   // -try what happens when we just add more points in the same directions but further out than
   //  the already existing points - will these additional points also increase the accuracy order?
   // -todo: implement, for reference, the regular forward, backward and central difference methods 
@@ -2301,6 +2312,13 @@ void vertexMeshGradient2()
   // -maybe the code should be written such that eventually the user does not need to care about
   //  assigning the edge-weights - optimal accuracy should be obtained when weights are all 1 and 
   //  the option for additional weighting is only kept in for experimentation purposes
+  // -compare the results to a 2D Taylor expansion of 2nd order (i.e. a conic section) around the
+  //  central point:
+  //    f(x,y) = A*x^2 + B*y^2 + C*x*y + D*x + E*y + F
+  //  estimate the 6 coeffs from the center point and 5 neighbors and compare it to the pentagonal
+  //  neighborhood results - maybe they are equivalent? ...or maybe my approach is even better?
+  //  i guess, finding the taylor coeffs is quite expensive due to having to solve a 6x6 system
+  //  of linear equations...we'll see
 }
 
 // some example functions - todo: define them as lambdas and/or std::function where needed:
