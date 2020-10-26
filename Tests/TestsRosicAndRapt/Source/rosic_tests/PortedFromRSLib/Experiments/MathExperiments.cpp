@@ -2266,6 +2266,11 @@ void vertexMeshGradient2()
   //  symmetric. So, in general, 3 neighbors are no better than 2, but from 3 upwards, we get
   //  the h^(n-2) rule - for two, the rule is still h^2 ...todo: figure out what happens when
   //  n = 1...
+  //  ...the reason why around an odd(!) symmetry point, a first order method appears to be 2nd
+  //  order can be understood by noting the the central difference can be seen as the arithmetic 
+  //  mean of the forward and backward difference and in the case of odd symmetry, these two are 
+  //  the same and therfore also equal to their average - so in case of odd symmetry: 
+  //  central- = forward- = backward-difference
   // -between h = 2^-5 and h = 2^-6, the h^6 rule breaks down for the octagonal neighborhood and 
   //  the function becomes erratic. This indicates that at this point we have reached the numerical
   //  precision limit and choosing even smaller h will not give any benefits anymore. This is also 
@@ -2337,7 +2342,7 @@ void vertexMeshGradient2()
   mesh.clear();
   mesh.addVertex(x0);
   addPolygonalNeighbours(mesh, 0, 5, h[3], angle);
-  meshPlotter.plotGraph2D(mesh);
+  //meshPlotter.plotGraph2D(mesh);
   Vec u(6), u_x(6), u_y(6);
   computeValueAndExactDerivatives(mesh, u, u_x, u_y, f, f_x, f_y);
   rsMatrix<double> X(6,6), a(6,1), z(6,1);
@@ -2360,6 +2365,14 @@ void vertexMeshGradient2()
   // derivative approach for the given h (here h[3]) ...maybe we can later do this also in a loop 
   // for all values of h, plot the function of h, estimate the order of the error, etc....
   // ...however: 5 neighbors is a really inconvenient number for mesh generation
+
+  // Verify that the Taylor polynomial indeed passes through the 6 mesh points:
+  Vec taylorValues(6);
+  for(int i = 0; i < 6; i++) {
+    Vec2 vi = mesh.getVertexData(i);
+    taylorValues[i] = a(0, 0) + a(1,0)*vi.x + a(2,0)*vi.y 
+      + a(3,0)*vi.x*vi.x + a(4,0)*vi.y*vi.y + a(5,0)*vi.x*vi.y; }
+  Vec taylorError = taylorValues - u;  // should be zero -> yep, is zero
 
   int dummy = 0;
 }
