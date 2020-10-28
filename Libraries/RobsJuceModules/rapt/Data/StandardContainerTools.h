@@ -32,6 +32,23 @@ bool rsAnyOf(const std::vector<T>& v, UnaryPredicate p)
   return std::any_of(v.cbegin(), v.cend(), p);
 }
 
+/** Returns a new vector which conatins elements where the function f is applied to each 
+corresponding element in the input vector v. The function f should be a function pointer. 
+Usage example:
+
+  std::vector<double> y = rsApplyFunction(x, &log);
+
+to get the logarithms of all values in a vector x of double precision numbers. */
+template<class T>
+std::vector<T> rsApplyFunction(const std::vector<T>& v, T (*f) (T))
+{
+  std::vector<T> r(v.size());
+  for(size_t i = 0; i < r.size(); i++)
+    r[i] = f(v[i]);
+  return r;
+}
+// todo: can this be generalized to any kind of callable f by using a 2nd template parameter F for
+// the function type?
 
 template<class T>
 inline std::vector<T> rsConstantVector(size_t size, T value)

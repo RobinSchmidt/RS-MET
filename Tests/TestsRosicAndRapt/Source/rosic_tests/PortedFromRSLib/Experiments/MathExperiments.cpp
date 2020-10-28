@@ -2235,10 +2235,6 @@ void vertexMeshGradient2()
       errorOrder(i,j) = (err(i,j) - err(i,j+1)) / log10(h[j]/h[j+1]);
   plotMatrixRows(errorOrder, &hLog[0]);
 
-
-
-
-
   // Observations:
   // -We indeed see that the slope of error increases when the number of points is increased, so 
   //  more evaluation points do indeed lead to better orders of accuracy in this numerical 
@@ -2282,7 +2278,6 @@ void vertexMeshGradient2()
   //  neighborhood happens already between h = 2^-4 = 0.0625 and h = 2^-5, so maybe such a choice
   //  of h is already fine enough in this case.
   
-  
   //  Octagonal neighborhoods are actually convenient to create meshes for:
   //  we just make a rectangular mesh and take the 4 direct and 4 diagonal neighbors...well...of 
   //  course...with a regular mesh, we could also just use a standard-scheme except that we also 
@@ -2297,8 +2292,6 @@ void vertexMeshGradient2()
   //  have actually the same length.
   // -i really should write up a paper about this...maybe titled: 
   //  "Finite Differences on Irregular Meshes based on Directional Derivatives"
-
-
 
   // ToDo:
   // -try what happens when we just add more points in the same directions but further out than
@@ -2324,21 +2317,25 @@ void vertexMeshGradient2()
   //  assigning the edge-weights - optimal accuracy should be obtained when weights are all 1 and 
   //  the option for additional weighting is only kept in for experimentation purposes
 
-
-  // -compare the results to a 2D Taylor expansion of 2nd order (i.e. a conic section) around the
-  //  central point:
+  // Compare the results to a 2D Taylor expansion of 2nd order (i.e. a conic section) around the
+  // central point:
+  //
   //    u = u(x,y) = a0 + a1*x + a2*y + a3*x^2 + a4*y^2 + a5*x*y
-  //  estimate the 6 coeffs from the center point and 5 neighbors and compare it to the pentagonal
-  //  neighborhood results - maybe they are equivalent? ...or maybe my approach is even better?
-  //  i guess, finding the Taylor coeffs is quite expensive due to having to solve a 6x6 system
-  //  of linear equations...we'll see - the system, we need to solve is:
+  //
+  // Estimate the 6 coeffs from the center point and 5 neighbors and compare it to the pentagonal
+  // neighborhood results. The system, we need to solve is:
+  //
   //    |u0|   |1 x0 y0 x0^2 y0^2 x0*y0|   |a0|
   //    |..| = |     ...........       | * |..|
   //    |u5|   |1 x5 y5 x5^2 y5^2 x5*y5|   |a5|
-  //  for the 6 datapoints (xi,yi,ui), i = 0,..,5 where index 0 refers to the center point at which 
-  //  we want to estimate the partial derivatives and indices 1..5 are the 5 neighbors - then, we 
-  //  need to evaluate the partial derivatives with respect to x and y at index 0 as:
-  //    u_x = a1 + 2*a3*x0 + a5*y0, u_y = a2 + 2*a4*y0 + a5*x0
+  //
+  // for the 6 datapoints (xi,yi,ui), i = 0,..,5 where index 0 refers to the center point at which 
+  // we want to estimate the partial derivatives and indices 1..5 are the 5 neighbors. After having 
+  // found Taylor coeffs, we need to evaluate the partial derivatives with respect to x and y at 
+  // index 0 as:
+  //
+  //    u_x = a1 + 2*a3*x0 + a5*y0
+  //    u_y = a2 + 2*a4*y0 + a5*x0
 
   Vec errorTaylor(h.size());
   for(int j = 0; j < (int)h.size(); j++)
@@ -2362,14 +2359,10 @@ void vertexMeshGradient2()
     }
     rsLinearAlgebraNew::solve(X, a, z);
     double u_x0 = a(1, 0) + 2*a(3, 0)*x0.x + a(5, 0)*x0.y; // numerical x-derivative at center point
-    double u_y0 = a(2, 0) + 2*a(4, 0)*x0.y + a(5, 0)*x0.x; // numerical y-derivative at center point
-    double e_x0 = u_x0 - u_x[0];                           // estimation error: numerical minus exact
-    double e_y0 = u_y0 - u_y[0];
-    errorTaylor[j] = rsMax(rsAbs(e_x0), rsAbs(e_y0));
-    // todo: compare the error made by the Talyor approximation to the error made by the directional
-    // derivative approach for the given h (here h[3]) ...maybe we can later do this also in a loop 
-    // for all values of h, plot the function of h, estimate the order of the error, etc....
-    // ...however: 5 neighbors is a really inconvenient number for mesh generation
+    double u_y0 = a(2, 0) + 2*a(4, 0)*x0.y + a(5, 0)*x0.x; // numerical y-derivative
+    double e_x0 = u_x0 - u_x[0];                           // x-error: numerical minus exact
+    double e_y0 = u_y0 - u_y[0];                           // y-error
+    errorTaylor[j] = rsMax(rsAbs(e_x0), rsAbs(e_y0));      // error taken to be the max-abs of both
 
     // Verify that the Taylor polynomial indeed passes through the 6 mesh points:
     Vec taylorValues(6);
@@ -2378,23 +2371,37 @@ void vertexMeshGradient2()
       taylorValues[i] = a(0, 0) + a(1, 0)*vi.x + a(2, 0)*vi.y
         + a(3, 0)*vi.x*vi.x + a(4, 0)*vi.y*vi.y + a(5, 0)*vi.x*vi.y;
     }
-    Vec taylorValueError = taylorValues - u;  // should be zero -> yep, is zero
+    Vec taylorValueError = taylorValues - u;  // should be zero up to roundoff -> yep, is zero
     int dummy = 0;
   }
   Vec errorOrderTaylor(h.size()-1);
   for(int j = 0; j < (int)h.size()-1; j++)
     errorOrderTaylor[j] = log(errorTaylor[j]/errorTaylor[j+1]) / log(h[j]/h[j+1]);
+  Vec errorTaylorLog = RAPT::rsApplyFunction(errorTaylor, &log10);
   //rsPlotVectorsXY(hLog, errorOrderTaylor);
   // For some reason, the plotting fails, but by inspecting the errorOrderTaylor array, we see that
   // the order is 3. That's interesting: i expected 2 because we use a 2nd order bivariate 
-  // polynomial. However, 3 fits the h^(n-2) rule where n is the number of neighbors - we use 5 
+  // polynomial. However, 3 fits the h^(n-2) rule where n is the number of neighbors. We use 5 
   // neighbors here to find the 6 2D Taylor coeffs. So, 2D Taylor is better than using 4 neighbors
   // and worse than using 6 neighbors and exactly just as good as using 5 neighbors with the 
-  // directional derivative approach. In concluscion, i think, the directional derivative approach 
-  // is favorable bevause it's more general (works not only for 5 neighbors but any number) and is
-  // easier to compute (no 6x6 system has to be solved). ToDo - maybe figure out, if the Taylor 
-  // approach produces exactly the same numbers as the directional derivative approach with n = 5.
-  // Maybe for this, use a rather large h such that the estimation error is of relevant size.
+  // directional derivative approach. In fact, the errors using the Taylor approach are numerically
+  // exactly the same (up to roundoff) as the corresponding errors for the n = 5 case using the 
+  // directional derivative approach. That's a pretty nice result! :-) In conclusion, i think, the 
+  // directional derivative approach is favorable over the 2D Taylor approach because it's more 
+  // general (works for any number of neighbors, not just 5) and is easier to compute (no 6x6 
+  // system has to be solved - only a 2x2 system - and that stays the same, regardles of n). Also
+  // the directional derivative approach readily generalizes to 3D. A 2nd order 3D Taylor 
+  // polynomial would need 10 coeffs for 1,x,y,z,x^2,y^2,z^2,xy,xz,yz, so we would need meshes with 
+  // exactly 9 neighbors for each mesh point. That number is inconvenient for 3D meshes, just like
+  // 5 is inconvenient for 2D meshes. In 3D, convenient numbers are 4 (corners of tetrahedrons), 
+  // 6 (sides or corners cubes), 12 (sides and corners of cubes), etc. Also, the boundary points 
+  // may not have a full set of neighbors. The directional derivative approach does not care about 
+  // that. Although, the global accuracy will suffer if some vertices have a lesser number of 
+  // neighbors, so maybe the boundary points should somehow have "fanning-out" edges to some of 
+  // their indirect neighbors as well. Fortunately, the algo seems to be quite oblivious of the
+  // question whether the edges go all generally into the same directions (which they will have to 
+  // at boundary points) or having some going into opposite directions (at least with respect to 
+  // the error order...i think -> verify that...).
 
   int dummy = 0;
 }
