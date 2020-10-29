@@ -184,6 +184,9 @@ public:
   // todo: maybe if the source has a different shape, change the shape of this image
 
 
+
+
+
   template<class TPix2>
   inline void convertPixelDataFrom(const rsImage<TPix2>& source) 
   { 
