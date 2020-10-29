@@ -158,8 +158,12 @@ public:
   /** Solves A*x = b for x. */
   static void solve(const rsMatrix2x2<T>& A, rsVector2D<T>& x, const rsVector2D<T>& b)
   {
-    T tol = 1000 * RS_EPS(T);
-    rsAssert(rsAbs(A.getDeterminant()) > tol, "Handling of singular matrices not implemented");
+    //T tol = 1000 * RS_EPS(T);
+    //rsAssert(rsAbs(A.getDeterminant()) > tol, "Handling of singular matrices not implemented");
+    // maybe we should divide the determinant by the maximum of the matrix elements or something
+    // to get a relative measure - we hit this, when all elements are very small, wich should not 
+    // be considered to be a problem
+
     rsMatrix2x2<T> Ai = A.getInverse();
     x.x = Ai.a * b.x + Ai.b * b.y;
     x.y = Ai.c * b.x + Ai.d * b.y;

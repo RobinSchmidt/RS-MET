@@ -114,7 +114,7 @@ void rsNumericDifferentiator<T>::derivative(
 
 
 template<class T>
-void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D<T>, T>& mesh, 
+void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, 
   const std::vector<T>& u, std::vector<T>& u_x, std::vector<T>& u_y)
 {
   // Algorithm:
@@ -154,10 +154,10 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
     // *something* that is *a* solution to the equation and the minimum norm solution is the only
     // meaningfully distinguished choice (right? or wrong?):
     if(numNeighbors == 1) {
-      int k = mesh.getEdgeTarget(i, 0);
-      const Vec2& vk = mesh.getVertexData(k);
-      Vec2 dv = vk   - vi;                      // difference vector
-      T    du = u[k] - u[i];                    // difference in function value
+      int j = mesh.getEdgeTarget(i, 0);
+      const Vec2& vj = mesh.getVertexData(j);
+      Vec2 dv = vj   - vi;                      // difference vector
+      T    du = u[j] - u[i];                    // difference in function value
       rsLinearAlgebra::solveMinNorm(dv.x, dv.y, du, &u_x[i], &u_y[i]);
       continue; }
 
@@ -167,24 +167,24 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
     // happens to be the exact solution...right?):
     A.setZero();
     b.setZero();
-    for(int j = 0; j < numNeighbors; j++)    // loop over neighbors of vertex i
+    for(int k = 0; k < numNeighbors; k++)    // loop over neighbors of vertex i
     {
       // Retrieve or compute intermediate variables:
-      int k = mesh.getEdgeTarget(i, j);         // index of current neighbor of vi
-      const Vec2& vk = mesh.getVertexData(k);   // current neighbor of vi
-      Vec2 dv = vk   - vi;                      // difference vector
-      T    du = u[k] - u[i];                    // difference in function value
-      T    w  = mesh.getEdgeData(i, j);         // weight in weighted least squares
+      int j = mesh.getEdgeTarget(i, k);         // index of current neighbor of vi
+      const Vec2& vj = mesh.getVertexData(j);   // current neighbor of vi
+      Vec2 dv = vj   - vi;                      // difference vector
+      T    du = u[j] - u[i];                    // difference in function value
+      T    w  = mesh.getEdgeData(i, k);         // weight in weighted least squares
 
       //w = T(1) / (dv.x*dv.x + dv.y*dv.y); // test - see below
       //T w2 = w*w;
 
       // Accumulate least-squares matrix and right-hand-side vector:
-      A.a += w * dv.x * dv.x;  // or do we need to use w^2 here?
-      A.b += w * dv.x * dv.y;  // ...and here
-      A.d += w * dv.y * dv.y;  // ...and here  ...hmm - seems not to be the case
-      b.x += w * dv.x * du;    // ...but not here
-      b.y += w * dv.y * du;    // ...or here
+      A.a += w * dv.x * dv.x;
+      A.b += w * dv.x * dv.y;
+      A.d += w * dv.y * dv.y;
+      b.x += w * dv.x * du;
+      b.y += w * dv.y * du;
       // don't we need to normalize the dv vector or is it assumed that the normalization coeff is
       // already absorbed in the weight w? If so, maybe the weight should be the reciprocal of the 
       // squared norm instead of the norm itself - so it works as normalizer *and* weight at the 
@@ -198,6 +198,8 @@ void rsNumericDifferentiator<T>::gradient2D(const RAPT::rsGraph<RAPT::rsVector2D
       // w = T(1) / (dv.x*dv.x + dv.y*dv.y)
       // try it before switching to an unweighted graph - it's really nice to have to divide by the
       // distance twice (once for normalizing dv and once for the error weighting)
+      // no - i think we don't need the normalization, because the vectors also appear in the 
+      // computations of the righ-hand sides, so the total lengths of the vectors cancel out
     }
     A.c = A.b;  // A.c is still zero - make A symmetric
 

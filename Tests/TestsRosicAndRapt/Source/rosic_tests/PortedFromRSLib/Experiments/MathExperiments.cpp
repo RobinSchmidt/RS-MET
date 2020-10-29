@@ -2177,7 +2177,8 @@ void vertexMeshGradient2()
   int maxNumSides =  8;  // maximum number of sides
   int Nh          = 10;  // number of stepsizes h
   double angle    = 0.0; // rotation angle of the polygon in radians
-  Vec2 x0(0.015, 0);     // position of center vertex (slightly off the x-symmetry center)
+  //Vec2 x0(0.015, 0);     // position of center vertex (slightly off the x-symmetry center)
+  Vec2 x0(1, 1);     // (1,1) is nicely general - no symmetries
 
   // Define functions for evaluating f(x,y) and its exact partial derivatives:
   std::function<Real(Real, Real)> f, f_x, f_y;
@@ -2200,12 +2201,9 @@ void vertexMeshGradient2()
       // Create mesh for a particular setting for numSides and stepsize h:
       mesh.clear();
       mesh.addVertex(x0);
-
       addPolygonalNeighbours(mesh, 0, numSides, h[j], angle);  // unweighted
-      //addPolygonalNeighbours(mesh, 0, numSides, h[j], 0.0, double(numSides)); // optimal(?) weight
-      // strangely, it doesn't seem to make a difference here, what weighting we use
-      // duh! all distances are the same, so the weighting doesn't matter!
-      //meshPlotter.plotGraph2D(mesh);
+      if(numSides == 5 && j == 0)
+        meshPlotter.plotGraph2D(mesh, {0});
 
       // Compute the and record the estimation error at vertex 0:
       Real e = computeVertexEstimationError(mesh, 0, f, f_x, f_y);
