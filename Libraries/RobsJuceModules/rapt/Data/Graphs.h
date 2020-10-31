@@ -73,6 +73,7 @@ public:
     void setData(const TVtx& newData)         { data = newData;         }
     void addEdge(const Edge& edge)            { edges.push_back(edge);  }
     void setEdgeData(int j, const TEdg& data) { edges[j].setData(data); }
+    void removeEdge(int k)                    { rsRemove(edges, k);     }
 
     const TVtx& getData()            const { return data;                 }
     int         getNumEdges()        const { return (int) edges.size();   }
@@ -120,8 +121,18 @@ public:
   /** Convenience function to add an edge with a default value of 1, possibly symmetrically. */
   void addEdge(int i, int j, bool bothWays) { addEdge(i, j, TEdg(1), bothWays); }
 
+  /** Removes an edge from vertex i to vertex j, if such an edge exists and returns true, iff 
+  there was such an edge. If there is no edge from i to j, it does nothing and returns false.  */
+  //bool removeEdgeAt(int i, int j) {}
 
-
+  /** Removes the k-th edge emanating from vertex i. Note that this is *not* in general an edge 
+  between vertex i and vertex k. If you want to remove and edge by giving the idices of the 
+  vertices it connects, use removeEdge */
+  void removeEdgeAtIndex(int i, int k)
+  {
+    rsAssert(isVertexIndexValid(i) && vertices[i].getNumEdges() > k);
+    vertices[i].removeEdge(k);
+  }
 
 
   void setEdgeData(int i, int j, const TEdg& data) { vertices[i].setEdgeData(j, data); }

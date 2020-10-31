@@ -172,6 +172,7 @@ void rsLinearAlgebra::eigenvector2x2_2(T a, T b, T c, T d, T* vx, T* vy, bool no
 template<class T>
 void rsLinearAlgebra::solveMinNorm(T a, T b, T p, T* x, T* y)
 {
+  rsAssert(a*a + b*b > T(0), "At least one coeff must be nonzero or we get a division by zero");
   T s = p / (a*a + b*b);
   *x = s*a;
   *y = s*b;

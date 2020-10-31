@@ -368,15 +368,16 @@ public:
   the measured directional derivatives via the gradient. It's reasonable to use edge weights 
   inversely proportional to the distance between the respective vertices - see comments in 
   implementation for more details. 
-    The optional rsVector2D parameter v is a direction vector that makes it possible to take only 
-  those neighbors into account, for which the dot-product of the direction to the neighbor with v
-  is nonnegative. This can be used to simulate "upwind" schemes in PDE solvers. In the case of the
-  transport equation, v should be your velocity vector. If it's left at the default of the zero 
-  vector, the dot-product will always be zero, which is nonnegative indeed and so the function will
-  take all neighbors into account. Leave this at default, unless you want an upwind scheme, i.e. 
-  a one-sided finite difference instead of a central one. */
+    The optional rsVector2D parameter d is a direction vector that makes it possible to take only 
+  those neighbors into account, for which the dot-product of the direction to the neighbor with d
+  is nonnegative, i.e. directions that are not oriented opposite to d. This can be used to simulate 
+  "upwind" schemes in PDE solvers. In the case of the transport equation, d should be the negative 
+  of your velocity vector (the "upwind" direction is where the wave comes from). If it's left at 
+  the default of the zero vector, the dot-product will always be zero, which is nonnegative indeed
+  and so the function will take all neighbors into account. Leave this at default, unless you want 
+  an upwind scheme, i.e. a one-sided finite difference instead of a central one. */
   static void gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const std::vector<T>& u, 
-    std::vector<T>& u_x, std::vector<T>& u_y, rsVector2D<T> v = rsVector2D<T>(T(0),T(0)));
+    std::vector<T>& u_x, std::vector<T>& u_y, rsVector2D<T> d = rsVector2D<T>(T(0),T(0)));
   // todo: 
   // -maybe use a Tx template parameter as in derivative
   // -use raw arrays instead of std::vector but keep a convenience function using std::vector

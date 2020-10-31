@@ -175,8 +175,12 @@ void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mes
       int j = mesh.getEdgeTarget(i, k);         // index of current neighbor of vi
       const Vec2& vj = mesh.getVertexData(j);   // current neighbor of vi
       Vec2 dv = vj - vi;                        // difference vector
+
       if(rsDot(dv, v) < T(0))                   // optionally, take only directional neighbors into
         continue;                               // account (to simulate "upwind" schemes)
+      // get rid of this again - it's not common enough to slow down the whole function - instead,
+      // manipulate the mesh itself to remove the downwind connections before running the 
+      // simulation
 
       // Accumulate least-squares matrix and right-hand-side vector:
       T du = u[j] - u[i];                       // difference in function value
