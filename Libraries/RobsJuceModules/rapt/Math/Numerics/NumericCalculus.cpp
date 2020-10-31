@@ -115,7 +115,7 @@ void rsNumericDifferentiator<T>::derivative(
 
 template<class T>
 void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, 
-  const std::vector<T>& u, std::vector<T>& u_x, std::vector<T>& u_y)
+  const std::vector<T>& u, std::vector<T>& u_x, std::vector<T>& u_y, rsVector2D<T> v)
 {
   // Algorithm:
   // The algorithm is based on the fact that the directional derivative into the direction of an 
@@ -127,11 +127,11 @@ void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mes
   // equations than degrees of freedom (u_x,u_y), so the system is overdetermined and we compute a
   // weighted least squares solution where the weights are taken to be the values stored at the 
   // edges between the respective vertices. Meaningful weights could be either all ones 
-  // (unweighted) or - probably better - something inversely proportional to the distance between
-  // the vertices. The rationale behind this is that we expect the values obtained by the formula 
-  // to be further off from the true values, the greater the distance between the vertices, but 
-  // some experimentation for what kind of weighting gives the most accurate results is encouraged
-  // (for example, if Euclidean or Manhattan distance gives better results, etc.).
+  // (unweighted) or - probably better - something inversely proportional to (some power of) the 
+  // distance between the vertices. The rationale behind this is that we expect the values obtained 
+  // by the formula to be further off from the true values, the greater the distance between the 
+  // vertices, but some experimentation for what kind of weighting gives the most accurate results 
+  // is encouraged (for example, if Euclidean or Manhattan distance gives better results, etc.).
 
   int N = mesh.getNumVertices();
   rsAssert((int) u.size()   == N);
@@ -140,9 +140,9 @@ void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mes
   using Vec2 = rsVector2D<T>;
   rsMatrix2x2<T> A;            // maybe rename to M = ATA (== A^T * A in most textbooks)
   Vec2 b, g;                   // maybe rename b to Mb (== A^T * b in textbooks)
-  for(int i = 0; i < N; i++)
+  for(int i = 0; i < N; i++)                    // loop over all the vertices
   {
-    const Vec2& vi   = mesh.getVertexData(i);   // vertex, at which we calculate the derivative
+    const Vec2& vi   = mesh.getVertexData(i);   // vertex i, at which we calculate the derivative
     int numNeighbors = mesh.getNumEdges(i);     // number of neighbors of vertex vi
 
     // If vi has no neighbors at all, we assign zeros to the partial derivatives:
@@ -160,6 +160,8 @@ void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mes
       T    du = u[j] - u[i];                    // difference in function value
       rsLinearAlgebra::solveMinNorm(dv.x, dv.y, du, &u_x[i], &u_y[i]);
       continue; }
+    // should we include the if(rsDot(dv, v) < T(0)) test here too? and if it indeed is < 0, should 
+    // we assign zeros to u_x[i], u_y[i]?
 
     // The typical case is that vi has >= 2 neighbors. In this case, we have either a critically
     // determined (numNeighbors == 2) or an overdetermined (numNeighbors > 2) system and we compute
@@ -172,34 +174,18 @@ void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mes
       // Retrieve or compute intermediate variables:
       int j = mesh.getEdgeTarget(i, k);         // index of current neighbor of vi
       const Vec2& vj = mesh.getVertexData(j);   // current neighbor of vi
-      Vec2 dv = vj   - vi;                      // difference vector
-      T    du = u[j] - u[i];                    // difference in function value
-      T    w  = mesh.getEdgeData(i, k);         // weight in weighted least squares
-
-      //w = T(1) / (dv.x*dv.x + dv.y*dv.y); // test - see below
-      //T w2 = w*w;
+      Vec2 dv = vj - vi;                        // difference vector
+      if(rsDot(dv, v) < T(0))                   // optionally, take only directional neighbors into
+        continue;                               // account (to simulate "upwind" schemes)
 
       // Accumulate least-squares matrix and right-hand-side vector:
+      T du = u[j] - u[i];                       // difference in function value
+      T w  = mesh.getEdgeData(i, k);            // weight in weighted least squares
       A.a += w * dv.x * dv.x;
       A.b += w * dv.x * dv.y;
       A.d += w * dv.y * dv.y;
       b.x += w * dv.x * du;
       b.y += w * dv.y * du;
-      // don't we need to normalize the dv vector or is it assumed that the normalization coeff is
-      // already absorbed in the weight w? If so, maybe the weight should be the reciprocal of the 
-      // squared norm instead of the norm itself - so it works as normalizer *and* weight at the 
-      // same time...but maybe that's premature optimization...maybe, if we compute the squared 
-      // distance here, we can use an unweighted graph - or maybe use a subclass Mesh that makes
-      // sure that the edge weights are correctly set up - if we use an unweighted graph, we would
-      // need to do an additional division here but we would save one memory access for getEdgeData
-      // ..it would also make the API easier to use - client code does not need to care about 
-      // assigning the weights instead of
-      // w = mesh.getEdgeData(i, j); we would use
-      // w = T(1) / (dv.x*dv.x + dv.y*dv.y)
-      // try it before switching to an unweighted graph - it's really nice to have to divide by the
-      // distance twice (once for normalizing dv and once for the error weighting)
-      // no - i think we don't need the normalization, because the vectors also appear in the 
-      // computations of the righ-hand sides, so the total lengths of the vectors cancel out
     }
     A.c = A.b;  // A.c is still zero - make A symmetric
 

@@ -110,6 +110,7 @@ public:
 
   void addEdge(int i, int j, const TEdg& data, bool bothWays = false)
   {
+    rsAssert(isVertexIndexValid(i) && isVertexIndexValid(j), "Invalid vertex index");
     vertices[i].addEdge(Edge(j, data));
     if(bothWays)
       vertices[j].addEdge(Edge(i, data));
@@ -140,6 +141,12 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
+
+  /** Returns true, iff i is a valid vertex index, i.e. an index within the proper range. */
+  bool isVertexIndexValid(int i)
+  {
+    return i >= 0 && i < (int)vertices.size();
+  }
 
   /** Returns the number of vertices. */
   int getNumVertices() const { return (int) vertices.size(); }

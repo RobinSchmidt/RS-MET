@@ -399,12 +399,12 @@ template void RAPT::rsNumericDifferentiator<double>::derivative(
   const double *x, const double *y, double *yd, int N, bool extrapolateEnds);
 
 template void RAPT::rsNumericDifferentiator<float>::gradient2D(
-  const rsGraph<rsVector2D<float>, float>& mesh, 
-  const std::vector<float>& u, std::vector<float>& u_x, std::vector<float>& u_y);
+  const rsGraph<rsVector2D<float>, float>& mesh, const std::vector<float>& u, 
+  std::vector<float>& u_x, std::vector<float>& u_y, rsVector2D<float> v);
 
 template void RAPT::rsNumericDifferentiator<double>::gradient2D(
-  const rsGraph<rsVector2D<double>, double>& mesh, 
-  const std::vector<double>& u, std::vector<double>& u_x, std::vector<double>& u_y);
+  const rsGraph<rsVector2D<double>, double>& mesh, const std::vector<double>& u, 
+  std::vector<double>& u_x, std::vector<double>& u_y, rsVector2D<double> v);
 
 
 template double RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(double fl, double fu);
