@@ -169,7 +169,7 @@ void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mes
     // happens to be the exact solution...right?):
     A.setZero();
     b.setZero();
-    for(int k = 0; k < numNeighbors; k++)    // loop over neighbors of vertex i
+    for(int k = 0; k < numNeighbors; k++)       // loop over neighbors of vertex i
     {
       // Retrieve or compute intermediate variables:
       int j = mesh.getEdgeTarget(i, k);         // index of current neighbor of vi
@@ -195,7 +195,8 @@ void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mes
 
     // Compute gradient that best explains the measured directional derivatives in the least 
     // squares sense and store it in output arrays:
-    rsMatrix2x2<T>::solve(A, g, b);  // g is the gradient vector that solves A*g = b
+    //rsMatrix2x2<T>::solve(A, g, b);  // g is the gradient vector that solves A*g = b
+    rsMatrix2x2<T>::solveSave(A, g, b);  // g is the gradient vector that solves A*g = b
     u_x[i] = g.x;
     u_y[i] = g.y;
   }

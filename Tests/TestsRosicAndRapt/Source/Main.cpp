@@ -256,6 +256,7 @@ int main(int argc, char* argv[])
   //nonUniformArrayDiffAndInt();  // numeric differentiation and integration of sampled data
 //  uniformArrayDiffAndInt();  // under construction
   vertexMeshGradient();
+  vertexMeshHessian();
 
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header

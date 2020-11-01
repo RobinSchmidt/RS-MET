@@ -135,7 +135,12 @@ public:
   }
 
 
-  void setEdgeData(int i, int j, const TEdg& data) { vertices[i].setEdgeData(j, data); }
+  void setEdgeData(int i, int k, const TEdg& data) 
+  { 
+    rsAssert(isVertexIndexValid(i) && vertices[i].getNumEdges() > k);
+    vertices[i].setEdgeData(k, data); 
+  }
+  // rename to setEdgeDataByIndex
 
   /** Clears the edges of all vertices. */
   void clearEdges()
@@ -191,11 +196,13 @@ public:
   /** Returns a const reference to the data that is stored in the j-th edge emanating from vertex 
   i. Note that j is (in general) not the index of the target vertex - it's the index at which the 
   edge occurs in the adjacency list of vertex i. */
-  const TEdg& getEdgeData(int i, int j) const { return vertices[i].getEdgeData(j); }
+  const TEdg& getEdgeData(int i, int k) const { return vertices[i].getEdgeData(k); }
   // O(1)
+  // rename to getEdgeDataByIndex
 
   /** Returns the index of the target vertex of the j-th edge emanating from vertex i. */
-  int getEdgeTarget(int i, int j) const { return vertices[i].getEdgeTarget(j); }
+  int getEdgeTarget(int i, int k) const { return vertices[i].getEdgeTarget(k); }
+  // rename to getEdgeTargetByIndex
 
   /** Returns true, iff for each edge from vertex i to j there also exists an edge from j to i. In 
   this case, the graph can be seen as undirected. */

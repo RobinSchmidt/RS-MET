@@ -35,6 +35,7 @@ void nonUniformArrayDiffAndInt();
 void uniformArrayDiffAndInt();
 void iteratedNumDiff();
 void vertexMeshGradient();
+void vertexMeshHessian();
 
 
 void shiftPolynomial();

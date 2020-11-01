@@ -164,13 +164,28 @@ public:
     // to get a relative measure - we hit this, when all elements are very small, wich should not 
     // be considered to be a problem
 
-    rsMatrix2x2<T> Ai = A.getInverse();
-    x.x = Ai.a * b.x + Ai.b * b.y;
-    x.y = Ai.c * b.x + Ai.d * b.y;
+    T D = A.getDeterminant();
+    T s = T(1) / D;
+    x.x = s * (A.d * b.x - A.b * b.y);
+    x.y = s * (A.a * b.y - A.c * b.x);
+
+    //rsMatrix2x2<T> Ai = A.getInverse();
+    //x.x = Ai.a * b.x + Ai.b * b.y;
+    //x.y = Ai.c * b.x + Ai.d * b.y;
   }
   // todo: optimize, handle singluar matrices: in the overdetermined case, produce a least squares
   // approximation, in the underdetermined case, produce a minimum norm solution
   // maybe implement it without using rsVector2D - just take references to coordinates instead
+
+  /** Like solve, but checks for division by zero and assigns zero to the result in this case. */
+  static void solveSave(const rsMatrix2x2<T>& A, rsVector2D<T>& x, const rsVector2D<T>& b)
+  {
+    T D = A.getDeterminant();
+    if(D == T(0)) { x.x = x.y = T(0); return; }
+    T s = T(1) / D;
+    x.x = s * (A.d * b.x - A.b * b.y);
+    x.y = s * (A.a * b.y - A.c * b.x);
+  }
 
 };
 

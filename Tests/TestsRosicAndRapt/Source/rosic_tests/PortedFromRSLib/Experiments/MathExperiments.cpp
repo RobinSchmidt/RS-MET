@@ -2125,17 +2125,14 @@ void computeValueAndExactDerivatives(rsGraph<rsVector2D<T>, T>& mesh,
   u.resize(N); 
   u_x.resize(N);
   u_y.resize(N);
-  for(int i = 0; i < N; i++) 
-  {
+  for(int i = 0; i < N; i++) {
     rsVector2D<T> vi = mesh.getVertexData(i);
     u[i]   = f( vi.x,  vi.y);
     u_x[i] = f_x(vi.x, vi.y);
-    u_y[i] = f_y(vi.x, vi.y); 
-  }
+    u_y[i] = f_y(vi.x, vi.y); }
 }
-
 template<class T>
-rsVector2D<T> computeVertexEstimationErrorVector(rsGraph<rsVector2D<T>, T>& mesh, int i,
+rsVector2D<T> gradientEstimationErrorVector(rsGraph<rsVector2D<T>, T>& mesh, int i,
   std::function<T(T, T)>& f, std::function<T(T, T)>& f_x, std::function<T(T, T)>& f_y)  
 {
   using Vec = std::vector<T>;
@@ -2147,19 +2144,17 @@ rsVector2D<T> computeVertexEstimationErrorVector(rsGraph<rsVector2D<T>, T>& mesh
   Vec e_y = U_y - u_y;
   return rsVector2D<T>(e_x[i], e_y[i]);
 }
-
-// todo: call code above
 template<class T>
-T computeVertexEstimationError(rsGraph<rsVector2D<T>, T>& mesh, int i,
+T gradientEstimationError(rsGraph<rsVector2D<T>, T>& mesh, int i,
   std::function<T(T, T)>& f, std::function<T(T, T)>& f_x, std::function<T(T, T)>& f_y)  
 {
-  rsVector2D<T> e = computeVertexEstimationErrorVector(mesh, i, f, f_x, f_y);
+  rsVector2D<T> e = gradientEstimationErrorVector(mesh, i, f, f_x, f_y);
   return rsMax(rsAbs(e.x), rsAbs(e.y));
 }
 // todo: maybe instead of computing the error at a single vertex, return the error vector (error
 // at all vertices) ...maybe also output the x- and y-error separately for more detailed analysis
 
-void vertexMeshGradient2()
+void meshGradientErrorVsDistance()
 {
   // We plot the error between the estimated partial derivatives and true partial derivatives as
   // functions of the stepsize h for various numbers of neighbors. The neighbors are arranged as
@@ -2206,7 +2201,7 @@ void vertexMeshGradient2()
         meshPlotter.plotGraph2D(mesh, {0});
 
       // Compute the and record the estimation error at vertex 0:
-      Real e = computeVertexEstimationError(mesh, 0, f, f_x, f_y);
+      Real e = gradientEstimationError(mesh, 0, f, f_x, f_y);
       err(numSides-minNumSides, j) = log10(e);
     }
   }
@@ -2409,7 +2404,7 @@ double sinX_times_expY(double x, double y) { return sin(x) * exp(y); }
 double sinX_plus_expY(double x, double y)  { return sin(x) + exp(y); }
 double sinX_times_cosY(double x, double y) { return sin(x) * cos(y); }
 
-void vertexMeshGradient3()  // rename to vertexMeshGradientWeighting
+void meshGradientErrorVsWeight()  // rename to vertexMeshGradientWeighting
 {
   // We plot the estimation error as function of the exponent p when using a p-norm as weighting
   // for the least-squares solver, i.e. the weight is proportional to 1/d^p where d is the distance
@@ -2447,8 +2442,8 @@ void vertexMeshGradient3()  // rename to vertexMeshGradientWeighting
     mesh.addVertex(x0);
     addPolygonalNeighbours(mesh, 0, numSides, h,   0.0, p[i]);
     addPolygonalNeighbours(mesh, 0, numSides, s*h, a,   p[i]);
-    //err[i] = computeVertexEstimationError(mesh, 0, f, f_x, f_y);
-    Vec2 ev = computeVertexEstimationErrorVector(mesh, 0, f, f_x, f_y); // error vector
+    //err[i] = gradientEstimationError(mesh, 0, f, f_x, f_y);      // scalar error
+    Vec2 ev = gradientEstimationErrorVector(mesh, 0, f, f_x, f_y); // error vector
     errX[i] = ev.x;
     errY[i] = ev.y;
     err[i]  = rsMax(rsAbs(ev.x), rsAbs(ev.y));
@@ -2541,7 +2536,7 @@ void vertexMeshGradient3()  // rename to vertexMeshGradientWeighting
   int dummy = 0;
 }
 
-void vertexMeshGradient4()
+void meshGradientErrorVsAngle()
 {
   // We try to find a formula for optimal weights that take into account the correlations between
   // the direction vectors. This formula could be used in addition to the weighting by the lengths.
@@ -2557,7 +2552,7 @@ void vertexMeshGradient4()
   double h = 1./16;     // approximation stepsize
   Vec2   v0(1, 1);      // position of center vertex
 
-  // define example function and its partial derivatives
+  // Define example function and its partial derivatives:
   std::function<double(double, double)> f, f_x, f_y;
   f   = [&](double x, double y)->double { return sin(x) * exp(y); };
   f_x = [&](double x, double y)->double { return cos(x) * exp(y); };
@@ -2595,7 +2590,7 @@ void vertexMeshGradient4()
     double dx = cos(a);
     double dy = sin(a);
     mesh.setVertexData(3, Vec2(v0.x + h*dx, v0.y + h*dy));
-    Vec2 err = computeVertexEstimationErrorVector(mesh, 0, f, f_x, f_y);
+    Vec2 err = gradientEstimationErrorVector(mesh, 0, f, f_x, f_y);
     errX[i] = err.x;
     errY[i] = err.y;
     errors[i] = rsMax(rsAbs(err.x), rsAbs(err.y));
@@ -2610,11 +2605,11 @@ void vertexMeshGradient4()
   // Observations:
   // -without any weighting, the angular dependency of the error has a somwhat sharp minimum at 
   //  around 135 degrees for v0 = (1,1) - however, that minimum is somewhere else for v0 = (2,2)
-  // -i actually expeced to see error minima whenever v3 is at at amultiple of a 45° angle and 
+  // -i actually expeced to see error minima whenever v3 is at at a multiple of a 45° angle and 
   //  maxima, whenever v3 coincides with v1 or v2 - but that doesn't seem to be the case
   //  -the reason for expecting this is that when v3 is equal to one of the other 2 vectors, we 
-  //   have effectively only 2 evalutaion points. i thought, the further away the 3rd 
-  //   evaluation point is from the other two, the more additional information gives it about the
+  //   have effectively only 2 evaluation points. I thought, the further away the 3rd 
+  //   evaluation point is from the other two, the more additional information it gives about the
   //   function and that would make the estimate more accurate. ...but it doesn't seem so....
   // -the x-error has 3 local maxima and minima, the y-error has 2 local maxima and minima and a 
   //  saddle with h = 1/16 and v0 = (1,1)
@@ -2627,7 +2622,7 @@ void vertexMeshGradient4()
   // -the minima are sharp, notch-like. the maxima are smooth and wide..the whole function looks
   //  a bit like piecewise rectified sines
   //  -maybe these notches are due to taking the maximum of x- and y-error - todo: plot x- and
-  //   y-error separately
+  //   y-error separately -> done: they look smooth
 
   // Conclusion:
   // -Trying to take into account the angles of the neighbours with respect to one another does not 
@@ -2642,11 +2637,67 @@ void vertexMeshGradient4()
 void vertexMeshGradient()
 {
   //vertexMeshGradient1();  // somewhat obsolete now
-  vertexMeshGradient2();
-  //vertexMeshGradient3();
-  //vertexMeshGradient4();
+  meshGradientErrorVsDistance();     // maybe rename to "...VsDistance"
+  meshGradientErrorVsWeight();
+  meshGradientErrorVsAngle();
+  // remove the "vertex" from the names
 }
 
+void vertexMeshHessian()
+{
+  // We use the rsNumericDifferentiator<T>::gradient2D function on the two gradients again to 
+  // estimate the Hessian matrix and measure the error in doing so...
+  // It's like vertexMeshGradientErrorOrder but for the Hessian instead of the gradient
+
+  using Vec2 = rsVector2D<double>;
+  using Vec  = std::vector<double>;
+  using ND   = rsNumericDifferentiator<double>;
+
+  // Settings:
+  int minNumSides =  2;  // minimum number of sides/neighbors (todo: try to go down to 1)
+  int maxNumSides =  8;  // maximum number of sides
+  int Nh          = 10;  // number of stepsizes h
+  Vec2 x0(1, 1);         // (1,1) is nicely general - no symmetries
+
+  // Define example function and its 2nd order partial derivatives:
+  std::function<double(double, double)> f, f_x, f_y, f_xx, f_xy, f_yy;
+  f    = [&](double x, double y)->double { return  sin(x) * exp(y); };
+  f_x  = [&](double x, double y)->double { return  cos(x) * exp(y); };
+  f_y  = [&](double x, double y)->double { return  sin(x) * exp(y); };
+  f_xx = [&](double x, double y)->double { return -sin(x) * exp(y); };
+  f_xy = [&](double x, double y)->double { return  cos(x) * exp(y); };
+  f_yy = [&](double x, double y)->double { return  sin(x) * exp(y); };
+  // maybe get rid of the 1st derivatives - we may not need them here
+
+
+  // Create measurement data:
+  Vec h(Nh);
+  for(int i = 0; i < Nh; i++)  // Create array of stepsizes
+    h[i] = pow(0.5, i);
+  int numMeshes = maxNumSides-minNumSides+1;
+  rsMatrix<double> err(numMeshes, (int)h.size());
+  rsGraph<Vec2, double> mesh;
+  GraphPlotter<double> meshPlotter;
+  for(int numSides = minNumSides; numSides <= maxNumSides; numSides++)
+  {
+    for(int j = 0; j < (int)h.size(); j++)
+    {
+      // Create mesh for a particular setting for numSides and stepsize h:
+      mesh.clear();
+      mesh.addVertex(x0);
+      addPolygonalNeighbours(mesh, 0, numSides, h[j]);  // unweighted
+      if(numSides == 5 && j == 0)
+        meshPlotter.plotGraph2D(mesh, {0});
+
+      // Compute the and record the estimation error at vertex 0:
+      double e = gradientEstimationError(mesh, 0, f, f_x, f_y);
+      err(numSides-minNumSides, j) = log10(e);
+    }
+  }
+
+
+  int dummy = 0;
+}
 
 void shiftPolynomial()
 {
