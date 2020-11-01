@@ -2701,9 +2701,6 @@ void vertexMeshHessian()
   // estimate the Hessian matrix and measure the error in doing so...
   // It's like meshGradientErrorVsDistance but for the Hessian instead of the gradient
 
-  // oh - no - this will not work! the neighbors themselves need to have a neighborhood n vertices
-  // in order to get meaningful estimates for the first derivatives there
-
   using Vec2 = rsVector2D<double>;
   using Vec  = std::vector<double>;
   using ND   = rsNumericDifferentiator<double>;
@@ -2717,13 +2714,9 @@ void vertexMeshHessian()
   // Define example function and its 2nd order partial derivatives:
   std::function<double(double, double)> f, /*f_x, f_y,*/ f_xx, f_xy, f_yy;
   f    = [&](double x, double y)->double { return  sin(x) * exp(y); };
-  //f_x  = [&](double x, double y)->double { return  cos(x) * exp(y); };
-  //f_y  = [&](double x, double y)->double { return  sin(x) * exp(y); };
   f_xx = [&](double x, double y)->double { return -sin(x) * exp(y); };
   f_xy = [&](double x, double y)->double { return  cos(x) * exp(y); };
   f_yy = [&](double x, double y)->double { return  sin(x) * exp(y); };
-  // maybe get rid of the 1st derivatives - we may not need them here
-
 
   // Create measurement data:
   Vec h(Nh);
@@ -2743,7 +2736,6 @@ void vertexMeshHessian()
       addPolygonalNeighbours(mesh, 0, numSides, h[j], 0., 0., false);  // unweighted
       for(int k = 1; k <= numSides; k++)
         addPolygonalNeighbours(mesh, k, numSides, h[j], 0., 0., false);
-
       //if(j == 0) meshPlotter.plotGraph2D(mesh, {0});
 
       // Compute the and record the estimation error at vertex 0:
@@ -2756,16 +2748,26 @@ void vertexMeshHessian()
   Vec hLog(h.size()); for(size_t i = 0; i < h.size(); i++) hLog[i] = rsLog2(h[i]);
   plotMatrixRows(err, &hLog[0]);
 
-  // this is still totally wrong! verify, if the neighborhoods of the neighbors are created and
-  // filled correctly!
+
+  rsMatrix<double> errorOrder(numMeshes, (int)h.size()-1);
+  for(int i = 0; i < numMeshes; i++)
+    for(int j = 0; j < (int)h.size()-1; j++)
+      errorOrder(i,j) = (err(i,j) - err(i,j+1)) / log10(h[j]/h[j+1]);
+  plotMatrixRows(errorOrder, &hLog[0]);
+
 
   // Observations:
   // -We see similar plots as in meshGradientErrorVsDistance, as expected.
-  // -The error in the mixed derivatives u_xy,u_yx seems to an order of magnitude less that the 
-  //  error in u_xx, u_yy (this can't be seen in the plot because there we plot only the maximum 
-  //  of the 4 errors, but it can be seen in the debugger)
+  // -The error in the mixed derivatives u_xy, u_yx seems to be orders of magnitude less than the 
+  //  error in u_xx, u_yy (this can't be seen in the plot because there, we plot only the maximum 
+  //  of the 4 errors, but it can be seen in the debugger inspecting the E matrix in hessianError)
   // -It's really important that we call addPolygonalNeighbours with false for the "symmetric" 
   //  parameter - otherwise, the results make no sense at all.
+
+  // ToDo:
+  // -Compute Laplacian and compare results to simplifed algorithm using the weighted average of 
+  //  the neighborhood.
+  //  
 
   int dummy = 0;
 }
