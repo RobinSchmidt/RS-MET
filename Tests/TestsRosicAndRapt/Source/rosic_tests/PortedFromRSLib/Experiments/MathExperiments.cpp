@@ -2117,38 +2117,36 @@ void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
 }
 
 template<class T>
-void computeValueAndExactDerivatives(rsGraph<rsVector2D<T>, T>& mesh, 
+void valueAndExactDerivatives(rsGraph<rsVector2D<T>, T>& mesh, 
   std::vector<T>& u, std::vector<T>& u_x, std::vector<T>& u_y,
   std::function<T(T, T)>& f, std::function<T(T, T)>& f_x, std::function<T(T, T)>& f_y)
 {
   int N = (int)mesh.getNumVertices();
-  u.resize(N); 
-  u_x.resize(N);
-  u_y.resize(N);
+  //u.resize(N); u_x.resize(N); u_y.resize(N);    // are these needed?
   for(int i = 0; i < N; i++) {
     rsVector2D<T> vi = mesh.getVertexData(i);
-    u[i]   = f( vi.x,  vi.y);
+    u[i]   = f(  vi.x, vi.y);
     u_x[i] = f_x(vi.x, vi.y);
     u_y[i] = f_y(vi.x, vi.y); }
 }
 template<class T>
-rsVector2D<T> gradientEstimationErrorVector(rsGraph<rsVector2D<T>, T>& mesh, int i,
+rsVector2D<T> gradientErrorVector(rsGraph<rsVector2D<T>, T>& mesh, int i,
   std::function<T(T, T)>& f, std::function<T(T, T)>& f_x, std::function<T(T, T)>& f_y)  
 {
   using Vec = std::vector<T>;
   int N = (int)mesh.getNumVertices();
   Vec u(N), u_x(N), u_y(N), U_x(N), U_y(N);
-  computeValueAndExactDerivatives(mesh, u, U_x, U_y, f, f_x, f_y); // U_* is exact value
-  rsNumericDifferentiator<T>::gradient2D(mesh, u, u_x, u_y);       // u_* is numeric estimate
+  valueAndExactDerivatives(mesh, u, U_x, U_y, f, f_x, f_y);    // U_* is exact value
+  rsNumericDifferentiator<T>::gradient2D(mesh, u, u_x, u_y);    // u_* is numeric estimate
   Vec e_x = U_x - u_x;
   Vec e_y = U_y - u_y;
   return rsVector2D<T>(e_x[i], e_y[i]);
 }
 template<class T>
-T gradientEstimationError(rsGraph<rsVector2D<T>, T>& mesh, int i,
+T gradientError(rsGraph<rsVector2D<T>, T>& mesh, int i,
   std::function<T(T, T)>& f, std::function<T(T, T)>& f_x, std::function<T(T, T)>& f_y)  
 {
-  rsVector2D<T> e = gradientEstimationErrorVector(mesh, i, f, f_x, f_y);
+  rsVector2D<T> e = gradientErrorVector(mesh, i, f, f_x, f_y);
   return rsMax(rsAbs(e.x), rsAbs(e.y));
 }
 // todo: maybe instead of computing the error at a single vertex, return the error vector (error
@@ -2201,7 +2199,7 @@ void meshGradientErrorVsDistance()
         meshPlotter.plotGraph2D(mesh, {0});
 
       // Compute the and record the estimation error at vertex 0:
-      Real e = gradientEstimationError(mesh, 0, f, f_x, f_y);
+      Real e = gradientError(mesh, 0, f, f_x, f_y);
       err(numSides-minNumSides, j) = log10(e);
     }
   }
@@ -2319,7 +2317,7 @@ void meshGradientErrorVsDistance()
   // neighborhood results. The system, we need to solve is:
   //
   //    |u0|   |1 x0 y0 x0^2 y0^2 x0*y0|   |a0|
-  //    |..| = |     ...........       | * |..|
+  //    |..| = |      ..........       | * |..|
   //    |u5|   |1 x5 y5 x5^2 y5^2 x5*y5|   |a5|
   //
   // for the 6 datapoints (xi,yi,ui), i = 0,..,5 where index 0 refers to the center point at which 
@@ -2338,7 +2336,7 @@ void meshGradientErrorVsDistance()
     addPolygonalNeighbours(mesh, 0, 5, h[j], angle);
     //meshPlotter.plotGraph2D(mesh);
     Vec u(6), u_x(6), u_y(6);
-    computeValueAndExactDerivatives(mesh, u, u_x, u_y, f, f_x, f_y);
+    valueAndExactDerivatives(mesh, u, u_x, u_y, f, f_x, f_y);
     rsMatrix<double> X(6, 6), a(6, 1), z(6, 1);
     for(int i = 0; i < 6; i++) {
       Vec2 vi = mesh.getVertexData(i);
@@ -2403,6 +2401,7 @@ void meshGradientErrorVsDistance()
 double sinX_times_expY(double x, double y) { return sin(x) * exp(y); }
 double sinX_plus_expY(double x, double y)  { return sin(x) + exp(y); }
 double sinX_times_cosY(double x, double y) { return sin(x) * cos(y); }
+// i think, they are not used anywhere
 
 void meshGradientErrorVsWeight()  // rename to vertexMeshGradientWeighting
 {
@@ -2443,7 +2442,7 @@ void meshGradientErrorVsWeight()  // rename to vertexMeshGradientWeighting
     addPolygonalNeighbours(mesh, 0, numSides, h,   0.0, p[i]);
     addPolygonalNeighbours(mesh, 0, numSides, s*h, a,   p[i]);
     //err[i] = gradientEstimationError(mesh, 0, f, f_x, f_y);      // scalar error
-    Vec2 ev = gradientEstimationErrorVector(mesh, 0, f, f_x, f_y); // error vector
+    Vec2 ev = gradientErrorVector(mesh, 0, f, f_x, f_y); // error vector
     errX[i] = ev.x;
     errY[i] = ev.y;
     err[i]  = rsMax(rsAbs(ev.x), rsAbs(ev.y));
@@ -2495,6 +2494,7 @@ void meshGradientErrorVsWeight()  // rename to vertexMeshGradientWeighting
   // ToDo:
   // -figure out, if this rule also holds for less regular configurations of neighbor vertices or
   //  if it's an artifact of the specific geometry chosen here
+  // -try especially those geometric configurations that commonly occur in an actual mesh
   // -maybe try a 3-edge stencil where the edges have different lengths (like 0.5, 1, 2)
   // -maybe try it with a lot of random lengths and angles - collect statistical evidence 
   // -figure out what the optimal weighting is when the edges do not form a regular polygon
@@ -2590,7 +2590,7 @@ void meshGradientErrorVsAngle()
     double dx = cos(a);
     double dy = sin(a);
     mesh.setVertexData(3, Vec2(v0.x + h*dx, v0.y + h*dy));
-    Vec2 err = gradientEstimationErrorVector(mesh, 0, f, f_x, f_y);
+    Vec2 err = gradientErrorVector(mesh, 0, f, f_x, f_y);
     errX[i] = err.x;
     errY[i] = err.y;
     errors[i] = rsMax(rsAbs(err.x), rsAbs(err.y));
@@ -2636,11 +2636,63 @@ void meshGradientErrorVsAngle()
 
 void vertexMeshGradient()
 {
-  //vertexMeshGradient1();  // somewhat obsolete now
-  meshGradientErrorVsDistance();     // maybe rename to "...VsDistance"
-  meshGradientErrorVsWeight();
+  //vertexMeshGradient1();  // somewhat obsolete now - maybe delete at some point
+  meshGradientErrorVsDistance();
+  meshGradientErrorVsWeight();   // todo: try with geometries other than regular polygons
   meshGradientErrorVsAngle();
-  // remove the "vertex" from the names
+}
+
+
+
+template<class T>
+void exactHessian(rsGraph<rsVector2D<T>, T>& mesh, 
+  std::vector<T>& u_xx, std::vector<T>& u_xy,
+  std::vector<T>& u_yx, std::vector<T>& u_yy,
+  std::function<T(T, T)>& f_xx, std::function<T(T, T)>& f_xy,
+  std::function<T(T, T)>& f_yx, std::function<T(T, T)>& f_yy
+)
+{
+  int N = (int)mesh.getNumVertices();
+  for(int i = 0; i < N; i++) {
+    rsVector2D<T> vi = mesh.getVertexData(i);
+    u_xx[i] = f_xx(vi.x, vi.y);
+    u_xy[i] = f_xy(vi.x, vi.y); 
+    u_yx[i] = f_yx(vi.x, vi.y); 
+    u_yy[i] = f_yy(vi.x, vi.y); }
+}
+template<class T>
+rsMatrix2x2<T> hessianErrorMatrix(rsGraph<rsVector2D<T>, T>& mesh, int i,
+  std::function<T(T, T)>& f,
+  std::function<T(T, T)>& f_xx, std::function<T(T, T)>& f_xy,
+  std::function<T(T, T)>& f_yx, std::function<T(T, T)>& f_yy)
+{
+  using Vec = std::vector<T>;
+  int N = (int)mesh.getNumVertices();
+  Vec U_xx(N), U_xy(N), U_yx(N), U_yy(N);  // exact values
+  Vec u_xx(N), u_xy(N), u_yx(N), u_yy(N);  // numeric estimates
+  exactHessian(mesh, U_xx, U_xy, U_yx, U_yy, f_xx, f_xy, f_yx, f_yy);
+  Vec u(N), u_x(N), u_x(N);
+  for(int i = 0; i < N; i++) {
+    sVector2D<T> vi = mesh.getVertexData(i);
+    u[i] = f(vi.x, vi.y); }
+  rsNumericDifferentiator<T>::gradient2D(mesh, u,   u_x,  u_y);
+  rsNumericDifferentiator<T>::gradient2D(mesh, u_x, u_xx, u_xy);
+  rsNumericDifferentiator<T>::gradient2D(mesh, u_y, u_yx, u_yy);
+  Vec e_xx = U_xx - u_xx; Vec e_xy = U_xy - u_xy;
+  Vec e_yx = U_yx - u_yx; Vec e_yy = U_yy - u_yy;
+  rsMatrix2x2<T> E;
+  E.a = e_xx[i]; E.b = e_xy[i];
+  E.c = e_yx[i]; E.d = e_yy[i];
+  return E;
+}
+template<class T>
+T hessianError(rsGraph<rsVector2D<T>, T>& mesh, int i,
+  std::function<T(T, T)>& f, 
+  std::function<T(T, T)>& f_xx, std::function<T(T, T)>& f_xy,
+  std::function<T(T, T)>& f_yx, std::function<T(T, T)>& f_yy)
+{
+  rsMatrix2x2<T> e = hessianErrorMatrix(mesh, i, f, f_xx, f_xy, f_yx, f_yy);
+  return rsMax(rsAbs(A.a), rsAbs(A.b), rsAbs(A.c), rsAbs(A.d));
 }
 
 void vertexMeshHessian()
@@ -2660,10 +2712,10 @@ void vertexMeshHessian()
   Vec2 x0(1, 1);         // (1,1) is nicely general - no symmetries
 
   // Define example function and its 2nd order partial derivatives:
-  std::function<double(double, double)> f, f_x, f_y, f_xx, f_xy, f_yy;
+  std::function<double(double, double)> f, /*f_x, f_y,*/ f_xx, f_xy, f_yy;
   f    = [&](double x, double y)->double { return  sin(x) * exp(y); };
-  f_x  = [&](double x, double y)->double { return  cos(x) * exp(y); };
-  f_y  = [&](double x, double y)->double { return  sin(x) * exp(y); };
+  //f_x  = [&](double x, double y)->double { return  cos(x) * exp(y); };
+  //f_y  = [&](double x, double y)->double { return  sin(x) * exp(y); };
   f_xx = [&](double x, double y)->double { return -sin(x) * exp(y); };
   f_xy = [&](double x, double y)->double { return  cos(x) * exp(y); };
   f_yy = [&](double x, double y)->double { return  sin(x) * exp(y); };
@@ -2690,8 +2742,8 @@ void vertexMeshHessian()
         meshPlotter.plotGraph2D(mesh, {0});
 
       // Compute the and record the estimation error at vertex 0:
-      double e = gradientEstimationError(mesh, 0, f, f_x, f_y);
-      err(numSides-minNumSides, j) = log10(e);
+      //double e = hessianError(mesh, 0, f, f_xx, f_xy, f_yy);
+      //err(numSides-minNumSides, j) = log10(e);
     }
   }
 
