@@ -2097,7 +2097,7 @@ void setupNeighbourWeight(rsGraph<rsVector2D<T>, T>& mesh, int i, int k, T p, T 
 
 template<class T>
 void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
-  int numSides, T radius, T angle = T(0), T p = T(0))
+  int numSides, T radius, T angle = T(0), T p = T(0), bool symmetric = true)
 {
   int N = (int)mesh.getNumVertices();
   using Vec2 = rsVector2D<T>;
@@ -2112,7 +2112,7 @@ void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
     T w  = pow(radius, -p);             // edge weight
     Vec2 vj(vi.x + dx, vi.y + dy);      // position of neighbor vertex
     mesh.addVertex(vj);                 // add the new neighbour to mesh
-    mesh.addEdge(i, j+N, w, true);      // add edge to the new neighbor and back
+    mesh.addEdge(i, j+N, w, symmetric); // add edge to the new neighbor and back
   }
 }
 
@@ -2671,9 +2671,9 @@ rsMatrix2x2<T> hessianErrorMatrix(rsGraph<rsVector2D<T>, T>& mesh, int i,
   Vec U_xx(N), U_xy(N), U_yx(N), U_yy(N);  // exact values
   Vec u_xx(N), u_xy(N), u_yx(N), u_yy(N);  // numeric estimates
   exactHessian(mesh, U_xx, U_xy, U_yx, U_yy, f_xx, f_xy, f_yx, f_yy);
-  Vec u(N), u_x(N), u_x(N);
+  Vec u(N), u_x(N), u_y(N);
   for(int i = 0; i < N; i++) {
-    sVector2D<T> vi = mesh.getVertexData(i);
+    rsVector2D<T> vi = mesh.getVertexData(i);
     u[i] = f(vi.x, vi.y); }
   rsNumericDifferentiator<T>::gradient2D(mesh, u,   u_x,  u_y);
   rsNumericDifferentiator<T>::gradient2D(mesh, u_x, u_xx, u_xy);
@@ -2691,15 +2691,18 @@ T hessianError(rsGraph<rsVector2D<T>, T>& mesh, int i,
   std::function<T(T, T)>& f_xx, std::function<T(T, T)>& f_xy,
   std::function<T(T, T)>& f_yx, std::function<T(T, T)>& f_yy)
 {
-  rsMatrix2x2<T> e = hessianErrorMatrix(mesh, i, f, f_xx, f_xy, f_yx, f_yy);
-  return rsMax(rsAbs(A.a), rsAbs(A.b), rsAbs(A.c), rsAbs(A.d));
+  rsMatrix2x2<T> E = hessianErrorMatrix(mesh, i, f, f_xx, f_xy, f_yx, f_yy);
+  return rsMax(rsAbs(E.a), rsAbs(E.b), rsAbs(E.c), rsAbs(E.d));
 }
 
 void vertexMeshHessian()
 {
   // We use the rsNumericDifferentiator<T>::gradient2D function on the two gradients again to 
   // estimate the Hessian matrix and measure the error in doing so...
-  // It's like vertexMeshGradientErrorOrder but for the Hessian instead of the gradient
+  // It's like meshGradientErrorVsDistance but for the Hessian instead of the gradient
+
+  // oh - no - this will not work! the neighbors themselves need to have a neighborhood n vertices
+  // in order to get meaningful estimates for the first derivatives there
 
   using Vec2 = rsVector2D<double>;
   using Vec  = std::vector<double>;
@@ -2737,16 +2740,32 @@ void vertexMeshHessian()
       // Create mesh for a particular setting for numSides and stepsize h:
       mesh.clear();
       mesh.addVertex(x0);
-      addPolygonalNeighbours(mesh, 0, numSides, h[j]);  // unweighted
-      if(numSides == 5 && j == 0)
-        meshPlotter.plotGraph2D(mesh, {0});
+      addPolygonalNeighbours(mesh, 0, numSides, h[j], 0., 0., false);  // unweighted
+      for(int k = 1; k <= numSides; k++)
+        addPolygonalNeighbours(mesh, k, numSides, h[j], 0., 0., false);
+
+      //if(j == 0) meshPlotter.plotGraph2D(mesh, {0});
 
       // Compute the and record the estimation error at vertex 0:
-      //double e = hessianError(mesh, 0, f, f_xx, f_xy, f_yy);
-      //err(numSides-minNumSides, j) = log10(e);
+      double e = hessianError(mesh, 0, f, f_xx, f_xy, f_xy, f_yy);
+      err(numSides-minNumSides, j) = log10(e);
     }
   }
 
+  // Plot:
+  Vec hLog(h.size()); for(size_t i = 0; i < h.size(); i++) hLog[i] = rsLog2(h[i]);
+  plotMatrixRows(err, &hLog[0]);
+
+  // this is still totally wrong! verify, if the neighborhoods of the neighbors are created and
+  // filled correctly!
+
+  // Observations:
+  // -We see similar plots as in meshGradientErrorVsDistance, as expected.
+  // -The error in the mixed derivatives u_xy,u_yx seems to an order of magnitude less that the 
+  //  error in u_xx, u_yy (this can't be seen in the plot because there we plot only the maximum 
+  //  of the 4 errors, but it can be seen in the debugger)
+  // -It's really important that we call addPolygonalNeighbours with false for the "symmetric" 
+  //  parameter - otherwise, the results make no sense at all.
 
   int dummy = 0;
 }

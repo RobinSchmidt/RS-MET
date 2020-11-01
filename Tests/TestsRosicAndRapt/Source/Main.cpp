@@ -255,7 +255,7 @@ int main(int argc, char* argv[])
   //numericIntegration(); // a.k.a. numeric "quadrature"
   //nonUniformArrayDiffAndInt();  // numeric differentiation and integration of sampled data
 //  uniformArrayDiffAndInt();  // under construction
-  vertexMeshGradient();
+  //vertexMeshGradient();
   vertexMeshHessian();
 
   //shiftPolynomial();
