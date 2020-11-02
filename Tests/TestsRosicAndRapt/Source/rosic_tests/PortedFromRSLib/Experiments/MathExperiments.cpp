@@ -2850,7 +2850,10 @@ void meshLaplacian()
 
 
   int numSides = 5;
-  double h = 1./16;
+  //double h = 1./32;
+  //double h = 1./16;
+  double h = 1./8;
+  //double h = 1./4;
   //double h = 1./10;
   //double h = 1;
   Vec2 x0(1, 1);
@@ -2881,12 +2884,13 @@ void meshLaplacian()
   // Figure out, if it's just a scaling issue, i.e if the result is at least proportional to the
   // Laplacian - compute ratio of true Laplacian and computed for various inputs
   double r = u_L2[0] / L;
-  // ...yes, indeed: r is always around -0.0009...  but what exactly is the proportionality 
-  // constant? it probably has to to with h?
+  // ...yes, indeed: r is always around -0.000976... no matter what we choose as x0 - but what 
+  // exactly is the formula for the proportionality constant? it probably has to do with h?
   //double test = u_L2[0] / (h*h); // nope - that's not it
-
-
-
+  //double test = u_L2[0] / pow(h, numSides-2);
+  // the factor does not seem to depend on numSides, at least, if numSides >= 4 - maybe for 3, the
+  // estimate is just too inaccurate. it definitely does depend on h - but how exactly? and why?
+  // maybe plot r against h to get some clues
 
 
   int dummy = 0;
