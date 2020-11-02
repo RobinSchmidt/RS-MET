@@ -2824,7 +2824,7 @@ void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh,
 //  that weighted average ad return the difference of the value and the average
 // -we assume that the edge weights are inversely proportional to the distances - todo: lift that
 //  assumption - we can't assume that - but maybe it works with any choice of weights, due to the 
-//  fact that we divide by the sum of weights, it will in any cas produce a weighted average
+//  fact that we divide by the sum of weights, it will in any case produce a weighted average
 // -applying the laplacian to the laplacian again should yield the biharmonic operator
 
 void meshLaplacian()
@@ -2837,18 +2837,28 @@ void meshLaplacian()
   using Vec2 = rsVector2D<double>;
   using Vec  = std::vector<double>;
 
-  std::function<double(double, double)> f;
-  f = [&](double x, double y)->double { return  sin(x) * exp(y); };
+  std::function<double(double, double)> f, f_xx, f_yy;
+  double a = 0.75;
+  double b = 0.5;
+  //f = [&](double x, double y)->double { return sin(x) * exp(y); }; // Laplacian identically zero
+  f    = [&](double x, double y)->double { return      sin(a*x) *     exp(b*y); }; // ...this is better
+  f_xx = [&](double x, double y)->double { return -a*a*sin(a*x) *     exp(b*y); };
+  f_yy = [&](double x, double y)->double { return      sin(a*x) * b*b*exp(b*y);  };
+
+  // maybe use f(x,y) = sin(a*x) * exp(b*y)
+  // f_xx = -a^2*sin(a*x) * exp(b*y), f_yy = sin(a*x) * b^2*exp(b*y)
 
 
   int numSides = 5;
   double h = 1./16;
+  //double h = 1./10;
+  //double h = 1;
   Vec2 x0(1, 1);
   rsGraph<Vec2, double> mesh;
 
   createMeshForHessianEstimation(mesh, numSides, h, x0);
   GraphPlotter<double> meshPlotter;
-  meshPlotter.plotGraph2D(mesh, {0});
+  //meshPlotter.plotGraph2D(mesh, {0});
 
   int N = mesh.getNumVertices();
 
@@ -2864,9 +2874,19 @@ void meshLaplacian()
     u[i] = f(vi.x, vi.y); }
   laplacian2D(mesh, u, u_L2);
 
-  // Both u_L1[0] and u_L2[0] are close to zero, but u_L2 is closer
-  // could it be that the exact value is 0 and u_L2 is a more accurate estimate?
-  // -> todo: compute also exact Laplacian
+  double L = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value
+
+  // OK, u_L1[0] is a reasonable approximation but u_L2[0] is totally wrong - maybe the whole idea
+  // is flawed somehow...or is there a bug?
+  // Figure out, if it's just a scaling issue, i.e if the result is at least proportional to the
+  // Laplacian - compute ratio of true Laplacian and computed for various inputs
+  double r = u_L2[0] / L;
+  // ...yes, indeed: r is always around -0.0009...  but what exactly is the proportionality 
+  // constant? it probably has to to with h?
+  //double test = u_L2[0] / (h*h); // nope - that's not it
+
+
+
 
 
   int dummy = 0;
