@@ -2834,6 +2834,39 @@ void meshLaplacian()
   // vertex and the (weighted) average of its neighborhood.
 
 
+  using Vec2 = rsVector2D<double>;
+  using Vec  = std::vector<double>;
+
+  std::function<double(double, double)> f;
+  f = [&](double x, double y)->double { return  sin(x) * exp(y); };
+
+
+  int numSides = 5;
+  double h = 1./16;
+  Vec2 x0(1, 1);
+  rsGraph<Vec2, double> mesh;
+
+  createMeshForHessianEstimation(mesh, numSides, h, x0);
+  GraphPlotter<double> meshPlotter;
+  meshPlotter.plotGraph2D(mesh, {0});
+
+  int N = mesh.getNumVertices();
+
+  // Compute Laplacian by brute force:
+  Vec u_xx(N), u_xy(N), u_yx(N), u_yy(N);
+  meshHessian(mesh, f, u_xx, u_xy, u_yx, u_yy);
+  Vec u_L1 = u_xx + u_yy;
+
+  // Compute Laplacian by neighborhood average:
+  Vec u(N), u_L2(N);
+  for(int i = 0; i < N; i++) {         // maybe factor out into fillMeshFunction or soemthing
+    Vec2 vi = mesh.getVertexData(i);
+    u[i] = f(vi.x, vi.y); }
+  laplacian2D(mesh, u, u_L2);
+
+  // Both u_L1[0] and u_L2[0] are close to zero, but u_L2 is closer
+  // could it be that the exact value is 0 and u_L2 is a more accurate estimate?
+  // -> todo: compute also exact Laplacian
 
 
   int dummy = 0;
@@ -2841,7 +2874,7 @@ void meshLaplacian()
 
 void vertexMeshHessian()
 {
-  meshHessianErrorVsDistance();
+  //meshHessianErrorVsDistance();
   meshLaplacian();
 }
 
