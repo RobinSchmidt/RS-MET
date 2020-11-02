@@ -2660,6 +2660,20 @@ void exactHessian(rsGraph<rsVector2D<T>, T>& mesh,
     u_yy[i] = f_yy(vi.x, vi.y); }
 }
 template<class T>
+void meshHessian(rsGraph<rsVector2D<T>, T>& mesh, std::function<T(T, T)>& f,
+  std::vector<T>& u_xx, std::vector<T>& u_xy,
+  std::vector<T>& u_yx, std::vector<T>& u_yy)
+{
+  int N = (int)mesh.getNumVertices();
+  std::vector<T> u(N), u_x(N), u_y(N);           // temporaries
+  for(int i = 0; i < N; i++) {
+    rsVector2D<T> vi = mesh.getVertexData(i);
+    u[i] = f(vi.x, vi.y); }
+  rsNumericDifferentiator<T>::gradient2D(mesh, u,   u_x,  u_y);
+  rsNumericDifferentiator<T>::gradient2D(mesh, u_x, u_xx, u_xy);
+  rsNumericDifferentiator<T>::gradient2D(mesh, u_y, u_yx, u_yy);
+}
+template<class T>
 rsMatrix2x2<T> hessianErrorMatrix(rsGraph<rsVector2D<T>, T>& mesh, int i,
   std::function<T(T, T)>& f,
   std::function<T(T, T)>& f_xx, std::function<T(T, T)>& f_xy,
@@ -2667,21 +2681,11 @@ rsMatrix2x2<T> hessianErrorMatrix(rsGraph<rsVector2D<T>, T>& mesh, int i,
 {
   using Vec = std::vector<T>;
   int N = (int)mesh.getNumVertices();
-  Vec U_xx(N), U_xy(N), U_yx(N), U_yy(N);  // exact values
+  Vec U_xx(N), U_xy(N), U_yx(N), U_yy(N);                               // exact values
   exactHessian(mesh, U_xx, U_xy, U_yx, U_yy, f_xx, f_xy, f_yx, f_yy);
-
-  // factor out into meshHessian:
-  Vec u_xx(N), u_xy(N), u_yx(N), u_yy(N);  // numeric estimates
-  Vec u(N), u_x(N), u_y(N);
-  for(int i = 0; i < N; i++) {
-    rsVector2D<T> vi = mesh.getVertexData(i);
-    u[i] = f(vi.x, vi.y); }
-  rsNumericDifferentiator<T>::gradient2D(mesh, u,   u_x,  u_y);
-  rsNumericDifferentiator<T>::gradient2D(mesh, u_x, u_xx, u_xy);
-  rsNumericDifferentiator<T>::gradient2D(mesh, u_y, u_yx, u_yy);
-
-
-  Vec e_xx = U_xx - u_xx; Vec e_xy = U_xy - u_xy;
+  Vec u_xx(N), u_xy(N), u_yx(N), u_yy(N);                               // numeric estimates
+  meshHessian(mesh, f, u_xx, u_xy, u_yx, u_yy);
+  Vec e_xx = U_xx - u_xx; Vec e_xy = U_xy - u_xy;                       // errors
   Vec e_yx = U_yx - u_yx; Vec e_yy = U_yy - u_yy;
   rsMatrix2x2<T> E;
   E.a = e_xx[i]; E.b = e_xy[i];
