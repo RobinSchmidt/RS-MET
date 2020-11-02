@@ -2794,9 +2794,10 @@ void meshHessianErrorVsDistance()
   int dummy = 0;
 }
 
+/*
 // maybe rename to meshLaplacian
 template<class T>
-void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, 
+void laplacian2D_old(const rsGraph<rsVector2D<T>, T>& mesh, 
   const std::vector<T>& u, std::vector<T>& L)
 {
   int N = mesh.getNumVertices();
@@ -2819,6 +2820,7 @@ void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh,
   }
   // todo: reverse roles of j,k
 }
+*/
 // -experimental - the idea is that the Laplacian represents, how far a value is away from the 
 //  average of its neighborhood (see the 3blue1brown video on the heat equation), so we compute 
 //  that weighted average ad return the difference of the value and the average
@@ -2829,7 +2831,7 @@ void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh,
 
 // the above was not quite right - 2nd attempt:
 template<class T>
-void laplacian2D_2(const rsGraph<rsVector2D<T>, T>& mesh, 
+void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, 
   const std::vector<T>& u, std::vector<T>& L)
 {
   using Vec2 = rsVector2D<T>;
@@ -2839,22 +2841,22 @@ void laplacian2D_2(const rsGraph<rsVector2D<T>, T>& mesh,
   for(int i = 0; i < N; i++)
   {
     Vec2 vi = mesh.getVertexData(i);
-    T uSum = T(0);                         // weighted sum of neighbors
-    T wSum = T(0);                           // sum of weights
+    T uSum = T(0);                                 // weighted sum of neighbors
+    T wSum = T(0);                                 // sum of weights
     for(int k = 0; k < mesh.getNumEdges(i); k++)
     {
-      int j = mesh.getEdgeTarget(i, k);      // index of current neighbor
-      T w   = mesh.getEdgeData(  i, k);      // weight in weighted sum of neighbors
-      Vec2 vj = mesh.getVertexData(j);
-      Vec2 dv = vj - vi;
-      T d2 = dv.x*dv.x + dv.y*dv.y;          // squared distance between vi and vj
+      int j = mesh.getEdgeTarget(i, k);            // index of current neighbor
+      T w   = mesh.getEdgeData(  i, k);            // weight in weighted sum of neighbors
+      Vec2 vj = mesh.getVertexData(j);             // location of current neighbor
+      Vec2 dv = vj - vi;                           // 
+      T d2 = dv.x*dv.x + dv.y*dv.y;                // squared distance between vi and vj
       uSum += w*(u[j]-u[i])/d2;
-      wSum += w;                           // accumulate sum of weights
+      wSum += w;                                   // accumulate sum of weights
     }
-    L[i] = 4*uSum/wSum;
+    L[i] = T(4)*uSum/wSum;
   }
 }
-
+// todo: figure out where the factor 4 comes from - it was found by trial and error
 
 void meshLaplacian()
 {
@@ -2862,29 +2864,20 @@ void meshLaplacian()
   // trace (that's the brute force, inefficient way) and using the difference of the value at the 
   // vertex and the (weighted) average of its neighborhood.
 
-
   using Vec2 = rsVector2D<double>;
   using Vec  = std::vector<double>;
 
   std::function<double(double, double)> f, f_xx, f_yy;
   double a = 0.75;
   double b = 0.5;
-  //f = [&](double x, double y)->double { return sin(x) * exp(y); }; // Laplacian identically zero
-  f    = [&](double x, double y)->double { return      sin(a*x) *     exp(b*y); }; // ...this is better
+  f    = [&](double x, double y)->double { return      sin(a*x) *     exp(b*y); };
   f_xx = [&](double x, double y)->double { return -a*a*sin(a*x) *     exp(b*y); };
   f_yy = [&](double x, double y)->double { return      sin(a*x) * b*b*exp(b*y);  };
+  // We have introduced factors a,b, because if they are both 1, the Laplacian happens to become 
+  // identically zero which is no good test case
 
-  // maybe use f(x,y) = sin(a*x) * exp(b*y)
-  // f_xx = -a^2*sin(a*x) * exp(b*y), f_yy = sin(a*x) * b^2*exp(b*y)
-
-
-  int numSides = 7;
-  //double h = 1./32;
-  double h = 1./16;
-  //double h = 1./8;
-  //double h = 1./4;
-  //double h = 1./10;
-  //double h = 1;
+  int numSides = 5;
+  double h = 1./8;
   Vec2 x0(1, 1);
   rsGraph<Vec2, double> mesh;
 
@@ -2906,29 +2899,13 @@ void meshLaplacian()
     u[i] = f(vi.x, vi.y); }
   laplacian2D(mesh, u, u_L2);
 
-  double L = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value
+  // Compute true value and errors:
+  double L  = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value
+  double e1 = L - u_L1[0];                          // error of first estimate
+  double e2 = L - u_L2[0];                          // error of second estimate
 
-  // OK, u_L1[0] is a reasonable approximation but u_L2[0] is totally wrong - maybe the whole idea
-  // is flawed somehow...or is there a bug?
-  // Figure out, if it's just a scaling issue, i.e if the result is at least proportional to the
-  // Laplacian - compute ratio of true Laplacian and computed for various inputs
-  double r = u_L2[0] / L;
-  // ...yes, indeed: r is always around -0.000976 for h=1/16, no matter what we choose as x0 - but 
-  // what exactly is the formula for the proportionality constant? it probably has to do with h?
-  //double test = u_L2[0] / (h*h); // nope - that's not it
-  double test = -4 * u_L2[0] / (h*h);  // ...that looks better!
-  //double test = u_L2[0] / pow(h, numSides-2);
-  // the factor does not seem to depend on numSides, at least, if numSides >= 4 - maybe for 3, the
-  // estimate is just too inaccurate. it definitely does depend on h - but how exactly? and why?
-  // maybe plot r against h to get some clues
-  // hmmm 0.000976 is close to 1/1024
-  // ...but what if the distances are not all equal? should we then take some average distance?
-  // or should each summand divided by its own distance squared?
-
-  laplacian2D_2(mesh, u, u_L2);  // ok - this seems to work better, but more tests are needed
-
-  //int M = 100;
-  //Vec vh, 
+  // Observations:
+  // -u_L2[0] is more accurate than u_L1[0], so the more efficient algo is also more accurate
 
   // see:
   // https://en.wikipedia.org/wiki/Discrete_Laplace_operator
