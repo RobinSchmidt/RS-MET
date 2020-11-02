@@ -2827,6 +2827,35 @@ void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh,
 //  fact that we divide by the sum of weights, it will in any case produce a weighted average
 // -applying the laplacian to the laplacian again should yield the biharmonic operator
 
+// the above was not quite right - 2nd attempt:
+template<class T>
+void laplacian2D_2(const rsGraph<rsVector2D<T>, T>& mesh, 
+  const std::vector<T>& u, std::vector<T>& L)
+{
+  using Vec2 = rsVector2D<T>;
+  int N = mesh.getNumVertices();
+  rsAssert((int) u.size() == N);
+  rsAssert((int) L.size() == N);
+  for(int i = 0; i < N; i++)
+  {
+    Vec2 vi = mesh.getVertexData(i);
+    T uSum = T(0);                         // weighted sum of neighbors
+    T wSum = T(0);                           // sum of weights
+    for(int k = 0; k < mesh.getNumEdges(i); k++)
+    {
+      int j = mesh.getEdgeTarget(i, k);      // index of current neighbor
+      T w   = mesh.getEdgeData(  i, k);      // weight in weighted sum of neighbors
+      Vec2 vj = mesh.getVertexData(j);
+      Vec2 dv = vj - vi;
+      T d2 = dv.x*dv.x + dv.y*dv.y;          // squared distance between vi and vj
+      uSum += w*(u[j]-u[i])/d2;
+      wSum += w;                           // accumulate sum of weights
+    }
+    L[i] = 4*uSum/wSum;
+  }
+}
+
+
 void meshLaplacian()
 {
   // Compares two methods of computing the Laplacian: by evaluating the Hessian and then taking its 
@@ -2894,6 +2923,9 @@ void meshLaplacian()
   // maybe plot r against h to get some clues
   // hmmm 0.000976 is close to 1/1024
   // ...but what if the distances are not all equal? should we then take some average distance?
+  // or should each summand divided by its own distance squared?
+
+  laplacian2D_2(mesh, u, u_L2);  // ok - this seems to work better, but more tests are needed
 
   //int M = 100;
   //Vec vh, 
