@@ -2849,10 +2849,10 @@ void meshLaplacian()
   // f_xx = -a^2*sin(a*x) * exp(b*y), f_yy = sin(a*x) * b^2*exp(b*y)
 
 
-  int numSides = 5;
+  int numSides = 7;
   //double h = 1./32;
-  //double h = 1./16;
-  double h = 1./8;
+  double h = 1./16;
+  //double h = 1./8;
   //double h = 1./4;
   //double h = 1./10;
   //double h = 1;
@@ -2884,14 +2884,22 @@ void meshLaplacian()
   // Figure out, if it's just a scaling issue, i.e if the result is at least proportional to the
   // Laplacian - compute ratio of true Laplacian and computed for various inputs
   double r = u_L2[0] / L;
-  // ...yes, indeed: r is always around -0.000976... no matter what we choose as x0 - but what 
-  // exactly is the formula for the proportionality constant? it probably has to do with h?
+  // ...yes, indeed: r is always around -0.000976 for h=1/16, no matter what we choose as x0 - but 
+  // what exactly is the formula for the proportionality constant? it probably has to do with h?
   //double test = u_L2[0] / (h*h); // nope - that's not it
+  double test = -4 * u_L2[0] / (h*h);  // ...that looks better!
   //double test = u_L2[0] / pow(h, numSides-2);
   // the factor does not seem to depend on numSides, at least, if numSides >= 4 - maybe for 3, the
   // estimate is just too inaccurate. it definitely does depend on h - but how exactly? and why?
   // maybe plot r against h to get some clues
+  // hmmm 0.000976 is close to 1/1024
+  // ...but what if the distances are not all equal? should we then take some average distance?
 
+  //int M = 100;
+  //Vec vh, 
+
+  // see:
+  // https://en.wikipedia.org/wiki/Discrete_Laplace_operator
 
   int dummy = 0;
 }
