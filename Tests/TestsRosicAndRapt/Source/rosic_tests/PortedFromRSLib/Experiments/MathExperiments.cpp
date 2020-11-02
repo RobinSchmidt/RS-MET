@@ -2649,8 +2649,7 @@ void exactHessian(rsGraph<rsVector2D<T>, T>& mesh,
   std::vector<T>& u_xx, std::vector<T>& u_xy,
   std::vector<T>& u_yx, std::vector<T>& u_yy,
   std::function<T(T, T)>& f_xx, std::function<T(T, T)>& f_xy,
-  std::function<T(T, T)>& f_yx, std::function<T(T, T)>& f_yy
-)
+  std::function<T(T, T)>& f_yx, std::function<T(T, T)>& f_yy)
 {
   int N = (int)mesh.getNumVertices();
   for(int i = 0; i < N; i++) {
@@ -2669,8 +2668,10 @@ rsMatrix2x2<T> hessianErrorMatrix(rsGraph<rsVector2D<T>, T>& mesh, int i,
   using Vec = std::vector<T>;
   int N = (int)mesh.getNumVertices();
   Vec U_xx(N), U_xy(N), U_yx(N), U_yy(N);  // exact values
-  Vec u_xx(N), u_xy(N), u_yx(N), u_yy(N);  // numeric estimates
   exactHessian(mesh, U_xx, U_xy, U_yx, U_yy, f_xx, f_xy, f_yx, f_yy);
+
+  // factor out into meshHessian:
+  Vec u_xx(N), u_xy(N), u_yx(N), u_yy(N);  // numeric estimates
   Vec u(N), u_x(N), u_y(N);
   for(int i = 0; i < N; i++) {
     rsVector2D<T> vi = mesh.getVertexData(i);
@@ -2678,6 +2679,8 @@ rsMatrix2x2<T> hessianErrorMatrix(rsGraph<rsVector2D<T>, T>& mesh, int i,
   rsNumericDifferentiator<T>::gradient2D(mesh, u,   u_x,  u_y);
   rsNumericDifferentiator<T>::gradient2D(mesh, u_x, u_xx, u_xy);
   rsNumericDifferentiator<T>::gradient2D(mesh, u_y, u_yx, u_yy);
+
+
   Vec e_xx = U_xx - u_xx; Vec e_xy = U_xy - u_xy;
   Vec e_yx = U_yx - u_yx; Vec e_yy = U_yy - u_yy;
   rsMatrix2x2<T> E;
@@ -2694,12 +2697,25 @@ T hessianError(rsGraph<rsVector2D<T>, T>& mesh, int i,
   rsMatrix2x2<T> E = hessianErrorMatrix(mesh, i, f, f_xx, f_xy, f_yx, f_yy);
   return rsMax(rsAbs(E.a), rsAbs(E.b), rsAbs(E.c), rsAbs(E.d));
 }
+template<class T>
+void createMeshForHessianEstimation(rsGraph<rsVector2D<T>, T>& mesh, int numSides, T h, 
+  rsVector2D<T> x0)
+{
+  // Creates a regular polygonal neighborhood around x0 and for all those created neighbors, it 
+  // creates such a neighborhood as well.
+  mesh.clear();
+  mesh.addVertex(x0);
+  addPolygonalNeighbours(mesh, 0, numSides, h, T(0), T(0), false);  // unweighted
+  for(int k = 1; k <= numSides; k++)
+    addPolygonalNeighbours(mesh, k, numSides, h, T(0), T(0), false);
+}
 
-void vertexMeshHessian()
+
+void meshHessianErrorVsDistance()
 {
   // We use the rsNumericDifferentiator<T>::gradient2D function on the two gradients again to 
-  // estimate the Hessian matrix and measure the error in doing so...
-  // It's like meshGradientErrorVsDistance but for the Hessian instead of the gradient
+  // estimate the Hessian matrix and measure the error in doing so. It's like 
+  // meshGradientErrorVsDistance but for the Hessian instead of the gradient.
 
   using Vec2 = rsVector2D<double>;
   using Vec  = std::vector<double>;
@@ -2712,7 +2728,7 @@ void vertexMeshHessian()
   Vec2 x0(1, 1);         // (1,1) is nicely general - no symmetries
 
   // Define example function and its 2nd order partial derivatives:
-  std::function<double(double, double)> f, /*f_x, f_y,*/ f_xx, f_xy, f_yy;
+  std::function<double(double, double)> f, f_xx, f_xy, f_yy;
   f    = [&](double x, double y)->double { return  sin(x) * exp(y); };
   f_xx = [&](double x, double y)->double { return -sin(x) * exp(y); };
   f_xy = [&](double x, double y)->double { return  cos(x) * exp(y); };
@@ -2730,17 +2746,13 @@ void vertexMeshHessian()
   {
     for(int j = 0; j < (int)h.size(); j++)
     {
-      // Create mesh for a particular setting for numSides and stepsize h:
-      mesh.clear();
-      mesh.addVertex(x0);
-      addPolygonalNeighbours(mesh, 0, numSides, h[j], 0., 0., false);  // unweighted
-      for(int k = 1; k <= numSides; k++)
-        addPolygonalNeighbours(mesh, k, numSides, h[j], 0., 0., false);
+      createMeshForHessianEstimation(mesh, numSides, h[j], x0);
       //if(j == 0) meshPlotter.plotGraph2D(mesh, {0});
 
       // Compute the and record the estimation error at vertex 0:
       double e = hessianError(mesh, 0, f, f_xx, f_xy, f_xy, f_yy);
       err(numSides-minNumSides, j) = log10(e);
+      // todo: maybe recor errors for u_xx, u_xy, etc. separately
     }
   }
 
@@ -2761,15 +2773,72 @@ void vertexMeshHessian()
   // -The error in the mixed derivatives u_xy, u_yx seems to be orders of magnitude less than the 
   //  error in u_xx, u_yy (this can't be seen in the plot because there, we plot only the maximum 
   //  of the 4 errors, but it can be seen in the debugger inspecting the E matrix in hessianError)
-  // -It's really important that we call addPolygonalNeighbours with false for the "symmetric" 
-  //  parameter - otherwise, the results make no sense at all.
 
   // ToDo:
   // -Compute Laplacian and compare results to simplifed algorithm using the weighted average of 
   //  the neighborhood.
-  //  
+
+  // Notes:
+  // -It's really important that we call addPolygonalNeighbours with false for the "symmetric" 
+  //  parameter - otherwise, the results make no sense at all.
+
+  // ..in the PDE solver context: can we take a DSP prespective and see each frame as a filtered
+  // version of the previous frame with some suitable kernel? if so, what can the kernel tell us 
+  // about numerical dispersion and diffusion? is this related to so specific way of accumulating
+  // the local errors (some sort of interference maybe?)
 
   int dummy = 0;
+}
+
+// maybe rename to meshLaplacian
+template<class T>
+void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, 
+  const std::vector<T>& u, std::vector<T>& L)
+{
+  int N = mesh.getNumVertices();
+  int k, numNeighbors;
+  rsAssert((int) u.size() == N);
+  rsAssert((int) L.size() == N);
+  for(int i = 0; i < N; i++)
+  {
+    numNeighbors = mesh.getNumEdges(i);    // number of neighbors of vertex vi
+    T uSum = T(0);                         // weighted sum of neighbors
+    T wSum = T(0);                         // sum of weights
+    for(int j = 0; j < numNeighbors; j++)  // loop over neighbors of vertex i
+    {
+      k   = mesh.getEdgeTarget(i, j);      // index of current neighbor
+      T w = mesh.getEdgeData(i, j);        // weight in weighted sum of neighbors
+      uSum += w * u[k];                    // accumulate weighted sum of neighbor values
+      wSum += w;                           // accumulate sum of weights
+    }
+    L[i] = u[i] - uSum/wSum;               // value minus weighted average of neighbors
+  }
+  // todo: reverse roles of j,k
+}
+// -experimental - the idea is that the Laplacian represents, how far a value is away from the 
+//  average of its neighborhood (see the 3blue1brown video on the heat equation), so we compute 
+//  that weighted average ad return the difference of the value and the average
+// -we assume that the edge weights are inversely proportional to the distances - todo: lift that
+//  assumption - we can't assume that - but maybe it works with any choice of weights, due to the 
+//  fact that we divide by the sum of weights, it will in any cas produce a weighted average
+// -applying the laplacian to the laplacian again should yield the biharmonic operator
+
+void meshLaplacian()
+{
+  // Compares two methods of computing the Laplacian: by evaluating the Hessian and then taking its 
+  // trace (that's the brute force, inefficient way) and using the difference of the value at the 
+  // vertex and the (weighted) average of its neighborhood.
+
+
+
+
+  int dummy = 0;
+}
+
+void vertexMeshHessian()
+{
+  meshHessianErrorVsDistance();
+  meshLaplacian();
 }
 
 void shiftPolynomial()
