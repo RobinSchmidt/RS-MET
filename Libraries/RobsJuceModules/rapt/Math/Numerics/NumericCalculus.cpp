@@ -251,7 +251,7 @@ void rsNumericDifferentiator<T>::laplacian2D(const rsGraph<rsVector2D<T>, T>& me
     L[i] = T(4)*uSum/wSum;
   }
 }
-
+// this is still wrong - it works well only, if all the distances d2 are the same
 
 template<class T>
 void rsNumericDifferentiator<T>::stencilCoeffs(const T* x, int N, int d, T* c)

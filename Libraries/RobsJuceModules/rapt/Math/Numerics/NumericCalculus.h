@@ -387,7 +387,7 @@ public:
   // -can this also be used for vector fields by just interpreting the vector field as two scalar 
   //  fields? i think so
 
-
+  /** Under construction - does not yet work correctly */
   static void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const std::vector<T>& u, 
     std::vector<T>& L);
   // needs more tests

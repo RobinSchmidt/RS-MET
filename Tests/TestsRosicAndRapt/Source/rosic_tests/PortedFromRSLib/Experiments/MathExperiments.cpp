@@ -2152,6 +2152,15 @@ T gradientError(rsGraph<rsVector2D<T>, T>& mesh, int i,
 // todo: maybe instead of computing the error at a single vertex, return the error vector (error
 // at all vertices) ...maybe also output the x- and y-error separately for more detailed analysis
 
+template<class T>
+void fillMeshValues(rsGraph<rsVector2D<T>, T>& mesh, const std::function<T(T, T)>& f, 
+  std::vector<T>& u)  
+{
+  for(int i = 0; i < mesh.getNumVertices(); i++) {
+    rsVector2D<T> vi = mesh.getVertexData(i);
+    u[i] = f(vi.x, vi.y); }
+}
+
 void meshGradientErrorVsDistance()
 {
   // We plot the error between the estimated partial derivatives and true partial derivatives as
@@ -2794,72 +2803,6 @@ void meshHessianErrorVsDistance()
   int dummy = 0;
 }
 
-/*
-// maybe rename to meshLaplacian
-template<class T>
-void laplacian2D_old(const rsGraph<rsVector2D<T>, T>& mesh, 
-  const std::vector<T>& u, std::vector<T>& L)
-{
-  int N = mesh.getNumVertices();
-  int k, numNeighbors;
-  rsAssert((int) u.size() == N);
-  rsAssert((int) L.size() == N);
-  for(int i = 0; i < N; i++)
-  {
-    numNeighbors = mesh.getNumEdges(i);    // number of neighbors of vertex vi
-    T uSum = T(0);                         // weighted sum of neighbors
-    T wSum = T(0);                         // sum of weights
-    for(int j = 0; j < numNeighbors; j++)  // loop over neighbors of vertex i
-    {
-      k   = mesh.getEdgeTarget(i, j);      // index of current neighbor
-      T w = mesh.getEdgeData(i, j);        // weight in weighted sum of neighbors
-      uSum += w * u[k];                    // accumulate weighted sum of neighbor values
-      wSum += w;                           // accumulate sum of weights
-    }
-    L[i] = u[i] - uSum/wSum;               // value minus weighted average of neighbors
-  }
-  // todo: reverse roles of j,k
-}
-*/
-// -experimental - the idea is that the Laplacian represents, how far a value is away from the 
-//  average of its neighborhood (see the 3blue1brown video on the heat equation), so we compute 
-//  that weighted average ad return the difference of the value and the average
-// -we assume that the edge weights are inversely proportional to the distances - todo: lift that
-//  assumption - we can't assume that - but maybe it works with any choice of weights, due to the 
-//  fact that we divide by the sum of weights, it will in any case produce a weighted average
-// -applying the laplacian to the laplacian again should yield the biharmonic operator
-
-
-/*
-// the above was not quite right - 2nd attempt:
-// moved to rsNumericDifferentiator:
-template<class T>
-void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, 
-  const std::vector<T>& u, std::vector<T>& L)
-{
-  using Vec2 = rsVector2D<T>;
-  int N = mesh.getNumVertices();
-  rsAssert((int) u.size() == N);
-  rsAssert((int) L.size() == N);
-  for(int i = 0; i < N; i++) {                     // loop over all vertices
-    Vec2 vi = mesh.getVertexData(i);               // current vertex location
-    T uSum = T(0);                                 // weighted sum of neighbors
-    T wSum = T(0);                                 // sum of weights
-    for(int k = 0; k < mesh.getNumEdges(i); k++) { // loop ove vi's neighbors
-      int j = mesh.getEdgeTarget(i, k);            // index of current neighbor
-      T w   = mesh.getEdgeData(  i, k);            // weight in weighted sum of neighbors
-      Vec2 vj = mesh.getVertexData(j);             // location of current neighbor
-      Vec2 dv = vj - vi;                           // difference vector
-      T d2 = dv.x*dv.x + dv.y*dv.y;                // squared distance between vi and vj
-      uSum += w*(u[j]-u[i])/d2;                    // accumulate sum of ...
-      wSum += w;                                   // accumulate sum of weights
-    }
-    L[i] = T(4)*uSum/wSum;
-  }
-}
-// todo: figure out where the factor 4 comes from - it was found by trial and error
-*/
-
 void meshLaplacian()
 {
   // Compares two methods of computing the Laplacian: by evaluating the Hessian and then taking its 
@@ -2897,9 +2840,7 @@ void meshLaplacian()
 
   // Compute Laplacian by neighborhood average:
   Vec u(N), u_L2(N);
-  for(int i = 0; i < N; i++) {         // maybe factor out into fillMeshFunction or something
-    Vec2 vi = mesh.getVertexData(i);
-    u[i] = f(vi.x, vi.y); }
+  fillMeshValues(mesh, f, u);
   ND::laplacian2D(mesh, u, u_L2);
 
   // Compute true value and errors:
@@ -2928,8 +2869,84 @@ void meshLaplacianErrorVsDistance()
 
   // pay special attention to using different distances to the neighbors - will the accuracy be 
   // determined by the distance to the largest neighbor? or maybe by the mean of the distances?
+  // -use hexagonal neighborhood and then increase every other distance by factor 2 - will the 
+  //  accuracy be in the middle between the two hexagonal neighborhoods with all distances the same
 
 
+  using Vec2 = rsVector2D<double>;
+  using Vec  = std::vector<double>;
+  using ND   = rsNumericDifferentiator<double>;
+
+  double h = 1./8;
+  int numSides = 6;
+
+  std::function<double(double, double)> f, f_xx, f_yy;
+  double a = 0.75;
+  double b = 0.5;
+  f    = [&](double x, double y)->double { return      sin(a*x) *     exp(b*y); };
+  f_xx = [&](double x, double y)->double { return -a*a*sin(a*x) *     exp(b*y); };
+  f_yy = [&](double x, double y)->double { return      sin(a*x) * b*b*exp(b*y);  };
+  Vec2 x0(1, 1);
+  double L = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value of Laplacian at x0
+
+  rsGraph<Vec2, double> mesh;
+  GraphPlotter<double> meshPlotter;
+
+  // Compute error for neighborhood at distance h:
+  mesh.clear();
+  mesh.addVertex(x0);
+  addPolygonalNeighbours(mesh, 0, numSides, h, 0., 0., false); 
+  meshPlotter.plotGraph2D(mesh, {0});
+  int N = mesh.getNumVertices();
+  Vec u(N), u_L(N);
+  fillMeshValues(mesh, f, u);
+  ND::laplacian2D(mesh, u, u_L);
+  double eh1 = L - u_L[0];          // error for neighborhood at distance h
+
+  // Compute error for neighborhood at distance 2*h:
+  mesh.clear();
+  mesh.addVertex(x0);
+  addPolygonalNeighbours(mesh, 0, numSides, 2*h, 0., 0., false); 
+  meshPlotter.plotGraph2D(mesh, {0});
+  fillMeshValues(mesh, f, u);
+  ND::laplacian2D(mesh, u, u_L);
+  double eh2 = L - u_L[0];          // error for neighborhood at distance 2*h
+  // eh2 is roughly 4 times eh1 for numSides = 6...seems like the error increases with h^2.
+  // shouldn't we expect the error to increase by h^4 = h^(numSides-2)?
+
+  // Now contract half of the neighbor-distances by a factor of 0.5, such that half of the neighbor
+  // vertices are at distance h and the other half at distance 2*h:
+  for(int k = 1; k < N; k+=2)
+  {
+    Vec2 vk = mesh.getVertexData(k);
+    Vec2 dv = vk - x0;
+    mesh.setVertexData(k, x0 + 0.5*dv);
+  }
+  meshPlotter.plotGraph2D(mesh, {0});
+  fillMeshValues(mesh, f, u);
+  ND::laplacian2D(mesh, u, u_L);
+  double eh12 = L - u_L[0]; 
+
+  // eh12 should be in between eh1 and eh2 but is much larger than both -> something is still wrong
+  // in ND::laplacian2D - the uSum += w*(u[j]-u[i])/d2; in the loop is not the right way to account
+  // for the distance(s) h
+  // maybe we should form a sort of weighted average:
+  // -instead of dividing each term by d2, divide at the very end by the average of d2
+  //  -> should nor change behavior, if all d2 are the same
+  // -then, divide each term by d2 again - this introdcuces weighting
+  // -record the sum of 1/d2, i.e. the total sum of weights
+  // -divide final result by total sum of weights
+  // -...maybe figure out, if this can be simplified/optimized
+
+  int dummy = 0;
+
+
+
+  // todo: compute error for h, compute error for 2*h, compute error for half of the neighbors at 
+  // distance h and the other half at distance 2*h
+
+
+  /*
   int minNumSides =   4;  // maybe go down to 3 or 2 later
   int maxNumSides =  10;
   int numTests    = 100;  // number of tests for each value of numSides
@@ -2941,9 +2958,8 @@ void meshLaplacianErrorVsDistance()
 
     }
   }
+  */
 
-
-  int dummy = 0;
 }
 
 void vertexMeshHessian()
