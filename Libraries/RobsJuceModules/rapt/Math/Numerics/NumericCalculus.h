@@ -388,6 +388,12 @@ public:
   //  fields? i think so
 
 
+  static void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const std::vector<T>& u, 
+    std::vector<T>& L);
+  // needs more tests
+
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 

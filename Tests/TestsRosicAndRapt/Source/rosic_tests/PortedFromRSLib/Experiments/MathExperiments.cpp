@@ -2829,7 +2829,10 @@ void laplacian2D_old(const rsGraph<rsVector2D<T>, T>& mesh,
 //  fact that we divide by the sum of weights, it will in any case produce a weighted average
 // -applying the laplacian to the laplacian again should yield the biharmonic operator
 
+
+/*
 // the above was not quite right - 2nd attempt:
+// moved to rsNumericDifferentiator:
 template<class T>
 void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, 
   const std::vector<T>& u, std::vector<T>& L)
@@ -2838,25 +2841,24 @@ void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh,
   int N = mesh.getNumVertices();
   rsAssert((int) u.size() == N);
   rsAssert((int) L.size() == N);
-  for(int i = 0; i < N; i++)
-  {
-    Vec2 vi = mesh.getVertexData(i);
+  for(int i = 0; i < N; i++) {                     // loop over all vertices
+    Vec2 vi = mesh.getVertexData(i);               // current vertex location
     T uSum = T(0);                                 // weighted sum of neighbors
     T wSum = T(0);                                 // sum of weights
-    for(int k = 0; k < mesh.getNumEdges(i); k++)
-    {
+    for(int k = 0; k < mesh.getNumEdges(i); k++) { // loop ove vi's neighbors
       int j = mesh.getEdgeTarget(i, k);            // index of current neighbor
       T w   = mesh.getEdgeData(  i, k);            // weight in weighted sum of neighbors
       Vec2 vj = mesh.getVertexData(j);             // location of current neighbor
-      Vec2 dv = vj - vi;                           // 
+      Vec2 dv = vj - vi;                           // difference vector
       T d2 = dv.x*dv.x + dv.y*dv.y;                // squared distance between vi and vj
-      uSum += w*(u[j]-u[i])/d2;
+      uSum += w*(u[j]-u[i])/d2;                    // accumulate sum of ...
       wSum += w;                                   // accumulate sum of weights
     }
     L[i] = T(4)*uSum/wSum;
   }
 }
 // todo: figure out where the factor 4 comes from - it was found by trial and error
+*/
 
 void meshLaplacian()
 {
@@ -2866,6 +2868,7 @@ void meshLaplacian()
 
   using Vec2 = rsVector2D<double>;
   using Vec  = std::vector<double>;
+  using ND   = rsNumericDifferentiator<double>;
 
   std::function<double(double, double)> f, f_xx, f_yy;
   double a = 0.75;
@@ -2894,10 +2897,10 @@ void meshLaplacian()
 
   // Compute Laplacian by neighborhood average:
   Vec u(N), u_L2(N);
-  for(int i = 0; i < N; i++) {         // maybe factor out into fillMeshFunction or soemthing
+  for(int i = 0; i < N; i++) {         // maybe factor out into fillMeshFunction or something
     Vec2 vi = mesh.getVertexData(i);
     u[i] = f(vi.x, vi.y); }
-  laplacian2D(mesh, u, u_L2);
+  ND::laplacian2D(mesh, u, u_L2);
 
   // Compute true value and errors:
   double L  = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value
@@ -2907,8 +2910,38 @@ void meshLaplacian()
   // Observations:
   // -u_L2[0] is more accurate than u_L1[0], so the more efficient algo is also more accurate
 
-  // see:
-  // https://en.wikipedia.org/wiki/Discrete_Laplace_operator
+  // ToDo:
+  // -test both algorithms with less regular geometries - maybe create random neighborhoods and 
+  //  check, if the fast algo always produces better results than the slow
+  //  ...hmm - that raises the question what sort of neighborhoods the neighbors should have 
+  //  - maybe instead of estimating 1st derivatives, assign them to exact values - this should make
+  //  the Hessian estimate more accurate, so we may need a less restrictive requirement
+
+  // see: https://en.wikipedia.org/wiki/Discrete_Laplace_operator
+
+  int dummy = 0;
+}
+
+void meshLaplacianErrorVsDistance()
+{
+  // We test the error of the estimation of the Laplacian via the efficient function...
+
+  // pay special attention to using different distances to the neighbors - will the accuracy be 
+  // determined by the distance to the largest neighbor? or maybe by the mean of the distances?
+
+
+  int minNumSides =   4;  // maybe go down to 3 or 2 later
+  int maxNumSides =  10;
+  int numTests    = 100;  // number of tests for each value of numSides
+  for(int numSides = minNumSides; numSides <= maxNumSides; numSides++)
+  {
+    for(int i = 0; i < numTests; i++)
+    {
+
+
+    }
+  }
+
 
   int dummy = 0;
 }
@@ -2917,6 +2950,7 @@ void vertexMeshHessian()
 {
   //meshHessianErrorVsDistance();
   meshLaplacian();
+  meshLaplacianErrorVsDistance();
 }
 
 void shiftPolynomial()

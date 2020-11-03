@@ -227,6 +227,31 @@ void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mes
 // https://www.researchgate.net/figure/Directional-derivatives-computed-using-one-sided-finite-differences-55-and-the_fig1_258919790
 
 
+template<class T>
+void rsNumericDifferentiator<T>::laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, 
+  const std::vector<T>& u, std::vector<T>& L)
+{
+  using Vec2 = rsVector2D<T>;
+  int N = mesh.getNumVertices();
+  rsAssert((int) u.size() == N);
+  rsAssert((int) L.size() == N);
+  for(int i = 0; i < N; i++) {                     // loop over all vertices
+    Vec2 vi = mesh.getVertexData(i);               // current vertex location
+    T uSum = T(0);                                 // weighted sum of neighbors
+    T wSum = T(0);                                 // sum of weights
+    for(int k = 0; k < mesh.getNumEdges(i); k++) { // loop over vi's neighbors
+      int j = mesh.getEdgeTarget(i, k);            // index of current neighbor
+      T w   = mesh.getEdgeData(  i, k);            // weight in weighted sum of neighbors
+      Vec2 vj = mesh.getVertexData(j);             // location of current neighbor
+      Vec2 dv = vj - vi;                           // difference vector
+      T d2 = dv.x*dv.x + dv.y*dv.y;                // squared distance between vi and vj
+      uSum += w*(u[j]-u[i])/d2;                    // accumulate sum of ...
+      wSum += w;                                   // accumulate sum of weights
+    }
+    L[i] = T(4)*uSum/wSum;
+  }
+}
+
 
 template<class T>
 void rsNumericDifferentiator<T>::stencilCoeffs(const T* x, int N, int d, T* c)

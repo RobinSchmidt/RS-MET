@@ -406,6 +406,10 @@ template void RAPT::rsNumericDifferentiator<double>::gradient2D(
   const rsGraph<rsVector2D<double>, double>& mesh, const std::vector<double>& u, 
   std::vector<double>& u_x, std::vector<double>& u_y, rsVector2D<double> v);
 
+template void RAPT::rsNumericDifferentiator<double>::laplacian2D(
+  const rsGraph<rsVector2D<double>, double>& mesh, const std::vector<double>& u, 
+  std::vector<double>& L);
+
 
 template double RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(double fl, double fu);
 template double RAPT::rsBandwidthConverter::bandedgesToAbsoluteBandwidth(double fl, double fu);
