@@ -2863,6 +2863,41 @@ void meshLaplacian()
   int dummy = 0;
 }
 
+
+// still tyring to figure out the right formula:
+template<class T>
+void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, 
+  const std::vector<T>& u, std::vector<T>& L)
+{
+  using Vec2 = rsVector2D<T>;
+  int N = mesh.getNumVertices();
+  rsAssert((int) u.size() == N);
+  rsAssert((int) L.size() == N);
+  for(int i = 0; i < N; i++) {                     // loop over all vertices
+    Vec2 vi = mesh.getVertexData(i);               // current vertex location
+    T uSum = T(0);                                 // weighted sum of neighbors
+    T wSum = T(0);                                 // sum of weights
+    T dSum = T(0);                                 // sum of squared distances
+    for(int k = 0; k < mesh.getNumEdges(i); k++) { // loop over vi's neighbors
+      int j = mesh.getEdgeTarget(i, k);            // index of current neighbor
+      T w   = mesh.getEdgeData(  i, k);            // weight in weighted sum of neighbors
+      Vec2 vj = mesh.getVertexData(j);             // location of current neighbor
+      Vec2 dv = vj - vi;                           // difference vector
+      T d  = dv.x*dv.x + dv.y*dv.y;                // squared distance between vi and vj
+
+      //uSum += w*(u[j]-u[i])/d;                     // accumulate sum of ...
+      uSum += w*(u[j]-u[i]);                       // accumulate sum of ...
+
+      wSum += w;                                   // accumulate sum of weights
+      dSum += d;
+    }
+    T dAvg = dSum / mesh.getNumEdges(i);           // average of squared distances
+
+    //L[i] = T(4)*uSum/wSum;
+    L[i] = T(4)*uSum/(wSum*dAvg);
+  }
+}
+
 void meshLaplacianErrorVsDistance()
 {
   // We test the error of the estimation of the Laplacian via the efficient function...
@@ -2896,21 +2931,23 @@ void meshLaplacianErrorVsDistance()
   mesh.clear();
   mesh.addVertex(x0);
   addPolygonalNeighbours(mesh, 0, numSides, h, 0., 0., false); 
-  meshPlotter.plotGraph2D(mesh, {0});
+  //meshPlotter.plotGraph2D(mesh, {0});
   int N = mesh.getNumVertices();
   Vec u(N), u_L(N);
   fillMeshValues(mesh, f, u);
-  ND::laplacian2D(mesh, u, u_L);
-  double eh1 = L - u_L[0];          // error for neighborhood at distance h
+  //ND::laplacian2D(mesh, u, u_L);
+  laplacian2D(mesh, u, u_L);
+  double eh1 = L - u_L[0];          // -0.00010707162148965166, -0.00010707162149820038
 
   // Compute error for neighborhood at distance 2*h:
   mesh.clear();
   mesh.addVertex(x0);
   addPolygonalNeighbours(mesh, 0, numSides, 2*h, 0., 0., false); 
-  meshPlotter.plotGraph2D(mesh, {0});
+  //meshPlotter.plotGraph2D(mesh, {0});
   fillMeshValues(mesh, f, u);
-  ND::laplacian2D(mesh, u, u_L);
-  double eh2 = L - u_L[0];          // error for neighborhood at distance 2*h
+  //ND::laplacian2D(mesh, u, u_L);
+  laplacian2D(mesh, u, u_L);
+  double eh2 = L - u_L[0];          // -0.00042702273039024741, -0.00042702273038902616
   // eh2 is roughly 4 times eh1 for numSides = 6...seems like the error increases with h^2.
   // shouldn't we expect the error to increase by h^4 = h^(numSides-2)?
 
@@ -2924,8 +2961,11 @@ void meshLaplacianErrorVsDistance()
   }
   meshPlotter.plotGraph2D(mesh, {0});
   fillMeshValues(mesh, f, u);
-  ND::laplacian2D(mesh, u, u_L);
-  double eh12 = L - u_L[0]; 
+  //ND::laplacian2D(mesh, u, u_L);
+  laplacian2D(mesh, u, u_L);
+  double eh12 = L - u_L[0];   // -0.012610446761559257  ...way too high! something is wrong!
+  // could it be that the error is (roughly) equal to taking only the inner neighbors into account?
+  // ..hmm...not really - but the order of magnitude seems to fit
 
   // eh12 should be in between eh1 and eh2 but is much larger than both -> something is still wrong
   // in ND::laplacian2D - the uSum += w*(u[j]-u[i])/d2; in the loop is not the right way to account
@@ -2937,6 +2977,10 @@ void meshLaplacianErrorVsDistance()
   // -record the sum of 1/d2, i.e. the total sum of weights
   // -divide final result by total sum of weights
   // -...maybe figure out, if this can be simplified/optimized
+
+  // try it with the new, experimental implementation:
+  laplacian2D(mesh, u, u_L);
+  double eNew = L - u_L[0]; 
 
   int dummy = 0;
 

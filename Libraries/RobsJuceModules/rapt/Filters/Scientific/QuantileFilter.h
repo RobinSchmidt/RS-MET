@@ -52,7 +52,7 @@ public:
   actually exists literally). In practice it's the largest of the small values, i.e. the front
   element of the min-heap of large alues in our double-heap. So what this function actually does is
   to update the sizes of the max-heap (of small values) and the min-heap (of large values) in the
-  double-heap. But conceptually, think about it simply as the readout index in an array of stored
+  double-heap. But conceptually, think about it simply as the readout index in an array of sorted
   past values. */
   void setReadPosition(int newPosition, bool hard = false)
   { setLengthAndReadPosition(L, newPosition, hard); }
