@@ -2887,11 +2887,19 @@ void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh,
 
       //uSum += w*(u[j]-u[i])/d;                     // accumulate sum of ...
       uSum += w*(u[j]-u[i]);                       // accumulate sum of ...
+      //uSum += w*(u[j]-u[i])/d;
+
 
       wSum += w;                                   // accumulate sum of weights
-      dSum += d;
+      //wSum += w/d;                                   // accumulate sum of weights
+
+
+      //dSum += d;
+      dSum += sqrt(d);
     }
     T dAvg = dSum / mesh.getNumEdges(i);           // average of squared distances
+    dAvg *= dAvg;
+
 
     //L[i] = T(4)*uSum/wSum;
     L[i] = T(4)*uSum/(wSum*dAvg);
@@ -2959,7 +2967,7 @@ void meshLaplacianErrorVsDistance()
     Vec2 dv = vk - x0;
     mesh.setVertexData(k, x0 + 0.5*dv);
   }
-  meshPlotter.plotGraph2D(mesh, {0});
+  //meshPlotter.plotGraph2D(mesh, {0});
   fillMeshValues(mesh, f, u);
   //ND::laplacian2D(mesh, u, u_L);
   laplacian2D(mesh, u, u_L);
