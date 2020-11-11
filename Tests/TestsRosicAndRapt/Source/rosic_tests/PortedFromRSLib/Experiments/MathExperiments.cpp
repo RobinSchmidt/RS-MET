@@ -2696,9 +2696,11 @@ void meshHessian(rsGraph<rsVector2D<T>, T>& mesh, std::function<T(T, T)>& f,
   for(int i = 0; i < N; i++) {
     rsVector2D<T> vi = mesh.getVertexData(i);
     u[i] = f(vi.x, vi.y); }
-  rsNumericDifferentiator<T>::gradient2D(mesh, u,   u_x,  u_y);
-  rsNumericDifferentiator<T>::gradient2D(mesh, u_x, u_xx, u_xy);
-  rsNumericDifferentiator<T>::gradient2D(mesh, u_y, u_yx, u_yy);
+  rsNumericDifferentiator<T>::gradientAndHessian2D(
+    mesh, &u[0], &u_x[0], &u_y[0], &u_xx[0], &u_xy[0], &u_yx[0], &u_yy[0]);
+  //rsNumericDifferentiator<T>::gradient2D(mesh, u,   u_x,  u_y);
+  //rsNumericDifferentiator<T>::gradient2D(mesh, u_x, u_xx, u_xy);
+  //rsNumericDifferentiator<T>::gradient2D(mesh, u_y, u_yx, u_yy);
 }
 template<class T>
 rsMatrix2x2<T> hessianErrorMatrix(rsGraph<rsVector2D<T>, T>& mesh, int i,
@@ -3068,9 +3070,9 @@ void meshLaplacianErrorVsDistance()
 
 void vertexMeshHessian()
 {
-  //meshHessianErrorVsDistance();
-  meshLaplacian();
-  meshLaplacianErrorVsDistance();
+  meshHessianErrorVsDistance();
+  //meshLaplacian();
+  //meshLaplacianErrorVsDistance();
 }
 
 void shiftPolynomial()

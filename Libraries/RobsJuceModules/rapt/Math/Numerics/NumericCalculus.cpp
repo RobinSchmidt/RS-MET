@@ -114,8 +114,8 @@ void rsNumericDifferentiator<T>::derivative(
 
 
 template<class T>
-void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, 
-  const std::vector<T>& u, std::vector<T>& u_x, std::vector<T>& u_y)
+void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, 
+  T* u_x, T* u_y)
 {
   // Algorithm:
   // The algorithm is based on the fact that the directional derivative into the direction of an 
@@ -134,9 +134,6 @@ void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mes
   // is encouraged (for example, if Euclidean or Manhattan distance gives better results, etc.).
 
   int N = mesh.getNumVertices();
-  rsAssert((int) u.size()   == N);
-  rsAssert((int) u_x.size() == N);
-  rsAssert((int) u_y.size() == N);
   using Vec2 = rsVector2D<T>;
   rsMatrix2x2<T> A;            // maybe rename to M = ATA (== A^T * A in most textbooks)
   Vec2 b, g;                   // maybe rename b to Mb (== A^T * b in textbooks)

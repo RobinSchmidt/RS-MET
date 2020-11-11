@@ -368,8 +368,7 @@ public:
   the measured directional derivatives via the gradient. It's reasonable to use edge weights 
   inversely proportional to the distance between the respective vertices - see comments in 
   implementation for more details. */
-  static void gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const std::vector<T>& u, 
-    std::vector<T>& u_x, std::vector<T>& u_y);
+  static void gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, T* u_x, T* u_y);
   // todo: 
   // -maybe use a Tx template parameter as in derivative
   // -use raw arrays instead of std::vector but keep a convenience function using std::vector
@@ -379,11 +378,19 @@ public:
   // -can this also be used for vector fields by just interpreting the vector field as two scalar 
   //  fields? i think so
 
-  /** Under construction - does not yet work correctly - it is still very inaccurate for irregular
-  meshes. */
-  static void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const std::vector<T>& u, 
-    std::vector<T>& L);
-  // needs more tests
+  /** Estimates gradient and Hessian matrix on an irregular mesh. It first computes the gradient 
+  of u using gradient2D and stores the result in u_x, u_y and then computes the gradients of u_x 
+  and u_y and stores the results in u_xx, u_xy and u_yx, u_yy. Mathematically, the mixed 2nd 
+  derivatives u_xy and u_yx are suppsoed to be the same, but numerically, they may differ due to 
+  different approximation errors (Q: Does it make sense to average them? Will this improve 
+  accuracy?). */
+  static void gradientAndHessian2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u,
+    T* u_x, T* u_y, T* u_xx, T* u_xy, T* u_yx, T* u_yy)
+  {
+    gradient2D(mesh, u,   u_x,  u_y);
+    gradient2D(mesh, u_x, u_xx, u_xy);
+    gradient2D(mesh, u_y, u_yx, u_yy);
+  }
 
 
 
@@ -442,6 +449,23 @@ public:
   static void hessianTimesVector(const F& f, T* x, T* v, int N, T* Hv, const T* h, T k)
   { std::vector<T> wrk(2*N); hessianTimesVector(f, x, v, N, Hv, h, k, &wrk[0]); }
   // allocates
+
+
+  static void gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const std::vector<T>& u,
+    std::vector<T>& u_x, std::vector<T>& u_y)
+  {
+    int N = mesh.getNumVertices();
+    rsAssert((int) u.size()   == N);
+    rsAssert((int) u_x.size() == N);
+    rsAssert((int) u_y.size() == N);
+    gradient2D(mesh, &u[0], &u_x[0], &u_y[0]);
+  }
+
+  /** Under construction - does not yet work correctly - it is still very inaccurate for irregular
+  meshes. */
+  static void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const std::vector<T>& u, 
+    std::vector<T>& L);
+  // needs more tests
 
   // maybe make convenience functions that take a scalar h - they should create temporary array and
   // set all values in it to h
