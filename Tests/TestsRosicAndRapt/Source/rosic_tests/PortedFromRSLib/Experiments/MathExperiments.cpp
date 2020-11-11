@@ -2838,7 +2838,7 @@ void meshHessianErrorVsDistance()
   // in a PDE solver. Maybe several possibilities should be checked out
 }
 
-void meshLaplacian()
+void meshLaplacianAlgorithms1()
 {
   // Compares two methods of computing the Laplacian: by evaluating the Hessian and then taking its 
   // trace (that's the brute force, inefficient way) and using the difference of the value at the 
@@ -2955,7 +2955,7 @@ void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh,
     //L[i] = T(4)*uSum/(wSum*dMin);
   }
 }
-// wait: this actually doe snot compute the difference of u[i] to the weighted mean of its local 
+// wait: this actually does not compute the difference of u[i] to the weighted mean of its local 
 // neighborhood - instead, it computes a weighted mean of the differences of u[i] from its 
 // neighbors - the difference is taken inside the loop rather than outside. does that make a 
 // difference?
@@ -2992,11 +2992,34 @@ void laplacian2D_2(const rsGraph<rsVector2D<T>, T>& mesh,
     // found empricially, seems to work for numSides = 6
   }
 }
+// The basic idea is that the Laplacian measures, how far the value u[i] is away from its local 
+// neighborhood, so we compute a weighted mean of this neighborhood and the difference to the 
+// actual value u[i]. But this must be scaled by the (maximum? minimu? average?) distance to the 
+// neighbors
+// see:
+// https://en.wikipedia.org/wiki/Discrete_Laplace_operator#Mesh_Laplacians
+// https://people.eecs.berkeley.edu/~jrs/meshpapers/Sorkine.pdf
+// https://cybertron.cg.tu-berlin.de/~philipp/SGP2015/files/HerholzSGP2015.pdf
+// http://ddg.math.uni-goettingen.de/pub/Polygonal_Laplace.pdf
 
+// unrelated, but could be useful for mesh-generation:
+// https://en.wikipedia.org/wiki/Laplacian_smoothing
 
+/*
 void meshLaplacianErrorVsDistance()
 {
+
   // We test the error of the estimation of the Laplacian via the efficient function...
+  // ...not true
+
+}
+*/
+
+void meshLaplacianAlgorithms2()
+{
+  // We test various numerical schemes to estimate the Laplacian for a scalar function defined on a
+  // mesh
+
 
   // pay special attention to using different distances to the neighbors - will the accuracy be 
   // determined by the distance to the largest neighbor? or maybe by the mean of the distances?
@@ -3121,8 +3144,8 @@ void meshLaplacianErrorVsDistance()
 void vertexMeshHessian()
 {
   //meshHessianErrorVsDistance();
-  meshLaplacian();
-  meshLaplacianErrorVsDistance();
+  meshLaplacianAlgorithms1();
+  meshLaplacianAlgorithms2();
 }
 
 void shiftPolynomial()

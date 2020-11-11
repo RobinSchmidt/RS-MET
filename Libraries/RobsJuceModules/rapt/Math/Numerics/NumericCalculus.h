@@ -394,12 +394,12 @@ public:
   // ToDo: figure out, if this can be done more efficiently, especially, when only the Laplacian
   // u_xx + u_yy is required (which is the case in the wave-equation, for example)
 
+  /** Computes a numerical estimate of the Laplacian of some scalar function u defined on a mesh.
+  The Laplacian ist stored in L. It needs a workspace of size 3*N where N is the number of 
+  vertices in the mesh (and therefore also the number of entries in u and L). The algorithm 
+  applies the gradient2D function 3 times. */
   static void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, T* L, T* workspace);
-  // workspace must be of length 5*N - maybe reduce this to 4*N by using L also for temporary 
-  // storage, maybe it can be reduced to 3*N by overwriting u_x after u_xx, u_xy have been computed
-
-
-
+  // ToDo: document the accuracy
 
 
   //-----------------------------------------------------------------------------------------------

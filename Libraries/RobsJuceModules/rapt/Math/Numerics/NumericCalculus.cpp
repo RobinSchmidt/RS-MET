@@ -252,10 +252,12 @@ void rsNumericDifferentiator<T>::laplacian2D(const rsGraph<rsVector2D<T>, T>& me
     L[i] += t2[i];                // L = u_xx + u_yy
 }
 
+
 template<class T>
 void rsNumericDifferentiator<T>::laplacian2D_2(const rsGraph<rsVector2D<T>, T>& mesh, 
   const std::vector<T>& u, std::vector<T>& L)
 {
+  rsWarning("rsNumericDifferentiator::laplacian2D_2 is still under construction.");
   using Vec2 = rsVector2D<T>;
   int N = mesh.getNumVertices();
   rsAssert((int) u.size() == N);

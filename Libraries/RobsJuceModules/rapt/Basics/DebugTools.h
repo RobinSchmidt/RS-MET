@@ -20,6 +20,12 @@ inline void rsError(const char *errorMessage = nullptr)
   // maybe open an error message box, etc.
 }
 
+inline void rsWarning(const char* message = nullptr)
+{
+  std::cout << "Warning: " << message << "\n";
+}
+
+
 /** This function should be used for runtime assertions. */
 inline void rsAssert(bool expression, const char *errorMessage = nullptr)
 {
