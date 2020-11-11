@@ -2102,7 +2102,6 @@ void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
   int N = (int)mesh.getNumVertices();
   using Vec2 = rsVector2D<T>;
   Vec2 vi = mesh.getVertexData(i);
-  //T p = 0; // make parameter
   for(int j = 0; j < numSides; j++)
   {
     T a = T(angle + 2*j*PI / numSides); // angle
@@ -2115,6 +2114,25 @@ void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
     mesh.addEdge(i, j+N, w, symmetric); // add edge to the new neighbor and back
   }
 }
+
+template<class T>
+void assignEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh, T p)
+{
+  int N = (int)mesh.getNumVertices();
+  using Vec2 = rsVector2D<T>;
+  for(int i = 0; i < N; i++) {
+    Vec2 vi = mesh.getVertexData(i);
+    for(int k = 0; k < mesh.getNumEdges(i); k++) {
+      int  j  = mesh.getEdgeTarget(i, k);
+      Vec2 vj = mesh.getVertexData(j);
+      Vec2 dv = vj - vi;
+      T    d  = rsNorm(dv);                  // distance between vi and vj
+      T    w  = pow(d, -p);                  // edge weight
+      mesh.setEdgeData(i, k, w); }}
+}
+// maybe the convention of using pow(d, -p) is inconvenient in a more general setting - if this 
+// code is moved to the library, we should probably just use pow(d, p) and the caller should set
+// the minus if he wants an inverse relationship
 
 template<class T>
 void valueAndExactDerivatives(rsGraph<rsVector2D<T>, T>& mesh, 
@@ -2781,6 +2799,8 @@ void meshHessianErrorVsDistance()
   plotMatrixRows(errorOrder, &hLog[0]);
 
 
+  int dummy = 0;
+
   // Observations:
   // -We see similar plots as in meshGradientErrorVsDistance, as expected.
   // -The error in the mixed derivatives u_xy, u_yx seems to be orders of magnitude less than the 
@@ -2800,7 +2820,23 @@ void meshHessianErrorVsDistance()
   // about numerical dispersion and diffusion? is this related to so specific way of accumulating
   // the local errors (some sort of interference maybe?)
 
-  int dummy = 0;
+  // Other ideas to estimate the Hessian:
+  // The function meshHessian computes an estimate of the Hessian matrix by computing gradients of
+  // gradients, using the same code for two levels of derivatives. Maybe it could be more efficient
+  // and/or accurate to set up equations like:
+  //   u_a ~= <g,a> + <a,H,a> = u_x*a_x + u_y*a_y + a_x^2*u_xx + 2*a_x*a_y*u_xy + a_y^2*u_yy
+  //   u_b ~= <g,b> + <b,H,b> = u_x*b_x + u_y*b_y + b_x^2*u_xx + 2*b_x*b_y*u_xy + b_y^2*u_yy
+  //   ...
+  // to jointly estimate Hessian and gradient. That would require each vertex to have at least 5 
+  // neighbors in order to not have an underdetermined 5x5 system. This is not required with the 
+  // 2-level appraoch, because it indirectly incorporates information form 2nd order neighbors for 
+  // computing the elements of the Hessian. Maybe we could also set up equations like:
+  //   u_a ~= <g,a> + <a,H,a>  where the latter means the a^T * H * a
+  //   u_a - <g,a> = <a,H,a>
+  // where g is already known (computed as usual) and for determining the 3 independent values of
+  // H, we would solve a 3x3 system. I really don't know which is best. Maybe it's not only about 
+  // accuracy or efficiency but also about numerical stability, dispersion and diffusion when used
+  // in a PDE solver. Maybe several possibilities should be checked out
 }
 
 void meshLaplacian()
@@ -2878,6 +2914,8 @@ void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh,
     T uSum = T(0);                                 // weighted sum of neighbors
     T wSum = T(0);                                 // sum of weights
     T dSum = T(0);                                 // sum of squared distances
+    T dMax = T(0);
+    T dMin = T(100000);
     for(int k = 0; k < mesh.getNumEdges(i); k++) { // loop over vi's neighbors
       int j = mesh.getEdgeTarget(i, k);            // index of current neighbor
       T w   = mesh.getEdgeData(  i, k);            // weight in weighted sum of neighbors
@@ -2896,6 +2934,8 @@ void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh,
 
       //dSum += d;
       dSum += sqrt(d);
+      dMax  = rsMax(dMax, d);
+      dMin  = rsMin(dMin, d);
     }
     T dAvg = dSum / mesh.getNumEdges(i);           // average of squared distances
     dAvg *= dAvg;
@@ -2903,6 +2943,8 @@ void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh,
 
     //L[i] = T(4)*uSum/wSum;
     L[i] = T(4)*uSum/(wSum*dAvg);
+    //L[i] = T(4)*uSum/(wSum*dMax);
+    //L[i] = T(4)*uSum/(wSum*dMin);
   }
 }
 
@@ -2922,6 +2964,7 @@ void meshLaplacianErrorVsDistance()
 
   double h = 1./8;
   int numSides = 6;
+  double p = 1.0;     // edge weight exponent/power
 
   std::function<double(double, double)> f, f_xx, f_yy;
   double a = 0.75;
@@ -2938,23 +2981,23 @@ void meshLaplacianErrorVsDistance()
   // Compute error for neighborhood at distance h:
   mesh.clear();
   mesh.addVertex(x0);
-  addPolygonalNeighbours(mesh, 0, numSides, h, 0., 0., false); 
+  addPolygonalNeighbours(mesh, 0, numSides, h, 0., p, false); 
   //meshPlotter.plotGraph2D(mesh, {0});
   int N = mesh.getNumVertices();
   Vec u(N), u_L(N);
   fillMeshValues(mesh, f, u);
-  //ND::laplacian2D(mesh, u, u_L);
-  laplacian2D(mesh, u, u_L);
+  ND::laplacian2D(mesh, u, u_L);
+  //laplacian2D(mesh, u, u_L);
   double eh1 = L - u_L[0];          // -0.00010707162148965166, -0.00010707162149820038
 
   // Compute error for neighborhood at distance 2*h:
   mesh.clear();
   mesh.addVertex(x0);
-  addPolygonalNeighbours(mesh, 0, numSides, 2*h, 0., 0., false); 
+  addPolygonalNeighbours(mesh, 0, numSides, 2*h, 0., p, false); 
   //meshPlotter.plotGraph2D(mesh, {0});
   fillMeshValues(mesh, f, u);
-  //ND::laplacian2D(mesh, u, u_L);
-  laplacian2D(mesh, u, u_L);
+  ND::laplacian2D(mesh, u, u_L);
+  //laplacian2D(mesh, u, u_L);
   double eh2 = L - u_L[0];          // -0.00042702273039024741, -0.00042702273038902616
   // eh2 is roughly 4 times eh1 for numSides = 6...seems like the error increases with h^2.
   // shouldn't we expect the error to increase by h^4 = h^(numSides-2)?
@@ -2967,10 +3010,11 @@ void meshLaplacianErrorVsDistance()
     Vec2 dv = vk - x0;
     mesh.setVertexData(k, x0 + 0.5*dv);
   }
-  //meshPlotter.plotGraph2D(mesh, {0});
+  assignEdgeWeights(mesh, p);  // recompute mesh-weights according to new distances
+  meshPlotter.plotGraph2D(mesh, {0});
   fillMeshValues(mesh, f, u);
-  //ND::laplacian2D(mesh, u, u_L);
-  laplacian2D(mesh, u, u_L);
+  ND::laplacian2D(mesh, u, u_L);
+  //laplacian2D(mesh, u, u_L);
   double eh12 = L - u_L[0];   // -0.012610446761559257  ...way too high! something is wrong!
   // could it be that the error is (roughly) equal to taking only the inner neighbors into account?
   // ..hmm...not really - but the order of magnitude seems to fit
@@ -2985,6 +3029,13 @@ void meshLaplacianErrorVsDistance()
   // -record the sum of 1/d2, i.e. the total sum of weights
   // -divide final result by total sum of weights
   // -...maybe figure out, if this can be simplified/optimized
+  // -hmm...it seems to be better behaved for larger values of numSides - with 6, the error is 
+  //  larger as it should be, but for 10 or 12 it is indeed in the expected range
+  // -p=1 seems to work well with an even numSides >= 6
+  // -for an odd numSides, the error is really large
+  // -maybe instead of dividing each term by its own squared distance, we should divide the whole 
+  //  sum at the end by the maximum of the squared distances - this will also save a lot of 
+  //  divisions
 
   // try it with the new, experimental implementation:
   laplacian2D(mesh, u, u_L);
@@ -2992,7 +3043,8 @@ void meshLaplacianErrorVsDistance()
 
   int dummy = 0;
 
-
+  // -maybe instead of trying to estimate the Laplacian directly, try first to estimate the 
+  //  diagonal elements of the Hessian u_xx and u_yy - can we do this via directional derivatives?
 
   // todo: compute error for h, compute error for 2*h, compute error for half of the neighbors at 
   // distance h and the other half at distance 2*h

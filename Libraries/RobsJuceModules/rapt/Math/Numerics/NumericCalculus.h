@@ -367,17 +367,9 @@ public:
   used as weights in weighted least squares computation of the gradient in which we try to explain
   the measured directional derivatives via the gradient. It's reasonable to use edge weights 
   inversely proportional to the distance between the respective vertices - see comments in 
-  implementation for more details. 
-    The optional rsVector2D parameter d is a direction vector that makes it possible to take only 
-  those neighbors into account, for which the dot-product of the direction to the neighbor with d
-  is nonnegative, i.e. directions that are not oriented opposite to d. This can be used to simulate 
-  "upwind" schemes in PDE solvers. In the case of the transport equation, d should be the negative 
-  of your velocity vector (the "upwind" direction is where the wave comes from). If it's left at 
-  the default of the zero vector, the dot-product will always be zero, which is nonnegative indeed
-  and so the function will take all neighbors into account. Leave this at default, unless you want 
-  an upwind scheme, i.e. a one-sided finite difference instead of a central one. */
+  implementation for more details. */
   static void gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const std::vector<T>& u, 
-    std::vector<T>& u_x, std::vector<T>& u_y, rsVector2D<T> d = rsVector2D<T>(T(0),T(0)));
+    std::vector<T>& u_x, std::vector<T>& u_y);
   // todo: 
   // -maybe use a Tx template parameter as in derivative
   // -use raw arrays instead of std::vector but keep a convenience function using std::vector
@@ -387,7 +379,8 @@ public:
   // -can this also be used for vector fields by just interpreting the vector field as two scalar 
   //  fields? i think so
 
-  /** Under construction - does not yet work correctly */
+  /** Under construction - does not yet work correctly - it is still very inaccurate for irregular
+  meshes. */
   static void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const std::vector<T>& u, 
     std::vector<T>& L);
   // needs more tests
