@@ -133,6 +133,7 @@ void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mes
   // vertices, but some experimentation for what kind of weighting gives the most accurate results 
   // is encouraged (for example, if Euclidean or Manhattan distance gives better results, etc.).
 
+  rsAssert(u_x != u && u_y != u, "Does not work in place");
   int N = mesh.getNumVertices();
   using Vec2 = rsVector2D<T>;
   rsMatrix2x2<T> A;            // maybe rename to M = ATA (== A^T * A in most textbooks)
@@ -215,6 +216,41 @@ void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mes
 // http://www.fluidmal.uma.es/pdfs/JCOMP_2005.pdf
 // https://www.researchgate.net/figure/Directional-derivatives-computed-using-one-sided-finite-differences-55-and-the_fig1_258919790
 
+template<class T>
+void rsNumericDifferentiator<T>::laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u,
+  T* L, T* w)
+{
+  int N = mesh.getNumVertices();
+
+  /*
+  T u_x  = &w[0*N];
+  T u_y  = &w[1*N];
+  T u_xx = &w[2*N];
+  T u_yy = &w[3*N];
+  T u_xy = &w[4*N];
+  gradientAndHessian2D(mesh, u, u_x, u_y, u_xx, u_xy, u_xy, u_yy); 
+  for(int i = 0; i < N; i++)
+    L[i] = u_xx[i] + u_yy[i];
+
+  */
+  // preliminary - todo: call gradient2D here in a way to minimize workspace memory by overwriting
+  // arrays that are not needed anymore
+  // (1) we can use L for one of the temporary arrays, for example u_x
+  // (2) after u_xx has been computed, u_x is not needed anymore and can be overwritten
+  // -> reduces workspace requirement from 5*N to 3*N
+  // for example, use L together with 3 temp arrays t1,t2,t3 in 4 steps:
+  // (1) L  = u_x,  t1 = u_y    1st gradient
+  // (2) t2 = u_xx, t3 = u_xy   2nd gradient
+  // (3) L  = u_yy,     3rd gradient
+  // (4) L += t2                Laplacian
+
+  T* t1 = &w[0], t2 = &w[N], t3 = &w[2*N];
+  gradient2D(mesh, u,  L,  t1);   // L  = u_x,  t1 = u_y
+  gradient2D(mesh, L,  t2, t3);   // t2 = u_xx, t3 = u_xy
+  gradient2D(mesh, t1, t3, L );   // t3 = u_yx, L  = u_yy
+  for(int i = 0; i < N; i++)
+    L[i] += t2[i];                // L = u_xx + u_yy
+}
 
 template<class T>
 void rsNumericDifferentiator<T>::laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, 

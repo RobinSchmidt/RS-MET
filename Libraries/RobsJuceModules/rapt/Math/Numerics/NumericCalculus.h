@@ -391,6 +391,14 @@ public:
     gradient2D(mesh, u_x, u_xx, u_xy);
     gradient2D(mesh, u_y, u_yx, u_yy);
   }
+  // ToDo: figure out, if this can be done more efficiently, especially, when only the Laplacian
+  // u_xx + u_yy is required (which is the case in the wave-equation, for example)
+
+  static void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, T* L, T* workspace);
+  // workspace must be of length 5*N - maybe reduce this to 4*N by using L also for temporary 
+  // storage, maybe it can be reduced to 3*N by overwriting u_x after u_xx, u_xy have been computed
+
+
 
 
 
@@ -460,6 +468,14 @@ public:
     rsAssert((int) u_y.size() == N);
     gradient2D(mesh, &u[0], &u_x[0], &u_y[0]);
   }
+
+  static void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, T* L)
+  {
+    int N = mesh.getNumVertices();
+    std::vector<T> wrk(5*N);  // todo: optimize to 3*N 
+    laplacian2D(mesh, u, L, &wrk[0]);
+  }
+  // allocates
 
   /** Under construction - does not yet work correctly - it is still very inaccurate for irregular
   meshes. */
