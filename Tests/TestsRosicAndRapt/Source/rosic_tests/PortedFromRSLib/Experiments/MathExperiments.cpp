@@ -2876,15 +2876,26 @@ void meshLaplacian()
   // Compute Laplacian by neighborhood average:
   Vec u(N), u_L2(N);
   fillMeshValues(mesh, f, u);
-  ND::laplacian2D(mesh, u, u_L2);
+  ND::laplacian2D_2(mesh, u, u_L2); // this function works only for regular neighborhood geometries
+
+  // Compute Laplacian by convenience function:
+  Vec u_L3(N);
+  ND::laplacian2D(mesh, &u[0], &u_L3[0]);
 
   // Compute true value and errors:
   double L  = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value
   double e1 = L - u_L1[0];                          // error of first estimate
   double e2 = L - u_L2[0];                          // error of second estimate
+  double e3 = L - u_L3[0];                          // same as e1 as it should be
 
   // Observations:
   // -u_L2[0] is more accurate than u_L1[0], so the more efficient algo is also more accurate
+  // -unfortunately, that seems to be the case only if the neighbors are all the same distance
+  //  away from the center vertex (see other experiment below) - can the formula be generalized to 
+  //  work with more general neighborhood geometries?
+  // -the basic idea is that the Laplacian measures by how much the value differs from its local
+  //  neighborhood
+
 
   // ToDo:
   // -test both algorithms with less regular geometries - maybe create random neighborhoods and 
@@ -2926,10 +2937,8 @@ void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh,
       uSum += w*(u[j]-u[i]);                       // accumulate sum of ...
       //uSum += w*(u[j]-u[i])/d;
 
-
       wSum += w;                                   // accumulate sum of weights
       //wSum += w/d;                                   // accumulate sum of weights
-
 
       //dSum += d;
       dSum += sqrt(d);
@@ -2946,6 +2955,44 @@ void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh,
     //L[i] = T(4)*uSum/(wSum*dMin);
   }
 }
+// wait: this actually doe snot compute the difference of u[i] to the weighted mean of its local 
+// neighborhood - instead, it computes a weighted mean of the differences of u[i] from its 
+// neighbors - the difference is taken inside the loop rather than outside. does that make a 
+// difference?
+
+template<class T>
+void laplacian2D_2(const rsGraph<rsVector2D<T>, T>& mesh, 
+  const std::vector<T>& u, std::vector<T>& L)
+{
+  using Vec2 = rsVector2D<T>;
+  int N = mesh.getNumVertices();
+  rsAssert((int) u.size() == N);
+  rsAssert((int) L.size() == N);
+  for(int i = 0; i < N; i++) {                     // loop over all vertices
+    Vec2 vi = mesh.getVertexData(i);               // current vertex location
+    T uSum = T(0);                                 // weighted sum of neighbors
+    T wSum = T(0);                                 // sum of weights
+    T dMax = T(0);
+    for(int k = 0; k < mesh.getNumEdges(i); k++) { // loop over vi's neighbors
+      int j = mesh.getEdgeTarget(i, k);            // index of current neighbor
+      T w   = mesh.getEdgeData(  i, k);            // weight in weighted sum of neighbors
+      Vec2 vj = mesh.getVertexData(j);             // location of current neighbor
+      Vec2 dv = vj - vi;                           // difference vector
+      T d2 = dv.x*dv.x + dv.y*dv.y;                // squared distance between vi and vj
+      w    /= d2;
+      uSum += w*u[j];                              // accumulate weighted sum of neighbors
+      wSum += w;                                   // accumulate sum of weights
+      dMax  = rsMax(dMax, d2);
+    }
+
+    T mean = uSum/wSum;
+    L[i]   = mean - u[i];
+
+    L[i] *= T(12)/dMax;        
+    // found empricially, seems to work for numSides = 6
+  }
+}
+
 
 void meshLaplacianErrorVsDistance()
 {
@@ -2985,7 +3032,7 @@ void meshLaplacianErrorVsDistance()
   int N = mesh.getNumVertices();
   Vec u(N), u_L(N);
   fillMeshValues(mesh, f, u);
-  ND::laplacian2D(mesh, u, u_L);
+  ND::laplacian2D_2(mesh, u, u_L);
   //laplacian2D(mesh, u, u_L);
   double eh1 = L - u_L[0];          // -0.00010707162148965166, -0.00010707162149820038
 
@@ -2995,7 +3042,7 @@ void meshLaplacianErrorVsDistance()
   addPolygonalNeighbours(mesh, 0, numSides, 2*h, 0., p, false); 
   //meshPlotter.plotGraph2D(mesh, {0});
   fillMeshValues(mesh, f, u);
-  ND::laplacian2D(mesh, u, u_L);
+  ND::laplacian2D_2(mesh, u, u_L);
   //laplacian2D(mesh, u, u_L);
   double eh2 = L - u_L[0];          // -0.00042702273039024741, -0.00042702273038902616
   // eh2 is roughly 4 times eh1 for numSides = 6...seems like the error increases with h^2.
@@ -3012,7 +3059,7 @@ void meshLaplacianErrorVsDistance()
   assignEdgeWeights(mesh, p);  // recompute mesh-weights according to new distances
   meshPlotter.plotGraph2D(mesh, {0});
   fillMeshValues(mesh, f, u);
-  ND::laplacian2D(mesh, u, u_L);
+  ND::laplacian2D_2(mesh, u, u_L);
   //laplacian2D(mesh, u, u_L);
   double eh12 = L - u_L[0];   // -0.012610446761559257  ...way too high! something is wrong!
   // could it be that the error is (roughly) equal to taking only the inner neighbors into account?
@@ -3038,7 +3085,13 @@ void meshLaplacianErrorVsDistance()
 
   // try it with the new, experimental implementation:
   laplacian2D(mesh, u, u_L);
-  double eNew = L - u_L[0]; 
+  double eh12_1 = L - u_L[0]; 
+
+
+  laplacian2D_2(mesh, u, u_L);
+  double eh12_2 = L - u_L[0]; 
+
+  double ratio = L / u_L[0]; 
 
   int dummy = 0;
 
@@ -3067,9 +3120,9 @@ void meshLaplacianErrorVsDistance()
 
 void vertexMeshHessian()
 {
-  meshHessianErrorVsDistance();
-  //meshLaplacian();
-  //meshLaplacianErrorVsDistance();
+  //meshHessianErrorVsDistance();
+  meshLaplacian();
+  meshLaplacianErrorVsDistance();
 }
 
 void shiftPolynomial()

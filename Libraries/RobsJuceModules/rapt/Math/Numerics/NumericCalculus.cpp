@@ -244,7 +244,7 @@ void rsNumericDifferentiator<T>::laplacian2D(const rsGraph<rsVector2D<T>, T>& me
   // (3) L  = u_yy,     3rd gradient
   // (4) L += t2                Laplacian
 
-  T* t1 = &w[0], t2 = &w[N], t3 = &w[2*N];
+  T *t1 = &w[0], *t2 = &w[N], *t3 = &w[2*N];
   gradient2D(mesh, u,  L,  t1);   // L  = u_x,  t1 = u_y
   gradient2D(mesh, L,  t2, t3);   // t2 = u_xx, t3 = u_xy
   gradient2D(mesh, t1, t3, L );   // t3 = u_yx, L  = u_yy
@@ -253,7 +253,7 @@ void rsNumericDifferentiator<T>::laplacian2D(const rsGraph<rsVector2D<T>, T>& me
 }
 
 template<class T>
-void rsNumericDifferentiator<T>::laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, 
+void rsNumericDifferentiator<T>::laplacian2D_2(const rsGraph<rsVector2D<T>, T>& mesh, 
   const std::vector<T>& u, std::vector<T>& L)
 {
   using Vec2 = rsVector2D<T>;

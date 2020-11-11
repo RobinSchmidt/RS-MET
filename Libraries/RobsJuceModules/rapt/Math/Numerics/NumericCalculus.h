@@ -470,16 +470,12 @@ public:
   }
 
   static void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, T* L)
-  {
-    int N = mesh.getNumVertices();
-    std::vector<T> wrk(5*N);  // todo: optimize to 3*N 
-    laplacian2D(mesh, u, L, &wrk[0]);
-  }
+  { std::vector<T> wrk(3*mesh.getNumVertices()); laplacian2D(mesh, u, L, &wrk[0]); }
   // allocates
 
   /** Under construction - does not yet work correctly - it is still very inaccurate for irregular
   meshes. */
-  static void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const std::vector<T>& u, 
+  static void laplacian2D_2(const rsGraph<rsVector2D<T>, T>& mesh, const std::vector<T>& u, 
     std::vector<T>& L);
   // needs more tests
 

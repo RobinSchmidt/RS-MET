@@ -407,6 +407,9 @@ template void RAPT::rsNumericDifferentiator<double>::gradient2D(
   std::vector<double>& u_x, std::vector<double>& u_y);
 
 template void RAPT::rsNumericDifferentiator<double>::laplacian2D(
+  const rsGraph<rsVector2D<double>, double>& mesh, const double* u, double* L);
+
+template void RAPT::rsNumericDifferentiator<double>::laplacian2D_2(
   const rsGraph<rsVector2D<double>, double>& mesh, const std::vector<double>& u, 
   std::vector<double>& L);
 
