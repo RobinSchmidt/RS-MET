@@ -3120,6 +3120,15 @@ void meshLaplacianAlgorithms2()
 
   // -maybe instead of trying to estimate the Laplacian directly, try first to estimate the 
   //  diagonal elements of the Hessian u_xx and u_yy - can we do this via directional derivatives?
+  // -maybe the center of gravity of the neighbor vertices should play a role in the formula?
+  //  -maybe the weighted average applies the the (weighted) center of gravity and not to the 
+  //   actual vertex position and maybe we should subtract a term that is proportional to the 
+  //   directional derivative into the direction from the vertex to the COG
+  //  -that may explain why the current formula seems to work well for even numSides - in this 
+  //   case, the COG coincides with the vertex position
+  //  -maybe, to implement it, it will make sense to factor out the body of the i-loop in
+  //   rsNumericDifferentiator<T>::gradient2D, so we can compute the gradient u_x, u_y as sub-algo
+  //   because we need it to compute the directional derivative into the direction of the COG
 
   // todo: compute error for h, compute error for 2*h, compute error for half of the neighbors at 
   // distance h and the other half at distance 2*h

@@ -355,6 +355,13 @@ public:
 
 
   /** Numerically estimates partial derivatives into the x- and y-direction of a function u(x,y) 
+  that is defined on an irregular mesh at a particular vertex with index i and stores the result in
+  u_x, u_y. Used internaly in a loop over all vertices in
+  @see gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, T* u_x, T* u_y). The 
+  per-vertex code has been factored out to be used in other contexts as well. */
+  static void gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, int i, T* u_x, T* u_y);
+
+  /** Numerically estimates partial derivatives into the x- and y-direction of a function u(x,y) 
   that is defined on an irregular mesh. This is a preliminary for generalizing finite difference 
   based solvers for partial differential equations to irregular meshes. The inputs are a mesh of 
   vertices (represented as a graph in which the data associated with each node represents the 

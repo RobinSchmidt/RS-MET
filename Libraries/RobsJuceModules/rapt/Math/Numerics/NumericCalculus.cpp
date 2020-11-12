@@ -114,6 +114,13 @@ void rsNumericDifferentiator<T>::derivative(
 
 
 template<class T>
+void rsNumericDifferentiator<T>::gradient2D(
+  const rsGraph<rsVector2D<T>, T>& mesh, const T* u, int i, T* u_x, T* u_y)
+{
+
+}
+
+template<class T>
 void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, 
   T* u_x, T* u_y)
 {
