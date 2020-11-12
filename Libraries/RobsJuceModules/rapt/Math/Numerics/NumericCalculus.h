@@ -358,7 +358,14 @@ public:
   that is defined on an irregular mesh at a particular vertex with index i and stores the result in
   u_x, u_y. Used internaly in a loop over all vertices in
   @see gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, T* u_x, T* u_y). The 
-  per-vertex code has been factored out to be used in other contexts as well. */
+  per-vertex code has been factored out to be used in other contexts as well. The u pointer 
+  should point to the begin of the array of function values and *not* to the particular function 
+  value u[i]. The function will reference u[i] and u[j] for j running over all neighbors of vertex 
+  i. The u_x, u_y pointers, on the other hand, should point to the particular locations at index i
+  in the derivative arrays (if used in this context, i.e. if derivate arrays should be computed, 
+  although the main purpose of factoring this function out is to be able to compute the vertex 
+  derivatives locally without allocating arrays for them. In such a context, they may point to 
+  local variables inside some higher level algorithm). */
   static void gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, int i, T* u_x, T* u_y);
 
   /** Numerically estimates partial derivatives into the x- and y-direction of a function u(x,y) 
@@ -378,12 +385,9 @@ public:
   static void gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, T* u_x, T* u_y);
   // todo: 
   // -maybe use a Tx template parameter as in derivative
-  // -use raw arrays instead of std::vector but keep a convenience function using std::vector
-  // -maybe use f, f_x, f_y instead of u, u_x, u_y to avoid notational clash with the u parameter
-  //  in a parametric surface (because eventually, we want to use this to numerically solve a PDE 
-  //  on a parametric surface)...hmm...maybe not
-  // -can this also be used for vector fields by just interpreting the vector field as two scalar 
-  //  fields? i think so
+  // -can this also be used for vector fields by just interpreting the vector field as pair of two
+  //  scalar fields? i think so - if so, explain in the documentation how - just apply the function
+  //  to both component functions
 
   /** Estimates gradient and Hessian matrix on an irregular mesh. It first computes the gradient 
   of u using gradient2D and stores the result in u_x, u_y and then computes the gradients of u_x 

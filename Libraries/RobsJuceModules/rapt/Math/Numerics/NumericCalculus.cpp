@@ -117,86 +117,74 @@ template<class T>
 void rsNumericDifferentiator<T>::gradient2D(
   const rsGraph<rsVector2D<T>, T>& mesh, const T* u, int i, T* u_x, T* u_y)
 {
-
-}
-
-template<class T>
-void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, 
-  T* u_x, T* u_y)
-{
   // Algorithm:
   // The algorithm is based on the fact that the directional derivative into the direction of an 
   // arbitrary vector a can be expressed as: D_a(u) = <g,a> where D_a(u) denotes the directional
-  // derivative of the function u(x,y) in the a-direction, g denotes the gradient of u and <g,a> 
-  // denotes the scalar product of vectors g and a. For each vertex, we compute numerical estimates
-  // of the directional derivatives into the directions of all its neighbors and set up the above 
-  // equation. When a vertex has more than 2 neighbors (which is the typical case), we have more 
-  // equations than degrees of freedom (u_x,u_y), so the system is overdetermined and we compute a
-  // weighted least squares solution where the weights are taken to be the values stored at the 
-  // edges between the respective vertices. Meaningful weights could be either all ones 
+  // derivative of the scalar function u(x,y) in the a-direction, g denotes the gradient of u and
+  // <g,a> denotes the scalar product of vectors g and a. For the vertex i, we compute numerical 
+  // estimates of the directional derivatives into the directions of all its neighbors and set up 
+  // the above equation. When a vertex has more than 2 neighbors (which is the typical case), we 
+  // have more equations than degrees of freedom (u_x, u_y), so the system is overdetermined and we
+  // compute a weighted least squares solution where the weights are taken to be the values stored 
+  // at the edges between the respective vertices. Meaningful weights could be either all ones 
   // (unweighted) or - probably better - something inversely proportional to (some power of) the 
   // distance between the vertices. The rationale behind this is that we expect the values obtained 
   // by the formula to be further off from the true values, the greater the distance between the 
   // vertices, but some experimentation for what kind of weighting gives the most accurate results 
   // is encouraged (for example, if Euclidean or Manhattan distance gives better results, etc.).
+  // First experimental results indicate that w = pow(d, -p) seems to give most accurate results 
+  // where d ist the (Euclidean) distance and p is the number of neighbors.
 
-  rsAssert(u_x != u && u_y != u, "Does not work in place");
-  int N = mesh.getNumVertices();
-  using Vec2 = rsVector2D<T>;
-  rsMatrix2x2<T> A;            // maybe rename to M = ATA (== A^T * A in most textbooks)
-  Vec2 b, g;                   // maybe rename b to Mb (== A^T * b in textbooks)
-  for(int i = 0; i < N; i++)                    // loop over all the vertices
+  using Vec2       = rsVector2D<T>;           // shorthand for convenience
+  const Vec2& vi   = mesh.getVertexData(i);   // vertex i, at which we calculate the derivative
+  int numNeighbors = mesh.getNumEdges(i);     // number of neighbors of vertex vi
+
+  // If vi has no neighbors at all, we assign zeros to the partial derivatives:
+  if(numNeighbors == 0) { *u_x = *u_y = T(0); return; }
+
+  // If vi has only one neighbor, we have only one equation for our 2 degrees of freedom 
+  // u_x, u_y, so there are infinitely many solutions. I'm not sure, if the minimum norm 
+  // solution is the best thing to compute in such a case, but we should at least compute 
+  // *something* that is *a* solution to the equation and the minimum norm solution is the only
+  // meaningfully distinguished choice (right? or wrong?):
+  if(numNeighbors == 1) {
+    int j = mesh.getEdgeTarget(i, 0);
+    const Vec2& vj = mesh.getVertexData(j);
+    Vec2 dv = vj   - vi;                      // difference vector
+    T    du = u[j] - u[i];                    // difference in function value
+    rsLinearAlgebra::solveMinNorm(dv.x, dv.y, du, u_x, u_y);
+    return; }
+
+  // The typical case is that vi has >= 2 neighbors. In this case, we have either a critically
+  // determined (numNeighbors == 2) or an overdetermined (numNeighbors > 2) system and we compute
+  // a weighted least squares solution (which, in the case of a critically determined system, 
+  // happens to be the exact solution...right?):
+  static const T z = T(0);      // zero
+  rsMatrix2x2<T> A(z,z,z,z);    // maybe rename to M = ATA (== A^T * A in most textbooks)
+  Vec2 b(z,z), g;               // maybe rename b to Mb (== A^T * b in textbooks)
+  for(int k = 0; k < numNeighbors; k++)       // loop over neighbors of vertex i
   {
-    const Vec2& vi   = mesh.getVertexData(i);   // vertex i, at which we calculate the derivative
-    int numNeighbors = mesh.getNumEdges(i);     // number of neighbors of vertex vi
+    // Retrieve or compute intermediate variables:
+    int j = mesh.getEdgeTarget(i, k);         // index of current neighbor of vi
+    const Vec2& vj = mesh.getVertexData(j);   // current neighbor of vi
+    Vec2 dv = vj - vi;                        // difference vector
 
-    // If vi has no neighbors at all, we assign zeros to the partial derivatives:
-    if(numNeighbors == 0) { u_x[i] = u_y[i] = T(0); continue; }
-
-    // If vi has only one neighbor, we have only one equation for our 2 degrees of freedom 
-    // u_x[i], u_y[i], so there are infinitely many solutions. I'm not sure, if the minimum norm 
-    // solution is the best thing to compute in such a case, but we should at least compute 
-    // *something* that is *a* solution to the equation and the minimum norm solution is the only
-    // meaningfully distinguished choice (right? or wrong?):
-    if(numNeighbors == 1) {
-      int j = mesh.getEdgeTarget(i, 0);
-      const Vec2& vj = mesh.getVertexData(j);
-      Vec2 dv = vj   - vi;                      // difference vector
-      T    du = u[j] - u[i];                    // difference in function value
-      rsLinearAlgebra::solveMinNorm(dv.x, dv.y, du, &u_x[i], &u_y[i]);
-      continue; }
-
-    // The typical case is that vi has >= 2 neighbors. In this case, we have either a critically
-    // determined (numNeighbors == 2) or an overdetermined (numNeighbors > 2) system and we compute
-    // a weighted least squares solution (which, in the case of a critically determined system, 
-    // happens to be the exact solution...right?):
-    A.setZero();
-    b.setZero();
-    for(int k = 0; k < numNeighbors; k++)       // loop over neighbors of vertex i
-    {
-      // Retrieve or compute intermediate variables:
-      int j = mesh.getEdgeTarget(i, k);         // index of current neighbor of vi
-      const Vec2& vj = mesh.getVertexData(j);   // current neighbor of vi
-      Vec2 dv = vj - vi;                        // difference vector
-
-      // Accumulate least-squares matrix and right-hand-side vector:
-      T du = u[j] - u[i];                       // difference in function value
-      T w  = mesh.getEdgeData(i, k);            // weight in weighted least squares
-      A.a += w * dv.x * dv.x;
-      A.b += w * dv.x * dv.y;
-      A.d += w * dv.y * dv.y;
-      b.x += w * dv.x * du;
-      b.y += w * dv.y * du;
-    }
-    A.c = A.b;  // A.c is still zero - make A symmetric
-
-    // Compute gradient that best explains the measured directional derivatives in the least 
-    // squares sense and store it in output arrays:
-    //rsMatrix2x2<T>::solve(A, g, b);  // g is the gradient vector that solves A*g = b
-    rsMatrix2x2<T>::solveSave(A, g, b);  // g is the gradient vector that solves A*g = b
-    u_x[i] = g.x;
-    u_y[i] = g.y;
+    // Accumulate least-squares matrix and right-hand-side vector:
+    T du = u[j] - u[i];                       // difference in function value
+    T w  = mesh.getEdgeData(i, k);            // weight in weighted least squares
+    A.a += w * dv.x * dv.x;
+    A.b += w * dv.x * dv.y;
+    A.d += w * dv.y * dv.y;
+    b.x += w * dv.x * du;
+    b.y += w * dv.y * du;
   }
+  A.c = A.b;  // A.c is still zero - make A symmetric
+
+  // Compute gradient that best explains the measured directional derivatives in the least 
+  // squares sense and store it in outputs:
+  rsMatrix2x2<T>::solveSave(A, g, b);  // g is the gradient vector that solves A*g = b
+  *u_x = g.x; 
+  *u_y = g.y;
 }
 // todo:
 // -this needs more numerical tests and verifications
@@ -222,6 +210,15 @@ void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mes
 // https://www.semanticscholar.org/paper/Development-of-Irregular-Grid-Finite-Difference-(-)-GEORGE/0b8bcb2afdfee4d2fd8efc52f499a9d59f742f77
 // http://www.fluidmal.uma.es/pdfs/JCOMP_2005.pdf
 // https://www.researchgate.net/figure/Directional-derivatives-computed-using-one-sided-finite-differences-55-and-the_fig1_258919790
+
+template<class T>
+void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, 
+  T* u_x, T* u_y)
+{
+  rsAssert(u_x != u && u_y != u, "rsNumericDifferentiator::gradient2D does not work in place");
+  for(int i = 0; i < mesh.getNumVertices(); i++)
+    gradient2D(mesh, u, i, &u_x[i], &u_y[i]);
+}
 
 template<class T>
 void rsNumericDifferentiator<T>::laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u,
