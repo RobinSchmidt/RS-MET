@@ -2891,17 +2891,18 @@ void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh,
     // Accumulate matrix elements:
     a11 += vx2*vx2;     // vx^4
     a12 += vx*vx2*vy;   // vx^3 * vy
-    a13 += vx2*vy2;     // vx^2 * vy^2 -> verify this!
-    a22 += vx2*vy2;     // vx^2 * vy^2    is this really the same...i mean, a22 gets scaled later but still
+    a13 += vx2*vy2;     // vx^2 * vy^2
+    a22 += vx2*vy2;     // vx^2 * vy^2 ..still the same as a13, scaled later (can be optimized)
     a23 += vy*vy2*vx;   // vy^3 * vx
     a33 += vy2*vy2;     // vy^4
 
     // Accumulate vector elements for right hand side:
-    T q = T(2)*(u[j] - u[i] - (u_x[i]*vx + u_y[i]*vy));  // verify!
+    T q = T(2)*(u[j] - u[i] - (u_x[i]*vx + u_y[i]*vy));
     b1 += q*vx2;
     b2 += q*vx*vy;
     b3 += q*vy2;
   }
+  // todo: maybe add weighting
 
   // Some elements must be scaled:
   a12 *= T(2);
@@ -2925,9 +2926,6 @@ void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh,
   *u_xy = x(1,0);
   *u_yy = x(2,0);
 
-
-
-
   int dummy = 0;
 }
 template<class T>
@@ -2942,15 +2940,15 @@ void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh,
 void meshHessianViaTaylorErrorVsDistance()
 {
   // Tests hessian2DViaTaylor in two ways: using the exact gradient as input and using the numeric
-  // estiamtion of the gradient
+  // estimation of the gradient
 
   using Vec2 = rsVector2D<double>;
   using Vec  = std::vector<double>;
   using ND   = rsNumericDifferentiator<double>;
 
   // Settings:
-  int minNumSides =  3;  // minimum number of sides/neighbors (todo: try to go down to 2 or 1)
-  int maxNumSides =  8;  // maximum number of sides
+  int minNumSides =  5;  // minimum number of sides/neighbors (todo: try to go down to 2 or 1)
+  int maxNumSides = 10;  // maximum number of sides
   int Nh          = 10;  // number of stepsizes h
   Vec2 x0(1, 1);         // (1,1) is nicely general - no symmetries
 
@@ -2997,8 +2995,10 @@ void meshHessianViaTaylorErrorVsDistance()
       double e_xx = U_xx[0] - u_xx[0];
       double e_xy = U_xy[0] - u_xy[0];
       double e_yy = U_yy[0] - u_yy[0];
+      //double eMin = rsMin(rsAbs(e_xx), rsAbs(e_xy), rsAbs(e_yy));
       double eMax = rsMax(rsAbs(e_xx), rsAbs(e_xy), rsAbs(e_yy));
       err1(numSides-minNumSides, j) = log10(eMax);
+      //err1(numSides-minNumSides, j) = log10(eMin);
 
       // Compute error for estimating the Hessian with a numeric gradient:
       ND::gradient2D(mesh, &u[0], &u_x[0], &u_y[0]); 
@@ -3017,6 +3017,26 @@ void meshHessianViaTaylorErrorVsDistance()
   // -plot errors as funtion of log2 of h
   // -compute and plot estimated error order
 
+  // Plot:
+  Vec hLog(h.size()); for(size_t i = 0; i < h.size(); i++) hLog[i] = rsLog2(h[i]);
+  plotMatrixRows(err1, &hLog[0]);
+  //plotMatrixRows(err2, &hLog[0]);
+
+
+  // Observations:
+  // -For numSides >= 5, it doesn't seem to make a difference, if we use the exact or numeric
+  //  gradient.
+  // -numSides = 6 is better than numSides = 5 and numSides = 7 is still better, but not in terms 
+  //  of order, just in terms of a constant factor. Going higher than 7 gives no additional 
+  //  improvement. This is unexpected! Using more information does not lead to further improvement.
+  //  Why is this so? Could it be that the estimation of the Hessian has an uppr limit for the
+  //  error orde when using only information from direct neighbors and to get further improvements
+  //  one has to take indirect neighbors into account?
+
+  // ToDo:
+  // -Compare performance with taking gradients of gradients. This seems to be better behaved with
+  //  respect to error reduction. But is it more or less costly. It takes more memory, but what
+  //  about CPU cycles?
 
   int dummy = 0;
 }
