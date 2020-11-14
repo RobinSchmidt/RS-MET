@@ -2871,7 +2871,62 @@ void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh,
   const T* u, const T* u_x, const T* u_y, int i,
   T* u_xx, T* u_xy, T* u_yy)
 {
-  // work to do!
+  using Vec2       = rsVector2D<T>;           // shorthand for convenience
+  const Vec2& vi   = mesh.getVertexData(i);   // vertex i, at which we calculate the Hessian
+  int numNeighbors = mesh.getNumEdges(i); 
+
+  if(numNeighbors < 3) { *u_xx = *u_xy = *u_yy = T(0); return; } // preliminary
+
+  T a11(0), a12(0), a13(0), a22(0), a23(0), a33(0);  // matrix elements
+  T b1(0), b2(0), b3(0);                             // vector elements of right hand side
+  for(int k = 0; k < numNeighbors; k++)              // loop over neighbors of vertex i
+  {
+    // Retrieve or compute intermediate variables:
+    int j = mesh.getEdgeTarget(i, k);         // index of current neighbor of vi
+    const Vec2& vj = mesh.getVertexData(j);   // current neighbor of vi
+    Vec2 dv = vj - vi;                        // difference vector
+    T vx  = dv.x,  vy  = dv.y;
+    T vx2 = vx*vx, vy2 = vy*vy;
+
+    // Accumulate matrix elements:
+    a11 += vx2*vx2;     // vx^4
+    a12 += vx*vx2*vy;   // vx^3 * vy
+    a13 += vx2*vy2;     // vx^2 * vy^2 -> verify this!
+    a22 += vx2*vy2;     // vx^2 * vy^2    is this really the same...i mean, a22 gets scaled later but still
+    a23 += vy*vy2*vx;   // vy^3 * vx
+    a33 += vy2*vy2;     // vy^4
+
+    // Accumulate vector elements for right hand side:
+    T q = T(2)*(u[j] - u[i] - (u_x[i]*vx + u_y[i]*vy));  // verify!
+    b1 += q*vx2;
+    b2 += q*vx*vy;
+    b3 += q*vy2;
+  }
+
+  // Some elements must be scaled:
+  a12 *= T(2);
+  a22 *= T(4);
+  a23 *= T(2);
+  b2  *= T(2);
+
+  // Solve the symmetric 3x3 system A*x = b (optimize later)
+  rsMatrix<T> A(3,3), x(3,1), b(3,1);
+  A(0,0) = a11;
+  A(1,1) = a22;
+  A(2,2) = a33;
+  A(0,1) = A(1,0) = a12;
+  A(0,2) = A(2,0) = a13;
+  A(1,2) = A(2,1) = a23;
+  b(0,0) = b1;
+  b(1,0) = b2;
+  b(2,0) = b3;
+  rsLinearAlgebraNew::solve(A, x, b);
+  *u_xx = x(0,0);
+  *u_xy = x(1,0);
+  *u_yy = x(2,0);
+
+
+
 
   int dummy = 0;
 }
