@@ -1915,8 +1915,8 @@ void uniformArrayDiffAndInt()
 // processors?
 
 
-
-
+//=================================================================================================
+// Mesh derivatives (it's a lot of code - maybe a separate file would be in order):
 
 /** Fills edges of a graph of 2D vectors (as vertices) with a user supplied function that takes as
 input the source and target vector and returns a scalar that can be used as weight for the edge 
@@ -2424,11 +2424,13 @@ void meshGradientErrorVsDistance()
   int dummy = 0;
 }
 
+/*
 // some example functions - todo: define them as lambdas and/or std::function where needed:
 double sinX_times_expY(double x, double y) { return sin(x) * exp(y); }
 double sinX_plus_expY(double x, double y)  { return sin(x) + exp(y); }
 double sinX_times_cosY(double x, double y) { return sin(x) * cos(y); }
 // i think, they are not used anywhere
+*/
 
 void meshGradientErrorVsWeight()  // rename to vertexMeshGradientWeighting
 {
@@ -2740,7 +2742,6 @@ void createMeshForHessianEstimation(rsGraph<rsVector2D<T>, T>& mesh, int numSide
     addPolygonalNeighbours(mesh, k, numSides, h, T(0), T(0), false);
 }
 
-
 void meshHessianErrorVsDistance()
 {
   // We use the rsNumericDifferentiator<T>::gradient2D function on the two gradients again to 
@@ -2837,6 +2838,98 @@ void meshHessianErrorVsDistance()
   // accuracy or efficiency but also about numerical stability, dispersion and diffusion when used
   // in a PDE solver. Maybe several possibilities should be checked out
 }
+
+
+// Computes Hessian, when the gradient is already known
+template<class T>
+void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh, 
+  const T* u, const T* u_x, const T* u_y, int i,
+  T* u_xx, T* u_xy, T* u_yy)
+{
+
+
+  int dummy = 0;
+}
+template<class T>
+void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh, 
+  const T* u, const T* u_x, const T* u_y, 
+  T* u_xx, T* u_xy, T* u_yy)
+{
+  for(int i = 0; i < mesh.getNumVertices(); i++)
+    hessian2DViaTaylor(mesh, u, u_x, u_y, i, &u_xx[i], &u_xy[i], &u_yy[i]);
+}
+
+void meshHessianViaTaylorErrorVsDistance()
+{
+  // Tests hessian2DViaTaylor in tow ways: using the exact gradient as input and using the numeric
+  // estiamtion of the gradient
+
+  using Vec2 = rsVector2D<double>;
+  using Vec  = std::vector<double>;
+
+  // Settings:
+  int minNumSides =  3;  // minimum number of sides/neighbors (todo: try to go down to 2 or 1)
+  int maxNumSides =  8;  // maximum number of sides
+  int Nh          = 10;  // number of stepsizes h
+  Vec2 x0(1, 1);         // (1,1) is nicely general - no symmetries
+
+  std::function<double(double, double)> f, f_x, f_y, f_xx, f_xy, f_yy;
+  double a = 0.75;
+  double b = 0.5;
+  f    = [&](double x, double y)->double { return      sin(a*x) *     exp(b*y); };
+  f_x  = [&](double x, double y)->double { return    a*cos(a*x) *     exp(b*y); };
+  f_y  = [&](double x, double y)->double { return      sin(a*x) *   b*exp(b*y); };
+  f_xx = [&](double x, double y)->double { return -a*a*sin(a*x) *     exp(b*y); };
+  f_xy = [&](double x, double y)->double { return    a*cos(a*x) *   b*exp(b*y); };
+  f_yy = [&](double x, double y)->double { return      sin(a*x) * b*b*exp(b*y); };
+
+
+  // Create measurement data:
+  Vec h(Nh);
+  for(int i = 0; i < Nh; i++)  // Create array of stepsizes
+    h[i] = pow(0.5, i);
+  int numMeshes = maxNumSides-minNumSides+1;
+  rsMatrix<double> err1(numMeshes, (int)h.size());  // error with exact gradients
+  rsMatrix<double> err2(numMeshes, (int)h.size());  // error with numeric gradients
+  rsGraph<Vec2, double> mesh;
+  GraphPlotter<double> meshPlotter;
+  int N = maxNumSides + 1;
+  Vec u(N);                                       // mesh function values
+  Vec U_x(N), U_y(N), U_xx(N), U_xy(N), U_yy(N);  // gradient and Hessian (exact)
+  Vec u_x(N), u_y(N), u_xx(N), u_xy(N), u_yy(N);  // gradient and Hessian estimates
+  for(int numSides = minNumSides; numSides <= maxNumSides; numSides++)
+  {
+    for(int j = 0; j < (int)h.size(); j++)
+    {
+      // Create mesh for a particular setting for numSides and stepsize h:
+      mesh.clear();
+      mesh.addVertex(x0);
+      addPolygonalNeighbours(mesh, 0.0, numSides, h[j], 0.0);  // unweighted
+      //if(j == 0) meshPlotter.plotGraph2D(mesh, {0});
+
+
+
+
+      //fillMeshValues(mesh, f, u);
+
+
+
+
+
+      // Compute the and record the estimation error at vertex 0:
+      //double e = hessianError(mesh, 0, f, f_xx, f_xy, f_xy, f_yy);
+      //err1(numSides-minNumSides, j) = log10(e);
+      // todo: maybe recor errors for u_xx, u_xy, etc. separately
+    }
+  }
+
+
+
+
+  int dummy = 0;
+}
+
+
 
 void meshLaplacianAlgorithms1()
 {
@@ -3153,9 +3246,14 @@ void meshLaplacianAlgorithms2()
 void vertexMeshHessian()
 {
   //meshHessianErrorVsDistance();
-  meshLaplacianAlgorithms1();
-  meshLaplacianAlgorithms2();
+  meshHessianViaTaylorErrorVsDistance();
+  //meshLaplacianAlgorithms1();
+  //meshLaplacianAlgorithms2();
 }
+
+// End of mesh derivatives
+//=================================================================================================
+
 
 void shiftPolynomial()
 {
@@ -3196,11 +3294,6 @@ void shiftPolynomial()
 // void stretchPolynomial()
 // {
 // }
-
-
-
-
-
 
 /*
 void monotonicPolynomials()

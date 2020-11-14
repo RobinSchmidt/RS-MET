@@ -392,9 +392,9 @@ public:
   /** Estimates gradient and Hessian matrix on an irregular mesh. It first computes the gradient 
   of u using gradient2D and stores the result in u_x, u_y and then computes the gradients of u_x 
   and u_y and stores the results in u_xx, u_xy and u_yx, u_yy. Mathematically, the mixed 2nd 
-  derivatives u_xy and u_yx are suppsoed to be the same, but numerically, they may differ due to 
-  different approximation errors (Q: Does it make sense to average them? Will this improve 
-  accuracy?). */
+  derivatives u_xy and u_yx are supposed to be the same (by Schwarz's theorem, if u has continuous
+  2nd partial derivatives), but numerically, they may differ due to different approximation errors.
+  (Q: Does it make sense to average them? Will this improve accuracy?) */
   static void gradientAndHessian2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u,
     T* u_x, T* u_y, T* u_xx, T* u_xy, T* u_yx, T* u_yy)
   {
@@ -402,11 +402,14 @@ public:
     gradient2D(mesh, u_x, u_xx, u_xy);
     gradient2D(mesh, u_y, u_yx, u_yy);
   }
-  // ToDo: figure out, if this can be done more efficiently, especially, when only the Laplacian
-  // u_xx + u_yy is required (which is the case in the wave-equation, for example)
+  // ToDo: 
+  // -figure out, if this can be done more efficiently, especially, when only the Laplacian
+  //  u_xx + u_yy is required (which is the case in the wave-equation, for example)
+  // -maybe rename by adding a qualifier for the estimation algorithm - there are different ways
+  //  to estimate the Hessian
 
   /** Computes a numerical estimate of the Laplacian of some scalar function u defined on a mesh.
-  The Laplacian ist stored in L. It needs a workspace of size 3*N where N is the number of 
+  The Laplacian is stored in L. It needs a workspace of size 3*N where N is the number of 
   vertices in the mesh (and therefore also the number of entries in u and L). The algorithm 
   applies the gradient2D function 3 times. */
   static void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, T* L, T* workspace);
