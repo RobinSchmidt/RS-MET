@@ -2178,6 +2178,31 @@ void fillMeshValues(rsGraph<rsVector2D<T>, T>& mesh, const std::function<T(T, T)
     rsVector2D<T> vi = mesh.getVertexData(i);
     u[i] = f(vi.x, vi.y); }
 }
+template<class T>
+void fillMeshGradient(rsGraph<rsVector2D<T>, T>& mesh, 
+  const std::function<T(T, T)>& f_x, 
+  const std::function<T(T, T)>& f_y,
+  std::vector<T>& u_x, std::vector<T>& u_y)
+{
+  for(int i = 0; i < mesh.getNumVertices(); i++) {
+    rsVector2D<T> vi = mesh.getVertexData(i);
+    u_x[i] = f_x(vi.x, vi.y);
+    u_y[i] = f_y(vi.x, vi.y); }
+}
+template<class T>
+void fillMeshHessian(rsGraph<rsVector2D<T>, T>& mesh, 
+  const std::function<T(T, T)>& f_xx, 
+  const std::function<T(T, T)>& f_xy, 
+  const std::function<T(T, T)>& f_yy,
+  std::vector<T>& u_xx, std::vector<T>& u_xy, std::vector<T>& u_yy)
+{
+  for(int i = 0; i < mesh.getNumVertices(); i++) {
+    rsVector2D<T> vi = mesh.getVertexData(i);
+    u_xx[i] = f_xx(vi.x, vi.y);
+    u_xy[i] = f_xy(vi.x, vi.y);
+    u_yy[i] = f_yy(vi.x, vi.y); }
+}
+
 
 void meshGradientErrorVsDistance()
 {
@@ -2846,7 +2871,7 @@ void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh,
   const T* u, const T* u_x, const T* u_y, int i,
   T* u_xx, T* u_xy, T* u_yy)
 {
-
+  // work to do!
 
   int dummy = 0;
 }
@@ -2861,11 +2886,12 @@ void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh,
 
 void meshHessianViaTaylorErrorVsDistance()
 {
-  // Tests hessian2DViaTaylor in tow ways: using the exact gradient as input and using the numeric
+  // Tests hessian2DViaTaylor in two ways: using the exact gradient as input and using the numeric
   // estiamtion of the gradient
 
   using Vec2 = rsVector2D<double>;
   using Vec  = std::vector<double>;
+  using ND   = rsNumericDifferentiator<double>;
 
   // Settings:
   int minNumSides =  3;  // minimum number of sides/neighbors (todo: try to go down to 2 or 1)
@@ -2904,26 +2930,37 @@ void meshHessianViaTaylorErrorVsDistance()
       // Create mesh for a particular setting for numSides and stepsize h:
       mesh.clear();
       mesh.addVertex(x0);
-      addPolygonalNeighbours(mesh, 0.0, numSides, h[j], 0.0);  // unweighted
+      addPolygonalNeighbours(mesh, 0, numSides, h[j], 0.0);  // unweighted
       //if(j == 0) meshPlotter.plotGraph2D(mesh, {0});
 
+      fillMeshValues(  mesh, f, u);
+      fillMeshGradient(mesh, f_x, f_y, U_x, U_y);
+      fillMeshHessian( mesh, f_xx, f_xy, f_yy, U_xx, U_xy, U_yy);
 
+      // Compute error for estimating the Hessian with an exact gradient:
+      hessian2DViaTaylor(mesh, &u[0], &U_x[0], &U_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
+      double e_xx = U_xx[0] - u_xx[0];
+      double e_xy = U_xy[0] - u_xy[0];
+      double e_yy = U_yy[0] - u_yy[0];
+      double eMax = rsMax(rsAbs(e_xx), rsAbs(e_xy), rsAbs(e_yy));
+      err1(numSides-minNumSides, j) = log10(eMax);
 
+      // Compute error for estimating the Hessian with a numeric gradient:
+      ND::gradient2D(mesh, &u[0], &u_x[0], &u_y[0]); 
+      hessian2DViaTaylor(mesh, &u[0], &u_x[0], &u_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
+      e_xx = U_xx[0] - u_xx[0];
+      e_xy = U_xy[0] - u_xy[0];
+      e_yy = U_yy[0] - u_yy[0];
+      eMax = rsMax(rsAbs(e_xx), rsAbs(e_xy), rsAbs(e_yy));
+      err2(numSides-minNumSides, j) = log10(eMax);
 
-      //fillMeshValues(mesh, f, u);
-
-
-
-
-
-      // Compute the and record the estimation error at vertex 0:
-      //double e = hessianError(mesh, 0, f, f_xx, f_xy, f_xy, f_yy);
-      //err1(numSides-minNumSides, j) = log10(e);
-      // todo: maybe recor errors for u_xx, u_xy, etc. separately
+      int dummy = 0;
     }
   }
 
-
+  // ToDo: 
+  // -plot errors as funtion of log2 of h
+  // -compute and plot estimated error order
 
 
   int dummy = 0;
