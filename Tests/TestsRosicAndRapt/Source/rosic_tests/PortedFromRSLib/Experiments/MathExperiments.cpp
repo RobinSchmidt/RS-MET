@@ -2864,6 +2864,19 @@ void meshHessianErrorVsDistance()
   // in a PDE solver. Maybe several possibilities should be checked out
 }
 
+template<class T>
+void solveSymmetric3x3(
+  T a11, T a12, T a13, T a22, T a23, T a33, T b1, T b2, T b3, T* x1, T* x2, T* x3)
+{
+  T a12_2 = a12*a12;
+  T a13_2 = a13*a13;
+  T a23_2 = a23*a23;
+  T D = (a13_2*a22 - 2*a12*a13*a23 + a12_2*a33 + (a23_2 - a22*a33)*a11);
+  T s = T(1) / D;
+  *x1 =  s*((a33*b2 - a23*b3)*a12 - (a23*b2 - a22*b3)*a13 + (a23_2   - a22*a33)*b1);
+  *x2 =  s*(a13_2*b2 - a12*a13*b3 - (a33*b2 - a23*b3)*a11 - (a13*a23 - a12*a33)*b1);
+  *x3 = -s*(a12*a13*b2 - a12_2*b3 - (a23*b2 - a22*b3)*a11 - (a13*a22 - a12*a23)*b1);
+}
 
 // Computes Hessian, when the gradient is already known
 template<class T>
@@ -2926,6 +2939,9 @@ void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh,
   *u_xy = x(1,0);
   *u_yy = x(2,0);
 
+  // optimized:
+  //solveSymmetric3x3(a11, a12, a13, a22, a23, a33, b1, b2, b3, u_xx, u_xy, u_yy);
+
   int dummy = 0;
 }
 template<class T>
@@ -2947,8 +2963,8 @@ void meshHessianViaTaylorErrorVsDistance()
   using ND   = rsNumericDifferentiator<double>;
 
   // Settings:
-  int minNumSides =  5;  // minimum number of sides/neighbors (todo: try to go down to 2 or 1)
-  int maxNumSides = 10;  // maximum number of sides
+  int minNumSides =  3;  // minimum number of sides/neighbors (todo: try to go down to 2 or 1)
+  int maxNumSides =  9;  // maximum number of sides
   int Nh          = 10;  // number of stepsizes h
   Vec2 x0(1, 1);         // (1,1) is nicely general - no symmetries
 
@@ -3032,6 +3048,12 @@ void meshHessianViaTaylorErrorVsDistance()
   //  Why is this so? Could it be that the estimation of the Hessian has an uppr limit for the
   //  error orde when using only information from direct neighbors and to get further improvements
   //  one has to take indirect neighbors into account?
+  // -numSides = 3 seems to have the same order as 5, but 4 seems to be of order 0, i.e. the error
+  //  does not decrease at all with decreasing h. WTF? With 4, only a11 and a33 are nonzero - is 
+  //  that the problem? could the linear solver have problems witha system like that? -> implement
+  //  optimized symmetric 3x3 solver and try with that - done - it seems to produce NaNs or infs
+  //  with 4 sides and the behavior for sides > 7 looks the same
+  // -double check the derivation - maybe i've missed some term
 
   // ToDo:
   // -Compare performance with taking gradients of gradients. This seems to be better behaved with
