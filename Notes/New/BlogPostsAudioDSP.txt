@@ -4,3 +4,6 @@ http://science-of-sound.net/2016/09/does-convolution-reverb-work-part-1/
 http://science-of-sound.net/2016/09/convolution-reverb-work-part-2/
 
 http://www.rossbencina.com/code/real-time-audio-programming-101-time-waits-for-nothing
+
+
+https://nhigham.com/2018/08/21/tricks-and-tips-in-numerical-computing/

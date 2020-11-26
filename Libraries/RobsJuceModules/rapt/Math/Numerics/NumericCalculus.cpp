@@ -195,6 +195,11 @@ void rsNumericDifferentiator<T>::gradient2D(
 // -do we need special treatment for 2 neighbours? I don't think so - the solution of the least 
 //  squares problem should reduce to the exact solution if the number of equations equals the
 //  number of unknowns
+// -the matrix A can actually be precomputed (and perhaps stored as vertex data), likewise the
+//  w*dv.x, w*dv.y coeffs used to establish the right-hand-side vector b - maybe the matrix 
+//  elements a,b,c (or better: the elements of the inverse matrix) and the coeffs can be stored in
+//  a data-structure rsMeshStencil2D at the nodes. Ultimately, we may just arrive at a scheme that
+//  just forms a weighted sum of stencil values (i.e. the value at vertex i and its neighbors)
 
 // See also: A Guide to Numerical Methods for Transport Equations (Dmitri Kuzmin):
 // http://www.mathematik.uni-dortmund.de/~kuzmin/Transport.pdf  
@@ -209,6 +214,13 @@ void rsNumericDifferentiator<T>::gradient2D(
 // https://www.semanticscholar.org/paper/Development-of-Irregular-Grid-Finite-Difference-(-)-GEORGE/0b8bcb2afdfee4d2fd8efc52f499a9d59f742f77
 // http://www.fluidmal.uma.es/pdfs/JCOMP_2005.pdf
 // https://www.researchgate.net/figure/Directional-derivatives-computed-using-one-sided-finite-differences-55-and-the_fig1_258919790
+
+// Oh - the method is actually very similar to this:
+// The finite difference method at arbitrary irregular grids and its application in applied 
+// mechanics
+// https://www.sciencedirect.com/science/article/abs/pii/0045794980901492
+// the only difference is the use of directional derivatives in the derivation instead of an 
+// interpolation polynomial
 
 template<class T>
 void rsNumericDifferentiator<T>::gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, 

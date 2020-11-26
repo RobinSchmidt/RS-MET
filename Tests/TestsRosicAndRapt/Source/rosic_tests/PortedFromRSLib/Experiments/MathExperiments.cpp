@@ -2203,7 +2203,6 @@ void fillMeshHessian(rsGraph<rsVector2D<T>, T>& mesh,
     u_yy[i] = f_yy(vi.x, vi.y); }
 }
 
-
 void meshGradientErrorVsDistance()
 {
   // We plot the error between the estimated partial derivatives and true partial derivatives as
@@ -2247,10 +2246,9 @@ void meshGradientErrorVsDistance()
       mesh.clear();
       mesh.addVertex(x0);
       addPolygonalNeighbours(mesh, 0, numSides, h[j], angle);  // unweighted
-      if(numSides == 5 && j == 0)
-        meshPlotter.plotGraph2D(mesh, {0});
+      //if(numSides >= 3 && j == 0) meshPlotter.plotGraph2D(mesh, {0});  // plot stencil for paper
 
-      // Compute the and record the estimation error at vertex 0:
+      // Compute and the record the estimation error at vertex 0:
       Real e = gradientError(mesh, 0, f, f_x, f_y);
       err(numSides-minNumSides, j) = log10(e);
     }
@@ -2258,8 +2256,7 @@ void meshGradientErrorVsDistance()
 
   // We use a log-log plot: the x-axis is the (negative) power of two (we use h = ...,0.25,0.5,1.0)
   // and the y-axis is the (negative) power of 10 that gives the order of magnitude of the error:
-  //Vec hLog = RAPT::rsApplyFunction(h, &log);  // dos not compile
-  Vec hLog(h.size()); for(size_t i = 0; i < h.size(); i++) hLog[i] = rsLog2(h[i]);
+  Vec hLog = RAPT::rsApplyFunction(h, &rsLog2);  // does not compile
   plotMatrixRows(err, &hLog[0]);
 
   // Numerically estimate order of the errors from two successive errors (for two successive 
@@ -2877,6 +2874,8 @@ void solveSymmetric3x3(
   *x2 =  s*(a13_2*b2 - a12*a13*b3 - (a33*b2 - a23*b3)*a11 - (a13*a23 - a12*a33)*b1);
   *x3 = -s*(a12*a13*b2 - a12_2*b3 - (a23*b2 - a22*b3)*a11 - (a13*a22 - a12*a23)*b1);
 }
+// move to library...hmm..i this really any better than just doing Gaussian elimination?
+// -> benchmark!
 
 // Computes Hessian, when the gradient is already known
 template<class T>
@@ -3050,9 +3049,16 @@ void meshHessianViaTaylorErrorVsDistance()
   //  one has to take indirect neighbors into account?
   // -numSides = 3 seems to have the same order as 5, but 4 seems to be of order 0, i.e. the error
   //  does not decrease at all with decreasing h. WTF? With 4, only a11 and a33 are nonzero - is 
-  //  that the problem? could the linear solver have problems witha system like that? -> implement
+  //  that the problem? could the linear solver have problems with a system like that? -> implement
   //  optimized symmetric 3x3 solver and try with that - done - it seems to produce NaNs or infs
   //  with 4 sides and the behavior for sides > 7 looks the same
+  //  ...hmm - maybe the u_xy derivative can't be estimated when the neighbors are purely in the x-
+  //  or y direction? how would we try to estimate u_xy "by hand" on such a grid, maybe like this:
+  //  -estimate 1st derivatives by central, forward or backward diff at center, north, east, 
+  //   south west
+  // -from these 4 estimates of the 1st derivatives, ...
+  // -...hmm...i really begin to think, that estimating the mixed 2nd derivative is problematic 
+  //  using only direct neighbors - at least with sides = 4
   // -double check the derivation - maybe i've missed some term
 
   // ToDo:
