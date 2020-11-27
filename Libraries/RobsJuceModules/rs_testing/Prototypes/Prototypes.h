@@ -1115,6 +1115,9 @@ public:
   { return i >= 0 && i < numRows && j >= 0 && j < numCols; }
 
 
+  /** Returns the diagonal part D of this matrix A, such that A = D + N (where N is the 
+  non-diagonal part). Diagonal part means that only the diagonal elements are included, the others
+  are set to zero, i.e. left out. */
   rsSparseMatrix<T> getDiagonalPart() const
   {
     rsSparseMatrix<T> D(numRows, numCols);
@@ -1123,7 +1126,10 @@ public:
         D.set(elements[k].i, elements[k].j, elements[k].value);
     return D;
   }
+  // maybe this should return a vector instead of a sparse matrix
 
+  /** Returns the diagonal part N of this matrix A, such that A = D + N (where D is the 
+  diagonal part). */
   rsSparseMatrix<T> getNonDiagonalPart() const
   {
     rsSparseMatrix<T> N(numRows, numCols);
@@ -1137,14 +1143,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Accessors. Element access via these is slow, so they should probably be only used, when 
   a matrix is built once and for all as a precomputation. When the matrix is used later e.g. in an
-  iterative linear solver, you will probaly want to use more efficient functions like 
-  productWith(). */
+  iterative linear solver, you will probably want to use more efficient functions like product. */
 
   /** Read access. */
   T operator()(int i, int j) 
   { 
-    //return T(0);
-
     Element e(i, j, T(0));
     if(elements.empty()) 
       return T(0);
@@ -1155,13 +1158,11 @@ public:
       return elements[k].value;
   }
 
+  /** Sets the element at position (i,j) to the given new value. This may lead to insertion of a 
+  new element (if there's no element yet at i,j) or removal of existing elements (if val is 
+  zero). */
   void set(int i, int j, T val) 
   { 
-    // todo: find flat index of i,j - if found, set new value, if not found, insert new value at
-    // appropriate place - maybe the find function should always return the flat index of the 
-    // element with position <= the new element, so in a subsequent test, we only need to check if 
-    // < or == to decide whether to insert or overwrite
-
     rsAssert(isValidIndexPair(i, j), "Index out of range");
     Element e(i, j, T(val));
     if(elements.empty() && val != T(0)) {
@@ -1176,9 +1177,7 @@ public:
       else
         rsRemove(elements, k); }
   }
-  // todo: if val == 0, we may need to remove an element - setting it to zero as we do now will not
-  // give wrong results in computations, but they will be less efficient due to actually performing 
-  // the multiply-adds with the zero elements -> done -> needs tests
+  // todo: element removal needs tests
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1203,9 +1202,27 @@ public:
   // naive algo should be part of the test-suite but not the class itself.
 
 
-  static void solveGaussSeidel(const rsSparseMatrix<T>& D, const rsSparseMatrix<T>& N, T* x, T* b,
-    T tol);
+  /** Given the diagonal part D and non-diagonal part N of a matrix A, such that A = D + N, this 
+  function solves the linear system A*x = (D+N)*x = b via Gauss-Seidel iteration and returns the 
+  number of iterations taken. The resulting solution vector will be written into x. Whatever is 
+  stored in the vector x before the call will be taken as initial guess. For the iteration to 
+  converge, the matrix A must be strictly diagonally dominant. That means the diagonal element on 
+  each row must have larger absolute value than the sum of the absolute values of the off-diagonal
+  elements in the same row. 
+  https://en.wikipedia.org/wiki/Gauss%E2%80%93Seidel_method
+  https://en.wikipedia.org/wiki/Diagonally_dominant_matrix   */
+  static int solveGaussSeidel(const rsSparseMatrix<T>& D, const rsSparseMatrix<T>& N, T* x, 
+    const T* b, T tol);
 
+  /** Convenience function that takes the matrix A and splits it internally into diagonal and 
+  non-diagonal parts. This is slow, so it should be used only in testing. In production code, the 
+  splitting can typically be done once and for all as pre-processing step. */
+  static int solveGaussSeidel(const rsSparseMatrix<T>& A, T* x, const T* b, T tol)
+  { return solveGaussSeidel(A.getDiagonalPart(), A.getNonDiagonalPart(), x, b, tol); }
+
+  // todo: implement SOR:
+  // https://en.wikipedia.org/wiki/Successive_over-relaxation
+  // needs a workspace of size N, becomes Gauss-Seidel for w=1 and Jacobi for w=0
 
 protected:
 
@@ -1251,11 +1268,11 @@ protected:
 };
 
 template<class T>
-void rsSparseMatrix<T>::solveGaussSeidel(
-  const rsSparseMatrix<T>& D, const rsSparseMatrix<T>& C, T* x, T* b, T tol)
+int rsSparseMatrix<T>::solveGaussSeidel(
+  const rsSparseMatrix<T>& D, const rsSparseMatrix<T>& C, T* x, const T* b, T tol)
 {
   size_t N = (size_t) D.numRows;
-
+  int numIts = 0;
   while(true)
   {
     // Perform one Gauss-Seidel iteration and record the maximum change in the value in any of the
@@ -1276,14 +1293,15 @@ void rsSparseMatrix<T>::solveGaussSeidel(
       x[i] = xi;
     }
 
+    // Increment iteration counter and check convergence criterion:
+    numIts++;
     if(dMax <= tol)
       break;
   }
-  // this is still wrong - the iteration diverges, dMax grows instead of shrinking
 
-
-  int dummy = 0;
+  return numIts;
 }
+
 
 // ToDo: 
 // -Make another implementation (with the same interface) that stores rows. This saves one 

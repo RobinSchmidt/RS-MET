@@ -778,27 +778,35 @@ bool testSparseMatrixSolvers()
   using Vec = std::vector<float>;
   using Mat = rsSparseMatrix<float>;
 
-  //      |1 2 3|
-  //  A = |4 5 6|
-  //      |7 8 9|
+  //      |7 1 2|
+  //  A = |3 8 4|  ...must be strictly diagoally dominant for Gauss-Seidel to converge
+  //      |5 2 9|
 
   int N = 3;
   Mat A(N, N);
-  A.set(0, 0, 1.f);  A.set(0, 1, 2.f);  A.set(0, 2, 3.f);
-  A.set(1, 0, 4.f);  A.set(1, 1, 5.f);  A.set(1, 2, 6.f);
-  A.set(2, 0, 7.f);  A.set(2, 1, 8.f);  A.set(2, 2, 9.f);
+  A.set(0, 0, 7.f);  A.set(0, 1, 1.f);  A.set(0, 2, 2.f);
+  A.set(1, 0, 3.f);  A.set(1, 1, 8.f);  A.set(1, 2, 4.f);
+  A.set(2, 0, 5.f);  A.set(2, 1, 2.f);  A.set(2, 2, 9.f);
 
   // Compute matrix-vector product y = A*x:
   Vec x({1,2,3}), y(N);
   A.product(&x[0], &y[0]);
 
   // Try to reconstruct x via solving A*x = y:
-  Mat D = A.getDiagonalPart();
-  Mat C = A.getNonDiagonalPart();
+  //Mat D = A.getDiagonalPart();    // maybe this should be a vector...but maybe not
+  //Mat C = A.getNonDiagonalPart();
 
-  float tol = 1.e-6f;
+  //float tol = 1.e-6f;
+  float tol = 0.f;
   Vec x2(N);
-  Mat::solveGaussSeidel(D, C, &x2[0], &y[0], tol);
+  //int numIts = Mat::solveGaussSeidel(D, C, &x2[0], &y[0], tol);
+  int numIts = Mat::solveGaussSeidel(A, &x2[0], &y[0], tol);
+  res &= x == x2;
+  res &= numIts == 13;  // converges to machine precision (with 0 tolerance) in 13 iterations
+
+
+  // ToDo: in certain contexts, it may make sense to use a better initial guess (here, we use the 
+  // zero vector)
 
 
   return res;
