@@ -506,7 +506,8 @@ public:
   static bool isPeakOrValley(const T *x, int n);
 
   /** Checks whether the buffer is sorted in ascending order, that is buffer[i] <= buffer[i+1] for
-  all i. */
+  all i, but it actually uses only the < operator in the implementation: it will return false, iff
+  buffer[i+1] < buffer[i] for some value of i. */
   template <class T>
   static bool isSortedAscending(const T *buffer, int length);
 
@@ -1007,6 +1008,29 @@ inline int rsArrayTools::findMaxAbs(const T *buffer, int length)
   return maxIndex;
 }
 
+template<class T>
+int rsArrayTools::findSplitIndex(const T* A, int N, T key)
+{
+  rsAssert(isSortedAscending(A, N), "array must be sorted");
+  int imin = 0;
+  int imax = N-1;
+
+  if(A[imax] < key) // new - needs tests
+    return N;
+
+  while( imin < imax ) {
+    int imid = imin/2 + imax/2;
+    //rsAssert(imid < imax); // only for debug
+    if( A[imid] < key )
+      imin = imid + 1;
+    else
+      imax = imid;
+  }
+  return imin;
+}
+// compare to this: https://en.wikipedia.org/wiki/Binary_search_algorithm
+// what about RSLib? look, if we have something like hat there already
+
 template <class T>
 inline bool rsArrayTools::isAllZeros(const T *buffer, int length)
 {
@@ -1039,6 +1063,17 @@ bool rsArrayTools::isPeakOrPlateau(const T *x, int n)
   if(x[n] >= x[n-1] && x[n] >= x[n+1])
     return true;
   return false;
+}
+
+template <class T>
+bool rsArrayTools::isSortedAscending(const T *buffer, int length)
+{
+  for(int i = 0; i < length-1; i++) 
+  {
+    //if(!(buffer[i] <= buffer[i+1])) return false; // old, requires, <=
+    if(buffer[i+1] < buffer[i]) return false; // new, requires only < to be implemented
+  }
+  return true;
 }
 
 template<class T>

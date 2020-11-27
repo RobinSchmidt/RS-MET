@@ -725,6 +725,35 @@ bool testKroneckerProduct()
   return res;
 }
 
+bool testSparseMatrix()
+{
+  bool res = true;
+
+  using Vec = std::vector<float>;
+
+  // We create a matrix of the form:
+  // 
+  //      |1 1 0 0 0 0 0 0|
+  //  A = |0 0 1 1 0 0 0 0|
+  //      |0 0 0 0 1 1 0 0|
+  //      |0 0 0 0 0 0 1 1|
+  //
+  // so, it takes an 8-vector as input and produces a 4-vector as output in which each element is
+  // the sum of two consecutive elements from the input.
+
+  rsSparseMatrix<float> A(4, 8); // still the zero matrix
+  Vec x({1,2,3,4,5,6,7,8});      // input vector
+  Vec y({1,2,3,4});              // output vector
+  A.product(&x[0], &y[0]);  res &= y == Vec({0,0,0,0}); 
+
+  // Now build up the actual matrix in a kind of "random" manner:
+  A.set(1, 2, 1.f);
+
+
+  return res;
+}
+
+
 bool testMatrix()
 {
   std::string dummy;
@@ -738,14 +767,17 @@ bool testMatrix()
   // obsolete - tests the old matrix class - todo: write similar tests for the new class
   //...
 
-  // tests for the nwe matrix class:
+  // tests for the new dense matrix class:
   testResult &= testMatrixView();
   testResult &= testMatrixOperators();
   testResult &= testMatrixAlloc();
   testResult &= testKroneckerProduct();
-
-
   //testResult &= testTransformMatrices();
+
+
+  testResult &= testSparseMatrix(); 
+
+
 
   return testResult;
 }

@@ -699,7 +699,7 @@ public:
   /** Computes the matrix-vector product y = A*x of this matrix with the given vector x and stores
   the result in y where x and y are given as raw arrays. The length of x must match the number of
   columns and the length of y must match the number of rows. */
-  void productWith(const T* x, T* y) const
+  void product(const T* x, T* y) const
   {
     rsAssert(x != y, "Can't be used in place");
     for(int i = 0; i < getNumRows(); i++) {
@@ -707,11 +707,12 @@ public:
       for(int j = 0; j < getNumColumns(); j++)
         y[i] += at(i, j) * x[j]; }
   }
+  // maybe rename to product (also in rsSparseMatrix)
 
   /** Convenience function to compute matrix-vector product y = A*x, taking a raw array for x as
   input and producing the result as a std::vector. */
   std::vector<T> productWith(const T* x) const
-  { std::vector<T> y(getNumRows()); productWith(x, &y[0]); return y; }
+  { std::vector<T> y(getNumRows()); product(x, &y[0]); return y; }
 
 
   //-----------------------------------------------------------------------------------------------

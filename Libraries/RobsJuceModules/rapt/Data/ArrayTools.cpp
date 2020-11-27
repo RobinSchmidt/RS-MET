@@ -819,6 +819,8 @@ int rsArrayTools::findPeakOrValleyLeft(const T *x, int N, int n0)
   return nL;
 }
 
+/*
+// moved to .h file
 template<class T>
 int rsArrayTools::findSplitIndex(const T* A, int N, T key)
 {
@@ -841,6 +843,7 @@ int rsArrayTools::findSplitIndex(const T* A, int N, T key)
 }
 // compare to this: https://en.wikipedia.org/wiki/Binary_search_algorithm
 // what about RSLib? look, if we have something like hat there already
+*/
 
 template<class T>
 int rsArrayTools::findSplitIndexClosest(const T* a, const int N, const T val)
@@ -855,7 +858,7 @@ int rsArrayTools::findSplitIndexClosest(const T* a, const int N, const T val)
   return i;
 }
 
-
+/* moved to .h
 template <class T>
 bool rsArrayTools::isSortedAscending(const T *buffer, int length)
 {
@@ -864,6 +867,7 @@ bool rsArrayTools::isSortedAscending(const T *buffer, int length)
       return false; }
   return true;
 }
+*/
 
 template <class T>
 bool rsArrayTools::isSortedStrictlyAscending(const T *buffer, int length)

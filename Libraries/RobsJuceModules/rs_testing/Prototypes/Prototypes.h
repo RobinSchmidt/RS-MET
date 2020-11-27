@@ -1088,11 +1088,26 @@ class rsSparseMatrix
 
 public:
 
-  // todo: provide a (subset of) the same interface as rsMatrix(View)
+  // todo: provide a (subset of) the same interface as rsMatrix(View)...maybe it's a good idea to 
+  // keep the interface small to make it easier to provide different implementations with different
+  // storage modes with the same interface that can be benchmarked against each other.
+
+  rsSparseMatrix() {}
+
+  rsSparseMatrix(int numRows, int numColumns)
+  {
+    rsAssert(numRows >= 1 && numColumns >= 1);
+    this->numRows = numRows;
+    this->numCols = numColumns;
+  }
 
   //-----------------------------------------------------------------------------------------------
 
   int getNumElements() { return (int) elements.size(); }
+
+
+  bool isValidIndexPair(int i, int j) const 
+  { return i >= 0 && i < numRows && j >= 0 && j < numCols; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1111,17 +1126,31 @@ public:
     // appropriate place - maybe the find function should always return the flat index of the 
     // element with position <= the new element, so in a subsequent test, we only need to check if 
     // < or == to decide whether to insert or overwrite
+
+    rsAssert(isValidIndexPair(i, j), "Index out of range");
+    Element e(i, j, T(val));
+    if(elements.empty())
+    {
+      elements.push_back(e);
+      return;
+    }
+
+
+    //int k = rsArrayTools::findSplitIndex(&elements[0], getNumElements(), Element(i, j, T(0)));
   
+
+    int dummy = 0;
   }
 
 
   //-----------------------------------------------------------------------------------------------
 
-  /** Computes the matrix-vector product y = A*x. */
-  void productWith(const T* x, T* y) const
+  /** Computes the matrix-vector product y = A*x where x must be numCols long and y must be numRows 
+  long. */
+  void product(const T* x, T* y) const
   {
     rsAssert(x != y, "Can't be used in place");
-    for(int j = 0; j < numCols; j++)
+    for(int j = 0; j < numRows; j++)
       y[j] = T(0);
     for(size_t k = 0; k < elements.size(); k++)
       y[elements[k].j] += elements[k].value * x[elements[k].i];
@@ -1144,13 +1173,26 @@ protected:
   struct Element
   {
     int i, j;   // row and column index
-    T value; 
+    T value;
+
+    Element(int row, int col, T val) { i = row; j = col; value = val; }
+
+    /** The less-than operator compares indices, i.e. a < b, iff a is supposed to be stored before 
+    b in our elements array. The value plays no role here. This is needed for the binary search 
+    that is used in element access. */
+    bool operator<(const Element& b) const
+    {
+      if(i   < b.i) return true;
+      if(b.i <   i) return false;
+      if(j   < b.j) return true;   // i == b.i, compare with respect to j
+      return false;
+    }
   };
 
 
   int numRows = 0, numCols = 0;  // number of rows and columns - maybe try to get rid
   
-  std::vector<T> elements;
+  std::vector<Element> elements;
 
 
 };
