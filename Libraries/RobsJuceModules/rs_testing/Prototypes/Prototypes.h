@@ -1079,7 +1079,90 @@ protected:
 
 };
 
+//=================================================================================================
 
+template<class T>
+class rsSparseMatrix
+{
+
+
+public:
+
+  // todo: provide a (subset of) the same interface as rsMatrix(View)
+
+  //-----------------------------------------------------------------------------------------------
+
+  int getNumElements() { return (int) elements.size(); }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Accessors. Element access via these is slow, so they should probably be only used, when 
+  a matrix is built once and for all as a precomputation. When the matrix is used later e.g. in an
+  iterative linear solver, you will probaly want to use more efficient functions like 
+  productWith(). */
+
+  /** Read access. */
+  T operator()(int i, int j) { return T(0); }  // preliminary
+
+
+  void set(int i, int j, T val) 
+  { 
+    // todo: find flat index of i,j - if found, set new value, if not found, insert new value at
+    // appropriate place - maybe the find function should always return the flat index of the 
+    // element with position <= the new element, so in a subsequent test, we only need to check if 
+    // < or == to decide whether to insert or overwrite
+  
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+
+  /** Computes the matrix-vector product y = A*x. */
+  void productWith(const T* x, T* y) const
+  {
+    rsAssert(x != y, "Can't be used in place");
+    for(int j = 0; j < numCols; j++)
+      y[j] = T(0);
+    for(size_t k = 0; k < elements.size(); k++)
+      y[elements[k].j] += elements[k].value * x[elements[k].i];
+  }
+
+
+
+protected:
+
+  /** Given a matrix position with row- and column-indices i,j, this function either returns the 
+  flat index k at which the element is found in our elements array or, if it's not found, the index
+  at which that element should be inserted. */
+  int flatIndex(int i, int j)
+  {
+    return 0;  // preliminary
+    // todo: do a binary search for element at position i,j, return its the flat index k if 
+    // present, otherwise return the place where this element should be inserted
+  }
+
+  struct Element
+  {
+    int i, j;   // row and column index
+    T value; 
+  };
+
+
+  int numRows = 0, numCols = 0;  // number of rows and columns - maybe try to get rid
+  
+  std::vector<T> elements;
+
+
+};
+// ToDo: 
+// -Make another implementation (with the same interface) that stores rows. This saves one 
+//  integer of storage space per entry because the row index is given implicitly. Maybe make a 
+//  column-wise version, too - but that's less useful because with row-wise storage, it's more 
+//  convenient and efficient to execute matrix-vector multiplications which is the most important 
+//  operation in iterative linear solvers, which are the main application of sparse matrices.
+// -Maybe templatize also on the integer type used for indices i,j. Users may want to use short
+//  integers (16 bit) to save even more storage space, especially when T is float because then 
+//  one entry is exactly 64 bits long). Maybe use TIdx, TVal for the two template parameters.
 
 
 //=================================================================================================
