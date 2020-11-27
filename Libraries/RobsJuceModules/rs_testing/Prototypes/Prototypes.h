@@ -1081,6 +1081,10 @@ protected:
 
 //=================================================================================================
 
+/** A class for representing and performing computations with sparse matrices which are matrices in 
+which most elements are zero. This implementation uses a std::vector of "elements" where each 
+element stores its row- and column-indices and the actual value. */
+
 template<class T>
 class rsSparseMatrix
 {
@@ -1103,6 +1107,7 @@ public:
 
   //-----------------------------------------------------------------------------------------------
 
+  /** Returns the number of nonzero elements in this matrix. */
   int getNumElements() { return (int) elements.size(); }
 
 
@@ -1117,8 +1122,19 @@ public:
   productWith(). */
 
   /** Read access. */
-  T operator()(int i, int j) { return T(0); }  // preliminary
+  T operator()(int i, int j) 
+  { 
+    //return T(0);
 
+    Element e(i, j, T(0));
+    if(elements.empty()) 
+      return T(0);
+    size_t k = (size_t) rsArrayTools::findSplitIndex(&elements[0], getNumElements(), e);
+    if(k >= elements.size() || e < elements[k])
+      return T(0);
+    else
+      return elements[k].value;
+  }
 
   void set(int i, int j, T val) 
   { 
@@ -1129,30 +1145,43 @@ public:
 
     rsAssert(isValidIndexPair(i, j), "Index out of range");
     Element e(i, j, T(val));
-    if(elements.empty())  {
+    if(elements.empty() && val != T(0)) {
       elements.push_back(e);
       return;  }
     size_t k = (size_t) rsArrayTools::findSplitIndex(&elements[0], getNumElements(), e);
-    if(k >= elements.size() || e < elements[k])
+    if((k >= elements.size() || e < elements[k]) && val != T(0))
       rsInsert(elements, e, k);
-    else
-      elements[k] = e;
+    else {
+      if(val != T(0))
+        elements[k] = e;
+      else
+        rsRemove(elements, k); }
   }
+  // todo: if val == 0, we may need to remove an element - setting it to zero as we do now will not
+  // give wrong results in computations, but they will be less efficient due to actually performing 
+  // the multiply-adds with the zero elements -> done -> needs tests
 
 
   //-----------------------------------------------------------------------------------------------
 
   /** Computes the matrix-vector product y = A*x where x must be numCols long and y must be numRows 
-  long. */
+  long. The complexity is O(N+K) where N is the number of rows and K is the number of nonzero 
+  elements. */
   void product(const T* x, T* y) const
   {
     rsAssert(x != y, "Can't be used in place");
     for(int j = 0; j < numRows; j++)
       y[j] = T(0);
     for(size_t k = 0; k < elements.size(); k++)
-      y[elements[k].j] += elements[k].value * x[elements[k].i];
+      y[elements[k].i] += elements[k].value * x[elements[k].j];
   }
 
+  // todo: maybe implement matrix-operators +,-,*. Such operations should result in another 
+  // (possibly less) sparse matrix. A naive algorithm for addition can use element access and set. 
+  // I think, this will have complexity O(N*M*(log(K1)+log(K2))) where N,M are number of rows and 
+  // columns and K1, K2 are the numbers of nozero elements in operands 1 and 2. I think, it's 
+  // possible to do in O(K1 + K2) or maybe O(K1*log(K1) + K2*log(K2))...or something. Maybe the 
+  // naive algo should be part of the test-suite but not the class itself.
 
 
 protected:
@@ -1160,12 +1189,15 @@ protected:
   /** Given a matrix position with row- and column-indices i,j, this function either returns the 
   flat index k at which the element is found in our elements array or, if it's not found, the index
   at which that element should be inserted. */
+  /*
   int flatIndex(int i, int j)
   {
+
     return 0;  // preliminary
     // todo: do a binary search for element at position i,j, return its the flat index k if 
     // present, otherwise return the place where this element should be inserted
   }
+  */
 
   struct Element
   {
@@ -1175,8 +1207,9 @@ protected:
     Element(int row, int col, T val) { i = row; j = col; value = val; }
 
     /** The less-than operator compares indices, i.e. a < b, iff a is supposed to be stored before 
-    b in our elements array. The value plays no role here. This is needed for the binary search 
-    that is used in element access. */
+    b in our elements array. The actual stored value plays no role in this comparison. This may 
+    seem weird but it is just what is needed for the binary search (which uses the operator) that 
+    is used in element access. ...todo: try to find a more elegant solution. */
     bool operator<(const Element& b) const
     {
       if(i   < b.i) return true;

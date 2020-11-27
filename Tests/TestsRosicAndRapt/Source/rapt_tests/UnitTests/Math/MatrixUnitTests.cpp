@@ -757,6 +757,16 @@ bool testSparseMatrix()
   A.set(2, 4, 1.f);
   A.set(3, 7, 1.f);
 
+  // Test the multiplication with the new matrix again:
+  A.product(&x[0], &y[0]);  res &= y == Vec({3,7,11,15});
+
+  res &= A(0, 0) == 1.f;
+  res &= A(0, 1) == 1.f;
+  res &= A(0, 2) == 0.f;
+  res &= A(0, 3) == 0.f;
+  // ...
+
+  // todo: test replacing elements, also with zero (in which case they should get removed)
 
   return res;
 }
