@@ -1129,17 +1129,14 @@ public:
 
     rsAssert(isValidIndexPair(i, j), "Index out of range");
     Element e(i, j, T(val));
-    if(elements.empty())
-    {
+    if(elements.empty())  {
       elements.push_back(e);
-      return;
-    }
-
-
-    //int k = rsArrayTools::findSplitIndex(&elements[0], getNumElements(), Element(i, j, T(0)));
-  
-
-    int dummy = 0;
+      return;  }
+    size_t k = (size_t) rsArrayTools::findSplitIndex(&elements[0], getNumElements(), e);
+    if(k >= elements.size() || e < elements[k])
+      rsInsert(elements, e, k);
+    else
+      elements[k] = e;
   }
 
 

@@ -746,8 +746,16 @@ bool testSparseMatrix()
   Vec y({1,2,3,4});              // output vector
   A.product(&x[0], &y[0]);  res &= y == Vec({0,0,0,0}); 
 
-  // Now build up the actual matrix in a kind of "random" manner:
+  // Now build up the actual matrix in a kind of "random" manner. The nonzero (i.e. one) elements 
+  // are at positions: (0,0),(0,1),(1,2),(1,3),(2,4),(2,5),(3,6),(3,7):
   A.set(1, 2, 1.f);
+  A.set(2, 5, 1.f);
+  A.set(0, 0, 1.f);
+  A.set(0, 1, 1.f);
+  A.set(3, 6, 1.f);
+  A.set(1, 3, 1.f);
+  A.set(2, 4, 1.f);
+  A.set(3, 7, 1.f);
 
 
   return res;
