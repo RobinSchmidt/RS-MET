@@ -1220,6 +1220,14 @@ public:
   static int solveGaussSeidel(const rsSparseMatrix<T>& A, T* x, const T* b, T tol)
   { return solveGaussSeidel(A.getDiagonalPart(), A.getNonDiagonalPart(), x, b, tol); }
 
+
+  static int solveSOR(const rsSparseMatrix<T>& D, const rsSparseMatrix<T>& N, T* x, 
+    const T* b, T tol, T* workspace, T w);
+
+  static int solveSOR(const rsSparseMatrix<T>& A, T* x, const T* b, T tol, T* workspace, T w)
+  { return solveSOR(A.getDiagonalPart(), A.getNonDiagonalPart(), x, b, tol, workspace, w); }
+
+
   // todo: implement SOR:
   // https://en.wikipedia.org/wiki/Successive_over-relaxation
   // needs a workspace of size N, becomes Gauss-Seidel for w=1 and Jacobi for w=0
@@ -1273,10 +1281,46 @@ int rsSparseMatrix<T>::solveGaussSeidel(
 {
   size_t N = (size_t) D.numRows;
   int numIts = 0;
-  while(true)
-  {
+  while(true) {
+
     // Perform one Gauss-Seidel iteration and record the maximum change in the value in any of the
     // elements in vector x:
+    size_t k = 0;
+    T dMax = T(0);
+    for(size_t i = 0; i < N; i++) {
+      T xi = b[i];  // xi will become the new, updated value for x[i]
+      while(k < C.elements.size() && C.elements[k].i == i)  {
+        xi -= C.elements[k].value * x[C.elements[k].j];
+        k++;  
+      }
+      xi /= D.elements[i].value;
+      T dxi = x[i] - xi;
+      dMax = rsMax(dMax, rsAbs(dxi));
+      x[i] = xi; 
+    }
+
+    // Increment iteration counter and check convergence criterion:
+    numIts++;
+    if(dMax <= tol)
+      break;
+  }
+
+  return numIts;
+}
+
+template<class T>
+int rsSparseMatrix<T>::solveSOR(const rsSparseMatrix<T>& D, const rsSparseMatrix<T>& C, T* x,
+  const T* b, T tol, T* wrk, T w)
+{
+  size_t N = (size_t) D.numRows;
+  int numIts = 0;
+  while(true)
+  {
+    // Perform one iteration of SOR and record the maximum change in the value in any of the
+    // elements in vector x:
+    for(size_t i = 0; i < N; i++)
+      wrk[i] = x[i];
+
     size_t k = 0;
     T dMax = T(0);
     for(size_t i = 0; i < N; i++)
@@ -1284,7 +1328,9 @@ int rsSparseMatrix<T>::solveGaussSeidel(
       T xi = b[i];  // xi will become the new, updated value for x[i]
       while(k < C.elements.size() && C.elements[k].i == i) 
       {
-        xi -= C.elements[k].value * x[C.elements[k].j];
+        T xOld = wrk[C.elements[k].j];
+        T xNew = x[  C.elements[k].j];
+        xi -= C.elements[k].value * (w * xNew + (T(1)-w) * xOld);
         k++;
       }
       xi /= D.elements[i].value;
@@ -1300,6 +1346,7 @@ int rsSparseMatrix<T>::solveGaussSeidel(
   }
 
   return numIts;
+
 }
 
 

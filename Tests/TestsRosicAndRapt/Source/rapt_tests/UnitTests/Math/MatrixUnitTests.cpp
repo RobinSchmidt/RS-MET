@@ -805,6 +805,33 @@ bool testSparseMatrixSolvers()
   res &= numIts == 13;  // converges to machine precision (with 0 tolerance) in 13 iterations
 
 
+  rsSetZero(x2);
+  Vec wrk(N);
+  numIts = Mat::solveSOR(A, &x2[0], &y[0], tol, &wrk[0], 1.f); // 1: same as Gauss-Seidel
+  res &= x == x2;
+  res &= numIts == 13; 
+  rsSetZero(x2);
+  numIts = Mat::solveSOR(A, &x2[0], &y[0], tol, &wrk[0], 0.f); // 0: same as Jacobi
+  res &= x == x2;
+  res &= numIts == 40;   // Jacobi takes much longer!
+
+  // try some other values of w:
+  rsSetZero(x2);
+  numIts = Mat::solveSOR(A, &x2[0], &y[0], tol, &wrk[0], 0.5f); 
+  res &= x == x2;
+  res &= numIts == 18;   // 0.5 is in between Jacobi and Gauss-Seidel as expected
+
+  // w > 1 gets us into actual *over*relaxation territory - but it doesn't seem to improve 
+  // convergence:
+  rsSetZero(x2);
+  numIts = Mat::solveSOR(A, &x2[0], &y[0], tol, &wrk[0], 1.1f); 
+  res &= x == x2;
+
+  // ..so Gauss-Seidel actually seems to converge fastest, which is good because it's also the most
+  // efficient algo and uses no additional workspace memory! ..but why does SOR not outperform it? 
+  // isn't it supposed to do? maybe there's a bug? ...more tests and experiments needed...
+
+
   // ToDo: in certain contexts, it may make sense to use a better initial guess (here, we use the 
   // zero vector)
 
