@@ -771,6 +771,40 @@ bool testSparseMatrix()
   return res;
 }
 
+bool testSparseMatrixSolvers()
+{
+  bool res = true;
+
+  using Vec = std::vector<float>;
+  using Mat = rsSparseMatrix<float>;
+
+  //      |1 2 3|
+  //  A = |4 5 6|
+  //      |7 8 9|
+
+  int N = 3;
+  Mat A(N, N);
+  A.set(0, 0, 1.f);  A.set(0, 1, 2.f);  A.set(0, 2, 3.f);
+  A.set(1, 0, 4.f);  A.set(1, 1, 5.f);  A.set(1, 2, 6.f);
+  A.set(2, 0, 7.f);  A.set(2, 1, 8.f);  A.set(2, 2, 9.f);
+
+  // Compute matrix-vector product y = A*x:
+  Vec x({1,2,3}), y(N);
+  A.product(&x[0], &y[0]);
+
+  // Try to reconstruct x via solving A*x = y:
+  Mat D = A.getDiagonalPart();
+  Mat C = A.getNonDiagonalPart();
+
+  float tol = 1.e-6f;
+  Vec x2(N);
+  Mat::solveGaussSeidel(D, C, &x2[0], &y[0], tol);
+
+
+  return res;
+}
+
+
 
 bool testMatrix()
 {
@@ -794,6 +828,7 @@ bool testMatrix()
 
 
   testResult &= testSparseMatrix(); 
+  testResult &= testSparseMatrixSolvers();
 
 
 

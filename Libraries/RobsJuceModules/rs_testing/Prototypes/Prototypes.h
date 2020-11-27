@@ -1115,6 +1115,25 @@ public:
   { return i >= 0 && i < numRows && j >= 0 && j < numCols; }
 
 
+  rsSparseMatrix<T> getDiagonalPart() const
+  {
+    rsSparseMatrix<T> D(numRows, numCols);
+    for(size_t k = 0; k < elements.size(); k++)
+      if(elements[k].i == elements[k].j)
+        D.set(elements[k].i, elements[k].j, elements[k].value);
+    return D;
+  }
+
+  rsSparseMatrix<T> getNonDiagonalPart() const
+  {
+    rsSparseMatrix<T> N(numRows, numCols);
+    for(size_t k = 0; k < elements.size(); k++)
+      if(elements[k].i != elements[k].j)
+        N.set(elements[k].i, elements[k].j, elements[k].value);
+    return N;
+  }
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Accessors. Element access via these is slow, so they should probably be only used, when 
   a matrix is built once and for all as a precomputation. When the matrix is used later e.g. in an
@@ -1184,6 +1203,10 @@ public:
   // naive algo should be part of the test-suite but not the class itself.
 
 
+  static void solveGaussSeidel(const rsSparseMatrix<T>& D, const rsSparseMatrix<T>& N, T* x, T* b,
+    T tol);
+
+
 protected:
 
   /** Given a matrix position with row- and column-indices i,j, this function either returns the 
@@ -1226,6 +1249,42 @@ protected:
 
 
 };
+
+template<class T>
+void rsSparseMatrix<T>::solveGaussSeidel(
+  const rsSparseMatrix<T>& D, const rsSparseMatrix<T>& C, T* x, T* b, T tol)
+{
+  size_t N = (size_t) D.numRows;
+
+  while(true)
+  {
+    // Perform one Gauss-Seidel iteration and record the maximum change in the value in any of the
+    // elements in vector x:
+    size_t k = 0;
+    T dMax = T(0);
+    for(size_t i = 0; i < N; i++)
+    {
+      T xi = b[i];  // xi will become the new, updated value for x[i]
+      while(k < C.elements.size() && C.elements[k].i == i) 
+      {
+        xi -= C.elements[k].value * x[C.elements[k].j];
+        k++;
+      }
+      xi /= D.elements[i].value;
+      T dxi = x[i] - xi;
+      dMax = rsMax(dMax, rsAbs(dxi));
+      x[i] = xi;
+    }
+
+    if(dMax <= tol)
+      break;
+  }
+  // this is still wrong - the iteration diverges, dMax grows instead of shrinking
+
+
+  int dummy = 0;
+}
+
 // ToDo: 
 // -Make another implementation (with the same interface) that stores rows. This saves one 
 //  integer of storage space per entry because the row index is given implicitly. Maybe make a 
