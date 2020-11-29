@@ -1237,6 +1237,7 @@ public:
   splitting can typically be done once and for all as pre-processing step. */
   static int solveGaussSeidel(const rsSparseMatrix<T>& A, T* x, const T* b, T tol)
   { return solveGaussSeidel(A.getDiagonalPart(), A.getNonDiagonalPart(), x, b, tol); }
+  // maybe make it non-static, to be called like A.solveGaussSeidel
 
 
   /**
@@ -1253,8 +1254,10 @@ public:
   // todo: implement computation of eigenvalues and -vectors maybe by vector iteration, because
   // the matrix-vector product is already implemented and efficient to compute
 
-  static int largestEigenVector(const rsSparseMatrix<T>& A, T* x, T* workspace, T w);
-  // this should use iterateProduct
+  int largestEigenValueAndVector(T* val, T* vec, T tol, T* workspace) const;
+  // this should use iterateProduct, maybe it should take a second vector that will be subtracted
+  // before the iteration (can be used later to subtract the projection onto the partial eigenspace
+  // in order to compute eigenvalues and -vectors other than the largest)
 
 protected:
 
@@ -1396,7 +1399,74 @@ int rsSparseMatrix<T>::solveSOR(const rsSparseMatrix<T>& D, const rsSparseMatrix
   }
 
   return numIts;
+}
 
+template<class T>
+T getLength(T* x, int N)
+{
+  T t = T(0);  // temporary
+  for(int i = 0; i < N; i++)
+    t += x[i] * x[i];
+  return sqrt(t);
+}
+// maybe move to rsArrayTools
+
+/*
+template<class T>
+ normalizeLength(T* x, int N)
+{
+  T t = T(0);  // temporary
+  for(int i = 0; i < N; i++)
+    t += x[i] * x[i];
+  T L = sqrt(t);
+
+  t = T(1) / L;
+  for(int i = 0; i < N; i++)
+    x[i] *= t;
+  return L;
+}
+
+*/
+
+
+template<class T>
+int rsSparseMatrix<T>::largestEigenValueAndVector(T* val, T* vec, T tol, T* wrk) const
+{
+  rsAssert(numRows == numCols, "Can be used only for square matrices");
+  using AT = rsArrayTools;
+  size_t N = numRows;
+  T oldLength = getLength(vec, N);
+  int numIts = 0;
+  while(true)
+  {
+    iterateProduct(vec, wrk);
+
+    T newLength = getLength(wrk, N);
+
+    *val = newLength / oldLength;
+    // well, that's actually just the absolute value of the largest eigenvalue - we still need to 
+    // determine the sign ...also, what about complex eigenvalues and -vectors?
+
+
+    T dMax = AT::maxDeviation(vec, wrk, N);
+    // nope - that's wrong, we need to compare vec with val * wrk (i think)
+
+
+    rsArrayTools::copy(wrk, vec, N);
+    if(dMax <= tol)
+      break;
+
+
+
+    // ah - damn - the convergence test is more tricky because iterate product is actually expected
+    // to change the vector, even after convergence: when it's converged, we expect expect the 
+    // (eigen)vector to scaled by the corresponding eigenvalue...so, i guess, that implies we need
+    // a wrokspace, too because it makes no sense to use updated scaled values ...unless we can 
+    // somehow manage to compensate for the scaling by predicting it via the current estimate of 
+    // the eigenvalue
+  }
+
+  return numIts;
 }
 
 

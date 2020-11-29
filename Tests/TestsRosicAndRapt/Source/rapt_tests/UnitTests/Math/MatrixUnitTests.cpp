@@ -834,6 +834,12 @@ bool testSparseMatrixSolvers()
   // efficient algo and uses no additional workspace memory! ..but why does SOR not outperform it? 
   // isn't it supposed to do? maybe there's a bug? ...more tests and experiments needed...
 
+  // Try to find eigenvalues and vectors:
+  float ev;
+  x = Vec({1,1,1});
+  //A.largestEigenValueAndVector(&ev, &x[0], tol, &wrk[0]);
+  // that doesn't work yet
+
 
   // ToDo: in certain contexts, it may make sense to use a better initial guess (here, we use the 
   // zero vector)
