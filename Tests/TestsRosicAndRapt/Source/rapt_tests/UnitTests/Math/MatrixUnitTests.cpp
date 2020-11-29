@@ -791,6 +791,9 @@ bool testSparseMatrixSolvers()
   // Compute matrix-vector product y = A*x:
   Vec x({1,2,3}), y(N);
   A.product(&x[0], &y[0]);
+  res &= y == Vec({15, 31, 36});
+  A.iterateProduct(&x[0], &y[0]);
+  res &= y == Vec({15, 31, 36});
 
   // Try to reconstruct x via solving A*x = y:
   //Mat D = A.getDiagonalPart();    // maybe this should be a vector...but maybe not

@@ -1194,6 +1194,22 @@ public:
       y[elements[k].i] += elements[k].value * x[elements[k].j];
   }
 
+
+  /** Computes the matrix-vector product y = A*x and returns the maximum absolute value of the 
+  change in y before and after the call. This is supposed to be used inside vector iterations of
+  the form yNew = A * yOld, where y takes the role of yNew and x the role of yOld. This implies 
+  that x and y must have the same dimensionality which in turn means the matrix A must be square. 
+  The return value can be used in a convergence test. If x and y are the same, i.e. the function is
+  applied in place, the returned y vector will actually not be the matrix-vector product A*x 
+  because in the computations of the values with higher index, it will use already updated values 
+  with lower index. That may seem undesirable from a mathematical cleanliness point of view, but in
+  practice, that may actually speed up convergence (see Jacobi- vs Gauss-Seidel iteration - it's a 
+  similar situation here). So, it can be used in place in such a context - just don't expect the 
+  computed y to be the exact matrix-vector product then. (todo: test, if it really improves 
+  convergence - i just assume it because of the similarity to Gauss-Seidel) */
+  T iterateProduct(const T* x, T* y) const;
+
+
   // todo: maybe implement matrix-operators +,-,*. Such operations should result in another 
   // (possibly less) sparse matrix. A naive algorithm for addition can use element access and set. 
   // I think, this will have complexity O(N*M*(log(K1)+log(K2))) where N,M are number of rows and 
@@ -1201,6 +1217,8 @@ public:
   // possible to do in O(K1 + K2) or maybe O(K1*log(K1) + K2*log(K2))...or something. Maybe the 
   // naive algo should be part of the test-suite but not the class itself.
 
+
+  // maybe move into class rsSparseLinearAlgebra to not overload this class
 
   /** Given the diagonal part D and non-diagonal part N of a matrix A, such that A = D + N, this 
   function solves the linear system A*x = (D+N)*x = b via Gauss-Seidel iteration and returns the 
@@ -1221,6 +1239,9 @@ public:
   { return solveGaussSeidel(A.getDiagonalPart(), A.getNonDiagonalPart(), x, b, tol); }
 
 
+  /**
+  https://en.wikipedia.org/wiki/Successive_over-relaxation
+  needs a workspace of size N, becomes Gauss-Seidel for w = 1 and Jacobi for w = 0.  */
   static int solveSOR(const rsSparseMatrix<T>& D, const rsSparseMatrix<T>& N, T* x, 
     const T* b, T tol, T* workspace, T w);
 
@@ -1228,9 +1249,12 @@ public:
   { return solveSOR(A.getDiagonalPart(), A.getNonDiagonalPart(), x, b, tol, workspace, w); }
 
 
-  // todo: implement SOR:
-  // https://en.wikipedia.org/wiki/Successive_over-relaxation
-  // needs a workspace of size N, becomes Gauss-Seidel for w=1 and Jacobi for w=0
+
+  // todo: implement computation of eigenvalues and -vectors maybe by vector iteration, because
+  // the matrix-vector product is already implemented and efficient to compute
+
+  static int largestEigenVector(const rsSparseMatrix<T>& A, T* x, T* workspace, T w);
+  // this should use iterateProduct
 
 protected:
 
@@ -1276,14 +1300,37 @@ protected:
 };
 
 template<class T>
+T rsSparseMatrix<T>::iterateProduct(const T* x, T* y) const
+{
+  rsAssert(numRows == numCols, "Can be used only for square matrices");
+  size_t k = 0;
+  T dMax = T(0);
+  while(k < elements.size())
+  {
+    size_t i = elements[k].i;
+    T yi = T(0);
+    while(k < elements.size() && elements[k].i == i) {
+      yi += elements[k].value * x[elements[k].j];
+      k++; }
+    T dyi = y[i] - yi;
+    dMax = rsMax(dMax, rsAbs(dyi));
+    y[i] = yi; 
+  }
+  return dMax;
+}
+
+template<class T>
 int rsSparseMatrix<T>::solveGaussSeidel(
   const rsSparseMatrix<T>& D, const rsSparseMatrix<T>& C, T* x, const T* b, T tol)
 {
   size_t N = (size_t) D.numRows;
+  rsAssert(D.numCols == N); // the matrices D,C must be square and have the same shape
+  rsAssert(C.numRows == N);
+  rsAssert(C.numCols == N);
   int numIts = 0;
   while(true) {
 
-    // Perform one Gauss-Seidel iteration and record the maximum change in the value in any of the
+    // Perform one Gauss-Seidel step and record the maximum change in the value in any of the
     // elements in vector x:
     size_t k = 0;
     T dMax = T(0);
@@ -1291,7 +1338,7 @@ int rsSparseMatrix<T>::solveGaussSeidel(
       T xi = b[i];  // xi will become the new, updated value for x[i]
       while(k < C.elements.size() && C.elements[k].i == i)  {
         xi -= C.elements[k].value * x[C.elements[k].j];
-        k++;  
+        k++;
       }
       xi /= D.elements[i].value;
       T dxi = x[i] - xi;
@@ -1307,6 +1354,9 @@ int rsSparseMatrix<T>::solveGaussSeidel(
 
   return numIts;
 }
+// todo: can the internal step be expressed using C.product(x, x) - this would be nice for 
+// generalizing the algo to other implementations of sparse matrices...but it may be hard to keep
+// track of the dMax
 
 template<class T>
 int rsSparseMatrix<T>::solveSOR(const rsSparseMatrix<T>& D, const rsSparseMatrix<T>& C, T* x,
