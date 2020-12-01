@@ -294,9 +294,13 @@ public:
   template <class T1, class T2, class TR>
   static void divide(const T1 *buffer1, const T2 *buffer2, TR *result, int length);
 
-
   //template <class T>
   //static bool equals(const T *x, const T *y, int length, T tolerance);
+
+  /** Returns the Euclidean norm (i.e. the length) of the N-dimensional vector x. This is the 
+  square-root of the sum of the squares of the elements. */
+  template<class T>
+  static T euclideanNorm(T* x, int N);
 
   /** Fills the array with values given by a function. For example, calling it like:
         fill(a, length, [](int i){ return 3*i+1; });
@@ -957,6 +961,12 @@ inline bool rsArrayTools::equal(const T *buffer1, const T *buffer2, const int le
       return false;
   }
   return true;
+}
+
+template<class T>
+static T rsArrayTools::euclideanNorm(T* x, int N)
+{
+  return sqrt(rsArrayTools::sumOfSquares(x, N));
 }
 
 template<class T, class F>

@@ -878,8 +878,19 @@ bool testSparseMatrixSolvers()
   A.set(2, 0, 0.f);  A.set(2, 1, 4.f);  A.set(2, 2, 9.f);
   x = Vec({1,2,3});
   tol = 1.e-7;
-  numIts = A.largestEigenValueAndVector(&ev, &x[0], tol, &wrk[0]);
+  //numIts = A.largestEigenValueAndVector(&ev, &x[0], tol, &wrk[0]);
+
+
+  using LA = rsIterativeLinearAlgebra;
+  x = Vec({1,2,3});
+  LA::largestEigenValueAndVector(A, &ev, &x[0], tol, &wrk[0]);
   // val: 11, vec: (0,1,2) / sqrt(5)
+
+
+  // todo: 
+  // -try to find the other 2 eigenvalues and -vectors, too
+  // -figure out what happens when we have eigenvalues with multiplicities (algebraic and/or
+  //  geometric)
 
 
   return res;

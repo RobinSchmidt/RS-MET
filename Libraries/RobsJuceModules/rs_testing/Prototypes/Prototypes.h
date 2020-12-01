@@ -1108,7 +1108,12 @@ public:
   //-----------------------------------------------------------------------------------------------
 
   /** Returns the number of nonzero elements in this matrix. */
-  int getNumElements() { return (int) elements.size(); }
+  int getNumElements() const { return (int) elements.size(); }
+
+  int getNumRows() const { return numRows; }
+
+  int getNumColumns() const { return numCols; }
+
 
 
   bool isValidIndexPair(int i, int j) const 
@@ -1255,10 +1260,19 @@ public:
   // todo: implement computation of eigenvalues and -vectors maybe by vector iteration, because
   // the matrix-vector product is already implemented and efficient to compute
 
-  int largestEigenValueAndVector(T* val, T* vec, T tol, T* workspace) const;
+  //int largestEigenValueAndVector(T* val, T* vec, T tol, T* workspace) const;
   // this should use iterateProduct, maybe it should take a second vector that will be subtracted
   // before the iteration (can be used later to subtract the projection onto the partial eigenspace
   // in order to compute eigenvalues and -vectors other than the largest)
+
+
+  int eigenspace(T* vals, T* vecs, T tol, T* workspace) const;
+  // each eigenvector is found in turn from the largest to the smallest via a variation of the von 
+  // Mises iteration in which the projection of the iterates onto the already found eigenspace is
+  // subtracted from the iterates
+  // returns the maximum number of iterations, i.e. the number of iteration for the eigenvector 
+  // that took the most iterations...hmm - or maybe it should return the sum of all iterations
+
 
 protected:
 
@@ -1303,6 +1317,16 @@ protected:
 
 };
 
+// ToDo: 
+// -Make another implementation (with the same interface) that stores rows. This saves one 
+//  integer of storage space per entry because the row index is given implicitly. Maybe make a 
+//  column-wise version, too - but that's less useful because with row-wise storage, it's more 
+//  convenient and efficient to execute matrix-vector multiplications which is the most important 
+//  operation in iterative linear solvers, which are the main application of sparse matrices.
+// -Maybe templatize also on the integer type used for indices i,j. Users may want to use short
+//  integers (16 bit) to save even more storage space, especially when T is float because then 
+//  one entry is exactly 64 bits long). Maybe use TIdx, TVal for the two template parameters.
+
 template<class T>
 T rsSparseMatrix<T>::iterateProduct(const T* x, T* y) const
 {
@@ -1322,6 +1346,8 @@ T rsSparseMatrix<T>::iterateProduct(const T* x, T* y) const
   }
   return dMax;
 }
+// this function may not be that useful after all, maybe remove it (or put it into some sort of 
+// code-attic)
 
 template<class T>
 int rsSparseMatrix<T>::solveGaussSeidel(
@@ -1402,64 +1428,108 @@ int rsSparseMatrix<T>::solveSOR(const rsSparseMatrix<T>& D, const rsSparseMatrix
   return numIts;
 }
 
-template<class T>
-T getLength(T* x, int N)
-{
-  T t = T(0);  // temporary
-  for(int i = 0; i < N; i++)
-    t += x[i] * x[i];
-  return sqrt(t);
-}
-// maybe move to rsArrayTools
-
+/*
+// replaced by function in rsIterativeLinearAlgebra
 template<class T>
 int rsSparseMatrix<T>::largestEigenValueAndVector(T* val, T* vec, T tol, T* wrk) const
 {
   rsAssert(numRows == numCols, "Can be used only for square matrices");
   using AT = rsArrayTools;
   int N = numRows;
-  T oldLength = getLength(vec, N);
-  AT::scale(vec, N, T(1) / oldLength);
+  T L = AT::euclideanNorm(vec, N);
+  AT::scale(vec, N, T(1) / L);
   int numIts = 0;
-
-  while(true)
-  {
+  while(true) {
     product(vec, wrk);
-    T newLength = getLength(wrk, N);
-    AT::scale(wrk, N, T(1) / newLength);
+    L = AT::euclideanNorm(wrk, N);
+    AT::scale(wrk, N, T(1) / L);
     T dMax = AT::maxDeviation(vec, wrk, N);
-    if(dMax <= tol)
-    {
-      //*val = wrk[i] / vec[i];
-      //*val = newLength / oldLength;  // but that's only the absolute value
-
-      *val = newLength;                  // ...that's only the absolute value
+    if(dMax <= tol) {
+      *val = L;                          // that's only the absolute value...
       int i = AT::maxAbsIndex(vec, N);
       if(vec[i] * wrk[i] < T(0))         // ...this figures out the sign
         *val = -(*val);
-
-      break;
-    }
+      AT::copy(wrk, vec, N);             // return the last iterate, not the 2nd to last
+      break; }
     AT::copy(wrk, vec, N);
-    oldLength = newLength;  // do we need this?
-    numIts++;
-  }
-
+    numIts++; }
   return numIts;
 }
+*/
 
 
+//=================================================================================================
+
+/** A class that implements iterative algorithms for numerical linear algebra. It is written in
+such a way that the same code can be used with dense or sparse matrices or any other kind of 
+special matrix, as long as some appropriate low-level functions are added to this class for the
+specific matrix-types. These low-level functions include things like retrieving the shape and for
+computing matrix-vector or matrix-matrix products. These low-level special purpose implementations 
+(one for each special matrix class) will then be used inside the actual computational algorithms 
+which themselves will be the same for all the different matrix classes. If you want to use the 
+algorithms for some new special matrix class, you will need to add just a small amount of 
+boilerplate code for these operations - either here in the class or as global functions. */
+
+class rsIterativeLinearAlgebra
+{
+
+public:
+
+  template<class T, class TMat>
+  static int largestEigenValueAndVector(const TMat& A, T* val, T* vec, T tol, T* wrk);
+  // maybe rename to vonMisesIteration or eigenViaVonMises/eigenViaPowerIteration
+
+  // Specializations of some low-level functions for sparse matrices (boilerplate):
+  template<class T> static void product(const rsSparseMatrix<T>& A, const T* x, T* y) { A.product(x, y); }
+  template<class T> static int numRows(const rsSparseMatrix<T>& A) { return A.getNumRows(); }
+  template<class T> static int numColumns(const rsSparseMatrix<T>& A) { return A.getNumColumns(); }
+
+};
+
+template<class T, class TMat>
+int rsIterativeLinearAlgebra::largestEigenValueAndVector(
+  const TMat& A, T* val, T* vec, T tol, T* wrk)
+{
+  rsAssert(numRows(A) == numColumns(A), "Can be used only for square matrices");
+  using AT = rsArrayTools;
+  int N = numRows(A);
+  T L = AT::euclideanNorm(vec, N);
+  AT::scale(vec, N, T(1) / L);
+  int numIts = 0;
+  while(true) {
+    product(A, vec, wrk);
+    L = AT::euclideanNorm(wrk, N);
+    AT::scale(wrk, N, T(1) / L);
+    T dMax = AT::maxDeviation(vec, wrk, N);
+    if(dMax <= tol) {
+      *val = L;                          // that's only the absolute value...
+      int i = AT::maxAbsIndex(vec, N);
+      if(vec[i] * wrk[i] < T(0))         // ...this figures out the sign
+        *val = -(*val);
+      AT::copy(wrk, vec, N);             // return the last iterate, not the 2nd to last
+      break; }
+    AT::copy(wrk, vec, N);
+    numIts++; }
+  return numIts;
+}
+// This implements the von Mises vector iteration.
+// https://en.wikipedia.org/wiki/Power_iteration
+
+// ToDo:
+// -maybe rename to MisesIteration
+// -maybe include a maxNumIterations parameter
+// -maybe factor out the stuff below product, such that the compiled version of this code can be 
+//  re-used for dense matrices (to reduce binary size)..maybe into a normalizeAndTest function
+//  that returns a boolean, the copy inside the if can be dragged outside the while(true) loop
+// -try to come up with an in-place iteration like Gauss-Seidel - but it must take care to not
+//  use the updated values as is but scale them by the current stimate of the eigenvalue, because 
+//  the next iterate is expected to be scaled by the eigenvalue in the iteration - so the summation
+//  loop need to be split inot two halfs: one with the scaling (using the updated values) and one 
+//  without (using the old values)
+// -try to find all eigenvalues and -vectors by subtracting the projection onto the already found
+//  eigenspace from each iterate - this should be done right after product(vec, wrk); i think
 
 
-// ToDo: 
-// -Make another implementation (with the same interface) that stores rows. This saves one 
-//  integer of storage space per entry because the row index is given implicitly. Maybe make a 
-//  column-wise version, too - but that's less useful because with row-wise storage, it's more 
-//  convenient and efficient to execute matrix-vector multiplications which is the most important 
-//  operation in iterative linear solvers, which are the main application of sparse matrices.
-// -Maybe templatize also on the integer type used for indices i,j. Users may want to use short
-//  integers (16 bit) to save even more storage space, especially when T is float because then 
-//  one entry is exactly 64 bits long). Maybe use TIdx, TVal for the two template parameters.
 
 
 //=================================================================================================
