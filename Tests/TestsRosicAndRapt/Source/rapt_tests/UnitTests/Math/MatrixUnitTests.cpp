@@ -858,20 +858,28 @@ bool testSparseMatrixSolvers()
   // A = V.transpose() * D * V
   // V, D, A
 
+  /*
   A.set(0, 0,  4.f/3);  A.set(0, 1, 0.f/3);  A.set(0, 2, 10.f/3);
   A.set(1, 0,  0.f/3);  A.set(1, 1, 4.f/3);  A.set(1, 2,  2.f/3);
   A.set(2, 0, 10.f/3);  A.set(2, 1, 2.f/3);  A.set(2, 2,  4.f/3);
   x = Vec({1,2,3});
   tol = 1.e-7;
   numIts = A.largestEigenValueAndVector(&ev, &x[0], tol, &wrk[0]);
+  */
 
   // hmm... A.eigenvectors_right()  does not give the eigenvalues and -vectors i expected from
   // the construction isn't V supposed to be the matrix of eigenvectors and D the diagonal matrix
-  // with the eignevalues? ...maybe try another example from a book
+  // with the eignevalues? ...maybe try another example from a book or wikipedia:
+  // https://en.wikipedia.org/wiki/Eigenvalues_and_eigenvectors#Three-dimensional_matrix_example
 
 
- 
-
+  A.set(0, 0, 2.f);  A.set(0, 1, 0.f);  A.set(0, 2, 0.f);
+  A.set(1, 0, 0.f);  A.set(1, 1, 3.f);  A.set(1, 2, 4.f);
+  A.set(2, 0, 0.f);  A.set(2, 1, 4.f);  A.set(2, 2, 9.f);
+  x = Vec({1,2,3});
+  tol = 1.e-7;
+  numIts = A.largestEigenValueAndVector(&ev, &x[0], tol, &wrk[0]);
+  // val: 11, vec: (0,1,2) / sqrt(5)
 
 
   return res;

@@ -1412,23 +1412,6 @@ T getLength(T* x, int N)
 }
 // maybe move to rsArrayTools
 
-/*
-template<class T>
- normalizeLength(T* x, int N)
-{
-  T t = T(0);  // temporary
-  for(int i = 0; i < N; i++)
-    t += x[i] * x[i];
-  T L = sqrt(t);
-
-  t = T(1) / L;
-  for(int i = 0; i < N; i++)
-    x[i] *= t;
-  return L;
-}
-
-*/
-
 template<class T>
 int rsSparseMatrix<T>::largestEigenValueAndVector(T* val, T* vec, T tol, T* wrk) const
 {
@@ -1447,62 +1430,25 @@ int rsSparseMatrix<T>::largestEigenValueAndVector(T* val, T* vec, T tol, T* wrk)
     T dMax = AT::maxDeviation(vec, wrk, N);
     if(dMax <= tol)
     {
-      //int i = AT::maxAbsIndex(vec, N);
       //*val = wrk[i] / vec[i];
+      //*val = newLength / oldLength;  // but that's only the absolute value
 
-      *val = newLength / oldLength;  // but that's only the absolute value
+      *val = newLength;                  // ...that's only the absolute value
+      int i = AT::maxAbsIndex(vec, N);
+      if(vec[i] * wrk[i] < T(0))         // ...this figures out the sign
+        *val = -(*val);
 
       break;
     }
     AT::copy(wrk, vec, N);
-    oldLength = newLength;
+    oldLength = newLength;  // do we need this?
     numIts++;
   }
 
   return numIts;
 }
 
-/*
-template<class T>
-int rsSparseMatrix<T>::largestEigenValueAndVector(T* val, T* vec, T tol, T* wrk) const
-{
-  rsAssert(numRows == numCols, "Can be used only for square matrices");
-  using AT = rsArrayTools;
-  size_t N = numRows;
-  T oldLength = getLength(vec, N);
-  int numIts = 0;
-  while(true)
-  {
-    iterateProduct(vec, wrk);
 
-    T newLength = getLength(wrk, N);
-
-    *val = newLength / oldLength;
-    // well, that's actually just the absolute value of the largest eigenvalue - we still need to 
-    // determine the sign ...also, what about complex eigenvalues and -vectors?
-
-
-    T dMax = AT::maxDeviation(vec, wrk, N);
-    // nope - that's wrong, we need to compare vec with val * wrk (i think)
-
-
-    rsArrayTools::copy(wrk, vec, N);
-    if(dMax <= tol)
-      break;
-
-
-
-    // ah - damn - the convergence test is more tricky because iterate product is actually expected
-    // to change the vector, even after convergence: when it's converged, we expect expect the 
-    // (eigen)vector to scaled by the corresponding eigenvalue...so, i guess, that implies we need
-    // a wrokspace, too because it makes no sense to use updated scaled values ...unless we can 
-    // somehow manage to compensate for the scaling by predicting it via the current estimate of 
-    // the eigenvalue
-  }
-
-  return numIts;
-}
-*/
 
 
 // ToDo: 
