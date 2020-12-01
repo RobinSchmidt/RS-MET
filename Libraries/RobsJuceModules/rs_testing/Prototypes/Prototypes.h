@@ -1493,39 +1493,27 @@ int rsIterativeLinearAlgebra::largestEigenValueAndVector(
 template<class T, class TMat>
 int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol, T* wrk)
 {
+  // Algorithm:
+  // It works like the von Mises vector iteration for one eigenvector at the time, from large to 
+  // small. To avoid converging to the same eigenvector again, instead of just forming the 
+  // matrix-vector product of the matrix with the previous iterate, we subtract from that product 
+  // the projection of it onto the space spanned by the already previously found eigenvectors.
+
   rsAssert(numRows(A) == numColumns(A), "Can be used only for square matrices");
   using AT = rsArrayTools;
   int N = numRows(A);
   int numIts = 0;
-
-  for(int n = 0; n < N; n++)
-  {
-    T* val = &vals[n];    // location of n-th eigenvalue
-    T* vec = &vecs[n*N];  // start location of n-th eigenvector
-
+  for(int n = 0; n < N; n++) {        // loop over the eigenvectors
+    T* val = &vals[n];                // location of n-th eigenvalue
+    T* vec = &vecs[n*N];              // start location of n-th eigenvector
     T L = AT::euclideanNorm(vec, N);
     AT::scale(vec, N, T(1) / L);
-
-
-    while(true) 
-    {
+    while(true) {
       product(A, vec, wrk);
-
-      // from wrk, subtract its projection onto the space spanned by the already found eigenvectors
-      // up to n
-      for(int i = 0; i < n; i++)
-      {
-        // compute projection coefficient of wrk on i-th eigenvector:
+      for(int i = 0; i < n; i++) {
         T pi = T(0);
-        for(int j = 0; j < N; j++)
-          pi += wrk[j] * vecs[i*N + j];
-
-        // ...aaand subtract the projection:
-        for(int j = 0; j < N; j++)
-          wrk[j] -= pi * vecs[i*N + j];
-      }
-
-
+        for(int j = 0; j < N; j++) pi += wrk[j] * vecs[i*N + j];   // compute projection coefficient
+        for(int j = 0; j < N; j++) wrk[j] -= pi * vecs[i*N + j]; } // subtract the projection
       L = AT::euclideanNorm(wrk, N);
       AT::scale(wrk, N, T(1) / L);
       T dMax = AT::maxDeviation(vec, wrk, N);
@@ -1537,9 +1525,7 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
         AT::copy(wrk, vec, N);
         break; }
       AT::copy(wrk, vec, N);
-      numIts++; }
-  }
-
+      numIts++; }}
   return numIts;
 }
 // maybe get rid of the function that that computes only the largest - give this function another
