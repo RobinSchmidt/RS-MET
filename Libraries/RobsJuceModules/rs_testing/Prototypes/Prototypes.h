@@ -1208,6 +1208,7 @@ public:
   computed y to be the exact matrix-vector product then. (todo: test, if it really improves 
   convergence - i just assume it because of the similarity to Gauss-Seidel) */
   T iterateProduct(const T* x, T* y) const;
+  // may not be needed
 
 
   // todo: maybe implement matrix-operators +,-,*. Such operations should result in another 
@@ -1428,7 +1429,40 @@ template<class T>
 
 */
 
+template<class T>
+int rsSparseMatrix<T>::largestEigenValueAndVector(T* val, T* vec, T tol, T* wrk) const
+{
+  rsAssert(numRows == numCols, "Can be used only for square matrices");
+  using AT = rsArrayTools;
+  int N = numRows;
+  T oldLength = getLength(vec, N);
+  AT::scale(vec, N, T(1) / oldLength);
+  int numIts = 0;
 
+  while(true)
+  {
+    product(vec, wrk);
+    T newLength = getLength(wrk, N);
+    AT::scale(wrk, N, T(1) / newLength);
+    T dMax = AT::maxDeviation(vec, wrk, N);
+    if(dMax <= tol)
+    {
+      //int i = AT::maxAbsIndex(vec, N);
+      //*val = wrk[i] / vec[i];
+
+      *val = newLength / oldLength;  // but that's only the absolute value
+
+      break;
+    }
+    AT::copy(wrk, vec, N);
+    oldLength = newLength;
+    numIts++;
+  }
+
+  return numIts;
+}
+
+/*
 template<class T>
 int rsSparseMatrix<T>::largestEigenValueAndVector(T* val, T* vec, T tol, T* wrk) const
 {
@@ -1468,6 +1502,7 @@ int rsSparseMatrix<T>::largestEigenValueAndVector(T* val, T* vec, T tol, T* wrk)
 
   return numIts;
 }
+*/
 
 
 // ToDo: 

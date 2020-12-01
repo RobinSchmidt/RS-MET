@@ -834,6 +834,11 @@ bool testSparseMatrixSolvers()
   // efficient algo and uses no additional workspace memory! ..but why does SOR not outperform it? 
   // isn't it supposed to do? maybe there's a bug? ...more tests and experiments needed...
 
+  // ToDo: in certain contexts, it may make sense to use a better initial guess (here, we use the 
+  // zero vector)
+
+
+
   // Try to find eigenvalues and vectors:
   float ev;
   x = Vec({1,1,1});
@@ -841,8 +846,32 @@ bool testSparseMatrixSolvers()
   // that doesn't work yet
 
 
-  // ToDo: in certain contexts, it may make sense to use a better initial guess (here, we use the 
-  // zero vector)
+  // Try to find the eigenvalues and -vectors of A = V^T * D * V with
+  // 
+  //     |1  1  1|                 |5  0  0|          |4  0  10|
+  // V = |1  1 -1| / sqrt(3),  D = |0 -3  0|,  -> A = |0  4   2| / 3
+  //     |1 -1  1|                 |0  0  2|          |10 2   4|
+  //
+  // Sage code for the matrices:
+  // V = Matrix([[1, 1, 1],[1,1,-1],[1,-1,1]]) / sqrt(3)
+  // D = Matrix([[5, 0, 0],[0,-3,0],[0,0,2]])
+  // A = V.transpose() * D * V
+  // V, D, A
+
+  A.set(0, 0,  4.f/3);  A.set(0, 1, 0.f/3);  A.set(0, 2, 10.f/3);
+  A.set(1, 0,  0.f/3);  A.set(1, 1, 4.f/3);  A.set(1, 2,  2.f/3);
+  A.set(2, 0, 10.f/3);  A.set(2, 1, 2.f/3);  A.set(2, 2,  4.f/3);
+  x = Vec({1,2,3});
+  tol = 1.e-7;
+  numIts = A.largestEigenValueAndVector(&ev, &x[0], tol, &wrk[0]);
+
+  // hmm... A.eigenvectors_right()  does not give the eigenvalues and -vectors i expected from
+  // the construction isn't V supposed to be the matrix of eigenvectors and D the diagonal matrix
+  // with the eignevalues? ...maybe try another example from a book
+
+
+ 
+
 
 
   return res;
