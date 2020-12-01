@@ -886,6 +886,9 @@ bool testSparseMatrixSolvers()
   LA::largestEigenValueAndVector(A, &ev, &x[0], tol, &wrk[0]);
   // val: 11, vec: (0,1,2) / sqrt(5)
 
+  Vec vals(3);
+  Vec vecs({1,2,3, 1,2,3, 1,2,3});
+  LA::eigenspace(A, &vals[0], &vecs[0], tol, &wrk[0]);
 
   // todo: 
   // -try to find the other 2 eigenvalues and -vectors, too

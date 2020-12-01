@@ -1256,24 +1256,6 @@ public:
   { return solveSOR(A.getDiagonalPart(), A.getNonDiagonalPart(), x, b, tol, workspace, w); }
 
 
-
-  // todo: implement computation of eigenvalues and -vectors maybe by vector iteration, because
-  // the matrix-vector product is already implemented and efficient to compute
-
-  //int largestEigenValueAndVector(T* val, T* vec, T tol, T* workspace) const;
-  // this should use iterateProduct, maybe it should take a second vector that will be subtracted
-  // before the iteration (can be used later to subtract the projection onto the partial eigenspace
-  // in order to compute eigenvalues and -vectors other than the largest)
-
-
-  int eigenspace(T* vals, T* vecs, T tol, T* workspace) const;
-  // each eigenvector is found in turn from the largest to the smallest via a variation of the von 
-  // Mises iteration in which the projection of the iterates onto the already found eigenspace is
-  // subtracted from the iterates
-  // returns the maximum number of iterations, i.e. the number of iteration for the eigenvector 
-  // that took the most iterations...hmm - or maybe it should return the sum of all iterations
-
-
 protected:
 
   /** Given a matrix position with row- and column-indices i,j, this function either returns the 
@@ -1428,36 +1410,6 @@ int rsSparseMatrix<T>::solveSOR(const rsSparseMatrix<T>& D, const rsSparseMatrix
   return numIts;
 }
 
-/*
-// replaced by function in rsIterativeLinearAlgebra
-template<class T>
-int rsSparseMatrix<T>::largestEigenValueAndVector(T* val, T* vec, T tol, T* wrk) const
-{
-  rsAssert(numRows == numCols, "Can be used only for square matrices");
-  using AT = rsArrayTools;
-  int N = numRows;
-  T L = AT::euclideanNorm(vec, N);
-  AT::scale(vec, N, T(1) / L);
-  int numIts = 0;
-  while(true) {
-    product(vec, wrk);
-    L = AT::euclideanNorm(wrk, N);
-    AT::scale(wrk, N, T(1) / L);
-    T dMax = AT::maxDeviation(vec, wrk, N);
-    if(dMax <= tol) {
-      *val = L;                          // that's only the absolute value...
-      int i = AT::maxAbsIndex(vec, N);
-      if(vec[i] * wrk[i] < T(0))         // ...this figures out the sign
-        *val = -(*val);
-      AT::copy(wrk, vec, N);             // return the last iterate, not the 2nd to last
-      break; }
-    AT::copy(wrk, vec, N);
-    numIts++; }
-  return numIts;
-}
-*/
-
-
 //=================================================================================================
 
 /** A class that implements iterative algorithms for numerical linear algebra. It is written in
@@ -1476,8 +1428,17 @@ class rsIterativeLinearAlgebra
 public:
 
   template<class T, class TMat>
-  static int largestEigenValueAndVector(const TMat& A, T* val, T* vec, T tol, T* wrk);
+  static int largestEigenValueAndVector(const TMat& A, T* val, T* vec, T tol, T* workspace);
   // maybe rename to vonMisesIteration or eigenViaVonMises/eigenViaPowerIteration
+
+  template<class T, class TMat>
+  static int eigenspace(const TMat& A, T* vals, T* vecs, T tol, T* workspace);
+  // each eigenvector is found in turn from the largest to the smallest via a variation of the von 
+  // Mises iteration in which the projection of the iterates onto the already found eigenspace is
+  // subtracted from the iterates
+  // returns the maximum number of iterations, i.e. the number of iteration for the eigenvector 
+  // that took the most iterations...hmm - or maybe it should return the sum of all iterations
+
 
   // Specializations of some low-level functions for sparse matrices (boilerplate):
   template<class T> static void product(const rsSparseMatrix<T>& A, const T* x, T* y) { A.product(x, y); }
@@ -1529,6 +1490,61 @@ int rsIterativeLinearAlgebra::largestEigenValueAndVector(
 // -try to find all eigenvalues and -vectors by subtracting the projection onto the already found
 //  eigenspace from each iterate - this should be done right after product(vec, wrk); i think
 
+template<class T, class TMat>
+int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol, T* wrk)
+{
+  rsAssert(numRows(A) == numColumns(A), "Can be used only for square matrices");
+  using AT = rsArrayTools;
+  int N = numRows(A);
+  int numIts = 0;
+
+  for(int n = 0; n < N; n++)
+  {
+    T* val = &vals[n];    // location of n-th eigenvalue
+    T* vec = &vecs[n*N];  // start location of n-th eigenvector
+
+    T L = AT::euclideanNorm(vec, N);
+    AT::scale(vec, N, T(1) / L);
+
+
+    while(true) 
+    {
+      product(A, vec, wrk);
+
+      // from wrk, subtract its projection onto the space spanned by the already found eigenvectors
+      // up to n
+      for(int i = 0; i < n; i++)
+      {
+        // compute projection coefficient of wrk on i-th eigenvector:
+        T pi = T(0);
+        for(int j = 0; j < N; j++)
+          pi += wrk[j] * vecs[i*N + j];
+
+        // ...aaand subtract the projection:
+        for(int j = 0; j < N; j++)
+          wrk[j] -= pi * vecs[i*N + j];
+      }
+
+
+      L = AT::euclideanNorm(wrk, N);
+      AT::scale(wrk, N, T(1) / L);
+      T dMax = AT::maxDeviation(vec, wrk, N);
+      if(dMax <= tol) {
+        *val = L;
+        int i = AT::maxAbsIndex(vec, N);
+        if(vec[i] * wrk[i] < T(0)) 
+          *val = -(*val);
+        AT::copy(wrk, vec, N);
+        break; }
+      AT::copy(wrk, vec, N);
+      numIts++; }
+  }
+
+  return numIts;
+}
+// maybe get rid of the function that that computes only the largest - give this function another
+// parameter that determines, how many eigenvalues should be computed, and if it's 1, it just 
+// reduces to the function that computes the largest.
 
 
 
