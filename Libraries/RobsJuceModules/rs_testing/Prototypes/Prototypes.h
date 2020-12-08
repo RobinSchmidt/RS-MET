@@ -1131,7 +1131,8 @@ public:
         D.set(elements[k].i, elements[k].j, elements[k].value);
     return D;
   }
-  // maybe this should return a vector instead of a sparse matrix
+  // maybe this should return a vector instead of a sparse matrix, maybe make a function that 
+  // splits A into diagonal and non-diagonal at once: splitOutDiagonalPart(Vec& D, Mat& N)
 
   /** Returns the diagonal part N of this matrix A, such that A = D + N (where D is the 
   diagonal part). */
@@ -1198,6 +1199,10 @@ public:
     for(size_t k = 0; k < elements.size(); k++)
       y[elements[k].i] += elements[k].value * x[elements[k].j];
   }
+  // -maybe include optional strideX, strideY parameters - or maybe implement a separate function with
+  //  strides
+  // -how can we implement the product with the transposed matrix? would it be
+  //    y[elements[k].j] += elements[k].value * x[elements[k].i];
 
 
   /** Computes the matrix-vector product y = A*x and returns the maximum absolute value of the 
@@ -1438,12 +1443,19 @@ public:
   // subtracted from the iterates
   // returns the maximum number of iterations, i.e. the number of iteration for the eigenvector 
   // that took the most iterations...hmm - or maybe it should return the sum of all iterations
+  // -maybe it should take an additional parameter to specify, how many eigenpairs should be found
+  //  and also a maximum number of iterations
 
 
   // Specializations of some low-level functions for sparse matrices (boilerplate):
   template<class T> static void product(const rsSparseMatrix<T>& A, const T* x, T* y) { A.product(x, y); }
   template<class T> static int numRows(const rsSparseMatrix<T>& A) { return A.getNumRows(); }
   template<class T> static int numColumns(const rsSparseMatrix<T>& A) { return A.getNumColumns(); }
+
+  // todo: implement:
+  // https://en.wikipedia.org/wiki/Conjugate_gradient_method
+  // https://en.wikipedia.org/wiki/Biconjugate_gradient_method
+  // https://en.wikipedia.org/wiki/Biconjugate_gradient_stabilized_method
 
 };
 
@@ -1477,6 +1489,8 @@ int rsIterativeLinearAlgebra::largestEigenValueAndVector(
 // https://en.wikipedia.org/wiki/Power_iteration
 
 // ToDo:
+// -try using the maximum norm instead of the Euclidean - may be numerically more precise due to 
+//  involving less arithmetic (none, actually)
 // -maybe rename to MisesIteration
 // -maybe include a maxNumIterations parameter
 // -maybe factor out the stuff below product, such that the compiled version of this code can be 
@@ -1501,20 +1515,27 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
 
   rsAssert(numRows(A) == numColumns(A), "Can be used only for square matrices");
   using AT = rsArrayTools;
+
+  T (*norm)(const T*, int) = &AT::euclideanNorm;
+  //T (*norm)(const T*, int) = &AT::maxAbs;
+  // i think, any norm should work, but maxAbs apparently doesn't - why?
+
   int N = numRows(A);
   int numIts = 0;
   for(int n = 0; n < N; n++) {        // loop over the eigenvectors
     T* val = &vals[n];                // location of n-th eigenvalue
     T* vec = &vecs[n*N];              // start location of n-th eigenvector
-    T L = AT::euclideanNorm(vec, N);
+    //T L = AT::euclideanNorm(vec, N);
+    T L = norm(vec, N);
     AT::scale(vec, N, T(1) / L);
     while(true) {
       product(A, vec, wrk);
       for(int i = 0; i < n; i++) {
         T pi = T(0);
-        for(int j = 0; j < N; j++) pi += wrk[j] * vecs[i*N + j];   // compute projection coefficient
-        for(int j = 0; j < N; j++) wrk[j] -= pi * vecs[i*N + j]; } // subtract the projection
-      L = AT::euclideanNorm(wrk, N);
+        for(int j = 0; j < N; j++) pi += wrk[j] * vecs[i*N + j];   // compute projection coeff
+        for(int j = 0; j < N; j++) wrk[j] -= pi * vecs[i*N + j]; } // subtract projection
+      //L = AT::euclideanNorm(wrk, N);
+      L = norm(wrk, N);
       AT::scale(wrk, N, T(1) / L);
       T dMax = AT::maxDeviation(vec, wrk, N);
       if(dMax <= tol) {
@@ -1528,9 +1549,20 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
       numIts++; }}
   return numIts;
 }
-// maybe get rid of the function that that computes only the largest - give this function another
-// parameter that determines, how many eigenvalues should be computed, and if it's 1, it just 
-// reduces to the function that computes the largest.
+// -maybe get rid of the function that that computes only the largest - give this function another
+//  parameter that determines, how many eigenvalues should be computed, and if it's 1, it just 
+//  reduces to the function that computes the largest.
+// -maybe have a boolean parameter to switch between finding eigenspace of A or A^-1 - in the 2nd
+//  case, we may have to use solve(A, vec, wrk) or solve(A, wrk, vec) instead of 
+//  product(A, vec, wrk) ...maybe we could also finde eigenvalues of A^T, A^-T
+// -maybe try to improve convergence by using a matrix with suitably shifted eigenvalues, the 
+//  shift should be such as to maximize the ratio between the largest and second-to-largest 
+//  (remaining, absolute) eigenvalue. maybe the trace could help: it's the sum of all eigenvalues,
+//  divide by N to get the average and subtract that average to center the eigenvalues around zero.
+//  ...but for the 2nd eigenpair, we want to center the *remaining* eigenvalues around zero - maybe 
+//  subtract all the already found eigenvalues from the trace before dividing by N -> experiments
+//  needed. ..the determinant is the product of all eigenvalues btw - but i don't think that's 
+//  helpful here (it's hard to compute anyway)
 
 
 

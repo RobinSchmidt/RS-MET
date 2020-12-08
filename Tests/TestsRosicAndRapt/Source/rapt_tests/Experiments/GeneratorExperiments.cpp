@@ -2181,11 +2181,18 @@ void snowFlake()
   sf.setAntiAlias(false);
   sf.setNumIterations(0);
 
-  // produce signal and write to file:
+  // produce signal without anti-aliasing and write to file:
   std::vector<double> xL(N), xR(N);
   for(int n = 0; n < N; n++)
     sf.getSampleFrameStereo(&xL[n], &xR[n]);
   rosic::writeToStereoWaveFile("SnowflakeTest.wav", &xL[0], &xR[0], N, fs);
+
+  // produce signal with anti-aliasing and write to file:
+  sf.setAntiAlias(true);
+  sf.reset();
+  for(int n = 0; n < N; n++)
+    sf.getSampleFrameStereo(&xL[n], &xR[n]);
+  rosic::writeToStereoWaveFile("SnowflakeTestAA.wav", &xL[0], &xR[0], N, fs);
 }
 // when there is a turn in the turtle-source, the slope/derivative of both x and y (as functions of 
 // time t) have a suddenchange which means, a blamp must be inserted into both

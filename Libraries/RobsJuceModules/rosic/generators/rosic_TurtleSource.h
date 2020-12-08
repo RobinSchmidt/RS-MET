@@ -445,6 +445,25 @@ protected:
 
 };
 
+
+//=================================================================================================
+
+/** Under construction... */
+
+class TurtleSourceAntiAliased : public TurtleSource
+{
+
+public:
+
+protected:
+
+
+
+};
+
+
+
+
 //=================================================================================================
 
 /** Subclass of TurtleSource that allows to run multiple TurtleSources in parallel and mix their

@@ -871,13 +871,17 @@ bool testSparseMatrixSolvers()
   // the construction isn't V supposed to be the matrix of eigenvectors and D the diagonal matrix
   // with the eignevalues? ...maybe try another example from a book or wikipedia:
   // https://en.wikipedia.org/wiki/Eigenvalues_and_eigenvectors#Three-dimensional_matrix_example
+  // i think, the matrix v is not orthogonal, so we may need to do A = V * D * inv(V) or something?
+  // https://en.wikipedia.org/wiki/Diagonalizable_matrix
+  // V = Matrix([[1,1,1],[1,1,-1],[1,-1,1]])
+  // V.inverse()
 
 
   A.set(0, 0, 2.f);  A.set(0, 1, 0.f);  A.set(0, 2, 0.f);
   A.set(1, 0, 0.f);  A.set(1, 1, 3.f);  A.set(1, 2, 4.f);
   A.set(2, 0, 0.f);  A.set(2, 1, 4.f);  A.set(2, 2, 9.f);
   x = Vec({1,2,3});
-  tol = 1.e-7;
+  tol = 1.e-7f;
   //numIts = A.largestEigenValueAndVector(&ev, &x[0], tol, &wrk[0]);
 
 
@@ -891,7 +895,6 @@ bool testSparseMatrixSolvers()
   numIts = LA::eigenspace(A, &vals[0], &vecs[0], tol, &wrk[0]);
 
   // todo: 
-  // -try to find the other 2 eigenvalues and -vectors, too
   // -figure out what happens when we have eigenvalues with multiplicities (algebraic and/or
   //  geometric)
 
@@ -920,6 +923,9 @@ bool testMatrix()
   testResult &= testMatrixAlloc();
   testResult &= testKroneckerProduct();
   //testResult &= testTransformMatrices();
+
+  // todo:
+  // test: inverse, pseudo-inverse: (A^T * A)^-1 * A^T
 
 
   testResult &= testSparseMatrix(); 

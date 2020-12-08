@@ -300,7 +300,7 @@ public:
   /** Returns the Euclidean norm (i.e. the length) of the N-dimensional vector x. This is the 
   square-root of the sum of the squares of the elements. */
   template<class T>
-  static T euclideanNorm(T* x, int N);
+  static T euclideanNorm(const T* x, int N);
 
   /** Fills the array with values given by a function. For example, calling it like:
         fill(a, length, [](int i){ return 3*i+1; });
@@ -964,7 +964,7 @@ inline bool rsArrayTools::equal(const T *buffer1, const T *buffer2, const int le
 }
 
 template<class T>
-static T rsArrayTools::euclideanNorm(T* x, int N)
+static T rsArrayTools::euclideanNorm(const T* x, int N)
 {
   return sqrt(rsArrayTools::sumOfSquares(x, N));
 }

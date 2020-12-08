@@ -74,7 +74,7 @@ protected:
   void updateTurtleCommands();
 
   LindenmayerSystem lindSys;
-  std::string axiom;
+  std::string axiom;     // maybe rename to seed
   int numIterations = 0; // replace by iteratorString or applicatorString (a string like AAABBAC)
   std::string lindenmayerResult;          // output string of Lindenmayer system
   //std::atomic_bool commandsReady = false; // flag to indicate that "turtleCommands" is up to date
