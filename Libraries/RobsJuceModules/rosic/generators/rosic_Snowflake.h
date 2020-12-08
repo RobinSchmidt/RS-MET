@@ -13,7 +13,7 @@ PGCA: Pattern Generation for Computational Art (Stefan and Richard Hollos)
 LSFP: Lindenmayer Systems, Fractals and Plants (Prusinkiewicz, Hanan)
 ABoP: The Algorithmic Beauty of Plants (Prusinkiewicz, Lindenmayer)  */
 
-class Snowflake : public TurtleSource
+class Snowflake : public TurtleSourceAntiAliased
 {
 
 public:
@@ -65,7 +65,7 @@ public:
   {
     if(!commandsReady)
       updateTurtleCommands();
-    TurtleSource::getSampleFrameStereo(outL, outR);
+    TurtleSourceAntiAliased::getSampleFrameStereo(outL, outR);
   }
 
 protected:

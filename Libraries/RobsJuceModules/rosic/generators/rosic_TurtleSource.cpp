@@ -512,6 +512,85 @@ void TurtleSource::updateMeanAndNormalizer()
   // is probably just as good (especially, when a DC blocking filter is used later anyway)
 }
 
+//=================================================================================================
+
+void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
+{
+  //*outL = *outR = 0.0; return;  // preliminary
+
+  // some checks (optimize - have a single readyToPlay flag so we only need one check here):
+  if(numLines < 1)                return;
+  if(!tableUpToDate && useTable)  updateWaveTable();
+  if(!incUpToDate)                updateIncrement(); // must be done before goToLineSegment
+
+  // integer and fractional part of position:
+  double linePos = getLinePosition(pos);
+  int iPos = floorInt(linePos);
+  double fPos = linePos - iPos;  
+  double slopeChangeX, slopeChangeY;
+  if(iPos != lineIndex)
+    goToLineSegment(iPos, &slopeChangeX, &slopeChangeY);
+  xBlep.prepareForCorner(fPos, slopeChangeX);  // do we need to scale fPos by inc here?
+  yBlep.prepareForCorner(fPos, slopeChangeY);
+
+  // read out buffered line segment (not yet anit-aliased):
+  double x, y;
+  interpolate(&x, &y, fPos);
+
+  updatePosition();
+
+  /*
+  // handle periodic resetting:
+  bool shouldReset = false;
+  for(int i = 0; i < numResetters; i++)
+    shouldReset |= resetters[i].tick();
+  if(shouldReset)
+    resetPhase();
+
+  // handle periodic direction reversal:
+  bool shouldReverse = false;
+  for(int i = 0; i < numReversers; i++)
+    shouldReverse |= reversers[i].tick();
+  if(shouldReverse)
+    reverseDirection();
+  */
+  // the resetters need to keep track of jumps and those should be passed to the blep objects as 
+  // well like:
+  //xBlep.prepareForStep(fPos, stepX);
+  //yBlep.prepareForStep(fPos, stepY);
+
+
+  // apply anti-aliasing:
+  x = xBlep.getSample(x);
+  y = yBlep.getSample(y);
+
+  // apply some final scaling and rotation:
+  double a = normalizer * amplitude;
+  *outL = a * (x - centerX);
+  *outR = a * (y - centerY);
+  rotator.apply(outL, outR);
+}
+
+void TurtleSourceAntiAliased::goToLineSegment(int targetLineIndex,
+  double* slopeChangeX, double* slopeChangeY)
+{
+  double s = inc;
+  double oldSlopeX = s * (x[1] - x[0]);
+  double oldSlopeY = s * (y[1] - y[0]);
+  Base::goToLineSegment(targetLineIndex);
+  double newSlopeX = s * (x[1] - x[0]);
+  double newSlopeY = s * (y[1] - y[0]);
+
+  *slopeChangeX = newSlopeX - oldSlopeX;
+  *slopeChangeY = newSlopeY - oldSlopeY;
+
+  // can be optimized to use only 2 multiplies
+  // needs tests
+}
+
+
+//=================================================================================================
+
 /*
 Features to do:
 -anti-aliasing

@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  passed &= runUnitTestsRapt();
+  //passed &= runUnitTestsRapt();
   //passed &= runUnitTestsRosic();  // some tests there are still commented out
   //passed = passed;  // dummy
 
@@ -189,7 +189,7 @@ int main(int argc, char* argv[])
   //rayBouncer();
   //hilbertCurve();
   //circleFractals(); // rename to spirograph
-  lindenmayer();
+  //lindenmayer();
   snowFlake();
   //triSawOsc();
   //triSawOscAntiAlias();

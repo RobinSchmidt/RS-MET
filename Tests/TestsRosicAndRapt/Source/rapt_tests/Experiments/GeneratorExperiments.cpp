@@ -2195,7 +2195,7 @@ void snowFlake()
   rosic::writeToStereoWaveFile("SnowflakeTestAA.wav", &xL[0], &xR[0], N, fs);
 }
 // when there is a turn in the turtle-source, the slope/derivative of both x and y (as functions of 
-// time t) have a suddenchange which means, a blamp must be inserted into both
+// time t) have a sudden change which means, a blamp must be inserted into both
 
 void triSawOsc()
 {

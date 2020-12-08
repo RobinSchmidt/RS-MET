@@ -67,6 +67,8 @@ public:
 
   double getInterval() const { return interval; }
 
+  double getPosition() const { return pos; }
+
   void reset() { pos = 0; }
 
   bool tick()
@@ -169,8 +171,6 @@ public:
   detuning and should be generally more efficient (verify this). */
   void setUseTable(bool shouldUseTable) { useTable = shouldUseTable; }
 
-  /** Experimental feature.. */
-  void setAntiAlias(bool shouldAntiAlias) { antiAlias = shouldAntiAlias; }
 
   //void setStereoDetune(double newDetune);
   //void setStereoFrequencyOffset(double newOffset);
@@ -213,7 +213,6 @@ public:
     if(!incUpToDate)                updateIncrement(); // must be done before goToLineSegment
 
     // integer and fractional part of position:
-    //double linePos = pos*numLines;
     double linePos = getLinePosition(pos);
     int iPos = floorInt(linePos);
     double fPos = linePos - iPos;
@@ -242,9 +241,11 @@ public:
     if(shouldReverse)
       reverseDirection();
   }
-  // to make that compatible with the blep, we should do the updates before computation
+  // maybe un-inline
 
 
+
+  /*
   INLINE void getSampleFrameStereoNoAA(double* outL, double* outR)
   {
 
@@ -254,6 +255,7 @@ public:
   {
 
   }
+  */
 
 
 
@@ -285,6 +287,9 @@ protected:
     while(pos >= 1) pos -= 1;
     while(pos <  0) pos += 1;
   }
+  // maybe it should return the number of wrpaarounds that have occurred (positive integer for 
+  // forward wrpas, negative for backward warps)...but maybe this should be done in the subclass 
+  // implementation - it may (or may not) be useful to facilitate anti-aliasing
 
   /** Reads out our line-segment buffer with interpolation and assigns the output for left and
   right channel accordingly. */
@@ -399,7 +404,7 @@ protected:
   TurtleGraphics turtle;
   rsEngineersFilterStereo turtleLowpass;
   // lowpass applied to turtle output for anti-aliasing ...check, if the filter coeffs have the
-  // correct limit, i.e. go into bypass mode when cutoff == fs/2
+  // correct limit, i.e. go into bypass mode when cutoff == fs/2...i think, that's obsolete
 
   // parameters:
   double amplitude      = 1;
@@ -409,7 +414,6 @@ protected:
   double turnAngle      = 0;
   double skew           = 0;
   int    interpolation  = LINEAR;
-  bool   antiAlias      = false;
   bool   useTable       = false;
 
   // resetters:
@@ -455,9 +459,46 @@ class TurtleSourceAntiAliased : public TurtleSource
 
 public:
 
+  using Base = TurtleSource;
+
+  /** Experimental feature.. */
+  void setAntiAlias(bool shouldAntiAlias) { antiAlias = shouldAntiAlias; }
+
+
+  void getSampleFrameStereoAA(double* outL, double* outR);
+
+  void getSampleFrameStereo(double* outL, double* outR)
+  {
+    if(antiAlias)
+      getSampleFrameStereoAA(outL, outR);
+    else
+      Base::getSampleFrameStereo(outL, outR);  // use basclass implementation
+  }
+
+  void reset()
+  {
+    Base::reset();
+    xBlep.reset();
+    yBlep.reset();
+  }
+
+
 protected:
 
 
+  // overrides:
+
+  /** Calls the corresponding baseclass method and addittionally computes the change in the line
+  slopes of x(t) and y(t) between before and after the call. These values are needed to scale the 
+  blamps for anti-aliasing. */
+  void goToLineSegment(int targetLineIndex, double* slopeChangeX, double* slopeChangeY);
+
+
+
+
+  bool antiAlias = true;  // switch to toggle anti-aliasing on/off
+
+  RAPT::rsPolyBlep2<double, double> xBlep, yBlep;
 
 };
 
