@@ -537,20 +537,21 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
     if(shouldReset)
     {
       double newPhase = resetters[i].getPosition();
+
+      //newPhase /= resetters[i].getInterval();  // test...i actually think, it's wrong
+
       double stepTime = newPhase / inc;
       double stepX, stepY;
       resetPhase(newPhase, &stepX, &stepY);
-      xBlep.prepareForStep(stepTime, stepX);  // looks and sounds good
-      yBlep.prepareForStep(stepTime, stepY);  // looks and sounds bad
-      // it seems like stepY is always zero, so it has no effect on the right channel
 
-      //yBlep.prepareForStep(stepTime, stepX);
-      // that works halfway for the particular test signal (but only by coincidence, i think)
+      RAPT::rsAssert(pos == newPhase);  // debug
 
-      // try some different reset-ratios
+      xBlep.prepareForStep(stepTime, stepX);
+      yBlep.prepareForStep(stepTime, stepY);
     }
   }
   */
+
 
   /*
   // handle periodic direction reversal:
@@ -607,6 +608,36 @@ void TurtleSourceAntiAliased::goToLineSegment(int targetLineIndex,
 
 void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, double* stepY)
 {
+  double linePos, fPos, oldX, oldY, newX, newY;
+  int iPos;
+
+  linePos = getLinePosition(pos);
+  //linePos = getLinePosition(pos+inc);
+  iPos    = floorInt(linePos);
+  fPos    = linePos - iPos;
+  interpolate(&oldX, &oldY, fPos);
+
+  /*
+  // test (extrapolate where the new sample would be if we would not reset):
+  double s = inc / numLines;  // is that correct?
+  oldX += s * (x[1]-x[0]);
+  oldY += s * (y[1]-y[0]);
+  */
+
+
+  Base::resetPhase(targetPhase);
+
+  linePos = getLinePosition(pos);
+  iPos    = floorInt(linePos);
+  fPos    = linePos - iPos;
+  interpolate(&newX, &newY, fPos);
+
+  *stepX = newX - oldX;
+  *stepY = newY - oldY;
+  int dummy = 0;
+
+
+  /*
   double oldX = x[0]; // maybe (1-f)*x[0] + f*x[1] for some f determined by the position - how much
   double oldY = y[0]; // are we into the current line?
   Base::resetPhase(targetPhase);
@@ -614,8 +645,12 @@ void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, doub
   double newY = y[0];
   *stepX = newX - oldX;
   *stepY = newY - oldY;
+  */
 }
-// needs verification
+// -needs to take into account current fractional position when computing oldX/X and newX/Y
+// -no - it's wrong - we can't use the old pos, instead, we must compute a linear extrapolation:
+//  oldX = (1-frac)*x[0] + frac*x[1] + inc * (x[1]-x[0])
+// -needs verification
 
 
 //=================================================================================================

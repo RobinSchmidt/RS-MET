@@ -2206,13 +2206,13 @@ void snowFlake()
   Vec dL2 = rsDifference(xL2);
   Vec cL1 = rsDifference(dL1);  // 2nd difference (curvature)
   Vec cL2 = rsDifference(dL2);
-  rsPlotArrays(numPlotPoints, &xL1[0], &xL2[0]);
-  rsPlotArrays(numPlotPoints, &dL1[0], &dL2[0]);
+  rsPlotArrays(numPlotPoints, &xL1[0], &xL2[0]);     // left without and with anti-alias
+  rsPlotArrays(numPlotPoints, &dL1[0], &dL2[0]);   // left difference without and with anti-alias
   rsPlotArrays(numPlotPoints, &cL1[0], &cL2[0]);
   //rsPlotArrays(numPlotPoints, &xR1[0], &xR2[0]);
-  // maybe plot the first or second differences, maybe we can see more from that
-  // maybe apply a 3-point MA to the 2nd difference - i think, the peaks should all have the same 
-  // height? ...not sure...
+  //rsPlotArrays(numPlotPoints, &xL1[0], &xR1[0]);   // left/right non anti-aliased
+  //rsPlotArrays(numPlotPoints, &xL2[0], &xR2[0]);   // left/right anti-aliased
+
 
   // write files:
   rosic::writeToStereoWaveFile("SnowflakeTest.wav",   &xL1[0], &xR1[0], N, fs);
@@ -2223,11 +2223,13 @@ void snowFlake()
   // -anti-aliasing of resets seems to work for resetRatio = 1.9 but not 2.1, i think stepY is 
   //  miscomputed - we need to compute oldX/Y, newX/Y more accurately, taking into account the 
   //  fractional position into the current line
-  // -setting resetRatio to 0 does not seem to de-activate the resetter (bug?)
-  // -i seem to have to comment out the "handle periodic resetting" stuff to get good results 
-  //  without resetting
-  // -oh, wait, the first resetter is by default not off but instead set to a reset-ratio of 1, 
-  //  turning resetting off actually produces a clean signal even without anti-aliasing
+  //  -with 1.9 the right channel looks good and the left looks bad, with 2.1 it's the other way
+  //   around - this is a strong hint that it has to do with the inaccuracy in computing stepX/Y
+  //   because of not taking into account where exactly inside the segment we are
+  //  -0.49: left bad, right good, 0.51: left bad, right totally broken
+ 
+  // -the first resetter is by default not off but instead set to a reset-ratio of 1, turning 
+  //  resetting off actually produces a clean signal even without anti-aliasing
 
   // -with f = 1000*sqrt(2), we hit the "if(iPos != lineIndex)" for the first time wehn n==7
   //  ...try to compute by hand what should happen, especially, what the cornerTime should be
@@ -2236,10 +2238,6 @@ void snowFlake()
   //  that's 0.006 samples ago, so cornerTime should be 0.006 or 1-0.006 = 0.994, 
   //  it happens at n = 7, n = 15 - that's actually one too early and it's because, we do the
   //  updatePosition before the test...but that should be no problem...or should it?
-
-  // ToDo:
-  // -maybe compensate for the 2-sample delay of the polyblep by producing two dummy samples in 
-  //  reset
 }
 // when there is a turn in the turtle-source, the slope/derivative of both x and y (as functions of 
 // time t) have a sudden change which means, a blamp must be inserted into both

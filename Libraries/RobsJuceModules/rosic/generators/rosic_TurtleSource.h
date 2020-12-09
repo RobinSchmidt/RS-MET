@@ -302,6 +302,7 @@ protected:
     }
     // or maybe call the 1st three floor, ceil, round, ..at least on the GUI
   }
+  // maybe remove anything but linear - it just bloats the code and is not really useful
 
   /** Resets the "phase" (position in the drawing) of the oscillator to its initial state. */
   void resetPhase(double newPhase = 0.0);
@@ -474,6 +475,7 @@ public:
       getSampleFrameStereoAA(&dummy, &dummy);
       //getSampleFrameStereoAA(&dummy, &dummy); // hmm...seems 1 is enough - why? maybe because i 
       // have dragged the updatePosition up to before the sample production
+      // damn - this call may trigger unwanted resets/reversals ...or does it?
     }
   }
 
