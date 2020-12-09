@@ -539,26 +539,32 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
     bool shouldReset = resetters[i].tick();
     if(shouldReset)
     {
-      double newPos  = resetters[i].getPosition();
+      double newPhase = resetters[i].getPosition();
+      double stepTime = newPhase / inc;
+      double stepX, stepY;
+      resetPhase(newPhase, &stepX, &stepY);
+      xBlep.prepareForStep(stepTime, stepX);  // looks and sounds good
+      yBlep.prepareForStep(stepTime, stepY);  // looks and sounds bad
 
-      //double linePos = getLinePosition(newPos);
-      //int    iPos    = floorInt(linePos);
-      //double fPos    = linePos - iPos;
 
-      double fPos = newPos / resetters[i].getInterval();
+
+      /*
+      double newPos = resetters[i].getPosition();
+
+      //double fPos   = newPos / resetters[i].getInterval();
+      double fPos   = newPos * resetters[i].getInterval();
 
       double stepX, stepY;
       //resetPhase(newPos, &stepX, &stepY);
       resetPhase(fPos, &stepX, &stepY);
 
-      //fPos /= inc;  // test
-      //fPos /= resetters[i].getInterval();
 
-      xBlep.prepareForStep(fPos, stepX);  
-      yBlep.prepareForStep(fPos, stepY);  
+      xBlep.prepareForStep(fPos, stepX);
+      yBlep.prepareForStep(fPos, stepY);
       // i think fPos is wrong ...what is the fractional time (in samples), the reset occurred?
       // pos / inc?
       // left channel looks ok'ish but right looks wrong
+      */
 
     }
   }
