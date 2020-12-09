@@ -492,7 +492,8 @@ protected:
   /** Calls the corresponding baseclass method and additionally computes size of the step 
   discontinuity in x(t) and y(t) between before and after the call. These values are needed to 
   scale the bleps for anti-aliasing. */
-  void resetPhase(double targetPhase, double* stepX, double* stepY);
+  void resetPhase(double targetPhase, double* stepX, double* stepY, 
+    double* slopeChangeX, double* slopeChangeY);
 
 
 

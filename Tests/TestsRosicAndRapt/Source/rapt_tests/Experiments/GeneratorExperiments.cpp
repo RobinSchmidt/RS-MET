@@ -2170,7 +2170,7 @@ void snowFlake()
   int N    = 44100;  // number of samples
   int fs   = 44100;  // sample rate
   double f = 1000;   // signal frequency
-  double resetRatio = 0.0;  // use 0 to turn resetting off
+  double resetRatio = 1.9;  // use 0 to turn resetting off
 
   //resetRatio  = 0.0;
   f *= sqrt(2.0);  // test
@@ -2201,14 +2201,14 @@ void snowFlake()
     sf.getSampleFrameStereo(&xL2[n], &xR2[n]);
 
   // plot:
-  int numPlotPoints = 500;
+  int numPlotPoints = 1000;
   Vec dL1 = rsDifference(xL1);  // difference
   Vec dL2 = rsDifference(xL2);
   Vec cL1 = rsDifference(dL1);  // 2nd difference (curvature)
   Vec cL2 = rsDifference(dL2);
-  rsPlotArrays(numPlotPoints, &xL1[0], &xL2[0]);     // left without and with anti-alias
-  rsPlotArrays(numPlotPoints, &dL1[0], &dL2[0]);   // left difference without and with anti-alias
-  rsPlotArrays(numPlotPoints, &cL1[0], &cL2[0]);
+  //rsPlotArrays(numPlotPoints, &xL1[0], &xL2[0]);     // left without and with anti-alias
+  //rsPlotArrays(numPlotPoints, &dL1[0], &dL2[0]);   // left difference without and with anti-alias
+  //rsPlotArrays(numPlotPoints, &cL1[0], &cL2[0]);
   //rsPlotArrays(numPlotPoints, &xR1[0], &xR2[0]);
   //rsPlotArrays(numPlotPoints, &xL1[0], &xR1[0]);   // left/right non anti-aliased
   //rsPlotArrays(numPlotPoints, &xL2[0], &xR2[0]);   // left/right anti-aliased
@@ -2220,6 +2220,8 @@ void snowFlake()
 
 
   // Observations:
+  // -update: now the anti-aliased left signal looks slightly better than the non-anti-aliased and
+  //  the right one looks really clean - i think, we need to additionally take care of the corners
   // -anti-aliasing of resets seems to work for resetRatio = 1.9 but not 2.1, i think stepY is 
   //  miscomputed - we need to compute oldX/Y, newX/Y more accurately, taking into account the 
   //  fractional position into the current line
@@ -2227,6 +2229,7 @@ void snowFlake()
   //   around - this is a strong hint that it has to do with the inaccuracy in computing stepX/Y
   //   because of not taking into account where exactly inside the segment we are
   //  -0.49: left bad, right good, 0.51: left bad, right totally broken
+  // -the inc depends on the resetRatio - why?
  
   // -the first resetter is by default not off but instead set to a reset-ratio of 1, turning 
   //  resetting off actually produces a clean signal even without anti-aliasing

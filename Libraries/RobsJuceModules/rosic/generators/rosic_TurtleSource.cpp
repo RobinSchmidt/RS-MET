@@ -529,29 +529,29 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
   if(!incUpToDate)                updateIncrement(); // must be done before goToLineSegment
   updatePosition();
 
-  /*
+    
   // handle periodic resetting:
+  double slopeChangeX, slopeChangeY;
+  double blepTime;
   for(int i = 0; i < numResetters; i++)
   {
     bool shouldReset = resetters[i].tick();
     if(shouldReset)
     {
       double newPhase = resetters[i].getPosition();
-
-      //newPhase /= resetters[i].getInterval();  // test...i actually think, it's wrong
-
-      double stepTime = newPhase / inc;
+      blepTime = newPhase / inc;
       double stepX, stepY;
-      resetPhase(newPhase, &stepX, &stepY);
-
+      resetPhase(newPhase, &stepX, &stepY, &slopeChangeX, &slopeChangeY);
       RAPT::rsAssert(pos == newPhase);  // debug
 
-      xBlep.prepareForStep(stepTime, stepX);
-      yBlep.prepareForStep(stepTime, stepY);
+      xBlep.prepareForStep(blepTime, stepX);
+      yBlep.prepareForStep(blepTime, stepY);
+
+      xBlep.prepareForCorner(blepTime, slopeChangeX);
+      yBlep.prepareForCorner(blepTime, slopeChangeY);
     }
   }
-  */
-
+ 
 
   /*
   // handle periodic direction reversal:
@@ -571,11 +571,10 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
   // jump to appropriate line segment, thereby prepare bleps for the slope change:
   if(iPos != lineIndex)
   {
-    double slopeChangeX, slopeChangeY;
     goToLineSegment(iPos, &slopeChangeX, &slopeChangeY);
-    double cornerTime = fPos / (numLines*inc);      // OPTIMIZE: precompute 1/(numLines*inc)
-    xBlep.prepareForCorner(cornerTime, slopeChangeX);
-    yBlep.prepareForCorner(cornerTime, slopeChangeY);
+    blepTime = fPos / (numLines*inc);      // OPTIMIZE: precompute 1/(numLines*inc)
+    xBlep.prepareForCorner(blepTime, slopeChangeX);
+    yBlep.prepareForCorner(blepTime, slopeChangeY);
   }
 
   // read out buffered line segment (not yet anti-aliased):
@@ -596,60 +595,73 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
 void TurtleSourceAntiAliased::goToLineSegment(int targetLineIndex,
   double* slopeChangeX, double* slopeChangeY)
 {
+  double s = inc * numLines;
   double oldSlopeX = x[1] - x[0];
   double oldSlopeY = y[1] - y[0];
   Base::goToLineSegment(targetLineIndex);
-  double newSlopeX = x[1] - x[0];
-  double newSlopeY = y[1] - y[0];
-  double s = inc * numLines;
+  double newSlopeX = x[1] - x[0];   // get rid
+  double newSlopeY = y[1] - y[0];   // get rid
   *slopeChangeX = s * (newSlopeX - oldSlopeX);
   *slopeChangeY = s * (newSlopeY - oldSlopeY);
 }
 
-void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, double* stepY)
+void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, double* stepY, 
+  double* slopeChangeX, double* slopeChangeY)
 {
-  double linePos, fPos, oldX, oldY, newX, newY;
+  double linePos, fPos, oldX, oldY, newX, newY, oldSlopeX, oldSlopeY, s;
   int iPos;
 
   linePos = getLinePosition(pos);
-  //linePos = getLinePosition(pos+inc);
   iPos    = floorInt(linePos);
   fPos    = linePos - iPos;
   interpolate(&oldX, &oldY, fPos);
+  oldSlopeX = x[1] - x[0];
+  oldSlopeY = y[1] - y[0];
 
-  /*
-  // test (extrapolate where the new sample would be if we would not reset):
-  double s = inc / numLines;  // is that correct?
-  oldX += s * (x[1]-x[0]);
-  oldY += s * (y[1]-y[0]);
-  */
+
+
+  s = 0;
+  // i think, we may not need to do this because we have already updated pos in getSample, so the oldX, 
+  // oldY already contain the additional partial step...right? wrong! they contain the full step by a 
+  // full increment! we must actually subtract targetPhase * something * oldSlopeX to set it back to 
+  // a partial step!
+
+  //s = (inc) * numLines;
+  //s = (inc-targetPhase) * numLines;  // is that correct? verify!
+  //s = (inc-targetPhase) / numLines;  // div better than mul
+  //s = (inc-targetPhase);
+  //s = ((inc-targetPhase) / inc) / numLines;
+  //s = ((inc-targetPhase) / inc) * numLines;
+  //s = (1-((inc-targetPhase)/inc)) * numLines;
+  //s = -((inc-targetPhase) / inc) / numLines;
+  //s = (inc*resetRatios[0]-targetPhase) * numLines;  // is that correct? verify!
+  //s = (inc-targetPhase)*resetRatios[0] * numLines;  // is that correct? verify!
+  //s = -fPos;  // ??!!
+  s = -targetPhase * numLines;
+  oldX += s * oldSlopeX;
+  oldY += s * oldSlopeY;
+
 
 
   Base::resetPhase(targetPhase);
 
-  linePos = getLinePosition(pos);
-  iPos    = floorInt(linePos);
-  fPos    = linePos - iPos;
-  interpolate(&newX, &newY, fPos);
+  *stepX = x[0] - oldX;
+  *stepY = y[0] - oldY;
 
-  *stepX = newX - oldX;
-  *stepY = newY - oldY;
+  s = inc * numLines;
+  *slopeChangeX = s * (x[1] - x[0] - oldSlopeX);
+  *slopeChangeY = s * (y[1] - y[0] - oldSlopeY);
+
   int dummy = 0;
-
-
-  /*
-  double oldX = x[0]; // maybe (1-f)*x[0] + f*x[1] for some f determined by the position - how much
-  double oldY = y[0]; // are we into the current line?
-  Base::resetPhase(targetPhase);
-  double newX = x[0];  // ...dito...but with a new f
-  double newY = y[0];
-  *stepX = newX - oldX;
-  *stepY = newY - oldY;
-  */
 }
 // -needs to take into account current fractional position when computing oldX/X and newX/Y
 // -no - it's wrong - we can't use the old pos, instead, we must compute a linear extrapolation:
-//  oldX = (1-frac)*x[0] + frac*x[1] + inc * (x[1]-x[0])
+//  oldX = (1-frac)*x[0] + frac*x[1] + inc * (x[1]-x[0]) or
+//  oldX = (1-frac)*x[0] + frac*x[1] + fPos * oldSlopeX
+//  ...
+//  newX = x[0]    nothing to interpolate
+// -we need to compute the old slopes - we may need it anyway in order to anti-alias the slope 
+//  change which happens in addition to the step - we have a step *and* a slope change on reset
 // -needs verification
 
 
