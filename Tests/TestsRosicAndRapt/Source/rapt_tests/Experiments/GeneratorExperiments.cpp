@@ -2236,6 +2236,10 @@ void snowFlake()
   //  that's 0.006 samples ago, so cornerTime should be 0.006 or 1-0.006 = 0.994, 
   //  it happens at n = 7, n = 15 - that's actually one too early and it's because, we do the
   //  updatePosition before the test...but that should be no problem...or should it?
+
+  // ToDo:
+  // -maybe compensate for the 2-sample delay of the polyblep by producing two dummy samples in 
+  //  reset
 }
 // when there is a turn in the turtle-source, the slope/derivative of both x and y (as functions of 
 // time t) have a sudden change which means, a blamp must be inserted into both

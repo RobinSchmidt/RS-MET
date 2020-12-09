@@ -566,36 +566,16 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
   double linePos = getLinePosition(pos); // linePos = 0...numLines
   int iPos = floorInt(linePos);          // iPos = 0...numLines...maybe subtract 1 in case == numLines?
   double fPos = linePos - iPos;
+
+  // jump to appropriate line segment, thereby prepare bleps for the slope change:
   if(iPos != lineIndex)
   {
     double slopeChangeX, slopeChangeY;
     goToLineSegment(iPos, &slopeChangeX, &slopeChangeY);
-
-    double cornerTime = 0;
-
-    //cornerTime = fPos; // i think, that's wrong
-    //cornerTime = fPos * numLines;  // is that correct?
-    //cornerTime = (fPos * numLines) / inc;
-    //cornerTime = (fPos / numLines) / inc;
-    //cornerTime = 1.0 - fPos;
-    // cornerTime must be a value in the range 0..1 and fPos actually is in that range, so i think 
-    // it must be either fPos itself or 1-fPos ...anything else does not seem to make sense
-    // or maybe something like fPos
-
-    //cornerTime = fPos / numLines;
-    //cornerTime = pos - double(lineIndex) / double(numLines); // gives the same value
-
-    cornerTime = fPos / (numLines*inc);
-
-
-    //cornerTime = 1.0 - cornerTime;  // not sure about the convention
-
+    double cornerTime = fPos / (numLines*inc);      // OPTIMIZE: precompute 1/(numLines*inc)
     xBlep.prepareForCorner(cornerTime, slopeChangeX);
     yBlep.prepareForCorner(cornerTime, slopeChangeY);
   }
-  // fPos is how much we are into the new line as fraction of its normalized length, but it does 
-  // not give the fractional sample instant at which the slope-change occurred, so we cannot use
-  // it for the blep
 
   // read out buffered line segment (not yet anti-aliased):
   double x, y;
@@ -606,7 +586,7 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
   y = yBlep.getSample(y);
 
   // apply some final scaling and rotation:
-  double a = normalizer * amplitude;
+  double a = normalizer * amplitude;  // maybe precompute as finalAmplitude
   *outL = a * (x - centerX);
   *outR = a * (y - centerY);
   rotator.apply(outL, outR);
@@ -620,12 +600,7 @@ void TurtleSourceAntiAliased::goToLineSegment(int targetLineIndex,
   Base::goToLineSegment(targetLineIndex);
   double newSlopeX = x[1] - x[0];
   double newSlopeY = y[1] - y[0];
-
-  //double s = inc / numLines;             // verify!
-  double s = inc * numLines;             // verify! ...maybe inc * (numLines-1)
-  //double s = -inc * numLines;             // verify!
-  //double s = inc; 
-
+  double s = inc * numLines;
   *slopeChangeX = s * (newSlopeX - oldSlopeX);
   *slopeChangeY = s * (newSlopeY - oldSlopeY);
 }
@@ -640,6 +615,7 @@ void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, doub
   *stepX = newX - oldX;
   *stepY = newY - oldY;
 }
+// needs verification
 
 
 //=================================================================================================

@@ -201,9 +201,7 @@ public:
     double tmp = normalizedPosition + phaseOffset;
     while(tmp >= 1) tmp -= 1;
     while(tmp <  0) tmp += 1;
-
-    //return tmp*(numLines-1);  // new - test - nope, seems wrong
-    return tmp*numLines;  // old... should it be tmp * (numLines-1) ?
+    return tmp*numLines;
   }
 
   /** Calculates one output-sample frame at a time. */
@@ -244,20 +242,6 @@ public:
       reverseDirection();
   }
   // maybe un-inline
-
-
-
-  /*
-  INLINE void getSampleFrameStereoNoAA(double* outL, double* outR)
-  {
-
-  }
-
-  INLINE void getSampleFrameStereoAA(double* outL, double* outR)
-  {
-
-  }
-  */
 
 
 
@@ -482,20 +466,30 @@ public:
     Base::reset();
     xBlep.reset();
     yBlep.reset();
+    if(antiAlias)
+    {
+      // Compensate for the 2-sample delay of the polyblep by producing (and discarding) 2 dummy 
+      // sample frames:
+      double dummy;
+      getSampleFrameStereoAA(&dummy, &dummy);
+      //getSampleFrameStereoAA(&dummy, &dummy); // hmm...seems 1 is enough - why? maybe because i 
+      // have dragged the updatePosition up to before the sample production
+    }
   }
 
 
 protected:
 
 
-  // overrides:
 
   /** Calls the corresponding baseclass method and additionally computes the change in the line
   slopes of x(t) and y(t) between before and after the call. These values are needed to scale the 
   blamps for anti-aliasing. */
   void goToLineSegment(int targetLineIndex, double* slopeChangeX, double* slopeChangeY);
 
-
+  /** Calls the corresponding baseclass method and additionally computes size of the step 
+  discontinuity in x(t) and y(t) between before and after the call. These values are needed to 
+  scale the bleps for anti-aliasing. */
   void resetPhase(double targetPhase, double* stepX, double* stepY);
 
 
