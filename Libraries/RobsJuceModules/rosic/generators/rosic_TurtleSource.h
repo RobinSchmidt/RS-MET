@@ -318,7 +318,7 @@ protected:
   }
 
   /** Resets the "phase" (position in the drawing) of the oscillator to its initial state. */
-  void resetPhase();
+  void resetPhase(double newPhase = 0.0);
 
   /** Resets only the turtle into its initial state, leaving the other state variables as is. Used
   internally in reset (which resets everything)) and for resetting after a number of lines has been
@@ -488,10 +488,13 @@ protected:
 
   // overrides:
 
-  /** Calls the corresponding baseclass method and addittionally computes the change in the line
+  /** Calls the corresponding baseclass method and additionally computes the change in the line
   slopes of x(t) and y(t) between before and after the call. These values are needed to scale the 
   blamps for anti-aliasing. */
   void goToLineSegment(int targetLineIndex, double* slopeChangeX, double* slopeChangeY);
+
+
+  void resetPhase(double targetPhase, double* stepX, double* stepY);
 
 
 

@@ -243,10 +243,15 @@ bool TurtleSource::isInInitialState()
   return r;
 }
 
-void TurtleSource::resetPhase()
+void TurtleSource::resetPhase(double newPhase)
 {
-  pos = 0;
-  lineIndex = 0;
+  if(newPhase == 0.0) {
+    pos = 0;
+    lineIndex = 0; }
+  else {
+    pos = newPhase;
+    lineIndex = floorInt(getLinePosition(pos)); }
+
   if(useTable)
     updateLineBufferFromTable();
   else
@@ -522,11 +527,59 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
   if(numLines < 1)                return;
   if(!tableUpToDate && useTable)  updateWaveTable();
   if(!incUpToDate)                updateIncrement(); // must be done before goToLineSegment
+  updatePosition();
+
+
+
+  // todo: handle resetting with anti-aliasing
+  // handle periodic resetting:
+
+  for(int i = 0; i < numResetters; i++)
+  {
+    bool shouldReset = resetters[i].tick();
+    if(shouldReset)
+    {
+      double newPos  = resetters[i].getPosition();
+
+      //double linePos = getLinePosition(newPos);
+      //int    iPos    = floorInt(linePos);
+      //double fPos    = linePos - iPos;
+
+      double fPos = newPos / resetters[i].getInterval();
+
+      double stepX, stepY;
+      //resetPhase(newPos, &stepX, &stepY);
+      resetPhase(fPos, &stepX, &stepY);
+
+      //fPos /= inc;  // test
+      //fPos /= resetters[i].getInterval();
+
+      xBlep.prepareForStep(fPos, stepX);  
+      yBlep.prepareForStep(fPos, stepY);  
+      // i think fPos is wrong ...what is the fractional time (in samples), the reset occurred?
+      // pos / inc?
+      // left channel looks ok'ish but right looks wrong
+
+    }
+  }
+
+
+  /*
+  // handle periodic direction reversal:
+  bool shouldReverse = false;
+  for(int i = 0; i < numReversers; i++)
+    shouldReverse |= reversers[i].tick();
+  if(shouldReverse)
+    reverseDirection();
+    */
+
+
+
 
   // integer and fractional part of position:
   double linePos = getLinePosition(pos);
   int iPos = floorInt(linePos);
-  double fPos = linePos - iPos;  
+  double fPos = linePos - iPos;
   double slopeChangeX, slopeChangeY;
   if(iPos != lineIndex)
     goToLineSegment(iPos, &slopeChangeX, &slopeChangeY);
@@ -536,29 +589,6 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
   // read out buffered line segment (not yet anit-aliased):
   double x, y;
   interpolate(&x, &y, fPos);
-
-  updatePosition();
-
-  /*
-  // handle periodic resetting:
-  bool shouldReset = false;
-  for(int i = 0; i < numResetters; i++)
-    shouldReset |= resetters[i].tick();
-  if(shouldReset)
-    resetPhase();
-
-  // handle periodic direction reversal:
-  bool shouldReverse = false;
-  for(int i = 0; i < numReversers; i++)
-    shouldReverse |= reversers[i].tick();
-  if(shouldReverse)
-    reverseDirection();
-  */
-  // the resetters need to keep track of jumps and those should be passed to the blep objects as 
-  // well like:
-  //xBlep.prepareForStep(fPos, stepX);
-  //yBlep.prepareForStep(fPos, stepY);
-
 
   // apply anti-aliasing:
   x = xBlep.getSample(x);
@@ -574,18 +604,24 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
 void TurtleSourceAntiAliased::goToLineSegment(int targetLineIndex,
   double* slopeChangeX, double* slopeChangeY)
 {
-  double s = inc;
-  double oldSlopeX = s * (x[1] - x[0]);
-  double oldSlopeY = s * (y[1] - y[0]);
+  double oldSlopeX = x[1] - x[0];
+  double oldSlopeY = y[1] - y[0];
   Base::goToLineSegment(targetLineIndex);
-  double newSlopeX = s * (x[1] - x[0]);
-  double newSlopeY = s * (y[1] - y[0]);
+  double newSlopeX = x[1] - x[0];
+  double newSlopeY = y[1] - y[0];
+  *slopeChangeX = inc * (newSlopeX - oldSlopeX);
+  *slopeChangeY = inc * (newSlopeY - oldSlopeY);
+}
 
-  *slopeChangeX = newSlopeX - oldSlopeX;
-  *slopeChangeY = newSlopeY - oldSlopeY;
-
-  // can be optimized to use only 2 multiplies
-  // needs tests
+void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, double* stepY)
+{
+  double oldX = x[0]; // maybe (1-f)*x[0] + f*x[1] for some f determined by the position - how much
+  double oldY = y[0]; // are we into the current line?
+  Base::resetPhase(targetPhase);
+  double newX = x[0];  // ...dito...but with a new f
+  double newY = y[0];
+  *stepX = newX - oldX;
+  *stepY = newY - oldY;
 }
 
 

@@ -2170,6 +2170,9 @@ void snowFlake()
   int N    = 44100;  // number of samples
   int fs   = 44100;  // sample rate
   double f = 1000;   // signal frequency
+  double resetRatio = 1.89;  // use 0 to turn resetting off
+
+  f *= sqrt(2.0);  // test
 
   rosic::Snowflake sf;
   sf.setSampleRate(fs);
@@ -2180,6 +2183,7 @@ void snowFlake()
   sf.setUseTable(false);
   sf.setAntiAlias(false);
   sf.setNumIterations(0);
+  //sf.setResetRatio(0, resetRatio);
 
   // produce signal without anti-aliasing and write to file:
   std::vector<double> xL(N), xR(N);
