@@ -529,11 +529,8 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
   if(!incUpToDate)                updateIncrement(); // must be done before goToLineSegment
   updatePosition();
 
-
-
-  // todo: handle resetting with anti-aliasing
+  /*
   // handle periodic resetting:
-
   for(int i = 0; i < numResetters; i++)
   {
     bool shouldReset = resetters[i].tick();
@@ -545,30 +542,15 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
       resetPhase(newPhase, &stepX, &stepY);
       xBlep.prepareForStep(stepTime, stepX);  // looks and sounds good
       yBlep.prepareForStep(stepTime, stepY);  // looks and sounds bad
+      // it seems like stepY is always zero, so it has no effect on the right channel
 
+      //yBlep.prepareForStep(stepTime, stepX);
+      // that works halfway for the particular test signal (but only by coincidence, i think)
 
-
-      /*
-      double newPos = resetters[i].getPosition();
-
-      //double fPos   = newPos / resetters[i].getInterval();
-      double fPos   = newPos * resetters[i].getInterval();
-
-      double stepX, stepY;
-      //resetPhase(newPos, &stepX, &stepY);
-      resetPhase(fPos, &stepX, &stepY);
-
-
-      xBlep.prepareForStep(fPos, stepX);
-      yBlep.prepareForStep(fPos, stepY);
-      // i think fPos is wrong ...what is the fractional time (in samples), the reset occurred?
-      // pos / inc?
-      // left channel looks ok'ish but right looks wrong
-      */
-
+      // try some different reset-ratios
     }
   }
-
+  */
 
   /*
   // handle periodic direction reversal:
@@ -580,19 +562,42 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
     */
 
 
-
-
   // integer and fractional part of position:
-  double linePos = getLinePosition(pos);
-  int iPos = floorInt(linePos);
+  double linePos = getLinePosition(pos); // linePos = 0...numLines
+  int iPos = floorInt(linePos);          // iPos = 0...numLines...maybe subtract 1 in case == numLines?
   double fPos = linePos - iPos;
-  double slopeChangeX, slopeChangeY;
   if(iPos != lineIndex)
+  {
+    double slopeChangeX, slopeChangeY;
     goToLineSegment(iPos, &slopeChangeX, &slopeChangeY);
-  xBlep.prepareForCorner(fPos, slopeChangeX);  // do we need to scale fPos by inc here?
-  yBlep.prepareForCorner(fPos, slopeChangeY);
 
-  // read out buffered line segment (not yet anit-aliased):
+    double cornerTime = 0;
+
+    //cornerTime = fPos; // i think, that's wrong
+    //cornerTime = fPos * numLines;  // is that correct?
+    //cornerTime = (fPos * numLines) / inc;
+    //cornerTime = (fPos / numLines) / inc;
+    //cornerTime = 1.0 - fPos;
+    // cornerTime must be a value in the range 0..1 and fPos actually is in that range, so i think 
+    // it must be either fPos itself or 1-fPos ...anything else does not seem to make sense
+    // or maybe something like fPos
+
+    //cornerTime = fPos / numLines;
+    //cornerTime = pos - double(lineIndex) / double(numLines); // gives the same value
+
+    cornerTime = fPos / (numLines*inc);
+
+
+    //cornerTime = 1.0 - cornerTime;  // not sure about the convention
+
+    xBlep.prepareForCorner(cornerTime, slopeChangeX);
+    yBlep.prepareForCorner(cornerTime, slopeChangeY);
+  }
+  // fPos is how much we are into the new line as fraction of its normalized length, but it does 
+  // not give the fractional sample instant at which the slope-change occurred, so we cannot use
+  // it for the blep
+
+  // read out buffered line segment (not yet anti-aliased):
   double x, y;
   interpolate(&x, &y, fPos);
 
@@ -615,8 +620,14 @@ void TurtleSourceAntiAliased::goToLineSegment(int targetLineIndex,
   Base::goToLineSegment(targetLineIndex);
   double newSlopeX = x[1] - x[0];
   double newSlopeY = y[1] - y[0];
-  *slopeChangeX = inc * (newSlopeX - oldSlopeX);
-  *slopeChangeY = inc * (newSlopeY - oldSlopeY);
+
+  //double s = inc / numLines;             // verify!
+  double s = inc * numLines;             // verify! ...maybe inc * (numLines-1)
+  //double s = -inc * numLines;             // verify!
+  //double s = inc; 
+
+  *slopeChangeX = s * (newSlopeX - oldSlopeX);
+  *slopeChangeY = s * (newSlopeY - oldSlopeY);
 }
 
 void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, double* stepY)

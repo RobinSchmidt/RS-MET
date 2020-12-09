@@ -2170,9 +2170,12 @@ void snowFlake()
   int N    = 44100;  // number of samples
   int fs   = 44100;  // sample rate
   double f = 1000;   // signal frequency
-  double resetRatio = 2.1;  // use 0 to turn resetting off
+  double resetRatio = 0.0;  // use 0 to turn resetting off
 
+  //resetRatio  = 0.0;
   f *= sqrt(2.0);  // test
+
+  using Vec = std::vector<double>;
 
   rosic::Snowflake sf;
   sf.setSampleRate(fs);
@@ -2185,18 +2188,54 @@ void snowFlake()
   sf.setNumIterations(0);
   sf.setResetRatio(0, resetRatio);
 
-  // produce signal without anti-aliasing and write to file:
-  std::vector<double> xL(N), xR(N);
+  // produce signal without anti-aliasing:
+  Vec xL1(N), xR1(N);
   for(int n = 0; n < N; n++)
-    sf.getSampleFrameStereo(&xL[n], &xR[n]);
-  rosic::writeToStereoWaveFile("SnowflakeTest.wav", &xL[0], &xR[0], N, fs);
+    sf.getSampleFrameStereo(&xL1[n], &xR1[n]);
 
-  // produce signal with anti-aliasing and write to file:
+  // produce signal with anti-aliasing:
+  Vec xL2(N), xR2(N);
   sf.setAntiAlias(true);
   sf.reset();
   for(int n = 0; n < N; n++)
-    sf.getSampleFrameStereo(&xL[n], &xR[n]);
-  rosic::writeToStereoWaveFile("SnowflakeTestAA.wav", &xL[0], &xR[0], N, fs);
+    sf.getSampleFrameStereo(&xL2[n], &xR2[n]);
+
+  // plot:
+  int numPlotPoints = 500;
+  Vec dL1 = rsDifference(xL1);  // difference
+  Vec dL2 = rsDifference(xL2);
+  Vec cL1 = rsDifference(dL1);  // 2nd difference (curvature)
+  Vec cL2 = rsDifference(dL2);
+  rsPlotArrays(numPlotPoints, &xL1[0], &xL2[0]);
+  rsPlotArrays(numPlotPoints, &dL1[0], &dL2[0]);
+  rsPlotArrays(numPlotPoints, &cL1[0], &cL2[0]);
+  //rsPlotArrays(numPlotPoints, &xR1[0], &xR2[0]);
+  // maybe plot the first or second differences, maybe we can see more from that
+  // maybe apply a 3-point MA to the 2nd difference - i think, the peaks should all have the same 
+  // height? ...not sure...
+
+  // write files:
+  rosic::writeToStereoWaveFile("SnowflakeTest.wav",   &xL1[0], &xR1[0], N, fs);
+  rosic::writeToStereoWaveFile("SnowflakeTestAA.wav", &xL2[0], &xR2[0], N, fs);
+
+
+  // Observations:
+  // -anti-aliasing of resets seems to work for resetRatio = 1.9 but not 2.1, i think stepY is 
+  //  miscomputed - we need to compute oldX/Y, newX/Y more accurately, taking into account the 
+  //  fractional position into the current line
+  // -setting resetRatio to 0 does not seem to de-activate the resetter (bug?)
+  // -i seem to have to comment out the "handle periodic resetting" stuff to get good results 
+  //  without resetting
+  // -oh, wait, the first resetter is by default not off but instead set to a reset-ratio of 1, 
+  //  turning resetting off actually produces a clean signal even without anti-aliasing
+
+  // -with f = 1000*sqrt(2), we hit the "if(iPos != lineIndex)" for the first time wehn n==7
+  //  ...try to compute by hand what should happen, especially, what the cornerTime should be
+  //  the increment is: inc = 0.032068334747689234 and numLines = 4
+  //  0.032*7 = 0.224, 0.032*8 = 0.256 ...the corner occurred exactly at 0.250, so from 0.256, 
+  //  that's 0.006 samples ago, so cornerTime should be 0.006 or 1-0.006 = 0.994, 
+  //  it happens at n = 7, n = 15 - that's actually one too early and it's because, we do the
+  //  updatePosition before the test...but that should be no problem...or should it?
 }
 // when there is a turn in the turtle-source, the slope/derivative of both x and y (as functions of 
 // time t) have a sudden change which means, a blamp must be inserted into both

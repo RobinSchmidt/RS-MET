@@ -201,7 +201,9 @@ public:
     double tmp = normalizedPosition + phaseOffset;
     while(tmp >= 1) tmp -= 1;
     while(tmp <  0) tmp += 1;
-    return tmp*numLines;
+
+    //return tmp*(numLines-1);  // new - test - nope, seems wrong
+    return tmp*numLines;  // old... should it be tmp * (numLines-1) ?
   }
 
   /** Calculates one output-sample frame at a time. */
@@ -499,7 +501,8 @@ protected:
 
 
 
-  bool antiAlias = true;  // switch to toggle anti-aliasing on/off
+  bool antiAlias = false;  // switch to toggle anti-aliasing on/off 
+  // turn it on by default when anti-aliasing works
 
   RAPT::rsPolyBlep2<double, double> xBlep, yBlep;
 
