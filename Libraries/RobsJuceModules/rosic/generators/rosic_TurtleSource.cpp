@@ -521,15 +521,12 @@ void TurtleSource::updateMeanAndNormalizer()
 
 void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
 {
-  //*outL = *outR = 0.0; return;  // preliminary
-
   // some checks (optimize - have a single readyToPlay flag so we only need one check here):
   if(numLines < 1)                return;
   if(!tableUpToDate && useTable)  updateWaveTable();
   if(!incUpToDate)                updateIncrement(); // must be done before goToLineSegment
   updatePosition();
 
-    
   // handle periodic resetting:
   double slopeChangeX, slopeChangeY;
   double blepTime;
@@ -542,15 +539,17 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
       blepTime = newPhase / inc;
       double stepX, stepY;
       resetPhase(newPhase, &stepX, &stepY, &slopeChangeX, &slopeChangeY);
-      RAPT::rsAssert(pos == newPhase);  // debug
-
-      xBlep.prepareForStep(blepTime, stepX);
-      yBlep.prepareForStep(blepTime, stepY);
-
+      xBlep.prepareForStep(  blepTime, stepX);
+      yBlep.prepareForStep(  blepTime, stepY);
       xBlep.prepareForCorner(blepTime, slopeChangeX);
       yBlep.prepareForCorner(blepTime, slopeChangeY);
     }
   }
+  // this seems to work if only one resetter is active, but for more than one, maybe we need to 
+  // first compute the data for all (both) resetters, then sort them by order of occurrence and 
+  // then execute them? or will the first reset obviate all others? ...that would be convenient
+  // ...but we may still need to figure out, which one comes first
+  // ...or maybe just use a single resetter for the time being
  
 
   /*
@@ -561,6 +560,8 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
   if(shouldReverse)
     reverseDirection();
     */
+  // reversers should be handled similarly to resetters, they should invert the slope, so a blamp
+  // should be inserted
 
 
   // integer and fractional part of position:
@@ -618,30 +619,11 @@ void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, doub
   oldSlopeX = x[1] - x[0];
   oldSlopeY = y[1] - y[0];
 
-
-
-  s = 0;
-  // i think, we may not need to do this because we have already updated pos in getSample, so the oldX, 
-  // oldY already contain the additional partial step...right? wrong! they contain the full step by a 
-  // full increment! we must actually subtract targetPhase * something * oldSlopeX to set it back to 
-  // a partial step!
-
-  //s = (inc) * numLines;
-  //s = (inc-targetPhase) * numLines;  // is that correct? verify!
-  //s = (inc-targetPhase) / numLines;  // div better than mul
-  //s = (inc-targetPhase);
-  //s = ((inc-targetPhase) / inc) / numLines;
-  //s = ((inc-targetPhase) / inc) * numLines;
-  //s = (1-((inc-targetPhase)/inc)) * numLines;
-  //s = -((inc-targetPhase) / inc) / numLines;
-  //s = (inc*resetRatios[0]-targetPhase) * numLines;  // is that correct? verify!
-  //s = (inc-targetPhase)*resetRatios[0] * numLines;  // is that correct? verify!
-  //s = -fPos;  // ??!!
+  // oldX, oldY already contain an additional the full step by a full increment! We must actually 
+  // subtract targetPhase * numLines * oldSlope as correction to set it back to a partial step:
   s = -targetPhase * numLines;
   oldX += s * oldSlopeX;
   oldY += s * oldSlopeY;
-
-
 
   Base::resetPhase(targetPhase);
 
@@ -651,18 +633,8 @@ void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, doub
   s = inc * numLines;
   *slopeChangeX = s * (x[1] - x[0] - oldSlopeX);
   *slopeChangeY = s * (y[1] - y[0] - oldSlopeY);
-
-  int dummy = 0;
 }
-// -needs to take into account current fractional position when computing oldX/X and newX/Y
-// -no - it's wrong - we can't use the old pos, instead, we must compute a linear extrapolation:
-//  oldX = (1-frac)*x[0] + frac*x[1] + inc * (x[1]-x[0]) or
-//  oldX = (1-frac)*x[0] + frac*x[1] + fPos * oldSlopeX
-//  ...
-//  newX = x[0]    nothing to interpolate
-// -we need to compute the old slopes - we may need it anyway in order to anti-alias the slope 
-//  change which happens in addition to the step - we have a step *and* a slope change on reset
-// -needs verification
+// -needs more verification with different resetRatios
 
 
 //=================================================================================================

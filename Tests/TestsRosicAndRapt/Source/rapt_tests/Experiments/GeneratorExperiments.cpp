@@ -2170,7 +2170,7 @@ void snowFlake()
   int N    = 44100;  // number of samples
   int fs   = 44100;  // sample rate
   double f = 1000;   // signal frequency
-  double resetRatio = 1.9;  // use 0 to turn resetting off
+  double resetRatio = 0.25;  // use 0 to turn resetting off
 
   //resetRatio  = 0.0;
   f *= sqrt(2.0);  // test
@@ -2210,8 +2210,8 @@ void snowFlake()
   //rsPlotArrays(numPlotPoints, &dL1[0], &dL2[0]);   // left difference without and with anti-alias
   //rsPlotArrays(numPlotPoints, &cL1[0], &cL2[0]);
   //rsPlotArrays(numPlotPoints, &xR1[0], &xR2[0]);
-  //rsPlotArrays(numPlotPoints, &xL1[0], &xR1[0]);   // left/right non anti-aliased
-  //rsPlotArrays(numPlotPoints, &xL2[0], &xR2[0]);   // left/right anti-aliased
+  rsPlotArrays(numPlotPoints, &xL1[0], &xR1[0]);   // left/right non anti-aliased
+  rsPlotArrays(numPlotPoints, &xL2[0], &xR2[0]);   // left/right anti-aliased
 
 
   // write files:
@@ -2220,30 +2220,18 @@ void snowFlake()
 
 
   // Observations:
-  // -update: now the anti-aliased left signal looks slightly better than the non-anti-aliased and
-  //  the right one looks really clean - i think, we need to additionally take care of the corners
-  // -anti-aliasing of resets seems to work for resetRatio = 1.9 but not 2.1, i think stepY is 
-  //  miscomputed - we need to compute oldX/Y, newX/Y more accurately, taking into account the 
-  //  fractional position into the current line
-  //  -with 1.9 the right channel looks good and the left looks bad, with 2.1 it's the other way
-  //   around - this is a strong hint that it has to do with the inaccuracy in computing stepX/Y
-  //   because of not taking into account where exactly inside the segment we are
-  //  -0.49: left bad, right good, 0.51: left bad, right totally broken
-  // -the inc depends on the resetRatio - why?
- 
+  // -Tests passed with 1 resetter with resetRatios of: 0.49, 0.51, 1.5, 1.9, 2.1
+  // -Tests failed with 1 resetter with resetratios of: 0.25, 0.50, 1.0, 2.0
+  //  -it seems only the right channel is wrong (that's strange!)
+  //  -it has probably to do with the reset occuring at a moment exactly when a cycle finishes
+  //  -with 0.25, we see 3 correct cycles alternate with 1 messed up cycle
+  //  -we actually do not fall into the "if(iPos != lineIndex)" branch in cases where a reset 
+  //   occured before for this sample
+  // -the inc depends on the resetRatio - why? probably to tune the funcdamental frequency 
+  //  independently from the reset ratio
   // -the first resetter is by default not off but instead set to a reset-ratio of 1, turning 
   //  resetting off actually produces a clean signal even without anti-aliasing
-
-  // -with f = 1000*sqrt(2), we hit the "if(iPos != lineIndex)" for the first time wehn n==7
-  //  ...try to compute by hand what should happen, especially, what the cornerTime should be
-  //  the increment is: inc = 0.032068334747689234 and numLines = 4
-  //  0.032*7 = 0.224, 0.032*8 = 0.256 ...the corner occurred exactly at 0.250, so from 0.256, 
-  //  that's 0.006 samples ago, so cornerTime should be 0.006 or 1-0.006 = 0.994, 
-  //  it happens at n = 7, n = 15 - that's actually one too early and it's because, we do the
-  //  updatePosition before the test...but that should be no problem...or should it?
 }
-// when there is a turn in the turtle-source, the slope/derivative of both x and y (as functions of 
-// time t) have a sudden change which means, a blamp must be inserted into both
 
 void triSawOsc()
 {
