@@ -541,7 +541,7 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
       resetPhase(newPhase, &stepX, &stepY, &slopeChangeX, &slopeChangeY);
       xBlep.prepareForStep(  blepTime, stepX);
       yBlep.prepareForStep(  blepTime, stepY);
-      xBlep.prepareForCorner(blepTime, slopeChangeX);
+      xBlep.prepareForCorner(blepTime, slopeChangeX); // commented for debuging the steps
       yBlep.prepareForCorner(blepTime, slopeChangeY);
     }
   }
@@ -619,13 +619,45 @@ void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, doub
   oldSlopeX = x[1] - x[0];
   oldSlopeY = y[1] - y[0];
 
-  // oldX, oldY already contain an additional the full step by a full increment! We must actually 
+  // oldX, oldY already contain an additional full step by a full increment! We must actually 
   // subtract targetPhase * numLines * oldSlope as correction to set it back to a partial step:
+
   s = -targetPhase * numLines;
+
+  //// test to fix problem when resetRatio = 0.25:
+  double tol = 1.e-11;
+  //if(targetPhase <= tol)  s = 1;  // is this correct?
+
   oldX += s * oldSlopeX;
   oldY += s * oldSlopeY;
 
+  if(fPos == 0)   // edge case, occurs when linePos == floor(linePos)
+  //if(fPos <= tol || fPos >= 1-tol)   // hmmm ... doesn't seem right
+  { 
+    oldX = x[1]; 
+    oldY = y[1]; 
+  } 
+
   Base::resetPhase(targetPhase);
+
+
+  // experimental:
+  double linePos2 = getLinePosition(pos);
+  int    iPos2    = floorInt(linePos);
+  if(iPos == iPos2)
+  {
+    *stepX = *stepY = *slopeChangeX = *slopeChangeY = 0;
+    return;
+  }
+  // this seems to fix the spurious spikes that occur when a wrap-around occurs immediately before
+  // a reset...but why is this needed? should the result of the computaions below yield zero in 
+  // this case? after all, when we are in the same segment pre and post Base::resetPhase, 
+  // x[0], x[1], y[0], y[1] should be the same before and after...but they do not seem to be
+  // ...soo - why does resetPhase change the x,y buffers in this case
+  // oh: but i think the s = -targetPhase * numLines; applies only if we really had a 
+  // reset that actually did an additional wraparound - otherwise, it makes no sense
+
+
 
   *stepX = x[0] - oldX;
   *stepY = y[0] - oldY;
@@ -633,6 +665,8 @@ void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, doub
   s = inc * numLines;
   *slopeChangeX = s * (x[1] - x[0] - oldSlopeX);
   *slopeChangeY = s * (y[1] - y[0] - oldSlopeY);
+
+  int dummy = 0;
 }
 // -needs more verification with different resetRatios
 

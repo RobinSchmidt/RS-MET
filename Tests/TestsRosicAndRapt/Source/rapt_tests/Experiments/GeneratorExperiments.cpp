@@ -2170,10 +2170,20 @@ void snowFlake()
   int N    = 44100;  // number of samples
   int fs   = 44100;  // sample rate
   double f = 1000;   // signal frequency
-  double resetRatio = 0.25;  // use 0 to turn resetting off
+  double resetRatio = 0.251;  // use 0 to turn resetting off
 
   //resetRatio  = 0.0;
   f *= sqrt(2.0);  // test
+  //f = 1102.5;
+
+  //fs = 32; f = 1.1;
+  //fs = 32; f = 1.01;
+  //fs = 32; f = 1.001;  // fails - adds upward spikes
+  //fs = 32; f = 1.0001;  // fails - adds upward spikes
+  //fs = 32; f = 1;     // works with edge-case check
+  //fs = 32; f = 0.999;     // fails - adds downward spikes
+  //fs = 32; f = 0.99;
+  //fs = 32; f = 0.9;
 
   using Vec = std::vector<double>;
 
@@ -2181,8 +2191,10 @@ void snowFlake()
   sf.setSampleRate(fs);
   sf.setFrequency(f);
   sf.setAmplitude(0.5);
-  sf.setAxiom("F+F+F+F+");
-  sf.setTurnAngle(90);    // try something else (60?) to see effect of resets)
+  //sf.setPhaseOffset(0.125 * 360);
+  //sf.setAxiom("F+F+F+F");
+  sf.setAxiom("F+F+F+F+"); sf.setTurnAngle(90);    // square
+  //sf.setAxiom("F+F+F+F+F+"); sf.setTurnAngle(72);    // pentagon
   sf.setUseTable(false);
   sf.setAntiAlias(false);
   sf.setNumIterations(0);
@@ -2210,7 +2222,7 @@ void snowFlake()
   //rsPlotArrays(numPlotPoints, &dL1[0], &dL2[0]);   // left difference without and with anti-alias
   //rsPlotArrays(numPlotPoints, &cL1[0], &cL2[0]);
   //rsPlotArrays(numPlotPoints, &xR1[0], &xR2[0]);
-  rsPlotArrays(numPlotPoints, &xL1[0], &xR1[0]);   // left/right non anti-aliased
+  //rsPlotArrays(numPlotPoints, &xL1[0], &xR1[0]);   // left/right non anti-aliased
   rsPlotArrays(numPlotPoints, &xL2[0], &xR2[0]);   // left/right anti-aliased
 
 
@@ -2221,12 +2233,29 @@ void snowFlake()
 
   // Observations:
   // -Tests passed with 1 resetter with resetRatios of: 0.49, 0.51, 1.5, 1.9, 2.1
-  // -Tests failed with 1 resetter with resetratios of: 0.25, 0.50, 1.0, 2.0
+  // -Tests failed with 1 resetter with resetRatios of: 0.25, 0.50, 1.0, 2.0
   //  -it seems only the right channel is wrong (that's strange!)
   //  -it has probably to do with the reset occuring at a moment exactly when a cycle finishes
   //  -with 0.25, we see 3 correct cycles alternate with 1 messed up cycle
   //  -we actually do not fall into the "if(iPos != lineIndex)" branch in cases where a reset 
   //   occured before for this sample
+  //  -apparently, stepX is always 0 and stepY is always 1 when the reset occurs - but that is 
+  //   wrong! both steps should be 0, right?
+  //  -using "F+F+F+F" as seed withut the final + does not seem to help
+  //   with f = 1102.5 there 8 initial correct cycles before it goes wrong
+  //  -when using an inc = 1/32 (via fs=32, f=1), the glitches occur at k*128 samples
+  // -a resetRatio of 0.252 has occasional spikes - it seems like the closer the ratio is to a 
+  //  fraction of the cycle-length, the denser the spurious spikes get, so maybe we should assume
+  //  they are always there, regardless of the ratio, just more or less frequently
+  // -probably they always happen when two events (reset and line-switch?) occur within one sample?
+  //  ...but the line-switch does not happen anymore, after a reset occured...maybe it should? but 
+  //  no, that doesn't seem to make sense - a reset actually switches to a new line segment, too
+  //  but maybe a line-switch may happen a sample *before* the reset and then we have two 
+  //  correction bleps...or at least 2 blamps
+  // -oh: it does happen to x, too when we use, for example setPhaseOffset(0.125 * 360)
+  // -try to figure out what conditions are different when the spikes occur (fPos, targetPhase, 
+  //  etc.)
+
   // -the inc depends on the resetRatio - why? probably to tune the funcdamental frequency 
   //  independently from the reset ratio
   // -the first resetter is by default not off but instead set to a reset-ratio of 1, turning 
