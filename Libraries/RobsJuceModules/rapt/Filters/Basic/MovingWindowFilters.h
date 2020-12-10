@@ -129,7 +129,7 @@ economic to extract min and max with a single filter object rather than using se
 min and max (specifically, the delayline can be shared by both filters). */
 
 template<class T>
-class rsMovingMinMaxFilter : public rsMovingMaximumFilter<T>
+class rsMovingMinMaxFilter : public rsMovingMaximumFilter<T>  // rename to rsMinMaxFilter
 {
 
 public:

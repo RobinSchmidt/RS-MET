@@ -261,5 +261,24 @@ void rsQuantileFilter<T>::convertParameters(
 todo: 
 -implement a getShortenedOutput similar to getElongatedOutput - this may simplify the 
  implementation of non-integer lengths and even allow for lengths < 2 (down to L=1)
+ ...done?
+
+Ideas:
+
+Create a version that generates a pseudo-resonance by:
+-running a rsMinMaxFilter in parallel that extracts the min and max of the segment of the same 
+ length
+-the total output is formed by wq*quantile + wMin*min + wMax*max
+-wq and wMin+wMax are obtained by a user crossfade: 0: wq=1, wMin+wMax=0, 1: wq=0, wMin+wMax=1
+ this crossfades between normal filter output and "resonance"
+-the relative weights of wMin,wMax are derived by some other feature of the signal, for example:
+ -the current number of stored samples in the min- and max buffers
+ -the position of the current quantile sample in the doubleheap
+ -the absolute values of min and max
+ -which feature is used can be selected by the user via a "ResoMode" parameter
+-the resulting resonance waveform will be some sort of pulse-wave which fits nicely to the general
+ character of this type of filter
+-we may need to implement an rsMinMaxFilter of non-integer length (by crossfading between two 
+ buffered samples, min and 2nd-to-min, ditto for max)
 
 */

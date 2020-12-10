@@ -243,14 +243,23 @@ bool TurtleSource::isInInitialState()
   return r;
 }
 
-void TurtleSource::resetPhase(double newPhase)
+void TurtleSource::resetPhase(double newPhase)  
 {
+  // rename newPhase to phaseAdvance or get rid - i wasn't there befroe and was inetroduced to 
+  // handle the andvance when receiving resets in getSample - but that doesn't seem to work well. 
+  // we may need a spearate resetPhaseWithAdvance function in the subclass
+
+  // old:
   if(newPhase == 0.0) {
     pos = 0;
     lineIndex = 0; }
   else {
     pos = newPhase;
     lineIndex = floorInt(getLinePosition(pos)); }
+
+  // new:
+  //pos = phaseOffset + newPhase;
+  //lineIndex = floorInt(getLinePosition(pos));
 
   if(useTable)
     updateLineBufferFromTable();
@@ -566,6 +575,8 @@ void TurtleSourceAntiAliased::getSampleFrameStereoAA(double* outL, double* outR)
 
   // integer and fractional part of position:
   double linePos = getLinePosition(pos); // linePos = 0...numLines
+  // maybe this should just use linePos = pos*numLines
+
   int iPos = floorInt(linePos);          // iPos = 0...numLines...maybe subtract 1 in case == numLines?
   double fPos = linePos - iPos;
 
@@ -625,7 +636,7 @@ void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, doub
   s = -targetPhase * numLines;
 
   //// test to fix problem when resetRatio = 0.25:
-  double tol = 1.e-11;
+  //double tol = 1.e-11;
   //if(targetPhase <= tol)  s = 1;  // is this correct?
 
   oldX += s * oldSlopeX;
@@ -646,8 +657,14 @@ void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, doub
   int    iPos2    = floorInt(linePos);
   if(iPos == iPos2)
   {
-    *stepX = *stepY = *slopeChangeX = *slopeChangeY = 0;
-    return;
+    *stepX = *stepY = 0; 
+    //*slopeChangeX = *slopeChangeY = 0;
+    //return;
+  }
+  else
+  {  
+    *stepX = x[0] - oldX;
+    *stepY = y[0] - oldY;
   }
   // this seems to fix the spurious spikes that occur when a wrap-around occurs immediately before
   // a reset...but why is this needed? should the result of the computaions below yield zero in 
@@ -656,11 +673,12 @@ void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, doub
   // ...soo - why does resetPhase change the x,y buffers in this case
   // oh: but i think the s = -targetPhase * numLines; applies only if we really had a 
   // reset that actually did an additional wraparound - otherwise, it makes no sense
+  // -this fix feels like a dirty workaround, but maybe it's indeed the way to go - we'll see
+  // -it seems to create dirt when the start-phase is not zero
 
 
 
-  *stepX = x[0] - oldX;
-  *stepY = y[0] - oldY;
+
 
   s = inc * numLines;
   *slopeChangeX = s * (x[1] - x[0] - oldSlopeX);

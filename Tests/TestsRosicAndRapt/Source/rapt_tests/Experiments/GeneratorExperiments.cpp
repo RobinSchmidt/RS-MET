@@ -2191,10 +2191,12 @@ void snowFlake()
   sf.setSampleRate(fs);
   sf.setFrequency(f);
   sf.setAmplitude(0.5);
+  //sf.setPhaseOffset(0.0625 * 360);
   //sf.setPhaseOffset(0.125 * 360);
-  //sf.setAxiom("F+F+F+F");
+  //sf.setPhaseOffset(0.6 * 360);
   sf.setAxiom("F+F+F+F+"); sf.setTurnAngle(90);    // square
   //sf.setAxiom("F+F+F+F+F+"); sf.setTurnAngle(72);    // pentagon
+  //sf.setAxiom("F+F+F+F+F+F+"); sf.setTurnAngle(60);    // hexagon
   sf.setUseTable(false);
   sf.setAntiAlias(false);
   sf.setNumIterations(0);
@@ -2256,10 +2258,41 @@ void snowFlake()
   // -try to figure out what conditions are different when the spikes occur (fPos, targetPhase, 
   //  etc.)
 
+  // -i think, TurtleSource::resetPhase must take into account the starPhase set by 
+  //  setPhaseOffset(0.6 * 360); otherwise we trigger an assert right in first getSample call 
+  //  because we get an invalid blepTi - we should make sure that the (iPos != lineIndex) branch is
+  //  not entered in the first call...but that could give rise to more porblems when we jump over
+  //  several line segments in one sample - in thins case, the blepTime = fPos / (numLines*inc) may 
+  //  not work
+
   // -the inc depends on the resetRatio - why? probably to tune the funcdamental frequency 
   //  independently from the reset ratio
   // -the first resetter is by default not off but instead set to a reset-ratio of 1, turning 
   //  resetting off actually produces a clean signal even without anti-aliasing
+
+  // Notes:
+  // -let N be the number of line-segments, then: pos = [0..1), linePos = [0..N), 
+  //  iPos = floor(linePos) = [0..N-1] (is N-1 really included - why?), 
+  //  fPos = linePos - iPos = [0..1), fPos is used to interpolate between start and end of current 
+  //  line segment  
+  // -to be free from alisiasng when using blamps for the line segment switches, we need 
+  //  inc <= 1/N (i think)
+  // -if a blamp occurs due to going from line i to i+1 during nomral(!) playback, the formula
+  //  blepTime = fPos/(N*inc) works (why?), but in the very first sample or when we skip segments 
+  //  due to high inc (violating inc <= 1/N), this formula seems inappropriate...we may get 
+  //  blepTime > 1 ...maybe we should fmod the value by 1? does that make sense? or do we need an 
+  //  entirely different approach?
+  // -actually, the line-segment change could also create a step-discontinuity, but in normal 
+  //  operation (where pos increases by inc (<= 1/N) each sample), this only is the case when we
+  //  wrap around, i.e. i = N-1, i+1 = wrapAround(N) = 0 and the turtle's path is not closed
+  // -maybe it would be more convenient to have a turtle-source that allows for random access 
+  //  values: double Turtle::getSampleAt(double phase) ...it could internally compute the increment
+  //  by inc = phase - oldPhase, if phase and oldPhase are both in [0..1), inc is in (-1..+1) for 
+  //  each sample, oldPhase would be member variable
+  //  -this may facilitate phase-modulation more easily than the current implementation
+  //  -we could build a driver around it that creates a swatooth shape for the phase
+
+
 }
 
 void triSawOsc()
