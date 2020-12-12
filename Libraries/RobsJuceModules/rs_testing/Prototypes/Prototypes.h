@@ -912,15 +912,28 @@ public:
   {
     double L = length*sampleRate;
     core.setLengthAndQuantile(   L, quantile);
+
     minCore.setLengthAndQuantile(L, T(0));
     maxCore.setLengthAndQuantile(L, T(1));
+    //minCore.setLengthAndQuantile(100, T(0));
+    //maxCore.setLengthAndQuantile(100, T(1));
+    //minCore.setLengthAndQuantile(rsMax(L, 10.0), T(0));
+    //maxCore.setLengthAndQuantile(rsMax(L, 10.0), T(1));
+
+
     delay = T(0.5)*(L-1);
 
     //T w = T(2*PI)*sampleRate/length; // == 2*PI*sampleRate*frequency
     T w = T(2*PI)  / (length * sampleRate); // == 2*PI*frequency/sampleRate
     bandpass.setFrequencyAndAbsoluteBandwidth(w, T(0.00001));  // preliminary
+    // todo: let the resonance frequency have an adjustable pitch-offset with respect to core 
+    // filters...maybe the min/max cores could have an offset as well
+    // and maybe we should use a power rule to generalize from constant absolute bandwidth (0) and
+    // constant relative bandwidth (1) to anything between and beyond...and we generally need a 
+    // reasonable user-parameter to control the bandwidth
 
-    T gain = bandpass.getMagnitudeAt(w); 
+    //T gain = bandpass.getMagnitudeAt(w);  // excluding the output gain
+    //bandpass.setOutputGain(T(1)/gain);
     // for test/debug 
     // -gain tends to get huge for small bandwidths (seems to be in reciprocal 
     //  relationship)! 
@@ -936,7 +949,9 @@ protected:
   void computeMinMaxWeights(T* wMin, T* wMax, T x, T yL, T yD, T yMin, T yMax)
   {
     T yB = bandpass.getSample(yD);  // or maybe feed x
-    T thresh = T(0.0) * yL;  
+
+    T thresh = T(0.0) * yL;
+    //T thresh = T(0.2) * rsMax(rsAbs(yMin), rsAbs(yMax));
     // make user-adjustable, determines pulse-width, should perhaps be scaled by yL...and maybe we
     // should normalize the amplitude of the bandpass with respect to the bandwidth (we probably 
     // want a constant peak gain bandpass - maybe the RBJ bandpass is good for that)
@@ -972,6 +987,8 @@ protected:
   T resoMix = T(0);
 
   rsTwoPoleFilter<T, T> bandpass;
+  // the two-pole is actually not really a bandpass but a resonator - maybe an RBJ bandpass is 
+  // better?
 
 };
 

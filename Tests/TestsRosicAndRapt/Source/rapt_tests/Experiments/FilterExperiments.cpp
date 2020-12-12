@@ -1692,14 +1692,15 @@ void quantileFilterResonant()
   // min-max filter
 
   double fs = 44100;  // sample rate
-  double f  = 500;    // filter frequency
+  double f1 = 20000;  // filter frequency 1
+  double f2 = 20;     // filter frequency 2
   double r  = 1.0;    // resonance mix
-  int    N  = 44100;  // number of samples
+  int    N  = 200000; // number of samples
 
   rsQuantileFilterResonant<double> flt;
   flt.setSampleRate(fs);
   flt.setMaxLength(1.0);   // allows for 1 Hz as lowest cutoff (reciprocal of minFreq)
-  flt.setFrequency(f);
+  //flt.setFrequency(f);
   flt.setResonanceMix(r);
 
   // Create input signal:
@@ -1709,24 +1710,40 @@ void quantileFilterResonant()
   rsOnePoleFilter<double, double> lpf;
   lpf.setSampleRate(fs);
   lpf.setMode(rsOnePoleFilter<double, double>::LOWPASS_IIT);
-  lpf.setCutoff(f);
+  lpf.setCutoff(f2); // maybe use something else
   for(int n = 0; n < N; n++)
     x[n] = lpf.getSample(x[n]);
 
 
   //rsArrayTools::cumulativeSum(&x[0], &x[0], N);
 
+  Vec f(N);
+  rsArrayTools::fillWithRangeExponential(&f[0], N, f1, f2);
+
   // produce output signal:
   Vec y(N);
   for(int n = 0; n < N; n++)
+  {
+    flt.setFrequency(f[n]);
     y[n] = flt.getSample(x[n]);
+  }
 
   //rsPlotVectors(x, y);
   rosic::writeToMonoWaveFile("ResoQuantileIn.wav",  &x[0], N, 44100);
   rosic::writeToMonoWaveFile("ResoQuantileOut.wav", &y[0], N, 44100);
 
-  // ToDo:
-  // -implement an exponential sweep
+  // Observations:
+  // -when creating a sweep, the resonance gets louder for lower frequencies - i think, it's 
+  //  because the min/max values are taken over a longer interval, so the amplitude tends to 
+  //  increase
+  // -maybe the length over which min and max are taken should be a fixed (adjustable) parameter
+  //  that is independent from the filter frequency setting - at least, when the resonance 
+  //  frequency is determined by the bandpass
+  // -for high frequencies, the resonance turns itself into noise
+  //  -maybe it can be counteracted by applying a highpass and amplification that somehow track the 
+  //   filter frequency (and become neutral at lower frequencies)...yes - that seems like a good 
+  //   idea
+
 
   // Ideas:
   // -maybe use a bandpass and use max when the output is >= 0 and min otherwise

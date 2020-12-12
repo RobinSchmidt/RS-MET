@@ -367,6 +367,7 @@ int main(int argc, char* argv[])
   //fakeResoDifferentDelays();
 
   // Modal Filters/Synthesis:
+  twoPoleFilter();
   //modalFilter();        // impulse response of decaying-sine filter
   //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
   //attackDecayFilter();  // ...hmm..almost redundant

@@ -105,8 +105,15 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
-  /** Returns the magnitude response of the filter at the given normalized radian frequency. */
+  /** Returns the magnitude response of the filter at the given normalized radian frequency 
+  excluding the output gain as set by setOutputGain. */
   TPar getMagnitudeAt(TPar w);
+
+
+  std::complex<TPar> getTransferFunctionAt(std::complex<TPar> z)
+  {
+    return biquadTransferFunctionAt(TPar(1), TPar(0), TPar(0), a1, a2, z);
+  }
 
 
   //-----------------------------------------------------------------------------------------------

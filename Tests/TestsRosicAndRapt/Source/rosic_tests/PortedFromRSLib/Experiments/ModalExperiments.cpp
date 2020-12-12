@@ -1,5 +1,35 @@
 #include "ModalExperiments.h"
 
+void twoPoleFilter()
+{
+  // rsTwoPoleFilter is a sort of simplified version of the modal filters...
+
+  double fs = 44100;
+  double f  = 1000;
+  double bw = 10;
+
+  rsTwoPoleFilter<double, double> flt;
+  double s = 2*PI/fs;  // conversion factor from frequency in Hz to omega
+  double w = s*f;
+  flt.setFrequencyAndAbsoluteBandwidth(w, s*bw);
+
+  double g  = flt.getMagnitudeAt(w);
+  double dB = rsAmp2dB(g);
+
+  plotImpulseResponse(flt, 500, 1.0);
+  plotFrequencyResponse(flt, 1001, 50.0, 20000.0, fs, true);  // needs getTransferFunctionAt
+
+
+
+  // Observations:
+  // -the maximum amplitude of the decaying sine seems to be (roughly) independent from the 
+  //  bandwidth
+
+
+  int dummy = 0;
+}
+
+
 void modalFilter()
 {
   //static const int N = 5000;  // number of samples to plot

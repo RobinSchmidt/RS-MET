@@ -4,6 +4,7 @@
 
 // maybe move to FilterExperiments
 
+void twoPoleFilter();
 void modalFilter();
 void modalFilterFreqResp(); // rename to modalWithAttack
 void modalTwoModes();
