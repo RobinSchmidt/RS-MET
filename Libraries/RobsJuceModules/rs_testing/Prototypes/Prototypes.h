@@ -791,6 +791,141 @@ protected:
 
 //=================================================================================================
 
+/** Extends rsQuantileFilter by producing a pseudo-resonance signal formed by... */
+
+template<class T>
+class rsQuantileFilterResonant : public rsQuantileFilter<T>
+{
+
+public:
+
+  using Base = rsQuantileFilter<T>;
+
+  rsQuantileFilterResonant()
+  {
+    allocateResources();
+    Base::dirty = true;
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets the sample rate at which this filter should operate. May re-allocate memory. */
+  void setSampleRate(T newSampleRate)
+  {
+    sampleRate = newSampleRate;
+    allocateResources();
+    Base::dirty = true;
+  }
+
+  /** Sets the maximum length (in seconds) for this filter. May re-allocate memory. */
+  void setMaxLength(T newMaxLength)
+  {
+    maxLength = newMaxLength;
+    allocateResources();
+    Base::dirty = true;
+  }
+
+  /** Sets sample rate and maximum length at the same time. May re-allocate memory. This may avoid
+  some re-allocations compared to using setSampleRate followed by setMaxLength (or vice versa), 
+  depending on the situation - so, if possible, it's recommended to set both at the same time. */
+  void setSampleRateAndMaxLength(T newSampleRate, T newMaxLength)
+  {
+    sampleRate = newSampleRate;
+    maxLength  = newMaxLength;
+    allocateResources();
+    Base::dirty = true;
+  }
+
+  void setResonanceMix(T newMix)
+  {
+    resoMix = newMix;
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  /** Produces one output sample from a given input sample. */
+  T getSample(T x)
+  {
+    delayLine.getSample(x);
+    if(dirty) 
+      updateInternals();
+
+    // compute non-resonant filter output:
+    T yL = core.getSample(x);                // lowpass part
+    T yH = delayLine[delayScl*delay] - yL;   // highpass part
+    T yF = loGain * yL + hiGain * yH;        // non-resonant filtered output
+
+    // compute (pseudo) resonance:
+    T min  = minCore.getSample(x);
+    T max  = maxCore.getSample(x);
+
+    // this computation should be factored out and we should provide various different ways to
+    // compute wMin/wMax that can bew switched by the user using a setResonanceMode function:
+    T wMin = 0;                              // preliminary.. maybe these should be members and 
+    T wMax = 0;                              // computed in updateinternals
+    if(x >= yF) wMax = 1;
+    else        wMin = 1;
+    // this is not a very good way to compute wMin/wMax - it should use some condition that is 
+    // likely to cause a switch once per cycle, i.e. on the avarage switches once within a length
+    // of the filter buffer. this condition here switches far too often - try several things
+
+    T yR = wMin*min + wMax*max;              // pseudo-resonance
+
+    return (T(1)-resoMix) * yF + resoMix * yR;
+  }
+  // maybe factor out a function to produce lowpass and highpass getSampleLoHi or something at the
+  // same time - client code may find that useful - or maybe getOutputs to be consistent with
+  // rsStateVariableFilter
+
+  /** Resets the filter into its initial state. */
+  void reset()
+  {
+  Base:reset();
+    minCore.reset();
+    maxCore.reset();
+  }
+
+  /** Updates the internal algorithm parameters and embedded objects according to the user
+  parameters. This is called in getSample, if the state is dirty but sometimes it may be
+  convenient to call it from client code, too. */
+  virtual void updateInternals()
+  {
+    double L = length*sampleRate;
+    core.setLengthAndQuantile(   L, quantile);
+    minCore.setLengthAndQuantile(L, T(0));
+    maxCore.setLengthAndQuantile(L, T(1));
+    delay = T(0.5)*(L-1);
+    dirty = false;
+  }
+
+
+
+protected:
+
+  virtual void allocateResources() override
+  {
+    Base::allocateResources();
+    int mL = getMaxRequiredLengthInSamples();
+    minCore.setMaxLength(mL);
+    maxCore.setMaxLength(mL);
+  }
+
+  // filter cores to extract min and max:
+  rsQuantileFilterCore2<T> minCore, maxCore;
+  // can this be done more efficiently - i could perhaps use the rsMovingMinMaxFilter class but 
+  // then the length would not be modulatable
+
+  T resoMix = T(0);
+
+};
+
+
+
+//=================================================================================================
+
 /** This is a naive implementation of (the core of) a moving quantile filter and meant only for
 producing test outputs to compare the production version of the rsQuantileFilterCore against.
 It's horribly inefficient - the cost per sample is O(N*log(N)) whereas the production version

@@ -319,11 +319,13 @@ public:
   Returns a linearly interpolated value between the rightmost value and its immediate left 
   neighbor using the given interpolation coefficient in the range [0,1]. 0 means rightmost only, 
   1 means left neighbor only. This is used to facilitate non-integer lengths in min/max filters. */
+  /*
   inline T readHeadInterpolated(T coeff = T(0)) const
   {
     RAPT::rsAssert(getLength() >= 2, "Deque too short for interpolation");
     return (1-coeff) * this->data[this->wrap(head-1)] + coeff * this->data[this->wrap(head-2)];
   }
+  */
   // needs test, todo: implement a similar function readTailInterpolated
 
   /** Returns the value at the tail of the queue, i.e. the leftmost value. */

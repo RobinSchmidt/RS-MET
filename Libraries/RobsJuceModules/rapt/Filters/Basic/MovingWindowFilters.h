@@ -47,7 +47,8 @@ public:
   }
 
   // todo: add function setMaxLength, setLength with non-integer parameter (should crossfade between
-  // floor(length) and ceil(length))
+  // floor(length) and ceil(length)) .oh - i think, it's not so easily possible to implement 
+  // non-integer lengths
 
 
 

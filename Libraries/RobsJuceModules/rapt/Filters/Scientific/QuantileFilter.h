@@ -590,10 +590,17 @@ protected:
   //static void convertParameters(T length, T quantile, T sampleRate, int* L, int* p, T* w, T* d);
   // obsolete - delete soon
 
+  /** Returns the maximum length in samples that may be needed for the delayline and core 
+  buffers. */
+  int getMaxRequiredLengthInSamples()
+  {
+    return (int) ceil(maxLength * sampleRate); // maxLength is a user parameter in seconds
+  }
+
   /** Allocates the memory used for the delay-buffers, heaps, etc. */
   virtual void allocateResources()
   {
-    int mL = (int) ceil(maxLength * sampleRate);
+    int mL = getMaxRequiredLengthInSamples();
     core.setMaxLength(mL);
     delayLine.setCapacity(mL);
   }

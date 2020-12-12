@@ -1530,7 +1530,6 @@ std::vector<double> applyDelay(const std::vector<double>& x, double delay)
   return y;
 }
 
-
 void quantileFilterDual()
 {
   double fs = 44100;  // sample rate
@@ -1687,26 +1686,33 @@ void quantileFilterDual()
 
 }
 
-template<class T>
-class rsQuantileFilterResonant : protected rsQuantileFilter<T>
-{
-
-public:
-
-
-
-protected:
-
-  rsMovingMinMaxFilter<T> minMaxFlt;
-
-};
-
 void quantileFilterResonant()
 {
   // Test the pseudo-resonance for the quantile filter that is introduced by using an additional 
   // min-max filter
 
-  //rsQuantileFilterResonant<double> flt; // needs default constructor
+  double fs = 44100;  // sample rate
+  double f  = 500;    // filter frequency
+  double r  = 0.5;    // resonance
+  int    N  = 1000;   // number of samples
+
+  rsQuantileFilterResonant<double> flt;
+  flt.setSampleRate(fs);
+  flt.setMaxLength(1.0);   // allows for 1 Hz as lowest cutoff (reciprocal of minFreq)
+  flt.setFrequency(f);
+  flt.setResonanceMix(r);
+
+  // Create input signal:
+  using Vec = std::vector<double>;
+  Vec x = rsRandomVector(N, -0.5, +0.5, 0);  // try sinusoids, too
+
+  // produce output signal:
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = flt.getSample(x[n]);
+
+  rsPlotVectors(x, y);
+  //rosic::writeToMonoWaveFile("ResoQuantileFilter.wav", &y[0], N, 44100);
 
   return;
 }

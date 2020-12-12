@@ -330,6 +330,7 @@ bool movingMaximumLengthModulation()
 {
   bool r = true;
 
+  // Under construction...
   // todo: test non-integer length and length modulation (i.e. switching the length to a new value 
   // while the filter is running):
 
@@ -363,14 +364,16 @@ bool movingMaximumLengthModulation()
   flt.setLength(5);
   for(int n = N/2; n < N; n++)
     y_2_5[n] = flt.getSample(x[n]);
+  // this is still wrong because it resets the buffer on the switch
+
+  // todo: do an opposite switch from 5 to 2
 
   // produce max-filtered signal with filter length of 4.25:
   //...
 
 
-
-
-  rsPlotVectors(x, y0, y1, y2, y3, y4, y5);
+  //rsPlotVectors(x, y0, y1, y2, y3, y4, y5);
+  //rsPlotVectors(x, y2, y5, y_2_5);
   return r;
 }
 
