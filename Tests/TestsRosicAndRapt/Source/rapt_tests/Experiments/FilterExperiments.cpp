@@ -1687,10 +1687,36 @@ void quantileFilterDual()
 
 }
 
+template<class T>
+class rsQuantileFilterResonant : protected rsQuantileFilter<T>
+{
+
+public:
+
+
+
+protected:
+
+  rsMovingMinMaxFilter<T> minMaxFlt;
+
+};
+
+void quantileFilterResonant()
+{
+  // Test the pseudo-resonance for the quantile filter that is introduced by using an additional 
+  // min-max filter
+
+  //rsQuantileFilterResonant<double> flt; // needs default constructor
+
+  return;
+}
+
+
 void quantileFilter()
 {
   //quantileFilterElongation();  // tests producing the length L+1 output by length L filter
   //quantileFilterSweep();  // tests non-integer length quatile filter
   //quantileFilterDelay();
-  quantileFilterDual();  // tests the dual-quantile filter (with highpass mode, etc.)
+  //quantileFilterDual();  // tests the dual-quantile filter (with highpass mode, etc.)
+  quantileFilterResonant();
 }

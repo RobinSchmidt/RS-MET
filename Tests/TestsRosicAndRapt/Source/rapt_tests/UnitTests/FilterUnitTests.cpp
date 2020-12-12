@@ -227,8 +227,7 @@ bool testMovingMaxFilter(rsMovingMaximumFilter<int>& flt, const std::vector<int>
   return result == target;
 }
 
-
-bool movingMaximumUnitTest()
+bool movingMaximumUnitTest1()
 {
   bool r = true;
 
@@ -313,6 +312,42 @@ https://www.nayuki.io/page/sliding-window-minimum-maximum-algorithm
 https://www.nayuki.io/res/sliding-window-minimum-maximum-algorithm/SlidingWindowMinMax.hpp
 
 */
+
+bool movingMaximumLengthModulation()
+{
+  bool r = true;
+
+  // todo: test non-integer length and length modulation
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  Vec x = { 1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2,1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2,1 }; // input
+  int N = (int) x.size();
+  Vec y(N);
+
+
+  rsMovingMaximumFilter<Real> flt(7);  // todo: implement and use a standard constructor without argument
+  //flt.setLength(4.0);
+
+
+
+
+
+
+
+  return r;
+}
+
+bool movingMaximumUnitTest()
+{
+  bool r = true;
+
+  r &= movingMaximumUnitTest1();
+  r &= movingMaximumLengthModulation();
+
+  return r;
+}
 
 
 bool testQuantileCore(int maxLength, int smallLength, int largeLength, int numSamples,

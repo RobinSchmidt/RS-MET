@@ -25,6 +25,10 @@ class rsMovingMaximumFilter  // rename to rsExtremumFilter, maybe move to Scient
 public:
 
   rsMovingMaximumFilter(size_t maxLength);
+  // todo: give it a default value (maybe 0 or 1)
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
 
   /** Sets up the length of the filter, i.e. the number of samples within which a maximum is
   searched.
@@ -42,7 +46,9 @@ public:
     // changes
   }
 
-  // todo: add function setMaxLength
+  // todo: add function setMaxLength, setLength with non-integer parameter (should crossfade between
+  // floor(length) and ceil(length))
+
 
 
   /** Sets the "greater-than" comparison function. Note that you can actually also pass a function
@@ -56,12 +62,16 @@ public:
   //{ greater = greaterThan; }
 
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+
   /** Returns the length of the filter, i.e. the number of samples within which a maximum is
   searched. */
   size_t getLength() const { return delayLine.getLength(); }
 
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
   /** Computes and returns an output sample.  */
