@@ -1693,8 +1693,8 @@ void quantileFilterResonant()
 
   double fs = 44100;  // sample rate
   double f  = 500;    // filter frequency
-  double r  = 0.5;    // resonance
-  int    N  = 1000;   // number of samples
+  double r  = 1.0;    // resonance mix
+  int    N  = 44100;  // number of samples
 
   rsQuantileFilterResonant<double> flt;
   flt.setSampleRate(fs);
@@ -1706,13 +1706,32 @@ void quantileFilterResonant()
   using Vec = std::vector<double>;
   Vec x = rsRandomVector(N, -0.5, +0.5, 0);  // try sinusoids, too
 
+  rsOnePoleFilter<double, double> lpf;
+  lpf.setSampleRate(fs);
+  lpf.setMode(rsOnePoleFilter<double, double>::LOWPASS_IIT);
+  lpf.setCutoff(f);
+  for(int n = 0; n < N; n++)
+    x[n] = lpf.getSample(x[n]);
+
+
+  //rsArrayTools::cumulativeSum(&x[0], &x[0], N);
+
   // produce output signal:
   Vec y(N);
   for(int n = 0; n < N; n++)
     y[n] = flt.getSample(x[n]);
 
-  rsPlotVectors(x, y);
-  //rosic::writeToMonoWaveFile("ResoQuantileFilter.wav", &y[0], N, 44100);
+  //rsPlotVectors(x, y);
+  rosic::writeToMonoWaveFile("ResoQuantileIn.wav",  &x[0], N, 44100);
+  rosic::writeToMonoWaveFile("ResoQuantileOut.wav", &y[0], N, 44100);
+
+  // ToDo:
+  // -implement an exponential sweep
+
+  // Ideas:
+  // -maybe use a bandpass and use max when the output is >= 0 and min otherwise
+  //  -done - that seems promising for a tuned pseudo-resonance
+  //  -the bandwidth can be adjusted by the user
 
   return;
 }

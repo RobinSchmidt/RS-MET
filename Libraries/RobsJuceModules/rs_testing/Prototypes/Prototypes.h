@@ -841,6 +841,15 @@ public:
   {
     resoMix = newMix;
   }
+  // maybe use a resoGain instead
+
+  /*
+  enum class ResoMode
+  {
+
+
+  };
+  */
 
 
   //-----------------------------------------------------------------------------------------------
@@ -855,7 +864,8 @@ public:
 
     // compute non-resonant filter output:
     T yL = core.getSample(x);                // lowpass part
-    T yH = delayLine[delayScl*delay] - yL;   // highpass part
+    T yD = delayLine[delayScl*delay];        // delayed input
+    T yH = yD - yL;                          // highpass part
     T yF = loGain * yL + hiGain * yH;        // non-resonant filtered output
 
     // compute (pseudo) resonance:
@@ -864,14 +874,20 @@ public:
 
     // this computation should be factored out and we should provide various different ways to
     // compute wMin/wMax that can bew switched by the user using a setResonanceMode function:
-    T wMin = 0;                              // preliminary.. maybe these should be members and 
-    T wMax = 0;                              // computed in updateinternals
-    if(x >= yF) wMax = 1;
-    else        wMin = 1;
+    T wMin, wMax;
+    wMin = 0;                              // preliminary.. maybe these should be members and 
+    wMax = 0;                              // computed in updateinternals
+    /*
+    if(yD >= yL) wMax = 1;
+    else         wMin = 1;
+    */
     // this is not a very good way to compute wMin/wMax - it should use some condition that is 
     // likely to cause a switch once per cycle, i.e. on the avarage switches once within a length
     // of the filter buffer. this condition here switches far too often - try several things
+    // ...oh - but maybe that's just because the input is white noise - if it's somewhat lowpassed
+    // noise, i may be better
 
+    computeMinMaxWeights(&wMin, &wMax, x, yL, yD, min, max);
     T yR = wMin*min + wMax*max;              // pseudo-resonance
 
     return (T(1)-resoMix) * yF + resoMix * yR;
@@ -883,9 +899,10 @@ public:
   /** Resets the filter into its initial state. */
   void reset()
   {
-  Base:reset();
+    Base:reset();
     minCore.reset();
     maxCore.reset();
+    bandpass.reset();
   }
 
   /** Updates the internal algorithm parameters and embedded objects according to the user
@@ -898,12 +915,33 @@ public:
     minCore.setLengthAndQuantile(L, T(0));
     maxCore.setLengthAndQuantile(L, T(1));
     delay = T(0.5)*(L-1);
+
+    //T w = T(2*PI)*sampleRate/length; // == 2*PI*sampleRate*frequency
+    T w = T(2*PI)  / (length * sampleRate); // == 2*PI*frequency/sampleRate
+    bandpass.setFrequencyAndAbsoluteBandwidth(w, T(0.0001));  // preliminary
+
     dirty = false;
   }
 
 
 
 protected:
+
+  void computeMinMaxWeights(T* wMin, T* wMax, T x, T yL, T yD, T yMin, T yMax)
+  {
+    T yB = bandpass.getSample(yD);  // or maybe feed x
+    T thresh = T(0.2) * yL;  
+    // make user-adjustble, determines pulse-width, should perhaps be scaled by yL
+
+    if(yB >= thresh) { *wMin = T(0); *wMax = T(1); }
+    else             { *wMin = T(1); *wMax = T(0); }
+
+
+    /*
+    if(yD >= yL) { *wMin = T(0); *wMax = T(1); }
+    else         { *wMin = T(1); *wMax = T(0); }
+    */
+  }
 
   virtual void allocateResources() override
   {
@@ -915,10 +953,12 @@ protected:
 
   // filter cores to extract min and max:
   rsQuantileFilterCore2<T> minCore, maxCore;
-  // can this be done more efficiently - i could perhaps use the rsMovingMinMaxFilter class but 
-  // then the length would not be modulatable
+  // can this be done more efficiently? i could perhaps use the rsMovingMinMaxFilter class but 
+  // then the length would not be modulatable and i don't think it's easy to make it modulatable
 
   T resoMix = T(0);
+
+  rsTwoPoleFilter<T, T> bandpass;
 
 };
 

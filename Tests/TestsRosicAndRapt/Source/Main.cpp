@@ -190,7 +190,7 @@ int main(int argc, char* argv[])
   //hilbertCurve();
   //circleFractals(); // rename to spirograph
   //lindenmayer();
-  snowFlake();
+  //snowFlake();
   //triSawOsc();
   //triSawOscAntiAlias();
   //xoxosOsc();

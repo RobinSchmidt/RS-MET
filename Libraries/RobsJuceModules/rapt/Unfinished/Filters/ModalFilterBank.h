@@ -74,6 +74,9 @@ public:
   /** Constructor. Creates a neutral filter. */
   rsTwoPoleFilter();
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
   /** Sets up the filter coefficients from a desired normalized radian frequency w = 2*PI*f/fs
   (f: resonance frequency, fs: samplerate) and a normalized decay time-constant d = tau*fs
   (tau: time constant in seconds, time to deacy to 1/e = 0.36..). */
@@ -82,14 +85,40 @@ public:
   /** Sets a gain-factor for the output. */
   void setOutputGain(TPar newGain);
 
+
+  /** UNDER CONSTRUCTION */
+  void setFrequencyAndAbsoluteBandwidth(TPar w, TPar b)
+  {
+    setFrequencyAndDecay(w, TPar(1)/b);
+  }
+  // todo: check, if we need a proportionality factor other than 1, i.e. c/b instead of 1/b for 
+  // some c, bandwidth definition should be based on the two -3.01 dB points left and right from 
+  // the peak...i think it could be 2*Pi or something
+
+  /** UNDER CONSTRUCTION */
+  void setFrequencyAndRelativeBandwidth(TPar w, TPar b)
+  {
+    setFrequencyAndAbsoluteBandwidth(w, w/b);
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
   /** Returns the magnitude response of the filter at the given normalized radian frequency. */
   TPar getMagnitudeAt(TPar w);
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  /** Computes an output sample from an input sample. */
+  RS_INLINE TSig getSample(TSig in);
 
   /** Resets the internal state variables to zero. */
   void reset();
 
-  /** Computes an output sample from an input sample. */
-  RS_INLINE TSig getSample(TSig in);
+
 
 protected:
 
@@ -141,12 +170,14 @@ class rsModalFilter
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Construction/Destruction */
 
   /** Constructor. */
   rsModalFilter();
 
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets all the mode parameters - this triggers a calculation of the filter coefficients.
@@ -158,7 +189,7 @@ public:
   /** Copies the filter coefficients g, b1, a1, a2 from another instance into this one. */
   void copyCoefficientsFrom(const rsModalFilter &other);
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the decay time constant (tau) in seconds. Because the filter object is agnostic of
@@ -174,8 +205,8 @@ public:
   TPar getMagnitudeAt(TPar w);
 
 
-
-  /** \name Audio Processing */
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
   /** Calculates one sample at a time. */
   RS_INLINE TSig getSample(TSig in);
@@ -183,7 +214,7 @@ public:
 
   void processBlock(TSig in[], TSig out[], int blockSize);
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Misc */
 
   /** Resets the internal state. */
@@ -202,7 +233,7 @@ protected:
 };
 
 
-//===============================================================================================
+//=================================================================================================
 
 /**
 
