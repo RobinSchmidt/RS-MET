@@ -313,29 +313,64 @@ https://www.nayuki.io/res/sliding-window-minimum-maximum-algorithm/SlidingWindow
 
 */
 
+template<class T>
+std::vector<T> filter(const std::vector<T>& x, rsMovingMaximumFilter<T>& flt, int length)
+{
+  flt.setLength(length);
+  flt.reset();
+  int N = (int) x.size();
+  std::vector<T> y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = flt.getSample(x[n]);
+  return y;
+}
+// later make length a type T
+
 bool movingMaximumLengthModulation()
 {
   bool r = true;
 
-  // todo: test non-integer length and length modulation
+  // todo: test non-integer length and length modulation (i.e. switching the length to a new value 
+  // while the filter is running):
 
   using Real = double;
   using Vec  = std::vector<Real>;
 
-  Vec x = { 1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2,1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2,1 }; // input
+  //Vec x = { 1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2,1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2,1 }; // input
+  Vec x = { 1,2,3,4,5,6,7,8,9,8,7,6,5,4,3,2 }; // input
+  x = rsConcatenate(x, x);
+  x = rsConcatenate(x, x);
   int N = (int) x.size();
   Vec y(N);
 
 
   rsMovingMaximumFilter<Real> flt(7);  // todo: implement and use a standard constructor without argument
-  //flt.setLength(4.0);
+
+  // produce max-filtered signal with different integer filter lengths:
+  Vec y0 = filter(x, flt, 0);
+  Vec y1 = filter(x, flt, 1);
+  Vec y2 = filter(x, flt, 2);
+  Vec y3 = filter(x, flt, 3);
+  Vec y4 = filter(x, flt, 4);
+  Vec y5 = filter(x, flt, 5);
+
+  // produce max-filtered signal with a length switch from 2 to 5 in the middle:
+  flt.setLength(2);
+  flt.reset();
+  Vec y_2_5(N);
+  for(int n = 0; n < N/2; n++)
+    y_2_5[n] = flt.getSample(x[n]);
+  flt.setLength(5);
+  for(int n = N/2; n < N; n++)
+    y_2_5[n] = flt.getSample(x[n]);
+
+  // produce max-filtered signal with filter length of 4.25:
+  //...
 
 
 
 
-
-
-
+  rsPlotVectors(x, y0, y1, y2, y3, y4, y5);
   return r;
 }
 
