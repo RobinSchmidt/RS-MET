@@ -97,7 +97,7 @@ void rsTwoPoleFilter<TSig, TPar>::setFrequencyAndDecay(TPar w, TPar d)
 {
   TPar P = exp(-1/d);  // pole radius
   a1 = -2*P*cos(w);
-  a2 = P*P;    
+  a2 = P*P;
 }
 
 template<class TSig, class TPar>
@@ -110,7 +110,13 @@ template<class TSig, class TPar>
 TPar rsTwoPoleFilter<TSig, TPar>::getMagnitudeAt(TPar w)
 {
   return biquadMagnitudeAt(TPar(1), TPar(0), TPar(0), a1, a2, w);
-    // optimize: a simpler (less general) formula may be used
+  // optimize: a simpler (less general) formula may be used
+  // ...i think, we should include the gain g - but before doing so, figure out, if the function
+  // is used somewhere in order to compute and set a compensation gain - something like:
+  //   g = filter.getMagnitudeAt(cutoff);
+  //   filter.setOutputGain(1/g);
+  // in such a case, this outlying code would break if we include the gain here.
+  // maybe we should have two getMagnitudeAt functions - including and excluding the gain
 }
 
 template<class TSig, class TPar>

@@ -918,7 +918,13 @@ public:
 
     //T w = T(2*PI)*sampleRate/length; // == 2*PI*sampleRate*frequency
     T w = T(2*PI)  / (length * sampleRate); // == 2*PI*frequency/sampleRate
-    bandpass.setFrequencyAndAbsoluteBandwidth(w, T(0.0001));  // preliminary
+    bandpass.setFrequencyAndAbsoluteBandwidth(w, T(0.00001));  // preliminary
+
+    T gain = bandpass.getMagnitudeAt(w); 
+    // for test/debug 
+    // -gain tends to get huge for small bandwidths (seems to be in reciprocal 
+    //  relationship)! 
+    // -todo: plot impulse response
 
     dirty = false;
   }
@@ -930,11 +936,18 @@ protected:
   void computeMinMaxWeights(T* wMin, T* wMax, T x, T yL, T yD, T yMin, T yMax)
   {
     T yB = bandpass.getSample(yD);  // or maybe feed x
-    T thresh = T(0.2) * yL;  
-    // make user-adjustble, determines pulse-width, should perhaps be scaled by yL
+    T thresh = T(0.0) * yL;  
+    // make user-adjustable, determines pulse-width, should perhaps be scaled by yL...and maybe we
+    // should normalize the amplitude of the bandpass with respect to the bandwidth (we probably 
+    // want a constant peak gain bandpass - maybe the RBJ bandpass is good for that)
+    // ...it should take into account the magnitude of the bandpass output which may be a function
+    // of the bandwidth - we shoould normalize everything such that thresholds between -1..+1 make
+    // sense and have the same effect regardless of input volume and bandwidth setting
+
 
     if(yB >= thresh) { *wMin = T(0); *wMax = T(1); }
     else             { *wMin = T(1); *wMax = T(0); }
+    // maybe instead of hard-switching, we can make a sort of soft-switch?
 
 
     /*
