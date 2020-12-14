@@ -220,9 +220,6 @@ void noise()
   // testNoiseGen(int numSamples, int order, bool plotHistogram, bool writeWaveFile)
 }
 
-
-
-
 void noiseTriModal()
 {
   int numSamples = 100000;
@@ -253,7 +250,36 @@ void noiseTriModal()
   // to rarely
 }
 
+void noiseWaveShaped()
+{
+  // We create uniform white noise and apply a waveshaper (using a signed power rule) to 
+  // investigate its effects on the amplitude distribution...
 
+  int numSamples = 100000;
+  int numBins    = 50;
+  double p       = 0.5;       // power for the waveshaper
+
+  // Create the raw input noise:
+  rsNoiseGenerator<double> ng;
+  using Vec = std::vector<double>;
+  int N = numSamples;
+  Vec x(N);
+  for(int n = 0; n < N; n++)
+    x[n] = ng.getSample();
+
+  // Modify it via the waveshaper (later also use filters)
+  //auto f = [](double x) -> double { return x*x*x; };
+  //auto f = [](double x) -> double { return cbrt(x); };
+  auto f = [&](double x) -> double { return rsSign(x) * pow(rsAbs(x), p); };
+
+  for(int n = 0; n < N; n++)
+    x[n] = f(x[n]);
+
+
+
+  plotHistogram(x, numBins, -1.0, +1.0);
+
+}
 
 // maybe let it take a parameter for the length and produce various test signals with various 
 // lengths to see, how the quality depends on the length:

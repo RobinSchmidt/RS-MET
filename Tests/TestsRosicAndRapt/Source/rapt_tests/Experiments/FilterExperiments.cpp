@@ -1742,8 +1742,9 @@ void quantileFilterResonant()
   // -for high frequencies, the resonance turns itself into noise
   //  -maybe it can be counteracted by applying a highpass and amplification that somehow track the 
   //   filter frequency (and become neutral at lower frequencies)...yes - that seems like a good 
-  //   idea
-
+  //   idea - try f_hp = rsMax(0, f - 2000)....but the appropriate amplification factor may depend
+  //   on the input signal - for white noise, 1 may be appropriate, for brown noise, something
+  //   proportional to frequency is more appropriate
 
   // Ideas:
   // -maybe use a bandpass and use max when the output is >= 0 and min otherwise

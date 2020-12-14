@@ -34,6 +34,7 @@ void seriesConnectionDecay();
 void waveformFractalization();
 void noise();
 void noiseTriModal();
+void noiseWaveShaped();
 void blit();
 void blep();
 //void blamp();

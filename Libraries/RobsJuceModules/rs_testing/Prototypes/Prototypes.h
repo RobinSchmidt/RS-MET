@@ -1073,6 +1073,86 @@ protected:
 
 };
 
+
+//=================================================================================================
+
+/** This is a naive implementation of a "filter" that minimizes the distance between subsequent 
+samples by re-ordering them. It always keeps a buffer of N samples from the past and when a new 
+sample comes in, it replaces one of the buffered samples with the new one and the replaced sample 
+from the buffer is used as output. Which one is replaced and used as output is one that is closest 
+to the previous output sample. In the special case that the current input is closer to the previous
+output than all buffered samples, it will be used as output and the buffer will left alone. */
+
+template<class T>
+class rsDistanceFilterNaive
+{
+
+public:
+
+  void setLength(int newLength)
+  {
+    buf.resize(newLength);
+    rsFill(buf, T(0));
+  }
+  // O(N)
+
+  T getSample(T x)
+  {
+    T   dMin = rsAbs(y - x);
+    int iMin = -1;
+    for(int i = 0; i < (int) buf.size(); i++) {
+      T d = rsAbs(y - buf[i]);
+      if(d < dMin) {
+        dMin = d;
+        iMin = i; }}
+
+    if(iMin != -1) {
+      y = buf[iMin];
+      buf[iMin] = x; }
+    else
+      y = x;
+
+    return y;
+  }
+  // O(N)
+
+  void reset()
+  {
+    rsFill(buf, T(0));
+    y = T(0);
+  }
+  // O(N)
+
+protected:
+
+  std::vector<T> buf;     // buffer of stored samples
+  T y = T(0);             // old output
+
+};
+// ..not yet tested
+// todo:
+// -implement this more efficiently using a heap: 
+//  -we need a heap-search procedure which should run in log(N) time): int heap.findClosest(T x)
+//  -this should be used to determine the sample to be replaced, replacement itself will also take
+//   O(log(N)), so the overall complexity of getSample will be O(log(N))
+//  ...oh - no, maybe a heap will not work and we need a binary search tree instead
+// -use it to filter uniform white noise - it should preserve the uniform amplitude distribtion
+//  while still imposing a correlation (that was actually the question that lead to the idea: how 
+//  can we produce correlated noise with uniform amplitude distribution - because regular filters
+//  tend to gaussianize it)
+// -the naive version could generalize to other distance measures such as 2D Euclidean distance
+//  for stereo signal - unfortunatley, i don't see, how this could be made efficient using a heap 
+//  because there's no natural ordering for 2D vectors...but maybe one could be invented...but it 
+//  should be related to distance between pairs of vectors
+
+// ...how else could we impose correlations (and therefore, some sort of not-flat frequency 
+// spectrum) without modifying the amplitude distribution? the amplitude distribution can be 
+// modified by waveshaping and correlations can be introduced by filtering - so maybe a filtering
+// process (like 2 or 3 point MA) can be used to spectrally shape the noise, which also turns a 
+// uniform distribtuion into triangular or parabolic and then that can be followed by waveshaper 
+// that counteracts this change (square? cube? sqrt?, cbrt?) ...or maybe it should be the 
+// (inverse of?) the integral of the resulting distribution
+
 //=================================================================================================
 
 template<class T>
