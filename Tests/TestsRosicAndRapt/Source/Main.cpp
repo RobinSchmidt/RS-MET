@@ -60,8 +60,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  passed &= runUnitTestsRapt();
-  passed &= runUnitTestsRosic();  // some tests there are still commented out
+  //passed &= runUnitTestsRapt();
+  //passed &= runUnitTestsRosic();  // some tests there are still commented out
   //passed = passed;  // dummy
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
   //prototypeDesign();  // old implementation - todo: check gains of prototype filters
   //poleZeroPrototype();  // new implementation - but we don't need that
   //seriesConnectionDecay();
-  //quantileFilter();
+  quantileFilter();
 
   // Physics:
   //doublePendulum(); // takes long
@@ -259,7 +259,8 @@ int main(int argc, char* argv[])
   //vertexMeshGradient();
   //vertexMeshHessian();
 
-  shiftPolynomial();
+  //convolvePolynomials();   // under construction
+  //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();
   //parametricBell();
@@ -368,7 +369,7 @@ int main(int argc, char* argv[])
   //fakeResoDifferentDelays();
 
   // Modal Filters/Synthesis:
-  twoPoleFilter();
+  //twoPoleFilter();
   //modalFilter();        // impulse response of decaying-sine filter
   //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
   //attackDecayFilter();  // ...hmm..almost redundant

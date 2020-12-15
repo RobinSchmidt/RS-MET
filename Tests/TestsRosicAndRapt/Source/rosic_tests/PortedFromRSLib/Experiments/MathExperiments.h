@@ -37,7 +37,7 @@ void iteratedNumDiff();
 void vertexMeshGradient();
 void vertexMeshHessian();
 
-
+void convolvePolynomials();
 void shiftPolynomial();
 //void stretchPolynomial();
 void monotonicPolynomials();

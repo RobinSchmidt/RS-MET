@@ -537,6 +537,8 @@ public:
   // *was* produced most recently, not to the sample that *will be* produced next
 
 
+  T getFrequency() const { return T(1) / length; }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 

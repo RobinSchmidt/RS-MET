@@ -861,36 +861,12 @@ public:
     delayLine.getSample(x);
     if(dirty) 
       updateInternals();
-
-    // compute non-resonant filter output:
-    T yL = core.getSample(x);                // lowpass part
-    T yD = delayLine[delayScl*delay];        // delayed input
-    T yH = yD - yL;                          // highpass part
-    T yF = loGain * yL + hiGain * yH;        // non-resonant filtered output
-
-    // compute (pseudo) resonance:
-    T min  = minCore.getSample(x);
-    T max  = maxCore.getSample(x);
-
-    // this computation should be factored out and we should provide various different ways to
-    // compute wMin/wMax that can bew switched by the user using a setResonanceMode function:
-    T wMin, wMax;
-    wMin = 0;                              // preliminary.. maybe these should be members and 
-    wMax = 0;                              // computed in updateinternals
-    /*
-    if(yD >= yL) wMax = 1;
-    else         wMin = 1;
-    */
-    // this is not a very good way to compute wMin/wMax - it should use some condition that is 
-    // likely to cause a switch once per cycle, i.e. on the avarage switches once within a length
-    // of the filter buffer. this condition here switches far too often - try several things
-    // ...oh - but maybe that's just because the input is white noise - if it's somewhat lowpassed
-    // noise, i may be better
-
-    computeMinMaxWeights(&wMin, &wMax, x, yL, yD, min, max);
-    T yR = wMin*min + wMax*max;              // pseudo-resonance
-
-    return (T(1)-resoMix) * yF + resoMix * yR;
+    T yL = core.getSample(x);                   // lowpass part
+    T yD = delayLine[delayScl*delay];           // delayed input
+    T yH = yD - yL;                             // highpass part
+    T yF = loGain * yL + hiGain * yH;           // non-resonant filtered output
+    T yR = getResonance(x, yL, yD);             // (pseudo) resonance
+    return (T(1)-resoMix) * yF + resoMix * yR;  // crossfade between non-resonant and resonance
   }
   // maybe factor out a function to produce lowpass and highpass getSampleLoHi or something at the
   // same time - client code may find that useful - or maybe getOutputs to be consistent with
@@ -946,6 +922,33 @@ public:
 
 protected:
 
+  /** Computes the pseudo-resonance signal. Inputs are the filter input x, the "lowpass" quantile
+  filter output yL and the delayed input yD (rename to xD) which are used to generate the 
+  resonance. */
+  T getResonance(T x, T yL, T yD)
+  {
+    T min  = minCore.getSample(x);
+    T max  = maxCore.getSample(x);
+
+    // this computation should be factored out and we should provide various different ways to
+    // compute wMin/wMax that can bew switched by the user using a setResonanceMode function:
+    T wMin, wMax;
+    wMin = 0;                              // preliminary.. maybe these should be members and 
+    wMax = 0;                              // computed in updateinternals
+
+    //if(yD >= yL) wMax = 1;
+    //else         wMin = 1;
+
+    // this is not a very good way to compute wMin/wMax - it should use some condition that is 
+    // likely to cause a switch once per cycle, i.e. on the avarage switches once within a length
+    // of the filter buffer. this condition here switches far too often - try several things
+    // ...oh - but maybe that's just because the input is white noise - if it's somewhat lowpassed
+    // noise, i may be better
+
+    computeMinMaxWeights(&wMin, &wMax, x, yL, yD, min, max);
+    return wMin*min + wMax*max;
+  }
+
   void computeMinMaxWeights(T* wMin, T* wMax, T x, T yL, T yD, T yMin, T yMax)
   {
     T yB = bandpass.getSample(yD);  // or maybe feed x
@@ -959,9 +962,17 @@ protected:
     // of the bandwidth - we shoould normalize everything such that thresholds between -1..+1 make
     // sense and have the same effect regardless of input volume and bandwidth setting
 
+    T a = T(1);  // scaler to control the resonance amplitude
+    T f = getFrequency();
+    //a = 10 / length;
+    //a = T(1) + T(4)*rsClip(f / T(20000), T(0), T(1)); 
+    // yes, we need a factor, but we also need a highpass, otherwise we just amplify noise
+    // maybe the highpass freq should be something like max(0, cutoff-2000) such that the highpass
+    // sets in above 2kHz cutoff an is tuned 2kHz below the cutoff...of maybe use 
+    // max(0, 0.5*cutoff-2000) or something - tweak the factor and offset to taste
 
-    if(yB >= thresh) { *wMin = T(0); *wMax = T(1); }
-    else             { *wMin = T(1); *wMax = T(0); }
+    if(yB >= thresh) { *wMin = T(0); *wMax = a;    }
+    else             { *wMin = a;    *wMax = T(0); }
     // maybe instead of hard-switching, we can make a sort of soft-switch?
 
 

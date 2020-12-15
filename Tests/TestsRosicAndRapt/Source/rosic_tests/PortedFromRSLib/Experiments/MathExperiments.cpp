@@ -3395,9 +3395,39 @@ void vertexMeshHessian()
 //=================================================================================================
 
 
+
+
+// Coeffs of the definite integral of the polynomial p that has its input affinely transformed
+// \int p(a*x + b)
+template<class T>
+rsPolynomial<T> integrateAffine(const rsPolynomial<T>& P, T a, T b)
+{
+  using Poly = RAPT::rsPolynomial<T>;
+  int N = P.getDegree();
+  Poly Q(N+1);
+  const T* p = P.getCoeffPointerConst();
+  T* q = Q.getCoeffPointer();
+  T r[2] = { b, a };
+  Poly::compose(r, 1, p, N, q);     // q(x) = p(a*x + b)
+  Poly::integral(q, q, N);
+  return Q;
+}
+void integrateAffineTest()
+{
+  using Poly = RAPT::rsPolynomial<double>;
+  Poly p({2,-3,5,-7});
+  double a = 2, b = 3;
+  Poly P = integrateAffine(p, a, b);
+
+  // todo: verify the result
+
+  return;
+}
 void convolvePolynomials()
 {
-  // Under Construction
+  integrateAffineTest();
+
+  // Under Construction...this is still all very shaky
 
   // We want to find an algorithm to convolve two polynomial pieces that may occur in a function
   // that is defined as piecewise polynomial. The eventual goal is to be able to analytically 
@@ -3420,8 +3450,21 @@ void convolvePolynomials()
   //   r(x) = \int_{a+c}^{b+d} p(x) q(x-u) du
   //        = p(x) \int_{a+c}^{b+d} q(x-u) du   because p(x) does not depend on u
 
-}
+  // i think, we need to consider the integrand as a polynomial in u with x being a fixed 
+  // parameter? or do we have to consider q as a bivariate polynomial q(x,u) from which we 
+  // "integrate out" the variable u? maybe we need a class for bivariate polynomials, represented
+  // by a matrix of coefficients?
 
+  static const int pN = 3;  // degree of p
+  static const int qN = 4;  // degree of q
+
+  double p[pN+1] = {2,-3,5,-7};
+  double q[qN+1] = {3,-4,6,-8,9};
+
+
+
+  int dummy = 0;
+}
 
 void shiftPolynomial()
 {
@@ -3446,15 +3489,7 @@ void shiftPolynomial()
 
   // establish coeffs of q(x) = p(x-x0):
   double q[order+1];
-  RAPT::rsPolynomial<double>::shiftArgument(p, q, order, x0);
-
-  // test - use composePolynomials using p(r(x)) where r(x) = x-x0, with x0 = 2.0
-  //double r[2] = {-x0, 1};
-  //Poly::compose(r, 1, p, 6, q); 
-    // ...yes - gives the same result - todo: i think, compose is actually more efficient, if so,
-    // the other algo can be moved to the prototypes section (just for reference), also, we should
-    // have a version of compose that uses a workspace
-
+  Poly::shiftArgument(p, q, order, x0);
 
   // evaluate q from x-array:
   for(n = 0; n < N; n++)

@@ -1738,7 +1738,8 @@ void quantileFilterResonant()
   //  increase
   // -maybe the length over which min and max are taken should be a fixed (adjustable) parameter
   //  that is independent from the filter frequency setting - at least, when the resonance 
-  //  frequency is determined by the bandpass
+  //  frequency is determined by the bandpass - but that tends to create weird aliasing (alike) 
+  //  artifacts at high resonance frequencies
   // -for high frequencies, the resonance turns itself into noise
   //  -maybe it can be counteracted by applying a highpass and amplification that somehow track the 
   //   filter frequency (and become neutral at lower frequencies)...yes - that seems like a good 
