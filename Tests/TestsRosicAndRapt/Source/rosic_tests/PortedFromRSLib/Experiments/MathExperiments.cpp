@@ -3395,6 +3395,34 @@ void vertexMeshHessian()
 //=================================================================================================
 
 
+void convolvePolynomials()
+{
+  // Under Construction
+
+  // We want to find an algorithm to convolve two polynomial pieces that may occur in a function
+  // that is defined as piecewise polynomial. The eventual goal is to be able to analytically 
+  // convolve two functions that are defined as piecewise polynomials. The result should again be
+  // a piecewise polynomial. We need a sub-algorithm two convolve two such pieces, say p_i(x), 
+  // q_j(x). The end-result can then be obtained by adding up all convolution products of each 
+  // piece i of polynomial p(x) with each piece j of polynomial q(x).
+
+  // Consider two polynomial pieces p(x), q(x) (index suppressed, here) defined on intervals 
+  // [a,b), [c,d) respectively by:
+  //   p(x) = \sum_{m=0}^M p_m x^m    for a <= x < b, 0 otherwise
+  //   q(x) = \sum_{n=0}^N q_n x^n    for c <= x < d, 0 otherwise
+  // We want to compute the convolution product:
+  //   r(x) = conv(p(x), q(x)) = \int_{-\infty}^{\infty} p(x) q(x-u) du
+  // because the functions are zero outside the intervals [a,b), [c,d), repectively,
+  // the integration limits become finite:
+  //   lower: a+c, 
+  //   upper: a+c + (L_p + L_q) = a+c + ((b-a)+(d-c)) = b+d
+  // so:
+  //   r(x) = \int_{a+c}^{b+d} p(x) q(x-u) du
+  //        = p(x) \int_{a+c}^{b+d} q(x-u) du   because p(x) does not depend on u
+
+}
+
+
 void shiftPolynomial()
 {
   static const int order = 6;
@@ -3421,10 +3449,12 @@ void shiftPolynomial()
   RAPT::rsPolynomial<double>::coeffsForShiftedArgument(p, q, order, x0);
 
   // test - use composePolynomials using p(r(x)) where r(x) = x-x0, with x0 = 2.0
-  //double r[2] = {-2.0, 1};
-  //Poly::compose(r, 1, p, 6, q); 
-    // ...yes - gives the same result - todo: find out, if polyCoeffsForShiftedArgument is actually
-    // more efficient - otherwise, we may not need it
+  double r[2] = {-2.0, 1};
+  Poly::compose(r, 1, p, 6, q); 
+    // ...yes - gives the same result - todo: i think, compose is actually more efficient, if so,
+    // the other algo can be moved to the prototypes section (just for reference), also, we should
+    // have a version of compose that uses a workspace
+
 
   // evaluate q from x-array:
   for(n = 0; n < N; n++)

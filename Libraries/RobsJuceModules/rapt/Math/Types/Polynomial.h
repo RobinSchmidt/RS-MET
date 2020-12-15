@@ -437,9 +437,11 @@ public:
   polynomials can itself be seen as a polynomial in its own right. This resulting polynomial has
   a degree of cN = aN*bN, where aN and bN are the degrees of the a[] and b[] polynomials,
   respectively, so the caller has to make sure that the c[] array has at least a length of
-  aN*bN+1. */
+  aN*bN+1. The workspace must also be of length aN*bN+1. */
+  static void compose(const T* a, int aN, const T* b, int bN, T* c, T* workspace);
+
+  /** Convenience function that allocates a workspace internally. */
   static void compose(const T* a, int aN, const T* b, int bN, T* c);
-  // allocates heap memory
 
   /** Composes (nests) the outer polynomial a(x) = a0 + a1*x + a2*x^2 + a3*x^3 with the inner
   polynomial b(x) = b0 + b1*x and writes the resulting cofficients into c (which may point to the

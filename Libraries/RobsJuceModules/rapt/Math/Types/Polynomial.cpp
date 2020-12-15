@@ -301,11 +301,11 @@ void rsPolynomial<T>::powers(const T* a, int N, T** aPowers, int highestPower)
 }
 
 template <class T>
-void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c)
+void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c, T* workspace)
 {
-  int cN = aN*bN;
-  T* an  = new T[cN+1];  // array for the successive powers of a[]
-  an[0]  = T(1);         // initialize to a[]^0
+  int cN = aN*bN;     // degree of c
+  T*  an = workspace; // array for the successive powers of a[]
+  an[0]  = T(1);      // initialize to a[]^0
 
   // accumulation:
   rsArrayTools::fillWithZeros(c, cN+1);
@@ -316,10 +316,16 @@ void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c)
     K += aN;
     for(int k = 0; k < K; k++)
       c[k] += b[n] * an[k]; }
-
-  delete[] an;
 }
-// maybe make a version that uses a workspace
+
+template <class T>
+void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c)
+{
+  int cN = aN*bN;               // degree of c
+  T* an = new T[cN+1];          // allocate array for the successive powers of a[]
+  compose(a, aN, b, bN, c, an); // call workspace based function
+  delete[] an;                  // clean up
+}
 
 template<class T>
 void rsPolynomial<T>::composeLinearWithCubic(T* a, T* c, T b0, T b1)

@@ -332,16 +332,38 @@ void noiseWaveShaped()
   // rise to a framework to shape the spectral and amplitude distribution properties of noise to
   // taste. It may be interesting to explore how they could be chained to produce more interesting
   // noises.
+
   // Question: can we derive a formula or algorithm that tells us the resulting amplitude 
   // distribution for a given filter (given that input to the filter is uniformly distributed?). 
-  // Ideally, if possible, from the filter coeffsbut maybe we need to consider the freq-response. 
+  // Ideally, if possible, from the filter coeffs but maybe we need to consider the freq-response. 
   // For MA filters of length k, we get the Irvin-Hall distribution of the same order (maybe 
   // divided by k) - but what about recursive filters? Maybe we can start from MA filters with 
   // weights and express the impulse response of a recursive filter as such. Let's consider the
   // filter y[n] = b0*x[n] + b1*x[n-1] ...i think, the resulting amplitude distribution is the 
   // uniform distribution scaled (in x-direction, i.e. stretched or compressed) by b0 convolved 
-  // with the uniform distribution stretched by b1...is that right?
-  // 
+  // with the uniform distribution stretched by b1...is that right? Consider the filter:
+  //   y[n] = b0*x[n] + b1*x[n-1]
+  // and let's assume that x has a probability density function (pdf) p_x(x). What is the pdf of
+  // the output p_y(y)? If we assume that the x[n] are independently drawn from p_x(x), i.e. 
+  // uncorrelated, i think, it's p_y(y) = conv(p_x(x/b0)/b0, p_x(x/b1)/b1), i.e. the convolution of
+  // appropriately stretched/compressed and scaled versions of p_x(x). When any of b-coeffs 
+  // approaches zero, the corresponding factor in the convolution product approaches the Dirac 
+  // delta distribution (small b make the distribution narrower and scale it up). When using more
+  // past x samples, i.e. a higher order non-recursive filter, we would have to do repeated 
+  // convolutions...right? or wrong? after the first convolution, one of the inputs to the 2nd 
+  // convolution is correlated, so the independence assumption does not hold anymore for one of the
+  // factors (is it enough, if it holds for only one?)..hmm...let's assume, it works - then, a 
+  // recursive filter could be expressed via its impulse response and then the formula for the 
+  // non-recursive filter could be used (leading to an infinitely often iterated convolution)
+
+  // To actually compute such a pdf, we need a way of convolving functions that are expressed as
+  // piecewise polynomials. For that we need a sub-algorithm to convolve two such polynomial pieces
+  // which we we define to be zero outside their respective interval. Let's consider two such 
+  // pieces p(x), q(x) defined on intervals [a,b), [c,d) respectively by:
+  //   p(x) = \sum_{m=0}^M p_m x^m    for a <= x < b, 0 otherwise
+  //   q(x) = \sum_{n=0}^N q_n x^n    for c <= x < d, 0 otherwise
+  // We wan
+
 }
 
 // maybe let it take a parameter for the length and produce various test signals with various 
