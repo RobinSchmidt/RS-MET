@@ -3449,8 +3449,8 @@ void shiftPolynomial()
   RAPT::rsPolynomial<double>::shiftArgument(p, q, order, x0);
 
   // test - use composePolynomials using p(r(x)) where r(x) = x-x0, with x0 = 2.0
-  double r[2] = {-x0, 1};
-  Poly::compose(r, 1, p, 6, q); 
+  //double r[2] = {-x0, 1};
+  //Poly::compose(r, 1, p, 6, q); 
     // ...yes - gives the same result - todo: i think, compose is actually more efficient, if so,
     // the other algo can be moved to the prototypes section (just for reference), also, we should
     // have a version of compose that uses a workspace

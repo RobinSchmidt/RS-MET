@@ -355,24 +355,35 @@ void rsPolynomial<T>::composeLinearWithCubic(T* a, T* c, T b0, T b1)
 template <class T>
 void rsPolynomial<T>::negateArgument(const T *a, T *am, int N)
 {
+  scaleArgument(a, am, N, T(-1));
+}
+
+template <class T>
+void rsPolynomial<T>::scaleArgument(const T* a, T* as, int N, T scaler)
+{
   T s = T(1);
   for(int n = 0; n <= N; n++) {
-    am[n]  = s*a[n];
-    s     *= T(-1);  }
+    as[n] = s*a[n]; 
+    s    *= scaler;  }
 }
-// todo: scaleArgument: aScaled[n] = a[n] * scaler^n - when the scaler equals -1,
-// it reduces to polyCoeffsForNegativeArgument - this function is superfluous then, the 
-// s *= T(-1); line needs to change to s *= scaler;
 
 template <class T>
 void rsPolynomial<T>::shiftArgument(const T *a, T *as, int N, T x0)
 {
+  T r[2] = { -x0, T(1) };
+  compose(r, 1, a, N, as);
+  return;
+  // todo: provide workspace based version
+
+
+  // old implementation - todo: move to prototypes, it's worth to keep somewhere because it shows
+  // the algorithm derived from the binomial theorem
   rsUint32 Nu = rsUint32(N); // used to fix warnings
   rsUint32 numLines = N+1;
   rsUint32 length   = (numLines*(numLines+1))/2;
   rsUint32 *pt = new rsUint32[length];
   rsCreatePascalTriangle(pt, numLines);
-  T *x0n = new T[N+1];  // +- x0^n
+  T *x0n = new T[N+1];  // +- x0^n, the alternation comes from the minus in (x-x0)^n
   x0n[0] = 1.0;
   for(rsUint32 n = 1; n <= Nu; n++)
     x0n[n] = -x0 * x0n[n-1];

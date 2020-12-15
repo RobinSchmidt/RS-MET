@@ -456,6 +456,12 @@ public:
   static void negateArgument(const T *a, T *am, int N);
 
   /** Given an array of polynomial coefficients "a" such that
+  p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "as") the coefficients for
+  a polynomial q(x) such that q(x) = p(scaler*x). This amounts to scaling all coefficients with the
+  scaler raised to the same power as the respective x. */
+  static void scaleArgument(const T *a, T *as, int N, T scaler);
+
+  /** Given an array of polynomial coefficients "a" such that
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "aShifted") the coefficients
   for a polynomial q(x) such that q(x) = p(x-x0). */
   static void shiftArgument(const T *a, T *aShifted, int N, T x0);
