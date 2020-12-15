@@ -171,7 +171,7 @@ int main(int argc, char* argv[])
   //waveformFractalization();
   //noise();
   //noiseTriModal();
-  noiseWaveShaped();
+  //noiseWaveShaped();
   //blit();
   //blep();
   //polyBlep();
@@ -259,7 +259,7 @@ int main(int argc, char* argv[])
   //vertexMeshGradient();
   //vertexMeshHessian();
 
-  //shiftPolynomial();
+  shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();
   //parametricBell();

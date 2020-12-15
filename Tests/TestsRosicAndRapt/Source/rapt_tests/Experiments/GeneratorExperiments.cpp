@@ -253,11 +253,16 @@ void noiseTriModal()
 void noiseWaveShaped()
 {
   // We create uniform white noise and apply a waveshaper (using a signed power rule) to 
-  // investigate its effects on the amplitude distribution...
+  // investigate its effects on the amplitude distribution. The eventual goal is to figure out a 
+  // way how to shape the spectrum and amplitude distribution of some noise independently by using
+  // a combination of filtering and waveshaping
 
   int numSamples = 100000;
   int numBins    = 50;
   double p       = 0.5;       // power for the waveshaper
+
+  double b0 = 0.5;
+  double b1 = 1.0;
 
   // Create the raw input noise:
   rsNoiseGenerator<double> ng;
@@ -266,19 +271,77 @@ void noiseWaveShaped()
   Vec x(N);
   for(int n = 0; n < N; n++)
     x[n] = ng.getSample();
+  //plotHistogram(x, numBins, -1.0, +1.0);  // uniform in -1..+1
+
+  // Apply a 2-point MA filter y[n] = b0*x[n] + b1*x[n-1]:
+  double xOld = 0;
+  for(int n = 0; n < N; n++)
+  {
+    double y = b0*x[n] + b1*xOld;
+    xOld = x[n];
+    x[n] = y;
+  }
+  plotHistogram(x, numBins, -2.0, +2.0); // triangular in -2..+2, if b0 = b1 = 1
+
 
   // Modify it via the waveshaper (later also use filters)
   //auto f = [](double x) -> double { return x*x*x; };
   //auto f = [](double x) -> double { return cbrt(x); };
   auto f = [&](double x) -> double { return rsSign(x) * pow(rsAbs(x), p); };
-
   for(int n = 0; n < N; n++)
     x[n] = f(x[n]);
+  //plotHistogram(x, numBins, -sqrt(2.0), +sqrt(2.0)); // bimodal in -sqrt(2)..+sqrt(2)
+
+  for(int n = 0; n < N; n++)
+    x[n] = rsLinToLin(x[n], -sqrt(2.), +sqrt(2.), -1., +1.);
+  plotHistogram(x, numBins, -1.0, 1.0); // bimodal in -1..+1
+  rosic::writeToMonoWaveFile("NoiseBiModal.wav", &x[0], N, 44100); 
 
 
+  // Observations:
+  // -if b0 = b1 = 1, the filtered output has a triangluar pdf from -1..+1 
+  // -if b0 = 1, b1 = 0.5 (or vice versa), we get a trpazoidal distribution from -1.5..+1.5
+  // -i think the general rule is that we need to convolved two stretched/compressed uniform 
+  //  distribtutions where the strech factors are the filter coeffs
+  // -i guess, this generalizes to higher order filters - we just have to perform repeated 
+  //  convolutions
+  // -for IIR filters, we may have to obtain the impluse-response first to express it as an MA 
+  //  filter and then do repeated convolutions using the so obtained non-recursive coeffs
 
-  plotHistogram(x, numBins, -1.0, +1.0);
+  // ToDo:
+  // -try waveshping first and then filtering
+  // -try multiple stages of filter -> shape or shape -> filter
 
+  // See:
+  // https://en.wikipedia.org/wiki/Probability_integral_transform
+  // this is eactly what we need
+
+  // also of interest is the inverse:
+  // https://en.wikipedia.org/wiki/Inverse_transform_sampling
+
+  // I think, in order to get a uniform distribution out of a filtered uniform noise, it may work
+  // like this:
+  // -filter the uniform noise and figure out the resulting amplitude distribution f_x, for 
+  //  example, a 2-point MA filter turns a uniform distribution from -1..+1 into a triangular 
+  //  distribution from -2..+2
+  // -from f_x figure out the cumulative distribution F_x and apply it as waveshaper to the 
+  //  filter's output - the new variable should be uniformly distributed between 0..1
+  // -scale and shift back to the desired range -1..+1
+  // I also think, we could first waveshape, then filter, if we use the inverse CDF instead. These
+  // two operations: filtering and waveshaping, used together in an appropriate way should give 
+  // rise to a framework to shape the spectral and amplitude distribution properties of noise to
+  // taste. It may be interesting to explore how they could be chained to produce more interesting
+  // noises.
+  // Question: can we derive a formula or algorithm that tells us the resulting amplitude 
+  // distribution for a given filter (given that input to the filter is uniformly distributed?). 
+  // Ideally, if possible, from the filter coeffsbut maybe we need to consider the freq-response. 
+  // For MA filters of length k, we get the Irvin-Hall distribution of the same order (maybe 
+  // divided by k) - but what about recursive filters? Maybe we can start from MA filters with 
+  // weights and express the impulse response of a recursive filter as such. Let's consider the
+  // filter y[n] = b0*x[n] + b1*x[n-1] ...i think, the resulting amplitude distribution is the 
+  // uniform distribution scaled (in x-direction, i.e. stretched or compressed) by b0 convolved 
+  // with the uniform distribution stretched by b1...is that right?
+  // 
 }
 
 // maybe let it take a parameter for the length and produce various test signals with various 

@@ -3398,20 +3398,22 @@ void vertexMeshHessian()
 void shiftPolynomial()
 {
   static const int order = 6;
-  double p[order+1]  = {2,1,-5,7,-3,2,-2}; // p(x) = -2x^6+2x^5-3x^4+7x^3-5x^2+1x^1+2x^0
+  double p[order+1]  = {2,1,-5,7,-3,2,-2};   // p(x) = -2x^6+2x^5-3x^4+7x^3-5x^2+1x^1+2x^0
   double x0          = 2.0;                  // shift value  
+
+  using Poly = RAPT::rsPolynomial<double>;
 
   double xMin = -1.0;
   double xMax = +1.0;
   static const int N = 1000;
   double x[N];
   RAPT::rsArrayTools::fillWithRangeLinear(x, N, xMin, xMax);
-  double y[N], ys[N], yst[N];   // y, stretched version of y, target for stretched version
+  double y[N], ys[N], yst[N];   // y, shifted version of y, target for shifted version
   int n;
   for(n = 0; n < N; n++)
   {
-    y[n]   = RAPT::rsPolynomial<double>::evaluate(x[n],    p, order);
-    yst[n] = RAPT::rsPolynomial<double>::evaluate(x[n]-x0, p, order);
+    y[n]   = Poly::evaluate(x[n],    p, order);
+    yst[n] = Poly::evaluate(x[n]-x0, p, order);
   }
 
   // establish coeffs of q(x) = p(x-x0):
@@ -3420,13 +3422,13 @@ void shiftPolynomial()
 
   // test - use composePolynomials using p(r(x)) where r(x) = x-x0, with x0 = 2.0
   //double r[2] = {-2.0, 1};
-  //composePolynomials(r, 1, p, 6, q); 
+  //Poly::compose(r, 1, p, 6, q); 
     // ...yes - gives the same result - todo: find out, if polyCoeffsForShiftedArgument is actually
     // more efficient - otherwise, we may not need it
 
   // evaluate q from x-array:
   for(n = 0; n < N; n++)
-    ys[n] = RAPT::rsPolynomial<double>::evaluate(x[n], q, order);
+    ys[n] = Poly::evaluate(x[n], q, order);
 
   plotData(N, x, y, yst, ys);
 }
