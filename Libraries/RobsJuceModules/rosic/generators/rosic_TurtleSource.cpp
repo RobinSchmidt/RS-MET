@@ -620,7 +620,7 @@ void TurtleSourceAntiAliased::goToLineSegment(int targetLineIndex,
 void TurtleSourceAntiAliased::resetPhase(double targetPhase, double* stepX, double* stepY, 
   double* slopeChangeX, double* slopeChangeY)
 {
-  double linePos, fPos, oldX, oldY, newX, newY, oldSlopeX, oldSlopeY, s;
+  double linePos, fPos, oldX, oldY, /*newX, newY,*/ oldSlopeX, oldSlopeY, s;
   int iPos;
 
   linePos = getLinePosition(pos);

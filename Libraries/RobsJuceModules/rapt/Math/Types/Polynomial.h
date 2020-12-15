@@ -439,6 +439,7 @@ public:
   respectively, so the caller has to make sure that the c[] array has at least a length of
   aN*bN+1. The workspace must also be of length aN*bN+1. */
   static void compose(const T* a, int aN, const T* b, int bN, T* c, T* workspace);
+  // i think, the complexity is O(aN^2 * bN)...verify!
 
   /** Convenience function that allocates a workspace internally. */
   static void compose(const T* a, int aN, const T* b, int bN, T* c);
@@ -452,15 +453,16 @@ public:
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "am") the coefficients for
   a polynomial q(x) such that q(x) = p(-x). This amounts to sign-inverting all coefficients which
   multiply odd powers of x. */
-  static void coeffsForNegativeArgument(const T *a, T *am, int N);
-  // rename to negateArgument
+  static void negateArgument(const T *a, T *am, int N);
 
   /** Given an array of polynomial coefficients "a" such that
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "aShifted") the coefficients
   for a polynomial q(x) such that q(x) = p(x-x0). */
-  static void coeffsForShiftedArgument(const T *a, T *aShifted, int N, T x0);
-  // allocates heap memory and algo is O(N^2) - can this be done better? ..i think so
-  // rename to shiftArgument, maybe move into "Conversions" section
+  static void shiftArgument(const T *a, T *aShifted, int N, T x0);
+  // allocates heap memory and algo is O(N^2) - can this be done better? ..i think so ...yes - we 
+  // should use compose and a workspace of length N (or N+1) should suffice, see comments in
+  // shiftPolynomial in MathExperiments.cpp
+  // maybe move into "Conversions" section
 
 
   //-----------------------------------------------------------------------------------------------

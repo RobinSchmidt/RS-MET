@@ -329,7 +329,7 @@ bool testPolynomialArgumentShift(std::string &reportString)
 
   // establish coeffs of q(x) = p(x-x0):
   double q[order+1];
-  rsPolynomial<double>::coeffsForShiftedArgument(p, q, order, x0);
+  rsPolynomial<double>::shiftArgument(p, q, order, x0);
 
   // check, if q-coeffs have correct values:
   testResult &= q[0] == -316;

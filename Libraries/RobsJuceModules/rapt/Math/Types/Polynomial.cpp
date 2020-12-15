@@ -353,21 +353,19 @@ void rsPolynomial<T>::composeLinearWithCubic(T* a, T* c, T b0, T b1)
 //   c3 = a3*b1^3
 
 template <class T>
-void rsPolynomial<T>::coeffsForNegativeArgument(const T *a, T *am, int N)
+void rsPolynomial<T>::negateArgument(const T *a, T *am, int N)
 {
-  T s = 1.0;
-  for(int n = 0; n <= N; n++)
-  {
+  T s = T(1);
+  for(int n = 0; n <= N; n++) {
     am[n]  = s*a[n];
-    s     *= -1.0;
-  }
+    s     *= T(-1);  }
 }
-
-// todo: polyCoeffsForScaledArgument: aScaled[n] = a[n] * scaler^n - when the scaler equals -1,
-// it reduces to polyCoeffsForNegativeArgument - this function is superfluous then
+// todo: scaleArgument: aScaled[n] = a[n] * scaler^n - when the scaler equals -1,
+// it reduces to polyCoeffsForNegativeArgument - this function is superfluous then, the 
+// s *= T(-1); line needs to change to s *= scaler;
 
 template <class T>
-void rsPolynomial<T>::coeffsForShiftedArgument(const T *a, T *as, int N, T x0)
+void rsPolynomial<T>::shiftArgument(const T *a, T *as, int N, T x0)
 {
   rsUint32 Nu = rsUint32(N); // used to fix warnings
   rsUint32 numLines = N+1;
@@ -423,6 +421,8 @@ void rsPolynomial<T>::integrateWithPolynomialLimits(
   delete[] A;
   delete[] B;
 }
+// todo: make a workspace based version, keep this as convenience function (or move it to protoypes
+// and provide a convenience function that needs only 1 allocation)
 
 template <class T>
 void rsPolynomial<T>::finiteDifference(const T *a, T *ad, int N, int direction, T h)
