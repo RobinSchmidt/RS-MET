@@ -3441,14 +3441,22 @@ void convolvePolynomials()
   //   p(x) = \sum_{m=0}^M p_m x^m    for a <= x < b, 0 otherwise
   //   q(x) = \sum_{n=0}^N q_n x^n    for c <= x < d, 0 otherwise
   // We want to compute the convolution product:
-  //   r(x) = conv(p(x), q(x)) = \int_{-\infty}^{\infty} p(x) q(x-u) du
+  //   r(x) = conv(p(x), q(x)) = \int_{-\infty}^{\infty} p(u) q(x-u) du
   // because the functions are zero outside the intervals [a,b), [c,d), repectively,
   // the integration limits become finite:
   //   lower: a+c, 
   //   upper: a+c + (L_p + L_q) = a+c + ((b-a)+(d-c)) = b+d
   // so:
-  //   r(x) = \int_{a+c}^{b+d} p(x) q(x-u) du
-  //        = p(x) \int_{a+c}^{b+d} q(x-u) du   because p(x) does not depend on u
+  //   r(x) = \int_{a+c}^{b+d} p(u) q(x-u) du
+
+  // ...oh - no - that last step may be invalid
+  // instead, just compute:
+  //   qL(x) = q(x-u)      with u = a+c 
+  //   qU(x) = q(x-u)      with u = b+d
+  // and then compute
+  //   r(x) = \int p(x)*qU(x) - p(x)*qL(x)
+  // ...but wait - no - we can't we exchange the evaluation at the two values of u with the 
+  // integration or can we?
 
   // i think, we need to consider the integrand as a polynomial in u with x being a fixed 
   // parameter? or do we have to consider q as a bivariate polynomial q(x,u) from which we 

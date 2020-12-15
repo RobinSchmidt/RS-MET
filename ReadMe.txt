@@ -9,23 +9,21 @@ on the size of the product/company, the role of my code within it, etc.
 
 The codebase ist structured as follows: 
 
-In the "Libraries" folder, there is a JUCE folder which contains a "modules"
-subfolder. This is a copy of the corresponding folder in the original JUCE 
-distribution with some additions of my own. These additions are my own juce 
-"modules" and these are the ones, on which all the actual products are based. 
-The rapt module (Rob's Audio Processing Templates) is a template based library 
-with rather low level code for math, number crunching and signal processing. It 
-has no dependencies whatsoever (not even on juce_core). The rosic module (Rob's 
-Signal Processing Classes), which depends only on rapt, is a bit more 
-high-level and more convenient to use and even includes some framework'ish 
-stuff (like thread-synchronization, polyphonic voice-management, etc.) to 
-facilitate easy integration of the code into plugins. rapt and rosic - although 
-being written as juce modules - do not depend in any way on juce. They can be 
-used in their own right and/or combined with other frameworks. jura_framework 
-is my juce-based GUI and plugin framework and jura_processors is the glue that 
-ties together the DSP code from rapt/rosic with the jura_framework based GUI 
-code into actual plugins or sub-modules of plugins (such as oscillators, 
-filters, effects, etc.).
+The "Libraries" folder contains a "RobsJuceModules" subfolder which contains a
+couple of my own JUCE modules, conforming to the way, JUCE itself is organized 
+into modules. The rapt module (Rob's Audio Processing Templates) is a template 
+based library with rather low level code for math, number crunching and signal 
+processing. It has no dependencies whatsoever (not even on juce_core). The 
+rosic module (Rob's Signal Processing Classes), which depends only on rapt, is 
+a bit more high-level and more convenient to use and even includes some 
+framework'ish stuff (like thread-synchronization, polyphonic voice-management, 
+etc.) to facilitate easy integration of the code into plugins. rapt and rosic, 
+although conforming to juce's module organization, do not depend in any way on 
+juce. They can be used in their own right and/or combined with other 
+frameworks. jura_framework is my juce-based GUI and plugin framework and 
+jura_processors is the glue that ties together the DSP code from rapt/rosic 
+with the jura_framework based GUI code into actual plugins or sub-modules of 
+plugins (such as oscillators, filters, effects, etc.).
 
 The most important project that can actually be built by itself is in:
 Products/AudioPlugins/ToolChain/

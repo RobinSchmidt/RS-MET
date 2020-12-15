@@ -17,18 +17,12 @@ void twoPoleFilter()
   double dB = rsAmp2dB(g);
 
   plotImpulseResponse(flt, 500, 1.0);
-  plotFrequencyResponse(flt, 1001, 50.0, 20000.0, fs, true);  // needs getTransferFunctionAt
-
-
+  plotFrequencyResponse(flt, 1001, 50.0, 20000.0, fs, true);
 
   // Observations:
   // -the maximum amplitude of the decaying sine seems to be (roughly) independent from the 
   //  bandwidth
-
-
-  int dummy = 0;
 }
-
 
 void modalFilter()
 {

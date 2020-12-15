@@ -803,6 +803,8 @@ public:
 
   rsQuantileFilterResonant()
   {
+    //resoHighpass.setMode(rsOnePoleFilter<T,T>::HIGHPASS_MZT);
+    resoHighpass.setMode(rsStateVariableFilter<T,T>::HIGHPASS);
     allocateResources();
     Base::dirty = true;
   }
@@ -815,6 +817,7 @@ public:
   {
     sampleRate = newSampleRate;
     allocateResources();
+    resoHighpass.setSampleRate(sampleRate);
     Base::dirty = true;
   }
 
@@ -879,6 +882,7 @@ public:
     minCore.reset();
     maxCore.reset();
     bandpass.reset();
+    resoHighpass.reset();
   }
 
   /** Updates the internal algorithm parameters and embedded objects according to the user
@@ -899,8 +903,10 @@ public:
 
     delay = T(0.5)*(L-1);
 
+    T f = getFrequency();
+
     //T w = T(2*PI)*sampleRate/length; // == 2*PI*sampleRate*frequency
-    T w = T(2*PI)  / (length * sampleRate); // == 2*PI*frequency/sampleRate
+    T w = T(2*PI) * f  / sampleRate; // == 2*PI*frequency/sampleRate
     bandpass.setFrequencyAndAbsoluteBandwidth(w, T(0.00001));  // preliminary
     // todo: let the resonance frequency have an adjustable pitch-offset with respect to core 
     // filters...maybe the min/max cores could have an offset as well
@@ -914,6 +920,12 @@ public:
     // -gain tends to get huge for small bandwidths (seems to be in reciprocal 
     //  relationship)! 
     // -todo: plot impulse response
+
+    //T fHp = rsMax(T(0), 0.9*f - T(1000));
+    T fHp = rsMax(T(0), 0.5*f);
+    //resoHighpass.setCutoff(fHp);
+    resoHighpass.setFrequency(fHp);
+
 
     dirty = false;
   }
@@ -946,7 +958,22 @@ protected:
     // noise, i may be better
 
     computeMinMaxWeights(&wMin, &wMax, x, yL, yD, min, max);
-    return wMin*min + wMax*max;
+    T yR = wMin*min + wMax*max;
+
+    // experimental - highpass and amplify the resonance to counteract resonance loss at high 
+    // cutoff frequencies:
+    yR  = resoHighpass.getSample(yR);
+    T a = T(1);    // preliminary - should later depend on cutoff in some way
+
+    // experimental:
+    T p = 2*getFrequency()/sampleRate;  // 0..1 as f goes 0..fs
+    //p = 1-p; p = p*p; a = 1 / (0.1 + p);
+    //p = cos(0.5*PI*p); a = 1 / (0.1 + p);
+    p = 1-sin(0.5*PI*p); a = 1 / (0.1 + p);
+    // todo: figure out the best shape
+
+
+    return a*yR;
   }
 
   void computeMinMaxWeights(T* wMin, T* wMax, T x, T yL, T yD, T yMin, T yMax)
@@ -1000,6 +1027,10 @@ protected:
   rsTwoPoleFilter<T, T> bandpass;
   // the two-pole is actually not really a bandpass but a resonator - maybe an RBJ bandpass is 
   // better?
+
+  //rsOnePoleFilter<T, T> resoHighpass;
+
+  rsStateVariableFilter<T, T> resoHighpass;
 
 };
 
