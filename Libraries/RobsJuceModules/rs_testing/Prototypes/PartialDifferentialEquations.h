@@ -332,9 +332,9 @@ public:
   void setGridDimensions(int numPointsX, int numPointsY)
   {
     rsAssert(numPointsX == numPointsY, "separate spacings for x- and y not yet supported");
-    u.setSize(numPointsX, numPointsY);
-    u1.setSize(numPointsX, numPointsY);
-    tmp.setSize(numPointsX, numPointsY);
+    u.setShape(numPointsX, numPointsY);
+    u1.setShape(numPointsX, numPointsY);
+    tmp.setShape(numPointsX, numPointsY);
   }
   // maybe rename to setGridResolution
 

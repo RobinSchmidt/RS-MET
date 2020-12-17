@@ -4,6 +4,7 @@ that break client code.
 
 Client-Code-Breaking Changes:
 
+2020/12/17: rsMatrix: setSize renamed to setShape
 2020/07/28: renamed rsRingBuffer to rsDelayBuffer
             renamed rsBuffer to rsRingBuffer
 2020/05/08: rsOnePoleFilter::applyBidirectionally: renamed to applyForwardBackward

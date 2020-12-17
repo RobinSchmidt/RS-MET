@@ -781,14 +781,14 @@ public:
   /** Standard constructor. You must pass the initial number of rows and columns */
   rsMatrix(int numRows = 0, int numColumns = 0)
   {
-    setSize(numRows, numColumns);
+    setShape(numRows, numColumns);
     // todo: optionally init with zeros
   }
 
   /** Constructor to create a matrix from a flat raw array. */
   rsMatrix(int numRows, int numColumns, const T* data)
   {
-    setSize(numRows, numColumns);
+    setShape(numRows, numColumns);
     rsArrayTools::copy(data, this->getDataPointer(), this->getSize());
   }
 
@@ -796,7 +796,7 @@ public:
   matrices in the old representation into the new one. */
   rsMatrix(int numRows, int numColumns, T** data)
   {
-    setSize(numRows, numColumns);
+    setShape(numRows, numColumns);
     for(int i = 0; i < numRows; i++)
       for(int j = 0; j < numColumns; j++)
         (*this)(i,j) = data[i][j];
@@ -844,7 +844,7 @@ public:
   /** Copy constructor. Copies data from B into this object.  */
   rsMatrix(const rsMatrix& B)
   {
-    setSize(B.numRows, B.numCols);
+    setShape(B.numRows, B.numCols);
     rsArrayTools::copy(B.dataPointer, this->dataPointer, this->getSize());
   }
 
@@ -862,7 +862,7 @@ public:
   rsMatrix<T>& operator=(const rsMatrix<T>& rhs)
   {
     if (this != &rhs) { // self-assignment check expected
-      setSize(rhs.numRows, rhs.numCols);
+      setShape(rhs.numRows, rhs.numCols);
       rsArrayTools::copy(rhs.dataPointer, this->dataPointer, this->getSize());
     }
     return *this;
@@ -913,7 +913,8 @@ public:
   /** Sets the number of rows and columns, this matrix should have. ToDo: provide a way to retain
   the data (optionally) - what does std::vector's resize do? Does it retain data...but if it does,
   it would be useless anyway in case the number of columns changed. */
-  void setSize(int numRows, int numColumns)
+  //void setSize(int numRows, int numColumns)
+  void setShape(int numRows, int numColumns)
   {
     if(numRows == this->numRows && numColumns == this->numCols)
       return;  // nothing to do
@@ -931,7 +932,7 @@ public:
   template<class T2>
   void copyDataFrom(const rsMatrixView<T2>& A)
   {
-    setSize(A.getNumRows(), A.getNumColumns());
+    setShape(A.getNumRows(), A.getNumColumns());
     rsArrayTools::convert(A.getDataPointerConst(), this->dataPointer, this->getSize());
   }
 

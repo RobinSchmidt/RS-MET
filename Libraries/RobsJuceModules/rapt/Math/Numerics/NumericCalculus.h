@@ -317,7 +317,9 @@ public:
   // todo: curl - this is more complicated in general N-dimensional space and needs more research. 
   // i think, it should be an anti-symmetrical NxN matrix of differences of partial derivatives.  
   // But how exactly the values should be arranged as matrix elements and which elements get 
-  // negative signs is something that i have not yet figured out....
+  // negative signs is something that i have not yet figured out... see:
+  // https://en.wikipedia.org/wiki/Vector_calculus#Generalizations
+  // https://en.wikipedia.org/wiki/Curl_(mathematics)#Generalizations
 
   //-----------------------------------------------------------------------------------------------
   // \name Data derivatives

@@ -1939,18 +1939,27 @@ public:
 
   rsPolynomial<T> evaluateX(T x);
 
-
+  rsPolynomial<T> evaluateY(T y);
 
   //-----------------------------------------------------------------------------------------------
   // \name Calculus
 
+  static void derivativeX(const rsMatrixView<T>& c, rsMatrixView<T>& d);
+
+  rsBivariatePolynomial<T> derivativeX() const;
+
+
+
   /** Computes the definite integral of the polynomial with respect to x with the integration 
   limits a,b. The result is a univariate polynomial in y whose coefficients are stored in py. */
-  void integrateX(T a, T b, T* py);
+  static void integrateX(T a, T b, T* py);
 
   /** Computes the definite integral of the polynomial with respect to y with the integration 
   limits a,b. The result is a univariate polynomial in x whose coefficients are stored in px. */
-  void integrateY(T a, T b, T* px);
+  static void integrateY(T a, T b, T* px);
+
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1985,21 +1994,15 @@ T rsBivariatePolynomial<T>::evaluate(T x, T y)
 template<class T>
 void rsBivariatePolynomial<T>::evaluateX(T x, T* py)
 {
-  //T xm(1);
   int M = coeffs.getNumRows();
   int N = coeffs.getNumColumns();
-  for(int n = 0; n < N; n++)
-  {
-    py[n] = T(0);
-    T xm  = T(1);
-    for(int m = 0; m < M; m++)
-    {
+  rsArrayTools::fillWithZeros(py, N);
+  T xm(1);
+  for(int m = 0; m < M; m++) {
+    for(int n = 0; n < N; n++)
       py[n] += coeffs(m, n) * xm;
-      xm *= x;
-    }
-  }
+    xm *= x; }
 }
-// i think, by swapping the loops, we can avoid the multiplication in the inner loop - optimize!
 
 template<class T>
 rsPolynomial<T> rsBivariatePolynomial<T>::evaluateX(T x)
@@ -2008,6 +2011,51 @@ rsPolynomial<T> rsBivariatePolynomial<T>::evaluateX(T x)
   evaluateX(x, py.getCoeffPointer());
   return py;
 }
+
+template<class T>
+void rsBivariatePolynomial<T>::evaluateY(T y, T* px)
+{
+  int M = coeffs.getNumRows();
+  int N = coeffs.getNumColumns();
+  rsArrayTools::fillWithZeros(px, M);
+  T yn(1);
+  for(int n = 0; n < N; n++) {
+    for(int m = 0; m < M; m++)
+      px[m] += coeffs(m, n) * yn;
+    yn *= y; }
+}
+
+template<class T>
+rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(T y)
+{
+  rsPolynomial<T> px(getDegreeX());
+  evaluateY(y, px.getCoeffPointer());
+  return px;
+}
+
+template<class T>
+void rsBivariatePolynomial<T>::derivativeX(const rsMatrixView<T>& c, rsMatrixView<T>& d)
+{
+  int M = c.getNumRows();
+  int N = c.getNumColumns();
+  rsAssert(d.hasShape(M-1, N));
+  for(int m = 0; m < M-1; m++)
+    for(int n = 0; n < N; n++)
+      d(m, n) = c(m+1, n) * rsFactorial(m);  // todo: optimize
+}
+
+template<class T>
+rsBivariatePolynomial<T> rsBivariatePolynomial<T>::derivativeX() const
+{
+  int M = coeffs.getNumRows();
+  int N = coeffs.getNumColumns();
+  rsBivariatePolynomial<T> q;
+  q.coeffs.setShape(M-1, N);
+  derivativeX(coeffs, q.coeffs);
+  return q;
+}
+
+
 
 //=================================================================================================
 // the stuff below is just for playing around - maybe move code elsewhere, like the research-repo:

@@ -1182,7 +1182,7 @@ void decomposeQR(const rsMatrix<T>& A, rsMatrix<T>& Q, rsMatrix<T>& R)
   int n = A.getNumRows();
   int r = A.getNumColumns();
   rsAssert(n >= r);    // Karpf. pg.181 - do we need this?
-  Q.setSize(n, n);
+  Q.setShape(n, n);
   Q.setToIdentity();
   R = A;
   rsMatrix<T> s(n, 1), a(n, 1), H(n, n);
@@ -1285,7 +1285,7 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   // matrix V: (v_1,...,v_n) such that (A^T * A) * v_i = lambda_i * v_i. The v_i become the columns
   // of V:
   int i = 0, j, k;
-  V.setSize(n, n);
+  V.setShape(n, n);
   rsMatrix<R> v_i;
   rsMatrix<R> tmp = ATA;
   while(i < n) {
@@ -1312,7 +1312,7 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 
   // Construct the diagonal matrix S from the singular values sigma_i, which are the square-roots
   // of the eigenvalues lambda_i:
-  S.setSize(m, n);
+  S.setShape(m, n);
   S.setToZero();
   //for(i = 0; i < rsMin(m, n); i++)
   for(i = 0; i < rsMin(r, n); i++)    // for i >= r, sqrt(lambda[i]) == 0 - no need to compute it
@@ -1323,7 +1323,7 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
   // Construct matrix U = (u_1,...,u_m) where u_1,..,u_r are computed from the nonzero singular
   // values sigma_i and corresponding basis-vectors v_i as: u_i = (1/sigma_i) * A * v_i and the
   // remaining u_{r+1},...,u_m (if any) are a basis of the orthogonal complement of u_1,..,u_r:
-  U.setSize(m, m);
+  U.setShape(m, m);
   U.setToZero();
   for(i = 0; i < r; i++) {             // i: col-index into U
     for(j = 0; j < m; j++) {           // j: row-index into U

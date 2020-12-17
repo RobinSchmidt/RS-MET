@@ -426,7 +426,7 @@ bool testSigularValueDecomp()
   int N = 5;
   V = getRandomOrthogonalMatrix(N, 2);
   U = getRandomOrthogonalMatrix(M, 1);
-  S.setSize(7, 5); S.setToZero();
+  S.setShape(7, 5); S.setToZero();
   S(0,0) = 5; S(1,1) = S(2,2) = S(3,3) = 3; S(4,4) = 2; // the middle sv mas multiplicity 3
   A = U * S * V.getTranspose();
   decomposeRealUSV(A, u, s, v, tol);
