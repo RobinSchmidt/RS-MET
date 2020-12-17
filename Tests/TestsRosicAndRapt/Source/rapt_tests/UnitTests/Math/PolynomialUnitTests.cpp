@@ -1481,8 +1481,18 @@ bool testBivariatePolynomial()
   // 9317*x^3 + 33033*x^2*y + 39039*x*y^2 + 15379*y^3 + 605*x^2 + 1430*x*y + 845*y^2 
   // + 33*x + 39*y + 2
 
-  bi = BiPoly::composeWithLinear(uni, 11, 13);
+  //    2       + 39*y        + 845*y^2     + 15379*y^3
+  // + 33*x     + 1430*x*y    + 39039*x*y^2 + 0
+  // + 605*x^2  + 33033*x^2*y + 0           + 0
+  // + 9317*x^3 + 0           + 0           + 0 
 
+
+  double a = 11, b = 13;
+  double x = 2,  y = 3;
+  bi   = BiPoly::composeWithLinear(uni, a, b);
+  val  = uni(a*x + b*y);
+  val2 = bi.evaluate(x, y);
+  r &= val == val2;
 
   return r;
 }

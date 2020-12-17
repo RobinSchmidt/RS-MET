@@ -2234,17 +2234,13 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear(
   int N = p.getDegree();
   rsBivariatePolynomial<T> r(N, N);
   r.coeffs.setToZero();
-
   const T* c = p.getCoeffPointerConst();
 
-  for(int n = 0; n <= N; n++)
-  {
-    for(int k = 0; k <= n; k++)
-    {
-      r.coeffs(n, k) += c[n] * (T) rsBinomialCoefficient(n, k) * pow(a,k) * pow(b,n-k);
-    }
-  }
 
+  // very slow:
+  for(int n = 0; n <= N; n++)
+    for(int k = 0; k <= n; k++)
+      r.coeffs(k, n-k) += c[n] * (T) rsBinomialCoefficient(n, k) * pow(a, k) * pow(b, n-k);
 
   return r;
 }
