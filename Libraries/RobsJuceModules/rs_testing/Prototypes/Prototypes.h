@@ -1954,10 +1954,10 @@ public:
   static void integralX(const rsMatrixView<T>& p, rsMatrixView<T>& pi, T c = T(0));
   rsBivariatePolynomial<T> integralX(T c = T(0)) const;
   // should the integration constant be a univariate polynomial in y instead of a fixed value?
+  // ...yes, i think so
 
-
-
-
+  static void integralY(const rsMatrixView<T>& p, rsMatrixView<T>& pi, T c = T(0));
+  rsBivariatePolynomial<T> integralY(T c = T(0)) const;
 
 
   /** Computes the definite integral of the polynomial with respect to x with the integration 
@@ -2117,6 +2117,31 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::integralX(T c) const
   rsBivariatePolynomial<T> q;
   q.coeffs.setShape(M+1, N);
   integralX(coeffs, q.coeffs, c);
+  return q;
+}
+
+template<class T>
+void rsBivariatePolynomial<T>::integralY(const rsMatrixView<T>& p, rsMatrixView<T>& pi, T c)
+{
+  int M = p.getNumRows();
+  int N = p.getNumColumns();
+  rsAssert(pi.hasShape(M, N+1));
+  for(int m = 0; m < m; m++)
+    pi(m, 0) = c; 
+  for(int n = 1; n <= N; n++) {
+    T s = T(1) / T(n);
+    for(int m = 0; m < M; m++)
+      pi(m, n) = s * p(m, n-1); }
+}
+
+template<class T>
+rsBivariatePolynomial<T> rsBivariatePolynomial<T>::integralY(T c) const
+{
+  int M = coeffs.getNumRows();
+  int N = coeffs.getNumColumns();
+  rsBivariatePolynomial<T> q;
+  q.coeffs.setShape(M, N+1);
+  integralY(coeffs, q.coeffs, c);
   return q;
 }
 
