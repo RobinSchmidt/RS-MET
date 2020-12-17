@@ -1458,12 +1458,30 @@ bool testBivariatePolynomial()
   uni = p.integralY(-2, 3); r &= uni == Poly({110, 755./3, 1180./3});
   // 1180/3*x^2 + 755/3*x + 110
 
+  // Construct bivariate polynomial as product of two univariate polynomials:
   uni  = Poly({ 2,  3,  5,  7});
   uni2 = Poly({11, 13, 17, 19, 23});
   bi   = BiPoly::multiply(uni, uni2);
   val  = bi.evaluate(2, 3);
   val2 = uni(2) * uni2(3);
   r &= val == val2;
+
+  // Construct bivariate polynomial from a univariate polynomial in the variable a*x + b*y for 
+  // given a,b
+
+  // var("x y a b")
+  // p(x) = 2 + 3*x + 5*x^2 + 7*x^3
+  // p(a*x + b*y).expand()
+  //
+  // 7*a^3*x^3 + 21*a^2*b*x^2*y + 21*a*b^2*x*y^2 + 7*b^3*y^3 + 5*a^2*x^2 + 10*a*b*x*y + 5*b^2*y^2 
+  // + 3*a*x + 3*b*y + 2
+  // has terms only up to total degree of 3, i.e. the exponents for x and y sum up to at at most 3
+
+  // p(11*x + 13*y).expand()
+  // 9317*x^3 + 33033*x^2*y + 39039*x*y^2 + 15379*y^3 + 605*x^2 + 1430*x*y + 845*y^2 
+  // + 33*x + 39*y + 2
+
+  bi = BiPoly::composeWithLinear(uni, 11, 13);
 
 
   return r;

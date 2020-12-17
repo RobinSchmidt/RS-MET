@@ -1950,12 +1950,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Arithmetic
 
-  /** Computes the coefficients of of a bivariate polynomial r that is given as the product of two
+  /** Computes the coefficients of a bivariate polynomial r that is given as the product of two
   univariate polynomial p and q that are functions of x and y alone, respectively, such that 
   r(x,y) = p(x) * q(y). */
   static rsBivariatePolynomial<T> multiply(const rsPolynomial<T>& p, const rsPolynomial<T>& q);
 
   static void multiply(const T* p, int pDeg, const T* q, int qDeg, rsMatrixView<T>& r);
+
+
+  /** Computes the coefficients of a bivariate polynomial r that is given as the composition of 
+  a linear combination of x and y and a univariate polynomial p: r(x,y) = p(a*x + b*y). */
+  static rsBivariatePolynomial<T> composeWithLinear(const rsPolynomial<T>& p, T a, T b);
 
 
   //-----------------------------------------------------------------------------------------------
@@ -2221,6 +2226,28 @@ rsPolynomial<T> rsBivariatePolynomial<T>::integralY(T a, T b) const
   return Pb - Pa;
 }
 // todo: optimize
+
+template<class T>
+rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear(
+  const rsPolynomial<T>& p, T a, T b)
+{
+  int N = p.getDegree();
+  rsBivariatePolynomial<T> r(N, N);
+  r.coeffs.setToZero();
+
+  const T* c = p.getCoeffPointerConst();
+
+  for(int n = 0; n <= N; n++)
+  {
+    for(int k = 0; k <= n; k++)
+    {
+      r.coeffs(n, k) += c[n] * (T) rsBinomialCoefficient(n, k) * pow(a,k) * pow(b,n-k);
+    }
+  }
+
+
+  return r;
+}
 
 
 //=================================================================================================
