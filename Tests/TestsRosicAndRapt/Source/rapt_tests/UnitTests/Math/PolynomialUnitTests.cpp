@@ -1416,8 +1416,13 @@ bool testBivariatePolynomial()
   //           + 5*x   + 6*x*y    + 7*x*y^2    + 8*x*y^3
   //           + 9*x^2 + 10*x^2*y + 11*x^2*y^2 + 12*x^2*y^3
 
+  // sage:
+  // var("x y")
+  // p(x,y) = 1 + 2*y + 3*y^2 + 4*y^3 + 5*x + 6*x*y + 7*x*y^2 + 8*x*y^3 + 9*x^2 + 10*x^2*y + 11*x^2*y^2 + 12*x^2*y^3
+  // p(2,3)
 
-
+  double val = p.evaluate(2, 3);
+  r &= val == 2594;
 
   return r;
 }

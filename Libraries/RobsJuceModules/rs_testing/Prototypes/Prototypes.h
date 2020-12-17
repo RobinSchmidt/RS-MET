@@ -1937,6 +1937,10 @@ public:
   void evaluateY(T y, T* px);
 
 
+  rsPolynomial<T> evaluateX(T x);
+
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Calculus
 
@@ -1948,14 +1952,51 @@ public:
   limits a,b. The result is a univariate polynomial in x whose coefficients are stored in px. */
   void integrateY(T a, T b, T* px);
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  int getDegreeX() const { return coeffs.getNumRows()-1; }
+
+  int getDegreeY() const { return coeffs.getNumColumns()-1; }
+
+
+
 protected:
 
   rsMatrix<T> coeffs;
 
 };
 
+template<class T>
+T rsBivariatePolynomial<T>::evaluate(T x, T y)
+{
+  T xm(1), yn(1), r(0);  // x^m, y^n, result
+  for(int m = 0; m < coeffs.getNumRows(); m++) {
+    yn = T(1);
+    for(int n = 0; n < coeffs.getNumColumns(); n++) {
+      r += coeffs(m, n) * xm * yn;
+      yn *= y;  }
+    xm *= x; }
+  return r;
+}
+// todo: try find an algo that works like Horner's rule 
 
+template<class T>
+void rsBivariatePolynomial<T>::evaluateX(T x, T* py)
+{
+  T xm(1);
+  //int M = 
 
+}
+
+template<class T>
+rsPolynomial<T> rsBivariatePolynomial<T>::evaluateX(T x)
+{
+  rsPolynomial<T> py(getDegreeY());
+  evaluateX(x, py.getCoeffPointer());
+  return py;
+}
 
 //=================================================================================================
 // the stuff below is just for playing around - maybe move code elsewhere, like the research-repo:
