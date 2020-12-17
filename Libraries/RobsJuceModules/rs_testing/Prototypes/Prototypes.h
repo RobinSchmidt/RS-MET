@@ -1954,7 +1954,8 @@ public:
   static void integralX(const rsMatrixView<T>& p, rsMatrixView<T>& pi, T c = T(0));
   rsBivariatePolynomial<T> integralX(T c = T(0)) const;
   // should the integration constant be a univariate polynomial in y instead of a fixed value?
-  // ...yes, i think so
+  // ...yes, i think so ...or maybe get rid of the paramneter alltogether and just leave the matrix
+  // entries corresponding to the terms not involving x as is
 
   static void integralY(const rsMatrixView<T>& p, rsMatrixView<T>& pi, T c = T(0));
   rsBivariatePolynomial<T> integralY(T c = T(0)) const;
@@ -1962,11 +1963,16 @@ public:
 
   /** Computes the definite integral of the polynomial with respect to x with the integration 
   limits a,b. The result is a univariate polynomial in y whose coefficients are stored in py. */
-  static void integrateX(T a, T b, T* py);
+  static void integralX(T a, T b, T* py);
 
   /** Computes the definite integral of the polynomial with respect to y with the integration 
   limits a,b. The result is a univariate polynomial in x whose coefficients are stored in px. */
-  static void integrateY(T a, T b, T* px);
+  static void integralY(T a, T b, T* px);
+
+
+  rsPolynomial<T> integralX(T a, T b);
+
+  rsPolynomial<T> integralY(T a, T b);
 
 
 
@@ -1992,6 +1998,8 @@ protected:
   rsMatrix<T> coeffs;
 
 };
+// maybe implement a function getHarmonicConjugate which returns 2*x*y when p = x^2 - y^2, etc.
+// ...are they obtained by a rotation? does every polynomial have such a conjugate?
 
 template<class T>
 T rsBivariatePolynomial<T>::evaluate(T x, T y)
@@ -2126,7 +2134,7 @@ void rsBivariatePolynomial<T>::integralY(const rsMatrixView<T>& p, rsMatrixView<
   int M = p.getNumRows();
   int N = p.getNumColumns();
   rsAssert(pi.hasShape(M, N+1));
-  for(int m = 0; m < m; m++)
+  for(int m = 0; m < M; m++)
     pi(m, 0) = c; 
   for(int n = 1; n <= N; n++) {
     T s = T(1) / T(n);
@@ -2144,6 +2152,26 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::integralY(T c) const
   integralY(coeffs, q.coeffs, c);
   return q;
 }
+
+template<class T>
+rsPolynomial<T> rsBivariatePolynomial<T>::integralX(T a, T b)
+{
+  rsBivariatePolynomial<T> P = integralX();
+  rsPolynomial<T> Pb = P.evaluateX(b);
+  rsPolynomial<T> Pa = P.evaluateX(a);
+  return Pb - Pa;
+}
+// todo: optimize
+
+template<class T>
+rsPolynomial<T> rsBivariatePolynomial<T>::integralY(T a, T b)
+{
+  rsBivariatePolynomial<T> P = integralY();
+  rsPolynomial<T> Pb = P.evaluateY(b);
+  rsPolynomial<T> Pa = P.evaluateY(a);
+  return Pb - Pa;
+}
+// todo: optimize
 
 
 //=================================================================================================

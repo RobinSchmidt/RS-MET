@@ -1453,6 +1453,12 @@ bool testBivariatePolynomial()
   // + 0*x   + 5*x*y   + 3*x*y^2   + 7/3*x*y^3    + 2*x*y^4
   // + 0*x^2 + 9*x^2*y + 5*x^2*y^2 + 11/3*x^2*y^3 + 3*x^2*y^4
 
+  uni = p.integralX(-2, 3); r &= uni == Poly({122.5, 425./3, 965./6, 180});
+  // 180*y^3 + 965/6*y^2 + 425/3*y + 245/2
+
+  uni = p.integralY(-2, 3); r &= uni == Poly({110, 755./3, 1180./3});
+  // 1180/3*x^2 + 755/3*x + 110
+
   return r;
 }
 
