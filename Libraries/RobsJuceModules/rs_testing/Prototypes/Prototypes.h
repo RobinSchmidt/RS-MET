@@ -1985,10 +1985,21 @@ T rsBivariatePolynomial<T>::evaluate(T x, T y)
 template<class T>
 void rsBivariatePolynomial<T>::evaluateX(T x, T* py)
 {
-  T xm(1);
-  //int M = 
-
+  //T xm(1);
+  int M = coeffs.getNumRows();
+  int N = coeffs.getNumColumns();
+  for(int n = 0; n < N; n++)
+  {
+    py[n] = T(0);
+    T xm  = T(1);
+    for(int m = 0; m < M; m++)
+    {
+      py[n] += coeffs(m, n) * xm;
+      xm *= x;
+    }
+  }
 }
+// i think, by swapping the loops, we can avoid the multiplication in the inner loop - optimize!
 
 template<class T>
 rsPolynomial<T> rsBivariatePolynomial<T>::evaluateX(T x)

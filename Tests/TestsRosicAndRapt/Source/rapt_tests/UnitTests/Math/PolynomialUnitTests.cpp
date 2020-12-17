@@ -1419,10 +1419,20 @@ bool testBivariatePolynomial()
   // sage:
   // var("x y")
   // p(x,y) = 1 + 2*y + 3*y^2 + 4*y^3 + 5*x + 6*x*y + 7*x*y^2 + 8*x*y^3 + 9*x^2 + 10*x^2*y + 11*x^2*y^2 + 12*x^2*y^3
-  // p(2,3)
+  // p(2,3), p(2,y), p(x,3)
+  //
+  // (2594, 68*y^3 + 61*y^2 + 54*y + 47, 462*x^2 + 302*x + 142)
 
-  double val = p.evaluate(2, 3);
+  double val;
+  val = p.evaluate(2, 3);
   r &= val == 2594;
+
+  //Poly px = p.evaluateY(3);
+  Poly py = p.evaluateX(2);
+  r &= py == Poly({47, 54, 61, 68});
+  //val = py.evaluate(3.0);
+  //r &= val == 2594;
+
 
   return r;
 }
