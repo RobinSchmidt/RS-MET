@@ -1945,8 +1945,18 @@ public:
   // \name Calculus
 
   static void derivativeX(const rsMatrixView<T>& c, rsMatrixView<T>& d);
-
   rsBivariatePolynomial<T> derivativeX() const;
+
+  static void derivativeY(const rsMatrixView<T>& c, rsMatrixView<T>& d);
+  rsBivariatePolynomial<T> derivativeY() const;
+
+
+  static void integralX(const rsMatrixView<T>& p, rsMatrixView<T>& pi, T c = T(0));
+  rsBivariatePolynomial<T> integralX(T c = T(0)) const;
+  // should the integration constant be a univariate polynomial in y instead of a fixed value?
+
+
+
 
 
 
@@ -1968,6 +1978,12 @@ public:
   int getDegreeX() const { return coeffs.getNumRows()-1; }
 
   int getDegreeY() const { return coeffs.getNumColumns()-1; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Operators
+
+  bool operator==(const rsBivariatePolynomial<T>& rhs) const { return coeffs == rhs.coeffs; }
 
 
 
@@ -2039,9 +2055,10 @@ void rsBivariatePolynomial<T>::derivativeX(const rsMatrixView<T>& c, rsMatrixVie
   int M = c.getNumRows();
   int N = c.getNumColumns();
   rsAssert(d.hasShape(M-1, N));
-  for(int m = 0; m < M-1; m++)
+  for(int m = 1; m < M; m++) {
+    T s(m);
     for(int n = 0; n < N; n++)
-      d(m, n) = c(m+1, n) * rsFactorial(m);  // todo: optimize
+      d(m-1, n) = s * c(m, n); }
 }
 
 template<class T>
@@ -2055,6 +2072,53 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::derivativeX() const
   return q;
 }
 
+template<class T>
+void rsBivariatePolynomial<T>::derivativeY(const rsMatrixView<T>& c, rsMatrixView<T>& d)
+{
+  int M = c.getNumRows();
+  int N = c.getNumColumns();
+  rsAssert(d.hasShape(M, N-1));
+  for(int n = 1; n < N; n++) {
+    T s(n);
+    for(int m = 0; m < M; m++)
+      d(m, n-1) = s * c(m, n); }
+}
+
+template<class T>
+rsBivariatePolynomial<T> rsBivariatePolynomial<T>::derivativeY() const
+{
+  int M = coeffs.getNumRows();
+  int N = coeffs.getNumColumns();
+  rsBivariatePolynomial<T> q;
+  q.coeffs.setShape(M, N-1);
+  derivativeY(coeffs, q.coeffs);
+  return q;
+}
+
+template<class T>
+void rsBivariatePolynomial<T>::integralX(const rsMatrixView<T>& p, rsMatrixView<T>& pi, T c)
+{
+  int M = p.getNumRows();
+  int N = p.getNumColumns();
+  rsAssert(pi.hasShape(M+1, N));
+  for(int n = 0; n < N; n++)
+    pi(0, n) = c; 
+  for(int m = 1; m <= M; m++) {
+    T s = T(1) / T(m);
+    for(int n = 0; n < N; n++)
+      pi(m, n) = s * p(m-1, n); }
+}
+
+template<class T>
+rsBivariatePolynomial<T> rsBivariatePolynomial<T>::integralX(T c) const
+{
+  int M = coeffs.getNumRows();
+  int N = coeffs.getNumColumns();
+  rsBivariatePolynomial<T> q;
+  q.coeffs.setShape(M+1, N);
+  integralX(coeffs, q.coeffs, c);
+  return q;
+}
 
 
 //=================================================================================================
