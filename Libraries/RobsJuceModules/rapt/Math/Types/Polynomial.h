@@ -60,11 +60,14 @@ public:
   rsPolynomial(const std::vector<T>& coefficients) { setCoeffs(coefficients); }
 
   /** Creates a polynomial from an initializer list for the coefficients. */
-  rsPolynomial(std::initializer_list<T> l) : coeffs(l) {}  // maybe take a reference? needs tests
+  rsPolynomial(std::initializer_list<T> l) : coeffs(l) {}
+  //  needs tests
+  // maybe take a reference? hmm...no, the examples here also use a value:
+  // https://en.cppreference.com/w/cpp/utility/initializer_list
+  // https://www.learncpp.com/cpp-tutorial/10-7-stdinitializer_list/
 
   /** Promotes a number to a 0th degree polynomial. */
-  rsPolynomial(const T& number)
-  { coeffs.resize(1); coeffs[0] = number; }
+  rsPolynomial(const T& number) { coeffs.resize(1); coeffs[0] = number; }
 
   // make a constructor that initializes from a raw array
 

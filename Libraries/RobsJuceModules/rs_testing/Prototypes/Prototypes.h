@@ -1640,6 +1640,7 @@ protected:
 // -Maybe templatize also on the integer type used for indices i,j. Users may want to use short
 //  integers (16 bit) to save even more storage space, especially when T is float because then 
 //  one entry is exactly 64 bits long). Maybe use TIdx, TVal for the two template parameters.
+// -make a class rsSparseTensor
 
 template<class T>
 T rsSparseMatrix<T>::iterateProduct(const T* x, T* y) const
@@ -1890,6 +1891,69 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
 //  subtract all the already found eigenvalues from the trace before dividing by N -> experiments
 //  needed. ..the determinant is the product of all eigenvalues btw - but i don't think that's 
 //  helpful here (it's hard to compute anyway)
+
+//=================================================================================================
+
+/** Class for representing bivariate polynomials, i.e. polynomials in two variables. They are 
+represented by an MxN matrix of coefficients which is supposed to be sandwiched between two vectors
+of powers of x and y like:
+
+  p(x,y) = |x^0 x^1 x^2| * |a00 a01 a02 a03| * |y^0|
+                           |a10 a11 a12 a13|   |y^1|
+                           |a20 a21 a22 a23|   |y^2|
+                                               |y^3|
+
+         = a00*x^0*y^0 + a01*x^0*y^1 + a02*x^0*y^1 + ... + a22*x^2*y^2 + a23*x^2*y^3
+
+for a polynomial that has degree 2 in x and degree 3 in y, so M=3, N=4 - the dimension of the 
+matrix is (degX+1)x(degY+1) where degX, degY are the degrees with respect to x and y.
+
+*/
+
+template<class T>
+class rsBivariatePolynomial
+{
+
+public:
+
+  rsBivariatePolynomial() {}
+
+  rsBivariatePolynomial(int degreeX, int degreeY, std::initializer_list<T> l) 
+    : coeffs(degreeX+1, degreeY+1, l) {}
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Evaluation
+
+  /** Evaluates the polynomial at the given (x,y). */
+  T evaluate(T x, T y);
+
+  /** Evaluates the polynomial for a given x. The result is a univariate polynomial in y whose 
+  coefficients are stored in py. */
+  void evaluateX(T x, T* py);
+
+  /** Evaluates the polynomial for a given y. The result is a univariate polynomial in x whose 
+  coefficients are stored in px. */
+  void evaluateY(T y, T* px);
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Calculus
+
+  /** Computes the definite integral of the polynomial with respect to x with the integration 
+  limits a,b. The result is a univariate polynomial in y whose coefficients are stored in py. */
+  void integrateX(T a, T b, T* py);
+
+  /** Computes the definite integral of the polynomial with respect to y with the integration 
+  limits a,b. The result is a univariate polynomial in x whose coefficients are stored in px. */
+  void integrateY(T a, T b, T* px);
+
+protected:
+
+  rsMatrix<T> coeffs;
+
+};
+
 
 
 

@@ -3461,7 +3461,8 @@ void convolvePolynomials()
   // i think, we need to consider the integrand as a polynomial in u with x being a fixed 
   // parameter? or do we have to consider q as a bivariate polynomial q(x,u) from which we 
   // "integrate out" the variable u? maybe we need a class for bivariate polynomials, represented
-  // by a matrix of coefficients?
+  // by a matrix of coefficients? this class should support operations like this integrating out of
+  // one variable, producing a univariate polynomial, multiplication with univariate polynomials,
 
   static const int pN = 3;  // degree of p
   static const int qN = 4;  // degree of q

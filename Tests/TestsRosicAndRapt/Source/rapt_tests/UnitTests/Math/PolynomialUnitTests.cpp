@@ -1403,8 +1403,26 @@ bool testQuadraticTo3Points()
   return r;
 }
 
+bool testBivariatePolynomial()
+{
+  bool r = true;
 
-//bool testPolynomial(std::string &reportString)
+  using Poly   = rsPolynomial<double>;
+  using BiPoly = rsBivariatePolynomial<double>;
+
+
+  BiPoly p(2, 3, {1,2,3,4, 5,6,7,8, 9,10,11,12});
+  // p(x,y) =    1     + 2*y      + 3*y^2      + 4*y^3  
+  //           + 5*x   + 6*x*y    + 7*x*y^2    + 8*x*y^3
+  //           + 9*x^2 + 10*x^2*y + 11*x^2*y^2 + 12*x^2*y^3
+
+
+
+
+  return r;
+}
+
+
 bool testPolynomial()
 {
   std::string reportString = "Polynomial"; // dummy -> remove
@@ -1439,6 +1457,9 @@ bool testPolynomial()
     // fails!
 
   testResult &= testRationalFunction(reportString);
+
+
+  testResult &= testBivariatePolynomial();
 
 
   return testResult;

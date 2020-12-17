@@ -831,6 +831,16 @@ public:
     updateDataPointer();
   }
 
+  rsMatrix(int numRows, int numColumns, std::initializer_list<T> l) : data(l) 
+  {
+    numHeapAllocations++;   // data(l) allocates
+    rsAssert(numRows*numColumns == l.size());
+    this->numRows = numRows;
+    this->numCols = numColumns;
+    updateDataPointer();
+  }
+  // needs tests
+
   /** Copy constructor. Copies data from B into this object.  */
   rsMatrix(const rsMatrix& B)
   {

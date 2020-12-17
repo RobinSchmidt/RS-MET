@@ -168,6 +168,14 @@ void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(
      // swapped ->that's confusing, clean this up - maybe just rename the flag into something
      // neutral
 }
+// todo: try to write the algorithm in a way that works in place - maybe it's sufficient to pull 
+// out the x[2*j], x[2*j+1] into temp variables? ...but i actually don't think so -> figure out!
+// ..i think it would work, if we also write y into slots 2*j, 2*j+1 - but then we would end up
+// with a differently ordered output - but that may actually not be an issue in this context, but 
+// it could also be counteracted by a subsequent reordering algo, like in the FFT with the 
+// bit-reversed ordering...maybe it's even the same re-ordering here?
+// maybe the algo should be moved to some appropriate place in rapt, too
+// 
 
 void FeedbackDelayNetwork::fastInverseGeneralizedHadamardTransform(
   double *x, int N, int log2N, double *work, double a, double b, double c, double d)
