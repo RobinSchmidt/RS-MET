@@ -1423,16 +1423,15 @@ bool testBivariatePolynomial()
   //
   // (2594, 68*y^3 + 61*y^2 + 54*y + 47, 462*x^2 + 302*x + 142)
 
-  double val;
-  Poly   uni;
+  double val, val2;
+  Poly   uni, uni2;
   BiPoly bi;
 
   val = p.evaluate(2, 3); r &= val == 2594;
   uni = p.evaluateX(2);   r &= uni == Poly({47, 54, 61, 68});
+  val = uni(3);           r &= val == 2594;
   uni = p.evaluateY(3);   r &= uni == Poly({142, 302, 462});
-  //val = py.evaluate(3.0); r &= val == 2594;
-  //val = px.evaluate(2.0); r &= val == 2594;
-
+  val = uni(2);           r &= val == 2594;
   bi = p.derivativeX(); r &= bi == BiPoly(1, 3, {5,6,7,8, 18,20,22,24});
   //    5    + 6*y    + 7*y^2    + 8*y^3 
   //  + 18*x + 20*x*y + 22*x*y^2 + 24*x*y^3
@@ -1458,6 +1457,14 @@ bool testBivariatePolynomial()
 
   uni = p.integralY(-2, 3); r &= uni == Poly({110, 755./3, 1180./3});
   // 1180/3*x^2 + 755/3*x + 110
+
+  uni  = Poly({ 2,  3,  5,  7});
+  uni2 = Poly({11, 13, 17, 19, 23});
+  bi   = BiPoly::multiply(uni, uni2);
+  val  = bi.evaluate(2, 3);
+  val2 = uni(2) * uni2(3);
+  r &= val == val2;
+
 
   return r;
 }

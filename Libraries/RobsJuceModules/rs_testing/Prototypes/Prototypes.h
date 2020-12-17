@@ -1903,7 +1903,7 @@ of powers of x and y like:
                            |a20 a21 a22 a23|   |y^2|
                                                |y^3|
 
-         = a00*x^0*y^0 + a01*x^0*y^1 + a02*x^0*y^1 + ... + a22*x^2*y^2 + a23*x^2*y^3
+         = a00*x^0*y^0 + a01*x^0*y^1 + a02*x^0*y^2 + ... + a22*x^2*y^2 + a23*x^2*y^3
 
 for a polynomial that has degree 2 in x and degree 3 in y, so M=3, N=4 - the dimension of the 
 matrix is (degX+1)x(degY+1) where degX, degY are the degrees with respect to x and y.
@@ -1918,6 +1918,8 @@ public:
 
   rsBivariatePolynomial() {}
 
+  rsBivariatePolynomial(int degreeX, int degreeY) : coeffs(degreeX+1, degreeY+1) {}
+
   rsBivariatePolynomial(int degreeX, int degreeY, std::initializer_list<T> l) 
     : coeffs(degreeX+1, degreeY+1, l) {}
 
@@ -1926,20 +1928,35 @@ public:
   // \name Evaluation
 
   /** Evaluates the polynomial at the given (x,y). */
-  T evaluate(T x, T y);
+  T evaluate(T x, T y) const;
+
+  /** Evaluates the polynomial for a given x. The result is a univariate polynomial in y. */
+  rsPolynomial<T> evaluateX(T x) const;
+
+  /** Evaluates the polynomial for a given y. The result is a univariate polynomial in x. */
+  rsPolynomial<T> evaluateY(T y) const;
 
   /** Evaluates the polynomial for a given x. The result is a univariate polynomial in y whose 
   coefficients are stored in py. */
-  void evaluateX(T x, T* py);
+  void evaluateX(T x, T* py) const;
+  // make function static, taking an rsMatrixView parameter, just like derivativeX
 
   /** Evaluates the polynomial for a given y. The result is a univariate polynomial in x whose 
   coefficients are stored in px. */
-  void evaluateY(T y, T* px);
+  void evaluateY(T y, T* px) const;
 
 
-  rsPolynomial<T> evaluateX(T x);
 
-  rsPolynomial<T> evaluateY(T y);
+  //-----------------------------------------------------------------------------------------------
+  // \name Arithmetic
+
+  /** Computes the coefficients of of a bivariate polynomial r that is given as the product of two
+  univariate polynomial p and q that are functions of x and y alone, respectively, such that 
+  r(x,y) = p(x) * q(y). */
+  static rsBivariatePolynomial<T> multiply(const rsPolynomial<T>& p, const rsPolynomial<T>& q);
+
+  static void multiply(const T* p, int pDeg, const T* q, int qDeg, rsMatrixView<T>& r);
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Calculus
@@ -1963,16 +1980,28 @@ public:
 
   /** Computes the definite integral of the polynomial with respect to x with the integration 
   limits a,b. The result is a univariate polynomial in y whose coefficients are stored in py. */
-  static void integralX(T a, T b, T* py);
+  //static void integralX(T a, T b, T* py);
 
   /** Computes the definite integral of the polynomial with respect to y with the integration 
   limits a,b. The result is a univariate polynomial in x whose coefficients are stored in px. */
-  static void integralY(T a, T b, T* px);
+  //static void integralY(T a, T b, T* px);
+
+  /** Computes the definite integral of the polynomial with respect to x with the integration 
+  limits a,b. The result is a univariate polynomial in y. */
+  rsPolynomial<T> integralX(T a, T b)  const;
+
+  /** Computes the definite integral of the polynomial with respect to y with the integration 
+  limits a,b. The result is a univariate polynomial in x. */
+  rsPolynomial<T> integralY(T a, T b)  const;
 
 
-  rsPolynomial<T> integralX(T a, T b);
+  // todo: make a function integralXY(T a, T b, T c, T d) that computes the value of the 
+  // double-integral, maybe have also a function integralYX which reverses the order of integration
+  // the result is mathematically the same but may be numerically different
+  // ...how about line integrals? can we check, if the function is a potential field? i think, the
+  // Laplacian should be zero
 
-  rsPolynomial<T> integralY(T a, T b);
+
 
 
 
@@ -2002,7 +2031,7 @@ protected:
 // ...are they obtained by a rotation? does every polynomial have such a conjugate?
 
 template<class T>
-T rsBivariatePolynomial<T>::evaluate(T x, T y)
+T rsBivariatePolynomial<T>::evaluate(T x, T y) const
 {
   T xm(1), yn(1), r(0);  // x^m, y^n, result
   for(int m = 0; m < coeffs.getNumRows(); m++) {
@@ -2016,7 +2045,7 @@ T rsBivariatePolynomial<T>::evaluate(T x, T y)
 // todo: try find an algo that works like Horner's rule 
 
 template<class T>
-void rsBivariatePolynomial<T>::evaluateX(T x, T* py)
+void rsBivariatePolynomial<T>::evaluateX(T x, T* py) const
 {
   int M = coeffs.getNumRows();
   int N = coeffs.getNumColumns();
@@ -2029,7 +2058,7 @@ void rsBivariatePolynomial<T>::evaluateX(T x, T* py)
 }
 
 template<class T>
-rsPolynomial<T> rsBivariatePolynomial<T>::evaluateX(T x)
+rsPolynomial<T> rsBivariatePolynomial<T>::evaluateX(T x) const
 {
   rsPolynomial<T> py(getDegreeY());
   evaluateX(x, py.getCoeffPointer());
@@ -2037,7 +2066,7 @@ rsPolynomial<T> rsBivariatePolynomial<T>::evaluateX(T x)
 }
 
 template<class T>
-void rsBivariatePolynomial<T>::evaluateY(T y, T* px)
+void rsBivariatePolynomial<T>::evaluateY(T y, T* px) const
 {
   int M = coeffs.getNumRows();
   int N = coeffs.getNumColumns();
@@ -2050,11 +2079,31 @@ void rsBivariatePolynomial<T>::evaluateY(T y, T* px)
 }
 
 template<class T>
-rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(T y)
+rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(T y) const
 {
   rsPolynomial<T> px(getDegreeX());
   evaluateY(y, px.getCoeffPointer());
   return px;
+}
+
+template<class T>
+rsBivariatePolynomial<T> rsBivariatePolynomial<T>::multiply(
+  const rsPolynomial<T>& p, const rsPolynomial<T>& q)
+{
+  rsBivariatePolynomial<T> r(p.getDegree(), q.getDegree());
+  multiply(p.getCoeffPointerConst(), p.getDegree(), q.getCoeffPointerConst(), q.getDegree(),
+    r.coeffs);
+  return r;
+}
+
+template<class T>
+void rsBivariatePolynomial<T>::multiply(const T* p, int pDeg, const T* q, int qDeg, 
+  rsMatrixView<T>& r)
+{
+  rsAssert(r.hasShape(pDeg+1, qDeg+1));
+  for(int m = 0; m <= pDeg; m++)
+    for(int n = 0; n <= qDeg; n++)
+      r(m, n) = p[m] * q[n];
 }
 
 template<class T>
@@ -2154,7 +2203,7 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::integralY(T c) const
 }
 
 template<class T>
-rsPolynomial<T> rsBivariatePolynomial<T>::integralX(T a, T b)
+rsPolynomial<T> rsBivariatePolynomial<T>::integralX(T a, T b) const
 {
   rsBivariatePolynomial<T> P = integralX();
   rsPolynomial<T> Pb = P.evaluateX(b);
@@ -2164,7 +2213,7 @@ rsPolynomial<T> rsBivariatePolynomial<T>::integralX(T a, T b)
 // todo: optimize
 
 template<class T>
-rsPolynomial<T> rsBivariatePolynomial<T>::integralY(T a, T b)
+rsPolynomial<T> rsBivariatePolynomial<T>::integralY(T a, T b) const
 {
   rsBivariatePolynomial<T> P = integralY();
   rsPolynomial<T> Pb = P.evaluateY(b);

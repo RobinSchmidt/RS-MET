@@ -3423,6 +3423,19 @@ void integrateAffineTest()
 
   return;
 }
+
+template<class T>
+void convolvePolynomials1(T* p, int pDeg, T* q, int qDeg, T* pq)
+{
+  int pqDeg = pDeg + qDeg;
+  RAPT::rsArrayTools::fillWithZeros(pq, pqDeg+1);
+
+
+
+
+  return;
+}
+
 void convolvePolynomials()
 {
   integrateAffineTest();
@@ -3464,13 +3477,15 @@ void convolvePolynomials()
   // by a matrix of coefficients? this class should support operations like this integrating out of
   // one variable, producing a univariate polynomial, multiplication with univariate polynomials,
 
-  static const int pN = 3;  // degree of p
-  static const int qN = 4;  // degree of q
+  static const int pN = 3;     // degree of p
+  static const int qN = 4;     // degree of q
+  static const int rN = pN+qN; // degree of convolution result
 
   double p[pN+1] = {2,-3,5,-7};
   double q[qN+1] = {3,-4,6,-8,9};
+  double r[rN+1];
 
-
+  convolvePolynomials1(p, pN, q, qN, r);
 
   int dummy = 0;
 }
