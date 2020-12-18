@@ -3436,23 +3436,29 @@ void convolvePolynomials1(T* p, int pDeg, T* q, int qDeg, T* pq)
 }
 
 template<class T>
-rsPolynomial<T> convolvePolynomials(
-  const rsPolynomial<T>& p, T a, T b,
-  const rsPolynomial<T>& q, T c, T d)
+rsPolynomial<T> convolvePolynomials(const rsPolynomial<T>& p, const rsPolynomial<T>& q, T a, T b)
 {
-  // r(x) = conv(p(x), q(x)) 
-  //      = \int_{-\infty}^{\infty} p(y) q(x-y) dy
-  //      = \int_{a+c}^{b+d}        p(y) q(x-y) dy
+  // Computes r(x) = conv(p(x), q(x)) = \int_a^b  p(y) q(x-y) dy
 
   using Poly   = rsPolynomial<T>;
   using BiPoly = rsBivariatePolynomial<T>;
 
   BiPoly Q  = BiPoly::composeWithLinear(q, T(1), T(-1)); //  Q(x,y) = q(x-y)
   BiPoly PQ = Q.multiplyY(p);                            // PQ(x,y) = p(y)*q(x-y)
-  Poly   r  = PQ.integralY(a+c, b+d);                    // r(x) = \int_{a+c}^{b+d} p(y)*q(x-y) dy
+  Poly   r  = PQ.integralY(a, b);                        // r(x) = \int_a^b p(y)*q(x-y) dy
+
+  r = PQ.integralX(a, b); // test - seems to give the correct degree - but why should we integrate
+  // with respect to x? that doesn't seem to make sense. nevertheless, the results are more 
+  // plausible....hmmmm
+
   return r;
+
+  // Q =   3     + 4*y     + 6*y^2
+  //     - 4*x   - 12*x*y  + 0*x*y^2
+  //     + 6*x^2 + 0*x^2*y + 0*x^2*y^2   -> correct!
 }
-// maybe just take the two polynomials and the two integration limits, rename to convolveFinite
+// maybe rename to convolveFinite
+// this does not yet seem to work
 
 void convolvePolynomials()
 {
@@ -3508,11 +3514,35 @@ void convolvePolynomials()
 
   using Poly = RAPT::rsPolynomial<double>;
 
-  Poly p({ 2,-3,5,-7 });
-  Poly q({ 3,-4,6,-8,9 });
-  double a = 2, b = 4;
-  double c = 5, d = 8;
-  Poly r = convolvePolynomials(p, a, b, q, c, d);  // has degree 5 ...too low!?
+  //Poly p({ 2,-3,5,-7 });
+  //Poly q({ 3,-4,6,-8,9 });
+
+  Poly p({ 2,-3,5,-7 });   // p(x) = 2 - 3*x + 5*x^2 - 7*x^3
+  Poly q({ 3,-4,6    });   // q(x) = 3 - 4*x + 6*x^2
+  double a = 2, b = 4;     // integration interval
+  Poly pqab = convolvePolynomials(p, q, a, b);  // has degree 2 ...too low!?
+  Poly pqba = convolvePolynomials(p, q, b, a);
+  Poly qpab = convolvePolynomials(q, p, a, b);  // has degree 3
+  Poly qpba = convolvePolynomials(q, p, b, a);
+
+
+  // sage:
+  // var("x y")
+  // p(x) = 2 - 3*x + 5*x^2 - 7*x^3
+  // q(x) = 3 - 4*x + 6*x^2
+  // Q(x,y) = q(x-y)
+  // PQ = p(y)*Q(x,y)
+  // r = integral(PQ, y, 2,4)
+  // r               # -2044*x^2 + 224344/15*x - 143406/5
+  // #PQ.expand()
+  // # Q.expand()  #  6*x^2 - 12*x*y + 6*y^2 - 4*x + 4*y + 3
+
+  // OK, the sage output seems to match - but the result must obviously be wrong. 1st: the degree
+  // is too low and 2nd: the order of the arguments p,q should not matter..or should it because
+  // the integral runs only over a finite domain?
+  // when integrating with respect o x, we at least get the same degree, no matter what the order
+  // of p,q 
+
 
   int dummy = 0;
 }
