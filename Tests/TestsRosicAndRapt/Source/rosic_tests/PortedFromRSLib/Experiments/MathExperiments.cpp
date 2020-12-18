@@ -3399,6 +3399,7 @@ void vertexMeshHessian()
 
 // Coeffs of the definite integral of the polynomial p that has its input affinely transformed
 // \int p(a*x + b)
+/*
 template<class T>
 rsPolynomial<T> integrateAffine(const rsPolynomial<T>& P, T a, T b)
 {
@@ -3423,6 +3424,7 @@ void integrateAffineTest()
 
   return;
 }
+*/
 
 template<class T>
 void convolvePolynomials1(T* p, int pDeg, T* q, int qDeg, T* pq)
@@ -3430,15 +3432,31 @@ void convolvePolynomials1(T* p, int pDeg, T* q, int qDeg, T* pq)
   int pqDeg = pDeg + qDeg;
   RAPT::rsArrayTools::fillWithZeros(pq, pqDeg+1);
 
-
-
-
   return;
 }
 
+template<class T>
+rsPolynomial<T> convolvePolynomials(
+  const rsPolynomial<T>& p, T a, T b,
+  const rsPolynomial<T>& q, T c, T d)
+{
+  // r(x) = conv(p(x), q(x)) 
+  //      = \int_{-\infty}^{\infty} p(y) q(x-y) dy
+  //      = \int_{a+c}^{b+d}        p(y) q(x-y) dy
+
+  using Poly   = rsPolynomial<T>;
+  using BiPoly = rsBivariatePolynomial<T>;
+
+  BiPoly Q  = BiPoly::composeWithLinear(q, T(1), T(-1)); //  Q(x,y) = q(x-y)
+  BiPoly PQ = Q.multiplyY(p);                            // PQ(x,y) = p(y)*q(x-y)
+  Poly   r  = PQ.integralY(a+c, b+d);                    // r(x) = \int_{a+c}^{b+d} p(y)*q(x-y) dy
+  return r;
+}
+// maybe just take the two polynomials and the two integration limits, rename to convolveFinite
+
 void convolvePolynomials()
 {
-  integrateAffineTest();
+  //integrateAffineTest();
 
   // Under Construction...this is still all very shaky
 
@@ -3477,6 +3495,7 @@ void convolvePolynomials()
   // by a matrix of coefficients? this class should support operations like this integrating out of
   // one variable, producing a univariate polynomial, multiplication with univariate polynomials,
 
+  /*
   static const int pN = 3;     // degree of p
   static const int qN = 4;     // degree of q
   static const int rN = pN+qN; // degree of convolution result
@@ -3484,8 +3503,16 @@ void convolvePolynomials()
   double p[pN+1] = {2,-3,5,-7};
   double q[qN+1] = {3,-4,6,-8,9};
   double r[rN+1];
-
   convolvePolynomials1(p, pN, q, qN, r);
+  */
+
+  using Poly = RAPT::rsPolynomial<double>;
+
+  Poly p({ 2,-3,5,-7 });
+  Poly q({ 3,-4,6,-8,9 });
+  double a = 2, b = 4;
+  double c = 5, d = 8;
+  Poly r = convolvePolynomials(p, a, b, q, c, d);  // has degree 5 ...too low!?
 
   int dummy = 0;
 }
