@@ -1962,6 +1962,13 @@ public:
   a linear combination of x and y and a univariate polynomial p: r(x,y) = p(a*x + b*y). */
   static rsBivariatePolynomial<T> composeWithLinear(const rsPolynomial<T>& p, T a, T b);
 
+  /** Multiplies this bivariate polynomial with a univariate polynomial in y only and returns the 
+  result which is again a bivariate polynomial. This amounts to convolving each row of our 
+  coefficient matrix with the coefficient array of p. */
+  rsBivariatePolynomial<T> multiplyY(const rsPolynomial<T>& p) const;
+
+  // todo: make a similar multiplyX method - this needs to convolve the columns with p, so we will
+  // need a convolution routine with strides
 
   //-----------------------------------------------------------------------------------------------
   // \name Calculus
@@ -2236,15 +2243,30 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear(
   r.coeffs.setToZero();
   const T* c = p.getCoeffPointerConst();
 
-
-  // very slow:
+  // this works, but is very slow:
   for(int n = 0; n <= N; n++)
     for(int k = 0; k <= n; k++)
       r.coeffs(k, n-k) += c[n] * (T) rsBinomialCoefficient(n, k) * pow(a, k) * pow(b, n-k);
 
   return r;
 }
+// optimize: precompute arrays of binomial coeffs and powers of a,b
 
+template<class T>
+rsBivariatePolynomial<T> rsBivariatePolynomial<T>::multiplyY(const rsPolynomial<T>& polyY) const
+{
+  int degX = getDegreeX();
+  int degY = getDegreeY();
+  int degP = polyY.getDegree();
+  rsBivariatePolynomial<T> r(degX, degY+degP);
+  const T* h = polyY.getCoeffPointerConst();     // "impulse response"
+  for(int i = 0; i <= degX; i++) {
+    const T* x = coeffs.getRowPointerConst(i);   // input
+    T* y = r.coeffs.getRowPointer(i);            // output
+    rsArrayTools::convolve(x, degY+1, h, degP+1, y); }
+  return r;
+}
+// this assumes row-major storage of matrices
 
 //=================================================================================================
 // the stuff below is just for playing around - maybe move code elsewhere, like the research-repo:

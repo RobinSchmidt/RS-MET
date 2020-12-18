@@ -1468,31 +1468,34 @@ bool testBivariatePolynomial()
 
   // Construct bivariate polynomial from a univariate polynomial in the variable a*x + b*y for 
   // given a,b
-
+  //
   // var("x y a b")
   // p(x) = 2 + 3*x + 5*x^2 + 7*x^3
-  // p(a*x + b*y).expand()
-  //
-  // 7*a^3*x^3 + 21*a^2*b*x^2*y + 21*a*b^2*x*y^2 + 7*b^3*y^3 + 5*a^2*x^2 + 10*a*b*x*y + 5*b^2*y^2 
-  // + 3*a*x + 3*b*y + 2
-  // has terms only up to total degree of 3, i.e. the exponents for x and y sum up to at at most 3
-
   // p(11*x + 13*y).expand()
-  // 9317*x^3 + 33033*x^2*y + 39039*x*y^2 + 15379*y^3 + 605*x^2 + 1430*x*y + 845*y^2 
-  // + 33*x + 39*y + 2
-
-  //    2       + 39*y        + 845*y^2     + 15379*y^3
+  //
+  //   2        + 39*y        + 845*y^2     + 15379*y^3
   // + 33*x     + 1430*x*y    + 39039*x*y^2 + 0
   // + 605*x^2  + 33033*x^2*y + 0           + 0
   // + 9317*x^3 + 0           + 0           + 0 
-
-
   double a = 11, b = 13;
   double x = 2,  y = 3;
   bi   = BiPoly::composeWithLinear(uni, a, b);
   val  = uni(a*x + b*y);
   val2 = bi.evaluate(x, y);
   r &= val == val2;
+
+  // Multiply bivariate polynomial with univariate polynomial in y:
+  //
+  // var("x y")
+  // p(x,y) = 1 + 2*y + 3*y^2 + 4*y^3 + 5*x + 6*x*y + 7*x*y^2 + 8*x*y^3 + 9*x^2 + 10*x^2*y + 11*x^2*y^2 + 12*x^2*y^3
+  // q(y) = 2 + 3*y + 5*y^2 + 7*y^3
+  // (p*q).expand()
+  //
+  //    2     + 7*y      + 17*y^2     + 34*y^3      + 41*y^4      + 41*y^5      + 28*y^6
+  // + 10*x   + 27*x*y   + 57*x*y^2   + 102*x*y^3   + 101*x*y^4   + 89*x*y^5    + 56*x*y^6
+  // + 18*x^2 + 47*x^2*y + 97*x^2*y^2 + 170*x^2*y^3 + 161*x^2*y^4 + 137*x^2*y^5 + 84*x^2*y^6
+  bi = p.multiplyY(uni);
+  r &= bi == BiPoly(2, 6, {2,7,17,34,41,41,28, 10,27,57,102,101,89,56, 18,47,97,170,161,137,84 });
 
   return r;
 }
