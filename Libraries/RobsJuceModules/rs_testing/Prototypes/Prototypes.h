@@ -1903,12 +1903,12 @@ of powers of x and y like:
                            |a20 a21 a22 a23|   |y^2|
                                                |y^3|
 
-         = a00*x^0*y^0 + a01*x^0*y^1 + a02*x^0*y^2 + ... + a22*x^2*y^2 + a23*x^2*y^3
+         =   a00*x^0*y^0 + a01*x^0*y^1 + a02*x^0*y^2 + a03*x^0*y^3
+           + a10*x^1*y^0 + a11*x^1*y^1 + a12*x^1*y^2 + a13*x^1*y^3
+           + a20*x^2*y^0 + a21*x^2*y^1 + a22*x^2*y^2 + a23*x^2*y^3
 
 for a polynomial that has degree 2 in x and degree 3 in y, so M=3, N=4 - the dimension of the 
-matrix is (degX+1)x(degY+1) where degX, degY are the degrees with respect to x and y.
-
-*/
+matrix is (degX+1)x(degY+1) where degX, degY are the degrees with respect to x and y. */
 
 template<class T>
 class rsBivariatePolynomial
@@ -1935,6 +1935,14 @@ public:
 
   /** Evaluates the polynomial for a given y. The result is a univariate polynomial in x. */
   rsPolynomial<T> evaluateY(T y) const;
+
+  // maybe make an evaluateY function, that takes a univariate polynomial y = y(x) as input, this
+  // requires to compute successive powers of y(x) and accumulate them into the output coeff array,
+  // similar like in the algorithm for polynomial composition...but in addition to the powers of 
+  // y(x) scaled by a01, a02, a03 we also need to add 1-shifted versions sclaed by a11,a12,a13 and
+  // a 2-shifted version scaled by a21,a22,a23 to account for the powers of y multiplied by powers 
+  // of x
+  rsPolynomial<T> evaluateY(const rsPolynomial<T>& y) const;
 
   /** Evaluates the polynomial for a given x. The result is a univariate polynomial in y whose 
   coefficients are stored in py. */
@@ -2009,7 +2017,7 @@ public:
   // maybe versions where the integration limits can be polynomials of the respective other 
   // variable:
   // rsPolynomial<T> integralX(const rsPolynomial<T>& a, const rsPolynomial<T>& b) const;
-  // here, a,b are polynomials in y - i
+  // here, a,b are polynomials in y
 
 
   // todo: make a function integralXY(T a, T b, T c, T d) that computes the value of the 
@@ -2101,6 +2109,41 @@ rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(T y) const
   rsPolynomial<T> px(getDegreeX());
   evaluateY(y, px.getCoeffPointer());
   return px;
+}
+
+template<class T>
+rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(const rsPolynomial<T>& y) const
+{
+  //rsError("Under construction. Not yet ready for use.");
+  int M = getDegreeX();
+  int N = getDegreeY();
+  int K = y.getDegree();
+  int L = K*N + M;                 // degree of result
+  rsPolynomial<T> r(L);            // result
+  std::vector<T> yn(K*N+1);        // workspace, holds coeff-array of powers of y(x)
+  rsFill(yn, T(0)); yn[0] = T(1);  // ..initially, it's the constant 1, i.e. y^0
+  int Kn = 1;                      // current effective length of yn, increases by K each iteration
+
+
+  for(int m = 0; m <= M; m++)
+    r[m] = coeffs(m, 0);           // copy coeffs from the left column
+
+  for(int n = 1; n <= N; n++)
+  {
+    // multiply y^n by y again to get the next power:
+    rsArrayTools::convolveInPlace(&yn[0], Kn, y.getCoeffPointerConst(), K+1);
+    Kn += K;
+
+    // accumulate:
+    for(int i = 0; i < Kn; i++)
+      for(int m = 0; m <= M; m++)
+        r[i+m] += coeffs(m, n) * yn[i];
+
+
+    int dummy = 0;
+  }
+
+  return r;
 }
 
 template<class T>

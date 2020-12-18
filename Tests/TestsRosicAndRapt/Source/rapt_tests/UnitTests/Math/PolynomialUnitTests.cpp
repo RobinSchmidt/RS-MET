@@ -1509,6 +1509,10 @@ bool testBivariatePolynomial()
   bi = p.multiplyY(uni);
   r &= bi == BiPoly(2, 6, {2,7,17,34,41,41,28, 10,27,57,102,101,89,56, 18,47,97,170,161,137,84 });
 
+  // Test evaluation with a polynomial as argument:
+  uni2 = p.evaluateY(uni);
+
+
   return r;
 }
 

@@ -3547,7 +3547,7 @@ void convolvePolynomials()
   // is too low and 2nd: the order of the arguments p,q should not matter..or should it because
   // the integral runs only over a finite domain?
   // when integrating with respect o x, we at least get the same degree, no matter what the order
-  // of p,q 
+  // of p,q, so maybe i have some misconception about the roles of x and y?
 
 
   int dummy = 0;
