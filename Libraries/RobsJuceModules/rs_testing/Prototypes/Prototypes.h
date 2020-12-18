@@ -2000,11 +2000,16 @@ public:
 
   /** Computes the definite integral of the polynomial with respect to x with the integration 
   limits a,b. The result is a univariate polynomial in y. */
-  rsPolynomial<T> integralX(T a, T b)  const;
+  rsPolynomial<T> integralX(T a, T b) const;
 
   /** Computes the definite integral of the polynomial with respect to y with the integration 
   limits a,b. The result is a univariate polynomial in x. */
-  rsPolynomial<T> integralY(T a, T b)  const;
+  rsPolynomial<T> integralY(T a, T b) const;
+
+  // maybe versions where the integration limits can be polynomials of the respective other 
+  // variable:
+  // rsPolynomial<T> integralX(const rsPolynomial<T>& a, const rsPolynomial<T>& b) const;
+  // here, a,b are polynomials in y - i
 
 
   // todo: make a function integralXY(T a, T b, T c, T d) that computes the value of the 

@@ -251,8 +251,16 @@ public:
 
   /** Evaluates the polynomial at the given input x. */
   T operator()(T x) const { return evaluate(x, &coeffs[0], getDegree()); }
-  // todo: have an overloaded operator() that takes a polynomial as input and returns another 
-  // polynomial -> implement nesting/composition
+
+  /** Overloaded evaluation operator () that takes a polynomial as input and returns another 
+  polynomial. This implements nesting/composition. The given x is the inner polynomial and "this" 
+  is the outer polynomial */
+  rsPolynomial<T> operator()(const rsPolynomial<T>& p) const
+  {
+    rsPolynomial<T> r(getDegree() * p.getDegree());
+    compose(&p.coeffs[0], p.getDegree(), &coeffs[0], getDegree(), &r.coeffs[0]);
+    return r;
+  }
 
   /** Read and write access to i-th coefficient (breaks encapsulation - use with care). */
   T& operator[](int i) { return coeffs[i]; }

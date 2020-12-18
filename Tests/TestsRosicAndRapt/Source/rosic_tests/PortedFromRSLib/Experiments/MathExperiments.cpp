@@ -3501,6 +3501,12 @@ void convolvePolynomials()
   // by a matrix of coefficients? this class should support operations like this integrating out of
   // one variable, producing a univariate polynomial, multiplication with univariate polynomials,
 
+  // i also think, the convolution of two polynomial segments leads to 3 different sections in the 
+  // result. in the first q starts to overlap with p so one of the integration limits should be a 
+  // (linear?) function of x, in the middle sections, there's full overlap and both limits are 
+  // constant and in the 3rd section, the overlap starts to shrink, so the other limit must be a 
+  // function of x
+
   /*
   static const int pN = 3;     // degree of p
   static const int qN = 4;     // degree of q

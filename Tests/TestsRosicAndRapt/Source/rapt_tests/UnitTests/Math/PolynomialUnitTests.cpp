@@ -459,22 +459,34 @@ bool testPolynomialComposition(std::string &reportString)
   std::string testName = "PolynomialComposition";
   bool testResult = true;
 
+  using Poly = rsPolynomial<double>;
+
   static const int na = 5;
   static const int nb = 4;
   static const int nc = na*nb;
   double a[na+1] = {2, -1, 5,  7, -3, 2}; // 2*x^5 - 3*x^4 + 7*x^3 + 5*x^2 - 1*x^1 + 2*x^0
   double b[nb+1] = {3,  1, 4, -5,  3};    //         3*x^4 - 5*x^3 + 4*x^2 + 1*x^1 - 3*x^0
   double c[nc+1];
-  rsPolynomial<double>::compose(a, na, b, nb, c);
+  Poly::compose(a, na, b, nb, c);
 
   // check, if the composed c-polynomial returns the same result as applying the 2nd b-polynomial
   // to the result of the 1st a-polynomial:
   double x = -3.0; // input value
   double y1, y2;
-  y1 = rsPolynomial<double>::evaluate(x,  a, na);
-  y1 = rsPolynomial<double>::evaluate(y1, b, nb);
-  y2 = rsPolynomial<double>::evaluate(x,  c, nc);
+  y1 = Poly::evaluate(x,  a, na);
+  y1 = Poly::evaluate(y1, b, nb);
+  y2 = Poly::evaluate(x,  c, nc);
   testResult &= (y1 == y2);
+
+  Poly p({2, -1, 5,  7, -3, 2});
+  Poly q({3,  1, 4, -5,  3});
+  Poly pq = p(q);
+  // Sage:
+  // p(x) = 2 - 1*x + 5*x^2 + 7*x^3 - 3*x^4 + 2*x^5
+  // q(x) = 3 + 1*x + 4*x^2 - 5*x^3 + 3*x^4
+  // p(q).expand()
+  testResult &= pq == Poly({476,704,3262,199,6627,-9747,16849,-26397,46908,-61886,82425,-106821,
+                            124440,-126114,120574,-106210,78177,-43290,16740,-4050,486});
 
   return testResult;
 }
