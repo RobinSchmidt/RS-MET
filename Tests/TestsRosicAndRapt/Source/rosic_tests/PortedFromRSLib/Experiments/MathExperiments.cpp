@@ -3579,9 +3579,29 @@ void convolvePolynomials()
   // OK - it seems the formula for rL was wrong in all the other tests above and worked only 
   // because pL happened to be zero, the correct formula seems to be given by the last line here
 
+  // Now, let's use qL = 1:
+  qL = 1;
+  // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 + 32*x^3 - 17*x^2 + 85*x on (0, 1]
+  // -77*x^3 + 426*x^2 - 12343/15*x + 11343/20 on (1, 4]
+  // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 109*x^3 - 141*x^2 + 7862/3*x - 18605/4 on (4, 5]
+  rL = PQ.integralY(pL,                    Poly({-qL, 1})); // left segment   -> correct!
+  rM = PQ.integralY(Poly({0-(qU-qL), 1}),  Poly({0,   1})); // middle segment -> wrong!
+  rR = PQ.integralY(Poly({0-(qU-qL), 1}),  pU);             // right segment  -> wrong!
+  rM = PQ.integralY(Poly({0-(qU-qL), 1}),  Poly({-qL, 1})); // middle segment -> wrong! (zero)
+  rM = PQ.integralY(Poly({-qU, 1}),  Poly({-qL, 1}));       // middle segment -> correct!
+  rR = PQ.integralY(Poly({-qU, 1}),  pU);                   // right segment  -> correct!
 
-  // Currently, the domain on which q is nonzero is smaller than the one on which p is nonzero. 
-  // What if it's the other way around?
+  // soo, in conclusion, it seems to be:
+  rL = PQ.integralY(pL,             Poly({-qL, 1}));
+  rM = PQ.integralY(Poly({-qU, 1}), Poly({-qL, 1}));
+  rR = PQ.integralY(Poly({-qU, 1}), pU);
+  // ToDo:
+  // -figure out the support ranges of the segments
+  // -why do we get 9th degree results with topmost coeffs zero? has this to do with the roles
+  //  of p and q?
+  // -clean up the mess above, if the final result as stated works for more cases
+  // -Currently, the domain on which q is nonzero is smaller than the one on which p is nonzero.  
+  //  What if it's the other way around? Try it!
 
   int dummy = 0;
 
