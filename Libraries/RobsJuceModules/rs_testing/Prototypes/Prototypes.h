@@ -2409,34 +2409,35 @@ void rsPiecewisePolynomial<T>::convolvePieces(
   rsPolynomial<T>& rL, T& rLL, T& rLU, rsPolynomial<T>& rM, rsPolynomial<T>& rR, T& rRL, T& rRU)
 {
   // ToDo: check, which one of p,q has higher degree and maybe invoke recursively with swapped 
-  // arguments if they are in disadvantageous order
+  // arguments if they are in disadvantageous order - but then we cant test, if it works in both
+  // orders (it should, but one may be more efficient and/or precise that the other)
 
-  T wp = pU - pL;  // width of domain of p
-  T wq = qU - qL;  // width of domain of q
+  // Compute the domains for the 3 output segments:
+  T wp = pU - pL;   // width of domain of p
+  T wq = qU - qL;   // width of domain of q
+  rLL  = pL + qL;
+  rLU  = pL + qU;   // == rLL + wq
+  rRL  = pU + qL;
+  rRU  = pU + qU;   // == rRL + wq
+  if(wq > wp)
+    rsSwap(rLU, rRL);
 
   // Create the bivariate polynomial PQ(x,y) = p(y)*q(x-y) which is our integrand in the 
   // convolution integral:
-  using Poly   = rsPolynomial<T>;
   using BiPoly = rsBivariatePolynomial<T>;
   BiPoly Q  = BiPoly::composeWithLinear(q, T(1), T(-1)); //  Q(x,y) = q(x-y)
   BiPoly PQ = Q.multiplyY(p);                            // PQ(x,y) = p(y)*q(x-y)
 
   // Integrate out the dummy variable y (typically tau in literature about convolution, and our x 
-  // is their t), leaving a polynomial only in x (or t). We get 3 segments:
+  // is their t), leaving a polynomial only in x (aka t). We get 3 segments:
+  using Poly = rsPolynomial<T>;
   Poly a({-qU, 1});                           // lower integration limit (in some cases)
   Poly b({-qL, 1});                           // upper integration limit (in some cases)
   rL                  = PQ.integralY(pL, b);  // left segment
-  if(     wp > wq) rM = PQ.integralY(a,  b);  // middle segment when p longer than q
-  else if(wq > wp) rM = PQ.integralY(pL, pU); // middle segment when q longer than p
-  else             rM = Poly(0);              // p, q have same length -> no middle segment
+  if(     wp > wq) rM = PQ.integralY(a,  b);  // middle segment when wp longer than wq
+  else if(wq > wp) rM = PQ.integralY(pL, pU); // middle segment when wq longer than wp
+  else             rM = Poly(0);              // p,q have same length -> no middle segment
   rR                  = PQ.integralY(a,  pU); // right segment
-
-  // Compute the domains for the 3 segments:
-  rLL = pL  + qL;
-  rLU = rLL + wq;
-  rRL = pU  + qL;
-  rRU = rRL + wq;
-  // todo: check, if these formulas also work when q is longer than p
 
 
   // Notes:
@@ -2447,10 +2448,10 @@ void rsPiecewisePolynomial<T>::convolvePieces(
   //  ...we'll see
   // ToDo:
   // -clean up
-  // -move to prototypes and write a unit test
-  // -implement a class rsPiecewisePolynomial that consists of many such polynomial pieces and also
-  //  supports convolution
-  // -make a function that uses a workspace
+  // -make a function that uses a workspace - if we later need to convolve many pieces in a 
+  //  piecewise polynomial, we'll call this in a double-loop: each piece from one input is 
+  //  convolved with each piece from the other (and then all the results get added up), so we want
+  //  the operation to be efficient
 }
 
 

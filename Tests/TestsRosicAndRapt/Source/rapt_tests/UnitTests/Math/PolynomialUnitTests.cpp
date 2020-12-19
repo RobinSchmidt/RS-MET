@@ -1584,7 +1584,7 @@ bool testPiecewisePolynomial()
   // -441*x^3 + 5012*x^2 - 288133/15*x + 498143/20 on (3, 5] 
   // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 767*x^3 + 14449/2*x^2 - 124586/5*x + 150942/5 on (5, 6]
 
-  // Define target pieces and domain boundaries:
+  // Define target pieces:
   double tol = 1.e-11; // we need a rather high tolerance because the absolute values are quite 
                        // large -> maybe use a relative tolerance
   Poly tL({-28594./5, 92231./15, -2271, 326, -101./12, 12./5, -7./10});
@@ -1601,8 +1601,17 @@ bool testPiecewisePolynomial()
   r &= rLL == 2; r &= rLU == 3;
   r &= rRL == 5; r &= rRU == 6;
 
+  // Test role reversal of p and q:
+  PiecePoly::convolvePieces(q, qL, qU, p, pL, pU, rL, rLL, rLU, rM, rR, rRL, rRU);
+  r &= rsIsCloseTo(rL, tL, tol);
+  r &= rsIsCloseTo(rM, tM, tol);
+  r &= rsIsCloseTo(rR, tR, tol);
+  r &= rLL == 2; r &= rLU == 3;
+  r &= rRL == 5; r &= rRU == 6;
+
   // ToDo: 
-  // -test role reversal of p and q
+  // -make tests with all possible combinations of p having higher and lower degree than q and
+  //  longer, shorter, equal domain
   // -figure out, why the nominal degrees of the results are higher than the actual ones (higher
   //  order coeffs are zero)
 
