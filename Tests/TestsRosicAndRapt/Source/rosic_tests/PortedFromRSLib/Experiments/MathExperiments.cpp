@@ -3394,74 +3394,8 @@ void vertexMeshHessian()
 // End of mesh derivatives
 //=================================================================================================
 
-
-
-
-// Coeffs of the definite integral of the polynomial p that has its input affinely transformed
-// \int p(a*x + b)
-/*
-template<class T>
-rsPolynomial<T> integrateAffine(const rsPolynomial<T>& P, T a, T b)
-{
-  using Poly = RAPT::rsPolynomial<T>;
-  int N = P.getDegree();
-  Poly Q(N+1);
-  const T* p = P.getCoeffPointerConst();
-  T* q = Q.getCoeffPointer();
-  T r[2] = { b, a };
-  Poly::compose(r, 1, p, N, q);     // q(x) = p(a*x + b)
-  Poly::integral(q, q, N);
-  return Q;
-}
-void integrateAffineTest()
-{
-  using Poly = RAPT::rsPolynomial<double>;
-  Poly p({2,-3,5,-7});
-  double a = 2, b = 3;
-  Poly P = integrateAffine(p, a, b);
-
-  // todo: verify the result
-
-  return;
-}
-*/
-
-template<class T>
-void convolvePolynomials1(T* p, int pDeg, T* q, int qDeg, T* pq)
-{
-  int pqDeg = pDeg + qDeg;
-  RAPT::rsArrayTools::fillWithZeros(pq, pqDeg+1);
-
-  return;
-}
-
-template<class T>
-rsPolynomial<T> convolvePolynomials(const rsPolynomial<T>& p, const rsPolynomial<T>& q, T a, T b)
-{
-  // Computes r(x) = conv(p(x), q(x)) = \int_a^b  p(y) q(x-y) dy
-
-  using Poly   = rsPolynomial<T>;
-  using BiPoly = rsBivariatePolynomial<T>;
-
-  BiPoly Q  = BiPoly::composeWithLinear(q, T(1), T(-1)); //  Q(x,y) = q(x-y)
-  BiPoly PQ = Q.multiplyY(p);                            // PQ(x,y) = p(y)*q(x-y)
-  Poly   r  = PQ.integralY(a, b);                        // r(x) = \int_a^b p(y)*q(x-y) dy
-
-  r = PQ.integralX(a, b); // test - seems to give the correct degree - but why should we integrate
-  // with respect to x? that doesn't seem to make sense. nevertheless, the results are more 
-  // plausible....hmmmm
-
-  return r;
-}
-// maybe rename to convolveFinite
-// this does not yet seem to work
-
 void convolvePolynomials()
 {
-  //integrateAffineTest();
-
-  // Under Construction...this is still all very shaky
-
   // We want to find an algorithm to convolve two polynomial pieces that may occur in a function
   // that is defined as piecewise polynomial. The eventual goal is to be able to analytically 
   // convolve two functions that are defined as piecewise polynomials. The result should again be
@@ -3507,130 +3441,49 @@ void convolvePolynomials()
   // limit is still pL+x and the upper limit must be pU
 
   using BiPoly = rsBivariatePolynomial<double>;
-  BiPoly Q  = BiPoly::composeWithLinear(q, 1.0, -1.0);  //  Q(x,y) = q(x-y)
-  BiPoly PQ = Q.multiplyY(p);                           // PQ(x,y) = p(y)*q(x-y), our integrand
+  BiPoly Q  = BiPoly::composeWithLinear(q, 1.0, -1.0);     //  Q(x,y) = q(x-y)
+  BiPoly PQ = Q.multiplyY(p);                              // PQ(x,y) = p(y)*q(x-y), our integrand
+  Poly pqL = PQ.integralY(pL,             Poly({-qL, 1})); // left segment
+  Poly pqM = PQ.integralY(Poly({-qU, 1}), Poly({-qL, 1})); // middle segment
+  Poly pqR = PQ.integralY(Poly({-qU, 1}), pU);             // right segment
 
-  //Poly ({pL, 1});  // moving integration limit
-  Poly rL = PQ.integralY(pL, Poly({pL, 1}));  // left segment of result
-  // hmm..some coeffs (4,5,6) are actually correct but others are wrong
+  // Try it with reversed roles of p and q - the result should be the same because convolution is
+  // commutative:
+  BiPoly P  = BiPoly::composeWithLinear(p, 1.0, -1.0);     //  P(x,y) = p(x-y)
+  BiPoly QP = P.multiplyY(q);                              // QP(x,y) = q(y)*p(x-y), our integrand
+  Poly qpL = QP.integralY(qL,             Poly({-pL, 1}));
+  Poly qpM = QP.integralY(Poly({-pU, 1}), Poly({-pL, 1}));
+  Poly qpR = QP.integralY(Poly({-pU, 1}), qU); 
+  Poly dL = pqL - qpL;
+  Poly dM = pqM - qpM;
+  Poly dR = pqR - qpR;
+  // qpL, qpR match pqL, pqR but qpM does not match pqM. It's probably because the middle section
+  // does not really exist in the case when the kernel is longer than the signal?
 
-  rL = PQ.integralY(pL+0.1, Poly({pL,     1}));   // changes only 0,1,2
-  rL = PQ.integralY(pL+0.1, Poly({pL+0.1, 1}));   // also changes 3
-  rL = PQ.integralY(pL+0.1, Poly({pL+0.1, 1.1})); // changes high order coeffs
-  rL = PQ.integralY(pL, Poly({0, 1}));
-  rL = PQ.integralY(pL, Poly({-qL, 1}));    // this looks right!
-
-  // it seems, the pL limit is wrong but coeff 1 is correct and determines the higher order coeffs
-  double a;
-  //a = pL+qL; a = pL-qL;a = pL+qU; a = pL-qU;
-  a = 1;
-  rL = PQ.integralY(a, Poly({a,1}));
-  // no matter what we choose as a, the 0th coeff is always zero
-
-  Poly rM = PQ.integralY(Poly({pL-(qU-qL), 1}), Poly({pL, 1})); // middle segment
-  // nope - wrong - but coeffs 4,5 are close to zero - probably not a coincidence
-
-  Poly rR = PQ.integralY(Poly({pL-(qU-qL), 1}), pU);  // right segment
-  // again, the high order coeffs are right but the lower order ones are wrong
-
-  // OK - let's make it simpler and let both polynomials be defined on 0..1, this gives two pieces:
-  // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 + 11*x^3 - 17/2*x^2 + 6*x            on (0, 1]
-  //  7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 32*x^3 + 61*x^2 - 851/15*x + 114/5 on (1, 2]
-  pL = qL = 0;
-  pU = qU = 1;
-  rL = PQ.integralY(pL,                    Poly({pL, 1})); // left segment   -> correct!
-  rM = PQ.integralY(Poly({pL-(qU-qL), 1}), Poly({pL, 1})); // middle segment -> irrelevant
-  rR = PQ.integralY(Poly({pL-(qU-qL), 1}), pU);            // right segment  -> correct!
-
-  // OK - let's make it a bit more complicated by using pU = 2:
-  // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 + 11*x^3 - 17/2*x^2 + 6*x on (0, 1], 
-  // -21*x^3 + 50*x^2 - 763/15*x + 473/20 on (1, 2], 
-  // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 32*x^3 - 83/2*x^2 + 1777/5*x - 8751/20 on (2, 3]
-  pU = 2;
-  rL = PQ.integralY(pL,                    Poly({pL, 1})); // left segment   -> correct!
-  rM = PQ.integralY(Poly({pL-(qU-qL), 1}), Poly({pL, 1})); // middle segment -> correct!
-  rR = PQ.integralY(Poly({pL-(qU-qL), 1}), pU);            // right segment  -> correct!
-
-  // let's use pU = 3, qU = 2:
-  // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 + 11*x^3 - 17/2*x^2 + 6*x on (0, 2], 
-  // -98*x^3 + 476*x^2 - 13106/15*x + 2954/5 on (2, 3], 
-  // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 109*x^3 - 141*x^2 + 7862/3*x - 18605/4 on (3, 5]
-  pU = 3;
-  qU = 2;
-  rL = PQ.integralY(pL,                    Poly({pL, 1})); // left segment   -> correct
-  rM = PQ.integralY(Poly({pL-(qU-qL), 1}), Poly({pL, 1})); // middle segment -> correct
-  rR = PQ.integralY(Poly({pL-(qU-qL), 1}), pU);            // right segment  -> correct
-
-  // Now let's also use pL = -1:
-  // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 + 11*x^3 + 33*x^2 + 512/15*x + 473/20 on (-1, 1]
-  // -98*x^3 + 476*x^2 - 13106/15*x + 2954/5 on (1, 3]
-  // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 109*x^3 - 141*x^2 + 7862/3*x - 18605/4 on (3, 5]
-  pL = -1;
-  rL = PQ.integralY(pL,                    Poly({pL,  1})); // left segment   -> wrong!
-  rM = PQ.integralY(Poly({pL-(qU-qL), 1}), Poly({pL,  1})); // middle segment -> wrong!
-  rR = PQ.integralY(Poly({pL-(qU-qL), 1}), pU);             // right segment  -> wrong!
-  rL = PQ.integralY(0,                     Poly({0,   1})); // left segment   -> wrong!
-  rM = PQ.integralY(Poly({0-(qU-qL), 1}),  Poly({0,   1})); // middle segment -> correct!
-  rR = PQ.integralY(Poly({0-(qU-qL), 1}),  pU);             // right segment  -> correct!
-  rL = PQ.integralY(0,                     Poly({pL,  1})); // left segment   -> wrong!
-  rL = PQ.integralY(0,                     Poly({0,   1})); // left segment   -> wrong!
-  rL = PQ.integralY(pL,                    Poly({0,   1})); // left segment   -> correct!
-  rL = PQ.integralY(pL,                    Poly({-qL, 1})); // left segment   -> correct!
-  // OK - it seems the formula for rL was wrong in all the other tests above and worked only 
-  // because pL happened to be zero, the correct formula seems to be given by the last line here
-
-  // Now, let's use qL = 1:
-  qL = 1;
-  // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 + 32*x^3 - 17*x^2 + 85*x on (0, 1]
-  // -77*x^3 + 426*x^2 - 12343/15*x + 11343/20 on (1, 4]
-  // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 109*x^3 - 141*x^2 + 7862/3*x - 18605/4 on (4, 5]
-  rL = PQ.integralY(pL,                    Poly({-qL, 1})); // left segment   -> correct!
-  rM = PQ.integralY(Poly({0-(qU-qL), 1}),  Poly({0,   1})); // middle segment -> wrong!
-  rR = PQ.integralY(Poly({0-(qU-qL), 1}),  pU);             // right segment  -> wrong!
-  rM = PQ.integralY(Poly({0-(qU-qL), 1}),  Poly({-qL, 1})); // middle segment -> wrong! (zero)
-  rM = PQ.integralY(Poly({-qU, 1}),  Poly({-qL, 1}));       // middle segment -> correct!
-  rR = PQ.integralY(Poly({-qU, 1}),  pU);                   // right segment  -> correct!
-
-  // soo, in conclusion, it seems to be:
-  rL = PQ.integralY(pL,             Poly({-qL, 1}));
-  rM = PQ.integralY(Poly({-qU, 1}), Poly({-qL, 1}));
-  rR = PQ.integralY(Poly({-qU, 1}), pU);
-  // ToDo:
-  // -figure out the support ranges of the segments
-  // -why do we get 9th degree results with topmost coeffs zero? has this to do with the roles
-  //  of p and q?
-  // -clean up the mess above, if the final result as stated works for more cases
-  // -Currently, the domain on which q is nonzero is smaller than the one on which p is nonzero.  
-  //  What if it's the other way around? Try it!
+  //qpM = QP.integralY(Poly({pU, 1}), Poly({-pL, 1})); // test - nope!
 
   int dummy = 0;
 
+  // Notes:
+  // -The expressions for the integration limits were found by trial and error and need more tests,
+  //  especially, when q has longer support than p. Perhaps, we should switch the roles of p and q
+  //  in such a case, but maybe it's more advisable to select the roles of p and q by their 
+  //  degrees. We should probably create the bivariate polynomial from whichever has lower degree.
+  //  ...we'll see
 
-  // old stuff:
-
-  /*
-  double a = 2, b = 4;     // integration interval
-  Poly pqab = convolvePolynomials(p, q, a, b);  // has degree 2 ...too low!?
-  Poly pqba = convolvePolynomials(p, q, b, a);
-  Poly qpab = convolvePolynomials(q, p, a, b);  // has degree 3
-  Poly qpba = convolvePolynomials(q, p, b, a);
-  */
-  // sage:
-  // var("x y")
-  // p(x) = 2 - 3*x + 5*x^2 - 7*x^3
-  // q(x) = 3 - 4*x + 6*x^2
-  // Q(x,y) = q(x-y)
-  // PQ = p(y)*Q(x,y)
-  // r = integral(PQ, y, 2,4)
-  // r               # -2044*x^2 + 224344/15*x - 143406/5
-  // #PQ.expand()
-  // # Q.expand()  #  6*x^2 - 12*x*y + 6*y^2 - 4*x + 4*y + 3
-
-  // OK, the sage output seems to match - but the result must obviously be wrong. 1st: the degree
-  // is too low and 2nd: the order of the arguments p,q should not matter..or should it because
-  // the integral runs only over a finite domain?
-  // when integrating with respect o x, we at least get the same degree, no matter what the order
-  // of p,q, so maybe i have some misconception about the roles of x and y?
+  // ToDo:
+  // -figure out the support ranges of the segments and implement a high-level function that 
+  //  computes all 3 segments and their ranges
+  //  -total width is wr = wp + wq where wr,wp,wq are the widths of r,p,q
+  //  -start of r is is pL + qL
+  //  -width of left and segment wL, wR is wq, if wq < wp
+  //  -width of middle segment is wp-wq, if wq < wp
+  // -so, rL goes from pL+qL to pL+qL + wL
+  // -why do we get 9th degree results with topmost coeffs zero? has this to do with the roles
+  //  of p and q?
+  // -Currently, the domain on which q is nonzero is smaller than the one on which p is nonzero.  
+  //  What if it's the other way around? Try it!
+  // -make a function that uses a workspace
 }
 
 void shiftPolynomial()
