@@ -1613,7 +1613,12 @@ bool testPiecewisePolynomial()
   // -make tests with all possible combinations of p having higher and lower degree than q and
   //  longer, shorter, equal domain
   // -figure out, why the nominal degrees of the results are higher than the actual ones (higher
-  //  order coeffs are zero)
+  //  order coeffs are zero) - i suppose, it's because the integral with respect to y could 
+  //  potentially produce a higher degree output, but because the lower right coeffs in matrix
+  //  of the bivariate polynomial are zero, the final result coeffs come out as zero too
+  //  ...maybe the function should cut off trailing zeros
+  // -figure out the nominal and actual degrees of the output segments as function of the degrees
+  //  (and maybe lengths of domains?) of the input segments
 
   return r;
 }

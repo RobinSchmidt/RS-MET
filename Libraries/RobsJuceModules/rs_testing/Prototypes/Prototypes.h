@@ -2408,9 +2408,15 @@ void rsPiecewisePolynomial<T>::convolvePieces(
   const rsPolynomial<T>& p, T pL, T pU, const rsPolynomial<T>& q, T qL, T qU,
   rsPolynomial<T>& rL, T& rLL, T& rLU, rsPolynomial<T>& rM, rsPolynomial<T>& rR, T& rRL, T& rRU)
 {
-  // ToDo: check, which one of p,q has higher degree and maybe invoke recursively with swapped 
-  // arguments if they are in disadvantageous order - but then we cant test, if it works in both
-  // orders (it should, but one may be more efficient and/or precise that the other)
+  // Check, which one of p,q has higher degree and invoke the function recursively with swapped 
+  // inputs if they are in disadvantageous order. We don't want q to be the higher degree 
+  // polynomial because it's q that gets blown up to a bivariate polynomial. Mathematically, the 
+  // results should be the same, but using the lower degree polynomial as q should be more 
+  // efficient and maybe also more precise. The unit tests should also pass when we comment this 
+  // optimization out:
+  if(q.getDegree() > p.getDegree()) {
+    convolvePieces(q, qL, qU, p, pL, pU, rL, rLL, rLU, rM, rR, rRL, rRU);
+    return; }
 
   // Compute the domains for the 3 output segments:
   T wp = pU - pL;   // width of domain of p
@@ -2439,6 +2445,16 @@ void rsPiecewisePolynomial<T>::convolvePieces(
   else             rM = Poly(0);              // p,q have same length -> no middle segment
   rR                  = PQ.integralY(a,  pU); // right segment
 
+  // Cut off trailing zero coefficients in the produced segments:
+  rL.truncateTrailingZeros();
+  rM.truncateTrailingZeros();
+  rR.truncateTrailingZeros();
+  // I think, they arise because the matrix of coefficients of the bivariate polynomial Q is 
+  // triangular. The integral could potentially produce higher order nonzero coeffs but doesn't
+  // due to the special structure of Q.
+  // The middle section may still have close-to-zero trailing coeffs (i think, it happens only 
+  // when wp > wq but this needs more tests)
+
 
   // Notes:
   // -The expressions for the integration limits were found by trial and error and need more tests,
@@ -2447,7 +2463,6 @@ void rsPiecewisePolynomial<T>::convolvePieces(
   //  degrees. We should probably create the bivariate polynomial from whichever has lower degree.
   //  ...we'll see
   // ToDo:
-  // -clean up
   // -make a function that uses a workspace - if we later need to convolve many pieces in a 
   //  piecewise polynomial, we'll call this in a double-loop: each piece from one input is 
   //  convolved with each piece from the other (and then all the results get added up), so we want
