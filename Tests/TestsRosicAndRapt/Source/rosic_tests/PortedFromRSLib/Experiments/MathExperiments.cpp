@@ -3511,15 +3511,45 @@ void convolvePolynomials()
   BiPoly PQ = Q.multiplyY(p);                           // PQ(x,y) = p(y)*q(x-y), our integrand
 
   //Poly ({pL, 1});  // moving integration limit
-  Poly rL = PQ.integralY(pL, Poly({pL, 1}));  // left segments of result
-  // hmm..some coeffs (3,4,5,6) are actually correct but others are wrong
+  Poly rL = PQ.integralY(pL, Poly({pL, 1}));  // left segment of result
+  // hmm..some coeffs (4,5,6) are actually correct but others are wrong
 
-  Poly rM = PQ.integralY(Poly({pL-(qU-qL), 1}), Poly({pL, 1}));
+  rL = PQ.integralY(pL+0.1, Poly({pL,     1}));   // changes only 0,1,2
+  rL = PQ.integralY(pL+0.1, Poly({pL+0.1, 1}));   // also changes 3
+  rL = PQ.integralY(pL+0.1, Poly({pL+0.1, 1.1})); // changes high order coeffs
+
+  // it seems, the pL limit is wrong but coeff 1 is correct and determines the higher order coeffs
+  double a;
+  //a = pL+qL; a = pL-qL;a = pL+qU; a = pL-qU;
+  a = 1;
+  rL = PQ.integralY(a, Poly({a,1}));
+  // no matter what we choose as a, the 0th coeff is always zero
+
+  Poly rM = PQ.integralY(Poly({pL-(qU-qL), 1}), Poly({pL, 1})); // middle segment
   // nope - wrong - but coeffs 4,5 are close to zero - probably not a coincidence
 
-  //double qL = qU 
+  Poly rR = PQ.integralY(Poly({pL-(qU-qL), 1}), pU);  // right segment
+  // again, the high order coeffs are right but the lower order ones are wrong
 
-  //rL = PQ.integralY(Poly({ pL }), Poly({ pL, 1 }));  // gives same result, as it should be
+  // OK - let's make it simpler and let both polynomials be defined on 0..1, this gives two pieces:
+  // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 + 11*x^3 - 17/2*x^2 + 6*x            on (0, 1]
+  //  7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 32*x^3 + 61*x^2 - 851/15*x + 114/5 on (1, 2]
+  pL = qL = 0;
+  pU = qU = 1;
+  rL = PQ.integralY(pL,                    Poly({pL, 1})); // left segment   -> correct!
+  rM = PQ.integralY(Poly({pL-(qU-qL), 1}), Poly({pL, 1})); // middle segment -> irrelevant
+  rR = PQ.integralY(Poly({pL-(qU-qL), 1}), pU);            // right segment  -> correct!
+
+  // OK - let's make it a bit more complicated by using pU = 2:
+  // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 + 11*x^3 - 17/2*x^2 + 6*x on (0, 1], 
+  // -21*x^3 + 50*x^2 - 763/15*x + 473/20 on (1, 2], 
+  // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 32*x^3 - 83/2*x^2 + 1777/5*x - 8751/20 on (2, 3]; x)
+  pU = 2;
+  rL = PQ.integralY(pL,                    Poly({pL, 1})); // left segment   -> correct!
+  rM = PQ.integralY(Poly({pL-(qU-qL), 1}), Poly({pL, 1})); // middle segment -> correct!
+  rR = PQ.integralY(Poly({pL-(qU-qL), 1}), pU);            // right segment  -> correct!
+
+
 
   int dummy = 0;
 
