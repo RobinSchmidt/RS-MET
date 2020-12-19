@@ -3394,6 +3394,73 @@ void vertexMeshHessian()
 // End of mesh derivatives
 //=================================================================================================
 
+/** Convolves two polynomial pieces p(x) and q(x) that are defined on the domains pL..pU and 
+qL..qU respectively and assumed to be zero outsied these domains (U and L stand for lower and upper
+boundaries of the domains). The result are 3 polynomial pieces rL,rM,rR that are adjacent to each 
+other (L,M,R stand for left, middle, right). These output pieces are defined on the domains
+rLL..rLU, rLU..rRL, rRL..rRR respectively. The left/right boundaries of the middle segment are 
+redundant right/left boundaries of the adjacent left and right pieces, so they are redundant (get 
+rid of the parameters!).   */
+template<class T>
+void convolvePieces(
+  const rsPolynomial<T>& p, T pL, T pU,
+  const rsPolynomial<T>& q, T qL, T qU,
+  rsPolynomial<T>& rL, T& rLL, T& rLU,
+  rsPolynomial<T>& rM, T& rML, T& rMU,
+  rsPolynomial<T>& rR, T& rRL, T& rRU)
+{
+  // todo: check, which one of p,q has higher degree and maybe invoke recursively with swapped 
+  // arguments if they are in disadvantageous order
+
+  T wp = pU - pL;  // width of support of p
+  T wq = qU - qL;  // width of support of q
+
+  // Create the bivariate polynomial PQ(x,y) = p(y)*q(x-y) which is our integrand in the 
+  // convolution integral:
+  using Poly   = rsPolynomial<T>;
+  using BiPoly = rsBivariatePolynomial<T>;
+  BiPoly Q  = BiPoly::composeWithLinear(q, T(1), T(-1)); //  Q(x,y) = q(x-y)
+  BiPoly PQ = Q.multiplyY(p);                            // PQ(x,y) = p(y)*q(x-y)
+
+  // Integrate out the dummy variable y (typically tau in literature abotu convolution), leaving
+  // a polynomial only in x. But we get 3 segments:
+  rL   = PQ.integralY(pL,             Poly({-qL, 1})); // left segment
+  if(wp > wq)
+    rM = PQ.integralY(Poly({-qU, 1}), Poly({-qL, 1})); // middle segment when p longer than q
+  else if(wq > wp)
+    rM = PQ.integralY(pL,             pU);             // middle segment when q longer than p
+  else
+    rM = Poly(0);                                      // when p and q have same length, there's no middle section
+  rR   = PQ.integralY(Poly({-qU, 1}), pU);             // right segment
+
+  // Compute the domains for the 3 segments:
+  rLL = pL  + qL;
+  rLU = rLL + wq;
+  rRL = pU  + qL;
+  rRU = rRL + wq;
+
+  // These are actually redundant - maybe get rid of the parameters:
+  rML = rLU;
+  rMU = rRL;
+
+  // What if they are both equally long - then we don't get a middle section
+
+  int dummy = 0;
+
+  // Notes:
+  // -The expressions for the integration limits were found by trial and error and need more tests,
+  //  especially, when q has longer support than p. Perhaps, we should switch the roles of p and q
+  //  in such a case, but maybe it's more advisable to select the roles of p and q by their 
+  //  degrees. We should probably create the bivariate polynomial from whichever has lower degree.
+  //  ...we'll see
+  // ToDo:
+  // -clean up
+  // -move to prototypes and write a unit test
+  // -implement a class rsPiecewisePolynomial that consists of many such polynomial pieces and also
+  //  supports convolution
+  // -make a function that uses a workspace
+}
+
 void convolvePolynomials()
 {
   // We want to find an algorithm to convolve two polynomial pieces that may occur in a function
@@ -3452,7 +3519,8 @@ void convolvePolynomials()
   BiPoly P  = BiPoly::composeWithLinear(p, 1.0, -1.0);     //  P(x,y) = p(x-y)
   BiPoly QP = P.multiplyY(q);                              // QP(x,y) = q(y)*p(x-y), our integrand
   Poly qpL = QP.integralY(qL,             Poly({-pL, 1}));
-  Poly qpM = QP.integralY(Poly({-pU, 1}), Poly({-pL, 1}));
+  //Poly qpM = QP.integralY(Poly({-pU, 1}), Poly({-pL, 1})); // does not work
+  Poly qpM = QP.integralY(qL,             qU);  // integration limits different bcs wq < wp
   Poly qpR = QP.integralY(Poly({-pU, 1}), qU); 
   Poly dL = pqL - qpL;
   Poly dM = pqM - qpM;
@@ -3460,30 +3528,17 @@ void convolvePolynomials()
   // qpL, qpR match pqL, pqR but qpM does not match pqM. It's probably because the middle section
   // does not really exist in the case when the kernel is longer than the signal?
 
-  //qpM = QP.integralY(Poly({pU, 1}), Poly({-pL, 1})); // test - nope!
+  // use the funtion:
+  Poly rL, rM, rR;                      // left, middle, right section of result
+  double rLL, rLU, rML, rMU, rRL, rRU;  // lower and upper limits of the sections
+  convolvePieces(p, pL, pU, q, qL, qU, rL, rLL, rLU, rM, rML, rMU, rR, rRL, rRU);
 
   int dummy = 0;
 
-  // Notes:
-  // -The expressions for the integration limits were found by trial and error and need more tests,
-  //  especially, when q has longer support than p. Perhaps, we should switch the roles of p and q
-  //  in such a case, but maybe it's more advisable to select the roles of p and q by their 
-  //  degrees. We should probably create the bivariate polynomial from whichever has lower degree.
-  //  ...we'll see
-
   // ToDo:
-  // -figure out the support ranges of the segments and implement a high-level function that 
-  //  computes all 3 segments and their ranges
-  //  -total width is wr = wp + wq where wr,wp,wq are the widths of r,p,q
-  //  -start of r is is pL + qL
-  //  -width of left and segment wL, wR is wq, if wq < wp
-  //  -width of middle segment is wp-wq, if wq < wp
-  // -so, rL goes from pL+qL to pL+qL + wL
-  // -why do we get 9th degree results with topmost coeffs zero? has this to do with the roles
-  //  of p and q?
-  // -Currently, the domain on which q is nonzero is smaller than the one on which p is nonzero.  
-  //  What if it's the other way around? Try it!
-  // -make a function that uses a workspace
+  // -figure out why we get 9th degree results for the pqX and 10th degree for th qpX with topmost 
+  //  coeffs zero? The actual degree is just 6 for L,R and 3 for M 
+
 }
 
 void shiftPolynomial()
