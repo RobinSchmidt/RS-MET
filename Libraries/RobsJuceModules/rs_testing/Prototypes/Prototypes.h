@@ -2374,6 +2374,89 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::multiplyY(const rsPolynomial<
 // this assumes row-major storage of matrices
 
 //=================================================================================================
+
+template<class T>
+class rsPiecewisePolynomial
+{
+
+public:
+
+  /** Convolves two polynomial pieces p(x) and q(x) that are defined on the domains pL..pU and 
+  qL..qU respectively and assumed to be zero outside these domains (L and U stand for lower and 
+  upper boundaries of the domains). The result are 3 polynomial pieces rL,rM,rR that are adjacent 
+  to each other (L,M,R stand for left, middle, right). These polynomials are output parameters and
+  assigend by the function. These output pieces are defined on the domains rLL..rLU, rLU..rRL, 
+  rRL..rRR respectively which are also output parameters. The left/right boundaries of the middle 
+  segment are the same as the right/left boundaries of the adjacent left and right pieces, so there 
+  are no output parameters for the middle section's domain boundaries because they would be 
+  redundant. We get 3 pieces as output because for the left piece, the two input segments that are 
+  convolved, are not yet fully overlapping as q gets shifted over p and for the right piece, they 
+  are not fully overlapping anymore. Only in the middle segment, there's full overlap, i.e. q is 
+  fully inside p or the other way around. */
+  static void convolvePieces(
+    const rsPolynomial<T>& p, T pL, T pU, const rsPolynomial<T>& q, T qL, T qU,
+    rsPolynomial<T>& rL, T& rLL, T& rLU, rsPolynomial<T>& rM, rsPolynomial<T>& rR, T& rRL, T& rRU);
+
+
+protected:
+
+
+};
+
+template<class T>
+void rsPiecewisePolynomial<T>::convolvePieces(
+  const rsPolynomial<T>& p, T pL, T pU, const rsPolynomial<T>& q, T qL, T qU,
+  rsPolynomial<T>& rL, T& rLL, T& rLU, rsPolynomial<T>& rM, rsPolynomial<T>& rR, T& rRL, T& rRU)
+{
+  // ToDo: check, which one of p,q has higher degree and maybe invoke recursively with swapped 
+  // arguments if they are in disadvantageous order
+
+  T wp = pU - pL;  // width of domain of p
+  T wq = qU - qL;  // width of domain of q
+
+  // Create the bivariate polynomial PQ(x,y) = p(y)*q(x-y) which is our integrand in the 
+  // convolution integral:
+  using Poly   = rsPolynomial<T>;
+  using BiPoly = rsBivariatePolynomial<T>;
+  BiPoly Q  = BiPoly::composeWithLinear(q, T(1), T(-1)); //  Q(x,y) = q(x-y)
+  BiPoly PQ = Q.multiplyY(p);                            // PQ(x,y) = p(y)*q(x-y)
+
+  // Integrate out the dummy variable y (typically tau in literature about convolution, and our x 
+  // is their t), leaving a polynomial only in x (or t). We get 3 segments:
+  Poly a({-qU, 1});                           // lower integration limit (in some cases)
+  Poly b({-qL, 1});                           // upper integration limit (in some cases)
+  rL                  = PQ.integralY(pL, b);  // left segment
+  if(     wp > wq) rM = PQ.integralY(a,  b);  // middle segment when p longer than q
+  else if(wq > wp) rM = PQ.integralY(pL, pU); // middle segment when q longer than p
+  else             rM = Poly(0);              // p, q have same length -> no middle segment
+  rR                  = PQ.integralY(a,  pU); // right segment
+
+  // Compute the domains for the 3 segments:
+  rLL = pL  + qL;
+  rLU = rLL + wq;
+  rRL = pU  + qL;
+  rRU = rRL + wq;
+  // todo: check, if these formulas also work when q is longer than p
+
+
+  // Notes:
+  // -The expressions for the integration limits were found by trial and error and need more tests,
+  //  especially, when q has longer support than p. Perhaps, we should switch the roles of p and q
+  //  in such a case, but maybe it's more advisable to select the roles of p and q by their 
+  //  degrees. We should probably create the bivariate polynomial from whichever has lower degree.
+  //  ...we'll see
+  // ToDo:
+  // -clean up
+  // -move to prototypes and write a unit test
+  // -implement a class rsPiecewisePolynomial that consists of many such polynomial pieces and also
+  //  supports convolution
+  // -make a function that uses a workspace
+}
+
+
+
+
+//=================================================================================================
 // the stuff below is just for playing around - maybe move code elsewhere, like the research-repo:
 
 /** A class for representing a particular kind of string with which we can do some computations

@@ -3394,64 +3394,6 @@ void vertexMeshHessian()
 // End of mesh derivatives
 //=================================================================================================
 
-/** Convolves two polynomial pieces p(x) and q(x) that are defined on the domains pL..pU and 
-qL..qU respectively and assumed to be zero outside these domains (L and U stand for lower and upper
-boundaries of the domains). The result are 3 polynomial pieces rL,rM,rR that are adjacent to each 
-other (L,M,R stand for left, middle, right). These polynomials are output parameters and assigend 
-by the function. These output pieces are defined on the domains rLL..rLU, rLU..rRL, rRL..rRR 
-respectively which are also output parameters. The left/right boundaries of the middle segment are 
-the same as the right/left boundaries of the adjacent left and right pieces, so there are no 
-output parameters for the middle section's domain boundaries because they would be redundant. */
-template<class T>
-void convolvePieces(
-  const rsPolynomial<T>& p, T pL, T pU, const rsPolynomial<T>& q, T qL, T qU,
-  rsPolynomial<T>& rL, T& rLL, T& rLU, rsPolynomial<T>& rM, rsPolynomial<T>& rR, T& rRL, T& rRU)
-{
-  // ToDo: check, which one of p,q has higher degree and maybe invoke recursively with swapped 
-  // arguments if they are in disadvantageous order
-
-  T wp = pU - pL;  // width of domain of p
-  T wq = qU - qL;  // width of domain of q
-
-  // Create the bivariate polynomial PQ(x,y) = p(y)*q(x-y) which is our integrand in the 
-  // convolution integral:
-  using Poly   = rsPolynomial<T>;
-  using BiPoly = rsBivariatePolynomial<T>;
-  BiPoly Q  = BiPoly::composeWithLinear(q, T(1), T(-1)); //  Q(x,y) = q(x-y)
-  BiPoly PQ = Q.multiplyY(p);                            // PQ(x,y) = p(y)*q(x-y)
-
-  // Integrate out the dummy variable y (typically tau in literature about convolution, and our x 
-  // is their t), leaving a polynomial only in x (or t). We get 3 segments:
-  Poly a({-qU, 1});                           // lower integration limit (in some cases)
-  Poly b({-qL, 1});                           // upper integration limit (in some cases)
-  rL                  = PQ.integralY(pL, b);  // left segment
-  if(     wp > wq) rM = PQ.integralY(a,  b);  // middle segment when p longer than q
-  else if(wq > wp) rM = PQ.integralY(pL, pU); // middle segment when q longer than p
-  else             rM = Poly(0);              // p, q have same length -> no middle segment
-  rR                  = PQ.integralY(a,  pU); // right segment
-
-  // Compute the domains for the 3 segments:
-  rLL = pL  + qL;
-  rLU = rLL + wq;
-  rRL = pU  + qL;
-  rRU = rRL + wq;
-  // todo: check, if these formulas also work when q is longer than p
-
-
-  // Notes:
-  // -The expressions for the integration limits were found by trial and error and need more tests,
-  //  especially, when q has longer support than p. Perhaps, we should switch the roles of p and q
-  //  in such a case, but maybe it's more advisable to select the roles of p and q by their 
-  //  degrees. We should probably create the bivariate polynomial from whichever has lower degree.
-  //  ...we'll see
-  // ToDo:
-  // -clean up
-  // -move to prototypes and write a unit test
-  // -implement a class rsPiecewisePolynomial that consists of many such polynomial pieces and also
-  //  supports convolution
-  // -make a function that uses a workspace
-}
-
 void convolvePolynomials()
 {
   // We want to find an algorithm to convolve two polynomial pieces that may occur in a function
@@ -3479,6 +3421,7 @@ void convolvePolynomials()
   Poly p({ 2,-3,5,-7 }); double pL = -1, pU = 2; // p(x) = 2 - 3*x + 5*x^2 - 7*x^3  in -1..2
   Poly q({ 3,-4,6    }); double qL =  3, qU = 4; // q(x) = 3 - 4*x + 6*x^2          in  3..4
 
+  // move to unit test:
   // Sage:
   // p  = piecewise([((-1,2), 2 - 3*x + 5*x^2 - 7*x^3)])
   // q  = piecewise([(( 3,4), 3 - 4*x + 6*x^2)])
@@ -3519,11 +3462,12 @@ void convolvePolynomials()
   // qpL, qpR match pqL, pqR but qpM does not match pqM. It's probably because the middle section
   // does not really exist in the case when the kernel is longer than the signal?
 
-  // use the funtion:
+
+  // use the function from class rsPiecewisePolynomial:
+  using PiecePoly = rsPiecewisePolynomial<double>;
   Poly rL, rM, rR;            // left, middle, right section of result
   double rLL, rLU, rRL, rRU;  // lower and upper limits of the sections
-  convolvePieces(p, pL, pU, q, qL, qU, rL, rLL, rLU, rM, rR, rRL, rRU);
-
+  PiecePoly::convolvePieces(p, pL, pU, q, qL, qU, rL, rLL, rLU, rM, rR, rRL, rRU);
   int dummy = 0;
 
   // ToDo:

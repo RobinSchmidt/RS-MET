@@ -125,6 +125,9 @@ public:
   T getLeadingCoeff() const { return rsLast(coeffs); }
   // what if we have trailing zeros in the coeff array?
 
+  /** Returns the i-th coefficient, i.e. the coefficient for x^i. */
+  T getCoeff(int i) const { rsAssert(i >= 0 && i <= getDegree()); return coeffs[i]; }
+
   /** Returns a pointer to our coefficient array - breaks encapsulation - use with care! */
   T* getCoeffPointer() { return &coeffs[0]; }
   // Try to get rid of this - when we really need low-level access to the coeff-array, we declare 

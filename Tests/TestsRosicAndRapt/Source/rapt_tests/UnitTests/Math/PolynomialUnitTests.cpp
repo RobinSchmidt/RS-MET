@@ -1475,7 +1475,6 @@ bool testBivariatePolynomial()
   uni = p.integralX( A, B); // verify!
   // todo: let either of the two or both integration limits be a polynomial (in y)
 
-
   // Test definite integration with respect to y:
   uni = p.integralY(-2, 3); r &= uni == Poly({110, 755./3, 1180./3});
   // 1180/3*x^2 + 755/3*x + 110
@@ -1537,6 +1536,79 @@ bool testBivariatePolynomial()
   return r;
 }
 
+template<class T>
+bool rsIsCloseTo(const RAPT::rsPolynomial<T>& p, const RAPT::rsPolynomial<T>& q, T tol)
+{
+  // Compare coeffs up to the highest one of lower degree polynomial:
+  int degP = p.getDegree();
+  int degQ = q.getDegree();
+  for(int i = 0; i <= rsMin(degP, degQ); i++)
+    if( rsAbs(p.getCoeff(i)-q.getCoeff(i)) > tol )
+      return false;
+  if(degP == degQ)
+    return true;    // if degrees match, we are done here
+
+  // If they have different degrees, check, if the higher order coeffs of the higher degree 
+  // polynomial are close to zero:
+  if(degP > degQ) { 
+    for(int i = degQ+1; i <= degP; i++)
+      if( rsAbs(p.getCoeff(i)) > tol )
+        return false; }
+  else {  // degQ > degP
+    for(int i = degP+1; i <= degQ; i++)
+      if( rsAbs(q.getCoeff(i)) > tol )
+        return false; }
+  return true;
+}
+
+bool testPiecewisePolynomial()
+{
+  bool r = true;
+
+  using Poly      = RAPT::rsPolynomial<double>;
+  using PiecePoly = rsPiecewisePolynomial<double>;
+  Poly p({ 2,-3,5,-7 }); double pL = -1, pU = 2; // p(x) = 2 - 3*x + 5*x^2 - 7*x^3  in -1..2
+  Poly q({ 3,-4,6    }); double qL =  3, qU = 4; // q(x) = 3 - 4*x + 6*x^2          in  3..4
+
+  // Test convolving two polynomial pieces. This gives 3 segments.
+  // Sage:
+  // p  = piecewise([((-1,2), 2 - 3*x + 5*x^2 - 7*x^3)])
+  // q  = piecewise([(( 3,4), 3 - 4*x + 6*x^2)])
+  // pq = p.convolution(q)
+  // pq
+  // #plot([p,q,pq],xmin=-1,xmax=6)
+  //
+  // gives:
+  // pq = 
+  // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 + 326*x^3 - 2271*x^2 + 92231/15*x - 28594/5 on (2, 3]
+  // -441*x^3 + 5012*x^2 - 288133/15*x + 498143/20 on (3, 5] 
+  // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 767*x^3 + 14449/2*x^2 - 124586/5*x + 150942/5 on (5, 6]
+
+  // Define target pieces and domain boundaries:
+  double tol = 1.e-11; // we need a rather high tolerance because the absolute values are quite 
+                       // large -> maybe use a relative tolerance
+  Poly tL({-28594./5, 92231./15, -2271, 326, -101./12, 12./5, -7./10});
+  Poly tM({ 498143./20,-288133./15,5012,-441});
+  Poly tR({150942./5,-124586./5,14449./2,-767.,101./12,-12./5,7./10});
+
+  // Compute the pieces and domain boundaries and compare results to their targets:
+  Poly rL, rM, rR;            // left, middle, right section of result
+  double rLL, rLU, rRL, rRU;  // lower and upper limits of the sections
+  PiecePoly::convolvePieces(p, pL, pU, q, qL, qU, rL, rLL, rLU, rM, rR, rRL, rRU);
+  r &= rsIsCloseTo(rL, tL, tol);
+  r &= rsIsCloseTo(rM, tM, tol);
+  r &= rsIsCloseTo(rR, tR, tol);
+  r &= rLL == 2; r &= rLU == 3;
+  r &= rRL == 5; r &= rRU == 6;
+
+  // ToDo: 
+  // -test role reversal of p and q
+  // -figure out, why the nominal degrees of the results are higher than the actual ones (higher
+  //  order coeffs are zero)
+
+  return r;
+}
+
 
 bool testPolynomial()
 {
@@ -1575,6 +1647,7 @@ bool testPolynomial()
 
 
   testResult &= testBivariatePolynomial();
+  testResult &= testPiecewisePolynomial();
 
 
   return testResult;
