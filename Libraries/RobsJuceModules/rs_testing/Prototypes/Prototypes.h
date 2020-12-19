@@ -2027,17 +2027,22 @@ public:
   //static void integralY(T a, T b, T* px);
 
   /** Computes the definite integral of the polynomial with respect to x with the integration 
-  limits a,b. The result is a univariate polynomial in y. */
-  rsPolynomial<T> integralX(T a, T b) const;
+  limits a,b. The result is a univariate polynomial in y. The types Ta, Tb can both be 
+  independently either T (for a constant integration limit) or rsPolynomial<T> (for an integration
+  limit that is a univariate polynomial in the variable that is not integrated over, here y). */
+  template<class Ta, class Tb>
+  rsPolynomial<T> integralX(Ta a, Tb b) const;
+  // needs tests for when a and/or b are polynomials
+  // if it's called with integer parameters a, b the compiler actually generates a version with
+  // Ta,Tb = int even if T = double...hmm...that may be a bit bloatsome...maybe client code should
+  // make sure, it does actually call it with double arguments in this case
 
   /** Computes the definite integral of the polynomial with respect to y with the integration 
   limits a,b. The result is a univariate polynomial in x. */
-  rsPolynomial<T> integralY(T a, T b) const;
+  template<class Ta, class Tb>
+  rsPolynomial<T> integralY(Ta a, Tb b) const;
+  // needs tests for when a and/or b are polynomials
 
-  // maybe versions where the integration limits can be polynomials of the respective other 
-  // variable:
-  // rsPolynomial<T> integralX(const rsPolynomial<T>& a, const rsPolynomial<T>& b) const;
-  // here, a,b are polynomials in y - uses evaluateY with polynomial arguments
 
 
   // todo: make a function integralXY(T a, T b, T c, T d) that computes the value of the 
@@ -2314,24 +2319,26 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::integralY(T c) const
 }
 
 template<class T>
-rsPolynomial<T> rsBivariatePolynomial<T>::integralX(T a, T b) const
+template<class Ta, class Tb>
+rsPolynomial<T> rsBivariatePolynomial<T>::integralX(Ta a, Tb b) const
 {
   rsBivariatePolynomial<T> P = integralX();
   rsPolynomial<T> Pb = P.evaluateX(b);
   rsPolynomial<T> Pa = P.evaluateX(a);
   return Pb - Pa;
 }
-// todo: optimize
+// todo: make workspace-based version(s)
 
 template<class T>
-rsPolynomial<T> rsBivariatePolynomial<T>::integralY(T a, T b) const
+template<class Ta, class Tb>
+rsPolynomial<T> rsBivariatePolynomial<T>::integralY(Ta a, Tb b) const
 {
   rsBivariatePolynomial<T> P = integralY();
   rsPolynomial<T> Pb = P.evaluateY(b);
   rsPolynomial<T> Pa = P.evaluateY(a);
   return Pb - Pa;
 }
-// todo: optimize
+// todo: make workspace-based version(s)
 
 template<class T>
 rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear(
@@ -2342,7 +2349,7 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear(
   r.coeffs.setToZero();
   const T* c = p.getCoeffPointerConst();
 
-  // this works, but is very slow:
+  // this works, but is very inefficient (Shlemiel, the painter, strikes again!) - optimize!:
   for(int n = 0; n <= N; n++)
     for(int k = 0; k <= n; k++)
       r.coeffs(k, n-k) += c[n] * (T) rsBinomialCoefficient(n, k) * pow(a, k) * pow(b, n-k);
