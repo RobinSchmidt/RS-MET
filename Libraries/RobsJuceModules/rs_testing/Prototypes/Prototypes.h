@@ -2112,18 +2112,16 @@ rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(T y) const
 }
 
 template<class T>
-rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(const rsPolynomial<T>& y) const
+rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(const rsPolynomial<T>& py) const
 {
-  //rsError("Under construction. Not yet ready for use.");
   int M = getDegreeX();
   int N = getDegreeY();
-  int K = y.getDegree();
+  int K = py.getDegree();
   int L = K*N + M;                 // degree of result
   rsPolynomial<T> r(L);            // result
   std::vector<T> yn(K*N+1);        // workspace, holds coeff-array of powers of y(x)
   rsFill(yn, T(0)); yn[0] = T(1);  // ..initially, it's the constant 1, i.e. y^0
   int Kn = 1;                      // current effective length of yn, increases by K each iteration
-
 
   for(int m = 0; m <= M; m++)
     r[m] = coeffs(m, 0);           // copy coeffs from the left column
@@ -2131,20 +2129,17 @@ rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(const rsPolynomial<T>& y) co
   for(int n = 1; n <= N; n++)
   {
     // multiply y^n by y again to get the next power:
-    rsArrayTools::convolveInPlace(&yn[0], Kn, y.getCoeffPointerConst(), K+1);
+    rsArrayTools::convolveInPlace(&yn[0], Kn, py.getCoeffPointerConst(), K+1);
     Kn += K;
-
-    // accumulate:
-    for(int i = 0; i < Kn; i++)
+    for(int i = 0; i < Kn; i++)           // accumulate
       for(int m = 0; m <= M; m++)
         r[i+m] += coeffs(m, n) * yn[i];
-
-
-    int dummy = 0;
   }
 
   return r;
 }
+// todo: factor out a workspace based version:
+// evaluateY(T* py, int yDeg, T* px, T* workspace) and make a similar evaluateX function
 
 template<class T>
 rsBivariatePolynomial<T> rsBivariatePolynomial<T>::multiply(

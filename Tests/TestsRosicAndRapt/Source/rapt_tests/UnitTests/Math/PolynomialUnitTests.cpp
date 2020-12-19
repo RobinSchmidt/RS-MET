@@ -1510,8 +1510,12 @@ bool testBivariatePolynomial()
   r &= bi == BiPoly(2, 6, {2,7,17,34,41,41,28, 10,27,57,102,101,89,56, 18,47,97,170,161,137,84 });
 
   // Test evaluation with a polynomial as argument:
+  // var("x y")
+  // p(x,y) = 1 + 2*y + 3*y^2 + 4*y^3 + 5*x + 6*x*y + 7*x*y^2 + 8*x*y^3 + 9*x^2 + 10*x^2*y + 11*x^2*y^2 + 12*x^2*y^3
+  // q(x) = 2 + 3*x + 5*x^2 + 7*x^3
+  // p(x,q).expand()
   uni2 = p.evaluateY(uni);
-
+  r &= uni2 == Poly({49,295,1112,3091,6862,12511,18686,23377,23795,18844,11564,4116});
 
   return r;
 }
