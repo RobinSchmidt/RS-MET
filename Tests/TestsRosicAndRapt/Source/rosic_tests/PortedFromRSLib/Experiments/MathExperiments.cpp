@@ -3517,6 +3517,8 @@ void convolvePolynomials()
   rL = PQ.integralY(pL+0.1, Poly({pL,     1}));   // changes only 0,1,2
   rL = PQ.integralY(pL+0.1, Poly({pL+0.1, 1}));   // also changes 3
   rL = PQ.integralY(pL+0.1, Poly({pL+0.1, 1.1})); // changes high order coeffs
+  rL = PQ.integralY(pL, Poly({0, 1}));
+  rL = PQ.integralY(pL, Poly({-qL, 1}));    // this looks right!
 
   // it seems, the pL limit is wrong but coeff 1 is correct and determines the higher order coeffs
   double a;
@@ -3543,13 +3545,43 @@ void convolvePolynomials()
   // OK - let's make it a bit more complicated by using pU = 2:
   // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 + 11*x^3 - 17/2*x^2 + 6*x on (0, 1], 
   // -21*x^3 + 50*x^2 - 763/15*x + 473/20 on (1, 2], 
-  // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 32*x^3 - 83/2*x^2 + 1777/5*x - 8751/20 on (2, 3]; x)
+  // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 32*x^3 - 83/2*x^2 + 1777/5*x - 8751/20 on (2, 3]
   pU = 2;
   rL = PQ.integralY(pL,                    Poly({pL, 1})); // left segment   -> correct!
   rM = PQ.integralY(Poly({pL-(qU-qL), 1}), Poly({pL, 1})); // middle segment -> correct!
   rR = PQ.integralY(Poly({pL-(qU-qL), 1}), pU);            // right segment  -> correct!
 
+  // let's use pU = 3, qU = 2:
+  // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 + 11*x^3 - 17/2*x^2 + 6*x on (0, 2], 
+  // -98*x^3 + 476*x^2 - 13106/15*x + 2954/5 on (2, 3], 
+  // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 109*x^3 - 141*x^2 + 7862/3*x - 18605/4 on (3, 5]
+  pU = 3;
+  qU = 2;
+  rL = PQ.integralY(pL,                    Poly({pL, 1})); // left segment   -> correct
+  rM = PQ.integralY(Poly({pL-(qU-qL), 1}), Poly({pL, 1})); // middle segment -> correct
+  rR = PQ.integralY(Poly({pL-(qU-qL), 1}), pU);            // right segment  -> correct
 
+  // Now let's also use pL = -1:
+  // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 + 11*x^3 + 33*x^2 + 512/15*x + 473/20 on (-1, 1]
+  // -98*x^3 + 476*x^2 - 13106/15*x + 2954/5 on (1, 3]
+  // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 109*x^3 - 141*x^2 + 7862/3*x - 18605/4 on (3, 5]
+  pL = -1;
+  rL = PQ.integralY(pL,                    Poly({pL,  1})); // left segment   -> wrong!
+  rM = PQ.integralY(Poly({pL-(qU-qL), 1}), Poly({pL,  1})); // middle segment -> wrong!
+  rR = PQ.integralY(Poly({pL-(qU-qL), 1}), pU);             // right segment  -> wrong!
+  rL = PQ.integralY(0,                     Poly({0,   1})); // left segment   -> wrong!
+  rM = PQ.integralY(Poly({0-(qU-qL), 1}),  Poly({0,   1})); // middle segment -> correct!
+  rR = PQ.integralY(Poly({0-(qU-qL), 1}),  pU);             // right segment  -> correct!
+  rL = PQ.integralY(0,                     Poly({pL,  1})); // left segment   -> wrong!
+  rL = PQ.integralY(0,                     Poly({0,   1})); // left segment   -> wrong!
+  rL = PQ.integralY(pL,                    Poly({0,   1})); // left segment   -> correct!
+  rL = PQ.integralY(pL,                    Poly({-qL, 1})); // left segment   -> correct!
+  // OK - it seems the formula for rL was wrong in all the other tests above and worked only 
+  // because pL happened to be zero, the correct formula seems to be given by the last line here
+
+
+  // Currently, the domain on which q is nonzero is smaller than the one on which p is nonzero. 
+  // What if it's the other way around?
 
   int dummy = 0;
 
