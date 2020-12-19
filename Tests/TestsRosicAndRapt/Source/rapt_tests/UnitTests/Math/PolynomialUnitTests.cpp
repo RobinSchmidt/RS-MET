@@ -1517,6 +1517,13 @@ bool testBivariatePolynomial()
   uni2 = p.evaluateY(uni);
   r &= uni2 == Poly({49,295,1112,3091,6862,12511,18686,23377,23795,18844,11564,4116});
 
+  // var("x y")
+  // p(x,y) = 1 + 2*y + 3*y^2 + 4*y^3 + 5*x + 6*x*y + 7*x*y^2 + 8*x*y^3 + 9*x^2 + 10*x^2*y + 11*x^2*y^2 + 12*x^2*y^3
+  // q(y) = 2 + 3*y + 5*y^2 + 7*y^3
+  // p(q,y).expand()
+  uni2 = p.evaluateX(uni);
+  r &= uni2 == Poly({47,177,485,1098,1747,2375,2630,2064,1379,588});
+
   return r;
 }
 

@@ -1894,9 +1894,11 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
 
 //=================================================================================================
 
-/** Class for representing bivariate polynomials, i.e. polynomials in two variables. They are 
-represented by an MxN matrix of coefficients which is supposed to be sandwiched between two vectors
-of powers of x and y like:
+/** Class for representing bivariate polynomials, i.e. polynomials in two variables x and y. They 
+are represented by an MxN matrix A of coefficients which is supposed to be sandwiched between two 
+vectors of powers of x and y as in X^T * A * Y, where X,Y denote the vectors constructed from 
+powers of x and y and ^T denotes transposition, making X^T a row vector. For example, a polynomial
+that has degree 2 in x and degree 3 in y looks like:
 
   p(x,y) = |x^0 x^1 x^2| * |a00 a01 a02 a03| * |y^0|
                            |a10 a11 a12 a13|   |y^1|
@@ -1907,8 +1909,8 @@ of powers of x and y like:
            + a10*x^1*y^0 + a11*x^1*y^1 + a12*x^1*y^2 + a13*x^1*y^3
            + a20*x^2*y^0 + a21*x^2*y^1 + a22*x^2*y^2 + a23*x^2*y^3
 
-for a polynomial that has degree 2 in x and degree 3 in y, so M=3, N=4 - the dimension of the 
-matrix is (degX+1)x(degY+1) where degX, degY are the degrees with respect to x and y. */
+so the shape of the matrix is 3x4 with M=3, N=4. In general, it's (degX+1)x(degY+1) where degX, 
+degY are the degrees with respect to x and y. */
 
 template<class T>
 class rsBivariatePolynomial
@@ -1939,11 +1941,15 @@ public:
   /** Evaluates the polynomial for a given y. The result is a univariate polynomial in x. */
   rsPolynomial<T> evaluateY(T y) const;
 
+  /** Takes a univariate polynomial x = x(y) as input and replaces each occurrence of x in this
+  bivariate polynomial p(x,y) by the polynomial expression x(y). This results in a univariate
+  polynomial in y. */
+  rsPolynomial<T> evaluateX(const rsPolynomial<T>& x) const;
+
   /** Takes a univariate polynomial y = y(x) as input and replaces each occurrence of y in this
   bivariate polynomial p(x,y) by the polynomial expression y(x). This results in a univariate
   polynomial in x. */
   rsPolynomial<T> evaluateY(const rsPolynomial<T>& y) const;
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Evaluation (Low Level)
@@ -1956,6 +1962,12 @@ public:
   /** Evaluates the polynomial for a given y. The result is a univariate polynomial in x whose 
   coefficients are stored in px. */
   void evaluateY(T y, T* px) const;
+
+
+  /** Used internally by evaluateX(const rsPolynomial<T>& x). Let M,N be the degrees in x and y of
+  this bivariate polynomial an K be the degree of the passed univariate polynomial. Then, the 
+  degree of the result py will be given by K*M + N. The workspace must have a size of K*M+1.  */
+  void evaluateX(const T* px, int xDeg, T* py, T* workspace) const;
 
   /** Used internally by evaluateY(const rsPolynomial<T>& y). Let M,N be the degrees in x and y of
   this bivariate polynomial an K be the degree of the passed univariate polynomial. Then, the 
@@ -2025,7 +2037,7 @@ public:
   // maybe versions where the integration limits can be polynomials of the respective other 
   // variable:
   // rsPolynomial<T> integralX(const rsPolynomial<T>& a, const rsPolynomial<T>& b) const;
-  // here, a,b are polynomials in y
+  // here, a,b are polynomials in y - uses evaluateY with polynomial arguments
 
 
   // todo: make a function integralXY(T a, T b, T c, T d) that computes the value of the 
@@ -2120,6 +2132,39 @@ rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(T y) const
 }
 
 template<class T>
+void rsBivariatePolynomial<T>::evaluateX(const T* x, int xDeg, T* r, T* xm) const
+{
+  using AT = rsArrayTools;
+  int M = getDegreeX();
+  int N = getDegreeY();
+  int K = xDeg;
+  AT::fillWithZeros(xm, K*M+1); 
+  xm[0] = T(1);
+  int Km = 1; 
+  for(int n = 0; n <= N; n++)
+    r[n] = coeffs(0, n);
+  for(int m = 1; m <= M; m++) {
+    AT::convolveInPlace(xm, Km, x, K+1);
+    Km += K;
+    for(int i = 0; i < Km; i++)
+      for(int n = 0; n <= N; n++)
+        r[i+n] += coeffs(m, n) * xm[i]; }
+}
+
+template<class T>
+rsPolynomial<T> rsBivariatePolynomial<T>::evaluateX(const rsPolynomial<T>& px) const
+{
+  int M = getDegreeX();
+  int N = getDegreeY();
+  int K = px.getDegree();
+  int L = K*M + N;
+  rsPolynomial<T> r(L);
+  std::vector<T> xm(K*M+1);
+  evaluateX(px.getCoeffPointerConst(), K, r.getCoeffPointer(), &xm[0]);
+  return r;
+}
+
+template<class T>
 void rsBivariatePolynomial<T>::evaluateY(const T* y, int yDeg, T* r, T* yn) const
 {
   using AT = rsArrayTools;
@@ -2145,9 +2190,9 @@ rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(const rsPolynomial<T>& py) c
   int M = getDegreeX();
   int N = getDegreeY();
   int K = py.getDegree();
-  int L = K*N + M;                 // degree of result
-  rsPolynomial<T> r(L);            // result
-  std::vector<T> yn(K*N+1);        // workspace, holds coeff-array of powers of y(x)
+  int L = K*N + M;            // degree of result
+  rsPolynomial<T> r(L);       // result
+  std::vector<T> yn(K*N+1);   // workspace, holds coeff-array of powers of y(x)
   evaluateY(py.getCoeffPointerConst(), K, r.getCoeffPointer(), &yn[0]);
   return r;
 }
