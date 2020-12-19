@@ -1916,6 +1916,9 @@ class rsBivariatePolynomial
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime 
+
   rsBivariatePolynomial() {}
 
   rsBivariatePolynomial(int degreeX, int degreeY) : coeffs(degreeX+1, degreeY+1) {}
@@ -1925,7 +1928,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  // \name Evaluation
+  // \name Evaluation (High Level)
 
   /** Evaluates the polynomial at the given (x,y). */
   T evaluate(T x, T y) const;
@@ -1936,13 +1939,14 @@ public:
   /** Evaluates the polynomial for a given y. The result is a univariate polynomial in x. */
   rsPolynomial<T> evaluateY(T y) const;
 
-  // maybe make an evaluateY function, that takes a univariate polynomial y = y(x) as input, this
-  // requires to compute successive powers of y(x) and accumulate them into the output coeff array,
-  // similar like in the algorithm for polynomial composition...but in addition to the powers of 
-  // y(x) scaled by a01, a02, a03 we also need to add 1-shifted versions sclaed by a11,a12,a13 and
-  // a 2-shifted version scaled by a21,a22,a23 to account for the powers of y multiplied by powers 
-  // of x
+  /** Takes a univariate polynomial y = y(x) as input and replaces each occurrence of y in this
+  bivariate polynomial p(x,y) by the polynomial expression y(x). This results in a univariate
+  polynomial in x. */
   rsPolynomial<T> evaluateY(const rsPolynomial<T>& y) const;
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Evaluation (Low Level)
 
   /** Evaluates the polynomial for a given x. The result is a univariate polynomial in y whose 
   coefficients are stored in py. */
@@ -1953,6 +1957,10 @@ public:
   coefficients are stored in px. */
   void evaluateY(T y, T* px) const;
 
+  /** Used internally by evaluateY(const rsPolynomial<T>& y). Let M,N be the degrees in x and y of
+  this bivariate polynomial an K be the degree of the passed univariate polynomial. Then, the 
+  degree of the result px will be given by K*N + M. The workspace must have a size of K*N+1.  */
+  void evaluateY(const T* py, int yDeg, T* px, T* workspace) const;
 
 
   //-----------------------------------------------------------------------------------------------
@@ -2112,6 +2120,26 @@ rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(T y) const
 }
 
 template<class T>
+void rsBivariatePolynomial<T>::evaluateY(const T* y, int yDeg, T* r, T* yn) const
+{
+  using AT = rsArrayTools;
+  int M = getDegreeX();
+  int N = getDegreeY();
+  int K = yDeg;
+  AT::fillWithZeros(yn, K*N+1); 
+  yn[0] = T(1);                           // initially, y^n the constant 1, i.e. y^0
+  int Kn = 1;                             // current effective length of yn
+  for(int m = 0; m <= M; m++)
+    r[m] = coeffs(m, 0);                  // copy coeffs from the left column
+  for(int n = 1; n <= N; n++) {
+    AT::convolveInPlace(yn, Kn, y, K+1);  // multiply y^n by y again to get the next power
+    Kn += K;                              // length of yn has increased by K
+    for(int i = 0; i < Kn; i++)
+      for(int m = 0; m <= M; m++)
+        r[i+m] += coeffs(m, n) * yn[i]; } // accumulate
+}
+
+template<class T>
 rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(const rsPolynomial<T>& py) const
 {
   int M = getDegreeX();
@@ -2120,26 +2148,9 @@ rsPolynomial<T> rsBivariatePolynomial<T>::evaluateY(const rsPolynomial<T>& py) c
   int L = K*N + M;                 // degree of result
   rsPolynomial<T> r(L);            // result
   std::vector<T> yn(K*N+1);        // workspace, holds coeff-array of powers of y(x)
-  rsFill(yn, T(0)); yn[0] = T(1);  // ..initially, it's the constant 1, i.e. y^0
-  int Kn = 1;                      // current effective length of yn, increases by K each iteration
-
-  for(int m = 0; m <= M; m++)
-    r[m] = coeffs(m, 0);           // copy coeffs from the left column
-
-  for(int n = 1; n <= N; n++)
-  {
-    // multiply y^n by y again to get the next power:
-    rsArrayTools::convolveInPlace(&yn[0], Kn, py.getCoeffPointerConst(), K+1);
-    Kn += K;
-    for(int i = 0; i < Kn; i++)           // accumulate
-      for(int m = 0; m <= M; m++)
-        r[i+m] += coeffs(m, n) * yn[i];
-  }
-
+  evaluateY(py.getCoeffPointerConst(), K, r.getCoeffPointer(), &yn[0]);
   return r;
 }
-// todo: factor out a workspace based version:
-// evaluateY(T* py, int yDeg, T* px, T* workspace) and make a similar evaluateX function
 
 template<class T>
 rsBivariatePolynomial<T> rsBivariatePolynomial<T>::multiply(
