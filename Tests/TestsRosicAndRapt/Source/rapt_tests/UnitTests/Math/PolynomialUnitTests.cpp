@@ -1453,20 +1453,30 @@ bool testBivariatePolynomial()
   //  + 6*x    + 14*x*y   + 24*x*y^2
   //  + 10*x^2 + 22*x^2*y + 36*x^2*y^2
 
+  // Test indefinite integration with respect to x:
   bi = p.integralX(); BiPoly(3, 3, {0,0,0,0, 1,2,3,4, 2.5,3,3.5,4, 3,10./3,11./3,4});
   //   0       + 0*y        + 0*y^2        + 0*y^3
   // + 1*x     + 2*x*y      + 3*x*y^2      + 4*x*y^3
   // + 5/2*x^2 + 3*x^2*y    + 7/2*x^2*y^2  + 4*x^2*y^3
   // + 3*x^3   + 10/3*x^3*y + 11/3*x^3*y^2 + 4*x^3*y^3
 
+  // Test indefinite integration with respect to y:
   bi = p.integralY(); r &= bi == BiPoly(2, 4, {0,1,1,1,1, 0,5,3,7*(1./3),2, 0,9,5,11*(1./3),3 });
   //   0     + y       + y^2 + y^3 + y^4
   // + 0*x   + 5*x*y   + 3*x*y^2   + 7/3*x*y^3    + 2*x*y^4
   // + 0*x^2 + 9*x^2*y + 5*x^2*y^2 + 11/3*x^2*y^3 + 3*x^2*y^4
 
+  // Test definite integration with respect to x:
+  Poly A({1,-2,3});
+  Poly B({3,-5,1,-2});
   uni = p.integralX(-2, 3); r &= uni == Poly({122.5, 425./3, 965./6, 180});
-  // 180*y^3 + 965/6*y^2 + 425/3*y + 245/2
+  uni = p.integralX( A, 3); // verify!
+  uni = p.integralX(-2, B); // verify!
+  uni = p.integralX( A, B); // verify!
+  // todo: let either of the two or both integration limits be a polynomial (in y)
 
+
+  // Test definite integration with respect to y:
   uni = p.integralY(-2, 3); r &= uni == Poly({110, 755./3, 1180./3});
   // 1180/3*x^2 + 755/3*x + 110
 

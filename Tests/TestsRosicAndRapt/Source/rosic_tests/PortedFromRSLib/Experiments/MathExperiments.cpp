@@ -3452,10 +3452,6 @@ rsPolynomial<T> convolvePolynomials(const rsPolynomial<T>& p, const rsPolynomial
   // plausible....hmmmm
 
   return r;
-
-  // Q =   3     + 4*y     + 6*y^2
-  //     - 4*x   - 12*x*y  + 0*x*y^2
-  //     + 6*x^2 + 0*x^2*y + 0*x^2*y^2   -> correct!
 }
 // maybe rename to convolveFinite
 // this does not yet seem to work
@@ -3485,53 +3481,58 @@ void convolvePolynomials()
   //   upper: a+c + (L_p + L_q) = a+c + ((b-a)+(d-c)) = b+d
   // so:
   //   r(x) = \int_{a+c}^{b+d} p(u) q(x-u) du
-
-  // ...oh - no - that last step may be invalid
-  // instead, just compute:
-  //   qL(x) = q(x-u)      with u = a+c 
-  //   qU(x) = q(x-u)      with u = b+d
-  // and then compute
-  //   r(x) = \int p(x)*qU(x) - p(x)*qL(x)
-  // ...but wait - no - we can't we exchange the evaluation at the two values of u with the 
-  // integration or can we?
-
-  // i think, we need to consider the integrand as a polynomial in u with x being a fixed 
-  // parameter? or do we have to consider q as a bivariate polynomial q(x,u) from which we 
-  // "integrate out" the variable u? maybe we need a class for bivariate polynomials, represented
-  // by a matrix of coefficients? this class should support operations like this integrating out of
-  // one variable, producing a univariate polynomial, multiplication with univariate polynomials,
-
-  // i also think, the convolution of two polynomial segments leads to 3 different sections in the 
-  // result. in the first q starts to overlap with p so one of the integration limits should be a 
-  // (linear?) function of x, in the middle sections, there's full overlap and both limits are 
-  // constant and in the 3rd section, the overlap starts to shrink, so the other limit must be a 
-  // function of x
-
-  /*
-  static const int pN = 3;     // degree of p
-  static const int qN = 4;     // degree of q
-  static const int rN = pN+qN; // degree of convolution result
-
-  double p[pN+1] = {2,-3,5,-7};
-  double q[qN+1] = {3,-4,6,-8,9};
-  double r[rN+1];
-  convolvePolynomials1(p, pN, q, qN, r);
-  */
+  // ...hmm...not sure...let's try some things....
 
   using Poly = RAPT::rsPolynomial<double>;
+  Poly p({ 2,-3,5,-7 }); double pL = -1, pU = 2; // p(x) = 2 - 3*x + 5*x^2 - 7*x^3  in -1..2
+  Poly q({ 3,-4,6    }); double qL =  3, qU = 4; // q(x) = 3 - 4*x + 6*x^2          in  3..4
 
-  //Poly p({ 2,-3,5,-7 });
-  //Poly q({ 3,-4,6,-8,9 });
+  // Sage:
+  // p  = piecewise([((-1,2), 2 - 3*x + 5*x^2 - 7*x^3)])
+  // q  = piecewise([(( 3,4), 3 - 4*x + 6*x^2)])
+  // pq = p.convolution(q)
+  // pq
+  // #plot([p,q,pq],xmin=-1,xmax=6)
+  //
+  // gives:
+  // pq = 
+  // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 + 326*x^3 - 2271*x^2 + 92231/15*x - 28594/5 on (2, 3]
+  // -441*x^3 + 5012*x^2 - 288133/15*x + 498143/20 on (3, 5] 
+  // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 767*x^3 + 14449/2*x^2 - 124586/5*x + 150942/5 on (5, 6]
+  //
+  // The convolution of two polynomial segments results in 3 different segments in the result. For 
+  // the first, q starts to overlap with p so the lower integration limit should be the constant pL
+  // and the upper limit should be pL+x. In the middle section, there's full overlap and both 
+  // limits are changing as pL+x and in the 3rd section, the overlap starts to shrink, so the lower
+  // limit is still pL+x and the upper limit must be pU
 
-  Poly p({ 2,-3,5,-7 });   // p(x) = 2 - 3*x + 5*x^2 - 7*x^3
-  Poly q({ 3,-4,6    });   // q(x) = 3 - 4*x + 6*x^2
+  using BiPoly = rsBivariatePolynomial<double>;
+  BiPoly Q  = BiPoly::composeWithLinear(q, 1.0, -1.0);  //  Q(x,y) = q(x-y)
+  BiPoly PQ = Q.multiplyY(p);                           // PQ(x,y) = p(y)*q(x-y), our integrand
+
+  //Poly ({pL, 1});  // moving integration limit
+  Poly rL = PQ.integralY(pL, Poly({pL, 1}));  // left segments of result
+  // hmm..some coeffs (3,4,5,6) are actually correct but others are wrong
+
+  Poly rM = PQ.integralY(Poly({pL-(qU-qL), 1}), Poly({pL, 1}));
+  // nope - wrong - but coeffs 4,5 are close to zero - probably not a coincidence
+
+  //double qL = qU 
+
+  //rL = PQ.integralY(Poly({ pL }), Poly({ pL, 1 }));  // gives same result, as it should be
+
+  int dummy = 0;
+
+
+  // old stuff:
+
+  /*
   double a = 2, b = 4;     // integration interval
   Poly pqab = convolvePolynomials(p, q, a, b);  // has degree 2 ...too low!?
   Poly pqba = convolvePolynomials(p, q, b, a);
   Poly qpab = convolvePolynomials(q, p, a, b);  // has degree 3
   Poly qpba = convolvePolynomials(q, p, b, a);
-
-
+  */
   // sage:
   // var("x y")
   // p(x) = 2 - 3*x + 5*x^2 - 7*x^3
@@ -3548,9 +3549,6 @@ void convolvePolynomials()
   // the integral runs only over a finite domain?
   // when integrating with respect o x, we at least get the same degree, no matter what the order
   // of p,q, so maybe i have some misconception about the roles of x and y?
-
-
-  int dummy = 0;
 }
 
 void shiftPolynomial()

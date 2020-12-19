@@ -1963,7 +1963,6 @@ public:
   coefficients are stored in px. */
   void evaluateY(T y, T* px) const;
 
-
   /** Used internally by evaluateX(const rsPolynomial<T>& x). Let M,N be the degrees in x and y of
   this bivariate polynomial an K be the degree of the passed univariate polynomial. Then, the 
   degree of the result py will be given by K*M + N. The workspace must have a size of K*M+1.  */
