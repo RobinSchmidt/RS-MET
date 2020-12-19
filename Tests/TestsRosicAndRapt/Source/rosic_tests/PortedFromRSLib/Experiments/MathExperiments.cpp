@@ -3395,25 +3395,23 @@ void vertexMeshHessian()
 //=================================================================================================
 
 /** Convolves two polynomial pieces p(x) and q(x) that are defined on the domains pL..pU and 
-qL..qU respectively and assumed to be zero outsied these domains (U and L stand for lower and upper
+qL..qU respectively and assumed to be zero outside these domains (L and U stand for lower and upper
 boundaries of the domains). The result are 3 polynomial pieces rL,rM,rR that are adjacent to each 
-other (L,M,R stand for left, middle, right). These output pieces are defined on the domains
-rLL..rLU, rLU..rRL, rRL..rRR respectively. The left/right boundaries of the middle segment are 
-redundant right/left boundaries of the adjacent left and right pieces, so they are redundant (get 
-rid of the parameters!).   */
+other (L,M,R stand for left, middle, right). These polynomials are output parameters and assigend 
+by the function. These output pieces are defined on the domains rLL..rLU, rLU..rRL, rRL..rRR 
+respectively which are also output parameters. The left/right boundaries of the middle segment are 
+the same as the right/left boundaries of the adjacent left and right pieces, so there are no 
+output parameters for the middle section's domain boundaries because they would be redundant. */
 template<class T>
 void convolvePieces(
-  const rsPolynomial<T>& p, T pL, T pU,
-  const rsPolynomial<T>& q, T qL, T qU,
-  rsPolynomial<T>& rL, T& rLL, T& rLU,
-  rsPolynomial<T>& rM, T& rML, T& rMU,
-  rsPolynomial<T>& rR, T& rRL, T& rRU)
+  const rsPolynomial<T>& p, T pL, T pU, const rsPolynomial<T>& q, T qL, T qU,
+  rsPolynomial<T>& rL, T& rLL, T& rLU, rsPolynomial<T>& rM, rsPolynomial<T>& rR, T& rRL, T& rRU)
 {
-  // todo: check, which one of p,q has higher degree and maybe invoke recursively with swapped 
+  // ToDo: check, which one of p,q has higher degree and maybe invoke recursively with swapped 
   // arguments if they are in disadvantageous order
 
-  T wp = pU - pL;  // width of support of p
-  T wq = qU - qL;  // width of support of q
+  T wp = pU - pL;  // width of domain of p
+  T wq = qU - qL;  // width of domain of q
 
   // Create the bivariate polynomial PQ(x,y) = p(y)*q(x-y) which is our integrand in the 
   // convolution integral:
@@ -3422,30 +3420,23 @@ void convolvePieces(
   BiPoly Q  = BiPoly::composeWithLinear(q, T(1), T(-1)); //  Q(x,y) = q(x-y)
   BiPoly PQ = Q.multiplyY(p);                            // PQ(x,y) = p(y)*q(x-y)
 
-  // Integrate out the dummy variable y (typically tau in literature abotu convolution), leaving
-  // a polynomial only in x. But we get 3 segments:
-  rL   = PQ.integralY(pL,             Poly({-qL, 1})); // left segment
-  if(wp > wq)
-    rM = PQ.integralY(Poly({-qU, 1}), Poly({-qL, 1})); // middle segment when p longer than q
-  else if(wq > wp)
-    rM = PQ.integralY(pL,             pU);             // middle segment when q longer than p
-  else
-    rM = Poly(0);                                      // when p and q have same length, there's no middle section
-  rR   = PQ.integralY(Poly({-qU, 1}), pU);             // right segment
+  // Integrate out the dummy variable y (typically tau in literature about convolution, and our x 
+  // is their t), leaving a polynomial only in x (or t). We get 3 segments:
+  Poly a({-qU, 1});                           // lower integration limit (in some cases)
+  Poly b({-qL, 1});                           // upper integration limit (in some cases)
+  rL                  = PQ.integralY(pL, b);  // left segment
+  if(     wp > wq) rM = PQ.integralY(a,  b);  // middle segment when p longer than q
+  else if(wq > wp) rM = PQ.integralY(pL, pU); // middle segment when q longer than p
+  else             rM = Poly(0);              // p, q have same length -> no middle segment
+  rR                  = PQ.integralY(a,  pU); // right segment
 
   // Compute the domains for the 3 segments:
   rLL = pL  + qL;
   rLU = rLL + wq;
   rRL = pU  + qL;
   rRU = rRL + wq;
+  // todo: check, if these formulas also work when q is longer than p
 
-  // These are actually redundant - maybe get rid of the parameters:
-  rML = rLU;
-  rMU = rRL;
-
-  // What if they are both equally long - then we don't get a middle section
-
-  int dummy = 0;
 
   // Notes:
   // -The expressions for the integration limits were found by trial and error and need more tests,
@@ -3529,9 +3520,9 @@ void convolvePolynomials()
   // does not really exist in the case when the kernel is longer than the signal?
 
   // use the funtion:
-  Poly rL, rM, rR;                      // left, middle, right section of result
-  double rLL, rLU, rML, rMU, rRL, rRU;  // lower and upper limits of the sections
-  convolvePieces(p, pL, pU, q, qL, qU, rL, rLL, rLU, rM, rML, rMU, rR, rRL, rRU);
+  Poly rL, rM, rR;            // left, middle, right section of result
+  double rLL, rLU, rRL, rRU;  // lower and upper limits of the sections
+  convolvePieces(p, pL, pU, q, qL, qU, rL, rLL, rLU, rM, rR, rRL, rRU);
 
   int dummy = 0;
 
