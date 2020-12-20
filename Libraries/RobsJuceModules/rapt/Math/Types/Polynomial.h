@@ -89,11 +89,10 @@ public:
 
   void negate()
   { rsArrayTools::negate(&coeffs[0], &coeffs[0], (int) coeffs.size()); }
-  // the conversion to int may be avoided
 
   /** Stretches (or compresses) the polynomial along the x axis. */
   void stretch(T factor)
-  { scaleArgument(&coeffs[0], &coeffs[0], (int) coeffs.size(), T(1)/factor); }
+  { scaleArgument(&coeffs[0], &coeffs[0], getDegree(), T(1)/factor); }
 
   /** Scales the output of the whole polynomial by the given factor. */
   void scale(T factor)
@@ -102,7 +101,6 @@ public:
   /** Shifts the polynomial up and down in the y direction by the given dy. */
   void shiftY(T dy) { coeffs[0] += dy; }
 
-
   /** Turns this polynomial into the indefinite integral of itself with integration constant c 
   (this c becomes the coeff fo x^0 = 1). */
   void integrate(T c = T(0))
@@ -110,9 +108,6 @@ public:
     coeffs.resize(coeffs.size()+1);
     integral(&coeffs[0], &coeffs[0], getDegree()-1, c); // -1 bcs resize has increased degree
   }
-  // this seems to be buggy - i get heap corruptions in convolvePiecewise() - todo: make a unit
-  // test - done, the test passes just fine
-
 
 
   //-----------------------------------------------------------------------------------------------

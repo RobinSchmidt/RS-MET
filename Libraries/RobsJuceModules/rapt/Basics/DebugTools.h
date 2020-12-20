@@ -39,5 +39,19 @@ inline void rsAssertFalse(const char *errorMessage = nullptr) { rsAssert(false, 
 // todo: have functions for logging and printing
 
 
+/*
+Some Notes on hard to catch bugs
 
+Heap Corruptions:
 
+I think, heap corruptions may occur erratically when trying to write beyond the end of a 
+std::vector when the function, that accesses the vector, does so via a pointer to its first 
+element. In this case, the range-check in std::vector itself is bypassed, so we don't trigger the 
+debug assertion there. Whether or not the heap actually gets corrupted depends on how much memory 
+the vector has allocated which may be more than its current size. The heap corruption only occurs
+when we try to write beyond its capacity, which we have no control over, because the growing is 
+controlled by the standard library - which is why it's so erratic and hard to reproduce reliably 
+(...i think...although, the capacity should actually be deterministic...hmmm - but i sometimes get
+or don't those heap corruptions depending on some change in a totally unrelated piece of code)
+
+*/

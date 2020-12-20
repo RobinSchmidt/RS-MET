@@ -3497,7 +3497,7 @@ void convolvePiecewise()
   //plot(B);
   B.scale(2.0);   plot(B);
   B.stretch(2.0); plot(B);
-  B.integrate(); plot(B);
+  B.integrate();  plot(B);
 
 
   int dummy = 0;
