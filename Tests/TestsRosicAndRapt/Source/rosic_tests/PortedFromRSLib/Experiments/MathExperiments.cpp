@@ -3477,27 +3477,30 @@ void convolvePolynomials()
   //  coeffs zero? The actual degree is just 6 for L,R and 3 for M 
 }
 
-void convolvePiecewise()
+void convolvePiecewise()  // rename to irwinHall
 {
+  // We create a Irwin-Hall distribution made from polynomial pieces by repeatedly convolving the
+  // seed function, which is uniform between -0.5..+0.5, with itself. Then, we integrate the 
+  // resulting function to get the cumulative density function. This serves mostly as a demo/test
+  // for the class rsPiecewisePolynomial...
+
   using Poly      = RAPT::rsPolynomial<double>;
   using PiecePoly = rsPiecewisePolynomial<double>;
 
-  double xMin = -4, xMax = +4;
-  int N = (int) round(100 * (xMax - xMin) + 1);
+  int order = 8;
 
   PiecePoly B0; 
   B0.addPiece(Poly({ 1.0 }), -0.5, 0.5);  // our seed function
   PiecePoly B = B0;
-  //plot(B, xMin, xMax, N);
-  for(int i = 1; i < 5; i++) {
+  for(int i = 1; i <= order; i++)
     B = B.convolve(B0);
-    //plot(B, xMin, xMax, N);
-  }
 
   //plot(B);
-  B.scale(2.0);   plot(B);
-  B.stretch(2.0); plot(B);
-  B.integrate();  plot(B);
+  //B.scale(2.0);     plot(B);
+  //B.stretch(2.0);   plot(B);
+  //B.integrate(1.0); plot(B);
+
+  B.integrate(0.0); plot(B);
 
 
   int dummy = 0;
