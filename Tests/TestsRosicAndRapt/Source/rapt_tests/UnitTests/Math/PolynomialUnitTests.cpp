@@ -1689,6 +1689,9 @@ bool testPiecewisePolynomial2()
   x =  3.0; y = p(x); r &= y == 0;
 
 
+  p.addPiece(Poly({0, 1, 0}), 1, 2); // middle segment should now be  p(x) = 3 + x - x^2
+  x = 1.5; y = p(x); r &= y == 3 + x - x*x;
+
 
   //plot(p, -1.0, 4.0, 51);// looks good - todo: make automated tests
 

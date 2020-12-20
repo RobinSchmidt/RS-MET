@@ -2438,6 +2438,9 @@ public:
 
   int getNumPieces() const { return (int) pieces.size(); }
 
+  /** Returns the index of the segment, where x belongs or -1, if x is out of range. */
+  int getIndex(T x) const;
+
   T evaluate(T x) const;
 
   T operator()(T x) const { return evaluate(x); }
@@ -2540,27 +2543,43 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
     rsPrepend(domains, pL);
     return; }
 
-  // todo: handle overlap and gap...gap should not occur because we can't handle them with the
-  // current implementation
+  // handle overlap:
+  int iL = getIndex(pL);
+  if(iL == -1) {
+    rsError("Gaps are not allowed"); // we can't handle them with the current implementation
+    return;  }
+  int iU = getIndex(pU);
+  if(pL == domains[iL] && iU == domains[iU])
+  {
+    // new segment is perfectly aligned with existing segment(s) iL..iU - we don't need to split 
+    // segments, we just need to accumulate the new coeffs into the existing ones..
+    for(int i = iL; i < iU; i++)
+      pieces[i] = pieces[i] + p;   // optimize: implement +=
+    return;
+  }
 
-  rsError("Case not yet handled");
+
+  rsError("Case not yet handled"); 
+}
+
+template<class T>
+int rsPiecewisePolynomial<T>::getIndex(T x) const
+{
+  if(pieces.empty() || x < domains[0] || x >= rsLast(domains))
+    return -1;
+  int i = rsArrayTools::findSplitIndex(&domains[0], (int) domains.size(), x);
+  if(x < domains[i])
+    i--;
+  rsAssert(i >= -1 && i < getNumPieces());
+  return i;
 }
 
 template<class T>
 T rsPiecewisePolynomial<T>::evaluate(T x) const
 {
-  if(pieces.empty() || x < domains[0] || x >= rsLast(domains))
-    return T(0);
-
-  // find the right segment - this is not yet correct - we want the left boundary to be included
-  // and the right boundary to be excluded
-  int i = rsArrayTools::findSplitIndex(&domains[0], (int) domains.size(), x);
-  if(x < domains[i])
-    i--;
-  rsAssert(i >= 0 && i < getNumPieces());
-  // factor out index computation (return -1, if x is outside the domain)
-
-  return pieces[i](x);  // use evaluate function (needs to be written)
+  int i = getIndex(x);
+  if(i == -1) return T(0);
+  else        return pieces[i](x);  // use evaluate function (needs to be written)
 }
 
 template<class T>
