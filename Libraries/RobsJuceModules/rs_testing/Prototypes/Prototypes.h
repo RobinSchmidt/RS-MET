@@ -2375,22 +2375,36 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear2(
   const T* c = p.getCoeffPointerConst();
 
   // new implementation:
-  T B[20];
+  T B[20];           // binomial coeffs
+  T an[20], bn[20];  // powers of a,b
+  an[0] = T(1);
+  bn[0] = T(1);
+  for(int n = 1; n <= N; n++)
+  {
+    an[n] = a * an[n-1];
+    bn[n] = b * bn[n-1];
+  }
+  // all these arrays need to be of length N+1
+
   for(int n = 0; n <= N; n++)
   {
     rsNextPascalTriangleLine(B, B, n);
     for(int k = 0; k <= n; k++)
     {
-      T Bnk, Cnk;
+      //T Bnk, Cnk;
 
       //Bnk = (T) rsBinomialCoefficient(n, k);   // old
 
-      Bnk = B[k];                              // new
+      //Bnk = B[k];                              // new
 
-      Cnk = c[n] * Bnk * pow(a, k) * pow(b, n-k);
+      //Cnk = c[n] * Bnk * pow(a, k) * pow(b, n-k);
       // todo: get rid of pow
 
-      r.coeffs(k, n-k) += Cnk;
+      //T Cnk2 = c[n] * B2[k];   // is that correct? should equal Cnk
+
+      //T Cnk2 = c[n] * B[k] * an[k] * bn[n-k];
+
+      r.coeffs(k, n-k) += c[n] * B[k] * an[k] * bn[n-k];
       int dummy = 0;
     }
   }
