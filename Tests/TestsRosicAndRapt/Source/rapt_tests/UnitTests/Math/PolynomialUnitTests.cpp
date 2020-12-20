@@ -1504,7 +1504,7 @@ bool testBivariatePolynomial()
   val  = uni(a*x + b*y);
   val2 = bi.evaluate(x, y);
   r &= val == val2;
-  bi   = BiPoly::composeWithLinear2(uni, a, b);
+  bi   = BiPoly::composeWithLinearOld(uni, a, b);
   val2 = bi.evaluate(x, y);
   r &= val == val2;
 
@@ -1564,7 +1564,7 @@ bool rsIsCloseTo(const RAPT::rsPolynomial<T>& p, const RAPT::rsPolynomial<T>& q,
   return true;
 }
 
-bool testPiecewisePolynomial()
+bool testPiecewisePolynomial1()
 {
   bool r = true;
 
@@ -1659,6 +1659,33 @@ bool testPiecewisePolynomial()
   //  (and maybe lengths of domains?) of the input segments
   // -produce B-Spline polynomials and/or Irvin-Hall distribution
 
+  return r;
+}
+
+bool testPiecewisePolynomial2()
+{
+  bool r = true;
+
+  using Poly      = RAPT::rsPolynomial<double>;
+  using PiecePoly = rsPiecewisePolynomial<double>;
+
+  PiecePoly p;
+  p.addPiece(Poly({1,-1      }), 0, 1);  // p(x) = 1-x     in x = 0..1
+  p.addPiece(Poly({1, 0,-1   }), 1, 2);  // p(x) = 1-x^2   in x = 1..2
+  p.addPiece(Poly({1, 0, 0,-1}), 2, 3);  // p(x) = 1-x^3   in x = 2..3
+
+
+
+  //Poly p({ 2,-3,5,-7 }); 
+
+  return r;
+}
+
+bool testPiecewisePolynomial()
+{
+  bool r = true;
+  r &= testPiecewisePolynomial1();
+  r &= testPiecewisePolynomial2();
   return r;
 }
 

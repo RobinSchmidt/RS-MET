@@ -1989,7 +1989,7 @@ public:
   a linear combination of x and y and a univariate polynomial p: r(x,y) = p(a*x + b*y). */
   static rsBivariatePolynomial<T> composeWithLinear(const rsPolynomial<T>& p, T a, T b);
 
-  static rsBivariatePolynomial<T> composeWithLinear2(const rsPolynomial<T>& p, T a, T b);
+  static rsBivariatePolynomial<T> composeWithLinearOld(const rsPolynomial<T>& p, T a, T b);
 
 
   /** Multiplies this bivariate polynomial with a univariate polynomial in y only and returns the 
@@ -2342,27 +2342,10 @@ rsPolynomial<T> rsBivariatePolynomial<T>::integralY(Ta a, Tb b) const
 }
 // todo: make workspace-based version(s)
 
+
+// optimized version of composeWithLinear
 template<class T>
 rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear(
-  const rsPolynomial<T>& p, T a, T b)
-{
-  int N = p.getDegree();
-  rsBivariatePolynomial<T> r(N, N);
-  r.coeffs.setToZero();
-  const T* c = p.getCoeffPointerConst();
-  for(int n = 0; n <= N; n++)
-    for(int k = 0; k <= n; k++)
-      r.coeffs(k, n-k) += c[n] * (T) rsBinomialCoefficient(n, k) * pow(a, k) * pow(b, n-k);
-  return r;
-}
-// This works, but is very inefficient: "Shlemiel the painter" strikes again in 
-// rsBinomialCoefficient and pow is expensive! On the other hand, it does not allocate memory.
-// ....maybe keep both versions
-
-// optimized version of composeWithLinear - todo: rename - maybe when a workspace pointer is 
-// passed, we can just remove the 2 because then the function has a different signature
-template<class T>
-rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear2(
   const rsPolynomial<T>& p, T a, T b)
 {
   int N = p.getDegree();
@@ -2380,15 +2363,35 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear2(
     an[n] = a * an[n-1];                // a^n
     bn[n] = b * bn[n-1]; }              // b^n
   for(int n = 0; n <= N; n++) {
-    rsNextPascalTriangleLine(B, B, n);  // B[k] is now the binomial coeff "n-choose-k"
+    rsNextPascalTriangleLine(B, B, n);  // B[k] is now B(n,k) the binomial coeff "n-choose-k"
     for(int k = 0; k <= n; k++)
-      r.coeffs(k, n-k) += c[n] * B[k] * an[k] * bn[n-k]; }
+      r.coeffs(k, n-k) += c[n] * B[k] * an[k] * bn[n-k]; } // += c[n] * B(n,k) * a^k * b^(n-k)
   return r;
 }
 // todo:
 // -let the workspace be passed by the user
 // -operate on a pre-allocated rsMatrixView
 // -the polynomial p should be passed as raw coefficient array
+
+// old version of composeWithLinear, just for reference
+template<class T>
+rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinearOld(
+  const rsPolynomial<T>& p, T a, T b)
+{
+  int N = p.getDegree();
+  rsBivariatePolynomial<T> r(N, N);
+  r.coeffs.setToZero();
+  const T* c = p.getCoeffPointerConst();
+  for(int n = 0; n <= N; n++)
+    for(int k = 0; k <= n; k++)
+      r.coeffs(k, n-k) += c[n] * (T) rsBinomialCoefficient(n, k) * pow(a, k) * pow(b, n-k);
+  return r;
+}
+// This works, but is very inefficient: "Shlemiel the painter" strikes again in 
+// rsBinomialCoefficient and pow is expensive! On the other hand, it does not allocate memory.
+// ....maybe keep both versions...or well.. it actually does allocate for the returned object
+// 
+
 
 template<class T>
 rsBivariatePolynomial<T> rsBivariatePolynomial<T>::multiplyY(const rsPolynomial<T>& polyY) const
@@ -2431,10 +2434,19 @@ public:
     rsPolynomial<T>& rL, T& rLL, T& rLU, rsPolynomial<T>& rM, rsPolynomial<T>& rR, T& rRL, T& rRU);
 
 
+  void addPiece(const rsPolynomial<T>& p, T pL, T pU);
+
+  //void addPiece(const rsPolynomial<T>& p, T pL, T pU);
+
 protected:
 
+  std::vector<T> domains;
+  std::vector<rsPolynomial<T>> pieces;
+  // -the pieces should be adjacent (no verlap, no gaps)
+  // -piece[i] goes from domains[i] to domains[i+1]
 
 };
+
 
 template<class T>
 void rsPiecewisePolynomial<T>::convolvePieces(
@@ -2487,6 +2499,8 @@ void rsPiecewisePolynomial<T>::convolvePieces(
   // due to the special structure of Q.
   // The middle section may still have close-to-zero trailing coeffs (i think, it happens only 
   // when wp > wq but this needs more tests)
+  // i think, the degrees are degP+degQ+1 for the L/R sections and degP or deQ for the middle M
+  // section and which one of the two it is, is determined by which one has the longer domain
 
 
   // Notes:
@@ -2502,7 +2516,40 @@ void rsPiecewisePolynomial<T>::convolvePieces(
   //  the operation to be efficient
 }
 
+template<class T>
+void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
+{
+  rsAssert(pL < pU);
 
+  if(pieces.empty())
+  {
+    // initialize with the first piece:
+    pieces.push_back(p);
+    domains.push_back(pL);
+    domains.push_back(pU);
+    return;
+  }
+  if(pL == rsLast(domains))
+  {
+    // append piece at the right end:
+    pieces.push_back(p);
+    domains.push_back(pU);
+    return;
+  }
+  if(pU == domains[0])
+  {
+    // prepend piece at the left end:
+    rsPrepend(pieces,  p);
+    rsPrepend(domains, pL);
+    return;
+  }
+
+  // todo: handle overlap and gap
+
+
+
+  rsError("Case not yet handled");
+}
 
 
 //=================================================================================================
