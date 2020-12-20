@@ -99,6 +99,21 @@ public:
   void scale(T factor)
   { rsArrayTools::scale(&coeffs[0], (int) coeffs.size(), factor); }
 
+  /** Shifts the polynomial up and down in the y direction by the given dy. */
+  void shiftY(T dy) { coeffs[0] += dy; }
+
+
+  /** Turns this polynomial into the indefinite integral of itself with integration constant c 
+  (this c becomes the coeff fo x^0 = 1). */
+  void integrate(T c = T(0))
+  { 
+    coeffs.resize(coeffs.size()+1);
+    integral(&coeffs[0], &coeffs[0], getDegree()-1, c); // -1 bcs resize has increased degree
+  }
+  // this seems to be buggy - i get heap corruptions in convolvePiecewise() - todo: make a unit
+  // test - done, the test passes just fine
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */

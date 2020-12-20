@@ -352,14 +352,16 @@ bool testPolynomialDiffAndInt(std::string &reportString)
   double ad[5];
   double ai[7];
 
-  rsPolynomial<double>::derivative(a, ad, 5);
+  using Poly = rsPolynomial<double>;
+
+  Poly::derivative(a, ad, 5);
   testResult &= (ad[0] == -1);
   testResult &= (ad[1] == 10);
   testResult &= (ad[2] == 21);
   testResult &= (ad[3] == -12);
   testResult &= (ad[4] == 10);
 
-  rsPolynomial<double>::integral(a, ai, 5, 2.0);
+  Poly::integral(a, ai, 5, 2.0);
   testResult &= (ai[0] ==  2.0);
   testResult &= (ai[1] ==  2.0/1.0);
   testResult &= (ai[2] == -1.0/2.0);
@@ -367,6 +369,27 @@ bool testPolynomialDiffAndInt(std::string &reportString)
   testResult &= (ai[4] ==  7.0/4.0);
   testResult &= (ai[5] == -3.0/5.0);
   testResult &= (ai[6] ==  2.0/6.0);
+
+  Poly p;           // should be the zero polynomial and have 1 coeff which is zero
+  p.shiftY(1);      // now the coeff should be one
+  p.integrate(1.0);
+  testResult &= p == Poly({1,1});
+  p.integrate(1.0);
+  testResult &= p == Poly({1,1,1./2});
+  p.integrate(1.0);
+  testResult &= p == Poly({1,1,1./2,1./6});
+  p.integrate(1.0);
+  testResult &= p == Poly({1,1,1./2,1./6,1./24});
+
+  // Test storing polynomials in arrays and integrating the array elements:
+  std::vector<Poly> polys;
+  polys.push_back(p);
+  polys.push_back(p);
+  polys.push_back(p);
+  polys[1].integrate(1.0);
+  testResult &= polys[1] == Poly({1,1,1./2,1./6,1./24,1./120});
+
+
 
   return testResult;
 }

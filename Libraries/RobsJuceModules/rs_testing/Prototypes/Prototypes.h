@@ -2466,10 +2466,10 @@ public:
   /** Stretches the whole function in the x-direction by the given factor. */
   void stretch(T factor);
 
-  void integrate(T c);
+  void integrate(/*T c = T(0)*/);
 
 
-
+  void makeContinuous();
 
 
   //-----------------------------------------------------------------------------------------------
@@ -2570,6 +2570,34 @@ void rsPiecewisePolynomial<T>::stretch(T factor)
     domains[i] *= factor;
 }
 
+template<class T>
+void rsPiecewisePolynomial<T>::integrate(/*T c*/)
+{
+  //for(size_t i = 0; i < pieces.size(); i++)
+  //  pieces[i].integrate();
+
+  //for(size_t i = 0; i < pieces.size(); i++)
+  //  pieces[i] = pieces[i].integral();
+
+
+  //T x  = domains[0];
+  //T yL = pieces[0](x);
+  //pieces[0].shiftY(-yL); // later: c-yL
+
+  //makeContinuous();
+}
+
+template<class T>
+void rsPiecewisePolynomial<T>::makeContinuous()
+{
+  for(size_t i = 1; i < pieces.size(); i++)
+  {
+    T x  = domains[i];
+    T yL = pieces[i-1](x);
+    T yR = pieces[i](x);
+    pieces[i].shiftY(yL-yR);
+  }
+}
 
 template<class T>
 int rsPiecewisePolynomial<T>::getIndex(T x) const

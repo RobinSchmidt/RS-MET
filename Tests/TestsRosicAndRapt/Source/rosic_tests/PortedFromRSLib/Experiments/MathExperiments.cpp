@@ -3494,15 +3494,15 @@ void convolvePiecewise()
     //plot(B, xMin, xMax, N);
   }
 
-  plot(B);
-  B.scale(2.0);
-  plot(B);
-  B.stretch(2.0);
-  plot(B);
+  //plot(B);
+  B.scale(2.0);   plot(B);
+  B.stretch(2.0); plot(B);
+  B.integrate(); plot(B);
+
 
   int dummy = 0;
 
-  // todo: test integrating, differentiating, shifting
+  // todo: test differentiating, shifting
 }
 
 void shiftPolynomial()
