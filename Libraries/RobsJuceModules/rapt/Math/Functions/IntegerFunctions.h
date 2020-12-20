@@ -103,7 +103,8 @@ is of length N-1 and y is of length N. It may be used in place, i.e. x and y may
 array. */
 template<class T>
 void rsNextPascalTriangleLine(const T* x, T* y, int N);
-// todo: document whether 0 or 1 is the index for the 1st line - it's 1 - but that is wrong!
+// todo: document limits for overflow for int32, uint32, int64, uint64, float, double (with
+// floats, use the limit of exactly representable integers)
 
 /** Convenience function for cases when you need only the N-th line of the Pascal triangle. It 
 calls rsNextPascalTriangleLine in a loop up to N, so if you actually need all lines of the 

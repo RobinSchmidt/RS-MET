@@ -143,14 +143,16 @@ void rsGetLineOfPascalTriangle(TUInt *c, TUInt n)
 template<class T>
 void rsNextPascalTriangleLine(const T* x, T* y, int N)
 {
-  rsAssert(N >= 1);
+  rsAssert(N >= 0);
   T xL = T(1);
-  y[0] = T(1); // correct?
-  for(int i = 1; i < N-1; i++) { 
+  y[0] = T(1);
+  for(int i = 1; i < N; i++) 
+  { 
     T xR = x[i]; 
     y[i] = xL + xR;
-    xL   = xR;  }
-  y[N-1] = T(1);
+    xL   = xR;  
+  }
+  y[N] = T(1);
 }
 // -maybe this can be optimized using symmetry by doing something like
 //  y[i] = y[i+k] = xL + xR where k depends on i and N - or maybe y[i] = y[N-i] = xL + xR?
@@ -160,7 +162,7 @@ void rsNextPascalTriangleLine(const T* x, T* y, int N)
 template<class T>
 void rsPascalTriangleLine(T* y, int N)
 {
-  for(int n = 1; n <= N; n++)    // use n = 0; n < N
+  for(int n = 0; n <= N; n++) 
     rsNextPascalTriangleLine(y, y, n);
 }
 

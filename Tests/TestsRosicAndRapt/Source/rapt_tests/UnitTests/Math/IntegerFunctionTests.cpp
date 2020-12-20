@@ -137,8 +137,8 @@ bool testBinomialCoefficients(std::string &reportString)
   double B2[nMax+1]; rsArrayTools::fillWithNaN(B2, nMax+1);
   for(uint n = 0; n <= nMax; n++)
   {
-    rsNextPascalTriangleLine(B1, B1, n+1);  // todo: use n
-    rsPascalTriangleLine(B2, n+1);          // todo: use n
+    rsNextPascalTriangleLine(B1, B1, n);
+    rsPascalTriangleLine(B2, n);
     for(uint k = 0; k <= n; k++)
     {
       uint c1 = rsBinomialCoefficient(      n, k);
