@@ -2417,6 +2417,26 @@ class rsPiecewisePolynomial
 
 public:
 
+
+
+
+  void addPiece(const rsPolynomial<T>& p, T pL, T pU);
+
+  int getNumPieces() const { return (int) pieces.size(); }
+
+  const rsPolynomial<T>& getPieceConstRef(int i) const { return pieces[i]; }
+
+  /** Returns the index of the segment, where x belongs or -1, if x is out of range. */
+  int getIndex(T x) const;
+
+  T evaluate(T x) const;
+
+  T operator()(T x) const { return evaluate(x); }
+
+
+
+  //-----------------------------------------------------------------------------------------------
+
   /** Convolves two polynomial pieces p(x) and q(x) that are defined on the domains pL..pU and 
   qL..qU respectively and assumed to be zero outside these domains (L and U stand for lower and 
   upper boundaries of the domains). The result are 3 polynomial pieces rL,rM,rR that are adjacent 
@@ -2434,18 +2454,10 @@ public:
     rsPolynomial<T>& rL, T& rLL, T& rLU, rsPolynomial<T>& rM, rsPolynomial<T>& rR, T& rRL, T& rRU);
 
 
-  void addPiece(const rsPolynomial<T>& p, T pL, T pU);
+  /** Convolves this piecewise polynomial with another piecewise polynomial p and returns the 
+  result which is again a piecewise polynomial. */
+  rsPiecewisePolynomial<T> convolve(const rsPiecewisePolynomial<T>& p);
 
-  int getNumPieces() const { return (int) pieces.size(); }
-
-  /** Returns the index of the segment, where x belongs or -1, if x is out of range. */
-  int getIndex(T x) const;
-
-  T evaluate(T x) const;
-
-  T operator()(T x) const { return evaluate(x); }
-
-  //void addPiece(const rsPolynomial<T>& p, T pL, T pU);
 
 protected:
 
@@ -2455,6 +2467,87 @@ protected:
   // -piece[i] goes from domains[i] to domains[i+1]
 
 };
+
+template<class T>
+void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
+{
+  rsAssert(pL < pU);
+  if(pieces.empty()) {        // initialize with the first piece:
+    pieces.push_back(p);
+    domains.push_back(pL);
+    domains.push_back(pU);
+    return;  }
+  if(pL == rsLast(domains)) { // append piece at the right end
+    pieces.push_back(p);
+    domains.push_back(pU);
+    return;  }
+  if(pU == domains[0]) {      // prepend piece at the left end:
+    rsPrepend(pieces,  p);
+    rsPrepend(domains, pL);
+    return; }
+
+  // handle overlap:
+  int iL = getIndex(pL);
+  if(iL == -1) {
+    rsError("Gaps are not allowed"); // we can't handle them with the current implementation
+    return;  }
+
+  if(pL == domains[iL])
+  {
+    // start of new piece is aligned with start of an existing piece
+    int iU = getIndex(pU);
+    if(iU == -1)
+    {
+      // end of new piece extends - we don't need to split pieces
+      pieces[iL] = pieces[iL] + p;   // optimize: implement +=
+      domains[iL+1] = pU;            // update the last domain end
+
+      return;
+    }
+
+
+
+    if(iU == domains[iU])
+    {
+      // end of new piece is aligned with end of an existing piece
+      for(int i = iL; i < iU; i++)
+        pieces[i] = pieces[i] + p;   // optimize: implement +=
+      return;
+    }
+  }
+
+  rsError("Case not yet handled"); 
+}
+
+template<class T>
+int rsPiecewisePolynomial<T>::getIndex(T x) const
+{
+  if(pieces.empty() || x < domains[0] || x >= rsLast(domains))
+    return -1;
+  int i = rsArrayTools::findSplitIndex(&domains[0], (int) domains.size(), x);
+  if(x < domains[i])
+    i--;
+  rsAssert(i >= -1 && i < getNumPieces());
+  return i;
+}
+
+template<class T>
+T rsPiecewisePolynomial<T>::evaluate(T x) const
+{
+  int i = getIndex(x);
+  if(i == -1) return T(0);
+  else        return pieces[i](x);  // use evaluate function (needs to be written)
+}
+
+template<class T>
+void plot(const rsPiecewisePolynomial<T>& p, T xMin, T xMax, int numSamples)
+{
+  std::vector<T> x(numSamples), y(numSamples);
+  rsArrayTools::fillWithRangeLinear(&x[0], numSamples, xMin, xMax);
+  for(int i = 0; i < numSamples; i++)
+    y[i] = p.evaluate(x[i]);
+  rsPlotVectorsXY(x, y);
+}
 
 
 template<class T>
@@ -2525,72 +2618,46 @@ void rsPiecewisePolynomial<T>::convolvePieces(
   //  the operation to be efficient
 }
 
-template<class T>
-void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
-{
-  rsAssert(pL < pU);
-  if(pieces.empty()) {        // initialize with the first piece:
-    pieces.push_back(p);
-    domains.push_back(pL);
-    domains.push_back(pU);
-    return;  }
-  if(pL == rsLast(domains)) { // append piece at the right end
-    pieces.push_back(p);
-    domains.push_back(pU);
-    return;  }
-  if(pU == domains[0]) {      // prepend piece at the left end:
-    rsPrepend(pieces,  p);
-    rsPrepend(domains, pL);
-    return; }
 
-  // handle overlap:
-  int iL = getIndex(pL);
-  if(iL == -1) {
-    rsError("Gaps are not allowed"); // we can't handle them with the current implementation
-    return;  }
-  int iU = getIndex(pU);
-  if(pL == domains[iL] && iU == domains[iU])
+template<class T>
+rsPiecewisePolynomial<T> rsPiecewisePolynomial<T>::convolve(const rsPiecewisePolynomial<T>& q)
+{
+  rsPiecewisePolynomial<T> r;
+
+
+  using Poly = rsPolynomial<T>;
+
+  Poly rL, rM, rR;
+  T rLL, rLU, rRL, rRU;
+  //T pL, pU, qL
+
+  for(int i = 0; i < getNumPieces(); i++)
   {
-    // new segment is perfectly aligned with existing segment(s) iL..iU - we don't need to split 
-    // segments, we just need to accumulate the new coeffs into the existing ones..
-    for(int i = iL; i < iU; i++)
-      pieces[i] = pieces[i] + p;   // optimize: implement +=
-    return;
+    for(int j = 0; j < q.getNumPieces(); j++)
+    {
+      const Poly& pi = getPieceConstRef(i);
+      T pL = domains[i];
+      T pU = domains[i+1];
+      const Poly& qj = q.getPieceConstRef(j);
+      T qL = q.domains[j];
+      T qU = q.domains[j+1];
+      convolvePieces(pi, pL, pU, qj, qL, qU, rL, rLL, rLU, rM, rR, rRL, rRU);
+
+      r.addPiece(rL, rLL, rLU);
+      if(rLU < rRL)
+        r.addPiece(rM, rLU, rRL);
+      r.addPiece(rR, rRL, rRU);
+
+
+      int dummy = 0;
+    }
   }
 
 
-  rsError("Case not yet handled"); 
+
+  return r;
 }
 
-template<class T>
-int rsPiecewisePolynomial<T>::getIndex(T x) const
-{
-  if(pieces.empty() || x < domains[0] || x >= rsLast(domains))
-    return -1;
-  int i = rsArrayTools::findSplitIndex(&domains[0], (int) domains.size(), x);
-  if(x < domains[i])
-    i--;
-  rsAssert(i >= -1 && i < getNumPieces());
-  return i;
-}
-
-template<class T>
-T rsPiecewisePolynomial<T>::evaluate(T x) const
-{
-  int i = getIndex(x);
-  if(i == -1) return T(0);
-  else        return pieces[i](x);  // use evaluate function (needs to be written)
-}
-
-template<class T>
-void plot(const rsPiecewisePolynomial<T>& p, T xMin, T xMax, int numSamples)
-{
-  std::vector<T> x(numSamples), y(numSamples);
-  rsArrayTools::fillWithRangeLinear(&x[0], numSamples, xMin, xMax);
-  for(int i = 0; i < numSamples; i++)
-    y[i] = p.evaluate(x[i]);
-  rsPlotVectorsXY(x, y);
-}
 
 
 //=================================================================================================

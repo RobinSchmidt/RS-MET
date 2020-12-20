@@ -1700,11 +1700,38 @@ bool testPiecewisePolynomial2()
   return r;
 }
 
+bool testPiecewisePolynomial3()
+{
+  // We create the B-Splines - maybe that should be an experiment rather than aunit test
+
+  bool r = true;
+
+  using Poly      = RAPT::rsPolynomial<double>;
+  using PiecePoly = rsPiecewisePolynomial<double>;
+
+  Poly one({1.0});
+
+  PiecePoly B0; B0.addPiece(Poly({ 1.0 }), 0, 1);
+  PiecePoly B1 = B0.convolve(B0);
+  PiecePoly B2 = B1.convolve(B0);
+  PiecePoly B3 = B2.convolve(B0);
+  PiecePoly B4 = B3.convolve(B0);
+
+  plot(B0, -1.0, 5.0, 601);
+  plot(B1, -1.0, 5.0, 601);
+  plot(B2, -1.0, 5.0, 601);
+  plot(B3, -1.0, 5.0, 601);
+  plot(B4, -1.0, 5.0, 601);
+
+  return r;
+}
+
 bool testPiecewisePolynomial()
 {
   bool r = true;
   r &= testPiecewisePolynomial1();
   r &= testPiecewisePolynomial2();
+  r &= testPiecewisePolynomial3();
   return r;
 }
 
