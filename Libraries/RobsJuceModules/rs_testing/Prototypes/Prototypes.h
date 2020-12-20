@@ -2355,16 +2355,12 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear(
       r.coeffs(k, n-k) += c[n] * (T) rsBinomialCoefficient(n, k) * pow(a, k) * pow(b, n-k);
   return r;
 }
-// this works, but is very inefficient (Shlemiel, the painter, strikes again!) - optimize!
-// -precompute arrays of binomial coeffs and powers of a,b
-// -or: in each iteration of the outer loop over n, generate a new line of the pascal triangle from
-//  the previous line 
-//  -needs a temporary array of length N+1
-//  -perhaps we can even compute the whole product coeff * a^k * b^(n-k) by using a generalized 
-//   algo for the pascal triangle lines
+// This works, but is very inefficient: "Shlemiel the painter" strikes again in 
+// rsBinomialCoefficient and pow is expensive! On the other hand, it does not allocate memory.
+// ....maybe keep both versions
 
-
-// UNDER CONSTRUCTION - optimized version of composeWithLinear
+// optimized version of composeWithLinear - todo: rename - maybe when a workspace pointer is 
+// passed, we can just remove the 2 because then the function has a different signature
 template<class T>
 rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear2(
   const rsPolynomial<T>& p, T a, T b)
@@ -2373,45 +2369,26 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear2(
   rsBivariatePolynomial<T> r(N, N);
   r.coeffs.setToZero();
   const T* c = p.getCoeffPointerConst();
-
-  // new implementation:
-  T B[20];           // binomial coeffs
-  T an[20], bn[20];  // powers of a,b
-  an[0] = T(1);
-  bn[0] = T(1);
-  for(int n = 1; n <= N; n++)
-  {
-    an[n] = a * an[n-1];
-    bn[n] = b * bn[n-1];
-  }
-  // all these arrays need to be of length N+1
-
-  for(int n = 0; n <= N; n++)
-  {
-    rsNextPascalTriangleLine(B, B, n);
+  int N1 = N+1;
+  std::vector<T> wrk(3*N1);             // workspace
+  T* B  = &wrk[0*N1];                   // binomial coeffs
+  T* an = &wrk[1*N1];                   // powers of a
+  T* bn = &wrk[2*N1];                   // powers of b
+  an[0] = T(1);                         // a^0
+  bn[0] = T(1);                         // b^0
+  for(int n = 1; n <= N; n++) {
+    an[n] = a * an[n-1];                // a^n
+    bn[n] = b * bn[n-1]; }              // b^n
+  for(int n = 0; n <= N; n++) {
+    rsNextPascalTriangleLine(B, B, n);  // B[k] is now the binomial coeff "n-choose-k"
     for(int k = 0; k <= n; k++)
-    {
-      //T Bnk, Cnk;
-
-      //Bnk = (T) rsBinomialCoefficient(n, k);   // old
-
-      //Bnk = B[k];                              // new
-
-      //Cnk = c[n] * Bnk * pow(a, k) * pow(b, n-k);
-      // todo: get rid of pow
-
-      //T Cnk2 = c[n] * B2[k];   // is that correct? should equal Cnk
-
-      //T Cnk2 = c[n] * B[k] * an[k] * bn[n-k];
-
-      r.coeffs(k, n-k) += c[n] * B[k] * an[k] * bn[n-k];
-      int dummy = 0;
-    }
-  }
-
+      r.coeffs(k, n-k) += c[n] * B[k] * an[k] * bn[n-k]; }
   return r;
 }
-
+// todo:
+// -let the workspace be passed by the user
+// -operate on a pre-allocated rsMatrixView
+// -the polynomial p should be passed as raw coefficient array
 
 template<class T>
 rsBivariatePolynomial<T> rsBivariatePolynomial<T>::multiplyY(const rsPolynomial<T>& polyY) const
