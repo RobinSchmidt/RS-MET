@@ -2376,16 +2376,21 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear2(
 
   // new implementation:
   T B[20];
-  r.coeffs(0, 0) = c[0];
-  for(int n = 1; n <= N; n++)             // loop must start at 1
+  for(int n = 0; n <= N; n++)
   {
-    r.coeffs(0, n) += c[n] * pow(b, n);   // compute pow(b,n) on the fly
     rsNextPascalTriangleLine(B, B, n);
-    for(int k = 1; k <= n; k++)           // loop must start at 1
+    for(int k = 0; k <= n; k++)
     {
-      T Bnk = (T) rsBinomialCoefficient(n, k);
-      r.coeffs(k, n-k) += c[n] * Bnk * pow(a, k) * pow(b, n-k);
-      //r.coeffs(k, n-k) += c[n] * B[k] * pow(a, k) * pow(b, n-k);
+      T Bnk, Cnk;
+
+      //Bnk = (T) rsBinomialCoefficient(n, k);   // old
+
+      Bnk = B[k];                              // new
+
+      Cnk = c[n] * Bnk * pow(a, k) * pow(b, n-k);
+      // todo: get rid of pow
+
+      r.coeffs(k, n-k) += Cnk;
       int dummy = 0;
     }
   }

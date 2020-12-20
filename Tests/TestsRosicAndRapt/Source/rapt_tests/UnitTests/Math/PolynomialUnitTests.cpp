@@ -1504,9 +1504,9 @@ bool testBivariatePolynomial()
   val  = uni(a*x + b*y);
   val2 = bi.evaluate(x, y);
   r &= val == val2;
-  //bi   = BiPoly::composeWithLinear2(uni, a, b);
-  //val2 = bi.evaluate(x, y);
-  //r &= val == val2;
+  bi   = BiPoly::composeWithLinear2(uni, a, b);
+  val2 = bi.evaluate(x, y);
+  r &= val == val2;
 
   // Multiply bivariate polynomial with univariate polynomial in y:
   //
