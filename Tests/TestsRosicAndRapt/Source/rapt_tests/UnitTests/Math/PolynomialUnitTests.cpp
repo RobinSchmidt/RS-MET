@@ -1671,12 +1671,26 @@ bool testPiecewisePolynomial2()
 
   PiecePoly p;
   p.addPiece(Poly({1,-1      }), 0, 1);  // p(x) = 1-x     in x = 0..1
-  p.addPiece(Poly({1, 0,-1   }), 1, 2);  // p(x) = 1-x^2   in x = 1..2
+  p.addPiece(Poly({3, 0,-1   }), 1, 2);  // p(x) = 3-x^2   in x = 1..2
   p.addPiece(Poly({1, 0, 0,-1}), 2, 3);  // p(x) = 1-x^3   in x = 2..3
 
+  // Test, if the left domain boundary is included and the right one is excluded in evaluation:
+  double x, y;
+  x = -0.1; y = p(x); r &= y == 0;
+  x =  0.0; y = p(x); r &= y == 1-x;
+  x =  0.1; y = p(x); r &= y == 1-x;
+  x =  0.9; y = p(x); r &= y == 1-x;
+  x =  1.0; y = p(x); r &= y == 3-x*x;
+  x =  1.1; y = p(x); r &= y == 3-x*x;
+  x =  1.9; y = p(x); r &= y == 3-x*x;
+  x =  2.0; y = p(x); r &= y == 1-x*x*x;
+  x =  2.1; y = p(x); r &= y == 1-x*x*x;
+  x =  2.9; y = p(x); r &= y == 1-x*x*x;
+  x =  3.0; y = p(x); r &= y == 0;
 
-  plot(p, -1.0, 4.0, 51);
-  // does not seem to handle the domain boundaries right
+
+
+  //plot(p, -1.0, 4.0, 51);// looks good - todo: make automated tests
 
   //Poly p({ 2,-3,5,-7 }); 
 

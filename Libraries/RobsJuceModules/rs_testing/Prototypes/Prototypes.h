@@ -2440,6 +2440,8 @@ public:
 
   T evaluate(T x) const;
 
+  T operator()(T x) const { return evaluate(x); }
+
   //void addPiece(const rsPolynomial<T>& p, T pL, T pU);
 
 protected:
@@ -2524,31 +2526,22 @@ template<class T>
 void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
 {
   rsAssert(pL < pU);
-
-  if(pieces.empty())
-  {
-    // initialize with the first piece:
+  if(pieces.empty()) {        // initialize with the first piece:
     pieces.push_back(p);
     domains.push_back(pL);
     domains.push_back(pU);
-    return;
-  }
-  if(pL == rsLast(domains))
-  {
-    // append piece at the right end:
+    return;  }
+  if(pL == rsLast(domains)) { // append piece at the right end
     pieces.push_back(p);
     domains.push_back(pU);
-    return;
-  }
-  if(pU == domains[0])
-  {
-    // prepend piece at the left end:
+    return;  }
+  if(pU == domains[0]) {      // prepend piece at the left end:
     rsPrepend(pieces,  p);
     rsPrepend(domains, pL);
-    return;
-  }
+    return; }
 
-  // todo: handle overlap and gap
+  // todo: handle overlap and gap...gap should not occur because we can't handle them with the
+  // current implementation
 
   rsError("Case not yet handled");
 }
@@ -2556,17 +2549,17 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
 template<class T>
 T rsPiecewisePolynomial<T>::evaluate(T x) const
 {
-  if(pieces.empty() || x < domains[0] || x > rsLast(domains))
+  if(pieces.empty() || x < domains[0] || x >= rsLast(domains))
     return T(0);
 
   // find the right segment - this is not yet correct - we want the left boundary to be included
   // and the right boundary to be excluded
   int i = rsArrayTools::findSplitIndex(&domains[0], (int) domains.size(), x);
-  //if(x > domains[i])
-  //  i--;
-  i = rsMax(i-1, 0);
-
+  if(x < domains[i])
+    i--;
   rsAssert(i >= 0 && i < getNumPieces());
+  // factor out index computation (return -1, if x is outside the domain)
+
   return pieces[i](x);  // use evaluate function (needs to be written)
 }
 
