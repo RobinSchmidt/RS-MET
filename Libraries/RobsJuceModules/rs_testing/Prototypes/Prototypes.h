@@ -2436,6 +2436,10 @@ public:
 
   void addPiece(const rsPolynomial<T>& p, T pL, T pU);
 
+  int getNumPieces() const { return (int) pieces.size(); }
+
+  T evaluate(T x) const;
+
   //void addPiece(const rsPolynomial<T>& p, T pL, T pU);
 
 protected:
@@ -2546,9 +2550,34 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
 
   // todo: handle overlap and gap
 
-
-
   rsError("Case not yet handled");
+}
+
+template<class T>
+T rsPiecewisePolynomial<T>::evaluate(T x) const
+{
+  if(pieces.empty() || x < domains[0] || x > rsLast(domains))
+    return T(0);
+
+  // find the right segment - this is not yet correct - we want the left boundary to be included
+  // and the right boundary to be excluded
+  int i = rsArrayTools::findSplitIndex(&domains[0], (int) domains.size(), x);
+  //if(x > domains[i])
+  //  i--;
+  i = rsMax(i-1, 0);
+
+  rsAssert(i >= 0 && i < getNumPieces());
+  return pieces[i](x);  // use evaluate function (needs to be written)
+}
+
+template<class T>
+void plot(const rsPiecewisePolynomial<T>& p, T xMin, T xMax, int numSamples)
+{
+  std::vector<T> x(numSamples), y(numSamples);
+  rsArrayTools::fillWithRangeLinear(&x[0], numSamples, xMin, xMax);
+  for(int i = 0; i < numSamples; i++)
+    y[i] = p.evaluate(x[i]);
+  rsPlotVectorsXY(x, y);
 }
 
 

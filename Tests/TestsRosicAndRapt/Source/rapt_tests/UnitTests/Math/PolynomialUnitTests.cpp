@@ -1675,6 +1675,8 @@ bool testPiecewisePolynomial2()
   p.addPiece(Poly({1, 0, 0,-1}), 2, 3);  // p(x) = 1-x^3   in x = 2..3
 
 
+  plot(p, -1.0, 4.0, 51);
+  // does not seem to handle the domain boundaries right
 
   //Poly p({ 2,-3,5,-7 }); 
 
