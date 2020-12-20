@@ -321,6 +321,10 @@ template int RAPT::rsChineseRemainderTheorem(int* remainders, int* moduli, rsUin
 //template rsUint32 RAPT::rsChineseRemainderTheorem(rsUint32* remainders, rsUint32* moduli, rsUint32 count);
 template void RAPT::rsFillPrimeTable(rsUint32 *primes, rsUint32 numPrimes, rsUint32 bufferSize);
 
+//template void RAPT::rsNextPascalTriangleLine(const double* x, double* y, int N);
+template void RAPT::rsPascalTriangleLine(double* y, int N);
+
+
 template void RAPT::smbFft(float *fftBuffer, long fftFrameSize, long sign);
 template void RAPT::rsDFT(std::complex<double> *buffer, int N);
 template void RAPT::rsFFT(std::complex<double> *buffer, int N);

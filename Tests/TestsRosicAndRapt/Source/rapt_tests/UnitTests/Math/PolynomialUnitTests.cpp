@@ -1504,6 +1504,9 @@ bool testBivariatePolynomial()
   val  = uni(a*x + b*y);
   val2 = bi.evaluate(x, y);
   r &= val == val2;
+  bi   = BiPoly::composeWithLinear2(uni, a, b);
+  val2 = bi.evaluate(x, y);
+  r &= val == val2;
 
   // Multiply bivariate polynomial with univariate polynomial in y:
   //
@@ -1609,6 +1612,36 @@ bool testPiecewisePolynomial()
   r &= rLL == 2; r &= rLU == 3;
   r &= rRL == 5; r &= rRU == 6;
 
+  // Now, let's swap the domains:
+  // p  = piecewise([(( 3,4), 2 - 3*x + 5*x^2 - 7*x^3)])
+  // q  = piecewise([((-1,2), 3 - 4*x + 6*x^2)])
+  // pq = p.convolution(q)
+  // pq
+  //
+  // gives:
+  // -7/10*x^6 + 12/5*x^5 - 101/12*x^4 - 38*x^3 + 561*x^2 - 53089/15*x + 26206/5 on (2, 3], 
+  // -3037/2*x^2 + 178022/15*x - 478007/20 on (3, 5], 
+  // 7/10*x^6 - 12/5*x^5 + 101/12*x^4 - 109*x^3 - 3319/2*x^2 + 72444/5*x - 142758/5 on (5, 6]
+  p  = Poly({ 2,-3,5,-7 }); pL =  3, pU = 4; // p(x) = 2 - 3*x + 5*x^2 - 7*x^3  in  3..4
+  q  = Poly({ 3,-4,6    }); qL = -1, qU = 2; // q(x) = 3 - 4*x + 6*x^2          in -1..2
+  tL = Poly({26206./5, -53089./15, 561, -38, -101./12, 12./5, -7./10});
+  tM = Poly({-478007./20, 178022./15, -3037./2 });
+  tR = Poly({-142758./5, 72444./5, -3319./2, -109, 101./12, -12./5, 7./10});
+
+  PiecePoly::convolvePieces(p, pL, pU, q, qL, qU, rL, rLL, rLU, rM, rR, rRL, rRU);
+  r &= rsIsCloseTo(rL, tL, tol);
+  r &= rsIsCloseTo(rM, tM, tol);
+  r &= rsIsCloseTo(rR, tR, tol);
+  r &= rLL == 2; r &= rLU == 3;
+  r &= rRL == 5; r &= rRU == 6;
+
+  PiecePoly::convolvePieces(q, qL, qU, p, pL, pU, rL, rLL, rLU, rM, rR, rRL, rRU);
+  r &= rsIsCloseTo(rL, tL, tol);
+  r &= rsIsCloseTo(rM, tM, tol);
+  r &= rsIsCloseTo(rR, tR, tol);
+  r &= rLL == 2; r &= rLU == 3;
+  r &= rRL == 5; r &= rRU == 6;
+
   // ToDo: 
   // -make tests with all possible combinations of p having higher and lower degree than q and
   //  longer, shorter, equal domain
@@ -1617,8 +1650,14 @@ bool testPiecewisePolynomial()
   //  potentially produce a higher degree output, but because the lower right coeffs in matrix
   //  of the bivariate polynomial are zero, the final result coeffs come out as zero too
   //  ...maybe the function should cut off trailing zeros
+  // -the middle section seems to have the degree of the polynomial with the longer domain, even if
+  //  that's the one with the lower degree...seems like a high-degree polynomial gets its wiggles
+  //  smoothed out such that only the low degree remains in the smoothed polynomial
+  // -the outer sections seem to have a degree that is the product of the input degrees? 
+  //  ..nope - it's their sum plus one
   // -figure out the nominal and actual degrees of the output segments as function of the degrees
   //  (and maybe lengths of domains?) of the input segments
+  // -produce B-Spline polynomials and/or Irvin-Hall distribution
 
   return r;
 }

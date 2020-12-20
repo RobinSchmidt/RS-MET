@@ -130,15 +130,24 @@ bool testBinomialCoefficients(std::string &reportString)
   std::string testName = "rsBinomialCoefficients";
   bool testResult = true;
 
-  unsigned int nMax = 20;
-  unsigned int c1, c2;
-  for(unsigned int n = 0; n <= nMax; n++)
+  using uint = unsigned int;
+  static const uint nMax = 20;
+
+  double B1[nMax+1]; rsArrayTools::fillWithNaN(B1, nMax+1);
+  double B2[nMax+1]; rsArrayTools::fillWithNaN(B2, nMax+1);
+  for(uint n = 0; n <= nMax; n++)
   {
-    for(unsigned int k = 0; k <= n; k++)
+    rsNextPascalTriangleLine(B1, B1, n+1);  // todo: use n
+    rsPascalTriangleLine(B2, n+1);          // todo: use n
+    for(uint k = 0; k <= n; k++)
     {
-      c1 = rsBinomialCoefficient(      n, k);
-      c2 = rsBinomialCoefficientUpTo20(n, k);
+      uint c1 = rsBinomialCoefficient(      n, k);
+      uint c2 = rsBinomialCoefficientUpTo20(n, k);
       testResult &= (c1 == c2);
+      double c3 = B1[k];
+      double c4 = B2[k];
+      testResult &= (double)c1 == c3;
+      testResult &= (double)c1 == c4;
     }
   }
 

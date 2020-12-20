@@ -68,6 +68,7 @@ required length for the array is given by length >= (numLines*(numLines+1))/2. T
 from this array, you can use rsPascalTriangle().  */
 template<class TUInt>
 void rsCreatePascalTriangle(TUInt *pascalTriangle, TUInt numLines);
+// todo: deprecate
 
 /** Returns the k-th value of the n-th line in a pascal triangle that is supposed to have been
 created previously via rsCreatePascalTriangle. In this creation, you must make sure to create at
@@ -77,7 +78,7 @@ RS_INLINE TUInt rsPascalTriangle(TUInt *pascalTriangle, TUInt n, TUInt k)
 {
   return pascalTriangle[((n*(n+1))>>1)+k];
 }
-// rename to rsReadTriangularMatrix
+// todo: deprecate (or rename to rsReadTriangularMatrix and move elsewhere)
 // \todo provide general functions triangleArrayRead/Write/Allocate/Free
 
 /** Returns one line of the Pascal triangle in the c-array which must be of length n+1,
@@ -95,7 +96,22 @@ given some value of n. This is more efficient then calling binomialCoefficient f
 (\todo: is it really more efficient? measure this) */
 template<class TUInt>
 void rsGetLineOfPascalTriangle(TUInt *c, TUInt n);
-  // maybe rename to rsBinomialCoeffs
+// todo: deprecate
+
+/** Given the (N-1)th line of the Pascal triangle in x, this produces the N-th line in y, where x 
+is of length N-1 and y is of length N. It may be used in place, i.e. x and y may point to the same
+array. */
+template<class T>
+void rsNextPascalTriangleLine(const T* x, T* y, int N);
+// todo: document whether 0 or 1 is the index for the 1st line - it's 1 - but that is wrong!
+
+/** Convenience function for cases when you need only the N-th line of the Pascal triangle. It 
+calls rsNextPascalTriangleLine in a loop up to N, so if you actually need all lines of the 
+triangle up to N (which is a typical case), you are better off, using rsNextPascalTriangleLine in 
+your loop over n - otherwise you are creating a "Shlemiel the painter" algorithm. */
+template<class T>
+void rsPascalTriangleLine(T* y, int N);
+
 
 /** Maps an integer index in the range 0...numIndices-1 into a normalized floating point number
 in the range 0...1. */

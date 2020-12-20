@@ -140,6 +140,30 @@ void rsGetLineOfPascalTriangle(TUInt *c, TUInt n)
   // maybe this can be optimized by using the symmetry of the Pascal triangle
 }
 
+template<class T>
+void rsNextPascalTriangleLine(const T* x, T* y, int N)
+{
+  rsAssert(N >= 1);
+  T xL = T(1);
+  y[0] = T(1); // correct?
+  for(int i = 1; i < N-1; i++) { 
+    T xR = x[i]; 
+    y[i] = xL + xR;
+    xL   = xR;  }
+  y[N-1] = T(1);
+}
+// -maybe this can be optimized using symmetry by doing something like
+//  y[i] = y[i+k] = xL + xR where k depends on i and N - or maybe y[i] = y[N-i] = xL + xR?
+// -maybe generalize to compute coefficients: y[i] = a*xL + b*xR...i think, this computes the coeff
+//  for x^k * y^(n-k) in (a*x + b*y)^n
+
+template<class T>
+void rsPascalTriangleLine(T* y, int N)
+{
+  for(int n = 1; n <= N; n++)    // use n = 0; n < N
+    rsNextPascalTriangleLine(y, y, n);
+}
+
 template<class TInt>
 TInt rsLeviCivita(TInt indices[], TInt N)
 {

@@ -1989,6 +1989,9 @@ public:
   a linear combination of x and y and a univariate polynomial p: r(x,y) = p(a*x + b*y). */
   static rsBivariatePolynomial<T> composeWithLinear(const rsPolynomial<T>& p, T a, T b);
 
+  static rsBivariatePolynomial<T> composeWithLinear2(const rsPolynomial<T>& p, T a, T b);
+
+
   /** Multiplies this bivariate polynomial with a univariate polynomial in y only and returns the 
   result which is again a bivariate polynomial. This amounts to convolving each row of our 
   coefficient matrix with the coefficient array of p. */
@@ -2347,15 +2350,49 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear(
   rsBivariatePolynomial<T> r(N, N);
   r.coeffs.setToZero();
   const T* c = p.getCoeffPointerConst();
-
-  // this works, but is very inefficient (Shlemiel, the painter, strikes again!) - optimize!:
   for(int n = 0; n <= N; n++)
     for(int k = 0; k <= n; k++)
       r.coeffs(k, n-k) += c[n] * (T) rsBinomialCoefficient(n, k) * pow(a, k) * pow(b, n-k);
+  return r;
+}
+// this works, but is very inefficient (Shlemiel, the painter, strikes again!) - optimize!
+// -precompute arrays of binomial coeffs and powers of a,b
+// -or: in each iteration of the outer loop over n, generate a new line of the pascal triangle from
+//  the previous line 
+//  -needs a temporary array of length N+1
+//  -perhaps we can even compute the whole product coeff * a^k * b^(n-k) by using a generalized 
+//   algo for the pascal triangle lines
+
+
+// UNDER CONSTRUCTION - optimized version of composeWithLinear
+template<class T>
+rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear2(
+  const rsPolynomial<T>& p, T a, T b)
+{
+  int N = p.getDegree();
+  rsBivariatePolynomial<T> r(N, N);
+  r.coeffs.setToZero();
+  const T* c = p.getCoeffPointerConst();
+
+  // new implementation:
+  T B[20];
+  r.coeffs(0, 0) = c[0];
+  for(int n = 1; n <= N; n++)             // loop must start at 1
+  {
+    r.coeffs(0, n) += c[n] * pow(b, n);   // compute pow(b,n) on the fly
+    rsNextPascalTriangleLine(B, B, n);
+    for(int k = 1; k <= n; k++)           // loop must start at 1
+    {
+      T Bnk = (T) rsBinomialCoefficient(n, k);
+      r.coeffs(k, n-k) += c[n] * Bnk * pow(a, k) * pow(b, n-k);
+      //r.coeffs(k, n-k) += c[n] * B[k] * pow(a, k) * pow(b, n-k);
+      int dummy = 0;
+    }
+  }
 
   return r;
 }
-// optimize: precompute arrays of binomial coeffs and powers of a,b
+
 
 template<class T>
 rsBivariatePolynomial<T> rsBivariatePolynomial<T>::multiplyY(const rsPolynomial<T>& polyY) const
@@ -2414,9 +2451,9 @@ void rsPiecewisePolynomial<T>::convolvePieces(
   // results should be the same, but using the lower degree polynomial as q should be more 
   // efficient and maybe also more precise. The unit tests should also pass when we comment this 
   // optimization out:
-  if(q.getDegree() > p.getDegree()) {
-    convolvePieces(q, qL, qU, p, pL, pU, rL, rLL, rLU, rM, rR, rRL, rRU);
-    return; }
+  //if(q.getDegree() > p.getDegree()) {
+  //  convolvePieces(q, qL, qU, p, pL, pU, rL, rLL, rLU, rM, rR, rRL, rRU);
+  //  return; }
 
   // Compute the domains for the 3 output segments:
   T wp = pU - pL;   // width of domain of p
