@@ -1702,26 +1702,26 @@ bool testPiecewisePolynomial2()
 
 bool testPiecewisePolynomial3()
 {
-  // We create the B-Splines - maybe that should be an experiment rather than aunit test
+  // We create the B-Splines - maybe that should be an experiment rather than a unit test
+  // move to experiments!
 
   bool r = true;
 
   using Poly      = RAPT::rsPolynomial<double>;
   using PiecePoly = rsPiecewisePolynomial<double>;
 
-  Poly one({1.0});
+  double xMin = -4, xMax = +4;
+  int N = (int) round(100 * (xMax - xMin) + 1);
 
-  PiecePoly B0; B0.addPiece(Poly({ 1.0 }), 0, 1);
-  PiecePoly B1 = B0.convolve(B0);
-  PiecePoly B2 = B1.convolve(B0);
-  PiecePoly B3 = B2.convolve(B0);
-  PiecePoly B4 = B3.convolve(B0);
-
-  plot(B0, -1.0, 5.0, 601);
-  plot(B1, -1.0, 5.0, 601);
-  plot(B2, -1.0, 5.0, 601);
-  plot(B3, -1.0, 5.0, 601);
-  plot(B4, -1.0, 5.0, 601);
+  PiecePoly B0; 
+  B0.addPiece(Poly({ 1.0 }), -0.5, 0.5);  // our seed function
+  PiecePoly B = B0;
+  plot(B, xMin, xMax, N);
+  for(int i = 1; i < 5; i++)
+  {
+    B = B.convolve(B0);
+    plot(B, xMin, xMax, N);
+  }
 
   return r;
 }

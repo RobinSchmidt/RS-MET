@@ -2486,35 +2486,28 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
     rsPrepend(domains, pL);
     return; }
 
-  // handle overlap:
+  // (don't) handle gaps:
   int iL = getIndex(pL);
   if(iL == -1) {
     rsError("Gaps are not allowed"); // we can't handle them with the current implementation
     return;  }
 
-  if(pL == domains[iL])
-  {
-    // start of new piece is aligned with start of an existing piece
+  // what if the new segment starts before our first? we need to update domains[0] = pL
+
+  // handle aligned overlap:
+  if(pL == domains[iL]) {          // start of new piece is aligned with start of an existing piece
     int iU = getIndex(pU);
-    if(iU == -1)
-    {
-      // end of new piece extends - we don't need to split pieces
-      pieces[iL] = pieces[iL] + p;   // optimize: implement +=
-      domains[iL+1] = pU;            // update the last domain end
-
-      return;
-    }
-
-
-
-    if(iU == domains[iU])
-    {
-      // end of new piece is aligned with end of an existing piece
+    if(iU == -1) {                 // end of new piece extends beyond our last piece
+      pieces[iL] = pieces[iL] + p; // optimize: implement +=
+      domains[iL+1] = pU;          // update the last domain end
+      return; }
+    if(iU == domains[iU]) {        // end of new piece is aligned with end of an existing piece
       for(int i = iL; i < iU; i++)
-        pieces[i] = pieces[i] + p;   // optimize: implement +=
-      return;
-    }
-  }
+        pieces[i] = pieces[i] + p; // optimize: implement +=
+      return; }}
+
+  // todo: handle unaligned overlap - that will be a messy business! many different cases to 
+  // consider
 
   rsError("Case not yet handled"); 
 }
@@ -2618,23 +2611,15 @@ void rsPiecewisePolynomial<T>::convolvePieces(
   //  the operation to be efficient
 }
 
-
 template<class T>
 rsPiecewisePolynomial<T> rsPiecewisePolynomial<T>::convolve(const rsPiecewisePolynomial<T>& q)
 {
   rsPiecewisePolynomial<T> r;
-
-
   using Poly = rsPolynomial<T>;
-
   Poly rL, rM, rR;
   T rLL, rLU, rRL, rRU;
-  //T pL, pU, qL
-
-  for(int i = 0; i < getNumPieces(); i++)
-  {
-    for(int j = 0; j < q.getNumPieces(); j++)
-    {
+  for(int i = 0; i < getNumPieces(); i++) {
+    for(int j = 0; j < q.getNumPieces(); j++) {
       const Poly& pi = getPieceConstRef(i);
       T pL = domains[i];
       T pU = domains[i+1];
@@ -2642,19 +2627,10 @@ rsPiecewisePolynomial<T> rsPiecewisePolynomial<T>::convolve(const rsPiecewisePol
       T qL = q.domains[j];
       T qU = q.domains[j+1];
       convolvePieces(pi, pL, pU, qj, qL, qU, rL, rLL, rLU, rM, rR, rRL, rRU);
-
       r.addPiece(rL, rLL, rLU);
       if(rLU < rRL)
         r.addPiece(rM, rLU, rRL);
-      r.addPiece(rR, rRL, rRU);
-
-
-      int dummy = 0;
-    }
-  }
-
-
-
+      r.addPiece(rR, rRL, rRU);   }}
   return r;
 }
 
