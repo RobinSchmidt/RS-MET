@@ -218,6 +218,22 @@ void plotPolynomial(const T* a, int degree, T min, T max, int numPoints = 200)
   rsPlotArraysXY(numPoints, &x[0], &y[0]);
 }
 
+template<class T>
+void plot(const rsPiecewisePolynomial<T>& p, T xMin, T xMax, int numSamples)
+{
+  std::vector<T> x(numSamples), y(numSamples);
+  rsArrayTools::fillWithRangeLinear(&x[0], numSamples, xMin, xMax);
+  for(int i = 0; i < numSamples; i++)
+    y[i] = p.evaluate(x[i]);
+  rsPlotVectorsXY(x, y);
+}
+
+template<class T>
+void plot(const rsPiecewisePolynomial<T>& p, int numSamples = 501)
+{
+  plot(p, p.getDomainMinimum(), p.getDomainMaximum(), numSamples);
+}
+
 
 /** Plots the magnitude spectrogram given in s against time axis t (of length numFrames) and
 frequency axis f (of length numBins). */

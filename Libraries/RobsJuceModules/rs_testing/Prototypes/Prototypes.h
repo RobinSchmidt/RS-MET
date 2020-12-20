@@ -2429,6 +2429,20 @@ public:
   /** Returns the index of the segment, where x belongs or -1, if x is out of range. */
   int getIndex(T x) const;
 
+  T getDomainMinimum() const
+  {
+    if(domains.empty())
+      return T(0);
+    return domains[0];
+  }
+
+  T getDomainMaximum() const
+  {
+    if(domains.empty())
+      return T(0);
+    return rsLast(domains);
+  }
+
   T evaluate(T x) const;
 
   T operator()(T x) const { return evaluate(x); }
@@ -2457,6 +2471,10 @@ public:
   /** Convolves this piecewise polynomial with another piecewise polynomial p and returns the 
   result which is again a piecewise polynomial. */
   rsPiecewisePolynomial<T> convolve(const rsPiecewisePolynomial<T>& p);
+
+  // todo: integral - as integration constants for the segments, use the function value at the 
+  // right boundary of the previous segment to get a continuous result
+  // ...derivative, scale, stretch
 
 
 protected:
@@ -2531,17 +2549,6 @@ T rsPiecewisePolynomial<T>::evaluate(T x) const
   if(i == -1) return T(0);
   else        return pieces[i](x);  // use evaluate function (needs to be written)
 }
-
-template<class T>
-void plot(const rsPiecewisePolynomial<T>& p, T xMin, T xMax, int numSamples)
-{
-  std::vector<T> x(numSamples), y(numSamples);
-  rsArrayTools::fillWithRangeLinear(&x[0], numSamples, xMin, xMax);
-  for(int i = 0; i < numSamples; i++)
-    y[i] = p.evaluate(x[i]);
-  rsPlotVectorsXY(x, y);
-}
-
 
 template<class T>
 void rsPiecewisePolynomial<T>::convolvePieces(

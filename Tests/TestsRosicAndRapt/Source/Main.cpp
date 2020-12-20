@@ -259,7 +259,8 @@ int main(int argc, char* argv[])
   //vertexMeshGradient();
   //vertexMeshHessian();
 
-  convolvePolynomials();   // under construction
+  //convolvePolynomials();   // obsolete
+  convolvePiecewise();
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();

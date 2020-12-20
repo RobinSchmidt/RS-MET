@@ -38,6 +38,7 @@ void vertexMeshGradient();
 void vertexMeshHessian();
 
 void convolvePolynomials();
+void convolvePiecewise();
 void shiftPolynomial();
 //void stretchPolynomial();
 void monotonicPolynomials();

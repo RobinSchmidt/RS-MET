@@ -3394,6 +3394,8 @@ void vertexMeshHessian()
 // End of mesh derivatives
 //=================================================================================================
 
+// this is obsolete - code to do this is now in Prototypes and used as subalgo in 
+// convolvePiecewise
 void convolvePolynomials()
 {
   // We want to find an algorithm to convolve two polynomial pieces that may occur in a function
@@ -3473,7 +3475,29 @@ void convolvePolynomials()
   // ToDo:
   // -figure out why we get 9th degree results for the pqX and 10th degree for th qpX with topmost 
   //  coeffs zero? The actual degree is just 6 for L,R and 3 for M 
+}
 
+void convolvePiecewise()
+{
+  using Poly      = RAPT::rsPolynomial<double>;
+  using PiecePoly = rsPiecewisePolynomial<double>;
+
+  double xMin = -4, xMax = +4;
+  int N = (int) round(100 * (xMax - xMin) + 1);
+
+  PiecePoly B0; 
+  B0.addPiece(Poly({ 1.0 }), -0.5, 0.5);  // our seed function
+  PiecePoly B = B0;
+  plot(B, xMin, xMax, N);
+  for(int i = 1; i < 5; i++) {
+    B = B.convolve(B0);
+    //plot(B, xMin, xMax, N);
+  }
+
+  plot(B);
+  int dummy = 0;
+
+  // todo: test stretching, compressing, integrating, differentiating, shifting
 }
 
 void shiftPolynomial()

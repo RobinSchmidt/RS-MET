@@ -347,7 +347,7 @@ void noiseWaveShaped()
   // the output p_y(y)? If we assume that the x[n] are independently drawn from p_x(x), i.e. 
   // uncorrelated, i think, it's p_y(y) = conv(p_x(x/b0)/b0, p_x(x/b1)/b1), i.e. the convolution of
   // appropriately stretched/compressed and scaled versions of p_x(x). When any of b-coeffs 
-  // approaches zero, the corresponding factor in the convolution product approaches the Dirac 
+  // approach zero, the corresponding factor in the convolution product approaches the Dirac 
   // delta distribution (small b make the distribution narrower and scale it up). When using more
   // past x samples, i.e. a higher order non-recursive filter, we would have to do repeated 
   // convolutions...right? or wrong? after the first convolution, one of the inputs to the 2nd 
@@ -357,12 +357,7 @@ void noiseWaveShaped()
   // non-recursive filter could be used (leading to an infinitely often iterated convolution)
 
   // To actually compute such a pdf, we need a way of convolving functions that are expressed as
-  // piecewise polynomials. For that we need a sub-algorithm to convolve two such polynomial pieces
-  // which we we define to be zero outside their respective interval. Let's consider two such 
-  // pieces p(x), q(x) defined on intervals [a,b), [c,d) respectively by:
-  //   p(x) = \sum_{m=0}^M p_m x^m    for a <= x < b, 0 otherwise
-  //   q(x) = \sum_{n=0}^N q_n x^n    for c <= x < d, 0 otherwise
-  // We wan
+  // piecewise polynomials. 
 
 }
 
