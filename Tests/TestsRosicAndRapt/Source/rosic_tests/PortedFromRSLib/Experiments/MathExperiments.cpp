@@ -3488,16 +3488,21 @@ void convolvePiecewise()
   PiecePoly B0; 
   B0.addPiece(Poly({ 1.0 }), -0.5, 0.5);  // our seed function
   PiecePoly B = B0;
-  plot(B, xMin, xMax, N);
+  //plot(B, xMin, xMax, N);
   for(int i = 1; i < 5; i++) {
     B = B.convolve(B0);
     //plot(B, xMin, xMax, N);
   }
 
   plot(B);
+  B.scale(2.0);
+  plot(B);
+  B.stretch(2.0);
+  plot(B);
+
   int dummy = 0;
 
-  // todo: test stretching, compressing, integrating, differentiating, shifting
+  // todo: test integrating, differentiating, shifting
 }
 
 void shiftPolynomial()

@@ -2419,8 +2419,8 @@ public:
 
 
 
-
-  void addPiece(const rsPolynomial<T>& p, T pL, T pU);
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
 
   int getNumPieces() const { return (int) pieces.size(); }
 
@@ -2443,6 +2443,10 @@ public:
     return rsLast(domains);
   }
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Evaluation
+
   T evaluate(T x) const;
 
   T operator()(T x) const { return evaluate(x); }
@@ -2450,6 +2454,26 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
+  // \name Manipulations
+
+  /** Adds another piece to the object. Implementation is still incomplete - it currently works 
+  only when the new piece aligns well with the already existing pieces... */
+  void addPiece(const rsPolynomial<T>& p, T pL, T pU);
+
+  /** Scales the whole function in the y-direction by the given factor. */
+  void scale(T factor);
+
+  /** Stretches the whole function in the x-direction by the given factor. */
+  void stretch(T factor);
+
+  void integrate(T c);
+
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Combination
 
   /** Convolves two polynomial pieces p(x) and q(x) that are defined on the domains pL..pU and 
   qL..qU respectively and assumed to be zero outside these domains (L and U stand for lower and 
@@ -2529,6 +2553,23 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
 
   rsError("Case not yet handled"); 
 }
+
+template<class T>
+void rsPiecewisePolynomial<T>::scale(T factor)
+{
+  for(size_t i = 0; i < pieces.size(); i++)
+    pieces[i].scale(factor);
+}
+
+template<class T>
+void rsPiecewisePolynomial<T>::stretch(T factor)
+{
+  for(size_t i = 0; i < pieces.size(); i++)
+    pieces[i].stretch(factor);
+  for(size_t i = 0; i < domains.size(); i++)
+    domains[i] *= factor;
+}
+
 
 template<class T>
 int rsPiecewisePolynomial<T>::getIndex(T x) const

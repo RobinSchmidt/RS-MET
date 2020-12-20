@@ -91,6 +91,13 @@ public:
   { rsArrayTools::negate(&coeffs[0], &coeffs[0], (int) coeffs.size()); }
   // the conversion to int may be avoided
 
+  /** Stretches (or compresses) the polynomial along the x axis. */
+  void stretch(T factor)
+  { scaleArgument(&coeffs[0], &coeffs[0], (int) coeffs.size(), T(1)/factor); }
+
+  /** Scales the output of the whole polynomial by the given factor. */
+  void scale(T factor)
+  { rsArrayTools::scale(&coeffs[0], (int) coeffs.size(), factor); }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -474,6 +481,7 @@ public:
   a polynomial q(x) such that q(x) = p(scaler*x). This amounts to scaling all coefficients with the
   scaler raised to the same power as the respective x. */
   static void scaleArgument(const T *a, T *as, int N, T scaler);
+  // maybe rename to stretch or scaleX
 
   /** Given an array of polynomial coefficients "a" such that
   p(x) = a[0]*x^0 + a[1]*x^1 + ... + a[N]*x^N, this function returns (in "aShifted") the coefficients
@@ -483,6 +491,7 @@ public:
   // should use compose and a workspace of length N (or N+1) should suffice, see comments in
   // shiftPolynomial in MathExperiments.cpp
   // maybe move into "Conversions" section
+  // maybe rename to shiftX
 
 
   //-----------------------------------------------------------------------------------------------
