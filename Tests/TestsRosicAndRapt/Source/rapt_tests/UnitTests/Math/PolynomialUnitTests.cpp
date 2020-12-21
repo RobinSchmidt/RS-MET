@@ -1693,6 +1693,7 @@ bool testPiecewisePolynomial2()
   using PiecePoly = rsPiecewisePolynomial<double>;
 
   Poly one({ 1.0 });  // polynomial that is constantly 1
+  Poly two({ 2.0 });  // polynomial that is constantly 2
 
   PiecePoly p;
   p.addPiece(Poly({1,-1      }), 0, 1);  // p(x) = 1-x     in x = 0..1
@@ -1728,8 +1729,12 @@ bool testPiecewisePolynomial2()
     p.addPiece(one, 5, 6);
   };
 
-  init6();
-  p.addPiece(one, 3.25, 3.75);
+  init6(); p.addPiece(two, 2.0, 4.5); r &= p(1.9)==1 && p(2.1)==3 && p(4.4)==3 && p(4.6)==1;
+  // left match, right nomatch
+
+
+
+  //init6(); p.addPiece(one, 3.25, 3.75);
   
   plot(p);
 

@@ -2553,17 +2553,40 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
 
   // what if the new segment starts before our first? we need to update domains[0] = pL
 
+  // splits piece at index i into two pieces at x0
+  auto split = [&](int i, T x0) 
+  { 
+    rsAssert(x0 > domains[i] && x0 < domains[i+1], "x0 outside domain of piece i");
+    rsInsert(domains, x0, i+1);
+    rsInsert(pieces, pieces[i], i);
+  };
+
   // handle aligned overlap:
   if(match(pL, domains[iL])) {     // start of new piece is aligned with start of an existing piece
     int iU = getIndex(pU);
     if(iU == -1) {                 // end of new piece extends beyond our last piece
-      pieces[iL] = pieces[iL] + p; // optimize: implement +=
+      pieces[iL] += p;
       domains[iL+1] = pU;          // update the last domain end
       return; }
-    if(match(iU, domains[iU])) {   // end of new piece is aligned with end of an existing piece
+
+    if(match(pU, domains[iU])) 
+    {   // end of new piece is aligned with end of an existing piece
       for(int i = iL; i < iU; i++)
-        pieces[i] = pieces[i] + p; // optimize: implement +=
-      return; }}
+        pieces[i] += p;
+      return; 
+    }
+    else 
+    {
+      for(int i = iL; i < iU; i++)  // loop is same as in case above - maybe merge for the cases
+        pieces[i] += p;
+      split(iU, pU);
+      pieces[iU] += p;
+      return;
+    }
+  }
+
+  // maybe it can be implemented simpler when using a function splitPiece(int i, T x0) that 
+  // splits piece i at position x0
 
   // todo: 
   // -handle unaligned overlap - that will be a messy business! many different cases to 

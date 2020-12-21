@@ -8,11 +8,13 @@ bool doNothing(T x)
 }
 
 /** This function should be used to indicate a runtime error. */
-inline void rsError(const char *errorMessage = nullptr)
+inline void rsError(const char *message = nullptr)
 {
-  doNothing(errorMessage);
+  //doNothing(errorMessage);
   // fixes "unreferenced formal parameter" warning - we don't do anything with the message, but 
-  // we may want to see it in the debugger
+  // we may want to see it in the debugger 
+
+  std::cout << "Error: " << message << "\n";
 
   //printf("%s", errorMessage);
   RS_DEBUG_BREAK;
@@ -34,7 +36,8 @@ inline void rsAssert(bool expression, const char *errorMessage = nullptr)
 }
 
 inline void rsAssertFalse(const char *errorMessage = nullptr) { rsAssert(false, errorMessage); }
-// lol! this is stupid! remove and use rsError directly!
+// lol! this is stupid! remove and use rsError directly! juce had such a thing and i just copied
+// the idea
 
 // todo: have functions for logging and printing
 

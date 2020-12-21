@@ -191,6 +191,15 @@ public:
     return r;
   }
 
+  /** Adds the polynomial b to "this" polynomial. */
+  rsPolynomial<T>& operator+=(const rsPolynomial<T>& b) 
+  { 
+    return *this = (*this) + b;
+    // this implementation is preliminary - todo: optimize: if deg(b) > deg(this) -> resize, then
+    // loop through the coeffs up to min(deg(b), deg(this)) using +=
+  }
+
+
   /** Subtracts two polynomials. */
   rsPolynomial<T> operator-(const rsPolynomial<T>& q) const {
     rsPolynomial<T> r(rsMax(getDegree(), q.getDegree()), false);
