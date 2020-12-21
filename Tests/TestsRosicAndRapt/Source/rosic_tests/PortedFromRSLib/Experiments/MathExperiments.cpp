@@ -3487,20 +3487,16 @@ void convolvePiecewise()  // rename to irwinHall
   using Poly      = RAPT::rsPolynomial<double>;
   using PiecePoly = rsPiecewisePolynomial<double>;
 
-  int order = 8;
+  int order = 3;
 
-  PiecePoly B0; 
-  B0.addPiece(Poly({ 1.0 }), -0.5, 0.5);  // our seed function
-  PiecePoly B = B0;
-  for(int i = 1; i <= order; i++)
-    B = B.convolve(B0);
+  PiecePoly p = PiecePoly::irwinHall(order, -0.5, +0.5);
 
-  //plot(B);
-  //B.scale(2.0);     plot(B);
-  //B.stretch(2.0);   plot(B);
-  //B.integrate(1.0); plot(B);
+  plot(p);
+  //p.scale(2.0);     plot(p);
+  //p.stretch(2.0);   plot(p);
+  //p.integrate(1.0); plot(p);
 
-  B.integrate(0.0); plot(B);
+  p.integrate(0.0); plot(p);
 
 
   int dummy = 0;

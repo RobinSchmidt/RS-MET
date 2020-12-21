@@ -24,6 +24,11 @@ to confusion like the compiler using a nested complex type which makes no sense
 ....under construction....tbc...  */
 
 // todo: 
+// -in the low-level function interfaces, use consistently "degree" or "aDeg", "bDeg" etc. 
+//  instead of the generic N, aN, bN etc. to make it clear to the caller that the degree must be 
+//  passed and *NOT* the length of the coefficient array (which is one more than the degree). 
+//  Conflating the two is a constant source of confusion and off-by-one bugs and even heap 
+//  corruptions.
 // -use consistently input arrays as first and output arrays as last parameters for example in
 //  interpolant, fitQuadraticDirect -> this will silenty break client code, so be extra careful to
 //  adapt the code at *every* call site - it should be a consistent pattern through the library:

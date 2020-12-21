@@ -2501,6 +2501,17 @@ public:
   // ...derivative, scale, stretch
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
+
+  /** Creates a Irwin-Hall distribution of given order N between a and b. This is the uniform 
+  distribution convolved with itself N times. It arises as amplitude distribution, when you add up 
+  the outputs of N independent noise generators with uniform distributions between a..b. N=0 gives 
+  the uniform distribution, N=1 gives a triangular distribution, N=2 a piecewise parabolic 
+  distribution and so on. */
+  static rsPiecewisePolynomial<T> irwinHall(int N, T a = T(0), T b = T(1));
+
+
 protected:
 
   std::vector<T> domains;
@@ -2548,8 +2559,11 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
         pieces[i] = pieces[i] + p; // optimize: implement +=
       return; }}
 
-  // todo: handle unaligned overlap - that will be a messy business! many different cases to 
-  // consider
+  // todo: 
+  // -handle unaligned overlap - that will be a messy business! many different cases to 
+  //  consider
+  // -replace == comparisons of the domain boundaries with rsIsCloseTo with some tolerance that can
+  //  be set by the user (0 by default)
 
   rsError("Case not yet handled"); 
 }
@@ -2624,9 +2638,9 @@ void rsPiecewisePolynomial<T>::convolvePieces(
   // results should be the same, but using the lower degree polynomial as q should be more 
   // efficient and maybe also more precise. The unit tests should also pass when we comment this 
   // optimization out:
-  //if(q.getDegree() > p.getDegree()) {
-  //  convolvePieces(q, qL, qU, p, pL, pU, rL, rLL, rLU, rM, rR, rRL, rRU);
-  //  return; }
+  if(q.getDegree() > p.getDegree()) {
+    convolvePieces(q, qL, qU, p, pL, pU, rL, rLL, rLU, rM, rR, rRL, rRU);
+    return; }
 
   // Compute the domains for the 3 output segments:
   T wp = pU - pL;   // width of domain of p
@@ -2704,7 +2718,17 @@ rsPiecewisePolynomial<T> rsPiecewisePolynomial<T>::convolve(const rsPiecewisePol
   return r;
 }
 
-
+template<class T>
+rsPiecewisePolynomial<T> rsPiecewisePolynomial<T>::irwinHall(int order, T a, T b)
+{
+  rsAssert(order >= 0);
+  rsPiecewisePolynomial<T> p0; 
+  p0.addPiece(rsPolynomial<T>({ b-a }), a, b);  // our seed function
+  rsPiecewisePolynomial<T> p = p0;
+  for(int i = 1; i <= order; i++)
+    p = p.convolve(p0);
+  return p;
+}
 
 //=================================================================================================
 // the stuff below is just for playing around - maybe move code elsewhere, like the research-repo:
