@@ -1692,6 +1692,8 @@ bool testPiecewisePolynomial2()
   using Poly      = RAPT::rsPolynomial<double>;
   using PiecePoly = rsPiecewisePolynomial<double>;
 
+  Poly one({ 1.0 });  // polynomial that is constantly 1
+
   PiecePoly p;
   p.addPiece(Poly({1,-1      }), 0, 1);  // p(x) = 1-x     in x = 0..1
   p.addPiece(Poly({3, 0,-1   }), 1, 2);  // p(x) = 3-x^2   in x = 1..2
@@ -1711,9 +1713,25 @@ bool testPiecewisePolynomial2()
   x =  2.9; y = p(x); r &= y == 1-x*x*x;
   x =  3.0; y = p(x); r &= y == 0;
 
-
   p.addPiece(Poly({0, 1, 0}), 1, 2); // middle segment should now be  p(x) = 3 + x - x^2
   x = 1.5; y = p(x); r &= y == 3 + x - x*x;
+
+  // initialization with constant segments that is repeatedly used for the following tests:
+  auto init6 = [&]() 
+  {  
+    p.clear();
+    p.addPiece(one, 0, 1);
+    p.addPiece(one, 1, 2);
+    p.addPiece(one, 2, 3);
+    p.addPiece(one, 3, 4);
+    p.addPiece(one, 4, 5);
+    p.addPiece(one, 5, 6);
+  };
+
+  init6();
+  p.addPiece(one, 3.25, 3.75);
+  
+  plot(p);
 
 
   //plot(p, -1.0, 4.0, 51);// looks good - todo: make automated tests

@@ -2460,6 +2460,9 @@ public:
   only when the new piece aligns well with the already existing pieces... */
   void addPiece(const rsPolynomial<T>& p, T pL, T pU);
 
+  /** Clears the polynomial, setting it back into a freshly constructed state. */
+  void clear() { domains.clear(); pieces.clear(); }
+
   /** Scales the whole function in the y-direction by the given factor. */
   void scale(T factor);
 
@@ -2524,17 +2527,20 @@ protected:
 template<class T>
 void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
 {
+  T tol(0);  // tolerance for (floating point) equality comparisons -> make member
+  auto match = [&](T x, T y) -> bool { return rsAbs(x-y) <= tol; };
+
   rsAssert(pL < pU);
-  if(pieces.empty()) {        // initialize with the first piece:
+  if(pieces.empty()) {             // initialize with the first piece:
     pieces.push_back(p);
     domains.push_back(pL);
     domains.push_back(pU);
     return;  }
-  if(pL == rsLast(domains)) { // append piece at the right end
+  if(match(pL, rsLast(domains))) { // append piece at the right end
     pieces.push_back(p);
     domains.push_back(pU);
     return;  }
-  if(pU == domains[0]) {      // prepend piece at the left end:
+  if(match(pU, domains[0])) {      // prepend piece at the left end:
     rsPrepend(pieces,  p);
     rsPrepend(domains, pL);
     return; }
@@ -2548,13 +2554,13 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
   // what if the new segment starts before our first? we need to update domains[0] = pL
 
   // handle aligned overlap:
-  if(pL == domains[iL]) {          // start of new piece is aligned with start of an existing piece
+  if(match(pL, domains[iL])) {     // start of new piece is aligned with start of an existing piece
     int iU = getIndex(pU);
     if(iU == -1) {                 // end of new piece extends beyond our last piece
       pieces[iL] = pieces[iL] + p; // optimize: implement +=
       domains[iL+1] = pU;          // update the last domain end
       return; }
-    if(iU == domains[iU]) {        // end of new piece is aligned with end of an existing piece
+    if(match(iU, domains[iU])) {   // end of new piece is aligned with end of an existing piece
       for(int i = iL; i < iU; i++)
         pieces[i] = pieces[i] + p; // optimize: implement +=
       return; }}
