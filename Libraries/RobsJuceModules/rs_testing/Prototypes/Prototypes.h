@@ -2537,6 +2537,11 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
     domains.push_back(pL);
     domains.push_back(pU);
     return;  }
+
+  // I think, these cases can now be subsumed by the code below...but maybe it's neverless useful 
+  // to handle them specially for efficiency - these cases here (especially the first) come up in 
+  // the supposedly common case of building up a piecewise polynomial from scratch by appending one
+  // segment after another:
   if(match(pL, rsLast(domains))) { // append piece at the right end
     pieces.push_back(p);
     domains.push_back(pU);
@@ -2546,7 +2551,7 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
     rsPrepend(domains, pL);
     return; }
 
-  // figure out start- and end indices for segment:
+  // Figure out start- and end indices for segment:
   int numPieces = getNumPieces();
   int iL = getIndex(pL);
   int iU;
@@ -2575,56 +2580,40 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
     p += q; 
   };
   // todo: use a std:: function that is passed as parameter, so we can use the same function also 
-  // for subtraction, multiplication, etc.
- 
-  // todo: if pL < domains[0], we either need tom prepend or prepend-and-accumulate - maybe prepend
-  // and adjust pL, so we always fall into the "if" below - which means, we can actually make the 
-  // code unconditional..
+  // for subtraction, multiplication, etc. - but for multiplication or division, we have to do 
+  // something else in the case where we prepend or append the pieces here...we'll see...
 
-  // Handle case when left boundary of p is to the elft of our left boundary:
-  if(iL == -1)
-  {
-    rsPrepend(domains, pL);  // this works only for addition, not multiplication
-    rsPrepend(pieces,  p);
+  // Handle case when left boundary of p is to the left of our left boundary:
+  if(iL == -1) {
+    rsPrepend(domains, pL);
+    rsPrepend(pieces,  p);   // this works only for addition, not multiplication
     iL = 1;
     pL = domains[iL];        // so subsequent code can be used as if we had a match
-    iU++;             // because we have a piece more now
-    numPieces++;
-  }
+    iU++;                    // because we have a piece more now
+    numPieces++; }
 
   // Handle case when left boundary of p is in the middle of one of our existing pieces:
-  if(!match(pL, domains[iL]))
-  {
+  if(!match(pL, domains[iL])) {
     split(iL, pL);
     iL++;
-    //accumulate(pieces[iL], p);
     iU++;
-    numPieces++;
-  }
+    numPieces++;  }
 
-  // handle aligned overlap:
-  if(match(pL, domains[iL]))   // this condition is now superfluous
-  {     
-    // start of new piece is aligned with start of an existing piece
+  // Accumulate the new polynomial into the exisitng pieces that are now in full overlap:
+  for(int i = iL; i < iU; i++)
+    accumulate(pieces[i], p);
 
-    for(int i = iL; i < iU; i++) 
-      accumulate(pieces[i], p);  
+  // If end of new piece is aligned with end of an existing piece, we are done:
+  if(match(pU, domains[iU]))
+    return;
 
-    if(match(pU, domains[iU])) 
-      return; // end of new piece is aligned with end of an existing piece
-
-    if(iU == numPieces) {
-      domains.push_back(pU);  // this works only for addition, not multiplication
-      pieces.push_back(p);
-      return;  }
-    else {
-      split(iU, pU);
-      accumulate(pieces[iU], p);
-      return;  }
-
-  }
-
-  rsError("Case not yet handled"); 
+  // ...and if it's not aligned, we have two cases to consider:
+  if(iU == numPieces) {          // End of new piece is beyond or right boundary 
+    domains.push_back(pU);
+    pieces.push_back(p);   }     // this works only for addition, not multiplication
+  else  {                        // End of new piece is in the middle of some existing piece
+    split(iU, pU);
+    accumulate(pieces[iU], p); }
 }
 
 template<class T>

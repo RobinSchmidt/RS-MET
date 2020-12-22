@@ -1741,21 +1741,18 @@ bool testPiecewisePolynomial2()
   //plot(p);
 
   // left mismatch, right match
-  init6(); 
-  p.addPiece(two, 2.5, 5.0);
+  init6(); p.addPiece(two, 2.5, 5.0);
   r &= p(2.4) == 1 && p(2.6) == 3 && p(4.9) == 3 && p(5.1) == 1;
-  plot(p);
+  //plot(p);
 
-  // test cases wher both have a mismatch, also the case when the new piece fall completely within
-  // and existing segemnt
+  init6(); p.addPiece(two, 3.25, 3.75);
+  r &= p(3.2) == 1 && p(3.3) == 3 && p(3.7) == 3 && p(3.8) == 1;
+  //plot(p);
 
-
-  //init6(); p.addPiece(one, 3.25, 3.75);
-  
-
-  //plot(p, -1.0, 4.0, 51);// looks good - todo: make automated tests
-
-  //Poly p({ 2,-3,5,-7 }); 
+  // left mismatch, right mismatch
+  init6(); p.addPiece(two, 2.5, 4.5);
+  r &= p(2.4) == 1 && p(2.6) == 3 && p(4.4) == 3 && p(4.6) == 1;
+  //plot(p);
 
   return r;
 }
