@@ -1727,19 +1727,27 @@ bool testPiecewisePolynomial2()
 
   // left match, right mismatch:
   init6(); p.addPiece(two, 2.0, 4.5); 
-  r &= p(1.9)==1 && p(2.1)==3 && p(4.4)==3 && p(4.6)==1;
+  r &= p(1.9) == 1 && p(2.1) == 3 && p(4.4) == 3 && p(4.6) == 1;
   //plot(p);
 
   // left match, right beyond:
   init6(); p.addPiece(two, 2.0, 6.5); 
-  r &= p(1.9)==1 && p(2.1)==3 && p(5.9)==3 && p(6.1)==2 && p(6.4)==2 && p(6.6)==0;
+  r &= p(1.9) == 1 && p(2.1) == 3 && p(5.9) == 3 && p(6.1) == 2 && p(6.4) == 2 && p(6.6) == 0;
   //plot(p);
 
   // left beyond, right match:
+  init6(); p.addPiece(two, -1.0, 3.0);
+  r &= p(-1.1) == 0 && p(-0.9) == 2 && p(-0.1) == 2 && p(0.1) == 3 && p(2.9) == 3 && p(3.1) == 1;
+  //plot(p);
+
+  // left mismatch, right match
   init6(); 
-  p.addPiece(two, -1.0, 3.0);
-  r &= p(-1.1)==0 && p(-0.9)==2 && p(-0.1)==2 && p(0.1)==3 && p(2.9)==3 && p(3.1)==1;
+  p.addPiece(two, 2.5, 5.0);
+  r &= p(2.4) == 1 && p(2.6) == 3 && p(4.9) == 3 && p(5.1) == 1;
   plot(p);
+
+  // test cases wher both have a mismatch, also the case when the new piece fall completely within
+  // and existing segemnt
 
 
   //init6(); p.addPiece(one, 3.25, 3.75);

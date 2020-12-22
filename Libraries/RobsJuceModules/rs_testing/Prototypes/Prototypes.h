@@ -2588,19 +2588,22 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
     rsPrepend(pieces,  p);
     iL = 1;
     pL = domains[iL];        // so subsequent code can be used as if we had a match
-    iU = iU + 1;             // because we have a piece more now
+    iU++;             // because we have a piece more now
+    numPieces++;
   }
 
   // Handle case when left boundary of p is in the middle of one of our existing pieces:
   if(!match(pL, domains[iL]))
   {
-    // todo: split and accumulate
+    split(iL, pL);
+    iL++;
+    //accumulate(pieces[iL], p);
+    iU++;
+    numPieces++;
   }
 
-
-
   // handle aligned overlap:
-  if(match(pL, domains[iL])) 
+  if(match(pL, domains[iL]))   // this condition is now superfluous
   {     
     // start of new piece is aligned with start of an existing piece
 
