@@ -252,17 +252,19 @@ void noiseTriModal()
 
 void noiseWaveShaped()
 {
-  // We create uniform white noise and apply a waveshaper (using a signed power rule) to 
-  // investigate its effects on the amplitude distribution. The eventual goal is to figure out a 
-  // way how to shape the spectrum and amplitude distribution of some noise independently by using
-  // a combination of filtering and waveshaping
+  // We create uniform white noise, apply a first order filter, predict the resulting amplitude
+  // distribution and use the corresponding cumulative distribution to shape the amplitude 
+  // distribution back to uniform. The eventual goal is to figure out a way how to shape the 
+  // spectrum and amplitude distribution of some noise independently by using a combination of 
+  // filtering and waveshaping....
 
   int numSamples = 50000;
   int numBins    = 61;
-  //double p       = 0.5;       // power for the waveshaper
+  double b0      = 1.0;    // filter coeff for direct signal
+  double b1      = 1.0;    // filter coeff for delayed input signal
+  double a1      = 0.8;    // filter coeff for delayed output signal
+  int numConvs   = 8;      // determines accuracy of our approximation of the pdf
 
-  double b0 = 1.0;
-  double b1 = 0.5;
 
   // Create the raw input noise:
   rsNoiseGenerator<double> ng;
@@ -275,24 +277,36 @@ void noiseWaveShaped()
 
   // Apply a 2-point MA filter y[n] = b0*x[n] + b1*x[n-1]:
   double xOld = 0;
+  double yOld = 0;
   for(int n = 0; n < N; n++)
   {
-    double y = b0*x[n] + b1*xOld;
+    double y = b0*x[n] + b1*xOld + a1*yOld;
     xOld = x[n];
+    yOld = y;
     x[n] = y;
   }
-  plotHistogram(x, numBins, -2.0, +2.0); // triangular in -2..+2, if b0 = b1 = 1
+  plotHistogram(x, numBins, -2.0, +2.0); // triangular in -2..+2, if b0 = b1 = 1, a1 = 0
 
-  // Generate the amplitude distribution based on the MA filter coeffs:
+
+  // Here, we predict the amplitude distribution based on the filter coeffs. When a1 == 0, i.e. the
+  // filter is nonrecursive, we actually get an exact pdf and cdf. When the filter is recursive, we
+  // obtain an approximation based on a truncated impulse response. The numConvs parameter 
+  // determines, how many samples of the impulse response are taken into account. The impulse 
+  // reponse of the filter is: h[0] = b0, h[1] = b1 + a1*b0, h[n] = a1*h[n-1] for n >= 2:
+  double h0 = b0, hn = b1 + a1*h0;
   using PiecePoly = rsPiecewisePolynomial<double>; 
-  PiecePoly p0  = PiecePoly::irwinHall(0, -rsAbs(b0), +rsAbs(b0));
-  PiecePoly p1  = PiecePoly::irwinHall(0, -rsAbs(b1), +rsAbs(b1));
+  PiecePoly p0  = PiecePoly::irwinHall(0, -rsAbs(h0), +rsAbs(h0));
+  PiecePoly p1  = PiecePoly::irwinHall(0, -rsAbs(hn), +rsAbs(hn));
   PiecePoly pdf = p0.convolve(p1);
+  if(a1 != 0) {
+    for(int n = 1; n < numConvs; n++) {
+      hn *= a1;
+      PiecePoly pn = PiecePoly::irwinHall(0, -rsAbs(hn), +rsAbs(hn));
+      pdf = pdf.convolve(pn); }}
   PiecePoly cdf = pdf.integral();
   plot(pdf);  // should match the histogram
   plot(cdf);  // should go from 0 to 1
-  // in general, for a higher order MA filter, we would just convolve in more 0-th order 
-  // Irwin-Hall distributions
+
 
   // Now that we know the cdf of the noise, we can apply this:
   // https://en.wikipedia.org/wiki/Inverse_transform_sampling
@@ -313,13 +327,16 @@ void noiseWaveShaped()
 
   // Observations:
   // -if b0 = b1 = 1, the filtered output has a triangluar pdf from -1..+1 
-  // -if b0 = 1, b1 = 0.5 (or vice versa), we get a trpazoidal distribution from -1.5..+1.5
+  // -if b0 = 1, b1 = 0.5 (or vice versa), we get a trapezoidal distribution from -1.5..+1.5
   // -i think the general rule is that we need to convolved two stretched/compressed uniform 
   //  distribtutions where the strech factors are the filter coeffs
   // -i guess, this generalizes to higher order filters - we just have to perform repeated 
   //  convolutions
   // -for IIR filters, we may have to obtain the impluse-response first to express it as an MA 
   //  filter and then do repeated convolutions using the so obtained non-recursive coeffs
+  // -when numConvs is too low, we get an emphasis of extreme amplitude values - the distribution
+  //  gets batman ears
+  // -for a closer to 1, we need more numConvs to get a reasonable approximation of the cdf
 
   // ToDo:
   // -try waveshping first and then filtering
@@ -373,7 +390,6 @@ void noiseWaveShaped()
 
   // To actually compute such a pdf, we need a way of convolving functions that are expressed as
   // piecewise polynomials. 
-
 }
 
 // maybe let it take a parameter for the length and produce various test signals with various 
