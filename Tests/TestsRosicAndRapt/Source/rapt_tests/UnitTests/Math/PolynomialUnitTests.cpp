@@ -1717,29 +1717,33 @@ bool testPiecewisePolynomial2()
   p.addPiece(Poly({0, 1, 0}), 1, 2); // middle segment should now be  p(x) = 3 + x - x^2
   x = 1.5; y = p(x); r &= y == 3 + x - x*x;
 
-  // initialization with constant segments that is repeatedly used for the following tests:
+  // initialization with 6 constant segments that is repeatedly used for the following tests:
   auto init6 = [&]() 
   {  
     p.clear();
-    p.addPiece(one, 0, 1);
-    p.addPiece(one, 1, 2);
-    p.addPiece(one, 2, 3);
-    p.addPiece(one, 3, 4);
-    p.addPiece(one, 4, 5);
-    p.addPiece(one, 5, 6);
+    for(int i = 0; i < 6; i++)
+      p.addPiece(one, double(i), i+1.0);
   };
 
-  init6(); p.addPiece(two, 2.0, 4.5); r &= p(1.9)==1 && p(2.1)==3 && p(4.4)==3 && p(4.6)==1;
-  // left match, right nomatch
+  // left match, right mismatch:
+  init6(); p.addPiece(two, 2.0, 4.5); 
+  r &= p(1.9)==1 && p(2.1)==3 && p(4.4)==3 && p(4.6)==1;
+  //plot(p);
 
-  init6(); 
-  p.addPiece(two, 2.0, 6.5); 
+  // left match, right beyond:
+  init6(); p.addPiece(two, 2.0, 6.5); 
   r &= p(1.9)==1 && p(2.1)==3 && p(5.9)==3 && p(6.1)==2 && p(6.4)==2 && p(6.6)==0;
+  //plot(p);
+
+  // left beyond, right match:
+  init6(); 
+  p.addPiece(two, -1.0, 3.0);
+  r &= p(-1.1)==0 && p(-0.9)==2 && p(-0.1)==2 && p(0.1)==3 && p(2.9)==3 && p(3.1)==1;
+  plot(p);
+
 
   //init6(); p.addPiece(one, 3.25, 3.75);
   
-  plot(p);
-
 
   //plot(p, -1.0, 4.0, 51);// looks good - todo: make automated tests
 

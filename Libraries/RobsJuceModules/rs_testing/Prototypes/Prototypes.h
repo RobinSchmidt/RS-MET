@@ -2581,6 +2581,24 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
   // and adjust pL, so we always fall into the "if" below - which means, we can actually make the 
   // code unconditional..
 
+  // Handle case when left boundary of p is to the elft of our left boundary:
+  if(iL == -1)
+  {
+    rsPrepend(domains, pL);  // this works only for addition, not multiplication
+    rsPrepend(pieces,  p);
+    iL = 1;
+    pL = domains[iL];        // so subsequent code can be used as if we had a match
+    iU = iU + 1;             // because we have a piece more now
+  }
+
+  // Handle case when left boundary of p is in the middle of one of our existing pieces:
+  if(!match(pL, domains[iL]))
+  {
+    // todo: split and accumulate
+  }
+
+
+
   // handle aligned overlap:
   if(match(pL, domains[iL])) 
   {     
