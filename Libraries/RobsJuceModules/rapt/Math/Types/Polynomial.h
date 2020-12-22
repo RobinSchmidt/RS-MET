@@ -103,6 +103,14 @@ public:
   void scale(T factor)
   { rsArrayTools::scale(&coeffs[0], (int) coeffs.size(), factor); }
 
+
+  void shiftX(T dx) 
+  {
+    std::vector<T> tmp = coeffs;
+    shiftArgument(&tmp[0], &coeffs[0], getDegree(), dx);
+  }
+  // needs tests
+
   /** Shifts the polynomial up and down in the y direction by the given dy. */
   void shiftY(T dy) { coeffs[0] += dy; }
 

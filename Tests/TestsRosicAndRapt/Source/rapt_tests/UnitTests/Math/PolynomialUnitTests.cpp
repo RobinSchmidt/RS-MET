@@ -1769,11 +1769,77 @@ bool testPiecewisePolynomial2()
   return r;
 }
 
+bool testPiecewisePolynomial3()
+{
+  bool r = true;
+
+  int N1 = 50;  // number datapoints in polynomial 1
+  int N2 = 50;  // number datapoints in polynomial 2
+
+  using Poly      = RAPT::rsPolynomial<double>;
+  using PiecePoly = rsPiecewisePolynomial<double>;
+
+  rsNoiseGenerator<double> ng;
+  ng.setRange(0, 1);
+  PiecePoly p1, p2;
+
+  auto getRandomPoly = [&](int deg) -> Poly 
+  {
+    Poly p(deg);
+    double* c = p.getCoeffPointer();
+    for(int i = 0; i <= deg; i++)
+      c[i] = ng.getSample();
+    return p;
+  };
+
+  auto getRandomPiecePoly = [&](int numPieces) -> PiecePoly
+  {
+    PiecePoly pp;
+    double xL = ng.getSample();
+    for(int i = 0; i < numPieces; i++)
+    {
+      double xR = xL + ng.getSample();
+      int deg = (int)ceil((8.0 * ng.getSample()));
+      Poly p = getRandomPoly(deg);
+      p.shiftX((xL+xR)/2);
+      pp.addPiece(p, xL, xR);
+      xL = xR;
+    }
+    return pp;
+  };
+
+  p1 = getRandomPiecePoly(N1);
+  p2 = getRandomPiecePoly(N2);
+  plot(p1);
+  plot(p2);
+
+  PiecePoly sum = p1 + p2;
+
+  plot(sum); 
+  // this looks wrong! some have many zero high order coeffs (e.g. 95,96)
+
+  // evaluate at random positions
+  double xMin = sum.getDomainMinimum();
+  double xMax = sum.getDomainMaximum();
+  double tol = 1.e-13;
+  for(int i = 0; i < 100; i++)
+  {
+    double x = xMin + (xMax-xMin) * ng.getSample();
+    double y = sum.evaluate(x);
+    double t = p1.evaluate(x) + p1.evaluate(x);
+    r &= rsIsCloseTo(y, t, tol);
+  }
+
+
+  return r;
+}
+
 bool testPiecewisePolynomial()
 {
   bool r = true;
   r &= testPiecewisePolynomial1();
   r &= testPiecewisePolynomial2();
+  r &= testPiecewisePolynomial3();
   //r &= testPiecewisePolynomial3();
   return r;
 }

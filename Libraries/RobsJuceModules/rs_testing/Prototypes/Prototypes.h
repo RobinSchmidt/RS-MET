@@ -2556,6 +2556,13 @@ protected:
   // -the pieces are adjacent (no verlap, no gaps)
   // -piece[i] goes from domains[i] to domains[i+1]
 
+  // todo: maybe have an evaluation mode parameter that determines what happens when the user wants 
+  // evaluate outside the domain. possible values are: zero (as it is now), just use the left/right
+  // polynomials for extrapolation, clamp output at whatever left/right polynomials give at the
+  // boundaries - so modes could be named: zero, extrapolate, clamp ..maybe, the extrapolation 
+  // could be restricted to use only the lower order coeffs
+  // 
+
 };
 
 template<class T>

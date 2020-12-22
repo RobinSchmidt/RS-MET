@@ -303,6 +303,7 @@ void rsPolynomial<T>::powers(const T* a, int N, T** aPowers, int highestPower)
 template <class T>
 void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c, T* workspace)
 {
+  rsAssert(c != a && c != b, "Does not work in place");
   int cN = aN*bN;     // degree of c
   T*  an = workspace; // array for the successive powers of a[]
   an[0]  = T(1);      // initialize to a[]^0
