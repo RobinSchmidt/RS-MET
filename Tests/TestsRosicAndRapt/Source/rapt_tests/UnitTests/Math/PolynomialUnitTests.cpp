@@ -1732,7 +1732,9 @@ bool testPiecewisePolynomial2()
   init6(); p.addPiece(two, 2.0, 4.5); r &= p(1.9)==1 && p(2.1)==3 && p(4.4)==3 && p(4.6)==1;
   // left match, right nomatch
 
-
+  init6(); 
+  p.addPiece(two, 2.0, 6.5); 
+  r &= p(1.9)==1 && p(2.1)==3 && p(5.9)==3 && p(6.1)==2 && p(6.4)==2 && p(6.6)==0;
 
   //init6(); p.addPiece(one, 3.25, 3.75);
   

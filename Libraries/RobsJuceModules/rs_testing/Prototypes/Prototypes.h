@@ -2426,7 +2426,8 @@ public:
 
   const rsPolynomial<T>& getPieceConstRef(int i) const { return pieces[i]; }
 
-  /** Returns the index of the segment, where x belongs or -1, if x is out of range. */
+  /** Returns the index of the piece, where x belongs or -1, if x is out of range to the left or
+  getNumPieces() if x is out of range to the right. */
   int getIndex(T x) const;
 
   T getDomainMinimum() const
@@ -2531,7 +2532,7 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
   auto match = [&](T x, T y) -> bool { return rsAbs(x-y) <= tol; };
 
   rsAssert(pL < pU);
-  if(pieces.empty()) {             // initialize with the first piece:
+  if(pieces.empty()) {             // initialize with the first piece
     pieces.push_back(p);
     domains.push_back(pL);
     domains.push_back(pU);
@@ -2540,20 +2541,27 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
     pieces.push_back(p);
     domains.push_back(pU);
     return;  }
-  if(match(pU, domains[0])) {      // prepend piece at the left end:
+  if(match(pU, domains[0])) {      // prepend piece at the left end
     rsPrepend(pieces,  p);
     rsPrepend(domains, pL);
     return; }
 
-  // (don't) handle gaps:
+  // figure out start- and end indices for segment:
+  int numPieces = getNumPieces();
   int iL = getIndex(pL);
-  if(iL == -1) {
+  int iU;
+  if(pU >= rsLast(domains))
+    iU = numPieces;
+  else
+    iU = getIndex(pU);
+
+  // (don't) handle gaps:
+  if(iL == numPieces || iU == -1) {  // p starts after this or ends before this
     rsError("Gaps are not allowed"); // we can't handle them with the current implementation
-    return;  }
+    return;  
+  }
 
-  // what if the new segment starts before our first? we need to update domains[0] = pL
-
-  // splits piece at index i into two pieces at x0
+  // Function to split the piece at index i into two pieces at x0:
   auto split = [&](int i, T x0) 
   { 
     rsAssert(x0 > domains[i] && x0 < domains[i+1], "x0 outside domain of piece i");
@@ -2561,38 +2569,39 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
     rsInsert(pieces, pieces[i], i);
   };
 
+  // Function to accumulate polynomial q into polynomial p:
+  auto accumulate = [](rsPolynomial<T>& p, const rsPolynomial<T>& q)
+  {
+    p += q; 
+  };
+  // todo: use a std:: function that is passed as parameter, so we can use the same function also 
+  // for subtraction, multiplication, etc.
+ 
+  // todo: if pL < domains[0], we either need tom prepend or prepend-and-accumulate - maybe prepend
+  // and adjust pL, so we always fall into the "if" below - which means, we can actually make the 
+  // code unconditional..
+
   // handle aligned overlap:
-  if(match(pL, domains[iL])) {     // start of new piece is aligned with start of an existing piece
-    int iU = getIndex(pU);
-    if(iU == -1) {                 // end of new piece extends beyond our last piece
-      pieces[iL] += p;
-      domains[iL+1] = pU;          // update the last domain end
-      return; }
+  if(match(pL, domains[iL])) 
+  {     
+    // start of new piece is aligned with start of an existing piece
+
+    for(int i = iL; i < iU; i++) 
+      accumulate(pieces[i], p);  
 
     if(match(pU, domains[iU])) 
-    {   // end of new piece is aligned with end of an existing piece
-      for(int i = iL; i < iU; i++)
-        pieces[i] += p;
-      return; 
-    }
-    else 
-    {
-      for(int i = iL; i < iU; i++)  // loop is same as in case above - maybe merge for the cases
-        pieces[i] += p;
+      return; // end of new piece is aligned with end of an existing piece
+
+    if(iU == numPieces) {
+      domains.push_back(pU);  // this works only for addition, not multiplication
+      pieces.push_back(p);
+      return;  }
+    else {
       split(iU, pU);
-      pieces[iU] += p;
-      return;
-    }
+      accumulate(pieces[iU], p);
+      return;  }
+
   }
-
-  // maybe it can be implemented simpler when using a function splitPiece(int i, T x0) that 
-  // splits piece i at position x0
-
-  // todo: 
-  // -handle unaligned overlap - that will be a messy business! many different cases to 
-  //  consider
-  // -replace == comparisons of the domain boundaries with rsIsCloseTo with some tolerance that can
-  //  be set by the user (0 by default)
 
   rsError("Case not yet handled"); 
 }
@@ -2639,8 +2648,10 @@ void rsPiecewisePolynomial<T>::makeContinuous()
 template<class T>
 int rsPiecewisePolynomial<T>::getIndex(T x) const
 {
-  if(pieces.empty() || x < domains[0] || x >= rsLast(domains))
+  if(pieces.empty() || x < domains[0])
     return -1;
+  if( x >= rsLast(domains))
+    return getNumPieces();
   int i = rsArrayTools::findSplitIndex(&domains[0], (int) domains.size(), x);
   if(x < domains[i])
     i--;
@@ -2652,8 +2663,10 @@ template<class T>
 T rsPiecewisePolynomial<T>::evaluate(T x) const
 {
   int i = getIndex(x);
-  if(i == -1) return T(0);
-  else        return pieces[i](x);  // use evaluate function (needs to be written)
+  if(i < 0 || i >= getNumPieces()) 
+    return T(0);
+  else        
+    return pieces[i](x);  // use evaluate function (needs to be written)
 }
 
 template<class T>
