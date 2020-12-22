@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool passed = true;
-  passed &= runUnitTestsRapt();
+  //passed &= runUnitTestsRapt();
   //passed &= runUnitTestsRosic();  // some tests there are still commented out
   //passed = passed;  // dummy
 
@@ -171,7 +171,7 @@ int main(int argc, char* argv[])
   //waveformFractalization();
   //noise();
   //noiseTriModal();
-  //noiseWaveShaped();
+  noiseWaveShaped();
   //blit();
   //blep();
   //polyBlep();
@@ -260,7 +260,7 @@ int main(int argc, char* argv[])
   //vertexMeshHessian();
 
   //convolvePolynomials();   // obsolete
-  convolvePiecewise();
+  //convolvePiecewise();
   //shiftPolynomial();
   ////void stretchPolynomial();  // commented in header
   //monotonicPolynomials();

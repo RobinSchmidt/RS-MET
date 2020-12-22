@@ -257,12 +257,12 @@ void noiseWaveShaped()
   // way how to shape the spectrum and amplitude distribution of some noise independently by using
   // a combination of filtering and waveshaping
 
-  int numSamples = 100000;
-  int numBins    = 50;
-  double p       = 0.5;       // power for the waveshaper
+  int numSamples = 50000;
+  int numBins    = 61;
+  //double p       = 0.5;       // power for the waveshaper
 
-  double b0 = 0.5;
-  double b1 = 1.0;
+  double b0 = 1.0;
+  double b1 = 0.5;
 
   // Create the raw input noise:
   rsNoiseGenerator<double> ng;
@@ -283,20 +283,33 @@ void noiseWaveShaped()
   }
   plotHistogram(x, numBins, -2.0, +2.0); // triangular in -2..+2, if b0 = b1 = 1
 
+  // Generate the amplitude distribution based on the MA filter coeffs:
+  using PiecePoly = rsPiecewisePolynomial<double>; 
+  PiecePoly p0  = PiecePoly::irwinHall(0, -rsAbs(b0), +rsAbs(b0));
+  PiecePoly p1  = PiecePoly::irwinHall(0, -rsAbs(b1), +rsAbs(b1));
+  PiecePoly pdf = p0.convolve(p1);
+  PiecePoly cdf = pdf.integral();
+  plot(pdf);  // should match the histogram
+  plot(cdf);  // should go from 0 to 1
+  // in general, for a higher order MA filter, we would just convolve in more 0-th order 
+  // Irwin-Hall distributions
 
-  // Modify it via the waveshaper (later also use filters)
-  //auto f = [](double x) -> double { return x*x*x; };
-  //auto f = [](double x) -> double { return cbrt(x); };
-  auto f = [&](double x) -> double { return rsSign(x) * pow(rsAbs(x), p); };
+  // Now that we know the cdf of the noise, we can apply this:
+  // https://en.wikipedia.org/wiki/Inverse_transform_sampling
+  // in order to shape the amplitude distribution into a uniform distribution between 0..1:
+  auto f = [&](double x) -> double { return cdf.evaluate(x); };
   for(int n = 0; n < N; n++)
     x[n] = f(x[n]);
-  //plotHistogram(x, numBins, -sqrt(2.0), +sqrt(2.0)); // bimodal in -sqrt(2)..+sqrt(2)
+  plotHistogram(x, numBins, -0.5, 1.5);
+  // yup - works - looks uniform in 0..1 
+  // -now we should have noise that is not white but has a uniform amplitude distribution
+  // -we can now further shape the amplitude distribution to taste
 
+  // Map it to the range -1..+1
   for(int n = 0; n < N; n++)
-    x[n] = rsLinToLin(x[n], -sqrt(2.), +sqrt(2.), -1., +1.);
-  plotHistogram(x, numBins, -1.0, 1.0); // bimodal in -1..+1
-  rosic::writeToMonoWaveFile("NoiseBiModal.wav", &x[0], N, 44100); 
-
+    x[n] = 2*x[n] - 1;
+  plotHistogram(x, numBins, -1.5, 1.5);
+  rosic::writeToMonoWaveFile("NoiseWaveShaped.wav", &x[0], N, 44100); 
 
   // Observations:
   // -if b0 = b1 = 1, the filtered output has a triangluar pdf from -1..+1 
@@ -311,6 +324,8 @@ void noiseWaveShaped()
   // ToDo:
   // -try waveshping first and then filtering
   // -try multiple stages of filter -> shape or shape -> filter
+  // -try an IIR filterand approximate its amplitude distribution
+  // -alternatively, measure the amplitude distribution from an arbitrary signal
 
   // See:
   // https://en.wikipedia.org/wiki/Probability_integral_transform

@@ -1836,7 +1836,9 @@ bool testPiecewisePolynomial3()
   // better to store coefficients for a polynomial in 0..1 and transform the input, i.e. work with
   // normalized x values internally - but then, we can not just simply add coefficients anymore 
   // when we add a piece, because the coeffs are incompatible - each set of coeffs requires a 
-  // different affine transform
+  // different affine transform of the input - but actually, this class is not really meant for
+  // interpolating random datapoints anyway. it's more meant for math stuff - in particular, doing
+  // computations with the Irwin-Hall distribution to shape the properties of noise
 
 
   return r;

@@ -2483,6 +2483,14 @@ public:
   boundary. */
   void integrate(T c = T(0));
 
+  rsPiecewisePolynomial<T> integral(T c = T(0)) const
+  {
+    rsPiecewisePolynomial<T> p = *this;
+    p.integrate(c);
+    return p;
+  }
+
+
   // todo: derivative
 
   /** Shifts the pieces up or down in the y-direction such that they match at the segment 
@@ -2830,7 +2838,7 @@ rsPiecewisePolynomial<T> rsPiecewisePolynomial<T>::irwinHall(int order, T a, T b
 {
   rsAssert(order >= 0);
   rsPiecewisePolynomial<T> p0; 
-  p0.addPiece(rsPolynomial<T>({ b-a }), a, b);  // our seed function
+  p0.addPiece(rsPolynomial<T>({ T(1)/(b-a) }), a, b);  // our seed function
   rsPiecewisePolynomial<T> p = p0;
   for(int i = 1; i <= order; i++)
     p = p.convolve(p0);
