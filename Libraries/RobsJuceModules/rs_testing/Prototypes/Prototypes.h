@@ -2411,6 +2411,9 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::multiplyY(const rsPolynomial<
 
 //=================================================================================================
 
+/** A class for representing and performing computations with functions that are defined as 
+piecewise polynomials. */
+
 template<class T>
 class rsPiecewisePolynomial
 {
@@ -2422,14 +2425,18 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
+  /** Returns the number of pieces. */
   int getNumPieces() const { return (int) pieces.size(); }
 
-  const rsPolynomial<T>& getPieceConstRef(int i) const { return pieces[i]; }
+  /** Returns a constant reference to the piece at index i. */
+  const rsPolynomial<T>& getPieceConstRef(int i) const 
+  { rsAssert(i >= 0 && i < getNumPieces(), "Index out of range"); return pieces[i]; }
 
   /** Returns the index of the piece, where x belongs or -1, if x is out of range to the left or
   getNumPieces() if x is out of range to the right. */
   int getIndex(T x) const;
 
+  /** Returns the left boundary of the domain, where the function is defined. */
   T getDomainMinimum() const
   {
     if(domains.empty())
@@ -2437,6 +2444,7 @@ public:
     return domains[0];
   }
 
+  /** Returns the right boundary of the domain, where the function is defined. */
   T getDomainMaximum() const
   {
     if(domains.empty())
@@ -2448,10 +2456,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Evaluation
 
+  /** Evaluates the function at the given x. If x is outside the range where we have defined 
+  pieces, it returns zero. */
   T evaluate(T x) const;
 
+  /** Evaluation as oprator. */
   T operator()(T x) const { return evaluate(x); }
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -2469,9 +2479,14 @@ public:
   /** Stretches the whole function in the x-direction by the given factor. */
   void stretch(T factor);
 
+  /** Integrates the function. The integration constant determines the function value at the left 
+  boundary. */
   void integrate(T c = T(0));
 
+  // todo: derivative
 
+  /** Shifts the pieces up or down in the y-direction such that they match at the segment 
+  boundaries. */
   void makeContinuous();
 
 
@@ -2498,6 +2513,8 @@ public:
   rsPiecewisePolynomial<T> operator-(const rsPiecewisePolynomial<T>& q) const 
   { rsPiecewisePolynomial<T> r = *this; r -= q; return r; }
 
+  // todo: implement multiplication, maybe the addPiece function can be extended to also handle 
+  // multiplication, such that we do not have to replicate the splitting logic
 
 
   /** Convolves two polynomial pieces p(x) and q(x) that are defined on the domains pL..pU and 
@@ -2516,14 +2533,9 @@ public:
     const rsPolynomial<T>& p, T pL, T pU, const rsPolynomial<T>& q, T qL, T qU,
     rsPolynomial<T>& rL, T& rLL, T& rLU, rsPolynomial<T>& rM, rsPolynomial<T>& rR, T& rRL, T& rRU);
 
-
   /** Convolves this piecewise polynomial with another piecewise polynomial p and returns the 
   result which is again a piecewise polynomial. */
   rsPiecewisePolynomial<T> convolve(const rsPiecewisePolynomial<T>& p);
-
-  // todo: integral - as integration constants for the segments, use the function value at the 
-  // right boundary of the previous segment to get a continuous result
-  // ...derivative, scale, stretch
 
 
   //-----------------------------------------------------------------------------------------------
@@ -2539,9 +2551,9 @@ public:
 
 protected:
 
-  std::vector<T> domains;
+  std::vector<T> domains;  // maybe rename to boundaries, ends, limits, borders
   std::vector<rsPolynomial<T>> pieces;
-  // -the pieces should be adjacent (no verlap, no gaps)
+  // -the pieces are adjacent (no verlap, no gaps)
   // -piece[i] goes from domains[i] to domains[i+1]
 
 };
@@ -2584,8 +2596,7 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU, T 
   // (don't) handle gaps:
   if(iL == numPieces || iU == -1) {  // p starts after this or ends before this
     rsError("Gaps are not allowed"); // we can't handle them with the current implementation
-    return;  
-  }
+    return; }
 
   // Function to split the piece at index i into two pieces at x0:
   auto split = [&](int i, T x0) 
@@ -2594,23 +2605,25 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU, T 
     rsInsert(domains, x0, i+1);
     rsInsert(pieces, pieces[i], i);
   };
+  // maybe move out and make it a member function, maybe also have a merge function.
 
   // Function to accumulate polynomial q into polynomial p:
   auto accumulate = [&](rsPolynomial<T>& p, const rsPolynomial<T>& q)
-  {
-    p.addWithWeight(q, weight);
-    //p += q; 
-  };
+  { p.addWithWeight(q, weight); };
   // todo: use a std::function that is passed as parameter, so we can use the same function also 
   // for subtraction, multiplication, etc. - but for multiplication or division, we have to do 
   // something else in the case where we prepend or append the pieces here...we'll see...
   // maybe just implement addition, subtraction and scalar multiplication (as operators) - then
   // we have at least a vector-space. elementwise multiplication and division can come later. 
   // mulitplication may actually shrink the domain because the result is nonzero only where both
-  // factors are nonzero, so we need some additional logic to update the domains
-  // maybe we can give this function a scalar parameters as weight - with +1 we get addtion, 
-  // with -1 we get subtraction - for this rsPolynomial needs a member 
-  // p.addWithWeight(Poly& q, T w)
+  // factors are nonzero, so we need some additional logic to update the domains - but maybe we 
+  // don't need to mainpulate the domains - we can just let some sections be the zero polynomial
+  // ...or we could cut off zero sections at start and end as post-processing
+  // ...maybe this function should have an additional "mode" parameter, 0: add, 1: multiply, 
+  // 2: divide...but no - divide doe not really make sense - from a mathematical perspective, we
+  // would expect a piecewise rational function to come out and not whatever results from 
+  // polynomial division (the results are equal only if this is divisible by p)
+
 
   // Handle case when left boundary of p is to the left of our left boundary:
   if(iL == -1) {
@@ -2623,10 +2636,7 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU, T 
 
   // Handle case when left boundary of p is in the middle of one of our existing pieces:
   if(!match(pL, domains[iL])) {
-    split(iL, pL);
-    iL++;
-    iU++;
-    numPieces++;  }
+    split(iL, pL); iL++; iU++; numPieces++; }
 
   // Accumulate the new polynomial into the exisitng pieces that are now in full overlap:
   for(int i = iL; i < iU; i++)
@@ -2750,18 +2760,27 @@ void rsPiecewisePolynomial<T>::convolvePieces(
   else             rM = Poly(0);              // p,q have same length -> no middle segment
   rR                  = PQ.integralY(a,  pU); // right segment
 
+  // Adjust degrees by truncating the trailing zero coefficients. I think, they arise because the
+  // matrix of coefficients of the bivariate polynomial Q is triangular. The integral could 
+  // potentially produce higher order nonzero coeffs but doesn't due to the special structure of Q.
+  int deg = 0;
+  if(wp > wq) deg = p.getDegree();
+  if(wp < wq) deg = q.getDegree();
+  rM.setAllocatedDegree(deg);
+  deg = p.getDegree() + q.getDegree() + 1;
+  rL.setAllocatedDegree(deg);
+  rR.setAllocatedDegree(deg);
+
+  // old:
   // Cut off trailing zero coefficients in the produced segments:
-  rL.truncateTrailingZeros();
-  rM.truncateTrailingZeros();
-  rR.truncateTrailingZeros();
-  // I think, they arise because the matrix of coefficients of the bivariate polynomial Q is 
-  // triangular. The integral could potentially produce higher order nonzero coeffs but doesn't
-  // due to the special structure of Q.
+  //rL.truncateTrailingZeros();
+  //rM.truncateTrailingZeros();
+  //rR.truncateTrailingZeros();
+
   // The middle section may still have close-to-zero trailing coeffs (i think, it happens only 
   // when wp > wq but this needs more tests)
   // i think, the degrees are degP+degQ+1 for the L/R sections and degP or deQ for the middle M
   // section and which one of the two it is, is determined by which one has the longer domain
-
 
   // Notes:
   // -The expressions for the integration limits were found by trial and error and need more tests,

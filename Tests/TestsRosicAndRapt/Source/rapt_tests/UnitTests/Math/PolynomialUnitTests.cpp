@@ -1761,8 +1761,10 @@ bool testPiecewisePolynomial2()
   p = p - p;
   r &= p(2.4) == 0 && p(2.6) == 0 && p(4.4) == 0 && p(4.6) == 0;
 
-  // todo: implement and test multiplication by a scalar (left and right)
-
+  // todo: 
+  // -implement and test multiplication by a scalar (left and right)
+  // -implement another unit test that adds polynomials that arise from randomly sampling noise at 
+  //  random x-values and interpolating them...or maybe just use totally random polynomials
 
   return r;
 }

@@ -3487,7 +3487,7 @@ void convolvePiecewise()  // rename to irwinHall
   using Poly      = RAPT::rsPolynomial<double>;
   using PiecePoly = rsPiecewisePolynomial<double>;
 
-  int order = 3;
+  int order = 6;
 
   PiecePoly p = PiecePoly::irwinHall(order, -0.5, +0.5);
 
