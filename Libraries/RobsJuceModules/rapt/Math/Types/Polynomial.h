@@ -134,10 +134,10 @@ public:
   coefficients in q - so the function may reallocate memory. */
   void addWithWeight(const rsPolynomial<T>& q, T w)
   {
-    int minDeg = rsMin(getDegree(), q.getDegree());
-    int maxDeg = rsMax(getDegree(), q.getDegree());
-    setAllocatedDegree(maxDeg);
-    for(int i = 0; i <= minDeg; i++)
+    int qDeg = q.getDegree();
+    if(qDeg > getDegree())
+      setAllocatedDegree(qDeg);
+    for(int i = 0; i <= qDeg; i++)
       coeffs[i] += w * q.coeffs[i];
   }
 
