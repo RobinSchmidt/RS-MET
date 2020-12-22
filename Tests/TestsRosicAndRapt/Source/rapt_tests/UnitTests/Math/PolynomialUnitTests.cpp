@@ -1754,6 +1754,16 @@ bool testPiecewisePolynomial2()
   r &= p(2.4) == 1 && p(2.6) == 3 && p(4.4) == 3 && p(4.6) == 1;
   //plot(p);
 
+  p = p + p;
+  r &= p(2.4) == 2 && p(2.6) == 6 && p(4.4) == 6 && p(4.6) == 2;
+  //plot(p);
+
+  p = p - p;
+  r &= p(2.4) == 0 && p(2.6) == 0 && p(4.4) == 0 && p(4.6) == 0;
+
+  // todo: implement and test multiplication by a scalar (left and right)
+
+
   return r;
 }
 

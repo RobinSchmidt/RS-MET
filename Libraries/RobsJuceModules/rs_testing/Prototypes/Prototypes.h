@@ -2457,9 +2457,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Manipulations
 
-  /** Adds another piece to the object. Implementation is still incomplete - it currently works 
-  only when the new piece aligns well with the already existing pieces... */
-  void addPiece(const rsPolynomial<T>& p, T pL, T pU);
+  /** Adds another piece to the object, possibly with a scalar weight applied to the new piece. */
+  void addPiece(const rsPolynomial<T>& p, T pL, T pU, T weight = T(1));
 
   /** Clears the polynomial, setting it back into a freshly constructed state. */
   void clear() { domains.clear(); pieces.clear(); }
@@ -2478,6 +2477,28 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   // \name Combination
+
+  rsPiecewisePolynomial<T>& operator+=(const rsPiecewisePolynomial<T>& q) 
+  { 
+    for(int i = 0; i < q.getNumPieces(); i++)
+      addPiece(q.pieces[i], q.domains[i], q.domains[i+1]);
+    return *this;
+  }
+
+  rsPiecewisePolynomial<T> operator+(const rsPiecewisePolynomial<T>& q) const 
+  { rsPiecewisePolynomial<T> r = *this; r += q; return r; }
+
+  rsPiecewisePolynomial<T>& operator-=(const rsPiecewisePolynomial<T>& q) 
+  { 
+    for(int i = 0; i < q.getNumPieces(); i++)
+      addPiece(q.pieces[i], q.domains[i], q.domains[i+1], T(-1));
+    return *this;
+  }
+
+  rsPiecewisePolynomial<T> operator-(const rsPiecewisePolynomial<T>& q) const 
+  { rsPiecewisePolynomial<T> r = *this; r -= q; return r; }
+
+
 
   /** Convolves two polynomial pieces p(x) and q(x) that are defined on the domains pL..pU and 
   qL..qU respectively and assumed to be zero outside these domains (L and U stand for lower and 
@@ -2526,7 +2547,7 @@ protected:
 };
 
 template<class T>
-void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
+void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU, T weight)
 {
   T tol(0);  // tolerance for (floating point) equality comparisons -> make member
   auto match = [&](T x, T y) -> bool { return rsAbs(x-y) <= tol; };
@@ -2575,13 +2596,21 @@ void rsPiecewisePolynomial<T>::addPiece(const rsPolynomial<T>& p, T pL, T pU)
   };
 
   // Function to accumulate polynomial q into polynomial p:
-  auto accumulate = [](rsPolynomial<T>& p, const rsPolynomial<T>& q)
+  auto accumulate = [&](rsPolynomial<T>& p, const rsPolynomial<T>& q)
   {
-    p += q; 
+    p.addWithWeight(q, weight);
+    //p += q; 
   };
-  // todo: use a std:: function that is passed as parameter, so we can use the same function also 
+  // todo: use a std::function that is passed as parameter, so we can use the same function also 
   // for subtraction, multiplication, etc. - but for multiplication or division, we have to do 
   // something else in the case where we prepend or append the pieces here...we'll see...
+  // maybe just implement addition, subtraction and scalar multiplication (as operators) - then
+  // we have at least a vector-space. elementwise multiplication and division can come later. 
+  // mulitplication may actually shrink the domain because the result is nonzero only where both
+  // factors are nonzero, so we need some additional logic to update the domains
+  // maybe we can give this function a scalar parameters as weight - with +1 we get addtion, 
+  // with -1 we get subtraction - for this rsPolynomial needs a member 
+  // p.addWithWeight(Poly& q, T w)
 
   // Handle case when left boundary of p is to the left of our left boundary:
   if(iL == -1) {

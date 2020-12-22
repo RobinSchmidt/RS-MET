@@ -114,6 +114,25 @@ public:
     integral(&coeffs[0], &coeffs[0], getDegree()-1, c); // -1 bcs resize has increased degree
   }
 
+  /** Sets the allcoated degree of this polynomial. The "allocated" qualifier means, that we are 
+  talking about the length of the coeff array (minus 1) regardless whether the highest coeff in 
+  this array is zero or not. If the new degree is less than the old one, we'll just cut off the 
+  coefficient array at the given new endpoint. If the new degree is greater than the old one, we
+  take over the lower coefficients and fill higher coefficients with zero. */
+  void setAllocatedDegree(int newDegree) { coeffs.resize(newDegree+1); }
+
+  /** Adds the givne polynomial q multiplied by a scalar weight into this one. If q has higher 
+  degree thatn this one, the degree of this will be increased to accomodate for the higher 
+  coefficients in q - so the function may reallocate memory. */
+  void addWithWeight(const rsPolynomial<T>& q, T w)
+  {
+    int minDeg = rsMin(getDegree(), q.getDegree());
+    int maxDeg = rsMax(getDegree(), q.getDegree());
+    setAllocatedDegree(maxDeg);
+    for(int i = 0; i <= minDeg; i++)
+      coeffs[i] += w * q.coeffs[i];
+  }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -135,7 +154,8 @@ public:
   // "takeZeroCoeffsIntoAccount" which defaults to false...or maybe it shouldn't have any default
   // value - client code must be explicit...or maybe have functions getAllocatedDegree, 
   // getActualDegree(tolerance)...or getDegree has an optional parameter for the tolerance 
-  // defaulting to 0
+  // defaulting to 0...but no - the calls may still be ambiguous from client code, when nothing is 
+  // passed...it's also confusing to pass a number into such a getter
 
   /** Returns the number of coefficients in this polynomial. */
   int getNumCoeffs() const { return (int)coeffs.size(); }
