@@ -197,10 +197,14 @@ template std::vector<double> rsLinearAlgebraNew::solveOld(rsMatrix<double> A, st
 
 template class RAPT::rsMatrixOld<double>;  // try to get rid
 
+
 template class RAPT::rsPolynomial<float>;
 template class RAPT::rsPolynomial<double>;
 template class RAPT::rsPolynomial<std::complex<double>>;
+//template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int
+// todo: instantiate rsPolynomial also for float, int and rsFraction<int>, maybe also for 
+// rsMatrix<float>, etc.
 
 template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, double, double*);
   // needs separate instantiation because function itself has a (second) template parameter
@@ -323,7 +327,7 @@ template void RAPT::rsFillPrimeTable(rsUint32 *primes, rsUint32 numPrimes, rsUin
 
 //template void RAPT::rsNextPascalTriangleLine(const double* x, double* y, int N);
 template void RAPT::rsPascalTriangleLine(double* y, int N);
-
+template void RAPT::rsPascalTriangleLine(float*  y, int N);
 
 template void RAPT::smbFft(float *fftBuffer, long fftFrameSize, long sign);
 template void RAPT::rsDFT(std::complex<double> *buffer, int N);

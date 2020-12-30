@@ -598,9 +598,9 @@ std::complex<R> rsPolynomial<T>::convergeToRootViaLaguerre(
 template<class T>
 T rsPolynomial<T>::rootLinear(const T& a, const T& b)
 {
-  if(a == 0.0) {  // hmm...maybe returning (+-)inf as root would actually be appropriate
+  if(a == T(0)) {  // hmm...maybe returning (+-)inf as root would actually be appropriate
     RS_DEBUG_BREAK;
-    return 0.0;
+    return T(0);
   }
   else
     return -b/a;

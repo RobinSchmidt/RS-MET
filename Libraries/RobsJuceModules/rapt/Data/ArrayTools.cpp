@@ -1105,7 +1105,17 @@ template <class T1, class T2, class TR>
 void rsArrayTools::multiply(const T1 *buffer1, const T2 *buffer2, TR *result, int length)
 {
   for(int i = 0; i < length; i++)
+  {
     result[i] = TR(buffer1[i] * buffer2[i]);
+    // does not compile when T1 == std::complex<float> and T2 == double. This occurs in
+    // rsPolynomial<T>::evaluateWithDerivatives when we call 
+    // rsArrayTools::multiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
+    // becasue the rsFactorials array is an array of doubles...
+
+    //result[i] = TR(buffer1[i]) * TR(buffer2[i]);
+    // ...so we need to do the conversion to the result type for both operands separately, not just
+    // for the result itself
+  }
 }
 
 template<class T>

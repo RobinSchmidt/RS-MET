@@ -275,6 +275,11 @@ void noiseWaveShaped()
     x[n] = ng.getSample();
   //plotHistogram(x, numBins, -1.0, +1.0);  // uniform in -1..+1
 
+  // alternatively, create a sinewave:
+  //createSineWave(&x[0], numSamples, 440, 1.0, 44100);
+  //createWaveform(&x[0], numSamples, 1, 440., 44100., 0.0, true);
+
+
   // Apply a 2-point MA filter y[n] = b0*x[n] + b1*x[n-1]:
   double xOld = 0;
   double yOld = 0;
@@ -339,10 +344,16 @@ void noiseWaveShaped()
   // -for a closer to 1, we need more numConvs to get a reasonable approximation of the cdf
 
   // ToDo:
+  // -measure autocorrelation of result
   // -try waveshping first and then filtering
   // -try multiple stages of filter -> shape or shape -> filter
-  // -try an IIR filterand approximate its amplitude distribution
+  // -try the process on other signals, like sinewaves, sawtooth waves, etc.
   // -alternatively, measure the amplitude distribution from an arbitrary signal
+  // -try to improve the approximation of the amplitude distribution after the IIR filter by 
+  //  convolving slightly wider 0th order irwin-hall distribtuions. the idea is to compensate for 
+  //  the truncation after finitely many convolutions by using wider input distributions. assess 
+  //  the quality of a low-order approximation by comparing with a high-order approximation, i.e. 
+  //  one using a higher number of convolutions
 
   // See:
   // https://en.wikipedia.org/wiki/Probability_integral_transform
