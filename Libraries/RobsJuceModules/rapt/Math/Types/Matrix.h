@@ -734,6 +734,15 @@ public:
 
   // void set(i, j, val) ...to make it compatible with old implementation
 
+  /** Returns the element at index pair i,j or padding, if i or j is out of range. Can be used to 
+  conveniently access elements of a (zero-)padded matrix. */
+  T getElementPadded(const int i, const int j, const T padding = T(0)) const
+  {
+    if(!isValidRowIndex(i) || !isValidColumnIndex(j))
+      return padding;
+    return dataPointer[flatIndex(i, j)];
+  }
+
   /** Converts a row index i and a column index j to a flat array index. */
   int flatIndex(const int i, const int j) const
   {

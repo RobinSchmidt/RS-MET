@@ -2094,6 +2094,8 @@ public:
     return r;
   }
 
+  T operator()(T x, T y) const { return evaluate(x, y); }
+
 
   // todo: implement +,-
 
@@ -2261,12 +2263,9 @@ void rsBivariatePolynomial<T>::weightedSum(
   int M = rsMax(p.getNumRows(),    q.getNumRows());
   int N = rsMax(p.getNumColumns(), q.getNumColumns());
   rsAssert(r.hasShape(M, N));
-  r.setAllValues(T(0));
-  M = rsMin(p.getNumRows(),    q.getNumRows());
-  N = rsMin(p.getNumColumns(), q.getNumColumns());
   for(int m = 0; m < M; m++)
     for(int n = 0; n < N; n++)
-      r(m, n) = wp * p(m, n) + wq * q(m, n);
+      r(m, n) = wp * p.getElementPadded(m, n) + wq * q.getElementPadded(m, n);
 }
 
 template<class T>
