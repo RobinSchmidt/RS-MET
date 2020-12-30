@@ -166,6 +166,16 @@ void rsPascalTriangleLine(T* y, int N)
     rsNextPascalTriangleLine(y, y, n);
 }
 
+// see: https://en.wikipedia.org/wiki/Pascal%27s_triangle
+// maybe implement also:
+// https://en.wikipedia.org/wiki/Trinomial_triangle
+// https://en.wikipedia.org/wiki/(2,1)-Pascal_triangle
+// https://en.wikipedia.org/wiki/Bell_triangle
+// https://en.wikipedia.org/wiki/Bernoulli%27s_triangle
+// https://en.wikipedia.org/wiki/Leibniz_harmonic_triangle
+// https://en.wikipedia.org/wiki/Eulerian_number#Basic_properties
+
+
 template<class TInt>
 TInt rsLeviCivita(TInt indices[], TInt N)
 {

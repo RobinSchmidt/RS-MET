@@ -1984,6 +1984,9 @@ public:
 
   static void multiply(const T* p, int pDeg, const T* q, int qDeg, rsMatrixView<T>& r);
 
+  static void weightedSum(const rsMatrixView<T>& p, T wp, const rsMatrixView<T>& q, T wq, 
+    rsMatrixView<T>& r);
+
 
   /** Computes the coefficients of a bivariate polynomial r that is given as the composition of 
   a linear combination of x and y and a univariate polynomial p: r(x,y) = p(a*x + b*y). */
@@ -2072,6 +2075,33 @@ public:
 
   bool operator==(const rsBivariatePolynomial<T>& rhs) const { return coeffs == rhs.coeffs; }
 
+
+  rsBivariatePolynomial<T> operator+(const rsBivariatePolynomial<T>& q) const 
+  { 
+    int M = rsMax(coeffs.getNumRows(),    q.coeffs.getNumRows());
+    int N = rsMax(coeffs.getNumColumns(), q.coeffs.getNumColumns());
+    rsBivariatePolynomial<T> r(M-1, N-1);
+    weightedSum(coeffs, T(1), q.coeffs, T(1), r.coeffs);
+    return r;
+  }
+
+  rsBivariatePolynomial<T> operator-(const rsBivariatePolynomial<T>& q) const 
+  { 
+    int M = rsMax(coeffs.getNumRows(),    q.coeffs.getNumRows());
+    int N = rsMax(coeffs.getNumColumns(), q.coeffs.getNumColumns());
+    rsBivariatePolynomial<T> r(M-1, N-1);
+    weightedSum(coeffs, T(1), q.coeffs, T(-1), r.coeffs);
+    return r;
+  }
+
+
+  // todo: implement +,-
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
+
+  /** Read and write access to the (i,j)th coefficient. */
+  T& coeff(int i, int j) { return coeffs(i, j); }
 
 
 protected:
@@ -2222,6 +2252,21 @@ void rsBivariatePolynomial<T>::multiply(const T* p, int pDeg, const T* q, int qD
   for(int m = 0; m <= pDeg; m++)
     for(int n = 0; n <= qDeg; n++)
       r(m, n) = p[m] * q[n];
+}
+
+template<class T>
+void rsBivariatePolynomial<T>::weightedSum(
+  const rsMatrixView<T>& p, T wp, const rsMatrixView<T>& q, T wq, rsMatrixView<T>& r)
+{
+  int M = rsMax(p.getNumRows(),    q.getNumRows());
+  int N = rsMax(p.getNumColumns(), q.getNumColumns());
+  rsAssert(r.hasShape(M, N));
+  r.setAllValues(T(0));
+  M = rsMin(p.getNumRows(),    q.getNumRows());
+  N = rsMin(p.getNumColumns(), q.getNumColumns());
+  for(int m = 0; m < M; m++)
+    for(int n = 0; n < N; n++)
+      r(m, n) = wp * p(m, n) + wq * q(m, n);
 }
 
 template<class T>

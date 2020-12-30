@@ -170,8 +170,9 @@ template void rsMatrixTools::matrixMultiplyBothTransposed(double **A, double **B
 template void rsMatrixTools::matrixInPlaceMultiply(double **A, double **B, int N, int M);
 
 
-
+//-------------------------------------------------------------------------------------------------
 // Math:
+
 //template RAPT::rsLinearAlgebra<float>; // doens't work bcs the template parameters are decalred in the member functions
 template void rsLinearAlgebra::rsSolveLinearSystem2x2(const double A[2][2], double x[2], const double y[2]);
 template void rsLinearAlgebra::rsSolveLinearSystem3x3(const double A[3][3], double x[3], const double y[3]);
@@ -328,6 +329,8 @@ template void RAPT::rsFillPrimeTable(rsUint32 *primes, rsUint32 numPrimes, rsUin
 //template void RAPT::rsNextPascalTriangleLine(const double* x, double* y, int N);
 template void RAPT::rsPascalTriangleLine(double* y, int N);
 template void RAPT::rsPascalTriangleLine(float*  y, int N);
+template void RAPT::rsPascalTriangleLine(std::complex<double>* y, int N);
+
 
 template void RAPT::smbFft(float *fftBuffer, long fftFrameSize, long sign);
 template void RAPT::rsDFT(std::complex<double> *buffer, int N);
