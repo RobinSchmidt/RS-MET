@@ -2007,11 +2007,18 @@ public:
   // need a convolution routine with strides
 
 
-
+  /** Given a complex valued bivariate polynomial, this function splits it into two real-valued 
+  bivariate polynomials...tbc... */
   static void splitRealImag(const rsBivariatePolynomial<std::complex<T>>& p,
     rsBivariatePolynomial<T>& pRe, rsBivariatePolynomial<T>& pIm);
 
-
+  /** Given a complex polynomial (or more generally, a complex function), the associated Polya 
+  vector field is the complex conjugate of the vector field that would result from just intepreting
+  real and imaginary parts of the function's output as x- and y-coordinates of a 2D vector field. 
+  That just means, the y-part is negated, i.e. fx(x,y) = Re(p(z)), fy(x,y) = -Im(p(z)) where 
+  z = x + i*y. The reason for this seemingly unnatural negation is that the resulting vector field 
+  will be conservative when the original function is analytic. This is a desirable property for 
+  vector fields and it does not hold true without the negation (-> verify that).  */
   static void polyaVectorField(const rsPolynomial<std::complex<T>>& p,
     rsBivariatePolynomial<T>& px, rsBivariatePolynomial<T>& py);
 
@@ -2061,11 +2068,23 @@ public:
   rsPolynomial<T> integralY(Ta a, Tb b) const;
   // needs tests for when a and/or b are polynomials
 
-
+  /** Given two bivariate polynomials px(x,y), py(x,y) that together constitute a 2D vector field 
+  and assuming that this vector field is conservative (implying that a potential exists), this 
+  function computes the potential. The potential of a 2D vector field given by fx(x,y), fy(x,y) is
+  a single bivariate function P(x,y) whose partial derivatives with respect to x and y give the 
+  original two functions fx, fy. Of course, one function gives in general less information than 
+  two, so this works only for special kinds of vector fields, namely conservative vector fields. 
+  The caller must ensure that px, py actually satisfy this condition - if they don't, the returned
+  function is meaningless. 
+  See: https://mathinsight.org/conservative_vector_field_find_potential  */
   static rsBivariatePolynomial<T> getPotential(
     const rsBivariatePolynomial<T>& px, const rsBivariatePolynomial<T>& py);
 
-
+  /** The Polya vector field of an analytic complex function (such as a polynomial) is 
+  conservative, so a potential exists for such a Polya vector field. This function computes that 
+  potential for a given (complex) Polynomial. The result is a bivariate real polynomial whose 
+  partial derivatives with respect to x and y give the real part and the negative imaginary part 
+  of the original complex polynomial. */
   static rsBivariatePolynomial<T> getPolyaPotential(const rsPolynomial<std::complex<T>>& p);
 
 
