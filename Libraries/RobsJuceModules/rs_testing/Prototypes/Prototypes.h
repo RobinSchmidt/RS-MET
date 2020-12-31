@@ -2000,8 +2000,21 @@ public:
   coefficient matrix with the coefficient array of p. */
   rsBivariatePolynomial<T> multiplyY(const rsPolynomial<T>& p) const;
 
+
+  void negate() { coeffs.negate(); }
+
   // todo: make a similar multiplyX method - this needs to convolve the columns with p, so we will
   // need a convolution routine with strides
+
+
+
+  static void splitRealImag(const rsBivariatePolynomial<std::complex<T>>& p,
+    rsBivariatePolynomial<T>& pRe, rsBivariatePolynomial<T>& pIm);
+
+
+  static void polyaVectorField(const rsPolynomial<std::complex<T>>& p,
+    rsBivariatePolynomial<T>& px, rsBivariatePolynomial<T>& py);
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Calculus
@@ -2049,6 +2062,12 @@ public:
   // needs tests for when a and/or b are polynomials
 
 
+  static rsBivariatePolynomial<T> getPotential(
+    const rsBivariatePolynomial<T>& px, const rsBivariatePolynomial<T>& py);
+
+
+  static rsBivariatePolynomial<T> getPolyaPotential(const rsPolynomial<std::complex<T>>& p);
+
 
   // todo: make a function integralXY(T a, T b, T c, T d) that computes the value of the 
   // double-integral, maybe have also a function integralYX which reverses the order of integration
@@ -2058,7 +2077,16 @@ public:
 
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
+  void initialize(int degX, int degY)
+  {
+    coeffs.setShape(degX+1, degY+1);
+    coeffs.setToZero();
+  }
+  // todo: write a setDegrees function that takes over the content of the old matrix and fills up
+  // with zeros
 
 
 
@@ -2104,6 +2132,9 @@ public:
 
   /** Read and write access to the (i,j)th coefficient. */
   T& coeff(int i, int j) { return coeffs(i, j); }
+
+  /** Read access to the (i,j)th coefficient. */
+  const T& coeff(int i, int j) const { return coeffs(i, j); }
 
 
 protected:
@@ -2386,6 +2417,38 @@ rsPolynomial<T> rsBivariatePolynomial<T>::integralY(Ta a, Tb b) const
 }
 // todo: make workspace-based version(s)
 
+template<class T>
+rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getPotential(
+  const rsBivariatePolynomial<T>& px, const rsBivariatePolynomial<T>& py)
+{
+  //rsAssert(px.derivativeY() == py.derivativeX(), "px, py are not a potential field");
+  // we need a weaker notion of equality here: allow different formal shapes of the coeff matrices, 
+  // allow tolerance for equality of coefficients, maybe have a function 
+  // isPotentialField(px, py, tol) that calls px.isCloseTo(py, tol)
+
+  rsBivariatePolynomial<T> Px, Px_y, gyp, gy;
+  Px   = px.integralX();    // integrate px with respect to x
+  Px_y = Px.derivativeY();  // differentiate the result with respect to y
+  gyp  = py - Px_y;         // g'(y): derivative of integration "constant" g(y)..
+  gy   = gyp.integralY();   // ..which is still a function of y
+  return Px + gy;           // Px + gy is the desired potential function
+}
+// -maybe optimize: gyp has nonzero coeffs only for terms that are free of any x
+// -maybe implement different algorithms, integrating py with respect y y first, etc. - they 
+//  should all give the same result up to roundoff error
+// -implement a function getHarmonicConjugate that takes a single bivariate polynomial, say px, and
+//  produces the appropriate py
+
+template<class T>
+rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getPolyaPotential(
+  const rsPolynomial<std::complex<T>>& p)
+{
+  rsBivariatePolynomial<T> px, py;
+  polyaVectorField(p, px, py);
+  return getPotential(px, py);       // (px, py) is a potential field -> compute its potential
+}
+
+
 
 // optimized version of composeWithLinear
 template<class T>
@@ -2452,6 +2515,32 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::multiplyY(const rsPolynomial<
   return r;
 }
 // this assumes row-major storage of matrices
+
+template<class T>
+void rsBivariatePolynomial<T>::splitRealImag(const rsBivariatePolynomial<std::complex<T>>& p,
+  rsBivariatePolynomial<T>& pRe, rsBivariatePolynomial<T>& pIm)
+{
+  int m = p.getDegreeX();
+  int n = p.getDegreeY();
+  pRe.initialize(m, n);
+  pIm.initialize(m, n);
+  for(int i = 0; i <= m; i++) {
+    for(int j = 0; j <= n; j++) {
+      pRe.coeff(i, j) = p.coeff(i, j).real();
+      pIm.coeff(i, j) = p.coeff(i, j).imag(); }}
+}
+
+template<class T>
+void rsBivariatePolynomial<T>::polyaVectorField(const rsPolynomial<std::complex<T>>& p,
+  rsBivariatePolynomial<T>& px, rsBivariatePolynomial<T>& py)
+{
+  using Complex = std::complex<T>;
+  using BiPolyC = rsBivariatePolynomial<Complex>;
+  Complex one(1, 0), im(0, 1);
+  BiPolyC bp = BiPolyC::composeWithLinear(p, one, im); // bp(x, y) = p(x + i*y) = p(z)
+  splitRealImag(bp, px, py);                           // extract real and imaginary parts
+  py.negate();                                         // apply complex conjugation
+}
 
 //=================================================================================================
 
