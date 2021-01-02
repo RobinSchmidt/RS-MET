@@ -2116,6 +2116,24 @@ public:
 
   int getDegreeY() const { return coeffs.getNumColumns()-1; }
 
+  /** Implements a sort of weak equality comparison of this polynomial with a second polynomial q. 
+  It has a tolerance for the comparisons of individual coefficients and in the second polynomial q
+  may have a differently shaped coefficient matrix, if the coeffs that have no corresponding partner 
+  in the respective other matrix are (close to) zero. So, the "overlapping" coeffs must be close to 
+  their partner and the non-overlapping coeffs must be close to zero. */
+  bool isCloseTo(const rsBivariatePolynomial<T>& q, T tol = T(0)) const
+  {
+
+    int M = rsMax(coeffs.getNumRows(),    q.coeffs.getNumRows());
+    int N = rsMax(coeffs.getNumColumns(), q.coeffs.getNumColumns());
+    for(int m = 0; m < M; m++) {
+      for(int n = 0; n < N; n++) {
+        T d = coeffs.getElementPadded(m, n) - q.coeffs.getElementPadded(m, n);
+        if(rsAbs(d) > tol)
+          return false;     }}
+    return true;
+  }
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Operators
@@ -2450,10 +2468,10 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getPotential(
   Px_y = Px.derivativeY();  // differentiate the result with respect to y
   gyp  = py - Px_y;         // g'(y): derivative of integration "constant" g(y)..
   gy   = gyp.integralY();   // ..which is still a function of y
-  return Px + gy;           // Px + gy is the desired potential function
+  return Px + gy;           // Px + gy is the desired potential function P(x,y)
 }
 // -maybe optimize: gyp has nonzero coeffs only for terms that are free of any x
-// -maybe implement different algorithms, integrating py with respect y y first, etc. - they 
+// -maybe implement different algorithms, integrating py with respect to y first, etc. - they 
 //  should all give the same result up to roundoff error
 // -implement a function getHarmonicConjugate that takes a single bivariate polynomial, say px, and
 //  produces the appropriate py

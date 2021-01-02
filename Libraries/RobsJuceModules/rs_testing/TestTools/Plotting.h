@@ -234,6 +234,14 @@ void plot(const rsPiecewisePolynomial<T>& p, int numSamples = 501)
   plot(p, p.getDomainMinimum(), p.getDomainMaximum(), numSamples);
 }
 
+template<class T>
+void plotBivariatePolynomial(const rsBivariatePolynomial<T> p,
+  T minX, T maxX, int numX, T minY, T maxY, int numY)
+{
+  GNUPlotter plt;
+  std::function<T(T, T)> f = [&](T x, T y) -> T { return p(x, y); };
+  plt.plotBivariateFunction(numX, minX, maxX, numY, minY, maxY, f);
+}
 
 /** Plots the magnitude spectrogram given in s against time axis t (of length numFrames) and
 frequency axis f (of length numBins). */

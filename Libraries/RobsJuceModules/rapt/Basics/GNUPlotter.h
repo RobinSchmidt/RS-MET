@@ -167,6 +167,10 @@ public:
    // let these functions take multiple functions, use internally a function
    // addBivariateFunctionData
 
+  template <class T>
+  void plotBivariateFunction(int Nx, T xMin, T xMax, int Ny, T yMin, T yMax, 
+    const std::function<T(T, T)>& f);
+
   // ToDo: 
   // -for those functions which receive a function pointer, use std::function instead - this 
   //   will allow use with lambda-functions, functors *and* function-pointers -> more flexible

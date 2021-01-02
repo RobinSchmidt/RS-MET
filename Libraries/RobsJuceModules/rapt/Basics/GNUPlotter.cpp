@@ -215,6 +215,19 @@ template void GNUPlotter::plotBivariateFunction(int Nx, float xMin, float xMax, 
 template void GNUPlotter::plotBivariateFunction(int Nx, int xMin, int xMax, int Ny, int yMin,
   int yMax, int (*f)(int, int));
 
+template <class T>
+void GNUPlotter::plotBivariateFunction(int Nx, T xMin, T xMax, int Ny, T yMin, T yMax,
+  const std::function<T(T, T)>& f)
+{
+  addDataBivariateFunction(Nx, xMin, xMax, Ny, yMin, yMax, f);
+  plot3D();
+}
+template void GNUPlotter::plotBivariateFunction(int Nx, double xMin, double xMax, int Ny,
+  double yMin, double yMax, const std::function<double(double, double)>& f);
+template void GNUPlotter::plotBivariateFunction(int Nx, float xMin, float xMax, int Ny,
+  float yMin, float yMax, const std::function<float(float, float)>& f);
+template void GNUPlotter::plotBivariateFunction(int Nx, int xMin, int xMax, int Ny,
+  int yMin, int yMax, const std::function<int(int, int)>& f);
 
 
 //-------------------------------------------------------------------------------------------------
