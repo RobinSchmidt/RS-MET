@@ -2003,6 +2003,8 @@ public:
 
   void negate() { coeffs.negate(); }
 
+  void scale(T s) { coeffs.scale(s); }
+
   // todo: make a similar multiplyX method - this needs to convolve the columns with p, so we will
   // need a convolution routine with strides
 
@@ -2021,6 +2023,13 @@ public:
   vector fields and it does not hold true without the negation (-> verify that).  */
   static void polyaVectorField(const rsPolynomial<std::complex<T>>& p,
     rsBivariatePolynomial<T>& px, rsBivariatePolynomial<T>& py);
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Factory
+
+  /** Creates the zero polynomial. */
+  static rsBivariatePolynomial<T> zero() { return rsBivariatePolynomial<T>(0, 0, { 0 }); };
 
 
   //-----------------------------------------------------------------------------------------------
@@ -2079,6 +2088,9 @@ public:
   See: https://mathinsight.org/conservative_vector_field_find_potential  */
   static rsBivariatePolynomial<T> getPotential(
     const rsBivariatePolynomial<T>& px, const rsBivariatePolynomial<T>& py);
+  // be consistent with regard to using get - either we should rename integralX to getIntegralX 
+  // etc. or rename getPotenteial to potential - choose the variant that is consistent with 
+  // rsPolynomial and rsNumericDifferentiator
 
   /** The Polya vector field of an analytic complex function (such as a polynomial) is 
   conservative, so a potential exists for such a Polya vector field. This function computes that 
@@ -2086,6 +2098,20 @@ public:
   partial derivatives with respect to x and y give the real part and the negative imaginary part 
   of the original complex polynomial. */
   static rsBivariatePolynomial<T> getPolyaPotential(const rsPolynomial<std::complex<T>>& p);
+
+
+  rsBivariatePolynomial<T> getHarmonicConjugate();
+
+
+
+  rsBivariatePolynomial<T> getLaplacian() const
+  { return derivativeX().derivativeX() + derivativeY().derivativeY(); }
+
+  // todo: implement divergence and curl
+
+
+
+
 
 
   // todo: make a function integralXY(T a, T b, T c, T d) that computes the value of the 
@@ -2133,6 +2159,12 @@ public:
           return false;     }}
     return true;
   }
+  // move out of class
+
+  bool isHarmonic(T tol = T(0)) const { return getLaplacian().isCloseTo(zero(), tol); }
+
+  static bool areHarmonicConjugates(
+    const rsBivariatePolynomial<T>& u, const rsBivariatePolynomial<T>& v, T tol = T(0));
 
 
   //-----------------------------------------------------------------------------------------------
@@ -2485,7 +2517,35 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getPolyaPotential(
   return getPotential(px, py);       // (px, py) is a potential field -> compute its potential
 }
 
+template<class T> 
+rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getHarmonicConjugate()
+{
+  rsAssert(isHarmonic());  // needs tolerance
+  using BiPoly = rsBivariatePolynomial<T>;
+  BiPoly u_dx_iy = derivativeX().integralY();
+  BiPoly u_dy = derivativeY(); 
+  for(int m = 0; m <= u_dy.getDegreeX(); m++)
+    for(int n = 1; n <= u_dy.getDegreeY(); n++)
+      u_dy.coeff(m, n) = T(0);
+  return u_dx_iy - u_dy.integralX();
+}
+// -needs tests 
 
+template<class T>
+bool rsBivariatePolynomial<T>::areHarmonicConjugates(
+  const rsBivariatePolynomial<T>& u, const rsBivariatePolynomial<T>& v, T tol)
+{
+  // We must have: u_x == v_y and u_y == -v_x:
+  using BiPoly = rsBivariatePolynomial<T>;
+  bool r = true;
+  BiPoly ux = u.derivativeX();
+  BiPoly uy = u.derivativeY();
+  BiPoly vx = v.derivativeX(); vx.negate();
+  BiPoly vy = v.derivativeY();
+  r &= ux.isCloseTo(vy, tol);
+  r &= uy.isCloseTo(vx, tol);
+  return r;
+}
 
 // optimized version of composeWithLinear
 template<class T>
