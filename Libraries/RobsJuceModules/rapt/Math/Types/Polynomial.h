@@ -7,7 +7,7 @@ have to create an instance of class rsPolynomial to use its functionality. Howev
 convenience, you may also instantiate polynomial objects and then you can do arithemetic operations
 with these objects directly, for example writing code like:
 
-  rsPolynomial<float> r = p*q;
+  rsPolynomial<double> r = p*q;
 
 where p and q are both polynomials and so is r - and the * operator implements polynomial 
 multiplication. But doing it this way is recommended mostly for prototyping only because creating
@@ -20,7 +20,7 @@ There are some static functions that use their own template parameter types inde
 real inputs and produce complex outputs (like root-finders) which then use "R" for the real type
 and std::complex<R> for the complex type. This is done because this class template should be able
 to be instantiated for real and complex types "T", so using the same template parameter could lead
-to confusion like the compiler using a nested complex type which makes no sense
+to confusion like the compiler using a nested complex type which makes no sense.
 ....under construction....tbc...  */
 
 // todo: 
@@ -1001,6 +1001,14 @@ public:
   // accurate - well, at least for inputs that are exactly representable (like not-too-large 
   // integers), which is expected because it just does basic arithmetic - as long as every 
   // intermediate result is exactly representable, the recursion will give exact results
+
+  // We have: cos(n*a) = T_n(cos(a)), see: https://www.youtube.com/watch?v=VOM3giwqMJw&t=14m5s
+  // ...how about sin(n*a) = S_n(sin(a)) for some other sort of polynomial? is this possible?
+  // maybe S_n(x) = sin(n*asin(x)) in analogy with the code above (for -1 <= x <= +1)?
+  // see https://en.wikipedia.org/wiki/Chebyshev_polynomials#Trigonometric_definition
+  // ...so the U_n polynomials do not work that way (but similar, so maybe also useful)
+  // https://mathworld.wolfram.com/ChebyshevPolynomialoftheFirstKind.html
+  // https://mathworld.wolfram.com/ChebyshevPolynomialoftheSecondKind.html
 
 
 

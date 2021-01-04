@@ -231,5 +231,6 @@ ToDo:
  (see OpenGL Programming Guide, p. 852 for formulas - maybe make it possible to decompose the 
  rotation into an x-, y-, z-roation (by successively dividing out the respective inverse
  rotation-matrices, recover also the rotation angles (acos)
+ see also: https://www.youtube.com/watch?v=PDgG2Z6T1ho for more on 3D rotations
 
 */

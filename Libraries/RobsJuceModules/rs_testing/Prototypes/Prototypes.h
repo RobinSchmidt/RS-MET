@@ -2014,6 +2014,18 @@ public:
   static void splitRealImag(const rsBivariatePolynomial<std::complex<T>>& p,
     rsBivariatePolynomial<T>& pRe, rsBivariatePolynomial<T>& pIm);
 
+
+  template<class T2>
+  rsBivariatePolynomial<T2> convert(T2 dummy) const
+  {
+    rsBivariatePolynomial<T2> p(getDegreeX(), getDegreeY());
+    for(int m = 0; m <= getDegreeX(); m++)
+      for(int n = 0; n <= getDegreeY(); n++)
+        p.coeff(m, n) = T2(coeffs(m, n));
+    return p;
+  }
+
+
   /** Given a complex polynomial (or more generally, a complex function), the associated Polya 
   vector field is the complex conjugate of the vector field that would result from just intepreting
   real and imaginary parts of the function's output as x- and y-coordinates of a 2D vector field. 
@@ -2100,7 +2112,7 @@ public:
   static rsBivariatePolynomial<T> getPolyaPotential(const rsPolynomial<std::complex<T>>& p);
 
 
-  rsBivariatePolynomial<T> getHarmonicConjugate();
+  rsBivariatePolynomial<T> getHarmonicConjugate() const;
 
 
 
@@ -2518,7 +2530,7 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getPolyaPotential(
 }
 
 template<class T> 
-rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getHarmonicConjugate()
+rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getHarmonicConjugate() const
 {
   rsAssert(isHarmonic());  // needs tolerance
   using BiPoly = rsBivariatePolynomial<T>;
@@ -2546,6 +2558,7 @@ bool rsBivariatePolynomial<T>::areHarmonicConjugates(
   r &= uy.isCloseTo(vx, tol);
   return r;
 }
+// try to optimize: avoid creating the temporary BiPolys. Instead, compare coeffs in u, v directly.
 
 // optimized version of composeWithLinear
 template<class T>
