@@ -1994,6 +1994,12 @@ public:
 
   static rsBivariatePolynomial<T> composeWithLinearOld(const rsPolynomial<T>& p, T a, T b);
 
+  /** Given a bivariate polynomial p(x,y) and two univariate polynomials x(t), y(t), this function 
+  computes p(x(t),y(t)) which is a univariate polynomial in t.  */
+  static rsPolynomial<T> compose(const rsBivariatePolynomial<T>& p,
+    const rsPolynomial<T>& x, const rsPolynomial<T>& y);
+
+
 
   /** Multiplies this bivariate polynomial with a univariate polynomial in y only and returns the 
   result which is again a bivariate polynomial. This amounts to convolving each row of our 
@@ -2103,6 +2109,9 @@ public:
   // be consistent with regard to using get - either we should rename integralX to getIntegralX 
   // etc. or rename getPotenteial to potential - choose the variant that is consistent with 
   // rsPolynomial and rsNumericDifferentiator
+  // -the convention is that the potential's *NEGATIVE* gradient should give the original 
+  //  functions back - here we take just the gradient - change that...we may need to ripple the 
+  //  negation through to the getPolyaPotential
 
   /** The Polya vector field of an analytic complex function (such as a polynomial) is 
   conservative, so a potential exists for such a Polya vector field. This function computes that 
@@ -2623,6 +2632,49 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinearOld(
 // rsBinomialCoefficient and pow is expensive! On the other hand, it does not allocate memory.
 // ....maybe keep both versions...or well.. it actually does allocate for the returned object
 // 
+
+template<class T> 
+rsPolynomial<T> rsBivariatePolynomial<T>::compose(const rsBivariatePolynomial<T>& p,
+  const rsPolynomial<T>& x, const rsPolynomial<T>& y)
+{
+  //   p(x,y) = \sum_m \sum_n a_{mn} x^m y^n
+  // where: 
+  //   x = x(t) = \sum_i b_i x^i
+  //   y = y(t) = \sum_j c_j y^j
+  // so the univariate p(t) is:
+  //   p(t) = \sum_m \sum_n \left(  a_{mn} * (\sum_i b_i x^i)^m * (\sum_j c_j y^j)^n  \right)
+  // so, the algo needs:
+  //   -successive powers of the b,c arrays (iterated convolutions of the arrays with themselves)
+  //   -the products of all possible combinations of those powers (more convolutions)
+  //   -multiply these products by a coeff a_{mn} and accumulate the result into the output coeff
+  //    array
+  using Poly = rsPolynomial<T>;
+  using AT   = rsArrayTools;
+  int M = p.getDegreeX();
+  int N = p.getDegreeY();
+  int I = x.getDegree();
+  int J = y.getDegree();
+  int L = I+M + J+N;              // degree of result
+  int strideX = M*(I+1)-1;        // number of columns in matrix xp (powers of x)
+  int strideY = N*(J+1)-1;        // same for yp
+  rsMatrix<T> xp(M+1, strideX);   // powers of x
+  rsMatrix<T> yp(N+1, strideY);   // powers of y
+  std::vector<T> tmp(L+1);        // holds coeffs for (x(t))^m * (y(t))^n as function of t
+  Poly pt(L);                     // target univariate polynomal p(t)
+  Poly::powers(x.getCoeffPointerConst(), I, xp.getDataPointer(), M, strideX);
+  Poly::powers(y.getCoeffPointerConst(), J, yp.getDataPointer(), N, strideY);
+  for(int m = 0; m <= M; m++) {
+    for(int n = 0; n <= N; n++) {
+      T*  xm  = xp.getRowPointer(m);            // coeffs for (x(t))^m
+      T*  yn  = yp.getRowPointer(n);            // coeffs for (y(t))^n
+      int lxm = m*I+1;                          // effective length of xm
+      int lyn = n*J+1;                          // effective length of xm
+      AT::convolve(xm, lxm, yn, lyn, &tmp[0]);
+      for(int i = 0; i < lxm+lyn-1; i++)
+        pt[i] += p.coeff(m, n) * tmp[i];  }}    // accumulation
+  return pt;
+}
+// what about the composition where the inner polynomial is bivariate and the outer univariate?
 
 
 template<class T>

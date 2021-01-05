@@ -525,6 +525,10 @@ public:
   convenience or whatever), make sure to initialize the sub-arrays with zeros. */
   static void powers(const T* a, int N, T** aPowers, int highestPower);
 
+  /** Like powers(const T* a, int N, T** aPowers, int highestPower) but using a flat array for the
+  output ...tbc... */
+  static void powers(const T* a, int N, T* aPowers, int highestPower, int stride);
+
   /** Let A(x) and B(x) be polynomials represented by their coefficient arrays a[] and b[]
   respectively. This function creates the coefficients of a polynomial C(x), represented by the
   coefficient array c[], that results from composing the polynomials A(x) and B(x), that is: first

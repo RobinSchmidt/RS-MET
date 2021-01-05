@@ -302,7 +302,6 @@ void rsPolynomial<T>::greatestCommonDivisor(
   rsError("Not yet implemented");
 }
 
-
 template <class T>
 void rsPolynomial<T>::powers(const T* a, int N, T** aPowers, int highestPower)
 {
@@ -313,6 +312,24 @@ void rsPolynomial<T>::powers(const T* a, int N, T** aPowers, int highestPower)
   for(int k = 2; k <= highestPower; k++)
     rsArrayTools::convolve(aPowers[k-1], (k-1)*N+1, a, N+1, aPowers[k]);
 }
+
+template <class T>
+void rsPolynomial<T>::powers(const T* a, int N, T* aPowers, int highestPower, int stride)
+{
+  //rsError("Not yet tested");
+  rsAssert(stride >= (N+1)*highestPower-1); // is this correct? or N*highestPower + 1
+
+  aPowers[0] = 1;
+  if(highestPower < 1)
+    return;
+  rsArrayTools::copy(a, &aPowers[stride], N+1);
+  for(int k = 2; k <= highestPower; k++)
+    rsArrayTools::convolve(&aPowers[(k-1)*stride], (k-1)*N+1, a, N+1, &aPowers[k*stride]);
+}
+// maybe make a version that assumes a different memory layout with "rows" having lengths:
+// 1, N+1, 2*N+1, 3*N+1, ... i.e. k*N+1 such that each row es exactly long enough for the number
+// of coeffs it holds - the way it's implemented now is convenient, especially when used together
+// with rsMatrix, but wastes memory
 
 template <class T>
 void rsPolynomial<T>::compose(const T* a, int aN, const T* b, int bN, T* c, T* workspace)
