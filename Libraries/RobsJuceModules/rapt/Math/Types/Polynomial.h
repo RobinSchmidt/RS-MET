@@ -191,19 +191,8 @@ public:
   bool isMonic() const { return getLeadingCoeff() == T(1); }
   // what if we have trailing zeros in the coeff array? should we have a tolerance?
 
-  /** Evaluates the first derivative of this polynomial at the given x. */
-  T derivativeAt(const T& x) 
-  { return evaluateDerivative(x, &coeffs[0], getDegree()); }
-
-  /** Evaluates the order-th derivative of this polynomial at the given x. Works also for the 0th 
-  derivative, which is the function value itself. ...but the order must be non-negative. */
-  T derivativeAt(const T& x, int order) 
-  { return evaluateDerivative(x, &coeffs[0], getDegree(), order); }
-  // todo: maybe make it also work for negative orders (in which case the antiderivative of 
-  // given order will be evaluated (setting integration constants to zero))
 
 
-  //T definiteIntegral(const T& lowerLimit, const T& upperLimit);
 
 
 
@@ -312,7 +301,8 @@ public:
 
 
   /** Evaluates the polynomial at the given input x. */
-  T operator()(T x) const { return evaluate(x, &coeffs[0], getDegree()); }
+  //T operator()(T x) const { return evaluate(x, &coeffs[0], getDegree()); }
+  T operator()(T x) const { return evaluate(x); }
 
   /** Overloaded evaluation operator () that takes a polynomial as input and returns another 
   polynomial. This implements nesting/composition. The given x is the inner polynomial and "this" 
@@ -327,11 +317,39 @@ public:
   /** Read and write access to i-th coefficient (breaks encapsulation - use with care). */
   T& operator[](int i) { return coeffs[i]; }
 
-  //===============================================================================================
-  /** \name Computations on raw coefficient arrays */
+
+
+
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Evaluation */
+  /** \name Evaluation (High Level) */
+
+  /** Evaluates the polynomial at the given input x. */
+  T evaluate(T x) const { return evaluate(x, &coeffs[0], getDegree()); }
+
+  /** Evaluates the first derivative of this polynomial at the given x. */
+  T derivativeAt(const T& x) 
+  { return evaluateDerivative(x, &coeffs[0], getDegree()); }
+
+  /** Evaluates the order-th derivative of this polynomial at the given x. Works also for the 0th 
+  derivative, which is the function value itself. ...but the order must be non-negative. */
+  T derivativeAt(const T& x, int order) 
+  { return evaluateDerivative(x, &coeffs[0], getDegree(), order); }
+  // todo: maybe make it also work for negative orders (in which case the antiderivative of 
+  // given order will be evaluated (setting integration constants to zero))
+
+  T integralAt(const T& x, const T c = T(0))
+  { return evaluateIntegral(x, &coeffs[0], getDegree(), c); }
+
+  T definiteIntegral(const T& lowerLimit, const T& upperLimit)
+  { return integralAt(upperLimit) - integralAt(lowerLimit); }
+
+
+  //===============================================================================================
+  /** \name Computations on raw coefficient arrays (low level functions) */
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Evaluation (Low Level) */
 
   /** Evaluates the polynomial defined by the array of coefficients "a" at argument "x".  The array
   of coefficients must be of length degree+1 and is interpreted as follows: a[0] is taken to be the
@@ -385,6 +403,11 @@ public:
     std::complex<R> z, std::complex<R>* P);
   // rename "P" to "y" ...or "w2 as is common in complex functions
 
+  /** Evaluates the indefinite integral of the polynomial at given x with given integration 
+  constant c. */
+  static T evaluateIntegral(const T& x, const T *a, int degree, T c = T(0));
+
+
   /** Evaluates the cubic polynomial a[0] + a[1]*x + a[2]*x^2 + a[3]*x^3 at the given x. */
   static inline T evaluateCubic(const T& x, const T* a)
   {
@@ -426,7 +449,7 @@ public:
   // polynomials (they are additionally parametrized by a set of roots)
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Arithmetic */
+  /** \name Arithmetic (Low Level) */
 
   /** Forms a weighted sum of two polynomials p(x) and q(x) with weights wp and wq respectively and
   stores the coeffficients of the resulting polynomial r(x) in the r-array. The polynomials p(x)
@@ -547,7 +570,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Calculus */
+  /** \name Calculus (Low Level) */
 
   /** Finds the coefficients of the derivative of the N-th degree polynomial with coeffs in "a" and
   stores them in "ad". The degree of the polynomial represented by the coeffs in "ad" will be
@@ -583,7 +606,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Roots */
+  /** \name Roots (Low Level) */
 
   /** Finds all complex roots of a polynomial by Laguerre's method and returns them in "roots". */
   template<class R>
@@ -693,7 +716,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Conversions */
+  /** \name Conversions (Low Level) */
   // changes for the representation of the polynomial
 
   /** Given expansion coefficients a[k] of an arbitrary polynomial P(x) with given degree in terms
@@ -746,7 +769,7 @@ public:
   // drag the ..shiftArgument function in this group
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Fitting/Interpolation */
+  /** \name Fitting/Interpolation (Low Level) */
 
   /** Computes coefficients a[0], a[1], a[2], a[3] for the cubic polynomial that goes through the
   points (x[0], y[0]) and (x[1], y[1]) and has first derivatives of dy[0] and dy[1] at these points
@@ -890,7 +913,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Coefficient generation */
+  /** \name Coefficient generation (Low Level) */
   // functions to generate coefficient arrays for certain special polynomials
 
   /** Computes polynomial coefficients of a polynomial that is defined recursively by
@@ -965,7 +988,7 @@ public:
   // maybe rename to coeffsNewtonInPlace
 
   //-----------------------------------------------------------------------------------------------
-  // Evaluation of special polynomials
+  // Evaluation of special polynomials (Low Level)
   // maybe move into the Evaluation section
 
   // move the evaluateHermite function here - use consistent naming - either they should all start

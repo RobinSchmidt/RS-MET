@@ -2203,6 +2203,14 @@ public:
     return r;
   }
 
+  rsBivariatePolynomial<T> operator-() const
+  {
+    rsBivariatePolynomial<T> r = *this;
+    r.negate();
+    return r;
+  }
+
+
   T operator()(T x, T y) const { return evaluate(x, y); }
 
 
@@ -2216,6 +2224,9 @@ public:
 
   /** Read access to the (i,j)th coefficient. */
   const T& coeff(int i, int j) const { return coeffs(i, j); }
+
+  T getCoeffPadded(int i, int j, T padding = T(0)) const 
+  { return coeffs.getElementPadded(i, j, padding); }
 
 
 protected:
@@ -2589,6 +2600,10 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear(
 // -let the workspace be passed by the user
 // -operate on a pre-allocated rsMatrixView
 // -the polynomial p should be passed as raw coefficient array
+// -maybe generalize to composeWithAffine(..., T a, T b, T c) that computes the composition with 
+//  (a*x + b*y + c) - i think, we need trinomial coeffients and Pascal's pyramid for this:
+//  https://en.wikipedia.org/wiki/Multinomial_theorem, 
+//  https://en.wikipedia.org/wiki/Pascal%27s_pyramid
 
 // old version of composeWithLinear, just for reference
 template<class T>

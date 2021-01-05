@@ -174,6 +174,20 @@ R rsPolynomial<T>::evaluateWithTwoDerivativesAndError(
 }
 
 template<class T>
+T rsPolynomial<T>::evaluateIntegral(const T& x, const T* a, int N, T c)
+{
+  T y = a[N] / T(N+1);
+  for(int i = N-1; i >= 0; i--)
+    y = y*x + a[i] / T(i+1);
+  return y*x + c;
+}
+// maybe make a variant that takes lower and upper integration limits a,b - this can be optimized:
+// the final + c can be thrown away and more importantly, the evaluation at a and b can be done 
+// within a single loop where a[i] / T(i+1) needs to be computed only once - in the loop, do:
+//   Ai = a[i] / T(i+1); ya = ya*x + Ai; yb = yb*x + Ai; 
+// where ya, yb are both initialized like y above. then return yb - ya
+
+template<class T>
 T rsPolynomial<T>::evaluateHermite(const T& x, int n)
 {
   if(n == 0) return T(1);
@@ -285,7 +299,7 @@ template <class T>
 void rsPolynomial<T>::greatestCommonDivisor(
   const T* p, int pDeg, const T* q, int qDeg, T* gcd, int* gcdDeg, T tol)
 {
-
+  rsError("Not yet implemented");
 }
 
 
@@ -374,11 +388,11 @@ void rsPolynomial<T>::shiftArgument(const T *a, T *as, int N, T x0)
   T r[2] = { -x0, T(1) };
   compose(r, 1, a, N, as);
   return;
-  // todo: provide workspace based version
+  // todo: provide workspace based version that uses the non-allocating version of compose
 
 
-  // old implementation - todo: move to prototypes, it's worth to keep somewhere because it shows
-  // the algorithm derived from the binomial theorem
+  // inefficient old implementation - todo: move to prototypes, it's worth to keep the code 
+  // somewhere because it shows the algorithm derived from the binomial theorem:
   rsUint32 Nu = rsUint32(N); // used to fix warnings
   rsUint32 numLines = N+1;
   rsUint32 length   = (numLines*(numLines+1))/2;
@@ -388,12 +402,10 @@ void rsPolynomial<T>::shiftArgument(const T *a, T *as, int N, T x0)
   x0n[0] = 1.0;
   for(rsUint32 n = 1; n <= Nu; n++)
     x0n[n] = -x0 * x0n[n-1];
-  for(rsUint32 n = 0; n <= Nu; n++)
-  {
+  for(rsUint32 n = 0; n <= Nu; n++) {
     as[n] = 0.0;
     for(rsUint32 k = n; k <= Nu; k++)
-      as[n] += T(rsPascalTriangle(pt, k, k-n)) * x0n[k-n] * a[k];
-  }
+      as[n] += T(rsPascalTriangle(pt, k, k-n)) * x0n[k-n] * a[k]; }
   delete[] pt;
   delete[] x0n;
 }
