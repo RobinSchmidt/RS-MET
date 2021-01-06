@@ -2174,13 +2174,27 @@ public:
   static T pathIntegral(const rsBivariatePolynomial<T>& p, const rsBivariatePolynomial<T>& q,
     const rsPolynomial<T>& x, const rsPolynomial<T>& y, T a, T b);
   // aka path integral of 2nd kind or vector path integral?
-  // -maybe rename to lineIntegral or contourIntegral 
+  // -maybe rename to lineIntegral or contourIntegral ...or maybe flowIntegral
+  // http://ndp.jct.ac.il/tutorials/infitut2/node61.html
+
+  static T fluxIntegral(const rsBivariatePolynomial<T>& p, const rsBivariatePolynomial<T>& q,
+    const rsPolynomial<T>& x, const rsPolynomial<T>& y, T a, T b);
 
   /** Path integral over a vector field around the closed rectangular loop going along the 4 line 
   segments: (x0,y0) -> (x1,y0) -> (x1,y1) -> (x0,y1) -> (x0,y0). By Green's theorem, this should 
   be equal to the double integral over the enclosed rectangle of the curl of the vector field. */
   static T loopIntegral(const rsBivariatePolynomial<T>& p, const rsBivariatePolynomial<T>& q,
     T x0, T x1, T y0, T y1);
+  // aka circulation?
+
+  /** Like loopIntegral but using the flux instead of the flow. The flux is the component of the 
+  vector field is perpendicular to the curve. The integral measures, how much of a fluid flows
+  out of the given rectangle. By Gauss' theorem, this should be equal to the double integral over 
+  the enclosed rectangle of the divergence of the vector field. */
+  static T outfluxIntegral(const rsBivariatePolynomial<T>& p, const rsBivariatePolynomial<T>& q,
+    T x0, T x1, T y0, T y1);
+
+  // todo: implement flux integral around a rectangular loop
 
   // todo:
   // -implement scalar path integrals - they are possible only numerically, due to the square-root 
@@ -2674,6 +2688,25 @@ T rsBivariatePolynomial<T>::pathIntegral(
 // P.integral or p.indefiniteIntegral
 
 template<class T> 
+T rsBivariatePolynomial<T>::fluxIntegral(
+  const rsBivariatePolynomial<T>& p, const rsBivariatePolynomial<T>& q,
+  const rsPolynomial<T>& x, const rsPolynomial<T>& y, T a, T b)
+{
+  using Poly   = rsPolynomial<T>;
+  using BiPoly = rsBivariatePolynomial<T>;
+  Poly pt = BiPoly::compose(p, x, y);  // p(t)
+  Poly qt = BiPoly::compose(q, x, y);  // q(t)
+  Poly xp = x.derivative();            // x'(t)
+  Poly yp = y.derivative();            // y'(t)
+  Poly P  = pt * yp - qt * xp;
+  return P.definiteIntegral(a, b);
+}
+// needs tests - this is on shaky grounds - especially with respect to computing and 
+// (not) normalizing the normal vector (which is taken to be equal to (nx, ny) = (yp, -xp) here...
+// but actually should be normalized...right?). ...in general, the function is very similar to
+// pathIntegral
+
+template<class T> 
 T rsBivariatePolynomial<T>::loopIntegral(const rsBivariatePolynomial<T>& p,
   const rsBivariatePolynomial<T>& q, T x0, T x1, T y0, T y1)
 {
@@ -2688,6 +2721,20 @@ T rsBivariatePolynomial<T>::loopIntegral(const rsBivariatePolynomial<T>& p,
 }
 // optimize: avoid creating so many temporary univariate polynomials xt, yt - reuse the existing 
 // objects by re-assigning the coeffs
+
+template<class T> 
+T rsBivariatePolynomial<T>::outfluxIntegral(const rsBivariatePolynomial<T>& p, 
+  const rsBivariatePolynomial<T>& q, T x0, T x1, T y0, T y1)
+{
+  using P = rsPolynomial<T>;
+  P xt, yt;
+  T r = T(0);
+  xt = P({x0, x1-x0}); yt = P({y0}); r += fluxIntegral(p, q, xt, yt, T(0), T(1));  // rightward
+  xt = P({x1}); yt = P({y0, y1-y0}); r += fluxIntegral(p, q, xt, yt, T(0), T(1));  // upward
+  xt = P({x1, x0-x1}); yt = P({y1}); r += fluxIntegral(p, q, xt, yt, T(0), T(1));  // leftward
+  xt = P({x0}); yt = P({y1, y0-y1}); r += fluxIntegral(p, q, xt, yt, T(0), T(1));  // downward
+  return r;
+}
 
 template<class T>
 bool rsBivariatePolynomial<T>::areHarmonicConjugates(

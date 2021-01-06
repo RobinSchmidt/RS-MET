@@ -178,6 +178,16 @@ public:
   /** Returns the i-th coefficient, i.e. the coefficient for x^i. */
   T getCoeff(int i) const { rsAssert(i >= 0 && i <= getDegree()); return coeffs[i]; }
 
+  /** Returns the i-th coefficient, i.e. the coefficient for x^i or zero if i is greater than the 
+  degree of this polynomial. */
+  T getCoeffPadded(int i) const 
+  { 
+    rsAssert(i >= 0); 
+    if(i > getDegree())
+      return T(0);
+    return coeffs[i]; 
+  }
+
   /** Returns a pointer to our coefficient array - breaks encapsulation - use with care! */
   T* getCoeffPointer() { return &coeffs[0]; }
   // Try to get rid of this - when we really need low-level access to the coeff-array, we declare 
