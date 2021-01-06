@@ -714,6 +714,26 @@ public:
   std::vector<T> productWith(const T* x) const
   { std::vector<T> y(getNumRows()); product(x, &y[0]); return y; }
 
+  /** 2D convolution of the two matrices A and B into the result matrix C. The number of rows and 
+  columns of C must equal the sum of the respective numbers of A and B minus 1. */
+  static void convolve(
+    const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
+  {
+    int Ma = A.numRows; int Na = A.numCols;
+    int Mb = B.numRows; int Nb = B.numCols;
+    int Mc = Ma+Mb-1;   int Nc = Na+Nb-1;
+    rsAssert(C->numRows == Mc && C->numCols == Nc, "Result matrix has wrong shape");
+    for(int m = 0; m < Mc; m++) {
+      for(int n = 0; n < Nc; n++) {
+        T s = T(0);
+        for(int i = rsMax(0, m-Ma+1); i <= rsMin(Mb-1, m); i++) {
+          for(int j = rsMax(0, n-Na+1); j <= rsMin(Nb-1, n); j++) {
+            s += B(i, j) * A(m-i, n-j);  }}
+        (*C)(m, n) = s; }}
+  }
+  // ToDo: implement this algo - it is nice: it reduces the 2D convolution problem to a 1D 
+  // convolution: Polynomial multiplication and FFT
+  // https://cseweb.ucsd.edu/~slovett/teaching/SP15-CSE190/poly-mult-and-FFT.pdf
 
   //-----------------------------------------------------------------------------------------------
   /** \name Accessors */
@@ -1117,6 +1137,13 @@ public:
   }
   // needs test - maybe optimize inner loop by avoiding re-computation of row base index
 
+  /** Convolves this matrix with matrix B and returns the result. */
+  rsMatrix<T> getConvolutionWith(const rsMatrix<T>& B)
+  {
+    rsMatrix<T> C(numRows + B.numRows - 1, numCols + B.numCols - 1);
+    rsMatrixView<T>::convolve(*this, B, &C);
+    return C;
+  }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Misc */
