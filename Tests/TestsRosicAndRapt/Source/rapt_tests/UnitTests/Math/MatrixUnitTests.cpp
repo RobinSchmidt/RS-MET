@@ -905,9 +905,7 @@ bool testSparseMatrixSolvers()
 bool testMatrixConvolution()
 {
   bool ok = true;
-
   using Mat = rsMatrix<double>;
-
   Mat A(4, 5, {1,2,3,4,5, 6,7,8,9,10, 11,12,13,14,15, 16,17,18,19,20}); // input 1
   Mat B(3, 4, {1,2,3,4, 5,6,7,8, 9,10,11,12});                          // input 2
   Mat T(6, 8, {  1,   4,   10,  20,   30,  34,  31,  20,                // target result

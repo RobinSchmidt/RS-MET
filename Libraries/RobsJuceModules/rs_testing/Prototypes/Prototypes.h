@@ -2127,7 +2127,20 @@ public:
   rsBivariatePolynomial<T> getLaplacian() const
   { return derivativeX().derivativeX() + derivativeY().derivativeY(); }
 
-  // todo: implement divergence and curl
+
+  static rsBivariatePolynomial<T> divergence2D(
+    const rsBivariatePolynomial<T>& fx, const rsBivariatePolynomial<T>& fy)
+  { return fx.derivativeX() + fy.derivativeY(); }
+  // needs test
+
+  static rsBivariatePolynomial<T> curl2D(
+    const rsBivariatePolynomial<T>& fx, const rsBivariatePolynomial<T>& fy)
+  { return fy.derivativeX() - fx.derivativeY(); }
+  // needs test
+
+  // https://en.wikipedia.org/wiki/Vector_calculus_identities#Divergence
+
+
 
 
 
@@ -2243,6 +2256,14 @@ public:
     return r;
   }
 
+  rsBivariatePolynomial<T> operator*(const rsBivariatePolynomial<T>& q) const
+  {
+    rsBivariatePolynomial<T> r(getDegreeX()+q.getDegreeX(), getDegreeY()+q.getDegreeY());
+    rsMatrixView<T>::convolve(coeffs, q.coeffs, &r.coeffs);
+    return r;
+  }
+
+  /** Unary minus. */
   rsBivariatePolynomial<T> operator-() const
   {
     rsBivariatePolynomial<T> r = *this;
@@ -2250,11 +2271,9 @@ public:
     return r;
   }
 
-
+  /** Evaluation. */
   T operator()(T x, T y) const { return evaluate(x, y); }
 
-
-  // todo: implement +,-
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc
@@ -2568,8 +2587,7 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getPotential(
 // -maybe optimize: gyp has nonzero coeffs only for terms that are free of any x
 // -maybe implement different algorithms, integrating py with respect to y first, etc. - they 
 //  should all give the same result up to roundoff error
-// -implement a function getHarmonicConjugate that takes a single bivariate polynomial, say px, and
-//  produces the appropriate py
+
 
 template<class T>
 rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getPolyaPotential(

@@ -731,9 +731,12 @@ public:
             s += B(i, j) * A(m-i, n-j);  }}
         (*C)(m, n) = s; }}
   }
-  // ToDo: implement this algo - it is nice: it reduces the 2D convolution problem to a 1D 
-  // convolution: Polynomial multiplication and FFT
-  // https://cseweb.ucsd.edu/~slovett/teaching/SP15-CSE190/poly-mult-and-FFT.pdf
+  // ToDo: 
+  // -make it possible to work in place -> reverse directions of outer loops, i.e. run m from
+  //  Mc-1 down to 0 and likewise for n
+  // -implement this algo - it is nice: it reduces the 2D convolution problem to a 1D 
+  //  convolution: Polynomial multiplication and FFT
+  //  https://cseweb.ucsd.edu/~slovett/teaching/SP15-CSE190/poly-mult-and-FFT.pdf
 
   //-----------------------------------------------------------------------------------------------
   /** \name Accessors */
