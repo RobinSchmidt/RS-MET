@@ -2133,6 +2133,20 @@ public:
 
 
 
+  /** Computes the double integral of the polynomial over the given rectangle. This function 
+  performs the integration over x first and then the integration over y. */
+  T doubleIntegralXY(T x0, T x1, T y0, T y1) const;
+
+  /** Computes the double integral of the polynomial over the given rectangle. This function 
+  performs the integration over y first and then the integration over x. */
+  T doubleIntegralYX(T x0, T x1, T y0, T y1) const;
+
+  /** Given a vector field u(x,y), v(x,y) and a parametric curve x(t), y(t) and start- and 
+  end-values a,b for the parameter t, this function computes the path integral of the (polynomial) 
+  vector field along the given (polynomial) path. */
+  static T pathIntegral(const rsBivariatePolynomial<T>& u, const rsBivariatePolynomial<T>& v,
+    const rsPolynomial<T>& x, const rsPolynomial<T>& y, T a, T b);
+
 
 
   // todo: make a function integralXY(T a, T b, T c, T d) that computes the value of the 
@@ -2563,6 +2577,41 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getHarmonicConjugate() const
 }
 // -needs tests 
 
+template<class T> 
+T rsBivariatePolynomial<T>::doubleIntegralXY(T x0, T x1, T y0, T y1) const
+{
+  rsPolynomial<T>& ix = integralX(x0, x1);  // still a function of y
+  return ix.definiteIntegral(y0, y1);       // just a number
+}
+
+template<class T> 
+T rsBivariatePolynomial<T>::doubleIntegralYX(T x0, T x1, T y0, T y1) const
+{
+  rsPolynomial<T>& iy = integralY(y0, y1);  // still a function of x
+  return iy.definiteIntegral(x0, x1);       // just a number
+}
+// make function names consistent maybe rename definiteIntegral to integral...but this could lead
+// to ambiguities with the function that evaluates the indefinite integral at some x0 with 
+// integration constant c
+
+template<class T> 
+T rsBivariatePolynomial<T>::pathIntegral(
+  const rsBivariatePolynomial<T>& u, const rsBivariatePolynomial<T>& v,
+  const rsPolynomial<T>& x, const rsPolynomial<T>& y, T a, T b)
+{
+  using Poly   = rsPolynomial<T>;
+  using BiPoly = rsBivariatePolynomial<T>;
+  Poly ut = BiPoly::compose(u, x, y);  // u(t) - todo: support syntax: u.compose(x, y)
+  Poly vt = BiPoly::compose(v, x, y);  // v(t)
+  Poly xp = x.derivative();            // x'(t)
+  Poly yp = y.derivative();            // y'(t)
+  Poly P  = ut * xp + vt * yp;         // the scalar product in the integrand
+  return P.definiteIntegral(a, b);
+}
+// todo: maybe have a function that leaves a,b, unspecified - this should return a single 
+// univariate polynomial into which the limits can be inserted later, i.e. just return
+// P.integral or p.indefiniteIntegral
+
 template<class T>
 bool rsBivariatePolynomial<T>::areHarmonicConjugates(
   const rsBivariatePolynomial<T>& u, const rsBivariatePolynomial<T>& v, T tol)
@@ -2639,10 +2688,10 @@ rsPolynomial<T> rsBivariatePolynomial<T>::compose(const rsBivariatePolynomial<T>
 {
   //   p(x,y) = \sum_m \sum_n a_{mn} x^m y^n
   // where: 
-  //   x = x(t) = \sum_i b_i x^i
-  //   y = y(t) = \sum_j c_j y^j
+  //   x = x(t) = \sum_i b_i t^i
+  //   y = y(t) = \sum_j c_j t^j
   // so the univariate p(t) is:
-  //   p(t) = \sum_m \sum_n \left(  a_{mn} * (\sum_i b_i x^i)^m * (\sum_j c_j y^j)^n  \right)
+  //   p(t) = \sum_m \sum_n \left(  a_{mn} * (\sum_i b_i t^i)^m * (\sum_j c_j t^j)^n  \right)
   // so, the algo needs:
   //   -successive powers of the b,c arrays (iterated convolutions of the arrays with themselves)
   //   -the products of all possible combinations of those powers (more convolutions)
@@ -2660,7 +2709,7 @@ rsPolynomial<T> rsBivariatePolynomial<T>::compose(const rsBivariatePolynomial<T>
   rsMatrix<T> xp(M+1, strideX);   // powers of x
   rsMatrix<T> yp(N+1, strideY);   // powers of y
   std::vector<T> tmp(L+1);        // holds coeffs for (x(t))^m * (y(t))^n as function of t
-  Poly pt(L);                     // target univariate polynomal p(t)
+  Poly pt(L);                     // target univariate polynomial p(t)
   Poly::powers(x.getCoeffPointerConst(), I, xp.getDataPointer(), M, strideX);
   Poly::powers(y.getCoeffPointerConst(), J, yp.getDataPointer(), N, strideY);
   for(int m = 0; m <= M; m++) {

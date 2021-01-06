@@ -345,6 +345,15 @@ public:
   { return integralAt(upperLimit) - integralAt(lowerLimit); }
 
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Calculus (High Level) */
+
+  rsPolynomial<T> derivative() const
+  { rsPolynomial<T> d(getDegree()-1); derivative(&coeffs[0], &d.coeffs[0], getDegree()); return d;}
+
+
+
   //===============================================================================================
   /** \name Computations on raw coefficient arrays (low level functions) */
 
