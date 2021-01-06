@@ -350,7 +350,11 @@ public:
   /** \name Calculus (High Level) */
 
   rsPolynomial<T> derivative() const
-  { rsPolynomial<T> d(getDegree()-1); derivative(&coeffs[0], &d.coeffs[0], getDegree()); return d;}
+  { 
+    if(getDegree() == 0) return rsPolynomial<T>(); // a constant polynomial has zero derivative
+    rsPolynomial<T> d(getDegree()-1); derivative(&coeffs[0], &d.coeffs[0], getDegree()); 
+    return d;
+  }
 
 
 
