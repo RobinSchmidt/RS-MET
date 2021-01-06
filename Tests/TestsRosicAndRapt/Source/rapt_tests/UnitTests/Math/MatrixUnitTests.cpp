@@ -902,7 +902,53 @@ bool testSparseMatrixSolvers()
   return res;
 }
 
+// 2D convolution of 2 matrices
+template<class T>
+rsMatrix<T> convolve(const rsMatrix<T>& A, const rsMatrix<T>& B)
+{
+  int Ma = A.getNumRows();
+  int Na = A.getNumColumns();
+  int Mb = B.getNumRows();
+  int Nb = B.getNumColumns();
+  int Mc = Ma + Mb - 1;
+  int Nc = Na + Nb - 1;
+  rsMatrix<T> C(Mc, Nc);
+  for(int m = 0; m < Mc; m++) {
+    for(int n = 0; n < Nc; n++) {
+      T s = T(0);
+      for(int i = rsMax(0, m-Ma+1); i <= rsMin(Mb-1, m); i++) {
+        for(int j = rsMax(0, n-Na+1); j <= rsMin(Nb-1, n); j++) {
+          s += B(i, j) * A(m-i, n-j);  }}
+      C(m, n) = s; }}
+  return C;
+}
 
+// this algo is nice - it reduces the 2D convolution problem to a 1D convolution:
+// Polynomial multiplication and FFT
+// https://cseweb.ucsd.edu/~slovett/teaching/SP15-CSE190/poly-mult-and-FFT.pdf
+
+bool testMatrixConvolution()
+{
+  bool ok = true;
+
+  using Mat = rsMatrix<double>;
+
+  Mat A(4, 5, {1,2,3,4,5, 6,7,8,9,10, 11,12,13,14,15, 16,17,18,19,20}); // input 1
+  Mat B(3, 4, {1,2,3,4, 5,6,7,8, 9,10,11,12});                          // input 2
+  Mat T(6, 8, {  1,   4,   10,  20,   30,  34,  31,  20,                // target result
+                11,  35,   74, 130,  166, 161, 133,  80,
+                50, 133,  252, 410,  488, 441, 346, 200,
+               125, 298,  522, 800,  878, 756, 571, 320,
+               179, 399,  662, 970, 1038, 857, 625, 340,
+               144, 313,  508, 730,  772, 625, 448, 240}); 
+  Mat C = convolve(A, B);
+  ok &= C == T;
+
+  Mat D = T-C;
+
+  return ok;
+}
+// http://juanreyero.com/article/python/python-convolution.html
 
 bool testMatrix()
 {
@@ -923,6 +969,8 @@ bool testMatrix()
   testResult &= testMatrixAlloc();
   testResult &= testKroneckerProduct();
   //testResult &= testTransformMatrices();
+
+  testResult &= testMatrixConvolution();
 
   // todo:
   // test: inverse, pseudo-inverse: (A^T * A)^-1 * A^T
