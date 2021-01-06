@@ -2124,7 +2124,6 @@ public:
   rsBivariatePolynomial<T> getHarmonicConjugate() const;
 
 
-
   rsBivariatePolynomial<T> getLaplacian() const
   { return derivativeX().derivativeX() + derivativeY().derivativeY(); }
 
@@ -2141,19 +2140,37 @@ public:
   performs the integration over y first and then the integration over x. */
   T doubleIntegralYX(T x0, T x1, T y0, T y1) const;
 
-  /** Given a vector field u(x,y), v(x,y) and a parametric curve x(t), y(t) and start- and 
-  end-values a,b for the parameter t, this function computes the path integral of the (polynomial) 
-  vector field along the given (polynomial) path. */
-  static T pathIntegral(const rsBivariatePolynomial<T>& u, const rsBivariatePolynomial<T>& v,
+  /** Given a scalar field p(x,y) and a parametric curve x(t), y(t) and start- and end-values a,b 
+  for the parameter t, this function computes the path integral (a.k.a. line integral, curve 
+  integral or contour integral) of the (polynomial) scalar field along the given (polynomial) path.
+  Currently, this is implemented only for linear paths, i.e. the degrees of x(t),y(t) must be at 
+  most 1. Path integrals over scalar fields can be thought of as computing the area of a curtain. 
+  Imagine the path on the xy-plane being projected up to the surface landscape of p(x,y) and a 
+  curtain hanging from this projected line down to the xy-plane. Of course, the "landscape" may
+  also lie below the xy-plane, in which case the result would become negative. So it's more like
+  a signed area difference. see: https://en.wikipedia.org/wiki/Line_integral */
+  static T pathIntegral(const rsBivariatePolynomial<T>& p, 
     const rsPolynomial<T>& x, const rsPolynomial<T>& y, T a, T b);
 
+  /** Given a vector field p(x,y), q(x,y) and a parametric curve x(t), y(t) and start- and 
+  end-values a,b for the parameter t, this function computes the path integral (a.k.a. line 
+  integral, curve integral or contour integral) of the (polynomial) vector field along the given
+  (polynomial) path. Path integrals over vector fields can be thought of as computing the work that
+  a force field does on a particle that moves through the field along the given path.  
+  see: https://en.wikipedia.org/wiki/Line_integral */
+  static T pathIntegral(const rsBivariatePolynomial<T>& p, const rsBivariatePolynomial<T>& q,
+    const rsPolynomial<T>& x, const rsPolynomial<T>& y, T a, T b);
+  // aka path integral of 2nd kind or vector path integral?
+  // -maybe rename to lineIntegral or contourIntegral 
 
 
-  // todo: make a function integralXY(T a, T b, T c, T d) that computes the value of the 
-  // double-integral, maybe have also a function integralYX which reverses the order of integration
-  // the result is mathematically the same but may be numerically different
-  // ...how about line integrals? can we check, if the function is a potential field? i think, the
-  // Laplacian should be zero
+
+  // todo:
+  // -implement scalar path integrals - they are possible only numerically, due to the square-root 
+  //  in the integrand (for the speed) ...except when x(t), y(t) are both linear - in this case, the 
+  //  speed is a constant number and we can just scale everything by it
+  // -implement flux and circulation integrals, if possible - compare results to double integral
+  //  (Gauss' and Green's theorem - the vector field must satisfy some conditions for them to hold)
 
 
 
@@ -2593,6 +2610,28 @@ T rsBivariatePolynomial<T>::doubleIntegralYX(T x0, T x1, T y0, T y1) const
 // make function names consistent maybe rename definiteIntegral to integral...but this could lead
 // to ambiguities with the function that evaluates the indefinite integral at some x0 with 
 // integration constant c
+
+template<class T> 
+T rsBivariatePolynomial<T>::pathIntegral(const rsBivariatePolynomial<T>& p, 
+  const rsPolynomial<T>& x, const rsPolynomial<T>& y, T a, T b)
+{
+  rsAssert(x.getDegree() <= 1 && y.getDegree() <= 1, "Only implemented for linear paths");
+  // ToDo: lift this restriction by switching to numerical integration, if any degree is larger.
+  // When x(t) or y(t) is nonlinear, then xp or yp would still be functions of t and the sqrt would
+  // appear in the integrand and we would have to evaluate x,y at t within the integral.
+
+  using Poly   = rsPolynomial<T>;
+  using BiPoly = rsBivariatePolynomial<T>;
+  Poly pt = BiPoly::compose(p, x, y);     // p(t)
+  Poly xp = x.derivative();               // x'(t) - optimize: it's just the coeff for x^1
+  Poly yp = y.derivative();               // y'(t)   ...but take care: the degree may be zero
+  T dx = xp(0);                           // dx/dt, constant bcs x is linear
+  T dy = yp(0);                           // dy/dt, constant bcs y is linear
+  T ds = sqrt(dx*dx + dy*dy);             // arc length (the "arc" is just a line element)
+  return ds * pt.definiteIntegral(a, b);
+}
+// pt has 2 zero coeffs at the end in the test - check, why that happens - should we expect that or
+// is that a bug?
 
 template<class T> 
 T rsBivariatePolynomial<T>::pathIntegral(
