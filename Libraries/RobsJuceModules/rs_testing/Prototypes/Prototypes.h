@@ -2904,13 +2904,16 @@ void rsBivariatePolynomial<T>::polyaVectorField(const rsPolynomial<std::complex<
 }
 
 // ToDo:
-// -compute Hessian and its determinant
+// -compute Hessian and its determinant and maybe (squared) eigenvalues and -vectors
 // -root finding: find points (x,y) for which p(x,y) = 0. i think, these are in general not 
 //  isolated points but rather curves - for example, when p(x,y) = x^2 + y^2 - 1, the unit circle
 //  gives the set of zeros and there we have y^2 = sqrt(1- x^2)...not sure how to deal with this
 // -maybe implement constrained optimization via Lagarange multipliers - find extremum of p(x,y)
 //  subject to c(x,y) = 0 where c is the constraint - the Lagrange function will be a trivariate 
 //  polynomial
+// -implement differentiation of implictit function (Kaprfinger, pg. 560)
+// -implement differential operators in polar-coordinates (needs bivariate rational function for
+//  the 1/r factor)
 
 
 //=================================================================================================
@@ -2953,13 +2956,34 @@ public:
     coeffs.fillRandomly(min, max, seed, roundToInt);
   }
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  int getDegreeX() const { return coeffs.getExtent(0)-1; }
+  int getDegreeY() const { return coeffs.getExtent(1)-1; }
+  int getDegreeZ() const { return coeffs.getExtent(2)-1; }
+
   //-----------------------------------------------------------------------------------------------
   // \name Evaluation
 
   T evaluate(T x, T y, T z) const;
 
+  rsBivariatePolynomial<T> evaluateX(T x) const;
+
   // todo: partial evaluation for x,y,z (returning bivriate polynomials), xy,xz,yz (returning 
-  // univariate polynomials
+  // univariate polynomials)
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Calculus
+
+  template<class Ta, class Tb>
+  rsBivariatePolynomial<T> integralX(Ta a, Tb b) const;
+
+
+  /** Computes the triple integral of the polynomial over the given cuboid. This function 
+  performs the integration over x first, then over y, then over z. */
+  T tripleIntegralXYZ(T x0, T x1, T y0, T y1, T z0, T z1) const;
 
 
 protected:
@@ -2984,6 +3008,39 @@ T rsTrivariatePolynomial<T>::evaluate(T x, T y, T z) const
       yn *= y; }
     xm *= x; }
   return r;
+}
+
+template<class T>
+rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::evaluateX(T x) const
+{
+  int L = getDegreeX();
+  int M = getDegreeY();
+  int N = getDegreeZ();
+  rsBivariatePolynomial<T> p_yz(M, N);
+  T xl(1);   // x^l
+  for(int l = 0; l <= L; l++) {
+    for(int m = 0; m <= M; m++) {
+      for(int n = 0; n <= N; n++) {
+        p_yz.coeff(m, n) += coeffs(l, m, n) * xl; }}
+    xl *= x; }
+  return p_yz;
+}
+
+template<class T>
+template<class Ta, class Tb>
+rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::integralX(Ta a, Tb b) const
+{
+  rsTrivariatePolynomial<T> P = integralX();
+  rsBivariatePolynomial<T> Pb = P.evaluateX(b);
+  rsBivariatePolynomial<T> Pa = P.evaluateX(a);
+  return Pb - Pa;
+}
+
+template<class T> 
+T rsTrivariatePolynomial<T>::tripleIntegralXYZ(T x0, T x1, T y0, T y1, T z0, T z1) const
+{
+  rsBivariatePolynomial<T>& ix = integralX(x0, x1);  // still a function of y and z
+  return ix.doubleIntegral(y0, y1, z0, z1);
 }
 
 
