@@ -482,6 +482,21 @@ void rsArrayTools::fillWithRandomValues(T *buffer, int length, double min, doubl
 }
 
 template <class T>
+void rsArrayTools::fillWithRandomIntegers(T *buffer, int length, int min, int max, int seed)
+{
+  fillWithRandomValues(buffer, length, T(min)-T(0.5), T(max)+T(0.5), seed);
+  for(int i = 0; i < length; i++)
+  {
+    buffer[i] = rsRound(buffer[i]);
+    if(buffer[i] < T(min)) buffer[i] = T(min);
+    if(buffer[i] > T(max)) buffer[i] = T(max);
+  }
+  // The +-0.5 is for making the min/max values equally likely to the "inner" values - but then, 
+  // the rounding could produce numbers min-1, max+1 (in very unlikely edge cases, but possible 
+  // anyway), so we need to catch these.
+}
+
+template <class T>
 void rsArrayTools::fillWithValue(T *buffer, int length, T value)
 {
   for(int i = 0; i < length; i++)

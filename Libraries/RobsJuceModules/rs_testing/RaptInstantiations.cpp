@@ -93,7 +93,8 @@ template rsUint32 rsArrayTools::maxValue(const rsUint32 *x, int length);
 
 // rsArrayTools<float>
 template void rsArrayTools::fillWithRange(float* x, int N, float min, float max, float shape);
-template void rsArrayTools::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?
+template void rsArrayTools::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?why the mix of float and double?
+template void rsArrayTools::fillWithRandomIntegers(double* x, int N, int min, int max, int seed);
 template float rsArrayTools::generalizedMean(const float *x, int length, float p);
 template float rsArrayTools::maxAbs(const float *x, int length);
 template float rsArrayTools::minValue(const float *x, int length);

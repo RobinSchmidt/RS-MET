@@ -329,6 +329,11 @@ public:
   template <class T>
   static void fillWithRandomValues(T *buffer, int length, double min, double max, int seed);
 
+  /** Fills the buffer with random integer values between min and max. */
+  template <class T>
+  static void fillWithRandomIntegers(T *buffer, int length, int min, int max, int seed);
+
+
   /** Fills the buffer with values ranging (exponentially scaled) from min to max (both end-values
   inclusive). The logs of the values are equidistant. */
   template <class T>

@@ -2159,7 +2159,7 @@ public:
   Currently, this is implemented only for linear paths, i.e. the degrees of x(t),y(t) must be at 
   most 1. Path integrals over scalar fields can be thought of as computing the area of a curtain. 
   Imagine the path on the xy-plane being projected up to the surface landscape of p(x,y) and a 
-  curtain hanging from this projected line down to the xy-plane. Of course, the "landscape" may
+  curtain hanging down from this projected line to the xy-plane. Of course, the "landscape" may
   also lie below the xy-plane, in which case the result would become negative. So it's more like
   a signed area difference. see: https://en.wikipedia.org/wiki/Line_integral */
   static T pathIntegral(const rsBivariatePolynomial<T>& p, 
@@ -2169,7 +2169,9 @@ public:
   end-values a,b for the parameter t, this function computes the path integral (a.k.a. line 
   integral, curve integral or contour integral) of the (polynomial) vector field along the given
   (polynomial) path. Path integrals over vector fields can be thought of as computing the work that
-  a force field does on a particle that moves through the field along the given path.  
+  a force field does on a particle that moves through the field along the given path. It integrates
+  over the scalar product of the vector field's direction vectors with the curve's "velocity" 
+  vectors, i.e. over the component of the vector field that points along the curve's direction.
   see: https://en.wikipedia.org/wiki/Line_integral */
   static T pathIntegral(const rsBivariatePolynomial<T>& p, const rsBivariatePolynomial<T>& q,
     const rsPolynomial<T>& x, const rsPolynomial<T>& y, T a, T b);
@@ -2177,15 +2179,21 @@ public:
   // -maybe rename to lineIntegral or contourIntegral ...or maybe flowIntegral
   // http://ndp.jct.ac.il/tutorials/infitut2/node61.html
 
+  /** ....
+  It integrates over the 2D cross product (which is a scalar) of the vector field's direction 
+  vectors with the curve's "velocity" vectors, i.e. over the component of the vector field that 
+  points perpendicular to the curve's direction.
+  */
   static T fluxIntegral(const rsBivariatePolynomial<T>& p, const rsBivariatePolynomial<T>& q,
     const rsPolynomial<T>& x, const rsPolynomial<T>& y, T a, T b);
 
   /** Path integral over a vector field around the closed rectangular loop going along the 4 line 
-  segments: (x0,y0) -> (x1,y0) -> (x1,y1) -> (x0,y1) -> (x0,y0). By Green's theorem, this should 
-  be equal to the double integral over the enclosed rectangle of the curl of the vector field. */
+  segments: (x0,y0) -> (x1,y0) -> (x1,y1) -> (x0,y1) -> (x0,y0). If x1 > x0 and y1 > y0, then we go
+  right, up, left, down. By Green's theorem, this should be equal to the double integral over the 
+  enclosed rectangle of the curl of the vector field. */
   static T loopIntegral(const rsBivariatePolynomial<T>& p, const rsBivariatePolynomial<T>& q,
     T x0, T x1, T y0, T y1);
-  // aka circulation?
+  // aka circulation? maybe rename to circulationIntegral or loopFlow, flowAroundLoop
 
   /** Like loopIntegral but using the flux instead of the flow. The flux is the component of the 
   vector field is perpendicular to the curve. The integral measures, how much of a fluid flows
@@ -2193,6 +2201,8 @@ public:
   the enclosed rectangle of the divergence of the vector field. */
   static T outfluxIntegral(const rsBivariatePolynomial<T>& p, const rsBivariatePolynomial<T>& q,
     T x0, T x1, T y0, T y1);
+  // i made up this name - figure out, if there is a more proper name for that, maybe loopFlux,
+  // fluxThroughLoop
 
   // todo: implement flux integral around a rectangular loop
 
@@ -2735,6 +2745,7 @@ T rsBivariatePolynomial<T>::outfluxIntegral(const rsBivariatePolynomial<T>& p,
   xt = P({x0}); yt = P({y1, y0-y1}); r += fluxIntegral(p, q, xt, yt, T(0), T(1));  // downward
   return r;
 }
+// maybe get rid of the duplication by using a pointer to fluxIntegral/pathIntegral
 
 template<class T>
 bool rsBivariatePolynomial<T>::areHarmonicConjugates(
@@ -2891,6 +2902,90 @@ void rsBivariatePolynomial<T>::polyaVectorField(const rsPolynomial<std::complex<
   splitRealImag(bp, px, py);                           // extract real and imaginary parts
   py.negate();                                         // apply complex conjugation
 }
+
+// ToDo:
+// -compute Hessian and its determinant
+// -root finding: find points (x,y) for which p(x,y) = 0. i think, these are in general not 
+//  isolated points but rather curves - for example, when p(x,y) = x^2 + y^2 - 1, the unit circle
+//  gives the set of zeros and there we have y^2 = sqrt(1- x^2)...not sure how to deal with this
+// -maybe implement constrained optimization via Lagarange multipliers - find extremum of p(x,y)
+//  subject to c(x,y) = 0 where c is the constraint - the Lagrange function will be a trivariate 
+//  polynomial
+
+
+//=================================================================================================
+
+template<class T>
+class rsTrivariatePolynomial
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime 
+
+  rsTrivariatePolynomial() {}
+
+  rsTrivariatePolynomial(int degreeX, int degreeY, int degreeZ)
+  {
+    setDegrees(degreeX, degreeY, degreeZ);
+  }
+
+  rsTrivariatePolynomial(int degreeX, int degreeY, int degreeZ, std::initializer_list<T> l)
+  {
+    setDegrees(degreeX, degreeY, degreeZ);
+    coeff.setData(&l[0]);  // does this work?
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  void setDegrees(int degreeX, int degreeY, int degreeZ)
+  {
+    std::vector<int> shape({degreeX+1, degreeY+1, degreeZ+1});
+    coeffs.setShape(shape);
+    coeffs.setToZero();  // todo: take over old data
+  }
+
+  void fillRandomly(T min = T(0), T max = T(1), int seed = 0, bool roundToInt = false)
+  {
+    coeffs.fillRandomly(min, max, seed, roundToInt);
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Evaluation
+
+  T evaluate(T x, T y, T z) const;
+
+  // todo: partial evaluation for x,y,z (returning bivriate polynomials), xy,xz,yz (returning 
+  // univariate polynomials
+
+
+protected:
+
+
+  rsMultiArray<T> coeffs;
+
+};
+
+
+template<class T>
+T rsTrivariatePolynomial<T>::evaluate(T x, T y, T z) const
+{
+  T xm(1), yn(1), zn(1), r(0);  // x^m, y^n, z^n result
+  for(int l = 0; l < coeffs.getExtent(0); l++) {
+    yn = T(1);
+    for(int m = 0; m < coeffs.getExtent(1); m++) {
+      zn = T(1);
+      for(int n = 0; n < coeffs.getExtent(2); n++) {
+        r += coeffs(l, m, n) * xm * yn * zn;
+        zn *= z; }
+      yn *= y; }
+    xm *= x; }
+  return r;
+}
+
 
 //=================================================================================================
 

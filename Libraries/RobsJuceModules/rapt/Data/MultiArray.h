@@ -60,9 +60,12 @@ public:
   // maybe rename to setExtents...but maybe not - shape seems to be common for that
 
 
-  void fillRandomly(T min = T(0), T max = T(1), int seed = 0)
+  void fillRandomly(T min = T(0), T max = T(1), int seed = 0, bool roundToInt = false)
   {
-    rsArrayTools::fillWithRandomValues(dataPointer, getSize(), min, max, seed);
+    if(roundToInt)
+      rsArrayTools::fillWithRandomIntegers(dataPointer, getSize(), int(min), int(max), seed);
+    else
+      rsArrayTools::fillWithRandomValues(dataPointer, getSize(), min, max, seed);
   }
 
   template<class T2>
