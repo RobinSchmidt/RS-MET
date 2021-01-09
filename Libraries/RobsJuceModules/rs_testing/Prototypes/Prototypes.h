@@ -2291,6 +2291,8 @@ public:
     return r;
   }
 
+  //rsBivariatePolynomial<T> operator*(T a, const rsBivariatePolynomial<T>& q) const;
+
   /** Unary minus. */
   rsBivariatePolynomial<T> operator-() const
   {
@@ -2323,6 +2325,12 @@ protected:
 };
 // maybe implement a function getHarmonicConjugate which returns 2*x*y when p = x^2 - y^2, etc.
 // ...are they obtained by a rotation? does every polynomial have such a conjugate?
+
+template<class T>
+rsBivariatePolynomial<T> operator*(const T& a, const rsBivariatePolynomial<T>& q)
+{
+  rsBivariatePolynomial<T> r = q; r.scale(a); return r;
+}
 
 template<class T>
 T rsBivariatePolynomial<T>::evaluate(T x, T y) const
@@ -2974,6 +2982,15 @@ public:
   // todo: partial evaluation for x,y,z (returning bivriate polynomials), xy,xz,yz (returning 
   // univariate polynomials)
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Arithmetic
+
+  static rsBivariatePolynomial<T> compose(const rsTrivariatePolynomial<T>& p,
+    const rsBivariatePolynomial<T>& x, const rsBivariatePolynomial<T>& y,
+    const rsBivariatePolynomial<T>& z);
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Calculus
 
@@ -3036,6 +3053,55 @@ rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::evaluateX(T x) const
     xl *= x; }
   return p_yz;
 }
+
+
+template<class T> 
+rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::compose(const rsTrivariatePolynomial<T>& p,
+  const rsBivariatePolynomial<T>& x, const rsBivariatePolynomial<T>& y,
+  const rsBivariatePolynomial<T>& z)
+{
+  //   p(x,y,z) = \sum_l \sum_m \sum_n a_{lmn} x^l y^m z^n
+  // where: 
+  //   x = x(u,v) = \sum_h \sum_i b_{hi} u^h v^i
+  //   y = y(u,v) = \sum_j \sum_k c_{jk} u^j v^k
+  //   z = z(u,v) = \sum_q \sum_r d_{qr} u^q v^r
+  // so the bivariate p(u,v) is:
+  //   p(u,v) = \sum_l \sum_m \sum_n  
+  //            \left(   a_{lmn} 
+  //                   * (\sum_h \sum_i b_{hi} u^h v^i)^l
+  //                   * (\sum_j \sum_k c_{jk} u^j v^k)^m
+  //                   * (\sum_q \sum_r d_{qr} u^q v^r)^n
+  //            \right)
+  // so, the algo needs:
+  //   -successive powers of the b,c,d matrices (iterated 2D convolutions of the matrices with 
+  //    themselves)
+  //   -the products of all possible combinations of those powers (more 2D convolutions)
+  //   -multiply these products by a coeff a_{lmn} and accumulate the result into the output coeff
+  //    array
+  //   -that's complicated - let's write an inefficient prototype first that just works like 
+  //    evaluation but with bivariate polynomials instead of numbers
+
+
+  using BiPoly  = rsBivariatePolynomial<T>;
+  BiPoly p_uv;            // p(u,v) = p(x(u,v), y(u,v), z(u,v))
+  BiPoly one(0, 0, {1});  // constant bivariate polynomial one(u,v) = 1
+  BiPoly xl, ym, zn;      // (x(u,v))^l, (y(u,v))^m, (z(u,v))^n
+
+  // This is quite inefficient (lots of temporary objects are created where we could potentially 
+  // work in place) - but it's readable - may be optimized later:
+  xl = one;
+  for(int l = 0; l < p.coeffs.getExtent(0); l++) {
+    ym = one;
+    for(int m = 0; m < p.coeffs.getExtent(1); m++) {
+      zn = one;
+      for(int n = 0; n < p.coeffs.getExtent(2); n++) {
+        p_uv = p_uv + p.coeffs(l, m, n) * xl * ym * zn;
+        zn = zn * z; }
+      ym = ym * y; }
+    xl = xl * x; }
+  return p_uv;
+}
+
 
 template<class T>
 template<class Ta, class Tb>
