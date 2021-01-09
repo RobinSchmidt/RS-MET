@@ -2986,6 +2986,17 @@ public:
   T tripleIntegralXYZ(T x0, T x1, T y0, T y1, T z0, T z1) const;
 
 
+  /** Computes the flux of a vector field given by 3 functions fx(x,y,z), fy(x,y,z), fz(x,y,z)
+  through a parametric surface patch given by x(u,v), y(u,v), z(u,v) where u and v run from u0 to
+  u1 and v0 to v1 respectively. If the vector field describes a fluid velocity, the flux integral 
+  measures, how much of the fluid flows through the given surface patch per unit time. */
+  T rsTrivariatePolynomial<T>::fluxIntegral(const rsTrivariatePolynomial<T>& fx,
+    const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz,
+    const rsBivariatePolynomial<T>& x, const rsBivariatePolynomial<T>& y,
+    const rsBivariatePolynomial<T>& z, T u0, T u1, T v0, T v1);
+
+
+
 protected:
 
 
@@ -2997,16 +3008,16 @@ protected:
 template<class T>
 T rsTrivariatePolynomial<T>::evaluate(T x, T y, T z) const
 {
-  T xm(1), yn(1), zn(1), r(0);  // x^m, y^n, z^n result
+  T xl(1), ym(1), zn(1), r(0);  // x^l, y^m, z^n, result
   for(int l = 0; l < coeffs.getExtent(0); l++) {
-    yn = T(1);
+    ym = T(1);
     for(int m = 0; m < coeffs.getExtent(1); m++) {
       zn = T(1);
       for(int n = 0; n < coeffs.getExtent(2); n++) {
-        r += coeffs(l, m, n) * xm * yn * zn;
+        r += coeffs(l, m, n) * xl * ym * zn;
         zn *= z; }
-      yn *= y; }
-    xm *= x; }
+      ym *= y; }
+    xl *= x; }
   return r;
 }
 
@@ -3042,6 +3053,50 @@ T rsTrivariatePolynomial<T>::tripleIntegralXYZ(T x0, T x1, T y0, T y1, T z0, T z
   rsBivariatePolynomial<T>& ix = integralX(x0, x1);  // still a function of y and z
   return ix.doubleIntegral(y0, y1, z0, z1);
 }
+
+template<class T> 
+T rsTrivariatePolynomial<T>::fluxIntegral(
+  const rsTrivariatePolynomial<T>& fx,
+  const rsTrivariatePolynomial<T>& fy,
+  const rsTrivariatePolynomial<T>& fz,
+  const rsBivariatePolynomial<T>& x,
+  const rsBivariatePolynomial<T>& y,
+  const rsBivariatePolynomial<T>& z,
+  T u0, T u1, T v0, T v1)
+{
+  return T(0);
+
+
+  // will not compile yet - we need to implement compose
+  /*
+  using Poly    = rsPolynomial<T>;
+  using BiPoly  = rsBivariatePolynomial<T>;
+  using TriPoly = rsTrivariatePolynomial<T>;
+
+  // vector field on the surface:
+  BiPoly gx = TriPoly::compose(fx, x, y, z);  // gx(u,v) = fx(x(u,v), y(u,v), z(u,v))
+  BiPoly gy = TriPoly::compose(fy, x, y, z);  // gy(u,v) = fy(x(u,v), y(u,v), z(u,v))
+  BiPoly gz = TriPoly::compose(fz, x, y, z);  // gz(u,v) = fz(x(u,v), y(u,v), z(u,v))
+
+  // partial derivatives of gx,gy,gz with respect to u,v:
+  BiPoly ax = gx.derivativeX();               // ax := d gx / du
+  BiPoly ay = gy.derivativeX();               // ay := d gy / du
+  BiPoly az = gz.derivativeX();               // az := d gz / du
+  BiPoly bx = gx.derivativeY();               // bx := d gx / dv
+  BiPoly by = gy.derivativeY();               // by := d gy / dv
+  BiPoly bz = gz.derivativeY();               // bz := d gz / dv 
+
+  // components of the cross-product (Bärwolff, pg 355):
+  BiPoly cx = ay*bz - az*by;
+  BiPoly cy = az*bx - ax*bz;
+  BiPoly cz = ax*by - ay*bx;
+
+  // differential flux element and total flux through surface (Bärwollf, pg 600):
+  BiPoly df = gx*cx + gy*cy + gz*cz;
+  return df.doubleIntegralXY(u0, u1, v0, v1);
+  */
+}
+
 
 
 //=================================================================================================
