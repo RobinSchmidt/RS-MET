@@ -600,6 +600,21 @@ public:
     rsArrayTools::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
+  /** Weighted sum of the mA x nA matrix A and the mB x nB matrix B. The result matrix C needs 
+  to have a shape max(mA, mB) x max(nA, nB). For rows or columns that are present in one matrix 
+  but not in the other, the other matrix is zero padded appropriately. */
+  static void weightedSum(const rsMatrixView<T>& A, T wA, const rsMatrixView<T>& B, T wB,
+    rsMatrixView<T>& C)
+  {
+    int M = rsMax(A.getNumRows(),    B.getNumRows());
+    int N = rsMax(A.getNumColumns(), B.getNumColumns());
+    rsAssert(C.hasShape(M, N));
+    for(int m = 0; m < M; m++)
+      for(int n = 0; n < N; n++)
+        C(m, n) = wA * A.getElementPadded(m, n) + wB * B.getElementPadded(m, n);
+  }
+  // needs test
+
   /** Multiplies the two matrices element-wise. */
   static void elementwiseMultiply(
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)

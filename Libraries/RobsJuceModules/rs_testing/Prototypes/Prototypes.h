@@ -2479,13 +2479,17 @@ template<class T>
 void rsBivariatePolynomial<T>::weightedSum(
   const rsMatrixView<T>& p, T wp, const rsMatrixView<T>& q, T wq, rsMatrixView<T>& r)
 {
+  rsMatrixView<T>::weightedSum(p, wp, q, wq, r);
+  /*
   int M = rsMax(p.getNumRows(),    q.getNumRows());
   int N = rsMax(p.getNumColumns(), q.getNumColumns());
   rsAssert(r.hasShape(M, N));
   for(int m = 0; m < M; m++)
     for(int n = 0; n < N; n++)
       r(m, n) = wp * p.getElementPadded(m, n) + wq * q.getElementPadded(m, n);
+      */
 }
+// todo: move to rsMatrixView
 
 template<class T>
 void rsBivariatePolynomial<T>::derivativeX(const rsMatrixView<T>& c, rsMatrixView<T>& d)
@@ -2987,6 +2991,23 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Arithmetic
 
+  static void weightedSum(const rsTrivariatePolynomial<T>& p, T wp,
+    const rsTrivariatePolynomial<T>& q, T wq, rsTrivariatePolynomial<T>& r)
+  { 
+    int L = rsMax(p.getDegreeX(), q.getDegreeX());
+    int M = rsMax(p.getDegreeY(), q.getDegreeY());
+    int N = rsMax(p.getDegreeZ(), q.getDegreeZ());
+    r.setDegrees(L, M, N);
+    rsMultiArray<T>::weightedSum(p.coeffs, wp, q.coeffs, wq, r.coeffs); 
+  }
+
+  rsTrivariatePolynomial<T> operator+(const rsTrivariatePolynomial<T>& p) const
+  { rsTrivariatePolynomial<T> r; weightedSum(*this, T(1), p, T(1), r); return r; }
+
+  rsTrivariatePolynomial<T> operator-(const rsTrivariatePolynomial<T>& p) const
+  { rsTrivariatePolynomial<T> r; weightedSum(*this, T(1), p, T(-1), r); return r; }
+
+
   static rsBivariatePolynomial<T> compose(const rsTrivariatePolynomial<T>& p,
     const rsBivariatePolynomial<T>& x, const rsBivariatePolynomial<T>& y,
     const rsBivariatePolynomial<T>& z);
@@ -3128,10 +3149,10 @@ rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::compose(const rsTrivariatePo
 template<class T>
 void rsTrivariatePolynomial<T>::derivativeX(const rsMultiArray<T>& c, rsMultiArray<T>& d)
 {
-  int L = c.coeffs.getExtent(0);
-  int M = c.coeffs.getExtent(1);
-  int N = c.coeffs.getExtent(2);
-  rsAssert(d.hasShape({ L-1, M, N }));
+  int L = c.getExtent(0);
+  int M = c.getExtent(1);
+  int N = c.getExtent(2);
+  //rsAssert(d.hasShape({ L-1, M, N })); // implement!
   for(int l = 1; l < L; l++) {
     T s(l);
     for(int m = 0; m < M; m++)
@@ -3142,14 +3163,59 @@ void rsTrivariatePolynomial<T>::derivativeX(const rsMultiArray<T>& c, rsMultiArr
 template<class T>
 rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::derivativeX() const
 {
-  int L = c.coeffs.getExtent(0);
-  int M = c.coeffs.getExtent(1);
-  int N = c.coeffs.getExtent(2);
-  rsTrivariatePolynomial<T> q;
-  q.coeffs.setShape(L-1, M, N);
+  rsTrivariatePolynomial<T> q(getDegreeX()-1, getDegreeY(), getDegreeZ());
   derivativeX(coeffs, q.coeffs);
   return q;
 }
+
+template<class T>
+void rsTrivariatePolynomial<T>::derivativeY(const rsMultiArray<T>& c, rsMultiArray<T>& d)
+{
+  int L = c.getExtent(0);
+  int M = c.getExtent(1);
+  int N = c.getExtent(2);
+  //rsAssert(d.hasShape({ L, M-1, N })); // implement!
+  for(int m = 1; m < M; m++) {
+    T s(m);
+    for(int l = 0; l < L; l++)
+      for(int n = 0; n < N; n++)
+        d(l, m-1, n) = s * c(l, m, n); }
+}
+
+template<class T>
+rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::derivativeY() const
+{
+  rsTrivariatePolynomial<T> q(getDegreeX(), getDegreeY()-1, getDegreeZ());
+  derivativeY(coeffs, q.coeffs);
+  return q;
+}
+
+template<class T>
+void rsTrivariatePolynomial<T>::derivativeZ(const rsMultiArray<T>& c, rsMultiArray<T>& d)
+{
+  int L = c.getExtent(0);
+  int M = c.getExtent(1);
+  int N = c.getExtent(2);
+  //rsAssert(d.hasShape({ L, M, N-1 })); // implement!
+  for(int n = 1; n < N; n++) {
+    T s(n);
+    for(int m = 0; m < M; m++)
+      for(int l = 0; l < L; l++)
+        d(l, m, n-1) = s * c(l, m, n); }
+}
+
+template<class T>
+rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::derivativeZ() const
+{
+  rsTrivariatePolynomial<T> q(getDegreeX(), getDegreeY(), getDegreeZ()-1);
+  derivativeZ(coeffs, q.coeffs);
+  return q;
+}
+
+
+
+
+
 
 
 template<class T>

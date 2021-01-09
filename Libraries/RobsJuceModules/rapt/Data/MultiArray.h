@@ -153,6 +153,17 @@ public:
   { return dataPointer[flatIndex(0, i, rest...)]; }
 
 
+  template<typename... Rest>
+  T getElementPadded(const int i, Rest... rest) const
+  {
+    int index = flatIndexSafe(0, i, rest...);
+    if(index == -1)
+      return T(0);
+    return dataPointer[index];
+  }
+  // needs test
+
+
   /*
   const T& operator()(const int i, const int j) const
   {
@@ -185,6 +196,28 @@ public:
     rsArrayTools::subtract(A.dataPointer, B.dataPointer, C->dataPointer, A.getSize());
   }
 
+
+  static void weightedSum(const rsMultiArrayView<T>& A, T wA, const rsMultiArrayView<T>& B, T wB, 
+    rsMultiArrayView<T>& C)
+  {
+    size_t numDims = C.shape.size();
+    rsAssert(A.shape.size() == numDims && B.shape.size() == numDims);
+    std::vector<int> indices(numDims);
+    C.setToZero();
+    for(int i = 0; i < C.size; i++)
+    {
+      C.structuredIndices(i, &indices[0]);
+      int ia = A.flatIndexSafe(&indices[0]);
+      int ib = B.flatIndexSafe(&indices[0]);
+      if(ia != -1 && ib != -1)
+        C.dataPointer[i] += wA * A.dataPointer[ia] + wB * B.dataPointer[ib];
+    }
+  }
+  // needs tests
+  // ..can this be done more efficiently? the computation of the indices array is expensive
+
+
+
   /** Multiplies the two multiarrays element-wise. */
   static void multiply(
     const rsMultiArrayView<T>& A, const rsMultiArrayView<T>& B, rsMultiArrayView<T>* C)
@@ -203,6 +236,9 @@ public:
 
   /** Scales all elements by a given factor. */
   void scale(T factor) { rsArrayTools::scale(dataPointer, getSize(), factor); }
+
+
+
 
   // maybe factor out common code with rsMatrixView into a class rsArrayView which serves as 
   // baseclass for both - a general "view" class for any sort of array, i.e. homogeneous data 
@@ -258,6 +294,7 @@ protected:
     return index * strides[depth]; 
   }
 
+
   /** Converts a C-array (assumed to be of length getNumDimensions()) of indices to a flat 
   index. */
   int flatIndex(const int* indices) const
@@ -269,8 +306,45 @@ protected:
   }
   // has this been tested?
 
+
+  // Safe versions that check, if all the indices are within their proper range and returns -1, 
+  // if any of them is not:
+
+
+  /*
+  template<typename... Rest>
+  int flatIndexSafe(const int depth, const int i, Rest... rest) const
+  {
+    int i1 = flatIndex(depth,   i);
+    int i2 = flatIndex(depth+1, rest...);
+    if(i1 == -1 || i2 == -1)
+      return -1;
+    return i1 + i2;
+  }
+
+  int flatIndexSafe(const int depth, const int index) const
+  {
+    if(index < 0 || index >= shape[depth])
+      return -1;
+    return index * strides[depth]; 
+  }
+  */
+
+  int flatIndexSafe(const int* indices) const
+  {
+    int fltIdx = 0;
+    for(size_t i = 0; i < strides.size(); i++) {
+      if(indices[i] < 0 || indices[i] >= shape[i])
+        return -1;
+      fltIdx += indices[i] * strides[i]; }
+    return fltIdx;
+  }
+
+
+
+
   /** Converts a flat index into an array of structured/hierarchical indices. */
-  void structuredIndices(int flatIndex, int* indices)
+  void structuredIndices(int flatIndex, int* indices) const
   {
     for(int i = 0; i < getNumIndices(); i++)
     {
@@ -319,16 +393,18 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  std::vector<int> shape;    // maybe rename to extents
+  std::vector<int> shape;     // maybe rename to extents
   std::vector<int> strides;
-  T* dataPointer = nullptr;
+  T* dataPointer = nullptr;   // rename to data
   int size = 0;
 
   // todo: get rid of strides, let shape be a non-owned pointer to int, store size of the shapes 
   // array - we want to avoid memory allocations when creating such a view object - creating a view
   // should be cheap! ...actually, we would only need two pointers: data and strides - to support 
   // the () syntax for accessing elements - but then we couldn't check for out-of-range indexes - 
-  // for that, we need also the shape
+  // for that, we need also the shape - use: int numDims; int* shape; int* strides;
+
+
   // or maybe make the number of indices a compile-time parameter, own strides and shape array (as
   // fixed arrays)...implement a constructor that takes an initializer list and copy its content 
   // into our members...but that implies that for each dimensionality, a template will be 
