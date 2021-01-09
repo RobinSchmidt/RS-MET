@@ -2131,7 +2131,8 @@ public:
   static rsBivariatePolynomial<T> divergence2D(
     const rsBivariatePolynomial<T>& fx, const rsBivariatePolynomial<T>& fy)
   { return fx.derivativeX() + fy.derivativeY(); }
-  // needs test
+  // needs test, get rid of the 2D qualifier - it's clear that we need 2D divergence when we deal 
+  // with bivariate polynomials
 
   static rsBivariatePolynomial<T> curl2D(
     const rsBivariatePolynomial<T>& fx, const rsBivariatePolynomial<T>& fy)
@@ -2994,6 +2995,24 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Calculus
 
+  static void derivativeX(const rsMultiArray<T>& c, rsMultiArray<T>& d);
+  rsTrivariatePolynomial<T> derivativeX() const;
+
+  static void derivativeY(const rsMultiArray<T>& c, rsMultiArray<T>& d);
+  rsTrivariatePolynomial<T> derivativeY() const;
+
+  static void derivativeZ(const rsMultiArray<T>& c, rsMultiArray<T>& d);
+  rsTrivariatePolynomial<T> derivativeZ() const;
+
+
+
+  static rsTrivariatePolynomial<T> divergence(const rsTrivariatePolynomial<T>& fx, 
+    const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz)
+  { return fx.derivativeX() + fy.derivativeY() + fz.derivativeZ(); }
+
+
+
+
   template<class Ta, class Tb>
   rsBivariatePolynomial<T> integralX(Ta a, Tb b) const;
 
@@ -3007,7 +3026,7 @@ public:
   through a parametric surface patch given by x(u,v), y(u,v), z(u,v) where u and v run from u0 to
   u1 and v0 to v1 respectively. If the vector field describes a fluid velocity, the flux integral 
   measures, how much of the fluid flows through the given surface patch per unit time. */
-  T rsTrivariatePolynomial<T>::fluxIntegral(const rsTrivariatePolynomial<T>& fx,
+  static T rsTrivariatePolynomial<T>::fluxIntegral(const rsTrivariatePolynomial<T>& fx,
     const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz,
     const rsBivariatePolynomial<T>& x, const rsBivariatePolynomial<T>& y,
     const rsBivariatePolynomial<T>& z, T u0, T u1, T v0, T v1);
@@ -3021,6 +3040,7 @@ protected:
 
 };
 
+// evaluation:
 
 template<class T>
 T rsTrivariatePolynomial<T>::evaluate(T x, T y, T z) const
@@ -3054,6 +3074,7 @@ rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::evaluateX(T x) const
   return p_yz;
 }
 
+// arithmetic:
 
 template<class T> 
 rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::compose(const rsTrivariatePolynomial<T>& p,
@@ -3102,6 +3123,34 @@ rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::compose(const rsTrivariatePo
   return p_uv;
 }
 
+// calculus:
+
+template<class T>
+void rsTrivariatePolynomial<T>::derivativeX(const rsMultiArray<T>& c, rsMultiArray<T>& d)
+{
+  int L = c.coeffs.getExtent(0);
+  int M = c.coeffs.getExtent(1);
+  int N = c.coeffs.getExtent(2);
+  rsAssert(d.hasShape({ L-1, M, N }));
+  for(int l = 1; l < L; l++) {
+    T s(l);
+    for(int m = 0; m < M; m++)
+      for(int n = 0; n < N; n++)
+        d(l-1, m, n) = s * c(l, m, n); }
+}
+
+template<class T>
+rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::derivativeX() const
+{
+  int L = c.coeffs.getExtent(0);
+  int M = c.coeffs.getExtent(1);
+  int N = c.coeffs.getExtent(2);
+  rsTrivariatePolynomial<T> q;
+  q.coeffs.setShape(L-1, M, N);
+  derivativeX(coeffs, q.coeffs);
+  return q;
+}
+
 
 template<class T>
 template<class Ta, class Tb>
@@ -3130,12 +3179,6 @@ T rsTrivariatePolynomial<T>::fluxIntegral(
   const rsBivariatePolynomial<T>& z,
   T u0, T u1, T v0, T v1)
 {
-  return T(0);
-
-
-  // will not compile yet - we need to implement compose
-  /*
-  using Poly    = rsPolynomial<T>;
   using BiPoly  = rsBivariatePolynomial<T>;
   using TriPoly = rsTrivariatePolynomial<T>;
 
@@ -3160,7 +3203,6 @@ T rsTrivariatePolynomial<T>::fluxIntegral(
   // differential flux element and total flux through surface (Bärwollf, pg 600):
   BiPoly df = gx*cx + gy*cy + gz*cz;
   return df.doubleIntegralXY(u0, u1, v0, v1);
-  */
 }
 
 
