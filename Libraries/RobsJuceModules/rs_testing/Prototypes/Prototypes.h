@@ -3273,8 +3273,16 @@ T rsTrivariatePolynomial<T>::fluxIntegral(
 
   // components of the cross-product (Bärwolff, pg 355):
   BiPoly cx = ay*bz - az*by;
-  BiPoly cy = az*bx - ax*bz;
+  BiPoly cy = az*bx - ax*bz;  // sign wrong?
   BiPoly cz = ax*by - ay*bx;
+
+  // fudge with the signs - i think, this has to do with different conventions how to orient the
+  // (normal vector to the) surface patch - found by trial and error -> figure out and verify:
+  cy.negate(); // ...this is really unaesthetic! why do we need to do this?
+  // ...of course, we could swap the terms in the computation of cy to "conceal" this "aesthetic 
+  // problem", but then, we not not compute a proper cross product anymore. ...try more example 
+  // vector fields to see, if this sign flip makes sense for all of them. compare also to the 2D 
+  // case
 
   // differential flux element and total flux through surface (Bärwollf, pg 600):
   BiPoly df = gx*cx + gy*cy + gz*cz;
@@ -3315,6 +3323,11 @@ T rsTrivariatePolynomial<T>::outfluxIntegral(const rsTrivariatePolynomial<T>& fx
 }
 // optimize!
 
+
+// ToDo:
+// -compute potential and vector-potential
+// -constrained optimization via Lagrange multipliers (maybe)
+// -Legendre transform (maybe)
 
 //=================================================================================================
 
