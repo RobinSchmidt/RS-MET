@@ -2508,6 +2508,8 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::derivativeX() const
 {
   int M = coeffs.getNumRows();
   int N = coeffs.getNumColumns();
+  if(M == 1)
+    return rsBivariatePolynomial<T>::zero();
   rsBivariatePolynomial<T> q;
   q.coeffs.setShape(M-1, N);
   derivativeX(coeffs, q.coeffs);
@@ -2531,6 +2533,8 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::derivativeY() const
 {
   int M = coeffs.getNumRows();
   int N = coeffs.getNumColumns();
+  if(N == 1)
+    return rsBivariatePolynomial<T>::zero();
   rsBivariatePolynomial<T> q;
   q.coeffs.setShape(M, N-1);
   derivativeY(coeffs, q.coeffs);
@@ -2950,7 +2954,8 @@ public:
   rsTrivariatePolynomial(int degreeX, int degreeY, int degreeZ, std::initializer_list<T> l)
   {
     setDegrees(degreeX, degreeY, degreeZ);
-    coeff.setData(&l[0]);  // does this work?
+    std::vector<T> vl(l);
+    coeffs.setData(vl);  
   }
 
 
@@ -3051,6 +3056,11 @@ public:
     const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz,
     const rsBivariatePolynomial<T>& x, const rsBivariatePolynomial<T>& y,
     const rsBivariatePolynomial<T>& z, T u0, T u1, T v0, T v1);
+
+
+  static T outfluxIntegral(const rsTrivariatePolynomial<T>& fx, 
+    const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz,
+    T x0, T x1, T y0, T y1, T z0, T z1);
 
 
 
@@ -3254,12 +3264,12 @@ T rsTrivariatePolynomial<T>::fluxIntegral(
   BiPoly gz = TriPoly::compose(fz, x, y, z);  // gz(u,v) = fz(x(u,v), y(u,v), z(u,v))
 
   // partial derivatives of gx,gy,gz with respect to u,v:
-  BiPoly ax = gx.derivativeX();               // ax := d gx / du
-  BiPoly ay = gy.derivativeX();               // ay := d gy / du
-  BiPoly az = gz.derivativeX();               // az := d gz / du
-  BiPoly bx = gx.derivativeY();               // bx := d gx / dv
-  BiPoly by = gy.derivativeY();               // by := d gy / dv
-  BiPoly bz = gz.derivativeY();               // bz := d gz / dv 
+  BiPoly ax = x.derivativeX();                // ax := d x(u,v) / du
+  BiPoly ay = y.derivativeX();                // ay := d y(u,v) / du
+  BiPoly az = z.derivativeX();                // az := d z(u,v) / du
+  BiPoly bx = x.derivativeY();                // bx := d x(u,v) / dv
+  BiPoly by = y.derivativeY();                // by := d y(u,v) / dv
+  BiPoly bz = z.derivativeY();                // bz := d z(u,v) / dv 
 
   // components of the cross-product (Bärwolff, pg 355):
   BiPoly cx = ay*bz - az*by;
@@ -3271,6 +3281,39 @@ T rsTrivariatePolynomial<T>::fluxIntegral(
   return df.doubleIntegralXY(u0, u1, v0, v1);
 }
 
+
+
+template<class T> 
+T rsTrivariatePolynomial<T>::outfluxIntegral(const rsTrivariatePolynomial<T>& fx,
+  const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz,
+  T x0, T x1, T y0, T y1, T z0, T z1)
+{
+  using BiPoly = rsBivariatePolynomial<T>;
+
+  T dx = x1 - x0;
+  T dy = y1 - y0;
+  T dz = z1 - z0;
+
+
+  // 
+  BiPoly x, y, z;
+
+  // flux through surface patch where z = z0:
+  x = BiPoly(1, 1, { x0, dx, dy, 0 });  // is this correct?
+  y = BiPoly(1, 1, { y0, dx, dy, 0 });
+  z = BiPoly(0, 0, { z0            });
+  T fz0 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
+
+  // flux through surface patch where z = z1:
+  z = BiPoly(0, 0, { z1            });
+  T fz1 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
+  T fz  = fz1 - fz0;
+
+
+
+  return T(0);
+}
+// optimize!
 
 
 //=================================================================================================
