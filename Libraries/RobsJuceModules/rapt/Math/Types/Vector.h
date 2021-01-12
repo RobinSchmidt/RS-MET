@@ -238,7 +238,19 @@ public:
   bool operator==(const rsVector3D<T>& v) { return x == v.x && y == v.y && z == v.z; }
 
 
-  // implement dot- and
+  /** Returns the triple product of the 3 vectors a,b,c, defined as: 
+  V = (a x b) * c = a * (b x c) = (b x c) * a = (c x a) * b
+  Its a scalar that gives the signed volume V of the parallelepiped spanned by the 3 vectors. If the 
+  sign is positive, the input vectors form a right handed system, if it negative, they form a left 
+  handed system and if it's zero, they are collinear. */
+  static T tripleProduct(const rsVector3D<T>& a, const rsVector3D<T>& b, const rsVector3D<T>& c)
+  { return dot(cross(a, b), c); }
+  // functions that make sense for n-dimenstional vectors are defined outside the class and those 
+  // that make sense only for a particular dimenstionality are defined inside the class (as static 
+  // functions). reason: those that make sense for any vector can be used in generic code that 
+  // doesn't care about the dimensionality such as in rsParametricCurve
+  // -> so the cross product should be inside the class, too!
+
 
 };
 
@@ -313,21 +325,8 @@ rsVector3D<T> cross(const rsVector3D<T>& a, const rsVector3D<T>& b)
 {
   return rsVector3D<T>(a.y*b.z-a.z*b.y, a.z*b.x-a.x*b.z, a.x*b.y-a.y*b.x); 
 }
+// move into class
 
-/** Returns the triple product of the 3 vectors a,b,c, defined as: 
-V = (a x b) * c = a * (b x c) = (b x c) * a = (c x a) * b
-Its a scalar that gives the volume V of the parallelepiped spanned by the 3 vectors. */
-// not yet tested
-template<class T>
-rsVector3D<T> triple(const rsVector3D<T>& a, const rsVector3D<T>& b, const rsVector3D<T>& c)
-{
-  dot(cross(a, b), c); 
-}
-// rename to rsTripleProduct, maybe move into class - rule: those functions that make sense for 
-// n-dimenstional vectors are defined outside the class and those that make sense only for a 
-// particular dimenstionality are defined inside the class (as static functions). reason: those
-// that make sense for any vector can be used in generic code that doesn't care about the 
-// dimensionality such as in rsParametricCurve
 
 /** Returns the determinant of the matrix that results from writing the 3 given vectors as columns
 into a 3x3 matrix. If this determinant is 0, the 3 vectors are linearly dependent, i.e. one can be 
@@ -338,6 +337,7 @@ T det(const rsVector3D<T>& a, const rsVector3D<T>& b, const rsVector3D<T>& c)
 {
   return a.x*b.y*c.z + b.x*c.y*a.z + c.x*a.y*b.z - c.x*b.y*a.z - b.x*a.y*c.z - a.x*c.y*b.z;
 }
+// isn't that the saem as the triple-product and therefore redundant?
 
 /** Returns the angle between vectors a and b. */
 // not yet tested
