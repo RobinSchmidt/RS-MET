@@ -3068,16 +3068,18 @@ public:
     const rsTrivariatePolynomial<T>& fz, const std::vector<rsVector3D<T>>& path);
 
 
-
-
   /** Computes the flux of a vector field given by 3 functions fx(x,y,z), fy(x,y,z), fz(x,y,z)
   through a parametric surface patch given by x(u,v), y(u,v), z(u,v) where u and v run from u0 to
   u1 and v0 to v1 respectively. If the vector field describes a fluid velocity, the flux integral 
   measures, how much of the fluid flows through the given surface patch per unit time. */
-  static T rsTrivariatePolynomial<T>::fluxIntegral(const rsTrivariatePolynomial<T>& fx,
-    const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz,
-    const rsBivariatePolynomial<T>& x, const rsBivariatePolynomial<T>& y,
-    const rsBivariatePolynomial<T>& z, T u0, T u1, T v0, T v1);
+  static T fluxIntegral(const rsTrivariatePolynomial<T>& fx, const rsTrivariatePolynomial<T>& fy, 
+    const rsTrivariatePolynomial<T>& fz, const rsBivariatePolynomial<T>& x, 
+    const rsBivariatePolynomial<T>& y, const rsBivariatePolynomial<T>& z, T u0, T u1, T v0, T v1);
+
+  /** Flux through a triangular patch between vertices P0, P1, P2. */
+  static T fluxIntegral(const rsTrivariatePolynomial<T>& fx, const rsTrivariatePolynomial<T>& fy, 
+    const rsTrivariatePolynomial<T>& fz, const rsVector3D<T>& P0, const rsVector3D<T>& P1, 
+    const rsVector3D<T>& P2);
 
   /** Computes the flux of a vector field coming out of a cuboid bounded by the given coordinates. 
   By Gauss theorem, this should be equal to the triple integral of the divergence and i think, 
@@ -3086,6 +3088,8 @@ public:
   static T outfluxIntegral(const rsTrivariatePolynomial<T>& fx, 
     const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz,
     T x0, T x1, T y0, T y1, T z0, T z1);
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -3414,6 +3418,32 @@ T rsTrivariatePolynomial<T>::fluxIntegral(
   // differential flux element and total flux through surface (Bärwollf, pg 600):
   BiPoly df = gx*cx + gy*cy + gz*cz;
   return df.doubleIntegralXY(u0, u1, v0, v1);
+}
+
+template<class T> 
+T rsTrivariatePolynomial<T>::fluxIntegral(
+  const rsTrivariatePolynomial<T>& fx,
+  const rsTrivariatePolynomial<T>& fy,
+  const rsTrivariatePolynomial<T>& fz,
+  const rsVector3D<T>& P0, const rsVector3D<T>& P1, const rsVector3D<T>& P2)
+{
+  rsBivariatePolynomial<T> x(1,1), y(1,1), z(1,1);
+
+  x.coeff(0, 0) = P0.x;
+  y.coeff(0, 0) = P0.y;
+  z.coeff(0, 0) = P0.z;
+
+  x.coeff(1, 0) = P1.x - P0.x;  // or coeff(0, 1)?
+  y.coeff(1, 0) = P1.y - P0.y;
+  z.coeff(1, 0) = P1.z - P0.z;
+
+  x.coeff(1, 1) = P2.x - P1.x;
+  y.coeff(1, 1) = P2.y - P1.y;
+  z.coeff(1, 1) = P2.z - P1.z;
+
+  // p(u,v) = P0 + (P1-P0)*u + (P2-P1)*u*v
+
+  return fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
 }
 
 template<class T> 
