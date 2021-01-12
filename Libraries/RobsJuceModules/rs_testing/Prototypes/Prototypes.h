@@ -2547,7 +2547,7 @@ void rsBivariatePolynomial<T>::integralX(const rsMatrixView<T>& p, rsMatrixView<
   int M = p.getNumRows();
   int N = p.getNumColumns();
   rsAssert(pi.hasShape(M+1, N));
-  for(int n = 0; n < N; n++)
+  for(int n = 0; n < N; n++)   // i think, this is wrong: just set pi(0,0) to c and the rest to 0
     pi(0, n) = c; 
   for(int m = 1; m <= M; m++) {
     T s = T(1) / T(m);
@@ -2572,7 +2572,7 @@ void rsBivariatePolynomial<T>::integralY(const rsMatrixView<T>& p, rsMatrixView<
   int M = p.getNumRows();
   int N = p.getNumColumns();
   rsAssert(pi.hasShape(M, N+1));
-  for(int m = 0; m < M; m++)
+  for(int m = 0; m < M; m++)   // i think, this is wrong: just set pi(0,0) to c and the rest to 0
     pi(m, 0) = c; 
   for(int n = 1; n <= N; n++) {
     T s = T(1) / T(n);
@@ -3031,6 +3031,13 @@ public:
   rsTrivariatePolynomial<T> derivativeZ() const;
 
 
+  static void integralX(const rsMultiArray<T>& a, rsMultiArray<T>& ai, T c = T(0));
+  rsTrivariatePolynomial<T> integralX(T c = T(0)) const;
+
+
+  template<class Ta, class Tb>
+  rsBivariatePolynomial<T> integralX(Ta a, Tb b) const;
+
 
   static rsTrivariatePolynomial<T> divergence(const rsTrivariatePolynomial<T>& fx, 
     const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz)
@@ -3039,8 +3046,7 @@ public:
 
 
 
-  template<class Ta, class Tb>
-  rsBivariatePolynomial<T> integralX(Ta a, Tb b) const;
+
 
 
   /** Computes the triple integral of the polynomial over the given cuboid. This function 
@@ -3088,6 +3094,8 @@ T rsTrivariatePolynomial<T>::evaluate(T x, T y, T z) const
     xl *= x; }
   return r;
 }
+// have functions where x,y,z are uni- or bivariate polynomials - the result is then again a 
+// polynomial (of the same kind)
 
 template<class T>
 rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::evaluateX(T x) const
@@ -3162,13 +3170,14 @@ void rsTrivariatePolynomial<T>::derivativeX(const rsMultiArray<T>& c, rsMultiArr
   int L = c.getExtent(0);
   int M = c.getExtent(1);
   int N = c.getExtent(2);
-  //rsAssert(d.hasShape({ L-1, M, N })); // implement!
+  rsAssert(d.hasShape({ L-1, M, N }));
   for(int l = 1; l < L; l++) {
     T s(l);
     for(int m = 0; m < M; m++)
       for(int n = 0; n < N; n++)
         d(l-1, m, n) = s * c(l, m, n); }
 }
+// maybe don't require d to have the proper shape - instead, set up the shape of d
 
 template<class T>
 rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::derivativeX() const
@@ -3184,7 +3193,7 @@ void rsTrivariatePolynomial<T>::derivativeY(const rsMultiArray<T>& c, rsMultiArr
   int L = c.getExtent(0);
   int M = c.getExtent(1);
   int N = c.getExtent(2);
-  //rsAssert(d.hasShape({ L, M-1, N })); // implement!
+  rsAssert(d.hasShape({ L, M-1, N }));
   for(int m = 1; m < M; m++) {
     T s(m);
     for(int l = 0; l < L; l++)
@@ -3206,7 +3215,7 @@ void rsTrivariatePolynomial<T>::derivativeZ(const rsMultiArray<T>& c, rsMultiArr
   int L = c.getExtent(0);
   int M = c.getExtent(1);
   int N = c.getExtent(2);
-  //rsAssert(d.hasShape({ L, M, N-1 })); // implement!
+  rsAssert(d.hasShape({ L, M, N-1 }));
   for(int n = 1; n < N; n++) {
     T s(n);
     for(int m = 0; m < M; m++)
@@ -3223,10 +3232,36 @@ rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::derivativeZ() const
 }
 
 
+template<class T>
+void rsTrivariatePolynomial<T>::integralX(const rsMultiArray<T>& a, rsMultiArray<T>& ai, T c)
+{
+  int L = a.getExtent(0);
+  int M = a.getExtent(1);
+  int N = a.getExtent(2);
+  rsAssert(ai.hasShape({ L+1, M, N }));
 
+  ai(0, 0, 0) = c; 
+  for(int m = 1; m < M; m++)
+    for(int n = 1; n < N; n++)
+      ai(0, m, n) = 0; 
+  // i think, more generally, the integration "constant" c could be a bivariate polynomial in y,z 
+  // and we would do: ai(0, m, n) = c(m, n) for (m,n) = (0,0)...(M-1,N-1)
 
+  for(int l = 1; l <= L; l++) {
+    T s = T(1) / T(l);
+    for(int m = 0; m < M; m++)
+      for(int n = 0; n < N; n++)
+        ai(l, m, n) = s * a(l-1, m, n); }
+}
 
-
+template<class T>
+rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::integralX(T c) const
+{
+  rsTrivariatePolynomial<T> q(getDegreeX()+1, getDegreeY(), getDegreeZ());
+  integralX(coeffs, q.coeffs, c);
+  return q;
+}
+// needs test
 
 template<class T>
 template<class Ta, class Tb>
@@ -3237,13 +3272,18 @@ rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::integralX(Ta a, Tb b) const
   rsBivariatePolynomial<T> Pa = P.evaluateX(a);
   return Pb - Pa;
 }
+// needs test
+
 
 template<class T> 
 T rsTrivariatePolynomial<T>::tripleIntegralXYZ(T x0, T x1, T y0, T y1, T z0, T z1) const
 {
   rsBivariatePolynomial<T>& ix = integralX(x0, x1);  // still a function of y and z
-  return ix.doubleIntegral(y0, y1, z0, z1);
+  return ix.doubleIntegralXY(y0, y1, z0, z1);
 }
+// maybe have functions where only the innermost limits x0,x1 are constant, the middle limits 
+// y0,y1 are univariate polynomials in x and the outermost limits z0, z1 are bivariate polynomials
+// in x,y
 
 template<class T> 
 T rsTrivariatePolynomial<T>::fluxIntegral(
@@ -3291,27 +3331,41 @@ T rsTrivariatePolynomial<T>::outfluxIntegral(const rsTrivariatePolynomial<T>& fx
   T dx = x1 - x0;
   T dy = y1 - y0;
   T dz = z1 - z0;
-
-
-  // 
   BiPoly x, y, z;
 
-  // flux through surface patch where z = z0:
-  x = BiPoly(1, 1, { x0, dx, dy, 0 });  // is this correct?
+  // flux through surface patches where z = z0 and z = z1:
+  x = BiPoly(1, 1, { x0, dx, dy, 0 });
   y = BiPoly(1, 1, { y0, dx, dy, 0 });
   z = BiPoly(0, 0, { z0            });
   T fz0 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
-
-  // flux through surface patch where z = z1:
   z = BiPoly(0, 0, { z1            });
   T fz1 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
-  T fz  = fz1 - fz0;
 
+  // flux through surface patch where y = y0 and y = y1:
+  x = BiPoly(1, 1, { x0, 0,  dx, 0 });
+  y = BiPoly(0, 0, { y0            });
+  z = BiPoly(1, 1, { z1, -dz, 0, 0 }); // z takes the role of y, direction reversed, see below
+  T fy0 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
+  y = BiPoly(0, 0, { y1            });
+  T fy1 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
 
+  // flux through surface patch where x = x0 and x = x1:
+  x = BiPoly(0, 0, { x0           });  // x is constant
+  y = BiPoly(1, 1, { y0, 0, dy, 0 });  // y takes the role of x
+  z = BiPoly(1, 1, { z0, dz, 0, 0 });  // z takes the role of y
+  T fx0 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
+  x = BiPoly(0, 0, { x1           });
+  T fx1 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
 
-  return T(0);
+  return (fx1-fx0) + (fy1-fy0) + (fz1-fz0);
+
+  // Remark: 
+  // For the two middle integrals where y = const, we need to reverse the direction of the 
+  // parametrization for either x or z (here, z was chosen), because the cross product of two unit
+  // vectors in x- and z-direction give the *negative* unit vector in the y-direction
 }
-// optimize!
+// optimize 
+// -create the BiPoly objects only once and re-assign the coeffs -> less allocation
 
 
 // ToDo:

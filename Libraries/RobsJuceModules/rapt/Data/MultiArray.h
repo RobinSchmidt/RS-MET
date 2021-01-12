@@ -500,6 +500,14 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Returns true, iff this multiarry has the given shape. */
+  bool hasShape(const std::vector<int>& shape)
+  { return shape == this->shape; }
+
+
+  //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
   /** Adds two multiarrays element-wise. */
