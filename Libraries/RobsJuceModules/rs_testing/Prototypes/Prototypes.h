@@ -2731,7 +2731,7 @@ T rsBivariatePolynomial<T>::fluxIntegral(
 // needs tests - this is on shaky grounds - especially with respect to computing and 
 // (not) normalizing the normal vector (which is taken to be equal to (nx, ny) = (yp, -xp) here...
 // but actually should be normalized...right?). ...in general, the function is very similar to
-// pathIntegral
+// pathIntegral with P = ut * xp + vt * yp  replaced by  P = pt * yp - qt * xp
 
 template<class T> 
 T rsBivariatePolynomial<T>::loopIntegral(const rsBivariatePolynomial<T>& p,
@@ -3013,6 +3013,10 @@ public:
   { rsTrivariatePolynomial<T> r; weightedSum(*this, T(1), p, T(-1), r); return r; }
 
 
+
+  static rsPolynomial<T> compose(const rsTrivariatePolynomial<T>& p,
+    const rsPolynomial<T>& x, const rsPolynomial<T>& y, const rsPolynomial<T>& z);
+
   static rsBivariatePolynomial<T> compose(const rsTrivariatePolynomial<T>& p,
     const rsBivariatePolynomial<T>& x, const rsBivariatePolynomial<T>& y,
     const rsBivariatePolynomial<T>& z);
@@ -3043,6 +3047,7 @@ public:
     const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz)
   { return fx.derivativeX() + fy.derivativeY() + fz.derivativeZ(); }
 
+  // todo: Laplacian, curl
 
 
 
@@ -3054,6 +3059,11 @@ public:
   T tripleIntegralXYZ(T x0, T x1, T y0, T y1, T z0, T z1) const;
 
 
+  static T rsTrivariatePolynomial<T>::pathIntegral(const rsTrivariatePolynomial<T>& fx, 
+    const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz, 
+    const rsPolynomial<T>& x, const rsPolynomial<T>& y, const rsPolynomial<T>& z, T a, T b);
+
+
   /** Computes the flux of a vector field given by 3 functions fx(x,y,z), fy(x,y,z), fz(x,y,z)
   through a parametric surface patch given by x(u,v), y(u,v), z(u,v) where u and v run from u0 to
   u1 and v0 to v1 respectively. If the vector field describes a fluid velocity, the flux integral 
@@ -3063,7 +3073,10 @@ public:
     const rsBivariatePolynomial<T>& x, const rsBivariatePolynomial<T>& y,
     const rsBivariatePolynomial<T>& z, T u0, T u1, T v0, T v1);
 
-
+  /** Computes the flux of a vector field coming out of a cuboid bounded by the given coordinates. 
+  By Gauss theorem, this should be equal to the triple integral of the divergence and i think, 
+  computing it that way is more efficient and accurate. This function is mostly for the sake of 
+  completeness and proof of concept. */
   static T outfluxIntegral(const rsTrivariatePolynomial<T>& fx, 
     const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz,
     T x0, T x1, T y0, T y1, T z0, T z1);
@@ -3126,6 +3139,31 @@ rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::evaluateX(T x) const
 }
 
 // arithmetic:
+
+template<class T> 
+rsPolynomial<T> rsTrivariatePolynomial<T>::compose(const rsTrivariatePolynomial<T>& p,
+  const rsPolynomial<T>& x, const rsPolynomial<T>& y, const rsPolynomial<T>& z)
+{
+  using Poly = rsPolynomial<T>;
+  Poly p_t;            // p(t) = p(x(t), y(t), z(t))
+  //Poly one({1});       // constant polynomial one(t) = 1
+  Poly one(0); one[0] = T(1);
+  Poly xl, ym, zn;     // (x(t))^l, (y(t))^m, (z(t))^n
+  xl = one;
+  for(int l = 0; l < p.coeffs.getExtent(0); l++) {
+    ym = one;
+    for(int m = 0; m < p.coeffs.getExtent(1); m++) {
+      zn = one;
+      for(int n = 0; n < p.coeffs.getExtent(2); n++) {
+        p_t = p_t + p.coeffs(l, m, n) * xl * ym * zn;
+        zn = zn * z; }
+      ym = ym * y; }
+    xl = xl * x; }
+  return p_t;
+}
+// try to avoid the duplication with the function below by templatizing - Poly and BiPoly both need
+// a factory function to create the one-polynomial or maybe more generally a constant polynomial
+// ...but maybe we later optimize in which case the code will look different in both cases
 
 template<class T> 
 rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::compose(const rsTrivariatePolynomial<T>& p,
@@ -3298,6 +3336,29 @@ T rsTrivariatePolynomial<T>::tripleIntegralXYZ(T x0, T x1, T y0, T y1, T z0, T z
 // in x,y
 
 template<class T> 
+T rsTrivariatePolynomial<T>::pathIntegral(
+  const rsTrivariatePolynomial<T>& fx, 
+  const rsTrivariatePolynomial<T>& fy,
+  const rsTrivariatePolynomial<T>& fz, 
+  const rsPolynomial<T>& x, 
+  const rsPolynomial<T>& y, 
+  const rsPolynomial<T>& z, 
+  T a, T b)
+{
+  using Poly    = rsPolynomial<T>;
+  using TriPoly = rsTrivariatePolynomial<T>;
+  Poly fxt = TriPoly::compose(fx, x, y, z);   // fx(t) = fx(x(t),y(t),z(t))
+  Poly fyt = TriPoly::compose(fy, x, y, z);   // fy(t) = fy(x(t),y(t),z(t))
+  Poly fzt = TriPoly::compose(fz, x, y, z);   // fz(t) = fz(x(t),y(t),z(t))
+  Poly xp = x.derivative();                   // x'(t)
+  Poly yp = y.derivative();                   // y'(t)
+  Poly zp = z.derivative();                   // z'(t)
+  Poly P  = fxt * xp + fyt * yp + fzt * zp;   // the scalar product in the integrand
+  return P.definiteIntegral(a, b);
+}
+// todo: add a path integral that takes an array of rsVector3D
+
+template<class T> 
 T rsTrivariatePolynomial<T>::fluxIntegral(
   const rsTrivariatePolynomial<T>& fx,
   const rsTrivariatePolynomial<T>& fy,
@@ -3345,7 +3406,6 @@ T rsTrivariatePolynomial<T>::outfluxIntegral(const rsTrivariatePolynomial<T>& fx
   T dz = z1 - z0;
   BiPoly x, y, z;
 
-
   // flux through surface patch where z = z0:
   x = BiPoly(1, 1, { x0,   0, dx, 0 });
   y = BiPoly(1, 1, { y1, -dy,  0, 0 });
@@ -3353,19 +3413,19 @@ T rsTrivariatePolynomial<T>::outfluxIntegral(const rsTrivariatePolynomial<T>& fx
   T fz0 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
 
   // flux through surface patch where z = z1:
-  x = BiPoly(1, 1, { x0,  0, dx, 0  });
+  //x = BiPoly(1, 1, { x0,  0, dx, 0  }); // has not changed
   y = BiPoly(1, 1, { y0, dy,  0, 0  });
   z = BiPoly(0, 0, { z1             });
   T fz1 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
 
   // flux through surface patch where y = y0:
-  x = BiPoly(1, 1, { x0, 0,  dx, 0 });
+  //x = BiPoly(1, 1, { x0, 0,  dx, 0 }); // has not changed
   y = BiPoly(0, 0, { y0            });
   z = BiPoly(1, 1, { z0,  dz, 0, 0 });
   T fy0 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
 
   // flux through surface patch where y = y1:
-  x = BiPoly(1, 1, { x0, 0,  dx, 0 });
+  //x = BiPoly(1, 1, { x0, 0,  dx, 0 }); // has not changed
   y = BiPoly(0, 0, { y1            });
   z = BiPoly(1, 1, { z1, -dz, 0, 0 });
   T fy1 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
@@ -3378,29 +3438,15 @@ T rsTrivariatePolynomial<T>::outfluxIntegral(const rsTrivariatePolynomial<T>& fx
 
   // flux through surface patch where x = x1:
   x = BiPoly(0, 0, { x1           });
-  y = BiPoly(1, 1, { y0, 0, dy, 0 });
+  //y = BiPoly(1, 1, { y0, 0, dy, 0 }); // has not changed
   z = BiPoly(1, 1, { z0, dz, 0, 0 });
   T fx1 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
 
-
   return fx0 + fx1 + fy0 + fy1 + fz0 + fz1;
-
-  //return (fx1-fx0) + (fy1-fy0) + (fz1-fz0);
-
-  //return (fx0-fx1) + (fy0-fy1) + (fz0-fz1);
-
-  // I think, this is still wrong - we need to add all contributions up (no subtractions) but use 
-  // different parametrizations for opposite faces such that their normals point into different 
-  // directions
-
-
-  // Remark: 
-  // For the two middle integrals where y = const, we need to reverse the direction of the 
-  // parametrization for either x or z (here, z was chosen), because the cross product of two unit
-  // vectors in x- and z-direction give the *negative* unit vector in the y-direction
 }
-// optimize 
+// -optimize 
 // -create the BiPoly objects only once and re-assign the coeffs -> less allocation
+// -remove the fz0, etc variables - directly add intermediated results into an accumulator
 
 
 // ToDo:

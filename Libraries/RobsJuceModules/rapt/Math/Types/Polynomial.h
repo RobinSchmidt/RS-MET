@@ -1076,6 +1076,16 @@ protected:
 
 };
 
+/** Multiplies a number and a polynomial. */
+template<class T>
+inline rsPolynomial<T> operator*(const T& s, const rsPolynomial<T>& p)
+{
+  rsPolynomial<T> q = p;
+  q.scale(s);
+  return q;
+}
+
+
 // todo: implement a function that determines the number of real roots of a polynomial in an
 // interval by means of Sturmian sequences (see Einführung in die computerorientierte Mathematik
 // mit Sage, p.163ff) - may be useful for rational interpolants to figure out, if there's a pole
