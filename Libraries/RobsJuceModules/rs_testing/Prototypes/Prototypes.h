@@ -3034,6 +3034,16 @@ public:
   static void derivativeZ(const rsMultiArray<T>& c, rsMultiArray<T>& d);
   rsTrivariatePolynomial<T> derivativeZ() const;
 
+  static rsTrivariatePolynomial<T> divergence(const rsTrivariatePolynomial<T>& fx, 
+    const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz)
+  { return fx.derivativeX() + fy.derivativeY() + fz.derivativeZ(); }
+
+  static void curl(const rsTrivariatePolynomial<T>& fx, const rsTrivariatePolynomial<T>& fy, 
+    const rsTrivariatePolynomial<T>& fz, rsTrivariatePolynomial<T>& cx, 
+    rsTrivariatePolynomial<T>& cy, rsTrivariatePolynomial<T>& cz);
+
+
+
 
   static void integralX(const rsMultiArray<T>& a, rsMultiArray<T>& ai, T c = T(0));
   rsTrivariatePolynomial<T> integralX(T c = T(0)) const;
@@ -3043,11 +3053,12 @@ public:
   rsBivariatePolynomial<T> integralX(Ta a, Tb b) const;
 
 
-  static rsTrivariatePolynomial<T> divergence(const rsTrivariatePolynomial<T>& fx, 
-    const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz)
-  { return fx.derivativeX() + fy.derivativeY() + fz.derivativeZ(); }
 
-  // todo: Laplacian, curl
+
+
+
+
+  // todo: Laplacian
 
 
 
@@ -3291,6 +3302,15 @@ rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::derivativeZ() const
   return q;
 }
 
+template<class T>
+void rsTrivariatePolynomial<T>::curl(const rsTrivariatePolynomial<T>& fx, 
+  const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz, 
+  rsTrivariatePolynomial<T>& cx, rsTrivariatePolynomial<T>& cy, rsTrivariatePolynomial<T>& cz)
+{
+  cx = fz.derivativeY() - fy.derivativeZ();
+  cy = fx.derivativeZ() - fz.derivativeX();
+  cz = fy.derivativeX() - fx.derivativeY();
+}
 
 template<class T>
 void rsTrivariatePolynomial<T>::integralX(const rsMultiArray<T>& a, rsMultiArray<T>& ai, T c)
@@ -3428,12 +3448,11 @@ T rsTrivariatePolynomial<T>::fluxIntegral(
   const rsVector3D<T>& P0, const rsVector3D<T>& P1, const rsVector3D<T>& P2)
 {
   rsBivariatePolynomial<T> x(1,1), y(1,1), z(1,1);
-
   x.coeff(0, 0) = P0.x;
   y.coeff(0, 0) = P0.y;
   z.coeff(0, 0) = P0.z;
 
-  x.coeff(1, 0) = P1.x - P0.x;  // or coeff(0, 1)?
+  x.coeff(1, 0) = P1.x - P0.x;
   y.coeff(1, 0) = P1.y - P0.y;
   z.coeff(1, 0) = P1.z - P0.z;
 
@@ -3441,9 +3460,13 @@ T rsTrivariatePolynomial<T>::fluxIntegral(
   y.coeff(1, 1) = P2.y - P1.y;
   z.coeff(1, 1) = P2.z - P1.z;
 
-  // p(u,v) = P0 + (P1-P0)*u + (P2-P1)*u*v
-
   return fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
+
+  // Parametrization was derived by considering:
+  //   p1(u) = P0 + u*(P1-P0), p2(u) = P0 + u*(P2-P0)
+  // which leads to:
+  //   p(u,v) = (1-v)*p1(u) + v*p2(u)  
+  //          = P0 + (P1-P0)*u + (P2-P1)*u*v
 }
 
 template<class T> 
