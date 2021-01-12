@@ -3345,37 +3345,47 @@ T rsTrivariatePolynomial<T>::outfluxIntegral(const rsTrivariatePolynomial<T>& fx
   T dz = z1 - z0;
   BiPoly x, y, z;
 
-  // flux through surface patches where z = z0 and z = z1:
-  x = BiPoly(1, 1, { x0, dx, dy, 0 });
-  y = BiPoly(1, 1, { y0, dx, dy, 0 });
-  z = BiPoly(0, 0, { z0            });
+
+  // flux through surface patch where z = z0:
+  x = BiPoly(1, 1, { x0,   0, dx, 0 });
+  y = BiPoly(1, 1, { y1, -dy,  0, 0 });
+  z = BiPoly(0, 0, { z0             });
   T fz0 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
-  z = BiPoly(0, 0, { z1            });
+
+  // flux through surface patch where z = z1:
+  x = BiPoly(1, 1, { x0,  0, dx, 0  });
+  y = BiPoly(1, 1, { y0, dy,  0, 0  });
+  z = BiPoly(0, 0, { z1             });
   T fz1 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
 
-  // flux through surface patch where y = y0 and y = y1:
+  // flux through surface patch where y = y0:
   x = BiPoly(1, 1, { x0, 0,  dx, 0 });
   y = BiPoly(0, 0, { y0            });
-  z = BiPoly(1, 1, { z1, -dz, 0, 0 }); // z takes the role of y, direction reversed, see below
-
-  z = BiPoly(1, 1, { z0,  dz, 0, 0 });  // test - should not work
-
+  z = BiPoly(1, 1, { z0,  dz, 0, 0 });
   T fy0 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
+
+  // flux through surface patch where y = y1:
+  x = BiPoly(1, 1, { x0, 0,  dx, 0 });
   y = BiPoly(0, 0, { y1            });
+  z = BiPoly(1, 1, { z1, -dz, 0, 0 });
   T fy1 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
 
-  // flux through surface patch where x = x0 and x = x1:
-  x = BiPoly(0, 0, { x0           });  // x is constant
-  y = BiPoly(1, 1, { y0, 0, dy, 0 });  // y takes the role of x
-  z = BiPoly(1, 1, { z0, dz, 0, 0 });  // z takes the role of y
+  // flux through surface patch where x = x0:
+  x = BiPoly(0, 0, { x0           });
+  y = BiPoly(1, 1, { y0,  0, dy, 0 });
+  z = BiPoly(1, 1, { z1, -dz, 0, 0 });
   T fx0 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
+
+  // flux through surface patch where x = x1:
   x = BiPoly(0, 0, { x1           });
+  y = BiPoly(1, 1, { y0, 0, dy, 0 });
+  z = BiPoly(1, 1, { z0, dz, 0, 0 });
   T fx1 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
 
 
-  //return (fx1+fx0) + (fy1+fy0) + (fz1+fz0);
+  return fx0 + fx1 + fy0 + fy1 + fz0 + fz1;
 
-  return (fx1-fx0) + (fy1-fy0) + (fz1-fz0);
+  //return (fx1-fx0) + (fy1-fy0) + (fz1-fz0);
 
   //return (fx0-fx1) + (fy0-fy1) + (fz0-fz1);
 
