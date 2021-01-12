@@ -209,8 +209,8 @@ public:
       C.structuredIndices(i, &indices[0]);
       int ia = A.flatIndexSafe(&indices[0]);
       int ib = B.flatIndexSafe(&indices[0]);
-      if(ia != -1 && ib != -1)
-        C.dataPointer[i] += wA * A.dataPointer[ia] + wB * B.dataPointer[ib];
+      if(ia != -1) C.dataPointer[i] += wA * A.dataPointer[ia];
+      if(ib != -1) C.dataPointer[i] += wB * B.dataPointer[ib];
     }
   }
   // needs tests
