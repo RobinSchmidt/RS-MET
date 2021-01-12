@@ -3069,6 +3069,18 @@ public:
     T x0, T x1, T y0, T y1, T z0, T z1);
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
+
+  /** Read and write access to the (i,j)th coefficient. */
+  T& coeff(int i, int j, int k) { return coeffs(i, j, k); }
+
+  /** Read access to the (i,j)th coefficient. */
+  //const T& coeff(int i, int j) const { return coeffs(i, j); }
+
+  //T getCoeffPadded(int i, int j, T padding = T(0)) const 
+  //{ return coeffs.getElementPadded(i, j, padding); }
+
 
 protected:
 
@@ -3345,6 +3357,9 @@ T rsTrivariatePolynomial<T>::outfluxIntegral(const rsTrivariatePolynomial<T>& fx
   x = BiPoly(1, 1, { x0, 0,  dx, 0 });
   y = BiPoly(0, 0, { y0            });
   z = BiPoly(1, 1, { z1, -dz, 0, 0 }); // z takes the role of y, direction reversed, see below
+
+  z = BiPoly(1, 1, { z0,  dz, 0, 0 });  // test - should not work
+
   T fy0 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
   y = BiPoly(0, 0, { y1            });
   T fy1 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
@@ -3357,7 +3372,17 @@ T rsTrivariatePolynomial<T>::outfluxIntegral(const rsTrivariatePolynomial<T>& fx
   x = BiPoly(0, 0, { x1           });
   T fx1 = fluxIntegral(fx, fy, fz, x, y, z, T(0), T(1), T(0), T(1));
 
+
+  //return (fx1+fx0) + (fy1+fy0) + (fz1+fz0);
+
   return (fx1-fx0) + (fy1-fy0) + (fz1-fz0);
+
+  //return (fx0-fx1) + (fy0-fy1) + (fz0-fz1);
+
+  // I think, this is still wrong - we need to add all contributions up (no subtractions) but use 
+  // different parametrizations for opposite faces such that their normals point into different 
+  // directions
+
 
   // Remark: 
   // For the two middle integrals where y = const, we need to reverse the direction of the 
