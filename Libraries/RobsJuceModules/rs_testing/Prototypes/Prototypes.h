@@ -3059,9 +3059,15 @@ public:
   T tripleIntegralXYZ(T x0, T x1, T y0, T y1, T z0, T z1) const;
 
 
-  static T rsTrivariatePolynomial<T>::pathIntegral(const rsTrivariatePolynomial<T>& fx, 
-    const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz, 
-    const rsPolynomial<T>& x, const rsPolynomial<T>& y, const rsPolynomial<T>& z, T a, T b);
+  static T pathIntegral(const rsTrivariatePolynomial<T>& fx, const rsTrivariatePolynomial<T>& fy, 
+    const rsTrivariatePolynomial<T>& fz, const rsPolynomial<T>& x, const rsPolynomial<T>& y, 
+    const rsPolynomial<T>& z, T a, T b);
+
+
+  static T pathIntegral(const rsTrivariatePolynomial<T>& fx, const rsTrivariatePolynomial<T>& fy, 
+    const rsTrivariatePolynomial<T>& fz, const std::vector<rsVector3D<T>>& path);
+
+
 
 
   /** Computes the flux of a vector field given by 3 functions fx(x,y,z), fy(x,y,z), fz(x,y,z)
@@ -3334,7 +3340,6 @@ T rsTrivariatePolynomial<T>::tripleIntegralXYZ(T x0, T x1, T y0, T y1, T z0, T z
 // maybe have functions where only the innermost limits x0,x1 are constant, the middle limits 
 // y0,y1 are univariate polynomials in x and the outermost limits z0, z1 are bivariate polynomials
 // in x,y
-
 template<class T> 
 T rsTrivariatePolynomial<T>::pathIntegral(
   const rsTrivariatePolynomial<T>& fx, 
@@ -3356,7 +3361,24 @@ T rsTrivariatePolynomial<T>::pathIntegral(
   Poly P  = fxt * xp + fyt * yp + fzt * zp;   // the scalar product in the integrand
   return P.definiteIntegral(a, b);
 }
-// todo: add a path integral that takes an array of rsVector3D
+
+template<class T> 
+T rsTrivariatePolynomial<T>::pathIntegral(
+  const rsTrivariatePolynomial<T>& fx, 
+  const rsTrivariatePolynomial<T>& fy,
+  const rsTrivariatePolynomial<T>& fz,
+  const std::vector<rsVector3D<T>>& path)
+{
+  T result = T(0);
+  rsPolynomial<T> x(1), y(1), z(1);
+  for(size_t i = 1; i < path.size(); i++) {
+    x[0] = path[i-1].x; x[1] = path[i].x - x[0];
+    y[0] = path[i-1].y; y[1] = path[i].y - y[0];
+    z[0] = path[i-1].z; z[1] = path[i].z - z[0];
+    result += pathIntegral(fx, fy, fz, x, y, z, T(0), T(1)); }
+  return result;
+}
+// needs more tests
 
 template<class T> 
 T rsTrivariatePolynomial<T>::fluxIntegral(
