@@ -3021,6 +3021,9 @@ public:
     const rsBivariatePolynomial<T>& x, const rsBivariatePolynomial<T>& y,
     const rsBivariatePolynomial<T>& z);
 
+  bool operator==(const rsTrivariatePolynomial<T>& p) const
+  { return coeffs == p.coeffs; }
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Calculus
@@ -3060,6 +3063,13 @@ public:
   static void integralX(const rsMultiArray<T>& a, rsMultiArray<T>& ai, T c = T(0));
   rsTrivariatePolynomial<T> integralX(T c = T(0)) const;
 
+  static void integralY(const rsMultiArray<T>& a, rsMultiArray<T>& ai, T c = T(0));
+  rsTrivariatePolynomial<T> integralY(T c = T(0)) const;
+
+  static void integralZ(const rsMultiArray<T>& a, rsMultiArray<T>& ai, T c = T(0));
+  rsTrivariatePolynomial<T> integralZ(T c = T(0)) const;
+
+
 
   template<class Ta, class Tb>
   rsBivariatePolynomial<T> integralX(Ta a, Tb b) const;
@@ -3079,7 +3089,12 @@ public:
 
   /** Computes the triple integral of the polynomial over the given cuboid. This function 
   performs the integration over x first, then over y, then over z. */
-  T tripleIntegralXYZ(T x0, T x1, T y0, T y1, T z0, T z1) const;
+  T tripleIntegralXYZ(T x0, T x1, T y0, T y1, T z0, T z1) const
+  { return integralX(x0, x1).doubleIntegralXY(y0, y1, z0, z1); }
+
+  // maybe have a function where only the innermost limits x0,x1 are constant, the middle limits 
+  // y0,y1 are univariate polynomials in x and the outermost limits z0, z1 are bivariate polynomials
+  // in x,y
 
 
   static T pathIntegral(const rsTrivariatePolynomial<T>& fx, const rsTrivariatePolynomial<T>& fy, 
@@ -3176,6 +3191,7 @@ rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::evaluateX(T x) const
 template<class T>
 void rsConvolve3D(const rsMultiArray<T>& x, const rsMultiArray<T>& h, rsMultiArray<T>& y)
 {
+  rsAssert(x.getNumIndices() == 3 && h.getNumIndices() == 3, "x and h must be 3-dimensional");
   int Lx = x.getExtent(0), Mx = x.getExtent(1), Nx = x.getExtent(2);
   int Lh = h.getExtent(0), Mh = h.getExtent(1), Nh = h.getExtent(2);
   int Ly = Lx + Lh - 1,    My = Mx + Mh - 1,    Ny = Nx + Nh - 1;
@@ -3386,6 +3402,60 @@ rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::integralX(T c) const
 // needs test
 
 template<class T>
+void rsTrivariatePolynomial<T>::integralY(const rsMultiArray<T>& a, rsMultiArray<T>& ai, T c)
+{
+  int L = a.getExtent(0);
+  int M = a.getExtent(1);
+  int N = a.getExtent(2);
+  rsAssert(ai.hasShape({ L, M+1, N }));
+  ai(0, 0, 0) = c; 
+  for(int l = 1; l < L; l++)
+    for(int n = 1; n < N; n++)
+      ai(l, 0, n) = 0; 
+  for(int m = 1; m <= M; m++) {
+    T s = T(1) / T(m);
+    for(int l = 0; l < L; l++)
+      for(int n = 0; n < N; n++)
+        ai(l, m, n) = s * a(l, m-1, n); }
+}
+
+template<class T>
+rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::integralY(T c) const
+{
+  rsTrivariatePolynomial<T> q(getDegreeX(), getDegreeY()+1, getDegreeZ());
+  integralY(coeffs, q.coeffs, c);
+  return q;
+}
+// needs test
+
+template<class T>
+void rsTrivariatePolynomial<T>::integralZ(const rsMultiArray<T>& a, rsMultiArray<T>& ai, T c)
+{
+  int L = a.getExtent(0);
+  int M = a.getExtent(1);
+  int N = a.getExtent(2);
+  rsAssert(ai.hasShape({ L, M, N+1 }));
+  ai(0, 0, 0) = c; 
+  for(int l = 1; l < L; l++)
+    for(int m = 1; m < M; m++)
+      ai(l, m, 0) = 0; 
+  for(int n = 1; n <= N; n++) {
+    T s = T(1) / T(n);
+    for(int l = 0; l < L; l++)
+      for(int m = 0; m < M; m++)
+        ai(l, m, n) = s * a(l, m, n-1); }
+}
+
+template<class T>
+rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::integralZ(T c) const
+{
+  rsTrivariatePolynomial<T> q(getDegreeX(), getDegreeY(), getDegreeZ()+1);
+  integralZ(coeffs, q.coeffs, c);
+  return q;
+}
+// needs test
+
+template<class T>
 template<class Ta, class Tb>
 rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::integralX(Ta a, Tb b) const
 {
@@ -3396,16 +3466,6 @@ rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::integralX(Ta a, Tb b) const
 }
 // needs test
 
-
-template<class T> 
-T rsTrivariatePolynomial<T>::tripleIntegralXYZ(T x0, T x1, T y0, T y1, T z0, T z1) const
-{
-  rsBivariatePolynomial<T>& ix = integralX(x0, x1);  // still a function of y and z
-  return ix.doubleIntegralXY(y0, y1, z0, z1);
-}
-// maybe have functions where only the innermost limits x0,x1 are constant, the middle limits 
-// y0,y1 are univariate polynomials in x and the outermost limits z0, z1 are bivariate polynomials
-// in x,y
 template<class T> 
 T rsTrivariatePolynomial<T>::pathIntegral(
   const rsTrivariatePolynomial<T>& fx, 
