@@ -3097,6 +3097,11 @@ public:
   // in x,y
 
 
+  static rsTrivariatePolynomial<T> potential(const rsTrivariatePolynomial<T>& px, 
+    const rsTrivariatePolynomial<T>& py, const rsTrivariatePolynomial<T>& pz);
+
+  // todo: vectorPotential
+
   static T pathIntegral(const rsTrivariatePolynomial<T>& fx, const rsTrivariatePolynomial<T>& fy, 
     const rsTrivariatePolynomial<T>& fz, const rsPolynomial<T>& x, const rsPolynomial<T>& y, 
     const rsPolynomial<T>& z, T a, T b);
@@ -3126,6 +3131,8 @@ public:
   static T outfluxIntegral(const rsTrivariatePolynomial<T>& fx, 
     const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz,
     T x0, T x1, T y0, T y1, T z0, T z1);
+
+
 
 
 
@@ -3465,6 +3472,26 @@ rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::integralX(Ta a, Tb b) const
   return Pb - Pa;
 }
 // needs test
+
+template<class T> 
+rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::potential(const rsTrivariatePolynomial<T>& px,
+  const rsTrivariatePolynomial<T>& py, const rsTrivariatePolynomial<T>& pz)
+{
+  rsTrivariatePolynomial<T> Px, Px_y, gyz_y, gyz, Pxy, Pxy_z, hz_z, hz, Pxyz;
+  Px    = px.integralX();      // integrate px with respect to x
+
+  Px_y  = Px.derivativeY();    // differentiate the result with respect to y
+  gyz_y = py - Px_y;           // d g(y,z) / dy
+  gyz   = gyz_y.integralY();   // g(y,z)
+  Pxy   = Px + gyz;
+
+  Pxy_z = Pxy.derivativeZ();
+  hz_z  = pz - Pxy_z;          // d h(z) / dz
+  hz    = hz_z.integralZ();    // h(z)
+  Pxyz  = Pxy + hz;
+
+  return Pxyz;
+}
 
 template<class T> 
 T rsTrivariatePolynomial<T>::pathIntegral(
