@@ -3012,7 +3012,7 @@ public:
   rsTrivariatePolynomial<T> operator-(const rsTrivariatePolynomial<T>& p) const
   { rsTrivariatePolynomial<T> r; weightedSum(*this, T(1), p, T(-1), r); return r; }
 
-
+  rsTrivariatePolynomial<T> operator*(const rsTrivariatePolynomial<T>& p) const;
 
   static rsPolynomial<T> compose(const rsTrivariatePolynomial<T>& p,
     const rsPolynomial<T>& x, const rsPolynomial<T>& y, const rsPolynomial<T>& z);
@@ -3025,6 +3025,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Calculus
 
+  // todo: use pointers for output parameters
+
   static void derivativeX(const rsMultiArray<T>& c, rsMultiArray<T>& d);
   rsTrivariatePolynomial<T> derivativeX() const;
 
@@ -3034,6 +3036,10 @@ public:
   static void derivativeZ(const rsMultiArray<T>& c, rsMultiArray<T>& d);
   rsTrivariatePolynomial<T> derivativeZ() const;
 
+  static void gradient(const rsTrivariatePolynomial<T>& f, rsTrivariatePolynomial<T>& f_x, 
+    rsTrivariatePolynomial<T>& f_y, rsTrivariatePolynomial<T>& f_z)
+  { f_x = f.derivativeX(); f_y = f.derivativeY(); f_z = f.derivativeZ(); }
+
   static rsTrivariatePolynomial<T> divergence(const rsTrivariatePolynomial<T>& fx, 
     const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz)
   { return fx.derivativeX() + fy.derivativeY() + fz.derivativeZ(); }
@@ -3041,6 +3047,12 @@ public:
   static void curl(const rsTrivariatePolynomial<T>& fx, const rsTrivariatePolynomial<T>& fy, 
     const rsTrivariatePolynomial<T>& fz, rsTrivariatePolynomial<T>& cx, 
     rsTrivariatePolynomial<T>& cy, rsTrivariatePolynomial<T>& cz);
+
+  rsTrivariatePolynomial<T> laplacian()
+  {
+    return derivativeX().derivativeX() + derivativeY().derivativeY() + derivativeZ().derivativeZ();
+  }
+  // todo: implement computing the 2nd partial derivatives in one go -> optimization
 
 
 
@@ -3058,7 +3070,7 @@ public:
 
 
 
-  // todo: Laplacian
+
 
 
 
@@ -3160,6 +3172,36 @@ rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::evaluateX(T x) const
 }
 
 // arithmetic:
+
+template<class T>
+void rsConvolve3D(const rsMultiArray<T>& x, const rsMultiArray<T>& h, rsMultiArray<T>& y)
+{
+  int Lx = x.getExtent(0), Mx = x.getExtent(1), Nx = x.getExtent(2);
+  int Lh = h.getExtent(0), Mh = h.getExtent(1), Nh = h.getExtent(2);
+  int Ly = Lx + Lh - 1,    My = Mx + Mh - 1,    Ny = Nx + Nh - 1;
+  y.setShape({Ly, My, Ny});
+  for(int l = 0; l < Ly; l++) {
+    for(int m = 0; m < My; m++) {
+      for(int n = 0; n < Ny; n++) {
+        T s = T(0);
+        for(int i = rsMax(0, l-Lx+1); i <= rsMin(Lh-1, l); i++) {
+          for(int j = rsMax(0, m-Mx+1); j <= rsMin(Mh-1, m); j++) {
+            for(int k = rsMax(0, n-Nx+1); k <= rsMin(Nh-1, n); k++) {
+              s += h(i, j, k) * x(l-i, m-j, n-k); }}}
+        y(l, m, n) = s; }}}
+  int dummy = 0;
+}
+// needs tests
+// move to rsMultiArray ...how can this be implemented for general nD convolution?
+
+template<class T>
+rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::operator*(
+  const rsTrivariatePolynomial<T>& p) const
+{
+  rsTrivariatePolynomial<T> r;
+  rsConvolve3D(coeffs, p.coeffs, r.coeffs);
+  return r;
+}
 
 template<class T> 
 rsPolynomial<T> rsTrivariatePolynomial<T>::compose(const rsTrivariatePolynomial<T>& p,
@@ -3521,7 +3563,7 @@ T rsTrivariatePolynomial<T>::outfluxIntegral(const rsTrivariatePolynomial<T>& fx
 }
 // -optimize 
 // -create the BiPoly objects only once and re-assign the coeffs -> less allocation
-// -remove the fz0, etc variables - directly add intermediated results into an accumulator
+// -remove the fz0, etc variables - directly add intermediate results into an accumulator
 
 
 // ToDo:
