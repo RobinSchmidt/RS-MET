@@ -3043,15 +3043,20 @@ public:
 
   // todo: use pointers for output parameters
 
-  static void derivativeX(const rsMultiArray<T>& c, rsMultiArray<T>& d);
+  /** Returns the derivative with respect to x. */
   rsTrivariatePolynomial<T> derivativeX() const;
+  static void derivativeX(const rsMultiArray<T>& c, rsMultiArray<T>& d);
 
-  static void derivativeY(const rsMultiArray<T>& c, rsMultiArray<T>& d);
+  /** Returns the derivative with respect to y. */
   rsTrivariatePolynomial<T> derivativeY() const;
+  static void derivativeY(const rsMultiArray<T>& c, rsMultiArray<T>& d);
 
-  static void derivativeZ(const rsMultiArray<T>& c, rsMultiArray<T>& d);
+  /** Returns the derivative with respect to z. */
   rsTrivariatePolynomial<T> derivativeZ() const;
+  static void derivativeZ(const rsMultiArray<T>& c, rsMultiArray<T>& d);
 
+  /** Given a scalar field f(x,y,z), this function computes the 3 partial derivatives with respect 
+  to x,y,z and assigns them to f_x,f_y,f_z. */
   static void gradient(const rsTrivariatePolynomial<T>& f, rsTrivariatePolynomial<T>& f_x, 
     rsTrivariatePolynomial<T>& f_y, rsTrivariatePolynomial<T>& f_z)
   { f_x = f.derivativeX(); f_y = f.derivativeY(); f_z = f.derivativeZ(); }
@@ -3071,8 +3076,6 @@ public:
   // todo: implement computing the 2nd partial derivatives in one go -> optimization
 
 
-
-
   static void integralX(const rsMultiArray<T>& a, rsMultiArray<T>& ai, T c = T(0));
   rsTrivariatePolynomial<T> integralX(T c = T(0)) const;
 
@@ -3083,19 +3086,10 @@ public:
   rsTrivariatePolynomial<T> integralZ(T c = T(0)) const;
 
 
-
   template<class Ta, class Tb>
   rsBivariatePolynomial<T> integralX(Ta a, Tb b) const;
 
-
-
-
-
-
-
-
-
-
+  // todo: integralY(Ta a, Tb b), integralZ(Ta a, Tb b) -> copy,paste,edit
 
 
 
@@ -3118,7 +3112,7 @@ public:
   here - if you want to adopt it, you need to add the minus yourself. The necessarry and sufficient
   condition for a scalar potential to exist is that the given vector field must have zero curl. The
   function assumes this condition to hold for f,g,h. If it doesn't hold, the computed result is 
-  meaningless. 
+  meaningless. A scalar potential is unique up to some constant.
   https://en.wikipedia.org/wiki/Scalar_potential  */ 
   static rsTrivariatePolynomial<T> scalarPotential(const rsTrivariatePolynomial<T>& f, 
     const rsTrivariatePolynomial<T>& g, const rsTrivariatePolynomial<T>& h);
@@ -3128,22 +3122,27 @@ public:
   field. A vector potential is another vector field whose curl gives the original vector field. 
   The necessarry and sufficient condition for a vector potential to exist is that the given vector
   field must have zero divergence. The function assumes this condition to hold for f,g,h. If it 
-  doesn't hold, the computed result is meaningless. 
+  doesn't hold, the computed result is meaningless. A vector potential is only unqiue up to some
+  vector field whose curl is zero. That means, given a vector potential for f,g,h, you can add any
+  curl-free (i.e. conservative) vector field to it and it will still be a vector potential for 
+  f,g,h. This leaves a lot of freedom of choice how to define F,G,H. Some of the degrees of freedom
+  are used here to set H(x,y,z) to be identically zero. 
   https://en.wikipedia.org/wiki/Vector_potential  */
   static void vectorPotential(const rsTrivariatePolynomial<T>& f, 
     const rsTrivariatePolynomial<T>& g, const rsTrivariatePolynomial<T>& h, 
     rsTrivariatePolynomial<T>& F, rsTrivariatePolynomial<T>& G, rsTrivariatePolynomial<T>& H);
 
-
-
+  /** Computes the path integral of a vector field fx(x,y,z), fy(x,y,z), fz(x,y,z) over a path that
+  is given parametrically by 3 univariate polynomials x(t), y(t), z(t) where the parameter t runs 
+  from a to b. */
   static T pathIntegral(const rsTrivariatePolynomial<T>& fx, const rsTrivariatePolynomial<T>& fy, 
     const rsTrivariatePolynomial<T>& fz, const rsPolynomial<T>& x, const rsPolynomial<T>& y, 
     const rsPolynomial<T>& z, T a, T b);
 
-
+  /** Computes the path integral of a vector field fx(x,y,z), fy(x,y,z), fz(x,y,z) over a path that
+  is given by linear segments connecting the vertices in the given array of 3D points. */
   static T pathIntegral(const rsTrivariatePolynomial<T>& fx, const rsTrivariatePolynomial<T>& fy, 
     const rsTrivariatePolynomial<T>& fz, const std::vector<rsVector3D<T>>& path);
-
 
   /** Computes the flux of a vector field given by 3 functions fx(x,y,z), fy(x,y,z), fz(x,y,z)
   through a parametric surface patch given by x(u,v), y(u,v), z(u,v) where u and v run from u0 to
@@ -3165,9 +3164,11 @@ public:
   static T outfluxIntegral(const rsTrivariatePolynomial<T>& fx, 
     const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz,
     T x0, T x1, T y0, T y1, T z0, T z1);
-
-
-
+  // maybe rename to outfluxIntegralDirect, implement an outfluxIntegralViaDivergence and then
+  // outfluxIntegral becomes just an alias to the better algorithm ...maybe it could dispatch, if
+  // the choice of best algorithm is not always the same, so it becomes a meta-algorithm but then
+  // we would have to figure out under which conditions which algo is better...but probably, the 
+  // divergence-based algo is always better...i think...maybe
 
 
 
@@ -3472,7 +3473,6 @@ rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::integralZ(T c) const
   integralZ(coeffs, q.coeffs, c);
   return q;
 }
-// needs test
 
 template<class T>
 template<class Ta, class Tb>
@@ -3483,7 +3483,6 @@ rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::integralX(Ta a, Tb b) const
   rsBivariatePolynomial<T> Pa = P.evaluateX(a);
   return Pb - Pa;
 }
-// needs test
 
 template<class T> 
 rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::scalarPotential(
@@ -3512,7 +3511,7 @@ void rsTrivariatePolynomial<T>::vectorPotential(const rsTrivariatePolynomial<T>&
   const rsTrivariatePolynomial<T>& g, const rsTrivariatePolynomial<T>& h,
   rsTrivariatePolynomial<T>& F, rsTrivariatePolynomial<T>& G, rsTrivariatePolynomial<T>& H)
 {
-  rsAssert(hasVectorPotential(f, g, h));  // we need a tolerance
+  //rsAssert(hasVectorPotential(f, g, h));  // we need a tolerance
 
   using TriPoly = rsTrivariatePolynomial<T>;
   TriPoly fz   = f.integralZ();
@@ -3524,12 +3523,10 @@ void rsTrivariatePolynomial<T>::vectorPotential(const rsTrivariatePolynomial<T>&
 
   F = gz;                 // F(x,y,z) =  gz + b(x,y) where b(x,y) = 0
   G = a - fz;             // G(x,y,z) = -fz + a(x,y)
-  H = TriPoly(0,0,0);     // H(x,y,z) = 0
+  H = TriPoly(0,0,0);     // H(x,y,z) =  0
 }
 // -see VectorPotentials.txt in the RS-MET-Research codebase for derivation of the algo
 // -maybe get rid of the parameter H - client code may implicitly assume it to be zero
-// -move into class
-// -maybe make some more tests
 // -maybe give the user more choices with respect to the free choices that can be made, such as
 //  setting H(x,y,z) = 0, b(x,y) = 0, see:
 //  https://en.wikipedia.org/wiki/Gauge_fixing
