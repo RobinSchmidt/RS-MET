@@ -2984,6 +2984,15 @@ public:
 
   bool isZero(T tolerance) const { return coeffs.isAllZeros(tolerance); }
 
+  /** Returns true, iff the vector field represented by the 3 trivariate functions 
+  fx(x,y,z), fy(x,y,z), fz(x,y,z) has a vector potential, i.e. a vector field whose curl is given
+  by fx, fy, fz. The necessarry and sufficient condition for such a vector potential to exist is 
+  that the divergence of fx, fy, fz must be zero. @see vectorPotential. */
+  static bool hasVectorPotential(const rsTrivariatePolynomial<T>& fx, 
+    const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz, T tolerance = T(0))
+  { return divergence(fx, fy, fz).isZero(tolerance); }
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Evaluation
 
@@ -3101,10 +3110,31 @@ public:
   // in x,y
 
 
-  static rsTrivariatePolynomial<T> potential(const rsTrivariatePolynomial<T>& px, 
-    const rsTrivariatePolynomial<T>& py, const rsTrivariatePolynomial<T>& pz);
+  /** Given a vector field represented by the 3 trivariate functions f(x,y,z), g(x,y,z), h(x,y,z),
+  this function computes a scalar potential P(x,y,z) for the given vector field. A scalar
+  potential (often just called unqualified "potential") is a scalar field whose gradient gives the 
+  original vector field. Note that sometimes (especially in physics) the convention is used that 
+  the negative gradient instead of the gradient itself is used. This convention is not adopted 
+  here - if you want to adopt it, you need to add the minus yourself. The necessarry and sufficient
+  condition for a scalar potential to exist is that the given vector field must have zero curl. The
+  function assumes this condition to hold for f,g,h. If it doesn't hold, the computed result is 
+  meaningless. 
+  https://en.wikipedia.org/wiki/Scalar_potential  */ 
+  static rsTrivariatePolynomial<T> scalarPotential(const rsTrivariatePolynomial<T>& f, 
+    const rsTrivariatePolynomial<T>& g, const rsTrivariatePolynomial<T>& h);
 
-  // todo: vectorPotential
+  /** Given a vector field represented by the 3 trivariate functions f(x,y,z), g(x,y,z), h(x,y,z),
+  this function computes a vector potential F(x,y,z), G(x,y,z), H(x,y,z) for the given vector 
+  field. A vector potential is another vector field whose curl gives the original vector field. 
+  The necessarry and sufficient condition for a vector potential to exist is that the given vector
+  field must have zero divergence. The function assumes this condition to hold for f,g,h. If it 
+  doesn't hold, the computed result is meaningless. 
+  https://en.wikipedia.org/wiki/Vector_potential  */
+  static void vectorPotential(const rsTrivariatePolynomial<T>& f, 
+    const rsTrivariatePolynomial<T>& g, const rsTrivariatePolynomial<T>& h, 
+    rsTrivariatePolynomial<T>& F, rsTrivariatePolynomial<T>& G, rsTrivariatePolynomial<T>& H);
+
+
 
   static T pathIntegral(const rsTrivariatePolynomial<T>& fx, const rsTrivariatePolynomial<T>& fy, 
     const rsTrivariatePolynomial<T>& fz, const rsPolynomial<T>& x, const rsPolynomial<T>& y, 
@@ -3456,8 +3486,9 @@ rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::integralX(Ta a, Tb b) const
 // needs test
 
 template<class T> 
-rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::potential(const rsTrivariatePolynomial<T>& px,
-  const rsTrivariatePolynomial<T>& py, const rsTrivariatePolynomial<T>& pz)
+rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::scalarPotential(
+  const rsTrivariatePolynomial<T>& px, const rsTrivariatePolynomial<T>& py, 
+  const rsTrivariatePolynomial<T>& pz)
 {
   rsTrivariatePolynomial<T> Px, Px_y, gyz_y, gyz, Pxy, Pxy_z, hz_z, hz, Pxyz;
   Px    = px.integralX();      // integrate px with respect to x
@@ -3474,6 +3505,37 @@ rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::potential(const rsTrivariat
 
   return Pxyz;
 }
+// maybe use rsAssert(hasScalarPotential(px, py, pz)); ..but with tolerance
+
+template<class T> 
+void rsTrivariatePolynomial<T>::vectorPotential(const rsTrivariatePolynomial<T>& f,
+  const rsTrivariatePolynomial<T>& g, const rsTrivariatePolynomial<T>& h,
+  rsTrivariatePolynomial<T>& F, rsTrivariatePolynomial<T>& G, rsTrivariatePolynomial<T>& H)
+{
+  rsAssert(hasVectorPotential(f, g, h));  // we need a tolerance
+
+  using TriPoly = rsTrivariatePolynomial<T>;
+  TriPoly fz   = f.integralZ();
+  TriPoly gz   = g.integralZ();
+  TriPoly fz_x = fz.derivativeX();
+  TriPoly gz_y = gz.derivativeY();
+  TriPoly a_x  = h + fz_x + gz_y;
+  TriPoly a    = a_x.integralX();
+
+  F = gz;                 // F(x,y,z) =  gz + b(x,y) where b(x,y) = 0
+  G = a - fz;             // G(x,y,z) = -fz + a(x,y)
+  H = TriPoly(0,0,0);     // H(x,y,z) = 0
+}
+// -see VectorPotentials.txt in the RS-MET-Research codebase for derivation of the algo
+// -maybe get rid of the parameter H - client code may implicitly assume it to be zero
+// -move into class
+// -maybe make some more tests
+// -maybe give the user more choices with respect to the free choices that can be made, such as
+//  setting H(x,y,z) = 0, b(x,y) = 0, see:
+//  https://en.wikipedia.org/wiki/Gauge_fixing
+//  https://en.wikipedia.org/wiki/Magnetic_vector_potential#Gauge_choices
+//  https://www.reed.edu/physics/faculty/wheeler/documents/Electrodynamics/Class%20Notes/Chapter%204.pdf
+
 
 template<class T> 
 T rsTrivariatePolynomial<T>::pathIntegral(
