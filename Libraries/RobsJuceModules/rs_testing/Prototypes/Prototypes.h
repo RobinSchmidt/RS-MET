@@ -3693,12 +3693,34 @@ T rsTrivariatePolynomial<T>::outfluxIntegral(const rsTrivariatePolynomial<T>& fx
 // -create the BiPoly objects only once and re-assign the coeffs -> less allocation
 // -remove the fz0, etc variables - directly add intermediate results into an accumulator
 
-
 // ToDo:
-// -compute potential and vector-potential
-// -transformed integrals (using the determinant of the Jacobian matrix)
-// -constrained optimization via Lagrange multipliers (maybe)
-// -Legendre transform (maybe)
+// -path and surface integrals over scalar fields, restricted to paths and surfaces parametrized by 
+//  (bi)linear functions, such that the factor for the differential path- or surface element 
+//  becomes a constant (only in this case, we can evade the annoying square-root in the integrand). 
+//  ..but what would be the interpretation of path integrals over scalar fields in 3D - does it 
+//  even make sense? if not, implement only surface integrals. i think, it would somehow be the 
+//  amount of 3D space between the (x,y,z)-space and the swept out line - whatever that means - by 
+//  analogy with "curtain" interpretation of 2D path integrals over 2D scalar fields. the 
+//  interpretation of surface integrals is: if the scalar field gives a mass-density per unit area,
+//  the integral computes the total mass of a thin shell...where we are restricted to planar 
+//  "shells" due to the pesky square-root problem - which is perhaps not very interesting, but for
+//  completeness
+// -transformed (volume) integrals (using the determinant of the Jacobian matrix) - needs perhaps 
+//  also be restricted to linear transformations because of the inverse transformations that occurs
+//  in the adjustment of the integration limits - (i think) we would then be able to integrate over 
+//  general parallelepipeds instead of just axis-aligned cuboids
+//  https://www.youtube.com/watch?v=geJ-36mnZ1I
+// -constrained optimization via Lagrange multipliers (maybe - but how?)
+// -Legendre transform (maybe) - nope, not possible because it involves inverse functions
+// -for vector potentials:
+//  -let user choose a divergence
+//   -we need a function to create a gradient field with a given divergence, so we need a field 
+//    whose Laplacian is zero and whose divergence is as given
+//   -then, compute the actual divergence of the simple vector potential, obtain the difference 
+//    with the desired divergence and add the gradient field that has as divergence this difference
+//   -if divergence is zero, the vector potential itself has a vector potential
+//  -can we choose the vector potential such that its Laplacian is zero? this would imply that we 
+//   can find a scalar potential for it. ...probably not
 
 //=================================================================================================
 
