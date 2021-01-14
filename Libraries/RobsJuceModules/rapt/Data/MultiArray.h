@@ -138,6 +138,11 @@ public:
   /** Returns a pointer to the data for read and write access as a flat array. */
   T* getDataPointer() { return dataPointer; }
 
+  /** Returns true, iff all elements ar close to zero within a given tolerance, which is zero by 
+  default. */
+  bool isAllZeros(T tolerance = T(0)) const
+  { return rsArrayTools::isAllZeros(dataPointer, getSize(), tolerance); }
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Element Access */
@@ -237,8 +242,8 @@ public:
   /** Scales all elements by a given factor. */
   void scale(T factor) { rsArrayTools::scale(dataPointer, getSize(), factor); }
 
-
-
+  /** Negates all elements. */
+  void negate() { rsArrayTools::negate(dataPointer, dataPointer, getSize()); }
 
   // maybe factor out common code with rsMatrixView into a class rsArrayView which serves as 
   // baseclass for both - a general "view" class for any sort of array, i.e. homogeneous data 
@@ -533,6 +538,12 @@ public:
   { return !(*this == B); }
 
 
+  /** Convolves the two arrays x and h which are assumed to be 3-dimensional (i.e. have 3 indices) 
+  and stores the result in y. */
+  static void convolve3D(const rsMultiArray<T>& x, const rsMultiArray<T>& h, rsMultiArray<T>& y);
+
+
+
 protected:
 
   /** Updates the data-pointer inherited from rsMultiArrayView to point to the begin of our 
@@ -554,5 +565,27 @@ protected:
 template<class T>
 inline rsMultiArray<T> operator*(const T& s, const rsMultiArray<T>& A)
 { rsMultiArray<T> B(A); B.scale(s); return B; }
+
+template<class T>
+void rsMultiArray<T>::convolve3D(const rsMultiArray<T>& x, const rsMultiArray<T>& h, 
+  rsMultiArray<T>& y)
+{
+  rsAssert(x.getNumIndices() == 3 && h.getNumIndices() == 3, "x and h must be 3-dimensional");
+  int Lx = x.getExtent(0), Mx = x.getExtent(1), Nx = x.getExtent(2);
+  int Lh = h.getExtent(0), Mh = h.getExtent(1), Nh = h.getExtent(2);
+  int Ly = Lx + Lh - 1,    My = Mx + Mh - 1,    Ny = Nx + Nh - 1;
+  y.setShape({Ly, My, Ny});
+  for(int l = 0; l < Ly; l++) {
+    for(int m = 0; m < My; m++) {
+      for(int n = 0; n < Ny; n++) {
+        T s = T(0);
+        for(int i = rsMax(0, l-Lx+1); i <= rsMin(Lh-1, l); i++) {
+          for(int j = rsMax(0, m-Mx+1); j <= rsMin(Mh-1, m); j++) {
+            for(int k = rsMax(0, n-Nx+1); k <= rsMin(Nh-1, n); k++) {
+              s += h(i, j, k) * x(l-i, m-j, n-k); }}}
+        y(l, m, n) = s; }}}
+}
+// How can general nD convolution be implemented?
+
 
 #endif

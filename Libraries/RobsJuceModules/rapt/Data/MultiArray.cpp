@@ -1,7 +1,4 @@
 
-
-
-
 /*
 
 Notes and Ideas:

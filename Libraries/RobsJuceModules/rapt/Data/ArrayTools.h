@@ -483,10 +483,12 @@ public:
   template<class T>
   static T interpolateClamped(const T *buffer, int length, double position);
 
-  /** Returns true, if the passed buffer has only zero values, false otherwise. */
+  /** Returns true, iff the passed buffer has only zero values. */
   template <class T>
   static inline bool isAllZeros(const T *buffer, int length);
 
+  /** Returns true, iff the passed buffer has only values close to zero within the given 
+  tolerance. */
   template <class T>
   static inline bool isAllZeros(const T *buffer, int length, T tolerance);
 

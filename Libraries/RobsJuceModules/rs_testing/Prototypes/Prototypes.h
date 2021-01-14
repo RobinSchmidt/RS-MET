@@ -2982,6 +2982,8 @@ public:
   int getDegreeY() const { return coeffs.getExtent(1)-1; }
   int getDegreeZ() const { return coeffs.getExtent(2)-1; }
 
+  bool isZero(T tolerance) const { return coeffs.isAllZeros(tolerance); }
+
   //-----------------------------------------------------------------------------------------------
   // \name Evaluation
 
@@ -3023,6 +3025,8 @@ public:
 
   bool operator==(const rsTrivariatePolynomial<T>& p) const
   { return coeffs == p.coeffs; }
+
+  void negate() { coeffs.negate(); }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -3196,33 +3200,11 @@ rsBivariatePolynomial<T> rsTrivariatePolynomial<T>::evaluateX(T x) const
 // arithmetic:
 
 template<class T>
-void rsConvolve3D(const rsMultiArray<T>& x, const rsMultiArray<T>& h, rsMultiArray<T>& y)
-{
-  rsAssert(x.getNumIndices() == 3 && h.getNumIndices() == 3, "x and h must be 3-dimensional");
-  int Lx = x.getExtent(0), Mx = x.getExtent(1), Nx = x.getExtent(2);
-  int Lh = h.getExtent(0), Mh = h.getExtent(1), Nh = h.getExtent(2);
-  int Ly = Lx + Lh - 1,    My = Mx + Mh - 1,    Ny = Nx + Nh - 1;
-  y.setShape({Ly, My, Ny});
-  for(int l = 0; l < Ly; l++) {
-    for(int m = 0; m < My; m++) {
-      for(int n = 0; n < Ny; n++) {
-        T s = T(0);
-        for(int i = rsMax(0, l-Lx+1); i <= rsMin(Lh-1, l); i++) {
-          for(int j = rsMax(0, m-Mx+1); j <= rsMin(Mh-1, m); j++) {
-            for(int k = rsMax(0, n-Nx+1); k <= rsMin(Nh-1, n); k++) {
-              s += h(i, j, k) * x(l-i, m-j, n-k); }}}
-        y(l, m, n) = s; }}}
-  int dummy = 0;
-}
-// needs tests
-// move to rsMultiArray ...how can this be implemented for general nD convolution?
-
-template<class T>
 rsTrivariatePolynomial<T> rsTrivariatePolynomial<T>::operator*(
   const rsTrivariatePolynomial<T>& p) const
 {
   rsTrivariatePolynomial<T> r;
-  rsConvolve3D(coeffs, p.coeffs, r.coeffs);
+  rsMultiArray<T>::convolve3D(coeffs, p.coeffs, r.coeffs);
   return r;
 }
 
