@@ -233,6 +233,7 @@ public:
   // implementation for the general case (which is not yet ready)
   // -maybe make versions that leave out the check against < 0 - typically, this will be ensured 
   //  already by the caller (when a loop starts at 0), so the checks are superfluous
+  //  maybe name it getElementPaddedRight3D or PaddedHigh or HighPadded or similar
   
 
 

@@ -2310,6 +2310,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroPrototype.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\BivariatePolynomial.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Drawing.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2334,6 +2337,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ParticleSystem.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\PiecewisePolynomial.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Polygon.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2356,6 +2362,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Tensor.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\TrivariatePolynomial.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\FileWriting.cpp">
@@ -2476,6 +2485,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\ArrayTools.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Buffers.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Data.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Graphs.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\MatrixTools.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\MultiArray.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Data\Range.h"/>
@@ -3136,6 +3146,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroDesignerDigital.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroMapper.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FilterDesign\PoleZeroPrototype.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\BivariatePolynomial.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Drawing.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FiniteAutomaton.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Ideas.h"/>
@@ -3144,6 +3155,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\PartialDifferentialEquations.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ParticleBouncer.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ParticleSystem.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\PiecewisePolynomial.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Polygon.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Probability.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Projection3Dto2D.h"/>
@@ -3152,6 +3164,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SineParameterEstimator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Tensor.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\TrivariatePolynomial.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\FileWriting.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\PerformanceTestTools.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\TestTools\Utilities\TestInputCreation.h"/>

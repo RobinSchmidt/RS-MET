@@ -53,6 +53,13 @@ functions:
 
 where c(x) can be function of x but for simplicity, we can also set it to zero.
 
+wait: shouldn't a_x be a function of y,z and b_y a function of x,z only? Aren't
+they supposed to be constant with respect to the subscripted variable such that
+they vanish when being differentiated with respect to that variable? ...but 
+further above, a and b are both supposed to be functions of x,y. Does that 
+imply that a_x should depend only on y and b_y only on x? Hmmm - that's 
+confusing. However, the code based on the derivation above seems to work.
+
 -------------------------------------------------------------------------------
 
 Other choices:

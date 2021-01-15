@@ -3557,17 +3557,17 @@ void rsTrivariatePolynomial<T>::vectorPotential(const rsTrivariatePolynomial<T>&
 {
   //rsAssert(hasVectorPotential(f, g, h));  // we need a tolerance
 
-  using TriPoly = rsTrivariatePolynomial<T>;
-  TriPoly fz   = f.integralZ();
-  TriPoly gz   = g.integralZ();
-  TriPoly fz_x = fz.derivativeX();
-  TriPoly gz_y = gz.derivativeY();
-  TriPoly a_x  = h + fz_x + gz_y;
-  TriPoly a    = a_x.integralX();
+  using TP = rsTrivariatePolynomial<T>;
+  TP fz   = f.integralZ();
+  TP gz   = g.integralZ();
+  TP fz_x = fz.derivativeX();
+  TP gz_y = gz.derivativeY();
+  TP a_x  = h + fz_x + gz_y;
+  TP a    = a_x.integralX();
 
-  F = gz;                 // F(x,y,z) =  gz + b(x,y) where b(x,y) = 0
-  G = a - fz;             // G(x,y,z) = -fz + a(x,y)
-  H = TriPoly(0,0,0);     // H(x,y,z) =  0
+  F = gz;           // F(x,y,z) =  gz + b(x,y) where b(x,y) = 0
+  G = a - fz;       // G(x,y,z) = -fz + a(x,y)
+  H = TP(0,0,0);    // H(x,y,z) =  0
 }
 // -see VectorPotentials.txt in the Notes folder for derivation of the algo
 // -maybe get rid of the parameter H - client code may implicitly assume it to be zero

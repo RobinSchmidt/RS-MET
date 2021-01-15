@@ -16,7 +16,7 @@ our filter y (== yOld), then the tail of the forward pass is given by the expres
 
   t[n] = y * b^n
   
-where t[0] == y[N-1], where N is the toal number of input samples and counting starts at index 0. 
+where t[0] == y[N-1], where N is the total number of input samples and counting starts at index 0. 
 That means, the first tail sample is taken to be the final output sample of our filter. To that 
 tail, we now apply the filter running in reverse direction - the result we call s[n]. We get the 
 difference equation:
