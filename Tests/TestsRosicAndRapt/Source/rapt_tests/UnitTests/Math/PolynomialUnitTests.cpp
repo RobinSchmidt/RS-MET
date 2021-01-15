@@ -2079,10 +2079,15 @@ bool testTrivariatePolynomial()
   fz.fillRandomly(-3.0, +3.0, 3, true);
   TP::curl(fx, fy, fz, cx, cy, cz);             // obtain curl field c using f as vector potential
   TP::vectorPotential(cx, cy, cz, gx, gy, gz);  // construct vector potential g with same curl c
-  TP::curl(gx, gy, gz, fx, fy, fz);             // f is now the curl of g and should match c
-  tmp = cx - fx; ok &= tmp.isZero(tol);
-  tmp = cy - fy; ok &= tmp.isZero(tol);
-  tmp = cz - fz; ok &= tmp.isZero(tol);
+  ok &= TP::isVectorPotential(gx, gy, gz, cx, cy, cz, tol);
+
+  // obsolete soon due to using isVectorPotential:
+  //TP::curl(gx, gy, gz, fx, fy, fz);             // f is now the curl of g and should match c
+  //tmp = cx - fx; ok &= tmp.isZero(tol);
+  //tmp = cy - fy; ok &= tmp.isZero(tol);
+  //tmp = cz - fz; ok &= tmp.isZero(tol);
+
+
 
   // -maybe test, if we can add any conservative vector field to the vector potential with 
   //  destroying its vector potential property
@@ -2093,10 +2098,14 @@ bool testTrivariatePolynomial()
   fy = TP(1,1,1); fy.coeff(1,0,1) = 1;          // fx(x,y,z) = x*z
   fz = TP(1,1,1); fz.coeff(1,1,0) = 1;          // fz(x,y,z) = x*y
   TP::vectorPotential(fx, fy, fz, gx, gy, gz);
-  TP::curl(gx, gy, gz, cx, cy, cz);             // cx,cy,cz should equal fx,fy,fz
-  tmp = fx - cx; ok &= tmp.isZero(tol);
-  tmp = fy - cy; ok &= tmp.isZero(tol);
-  tmp = fz - cz; ok &= tmp.isZero(tol);
+  ok &= TP::isVectorPotential(gx, gy, gz, fx, fy, fz, tol);
+  // fails! due to rsMulitArray::areClosePadded - seems to work only when inputs have same shape
+
+  // obsolete soon due to using isVectorPotential:
+  //TP::curl(gx, gy, gz, cx, cy, cz);             // cx,cy,cz should equal fx,fy,fz
+  //tmp = fx - cx; ok &= tmp.isZero(tol);
+  //tmp = fy - cy; ok &= tmp.isZero(tol);
+  //tmp = fz - cz; ok &= tmp.isZero(tol);
 
 
 

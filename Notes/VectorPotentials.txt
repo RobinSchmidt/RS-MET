@@ -1,0 +1,118 @@
+Given a 3D vector field defined by the 3 trivariate functions:
+
+  f(x,y,z), g(x,y,z), h(x,y,z)
+
+we want to find another vector field:
+
+  F(x,y,z), G(x,y,z), H(x,y,z)
+
+such that the curl of F,G,H equals f,g,h. The field F,G,H is called the vector 
+potential of f,g,h. The necessarry and sufficient condition for such a vector 
+potential to exist is that the divergence of f,g,h is zero. From the definition
+of curl, we see that F,G,H must satisfy the 3 simultaneous equations:
+
+  f = H_y - G_z, g = F_z - H_x, h = G_x - F_y
+
+where H_y denotes the partial derivative of H with respect to y and so on 
+(subscripts, symbolized by the underscore _, denote partial derivatives).
+Vector potentials are not unique. We have some freedom of choice and we use it
+to set H(x,y,z) = const which simplifies the equation system to:
+
+  f = -G_z, g = F_z, h = G_x - F_y
+
+The f,g equations lead to:
+
+  G = -f^z + a(x,y), F = g^z + b(x,y)
+
+where we use the superscript notation, subolized by the caret ^, to denote 
+integration ("antidifferentiation") with respect to the superscripted 
+variable, so f^z is f integrated with respect to z. With a(x,y), b(x,y), we
+denote the integration "constants". They are constant only with respect 
+to z but can still be functions of x and y. We can now compute the integrals 
+f^z, g^z and are left with the task to figure out some appropriate integration
+constants a = a(x,y), b = b(x,y) such that the third equation is satisfied:
+
+  h = G_x - F_y 
+    = (-f^z + a)_x - (g^z + b)_y 
+    = (-f^z)_x + a_x - (g^z)_y + b_y
+  
+  h + f^z_x + g^z_y = a_x + b_y
+
+This is one equation for the two unknown functions a_x, b_y. We have a 
+again some freedom of choice and use it to set b_y = 0 which determines our
+integration constants as:
+
+  a_x = h + f^z_x + g^z_y
+  b_y = 0
+
+Integrating a_x with respect to x and b_y with respect to y gives our desired
+functions:
+
+  a = a(x,y) = a_x^x = (h + f^z_x + g^z_y)^x
+  b = b(x,y) = b_y^y = 0^y = c(x)
+
+where c(x) can be function of x but for simplicity, we can also set it to zero.
+
+-------------------------------------------------------------------------------
+
+Other choices:
+
+We may want the divergence of F,G,H to be zero. In this case, we have the 
+additional equation:
+
+  F_x + G_y + H_z = 0
+
+hmm...if we keep using H = const, we would have H_z = 0, so F_x = - G_y, so:
+
+  h = G_x - F_y = 2*G_x
+
+we still need to satisfy:
+
+  h + f^z_x + g^z_y = a_x + b_y
+
+maybe with a more symmetric choice like:
+
+  a_x = h/2 + f^z_x
+  b_y = h/2 + g^z_y
+  
+or:
+
+  a_x = h/2 + g^z_y
+  b_y = h/2 + f^z_x
+
+or:
+
+  a_x = (h + f^z_x + g^z_y)/2
+  b_y = (h + f^z_x + g^z_y)/2
+
+we could get somewhere?
+
+-------------------------------------------------------------------------------
+
+Creating a gradient field with a given divergence. The idea is to obtain the 
+difference between a desired divergence and the divergence of the field 
+created by the algo above and then add a gradient field to it that has the
+difference-divergence. That way, we may create a vector potential with any 
+desired divergence - often zero is a convenient choice
+
+A gradient field must satisfy the Laplace equation. In addition to that, we 
+require the divergence to be given by a specific function. So, we are looking 
+for a vector field f,g,h that simultaneously satisfies:
+
+  f_xx + g_yy + h_zz = 0            Laplace equation
+  f_x  + g_y  + h_z  = d(x,y,z)     Divergence is specified by d(x,y,z)
+
+Can we set h = 0? Let's try it:
+
+  f_xx + g_yy = 0
+  f_x  + g_y  = d
+  
+  f_x = d - g_y
+  f   = (d - g_y)^x + a(y)
+
+
+
+
+needs to be tested
+see:
+http://galileo.math.siu.edu/Courses/251/S12/vpot.pdf

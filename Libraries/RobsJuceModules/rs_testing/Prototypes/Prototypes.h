@@ -2931,6 +2931,14 @@ void rsBivariatePolynomial<T>::polyaVectorField(const rsPolynomial<std::complex<
 // -implement differentiation of implictit function (Kaprfinger, pg. 560)
 // -implement differential operators in polar-coordinates (needs bivariate rational function for
 //  the 1/r factor)
+// -can we compute path integrals along circular or elliptic arcs? their parametric description 
+//  involves sin/cos but their implicit description is polynomial. the explicit description as
+//  y = f(x) involves the sqrt - but maybe we can somehow evade this by integrating not with 
+//  respect to x but with respect to x^2 - maybe this can help:
+//  https://en.wikipedia.org/wiki/Riemann%E2%80%93Stieltjes_integral
+//  -figure out first, if the result is actually a polynomial (when one or both limits are left as
+//   free parameters)...well...nope...i think, that can't be the case - arc lengths are in general
+//   transcendental numbers
 
 
 //=================================================================================================
@@ -2984,6 +2992,8 @@ public:
 
   bool isZero(T tolerance) const { return coeffs.isAllZeros(tolerance); }
 
+  bool isCloseTo(const rsTrivariatePolynomial<T>& p, T tol) const;
+
   /** Returns true, iff the vector field represented by the 3 trivariate functions 
   fx(x,y,z), fy(x,y,z), fz(x,y,z) has a vector potential, i.e. a vector field whose curl is given
   by fx, fy, fz. The necessarry and sufficient condition for such a vector potential to exist is 
@@ -2991,6 +3001,13 @@ public:
   static bool hasVectorPotential(const rsTrivariatePolynomial<T>& fx, 
     const rsTrivariatePolynomial<T>& fy, const rsTrivariatePolynomial<T>& fz, T tolerance = T(0))
   { return divergence(fx, fy, fz).isZero(tolerance); }
+
+  /** Checks whether F,G,H is a vector potential for f,g,h. */
+  static bool isVectorPotential(const rsTrivariatePolynomial<T>& F, 
+    const rsTrivariatePolynomial<T>& G, const rsTrivariatePolynomial<T>& H, 
+    const rsTrivariatePolynomial<T>& f, const rsTrivariatePolynomial<T>& g, 
+    const rsTrivariatePolynomial<T>& h, T tolerance = T(0));
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -3181,8 +3198,8 @@ public:
   /** Read access to the (i,j)th coefficient. */
   //const T& coeff(int i, int j) const { return coeffs(i, j); }
 
-  //T getCoeffPadded(int i, int j, T padding = T(0)) const 
-  //{ return coeffs.getElementPadded(i, j, padding); }
+  T getCoeffPadded(int i, int j, int k, T padding = T(0)) const 
+  { return coeffs.getElementPadded3D(i, j, k, padding); }
 
 
 protected:
@@ -3191,6 +3208,33 @@ protected:
   rsMultiArray<T> coeffs;
 
 };
+
+// inquiry:
+
+template<class T>
+bool rsTrivariatePolynomial<T>::isCloseTo(const rsTrivariatePolynomial<T>& p, T tol) const
+{
+  int L = rsMax(getDegreeX(), p.getDegreeX());
+  int M = rsMax(getDegreeY(), p.getDegreeY());
+  int N = rsMax(getDegreeZ(), p.getDegreeZ());
+  for(int i = 0; i <= L; i++)
+    for(int j = 0; j <= M; j++)
+      for(int k = 0; k <= N; k++)
+        if( rsAbs( getCoeffPadded(i,j,k) - p.getCoeffPadded(i,j,k)) > tol )
+          return false;
+  return true;
+}
+
+template<class T>
+bool rsTrivariatePolynomial<T>::isVectorPotential(const rsTrivariatePolynomial<T>& F,
+  const rsTrivariatePolynomial<T>& G, const rsTrivariatePolynomial<T>& H,
+  const rsTrivariatePolynomial<T>& f, const rsTrivariatePolynomial<T>& g,
+  const rsTrivariatePolynomial<T>& h, T tol)
+{
+  rsTrivariatePolynomial<T> cx, cy, cz; // components of curl of F,G,H
+  curl(F, G, H, cx, cy, cz);
+  return f.isCloseTo(cx, tol) && g.isCloseTo(cy, tol) && h.isCloseTo(cz, tol);
+}
 
 // evaluation:
 
@@ -3525,7 +3569,7 @@ void rsTrivariatePolynomial<T>::vectorPotential(const rsTrivariatePolynomial<T>&
   G = a - fz;             // G(x,y,z) = -fz + a(x,y)
   H = TriPoly(0,0,0);     // H(x,y,z) =  0
 }
-// -see VectorPotentials.txt in the RS-MET-Research codebase for derivation of the algo
+// -see VectorPotentials.txt in the Notes folder for derivation of the algo
 // -maybe get rid of the parameter H - client code may implicitly assume it to be zero
 // -maybe give the user more choices with respect to the free choices that can be made, such as
 //  setting H(x,y,z) = 0, b(x,y) = 0, see:
@@ -3720,7 +3764,9 @@ T rsTrivariatePolynomial<T>::outfluxIntegral(const rsTrivariatePolynomial<T>& fx
 //    with the desired divergence and add the gradient field that has as divergence this difference
 //   -if divergence is zero, the vector potential itself has a vector potential
 //  -can we choose the vector potential such that its Laplacian is zero? this would imply that we 
-//   can find a scalar potential for it. ...probably not
+//   can find a scalar potential for it. ...probably not - because the curl of a gradient is always 
+//   zero, so if we take the gradient of a scalar field (to get the vector potential) and then take 
+//   the curl of that to get our vector field, we would always get zero
 
 //=================================================================================================
 

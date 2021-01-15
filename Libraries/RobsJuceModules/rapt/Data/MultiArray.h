@@ -143,6 +143,57 @@ public:
   bool isAllZeros(T tolerance = T(0)) const
   { return rsArrayTools::isAllZeros(dataPointer, getSize(), tolerance); }
 
+  /** NOT YET READY FOR USE!!
+  Returns true, if the corresponding elements of the arrays x and y are all close to each other
+  up to some tolerance. Elements in one array that have no corresponding element in the other array
+  must be (close to) zero. In this sense, the arrays are assumed to be zero padded as needed. */
+  /*
+  static bool areClosePadded(const rsMultiArrayView<T>& x, const rsMultiArrayView<T>& y, 
+    T tol = T(0))
+  {
+    rsError("This seems to be still buggy - needs unit tests");
+    rsWarning("rsMultiArrayView::areClosePadded not yet tested");
+
+    int R = x.getNumIndices();
+    if(y.getNumIndices() != R)  {
+      rsError("x and y should have the same number of indices");
+      return false;
+    }
+    int size = rsMax(x.getSize(), y.getSize());
+    vector<int> ix(R), iy(R);                    // multiindices into x and y
+    for(int i = 0; i < size; i++)
+    {
+      x.structuredIndices(i, &ix[0]);
+      y.structuredIndices(i, &iy[0]);
+      int jx = x.flatIndexSafe(&ix[0]);          // flat index into x
+      int jy = y.flatIndexSafe(&iy[0]);          // flat index into y
+
+      if(jx == -1 && jy == -1)                   // jx, jy both invalid: nothing to check
+        continue;                                // ...can this actually happen?
+      else if(jx == -1) {
+        if(rsAbs(y.dataPointer[jy]) > tol)       // jx invalid: y[jy] must be zero
+          return false; }
+      else if(jy == -1) {
+        if(rsAbs(x.dataPointer[jx]) > tol)       // jy invalid: x[jx] must be zero
+          return false; }
+      else {                                     // both jx and jy are valid... 
+        T d = x.dataPointer[jx] - y.dataPointer[jy];
+        if(rsAbs(d) > tol)  // ...so x[jx] must match y[jy]
+          return false;  }
+    }
+    return true;
+  }
+  */
+  // nope! that's not how it works! the whole idea with the index structuring and destructuring is
+  // flawed!
+  // needs more tests - compare a 2x3 with a 3x2 matrix
+
+  /** NOT YET READY FOR USE!! */
+  //bool isCloseToPadded(const rsMultiArrayView<T> y, T tolerance = T(0)) const
+  //{ return areClosePadded(*this, y, tolerance); }
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Element Access */
@@ -158,6 +209,7 @@ public:
   { return dataPointer[flatIndex(0, i, rest...)]; }
 
 
+  /*
   template<typename... Rest>
   T getElementPadded(const int i, Rest... rest) const
   {
@@ -166,7 +218,22 @@ public:
       return T(0);
     return dataPointer[index];
   }
+  */
   // needs test
+
+
+  T getElementPadded3D(int i, int j, int k, T padding) const
+  {
+    rsAssert(shape.size() == 3, "Must be used only with 3D arrays");
+    if(i < 0 || i >= shape[0] || j < 0 || j >= shape[1] || k < 0 || k >= shape[2]) 
+      return T(0);
+    return (*this)(i, j, k);
+  }
+  // todo: make 1D and 2D versions - these may be more efficient than using the recursive 
+  // implementation for the general case (which is not yet ready)
+  // -maybe make versions that leave out the check against < 0 - typically, this will be ensured 
+  //  already by the caller (when a loop starts at 0), so the checks are superfluous
+  
 
 
   /*
@@ -314,8 +381,6 @@ protected:
 
   // Safe versions that check, if all the indices are within their proper range and returns -1, 
   // if any of them is not:
-
-
   /*
   template<typename... Rest>
   int flatIndexSafe(const int depth, const int i, Rest... rest) const
@@ -326,6 +391,7 @@ protected:
       return -1;
     return i1 + i2;
   }
+  // needs test
 
   int flatIndexSafe(const int depth, const int index) const
   {
@@ -333,6 +399,7 @@ protected:
       return -1;
     return index * strides[depth]; 
   }
+  // recursion base case
   */
 
   int flatIndexSafe(const int* indices) const
@@ -400,7 +467,7 @@ protected:
 
   std::vector<int> shape;     // maybe rename to extents
   std::vector<int> strides;
-  T* dataPointer = nullptr;   // rename to data
+  T* dataPointer = nullptr;   // rename to data or pData
   int size = 0;
 
   // todo: get rid of strides, let shape be a non-owned pointer to int, store size of the shapes 
