@@ -140,7 +140,52 @@ Can we set h = 0? Let's try it:
   f_x = d - g_y
   f   = (d - g_y)^x + a(y)
 
+-------------------------------------------------------------------------------
 
+Let's consider the 2D case first and let's be a bit more general by not 
+setting the Laplacian to zero but to some arbitrary polynomial L(x,y) and call 
+the divergence D(x,y). We have the two equations:
+
+  f_x  + g_y  = D
+  f_xx + g_yy = L
+
+Let's denote the coefficients of the matrices for the bivariate polynomials 
+f,g by a_ij, b_ij. Then, our two equations can be written in terms of the 
+coeffcients as:
+
+        i*a_ij +       j*b_ij = D_ij
+  (i-1)*i*a_ij + (j-1)*j*b_ij = L_ij
+
+where D_ij, L_ij are the polynomial coefficients of the divergence and 
+Laplacian. Let's solve the first equation for b_ij:
+
+  b_ij = (D_ij - i*a_ij) / j
+
+and plug the result into the second:
+
+  (i-1)*i*a_ij + (j-1)*(D_ij - i*a_ij) = L_ij
+
+and solve for a_ij:
+
+  (i-1)*i*a_ij + (j-1)*D_ij - (j-1)*(i*a_ij) = L_ij
+  (i-1)*i*a_ij - (j-1)*i*a_ij = L_ij - (j-1)*D_ij
+  ((i-1)-(j-1))*i * a_ij = L_ij - (j-1)*D_ij
+  
+  a_ij = (L_ij - (j-1)*D_ij) / (((i-1)-(j-1))*i)
+  
+That should be it - we can compute a_ij from the known D_ij and L_ij and once 
+we have them, we can compute b_ij by the equation further above. -> Try it!
+If it works, we can just set L_ij to all zeros, if we want a gradient field 
+with a given divergence. This should hopefully work for the 3D case, too. We 
+just have to use:
+
+  a_ijk = (L_ijk - (j-1)*D_ijk) / (((i-1)-(j-1))*i)
+  b_ijk = (D_ijk - i*a_ijk) / j
+
+What about the division by zero when i = j for the a_ijk and when j = 0 for the 
+b_ijk? How about defining a (2D) vector field not via divergence and Laplacian 
+but by divergence and (2D) curl or curl and Laplacian? Maybe the function could 
+be called divAndCurlToField, divAndLapToField, etc.
 
 
 needs to be tested
