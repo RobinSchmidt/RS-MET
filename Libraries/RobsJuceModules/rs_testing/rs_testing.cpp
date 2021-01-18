@@ -21,10 +21,13 @@ namespace RAPT
 #include "TestTools/Utilities/TestUtilities.cpp"
 #include "Prototypes/OscDrivers.cpp"
 #include "Prototypes/PartialDifferentialEquations.cpp"
-#include "Prototypes/Prototypes.cpp"
+
 #include "Prototypes/BivariatePolynomial.cpp"
 #include "Prototypes/TrivariatePolynomial.cpp"
 #include "Prototypes/PiecewisePolynomial.cpp"
+
+#include "Prototypes/Prototypes.cpp"
+
 #include "Prototypes/FiniteAutomaton.cpp"
 #include "Prototypes/ParticleBouncer.cpp"
 #include "Prototypes/ParticleSystem.cpp"

@@ -554,7 +554,40 @@ template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(const 
   int N, double fc, double bw, double fs, int order, int numPasses, double gc);
 
 
-
-
 //template class RAPT::rsSinusoidalSynthesizer<double>;
 //template class RAPT::rsHarmonicAnalyzer<double>;
+
+//=================================================================================================
+// Instantiations of (prototype) classes that are not (yet) in the RAPT namespace
+
+template class rsBivariatePolynomial<double>;
+template class rsBivariatePolynomial<std::complex<double>>;
+
+template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
+  rsPolynomial<double> a, rsPolynomial<double> b) const;
+//template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
+//  double a, double b) const;
+
+template rsPolynomial<double> rsBivariatePolynomial<double>::integralY(
+  rsPolynomial<double> a, rsPolynomial<double> b) const;
+template rsPolynomial<double> rsBivariatePolynomial<double>::integralY(
+  double a, rsPolynomial<double> b) const;
+template rsPolynomial<double> rsBivariatePolynomial<double>::integralY(
+  rsPolynomial<double> a, double b) const;
+//template rsPolynomial<double> rsBivariatePolynomial<double>::integralY(
+//  double a, double b) const;
+
+
+// get rid of these! they should not be needed! somewhere the integral functions must get called 
+// with integer a,b which should not be the case!! -> figure out where and fix it!:
+template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
+  int a, int b) const;  
+template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
+  rsPolynomial<double> a, int b) const;
+template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
+  int a, rsPolynomial<double> b) const;
+template rsPolynomial<double> rsBivariatePolynomial<double>::integralY(
+  int a, int b) const;  
+
+
+template class rsTrivariatePolynomial<double>;

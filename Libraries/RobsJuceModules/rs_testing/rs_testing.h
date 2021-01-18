@@ -43,11 +43,14 @@ namespace RAPT
 
 #include "Prototypes/OscDrivers.h"
 #include "Prototypes/PartialDifferentialEquations.h"
-#include "Prototypes/Prototypes.h"
 
 #include "Prototypes/BivariatePolynomial.h"
 #include "Prototypes/TrivariatePolynomial.h"
 #include "Prototypes/PiecewisePolynomial.h"
+
+#include "Prototypes/Prototypes.h"
+
+
 
 #include "TestTools/DSPPlotters.h"
 #include "TestTools/Plotting.h"
