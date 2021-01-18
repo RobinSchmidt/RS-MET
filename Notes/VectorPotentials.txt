@@ -153,8 +153,8 @@ Let's denote the coefficients of the matrices for the bivariate polynomials
 f,g by a_ij, b_ij. Then, our two equations can be written in terms of the 
 coeffcients as:
 
-        i*a_ij +       j*b_ij = D_ij
-  (i-1)*i*a_ij + (j-1)*j*b_ij = L_ij
+        i*a_ij +       j*b_ij = D_ij      i=1..M, j=1..N
+  (i-1)*i*a_ij + (j-1)*j*b_ij = L_ij      i=2..M, j=2..N
 
 where D_ij, L_ij are the polynomial coefficients of the divergence and 
 Laplacian. Let's solve the first equation for b_ij:
@@ -185,7 +185,58 @@ just have to use:
 What about the division by zero when i = j for the a_ijk and when j = 0 for the 
 b_ijk? How about defining a (2D) vector field not via divergence and Laplacian 
 but by divergence and (2D) curl or curl and Laplacian? Maybe the function could 
-be called divAndCurlToField, divAndLapToField, etc.
+be called divAndCurlToField, divAndLapToField, etc. Does this uniquely determine
+all coeffs? the equations are only valid for certain ranges of indices - what 
+about the other coeffs? can they be chosen freely?
+
+
+...wait - no: f_xx + g_yy is not the Laplacian! The Laplacian is defined for a 
+scalar field! We are actually looking for a scalar potential P(x,y) which 
+satisfies:
+
+  P_x  + P_y  = D
+  P_xx + P_yy = L
+
+in terms of coefficients, this means:
+
+        i*P_ij +       j*P_ij = D_ij           i=1..M, j=1..N
+  (i-1)*i*P_ij + (j-1)*j*P_ij = L_ij           i=2..M, j=2..N
+
+no - this is still wrong. If we can find a scalar field with a given divergence, 
+it's Laplacian it automatically zero - we have just one equation:
+
+  i*P_ij + j*P_ij = D_ij           i=1..M, j=1..N
+
+which we can easily solve for P_ij:
+
+  P_ij = D_ij / (i + j)           i=1..M, j=1..N
+
+no - still wrong: P_x and P_y is supposed to be our gradient field. To get 
+its divergence, we must differentiate once more (and add the results), so:
+
+  (i-1)*i*P_ij + (j-1)*j*P_ij = D_ij        i=2..M, j=2..N
+
+so:
+
+  P_ij = D_ij / (i*(i-1) + j*(j-1))         i=2..M, j=2..N
+
+i think, for i,j < 2, we can freely choose whatever we want. To get the desired
+vector field f,g we just take partial derivatives, i.e. the gradient of P
+...still wrong: we need to shift indices:
+
+  P_ij = D_{i-2,j-2} / (i*(i-1) + j*(j-1))         i=2..M, j=2..N
+
+M = D.degX, N = D.degY
+
+or like this?:
+
+  (i-1)*i*P_{i+2,j} + (j-1)*j*P_{i,j+2} = D_ij        i=2..M, j=2..N
+
+
+
+
+
+
 
 
 needs to be tested

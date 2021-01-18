@@ -220,6 +220,8 @@ public:
   // -the convention is that the potential's *NEGATIVE* gradient should give the original 
   //  functions back - here we take just the gradient - change that...we may need to ripple the 
   //  negation through to the getPolyaPotential
+  // -document how it can be easisly checked, if a potential exists - i think, the condition is 
+  //  px_x == py_y or similar
 
   /** The Polya vector field of an analytic complex function (such as a polynomial) is 
   conservative, so a potential exists for such a Polya vector field. This function computes that 
@@ -234,6 +236,10 @@ public:
 
   rsBivariatePolynomial<T> getLaplacian() const
   { return derivativeX().derivativeX() + derivativeY().derivativeY(); }
+  // rename to laplacian
+
+  // implement vector Laplacian:
+  // https://en.wikipedia.org/wiki/Laplace_operator#Two_dimensions
 
 
   static rsBivariatePolynomial<T> divergence2D(

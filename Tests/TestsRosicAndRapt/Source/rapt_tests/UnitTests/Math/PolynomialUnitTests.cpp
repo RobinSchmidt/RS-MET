@@ -1559,101 +1559,20 @@ bool testBivariatePolynomial()
   uni2 = p.evaluateX(uni);
   r &= uni2 == Poly({47,177,485,1098,1747,2375,2630,2064,1379,588});
 
+
+  // Test the construction of a potential and its gradient vector field from a given divergence:
+  BiPoly D = BiPoly(2, 3, {1,2,3,4, 5,6,7,8, 9,10,11,12});   // prescribed divergence
+  BiPoly P;
+  divergenceToPotential(D, P);                               // the scalar potential
+  BiPoly P_x = P.derivativeX();                              // x-component of vector field
+  BiPoly P_y = P.derivativeY();                              // y-component of vector field
+  BiPoly D2  = BiPoly::divergence2D(P_x, P_y);               // actual divergence of vector field
+  // this does not yet work!
+
   return r;
 }
 
-
-
-
-
-template<class T> 
-bool isHarmonic2(const rsBivariatePolynomial<T>& u, T tol = T(0))
-{
-  for(int m = 2; m <= u.getDegreeX(); m++) {
-    for(int n = 2; n <= u.getDegreeY(); n++) {
-      T c_xx = m * (m-1) * u.coeff(m  , n-2);   // coeff for x^(m-2) * y^(n-2) in u_xx
-      T c_yy = n * (n-1) * u.coeff(m-2, n  );   // coeff for x^(m-2) * y^(n-2) in u_yy
-      if(rsAbs(c_xx + c_yy) > tol)
-        return false;   }}
-  return true;
-}
-// -needs more tests
-// -if it works, maybe replace the old implementation in rsBivariatePolynomial - this here is more
-//  efficient
-// -make a function makeHarmonicY that assigns:
-//    u.coeff(m-2, n) = -m * (m-1) * u.coeff(m, n-2) / (n * (n-1))
-//  and a makeHarmonicX that assigns:
-//    u.coeff(m, n-2) = -n * (n-1) * u.coeff(m-2, n) / (m * (m-1))
-//  and maybe some sort of symmetric version that assigns both - the goal is always that 
-//  c_xx + c_yy = 0  ->  m * (m-1) * u[m, n-2] + n * (n-1) * u[m-2, n] = 0
-//  m * (m-1) * u[m, n-2] = -n * (n-1) * u[m-2, n]
-//  so:
-//    u[m, n-2] / u[m-2, n] = -(n*(n-1)) / (m*(m-1))
-//  i think, this is the general symmetry condition that the matrix for a harmonic polynomial must
-//  satisfy
-
-template<class T> 
-rsPolynomial<std::complex<T>> getComplexFromHarmonicUV(
-  const rsBivariatePolynomial<T>& u, const rsBivariatePolynomial<T>& v)
-{
-  rsAssert(rsBivariatePolynomial<T>::areHarmonicConjugates(u, v));
-  // fails: seems like ux == -vy where we should have ux == vy - there's some sign confusion: i 
-  // think P_y is not the harmonic conjugate of of P_x, -P_y is
-
-  /*
-  int M = rsMax(u.getDegreeX(), v.getDegreeX());
-  rsPolynomial<std::complex<T>> p(M);
-  for(int i = 0; i <= M; i++)
-  p[i] = std::complex<T>(u.getCoeffPadded(i, 0), v.getCoeffPadded(i, 0));
-  return p;
-  // seems like if v.degX > u.degX, the last coeff is zero anyway - more tests needed
-  */
-
-  int M = rsMin(u.getDegreeX(), v.getDegreeX());
-  rsPolynomial<std::complex<T>> p(M);
-  for(int i = 0; i <= M; i++)
-    p[i] = std::complex<T>(u.coeff(i, 0), v.coeff(i, 0));
-  return p;
-}
-// needs more tests - especially: why should the loop go only up to M and not max(M,N), where 
-// N = v.getDegreeX(), using a zero-padded accessor like getCoeffPadded(i, 0) for safe 
-// out-of-range access returning 0? ...or maybe the loop should go only up to min(M,N)
-
-template<class T> 
-void firstFundamentalForm(const rsBivariatePolynomial<T>& x, const rsBivariatePolynomial<T>& y,
-  const rsBivariatePolynomial<T>& z, rsBivariatePolynomial<T>& E, rsBivariatePolynomial<T>& F,
-  rsBivariatePolynomial<T>& G)
-{
-  using BiPoly = rsBivariatePolynomial<T>;
-  BiPoly x_u = x.derivativeX();     // dx/du
-  BiPoly x_v = x.derivativeY();     // dx/dv
-  BiPoly y_u = y.derivativeX();     // dy/du
-  BiPoly y_v = y.derivativeY();     // dy/dv
-  BiPoly z_u = z.derivativeX();     // dz/du
-  BiPoly z_v = z.derivativeY();     // dz/dv
-  E = x_u*x_u + y_u*y_u + z_u*z_u;
-  F = x_u*x_v + y_u*y_v + z_u*z_v;
-  G = x_v*x_v + y_v*y_v + z_v*z_v;
-}
-// see Weitz - Differentialgeometrie, p.154
-// -maybe make a function that takes as input an rsVector3D of rsBivariatePolynomial instead of 
-//  x,y,z separately
-// -are E,F,G the entries of J^T * J where J is the Jacobian and E*G - 2*F is its determinant?
-
-// todo: 
-// -consider parametric surfaces given by a triple of bivariate polynomials:
-//  x(u,v), y(u,v), z(u,v) (note that u,v are here the independent variables, i.e. the inputs to
-//  the 3 component polynomials, in the context of complex analysis, they were used for the real 
-//  and imaginary part of the function - don't get confused by this!)
-// -write a function to compute the first fundamental form coeffs E,F,G of the surface
-// -functions for principal curvatures, mean curvature and Gaussian curvature - these should
-//  all be bivariate polynomials again (if i'm not mistaken)
-// -circulation ond flux through a curve (path integrals over curl and divergence)
-// -maybe integral functions that take univariate polynomials for the integration limits
-
-
- 
-bool testBivariatePolynomial2() // move to unit tests
+bool testBivariatePolynomial2()
 {
   // We consider the complex polynomial f(z) = z^n - 1 which has as its roots the n n-th roots of 
   // unity. We want to find its Polya vector field and a potential function for that field
@@ -1761,8 +1680,8 @@ bool testBivariatePolynomial2() // move to unit tests
   // harmonic conjugate of v? or is -u the harmonic conjugate of v? this is what seems to come out
   // of the algorithm
 
-  // u(x,y) = 2*y^3 ? 6*x^2*y + 4*x^2 ? 7*x*y ? 4*y^2 + 3*x + 4*y ? 4
-  // v(x,y) = 2*x^3 + (7/2)*x^2 ? 6*x*y^2 + 8*x*y ? 4*x ? (7/2)*y^2 + 3*y
+  // u(x,y) = 2*y^3 ? 6*x^2*y + 4*x^2 + 7*x*y + 4*y^2 + 3*x + 4*y + 4
+  // v(x,y) = 2*x^3 + (7/2)*x^2 + 6*x*y^2 + 8*x*y + 4*x + (7/2)*y^2 + 3*y
   u  = BiPolyR(2,3,{-4,4,-4,2, 3,-7,0,0, 4,-6,0,0}); 
   v  = BiPolyR(3,2,{0,3,-3.5, -4,8,-6, 3.5,0,0, 2,0,0}); 
   v2 = u.getHarmonicConjugate();
@@ -1883,6 +1802,7 @@ bool testBivariatePolynomial2() // move to unit tests
 
   // Test the flux integral with more general curves:
   // see https://www.khanacademy.org/math/multivariable-calculus/integrating-multivariable-functions/line-integrals-in-vector-fields-articles/a/flux-in-two-dimensions
+
 
 
   // Curvature of surfaces:

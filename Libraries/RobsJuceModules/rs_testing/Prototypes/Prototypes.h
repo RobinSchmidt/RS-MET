@@ -1894,6 +1894,94 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
 
 //=================================================================================================
 
+
+template<class T> 
+bool isHarmonic2(const rsBivariatePolynomial<T>& u, T tol = T(0))
+{
+  for(int m = 2; m <= u.getDegreeX(); m++) {
+    for(int n = 2; n <= u.getDegreeY(); n++) {
+      T c_xx = m * (m-1) * u.coeff(m  , n-2);   // coeff for x^(m-2) * y^(n-2) in u_xx
+      T c_yy = n * (n-1) * u.coeff(m-2, n  );   // coeff for x^(m-2) * y^(n-2) in u_yy
+      if(rsAbs(c_xx + c_yy) > tol)
+        return false;   }}
+  return true;
+}
+// -needs more tests
+// -if it works, maybe replace the old implementation in rsBivariatePolynomial - this here is more
+//  efficient
+// -make a function makeHarmonicY that assigns:
+//    u.coeff(m-2, n) = -m * (m-1) * u.coeff(m, n-2) / (n * (n-1))
+//  and a makeHarmonicX that assigns:
+//    u.coeff(m, n-2) = -n * (n-1) * u.coeff(m-2, n) / (m * (m-1))
+//  and maybe some sort of symmetric version that assigns both - the goal is always that 
+//  c_xx + c_yy = 0  ->  m * (m-1) * u[m, n-2] + n * (n-1) * u[m-2, n] = 0
+//  m * (m-1) * u[m, n-2] = -n * (n-1) * u[m-2, n]
+//  so:
+//    u[m, n-2] / u[m-2, n] = -(n*(n-1)) / (m*(m-1))
+//  i think, this is the general symmetry condition that the matrix for a harmonic polynomial must
+//  satisfy
+
+template<class T> 
+rsPolynomial<std::complex<T>> getComplexFromHarmonicUV(
+  const rsBivariatePolynomial<T>& u, const rsBivariatePolynomial<T>& v)
+{
+  rsAssert(rsBivariatePolynomial<T>::areHarmonicConjugates(u, v));
+  // fails: seems like ux == -vy where we should have ux == vy - there's some sign confusion: i 
+  // think P_y is not the harmonic conjugate of of P_x, -P_y is
+
+  /*
+  int M = rsMax(u.getDegreeX(), v.getDegreeX());
+  rsPolynomial<std::complex<T>> p(M);
+  for(int i = 0; i <= M; i++)
+  p[i] = std::complex<T>(u.getCoeffPadded(i, 0), v.getCoeffPadded(i, 0));
+  return p;
+  // seems like if v.degX > u.degX, the last coeff is zero anyway - more tests needed
+  */
+
+  int M = rsMin(u.getDegreeX(), v.getDegreeX());
+  rsPolynomial<std::complex<T>> p(M);
+  for(int i = 0; i <= M; i++)
+    p[i] = std::complex<T>(u.coeff(i, 0), v.coeff(i, 0));
+  return p;
+}
+// needs more tests - especially: why should the loop go only up to M and not max(M,N), where 
+// N = v.getDegreeX(), using a zero-padded accessor like getCoeffPadded(i, 0) for safe 
+// out-of-range access returning 0? ...or maybe the loop should go only up to min(M,N)
+
+
+template<class T> 
+void firstFundamentalForm(const rsBivariatePolynomial<T>& x, const rsBivariatePolynomial<T>& y,
+  const rsBivariatePolynomial<T>& z, rsBivariatePolynomial<T>& E, rsBivariatePolynomial<T>& F,
+  rsBivariatePolynomial<T>& G)
+{
+  using BiPoly = rsBivariatePolynomial<T>;
+  BiPoly x_u = x.derivativeX();     // dx/du
+  BiPoly x_v = x.derivativeY();     // dx/dv
+  BiPoly y_u = y.derivativeX();     // dy/du
+  BiPoly y_v = y.derivativeY();     // dy/dv
+  BiPoly z_u = z.derivativeX();     // dz/du
+  BiPoly z_v = z.derivativeY();     // dz/dv
+  E = x_u*x_u + y_u*y_u + z_u*z_u;
+  F = x_u*x_v + y_u*y_v + z_u*z_v;
+  G = x_v*x_v + y_v*y_v + z_v*z_v;
+}
+// see Weitz - Differentialgeometrie, p.154
+// -maybe make a function that takes as input an rsVector3D of rsBivariatePolynomial instead of 
+//  x,y,z separately
+// -are E,F,G the entries of J^T * J where J is the Jacobian and E*G - 2*F is its determinant?
+
+// todo: 
+// -consider parametric surfaces given by a triple of bivariate polynomials:
+//  x(u,v), y(u,v), z(u,v) (note that u,v are here the independent variables, i.e. the inputs to
+//  the 3 component polynomials, in the context of complex analysis, they were used for the real 
+//  and imaginary part of the function - don't get confused by this!)
+// -write a function to compute the first fundamental form coeffs E,F,G of the surface
+// -functions for principal curvatures, mean curvature and Gaussian curvature - these should
+//  all be bivariate polynomials again (if i'm not mistaken)
+// -circulation ond flux through a curve (path integrals over curl and divergence)
+// -maybe integral functions that take univariate polynomials for the integration limits
+
+
 // experimental - doesn't seem to work:
 template<class T> 
 void vectorPotential2(const rsTrivariatePolynomial<T>& f, const rsTrivariatePolynomial<T>& g,
@@ -1919,6 +2007,19 @@ void vectorPotential2(const rsTrivariatePolynomial<T>& f, const rsTrivariatePoly
   G = a - fz;       // G(x,y,z) = -fz + a(x,y)
   H = TP(0,0,0);    // H(x,y,z) =  0
 }
+
+template<class T>
+void divergenceToPotential(const rsBivariatePolynomial<T>& D, rsBivariatePolynomial<T>& P)
+{
+  int M = D.getDegreeX() + 2; 
+  int N = D.getDegreeY() + 2;
+  P.initialize(M, N);
+  for(int m = 2; m <= M; m++)
+    for(int n = 2; n <= N; n++)
+      P.coeff(m, n) = D.coeff(m-2, n-2) / T(m*(m-1) + n*(n-1));
+  int dummy = 0;
+}
+// nope! this is still wrong!
 
 
 //=================================================================================================
