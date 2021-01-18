@@ -1492,14 +1492,14 @@ bool testBivariatePolynomial()
   // Test definite integration with respect to x:
   Poly A({1,-2,3});
   Poly B({3,-5,1,-2});
-  uni = p.integralX(-2, 3); r &= uni == Poly({122.5, 425./3, 965./6, 180});
-  uni = p.integralX( A, 3); // verify!
-  uni = p.integralX(-2, B); // verify!
-  uni = p.integralX( A, B); // verify!
+  uni = p.integralX(-2., 3.); r &= uni == Poly({122.5, 425./3, 965./6, 180});
+  uni = p.integralX( A,  3.); // verify!
+  uni = p.integralX(-2., B ); // verify!
+  uni = p.integralX( A,  B ); // verify!
   // todo: let either of the two or both integration limits be a polynomial (in y)
 
   // Test definite integration with respect to y:
-  uni = p.integralY(-2, 3); r &= uni == Poly({110, 755./3, 1180./3});
+  uni = p.integralY(-2., 3.); r &= uni == Poly({110, 755./3, 1180./3});
   // 1180/3*x^2 + 755/3*x + 110
 
   // Construct bivariate polynomial as product of two univariate polynomials:

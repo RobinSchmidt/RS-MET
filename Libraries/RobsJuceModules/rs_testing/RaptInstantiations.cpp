@@ -563,31 +563,20 @@ template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(const 
 template class rsBivariatePolynomial<double>;
 template class rsBivariatePolynomial<std::complex<double>>;
 
+// it's really annoying that we have to instantiate these member functions separately - maybe move 
+// their code to the header file - it is short anyway:
 template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
   rsPolynomial<double> a, rsPolynomial<double> b) const;
-//template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
-//  double a, double b) const;
-
 template rsPolynomial<double> rsBivariatePolynomial<double>::integralY(
   rsPolynomial<double> a, rsPolynomial<double> b) const;
 template rsPolynomial<double> rsBivariatePolynomial<double>::integralY(
   double a, rsPolynomial<double> b) const;
 template rsPolynomial<double> rsBivariatePolynomial<double>::integralY(
   rsPolynomial<double> a, double b) const;
-//template rsPolynomial<double> rsBivariatePolynomial<double>::integralY(
-//  double a, double b) const;
-
-
-// get rid of these! they should not be needed! somewhere the integral functions must get called 
-// with integer a,b which should not be the case!! -> figure out where and fix it!:
 template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
-  int a, int b) const;  
+  rsPolynomial<double> a, double b) const;
 template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
-  rsPolynomial<double> a, int b) const;
-template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
-  int a, rsPolynomial<double> b) const;
-template rsPolynomial<double> rsBivariatePolynomial<double>::integralY(
-  int a, int b) const;  
-
+  double a, rsPolynomial<double> b) const;
 
 template class rsTrivariatePolynomial<double>;
+template class rsPiecewisePolynomial<double>;
