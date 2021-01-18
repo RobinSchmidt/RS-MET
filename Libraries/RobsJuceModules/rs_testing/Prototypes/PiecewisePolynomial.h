@@ -139,11 +139,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 
-  /** Creates a Irwin-Hall distribution of given order N between a and b. This is the uniform 
+  /** Creates an Irwin-Hall distribution of given order N between a and b. This is the uniform 
   distribution convolved with itself N times. It arises as amplitude distribution, when you add up 
   the outputs of N independent noise generators with uniform distributions between a..b. N=0 gives 
-  the uniform distribution, N=1 gives a triangular distribution, N=2 a piecewise parabolic 
-  distribution and so on. */
+  the uniform distribution, N=1 gives a triangular (piecewise linear) distribution, N=2 a piecewise
+  parabolic distribution and so on. The higher order distributions approach a Gaussian distribution
+  due to the central limit theorem. */
   static rsPiecewisePolynomial<T> irwinHall(int N, T a = T(0), T b = T(1));
 
 

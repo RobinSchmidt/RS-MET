@@ -1892,14 +1892,33 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
 //  needed. ..the determinant is the product of all eigenvalues btw - but i don't think that's 
 //  helpful here (it's hard to compute anyway)
 
-
-
-
-
-
 //=================================================================================================
 
+// experimental - doesn't seem to work:
+template<class T> 
+void vectorPotential2(const rsTrivariatePolynomial<T>& f, const rsTrivariatePolynomial<T>& g,
+  const rsTrivariatePolynomial<T>& h, const rsTrivariatePolynomial<T>& d, 
+  rsTrivariatePolynomial<T>& F, rsTrivariatePolynomial<T>& G, rsTrivariatePolynomial<T>& H)
+{
+  using TP = rsTrivariatePolynomial<T>;
+  TP fz   = f.integralZ();
+  TP gz   = g.integralZ();
+  TP fz_x = fz.derivativeX();
+  TP gz_y = gz.derivativeY();
+  TP a_x  = h + fz_x + gz_y;
+  TP a    = a_x.integralX();
 
+  TP fz_y = fz.derivativeY();
+  TP gz_x = gz.derivativeX();
+  TP a_y  = a.derivativeY();
+  TP D    = d + fz_y - gz_x;
+  TP b_x  = D - a_y;
+  TP b    = b_x.integralX();
+
+  F = b + gz;       // F(x,y,z) =  gz + b(x,y)
+  G = a - fz;       // G(x,y,z) = -fz + a(x,y)
+  H = TP(0,0,0);    // H(x,y,z) =  0
+}
 
 
 //=================================================================================================

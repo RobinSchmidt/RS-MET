@@ -20,11 +20,11 @@ to set H(x,y,z) = const which simplifies the equation system to:
 
   f = -G_z, g = F_z, h = G_x - F_y
 
-The f,g equations lead to:
+The f,g equations can now be simply integrated to give:
 
-  G = -f^z + a(x,y), F = g^z + b(x,y)
+  G = -f^z + a(x,y), F = g^z + b(x,y)                      (1)
 
-where we use the superscript notation, subolized by the caret ^, to denote 
+where we use the superscript notation, symbolized by the caret ^, to denote 
 integration ("antidifferentiation") with respect to the superscripted 
 variable, so f^z is f integrated with respect to z. With a(x,y), b(x,y), we
 denote the integration "constants". They are constant only with respect 
@@ -36,7 +36,7 @@ constants a = a(x,y), b = b(x,y) such that the third equation is satisfied:
     = (-f^z + a)_x - (g^z + b)_y 
     = (-f^z)_x + a_x - (g^z)_y + b_y
   
-  h + f^z_x + g^z_y = a_x + b_y
+  h + f^z_x + g^z_y = a_x + b_y                            (2)
 
 This is one equation for the two unknown functions a_x, b_y. We have a 
 again some freedom of choice and use it to set b_y = 0 which determines our
@@ -71,7 +71,7 @@ additional equation:
 
 hmm...if we keep using H = const, we would have H_z = 0, so F_x = - G_y, so:
 
-  h = G_x - F_y = 2*G_x
+  h = G_x - F_y = 2*G_x  ...wait - what? why? mistake?
 
 we still need to satisfy:
 
@@ -92,7 +92,30 @@ or:
   a_x = (h + f^z_x + g^z_y)/2
   b_y = (h + f^z_x + g^z_y)/2
 
-we could get somewhere?
+we could get somewhere? maybe require:
+
+  F_x + G_y = d(x,y,z)           prescribe divergence as d (H_z assumed 0)
+
+using our equations (1) for F,G: F = b + g^z, G = a - f^z
+
+  d = (b + g^z)_x + (a - f^z)_y
+    = a_y + b_x - f^z_y + g^z_x
+
+we still have to satisfy (2), so we get the two equations:
+
+  C := h + f^z_x + g^z_y = a_x + b_y
+  D := d + f^z_y - g^z_x = a_y + b_x
+
+set b_y = 0 as before, compute a_x, integrate to get a, compute a_y, compute
+b_x = D - a_y, integrate to get b 
+
+the code doesn't work: the divergence is indeed zero, but F,G,H seems not to 
+be a vector potential anymore - some coeffs in the computed curl match f,g,h 
+but others are totally wrong (it's not a precision issue) - i guess our 
+integration constants a(x,y), b(x,y) do in fact depend on z? maybe we can't 
+simply set b_y = 0 as before anymore. maybe we should write out the 2 
+equations C = ..., D = ... in terms of all the coefficients involved, giving
+ a large system of linear equations for all coeffs of a,b?
 
 -------------------------------------------------------------------------------
 
