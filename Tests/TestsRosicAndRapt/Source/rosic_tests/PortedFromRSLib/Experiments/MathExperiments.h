@@ -42,6 +42,7 @@ void convolvePiecewise();
 void shiftPolynomial();
 //void stretchPolynomial();
 void monotonicPolynomials();
+void mixedPolynomialRoots();
 void parametricBell();
 void partialFractionExpansion();
 void partialFractionExpansion2();

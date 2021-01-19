@@ -3710,6 +3710,101 @@ void monotonicPolynomials()
   //int dummy = 0;
 }
 
+
+template<class T>
+void weightedSum(const T* x1, int N1, T w1, const T* x2, int N2, T w2, T* y, int Ny)
+{
+  int n = 0;
+
+  while(n < rsMin(N1, N2, Ny)) {
+    y[n] = w1 * x1[n] + w2 * x2[n];
+    n++; }
+
+  if(n == Ny)
+    return;
+
+  // handle overhanging part in x1 or x2:
+  if(N1 > N2) {
+    while(n < rsMin(N1, Ny)) {
+      y[n] = w1 * x1[n];
+      n++; }}
+  else if(N2 > N1) {
+    while(n < rsMin(N2, Ny)) {
+      y[n] = w2 * x2[n];
+      n++; }}
+
+  // handle trailing zeros in result, if necessarry:
+  while(n < Ny) {
+    y[n] = T(0);
+    n++; }
+}
+// todo: write test, move into rsArrayTools
+
+//template<class T>
+//void plotPolesAndZeros(const std::vector<complex<T>>& p, const std::vector<complex<T>>& z);
+
+void mixedPolynomialRoots()
+{
+  // Given two polynomials p(z) and q(z) in product form, i.e. specified by their roots, we form a
+  // "crossfaded" polynomial r(z) = (1-c)*p(z) + c*q(z) and figure out where its roots are. The 
+  // eventual goal is to find an algorithm that can compute the roots of a polynomial r(z) that is
+  // given as linear combination of two other polynomilas p(z), q(z) without converting back and 
+  // forth between product-form and sum-form of the polynomials.
+
+  using Complex = std::complex<double>;
+  using Vec     = std::vector<Complex>;
+  using Poly    = rsPolynomial<Complex>;
+  using AT      = rsArrayTools;
+
+
+  int numSteps = 20;         // number of intermediate polynomials (including ends)
+
+  Complex j(0.0, 1.0);       // imaginary unit
+
+  Vec r1{ 1.0,    -1.0   };  // roots of polynomial 1
+  Vec r2{ 1.0*j,  -1.0*j };  // roots of polynomial 2
+
+
+  int N1 = (int)r1.size();   // degree of polynomial 1
+  int N2 = (int)r2.size();   // degree of polynomial 2
+
+  Vec a1(N1+1), a2(N2+1);    // coefficients of both polynomials
+  Poly::rootsToCoeffs(&r1[0], &a1[0], N1);
+  Poly::rootsToCoeffs(&r2[0], &a2[0], N2);
+
+  int N = rsMax(N1, N2);     // degree of mixed polynomial
+  Vec a(N+1);                // coeffs of mixed polynomial
+  Vec r(N);                  // roots of mixed polynomial
+
+
+  FilterPlotter<double> plt;
+
+  /*
+  for(int i = 0; i < numSteps; i++)
+  {
+    double c = double(i) / double(numSteps-1);
+    Complex w1 = 1-c, w2 = c;
+    weightedSum(&a1[0], N1+1, w1, &a2[0], N2+1, w2, &a[0], N+1);
+    Poly::roots(&a[0], N, &r[0]);
+
+
+    rsFilterSpecificationZPK<double> spec;
+    spec.p = r;
+    plt.addFilterSpecificationZPK(spec);
+
+
+
+
+    int dummy = 0;
+  }
+  */
+
+
+
+
+  int dummy = 0;
+}
+
 void parametricBell()
 {
   static const int N = 1000;
