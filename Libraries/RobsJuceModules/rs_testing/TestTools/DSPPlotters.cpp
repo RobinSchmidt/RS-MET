@@ -100,9 +100,35 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
   plot();
 }
 
+template <class T>
+void FilterPlotter<T>::plotPolesAndZeros(int plotSize)
+{
+  unsigned int j = 0;
+  for(unsigned int i = 0; i < filterSpecsZPK.size(); i++)
+  {
+    if(filterSpecsZPK[i].p.size() > 0) {
+      addDataComplex(filterSpecsZPK[i].p);
+      addGraph("i " + s(j) + " u 1:2 w points pt 2 ps 1 notitle");
+      j++;  }
+    if(filterSpecsZPK[i].z.size() > 0) {
+      addDataComplex(filterSpecsZPK[i].z);
+      addGraph("i " + s(j) + " u 1:2 w points pt 6 ps 1 notitle");
+      j++;  }
 
+    // show the multiplicities of poles and zeros:
+    T thresh = T(1.e-8);    // threshold for considering close poles/zeros as multiple root
+                            // maybe use something that depends on the epsilon of T
+    drawMultiplicities(filterSpecsZPK[i].p, thresh);
+    drawMultiplicities(filterSpecsZPK[i].z, thresh);
+  }
 
+  // todo: make the colors of the poles, zeros and multiplicities for each filter equal
 
+  setupForPoleZeroPlot(plotSize);
+  plot();
+}
+
+/*
 template <class T>
 void FilterPlotter<T>::plotPolesAndZeros(int plotSize)
 {
@@ -125,6 +151,8 @@ void FilterPlotter<T>::plotPolesAndZeros(int plotSize)
   setupForPoleZeroPlot(plotSize);
   plot();
 }
+// does not work, when there empty arrays of poles and/or zeros
+*/
 
 template <class T>
 vector<T> FilterPlotter<T>::getFrequencyAxis(int numFreqs, T lowFreq, T highFreq, bool logarithmic)

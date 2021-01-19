@@ -3757,11 +3757,11 @@ void mixedPolynomialRoots()
   using AT      = rsArrayTools;
 
 
-  int numSteps = 20;         // number of intermediate polynomials (including ends)
+  int numSteps = 21;         // number of intermediate polynomials (including ends)
 
   Complex j(0.0, 1.0);       // imaginary unit
 
-  Vec r1{ 1.0,    -1.0   };  // roots of polynomial 1
+  Vec r1{ 1.0+j,  -1.0   };  // roots of polynomial 1
   Vec r2{ 1.0*j,  -1.0*j };  // roots of polynomial 2
 
 
@@ -3778,8 +3778,6 @@ void mixedPolynomialRoots()
 
 
   FilterPlotter<double> plt;
-
-  /*
   for(int i = 0; i < numSteps; i++)
   {
     double c = double(i) / double(numSteps-1);
@@ -3787,20 +3785,25 @@ void mixedPolynomialRoots()
     weightedSum(&a1[0], N1+1, w1, &a2[0], N2+1, w2, &a[0], N+1);
     Poly::roots(&a[0], N, &r[0]);
 
-
     rsFilterSpecificationZPK<double> spec;
     spec.p = r;
     plt.addFilterSpecificationZPK(spec);
-
-
-
-
-    int dummy = 0;
   }
-  */
+  plt.plotPolesAndZeros();
 
-
-
+  // Observations:
+  // -r1 = {1,-1}, r2 = {j,-j}: roots first go both to zero along the real axis, meet and split 
+  //  again along the imaginary axis, there's no real continuous and fixed correspondence between
+  //  any pair of roots
+  // -r1 = {1+j,-1}, r2 = {j,-j}: there's indeed a correpondence between pairs of roots - seems 
+  //  like it could be based on distance, the transition paths are curved in non-simple ways
+  // -r1 = {j,-1}, r2 = {j,-j}: the root at j statys fixed and the root at -1 moves to the root at
+  //  -j in a straight line
+  // -r1 = {1}, r2 = {j,-j}: the root finder does not converge (may be a general feature when the
+  //  arrays have different lengths?)
+  // -r1 = {1+j,-1+j}, r2 = {j,-j}: the roots first move inward along a curve, meet on the 
+  //  imaginary axis and then split along the imaginary axis
+  // -r1 = {1+j,-1-j}, r2 = {j,-j}: 1+j moves to j, -1-j moves to -j, transition is curved
 
   int dummy = 0;
 }

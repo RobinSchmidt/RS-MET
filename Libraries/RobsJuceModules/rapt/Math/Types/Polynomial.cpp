@@ -157,19 +157,17 @@ template<class R>
 R rsPolynomial<T>::evaluateWithTwoDerivativesAndError(
   const std::complex<R>* a, int degree, std::complex<R> z, std::complex<R>* P)
 {
-  P[0] = a[degree];                  // P(z)
-  P[1] = std::complex<R>(0.0, 0.0);  // P'(z)
-  P[2] = std::complex<R>(0.0, 0.0);  // P''(z)
-  T err = abs(P[0]);                 // estimated roundoff error in evaluation of the polynomial
-  T zA  = abs(z);                    // absolute value of z
-  for(int j = degree-1; j >= 0; j--)
-  {
+  P[0] = a[degree];                    // P(z)
+  P[1] = std::complex<R>(R(0), R(0));  // P'(z)
+  P[2] = std::complex<R>(R(0), R(0));  // P''(z)
+  R err = rsAbs(P[0]);                 // estimated roundoff error in evaluation of the polynomial
+  R zA  = rsAbs(z);                    // absolute value of z
+  for(int j = degree-1; j >= 0; j--) {
     P[2] = z * P[2] + P[1];
     P[1] = z * P[1] + P[0];
     P[0] = z * P[0] + a[j];
-    err  = abs(P[0]) + zA*err;
-  }
-  P[2] *= 2.0;
+    err  = abs(P[0]) + zA*err; }
+  P[2] *= R(2);
   return err;
 }
 
