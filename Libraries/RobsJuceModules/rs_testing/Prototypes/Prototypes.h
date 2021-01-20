@@ -2057,6 +2057,64 @@ void potentialToDivergence(const rsBivariatePolynomial<T>& P, rsBivariatePolynom
 template<class T>
 void divergenceToPotential(const rsBivariatePolynomial<T>& D, rsBivariatePolynomial<T>& P)
 {
+  int M = D.getDegreeX();
+  int N = D.getDegreeY();
+  P.initialize(M+2, N+2);
+  for(int m = 0; m <= M; m++) 
+  {
+    for(int n = 0; n <= N; n++) 
+    {
+      //D.coeff(m, n) = (m+1)*(m+2)*P.coeff(m+2, n) + (n+1)*(n+2)*P.coeff(m, n+2);
+      P.coeff(m+2, n) = (D.coeff(m, n) - (n+1)*(n+2)*P.coeff(m, n+2)) / ((m+1)*(m+2));
+      //P.coeff(m, n+2) = (D.coeff(m, n) - (m+1)*(m+2)*P.coeff(m+2, n)) / ((n+1)*(n+2));
+    }
+  }
+}
+// this seems to work - todo: make a 2nd version that uses the lower formula - should produce a
+// different potential with same divergence
+
+template<class T>
+void divergenceToPotential3(const rsBivariatePolynomial<T>& D, rsBivariatePolynomial<T>& P)
+{
+  int M = D.getDegreeX(); 
+  int N = D.getDegreeY();
+  P.initialize(M, N);
+  for(int m = 0; m <= M; m++) 
+  {
+    for(int n = 0; n <= N; n++) 
+    {
+      if(m <= M-2 && n <= N-2)
+      {
+        //D.coeff(m, n) = (m+1)*(m+2)*P.coeff(m+2, n) + (n+1)*(n+2)*P.coeff(m, n+2);
+        P.coeff(m+2, n) = (D.coeff(m, n) - (n+1)*(n+2)*P.coeff(m, n+2)) / ((m+1)*(m+2));
+        //P.coeff(m, n+2) = (D.coeff(m, n) - (m+1)*(m+2)*P.coeff(m+2, n)) / ((n+1)*(n+2));
+      }
+      else if(m <= M-2 && n > N-2)
+      {
+        //D.coeff(m, n) = (m+1)*(m+2)*P.coeff(m+2, n);
+        P.coeff(m+2, n) = D.coeff(m, n) / ((m+1)*(m+2));
+      }
+      else if(m > M-2 && n <= N-2)
+      {
+        //D.coeff(m, n) = (n+1)*(n+2)*P.coeff(m, n+2);
+        P.coeff(m, n+2) = D.coeff(m, n) / ((n+1)*(n+2));
+      }
+      else
+      {
+        //D.coeff(m, n) = T(0);
+        P.coeff(m, n) = T(0);
+      }
+    }
+  }
+
+}
+// not yet correct - produces too many zeros - i think, the potential may indeed have shape
+// M+2,N+2 - in the example, the bootm-right 2x2 section of the divergence was zero, but we may
+// not assume that in general - then maybe we don't need the branches at all
+
+template<class T>
+void divergenceToPotential2(const rsBivariatePolynomial<T>& D, rsBivariatePolynomial<T>& P)
+{
   //int M = D.getDegreeX(); 
   //int N = D.getDegreeY();
   //P.initialize(M+2, N+2);

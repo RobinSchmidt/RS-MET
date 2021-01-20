@@ -1592,11 +1592,10 @@ bool testBivariatePolynomial()
   D    = P_xx + P_yy;
   potentialToDivergence(P, D2); 
   r &= D2 == D;
-
-
-  //divergenceToPotential(D, P2);
-
-
+  divergenceToPotential(D,  P2);
+  potentialToDivergence(P2, D2); 
+  r &= D2.isCloseTo(D);
+  //r &= D2 == D;
 
   //BiPoly D2  = BiPoly::divergence2D(P_x, P_y);               // actual divergence of vector field
   // this does not yet work!

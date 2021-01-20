@@ -1,0 +1,51 @@
+Find a potential P such that:
+
+  P_xx + P_yy = D
+
+for a given divergence D. Example using a bivariate polynomial with M=4,N=5:
+The coefficient matrices are:
+
+P =  1  2  3  4  5  6
+     7  8  9 10 11 12
+    13 14 15 16 17 18
+    19 20 21 22 23 24
+    25 26 27 28 29 30
+
+P_x =   7   8   9  10  11  12
+       26  28  30  32  34  36
+       57  60  63  66  69  72
+      100 104 108 112 116 120
+
+P_xx =  26  28  30  32  34  36
+       114 120 126 132 138 144
+       300 312 324 336 348 360
+
+P_y =  2  6 12  20  30
+       8 18 30  44  60
+      14 30 48  68  90
+      20 42 66  92 120
+      26 54 84 116 150
+
+P_yy =  6  24  60 120
+       18  60 132 240
+       30  96 204 360
+       42 132 276 480
+       54 168 348 600
+
+D =  32  52  90 152  34  36
+    132 180 258 372 138 144
+    330 408 528 696 348 360
+     42 132 276 480   0   0
+     54 168 348 600   0   0
+
+observations: 
+-the divergence has the same shape as the potential
+-the formula for the coeffs of the divergence is:
+    D_mn = (m+1)*(m+2)*P_{m+2,n} + (n+1)*(n+2)*P{m,n+2}
+
+
+
+
+
+
+
