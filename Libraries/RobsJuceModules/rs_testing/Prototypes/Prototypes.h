@@ -2035,24 +2035,75 @@ void vectorPotential2(const rsTrivariatePolynomial<T>& f, const rsTrivariatePoly
   H = TP(0,0,0);    // H(x,y,z) =  0
 }
 
+
+template<class T>
+void potentialToDivergence(const rsBivariatePolynomial<T>& P, rsBivariatePolynomial<T>& D)
+{
+  int M = P.getDegreeX(); 
+  int N = P.getDegreeY();
+  D.initialize(M, N);
+  for(int m = 0; m <= M; m++) {
+    for(int n = 0; n <= N; n++) {
+      if(m <= M-2 && n <= N-2)
+        D.coeff(m, n) = (m+1)*(m+2)*P.coeff(m+2, n) + (n+1)*(n+2)*P.coeff(m, n+2);
+      else if(m <= M-2 && n > N-2)
+        D.coeff(m, n) = (m+1)*(m+2)*P.coeff(m+2, n);
+      else if(m > M-2 && n <= N-2)
+        D.coeff(m, n) = (n+1)*(n+2)*P.coeff(m, n+2);
+      else
+        D.coeff(m, n) = T(0); }}
+}
+
 template<class T>
 void divergenceToPotential(const rsBivariatePolynomial<T>& D, rsBivariatePolynomial<T>& P)
 {
+  //int M = D.getDegreeX(); 
+  //int N = D.getDegreeY();
+  //P.initialize(M+2, N+2);
+  //for(int m = 0; m <= M; m++)
+  //  for(int n = 2; n <= N; n++)
+  //    P.coeff(m+2, n) = D.coeff(m, n) / ((n-1)*n);
+
+
   int M = D.getDegreeX() + 2; 
   int N = D.getDegreeY() + 2;
   P.initialize(M, N);
+
+
+  //for(int n = 2; n <= N; n++)
+  //  for(int m = n; m <= M; m++)
+  //    P.coeff(m-2, n) = D.coeff(m-2, n-2) / ((n-1)*n);
+
+  //for(int m = 2; m <= M; m++)
+  //  for(int n = m; n <= N; n++)
+  //    P.coeff(m-2, n) = D.coeff(m-2, n-2) / ((n-1)*n);
+
+  //for(int m = 2; m <= M; m++)
+  //  for(int n = 2; n <= N; n++)
+  //    P.coeff(m-2, n) = D.coeff(m-2, n-2) / ((n-1)*n);
+
+  for(int m = 2; m <= M; m++)
+    for(int n = 2; n <= N; n++)
+      P.coeff(m-2, n) = (D.coeff(m-2, n-2) - (m-1)*m*P.coeff(m, n-2)) / ((n-1)*n);
+
+
+  /*
   for(int m = 2; m <= M; m++)
   {
-    for(int n = 2; n <= N; n++)
+    //for(int n = 2; n <= N; n++)
+    for(int n = m; n <= N; n++)
     {
-      P.coeff(m-2, n) = (D.coeff(m-2, n-2) - (m-1)*m*P.coeff(m, n-2)) / ((n-1)*n);
+      //P.coeff(m-2, n) = (D.coeff(m-2, n-2) - (m-1)*m*P.coeff(m, n-2)) / ((n-1)*n);
       // can be simplified when P.coeff(m,n-2) = 0, which it is (i think, it may be chosen freely)
+
+      P.coeff(m-2, n) = D.coeff(m-2, n-2) / ((n-1)*n);
+
+      //P.coeff(m-2, n) = D.coeff(m-2, n-2) / ((m-1)*m);
 
       int dummy = 0;
     }
   }
-
-
+  */
 
   //for(int m = 2; m <= M; m++)
   //  for(int n = 2; n <= N; n++)
