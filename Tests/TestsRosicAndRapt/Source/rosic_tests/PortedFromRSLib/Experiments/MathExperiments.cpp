@@ -3710,43 +3710,10 @@ void monotonicPolynomials()
   //int dummy = 0;
 }
 
-
-template<class T>
-void weightedSum(const T* x1, int N1, T w1, const T* x2, int N2, T w2, T* y, int Ny)
-{
-  int n = 0;
-
-  while(n < rsMin(N1, N2, Ny)) {
-    y[n] = w1 * x1[n] + w2 * x2[n];
-    n++; }
-
-  if(n == Ny)
-    return;
-
-  // handle overhanging part in x1 or x2:
-  if(N1 > N2) {
-    while(n < rsMin(N1, Ny)) {
-      y[n] = w1 * x1[n];
-      n++; }}
-  else if(N2 > N1) {
-    while(n < rsMin(N2, Ny)) {
-      y[n] = w2 * x2[n];
-      n++; }}
-
-  // handle trailing zeros in result, if necessarry:
-  while(n < Ny) {
-    y[n] = T(0);
-    n++; }
-}
-// todo: write test, move into rsArrayTools
-
-//template<class T>
-//void plotPolesAndZeros(const std::vector<complex<T>>& p, const std::vector<complex<T>>& z);
-
 void mixedPolynomialRoots()
 {
   // Given two polynomials p(z) and q(z) in product form, i.e. specified by their roots, we form a
-  // "crossfaded" polynomial r(z) = (1-c)*p(z) + c*q(z) and figure out where its roots are. The 
+  // "crossfaded" polynomial r(z) = (1-t)*p(z) + t*q(z) and figure out where its roots are. The 
   // eventual goal is to find an algorithm that can compute the roots of a polynomial r(z) that is
   // given as linear combination of two other polynomilas p(z), q(z) without converting back and 
   // forth between product-form and sum-form of the polynomials.
@@ -3757,12 +3724,12 @@ void mixedPolynomialRoots()
   using AT      = rsArrayTools;
 
 
-  int numSteps = 21;         // number of intermediate polynomials (including ends)
+  int numSteps = 51;         // number of intermediate polynomials (including ends)
 
   Complex j(0.0, 1.0);       // imaginary unit
 
-  Vec r1{ 1.0+j,  -1.0   };  // roots of polynomial 1
-  Vec r2{ 1.0*j,  -1.0*j };  // roots of polynomial 2
+  Vec r1{ 1.0+2.*j, -1.0+3.*j };  // roots of polynomial 1
+  Vec r2{     2.0*j,-1.0-3.0*j };  // roots of polynomial 2
 
 
   int N1 = (int)r1.size();   // degree of polynomial 1
@@ -3780,8 +3747,8 @@ void mixedPolynomialRoots()
   FilterPlotter<double> plt;
   for(int i = 0; i < numSteps; i++)
   {
-    double c = double(i) / double(numSteps-1);
-    Complex w1 = 1-c, w2 = c;
+    double t = double(i) / double(numSteps-1);
+    Complex w1 = 1-t, w2 = t;
     weightedSum(&a1[0], N1+1, w1, &a2[0], N2+1, w2, &a[0], N+1);
     Poly::roots(&a[0], N, &r[0]);
 
@@ -3789,7 +3756,7 @@ void mixedPolynomialRoots()
     spec.p = r;
     plt.addFilterSpecificationZPK(spec);
   }
-  plt.plotPolesAndZeros();
+  plt.plotPolesAndZeros(600);
 
   // Observations:
   // -r1 = {1,-1}, r2 = {j,-j}: roots first go both to zero along the real axis, meet and split 
@@ -3804,8 +3771,53 @@ void mixedPolynomialRoots()
   // -r1 = {1+j,-1+j}, r2 = {j,-j}: the roots first move inward along a curve, meet on the 
   //  imaginary axis and then split along the imaginary axis
   // -r1 = {1+j,-1-j}, r2 = {j,-j}: 1+j moves to j, -1-j moves to -j, transition is curved
+  // -r1 = {1+j/10, -1-1j/10}, r2 = {j,-j}: 1+j/10 goes to j and -1-1j/10 goes to -j in a sort of
+  //  hyperbola-shaped curve. compare this to the "cross" in the first test: the cross is the 
+  //  limit of the hyperbolas as the divisor (here 10) goes to infinity
+  // -r1 = {1+2j,-1+3j}, r2 = {2j,   -3j}: clear pairing, curves with weird shape
+  // -r1 = {1+2j,-1+3j}, r2 = {2j, -2-3j}: pairing is exchanged with respec to previous case
 
-  int dummy = 0;
+  // Ideas:
+  //
+  // Consider the "mixed" polynomial:
+  //
+  //   r(z) = a * \prod_i (z-p_i) + b * \prod_j (z-q_j)
+  //
+  // We want to find the roots of r, so we set it equal to zero and try to find the set of values 
+  // for z for which the resulting equation holds:
+  //
+  //   0 = a * \prod_i (z-p_i) + b * \prod_j (z-q_j)
+  //   -a * \prod_i (z-p_i) = b * \prod_j (z-q_j)
+  //   -a/b = \prod_j (z-q_j)  /  \prod_i (z-p_i)
+  //
+  // The products run from 1 to N where N is the degree of p and q. Let's take the N-th root of 
+  // both sides:
+  //
+  //   root(-a/b, N) = root( \prod_j (z-q_j)  /  \prod_i (z-p_i), N)
+  //
+  // I don't really know, if this makes sense..anyway: is it possible that we can simplify the rhs
+  // to get rid of the products by assuming that we can pair each q_j with an appropriate p_i, such
+  // that the quotient (z-q_j) / (z-p_i) is equal to the lhs? That means that each factor in the 
+  // rhs is equal to root(-a/b, N) such that the whole product becomes -a/b as desired? There are
+  // some complications: (1) taking the N-th root is a multifunction, so we may have to pick a 
+  // particular solution and (2) we would have to determine the appropriate pairing of i,j. 
+  // Assuming that this is possible, we would just have to solve:
+  //
+  //   root(-a/b, N) = (z-q_j) / (z-p_i)
+  //
+  // for z. That z would then be a root of our mixed polynomial. ToDo: try it experimentally with
+  // p,q of degree 2. But no: that can't be the case because it would imply that one root of the 
+  // mixed polynomial depends *only* on a particular pair of roots in the two input polynomials, 
+  // but we certainly expect it to depend on all of them. Maybe it's futile to search for an 
+  // algorithm that is better than the one we already have (which converts back and forth between 
+  // roots and coeffs). Because, what does "better" actually mean: consider the complexity of both
+  // conversions: i thinks it's quadratic for coeffs -> roots and linear for roots -> coeffs, so 
+  // it's quadratic overall and i think any algo in which each root r_k depends on *all* roots 
+  // p_i, q_j would also have to be quadratic...right?
+  //
+  // Perhaps in the case for designing low-shelving prototypes from given lowpass prototypes, the
+  // overall algo can be simplified (at least for allpole filters) by taking as zeros just scaled
+  // versions of the original poles - that seems to be what comes out
 }
 
 void parametricBell()

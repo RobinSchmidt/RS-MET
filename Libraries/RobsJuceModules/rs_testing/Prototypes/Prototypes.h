@@ -42,7 +42,34 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //static size_t allBitsButFirst= allBits ^ firstBitOnly;
 */
 
+template<class T>
+void weightedSum(const T* x1, int N1, T w1, const T* x2, int N2, T w2, T* y, int Ny)
+{
+  int n = 0;
 
+  while(n < rsMin(N1, N2, Ny)) {
+    y[n] = w1 * x1[n] + w2 * x2[n];
+    n++; }
+
+  if(n == Ny)
+    return;
+
+  // handle overhanging part in x1 or x2:
+  if(N1 > N2) {
+    while(n < rsMin(N1, Ny)) {
+      y[n] = w1 * x1[n];
+      n++; }}
+  else if(N2 > N1) {
+    while(n < rsMin(N2, Ny)) {
+      y[n] = w2 * x2[n];
+      n++; }}
+
+  // handle trailing zeros in result, if necessarry:
+  while(n < Ny) {
+    y[n] = T(0);
+    n++; }
+}
+// todo: document, write test, move into rsArrayTools
 
 /** Solves a pentadiagonal linear system of equations with given diagonals and right-hand side
 using a simple algorithm without pivot-search. lowerDiag1 is the one directly below the main
