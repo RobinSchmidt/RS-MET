@@ -230,7 +230,13 @@ M = D.degX, N = D.degY
 
 or like this?:
 
-  (i-1)*i*P_{i+2,j} + (j-1)*j*P_{i,j+2} = D_ij        i=2..M, j=2..N
+  (m-1)*m*P_{m+2,n} + (n-1)*n*P_{m,n+2} = D_mn        m=2..M, n=2..N
+  
+  choose P_{m+2,n} freely (for example, zero) and use:
+  
+  P_{m,n+2} = (D_mn - (m-1)*m*P_{m+2,n}) / ((n-1)*n)
+  
+  
 
 
 

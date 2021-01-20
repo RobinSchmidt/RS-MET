@@ -2042,8 +2042,22 @@ void divergenceToPotential(const rsBivariatePolynomial<T>& D, rsBivariatePolynom
   int N = D.getDegreeY() + 2;
   P.initialize(M, N);
   for(int m = 2; m <= M; m++)
+  {
     for(int n = 2; n <= N; n++)
-      P.coeff(m, n) = D.coeff(m-2, n-2) / T(m*(m-1) + n*(n-1));
+    {
+      P.coeff(m-2, n) = (D.coeff(m-2, n-2) - (m-1)*m*P.coeff(m, n-2)) / ((n-1)*n);
+      // can be simplified when P.coeff(m,n-2) = 0, which it is (i think, it may be chosen freely)
+
+      int dummy = 0;
+    }
+  }
+
+
+
+  //for(int m = 2; m <= M; m++)
+  //  for(int n = 2; n <= N; n++)
+  //    P.coeff(m, n) = D.coeff(m-2, n-2) / T(m*(m-1) + n*(n-1));
+
   int dummy = 0;
 }
 // nope! this is still wrong!
