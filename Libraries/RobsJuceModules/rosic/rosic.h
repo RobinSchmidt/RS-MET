@@ -388,10 +388,11 @@
 // unfinished:
 #include "unfinished/rosic_Polyphony.h"
 #include "unfinished/rosic_EllipseOscillator.h"
+#include "unfinished/rosic_MiscUnfinished.h"
 #include "unfinished/rosic_QuadSource.h"
 #include "unfinished/rosic_DualFilter.h"
 #include "unfinished/rosic_NewSynth.h"
-#include "unfinished/rosic_MiscUnfinished.h"
+
 #include "unfinished/rosic_ModalFilters.h"
 #include "unfinished/rosic_ModalFilterBank.h"
 #include "unfinished/rosic_ModalSynth.h"

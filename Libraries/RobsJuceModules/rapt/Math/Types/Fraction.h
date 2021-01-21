@@ -30,6 +30,7 @@ public:
 
   double toDouble() const { return double(num) / double(den); }
 
+
   //-----------------------------------------------------------------------------------------------
   // \name Arithmetic operators
 
@@ -116,6 +117,7 @@ rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
 //  (but maybe that's not a good idea - conversions should probably always be explicit)
 // -in the Prototypes section, there's some stuff for converting between fractions and their
 //  continued fraction representation - maybe drag that over. 
+// -intAndFracPart via div and mod. r = n/d = i+f -> n = d*(i+f)
 //
 // Notes:
 // -maybe it's sometimes convenient to keep it in unreduced form - it may be easier to spot 

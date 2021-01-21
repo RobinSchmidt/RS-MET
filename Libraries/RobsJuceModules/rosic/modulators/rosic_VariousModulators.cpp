@@ -1,6 +1,3 @@
-//#include "rosic_AttackDecayEnvelope.h"
-//using namespace rosic;
-
 //-------------------------------------------------------------------------------------------------
 // construction/destruction:
 

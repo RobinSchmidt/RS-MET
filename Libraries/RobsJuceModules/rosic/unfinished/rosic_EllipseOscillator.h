@@ -71,7 +71,7 @@ protected:
 
 //=================================================================================================
 
-class rsEllipseOscillatorVoice // public rsPolyVoice
+class rsEllipseOscillatorVoice // : public rsPolyVoice  (maybe)
 {
 
 protected:

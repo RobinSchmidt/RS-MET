@@ -1,0 +1,14 @@
+Goals:
+
+-dynamically changing the type of module plugged into a particular slot
+-arbitrary routing modulator outputs to any number of parameters, like
+ with the modulation system in jura, but:
+-everything should work polyphonically
+-no formal distinction between modulation and audio generators
+-no formal distinctions between sources and effects
+-modules should be able to dynamically change ther I/O properties
+
+
+Synth contains 3 sections:
+-QuadSource: 4 sources with vector mixer
+-DualFilter: 2 filters with routing setup

@@ -29,6 +29,8 @@ void NewSynthAudioModule::populateModuleFactories()
   CS cs = lock;
   juce::String s;
 
+  // Later, we should use the polyphonic versions of the modules
+
   AudioModuleFactory& sf = sourceFactory;
   s = "";
   sf.registerModuleType([](CS cs)->AM { return new DummyModule(cs); },      s, "None");
@@ -74,3 +76,20 @@ void NewSynthEditor::resized()
   h = getHeight() - y;
   modulatorsEditor->setBounds(x, y, w, h);
 }
+
+
+/*
+ToDo:
+implement modules:
+
+Sources:
+-TriSawOsc
+
+Filters:
+-LadderFilter
+
+Modulators:
+-AttackDecayEnv
+
+
+*/

@@ -1,6 +1,6 @@
 
 
-void rsDualFilter::computeCoeffs(double x, double y)
+void rsDualFilterPoly::computeCoeffs(double x, double y)
 {
   // the filter equation is:
   // y1 = filter1(a*x + d*y2);

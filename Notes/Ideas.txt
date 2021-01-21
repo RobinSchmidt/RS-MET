@@ -207,5 +207,15 @@ protected:
   
 -------------------------------------------------------------------------------
 
+NewSynth:
+
+general idea:
+-4 sources with vector mixer
+-2 filters with a sort of vector mixer that adjusts between in,1,2,1->2
+-arbitray number of routable modulators
+-into source, filter- and modulator slots, differnt sorts of modules can be 
+ plugged in
+
+
 
  

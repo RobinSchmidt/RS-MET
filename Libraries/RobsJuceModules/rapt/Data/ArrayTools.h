@@ -118,6 +118,10 @@ public:
   static void circularShiftInterpolated(T *buffer, const int length, const double numPositions);
   // // Allocates heap memory - todo: pass a workspace.
 
+  /** Clears the buffer, i.e. fills it with all zeros. */
+  template <class T>
+  static void clear(T* buffer, const int length) { fillWithZeros(buffer, length); }
+
   /** Restricts the values in the buffer to the range between min and max for types that define the
   operators '<' and '>'. */
   template <class T>

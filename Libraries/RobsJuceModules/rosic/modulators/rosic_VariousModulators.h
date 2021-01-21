@@ -5,6 +5,7 @@
 namespace rosic
 {
 
+
 /** This is a class implements an envelope generator based on feeding the output signal of a
 multiplicative accumulator (which is decaying exponential) into a leaky integrator (which smoothes 
 out the (otherwise instantaneous) attack). The output of the envelope is normalized to the range 
@@ -76,7 +77,7 @@ protected:
   double ta, td;     // attack and decay time-constants (in seconds)
   double tp;         // time-instant of the peak excursion (in seconds);
   double fs;         // sample-rate
-  int    n, np;     // current sample-index and sample-index of the peak
+  int    n, np;      // current sample-index and sample-index of the peak
 
 };
 
@@ -89,7 +90,7 @@ INLINE double AttackDecayEnvelope::getSample()
 
 //=================================================================================================
 
-/** An envelope generator class based on RAPT::rsTrioSawOscillator. Instead of setting it up via
+/** An envelope generator class based on RAPT::rsTriSawOscillator. Instead of setting it up via
 a frequency and an asymmetry parameter, this class is parametrized in terms of attack- and decay 
 times. */
 

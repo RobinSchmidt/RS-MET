@@ -2055,121 +2055,62 @@ void potentialToDivergence(const rsBivariatePolynomial<T>& P, rsBivariatePolynom
 }
 
 template<class T>
-void divergenceToPotential(const rsBivariatePolynomial<T>& D, rsBivariatePolynomial<T>& P)
+void divergenceToPotential1(const rsBivariatePolynomial<T>& D, rsBivariatePolynomial<T>& P)
 {
   int M = D.getDegreeX();
   int N = D.getDegreeY();
   P.initialize(M+2, N+2);
   for(int m = 0; m <= M; m++) 
-  {
     for(int n = 0; n <= N; n++) 
-    {
-      //D.coeff(m, n) = (m+1)*(m+2)*P.coeff(m+2, n) + (n+1)*(n+2)*P.coeff(m, n+2);
       P.coeff(m+2, n) = (D.coeff(m, n) - (n+1)*(n+2)*P.coeff(m, n+2)) / ((m+1)*(m+2));
-      //P.coeff(m, n+2) = (D.coeff(m, n) - (m+1)*(m+2)*P.coeff(m+2, n)) / ((n+1)*(n+2));
-    }
-  }
 }
-// this seems to work - todo: make a 2nd version that uses the lower formula - should produce a
-// different potential with same divergence
+// something is still wrong - now it produces too many nonzero entries - i think, it works only 
+// when the bottom-right 2x2 section of the divergence is zero?
+// seems like we could fix it by zeroing the last two rows ..or well - we need to do something
+// that creates zeros in the last two rows in the computed divergence
 
 template<class T>
-void divergenceToPotential3(const rsBivariatePolynomial<T>& D, rsBivariatePolynomial<T>& P)
+void divergenceToPotential4(const rsBivariatePolynomial<T>& D, rsBivariatePolynomial<T>& P)
 {
-  int M = D.getDegreeX(); 
+  int M = D.getDegreeX();
   int N = D.getDegreeY();
-  P.initialize(M, N);
+  P.initialize(M+2, N+2);
   for(int m = 0; m <= M; m++) 
-  {
     for(int n = 0; n <= N; n++) 
-    {
-      if(m <= M-2 && n <= N-2)
-      {
-        //D.coeff(m, n) = (m+1)*(m+2)*P.coeff(m+2, n) + (n+1)*(n+2)*P.coeff(m, n+2);
-        P.coeff(m+2, n) = (D.coeff(m, n) - (n+1)*(n+2)*P.coeff(m, n+2)) / ((m+1)*(m+2));
-        //P.coeff(m, n+2) = (D.coeff(m, n) - (m+1)*(m+2)*P.coeff(m+2, n)) / ((n+1)*(n+2));
-      }
-      else if(m <= M-2 && n > N-2)
-      {
-        //D.coeff(m, n) = (m+1)*(m+2)*P.coeff(m+2, n);
-        P.coeff(m+2, n) = D.coeff(m, n) / ((m+1)*(m+2));
-      }
-      else if(m > M-2 && n <= N-2)
-      {
-        //D.coeff(m, n) = (n+1)*(n+2)*P.coeff(m, n+2);
-        P.coeff(m, n+2) = D.coeff(m, n) / ((n+1)*(n+2));
-      }
-      else
-      {
-        //D.coeff(m, n) = T(0);
-        P.coeff(m, n) = T(0);
-      }
-    }
-  }
+      P.coeff(m+2, n) = (D.coeff(m, n) - (n+1)*(n+2)*P.coeff(m, n+2)) / ((m+1)*(m+2));
 
+  //for(int m = M; m <= M+2; m++) 
+  //  for(int n = 0; n <= N+2; n++)
+  //    P.coeff(m, n) = T(0);
 }
-// not yet correct - produces too many zeros - i think, the potential may indeed have shape
-// M+2,N+2 - in the example, the bootm-right 2x2 section of the divergence was zero, but we may
-// not assume that in general - then maybe we don't need the branches at all
+
 
 template<class T>
 void divergenceToPotential2(const rsBivariatePolynomial<T>& D, rsBivariatePolynomial<T>& P)
 {
-  //int M = D.getDegreeX(); 
-  //int N = D.getDegreeY();
-  //P.initialize(M+2, N+2);
-  //for(int m = 0; m <= M; m++)
-  //  for(int n = 2; n <= N; n++)
-  //    P.coeff(m+2, n) = D.coeff(m, n) / ((n-1)*n);
-
-
-  int M = D.getDegreeX() + 2; 
-  int N = D.getDegreeY() + 2;
-  P.initialize(M, N);
-
-
-  //for(int n = 2; n <= N; n++)
-  //  for(int m = n; m <= M; m++)
-  //    P.coeff(m-2, n) = D.coeff(m-2, n-2) / ((n-1)*n);
-
-  //for(int m = 2; m <= M; m++)
-  //  for(int n = m; n <= N; n++)
-  //    P.coeff(m-2, n) = D.coeff(m-2, n-2) / ((n-1)*n);
-
-  //for(int m = 2; m <= M; m++)
-  //  for(int n = 2; n <= N; n++)
-  //    P.coeff(m-2, n) = D.coeff(m-2, n-2) / ((n-1)*n);
-
-  for(int m = 2; m <= M; m++)
-    for(int n = 2; n <= N; n++)
-      P.coeff(m-2, n) = (D.coeff(m-2, n-2) - (m-1)*m*P.coeff(m, n-2)) / ((n-1)*n);
-
-
-  /*
-  for(int m = 2; m <= M; m++)
-  {
-    //for(int n = 2; n <= N; n++)
-    for(int n = m; n <= N; n++)
-    {
-      //P.coeff(m-2, n) = (D.coeff(m-2, n-2) - (m-1)*m*P.coeff(m, n-2)) / ((n-1)*n);
-      // can be simplified when P.coeff(m,n-2) = 0, which it is (i think, it may be chosen freely)
-
-      P.coeff(m-2, n) = D.coeff(m-2, n-2) / ((n-1)*n);
-
-      //P.coeff(m-2, n) = D.coeff(m-2, n-2) / ((m-1)*m);
-
-      int dummy = 0;
-    }
-  }
-  */
-
-  //for(int m = 2; m <= M; m++)
-  //  for(int n = 2; n <= N; n++)
-  //    P.coeff(m, n) = D.coeff(m-2, n-2) / T(m*(m-1) + n*(n-1));
-
-  int dummy = 0;
+  int M = D.getDegreeX();
+  int N = D.getDegreeY();
+  P.initialize(M+2, N+2);
+  for(int n = 0; n <= N; n++)
+    for(int m = 0; m <= M; m++)
+      P.coeff(m, n+2) = (D.coeff(m, n) - (m+1)*(m+2)*P.coeff(m+2, n)) / ((n+1)*(n+2));
 }
-// nope! this is still wrong!
+// note that we had to exchange the loops compared to divergenceToPotential1 
+
+// experimental:
+template<class T>
+void divergenceToPotential3(const rsBivariatePolynomial<T>& D, rsBivariatePolynomial<T>& P)
+{
+  int M = D.getDegreeX();
+  int N = D.getDegreeY();
+  P.initialize(M+2, N+2);
+  for(int n = 0; n <= N; n++)
+    for(int m = 0; m <= M; m++)
+      if(m <= M-2 /* || n <= N-2*/)
+        P.coeff(m, n+2) = (D.coeff(m, n) - (m+1)*(m+2)*P.coeff(m+2, n)) / ((n+1)*(n+2));
+}
+
+
 
 
 //=================================================================================================

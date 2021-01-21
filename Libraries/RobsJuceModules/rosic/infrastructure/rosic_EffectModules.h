@@ -1,47 +1,6 @@
 #ifndef rosic_EffectModules_h
 #define rosic_EffectModules_h
 
-//// rosic-indcludes:
-//#include "rosic_Module.h"
-//
-//#include "../delaylines/rosic_FractionalDelayLineStereo.h"
-//#include "../delaylines/rosic_PingPongEcho.h"
-//#include "../dynamics/rosic_Limiter.h"
-//#include "../dynamics/rosic_NoiseGate.h"
-//#include "../dynamics/rosic_SoftKneeCompressor.h"
-//#include "../dynamics/rosic_SoftKneeExpander.h"
-//#include "../effects/rosic_BitCrusher.h"
-//#include "../effects/rosic_Chorus.h"
-//#include "../effects/rosic_CombBank.h"
-//#include "../effects/rosic_BitCrusher.h"
-//#include "../effects/rosic_Harmonics.h"
-//#include "../effects/rosic_Chorus.h"
-//#include "../effects/rosic_CompShaper.h"
-//#include "../effects/rosic_CombBank.h"
-//#include "../effects/rosic_CombResonatorStereo.h"
-//#include "../effects/rosic_CombStereoizer.h"
-//#include "../effects/rosic_Flanger.h"
-//#include "../effects/rosic_FormantShifter.h"
-//#include "../effects/rosic_FrequencyShifter.h"
-//#include "../effects/rosic_ModulatedAllpass.h"
-//#include "../effects/rosic_Noisifier.h"
-//#include "../effects/rosic_Phaser.h"
-//#include "../effects/rosic_PhaseStereoizer.h"
-//#include "../effects/rosic_PitchShifterGrainAdaptive.h"
-//#include "../effects/rosic_Reverb.h"
-//#include "../effects/rosic_RingModulator.h"
-//#include "../effects/rosic_SingleSidebandModulator.h"
-//#include "../effects/rosic_StereoPan.h"
-//#include "../effects/rosic_StereoWidth.h"
-//#include "../effects/rosic_Tremolo.h"
-//#include "../effects/rosic_WahWah.h"
-//#include "../effects/rosic_WaveShaper.h"
-//#include "../filters/rosic_EqualizerStereo.h"
-//#include "../filters/rosic_DualTwoPoleFilter.h"
-//#include "../filters/rosic_FourPoleFilter.h"
-//#include "../filters/rosic_LadderFilter.h"
-//#include "../filters/rosic_SlopeFilter.h"
-
 namespace rosic
 {
 

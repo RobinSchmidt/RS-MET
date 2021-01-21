@@ -13,7 +13,8 @@ namespace rosic
   etc. It is meant to be used in conjunction with classes ModulatableParameter and
   ModulationRouter.
 
-  the design doesn't seem quite right yet
+  -the design doesn't seem quite right yet  -this is under cosntruction - maybe move to unfinished
+   also the class Module
 
   */
 

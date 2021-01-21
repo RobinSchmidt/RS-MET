@@ -4,7 +4,7 @@
 namespace rosic
 {
 
-class rsDualFilter
+class rsDualFilterPoly
 {
 
 public:
@@ -20,23 +20,23 @@ public:
 
 
 
-  INLINE rsFloat64x2 getSample(const rsFloat64x2& x)
+  INLINE rsFloat64x2 getSample(const rsFloat64x2& x, int v)
   {
     if(delayConfig == DELAY_BOTH)
     {
       rsFloat64x2 y1Old = y1;
-      y1 = filter1->getSample(a*x + d*y2);
-      y2 = filter2->getSample(b*x + c*y1Old);
+      y1 = filter1->getSample(a*x + d*y2, v);
+      y2 = filter2->getSample(b*x + c*y1Old, v);
     }
     else if(delayConfig == DELAY_SECOND)
     {
-      y1 = filter1->getSample(a*x + d*y2);
-      y2 = filter2->getSample(b*x + c*y1);
+      y1 = filter1->getSample(a*x + d*y2, v);
+      y2 = filter2->getSample(b*x + c*y1, v);
     }
     else  // delayConfig == DELAY_FIRST
     {
-      y2 = filter2->getSample(b*x + c*y1);
-      y1 = filter1->getSample(a*x + d*y2);
+      y2 = filter2->getSample(b*x + c*y1, v);
+      y1 = filter1->getSample(a*x + d*y2, v);
     }
     return e*y1 + f*y2;
   }

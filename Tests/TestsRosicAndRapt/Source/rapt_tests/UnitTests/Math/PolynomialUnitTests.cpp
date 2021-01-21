@@ -1565,15 +1565,13 @@ bool testBivariatePolynomial()
   //BiPoly D = BiPoly(2, 2, {1,2,3, 4,5,6, 7,8,9});   // prescribed divergence
   BiPoly D = BiPoly(3, 3, {1,2,3,4, 5,6,7,8, 9,10,11,12, 13,14,15,16});   // prescribed divergence
   BiPoly P, P2;
-  divergenceToPotential(D, P);                               // the scalar potential
+  divergenceToPotential4(D, P);                               // the scalar potential
   BiPoly P_x  = P.derivativeX();                              // x-component of vector field
   BiPoly P_y  = P.derivativeY();                              // y-component of vector field
   BiPoly P_xx = P_x.derivativeX();
   BiPoly P_yy = P_y.derivativeY();
   BiPoly D2   = P_xx + P_yy;
-  // some computed coeffs mathc, others don't - i think, the general formula is correct, just the
-  // loop limits may be wrong - maybe there's some reading of values that have already been written
-  // going on?
+  // wrong: there are some extra nonzero coeffs in D2 - seems like there are 2 extra coeffs
 
   //P = BiPoly(3, 3, {1,2,3,4, 5,6,7,8, 9,10,11,12, 13,14,15,16});
   //P_x  = P.derivativeX();                              // x-component of vector field
@@ -1592,9 +1590,13 @@ bool testBivariatePolynomial()
   D    = P_xx + P_yy;
   potentialToDivergence(P, D2); 
   r &= D2 == D;
-  divergenceToPotential(D,  P2);
+  divergenceToPotential1(D, P2);
   potentialToDivergence(P2, D2); 
   r &= D2.isCloseTo(D);
+  divergenceToPotential2(D, P2);
+  potentialToDivergence(P2, D2); 
+  r &= D2.isCloseTo(D);
+
   //r &= D2 == D;
 
   //BiPoly D2  = BiPoly::divergence2D(P_x, P_y);               // actual divergence of vector field
