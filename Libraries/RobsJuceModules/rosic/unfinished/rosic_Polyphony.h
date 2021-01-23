@@ -52,7 +52,14 @@ public:
   { RAPT::rsRemoveFirstOccurrence(managedModules, moduleToRemove); }
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
 
+  /** Returns the number of voices that are currently playing. */
+  int getNumActiveVoices() const { return 0; } // preliminary
+
+  /** Returns the index of the i-th voice that is currently playing. */
+  int getVoiceIndex(int i) const { return 0; } // preliminary
 
 
 protected:
@@ -124,36 +131,46 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  virtual void processFrame(const double* in, int numIns, double* out, int numOuts, int voice)
-  { RAPT::rsArrayTools::clear(out, numOuts); }
+  //virtual void processFrame(const double* in, int numIns, double* out, int numOuts, int voice)
+  //{ RAPT::rsArrayTools::clear(out, numOuts); }
   // maybe make purely virtual
   // maybe the user should pass numIn/Outputs - if the number disaggrees with what the module 
   // naturally produces, apply some rules, like:
   // -if more outputs are requested than produced, duplicate the existing ones
+  // -maybe use getSample instead - it's less flexible but simpler and more efficient - maybe 
+  //  handle multichannel stuff later
 
+  /** Must be overriden by subclasses to produce one sample at a time for the given voice. */
+  virtual rsFloat64x2 getSample(const rsFloat64x2& in, int voice) { return rsFloat64x2(0, 0); }
+
+  /** Block processing function. Can be overriden optionally for optimization. */
+  virtual void processBlock(rsFloat64x2* inOut, int numSamples, int voice)
+  {
+    for(int n = 0; n < numSamples; n++)
+      inOut[n] = getSample(inOut[n], voice);
+  }
+
+  /** Event handler. Must be overriden, if the module needs to respond to events. */
   virtual void handleEvent(rsMusicalEvent* event) {};
+
+  /** under construction */
+  void updateModulatedParameters(int voice);
 
 
   /** Must be overriden by subclasses to produce one sample at a time. */
   //virtual rsFloat64x2 getSample(const rsFloat64x2& in) = 0;
 
 
-  /** Must be overriden by subclasses to produce one sample at a time for the given voice. */
-  //virtual rsFloat64x2 getSample(const rsFloat64x2& in, int voice) = 0;
-  virtual rsFloat64x2 getSample(const rsFloat64x2& in, int voice) { return rsFloat64x2(0, 0); }
+
   // get rid - use processFrame instead
 
   // maybe have a function processFrame(double* in, double *out); the number of in/out channels may
   // vary from module to module
 
 
-  /*
-  virtual void processBlockStereo(rsFloat64x2* inOut, int numSamples)
-  {
-    for(int n = 0; n < numSamples; n++)
-      inOut[n] = getSample(inOut[n]);
-  }
-  */
+
+
+
 
 protected:
 
@@ -172,7 +189,9 @@ protected:
 };
 
 // todo: 
-// -don't distinguish between audio-sources and modulators at this level
+// -maybe don't distinguish between audio-sources and modulators at this code level - modulators 
+//  are also just rsPolyModules - that means they must also produce stereo output - maybe in most
+//  cases, just copy the output into both channels
 
 
 }

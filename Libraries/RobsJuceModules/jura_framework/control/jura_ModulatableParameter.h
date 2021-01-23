@@ -16,7 +16,7 @@ How to use it:
 Client code that wants to use the modulation system for plugin parameters must do the following 
 things:
 
--derive its AudioModule from ModulatableAudioModule (or from a subclass therof)
+-derive its AudioModule from ModulatableAudioModule (or from a subclass thereof)
 -somewhere have a ModulationManager object lying around, a pointer to that object should be passed
  to the constructor call of the ModulatableAudioModule baseclass
 -use objects of type ModulatableParameter for its parameters
@@ -95,17 +95,17 @@ Parameter <- MetaControlledParameter <- ModulatableParameter <- PolyphonicParame
 
 ToDo:
 -It doesn't work in Elan's SpiralGenerator - why? maybe it has to do with creation order? There,
- the modulators whould modulate parameters of their parent module, in chainer it's the sibling
+ the modulators whould modulate parameters of their parent module, in ToolChain it's the sibling
  modules - and no sources or targets are created in the constructor
  Solution:
  -call setModulationManager in constructor b4 creating sources and targets
  -..
 -figure out what happens if the user changes the range of depthParam - how will this affect the 
  meta-value, how can we make sure that the depth parameter is always consistent with its attached 
- metaparameter? how its patch recall affected?
+ metaparameter? how is patch recall affected?
 -optimize, where possible - maybe the scaler can be multiplied into the depth (maybe use a 
  scaledDepth member)
- -maybe the ModulationManager shhould maintain an array usedSources and itereate only over that in
+ -maybe the ModulationManager should maintain an array usedSources and iterate only over that in
   applyModulations (similar to the treatment of affectedTargets - maybe call the arrays 
   connectedTargets and connectedSources to make the parallelism obvious)
 -let the depth be controlled by key and/or velocity - or better, make key and vel available as
@@ -189,7 +189,7 @@ protected:
   static std::vector<ModulationConnection*> dummyConnections;
   // These are empty dummy arrays to which references will be returned by 
   // getAvailableModulationSources/Targets/getModulationConnections in case our modManager is a 
-  // nullptr.  This is somehow ugly design, maybe use the "Null Object" pattern instead:
+  // nullptr. This is somehow ugly design, maybe use the "Null Object" pattern instead:
   // https://sourcemaking.com/design_patterns/null_object
   // somewhere, we should have a default "null" ModulationManager object lying around to which
   // our pointer is initialized
@@ -225,7 +225,7 @@ public:
     modValue = getModulatorOutputSample(); 
     //jassert(RAPT::rsIsFiniteNumber(modValue));
   }
-  // when the dust settles, delete these comments
+  // when the dust settles, delete these comments...and this function - it's obsolete now, right?
 
   /** Override this function in your subclass to produce one modulator output sample at a time. */
   virtual double getModulatorOutputSample() = 0;
@@ -258,6 +258,12 @@ protected:
   // subclassing their monophonic counterparts (just by mixing in the AudioModulePoly class) - 
   // without any issues with virtual inheritance ...but they would still need to delete the 
   // monophonic parameters and replace them by polyphonic ones
+  // or: maybe get rid of this member entirely - see comments at updateModulationValue - if this 
+  // function is obsolete, then so is this member. If we don't store the value here, it may also 
+  // facilitate polyphony - mayby make a subclass ModulationSourcePoly in which we have a function
+  // getModulatorOutputSample(int voiceIndex) instead of a parameterless function
+  // or maybe just add another member getModulatorOutputSamplePoly(int voiceIndex) to this class.
+  // this may make it easier to devise the class hierarchy
 
   juce::String modSourceName = "ModulationSource";
   juce::String displayName   = "";
@@ -426,7 +432,15 @@ protected:
   int    defaultModMode = 0; // absolute
 
   friend class ModulationConnection;
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget);
+
+  // ToDo: try to get rid of the modulated modulatedValue - all functions that reference it should
+  // instead receive a pointer or reference to the modulatedValue. That facilitates that the 
+  // ModulationManager controls where the value is stored which in turn facilitates extension to
+  // polyphony...i think...we'll see. It also makes the call a little leaner...maybe we should use
+  // float instead of double
+
+
 };
 
 //=================================================================================================
@@ -500,9 +514,9 @@ public:
     {
       z = RAPT::rsClip(u * pow(m, d) - u, -1.e100, +1.e100);
       // Multiplicative mode may produce infinity when it gets an input like m=0, d=-1: 0^-1 = 1/0.
-      // That in itself might later be clipped to max target value but if one modulator produces
-      // inf and another one -inf because u is negative in the 2nd, we would get inf-inf = NaN so
-      // we need to clip here already.
+      // That in itself might not be a problem due to later being clipped to the max target value 
+      // but if one modulator produces inf and another one -inf because u is negative in the 2nd, 
+      // we would get inf-inf = NaN so we need to clip here already.
     } break;
     default:             z = 0;
     }
@@ -540,7 +554,10 @@ protected:
   friend class ModulationSource;
   friend class ModulationTarget;
   friend class ModulationManager;
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection) 
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection);
+
+  // ToDo: try to get rid of sourceValue, targetValue - functions that reference these should 
+  // instead get pointers passed - this is also for facilitating polyphony
 };
 
 //=================================================================================================
@@ -732,7 +749,7 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTargetObserver)
 };
 
-/** A subclass of ModulationTarget that allows to be monitored by observer objects, for example,
+/** A subclass of ModulationTarget that allows to be monitored by observer objects. For example,
 a slider on a gui could keep track of whether its underlying parameter has modulations applied to 
 it and if so, change its appearance. */
 
@@ -853,7 +870,8 @@ class JUCE_API ModulatableParameter2 : public ModulatableParameter
   }
 };
 // Elan uses this - eventually, i should probably switch to this too and get rid of all the other
-// callback types in class Parameter
+// callback types in class Parameter - but the current mechanism may actually be more performant 
+// than std::function - check this first
 
 //=================================================================================================
 
@@ -888,6 +906,8 @@ protected:
 
   std::vector<double> modulatedValues; 
   // this array is the replacement the single "modulatedValue" member of the monophonic baseclass
+  // ...nah - this is bad design - very wasteful with memory - try to get rid of the modulatedValue 
+  // member, see comments
 
 };
 
@@ -982,7 +1002,7 @@ private:
 
 
 // i think, a special ModulationConnection (sub)class is not needed for polyphony - we can use the
-// ame class as in the monophonic case
+// same class as in the monophonic case
 
 class JUCE_API ModulationManagerPoly : public ModulationManager
 {

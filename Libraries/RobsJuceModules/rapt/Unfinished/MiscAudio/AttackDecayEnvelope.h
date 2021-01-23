@@ -219,6 +219,24 @@ protected:
 
 };
 
+/*
+todo:
+-later extend it to allow for a two-stage decay (maybe in a subclass)
+-make it polyphonic - allow to build a very basic subtractive synth from such envelopes, a simple
+osc class (maybe TriSaw osc?) and the rsLadder filter
+-the filter cutoff, osc-frequency and overall amplitude should be (polyphonically) modulated by
+this simple envelope
+-maybe also have some simple LFO class
+*/
+
+
+
+
+
+
+
+
+
 //=================================================================================================
 
 // maybe this class should not be part of rapt but be moved to rosic - maybe also for the rsVoice
@@ -298,12 +316,3 @@ protected:
 
 
 
-/*
-todo:
--later extend it to allow for a two-stage decay (maybe in a subclass)
--make it polyphonic - allow to build a very basic subtractive synth from such envelopes, a simple
- osc class (maybe TriSaw osc?) and the rsLadder filter
- -the filter cutoff, osc-frequency and overall amplitude should be (polyphonically) modulated by
-  this simple envelope
- -maybe also have some simple LFO class
-*/

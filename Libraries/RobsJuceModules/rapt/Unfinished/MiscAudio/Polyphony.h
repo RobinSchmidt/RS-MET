@@ -1,8 +1,10 @@
 #pragma once
 
 
+// move to rosic
 
 /** Baseclass for all DSP classes that need to implement polyphony handling... */
+
 
 class rsVoice
 {

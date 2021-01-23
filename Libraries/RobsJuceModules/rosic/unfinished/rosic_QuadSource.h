@@ -47,7 +47,21 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  void processFrame(const double* in, int numIns, double* out, int numOuts, int voice) override
+
+  rsFloat64x2 getSample(const rsFloat64x2& in, int voice) override
+  { 
+    rsFloat64x2 gains[4];
+    mixer->getGains(&gains[0], &gains[1], &gains[2], &gains[3]);
+
+    rsFloat64x2 out(0, 0);
+    for(int i = 0; i < numSources; i++)
+      out += gains[i] * sources[i]->getSample(in, voice);
+    return out;
+  }
+
+
+  /*
+  void processFrameNoMix(const double* in, int numIns, double* out, int numOuts, int voice)
   {
     RAPT::rsAssert(numOuts == 8); // 4 stereo outs
 
@@ -69,7 +83,18 @@ public:
     out[5] *= a[2];
     out[6] *= a[3];
     out[7] *= a[3];
+    // maybe factor out the weighting by the gain factors
   }
+
+  void processFrame(const double* in, int numIns, double* out, int numOuts, int voice) override
+  {
+    RAPT::rsAssert(numOuts == 2); // stereo out
+    double tmp[8];
+    processFrameNoMix(in, numIns, tmp, 8, voice);
+    out[0] = tmp[0] + tmp[2] + tmp[4] + tmp[6];
+    out[1] = tmp[1] + tmp[3] + tmp[5] + tmp[7];
+  }
+  */
 
   // todo: implement processBlock
 

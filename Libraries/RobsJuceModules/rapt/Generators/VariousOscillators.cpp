@@ -6,7 +6,7 @@ void rsTriSawOscillator<T>::updateTriSawCoeffs()
   //// range variables - make settable members later:
   //T min = -1;
   //T max = +1;
-  //// hmm...but actually we need thme to be -1 and 1 because the waveshaping expects its input in
+  //// hmm...but actually we need them to be -1 and 1 because the waveshaping expects its input in
   //// this range - if the range should really be different we may scale/shift as last step...
 
   //// coeffs:
@@ -64,7 +64,7 @@ void rsTriSawOscillator<T>::updateTriSawCoeffs()
 // f'(0) = a*d/d^2 = s
 // f(0)  = 0 ...damn - we loose the ability to adjust the y-value at the midpoint - we need both
 
-// how about f(x) = a0 + a1*x + a3*x^3 / (b0 + b1*x)
+// how about f(x) = (a0 + a1*x + a3*x^3) / (b0 + b1*x)
 // should allow to adjust both...maybe also try an a2*x^2 term insead of a3*x^3 ...or maybe both?
 // or maybe try a 2nd order denominator, too - maybe a general biquadratic formula?
 // looks like it's flexible enough: https://www.desmos.com/calculator/4dxeptvth3

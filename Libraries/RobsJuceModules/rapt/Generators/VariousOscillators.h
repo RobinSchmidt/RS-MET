@@ -218,7 +218,7 @@ public:
     // maybe do also a wraparound at 0 -> allow negative frequencies
   }
 
-  // maybe have a function that returns x and y separately - maybe that's useful as stero signal?
+  // maybe have a function that returns x and y separately - maybe that's useful as stereo signal?
   // if not, it is certainly helpful to figure out what the osc is doing - and then we can do 
   // mid/side (re)mixing
 

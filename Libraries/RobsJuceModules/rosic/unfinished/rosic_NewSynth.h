@@ -25,19 +25,47 @@ public:
 
 
 
-
+  /*
   INLINE rsFloat64x2 getSample(const rsFloat64x2& x)
   {
     return 0;
     //return filter.getSample(source.getSample(x));
   }
+  */
 
-  INLINE void getSampleFrameStereo(double* left, double* right)
+  void getSampleFrameStereo(double* left, double* right)
   {
-    *left = *right = 0;
+    //double in[2];
+    //in[0] = *left;
+    //in[1] = *right;
+
+
+    rsFloat64x2 in(*left, *right);
+    rsFloat64x2 out(0.0);
+    rsFloat64x2 tmp;
+    for(int i = 0; i < getNumActiveVoices(); i++)
+    {
+      int v = getVoiceIndex(i);
+
+      // Update modulators for current voice:
+      //polyMod.updateModulatorOutputs(v);
+      source.updateModulatedParameters(v);
+      filter.updateModulatedParameters(v);
+
+      // Produce voice's audio signal and add to the output:
+      tmp  = source.getSample(in,  v);
+      tmp  = filter.getSample(tmp, v);
+      out += tmp;
+    }
+
     //rsFloat64x2 tmp(*left, *right);
     //*left  = tmp[0];
     //*right = tmp[1];
+
+    //*left = *right = 0;
+
+    *left  = out[0];
+    *right = out[1];
   }
 
 //protected:
