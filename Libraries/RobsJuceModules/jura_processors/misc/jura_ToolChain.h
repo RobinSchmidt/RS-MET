@@ -52,7 +52,7 @@ AudioModule objects.
 
  */
 
-class JUCE_API ToolChain  : public jura::AudioModuleWithMidiIn
+class JUCE_API ToolChain : public jura::AudioModulePoly   /*public jura::AudioModuleWithMidiIn*/
   /*, public jura::ModulationManager*/
   // we need to have a ModulationManager member to pass it to the constructor of
   // AudioModuleWithMidiIn
@@ -61,6 +61,7 @@ class JUCE_API ToolChain  : public jura::AudioModuleWithMidiIn
 public:
 
   ToolChain(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr);
+
   virtual ~ToolChain();
 
   //-----------------------------------------------------------------------------------------------
@@ -172,6 +173,11 @@ protected:
   /** Sets up the pointers to the SmoothingManager, MetaParameterManager and ModulationManager in
   the passed module. */
   void setupManagers(AudioModule* module);
+
+  /** Overriden from AudioModulePoly. We iterate through our modules array and call the same 
+  function on the modules where this is applicable, i.e. those that are also subclasses of
+  AudioModulePoly. */
+  void allocateVoiceResources() override;
 
   /** Checks, if the passed AudioModule can be cast into a ModulationSource and if so, adds it to
   our array of ModulationSources (inherited from ModulationManager). */

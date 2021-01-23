@@ -78,7 +78,7 @@ protected:
 
 //=================================================================================================
 
-class JUCE_API AttackDecayEnvelopeModulePoly : public AudioModulePoly, public ModulationSourcePoly
+class JUCE_API AttackDecayEnvelopeModulePoly : public AudioModulePoly
 {
 
 public:
@@ -86,9 +86,9 @@ public:
   AttackDecayEnvelopeModulePoly(CriticalSection *lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr, 
     ModulationManager* modManagerToUse = nullptr,
-    rsVoiceManager* voiceManagerToUse = nullptr);
+    rosic::rsVoiceManager* voiceManagerToUse = nullptr);
 
-  virtual ~AttackDecayEnvelopeModulePoly();
+  virtual ~AttackDecayEnvelopeModulePoly() {}
 
   /*
   virtual void setSampleRate(double newSampleRate) override; 
@@ -110,11 +110,21 @@ public:
 
 protected:
 
-  virtual void createCores();
+  // called once in the constructor:
+  //virtual void createCores();
   virtual void createParameters();
 
-  std::vector<RAPT::rsAttackDecayEnvelope<double>*> cores;
 
+  void allocateVoiceResources() override;
+
+
+  //std::vector<RAPT::rsAttackDecayEnvelope<double>*> cores;
+  // no - that's not good - we should have one full rsAttackDecayEnvelope object with the full set
+  // of parameters and the voices should be leaner objects that only store the voice-dependent 
+  // state
+
+  // maybe have an array of direct objects, not pointers - easier to handle:
+  std::vector<RAPT::rsAttackDecayEnvelope<double>> cores;
 
 
   // parameters:

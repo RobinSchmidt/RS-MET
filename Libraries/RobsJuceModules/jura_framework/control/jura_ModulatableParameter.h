@@ -208,7 +208,10 @@ public:
 
   /** Constructor */
   ModulationSource(ModulationManager* managerToUse = nullptr) 
-    : ModulationParticipant(managerToUse) {}
+    : ModulationParticipant(managerToUse) 
+  {
+    modValues.resize(1);  // monophonic by default
+  }
 
   /** Destructor */
   virtual ~ModulationSource();
@@ -222,7 +225,7 @@ public:
   //virtual void updateModulationValue() = 0;
   virtual void updateModulationValue() final 
   { 
-    modValue = getModulatorOutputSample(); 
+    modValues[0] = getModulatorOutputSample(); 
     //jassert(RAPT::rsIsFiniteNumber(modValue));
   }
   // when the dust settles, delete these comments...and this function - it's obsolete now, right?
@@ -252,11 +255,12 @@ public:
 
   /** Returns the current output value of the modulations source. This is supposed to be called 
   after updateModulationValue has been called. */
-  inline double getModulationValue() const { return modValue; }
+  inline double getModulationValue() const { return modValues[0]; }
 
 protected:
 
-  double modValue = 0;    // get rid - or replace by array
+  //double modValue = 0;    // get rid - or replace by array
+  std::vector<double> modValues;
   // maybe use a std::vector to support polyphony already here - obviates subclass 
   // ModulationSourcePoly which would make some things easier - when then AudioModulePoly is 
   // realized as a mix-in class, then polyphonic modulator classes could be realized by 
@@ -269,6 +273,10 @@ protected:
   // getModulatorOutputSample(int voiceIndex) instead of a parameterless function
   // or maybe just add another member getModulatorOutputSamplePoly(int voiceIndex) to this class.
   // this may make it easier to devise the class hierarchy
+
+  // maybe we don't need an array, if we process one voice after another - but no: the modulator 
+  // output values must be available all at once when we iterate through the polyphonic modules
+
 
   juce::String modSourceName = "ModulationSource";
   juce::String displayName   = "";
@@ -288,7 +296,10 @@ public:
 
   /** Constructor */
   ModulationTarget(ModulationManager* managerToUse = nullptr) 
-    : ModulationParticipant(managerToUse) {}
+    : ModulationParticipant(managerToUse) 
+  {
+    modulatedValues.resize(1);  // monophonic by default
+  }
 
   /** Destructor */
   virtual ~ModulationTarget();
@@ -311,9 +322,9 @@ public:
   will be computed. */
   void setUnmodulatedValue(double newValue)
   {
-    unmodulatedValue = newValue;
+    unmodulatedValue   = newValue;
 
-    modulatedValue   = unmodulatedValue; 
+    modulatedValues[0] = unmodulatedValue; 
     // Elan's smoother needs this - it makes sure that the modulated value is always the same as
     // the unmodulated value, even in cases in case where no modulations are applied (in which case 
     // initModulatedValue is not called (per sample)). It works only, if the smoother calls 
@@ -321,6 +332,7 @@ public:
     // otherwise the modulations don't work anymore, because the modulatedValue is reset after 
     // modulations have been applied. It's a bit hacky but probably needs to be taken into account
     // when designing a parameter smoother for jura.
+    // do we also need to set more values in the array in the polyphonic case?
   }
 
   /** Adds a ModulationSource to this ModulationTarget. The amount of modulation is initially 0. */
@@ -409,16 +421,33 @@ public:
   /** Initializes the modulated value by setting it to the unmodulated value. */
   inline void initModulatedValue()
   {
-    modulatedValue = unmodulatedValue;
+    modulatedValues[0] = unmodulatedValue;
   }
+
+  inline void initModulatedValuesPoly(int numPlayingVoices)
+  {
+    jassert(numPlayingVoices < modulatedValues.size());
+    for(int i = 0; i < numPlayingVoices; i++)
+      modulatedValues[i] = unmodulatedValue;
+    // maybe the value with index 0 should always be set, regardless of how many voices are 
+    // playing? so maybe drage the i = 0 case out of the loop?
+  }
+  // under construction
 
   /** Function to retrieve the modulated value after all modulations have been applied. This may 
   also include a clipping function, such that the returned value is restricted to some allowable
   range. */
   inline double getModulatedValue() const
   {
-    return RAPT::rsClip(modulatedValue, rangeMin, rangeMax);
+    return RAPT::rsClip(modulatedValues[0], rangeMin, rangeMax);
   }
+
+  inline double getModulatedValuePoly(int voice) const
+  {
+    jassert(voice < modulatedValues.size());
+    return RAPT::rsClip(modulatedValues[voice], rangeMin, rangeMax);
+  }
+  // under construction
 
   /** Returns the unmodulated value, which is the base value when no modulation is applied. */
   inline double getUnmodulatedValue() const
@@ -430,14 +459,29 @@ public:
   a contribution from a modulator to the modulated value. */
   inline void addToModulatedValue(double amount)
   {
-    modulatedValue += amount;
+    modulatedValues[0] += amount;
   }
+
+  /** Polyphonic version of addToModulatedValue. */
+  inline void addToModulatedValuePoly(double amount, int voice)
+  {
+    jassert(voice < modulatedValues.size());
+    modulatedValues[voice] += amount;
+  }
+  // under construction
 
 
 protected:
 
   double unmodulatedValue = 0;
-  double modulatedValue = 0;     // replace by array
+
+  //double modulatedValue = 0;     // replace by array
+  std::vector<double> modulatedValues;
+  // maybe we don't need an array (i.e. revert to the single modulatedValue member), if we process
+  // one voice after another - that would save a lot of memory - for the modulation sources, we may
+  // still need the array - but that's not that memory intensive because the number of sources is
+  // typically much smaller than the number of possible targets
+
   double rangeMin = -INF, rangeMax = INF; 
   double defaultDepthMin = -1, defaultDepthMax = 1;
   double initialDepth = 0.0;
@@ -892,7 +936,7 @@ class JUCE_API ModulatableParameter2 : public ModulatableParameter
 //=================================================================================================
 
 // the stuff below is under construction - it's for the polyphonic version of the modulation system
-
+/*
 class JUCE_API ModulationSourcePoly : public ModulationSource
 {
 
@@ -926,10 +970,9 @@ protected:
   // member, see comments
 
 };
+*/
 
-
-class JUCE_API ModulatableParameterPoly 
-  : public ModulatableParameter, virtual public ModulationTargetPoly
+class JUCE_API ModulatableParameterPoly : public ModulatableParameter /*, virtual public ModulationTargetPoly*/
   // todo: check, if the inheritance order makes a difference - 
 {
 
@@ -949,6 +992,7 @@ public:
     valueChangeCallbackPoly = cb;
     //callValueChangeCallbackPoly(value);
   }
+  // maybe make the parameter a const reference
 
   void callValueChangeCallbackPoly(double value, int voiceIndex)
   {
@@ -971,7 +1015,8 @@ protected:
   //std::vector<SetValueCallback*> valueChangeCallbacks;
   // for testing, we only use a "double" callback - it's very ugly design in Parameter, to have 
   // pointers to all 3 kinds of callbacks (double, int, bool) - maybe refactor and/or templatize 
-  // the design...or maybe just use std::function, as Elan does
+  // the design...or maybe just use std::function, as Elan does - but before doing such a switch, 
+  // figure out if the old way is more performant - if that's the case, it may be better to keep it
 
   //typedef std::function<void(double)> SetValueCallback;
   //std::vector<SetValueCallback*> valueChangeCallbacks;
@@ -992,7 +1037,6 @@ private:
 
 
   //GenericMemberFunctionCallback1<void, double> *valueChangeCallbackDouble
-
 
 };
 // -maybe it should have its own callCallbacks function that takes the voice index as second 

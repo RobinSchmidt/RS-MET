@@ -617,20 +617,25 @@ void ModulationManager::sendModulationChangeNotificationFor(ModulationTarget* ta
 
 //-------------------------------------------------------------------------------------------------
 
-void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks)
+void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotification, 
+  bool callCallbacks)
 {
   MetaControlledParameter::setNormalizedValue(newValue, sendNotification, callCallbacks);
-  modulatedValue = unmodulatedValue = value; 
+  unmodulatedValue = value;
+  modulatedValues[0] = unmodulatedValue;
+  // should we iterate over the array here? i guess not because this is supposed to be a 
+  // monophonic parameter, so the 0th entry is the only one that exists
 
-  //callValueChangeCallbacks(value); // might result in redundant call since baseclass may already call it?
-  // maybe we should use "false" for the callCallbacks parameter in the baseclass call and call it here 
-  // manually only when there is no smoothing and no modulation
+  //callValueChangeCallbacks(value); // might result in redundant call since baseclass may already 
+  // call it? maybe we should use "false" for the callCallbacks parameter in the baseclass call and
+  // call it here manually only when there is no smoothing and no modulation
 }
 
 void ModulatableParameter::setSmoothedValue(double newValue)
 {
-  modulatedValue = unmodulatedValue = mapper->map(newValue);
-  callValueChangeCallbacks(unmodulatedValue); 
+  unmodulatedValue = mapper->map(newValue);
+  modulatedValues[0] = unmodulatedValue;
+  callValueChangeCallbacks(unmodulatedValue);
 
   // later do:
   //if( hasConnectedSources() )
@@ -667,3 +672,5 @@ void ModulatableParameterPoly::callValueChangeCallbacks(
   for(int i = 0; i < numActiveVoices; i++)
     callValueChangeCallbackPoly(values[i], voiceIndices[i]);
 }
+
+// maybe we also need to override setNormalizedValue, setSmoothedValue

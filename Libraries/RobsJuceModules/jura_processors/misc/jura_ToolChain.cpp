@@ -23,13 +23,14 @@ public:
 
 ToolChain::ToolChain(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse) 
-  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse/*, &modManager*/) // passing modManager causes access violation (not yet constructed)?
+  : AudioModulePoly(lockToUse, metaManagerToUse/*, &modManager*/) // passing modManager causes access violation (not yet constructed)?
   , modManager(lockToUse), moduleFactory(lockToUse) // maybe pass the metaManagerToUse to this constructor call
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("ToolChain");
   modManager.setMetaParameterManager(metaManagerToUse);
-  setModulationManager(&modManager);
+  setModulationManager(&modManager);            // maybe use "new" for this, too
+  setVoiceManager(new rosic::rsVoiceManager);
   //createDebugModSourcesAndTargets(); // for debugging the mod-system
   populateModuleFactory();
   addEmptySlot();
@@ -51,6 +52,8 @@ ToolChain::~ToolChain()
 
   for(int i = 0; i < size(modules); i++)
     delete modules[i];
+
+  delete voiceManager;
 }
 
 void ToolChain::addEmptySlot()
@@ -425,6 +428,17 @@ void ToolChain::setupManagers(AudioModule* m)
   ModulatableAudioModule* mm = dynamic_cast<ModulatableAudioModule*>(m);
   if(mm)
     mm->setModulationManager(&modManager);
+  AudioModulePoly* pm = dynamic_cast<AudioModulePoly*> (m);
+  if(pm != nullptr)
+    pm->setVoiceManager(voiceManager);
+}
+
+void ToolChain::allocateVoiceResources()
+{
+  for(size_t i = 0; i < modules.size(); i++) {
+    AudioModulePoly* pm = dynamic_cast<AudioModulePoly*> (modules[i]);
+    if(pm != nullptr)
+      pm->allocateVoiceResources(); }
 }
 
 void ToolChain::addToModulatorsIfApplicable(AudioModule* module)
@@ -509,6 +523,8 @@ void ToolChain::createDebugModSourcesAndTargets()
 
 void ToolChain::populateModuleFactory()
 {
+  //ScopedLock scopedLock(*lock);
+
   typedef CriticalSection* CS;
   typedef AudioModule* AM;
   CS cs = lock;
@@ -525,7 +541,7 @@ void ToolChain::populateModuleFactory()
 #endif
 
   s = "Sources";
-
+  // no sources available yet, todo: move TriSawOsc, etc. here, when done, implement QuadSource
 
   s = "Filters";
   f.registerModuleType([](CS cs)->AM { return new EqualizerAudioModule(cs);       }, s, "Equalizer");
@@ -534,7 +550,6 @@ void ToolChain::populateModuleFactory()
 
   s = "Modulators";
   f.registerModuleType([](CS cs)->AM { return new BreakpointModulatorAudioModule(cs); }, s, "BreakpointModulator");
-  f.registerModuleType([](CS cs)->AM { return new TriSawModulatorModule(cs); },          s, "TriSawModulator");
 
 
   s = "Dynamics";
@@ -575,8 +590,13 @@ void ToolChain::populateModuleFactory()
   //f.registerModuleType([](CS cs)->AM { return new CrossOverAudioModule(cs);       }, s, "CrossOver");
 
   // Modulators:
+  f.registerModuleType([](CS cs)->AM { return new AttackDecayEnvelopeModulePoly(cs); },      s, "EnvelopeAD");
   f.registerModuleType([](CS cs)->AM { return new AttackDecayEnvelopeModule(cs); },      s, "AttackDecayEnvelope");
   //f.registerModuleType([](CS cs)->AM { return new AttackDecayEnvelopeModulePoly(cs); },      s, "AttackDecayEnvelope");
+  f.registerModuleType([](CS cs)->AM { return new TriSawModulatorModule(cs); },          s, "TriSawModulator");
+  // rename to TriSawLFO
+
+
 
   // Effects:
   //f.registerModuleType([](CS cs)->AM { return new NodeShaperAudioModule(cs);   }, s, "NodeShaper");

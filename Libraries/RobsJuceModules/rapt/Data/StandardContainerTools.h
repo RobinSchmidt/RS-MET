@@ -67,6 +67,32 @@ void rsCopy(const std::vector<T>& src, std::vector<T>& dst)
   rsArrayTools::copy(&src[0], &dst[0], (int)src.size());
 }
 
+/** For a vector v of pointers to objects, this functions deletes all the objects. */
+template<class T>
+inline void rsDeleteObjects(const std::vector<T*>& v)
+{
+  for(size_t i = 0; i < v.size(); i++)
+    delete v[i];
+}
+
+/** Calls rsDeleteObjects and clears the vector. */
+template<class T>
+inline void rsDeleteObjectsAndClear(const std::vector<T*>& v)
+{
+  rsDeleteObjects(v);
+  v.clear();
+}
+
+/** Like rsDeleteObjects but additionally sets the pointers to nullptr. */
+template<class T>
+inline void rsDeleteObjectsAndNull(const std::vector<T*>& v)
+{
+  for(size_t i = 0; i < v.size(); i++) {
+    delete v[i];
+    v[i] = nullptr; }
+}
+
+
 template<class T>
 inline size_t rsSize(const std::vector<T>& v)
 {

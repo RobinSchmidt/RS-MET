@@ -30,6 +30,33 @@ protected:
 
 };
 
+//=================================================================================================
+
+
+
+class rsVoiceManager
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  int getMaxNumVoices() const { return maxNumVoices; }
+
+
+protected:
+
+  int maxNumVoices    = 16;  // maximum number of voices
+  int numVoices       =  8;  // number of available voices
+  int numActiveVoices =  0;  // number of currently playing voices
+
+};
+
+
+
+
+
 
 
 //=================================================================================================

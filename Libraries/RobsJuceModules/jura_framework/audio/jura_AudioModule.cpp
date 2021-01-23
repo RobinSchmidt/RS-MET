@@ -700,20 +700,29 @@ void AudioModuleWithMidiIn::setPitchBend(int pitchBendValue)
 
 AudioModulePoly::AudioModulePoly(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse, 
-  rsVoiceManager* voiceManagerToUse) 
+  rosic::rsVoiceManager* voiceManagerToUse) 
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse) 
 {
   setVoiceManager(voiceManagerToUse);
 }
 
-void AudioModulePoly::setVoiceManager(rsVoiceManager* managerToUse)
+void AudioModulePoly::setVoiceManager(rosic::rsVoiceManager* managerToUse)
 {
   voiceManager = managerToUse;
-  // todo: maybe loop through child-modules and set the managere there, too
+  allocateVoiceResources();
+  for(int i = 0; i < size(childModules); i++) {
+    AudioModulePoly* pm = dynamic_cast<AudioModulePoly*>(childModules[i]);
+    if(pm)
+      pm->setVoiceManager(voiceManager); }
 }
 
-
-
+void AudioModulePoly::addChildAudioModule(AudioModule* moduleToAdd)
+{
+  AudioModuleWithMidiIn::addChildAudioModule(moduleToAdd);
+  AudioModulePoly* pm = dynamic_cast<AudioModulePoly*> (moduleToAdd);
+  if(pm != nullptr)
+    pm->setVoiceManager(voiceManager);
+}
 
 //=================================================================================================
 // class AudioModuleEditor

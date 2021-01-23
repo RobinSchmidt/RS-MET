@@ -3,7 +3,8 @@
 // rename to Oscillators
 //=================================================================================================
 
-/** A thin wrapper around rosic::SineOscillator to facilitate use as an AudioModule. */
+/** A thin wrapper around rosic::SineOscillator to facilitate use as an AudioModule. Maybe get 
+rid of that. */
 
 class JUCE_API SineOscCore : private rosic::SineOscillator
 {
@@ -65,6 +66,32 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SineOscAudioModule)
 };
+
+class JUCE_API SineOscAudioModulePoly : public jura::AudioModulePoly
+{
+
+public:
+
+  SineOscAudioModulePoly(CriticalSection *lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr,
+    rosic::rsVoiceManager* voiceManagerToUse = nullptr);
+
+
+protected:
+
+
+  virtual void createCores();
+  virtual void createParameters();
+
+  std::vector<SineOscCore*> cores;
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SineOscAudioModulePoly)
+};
+
+
+//class JUCE_API AttackDecayEnvelopeModulePoly : public AudioModulePoly
 
 //=================================================================================================
 

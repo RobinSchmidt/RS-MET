@@ -62,7 +62,7 @@ AttackDecayEnvelopeModule::AttackDecayEnvelopeModule(CriticalSection *lockToUse,
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse)
 {
   ScopedLock scopedLock(*lock);
-  setModuleTypeName("AttackDecayEnvelope");
+  setModuleTypeName("AttackDecayEnvelope");  // maybe use EnvelopeAD or EnvelopeAD_Mono
   createParameters();
 }
 
@@ -112,30 +112,46 @@ AttackDecayEnvelopeModulePoly::AttackDecayEnvelopeModulePoly(CriticalSection* lo
   : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
 {
   ScopedLock scopedLock(*lock);
-  setModuleTypeName("AttackDecayEnvelope");
-  createCores();
+  //setModuleTypeName("AttackDecayEnvelope");  // use EnvelopeAD
+  setModuleTypeName("EnvelopeAD");  //
+  //createCores();
   createParameters();
 }
 
+/*
 AttackDecayEnvelopeModulePoly::~AttackDecayEnvelopeModulePoly()
 {
-  for(size_t i = 0; i < cores.size(); i++)
-    delete cores[i];
+  RAPT::rsDeleteObjects(cores);
+  //for(size_t i = 0; i < cores.size(); i++)
+  //  delete cores[i];
   // maybe make a subclass of std::vector rsOwnedPointerArray that deletes the objects when it
   // goes out of scope ...i think, that's also what juce::OwnedArray does? ...maybe have an 
   // intermediate clas rsPointerArray that doesn't do the deletion
 }
+*/
 
+/*
 void AttackDecayEnvelopeModulePoly::createCores()
 {
-  int numCores = 16; // todo: use maxNumVoices - inquire from voiceManager or AudioModulePoly baseclass
+  //jassert(voiceManager != nullptr); 
+  // voiceManager needs to be a valid object at this point - oh, no, it's sometimes not: In debug 
+  // mode, we create all modules in AudioModuleFactory in order to check that the moduleTypeName is
+  // set up correctly. There, we do not set up the voiceManager
 
+  int numCores = 1;
+  if(voiceManager != nullptr)
+    numCores = voiceManager->getMaxNumVoices();
   cores.resize(numCores);
   for(size_t i = 0; i < cores.size(); i++)
     cores[i] = new RAPT::rsAttackDecayEnvelope<double>;
 
-  int dummy = 0;
+  // If, at some point, we make the maximum number of voices adjustable at runtime, we need a 
+  // mechanism to create more objects, if the max number of voices goes up. Currently, the maximum
+  // number of voices is supposed to be a fixed value that is set up once and for all at 
+  // construction time.
 }
+*/
+
 
 void AttackDecayEnvelopeModulePoly::createParameters()
 {
@@ -152,6 +168,14 @@ void AttackDecayEnvelopeModulePoly::createParameters()
   p = new Param("Decay", 10., 1000.0, 100.0, Parameter::EXPONENTIAL); 
   addObservedParameter(p);
   p->setValueChangeCallbackPoly([this](double v, int i) { setDecay(v, i); });
+}
+
+void AttackDecayEnvelopeModulePoly::allocateVoiceResources() 
+{
+  if(voiceManager)
+    cores.resize(voiceManager->getMaxNumVoices());
+  else
+    cores.resize(1); // monophonic in absence of a voice manager
 }
 
 void AttackDecayEnvelopeModulePoly::setAttack(double newAttack, int voice)

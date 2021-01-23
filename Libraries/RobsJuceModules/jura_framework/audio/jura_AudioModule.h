@@ -475,10 +475,6 @@ public:
 
 //=================================================================================================
 
-class rsVoiceManager // stub - maybe move to rosic
-{
-
-};
 
 /** Baseclass for polyphonic AudioModules. They have polyphonic audio outputs, so you can chain a 
 polyphonic oscillator with a polyphonic filter and drop in some polyphonic modulators in ToolChain.
@@ -493,15 +489,25 @@ class JUCE_API AudioModulePoly : public AudioModuleWithMidiIn
 public:
 
   /** Constructor. May set up the managers. */
-  AudioModulePoly(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr, 
-    ModulationManager* modManagerToUse = nullptr, rsVoiceManager* voiceManagerToUse = nullptr);
+  AudioModulePoly(CriticalSection *lockToUse, 
+    MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr, 
+    rosic::rsVoiceManager* voiceManagerToUse = nullptr);
 
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup:
 
-  void setVoiceManager(rsVoiceManager* managerToUse);
+  /** Sets the voice manager for this module and recursively for all the child modules. This will 
+  trigger a call to allocateVoiceResources because the amount of resources needed depends on the
+  maxNumVoices value which is a member of rsVoiceManager - so if the voice manager changes, the
+  resources (DSP objects) may need to be re-allocated. */
+  void setVoiceManager(rosic::rsVoiceManager* managerToUse);
+  // todo: maybe make it optional (true by default) to set it also for the child modules
+
+  /** Overriden in order to set the voice manager for the child modules. */
+  virtual void addChildAudioModule(AudioModule* moduleToAdd) override;
 
 
   //-----------------------------------------------------------------------------------------------
@@ -535,9 +541,21 @@ public:
   }
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc:
+
+  /** Your subclass should override this to allocate the DSP resources for the voices. */
+  virtual void allocateVoiceResources()
+  {
+    // We need to provide an empty baseclass implementation because it gets called in our 
+    // constructor. Maybe get rid of that call and make the function purely virtual. I think, it 
+    // would be better design if this is purely virtual.
+  }
+
 protected:
 
-  rsVoiceManager* voiceManager;
+
+  rosic::rsVoiceManager* voiceManager = nullptr;
 
 };
 
