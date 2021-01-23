@@ -234,13 +234,14 @@ public:
   ModulationSource names, so it can be used to identify the source in state recall. */
   void setModulationSourceName(const juce::String& newName) { modSourceName = newName; }
 
-  /** Returns the name of this ModulationSource. This is the (supposed to be unique) name that will
-  used for identifying the source state recall. */
-  juce::String getModulationSourceName() const { return modSourceName; }
-
   /** Sets a name that should be used in dropdown list when connecting a mod-source. If you don't
   set this up, the name that was set by setModulationSourceName will be used by default. */
   void setModulationSourceDisplayName(const juce::String& newName) { displayName = newName; }
+
+
+  /** Returns the name of this ModulationSource. This is the (supposed to be unique) name that will
+  used for identifying the source state recall. */
+  juce::String getModulationSourceName() const { return modSourceName; }
 
   /** Returns the name that should be used to identify the source in the dropdown menu on the gui.
   This may potentially be different from the name used for state recall. */
@@ -249,9 +250,13 @@ public:
   /** Returns true, if this source is connected to at least one ModulationTarget. */
   bool hasConnectedTargets() const;
 
+  /** Returns the current output value of the modulations source. This is supposed to be called 
+  after updateModulationValue has been called. */
+  inline double getModulationValue() const { return modValue; }
+
 protected:
 
-  double modValue = 0;  
+  double modValue = 0;    // get rid - or replace by array
   // maybe use a std::vector to support polyphony already here - obviates subclass 
   // ModulationSourcePoly which would make some things easier - when then AudioModulePoly is 
   // realized as a mix-in class, then polyphonic modulator classes could be realized by 
@@ -268,7 +273,7 @@ protected:
   juce::String modSourceName = "ModulationSource";
   juce::String displayName   = "";
 
-  friend class ModulationConnection;
+  //friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationSource)
 };
 
@@ -425,7 +430,7 @@ public:
 protected:
 
   double unmodulatedValue = 0;
-  double modulatedValue = 0;
+  double modulatedValue = 0;     // replace by array
   double rangeMin = -INF, rangeMax = INF; 
   double defaultDepthMin = -1, defaultDepthMax = 1;
   double initialDepth = 0.0;
@@ -501,7 +506,8 @@ public:
   /** Applies the source-value to the target-value, taking into account the modulation depth. */
   inline void apply()
   {
-    double m = *sourceValue; // todo: apply map to m, similar to meta-map
+    //double m = *sourceValue; // todo: apply map to m, similar to meta-map, old
+    double m = source->getModulationValue(); // new
     double d = depth;
     double u = target->unmodulatedValue;
     double z;
@@ -543,8 +549,8 @@ protected:
 
   ModulationSource* source;
   ModulationTarget* target;
-  double* sourceValue;       // pointer to modulation source output signal
-  double* targetValue;       // pointer to target value
+  //double* sourceValue;       // pointer to modulation source output signal - get rid!
+  double* targetValue;       // pointer to target value - get rid!
   double depth;              // modulation depth
   int mode = ABSOLUTE;       // application mode for modulation signal
 
@@ -723,6 +729,8 @@ protected:
   std::vector<ModulationTarget*> availableTargets;
   std::vector<ModulationTarget*> affectedTargets;
   std::vector<ModulationConnection*> modulationConnections;
+
+  //std::vector<double> sourceValues;  // later: also have targetValues..hmm..nah
 
   CriticalSection *modLock = nullptr; 
   MetaParameterManager* metaManager = nullptr; // use a null object instead
@@ -1010,6 +1018,12 @@ class JUCE_API ModulationManagerPoly : public ModulationManager
 };
 
 
+// see:
+// https://github.com/RobinSchmidt/RS-MET/wiki/The-Modulation-System
+// https://github.com/RobinSchmidt/RS-MET/issues/65
+// https://github.com/RobinSchmidt/RS-MET/issues/269
+
+// https://github.com/RobinSchmidt/RS-MET/discussions/312
 
 
 

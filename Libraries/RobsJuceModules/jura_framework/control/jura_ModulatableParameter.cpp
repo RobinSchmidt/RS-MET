@@ -182,7 +182,7 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
   source   = _source; 
   target   = _target;
   mode        = target->getDefaultModulationMode();
-  sourceValue = &(source->modValue);
+  //sourceValue = &(source->modValue);    // obsolete
   targetValue = &(target->modulatedValue);
 
   double depthMin = target->getDefaultModulationDepthMin();
@@ -264,8 +264,12 @@ void ModulationManager::applyModulationsNoLock()
 
   // compute output signals of all modulators:
   for(i = 0; i < availableSources.size(); i++)
-    availableSources[i]->updateModulationValue();
-    // maybe we should loop only over an array of "usedSources"?
+  {
+    availableSources[i]->updateModulationValue(); 
+    //sourceValues[i] = availableSources[i]->getModulatorOutputSample();
+  }
+    // maybe we should loop only over an array of "usedSources" as optimization? similar to the way
+    // we only loop over "affectedTargets"
 
   // initialize modulation target values with their unmodulated values:
   for(i = 0; i < affectedTargets.size(); i++)
@@ -381,7 +385,8 @@ void ModulationManager::removeConnection(int i)
 
 void ModulationManager::registerModulationSource(ModulationSource* source)
 {
-  ScopedLock scopedLock(*modLock); 
+  ScopedLock scopedLock(*modLock);
+  //sourceValues.resize(sourceValues.size()+1);
   appendIfNotAlreadyThere(availableSources, source);
   source->setModulationManager(this);
 }
@@ -393,6 +398,7 @@ void ModulationManager::deRegisterModulationSource(ModulationSource* source)
   removeFirstOccurrence(availableSources, source);
   removeConnectionsWith(source);
   source->setModulationManager(nullptr); 
+  //sourceValues.resize(availableSources.size());
 }
 
 void ModulationManager::deRegisterAllSources()
