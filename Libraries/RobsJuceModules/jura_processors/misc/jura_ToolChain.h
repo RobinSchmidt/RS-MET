@@ -52,7 +52,7 @@ AudioModule objects.
 
  */
 
-class JUCE_API ToolChain : public jura::AudioModulePoly   /*public jura::AudioModuleWithMidiIn*/
+class JUCE_API ToolChain : public jura::AudioModulePoly  /*public jura::AudioModuleWithMidiIn */
   /*, public jura::ModulationManager*/
   // we need to have a ModulationManager member to pass it to the constructor of
   // AudioModuleWithMidiIn
@@ -212,6 +212,8 @@ protected:
 
   double sampleRate = 44100;
   std::vector<ToolChainObserver*> observers;
+
+  std::vector<double> voiceSignals;
 
   friend class ToolChainEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ToolChain)

@@ -39,10 +39,32 @@ class rsVoiceManager
 
 public:
 
+  rsVoiceManager()
+  {
+    setMaxNumVoices(16);
+  }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  void setMaxNumVoices(int newNumber)
+  {
+    maxNumVoices    = newNumber;
+    numVoices       = RAPT::rsMin(numVoices,       maxNumVoices);
+    numActiveVoices = RAPT::rsMin(numActiveVoices, maxNumVoices);
+    playingVoices.resize(maxNumVoices);
+  }
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
   int getMaxNumVoices() const { return maxNumVoices; }
+
+  int getNumVoices() const { return numVoices; }
+
+  int getNumActiveVoices() const { return numActiveVoices; } 
 
 
 protected:
@@ -50,6 +72,8 @@ protected:
   int maxNumVoices    = 16;  // maximum number of voices
   int numVoices       =  8;  // number of available voices
   int numActiveVoices =  0;  // number of currently playing voices
+
+  std::vector<int> playingVoices;
 
 };
 

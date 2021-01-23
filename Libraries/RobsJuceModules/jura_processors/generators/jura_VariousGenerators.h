@@ -78,6 +78,10 @@ public:
     ModulationManager* modManagerToUse = nullptr,
     rosic::rsVoiceManager* voiceManagerToUse = nullptr);
 
+  void processStereoFrameVoice(double* left, double* right, int voice) override
+  { 
+    *left = *right = voices[voice].getSample(); 
+  }
 
 
   // parameter callback targets:

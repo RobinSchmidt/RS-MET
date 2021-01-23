@@ -509,6 +509,9 @@ public:
   /** Overriden in order to set the voice manager for the child modules. */
   virtual void addChildAudioModule(AudioModule* moduleToAdd) override;
 
+  /** Sets the buffer into which the individual voice outputs shall be written. It must be of 
+  length 2*maxNumVoice where the factor two comes from the two channels for stereo signals. */
+  void setVoiceSignalBuffer(double* buffer) { voicesBuffer = buffer; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry:
@@ -520,14 +523,24 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Audio processing:
 
+
+
+  void processStereoFrame(double *left, double *right) override;
+
+
+  virtual void processStereoFrameVoice(double *left, double *right, int voice) { }
+  // maybe make purely virtual
+
+
+  /** Here, left and right are not pointers single samples but rather buffers that should be long 
+  enough to hold the outputs samples for all the voices separately. */
+  virtual void processStereoFramePoly(double *buffer, int numActiveVoices);
+
+
+  /*
   virtual void processBlockVoice(double **inOutBuffer, int numChannels, int numSamples, int voice) 
   {
 
-  }
-
-  virtual void processStereoFrameVoice(double *left, double *right, int voice) 
-  {
-  
   }
 
   virtual void processBlockPoly(double ***inOutBuffer, int numChannels, int numSamples) 
@@ -539,6 +552,7 @@ public:
   {
 
   }
+  */
 
 
   //-----------------------------------------------------------------------------------------------
@@ -561,6 +575,8 @@ protected:
 
 
   rosic::rsVoiceManager* voiceManager = nullptr;
+
+  double *voicesBuffer = nullptr; // should be of length 2*maxNumVoices (2 for the 2 channels)
 
 };
 

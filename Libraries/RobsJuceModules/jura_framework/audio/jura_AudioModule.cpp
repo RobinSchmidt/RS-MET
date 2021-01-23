@@ -724,6 +724,38 @@ void AudioModulePoly::addChildAudioModule(AudioModule* moduleToAdd)
     pm->setVoiceManager(voiceManager);
 }
 
+void AudioModulePoly::processStereoFrame(double* left, double* right)
+{
+  if(!voiceManager)
+    return;
+
+  int numActiveVoices = voiceManager->getNumActiveVoices();
+  processStereoFramePoly(voicesBuffer, numActiveVoices);
+
+  // maybe for optimization, have a boolean flag "needsMonophonicMixdown" (member) to suppress the
+  // mixing of the voices because if several polyphonic modules are chained, the later modules 
+  // actually do not use the mixed signals
+
+  double sumL = 0, sumR = 0;  // todo: use rsFloat64x2
+  for(int i = 0; i < numActiveVoices; i+=2) {
+    sumL += voicesBuffer[i];
+    sumR += voicesBuffer[i+1]; }
+
+  *left  = sumL; // todo: use *left = thruGain * *left + outGain * sumL
+  *right = sumR; // ditto
+}
+
+void AudioModulePoly::processStereoFramePoly(double *buffer, int numActiveVoices)
+{
+  jassert(buffer); // must be a valid pointer, length should be at least 2*numActiveVoices, more
+                   // typically, it will be 2*voiceManager->getNumActiveVoices()
+
+  for(int i = 0; i < numActiveVoices; i+=2)
+    processStereoFrameVoice(&buffer[i], &buffer[i+1], i);
+    // we use an interleaved format for easier interfacing with rsFloat64x2
+}
+
+
 //=================================================================================================
 // class AudioModuleEditor
 

@@ -430,15 +430,24 @@ void ToolChain::setupManagers(AudioModule* m)
     mm->setModulationManager(&modManager);
   AudioModulePoly* pm = dynamic_cast<AudioModulePoly*> (m);
   if(pm != nullptr)
+  {
     pm->setVoiceManager(voiceManager);
+    pm->setVoiceSignalBuffer(&voiceSignals[0]);
+  }
 }
 
 void ToolChain::allocateVoiceResources()
 {
-  for(size_t i = 0; i < modules.size(); i++) {
+  voiceSignals.resize(2*voiceManager->getMaxNumVoices());
+  for(size_t i = 0; i < modules.size(); i++) 
+  {
     AudioModulePoly* pm = dynamic_cast<AudioModulePoly*> (modules[i]);
     if(pm != nullptr)
-      pm->allocateVoiceResources(); }
+    {
+      pm->allocateVoiceResources();
+      pm->setVoiceSignalBuffer(&voiceSignals[0]);
+    }
+  }
 }
 
 void ToolChain::addToModulatorsIfApplicable(AudioModule* module)
