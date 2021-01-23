@@ -183,7 +183,7 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
   target   = _target;
   mode        = target->getDefaultModulationMode();
   //sourceValue = &(source->modValue);    // obsolete
-  targetValue = &(target->modulatedValue);
+  //targetValue = &(target->modulatedValue);  // obsolete
 
   double depthMin = target->getDefaultModulationDepthMin();
   double depthMax = target->getDefaultModulationDepthMax();

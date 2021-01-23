@@ -426,6 +426,13 @@ public:
     return unmodulatedValue;
   }
 
+  /** Adds the given amount to our modulatedValue. Used in the modulation connection to accumulate
+  a contribution from a modulator to the modulated value. */
+  inline void addToModulatedValue(double amount)
+  {
+    modulatedValue += amount;
+  }
+
 
 protected:
 
@@ -436,7 +443,7 @@ protected:
   double initialDepth = 0.0;
   int    defaultModMode = 0; // absolute
 
-  friend class ModulationConnection;
+  //friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget);
 
   // ToDo: try to get rid of the modulated modulatedValue - all functions that reference it should
@@ -509,7 +516,7 @@ public:
     //double m = *sourceValue; // todo: apply map to m, similar to meta-map, old
     double m = source->getModulationValue(); // new
     double d = depth;
-    double u = target->unmodulatedValue;
+    double u = target->getUnmodulatedValue();
     double z;
     switch(mode)  // maybe use function pointer instead of switch
     {
@@ -526,7 +533,8 @@ public:
     } break;
     default:             z = 0;
     }
-    *targetValue += z;
+    //*targetValue += z;  // old
+    target->addToModulatedValue(z); // new
   }
 
 
@@ -550,7 +558,7 @@ protected:
   ModulationSource* source;
   ModulationTarget* target;
   //double* sourceValue;       // pointer to modulation source output signal - get rid!
-  double* targetValue;       // pointer to target value - get rid!
+  //double* targetValue;       // pointer to target value - get rid!
   double depth;              // modulation depth
   int mode = ABSOLUTE;       // application mode for modulation signal
 
