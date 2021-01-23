@@ -28,7 +28,8 @@ protected:
   double key = 64;
   double detune = 0.0, amp = 1.0;
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SineOscCore)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SineOscCore);
+  //JUCE_LEAK_DETECTOR(SineOscCore);
 };
 
 //=================================================================================================
@@ -78,14 +79,19 @@ public:
     rosic::rsVoiceManager* voiceManagerToUse = nullptr);
 
 
+
+  // parameter callback targets:
+  void setAmplitude(double newAmplitude, int voice);
+  void setDetune(   double newDetune,    int voice);
+
+
 protected:
 
-
-  virtual void createCores();
   virtual void createParameters();
+  void allocateVoiceResources() override;
 
-  std::vector<SineOscCore*> cores;
-
+  SineOscCore core;  // maybe rename to master
+  std::vector<RAPT::rsSineOscillator<double>> voices;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SineOscAudioModulePoly)
 };

@@ -479,7 +479,7 @@ public:
 /** Baseclass for polyphonic AudioModules. They have polyphonic audio outputs, so you can chain a 
 polyphonic oscillator with a polyphonic filter and drop in some polyphonic modulators in ToolChain.
 
-...just a stub, at the moment....tbc.... */
+...under construction....tbc.... */
 
 class JUCE_API AudioModulePoly : public AudioModuleWithMidiIn 
   // maybe don't inherit - the class is a mix-in - maybe rename to 
@@ -551,6 +551,11 @@ public:
     // constructor. Maybe get rid of that call and make the function purely virtual. I think, it 
     // would be better design if this is purely virtual.
   }
+  // Maybe it should have a boolean parameter to decide whether it should get called recursively on
+  // the child modules. In our setVoiceManager we would pass false because the function calls 
+  // itself recursively on the child modules and also calls allocateVoiceResources, so we would end
+  // up re-allocating twice. But in other circumstances it may make more sense to call it on the 
+  // child modules, so we may need both options.
 
 protected:
 

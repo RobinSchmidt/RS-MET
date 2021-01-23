@@ -18,7 +18,8 @@ void rsComplexExponentialIterator<T>::setZ(std::complex<T> newZ)
 }
 
 //=================================================================================================
-    
+
+/*
 template<class T>
 rsSineIterator<T>::rsSineIterator()
 {
@@ -33,6 +34,7 @@ rsSineIterator<T>::rsSineIterator(T w, T p, T a)
 {
   setup(w, p, a);
 }
+*/
 
 template<class T>
 void rsSineIterator<T>::setup(T w, T p, T a)
@@ -40,4 +42,6 @@ void rsSineIterator<T>::setup(T w, T p, T a)
   a1 = 2.0*cos(w);
   s1 = a*sin(p-    w);
   s2 = a*sin(p-2.0*w);
+  // Try to optimize computations of s1,s2 using addition theorems - i think, we may save one call
+  // to sin
 }

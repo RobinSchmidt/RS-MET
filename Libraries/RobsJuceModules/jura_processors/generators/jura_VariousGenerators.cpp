@@ -29,12 +29,64 @@ void SineOscAudioModule::createParameters()
   // phasor-based implementation is better for freq modulation anyway - for the time being, just
   // don't modulate detune
   
-  // maybe  make a start-phase parameter
+  // maybe  make a start-phase parameter - or better: just a phase parameter to allow also for
+  // phase-modulation
 }
 
+//-------------------------------------------------------------------------------------------------
 
+SineOscAudioModulePoly::SineOscAudioModulePoly(CriticalSection* lockToUse,
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse,
+  rosic::rsVoiceManager* voiceManagerToUse)
+  : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+{
+  ScopedLock scopedLock(*lock);
+  setModuleTypeName("SineOscillatorPoly");  // change to SineOscillator later
+  createParameters();
+}
 
+void SineOscAudioModulePoly::createParameters()
+{
+  ScopedLock scopedLock(*lock);
 
+  typedef SineOscAudioModulePoly SOM;
+  typedef ModulatableParameterPoly Param;
+  Param* p;
+
+  p = new Param("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallbackPoly([this](double v, int i) { setAmplitude(v, i); });
+
+  p = new Param("Detune", -60.0, +60.0, 0.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallbackPoly([this](double v, int i) { setDetune(v, i); });
+}
+
+void SineOscAudioModulePoly::allocateVoiceResources() 
+{
+  if(voiceManager)
+    voices.resize(voiceManager->getMaxNumVoices());
+  else
+    voices.resize(1); // monophonic in absence of a voice manager
+}
+
+void SineOscAudioModulePoly::setAmplitude(double newAmplitude, int voice)
+{
+  jassert(voice < voices.size());
+  voices[voice].setAmplitude(newAmplitude);
+}
+
+void SineOscAudioModulePoly::setDetune(double newDetune, int voice)
+{
+  jassert(voice < voices.size());
+
+  if(!voiceManager)
+    return;
+
+  //double freq = voiceManager->getCurrentNoteFreq(voice);
+  // ...
+  //voices[voice].setOmega(omega);
+}
 
 
 

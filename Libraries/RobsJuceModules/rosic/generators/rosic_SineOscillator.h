@@ -1,10 +1,6 @@
 #ifndef rosic_SineOscillator_h
 #define rosic_SineOscillator_h
 
-//// rosic-indcludes:
-//#include "../math/rosic_ElementaryFunctionsReal.h"
-//#include "../infrastructure/rosic_MutexLock.h"
-
 namespace rosic
 {
 
@@ -92,6 +88,8 @@ namespace rosic
 
     MutexLock mutex;   
     // to ensure consistency between the variables (otherwise harsh noise may result)
+    // todo: get rid of this - maybe the class should be considered obsolete anyway due to having
+    // similar functionality in rapt now
 
   };
 

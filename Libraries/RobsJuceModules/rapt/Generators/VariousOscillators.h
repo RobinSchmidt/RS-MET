@@ -2,6 +2,42 @@
 #define RAPT_VARIOUSOSCILLATORS_H_INCLUDED
 
 
+
+template<class T>
+class rsSineOscillator : public rsSineIterator<T>
+{
+
+public:
+
+  //using rsSineIterator::rsSineIterator;  // inherit constructors
+
+
+  void setAmplitude(T newAmplitude) { amp = newAmplitude; }
+
+  //void setOmega(T newOmega) { setup(newOmega, getPhase(), T(1)); }
+  // getPhase should reconstruct the phase from the state - needs asin and then figure out if we 
+  // are in the ascending or descending part and possibly add an offset of pi, maybe:
+  //   y = getValue();
+  //   p = asin(y);
+  //   if(y < s1)
+  //     p += PI;
+  //
+
+  inline T getSample()
+  {
+    return amp * rsSineIterator<T>::getValue();
+  }
+
+
+protected:
+
+  T amp = T(1);
+
+};
+
+
+//=================================================================================================
+
 /** An oscillator based on morphing between saw-up/triangle/saw-down waveforms. 
 
 todo: produce info for blep/blamp anti-aliasing, make a DualTriSawOsc - drive that controls two

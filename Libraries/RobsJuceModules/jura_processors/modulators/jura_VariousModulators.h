@@ -110,21 +110,15 @@ public:
 
 protected:
 
-  // called once in the constructor:
-  //virtual void createCores();
+
   virtual void createParameters();
-
-
   void allocateVoiceResources() override;
 
 
-  //std::vector<RAPT::rsAttackDecayEnvelope<double>*> cores;
-  // no - that's not good - we should have one full rsAttackDecayEnvelope object with the full set
-  // of parameters and the voices should be leaner objects that only store the voice-dependent 
-  // state
-
-  // maybe have an array of direct objects, not pointers - easier to handle:
   std::vector<RAPT::rsAttackDecayEnvelope<double>> cores;
+  // todo: use a single full rsAttackDecayEnvelope object and an array of 
+  // rsAttackDecayEnvelopeVoice objects that store only voice specific state and have a pointer to
+  // the single "master" object - gets rid of redundant values
 
 
   // parameters:

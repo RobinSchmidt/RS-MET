@@ -66,14 +66,20 @@ public:
   /** Standard constructor. Sets the iterator up for producing y[n] = a * sin(w*n + p) with
   a = 1, w = 1, p = 0. It initializes the recursion coefficient and state variables using
   precomuted constants, so no costly call to setup() is invoked. */
-  rsSineIterator();
+  rsSineIterator()
+  {
+    a1 = T( 1.0806046117362795);
+    s1 = T(-0.84147098480789650);
+    s2 = T(-0.90929742682568171);
+    // calling setup(1, 0, 1) would compute these values, but that would be more costly.
+  }
 
   /** Constructor. You have to pass the normalized radian frequency "w" and may optionally pass
   a start-phase "p" and an amplitude "a" and for the formula y[n] = a * sin(w*n + p). If you
   don't pass phase and/or amplitude, zero and unity will be used as default values respectively.
   After construction (or a call to setup), the first call to getValue() will return
   y[0] = a*sin(p), the next call gives y[1] = a*sin(w+p), then y[2] = a*sin(2*w+p), and so on. */
-  rsSineIterator(T w, T p = 0.0, T a = 1.0);
+  rsSineIterator(T w, T p = 0.0, T a = 1.0) { setup(w, p, a); }
 
   /** Sets up the sine oscillator such that the next call to getValue will return
   y[0] = a*sin(p), then the next call gives y[1] = a*sin(w + p), then
@@ -89,6 +95,8 @@ public:
     s1 = tmp;
     return tmp;
   }
+  // todo: maybe make a version that takes an input sample - it should just be added to tmp:
+  // T tmp = in + a1*s1 - s2;
 
 protected:
 
