@@ -2,9 +2,63 @@
 #define jura_VoiceManager_h
 
 
+
+/** A class to dispatch various kinds of MIDI messages to specific handler functions that can be 
+overriden in a subclass. */
+
+class JUCE_API rsMidiMessageDispatcher
+{
+
+public:
+
+  rsMidiMessageDispatcher() {}
+
+  virtual ~rsMidiMessageDispatcher() {}
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Event processing:
+
+  /** Handles a generic MidiMessage. This dispatches to a call of the appropriate specific handler 
+  function. */
+  virtual void handleMidiMessage(MidiMessage message);
+
+  /** Triggered by a note-on event. */
+  virtual void noteOn(int noteNumber, int velocity) {}
+
+  /** Triggered by a note-off event. */
+  virtual void noteOff(int noteNumber) {}
+  // todo: support note-off velocity
+
+  /** Triggered by an all-notes-off event. */
+  virtual void allNotesOff() {}
+
+  /** Overrides setMidiController which is inherited from both base-classes - and we simply we pass
+  through the function call to both of them here. */
+  virtual void setMidiController(int controllerNumber, float controllerValue) {}
+
+  /** Triggered by a pitch-bend event. */
+  virtual void setPitchBend(int pitchBendValue) {}
+
+  /** Triggered by an aftertouch event. */
+  virtual void setAfterTouch(int afterTouchValue) {}
+
+  /** Triggered by a channel pressure event. */
+  virtual void setChannelPressure(int channelPressureValue) {}
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMidiMessageDispatcher)
+};
+// maybe move into extra file
+// AudioModuleWithMidiIn should then also become a subclass of this
+
+
+
+//=================================================================================================
+
 /** A class for managing polyphony in instrument modules. */
 
-class rsVoiceManager
+class JUCE_API rsVoiceManager : public rsMidiMessageDispatcher
 {
 
 public:
@@ -14,6 +68,8 @@ public:
     setMaxNumVoices(16);
   }
 
+
+  virtual ~rsVoiceManager() {}
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
@@ -53,6 +109,19 @@ public:
   int getNumActiveVoices() const { return numActiveVoices; } 
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Event handling
+
+
+  virtual void noteOn(int noteNumber, int velocity) override;
+
+  virtual void noteOff(int noteNumber) override;
+
+  virtual void setPitchBend(int pitchBendValue) override;
+
+
+
+
 protected:
 
   int maxNumVoices    = 16;  // maximum number of voices
@@ -61,30 +130,15 @@ protected:
 
   std::vector<int> playingVoices;
 
-};
-
-
-
-
-
-
-
-
-/** A thin wrapper around rosic::rsVoiceManager to provide the glue to the juce framework, 
-specifically, the translation of juce::MidiMessage. */
-
-/*
-class JUCE_API rsVoiceManager : public rosic::rsVoiceManager
-{
-
-public:
-
-
-protected:
-
-
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsVoiceManager)
 };
-*/
+
+// ToDo:
+// -this class should also provide a mechanism to kill voices: after a noteOff has been received 
+//  for a given voice, monitor the output of that voice (how?) and if it remains below a certain
+//  threshold for a given amount of time, the voice can be killed and moved back into the pool
+//  of available voices
+
+
 
 #endif

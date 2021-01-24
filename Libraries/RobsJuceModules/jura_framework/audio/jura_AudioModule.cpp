@@ -660,6 +660,7 @@ void AudioModuleWithMidiIn::handleMidiMessage(MidiMessage message)
   else if (message.isChannelPressure())
     setChannelPressure(message.getChannelPressureValue());
 }
+// todo: acquire lock and call baseclass method
 
 //void AudioModuleWithMidiIn::noteOn(int noteNumber, int velocity)
 //{

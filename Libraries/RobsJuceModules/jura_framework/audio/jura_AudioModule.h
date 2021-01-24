@@ -472,6 +472,7 @@ public:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleWithMidiIn)
 };
+// todo: derive from rsMidiMessageDispatcher and override only handleMidiMessage
 
 //=================================================================================================
 
