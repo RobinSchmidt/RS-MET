@@ -23,7 +23,7 @@ public:
 
 ToolChain::ToolChain(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse) 
-  : AudioModulePoly(lockToUse, metaManagerToUse/*, &modManager*/) // passing modManager causes access violation (not yet constructed)?
+  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse/*, &modManager*/) // passing modManager causes access violation (not yet constructed)?
   , modManager(lockToUse), moduleFactory(lockToUse) // maybe pass the metaManagerToUse to this constructor call
 {
   ScopedLock scopedLock(*lock);
@@ -32,16 +32,18 @@ ToolChain::ToolChain(CriticalSection *lockToUse,
 
 
   setModulationManager(&modManager);            // maybe use "new" for this, too
-  setVoiceManager(new rosic::rsVoiceManager);
+
+  //setVoiceManager(new rosic::rsVoiceManager);
+  //voiceManager = new rosic::rsVoiceManager;
   // i think, we really should use a pointer to modManager and destroy it explicitly, i.e. use 
   // new/delete. modManager holds a pointer to our voiceManager and if we do it like this, the 
   // mod-manager will for a short moment hold a dangling pointer in the destructor because the 
   // voiceManager is deleted before the modManager goes out of scope. If we use a pointer, we have
   // explicit control of the destruction order ..but we may also just null the pointer manually
   // before destroying the voiceManager
-  modManager.setVoiceManager(voiceManager);
+  modManager.setVoiceManager(&voiceManager);
 
-
+  voiceSignals.resize(2 * voiceManager.getMaxNumVoices());
 
   //createDebugModSourcesAndTargets(); // for debugging the mod-system
   populateModuleFactory();
@@ -69,7 +71,7 @@ ToolChain::~ToolChain()
   // delete modManager; // done before deleting voiceManager bcs. it holds a pointer to it
 
   modManager.setVoiceManager(nullptr); // dunno if required but better safe than sorry
-  delete voiceManager;
+  //delete voiceManager;
 }
 
 void ToolChain::addEmptySlot()
@@ -447,11 +449,12 @@ void ToolChain::setupManagers(AudioModule* m)
   AudioModulePoly* pm = dynamic_cast<AudioModulePoly*> (m);
   if(pm != nullptr)
   {
-    pm->setVoiceManager(voiceManager);
+    pm->setVoiceManager(&voiceManager);
     pm->setVoiceSignalBuffer(&voiceSignals[0]);
   }
 }
 
+/*
 void ToolChain::allocateVoiceResources(rosic::rsVoiceManager* voiceManager)
 {
   voiceSignals.resize(2*voiceManager->getMaxNumVoices());
@@ -460,11 +463,12 @@ void ToolChain::allocateVoiceResources(rosic::rsVoiceManager* voiceManager)
     AudioModulePoly* pm = dynamic_cast<AudioModulePoly*> (modules[i]);
     if(pm != nullptr)
     {
-      pm->allocateVoiceResources(voiceManager);
+      pm->allocateVoiceResources(&voiceManager);
       pm->setVoiceSignalBuffer(&voiceSignals[0]);
     }
   }
 }
+*/
 
 void ToolChain::addToModulatorsIfApplicable(AudioModule* module)
 {

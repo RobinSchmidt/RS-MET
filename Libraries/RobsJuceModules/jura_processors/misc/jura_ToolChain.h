@@ -52,7 +52,7 @@ AudioModule objects.
 
  */
 
-class JUCE_API ToolChain : public jura::AudioModulePoly  /*public jura::AudioModuleWithMidiIn */
+class JUCE_API ToolChain : /*public jura::AudioModulePoly*/  public jura::AudioModuleWithMidiIn 
   /*, public jura::ModulationManager*/
   // we need to have a ModulationManager member to pass it to the constructor of
   // AudioModuleWithMidiIn
@@ -177,7 +177,7 @@ protected:
   /** Overriden from AudioModulePoly. We iterate through our modules array and call the same 
   function on the modules where this is applicable, i.e. those that are also subclasses of
   AudioModulePoly. */
-  void allocateVoiceResources(rosic::rsVoiceManager* voiceManager) override;
+  //void allocateVoiceResources(rosic::rsVoiceManager* voiceManager) override;
 
   /** Checks, if the passed AudioModule can be cast into a ModulationSource and if so, adds it to
   our array of ModulationSources (inherited from ModulationManager). */
@@ -213,7 +213,12 @@ protected:
   double sampleRate = 44100;
   std::vector<ToolChainObserver*> observers;
 
-  std::vector<double> voiceSignals;
+
+  rosic::rsVoiceManager voiceManager;
+  std::vector<double> voiceSignals; // Used to share/re-use a single 
+  // buffer for the voice-signals of the modules (using either overwriting or accumulation - 
+  // whatever is most appropriate for the particular module). For the time being, each module 
+  // allocates it own buffer.
 
   friend class ToolChainEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ToolChain)

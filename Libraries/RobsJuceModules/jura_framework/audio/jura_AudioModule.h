@@ -494,7 +494,7 @@ public:
     ModulationManager* modManagerToUse = nullptr, 
     rosic::rsVoiceManager* voiceManagerToUse = nullptr);
 
-
+  virtual ~AudioModulePoly() { }
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup:
@@ -524,16 +524,18 @@ public:
   // \name Audio processing:
 
 
+  /** Must be overriden by subclasses to produce a stereo sample frame at a time. */
+  virtual void processStereoFrameVoice(double *left, double *right, int voice) = 0;
 
+  /** Overriden in order to first compute all the voice outputs via calling 
+  processStereoFramePoly and writing them into our voicesBuffer and them summing them into 
+  left/right. */
   void processStereoFrame(double *left, double *right) override;
 
-
-  virtual void processStereoFrameVoice(double *left, double *right, int voice) { }
-  // maybe make purely virtual
-
-
-  /** Here, left and right are not pointers single samples but rather buffers that should be long 
-  enough to hold the outputs samples for all the voices separately. */
+  /** Fills the given buffer with the stereo outputs of the voices. It just calls 
+  processStereoFrameVoice in a loop over the active voices using the buffer for the left/right
+  pointer parameters. Stereo signals are stored interleaved - buffer[0], buffer[1] is the pair for
+  the 1st voice etc. */
   virtual void processStereoFramePoly(double *buffer, int numActiveVoices);
 
 
@@ -583,6 +585,8 @@ protected:
   // data somewhere else...maybe we should use generic processFrame(double* buffer), 
   // processBlock(double* buffer) functions... or introduce processFramePoly already in the
   // AudioModule baseclass and always call that
+  // ...or maybe we should actually own the voicesBuffer here - re-using the same buffer for 
+  // various modules may be a premature optimization.
 
 };
 
@@ -603,6 +607,11 @@ public:
     ModulationManager* modManagerToUse = nullptr,
     rosic::rsVoiceManager* voiceManagerToUse = nullptr)
     : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) {}
+
+  virtual void processStereoFrameVoice(double* left, double* right, int voice)
+  {
+    // Do nothing - modulators need to override getModulationValue instead
+  }
 
 
   virtual void allocateVoiceResources(rosic::rsVoiceManager* voiceManager)
