@@ -426,7 +426,9 @@ protected:
 /** A subclass of AudioModule that accepts MIDI input. If you derive your effect or instrument from
 this baseclass and wrap it into a juce::AudioProcessor (via the wrapper class jura::AudioPlugin),
 the plugin will have a MIDI input. Also, you can override the event handler methods in your 
-subclass (noteOn, noteOff, setMidiController, etc.) in order to respond to incoming MIDI events  */
+subclass (noteOn, noteOff, setMidiController, etc. - inherited from rsMidiMessageDispatcher) in 
+order to respond to incoming MIDI events. You can also override handleMidiMessage and do the 
+dispatch yourself. */
 
 class JUCE_API AudioModuleWithMidiIn : public ModulatableAudioModule, 
   public rsMidiMessageDispatcher

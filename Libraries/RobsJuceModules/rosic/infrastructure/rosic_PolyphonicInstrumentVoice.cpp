@@ -1,7 +1,5 @@
-//#include "rosic_PolyphonicInstrumentVoice.h"
-//using namespace rosic;
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 PolyphonicInstrumentVoice::PolyphonicInstrumentVoice()
@@ -26,7 +24,7 @@ PolyphonicInstrumentVoice::~PolyphonicInstrumentVoice()
 
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // parameter settings:
 
 void PolyphonicInstrumentVoice::setSampleRate(double newSampleRate)
@@ -105,8 +103,9 @@ void PolyphonicInstrumentVoice::setGlideMode(bool shouldGlide)
 
 void PolyphonicInstrumentVoice::setBeatsPerMinute(double /*newBeatsPerMinute*/)
 {
-  // this function here is empty and serves only as dummy for the PolyphonicInstrument class which may call this - if you need
-  // sync-functionality you will need to override this in your subclass.
+  // this function here is empty and serves only as dummy for the PolyphonicInstrument class which
+  // may call this - if you need sync-functionality you will need to override this in your 
+  // subclass.
 }
 
 void PolyphonicInstrumentVoice::setTuningTable(rosic::TuningTable *newTable)
@@ -114,7 +113,7 @@ void PolyphonicInstrumentVoice::setTuningTable(rosic::TuningTable *newTable)
   tuningTable = newTable;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // inquiry:
 
 double PolyphonicInstrumentVoice::getLevel()
@@ -205,7 +204,7 @@ bool PolyphonicInstrumentVoice::hasNoteInList(int noteKeyToCheckFor)
   return result;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // event handling:
 
 void PolyphonicInstrumentVoice::noteOn(int newKey, int newVelocity, int newDetune)
@@ -397,7 +396,7 @@ void PolyphonicInstrumentVoice::reset()
   isReleasing                   = false;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // others:
 
 double PolyphonicInstrumentVoice::getNoteFrequency(int noteNumber)
@@ -416,7 +415,8 @@ double PolyphonicInstrumentVoice::getNoteFrequency(double noteNumber)
     return RAPT::rsPitchToFreq(noteNumber);
 }
 
-void PolyphonicInstrumentVoice::prepareForAmplitudeRamp(double newKey, double newVel, bool shouldRamp)
+void PolyphonicInstrumentVoice::prepareForAmplitudeRamp(double newKey, double newVel, 
+  bool shouldRamp)
 {
   if( newKey < 0 || newVel <= 0 )
     shouldRamp = false; // function was called while no note was being played

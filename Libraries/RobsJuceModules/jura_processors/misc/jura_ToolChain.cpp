@@ -248,6 +248,7 @@ void ToolChain::setSampleRate(double newSampleRate)
 void ToolChain::handleMidiMessage(MidiMessage message)
 {
   ScopedLock scopedLock(*lock);
+  voiceManager.handleMidiMessage(message);
   for(int i = 0; i < size(modules); i++){
     AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
     if(m != nullptr)

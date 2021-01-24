@@ -74,19 +74,21 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
+  /** Modes for voice stealing. */
+  enum class StealMode
+  {
+    oldest,
+    newest
+    //nearest, lowest, highest, quietest, dontSteal
+  };
+
   /** Sets the maximum number of voices that should be supported. The function is supposed to be 
   called once shortly after construction and then that setting should remain fixed for the lifetime
   of the plugin. If we later want to allow the user to change that setting at runtime, we will need 
   facilities to trigger a re-allocation of all the required resources (buffer, DSP-objects, 
   etc.). We don't have such facilities yet and maybe that feature is not worth the increased 
   complexity anyway...we'll see... */
-  void setMaxNumVoices(int newNumber)
-  {
-    maxNumVoices    = newNumber;
-    numVoices       = RAPT::rsMin(numVoices,       maxNumVoices);
-    numActiveVoices = RAPT::rsMin(numActiveVoices, maxNumVoices);
-    playingVoices.resize(maxNumVoices);
-  }
+  void setMaxNumVoices(int newNumber);
 
   /** Sets the number of voices that should be available for playing. */
   void setNumVoices(int newNumber)
@@ -108,27 +110,81 @@ public:
 
   int getNumActiveVoices() const { return numActiveVoices; } 
 
+  int getNumIdleVoices() const { return numVoices - numActiveVoices; }
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Event handling
 
 
-  virtual void noteOn(int noteNumber, int velocity) override;
+  virtual void noteOn(int key, int vel) override;
 
-  virtual void noteOff(int noteNumber) override;
+  virtual void noteOff(int key) override;
 
   virtual void setPitchBend(int pitchBendValue) override;
 
 
 
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+  /** Should be called once per sample by some outlying driver class. */
+  void perSampleUpdate();
+
+
+  void reset();
+
+
 protected:
+
+  void stealVoice(int key, int vel);
+
 
   int maxNumVoices    = 16;  // maximum number of voices
   int numVoices       =  8;  // number of available voices
   int numActiveVoices =  0;  // number of currently playing voices
 
-  std::vector<int> playingVoices;
+  /** Indices of the voices that are currently playing and therefore must process audio. A voice 
+  is playing if it's currently being held or releasing. */
+  std::vector<int> activeVoices;
+
+  /** Indices of the voices that are currently idle and therefore available for new notes. */
+  std::vector<int> idleVoices;
+
+  // The invariant should be that playingVoices and idleVoices at all times combine to the full
+  // set 0,1,2,3,...,numVoices-1. The playingVoices is supposed to be filled up to 
+  // n = numActiveVoices-1 and the idleVoice is filled up to 
+  // numVoices - numActiveVoices = numVoices-1-n = 
+
+
+  //std::vector<int> releasingVoices;
+
+
+  struct VoiceState
+  {
+    VoiceState() { reset(); }
+
+    void reset()
+    {
+      frequency = 0;
+      normalizedVelocity = 0;
+      key = 0;
+      isHeld = false;
+    }
+
+    double frequency;           // derived from key and the tuning to be used - maybe pitch is better
+    double normalizedVelocity;  // velocity normalized to the range 0...1
+    int    key;                 // key as MIDI note value
+    bool   isHeld;              // flag to indicate that the note is being held - may not be needed
+  };
+
+  std::vector<VoiceState> voiceStates;
+
+
+
+  StealMode stealMode = StealMode::oldest;
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsVoiceManager)
 };
@@ -139,6 +195,7 @@ protected:
 //  threshold for a given amount of time, the voice can be killed and moved back into the pool
 //  of available voices
 
+// see romos::VoiceAllocator and rosic::PolyphonicInstrument/Voice for ideas, code and formulas
 
 
 #endif

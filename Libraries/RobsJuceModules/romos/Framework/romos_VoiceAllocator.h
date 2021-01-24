@@ -1,8 +1,6 @@
 #ifndef romos_VoiceAllocator_h
 #define romos_VoiceAllocator_h
 
-//namespace romos
-//{
 
 /** This class can be used for managing voices in a polyphonic instrument. */
 
