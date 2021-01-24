@@ -446,37 +446,16 @@ public:
   // \name Event processing:
 
   /** Handles a generic MidiMessage. */
-  virtual void handleMidiMessage(MidiMessage message);
+  void handleMidiMessage(MidiMessage message) override;
 
-  /** Triggered by a note-on event. */
-  //virtual void noteOn(int noteNumber, int velocity) {}
-
-  /** Triggered by a note-off event. */
-  //virtual void noteOff(int noteNumber) {}
-  // todo: support note-off velocity
-
-  /** Triggered by an all-notes-off event. */
-  //virtual void allNotesOff() {}
-
-  /** Overrides setMidiController which is inherited from both base-classes - and we simply we pass
-  through the function call to both of them here. */
-  virtual void setMidiController(int controllerNumber, float controllerValue);
-
-  /** Triggered by a pitch-bend event. */
-  //virtual void setPitchBend(int pitchBendValue);
-
-  /** Triggered by an aftertouch event. */
-  //virtual void setAfterTouch(int afterTouchValue) {}
-
-  /** Triggered by a channel pressure event. */
-  //virtual void setChannelPressure(int channelPressureValue) {}
+  /** Overrides setMidiController */
+  void setMidiController(int controllerNumber, float controllerValue) override;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleWithMidiIn)
 };
-// todo: derive from rsMidiMessageDispatcher and override only handleMidiMessage
+
 
 //=================================================================================================
-
 
 /** Baseclass for polyphonic AudioModules. They have polyphonic audio outputs, so you can chain a 
 polyphonic oscillator with a polyphonic filter and drop in some polyphonic modulators in ToolChain.

@@ -646,45 +646,13 @@ void AudioModuleWithMidiIn::handleMidiMessage(MidiMessage message)
 {
   ScopedLock scopedLock(*lock);
   rsMidiMessageDispatcher::handleMidiMessage(message);
-
-  /*
-  if( message.isNoteOn() )
-    noteOn(message.getNoteNumber(), message.getVelocity());
-  else if( message.isNoteOff() )
-    noteOff(message.getNoteNumber());
-  else if( message.isAllNotesOff() )
-    allNotesOff();
-  else if( message.isController() )
-    setMidiController(message.getControllerNumber(), (float) message.getControllerValue());
-  else if( message.isPitchWheel() )
-    setPitchBend(message.getPitchWheelValue());
-  else if (message.isAftertouch())
-    setAfterTouch(message.getAfterTouchValue());
-  else if (message.isChannelPressure())
-    setChannelPressure(message.getChannelPressureValue());
-    */
 }
-// todo: acquire lock and call baseclass method
-
-//void AudioModuleWithMidiIn::noteOn(int noteNumber, int velocity)
-//{
-//
-//}
-//
-//void AudioModuleWithMidiIn::noteOff(int noteNumber)
-//{
-//
-//}
-//
-//void AudioModuleWithMidiIn::allNotesOff()
-//{
-//
-//}
 
 void AudioModuleWithMidiIn::setMidiController(int controllerNumber, float controllerValue)
 {
-  ScopedLock scopedLock(*lock);
-  AudioModule::setMidiController(controllerNumber, controllerValue);
+  //ScopedLock scopedLock(*lock); // lock is already held
+  //AudioModule::setMidiController(controllerNumber, controllerValue);
+  ModulatableAudioModule::setMidiController(controllerNumber, controllerValue);
   for(int c = 0; c < (int)childModules.size(); c++)
     childModules[c]->setMidiController(controllerNumber, controllerValue);
 }
