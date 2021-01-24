@@ -93,9 +93,10 @@ namespace jura
 #include "misc/jura_DebugAudioModule.cpp"
 #include "misc/jura_ToolChain.cpp"
 
-#include "unfinished/jura_QuadSource.cpp"
-#include "unfinished/jura_DualFilter.cpp"
-#include "unfinished/jura_NewSynth.cpp"
+//#include "unfinished/jura_QuadSource.cpp"
+//#include "unfinished/jura_DualFilter.cpp"
+//#include "unfinished/jura_NewSynth.cpp"
+
 #include "unfinished/jura_OscArrays.cpp"
 
 }

@@ -1,3 +1,4 @@
+
 class JUCE_API PolyAudioModule : public jura::AudioModule // maybe derive from ModulatableAudioModule
 {
 

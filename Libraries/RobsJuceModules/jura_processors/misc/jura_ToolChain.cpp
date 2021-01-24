@@ -29,22 +29,9 @@ ToolChain::ToolChain(CriticalSection *lockToUse,
   ScopedLock scopedLock(*lock);
   setModuleTypeName("ToolChain");
   modManager.setMetaParameterManager(metaManagerToUse);
-
-
-  setModulationManager(&modManager);            // maybe use "new" for this, too
-
-  //setVoiceManager(new rosic::rsVoiceManager);
-  //voiceManager = new rosic::rsVoiceManager;
-  // i think, we really should use a pointer to modManager and destroy it explicitly, i.e. use 
-  // new/delete. modManager holds a pointer to our voiceManager and if we do it like this, the 
-  // mod-manager will for a short moment hold a dangling pointer in the destructor because the 
-  // voiceManager is deleted before the modManager goes out of scope. If we use a pointer, we have
-  // explicit control of the destruction order ..but we may also just null the pointer manually
-  // before destroying the voiceManager
+  setModulationManager(&modManager);
   modManager.setVoiceManager(&voiceManager);
-
-  voiceSignals.resize(2 * voiceManager.getMaxNumVoices());
-
+  voiceSignals.resize(2 * voiceManager.getMaxNumVoices()); // maybe move into allocateVoiceResources later
   //createDebugModSourcesAndTargets(); // for debugging the mod-system
   populateModuleFactory();
   addEmptySlot();
@@ -67,11 +54,11 @@ ToolChain::~ToolChain()
   for(int i = 0; i < size(modules); i++)
     delete modules[i];
 
-  // ToDo:
-  // delete modManager; // done before deleting voiceManager bcs. it holds a pointer to it
-
-  modManager.setVoiceManager(nullptr); // dunno if required but better safe than sorry
-  //delete voiceManager;
+  modManager.setVoiceManager(nullptr); // Dunno if required but better safe than sorry. If the 
+  // voiceManager is destructed before the modManager, we might otherwise have a dangling pointer
+  // in the modManager for a brief moment during destruction. That may be inconsequential but who 
+  // knows... But maybe we can make sure that the modManager is destructed first by declaration 
+  // order -> figure out
 }
 
 void ToolChain::addEmptySlot()
@@ -639,7 +626,7 @@ void ToolChain::populateModuleFactory()
   // Instruments:
   f.registerModuleType([](CS cs)->AM { return new ModalSynthAudioModule(cs);   }, s, "ModalSynth");
   f.registerModuleType([](CS cs)->AM { return new QuadrifexAudioModule(cs);    }, s, "Quadrifex");
-  f.registerModuleType([](CS cs)->AM { return new NewSynthAudioModule(cs);     }, s, "NewSynth");
+  //f.registerModuleType([](CS cs)->AM { return new NewSynthAudioModule(cs);     }, s, "NewSynth");
   //f.registerModuleType([](CS cs)->AM { return new MagicCarpetAudioModule(cs);   }, s, "MagicCarpet");
   f.registerModuleType([](CS cs)->AM { return new SamplePlayerAudioModule(cs);    }, s, "SamplePlayer");
   f.registerModuleType([](CS cs)->AM { return new BlepOscArrayModule(cs);    }, s, "BlepOscArray");

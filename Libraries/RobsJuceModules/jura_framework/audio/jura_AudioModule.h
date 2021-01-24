@@ -492,7 +492,7 @@ public:
   AudioModulePoly(CriticalSection *lockToUse, 
     MetaParameterManager* metaManagerToUse = nullptr, 
     ModulationManager* modManagerToUse = nullptr, 
-    rosic::rsVoiceManager* voiceManagerToUse = nullptr);
+    rsVoiceManager* voiceManagerToUse = nullptr);
 
   virtual ~AudioModulePoly() { }
 
@@ -503,7 +503,7 @@ public:
   trigger a call to allocateVoiceResources because the amount of resources needed depends on the
   maxNumVoices value which is a member of rsVoiceManager - so if the voice manager changes, the
   resources (DSP objects) may need to be re-allocated. */
-  void setVoiceManager(rosic::rsVoiceManager* managerToUse);
+  void setVoiceManager(rsVoiceManager* managerToUse);
   // todo: maybe make it optional (true by default) to set it also for the child modules
 
   /** Overriden in order to set the voice manager for the child modules. */
@@ -561,7 +561,7 @@ public:
   // \name Misc:
 
   /** Your subclass should override this to allocate the DSP resources for the voices. */
-  virtual void allocateVoiceResources(rosic::rsVoiceManager* voiceManager)
+  virtual void allocateVoiceResources(rsVoiceManager* voiceManager)
   {
     // We need to provide an empty baseclass implementation because it gets called in our 
     // constructor. Maybe get rid of that call and make the function purely virtual. I think, it 
@@ -576,7 +576,7 @@ public:
 protected:
 
 
-  rosic::rsVoiceManager* voiceManager = nullptr;
+  rsVoiceManager* voiceManager = nullptr;
 
   double *voicesBuffer = nullptr; // should be of length 2*maxNumVoices (2 for the 2 channels)
   // hmm - i'm not sure, if that's a good design - the motivation for introducing this buffer is
@@ -605,7 +605,7 @@ public:
   ModulatorModulePoly(CriticalSection* lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr,
     ModulationManager* modManagerToUse = nullptr,
-    rosic::rsVoiceManager* voiceManagerToUse = nullptr)
+    rsVoiceManager* voiceManagerToUse = nullptr)
     : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) {}
 
   virtual void processStereoFrameVoice(double* left, double* right, int voice)
@@ -614,7 +614,7 @@ public:
   }
 
 
-  virtual void allocateVoiceResources(rosic::rsVoiceManager* voiceManager)
+  virtual void allocateVoiceResources(rsVoiceManager* voiceManager)
   {
     AudioModulePoly::allocateVoiceResources(voiceManager);
     ModulationSourcePoly::allocateVoiceResources(voiceManager);

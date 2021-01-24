@@ -63,8 +63,9 @@ namespace jura
 #include "control/jura_Parameter.h"
 #include "control/jura_ParameterProfiles.h"
 #include "control/jura_SmoothableParameter.h"
-#include "control/jura_AutomatableParameter.h" // obsolete?
+#include "control/jura_AutomatableParameter.h"    // obsolete?
 #include "control/jura_MetaParameter.h"
+#include "control/jura_VoiceManager.h"
 #include "control/jura_ModulatableParameter.h"
 #include "control/jura_PreDefinedParameters.h"
 #include "control/jura_ParameterManager.h"
@@ -166,9 +167,9 @@ namespace jura
 #include "audio/jura_AudioModule.h"
 #include "audio/jura_AudioModuleFactory.h"
 #include "audio/jura_AudioModuleSelector.h"
-#include "audio/jura_PolyModule.h"
-#include "audio/jura_PolySlot.h"
-#include "audio/jura_PolyModulators.h"
+//#include "audio/jura_PolyModule.h"      // maybe get rid of these files
+//#include "audio/jura_PolySlot.h"
+//#include "audio/jura_PolyModulators.h"
 #include "audio/jura_AudioPlugin.h"
 
 #include "misc/jura_Experimental.h"

@@ -37,7 +37,7 @@ void SineOscAudioModule::createParameters()
 
 SineOscAudioModulePoly::SineOscAudioModulePoly(CriticalSection* lockToUse,
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse,
-  rosic::rsVoiceManager* voiceManagerToUse)
+  rsVoiceManager* voiceManagerToUse)
   : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
 {
   ScopedLock scopedLock(*lock);
@@ -62,7 +62,7 @@ void SineOscAudioModulePoly::createParameters()
   p->setValueChangeCallbackPoly([this](double v, int i) { setDetune(v, i); });
 }
 
-void SineOscAudioModulePoly::allocateVoiceResources(rosic::rsVoiceManager* voiceManager) 
+void SineOscAudioModulePoly::allocateVoiceResources(rsVoiceManager* voiceManager) 
 {
   if(voiceManager)
     voices.resize(voiceManager->getMaxNumVoices());

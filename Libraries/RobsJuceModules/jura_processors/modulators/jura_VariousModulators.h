@@ -86,7 +86,7 @@ public:
   AttackDecayEnvelopeModulePoly(CriticalSection *lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr, 
     ModulationManager* modManagerToUse = nullptr,
-    rosic::rsVoiceManager* voiceManagerToUse = nullptr);
+    rsVoiceManager* voiceManagerToUse = nullptr);
 
   virtual ~AttackDecayEnvelopeModulePoly() {}
 
@@ -118,7 +118,7 @@ protected:
 
 
   virtual void createParameters();
-  void allocateVoiceResources(rosic::rsVoiceManager* voiceManager) override;
+  void allocateVoiceResources(rsVoiceManager* voiceManager) override;
 
 
   std::vector<RAPT::rsAttackDecayEnvelope<double>> cores;

@@ -221,7 +221,7 @@ public:
   override) and using its output for the modValue. The rsVoiceManager parameter is irrelevant in 
   this class here but it becomes relevant in the ModulationSourcePoly subclass, where we override
   this method, so the parameter must be already included in the function signature here. */
-  virtual void updateModulationValue(rosic::rsVoiceManager* voiceManager)
+  virtual void updateModulationValue(rsVoiceManager* voiceManager)
   { 
     modValue = getModulatorOutputSample(); 
     //jassert(RAPT::rsIsFiniteNumber(modValue));
@@ -762,7 +762,7 @@ public:
 
   /** Sets the voice manager that should be used in the polyphonic case. Can be ignored in for
   monophonic plugins. */
-  virtual void setVoiceManager(rosic::rsVoiceManager* managerToUse);
+  virtual void setVoiceManager(rsVoiceManager* managerToUse);
 
   /** Recalls a state (i.e. all the connections and their settings) from an XmlElement. */
   virtual void setStateFromXml(const XmlElement& xmlState);
@@ -788,7 +788,7 @@ protected:
 
   CriticalSection *modLock = nullptr; 
   MetaParameterManager*  metaManager  = nullptr;  // maybe use a null object instead - or maybe not
-  rosic::rsVoiceManager* voiceManager = nullptr; 
+  rsVoiceManager*        voiceManager = nullptr; 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationManager)
 };
@@ -950,7 +950,7 @@ public:
   virtual double getModulatorOutputSample(int voiceIndex) = 0;
 
 
-  void updateModulationValue(rosic::rsVoiceManager* voiceManager) override
+  void updateModulationValue(rsVoiceManager* voiceManager) override
   { 
     if(voiceManager == nullptr) return;
     jassert(modValues.size() >= voiceManager->getMaxNumVoices());
@@ -965,7 +965,7 @@ public:
     return 0;
   }
 
-  virtual void allocateVoiceResources(rosic::rsVoiceManager* voiceManager)
+  virtual void allocateVoiceResources(rsVoiceManager* voiceManager)
   {
     if(voiceManager == nullptr)
       modValues.resize(0);       // or maybe use size 1?

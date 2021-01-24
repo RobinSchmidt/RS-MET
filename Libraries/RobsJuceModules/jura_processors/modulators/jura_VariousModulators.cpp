@@ -133,7 +133,7 @@ void AttackDecayEnvelopeModulePoly::createParameters()
   p->setValueChangeCallbackPoly([this](double v, int i) { setDecay(v, i); });
 }
 
-void AttackDecayEnvelopeModulePoly::allocateVoiceResources(rosic::rsVoiceManager* voiceManager) 
+void AttackDecayEnvelopeModulePoly::allocateVoiceResources(rsVoiceManager* voiceManager) 
 {
   ModulatorModulePoly::allocateVoiceResources(voiceManager);
   if(voiceManager)

@@ -511,7 +511,7 @@ void ModulationManager::setMetaParameterManager(MetaParameterManager* managerToU
   // todo: set it to the null object, in case a nullptr is passed
 }
 
-void ModulationManager::setVoiceManager(rosic::rsVoiceManager* managerToUse)
+void ModulationManager::setVoiceManager(rsVoiceManager* managerToUse)
 {
   ScopedLock scopedLock(*modLock); 
   voiceManager = managerToUse;

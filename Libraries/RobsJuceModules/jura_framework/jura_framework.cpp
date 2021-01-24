@@ -23,6 +23,7 @@ namespace jura
 #include "control/jura_SmoothableParameter.cpp"
 #include "control/jura_AutomatableParameter.cpp"
 #include "control/jura_MetaParameter.cpp"
+#include "control/jura_VoiceManager.cpp"
 #include "control/jura_ModulatableParameter.cpp"
 #include "control/jura_PreDefinedParameters.cpp"
 #include "control/jura_ParameterManager.cpp"
@@ -113,9 +114,9 @@ namespace jura
 #include "audio/jura_AudioModule.cpp" // needs editor stuff
 #include "audio/jura_AudioModuleFactory.cpp"
 #include "audio/jura_AudioModuleSelector.cpp"
-#include "audio/jura_PolyModule.cpp"
-#include "audio/jura_PolySlot.cpp"
-#include "audio/jura_PolyModulators.cpp"
+//#include "audio/jura_PolyModule.cpp"
+//#include "audio/jura_PolySlot.cpp"
+//#include "audio/jura_PolyModulators.cpp"
 #include "audio/jura_AudioPlugin.cpp"
 
 #include "misc/jura_Experimental.cpp"

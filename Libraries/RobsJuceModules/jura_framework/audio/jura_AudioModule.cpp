@@ -700,13 +700,13 @@ void AudioModuleWithMidiIn::setPitchBend(int pitchBendValue)
 
 AudioModulePoly::AudioModulePoly(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse, 
-  rosic::rsVoiceManager* voiceManagerToUse) 
+  rsVoiceManager* voiceManagerToUse) 
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse) 
 {
   setVoiceManager(voiceManagerToUse);
 }
 
-void AudioModulePoly::setVoiceManager(rosic::rsVoiceManager* managerToUse)
+void AudioModulePoly::setVoiceManager(rsVoiceManager* managerToUse)
 {
   voiceManager = managerToUse;
   allocateVoiceResources(voiceManager);

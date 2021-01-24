@@ -174,9 +174,8 @@ protected:
   the passed module. */
   void setupManagers(AudioModule* module);
 
-  /** Overriden from AudioModulePoly. We iterate through our modules array and call the same 
-  function on the modules where this is applicable, i.e. those that are also subclasses of
-  AudioModulePoly. */
+  // Might become relevant when we want to allow the user to change the maxNumVoices at runtime. 
+  // Currently, this is fixed after construction..
   //void allocateVoiceResources(rosic::rsVoiceManager* voiceManager) override;
 
   /** Checks, if the passed AudioModule can be cast into a ModulationSource and if so, adds it to
@@ -214,7 +213,7 @@ protected:
   std::vector<ToolChainObserver*> observers;
 
 
-  rosic::rsVoiceManager voiceManager;
+  rsVoiceManager voiceManager;
   std::vector<double> voiceSignals; // Used to share/re-use a single 
   // buffer for the voice-signals of the modules (using either overwriting or accumulation - 
   // whatever is most appropriate for the particular module). For the time being, each module 

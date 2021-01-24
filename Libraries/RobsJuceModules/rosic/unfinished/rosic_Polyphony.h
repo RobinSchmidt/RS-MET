@@ -33,7 +33,8 @@ protected:
 //=================================================================================================
 
 
-
+/*
+// moved to jura - it fits better there
 class rsVoiceManager
 {
 
@@ -76,6 +77,7 @@ protected:
   std::vector<int> playingVoices;
 
 };
+*/
 
 
 
