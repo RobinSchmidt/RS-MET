@@ -1,7 +1,6 @@
 
 void rsMidiMessageDispatcher::handleMidiMessage(MidiMessage message)
 {
-  ScopedLock scopedLock(*lock);
   if( message.isNoteOn() )
     noteOn(message.getNoteNumber(), message.getVelocity());
   else if( message.isNoteOff() )

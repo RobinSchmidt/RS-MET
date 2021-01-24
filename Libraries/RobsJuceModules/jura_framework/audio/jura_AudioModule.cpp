@@ -645,6 +645,9 @@ void ModulatableAudioModule::setupForModulationIfModulatable(Parameter* p)
 void AudioModuleWithMidiIn::handleMidiMessage(MidiMessage message)
 {
   ScopedLock scopedLock(*lock);
+  rsMidiMessageDispatcher::handleMidiMessage(message);
+
+  /*
   if( message.isNoteOn() )
     noteOn(message.getNoteNumber(), message.getVelocity());
   else if( message.isNoteOff() )
@@ -659,6 +662,7 @@ void AudioModuleWithMidiIn::handleMidiMessage(MidiMessage message)
     setAfterTouch(message.getAfterTouchValue());
   else if (message.isChannelPressure())
     setChannelPressure(message.getChannelPressureValue());
+    */
 }
 // todo: acquire lock and call baseclass method
 
@@ -685,6 +689,7 @@ void AudioModuleWithMidiIn::setMidiController(int controllerNumber, float contro
     childModules[c]->setMidiController(controllerNumber, controllerValue);
 }
 
+/*
 void AudioModuleWithMidiIn::setPitchBend(int pitchBendValue)
 {
   //int dummy = 0;
@@ -695,6 +700,7 @@ void AudioModuleWithMidiIn::setPitchBend(int pitchBendValue)
   //  underlyingRosicInstrument->setPitchBend(wheelValueMapped);
   //}
 }
+*/
 
 //=================================================================================================
 // class AudioModulePoly
