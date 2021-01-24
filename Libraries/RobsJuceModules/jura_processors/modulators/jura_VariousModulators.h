@@ -78,7 +78,7 @@ protected:
 
 //=================================================================================================
 
-class JUCE_API AttackDecayEnvelopeModulePoly : public AudioModulePoly
+class JUCE_API AttackDecayEnvelopeModulePoly : public ModulatorModulePoly
 {
 
 public:
@@ -100,6 +100,12 @@ public:
   virtual double getModulatorOutputSample() override { return core.getSample(); }
   */
 
+  double getModulatorOutputSample(int voiceIndex) override
+  {
+    jassert(voiceIndex <= cores.size());
+    return cores[voiceIndex].getSample();
+  }
+
   // parameter callback targets:
   void setAttack(double newAttack, int voice);
   void setDecay( double newDecay,  int voice);
@@ -112,7 +118,7 @@ protected:
 
 
   virtual void createParameters();
-  void allocateVoiceResources() override;
+  void allocateVoiceResources(rosic::rsVoiceManager* voiceManager) override;
 
 
   std::vector<RAPT::rsAttackDecayEnvelope<double>> cores;

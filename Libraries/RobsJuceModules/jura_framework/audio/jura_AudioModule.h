@@ -559,7 +559,7 @@ public:
   // \name Misc:
 
   /** Your subclass should override this to allocate the DSP resources for the voices. */
-  virtual void allocateVoiceResources()
+  virtual void allocateVoiceResources(rosic::rsVoiceManager* voiceManager)
   {
     // We need to provide an empty baseclass implementation because it gets called in our 
     // constructor. Maybe get rid of that call and make the function purely virtual. I think, it 
@@ -577,14 +577,41 @@ protected:
   rosic::rsVoiceManager* voiceManager = nullptr;
 
   double *voicesBuffer = nullptr; // should be of length 2*maxNumVoices (2 for the 2 channels)
+  // hmm - i'm not sure, if that's a good design - the motivation for introducing this buffer is
+  // not having to change ToolChain::processBlock such that the realtime code of mono and poly
+  // modules can be handled uniformly there...and that requires that we need to write our sample
+  // data somewhere else...maybe we should use generic processFrame(double* buffer), 
+  // processBlock(double* buffer) functions... or introduce processFramePoly already in the
+  // AudioModule baseclass and always call that
 
 };
 
+//=================================================================================================
+
+/** Baseclass for polyphonic modulator modules. */
+
+class JUCE_API ModulatorModulePoly : public AudioModulePoly, public ModulationSourcePoly
+{
+  // ToDo: Maybe experiment with the order of the multiple inheritance. This affects the memory 
+  // layout of the class and may therefore affect performance. It should not affect functionality.
+
+public:
 
 
+  ModulatorModulePoly(CriticalSection* lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr,
+    ModulationManager* modManagerToUse = nullptr,
+    rosic::rsVoiceManager* voiceManagerToUse = nullptr)
+    : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) {}
 
 
+  virtual void allocateVoiceResources(rosic::rsVoiceManager* voiceManager)
+  {
+    AudioModulePoly::allocateVoiceResources(voiceManager);
+    ModulationSourcePoly::allocateVoiceResources(voiceManager);
+  }
 
+};
 
 
 

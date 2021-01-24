@@ -709,7 +709,7 @@ AudioModulePoly::AudioModulePoly(CriticalSection *lockToUse,
 void AudioModulePoly::setVoiceManager(rosic::rsVoiceManager* managerToUse)
 {
   voiceManager = managerToUse;
-  allocateVoiceResources();
+  allocateVoiceResources(voiceManager);
   for(int i = 0; i < size(childModules); i++) {
     AudioModulePoly* pm = dynamic_cast<AudioModulePoly*>(childModules[i]);
     if(pm)

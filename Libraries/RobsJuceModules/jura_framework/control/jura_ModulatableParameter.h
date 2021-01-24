@@ -210,25 +210,25 @@ public:
   ModulationSource(ModulationManager* managerToUse = nullptr) 
     : ModulationParticipant(managerToUse) 
   {
-    modValues.resize(1);  // monophonic by default
+    //modValues.resize(1);  // monophonic by default
   }
 
   /** Destructor */
   virtual ~ModulationSource();
 
-  /** Should be overriden by subclasses to update the "modValue" member variable per sample. It 
-  should assign modValue to the output signal value of the modulator. 
-  NOT ANYMORE !
-  // previously, this function was required to be overriden, but now you must override
-  // getModulatorOutputSample instead - it's better design to let the framework take care of 
-  // where the value is stored - it allows me also to make debug checks on the value  */
-  //virtual void updateModulationValue() = 0;
-  virtual void updateModulationValue() final 
+  /** This is called per sample from the ModulationManager and it updates our modValue member 
+  variable by calling the virtual getModulatorOutputSample() function (that subclasses must 
+  override) and using its output for the modValue. The rsVoiceManager parameter is irrelevant in 
+  this class here but it becomes relevant in the ModulationSourcePoly subclass, where we override
+  this method, so the parameter must be already included in the function signature here. */
+  virtual void updateModulationValue(rosic::rsVoiceManager* voiceManager)
   { 
-    modValues[0] = getModulatorOutputSample(); 
+    modValue = getModulatorOutputSample(); 
     //jassert(RAPT::rsIsFiniteNumber(modValue));
   }
-  // when the dust settles, delete these comments...and this function - it's obsolete now, right?
+  // maybe rename it to updateModulation because it may apply either to a single value 
+  // (monophonic) or many values (polyphonic), where the latter applies to subclass 
+  // ModulationSourcePoly
 
   /** Override this function in your subclass to produce one modulator output sample at a time. */
   virtual double getModulatorOutputSample() = 0;
@@ -255,12 +255,12 @@ public:
 
   /** Returns the current output value of the modulations source. This is supposed to be called 
   after updateModulationValue has been called. */
-  inline double getModulationValue() const { return modValues[0]; }
+  inline double getModulationValue() const { return modValue; }
 
 protected:
 
-  //double modValue = 0;    // get rid - or replace by array
-  std::vector<double> modValues;
+  double modValue = 0;    // get rid - or replace by array
+  //std::vector<double> modValues;
   // maybe use a std::vector to support polyphony already here - obviates subclass 
   // ModulationSourcePoly which would make some things easier - when then AudioModulePoly is 
   // realized as a mix-in class, then polyphonic modulator classes could be realized by 
@@ -760,6 +760,10 @@ public:
   depth-parameters of the modulation connections. */
   virtual void setMetaParameterManager(MetaParameterManager* managerToUse);
 
+  /** Sets the voice manager that should be used in the polyphonic case. Can be ignored in for
+  monophonic plugins. */
+  virtual void setVoiceManager(rosic::rsVoiceManager* managerToUse);
+
   /** Recalls a state (i.e. all the connections and their settings) from an XmlElement. */
   virtual void setStateFromXml(const XmlElement& xmlState);
 
@@ -782,10 +786,9 @@ protected:
   std::vector<ModulationTarget*> affectedTargets;
   std::vector<ModulationConnection*> modulationConnections;
 
-  //std::vector<double> sourceValues;  // later: also have targetValues..hmm..nah
-
   CriticalSection *modLock = nullptr; 
-  MetaParameterManager* metaManager = nullptr; // use a null object instead
+  MetaParameterManager*  metaManager  = nullptr;  // maybe use a null object instead - or maybe not
+  rosic::rsVoiceManager* voiceManager = nullptr; 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationManager)
 };
@@ -936,14 +939,43 @@ class JUCE_API ModulatableParameter2 : public ModulatableParameter
 //=================================================================================================
 
 // the stuff below is under construction - it's for the polyphonic version of the modulation system
-/*
+
 class JUCE_API ModulationSourcePoly : public ModulationSource
 {
 
 public:
 
+  /** Must be overriden by subclasses to produce a modulator output sample for the given voice 
+  index. */
   virtual double getModulatorOutputSample(int voiceIndex) = 0;
-  //virtual double getModulatorOutputSample() = 0;
+
+
+  void updateModulationValue(rosic::rsVoiceManager* voiceManager) override
+  { 
+    if(voiceManager == nullptr) return;
+    jassert(modValues.size() >= voiceManager->getMaxNumVoices());
+
+    for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)
+      modValues[i] = getModulatorOutputSample(i);
+  }
+
+  double getModulatorOutputSample() override
+  {
+    jassertfalse; // this function should not be used anymore for polyphonic sources
+    return 0;
+  }
+
+  virtual void allocateVoiceResources(rosic::rsVoiceManager* voiceManager)
+  {
+    if(voiceManager == nullptr)
+      modValues.resize(0);       // or maybe use size 1?
+    else
+      modValues.resize(voiceManager->getMaxNumVoices());
+  }
+
+protected:
+
+  std::vector<double> modValues; // replaces "modValue" member of monophonic baseclass
 
 };
 // maybe it's not a good idea to have such a subclass - it may mess up the class hierarchy - the 
@@ -951,6 +983,7 @@ public:
 // - like getModulatorOutputSample always takes a voice-index parameter and monophonic 
 // implementations may just ignore it
 
+/*
 class JUCE_API ModulationTargetPoly : virtual public ModulationTarget
   // virtual inheritance, because we need a ModulatableParameterPoly subclass of 
   // ModulatableParameter - which already has ModulationTarget as baseclass
@@ -971,6 +1004,7 @@ protected:
 
 };
 */
+
 
 class JUCE_API ModulatableParameterPoly : public ModulatableParameter /*, virtual public ModulationTargetPoly*/
   // todo: check, if the inheritance order makes a difference - 
@@ -1006,7 +1040,7 @@ public:
   {
     return ModulatableParameter::getModulationTargetName();
   }
-  // idk, why we don't inherit that method
+  // idk, why we don't inherit that method -> figure out
 
 
 protected:
@@ -1063,11 +1097,12 @@ private:
 
 // i think, a special ModulationConnection (sub)class is not needed for polyphony - we can use the
 // same class as in the monophonic case
-
+/*
 class JUCE_API ModulationManagerPoly : public ModulationManager
 {
 
 };
+*/
 
 
 // see:

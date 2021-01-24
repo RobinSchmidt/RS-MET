@@ -265,7 +265,7 @@ void ModulationManager::applyModulationsNoLock()
   // compute output signals of all modulators:
   for(i = 0; i < availableSources.size(); i++)
   {
-    availableSources[i]->updateModulationValue(); 
+    availableSources[i]->updateModulationValue(voiceManager); 
     //sourceValues[i] = availableSources[i]->getModulatorOutputSample();
   }
     // maybe we should loop only over an array of "usedSources" as optimization? similar to the way
@@ -509,6 +509,12 @@ void ModulationManager::setMetaParameterManager(MetaParameterManager* managerToU
   ScopedLock scopedLock(*modLock); 
   metaManager = managerToUse;
   // todo: set it to the null object, in case a nullptr is passed
+}
+
+void ModulationManager::setVoiceManager(rosic::rsVoiceManager* managerToUse)
+{
+  ScopedLock scopedLock(*modLock); 
+  voiceManager = managerToUse;
 }
 
 void ModulationManager::setStateFromXml(const XmlElement& xmlState)

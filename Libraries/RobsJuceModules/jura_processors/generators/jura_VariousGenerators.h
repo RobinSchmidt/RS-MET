@@ -92,7 +92,7 @@ public:
 protected:
 
   virtual void createParameters();
-  void allocateVoiceResources() override;
+  void allocateVoiceResources(rosic::rsVoiceManager* voiceManager) override;
 
   SineOscCore core;  // maybe rename to master
   std::vector<RAPT::rsSineOscillator<double>> voices;

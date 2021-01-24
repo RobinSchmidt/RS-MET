@@ -62,7 +62,7 @@ void SineOscAudioModulePoly::createParameters()
   p->setValueChangeCallbackPoly([this](double v, int i) { setDetune(v, i); });
 }
 
-void SineOscAudioModulePoly::allocateVoiceResources() 
+void SineOscAudioModulePoly::allocateVoiceResources(rosic::rsVoiceManager* voiceManager) 
 {
   if(voiceManager)
     voices.resize(voiceManager->getMaxNumVoices());

@@ -177,7 +177,7 @@ protected:
   /** Overriden from AudioModulePoly. We iterate through our modules array and call the same 
   function on the modules where this is applicable, i.e. those that are also subclasses of
   AudioModulePoly. */
-  void allocateVoiceResources() override;
+  void allocateVoiceResources(rosic::rsVoiceManager* voiceManager) override;
 
   /** Checks, if the passed AudioModule can be cast into a ModulationSource and if so, adds it to
   our array of ModulationSources (inherited from ModulationManager). */

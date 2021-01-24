@@ -109,7 +109,7 @@ void AttackDecayEnvelopeModule::setDecay(double newDecay)
 AttackDecayEnvelopeModulePoly::AttackDecayEnvelopeModulePoly(CriticalSection* lockToUse,
   MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse,
   rsVoiceManager* voiceManagerToUse) 
-  : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+  : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("EnvelopeAD");  //
@@ -133,8 +133,9 @@ void AttackDecayEnvelopeModulePoly::createParameters()
   p->setValueChangeCallbackPoly([this](double v, int i) { setDecay(v, i); });
 }
 
-void AttackDecayEnvelopeModulePoly::allocateVoiceResources() 
+void AttackDecayEnvelopeModulePoly::allocateVoiceResources(rosic::rsVoiceManager* voiceManager) 
 {
+  ModulatorModulePoly::allocateVoiceResources(voiceManager);
   if(voiceManager)
     cores.resize(voiceManager->getMaxNumVoices());
   else

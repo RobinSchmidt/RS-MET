@@ -29,8 +29,20 @@ ToolChain::ToolChain(CriticalSection *lockToUse,
   ScopedLock scopedLock(*lock);
   setModuleTypeName("ToolChain");
   modManager.setMetaParameterManager(metaManagerToUse);
+
+
   setModulationManager(&modManager);            // maybe use "new" for this, too
   setVoiceManager(new rosic::rsVoiceManager);
+  // i think, we really should use a pointer to modManager and destroy it explicitly, i.e. use 
+  // new/delete. modManager holds a pointer to our voiceManager and if we do it like this, the 
+  // mod-manager will for a short moment hold a dangling pointer in the destructor because the 
+  // voiceManager is deleted before the modManager goes out of scope. If we use a pointer, we have
+  // explicit control of the destruction order ..but we may also just null the pointer manually
+  // before destroying the voiceManager
+  modManager.setVoiceManager(voiceManager);
+
+
+
   //createDebugModSourcesAndTargets(); // for debugging the mod-system
   populateModuleFactory();
   addEmptySlot();
@@ -53,6 +65,10 @@ ToolChain::~ToolChain()
   for(int i = 0; i < size(modules); i++)
     delete modules[i];
 
+  // ToDo:
+  // delete modManager; // done before deleting voiceManager bcs. it holds a pointer to it
+
+  modManager.setVoiceManager(nullptr); // dunno if required but better safe than sorry
   delete voiceManager;
 }
 
@@ -436,7 +452,7 @@ void ToolChain::setupManagers(AudioModule* m)
   }
 }
 
-void ToolChain::allocateVoiceResources()
+void ToolChain::allocateVoiceResources(rosic::rsVoiceManager* voiceManager)
 {
   voiceSignals.resize(2*voiceManager->getMaxNumVoices());
   for(size_t i = 0; i < modules.size(); i++) 
@@ -444,7 +460,7 @@ void ToolChain::allocateVoiceResources()
     AudioModulePoly* pm = dynamic_cast<AudioModulePoly*> (modules[i]);
     if(pm != nullptr)
     {
-      pm->allocateVoiceResources();
+      pm->allocateVoiceResources(voiceManager);
       pm->setVoiceSignalBuffer(&voiceSignals[0]);
     }
   }
