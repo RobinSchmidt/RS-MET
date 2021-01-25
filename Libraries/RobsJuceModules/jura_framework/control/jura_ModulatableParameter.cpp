@@ -299,9 +299,8 @@ void ModulationManager::addConnection(ModulationConnection* connection)
 {
   ScopedLock scopedLock(*modLock); 
   jassert(!isConnected(connection->source, connection->target)); // connection already exists
-  modulationConnections.push_back(connection);
+  addConnectionToArray(connection);
   appendIfNotAlreadyThere(affectedTargets, connection->target);
-
   sendModulationChangeNotificationFor(connection->target); // new
 }
 
@@ -362,7 +361,7 @@ void ModulationManager::removeConnection(int i, bool updateAffectTargets)
   ObservableModulationTarget* omt = 
     dynamic_cast<ObservableModulationTarget*> (modulationConnections[i]->target);
   delete modulationConnections[i];
-  remove(modulationConnections, i);
+  removeConnectionFromArray(i);  // todo: remove before deleting
   if(omt)
     omt->sendModulationsChangedNotification();
   if(!t->hasConnectedSources()) {  // avoids the target getting stuck at modulated value when last 
@@ -729,24 +728,20 @@ void ModulationManagerPoly::applyModulationsNoLock()
 // method updateModulationValue should just copy the value from the newest voice into 
 // modulationValue, if the source is polyphonic.
 
-
-
-void ModulationManagerPoly::addConnection(ModulationConnection* connection)
+/*
+void ModulationManagerPoly::addConnectionToArray(ModulationConnection* connection)
 {
-  ModulationManager::addConnection(connection); // preliminary
-
   // ToDo: do not just use push_back but instead insert it at location thta ensures that 
   // connections with the same target are neighbors in the array, also increments 
   // numDistinctActiveTargets if the was not connection with that target yet, maybe resize the
   // modulatedValues buffer
-
 }
 
-void ModulationManagerPoly::removeConnection(int index, bool updateAffectTargets)
+void ModulationManagerPoly::removeConnectionFromArray(int index)
 {
-  ModulationManager::removeConnection(index, updateAffectTargets); // preliminary
-
   // ToDo: possibly decrement numDistinctActiveTargets, if this was the last connection to that
   // target, maybe resize the modulatedValues buffer
 }
+*/
+
 

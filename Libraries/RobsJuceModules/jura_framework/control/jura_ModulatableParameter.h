@@ -577,7 +577,7 @@ public:
   void addConnection(ModulationSource* source, ModulationTarget* target);
 
   /** Adds the passed ModulationConnection to our array. */
-  virtual void addConnection(ModulationConnection* connection);
+  void addConnection(ModulationConnection* connection);
 
   /** Removes a connection between the given source and target. */
   void removeConnection(ModulationSource* source, ModulationTarget* target);
@@ -592,7 +592,7 @@ public:
   void removeAllConnections();
 
   /** Removes the connection with given index. */
-  virtual void removeConnection(int index, bool updateAffectTargets);
+  void removeConnection(int index, bool updateAffectTargets);
   // maybe set updateAffectTargets to true by default
 
   /** Resets all the range limits for all registered modulation targets to +-inf. */
@@ -703,6 +703,17 @@ public:
   void updateAffectedTargetsArray();
 
 protected:
+
+  /** Just appends the given connction to the end of our modulationConnections. Intended to be 
+  overriden by subclass which need to enforce a certain ordering of the connections. */
+  virtual void addConnectionToArray(ModulationConnection* connection)
+  { modulationConnections.push_back(connection); }
+
+  /** Just removes the pointer to the connection at the given index from our modulationConnections
+  array. Intended to be overriden by subclasses which need to perform additional operations when 
+  this happens. */
+  virtual void removeConnectionFromArray(int index)
+  { remove(modulationConnections, index); }
 
   /** Tries to cast the passed ModulationTarget into an ObservableModulationTarget and if this is 
   successful, it sends out the modulation change notifiaction for it. */
@@ -882,14 +893,11 @@ public:
   /** Overriden to apply the polyphonic modulations as well. */
   void applyModulationsNoLock() override;
 
-  /**  */
-  void addConnection(ModulationConnection* connection) override;
-
-
-  /**  */
-  void removeConnection(int index, bool updateAffectTargets) override;
-
 protected:
+
+  //void addConnectionToArray(ModulationConnection* connection) override
+  //void removeConnectionFromArray(int index) override;
+
 
   std::vector<double> modulatedValues;
 
