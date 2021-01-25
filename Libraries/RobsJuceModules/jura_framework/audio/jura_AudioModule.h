@@ -480,7 +480,7 @@ public:
   virtual ~AudioModulePoly() { }
 
   //-----------------------------------------------------------------------------------------------
-  // \name Setup:
+  // \name Setup
 
   /** Sets the voice manager for this module and recursively for all the child modules. This will 
   trigger a call to allocateVoiceResources because the amount of resources needed depends on the
@@ -497,9 +497,29 @@ public:
   void setVoiceSignalBuffer(double* buffer) { voicesBuffer = buffer; }
 
   //-----------------------------------------------------------------------------------------------
-  // \name Inquiry:
+  // \name Inquiry
 
   // int getMaxNumVoices();
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Callbacks
+
+  /** Supposed to be called on note-on when the given voice should immediately switch to the new 
+  pitch due to having just been grabbed from pool of idle voices or was stolen and must now play a 
+  new pitch. It may also be called per sample, when the note pitch of a voice is in transition to 
+  a new value due to glide. The pitch given is in units of midi-note numbers, but as continuous 
+  value. Subclasses can override this in order to implement their required response, like - for 
+  example - setting the frequency of an oscillator to the frequency that corresponds to the new 
+  pitch. The pitch value already has microtuning baked in, but not pitch-wheel. This is because 
+  microtuning is handled globally but the response to pitch-wheel is implemented via the modulation
+  system. Pitch-Wheel is available as modulator and can be routed to the parameters at will. */
+  virtual void setVoiceKeyPitch(int voice, double pitch) {}
+
+
+
+  virtual void setVoiceVelNorm(int voice, double pitch) {}
+  // similar to setVoiceKeyPitch but for (normalized) velocity 
+
 
 
 

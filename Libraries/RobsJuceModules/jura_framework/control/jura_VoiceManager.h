@@ -113,6 +113,14 @@ public:
   int getNumIdleVoices() const { return numVoices - numActiveVoices; }
 
 
+  bool needsPreRenderUpdate() const { return _needsPreRenderUpdate; } 
+
+  bool needsPostRenderUpdate() const { return _needsPostRenderUpdate; } 
+
+  double getPitchForKey(int key) const { return double(key); }
+  // preliminary - todo: take into account tuning table and master-tune
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Event handling
 
@@ -129,8 +137,13 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  /** Should be called once per sample by some outlying driver class. */
-  void perSampleUpdate();
+  /** Should be called once per sample by some outlying driver class before the audio signal for 
+  the given sample instant is rendered. */
+  //void perSampleUpdatePreRender();
+
+  /** Should be called once per sample by some outlying driver class after the audio signal for 
+  the given sample instant was rendered. */
+  //void perSampleUpdatePostRender();
 
 
   void reset();
@@ -138,7 +151,15 @@ public:
 
 protected:
 
+  int activateAndGetLastIdleVoice();
+
+  void triggerVoice(int voiceIndex, int key, int vel);
+
   void stealVoice(int key, int vel);
+
+  void releaseVoice(int voiceIndex);
+
+  void deactivateVoice(int indexInActiveVoices);
 
 
   int maxNumVoices    = 16;  // maximum number of voices
@@ -167,16 +188,16 @@ protected:
 
     void reset()
     {
-      frequency = 0;
-      normalizedVelocity = 0;
-      key = 0;
+      pitch  = 0.0;
+      vel01  = 0.0;
+      key    = 0;
       isHeld = false;
     }
 
-    double frequency;           // derived from key and the tuning to be used - maybe pitch is better
-    double normalizedVelocity;  // velocity normalized to the range 0...1
-    int    key;                 // key as MIDI note value
-    bool   isHeld;              // flag to indicate that the note is being held - may not be needed
+    double pitch;    // midi-pitch computed from key and tuning 
+    double vel01;    // velocity as continuous value, normalized to range 0..1
+    int    key;      // key as MIDI note value
+    bool   isHeld;   // flag to indicate that the note is being held - may not be needed
   };
 
   std::vector<VoiceState> voiceStates;
@@ -184,6 +205,12 @@ protected:
 
 
   StealMode stealMode = StealMode::oldest;
+
+  bool _needsPreRenderUpdate  = false;
+  bool _needsPostRenderUpdate = false;
+  // Flags that is set to true whenever there is some process going on that requires a per-sample
+  // update of the state, such as gliding from one note to another. The underscore is just for 
+  // avoiding confusion with the method that has the same name.
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsVoiceManager)

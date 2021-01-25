@@ -36,20 +36,7 @@ void rsVoiceManager::noteOn(int key, int vel)
   if(vel == 0)
     noteOff(key);
   else if(numActiveVoices < numVoices)
-  {
-    // maybe factor out into voiceToUse = activateLastIdleVoice()
-    int idleIndex  = getNumIdleVoices() - 1;
-    int voiceToUse = idleVoices[idleIndex];     // us the last from the array of idle voices
-    idleVoices[idleIndex] = -1;                 // -1 is code for an invalid voice index
-    activeVoices[numActiveVoices] = voiceToUse; // append it to the array of active voices
-    numActiveVoices++;
-
-    // maybe factor out into triggerVoice(voiceIndex, key, vel):
-    voiceStates[voiceToUse].frequency = RAPT::rsPitchToFreq(double(key)); // preliminary
-    voiceStates[voiceToUse].normalizedVelocity = double(vel) / 127.0;
-    voiceStates[voiceToUse].key = key;
-    voiceStates[voiceToUse].isHeld = true;
-  }
+    triggerVoice(activateAndGetLastIdleVoice(), key, vel);
   else
     stealVoice(key, vel);
 }
@@ -57,35 +44,33 @@ void rsVoiceManager::noteOn(int key, int vel)
 
 void rsVoiceManager::noteOff(int key)
 {
-  for(int i = 0; i < numActiveVoices; i++)
-  {
+  for(int i = 0; i < numActiveVoices; i++) {
     int j = activeVoices[i];
-    if(voiceStates[j].key == key)
-    {
-      // we have found the voice that needs to be put into release state
-
-
-      voiceStates[j].isHeld = false;
-      //releasingVoices.push_back(j);
-
-
-      int dummy = 0;
-    }
-  }
-
-
-
+    if(voiceStates[j].key == key) {
+      releaseVoice(j);
+      return; }} // should be ok to return because we assume that a given key can only be held
+                 // in one voice at a time
 }
+// needs tests
 
 void rsVoiceManager::setPitchBend(int pitchBendValue)
 {
 
 }
+// may not be needed - we handle PitchBend as moudlator via the modulation system. this is more
+// flexible and laso more convenient to implement
 
-void rsVoiceManager::perSampleUpdate()
+/*
+void rsVoiceManager::perSampleUpdatePreRender()
 {
 
 }
+
+void rsVoiceManager::perSampleUpdatePostRender()
+{
+
+}
+*/
 
 void rsVoiceManager::reset()
 {
@@ -96,6 +81,26 @@ void rsVoiceManager::reset()
     activeVoices[i] = -1;                        // code for invalid voice index
     voiceStates[i].reset();
   }
+}
+
+int rsVoiceManager::activateAndGetLastIdleVoice()
+{
+  int idleIndex  = getNumIdleVoices() - 1;
+  jassert(idleIndex >= 0 && idleIndex < getNumIdleVoices());
+  int voiceToUse = idleVoices[idleIndex];     // use the last from the array of idle voices
+  jassert(voiceToUse >= 0 && voiceToUse < getNumVoices());
+  idleVoices[idleIndex] = -1;                 // -1 is code for an invalid voice index
+  activeVoices[numActiveVoices] = voiceToUse; // append it to the array of active voices
+  numActiveVoices++;
+  return voiceToUse;
+}
+
+void rsVoiceManager::triggerVoice(int voiceIndex, int key, int vel)
+{
+  voiceStates[voiceIndex].pitch  = getPitchForKey(key);
+  voiceStates[voiceIndex].vel01  = double(vel) / 127.0;
+  voiceStates[voiceIndex].key    = key;
+  voiceStates[voiceIndex].isHeld = true;
 }
 
 void rsVoiceManager::stealVoice(int key, int vel)
@@ -120,3 +125,31 @@ void rsVoiceManager::stealVoice(int key, int vel)
 
   int dummy = 0;
 }
+
+void rsVoiceManager::releaseVoice(int i)
+{
+  voiceStates[i].isHeld = false;
+  //releasingVoices.push_back(i);
+
+  // more to do....
+
+  int dummy = 0;
+}
+
+template<class T>
+void removeElement(T* x, int length, int index)
+{
+  for(int i = index; i < length-1; i++)
+    x[i] = x[i+1];
+}
+// move to RAPT::rsArrayTools
+
+void rsVoiceManager::deactivateVoice(int activeIndex)
+{
+  int voiceIndex = activeVoices[activeIndex];
+  removeElement(&activeVoices[0], numActiveVoices, activeIndex); 
+  idleVoices[getNumIdleVoices()] = voiceIndex;
+  numActiveVoices--;
+  activeVoices[numActiveVoices] = -1;
+}
+// needs test
