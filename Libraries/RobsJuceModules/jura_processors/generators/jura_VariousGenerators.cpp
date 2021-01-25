@@ -80,6 +80,8 @@ void SineOscAudioModulePoly::createParameters()
   //  ...but i think, it shoould already behave this way, if the modulated value is correctly
   //  initialized from the unmodulated value - maybe there's something wrong with that
   // -hmm..setFrequency is not called - why? ..ah - because we have no modulator assigned
+  //  ...but that's not all - what about doModulationUpdate? do we need to override this in
+  //  AudioModulePoly to also call do the polyphonic callbacks?
 }
 
 void SineOscAudioModulePoly::allocateVoiceResources(rsVoiceManager* voiceManager) 

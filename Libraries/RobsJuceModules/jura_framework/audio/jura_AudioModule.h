@@ -465,8 +465,6 @@ polyphonic oscillator with a polyphonic filter and drop in some polyphonic modul
 ...under construction....tbc.... */
 
 class JUCE_API AudioModulePoly : public AudioModuleWithMidiIn 
-  // maybe don't inherit - the class is a mix-in - maybe rename to 
-  // PolyphonicModule (such that the name doesn't suggest being a subclass of AudioModule
 {
 
 public:
@@ -500,6 +498,10 @@ public:
   // \name Inquiry
 
   // int getMaxNumVoices();
+
+  /** Returns a pointer to our voiceManager. */
+  rsVoiceManager* getVoiceManager() const { return voiceManager; }
+  // maybe it should be a const pointer?
 
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks

@@ -672,11 +672,13 @@ juce::String ModulatableParameter::getModulationTargetName()
 
 //=================================================================================================
 
+/*
 void ModulatableParameterPoly::callValueChangeCallbacks(
   int numActiveVoices, double* values, int* voiceIndices)
 {
   for(int i = 0; i < numActiveVoices; i++)
     callValueChangeCallbackPoly(values[i], voiceIndices[i]);
 }
+*/
 
 // maybe we also need to override setNormalizedValue, setSmoothedValue

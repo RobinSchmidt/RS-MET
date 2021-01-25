@@ -54,6 +54,9 @@ public:
 
 
 
+
+
+
 //=================================================================================================
 
 /** A class for managing polyphony in instrument modules. */
@@ -140,6 +143,7 @@ public:
   size_t getNumReleasingVoices() const { return releasingVoices.size(); }
   // the inconsistency is a bit ugly but we want to avoid conversion
 
+  int getActiveVoiceIndex(int i) const { return activeVoices[i]; }
 
 
 

@@ -770,6 +770,10 @@ public:
   /** Returns the state (i.e. all the connections and their settings) in form of an XmlElement. */
   virtual XmlElement* getStateAsXml();
 
+  /** Returns the voice manager that is used for polyphonic modulation, if applicable. */
+  rsVoiceManager* getVoiceManager() const { return voiceManager; }
+
+
   /** Updates our affectedTargets array. Called from the connection-removal functions in order to 
   remove the target from the affectedTargets, in case it has no incoming connections anymore after 
   connection removal. */
@@ -905,7 +909,7 @@ public:
   }
 
   /** Overriden to call our callback function with the modulated value. */
-  virtual void doModulationUpdate() override
+  void doModulationUpdate() override
   {
     callCallbackWithModulatedValue();
   }
@@ -956,21 +960,9 @@ public:
     jassert(modValues.size() >= voiceManager->getMaxNumVoices());
     for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)
       modValues[i] = getModulatorOutputSample(i);
-    modValue = modValues[voiceManager->getNewestVoice()];
-    // experimental - to support the monophonic code...but it may get overwritten in the next 
-    // initialization...but maybe that's good...we'll see....
-  }
-
-
-  double getModulatorOutputSample() override
-  {
-    jassertfalse;  // should not be used in polyphonic modules
-    return 0.0;
-
-    //jassert(voiceManager != nullptr);
-    //return getModulatorOutputSample(voiceManager->getNewestVoice());
-    // will this work? what if the newest voice is among the active voices? will then getSample be
-    // called twice? ...figure out?
+    modValue = modValues[voiceManager->getNewestVoice()]; // experimental - to support the 
+    // monophonic code...but it may get overwritten in the next initialization...but maybe 
+    // that's good...we'll see....
   }
 
   virtual void allocateVoiceResources(rsVoiceManager* voiceManager)
@@ -984,6 +976,19 @@ public:
 protected:
 
   std::vector<double> modValues; // replaces "modValue" member of monophonic baseclass
+
+private:
+
+  double getModulatorOutputSample() override
+  {
+    jassertfalse;  // should not be used in polyphonic modules
+    return 0.0;
+
+    //jassert(voiceManager != nullptr);
+    //return getModulatorOutputSample(voiceManager->getNewestVoice());
+    // will this work? what if the newest voice is among the active voices? will then getSample be
+    // called twice? ...figure out?
+  }
 
 };
 // maybe it's not a good idea to have such a subclass - it may mess up the class hierarchy - the 
@@ -1013,9 +1018,9 @@ protected:
 };
 */
 
+//class AudioModulePoly; 
 
-class JUCE_API ModulatableParameterPoly : public ModulatableParameter /*, virtual public ModulationTargetPoly*/
-  // todo: check, if the inheritance order makes a difference - 
+class JUCE_API ModulatableParameterPoly : public ModulatableParameter
 {
 
 public:
@@ -1041,7 +1046,32 @@ public:
     valueChangeCallbackPoly(value, voiceIndex);
   }
 
-  virtual void callValueChangeCallbacks(int numActiveVoices, double* values, int *voiceIndices);
+  //virtual void callValueChangeCallbacks(int numActiveVoices, double* values, int *voiceIndices);
+
+
+  /** Overriden to call our callback function with the modulated value. */
+  void doModulationUpdate() override
+  {
+    callCallbackWithModulatedValue();  // calls the monophonic callback
+
+    rsVoiceManager* vm = getModulationManager()->getVoiceManager(); 
+    // maybe we should have some safeguards aginst nullpointers?
+
+    jassert(vm);  // needs to be assigned
+    for(int i = 0; i < vm->getNumActiveVoices(); i++)
+    {
+      int j = vm->getActiveVoiceIndex(i);
+
+      //valueChangeCallbackPoly(modValues[j], j); // is this correct?
+
+      int dummy = 0;
+    }
+  }
+  // maybe we should computed the modulatedValue here, right before calling the callback
+  // ..no need to store it in any object....
+
+  // maybe we also need to override setNormalizedValue, setSmoothedValue? ..but maybe not - these
+  // should modifiers should be baked into the unmodulatedValue before modulation is applied
 
 
   virtual juce::String getModulationTargetName() override
