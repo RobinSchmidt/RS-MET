@@ -1,7 +1,13 @@
 #ifndef RAPT_VARIOUSOSCILLATORS_H_INCLUDED
 #define RAPT_VARIOUSOSCILLATORS_H_INCLUDED
 
-
+// maybe rename to rsSineOscillatorRecursive - we may also have a naive one - they should both 
+// behave the same way, but be different with regard to which operations are efficient and which 
+// are expensive - both should allow FM and PM - maybe even have a class that somehow automatically
+// dispatches between both implementations depending on the conditions - PM/FM is cheaper with a 
+// naive implementation, just producing a steady sine is cheaper with the recursive implementation
+// so we need to detect, if PM/FM is going on - maybe that should be done in the jura processor.
+// there we can inquire, if a modulator is connected to freq and/or phase
 
 template<class T>
 class rsSineOscillator : public rsSineIterator<T>
@@ -14,7 +20,21 @@ public:
 
   void setAmplitude(T newAmplitude) { amp = newAmplitude; }
 
-  //void setOmega(T newOmega) { setup(newOmega, getPhase(), T(1)); }
+  void setOmega(T w, bool fixPhase = true) 
+  { 
+    this->a1 = 2.0*cos(w);
+    if(fixPhase)
+    {
+      T p = this->getPhase();
+      this->s1 = this->a1*sin(p-    w);
+      this->s2 = this->a1*sin(p-2.0*w);
+      // but what if w < 0? i think, we should then swap s1,s2 - this needs tests - we want to be
+      // able to do through-zero FM
+    }
+
+
+    //setup(newOmega, getPhase(), T(1)); 
+  }
   // getPhase should reconstruct the phase from the state - needs asin and then figure out if we 
   // are in the ascending or descending part and possibly add an offset of pi, maybe:
   //   y = getValue();

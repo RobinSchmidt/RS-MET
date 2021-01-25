@@ -90,6 +90,8 @@ void rsVoiceManager::findAndKillFinishedVoices()
       deactivateVoice(vi);
   }
 
+  // what if the amplitude of the voice does not go to zero?
+
   // implementation of va = .. needs to be changed when numChannels != 2 ...maybe do this later
 }
 
@@ -152,8 +154,15 @@ void rsVoiceManager::stealVoice(int key, int vel)
 void rsVoiceManager::releaseVoice(int i)
 {
   //voiceStates[i].isHeld = false;
-  releasingVoices.push_back(i);
-  killCounters[i] = killTimeSamples;
+  if(killMode == KillMode::immediately)
+  {
+    deactivateVoice(i);
+  }
+  else
+  {
+    releasingVoices.push_back(i);
+    killCounters[i] = killTimeSamples;
+  }
 }
 
 
@@ -175,7 +184,7 @@ void rsVoiceManager::deactivateVoice(int voiceIndex)
   activeVoices[numActiveVoices] = -1;
 
   bool dbg = RAPT::rsRemoveFirstOccurrence(releasingVoices, voiceIndex);
-  jassert(dbg); // voices that are deactivated are supposed to have been in release-mode before
+  //jassert(dbg); // voices that are deactivated are supposed to have been in release-mode before
   // ...but maybe that doesn't need to be the case? Are there situations when a voice is directly
   // shut off without going inot the release phase before?
 }

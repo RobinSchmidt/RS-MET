@@ -712,9 +712,9 @@ void AudioModulePoly::processStereoFrame(double* left, double* right)
   // actually do not use the mixed signals
 
   double sumL = 0, sumR = 0;  // todo: use rsFloat64x2
-  for(int i = 0; i < numActiveVoices; i+=2) {
-    sumL += voicesBuffer[i];
-    sumR += voicesBuffer[i+1]; }
+  for(int i = 0; i < numActiveVoices; i+=1) {
+    sumL += voicesBuffer[2*i];
+    sumR += voicesBuffer[2*i+1]; }
 
   *left  = sumL; // todo: use *left = thruGain * *left + outGain * sumL
   *right = sumR; // ditto
@@ -725,8 +725,8 @@ void AudioModulePoly::processStereoFramePoly(double *buffer, int numActiveVoices
   jassert(buffer); // must be a valid pointer, length should be at least 2*numActiveVoices, more
                    // typically, it will be 2*voiceManager->getNumActiveVoices()
 
-  for(int i = 0; i < numActiveVoices; i+=2)
-    processStereoFrameVoice(&buffer[i], &buffer[i+1], i);
+  for(int i = 0; i < numActiveVoices; i+=1)
+    processStereoFrameVoice(&buffer[2*i], &buffer[2*i+1], i);
     // we use an interleaved format for easier interfacing with rsFloat64x2
 }
 

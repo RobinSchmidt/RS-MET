@@ -82,6 +82,12 @@ public:
     //nearest, lowest, highest, quietest, dontSteal
   };
 
+  enum class KillMode
+  {
+    immediately,
+    afterSilence
+  };
+
   /** Sets the maximum number of voices that should be supported. The function is supposed to be 
   called once shortly after construction and then that setting should remain fixed for the lifetime
   of the plugin. If we later want to allow the user to change that setting at runtime, we will need 
@@ -227,6 +233,8 @@ protected:
 
 
   StealMode stealMode = StealMode::oldest;
+  KillMode  killMode  = KillMode::immediately;
+
 
   //bool _needsPreRenderUpdate  = false;
   //bool _needsPostRenderUpdate = false;

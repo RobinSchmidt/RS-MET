@@ -53,13 +53,24 @@ void SineOscAudioModulePoly::createParameters()
   typedef ModulatableParameterPoly Param;
   Param* p;
 
+  p = new Param("Frequency", 0.0, 20000.0, 1.0, Parameter::LINEAR);
+  addObservedParameter(p);
+  p->setValueChangeCallbackPoly([this](double v, int i) { setFrequency(v, i); });
+  // later we want a sort of exponential mapping but one that allows for zero values - maybe
+  // something based on sinh that is matched to the actual desired exp-shape at the max-value
+  // and at the mid-value (or some other selectable value) - or the user prescribes the mid 
+  // value - what about frequencies < 0 - that shoudl reverse the direction of the oscillator
+  // in the sine osc, we may realizes this by swapping y1,y2 (i think)
+
   p = new Param("Amplitude", -1.0, +1.0, 1.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallbackPoly([this](double v, int i) { setAmplitude(v, i); });
 
+  /*
   p = new Param("Detune", -60.0, +60.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallbackPoly([this](double v, int i) { setDetune(v, i); });
+  */
 }
 
 void SineOscAudioModulePoly::allocateVoiceResources(rsVoiceManager* voiceManager) 
@@ -70,12 +81,20 @@ void SineOscAudioModulePoly::allocateVoiceResources(rsVoiceManager* voiceManager
     voices.resize(1); // monophonic in absence of a voice manager
 }
 
+void SineOscAudioModulePoly::setFrequency(double newFrequency, int voice)
+{
+  jassert(voice < voices.size());
+  double omega = 2*PI*newFrequency / sampleRate;
+  voices[voice].setOmega(omega, false);  // later use true for fixPhase
+}
+
 void SineOscAudioModulePoly::setAmplitude(double newAmplitude, int voice)
 {
   jassert(voice < voices.size());
   voices[voice].setAmplitude(newAmplitude);
 }
 
+/*
 void SineOscAudioModulePoly::setDetune(double newDetune, int voice)
 {
   jassert(voice < voices.size());
@@ -87,6 +106,7 @@ void SineOscAudioModulePoly::setDetune(double newDetune, int voice)
   // ...
   //voices[voice].setOmega(omega);
 }
+*/
 
 
 

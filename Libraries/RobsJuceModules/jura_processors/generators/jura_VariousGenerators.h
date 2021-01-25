@@ -84,9 +84,17 @@ public:
   }
 
 
+  void setSampleRate(double newSampleRate) override { sampleRate = newSampleRate; }
+
+
   // parameter callback targets:
+  void setFrequency(double newFrequency, int voice);
   void setAmplitude(double newAmplitude, int voice);
-  void setDetune(   double newDetune,    int voice);
+  //void setDetune(   double newDetune,    int voice);
+  // maybe just have frequency and amplitude parameters and handle the adjustment of frequency via
+  // the mod-system -> provide a polyphonic Moudlator for NotePitch (but hwat range?) and/or 
+  // NoteFrequency that is 
+  // always available in ToolChain - maybe also NoteVelocity (0..1), PitchBend (-1..+1)
 
 
 protected:
@@ -96,6 +104,8 @@ protected:
 
   SineOscCore core;  // maybe rename to master
   std::vector<RAPT::rsSineOscillator<double>> voices;
+
+  double sampleRate;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SineOscAudioModulePoly)
 };
