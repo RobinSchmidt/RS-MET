@@ -97,7 +97,9 @@ public:
 
     //numActiveVoices = RAPT::rsMin(numActiveVoices, numVoices); 
     // hmmm...might be a bit harsh to kill off voices immediately - maybe we should wait for them 
-    // to be released naturally
+    // to be released naturally - but this may mess with our invariant (see comment at idleVoices)
+    // todo: figure out what happens when numVoices is being changed during playing and handle it
+    // gracefully
   }
 
 
@@ -159,27 +161,28 @@ protected:
 
   void releaseVoice(int voiceIndex);
 
-  void deactivateVoice(int indexInActiveVoices);
+  void deactivateVoice(int voiceindex);
 
 
   int maxNumVoices    = 16;  // maximum number of voices
   int numVoices       =  8;  // number of available voices
   int numActiveVoices =  0;  // number of currently playing voices
 
-  /** Indices of the voices that are currently playing and therefore must process audio. A voice 
-  is playing if it's currently being held or releasing. */
+  /** Indices of the voices that are currently active and therefore must process audio. A voice 
+  is active if it's either currently being held or releasing. */
   std::vector<int> activeVoices;
 
-  /** Indices of the voices that are currently idle and therefore available for new notes. */
+  /** Indices of the voices that are currently idle and therefore available for new notes. The 
+  invariant should be that activeVoices and idleVoices at all times combine to the full set 
+  0,1,2,3,...,numVoices-1. The activeVoices array is supposed to be filled up to 
+  n = numActiveVoices-1 (the rest being set to -1) and the idleVoices array is filled up to 
+  numVoices - numActiveVoices = numVoices-1-n  ..verify this... */
   std::vector<int> idleVoices;
 
-  // The invariant should be that playingVoices and idleVoices at all times combine to the full
-  // set 0,1,2,3,...,numVoices-1. The playingVoices is supposed to be filled up to 
-  // n = numActiveVoices-1 and the idleVoice is filled up to 
-  // numVoices - numActiveVoices = numVoices-1-n = 
-
-
-  //std::vector<int> releasingVoices;
+  /** Indices of voices that are currently in release mode. It's a subset of the activeVoices. 
+  These are ones whose output signals need to be monitored in order to know when a voice can be 
+  deactivated. */
+  std::vector<int> releasingVoices;
 
 
   struct VoiceState
@@ -191,13 +194,13 @@ protected:
       pitch  = 0.0;
       vel01  = 0.0;
       key    = 0;
-      isHeld = false;
+      //isHeld = false;
     }
 
     double pitch;    // midi-pitch computed from key and tuning 
     double vel01;    // velocity as continuous value, normalized to range 0..1
-    int    key;      // key as MIDI note value
-    bool   isHeld;   // flag to indicate that the note is being held - may not be needed
+    int    key;      // key as MIDI note value (maybe use char)
+    //bool   isHeld;   // flag to indicate that the note is being held - may not be needed
   };
 
   std::vector<VoiceState> voiceStates;
@@ -221,6 +224,7 @@ protected:
 //  for a given voice, monitor the output of that voice (how?) and if it remains below a certain
 //  threshold for a given amount of time, the voice can be killed and moved back into the pool
 //  of available voices
+// -maybe use short or even char instead of int - that may save a little memory
 
 // see romos::VoiceAllocator and rosic::PolyphonicInstrument/Voice for ideas, code and formulas
 

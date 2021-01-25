@@ -27,6 +27,7 @@ void rsVoiceManager::setMaxNumVoices(int newNumber)
   numActiveVoices = RAPT::rsMin(numActiveVoices, maxNumVoices);
   activeVoices.resize(maxNumVoices);
   idleVoices.resize(maxNumVoices);
+  releasingVoices.reserve(maxNumVoices);
   voiceStates.resize(maxNumVoices);
   reset();
 }
@@ -100,7 +101,7 @@ void rsVoiceManager::triggerVoice(int voiceIndex, int key, int vel)
   voiceStates[voiceIndex].pitch  = getPitchForKey(key);
   voiceStates[voiceIndex].vel01  = double(vel) / 127.0;
   voiceStates[voiceIndex].key    = key;
-  voiceStates[voiceIndex].isHeld = true;
+  //voiceStates[voiceIndex].isHeld = true;
 }
 
 void rsVoiceManager::stealVoice(int key, int vel)
@@ -128,13 +129,10 @@ void rsVoiceManager::stealVoice(int key, int vel)
 
 void rsVoiceManager::releaseVoice(int i)
 {
-  voiceStates[i].isHeld = false;
-  //releasingVoices.push_back(i);
-
-  // more to do....
-
-  int dummy = 0;
+  //voiceStates[i].isHeld = false;
+  releasingVoices.push_back(i);
 }
+
 
 template<class T>
 void removeElement(T* x, int length, int index)
@@ -142,14 +140,20 @@ void removeElement(T* x, int length, int index)
   for(int i = index; i < length-1; i++)
     x[i] = x[i+1];
 }
-// move to RAPT::rsArrayTools
+// move to RAPT::rsArrayTools - maybe change order of length and index for better consistency with
+// findIndexOf
 
-void rsVoiceManager::deactivateVoice(int activeIndex)
+void rsVoiceManager::deactivateVoice(int voiceIndex)
 {
-  int voiceIndex = activeVoices[activeIndex];
+  int activeIndex = RAPT::rsArrayTools::findIndexOf(&activeVoices[0], voiceIndex, numActiveVoices);
   removeElement(&activeVoices[0], numActiveVoices, activeIndex); 
   idleVoices[getNumIdleVoices()] = voiceIndex;
   numActiveVoices--;
   activeVoices[numActiveVoices] = -1;
+
+  bool dbg = RAPT::rsRemoveFirstOccurrence(releasingVoices, voiceIndex);
+  jassert(dbg); // voices that are deactivated are supposed to have been in release-mode before
+  // ...but maybe that doesn't need to be the case? Are there situations when a voice is directly
+  // shut off without going inot the release phase before?
 }
 // needs test
