@@ -114,13 +114,19 @@ public:
 
   int getNumIdleVoices() const { return numVoices - numActiveVoices; }
 
+  size_t getNumReleasingVoices() const { return releasingVoices.size(); }
+  // the inconsistency is a bit ugly but we want to avoid conversion
 
-  bool needsPreRenderUpdate() const { return _needsPreRenderUpdate; } 
 
-  bool needsPostRenderUpdate() const { return _needsPostRenderUpdate; } 
 
   double getPitchForKey(int key) const { return double(key); }
   // preliminary - todo: take into account tuning table and master-tune
+
+  //bool needsPreRenderUpdate() const { return _needsPreRenderUpdate; } 
+
+  //bool needsPostRenderUpdate() const { return _needsPostRenderUpdate; } 
+
+  bool needsVoiceKillCheck() const { return getNumReleasingVoices() > 0; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -147,6 +153,8 @@ public:
   the given sample instant was rendered. */
   //void perSampleUpdatePostRender();
 
+  void findAndKillFinishedVoices();
+
 
   void reset();
 
@@ -162,6 +170,7 @@ protected:
   void releaseVoice(int voiceIndex);
 
   void deactivateVoice(int voiceindex);
+  // maybe rename to killVoice
 
 
   int maxNumVoices    = 16;  // maximum number of voices
@@ -209,11 +218,20 @@ protected:
 
   StealMode stealMode = StealMode::oldest;
 
-  bool _needsPreRenderUpdate  = false;
-  bool _needsPostRenderUpdate = false;
+  //bool _needsPreRenderUpdate  = false;
+  //bool _needsPostRenderUpdate = false;
   // Flags that is set to true whenever there is some process going on that requires a per-sample
   // update of the state, such as gliding from one note to another. The underscore is just for 
   // avoiding confusion with the method that has the same name.
+
+  // Stuff for the voice killing functionality:
+  //static const int numChannels = 2; // maybe uncomment later
+  double *voicesBuffer   = nullptr;     // length should be numChannels*maxNumVoices
+  double sampleRate      = 44100.0;
+  double killThreshold   = 0.00001;     // -100 dB by default
+  double killTimeSeconds = 0.1;         //  100 ms
+  int    killTimeSamples = ceil(sampleRate * killTimeSeconds);
+  std::vector<int> killCounters;
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsVoiceManager)

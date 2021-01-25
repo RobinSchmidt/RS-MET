@@ -29,6 +29,7 @@ void rsVoiceManager::setMaxNumVoices(int newNumber)
   idleVoices.resize(maxNumVoices);
   releasingVoices.reserve(maxNumVoices);
   voiceStates.resize(maxNumVoices);
+  killCounters.resize(maxNumVoices);
   reset();
 }
 
@@ -73,15 +74,36 @@ void rsVoiceManager::perSampleUpdatePostRender()
 }
 */
 
+void rsVoiceManager::findAndKillFinishedVoices()
+{
+  jassert(voicesBuffer != nullptr);  // must be assigend or else access violations will occur
+
+  double *vb = voicesBuffer;
+  for(size_t i = 0; i < releasingVoices.size(); i++)
+  {
+    int    vi = releasingVoices[i];                // voice index
+    double va = RAPT::rsMax(vb[2*i], vb[2*i+1]);   // voice output amplitude
+    if(va >= killThreshold)
+      killCounters[vi] = killTimeSamples;          // reset counter, if output is above threshold
+    killCounters[vi]--;                            // countdown
+    if(killCounters[vi] == 0)
+      deactivateVoice(vi);
+  }
+
+  // implementation of va = .. needs to be changed when numChannels != 2 ...maybe do this later
+}
+
 void rsVoiceManager::reset()
 {
   numActiveVoices = 0;
   for(int i = 0; i < maxNumVoices; i++)
   {
-    idleVoices  [i] =  jmax(numVoices-1-i, -1);  // 0th voice is in last slot for first grab
     activeVoices[i] = -1;                        // code for invalid voice index
+    idleVoices  [i] =  jmax(numVoices-1-i, -1);  // 0th voice is in last slot for first grab
     voiceStates[i].reset();
+    killCounters[i] =  0;
   }
+  releasingVoices.clear();
 }
 
 int rsVoiceManager::activateAndGetLastIdleVoice()
@@ -131,6 +153,7 @@ void rsVoiceManager::releaseVoice(int i)
 {
   //voiceStates[i].isHeld = false;
   releasingVoices.push_back(i);
+  killCounters[i] = killTimeSamples;
 }
 
 
