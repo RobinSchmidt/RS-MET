@@ -264,10 +264,7 @@ void ModulationManager::applyModulationsNoLock()
 
   // compute output signals of all modulators:
   for(i = 0; i < availableSources.size(); i++)
-  {
-    availableSources[i]->updateModulationValue(/*voiceManager*/); 
-    //sourceValues[i] = availableSources[i]->getModulatorOutputSample();
-  }
+    availableSources[i]->updateModulationValue(); 
     // maybe we should loop only over an array of "usedSources" as optimization? similar to the way
     // we only loop over "affectedTargets"
 
@@ -284,11 +281,6 @@ void ModulationManager::applyModulationsNoLock()
   for(i = 0; i < affectedTargets.size(); i++)
     affectedTargets[i]->doModulationUpdate();
 }
-// perhaps it's best to make a subclass ModulationManagerPoly and override it there. It should
-// perhaps first apply all the polyphonic modulations and then call the baseclass method
-// updateModulationValue should just copy the value from the newest voice into modulationValue, if
-// the source is polyphonic.
-
 
 void ModulationManager::addConnection(ModulationSource* source, ModulationTarget* target)
 {
@@ -320,7 +312,7 @@ void ModulationManager::removeConnection(ModulationSource* source, ModulationTar
   for(int i = 0; i < size(modulationConnections); i++)
   {
     if(modulationConnections[i]->source == source && modulationConnections[i]->target == target)
-      removeConnection(i);
+      removeConnection(i, false);
   }
   updateAffectedTargetsArray();
   jassert(!isConnected(source, target)); // there must have been more than one connection between
@@ -334,7 +326,7 @@ void ModulationManager::removeConnectionsWith(ModulationSource* source)
   {
     if(modulationConnections[i]->source == source)
     {
-      removeConnection(i);
+      removeConnection(i, false);
       i--; // array was shrunken
     }
   }
@@ -348,7 +340,7 @@ void ModulationManager::removeConnectionsWith(ModulationTarget* target)
   {
     if(modulationConnections[i]->target == target)
     {
-      removeConnection(i);
+      removeConnection(i, false);
       i--; // array was shrunken
     }
   }
@@ -359,11 +351,11 @@ void ModulationManager::removeAllConnections()
 {
   ScopedLock scopedLock(*modLock); 
   while(size(modulationConnections) > 0)
-    removeConnection(size(modulationConnections)-1);
+    removeConnection(size(modulationConnections)-1, false);
   updateAffectedTargetsArray();
 }
 
-void ModulationManager::removeConnection(int i)
+void ModulationManager::removeConnection(int i, bool updateAffectTargets)
 {
   ScopedLock scopedLock(*modLock); 
   ModulationTarget* t = modulationConnections[i]->target;
@@ -376,6 +368,8 @@ void ModulationManager::removeConnection(int i)
   if(!t->hasConnectedSources()) {  // avoids the target getting stuck at modulated value when last 
     t->initModulatedValue();       // modulator was removed
     t->doModulationUpdate();  }
+  if(updateAffectTargets)
+    updateAffectedTargetsArray();
 }
 
 //void ModulationManager::resetAllTargetRangeLimits()
@@ -678,23 +672,81 @@ juce::String ModulatableParameter::getModulationTargetName()
 //=================================================================================================
 
 
+void ModulationManagerPoly::applyVoiceModulations(int i)
+{    
+  // todo loop over all connections to compute the modulated value and call the callback for 
+  // voice i
+
+  modulatedValues.resize(affectedTargets.size());
+  // we should somehow assure that this doe not cause a re-allocation - the capacity should be 
+  // large enough - the worst that can happen is min(numAvailableTargets, numConections)
+  // but how do we assign the array-slots to the targets and how do we figure out when two 
+  // connections go to the same target? ...maybe for this, we should also have the array sorted
+  // by target
+  // or the targets somehow need to store an array index that they want to use - but that must be
+  // uodated when the number of targets changes...maybe its beset to just have an array of
+  // size numAvailableTargets - that seems most practical
+
+  // hmm.. i think, we need to make sure that connections that go to the same target are 
+  // adjacent in the array of connections..we should also maintain a variable 
+  // numDistinctActiveTargets - we should nevertheless compute all values first and then apply
+  // all callbacks in one go after that in order to not introduce any dependency of the result
+  // on the actual ordering of the connections
+
+  for(i = 0; i < modulationConnections.size(); i++)
+  {
+    //modulationConnections[i]->apply();
+
+    // todo:
+    // -retrieve unmodulated value from source
+
+
+    // it would be helpful, if the connections would be sorted by their target - then we could 
+    // process one target at a time: loop over all connections involving that target, when done
+    // call the callback and then move on to the next target
+    // ...does it actually make any difference, in which order the connections are processed?
+    // maybe only when we have some sort of feedback modulation
+
+    // if we can't assume any ordering, we need a buffer of target-values whose size equals
+    // affectedTargets.size
+
+  }
+
+
+
+  int dummy = 0;
+}
+
 void ModulationManagerPoly::applyModulationsNoLock()
 {
-  size_t i;
-
-  // todo: apply polyphonic modulations...
+  if(voiceManager != nullptr)
+    for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)
+      applyVoiceModulations(voiceManager->getActiveVoiceIndex(i));
 
   ModulationManager::applyModulationsNoLock();
 }
+// It should perhaps first apply all the polyphonic modulations and then call the baseclass 
+// method updateModulationValue should just copy the value from the newest voice into 
+// modulationValue, if the source is polyphonic.
 
 
-/*
-void ModulatableParameterPoly::callValueChangeCallbacks(
-  int numActiveVoices, double* values, int* voiceIndices)
+
+void ModulationManagerPoly::addConnection(ModulationConnection* connection)
 {
-  for(int i = 0; i < numActiveVoices; i++)
-    callValueChangeCallbackPoly(values[i], voiceIndices[i]);
-}
-*/
+  ModulationManager::addConnection(connection); // preliminary
 
-// maybe we also need to override setNormalizedValue, setSmoothedValue
+  // ToDo: do not just use push_back but instead insert it at location thta ensures that 
+  // connections with the same target are neighbors in the array, also increments 
+  // numDistinctActiveTargets if the was not connection with that target yet, maybe resize the
+  // modulatedValues buffer
+
+}
+
+void ModulationManagerPoly::removeConnection(int index, bool updateAffectTargets)
+{
+  ModulationManager::removeConnection(index, updateAffectTargets); // preliminary
+
+  // ToDo: possibly decrement numDistinctActiveTargets, if this was the last connection to that
+  // target, maybe resize the modulatedValues buffer
+}
+

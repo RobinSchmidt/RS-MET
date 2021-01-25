@@ -208,10 +208,7 @@ public:
 
   /** Constructor */
   ModulationSource(ModulationManager* managerToUse = nullptr) 
-    : ModulationParticipant(managerToUse) 
-  {
-    //modValues.resize(1);  // monophonic by default
-  }
+    : ModulationParticipant(managerToUse) { }
 
   /** Destructor */
   virtual ~ModulationSource();
@@ -221,14 +218,8 @@ public:
   override) and using its output for the modValue. The rsVoiceManager parameter is irrelevant in 
   this class here but it becomes relevant in the ModulationSourcePoly subclass, where we override
   this method, so the parameter must be already included in the function signature here. */
-  virtual void updateModulationValue(/*rsVoiceManager* voiceManager*/)
-  { 
-    modValue = getModulatorOutputSample(); 
-    //jassert(RAPT::rsIsFiniteNumber(modValue));
-  }
-  // maybe rename it to updateModulation because it may apply either to a single value 
-  // (monophonic) or many values (polyphonic), where the latter applies to subclass 
-  // ModulationSourcePoly
+  virtual void updateModulationValue() { modValue = getModulatorOutputSample(); }
+
 
   /** Override this function in your subclass to produce one modulator output sample at a time. */
   virtual double getModulatorOutputSample() = 0;
@@ -240,7 +231,6 @@ public:
   /** Sets a name that should be used in dropdown list when connecting a mod-source. If you don't
   set this up, the name that was set by setModulationSourceName will be used by default. */
   void setModulationSourceDisplayName(const juce::String& newName) { displayName = newName; }
-
 
   /** Returns the name of this ModulationSource. This is the (supposed to be unique) name that will
   used for identifying the source state recall. */
@@ -259,29 +249,11 @@ public:
 
 protected:
 
-  double modValue = 0;    // get rid - or replace by array
-  //std::vector<double> modValues;
-  // maybe use a std::vector to support polyphony already here - obviates subclass 
-  // ModulationSourcePoly which would make some things easier - when then AudioModulePoly is 
-  // realized as a mix-in class, then polyphonic modulator classes could be realized by 
-  // subclassing their monophonic counterparts (just by mixing in the AudioModulePoly class) - 
-  // without any issues with virtual inheritance ...but they would still need to delete the 
-  // monophonic parameters and replace them by polyphonic ones
-  // or: maybe get rid of this member entirely - see comments at updateModulationValue - if this 
-  // function is obsolete, then so is this member. If we don't store the value here, it may also 
-  // facilitate polyphony - mayby make a subclass ModulationSourcePoly in which we have a function
-  // getModulatorOutputSample(int voiceIndex) instead of a parameterless function
-  // or maybe just add another member getModulatorOutputSamplePoly(int voiceIndex) to this class.
-  // this may make it easier to devise the class hierarchy
-
-  // maybe we don't need an array, if we process one voice after another - but no: the modulator 
-  // output values must be available all at once when we iterate through the polyphonic modules
-
+  double modValue = 0;
 
   juce::String modSourceName = "ModulationSource";
   juce::String displayName   = "";
 
-  //friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationSource)
 };
 
@@ -296,10 +268,7 @@ public:
 
   /** Constructor */
   ModulationTarget(ModulationManager* managerToUse = nullptr) 
-    : ModulationParticipant(managerToUse) 
-  {
-    //modulatedValues.resize(1);  // monophonic by default
-  }
+    : ModulationParticipant(managerToUse) { }
 
   /** Destructor */
   virtual ~ModulationTarget();
@@ -424,19 +393,6 @@ public:
     modulatedValue = unmodulatedValue;
   }
 
-
-  /*
-  inline void initModulatedValuesPoly(int numPlayingVoices)
-  {
-    jassert(numPlayingVoices < modulatedValues.size());
-    for(int i = 0; i < numPlayingVoices; i++)
-      modulatedValues[i] = unmodulatedValue;
-    // maybe the value with index 0 should always be set, regardless of how many voices are 
-    // playing? so maybe drage the i = 0 case out of the loop?
-  }
-  // under construction
-  */
-
   /** Function to retrieve the modulated value after all modulations have been applied. This may 
   also include a clipping function, such that the returned value is restricted to some allowable
   range. */
@@ -445,67 +401,27 @@ public:
     return RAPT::rsClip(modulatedValue, rangeMin, rangeMax);
   }
 
-  /*
-  inline double getModulatedValuePoly(int voice) const
-  {
-    jassert(voice < modulatedValues.size());
-    return RAPT::rsClip(modulatedValues[voice], rangeMin, rangeMax);
-  }
-  */
-  // under construction
-
   /** Returns the unmodulated value, which is the base value when no modulation is applied. */
   inline double getUnmodulatedValue() const
   {
     return unmodulatedValue;
   }
 
-  /** Adds the given amount to our modulatedValue. Used in the modulation connection to accumulate
-  a contribution from a modulator to the modulated value. */
-  inline void addToModulatedValue(double amount)
-  {
-    modulatedValue += amount;
-  }
-  // obsolete
-
+  /** Returns a pointer to the modulated value to facilitate accumulation of the contributions 
+  from all the connections */
   inline double* getPointerToModulated() { return &modulatedValue; }
-
-  /** Polyphonic version of addToModulatedValue. */
-  /*
-  inline void addToModulatedValuePoly(double amount, int voice)
-  {
-    jassert(voice < modulatedValues.size());
-    modulatedValues[voice] += amount;
-  }
-  */
-  // under construction
 
 
 protected:
 
   double unmodulatedValue = 0;
   double modulatedValue   = 0;
-  //std::vector<double> modulatedValues;
-  // maybe we don't need an array (i.e. revert to the single modulatedValue member), if we process
-  // one voice after another - that would save a lot of memory - for the modulation sources, we may
-  // still need the array - but that's not that memory intensive because the number of sources is
-  // typically much smaller than the number of possible targets
-
   double rangeMin = -INF, rangeMax = INF; 
   double defaultDepthMin = -1, defaultDepthMax = 1;
   double initialDepth = 0.0;
   int    defaultModMode = 0; // absolute
 
-  //friend class ModulationConnection;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget);
-
-  // ToDo: try to get rid of the modulated modulatedValue - all functions that reference it should
-  // instead receive a pointer or reference to the modulatedValue. That facilitates that the 
-  // ModulationManager controls where the value is stored which in turn facilitates extension to
-  // polyphony...i think...we'll see. It also makes the call a little leaner...maybe we should use
-  // float instead of double
-
-
 };
 
 //=================================================================================================
@@ -593,7 +509,6 @@ public:
       target->getPointerToModulated(), mode);
   }
 
-
   /** Returns a xml element containing the information about this connection (needed for state 
   save/recall in ModulationManager - todo: maybe move it to there) */
   XmlElement* getAsXml(); // should be const
@@ -623,9 +538,6 @@ protected:
   friend class ModulationTarget;
   friend class ModulationManager;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationConnection);
-
-  // ToDo: try to get rid of sourceValue, targetValue - functions that reference these should 
-  // instead get pointers passed - this is also for facilitating polyphony
 };
 
 //=================================================================================================
@@ -665,7 +577,7 @@ public:
   void addConnection(ModulationSource* source, ModulationTarget* target);
 
   /** Adds the passed ModulationConnection to our array. */
-  void addConnection(ModulationConnection* connection);
+  virtual void addConnection(ModulationConnection* connection);
 
   /** Removes a connection between the given source and target. */
   void removeConnection(ModulationSource* source, ModulationTarget* target);
@@ -680,7 +592,8 @@ public:
   void removeAllConnections();
 
   /** Removes the connection with given index. */
-  void removeConnection(int index);
+  virtual void removeConnection(int index, bool updateAffectTargets);
+  // maybe set updateAffectTargets to true by default
 
   /** Resets all the range limits for all registered modulation targets to +-inf. */
   //void resetAllTargetRangeLimits();
@@ -952,7 +865,7 @@ class JUCE_API ModulatableParameter2 : public ModulatableParameter
 // than std::function - check this first
 
 
-//=================================================================================================
+//#################################################################################################
 
 // the stuff below is under construction - it's for the polyphonic version of the modulation system
 
@@ -964,15 +877,28 @@ public:
 
   ModulationManagerPoly(CriticalSection* lockToUse) : ModulationManager(lockToUse) {}
 
+  void applyVoiceModulations(int voiceIndex);
+
   /** Overriden to apply the polyphonic modulations as well. */
   void applyModulationsNoLock() override;
 
+  /**  */
+  void addConnection(ModulationConnection* connection) override;
+
+
+  /**  */
+  void removeConnection(int index, bool updateAffectTargets) override;
+
 protected:
+
+  std::vector<double> modulatedValues;
+
+  int numDistinctActiveTargets = 0;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationManagerPoly)
 };
 
-
+//=================================================================================================
 
 class JUCE_API ModulationSourcePoly : public ModulationSource
 {
@@ -1027,32 +953,8 @@ private:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationSourcePoly)
 };
-// maybe it's not a good idea to have such a subclass - it may mess up the class hierarchy - the 
-// baseclass should probably already facilitate polyphony - but the use of it should be optional
-// - like getModulatorOutputSample always takes a voice-index parameter and monophonic 
-// implementations may just ignore it
 
-/*
-class JUCE_API ModulationTargetPoly : virtual public ModulationTarget
-  // virtual inheritance, because we need a ModulatableParameterPoly subclass of 
-  // ModulatableParameter - which already has ModulationTarget as baseclass
-  // maybe we should not use "poly" subclasses for ModulationSource/Target but instead have the 
-  // respective member functions/variables already defined in the basclasses ...this would avoid 
-  // the virtual inheritance stuff - which is always a pain) - but it would slightly complicate 
-  // these classes even when polyphony is not needed - we'll see....
-{
-
-public:
-
-protected:
-
-  std::vector<double> modulatedValues; 
-  // this array is the replacement the single "modulatedValue" member of the monophonic baseclass
-  // ...nah - this is bad design - very wasteful with memory - try to get rid of the modulatedValue 
-  // member, see comments
-
-};
-*/
+//=================================================================================================
 
 class JUCE_API ModulatableParameterPoly : public ModulatableParameter
 {
