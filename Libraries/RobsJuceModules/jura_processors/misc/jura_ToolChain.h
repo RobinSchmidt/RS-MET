@@ -208,6 +208,7 @@ protected:
                      
 
   ModulationManager modManager;
+  //ModulationManagerPoly modManager;  // seems to cause heap corruptions
   // name clash with modManager inherited ModulationParticipant (baseclass of 
   // ModulatableAudioModule) - maybe rename this
 

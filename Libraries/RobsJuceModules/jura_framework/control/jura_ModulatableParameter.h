@@ -591,33 +591,6 @@ public:
   {
     apply(source->getModulationValue(), depth, target->getUnmodulatedValue(),
       target->getPointerToModulated(), mode);
-
-    /*
-    double m = source->getModulationValue(); // todo: apply map to m, similar to meta-map
-    double d = depth;
-    double u = target->getUnmodulatedValue();
-    double z;
-    switch(mode)  // maybe use function pointer instead of switch
-    {
-    case ABSOLUTE:       z = d * m;             break;
-    case RELATIVE:       z = d * m * u;         break;
-    case EXPONENTIAL:    z = u * exp2(d*m) - u; break; // maybe rename function to pow2
-    case MULTIPLICATIVE: 
-    {
-      z = RAPT::rsClip(u * pow(m, d) - u, -1.e100, +1.e100);
-      // Multiplicative mode may produce infinity when it gets an input like m=0, d=-1: 0^-1 = 1/0.
-      // That in itself might not be a problem due to later being clipped to the max target value 
-      // but if one modulator produces inf and another one -inf because u is negative in the 2nd, 
-      // we would get inf-inf = NaN so we need to clip here already.
-    } break;
-    default:             z = 0;
-    }
-
-    double *t = target->getPointerToModulated();
-    *t += z;
-    */
-
-    //target->addToModulatedValue(z);
   }
 
 
@@ -683,7 +656,7 @@ public:
   /** Same as applyModulations() but it doesn't acquire the mutex-lock. This should be used in cases 
   where the caller already has acquired the lock (i.e. it already holds the lock for the same 
   CriticalSection object that was initially passed to our constructor). */
-  void applyModulationsNoLock();
+  virtual void applyModulationsNoLock();
 
 
   /** \name Connection setup */
@@ -829,7 +802,8 @@ protected:
 
   CriticalSection *modLock = nullptr; 
   MetaParameterManager*  metaManager  = nullptr;  // maybe use a null object instead - or maybe not
-  rsVoiceManager*        voiceManager = nullptr; 
+
+  rsVoiceManager*        voiceManager = nullptr; // move to poly subclass
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationManager)
 };
@@ -977,14 +951,37 @@ class JUCE_API ModulatableParameter2 : public ModulatableParameter
 // callback types in class Parameter - but the current mechanism may actually be more performant 
 // than std::function - check this first
 
+
 //=================================================================================================
 
 // the stuff below is under construction - it's for the polyphonic version of the modulation system
+
+
+class JUCE_API ModulationManagerPoly : public ModulationManager
+{
+
+public:
+
+  ModulationManagerPoly(CriticalSection* lockToUse) : ModulationManager(lockToUse) {}
+
+  /** Overriden to apply the polyphonic modulations as well. */
+  //void applyModulationsNoLock() override;
+
+protected:
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationManagerPoly)
+};
+
+
 
 class JUCE_API ModulationSourcePoly : public ModulationSource
 {
 
 public:
+
+
+  ModulationSourcePoly(ModulationManager* managerToUse = nullptr)
+    : ModulationSource(managerToUse) { }
 
   /** Must be overriden by subclasses to produce a modulator output sample for the given voice 
   index. */
@@ -1027,6 +1024,8 @@ private:
     // called twice? ...figure out?
   }
 
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationSourcePoly)
 };
 // maybe it's not a good idea to have such a subclass - it may mess up the class hierarchy - the 
 // baseclass should probably already facilitate polyphony - but the use of it should be optional
@@ -1054,8 +1053,6 @@ protected:
 
 };
 */
-
-//class AudioModulePoly; 
 
 class JUCE_API ModulatableParameterPoly : public ModulatableParameter
 {

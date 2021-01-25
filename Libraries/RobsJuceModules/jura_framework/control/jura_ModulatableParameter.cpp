@@ -284,6 +284,11 @@ void ModulationManager::applyModulationsNoLock()
   for(i = 0; i < affectedTargets.size(); i++)
     affectedTargets[i]->doModulationUpdate();
 }
+// perhaps it's best to make a subclass ModulationManagerPoly and override it there. It should
+// perhaps first apply all the polyphonic modulations and then call the baseclass method
+// updateModulationValue should just copy the value from the newest voice into modulationValue, if
+// the source is polyphonic.
+
 
 void ModulationManager::addConnection(ModulationSource* source, ModulationTarget* target)
 {
@@ -671,6 +676,17 @@ juce::String ModulatableParameter::getModulationTargetName()
 }
 
 //=================================================================================================
+
+/*
+void ModulationManagerPoly::applyModulationsNoLock()
+{
+  size_t i;
+
+  // todo: apply polyphonic modulations...
+
+  ModulationManager::applyModulationsNoLock();
+}
+*/
 
 /*
 void ModulatableParameterPoly::callValueChangeCallbacks(
