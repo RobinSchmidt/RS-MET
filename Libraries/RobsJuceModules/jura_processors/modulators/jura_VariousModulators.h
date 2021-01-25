@@ -88,7 +88,7 @@ class JUCE_API rsConstantOneModulatorModulePoly : public ModulatorModulePoly
 {
 public:
 
-  rsMotePitchModulatorModulePoly(CriticalSection* lockToUse,
+  rsConstantOneModulatorModulePoly(CriticalSection* lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr,
     ModulationManager* modManagerToUse = nullptr,
     rsVoiceManager* voiceManagerToUse = nullptr)
@@ -98,20 +98,23 @@ public:
     //setModuleTypeName("NotePitch");
     setModulationSourceName("ConstantOne");
   }
-
+  double getModulatorOutputSample() override
+  {
+    return 1.0;
+  }
   double getModulatorOutputSample(int voiceIndex) override
   {
     return 1.0;
   }
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMotePitchModulatorModulePoly)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsConstantOneModulatorModulePoly)
 };
 
 /** A modulator module that just outputs the current note pitch of a given voice. */
-class JUCE_API rsMotePitchModulatorModulePoly : public ModulatorModulePoly
+class JUCE_API rsNotePitchModulatorModulePoly : public ModulatorModulePoly
 {
 public:
 
-  rsMotePitchModulatorModulePoly(CriticalSection* lockToUse,
+  rsNotePitchModulatorModulePoly(CriticalSection* lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr,
     ModulationManager* modManagerToUse = nullptr,
     rsVoiceManager* voiceManagerToUse = nullptr)
@@ -122,12 +125,19 @@ public:
     setModulationSourceName("NotePitch");
   }
 
+  double getModulatorOutputSample() override
+  {
+    jassert(voiceManager != nullptr);
+    return getModulatorOutputSample(voiceManager->getNewestVoice());
+  }
+  // move to baseclass
+
   double getModulatorOutputSample(int voiceIndex) override
   {
     jassert(voiceManager != nullptr);
     return voiceManager->getVoicePitch(voiceIndex);
   }
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMotePitchModulatorModulePoly)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNotePitchModulatorModulePoly)
 };
 
 /** A modulator module that just outputs the current normalized velocity of a given voice. */
@@ -145,7 +155,11 @@ public:
     //setModuleTypeName("NormalizedVelocity");
     setModulationSourceName("NoteVelocity");
   }
-
+  double getModulatorOutputSample() override
+  {
+    jassert(voiceManager != nullptr);
+    return getModulatorOutputSample(voiceManager->getNewestVoice());
+  }
   double getModulatorOutputSample(int voiceIndex) override
   {
     jassert(voiceManager != nullptr);

@@ -526,7 +526,7 @@ void ToolChain::clearModulesArray()
 void ToolChain::createMidiModSources()
 {
   notePitchModulator = 
-    new rsMotePitchModulatorModulePoly(lock, metaParamManager, &modManager, &voiceManager);
+    new rsNotePitchModulatorModulePoly(lock, metaParamManager, &modManager, &voiceManager);
   noteVelocityModulator = 
     new rsMoteVelocityModulatorModulePoly(lock, metaParamManager, &modManager, &voiceManager);
   modManager.registerModulationSource(notePitchModulator);

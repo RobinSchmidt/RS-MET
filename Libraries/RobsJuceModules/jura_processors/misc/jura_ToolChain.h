@@ -224,7 +224,7 @@ protected:
   // whatever is most appropriate for the particular module). For the time being, each module 
   // allocates it own buffer.
 
-  rsMotePitchModulatorModulePoly*    notePitchModulator;
+  rsNotePitchModulatorModulePoly*    notePitchModulator;
   rsMoteVelocityModulatorModulePoly* noteVelocityModulator;
 
 

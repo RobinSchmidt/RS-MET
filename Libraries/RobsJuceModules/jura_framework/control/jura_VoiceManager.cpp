@@ -105,6 +105,7 @@ void rsVoiceManager::reset()
     voiceStates[i].reset();
     killCounters[i] =  0;
   }
+  newestVoice = 0;
   releasingVoices.clear();
 }
 
@@ -126,6 +127,7 @@ void rsVoiceManager::triggerVoice(int voiceIndex, int key, int vel)
   voiceStates[voiceIndex].vel01  = double(vel) / 127.0;
   voiceStates[voiceIndex].key    = key;
   //voiceStates[voiceIndex].isHeld = true;
+  newestVoice = voiceIndex;
 }
 
 void rsVoiceManager::stealVoice(int key, int vel)
@@ -194,7 +196,9 @@ void rsVoiceManager::deactivateVoice(int voiceIndex)
 
 ToDo:
 
-what abouth thread safety? whould we use a mutex?
+-what about thread safety? whould we use a mutex?
+-maybe we should also store the most recent note an use that to update the monophonic modValue
+ where applicable
 
 see also:
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=558446 Polyphonic voice assignment and retrigger

@@ -954,15 +954,23 @@ public:
   { 
     if(voiceManager == nullptr) return;
     jassert(modValues.size() >= voiceManager->getMaxNumVoices());
-
     for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)
       modValues[i] = getModulatorOutputSample(i);
+    modValue = modValues[voiceManager->getNewestVoice()];
+    // experimental - to support the monophonic code...but it may get overwritten in the next 
+    // initialization...but maybe that's good...we'll see....
   }
+
 
   double getModulatorOutputSample() override
   {
-    jassertfalse; // this function should not be used anymore for polyphonic sources
-    return 0;
+    jassertfalse;  // should not be used in polyphonic modules
+    return 0.0;
+
+    //jassert(voiceManager != nullptr);
+    //return getModulatorOutputSample(voiceManager->getNewestVoice());
+    // will this work? what if the newest voice is among the active voices? will then getSample be
+    // called twice? ...figure out?
   }
 
   virtual void allocateVoiceResources(rsVoiceManager* voiceManager)

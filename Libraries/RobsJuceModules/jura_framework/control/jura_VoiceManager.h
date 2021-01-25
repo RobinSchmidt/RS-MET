@@ -130,8 +130,16 @@ public:
 
   int getNumIdleVoices() const { return numVoices - numActiveVoices; }
 
+  /** Returns the index of the voice that was triggered most recently. This facilitates 
+  compatibility with monophonic modules because they always only look at what the newest voice
+  does. Initially (or after reset), when no voice has yet been triggered at all, it will return 
+  zero. It will still continue to return the most recently triggered voice index even when all
+  voices are already dead. It doesn't care at all about note-off. */
+  int getNewestVoice() const { return newestVoice; }
+
   size_t getNumReleasingVoices() const { return releasingVoices.size(); }
   // the inconsistency is a bit ugly but we want to avoid conversion
+
 
 
 
@@ -148,6 +156,8 @@ public:
   double getVoicePitch(int i) const { return voiceStates[i].pitch; }
 
   double getVoiceNormalizedVelocity(int i) const { return voiceStates[i].vel01; }
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -197,6 +207,7 @@ protected:
   int maxNumVoices    = 16;  // maximum number of voices
   int numVoices       =  8;  // number of available voices
   int numActiveVoices =  0;  // number of currently playing voices
+  int newestVoice     =  0;  // most recently triggered voice
 
   /** Indices of the voices that are currently active and therefore must process audio. A voice 
   is active if it's either currently being held or releasing. */

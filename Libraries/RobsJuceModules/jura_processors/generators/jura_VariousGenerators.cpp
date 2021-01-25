@@ -79,6 +79,7 @@ void SineOscAudioModulePoly::createParameters()
  //   and detune and that value is determined by the slider as is
   //  ...but i think, it shoould already behave this way, if the modulated value is correctly
   //  initialized from the unmodulated value - maybe there's something wrong with that
+  // -hmm..setFrequency is not called - why? ..ah - because we have no modulator assigned
 }
 
 void SineOscAudioModulePoly::allocateVoiceResources(rsVoiceManager* voiceManager) 
