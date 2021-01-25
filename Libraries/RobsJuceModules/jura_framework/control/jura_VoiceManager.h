@@ -102,6 +102,16 @@ public:
     // gracefully
   }
 
+  /** Sets the buffer into which the outlying driver object writes its voice outputs. We need 
+  access to the outputs of the individual voices here in order to be able to figure out, when
+  a voice may be killed. It is currently assumed that the length is 2*maxNumVoices where the 
+  factor two comes from the two channels for stereo signals - so we assume a driver that 
+  produces stereo output, as ToolChain does. 
+  ToDo: make that more flexible to allow any number of channels  */
+  void setVoiceSignalBuffer(double* buffer) { voicesBuffer = buffer; }
+
+  void setSampleRate(double newRate) { sampleRate = newRate; }
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -230,7 +240,7 @@ protected:
   double sampleRate      = 44100.0;
   double killThreshold   = 0.00001;     // -100 dB by default
   double killTimeSeconds = 0.1;         //  100 ms
-  int    killTimeSamples = ceil(sampleRate * killTimeSeconds);
+  int    killTimeSamples = (int) ceil(sampleRate * killTimeSeconds);
   std::vector<int> killCounters;
 
 

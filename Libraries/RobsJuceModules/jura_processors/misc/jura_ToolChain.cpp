@@ -32,6 +32,7 @@ ToolChain::ToolChain(CriticalSection *lockToUse,
   setModulationManager(&modManager);
   modManager.setVoiceManager(&voiceManager);
   voiceSignals.resize(2 * voiceManager.getMaxNumVoices()); // maybe move into allocateVoiceResources later
+  voiceManager.setVoiceSignalBuffer(&voiceSignals[0]);
   //createDebugModSourcesAndTargets(); // for debugging the mod-system
   populateModuleFactory();
   addEmptySlot();
@@ -217,19 +218,30 @@ void ToolChain::processBlock(double **inOutBuffer, int numChannels, int numSampl
   //ScopedLock scopedLock(*lock); // lock already held by the wrapping plugin
   bool needsSmoothing  = smoothingManager->needsSmoothing();
   bool needsModulation = modManager.getNumConnections() > 0;
-  if( !needsSmoothing && !needsModulation )
+  bool needsVoiceKill  = voiceManager.needsVoiceKillCheck();
+
+  if( !needsSmoothing && !needsModulation && !needsVoiceKill )
     for(size_t i = 0; i < modules.size(); i++)
       modules[i]->processBlock(inOutBuffer, numChannels, numSamples);
   else {
     // we have to iterate through all the samples and for each sample, update all the modulators 
     // and then compute a sample-frame from each non-modulator module:
-    for(int n = 0; n < numSamples; n++) {
-      if(needsSmoothing)   smoothingManager->updateSmoothedValuesNoLock();
-      if(needsModulation)  modManager.applyModulationsNoLock();
+    for(int n = 0; n < numSamples; n++) 
+    {
+      if(needsSmoothing)   
+        smoothingManager->updateSmoothedValuesNoLock();
+      if(needsModulation)  
+        modManager.applyModulationsNoLock();
       for(size_t i = 0; i < modules.size(); i++)
         modules[i]->processStereoFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
         // AudioModules that are subclasses of ModulationSource have not overriden this function.
         // That means, they inherit the empty baseclass method and do nothing in this call.
+
+      if(needsVoiceKill)
+      {
+        voiceManager.findAndKillFinishedVoices();
+        needsVoiceKill = voiceManager.needsVoiceKillCheck(); // condition may have changed
+      }
     }
   }
 
@@ -241,6 +253,7 @@ void ToolChain::setSampleRate(double newSampleRate)
 {
   ScopedLock scopedLock(*lock);
   sampleRate = newSampleRate;
+  voiceManager.setSampleRate(sampleRate);
   for(int i = 0; i < size(modules); i++)
     modules[i]->setSampleRate(sampleRate);
 }
