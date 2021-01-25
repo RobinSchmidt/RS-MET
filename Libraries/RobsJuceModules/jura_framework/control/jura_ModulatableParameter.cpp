@@ -360,8 +360,9 @@ void ModulationManager::removeConnection(int i, bool updateAffectTargets)
   ModulationTarget* t = modulationConnections[i]->target;
   ObservableModulationTarget* omt = 
     dynamic_cast<ObservableModulationTarget*> (modulationConnections[i]->target);
-  delete modulationConnections[i];
-  removeConnectionFromArray(i);  // todo: remove before deleting
+  ModulationConnection* c = modulationConnections[i];
+  removeConnectionFromArray(i);    // it's important to call remove *before* deleting because a
+  delete c;                        // subclass may still want reference it in overriden remove
   if(omt)
     omt->sendModulationsChangedNotification();
   if(!t->hasConnectedSources()) {  // avoids the target getting stuck at modulated value when last 
@@ -728,20 +729,43 @@ void ModulationManagerPoly::applyModulationsNoLock()
 // method updateModulationValue should just copy the value from the newest voice into 
 // modulationValue, if the source is polyphonic.
 
-/*
-void ModulationManagerPoly::addConnectionToArray(ModulationConnection* connection)
+
+void ModulationManagerPoly::addConnectionToArray(ModulationConnection* c)
 {
-  // ToDo: do not just use push_back but instead insert it at location thta ensures that 
+  // ToDo: do not just use push_back but instead insert it at location that ensures that 
   // connections with the same target are neighbors in the array, also increments 
   // numDistinctActiveTargets if the was not connection with that target yet, maybe resize the
   // modulatedValues buffer
+
+  const ModulationTarget* tc = c->getTarget();
+  for(int i = 0; i < (int)modulationConnections.size(); i++) {
+    const ModulationTarget* ta = modulationConnections[i]->getTarget();
+    if(ta == tc) {
+      insert(modulationConnections, c, i);
+      return; }}
+  ModulationManager::addConnectionToArray(c); // no connection with the same target was found...
+  numDistinctActiveTargets++;                 // ...so we have now one distinct target more
 }
 
-void ModulationManagerPoly::removeConnectionFromArray(int index)
+void ModulationManagerPoly::removeConnectionFromArray(int i)
 {
   // ToDo: possibly decrement numDistinctActiveTargets, if this was the last connection to that
   // target, maybe resize the modulatedValues buffer
+
+  // Check targets of connections left and right of i:
+  const ModulationTarget* ti = modulationConnections[i]->getTarget();
+  const ModulationTarget *tl = nullptr, *tr = nullptr;
+  if(i > 0)
+    tl = modulationConnections[i-1]->getTarget();
+  if(i < (int)modulationConnections.size() - 1)
+    tr = modulationConnections[i+1]->getTarget();
+  if(!(ti == tl || ti == tr))
+    numDistinctActiveTargets--; 
+    // none of the two neighbors has the same target, so the connection is the last one with the 
+    // given target, so the number of distinct targets gets decremented
+
+  ModulationManager::removeConnectionFromArray(i);
 }
-*/
+
 
 

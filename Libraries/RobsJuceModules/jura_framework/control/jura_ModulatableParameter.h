@@ -895,8 +895,9 @@ public:
 
 protected:
 
-  //void addConnectionToArray(ModulationConnection* connection) override
-  //void removeConnectionFromArray(int index) override;
+  void addConnectionToArray(ModulationConnection* connection) override;
+
+  void removeConnectionFromArray(int index) override;
 
 
   std::vector<double> modulatedValues;
