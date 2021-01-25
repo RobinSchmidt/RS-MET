@@ -53,7 +53,7 @@ void SineOscAudioModulePoly::createParameters()
   typedef ModulatableParameterPoly Param;
   Param* p;
 
-  p = new Param("Frequency", 0.0, 20000.0, 1.0, Parameter::LINEAR);
+  p = new Param("Frequency", 20.0, 20000.0, 1000.0, Parameter::EXPONENTIAL);
   addObservedParameter(p);
   p->setValueChangeCallbackPoly([this](double v, int i) { setFrequency(v, i); });
   // later we want a sort of exponential mapping but one that allows for zero values - maybe
@@ -67,10 +67,18 @@ void SineOscAudioModulePoly::createParameters()
   p->setValueChangeCallbackPoly([this](double v, int i) { setAmplitude(v, i); });
 
   /*
-  p = new Param("Detune", -60.0, +60.0, 0.0, Parameter::LINEAR);
+  p = new Param("Detune", -24.0, +24.0, 0.0, Parameter::LINEAR);
   addObservedParameter(p);
   p->setValueChangeCallbackPoly([this](double v, int i) { setDetune(v, i); });
   */
+
+  // now the parameters don't seem to do anything - that's not a good behavior! maybe we need both
+  // monophonic and polyphonic callbacks for the parameters? but nah - that doesn't seem right. 
+  // What we want is:
+  // -when no modulator is connected to a slider, each voice uses the same value for frequency
+ //   and detune and that value is determined by the slider as is
+  //  ...but i think, it shoould already behave this way, if the modulated value is correctly
+  //  initialized from the unmodulated value - maybe there's something wrong with that
 }
 
 void SineOscAudioModulePoly::allocateVoiceResources(rsVoiceManager* voiceManager) 
@@ -94,19 +102,11 @@ void SineOscAudioModulePoly::setAmplitude(double newAmplitude, int voice)
   voices[voice].setAmplitude(newAmplitude);
 }
 
-/*
 void SineOscAudioModulePoly::setDetune(double newDetune, int voice)
 {
   jassert(voice < voices.size());
-
-  if(!voiceManager)
-    return;
-
-  //double freq = voiceManager->getCurrentNoteFreq(voice);
-  // ...
-  //voices[voice].setOmega(omega);
+  RAPT::rsError("Not yet implemented");
 }
-*/
 
 
 

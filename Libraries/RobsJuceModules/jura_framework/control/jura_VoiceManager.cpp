@@ -196,4 +196,7 @@ ToDo:
 
 what abouth thread safety? whould we use a mutex?
 
+see also:
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=558446 Polyphonic voice assignment and retrigger
+
 */

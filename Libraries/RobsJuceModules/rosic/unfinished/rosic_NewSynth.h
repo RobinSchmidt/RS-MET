@@ -9,6 +9,8 @@ through sync, frequency modulation, ring modulation, a dual filter and an arbitr
 freely routable modulators. The sources and filters are actually slots into which various kinds
 of source and filter modules can be plugged. 
 
+name ideas: Versatone
+
 todo: 
 -maybe allow for the same modules to be inserted into source and filter slots - we need no 
  formal distinction - sources can have an input (they may ignore it, if they don't need it) and 

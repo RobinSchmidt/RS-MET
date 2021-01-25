@@ -90,7 +90,7 @@ public:
   // parameter callback targets:
   void setFrequency(double newFrequency, int voice);
   void setAmplitude(double newAmplitude, int voice);
-  //void setDetune(   double newDetune,    int voice);
+  void setDetune(   double newDetune,    int voice);
   // maybe just have frequency and amplitude parameters and handle the adjustment of frequency via
   // the mod-system -> provide a polyphonic Moudlator for NotePitch (but hwat range?) and/or 
   // NoteFrequency that is 

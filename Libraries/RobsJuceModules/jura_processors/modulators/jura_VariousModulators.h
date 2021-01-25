@@ -78,6 +78,34 @@ protected:
 
 //=================================================================================================
 
+// some very simple modulators
+
+/** A modulator module that just outputs the constant value 1. That may be useful for use with 
+exponentially scaled parameters such as a frequency that goes form 20 to 20000. We can just 
+subtract 20 by connecting the constant with depth -20 and the use additive envelopes to directly
+determine the freq without having the minimum getting in the way. */
+class JUCE_API rsConstantOneModulatorModulePoly : public ModulatorModulePoly
+{
+public:
+
+  rsMotePitchModulatorModulePoly(CriticalSection* lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr,
+    ModulationManager* modManagerToUse = nullptr,
+    rsVoiceManager* voiceManagerToUse = nullptr)
+    : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+  {
+    ScopedLock scopedLock(*lock);
+    //setModuleTypeName("NotePitch");
+    setModulationSourceName("ConstantOne");
+  }
+
+  double getModulatorOutputSample(int voiceIndex) override
+  {
+    return 1.0;
+  }
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMotePitchModulatorModulePoly)
+};
+
 /** A modulator module that just outputs the current note pitch of a given voice. */
 class JUCE_API rsMotePitchModulatorModulePoly : public ModulatorModulePoly
 {
@@ -115,7 +143,7 @@ public:
   {
     ScopedLock scopedLock(*lock);
     //setModuleTypeName("NormalizedVelocity");
-    setModulationSourceName("NormalizedVelocity");
+    setModulationSourceName("NoteVelocity");
   }
 
   double getModulatorOutputSample(int voiceIndex) override
@@ -126,7 +154,7 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMoteVelocityModulatorModulePoly)
 };
 
-// todo: pitch-wheel, aftertouch, etc
+// todo: NoteFrequency pitch-wheel, aftertouch, etc
 
 
 
@@ -188,6 +216,8 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AttackDecayEnvelopeModulePoly)
 };
 
+// also have a module that just produces a constant value - that may be useful for exponentially
+// scaled parameters - we can just subtract off their minimum 
 
 
 
