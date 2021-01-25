@@ -145,6 +145,11 @@ public:
   bool needsVoiceKillCheck() const { return getNumReleasingVoices() > 0; }
 
 
+  double getVoicePitch(int i) const { return voiceStates[i].pitch; }
+
+  double getVoiceNormalizedVelocity(int i) const { return voiceStates[i].vel01; }
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Event handling
 

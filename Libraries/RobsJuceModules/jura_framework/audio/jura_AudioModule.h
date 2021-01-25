@@ -609,7 +609,10 @@ public:
     MetaParameterManager* metaManagerToUse = nullptr,
     ModulationManager* modManagerToUse = nullptr,
     rsVoiceManager* voiceManagerToUse = nullptr)
-    : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) {}
+    : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+  {
+    allocateVoiceResources(voiceManager);
+  }
 
   virtual void processStereoFrameVoice(double* left, double* right, int voice)
   {

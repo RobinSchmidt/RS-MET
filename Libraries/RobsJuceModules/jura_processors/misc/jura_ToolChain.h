@@ -194,6 +194,11 @@ protected:
   /** Clears the array of AudioModules which means als to delete all objects. */
   void clearModulesArray();
 
+
+  void createMidiModSources();
+
+  void deleteMidiModSources();
+
   /** Just some temporary throwaway code to figure out what is going wrong with the mod-system in
   Elan's SpiralGenerator. */
   void createDebugModSourcesAndTargets();
@@ -218,6 +223,10 @@ protected:
   // buffer for the voice-signals of the modules (using either overwriting or accumulation - 
   // whatever is most appropriate for the particular module). For the time being, each module 
   // allocates it own buffer.
+
+  rsMotePitchModulatorModulePoly*    notePitchModulator;
+  rsMoteVelocityModulatorModulePoly* noteVelocityModulator;
+
 
   friend class ToolChainEditor;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ToolChain)

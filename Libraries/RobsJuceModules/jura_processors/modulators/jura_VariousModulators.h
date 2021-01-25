@@ -78,6 +78,61 @@ protected:
 
 //=================================================================================================
 
+/** A modulator module that just outputs the current note pitch of a given voice. */
+class JUCE_API rsMotePitchModulatorModulePoly : public ModulatorModulePoly
+{
+public:
+
+  rsMotePitchModulatorModulePoly(CriticalSection* lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr,
+    ModulationManager* modManagerToUse = nullptr,
+    rsVoiceManager* voiceManagerToUse = nullptr)
+    : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+  {
+    ScopedLock scopedLock(*lock);
+    //setModuleTypeName("NotePitch");
+    setModulationSourceName("NotePitch");
+  }
+
+  double getModulatorOutputSample(int voiceIndex) override
+  {
+    jassert(voiceManager != nullptr);
+    return voiceManager->getVoicePitch(voiceIndex);
+  }
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMotePitchModulatorModulePoly)
+};
+
+/** A modulator module that just outputs the current normalized velocity of a given voice. */
+class JUCE_API rsMoteVelocityModulatorModulePoly : public ModulatorModulePoly
+{
+public:
+
+  rsMoteVelocityModulatorModulePoly(CriticalSection* lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr,
+    ModulationManager* modManagerToUse = nullptr,
+    rsVoiceManager* voiceManagerToUse = nullptr)
+    : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+  {
+    ScopedLock scopedLock(*lock);
+    //setModuleTypeName("NormalizedVelocity");
+    setModulationSourceName("NormalizedVelocity");
+  }
+
+  double getModulatorOutputSample(int voiceIndex) override
+  {
+    jassert(voiceManager != nullptr);
+    return voiceManager->getVoiceNormalizedVelocity(voiceIndex);
+  }
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMoteVelocityModulatorModulePoly)
+};
+
+// todo: pitch-wheel, aftertouch, etc
+
+
+
+
+//=================================================================================================
+
 class JUCE_API AttackDecayEnvelopeModulePoly : public ModulatorModulePoly
 {
 

@@ -189,3 +189,11 @@ void rsVoiceManager::deactivateVoice(int voiceIndex)
   // shut off without going inot the release phase before?
 }
 // needs test
+
+/*
+
+ToDo:
+
+what abouth thread safety? whould we use a mutex?
+
+*/

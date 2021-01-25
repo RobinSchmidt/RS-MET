@@ -33,6 +33,7 @@ ToolChain::ToolChain(CriticalSection *lockToUse,
   modManager.setVoiceManager(&voiceManager);
   voiceSignals.resize(2 * voiceManager.getMaxNumVoices()); // maybe move into allocateVoiceResources later
   voiceManager.setVoiceSignalBuffer(&voiceSignals[0]);
+  createMidiModSources();
   //createDebugModSourcesAndTargets(); // for debugging the mod-system
   populateModuleFactory();
   addEmptySlot();
@@ -60,6 +61,8 @@ ToolChain::~ToolChain()
   // in the modManager for a brief moment during destruction. That may be inconsequential but who 
   // knows... But maybe we can make sure that the modManager is destructed first by declaration 
   // order -> figure out
+
+  deleteMidiModSources();
 }
 
 void ToolChain::addEmptySlot()
@@ -242,6 +245,9 @@ void ToolChain::processBlock(double **inOutBuffer, int numChannels, int numSampl
         voiceManager.findAndKillFinishedVoices();
         needsVoiceKill = voiceManager.needsVoiceKillCheck(); // condition may have changed
       }
+      // should we also equip rsVoiceManager with a pointer to a mutex and generally lock it and
+      // provide a "NoLock" version of these functions? or is it safe to use without?
+
     }
   }
 
@@ -515,6 +521,22 @@ void ToolChain::clearModulesArray()
   ScopedLock scopedLock(*lock);
   while(size(modules) > 0)
     deleteLastModule();
+}
+
+void ToolChain::createMidiModSources()
+{
+  notePitchModulator = 
+    new rsMotePitchModulatorModulePoly(lock, metaParamManager, &modManager, &voiceManager);
+  noteVelocityModulator = 
+    new rsMoteVelocityModulatorModulePoly(lock, metaParamManager, &modManager, &voiceManager);
+  modManager.registerModulationSource(notePitchModulator);
+  modManager.registerModulationSource(noteVelocityModulator);
+}
+
+void ToolChain::deleteMidiModSources()
+{
+  delete notePitchModulator;
+  delete noteVelocityModulator;
 }
 
 void ToolChain::createDebugModSourcesAndTargets()
