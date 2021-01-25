@@ -677,7 +677,7 @@ juce::String ModulatableParameter::getModulationTargetName()
 
 //=================================================================================================
 
-/*
+
 void ModulationManagerPoly::applyModulationsNoLock()
 {
   size_t i;
@@ -686,7 +686,7 @@ void ModulationManagerPoly::applyModulationsNoLock()
 
   ModulationManager::applyModulationsNoLock();
 }
-*/
+
 
 /*
 void ModulatableParameterPoly::callValueChangeCallbacks(

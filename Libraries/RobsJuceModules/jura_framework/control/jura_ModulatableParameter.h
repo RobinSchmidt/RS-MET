@@ -965,7 +965,7 @@ public:
   ModulationManagerPoly(CriticalSection* lockToUse) : ModulationManager(lockToUse) {}
 
   /** Overriden to apply the polyphonic modulations as well. */
-  //void applyModulationsNoLock() override;
+  void applyModulationsNoLock() override;
 
 protected:
 

@@ -207,8 +207,15 @@ protected:
   void populateModuleFactory();
                      
 
-  ModulationManager modManager;
-  //ModulationManagerPoly modManager;  // seems to cause heap corruptions
+  //ModulationManager modManager;
+  ModulationManagerPoly *modManager;  
+  // This is really strange: when switching to using ModulationManagerPoly instead of the baseclass
+  // ModulationManager, i also had to change to using a pointer instead of a direct object because
+  // otherwise i got heap corruptions. Why is that? Is it because we pass pointers to it other 
+  // objects and the address operator does not work properly when it's a subclass? It happened 
+  // right after creating the subclass - it literally did not have any additional member variables
+  // or functions or overrides.
+
   // name clash with modManager inherited ModulationParticipant (baseclass of 
   // ModulatableAudioModule) - maybe rename this
 

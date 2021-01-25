@@ -24,13 +24,14 @@ public:
 ToolChain::ToolChain(CriticalSection *lockToUse, 
   MetaParameterManager* metaManagerToUse) 
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse/*, &modManager*/) // passing modManager causes access violation (not yet constructed)?
-  , modManager(lockToUse), moduleFactory(lockToUse) // maybe pass the metaManagerToUse to this constructor call
+  /*, modManager(lockToUse)*/, moduleFactory(lockToUse) // maybe pass the metaManagerToUse to this constructor call
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("ToolChain");
-  modManager.setMetaParameterManager(metaManagerToUse);
-  setModulationManager(&modManager);
-  modManager.setVoiceManager(&voiceManager);
+  modManager = new ModulationManagerPoly(lockToUse);
+  modManager->setMetaParameterManager(metaManagerToUse);
+  setModulationManager(modManager);
+  modManager->setVoiceManager(&voiceManager);
   voiceSignals.resize(2 * voiceManager.getMaxNumVoices()); // maybe move into allocateVoiceResources later
   voiceManager.setVoiceSignalBuffer(&voiceSignals[0]);
   createMidiModSources();
@@ -44,8 +45,8 @@ ToolChain::~ToolChain()
   ScopedLock scopedLock(*lock);
 
   // Trying to fix the crash of Elan's SeToolChain on destruction:
-  modManager.deRegisterAllTargets();
-  modManager.deRegisterAllSources();
+  modManager->deRegisterAllTargets();
+  modManager->deRegisterAllSources();
   // Yep - that seems to fix it. I think the problem was this: when our modManager member goes out
   // of scope, it calls these 2 functions in its destructor - and in these functions the pointers
   // to the source/target modules are referenced (for nulling their modManager pointer) - but at
@@ -56,13 +57,15 @@ ToolChain::~ToolChain()
   for(int i = 0; i < size(modules); i++)
     delete modules[i];
 
-  modManager.setVoiceManager(nullptr); // Dunno if required but better safe than sorry. If the 
+  modManager->setVoiceManager(nullptr); // Dunno if required but better safe than sorry. If the 
   // voiceManager is destructed before the modManager, we might otherwise have a dangling pointer
   // in the modManager for a brief moment during destruction. That may be inconsequential but who 
   // knows... But maybe we can make sure that the modManager is destructed first by declaration 
   // order -> figure out
 
   deleteMidiModSources();
+
+  delete modManager;
 }
 
 void ToolChain::addEmptySlot()
@@ -220,7 +223,7 @@ void ToolChain::processBlock(double **inOutBuffer, int numChannels, int numSampl
   if(numChannels != 2) return;
   //ScopedLock scopedLock(*lock); // lock already held by the wrapping plugin
   bool needsSmoothing  = smoothingManager->needsSmoothing();
-  bool needsModulation = modManager.getNumConnections() > 0;
+  bool needsModulation = modManager->getNumConnections() > 0;
   bool needsVoiceKill  = voiceManager.needsVoiceKillCheck();
 
   if( !needsSmoothing && !needsModulation && !needsVoiceKill )
@@ -234,7 +237,7 @@ void ToolChain::processBlock(double **inOutBuffer, int numChannels, int numSampl
       if(needsSmoothing)   
         smoothingManager->updateSmoothedValuesNoLock();
       if(needsModulation)  
-        modManager.applyModulationsNoLock();
+        modManager->applyModulationsNoLock();
       for(size_t i = 0; i < modules.size(); i++)
         modules[i]->processStereoFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
         // AudioModules that are subclasses of ModulationSource have not overriden this function.
@@ -346,7 +349,7 @@ XmlElement* ToolChain::getStateAsXml(const juce::String& stateName, bool markAsC
     xml->addChildElement(child);
   }
 
-  xml->addChildElement(modManager.getStateAsXml()); 
+  xml->addChildElement(modManager->getStateAsXml()); 
   // do this also in ModulatableAudioModule...wait no - the mod-settings are only stored in the 
   // top-level module, maybe we should have a ModManagerAudioModule as baseclass which contains the
   // ModulationManager. then, instead of calling xml = AudioModule::getStateAsXml(stateName, markAsClean); 
@@ -440,10 +443,10 @@ void ToolChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
 // move to ModulatableAudioModule:
 void ToolChain::recallModulationsFromXml(const XmlElement &xmlState)
 {
-  modManager.removeAllConnections();
+  modManager->removeAllConnections();
   XmlElement* modXml = xmlState.getChildByName("Modulations");
   if(modXml != nullptr)
-    modManager.setStateFromXml(*modXml);  // recall modulation settings
+    modManager->setStateFromXml(*modXml);  // recall modulation settings
 }
 
 void ToolChain::setupManagers(AudioModule* m)
@@ -452,7 +455,7 @@ void ToolChain::setupManagers(AudioModule* m)
   m->setMetaParameterManager(metaParamManager); 
   ModulatableAudioModule* mm = dynamic_cast<ModulatableAudioModule*>(m);
   if(mm)
-    mm->setModulationManager(&modManager);
+    mm->setModulationManager(modManager);
   AudioModulePoly* pm = dynamic_cast<AudioModulePoly*> (m);
   if(pm != nullptr)
   {
@@ -483,7 +486,7 @@ void ToolChain::addToModulatorsIfApplicable(AudioModule* module)
   if(ms != nullptr)
   {
     assignModulationSourceName(ms);
-    modManager.registerModulationSource(ms);
+    modManager->registerModulationSource(ms);
   }
 }
 
@@ -491,7 +494,7 @@ void ToolChain::removeFromModulatorsIfApplicable(AudioModule* module)
 {
   ModulationSource* ms = dynamic_cast<ModulationSource*> (module);
   if(ms != nullptr)
-    modManager.deRegisterModulationSource(ms);
+    modManager->deRegisterModulationSource(ms);
 }
 
 void ToolChain::assignModulationSourceName(ModulationSource* source)
@@ -526,11 +529,11 @@ void ToolChain::clearModulesArray()
 void ToolChain::createMidiModSources()
 {
   notePitchModulator = 
-    new rsNotePitchModulatorModulePoly(lock, metaParamManager, &modManager, &voiceManager);
+    new rsNotePitchModulatorModulePoly(lock, metaParamManager, modManager, &voiceManager);
   noteVelocityModulator = 
-    new rsMoteVelocityModulatorModulePoly(lock, metaParamManager, &modManager, &voiceManager);
-  modManager.registerModulationSource(notePitchModulator);
-  modManager.registerModulationSource(noteVelocityModulator);
+    new rsMoteVelocityModulatorModulePoly(lock, metaParamManager, modManager, &voiceManager);
+  modManager->registerModulationSource(notePitchModulator);
+  modManager->registerModulationSource(noteVelocityModulator);
 }
 
 void ToolChain::deleteMidiModSources()
@@ -552,7 +555,7 @@ void ToolChain::createDebugModSourcesAndTargets()
   env->setModuleName("Envelope1");
   addChildAudioModule(env);
 
-  modManager.registerModulationSource(env);
+  modManager->registerModulationSource(env);
 
   ModulatableParameter* p = 
     new ModulatableParameter("Gain", -60.0, -20.0, 0.0, Parameter::LINEAR, 0.01);
