@@ -221,7 +221,7 @@ public:
   override) and using its output for the modValue. The rsVoiceManager parameter is irrelevant in 
   this class here but it becomes relevant in the ModulationSourcePoly subclass, where we override
   this method, so the parameter must be already included in the function signature here. */
-  virtual void updateModulationValue(rsVoiceManager* voiceManager)
+  virtual void updateModulationValue(/*rsVoiceManager* voiceManager*/)
   { 
     modValue = getModulatorOutputSample(); 
     //jassert(RAPT::rsIsFiniteNumber(modValue));
@@ -298,7 +298,7 @@ public:
   ModulationTarget(ModulationManager* managerToUse = nullptr) 
     : ModulationParticipant(managerToUse) 
   {
-    modulatedValues.resize(1);  // monophonic by default
+    //modulatedValues.resize(1);  // monophonic by default
   }
 
   /** Destructor */
@@ -322,9 +322,9 @@ public:
   will be computed. */
   void setUnmodulatedValue(double newValue)
   {
-    unmodulatedValue   = newValue;
+    unmodulatedValue = newValue;
 
-    modulatedValues[0] = unmodulatedValue; 
+    modulatedValue   = unmodulatedValue; 
     // Elan's smoother needs this - it makes sure that the modulated value is always the same as
     // the unmodulated value, even in cases in case where no modulations are applied (in which case 
     // initModulatedValue is not called (per sample)). It works only, if the smoother calls 
@@ -421,9 +421,11 @@ public:
   /** Initializes the modulated value by setting it to the unmodulated value. */
   inline void initModulatedValue()
   {
-    modulatedValues[0] = unmodulatedValue;
+    modulatedValue = unmodulatedValue;
   }
 
+
+  /*
   inline void initModulatedValuesPoly(int numPlayingVoices)
   {
     jassert(numPlayingVoices < modulatedValues.size());
@@ -433,20 +435,23 @@ public:
     // playing? so maybe drage the i = 0 case out of the loop?
   }
   // under construction
+  */
 
   /** Function to retrieve the modulated value after all modulations have been applied. This may 
   also include a clipping function, such that the returned value is restricted to some allowable
   range. */
   inline double getModulatedValue() const
   {
-    return RAPT::rsClip(modulatedValues[0], rangeMin, rangeMax);
+    return RAPT::rsClip(modulatedValue, rangeMin, rangeMax);
   }
 
+  /*
   inline double getModulatedValuePoly(int voice) const
   {
     jassert(voice < modulatedValues.size());
     return RAPT::rsClip(modulatedValues[voice], rangeMin, rangeMax);
   }
+  */
   // under construction
 
   /** Returns the unmodulated value, which is the base value when no modulation is applied. */
@@ -459,24 +464,28 @@ public:
   a contribution from a modulator to the modulated value. */
   inline void addToModulatedValue(double amount)
   {
-    modulatedValues[0] += amount;
+    modulatedValue += amount;
   }
+  // obsolete
+
+  inline double* getPointerToModulated() { return &modulatedValue; }
 
   /** Polyphonic version of addToModulatedValue. */
+  /*
   inline void addToModulatedValuePoly(double amount, int voice)
   {
     jassert(voice < modulatedValues.size());
     modulatedValues[voice] += amount;
   }
+  */
   // under construction
 
 
 protected:
 
   double unmodulatedValue = 0;
-
-  //double modulatedValue = 0;     // replace by array
-  std::vector<double> modulatedValues;
+  double modulatedValue   = 0;
+  //std::vector<double> modulatedValues;
   // maybe we don't need an array (i.e. revert to the single modulatedValue member), if we process
   // one voice after another - that would save a lot of memory - for the modulation sources, we may
   // still need the array - but that's not that memory intensive because the number of sources is
@@ -554,11 +563,37 @@ public:
   /** Returns the Parameter object that controls the amount of modulation */
   MetaControlledParameter* getDepthParameter() const { return depthParam; }
 
+
+
+  static inline void apply(double m, double d, double u, double* t, int mode)
+  {
+    double z;
+    switch(mode)  // maybe use function pointer instead of switch
+    {
+    case ABSOLUTE:       z = d * m;             break;
+    case RELATIVE:       z = d * m * u;         break;
+    case EXPONENTIAL:    z = u * exp2(d*m) - u; break; // maybe rename function to pow2
+    case MULTIPLICATIVE: 
+    {
+      z = RAPT::rsClip(u * pow(m, d) - u, -1.e100, +1.e100);
+      // Multiplicative mode may produce infinity when it gets an input like m=0, d=-1: 0^-1 = 1/0.
+      // That in itself might not be a problem due to later being clipped to the max target value 
+      // but if one modulator produces inf and another one -inf because u is negative in the 2nd, 
+      // we would get inf-inf = NaN so we need to clip here already.
+    } break;
+    default:             z = 0;
+    }
+    *t += z;
+  }
+
   /** Applies the source-value to the target-value, taking into account the modulation depth. */
   inline void apply()
   {
-    //double m = *sourceValue; // todo: apply map to m, similar to meta-map, old
-    double m = source->getModulationValue(); // new
+    apply(source->getModulationValue(), depth, target->getUnmodulatedValue(),
+      target->getPointerToModulated(), mode);
+
+    /*
+    double m = source->getModulationValue(); // todo: apply map to m, similar to meta-map
     double d = depth;
     double u = target->getUnmodulatedValue();
     double z;
@@ -577,8 +612,12 @@ public:
     } break;
     default:             z = 0;
     }
-    //*targetValue += z;  // old
-    target->addToModulatedValue(z); // new
+
+    double *t = target->getPointerToModulated();
+    *t += z;
+    */
+
+    //target->addToModulatedValue(z);
   }
 
 
@@ -601,8 +640,6 @@ protected:
 
   ModulationSource* source;
   ModulationTarget* target;
-  //double* sourceValue;       // pointer to modulation source output signal - get rid!
-  //double* targetValue;       // pointer to target value - get rid!
   double depth;              // modulation depth
   int mode = ABSOLUTE;       // application mode for modulation signal
 
@@ -954,7 +991,7 @@ public:
   virtual double getModulatorOutputSample(int voiceIndex) = 0;
 
 
-  void updateModulationValue(rsVoiceManager* voiceManager) override
+  void updateModulationValue(rsVoiceManager* voiceManager) // override
   { 
     if(voiceManager == nullptr) return;
     jassert(modValues.size() >= voiceManager->getMaxNumVoices());

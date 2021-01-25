@@ -265,7 +265,7 @@ void ModulationManager::applyModulationsNoLock()
   // compute output signals of all modulators:
   for(i = 0; i < availableSources.size(); i++)
   {
-    availableSources[i]->updateModulationValue(voiceManager); 
+    availableSources[i]->updateModulationValue(/*voiceManager*/); 
     //sourceValues[i] = availableSources[i]->getModulatorOutputSample();
   }
     // maybe we should loop only over an array of "usedSources" as optimization? similar to the way
@@ -628,7 +628,7 @@ void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotifica
 {
   MetaControlledParameter::setNormalizedValue(newValue, sendNotification, callCallbacks);
   unmodulatedValue = value;
-  modulatedValues[0] = unmodulatedValue;
+  modulatedValue   = unmodulatedValue;
   // should we iterate over the array here? i guess not because this is supposed to be a 
   // monophonic parameter, so the 0th entry is the only one that exists
 
@@ -640,7 +640,7 @@ void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotifica
 void ModulatableParameter::setSmoothedValue(double newValue)
 {
   unmodulatedValue = mapper->map(newValue);
-  modulatedValues[0] = unmodulatedValue;
+  modulatedValue   = unmodulatedValue;
   callValueChangeCallbacks(unmodulatedValue);
 
   // later do:
