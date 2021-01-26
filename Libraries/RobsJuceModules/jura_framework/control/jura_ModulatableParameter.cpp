@@ -677,10 +677,9 @@ void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
   // In our overrides for addConnectionToArray/removeConnectionFromArray we make sure that 
   // connections with the same target are adjacent in the modulationConnections array. That means
   // we can grab a connection at a a time and as long as it has the same target as the one grabbed
-  // before, we accumulate the contribution from the connection into the the same buffered
-  // accumulator. When the target is different, we skip to the next accumulator, initialize it and
-  // increment a counter that keeps track of how many distinct targets we have visited.
-
+  // before, we accumulate the contribution from the connection into the same buffered accumulator.
+  // When the target is different, we skip to the next accumulator, initialize it and increment a 
+  // counter that keeps track of how many distinct targets we have visited.
   int k = 0;
   const ModulationTarget* tOld = nullptr;
   for(int i = 0; i < modulationConnections.size(); i++)
@@ -693,6 +692,11 @@ void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
     c->apply(&modulatedValues[k-1]);
     int dummy = 0;
   }
+  // todo: maybe try to figure out beforehand, how many incoming connections a particular target 
+  // has and cache those values in order to accelerate this loop. these values can change only when
+  // connections are added or removed, so the addConnectionToArray/removeConnectionFromArray are
+  // the places where we need to update the stored values. but it should be tested, if it's really
+  // faster
 
   // The order of the targets in affectedTargets is supposed to match the order of the targets
   // as they appear in the modulationConnections array, so we can now just iterate over the
@@ -700,7 +704,7 @@ void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
   jassert(k == modulatedValues.size() && k == affectedTargets.size() 
     && k == numDistinctActiveTargets);
   for(int i = 0; i < k; i++)
-    affectedTargets[i]->doModulationUpdate(voiceIndex);
+    affectedTargets[i]->doModulationUpdate(modulatedValues[i], voiceIndex);
 
   int dummy = 0;
 }

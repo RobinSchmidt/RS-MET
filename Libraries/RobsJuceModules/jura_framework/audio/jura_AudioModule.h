@@ -346,6 +346,16 @@ protected:
   rsSmoothingManager* smoothingManager = nullptr;
   MetaParameterManager* metaParamManager = nullptr;
 
+  // ToDo:
+  // double dryGain = 0.0;
+  // double wetGain = 1.0;
+  // to mix between input and output i.e. dry/wet. the idea is that source may modules want to add
+  // their output to what's already there (for stacking, layering, parallel connection -> both 
+  // gains = 1) whereas filters and effects may want to replace the input with the output (serial 
+  // connection: dry = 0, wet = 1). Having these two gains provides a flexible way to facilitate 
+  // this and more. These should also be saved and recalled, of course (but saved only when not at 
+  // default settings)
+
   double triggerInterval = 0.0;    // interval (in beats) for calls to trigger()
   bool saveAndRecallState = true;  // indicates, that this module wants to save/recall its state
   bool saveAndRecallMetas = false; // store/recall values of meta-params - should be true for top-level modules only

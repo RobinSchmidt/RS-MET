@@ -1011,23 +1011,15 @@ public:
   /** Overriden to call our callback function with the modulated value. */
   void doModulationUpdate(double modulatedValue, int voiceIndex = -1) override
   {
-
-    /*
-    callCallbackWithModulatedValue();  // calls the monophonic callback
-
-    rsVoiceManager* vm = getModulationManager()->getVoiceManager(); 
-    // maybe we should have some safeguards aginst nullpointers?
-
-    jassert(vm);  // needs to be assigned
-    for(int i = 0; i < vm->getNumActiveVoices(); i++)
+    if(voiceIndex >= 0)
+      valueChangeCallbackPoly(modulatedValue, voiceIndex);
+    else
     {
-      int j = vm->getActiveVoiceIndex(i);
-
-      //valueChangeCallbackPoly(modValues[j], j); // is this correct?
-
       int dummy = 0;
+      //jassertfalse; // not yet implemented
+      //... maybe we should call the inherited monophonic callback here?
+      // callCallback(modulatedValue); ..like this? ..not sure - we'll see
     }
-    */
   }
   // maybe we should computed the modulatedValue here, right before calling the callback
   // ..no need to store it in any object....
