@@ -686,25 +686,19 @@ void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
   // before, we accumulate the contribution from the connection into the same buffered accumulator.
   // When the target is different, we skip to the next accumulator, initialize it and increment a 
   // counter that keeps track of how many distinct targets we have visited.
-  int k = 0;
+  int k = -1;
   const ModulationTarget* tOld = nullptr;
-  for(int i = 0; i < modulationConnections.size(); i++)
-  {
+  for(int i = 0; i < modulationConnections.size(); i++) {
     const ModulationConnection* c = modulationConnections[i];
     const ModulationTarget*     t = c->getTarget();
     if(t != tOld) {
+      k++; 
       modulatedValues[k] = t->getUnmodulatedValue();
-      k++; }
-
-    //c->apply(&modulatedValues[k-1]);  
-    // wrong! this applies the monophonic modulation value! we need to somehow acces the 
-    // polyphonic value...
-
-    c->applyVoice(&modulatedValues[k-1], voiceIndex); // new, experimental
-
-    int dummy = 0;
+      tOld = t; 
+    }
+    c->applyVoice(&modulatedValues[k], voiceIndex); 
   }
-  // todo: maybe try to figure out beforehand, how many incoming connections a particular target 
+  // ToDo: maybe try to figure out beforehand, how many incoming connections a particular target 
   // has and cache those values in order to accelerate this loop. these values can change only when
   // connections are added or removed, so the addConnectionToArray/removeConnectionFromArray are
   // the places where we need to update the stored values. but it should be tested, if it's really
@@ -713,12 +707,10 @@ void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
   // The order of the targets in affectedTargets is supposed to match the order of the targets
   // as they appear in the modulationConnections array, so we can now just iterate over the
   // affectedTargets to let them call their callbacks for voice i.
-  jassert(k == modulatedValues.size() && k == affectedTargets.size() 
-    && k == numDistinctActiveTargets);
-  for(int i = 0; i < k; i++)
+  jassert(k == modulatedValues.size()-1 && k == affectedTargets.size()-1
+    && k == numDistinctActiveTargets-1);
+  for(int i = 0; i <= k; i++)
     affectedTargets[i]->doModulationUpdate(modulatedValues[i], voiceIndex);
-
-  int dummy = 0;
 }
 
 void ModulationManagerPoly::applyModulationsNoLock()

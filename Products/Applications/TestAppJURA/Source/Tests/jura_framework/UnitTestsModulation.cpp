@@ -155,7 +155,7 @@ void UnitTestModulation::runTestPolyModulation()
 
   // Add a 2nd connection to the 1st parameter:
   addConnection(&constant, targets[0], 1.0);
-  //modMan.applyModulationsNoLock();   // triggers vector index out of range
+  modMan.applyModulationsNoLock();   // triggers vector index out of range
   //targetModule.processStereoFrame(&dVal1, &dVal2);
 
 

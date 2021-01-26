@@ -107,9 +107,10 @@ private:
 
   void initSubComponents()
   {
-    addAndMakeVisible(painter);
+    //addAndMakeVisible(painter);
     addAndMakeVisible(unitTestsView);
   }
+  // todo: implement response to buttons to switch between the screens
 
 
 
