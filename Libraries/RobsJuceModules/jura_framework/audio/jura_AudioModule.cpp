@@ -726,7 +726,12 @@ void AudioModulePoly::processStereoFramePoly(double *buffer, int numActiveVoices
                    // typically, it will be 2*voiceManager->getNumActiveVoices()
 
   for(int i = 0; i < numActiveVoices; i+=1)
-    processStereoFrameVoice(&buffer[2*i], &buffer[2*i+1], i);
+  {
+    //processStereoFrameVoice(&buffer[2*i], &buffer[2*i+1], i);
+
+    int k = voiceManager->getActiveVoiceIndex(i);
+    processStereoFrameVoice(&buffer[2*i], &buffer[2*i+1], k);
+  }
     // we use an interleaved format for easier interfacing with rsFloat64x2
 }
 

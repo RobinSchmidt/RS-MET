@@ -970,7 +970,20 @@ public:
     jassert(voiceManager != nullptr);
     jassert(modValues.size() >= voiceManager->getMaxNumVoices());
     for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)
-      modValues[i] = getModulatorOutputSample(i);
+    {
+      //modValues[i] = getModulatorOutputSample(i); // old
+
+      //int k = voiceManager->getActiveVoiceIndex(i);  // new
+      //modValues[i] = getModulatorOutputSample(k);
+
+      int k = voiceManager->getActiveVoiceIndex(i);  // newer
+      modValues[k] = getModulatorOutputSample(k);
+
+      //int k = voiceManager->getActiveVoiceIndex(i);  // 
+      //modValues[k] = getModulatorOutputSample(i);
+
+      int dummy = 0;
+    }
     modValue = modValues[voiceManager->getNewestVoice()]; // experimental - to support the 
     // monophonic code...but it may get overwritten in the next initialization...but maybe 
     // that's good...we'll see....

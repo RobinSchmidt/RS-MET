@@ -188,6 +188,11 @@ void UnitTestModulation::runTestPolyModulation()
   expectEquals(dVal1, 2000.0 + key2 + key3 + 2.0);  // this fails
   expectEquals(dVal2,  2*( 1.0 + 0.5*velR)  );
 
+  // d1 should be 2152 but is 2121 = 2000 + 50 + 69 + 2, so it seems that key3 is released instead
+  // of key1
+  // active voices are 1,2, voiceStates 1,2 are 50,100
+
+  // ...now it's 2171 = 2000 + 100 + 69 + 2, so it's key1 and key3
 
   int dummy = 0;
 }
