@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="TestAppJURA\Source\Tests\jura_framework">
       <UniqueIdentifier>{84A1F62E-B419-1B99-CFC9-15ECA6198065}</UniqueIdentifier>

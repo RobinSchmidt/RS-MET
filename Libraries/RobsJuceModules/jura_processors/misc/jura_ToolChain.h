@@ -233,7 +233,7 @@ protected:
   // allocates it own buffer.
 
   rsNotePitchModulatorModulePoly*    notePitchModulator;
-  rsMoteVelocityModulatorModulePoly* noteVelocityModulator;
+  rsNoteVelocityModulatorModulePoly* noteVelocityModulator;
 
 
   friend class ToolChainEditor;

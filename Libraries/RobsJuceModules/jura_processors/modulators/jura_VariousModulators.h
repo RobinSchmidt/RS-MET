@@ -141,11 +141,11 @@ public:
 };
 
 /** A modulator module that just outputs the current normalized velocity of a given voice. */
-class JUCE_API rsMoteVelocityModulatorModulePoly : public ModulatorModulePoly
+class JUCE_API rsNoteVelocityModulatorModulePoly : public ModulatorModulePoly
 {
 public:
 
-  rsMoteVelocityModulatorModulePoly(CriticalSection* lockToUse,
+  rsNoteVelocityModulatorModulePoly(CriticalSection* lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr,
     ModulationManager* modManagerToUse = nullptr,
     rsVoiceManager* voiceManagerToUse = nullptr)
@@ -165,7 +165,7 @@ public:
     jassert(voiceManager != nullptr);
     return voiceManager->getVoiceNormalizedVelocity(voiceIndex);
   }
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMoteVelocityModulatorModulePoly)
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNoteVelocityModulatorModulePoly)
 };
 
 // todo: NoteFrequency pitch-wheel, aftertouch, etc

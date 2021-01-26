@@ -9,10 +9,20 @@
     <GROUP id="{E7DA5915-A163-B06A-6F1B-762E629AA87C}" name="Source">
       <GROUP id="{F297B51F-ADA4-24A8-B081-EC977DA1BEC7}" name="Tests">
         <GROUP id="{F3F7881C-7C54-A2FA-9122-5E0D063993E6}" name="jura_framework">
+          <FILE id="TxkfK5" name="UnitTestsModulation.cpp" compile="1" resource="0"
+                file="Source/Tests/jura_framework/UnitTestsModulation.cpp"/>
+          <FILE id="ZvFHun" name="UnitTestsModulation.h" compile="0" resource="0"
+                file="Source/Tests/jura_framework/UnitTestsModulation.h"/>
           <FILE id="J8kMm7" name="UnitTestsParameter.cpp" compile="1" resource="0"
                 file="Source/Tests/jura_framework/UnitTestsParameter.cpp"/>
           <FILE id="T23Odn" name="UnitTestsParameter.h" compile="0" resource="0"
                 file="Source/Tests/jura_framework/UnitTestsParameter.h"/>
+        </GROUP>
+        <GROUP id="{0834D3BF-8C32-54D1-0BE9-8016F712ABBF}" name="jura_processors">
+          <FILE id="FfNYL8" name="UnitTestsToolChain.cpp" compile="1" resource="0"
+                file="Source/Tests/jura_processors/UnitTestsToolChain.cpp"/>
+          <FILE id="K9JGb8" name="UnitTestsToolChain.h" compile="0" resource="0"
+                file="Source/Tests/jura_processors/UnitTestsToolChain.h"/>
         </GROUP>
         <GROUP id="{0E8EC52A-9DE3-82D9-102B-E8FFD6A10DBD}" name="RAPT">
           <GROUP id="{926D8825-12A1-B444-C06E-AAB4263B527F}" name="Visualization">
@@ -67,6 +77,33 @@
         <MODULEPATH id="rapt" path="../../../Libraries/RobsJuceModules"/>
       </MODULEPATHS>
     </VS2015>
+    <VS2019 targetFolder="Builds/VisualStudio2019">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" winWarningLevel="3"/>
+        <CONFIGURATION isDebug="0" name="Release"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="rosic" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="romos" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="rapt" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="jura_processors" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="jura_framework" path="../../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="juce_video"/>
+        <MODULEPATH id="juce_opengl"/>
+        <MODULEPATH id="juce_gui_extra"/>
+        <MODULEPATH id="juce_gui_basics"/>
+        <MODULEPATH id="juce_graphics"/>
+        <MODULEPATH id="juce_events"/>
+        <MODULEPATH id="juce_data_structures"/>
+        <MODULEPATH id="juce_cryptography"/>
+        <MODULEPATH id="juce_core"/>
+        <MODULEPATH id="juce_audio_utils"/>
+        <MODULEPATH id="juce_audio_processors"/>
+        <MODULEPATH id="juce_audio_formats"/>
+        <MODULEPATH id="juce_audio_devices"/>
+        <MODULEPATH id="juce_audio_basics"/>
+      </MODULEPATHS>
+    </VS2019>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
