@@ -168,6 +168,38 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNoteVelocityModulatorModulePoly)
 };
 
+/** A modulator module that just outputs the current frequency of a given voice. */
+class JUCE_API rsNoteFreqModulatorModulePoly : public ModulatorModulePoly
+{
+public:
+
+  rsNoteFreqModulatorModulePoly(CriticalSection* lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr,
+    ModulationManager* modManagerToUse = nullptr,
+    rsVoiceManager* voiceManagerToUse = nullptr)
+    : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+  {
+    ScopedLock scopedLock(*lock);
+    //setModuleTypeName("NotePitch");
+    setModulationSourceName("NoteFrequency");
+  }
+
+  double getModulatorOutputSample() override
+  {
+    jassert(voiceManager != nullptr);
+    return getModulatorOutputSample(voiceManager->getNewestVoice());
+  }
+  // move to baseclass
+
+  double getModulatorOutputSample(int voiceIndex) override
+  {
+    jassert(voiceManager != nullptr);
+    return RAPT::rsPitchToFreq(voiceManager->getVoicePitch(voiceIndex));
+  }
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNoteFreqModulatorModulePoly)
+};
+
+
 // todo: NoteFrequency pitch-wheel, aftertouch, etc
 
 

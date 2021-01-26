@@ -695,7 +695,13 @@ void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
     if(t != tOld) {
       modulatedValues[k] = t->getUnmodulatedValue();
       k++; }
-    c->apply(&modulatedValues[k-1]);
+
+    //c->apply(&modulatedValues[k-1]);  
+    // wrong! this applies the monophonic modulation value! we need to somehow acces the 
+    // polyphonic value...
+
+    c->applyVoice(&modulatedValues[k-1], voiceIndex); // new, experimental
+
     int dummy = 0;
   }
   // todo: maybe try to figure out beforehand, how many incoming connections a particular target 

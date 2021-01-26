@@ -251,6 +251,8 @@ public:
   after updateModulationValue has been called. */
   inline double getModulationValue() const { return modValue; }
 
+  virtual double getVoiceModulationValue(int voiceIndex) const { return modValue; }
+
 protected:
 
   double modValue = 0;
@@ -510,9 +512,17 @@ public:
   }
 
 
+  /*
   inline void apply(double* targetValue) const
   {
     apply(source->getModulationValue(), depth, target->getUnmodulatedValue(), targetValue, mode);
+  }
+  */
+
+  inline void applyVoice(double* targetValue, int voiceIndex) const
+  {
+    apply(source->getVoiceModulationValue(voiceIndex), depth, target->getUnmodulatedValue(), 
+      targetValue, mode);
   }
 
 
@@ -945,7 +955,15 @@ public:
   /** Must be overriden by subclasses to produce a modulator output sample for the given voice 
   index. */
   virtual double getModulatorOutputSample(int voiceIndex) = 0;
+  // maybe rename to getVoiceModulatorOutput
 
+
+
+  double getVoiceModulationValue(int voiceIndex) const override
+  { 
+    jassert(voiceIndex >= 0 && voiceIndex < (int)modValues.size());
+    return modValues[voiceIndex]; 
+  }
 
   void updateModulationValue(rsVoiceManager* voiceManager) override
   { 
