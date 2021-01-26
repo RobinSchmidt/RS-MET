@@ -3073,6 +3073,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\instruments\jura_Workhorse.cpp">
       <Filter>JUCE Modules\jura_processors\instruments</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\misc\jura_AudioModuleSlotArray.cpp">
+      <Filter>JUCE Modules\jura_processors\misc</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\misc\jura_ChannelMatrix2x2.cpp">
       <Filter>JUCE Modules\jura_processors\misc</Filter>
     </ClCompile>
@@ -7601,6 +7604,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\instruments\jura_Workhorse.h">
       <Filter>JUCE Modules\jura_processors\instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\misc\jura_AudioModuleSlotArray.h">
+      <Filter>JUCE Modules\jura_processors\misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\misc\jura_ChannelMatrix2x2.h">
       <Filter>JUCE Modules\jura_processors\misc</Filter>

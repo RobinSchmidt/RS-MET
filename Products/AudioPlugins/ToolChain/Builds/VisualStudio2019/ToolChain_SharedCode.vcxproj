@@ -2339,6 +2339,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\instruments\jura_Workhorse.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\misc\jura_AudioModuleSlotArray.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\misc\jura_ChannelMatrix2x2.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -5127,6 +5130,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\instruments\jura_SimpleSampler.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\instruments\jura_Straightliner.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\instruments\jura_Workhorse.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\misc\jura_AudioModuleSlotArray.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\misc\jura_ChannelMatrix2x2.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\misc\jura_DebugAudioModule.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\misc\jura_DspWorkbench.h"/>

@@ -91,6 +91,7 @@ namespace jura
 #include "misc/jura_ChannelMatrix2x2.cpp"
 #include "misc/jura_DspWorkbench.cpp"
 #include "misc/jura_DebugAudioModule.cpp"
+//#include "misc/jura_AudioModuleSlotArray.cpp"
 #include "misc/jura_ToolChain.cpp"
 
 //#include "unfinished/jura_QuadSource.cpp"

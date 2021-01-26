@@ -10332,6 +10332,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/jura_processors/misc/jura_AudioModuleSlotArray.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/jura_processors/misc/jura_AudioModuleSlotArray.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/jura_processors/misc/jura_ChannelMatrix2x2.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
