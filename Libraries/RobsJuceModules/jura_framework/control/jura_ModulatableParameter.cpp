@@ -682,7 +682,7 @@ void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
 { 
   // In our overrides for addConnectionToArray/removeConnectionFromArray we make sure that 
   // connections with the same target are adjacent in the modulationConnections array. That means
-  // we can grab a connection at a a time and as long as it has the same target as the one grabbed
+  // we can grab a connection at a time and as long as it has the same target as the one grabbed
   // before, we accumulate the contribution from the connection into the same buffered accumulator.
   // When the target is different, we skip to the next accumulator, initialize it and increment a 
   // counter that keeps track of how many distinct targets we have visited.
@@ -698,10 +698,10 @@ void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
     }
     c->applyVoice(&modulatedValues[k], voiceIndex); 
   }
-  // ToDo: maybe try to figure out beforehand, how many incoming connections a particular target 
-  // has and cache those values in order to accelerate this loop. these values can change only when
+  // ToDo: Maybe try to figure out beforehand, how many incoming connections a particular target 
+  // has and cache those values in order to accelerate this loop. These values can change only when
   // connections are added or removed, so the addConnectionToArray/removeConnectionFromArray are
-  // the places where we need to update the stored values. but it should be tested, if it's really
+  // the places where we need to update the stored values. But it should be tested, if it's really
   // faster
 
   // The order of the targets in affectedTargets is supposed to match the order of the targets

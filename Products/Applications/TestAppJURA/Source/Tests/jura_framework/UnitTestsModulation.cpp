@@ -141,29 +141,52 @@ void UnitTestModulation::runTestPolyModulation()
 
   // Trigger a note-on - this should cause the 0th voice to start playing
   using Msg = juce::MidiMessage;
-  int    key  = 69;
+  int    key1 = 69;
   float  vel  = 0.5f;
-  double vel2 = round(vel * 127.0) / 127.0;  // midi-byte roundtrip messes the velocity up
-  targetModule.handleMidiMessage(Msg::noteOn(1, key, vel));
+  double velR = round(vel * 127.0) / 127.0;  // midi-byte roundtrip messes the velocity up
+  targetModule.handleMidiMessage(Msg::noteOn(1, key1, vel));
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 1);
   modMan.applyModulationsNoLock();
   targetModule.processStereoFrame(&dVal1, &dVal2);
-  expectEquals(dVal1, 1000.0 + key     );  // default freq of 1kHz plus the note-number
-  expectEquals(dVal2,    1.0 + 0.5*vel2);  // default amp of 1 plus depth*vel2
-
+  expectEquals(dVal1, 1000.0 + key1    );  // default freq of 1kHz plus the note-number
+  expectEquals(dVal2,    1.0 + 0.5*velR);  // default amp of 1 plus depth*vel2
 
   // Add a 2nd connection to the 1st parameter:
   addConnection(&constant, targets[0], 1.0);
-  modMan.applyModulationsNoLock();   // triggers vector index out of range
-  //targetModule.processStereoFrame(&dVal1, &dVal2);
+  modMan.applyModulationsNoLock();
+  targetModule.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1000.0 + key1 + 1.0); // the + 1.0 is the addition from the 2nd connection
+  expectEquals(dVal2,    1.0 + 0.5*velR  ); // this should be the same value as before
 
+  // Trigger a second note:
+  int key2 = 50;
+  targetModule.handleMidiMessage(Msg::noteOn(1, key2, vel));
+  iVal = voiceMan.getNumActiveVoices();
+  expectEquals(iVal, 2);
+  modMan.applyModulationsNoLock();
+  targetModule.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 2000.0 + key1 + key2 + 2.0);
+  expectEquals(dVal2,  2*( 1.0 + 0.5*velR)  );
 
+  // ...and a third:
+  int key3 = 100;
+  targetModule.handleMidiMessage(Msg::noteOn(1, key3, vel));
+  iVal = voiceMan.getNumActiveVoices();
+  expectEquals(iVal, 3);
+  modMan.applyModulationsNoLock();
+  targetModule.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 3000.0 + key1 + key2 + key3 + 3.0);
+  expectEquals(dVal2,  3*( 1.0 + 0.5*velR)  );
 
-
-  //targetModule.processStereoFrameVoice(&dVal1, &dVal2, 0);
-  // hmm - i think, dVal1 should now be the frequency and dVal2 the amplitude, but they are still
-  // zero
+  // Release the first note:
+  targetModule.handleMidiMessage(Msg::noteOn(1, key1, 0.f));  
+  iVal = voiceMan.getNumActiveVoices();
+  expectEquals(iVal, 2);
+  modMan.applyModulationsNoLock();
+  targetModule.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 2000.0 + key2 + key3 + 2.0);  // this fails
+  expectEquals(dVal2,  2*( 1.0 + 0.5*velR)  );
 
 
   int dummy = 0;
