@@ -626,6 +626,21 @@ public:
     allocateVoiceResources(voiceManager);
   }
 
+  /*
+  double renderVoiceModulation(int voiceIndex) override
+  {
+    return 0.0;
+  }
+  */
+  /*
+  double getModulatorOutputSample() override
+  {
+    jassert(voiceManager != nullptr);
+    return getVoiceModulatorOutput(voiceManager->getNewestVoice());
+  }
+  */
+  // renaem to getModulatorOutput
+
   virtual void processStereoFrameVoice(double* left, double* right, int voice)
   {
     // Do nothing - modulators need to override getModulationValue instead

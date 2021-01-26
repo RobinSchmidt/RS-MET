@@ -227,6 +227,8 @@ public:
 
   /** Override this function in your subclass to produce one modulator output sample at a time. */
   virtual double getModulatorOutputSample() = 0;
+  // maybe rename to renderModulation
+
 
   /** Sets up a name for this ModulationSource. This should be unique among all the available 
   ModulationSource names, so it can be used to identify the source in state recall. */
@@ -954,8 +956,8 @@ public:
 
   /** Must be overriden by subclasses to produce a modulator output sample for the given voice 
   index. */
-  virtual double getModulatorOutputSample(int voiceIndex) = 0;
-  // maybe rename to getVoiceModulatorOutput
+  virtual double renderVoiceModulation(int voiceIndex) = 0;
+
 
 
 
@@ -965,13 +967,14 @@ public:
     return modValues[voiceIndex]; 
   }
 
+
   void updateModulationValue(rsVoiceManager* voiceManager) override
   { 
     jassert(voiceManager != nullptr);
     jassert(modValues.size() >= voiceManager->getMaxNumVoices());
     for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)  {
       int k = voiceManager->getActiveVoiceIndex(i);
-      modValues[k] = getModulatorOutputSample(k);    }
+      modValues[k] = renderVoiceModulation(k);    }
     modValue = modValues[voiceManager->getNewestVoice()]; // experimental - to support the 
     // monophonic code...but it may get overwritten in the next initialization...but maybe 
     // that's good...we'll see....

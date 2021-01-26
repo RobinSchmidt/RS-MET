@@ -81,7 +81,7 @@ protected:
 // some very simple modulators
 
 /** A modulator module that just outputs the constant value 1. That may be useful for use with 
-exponentially scaled parameters such as a frequency that goes form 20 to 20000. We can just 
+exponentially scaled parameters such as a frequency that goes from 20 to 20000. We can just 
 subtract 20 by connecting the constant with depth -20 and the use additive envelopes to directly
 determine the freq without having the minimum getting in the way. */
 class JUCE_API rsConstantOneModulatorModulePoly : public ModulatorModulePoly
@@ -95,17 +95,12 @@ public:
     : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
   {
     ScopedLock scopedLock(*lock);
-    //setModuleTypeName("NotePitch");
     setModulationSourceName("ConstantOne");
   }
-  double getModulatorOutputSample() override
-  {
-    return 1.0;
-  }
-  double getModulatorOutputSample(int voiceIndex) override
-  {
-    return 1.0;
-  }
+
+  double getModulatorOutputSample()  override { return 1.0; } // rename to renderModulation
+  double renderVoiceModulation(int voiceIndex) override { return 1.0; }
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsConstantOneModulatorModulePoly)
 };
 
@@ -125,14 +120,7 @@ public:
     setModulationSourceName("NotePitch");
   }
 
-  double getModulatorOutputSample() override
-  {
-    jassert(voiceManager != nullptr);
-    return getModulatorOutputSample(voiceManager->getNewestVoice());
-  }
-  // move to baseclass
-
-  double getModulatorOutputSample(int voiceIndex) override
+  double renderVoiceModulation(int voiceIndex) override
   {
     jassert(voiceManager != nullptr);
     return voiceManager->getVoicePitch(voiceIndex);
@@ -155,12 +143,7 @@ public:
     //setModuleTypeName("NormalizedVelocity");
     setModulationSourceName("NoteVelocity");
   }
-  double getModulatorOutputSample() override
-  {
-    jassert(voiceManager != nullptr);
-    return getModulatorOutputSample(voiceManager->getNewestVoice());
-  }
-  double getModulatorOutputSample(int voiceIndex) override
+  double renderVoiceModulation(int voiceIndex) override
   {
     jassert(voiceManager != nullptr);
     return voiceManager->getVoiceNormalizedVelocity(voiceIndex);
@@ -184,14 +167,7 @@ public:
     setModulationSourceName("NoteFrequency");
   }
 
-  double getModulatorOutputSample() override
-  {
-    jassert(voiceManager != nullptr);
-    return getModulatorOutputSample(voiceManager->getNewestVoice());
-  }
-  // move to baseclass
-
-  double getModulatorOutputSample(int voiceIndex) override
+  double renderVoiceModulation(int voiceIndex) override
   {
     jassert(voiceManager != nullptr);
     return RAPT::rsPitchToFreq(voiceManager->getVoicePitch(voiceIndex));
@@ -229,7 +205,7 @@ public:
   virtual double getModulatorOutputSample() override { return core.getSample(); }
   */
 
-  double getModulatorOutputSample(int voiceIndex) override
+  double renderVoiceModulation(int voiceIndex) override
   {
     jassert(voiceIndex <= cores.size());
     return cores[voiceIndex].getSample();
