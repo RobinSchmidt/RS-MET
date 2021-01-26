@@ -181,7 +181,7 @@ ModulationConnection::ModulationConnection(ModulationSource* _source, Modulation
 {
   source   = _source; 
   target   = _target;
-  mode        = target->getDefaultModulationMode();
+  mode     = target->getDefaultModulationMode();
   //sourceValue = &(source->modValue);    // obsolete
   //targetValue = &(target->modulatedValue);  // obsolete
 

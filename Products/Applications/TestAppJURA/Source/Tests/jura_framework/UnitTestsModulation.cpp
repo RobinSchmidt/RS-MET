@@ -121,17 +121,15 @@ void UnitTestModulation::runTestPolyModulation()
 
   // Create and add connections:
   const std::vector<jura::ModulationTarget*>& targets = modMan.getAvailableModulationTargets();
-  using Con = jura::ModulationConnection;
-  Con* con; 
-
-  con = new Con(&notePitch, targets[0], nullptr);  // make a constructor that takes a depth
-  con->setDepth(1.0);
-  modMan.addConnection(con);
-
-  con = new Con(&noteVel, targets[1], nullptr);  // make a constructor that takes a depth
-  con->setDepth(0.5);
-  modMan.addConnection(con);
-
+  auto addConnection = [&](jura::ModulationSource* source, jura::ModulationTarget* target, 
+    double depth)  // convenience function
+  {
+    jura::ModulationConnection* c = new jura::ModulationConnection(source, target, nullptr);
+    c->setDepth(depth);
+    modMan.addConnection(c);
+  };
+  addConnection(&notePitch, targets[0], 1.0);
+  addConnection(&noteVel,   targets[1], 0.5);
   iVal = (int) modMan.getModulationConnections().size();
   expectEquals(iVal, 2, "Failed add connection to modulation manager");
 
@@ -154,9 +152,14 @@ void UnitTestModulation::runTestPolyModulation()
   expectEquals(dVal1, 1000.0 + key     );  // default freq of 1kHz plus the note-number
   expectEquals(dVal2,    1.0 + 0.5*vel2);  // default amp of 1 plus depth*vel2
 
-  // no dVal2 is a bit larger because the 0.5 value gets multiplied by 127, giving 63.5, rounded up
-  // to 64 and when we later divide 64 by 127, we get 0.5039... - so we expect:
-  // 1 + 0.5 * round(vel * 127)/127;
+
+  // Add a 2nd connection to the 1st parameter:
+  addConnection(&constant, targets[0], 1.0);
+  //modMan.applyModulationsNoLock();   // triggers vector index out of range
+  //targetModule.processStereoFrame(&dVal1, &dVal2);
+
+
+
 
   //targetModule.processStereoFrameVoice(&dVal1, &dVal2, 0);
   // hmm - i think, dVal1 should now be the frequency and dVal2 the amplitude, but they are still

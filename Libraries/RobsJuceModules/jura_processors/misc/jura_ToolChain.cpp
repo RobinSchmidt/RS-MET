@@ -528,17 +528,26 @@ void ToolChain::clearModulesArray()
 
 void ToolChain::createMidiModSources()
 {
+  constantModulator = 
+    new rsConstantOneModulatorModulePoly(lock, metaParamManager, modManager, &voiceManager);
   notePitchModulator = 
     new rsNotePitchModulatorModulePoly(lock, metaParamManager, modManager, &voiceManager);
+  noteFreqModulator = 
+    new rsNoteFreqModulatorModulePoly(lock, metaParamManager, modManager, &voiceManager);
   noteVelocityModulator = 
     new rsNoteVelocityModulatorModulePoly(lock, metaParamManager, modManager, &voiceManager);
+
+  modManager->registerModulationSource(constantModulator);
   modManager->registerModulationSource(notePitchModulator);
+  modManager->registerModulationSource(noteFreqModulator);
   modManager->registerModulationSource(noteVelocityModulator);
 }
 
 void ToolChain::deleteMidiModSources()
 {
+  delete constantModulator;
   delete notePitchModulator;
+  delete noteFreqModulator;
   delete noteVelocityModulator;
 }
 

@@ -232,8 +232,12 @@ protected:
   // whatever is most appropriate for the particular module). For the time being, each module 
   // allocates it own buffer.
 
+  // The modulation sources that are always available:
+  rsConstantOneModulatorModulePoly*  constantModulator;
   rsNotePitchModulatorModulePoly*    notePitchModulator;
+  rsNoteFreqModulatorModulePoly*     noteFreqModulator;
   rsNoteVelocityModulatorModulePoly* noteVelocityModulator;
+
 
 
   friend class ToolChainEditor;
