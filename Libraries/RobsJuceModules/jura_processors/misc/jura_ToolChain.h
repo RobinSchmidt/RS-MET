@@ -35,30 +35,8 @@ public:
     AudioModule *newModule, int index) = 0;
 
 };
-// rename to AudioModuleSlotArrayObserver
 
 //=================================================================================================
-
-class JUCE_API AudioModuleSlotArray
-{
-  // into this class we want to factor out stuff form ToolChain that can be re-used in other
-  // slot based modules
-
-public:
-
-  AudioModuleSlotArray(CriticalSection *lockToUse, 
-    MetaParameterManager* metaManagerToUse = nullptr);
-
-  virtual ~AudioModuleSlotArray();
-
-
-protected:
-
-
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleSlotArray)
-};
-
 
 /** A shell module that can be used to create a chain (i.e. series connection) of some number of
 AudioModule objects. 
@@ -74,7 +52,10 @@ AudioModule objects.
 
  */
 
-class JUCE_API ToolChain :  public jura::AudioModuleWithMidiIn 
+class JUCE_API ToolChain : /*public jura::AudioModulePoly*/  public jura::AudioModuleWithMidiIn 
+  /*, public jura::ModulationManager*/
+  // we need to have a ModulationManager member to pass it to the constructor of
+  // AudioModuleWithMidiIn
 {
 
 public:
@@ -256,9 +237,6 @@ protected:
   rsNotePitchModulatorModulePoly*    notePitchModulator;
   rsNoteFreqModulatorModulePoly*     noteFreqModulator;
   rsNoteVelocityModulatorModulePoly* noteVelocityModulator;
-  // maybe have them not always alvailable in TooChain - instead let the user plug in a 
-  // ModulatorBank with a bunch of slots
-  // let also midi-controllers be used
 
 
 
@@ -267,22 +245,6 @@ protected:
 };
 
 //=================================================================================================
-
-
-
-class JUCE_API AudioModuleSlotArrayEditor
-{
-
-public:
-
-
-
-protected:
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleSlotArrayEditor)
-}
-
-
 
 /** Implements a GUI editor for the ToolChain.
 \todo: 
@@ -364,7 +326,7 @@ protected:
   void clearEditorArray();
 
   // Data:
-  ToolChain* chain;                           // the edited object
+  ToolChain* chain;                    // the edited object
   vector<AudioModuleSelector*> selectors;     // combo-boxes for selecting modules
   vector<AudioModuleEditor*>   editors;       // array of editors for the modules
 
@@ -375,8 +337,5 @@ protected:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ToolChainEditor)
 };
-
-// factor out a class AudioModuleSlotArrayEditor that can be re-used, for example in 
-// ModulatorBankEditor - for this, we have to factor out a AudioModuleSlotArray
 
 #endif 
