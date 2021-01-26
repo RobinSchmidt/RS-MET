@@ -46,7 +46,13 @@ public:
 
   void processStereoFrameVoice(double* left, double* right, int voice) override
   {
-    int dummy = 0;
+    *left  = voiceFreqs[voice];
+    *right = voiceAmps[voice];
+  }
+
+  void handleMidiMessage(MidiMessage message) override
+  {
+    voiceManager->handleMidiMessage(message);
   }
 
 
@@ -81,22 +87,18 @@ void UnitTestModulation::runTest()
 
 void UnitTestModulation::runTestPolyModulation()
 {
-  // Create the mutex lock and the managers:
+  // Create the basic infrastructure:
   juce::CriticalSection lock;
   jura::rsVoiceManager voiceMan;
   jura::ModulationManagerPoly modMan(&lock);
   modMan.setVoiceManager(&voiceMan);
+  std::vector<double> voiceBuffer;
+  voiceBuffer.resize(2*voiceMan.getMaxNumVoices());
+  voiceMan.setVoiceSignalBuffer(&voiceBuffer[0]);
 
-  // Create and register modulation sources:
-  /*
-  static const int numSources = 5;
-  TestPolyModulator* sources[numSources];
-  for(int i = 0; i < numSources; i++) {
-    sources[i] = new TestPolyModulator(&lock, nullptr, &modMan, &voiceMan);
-    modMan.registerModulationSource(sources[i]); }
-  */
-
+  // Temporary values for the tests:
   int iVal;
+  double dVal1, dVal2;
 
   // Create modulation sources:
   jura::rsConstantOneModulatorModulePoly  constant( &lock, nullptr, &modMan, &voiceMan);
@@ -113,8 +115,35 @@ void UnitTestModulation::runTestPolyModulation()
   // Create the target module and register its parameters as modulation targets:
   TestPolyAudioModule targetModule(&lock, nullptr, &modMan, &voiceMan);
   targetModule.init();
+  targetModule.setVoiceSignalBuffer(&voiceBuffer[0]);
   iVal = (int) modMan.getAvailableModulationTargets().size();
   expectEquals(iVal, 2, "Failed to register parameters in modulation manager");
+
+  // Create and add connections:
+  const std::vector<jura::ModulationTarget*>& targets = modMan.getAvailableModulationTargets();
+  using Con = jura::ModulationConnection;
+  Con* con; 
+  con = new Con(&notePitch, targets[0], nullptr); 
+  con->setDepth(1.0);
+  modMan.addConnection(con);
+  iVal = (int) modMan.getModulationConnections().size();
+  expectEquals(iVal, 1, "Failed add connection to modulation manager");
+
+  // Let the target module process an audio frame:
+  targetModule.processStereoFrameVoice(&dVal1, &dVal2, 0);
+  expectEquals(dVal1, 0.0);
+  expectEquals(dVal2, 0.0);
+
+  // Trigger a note-on - this should cause the 0th voice to start playing
+  using Msg = juce::MidiMessage;
+  targetModule.handleMidiMessage(Msg::noteOn(1, 69, 1.f));
+  iVal = voiceMan.getNumActiveVoices();
+  expectEquals(iVal, 1);
+  modMan.applyModulationsNoLock();
+  targetModule.processStereoFrame(&dVal1, &dVal2);
+  //targetModule.processStereoFrameVoice(&dVal1, &dVal2, 0);
+  // hmm - i think, dVal1 should now be the frequency and dVal2 the amplitude, but they are still
+  // zero
 
 
   int dummy = 0;
