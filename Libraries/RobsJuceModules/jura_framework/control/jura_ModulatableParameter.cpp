@@ -677,7 +677,7 @@ void ModulationManagerPoly::applyVoiceModulations(int i)
   // todo loop over all connections to compute the modulated value and call the callback for 
   // voice i
 
-  modulatedValues.resize(affectedTargets.size());
+  //modulatedValues.resize(affectedTargets.size());
   // we should somehow assure that this doe not cause a re-allocation - the capacity should be 
   // large enough - the worst that can happen is min(numAvailableTargets, numConections)
   // but how do we assign the array-slots to the targets and how do we figure out when two 
@@ -693,12 +693,25 @@ void ModulationManagerPoly::applyVoiceModulations(int i)
   // all callbacks in one go after that in order to not introduce any dependency of the result
   // on the actual ordering of the connections
 
-  for(i = 0; i < modulationConnections.size(); i++)
+  int k = 0;
+  const ModulationTarget* tOld = nullptr;
+  for(int i = 0; i < modulationConnections.size(); i++)
   {
     //modulationConnections[i]->apply();
 
     // todo:
-    // -retrieve unmodulated value from source
+    // -retrieve target of i-th connection
+    // -if it's a new target, retrieve unmodulated value from target
+    // -init the k-th value in modulatedValues with that value
+    // -loop over connections as long as target stays the same and apply the modulations
+
+ 
+    const ModulationConnection* c = modulationConnections[i];
+    const ModulationTarget*     t = c->getTarget();
+    if(t != tOld) {
+      modulatedValues[k] = t->getUnmodulatedValue();
+      k++; }
+    c->apply(&modulatedValues[k-1]);
 
 
     // it would be helpful, if the connections would be sorted by their target - then we could 
@@ -710,8 +723,13 @@ void ModulationManagerPoly::applyVoiceModulations(int i)
     // if we can't assume any ordering, we need a buffer of target-values whose size equals
     // affectedTargets.size
 
+    int dummy = 0;
   }
 
+  jassert(k == modulatedValues.size() && k == affectedTargets.size());
+
+
+  // todo: call callbacks for voice i
 
 
   int dummy = 0;
@@ -727,7 +745,11 @@ void ModulationManagerPoly::applyModulationsNoLock()
 }
 // It should perhaps first apply all the polyphonic modulations and then call the baseclass 
 // method updateModulationValue should just copy the value from the newest voice into 
-// modulationValue, if the source is polyphonic.
+// modulationValue, if the source is polyphonic. ...that order of doing things should work right 
+// when connecting poly-sources to mono-targets - but what bout connecting mono-sources to poly 
+// targets? here we will need to compute the monophonic mod-signal first and then distribute it 
+// among the voices...we may need to loop over the sources, inquire, if the module is poly and
+// if not, do the mono update and somehow (how?) distribute the result to the voices
 
 
 void ModulationManagerPoly::addConnectionToArray(ModulationConnection* c)
@@ -745,6 +767,7 @@ void ModulationManagerPoly::addConnectionToArray(ModulationConnection* c)
       return; }}
   ModulationManager::addConnectionToArray(c); // no connection with the same target was found...
   numDistinctActiveTargets++;                 // ...so we have now one distinct target more
+  modulatedValues.resize(numDistinctActiveTargets);
 }
 
 void ModulationManagerPoly::removeConnectionFromArray(int i)
@@ -765,7 +788,19 @@ void ModulationManagerPoly::removeConnectionFromArray(int i)
     // given target, so the number of distinct targets gets decremented
 
   ModulationManager::removeConnectionFromArray(i);
+  modulatedValues.resize(numDistinctActiveTargets);
 }
 
-
+// ToDo:
+// -make sure that connecting PolySource to MonoParam and MonoSoUrce to PolyParam does something 
+//  reasonable:
+//  -poly-to-mono: should use modulator output of the newest voice
+//  -mono-to-poly: all voices get the same monophonic value -> distribute it to the active voices 
+//   after it was computed
+// -make sure that upgrading monophonic modules to polyphonic ones later does not mess up state 
+//  recall:
+//  -poly modules should have a switch to toggle between mono and poly mode
+//  -in mono mode, they should behave exactly as their old mono-only precursors
+//  -the switch should be mono by default -> when upgrading a mono module to poly, the recall 
+//   should set it into mono-mode when the patch was saved with the old mono-only version
 

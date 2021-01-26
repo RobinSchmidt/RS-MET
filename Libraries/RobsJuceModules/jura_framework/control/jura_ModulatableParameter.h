@@ -502,9 +502,18 @@ public:
     *t += z;
   }
 
-  /** Applies the source-value to the target-value, taking into account the modulation depth. */
-  inline void apply()
+
+  inline void apply(double* targetValue) const
   {
+    apply(source->getModulationValue(), depth, target->getUnmodulatedValue(), targetValue, mode);
+  }
+
+
+  /** Applies the source-value to the target-value, taking into account the modulation depth. */
+  inline void apply() const
+  {
+    //apply(target->getPointerToModulated()); // use later
+
     apply(source->getModulationValue(), depth, target->getUnmodulatedValue(),
       target->getPointerToModulated(), mode);
   }
@@ -514,10 +523,10 @@ public:
   XmlElement* getAsXml(); // should be const
 
   /** Returns a (const) pointer to the source, so you can inquire something about it. */
-  const ModulationSource* getSource() { return source; }
+  const ModulationSource* getSource() const { return source; }
 
   /** Returns a (const) pointer to the target, so you can inquire something about it. */
-  const ModulationTarget* getTarget() { return target; }
+  const ModulationTarget* getTarget() const { return target; }
 
 protected:
 
