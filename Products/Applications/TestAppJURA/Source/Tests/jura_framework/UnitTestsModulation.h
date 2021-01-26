@@ -3,16 +3,22 @@
 
 #include "../../../JuceLibraryCode/JuceHeader.h"
 
-class JUCE_API UnitTestsModulation : public juce::UnitTest
+class JUCE_API UnitTestModulation : public juce::UnitTest
 {
 
 public:
 
+  UnitTestModulation();
 
+  virtual void runTest() override;
 
 protected:
 
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestsModulation)
+  // called from runTest:
+  void runTestPolyModulation();
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestModulation)
 };
+
 
 #endif

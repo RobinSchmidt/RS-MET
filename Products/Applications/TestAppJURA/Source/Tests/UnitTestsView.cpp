@@ -10,7 +10,8 @@ void UnitTestsView::runTest(int testIndex)
 {
   juce::Array<UnitTest*> tests;
 
-  tests.add(new UnitTestParameter);
+  if(includeTest(PARAMETERS)) tests.add(new UnitTestParameter);
+  if(includeTest(MODULATION)) tests.add(new UnitTestModulation);
 
   //beginTest();
   runTests(tests);
@@ -63,6 +64,16 @@ void UnitTestsView::resultsUpdated()
   testResultView->setText(str);
 }
 
+bool UnitTestsView::includeTest(int testIndex)
+{
+  juce::String selection = testSelectorBox->getSelectedItemText();
+  if(selection == "All Tests")                             return true;
+  if(selection == "Parameters" && testIndex == PARAMETERS) return true;
+  if(selection == "Modulation" && testIndex == MODULATION) return true;
+
+  return false;
+}
+
 void UnitTestsView::createWidgets()
 {
   runTestsLabel  = new RTextField("Select Test:");
@@ -71,6 +82,7 @@ void UnitTestsView::createWidgets()
   testSelectorBox = new RComboBox;
   testSelectorBox->addItem(ALL,        "All Tests");
   testSelectorBox->addItem(PARAMETERS, "Parameters");
+  testSelectorBox->addItem(MODULATION, "Modulation");
   //testSelectorBox->addItem(WIDGETS, "Widgets");
   addWidget(testSelectorBox);
 

@@ -2,6 +2,7 @@
 #define jura_UnitTestsView_h  
 
 #include "jura_framework/UnitTestsParameter.h"
+#include "jura_framework/UnitTestsModulation.h"
 
 /** A component to perform unit tests for jura classes, print results, etc. */
 
@@ -15,9 +16,11 @@ public:
   {
     ALL = 1,
     PARAMETERS,
+    MODULATION,
 
     NUM_UNIT_TESTS
   };
+  // todo: use an enum class
 
   UnitTestsView();
 
@@ -30,7 +33,9 @@ public:
 
 protected:
 
-
+  /** Returns true, if the test with given index should be included in the next run. This 
+  depends on what the user hase selected via the testSelectorBox. */
+  bool includeTest(int testIndex);
 
   void createWidgets();
 
