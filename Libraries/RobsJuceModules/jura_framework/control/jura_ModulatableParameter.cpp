@@ -264,7 +264,7 @@ void ModulationManager::applyModulationsNoLock()
 
   // compute output signals of all modulators:
   for(i = 0; i < availableSources.size(); i++)
-    availableSources[i]->updateModulationValue(); 
+    availableSources[i]->updateModulationValue(nullptr); 
     // maybe we should loop only over an array of "usedSources" as optimization? similar to the way
     // we only loop over "affectedTargets"
 
@@ -622,6 +622,13 @@ void ModulationManager::sendModulationChangeNotificationFor(ModulationTarget* ta
 
 //-------------------------------------------------------------------------------------------------
 
+void ModulatableParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
+{
+  MetaControlledParameter::setValue(newValue, sendNotification, callCallbacks);
+  unmodulatedValue = value;
+  modulatedValue   = unmodulatedValue;
+}
+
 void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotification, 
   bool callCallbacks)
 {
@@ -671,7 +678,6 @@ juce::String ModulatableParameter::getModulationTargetName()
 
 //=================================================================================================
 
-
 void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
 { 
   // In our overrides for addConnectionToArray/removeConnectionFromArray we make sure that 
@@ -711,19 +717,26 @@ void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
 
 void ModulationManagerPoly::applyModulationsNoLock()
 {
-  if(voiceManager != nullptr)
-    for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)
-      applyVoiceModulations(voiceManager->getActiveVoiceIndex(i));
+  jassert(voiceManager != nullptr); // must be assigned
 
-  ModulationManager::applyModulationsNoLock();
+  // Compute output signals of all modulators. If the soucre is polyphonic, it will call the 
+  // overriden method and do the update for all active voices:
+  for(size_t i = 0; i < availableSources.size(); i++)
+    availableSources[i]->updateModulationValue(voiceManager);
+
+  // Apply the modulator outputs to the targets via the connections for one voice at a time. This 
+  // will also trigger the per-voice callback for the given voice:
+  for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)  
+    applyVoiceModulations(voiceManager->getActiveVoiceIndex(i));
+
+  // Also call the monophonic callbacks because they are not called in the loop above:
+  for(size_t i = 0; i < affectedTargets.size(); i++)
+    affectedTargets[i]->doModulationUpdate(affectedTargets[i]->getModulatedValue());
 }
-// It should perhaps first apply all the polyphonic modulations and then call the baseclass 
-// method updateModulationValue should just copy the value from the newest voice into 
-// modulationValue, if the source is polyphonic. ...that order of doing things should work right 
-// when connecting poly-sources to mono-targets - but what bout connecting mono-sources to poly 
-// targets? here we will need to compute the monophonic mod-signal first and then distribute it 
-// among the voices...we may need to loop over the sources, inquire, if the module is poly and
-// if not, do the mono update and somehow (how?) distribute the result to the voices
+// What bout connecting mono-sources to poly targets? here we will need to compute the monophonic
+// mod-signal first and then distribute it among the voices...we may need to loop over the 
+// sources, inquire, if the module is poly and if not, do the mono update and somehow (how?) 
+// distribute the result to the voices
 
 
 void ModulationManagerPoly::addConnectionToArray(ModulationConnection* c)

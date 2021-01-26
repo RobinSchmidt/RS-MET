@@ -217,8 +217,12 @@ public:
   variable by calling the virtual getModulatorOutputSample() function (that subclasses must 
   override) and using its output for the modValue. The rsVoiceManager parameter is irrelevant in 
   this class here but it becomes relevant in the ModulationSourcePoly subclass, where we override
-  this method, so the parameter must be already included in the function signature here. */
-  virtual void updateModulationValue() { modValue = getModulatorOutputSample(); }
+  this method in order to update the modulator outputs for all voices, so the voice manager must 
+  be already included in the function signature here. */
+  virtual void updateModulationValue(rsVoiceManager* voiceManager) 
+  { modValue = getModulatorOutputSample(); }
+  // maybe rename - the singular "Value" part does not apply anymore for the poly subclass which
+  // updates all values for all voices - maybe updateModulationOutput
 
 
   /** Override this function in your subclass to produce one modulator output sample at a time. */
@@ -816,7 +820,10 @@ public:
   /** Constructor */
   ModulatableParameter(const juce::String& name, double min = 0.0, double max = 1.0,
     double defaultValue = 0.5, int scaling = LINEAR, double interval = 0.0)
-    : MetaControlledParameter(name, min, max, defaultValue, scaling, interval) {}
+    : MetaControlledParameter(name, min, max, defaultValue, scaling, interval) 
+  {
+    modulatedValue = unmodulatedValue = value;
+  }
 
 
   /** \name Setup */
@@ -829,10 +836,13 @@ public:
   }
   */
 
-  virtual void setNormalizedValue(double newValue, bool sendNotification, 
-    bool callCallbacks) override;
+  void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
+  // this override is new and needs tests - it seems to be the right thing to do but so far we
+  // didn't - why?
 
-  virtual void setSmoothedValue(double newValue) override;
+  void setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks) override;
+
+  void setSmoothedValue(double newValue) override;
 
   /** Sets up the pointer to our owner, i.e. the AudioModule that contains this parameter (needed 
   for unique identification of this parameter in the tree of AudioModules when a state is 
@@ -937,9 +947,9 @@ public:
   virtual double getModulatorOutputSample(int voiceIndex) = 0;
 
 
-  void updateModulationValue(rsVoiceManager* voiceManager) // override
+  void updateModulationValue(rsVoiceManager* voiceManager) override
   { 
-    if(voiceManager == nullptr) return;
+    jassert(voiceManager != nullptr);
     jassert(modValues.size() >= voiceManager->getMaxNumVoices());
     for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)
       modValues[i] = getModulatorOutputSample(i);

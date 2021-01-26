@@ -123,11 +123,18 @@ void UnitTestModulation::runTestPolyModulation()
   const std::vector<jura::ModulationTarget*>& targets = modMan.getAvailableModulationTargets();
   using Con = jura::ModulationConnection;
   Con* con; 
-  con = new Con(&notePitch, targets[0], nullptr); 
+
+  con = new Con(&notePitch, targets[0], nullptr);  // make a constructor that takes a depth
   con->setDepth(1.0);
   modMan.addConnection(con);
+
+  con = new Con(&noteVel, targets[1], nullptr);  // make a constructor that takes a depth
+  con->setDepth(0.5);
+  modMan.addConnection(con);
+
   iVal = (int) modMan.getModulationConnections().size();
-  expectEquals(iVal, 1, "Failed add connection to modulation manager");
+  expectEquals(iVal, 2, "Failed add connection to modulation manager");
+
 
   // Let the target module process an audio frame:
   targetModule.processStereoFrameVoice(&dVal1, &dVal2, 0);
@@ -136,11 +143,21 @@ void UnitTestModulation::runTestPolyModulation()
 
   // Trigger a note-on - this should cause the 0th voice to start playing
   using Msg = juce::MidiMessage;
-  targetModule.handleMidiMessage(Msg::noteOn(1, 69, 1.f));
+  int    key  = 69;
+  float  vel  = 0.5f;
+  double vel2 = round(vel * 127.0) / 127.0;  // midi-byte roundtrip messes the velocity up
+  targetModule.handleMidiMessage(Msg::noteOn(1, key, vel));
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 1);
   modMan.applyModulationsNoLock();
   targetModule.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1000.0 + key     );  // default freq of 1kHz plus the note-number
+  expectEquals(dVal2,    1.0 + 0.5*vel2);  // default amp of 1 plus depth*vel2
+
+  // no dVal2 is a bit larger because the 0.5 value gets multiplied by 127, giving 63.5, rounded up
+  // to 64 and when we later divide 64 by 127, we get 0.5039... - so we expect:
+  // 1 + 0.5 * round(vel * 127)/127;
+
   //targetModule.processStereoFrameVoice(&dVal1, &dVal2, 0);
   // hmm - i think, dVal1 should now be the frequency and dVal2 the amplitude, but they are still
   // zero
