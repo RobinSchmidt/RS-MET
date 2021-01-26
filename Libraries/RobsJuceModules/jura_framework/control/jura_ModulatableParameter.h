@@ -273,12 +273,12 @@ public:
   /** Destructor */
   virtual ~ModulationTarget();
 
-  /** Must be overriden by subclasses to do whatever they need to do after our modulatedValue has 
+  /** Must be overriden by subclasses to do whatever they need to do after a modulatedValue has 
   been computed (for example, ModulatableParameter invokes the setter-callback which in turn 
   updates the corresponding value in the core dsp algorithm). The voiceIndex is a provision to
   implement polyphonic modulations in subclass ModulatableParameterPoly and can be ignored in case
   of monophonic modulation targets. */
-  virtual void doModulationUpdate(int voiceIndex = -1)
+  virtual void doModulationUpdate(double modulatedValue, int voiceIndex = -1)
   {
     // we need an empty baseclass implementation because in the destructor of a plugin, 
     // doModulationUpdate would otherwise (in case of a purely virtual function) get called with a 
@@ -842,23 +842,24 @@ public:
 
   /** \name Misc */
 
-  /** We suppose that modulatedValue of the ModulationTarget baseclass has already been computed, 
+  /** comment out of date - todo: update
+  We suppose that modulatedValue of the ModulationTarget baseclass has already been computed, 
   such that modulatedValue has a legitimate value with all modulations applied. Here we pull out 
   this modulated value and call our valueChangeCallback with it. The function is supposed to be 
   called per sample for each modulated Parameter. ModulationManager will take care of this. */
-  inline void callCallbackWithModulatedValue()
+  inline void callCallback(double modulatedValue)
   {
     //jassert(RAPT::rsIsFiniteNumber(getModulatedValue()));
     if( valueChangeCallbackDouble != nullptr )
-      valueChangeCallbackDouble->call(getModulatedValue());
+      valueChangeCallbackDouble->call(modulatedValue);
     if( valueChangeCallbackInt != nullptr )
-      valueChangeCallbackInt->call((int)getModulatedValue());
+      valueChangeCallbackInt->call((int)modulatedValue);
   }
 
   /** Overriden to call our callback function with the modulated value. */
-  void doModulationUpdate(int voiceIndex = -1) override
+  void doModulationUpdate(double modulatedValue, int voiceIndex = -1) override
   {
-    callCallbackWithModulatedValue();
+    callCallback(modulatedValue);
   }
 
   /** Returns the unique name of this modulation target that is used to identify it in state 
@@ -878,9 +879,10 @@ callback, so if you use this callback mechanism, use this class for your paramet
 class JUCE_API ModulatableParameter2 : public ModulatableParameter
 {
   using ModulatableParameter::ModulatableParameter; // import baseclass constructors
-  virtual void doModulationUpdate(int voiceIndex = -1) override
+  virtual void doModulationUpdate(double modulatedValue, int voiceIndex = -1) override
   {
-    valueChangeCallbackFunction(getModulatedValue());
+    valueChangeCallbackFunction(modulatedValue);
+    //valueChangeCallbackFunction(getModulatedValue());
   }
 };
 // Elan uses this - eventually, i should probably switch to this too and get rid of all the other
@@ -1007,8 +1009,10 @@ public:
 
 
   /** Overriden to call our callback function with the modulated value. */
-  void doModulationUpdate(int voiceIndex = -1) override
+  void doModulationUpdate(double modulatedValue, int voiceIndex = -1) override
   {
+
+    /*
     callCallbackWithModulatedValue();  // calls the monophonic callback
 
     rsVoiceManager* vm = getModulationManager()->getVoiceManager(); 
@@ -1023,6 +1027,7 @@ public:
 
       int dummy = 0;
     }
+    */
   }
   // maybe we should computed the modulatedValue here, right before calling the callback
   // ..no need to store it in any object....

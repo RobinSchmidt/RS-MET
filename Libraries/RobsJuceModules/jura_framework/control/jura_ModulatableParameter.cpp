@@ -279,7 +279,7 @@ void ModulationManager::applyModulationsNoLock()
   // let the targets do whatever work they have to do with the modulated value (typically, 
   // call setter-callbacks):
   for(i = 0; i < affectedTargets.size(); i++)
-    affectedTargets[i]->doModulationUpdate();
+    affectedTargets[i]->doModulationUpdate(affectedTargets[i]->getModulatedValue());
 }
 
 void ModulationManager::addConnection(ModulationSource* source, ModulationTarget* target)
@@ -362,12 +362,12 @@ void ModulationManager::removeConnection(int i, bool updateAffectTargets)
     dynamic_cast<ObservableModulationTarget*> (modulationConnections[i]->target);
   ModulationConnection* c = modulationConnections[i];
   removeConnectionFromArray(i);    // it's important to call remove *before* deleting because a
-  delete c;                        // subclass may still want reference it in overriden remove
+  delete c;                        // subclass may still want to reference it in overriden remove
   if(omt)
     omt->sendModulationsChangedNotification();
-  if(!t->hasConnectedSources()) {  // avoids the target getting stuck at modulated value when last 
-    t->initModulatedValue();       // modulator was removed
-    t->doModulationUpdate();  }
+  if(!t->hasConnectedSources()) {                       // avoids the target getting stuck at
+    t->initModulatedValue();                            // modulated value when last modulator
+    t->doModulationUpdate(t->getModulatedValue()); }    // was removed
   if(updateAffectTargets)
     updateAffectedTargetsArray();
 }
