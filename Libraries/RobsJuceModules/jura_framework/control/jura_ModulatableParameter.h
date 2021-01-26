@@ -220,14 +220,16 @@ public:
   this method in order to update the modulator outputs for all voices, so the voice manager must 
   be already included in the function signature here. */
   virtual void updateModulationValue(rsVoiceManager* voiceManager) 
-  { modValue = getModulatorOutputSample(); }
+  { modValue = renderModulation(); }
   // maybe rename - the singular "Value" part does not apply anymore for the poly subclass which
   // updates all values for all voices - maybe updateModulationOutput
 
 
   /** Override this function in your subclass to produce one modulator output sample at a time. */
-  virtual double getModulatorOutputSample() = 0;
-  // maybe rename to renderModulation
+  virtual double renderModulation() = 0;
+  // was formerly getModulatorOutputSample - but the old name was ambiguous with 
+  // getModulationValue, the getter for the modulation signal after it has been rendered, 
+  // especially in the polyphonic subclass
 
 
   /** Sets up a name for this ModulationSource. This should be unique among all the available 
@@ -994,7 +996,7 @@ protected:
 
 private:
 
-  double getModulatorOutputSample() override
+  double renderModulation() override
   {
     jassertfalse;  // should not be used in polyphonic modules
     return 0.0;

@@ -14,7 +14,7 @@ public:
   virtual void setSampleRate(double newSampleRate) override { core.setSampleRate(newSampleRate); }
   virtual void reset() override { core.reset();  }
   virtual void noteOn(int noteNumber, int velocity) override { core.reset(); }
-  virtual double getModulatorOutputSample() override { return core.getSample(); }
+  virtual double renderModulation() override { return core.getSample(); }
 
   //virtual void updateModulationValue() override { modValue = core.getSample();  }
   // todo: change interface in order to return the modValue and let the framework take care of 
@@ -50,7 +50,7 @@ public:
   virtual void noteOn( int key, int vel) override { core.noteOn(key, vel); }
   virtual void noteOff(int key)          override { core.noteOff(key, 0);  }
 
-  virtual double getModulatorOutputSample() override { return core.getSample(); }
+  virtual double renderModulation() override { return core.getSample(); }
 
   // parameter callback targets:
   void setAttack(double newAttack);
@@ -98,7 +98,7 @@ public:
     setModulationSourceName("ConstantOne");
   }
 
-  double getModulatorOutputSample()  override { return 1.0; } // rename to renderModulation
+  double renderModulation()                    override { return 1.0; } 
   double renderVoiceModulation(int voiceIndex) override { return 1.0; }
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsConstantOneModulatorModulePoly)
@@ -176,7 +176,31 @@ public:
 };
 
 
-// todo: NoteFrequency pitch-wheel, aftertouch, etc
+/** A modulator module that outputs the current value of the pitch-wheel in the range -1..+1. */
+class JUCE_API rsPitchBendModulatorModulePoly : public ModulatorModulePoly
+{
+public:
+
+  rsPitchBendModulatorModulePoly(CriticalSection* lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr,
+    ModulationManager* modManagerToUse = nullptr,
+    rsVoiceManager* voiceManagerToUse = nullptr)
+    : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+  {
+    ScopedLock scopedLock(*lock);
+    setModulationSourceName("PitchBend");
+  }
+
+  double renderVoiceModulation(int voiceIndex) override
+  {
+    jassert(voiceManager != nullptr);
+    return voiceManager->getPitchBend();
+  }
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsPitchBendModulatorModulePoly)
+};
+
+
+// todo: pitch-wheel, aftertouch, etc
 
 
 

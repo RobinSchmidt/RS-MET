@@ -58,9 +58,9 @@ void rsVoiceManager::noteOff(int key)
 void rsVoiceManager::setPitchBend(int pitchBendValue)
 {
 
+  int dummy = 0;
 }
-// may not be needed - we handle PitchBend as moudlator via the modulation system. this is more
-// flexible and laso more convenient to implement
+
 
 /*
 void rsVoiceManager::perSampleUpdatePreRender()

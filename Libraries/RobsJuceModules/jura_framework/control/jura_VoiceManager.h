@@ -163,7 +163,7 @@ public:
 
   double getVoiceNormalizedVelocity(int i) const { return voiceStates[i].vel01; }
 
-
+  double getPitchBend() const { return pitchBend; }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -263,6 +263,9 @@ protected:
   // Flags that is set to true whenever there is some process going on that requires a per-sample
   // update of the state, such as gliding from one note to another. The underscore is just for 
   // avoiding confusion with the method that has the same name.
+
+
+  double pitchBend = 0;
 
   // Stuff for the voice killing functionality:
   //static const int numChannels = 2; // maybe uncomment later

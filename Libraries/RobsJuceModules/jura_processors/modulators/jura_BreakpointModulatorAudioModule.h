@@ -44,7 +44,7 @@ public:
   }
   // maybe, this function is obsolete now
 
-  virtual double getModulatorOutputSample() override
+  virtual double renderModulation() override
   {
     return wrappedBreakpointModulator->getSample();
   }
