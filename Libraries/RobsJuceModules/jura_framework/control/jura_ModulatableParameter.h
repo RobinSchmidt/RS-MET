@@ -275,14 +275,17 @@ public:
 
   /** Must be overriden by subclasses to do whatever they need to do after our modulatedValue has 
   been computed (for example, ModulatableParameter invokes the setter-callback which in turn 
-  updates the corresponding value in the core dsp algorithm). */
-  virtual void doModulationUpdate()
+  updates the corresponding value in the core dsp algorithm). The voiceIndex is a provision to
+  implement polyphonic modulations in subclass ModulatableParameterPoly and can be ignored in case
+  of monophonic modulation targets. */
+  virtual void doModulationUpdate(int voiceIndex = -1)
   {
     // we need an empty baseclass implementation because in the destructor of a plugin, 
     // doModulationUpdate would otherwise (in case of a purely virtual function) get called with a 
     // null-reference (or something), in ModulationManager::removeConnection when the modulateble 
     // parameter deletes itself
   }
+  // maybe it also needs to take the modulatedValue as parameter?
 
 
   /** \name Setup */
@@ -853,7 +856,7 @@ public:
   }
 
   /** Overriden to call our callback function with the modulated value. */
-  void doModulationUpdate() override
+  void doModulationUpdate(int voiceIndex = -1) override
   {
     callCallbackWithModulatedValue();
   }
@@ -875,7 +878,7 @@ callback, so if you use this callback mechanism, use this class for your paramet
 class JUCE_API ModulatableParameter2 : public ModulatableParameter
 {
   using ModulatableParameter::ModulatableParameter; // import baseclass constructors
-  virtual void doModulationUpdate() override
+  virtual void doModulationUpdate(int voiceIndex = -1) override
   {
     valueChangeCallbackFunction(getModulatedValue());
   }
@@ -1004,7 +1007,7 @@ public:
 
 
   /** Overriden to call our callback function with the modulated value. */
-  void doModulationUpdate() override
+  void doModulationUpdate(int voiceIndex = -1) override
   {
     callCallbackWithModulatedValue();  // calls the monophonic callback
 

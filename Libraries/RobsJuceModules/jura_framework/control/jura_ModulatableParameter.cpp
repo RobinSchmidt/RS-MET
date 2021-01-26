@@ -672,65 +672,35 @@ juce::String ModulatableParameter::getModulationTargetName()
 //=================================================================================================
 
 
-void ModulationManagerPoly::applyVoiceModulations(int i)
-{    
-  // todo loop over all connections to compute the modulated value and call the callback for 
-  // voice i
-
-  //modulatedValues.resize(affectedTargets.size());
-  // we should somehow assure that this doe not cause a re-allocation - the capacity should be 
-  // large enough - the worst that can happen is min(numAvailableTargets, numConections)
-  // but how do we assign the array-slots to the targets and how do we figure out when two 
-  // connections go to the same target? ...maybe for this, we should also have the array sorted
-  // by target
-  // or the targets somehow need to store an array index that they want to use - but that must be
-  // uodated when the number of targets changes...maybe its beset to just have an array of
-  // size numAvailableTargets - that seems most practical
-
-  // hmm.. i think, we need to make sure that connections that go to the same target are 
-  // adjacent in the array of connections..we should also maintain a variable 
-  // numDistinctActiveTargets - we should nevertheless compute all values first and then apply
-  // all callbacks in one go after that in order to not introduce any dependency of the result
-  // on the actual ordering of the connections
+void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
+{ 
+  // In our overrides for addConnectionToArray/removeConnectionFromArray we make sure that 
+  // connections with the same target are adjacent in the modulationConnections array. That means
+  // we can grab a connection at a a time and as long as it has the same target as the one grabbed
+  // before, we accumulate the contribution from the connection into the the same buffered
+  // accumulator. When the target is different, we skip to the next accumulator, initialize it and
+  // increment a counter that keeps track of how many distinct targets we have visited.
 
   int k = 0;
   const ModulationTarget* tOld = nullptr;
   for(int i = 0; i < modulationConnections.size(); i++)
   {
-    //modulationConnections[i]->apply();
-
-    // todo:
-    // -retrieve target of i-th connection
-    // -if it's a new target, retrieve unmodulated value from target
-    // -init the k-th value in modulatedValues with that value
-    // -loop over connections as long as target stays the same and apply the modulations
-
- 
     const ModulationConnection* c = modulationConnections[i];
     const ModulationTarget*     t = c->getTarget();
     if(t != tOld) {
       modulatedValues[k] = t->getUnmodulatedValue();
       k++; }
     c->apply(&modulatedValues[k-1]);
-
-
-    // it would be helpful, if the connections would be sorted by their target - then we could 
-    // process one target at a time: loop over all connections involving that target, when done
-    // call the callback and then move on to the next target
-    // ...does it actually make any difference, in which order the connections are processed?
-    // maybe only when we have some sort of feedback modulation
-
-    // if we can't assume any ordering, we need a buffer of target-values whose size equals
-    // affectedTargets.size
-
     int dummy = 0;
   }
 
-  jassert(k == modulatedValues.size() && k == affectedTargets.size());
-
-
-  // todo: call callbacks for voice i
-
+  // The order of the targets in affectedTargets is supposed to match the order of the targets
+  // as they appear in the modulationConnections array, so we can now just iterate over the
+  // affectedTargets to let them call their callbacks for voice i.
+  jassert(k == modulatedValues.size() && k == affectedTargets.size() 
+    && k == numDistinctActiveTargets);
+  for(int i = 0; i < k; i++)
+    affectedTargets[i]->doModulationUpdate(voiceIndex);
 
   int dummy = 0;
 }
