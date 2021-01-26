@@ -724,14 +724,9 @@ void AudioModulePoly::processStereoFramePoly(double *buffer, int numActiveVoices
 {
   jassert(buffer); // must be a valid pointer, length should be at least 2*numActiveVoices, more
                    // typically, it will be 2*voiceManager->getNumActiveVoices()
-
-  for(int i = 0; i < numActiveVoices; i+=1)
-  {
-    //processStereoFrameVoice(&buffer[2*i], &buffer[2*i+1], i);
-
+  for(int i = 0; i < numActiveVoices; i+=1) {
     int k = voiceManager->getActiveVoiceIndex(i);
-    processStereoFrameVoice(&buffer[2*i], &buffer[2*i+1], k);
-  }
+    processStereoFrameVoice(&buffer[2*i], &buffer[2*i+1], k); }
     // we use an interleaved format for easier interfacing with rsFloat64x2
 }
 

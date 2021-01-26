@@ -96,7 +96,7 @@ void SineOscAudioModulePoly::setFrequency(double newFrequency, int voice)
 {
   jassert(voice < voices.size());
   double omega = 2*PI*newFrequency / sampleRate;
-  voices[voice].setOmega(omega, false);  // later use true for fixPhase
+  voices[voice].setOmega(omega);
 }
 
 void SineOscAudioModulePoly::setAmplitude(double newAmplitude, int voice)

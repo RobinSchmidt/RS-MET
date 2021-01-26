@@ -103,7 +103,8 @@ protected:
   void allocateVoiceResources(rsVoiceManager* voiceManager) override;
 
   SineOscCore core;  // maybe rename to master
-  std::vector<RAPT::rsSineOscillator<double>> voices;
+  //std::vector<RAPT::rsSineOscillator<double>> voices;
+  std::vector<RAPT::rsSineOscillatorNaive<double>> voices;
 
   double sampleRate;
 

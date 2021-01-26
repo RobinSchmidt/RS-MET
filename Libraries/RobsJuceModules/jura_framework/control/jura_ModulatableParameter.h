@@ -489,7 +489,10 @@ public:
   MetaControlledParameter* getDepthParameter() const { return depthParam; }
 
 
-
+  /** Given a modulator output value m, a modulatio depth d and an unmodulated parameter value u,
+  this function applies the modulation to the target value t. The mode controls, which formula
+  is used for the application. Factored out common code for applying modulations mono- and 
+  polyphonically. */
   static inline void apply(double m, double d, double u, double* t, int mode)
   {
     double z;
@@ -511,29 +514,26 @@ public:
     *t += z;
   }
 
-
-  /*
-  inline void apply(double* targetValue) const
+  /** Applies the source-value to the target-value, taking into account the modulation depth. Used
+  for monophonic modulations */
+  inline void apply() const
   {
-    apply(source->getModulationValue(), depth, target->getUnmodulatedValue(), targetValue, mode);
+    apply(source->getModulationValue(), depth, target->getUnmodulatedValue(),
+      target->getPointerToModulated(), mode);
   }
-  */
 
+  /** Applies the modulation value of the sources for the given voice index to the target value 
+  where the location of the target value can be controlled by the caller. This is used for 
+  polyphonic modulations, where the target value is not stored in the ModulationTarget object but
+  buffered elesewhere in order to save memory. */
   inline void applyVoice(double* targetValue, int voiceIndex) const
   {
     apply(source->getVoiceModulationValue(voiceIndex), depth, target->getUnmodulatedValue(), 
       targetValue, mode);
   }
+  // maybe find a better name
 
 
-  /** Applies the source-value to the target-value, taking into account the modulation depth. */
-  inline void apply() const
-  {
-    //apply(target->getPointerToModulated()); // use later
-
-    apply(source->getModulationValue(), depth, target->getUnmodulatedValue(),
-      target->getPointerToModulated(), mode);
-  }
 
   /** Returns a xml element containing the information about this connection (needed for state 
   save/recall in ModulationManager - todo: maybe move it to there) */
@@ -912,7 +912,7 @@ class JUCE_API ModulatableParameter2 : public ModulatableParameter
 
 //#################################################################################################
 
-// the stuff below is under construction - it's for the polyphonic version of the modulation system
+// The polyphonic version of the modulation system
 
 
 class JUCE_API ModulationManagerPoly : public ModulationManager
@@ -969,21 +969,9 @@ public:
   { 
     jassert(voiceManager != nullptr);
     jassert(modValues.size() >= voiceManager->getMaxNumVoices());
-    for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)
-    {
-      //modValues[i] = getModulatorOutputSample(i); // old
-
-      //int k = voiceManager->getActiveVoiceIndex(i);  // new
-      //modValues[i] = getModulatorOutputSample(k);
-
-      int k = voiceManager->getActiveVoiceIndex(i);  // newer
-      modValues[k] = getModulatorOutputSample(k);
-
-      //int k = voiceManager->getActiveVoiceIndex(i);  // 
-      //modValues[k] = getModulatorOutputSample(i);
-
-      int dummy = 0;
-    }
+    for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)  {
+      int k = voiceManager->getActiveVoiceIndex(i);
+      modValues[k] = getModulatorOutputSample(k);    }
     modValue = modValues[voiceManager->getNewestVoice()]; // experimental - to support the 
     // monophonic code...but it may get overwritten in the next initialization...but maybe 
     // that's good...we'll see....
@@ -1032,7 +1020,6 @@ public:
     : ModulatableParameter(name, min, max, defaultValue, scaling, interval) {}
 
 
-
   void setValueChangeCallbackPoly(std::function<void(double, int)> cb)
   {
     ScopedPointerLock spl(mutex);
@@ -1045,9 +1032,6 @@ public:
   {
     valueChangeCallbackPoly(value, voiceIndex);
   }
-
-  //virtual void callValueChangeCallbacks(int numActiveVoices, double* values, int *voiceIndices);
-
 
   /** Overriden to call our callback function with the modulated value. */
   void doModulationUpdate(double modulatedValue, int voiceIndex = -1) override
@@ -1127,25 +1111,10 @@ private:
 //  -maybe have an calleeArray - actually, we just need to augment SpecificMemberFunctionCallback1 
 //   by a numCallees field
 
-
-// i think, a special ModulationConnection (sub)class is not needed for polyphony - we can use the
-// same class as in the monophonic case
-/*
-class JUCE_API ModulationManagerPoly : public ModulationManager
-{
-
-};
-*/
-
-
 // see:
 // https://github.com/RobinSchmidt/RS-MET/wiki/The-Modulation-System
 // https://github.com/RobinSchmidt/RS-MET/issues/65
 // https://github.com/RobinSchmidt/RS-MET/issues/269
-
 // https://github.com/RobinSchmidt/RS-MET/discussions/312
-
-
-
 
 #endif

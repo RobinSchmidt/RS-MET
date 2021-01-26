@@ -788,4 +788,8 @@ void ModulationManagerPoly::removeConnectionFromArray(int i)
 //  -in mono mode, they should behave exactly as their old mono-only precursors
 //  -the switch should be mono by default -> when upgrading a mono module to poly, the recall 
 //   should set it into mono-mode when the patch was saved with the old mono-only version
+// Bugs:
+// -when suing the preset _TestSineOsvPoly, the amplitude of the sine sometimes gets really loud
+//  ...ahh - i think, this is because of not fixing the phase in the osc's dsp code
+// -> implement phase fixing
 

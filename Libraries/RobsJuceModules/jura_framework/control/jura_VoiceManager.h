@@ -91,6 +91,8 @@ public:
     afterSilence
   };
 
+  void setKillMode(KillMode newMode) { killMode = newMode; }
+
   /** Sets the maximum number of voices that should be supported. The function is supposed to be 
   called once shortly after construction and then that setting should remain fixed for the lifetime
   of the plugin. If we later want to allow the user to change that setting at runtime, we will need 

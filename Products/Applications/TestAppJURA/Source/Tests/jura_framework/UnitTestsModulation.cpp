@@ -95,6 +95,7 @@ void UnitTestModulation::runTestPolyModulation()
   std::vector<double> voiceBuffer;
   voiceBuffer.resize(2*voiceMan.getMaxNumVoices());
   voiceMan.setVoiceSignalBuffer(&voiceBuffer[0]);
+  voiceMan.setKillMode(jura::rsVoiceManager::KillMode::immediately);
 
   // Temporary values for the tests:
   int iVal;
@@ -185,14 +186,50 @@ void UnitTestModulation::runTestPolyModulation()
   expectEquals(iVal, 2);
   modMan.applyModulationsNoLock();
   targetModule.processStereoFrame(&dVal1, &dVal2);
-  expectEquals(dVal1, 2000.0 + key2 + key3 + 2.0);  // this fails
+  expectEquals(dVal1, 2000.0 + key2 + key3 + 2.0);
   expectEquals(dVal2,  2*( 1.0 + 0.5*velR)  );
 
-  // d1 should be 2152 but is 2121 = 2000 + 50 + 69 + 2, so it seems that key3 is released instead
-  // of key1
-  // active voices are 1,2, voiceStates 1,2 are 50,100
+  // Trigger another note:
+  int key4 = 20;
+  targetModule.handleMidiMessage(Msg::noteOn(1, key4, vel));
+  iVal = voiceMan.getNumActiveVoices();
+  expectEquals(iVal, 3);
+  modMan.applyModulationsNoLock();
+  targetModule.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 3000.0 + key2 + key3 + key4 + 3.0);
+  expectEquals(dVal2,  3*( 1.0 + 0.5*velR)  );
 
-  // ...now it's 2171 = 2000 + 100 + 69 + 2, so it's key1 and key3
+  // Release 3rd note:
+  targetModule.handleMidiMessage(Msg::noteOn(1, key3, 0.f));
+  iVal = voiceMan.getNumActiveVoices();
+  expectEquals(iVal, 2);
+  modMan.applyModulationsNoLock();
+  targetModule.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 2000.0 + key2 + key4 + 2.0);
+  expectEquals(dVal2,  2*( 1.0 + 0.5*velR)  );
+
+  // Remove the connection between the constant 1 and the frequency parameter:
+  modMan.removeConnectionsWith(&constant);
+  modMan.applyModulationsNoLock();
+  targetModule.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 2000.0 + key2 + key4);
+
+  // Change the value of the frequency parameter:
+  targetModule.getParameterByName("Frequency")->setValue(500.0, false, true);
+  modMan.applyModulationsNoLock();
+  targetModule.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1000.0 + key2 + key4);
+
+
+
+
+
+  // What if we trigger a note again before a corresponding note-off was received? i think, best
+  // would be to just do nothing, if the note is being held and just turn it back on when it was
+  // releasing ....but that's a matter of voice management
+
+
+
 
   int dummy = 0;
 }

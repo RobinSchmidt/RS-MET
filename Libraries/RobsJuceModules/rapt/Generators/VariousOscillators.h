@@ -1,6 +1,44 @@
 #ifndef RAPT_VARIOUSOSCILLATORS_H_INCLUDED
 #define RAPT_VARIOUSOSCILLATORS_H_INCLUDED
 
+
+
+template<class T>
+class rsSineOscillatorNaive
+{
+
+public:
+
+
+  void setAmplitude(T newAmplitude) { amp = newAmplitude; }
+
+  void setOmega(T newOmega) { omega = newOmega; }
+
+  void setPhase(T newPhase) { phase = newPhase;   }
+
+  void modulatePhase(T amount) { phase += T(2*PI)*amount; } // verify factor 2*PI
+
+  inline T getSample()
+  {
+    T y = amp * sin(phase);
+    phase += omega;
+    return y;
+  }
+
+  void reset(T startPhase = T(0))
+  {
+    phase = startPhase;
+  }
+
+protected:
+
+  T amp   = T(1);
+  T phase = T(0);
+  T omega = T(0);
+
+};
+
+
 // maybe rename to rsSineOscillatorRecursive - we may also have a naive one - they should both 
 // behave the same way, but be different with regard to which operations are efficient and which 
 // are expensive - both should allow FM and PM - maybe even have a class that somehow automatically
@@ -10,7 +48,7 @@
 // there we can inquire, if a modulator is connected to freq and/or phase
 
 template<class T>
-class rsSineOscillator : public rsSineIterator<T>
+class rsSineOscillatorRecursive : public rsSineIterator<T>
 {
 
 public:
