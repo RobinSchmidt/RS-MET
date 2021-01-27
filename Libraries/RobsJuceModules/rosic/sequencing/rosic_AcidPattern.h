@@ -93,7 +93,17 @@ namespace rosic
     */
 
     /** Circularly shifts the whole pattern by the given number of steps. */
-    void circularShift(int numStepsToShift);
+    void circularShiftAll(int numStepsToShift);
+
+    // under construction:
+    void circularShiftAccents(int numStepsToShift);
+    void circularShiftSlides( int numStepsToShift);
+    void circularShiftOctaves(int numStepsToShift);
+    void circularShiftNotes(  int numStepsToShift); 
+    // should shift key and gates? maybe it can make sense to shift them seperately?
+
+
+
 
     //---------------------------------------------------------------------------------------------
     // inquiry:

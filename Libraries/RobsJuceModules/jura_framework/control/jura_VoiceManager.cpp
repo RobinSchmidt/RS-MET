@@ -67,6 +67,7 @@ int rsVoiceManager::noteOffReturnVoice(int key)
       releaseVoice(j);
       return j; }} // should be ok to return because we assume that a given key can only be held
                    // in one voice at a time
+  return -1;
 }
 // needs tests
 

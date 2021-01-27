@@ -544,6 +544,35 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   shiftRightButton->setClickingTogglesState(false);
   shiftRightButton->addRButtonListener(this);
 
+  addWidget( shiftAccentsLeftButton = new RButton("L") );
+  shiftAccentsLeftButton->setDescription("Shift the accents one postion to the left (circularly)");
+  shiftAccentsLeftButton->setDescriptionField(infoField);
+  shiftAccentsLeftButton->setClickingTogglesState(false);
+  shiftAccentsLeftButton->addRButtonListener(this);
+
+  addWidget( shiftAccentsRightButton = new RButton("R") );
+  shiftAccentsRightButton->setDescription("Shift the accents one postion to the right (circularly)");
+  shiftAccentsRightButton->setDescriptionField(infoField);
+  shiftAccentsRightButton->setClickingTogglesState(false);
+  shiftAccentsRightButton->addRButtonListener(this);
+
+  // reduces boilerplate - todo: update code above to use this code, too:
+  auto addButton = [&](RButton** pButton, const String& name, const String& description)
+  {
+    addWidget( *pButton = new RButton(name) );
+    (*pButton)->setDescription(description);
+    (*pButton)->setDescriptionField(infoField);
+    (*pButton)->setClickingTogglesState(false);
+    (*pButton)->addRButtonListener(this);
+  };
+
+  addButton(&shiftSlidesLeftButton,   "L", "Shift the slides one postion to the left (circularly)");
+  addButton(&shiftSlidesRightButton,  "R", "Shift the slides one postion to the right (circularly)");
+  addButton(&shiftNotesLeftButton,    "L", "Shift the notes one postion to the left (circularly)");
+  addButton(&shiftNotesRightButton,   "R", "Shift the notes one postion to the right (circularly)");
+  addButton(&shiftOctavesLeftButton,  "L", "Shift the octaves one postion to the left (circularly)");
+  addButton(&shiftOctavesRightButton, "R", "Shift the octaves one postion to the right (circularly)");
+
   // set up the widgets:
   updateWidgetsAccordingToState();
 }
@@ -556,18 +585,30 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
 //-------------------------------------------------------------------------------------------------
 // callbacks:
 
-void AcidSequencerModuleEditor::rButtonClicked(RButton *buttonThatWasClicked)
+void AcidSequencerModuleEditor::rButtonClicked(RButton *b)
 {
   if( acidSequencerModuleToEdit==NULL || acidSequencerModuleToEdit->wrappedAcidSequencer==NULL )
     return;
 
-  if( buttonThatWasClicked == shiftLeftButton )
-    acidSequencerModuleToEdit->wrappedAcidSequencer->circularShift(-1);
-  else if( buttonThatWasClicked == shiftRightButton )
-    acidSequencerModuleToEdit->wrappedAcidSequencer->circularShift(+1);
+  auto seq = acidSequencerModuleToEdit->wrappedAcidSequencer;
 
-  // \todo: randomization stuff....
+  if(      b == shiftLeftButton         ) seq->circularShiftAll(-1);
+  else if( b == shiftRightButton        ) seq->circularShiftAll(+1);
+  else if( b == shiftAccentsLeftButton  ) seq->circularShiftAccents(-1);
+  else if( b == shiftAccentsRightButton ) seq->circularShiftAccents(+1);
+  else if( b == shiftSlidesLeftButton   ) seq->circularShiftSlides(-1);
+  else if( b == shiftSlidesRightButton  ) seq->circularShiftSlides(+1);
+  else if( b == shiftOctavesLeftButton  ) seq->circularShiftOctaves(-1);
+  else if( b == shiftOctavesRightButton ) seq->circularShiftOctaves(+1);
+  else if( b == shiftNotesLeftButton    ) seq->circularShiftNotes(-1);
+  else if( b == shiftNotesRightButton   ) seq->circularShiftNotes(+1);
 
+  // \todo: randomization stuff....we should give the user the option to define a set of notes,
+  // like C, E#, G, G#, Bb with certain probabilities and then a random number generator generates
+  // a sequence.  it should also randomly set accents and slides...perhaps the probabilities
+  // for on-beat and off-beat accents etc. can be set up
+
+  // BUG: shifting the octaves sometimes produces garbage on the gui
 
   patternEditor->repaint();
 }
@@ -609,9 +650,28 @@ void AcidSequencerModuleEditor::resized()
   y = modeBox->getBottom();
   stepLengthSlider->setBounds(x+4, y+4, w-8, 16);
 
+
+
   y = stepLengthSlider->getBottom()+4;
   shiftLabel->setBounds(x+4, y+4, 40, 16);
   x = shiftLabel->getRight();
   shiftLeftButton->setBounds(                           x+4, y+4, 24, 16);
   shiftRightButton->setBounds(shiftLeftButton->getRight()+4, y+4, 24, 16);
+
+  y = shiftRightButton->getBottom()+4;
+  shiftAccentsLeftButton->setBounds(                           x+4, y+4, 24, 16);
+  shiftAccentsRightButton->setBounds(shiftLeftButton->getRight()+4, y+4, 24, 16);
+
+  y = shiftAccentsRightButton->getBottom()+4;
+  shiftSlidesLeftButton->setBounds(                           x+4, y+4, 24, 16);
+  shiftSlidesRightButton->setBounds(shiftLeftButton->getRight()+4, y+4, 24, 16);
+
+  y = shiftSlidesRightButton->getBottom()+4;
+  shiftNotesLeftButton->setBounds(                           x+4, y+4, 24, 16);
+  shiftNotesRightButton->setBounds(shiftLeftButton->getRight()+4, y+4, 24, 16);
+
+  y = shiftNotesRightButton->getBottom()+4;
+  shiftOctavesLeftButton->setBounds(                           x+4, y+4, 24, 16);
+  shiftOctavesRightButton->setBounds(shiftLeftButton->getRight()+4, y+4, 24, 16);
+
 }

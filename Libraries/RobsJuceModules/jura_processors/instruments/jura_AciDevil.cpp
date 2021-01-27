@@ -485,3 +485,9 @@ void AciDevilModuleEditor::resized()
   sequencerEditor->setBounds(0, y, w, 252);
 }
 
+/*
+Ideas:
+-the shift functionality for the sequencer should be available separately for accent, glide, 
+ octave and notes - currently everything is shifted togther
+
+*/

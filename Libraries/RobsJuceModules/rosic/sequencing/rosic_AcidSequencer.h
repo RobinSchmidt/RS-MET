@@ -67,8 +67,24 @@ namespace rosic
     void setStepLength(double newStepLength) 
     { patterns[activePattern].setStepLength(newStepLength); }
 
-    /** Circularly shifts the active pattern by the given number of steps. */
-    void circularShift(int numSteps) { patterns[activePattern].circularShift(numSteps); }
+    /** Circularly shifts the whole active pattern by the given number of steps. */
+    void circularShiftAll(int numSteps) { patterns[activePattern].circularShiftAll(numSteps); }
+
+    /** Circularly shifts the accents of the active pattern by the given number of steps. */
+    void circularShiftAccents(int numSteps) 
+    { patterns[activePattern].circularShiftAccents(numSteps); }
+
+    /** Circularly shifts the slides of the active pattern by the given number of steps. */
+    void circularShiftSlides(int numSteps) 
+    { patterns[activePattern].circularShiftSlides(numSteps); }
+
+    /** Circularly shifts the octaves of the active pattern by the given number of steps. */
+    void circularShiftOctaves(int numSteps) 
+    { patterns[activePattern].circularShiftOctaves(numSteps); }
+
+    /** Circularly shifts the notes of the active pattern by the given number of steps. */
+    void circularShiftNotes(int numSteps) 
+    { patterns[activePattern].circularShiftNotes(numSteps); }
 
     /** Marks a key (note value from 0...12, where 0 and 12 is a C) as permissible or not. 
     Whenever the pattern currently played requires a key that is not permissible, the sequencer

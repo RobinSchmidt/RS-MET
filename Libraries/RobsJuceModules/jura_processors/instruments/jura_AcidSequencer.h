@@ -186,6 +186,13 @@ protected:
   RButton    *shiftLeftButton, *shiftRightButton;
   RButton    *lockButton;  // prevents the sequencer data from being changed and preset-change
 
+  // new:
+  RButton    *shiftAccentsLeftButton, *shiftAccentsRightButton;
+  RButton    *shiftSlidesLeftButton,  *shiftSlidesRightButton;
+  RButton    *shiftNotesLeftButton,   *shiftNotesRightButton;
+  RButton    *shiftOctavesLeftButton, *shiftOctavesRightButton;
+
+
   juce_UseDebuggingNewOperator;
 };
 

@@ -34,10 +34,53 @@ void AcidPattern::randomize()
   }
 }
 
-void AcidPattern::circularShift(int numStepsToShift)
+void AcidPattern::circularShiftAll(int numStepsToShift)
 {
   RAPT::rsArrayTools::circularShift(notes, maxNumSteps, numStepsToShift);
 }
+
+
+int rsMod(int val, int modulus)
+{
+  while(val > modulus) val -= modulus;
+  while(val < 0      ) val += modulus;
+  return val;
+}
+// move somewhere else
+
+void AcidPattern::circularShiftAccents(int shift)
+{
+  AcidPattern tmp = *this;
+  for(int i = 0; i < numSteps; i++)
+    notes[i].accent = tmp.notes[rsMod(i-shift, numSteps)].accent;
+}
+// seems not to work - maybe the mod operation doe not work for negative numbers
+
+void AcidPattern::circularShiftSlides(int shift)
+{
+  AcidPattern tmp = *this;
+  for(int i = 0; i < numSteps; i++)
+    notes[i].slide = tmp.notes[rsMod(i-shift, numSteps)].slide;
+}
+
+void AcidPattern::circularShiftOctaves(int shift)
+{
+  AcidPattern tmp = *this;
+  for(int i = 0; i < numSteps; i++)
+    notes[i].octave = tmp.notes[rsMod(i-shift, numSteps)].octave;
+}
+
+void AcidPattern::circularShiftNotes(int shift)
+{
+  AcidPattern tmp = *this;
+  for(int i = 0; i < numSteps; i++) {
+    notes[i].key  = tmp.notes[rsMod(i-shift, numSteps)].key;
+    notes[i].gate = tmp.notes[rsMod(i-shift, numSteps)].gate; }
+}
+
+// maybe have functions to swap slides and accents etc - maybe this functionality would be easier
+// to implement with parallel arrays
+
 
 //-------------------------------------------------------------------------------------------------   
 // inquiry:
