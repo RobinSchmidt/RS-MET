@@ -42,8 +42,8 @@ void AcidPattern::circularShiftAll(int numStepsToShift)
 
 int rsMod(int val, int modulus)
 {
-  while(val > modulus) val -= modulus;
-  while(val < 0      ) val += modulus;
+  while(val >= modulus) val -= modulus;
+  while(val < 0       ) val += modulus;
   return val;
 }
 // move somewhere else

@@ -603,10 +603,16 @@ void AcidSequencerModuleEditor::rButtonClicked(RButton *b)
   else if( b == shiftNotesLeftButton    ) seq->circularShiftNotes(-1);
   else if( b == shiftNotesRightButton   ) seq->circularShiftNotes(+1);
 
+  // todo: reverse, swap-halves (swap 1st and 2nd half), exchange, for example, slide for accent,
+  // ...all these features are easier with parallel arrays, maybe then, the length of the 
+  // individual arrays can be different
+
   // \todo: randomization stuff....we should give the user the option to define a set of notes,
   // like C, E#, G, G#, Bb with certain probabilities and then a random number generator generates
   // a sequence.  it should also randomly set accents and slides...perhaps the probabilities
   // for on-beat and off-beat accents etc. can be set up
+
+
 
   // BUG: shifting the octaves sometimes produces garbage on the gui
 
