@@ -204,6 +204,10 @@ protected:
   RButton    *xorAccentsSlidesButton;
   RButton    *xorSlidesAccentsButton;
 
+  RButton    *invertAccentsButton;
+  RButton    *invertSlidesButton;
+  RButton    *invertOctavesButton;
+
 
   juce_UseDebuggingNewOperator;
 };

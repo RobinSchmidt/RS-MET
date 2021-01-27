@@ -93,12 +93,17 @@ namespace rosic
     void reverseOctaves() { patterns[activePattern].reverseOctaves(); }
     void reverseNotes()   { patterns[activePattern].reverseNotes();   }
 
+
+    void invertAccents() { patterns[activePattern].invertAccents();  }
+    void invertSlides()  { patterns[activePattern].invertSlides();   }
+    void invertOctaves() { patterns[activePattern].invertOctaves();  }
+
     // implement logical not for accents and slides, invert for octaves
 
 
     void swapAccentsWithSlides() { patterns[activePattern].swapAccentsWithSlides(); }
-    void xorAccentsWithSlides() { patterns[activePattern].xorAccentsWithSlides(); }
-    void xorSlidesWithAccents() { patterns[activePattern].xorSlidesWithAccents(); }
+    void xorAccentsWithSlides()  { patterns[activePattern].xorAccentsWithSlides(); }
+    void xorSlidesWithAccents()  { patterns[activePattern].xorSlidesWithAccents(); }
 
 
     /** Marks a key (note value from 0...12, where 0 and 12 is a C) as permissible or not. 

@@ -395,9 +395,14 @@ void AciDevilModuleEditor::resized()
   x = filterRectangle.getRight()-2;
   w = 140;
   filterEnvRectangle.setBounds(x, y, w, h);
-  x = filterEnvRectangle.getRight()-2;
+
+
+  //x = filterEnvRectangle.getRight()-2;
   w = 140;
-  ampRectangle.setBounds(x, y, w, h);
+  y = filterEnvRectangle.getBottom()-2;
+  ampRectangle.setBounds(x, y, w, h); 
+
+
   guiLayoutRectangles.add(globalRectangle);
   guiLayoutRectangles.add(oscRectangle);
   guiLayoutRectangles.add(filterRectangle);
@@ -483,11 +488,20 @@ void AciDevilModuleEditor::resized()
   y = globalRectangle.getBottom()-2;
   w = filterRectangle.getRight();
   sequencerEditor->setBounds(0, y, w, 252);
+
+  // rename to "Amplifier" to "Amplifier Envelope", pack the A/D/R sliders densely
+  // make a distortion section below the amp env: parameters: drive, shape, DC etc.
+  // the filte mode and envmod should be a little lower, maybe by 8 pixels ..or maybe only
+  // the envmod slider should be lowered
+
+  // what can we do below the preset section? maybe a little scope? or some meters?
 }
 
 /*
 Ideas:
 -the shift functionality for the sequencer should be available separately for accent, glide, 
  octave and notes - currently everything is shifted togther
+
+Todo: move the amplifier secstion under the filter env, maybe ad some more distortion options
 
 */

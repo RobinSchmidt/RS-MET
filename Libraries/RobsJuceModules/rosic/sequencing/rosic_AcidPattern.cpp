@@ -108,6 +108,24 @@ void AcidPattern::reverseNotes()
     RAPT::rsSwap(notes[i].key, notes[numSteps-1-i].key);
 }
 
+void AcidPattern::invertAccents()
+{
+  for(int i = 0; i < numSteps; i++)
+    notes[i].accent = !notes[i].accent;
+}
+
+void AcidPattern::invertSlides()
+{
+  for(int i = 0; i < numSteps; i++)
+    notes[i].slide = !notes[i].slide;
+}
+
+void AcidPattern::invertOctaves()
+{
+  for(int i = 0; i < numSteps; i++)
+    notes[i].octave = -notes[i].octave;
+}
+
 void AcidPattern::swapAccentsWithSlides()
 {
   for(int i = 0; i < numSteps; i++)
