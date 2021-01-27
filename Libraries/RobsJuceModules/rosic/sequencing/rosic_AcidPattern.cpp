@@ -114,7 +114,17 @@ void AcidPattern::swapAccentsWithSlides()
     RAPT::rsSwap(notes[i].accent, notes[i].slide);
 }
 
+void AcidPattern::xorAccentsWithSlides()
+{
+  for(int i = 0; i < numSteps; i++)
+    notes[i].accent = rsXor(notes[i].accent, notes[i].slide);
+}
 
+void AcidPattern::xorSlidesWithAccents()
+{
+  for(int i = 0; i < numSteps; i++)
+    notes[i].accent = rsXor(notes[i].accent, notes[i].slide);
+}
 
 
 //-------------------------------------------------------------------------------------------------   

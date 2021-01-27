@@ -200,8 +200,9 @@ protected:
   RButton    *reverseSlidesButton;
   RButton    *reverseNotesButton;
   RButton    *reverseOctavesButton;
-
   RButton    *swapAccentsSlidesButton;
+  RButton    *xorAccentsSlidesButton;
+  RButton    *xorSlidesAccentsButton;
 
 
   juce_UseDebuggingNewOperator;

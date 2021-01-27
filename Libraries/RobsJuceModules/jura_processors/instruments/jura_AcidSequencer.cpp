@@ -584,6 +584,8 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   addButton(&reverseOctavesButton,"Rv", "Reverses the octaves");
 
   addButton(&swapAccentsSlidesButton, "A2S", "Swaps accents with slides");
+  addButton(&xorAccentsSlidesButton,  "AXS", "Xors accents with slides");
+  addButton(&xorSlidesAccentsButton,  "SXA", "Xors slides with accents");
 
   // maybe let new accents be old accenzts xor'ed with slides, smae for slides
 
@@ -625,6 +627,8 @@ void AcidSequencerModuleEditor::rButtonClicked(RButton *b)
   else if( b == reverseOctavesButton ) seq->reverseOctaves();
 
   else if( b == swapAccentsSlidesButton ) seq->swapAccentsWithSlides();
+  else if( b == xorAccentsSlidesButton  ) seq->xorAccentsWithSlides();
+  else if( b == xorSlidesAccentsButton  ) seq->xorSlidesWithAccents();
 
   // todo: reverse, swap-halves (swap 1st and 2nd half), exchange, for example, slide for accent,
   // ...all these features are easier with parallel arrays, maybe then, the length of the 
@@ -710,6 +714,8 @@ void AcidSequencerModuleEditor::resized()
   stepLengthSlider->setBounds(x+4, y+4, w-8, 16);
 
   y += 20;
-  swapAccentsSlidesButton->setBounds(x+4, y+4, 32, 16);
-
+  w = 32;
+  swapAccentsSlidesButton->setBounds(x+4,     y+4, w, 16);
+  xorAccentsSlidesButton->setBounds( x+4+w,   y+4, w, 16);
+  xorSlidesAccentsButton->setBounds( x+4+2*w, y+4, w, 16);
 }

@@ -111,7 +111,9 @@ namespace rosic
 
     void swapAccentsWithSlides();
 
+    void xorAccentsWithSlides();
 
+    void xorSlidesWithAccents();
 
     //---------------------------------------------------------------------------------------------
     // inquiry:
