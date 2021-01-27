@@ -583,6 +583,10 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   addButton(&reverseNotesButton,  "Rv", "Reverses the notes");
   addButton(&reverseOctavesButton,"Rv", "Reverses the octaves");
 
+  addButton(&swapAccentsSlidesButton, "A2S", "Swaps accents with slides");
+
+  // maybe let new accents be old accenzts xor'ed with slides, smae for slides
+
 
   // set up the widgets:
   updateWidgetsAccordingToState();
@@ -620,6 +624,7 @@ void AcidSequencerModuleEditor::rButtonClicked(RButton *b)
   else if( b == reverseNotesButton   ) seq->reverseNotes();
   else if( b == reverseOctavesButton ) seq->reverseOctaves();
 
+  else if( b == swapAccentsSlidesButton ) seq->swapAccentsWithSlides();
 
   // todo: reverse, swap-halves (swap 1st and 2nd half), exchange, for example, slide for accent,
   // ...all these features are easier with parallel arrays, maybe then, the length of the 
@@ -692,7 +697,6 @@ void AcidSequencerModuleEditor::resized()
 
   // todo: add more buttons: reverse, swapHalves
 
-
   x = patternEditor->getRight();
   y = stateWidgetSet->getY();
   modeLabel->setBounds(x, y, 40, 16);
@@ -704,4 +708,8 @@ void AcidSequencerModuleEditor::resized()
   x = patternEditor->getRight();
   w = getWidth() - x;
   stepLengthSlider->setBounds(x+4, y+4, w-8, 16);
+
+  y += 20;
+  swapAccentsSlidesButton->setBounds(x+4, y+4, 32, 16);
+
 }

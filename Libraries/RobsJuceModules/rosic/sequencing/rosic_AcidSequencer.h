@@ -94,6 +94,8 @@ namespace rosic
     void reverseNotes()   { patterns[activePattern].reverseNotes();   }
 
 
+    void swapAccentsWithSlides() { patterns[activePattern].swapAccentsWithSlides(); }
+
 
     /** Marks a key (note value from 0...12, where 0 and 12 is a C) as permissible or not. 
     Whenever the pattern currently played requires a key that is not permissible, the sequencer

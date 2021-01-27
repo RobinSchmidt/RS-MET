@@ -108,11 +108,13 @@ void AcidPattern::reverseNotes()
     RAPT::rsSwap(notes[i].key, notes[numSteps-1-i].key);
 }
 
+void AcidPattern::swapAccentsWithSlides()
+{
+  for(int i = 0; i < numSteps; i++)
+    RAPT::rsSwap(notes[i].accent, notes[i].slide);
+}
 
 
-
-// maybe have functions to swap slides and accents etc - maybe this functionality would be easier
-// to implement with parallel arrays
 
 
 //-------------------------------------------------------------------------------------------------   

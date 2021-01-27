@@ -201,6 +201,8 @@ protected:
   RButton    *reverseNotesButton;
   RButton    *reverseOctavesButton;
 
+  RButton    *swapAccentsSlidesButton;
+
 
   juce_UseDebuggingNewOperator;
 };

@@ -109,6 +109,8 @@ namespace rosic
     void reverseOctaves();
     void reverseNotes();
 
+    void swapAccentsWithSlides();
+
 
 
     //---------------------------------------------------------------------------------------------
