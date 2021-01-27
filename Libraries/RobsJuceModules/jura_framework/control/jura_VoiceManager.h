@@ -13,11 +13,11 @@ public:
 
   rsMidiMessageHandler() {}
 
+  //virtual ~rsMidiMessageHandler() {}
 
 
-  virtual ~rsMidiMessageHandler() {}
 
-
+  /*
   class MidiHandleInfo
   {
 
@@ -26,7 +26,6 @@ public:
 
     void setVoiceIndex(int newIndex) { voiceIndex = newIndex; }
 
-    /**  */
     void setWasHandled(bool wasHandled) { _wasHandled = wasHandled; }
 
     int getVoiceIndex() const { return voiceIndex; }
@@ -37,6 +36,7 @@ public:
     int voiceIndex = -1;
     bool _wasHandled = true;
   };
+  */
 
 
   /** Method that must be overriden by subclasses to handle an incoming midi message. If the passed
@@ -47,7 +47,7 @@ public:
   case the voiceIndex is supposed to be pre-filled out by the caller...tbc...
   If it's a nullptr, the parameter shall be ignored. */
   //virtual handleMidiMessage(const rsMidiMessage& message, MidiHandleInfo* info) = 0;
-  virtual void handleMidiMessage(const juce::MidiMessage& message, MidiHandleInfo* info) {}
+  //virtual void handleMidiMessage(const juce::MidiMessage& message, MidiHandleInfo* info) {}
   // Last time i checked sizeof(rsMidiMessage) was 32 bytes = 384 bits so i think it makes sense
   // to pass by reference. A pointer/reference is just 8 bytes = 64 bits.
   // https://stackoverflow.com/questions/40185665/performance-cost-of-passing-by-value-vs-by-reference-or-by-pointer
@@ -124,8 +124,8 @@ public:
 
 /** A class for managing polyphony in instrument modules. */
 
-//class JUCE_API rsVoiceManager : public rsMidiMessageDispatcher
-class JUCE_API rsVoiceManager : public rsMidiMessageHandler
+class JUCE_API rsVoiceManager : public rsMidiMessageDispatcher
+//class JUCE_API rsVoiceManager : public rsMidiMessageHandler
 {
 
 public:
@@ -234,15 +234,15 @@ public:
   // \name Event handling
 
 
-  virtual void handleMidiMessage(const juce::MidiMessage& message, 
-    rsMidiMessageHandler::MidiHandleInfo* info) override;
+  //virtual void handleMidiMessage(const juce::MidiMessage& message, 
+  //  rsMidiMessageHandler::MidiHandleInfo* info) override;
 
 
-  virtual void noteOn(int key, int vel) ;
+  virtual void noteOn(int key, int vel) override;
 
-  virtual void noteOff(int key);
+  virtual void noteOff(int key) override;
 
-  virtual void setPitchBend(int pitchBendValue);
+  virtual void setPitchBend(int pitchBendValue) override;
 
 
 

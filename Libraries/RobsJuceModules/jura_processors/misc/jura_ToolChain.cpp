@@ -281,11 +281,14 @@ void ToolChain::handleMidiMessage(MidiMessage message)
   // class RAPT::rsFlages16
 
 
-  rsMidiMessageHandler::MidiHandleInfo info;   // filled out by the voiceManager
-  voiceManager.handleMidiMessage(message, &info);
+  //rsMidiMessageHandler::MidiHandleInfo info;   // filled out by the voiceManager
+  //voiceManager.handleMidiMessage(message, &info);
   // maybe the voiceManager should return some information, specifically, which voice was assigned
   // and we may have to pass this information to the child modules in the llop below - maybe we 
   // need to introduce a new callback handleMidiMessage(const MidiMessage&, int voice)
+
+
+  voiceManager.handleMidiMessage(message);
 
 
   for(int i = 0; i < size(modules); i++){
