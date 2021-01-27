@@ -1,84 +1,6 @@
 #ifndef jura_VoiceManager_h
 #define jura_VoiceManager_h
 
-//=================================================================================================
-
-/** A class to dispatch various kinds of MIDI messages to specific handler functions that can be 
-overriden in a subclass. */
-
-class JUCE_API rsMidiMessageDispatcher
-{
-
-public:
-
-  rsMidiMessageDispatcher() {}
-
-  virtual ~rsMidiMessageDispatcher() {}
-
-
-  //-----------------------------------------------------------------------------------------------
-  // \name Event processing:
-
-  /** Handles a generic MidiMessage. This dispatches to a call of the appropriate specific handler 
-  function. */
-  virtual void handleMidiMessage(MidiMessage message);
-  // should return some information, how the message was handled - in particular, which voice was 
-  // used for note-on events
-
-  /** Triggered by a note-on event. */
-  virtual void noteOn(int noteNumber, int velocity) {}
-
-  /** Triggered by a note-off event. */
-  virtual void noteOff(int noteNumber) {}
-  // todo: support note-off velocity
-
-  /** Triggered by an all-notes-off event. */
-  virtual void allNotesOff() {}
-
-  /** Overrides setMidiController which is inherited from both base-classes - and we simply we pass
-  through the function call to both of them here. */
-  virtual void setMidiController(int controllerNumber, float controllerValue) {}
-
-  /** Triggered by a pitch-bend event. */
-  virtual void setPitchBend(int pitchBendValue) {}
-
-  /** Triggered by an aftertouch event. */
-  virtual void setAfterTouch(int afterTouchValue) {}
-
-  /** Triggered by a channel pressure event. */
-  virtual void setChannelPressure(int channelPressureValue) {}
-
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMidiMessageDispatcher)
-};
-// -maybe move into extra file
-// -not yet used
-
-
-//=================================================================================================
-
-/** A class that extends juce::MidiMessage by some extra fields. */
-
-class JUCE_API rsMidiMessage : public juce::MidiMessage
-{
-
-public:
-
-  rsMidiMessage() {}
-  rsMidiMessage(const juce::MidiMessage&  msg) : juce::MidiMessage(msg) {}
-  rsMidiMessage(const juce::MidiMessage&& msg) : juce::MidiMessage(msg) {}
-
-
-  void setVoiceIndex(int newIndex) { voiceIndex = newIndex; }
-
-  int getVoiceIndex() const { return voiceIndex; }
-
-private:
-
-  int voiceIndex = -1;
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMidiMessage)
-};
 
 //=================================================================================================
 
@@ -125,7 +47,7 @@ public:
   case the voiceIndex is supposed to be pre-filled out by the caller...tbc...
   If it's a nullptr, the parameter shall be ignored. */
   //virtual handleMidiMessage(const rsMidiMessage& message, MidiHandleInfo* info) = 0;
-  virtual void handleMidiMessage(const juce::MidiMessage& message, MidiHandleInfo* info) = 0;
+  virtual void handleMidiMessage(const juce::MidiMessage& message, MidiHandleInfo* info) {}
   // Last time i checked sizeof(rsMidiMessage) was 32 bytes = 384 bits so i think it makes sense
   // to pass by reference. A pointer/reference is just 8 bytes = 64 bits.
   // https://stackoverflow.com/questions/40185665/performance-cost-of-passing-by-value-vs-by-reference-or-by-pointer
@@ -136,6 +58,67 @@ public:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMidiMessageHandler)
 };
+
+//=================================================================================================
+
+/** A class to dispatch various kinds of MIDI messages to specific handler functions that can be 
+overriden in a subclass. */
+
+class JUCE_API rsMidiMessageDispatcher //: public rsMidiMessageHandler 
+                                       // when we make this a subclass, we get crashes
+{
+
+public:
+
+  rsMidiMessageDispatcher() {}
+
+  virtual ~rsMidiMessageDispatcher() {}
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Event processing:
+
+  /** Handles a generic MidiMessage. This dispatches to a call of the appropriate specific handler 
+  function. */
+  virtual void handleMidiMessage(MidiMessage message);
+  // should return some information, how the message was handled - in particular, which voice was 
+  // used for note-on events
+
+  /*
+  void handleMidiMessage(const juce::MidiMessage& message, MidiHandleInfo* info) override
+  {
+
+  }
+  */
+
+  /** Triggered by a note-on event. */
+  virtual void noteOn(int noteNumber, int velocity) {}
+
+  /** Triggered by a note-off event. */
+  virtual void noteOff(int noteNumber) {}
+  // todo: support note-off velocity
+
+  /** Triggered by an all-notes-off event. */
+  virtual void allNotesOff() {}
+
+  /** Overrides setMidiController which is inherited from both base-classes - and we simply we pass
+  through the function call to both of them here. */
+  virtual void setMidiController(int controllerNumber, float controllerValue) {}
+
+  /** Triggered by a pitch-bend event. */
+  virtual void setPitchBend(int pitchBendValue) {}
+
+  /** Triggered by an aftertouch event. */
+  virtual void setAfterTouch(int afterTouchValue) {}
+
+  /** Triggered by a channel pressure event. */
+  virtual void setChannelPressure(int channelPressureValue) {}
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMidiMessageDispatcher)
+};
+// -maybe move into extra file
+// -when we make this a subclass of rsMidiMessageHandler, we get crashes - why?
 
 //=================================================================================================
 
