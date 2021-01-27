@@ -1050,5 +1050,8 @@ Bugs:
  limiter, the limiter has no effect
 -Poly modulators (and generators?) do not update their parameters when the slider is moved but no 
  modulator is connected
+-the order of the modulation connections is not always the same as we wired them up
+-when moving slider during playing, it sometimes seems to hang and glitch and does not recover
+ ...waiting and then playing more notes just produces audio fragments
 
 */
