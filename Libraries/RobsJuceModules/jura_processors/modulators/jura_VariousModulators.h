@@ -231,12 +231,15 @@ public:
   virtual double getModulatorOutputSample() override { return core.getSample(); }
   */
 
-
-  //virtual void handleMidiMessageWithVoiceInfo(MidiMessage message, int voiceInfo)
-
-  virtual void noteOnForVoice( int key, int vel, int voice) override 
+  virtual void noteOnForVoice(int key, int vel, int voice) override 
   { 
-    cores[voice].noteOn(key, vel); 
+    cores[voice].reset();
+    // maybe do this only if the voice is inactive - if it's in release, don't reset
+    // i think, the voice manager needs an optional reuseReleasingVoice mode - maybe call it
+    // retriggerMode with options: useNewVoice, reuseReleasingVoice - are there other meaningful 
+    // options? maybe reuseIfBelow, reuseIfAbove, etc...
+
+    cores[voice].noteOn(key, vel);
   }
 
   double renderVoiceModulation(int voiceIndex) override

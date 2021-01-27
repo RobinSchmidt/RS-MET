@@ -1042,3 +1042,13 @@ void ToolChainEditor::clearEditorArray()
     removeChildColourSchemeComponent(editors[i], true);
   editors.clear();
 }
+
+/*
+
+Bugs:
+-If a limiter (or gain) is placed after a poly-sine osc and the modulator is placed after the 
+ limiter, the limiter has no effect
+-Poly modulators (and generators?) do not update their parameters when the slider is moved but no 
+ modulator is connected
+
+*/

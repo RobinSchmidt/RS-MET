@@ -154,15 +154,14 @@ void AttackDecayEnvelopeModulePoly::handleMidiMessage(MidiMessage msg)
   }
 }
 
-
 void AttackDecayEnvelopeModulePoly::setAttack(double newAttack, int voice)
 {
   jassert(voice < cores.size());
-
+  cores[voice].setAttackSamples(0.001 * newAttack * sampleRate);
 }
 
 void AttackDecayEnvelopeModulePoly::setDecay(double newDecay, int voice)
 {
   jassert(voice < cores.size());
-
+  cores[voice].setDecaySamples(0.001 * newDecay * sampleRate);
 }

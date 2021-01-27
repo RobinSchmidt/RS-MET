@@ -9,7 +9,13 @@ template<class T>
 void rsAttackDecayFilter<T>::updateCoeffs()
 {
   T tauAttack;
-  expDiffScalerAndTau2(decaySamples, attackSamples+T(1), &tauAttack, &s);
+
+  T attackSamples2 = rsMin(T(0.99) * decaySamples, attackSamples + T(1));
+  // Why the 2nd +1? to avoid numerical problems when is goes down to zero? Then maybe 
+  // using max would be better...or is there some offset of 1 sample that is being compesated?
+
+
+  expDiffScalerAndTau2(decaySamples, attackSamples2, &tauAttack, &s);
   ca = exp(-1.0/tauAttack);       // = exp(-alpha), pole radius
   cd = exp(-1.0/decaySamples);
   coeffsDirty = false;
