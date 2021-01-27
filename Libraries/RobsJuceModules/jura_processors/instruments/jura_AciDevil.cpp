@@ -159,7 +159,8 @@ AciDevilModuleEditor::AciDevilModuleEditor(CriticalSection *newPlugInLock,
 
   createWidgets();
   updateWidgetsAccordingToState();
-  setSize(772, 394);
+  //setSize(772, 394);
+  setSize(634, 394);
 }
 
 void AciDevilModuleEditor::createWidgets()
