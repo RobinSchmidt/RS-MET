@@ -4,68 +4,10 @@
 
 //=================================================================================================
 
-/** Baseclass for classes tha handle (extended) midi messages of type rsMidiMessage. */
-
-class JUCE_API rsMidiMessageHandler
-{
-
-public:
-
-  rsMidiMessageHandler() {}
-
-  //virtual ~rsMidiMessageHandler() {}
-
-
-
-  /*
-  class MidiHandleInfo
-  {
-
-  public:
-
-
-    void setVoiceIndex(int newIndex) { voiceIndex = newIndex; }
-
-    void setWasHandled(bool wasHandled) { _wasHandled = wasHandled; }
-
-    int getVoiceIndex() const { return voiceIndex; }
-
-    bool wasHandled() const { return _wasHandled; }
-
-  private:
-    int voiceIndex = -1;
-    bool _wasHandled = true;
-  };
-  */
-
-
-  /** Method that must be overriden by subclasses to handle an incoming midi message. If the passed
-  MidiHandleInfo pointer is not a nullptr, it should also fill out the fields of the object to 
-  inform the caller, how the message was handled. This includes the information, whether it was 
-  handled at all and if so, which voice has been allocated (in case of noteOn) or which voice was
-  put into release (in case of noteOff) etc. It may also be used as an additional input in which
-  case the voiceIndex is supposed to be pre-filled out by the caller...tbc...
-  If it's a nullptr, the parameter shall be ignored. */
-  //virtual handleMidiMessage(const rsMidiMessage& message, MidiHandleInfo* info) = 0;
-  //virtual void handleMidiMessage(const juce::MidiMessage& message, MidiHandleInfo* info) {}
-  // Last time i checked sizeof(rsMidiMessage) was 32 bytes = 384 bits so i think it makes sense
-  // to pass by reference. A pointer/reference is just 8 bytes = 64 bits.
-  // https://stackoverflow.com/questions/40185665/performance-cost-of-passing-by-value-vs-by-reference-or-by-pointer
-  // https://softwareengineering.stackexchange.com/questions/372105/is-passing-arguments-as-const-references-premature-optimization
-  // https://www.cplusplus.com/articles/z6vU7k9E/
-
-
-
-  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMidiMessageHandler)
-};
-
-//=================================================================================================
-
 /** A class to dispatch various kinds of MIDI messages to specific handler functions that can be 
 overriden in a subclass. */
 
-class JUCE_API rsMidiMessageDispatcher //: public rsMidiMessageHandler 
-                                       // when we make this a subclass, we get crashes
+class JUCE_API rsMidiMessageDispatcher
 {
 
 public:
@@ -81,15 +23,14 @@ public:
   /** Handles a generic MidiMessage. This dispatches to a call of the appropriate specific handler 
   function. */
   virtual void handleMidiMessage(MidiMessage message);
+  // Last time i checked sizeof(MidiMessage) was 24 bytes = 192 bits so i think it makes sense
+  // to pass by reference. A pointer/reference is just 8 bytes = 64 bits.
+  // https://stackoverflow.com/questions/40185665/performance-cost-of-passing-by-value-vs-by-reference-or-by-pointer
+  // https://softwareengineering.stackexchange.com/questions/372105/is-passing-arguments-as-const-references-premature-optimization
+  // https://www.cplusplus.com/articles/z6vU7k9E/
+
   // should return some information, how the message was handled - in particular, which voice was 
   // used for note-on events
-
-  /*
-  void handleMidiMessage(const juce::MidiMessage& message, MidiHandleInfo* info) override
-  {
-
-  }
-  */
 
   /** Triggered by a note-on event. */
   virtual void noteOn(int noteNumber, int velocity) {}
@@ -113,6 +54,38 @@ public:
 
   /** Triggered by a channel pressure event. */
   virtual void setChannelPressure(int channelPressureValue) {}
+
+
+
+
+
+  // new code for supporting events with voice-info:
+
+  virtual int handleMidiMessage(MidiMessage msg, int voiceInfo)
+  {
+    int returnInfo = -1;  // code for unknown
+    if( msg.isNoteOn() )
+      returnInfo = noteOn(msg.getNoteNumber(), msg.getVelocity(), voiceInfo);
+    else if( msg.isNoteOff() )
+      returnInfo = noteOff(msg.getNoteNumber(), voiceInfo);
+    else
+      handleMidiMessage(msg);
+    return returnInfo;
+  }
+
+  virtual int noteOn(int key, int vel, int voiceInfo) 
+  { 
+    noteOn(key, vel);
+    return -1;        // code for unknown
+  }
+
+  virtual int noteOff(int key, int voiceInfo) 
+  { 
+    noteOff(key);
+    return -1;        // code for unknown
+  }
+
+
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMidiMessageDispatcher)
