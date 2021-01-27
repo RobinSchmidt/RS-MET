@@ -78,6 +78,39 @@ void AcidPattern::circularShiftNotes(int shift)
     notes[i].gate = tmp.notes[rsMod(i-shift, numSteps)].gate; }
 }
 
+void AcidPattern::reverseAll()
+{
+  for(int i = 0; i < numSteps/2; i++)
+    RAPT::rsSwap(notes[i], notes[numSteps-1-i]);
+}
+
+void AcidPattern::reverseAccents()
+{
+  for(int i = 0; i < numSteps/2; i++)
+    RAPT::rsSwap(notes[i].accent, notes[numSteps-1-i].accent);
+}
+
+void AcidPattern::reverseSlides()
+{
+  for(int i = 0; i < numSteps/2; i++)
+    RAPT::rsSwap(notes[i].slide, notes[numSteps-1-i].slide);
+}
+
+void AcidPattern::reverseOctaves()
+{
+  for(int i = 0; i < numSteps/2; i++)
+    RAPT::rsSwap(notes[i].octave, notes[numSteps-1-i].octave);
+}
+
+void AcidPattern::reverseNotes()
+{
+  for(int i = 0; i < numSteps/2; i++)
+    RAPT::rsSwap(notes[i].key, notes[numSteps-1-i].key);
+}
+
+
+
+
 // maybe have functions to swap slides and accents etc - maybe this functionality would be easier
 // to implement with parallel arrays
 

@@ -195,6 +195,12 @@ protected:
   RButton    *shiftNotesLeftButton,   *shiftNotesRightButton;
   RButton    *shiftOctavesLeftButton, *shiftOctavesRightButton;
 
+  RButton    *reverseAllButton;
+  RButton    *reverseAccentsButton;
+  RButton    *reverseSlidesButton;
+  RButton    *reverseNotesButton;
+  RButton    *reverseOctavesButton;
+
 
   juce_UseDebuggingNewOperator;
 };

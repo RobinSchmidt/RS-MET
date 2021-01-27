@@ -577,6 +577,12 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   // string only "accents", "slides", etc.
   // todo: maybe instead of L and R use the left/right arrow symbols
 
+  addButton(&reverseAllButton,    "Rv", "Reverses the whole pattern");
+  addButton(&reverseAccentsButton,"Rv", "Reverses the accents");
+  addButton(&reverseSlidesButton, "Rv", "Reverses the slides");
+  addButton(&reverseNotesButton,  "Rv", "Reverses the notes");
+  addButton(&reverseOctavesButton,"Rv", "Reverses the octaves");
+
 
   // set up the widgets:
   updateWidgetsAccordingToState();
@@ -607,6 +613,13 @@ void AcidSequencerModuleEditor::rButtonClicked(RButton *b)
   else if( b == shiftOctavesRightButton ) seq->circularShiftOctaves(+1);
   else if( b == shiftNotesLeftButton    ) seq->circularShiftNotes(-1);
   else if( b == shiftNotesRightButton   ) seq->circularShiftNotes(+1);
+
+  else if( b == reverseAllButton     ) seq->reverseAll();
+  else if( b == reverseAccentsButton ) seq->reverseAccents();
+  else if( b == reverseSlidesButton  ) seq->reverseSlides();
+  else if( b == reverseNotesButton   ) seq->reverseNotes();
+  else if( b == reverseOctavesButton ) seq->reverseOctaves();
+
 
   // todo: reverse, swap-halves (swap 1st and 2nd half), exchange, for example, slide for accent,
   // ...all these features are easier with parallel arrays, maybe then, the length of the 
@@ -657,20 +670,25 @@ void AcidSequencerModuleEditor::resized()
   setRightKeepLeft(stateWidgetSet, x);
   int h = patternEditor->getTopLaneHeight();
   w = 24; 
-  shiftLeftButton->setBounds( x,     y, w, h);
-  shiftRightButton->setBounds(x+w-2, y, w, h);
+  shiftLeftButton->setBounds( x,       y, w, h);
+  shiftRightButton->setBounds(x+  w-2, y, w, h);
+  reverseAllButton->setBounds(x+2*w-2, y, w, h);
   y += h;
-  shiftAccentsLeftButton->setBounds( x,     y, w, h);
-  shiftAccentsRightButton->setBounds(x+w-2, y, w, h);
+  shiftAccentsLeftButton->setBounds( x,       y, w, h);
+  shiftAccentsRightButton->setBounds(x+  w-2, y, w, h);
+  reverseAccentsButton->setBounds(   x+2*w-2, y, w, h);
   y += h;
-  shiftSlidesLeftButton->setBounds( x,     y, w, h);
-  shiftSlidesRightButton->setBounds(x+w-2, y, w, h);
+  shiftSlidesLeftButton->setBounds( x,       y, w, h);
+  shiftSlidesRightButton->setBounds(x+  w-2, y, w, h);
+  reverseSlidesButton->setBounds(   x+2*w-2, y, w, h);
   y += h;
-  shiftOctavesLeftButton->setBounds( x,     y, w, h);
-  shiftOctavesRightButton->setBounds(x+w-2, y, w, h);
+  shiftOctavesLeftButton->setBounds( x,       y, w, h);
+  shiftOctavesRightButton->setBounds(x+  w-2, y, w, h);
+  reverseOctavesButton->setBounds(   x+2*w-2, y, w, h);
   y += h;
-  shiftNotesLeftButton->setBounds( x,     y, w, h);
-  shiftNotesRightButton->setBounds(x+w-2, y, w, h);
+  shiftNotesLeftButton->setBounds( x,       y, w, h);
+  shiftNotesRightButton->setBounds(x+  w-2, y, w, h);
+  reverseNotesButton->setBounds(   x+2*w-2, y, w, h);
 
   // todo: add more buttons: reverse, swapHalves
 

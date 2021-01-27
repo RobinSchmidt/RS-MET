@@ -86,6 +86,15 @@ namespace rosic
     void circularShiftNotes(int numSteps) 
     { patterns[activePattern].circularShiftNotes(numSteps); }
 
+
+    void reverseAll()     { patterns[activePattern].reverseAll();     }
+    void reverseAccents() { patterns[activePattern].reverseAccents(); }
+    void reverseSlides()  { patterns[activePattern].reverseSlides();  }
+    void reverseOctaves() { patterns[activePattern].reverseOctaves(); }
+    void reverseNotes()   { patterns[activePattern].reverseNotes();   }
+
+
+
     /** Marks a key (note value from 0...12, where 0 and 12 is a C) as permissible or not. 
     Whenever the pattern currently played requires a key that is not permissible, the sequencer
     will play the closest key among the permissible ones (it will select the lower when two 

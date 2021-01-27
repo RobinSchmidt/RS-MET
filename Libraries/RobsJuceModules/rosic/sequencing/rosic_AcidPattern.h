@@ -103,6 +103,12 @@ namespace rosic
     // should shift key and gates? maybe it can make sense to shift them seperately?
 
 
+    void reverseAll();
+    void reverseAccents();
+    void reverseSlides();
+    void reverseOctaves();
+    void reverseNotes();
+
 
 
     //---------------------------------------------------------------------------------------------
