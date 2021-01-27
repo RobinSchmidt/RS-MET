@@ -970,7 +970,7 @@ void AudioModuleEditor::resized()
 
   if( presetSectionPosition != INVISIBLE )
   {
-    int w = setupButton->getX();;
+    int w = setupButton->getX();
     stateWidgetSet->setVisible(true);
     if( Editor::headlineStyle == NO_HEADLINE )
       stateWidgetSet->setBounds(0, 4, w, 16);

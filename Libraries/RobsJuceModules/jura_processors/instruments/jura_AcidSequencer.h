@@ -115,6 +115,9 @@ public:
   /** Returns true if given x-coordinate is in the keyboard column, false otherwise). */
   bool isInKeyboardColumn(float xCoordinate);
 
+  /** Returns the height of one row in the top lane (for accent, slide, etc.) */
+  int getTopLaneHeight() const { return topLaneHeight; }
+
   //---------------------------------------------------------------------------------------------
   // callbacks:
 
@@ -180,7 +183,7 @@ protected:
   AcidSequencerAudioModule *acidSequencerModuleToEdit;
   AcidPatternEditor        *patternEditor;
 
-  RTextField *modeLabel, *shiftLabel;
+  RTextField *modeLabel, *shiftLabel;  // shiftLabel not use anymore
   RComboBox  *modeBox;
   RSlider    *stepLengthSlider;
   RButton    *shiftLeftButton, *shiftRightButton;

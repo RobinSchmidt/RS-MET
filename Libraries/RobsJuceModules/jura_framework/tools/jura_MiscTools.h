@@ -172,6 +172,20 @@ inline T getAndRemoveLast(vector<T>& v)
   return result;
 }
 
+// maybe move into file ComponentTools
+
+/** Sets the position of the right border while keeping the left as is */
+inline void setRightKeepLeft(juce::Component* c, int newRight)
+{
+  int x = c->getX();
+  int y = c->getY();
+  int w = c->getWidth();
+  int h = c->getHeight();
+  int oldRight = x + w;
+  int newWidth = newRight - x;
+  c->setBounds(x, y, newWidth, h);
+}
+
 
 
 

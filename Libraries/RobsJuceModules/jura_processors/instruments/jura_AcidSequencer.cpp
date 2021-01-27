@@ -401,6 +401,7 @@ void AcidPatternEditor::paint(juce::Graphics &g)
   g.drawLine(x, y, w, y, thickness);  y += h;
   g.drawLine(x, y, w, y, thickness);  y += h;
   g.drawLine(x, y, w, y, thickness);
+  // maybe use loop
 
   // draw the lines between the piano-roll white keys:
   g.setColour(lineColour);
@@ -572,6 +573,10 @@ AcidSequencerModuleEditor::AcidSequencerModuleEditor(CriticalSection *newPlugInL
   addButton(&shiftNotesRightButton,   "R", "Shift the notes one postion to the right (circularly)");
   addButton(&shiftOctavesLeftButton,  "L", "Shift the octaves one postion to the left (circularly)");
   addButton(&shiftOctavesRightButton, "R", "Shift the octaves one postion to the right (circularly)");
+  // reduce boilerplate further by making two functions addShiftLeft/RightButton that takes as 
+  // string only "accents", "slides", etc.
+  // todo: maybe instead of L and R use the left/right arrow symbols
+
 
   // set up the widgets:
   updateWidgetsAccordingToState();
@@ -647,37 +652,38 @@ void AcidSequencerModuleEditor::resized()
   y = getPresetSectionBottom()+4;
   x = 4;
   patternEditor->setBounds(x, y, 368, 220);
+  x = patternEditor->getRight();
+  y = patternEditor->getY();
+  setRightKeepLeft(stateWidgetSet, x);
+  int h = patternEditor->getTopLaneHeight();
+  w = 24; 
+  shiftLeftButton->setBounds( x,     y, w, h);
+  shiftRightButton->setBounds(x+w-2, y, w, h);
+  y += h;
+  shiftAccentsLeftButton->setBounds( x,     y, w, h);
+  shiftAccentsRightButton->setBounds(x+w-2, y, w, h);
+  y += h;
+  shiftSlidesLeftButton->setBounds( x,     y, w, h);
+  shiftSlidesRightButton->setBounds(x+w-2, y, w, h);
+  y += h;
+  shiftOctavesLeftButton->setBounds( x,     y, w, h);
+  shiftOctavesRightButton->setBounds(x+w-2, y, w, h);
+  y += h;
+  shiftNotesLeftButton->setBounds( x,     y, w, h);
+  shiftNotesRightButton->setBounds(x+w-2, y, w, h);
+
+  // todo: add more buttons: reverse, swapHalves
+
 
   x = patternEditor->getRight();
-  w = getWidth()-x;
+  y = stateWidgetSet->getY();
+  modeLabel->setBounds(x, y, 40, 16);
+  x = modeLabel->getRight();
+  w = getWidth() - x - 2;
+  modeBox->setBounds(x, y, w, 16);
 
-  modeLabel->setBounds(x+4,    y+4, 40,     16);
-  modeBox->setBounds(  x+40+4, y+4, w-40-8, 16);
-  y = modeBox->getBottom();
+  y = shiftNotesRightButton->getBottom();
+  x = patternEditor->getRight();
+  w = getWidth() - x;
   stepLengthSlider->setBounds(x+4, y+4, w-8, 16);
-
-
-
-  y = stepLengthSlider->getBottom()+4;
-  shiftLabel->setBounds(x+4, y+4, 40, 16);
-  x = shiftLabel->getRight();
-  shiftLeftButton->setBounds(                           x+4, y+4, 24, 16);
-  shiftRightButton->setBounds(shiftLeftButton->getRight()+4, y+4, 24, 16);
-
-  y = shiftRightButton->getBottom()+4;
-  shiftAccentsLeftButton->setBounds(                           x+4, y+4, 24, 16);
-  shiftAccentsRightButton->setBounds(shiftLeftButton->getRight()+4, y+4, 24, 16);
-
-  y = shiftAccentsRightButton->getBottom()+4;
-  shiftSlidesLeftButton->setBounds(                           x+4, y+4, 24, 16);
-  shiftSlidesRightButton->setBounds(shiftLeftButton->getRight()+4, y+4, 24, 16);
-
-  y = shiftSlidesRightButton->getBottom()+4;
-  shiftNotesLeftButton->setBounds(                           x+4, y+4, 24, 16);
-  shiftNotesRightButton->setBounds(shiftLeftButton->getRight()+4, y+4, 24, 16);
-
-  y = shiftNotesRightButton->getBottom()+4;
-  shiftOctavesLeftButton->setBounds(                           x+4, y+4, 24, 16);
-  shiftOctavesRightButton->setBounds(shiftLeftButton->getRight()+4, y+4, 24, 16);
-
 }
