@@ -61,25 +61,42 @@ public:
 
   // new code for supporting events with voice-info:
 
-  virtual int handleMidiMessage(MidiMessage msg, int voiceInfo)
+  /** This function can be overriden alternatively to the regular handleMidiMessage callback in 
+  cases when the callee needs to know the voice to which this event applies as additional 
+  information. The default implementation will just call the regular callback. The idea is that 
+  many modules want to receive the same message but only the first one allocates the voice and 
+  the other ones need to have the information which voice it was. In ToolChain, the message is 
+  first passed to the voiceManager via handleMidiMessageReturnVoice which then allocates the voice
+  and returns the info, which voice it has selected. Then, the same event is also passed to the 
+  child modules by calling handleMidiMessageWithVoiceInfo, so they can retrigger the right 
+  voice, if necessary.  */
+  virtual void handleMidiMessageWithVoiceInfo(MidiMessage message, int voiceInfo)
+  {
+    handleMidiMessage(message);
+  }
+
+  /** This is supposed to be used when the caller needs to know which voice was assigned or 
+  released for noteOn and noteOff events. But the default implementation will just return -1 as
+  code for "unknown". Subclasses can override these to provide that information. */
+  virtual int handleMidiMessageReturnVoice(MidiMessage msg)
   {
     int returnInfo = -1;  // code for unknown
     if( msg.isNoteOn() )
-      returnInfo = noteOn(msg.getNoteNumber(), msg.getVelocity(), voiceInfo);
+      returnInfo = noteOnReturnVoice(msg.getNoteNumber(), msg.getVelocity());
     else if( msg.isNoteOff() )
-      returnInfo = noteOff(msg.getNoteNumber(), voiceInfo);
+      returnInfo = noteOffReturnVoice(msg.getNoteNumber());
     else
       handleMidiMessage(msg);
     return returnInfo;
   }
 
-  virtual int noteOn(int key, int vel, int voiceInfo) 
+  virtual int noteOnReturnVoice(int key, int vel) 
   { 
     noteOn(key, vel);
     return -1;        // code for unknown
   }
 
-  virtual int noteOff(int key, int voiceInfo) 
+  virtual int noteOffReturnVoice(int key) 
   { 
     noteOff(key);
     return -1;        // code for unknown
@@ -216,6 +233,11 @@ public:
   virtual void noteOff(int key) override;
 
   virtual void setPitchBend(int pitchBendValue) override;
+
+
+  //virtual int noteOn(int key, int vel, int voice) override;
+
+  //virtual int noteOff(int key, int voice) override;
 
 
 
