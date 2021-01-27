@@ -17,7 +17,7 @@ namespace rosic
   {
   public:
 
-    int  key;
+    int  key;     // maybe use char to save memory
     int  octave;
     bool accent;
     bool slide;
@@ -82,6 +82,9 @@ namespace rosic
     /** Randomizes all notes in the pattern. \todo: restrict possible note-values to some scales*/
     void randomize();
 
+    /** Sets the number of steps in this pattern. Must be <= maxNumSteps. */
+    void setNumSteps(int newNumber);
+
     /*
     void setRandomSeed(int newSeed);
     void resetRandomSeed();
@@ -117,6 +120,11 @@ namespace rosic
     void xorAccentsWithSlides();
     void xorSlidesWithAccents();
 
+    ///** Pastes the content from the given buffer into our notes array */
+    //void pasteFromBuffer(AcidNote* buffer, int bufferLength) 
+    //{ clear(); RAPT::rsArrayTools::copy(buffer, notes, RAPT::rsMin(bufferLength, numSteps)); }
+    // needs test
+
     //---------------------------------------------------------------------------------------------
     // inquiry:
 
@@ -151,6 +159,11 @@ namespace rosic
     /** Returns a pointer to the note at the given step. */
     AcidNote* getNote(int step) { return &notes[step]; }
 
+    ///** Copies the content of our notes array into the given buffer. */
+    //void copyToBuffer(AcidNote* buffer, int bufferLength) const
+    //{ RAPT::rsArrayTools::copy(notes, buffer, RAPT::rsMin(bufferLength, numSteps)); }
+    // needs test
+
     //=============================================================================================
 
   protected:
@@ -160,6 +173,9 @@ namespace rosic
 
     int    numSteps;         // number of steps in the pattern
     double stepLength;       // step length in step units (16th notes)
+
+
+    friend class AcidSequencer;
 
   };
 

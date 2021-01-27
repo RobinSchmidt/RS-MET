@@ -115,6 +115,10 @@ namespace rosic
     /** Toggles the permissibility of a key on/off. */
     void toggleKeyPermissibility(int key);
 
+    void copyActiveToClipboard();
+
+    void pasteClipboardToActive();
+
     //---------------------------------------------------------------------------------------------
     // inquiry:
 
@@ -185,8 +189,10 @@ namespace rosic
 
   protected:
 
-    static const int numPatterns = 16;
+    static const int numPatterns = 16; // maybe use 128 and let use selct midi controller
     AcidPattern patterns[numPatterns];
+    AcidPattern clipboard; 
+    int clipboardLength = 0;
 
     int    activePattern;      // the currently selected pattern
     bool   running;            // flag to indicate that sequencer is running

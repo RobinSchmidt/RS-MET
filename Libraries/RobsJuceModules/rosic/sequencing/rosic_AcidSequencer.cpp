@@ -50,6 +50,28 @@ void AcidSequencer::toggleKeyPermissibility(int key)
     keyPermissible[key] = !keyPermissible[key];
 }
 
+void AcidSequencer::copyActiveToClipboard()
+{
+  AcidPattern* p = &patterns[activePattern];
+  int L = p->getNumSteps();
+  clipboardLength = L;
+  for(int i = 0; i < L; i++)
+    clipboard.notes[i] = p->notes[i];
+  for(int i = L; i < p->getMaxNumSteps(); i++)
+    clipboard.notes[i] = AcidNote();
+}
+
+void AcidSequencer::pasteClipboardToActive()
+{
+  AcidPattern* p = &patterns[activePattern];
+  int L = clipboardLength;
+  p->setNumSteps(L);
+  for(int i = 0; i < L; i++)
+     p->notes[i] = clipboard.notes[i];
+  for(int i = L; i < p->getMaxNumSteps(); i++)
+    p->notes[i] = AcidNote();
+}
+
 //-------------------------------------------------------------------------------------------------
 // inquiry:
 

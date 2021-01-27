@@ -32,6 +32,13 @@ void AcidPattern::randomize()
     notes[i].slide  = roundToInt(RAPT::rsRandomUniform( 0,  1)) == 1;
     notes[i].gate   = roundToInt(RAPT::rsRandomUniform( 0,  1)) == 1;
   }
+  // todo: use PRNG member, provide the options to randomize only accents, slides, etc.
+}
+
+void AcidPattern::setNumSteps(int newNumber)
+{
+  RAPT::rsAssert(newNumber <= maxNumSteps);
+  numSteps = maxNumSteps;
 }
 
 void AcidPattern::circularShiftAll(int numStepsToShift)

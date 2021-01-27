@@ -312,7 +312,7 @@ void AciDevilModuleEditor::createWidgets()
   s->setStringConversionFunction(millisecondsToStringWithUnit2);
   s->setDescriptionField(infoField);
 
-  addWidget( ampLabel = new Lbl("Amplifier") );
+  addWidget( ampLabel = new Lbl("Amp Envelope") );
   ampLabel->setJustification(Justification::centred);
   ampLabel->setDescription("Amplide envelope and distortion parameters");
   ampLabel->setDescriptionField(infoField);
@@ -337,6 +337,12 @@ void AciDevilModuleEditor::createWidgets()
   s->setDescription("Release time for amplitude envelope in milliseconds");
   s->setStringConversionFunction(millisecondsToStringWithUnit2);
   s->setDescriptionField(infoField);
+
+
+  addWidget( distLabel = new Lbl("Distortion") );
+  distLabel->setJustification(Justification::centred);
+  distLabel->setDescription("Distortion Settings");
+  distLabel->setDescriptionField(infoField);
 
   addWidget( distortionDriveSlider = s = new Sld );
   s->assignParameter( aciDevilModuleToEdit->getParameterByName("DistortionDrive") );
@@ -396,12 +402,14 @@ void AciDevilModuleEditor::resized()
   x = filterRectangle.getRight()-2;
   w = 140;
   filterEnvRectangle.setBounds(x, y, w, h);
-
-
-  //x = filterEnvRectangle.getRight()-2;
   w = 140;
   y = filterEnvRectangle.getBottom()-2;
+  h = 80;  // test
   ampRectangle.setBounds(x, y, w, h); 
+
+  y = ampRectangle.getBottom()-2;
+  h = getHeight() - y;
+  distRectangle.setBounds(x, y, w, h);
 
 
   guiLayoutRectangles.add(globalRectangle);
@@ -409,6 +417,7 @@ void AciDevilModuleEditor::resized()
   guiLayoutRectangles.add(filterRectangle);
   guiLayoutRectangles.add(filterEnvRectangle);
   guiLayoutRectangles.add(ampRectangle);
+  guiLayoutRectangles.add(distRectangle);
 
 
   x = globalRectangle.getX();
@@ -452,7 +461,7 @@ void AciDevilModuleEditor::resized()
   y += 20;
   filterModeLabel->setBounds(x+4,    y+4, 40,     16);
   filterModeBox->setBounds(  x+40+4, y+4, w-40-8, 16);
-  y += 20;
+  y += 20;  // maybe use 4 or 8 pixels more - it should have a greate distance
   envModSlider->setBounds(x+4, y+4, w-8, 16);
 
   x = filterEnvRectangle.getX();
@@ -472,26 +481,35 @@ void AciDevilModuleEditor::resized()
   y += 14;
   accentAttackSlider->setBounds(x+4, y+4, w-8, 16);
 
-
   x = ampRectangle.getX();
   y = ampRectangle.getY();
   w = ampRectangle.getWidth();
   ampLabel->setBounds(x, y+2, w, 16);
   y = ampLabel->getBottom();
   ampDecaySlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;
+  y += 14;
   ampSustainSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 20;
+  y += 14;
   ampReleaseSlider->setBounds(x+4, y+4, w-8, 16);
-  y += 24;
+
+  y = distRectangle.getY();
+  distLabel->setBounds(x, y+2, w, 16);
+  y = distLabel->getBottom();
   distortionDriveSlider->setBounds(x+4, y+4, w-8, 16);
+
+
+  // todo: set up dist label
+
 
   y = globalRectangle.getBottom()-2;
   w = filterRectangle.getRight();
   sequencerEditor->setBounds(0, y, w, 252);
 
+  int patternSize = sizeof(rosic::AcidPattern);
+
   // rename to "Amplifier" to "Amplifier Envelope", pack the A/D/R sliders densely
   // make a distortion section below the amp env: parameters: drive, shape, DC etc.
+  // shape could be several parameters
   // the filte mode and envmod should be a little lower, maybe by 8 pixels ..or maybe only
   // the envmod slider should be lowered
 
