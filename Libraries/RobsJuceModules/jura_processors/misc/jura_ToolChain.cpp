@@ -287,13 +287,18 @@ void ToolChain::handleMidiMessage(MidiMessage message)
   // and we may have to pass this information to the child modules in the llop below - maybe we 
   // need to introduce a new callback handleMidiMessage(const MidiMessage&, int voice)
 
-
-  voiceManager.handleMidiMessage(message);
+  int voice = voiceManager.handleMidiMessageReturnVoice(message);
   for(int i = 0; i < size(modules); i++){
     AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
     if(m != nullptr)
-      m->handleMidiMessage(message); }   // todo: pass info
-      // the child modules inquire the voiceIndex from the info
+      m->handleMidiMessageForVoice(message, voice); } 
+
+  //voiceManager.handleMidiMessage(message);
+  //for(int i = 0; i < size(modules); i++){
+  //  AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
+  //  if(m != nullptr)
+  //    m->handleMidiMessage(message); }   // todo: pass info
+  //    // the child modules inquire the voiceIndex from the info
 
   // todo: maybe let different slots receive MIDI on different channels, maybe 
   // AudioModuleWithMidiIn should have a means to filter midi messages based on their channel and

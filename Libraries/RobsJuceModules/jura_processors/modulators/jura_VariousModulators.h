@@ -231,6 +231,14 @@ public:
   virtual double getModulatorOutputSample() override { return core.getSample(); }
   */
 
+
+  //virtual void handleMidiMessageWithVoiceInfo(MidiMessage message, int voiceInfo)
+
+  virtual void noteOnForVoice( int key, int vel, int voice) override 
+  { 
+    cores[voice].noteOn(key, vel); 
+  }
+
   double renderVoiceModulation(int voiceIndex) override
   {
     jassert(voiceIndex <= cores.size());

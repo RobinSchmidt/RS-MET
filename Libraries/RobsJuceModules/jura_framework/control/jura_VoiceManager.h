@@ -70,10 +70,18 @@ public:
   and returns the info, which voice it has selected. Then, the same event is also passed to the 
   child modules by calling handleMidiMessageWithVoiceInfo, so they can retrigger the right 
   voice, if necessary.  */
-  virtual void handleMidiMessageWithVoiceInfo(MidiMessage message, int voiceInfo)
+  virtual void handleMidiMessageForVoice(MidiMessage msg, int voice)
   {
-    handleMidiMessage(message);
+    if( msg.isNoteOn() )
+      noteOnForVoice(msg.getNoteNumber(), msg.getVelocity(), voice);
+    else if( msg.isNoteOff() )
+      noteOffForVoice(msg.getNoteNumber(), voice);
+    else
+      handleMidiMessage(msg);
+
+    //handleMidiMessage(message);
   }
+
 
   /** This is supposed to be used when the caller needs to know which voice was assigned or 
   released for noteOn and noteOff events. But the default implementation will just return -1 as
@@ -102,7 +110,15 @@ public:
     return -1;        // code for unknown
   }
 
+  virtual void noteOnForVoice(int key, int vel, int voice) 
+  { 
+    noteOn(key, vel);
+  }
 
+  virtual void noteOffForVoice(int key, int voice) 
+  { 
+    noteOff(key);
+  }
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMidiMessageDispatcher)
