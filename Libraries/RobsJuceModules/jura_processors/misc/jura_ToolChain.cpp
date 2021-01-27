@@ -271,7 +271,18 @@ void ToolChain::handleMidiMessage(MidiMessage message)
 {
   ScopedLock scopedLock(*lock);
 
-  voiceManager.handleMidiMessage(message);
+  if(message.getChannel() != 1) return;
+  // We currently respond only to messages on channel 1. This is a provision for later allowing
+  // different slots respond to different channels. I guess it may break behavior, if the user
+  // has a saved project which sends on another channel and a later version responds differently
+  // ...but maybe not...but better safe than sorry - we now force the user to use channel 1 for 
+  // better project compatibility with future versions. Maybe for each slot, we should have a 
+  // set of flags 1..16 and responds to messages on all channels which have the flag set - use 
+  // class RAPT::rsFlages16
+
+
+  rsMidiMessageHandler::MidiHandleInfo info;   // filled out by the voiceManager
+  voiceManager.handleMidiMessage(message, &info);
   // maybe the voiceManager should return some information, specifically, which voice was assigned
   // and we may have to pass this information to the child modules in the llop below - maybe we 
   // need to introduce a new callback handleMidiMessage(const MidiMessage&, int voice)
@@ -280,9 +291,14 @@ void ToolChain::handleMidiMessage(MidiMessage message)
   for(int i = 0; i < size(modules); i++){
     AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
     if(m != nullptr)
-      m->handleMidiMessage(message); }
+      m->handleMidiMessage(message); }   // todo: pass info
+      // the child modules inquire the voiceIndex from the info
 
-  // todo: maybe let different slots receive MIDI on different channels
+  // todo: maybe let different slots receive MIDI on different channels, maybe 
+  // AudioModuleWithMidiIn should have a means to filter midi messages based on their channel and
+  // respond only, if the message passes the filter
+
+
   // and/or don't override the noteOn/etc. functions here but rather let the MIDI events also
   // pass through the modules in series. most modules just pass them through, but we can also
   // have MIDI effects such as appregiators and sequencers which modify the sequence and pass

@@ -33,6 +33,17 @@ void rsVoiceManager::setMaxNumVoices(int newNumber)
   reset();
 }
 
+void rsVoiceManager::handleMidiMessage(const juce::MidiMessage& msg, 
+  rsMidiMessageHandler::MidiHandleInfo* info)
+{
+  if( msg.isNoteOn() )
+    noteOn(msg.getNoteNumber(), msg.getVelocity());
+  else if( msg.isNoteOff() )
+    noteOff(msg.getNoteNumber());
+  else if( msg.isPitchWheel() )
+    setPitchBend(msg.getPitchWheelValue());
+}
+
 void rsVoiceManager::noteOn(int key, int vel)
 {
   if(vel == 0)
