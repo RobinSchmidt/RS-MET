@@ -1,7 +1,7 @@
 #ifndef jura_VoiceManager_h
 #define jura_VoiceManager_h
 
-
+//=================================================================================================
 
 /** A class to dispatch various kinds of MIDI messages to specific handler functions that can be 
 overriden in a subclass. */
@@ -22,6 +22,8 @@ public:
   /** Handles a generic MidiMessage. This dispatches to a call of the appropriate specific handler 
   function. */
   virtual void handleMidiMessage(MidiMessage message);
+  // should return some information, how the message was handled - in particular, which voice was 
+  // used for note-on events
 
   /** Triggered by a note-on event. */
   virtual void noteOn(int noteNumber, int velocity) {}
@@ -49,13 +51,60 @@ public:
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMidiMessageDispatcher)
 };
-// maybe move into extra file
-// AudioModuleWithMidiIn should then also become a subclass of this
+// -maybe move into extra file
+// -not yet used
 
 
+//=================================================================================================
+
+/** A class that extends juce::MidiMessage by some extra fields. */
+
+class JUCE_API rsMidiMessage : public juce::MidiMessage
+{
+
+public:
+
+  rsMidiMessage() {}
+  rsMidiMessage(const juce::MidiMessage&  msg) : juce::MidiMessage(msg) {}
+  rsMidiMessage(const juce::MidiMessage&& msg) : juce::MidiMessage(msg) {}
 
 
+  void setVoiceIndex(int newIndex) { voiceIndex = newIndex; }
 
+  int getVoiceIndex() const { return voiceIndex; }
+
+private:
+
+  int voiceIndex = -1;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMidiMessage)
+};
+
+//=================================================================================================
+
+/** Baseclass for classes tha handle (extended) midi messages of type rsMidiMessage. */
+
+class JUCE_API rsMidiMessageHandler
+{
+
+public:
+
+  rsMidiMessageHandler() {}
+
+
+  virtual ~rsMidiMessageHandler() {}
+
+  /** Method that must be overriden by subclasses to handle an incoming midi message. */
+  virtual void handleMidiMessage(const rsMidiMessage& message) = 0;
+  // Last time i checked sizeof(rsMidiMessage) was 32 bytes = 384 bits so i think it makes sense
+  // to pass by reference. A pointer/reference is just 8 bytes = 64 bits.
+  // https://stackoverflow.com/questions/40185665/performance-cost-of-passing-by-value-vs-by-reference-or-by-pointer
+  // https://softwareengineering.stackexchange.com/questions/372105/is-passing-arguments-as-const-references-premature-optimization
+  // https://www.cplusplus.com/articles/z6vU7k9E/
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMidiMessageHandler)
+};
 
 //=================================================================================================
 

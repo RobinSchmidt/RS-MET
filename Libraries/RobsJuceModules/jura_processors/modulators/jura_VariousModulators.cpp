@@ -142,6 +142,19 @@ void AttackDecayEnvelopeModulePoly::allocateVoiceResources(rsVoiceManager* voice
     cores.resize(1); // monophonic in absence of a voice manager
 }
 
+void AttackDecayEnvelopeModulePoly::handleMidiMessage(MidiMessage msg)
+{
+  if(msg.isNoteOn())
+  {
+    // We have to trigger the envelope for one of the voices - but which? we need to figure out
+    // which voice was assigned to this note
+
+
+    int dummy = 0;
+  }
+}
+
+
 void AttackDecayEnvelopeModulePoly::setAttack(double newAttack, int voice)
 {
   jassert(voice < cores.size());

@@ -267,6 +267,11 @@ public:
   patchFormatIndex of the state and the module don't match. Override this function in your subclass
   to do the actual conversion. */
   virtual XmlElement convertXmlStateIfNecessary(const XmlElement& xmlState);
+  // it is a bit inefficient to return the new xml - it has to be created from the old - maybe use
+  // XmlElement* convertXmlStateIfNecessary(const XmlElement* oldXml) that just returns the pointer
+  // if there's nothing to do. it implies that we have to change setStateFromXml to take a pointer 
+  // too - maybe keep both versions - but maybe that's not true since c++11 becuase of return-value 
+  // optimization?
 
   /** Resets all the parameters to their default values. */
   virtual void resetParametersToDefaultValues();

@@ -270,7 +270,13 @@ void ToolChain::setSampleRate(double newSampleRate)
 void ToolChain::handleMidiMessage(MidiMessage message)
 {
   ScopedLock scopedLock(*lock);
+
   voiceManager.handleMidiMessage(message);
+  // maybe the voiceManager should return some information, specifically, which voice was assigned
+  // and we may have to pass this information to the child modules in the llop below - maybe we 
+  // need to introduce a new callback handleMidiMessage(const MidiMessage&, int voice)
+
+
   for(int i = 0; i < size(modules); i++){
     AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
     if(m != nullptr)

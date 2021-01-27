@@ -12,6 +12,7 @@ kinds of state changes.
 the pointers along as well
 */
 
+
 class JUCE_API ToolChainObserver
 {
 
@@ -52,10 +53,7 @@ AudioModule objects.
 
  */
 
-class JUCE_API ToolChain : /*public jura::AudioModulePoly*/  public jura::AudioModuleWithMidiIn 
-  /*, public jura::ModulationManager*/
-  // we need to have a ModulationManager member to pass it to the constructor of
-  // AudioModuleWithMidiIn
+class JUCE_API ToolChain :  public jura::AudioModuleWithMidiIn 
 {
 
 public:

@@ -219,6 +219,8 @@ public:
 
   virtual ~AttackDecayEnvelopeModulePoly() {}
 
+  void handleMidiMessage(MidiMessage msg) override;
+
   /*
   virtual void setSampleRate(double newSampleRate) override; 
   virtual void reset() override { core.reset();  }
