@@ -227,10 +227,20 @@ public:
   //virtual void handleMidiMessage(const juce::MidiMessage& message, 
   //  rsMidiMessageHandler::MidiHandleInfo* info) override;
 
+  void noteOn(int key, int vel) override 
+  { 
+    noteOnReturnVoice(key, vel); 
+  }
 
-  virtual void noteOn(int key, int vel) override;
+  void noteOff(int key) override 
+  { 
+    noteOffReturnVoice(key); 
+  }
 
-  virtual void noteOff(int key) override;
+
+  virtual int noteOnReturnVoice(int key, int vel) override;
+
+  virtual int noteOffReturnVoice(int key) override;
 
   virtual void setPitchBend(int pitchBendValue) override;
 
@@ -265,7 +275,7 @@ protected:
 
   void triggerVoice(int voiceIndex, int key, int vel);
 
-  void stealVoice(int key, int vel);
+  int stealVoice(int key, int vel);
 
   void releaseVoice(int voiceIndex);
 

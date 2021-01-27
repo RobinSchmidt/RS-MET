@@ -46,25 +46,27 @@ void rsVoiceManager::handleMidiMessage(const juce::MidiMessage& msg,
 }
 */
 
-void rsVoiceManager::noteOn(int key, int vel)
+int rsVoiceManager::noteOnReturnVoice(int key, int vel)
 {
   if(vel == 0)
-    noteOff(key);
-  else if(numActiveVoices < numVoices)
-    triggerVoice(activateAndGetLastIdleVoice(), key, vel);
+    return noteOffReturnVoice(key);
+  else if(numActiveVoices < numVoices)  {
+    int i = activateAndGetLastIdleVoice();
+    triggerVoice(i, key, vel);
+    return i; }
   else
-    stealVoice(key, vel);
+    return stealVoice(key, vel);
 }
 // needs tests
 
-void rsVoiceManager::noteOff(int key)
+int rsVoiceManager::noteOffReturnVoice(int key)
 {
   for(int i = 0; i < numActiveVoices; i++) {
     int j = activeVoices[i];
     if(voiceStates[j].key == key) {
       releaseVoice(j);
-      return; }} // should be ok to return because we assume that a given key can only be held
-                 // in one voice at a time
+      return j; }} // should be ok to return because we assume that a given key can only be held
+                   // in one voice at a time
 }
 // needs tests
 
@@ -143,7 +145,7 @@ void rsVoiceManager::triggerVoice(int voiceIndex, int key, int vel)
   newestVoice = voiceIndex;
 }
 
-void rsVoiceManager::stealVoice(int key, int vel)
+int rsVoiceManager::stealVoice(int key, int vel)
 {
   switch(stealMode)
   {
@@ -162,8 +164,7 @@ void rsVoiceManager::stealVoice(int key, int vel)
 
   }
 
-
-  int dummy = 0;
+  return 0;
 }
 
 void rsVoiceManager::releaseVoice(int i)
