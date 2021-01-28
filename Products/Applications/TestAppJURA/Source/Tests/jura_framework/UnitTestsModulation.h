@@ -14,8 +14,19 @@ public:
 
 protected:
 
+  void reset();
+
+
   // called from runTest:
+  void runTestPolyToMono();
   void runTestPolyToPoly();
+
+
+
+  juce::CriticalSection lock;
+  jura::rsVoiceManager voiceMan;
+  jura::ModulationManagerPoly modMan;
+  std::vector<double> voiceBuffer;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestModulation)
 };

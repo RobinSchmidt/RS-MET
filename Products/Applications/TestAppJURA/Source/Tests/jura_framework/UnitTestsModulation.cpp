@@ -1,23 +1,139 @@
 #include "UnitTestsModulation.h"
 
+// Define Some subclasses of AudioModule that are used in the tests. They have two parameters:
+// Frequency and Amplitude which are also used as output signals for the per-sample callback, so we
+// can figure out what their current values are.
+
+
+// todo: a monophonic modulator
+
+//=================================================================================================
+
+/** A polyphonic modulator. */
+
 class JUCE_API TestPolyModulator : public jura::ModulatorModulePoly
 {
+
+public:
+
   using jura::ModulatorModulePoly::ModulatorModulePoly;  // inherit constructors
 
 
   double renderVoiceModulation(int voiceIndex) override
   {
-    return 1; // preliminary
+    return value;
   }
+
+  // do we need to override the monophonic renderModulation too?
+
+  double value = 1.0;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TestPolyModulator)
 };
+
+
+//=================================================================================================
+
+/** A monophonic audio module with parameters of class ModulatebleParameter. */
+
+class JUCE_API TestMonoAudioModule : public jura::ModulatableAudioModule
+{
+
+public:
+
+  TestMonoAudioModule(juce::CriticalSection* lockToUse, 
+    jura::MetaParameterManager* metaManagerToUse = nullptr,
+    jura::ModulationManager* modManagerToUse = nullptr) :
+    ModulatableAudioModule(lockToUse, metaManagerToUse, modManagerToUse) 
+  {
+    createParameters();
+  }
+
+  void processStereoFrame(double* left, double* right) override
+  {
+    *left  = freq;
+    *right = amp;
+  }
+
+  void setFrequency(double newFreq) { freq = newFreq; }
+
+  void setAmplitude(double newAmp)  { amp  = newAmp; }
+
+
+
+
+private:
+
+  void createParameters()
+  {
+    // ScopedLock scopedLock(*lock);
+    typedef TestMonoAudioModule TMAM;
+    typedef jura::ModulatableParameter Param;
+    Param* p;
+
+    p = new Param("Frequency", 20.0, 20000.0, 1000.0, Param::EXPONENTIAL);
+    addObservedParameter(p);
+    p->setValueChangeCallback<TMAM>(this, &TMAM::setFrequency);
+
+    p = new Param("Amplitude", -1.0, +1.0, +1.0, Param::LINEAR);
+    addObservedParameter(p);
+    p->setValueChangeCallback<TMAM>(this, &TMAM::setAmplitude);
+  }
+
+
+  double freq = 0, amp = 0;
+
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TestMonoAudioModule)
+};
+
+
+//=================================================================================================
+
+/** A monophonic audio module with parameters of class ModulatebleParameterPoly. */
 
 class JUCE_API TestPolyAudioModule : public jura::AudioModulePoly
 {
 public:
 
-  using jura::AudioModulePoly::AudioModulePoly;  // inherit constructors
+  TestPolyAudioModule(juce::CriticalSection* lockToUse,
+    jura::MetaParameterManager* metaManagerToUse = nullptr,
+    jura::ModulationManager* modManagerToUse = nullptr,
+    jura::rsVoiceManager* voiceManagerToUse = nullptr)
+    : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse)
+  {
+    init();
+  }
+
+  void processStereoFrameVoice(double* left, double* right, int voice) override
+  {
+    *left  = voiceFreqs[voice];
+    *right = voiceAmps[voice];
+  }
+
+  void handleMidiMessage(MidiMessage message) override
+  {
+    voiceManager->handleMidiMessage(message);
+  }
+
+  void setFrequency(double newFreq, int voice) 
+  { 
+    voiceFreqs[voice] = newFreq;
+  }
+
+  void setAmplitude(double newAmp, int voice) 
+  { 
+    voiceAmps[voice] = newAmp;
+  }
+
+  void allocateVoiceResources(jura::rsVoiceManager* voiceManager) override
+  {
+
+    int dummy = 0;
+  }
+
+
+private:
 
   void init()
   {
@@ -25,6 +141,14 @@ public:
     int numVoices = vm->getNumVoices();
     voiceFreqs.resize(numVoices);
     voiceAmps.resize(numVoices);
+    // shouldn't we do this in an overriden allocateVoiceResources? ..but that callback doesn't get
+    // called - why?
+    // the constructor of AudioModulePoly calls setVoiceManager which in trun calls 
+    // allocateVoiceResources - and this call invokes the baseclass implementation...why? it seems 
+    // like the template-method patter does not work from constructors - yes, indeed
+
+
+
     createParameters();
   }
 
@@ -43,29 +167,6 @@ public:
     p->setValueChangeCallbackPoly([this](double v, int i) { setAmplitude(v, i); });
   }
 
-
-  void processStereoFrameVoice(double* left, double* right, int voice) override
-  {
-    *left  = voiceFreqs[voice];
-    *right = voiceAmps[voice];
-  }
-
-  void handleMidiMessage(MidiMessage message) override
-  {
-    voiceManager->handleMidiMessage(message);
-  }
-
-
-  void setFrequency(double newFreq, int voice) 
-  { 
-    voiceFreqs[voice] = newFreq;
-  }
-
-  void setAmplitude(double newAmp, int voice) 
-  { 
-    voiceAmps[voice] = newAmp;
-  }
-
   //double monoFreq, monoAmp;  
   std::vector<double> voiceFreqs, voiceAmps;
 
@@ -74,27 +175,50 @@ public:
 
 //=================================================================================================
 
-UnitTestModulation::UnitTestModulation() : juce::UnitTest("Modulation", "Control")
+UnitTestModulation::UnitTestModulation() 
+  : juce::UnitTest("Modulation", "Control"), modMan(&lock)
 {
+  // Set up the basic infrastructure:
+  modMan.setVoiceManager(&voiceMan);
+  voiceBuffer.resize(2*voiceMan.getMaxNumVoices());
+  voiceMan.setVoiceSignalBuffer(&voiceBuffer[0]);
+}
 
+void UnitTestModulation::reset()
+{
+  modMan.deRegisterAllSources();
+  modMan.deRegisterAllTargets();
+  //modMan.removeAllConnections();  // should happen automatically in either of the 2 calls above
+
+  voiceMan.reset();
 }
 
 void UnitTestModulation::runTest()
 {
   UnitTest::beginTest("Modulation");
+  runTestPolyToMono();
   runTestPolyToPoly();
 }
 
+
+void UnitTestModulation::runTestPolyToMono()
+{
+  reset();
+
+  // Create modulation sources:
+  TestPolyModulator mod1(&lock, nullptr, &modMan, &voiceMan);
+
+
+
+
+  int dummy = 0;
+}
+
+
 void UnitTestModulation::runTestPolyToPoly()
 {
-  // Create the basic infrastructure:
-  juce::CriticalSection lock;
-  jura::rsVoiceManager voiceMan;
-  jura::ModulationManagerPoly modMan(&lock);
-  modMan.setVoiceManager(&voiceMan);
-  std::vector<double> voiceBuffer;
-  voiceBuffer.resize(2*voiceMan.getMaxNumVoices());
-  voiceMan.setVoiceSignalBuffer(&voiceBuffer[0]);
+  reset();
+
   voiceMan.setKillMode(jura::rsVoiceManager::KillMode::immediately);
 
   // Temporary values for the tests:
@@ -115,7 +239,7 @@ void UnitTestModulation::runTestPolyToPoly()
 
   // Create the target module and register its parameters as modulation targets:
   TestPolyAudioModule targetModule(&lock, nullptr, &modMan, &voiceMan);
-  targetModule.init();
+  //targetModule.init();
   targetModule.setVoiceSignalBuffer(&voiceBuffer[0]);
   iVal = (int) modMan.getAvailableModulationTargets().size();
   expectEquals(iVal, 2, "Failed to register parameters in modulation manager");

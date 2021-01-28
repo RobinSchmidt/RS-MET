@@ -966,8 +966,12 @@ void ToolChainEditor::paintOverChildren(Graphics& g)
   if(size(selectors) == 0)   // occurs during state recall
     return;
 
-  g.setColour(Colour::fromFloatRGBA(0.8125f, 0.8125f, 0.8125f, 1.f));// maybe switch depending on widget color-scheme (dark-on-bright vs bright-on-dark)
-  jassert(chain->activeSlot < selectors.size()); // ..i once had a weird crash - not sure, if that was out of range
+  g.setColour(Colour::fromFloatRGBA(0.8125f, 0.8125f, 0.8125f, 1.f));
+  // maybe switch depending on widget color-scheme (dark-on-bright vs bright-on-dark)
+
+  jassert(chain->activeSlot < selectors.size()); 
+  // ..i once had a weird crash - not sure, if that was out of range
+
   juce::Rectangle<int> rect = selectors[chain->activeSlot]->getBounds();
   g.drawRect(rect, 2);  // 2nd param: thickness
 }
@@ -1046,6 +1050,13 @@ void ToolChainEditor::clearEditorArray()
 /*
 
 Bugs:
+-Load patch Acid2 and then _TestSineOscPoly3 -> crash
+ -when the patch is loaded, the module will call moduleWillBeDeleted on the editor
+ -the editor will call scheduleSelectorArrayUpdate
+ -paintOverChildren is called - the selectorArray does not seem to be updated yet - but i guess,
+  it should be - seems like updateSelectorArray is called too late (asynchronously)
+  -maybe in audioModuleWillBeDeleted, we should call a function deleteSelector(index) similar to
+   deleteEditor(index) instead of scheduleSelectorArrayUpdate
 -If a limiter (or gain) is placed after a poly-sine osc and the modulator is placed after the 
  limiter, the limiter has no effect
 -Poly modulators (and generators?) do not update their parameters when the slider is moved but no 

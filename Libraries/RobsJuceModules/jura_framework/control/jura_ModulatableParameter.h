@@ -517,6 +517,15 @@ public:
     }
     *t += z;
   }
+  // ToDo:
+  // Maybe have a true multiplicative mode that actually multiplies t by m^d because sometimes 
+  // that's really a desirable behavior. But then the order of the connections becomes relevant, so
+  // we need a means for the user to reorder them. Then, the current faux-multiplicative mode 
+  // should be renamed into something else and the real multiplicative mode should get the name 
+  // "Multiplicative" - that needs to invoke the patch conversion when old patches are loaded...
+  // the real and faux mode should give the same results only if the multiplicative connection
+  // is the first of all and in particular if its the only connection. Maybe we could have another
+  // faux mode that uses the depth not as exponent but as scaler...
 
   /** Applies the source-value to the target-value, taking into account the modulation depth. Used
   for monophonic modulations */

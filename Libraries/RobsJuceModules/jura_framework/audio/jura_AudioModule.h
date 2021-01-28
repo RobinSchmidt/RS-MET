@@ -503,7 +503,7 @@ public:
   // todo: maybe make it optional (true by default) to set it also for the child modules
 
   /** Overriden in order to set the voice manager for the child modules. */
-  virtual void addChildAudioModule(AudioModule* moduleToAdd) override;
+  void addChildAudioModule(AudioModule* moduleToAdd) override;
 
   /** Sets the buffer into which the individual voice outputs shall be written. It must be of 
   length 2*maxNumVoice where the factor two comes from the two channels for stereo signals. */

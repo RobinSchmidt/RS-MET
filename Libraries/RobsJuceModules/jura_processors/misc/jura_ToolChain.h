@@ -309,7 +309,7 @@ protected:
 
   /** Sends out a change message that we will receive ourselves. On receive, we will call
   updateSelectorArray. This mechanism is used to cause a deferred update of the selectors array 
-  from replaceModule. The deferrence is necessray, because replaceModule is called from 
+  from replaceModule. The deferrence is necessarry, because replaceModule is called from 
   rComboBoxChanged - if we would call updateSelectorArray directly in replaceModule, we would 
   possibly delete the combobox that has changed before rComboBoxChanged returns which results
   in a combox trying to update itself with an invalid this-pointer. So, we need a deferred 

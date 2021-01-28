@@ -679,6 +679,18 @@ AudioModulePoly::AudioModulePoly(CriticalSection *lockToUse,
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse) 
 {
   setVoiceManager(voiceManagerToUse);
+  // This call to setVoiceManager will not call the subclass implementation of
+  // allocateVoiceResources, it will resolve to the empty baseclass version, see here:
+  // https://stackoverflow.com/questions/14552412/is-it-possible-to-use-the-template-method-pattern-in-the-constructor
+  // "A very good thing to keep in mind in these situations is the old chant "during construction, 
+  // virtual methods aren't". Because in the constructor of the base class, the object is still
+  // considered to be of that base type, and so calls to virtual functions will resolve to the
+  // version implemented for that base class. This is seldom what you want, and If it is pure 
+  // virtual in the base class, it is definitely not what you want."
+
+  // Then, maybe the voiceManager should not be passed to the constructor. Instead, client code
+  // should be forced to call setVoiceManager manually, such that the right version of 
+  // allocateVoiceResources gets called.
 }
 
 void AudioModulePoly::setVoiceManager(rsVoiceManager* managerToUse)

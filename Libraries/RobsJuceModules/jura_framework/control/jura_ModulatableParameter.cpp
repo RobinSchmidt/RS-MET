@@ -745,20 +745,20 @@ void ModulationManagerPoly::applyModulationsNoLock()
 
 void ModulationManagerPoly::addConnectionToArray(ModulationConnection* c)
 {
-  // ToDo: do not just use push_back but instead insert it at location that ensures that 
-  // connections with the same target are neighbors in the array, also increments 
-  // numDistinctActiveTargets if the was not connection with that target yet, maybe resize the
-  // modulatedValues buffer
-
+  // To find the position where we want to insert the connection into the array, we need to 
+  // traverse the connections array backwards because the new connection should be inserted after
+  // the existing ones with the same target (if any):
   const ModulationTarget* tc = c->getTarget();
-  for(int i = 0; i < (int)modulationConnections.size(); i++) {
+  for(int i = (int)modulationConnections.size()-1; i >= 0 ; i--)
+  {
     const ModulationTarget* ta = modulationConnections[i]->getTarget();
     if(ta == tc) {
-      insert(modulationConnections, c, i);
+      insert(modulationConnections, c, i+1);
       return; }}
   ModulationManager::addConnectionToArray(c); // no connection with the same target was found...
   numDistinctActiveTargets++;                 // ...so we have now one distinct target more
   modulatedValues.resize(numDistinctActiveTargets);
+
 }
 
 void ModulationManagerPoly::removeConnectionFromArray(int i)
