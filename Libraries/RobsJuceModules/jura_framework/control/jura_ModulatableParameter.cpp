@@ -727,6 +727,12 @@ void ModulationManagerPoly::applyModulationsNoLock()
   for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)  
     applyVoiceModulations(voiceManager->getActiveVoiceIndex(i));
 
+
+  // i think we need to apply the mono modulations, too ...maybe that can be done by copying the
+  // value
+
+
+
   // Also call the monophonic callbacks because they are not called in the loop above:
   for(size_t i = 0; i < affectedTargets.size(); i++)
     affectedTargets[i]->doModulationUpdate(affectedTargets[i]->getModulatedValue());

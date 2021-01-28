@@ -9,7 +9,7 @@ class JUCE_API ConstantModulationSource : public ModulationSource
 public:
   void setModulationValue(double newValue) { modValue = newValue; }
 
-  virtual double getModulatorOutputSample() override
+  virtual double renderModulation() override
   {
     return modValue;
   }

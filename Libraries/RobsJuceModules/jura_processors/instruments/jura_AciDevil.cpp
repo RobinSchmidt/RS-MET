@@ -41,7 +41,8 @@ AudioModuleEditor* AciDevilAudioModule::createEditor(int type)
 
 void AciDevilAudioModule::createParameters()
 {
-  typedef MetaControlledParameter Param;
+  //typedef MetaControlledParameter Param;
+  typedef ModulatableParameter Param;
   Param* p;
 
   typedef rosic::AciDevil AD;
@@ -63,10 +64,11 @@ void AciDevilAudioModule::createParameters()
   p->setValueChangeCallback<AD>(ad, &AD::setWaveform);
   addObservedParameter(p);
 
-  // has no slider so far:
   p = new Param("PulseWidth", 1.0, 100.0, 45.0, Parameter::LINEAR, 0.1);
   p->setValueChangeCallback<AD>(ad, &AD::setPulseWidth);
   addObservedParameter(p);
+  // 45 is the default value because that's roughly what i have measured in real 303 samples
+  // ...but the DSP object does not to respond to it...why? is it not yet implemented?
 
   p = new Param("SubOscLevel", -60.0, 0.0, -60.0, Parameter::LINEAR, 0.1);
   p->setValueChangeCallback<AD>(ad, &AD::setSubOscLevel);
@@ -211,7 +213,12 @@ void AciDevilModuleEditor::createWidgets()
   s->setStringConversionFunction(ratioToString0);
   s->setDescriptionField(infoField);
 
-  // pulse-width...
+  addWidget( pulseWidthSlider = s = new Sld );
+  s->assignParameter( aciDevilModuleToEdit->getParameterByName("PulseWidth") );
+  s->setSliderName("PulseWidth");
+  s->setDescription("Width of high section of the rectangular pulse waveform");
+  s->setStringConversionFunction(percentToStringWithUnit1);
+  s->setDescriptionField(infoField);
 
   addWidget( subOscLabel = new Lbl("SubOsc:") );
   subOscLabel->setJustification(Justification::centredLeft);
@@ -442,6 +449,8 @@ void AciDevilModuleEditor::resized()
   oscLabel->setBounds(x, y+2, w, 16);
   y = oscLabel->getBottom();
   waveformSlider->setBounds(x+4, y+4, w-8, 16);
+  //y += 16;
+  //pulseWidthSlider->setBounds(x+4, y+4, w-8, 16);
   y += 24;
   subOscLabel->setBounds(x+4, y+4, w-8, 16);
   y += 16;

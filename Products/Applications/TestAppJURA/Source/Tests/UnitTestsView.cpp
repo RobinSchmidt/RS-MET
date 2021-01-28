@@ -84,6 +84,7 @@ void UnitTestsView::createWidgets()
   testSelectorBox->addItem(PARAMETERS, "Parameters");
   testSelectorBox->addItem(MODULATION, "Modulation");
   //testSelectorBox->addItem(WIDGETS, "Widgets");
+  testSelectorBox->selectItemFromText("All Tests", false);
   addWidget(testSelectorBox);
 
   runButton = new RClickButtonNotifyOnMouseUp("Run");

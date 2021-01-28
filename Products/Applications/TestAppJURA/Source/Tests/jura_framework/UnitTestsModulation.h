@@ -15,7 +15,7 @@ public:
 protected:
 
   // called from runTest:
-  void runTestPolyModulation();
+  void runTestPolyToPoly();
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestModulation)
 };

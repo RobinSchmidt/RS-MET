@@ -1,3 +1,6 @@
+// This infrastucture is not used anywhere, the files are not even included by
+// jura_framework.h...maybe get rid of them...
+// or maybe move code formAudioModulePoly here
 
 class JUCE_API PolyAudioModule : public jura::AudioModule // maybe derive from ModulatableAudioModule
 {

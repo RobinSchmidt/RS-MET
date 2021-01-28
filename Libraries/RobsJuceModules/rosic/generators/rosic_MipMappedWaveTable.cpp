@@ -168,6 +168,7 @@ void MipMappedWaveTable::generateMipMap()
     lowBin  = (int) (tableLength / pow(2.0, t));   // the cutoff-bin
     highBin = (int) (tableLength / pow(2.0, t-1)); // the bin up to which the
     // spectrum is currently still nonzero
+    // todo: optimize away the pow
 
     // zero out the bins above the cutoff-bin:
     for(i=lowBin; i<highBin; i++)

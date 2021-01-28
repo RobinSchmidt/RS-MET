@@ -5,7 +5,7 @@
 //=================================================================================================
 
 /** A class to dispatch various kinds of MIDI messages to specific handler functions that can be 
-overriden in a subclass. */
+overriden in a subclass.  */
 
 class JUCE_API rsMidiMessageDispatcher
 {
@@ -139,10 +139,12 @@ public:
 
 //=================================================================================================
 
-/** A class for managing polyphony in instrument modules. */
+/** A class for managing polyphony in instrument modules. 
+
+This class is still under construction - not all features that the API provides are implemented 
+yet... */
 
 class JUCE_API rsVoiceManager : public rsMidiMessageDispatcher
-//class JUCE_API rsVoiceManager : public rsMidiMessageHandler
 {
 
 public:
@@ -173,6 +175,21 @@ public:
   };
 
   void setKillMode(KillMode newMode) { killMode = newMode; }
+
+
+  enum class RetriggerMode
+  {
+    useNewVoice,
+    reuseExistingVoice
+  };
+  /** Sets up the behavior when a note is triggered for which we have an existing active voice 
+  (presumably in release). In such cases, it may make sense to not allocate a fresh voice but 
+  rather to revive the existing voice and retrigger its envelopes (but not reset oscillator 
+  phases and filter states). This can be done by choosing RetriggerMode::reuseExistingVoice and it
+  is the default behavior. If the old voice should keep releasing and a new voice should be used 
+  for the new note, choose RetriggerMode::useNewVoice. */
+  void setRetriggerMode(RetriggerMode newMode) { retriggerMode = newMode; }
+
 
   /** Sets the maximum number of voices that should be supported. The function is supposed to be 
   called once shortly after construction and then that setting should remain fixed for the lifetime
@@ -243,6 +260,10 @@ public:
   double getVoicePitch(int i) const { return voiceStates[i].pitch; }
 
   double getVoiceNormalizedVelocity(int i) const { return voiceStates[i].vel01; }
+  // rename to getVoiceVelocity and just always assume normalization - midi values in the range
+  // 0..127 are historical baggage that is not used in this modern software framework. 
+  // juce::MidiMessage represents velocities as float in 0..1, too
+
 
   double getPitchBend() const { return pitchBend; }
 
@@ -342,6 +363,8 @@ protected:
       vel01  = 0.0;
       key    = 0;
       //isHeld = false;
+      // maybe we should have a state that can be: active/inactive/revived or alive/dead/revived
+      // to facilitate the different retrigger modes
     }
 
     double pitch;    // midi-pitch computed from key and tuning 
@@ -354,8 +377,10 @@ protected:
 
 
 
-  StealMode stealMode = StealMode::oldest;
-  KillMode  killMode  = KillMode::immediately;
+  StealMode     stealMode     = StealMode::oldest;
+  KillMode      killMode      = KillMode::immediately;  // todo: use some other default
+  RetriggerMode retriggerMode = RetriggerMode::reuseExistingVoice;
+
 
 
   //bool _needsPreRenderUpdate  = false;

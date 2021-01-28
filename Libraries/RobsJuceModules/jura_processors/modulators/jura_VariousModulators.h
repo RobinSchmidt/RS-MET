@@ -78,7 +78,7 @@ protected:
 
 //=================================================================================================
 
-// some very simple modulators
+// some very simple modulators - maybe they should be moved into the jura_framework module
 
 /** A modulator module that just outputs the constant value 1. That may be useful for use with 
 exponentially scaled parameters such as a frequency that goes from 20 to 20000. We can just 
@@ -143,11 +143,25 @@ public:
     //setModuleTypeName("NormalizedVelocity");
     setModulationSourceName("NoteVelocity");
   }
+
+  double renderModulation() override
+  {
+    jassert(voiceManager != nullptr);
+    int voiceIndex = voiceManager->getNewestVoice();
+    double vel = voiceManager->getVoiceNormalizedVelocity(voiceIndex); // for debug
+    return voiceManager->getVoiceNormalizedVelocity(voiceIndex);
+  }
+  // not called when we use AcidDevil and try to modulate its cutoff via velocity -> check, if 
+  // ToolChain calls applyModulations
+
   double renderVoiceModulation(int voiceIndex) override
   {
     jassert(voiceManager != nullptr);
+    double vel = voiceManager->getVoiceNormalizedVelocity(voiceIndex); // for debug
     return voiceManager->getVoiceNormalizedVelocity(voiceIndex);
   }
+
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNoteVelocityModulatorModulePoly)
 };
 
@@ -177,6 +191,7 @@ public:
 
 
 /** A modulator module that outputs the current value of the pitch-wheel in the range -1..+1. */
+/*
 class JUCE_API rsPitchBendModulatorModulePoly : public ModulatorModulePoly
 {
 public:
@@ -198,6 +213,12 @@ public:
   }
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsPitchBendModulatorModulePoly)
 };
+
+*/
+
+
+
+
 
 
 

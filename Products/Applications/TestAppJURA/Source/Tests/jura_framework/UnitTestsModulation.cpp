@@ -5,7 +5,7 @@ class JUCE_API TestPolyModulator : public jura::ModulatorModulePoly
   using jura::ModulatorModulePoly::ModulatorModulePoly;  // inherit constructors
 
 
-  double getModulatorOutputSample(int voiceIndex) override
+  double renderVoiceModulation(int voiceIndex) override
   {
     return 1; // preliminary
   }
@@ -82,10 +82,10 @@ UnitTestModulation::UnitTestModulation() : juce::UnitTest("Modulation", "Control
 void UnitTestModulation::runTest()
 {
   UnitTest::beginTest("Modulation");
-  runTestPolyModulation();
+  runTestPolyToPoly();
 }
 
-void UnitTestModulation::runTestPolyModulation()
+void UnitTestModulation::runTestPolyToPoly()
 {
   // Create the basic infrastructure:
   juce::CriticalSection lock;
@@ -220,16 +220,9 @@ void UnitTestModulation::runTestPolyModulation()
   targetModule.processStereoFrame(&dVal1, &dVal2);
   expectEquals(dVal1, 1000.0 + key2 + key4);
 
-
-
-
-
   // What if we trigger a note again before a corresponding note-off was received? i think, best
   // would be to just do nothing, if the note is being held and just turn it back on when it was
   // releasing ....but that's a matter of voice management
-
-
-
 
   int dummy = 0;
 }

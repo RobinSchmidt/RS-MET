@@ -131,6 +131,9 @@ namespace rosic
     /** Sets the DC offset for the clipper. */
     void setClipperDC(double newDC) { clipperDC = newDC; }
 
+    // todo: add more parameters: CliperSoftnessLow, ClipperSoftnessHigh - both from 0..1, default
+    // is zero and means hardclip
+
     //-----------------------------------------------------------------------------------------------
     // inquiry:
 

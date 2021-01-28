@@ -121,10 +121,12 @@ protected:
     *sequencerLabel, *normalLabel, *accentLabel, *subOscLabel;
 
   rsAutomatableSlider *masterLevelSlider, *accentSlider, *slideTimeSlider, *waveformSlider, 
-    *subOscLevelSlider, *subOscWaveformSlider, *cutoffSlider, *resonanceSlider, *envModSlider, 
-    *normalDecaySlider, *normalAttackSlider, *accentDecaySlider, *accentAttackSlider, 
-    *upwardFractionSlider, *ampDecaySlider, *ampSustainSlider, *ampReleaseSlider, 
-    *distortionDriveSlider;
+    *pulseWidthSlider, *subOscLevelSlider, *subOscWaveformSlider, *cutoffSlider, *resonanceSlider, 
+    *envModSlider, *normalDecaySlider, *normalAttackSlider, *accentDecaySlider, 
+    *accentAttackSlider, *upwardFractionSlider, *ampDecaySlider, *ampSustainSlider, 
+    *ampReleaseSlider, *distortionDriveSlider;
+    // maybe we can use an array to reduce the number of member variables? ah - no, we need all the
+    // separate pointers in resized
 
   RTextField *filterModeLabel;
 

@@ -78,6 +78,20 @@ public:
     ModulationManager* modManagerToUse = nullptr,
     rsVoiceManager* voiceManagerToUse = nullptr);
 
+  virtual void noteOnForVoice(int key, int vel, int voice) override
+  {
+    jassert(voice >= 0 && voice < voiceManager->getMaxNumVoices());
+    // see comment in AttackDecayEnvelopeModulePoly
+
+    // We want to retrigger the phase of the oscillator but only if the voice was allocated freshly
+    // and not revived from relase
+
+    voices[voice].reset();
+    // hmm...but i think this retriggering should only be done, if the voice was previously silent
+    // ...in cases where a releasing voice is retriggered ()
+
+  }
+
   void processStereoFrameVoice(double* left, double* right, int voice) override
   { 
     *left = *right = voices[voice].getSample(); 
