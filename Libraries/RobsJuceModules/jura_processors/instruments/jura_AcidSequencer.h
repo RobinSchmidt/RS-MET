@@ -116,7 +116,7 @@ public:
   bool isInKeyboardColumn(float xCoordinate);
 
   /** Returns the height of one row in the top lane (for accent, slide, etc.) */
-  int getTopLaneHeight() const { return topLaneHeight; }
+  int getTopLaneHeight() const { return (int) topLaneHeight; } // why is this a fdloat?
 
   //---------------------------------------------------------------------------------------------
   // callbacks:

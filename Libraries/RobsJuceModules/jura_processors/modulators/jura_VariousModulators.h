@@ -200,7 +200,9 @@ public:
 };
 
 
-// todo: pitch-wheel, aftertouch, etc
+
+
+// todo: controller, aftertouch, etc.
 
 
 
@@ -233,6 +235,14 @@ public:
 
   virtual void noteOnForVoice(int key, int vel, int voice) override 
   { 
+    jassert(voice >= 0 && voice < voiceManager->getMaxNumVoices());
+    // I think getMaxNumVoices makes more sense than getNumVoices because a note-off can also
+    // be passed as note-on (with zero velocity) and if the user reduces the number of voices
+    // between note-on and note-off, the condition could occur that we receive a note-off for a 
+    // non-existent voice. ...but no: the dispatche already makes sure that only *actual* 
+    // note-ons are passed to this - and those should really be constrained to the current
+    // "NumVoices" setting...hmmm...figure out....
+
     cores[voice].reset();
     // maybe do this only if the voice is inactive - if it's in release, don't reset
     // i think, the voice manager needs an optional reuseReleasingVoice mode - maybe call it
@@ -241,6 +251,8 @@ public:
 
     cores[voice].noteOn(key, vel);
   }
+
+  // what about noteOffForVoice? if the envelope has sustain, we need to override that, too
 
   double renderVoiceModulation(int voiceIndex) override
   {

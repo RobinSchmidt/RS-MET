@@ -734,7 +734,7 @@ void AcidSequencerModuleEditor::resized()
 
 
 /*
--move step-lengfth below A2S, etc
+-make step-length available for modulation
 -add selector for pattern (maybe a 4x4 array)
 -implement copy/paste for patterns
 -fix colors

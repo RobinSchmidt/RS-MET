@@ -505,7 +505,9 @@ void AciDevilModuleEditor::resized()
   w = filterRectangle.getRight();
   sequencerEditor->setBounds(0, y, w, 252);
 
-  int patternSize = sizeof(rosic::AcidPattern);
+
+  int noteSize    = sizeof(rosic::AcidNote);     // 12/5    with int/byte
+  int patternSize = sizeof(rosic::AcidPattern);  // 208/96
 
   // rename to "Amplifier" to "Amplifier Envelope", pack the A/D/R sliders densely
   // make a distortion section below the amp env: parameters: drive, shape, DC etc.

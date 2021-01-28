@@ -1,9 +1,6 @@
 #ifndef rosic_AcidPattern_h
 #define rosic_AcidPattern_h
 
-//// rosic-indcludes:
-//#include "../math/rosic_ElementaryFunctionsReal.h"
-
 namespace rosic
 {
 
@@ -17,11 +14,20 @@ namespace rosic
   {
   public:
 
-    int  key;     // maybe use char to save memory
-    int  octave;
+    //int  key;     //
+    //int  octave;
+    char key;
+    char octave;
     bool accent;
     bool slide;
     bool gate;
+    // maybe use char to save memory and maybe the octave,accent,slide,gate can all be packed into
+    // a single char, too - we want to keep 128 patterns in memory, so we really need to take care
+    // to keep the size small
+    // ToDo: Maybe have other per note data...maybe pan (maybe 9 steps from -4..+4)...and/or make 
+    // it continuous...maybe also the accent paramater - maybe use a char for accent and pan and 
+    // let both have 128 steps. On the gui, we could present partial accents (between 0 and 1) as 
+    // fainter and/or smaller black circles
 
     AcidNote()
     {
@@ -31,6 +37,7 @@ namespace rosic
       slide  = false;
       gate   = false;
     }
+
 
     bool isInDefaultState()
     { return key == 0 && octave == 0 && accent == false && slide == false && gate == false; }

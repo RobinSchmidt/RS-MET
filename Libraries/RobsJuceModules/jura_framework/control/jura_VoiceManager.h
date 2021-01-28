@@ -63,13 +63,21 @@ public:
 
   /** This function can be overriden alternatively to the regular handleMidiMessage callback in 
   cases when the callee needs to know the voice to which this event applies as additional 
-  information. The default implementation will just call the regular callback. The idea is that 
-  many modules want to receive the same message but only the first one allocates the voice and 
-  the other ones need to have the information which voice it was. In ToolChain, the message is 
-  first passed to the voiceManager via handleMidiMessageReturnVoice which then allocates the voice
-  and returns the info, which voice it has selected. Then, the same event is also passed to the 
-  child modules by calling handleMidiMessageWithVoiceInfo, so they can retrigger the right 
-  voice, if necessary.  */
+  information. The default implementation will just call the regular handleMidiMessage callback in 
+  case of non-note messages and dispatch to noteOn/OffForVoice in case of note messages. These
+  two functions in turn have default implementations that also just call their regular, voiceless
+  counterparts noteOn/Off but subclasses can override them too. For example, look at the polyphonic
+  modulator classes such as AttackDecayEnvelopeModulePoly. It overrides noteOnForVoice and triggers 
+  the envelope in the underlying DSP object for the given voice. It can also be used to reset the 
+  phase in polyphonic oscillators, reste the state in polyphonic filters, etc. The general idea 
+  is that many modules want to receive the same message but only the first one allocates the voice 
+  and the other ones need to have the information which voice that was. In ToolChain, the message 
+  is first passed to the voiceManager via handleMidiMessageReturnVoice which then allocates the 
+  voice and returns the info, which voice it has selected (because rsVoiceManager overrides that
+  method accordingly). Then, the same event is also passed to the child modules by calling 
+  handleMidiMessageWithVoiceInfo, so they can retrigger the right voice, if necessary. A subclass
+  that overrides it should also handle the case when voice = 1 which is used as code for 
+  "unknown"..or should it?...maybe we sho. */
   virtual void handleMidiMessageForVoice(MidiMessage msg, int voice)
   {
     if( msg.isNoteOn() )
@@ -78,14 +86,15 @@ public:
       noteOffForVoice(msg.getNoteNumber(), voice);
     else
       handleMidiMessage(msg);
-
-    //handleMidiMessage(message);
   }
+  // todo: maybe have an addtional parameter for the midi channel (defaulting to 1)..or no: that
+  // info is already contained in the MidiMessage
 
 
   /** This is supposed to be used when the caller needs to know which voice was assigned or 
   released for noteOn and noteOff events. But the default implementation will just return -1 as
-  code for "unknown". Subclasses can override these to provide that information. */
+  code for "unknown". Callers should gracefully handle such an "unknown" return value. Subclasses 
+  can override this function to provide that information. */
   virtual int handleMidiMessageReturnVoice(MidiMessage msg)
   {
     int returnInfo = -1;  // code for unknown
@@ -98,33 +107,35 @@ public:
     return returnInfo;
   }
 
-  virtual int noteOnReturnVoice(int key, int vel) 
-  { 
-    noteOn(key, vel);
-    return -1;        // code for unknown
-  }
+  /** Can be overriden by subclasses to return the voice index that was used to play the note. For
+  example, the subclass rsVoiceManager does this. The baseclass implementation returns -1 as code 
+  for "unknown". */
+  virtual int noteOnReturnVoice(int key, int vel) { noteOn(key, vel); return -1; }
 
-  virtual int noteOffReturnVoice(int key) 
-  { 
-    noteOff(key);
-    return -1;        // code for unknown
-  }
+  /** Can be overriden by subclasses to return the voice index that was put into release state, 
+  i.e. the voice which is currently holding the given note. The baseclass implementation 
+  returns -1 as code for "unknown".  
+  ...to consider: what if a note-off is received and there was actually no voice playing that 
+  note? should a subclass then also return -1 or whould we use another code for "none" - which 
+  really is a condition different from "unknown". ...also: could it be that more than voice was 
+  playing the same note? ...and the note-off could trigger multiple voices to enter release? what 
+  should a subclass return in such a case? for the time being, we just assume that such cases are 
+  not a thing. */
+  virtual int noteOffReturnVoice(int key) { noteOff(key); return -1; }
+  
 
-  virtual void noteOnForVoice(int key, int vel, int voice) 
-  { 
-    noteOn(key, vel);
-  }
 
-  virtual void noteOffForVoice(int key, int voice) 
-  { 
-    noteOff(key);
-  }
+  virtual void noteOnForVoice(int key, int vel, int voice) { noteOn(key, vel); }
+
+  virtual void noteOffForVoice(int key, int voice) { noteOff(key); }
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsMidiMessageDispatcher)
 };
 // -maybe move into extra file
-// -when we make this a subclass of rsMidiMessageHandler, we get crashes - why?
+// -when we make this a subclass of rsMidiMessageHandler, we get crashes - why? ...update: this 
+//  baseclass does not exits for that very reason - but it's strange anyway and it deserves some 
+//  more research why this happened...
 
 //=================================================================================================
 
