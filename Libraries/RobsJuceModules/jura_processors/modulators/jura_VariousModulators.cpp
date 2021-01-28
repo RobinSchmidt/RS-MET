@@ -107,9 +107,8 @@ void AttackDecayEnvelopeModule::setDecay(double newDecay)
 //=================================================================================================
 
 AttackDecayEnvelopeModulePoly::AttackDecayEnvelopeModulePoly(CriticalSection* lockToUse,
-  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse,
-  rsVoiceManager* voiceManagerToUse) 
-  : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse) 
+  : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse) 
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("EnvelopeAD");  //

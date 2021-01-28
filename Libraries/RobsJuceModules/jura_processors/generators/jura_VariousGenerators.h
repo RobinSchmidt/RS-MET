@@ -75,8 +75,7 @@ public:
 
   SineOscAudioModulePoly(CriticalSection *lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr, 
-    ModulationManager* modManagerToUse = nullptr,
-    rsVoiceManager* voiceManagerToUse = nullptr);
+    ModulationManager* modManagerToUse = nullptr);
 
   virtual void noteOnForVoice(int key, int vel, int voice) override
   {
@@ -114,7 +113,7 @@ public:
 protected:
 
   virtual void createParameters();
-  void allocateVoiceResources(rsVoiceManager* voiceManager) override;
+  void allocateVoiceResources() override;
 
   SineOscCore core;  // maybe rename to master
   //std::vector<RAPT::rsSineOscillator<double>> voices;

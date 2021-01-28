@@ -674,11 +674,10 @@ void AudioModuleWithMidiIn::setPitchBend(int pitchBendValue)
 // class AudioModulePoly
 
 AudioModulePoly::AudioModulePoly(CriticalSection *lockToUse, 
-  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse, 
-  rsVoiceManager* voiceManagerToUse) 
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse) 
   : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse) 
 {
-  setVoiceManager(voiceManagerToUse);
+  //setVoiceManager(voiceManagerToUse);
   // This call to setVoiceManager will not call the subclass implementation of
   // allocateVoiceResources, it will resolve to the empty baseclass version, see here:
   // https://stackoverflow.com/questions/14552412/is-it-possible-to-use-the-template-method-pattern-in-the-constructor

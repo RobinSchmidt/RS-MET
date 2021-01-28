@@ -90,9 +90,8 @@ public:
 
   rsConstantOneModulatorModulePoly(CriticalSection* lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr,
-    ModulationManager* modManagerToUse = nullptr,
-    rsVoiceManager* voiceManagerToUse = nullptr)
-    : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+    ModulationManager* modManagerToUse = nullptr)
+    : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse) 
   {
     ScopedLock scopedLock(*lock);
     setModulationSourceName("ConstantOne");
@@ -111,9 +110,8 @@ public:
 
   rsNotePitchModulatorModulePoly(CriticalSection* lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr,
-    ModulationManager* modManagerToUse = nullptr,
-    rsVoiceManager* voiceManagerToUse = nullptr)
-    : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+    ModulationManager* modManagerToUse = nullptr)
+    : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse) 
   {
     ScopedLock scopedLock(*lock);
     //setModuleTypeName("NotePitch");
@@ -135,9 +133,8 @@ public:
 
   rsNoteVelocityModulatorModulePoly(CriticalSection* lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr,
-    ModulationManager* modManagerToUse = nullptr,
-    rsVoiceManager* voiceManagerToUse = nullptr)
-    : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+    ModulationManager* modManagerToUse = nullptr)
+    : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse) 
   {
     ScopedLock scopedLock(*lock);
     //setModuleTypeName("NormalizedVelocity");
@@ -172,9 +169,8 @@ public:
 
   rsNoteFreqModulatorModulePoly(CriticalSection* lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr,
-    ModulationManager* modManagerToUse = nullptr,
-    rsVoiceManager* voiceManagerToUse = nullptr)
-    : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+    ModulationManager* modManagerToUse = nullptr)
+    : ModulatorModulePoly(lockToUse, metaManagerToUse, modManagerToUse) 
   {
     ScopedLock scopedLock(*lock);
     //setModuleTypeName("NotePitch");
@@ -237,8 +233,7 @@ public:
 
   AttackDecayEnvelopeModulePoly(CriticalSection *lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr, 
-    ModulationManager* modManagerToUse = nullptr,
-    rsVoiceManager* voiceManagerToUse = nullptr);
+    ModulationManager* modManagerToUse = nullptr);
 
   virtual ~AttackDecayEnvelopeModulePoly() {}
 

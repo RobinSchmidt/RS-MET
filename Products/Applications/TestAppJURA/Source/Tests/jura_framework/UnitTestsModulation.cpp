@@ -98,11 +98,10 @@ public:
 
   TestPolyAudioModule(juce::CriticalSection* lockToUse,
     jura::MetaParameterManager* metaManagerToUse = nullptr,
-    jura::ModulationManager* modManagerToUse = nullptr,
-    jura::rsVoiceManager* voiceManagerToUse = nullptr)
-    : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse)
+    jura::ModulationManager* modManagerToUse = nullptr)
+    : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse)
   {
-    init();
+    createParameters();
   }
 
   void processStereoFrameVoice(double* left, double* right, int voice) override
@@ -126,31 +125,19 @@ public:
     voiceAmps[voice] = newAmp;
   }
 
-  void allocateVoiceResources(jura::rsVoiceManager* voiceManager) override
+  void allocateVoiceResources() override
   {
-
-    int dummy = 0;
+    int numVoices = 0;
+    jura::rsVoiceManager* vm = getVoiceManager();
+    if(vm)
+      numVoices = vm->getNumVoices();
+    voiceFreqs.resize(numVoices);
+    voiceAmps.resize(numVoices);
   }
 
 
 private:
 
-  void init()
-  {
-    jura::rsVoiceManager* vm = getVoiceManager();
-    int numVoices = vm->getNumVoices();
-    voiceFreqs.resize(numVoices);
-    voiceAmps.resize(numVoices);
-    // shouldn't we do this in an overriden allocateVoiceResources? ..but that callback doesn't get
-    // called - why?
-    // the constructor of AudioModulePoly calls setVoiceManager which in trun calls 
-    // allocateVoiceResources - and this call invokes the baseclass implementation...why? it seems 
-    // like the template-method patter does not work from constructors - yes, indeed
-
-
-
-    createParameters();
-  }
 
   void createParameters()
   {
@@ -206,7 +193,8 @@ void UnitTestModulation::runTestPolyToMono()
   reset();
 
   // Create modulation sources:
-  TestPolyModulator mod1(&lock, nullptr, &modMan, &voiceMan);
+  TestPolyModulator mod1(&lock, nullptr, &modMan);
+  mod1.setVoiceManager(&voiceMan);
 
 
 
@@ -226,9 +214,12 @@ void UnitTestModulation::runTestPolyToPoly()
   double dVal1, dVal2;
 
   // Create modulation sources:
-  jura::rsConstantOneModulatorModulePoly  constant( &lock, nullptr, &modMan, &voiceMan);
-  jura::rsNotePitchModulatorModulePoly    notePitch(&lock, nullptr, &modMan, &voiceMan);
-  jura::rsNoteVelocityModulatorModulePoly noteVel(  &lock, nullptr, &modMan, &voiceMan);
+  jura::rsConstantOneModulatorModulePoly  constant( &lock, nullptr, &modMan);
+  jura::rsNotePitchModulatorModulePoly    notePitch(&lock, nullptr, &modMan);
+  jura::rsNoteVelocityModulatorModulePoly noteVel(  &lock, nullptr, &modMan);
+  constant.setVoiceManager(&voiceMan);
+  notePitch.setVoiceManager(&voiceMan);
+  noteVel.setVoiceManager(&voiceMan);
 
   // Register modulation sources:
   modMan.registerModulationSource(&constant);
@@ -238,7 +229,8 @@ void UnitTestModulation::runTestPolyToPoly()
   expectEquals(iVal, 3, "Failed to register sources in modulation manager");
 
   // Create the target module and register its parameters as modulation targets:
-  TestPolyAudioModule targetModule(&lock, nullptr, &modMan, &voiceMan);
+  TestPolyAudioModule targetModule(&lock, nullptr, &modMan);
+  targetModule.setVoiceManager(&voiceMan);
   //targetModule.init();
   targetModule.setVoiceSignalBuffer(&voiceBuffer[0]);
   iVal = (int) modMan.getAvailableModulationTargets().size();

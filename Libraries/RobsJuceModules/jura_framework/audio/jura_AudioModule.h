@@ -485,10 +485,8 @@ class JUCE_API AudioModulePoly : public AudioModuleWithMidiIn
 public:
 
   /** Constructor. May set up the managers. */
-  AudioModulePoly(CriticalSection *lockToUse, 
-    MetaParameterManager* metaManagerToUse = nullptr, 
-    ModulationManager* modManagerToUse = nullptr, 
-    rsVoiceManager* voiceManagerToUse = nullptr);
+  AudioModulePoly(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr, 
+    ModulationManager* modManagerToUse = nullptr);
 
   virtual ~AudioModulePoly() { }
 
@@ -580,13 +578,20 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Misc:
 
-  /** Your subclass should override this to allocate the DSP resources for the voices. */
-  virtual void allocateVoiceResources(rsVoiceManager* voiceManager)
+  /** Your subclass should override this to allocate the DSP resources for the voices. When this 
+  function gets called, it is assumed that the voiceManager has already been assigned (in fact, it 
+  is getting called from setVoiceManager), so in your overriden implementation, you can access the 
+  voiceMananger member to inquire things the desired maximum number of voices which will be 
+  relevant for knowing how many core DSP objects you need. */
+  virtual void allocateVoiceResources() = 0;
+
+  /*
   {
     // We need to provide an empty baseclass implementation because it gets called in our 
     // constructor. Maybe get rid of that call and make the function purely virtual. I think, it 
     // would be better design if this is purely virtual.
   }
+  */
   // Maybe it should have a boolean parameter to decide whether it should get called recursively on
   // the child modules. In our setVoiceManager we would pass false because the function calls 
   // itself recursively on the child modules and also calls allocateVoiceResources, so we would end
@@ -602,7 +607,8 @@ protected:
   // hmm - i'm not sure, if that's a good design - the motivation for introducing this buffer is
   // not having to change ToolChain::processBlock such that the realtime code of mono and poly
   // modules can be handled uniformly there...and that requires that we need to write our sample
-  // data somewhere else...maybe we should use generic processFrame(double* buffer), 
+  // data somewhere else - we cant use the buffers that are passed to processBlock because they
+  // are only for monophonic signals. maybe we should use generic processFrame(double* buffer), 
   // processBlock(double* buffer) functions... or introduce processFramePoly already in the
   // AudioModule baseclass and always call that
   // ...or maybe we should actually own the voicesBuffer here - re-using the same buffer for 
@@ -624,11 +630,10 @@ public:
 
   ModulatorModulePoly(CriticalSection* lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr,
-    ModulationManager* modManagerToUse = nullptr,
-    rsVoiceManager* voiceManagerToUse = nullptr)
-    : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+    ModulationManager* modManagerToUse = nullptr)
+    : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse) 
   {
-    allocateVoiceResources(voiceManager);
+    //allocateVoiceResources(voiceManager);
   }
 
   /*
@@ -652,9 +657,9 @@ public:
   }
 
 
-  virtual void allocateVoiceResources(rsVoiceManager* voiceManager)
+  void allocateVoiceResources() override
   {
-    AudioModulePoly::allocateVoiceResources(voiceManager);
+    //AudioModulePoly::allocateVoiceResources();
     ModulationSourcePoly::allocateVoiceResources(voiceManager);
   }
 

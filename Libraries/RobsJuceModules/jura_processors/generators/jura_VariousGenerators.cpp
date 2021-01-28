@@ -36,9 +36,8 @@ void SineOscAudioModule::createParameters()
 //-------------------------------------------------------------------------------------------------
 
 SineOscAudioModulePoly::SineOscAudioModulePoly(CriticalSection* lockToUse,
-  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse,
-  rsVoiceManager* voiceManagerToUse)
-  : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse, voiceManagerToUse) 
+  MetaParameterManager* metaManagerToUse, ModulationManager* modManagerToUse)
+  : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse) 
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("SineOscillatorPoly");  // change to SineOscillator later
@@ -84,7 +83,7 @@ void SineOscAudioModulePoly::createParameters()
   //  AudioModulePoly to also call do the polyphonic callbacks?
 }
 
-void SineOscAudioModulePoly::allocateVoiceResources(rsVoiceManager* voiceManager) 
+void SineOscAudioModulePoly::allocateVoiceResources() 
 {
   if(voiceManager)
     voices.resize(voiceManager->getMaxNumVoices());
