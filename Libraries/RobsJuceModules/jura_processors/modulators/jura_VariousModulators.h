@@ -114,7 +114,7 @@ public:
   {
     ScopedLock scopedLock(*lock);
     //setModuleTypeName("NotePitch");
-    setModulationSourceName("NotePitch");
+    setModulationSourceName("NotePitch"); // maybe rename to NoteKey, MidiKey
   }
 
   double renderVoiceModulation(int voiceIndex) override
@@ -124,6 +124,7 @@ public:
   }
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNotePitchModulatorModulePoly)
 };
+
 
 /** A modulator module that just outputs the current normalized velocity of a given voice. */
 class JUCE_API rsNoteVelocityModulatorModulePoly : public ModulatorModulePoly

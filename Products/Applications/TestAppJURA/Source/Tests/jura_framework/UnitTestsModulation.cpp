@@ -251,6 +251,10 @@ void UnitTestModulation::runTest()
 
   // todo: make a test that combines all sorts of modulators and targets - both mono/poly and wire
   // everything to everything
+
+  // The modulation depths in the connections should be between 0 and 1 because they are clipped at
+  // these values by default because depth is actually a Parameter object that has a default range
+  // of 0..1.
 }
 
 
@@ -259,7 +263,8 @@ void UnitTestModulation::runTestMonoToPoly()
   reset();
 
   int iVal;
-  double dVal1, dVal2;
+  double dVal1, dVal2;  // values
+  double dTgt1, dTgt2;  // targets
 
   // Create and register modulation sources:
   TestMonoModulator mod1(&lock, nullptr, &modMan);
@@ -310,29 +315,103 @@ void UnitTestModulation::runTestMonoToPoly()
   // Trigger a note and do the same. Now we actually expect the setFreq callbacks to be called and 
   // a nonzero output to be produced:
   using Msg = juce::MidiMessage;
-  int    key1 = 69;
-  float  vel  = 1.0f;
-  double velQ = voiceMan.quantize7BitUnsigned(vel);       // midi roundtrip quantizes velocity
-  voiceMan.handleMidiMessage(Msg::noteOn(1, key1, vel));
+  int    key1  = 69;
+  float  vel1  = 1.0f;
+  double vel1Q = voiceMan.quantize7BitUnsigned(vel1);       // midi roundtrip quantizes velocity
+  voiceMan.handleMidiMessage(Msg::noteOn(1, key1, vel1));
   modMan.applyModulationsNoLock();
   expectEquals(mod1.numMonoRenders, 2);
   expectEquals(mod2.numMonoRenders, 2);
   expectEquals(gen.numSetFreqCalls, 1);
   expectEquals(gen.numSetAmpCalls,  1);
   gen.processStereoFrame(&dVal1, &dVal2);
+  dTgt1 = 1000.0 + depth1 * mod1.value;
+  dTgt2 =    1.0 + depth2 * mod2.value;
   expectEquals(dVal1, 1000.0 + depth1 * mod1.value); 
   expectEquals(dVal2,    1.0 + depth2 * mod2.value);
 
+  // Turn the nore off again. After noteOff, we should again get a zero output and setFreq should
+  // not get called:
+  voiceMan.handleMidiMessage(Msg::noteOn(1, key1, 0.f));
+  modMan.applyModulationsNoLock();
+  expectEquals(mod1.numMonoRenders, 3);
+  expectEquals(mod2.numMonoRenders, 3);
+  expectEquals(gen.numSetFreqCalls, 1);
+  expectEquals(gen.numSetAmpCalls,  1);
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 0.0); 
+  expectEquals(dVal2, 0.0);
 
+  // Create and register modulators for note-key and note-vel and connect them to the parameters:
+  jura::rsNotePitchModulatorModulePoly    notePitch(&lock, nullptr, &modMan);
+  jura::rsNoteVelocityModulatorModulePoly noteVel(  &lock, nullptr, &modMan);
+  notePitch.setVoiceManager(&voiceMan);
+  noteVel.setVoiceManager(&voiceMan);
+  modMan.registerModulationSource(&notePitch);
+  modMan.registerModulationSource(&noteVel);
+  double depthKey = 0.25;
+  double depthVel = 0.75;
+  addConnection(&notePitch, targets[0], depthKey);
+  addConnection(&noteVel,   targets[1], depthVel);
+  iVal = (int) modMan.getModulationConnections().size();
+  expectEquals(iVal, 4, "Failed add connection to modulation manager");
 
-  // todo: wire up note-based modulators and tigger multiple notes and check, if the used 
-  // modulation signal corresponds to the right one (which is the the newest active)..
+  // Trigger the note again and check, if now the additional note-based modulators are applied:
+  voiceMan.handleMidiMessage(Msg::noteOn(1, key1, vel1));
+  modMan.applyModulationsNoLock();
+  expectEquals(mod1.numMonoRenders, 4);
+  expectEquals(mod2.numMonoRenders, 4);
+  expectEquals(gen.numSetFreqCalls, 2);
+  expectEquals(gen.numSetAmpCalls,  2);
+  gen.processStereoFrame(&dVal1, &dVal2);
+  dTgt1 = 1000.0 + depth1 * mod1.value + depthKey * key1;
+  dTgt2 =    1.0 + depth2 * mod2.value + depthVel * vel1Q;
+  expectEquals(dVal1, dTgt1); 
+  expectEquals(dVal2, dTgt2);
 
+  // Trigger a 2nd, 3rd, 4th, 5th note, release the 2nd and 5th and 3rd. That means that key1 and 
+  // key4 are still active after that sequence:
+  int   key2 = 20,  key3 = 30,   key4 = 40,   key5 = 50;
+  float vel2 = 0.2, vel3 = 0.3f, vel4 = 0.4f, vel5 = 0.5f;
+  double vel4Q = voiceMan.quantize7BitUnsigned(vel4);  
+  voiceMan.handleMidiMessage(Msg::noteOn(1, key2, vel2));
+  voiceMan.handleMidiMessage(Msg::noteOn(1, key3, vel3));
+  voiceMan.handleMidiMessage(Msg::noteOn(1, key4, vel4));
+  voiceMan.handleMidiMessage(Msg::noteOn(1, key5, vel5));
+  voiceMan.handleMidiMessage(Msg::noteOn(1, key2, 0.f));
+  voiceMan.handleMidiMessage(Msg::noteOn(1, key5, 0.f));
+  voiceMan.handleMidiMessage(Msg::noteOn(1, key3, 0.f));
+  modMan.applyModulationsNoLock();
+  expectEquals(mod1.numMonoRenders, 5);
+  expectEquals(mod2.numMonoRenders, 5);
+  expectEquals(gen.numSetFreqCalls, 4);  // incremented by two
+  expectEquals(gen.numSetAmpCalls,  4); 
+  gen.processStereoFrame(&dVal1, &dVal2);
+  dTgt1  = 1000.0 + depth1 * mod1.value + depthKey * key1;  // contribution of voice with key1
+  dTgt2  =    1.0 + depth2 * mod2.value + depthVel * vel1Q;
+  dTgt1 += 1000.0 + depth1 * mod1.value + depthKey * key4;  // contribution of voice with key4
+  dTgt2 +=    1.0 + depth2 * mod2.value + depthVel * vel4Q;
+  expectEquals(dVal1, dTgt1); 
+  expectEquals(dVal2, dTgt2);
+
+  // Change parameter value - set freq from 1000 to 500:
+  //gen.getParameterByName("Frequency")->setValue(500.0, false, false); // or false, true?
+  gen.getParameterByName("Frequency")->setValue(500.0, false, true);
+  modMan.applyModulationsNoLock();
+  expectEquals(mod1.numMonoRenders, 6);
+  expectEquals(mod2.numMonoRenders, 6);
+  expectEquals(gen.numSetFreqCalls, 6);
+  expectEquals(gen.numSetAmpCalls,  6);
+  dTgt1  = 500.0 + depth1 * mod1.value + depthKey * key1;
+  dTgt2  =   1.0 + depth2 * mod2.value + depthVel * vel1Q;
+  dTgt1 += 500.0 + depth1 * mod1.value + depthKey * key4;
+  dTgt2 +=   1.0 + depth2 * mod2.value + depthVel * vel4Q;
+  expectEquals(dVal1, dTgt1);
+  expectEquals(dVal2, dTgt2);
+  // This test still fails. Maybe the unmodulated value is not getting updated in setValue?
 
   int dummy = 0;
 }
-
-
 
 
 void UnitTestModulation::runTestPolyToMono()
