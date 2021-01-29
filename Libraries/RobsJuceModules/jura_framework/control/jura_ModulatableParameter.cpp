@@ -759,6 +759,11 @@ void ModulationManagerPoly::applyModulationsNoLock()
       double val = modulatedValues[i];
       affectedTargets[i]->modulatedValue = val;
       affectedTargets[i]->doModulationUpdate(val); }
+      // this calls the monophonic callback a second time when a voice is active...oh and i guess
+      // it will call the monophonic update once for every active voice and then again here
+      // ...baaad! fix it by introducing a virtual doVoiceModulationUpdate function that is empty 
+      // in ModulationTarget but overriden in ModulatableParameterPoly to actually call the 
+      // callback. the, in applyVoiceModulations call that function instead
   }
   else
   {

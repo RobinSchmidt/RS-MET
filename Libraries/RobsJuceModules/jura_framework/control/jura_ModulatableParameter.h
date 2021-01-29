@@ -998,21 +998,11 @@ public:
   index. */
   virtual double renderVoiceModulation(int voiceIndex) = 0;
 
-
-
-  double renderModulation() override
-  {
-    //jassert(voiceManager != nullptr);
-    //modValue = modValues[voiceManager->getNewestVoice()];
-    
-    //jassertfalse;  // should not be used in polyphonic modules
-    return 0.0;
-
-    //jassert(voiceManager != nullptr);
-    //return getModulatorOutputSample(voiceManager->getNewestVoice());
-    // will this work? what if the newest voice is among the active voices? will then getSample be
-    // called twice? ...figure out?
-  }
+  /** We override this purely virtual method inherited from ModulationSource here to produce a zero
+  value. This rendering function is invoked when there is no active voice, i.e. no note is playing.
+  If your modulator subclass wants to produce something other than zero in such a case, you may
+  override it in your subclass of ModulationSourcePoly again. */
+  double renderModulation() override { return 0.0; }
 
 
 
@@ -1025,38 +1015,19 @@ public:
 
   void updateModulationValue(rsVoiceManager* voiceManager) override
   { 
-    //jassert(voiceManager != nullptr);
-    if(voiceManager == nullptr)
-    {
+    if(voiceManager == nullptr) {
       modValue = renderModulation();
-      return;
-    }
-
+      return; }
+      // This is supposed to happen when either the monophonic ModulationManager baseclass is used
+      // or when ModulationManagerPoly is used but there are currently no active voices (it then
+      // falls back to calling the basclass method)
 
     jassert(modValues.size() >= voiceManager->getMaxNumVoices());
     for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)  {
       int k = voiceManager->getActiveVoiceIndex(i);
       modValues[k] = renderVoiceModulation(k);    }
-
-    // newer:  
-    //modValue = renderModulation();
-
-    // new:
-    if(voiceManager->getNumActiveVoices() > 0)
-      modValue = modValues[voiceManager->getNewestActiveVoice()];
-    else
-      modValue = renderModulation();
-    // does it make sense to handle it that way? could it produce glitches when numVoices 
-    // switches between zero and nonzero? -> figure out!
-    // maybe renderModulation should also just copy the value
-
-    // old:
-    //modValue = modValues[voiceManager->getNewestVoice()]; 
-    // experimental - to support the 
-    // monophonic code...but it may get overwritten in the next initialization...but maybe 
-    // that's good...we'll see....
   }
-  // maybe provide a separate new function updateModulationsPoly
+
 
   virtual void allocateVoiceResources(rsVoiceManager* voiceManager)
   {

@@ -21,11 +21,13 @@ public:
 
   double renderModulation() override
   {
+    numMonoRenders++;
     return value;
   }
 
   double renderVoiceModulation(int voiceIndex) override
   {
+    numPolyRenders++;
     return value;
   }
 
@@ -33,8 +35,13 @@ public:
 
   double value = 1.0;
 
+  int numMonoRenders = 0;
+  int numPolyRenders = 0;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TestPolyModulator)
 };
+// todo: count, how many times the render callbacks have been called and check in the test, if 
+// that matches the expectation
 
 
 //=================================================================================================
@@ -62,16 +69,19 @@ public:
 
   void setFrequency(double newFreq) 
   { 
-    freq = newFreq; 
+    freq = newFreq;
+    numSetFreqCalls++;
   }
 
   void setAmplitude(double newAmp)  
   { 
-    amp  = newAmp; 
+    amp  = newAmp;
+    numSetAmpCalls++;
   }
 
 
 
+  int numSetFreqCalls = 0, numSetAmpCalls = 0;
 
 private:
 
@@ -89,11 +99,17 @@ private:
     p = new Param("Amplitude", -1.0, +1.0, +1.0, Param::LINEAR);
     addObservedParameter(p);
     p->setValueChangeCallback<TMAM>(this, &TMAM::setAmplitude);
+
+    // We don't want to count the calls that happen during construction. The counters get 
+    // incremented during setValueChangeCallback because this setter actually also invokes the 
+    // callback once, to make sure, everything is in sync after construction. So we decrement them
+    // again:
+    numSetFreqCalls--;
+    numSetAmpCalls--;
   }
 
 
   double freq = 0, amp = 0;
-
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TestMonoAudioModule)
 };
@@ -240,27 +256,37 @@ void UnitTestModulation::runTestPolyToMono()
   mod1.value = 3.0;
   mod2.value = 5.0;
   modMan.applyModulationsNoLock();
+  expectEquals(mod1.numMonoRenders, 1);
+  expectEquals(mod1.numPolyRenders, 0);
+  expectEquals(mod2.numMonoRenders, 1);
+  expectEquals(mod2.numPolyRenders, 0);
+  expectEquals(gen.numSetFreqCalls, 1);
+  expectEquals(gen.numSetAmpCalls,  1);
   gen.processStereoFrame(&dVal1, &dVal2);
   expectEquals(dVal1, 1000.0 + depth1 * mod1.value); 
   expectEquals(dVal2,    1.0 + depth2 * mod2.value);
-  // this fails! 
-  // -TestPolyModulator::renderModulation is called 3 times (-> ok)
-  // -setFreqiuencvy is called, but with 1000 - 
-  //  affectedTargets[0].modulatedValue is still 1000
-
-
 
   // Trigger a note-on on the voice manager (the gen module itself does not have a midi event 
   // handler because it's just a ModulatableAudioModule with no midi in), call applyModulations 
   // and produce a sample again - this should produce a value with the modulations applied:
   using Msg = juce::MidiMessage;
   int    key1 = 69;
-  float  vel  = 0.5f;
+  float  vel  = 1.0f;
   double velQ = voiceMan.quantize7BitUnsigned(vel);       // midi roundtrip quantizes velocity
   voiceMan.handleMidiMessage(Msg::noteOn(1, key1, vel));
+  modMan.applyModulationsNoLock();
+  expectEquals(mod1.numMonoRenders, 1);
+  expectEquals(mod1.numPolyRenders, 1);
+  expectEquals(mod2.numMonoRenders, 1);
+  expectEquals(mod2.numPolyRenders, 1);
+  expectEquals(gen.numSetFreqCalls, 2); // fails! it got called 3 times. there's an extra
+  expectEquals(gen.numSetAmpCalls,  2); // invocation of the callback somewhere!
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1000.0 + depth1 * mod1.value); 
+  expectEquals(dVal2,    1.0 + depth2 * mod2.value);
 
+  // todo: try changing the parameter(s) - for example, set the freqeuncy to 500
 
-  // todo: try changing the parameter(s)
 
 
   int dummy = 0;
