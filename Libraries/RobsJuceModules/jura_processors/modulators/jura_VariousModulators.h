@@ -288,7 +288,7 @@ protected:
 
 
   virtual void createParameters();
-  void allocateVoiceResources(rsVoiceManager* voiceManager) override;
+  void allocateVoiceResources() override;
 
 
   std::vector<RAPT::rsAttackDecayEnvelope<double>> cores;

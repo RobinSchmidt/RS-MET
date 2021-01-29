@@ -1064,6 +1064,12 @@ Bugs:
    deleteEditor(index) instead of scheduleSelectorArrayUpdate
 -If a limiter (or gain) is placed after a poly-sine osc and the modulator is placed after the 
  limiter, the limiter has no effect
+-load a fresh SineOscillatorStereo and play a not: silence. we only get sound if we wire (for 
+ example) NoteFrequency to Frequency
+-load patch _TestSineOscPoly2 and connect the EnvelopeAD to the frequency - the envelope does
+ have effect, but attack/decay parameters in the dsp object do not reflect the settings. moving 
+ the sliders for attack/decay also has no effect. in _TestSineOscPoly3 the do have effect. the
+ difference is that they are wired to the constant1 modulator (with 0 depth)
 -Poly modulators (and generators?) do not update their parameters when the slider is moved but no 
  modulator is connected
 -the order of the modulation connections is not always the same as we wired them up

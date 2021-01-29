@@ -681,8 +681,7 @@ public:
 
   void allocateVoiceResources() override
   {
-    //AudioModulePoly::allocateVoiceResources();
-    ModulationSourcePoly::allocateVoiceResources(voiceManager);
+    ModulationSourcePoly::allocateVoiceOutputPins(voiceManager);
   }
 
 };

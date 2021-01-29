@@ -1033,7 +1033,7 @@ public:
   }
 
 
-  virtual void allocateVoiceResources(rsVoiceManager* voiceManager)
+  virtual void allocateVoiceOutputPins(rsVoiceManager* voiceManager)
   {
     if(voiceManager == nullptr)
       modValues.resize(0);       // or maybe use size 1? ...nah - array should not be used in this case
