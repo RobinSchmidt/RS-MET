@@ -1078,6 +1078,10 @@ public:
   /** Overriden to call our callback function with the modulated value. */
   void doVoiceModulationUpdate(double modulatedValue, int voiceIndex) override
   {
+    jassert(voiceIndex >= 0);
+    valueChangeCallbackPoly(modulatedValue, voiceIndex);
+
+    /*
     if(voiceIndex >= 0)
       valueChangeCallbackPoly(modulatedValue, voiceIndex);
     else
@@ -1087,6 +1091,7 @@ public:
       //... maybe we should call the inherited monophonic callback here?
       // callCallback(modulatedValue); ..like this? ..not sure - we'll see
     }
+    */
   }
   // maybe we should computed the modulatedValue here, right before calling the callback
   // ..no need to store it in any object....
@@ -1111,7 +1116,9 @@ protected:
   // the design...or maybe just use std::function, as Elan does - but before doing such a switch, 
   // figure out if the old way is more performant - if that's the case, it may be better to keep 
   // it - and it may actually even better to not use std::function here, too. -> Do performance 
-  // tests that compare ModulatableParameter with ModulatableParameter2
+  // tests that compare ModulatableParameter with ModulatableParameter2. The higher memory cost
+  // for std::function is probably irrelevant because Parameter is already quite heavyweight 
+  // anyway...da macht das biﬂchen mehr den kohl auch nicht mehr fett
 
   //typedef std::function<void(double)> SetValueCallback;
   //std::vector<SetValueCallback*> valueChangeCallbacks;

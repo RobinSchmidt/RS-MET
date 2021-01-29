@@ -166,6 +166,9 @@ void MetaControlledParameter::setValue(double newValue, bool sendNotification, b
   //jassert(x >= 0 && x <= 1);
   x = RAPT::rsClip(x, 0.0, 1.0);
   setNormalizedValue(x, sendNotification, callCallbacks);
+  // ToDo: Document, why this mapping/unmapping is necessarry. It has to do with keeping our 
+  // normalized value here in sync with the host automation taking into account the user defined 
+  // mapping curve but i'm not sure anymore, how exactly that works.
 
   // preliminary
   //rsSmoothableParameter::setValue(newValue, sendNotification, callCallbacks);

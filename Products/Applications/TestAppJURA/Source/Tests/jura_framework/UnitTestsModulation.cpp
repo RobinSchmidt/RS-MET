@@ -321,25 +321,20 @@ void UnitTestModulation::runTestMonoToMono()
   expectEquals(gen.numSetFreqCalls, 2);
   expectEquals(gen.numSetAmpCalls,  2);
   gen.processStereoFrame(&dVal1, &dVal2);
-  expectEquals(dVal1, 500.0 + depth1 * mod1.value);  // we get roundoff error here! why?
+  expectWithinAbsoluteError(dVal1, 500.0 + depth1 * mod1.value, 1.e-13); 
   expectEquals(dVal2,   1.0 + depth2 * mod2.value);
-
-
-
-  // ToDo:
-  // Create and connect note-based modulators and see if they work. Because we are dealing with 
-  // monophonic modules only, the noteOn events must be passed directly to the modulator, i.e. we
-  // need to call noteOn on the modulator. This is what in the other cases the voiceManager would 
-  // do...right? but no: the note-based modulators are poly-modulators but here we deal with 
-  // MonoToMono
-
-  // wait - is it actually desirable that a modulated output is produced even when no note is 
-  // active? what should the modulation be based on, if no voice is playing? ah - wait - it 
-  // actually is (or can be) based on notes anyway, depending on how the modulator implements
-  // noteOn - modulators do not even need a voiceManager to respond to noteOn calls
-
-
-  int dummy = 0;
+  // We get roundoff error here: the unmodulated value after calling setValue is something like 
+  // 499.9999.... It's because setValue lets the value makes a roundtrip through the normalized 
+  // value. In MetaControlledParameter::setValue, we do:
+  //   double y = mapper->unmap(newValue);
+  //   double x = metaMapper.unmap(y);
+  // This is somehow to keep the value in sync with the host automation, also taking into account
+  // the user-defined mapping between normalized meta-parameters. I don't know exactly anymore
+  // why that is necessarry and how it works but i guess, it's ok. And it's definitely not the
+  // fault of the modulation system. It has to do with the automation/metaparameter system.
+  // The roundoff error does not seem to happen for the polyphonic parameter. That seems to be
+  // because we use other modulations there - the unmodulated value is still wrong but the 
+  // modulated value apparently happens to come out right again. 
 }
 
 void UnitTestModulation::runTestMonoToPoly()
