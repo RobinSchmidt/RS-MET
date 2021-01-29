@@ -956,6 +956,33 @@ protected:
 
 //=================================================================================================
 
+/** Baseclass for polyphonic modulations sources.
+
+The rules for applying polyphonic sources to monophonic targets are as follows:
+
+  -If at least one voice is active (i.e. at least one note is playing), the monophonic target 
+   receives the modulation signal from the newest active voice, i.e. the latest note.
+  -If no voice is playing, the monophonic target receives whatever your overriden renderModulation
+   function produces. But you don't have to ovevride it. In this case, it receives zero, because 
+   that's what the inherited function will then produce. 
+
+So, your subclass is only *required* to override renderVoiceModulation and it *may optionally* 
+also override renderModulation in cases where it's not appropriate to produce a zero modulation 
+when no voice is playing (which, i guess, is uncommon - so mostly it should suffice to override
+renderVoiceModulation -> less boilerplate).
+
+...i'm not sure, if that's the best way to do it - experimentation is needed
+maybe it could also make sense to continue producing the last signal value from the latest voice
+after it was turned of - i.e. always use value of the newest voice, regardless whether this voice 
+is still active or not. but his implies that the sound of a patch will depend on the latest note
+that was ever produced - even after the note has long been died out - that may be bad for sound 
+design: the synth is in a certain state (due to the laste played note), the user creates a sound,
+saves it and when she relaods it at anothe day, it will sound different, because the synth is in
+a different state. that would be bad! ..it seems like having a state which depends on the last 
+played note and which affects the sound output is not a good idea.
+
+*/
+
 class JUCE_API ModulationSourcePoly : public ModulationSource
 {
 
@@ -969,6 +996,21 @@ public:
   index. */
   virtual double renderVoiceModulation(int voiceIndex) = 0;
 
+
+
+  double renderModulation() override
+  {
+    //jassert(voiceManager != nullptr);
+    //modValue = modValues[voiceManager->getNewestVoice()];
+    
+    //jassertfalse;  // should not be used in polyphonic modules
+    return 0.0;
+
+    //jassert(voiceManager != nullptr);
+    //return getModulatorOutputSample(voiceManager->getNewestVoice());
+    // will this work? what if the newest voice is among the active voices? will then getSample be
+    // called twice? ...figure out?
+  }
 
 
 
@@ -986,7 +1028,22 @@ public:
     for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)  {
       int k = voiceManager->getActiveVoiceIndex(i);
       modValues[k] = renderVoiceModulation(k);    }
-    modValue = modValues[voiceManager->getNewestVoice()]; // experimental - to support the 
+
+    // newer:  
+    //modValue = renderModulation();
+
+    // new:
+    if(voiceManager->getNumActiveVoices() > 0)
+      modValue = modValues[voiceManager->getNewestVoice()];
+    else
+      modValue = renderModulation();
+    // does it make sense to handle it that way? could it produce glitches when numVoices 
+    // switches between zero and nonzero? -> figure out!
+    // maybe renderModulation should also just copy the value
+
+    // old:
+    //modValue = modValues[voiceManager->getNewestVoice()]; 
+    // experimental - to support the 
     // monophonic code...but it may get overwritten in the next initialization...but maybe 
     // that's good...we'll see....
   }
@@ -994,7 +1051,7 @@ public:
   virtual void allocateVoiceResources(rsVoiceManager* voiceManager)
   {
     if(voiceManager == nullptr)
-      modValues.resize(0);       // or maybe use size 1?
+      modValues.resize(0);       // or maybe use size 1? ...nah - array should not be used in this case
     else
       modValues.resize(voiceManager->getMaxNumVoices());
   }
@@ -1002,20 +1059,6 @@ public:
 protected:
 
   std::vector<double> modValues; // replaces "modValue" member of monophonic baseclass
-
-private:
-
-  double renderModulation() override
-  {
-    jassertfalse;  // should not be used in polyphonic modules
-    return 0.0;
-
-    //jassert(voiceManager != nullptr);
-    //return getModulatorOutputSample(voiceManager->getNewestVoice());
-    // will this work? what if the newest voice is among the active voices? will then getSample be
-    // called twice? ...figure out?
-  }
-
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationSourcePoly)
 };

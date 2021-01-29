@@ -19,6 +19,11 @@ public:
   using jura::ModulatorModulePoly::ModulatorModulePoly;  // inherit constructors
 
 
+  double renderModulation() override
+  {
+    return value;
+  }
+
   double renderVoiceModulation(int voiceIndex) override
   {
     return value;
@@ -55,9 +60,15 @@ public:
     *right = amp;
   }
 
-  void setFrequency(double newFreq) { freq = newFreq; }
+  void setFrequency(double newFreq) 
+  { 
+    freq = newFreq; 
+  }
 
-  void setAmplitude(double newAmp)  { amp  = newAmp; }
+  void setAmplitude(double newAmp)  
+  { 
+    amp  = newAmp; 
+  }
 
 
 
@@ -192,11 +203,64 @@ void UnitTestModulation::runTestPolyToMono()
 {
   reset();
 
-  // Create modulation sources:
-  TestPolyModulator mod1(&lock, nullptr, &modMan);
-  mod1.setVoiceManager(&voiceMan);
+  int iVal;
+  double dVal1, dVal2;
+
+  // Create and register modulation sources:
+  TestPolyModulator mod1(&lock, nullptr, &modMan); mod1.setVoiceManager(&voiceMan);
+  TestPolyModulator mod2(&lock, nullptr, &modMan); mod2.setVoiceManager(&voiceMan);
+  TestPolyModulator mod3(&lock, nullptr, &modMan); mod3.setVoiceManager(&voiceMan);
+  modMan.registerModulationSource(&mod1);
+  modMan.registerModulationSource(&mod2);
+  modMan.registerModulationSource(&mod3);
+  iVal = (int) modMan.getAvailableModulationSources().size();
+  expectEquals(iVal, 3, "Failed to register sources in modulation manager");
+  // hmm...maybe we should use the velocity and freq/pitch as modulators
+
+  // Create the target module and register its parameters as modulation targets:
+  TestMonoAudioModule gen(&lock, nullptr, &modMan); // "gen" for "generator"
+  iVal = (int) modMan.getAvailableModulationTargets().size();
+  expectEquals(iVal, 2, "Failed to register parameters in modulation manager");
+
+  // Create and add connections:
+  const std::vector<jura::ModulationTarget*>& targets = modMan.getAvailableModulationTargets();
+  double depth1 = 1.0;
+  double depth2 = 0.5;
+  addConnection(&mod1, targets[0], depth1);
+  addConnection(&mod2, targets[1], depth2);
+  iVal = (int) modMan.getModulationConnections().size();
+  expectEquals(iVal, 2, "Failed add connection to modulation manager");
+
+  // Let the target module process an audio frame - this should produce unmodulated values:
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1000.0); 
+  expectEquals(dVal2,    1.0);
+
+  // Set up modulator values and produce a frame - this should produce modulated values:
+  mod1.value = 3.0;
+  mod2.value = 5.0;
+  modMan.applyModulationsNoLock();
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1000.0 + depth1 * mod1.value); 
+  expectEquals(dVal2,    1.0 + depth2 * mod2.value);
+  // this fails! 
+  // -TestPolyModulator::renderModulation is called 3 times (-> ok)
+  // -setFreqiuencvy is called, but with 1000 - 
+  //  affectedTargets[0].modulatedValue is still 1000
 
 
+
+  // Trigger a note-on on the voice manager (the gen module itself does not have a midi event 
+  // handler because it's just a ModulatableAudioModule with no midi in), call applyModulations 
+  // and produce a sample again - this should produce a value with the modulations applied:
+  using Msg = juce::MidiMessage;
+  int    key1 = 69;
+  float  vel  = 0.5f;
+  double velQ = voiceMan.quantize7BitUnsigned(vel);       // midi roundtrip quantizes velocity
+  voiceMan.handleMidiMessage(Msg::noteOn(1, key1, vel));
+
+
+  // todo: try changing the parameter(s)
 
 
   int dummy = 0;
@@ -238,13 +302,6 @@ void UnitTestModulation::runTestPolyToPoly()
 
   // Create and add connections:
   const std::vector<jura::ModulationTarget*>& targets = modMan.getAvailableModulationTargets();
-  auto addConnection = [&](jura::ModulationSource* source, jura::ModulationTarget* target, 
-    double depth)  // convenience function
-  {
-    jura::ModulationConnection* c = new jura::ModulationConnection(source, target, nullptr);
-    c->setDepth(depth);
-    modMan.addConnection(c);
-  };
   addConnection(&notePitch, targets[0], 1.0);
   addConnection(&noteVel,   targets[1], 0.5);
   iVal = (int) modMan.getModulationConnections().size();

@@ -16,6 +16,14 @@ protected:
 
   void reset();
 
+  /** Convenience function to add a modulation connection to our modMan. */
+  void addConnection(jura::ModulationSource* source, jura::ModulationTarget* target, double depth)
+  {
+    jura::ModulationConnection* c = new jura::ModulationConnection(source, target, nullptr);
+    c->setDepth(depth);
+    modMan.addConnection(c);
+  }
+
 
   // called from runTest:
   void runTestPolyToMono();

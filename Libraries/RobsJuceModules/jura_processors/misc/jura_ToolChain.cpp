@@ -1070,4 +1070,9 @@ Bugs:
 -when moving slider during playing, it sometimes seems to hang and glitch and does not recover
  ...waiting and then playing more notes just produces audio fragments
 
+
+ToDo:
+-FuncShaper: have a DryDelay parameter - mostly for compensating the latency of the AA filter but 
+ may be an interestinf effect as well
+
 */

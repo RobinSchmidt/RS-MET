@@ -211,11 +211,12 @@ void rsVoiceManager::deactivateVoice(int voiceIndex)
 
 ToDo:
 
--what about thread safety? whould we use a mutex?
+-what about thread safety? would we use a mutex?
 -maybe we should also store the most recent note an use that to update the monophonic modValue
  where applicable
 
 see also:
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=558446 Polyphonic voice assignment and retrigger
+
 
 */

@@ -267,6 +267,21 @@ public:
 
   double getPitchBend() const { return pitchBend; }
 
+  /** Helper function to quantize values in the range 0..1 to values representable by the midi
+  standard for velocities and controller values. In midi, these are represented as 7-bit integers 
+  in the range 0..127, so converting a normalized 0..1 value back and forth introduces a 
+  quantization that is replicated by this function. */
+  static double quantize7BitUnsigned(double val) { return round(val * 127.0) / 127.0; }
+  // maybe rename to quantize7bit
+  // can be sued in functions like setNoteVelocity(int voiceIndex, bool quantizeToMidi), if we want
+  // to implement such a thing - but setting/readjusting note-velocities after the fact is not 
+  // really supposed to be a common occurrence...but it may actually be a useful thing to 
+  // "modulate" the note velocity by some sort of controller - this will typically modulate 
+  // multiple parameter low-level parameters at once (gain, cutoff, env-excursions, etc.) - we'll 
+  // see
+
+  // todo: quantizeSigned8192: 14-bit values used for pitch-wheel - should expect values in -1..+1
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Event handling
