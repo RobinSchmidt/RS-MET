@@ -134,7 +134,7 @@ void AttackDecayEnvelopeModulePoly::createParameters()
 
 void AttackDecayEnvelopeModulePoly::allocateVoiceResources(rsVoiceManager* voiceManager) 
 {
-  ModulatorModulePoly::allocateVoiceResources(voiceManager);
+  ModulatorModulePoly::allocateVoiceResources();
   if(voiceManager)
     cores.resize(voiceManager->getMaxNumVoices());
   else

@@ -238,7 +238,11 @@ public:
   does. Initially (or after reset), when no voice has yet been triggered at all, it will return 
   zero. It will still continue to return the most recently triggered voice index even when all
   voices are already dead. It doesn't care at all about note-off. */
-  int getNewestVoice() const { return newestVoice; }
+  int getNewestVoice() const { return newestVoice;  }
+  // maybe it should return -1 when no voice is active. it doesn't seem to make sense to report
+  // the index of the last voice ever used - using that information for anything will produce bad 
+  // behavior such as dependency of the sound of a patch on the last note played (if note-based 
+  // modulators are connected), even if the note event was hours ago
 
   size_t getNumReleasingVoices() const { return releasingVoices.size(); }
   // the inconsistency is a bit ugly but we want to avoid conversion

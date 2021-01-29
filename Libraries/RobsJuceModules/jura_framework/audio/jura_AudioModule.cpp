@@ -695,7 +695,7 @@ AudioModulePoly::AudioModulePoly(CriticalSection *lockToUse,
 void AudioModulePoly::setVoiceManager(rsVoiceManager* managerToUse)
 {
   voiceManager = managerToUse;
-  allocateVoiceResources(voiceManager);
+  allocateVoiceResources();
   for(int i = 0; i < size(childModules); i++) {
     AudioModulePoly* pm = dynamic_cast<AudioModulePoly*>(childModules[i]);
     if(pm)

@@ -194,8 +194,9 @@ void UnitTestModulation::reset()
 void UnitTestModulation::runTest()
 {
   UnitTest::beginTest("Modulation");
-  runTestPolyToMono();
   runTestPolyToPoly();
+  runTestPolyToMono();
+
 }
 
 

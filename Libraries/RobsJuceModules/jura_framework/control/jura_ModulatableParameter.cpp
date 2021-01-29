@@ -711,31 +711,94 @@ void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
     && k == numDistinctActiveTargets-1);
   for(int i = 0; i <= k; i++)
     affectedTargets[i]->doModulationUpdate(modulatedValues[i], voiceIndex);
+
+
+  // i think this will cause monophonic parameters to get updated as many times as we have active 
+  // voices - but actually a single update should suffice...
 }
 
 void ModulationManagerPoly::applyModulationsNoLock()
 {
   jassert(voiceManager != nullptr); // must be assigned
 
-  // Compute output signals of all modulators. If the soucre is polyphonic, it will call the 
-  // overriden method and do the update for all active voices:
-  for(size_t i = 0; i < availableSources.size(); i++)
-    availableSources[i]->updateModulationValue(voiceManager);
 
-  // Apply the modulator outputs to the targets via the connections for one voice at a time. This 
-  // will also trigger the per-voice callback for the given voice:
-  for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)  
-    applyVoiceModulations(voiceManager->getActiveVoiceIndex(i));
+  if(voiceManager->getNumActiveVoices() > 0)
+  {
+    // Compute output signals of all modulators. If the soucre is polyphonic, it will call the 
+    // overriden method and do the update for all active voices:
+    for(size_t i = 0; i < availableSources.size(); i++)
+      availableSources[i]->updateModulationValue(voiceManager);
+
+    // Apply the modulator outputs to the targets via the connections for one voice at a time. This 
+    // will also trigger the per-voice callback for the given voice:
+    int numVoices = voiceManager->getNumActiveVoices();
+    int k;
+    for(int i = 0; i < numVoices; i++)
+    {
+      k = voiceManager->getActiveVoiceIndex(i);
+      applyVoiceModulations(k);
+    }
+      
+    int newestVoice = voiceManager->getNewestVoice(); 
+    jassert(newestVoice == k);
+    // should this be equal to the last k? i think so. -> figure out. if this is indeed the case 
+    // then now, after the loop has finished, the modulatedValues array contains the modulated 
+    // values for all parameters for the newest voice, so these values should be appropriate to
+    // to use to call the monophonic callback with. If it's not the case, we may have to pass
+    // a flag to applyVoiceModulations that is true only iff k == newetsVoice and the function
+    // should also call the mono-callbacks when the flag is true - ok, it seems to work
+
+    // nope: trigger C,D,E the release E - yes, of course: E was the last note triggered, but when
+    // its released first, this condition does not hold anymore. and it doesn't seem to make sense
+    // to use the last triggered void for the mono params. if anything, maybe it should use the 
+    // value from the lasr released voice...anyway - maybe we should just use the value from the 
+    // last k - that will be the most recently triggered voice that is still active
+
+  }
+  else
+  {
+    //ModulationManager::applyModulationsNoLock();
+  }
 
 
+
+
+
+  /*
   // i think we need to apply the mono modulations, too ...maybe that can be done by copying the
   // value
+  // initialize modulation target values with their unmodulated values:
+
+  // experimental:
+  if(voiceManager->getNumActiveVoices() == 0)
+  {
+    // No voice is playing and therefore no modulatedValues have been produced, so our 
+    // modulatedValues[i] array is empty and we have to produce a modulated value in the same
+    // way as we did in the monophonic baseclass. This code is copied from there:
+    for(int i = 0; i < affectedTargets.size(); i++)
+      affectedTargets[i]->initModulatedValue();
+    for(int i = 0; i < modulationConnections.size(); i++)
+      modulationConnections[i]->apply();
+    // This will set up 
+  }
+  else
+  {
+    // When at least one voice is playing, we use the modulatedValue from the newest voice:
+    for(int i = 0; i < affectedTargets.size(); i++)
+    {
+      int newestVoice = voiceManager->getNewestVoice();
+      affectedTargets[i]->modulatedValue = modulatedValues[newestVoice];
+
+      // wait - no - we cannot use the same value for all targets. that makes no sense
+    }
+  }
 
 
 
   // Also call the monophonic callbacks because they are not called in the loop above:
   for(size_t i = 0; i < affectedTargets.size(); i++)
     affectedTargets[i]->doModulationUpdate(affectedTargets[i]->getModulatedValue());
+    */
 }
 // What bout connecting mono-sources to poly targets? here we will need to compute the monophonic
 // mod-signal first and then distribute it among the voices...we may need to loop over the 
