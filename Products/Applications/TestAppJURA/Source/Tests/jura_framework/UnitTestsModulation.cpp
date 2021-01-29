@@ -297,7 +297,7 @@ void UnitTestModulation::runTestMonoToMono()
   // even though there is no voice manager involved, because they are already inheriting 
   // noteOn/Off callbacks from AudioModuleWithMidiIn which is a baseclass of ModulatorModuleMono.
   // This makes sense because modulators are typically things that we want to trigger via midi even
-  // in absence of a polyphony framework.
+  // in absence of a polyphony framework. 
   gen.processStereoFrame(&dVal1, &dVal2);
   expectEquals(dVal1, 1000.0); 
   expectEquals(dVal2,    1.0);
@@ -321,7 +321,7 @@ void UnitTestModulation::runTestMonoToMono()
   expectEquals(gen.numSetFreqCalls, 2);
   expectEquals(gen.numSetAmpCalls,  2);
   gen.processStereoFrame(&dVal1, &dVal2);
-  //expectEquals(dVal1, 500.0 + depth1 * mod1.value);  // we get roundoff error here! why?
+  expectEquals(dVal1, 500.0 + depth1 * mod1.value);  // we get roundoff error here! why?
   expectEquals(dVal2,   1.0 + depth2 * mod2.value);
 
 

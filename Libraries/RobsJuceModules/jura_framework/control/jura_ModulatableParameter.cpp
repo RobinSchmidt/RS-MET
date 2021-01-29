@@ -722,14 +722,6 @@ void ModulationManagerPoly::applyModulationsNoLock()
     // overriden method and do the update for all active voices:
     for(size_t i = 0; i < availableSources.size(); i++)
       availableSources[i]->updateModulationValue(voiceManager);
-    // ...what if the source is monophonic? i think, then it will assign only the modulatedValue
-    // member. in this case we should copy it into ...ooh - i think, in this case, i makes no sense
-    // to call it per voice - that will cause the getSample function of the modulator to be called
-    // nnumActiveVoices times. fix: 
-    // -introduce an updateVoiceModulation callback
-    // -in mono modulators, this just copy the modValue into the particular voice slot...but these
-    //  do not have the array as member
-    // -call the 
 
     // Apply the modulator outputs to the targets via the connections for one voice at a time. This 
     // will also trigger the doVoiceModulationUpdate callback for the given voice:
@@ -752,54 +744,15 @@ void ModulationManagerPoly::applyModulationsNoLock()
   }
   else
   {
-    // When no voice is active, we fall back to the baseclass implementation:
+    // When no voice is active, we fall back to the baseclass implementation. Monophonic target 
+    // modules should behave the same way as before introducing the polyphonic version of the
+    // modulation system. That no voice is active in voiceManager does not necesarrily mean that
+    // there are no note-based modulations going on because monphonic modulators can still produce
+    // nonzero output even when no voice is active and can even get triggered via midi-notes...
+    // ...todo: explain more what is the rationale behind this and what happens
     ModulationManager::applyModulationsNoLock();
-    // todo: explain more what is the rationale behind this and what happens
   }
-
-
-
-  /*
-  // i think we need to apply the mono modulations, too ...maybe that can be done by copying the
-  // value
-  // initialize modulation target values with their unmodulated values:
-
-  // experimental:
-  if(voiceManager->getNumActiveVoices() == 0)
-  {
-    // No voice is playing and therefore no modulatedValues have been produced, so our 
-    // modulatedValues[i] array is empty and we have to produce a modulated value in the same
-    // way as we did in the monophonic baseclass. This code is copied from there:
-    for(int i = 0; i < affectedTargets.size(); i++)
-      affectedTargets[i]->initModulatedValue();
-    for(int i = 0; i < modulationConnections.size(); i++)
-      modulationConnections[i]->apply();
-    // This will set up 
-  }
-  else
-  {
-    // When at least one voice is playing, we use the modulatedValue from the newest voice:
-    for(int i = 0; i < affectedTargets.size(); i++)
-    {
-      int newestVoice = voiceManager->getNewestVoice();
-      affectedTargets[i]->modulatedValue = modulatedValues[newestVoice];
-
-      // wait - no - we cannot use the same value for all targets. that makes no sense
-    }
-  }
-
-
-
-  // Also call the monophonic callbacks because they are not called in the loop above:
-  for(size_t i = 0; i < affectedTargets.size(); i++)
-    affectedTargets[i]->doModulationUpdate(affectedTargets[i]->getModulatedValue());
-    */
 }
-// What bout connecting mono-sources to poly targets? here we will need to compute the monophonic
-// mod-signal first and then distribute it among the voices...we may need to loop over the 
-// sources, inquire, if the module is poly and if not, do the mono update and somehow (how?) 
-// distribute the result to the voices
-
 
 void ModulationManagerPoly::addConnectionToArray(ModulationConnection* c)
 {
@@ -821,10 +774,10 @@ void ModulationManagerPoly::addConnectionToArray(ModulationConnection* c)
 
 void ModulationManagerPoly::removeConnectionFromArray(int i)
 {
-  // ToDo: possibly decrement numDistinctActiveTargets, if this was the last connection to that
-  // target, maybe resize the modulatedValues buffer
-
-  // Check targets of connections left and right of i:
+  // Check targets of connections left and right of i. If neither of the neighbours has the same
+  // target, the removed connection is the only one to the given target and removing it will mean
+  // that we have one distinct active target less. That means numDistinctActiveTargets must be
+  // decremented and modulatedValues be resized:
   const ModulationTarget* ti = modulationConnections[i]->getTarget();
   const ModulationTarget *tl = nullptr, *tr = nullptr;
   if(i > 0)
@@ -833,27 +786,16 @@ void ModulationManagerPoly::removeConnectionFromArray(int i)
     tr = modulationConnections[i+1]->getTarget();
   if(!(ti == tl || ti == tr))
     numDistinctActiveTargets--; 
-    // none of the two neighbors has the same target, so the connection is the last one with the 
-    // given target, so the number of distinct targets gets decremented
-
   ModulationManager::removeConnectionFromArray(i);
   modulatedValues.resize(numDistinctActiveTargets);
 }
 
 // ToDo:
-// -make sure that connecting PolySource to MonoParam and MonoSoUrce to PolyParam does something 
-//  reasonable:
-//  -poly-to-mono: should use modulator output of the newest voice
-//  -mono-to-poly: all voices get the same monophonic value -> distribute it to the active voices 
-//   after it was computed
 // -make sure that upgrading monophonic modules to polyphonic ones later does not mess up state 
 //  recall:
 //  -poly modules should have a switch to toggle between mono and poly mode
 //  -in mono mode, they should behave exactly as their old mono-only precursors
 //  -the switch should be mono by default -> when upgrading a mono module to poly, the recall 
 //   should set it into mono-mode when the patch was saved with the old mono-only version
-// Bugs:
-// -when suing the preset _TestSineOsvPoly, the amplitude of the sine sometimes gets really loud
-//  ...ahh - i think, this is because of not fixing the phase in the osc's dsp code
-// -> implement phase fixing
+
 

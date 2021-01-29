@@ -1109,7 +1109,9 @@ protected:
   // for testing, we only use a "double" callback - it's very ugly design in Parameter, to have 
   // pointers to all 3 kinds of callbacks (double, int, bool) - maybe refactor and/or templatize 
   // the design...or maybe just use std::function, as Elan does - but before doing such a switch, 
-  // figure out if the old way is more performant - if that's the case, it may be better to keep it
+  // figure out if the old way is more performant - if that's the case, it may be better to keep 
+  // it - and it may actually even better to not use std::function here, too. -> Do performance 
+  // tests that compare ModulatableParameter with ModulatableParameter2
 
   //typedef std::function<void(double)> SetValueCallback;
   //std::vector<SetValueCallback*> valueChangeCallbacks;
