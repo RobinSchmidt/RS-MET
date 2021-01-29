@@ -24,8 +24,8 @@ protected:
     modMan.addConnection(c);
   }
 
-
   // called from runTest:
+  void runTestMonoToPoly();
   void runTestPolyToMono();
   void runTestPolyToPoly();
 

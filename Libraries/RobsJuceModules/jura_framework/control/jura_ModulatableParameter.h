@@ -285,17 +285,21 @@ public:
 
   /** Must be overriden by subclasses to do whatever they need to do after a modulatedValue has 
   been computed (for example, ModulatableParameter invokes the setter-callback which in turn 
-  updates the corresponding value in the core dsp algorithm). The voiceIndex is a provision to
-  implement polyphonic modulations in subclass ModulatableParameterPoly and can be ignored in case
-  of monophonic modulation targets. */
-  virtual void doModulationUpdate(double modulatedValue, int voiceIndex = -1)
+  updates the corresponding value in the core dsp algorithm). */
+  virtual void doModulationUpdate(double modulatedValue)
   {
     // we need an empty baseclass implementation because in the destructor of a plugin, 
     // doModulationUpdate would otherwise (in case of a purely virtual function) get called with a 
     // null-reference (or something), in ModulationManager::removeConnection when the modulateble 
     // parameter deletes itself
   }
-  // maybe it also needs to take the modulatedValue as parameter?
+
+  /** Like doModulationUpdate, but for polyphonic modulations. Overriden in 
+  ModuldatableParameterPoly. Monophonic modulation targets can ignore this. */
+  virtual void doVoiceModulationUpdate(double modulatedValue, int voiceIndex)
+  {
+
+  }
 
 
   /** \name Setup */
@@ -892,7 +896,7 @@ public:
   }
 
   /** Overriden to call our callback function with the modulated value. */
-  void doModulationUpdate(double modulatedValue, int voiceIndex = -1) override
+  void doModulationUpdate(double modulatedValue) override
   {
     callCallback(modulatedValue);
   }
@@ -914,7 +918,7 @@ callback, so if you use this callback mechanism, use this class for your paramet
 class JUCE_API ModulatableParameter2 : public ModulatableParameter
 {
   using ModulatableParameter::ModulatableParameter; // import baseclass constructors
-  virtual void doModulationUpdate(double modulatedValue, int voiceIndex = -1) override
+  virtual void doModulationUpdate(double modulatedValue) override
   {
     valueChangeCallbackFunction(modulatedValue);
     //valueChangeCallbackFunction(getModulatedValue());
@@ -1072,7 +1076,7 @@ public:
   }
 
   /** Overriden to call our callback function with the modulated value. */
-  void doModulationUpdate(double modulatedValue, int voiceIndex = -1) override
+  void doVoiceModulationUpdate(double modulatedValue, int voiceIndex) override
   {
     if(voiceIndex >= 0)
       valueChangeCallbackPoly(modulatedValue, voiceIndex);

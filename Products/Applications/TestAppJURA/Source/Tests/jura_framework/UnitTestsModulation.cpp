@@ -7,6 +7,32 @@
 
 // todo: a monophonic modulator
 
+
+//=================================================================================================
+
+/** A monophonic modulator. */
+
+class JUCE_API TestMonoModulator : public jura::ModulatorModuleMono
+{
+
+public:
+
+  using jura::ModulatorModuleMono::ModulatorModuleMono;  // inherit constructors
+
+
+  double renderModulation() override
+  {
+    numMonoRenders++;
+    return value;
+  }
+
+
+  double value = 1.0;
+  int numMonoRenders = 0;
+
+  JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TestMonoModulator)
+};
+
 //=================================================================================================
 
 /** A polyphonic modulator. */
@@ -145,11 +171,13 @@ public:
   void setFrequency(double newFreq, int voice) 
   { 
     voiceFreqs[voice] = newFreq;
+    numSetFreqCalls++;
   }
 
   void setAmplitude(double newAmp, int voice) 
   { 
     voiceAmps[voice] = newAmp;
+    numSetAmpCalls++;
   }
 
   void allocateVoiceResources() override
@@ -162,9 +190,10 @@ public:
     voiceAmps.resize(numVoices);
   }
 
+  int numSetFreqCalls = 0, numSetAmpCalls = 0;
+
 
 private:
-
 
   void createParameters()
   {
@@ -179,10 +208,16 @@ private:
     p = new Param("Amplitude", -1.0, +1.0, +1.0, Param::LINEAR);
     addObservedParameter(p);
     p->setValueChangeCallbackPoly([this](double v, int i) { setAmplitude(v, i); });
+
+    //numSetFreqCalls--;
+    //numSetAmpCalls--;
+    // nope - no need to decrement here - the poly callback is not invoked when its wired up 
+    // because that would make no sense - we don't even know for which voice we should call it
   }
 
   //double monoFreq, monoAmp;  
   std::vector<double> voiceFreqs, voiceAmps;
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TestPolyAudioModule)
 };
@@ -210,9 +245,94 @@ void UnitTestModulation::reset()
 void UnitTestModulation::runTest()
 {
   UnitTest::beginTest("Modulation");
+  runTestMonoToPoly();
   runTestPolyToMono();
   runTestPolyToPoly();
+
+  // todo: make a test that combines all sorts of modulators and targets - both mono/poly and wire
+  // everything to everything
 }
+
+
+void UnitTestModulation::runTestMonoToPoly()
+{
+  reset();
+
+  int iVal;
+  double dVal1, dVal2;
+
+  // Create and register modulation sources:
+  TestMonoModulator mod1(&lock, nullptr, &modMan);
+  TestMonoModulator mod2(&lock, nullptr, &modMan);
+  modMan.registerModulationSource(&mod1);
+  modMan.registerModulationSource(&mod2);
+  iVal = (int) modMan.getAvailableModulationSources().size();
+  expectEquals(iVal, 2, "Failed to register sources in modulation manager");
+
+  // Create the target module and register its parameters as modulation targets:
+  TestPolyAudioModule gen(&lock, nullptr, &modMan);
+  gen.setVoiceManager(&voiceMan);
+  gen.setVoiceSignalBuffer(&voiceBuffer[0]);
+  iVal = (int) modMan.getAvailableModulationTargets().size();
+  expectEquals(iVal, 2, "Failed to register parameters in modulation manager");
+
+  // Create and add connections:
+  const std::vector<jura::ModulationTarget*>& targets = modMan.getAvailableModulationTargets();
+  double depth1 = 1.0;
+  double depth2 = 0.5;
+  addConnection(&mod1, targets[0], depth1);
+  addConnection(&mod2, targets[1], depth2);
+  iVal = (int) modMan.getModulationConnections().size();
+  expectEquals(iVal, 2, "Failed add connection to modulation manager");
+
+  // Let the target module process an audio frame. This should produce zeros because we have not 
+  // yet triggered a note. Polyphonic sources produce nonzero output only when voices are active 
+  // (by default, but subclasses can override this behavior):
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 0.0); 
+  expectEquals(dVal2, 0.0);
+
+  // Now do the same thing but call applyModulationsNoLock before. We still expect zero outputs and
+  // we also don't expect the setFrequency/Amplitude modulation callback to get called because when
+  // the output is zero anyway it would be pointless to modulate any parameters. However, we do 
+  // render the modulation signals...because they could be wired to monophonic targets as well..
+  // ...hmm...does that make sense?
+  mod1.value = 3.0;
+  mod2.value = 5.0;
+  modMan.applyModulationsNoLock();
+  expectEquals(mod1.numMonoRenders, 1);
+  expectEquals(mod2.numMonoRenders, 1);
+  expectEquals(gen.numSetFreqCalls, 0);
+  expectEquals(gen.numSetAmpCalls,  0);
+  expectEquals(dVal1, 0.0); 
+  expectEquals(dVal2, 0.0);
+
+  // Trigger a note and do the same. Now we actually expect the setFreq callbacks to be called and 
+  // a nonzero output to be produced:
+  using Msg = juce::MidiMessage;
+  int    key1 = 69;
+  float  vel  = 1.0f;
+  double velQ = voiceMan.quantize7BitUnsigned(vel);       // midi roundtrip quantizes velocity
+  voiceMan.handleMidiMessage(Msg::noteOn(1, key1, vel));
+  modMan.applyModulationsNoLock();
+  expectEquals(mod1.numMonoRenders, 2);
+  expectEquals(mod2.numMonoRenders, 2);
+  expectEquals(gen.numSetFreqCalls, 1);
+  expectEquals(gen.numSetAmpCalls,  1);
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1000.0 + depth1 * mod1.value); 
+  expectEquals(dVal2,    1.0 + depth2 * mod2.value);
+
+
+
+  // todo: wire up note-based modulators and tigger multiple notes and check, if the used 
+  // modulation signal corresponds to the right one (which is the the newest active)..
+
+
+  int dummy = 0;
+}
+
+
 
 
 void UnitTestModulation::runTestPolyToMono()
@@ -225,7 +345,7 @@ void UnitTestModulation::runTestPolyToMono()
   // Create and register modulation sources:
   TestPolyModulator mod1(&lock, nullptr, &modMan); mod1.setVoiceManager(&voiceMan);
   TestPolyModulator mod2(&lock, nullptr, &modMan); mod2.setVoiceManager(&voiceMan);
-  TestPolyModulator mod3(&lock, nullptr, &modMan); mod3.setVoiceManager(&voiceMan);
+  TestPolyModulator mod3(&lock, nullptr, &modMan); mod3.setVoiceManager(&voiceMan); // not yet used
   modMan.registerModulationSource(&mod1);
   modMan.registerModulationSource(&mod2);
   modMan.registerModulationSource(&mod3);
@@ -285,13 +405,14 @@ void UnitTestModulation::runTestPolyToMono()
   expectEquals(dVal1, 1000.0 + depth1 * mod1.value); 
   expectEquals(dVal2,    1.0 + depth2 * mod2.value);
 
-  // todo: try changing the parameter(s) - for example, set the freqeuncy to 500
-
-
+  // todo: 
+  // -try changing the parameter(s) - for example, set the frequency to 500
+  // -connect the a note-based modulator (pitch or vel) and check, if the applied note-based 
+  //  modulation corresponds to the mostrecently triggered (via noteOn) note that has not yet 
+  //  been released (via noteOff)
 
   int dummy = 0;
 }
-
 
 void UnitTestModulation::runTestPolyToPoly()
 {
@@ -321,7 +442,6 @@ void UnitTestModulation::runTestPolyToPoly()
   // Create the target module and register its parameters as modulation targets:
   TestPolyAudioModule targetModule(&lock, nullptr, &modMan);
   targetModule.setVoiceManager(&voiceMan);
-  //targetModule.init();
   targetModule.setVoiceSignalBuffer(&voiceBuffer[0]);
   iVal = (int) modMan.getAvailableModulationTargets().size();
   expectEquals(iVal, 2, "Failed to register parameters in modulation manager");

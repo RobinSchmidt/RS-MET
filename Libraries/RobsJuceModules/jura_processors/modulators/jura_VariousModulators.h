@@ -33,7 +33,6 @@ protected:
 //=================================================================================================
 
 class JUCE_API AttackDecayEnvelopeModule 
-  //: public AudioModulePoly, public ModulationSourcePoly  // for later use
   : public AudioModuleWithMidiIn, public ModulationSource 
 {
 

@@ -618,6 +618,28 @@ protected:
 
 //=================================================================================================
 
+/** Baseclass for monophonic modulator modules. */
+
+class JUCE_API ModulatorModuleMono : public AudioModuleWithMidiIn, public ModulationSource
+{
+
+public:
+
+  using AudioModuleWithMidiIn::AudioModuleWithMidiIn;
+
+  /*
+  ModulatorModule(CriticalSection* lockToUse,
+    MetaParameterManager* metaManagerToUse = nullptr,
+    ModulationManager* modManagerToUse = nullptr)
+    : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse) 
+  {
+
+  }
+  */
+
+};
+
+
 /** Baseclass for polyphonic modulator modules. */
 
 class JUCE_API ModulatorModulePoly : public AudioModulePoly, public ModulationSourcePoly
