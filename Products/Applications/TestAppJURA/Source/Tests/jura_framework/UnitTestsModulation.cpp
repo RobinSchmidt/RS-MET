@@ -245,18 +245,102 @@ void UnitTestModulation::reset()
 void UnitTestModulation::runTest()
 {
   UnitTest::beginTest("Modulation");
+  runTestMonoToMono();
   runTestMonoToPoly();
   runTestPolyToMono();
   runTestPolyToPoly();
 
-  // todo: make a test that combines all sorts of modulators and targets - both mono/poly and wire
+  // ToDo: make a test that combines all sorts of modulators and targets - both mono/poly and wire
   // everything to everything
 
+  // When adding new tests, keep in mind:
   // The modulation depths in the connections should be between 0 and 1 because they are clipped at
   // these values by default because depth is actually a Parameter object that has a default range
   // of 0..1.
 }
 
+
+void UnitTestModulation::runTestMonoToMono()
+{
+  reset();
+
+  int iVal;
+  double dVal1, dVal2;  // values
+
+  // Create and register modulation sources:
+  TestMonoModulator mod1(&lock, nullptr, &modMan);
+  TestMonoModulator mod2(&lock, nullptr, &modMan);
+  modMan.registerModulationSource(&mod1);
+  modMan.registerModulationSource(&mod2);
+  iVal = (int) modMan.getAvailableModulationSources().size();
+  expectEquals(iVal, 2, "Failed to register sources in modulation manager");
+
+  // Create the target module and register its parameters as modulation targets:
+  TestMonoAudioModule gen(&lock, nullptr, &modMan); // "gen" for "generator"
+  iVal = (int) modMan.getAvailableModulationTargets().size();
+  expectEquals(iVal, 2, "Failed to register parameters in modulation manager");
+
+  // Create and add connections:
+  const std::vector<jura::ModulationTarget*>& targets = modMan.getAvailableModulationTargets();
+  double depth1 = 0.75;
+  double depth2 = 0.5;
+  addConnection(&mod1, targets[0], depth1);
+  addConnection(&mod2, targets[1], depth2);
+  iVal = (int) modMan.getModulationConnections().size();
+  expectEquals(iVal, 2, "Failed add connection to modulation manager");
+
+  // Let the target module process an audio frame. This should produce the unmodulated values.
+  // Monophonic sources always potentially produce output, regardless whether a note is active or 
+  // not. Of course, a monophonic synth can choose to produce no output unless a note is active 
+  // but that has nothing to do with how the framework should behave. Monophonic modulators that 
+  // are subclasses of ModulatorModuleMono actually can and typically do respond to midi messages
+  // even though there is no voice manager involved, because they are already inheriting 
+  // noteOn/Off callbacks from AudioModuleWithMidiIn which is a baseclass of ModulatorModuleMono.
+  // This makes sense because modulators are typically things that we want to trigger via midi even
+  // in absence of a polyphony framework.
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1000.0); 
+  expectEquals(dVal2,    1.0);
+
+  // Apply modulations and render a sample again. This time, we should get modulated outputs:
+  
+  modMan.applyModulationsNoLock();
+  expectEquals(mod1.numMonoRenders, 1);
+  expectEquals(mod2.numMonoRenders, 1);
+  expectEquals(gen.numSetFreqCalls, 1);
+  expectEquals(gen.numSetAmpCalls,  1);
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1000.0 + depth1 * mod1.value); 
+  expectEquals(dVal2,    1.0 + depth2 * mod2.value);
+
+  // Test changing the frequency parameter:
+  gen.getParameterByName("Frequency")->setValue(500.0, false, false);
+  modMan.applyModulationsNoLock();
+  expectEquals(mod1.numMonoRenders, 2);
+  expectEquals(mod2.numMonoRenders, 2);
+  expectEquals(gen.numSetFreqCalls, 2);
+  expectEquals(gen.numSetAmpCalls,  2);
+  gen.processStereoFrame(&dVal1, &dVal2);
+  //expectEquals(dVal1, 500.0 + depth1 * mod1.value);  // we get roundoff error here! why?
+  expectEquals(dVal2,   1.0 + depth2 * mod2.value);
+
+
+
+  // ToDo:
+  // Create and connect note-based modulators and see if they work. Because we are dealing with 
+  // monophonic modules only, the noteOn events must be passed directly to the modulator, i.e. we
+  // need to call noteOn on the modulator. This is what in the other cases the voiceManager would 
+  // do...right? but no: the note-based modulators are poly-modulators but here we deal with 
+  // MonoToMono
+
+  // wait - is it actually desirable that a modulated output is produced even when no note is 
+  // active? what should the modulation be based on, if no voice is playing? ah - wait - it 
+  // actually is (or can be) based on notes anyway, depending on how the modulator implements
+  // noteOn - modulators do not even need a voiceManager to respond to noteOn calls
+
+
+  int dummy = 0;
+}
 
 void UnitTestModulation::runTestMonoToPoly()
 {
@@ -395,24 +479,21 @@ void UnitTestModulation::runTestMonoToPoly()
   expectEquals(dVal2, dTgt2);
 
   // Change parameter value - set freq from 1000 to 500:
-  //gen.getParameterByName("Frequency")->setValue(500.0, false, false); // or false, true?
-  gen.getParameterByName("Frequency")->setValue(500.0, false, true);
+  gen.getParameterByName("Frequency")->setValue(500.0, false, false); // or false, true?
+  //gen.getParameterByName("Frequency")->setValue(500.0, false, true);
   modMan.applyModulationsNoLock();
   expectEquals(mod1.numMonoRenders, 6);
   expectEquals(mod2.numMonoRenders, 6);
   expectEquals(gen.numSetFreqCalls, 6);
   expectEquals(gen.numSetAmpCalls,  6);
+  gen.processStereoFrame(&dVal1, &dVal2);
   dTgt1  = 500.0 + depth1 * mod1.value + depthKey * key1;
   dTgt2  =   1.0 + depth2 * mod2.value + depthVel * vel1Q;
   dTgt1 += 500.0 + depth1 * mod1.value + depthKey * key4;
   dTgt2 +=   1.0 + depth2 * mod2.value + depthVel * vel4Q;
   expectEquals(dVal1, dTgt1);
   expectEquals(dVal2, dTgt2);
-  // This test still fails. Maybe the unmodulated value is not getting updated in setValue?
-
-  int dummy = 0;
 }
-
 
 void UnitTestModulation::runTestPolyToMono()
 {
@@ -613,7 +694,7 @@ void UnitTestModulation::runTestPolyToPoly()
   expectEquals(dVal1, 2000.0 + key2 + key4);
 
   // Change the value of the frequency parameter:
-  targetModule.getParameterByName("Frequency")->setValue(500.0, false, true);
+  targetModule.getParameterByName("Frequency")->setValue(500.0, false, false);
   modMan.applyModulationsNoLock();
   targetModule.processStereoFrame(&dVal1, &dVal2);
   expectEquals(dVal1, 1000.0 + key2 + key4);

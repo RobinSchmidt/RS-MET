@@ -25,6 +25,7 @@ protected:
   }
 
   // called from runTest:
+  void runTestMonoToMono();
   void runTestMonoToPoly();
   void runTestPolyToMono();
   void runTestPolyToPoly();
