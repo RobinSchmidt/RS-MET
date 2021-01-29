@@ -244,6 +244,15 @@ public:
   // behavior such as dependency of the sound of a patch on the last note played (if note-based 
   // modulators are connected), even if the note event was hours ago
 
+  int getNewestActiveVoice() const 
+  { 
+    if(numActiveVoices == 0)
+      return -1;
+    else
+      return activeVoices[numActiveVoices-1];  
+  }
+
+
   size_t getNumReleasingVoices() const { return releasingVoices.size(); }
   // the inconsistency is a bit ugly but we want to avoid conversion
 

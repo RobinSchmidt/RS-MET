@@ -434,6 +434,8 @@ protected:
   double initialDepth = 0.0;
   int    defaultModMode = 0; // absolute
 
+  friend class ModulationManagerPoly; // maybe get rid by providing a setter for modulatedValue
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget);
 };
 
@@ -1023,7 +1025,14 @@ public:
 
   void updateModulationValue(rsVoiceManager* voiceManager) override
   { 
-    jassert(voiceManager != nullptr);
+    //jassert(voiceManager != nullptr);
+    if(voiceManager == nullptr)
+    {
+      modValue = renderModulation();
+      return;
+    }
+
+
     jassert(modValues.size() >= voiceManager->getMaxNumVoices());
     for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)  {
       int k = voiceManager->getActiveVoiceIndex(i);
@@ -1034,7 +1043,7 @@ public:
 
     // new:
     if(voiceManager->getNumActiveVoices() > 0)
-      modValue = modValues[voiceManager->getNewestVoice()];
+      modValue = modValues[voiceManager->getNewestActiveVoice()];
     else
       modValue = renderModulation();
     // does it make sense to handle it that way? could it produce glitches when numVoices 
@@ -1047,6 +1056,7 @@ public:
     // monophonic code...but it may get overwritten in the next initialization...but maybe 
     // that's good...we'll see....
   }
+  // maybe provide a separate new function updateModulationsPoly
 
   virtual void allocateVoiceResources(rsVoiceManager* voiceManager)
   {

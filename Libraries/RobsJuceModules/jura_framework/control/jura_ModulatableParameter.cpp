@@ -739,8 +739,8 @@ void ModulationManagerPoly::applyModulationsNoLock()
       applyVoiceModulations(k);
     }
       
-    int newestVoice = voiceManager->getNewestVoice(); 
-    jassert(newestVoice == k);
+    //int newestVoice = voiceManager->getNewestVoice(); 
+    //jassert(newestVoice == k);
     // should this be equal to the last k? i think so. -> figure out. if this is indeed the case 
     // then now, after the loop has finished, the modulatedValues array contains the modulated 
     // values for all parameters for the newest voice, so these values should be appropriate to
@@ -754,10 +754,15 @@ void ModulationManagerPoly::applyModulationsNoLock()
     // value from the lasr released voice...anyway - maybe we should just use the value from the 
     // last k - that will be the most recently triggered voice that is still active
 
+    // Also call the monophonic callbacks because they are not called in the loop above:
+    for(size_t i = 0; i < affectedTargets.size(); i++) {
+      double val = modulatedValues[i];
+      affectedTargets[i]->modulatedValue = val;
+      affectedTargets[i]->doModulationUpdate(val); }
   }
   else
   {
-    //ModulationManager::applyModulationsNoLock();
+    ModulationManager::applyModulationsNoLock();
   }
 
 
