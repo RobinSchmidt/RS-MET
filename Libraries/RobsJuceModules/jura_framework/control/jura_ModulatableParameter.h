@@ -437,8 +437,11 @@ protected:
   double defaultDepthMin = -1, defaultDepthMax = 1;
   double initialDepth = 0.0;
   int    defaultModMode = 0; // absolute
+  int    numConnectedSources = 0;
 
-  friend class ModulationManagerPoly; // maybe get rid by providing a setter for modulatedValue
+  friend class ModulationManager;
+  friend class ModulationManagerPoly; 
+  // maybe get rid by providing accessors
 
   // ToDo:
   // -Maybe we don't need to store the modulatedValue here. This oculd perhaps be handled by the 

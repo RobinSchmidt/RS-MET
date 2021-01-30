@@ -150,21 +150,24 @@ std::vector<ModulationSource*> ModulationTarget::getDisconnectedSources() const
 std::vector<ModulationConnection*> ModulationTarget::getConnections() const
 {
   std::vector<ModulationConnection*> result;
-  if(modManager)
-  {
+  if(modManager) {
+    result.reserve(numConnectedSources);
     const std::vector<ModulationConnection*>& 
       allConnections = modManager->getModulationConnections();
-    for(int i = 0; i < size(allConnections); i++)
-    {
+    for(int i = 0; i < size(allConnections); i++) {
       if(this == allConnections[i]->target)
-        result.push_back(allConnections[i]);
-    }
-  }
+        result.push_back(allConnections[i]); }}
   return result;
 }
 
 bool ModulationTarget::hasConnectedSources() const
 {
+  return numConnectedSources > 0;
+
+  /*
+  // Old code from before we introduced the numConnectedSources member. May be deleted, if 
+  // everything works as before. We need to check, if the variable gets updated in *all* places 
+  // that add or remove connections. And maybe the function should then be inlined.
   if(modManager){
     const std::vector<ModulationConnection*>& 
       allConnections = modManager->getModulationConnections();
@@ -172,6 +175,7 @@ bool ModulationTarget::hasConnectedSources() const
       if(this == allConnections[i]->target)
         return true; }}
   return false;
+  */
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -297,11 +301,13 @@ void ModulationManager::addConnection(ModulationSource* source, ModulationTarget
 
 void ModulationManager::addConnection(ModulationConnection* connection)
 {
-  ScopedLock scopedLock(*modLock); 
-  jassert(!isConnected(connection->source, connection->target)); // connection already exists
+  ScopedLock scopedLock(*modLock);
+  ModulationTarget* t = connection->target;
+  jassert(!isConnected(connection->source, t)); // connection already exists
   addConnectionToArray(connection);
-  appendIfNotAlreadyThere(affectedTargets, connection->target);
-  sendModulationChangeNotificationFor(connection->target); // new
+  t->numConnectedSources++;
+  appendIfNotAlreadyThere(affectedTargets, t);
+  sendModulationChangeNotificationFor(t);       // new
 }
 
 void ModulationManager::removeConnection(ModulationSource* source, ModulationTarget* target)
@@ -321,14 +327,10 @@ void ModulationManager::removeConnection(ModulationSource* source, ModulationTar
 void ModulationManager::removeConnectionsWith(ModulationSource* source)
 {
   ScopedLock scopedLock(*modLock); 
-  for(int i = 0; i < size(modulationConnections); i++)
-  {
-    if(modulationConnections[i]->source == source)
-    {
+  for(int i = 0; i < size(modulationConnections); i++) {
+    if(modulationConnections[i]->source == source) {
       removeConnection(i, false);
-      i--; // array was shrunken
-    }
-  }
+      i--;  }}     // array was shrunken
   updateAffectedTargetsArray();
 }
 
@@ -365,6 +367,7 @@ void ModulationManager::removeConnection(int i, bool updateAffectTargets)
   delete c;                        // subclass may still want to reference it in overriden remove
   if(omt)
     omt->sendModulationsChangedNotification();
+  t->numConnectedSources--;
   if(!t->hasConnectedSources()) {                       // avoids the target getting stuck at
     t->initModulatedValue();                            // modulated value when last modulator
     t->doModulationUpdate(t->getModulatedValue()); }    // was removed
