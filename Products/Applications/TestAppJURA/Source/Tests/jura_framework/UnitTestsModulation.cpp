@@ -321,7 +321,8 @@ void UnitTestModulation::runTestMonoToMono()
   expectEquals(dVal2,    1.0 + depth2 * mod2.value);
 
   // Test changing the frequency parameter:
-  gen.getParameterByName("Frequency")->setValue(500.0, false, false);
+  jura::Parameter* freqParam = gen.getParameterByName("Frequency");
+  freqParam->setValue(500.0, false, false);
   modMan.applyModulationsNoLock();
   expectEquals(mod1.numMonoRenders, 2);
   expectEquals(mod2.numMonoRenders, 2);
@@ -345,10 +346,14 @@ void UnitTestModulation::runTestMonoToMono()
 
   // Test, if the engine is also updated when there are no connections:
   modMan.removeAllConnections();
-  expectEquals(gen.numSetAmpCalls, 3);  // removing a connection will also trigger a callback call
-  expectEquals(gen.numSetAmpCalls, 3);  // see comment in ModulationManager::removeConnection
-  gen.getParameterByName("Frequency")->setValue(1000.0, false, true);
-  modMan.applyModulationsNoLock();
+  expectEquals(gen.numSetAmpCalls, 3);      // removing a connection will also trigger a callback, 
+  expectEquals(gen.numSetAmpCalls, 3);      // so we do not get stuck at the modulated value
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectWithinAbsoluteError(dVal1, 500.0 , 1.e-13); 
+  expectEquals(dVal2,   1.0);
+  freqParam->setValue(1000.0, false, true); // simulates a change from the GUI
+  expectEquals(gen.numSetFreqCalls, 4);
+  modMan.applyModulationsNoLock();          // should have no effect on numSetFreq/AmpCalls
   expectEquals(mod1.numMonoRenders, 3);
   expectEquals(mod2.numMonoRenders, 3);
   expectEquals(gen.numSetFreqCalls, 4);
@@ -510,7 +515,8 @@ void UnitTestModulation::runTestMonoToPoly()
   expectEquals(dVal2, dTgt2);
 
   // Change parameter value - set freq from 1000 to 500:
-  gen.getParameterByName("Frequency")->setValue(500.0, false, false);
+  jura::Parameter* freqParam = gen.getParameterByName("Frequency");
+  freqParam->setValue(500.0, false, false);
   modMan.applyModulationsNoLock();
   expectEquals(mod1.numMonoRenders, 6);
   expectEquals(mod2.numMonoRenders, 6);
@@ -526,27 +532,24 @@ void UnitTestModulation::runTestMonoToPoly()
 
   // Test, if the engine is also updated when there are no connections:
   modMan.removeAllConnections();
-  expectEquals(gen.numSetAmpCalls, 6);
-  expectEquals(gen.numSetAmpCalls, 6);
-  // They do not increment by one as they to in the case of monophonic targets because we wouldn't
-  // know for which we should call them. For all active?...hmm...yes, maybe that would make sense.
-  // ToDo: test with ToolChain what happens when a connections is removed while some notes are 
-  // held. Desired behavior: the effect of the disconnected modulator should immediately disappear 
-  // from the sound in all of the held notes. When this is done, we should change the expectation 
-  // here to 8. ..oh - but that only applies, when the very last modulator is removed because only
-  // in this case ToolChain skips the applyModulationsNoLock call. If that function is called, we 
-  // do not need these calls. Oh and also when the last modulator from agiven target is removed 
-  // (because it the gets removed from the affectedTargets array). OK, now on with the actual test:
-  gen.getParameterByName("Frequency")->setValue(1000.0, false, true);
-  modMan.applyModulationsNoLock();
-  /*
-  expectEquals(mod1.numMonoRenders, 7);
-  expectEquals(mod2.numMonoRenders, 7);
-  expectEquals(gen.numSetFreqCalls, 8);  // is actually 6
-  expectEquals(gen.numSetAmpCalls,  7);
+  expectEquals(gen.numSetAmpCalls, 8);    // should have increased by 2 because 2 voices are still
+  expectEquals(gen.numSetAmpCalls, 8);    // playing
   gen.processStereoFrame(&dVal1, &dVal2);
-  expectWithinAbsoluteError(dVal1, 1000.0, 1.e-12); 
-  expectEquals(dVal2, 1.0);
+  expectWithinAbsoluteError(dVal1, 1000.0, 1.e-12);  // 2 notes, no mods, freq is 500
+  expectEquals(dVal2,    2.0);
+
+
+
+  /*
+  freqParam->setValue(1000.0, false, true);
+  modMan.applyModulationsNoLock();
+  //expectEquals(mod1.numMonoRenders, 7);
+  //expectEquals(mod2.numMonoRenders, 7);
+  //expectEquals(gen.numSetFreqCalls, 8);  // is actually 6
+  //expectEquals(gen.numSetAmpCalls,  7);
+  gen.processStereoFrame(&dVal1, &dVal2);
+  //expectWithinAbsoluteError(dVal1, 1000.0, 1.e-12);
+  //expectEquals(dVal2, 1.0);
   */
   // OK - i think the problem is that when a parameter has no modulators connected to it, it's per 
   // voice versions of the value are not updated because it's not in the affectedTargets array 

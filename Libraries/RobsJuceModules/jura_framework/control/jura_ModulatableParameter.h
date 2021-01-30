@@ -574,6 +574,10 @@ public:
   /** Returns a (const) pointer to the target, so you can inquire something about it. */
   const ModulationTarget* getTarget() const { return target; }
 
+  /** Returns a (non-const) pointer to the target, so you can do stuff with it, like invoking the
+  callbacks */
+  ModulationTarget* getTarget() { return target; }
+
 protected:
 
   /** Sets the modulation depth for this connection. Used as target callback in the depthParam. To 
@@ -1063,6 +1067,17 @@ public:
     : ModulatableParameter(name, min, max, defaultValue, scaling, interval) {}
 
 
+  void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
+  // called from gui?
+
+  void setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks) override;
+  // called from automation system?
+
+  void setSmoothedValue(double newValue) override;
+  // called from smoothing manager?
+
+
+
   void setValueChangeCallbackPoly(std::function<void(double, int)> cb)
   {
     ScopedPointerLock spl(mutex);
@@ -1071,10 +1086,13 @@ public:
   }
   // maybe make the parameter a const reference
 
+  /*
   void callValueChangeCallbackPoly(double value, int voiceIndex)
   {
     valueChangeCallbackPoly(value, voiceIndex);
   }
+  */
+  // rename to callVoiceCallback
 
   /** Overriden to call our callback function with the modulated value. */
   void doVoiceModulationUpdate(double modulatedValue, int voiceIndex) override
@@ -1097,7 +1115,15 @@ public:
   // idk, why we don't inherit that method -> figure out
 
 
+  /** Calls the value change callback for all curently active voices with the unmodulated value. 
+  This is needed when the parameter was changed on the GUI when it has no connected modulation 
+  sources. Called from our override setValue etc. methods. */
+  void callCallbacksForActiveVoices();
+
+
 protected:
+
+
 
   //typedef GenericMemberFunctionCallback1<void, double> SetValueCallback;
   //std::vector<SetValueCallback*> valueChangeCallbacks;

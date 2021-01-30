@@ -363,11 +363,11 @@ void ModulationManager::removeConnection(int i, bool updateAffectTargets)
   ObservableModulationTarget* omt = 
     dynamic_cast<ObservableModulationTarget*> (modulationConnections[i]->target);
   ModulationConnection* c = modulationConnections[i];
-  removeConnectionFromArray(i);    // it's important to call remove *before* deleting because a
-  delete c;                        // subclass may still want to reference it in overriden remove
+  t->numConnectedSources--;     // important to decrement before removeConnectionFromArray
+  removeConnectionFromArray(i); // important to call remove *before* deleting because a
+  delete c;                     // subclass may still want to reference it in overriden remove
   if(omt)
     omt->sendModulationsChangedNotification();
-  t->numConnectedSources--;
   if(!t->hasConnectedSources()) {                       // avoids the target getting stuck at
     t->initModulatedValue();                            // modulated value when last modulator
     t->doModulationUpdate(t->getModulatedValue()); }    // was removed
@@ -779,7 +779,7 @@ void ModulationManagerPoly::removeConnectionFromArray(int i)
   // target, the removed connection is the only one to the given target and removing it will mean
   // that we have one distinct active target less. That means numDistinctActiveTargets must be
   // decremented and modulatedValues be resized:
-  const ModulationTarget* ti = modulationConnections[i]->getTarget();
+  ModulationTarget* ti = modulationConnections[i]->getTarget();
   const ModulationTarget *tl = nullptr, *tr = nullptr;
   if(i > 0)
     tl = modulationConnections[i-1]->getTarget();
@@ -789,6 +789,48 @@ void ModulationManagerPoly::removeConnectionFromArray(int i)
     numDistinctActiveTargets--; 
   ModulationManager::removeConnectionFromArray(i);
   modulatedValues.resize(numDistinctActiveTargets);
+
+  // Check, if it was the last connection removed from a polyphonic target and if so,
+  // trigger a callback for all active voices to set the values in the audio engine back to 
+  // unmodulated:
+  ModulatableParameterPoly* polyParam = dynamic_cast<ModulatableParameterPoly*>(ti);
+  if(polyParam && !ti->hasConnectedSources())
+    polyParam->callCallbacksForActiveVoices();
+}
+
+//=================================================================================================
+
+void ModulatableParameterPoly::setValue(double newValue, bool sendNotification, bool callCallbacks)
+{
+  ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
+  if(!hasConnectedSources() && callCallbacks == true)
+    callCallbacksForActiveVoices();
+}
+
+void ModulatableParameterPoly::setNormalizedValue(
+  double newValue, bool sendNotification, bool callCallbacks)
+{
+  ModulatableParameter::setNormalizedValue(newValue, sendNotification, callCallbacks);
+  if(!hasConnectedSources() && callCallbacks == true)
+    callCallbacksForActiveVoices();
+}
+
+void ModulatableParameterPoly::setSmoothedValue(double newValue)
+{
+  ModulatableParameter::setSmoothedValue(newValue);
+  if(!hasConnectedSources())
+    callCallbacksForActiveVoices();
+}
+
+void ModulatableParameterPoly::callCallbacksForActiveVoices()
+{
+  ModulationManager* modMan = getModulationManager();
+  if(modMan == nullptr) return;    // is this supposed to happen? maybe assert that it doesn't
+  rsVoiceManager* voiceMan = modMan->getVoiceManager();
+  if(voiceMan == nullptr) return;  // ditto
+  for(int i = 0; i < voiceMan->getNumActiveVoices(); i++) {
+    int k = voiceMan->getActiveVoiceIndex(i);
+    valueChangeCallbackPoly(unmodulatedValue, k); }
 }
 
 // ToDo:
