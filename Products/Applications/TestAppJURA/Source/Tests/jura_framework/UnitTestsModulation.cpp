@@ -592,6 +592,17 @@ void UnitTestModulation::runTestMonoToPoly()
   gen.processStereoFrame(&dVal1, &dVal2);
   expectWithinAbsoluteError(dVal1, 3000.0, 1.e-12);  // 3 notes, no mods, freq is 1000
 
+  // It should also work, when we do it like this:
+  int voice = voiceMan.noteOnReturnVoice(key4, 127);
+  gen.noteOnForVoice(key4, 127, voice);
+  expectEquals(gen.numSetFreqCalls, 12);
+  expectEquals(gen.numSetAmpCalls,  10);
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectWithinAbsoluteError(dVal1, 4000.0, 1.e-12);  // 4 notes, no mods, freq is 1000
+
+
+
+
   int dummy = 0;
 }
 

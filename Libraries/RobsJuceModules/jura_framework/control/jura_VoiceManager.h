@@ -34,6 +34,7 @@ public:
 
   /** Triggered by a note-on event. */
   virtual void noteOn(int noteNumber, int velocity) {}
+  // return an int for the used voice
 
   /** Triggered by a note-off event. */
   virtual void noteOff(int noteNumber) {}
@@ -89,6 +90,8 @@ public:
   }
   // todo: maybe have an addtional parameter for the midi channel (defaulting to 1)..or no: that
   // info is already contained in the MidiMessage
+  // hmm...maybe this is is not a good idea - just override the regular noteOn/Off and infer the
+  // voice from the voiceManager - or, in AudioModulePoly override this instead of noteOn
 
 
   /** This is supposed to be used when the caller needs to know which voice was assigned or 
