@@ -510,8 +510,7 @@ void UnitTestModulation::runTestMonoToPoly()
   expectEquals(dVal2, dTgt2);
 
   // Change parameter value - set freq from 1000 to 500:
-  gen.getParameterByName("Frequency")->setValue(500.0, false, false); // or false, true?
-  //gen.getParameterByName("Frequency")->setValue(500.0, false, true);
+  gen.getParameterByName("Frequency")->setValue(500.0, false, false);
   modMan.applyModulationsNoLock();
   expectEquals(mod1.numMonoRenders, 6);
   expectEquals(mod2.numMonoRenders, 6);
@@ -524,6 +523,54 @@ void UnitTestModulation::runTestMonoToPoly()
   dTgt2 +=   1.0 + depth2 * mod2.value + depthVel * vel4Q;
   expectEquals(dVal1, dTgt1);
   expectEquals(dVal2, dTgt2);
+
+  // Test, if the engine is also updated when there are no connections:
+  modMan.removeAllConnections();
+  expectEquals(gen.numSetAmpCalls, 6);
+  expectEquals(gen.numSetAmpCalls, 6);
+  // They do not increment by one as they to in the case of monophonic targets because we wouldn't
+  // know for which we should call them. For all active?...hmm...yes, maybe that would make sense.
+  // ToDo: test with ToolChain what happens when a connections is removed while some notes are 
+  // held. Desired behavior: the effect of the disconnected modulator should immediately disappear 
+  // from the sound in all of the held notes. When this is done, we should change the expectation 
+  // here to 8. ..oh - but that only applies, when the very last modulator is removed because only
+  // in this case ToolChain skips the applyModulationsNoLock call. If that function is called, we 
+  // do not need these calls. Oh and also when the last modulator from agiven target is removed 
+  // (because it the gets removed from the affectedTargets array). OK, now on with the actual test:
+  gen.getParameterByName("Frequency")->setValue(1000.0, false, true);
+  modMan.applyModulationsNoLock();
+  expectEquals(mod1.numMonoRenders, 7);
+  expectEquals(mod2.numMonoRenders, 7);
+  expectEquals(gen.numSetFreqCalls, 8);  // is actually 6
+  expectEquals(gen.numSetAmpCalls,  7);
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectWithinAbsoluteError(dVal1, 1000.0, 1.e-12); 
+  expectEquals(dVal2, 1.0);
+  // OK - i think the problem is that when a parameter has no modulators connected to it, it's per 
+  // voice versions of the value are not updated because it's not in the affectedTargets array 
+  // anymore. What should we do about this? Maybe when the last modulator is disconnected from a 
+  // poly-target, we should call the per-voice callback for all available voices with the 
+  // unmodulated value? but that would be expensive. Or maybe it's sufficient to call it for the 
+  // active voices? But then, what when later an additional voice is triggered? Will it then have 
+  // the wrong setting? But maybe it's practical to call the callback for available voices when the
+  // called back function just sets a "dirty" flag and defers coefficient recomputations to the 
+  // next getSample call which is a good pattern anyway because it consolidates multiple setter 
+  // calls into a single update computation and makes the updates thread-safe.
+
+  // So, there's a general problem with polyphonic parameters that are not connected to any 
+  // modulator: we have no infrastructure in place that calls its per-voice callbacks in this case.
+  // The valueChangeCallbackPoly gets called only in doVoiceModulationUpdate which is invoked from
+  // applyModulationsNoLock, iff the parameter is connected to at least one modulation source. When 
+  // it's disconnected, we somehow need to directly call it from elsewhere...maybe noteOn of the
+  // AudioModulePoly class and/or setValue of ModulatableParameterPoly class. But that may, again,
+  // lead to redundant callbacks in the case of connected parameters. But noteOn events are rare
+  // so a redundant callback seems acceptable. setParameter occurs from the gui and from automation
+  // redundant callbacks from the gui may also be rare enough to be accpetable but automation 
+  // events could potentially be dense. maybe the best thing to do is to keep track of the number
+  // of connected sources and invoke the callback from setValue only if the parameter is 
+  // disconnected
+
+  int dummy = 0;
 }
 
 void UnitTestModulation::runTestPolyToMono()

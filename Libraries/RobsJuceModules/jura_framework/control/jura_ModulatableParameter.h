@@ -432,13 +432,20 @@ public:
 protected:
 
   double unmodulatedValue = 0;
-  double modulatedValue   = 0;
+  double modulatedValue   = 0; 
   double rangeMin = -INF, rangeMax = INF; 
   double defaultDepthMin = -1, defaultDepthMax = 1;
   double initialDepth = 0.0;
   int    defaultModMode = 0; // absolute
 
   friend class ModulationManagerPoly; // maybe get rid by providing a setter for modulatedValue
+
+  // ToDo:
+  // -Maybe we don't need to store the modulatedValue here. This oculd perhaps be handled by the 
+  //  ModulationManager as a local variable, quite similar to what we do with the modValues array
+  //  ModulationManagerPoly.
+  // -Maybe it makes sense to keep track of the connected source via a numConnectedSources 
+  //  variable....
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationTarget);
 };
@@ -856,18 +863,9 @@ public:
 
 
   /** \name Setup */
-  /*
-  virtual void setValue(double newValue, bool sendNotification, bool callCallbacks) override
-  {
-    jassertfalse; // client code should call setNormalizedValue
-    //MetaControlledParameter::setValue(newValue, sendNotification, callCallbacks);
-    //ModulationTarget::setUnmodulatedValue(newValue);
-  }
-  */
 
   void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
-  // this override is new and needs tests - it seems to be the right thing to do but so far we
-  // didn't - why?
+  // this override is new and needs tests
 
   void setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks) override;
 
@@ -983,7 +981,7 @@ after it was turned of - i.e. always use value of the newest voice, regardless w
 is still active or not. but his implies that the sound of a patch will depend on the latest note
 that was ever produced - even after the note has long been died out - that may be bad for sound 
 design: the synth is in a certain state (due to the laste played note), the user creates a sound,
-saves it and when she relaods it at anothe day, it will sound different, because the synth is in
+saves it and when she relaods it at another day, it will sound different, because the synth is in
 a different state. that would be bad! ..it seems like having a state which depends on the last 
 played note and which affects the sound output is not a good idea.
 
@@ -1080,24 +1078,13 @@ public:
   {
     jassert(voiceIndex >= 0);
     valueChangeCallbackPoly(modulatedValue, voiceIndex);
-
-    /*
-    if(voiceIndex >= 0)
-      valueChangeCallbackPoly(modulatedValue, voiceIndex);
-    else
-    {
-      int dummy = 0;
-      //jassertfalse; // not yet implemented
-      //... maybe we should call the inherited monophonic callback here?
-      // callCallback(modulatedValue); ..like this? ..not sure - we'll see
-    }
-    */
   }
-  // maybe we should computed the modulatedValue here, right before calling the callback
-  // ..no need to store it in any object....
+
 
   // maybe we also need to override setNormalizedValue, setSmoothedValue? ..but maybe not - these
-  // should modifiers should be baked into the unmodulatedValue before modulation is applied
+  // should modifiers should be baked into the unmodulatedValue before modulation is applied..but:
+  // the per voice callbacks will never get called on parameter changes, when the parameter has no
+  // connected modulator. maybe we should call them for all active voices there ourselves
 
 
   virtual juce::String getModulationTargetName() override
