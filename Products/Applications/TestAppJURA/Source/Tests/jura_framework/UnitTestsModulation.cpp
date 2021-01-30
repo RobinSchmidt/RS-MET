@@ -50,6 +50,11 @@ public:
     numMonoRenders++;
     return value;
   }
+  // Do we need to override the monophonic renderModulation too? What happens if we don't? Maybe 
+  // make a TestPolyModulator2 that overrides only the polyphonic version and test, how it behaves.
+  // I think, when it is connected to a monophonic parameter, we should expect it to produce a zero 
+  // signal in cases when there's no active voice and the modulation signal of the newest active 
+  // voice when at least one voice is active.
 
   double renderVoiceModulation(int voiceIndex) override
   {
@@ -57,12 +62,14 @@ public:
     return value;
   }
 
-  // do we need to override the monophonic renderModulation too?
+  void allocateVoiceModResources() override {}
+
+
 
   double value = 1.0;
 
   int numMonoRenders = 0;
-  int numPolyRenders = 0;
+  int numPolyRenders = 0;  // maybe rename to numVoiceRenders
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TestPolyModulator)
 };
@@ -335,6 +342,35 @@ void UnitTestModulation::runTestMonoToMono()
   // The roundoff error does not seem to happen for the polyphonic parameter. That seems to be
   // because we use other modulations there - the unmodulated value is still wrong but the 
   // modulated value apparently happens to come out right again. 
+
+  // Test, if the engine is also updated when there are no connections:
+  modMan.removeAllConnections();
+  expectEquals(gen.numSetAmpCalls, 3);  // removing a connection will also trigger a callback call
+  expectEquals(gen.numSetAmpCalls, 3);  // see comment in ModulationManager::removeConnection
+  gen.getParameterByName("Frequency")->setValue(1000.0, false, true);
+  modMan.applyModulationsNoLock();
+  expectEquals(mod1.numMonoRenders, 3);
+  expectEquals(mod2.numMonoRenders, 3);
+  expectEquals(gen.numSetFreqCalls, 4);
+  expectEquals(gen.numSetAmpCalls,  3);
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectWithinAbsoluteError(dVal1, 1000.0, 1.e-12); 
+  expectEquals(dVal2,    1.0);
+  // ToDo: maybe provide facilities that suppress the rendering of the disconnected modulation 
+  // sources. In ModulationManager(Poly), we always loop over all available sources to let them 
+  // render their outputs, so the mod1/2.numMonoRenders are here actually expected to go up by 
+  // one. But these calls could be optimized away in a way similar as we do with the 
+  // affctedTargets array. In ToolChain, we would not expect these useless render calls in this 
+  // configuration because it skips the call to applyModulationsNoLock entirely, when there are no 
+  // connections at all. But here, we call it. But we really should optimize away also the 
+  // rendering calls to individual disconnected sources.
+
+
+  // What about smoothing? I think, the smoothing callback should set the unmodulatedValue. ToDo:
+  // test smoothing here, too. Set up a smoothing manager "smoothMan" and repeat some of the tests 
+  // above
+
+  int dummy = 0;
 }
 
 void UnitTestModulation::runTestMonoToPoly()
@@ -450,8 +486,8 @@ void UnitTestModulation::runTestMonoToPoly()
 
   // Trigger a 2nd, 3rd, 4th, 5th note, release the 2nd and 5th and 3rd. That means that key1 and 
   // key4 are still active after that sequence:
-  int   key2 = 20,  key3 = 30,   key4 = 40,   key5 = 50;
-  float vel2 = 0.2, vel3 = 0.3f, vel4 = 0.4f, vel5 = 0.5f;
+  int   key2 = 20,   key3 = 30,   key4 = 40,   key5 = 50;
+  float vel2 = 0.2f, vel3 = 0.3f, vel4 = 0.4f, vel5 = 0.5f;
   double vel4Q = voiceMan.quantize7BitUnsigned(vel4);  
   voiceMan.handleMidiMessage(Msg::noteOn(1, key2, vel2));
   voiceMan.handleMidiMessage(Msg::noteOn(1, key3, vel3));

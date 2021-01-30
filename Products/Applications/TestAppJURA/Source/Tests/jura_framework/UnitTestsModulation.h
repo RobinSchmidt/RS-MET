@@ -37,6 +37,8 @@ protected:
   jura::ModulationManagerPoly modMan;
   std::vector<double> voiceBuffer;
 
+  // what about meta-control and smoothing?
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(UnitTestModulation)
 };
 

@@ -132,17 +132,8 @@ void AttackDecayEnvelopeModulePoly::createParameters()
   p->setValueChangeCallbackPoly([this](double v, int i) { setDecay(v, i); });
 }
 
-void AttackDecayEnvelopeModulePoly::allocateVoiceResources() 
+void AttackDecayEnvelopeModulePoly::allocateVoiceModResources() 
 {
-  ModulatorModulePoly::allocateVoiceResources();
-  // this is bad design that we have to call it here. it's something that *always* must be done,
-  // so it should happen automatically! change that! 
-
-  // allocateVoiceResources is already overriden in ModulationSourcePoly - maybe it should do its
-  // thing and then call a new purely virtual function allocateVoiceModResources or something which
-  // shall become this function here
-
-
   if(voiceManager)
     cores.resize(voiceManager->getMaxNumVoices());
   else

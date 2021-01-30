@@ -99,6 +99,8 @@ public:
   double renderModulation()                    override { return 1.0; } 
   double renderVoiceModulation(int voiceIndex) override { return 1.0; }
 
+  void allocateVoiceModResources() override {}
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsConstantOneModulatorModulePoly)
 };
 
@@ -121,7 +123,15 @@ public:
   {
     jassert(voiceManager != nullptr);
     return voiceManager->getVoicePitch(voiceIndex);
+
+    // ToDo: maybe use something like:
+    // smoother[voiceIndex]->getSample( voiceManager->getVoicePitch(voiceIndex) );
+    // i think, this will also provide glide
+
   }
+
+  void allocateVoiceModResources() override {}
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNotePitchModulatorModulePoly)
 };
 
@@ -158,6 +168,8 @@ public:
     return voiceManager->getVoiceNormalizedVelocity(voiceIndex);
   }
 
+  void allocateVoiceModResources() override {}
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNoteVelocityModulatorModulePoly)
 };
@@ -182,6 +194,9 @@ public:
     jassert(voiceManager != nullptr);
     return RAPT::rsPitchToFreq(voiceManager->getVoicePitch(voiceIndex));
   }
+
+  void allocateVoiceModResources() override {}
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsNoteFreqModulatorModulePoly)
 };
 
@@ -212,14 +227,10 @@ public:
 
 */
 
-
-
-
-
-
-
-
-// todo: controller, aftertouch, etc.
+// todo: controller, aftertouch, etc. - maybe these modulators should have a built-in smoothing, 
+// maybe independent form meta-smoothing system. in allocateVoiceModResources, just allocate a 
+// bunch of smoothing-filters. Maybe have a baseclass SmoothedMidiModulator from which smoothed
+// versions of the pitch/vel/etc modulators derive
 
 
 
@@ -288,7 +299,7 @@ protected:
 
 
   virtual void createParameters();
-  void allocateVoiceResources() override;
+  void allocateVoiceModResources() override;
 
 
   std::vector<RAPT::rsAttackDecayEnvelope<double>> cores;

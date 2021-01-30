@@ -679,9 +679,17 @@ public:
   }
 
 
+  /** Must be overriden by subclasses to allocate the DSP sources. It serves the same purpose as 
+  AudioModulePoly::allocateVoiceModResources but for modulators. We give it a different name in 
+  order to make it purely virtual because we have already overriden the allocateVoiceModResources
+  here, so we need a different name.   */
+  virtual void allocateVoiceModResources() = 0;
+
+
   void allocateVoiceResources() override
   {
     ModulationSourcePoly::allocateVoiceOutputPins(voiceManager);
+    allocateVoiceModResources();
   }
 
 };

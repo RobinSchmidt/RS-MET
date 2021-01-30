@@ -635,8 +635,6 @@ void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotifica
   MetaControlledParameter::setNormalizedValue(newValue, sendNotification, callCallbacks);
   unmodulatedValue = value;
   modulatedValue   = unmodulatedValue;
-  // should we iterate over the array here? i guess not because this is supposed to be a 
-  // monophonic parameter, so the 0th entry is the only one that exists
 
   //callValueChangeCallbacks(value); // might result in redundant call since baseclass may already 
   // call it? maybe we should use "false" for the callCallbacks parameter in the baseclass call and
