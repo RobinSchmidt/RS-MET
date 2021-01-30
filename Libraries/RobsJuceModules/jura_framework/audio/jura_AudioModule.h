@@ -678,35 +678,22 @@ public:
     //allocateVoiceResources(voiceManager);
   }
 
-  /*
-  double renderVoiceModulation(int voiceIndex) override
-  {
-    return 0.0;
-  }
-  */
-  /*
-  double getModulatorOutputSample() override
-  {
-    jassert(voiceManager != nullptr);
-    return getVoiceModulatorOutput(voiceManager->getNewestVoice());
-  }
-  */
-  // renaem to getModulatorOutput
+  // finalize all the audio processinc callbacks - they are not suppsoed not be used for anything 
+  // anymore and just pass the audio through
 
-  virtual void processStereoFrameVoice(double* left, double* right, int voice)
-  {
+  void processStereoFrame(double* left, double* right) override final {}
+
+  void processStereoFrameVoice(double* left, double* right, int voice) override final {}
     // Do nothing - modulators need to override getModulationValue instead
-  }
-
 
   /** Must be overriden by subclasses to allocate the DSP sources. It serves the same purpose as 
   AudioModulePoly::allocateVoiceModResources but for modulators. We give it a different name in 
-  order to make it purely virtual because we have already overriden the allocateVoiceModResources
+  order to make it purely virtual because we have already overriden the allocateVoiceResources
   here, so we need a different name.   */
   virtual void allocateVoiceModResources() = 0;
 
 
-  void allocateVoiceResources() override
+  void allocateVoiceResources() override final
   {
     ModulationSourcePoly::allocateVoiceOutputPins(voiceManager);
     allocateVoiceModResources();

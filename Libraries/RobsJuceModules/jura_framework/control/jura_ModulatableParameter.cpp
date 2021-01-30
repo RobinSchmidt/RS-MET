@@ -829,5 +829,6 @@ void ModulatableParameterPoly::callCallbacksForActiveVoices()
 //  -in mono mode, they should behave exactly as their old mono-only precursors
 //  -the switch should be mono by default -> when upgrading a mono module to poly, the recall 
 //   should set it into mono-mode when the patch was saved with the old mono-only version
-
+// -maybe it could be interesting to switch the beavhior of mono->poly and poly->mono 
+//  connections between: newestActive, oldestActive
 
