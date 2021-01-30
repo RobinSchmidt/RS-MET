@@ -871,8 +871,9 @@ public:
 
   /** \name Setup */
 
-  void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
-  // this override is new and needs tests
+  //void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
+  // this override is new and needs tests - maybe it should not be overriden because the baseclass
+  // version aczually calls setNormlaizedValue, so it's enough to override this
 
   void setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks) override;
 
@@ -1067,7 +1068,7 @@ public:
     : ModulatableParameter(name, min, max, defaultValue, scaling, interval) {}
 
 
-  void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
+  //void setValue(double newValue, bool sendNotification, bool callCallbacks) override;
   // called from gui?
 
   void setNormalizedValue(double newValue, bool sendNotification, bool callCallbacks) override;

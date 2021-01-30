@@ -532,25 +532,25 @@ void UnitTestModulation::runTestMonoToPoly()
 
   // Test, if the engine is also updated when there are no connections:
   modMan.removeAllConnections();
-  expectEquals(gen.numSetAmpCalls, 8);    // should have increased by 2 because 2 voices are still
-  expectEquals(gen.numSetAmpCalls, 8);    // playing
+  expectEquals(gen.numSetFreqCalls, 8);              // should have increased by 2 because 
+  expectEquals(gen.numSetAmpCalls,  8);              // 2 voices are still playing
   gen.processStereoFrame(&dVal1, &dVal2);
   expectWithinAbsoluteError(dVal1, 1000.0, 1.e-12);  // 2 notes, no mods, freq is 500
   expectEquals(dVal2,    2.0);
-
-
-
-  /*
-  freqParam->setValue(1000.0, false, true);
+  freqParam->setValue(1000.0, false, true);          // simulates setting from gui
+  expectEquals(gen.numSetFreqCalls, 10);             // gui should trigger callback
   modMan.applyModulationsNoLock();
-  //expectEquals(mod1.numMonoRenders, 7);
-  //expectEquals(mod2.numMonoRenders, 7);
-  //expectEquals(gen.numSetFreqCalls, 8);  // is actually 6
-  //expectEquals(gen.numSetAmpCalls,  7);
+  expectEquals(mod1.numMonoRenders,  7);
+  expectEquals(mod2.numMonoRenders,  7);
+  expectEquals(gen.numSetFreqCalls, 10);             // updateModulations should not triggeer any
+  expectEquals(gen.numSetAmpCalls,   8);             // more callbacks
   gen.processStereoFrame(&dVal1, &dVal2);
-  //expectWithinAbsoluteError(dVal1, 1000.0, 1.e-12);
-  //expectEquals(dVal2, 1.0);
-  */
+  expectWithinAbsoluteError(dVal1, 2000.0, 1.e-12);  // 2 notes, no mods, freq is 1000
+  expectEquals(dVal2, 2.0);
+
+  // todo: trogger a 3rd note - output should then be 3000 and 3, with a 4th, 4000 and 4 etc.
+
+
   // OK - i think the problem is that when a parameter has no modulators connected to it, it's per 
   // voice versions of the value are not updated because it's not in the affectedTargets array 
   // anymore. What should we do about this? Maybe when the last modulator is disconnected from a 
@@ -574,6 +574,8 @@ void UnitTestModulation::runTestMonoToPoly()
   // events could potentially be dense. maybe the best thing to do is to keep track of the number
   // of connected sources and invoke the callback from setValue only if the parameter is 
   // disconnected. maybe the same should be done also for monophonic parameters?
+
+  // ....OK - this seems to be solved
 
   int dummy = 0;
 }

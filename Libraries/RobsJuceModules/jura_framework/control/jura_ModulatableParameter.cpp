@@ -624,14 +624,14 @@ void ModulationManager::sendModulationChangeNotificationFor(ModulationTarget* ta
 }
 
 //-------------------------------------------------------------------------------------------------
-
+/*
 void ModulatableParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {
   MetaControlledParameter::setValue(newValue, sendNotification, callCallbacks);
   unmodulatedValue = value;
   modulatedValue   = unmodulatedValue;
 }
-
+*/
 void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotification, 
   bool callCallbacks)
 {
@@ -799,13 +799,14 @@ void ModulationManagerPoly::removeConnectionFromArray(int i)
 }
 
 //=================================================================================================
-
+/*
 void ModulatableParameterPoly::setValue(double newValue, bool sendNotification, bool callCallbacks)
 {
   ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
   if(!hasConnectedSources() && callCallbacks == true)
     callCallbacksForActiveVoices();
 }
+*/
 
 void ModulatableParameterPoly::setNormalizedValue(
   double newValue, bool sendNotification, bool callCallbacks)
