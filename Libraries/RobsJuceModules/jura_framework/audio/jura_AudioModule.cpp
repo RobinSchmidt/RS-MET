@@ -710,10 +710,35 @@ void AudioModulePoly::addChildAudioModule(AudioModule* moduleToAdd)
     pm->setVoiceManager(voiceManager);
 }
 
+void AudioModulePoly::noteOn(int key, int vel)
+{
+  if(!voiceManager) return; // maybe assert that it's not null
+
+  // When we receive a noteOn, we assume that the voiceManager has just immediately before that 
+  // also has received the same noteOn. The main module that drives this module (for example, 
+  // ToolChain) is supposed to first set up the voice manager and then pass the event on to the 
+  // child modules. For all modulatable parameters that have no modulation connections set up, we
+  // call the callback for the voice that was allocated for the note, which we assume to be the 
+  // newest note in the voiceManager.
+
+  int voiceIndex = voiceManager->getNewestActiveVoice();
+  jassert(voiceIndex >= 0); 
+  // it returns -1 only when there's no active voice but that should never be the case immediately 
+  // after a note-on
+
+  for(int i = 0; i < getNumParameters(); i++) {
+    Parameter* p = getParameterByIndex(i);
+    ModulatableParameterPoly* mp;
+    mp = dynamic_cast<ModulatableParameterPoly*>(p);
+    if(mp != nullptr && !mp->hasConnectedSources())
+      mp->callCallbackForVoice(voiceIndex); }
+
+  int dummy = 0;
+}
+
 void AudioModulePoly::processStereoFrame(double* left, double* right)
 {
-  if(!voiceManager)
-    return;
+  if(!voiceManager) return;  // maybe assert that it's not null
 
   int numActiveVoices = voiceManager->getNumActiveVoices();
   processStereoFramePoly(voicesBuffer, numActiveVoices);

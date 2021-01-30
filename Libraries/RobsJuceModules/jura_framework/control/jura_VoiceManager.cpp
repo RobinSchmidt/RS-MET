@@ -218,5 +218,10 @@ ToDo:
 see also:
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=558446 Polyphonic voice assignment and retrigger
 
+midi-specs:
+https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message
+https://www.midi.org/specifications
+
+maybe we should respond to midi reset with calling our reset
 
 */

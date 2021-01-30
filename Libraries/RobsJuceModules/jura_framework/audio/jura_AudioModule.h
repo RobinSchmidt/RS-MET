@@ -519,6 +519,13 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks
 
+  /** Overrides notOn in order to invoke the per voice callback for the voice that is used for the 
+  new note (which voice this is is inquired from the voiceManager) for those polyphonic parameters
+  that are not connected to any modulation sources. For those that are connected, the callbacks 
+  will be called in the audio process call by the modulation system but for the disconnected ones,
+  we must do it here. */
+  void noteOn(int key, int vel) override;
+
   /** Supposed to be called on note-on when the given voice should immediately switch to the new 
   pitch due to having just been grabbed from pool of idle voices or was stolen and must now play a 
   new pitch. It may also be called per sample, when the note pitch of a voice is in transition to 
@@ -529,6 +536,8 @@ public:
   microtuning is handled globally but the response to pitch-wheel is implemented via the modulation
   system. Pitch-Wheel is available as modulator and can be routed to the parameters at will. */
   virtual void setVoiceKeyPitch(int voice, double pitch) {}
+  // obsolete? should this not better be handled by a modulator module? maybe the NotePitch/Freq
+  // modulators should have glide already baked in? i think that would make sense
 
 
 

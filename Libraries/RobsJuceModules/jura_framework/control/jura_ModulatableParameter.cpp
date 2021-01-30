@@ -624,14 +624,7 @@ void ModulationManager::sendModulationChangeNotificationFor(ModulationTarget* ta
 }
 
 //-------------------------------------------------------------------------------------------------
-/*
-void ModulatableParameter::setValue(double newValue, bool sendNotification, bool callCallbacks)
-{
-  MetaControlledParameter::setValue(newValue, sendNotification, callCallbacks);
-  unmodulatedValue = value;
-  modulatedValue   = unmodulatedValue;
-}
-*/
+
 void ModulatableParameter::setNormalizedValue(double newValue, bool sendNotification, 
   bool callCallbacks)
 {
@@ -679,41 +672,6 @@ juce::String ModulatableParameter::getModulationTargetName()
 
 //=================================================================================================
 
-void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
-{ 
-  // In our overrides for addConnectionToArray/removeConnectionFromArray we make sure that 
-  // connections with the same target are adjacent in the modulationConnections array. That means
-  // we can grab a connection at a time and as long as it has the same target as the one grabbed
-  // before, we accumulate the contribution from the connection into the same buffered accumulator.
-  // When the target is different, we skip to the next accumulator, initialize it and increment a 
-  // counter that keeps track of how many distinct targets we have visited.
-  int k = -1;
-  const ModulationTarget* tOld = nullptr;
-  for(int i = 0; i < modulationConnections.size(); i++) {
-    const ModulationConnection* c = modulationConnections[i];
-    const ModulationTarget*     t = c->getTarget();
-    if(t != tOld) {
-      k++; 
-      modulatedValues[k] = t->getUnmodulatedValue();
-      tOld = t; 
-    }
-    c->applyVoice(&modulatedValues[k], voiceIndex); 
-  }
-  // ToDo: Maybe try to figure out beforehand, how many incoming connections a particular target 
-  // has and cache those values in order to accelerate this loop. These values can change only when
-  // connections are added or removed, so the addConnectionToArray/removeConnectionFromArray are
-  // the places where we need to update the stored values. But it should be tested, if it's really
-  // faster
-
-  // The order of the targets in affectedTargets is supposed to match the order of the targets
-  // as they appear in the modulationConnections array, so we can now just iterate over the
-  // affectedTargets to let them call their callbacks for voice i.
-  jassert(k == modulatedValues.size()-1 && k == affectedTargets.size()-1
-    && k == numDistinctActiveTargets-1);
-  for(int i = 0; i <= k; i++)
-    affectedTargets[i]->doVoiceModulationUpdate(modulatedValues[i], voiceIndex);
-}
-
 void ModulationManagerPoly::applyModulationsNoLock()
 {
   jassert(voiceManager != nullptr); // must be assigned
@@ -755,6 +713,41 @@ void ModulationManagerPoly::applyModulationsNoLock()
   }
 }
 
+void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
+{ 
+  // In our overrides for addConnectionToArray/removeConnectionFromArray we make sure that 
+  // connections with the same target are adjacent in the modulationConnections array. That means
+  // we can grab a connection at a time and as long as it has the same target as the one grabbed
+  // before, we accumulate the contribution from the connection into the same buffered accumulator.
+  // When the target is different, we skip to the next accumulator, initialize it and increment a 
+  // counter that keeps track of how many distinct targets we have visited.
+  int k = -1;
+  const ModulationTarget* tOld = nullptr;
+  for(int i = 0; i < modulationConnections.size(); i++) {
+    const ModulationConnection* c = modulationConnections[i];
+    const ModulationTarget*     t = c->getTarget();
+    if(t != tOld) {
+      k++; 
+      modulatedValues[k] = t->getUnmodulatedValue();
+      tOld = t; 
+    }
+    c->applyVoice(&modulatedValues[k], voiceIndex); 
+  }
+  // ToDo: Maybe try to figure out beforehand, how many incoming connections a particular target 
+  // has and cache those values in order to accelerate this loop. These values can change only when
+  // connections are added or removed, so the addConnectionToArray/removeConnectionFromArray are
+  // the places where we need to update the stored values. But it should be tested, if it's really
+  // faster
+
+  // The order of the targets in affectedTargets is supposed to match the order of the targets
+  // as they appear in the modulationConnections array, so we can now just iterate over the
+  // affectedTargets to let them call their callbacks for voice i.
+  jassert(k == modulatedValues.size()-1 && k == affectedTargets.size()-1
+    && k == numDistinctActiveTargets-1);
+  for(int i = 0; i <= k; i++)
+    affectedTargets[i]->doVoiceModulationUpdate(modulatedValues[i], voiceIndex);
+}
+
 void ModulationManagerPoly::addConnectionToArray(ModulationConnection* c)
 {
   // To find the position where we want to insert the connection into the array, we need to 
@@ -790,6 +783,9 @@ void ModulationManagerPoly::removeConnectionFromArray(int i)
   ModulationManager::removeConnectionFromArray(i);
   modulatedValues.resize(numDistinctActiveTargets);
 
+  // I think, the stuff we do there could be done in a much simpler way by just using:
+  // ti->hasConnectedSources() ...try it!
+
   // Check, if it was the last connection removed from a polyphonic target and if so,
   // trigger a callback for all active voices to set the values in the audio engine back to 
   // unmodulated:
@@ -799,14 +795,6 @@ void ModulationManagerPoly::removeConnectionFromArray(int i)
 }
 
 //=================================================================================================
-/*
-void ModulatableParameterPoly::setValue(double newValue, bool sendNotification, bool callCallbacks)
-{
-  ModulatableParameter::setValue(newValue, sendNotification, callCallbacks);
-  if(!hasConnectedSources() && callCallbacks == true)
-    callCallbacksForActiveVoices();
-}
-*/
 
 void ModulatableParameterPoly::setNormalizedValue(
   double newValue, bool sendNotification, bool callCallbacks)

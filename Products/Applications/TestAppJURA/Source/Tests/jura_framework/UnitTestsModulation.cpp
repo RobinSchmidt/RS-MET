@@ -542,14 +542,11 @@ void UnitTestModulation::runTestMonoToPoly()
   modMan.applyModulationsNoLock();
   expectEquals(mod1.numMonoRenders,  7);
   expectEquals(mod2.numMonoRenders,  7);
-  expectEquals(gen.numSetFreqCalls, 10);             // updateModulations should not triggeer any
+  expectEquals(gen.numSetFreqCalls, 10);             // updateModulations should not trigger any
   expectEquals(gen.numSetAmpCalls,   8);             // more callbacks
   gen.processStereoFrame(&dVal1, &dVal2);
   expectWithinAbsoluteError(dVal1, 2000.0, 1.e-12);  // 2 notes, no mods, freq is 1000
   expectEquals(dVal2, 2.0);
-
-  // todo: trogger a 3rd note - output should then be 3000 and 3, with a 4th, 4000 and 4 etc.
-
 
   // OK - i think the problem is that when a parameter has no modulators connected to it, it's per 
   // voice versions of the value are not updated because it's not in the affectedTargets array 
@@ -575,7 +572,25 @@ void UnitTestModulation::runTestMonoToPoly()
   // of connected sources and invoke the callback from setValue only if the parameter is 
   // disconnected. maybe the same should be done also for monophonic parameters?
 
-  // ....OK - this seems to be solved
+  // ....OK - this seems to be solved - the next probelm is when a new note is triggered:
+
+  // At the moment key1 and key4 are still held. We now trigger key2 again. In this case, gen must 
+  // also receive the noteOn, so we call its noteOn as well. Formerly, with modulation connections 
+  // in place this wasn't necessary, because the parameter callbacks were invoked by the modulation
+  // system anyway. But without connections, that doesn't happen, so we must call noteOn. In the 
+  // context of ToolChain, we can assume that this is always called by ToolChains midi-handler, 
+  // here we need to do it ourselves:
+  voiceMan.handleMidiMessage(Msg::noteOn(1, key2, 1.f));
+  gen.noteOn(key2, 127);
+  expectEquals(gen.numSetFreqCalls, 11);    // gen.noteOn should not trigger a callback
+  expectEquals(gen.numSetAmpCalls,   9);    // for the newly allocated voice
+  modMan.applyModulationsNoLock();          // should trigger no callbacks
+  expectEquals(gen.numSetFreqCalls, 11);
+  expectEquals(gen.numSetAmpCalls,   9);
+  expectEquals(mod1.numMonoRenders,  8);    // ..but it does (still) trigger rendering..
+  expectEquals(mod2.numMonoRenders,  8);
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectWithinAbsoluteError(dVal1, 3000.0, 1.e-12);  // 3 notes, no mods, freq is 1000
 
   int dummy = 0;
 }
