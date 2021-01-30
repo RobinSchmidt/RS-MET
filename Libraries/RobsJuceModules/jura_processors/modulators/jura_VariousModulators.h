@@ -260,7 +260,7 @@ public:
   virtual double getModulatorOutputSample() override { return core.getSample(); }
   */
 
-  virtual void noteOnForVoice(int key, int vel, int voice) override 
+  void noteOn(int key, int vel, int voice) override 
   { 
     jassert(voice >= 0 && voice < voiceManager->getMaxNumVoices());
     // I think getMaxNumVoices makes more sense than getNumVoices because a note-off can also

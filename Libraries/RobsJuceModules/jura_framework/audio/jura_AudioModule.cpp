@@ -735,6 +735,7 @@ void AudioModulePoly::noteOnForVoice(int key, int vel, int voice)
     mp = dynamic_cast<ModulatableParameterPoly*>(p);
     if(mp != nullptr && !mp->hasConnectedSources())
       mp->callCallbackForVoice(voice); }
+  noteOn(key, vel, voice);
 }
 
 void AudioModulePoly::processStereoFrame(double* left, double* right)

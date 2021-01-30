@@ -77,7 +77,7 @@ public:
     MetaParameterManager* metaManagerToUse = nullptr, 
     ModulationManager* modManagerToUse = nullptr);
 
-  virtual void noteOnForVoice(int key, int vel, int voice) override
+  virtual void noteOn(int key, int vel, int voice) override
   {
     jassert(voice >= 0 && voice < voiceManager->getMaxNumVoices());
     // see comment in AttackDecayEnvelopeModulePoly

@@ -520,15 +520,22 @@ public:
   // \name Callbacks
 
   /** Overriden to inquires from the voiceManager which voice was used for the most recently 
-  triggered note and then calls noteOnForVoice with that.  */
-  void noteOn(int key, int vel) override;
+  triggered note and then calls noteOnForVoice with that. Finalized because subclasses are 
+  supposed to override noteOn(int key, int vel, int voice) instead (which is called form this). */
+  void noteOn(int key, int vel) override final;
 
   /** Overriden in order to invoke the per voice callback for the voice that is used for the new 
   note for those polyphonic parametersthat are not connected to any modulation sources. For those 
   that are connected, the callbacks will be called in the audio process call by the modulation 
-  system but for the disconnected ones, we must do it here. */
-  void noteOnForVoice(int key, int vel, int voice) override;
+  system but for the disconnected ones, we must do it here. Finalized because subclasses are 
+  supposed to override noteOn(int key, int vel, int voice) instead (which is called form this). */
+  void noteOnForVoice(int key, int vel, int voice) override final;
 
+
+  virtual void noteOn(int key, int vel, int voice) {}
+  // maybe make this purely virtual
+
+  virtual void noteOff(int key, int vel, int voice) {}
 
   /** Supposed to be called on note-on when the given voice should immediately switch to the new 
   pitch due to having just been grabbed from pool of idle voices or was stolen and must now play a 
