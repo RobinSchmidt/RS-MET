@@ -731,6 +731,14 @@ void UnitTestModulation::runTestPolyToPoly()
   expectEquals(dVal1, 0.0);
   expectEquals(dVal2, 0.0);
 
+  // Define a convenience function for applying the modulations and generating a sample frame:
+  auto process = [&]()
+  {
+    modMan.applyModulationsNoLock();
+    gen.processStereoFrame(&dVal1, &dVal2);
+  };
+
+
   // Trigger a note-on - this should cause the 0th voice to start playing
   using Msg = juce::MidiMessage;
   int    key1 = 69;
@@ -739,16 +747,14 @@ void UnitTestModulation::runTestPolyToPoly()
   gen.handleMidiMessage(Msg::noteOn(1, key1, vel));
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 1);
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 1000.0 + key1    );       // default freq of 1kHz plus the note-number
   expectEquals(dVal2,    1.0 + depthVel*velR);  // default amp of 1 plus depth*vel2
 
   // Add a 2nd connection to the constant 1 the frequency parameter. It should immediately take 
   // effect:
   addConnection(&constant, targets[0], 1.0);
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 1000.0 + key1 + 1.0);      // + 1.0 is the addition from the 2nd connection
   expectEquals(dVal2,    1.0 + depthVel*velR  ); // this should be the same value as before
 
@@ -757,8 +763,7 @@ void UnitTestModulation::runTestPolyToPoly()
   gen.handleMidiMessage(Msg::noteOn(1, key2, vel));
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 2);
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 2000.0 + key1 + key2 + 2.0);
   expectEquals(dVal2,  2*( 1.0 + depthVel*velR)  );
 
@@ -767,8 +772,7 @@ void UnitTestModulation::runTestPolyToPoly()
   gen.handleMidiMessage(Msg::noteOn(1, key3, vel));
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 3);
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 3000.0 + key1 + key2 + key3 + 3.0);
   expectEquals(dVal2,  3*( 1.0 + depthVel*velR)  );
 
@@ -776,8 +780,7 @@ void UnitTestModulation::runTestPolyToPoly()
   gen.handleMidiMessage(Msg::noteOn(1, key1, 0.f));  
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 2);
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 2000.0 + key2 + key3 + 2.0);
   expectEquals(dVal2,  2*( 1.0 + depthVel*velR)  );
 
@@ -786,8 +789,7 @@ void UnitTestModulation::runTestPolyToPoly()
   gen.handleMidiMessage(Msg::noteOn(1, key4, vel));
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 3);
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 3000.0 + key2 + key3 + key4 + 3.0);
   expectEquals(dVal2,  3*( 1.0 + depthVel*velR)  );
 
@@ -795,21 +797,18 @@ void UnitTestModulation::runTestPolyToPoly()
   gen.handleMidiMessage(Msg::noteOn(1, key3, 0.f));
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 2);
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 2000.0 + key2 + key4 + 2.0);
   expectEquals(dVal2,  2*( 1.0 + depthVel*velR)  );
 
   // Remove the connection between the constant 1 and the frequency parameter:
   modMan.removeConnectionsWith(&constant);
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 2000.0 + key2 + key4);
 
   // Change the value of the frequency parameter:
   gen.getParameterByName("Frequency")->setValue(500.0, false, false);
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 1000.0 + key2 + key4);
 
   // Switch the generator into monophonic mode, trigger another note with key3 (2 voices are still
@@ -817,45 +816,40 @@ void UnitTestModulation::runTestPolyToPoly()
   // output corresponding to key3 only:
   gen.setMonophonic(true);
   gen.handleMidiMessage(Msg::noteOn(1, key3, vel));
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 500.0 + key3);
   expectEquals(dVal2,   1.0 + depthVel*velR);
 
   // Switch back to polyphonic mode again:
   gen.setMonophonic(false);
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 1500.0 + key2 + key4 + key3);
   expectEquals(dVal2,  3*(1.0 + depthVel*velR));
 
   // Connect the constant 1 modulator to the frequency again:
   addConnection(&constant, targets[0], 1.0);
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 1500.0 + key2 + key4 + key3 + 3.0);
   expectEquals(dVal2,  3*(1.0 + depthVel*velR));
 
   // Switch the constant modulator into mono mode. This should make no difference:
   constant.setMonophonic(true);
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 1500.0 + key2 + key4 + key3 + 3.0);
 
   // Switch the notePitch modulator into mono mode, too. This means that instead of seeing
   // key2 + key4 + key3 as modulation signal, the module should see 3*key3:
   notePitch.setMonophonic(true);
-  modMan.applyModulationsNoLock();
-  gen.processStereoFrame(&dVal1, &dVal2);
+  process();
   expectEquals(dVal1, 1500.0 + 3*key3 + 3.0);
 
-
-  // Now switch the generator also into mono-mode. We expect..
-
-
+  // Now switch the generator also into mono-mode. We expect an output corresponding only to the
+  // latest actiive note:
+  gen.setMonophonic(true);
+  process();
+  expectEquals(dVal1, 500.0 + key3 + 1.0);
 
   // ToDo: check also the number of randering and callback calls in each test
-
 
   // What if we trigger a note again before a corresponding note-off was received? i think, best
   // would be to just do nothing, if the note is being held and just turn it back on when it was
