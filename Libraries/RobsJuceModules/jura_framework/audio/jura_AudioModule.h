@@ -510,8 +510,11 @@ public:
   /** Switches the module into monophonic mode. The idea is that polyphonic modules should be 
   able to optionally behave exactly as if they would be implemented without making any use of the
   polyphony infrastructure. By default i.e. after construrction, an AudioModulePoly will actually 
-  be in polyphonic mode, because it would be confusing otherwise (i guess). */
-  void setMonophonic(bool shouldBeMonophonic);
+  be in polyphonic mode, because it would be confusing otherwise (i guess). The feature is mostly 
+  meant to facilitate upgrading monophonic module classes to polyphonic ones later without breaking
+  any patches. Patches involvong the old monophonic modulators could use the upgraded polyphonic 
+  versions the same way as before by just switching them into monophonic mode. */
+  virtual void setMonophonic(bool shouldBeMonophonic);
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -651,18 +654,31 @@ public:
     ModulationManager* modManagerToUse = nullptr)
     : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse) {}
 
+  /** Must be overriden by subclasses to allocate the DSP sources. It serves the same purpose as 
+  AudioModulePoly::allocateVoiceModResources but for modulators. We give it a different name in 
+  order to make it purely virtual because we have already overriden the allocateVoiceResources
+  here, so we need a different name in order to make it purely virtual again. We do this because
+  ModulatorModulePoly needs to always allocate the slots for the voice output signals and we do 
+  not want to force subclasses to call the basclass method - that would just add more boilerplate
+  and could be forgotten as well. */
+  virtual void allocateVoiceModResources() = 0;
+
+  /** Sets the modulator into monophonic mode in which case it should behave in the same way as 
+  truly monophonic object that doesn't use the polyphony system would.  */
+  void setMonophonic(bool shouldBeMonophonic) override
+  {
+    AudioModulePoly::setMonophonic(shouldBeMonophonic);
+    ModulationSourcePoly::setMonophonic(shouldBeMonophonic);
+    // Thats a bit ugly: we inherit a "monophonic" flag and a setter for it from both baseclasses.
+    // ToDo: try to find a better design that avoids this
+  }
+
   // Finalize all the audio processing callbacks - they are not suppsoed not be used for anything 
   // anymore and just pass the audio through:
   void processBlock(double** inOutBuffer, int numChannels, int numSamples) override final {}
   void processStereoFrame(double* left, double* right) override final {}
   void processStereoFrameVoice(double* left, double* right, int voice) override final {}
   void processStereoFramePoly(double* buffer, int numActiveVoices) override final {}
-
-  /** Must be overriden by subclasses to allocate the DSP sources. It serves the same purpose as 
-  AudioModulePoly::allocateVoiceModResources but for modulators. We give it a different name in 
-  order to make it purely virtual because we have already overriden the allocateVoiceResources
-  here, so we need a different name.   */
-  virtual void allocateVoiceModResources() = 0;
 
   /** Overriden to trigger the allocation of the modulator output signal slots and triggers 
   allocateVoiceModResources which must be overriden by subclasses. */

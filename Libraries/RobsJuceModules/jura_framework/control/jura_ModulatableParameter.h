@@ -1026,6 +1026,10 @@ public:
   ModulationSourcePoly(ModulationManager* managerToUse = nullptr)
     : ModulationSource(managerToUse) { }
 
+
+  virtual void setMonophonic(bool shouldBeMonophonic) { monophonic = shouldBeMonophonic; }
+
+
   /** Must be overriden by subclasses to produce a modulator output sample for the given voice 
   index. */
   virtual double renderVoiceModulation(int voiceIndex) = 0;
@@ -1055,9 +1059,16 @@ public:
       // falls back to calling the basclass method)
 
     jassert(modValues.size() >= voiceManager->getMaxNumVoices());
-    for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)  {
-      int k = voiceManager->getActiveVoiceIndex(i);
-      modValues[k] = renderVoiceModulation(k);    }
+    if(!monophonic) {
+      for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)  {
+        int k = voiceManager->getActiveVoiceIndex(i);
+        modValues[k] = renderVoiceModulation(k); }}
+    else {
+      int newestVoice = voiceManager->getNewestActiveVoice();
+      double val = renderVoiceModulation(newestVoice);
+      for(int i = 0; i < voiceManager->getNumActiveVoices(); i++)  {
+        int k = voiceManager->getActiveVoiceIndex(i);
+        modValues[k] = val; }}
   }
 
 
@@ -1072,6 +1083,9 @@ public:
 protected:
 
   std::vector<double> modValues; // replaces "modValue" member of monophonic baseclass
+  bool monophonic = false; 
+  // if true, the modulation source should behave as if it was a monophonic one
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModulationSourcePoly)
 };

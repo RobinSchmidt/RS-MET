@@ -848,8 +848,7 @@ void UnitTestModulation::runTestPolyToPoly()
   modMan.applyModulationsNoLock();
   gen.processStereoFrame(&dVal1, &dVal2);
   expectEquals(dVal1, 1500.0 + 3*key3 + 3.0);
-  // This does not work yet! I think we need to change the implementation renderVoiceModulation to
-  // switch and do something else, if in mono mode
+
 
   // Now switch the generator also into mono-mode. We expect..
 
