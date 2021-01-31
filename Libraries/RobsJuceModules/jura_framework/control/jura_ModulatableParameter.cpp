@@ -831,4 +831,21 @@ void ModulatableParameterPoly::callCallbacksForActiveVoices()
 //   should set it into mono-mode when the patch was saved with the old mono-only version
 // -maybe it could be interesting to switch the beavhior of mono->poly and poly->mono 
 //  connections between: newestActive, oldestActive
+// -implement mono/poy switch for poly modules (they should be able to operate in mono-mode)
+// -implement the outGain/thruGain stuff for AudioModule
+// -maybe let AudioModule have another rendering callback rsFloat64 getSampleStereo(rsFloat64 in)
+// -the default implementation of processSampleFrameStereo should call this and also do the mixing
+// -maybe make the output of regular AudioModules avilable as modulations osurces, too - maybe like
+//  this:
+//  -make a subclass AudioModulatorModule of AudioModuleWithMidiIn
+//  -let it have two embedded ModulationSource objects that get automatically registered when the
+//   the module is plugged in
+//  -these two ModulationSources should output the most recently rendered audio-output samples
+//  -so: *not* the AudioModule *itself* gets registered as mod-source but two *embedded* objects 
+//   (or maybe some other number, should be flexible enough to support mono and multichannel as 
+//   well). doing it this way should be compatible with the existing infrastructure and not mess 
+//   up any of the current behavior
+//  -but: modulation outputs would have a one sample delay because the sample-rendering is called 
+//   after the modulator update
+
 

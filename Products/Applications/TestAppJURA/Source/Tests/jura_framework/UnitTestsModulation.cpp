@@ -190,7 +190,7 @@ public:
   void allocateVoiceResources() override
   {
     int numVoices = 0;
-    jura::rsVoiceManager* vm = getVoiceManager();
+    const jura::rsVoiceManager* vm = getVoiceManager();
     if(vm)
       numVoices = vm->getNumVoices();
     voiceFreqs.resize(numVoices);
@@ -711,22 +711,23 @@ void UnitTestModulation::runTestPolyToPoly()
   expectEquals(iVal, 3, "Failed to register sources in modulation manager");
 
   // Create the target module and register its parameters as modulation targets:
-  TestPolyAudioModule targetModule(&lock, nullptr, &modMan);
-  targetModule.setVoiceManager(&voiceMan);
-  targetModule.setVoiceSignalBuffer(&voiceBuffer[0]);
+  TestPolyAudioModule gen(&lock, nullptr, &modMan);
+  gen.setVoiceManager(&voiceMan);
+  gen.setVoiceSignalBuffer(&voiceBuffer[0]);
   iVal = (int) modMan.getAvailableModulationTargets().size();
   expectEquals(iVal, 2, "Failed to register parameters in modulation manager");
 
   // Create and add connections:
   const std::vector<jura::ModulationTarget*>& targets = modMan.getAvailableModulationTargets();
+  double depthVel = 0.5;
   addConnection(&notePitch, targets[0], 1.0);
-  addConnection(&noteVel,   targets[1], 0.5);
+  addConnection(&noteVel,   targets[1], depthVel);
   iVal = (int) modMan.getModulationConnections().size();
   expectEquals(iVal, 2, "Failed add connection to modulation manager");
 
 
   // Let the target module process an audio frame:
-  targetModule.processStereoFrameVoice(&dVal1, &dVal2, 0);
+  gen.processStereoFrameVoice(&dVal1, &dVal2, 0);
   expectEquals(dVal1, 0.0);
   expectEquals(dVal2, 0.0);
 
@@ -735,80 +736,101 @@ void UnitTestModulation::runTestPolyToPoly()
   int    key1 = 69;
   float  vel  = 0.5f;
   double velR = round(vel * 127.0) / 127.0;  // midi-byte roundtrip messes the velocity up
-  targetModule.handleMidiMessage(Msg::noteOn(1, key1, vel));
+  gen.handleMidiMessage(Msg::noteOn(1, key1, vel));
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 1);
   modMan.applyModulationsNoLock();
-  targetModule.processStereoFrame(&dVal1, &dVal2);
-  expectEquals(dVal1, 1000.0 + key1    );  // default freq of 1kHz plus the note-number
-  expectEquals(dVal2,    1.0 + 0.5*velR);  // default amp of 1 plus depth*vel2
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1000.0 + key1    );       // default freq of 1kHz plus the note-number
+  expectEquals(dVal2,    1.0 + depthVel*velR);  // default amp of 1 plus depth*vel2
 
   // Add a 2nd connection to the 1st parameter:
   addConnection(&constant, targets[0], 1.0);
   modMan.applyModulationsNoLock();
-  targetModule.processStereoFrame(&dVal1, &dVal2);
-  expectEquals(dVal1, 1000.0 + key1 + 1.0); // the + 1.0 is the addition from the 2nd connection
-  expectEquals(dVal2,    1.0 + 0.5*velR  ); // this should be the same value as before
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1000.0 + key1 + 1.0);      // + 1.0 is the addition from the 2nd connection
+  expectEquals(dVal2,    1.0 + depthVel*velR  ); // this should be the same value as before
 
   // Trigger a second note:
   int key2 = 50;
-  targetModule.handleMidiMessage(Msg::noteOn(1, key2, vel));
+  gen.handleMidiMessage(Msg::noteOn(1, key2, vel));
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 2);
   modMan.applyModulationsNoLock();
-  targetModule.processStereoFrame(&dVal1, &dVal2);
+  gen.processStereoFrame(&dVal1, &dVal2);
   expectEquals(dVal1, 2000.0 + key1 + key2 + 2.0);
-  expectEquals(dVal2,  2*( 1.0 + 0.5*velR)  );
+  expectEquals(dVal2,  2*( 1.0 + depthVel*velR)  );
 
   // ...and a third:
   int key3 = 100;
-  targetModule.handleMidiMessage(Msg::noteOn(1, key3, vel));
+  gen.handleMidiMessage(Msg::noteOn(1, key3, vel));
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 3);
   modMan.applyModulationsNoLock();
-  targetModule.processStereoFrame(&dVal1, &dVal2);
+  gen.processStereoFrame(&dVal1, &dVal2);
   expectEquals(dVal1, 3000.0 + key1 + key2 + key3 + 3.0);
-  expectEquals(dVal2,  3*( 1.0 + 0.5*velR)  );
+  expectEquals(dVal2,  3*( 1.0 + depthVel*velR)  );
 
   // Release the first note:
-  targetModule.handleMidiMessage(Msg::noteOn(1, key1, 0.f));  
+  gen.handleMidiMessage(Msg::noteOn(1, key1, 0.f));  
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 2);
   modMan.applyModulationsNoLock();
-  targetModule.processStereoFrame(&dVal1, &dVal2);
+  gen.processStereoFrame(&dVal1, &dVal2);
   expectEquals(dVal1, 2000.0 + key2 + key3 + 2.0);
-  expectEquals(dVal2,  2*( 1.0 + 0.5*velR)  );
+  expectEquals(dVal2,  2*( 1.0 + depthVel*velR)  );
 
   // Trigger another note:
   int key4 = 20;
-  targetModule.handleMidiMessage(Msg::noteOn(1, key4, vel));
+  gen.handleMidiMessage(Msg::noteOn(1, key4, vel));
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 3);
   modMan.applyModulationsNoLock();
-  targetModule.processStereoFrame(&dVal1, &dVal2);
+  gen.processStereoFrame(&dVal1, &dVal2);
   expectEquals(dVal1, 3000.0 + key2 + key3 + key4 + 3.0);
-  expectEquals(dVal2,  3*( 1.0 + 0.5*velR)  );
+  expectEquals(dVal2,  3*( 1.0 + depthVel*velR)  );
 
   // Release 3rd note:
-  targetModule.handleMidiMessage(Msg::noteOn(1, key3, 0.f));
+  gen.handleMidiMessage(Msg::noteOn(1, key3, 0.f));
   iVal = voiceMan.getNumActiveVoices();
   expectEquals(iVal, 2);
   modMan.applyModulationsNoLock();
-  targetModule.processStereoFrame(&dVal1, &dVal2);
+  gen.processStereoFrame(&dVal1, &dVal2);
   expectEquals(dVal1, 2000.0 + key2 + key4 + 2.0);
-  expectEquals(dVal2,  2*( 1.0 + 0.5*velR)  );
+  expectEquals(dVal2,  2*( 1.0 + depthVel*velR)  );
 
   // Remove the connection between the constant 1 and the frequency parameter:
   modMan.removeConnectionsWith(&constant);
   modMan.applyModulationsNoLock();
-  targetModule.processStereoFrame(&dVal1, &dVal2);
+  gen.processStereoFrame(&dVal1, &dVal2);
   expectEquals(dVal1, 2000.0 + key2 + key4);
 
   // Change the value of the frequency parameter:
-  targetModule.getParameterByName("Frequency")->setValue(500.0, false, false);
+  gen.getParameterByName("Frequency")->setValue(500.0, false, false);
   modMan.applyModulationsNoLock();
-  targetModule.processStereoFrame(&dVal1, &dVal2);
+  gen.processStereoFrame(&dVal1, &dVal2);
   expectEquals(dVal1, 1000.0 + key2 + key4);
+
+  // Switch the generator into monophonic mode, trigger another note with key3 (2 voices are still
+  // active, playing key2 and key4, so this note will use the 3rd active voice). We expect that an
+  // output corresponding to key3 only:
+  gen.setMonophonic(true);
+  gen.handleMidiMessage(Msg::noteOn(1, key3, vel));
+  modMan.applyModulationsNoLock();
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 500.0 + key3);
+  expectEquals(dVal2,   1.0 + depthVel*velR);
+
+  // Switch back to polyphonic mode again:
+  gen.setMonophonic(false);
+  modMan.applyModulationsNoLock();
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1500.0 + key2 + key4 + key3);
+  expectEquals(dVal2,  3*(1.0 + depthVel*velR));
+
+
+  // ToDo: check also the number of randering and callback calls in each test
+
 
   // What if we trigger a note again before a corresponding note-off was received? i think, best
   // would be to just do nothing, if the note is being held and just turn it back on when it was

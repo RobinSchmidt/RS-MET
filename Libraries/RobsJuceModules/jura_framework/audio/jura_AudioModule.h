@@ -471,7 +471,6 @@ public:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioModuleWithMidiIn)
 };
 
-
 //=================================================================================================
 
 /** Baseclass for polyphonic AudioModules. They have polyphonic audio outputs, so you can chain a 
@@ -495,8 +494,9 @@ public:
 
   /** Sets the voice manager for this module and recursively for all the child modules. This will 
   trigger a call to allocateVoiceResources because the amount of resources needed depends on the
-  maxNumVoices value which is a member of rsVoiceManager - so if the voice manager changes, the
-  resources (DSP objects) may need to be re-allocated. */
+  maxNumVoices value which is a member of rsVoiceManager, so if the voiceManager changes, the
+  resources (like states of dsp objects) may need to be (re)allocated. Typically, this just happens
+  once, soon after construction. */
   void setVoiceManager(rsVoiceManager* managerToUse);
   // todo: maybe make it optional (true by default) to set it also for the child modules
 
@@ -507,35 +507,46 @@ public:
   length 2*maxNumVoice where the factor two comes from the two channels for stereo signals. */
   void setVoiceSignalBuffer(double* buffer) { voicesBuffer = buffer; }
 
+  /** Switches the module into monophonic mode. The idea is that polyphonic modules should be 
+  able to optionally behave exactly as if they would be implemented without making any use of the
+  polyphony infrastructure. By default i.e. after construrction, an AudioModulePoly will actually 
+  be in polyphonic mode, because it would be confusing otherwise (i guess). */
+  void setMonophonic(bool shouldBeMonophonic);
+
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
   // int getMaxNumVoices();
 
-  /** Returns a pointer to our voiceManager. */
-  rsVoiceManager* getVoiceManager() const { return voiceManager; }
-  // maybe it should be a const pointer?
+  /** Returns a const pointer to our voiceManager which can be used by the caller to inquire 
+  things about the current processing state like the number of active voices etc. */
+  const rsVoiceManager* getVoiceManager() const { return voiceManager; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Callbacks
 
   /** Overriden to inquires from the voiceManager which voice was used for the most recently 
   triggered note and then calls noteOnForVoice with that. Finalized because subclasses are 
-  supposed to override noteOn(int key, int vel, int voice) instead (which is called form this). */
+  supposed to override noteOn(int key, int vel, int voice) instead (which is called from this). */
   void noteOn(int key, int vel) override final;
 
   /** Overriden in order to invoke the per voice callback for the voice that is used for the new 
-  note for those polyphonic parametersthat are not connected to any modulation sources. For those 
+  note for those polyphonic parameters that are not connected to any modulation sources. For those 
   that are connected, the callbacks will be called in the audio process call by the modulation 
   system but for the disconnected ones, we must do it here. Finalized because subclasses are 
-  supposed to override noteOn(int key, int vel, int voice) instead (which is called form this). */
+  supposed to override noteOn(int key, int vel, int voice) instead (which is called from this). */
   void noteOnForVoice(int key, int vel, int voice) override final;
 
+  // todo: maybe finalize noteOffForVoice
 
+  /** Can be overriden by subclasses to respond to note-on events for a particular voice. Can be 
+  used in audio processors (oscillators, filters, etc.) to reset oscillator phases, filter states,
+  etc. and in modulators (envelopes, etc.) to reset the position in the envelope etc. */
   virtual void noteOn(int key, int vel, int voice) {}
   // maybe make this purely virtual
 
-  virtual void noteOff(int key, int vel, int voice) {}
+  // todo:
+  //virtual void noteOff(int key, int vel, int voice) {}
 
   /** Supposed to be called on note-on when the given voice should immediately switch to the new 
   pitch due to having just been grabbed from pool of idle voices or was stolen and must now play a 
@@ -550,17 +561,11 @@ public:
   // obsolete? should this not better be handled by a modulator module? maybe the NotePitch/Freq
   // modulators should have glide already baked in? i think that would make sense
 
-
-
   virtual void setVoiceVelNorm(int voice, double pitch) {}
   // similar to setVoiceKeyPitch but for (normalized) velocity 
 
-
-
-
   //-----------------------------------------------------------------------------------------------
   // \name Audio processing:
-
 
   /** Must be overriden by subclasses to produce a stereo sample frame at a time. */
   virtual void processStereoFrameVoice(double *left, double *right, int voice) = 0;
@@ -576,23 +581,10 @@ public:
   the 1st voice etc. */
   virtual void processStereoFramePoly(double *buffer, int numActiveVoices);
 
-
-  /*
-  virtual void processBlockVoice(double **inOutBuffer, int numChannels, int numSamples, int voice) 
-  {
-
-  }
-
-  virtual void processBlockPoly(double ***inOutBuffer, int numChannels, int numSamples) 
-  {
-
-  }
-
-  virtual void processStereoFramePoly(double **left, double **right) 
-  {
-
-  }
-  */
+  // maybe add later for optimization:
+  //virtual void processBlockVoice(double **inOutBuffer, int numChannels, int numSamples, int voice) { }
+  //virtual void processBlockPoly(double ***inOutBuffer, int numChannels, int numSamples) {}
+  //virtual void processStereoFramePoly(double **left, double **right) {}
 
 
   //-----------------------------------------------------------------------------------------------
@@ -604,14 +596,6 @@ public:
   voiceMananger member to inquire things the desired maximum number of voices which will be 
   relevant for knowing how many core DSP objects you need. */
   virtual void allocateVoiceResources() = 0;
-
-  /*
-  {
-    // We need to provide an empty baseclass implementation because it gets called in our 
-    // constructor. Maybe get rid of that call and make the function purely virtual. I think, it 
-    // would be better design if this is purely virtual.
-  }
-  */
   // Maybe it should have a boolean parameter to decide whether it should get called recursively on
   // the child modules. In our setVoiceManager we would pass false because the function calls 
   // itself recursively on the child modules and also calls allocateVoiceResources, so we would end
@@ -622,6 +606,8 @@ protected:
 
 
   rsVoiceManager* voiceManager = nullptr;
+
+  bool monophonic = false;
 
   double *voicesBuffer = nullptr; // should be of length 2*maxNumVoices (2 for the 2 channels)
   // hmm - i'm not sure, if that's a good design - the motivation for introducing this buffer is
@@ -645,20 +631,11 @@ class JUCE_API ModulatorModuleMono : public AudioModuleWithMidiIn, public Modula
 
 public:
 
-  using AudioModuleWithMidiIn::AudioModuleWithMidiIn;
-
-  /*
-  ModulatorModule(CriticalSection* lockToUse,
-    MetaParameterManager* metaManagerToUse = nullptr,
-    ModulationManager* modManagerToUse = nullptr)
-    : AudioModuleWithMidiIn(lockToUse, metaManagerToUse, modManagerToUse) 
-  {
-
-  }
-  */
+  using AudioModuleWithMidiIn::AudioModuleWithMidiIn;  // inherit constructors
 
 };
 
+//=================================================================================================
 
 /** Baseclass for polyphonic modulator modules. */
 
@@ -669,22 +646,17 @@ class JUCE_API ModulatorModulePoly : public AudioModulePoly, public ModulationSo
 
 public:
 
-
   ModulatorModulePoly(CriticalSection* lockToUse,
     MetaParameterManager* metaManagerToUse = nullptr,
     ModulationManager* modManagerToUse = nullptr)
-    : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse) 
-  {
-    //allocateVoiceResources(voiceManager);
-  }
+    : AudioModulePoly(lockToUse, metaManagerToUse, modManagerToUse) {}
 
-  // finalize all the audio processinc callbacks - they are not suppsoed not be used for anything 
-  // anymore and just pass the audio through
-
+  // Finalize all the audio processing callbacks - they are not suppsoed not be used for anything 
+  // anymore and just pass the audio through:
+  void processBlock(double** inOutBuffer, int numChannels, int numSamples) override final {}
   void processStereoFrame(double* left, double* right) override final {}
-
   void processStereoFrameVoice(double* left, double* right, int voice) override final {}
-    // Do nothing - modulators need to override getModulationValue instead
+  void processStereoFramePoly(double* buffer, int numActiveVoices) override final {}
 
   /** Must be overriden by subclasses to allocate the DSP sources. It serves the same purpose as 
   AudioModulePoly::allocateVoiceModResources but for modulators. We give it a different name in 
@@ -692,7 +664,8 @@ public:
   here, so we need a different name.   */
   virtual void allocateVoiceModResources() = 0;
 
-
+  /** Overriden to trigger the allocation of the modulator output signal slots and triggers 
+  allocateVoiceModResources which must be overriden by subclasses. */
   void allocateVoiceResources() override final
   {
     ModulationSourcePoly::allocateVoiceOutputPins(voiceManager);
@@ -700,10 +673,6 @@ public:
   }
 
 };
-
-
-
-
 
 //=================================================================================================
 

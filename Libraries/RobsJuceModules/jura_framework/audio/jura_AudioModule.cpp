@@ -710,6 +710,20 @@ void AudioModulePoly::addChildAudioModule(AudioModule* moduleToAdd)
     pm->setVoiceManager(voiceManager);
 }
 
+void AudioModulePoly::setMonophonic(bool shouldBeMonophonic)
+{
+  monophonic = shouldBeMonophonic;
+  for(int i = 0; i < getNumParameters(); i++) {
+    Parameter* p = getParameterByIndex(i);            // maybe factor out this sequence of 3 calls
+    ModulatableParameterPoly* mp;                     // its used in the same form in
+    mp = dynamic_cast<ModulatableParameterPoly*>(p);  // noteOnForVoice
+    if(mp)
+      mp->setMonophonic(shouldBeMonophonic); }
+  // ToDo: maybe set the child-modules monophonic, too - but maybe not? Maybe a module should be
+  // able to have any mix of monophonic and polyphonic modules as child modules? maybe have a 
+  // boolean parameter that lets the module optionally set up the child-modules
+}
+
 void AudioModulePoly::noteOn(int key, int vel)
 {
   // When we receive a noteOn, we assume that the voiceManager has just immediately before that 
@@ -742,17 +756,27 @@ void AudioModulePoly::processStereoFrame(double* left, double* right)
 {
   if(!voiceManager) return;  // maybe assert that it's not null
 
-  int numActiveVoices = voiceManager->getNumActiveVoices();
-  processStereoFramePoly(voicesBuffer, numActiveVoices);
+
 
   // maybe for optimization, have a boolean flag "needsMonophonicMixdown" (member) to suppress the
   // mixing of the voices because if several polyphonic modules are chained, the later modules 
-  // actually do not use the mixed signals
+  // actually do not use the mixed signals...or do they? hmmm...well, i guess they may but most 
+  // will not
 
-  double sumL = 0, sumR = 0;  // todo: use rsFloat64x2
-  for(int i = 0; i < numActiveVoices; i+=1) {
-    sumL += voicesBuffer[2*i];
-    sumR += voicesBuffer[2*i+1]; }
+  double sumL, sumR;  // accumulators, todo: use rsFloat64x2
+  if(monophonic) {
+    // In mono mode, use only output of most recently triggered voice that is still active:
+    int k = voiceManager->getNewestActiveVoice();
+    if(k >= 0)  
+      processStereoFrameVoice(&sumL, &sumR, k); }
+  else {
+    // In poly mode, accumulate outputs of all active voices:
+    int numActiveVoices = voiceManager->getNumActiveVoices();
+    processStereoFramePoly(voicesBuffer, numActiveVoices);
+    sumL = sumR = 0.0;
+    for(int i = 0; i < numActiveVoices; i += 1) {
+      sumL += voicesBuffer[2*i];
+      sumR += voicesBuffer[2*i+1]; }}
 
   *left  = sumL; // todo: use *left = thruGain * *left + outGain * sumL
   *right = sumR; // ditto
@@ -760,8 +784,12 @@ void AudioModulePoly::processStereoFrame(double* left, double* right)
 
 void AudioModulePoly::processStereoFramePoly(double *buffer, int numActiveVoices)
 {
-  jassert(buffer); // must be a valid pointer, length should be at least 2*numActiveVoices, more
-                   // typically, it will be 2*voiceManager->getNumActiveVoices()
+  jassert(buffer); 
+  // Must be a valid pointer, length should be at least 2*numActiveVoices, more typically, it will
+  // be 2*voiceManager->getNumActiveVoices()...this is a bit dangerous: we rely on the assumption 
+  // that the buffer is large enough, but don't check that. Maybe provide a means to make that 
+  // safer.
+
   for(int i = 0; i < numActiveVoices; i+=1) {
     int k = voiceManager->getActiveVoiceIndex(i);
     processStereoFrameVoice(&buffer[2*i], &buffer[2*i+1], k); }

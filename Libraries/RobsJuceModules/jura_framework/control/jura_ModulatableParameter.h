@@ -1100,6 +1100,8 @@ public:
   // called from smoothing manager?
 
 
+  void setMonophonic(bool shouldBeMonophonic) { monophonic = shouldBeMonophonic; }
+
 
   void setValueChangeCallbackPoly(std::function<void(double, int)> cb)
   {
@@ -1110,11 +1112,25 @@ public:
   // maybe make the parameter a const reference
 
 
+  bool isMonophonic() const { return monophonic; }
+
+  int getNewestActiveVoice()
+  {
+    ModulationManager* modMan = getModulationManager();    jassert(modMan);
+    rsVoiceManager*  voiceMan = modMan->getVoiceManager(); jassert(voiceMan);
+    return voiceMan->getNewestActiveVoice();
+    // todo: try to optimize this and make it const
+  }
+
+
   /** Overriden to call our callback function with the modulated value. */
   void doVoiceModulationUpdate(double modulatedValue, int voiceIndex) override
   {
     jassert(voiceIndex >= 0);
-    valueChangeCallbackPoly(modulatedValue, voiceIndex);
+    if(!monophonic)  // experimental
+      valueChangeCallbackPoly(modulatedValue, voiceIndex);
+    else if(voiceIndex == getNewestActiveVoice())  
+      valueChangeCallbackPoly(modulatedValue, voiceIndex);
   }
 
 
@@ -1166,6 +1182,9 @@ protected:
 
 
   std::function<void(double, int)> valueChangeCallbackPoly;
+
+  bool monophonic = false; 
+  // if true, the modulation target should behave as if it was a monophonic one
 
 
 private:
