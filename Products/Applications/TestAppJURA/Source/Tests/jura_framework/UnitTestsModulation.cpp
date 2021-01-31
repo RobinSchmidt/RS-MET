@@ -744,7 +744,8 @@ void UnitTestModulation::runTestPolyToPoly()
   expectEquals(dVal1, 1000.0 + key1    );       // default freq of 1kHz plus the note-number
   expectEquals(dVal2,    1.0 + depthVel*velR);  // default amp of 1 plus depth*vel2
 
-  // Add a 2nd connection to the 1st parameter:
+  // Add a 2nd connection to the constant 1 the frequency parameter. It should immediately take 
+  // effect:
   addConnection(&constant, targets[0], 1.0);
   modMan.applyModulationsNoLock();
   gen.processStereoFrame(&dVal1, &dVal2);
@@ -827,6 +828,31 @@ void UnitTestModulation::runTestPolyToPoly()
   gen.processStereoFrame(&dVal1, &dVal2);
   expectEquals(dVal1, 1500.0 + key2 + key4 + key3);
   expectEquals(dVal2,  3*(1.0 + depthVel*velR));
+
+  // Connect the constant 1 modulator to the frequency again:
+  addConnection(&constant, targets[0], 1.0);
+  modMan.applyModulationsNoLock();
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1500.0 + key2 + key4 + key3 + 3.0);
+  expectEquals(dVal2,  3*(1.0 + depthVel*velR));
+
+  // Switch the constant modulator into mono mode. This should make no difference:
+  constant.setMonophonic(true);
+  modMan.applyModulationsNoLock();
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1500.0 + key2 + key4 + key3 + 3.0);
+
+  // Switch the notePitch modulator into mono mode, too. This means that instead of seeing
+  // key2 + key4 + key3 as modulation signal, the module should see 3*key3:
+  notePitch.setMonophonic(true);
+  modMan.applyModulationsNoLock();
+  gen.processStereoFrame(&dVal1, &dVal2);
+  expectEquals(dVal1, 1500.0 + 3*key3 + 3.0);
+  // This does not work yet! I think we need to change the implementation renderVoiceModulation to
+  // switch and do something else, if in mono mode
+
+  // Now switch the generator also into mono-mode. We expect..
+
 
 
   // ToDo: check also the number of randering and callback calls in each test
