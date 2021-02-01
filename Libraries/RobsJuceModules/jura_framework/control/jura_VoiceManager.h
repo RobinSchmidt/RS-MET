@@ -17,6 +17,9 @@ public:
   virtual ~rsMidiMessageDispatcher() {}
 
 
+
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Event processing:
 
@@ -110,10 +113,17 @@ public:
     return returnInfo;
   }
 
+  // We use some negative numbers as codes to be used as return values when a valid voice index is
+  // expected to be returned but we can't, either because we don't have the information or no voice
+  // could be found/allocated, or more than one was found (in case of noteOff, for example):
+  static const int unknownVoice = -1;
+  static const int noVoice      = -2;
+  static const int manyVoices   = -3;
+
   /** Can be overriden by subclasses to return the voice index that was used to play the note. For
   example, the subclass rsVoiceManager does this. The baseclass implementation returns -1 as code 
   for "unknown". */
-  virtual int noteOnReturnVoice(int key, int vel) { noteOn(key, vel); return -1; }
+  virtual int noteOnReturnVoice(int key, int vel) { noteOn(key, vel); return unknownVoice; }
 
   /** Can be overriden by subclasses to return the voice index that was put into release state, 
   i.e. the voice which was currently holding the given note before receiving the event. The 
@@ -124,7 +134,7 @@ public:
   playing the same note? ...and the note-off could trigger multiple voices to enter release? what 
   should a subclass return in such a case? maybe another code for "many"? for the time being, we 
   just assume that such cases are not a thing. */
-  virtual int noteOffReturnVoice(int key) { noteOff(key); return -1; }
+  virtual int noteOffReturnVoice(int key) { noteOff(key); return unknownVoice; }
   
 
 
@@ -167,8 +177,9 @@ public:
   enum class StealMode
   {
     oldest,
-    newest
-    //nearest, lowest, highest, quietest, dontSteal
+    newest,
+    noSteal
+    // todo: nearest, farthest, lowest, highest, quietest, 
   };
 
   enum class KillMode
@@ -200,12 +211,12 @@ public:
   enum class RetriggerMode
   {
     useNewVoice,
-    reuseExistingVoice
+    reuseOldVoice
   };
   /** Sets up the behavior when a note is triggered for which we have an existing active voice 
   (presumably in release). In such cases, it may make sense to not allocate a fresh voice but 
   rather to revive the existing voice and retrigger its envelopes (but not reset oscillator 
-  phases and filter states). This can be done by choosing RetriggerMode::reuseExistingVoice and it
+  phases and filter states). This can be done by choosing RetriggerMode::reuseOldVoice and it
   is the default behavior. If the old voice should keep releasing and a new voice should be used 
   for the new note, choose RetriggerMode::useNewVoice. */
   void setRetriggerMode(RetriggerMode newMode) { retriggerMode = newMode; }
@@ -375,13 +386,15 @@ public:
   void reset();
 
 
+
+
 protected:
 
   int activateAndGetLastIdleVoice();
 
   void triggerVoice(int voiceIndex, int key, int vel);
 
-  int stealVoice(int key, int vel);
+  int getVoiceToSteal(int key, int vel);
 
   void releaseVoice(int voiceIndex);
 
@@ -434,18 +447,23 @@ protected:
   std::vector<VoiceState> voiceStates;
 
 
-
   StealMode     stealMode     = StealMode::oldest;
-  KillMode      killMode      = KillMode::immediately;  // todo: use some other default
-  RetriggerMode retriggerMode = RetriggerMode::reuseExistingVoice;
+  KillMode      killMode      = KillMode::afterSilence;
+  RetriggerMode retriggerMode = RetriggerMode::reuseOldVoice;
 
 
-
+  // stuff to do
   //bool _needsPreRenderUpdate  = false;
   //bool _needsPostRenderUpdate = false;
   // Flags that is set to true whenever there is some process going on that requires a per-sample
   // update of the state, such as gliding from one note to another. The underscore is just for 
   // avoiding confusion with the method that has the same name.
+
+  //bool sustainPedalHeld   = false;
+  //bool softPedalHeld      = false;  // what whould this do?
+  //bool sostenutoPedalHeld = false;  // and this?
+
+
 
 
   double pitchBend = 0;
@@ -463,14 +481,7 @@ protected:
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(rsVoiceManager)
 };
 
-// ToDo:
-// -this class should also provide a mechanism to kill voices: after a noteOff has been received 
-//  for a given voice, monitor the output of that voice (how?) and if it remains below a certain
-//  threshold for a given amount of time, the voice can be killed and moved back into the pool
-//  of available voices
-// -maybe use short or even char instead of int - that may save a little memory
 
-// see romos::VoiceAllocator and rosic::PolyphonicInstrument/Voice for ideas, code and formulas
 
 
 #endif

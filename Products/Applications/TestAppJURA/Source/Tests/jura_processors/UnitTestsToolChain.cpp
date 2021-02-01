@@ -72,6 +72,13 @@ void UnitTestToolChain::runTestVoiceManager()
   expectEquals(active,    0);
   expectEquals(releasing, 0);
 
+  // Maybe later test other kill modes. Currently the only other mode is the trivial 
+  // "immediately" mode, but if we later come up with more modes, test for them should go here. But
+  // i really can't think of any other meaningful modes at the moment.
+
+  // Test voice stealing:
+  //voiceMan.set
+
   // ToDo: test voice stealing in the various modes, voice retriggering, etc.
 
 

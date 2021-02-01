@@ -288,6 +288,12 @@ void ToolChain::handleMidiMessage(MidiMessage message)
   // need to introduce a new callback handleMidiMessage(const MidiMessage&, int voice)
 
   int voice = voiceManager.handleMidiMessageReturnVoice(message);
+  if(voice < 0) return;
+  // If no voice was allocated or used for the event, we don't pass it on to the child modules to 
+  // free them from having to handle this condition themselves. So the child modules can expect 
+  // that they always receive a valid voice index in their per voice callbacks. This simplifies 
+  // their implementations of which we will have many, so it's worth it.
+
   for(int i = 0; i < size(modules); i++){
     AudioModuleWithMidiIn *m = dynamic_cast<AudioModuleWithMidiIn*> (modules[i]);
     if(m != nullptr)

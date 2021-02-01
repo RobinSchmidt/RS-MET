@@ -56,15 +56,29 @@ void rsVoiceManager::handleMidiMessage(const juce::MidiMessage& msg,
 
 int rsVoiceManager::noteOnReturnVoice(int key, int vel)
 {
+  int k = -1;
   if(vel == 0)
     return noteOffReturnVoice(key);
-  else if(numActiveVoices < numVoices)  {
-    int i = activateAndGetLastIdleVoice();
-    triggerVoice(i, key, vel);
-    return i; }
+  else if(numActiveVoices < numVoices) 
+  {
+    // wait - no - if we retrigger, we don't have to do it inside this condition. We can retrigger
+    // even when all voices are used up
+    if(retriggerMode == RetriggerMode::reuseOldVoice) {
+      for(int i = 0; i < numActiveVoices; i++) {
+        j = activeVoices[i];
+        if(voiceStates[j].key == key)
+          k = j; }}
+
+
+    if(k == -1)
+      k = activateAndGetLastIdleVoice(); 
+  }
   else
-    return stealVoice(key, vel);
+    k = getVoiceToSteal(key, vel);
+  triggerVoice(k, key, vel);
+  return k;
 }
+
 
 int rsVoiceManager::noteOffReturnVoice(int key)
 {
@@ -76,9 +90,13 @@ int rsVoiceManager::noteOffReturnVoice(int key)
   return -1;
   // When we found a voice that's holding the key, we release it and directly return because we 
   // assume that a given key can only be held in one voice at a time. Could there be situations 
-  // where this is not true, i.e. we have several voices simultaneously palying the same note? If 
-  // so, what should we do on noteOff? Release all voices that hold the key? Or only the oldest or
-  // newest?
+  // where this is not true, i.e. we have several voices simultaneously playing (as in holding) the
+  // same note? If so, what should we do on noteOff? Release all voices that hold the key? Or only
+  // the oldest or newest? See here:
+  // http://www.martin-finke.de/blog/articles/audio-plugins-016-polyphony/
+  // Martin says that yes, that situation could occur. But i think, that's wrong: a noteOff will 
+  // be received between the 1st and 2nd noteOn because the keyboard player has to lift the key
+  // before they can press it again and that lifting will trigger the noteOff
 }
 // ToDo: if sustain is active, we should not release it - instead just set the isHeld flag false.
 // as soon as we receive a setSustainOff message, we loop through all active voices and check their
@@ -159,26 +177,17 @@ void rsVoiceManager::triggerVoice(int voiceIndex, int key, int vel)
   newestVoice = voiceIndex;
 }
 
-int rsVoiceManager::stealVoice(int key, int vel)
-{
+int rsVoiceManager::getVoiceToSteal(int key, int vel)
+{  
+  jassert(numActiveVoices > 0); // steal a voice when none is active? something is fishy!
   switch(stealMode)
   {
-  case StealMode::oldest:
-  {
-
-    // ...
-
-  } break;
-
-
-  default:
-  {
-    jassertfalse;  // stealMode is not correctly set up
+  case StealMode::oldest:  { return activeVoices[0];                 } break;
+  case StealMode::newest:  { return activeVoices[numActiveVoices-1]; } break;
+  case StealMode::noSteal: { return noVoice;                         } break;
   }
-
-  }
-
-  return 0;
+  jassertfalse;   // stealMode is not correctly set up
+  return noVoice;
 }
 
 void rsVoiceManager::releaseVoice(int i)
@@ -218,7 +227,7 @@ void rsVoiceManager::deactivateVoice(int voiceIndex)
   // ...but maybe that doesn't need to be the case? Are there situations when a voice is directly
   // shut off without going into the release phase before?
 }
-// needs test
+
 
 /*
 
@@ -229,12 +238,42 @@ ToDo:
  where applicable
 
 see also:
-https://www.kvraudio.com/forum/viewtopic.php?f=33&t=558446 Polyphonic voice assignment and retrigger
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=558446 
+"Polyphonic voice assignment and retrigger"
+
+http://www.martin-finke.de/blog/articles/audio-plugins-016-polyphony/
 
 midi-specs:
 https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message
 https://www.midi.org/specifications
 
 maybe we should respond to midi reset with calling our reset
+
+
+implement sustain, soft and sustenuto pedals: https://en.wikipedia.org/wiki/Piano_pedals
+
+Sustain:
+"It raises all the dampers off the strings so that they keep vibrating after the player releases 
+the key. "
+so: no voice renters release on noteOff until the pedal is turned off again. when it's turned off,
+then all notes that have previously received noteOff, should enter release
+
+Soft:
+"On the pianos of the late eighteenth to early nineteenth centuries, the pianist could shift from 
+the normal three-string (tre corde) position to one in which either two strings (due corde) or 
+only one (una corda) would be struck, depending on how far the player depressed the pedal."
+
+Sostenuto: 
+"The pedal holds up only dampers that were already raised at the moment that it was depressed"
+...so it's a partial sustain affecting only those notes already held, future notes are not 
+affected
+
+
+-maybe use short or even char instead of int where values are supposed to fit in that range
+ (like for midi keys and velocities) - that may save a little memory - we'll see
+
+see romos::VoiceAllocator and rosic::PolyphonicInstrument/Voice for ideas for implementing 
+certain behaviors, code and formulas. for example, there's this polyphonic glide feature 
+("PolyGlide"?) if i remember correctly, also: glide back, if note is released - stuff like that
 
 */
