@@ -401,6 +401,16 @@ protected:
   void deactivateVoice(int voiceindex);
   // maybe rename to killVoice
 
+  /** Returns the instantaneous output amplitude of voice i, defined as the absolute maximum of all
+  channels (currently we assume 2 channels). */
+  inline double getVoiceAmplitude(int i) const
+  {
+    double *vb = voicesBuffer;;
+    return RAPT::rsMax(RAPT::rsAbs(vb[2*i]), RAPT::rsAbs(vb[2*i+1]));
+  }
+
+
+
 
   int maxNumVoices    = 16;  // maximum number of voices
   int numVoices       =  8;  // number of available voices
@@ -448,8 +458,10 @@ protected:
 
 
   StealMode     stealMode     = StealMode::oldest;
-  KillMode      killMode      = KillMode::afterSilence;
-  RetriggerMode retriggerMode = RetriggerMode::reuseOldVoice;
+  //KillMode      killMode      = KillMode::afterSilence;
+  KillMode      killMode      = KillMode::immediately;
+  //RetriggerMode retriggerMode = RetriggerMode::reuseOldVoice;
+  RetriggerMode retriggerMode = RetriggerMode::useNewVoice;
 
 
   // stuff to do
@@ -458,6 +470,11 @@ protected:
   // Flags that is set to true whenever there is some process going on that requires a per-sample
   // update of the state, such as gliding from one note to another. The underscore is just for 
   // avoiding confusion with the method that has the same name.
+  // maybe for efficiency have just one flag needsPerSampleUpdate and do all updates either
+  // pre-render or post render, if possible - it will make a difference of a one sample delay only
+  // and things can probably be arranged such that they do the appropriate thing in either of these
+  // variants. perhaps pre-render is more appropriate, so a note-off received at one sample will
+  // kill the note off *at* that sample (if killmode is immediate) and not one sample later
 
   //bool sustainPedalHeld   = false;
   //bool softPedalHeld      = false;  // what whould this do?

@@ -56,23 +56,21 @@ void rsVoiceManager::handleMidiMessage(const juce::MidiMessage& msg,
 
 int rsVoiceManager::noteOnReturnVoice(int key, int vel)
 {
-  int k = -1;
   if(vel == 0)
     return noteOffReturnVoice(key);
-  else if(numActiveVoices < numVoices) 
-  {
-    // wait - no - if we retrigger, we don't have to do it inside this condition. We can retrigger
-    // even when all voices are used up
-    if(retriggerMode == RetriggerMode::reuseOldVoice) {
-      for(int i = 0; i < numActiveVoices; i++) {
-        j = activeVoices[i];
-        if(voiceStates[j].key == key)
-          k = j; }}
 
+  // Reuse an existing voice, if desired and possible:
+  if(retriggerMode == RetriggerMode::reuseOldVoice) {
+    for(int i = 0; i < numActiveVoices; i++) {  // factor out into getVoiceWithKey and reuse it
+      int j = activeVoices[i];                  // in noteOffReturnVoice - we do the same thing 
+      if(voiceStates[j].key == key) {
+        triggerVoice(j, key, vel);
+        return j;  }}}
 
-    if(k == -1)
-      k = activateAndGetLastIdleVoice(); 
-  }
+  // No voice was retriggered. We either trigger an idle voice or steal an active voice:
+  int k = -1;
+  if(numActiveVoices < numVoices)
+    k = activateAndGetLastIdleVoice();
   else
     k = getVoiceToSteal(key, vel);
   triggerVoice(k, key, vel);
@@ -87,7 +85,7 @@ int rsVoiceManager::noteOffReturnVoice(int key)
     if(voiceStates[j].key == key) {
       releaseVoice(j);
       return j; }}                    // should be ok to return now, see comment below
-  return -1;
+  return noVoice;
   // When we found a voice that's holding the key, we release it and directly return because we 
   // assume that a given key can only be held in one voice at a time. Could there be situations 
   // where this is not true, i.e. we have several voices simultaneously playing (as in holding) the
@@ -128,18 +126,18 @@ void rsVoiceManager::findAndKillFinishedVoices()
   double *vb = voicesBuffer;
   for(size_t i = 0; i < releasingVoices.size(); i++)
   {
-    int    vi = releasingVoices[i];              // voice index
-    double va = RAPT::rsMax(vb[2*i], vb[2*i+1]); // voice output amplitude
-    killCounters[vi]--;                          // countdown
-    if(va > killThreshold)                       // use strictly greater to allow zero threshold
-      killCounters[vi] = killTimeSamples;        // reset counter, if output is above threshold
+    int    vi = releasingVoices[i];       // voice index
+    double va = getVoiceAmplitude(vi);    // voice output amplitude
+    killCounters[vi]--;                   // countdown
+    if(va > killThreshold)                // use strictly greater to allow zero threshold
+      killCounters[vi] = killTimeSamples; // reset counter, if output is above threshold
     if(killCounters[vi] == 0)
       deactivateVoice(vi);
   }
 
-  // what if the amplitude of the voice does not go to zero?
-
-  // implementation of va = .. needs to be changed when numChannels != 2 ...maybe do this later
+  // What if the amplitude of the voice does not go to zero because the user has not connected an 
+  // amp-env or that env does not go to zero at the end? The voice will never get killed...but
+  // maybe that's ok, i.e. considered user error
 }
 
 void rsVoiceManager::reset()
@@ -189,6 +187,11 @@ int rsVoiceManager::getVoiceToSteal(int key, int vel)
   jassertfalse;   // stealMode is not correctly set up
   return noVoice;
 }
+// ToDo: In "oldest" mode we do not take into account, if the voice is releasing or not. But we 
+// probably should: releasing voices should be stolen first. But maybe that should be another mode:
+// oldestInRelease. It should first try to find the oldest releasing voice and only when no voice
+// is releasing use the other active voices. We can implement this by checking if the 
+// releasingVoices array is empty
 
 void rsVoiceManager::releaseVoice(int i)
 {
