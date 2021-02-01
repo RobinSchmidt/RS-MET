@@ -11,11 +11,19 @@ void rsMidiMessageDispatcher::handleMidiMessage(MidiMessage message)
     setMidiController(message.getControllerNumber(), (float) message.getControllerValue());
   else if( message.isPitchWheel() )
     setPitchBend(message.getPitchWheelValue());
-  else if (message.isAftertouch())
+  else if(message.isAftertouch())
     setAfterTouch(message.getAfterTouchValue());
-  else if (message.isChannelPressure())
+  else if(message.isChannelPressure())
     setChannelPressure(message.getChannelPressureValue());
 }
+// ToDo: handle reset messages - provide a midiReset callback for that. the voice manager should 
+// override it to call its reset function... isAllNotesOff, isAllSoundOff
+// maybe handle these in an override in rsVoiceManager - oh, and also handle sustain
+
+// isResetAllControllers, 
+// isSustainPedalOn/Off, isSostenutoPedalOn/Off, isSoftPedalOn/Off...but they are controllers and
+// should perhaps handled in the controller callback - they don't warrant to introduce their own
+// callbacks
 
 
 //=================================================================================================
@@ -57,7 +65,6 @@ int rsVoiceManager::noteOnReturnVoice(int key, int vel)
   else
     return stealVoice(key, vel);
 }
-// needs tests
 
 int rsVoiceManager::noteOffReturnVoice(int key)
 {
@@ -65,11 +72,17 @@ int rsVoiceManager::noteOffReturnVoice(int key)
     int j = activeVoices[i];
     if(voiceStates[j].key == key) {
       releaseVoice(j);
-      return j; }} // should be ok to return because we assume that a given key can only be held
-                   // in one voice at a time
+      return j; }}                    // should be ok to return now, see comment below
   return -1;
+  // When we found a voice that's holding the key, we release it and directly return because we 
+  // assume that a given key can only be held in one voice at a time. Could there be situations 
+  // where this is not true, i.e. we have several voices simultaneously palying the same note? If 
+  // so, what should we do on noteOff? Release all voices that hold the key? Or only the oldest or
+  // newest?
 }
-// needs tests
+// ToDo: if sustain is active, we should not release it - instead just set the isHeld flag false.
+// as soon as we receive a setSustainOff message, we loop through all active voices and check their
+// isHeld flag and if it's false, we release the voice
 
 void rsVoiceManager::setPitchBend(int pitchBendValue)
 {
@@ -97,11 +110,11 @@ void rsVoiceManager::findAndKillFinishedVoices()
   double *vb = voicesBuffer;
   for(size_t i = 0; i < releasingVoices.size(); i++)
   {
-    int    vi = releasingVoices[i];                // voice index
-    double va = RAPT::rsMax(vb[2*i], vb[2*i+1]);   // voice output amplitude
-    if(va >= killThreshold)
-      killCounters[vi] = killTimeSamples;          // reset counter, if output is above threshold
-    killCounters[vi]--;                            // countdown
+    int    vi = releasingVoices[i];              // voice index
+    double va = RAPT::rsMax(vb[2*i], vb[2*i+1]); // voice output amplitude
+    killCounters[vi]--;                          // countdown
+    if(va > killThreshold)                       // use strictly greater to allow zero threshold
+      killCounters[vi] = killTimeSamples;        // reset counter, if output is above threshold
     if(killCounters[vi] == 0)
       deactivateVoice(vi);
   }
@@ -203,7 +216,7 @@ void rsVoiceManager::deactivateVoice(int voiceIndex)
   bool dbg = RAPT::rsRemoveFirstOccurrence(releasingVoices, voiceIndex);
   //jassert(dbg); // voices that are deactivated are supposed to have been in release-mode before
   // ...but maybe that doesn't need to be the case? Are there situations when a voice is directly
-  // shut off without going inot the release phase before?
+  // shut off without going into the release phase before?
 }
 // needs test
 

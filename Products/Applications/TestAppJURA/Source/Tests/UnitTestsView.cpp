@@ -12,6 +12,7 @@ void UnitTestsView::runTest(int testIndex)
 
   if(includeTest(PARAMETERS)) tests.add(new UnitTestParameter);
   if(includeTest(MODULATION)) tests.add(new UnitTestModulation);
+  if(includeTest(TOOL_CHAIN)) tests.add(new UnitTestToolChain);
 
   //beginTest();
   runTests(tests);
@@ -70,7 +71,7 @@ bool UnitTestsView::includeTest(int testIndex)
   if(selection == "All Tests")                             return true;
   if(selection == "Parameters" && testIndex == PARAMETERS) return true;
   if(selection == "Modulation" && testIndex == MODULATION) return true;
-
+  if(selection == "ToolChain"  && testIndex == TOOL_CHAIN) return true;
   return false;
 }
 
@@ -83,6 +84,7 @@ void UnitTestsView::createWidgets()
   testSelectorBox->addItem(ALL,        "All Tests");
   testSelectorBox->addItem(PARAMETERS, "Parameters");
   testSelectorBox->addItem(MODULATION, "Modulation");
+  testSelectorBox->addItem(MODULATION, "ToolChain");
   //testSelectorBox->addItem(WIDGETS, "Widgets");
   testSelectorBox->selectItemFromText("All Tests", false);
   addWidget(testSelectorBox);

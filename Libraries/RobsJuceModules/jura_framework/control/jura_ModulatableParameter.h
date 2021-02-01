@@ -145,18 +145,12 @@ public:
 
   /** Sets up the ModulationManager that should be used for registering ModulationSources and 
   ModulationTargets. Should be called sometime soon after construction. */
-  virtual void setModulationManager(ModulationManager* managerToUse)
-  {
-    modManager = managerToUse;
-  }
+  virtual void setModulationManager(ModulationManager* managerToUse) { modManager = managerToUse; }
   // maybe get rid of this and demand it to be passed to the constructor
 
   /** Returns a pointer to the ModulationManager object that is used for registering 
   ModulationSources and ModulationTargets. */
-  ModulationManager* getModulationManager()
-  {
-    return modManager;
-  }
+  ModulationManager* getModulationManager() { return modManager; }
 
   /** Registers the given ModulationSource to make it available to ModulationTargets. */
   void registerModulationSource(ModulationSource* source);
@@ -221,19 +215,22 @@ public:
   // especially in the polyphonic subclass
 
   /** This is called per sample from the ModulationManager and it updates our modValue member 
-  variable by calling the virtual getModulatorOutputSample() function (that subclasses must 
-  override) and using its output for the modValue. The rsVoiceManager parameter is irrelevant in 
-  this class here but it becomes relevant in the ModulationSourcePoly subclass, where we override
-  this method in order to update the modulator outputs for all voices, so the voice manager must 
-  be already included in the function signature here. */
+  variable by calling the virtual renderModulation() function (that subclasses must override) and 
+  using its output for the modValue. The rsVoiceManager parameter is irrelevant in this class here 
+  but it becomes relevant in the ModulationSourcePoly subclass, where we override this method in 
+  order to update the modulator outputs for all active voices, so the voice manager must be already
+  included in the function signature here. */
   virtual void updateModulationValue(rsVoiceManager* voiceManager) 
   { modValue = renderModulation(); }
   // maybe rename - the singular "Value" part does not apply anymore for the poly subclass which
   // updates all values for all voices - maybe updateModulationOutput
+  // why is this virtual? this is not supposed to be overriden
 
   /** Sets up a name for this ModulationSource. This should be unique among all the available 
   ModulationSource names, so it can be used to identify the source in state recall. */
   void setModulationSourceName(const juce::String& newName) { modSourceName = newName; }
+  // todo: maybe in debug mode, assert that the name is unique (requires iterating through all 
+  // already registered sources and comaring the name)
 
   /** Sets a name that should be used in dropdown list when connecting a mod-source. If you don't
   set this up, the name that was set by setModulationSourceName will be used by default. */
@@ -247,14 +244,18 @@ public:
   This may potentially be different from the name used for state recall. */
   juce::String getModulationSourceDisplayName() const;
 
-  /** Returns true, if this source is connected to at least one ModulationTarget. */
+  /** Returns true, if this source is connected to at least one ModulationTarget. Currently, this 
+  is quite expensive to call (requires to loop through the connections). I think, that's acceptable
+  at the momen because it's not supposed to be called often (like, per sample). If that situation 
+  changes, it may be optimized by using a numConnectedTargets member just like ModulationTarget has
+  a numConenctedSources member. */
   bool hasConnectedTargets() const;
 
   /** Returns the current output value of the modulation source. This is supposed to be called 
   after updateModulationValue has been called. */
   inline double getModulationValue() const { return modValue; }
 
-  /** This is a provision for implementing polyphony in subclass ModulationSource. There, it 
+  /** This is a provision for implementing polyphony in subclass ModulationSourcePoly. There, it 
   returns the modulator output for a given voice. Here, we just return the same value for all 
   voices, because this baseclass is only monophonic and when a monophonic modulator is asked for a
   voice output, it makes most sense to just use the same value for all voices. */
@@ -291,18 +292,15 @@ public:
   updates the corresponding value in the core dsp algorithm). */
   virtual void doModulationUpdate(double modulatedValue)
   {
-    // we need an empty baseclass implementation because in the destructor of a plugin, 
+    // We need an empty baseclass implementation because in the destructor of a plugin, 
     // doModulationUpdate would otherwise (in case of a purely virtual function) get called with a 
     // null-reference (or something), in ModulationManager::removeConnection when the modulateble 
-    // parameter deletes itself
+    // parameter deletes itself. ToDo: figure out and document why this is the case
   }
 
   /** Like doModulationUpdate, but for polyphonic modulations. Overriden in 
   ModuldatableParameterPoly. Monophonic modulation targets can ignore this. */
-  virtual void doVoiceModulationUpdate(double modulatedValue, int voiceIndex)
-  {
-
-  }
+  virtual void doVoiceModulationUpdate(double modulatedValue, int voiceIndex) { }
 
 
   /** \name Setup */
@@ -429,7 +427,7 @@ public:
 
   /** Returns a pointer to the modulated value to facilitate accumulation of the contributions 
   from all the connections */
-  inline double* getPointerToModulated() { return &modulatedValue; }
+  inline double* getPointerToModulatedValue() { return &modulatedValue; }
 
 
 protected:
@@ -475,6 +473,7 @@ public:
     EXPONENTIAL,     // u * 2^(d*m) - u
     MULTIPLICATIVE   // u * m^d     - u
   };
+  // ToDo: use an enum class
 
   /** Constructor. You should pass a ModulationSource and a ModulationTarget. If you want to enable
   meta-control for the modulation-depth associated with the connection, you may pass the pointer to
@@ -491,15 +490,14 @@ public:
   that is associated with the depth. */
   void setDepth(double newDepth)
   {
-    depthParam->setValue(newDepth, true, true);
+    depthParam->setValue(newDepth, true, true); // the 2nd true triggers the callback call which 
+                                                // typically updates the dsp object (i think)
     // modManager->modulationDepthChanged(this);
   }
 
   /** Sets the parameter range and value of the modulation depths. */
   void setDepthRangeAndValue(double newMin, double newMax, double newValue)
-  {
-    depthParam->setRangeAndValue(newMin, newMax, newValue, true, true);
-  }
+  { depthParam->setRangeAndValue(newMin, newMax, newValue, true, true); }
 
   /** Sets the mode in which this connection should apply the modulation source output value to the
   modualtion target. @see modModes. */
@@ -543,15 +541,16 @@ public:
   // should be renamed into something else and the real multiplicative mode should get the name 
   // "Multiplicative" - that needs to invoke the patch conversion when old patches are loaded...
   // the real and faux mode should give the same results only if the multiplicative connection
-  // is the first of all and in particular if its the only connection. Maybe we could have another
-  // faux mode that uses the depth not as exponent but as scaler...
+  // is the first of all (and in particular if its the only connection). Maybe we could have 
+  // another faux mode that uses the depth not as exponent but as scaler...
 
-  /** Applies the source-value to the target-value, taking into account the modulation depth. Used
-  for monophonic modulations */
+  /** Applies the source-value to the target-value that is stored in the ModulationTarget object of
+  this connection, taking into account the modulation depth. This "modulatedValue" member of 
+  ModulationTarget is used for monophonic modulations. */
   inline void apply() const
   {
     apply(source->getModulationValue(), depth, target->getUnmodulatedValue(),
-      target->getPointerToModulated(), mode);
+      target->getPointerToModulatedValue(), mode);
   }
 
   /** Applies the modulation value of the sources for the given voice index to the target value 
@@ -975,7 +974,15 @@ protected:
   for the active voices, in cases when the last connection from a target is removed. */
   void removeConnectionFromArray(int index) override;
 
-
+  /** Storage buffer for the modulated values. Each ModulationTarget that has incoming modulation 
+  connections gets a correpsonding slot in this array here. It serves as a substitute for the 
+  modulatedValue member of the ModulationTarget class (that is used for monophonic modualtions) 
+  when computing and applying the modulations, because we really don't want to have to store an 
+  array in each target because that would starkly increase the memory footprint of a 
+  ModulationTarget object. 
+  ToDo: maybe use the same meachanism for monophonic modulations, too. That would save one byte
+  of storage space (a member of type double) for ModulationTarget objects and the code would be 
+  more consistent.  */
   std::vector<double> modulatedValues;
 
 
@@ -990,15 +997,18 @@ protected:
 
 //=================================================================================================
 
-/** Baseclass for polyphonic modulations sources.
+/** Baseclass for polyphonic modulation sources.
+
+...
 
 The rules for applying polyphonic sources to monophonic targets are as follows:
 
   -If at least one voice is active (i.e. at least one note is playing), the monophonic target 
-   receives the modulation signal from the newest active voice, i.e. the latest note.
+   receives the modulation signal from the newest active voice, i.e. the latest triggered note that
+   is still being held.
   -If no voice is playing, the monophonic target receives whatever your overriden renderModulation
-   function produces. But you don't have to ovevride it. In this case, it receives zero, because 
-   that's what the inherited function will then produce. 
+   function produces. But you don't have to override it in which case it receives zero, because 
+   that's what the inherited baseclass function will then produce. 
 
 So, your subclass is only *required* to override renderVoiceModulation and it *may optionally* 
 also override renderModulation in cases where it's not appropriate to produce a zero modulation 
@@ -1010,8 +1020,8 @@ maybe it could also make sense to continue producing the last signal value from 
 after it was turned of - i.e. always use value of the newest voice, regardless whether this voice 
 is still active or not. but his implies that the sound of a patch will depend on the latest note
 that was ever produced - even after the note has long been died out - that may be bad for sound 
-design: the synth is in a certain state (due to the laste played note), the user creates a sound,
-saves it and when she relaods it at another day, it will sound different, because the synth is in
+design: the synth is in a certain state (due to the last played note), the user creates a sound,
+saves it and when they reload it at another day, it will sound different, because the synth is in
 a different state. that would be bad! ..it seems like having a state which depends on the last 
 played note and which affects the sound output is not a good idea.
 

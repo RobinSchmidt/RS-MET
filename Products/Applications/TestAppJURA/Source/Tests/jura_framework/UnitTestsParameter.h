@@ -13,7 +13,7 @@ public:
 
   UnitTestParameter();
 
-  virtual void runTest() override;
+  void runTest() override;
 
   /** Overriden to increment our notification counter. */
   virtual void parameterChanged(jura::Parameter* parameterThatHasChanged) override;

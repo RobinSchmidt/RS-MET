@@ -245,13 +245,13 @@ void UnitTestModulation::reset()
   modMan.deRegisterAllSources();
   modMan.deRegisterAllTargets();
   //modMan.removeAllConnections();  // should happen automatically in either of the 2 calls above
-
   voiceMan.reset();
 }
 
 void UnitTestModulation::runTest()
 {
-  UnitTest::beginTest("Modulation");
+  //UnitTest::beginTest("Modulation");
+  voiceMan.setKillMode(jura::rsVoiceManager::KillMode::immediately);
   runTestMonoToMono();
   runTestMonoToPoly();
   runTestPolyToMono();
@@ -266,9 +266,9 @@ void UnitTestModulation::runTest()
   // of 0..1.
 }
 
-
 void UnitTestModulation::runTestMonoToMono()
 {
+  UnitTest::beginTest("Modulation: mono to mono");
   reset();
 
   int iVal;
@@ -380,6 +380,7 @@ void UnitTestModulation::runTestMonoToMono()
 
 void UnitTestModulation::runTestMonoToPoly()
 {
+  UnitTest::beginTest("Modulation: mono to poly");
   reset();
 
   int iVal;
@@ -608,6 +609,7 @@ void UnitTestModulation::runTestMonoToPoly()
 
 void UnitTestModulation::runTestPolyToMono()
 {
+  UnitTest::beginTest("Modulation: poly to mono");
   reset();
 
   int iVal;
@@ -687,6 +689,7 @@ void UnitTestModulation::runTestPolyToMono()
 
 void UnitTestModulation::runTestPolyToPoly()
 {
+  UnitTest::beginTest("Modulation: poly to poly");
   reset();
 
   voiceMan.setKillMode(jura::rsVoiceManager::KillMode::immediately);

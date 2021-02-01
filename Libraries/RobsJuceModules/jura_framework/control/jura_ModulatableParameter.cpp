@@ -737,7 +737,9 @@ void ModulationManagerPoly::applyVoiceModulations(int voiceIndex)
   // has and cache those values in order to accelerate this loop. These values can change only when
   // connections are added or removed, so the addConnectionToArray/removeConnectionFromArray are
   // the places where we need to update the stored values. But it should be tested, if it's really
-  // faster
+  // faster....update: ModulationTarget now has the numConnectedSources member - we could now turn 
+  // the loop into: while(i < modulationConnections.size()), retrieve he numConnectedSources
+  // of target i and make an inner for-loop over this number, then increment i by this number
 
   // The order of the targets in affectedTargets is supposed to match the order of the targets
   // as they appear in the modulationConnections array, so we can now just iterate over the
@@ -823,6 +825,7 @@ void ModulatableParameterPoly::callCallbacksForActiveVoices()
 }
 
 // ToDo:
+// -implement the outGain/thruGain stuff for AudioModule
 // -make sure that upgrading monophonic modules to polyphonic ones later does not mess up state 
 //  recall:
 //  -poly modules should have a switch to toggle between mono and poly mode
@@ -831,8 +834,6 @@ void ModulatableParameterPoly::callCallbacksForActiveVoices()
 //   should set it into mono-mode when the patch was saved with the old mono-only version
 // -maybe it could be interesting to switch the beavhior of mono->poly and poly->mono 
 //  connections between: newestActive, oldestActive
-// -implement mono/poy switch for poly modules (they should be able to operate in mono-mode)
-// -implement the outGain/thruGain stuff for AudioModule
 // -maybe let AudioModule have another rendering callback rsFloat64 getSampleStereo(rsFloat64 in)
 // -the default implementation of processSampleFrameStereo should call this and also do the mixing
 // -maybe make the output of regular AudioModules avilable as modulations osurces, too - maybe like

@@ -70,7 +70,7 @@ public:
   counterparts noteOn/Off but subclasses can override them too. For example, look at the polyphonic
   modulator classes such as AttackDecayEnvelopeModulePoly. It overrides noteOnForVoice and triggers 
   the envelope in the underlying DSP object for the given voice. It can also be used to reset the 
-  phase in polyphonic oscillators, reste the state in polyphonic filters, etc. The general idea 
+  phase in polyphonic oscillators, reset the state in polyphonic filters, etc. The general idea 
   is that many modules want to receive the same message but only the first one allocates the voice 
   and the other ones need to have the information which voice that was. In ToolChain, the message 
   is first passed to the voiceManager via handleMidiMessageReturnVoice which then allocates the 
@@ -116,14 +116,14 @@ public:
   virtual int noteOnReturnVoice(int key, int vel) { noteOn(key, vel); return -1; }
 
   /** Can be overriden by subclasses to return the voice index that was put into release state, 
-  i.e. the voice which is currently holding the given note. The baseclass implementation 
-  returns -1 as code for "unknown".  
+  i.e. the voice which was currently holding the given note before receiving the event. The 
+  baseclass implementation returns -1 as code for "unknown".  
   ...to consider: what if a note-off is received and there was actually no voice playing that 
   note? should a subclass then also return -1 or whould we use another code for "none" - which 
   really is a condition different from "unknown". ...also: could it be that more than voice was 
   playing the same note? ...and the note-off could trigger multiple voices to enter release? what 
-  should a subclass return in such a case? for the time being, we just assume that such cases are 
-  not a thing. */
+  should a subclass return in such a case? maybe another code for "many"? for the time being, we 
+  just assume that such cases are not a thing. */
   virtual int noteOffReturnVoice(int key) { noteOff(key); return -1; }
   
 
@@ -176,8 +176,25 @@ public:
     immediately,
     afterSilence
   };
-
+  /** Sets up how voices are killed, i.e. determines the criteria by which it is decided, if a 
+  voice can be deactivated. Voices are typically not deactivated immediately after receiving a 
+  noteOff for the key the voice is playing. Instead, that voice enters the release phase and there
+  is no other event that can tell us, when the release phase is over, so we need to figure it out
+  ourselves. In the mode KillMode::immediately, we actually do indeed kill the voice immediately 
+  but that mode is mostly for testing purposes. In real-world applications, we would rather apply 
+  the following heuristic: If the absolute value of the voice's output remains below a given 
+  threshold for some given amount of time, the voice is considered to have finished its release and
+  can be turned off. That's what KillMode::afterSilence does. The threshold and time are set up via
+  setKillThreshold and setKillTime functions.  */
   void setKillMode(KillMode newMode) { killMode = newMode; }
+
+  void setKillThreshold(double newThreshold) { killThreshold = newThreshold; }
+
+  void setKillTime(double newTime)
+  {
+    killTimeSeconds = newTime;
+    killTimeSamples = (int) ceil(sampleRate * killTimeSeconds);
+  }
 
 
   enum class RetriggerMode
@@ -222,7 +239,11 @@ public:
   ToDo: make that more flexible to allow any number of channels  */
   void setVoiceSignalBuffer(double* buffer) { voicesBuffer = buffer; }
 
-  void setSampleRate(double newRate) { sampleRate = newRate; }
+  void setSampleRate(double newRate) 
+  { 
+    sampleRate = newRate; 
+    killTimeSamples = (int) ceil(sampleRate * killTimeSeconds);
+  }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -257,7 +278,11 @@ public:
 
 
   size_t getNumReleasingVoices() const { return releasingVoices.size(); }
-  // the inconsistency is a bit ugly but we want to avoid conversion
+  // The inconsistency is a bit ugly but we want to avoid conversion because conversion is not free
+  // and this is called per sample. Maybe make it more consistent by using size_t for 
+  // getNumActiveVoices, too. We may remove the numActiveVoices member and use 
+  // activeVoices.size by adjusting the array size
+  //
 
   int getActiveVoiceIndex(int i) const { return activeVoices[i]; }
 
@@ -298,6 +323,8 @@ public:
 
   // todo: quantizeSigned8192: 14-bit values used for pitch-wheel - should expect values in -1..+1
 
+
+  int getKillTimeSamples() const { return killTimeSamples; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Event handling
