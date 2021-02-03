@@ -77,7 +77,27 @@ void UnitTestToolChain::runTestVoiceManager()
   // i really can't think of any other meaningful modes at the moment.
 
   // Test voice stealing:
-  //voiceMan.set
+  using SM = rsVoiceManager::StealMode;
+  voiceMan.setNumVoices(4);
+  voiceMan.setStealMode(SM::oldest);
+  voiceMan.setKillMode(KM::immediately);
+  voiceMan.reset();
+  int key2 = 20, key3 = 30, key4 = 40, key5 = 50, key6 = 60;
+  int voice;
+  voice = voiceMan.noteOnReturnVoice(key1, 100); expectEquals(voice, 0);
+  voice = voiceMan.noteOnReturnVoice(key2, 100); expectEquals(voice, 1);
+  voice = voiceMan.noteOnReturnVoice(key3, 100); expectEquals(voice, 2);
+  voice = voiceMan.noteOnReturnVoice(key4, 100); expectEquals(voice, 3);
+
+  // Now all 4 voices are used up and stealing should take place:
+  voice = voiceMan.noteOnReturnVoice(key5, 100); expectEquals(voice, 0);
+  voice = voiceMan.noteOnReturnVoice(key6, 100); expectEquals(voice, 1); // fails!
+
+  // Releae voice 3 and trigger another note - for the new note, the juts freed voice should be 
+  // used again:
+  voice = voiceMan.noteOffReturnVoice(key4);      expectEquals(voice, 3);
+  voice = voiceMan.noteOnReturnVoice( key1, 100); expectEquals(voice, 3);
+
 
   // ToDo: test voice stealing in the various modes, voice retriggering, etc.
 

@@ -179,8 +179,9 @@ public:
     oldest,
     newest,
     noSteal
-    // todo: nearest, farthest, lowest, highest, quietest, 
+    // todo: oldestInRelease, nearest, farthest, lowest, highest, quietest, 
   };
+  void setStealMode(StealMode newMode) { stealMode = newMode; }
 
   enum class KillMode
   {

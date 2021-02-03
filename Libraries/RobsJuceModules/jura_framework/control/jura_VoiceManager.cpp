@@ -271,7 +271,9 @@ Sostenuto:
 ...so it's a partial sustain affecting only those notes already held, future notes are not 
 affected
 
-
+-instead of killing a voice immediately when it falls below the kill-threshold (for some amount of 
+ time), let it enter a short fade-out phase of a few milliseconds to avoid the potential low-level
+ clicks that we would otherwise get
 -maybe use short or even char instead of int where values are supposed to fit in that range
  (like for midi keys and velocities) - that may save a little memory - we'll see
 
