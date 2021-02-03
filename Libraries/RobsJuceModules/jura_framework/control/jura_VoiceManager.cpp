@@ -94,7 +94,8 @@ int rsVoiceManager::noteOffReturnVoice(int key)
   // http://www.martin-finke.de/blog/articles/audio-plugins-016-polyphony/
   // Martin says that yes, that situation could occur. But i think, that's wrong: a noteOff will 
   // be received between the 1st and 2nd noteOn because the keyboard player has to lift the key
-  // before they can press it again and that lifting will trigger the noteOff
+  // before they can press it again and that lifting will trigger the noteOff. ...but maybe in a 
+  // piano-roll editor, the user could enter overlapping notes on the same key
 }
 // ToDo: if sustain is active, we should not release it - instead just set the isHeld flag false.
 // as soon as we receive a setSustainOff message, we loop through all active voices and check their
@@ -250,6 +251,12 @@ void rsVoiceManager::deactivateVoice(int voiceIndex)
 
 
 /*
+
+Bug:
+-when triggering and releasing a note in rapid succession, the releasingVoices array gets
+ filled up with a lot of copies of the same number
+-releasingVoices can actually grow laregr than numVoices - i think, by triggering and releasing 
+ more notes than voices are available?
 
 ToDo:
 

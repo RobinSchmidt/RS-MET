@@ -164,7 +164,8 @@ public:
 
   rsVoiceManager()
   {
-    setMaxNumVoices(16);
+    setMaxNumVoices(16);   // seems a good default
+    //setMaxNumVoices(4);      // for debug
   }
 
 

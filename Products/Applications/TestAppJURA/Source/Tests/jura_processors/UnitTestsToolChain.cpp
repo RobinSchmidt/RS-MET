@@ -99,10 +99,41 @@ void UnitTestToolChain::runTestVoiceManager()
   voice = voiceMan.noteOnReturnVoice( key1, 100); expectEquals(voice, 3);
 
 
-  // ToDo: test voice stealing in the various modes, voice retriggering, etc.
+  voiceMan.setNumVoices(2);
+  voiceMan.setStealMode(SM::oldest);
+  voiceMan.setKillMode(KM::afterSilence);
+  voiceMan.reset();
+  voice = voiceMan.noteOnReturnVoice(key1, 100); expectEquals(voice, 0);
+  voice = voiceMan.noteOnReturnVoice(key1,   0); expectEquals(voice, 0);
+  voice = voiceMan.noteOnReturnVoice(key2, 100); expectEquals(voice, 1);
+  voice = voiceMan.noteOnReturnVoice(key2,   0); expectEquals(voice, 1);
+  voice = voiceMan.noteOnReturnVoice(key3, 100); expectEquals(voice, 0);  // should steal
+  voice = voiceMan.noteOnReturnVoice(key3,   0); expectEquals(voice, 0);
+  voice = voiceMan.noteOnReturnVoice(key1, 100); expectEquals(voice, 1);
+  voice = voiceMan.noteOnReturnVoice(key1,   0); expectEquals(voice, 1);
+  voice = voiceMan.noteOnReturnVoice(key1, 100); expectEquals(voice, 0);
+  //voice = voiceMan.noteOnReturnVoice(key1,   0); expectEquals(voice, 0);  // fails
+
+  voiceMan.reset();
+  voice = voiceMan.noteOnReturnVoice(key1, 100);
+  voice = voiceMan.noteOnReturnVoice(key1, 100);
+  voice = voiceMan.noteOnReturnVoice(key1, 100);
+  voice = voiceMan.noteOnReturnVoice(key1,   0);
+  voice = voiceMan.noteOnReturnVoice(key1,   0);
+  voice = voiceMan.noteOnReturnVoice(key1,   0);
+  // now the releasingVoices array is overfull (size == 3 where numVoices is only 2) - todo:
+  // handle releasingVoices in the same way as activeVoices (resize to maxNumVoices and keep a
+  // numReleasingVoices variable
+
 
 
   int dummy = 0;
+
+
+  // ToDo: test voice stealing in the various modes, voice retriggering, etc.
+
+
+
 }
 // actually, that test belongs into the framework tests - maybe make files UnitTestsAudio/Midi
 // and put this test there
