@@ -72,7 +72,7 @@ int rsVoiceManager::noteOnReturnVoice(int key, int vel)
   if(numActiveVoices < numVoices)
     k = activateAndGetLastIdleVoice();
   else
-    k = getVoiceToSteal(key, vel);
+    k = stealVoice(key, vel);
   triggerVoice(k, key, vel);
   return k;
 }
@@ -175,17 +175,30 @@ void rsVoiceManager::triggerVoice(int voiceIndex, int key, int vel)
   newestVoice = voiceIndex;
 }
 
-int rsVoiceManager::getVoiceToSteal(int key, int vel)
+int rsVoiceManager::stealVoice(int key, int vel)
 {  
   jassert(numActiveVoices > 0); // steal a voice when none is active? something is fishy!
+
+  int i = 0;  // index in the activeVoices array
   switch(stealMode)
   {
-  case StealMode::oldest:  { return activeVoices[0];                 } break;
-  case StealMode::newest:  { return activeVoices[numActiveVoices-1]; } break;
-  case StealMode::noSteal: { return noVoice;                         } break;
+  case StealMode::oldest:  { i = 0;                 } break;
+  case StealMode::newest:  { i = numActiveVoices-1; } break;
+  case StealMode::noSteal: { i = noVoice;           } break;
   }
-  jassertfalse;   // stealMode is not correctly set up
-  return noVoice;
+
+  if(i == noVoice) {
+    jassertfalse;   // stealMode is not correctly set up
+    return noVoice; }
+
+  int k = activeVoices[i];
+
+  // Shift the content of the activeVoices array and put the stolen voice at the end of the array 
+  // to keep it sorted by age:
+  for(int j = i+1; j < numVoices; j++)
+    activeVoices[j-1] = activeVoices[j];
+  activeVoices[numVoices-1] = k;
+  return k;
 }
 // ToDo: In "oldest" mode we do not take into account, if the voice is releasing or not. But we 
 // probably should: releasing voices should be stolen first. But maybe that should be another mode:

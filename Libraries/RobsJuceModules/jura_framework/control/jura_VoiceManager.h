@@ -393,9 +393,11 @@ protected:
 
   int activateAndGetLastIdleVoice();
 
+  int stealVoice(int key, int vel);
+
   void triggerVoice(int voiceIndex, int key, int vel);
 
-  int getVoiceToSteal(int key, int vel);
+
 
   void releaseVoice(int voiceIndex);
 
