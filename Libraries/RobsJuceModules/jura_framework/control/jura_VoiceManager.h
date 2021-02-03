@@ -461,8 +461,8 @@ protected:
 
 
   StealMode     stealMode     = StealMode::oldest;
-  //KillMode      killMode      = KillMode::afterSilence;
-  KillMode      killMode      = KillMode::immediately;
+  KillMode      killMode      = KillMode::afterSilence;
+  //KillMode      killMode      = KillMode::immediately;
   //RetriggerMode retriggerMode = RetriggerMode::reuseOldVoice;
   RetriggerMode retriggerMode = RetriggerMode::useNewVoice;
 
@@ -492,7 +492,7 @@ protected:
   //static const int numChannels = 2; // maybe uncomment later
   double *voicesBuffer   = nullptr;     // length should be numChannels*maxNumVoices
   double sampleRate      = 44100.0;
-  double killThreshold   = 0.00001;     // -100 dB by default
+  double killThreshold   = 0.0001;       // -60 dB by default
   double killTimeSeconds = 0.1;         //  100 ms
   int    killTimeSamples = (int) ceil(sampleRate * killTimeSeconds);
   std::vector<int> killCounters;

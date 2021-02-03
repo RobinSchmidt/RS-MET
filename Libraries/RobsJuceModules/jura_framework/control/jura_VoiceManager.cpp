@@ -127,6 +127,7 @@ void rsVoiceManager::findAndKillFinishedVoices()
   for(size_t i = 0; i < releasingVoices.size(); i++)
   {
     int    vi = releasingVoices[i];       // voice index
+    jassert(vi >= 0 && vi < numVoices);
     double va = getVoiceAmplitude(vi);    // voice output amplitude
     killCounters[vi]--;                   // countdown
     if(va > killThreshold)                // use strictly greater to allow zero threshold
@@ -198,6 +199,7 @@ int rsVoiceManager::stealVoice(int key, int vel)
   for(int j = i+1; j < numVoices; j++)
     activeVoices[j-1] = activeVoices[j];
   activeVoices[numVoices-1] = k;
+  RAPT::rsRemoveFirstOccurrence(releasingVoices, k);
   return k;
 }
 // ToDo: In "oldest" mode we do not take into account, if the voice is releasing or not. But we 
@@ -232,7 +234,9 @@ void removeElement(T* x, int length, int index)
 
 void rsVoiceManager::deactivateVoice(int voiceIndex)
 {
+  jassert(voiceIndex >= 0 && voiceIndex < numVoices);
   int activeIndex = RAPT::rsArrayTools::findIndexOf(&activeVoices[0], voiceIndex, numActiveVoices);
+  jassert(activeIndex >= 0 && activeIndex < numActiveVoices);
   removeElement(&activeVoices[0], numActiveVoices, activeIndex); 
   idleVoices[getNumIdleVoices()] = voiceIndex;
   numActiveVoices--;
