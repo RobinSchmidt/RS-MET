@@ -145,7 +145,7 @@ public:
   /** Searches the array for an element (via the '==' operator of type T) and returns true if the
   element was found. */
   template <class T>
-  static bool contains(const T *buffer, const int length, const T elementToFind);
+  static inline bool contains(const T *buffer, const int length, const T elementToFind);
 
   /** Convolves an array x (seen as input signal) with another array h (seen as impulse response)
   and stores the result in the array y. The type T must define the operators: *, += and a 
@@ -919,6 +919,16 @@ inline void rsArrayTools::copy(const T *source, T *destination, const int length
 // ...but maybe for short arrays, the overhead of calling memcpy may outweigh its efficiency, so 
 // for very small arrays, the loop is actually faster? -> do benchmarks
 // see here, around 50min:  https://www.youtube.com/watch?v=ZeU6OPaGxwM
+
+template <class T>
+inline bool rsArrayTools::contains(const T *buffer, const int length, const T elementToFind)
+{
+  for(int i = 0; i < length; i++) {
+    if(buffer[i] == elementToFind)
+      return true; }
+  return false;
+  //return (rsFindFirstOccurrenceOf(buffer, length, elementToFind) != -1);
+}
 
 template <class T1, class T2>
 inline void rsArrayTools::convert(const T1 *source, T2 *destination, const int length)

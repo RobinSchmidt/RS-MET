@@ -252,6 +252,9 @@ void UnitTestModulation::runTest()
 {
   //UnitTest::beginTest("Modulation");
   voiceMan.setKillMode(jura::rsVoiceManager::KillMode::immediately);
+  voiceMan.setMaxNumVoices(16);
+  voiceMan.setNumVoices(8);
+
   runTestMonoToMono();
   runTestMonoToPoly();
   runTestPolyToMono();

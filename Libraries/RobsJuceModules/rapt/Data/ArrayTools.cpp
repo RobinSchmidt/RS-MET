@@ -190,6 +190,7 @@ int rsArrayTools::compare(const T *a, int na, const T *b, const int nb)
   return 0;
 }
 
+/*
 template <class T>
 bool rsArrayTools::contains(const T *buffer, const int length, const T elementToFind)
 {
@@ -201,6 +202,7 @@ bool rsArrayTools::contains(const T *buffer, const int length, const T elementTo
   return false;
   //return (rsFindFirstOccurrenceOf(buffer, length, elementToFind) != -1);
 }
+*/
 
 template <class T>
 void rsArrayTools::convolve(const T *x, const int xLength, const T *h, const int hLength, T *y)

@@ -290,7 +290,9 @@ public:
   }
 
 
-  size_t getNumReleasingVoices() const { return releasingVoices.size(); }
+  int getNumReleasingVoices() const { return numReleasingVoices; }
+
+  //size_t getNumReleasingVoices() const { return releasingVoices.size(); }
   // The inconsistency is a bit ugly but we want to avoid conversion because conversion is not free
   // and this is called per sample. Maybe make it more consistent by using size_t for 
   // getNumActiveVoices, too. We may remove the numActiveVoices member and use 
@@ -338,6 +340,11 @@ public:
 
 
   int getKillTimeSamples() const { return killTimeSamples; }
+
+
+  /** Performs a couple of sanity checks, verifying some invariants that should always be true and
+  returns true, iff everything seems same. This is mainly for debugging purposes. */
+  bool isInSaneState();
 
   //-----------------------------------------------------------------------------------------------
   // \name Event handling
@@ -388,8 +395,6 @@ public:
   void reset();
 
 
-
-
 protected:
 
   int activateAndGetLastIdleVoice();
@@ -416,10 +421,11 @@ protected:
 
 
 
-  int maxNumVoices    = 16;  // maximum number of voices
-  int numVoices       =  8;  // number of available voices
-  int numActiveVoices =  0;  // number of currently playing voices
-  int newestVoice     =  0;  // most recently triggered voice
+  int maxNumVoices       = 16;  // maximum number of voices
+  int numVoices          =  8;  // number of available voices
+  int numActiveVoices    =  0;  // number of currently playing voices (holding or releasing)
+  int numReleasingVoices =  0;  // number of voices in release phase
+  int newestVoice        =  0;  // most recently triggered voice
 
   /** Indices of the voices that are currently active and therefore must process audio. A voice 
   is active if it's either currently being held or releasing. */
@@ -494,7 +500,7 @@ protected:
   double *voicesBuffer   = nullptr;     // length should be numChannels*maxNumVoices
   double sampleRate      = 44100.0;
   double killThreshold   = 0.0001;       // -60 dB by default
-  double killTimeSeconds = 0.1;         //  100 ms
+  double killTimeSeconds = 0.5;         //  100 ms
   int    killTimeSamples = (int) ceil(sampleRate * killTimeSeconds);
   std::vector<int> killCounters;
 
