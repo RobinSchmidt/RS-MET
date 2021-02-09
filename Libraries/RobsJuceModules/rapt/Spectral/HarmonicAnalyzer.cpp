@@ -719,6 +719,24 @@ use a non-integer number of cycles per block - probably not, but maybe for stron
 signals, but we could experiment with that...
 
 
+Do temporal oversampling: take datapoints not only every cycle but every half-cycle or 
+quarter-cycle. It was observed that the error signal is largest halfway between the datapoints, 
+which is not surprising. So, placing new datapoints at exactly those positions where the error is
+currently greatest, should effectively reduce the error signal.
+
+
+Another idea to estimate the instantaneous frequncies: Do the same block based measurements as now 
+additionally with one sample offset to the left and to the right and estimate the frequency by 
+numerically differentiating the instantaneous phase: f = dp/dt ~= (p(t+dt) - p(t-dt)) / (2*dt) 
+where dt is the sampling period. We could also estimate the 2nd derivative of the phase and store 
+that in an additional data field (called "glide" or "slide" or something) that defaults to zero. 
+That could be used as target value for quintic phase interpolation. Maybe one sample offset is too
+little - maybe experiment with 2,3, etc. maybe up to half a cycle. There are some questions how 
+exactly to incorporate the frequency information that is already available by the current method 
+(and similar information that will be available at the two additional datapoints)...maybe some sort
+of "best-fit" strategy (whatever that means in this context) could make sense?
+
+
 
 ToDo: 
 

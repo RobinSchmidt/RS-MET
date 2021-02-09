@@ -348,11 +348,14 @@ void rsVoiceManager::deactivateVoice(int voiceIndex)
 
 Bug:
 
+in ToolChain:
 -set maxNumVoices to 4, trigger 5 notes, wait until all are killed, play more notes - the new notes
  are cut off early, as if they are immeditely killed on noteOff - is something wrong about the 
  killSamples array? ah - no - it's not immediate - it seems to be cut off after killSamples. It's 
  as if the killCounter is not reset properly when the voice is still producing audio
 -it also seems one voice (3) never gets killed ..oh - another time it was voice 2
+-looks like the va (voice-amplitude) doesn't go down to zero and instead setlles to a fixed nonzero
+ value - is the voiceBuffer not updated correctly
 
 ToDo:
 
