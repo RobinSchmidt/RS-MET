@@ -1,12 +1,16 @@
-#ifndef RAPT_FOR_APE_H_INCLUDED
-#define RAPT_FOR_APE_H_INCLUDED
+#ifndef RAPT_FOR_APE_CPP_INCLUDED
+#define RAPT_FOR_APE_CPP_INCLUDED
 
 /*
+
 Include file for RAPT for use in APE (Audio Programming Environment). There, it has to be 
 included as relative path from "Audio Programming Environment\includes", for example, like:
 
-  #include "../../../../RS-MET/Libraries/RobsJuceModules/rapt/rapt_for_ape.h"
-  
+  #include "../../../../RS-MET/Libraries/RobsJuceModules/rapt/rapt_for_ape.cpp"
+
+We make it a .cpp file because it also inlcudes the relevant cpp files from rapt, such that the
+relevant code actually gets compiled - otherwise, we would get linker errors. 
+
 */
 
 /*
@@ -40,6 +44,27 @@ included as relative path from "Audio Programming Environment\includes", for exa
 
 #include "Unfinished/Unfinished.h"       // code under construction - should go to the bottom!
 #include "Spectral/Spectral.h"           // move up, when cycle-mark finder was moved to analysis folder
+
+
+
+#include "Basics/Basics.cpp"
+#include "Data/Data.cpp"
+#include "Math/Math.cpp"
+#include "AudioBasics/AudioBasics.cpp" 
+#include "Filters/Filters.cpp"
+#include "Analysis/Analysis.cpp"
+#include "Physics/Physics.cpp"
+//#include "Circuits/Circuits.cpp"
+//#include "Spectral/Spectral.cpp"
+#include "Visualization/Visualization.cpp"
+#include "Generators/Generators.cpp"
+#include "Modulators/Modulators.cpp"
+//#include "Effects/Effects.cpp"
+//#include "Framework/Framework.cpp".
+//#include "Music/Music.cpp"
+//#include "Instruments/Instruments.cpp"
+#include "Unfinished/Unfinished.cpp" 
+#include "Spectral/Spectral.cpp"
 
 
 
