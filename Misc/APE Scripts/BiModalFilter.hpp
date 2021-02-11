@@ -13,17 +13,19 @@ public:
 
   BiModalFilter() {}
 
-  ape::Param<float> param{ "Gain", ape::Range(0, 4) };
+  ape::Param<float> param{ "Gain", ape::Range(0, 4) };  // why is the parameter public?
 
 
 
 
 
-private:
+private:   
 
   RAPT::rsModalFilter<float, float> mf1, mf2;
   float sampleRate;
   
+  
+  // why is start and process private? 
 
   void start(const ape::IOConfig& cfg) override
   {
@@ -35,10 +37,23 @@ private:
     const auto numChannels = sharedChannels();
     const float gain = param;
 
-    for(std::size_t c = 0; c < numChannels; ++c)
+
+    for(std::size_t n = 0; n < frames; ++n)
     {
-      for(std::size_t n = 0; n < frames; ++n)
-        outputs[c][n] = gain * inputs[c][n];
+      // to do:
+      // -set up the filter's accorind to the user parameters
+      // -update the filter coefficients
+    
+    
+      float y1 = mf1.getSample(inputs[0][n]);
+      
+      // to do:
+      // -include nonlinear feedback into the inputs to the filter
+      
+      float y  = y1;
+
+      for(std::size_t c = 0; c < numChannels; ++c)
+        outputs[c][n] = gain * y;
     }
 
     clear(outputs, numChannels); // what does this do? clear unused channels?
