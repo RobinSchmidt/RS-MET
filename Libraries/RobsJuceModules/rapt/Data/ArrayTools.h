@@ -29,13 +29,9 @@ todo:
  just keep using -1 and let it be converted to size_t, it will map to the maximum (that's what 
  2-complement does for unsigned integers, right?) which actually is a reasonable convention to 
  encode "not found" (although, std::find uses v.size() and not max(size_t)) - so it *may* just work 
- fine without any further ado (unit tests would be needed)
+ fine without any further ado (unit tests would be needed)  */
 
-
-
-*/
-
-class rsArrayTools  // 
+class rsArrayTools
 {
 
 public:
@@ -985,7 +981,7 @@ inline bool rsArrayTools::equal(const T *buffer1, const T *buffer2, const int le
 }
 
 template<class T>
-static T rsArrayTools::euclideanNorm(const T* x, int N)
+T rsArrayTools::euclideanNorm(const T* x, int N)
 {
   return sqrt(rsArrayTools::sumOfSquares(x, N));
 }

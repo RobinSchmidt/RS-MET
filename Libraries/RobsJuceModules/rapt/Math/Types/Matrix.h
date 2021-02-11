@@ -1158,7 +1158,7 @@ public:
   /** Convolves this matrix with matrix B and returns the result. */
   rsMatrix<T> getConvolutionWith(const rsMatrix<T>& B)
   {
-    rsMatrix<T> C(numRows + B.numRows - 1, numCols + B.numCols - 1);
+    rsMatrix<T> C(this->numRows + B.numRows - 1, this->numCols + B.numCols - 1);
     rsMatrixView<T>::convolve(*this, B, &C);
     return C;
   }

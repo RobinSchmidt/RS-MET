@@ -7,6 +7,13 @@ bool doNothing(T x)
   return x == x;
 }
 
+inline void rsPrintLine(const std::string& message)
+{
+  std::string str = message + "\n";
+  //std::cout << str;
+  printf("%s", str.c_str());  // APE (Audio Programming Environment) does not support std::cout
+}
+
 /** This function should be used to indicate a runtime error. */
 inline void rsError(const char *message = nullptr)
 {
@@ -14,9 +21,11 @@ inline void rsError(const char *message = nullptr)
   // fixes "unreferenced formal parameter" warning - we don't do anything with the message, but 
   // we may want to see it in the debugger 
 
-  std::cout << "Error: " << message << "\n";
+  rsPrintLine("Error " + std::string(message));
 
-  //printf("%s", errorMessage);
+  //std::cout << "Error: " << message << "\n";
+
+  //printf("%s", message);
   RS_DEBUG_BREAK;
   // \todo have some conditional compilation code based on the DEBUG macro (trigger a break),
   // maybe open an error message box, etc.
@@ -24,7 +33,9 @@ inline void rsError(const char *message = nullptr)
 
 inline void rsWarning(const char* message = nullptr)
 {
-  std::cout << "Warning: " << message << "\n";
+  rsPrintLine("Warning " + std::string(message));
+
+  //std::cout << "Warning: " << message << "\n";
 }
 
 

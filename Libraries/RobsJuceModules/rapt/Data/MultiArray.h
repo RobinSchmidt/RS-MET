@@ -600,7 +600,7 @@ public:
   { rsMultiArray<T> C(this->shape); this->divide(*this, B, &C); return C; }
 
   bool operator==(const rsMultiArray<T>& B) const
-  { return shape == B.shape && data == B.data; }
+  { return this->shape == B.shape && this->data == B.data; }
 
   bool operator!=(const rsMultiArray<T>& B) const
   { return !(*this == B); }
