@@ -140,7 +140,7 @@ template<class TSig, class TPar>
 void rsModalFilter<TSig, TPar>::setModalParameters(TPar frequency, TPar amplitude, TPar decayTime, 
   TPar startPhase, TPar sampleRate)
 {
-  rsDampedSineFilterCoeffs(2*PI*frequency/sampleRate, amplitude, decayTime*sampleRate,
+  rsDampedSineFilterCoeffs(TPar(2*PI)*frequency/sampleRate, amplitude, decayTime*sampleRate,
     RAPT::rsDegreeToRadiant(startPhase), &b0, &b1, &a1, &a2);  
 }
 

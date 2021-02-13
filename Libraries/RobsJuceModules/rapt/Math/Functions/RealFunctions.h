@@ -156,7 +156,8 @@ template<class T>
 T rsCsch(T x);
 
 /** Converts an angle in degrees into radiant. */
-RS_INLINE double rsDegreeToRadiant(double degrees);
+template<class T>
+RS_INLINE T rsDegreeToRadiant(T degrees);
 
 /** Distance of x to a multiple of period p */
 template<class T> 
@@ -472,9 +473,10 @@ T rsCsch(T x)
   return (2*c)/(c*c-1);
 }
 
-RS_INLINE double rsDegreeToRadiant(double degrees)
+template<class T>
+RS_INLINE T rsDegreeToRadiant(T degrees)
 {
-  return (PI / 180.0)*degrees;
+  return T(PI/180.0)*degrees;
 }
 
 // distance of x to a multiple of period p

@@ -45,7 +45,6 @@ private:
     mf1.reset();
     mf2.reset();
     yOld = 0;
-  
   }
   
   
@@ -54,46 +53,34 @@ private:
   void start(const ape::IOConfig& cfg) override
   {
     sampleRate = (float)cfg.sampleRate;
+    reset();
   }
 
   void process(ape::umatrix<const float> inputs, ape::umatrix<float> outputs, size_t frames) override
   {
-    const auto numChannels = sharedChannels();
-    
+    // Pull the values of the parameters for this block and update the DSP objects:
     const float gain = RAPT::rsDbToAmp((float)parGain);
+    const float fb   = (float)parFeedback;
+    mf1.setModalParameters(parFreq1, parAmp1, parDecay1, parPhase1, sampleRate);
+    mf2.setModalParameters(parFreq2, parAmp2, parDecay2, parPhase2, sampleRate);
 
-    /*
-    for(std::size_t c = 0; c < numChannels; ++c)
-      for(std::size_t n = 0; n < frames; ++n)
-        outputs[c][n] = gain * inputs[c][n];
-    // accps = 105 (average cycles per sample)
-    */
-
-    /*
-    for(std::size_t n = 0; n < frames; ++n)
-      for(std::size_t c = 0; c < numChannels; ++c)
-        outputs[c][n] = gain * inputs[c][n];
-    // accps = 115 (average cycles per sample)
-    // -> outer loop over the channels is faster (which makes sense)
-    */
-    
-
+    // Loop over the sample frames:
+    const auto numChannels = sharedChannels();    
     for(std::size_t n = 0; n < frames; ++n)
     {
-      // to do:
-      // -set up the filter's according to the user parameters
-      // -update the filter coefficients
-    
-    
-      float y1 = mf1.getSample(inputs[0][n]);
+      float x  = inputs[0][n];
+      float y1 = mf1.getSample(x);
+      float y2 = mf2.getSample(x);
       
       // to do:
       // -include nonlinear feedback into the inputs to the filter
       
-      float y  = y1;
+      
+      float y = gain * (y1 + y2);
 
+      // Write generated sample into all channels:
       for(std::size_t c = 0; c < numChannels; ++c)
-        outputs[c][n] = gain * y;
+        outputs[c][n] = y;
     }
 
     clear(outputs, numChannels); // what does this do? clear unused channels?
