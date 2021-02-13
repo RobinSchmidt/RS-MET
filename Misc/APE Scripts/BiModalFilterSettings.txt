@@ -1,0 +1,9 @@
+Feedback Freq1   Freq2   Amp1   Amp2  Decay1  Decay2  Phase1  Phase2
+0.54     74.30   142.24  1.00   1.00  1.58    0.98    -36.00  0.00
+0.51     135.84  264.83  0.99   0.34  6.19    4.13     20.16  -50.40
+
+
+todo: 
+-try to add a way to APE to store and load the parameter settings
+-add a way to select the number of digits for the parameters
+-add fine adjustment for parameters via shift
