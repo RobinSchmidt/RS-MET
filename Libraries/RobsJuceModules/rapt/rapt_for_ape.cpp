@@ -11,6 +11,8 @@ included as relative path from "Audio Programming Environment\includes", for exa
 We make it a .cpp file because it also inlcudes the relevant cpp files from rapt, such that the
 relevant code actually gets compiled - otherwise, we would get linker errors. 
 
+maybe move this file into Misc/APE Scripts (requires adjusting the paths)
+
 */
 
 /*
