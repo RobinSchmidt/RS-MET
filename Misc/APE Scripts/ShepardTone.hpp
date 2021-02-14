@@ -12,19 +12,54 @@ class rsShepardToneGenerator
 {
   
 public:
-  
+
+   /** Sets the sample rate at which this object runs. This determines the time increment for our
+   phasor */
+   inline void setSampleRate(T newRate) { dt = T(1) / newRate; }
+
+   /** Computes the desired gain factor for a given radian frequency w. */
+   inline T getGainForOmega(T w)
+   {
+     return T(1); // preliminary - todo: implement a bell curve here
+   }
 
   /** Produces one output sample at a time. */
   inline T getSample()
   {
-    return T(0);
+    T y = T(0);   // output
+
+    // Create all frequencies from wRef up to the upper cutoff:
+    T w = wRef;
+    while(w <= wHi)
+    {
+      y += getGainForOmega(w) * sin(w*t);
+      w *= T(2);
+    }
+
+    // Create all frequencies from 0.5*wRef down to the lower cutoff:
+    w = T(0.5)*wRef;
+    while(w >= wLo)
+    {
+      y += getGainForOmega(w) * sin(w*t);
+      w *= T(0.5);
+    }
+
+    // Increment time and return output:
+    t += dt;
+    return y;
   }
-  
+
+  inline void reset()
+  {
+    t = T(0);
+  }
   
 protected:
 
-
-
+  T t;         // current time, normalized to 0..1. our phasor
+  T dt;        // time increment per sample for t. equal to 1/sampleRate
+  T wRef;      // current reference omega
+  T wLo, wHi;  // high and low cutoff omegas
 
 };
 
@@ -35,7 +70,7 @@ protected:
 
 GlobalData(ShepardTone, "Endless glissando generator");
 
-class ShepardToneAPE : public ape::Effect
+class ShepardTone : public ape::Effect
 {
 public:
 
@@ -48,8 +83,14 @@ public:
   using Map = Rng::Mapping;
 
   Par parGain{   "Gain",     Rng(-48,  12)              }; // in dB
-  Par parFreqLo{ "FreqLo",   Rng(20,   20000, Map::Exp) }; // in Hz
-  Par parFreqHi{ "FreqHi",   Rng(20,   20000, Map::Exp) };  
+  Par parFreqLo{ "FreqLo",   Rng(20,   20000, Map::Exp) }; // lower cutoff in Hz
+  Par parFreqHi{ "FreqHi",   Rng(20,   20000, Map::Exp) }; // upper cutoff in Hz
+
+  Par parFreq{   "Freq",     Rng(20,   20000, Map::Exp) }; // current reference freq
+  // this is preliminary - later this is the freq that should automatically increase or decrease
+  // and wrap around when it reaches to times its original value
+
+
 
 private:   
 
@@ -58,7 +99,7 @@ private:
   /** Resets the internal state. */
   void reset()
   {
-
+    core.reset();
   }
 
   //-----------------------------------------------------------------------------------------------
@@ -76,7 +117,7 @@ private:
     float s  = 2*PI / config().sampleRate;
     float wl = s * (float)parFreqLo;
     float wh = s * (float)parFreqHi;
-    core.setOmegas(wl, wh);
+    //core.setOmegas(wl, wh);
 
     // Loop over the sample frames:
     const auto numChannels = sharedChannels();     // shared? with whom?
