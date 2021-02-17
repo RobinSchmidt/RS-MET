@@ -2179,11 +2179,13 @@ protected:
 
   //inline T omegaToFreq(T omega) { return omega / (T(2.0*PI) * dt); }
 
-  T t   = T(0);  // Current time, normalized to 0..1. Our phasor for the reference sine.
-  T dt  = T(0);  // Time increment per sample for t. Equal to 1/sampleRate
-  T argScale;    // Scales the argument of the Gaussian
-  T resShift;    // Shifts the result of the Gaussian
-  T resScale;    // Scales the shifted result of the Gaussian
+  T t     = T(0);  // Current time, normalized to 0..1. Our phasor for the reference sine.
+  T dt    = T(0);  // Time increment per sample for t. Equal to 1/sampleRate
+  T phase = T(0);  // Current phase of the refenrece sinusoid
+
+  T argScale;      // Scales the argument of the Gaussian
+  T resShift;      // Shifts the result of the Gaussian
+  T resScale;      // Scales the shifted result of the Gaussian
 
   T bellFloor   = 0.01; // floor of the bell curve
   T centerPitch = 64;   // center of the bell
@@ -2248,10 +2250,30 @@ inline T rsShepardToneGenerator<T>::getSample()
   if(coeffsDirty)
     updateCoeffs();
 
-  T y = T(0);                       // output accumulator
+  static const T tau = T(2.0*PI);   // the circle constant == circumfence/radius
+
+  T halfWidth = T(0.5)*pitchWidth;
+  T p = pitch - halfWidth;               // lowest pitch to generate
+  T factor = T(1);
+  if(p < centerPitch - halfWidth)
+  {
+    p += T(12);
+    factor *= T(2);
+  }
+  T fLo = rsPitchToFreq(p);              // lowest frequency to generate
+  T wLo = freqToOmega(fLo);              // lowest normalized radian frequency to generate
+  T y = T(0);                            // output accumulator
+  while(p <= centerPitch + halfWidth)
+  {
+    y += getGainForPitch(p) * sin(factor*phase);
+    factor *= T(2);
+    p += T(12);
+  }
+
+  /*
   T fRef = rsPitchToFreq(pitch);
   //T wRef = freqToOmega(fRef);     // reference radian frequency for this sample -> too slow
-  T wRef = T(2.0*PI)*fRef;          // we actually need an analog radian frequency
+  T wRef = tau*fRef;                // we actually need an analog radian frequency
 
   // Create all frequencies from wRef up to the upper cutoff:
   T w = wRef;
@@ -2274,10 +2296,15 @@ inline T rsShepardToneGenerator<T>::getSample()
     w *= T(0.5);
     p -= T(12);
   }
+  */
 
-  // Increment time and pitch and return output:
+  // Increment time, phase and pitch and return output:
   t += dt;
-  if(t > T(1)) t -= T(1);
+  if(t > T(1)) 
+    t -= T(1);
+  phase += wLo; 
+  if(phase >= tau)
+    phase -= tau;
   pitch += pitchDelta;
   if(pitch > startPitch + T(12)) pitch -= T(12);  // for upward sweeps
   if(pitch < startPitch - T(12)) pitch += T(12);  // for downward sweeps

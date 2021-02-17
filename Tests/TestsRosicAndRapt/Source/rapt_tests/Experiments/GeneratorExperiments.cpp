@@ -2672,7 +2672,7 @@ void shepardTone()
   for(int n = 0; n < N; n++)
     y[n] = stg.getSample();
 
-  AT::normalize(&y[0], N);
+  AT::normalize(&y[0], N, Real(0.5));
   rosic::writeToMonoWaveFile("ShepardTone.wav", &y[0], N, (int)sampleRate);
 
 
