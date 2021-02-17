@@ -2656,6 +2656,7 @@ void shepardTone()
   Real sampleRate = 44100.f;
 
   rsShepardToneGenerator<Real> stg;
+  stg.updateCoeffs();
 
   // Generate and plot the frequency response of the pseudo "filter"
   int numBins = 1000;

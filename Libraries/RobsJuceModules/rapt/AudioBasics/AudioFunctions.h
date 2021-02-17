@@ -138,7 +138,8 @@ T rsPhaseError(T p1, T p2);
 // mean, we look into the otherdirection and it would make the function symmetrical in its 
 // arguments
 
-/** Converts a pitch-offset in semitones value into a frequency multiplication factor. */
+/** Converts a pitch-offset in semitones value into a frequency multiplication factor. Uses one 
+multiplication and one call to exp.*/
 template<class T>
 inline T rsPitchOffsetToFreqFactor(T pitchOffset)
 {
@@ -147,15 +148,20 @@ inline T rsPitchOffsetToFreqFactor(T pitchOffset)
 }
 // rename to rsPitchShiftToFreqRatio
 
-/** Converts a MIDI-note value into a frequency in Hz assuming A4 = 440 Hz. */
+/** Converts a MIDI-note value into a frequency in Hz assuming A4 = 440 Hz. Uses two 
+multiplications and one call to exp. */
 template<class T>
 inline T rsPitchToFreq(T pitch)
 {
   return T(8.1757989156437073336828122976033 * exp(0.057762265046662109118102676788181 * pitch));
   //return 440.0*( pow(2.0, (pitch-69.0)/12.0) ); // naive, slower but numerically more precise
 }
+// todo: make a function rsPitchToOmega(T pitch, T sampleRate)
+// maybe compute the coefficients as constexpr here to document the formulas used - something with
+// a * pow(b, c) = a * exp(log(b) * c) = ...something -> look it up!
 
-/** Converts a MIDI-note value into a frequency in Hz for arbitrary master-tunings of A4. */
+/** Converts a MIDI-note value into a frequency in Hz for arbitrary master-tunings of A4. Uses 
+three multiplications and one call to exp. */
 template<class T>
 inline T rsPitchToFreq(T pitch, T masterTuneA4)
 {
