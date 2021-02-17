@@ -2662,7 +2662,7 @@ void shepardTone()
 
   rsShepardToneGenerator<Real> stg;
   stg.setSampleRate(sampleRate);
-  stg.setBellFloor(0.01);
+  stg.setBellFloor(0.00001);
   stg.setSpeed(speed);
   stg.updateCoeffs();
 
@@ -2694,6 +2694,16 @@ void shepardTone()
 
 
   // ToDo: 
+  // -there are still discontinuities at the wrap-arounds of the time variable. i think, they 
+  //  happen because the sine that is switched off is not yet totally zero and the one that is 
+  //  switched on does not start at zero?
+  //  -figure out by generating only bottom and top sine and/or 
+  //  -using a lower floor does not seem to help
+  //  -commenting out the if(p < centerPitch - halfWidth) ... stuff also does not help
+  //  -maybe inconsistent use of > and >= in the various wraparounds? nope: using >= consistently
+  //   also doesn't fix is - but is probably a good idea anyway
+  //  -it seems like the phase jumps suddenly - maybe it's not a good idea to multiply the phase
+  //   itself by the factor?
   // -what about using using an actual filter instead of the pseduo-filter?
 
   int dummy = 0;

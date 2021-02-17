@@ -2263,13 +2263,18 @@ inline T rsShepardToneGenerator<T>::getSample()
   T halfWidth = T(0.5)*pitchWidth;
   T p = pitch - halfWidth;               // lowest pitch to generate
   T factor = T(1);
+
+  T fLo = rsPitchToFreq(p);              // lowest frequency to generate
+  T wLo = freqToOmega(fLo);              // lowest normalized radian frequency to generate
+
+  /*
   if(p < centerPitch - halfWidth)
   {
     p += T(12);
     factor *= T(2);
   }
-  T fLo = rsPitchToFreq(p);              // lowest frequency to generate
-  T wLo = freqToOmega(fLo);              // lowest normalized radian frequency to generate
+  */
+
   T y = T(0);                            // output accumulator
   while(p <= centerPitch + halfWidth)
   {
@@ -2280,14 +2285,14 @@ inline T rsShepardToneGenerator<T>::getSample()
 
   // Increment time, phase and pitch and return output:
   t += dt;
-  if(t > T(1)) 
+  if(t >= T(1)) 
     t -= T(1);
   phase += wLo; 
   if(phase >= tau)
     phase -= tau;
   pitch += dt*pitchDelta;
-  if(pitch > startPitch + T(12)) pitch -= T(12);  // for upward sweeps
-  if(pitch < startPitch - T(12)) pitch += T(12);  // for downward sweeps
+  if(pitch >= startPitch + T(12)) pitch -= T(12);  // for upward sweeps
+  if(pitch <= startPitch - T(12)) pitch += T(12);  // for downward sweeps
   return y;
 }
 // todo: optimize using double- and half-angle formulas, maybe try to use a single loop (compute
