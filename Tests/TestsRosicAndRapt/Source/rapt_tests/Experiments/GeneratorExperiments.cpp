@@ -2655,13 +2655,15 @@ void shepardTone()
 
   Real sampleRate = 44100.f;
   Real length     = 3.0;     // length of 1 cycle in seconds
-  int  numCycles  = 1;       // number of cycles to generate
+  int  numCycles  = 4;       // number of cycles to generate
 
 
+  Real speed = 12.0 / length;
 
   rsShepardToneGenerator<Real> stg;
   stg.setSampleRate(sampleRate);
   stg.setBellFloor(0.01);
+  stg.setSpeed(speed);
   stg.updateCoeffs();
 
   using AT  = RAPT::rsArrayTools;

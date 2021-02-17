@@ -2142,6 +2142,14 @@ public:
   after a reset. */
   inline void setStartPitch(T newPitch) { startPitch = newPitch; }
 
+  /** Sets the ascension speed in semitones per second. Negative values will result in descending 
+  pitch. */
+  inline void setSpeed(T newSpeed)
+  {
+    pitchDelta = newSpeed;
+    //pitchDelta = newSpeed * T(12); // is that correct?
+  }
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -2270,34 +2278,6 @@ inline T rsShepardToneGenerator<T>::getSample()
     p += T(12);
   }
 
-  /*
-  T fRef = rsPitchToFreq(pitch);
-  //T wRef = freqToOmega(fRef);     // reference radian frequency for this sample -> too slow
-  T wRef = tau*fRef;                // we actually need an analog radian frequency
-
-  // Create all frequencies from wRef up to the upper cutoff:
-  T w = wRef;
-  T p = pitch;
-  T hiCutoffPitch = centerPitch + T(0.5)*pitchWidth;
-  while(p <= hiCutoffPitch)
-  {
-    y += getGainForPitch(p) * sin(w*t);
-    w *= T(2);
-    p += T(12);
-  }
-
-  // Create all frequencies from 0.5*wRef down to the lower cutoff:
-  w = wRef  * T(0.5);
-  p = pitch - T(12);
-  T loCutoffPitch = centerPitch - T(0.5)*pitchWidth;
-  while(p >= loCutoffPitch)
-  {
-    y += getGainForPitch(p) * sin(w*t);
-    w *= T(0.5);
-    p -= T(12);
-  }
-  */
-
   // Increment time, phase and pitch and return output:
   t += dt;
   if(t > T(1)) 
@@ -2305,7 +2285,7 @@ inline T rsShepardToneGenerator<T>::getSample()
   phase += wLo; 
   if(phase >= tau)
     phase -= tau;
-  pitch += pitchDelta;
+  pitch += dt*pitchDelta;
   if(pitch > startPitch + T(12)) pitch -= T(12);  // for upward sweeps
   if(pitch < startPitch - T(12)) pitch += T(12);  // for downward sweeps
   return y;
