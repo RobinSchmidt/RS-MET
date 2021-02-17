@@ -2248,13 +2248,15 @@ inline T rsShepardToneGenerator<T>::getSample()
   if(coeffsDirty)
     updateCoeffs();
 
-  T y = T(0);                                  // output accumulator
-  T wRef = freqToOmega(rsPitchToFreq(pitch));  // reference radian frequency for this sample
+  T y = T(0);                       // output accumulator
+  T fRef = rsPitchToFreq(pitch);
+  //T wRef = freqToOmega(fRef);     // reference radian frequency for this sample -> too slow
+  T wRef = T(2.0*PI)*fRef;          // we actually need an analog radian frequency
 
   // Create all frequencies from wRef up to the upper cutoff:
   T w = wRef;
   T p = pitch;
-T hiCutoffPitch = centerPitch + T(0.5)*pitchWidth;
+  T hiCutoffPitch = centerPitch + T(0.5)*pitchWidth;
   while(p <= hiCutoffPitch)
   {
     y += getGainForPitch(p) * sin(w*t);
@@ -2284,6 +2286,8 @@ T hiCutoffPitch = centerPitch + T(0.5)*pitchWidth;
 // todo: optimize using double- and half-angle formulas, maybe try to use a single loop (compute
 // the lowest pitch that needs to be generated, start there and only go upward - only 
 // double-angle formula needed
+// -there are discontinuities after every second - i think we need separate phasors for the time
+//  after which to wrap around the pitch ascension and the reference sinusoid
 
 template<class T>
 inline void rsShepardToneGenerator<T>::updateCoeffs()

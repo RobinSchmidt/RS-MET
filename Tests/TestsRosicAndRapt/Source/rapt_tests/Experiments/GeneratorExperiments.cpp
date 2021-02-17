@@ -2654,7 +2654,7 @@ void shepardTone()
   using Real = double;
 
   Real sampleRate = 44100.f;
-  Real length     = 2.0;     // length of 1 cycle in seconds
+  Real length     = 3.0;     // length of 1 cycle in seconds
   int  numCycles  = 1;       // number of cycles to generate
 
 
@@ -2676,7 +2676,7 @@ void shepardTone()
   rosic::writeToMonoWaveFile("ShepardTone.wav", &y[0], N, (int)sampleRate);
 
 
-
+  /*
   // Generate and plot the frequency response of the pseudo "filter"
   int numBins = 1000;
   Vec freqs(numBins), amps(numBins);
@@ -2687,6 +2687,7 @@ void shepardTone()
   plt.addDataArrays(numBins, &freqs[0], &amps[0]);
   plt.setLogScale("x");
   plt.plot();
+  */
 
 
 
