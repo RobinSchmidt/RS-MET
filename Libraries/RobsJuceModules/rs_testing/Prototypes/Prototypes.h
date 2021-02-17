@@ -2217,25 +2217,12 @@ inline T rsShepardToneGenerator<T>::getGainForPitch(T pitch)
   // range at the call site -> factor out a function without the check and call that from the 
   // audio code "getGainForPitchNoCheck"  or something
 
-
-  //T centerPitch = T(0.5) * (loCutoffPitch + hiCutoffPitch);
-  T x = pitch - centerPitch;
-
-  //T scl = 0.001;
-  // determines variance of Gaussian shape -> experiment with that, make it user-adjustable, 
-  // pre-compute according to meaningful user parameter, maybe width (in semitones - may set the
-  // point, where the curve goes through 0.5) ...or maybe it should be set up in terms of a floor
-  // value for the Gaussian - maybe have a function setBellFloor that takes a value in dB, maybe 
-  // use -80 or -100 by default...or -60 - we don't need to worry about clicks if we offset the 
-  // bell down to zero
-
-  //return exp(x*x * argScale);
-
+  T x = pitch - centerPitch;  //
   return resScale * (exp(x*x * argScale) + resShift);
 
-  //return resScale * exp(x*x * argScale) + resShift;
-  // todo: subtract some precomputed offset to hit zero at ends, then multiply by suitable factor
-  // to hit one at center
+  // ToDo: maybe taper off the "feet" of the Gaussian by multiplying with a function that has zero
+  // derivative - this helps to reduce clicks even more when sines are turned on and off
+
 }
 
 template<class T>
@@ -2287,7 +2274,12 @@ inline void rsShepardToneGenerator<T>::updateCoeffs()
 
   // To figure out the factor "a" inside the exponential, given a desired floor "b", we need to 
   // solve exp(a * x^2) = b, where x = pitchWidth/2. This gives:
-  T x = T(0.5) * pitchWidth;
+
+  T x = T(0.5) * pitchWidth;  
+  // maybe use a normalized range, say -1...+1 and integrate into rsBellFunctions - make a 
+  // function: tweakedGaussian(T x, T xFloor) and 
+  // tweakedGaussianCoeffs(T xFloor, T* argScale, T* resScale, T* resShift)
+
   argScale = log(b) / (x*x);
   resShift = -b;
   resScale = T(1) / (T(1) - b);
