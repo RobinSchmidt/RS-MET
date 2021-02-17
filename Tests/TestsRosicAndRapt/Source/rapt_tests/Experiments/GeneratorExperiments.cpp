@@ -2654,14 +2654,33 @@ void shepardTone()
   using Real = double;
 
   Real sampleRate = 44100.f;
+  Real length     = 2.0;     // length of 1 cycle in seconds
+  int  numCycles  = 1;       // number of cycles to generate
+
+
 
   rsShepardToneGenerator<Real> stg;
+  stg.setSampleRate(sampleRate);
+  stg.setBellFloor(0.01);
   stg.updateCoeffs();
+
+  using AT  = RAPT::rsArrayTools;
+  using Vec = std::vector<Real>;
+
+  int N = (int) round(length * sampleRate * numCycles);
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+    y[n] = stg.getSample();
+
+  AT::normalize(&y[0], N);
+  rosic::writeToMonoWaveFile("ShepardTone.wav", &y[0], N, (int)sampleRate);
+
+
 
   // Generate and plot the frequency response of the pseudo "filter"
   int numBins = 1000;
-  std::vector<Real> freqs(numBins), amps(numBins);
-  RAPT::rsArrayTools::fillWithRangeExponential(&freqs[0], numBins, 20.0, 20000.0);
+  Vec freqs(numBins), amps(numBins);
+  AT::fillWithRangeExponential(&freqs[0], numBins, 20.0, 20000.0);
   for(int i = 0; i < numBins; i++)
     amps[i] = stg.getGainForFrequency(freqs[i]);
   GNUPlotter plt;

@@ -2131,9 +2131,17 @@ public:
   /** Sets the width of the bell-shaped spectral envelope in semitones. */
   inline void setPitchWidth(T newWidth);
 
+  /** Sets the floor of the Gaussian bell curve, below which it is considered to be close enough to
+  zero to switch the sine off. The actual bell is shifted and scaled, so as to actually hit zero at
+  the boundaries and one in the middle, but this setting here changes the overall shape. Typical 
+  values are 0.1...0.0001, maybe log-scaled - perhaps a user parameter should set this up in dB. 
+  This here sets the raw value, however. */
+  inline void setBellFloor(T newFloor);
+
   /** Sets the start pitch. This is the pitch of the center sinusoid that is heard immediately 
   after a reset. */
   inline void setStartPitch(T newPitch) { startPitch = newPitch; }
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -2177,8 +2185,9 @@ protected:
   T resShift;    // Shifts the result of the Gaussian
   T resScale;    // Scales the shifted result of the Gaussian
 
-  T centerPitch = 64;   // = (loCutoffPitch + hiCutoffPitch) / 2
-  T pitchWidth  = 72;
+  T bellFloor   = 0.01; // floor of the bell curve
+  T centerPitch = 64;   // center of the bell
+  T pitchWidth  = 72;   // width of the bell from left to right boundary
   T startPitch  = 64;   // Pitch of reference sine after reset
   T pitch       = 64;   // Current pitch of reference sine
   T pitchDelta  = 0;    // maybe this should be in semitones or octaves per second
@@ -2207,6 +2216,14 @@ inline void rsShepardToneGenerator<T>::setPitchWidth(T newWidth)
 }
 
 template<class T>
+inline void rsShepardToneGenerator<T>::setBellFloor(T newFloor)
+{
+  if(newFloor != bellFloor) {
+    bellFloor = newFloor;
+    coeffsDirty = true; }
+}
+
+template<class T>
 inline T rsShepardToneGenerator<T>::getGainForPitch(T pitch)
 {
   T loCutoffPitch = centerPitch - T(0.5)*pitchWidth;
@@ -2217,7 +2234,7 @@ inline T rsShepardToneGenerator<T>::getGainForPitch(T pitch)
   // range at the call site -> factor out a function without the check and call that from the 
   // audio code "getGainForPitchNoCheck"  or something
 
-  T x = pitch - centerPitch;  //
+  T x = pitch - centerPitch;
   return resScale * (exp(x*x * argScale) + resShift);
 
   // ToDo: maybe taper off the "feet" of the Gaussian by multiplying with a function that has zero
@@ -2237,8 +2254,8 @@ inline T rsShepardToneGenerator<T>::getSample()
   // Create all frequencies from wRef up to the upper cutoff:
   T w = wRef;
   T p = pitch;
-  T loCutoffPitch = centerPitch - T(0.5)*pitchWidth;
-  while(p <= loCutoffPitch)
+T hiCutoffPitch = centerPitch + T(0.5)*pitchWidth;
+  while(p <= hiCutoffPitch)
   {
     y += getGainForPitch(p) * sin(w*t);
     w *= T(2);
@@ -2248,11 +2265,12 @@ inline T rsShepardToneGenerator<T>::getSample()
   // Create all frequencies from 0.5*wRef down to the lower cutoff:
   w = wRef  * T(0.5);
   p = pitch - T(12);
-  T hiCutoffPitch = centerPitch + T(0.5)*pitchWidth;
-  while(p >= hiCutoffPitch)
+  T loCutoffPitch = centerPitch - T(0.5)*pitchWidth;
+  while(p >= loCutoffPitch)
   {
     y += getGainForPitch(p) * sin(w*t);
     w *= T(0.5);
+    p -= T(12);
   }
 
   // Increment time and pitch and return output:
@@ -2270,21 +2288,23 @@ inline T rsShepardToneGenerator<T>::getSample()
 template<class T>
 inline void rsShepardToneGenerator<T>::updateCoeffs()
 {
-  T b = 0.01;  // todo: compute from user parameter in dB
-
   // To figure out the factor "a" inside the exponential, given a desired floor "b", we need to 
-  // solve exp(a * x^2) = b, where x = pitchWidth/2. This gives:
-
-  T x = T(0.5) * pitchWidth;  
-  // maybe use a normalized range, say -1...+1 and integrate into rsBellFunctions - make a 
-  // function: tweakedGaussian(T x, T xFloor) and 
-  // tweakedGaussianCoeffs(T xFloor, T* argScale, T* resScale, T* resShift)
-
+  // solve exp(a * x^2) = b, where x = pitchWidth/2. After finding the scaler for the argument of 
+  // the exponential, we need to shift the bell curve down by b to actually hit zero at the 
+  // boundaries. This in turn reduces the value at the center so we must scale the whole curve up 
+  // to hit one at the center again. This leads to:
+  T b = bellFloor;
+  T x = T(0.5) * pitchWidth; 
   argScale = log(b) / (x*x);
   resShift = -b;
   resScale = T(1) / (T(1) - b);
   coeffsDirty = false;
 }
+// maybe use a normalized range, say -1...+1 and integrate into rsBellFunctions - make a 
+// function: tweakedGaussian(T x, T xFloor) and 
+// tweakedGaussianCoeffs(T xFloor, T* argScale, T* resScale, T* resShift)
+// but using it here would increase the amount of computation to do in getSample, so maybe not
+
 
 
 
