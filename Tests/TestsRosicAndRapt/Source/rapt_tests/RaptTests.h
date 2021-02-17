@@ -59,6 +59,7 @@ void snowFlake();
 void triSawOsc();
 void triSawOscAntiAlias();
 void xoxosOsc();
+void shepardTone();
 
 
 // Graphics Experiments:

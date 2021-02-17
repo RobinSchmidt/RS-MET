@@ -2648,3 +2648,30 @@ void xoxosOsc()
   // -project onto unit sphere by dividing x,y,z by  sqrt(x^2 + y^2 + z^2)
   // -take linear combination of x,y,z as output
 }
+
+void shepardTone()
+{
+  using Real = double;
+
+  Real sampleRate = 44100.f;
+
+  rsShepardToneGenerator<Real> stg;
+
+  // Generate and plot the frequency response of the pseudo "filter"
+  int numBins = 1000;
+  std::vector<Real> freqs(numBins), amps(numBins);
+  RAPT::rsArrayTools::fillWithRangeExponential(&freqs[0], numBins, 20.0, 20000.0);
+  for(int i = 0; i < numBins; i++)
+    amps[i] = stg.getGainForFrequency(freqs[i]);
+  GNUPlotter plt;
+  plt.addDataArrays(numBins, &freqs[0], &amps[0]);
+  plt.setLogScale("x");
+  plt.plot();
+
+
+
+  // ToDo: 
+  // -what about using using an actual filter instead of the pseduo-filter?
+
+  int dummy = 0;
+}

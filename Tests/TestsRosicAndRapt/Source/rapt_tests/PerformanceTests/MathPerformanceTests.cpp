@@ -311,7 +311,8 @@ void rsSinCos1(double x, double* s, double* c)
 
 void sinCosPerformance()
 {
-  static const int N = 10000;  // number of values
+  //static const int N = 10000;  // number of values
+  static const int N = 128;  // number of values
   float xMin = 0.f;
   float xMax = float(2*PI);
 

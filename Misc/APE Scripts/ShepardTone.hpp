@@ -13,9 +13,22 @@ class rsShepardToneGenerator
   
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
    /** Sets the sample rate at which this object runs. This determines the time increment for our
    phasor */
    inline void setSampleRate(T newRate) { dt = T(1) / newRate; }
+
+   /** Sets the lower und upper cutoff frequency between which all the action happens. */
+   inline void setCutoffFrequencies(T lowCutoff, T highCutoff)
+   {
+     wLo = T(2) * PI * lowCutoff  * dt;
+     wHi = T(2) * PI * highCutoff * dt;
+   }
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
 
    /** Computes the desired gain factor for a given radian frequency w. */
    inline T getGainForOmega(T w)

@@ -2110,8 +2110,139 @@ void divergenceToPotential3(const rsBivariatePolynomial<T>& D, rsBivariatePolyno
         P.coeff(m, n+2) = (D.coeff(m, n) - (m+1)*(m+2)*P.coeff(m+2, n)) / ((n+1)*(n+2));
 }
 
+//=================================================================================================
+
+template<class T>
+class rsShepardToneGenerator
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  /** Sets the sample rate at which this object runs. This determines the time increment for our
+  phasor */
+  inline void setSampleRate(T newRate) { dt = T(1) / newRate; }
+
+  /** Sets the lower cutoff pitch. Below that pitch, no sound will be generated. */
+  inline void setLowCutoffPitch(T lowCutoff) { loCutoffPitch = lowCutoff; }
+
+  /** Sets the upper cutoff pitch. Above that pitch, no sound will be generated. */
+  inline void setHighCutoffPitch(T highCutoff) { hiCutoffPitch = highCutoff; }
+
+  /** Sets the start pitch. This is the pitch of the center sinusoid that is heard immediately 
+  after a reset. */
+  inline void setStartPitch(T newPitch) { startPitch = newPitch; }
 
 
+  /** Sets the reference frequency above and below the octaves will be generated. This is the 
+  frequency that is supposed to move up or down (linearly in the pitch domain), and wrap around at
+  an octave. In practice, the should be a driver that moves this frequency. */
+  //inline void setFrequency(T newFreq) { wRef = T(2) * PI * newFreq  * dt; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  /** Computes the desired gain factor for a given frequency in Hz. */
+  inline T getGainForFrequency(T f)
+  {
+    return getGainForPitch(rsFreqToPitch(f));
+  }
+  // avoid using that in realtime code
+
+  inline T getGainForPitch(T pitch)
+  {
+    if(pitch < loCutoffPitch || pitch > hiCutoffPitch)
+      return T(0);
+    // this is relevant only for plotting. in the audio code, we already ensure that pitch is 
+    // within the range at the call site -> factor out a function without the check and call that
+    // from the audio code
+
+
+    T centerPitch = T(0.5) * (loCutoffPitch + hiCutoffPitch);
+    T x = pitch - centerPitch;
+
+    T scl = 0.001;
+    // determines variance of Gaussian shape -> experiment with that, make it user-adjustable, 
+    // pre-compute according to meaningful user parameter, maybe width (in semitones - may set the
+    // point, where the curve goes through 0.5) ...or maybe it should be set up in terms of a floor
+    // value for the Gaussian
+
+    return exp(-x*x * scl);  
+    // todo: subtract some precomputed offset to hit zero at ends, then multiply by suitable factor
+    // to hit one at center
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+
+  /** Produces one output sample at a time. */
+  inline T getSample()
+  {
+    T y = T(0);                                  // output accumulator
+    T wRef = freqToOmega(rsPitchToFreq(pitch));  // reference radina frequency for this sample
+
+    // Create all frequencies from wRef up to the upper cutoff:
+    T w = wRef;
+    T p = pitch;
+    while(p <= loCutoffPitch)
+    {
+      y += getGainForPitch(p) * sin(w*t);
+      w *= T(2);
+      p += T(12);
+    }
+
+    // Create all frequencies from 0.5*wRef down to the lower cutoff:
+    w = wRef  * T(0.5);
+    p = pitch - T(12);
+    while(w >= wLo)
+    {
+      y += getGainForPitch(p) * sin(w*t);
+      w *= T(0.5);
+    }
+
+    // Increment time and pitch and return output:
+    t += dt;
+    if(t > T(1)) t -= T(1);
+    pitch += pitchDelta;
+    if(pitch > startPitch + T(12)) pitch -= T(12);  // for upward sweeps
+    if(pitch < startPitch - T(12)) pitch += T(12);  // for downward sweeps
+    return y;
+  }
+  // todo: optimize using double- and half-angle formulas, maybe try to use a single loop (compute
+  // the lowest pitch that needs to be generated, start there and only go upward - only 
+  // double-angle formula needed
+
+  inline void reset()
+  {
+    t = T(0);
+    pitch = startPitch;
+  }
+
+protected:
+
+  /** Conversion of physical frequency in Hz to radian frequency omega = 2*pi*f/fs. */
+  inline T freqToOmega(T freq)  { return T(2.0*PI) * dt * freq;    }
+
+  //inline T omegaToFreq(T omega) { return omega / (T(2.0*PI) * dt); }
+
+  T t   = T(0);            // Current time, normalized to 0..1. Our phasor for the reference sine.
+  T dt  = T(0);            // Time increment per sample for t. Equal to 1/sampleRate
+
+  T loCutoffPitch = 28;   // Lower cutoff pitch
+  T hiCutoffPitch = 100;  // Upper cutoff pitch
+  T centerPitch   = 64;   // = (loCutoffPitch + hiCutoffPitch) / 2
+  T startPitch    = 64;   // Pitch of reference sine after reset
+  T pitch         = 64;   // Current pitch of reference sine
+  T pitchDelta    = 0;    // maybe this should be in semitones or octaves per second
+
+  //T wRef;      // current reference omega - should later be subject to automatic raising/falling
+  // change name
+
+};
 
 //=================================================================================================
 // the stuff below is just for playing around - maybe move code elsewhere, like the research-repo:

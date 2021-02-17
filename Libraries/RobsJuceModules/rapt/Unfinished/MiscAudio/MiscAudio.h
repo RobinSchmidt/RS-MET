@@ -177,4 +177,7 @@ respectively. For the deBias parameter, @see rsMaxCorrelationLag() */
 template<class T>
 T rsGetShiftForBestMatch(T *x1, T *x2, int N, bool deBias = false);
 
+
+
+
 #endif
