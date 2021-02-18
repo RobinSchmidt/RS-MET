@@ -1,5 +1,7 @@
 #include "Experiments.h"
 
+#include "PrototypesForAPE.cpp"
+
 #include "../rapt_tests/Experiments/ScratchPad.cpp"
 #include "../rapt_tests/Experiments/MathExperiments.cpp"
 #include "../rapt_tests/Experiments/FilterExperiments.cpp"
