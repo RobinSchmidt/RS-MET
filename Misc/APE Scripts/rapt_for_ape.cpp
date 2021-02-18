@@ -3,8 +3,8 @@
 
 /* 
 
-Include file for RAPT for use in APE (Audio Programming Environment). There, it has to be 
-included as relative path from "Audio Programming Environment\includes", for example, like:
+Include file for RAPT for use in APE (Audio Programming Environment). In APE scripts, it has to be 
+included as relative path from "[PathToAPE]/Audio Programming Environment/includes". Example:
 
   #include "../../../../RS-MET/Misc/APE Scripts/rapt_for_ape.cpp"
 

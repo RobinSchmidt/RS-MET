@@ -101,6 +101,10 @@
       <GROUP id="{CDBDEF1D-BB8A-7D2D-D038-9B74B068C290}" name="Experiments">
         <FILE id="XlUMHK" name="Experiments.cpp" compile="1" resource="0" file="Source/Experiments/Experiments.cpp"/>
         <FILE id="VKq4cA" name="Experiments.h" compile="0" resource="0" file="Source/Experiments/Experiments.h"/>
+        <FILE id="WyGJSl" name="PrototypesForAPE.cpp" compile="0" resource="0"
+              file="Source/Experiments/PrototypesForAPE.cpp"/>
+        <FILE id="PRlvpg" name="PrototypesForAPE.h" compile="0" resource="0"
+              file="Source/Experiments/PrototypesForAPE.h"/>
       </GROUP>
       <GROUP id="{F7076C47-6EF8-D26D-C723-89FE096AF36F}" name="rosic_tests">
         <GROUP id="{AB24ABE0-F0E0-71E1-6E93-83A6FD72A019}" name="PortedFromRSLib">
