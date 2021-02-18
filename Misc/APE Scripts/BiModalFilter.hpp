@@ -1,4 +1,4 @@
-#include "../../../../RS-MET/Libraries/RobsJuceModules/rapt/rapt_for_ape.cpp"
+#include "../../../../RS-MET/Misc/APE Scripts/rapt_for_ape.cpp"
 // relative path from "Audio Programming Environment/includes"
 
 #include <effect.h>
