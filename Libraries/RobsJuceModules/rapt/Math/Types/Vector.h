@@ -222,6 +222,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
+  /** Unary minus. */
+  rsVector3D<T> operator-() const { return rsVector3D<T>(-x, -y, -z); }
+
   /** Adds vector v to this vector. */
   rsVector3D<T>& operator+=(const rsVector3D<T>& v) { x += v.x; y += v.y; z += v.z; return *this; }
 
@@ -235,7 +238,7 @@ public:
   rsVector3D<T>& operator/=(T s) { s = 1/s; x *= s; y *= s; z *= s; return *this; }
 
   /** Compares two vectors for equality. */
-  bool operator==(const rsVector3D<T>& v) { return x == v.x && y == v.y && z == v.z; }
+  bool operator==(const rsVector3D<T>& v) const { return x == v.x && y == v.y && z == v.z; }
 
 
   /** Returns the triple product of the 3 vectors a,b,c, defined as: 
