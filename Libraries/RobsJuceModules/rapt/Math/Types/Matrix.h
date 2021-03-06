@@ -245,8 +245,8 @@ public:
   // maybe rename to setShape for consistency with the rest of the library...otoh, reshape is
   // consistent with NumPy
 
-  /** Resets the number of rows and columns to zero and the dataPointer to nullptr. Should be called
-  whenever you need to invalidate our pointer member. */
+  /** Resets the number of rows and columns to zero and the dataPointer to nullptr. Should be 
+  called whenever you need to invalidate our pointer member. */
   void reset()
   {
     numRows = 0;
@@ -358,6 +358,22 @@ public:
     return false;
   }
   // needs test
+
+  /** Returns true, iff this matrix (denoted as A) is symmetric (up to a given tolerance), i.e. 
+  A(i,j) == A(j,i) for all i,j. Symmetry considerations usually apply only to square matrices. If 
+  A isn't a square matrix, it will be considered non-symmetric, regardless of its content. */
+  bool isSymmetric(T tol = T(0)) const
+  {
+    if(numRows != numCols) return false;  // non-square matrices are never considered symmetric
+    for(int i = 1; i < numRows; i++) {
+      for(int j = i; j < numCols; j++) {
+        T d = rsAbs(at(i,j) - at(j,i));
+        if(d > tol)
+          return false; }}
+    return true;
+  }
+  // needs test, todo: implement test for antisymmetry - the struture is the same, just that we 
+  // need to use at(i,j) + at(j,i) instead of at(i,j) - at(j,i)
 
 
   /** Returns a const pointer to the data for read access as a flat array. */
