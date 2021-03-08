@@ -190,7 +190,11 @@ typename std::vector<T>::iterator rsInsertSorted(std::vector<T>& v, T const& x)
 }
 // https://stackoverflow.com/questions/15843525/how-do-you-insert-the-value-in-a-sorted-vector
 
-
+template<class T>
+inline void rsNegate(std::vector<T>& v)
+{
+  rsArrayTools::negate(&v[0], &v[0], (int) v.size());
+}
 
 /** Wraps iterator syntax to simplify calls to std::none_of. */
 template<class T, class UnaryPredicate >
