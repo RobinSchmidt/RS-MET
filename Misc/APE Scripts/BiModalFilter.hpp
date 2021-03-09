@@ -8,17 +8,16 @@ GlobalData(BiModalFilter, "2 modal filters with nonlinear feedback");
 
 class BiModalFilter : public ape::Effect
 {
+  
 public:
 
-
   BiModalFilter() {}
-  
+
   // Shorthands for convenience to reduce boilerplate:
   using Par = ape::Param<float>;
   using Rng = ape::Range;
   using Map = Rng::Mapping;
 
-  
   // Why are the parameters public? is there a compelling reason for this? perhaps the gui widgets 
   // need to access them? -> figure out
   Par parGain{     "Gain",     Rng(-48,  12)              }; // in dB
@@ -33,7 +32,8 @@ public:
   Par parPhase2{   "Phase2",   Rng(-180, +180)            };
   // How can we set the parameters to reasonable default values?
 
-private:   
+
+private:
 
   RAPT::rsModalFilter<float, float> mf1, mf2;
   float sampleRate;
@@ -79,8 +79,6 @@ private:
     yOld = y;
     return y;
   }
-  
-  
 
   //-----------------------------------------------------------------------------------------------
   // \name Overriden callbacks (why are they private?) 
@@ -96,8 +94,8 @@ private:
     // Pull the values of the parameters for this block and update the DSP objects:
     const float gain = RAPT::rsDbToAmp((float)parGain);
     const float fb   = (float)parFeedback;
-    mf1.setModalParameters(parFreq1, parAmp1, 0.01f*parDecay1, parPhase1, sampleRate);
-    mf2.setModalParameters(parFreq2, parAmp2, 0.01f*parDecay2, parPhase2, sampleRate);
+    mf1.setModalParameters(parFreq1, parAmp1, 0.001f*parDecay1, parPhase1, sampleRate);
+    mf2.setModalParameters(parFreq2, parAmp2, 0.001f*parDecay2, parPhase2, sampleRate);
 
     // Loop over the sample frames:
     const auto numChannels = sharedChannels();     // shared? with whom?
