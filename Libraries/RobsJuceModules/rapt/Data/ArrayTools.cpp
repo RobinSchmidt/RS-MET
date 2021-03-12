@@ -1047,6 +1047,16 @@ T rsArrayTools::meanDifference(const T *x, int N)
 }
 
 template<class T>
+int rsArrayTools::numNonZeros(const T* x, int N)
+{
+  int n = 0;
+  for(int i = 0; i < N; i++)
+    if(x[i] != T(0))
+      n++;
+  return n;
+}
+
+template<class T>
 T rsArrayTools::meanSquare(const T *x, int N)
 {
   return sumOfSquares(x, N) / T(N);

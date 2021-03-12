@@ -435,6 +435,10 @@ public:
   */
   template <class T>
   static int firstIndexWithNonZeroValue(const T *buffer, int length);
+  // todo: rename to something shorter - maybe 
+  // firstNonZeroIndex            may not be that clear
+  // indexOfFirstNonZero          seems a good compromise between length and clarity
+  // firstIndexWithNonZeroValue   for length comparison reference
 
   /** Scales and offsets the passed buffer such that the minimum value hits 'min' and the
   maximum value hits 'max'. */
@@ -596,6 +600,10 @@ public:
   /** Returns the mean of the squares of the values in the array. */
   template<class T>
   static T meanSquare(const T *x, int N);
+
+  /** Returns the number of nonzero values in the vector array x. */
+  template<class T>
+  static int numNonZeros(const T *x, int N);
 
   /** Computes the mean of the absoulte values of the differences of arrays x and y */
   template<class T>

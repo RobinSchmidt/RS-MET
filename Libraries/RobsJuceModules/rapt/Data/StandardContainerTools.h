@@ -470,6 +470,20 @@ bool rsIsCloseTo(const std::vector<T>& x, const std::vector<T>& y, T tol)
   //}
   //return max;
 
+/** Returns the first index for which vector v has a nonzero value or -1 if all values are zero. */
+template<class T>
+int rsIndexOfFirstNonZero(const std::vector<T>& v)
+{
+  return rsArrayTools::firstIndexWithNonZeroValue(&v[0], (int)v.size()); 
+  // todo: rename that to rsIndexOfFirstNonZero, too -> shorter and consistent
+}
+
+/** Returns the number of nonzero values in the vector v. */
+template<class T>
+int rsNumNonZeros(const std::vector<T>& v)
+{
+  return rsArrayTools::numNonZeros(&v[0], (int)v.size()); 
+}
 
 template<class T>
 T rsSum(const std::vector<T>& x)

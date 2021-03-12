@@ -416,6 +416,14 @@ public:
   /** Returns the maximum absolute value of all elements in the matrix. */
   T getAbsoluteMaximum() const { return rsArrayTools::maxAbs(dataPointer, getSize()); }
 
+  /** Returns the number of nonzero elements in this matrix. */
+  int getNumNonZeros() const { return rsArrayTools::numNonZeros(dataPointer, getSize()); }
+
+  /** Returns the density of this matrix which is a number between 0 and 1 defined as the number 
+  of nonzero elements divided by the total number of elements. Sparse matrices have a low density
+  (near zero), fully populated matrices have a density of 1. */
+  T getDensity() const { return T(getNumNonZeros()) / T(getSize()); }
+
   /** Computes the trace of the matrix which is the sum of the diagonal elements. */
   T getTrace() const
   {
