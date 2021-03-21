@@ -78,7 +78,7 @@ void rsRemoveCorrelationBias(T x[], int N, T r[])
 }
 
 template<class T>
-T rsCrossCorrelation(T *x, int Nx, T *y, int Ny)
+T rsCrossCorrelation(const T *x, int Nx, const T *y, int Ny)
 {
   T xx = rsArrayTools::sumOfSquares(x, Nx);
   T yy = rsArrayTools::sumOfSquares(y, Ny);
@@ -91,7 +91,7 @@ T rsCrossCorrelation(T *x, int Nx, T *y, int Ny)
 }
 
 template<class T>
-T rsStretchedCrossCorrelation(T *x, int Nx, T *y, int Ny)
+T rsStretchedCrossCorrelation(const T *x, int Nx, const T *y, int Ny)
 {
   // x should be the longer than y:
   if(Nx < Ny)

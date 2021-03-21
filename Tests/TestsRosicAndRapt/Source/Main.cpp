@@ -468,7 +468,7 @@ int main(int argc, char* argv[])
   //sincResamplerPassbandRipple();
   //sincResamplerSumOfTapWeights();
   //timeWarp();
-  //pitchDemodulation();
+  pitchDemodulation();        // rename to pitchFlattening - produces memleak -> fix!
   //phaseLockedCrossfade();
   //phaseLockedCrossfade2();
   //pitchDetectWithSilence();

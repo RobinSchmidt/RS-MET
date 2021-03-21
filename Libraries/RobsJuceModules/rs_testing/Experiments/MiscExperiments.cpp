@@ -271,7 +271,6 @@ void getPaddedSignals(double* xIn, int Nx,
     RAPT::rsResizeWithInit(x, ny, 0.0);
 }
 
-
 void testModalResynthesis(const std::string& name, std::vector<double>& x,
   double fs, double f0)
 {
@@ -606,6 +605,16 @@ void testEnvelopeMatching2(std::vector<double>& x1, std::vector<double>& x2)
   plt.plot();
 }
 
+void testTimeWarping1(const std::vector<double>& x, double fs, double f0)
+{
+  //rsTimeWarper<double, double> tw;
+  //tw.timeWarpSinc(
+
+  //rsPitchFlattener<double, double> pf;
+
+
+  int dummy = 0;
+}
 
 
 

@@ -381,7 +381,7 @@ rsCycleMarkFinder<T>::rsCycleMarkFinder(T sampleRate, T minFundamental, T maxFun
 }
 
 template<class T>
-void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(T *x, int N, std::vector<T>& cm, T f0)
+void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(const T *x, int N, std::vector<T>& cm, T f0)
 {
   T* y = new T[N];
   if(correlationHighpass > 0)
@@ -428,7 +428,7 @@ void rsCycleMarkFinder<T>::refineCycleMarksByCorrelation(T *x, int N, std::vecto
 }
 
 template<class T>
-std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(T *x, int N)
+std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(const T *x, int N)
 {
   if(algo == F0_ZERO_CROSSINGS)
     return findCycleMarksByFundamentalZeros(x, N);
@@ -445,7 +445,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarks(T *x, int N)
 }
 
 template<class T>
-std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int N)
+std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(const T* x, int N)
 {
   // Get initial estimate of fundamental by using an autocorrelation based algorithm at the center
   // of the input signal:
@@ -463,7 +463,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByFundamentalZeros(T* x, int 
 }
 
 template<class T>
-std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
+std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(const T* x, int N)
 {
   // select a sample index n in the middle and estimate frequency there:
   //int nCenter = N/2;
@@ -531,7 +531,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByRefinement(T* x, int N)
 }
 
 template<class T>
-std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelationOld(T* x, int N)
+std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelationOld(const T* x, int N)
 {
   std::vector<T> z = findCycleMarksByFundamentalZeros(x, N); // initial estimates
   T f0 = getFundamental(x, N);
@@ -540,7 +540,7 @@ std::vector<T> rsCycleMarkFinder<T>::findCycleMarksByCorrelationOld(T* x, int N)
 }
 
 template<class T>
-T rsCycleMarkFinder<T>::getFundamental(T* x, int N)
+T rsCycleMarkFinder<T>::getFundamental(const T* x, int N)
 {
   if(fundamental != T(0))
     return fundamental;
@@ -589,7 +589,7 @@ rsCycleMarkFinder<T>::getErrorMeasures(const std::vector<T>& cycleMarks, T perio
 // internal functions
 
 template<class T>
-T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, T left, T right)
+T rsCycleMarkFinder<T>::periodErrorByCorrelation(const T* x, int N, T left, T right)
 {
   // a sort of crude, preliminary way to avoid producing garbage data or even crashes in
   // fade-in/out sections:
@@ -605,7 +605,7 @@ T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, T left, T right)
 }
 
 template<class T>
-T rsCycleMarkFinder<T>::periodErrorByCorrelation(T* x, int N, int left, int right)
+T rsCycleMarkFinder<T>::periodErrorByCorrelation(const T* x, int N, int left, int right)
 {
   rsAssert(left  >= 0);
   rsAssert(right <  N);
@@ -1056,7 +1056,7 @@ void rsResampler<TSig, TPos>::shiftSinc(TSig *x, TSig *y, int N, TPos amount, TP
 //=================================================================================================
 
 template<class TSig, class TPos>
-void rsTimeWarper<TSig, TPos>::timeWarpSinc(TSig *x, int xN, TSig *y, TPos *w, int yN,
+void rsTimeWarper<TSig, TPos>::timeWarpSinc(const TSig *x, int xN, TSig *y, TPos *w, int yN,
   TPos minSincLength, TPos maxLengthScaler, bool antiAlias)
 {
   if( antiAlias == false )
@@ -1137,7 +1137,7 @@ int rsTimeWarper<TSig, TPos>::getPitchModulatedLength(TPos *r, int N)
 }
 
 template<class TSig, class TPos>
-void rsTimeWarper<TSig, TPos>::applyPitchModulation(TSig *x, TPos *r, int N, TSig *y,
+void rsTimeWarper<TSig, TPos>::applyPitchModulation(const TSig *x, TPos *r, int N, TSig *y,
   TPos minSincLength, TPos maxLengthScaler, bool antiAlias)
 {
   rsVariableSpeedPlayer<TSig, TPos> vsp;
@@ -1160,7 +1160,7 @@ rsVariableSpeedPlayer<TSig, TPos>::~rsVariableSpeedPlayer()
 }
 
 template<class TSig, class TPos>
-void rsVariableSpeedPlayer<TSig, TPos>::setInputAndSpeed(TSig *input, TPos *r, int length)
+void rsVariableSpeedPlayer<TSig, TPos>::setInputAndSpeed(const TSig *input, TPos *r, int length)
 {
   clear();
 
@@ -1451,7 +1451,7 @@ void rsPhaseLockedCrossfader<TSig, TPos>::computeReadoutTimes()
 //=================================================================================================
 
 template<class T>
-void rsInstantaneousFundamentalEstimator<T>::estimateReliability(T *x, int N,
+void rsInstantaneousFundamentalEstimator<T>::estimateReliability(const T *x, int N,
   const std::vector<T>& z, T *r)
 {
   int Nz = (int) z.size(); // number of zero crossings in z
@@ -1484,7 +1484,7 @@ void rsInstantaneousFundamentalEstimator<T>::estimateReliability(T *x, int N,
 }
 
 template<class T>
-void rsInstantaneousFundamentalEstimator<T>::measureInstantaneousFundamental(T *x, T *f,
+void rsInstantaneousFundamentalEstimator<T>::measureInstantaneousFundamental(const T *x, T *f,
   int N, T fs, T fMin, T fMax, T *r, int cycleMarkAlgo)
 {
   rsCycleMarkFinder<T> cmf(fs, fMin, fMax); // todo: maybe set it up - or maybe have it a member and allow client code to set it up
@@ -1539,7 +1539,7 @@ void rsInstantaneousFundamentalEstimator<T>::measureInstantaneousFundamental(T *
 }
 
 template<class T>
-T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(T *x, int N, int n,
+T rsInstantaneousFundamentalEstimator<T>::estimateFundamentalAt(const T *x, int N, int n,
   T fs, T fMin, T fMax)
 {
   T pMax = fs/fMin; // maximum detectable period
@@ -2683,4 +2683,28 @@ std::vector<T> rsExpDecayTail(int numFrames, const T* timeArray, const T* ampArr
   // todo: optimize: use the exponential-decay filter instead of calling exp/cos explicitly
 
   return x;
+}
+
+template<class T>
+std::vector<T> rsFlattenPitch(const T *x, int N, T fs, T ft)
+{
+  // Measure instantaneous frequency:
+  std::vector<T> f(N);
+  rsInstantaneousFundamentalEstimator<T>::
+    measureInstantaneousFundamental(x, &f[0], N, fs, T(20), T(5000));
+    // todo: make 20,5000 user adjustable
+
+  // Compute desired readout speed for each sample which is given by the ratio of the desired 
+  // instantaneous frequency and the actual instantaneous frequency of the input signal (re-use the
+  // f-array for this)
+  for(int n = 0; n < N; n++)
+    f[n] = ft / f[n];
+
+  // Compute required length for output, allocate memory and compute output:
+  int Ny = rsTimeWarper<T,T>::getPitchModulatedLength(&f[0], N);
+  std::vector<T> y(Ny);
+  rsTimeWarper<T,T>::applyPitchModulation(x, &f[0], N, &y[0], T(16), T(4), true); 
+  // todo: make 16,4 user adjustable
+
+  return y;
 }

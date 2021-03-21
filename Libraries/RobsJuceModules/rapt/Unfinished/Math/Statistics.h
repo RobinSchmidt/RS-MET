@@ -45,7 +45,7 @@ Nx, Ny are not equal, you can imagine that the effective length is taken to be t
 array and the shorter array is conceptually zero-padded to match the length of the longer
 (there's no literal zero-padding done, just the summation loop is shorter). */
 template<class T>
-T rsCrossCorrelation(T *x, int Nx, T *y, int Ny);
+T rsCrossCorrelation(const T *x, int Nx, const T *y, int Ny);
 // ?formula assumes zero mean for x and y? ...check this...maybe rename/generalize - look up 
 // definitions (correlation vs covariance)
 
@@ -58,6 +58,6 @@ stretched version of the same shape should have a "stretched" correlation value 
 due to linear interpolation). Computation of the linearly interpolated values is done on the fly
 without need for a temporary buffer for the stretched signal. */
 template<class T>
-T rsStretchedCrossCorrelation(T *x, int Nx, T *y, int Ny);
+T rsStretchedCrossCorrelation(const T *x, int Nx, const T *y, int Ny);
 
 #endif

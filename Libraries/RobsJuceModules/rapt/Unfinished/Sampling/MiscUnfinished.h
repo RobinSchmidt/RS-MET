@@ -266,27 +266,12 @@ class rsCycleMarkFinder
 
 public:
 
-  /** Enumeration of the cycle-mark finder algorithms. */
-  enum algorithms
-  {
-    F0_ZERO_CROSSINGS = 0,  // zero crossings of extracted fundamental
-    WINDOWED_CORRELATION,
-    CYCLE_CORRELATION,
-    ZERO_CROSSINGS,
-    CORRELATED_ZERO,        // hybrid - use correlation first, then zero-crossing
-
-    CYCLE_CORRELATION_OLD   // refines f0 zero-crossings by correlation (has sometimes problems,
-                            // should not be used anymore)
-  };
-  // old - to be replaced by enum class:
-
- 
 
   /** Constructor. You should pass a sample-rate and the minimum and maximum expected values
   for the fundamental frequency. */
   rsCycleMarkFinder(T sampleRate, T minFundamental = 20, T maxFundamental = 5000);
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets the sample-rate of the signal to be analyzed. */
@@ -301,102 +286,86 @@ public:
   /** Sets the expected range for the fundamental frequency. This sets some thresholds in the
   algorithm. Only relevant, if the fundamental is to be auto-detected, i.e. not set explicitly via
   setFundamental. ..verify, if this is true, or if the values are also used elsewhere.... */
-  inline void setFundamentalRange(T newMin, T newMax)
+  inline void setFundamentalRange(T newMin, T newMax) { fMin = newMin; fMax = newMax; }
+
+  /** Enumeration of the cycle-mark finder algorithms. */
+  enum algorithms
   {
-    fMin = newMin;
-    fMax = newMax;
-  }
+    F0_ZERO_CROSSINGS = 0,  // zero crossings of extracted fundamental
+    WINDOWED_CORRELATION,
+    CYCLE_CORRELATION,
+    ZERO_CROSSINGS,
+    CORRELATED_ZERO,        // hybrid - use correlation first, then zero-crossing
+
+    CYCLE_CORRELATION_OLD   // refines f0 zero-crossings by correlation (has sometimes problems,
+                            // should not be used anymore)
+  };
+  // old - to be replaced by enum class:
 
   /** Selects the algorithm by which this object will determine where one cycle ends and the next
   cycle starts. @see algorithms. */
-  inline void setAlgorithm(int newAlgorithm)
-  {
-    algo = newAlgorithm;
-  }
+  inline void setAlgorithm(int newAlgorithm) { algo = newAlgorithm; }
 
   /** Sets the precision by which we try to approximate the subsample location of the
   cycle-marks. Currently, this affects only the F0_ZERO_CROSSINGS algorithm in which case it
   determines the order of the polynomial that we fit to the samples around the zero-crossing and
   whose zero-crossing we use. 0: linear, 1: cubic, in general, the polynomial order is 2*k+1
   where k ist the value passed as "newPrecision". */
-  inline void setSubSampleApproximationPrecision(int newPrecision)
-  {
-    precision = newPrecision;
-  }
+  inline void setSubSampleApproximationPrecision(int newPrecision) { precision = newPrecision; }
 
   /** This sets the length of the correlation that should be used in the CYCLE_CORRELATION
   algorithm as fraction of the cycle length. The larger it is, the more of the neighbourhood of the
   (old, estimated) cycle-mark will be taken into account to find the new, refined cycle-mark. A
   value of 1 one means to take a neighbourhood corresponding to one cycle (a half-cycle to the left
   and another half-cycle to the right). */
-  inline void setRelativeCorrelationLength(T newLength)
-  {
-    correlationLength = newLength;
-  }
+  inline void setRelativeCorrelationLength(T newLength) { correlationLength = newLength; }
 
   /** In the CYCLE_CORRELATION algorithm, there's an optional highpass that is used on the signal
   before doing the correlations. Here you can set its frequency as fraction of the estimated
   fundamental frequency. A value of 0 turns the highpass off (which is the default setting). */
-  inline void setRelativeCorrelationHighpassFreq(T newFreq)
-  {
-    correlationHighpass = newFreq;
-  }
+  inline void setRelativeCorrelationHighpassFreq(T newFreq) { correlationHighpass = newFreq; }
 
   /** Sets the bandwidth of the bandpass that is used to extract the fundamental as fraction of
   the estimated fundamental frequency. So, if this value is 1 and the (estimated) fundamental is
   100Hz, a bandpass from 50 to 150 Hz will be used to extract the fundamental. If it's 0.1, the
   bandpass will go from from 95 to 105 Hz.  */
-  inline void setRelativeBandpassWidth(T newWidth)
-  {
-    bandPassWidth = newWidth;
-  }
+  inline void setRelativeBandpassWidth(T newWidth) { bandPassWidth = newWidth; }
 
   /** Sets the number of bidirectional passes of the fundamental extraction bandpass. The basic
   bandpass is a biquad with 6dB/oct at each side, bi-directionally applied that makes 12, so in
   the end, you'll get a 12*n dB/oct, where n is the value passed as "newSteepness". Note that the
   bandwidth will be scaled according to the steepness value to get comparable magnitude responses
   for various steepness settings. */
-  inline void setBandpassSteepness(int newSteepness)
-  {
-    bandpassSteepness = newSteepness;
-  }
+  inline void setBandpassSteepness(int newSteepness) { bandpassSteepness = newSteepness; }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
   /** Returns an array of cycle-marks for the given input signal of length N using the selected
   algorithm. */
-  std::vector<T> findCycleMarks(T* x, int N);
-
+  std::vector<T> findCycleMarks(const T* x, int N);
 
   // the various algorithms:
 
   /** Filters the signal with a bandpass tuned to (an estimate of) the fundamental frequency and
   then uses the zero-crossings of this bandpassed signal as cycle-marks. */
-  std::vector<T> findCycleMarksByFundamentalZeros(T* x, int N);
+  std::vector<T> findCycleMarksByFundamentalZeros(const T* x, int N);
 
   /** Uses one of several refinement methods that use an initial estimate for a mark and then look
   in the vicinity of that estimate for a better position to place the mark by criteria based on
   correlation, etc...
   ...explain better...
   */
-  std::vector<T> findCycleMarksByRefinement(T* x, int N);
+  std::vector<T> findCycleMarksByRefinement(const T* x, int N);
     // experimental
 
   /** DEPRECATED. Uses cycle marks from fundamental zeros refined by autocorrelation - but it
   doesn't work because the refined marks may overrun the initial estimates etc...to be deleted. */
-  std::vector<T> findCycleMarksByCorrelationOld(T* x, int N);
+  std::vector<T> findCycleMarksByCorrelationOld(const T* x, int N);
     // deprecated
 
-
-  /** \name Introspection */
-
-
   /** A datastructure to represent the errors of a cycle-mark analysis. */
-  struct ErrorMeasures
-  {
-    T min, max, mean, maxAbs;
-  };
+  struct ErrorMeasures { T min, max, mean, maxAbs; };
 
   /** Given an array of cycle marks (supposedly produced by an object of this class) and a true,
   known, target value for signal's period in samples (assumed to be static, non-time varying here),
@@ -413,12 +382,12 @@ protected:
 
   /** Returns either the fixed fundamental freq as set up in our member "fundamental" or - if that
   member is set to zero - tries to estimate a fundamental from the given signal. */
-  T getFundamental(T* x, int N);
+  T getFundamental(const T* x, int N);
 
   /** Refines a given vector of initial estimates of the cycle-marks given in cm by correlating
   successive (estimated) cycles and placing the new cycle border at the instant of maximum
   correlation. */
-  void refineCycleMarksByCorrelation(T *x, int N, std::vector<T>& cm, T f0);
+  void refineCycleMarksByCorrelation(const T *x, int N, std::vector<T>& cm, T f0);
     // deprecated
 
   /** \name Data */
@@ -440,7 +409,6 @@ protected:
   T correlationHighpass = 0.0;
 
 
-
   /** We assume that left and right are preliminary estimates for the starting times of two
   successive cycles in the signal x assumed to be of length N. This function computes
   cross-correlation between two chunks of x, centered at left and right respectively (the length
@@ -451,9 +419,9 @@ protected:
   right are indeed the correct cycle start-points, it should be zero. If it's nonzero, the returned
   value can be used to refine either the left mark by subtracting the returned value or to refine
   the right mark by adding the returned value..  */
-  T periodErrorByCorrelation(T* x, int N, int left, int right);
+  T periodErrorByCorrelation(const T* x, int N, int left, int right);
 
-  T periodErrorByCorrelation(T* x, int N, T left, T right);
+  T periodErrorByCorrelation(const T* x, int N, T left, T right);
     // should call the function with same name but integer left/right preliminary marks
     // maybe make public for testing
 
@@ -469,7 +437,7 @@ protected:
   x[n1+n] * x[n2+n] for n = 0,..,M-1, so M is the number of products that are summed up. The
   function will take care of array bounds and assume zero values there. */
   //T sumOfProducts(T* x, int N, int n1, int n2, int M);
-    // repalced by autoCorrelation
+    // replaced by autoCorrelation
 
   /** Given an array x of length N, this function computes the autocorrelation of two chunks of x
   starting at n1 and n2 respectively. The function will take care to not try to sum up values
@@ -628,7 +596,7 @@ public:
   Note: if you have a readout-speed for each output sample index n instead of a time-instant
   where to read the input signal, you can convert your values into time-instants using
   rsCumulativeSum. */
-  static void timeWarpSinc(TSig *x, int Nx, TSig *y, TPos *w, int Ny,
+  static void timeWarpSinc(const TSig *x, int Nx, TSig *y, TPos *w, int Ny,
     TPos minSincLength = 64.0, TPos maxLengthScaler = 1.0, bool antiAlias = true);
     // \todo provide a function to compute the nonzero length of the y-signal beforehand
 
@@ -646,7 +614,7 @@ public:
   /** Modulates the pitch the pitch of the signal x (of length N) using the array of
   instantaneous readout speeds r and stores the result in y. The length of y is can be determined
   beforehand using getPitchModulatedLength(). */
-  static void applyPitchModulation(TSig *x, TPos *r, int N, TSig *y,
+  static void applyPitchModulation(const TSig *x, TPos *r, int N, TSig *y,
     TPos minSincLength = 64.0, TPos maxLengthScaler = 1.0, bool antiAlias = true);
 
   /** Given an array of instantaneous (fundamental) frequencies of length N and a desired target
@@ -682,7 +650,7 @@ public:
 
   /** Sets up the input signal and the corresponding array of instantaneous read-speeds, both
   assumed to be of the given length.*/
-  void setInputAndSpeed(TSig *input, TPos *speeds, int length);
+  void setInputAndSpeed(const TSig *input, TPos *speeds, int length);
 
 
   /** \name Time Conversion */
@@ -744,7 +712,7 @@ protected:
   /** Clears the internal buffers */
   void clear();
 
-  TSig *x;           // input signal
+  const TSig *x;     // input signal
   TPos *w, *wi;      // warp-map and its inverse
   int Nx;            // length of x, wi
   int Ny;            // length of output signal y and warp map w
@@ -898,10 +866,10 @@ public:
   length but it allows for some vibrato and also some moderate pitch glide but not for multiple
   subsequent pitches as in a melody. The optional reliability parameter is also an array of
   length N which will be filled with a reliability measure for the measured frequency values at
-  each sample. The relaibility measure is between 0 and 1. If you don't need this reliability
+  each sample. The reliability measure is between 0 and 1. If you don't need this reliability
   measure, just pass a nullpointer. The cycleMarkAlgo parameter determines, how we find the cycle
   starts/ends and can be any of the values in enum cycleMarkAlgorithms. */
-  static void measureInstantaneousFundamental(T *x, T *f, int N, T fs,
+  static void measureInstantaneousFundamental(const T *x, T *f, int N, T fs,
     T fMin, T fMax, T *reliability = nullptr,
     int cycleMarkAlgo = rsCycleMarkFinder<T>::F0_ZERO_CROSSINGS);
 
@@ -909,7 +877,7 @@ public:
   the signal at sample instant n using an autocorrelation based approach. Here, this estimate is
   only used as a rough inital estimate to tune the filters used inside the actual high-precision
   measurement algorithm. */
-  static T estimateFundamentalAt(T *x, int N, int n, T fs, T fMin, T fMax);
+  static T estimateFundamentalAt(const T *x, int N, int n, T fs, T fMin, T fMax);
 
 protected:
 
@@ -918,7 +886,7 @@ protected:
   sample instant n (from 0...N-1) and stores it in the array r (of length N). The function is
   used internally inside measureInstantaneousFundamental(). The reliability measure is based on
   the cross-correlation of successive cycles in the signal x. */
-  static void estimateReliability(T *x, int N, const std::vector<T>& z, T *r);
+  static void estimateReliability(const T *x, int N, const std::vector<T>& z, T *r);
 
 };
 
@@ -1573,6 +1541,16 @@ std::vector<T> rsExpDecayTail(int N, const T* timeArray, const T* ampArray,
   int numSamples = -1);
 // maybe let the user select the length of the tail to be generated - it may be longer that the 
 // analysis data to be used as tail-extender
+
+/** Convenience function to remove the pitch modulation that may be present in the input signal x
+of length N.  */
+template<class T>
+std::vector<T> rsFlattenPitch(const T *x, int N, T sampleRate, T targetFrequency);
+// ToDo: 
+// -maybe have more parameters to allow the caller to tweak the settings of the fundamental 
+//  frequency estimator...or maybe put it all into a (convenience) class with setters.
+// -maybe make the target frequency parameter optional (0 by default which is used as code for 
+//  using the measured average frequency instead of the passed value)
 
 
 #endif

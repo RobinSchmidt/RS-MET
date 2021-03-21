@@ -545,6 +545,8 @@ template double RAPT::rsEnvelopeMatchOffset(const double* x, int Nx, const doubl
 template std::vector<double> RAPT::rsExpDecayTail(const RAPT::rsSinusoidalPartial<double>& partial,
   int spliceIndex, double sampleRate);
 
+template std::vector<double> RAPT::rsFlattenPitch(const double *x, int N, double fs, double ft);
+
 // move to rsFilterAnalyzer:
 template double RAPT::analogBiquadMagnitudeSquaredAt(double B0, double B1, double B2, double A0,
   double A1, double A2, double w);

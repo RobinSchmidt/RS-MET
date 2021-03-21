@@ -472,6 +472,8 @@ int removePitchModulation(double *x, int N, double *&y,  double targetFrequency)
   delete[] f;
   return Ny;
 }
+// todo: move this function to library -> done (rsFlattenPitch) -> now this here is obsolete 
+// -> delete soon
 
 void pitchDemodulation()
 {
@@ -533,9 +535,15 @@ void pitchDemodulation()
   int yN3 = removePitchModulation(x, xN, y3, fy);
   writeToMonoWaveFile("PitchDemodulationOutputMeasuredF0-2.wav", y3, yN3, (int) fs, 16);
   delete[] y3;
+  // maybe remove - is obsolete
+
+  // the same, but using the new convenience function rsFlattenPitch
+  //std::vector<double> y4 = rsFlattenPitch(x, xN, fs, fy);
+  //writeToMonoWaveFile("PitchDemodulationOutputMeasuredF0-3.wav",  
+  //  &y4[0], (int)y4.size(), (int) fs, 16);
 
 
-  plotData(xN, 0, 1/fs, f, fm); // plot actual and measured fundamental
+  //plotData(xN, 0, 1/fs, f, fm); // plot actual and measured fundamental
   //plotData(xN, 0, 1/fs, rl);    // plot reliability
 
   /*
