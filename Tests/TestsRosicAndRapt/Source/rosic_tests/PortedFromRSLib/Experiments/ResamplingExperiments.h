@@ -11,7 +11,7 @@ void sincResamplerModulation();
 void sincResamplerPassbandRipple();
 void sincResamplerSumOfTapWeights();
 void timeWarp();
-void pitchDemodulation();
+void pitchFlattening();
 
 void phaseLockedCrossfade();
 void phaseLockedCrossfade2();

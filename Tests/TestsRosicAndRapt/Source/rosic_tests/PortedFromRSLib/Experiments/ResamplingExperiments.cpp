@@ -433,49 +433,7 @@ void timeWarp()
   delete[] w;
 }
 
-/*
-std::vector<double> removePitchModulation(std::vector<double> input, double targetFrequency)
-{
-  double fs = 44100.0; // shoould be irrelevant
-  
-  input.
-
-  //rsInstantaneousFundamentalEstimator::measureInstantaneousFundamental(x, fm, xN, fs, 20.0, 
-  //  5000.0)
-}
-*/
-
-// The function takes a reference to a pointer for the output signal y and will allocate memory for
-// y and the return-value its number of samples in the y-array. The caller is responsible for 
-// deleting the y-array eventually:
-int removePitchModulation(double *x, int N, double *&y,  double targetFrequency)
-{
-  double fs = 44100.0;       // samplerate - irrelevant but required as argument
-  double *f = new double[N]; // instantaneous frequency
-
-  // Measure instantaneous frequency:
-  rsInstantaneousFundamentalEstimatorD::
-    measureInstantaneousFundamental(x, f, N, fs, 20.0, 5000.0);
-
-  // Compute desired readout speed for each sample which is given by the ratio of the desired 
-  // instantaneous frequency and the actual instantaneous frequency of the input signal (re-use the
-  // f-array for this)
-  for(int n = 0; n < N; n++)
-    f[n] = targetFrequency / f[n];
-
-  // Compute required length for output, allocate memory and compute output:
-  int Ny = rsTimeWarperDD::getPitchModulatedLength(f, N);
-  y = new double[Ny]; 
-  rsTimeWarperDD::applyPitchModulation(x, f, N, y, 16.0, 4.0, true); 
-
-  // Clean up and return the length of the output:
-  delete[] f;
-  return Ny;
-}
-// todo: move this function to library -> done (rsFlattenPitch) -> now this here is obsolete 
-// -> delete soon
-
-void pitchDemodulation()
+void pitchFlattening()
 {
   // As test input, we create a sinewave that sweeps linearly from some start frequency to some 
   // end frequency and also has some vibrato in it. This swept and vibrato'ed sine wave will then  
@@ -497,50 +455,33 @@ void pitchDemodulation()
   double *r  = new double[xN]; // readout-ratios
 
 
-
-  // create the array with instantaneous frequencies of input signal:
+  // Create the array with instantaneous frequencies of input signal:
   RAPT::rsArrayTools::fillWithRangeLinear(f, xN, f1, f2);
   int n;
   for(n = 0; n < xN; n++)
     f[n] += 0.5 * vd * sin((2*PI*vf/fs)*n);
 
-  // create input signal:
+  // Create input signal:
   createSineWave(x, xN, f, a, fs);
-  writeToMonoWaveFile("PitchDemodulationInput.wav",  x, xN, (int) fs, 16);
+  writeToMonoWaveFile("PitchFlatteningInput.wav",  x, xN, (int) fs, 16);
 
-  // compute desired readout speed for each sample which is given by the ratio of the desired 
+  // Compute desired readout speed for each sample which is given by the ratio of the desired 
   // instantaneous frequency and the actual instantaneous frequency of the input signal:
   for(n = 0; n < xN; n++)
     r[n] = fy / f[n];
 
-  // compute the output signal:
+  // Compute the output signal:
   int yN = rsTimeWarperDD::getPitchModulatedLength(r, xN);
   double *y = new double[yN]; 
   rsTimeWarperDD::applyPitchModulation(x, r, xN, y, 16.0, 4.0, true);  
-  writeToMonoWaveFile("PitchDemodulationOutputKnownF0.wav",  y, yN, (int) fs, 16);
+  writeToMonoWaveFile("PitchFlatteningOutputKnownF0.wav",  y, yN, (int) fs, 16);
 
-
-  // measure the instantaneous frequency and do the same thing with measured values:
-  rsInstantaneousFundamentalEstimatorD::measureInstantaneousFundamental(x, fm, xN, fs, 20.0, 
-    5000.0, rl);
-  for(n = 0; n < xN; n++)
-    r[n] = fy / fm[n];  
-  int yN2 = rsTimeWarperDD::getPitchModulatedLength(r, xN);
-  double *y2 = new double[yN2]; 
-  rsTimeWarperDD::applyPitchModulation(x, r, xN, y2, 16.0, 4.0, true);  
-  writeToMonoWaveFile("PitchDemodulationOutputMeasuredF0.wav",  y2, yN2, (int) fs, 16);
-
-  // now, the same, but using the convenience function removePitchModulation
-  double *y3 = nullptr;
-  int yN3 = removePitchModulation(x, xN, y3, fy);
-  writeToMonoWaveFile("PitchDemodulationOutputMeasuredF0-2.wav", y3, yN3, (int) fs, 16);
-  delete[] y3;
-  // maybe remove - is obsolete
-
-  // the same, but using the new convenience function rsFlattenPitch
-  //std::vector<double> y4 = rsFlattenPitch(x, xN, fs, fy);
-  //writeToMonoWaveFile("PitchDemodulationOutputMeasuredF0-3.wav",  
-  //  &y4[0], (int)y4.size(), (int) fs, 16);
+  // Compute output using the new convenience function rsFlattenPitch, which doesn't need the array 
+  // with the true instantaneous frequencies (i.e. the f array) but instead measures the 
+  // instantaneous frequency internally:
+  std::vector<double> y4 = rsFlattenPitch(x, xN, fs, fy);
+  writeToMonoWaveFile("PitchFlatteningOutputMeasuredF0.wav",  
+    &y4[0], (int)y4.size(), (int) fs, 16);
 
 
   //plotData(xN, 0, 1/fs, f, fm); // plot actual and measured fundamental
@@ -561,9 +502,9 @@ void pitchDemodulation()
 
   delete[] f;
   delete[] fm;
+  delete[] rl;
   delete[] x;
   delete[] y;
-  delete[] y2;
   delete[] r;
 }
 
