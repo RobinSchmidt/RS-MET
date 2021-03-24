@@ -98,7 +98,8 @@ inline T rsNextEvenNumber(T x);
 
 // rsNextOddNumber
 
-/** Returns a power of two which is greater than or equal to the input argument. */
+/** Returns a power of two which is greater than or equal to the input argument x where x is 
+assumed to be >= 1. */
 template <class T>
 inline T rsNextPowerOfTwo(T x);
 
@@ -286,6 +287,14 @@ inline T rsMedian(T x1, T x2, T x3)
 // amount to doing a 3-value bubble-sort and returning the middle - we would trade 9 
 // comparisons for 2 comparisons and 2 swaps - maybe benchmark, which is better
 
+template <class T>
+inline T rsNextPowerOfTwo(T x)
+{
+  T accu = 1;
+  while(accu < x)
+    accu *= 2;
+  return accu;
+}
 
 // general fallback version:
 template<class T>

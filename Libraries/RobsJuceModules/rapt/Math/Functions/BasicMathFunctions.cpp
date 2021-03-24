@@ -210,6 +210,7 @@ inline T rsNextEvenNumber(T x)
   return x+1;
 }
 
+/*
 template <class T>
 inline T rsNextPowerOfTwo(T x)
 {
@@ -218,6 +219,7 @@ inline T rsNextPowerOfTwo(T x)
     accu *= 2;
   return accu;
 }
+*/
 
 template <class T>
 T rsPow(const T& base, int exponent)
