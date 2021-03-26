@@ -32,6 +32,24 @@ bool rsLinearAlgebraNew::solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixV
   return true;                                   // matrix A was regular -> report success
 }
 
+template<class T>
+T rsLinearAlgebraNew::determinant(const rsMatrixView<T>& A)
+{
+  int N = A.getNumRows();
+  rsAssert(A.getNumColumns() == N, "Matrix A must be square");
+  rsMatrix<T> A2(N, N, A.getDataPointerConst()), B(N, 1);
+  int numSwaps;
+  int rank = makeTriangular(A2, B, &numSwaps);
+  if(rank < N)
+    return T(0);
+  T det = A2.getDiagonalProduct();
+  if(rsIsOdd(numSwaps))
+    return -det;
+  else
+    return det;
+}
+
+
 // subspaces:
 
 /*
@@ -85,7 +103,15 @@ inline bool operator>(const std::complex<T>& L, const std::complex<T>& R)
 template<class T>
 int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
 {
+  int numSwaps;  // dummy
+  return makeTriangular(A, B, &numSwaps);
+}
+
+template<class T>
+int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, int* numSwaps)
+{
   rsAssert(A.getNumRows() == B.getNumRows());
+  *numSwaps = 0;
   T tooSmall = T(1000) * RS_EPS(T) * A.getAbsoluteMaximum();    // ad hoc -> todo: research
   int i, numRows = A.getNumRows();
   for(i = 0; i < rsMin(numRows, A.getNumColumns()); i++) {
@@ -100,7 +126,8 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B)
       return i;
     if(p != i) {                                                // turn pivot row into current row
       A.swapRows(i, p); 
-      B.swapRows(i, p); } 
+      B.swapRows(i, p);
+      (*numSwaps)++;     }                                      // keep track of number of swaps
     for(int j = i+1; j < numRows; j++) {                        // pivot row subtraction
       T w = -A(j, i) / A(i, i);                                 // weight
       A.addWeightedRowToOther(i, j, w, i, A.getNumColumns()-1); // start at i: avoid adding zeros

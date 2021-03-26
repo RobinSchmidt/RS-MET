@@ -36,6 +36,11 @@ public:
   static rsMatrix<T> inverse(const RAPT::rsMatrixView<T>& A);
   // allocates, todo: pseudoInverse
 
+  /** Computes the determinant of A by Gaussian elemination. */
+  template<class T>
+  static T determinant(const rsMatrixView<T>& A);
+  // allocates
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Solvers */
@@ -90,9 +95,20 @@ public:
   The process used is Gaussian elimination with partial pivoting. */
   template<class T>
   static int makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B);
+  // todo: document return value: it returns the ietration number, i.e. the number of row 
+  // reductions that have been performed. for a NxN matrix, if this number is < N it means, the 
+  // function encountered a zero pivot and returns early and indicates that A is singular, i think
+  // the returned value is the rank of the matrix
   // doesn't allocate, maybe rename to rowElimination or rowEchelonForm, or rowEchelonRegular
   // return value is the number of iterations taken until no pivot could be found - is this the 
   // rank? i think so -> figure out, if yes, add the info to the documentation
+
+  /** Like makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B) but with additional the output 
+  parameter numSwaps that returns the number of row-swaps that occurred due to the pivoting. This
+  information is required, when the function is used as subroutine in a function for computing
+  determinants via Gaussian elimination. */
+  template<class T>
+  static int makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, int* numSwaps);
 
   /** Simplified version that doesn't use pivoting - this may fail even for non-singular 
   matrices, so it's not recommended for general use, but if you know that the elimination will 
