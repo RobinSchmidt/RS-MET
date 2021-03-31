@@ -1,6 +1,9 @@
 
 using namespace RAPT;  // get rid
 
+//=================================================================================================
+// LAPACK based solvers:
+
 bool testBandDiagonalSolver()
 {
   //std::string testName = "BandDiagonalSolver";
@@ -65,11 +68,14 @@ bool testBandDiagonalSolver()
   return testResult;
 }
 
+//=================================================================================================
+// Old 2D array based solvers:
+
 bool testMatrix2x2()
 {
   std::string testName = "Matrix2x2";
   bool testResult = true;
-  typedef rsLinearAlgebra LA;
+  typedef rsLinearAlgebra LA;  // todo: move the code to rsLinearAlgebraNew
 
 
   // Test compuatation of eigenvalues and eigenvectors:
@@ -461,6 +467,9 @@ bool testNullSpace()
   return r;
 }
 
+//=================================================================================================
+// New flat array based solvers:
+
 // tests the new implementation
 bool testLinearSystemViaGauss2()
 {
@@ -532,14 +541,10 @@ bool testLinearAlgebra()
   std::string reportString = "LinearAlgebra"; // dummy-string - delete later
   bool ok = true;
 
-  // Old solvers:
-
-
   // LAPACK based solvers:
-
-
-  // Direct solvers:
   //ok &= testBandDiagonalSolver();  // fails with gcc
+
+  // Old (2D array based) solvers:
   ok &= testMatrix2x2();
   ok &= testLinearSystem2x2();
   ok &= testLinearSystem3x3();
@@ -547,6 +552,8 @@ bool testLinearAlgebra()
   ok &= testGaussJordanInversion();
   ok &= testTridiagonalSystem();
   ok &= testChangeOfBasis();
+
+  // New (flat array based) direct solvers:
   ok &= testNullSpace();
   ok &= testLinearSystemViaGauss2();
 
