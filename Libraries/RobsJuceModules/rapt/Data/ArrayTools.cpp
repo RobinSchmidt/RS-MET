@@ -1331,6 +1331,15 @@ T rsArrayTools::sumOfSquares(const T *x, int N)
 }
 
 template<class T>
+T rsArrayTools::sumOfAbsoluteValues(const T* x, const int N)
+{
+  T s(0);
+  for(int n = 0; n < N; n++)
+    s += rsAbs(x[n]);
+  return s;
+}
+
+template<class T>
 T rsArrayTools::sumOfAbsoluteDifferences(const T* x, const T* y, const int N)
 {
   T s(0);

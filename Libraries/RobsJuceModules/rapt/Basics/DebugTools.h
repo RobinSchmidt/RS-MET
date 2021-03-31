@@ -21,7 +21,8 @@ inline void rsError(const char *message = nullptr)
   // fixes "unreferenced formal parameter" warning - we don't do anything with the message, but 
   // we may want to see it in the debugger 
 
-  rsPrintLine("Error " + std::string(message));
+  if(message) rsPrintLine("Error " + std::string(message));
+  else        rsPrintLine("Error");
 
   //std::cout << "Error: " << message << "\n";
 
@@ -33,7 +34,8 @@ inline void rsError(const char *message = nullptr)
 
 inline void rsWarning(const char* message = nullptr)
 {
-  rsPrintLine("Warning " + std::string(message));
+  if(message) rsPrintLine("Warning " + std::string(message));
+  else        rsPrintLine("Warning");
 
   //std::cout << "Warning: " << message << "\n";
 }

@@ -789,7 +789,11 @@ public:
   template<class T>
   static T sumOfSquares(const T *x, int N);
 
-  /** Computes the sum of the absoulte values of the differences of arrays x and y */
+  /** Computes the sum of the absoulte values of array x. */
+  template<class T>
+  static T sumOfAbsoluteValues(const T *x, const int N);
+
+  /** Computes the sum of the absolute values of the differences of arrays x and y. */
   template<class T>
   static T sumOfAbsoluteDifferences(const T *x, const T *y, const int N);
 
