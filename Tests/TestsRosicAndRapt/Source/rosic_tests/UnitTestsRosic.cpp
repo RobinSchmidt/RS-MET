@@ -25,18 +25,18 @@
 
 bool runUnitTestsRosic()
 {
-  bool passed = true;  // test result
+  bool ok = true;  // test result
 
   std::cout << "Running unit tests for rosic\n";
 
-  passed &= runUnitTest(&testTypeSizes,          "TypeSizes");
-  passed &= runUnitTest(&testNumberManipulations,"NumberManipulations");
+  ok &= runUnitTest(&testTypeSizes,          "TypeSizes");
+  ok &= runUnitTest(&testNumberManipulations,"NumberManipulations");
 
-  passed &= runUnitTest(&testFilterPolynomials,  "FilterPolynomials");
-  passed &= runUnitTest(&testHighOrderFilter,    "HighOrderFilter");
-  passed &= runUnitTest(&testModalFilter2,        "ModalFilter2");
-  passed &= runUnitTest(&testModalSynth,          "ModalSynth");  // doesn't do anything useful
-  passed &= runUnitTest(&testAutoCorrelationPitchDetector, "AutoCorrPitchDetect");
+  ok &= runUnitTest(&testFilterPolynomials,  "FilterPolynomials");
+  ok &= runUnitTest(&testHighOrderFilter,    "HighOrderFilter");
+  ok &= runUnitTest(&testModalFilter2,        "ModalFilter2");
+  ok &= runUnitTest(&testModalSynth,          "ModalSynth");  // doesn't do anything useful
+  ok &= runUnitTest(&testAutoCorrelationPitchDetector, "AutoCorrPitchDetect");
 
 
   // these need to be adapted
@@ -53,7 +53,8 @@ bool runUnitTestsRosic()
   //testRosicOthers();
   // hmm...maybe some of those are actually not unit tests but experiments - disentangle that...
 
-
+  if(ok) std::cout << "rosic: OK\n";
+  else   std::cout << "rosic: !!!!----> F A I L E D <----!!!!\n";
   std::cout << "\n";
-  return passed;
+  return ok;
 }

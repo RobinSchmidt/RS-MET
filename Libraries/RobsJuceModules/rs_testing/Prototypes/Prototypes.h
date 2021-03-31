@@ -1787,12 +1787,20 @@ class rsIterativeLinearAlgebra
 
 public:
 
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Low Level Interface
+
   template<class T, class TMat>
   static int largestEigenValueAndVector(const TMat& A, T* val, T* vec, T tol, T* workspace);
   // maybe rename to vonMisesIteration or eigenViaVonMises/eigenViaPowerIteration
 
   template<class T, class TMat>
   static int eigenspace(const TMat& A, T* vals, T* vecs, T tol, T* workspace);
+  // rename to eigenViaPower
   // each eigenvector is found in turn from the largest to the smallest via a variation of the von 
   // Mises iteration in which the projection of the iterates onto the already found eigenspace is
   // subtracted from the iterates
@@ -1800,12 +1808,18 @@ public:
   // that took the most iterations...hmm - or maybe it should return the sum of all iterations
   // -maybe it should take an additional parameter to specify, how many eigenpairs should be found
   //  and also a maximum number of iterations
+  // mayb rename to eigensystem
+  // https://reference.wolfram.com/language/ref/Eigensystem.html
 
+
+protected:
 
   // Specializations of some low-level functions for sparse matrices (boilerplate):
   template<class T> static void product(const rsSparseMatrix<T>& A, const T* x, T* y) { A.product(x, y); }
   template<class T> static int numRows(const rsSparseMatrix<T>& A) { return A.getNumRows(); }
   template<class T> static int numColumns(const rsSparseMatrix<T>& A) { return A.getNumColumns(); }
+
+  // ToDo: specializations for rsMatrix
 
   // todo: implement:
   // https://en.wikipedia.org/wiki/Conjugate_gradient_method
@@ -1880,7 +1894,6 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
   for(int n = 0; n < N; n++) {        // loop over the eigenvectors
     T* val = &vals[n];                // location of n-th eigenvalue
     T* vec = &vecs[n*N];              // start location of n-th eigenvector
-    //T L = AT::euclideanNorm(vec, N);
     T L = norm(vec, N);
     AT::scale(vec, N, T(1) / L);
     while(true) {
@@ -1889,7 +1902,6 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
         T pi = T(0);
         for(int j = 0; j < N; j++) pi += wrk[j] * vecs[i*N + j];   // compute projection coeff
         for(int j = 0; j < N; j++) wrk[j] -= pi * vecs[i*N + j]; } // subtract projection
-      //L = AT::euclideanNorm(wrk, N);
       L = norm(wrk, N);
       AT::scale(wrk, N, T(1) / L);
       T dMax = AT::maxDeviation(vec, wrk, N);

@@ -1,17 +1,23 @@
 #include "TestUtilities.h"
 
+void reportUnitTestSuccess(const std::string& name = std::string())
+{ 
+  std::cout << name << "OK\n"; 
+}
+
+void reportUnitTestFailure(const std::string& name = std::string())
+{ 
+  std::cout << name << "!!!!----> F A I L E D <----!!!!\n"; 
+}
 
 bool runUnitTest(bool (*test)(), const std::string& name)
 {
-  //cout << "Testing: " + name + ": ";
   std::cout << name + ": ";
-  bool passed = test();
-  //rsAssert(passed); // break, if test fails
-  if(passed)
-    std::cout << "Passed\n";
-  else
-    std::cout << "!!!!----> F A I L E D <----!!!!\n";
-  return passed;
+  bool ok = test();
+  //rsAssert(ok); // break, if test fails
+  if(ok) reportUnitTestSuccess();
+  else   reportUnitTestFailure();
+  return ok;
 }
 
 /*

@@ -828,34 +828,45 @@ bool testLinearSystemViaGauss2()
   // test behavior of makeTriangular in case of singular matrices
 
 
-
-
   // figure out, when it can be used in place, i.e. X == B
 
   return r;
 }
 
+bool testPowerIteration()
+{
+  bool ok = true;
+
+  // ...
+
+  return ok;
+}
 
 
-//bool testLinearAlgebra(std::string &reportString)
 bool testLinearAlgebra()
 {
   std::string reportString = "LinearAlgebra"; // dummy-string - delete later
-  bool testResult = true;
+  bool ok = true;
 
-  //testResult &= testBandDiagonalSolver();  // fails with gcc
-  testResult &= testMatrix2x2();
-  testResult &= testLinearSystem2x2();
-  testResult &= testLinearSystem3x3();
-  testResult &= testLinearSystemViaGauss();
-  testResult &= testGaussJordanInversion();
-  testResult &= testTridiagonalSystem();
-  testResult &= testSquareMatrixTranspose();
-  testResult &= testMatrixVectorMultiply();
-  testResult &= testMatrixMultiply();
-  testResult &= testChangeOfBasis();
-  testResult &= testNullSpace();
-  testResult &= testLinearSystemViaGauss2();
+  // Basics:
+  ok &= testSquareMatrixTranspose();
+  ok &= testMatrixVectorMultiply();
+  ok &= testMatrixMultiply();
 
-  return testResult;
+  // Direct solvers:
+  //ok &= testBandDiagonalSolver();  // fails with gcc
+  ok &= testMatrix2x2();
+  ok &= testLinearSystem2x2();
+  ok &= testLinearSystem3x3();
+  ok &= testLinearSystemViaGauss();
+  ok &= testGaussJordanInversion();
+  ok &= testTridiagonalSystem();
+  ok &= testChangeOfBasis();
+  ok &= testNullSpace();
+  ok &= testLinearSystemViaGauss2();
+
+  // Iterative solvers:
+
+
+  return ok;
 }

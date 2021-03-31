@@ -771,6 +771,7 @@ bool testSparseMatrix()
   return res;
 }
 
+// move to LinearAlgebraUnitTests:
 bool testSparseMatrixSolvers()
 {
   bool res = true;

@@ -59,10 +59,10 @@ int main(int argc, char* argv[])
 
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
-  bool passed = true;
-  //passed &= runUnitTestsRapt();
-  //passed &= runUnitTestsRosic();  // some tests there are still commented out
-  //passed = passed;  // dummy
+  bool ok = true;
+  ok &= runUnitTestsRapt();
+  ok &= runUnitTestsRosic();  // some tests there are still commented out
+  //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
   //testSubSpaces();        // todo: move to unit tests
   //testSigularValueDecomp();   // dito
   //linearIndependence();
-  //eigenstuff();
+  eigenstuff();
   //linearSolverPrecision();
 
   //ellipseLineIntersections();
@@ -489,7 +489,7 @@ int main(int argc, char* argv[])
   ////sylophoneCycleMarks();
   ////autoTuneSylophone();
   ////bestMatchShift();
-  // move them into the test repo and add the relevant sample files there (if i still cna find
+  // move them into the test repo and add the relevant sample files there (if i still can find
   // them, that is)
 
   // Saturation:
