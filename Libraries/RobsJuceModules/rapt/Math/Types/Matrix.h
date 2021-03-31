@@ -321,7 +321,7 @@ public:
     return rsArrayTools::isAllZeros(dataPointer, getSize(), tol);
   }
 
-  bool isRowZero(int rowIndex, T tol) const
+  bool isRowZero(int rowIndex, T tol = T(0)) const
   {
     for(int j = 0; j < getNumColumns(); ++j)
       //if( rsAbs(at(rowIndex, j)) > tol )
@@ -331,7 +331,7 @@ public:
   }
 
   //template<class T>
-  bool areRowsZero(int startRow, int endRow, T tol) const
+  bool areRowsZero(int startRow, int endRow, T tol = T(0)) const
   {
     for(int i = startRow; i <= endRow; ++i)
       if(!isRowZero(i, tol))
@@ -339,7 +339,7 @@ public:
     return true;
   }
 
-  bool isColumnZero(int columnIndex, T tol) const
+  bool isColumnZero(int columnIndex, T tol = T(0)) const
   {
     for(int i = 0; i < getNumRows(); ++i)
       if( rsAbs(at(i, columnIndex)) > tol )
@@ -350,7 +350,7 @@ public:
 
   /** Returns true, iff one of the columns of the matrix consists of all zeros. */
   //template<class T>
-  bool containsZeroColumn(T tol) const
+  bool containsZeroColumn(T tol = T(0)) const
   {
     for(int j = 0; j < numCols; j++)
       if( isColumnZero(j, tol) )
