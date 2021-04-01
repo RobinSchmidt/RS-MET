@@ -41,4 +41,10 @@ The CodeBlocksWindows build has been set to a 32 bit build because i was getting
 This is meant only for fixing gcc build errors on windows without the  need to switch to linux or
 osx.
 
+To view an array (say named A) in the Visual Sudio debugger:
+-right-click on A in the code -> select Add watch
+-double-click on A in watch window and edit it to A,10 to watch 10 elements
+-now it can be expanded just like std::vector
+-one can also typecast a void-pointer by prepending e.g. (*double)
+-one can also view another chunk of the array by adding an offset like: A+100,10
 

@@ -685,6 +685,31 @@ bool checkEigensystem(
   return true;
 }
 
+template<class T>
+void normalizeChunks(std::vector<T>& v, int chunkSize)
+{
+  using AT = rsArrayTools;
+  int N = (int) v.size();
+  rsAssert(N % chunkSize == 0);  // v must contain integer number of chunks
+  int numChunks = N / chunkSize;
+  for(int i = 0; i < numChunks; i++) {
+    int j = i*chunkSize;
+    T norm = sqrt(AT::sumOfSquares(&v[j], chunkSize));
+    AT::scale(&v[j], chunkSize, T(1)/norm);  }
+}
+
+/** Extracts a chunk starting at "start" given "size" from vector v. */
+template<class T>
+std::vector<T> rsChunk(std::vector<T>& v, int start, int size)
+{
+  rsAssert(start >= 0 && start+size <= (int) v.size());
+  std::vector<T> c(size);
+  for(int i = 0; i < size; i++)
+    c[i] = v[start+i];
+  return c;
+}
+// move to library
+
 
 // todo: 
 // -move the iterative solvers that are currently in rsSparseMatrix (solveGaussSeidel, solveSOR, 
@@ -703,7 +728,7 @@ bool testPowerIterationDense()
   using AT   = rsArrayTools;
 
   // Create 3x3 matrix with eigenvalues -1,2,3 and eigenvectors (1,-2,2),(2,-5,3),(3,6,3):
-  static const int N = 3;                // dimensionality
+  int N = 3;                             // dimensionality
   Vec vals({  -1,       2,      3  });   // eigenvalues
   Vec vecs({1,-2,2,  2,-5,3,  3,6,3});   // eigenvectors
   Mat A = fromEigenSystem(vals, vecs);   // A = matrix with desired eigensystem
@@ -712,20 +737,54 @@ bool testPowerIterationDense()
   int its;
   Real tol = 1.e-13;
   Real val;
-  Real vec[N], wrk[N];
-  its = ILA::largestEigenValueAndVector(A, &val, vec, tol, wrk);
+  Vec vec(N), wrk(N);
+  vec = rsRandomVector(N, 0, 1);
+  its = ILA::largestEigenValueAndVector(A, &val, &vec[0], tol, &wrk[0]);
   // yep, works: val == 3 and vec == (3,6,3)/sqrt(54) todo: add automatic check
 
   // Recover all eigenvalues and vectors:
+  normalizeChunks(vecs, N);  // for easier comparison
   Vec vals2(N), vecs2(N*N);
   AT::fillWithRandomValues(&vecs2[0], N*N, -1.0, +1.0, 0);  // initial guess
-  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, wrk);
-
+  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, &wrk[0]);
+  Vec vec2 = rsChunk(vecs2, N, N);
+  Vec tmp1 = A*vec2;         // matrix times vector
+  Vec tmp2 = vals2[1]*vec2;  // scalar times vector
+  normalizeChunks(vecs2, N);  // should not change anything, vecs 2 is already normalized
   tol = 1.e-7;
-  ok &= checkEigensystem(vals2, vecs2, vals, vecs, tol);
+  //ok &= checkEigensystem(vals2, vecs2, vals, vecs, tol);
   // the 1st eigenvector matches but the other 2 do not - but all eigenvalues are correct, so the
   // iteration actuall must have converged to the right eigenvalue. but maybe we have some issue
   // with some projections being subtracted or not before leaving the function?
+  // yep: we copy wrk int vec before leaving and wrk has the projections removed ..but that's
+  // actually right, isnt it?
+
+  // try it with a simpler problem: 2D, eigenvectors (1,1),(1,-1)
+  N = 2;
+  vals = Vec({ -1,     3});   // eigenvalues
+  vecs = Vec({1,1,  1,-1});   // eigenvectors
+  A = fromEigenSystem(vals, vecs);
+  vals2.resize(N);
+  vecs2.resize(N*N);
+  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, &wrk[0]);
+  ok &= checkEigensystem(vals2, vecs2, vals, vecs, tol);
+  // 2D works with (1,(1,1)),(3,(1,-1)) but not with (1,(1,2)),(3,(1,-1))
+  // I think, it works only when the eigenvectors are orthogonal. If they are not we probably can't
+  // just project by inner products. it may nevertheless work with the eigenvalues because we 
+  // subtract some portion in the directions of the already foun eigenvectors - but not everything?
+
+  vecs = Vec({6,8, -8,6});  // is also orthogonal, both have norm 100
+  A = fromEigenSystem(vals, vecs);
+  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, &wrk[0]);
+  ok &= checkEigensystem(vals2, vecs2, vals, vecs, tol);
+
+  vecs = Vec({6,8, 8,6});  // not orthogonal, both have norm 100
+  A = fromEigenSystem(vals, vecs);
+  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, &wrk[0]);
+  ok &= checkEigensystem(vals2, vecs2, vals, vecs, tol);
+  // maybe we can rapair it by adding the subtracted projections back after convergence? or maybe
+  // twice them?
+
 
   // hangs because one of eigenvalues is negative which flips the sign of the iterates in each
   // iteration and the convergence test can't deal with that. i think, we must drag the 
@@ -744,9 +803,16 @@ bool testPowerIterationDense()
   // -> done
   // -i think, the same applies to largestEigenValueAndVector
 
+  // todo: 
+  // -figure out what happens when we have eigenvalues with multiplicities (algebraic and/or
+  //  geometric)
 
   return ok;
 }
+
+
+
+
 
 
 bool testLinearAlgebra()

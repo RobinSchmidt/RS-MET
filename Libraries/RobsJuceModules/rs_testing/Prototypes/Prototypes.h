@@ -1916,21 +1916,23 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
   for(int n = 0; n < N; n++) {         // loop over the eigenvectors
     T* val = &vals[n];                 // location of n-th eigenvalue
     T* vec = &vecs[n*N];               // start location of n-th eigenvector
-    T L = norm(vec, N);
-    AT::scale(vec, N, T(1) / L);       // what if L == 0?
     while(true) {
+      numIts++; 
       product(A, vec, wrk);
       for(int i = 0; i < n; i++) {
         T pi = T(0);
-        for(int j = 0; j < N; j++) pi += wrk[j] * vecs[i*N + j];   // compute projection coeff
-        for(int j = 0; j < N; j++) wrk[j] -= pi * vecs[i*N + j]; } // subtract projection
-      bool converged = isScalarMultiple(vec, wrk, N, tol, val);
-      L = norm(wrk, N);
-      AT::scale(wrk, N, T(1) / L);     // what if L == 0?
+        for(int j = 0; j < N; j++) 
+          pi += wrk[j] * vecs[i*N + j];   // compute projection coeff
+        for(int j = 0; j < N; j++) 
+          wrk[j] -= pi * vecs[i*N + j]; } // subtract projection
+      bool done = isScalarMultiple(vec, wrk, N, tol, val);
+      T L = norm(wrk, N);
+      AT::scale(wrk, N, T(1) / L);        // what if L == 0?
       AT::copy(wrk, vec, N);
-      if(converged)
+      if(done)
         break;
-      numIts++; }}
+    }
+  }
   return numIts;
 
   // todo: drag the T L = norm(vec, N); AT::scale(vec, N, T(1) / L); into the iteration before
