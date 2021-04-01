@@ -746,7 +746,6 @@ public:
       for(int j = 0; j < getNumColumns(); j++)
         y[i] += at(i, j) * x[j]; }
   }
-  // maybe rename to product (also in rsSparseMatrix)
 
   /** Convenience function to compute matrix-vector product y = A*x, taking a raw array for x as
   input and producing the result as a std::vector. */

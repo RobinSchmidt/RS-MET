@@ -1780,7 +1780,8 @@ computing matrix-vector or matrix-matrix products. These low-level special purpo
 (one for each special matrix class) will then be used inside the actual computational algorithms 
 which themselves will be the same for all the different matrix classes. If you want to use the 
 algorithms for some new special matrix class, you will need to add just a small amount of 
-boilerplate code for these operations - either here in the class or as global functions. */
+boilerplate code for these operations - either as static member functions here in the class (if 
+you are me) or as free functions (if you are a client and don't want to hack my library). */
 
 class rsIterativeLinearAlgebra
 {
@@ -1797,10 +1798,11 @@ public:
   template<class T, class TMat>
   static int largestEigenValueAndVector(const TMat& A, T* val, T* vec, T tol, T* workspace);
   // maybe rename to vonMisesIteration or eigenViaVonMises/eigenViaPowerIteration
+  // largestEigenpair
 
   template<class T, class TMat>
   static int eigenspace(const TMat& A, T* vals, T* vecs, T tol, T* workspace);
-  // rename to eigenViaPower
+  // rename to eigenViaPower or eigensystemViaEPI (extended power iteration)
   // each eigenvector is found in turn from the largest to the smallest via a variation of the von 
   // Mises iteration in which the projection of the iterates onto the already found eigenspace is
   // subtracted from the iterates
@@ -1810,21 +1812,42 @@ public:
   //  and also a maximum number of iterations
   // mayb rename to eigensystem
   // https://reference.wolfram.com/language/ref/Eigensystem.html
+  // sizes: A: NxN, vals: N, vecs: N*N, workspace: N
 
+  /** Returns true, iff the vector y is a scalar multiple of the vector x (up to some tolerance). 
+  Both vectors must be of length N. If the "factor" parameter is not a nulltpr, it will get the
+  scale factor assigned if y is indeed a multiple of x or 0, if not. I deliberately chose 0 and not
+  nan for this case for two reasons: (1) the function should be able to work with number types T 
+  that have no concept of nan (fractions, modular integers, etc. (2) the function is mainly 
+  intended for dealing with eigenvectors and they are defined to be nonzero, so y cannot be 0*x and
+  still count as eigenvector, so the zero is actually "free" and can be used to encode that 
+  condition. */
+  template<class T>
+  bool isScalarMultiple(const T* x, const T* y, int N, T tol = T(0), T* factor = nullptr);
+  // todo: (decide and) document if tolerance is absolute or relative, maybe rename to tolR, if
+  // relative
+  // maybe rename to rsIsMultiple move into rsArrayTools (and maybe have an alias isScalarMultiple
+  // here)
 
-protected:
-
-  // Specializations of some low-level functions for sparse matrices (boilerplate):
-  template<class T> static void product(const rsSparseMatrix<T>& A, const T* x, T* y) { A.product(x, y); }
-  template<class T> static int numRows(const rsSparseMatrix<T>& A) { return A.getNumRows(); }
-  template<class T> static int numColumns(const rsSparseMatrix<T>& A) { return A.getNumColumns(); }
-
-  // ToDo: specializations for rsMatrix
 
   // todo: implement:
   // https://en.wikipedia.org/wiki/Conjugate_gradient_method
   // https://en.wikipedia.org/wiki/Biconjugate_gradient_method
   // https://en.wikipedia.org/wiki/Biconjugate_gradient_stabilized_method
+
+protected:
+
+  // Specializations of some low-level functions (this is boilerplate):
+
+  // Specializations for rsMatrix:
+  template<class T> static void product(const rsMatrix<T>& A, const T* x, T* y) { A.product(x, y); }
+  template<class T> static int numRows(const rsMatrix<T>& A) { return A.getNumRows(); }
+  template<class T> static int numColumns(const rsMatrix<T>& A) { return A.getNumColumns(); }
+
+  // Specializations for rsSparseMatrix:
+  template<class T> static void product(const rsSparseMatrix<T>& A, const T* x, T* y) { A.product(x, y); }
+  template<class T> static int numRows(const rsSparseMatrix<T>& A) { return A.getNumRows(); }
+  template<class T> static int numColumns(const rsSparseMatrix<T>& A) { return A.getNumColumns(); }
 
 };
 
@@ -1921,15 +1944,49 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
 //  reduces to the function that computes the largest.
 // -maybe have a boolean parameter to switch between finding eigenspace of A or A^-1 - in the 2nd
 //  case, we may have to use solve(A, vec, wrk) or solve(A, wrk, vec) instead of 
-//  product(A, vec, wrk) ...maybe we could also finde eigenvalues of A^T, A^-T
-// -maybe try to improve convergence by using a matrix with suitably shifted eigenvalues, the 
+//  product(A, vec, wrk) ...maybe we could also find eigenvalues of A^T, A^-T
+// -Maybe try to improve convergence by using a matrix with suitably shifted eigenvalues. The 
 //  shift should be such as to maximize the ratio between the largest and second-to-largest 
-//  (remaining, absolute) eigenvalue. maybe the trace could help: it's the sum of all eigenvalues,
-//  divide by N to get the average and subtract that average to center the eigenvalues around zero.
-//  ...but for the 2nd eigenpair, we want to center the *remaining* eigenvalues around zero - maybe 
-//  subtract all the already found eigenvalues from the trace before dividing by N -> experiments
-//  needed. ..the determinant is the product of all eigenvalues btw - but i don't think that's 
-//  helpful here (it's hard to compute anyway)
+//  (remaining, absolute) eigenvalue. Maybe the trace could help: it's the sum of all eigenvalues, 
+//  so we may divide by N to get the average and subtract that average to center the eigenvalues 
+//  around zero. But for the 2nd eigenpair, we want to center the *remaining* eigenvalues around 
+//  zero. Maybe subtract all the already found eigenvalues from the trace before dividing by N 
+//  -> experiments needed. ...the determinant is the product of all eigenvalues btw - but i don't 
+//  think that's helpful here (it's hard to compute anyway). For example, if we have a matrix with
+//  eigenvalues 1,2,3, the convergence speed will be given by |3|/|2| = 1.5. That's the factor by 
+//  which the contribution of the 3rd eigenvector grows faster than that of the 2nd. If we shift 
+//  by -1, the shifted eigenvalues are 0,1,2 and the convergence speed will be |2|/|1| = 2 which is
+//  better. But we don't know the ratio of largest to second largest which (i think) is needed to 
+//  make an informed shift. Maybe we could estimate it in each iteration by computing in each 
+//  iteration 2 vectors: one as usual and one with the projection onto the usual vector subtracted,
+//  which is going to be our estimate for the 2nd largest eigenvector ...dunno, just brainstorming
+
+template<class T>
+bool rsIterativeLinearAlgebra::isScalarMultiple(const T* x, const T* y, int N, T tol, T* factor)
+{
+  T ratio = T(0);
+  for(int i = 0; i < N; i++)
+  {
+    // todo: check for x[i] == 0 - if it is zero, we can't divide by it an need a different 
+    // criterion - maybe check instead, if abs[y] <= tol and if so, skip the current iteration
+
+    T newRatio = y[i] / x[i];
+    T delta = newRatio - ratio;
+    if(rsAbs(delta) > tol) {
+      if(factor)
+        *factor = T(0);
+      return false;   }
+    ratio = newRatio;
+  }
+
+  if(factor)
+    *factor = ratio;
+  return true;
+}
+// needs test
+// maybe make (tol and) factor non-optional to get rid of the ifs...actually, we could return the 
+// factor because we use 0 to encode "no" anyway. but that would make a non-intuitive api
+
 
 //=================================================================================================
 

@@ -526,9 +526,72 @@ bool testLinearSystemViaGauss2()
   return r;
 }
 
-bool testPowerIteration()
+/** Given an array of N desired eigenvalues and an NxN matrix whose columns are the desired 
+eigenvectors, this function returns the NxN matrix A that has this eigensystem. It basically 
+computes vecs * diag(vals) * inv(vecs). */
+template<class T>
+rsMatrix<T> fromEigenSystem(const std::vector<T>& vals, const rsMatrix<T>& vecs)
+{
+  int N = (int) vals.size();
+  rsAssert(vecs.hasShape(N, N));
+  rsMatrix<T> tmp(vecs);
+  for(int j = 0; j < N; j++)
+    tmp.scaleColumn(j, vals[j]);
+  return tmp * rsLinearAlgebraNew::inverse(vecs);
+}
+// todo: move into class rsLinearAlgebraNew
+// can this be generalized for non-square matrices? maybe using the pseudo-inverse? but no - the 
+// idea l*x = A*x makes sense only when input and output space are equal
+
+// todo: 
+// -move the iterative solvers that are currently in rsSparseMatrix (solveGaussSeidel, solveSOR, 
+//  etc.) into rsIterativeLinearAlgebra
+// -drag over testSparseMatrixSolvers from MatrixUnitTests.cpp, rename to testIterativeSolvers
+
+bool testPowerIterationDense()
 {
   bool ok = true;
+
+  using Real = double;
+  using Mat  = rsMatrix<Real>;
+  using Vec  = std::vector<Real>;
+  using ILA  = rsIterativeLinearAlgebra;
+  using AT   = rsArrayTools;
+
+  // Create 3x3 matrix with eigenvalues -1,2,3 and eigenvectors (1,-2,2),(2,-5,3),(3,6,3):
+  static const int N = 3;
+  Mat vecs(N, N, {1,2,3, -2,-5,6, 2,-2,3});
+  Vec vals({ -1,2,3 });
+  Mat A = fromEigenSystem(vals, vecs);
+
+  // Recover the largest eigenvalue and its eigenvector via power iteration:
+  Real tol = 1.e-13;
+  Real val;
+  Real vec[N], wrk[N];
+  ILA::largestEigenValueAndVector(A, &val, vec, tol, wrk);
+  // yep, works: val == 3 and vec == (3,6,3)/sqrt(54) todo: add automatic check
+
+
+  // Recover all eigenvalues and vectors
+  Real vals2[N], vecs2[N*N];
+  AT::fillWithRandomValues(vecs2, N*N, -1.0, +1.0, 0);  // initial guess
+  //ILA::eigenspace(A, vals2, vecs2, tol, wrk);
+  // hangs because one of eigenvalues is negative which flips the sign of the iterates in each
+  // iteration and the convergence test can't deal with that. i think, we must drag the 
+  //   int i = AT::maxAbsIndex(vec, N);
+  //   if(vec[i] * wrk[i] < T(0)) 
+  // out of the
+  //   if(dMax <= tol)
+  // condition and if the test returns true, we must compute not compute the maxDeviation but the
+  // max-abs of the sum...or just negate the vec or the wrk and set a flag that the eigenvalue is
+  // negative which will then be used instead of the if(vec[i] * wrk[i] < T(0)) inside the if(dMax
+  // ...or: to make it suitable for complex numbers, we should really have a function:
+  //   bool isScalarMultiple(const T* x, const T* y, int N, T tol, T* factor)
+  // that can be used for the convergence test *and* at the same time compute the eigenvalue. It
+  // should compute all the ratios y[i]/x[i]. If they all give the same value (up to tolerance), 
+  // that ratio is the scale factor (eigenvalue). some care needs to be taken, if x[i] is zero
+  // -i think, the same applies to largestEigenValueAndVector
+
 
   // ...
 
@@ -558,6 +621,7 @@ bool testLinearAlgebra()
   ok &= testLinearSystemViaGauss2();
 
   // Iterative solvers:
+  testPowerIterationDense();
 
 
   return ok;
