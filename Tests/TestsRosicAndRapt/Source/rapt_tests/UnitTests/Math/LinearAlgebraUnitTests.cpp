@@ -557,25 +557,7 @@ bool testIterativeLinAlgBasics()
   //using Mat  = rsMatrix<Real>;
   using Vec  = std::vector<Real>;
   using ILA  = rsIterativeLinearAlgebra;
-
-
   Real tol;
-
-  /*
-  Vec x, y;
-  Real r;
-  x = Vec({1,2,3,4});
-  y = Vec({2,4,6,8});
-  */
-
-  // Desired results:
-  // x         y          result
-  // 1 2 3 4   2 4 6 8    true,  2
-  // 0 2 3 4   0 4 6 8    true,  2
-  // 0 0 3 4   0 0 6 8    true,  2
-  // 0 0 0 4   0 0 0 8    true,  2
-  // 0 0 0 0   0 0 0 0    false, 0
-  // 1 2 3 0   2 4 6 0    true,  2
 
   auto testIsMul = [&](const Vec& x, const Vec& y, bool desiredResult, Real desiredRatio)
   {
@@ -583,24 +565,32 @@ bool testIterativeLinAlgBasics()
     int N = (int) x.size();
     Real ratio;
     bool result = ILA::isScalarMultiple(&x[0], &y[0], N, tol, &ratio);
-    return result == desiredResult && ratio == desiredRatio;
+    bool ok = result == desiredResult && ratio == desiredRatio;
+    result = ILA::isScalarMultiple(&y[0], &x[0], N, tol, &ratio); // x,y swapped
+    ok &= result == desiredResult;                                // result should be the same
+    if(result == true) ok &= ratio == 1.0/desiredRatio;           // ratio should be reciprocal
+    return ok;
   };
   tol = 0.0;
   ok &= testIsMul(Vec({1,2,3,4}), Vec({2,4,6,8}), true,  2.0);
   ok &= testIsMul(Vec({0,2,3,4}), Vec({0,4,6,8}), true,  2.0);
   ok &= testIsMul(Vec({0,0,3,4}), Vec({0,0,6,8}), true,  2.0);
   ok &= testIsMul(Vec({0,0,0,4}), Vec({0,0,0,8}), true,  2.0);
+  ok &= testIsMul(Vec({0,2,0,4}), Vec({0,4,0,8}), true,  2.0);
+  ok &= testIsMul(Vec({0,2,3,0}), Vec({0,4,6,0}), true,  2.0);
+  ok &= testIsMul(Vec({1,2,0,0}), Vec({2,4,0,0}), true,  2.0);
+  ok &= testIsMul(Vec({1,0,0,0}), Vec({2,0,0,0}), true,  2.0);
+  ok &= testIsMul(Vec({0,2,0,0}), Vec({0,4,0,0}), true,  2.0);
+
   ok &= testIsMul(Vec({0,0,0,0}), Vec({0,0,0,0}), false, 0.0);
   ok &= testIsMul(Vec({0,0,3,4}), Vec({0,4,6,8}), false, 0.0);
   ok &= testIsMul(Vec({0,2,3,4}), Vec({0,0,6,8}), false, 0.0);
+  ok &= testIsMul(Vec({1,2,0,4}), Vec({2,4,6,8}), false, 0.0);
+  ok &= testIsMul(Vec({1,2,3,4}), Vec({2,4,0,8}), false, 0.0);
 
-
-
-  //ok &= ILA::isScalarMultiple(&x[0], &y[0], 4, tol, &r);
-
-
-
-
+  // Test with some nonzero tolerance:
+  tol = 0.2;
+  ok &= testIsMul(Vec({1.0,2.0,3.0,4.0}), Vec({2.0,3.9,6.1,8.0}), true, 2.0);
 
   return ok;
 }

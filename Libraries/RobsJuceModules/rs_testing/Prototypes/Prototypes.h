@@ -1963,12 +1963,11 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
 template<class T>
 bool rsIterativeLinearAlgebra::isScalarMultiple(const T* x, const T* y, int N, T tol, T* factor)
 {
-  int i = 0;
   *factor = T(0);
 
-  auto isZero = [&](const T& number) { return rsAbs(number) <= tol; };
-
   // Skip initial section of zeros:
+  auto isZero = [&](const T& number) { return rsAbs(number) <= tol; };
+  int i = 0;
   while(isZero(x[i]) && isZero(y[i]))  
     i++;
   if(i == N || isZero(x[i]) || isZero(y[i])) 
@@ -1995,33 +1994,7 @@ bool rsIterativeLinearAlgebra::isScalarMultiple(const T* x, const T* y, int N, T
   // If we reach this point, y is indeed a scalar multiple of x and the scale factor is r:
   *factor = r;
   return true;
-  
-
-
-  /*
-  T ratio = T(0);
-  for(int i = 0; i < N; i++)
-  {
-    // todo: check for x[i] == 0 - if it is zero, we can't divide by it an need a different 
-    // criterion - maybe check instead, if abs[y] <= tol and if so, skip the current iteration
-
-    T newRatio = y[i] / x[i];
-    T delta = newRatio - ratio;
-    if(rsAbs(delta) > tol) {
-      if(factor)
-        *factor = T(0);
-      return false;   }
-    ratio = newRatio;
-  }
-
-  if(factor)
-    *factor = ratio;
-    */
-  return true;
 }
-// needs test
-// maybe make (tol and) factor non-optional to get rid of the ifs...actually, we could return the 
-// factor because we use 0 to encode "no" anyway. but that would make a non-intuitive api
 
 
 //=================================================================================================
