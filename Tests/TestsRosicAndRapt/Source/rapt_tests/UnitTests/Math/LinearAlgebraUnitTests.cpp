@@ -574,17 +574,7 @@ bool testIterativeLinAlgBasics()
   return ok;
 }
 
-// Function that checks, if the computed eigenvalues "vals" and eigenvectors "vecs" are compatible
-// with the original ones (in the "...True" arrays). The order of the original ones can be anything
-// while the returned ones are supposed ordered by decreasing max-abs. Also, the computed 
-// eigenvectors may not be equal to the original ones but rather scalar multiples of them
-template<class T>
-bool checkEigensystem(
-  const std::vector<T>& vals,     const std::vector<T>& vecs, 
-  const std::vector<T>& valsTrue, const std::vector<T>& vecsTrue)
-{
 
-}
 
 // Convenience functions that convert rsMatrix from/to std::vector row-wise and column-wise
 template<class T>
@@ -656,6 +646,45 @@ rsMatrix<T> fromEigenSystem(const std::vector<T>& vals, const std::vector<T>& ve
   return fromEigenSystem(vals, rsToMatrixColumnWise(vecs, N, N));
 }
 
+/** This function checks, if the eigenvalues "vals1" and eigenvectors "vecs1" are compatible with 
+the ones in the vals2, vecs2 arrays. The equivalence relation between the eigensystems is that 
+vals2 must be some permutation of vals1 and the eigenvectors that correspond to a given eigenvalue
+must match up to a scalar factor. That means if some eigenvalue k is found at indices i,j in the 
+vals1,vals2 arrays respectively, the j-th vector in vecs2 must match the i-th vector in vecs1 up to
+scaling. ...and all equalities are taken up to some given tolerance level "tol".  */
+template<class T>
+bool checkEigensystem(
+  const std::vector<T>& vals1, const std::vector<T>& vecs1, 
+  const std::vector<T>& vals2, const std::vector<T>& vecs2, T tol)
+{
+  int N  = (int) vals1.size();
+  rsAssert((int) vals2.size() == N);
+  rsAssert((int) vecs1.size() == N*N);
+  rsAssert((int) vecs2.size() == N*N);
+
+  using ILA  = rsIterativeLinearAlgebra;
+  std::vector<bool> done(N);              // flags to indicate that an eigenvalue was used up
+  T val;
+  bool match;
+  int i, j;
+  for(i = 0; i < N; i++)
+  {
+    for(j = 0; j < N; j++)
+      if(!done[j] && rsAbs(vals1[i]-vals2[j]) < tol)
+        break;
+    if(j == N)
+      return false;
+
+    // We have found a correspondence between vals1[i] and vals2[j], so we check, if the 
+    // corresponding eigenvectors match up to a scalar factor:
+    match = ILA::isScalarMultiple(&vecs1[i*N], &vecs2[j*N], N, tol, &val);
+    if(!match)
+      return false;
+    done[j] = true;
+  }
+  return true;
+}
+
 
 // todo: 
 // -move the iterative solvers that are currently in rsSparseMatrix (solveGaussSeidel, solveSOR, 
@@ -687,12 +716,17 @@ bool testPowerIterationDense()
   its = ILA::largestEigenValueAndVector(A, &val, vec, tol, wrk);
   // yep, works: val == 3 and vec == (3,6,3)/sqrt(54) todo: add automatic check
 
-
-  // Recover all eigenvalues and vectors
-  //Real vals2[N], vecs2[N*N];
+  // Recover all eigenvalues and vectors:
   Vec vals2(N), vecs2(N*N);
   AT::fillWithRandomValues(&vecs2[0], N*N, -1.0, +1.0, 0);  // initial guess
   its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, wrk);
+
+  tol = 1.e-7;
+  ok &= checkEigensystem(vals2, vecs2, vals, vecs, tol);
+  // the 1st eigenvector matches but the other 2 do not - but all eigenvalues are correct, so the
+  // iteration actuall must have converged to the right eigenvalue. but maybe we have some issue
+  // with some projections being subtracted or not before leaving the function?
+
   // hangs because one of eigenvalues is negative which flips the sign of the iterates in each
   // iteration and the convergence test can't deal with that. i think, we must drag the 
   //   int i = AT::maxAbsIndex(vec, N);
