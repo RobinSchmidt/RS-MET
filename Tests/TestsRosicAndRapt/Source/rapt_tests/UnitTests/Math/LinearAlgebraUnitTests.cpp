@@ -548,6 +548,64 @@ rsMatrix<T> fromEigenSystem(const std::vector<T>& vals, const rsMatrix<T>& vecs)
 //  etc.) into rsIterativeLinearAlgebra
 // -drag over testSparseMatrixSolvers from MatrixUnitTests.cpp, rename to testIterativeSolvers
 
+
+bool testIterativeLinAlgBasics()
+{
+  bool ok = true;
+
+  using Real = double;
+  //using Mat  = rsMatrix<Real>;
+  using Vec  = std::vector<Real>;
+  using ILA  = rsIterativeLinearAlgebra;
+
+
+  Real tol;
+
+  /*
+  Vec x, y;
+  Real r;
+  x = Vec({1,2,3,4});
+  y = Vec({2,4,6,8});
+  */
+
+  // Desired results:
+  // x         y          result
+  // 1 2 3 4   2 4 6 8    true,  2
+  // 0 2 3 4   0 4 6 8    true,  2
+  // 0 0 3 4   0 0 6 8    true,  2
+  // 0 0 0 4   0 0 0 8    true,  2
+  // 0 0 0 0   0 0 0 0    false, 0
+  // 1 2 3 0   2 4 6 0    true,  2
+
+  auto testIsMul = [&](const Vec& x, const Vec& y, bool desiredResult, Real desiredRatio)
+  {
+    rsAssert(x.size() == y.size());
+    int N = (int) x.size();
+    Real ratio;
+    bool result = ILA::isScalarMultiple(&x[0], &y[0], N, tol, &ratio);
+    return result == desiredResult && ratio == desiredRatio;
+  };
+  tol = 0.0;
+  ok &= testIsMul(Vec({1,2,3,4}), Vec({2,4,6,8}), true,  2.0);
+  ok &= testIsMul(Vec({0,2,3,4}), Vec({0,4,6,8}), true,  2.0);
+  ok &= testIsMul(Vec({0,0,3,4}), Vec({0,0,6,8}), true,  2.0);
+  ok &= testIsMul(Vec({0,0,0,4}), Vec({0,0,0,8}), true,  2.0);
+  ok &= testIsMul(Vec({0,0,0,0}), Vec({0,0,0,0}), false, 0.0);
+  ok &= testIsMul(Vec({0,0,3,4}), Vec({0,4,6,8}), false, 0.0);
+  ok &= testIsMul(Vec({0,2,3,4}), Vec({0,0,6,8}), false, 0.0);
+
+
+
+  //ok &= ILA::isScalarMultiple(&x[0], &y[0], 4, tol, &r);
+
+
+
+
+
+  return ok;
+}
+
+
 bool testPowerIterationDense()
 {
   bool ok = true;
@@ -570,7 +628,6 @@ bool testPowerIterationDense()
   Real vec[N], wrk[N];
   ILA::largestEigenValueAndVector(A, &val, vec, tol, wrk);
   // yep, works: val == 3 and vec == (3,6,3)/sqrt(54) todo: add automatic check
-
 
   // Recover all eigenvalues and vectors
   Real vals2[N], vecs2[N*N];
@@ -621,7 +678,8 @@ bool testLinearAlgebra()
   ok &= testLinearSystemViaGauss2();
 
   // Iterative solvers:
-  testPowerIterationDense();
+  ok &= testIterativeLinAlgBasics();
+  ok &= testPowerIterationDense();
 
 
   return ok;

@@ -1815,15 +1815,14 @@ public:
   // sizes: A: NxN, vals: N, vecs: N*N, workspace: N
 
   /** Returns true, iff the vector y is a scalar multiple of the vector x (up to some tolerance). 
-  Both vectors must be of length N. If the "factor" parameter is not a nulltpr, it will get the
-  scale factor assigned if y is indeed a multiple of x or 0, if not. I deliberately chose 0 and not
-  nan for this case for two reasons: (1) the function should be able to work with number types T 
-  that have no concept of nan (fractions, modular integers, etc. (2) the function is mainly 
-  intended for dealing with eigenvectors and they are defined to be nonzero, so y cannot be 0*x and
-  still count as eigenvector, so the zero is actually "free" and can be used to encode that 
-  condition. */
+  Both vectors must be of length N. The "factor" parameter will get the scale factor assigned if y
+  is indeed a multiple of x or 0, if not. I deliberately chose 0 and not nan for this case for two
+  reasons: (1) the function should be able to work with number types T that have no concept of nan 
+  (fractions, modular integers, etc. (2) the function is mainly intended for dealing with 
+  eigenvectors and they are defined to be nonzero, so y cannot be 0*x and still count as 
+  eigenvector, so the zero is actually "free" and can be used to encode that condition. */
   template<class T>
-  bool isScalarMultiple(const T* x, const T* y, int N, T tol = T(0), T* factor = nullptr);
+  static bool isScalarMultiple(const T* x, const T* y, int N, T tol, T* factor);
   // todo: (decide and) document if tolerance is absolute or relative, maybe rename to tolR, if
   // relative
   // maybe rename to rsIsMultiple move into rsArrayTools (and maybe have an alias isScalarMultiple
@@ -1964,6 +1963,42 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
 template<class T>
 bool rsIterativeLinearAlgebra::isScalarMultiple(const T* x, const T* y, int N, T tol, T* factor)
 {
+  int i = 0;
+  *factor = T(0);
+
+  auto isZero = [&](const T& number) { return rsAbs(number) <= tol; };
+
+  // Skip initial section of zeros:
+  while(isZero(x[i]) && isZero(y[i]))  
+    i++;
+  if(i == N || isZero(x[i]) || isZero(y[i])) 
+    return false;
+    // either both x and y are all zeros or we found an i for which x[i] is zero but y[i] is 
+    // nonzero or vice versa
+
+  // If we reach this point, we have found an index i for which both x[i] and y[i] are nonzero. We 
+  // compute their ratio, defined by r := y[i] / x[i] such that y[i] = r * x[i]:
+  T r = y[i] / x[i];
+
+  // Now we iterate through the remaining array and check for each pair x[i], y[i], if they either
+  // obey the same ratio or are both zero:
+  i++;
+  while(i < N) {
+    // Check, if the ratio of x[i] and y[i] matches r unless both are zero:
+    if(!(isZero(x[i]) && isZero(y[i]))) {
+      T yt = r  * x[i];     // expected target value for y
+      T d  = yt - y[i];     // difference between target and actual
+      if(rsAbs(d) > tol)
+        return false;    }  // the ratio of x[i] and y[i] did not match r
+    i++; }
+
+  // If we reach this point, y is indeed a scalar multiple of x and the scale factor is r:
+  *factor = r;
+  return true;
+  
+
+
+  /*
   T ratio = T(0);
   for(int i = 0; i < N; i++)
   {
@@ -1981,6 +2016,7 @@ bool rsIterativeLinearAlgebra::isScalarMultiple(const T* x, const T* y, int N, T
 
   if(factor)
     *factor = ratio;
+    */
   return true;
 }
 // needs test
