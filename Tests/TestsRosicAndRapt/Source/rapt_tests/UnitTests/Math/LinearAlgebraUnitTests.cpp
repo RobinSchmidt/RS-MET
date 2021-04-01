@@ -526,27 +526,6 @@ bool testLinearSystemViaGauss2()
   return r;
 }
 
-/** Given an array of N desired eigenvalues and an NxN matrix whose columns are the desired 
-eigenvectors, this function returns the NxN matrix A that has this eigensystem. It basically 
-computes vecs * diag(vals) * inv(vecs). */
-template<class T>
-rsMatrix<T> fromEigenSystem(const std::vector<T>& vals, const rsMatrix<T>& vecs)
-{
-  int N = (int) vals.size();
-  rsAssert(vecs.hasShape(N, N));
-  rsMatrix<T> tmp(vecs);
-  for(int j = 0; j < N; j++)
-    tmp.scaleColumn(j, vals[j]);
-  return tmp * rsLinearAlgebraNew::inverse(vecs);
-}
-// todo: move into class rsLinearAlgebraNew
-// can this be generalized for non-square matrices? maybe using the pseudo-inverse? but no - the 
-// idea l*x = A*x makes sense only when input and output space are equal
-
-// todo: 
-// -move the iterative solvers that are currently in rsSparseMatrix (solveGaussSeidel, solveSOR, 
-//  etc.) into rsIterativeLinearAlgebra
-// -drag over testSparseMatrixSolvers from MatrixUnitTests.cpp, rename to testIterativeSolvers
 
 
 bool testIterativeLinAlgBasics()
@@ -595,6 +574,94 @@ bool testIterativeLinAlgBasics()
   return ok;
 }
 
+// Function that checks, if the computed eigenvalues "vals" and eigenvectors "vecs" are compatible
+// with the original ones (in the "...True" arrays). The order of the original ones can be anything
+// while the returned ones are supposed ordered by decreasing max-abs. Also, the computed 
+// eigenvectors may not be equal to the original ones but rather scalar multiples of them
+template<class T>
+bool checkEigensystem(
+  const std::vector<T>& vals,     const std::vector<T>& vecs, 
+  const std::vector<T>& valsTrue, const std::vector<T>& vecsTrue)
+{
+
+}
+
+// Convenience functions that convert rsMatrix from/to std::vector row-wise and column-wise
+template<class T>
+std::vector<T> rsRowsToVector(const rsMatrix<T>& A)
+{
+  int M = A.getNumRows();
+  int N = A.getNumColumns();
+  std::vector<T> v(M*N);
+  for(int m = 0; m < M; m++)
+    for(int n = 0; n < N; n++)
+      v[m*N + n] = A(m, n);
+  return v;
+}
+template<class T>
+std::vector<T> rsColumnsToVector(const rsMatrix<T>& A)
+{
+  int M = A.getNumRows();
+  int N = A.getNumColumns();
+  std::vector<T> v(M*N);
+  for(int m = 0; m < M; m++)
+    for(int n = 0; n < N; n++)
+      v[n*M + m] = A(m, n);
+  return v;
+}
+template<class T>
+rsMatrix<T> rsToMatrixRowWise(const std::vector<T>& v, int numRows, int numCols)
+{
+  int M = numRows;
+  int N = numCols;
+  rsAssert((int)v.size() == M*N);
+  rsMatrix<T> A(M, N);
+  for(int m = 0; m < M; m++)
+    for(int n = 0; n < N; n++) 
+      A(m, n) = v[m*N + n];
+  return A;
+}
+template<class T>
+rsMatrix<T> rsToMatrixColumnWise(const std::vector<T>& v, int numRows, int numCols)
+{
+  int M = numRows;
+  int N = numCols;
+  rsAssert((int)v.size() == M*N);
+  rsMatrix<T> A(M, N);
+  for(int m = 0; m < M; m++)
+    for(int n = 0; n < N; n++) 
+      A(m, n) = v[n*M + m];
+  return A;
+}
+// maybe move into class rsMatrix(View)
+
+/** Given an array of N desired eigenvalues and an NxN matrix whose columns are the desired 
+eigenvectors, this function returns the NxN matrix A that has this eigensystem. It basically 
+computes vecs * diag(vals) * inv(vecs). */
+template<class T>
+rsMatrix<T> fromEigenSystem(const std::vector<T>& vals, const rsMatrix<T>& vecs)
+{
+  int N = (int) vals.size();
+  rsAssert(vecs.hasShape(N, N));
+  rsMatrix<T> tmp(vecs);
+  for(int j = 0; j < N; j++)
+    tmp.scaleColumn(j, vals[j]);
+  return tmp * rsLinearAlgebraNew::inverse(vecs);
+}
+template<class T>
+rsMatrix<T> fromEigenSystem(const std::vector<T>& vals, const std::vector<T>& vecs)
+{
+  int N = (int) vals.size();
+  rsAssert((int)vecs.size() == N*N);
+  return fromEigenSystem(vals, rsToMatrixColumnWise(vecs, N, N));
+}
+
+
+// todo: 
+// -move the iterative solvers that are currently in rsSparseMatrix (solveGaussSeidel, solveSOR, 
+//  etc.) into rsIterativeLinearAlgebra
+// -drag over testSparseMatrixSolvers from MatrixUnitTests.cpp, rename to testIterativeSolvers
+
 
 bool testPowerIterationDense()
 {
@@ -607,22 +674,25 @@ bool testPowerIterationDense()
   using AT   = rsArrayTools;
 
   // Create 3x3 matrix with eigenvalues -1,2,3 and eigenvectors (1,-2,2),(2,-5,3),(3,6,3):
-  static const int N = 3;
-  Mat vecs(N, N, {1,2,3, -2,-5,6, 2,-2,3});
-  Vec vals({ -1,2,3 });
-  Mat A = fromEigenSystem(vals, vecs);
+  static const int N = 3;                // dimensionality
+  Vec vals({  -1,       2,      3  });   // eigenvalues
+  Vec vecs({1,-2,2,  2,-5,3,  3,6,3});   // eigenvectors
+  Mat A = fromEigenSystem(vals, vecs);   // A = matrix with desired eigensystem
 
   // Recover the largest eigenvalue and its eigenvector via power iteration:
+  int its;
   Real tol = 1.e-13;
   Real val;
   Real vec[N], wrk[N];
-  ILA::largestEigenValueAndVector(A, &val, vec, tol, wrk);
+  its = ILA::largestEigenValueAndVector(A, &val, vec, tol, wrk);
   // yep, works: val == 3 and vec == (3,6,3)/sqrt(54) todo: add automatic check
 
+
   // Recover all eigenvalues and vectors
-  Real vals2[N], vecs2[N*N];
-  AT::fillWithRandomValues(vecs2, N*N, -1.0, +1.0, 0);  // initial guess
-  ILA::eigenspace(A, vals2, vecs2, tol, wrk);
+  //Real vals2[N], vecs2[N*N];
+  Vec vals2(N), vecs2(N*N);
+  AT::fillWithRandomValues(&vecs2[0], N*N, -1.0, +1.0, 0);  // initial guess
+  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, wrk);
   // hangs because one of eigenvalues is negative which flips the sign of the iterates in each
   // iteration and the convergence test can't deal with that. i think, we must drag the 
   //   int i = AT::maxAbsIndex(vec, N);
@@ -637,10 +707,9 @@ bool testPowerIterationDense()
   // that can be used for the convergence test *and* at the same time compute the eigenvalue. It
   // should compute all the ratios y[i]/x[i]. If they all give the same value (up to tolerance), 
   // that ratio is the scale factor (eigenvalue). some care needs to be taken, if x[i] is zero
+  // -> done
   // -i think, the same applies to largestEigenValueAndVector
 
-
-  // ...
 
   return ok;
 }

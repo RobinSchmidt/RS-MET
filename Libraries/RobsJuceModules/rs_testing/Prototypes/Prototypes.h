@@ -1932,6 +1932,10 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
         break;
       numIts++; }}
   return numIts;
+
+  // todo: drag the T L = norm(vec, N); AT::scale(vec, N, T(1) / L); into the iteration before
+  // forming the product, remove them after the convergence test
+  // 
 }
 // -maybe get rid of the function that that computes only the largest - give this function another
 //  parameter that determines, how many eigenvalues should be computed, and if it's 1, it just 
