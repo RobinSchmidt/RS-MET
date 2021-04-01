@@ -622,7 +622,7 @@ bool testPowerIterationDense()
   // Recover all eigenvalues and vectors
   Real vals2[N], vecs2[N*N];
   AT::fillWithRandomValues(vecs2, N*N, -1.0, +1.0, 0);  // initial guess
-  //ILA::eigenspace(A, vals2, vecs2, tol, wrk);
+  ILA::eigenspace(A, vals2, vecs2, tol, wrk);
   // hangs because one of eigenvalues is negative which flips the sign of the iterates in each
   // iteration and the convergence test can't deal with that. i think, we must drag the 
   //   int i = AT::maxAbsIndex(vec, N);
