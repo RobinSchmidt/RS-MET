@@ -605,11 +605,17 @@ void linearIndependence()
 
 
 
+void orthogonalizedPowerIteration()
+{
 
-
+  int dummy = 0;
+}
 
 void eigenstuff()
 {
+  orthogonalizedPowerIteration();
+
+
   // create a matrix and find its eigenvalues and eigenvectors
 
   using Matrix  = RAPT::rsMatrix<double>;

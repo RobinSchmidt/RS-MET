@@ -574,148 +574,10 @@ bool testIterativeLinAlgBasics()
   return ok;
 }
 
-
-
-// Convenience functions that convert rsMatrix from/to std::vector row-wise and column-wise
-template<class T>
-std::vector<T> rsRowsToVector(const rsMatrix<T>& A)
-{
-  int M = A.getNumRows();
-  int N = A.getNumColumns();
-  std::vector<T> v(M*N);
-  for(int m = 0; m < M; m++)
-    for(int n = 0; n < N; n++)
-      v[m*N + n] = A(m, n);
-  return v;
-}
-template<class T>
-std::vector<T> rsColumnsToVector(const rsMatrix<T>& A)
-{
-  int M = A.getNumRows();
-  int N = A.getNumColumns();
-  std::vector<T> v(M*N);
-  for(int m = 0; m < M; m++)
-    for(int n = 0; n < N; n++)
-      v[n*M + m] = A(m, n);
-  return v;
-}
-template<class T>
-rsMatrix<T> rsToMatrixRowWise(const std::vector<T>& v, int numRows, int numCols)
-{
-  int M = numRows;
-  int N = numCols;
-  rsAssert((int)v.size() == M*N);
-  rsMatrix<T> A(M, N);
-  for(int m = 0; m < M; m++)
-    for(int n = 0; n < N; n++) 
-      A(m, n) = v[m*N + n];
-  return A;
-}
-template<class T>
-rsMatrix<T> rsToMatrixColumnWise(const std::vector<T>& v, int numRows, int numCols)
-{
-  int M = numRows;
-  int N = numCols;
-  rsAssert((int)v.size() == M*N);
-  rsMatrix<T> A(M, N);
-  for(int m = 0; m < M; m++)
-    for(int n = 0; n < N; n++) 
-      A(m, n) = v[n*M + m];
-  return A;
-}
-// maybe move into class rsMatrix(View)
-
-/** Given an array of N desired eigenvalues and an NxN matrix whose columns are the desired 
-eigenvectors, this function returns the NxN matrix A that has this eigensystem. It basically 
-computes vecs * diag(vals) * inv(vecs). */
-template<class T>
-rsMatrix<T> fromEigenSystem(const std::vector<T>& vals, const rsMatrix<T>& vecs)
-{
-  int N = (int) vals.size();
-  rsAssert(vecs.hasShape(N, N));
-  rsMatrix<T> tmp(vecs);
-  for(int j = 0; j < N; j++)
-    tmp.scaleColumn(j, vals[j]);
-  return tmp * rsLinearAlgebraNew::inverse(vecs);
-}
-template<class T>
-rsMatrix<T> fromEigenSystem(const std::vector<T>& vals, const std::vector<T>& vecs)
-{
-  int N = (int) vals.size();
-  rsAssert((int)vecs.size() == N*N);
-  return fromEigenSystem(vals, rsToMatrixColumnWise(vecs, N, N));
-}
-
-/** This function checks, if the eigenvalues "vals1" and eigenvectors "vecs1" are compatible with 
-the ones in the vals2, vecs2 arrays. The equivalence relation between the eigensystems is that 
-vals2 must be some permutation of vals1 and the eigenvectors that correspond to a given eigenvalue
-must match up to a scalar factor. That means if some eigenvalue k is found at indices i,j in the 
-vals1,vals2 arrays respectively, the j-th vector in vecs2 must match the i-th vector in vecs1 up to
-scaling. ...and all equalities are taken up to some given tolerance level "tol".  */
-template<class T>
-bool checkEigensystem(
-  const std::vector<T>& vals1, const std::vector<T>& vecs1, 
-  const std::vector<T>& vals2, const std::vector<T>& vecs2, T tol)
-{
-  int N  = (int) vals1.size();
-  rsAssert((int) vals2.size() == N);
-  rsAssert((int) vecs1.size() == N*N);
-  rsAssert((int) vecs2.size() == N*N);
-
-  using ILA  = rsIterativeLinearAlgebra;
-  std::vector<bool> done(N);              // flags to indicate that an eigenvalue was used up
-  T val;
-  bool match;
-  int i, j;
-  for(i = 0; i < N; i++)
-  {
-    for(j = 0; j < N; j++)
-      if(!done[j] && rsAbs(vals1[i]-vals2[j]) < tol)
-        break;
-    if(j == N)
-      return false;
-
-    // We have found a correspondence between vals1[i] and vals2[j], so we check, if the 
-    // corresponding eigenvectors match up to a scalar factor:
-    match = ILA::isScalarMultiple(&vecs1[i*N], &vecs2[j*N], N, tol, &val);
-    if(!match)
-      return false;
-    done[j] = true;
-  }
-  return true;
-}
-
-template<class T>
-void normalizeChunks(std::vector<T>& v, int chunkSize)
-{
-  using AT = rsArrayTools;
-  int N = (int) v.size();
-  rsAssert(N % chunkSize == 0);  // v must contain integer number of chunks
-  int numChunks = N / chunkSize;
-  for(int i = 0; i < numChunks; i++) {
-    int j = i*chunkSize;
-    T norm = sqrt(AT::sumOfSquares(&v[j], chunkSize));
-    AT::scale(&v[j], chunkSize, T(1)/norm);  }
-}
-
-/** Extracts a chunk starting at "start" given "size" from vector v. */
-template<class T>
-std::vector<T> rsGetChunk(std::vector<T>& v, int start, int size)
-{
-  rsAssert(start >= 0 && start+size <= (int) v.size());
-  std::vector<T> c(size);
-  for(int i = 0; i < size; i++)
-    c[i] = v[start+i];
-  return c;
-}
-// move to library
-
-
 // todo: 
 // -move the iterative solvers that are currently in rsSparseMatrix (solveGaussSeidel, solveSOR, 
 //  etc.) into rsIterativeLinearAlgebra
 // -drag over testSparseMatrixSolvers from MatrixUnitTests.cpp, rename to testIterativeSolvers
-
 
 bool testPowerIterationDense()
 {
@@ -747,14 +609,14 @@ bool testPowerIterationDense()
 
   // move this code into the experiments section:
   // Recover all eigenvalues and vectors:
-  normalizeChunks(vecs, N);  // for easier comparison
+  rsNormalizeChunks(vecs, N);  // for easier comparison
   Vec vals2(N), vecs2(N*N);
   AT::fillWithRandomValues(&vecs2[0], N*N, -1.0, +1.0, 0);  // initial guess
   its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, &wrk[0]);
   Vec vec2 = rsGetChunk(vecs2, N, N);
   Vec tmp1 = A*vec2;         // matrix times vector
   Vec tmp2 = vals2[1]*vec2;  // scalar times vector
-  normalizeChunks(vecs2, N);  // should not change anything, vecs 2 is already normalized
+  rsNormalizeChunks(vecs2, N);  // should not change anything, vecs 2 is already normalized
   tol = 1.e-7;
   Mat E = rsToMatrixColumnWise(vecs2, N, N);
   //bool ortho = areColumnsOrthogonal(E);
