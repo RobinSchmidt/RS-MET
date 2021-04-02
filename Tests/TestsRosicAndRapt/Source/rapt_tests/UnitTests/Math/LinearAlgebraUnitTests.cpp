@@ -700,7 +700,7 @@ void normalizeChunks(std::vector<T>& v, int chunkSize)
 
 /** Extracts a chunk starting at "start" given "size" from vector v. */
 template<class T>
-std::vector<T> rsChunk(std::vector<T>& v, int start, int size)
+std::vector<T> rsGetChunk(std::vector<T>& v, int start, int size)
 {
   rsAssert(start >= 0 && start+size <= (int) v.size());
   std::vector<T> c(size);
@@ -740,18 +740,24 @@ bool testPowerIterationDense()
   Vec vec(N), wrk(N);
   vec = rsRandomVector(N, 0, 1);
   its = ILA::largestEigenValueAndVector(A, &val, &vec[0], tol, &wrk[0]);
-  // yep, works: val == 3 and vec == (3,6,3)/sqrt(54) todo: add automatic check
+  // yep, works: val == 3 and vec == (3,6,3)/sqrt(54) 
+  // todo: add automatic check, test with negative largest eigenvalue - it wil probably fail 
+  // because we need to swicth the convergence test to using isScalarMultiple as in eigenspace
 
+
+  // move this code into the experiments section:
   // Recover all eigenvalues and vectors:
   normalizeChunks(vecs, N);  // for easier comparison
   Vec vals2(N), vecs2(N*N);
   AT::fillWithRandomValues(&vecs2[0], N*N, -1.0, +1.0, 0);  // initial guess
   its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, &wrk[0]);
-  Vec vec2 = rsChunk(vecs2, N, N);
+  Vec vec2 = rsGetChunk(vecs2, N, N);
   Vec tmp1 = A*vec2;         // matrix times vector
   Vec tmp2 = vals2[1]*vec2;  // scalar times vector
   normalizeChunks(vecs2, N);  // should not change anything, vecs 2 is already normalized
   tol = 1.e-7;
+  Mat E = rsToMatrixColumnWise(vecs2, N, N);
+  //bool ortho = areColumnsOrthogonal(E);
   //ok &= checkEigensystem(vals2, vecs2, vals, vecs, tol);
   // the 1st eigenvector matches but the other 2 do not - but all eigenvalues are correct, so the
   // iteration actuall must have converged to the right eigenvalue. but maybe we have some issue
@@ -761,29 +767,41 @@ bool testPowerIterationDense()
 
   // try it with a simpler problem: 2D, eigenvectors (1,1),(1,-1)
   N = 2;
-  vals = Vec({ -1,     3});   // eigenvalues
+  vals = Vec({  2,     1});   // eigenvalues
   vecs = Vec({1,1,  1,-1});   // eigenvectors
   A = fromEigenSystem(vals, vecs);
   vals2.resize(N);
   vecs2.resize(N*N);
-  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, &wrk[0]);
-  ok &= checkEigensystem(vals2, vecs2, vals, vecs, tol);
+  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], 1.e-13, &wrk[0]);
+  ok &= checkEigensystem(vals2, vecs2, vals, vecs, 1.e-13);
   // 2D works with (1,(1,1)),(3,(1,-1)) but not with (1,(1,2)),(3,(1,-1))
   // I think, it works only when the eigenvectors are orthogonal. If they are not we probably can't
   // just project by inner products. it may nevertheless work with the eigenvalues because we 
   // subtract some portion in the directions of the already foun eigenvectors - but not everything?
 
+  vals = Vec({  3,    1});  // eigenvalues
   vecs = Vec({6,8, -8,6});  // is also orthogonal, both have norm 100
   A = fromEigenSystem(vals, vecs);
-  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, &wrk[0]);
-  ok &= checkEigensystem(vals2, vecs2, vals, vecs, tol);
+  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], 1.e-13, &wrk[0]);
+  ok &= checkEigensystem(vals2, vecs2, vals, vecs, 1.e-12);
 
   vecs = Vec({6,8, 8,6});  // not orthogonal, both have norm 100
   A = fromEigenSystem(vals, vecs);
-  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, &wrk[0]);
-  ok &= checkEigensystem(vals2, vecs2, vals, vecs, tol);
+  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], 1.e-13, &wrk[0]);
+  //ok &= checkEigensystem(vals2, vecs2, vals, vecs, 1.e-12);
+  Vec w1 = rsGetChunk(vecs2, 0, N);  // extract both found vectors
+  Vec w2 = rsGetChunk(vecs2, N, N);
+  Vec w3 = w2-w1;
+  Vec w4 = w2+w1;
+  Vec w5 = vals2[0]*w1 - vals2[1]*w2;
+  Vec w6 = vals2[0]*w1 + vals2[1]*w2;
+
   // maybe we can rapair it by adding the subtracted projections back after convergence? or maybe
-  // twice them?
+  // twice them? or maybe the vectors converge to an orthogonalized eigensystem and we somehow need
+  // to deorthogonalize it as postprocessing step?
+
+  // BUT: even if the algo only produces the eigenvalues and incorrect eigenvectors, it may still
+  // be useful
 
 
   // hangs because one of eigenvalues is negative which flips the sign of the iterates in each
@@ -806,6 +824,9 @@ bool testPowerIterationDense()
   // todo: 
   // -figure out what happens when we have eigenvalues with multiplicities (algebraic and/or
   //  geometric)
+
+  // Deflation for symmetric matrices works by subtractinng sum_i (lamda_i * V_i * V_i^T)
+  // https://www.math.tamu.edu/~dallen/linear_algebra/chpt6.pdf  pg 417
 
   return ok;
 }

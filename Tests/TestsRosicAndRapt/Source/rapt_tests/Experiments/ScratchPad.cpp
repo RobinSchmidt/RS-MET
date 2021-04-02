@@ -1097,8 +1097,14 @@ This means, the scalar product of any pair of distinct columns must be zero. Not
 not require, that the scalar product of a column with itself is unity. ...i think, this would be
 the definition of an orthogonal matrix - math terminology seems a bit inconsistent here: a matrix
 being orthogonal seems a stronger requirement than its columns beings mutually orthogonal - the
-columns must be orthoNORMal for the matrix being orthoGONal....-> look up
-See: https://en.wikipedia.org/wiki/Orthogonality  */
+columns must be orthoNORMal for the matrix being orthoGONal....-> look up -> See: 
+https://en.wikipedia.org/wiki/Orthogonality  
+https://en.wikipedia.org/wiki/Orthogonal_matrix
+But i think, i have also seen some authors using the more consistent terminology of only requiring
+orthogonality of the columns for a matrix to count as orthogonal - and then additionally defining
+orthonormal matrices. I think, i'd rather adopt that convention. It makes more sense. An orhoGONal
+matrix should require only that A * A^T is a diagonal matrix, not necessarily the identity 
+matrix. */
 template<class T>
 bool areColumnsOrthogonal(rsMatrix<T>& A, T tol)
 {
@@ -1123,7 +1129,7 @@ bool isOrthogonal(rsMatrix<T>& A, T tol)
   return areColumnsOrthonormal(A, tol);
 }
 // It seems, math terminology is inconsistent here: for a matrix to count as orthoGONal, its
-// columns must be orthoNORMal. the definition of matrix orthogonality is that the linear map
+// columns must be orthoNORMal. The definition of matrix orthogonality is that the linear map
 // doesn't change the scalar product, i.e <x, y> = <A*x, A*y> which implies A^T * A = I
 // if a matrix A is orthogonal, det(A) = +-1 (what if A is complex?)
 
