@@ -590,6 +590,11 @@ bool testIterativeLinearSolvers()
   Vec b = A*x;
   Vec x2(N);
   int its = rsSolveCG(A, x2, b, 1.e-12, 100);
+  ok &= rsIsCloseTo(x, x2, 1.e-12);
+
+  rsFill(x2, 0.0);
+  its = rsSolveRichardson(A, x2, b, 0.1, 1.e-12, 100);
+
 
 
   return ok;

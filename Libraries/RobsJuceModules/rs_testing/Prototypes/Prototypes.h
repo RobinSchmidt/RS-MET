@@ -2043,7 +2043,30 @@ int rsSolveCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, 
 // todo: implement Richardson's method (pg 261)
 
 
-
+template<class T>
+int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T alpha,
+  T tol, int maxIts)
+{
+  int its = 0;
+  std::vector<T> dx;
+  while(its < maxIts)
+  {
+    dx = alpha * (b - A*x);
+    //if(!rsMakesDifference(x, dx)) return its;
+    x = x + dx;
+    its++;
+  }
+  return its;
+}
+// -needs convergence test
+// -can we select alpha per iteration to speed up convergence?
+// -could it make sense to use momentum?
+// -could we use an alpha vector, i.e. an update rate per coordinate (and maybe also adapt that
+//  during iteration?)
+// -maybe we could also have a momentum per coordinate?
+// -maybe we could detect if the update vector alternates sign between the iterations for a given
+//  coordinate, and if so, increase the momentum for that coordinate? ..and decrease it, if it
+//  doesn't?
 
 //=================================================================================================
 
