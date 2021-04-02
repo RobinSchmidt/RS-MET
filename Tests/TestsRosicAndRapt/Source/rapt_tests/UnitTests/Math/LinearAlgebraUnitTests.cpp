@@ -574,6 +574,27 @@ bool testIterativeLinAlgBasics()
   return ok;
 }
 
+bool testIterativeLinearSolvers()
+{
+  bool ok = true;
+
+  using Real = double;
+  using Mat  = rsMatrix<Real>;
+  using Vec  = std::vector<Real>;
+  using ILA  = rsIterativeLinearAlgebra;
+  using AT   = rsArrayTools;
+
+  int N = 3;
+  Mat A(3, 3, {5,-1,2, -1,7,3, 2,3,6}); // is symmetric and positive definite (SPD) (verify!)
+  Vec x({1,2,3});
+  Vec b = A*x;
+  Vec x2(N);
+  int its = rsSolveCG(A, x2, b, 1.e-12, 100);
+
+
+  return ok;
+}
+
 // todo: 
 // -move the iterative solvers that are currently in rsSparseMatrix (solveGaussSeidel, solveSOR, 
 //  etc.) into rsIterativeLinearAlgebra
@@ -721,8 +742,9 @@ bool testLinearAlgebra()
   ok &= testNullSpace();
   ok &= testLinearSystemViaGauss2();
 
-  // Iterative solvers:
+  // Iterative linear algebra:
   ok &= testIterativeLinAlgBasics();
+  ok &= testIterativeLinearSolvers();
   ok &= testPowerIterationDense();
 
 

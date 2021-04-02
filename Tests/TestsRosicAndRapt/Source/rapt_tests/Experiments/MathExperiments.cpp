@@ -607,14 +607,16 @@ void linearIndependence()
 
 void orthogonalizedPowerIteration()
 {
-  // Experiments with an algorithm that came came up with that is an extension of the power 
-  // iteration method to compute eigenvalues. It extends it by trying to find all eigenvalues
-  // and vectors by forcing the iterates to be orthogonal to the subspace spanned by all the 
-  // already found eigenvectors. It turns out (as far as i can tell, so far), that the resulting
-  // algo is able to find all eigenvalues but the eigenvectors only in the case when they happen
-  // to be orthogonal (which is the case for eigenvectors corresponding to distinct eigenvalues
-  // of a symmetric matrix). For the time being, i would suggest to call the algorithm 
-  // "orthogonalized power iteration" (OPI)
+  // Experiments with an algorithm that i came up with that is a simple extension of the power 
+  // iteration method to compute the largest eigenvalue and it's corresponding eigenvector. The 
+  // algo is extended to find more (potentially all) eigenvalues and -vectors by forcing the 
+  // iterates to be orthogonal to the subspace spanned by all the already found eigenvectors. It 
+  // does so by doing a Gram-Schmidt like orthogonalization step after the multiplication of the
+  // iterate by the matrix. It turns out (as far as i can tell, so far), that the resulting algo 
+  // is indeed able to find all eigenvalues but the eigenvectors can only be found if they happen
+  // to be orthogonal (which is the case for eigenvectors corresponding to distinct eigenvalues of
+  // a symmetric matrix). For the time being, i would suggest to call the algorithm "orthogonalized
+  // power iteration" (OPI).
 
   using Real = double;
   using Mat  = rsMatrix<Real>;
@@ -755,6 +757,7 @@ void orthogonalizedPowerIteration()
   //  (not yet sure, if the shift should be applied with positive or negative sign). 
   //  To do this, we should first move the solvers from rsSparseMatrix into 
   //  rsIterativeLinearAlgebra
+  // -Rayleigh iteration may also be a candidate to find the eigenvectors
 }
 
 void eigenstuff()

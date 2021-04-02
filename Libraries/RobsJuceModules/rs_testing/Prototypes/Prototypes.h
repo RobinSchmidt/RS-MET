@@ -1790,8 +1790,6 @@ public:
 
 
 
-
-
   //-----------------------------------------------------------------------------------------------
   // \name Low Level Interface
 
@@ -1813,6 +1811,8 @@ public:
   // mayb rename to eigensystem
   // https://reference.wolfram.com/language/ref/Eigensystem.html
   // sizes: A: NxN, vals: N, vecs: N*N, workspace: N
+
+
 
   /** Returns true, iff the vector y is a scalar multiple of the vector x (up to some tolerance). 
   Both vectors must be of length N. The "factor" parameter will get the scale factor assigned if y
@@ -1996,6 +1996,53 @@ bool rsIterativeLinearAlgebra::isScalarMultiple(const T* x, const T* y, int N, T
   *factor = r;
   return true;
 }
+
+
+template<class T>
+T rsDot(const std::vector<T>& x, const std::vector<T>& y)
+{
+  rsAssert(x.size() == y.size());
+  T sum = T(0);
+  for(size_t i = 0; i < x.size(); i++)
+    sum += x[i] * y[i];
+  return sum;
+}
+// move elsewhere
+
+/** Solves the linear system A*x = b via the conjugate gradient method. A must be symmetric and 
+positive definite (i think). */
+template<class T>
+int rsSolveCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T tol, int maxIts)
+{
+  using Vec = std::vector<T>;
+  Vec r = b - A*x;
+  Vec p = r;
+  T rho0 = rsDot(b, b);
+  T rho  = rsDot(r, r);
+  Vec t;
+  T a, rhos;
+  for(int k = 0; k < maxIts; k++)
+  {
+    if(sqrt(rho/rho0) <= tol)
+      return k;                
+    // ToDo: we need a better stopping criterion. Maybe something based on 
+    // rsMakesDifference(x, p, a, tol) ...
+
+    t    = A*p;
+    a    = rho / rsDot(p,t);
+    x    = x + a*p;
+    r    = r - a*t;
+    rhos = rho;
+    rho  = rsDot(r, r);
+    p    = r + (rho/rhos)*p;
+  }
+  return maxIts+1;
+}
+// References:
+// Numerical Linear Algebra and Matrix Factorizations (Tom Lyche), pg 286
+// todo: implement Richardson's method (pg 261)
+
+
 
 
 //=================================================================================================

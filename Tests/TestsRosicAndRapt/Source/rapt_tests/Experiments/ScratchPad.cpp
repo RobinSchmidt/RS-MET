@@ -1412,7 +1412,6 @@ void decomposeRealUSV(const rsMatrix<R>& A, rsMatrix<R>& U, rsMatrix<R>& S, rsMa
 //  always in between these two or can it be used to further constrain the eigenvalues? what about
 //  yet other norms?)
 
-
 // make a class rsSubSpace that defines arithmetic operations:
 // -subspaces of a R^M are represented by MxN matrices whose columns define a basis of R^M
 // -equals(A, B): spanSameSpace(A, B), A,B must have the same embedding space, i.e. their number
