@@ -5,9 +5,8 @@
 library (STL), such as std::vector, std::map, etc. */
 
 //=================================================================================================
-// functions for std::vector
-
-// maybe wrap into a class rsVectorTools
+// Conveniennce functions for std::vector
+// maybe wrap into a class rsStdVectorTools
 
 template<class T>
 inline std::vector<T> rsAbs(const std::vector<T>& v)
@@ -448,6 +447,13 @@ T rsMaxValue(const std::vector<T>& x) { return rsArrayTools::maxValue(&x[0], (in
 
 template<class T>
 T rsMaxAbs(const std::vector<T>& x) { return rsArrayTools::maxAbs(&x[0], (int) x.size()); }
+
+template<class T>
+T rsMaxDeviation(const std::vector<T>& x, const std::vector<T>& y)
+{
+  rsAssert(x.size() == y.size());
+  return rsArrayTools::maxDeviation(&x[0], &y[0], (int)x.size());
+}
 
 template<class T>
 bool rsIsCloseTo(const std::vector<T>& x, const std::vector<T>& y, T tol)

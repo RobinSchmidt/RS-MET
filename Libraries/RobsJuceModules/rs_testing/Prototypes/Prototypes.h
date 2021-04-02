@@ -2009,8 +2009,30 @@ T rsDot(const std::vector<T>& x, const std::vector<T>& y)
 }
 // move elsewhere
 
-/** Solves the linear system A*x = b via the conjugate gradient method. A must be symmetric and 
-positive definite (i think). */
+
+/** Returns true, iff for all values x[i] in the x-array, adding s*dx[i] does not actually change 
+the x[i] value. Useful for multidimensional convergence tests. */
+template<class T>
+bool rsStaysFixed(const T* x, const T* dx, int N, T s = T(1))
+{
+  for(int n = 0; n < N; n++) {
+    T y = x[n] + s*dx[n];
+    if(y != x[n])
+      return false; }
+  return true;
+}
+// todo: give it a tolerance. maybe that should be relative
+
+template<class T>
+bool rsStaysFixed(const std::vector<T>& x, const std::vector<T>& dx, T s = T(1))
+{
+  rsAssert(x.size() == dx.size());
+  return rsStaysFixed(&x[0], &dx[0], (int)x.size(), s);
+}
+
+
+/** Solves the linear system A*x = b iteratively via the conjugate gradient method. The matrix A 
+must be symmetric and positive definite (i think). */
 template<class T>
 int rsSolveCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T tol, int maxIts)
 {
@@ -2026,7 +2048,7 @@ int rsSolveCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, 
     if(sqrt(rho/rho0) <= tol)
       return k;                
     // ToDo: we need a better stopping criterion. Maybe something based on 
-    // rsMakesDifference(x, p, a, tol) ...
+    // rsStaysFixed(x, p, a, tol) ...
 
     t    = A*p;
     a    = rho / rsDot(p,t);
@@ -2038,10 +2060,7 @@ int rsSolveCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, 
   }
   return maxIts+1;
 }
-// References:
-// Numerical Linear Algebra and Matrix Factorizations (Tom Lyche), pg 286
-// todo: implement Richardson's method (pg 261)
-
+// References: Numerical Linear Algebra and Matrix Factorizations (Tom Lyche), pg 286
 
 template<class T>
 int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T alpha,
@@ -2052,21 +2071,33 @@ int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector
   while(its < maxIts)
   {
     dx = alpha * (b - A*x);
-    //if(!rsMakesDifference(x, dx)) return its;
+    if(rsStaysFixed(x, dx)) 
+      return its;               // x has converged
     x = x + dx;
     its++;
   }
   return its;
 }
-// -needs convergence test
-// -can we select alpha per iteration to speed up convergence?
-// -could it make sense to use momentum?
-// -could we use an alpha vector, i.e. an update rate per coordinate (and maybe also adapt that
-//  during iteration?)
-// -maybe we could also have a momentum per coordinate?
-// -maybe we could detect if the update vector alternates sign between the iterations for a given
-//  coordinate, and if so, increase the momentum for that coordinate? ..and decrease it, if it
-//  doesn't?
+// References: Numerical Linear Algebra and Matrix Factorizations (Tom Lyche), pg 261
+// -convergence test needs tolerance
+// -if A has positive eigenvalues s1 >= s2 >= sN > 0, the method converges, iff 0 < alpha < 2/s1.
+// -The iteration can also be expressed as xNew = (I-alpha*A)*xOld + b. Define kappa = s1/sN, 
+//  alpha_0 = 2 / (s1 + sN), then we have:
+//    rho(I-alpha*A) > rho(I-alpha_0*A) = (kappa-1)/(kappa+1). 
+//  where rho is the spectral radius (i guess)
+// -I think, this algorithm corresponds to gradient descent algorithm in numerical optimization. 
+//  Starting from that as the baseline, we can try various tweaks to try to improve the 
+//  convergence speed and robustness, such as:
+//  -select update rate alpha per iteration (...somehow)
+//  -use momentum
+//  -use an alpha vector, i.e. an update rate per coordinate, possibly adaptive
+//  -use (adaptive) momentum per coordinate
+//  -maybe we could detect if the update vector alternates sign between the iterations for a given
+//   coordinate, and if so, increase the momentum and/or decrease update rate for that coordinate
+//   ...and decrease/increase it, if it doesn't alternate?
+//  -detect, if the error err = b - A*x has increased with respect to previous iteration, if so,
+//   maybe undo the step and also adapt momentum and update rate
+
 
 //=================================================================================================
 
