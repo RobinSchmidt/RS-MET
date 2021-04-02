@@ -607,7 +607,9 @@ bool testPowerIterationDense()
   // because we need to swicth the convergence test to using isScalarMultiple as in eigenspace
 
 
-  // move this code into the experiments section:
+  // move this code into the experiments section (partially done - see orthogonalizedPowerIteration
+  // in MathExperiments.cpp):
+
   // Recover all eigenvalues and vectors:
   rsNormalizeChunks(vecs, N);  // for easier comparison
   Vec vals2(N), vecs2(N*N);
@@ -687,7 +689,7 @@ bool testPowerIterationDense()
   // -figure out what happens when we have eigenvalues with multiplicities (algebraic and/or
   //  geometric)
 
-  // Deflation for symmetric matrices works by subtractinng sum_i (lamda_i * V_i * V_i^T)
+  // Deflation for symmetric matrices works by subtracting sum_i (lamda_i * V_i * V_i^T)
   // https://www.math.tamu.edu/~dallen/linear_algebra/chpt6.pdf  pg 417
 
   return ok;

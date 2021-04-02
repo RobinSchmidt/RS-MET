@@ -607,8 +607,90 @@ void linearIndependence()
 
 void orthogonalizedPowerIteration()
 {
+  using Real = double;
+  using Mat  = rsMatrix<Real>;
+  using Vec  = std::vector<Real>;
+  using ILA  = rsIterativeLinearAlgebra;
+  using AT   = rsArrayTools;
+
+  // Create 2x2 matrix with eigenvalues 3,2 and (orthogonal) eigenvectors (6,8),(-8,6):
+  int N = 2;                      // dimensionality
+  Vec s({3,    2  });             // eigenvalues* (distinct, positive real)
+  Vec v({6,8, -8,6});             // eigenvectors (orthogonal, both have norm 100)
+  Mat A = fromEigenSystem(s, v);  // A = (2.36, 0.48,  0.48, 2.64) (symmetric)
+  // (*) I use s for the eigenvalues to indicate that they are scalars ("eigenscalars")
+
+  // Output variables for algo:
+  Vec wrk(N), t(N), w(N*N);       // wrk: workspace, t: recovered eigenvalues, w: orthovectors*
+  int its;                        // number of iteratiosn taken by the algo
+  bool ok = true;
+  // (*) "orthovector" is a term i just made up myself to call the orthogonalized eigenvectors that
+  // the algo produces.
+
+  // Retrieve eigensystem:
+  AT::fillWithRandomValues(&w[0], N*N, -1.0, +1.0, 0);     // initial guess
+  its = ILA::eigenspace(A, &t[0], &w[0], 1.e-13, &wrk[0]); // its = 81
+  ok  = checkEigensystem(t, w, s, v, 1.e-12);              // yep, works!
+
+  // Now try the same thing with eigenvectors (6,8),(8,6). These have still both norm 100 but are
+  // not orthogonal anymore:
+  v = Vec({6,8, 8,6});                                     // not orthogonal anymore
+  A    = fromEigenSystem(s, v);                            // A is now antisymmetric
+  AT::fillWithRandomValues(&w[0], N*N, -1.0, +1.0, 0);     // initial guess
+  its = ILA::eigenspace(A, &t[0], &w[0], 1.e-13, &wrk[0]); // its = 75
+  ok  = rsIsPermutation(s, t, 1.e-12);                     // eigenvalues are correct
+  ok  = checkEigensystem(t, w, s, v, 1.e-12);              // eigenvectors are wrong
+
+  // Test if the found vectors are orthonormal (they should be):
+  Mat W = rsToMatrixColumnWise(w, N, N);
+  ok = areColumnsOrthogonal( W, 1.e-12);                   // yes
+  ok = areColumnsOrthonormal(W, 1.e-12);                   // yes
+
+  // Test if the found vectors are compatible with the Gram-Schmidt orthogonalized set of the 
+  // actual, true eigenvectors:
+  Mat V   = rsToMatrixColumnWise(v, N, N);
+  Mat V_o = V; orthonormalizeColumns1(V_o);       // V_o is (Gram-Schmidt) orthogonalized V
+  Mat D   = W - V_o;
+  // D is the zero matrix, so the computed vectors are indeed equal to the Gram-Schmidt 
+  // orthogonalized set of the original eigenvectors. I think, in general, we would expect them to
+  // equal to but only compatible with them, i.e. they may have different signs. (...something to
+  // figure out...)
+
+  // Now try to recover the orginal eigenvector v2 from w1,w2 by undoing the Gram-schmidt process
+  // ...but how can this be done? Can it be done at all?
+
+
 
   int dummy = 0;
+
+
+  // Now try it with a 3x3 matrix with orthogonal eigenvectors (6,8,0),(-8,6,0),(0,0,10):
+  // ...
+
+  // Observations:
+  // -For the symmetric 2x2 matrix A = (2.36, 0.48,  0.48, 2.64) with eigenvalues 3,2 and 
+  //  orthogonal eigenvectors (6,8),(-8,6), the algorithm can indeed recover both eigenpairs from
+  //  the matrix A. The algo takes 81 iterations.
+  // -When we use the non-orthogonal eigenvectors (6,8),(8,6), the matrix A becomes antisymmetric.
+  //  The algo will still produce the correct eigenvalues, but the returned vectors are not the
+  //  eigenvectors. The algo takes 75 iterations - that's a bit less than before.
+
+  // Conclusion (preliminary):
+  // -I think, the set of vectors that the algorithm produces is forced to be orthogonal and 
+  //  therefore it can match the actual eigenvectors only when they are orthogonal themselves.
+  // -I think in any step, (i.e. for any n), the set of the n already fround vectors spans the same
+  //  space as the first n eigenvectors.
+
+  // ToDo:
+  // -Try to apply Gram-Schmidt othogonalization to the actual, true eigenvectors and see if the
+  //  result matches the output of the algo.
+  // -Try to reconstruct the actual eigenvectors from the returned orthonormal set by a 
+  //  postprocessing step. Maybe in the 2x2 case try w2' = w1 + A*w2 or w2' = w1 - A*w2 where
+  //  w2' is supposed to be the reconstructed eigenvector v2 and w1 is the first (found) 
+  //  eigenvector. I think the computed w2 is perp(v2; w1), i.e. the perpendicular componenent of
+  //  the actual eigenvector v2 with respect to the 1st eigenvector w1 (which itself is compatible
+  //  with v1, i.e. equals v1 up to scaling)
+  // -maybe rename variables vecs to v and vecs2 to w 
 }
 
 void eigenstuff()

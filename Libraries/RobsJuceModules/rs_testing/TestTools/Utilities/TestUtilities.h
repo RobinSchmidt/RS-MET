@@ -214,6 +214,25 @@ std::vector<T> rsGetChunk(std::vector<T>& v, int start, int size)
   return c;
 }
 
+/** Checks if vector y is a permutation of x, up to some tolerance. */
+template<class T>
+bool rsIsPermutation(const std::vector<T>& x, const std::vector<T>& y, T tol)
+{
+  int N  = (int) x.size();
+  if((int) y.size() != N)
+    return false;
+  std::vector<bool> done(N);   // flags to indicate that a value was used up
+  for(int i = 0; i < N; i++)  {
+    int j;
+    for(j = 0; j < N; j++)
+      if(!done[j] && rsAbs(x[i]-y[j]) <= tol)
+        break;
+    if(j == N)
+      return false;
+    done[j] = true;  }
+  return true;
+}
+
 //=================================================================================================
 // Convenience functions for matrices:
 
@@ -312,7 +331,7 @@ bool checkEigensystem(
   for(i = 0; i < N; i++)
   {
     for(j = 0; j < N; j++)
-      if(!done[j] && rsAbs(vals1[i]-vals2[j]) < tol)
+      if(!done[j] && rsAbs(vals1[i]-vals2[j]) <= tol)
         break;
     if(j == N)
       return false;
@@ -326,7 +345,6 @@ bool checkEigensystem(
   }
   return true;
 }
-
 
 //=================================================================================================
 
