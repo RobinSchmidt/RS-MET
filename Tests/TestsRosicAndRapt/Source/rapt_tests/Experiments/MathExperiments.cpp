@@ -607,6 +607,15 @@ void linearIndependence()
 
 void orthogonalizedPowerIteration()
 {
+  // Experiments with an algorithm that came came up with that is an extension of the power 
+  // iteration method to compute eigenvalues. It extends it by trying to find all eigenvalues
+  // and vectors by forcing the iterates to be orthogonal to the subspace spanned by all the 
+  // already found eigenvectors. It turns out (as far as i can tell, so far), that the resulting
+  // algo is able to find all eigenvalues but the eigenvectors only in the case when they happen
+  // to be orthogonal (which is the case for eigenvectors corresponding to distinct eigenvalues
+  // of a symmetric matrix). For the time being, i would suggest to call the algorithm 
+  // "orthogonalized power iteration" (OPI)
+
   using Real = double;
   using Mat  = rsMatrix<Real>;
   using Vec  = std::vector<Real>;
@@ -695,6 +704,11 @@ void orthogonalizedPowerIteration()
   // Then we may write 
   //   v2_o*k2 = v2 - <v1_o, v2> * v1_o
   // here v2_o,v1_o are the knwons and k2,v2 are the unknowns.
+  // I think, in this special case here, we may be able to reconstruct the eigenvector by flipping
+  // the sign of x or y. Try it! but this may work only when A is antisymmetric? ...maybe if it 
+  // works, the algo can be applied to symmetric and antisymmetic parts (A_s, A_a) separately? But 
+  // that would only help, if we could find the eigenvectors of A from those of A_s, A_a
+
 
 
   int dummy = 0;
@@ -714,8 +728,13 @@ void orthogonalizedPowerIteration()
   // Conclusion (preliminary):
   // -I think, the set of vectors that the algorithm produces is forced to be orthogonal and 
   //  therefore it can match the actual eigenvectors only when they are orthogonal themselves.
-  // -I think in any step, (i.e. for any n), the set of the n already fround vectors spans the same
-  //  space as the first n eigenvectors.
+  // -I think in any step, (i.e. for any n), the set of the n already found vectors spans the same
+  //  space as the first n eigenvectors. Indeed, i think the set of vectors is the Gram-Schmidt
+  //  orthogonalized set of the first n eigenvectors.
+  // -Maybe the algorithm could at least be useful for symmetric matrices, because their 
+  //  eigenvectors are indeed orthogonal. Oh - no - that holds only for eigenvectors corresponding 
+  //  to distinct eigenvalues:
+  //  https://math.stackexchange.com/questions/82467/eigenvectors-of-real-symmetric-matrices-are-orthogonal
 
   // ToDo:
   // -Try to apply Gram-Schmidt othogonalization to the actual, true eigenvectors and see if the
