@@ -658,7 +658,43 @@ void orthogonalizedPowerIteration()
 
   // Now try to recover the orginal eigenvector v2 from w1,w2 by undoing the Gram-schmidt process
   // ...but how can this be done? Can it be done at all?
-
+  Vec v1(N); V.copyColumn(0, &v1[0]); // todo: implement convenience function: v1 = V.getColumn(0)
+  Vec v2(N); V.copyColumn(1, &v1[0]);
+  Vec w1(N); W.copyColumn(0, &w1[0]);
+  Vec w2(N); W.copyColumn(1, &w2[0]);
+  Vec Aw2 = A*w2;
+  Vec u2p = w1 + Aw2;  // nah - does not equal v2
+  Vec u2m = w1 - Aw2;  // ditto
+  // The Gram-Schmidt process applied to v1,v2 does (verify!):
+  //
+  //   v1_o = v1 / |v1|
+  //
+  //            (v2 - <v1_o, v2> * v1_o)
+  //   v2_o = ----------------------------
+  //           |(v2 - <v1_o, v2> * v1_o)|
+  //
+  // Can this be undone? The normalization steps obviously can't be undone because the length 
+  // information is indeed lost in such a step. But we are not interested in reconstructing the 
+  // length information anyway. Only the direction information is relevant. Can we hope to 
+  // reconstruct from v1_o, v2_o a vector v2_n that is a normalized version of v2 not necessarily
+  // orthogonal to v1_o but instead pointing in the same direction as v2 originally did? Maybe not
+  // without additional information. But we do have additional information: the matrix A, its
+  // eigenvalues s1,s2 and we know that v1 and v1_o are eigenvectors to s1 and we know that
+  // v2_o is the perpendicular part of v2 with respect to v1 (or v1_o). Maybe writing:
+  //   v2_n = par(v2_n, {v1}) + perp(v2_n, {v1})
+  // could help? Here, par and perp denote the parallel and perpendicular part of a vector with 
+  // respect to a set of vectors (here, a 1 element set). The term perp(v2_n, {v1}) has the same 
+  // direction as v2_o (but possibly different length?)
+  // See:
+  // https://www.physicsforums.com/threads/matrix-which-reverses-gram-schmidt-linear-algebra.981879/
+  // https://arxiv.org/ftp/arxiv/papers/1607/1607.04759.pdf - this apaper discusses an inversion
+  // algo for Gram-Schmidt, but that makes use of an additional matrix r(M,N) that is computed 
+  // during the forward orthogonalization along with the orthogonalized set of vectors. We don't
+  // have such a matrix available here. Maybe define the (unknwon) denominator as:
+  //   k2 := |(v2 - <v1_o, v2> * v1_o)|. 
+  // Then we may write 
+  //   v2_o*k2 = v2 - <v1_o, v2> * v1_o
+  // here v2_o,v1_o are the knwons and k2,v2 are the unknowns.
 
 
   int dummy = 0;
@@ -690,7 +726,16 @@ void orthogonalizedPowerIteration()
   //  eigenvector. I think the computed w2 is perp(v2; w1), i.e. the perpendicular componenent of
   //  the actual eigenvector v2 with respect to the 1st eigenvector w1 (which itself is compatible
   //  with v1, i.e. equals v1 up to scaling)
-  // -maybe rename variables vecs to v and vecs2 to w 
+  // -If this doesn't work out, we may use the known eigenvalues s_i to compute the corresponding 
+  //  eigenvectors v_i in a 2nd step, one at a time, by solving the linear system 
+  //  (A - s_i*I) * v_i = 0. If this system is also to be solved iteratively, maybe it makes sense
+  //  to use the computed "orthovector" as initial guess? Maybe it would make sense to have a 
+  //  function shiftedProduct that can be used instead of the regular call to product in the 
+  //  solvers. shiftedProduct(const rsMatrix<T>& A, const T& s, const T* x, T* y) should work
+  //  like product(const rsMatrix<T>& A, const T* x, T* y) but instead use the shifted matrix
+  //  (not yet sure, if the shift should be applied with positive or negative sign). 
+  //  To do this, we should first move the solvers from rsSparseMatrix into 
+  //  rsIterativeLinearAlgebra
 }
 
 void eigenstuff()
