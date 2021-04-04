@@ -2011,23 +2011,26 @@ T rsDot(const std::vector<T>& x, const std::vector<T>& y)
 
 
 /** Returns true, iff for all values x[i] in the x-array, adding s*dx[i] does not actually change 
-the x[i] value. Useful for multidimensional convergence tests. */
+the x[i] value (upt to some relative tolerance tolR). Useful for multidimensional convergence 
+tests. */
 template<class T>
-bool rsStaysFixed(const T* x, const T* dx, int N, T s = T(1))
+bool rsStaysFixed(const T* x, const T* dx, int N, T s = T(1), T tolR = T(0))
 {
   for(int n = 0; n < N; n++) {
     T y = x[n] + s*dx[n];
-    if(y != x[n])
-      return false; }
+    T d = y - x[n];
+    if(rsAbs(d) > rsAbs(x[n]*tolR))
+      return false;
+    //if(y != x[n])   
+    //  return false;    // old
+  }
   return true;
 }
-// todo: give it a tolerance. maybe that should be relative
-
 template<class T>
-bool rsStaysFixed(const std::vector<T>& x, const std::vector<T>& dx, T s = T(1))
+bool rsStaysFixed(const std::vector<T>& x, const std::vector<T>& dx, T s = T(1), T tolR = T(0))
 {
   rsAssert(x.size() == dx.size());
-  return rsStaysFixed(&x[0], &dx[0], (int)x.size(), s);
+  return rsStaysFixed(&x[0], &dx[0], (int)x.size(), s, tolR);
 }
 
 
@@ -2037,8 +2040,8 @@ template<class T>
 int rsSolveCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T tol, int maxIts)
 {
   using Vec = std::vector<T>;
-  Vec r = b - A*x;
-  Vec p = r;
+  Vec r = b - A*x;         // residuum?
+  Vec p = r;               // current direction?
   T rho0 = rsDot(b, b);
   T rho  = rsDot(r, r);
   Vec t;
@@ -2064,14 +2067,14 @@ int rsSolveCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, 
 
 template<class T>
 int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T alpha,
-  T tol, int maxIts)
+  T tolR, int maxIts)
 {
   int its = 0;
   std::vector<T> dx;
   while(its < maxIts)
   {
     dx = alpha * (b - A*x);
-    if(rsStaysFixed(x, dx)) 
+    if(rsStaysFixed(x, dx, T(1), tolR)) 
       return its;               // x has converged
     x = x + dx;
     its++;
@@ -2097,6 +2100,16 @@ int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector
 //   ...and decrease/increase it, if it doesn't alternate?
 //  -detect, if the error err = b - A*x has increased with respect to previous iteration, if so,
 //   maybe undo the step and also adapt momentum and update rate
+//  -maybe use a 2-point moving avergae for the dx - that should effectively remove sign 
+//   alternations in the updates. maybe the fiilter coeffs (which should sum to 1) can also be made
+//   adaptive. maybe based on the difference of successive values: if the difference is large, the 
+//   coeff should be large (i.e. smoothing should be stronger) and if the difference is zero, the 
+//   coeff should be zero. maybe based on some function f(x) that is zero for x=0 and approaches
+//   0.5, if |x| approaches infinity
+// -maybe interpret the problem as minimization of dot(A*x-b, A*x-b) = (A*x-b)^T * (A*x-b)
+//    = ((A*x)^T-b^T) * (A*x-b) 
+//    = (A*x)^T * A*x  -  (A*x)^T * b  -  b^T * A*x  +  b^T * b
+//    = x^T*A^T*A*x  -  x^T*A^T*b  -  b^T * A*x  +  b^T * b
 
 
 //=================================================================================================
