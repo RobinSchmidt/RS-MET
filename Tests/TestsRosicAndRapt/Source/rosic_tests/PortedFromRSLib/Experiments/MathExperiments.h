@@ -9,6 +9,7 @@ bool testSubSpaces();
 bool testSigularValueDecomp();
 void linearIndependence();
 void eigenstuff();
+void iterativeLinearSolvers();
 void linearSolverPrecision();
 
 void bandMatrix();

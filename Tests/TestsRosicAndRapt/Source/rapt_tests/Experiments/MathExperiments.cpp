@@ -899,6 +899,63 @@ void eigenstuff()
 };
 
 
+
+
+template<class T>
+int rsSolveRichardson2(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T alpha,
+  T tolR, int maxIts, T smooth = T(0))
+{
+  int its = 0;
+  int N = (int) x.size();
+  std::vector<T> err, errOld(N), dx;
+  while(its < maxIts) 
+  {
+    err = A*x - b;
+    //dx  = -alpha * err;          // this is the basic Richardson iteration rule
+    dx  = -alpha * ((1-smooth)*err + smooth*errOld);
+    if(rsStaysFixed(x, dx, T(1), tolR)) 
+      return its;  // x has converged
+    x = x + dx;
+    errOld = err;
+    its++; 
+  }
+  return its;
+}
+void iterativeLinearSolvers()
+{
+  using Real = double;
+  using Mat  = rsMatrix<Real>;
+  using Vec  = std::vector<Real>;
+  //using ILA  = rsIterativeLinearAlgebra;
+  //using AT   = rsArrayTools;
+
+
+  bool ok = true;
+
+  int maxIts = 1000;
+
+  int N = 3;
+  Mat A(3, 3, {5,-1,2, -1,7,3, 2,3,6}); // is symmetric and positive definite (SPD) (verify!)
+  Vec x({1,2,3});
+  Vec b = A*x;
+  Vec x2(N);
+  int its = rsSolveCG(A, x2, b, 1.e-12, maxIts);
+  ok &= rsIsCloseTo(x, x2, 1.e-12);
+  ok &= its == 3; // conjugate gradient is supposed to find the solution after at most N steps
+
+  rsFill(x2, 0.0);
+  its = rsSolveRichardson(A, x2, b, 0.16, 1.e-13, maxIts); // around 0.16 seems best, 75 iterations
+  Real err = rsMaxDeviation(x2, x);
+  ok &= err <= 1.e-12;
+
+  rsFill(x2, 0.0); 
+  its = rsSolveRichardson2(A, x2, b, 0.16, 1.e-13, maxIts, 0.25);
+
+
+  int dummy = 0;
+}
+
+
 void linearSolverPrecision()
 {
   // We construct matrices of different sizes by shuffling diagonal matrices for which we know

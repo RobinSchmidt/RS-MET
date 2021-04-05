@@ -2020,12 +2020,12 @@ bool rsStaysFixed(const T* x, const T* dx, int N, T s = T(1), T tolR = T(0))
     T y = x[n] + s*dx[n];
     T d = y - x[n];
     if(rsAbs(d) > rsAbs(x[n]*tolR))
-      return false;
-    //if(y != x[n])   
-    //  return false;    // old
-  }
+      return false;  }
   return true;
 }
+// Is it possible that compiler algebraically optimizes this to d = s*dx? And if so, would that be
+// a potential problem?
+
 template<class T>
 bool rsStaysFixed(const std::vector<T>& x, const std::vector<T>& dx, T s = T(1), T tolR = T(0))
 {
@@ -2071,18 +2071,15 @@ int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector
 {
   int its = 0;
   std::vector<T> dx;
-  while(its < maxIts)
-  {
+  while(its < maxIts) {
     dx = alpha * (b - A*x);
     if(rsStaysFixed(x, dx, T(1), tolR)) 
-      return its;               // x has converged
+      return its;  // x has converged
     x = x + dx;
-    its++;
-  }
+    its++; }
   return its;
 }
 // References: Numerical Linear Algebra and Matrix Factorizations (Tom Lyche), pg 261
-// -convergence test needs tolerance
 // -if A has positive eigenvalues s1 >= s2 >= sN > 0, the method converges, iff 0 < alpha < 2/s1.
 // -The iteration can also be expressed as xNew = (I-alpha*A)*xOld + b. Define kappa = s1/sN, 
 //  alpha_0 = 2 / (s1 + sN), then we have:
@@ -2098,14 +2095,14 @@ int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector
 //  -maybe we could detect if the update vector alternates sign between the iterations for a given
 //   coordinate, and if so, increase the momentum and/or decrease update rate for that coordinate
 //   ...and decrease/increase it, if it doesn't alternate?
-//  -detect, if the error err = b - A*x has increased with respect to previous iteration, if so,
-//   maybe undo the step and also adapt momentum and update rate
-//  -maybe use a 2-point moving avergae for the dx - that should effectively remove sign 
-//   alternations in the updates. maybe the fiilter coeffs (which should sum to 1) can also be made
+//  -or: use a 2-point moving avergae for the dx - that should effectively remove sign 
+//   alternations in the updates. maybe the filter coeffs (which should sum to 1) can also be made
 //   adaptive. maybe based on the difference of successive values: if the difference is large, the 
 //   coeff should be large (i.e. smoothing should be stronger) and if the difference is zero, the 
 //   coeff should be zero. maybe based on some function f(x) that is zero for x=0 and approaches
 //   0.5, if |x| approaches infinity
+//  -detect, if the error err = b - A*x has increased with respect to previous iteration, if so,
+//   maybe undo the step and also adapt momentum and update rate
 // -maybe interpret the problem as minimization of dot(A*x-b, A*x-b) = (A*x-b)^T * (A*x-b)
 //    = ((A*x)^T-b^T) * (A*x-b) 
 //    = (A*x)^T * A*x  -  (A*x)^T * b  -  b^T * A*x  +  b^T * b
@@ -2113,7 +2110,6 @@ int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector
 
 
 //=================================================================================================
-
 
 template<class T> 
 bool isHarmonic2(const rsBivariatePolynomial<T>& u, T tol = T(0))
