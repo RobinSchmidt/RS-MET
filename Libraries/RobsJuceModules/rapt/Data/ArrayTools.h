@@ -1157,7 +1157,8 @@ inline bool rsArrayTools::staysFixed(const T* x, const T* dx, int N, T s, T tolR
     if(rsAbs(d) > rsAbs(x[n]*tolR))
       return false;  }
   return true;
-
+  // Is it possible that compiler algebraically optimizes this to d = s*dx? And if so, would that 
+  // be a potential problem?
 }
 
 template <class T>

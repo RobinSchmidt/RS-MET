@@ -1859,11 +1859,42 @@ protected:
 };
 
 template<class T, class TMat>
-int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b, T* wrk,
-  T tol, int maxIts)
+int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b, 
+  T* wrk, T tol, int maxIts)
 {
-
+  using AT = rsArrayTools;
+  int M = numRows(A);               // number of outputs, size of b
+  int N = numColumns(A);            // number of inputs, size of x
+  rsAssert(M == N, "Matrix A must be square");
+  T* r = &wrk[0];                   // residual
+  T* p = &wrk[N];                   // current update direction
+  T* t = &wrk[2*N];                 // temp? product A*p
+  product(A, x, t);                 // t = A*x
+  AT::subtract(b, t, r, N);         // r = b-t = b - A*x
+  AT::copy(r, p, N);                // p = r
+  T rho0 = AT::sumOfSquares(b, N);  // rho0 = dot(b, b)
+  T rho  = AT::sumOfSquares(r, N);  // rho  = dot(r, r)
+  T a;                              // update step size
+  T rhos;                           // old rho?
+  T rhor;                           // ratio rho/rhos
+  int k;
+  for(k = 0; k < maxIts; k++) {
+    if(rho/rho0 <= tol*tol) 
+      return k;
+    product(A, p, t);               // t = A*p
+    a = AT::sumOfProducts(p, t, N); // a = dot(p,t)
+    for(int i = 0; i < N; i++) {
+      x[i] += a*p[i];
+      r[i] -= a*t[i];  }
+    rhos = rho;
+    rho  = AT::sumOfSquares(r, N);
+    rhor = rho/rhos;
+    for(int i = 0; i < N; i++)
+      p[i] = r[i] + rhor*p[i]; }
+  return k;
 }
+// -needs tests
+// -wrk needs to be of size 3*N - can we reduce it to 2*N?
 
 template<class T, class TMat>
 int rsIterativeLinearAlgebra::largestEigenValueAndVector(
@@ -1976,10 +2007,6 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
 //  iteration 2 vectors: one as usual and one with the projection onto the usual vector subtracted,
 //  which is going to be our estimate for the 2nd largest eigenvector ...dunno, just brainstorming
 
-
-
-
-
 template<class T>
 bool rsIterativeLinearAlgebra::isScalarMultiple(const T* x, const T* y, int N, T tol, T* factor)
 {
@@ -2031,34 +2058,12 @@ T rsDot(const std::vector<T>& x, const std::vector<T>& y)
 }
 // move elsewhere
 
-
-/** Returns true, iff for all values x[i] in the x-array, adding s*dx[i] does not actually change 
-the x[i] value (up to some relative tolerance tolR). Useful primarily for multidimensional 
-convergence tests: if adding s*dx to x does not change x (upt to tolerance), an algo may be 
-considered to be converged. */
-/*
-template<class T>
-bool rsStaysFixed(const T* x, const T* dx, int N, T s = T(1), T tolR = T(0))
-{
-  for(int n = 0; n < N; n++) {
-    T y = x[n] + s*dx[n];
-    T d = y - x[n];
-    if(rsAbs(d) > rsAbs(x[n]*tolR))
-      return false;  }
-  return true;
-}
-*/
-// -move to rsArrayTools
-// Is it possible that compiler algebraically optimizes this to d = s*dx? And if so, would that be
-// a potential problem?
-
 template<class T>
 bool rsStaysFixed(const std::vector<T>& x, const std::vector<T>& dx, T s = T(1), T tolR = T(0))
 {
   rsAssert(x.size() == dx.size());
   return rsArrayTools::staysFixed(&x[0], &dx[0], (int)x.size(), s, tolR);
 }
-
 
 /** Solves the linear system A * x = b iteratively via the conjugate gradient (CG) method. The 
 matrix A must be symmetric and positive definite (SPD) for the algorithm to converge. */
