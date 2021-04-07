@@ -1039,10 +1039,17 @@ void iterativeLinearSolvers()
   // Try least squares conjugate gradient algo:
   rsFill(x2, 0.0); 
   its = rsSolveLSCG(A, x2, b, 1.e-13, maxIts);
-  err = rsMaxDeviation(x2, x); ok &= err <= 1.e-12;
+  err = rsMaxDeviation(x2, x); 
+  ok &= err <= 1.e-12 && its == 3;
+
+  // Can we do some sort of iterative improvement to polish the solution?
+  its = rsSolveLSCG(A, x2, b, 0.0, maxIts);
+  err = rsMaxDeviation(x2, x); 
+  // ...hmm - this takes 30 iterations and the result is still inexact. ToDo: look up the 
+  // iterative improvement in Numerical Recipies and see, if it can be applied here
 
 
-
+  // soon obsolete:
   // Idea: The conjugate gradient algorithm needs a symmetric and positive definite matrix. Let's
   // construct a related problem, that features such a matrix and has the same solution as A*x = b.
   // Consider the equation: dot(A*x-b, A*x-b) = (A*x-b)^T * (A*x-b) = min. Multiplying it out, 

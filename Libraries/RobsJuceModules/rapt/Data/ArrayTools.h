@@ -767,6 +767,13 @@ public:
   static T shiftToMakeMinimumZero(const T* x, int N, T* y);
   // could also be called subtractMinimum - but the current name better reveals the intention
 
+  /** Returns true, iff for all values x[i] in the x-array, adding s*dx[i] does not actually change 
+  the x[i] value (up to some relative tolerance tolR). Useful primarily for multidimensional 
+  convergence tests: if adding s*dx to x does not change x (up to tolerance), an algo may be 
+  considered to be converged. */
+  template<class T>
+  static inline bool staysFixed(const T* x, const T* dx, int N, T s = T(1), T tolR = T(0));
+
   /** Subtracts the elements of 'buffer2' from 'buffer1' - type must define operator '-'. The
   'result' buffer may be the same as 'buffer1' or 'buffer2'. */
   template <class T>
@@ -1139,6 +1146,18 @@ inline void rsArrayTools::scale(const T1 *src, T1 *dst, int length, T2 scaleFact
 {
   for(int n = 0; n < length; n++)
     dst[n] = scaleFactor * src[n];
+}
+
+template<class T>
+inline bool rsArrayTools::staysFixed(const T* x, const T* dx, int N, T s, T tolR)
+{
+  for(int n = 0; n < N; n++) {
+    T y = x[n] + s*dx[n];
+    T d = y - x[n];
+    if(rsAbs(d) > rsAbs(x[n]*tolR))
+      return false;  }
+  return true;
+
 }
 
 template <class T>

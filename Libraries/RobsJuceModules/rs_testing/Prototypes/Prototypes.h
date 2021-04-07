@@ -1793,6 +1793,14 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Low Level Interface
 
+
+  template<class T, class TMat>
+  static int solveViaCG(const TMat& A, T* x, const T* b, T* workspace, T tol, int maxIts);
+
+
+
+
+
   template<class T, class TMat>
   static int largestEigenValueAndVector(const TMat& A, T* val, T* vec, T tol, T* workspace);
   // maybe rename to vonMisesIteration or eigenViaVonMises/eigenViaPowerIteration
@@ -1849,6 +1857,13 @@ protected:
   template<class T> static int numColumns(const rsSparseMatrix<T>& A) { return A.getNumColumns(); }
 
 };
+
+template<class T, class TMat>
+int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b, T* wrk,
+  T tol, int maxIts)
+{
+
+}
 
 template<class T, class TMat>
 int rsIterativeLinearAlgebra::largestEigenValueAndVector(
@@ -1961,6 +1976,10 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
 //  iteration 2 vectors: one as usual and one with the projection onto the usual vector subtracted,
 //  which is going to be our estimate for the 2nd largest eigenvector ...dunno, just brainstorming
 
+
+
+
+
 template<class T>
 bool rsIterativeLinearAlgebra::isScalarMultiple(const T* x, const T* y, int N, T tol, T* factor)
 {
@@ -1998,6 +2017,9 @@ bool rsIterativeLinearAlgebra::isScalarMultiple(const T* x, const T* y, int N, T
 }
 
 
+
+
+
 template<class T>
 T rsDot(const std::vector<T>& x, const std::vector<T>& y)
 {
@@ -2011,8 +2033,10 @@ T rsDot(const std::vector<T>& x, const std::vector<T>& y)
 
 
 /** Returns true, iff for all values x[i] in the x-array, adding s*dx[i] does not actually change 
-the x[i] value (upt to some relative tolerance tolR). Useful for multidimensional convergence 
-tests. */
+the x[i] value (up to some relative tolerance tolR). Useful primarily for multidimensional 
+convergence tests: if adding s*dx to x does not change x (upt to tolerance), an algo may be 
+considered to be converged. */
+/*
 template<class T>
 bool rsStaysFixed(const T* x, const T* dx, int N, T s = T(1), T tolR = T(0))
 {
@@ -2023,6 +2047,8 @@ bool rsStaysFixed(const T* x, const T* dx, int N, T s = T(1), T tolR = T(0))
       return false;  }
   return true;
 }
+*/
+// -move to rsArrayTools
 // Is it possible that compiler algebraically optimizes this to d = s*dx? And if so, would that be
 // a potential problem?
 
@@ -2030,7 +2056,7 @@ template<class T>
 bool rsStaysFixed(const std::vector<T>& x, const std::vector<T>& dx, T s = T(1), T tolR = T(0))
 {
   rsAssert(x.size() == dx.size());
-  return rsStaysFixed(&x[0], &dx[0], (int)x.size(), s, tolR);
+  return rsArrayTools::staysFixed(&x[0], &dx[0], (int)x.size(), s, tolR);
 }
 
 
@@ -2084,8 +2110,10 @@ int rsSolveLSCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b
   rsMatrix<T> AT = A.getTranspose();
   return rsSolveCG(AT*A, x, AT*b, tol, maxIts);
 }
-// -more tests needed, especially with singular (consistent and incosistent) systems
+// -more tests needed, especially with singular (consistent and inconsistent) systems
 // -figure out and document, if there can be systems, where this method breaks down
+// -an efficient implementation that works also for sparse matrices is needed - this should not
+//  explicitly create the matrix A^T * A, because it may not be sparse even if A is sparse
 
 template<class T>
 int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T alpha,
