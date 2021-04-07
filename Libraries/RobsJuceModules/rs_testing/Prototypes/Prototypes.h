@@ -2046,7 +2046,8 @@ int rsSolveCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, 
   T rho  = rsDot(r, r);
   Vec t;
   T a, rhos;
-  for(int k = 0; k < maxIts; k++)
+  int k;
+  for(k = 0; k < maxIts; k++)
   {
     if(sqrt(rho/rho0) <= tol)
       return k;                
@@ -2061,7 +2062,8 @@ int rsSolveCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, 
     rho  = rsDot(r, r);
     p    = r + (rho/rhos)*p;
   }
-  return maxIts+1;
+  return k;
+  //return maxIts+1;
 }
 // References: Numerical Linear Algebra and Matrix Factorizations (Tom Lyche), pg 286
 

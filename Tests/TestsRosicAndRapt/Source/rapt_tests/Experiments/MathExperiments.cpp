@@ -1025,29 +1025,45 @@ void iterativeLinearSolvers()
   A = Mat(3, 3, {-1,5,2, 2,3,7, 6,3,2});
   b = A*x;
 
+  // Try Richardson iteration:
   rsFill(x2, 0.0); 
   its = rsSolveRichardson3(A, x2, b, 0.1, 1.e-13, maxIts, 1.25, 0.75, 0.125);
   //err = rsMaxDeviation(x2, x); ok &= err <= 1.e-12;
   // result is infinite -> algo has diverged
 
+  // Try conjugate gradient algo:
+  its = rsSolveCG(A, x2, b, 1.e-13, maxIts);
+  // its = maxIts, x2 is wrong -> algo has failed
 
-  //  define:  P := 2*(A^T*A), q = (A^T + A)*b
-  //  solve:   P*x - q = 0   or   P*x = q
-
+  // Idea: The conjugate gradient algorithm needs a symmetric and positive definite matrix. Let's
+  // construct a related problem, that features such a matrix and has the same solution as A*x = b.
+  // Consider the equation: dot(A*x-b, A*x-b) = (A*x-b)^T * (A*x-b) = min. Multiplying it out, 
+  // taking the derivative and setting it to zero gives the equation: P*x = q, where P := A^T*A,
+  // q = A^T*b. So, what we do now instead of solving A*x = b is:
+  //   Define: P := A^T*A, q := A^T*b
+  //   Solve:  P*x = q
   Mat A_T = A.getTranspose();
-  Mat P   = 0.5 * (A_T * A);
-  Vec q   = (A_T + A) * b;
-  //Vec q   = A_T*b + A*b;
-
-  P = A_T * A;
-  q = A_T * b;
-
+  Mat P   = A_T * A;
+  Vec q   = A_T * b;
   rsFill(x2, 0.0); 
-  its = rsSolveCG(P, x2, q, 1.e-12, maxIts);
-  //its = rsSolveRichardson3(P, x2, q, 0.01, 1.e-13, maxIts, 1.0, 1.0, 0.0);
-
+  its = rsSolveCG(P, x2, q, 1.e-13, maxIts);
+  err = rsMaxDeviation(x2, x); ok &= err <= 1.e-12;
   Vec t = P*x2; // test - should equal q - seems ok
+  // ...yes, that seems to work indeed. I think, if the problem has no solution, the algo will 
+  // produce a least squares approximation to a solution and if it has multiple solutions, it will
+  // produce the minimum norm solution. For sparse matrices A, it does not make sense to explicitly
+  // create the matrix A^T*A because it may not be sparse. Instead, we need an adapted CG algorithm
+  // computes the product (A^T * A) * x by first computing y = A*x and then computing z = A^T*y 
+  // where in both products, the sparsity can be exploited. So the algo will need to compute twice 
+  // as many matrix-vector products as the original CG algo. More specifically, it will have to 
+  // compute 2 matrix-vector products per iteration. But that is more than compensated for by the 
+  // fast convergence. The vector q = A^T * b on the other hand can be precomputed.
 
+  // ToDo:
+  // -implement a function transProduct which computes A^T * x for rsMatrix, rsSparseMatrix
+  // -implement rsSolveMCG (modified conjugate gradient) or rsSolveSCG (symmetrized conjugate 
+  //  gradient)...but that may lead to confusion with the "scaled conjugate gradient" algo, 
+  //  ...maybe SymCG
 
   int dummy = 0;
 }
