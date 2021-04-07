@@ -905,9 +905,11 @@ template<class T>
 int rsSolveRichardson2(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T alpha,
   T tolR, int maxIts, T smooth = T(0))
 {
+  // This version uses 1st order FIR smoothing of the error.
   int its = 0;
   int N = (int) x.size();
   std::vector<T> err, errOld(N), dx;
+  smooth *= 0.5;
   while(its < maxIts) 
   {
     err = A*x - b;
@@ -920,7 +922,42 @@ int rsSolveRichardson2(const rsMatrix<T>& A, std::vector<T>& x, const std::vecto
     its++; 
   }
   return its;
+  // maybe we should smooth only when the errors err and errOld have different signs...or maybe 
+  // reduce the alpha? ...and increase it, when they have the same size. maybe the decrease should
+  // large (like a factor of 0.5) but the increase smaller (like 1.1)
 }
+template<class T>
+int rsSolveRichardson3(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T alpha0,
+  T tolR, int maxIts, T grow, T shrink)
+{
+  // This version uses an adaptive update rate per coordinate.
+  int its = 0;
+  int N = (int) x.size();
+  std::vector<T> err, errOld(N), alpha(N), dx(N);
+  for(int i = 0; i < N; i++)       // initialize update rates
+    alpha[i] = alpha0;
+  while(its < maxIts) 
+  {
+    err = A*x - b;
+
+    for(int i = 0; i < N; i++) {           // adapt update rate
+      if(err[i]*errOld[i] < T(0))
+        alpha[i] *= shrink;                // shrink, if error has alternating sign
+      else
+        alpha[i] *= grow;                  // ...and grow, if not
+      dx[i] = -alpha[i] * err[i]; }        // ...and do the actual update
+
+    if(rsStaysFixed(x, dx, T(1), tolR))    // x has converged
+      return its;
+
+    x = x + dx;
+    errOld = err;
+    its++; 
+  }
+  return its;
+}
+
+
 void iterativeLinearSolvers()
 {
   using Real = double;
@@ -949,7 +986,15 @@ void iterativeLinearSolvers()
   ok &= err <= 1.e-12;
 
   rsFill(x2, 0.0); 
-  its = rsSolveRichardson2(A, x2, b, 0.16, 1.e-13, maxIts, 0.25);
+  its = rsSolveRichardson2(A, x2, b, 0.16, 1.e-13, maxIts, 0.5);         // 66
+  err = rsMaxDeviation(x2, x); ok &= err <= 1.e-12;
+
+  rsFill(x2, 0.0); 
+  its = rsSolveRichardson3(A, x2, b, 0.16, 1.e-13, maxIts, 1.25, 0.75);  // 51
+  err = rsMaxDeviation(x2, x); ok &= err <= 1.e-12;
+
+
+  // todo: try to combine smoothing with grow/shrink, try momentum
 
 
   int dummy = 0;
