@@ -928,9 +928,14 @@ int rsSolveRichardson2(const rsMatrix<T>& A, std::vector<T>& x, const std::vecto
 }
 template<class T>
 int rsSolveRichardson3(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T alpha0,
-  T tolR, int maxIts, T grow, T shrink)
+  T tolR, int maxIts, T grow, T shrink, T mom = T(0))
 {
-  // This version uses an adaptive update rate per coordinate.
+  // This version uses an adaptive update rate per coordinate that grows and shrinks according to 
+  // the signs of the errors in two successive iterations. If the error (for some coordinate i) has
+  // different signs in successive iterations, it means that we have overshot the optimum and 
+  // therefore, the update step was too large, so the update rate for coordinate i is reduced by 
+  // the shrink factor which should be <= 1. On the other hand, if the error has the same sign, the
+  // update rate is multiplied by the grow factor >= 1.
   int its = 0;
   int N = (int) x.size();
   std::vector<T> err, errOld(N), alpha(N), dx(N);
@@ -940,12 +945,19 @@ int rsSolveRichardson3(const rsMatrix<T>& A, std::vector<T>& x, const std::vecto
   {
     err = A*x - b;
 
-    for(int i = 0; i < N; i++) {           // adapt update rate
-      if(err[i]*errOld[i] < T(0))
-        alpha[i] *= shrink;                // shrink, if error has alternating sign
+    for(int i = 0; i < N; i++) {
+      if(err[i]*errOld[i] < T(0))          // adapt update rate...
+      {
+        alpha[i] *= shrink;                // ...shrink, if error has alternating sign
+
+        // maybe take back previous step for this coordinate?
+        //x[i] -= dx[i]; // nope - not good - slows down convergence
+
+      }
       else
-        alpha[i] *= grow;                  // ...and grow, if not
-      dx[i] = -alpha[i] * err[i]; }        // ...and do the actual update
+        alpha[i] *= grow;                  // ...grow, if not
+      dx[i] = mom*dx[i] + (T(1)-mom)*(-alpha[i]*err[i]);  // ...do the actual update
+    }
 
     if(rsStaysFixed(x, dx, T(1), tolR))    // x has converged
       return its;
@@ -989,12 +1001,52 @@ void iterativeLinearSolvers()
   its = rsSolveRichardson2(A, x2, b, 0.16, 1.e-13, maxIts, 0.5);         // 66
   err = rsMaxDeviation(x2, x); ok &= err <= 1.e-12;
 
+  // no momentum, only grow/shrink:
   rsFill(x2, 0.0); 
   its = rsSolveRichardson3(A, x2, b, 0.16, 1.e-13, maxIts, 1.25, 0.75);  // 51
   err = rsMaxDeviation(x2, x); ok &= err <= 1.e-12;
 
+  // no grow/shrink, only momentum:
+  rsFill(x2, 0.0); 
+  its = rsSolveRichardson3(A, x2, b, 0.16, 1.e-13, maxIts, 1.0, 1.0, 0.25); // 58
+  err = rsMaxDeviation(x2, x); ok &= err <= 1.e-12;
 
-  // todo: try to combine smoothing with grow/shrink, try momentum
+  // momentum and grow/shrink:
+  rsFill(x2, 0.0); 
+  its = rsSolveRichardson3(A, x2, b, 0.16, 1.e-13, maxIts, 1.25, 0.75, 0.125); // 45
+  err = rsMaxDeviation(x2, x); ok &= err <= 1.e-12;
+
+  // todo: 
+  // -try adaptive momentum per coordinate
+  // -try to combine smoothing with grow/shrink
+
+
+  // Now, let's use a non-symmetric matrix:
+  A = Mat(3, 3, {-1,5,2, 2,3,7, 6,3,2});
+  b = A*x;
+
+  rsFill(x2, 0.0); 
+  its = rsSolveRichardson3(A, x2, b, 0.1, 1.e-13, maxIts, 1.25, 0.75, 0.125);
+  //err = rsMaxDeviation(x2, x); ok &= err <= 1.e-12;
+  // result is infinite -> algo has diverged
+
+
+  //  define:  P := 2*(A^T*A), q = (A^T + A)*b
+  //  solve:   P*x - q = 0   or   P*x = q
+
+  Mat A_T = A.getTranspose();
+  Mat P   = 0.5 * (A_T * A);
+  Vec q   = (A_T + A) * b;
+  //Vec q   = A_T*b + A*b;
+
+  P = A_T * A;
+  q = A_T * b;
+
+  rsFill(x2, 0.0); 
+  its = rsSolveCG(P, x2, q, 1.e-12, maxIts);
+  //its = rsSolveRichardson3(P, x2, q, 0.01, 1.e-13, maxIts, 1.0, 1.0, 0.0);
+
+  Vec t = P*x2; // test - should equal q - seems ok
 
 
   int dummy = 0;

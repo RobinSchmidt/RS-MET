@@ -2106,7 +2106,11 @@ int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector
 // -maybe interpret the problem as minimization of dot(A*x-b, A*x-b) = (A*x-b)^T * (A*x-b)
 //    = ((A*x)^T-b^T) * (A*x-b) 
 //    = (A*x)^T * A*x  -  (A*x)^T * b  -  b^T * A*x  +  b^T * b
-//    = x^T*A^T*A*x  -  x^T*A^T*b  -  b^T * A*x  +  b^T * b
+//    = x^T*A^T*A*x  -  x^T*A^T*b  -  b^T*A*x  +  b^T*b = min
+//  define:
+//    P := 2*(A^T*A), q = (A^T + A)*b
+//  then solve:
+//    P*x - q = 0   or   P*x = q
 
 
 //=================================================================================================
