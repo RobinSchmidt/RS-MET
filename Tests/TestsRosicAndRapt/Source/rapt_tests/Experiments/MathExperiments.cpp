@@ -1032,8 +1032,16 @@ void iterativeLinearSolvers()
   // result is infinite -> algo has diverged
 
   // Try conjugate gradient algo:
+  rsFill(x2, 0.0); 
   its = rsSolveCG(A, x2, b, 1.e-13, maxIts);
   // its = maxIts, x2 is wrong -> algo has failed
+
+  // Try least squares conjugate gradient algo:
+  rsFill(x2, 0.0); 
+  its = rsSolveLSCG(A, x2, b, 1.e-13, maxIts);
+  err = rsMaxDeviation(x2, x); ok &= err <= 1.e-12;
+
+
 
   // Idea: The conjugate gradient algorithm needs a symmetric and positive definite matrix. Let's
   // construct a related problem, that features such a matrix and has the same solution as A*x = b.
@@ -1057,13 +1065,15 @@ void iterativeLinearSolvers()
   // where in both products, the sparsity can be exploited. So the algo will need to compute twice 
   // as many matrix-vector products as the original CG algo. More specifically, it will have to 
   // compute 2 matrix-vector products per iteration. But that is more than compensated for by the 
-  // fast convergence. The vector q = A^T * b on the other hand can be precomputed.
+  // fast convergence. The vector q = A^T * b on the other hand can be precomputed. See:
+  // https://en.wikipedia.org/wiki/Gramian_matrix
+  // https://math.stackexchange.com/questions/158219/is-a-matrix-multiplied-with-its-transpose-something-special
+  // https://www.quora.com/Whats-the-meaning-of-matrixs-transpose-multiplied-by-the-matrix-itself
+  // The algo can be derived more simply by just premultiplying both sides of A*x = b by 
+  // A^T
 
   // ToDo:
   // -implement a function transProduct which computes A^T * x for rsMatrix, rsSparseMatrix
-  // -implement rsSolveMCG (modified conjugate gradient) or rsSolveSCG (symmetrized conjugate 
-  //  gradient)...but that may lead to confusion with the "scaled conjugate gradient" algo, 
-  //  ...maybe SymCG
 
   int dummy = 0;
 }

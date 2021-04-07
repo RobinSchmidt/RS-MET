@@ -2034,8 +2034,8 @@ bool rsStaysFixed(const std::vector<T>& x, const std::vector<T>& dx, T s = T(1),
 }
 
 
-/** Solves the linear system A*x = b iteratively via the conjugate gradient method. The matrix A 
-must be symmetric and positive definite (i think). */
+/** Solves the linear system A * x = b iteratively via the conjugate gradient (CG) method. The 
+matrix A must be symmetric and positive definite (SPD) for the algorithm to converge. */
 template<class T>
 int rsSolveCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T tol, int maxIts)
 {
@@ -2049,7 +2049,7 @@ int rsSolveCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, 
   int k;
   for(k = 0; k < maxIts; k++)
   {
-    if(sqrt(rho/rho0) <= tol)
+    if(sqrt(rho/rho0) <= tol)  // avoid sqrt: use rho/rho0 <= tol*tol
       return k;                
     // ToDo: we need a better stopping criterion. Maybe something based on 
     // rsStaysFixed(x, p, a, tol) ...
@@ -2066,6 +2066,26 @@ int rsSolveCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, 
   //return maxIts+1;
 }
 // References: Numerical Linear Algebra and Matrix Factorizations (Tom Lyche), pg 286
+
+/** Solves the linear system A * x = b iteratively via applying the conjugate gradient method to 
+the related problem: A^T * A * x = A^T * b. This related problem can be derived by either simply
+pre-multiplying both sides by A^T or by minimizing dot(A*x-b, A*x-b) = (A*x-b)^T * (A*x-b). The 
+nice thing is that the matrix A^T * A is guarenteed to be positive (semi?)definite (which is 
+required by CG for convergence), so this strategy extends the applicability of the conjugate 
+gradient method to (almmost?) general matrices. I call this the least squares conjugate gradient
+(LSCG) method, because it can be seen as minimizing the squared norm of the residual r = A*x-b. I 
+think, if the problem has no solution, the algo will produce a least squares approximation to a 
+solution and if it has multiple solutions, it will produce the minimum norm solution (tests 
+needed!). */
+template<class T>
+int rsSolveLSCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b,
+  T tol, int maxIts)
+{
+  rsMatrix<T> AT = A.getTranspose();
+  return rsSolveCG(AT*A, x, AT*b, tol, maxIts);
+}
+// -more tests needed, especially with singular (consistent and incosistent) systems
+// -figure out and document, if there can be systems, where this method breaks down
 
 template<class T>
 int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T alpha,
