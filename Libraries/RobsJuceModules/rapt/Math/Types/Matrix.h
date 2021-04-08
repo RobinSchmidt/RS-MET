@@ -285,13 +285,13 @@ public:
   { return areSameShape(*this, B); }
 
   /** Returns the number of rows. */
-  int getNumRows()    const { return numRows; }
+  int getNumRows() const { return numRows; }
 
   /** Returns the number of columns. */
   int getNumColumns() const { return numCols; }
 
   /** Returns the total size, i.e. the number of elements in the matrix. */
-  int getSize()       const { return numRows * numCols; }
+  int getSize() const { return numRows * numCols; }
 
   /** Returns true, iff this matrix is a row vector. */
   bool isRowVector() const { return numRows == 1; }
@@ -317,9 +317,7 @@ public:
   // todo: allow for a tolerance ..or maybe have a function isAlmostZero for that
 
   bool isZero(T tol) const
-  {
-    return rsArrayTools::isAllZeros(dataPointer, getSize(), tol);
-  }
+  { return rsArrayTools::isAllZeros(dataPointer, getSize(), tol); }
 
   bool isRowZero(int rowIndex, T tol = T(0)) const
   {
@@ -330,7 +328,6 @@ public:
     return true;
   }
 
-  //template<class T>
   bool areRowsZero(int startRow, int endRow, T tol = T(0)) const
   {
     for(int i = startRow; i <= endRow; ++i)
@@ -349,7 +346,6 @@ public:
 
 
   /** Returns true, iff one of the columns of the matrix consists of all zeros. */
-  //template<class T>
   bool containsZeroColumn(T tol = T(0)) const
   {
     for(int j = 0; j < numCols; j++)
@@ -372,7 +368,7 @@ public:
           return false; }}
     return true;
   }
-  // needs test, todo: implement test for antisymmetry - the struture is the same, just that we 
+  // needs test, todo: implement test for antisymmetry - the structure is the same, just that we 
   // need to use at(i,j) + at(j,i) instead of at(i,j) - at(j,i)
 
 
@@ -497,10 +493,7 @@ public:
   }
   // needs test
 
-  void setRow(int i, T* values)
-  {
-    rsArrayTools::copy(values, getRowPointer(i), numCols);
-  }
+  void setRow(int i, T* values) { rsArrayTools::copy(values, getRowPointer(i), numCols); }
   // needs test
 
   void setColumn(int j, T* values)
@@ -747,6 +740,18 @@ public:
         y[i] += at(i, j) * x[j]; }
   }
 
+  /** Computes the matrix-vector product y = A^T * x where ^T denotes taking the matrix transpose.
+  @see product */
+  void transProduct(const T* x, T* y) const
+  {
+    rsAssert(x != y, "Can't be used in place");
+    for(int i = 0; i < getNumColumns(); i++) {
+      y[i] = T(0);
+      for(int j = 0; j < getNumRows(); j++)
+        y[i] += at(j, i) * x[j]; }
+  }
+
+
   /** Convenience function to compute matrix-vector product y = A*x, taking a raw array for x as
   input and producing the result as a std::vector. */
   std::vector<T> productWith(const T* x) const
@@ -783,10 +788,7 @@ public:
   T& operator()(const int i, const int j) { return dataPointer[flatIndex(i, j)]; }
 
   /** Read only access to matrix elements with row-index i and column-index j. */
-  const T& operator()(const int i, const int j) const
-  {
-    return dataPointer[flatIndex(i, j)];
-  }
+  const T& operator()(const int i, const int j) const { return dataPointer[flatIndex(i, j)]; }
 
   /** Read only access - used mainly internally with const reference arguments (for example,
   in add). */

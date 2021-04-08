@@ -1847,14 +1847,15 @@ protected:
   // Specializations of some low-level functions (this is boilerplate):
 
   // Specializations for rsMatrix:
-  template<class T> static void product(const rsMatrix<T>& A, const T* x, T* y) { A.product(x, y); }
   template<class T> static int numRows(const rsMatrix<T>& A) { return A.getNumRows(); }
   template<class T> static int numColumns(const rsMatrix<T>& A) { return A.getNumColumns(); }
+  template<class T> static void product(const rsMatrix<T>& A, const T* x, T* y) { A.product(x, y); }
+  template<class T> static void transProduct(const rsMatrix<T>& A, const T* x, T* y) { A.transProduct(x, y); }
 
   // Specializations for rsSparseMatrix:
-  template<class T> static void product(const rsSparseMatrix<T>& A, const T* x, T* y) { A.product(x, y); }
   template<class T> static int numRows(const rsSparseMatrix<T>& A) { return A.getNumRows(); }
   template<class T> static int numColumns(const rsSparseMatrix<T>& A) { return A.getNumColumns(); }
+  template<class T> static void product(const rsSparseMatrix<T>& A, const T* x, T* y) { A.product(x, y); }
 
 };
 
@@ -1881,13 +1882,13 @@ int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b,
   for(k = 0; k < maxIts; k++) {
     if(rho/rho0 <= tol*tol) 
       return k;
-    product(A, p, t);               // t = A*p
-    a = AT::sumOfProducts(p, t, N); // a = dot(p,t)
+    product(A, p, t);                     // t = A*p
+    a = rho / AT::sumOfProducts(p, t, N); // a = rho / dot(p,t)
     for(int i = 0; i < N; i++) {
       x[i] += a*p[i];
       r[i] -= a*t[i];  }
     rhos = rho;
-    rho  = AT::sumOfSquares(r, N);
+    rho  = AT::sumOfSquares(r, N);        // rho = dot(r,r)
     rhor = rho/rhos;
     for(int i = 0; i < N; i++)
       p[i] = r[i] + rhor*p[i]; }
@@ -1895,6 +1896,7 @@ int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b,
 }
 // -needs tests
 // -wrk needs to be of size 3*N - can we reduce it to 2*N?
+// -implement LSCG
 
 template<class T, class TMat>
 int rsIterativeLinearAlgebra::largestEigenValueAndVector(
