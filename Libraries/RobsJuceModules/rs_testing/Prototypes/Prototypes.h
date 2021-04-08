@@ -1794,8 +1794,11 @@ public:
   // \name Low Level Interface
 
 
+  /** ...
+  If leastSquares is true, the workspace must be of size 4*N, otherwise of size 3*N.  */
   template<class T, class TMat>
-  static int solveViaCG(const TMat& A, T* x, const T* b, T* workspace, T tol, int maxIts);
+  static int solveViaCG(const TMat& A, T* x, const T* b, T* workspace, T tol, int maxIts, 
+    bool leastSquares = false);
 
 
 
@@ -1844,6 +1847,15 @@ public:
 
 protected:
 
+  /** If leastSquares is false, this function just computes the regular matrix-vector product 
+  y = A * x. If leastSquares is true, it computes the product y = A^T * A * x that occurs in the 
+  least squares problem |A*x-b|^2 = min that is related to the problem A*x-b = 0. Only in the 
+  second case the workspace is needed (it then must have the same size as x and y). */
+  template<class T, class TMat>
+  static void productLS(const TMat& A, const T* x, T* y, 
+    bool leastSquares = false, T* workspace = nullptr);
+
+
   // Specializations of some low-level functions (this is boilerplate):
 
   // Specializations for rsMatrix:
@@ -1860,8 +1872,18 @@ protected:
 };
 
 template<class T, class TMat>
+void rsIterativeLinearAlgebra::productLS(const TMat& A, const T* x, T* y, bool ls, T* w)
+{
+  if(ls) {
+    transProduct(A, x, w);
+    product(     A, w, y); }
+  else
+    product(     A, x, y);
+}
+
+template<class T, class TMat>
 int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b, 
-  T* wrk, T tol, int maxIts)
+  T* wrk, T tol, int maxIts, bool ls)
 {
   using AT = rsArrayTools;
   int M = numRows(A);               // number of outputs, size of b
@@ -1870,8 +1892,17 @@ int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b,
   T* r = &wrk[0];                   // residual
   T* p = &wrk[N];                   // current update direction
   T* t = &wrk[2*N];                 // temp? product A*p
-  product(A, x, t);                 // t = A*x
-  AT::subtract(b, t, r, N);         // r = b-t = b - A*x
+  T* w = nullptr;                   // workspace for least-squares product
+  if(ls) {
+    w = &wrk[3*N];
+    productLS(   A, x, t, ls, w);   // t = A^T * A * x
+    transProduct(A, b, p);          // p = A^T * b
+    AT::subtract(p, t, r, N);       // r = p-t = A^T * b - A^T * A * x
+  }
+  else {
+    product(A, x, t);               // t = A*x
+    AT::subtract(b, t, r, N);       // r = b-t = b - A*x
+  }
   AT::copy(r, p, N);                // p = r
   T rho0 = AT::sumOfSquares(b, N);  // rho0 = dot(b, b)
   T rho  = AT::sumOfSquares(r, N);  // rho  = dot(r, r)
@@ -1882,7 +1913,8 @@ int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b,
   for(k = 0; k < maxIts; k++) {
     if(rho/rho0 <= tol*tol) 
       return k;
-    product(A, p, t);                     // t = A*p
+    //product(A, p, t);                     // t = A*p ...old
+    productLS(A, p, t, ls, w);            // t = A*p  or  t = A^T*A*p
     a = rho / AT::sumOfProducts(p, t, N); // a = rho / dot(p,t)
     for(int i = 0; i < N; i++) {
       x[i] += a*p[i];
@@ -1894,9 +1926,7 @@ int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b,
       p[i] = r[i] + rhor*p[i]; }
   return k;
 }
-// -needs tests
-// -wrk needs to be of size 3*N - can we reduce it to 2*N?
-// -implement LSCG
+// -needs tests with singular systems
 
 template<class T, class TMat>
 int rsIterativeLinearAlgebra::largestEigenValueAndVector(

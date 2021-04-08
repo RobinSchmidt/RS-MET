@@ -593,16 +593,26 @@ bool testIterativeLinearSolvers()
   ok &= rsIsCloseTo(x, x2, 1.e-12);
   ok &= its == 3; // conjugate gradient is supposed to find the solution after at most N steps
 
-  Vec wrk(3*N);
+  Vec wrk(4*N);
+
   rsFill(x2, 0.0);
   its = ILA::solveViaCG(A, &x2[0], &b[0], &wrk[0], 1.e-13, 100);
   ok &= rsIsCloseTo(x, x2, 1.e-12);
   ok &= its == 3; 
 
   rsFill(x2, 0.0);
+  its = ILA::solveViaCG(A, &x2[0], &b[0], &wrk[0], 1.e-13, 100, true); // with LS option
+  ok &= rsIsCloseTo(x, x2, 1.e-12);
+  ok &= its == 3; 
+
+
+
+  rsFill(x2, 0.0);
   its = rsSolveRichardson(A, x2, b, 0.16, 1.e-13, 100); // around 0.16 seems best
   Real err = rsMaxDeviation(x2, x);
   ok &= err <= 1.e-12;
+
+  // todo: test CG with the LS with a general matrix
 
   return ok;
 }
