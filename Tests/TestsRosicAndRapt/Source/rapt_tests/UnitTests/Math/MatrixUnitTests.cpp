@@ -1043,9 +1043,13 @@ bool testKroneckerProduct()
 
 bool testSparseMatrix()
 {
-  bool res = true;
+  bool ok = true;
 
-  using Vec = std::vector<float>;
+  using Real = float;
+  using Vec  = std::vector<Real>;
+  using Mat  = rsMatrix<Real>;
+  using MatS = rsSparseMatrix<Real>;
+
 
   // We create a matrix of the form:
   // 
@@ -1054,15 +1058,17 @@ bool testSparseMatrix()
   //      |0 0 0 0 1 1 0 0|
   //      |0 0 0 0 0 0 1 1|
   //
-  // so, it takes an 8-vector as input and produces a 4-vector as output in which each element is
-  // the sum of two consecutive elements from the input.
+  // so, in a matrix-vector product y = A*x, it takes an 8-vector x as input and produces a 4-vector 
+  // as output y in which each element is the sum of two consecutive elements from the input.
 
-  rsSparseMatrix<float> A(4, 8); // still the zero matrix
+  rsSparseMatrix<Real> A(4, 8);  // still the zero matrix
   Vec x({1,2,3,4,5,6,7,8});      // input vector
   Vec y({1,2,3,4});              // output vector
-  A.product(&x[0], &y[0]);  res &= y == Vec({0,0,0,0}); 
+  A.product(&x[0], &y[0]);  
+  ok &= y == Vec({0,0,0,0});    // A was till zero
+  // todo: use * operator: y = A*x (it calls the product function)
 
-  // Now build up the actual matrix in a kind of "random" manner. The nonzero (i.e. one) elements 
+  // Now build up the actual matrix in a kind of "random" order. The nonzero (i.e. one) elements 
   // are at positions: (0,0),(0,1),(1,2),(1,3),(2,4),(2,5),(3,6),(3,7):
   A.set(1, 2, 1.f);
   A.set(2, 5, 1.f);
@@ -1074,17 +1080,27 @@ bool testSparseMatrix()
   A.set(3, 7, 1.f);
 
   // Test the multiplication with the new matrix again:
-  A.product(&x[0], &y[0]);  res &= y == Vec({3,7,11,15});
+  A.product(&x[0], &y[0]);  ok &= y == Vec({3,7,11,15});  // redundant now
+  y = A*x;
+  ok &= y == Vec({3,7,11,15});
 
-  res &= A(0, 0) == 1.f;
-  res &= A(0, 1) == 1.f;
-  res &= A(0, 2) == 0.f;
-  res &= A(0, 3) == 0.f;
+
+  ok &= A(0, 0) == 1.f;
+  ok &= A(0, 1) == 1.f;
+  ok &= A(0, 2) == 0.f;
+  ok &= A(0, 3) == 0.f;
   // ...
+
+
+  // Test conversion from/to dense matrices:
+  Mat  dA = MatS::toDense(A);
+  MatS A2 = MatS::fromDense(dA);
+  //ok &= A2 == A;   // == not yet implemented
+
 
   // todo: test replacing elements, also with zero (in which case they should get removed)
 
-  return res;
+  return ok;
 }
 
 // move to LinearAlgebraUnitTests:

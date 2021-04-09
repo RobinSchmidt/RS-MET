@@ -1446,20 +1446,32 @@ class rsSparseMatrix
 
 public:
 
+
+
   // todo: provide a (subset of) the same interface as rsMatrix(View)...maybe it's a good idea to 
   // keep the interface small to make it easier to provide different implementations with different
   // storage modes with the same interface that can be benchmarked against each other.
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
 
   rsSparseMatrix() {}
 
   rsSparseMatrix(int numRows, int numColumns)
   {
-    rsAssert(numRows >= 1 && numColumns >= 1);
-    this->numRows = numRows;
+    rsAssert(numRows >= 1 && numColumns >= 1); 
+    this->numRows = numRows; 
     this->numCols = numColumns;
   }
 
+  /** Creates a rsSparseMatrix from a regular (dense) rsMatrix. */
+  static rsSparseMatrix<T> fromDense(const rsMatrix<T>& A);
+
+  /** Creates a regular (dense) rsMatrix from a rsSparseMatrix. */
+  static rsMatrix<T> toDense(const rsSparseMatrix<T>& A);
+
   //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
 
   /** Returns the number of nonzero elements in this matrix. */
   int getNumElements() const { return (int) elements.size(); }
@@ -1553,8 +1565,8 @@ public:
     for(size_t k = 0; k < elements.size(); k++)
       y[elements[k].i] += elements[k].value * x[elements[k].j];
   }
-  // -maybe include optional strideX, strideY parameters - or maybe implement a separate function with
-  //  strides
+  // -maybe include optional strideX, strideY parameters - or maybe implement a separate function 
+  //  with strides
   // -how can we implement the product with the transposed matrix? would it be
   //    y[elements[k].j] += elements[k].value * x[elements[k].i];
 
@@ -1583,7 +1595,12 @@ public:
   // naive algo should be part of the test-suite but not the class itself.
 
 
-  // maybe move into class rsSparseLinearAlgebra to not overload this class
+  /** Multiplies a matrix with a std::vector to give another vector: y = A * x. */
+  std::vector<T> operator*(const std::vector<T>& x) const;
+
+  //-----------------------------------------------------------------------------------------------
+  // maybe move into class rsIterativeLinearAlgebra - hmm - but the implementation really relies
+  // on the way the data is stored...so maybe not
 
   /** Given the diagonal part D and non-diagonal part N of a matrix A, such that A = D + N, this 
   function solves the linear system A*x = (D+N)*x = b via Gauss-Seidel iteration and returns the 
@@ -1657,7 +1674,6 @@ protected:
 
 
 };
-
 // ToDo: 
 // -Make another implementation (with the same interface) that stores rows. This saves one 
 //  integer of storage space per entry because the row index is given implicitly. Maybe make a 
@@ -1668,6 +1684,43 @@ protected:
 //  integers (16 bit) to save even more storage space, especially when T is float because then 
 //  one entry is exactly 64 bits long). Maybe use TIdx, TVal for the two template parameters.
 // -make a class rsSparseTensor
+
+template<class T>
+rsSparseMatrix<T> rsSparseMatrix<T>::fromDense(const rsMatrix<T>& A)
+{
+  int M = A.getNumRows();
+  int N = A.getNumColumns();
+  rsSparseMatrix<T> B(M, N);
+
+  T tol = T(0);  // preliminary
+  // todo: have an optional relative (to the maximum element) tolerance parameter, absolute tol is 
+  // then computed as: tolRel / maxAbs(A)
+
+  for(int i = 0; i < M; i++)
+    for(int j = 0; j < N; j++)
+      if(rsAbs(A(i, j)) > tol)
+        B.set(i, j, A(i, j));
+  return B;
+}
+
+template<class T>
+rsMatrix<T> rsSparseMatrix<T>::toDense(const rsSparseMatrix<T>& A)
+{
+  rsMatrix<T> B(A.getNumRows(), A.getNumColumns());
+  for(int k = 0; k < A.getNumElements(); k++) {
+    Element el = A.elements[k];
+    B(el.i, el.j) = el.value;   }
+  return B;
+}
+
+template<class T>
+std::vector<T> rsSparseMatrix<T>::operator*(const std::vector<T>& x) const
+{
+  rsAssert((int) x.size() == this->numCols, "Vector incompatible for left multiply by matrix");
+  std::vector<T> y(this->numRows);
+  product(&x[0], &y[0]);
+  return y;
+}
 
 template<class T>
 T rsSparseMatrix<T>::iterateProduct(const T* x, T* y) const
@@ -1893,37 +1946,39 @@ int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b,
   T* p = &wrk[N];                   // current update direction
   T* t = &wrk[2*N];                 // temp? product A*p
   T* w = nullptr;                   // workspace for least-squares product
+  T rho0;
   if(ls) {
     w = &wrk[3*N];
     productLS(   A, x, t, ls, w);   // t = A^T * A * x
     transProduct(A, b, p);          // p = A^T * b
     AT::subtract(p, t, r, N);       // r = p-t = A^T * b - A^T * A * x
+    rho0 = AT::sumOfSquares(p, N);  // rho0 = dot(p, p)
   }
   else {
     product(A, x, t);               // t = A*x
     AT::subtract(b, t, r, N);       // r = b-t = b - A*x
+    rho0 = AT::sumOfSquares(b, N);  // rho0 = dot(b, b)
   }
   AT::copy(r, p, N);                // p = r
-  T rho0 = AT::sumOfSquares(b, N);  // rho0 = dot(b, b)
-  T rho  = AT::sumOfSquares(r, N);  // rho  = dot(r, r)
+  T rho = AT::sumOfSquares(r, N);   // rho = dot(r, r)
   T a;                              // update step size
-  T rhos;                           // old rho?
-  T rhor;                           // ratio rho/rhos
+  T rhoP;                           // rho of previous iteration
+  T rhoR;                           // ratio rho/rhoP
+  T rhoC = tol*tol*rho0;            // convergence criterion for rho
   int k;
   for(k = 0; k < maxIts; k++) {
-    if(rho/rho0 <= tol*tol) 
+    if(rho <= rhoC) 
       return k;
-    //product(A, p, t);                     // t = A*p ...old
     productLS(A, p, t, ls, w);            // t = A*p  or  t = A^T*A*p
     a = rho / AT::sumOfProducts(p, t, N); // a = rho / dot(p,t)
     for(int i = 0; i < N; i++) {
       x[i] += a*p[i];
       r[i] -= a*t[i];  }
-    rhos = rho;
+    rhoP = rho;
     rho  = AT::sumOfSquares(r, N);        // rho = dot(r,r)
-    rhor = rho/rhos;
+    rhoR = rho / rhoP;
     for(int i = 0; i < N; i++)
-      p[i] = r[i] + rhor*p[i]; }
+      p[i] = r[i] + rhoR*p[i]; }
   return k;
 }
 // -needs tests with singular systems

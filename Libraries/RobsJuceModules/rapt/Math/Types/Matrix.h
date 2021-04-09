@@ -1170,7 +1170,7 @@ public:
   /** Multiplies a matrix with a std::vector to give another vector: y = A * x. */
   std::vector<T> operator*(const std::vector<T>& x) const
   {
-    rsAssert((int) x.size() == this->numCols, "vector incompatible for left multiply by matrix");
+    rsAssert((int) x.size() == this->numCols, "Vector incompatible for left multiply by matrix");
     std::vector<T> y(this->numRows);
     for(int i = 0; i < this->numRows; i++) {
       y[i] = T(0);
