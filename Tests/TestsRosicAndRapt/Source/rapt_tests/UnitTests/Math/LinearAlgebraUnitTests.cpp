@@ -586,33 +586,67 @@ bool testIterativeLinearSolvers()
 
   int N = 3;
   Mat A(3, 3, {5,-1,2, -1,7,3, 2,3,6}); // is symmetric and positive definite (SPD) (verify!)
-  Vec x({1,2,3});
-  Vec b = A*x;
-  Vec x2(N);
-  int its = rsSolveCG(A, x2, b, 1.e-12, 100);
+  Vec x({1,2,3});                       // true solution
+  Vec b = A*x;                          // right hand side
+  Vec x2(N);                            // computed solution
+  Real err;                             // maximum absolute error of computed solution
+  int its;                              // number of iterations taken
+  Vec wrk(4*N);                         // workspace
+
+
+  // Test prototype conjugate gradient implementation:
+  rsFill(x2, 0.0);
+  its = rsSolveCG(A, x2, b, 1.e-12, 100);
   ok &= rsIsCloseTo(x, x2, 1.e-12);
   ok &= its == 3; // conjugate gradient is supposed to find the solution after at most N steps
 
-  Vec wrk(4*N);
-
+  // Test production conjugate gradient implementation:
   rsFill(x2, 0.0);
   its = ILA::solveViaCG(A, &x2[0], &b[0], &wrk[0], 1.e-13, 100);
   ok &= rsIsCloseTo(x, x2, 1.e-12);
   ok &= its == 3; 
 
+  // ...now with least squares option ("LSCG" algorithm):
   rsFill(x2, 0.0);
-  its = ILA::solveViaCG(A, &x2[0], &b[0], &wrk[0], 1.e-13, 100, true); // with LS option
+  its = ILA::solveViaCG(A, &x2[0], &b[0], &wrk[0], 1.e-13, 100, true);
   ok &= rsIsCloseTo(x, x2, 1.e-12);
   ok &= its == 3; 
 
-
-
+  // Test prototype implementation of Richardson iteration:
   rsFill(x2, 0.0);
   its = rsSolveRichardson(A, x2, b, 0.16, 1.e-13, 100); // around 0.16 seems best
-  Real err = rsMaxDeviation(x2, x);
+  err = rsMaxDeviation(x2, x);
   ok &= err <= 1.e-12;
 
-  // todo: test CG with the LS with a general matrix
+
+  // Now, let's use a non-symmetric matrix:
+  A = Mat(3, 3, {-1,5,2, 2,3,7, 6,3,2});
+  b = A*x;
+
+  // The LSCG algorithm should be able to deal with it:
+
+  rsFill(x2, 0.0);
+  its = rsSolveLSCG(A, x2, b, 1.e-12, 100);  // prototype
+  ok &= rsIsCloseTo(x, x2, 1.e-12);
+  ok &= its == 3;
+
+  // fails:
+  rsFill(x2, 0.0);
+  its = ILA::solveViaCG(A, &x2[0], &b[0], &wrk[0], 1.e-13, 100, true); // production
+  //ok &= rsIsCloseTo(x, x2, 1.e-12);
+  //ok &= its == 3; 
+
+
+  // todo: 
+  // -test LSCG with rsSparseMatrix
+  // -try LSCG with singular systems (consistent and inconsistent)
+
+
+  // Fails:
+  rsFill(x2, 0.0);
+  its = rsSolveRichardson(A, x2, b, 0.16, 1.e-13, 100); // around 0.16 seems best
+  err = rsMaxDeviation(x2, x);
+  //ok &= err <= 1.e-12;
 
   return ok;
 }
