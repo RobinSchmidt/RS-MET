@@ -977,6 +977,10 @@ public:
   static rsMatrix<T> identity(int size)
   { rsMatrix<T> E(size, size); E.setToIdentity(); return E; }
 
+  /** Creates a diagonal matrix of given size with all diagonal values set to d. */
+  static rsMatrix<T> diag(int size, const T& d)
+  { rsMatrix<T> D(size, size); D.setDiagonalValues(d); return D; }
+
   // todo: diag(int size, T* data), diag(int size, T value)
 
   //-----------------------------------------------------------------------------------------------

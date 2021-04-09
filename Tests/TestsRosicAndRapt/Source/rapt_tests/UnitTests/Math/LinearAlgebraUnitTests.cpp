@@ -628,17 +628,23 @@ bool testIterativeLinearSolvers()
   its = ILA::solveViaCG(A, &x2[0], &b[0], &wrk[0], 1.e-13, 100, true); // production
   ok &= rsIsCloseTo(x, x2, 1.e-12); ok &= its == 3; 
 
+  // Test shifted LSCG:
+  Real shift = 2.0;
+  rsFill(x2, 0.0); its = rsSolveShiftedLSCG(A, x2, b, 1.e-12, 100, shift);
+  // todo: implement production version with shift and compare result to prototype
+
 
   // todo: 
   // -test LSCG with rsSparseMatrix
   // -try LSCG with singular systems (consistent and inconsistent)
 
-
+  /*
   // Fails:
   rsFill(x2, 0.0);
   its = rsSolveRichardson(A, x2, b, 0.16, 1.e-13, 100); // around 0.16 seems best
   err = rsMaxDeviation(x2, x);
   //ok &= err <= 1.e-12;
+  */
 
   return ok;
 }

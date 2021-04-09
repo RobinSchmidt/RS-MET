@@ -1878,7 +1878,10 @@ public:
   algorithm should converge in at most N steps. However, due to roundoff error, that may not be the 
   case and the numerical problems get worse when using LSCG instead of regular CG (because the 
   condition number of the matrix gets squared for LSCG). For LSCG, i.e. if leastSquares is true, 
-  the workspace must be of size 4*N. For regular CG, a size of 3*N is enough.  */
+  the workspace must be of size 4*N. For regular CG, a size of 3*N is enough. To make the 
+  implementation suitable also for sparse matrices, the A^T * A matrix is not explicitly created
+  (it may not be sparse even if A is sparse). Instead there will be one call to the regular product
+  function and another to the transProduct function per iteration (in case of LSCG only).  */
   template<class T, class TMat>
   static int solveViaCG(const TMat& A, T* x, const T* b, T* workspace, T tol, int maxIts, 
     bool leastSquares = false);
@@ -1937,6 +1940,22 @@ protected:
   template<class T, class TMat>
   static void productLS(const TMat& A, const T* x, T* y, 
     bool leastSquares = false, T* workspace = nullptr);
+
+  /** This is used to modify the result of a matrix-vector multiplication y = A*x by adding to each
+  y[i] and additional s*x[i]. This has the same effect as if the matrix A would have been modified
+  to A' = A + s*I where I is the identity matrix. The matrix A' has the same eigenvectors as A but
+  all eigenvalues are shifted by s. Such shifts play a role in computations of eigenvectors: if 
+  you know some eigenvalue s_k, to find the corresponding eigenvector v_k, you need to solve the 
+  linear system (A - s_k*I) * v_k = 0 (verify this!). */
+  template<class T>
+  static void shift(const T& s, const T* x, T* y, int N)
+  {
+    if(s != T(0))
+      for(int i = 0; i < N; i++)
+        y[i] += s * x[i];
+  }
+  // needs tests
+
 
 
   // Specializations of some low-level functions (this is boilerplate):
@@ -2019,6 +2038,11 @@ int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b,
 // -Conjugate gradient type methods for unsymmetric and inconsistent systems of linear equations
 //
 // ToDo:
+// -Introduce scalar shift parameter. After each product of the form y = A*x, do y += shift*x 
+//  (maybe conditionally: if(shift != 0)...). This has the same effect as adding the shift 
+//  parameter to each diagonal element of the matrix A and is important in the context of 
+//  eigenvalues. It shifts the spectrum of the matrix A. In productLS it must be applied after 
+//  product *and* after transProduct (i think). It should call the shift member function
 // -needs tests with singular systems (consistent and inconsistent)
 // -try to incorporate preconditioning...but maybe that should be done in pre/post processing steps
 //  outside this function
@@ -2248,6 +2272,18 @@ int rsSolveLSCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b
 // -figure out and document, if there can be systems, where this method breaks down
 // -an efficient implementation that works also for sparse matrices is needed - this should not
 //  explicitly create the matrix A^T * A, because it may not be sparse even if A is sparse
+
+template<class T>
+int rsSolveShiftedLSCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b,
+  T tol, int maxIts, T shift)
+{
+  rsAssert(A.isSquare());
+  int N = A.getNumRows();
+  using Mat = rsMatrix<T>;
+  Mat As = A + Mat::diag(N, shift);
+  return rsSolveLSCG(As, x, b, tol, maxIts);
+}
+
 
 template<class T>
 int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T alpha,
