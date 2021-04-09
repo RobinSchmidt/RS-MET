@@ -593,8 +593,6 @@ bool testIterativeLinearSolvers()
   int its;                              // number of iterations taken
   Vec wrk(4*N);                         // workspace
 
-
-  /*
   // Test prototype conjugate gradient implementation:
   rsFill(x2, 0.0);
   its = rsSolveCG(A, x2, b, 1.e-12, 100);
@@ -618,8 +616,6 @@ bool testIterativeLinearSolvers()
   its = rsSolveRichardson(A, x2, b, 0.16, 1.e-13, 100); // around 0.16 seems best
   err = rsMaxDeviation(x2, x);
   ok &= err <= 1.e-12;
-  */
-
 
   // Now, let's use a non-symmetric matrix:
   A = Mat(3, 3, {-1,5,2, 2,3,7, 6,3,2});

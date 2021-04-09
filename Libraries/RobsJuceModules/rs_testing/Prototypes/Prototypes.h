@@ -1866,8 +1866,19 @@ public:
   // \name Low Level Interface
 
 
-  /** ...
-  If leastSquares is true, the workspace must be of size 4*N, otherwise of size 3*N.  */
+  /** Solves the linear system of equations A*x = b by means of the conjugate gradient (CG) method.
+  In its original form, the CG method converges only for symmetric positive definite (SPD) matrices 
+  A. However, if the "leastSquares" flag is true, the function applies the CG method to the 
+  modified linear system A^T*A*x = A^T*b in which case the matrix A^T*A is indeed symmetric and at 
+  least positive semi-definite (todo: figure out, if that is enough to ensure convergence). This 
+  modified system can be obtained by either simply pre-multiplying the original system by A^T or by
+  considering the least-squares problem dot(r,r) = min where r = b - A*x is the residual. I call 
+  this the least squares conjugate gradient (LSCG) method but this is not standard terminology, as 
+  far as i know. Theoretically, if N is the size of the matrix (which must be square), the 
+  algorithm should converge in at most N steps. However, due to roundoff error, that may not be the 
+  case and the numerical problems get worse when using LSCG instead of regular CG (because the 
+  condition number of the matrix gets squared for LSCG). For LSCG, i.e. if leastSquares is true, 
+  the workspace must be of size 4*N. For regular CG, a size of 3*N is enough.  */
   template<class T, class TMat>
   static int solveViaCG(const TMat& A, T* x, const T* b, T* workspace, T tol, int maxIts, 
     bool leastSquares = false);
@@ -1941,6 +1952,10 @@ protected:
   template<class T> static int numColumns(const rsSparseMatrix<T>& A) { return A.getNumColumns(); }
   template<class T> static void product(const rsSparseMatrix<T>& A, const T* x, T* y) { A.product(x, y); }
 
+
+  template<class TMat>
+  static bool isSquare(const TMat& A) { return numRows(A) == numColumns(A); }
+
 };
 
 template<class T, class TMat>
@@ -1957,30 +1972,29 @@ template<class T, class TMat>
 int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b, 
   T* wrk, T tol, int maxIts, bool ls)
 {
-  using AT = rsArrayTools;
-  int M = numRows(A);               // number of outputs, size of b
-  int N = numColumns(A);            // number of inputs, size of x
-  rsAssert(M == N, "Matrix A must be square");
+  rsAssert(isSquare(A), "Matrix A must be square");
+  using AT = rsArrayTools;          // shortcut for convenience
+  int N = numRows(A);               // number of inputs and outputs, size of x and b
   T* r = &wrk[0];                   // residual
-  T* p = &wrk[N];                   // current update direction
-  T* t = &wrk[2*N];                 // temp? product A*p
+  T* p = &wrk[N];                   // current direction for update
+  T* t = &wrk[2*N];                 // temporary for product A*p
   T* w = nullptr;                   // workspace for least-squares product
   T rho0;
-  if(ls) {
-    w = &wrk[3*N];
+  if(ls) {                          // LSCG algorithm was requested
+    w = &wrk[3*N];                  // additional workspace of size N required
     productLS(   A, x, t, ls, w);   // t = A^T * A * x
     transProduct(A, b, p);          // p = A^T * b
     AT::subtract(p, t, r, N);       // r = p-t = A^T * b - A^T * A * x
     rho0 = AT::sumOfSquares(p, N);  // rho0 = dot(p, p)
   }
-  else {
+  else {                            // regular CG algorithm was requested
     product(A, x, t);               // t = A*x
     AT::subtract(b, t, r, N);       // r = b-t = b - A*x
     rho0 = AT::sumOfSquares(b, N);  // rho0 = dot(b, b)
   }
   AT::copy(r, p, N);                // p = r
   T rho = AT::sumOfSquares(r, N);   // rho = dot(r, r)
-  T a;                              // update step size
+  T a;                              // current step size for update 
   T rhoP;                           // rho of previous iteration
   T rhoR;                           // ratio rho/rhoP
   T rhoC = tol*tol*rho0;            // convergence criterion for rho
@@ -1988,11 +2002,11 @@ int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b,
   for(k = 0; k < maxIts; k++) {
     if(rho <= rhoC) 
       return k;
-    productLS(A, p, t, ls, w);            // t = A*p  or  t = A^T*A*p
+    productLS(A, p, t, ls, w);            // t = A*p (CG)  or  t = A^T*A*p (LSCG)
     a = rho / AT::sumOfProducts(p, t, N); // a = rho / dot(p,t)
     for(int i = 0; i < N; i++) {
-      x[i] += a*p[i];
-      r[i] -= a*t[i];  }
+      x[i] += a*p[i];                     // x = x + a*p
+      r[i] -= a*t[i]; }                   // r = r - a*t
     rhoP = rho;
     rho  = AT::sumOfSquares(r, N);        // rho = dot(r,r)
     rhoR = rho / rhoP;
@@ -2000,7 +2014,16 @@ int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b,
       p[i] = r[i] + rhoR*p[i]; }
   return k;
 }
-// -needs tests with singular systems
+// References:
+// -https://en.wikipedia.org/wiki/Conjugate_gradient_method
+// -Conjugate gradient type methods for unsymmetric and inconsistent systems of linear equations
+//
+// ToDo:
+// -needs tests with singular systems (consistent and inconsistent)
+// -try to incorporate preconditioning...but maybe that should be done in pre/post processing steps
+//  outside this function
+
+
 
 template<class T, class TMat>
 int rsIterativeLinearAlgebra::largestEigenValueAndVector(
@@ -2272,6 +2295,10 @@ int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector
 //    P := 2*(A^T*A), q = (A^T + A)*b
 //  then solve:
 //    P*x - q = 0   or   P*x = q
+
+
+// see also:
+// https://en.wikipedia.org/wiki/Generalized_minimal_residual_method (has matlab code)
 
 
 //=================================================================================================
