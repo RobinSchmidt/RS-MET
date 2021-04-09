@@ -1881,10 +1881,12 @@ public:
   the workspace must be of size 4*N. For regular CG, a size of 3*N is enough. To make the 
   implementation suitable also for sparse matrices, the A^T * A matrix is not explicitly created
   (it may not be sparse even if A is sparse). Instead there will be one call to the regular product
-  function and another to the transProduct function per iteration (in case of LSCG only).  */
+  function and another to the transProduct function per iteration (in case of LSCG only). With the 
+  optional shift parameter, you can have the algorithm work with a shifted matrix A' = A + shift*I 
+  where I is the identity matrix. @see shift() */
   template<class T, class TMat>
   static int solveViaCG(const TMat& A, T* x, const T* b, T* workspace, T tol, int maxIts, 
-    bool leastSquares = false);
+    bool leastSquares = false, const T& shift = T(0));
 
 
 
@@ -1939,7 +1941,7 @@ protected:
   second case the workspace is needed (it then must have the same size as x and y). */
   template<class T, class TMat>
   static void productLS(const TMat& A, const T* x, T* y, 
-    bool leastSquares = false, T* workspace = nullptr);
+    bool leastSquares = false, T* workspace = nullptr, const T& shift = T(0));
 
   /** This is used to modify the result of a matrix-vector multiplication y = A*x by adding to each
   y[i] and additional s*x[i]. This has the same effect as if the matrix A would have been modified
@@ -1978,50 +1980,57 @@ protected:
 };
 
 template<class T, class TMat>
-void rsIterativeLinearAlgebra::productLS(const TMat& A, const T* x, T* y, bool ls, T* w)
+void rsIterativeLinearAlgebra::productLS(
+  const TMat& A, const T* x, T* y, bool ls, T* w, const T& s)
 {
+  rsAssert(isSquare(A), "Matrix A must be square");
+  int N = numRows(A);
   if(ls) {
-    product(     A, x, w);
-    transProduct(A, w, y); }
-  else
-    product(     A, x, y);
+    product(     A, x, w   );
+    shift(       s, x, w, N);
+    transProduct(A, w, y   ); 
+    shift(       s, w, y, N); }
+  else {
+    product(     A, x, y   );
+    shift(       s, x, y, N); }
 }
 
 template<class T, class TMat>
 int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b, 
-  T* wrk, T tol, int maxIts, bool ls)
+  T* wrk, T tol, int maxIts, bool ls, const T& s)
 {
   rsAssert(isSquare(A), "Matrix A must be square");
-  using AT = rsArrayTools;          // shortcut for convenience
-  int N = numRows(A);               // number of inputs and outputs, size of x and b
-  T* r = &wrk[0];                   // residual
-  T* p = &wrk[N];                   // current direction for update
-  T* t = &wrk[2*N];                 // temporary for product A*p
-  T* w = nullptr;                   // workspace for least-squares product
+  using AT = rsArrayTools;            // shortcut for convenience
+  int N = numRows(A);                 // number of inputs and outputs, size of x and b
+  T* r = &wrk[0];                     // residual
+  T* p = &wrk[N];                     // current direction for update
+  T* t = &wrk[2*N];                   // temporary for product A*p
+  T* w = nullptr;                     // workspace for least-squares product
   T rho0;
-  if(ls) {                          // LSCG algorithm was requested
-    w = &wrk[3*N];                  // additional workspace of size N required
-    productLS(   A, x, t, ls, w);   // t = A^T * A * x
-    transProduct(A, b, p);          // p = A^T * b
-    AT::subtract(p, t, r, N);       // r = p-t = A^T * b - A^T * A * x
-    rho0 = AT::sumOfSquares(p, N);  // rho0 = dot(p, p)
+  if(ls) {                            // LSCG algorithm was requested
+    w = &wrk[3*N];                    // additional workspace of size N required
+    productLS(   A, x, t, ls, w, s);  // t = A^T * A * x (with optional shift)
+    transProduct(A, b, p);            // p = A^T * b
+    shift(       s, b, p, N);         // optional shift
+    AT::subtract(p, t, r, N);         // r = p-t = A^T * b - A^T * A * x
+    rho0 = AT::sumOfSquares(p, N);    // rho0 = dot(p, p)
   }
-  else {                            // regular CG algorithm was requested
-    product(A, x, t);               // t = A*x
-    AT::subtract(b, t, r, N);       // r = b-t = b - A*x
-    rho0 = AT::sumOfSquares(b, N);  // rho0 = dot(b, b)
+  else {                              // regular CG algorithm was requested
+    product(A, x, t);                 // t = A*x
+    shift(  s, x, t, N);              // optional shift
+    AT::subtract(b, t, r, N);         // r = b-t = b - A*x
+    rho0 = AT::sumOfSquares(b, N);    // rho0 = dot(b, b)
   }
-  AT::copy(r, p, N);                // p = r
-  T rho = AT::sumOfSquares(r, N);   // rho = dot(r, r)
-  T a;                              // current step size for update 
-  T rhoP;                           // rho of previous iteration
-  T rhoR;                           // ratio rho/rhoP
-  T rhoC = tol*tol*rho0;            // convergence criterion for rho
+  AT::copy(r, p, N);                  // p = r
+  T rho = AT::sumOfSquares(r, N);     // rho = dot(r, r)
+  T a;                                // current step size for update 
+  T rhoP;                             // rho of previous iteration
+  T rhoR;                             // ratio rho/rhoP
+  T rhoC = tol*tol*rho0;              // convergence test threshold for rho
   int k;
   for(k = 0; k < maxIts; k++) {
-    if(rho <= rhoC) 
-      return k;
-    productLS(A, p, t, ls, w);            // t = A*p (CG)  or  t = A^T*A*p (LSCG)
+    if(rho <= rhoC) return k;             // convergence test
+    productLS(A, p, t, ls, w, s);         // t = A*p (CG) or t = A^T*A*p (LSCG) with optional shift
     a = rho / AT::sumOfProducts(p, t, N); // a = rho / dot(p,t)
     for(int i = 0; i < N; i++) {
       x[i] += a*p[i];                     // x = x + a*p
@@ -2275,15 +2284,15 @@ int rsSolveLSCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b
 
 template<class T>
 int rsSolveShiftedLSCG(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b,
-  T tol, int maxIts, T shift)
+  T tol, int maxIts, T shift, bool leastSquares = true)
 {
   rsAssert(A.isSquare());
   int N = A.getNumRows();
   using Mat = rsMatrix<T>;
   Mat As = A + Mat::diag(N, shift);
-  return rsSolveLSCG(As, x, b, tol, maxIts);
+  if(leastSquares) return rsSolveLSCG(As, x, b, tol, maxIts);
+  else             return rsSolveCG(  As, x, b, tol, maxIts);
 }
-
 
 template<class T>
 int rsSolveRichardson(const rsMatrix<T>& A, std::vector<T>& x, const std::vector<T>& b, T alpha,

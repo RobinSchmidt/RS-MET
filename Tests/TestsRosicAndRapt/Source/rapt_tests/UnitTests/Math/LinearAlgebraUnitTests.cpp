@@ -588,7 +588,7 @@ bool testIterativeLinearSolvers()
   Mat A(3, 3, {5,-1,2, -1,7,3, 2,3,6}); // is symmetric and positive definite (SPD) (verify!)
   Vec x({1,2,3});                       // true solution
   Vec b = A*x;                          // right hand side
-  Vec x2(N);                            // computed solution
+  Vec x2(N), x3(N);                     // computed solutions
   Real err;                             // maximum absolute error of computed solution
   int its;                              // number of iterations taken
   Vec wrk(4*N);                         // workspace
@@ -611,6 +611,12 @@ bool testIterativeLinearSolvers()
   ok &= rsIsCloseTo(x, x2, 1.e-12);
   ok &= its == 3; 
 
+  // Test shifted CG:
+  Real shift = 2.0;
+  rsFill(x2, 0.0); its = rsSolveShiftedLSCG(A, x2, b, 1.e-13, 100, shift, false);
+  rsFill(x3, 0.0); its = ILA::solveViaCG(A, &x3[0], &b[0], &wrk[0], 1.e-13, 100, false, shift);
+  ok &= rsIsCloseTo(x2, x3, 1.e-15);
+
   // Test prototype implementation of Richardson iteration:
   rsFill(x2, 0.0);
   its = rsSolveRichardson(A, x2, b, 0.16, 1.e-13, 100); // around 0.16 seems best
@@ -629,9 +635,13 @@ bool testIterativeLinearSolvers()
   ok &= rsIsCloseTo(x, x2, 1.e-12); ok &= its == 3; 
 
   // Test shifted LSCG:
-  Real shift = 2.0;
-  rsFill(x2, 0.0); its = rsSolveShiftedLSCG(A, x2, b, 1.e-12, 100, shift);
-  // todo: implement production version with shift and compare result to prototype
+  rsFill(x2, 0.0); its = rsSolveShiftedLSCG(A, x2, b, 1.e-13, 100, shift);
+  rsFill(x3, 0.0); its = ILA::solveViaCG(A, &x3[0], &b[0], &wrk[0], 1.e-13, 100, true, shift);
+  ok &= rsIsCloseTo(x2, x3, 1.e-15);
+
+  // todo: 
+  // -implement production version with shift and compare result to prototype
+  // -test regular CG with shift
 
 
   // todo: 
