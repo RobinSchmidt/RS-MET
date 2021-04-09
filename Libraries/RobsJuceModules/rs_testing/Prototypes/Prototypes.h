@@ -1947,8 +1947,8 @@ template<class T, class TMat>
 void rsIterativeLinearAlgebra::productLS(const TMat& A, const T* x, T* y, bool ls, T* w)
 {
   if(ls) {
-    transProduct(A, x, w);
-    product(     A, w, y); }
+    product(     A, x, w);
+    transProduct(A, w, y); }
   else
     product(     A, x, y);
 }

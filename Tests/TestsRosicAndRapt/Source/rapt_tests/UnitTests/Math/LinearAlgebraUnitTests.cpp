@@ -594,6 +594,7 @@ bool testIterativeLinearSolvers()
   Vec wrk(4*N);                         // workspace
 
 
+  /*
   // Test prototype conjugate gradient implementation:
   rsFill(x2, 0.0);
   its = rsSolveCG(A, x2, b, 1.e-12, 100);
@@ -617,6 +618,7 @@ bool testIterativeLinearSolvers()
   its = rsSolveRichardson(A, x2, b, 0.16, 1.e-13, 100); // around 0.16 seems best
   err = rsMaxDeviation(x2, x);
   ok &= err <= 1.e-12;
+  */
 
 
   // Now, let's use a non-symmetric matrix:
@@ -624,17 +626,11 @@ bool testIterativeLinearSolvers()
   b = A*x;
 
   // The LSCG algorithm should be able to deal with it:
-
-  rsFill(x2, 0.0);
-  its = rsSolveLSCG(A, x2, b, 1.e-12, 100);  // prototype
-  ok &= rsIsCloseTo(x, x2, 1.e-12);
-  ok &= its == 3;
-
-  // fails:
-  rsFill(x2, 0.0);
+  rsFill(x2, 0.0); its = rsSolveLSCG(A, x2, b, 1.e-12, 100);           // prototype
+  ok &= rsIsCloseTo(x, x2, 1.e-12); ok &= its == 3;
+  rsFill(x2, 0.0); 
   its = ILA::solveViaCG(A, &x2[0], &b[0], &wrk[0], 1.e-13, 100, true); // production
-  //ok &= rsIsCloseTo(x, x2, 1.e-12);
-  //ok &= its == 3; 
+  ok &= rsIsCloseTo(x, x2, 1.e-12); ok &= its == 3; 
 
 
   // todo: 
