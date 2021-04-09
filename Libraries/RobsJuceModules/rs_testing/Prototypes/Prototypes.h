@@ -1437,7 +1437,15 @@ protected:
 
 /** A class for representing and performing computations with sparse matrices which are matrices in 
 which most elements are zero. This implementation uses a std::vector of "elements" where each 
-element stores its row- and column-indices and the actual value. */
+element stores its row- and column-indices and the actual value. 
+
+The class is meant to be used mostly in situations where computing matrix-vector products is common
+and random access of matrix elements is uncommon. In a regular (dense) matrix implementation of 
+shape MxN, the matrix-vector product is an O(M*N) operation and element access is O(1). Here, 
+computing the matrix-vector product is an O(K) operation (where K is the number of nonzero entries) 
+and element random access is O(log(K)). This is because the elements are stored as sorted array and
+random access requires binary search. In the product, we can just iterate over all the stored 
+elements. */
 
 template<class T>
 class rsSparseMatrix
@@ -1464,8 +1472,11 @@ public:
     this->numCols = numColumns;
   }
 
-  /** Creates a rsSparseMatrix from a regular (dense) rsMatrix. */
-  static rsSparseMatrix<T> fromDense(const rsMatrix<T>& A);
+  /** Creates a rsSparseMatrix from a regular (dense) rsMatrix. You can optionally set a relative 
+  tolerance for the absolute value below which elements in A will be considered zero and not be 
+  stored in th sparse representation. The tolerance is relative to the maximum absolute value in 
+  A and it is zero by default. */
+  static rsSparseMatrix<T> fromDense(const rsMatrix<T>& A, T tolRel = T(0));
 
   /** Creates a regular (dense) rsMatrix from a rsSparseMatrix. */
   static rsMatrix<T> toDense(const rsSparseMatrix<T>& A);
@@ -1598,6 +1609,10 @@ public:
   /** Multiplies a matrix with a std::vector to give another vector: y = A * x. */
   std::vector<T> operator*(const std::vector<T>& x) const;
 
+  /** Compares two sparse matrices for equality */
+  bool operator==(const rsSparseMatrix<T>& A) const
+  { return numRows == A.numRows && numCols == A.numCols && elements == A.elements; }
+
   //-----------------------------------------------------------------------------------------------
   // maybe move into class rsIterativeLinearAlgebra - hmm - but the implementation really relies
   // on the way the data is stored...so maybe not
@@ -1657,7 +1672,8 @@ protected:
     /** The less-than operator compares indices, i.e. a < b, iff a is supposed to be stored before 
     b in our elements array. The actual stored value plays no role in this comparison. This may 
     seem weird but it is just what is needed for the binary search (which uses the operator) that 
-    is used in element access. ...todo: try to find a more elegant solution. */
+    is used in element insertion and random access. 
+    ...todo: try to find a more elegant solution. */
     bool operator<(const Element& b) const
     {
       if(i   < b.i) return true;
@@ -1665,6 +1681,10 @@ protected:
       if(j   < b.j) return true;   // i == b.i, compare with respect to j
       return false;
     }
+
+    /** Compares two elements for equality. */
+    bool operator==(const Element& b) const { return i == b.i && j == b.j && value == b.value; }
+
   };
 
 
@@ -1686,16 +1706,15 @@ protected:
 // -make a class rsSparseTensor
 
 template<class T>
-rsSparseMatrix<T> rsSparseMatrix<T>::fromDense(const rsMatrix<T>& A)
+rsSparseMatrix<T> rsSparseMatrix<T>::fromDense(const rsMatrix<T>& A, T tolRel)
 {
   int M = A.getNumRows();
   int N = A.getNumColumns();
   rsSparseMatrix<T> B(M, N);
-
-  T tol = T(0);  // preliminary
-  // todo: have an optional relative (to the maximum element) tolerance parameter, absolute tol is 
-  // then computed as: tolRel / maxAbs(A)
-
+  T tol = T(0);
+  T maxA = A.getAbsoluteMaximum();
+  if(maxA > T(0))
+    tol = tolRel / maxA;
   for(int i = 0; i < M; i++)
     for(int j = 0; j < N; j++)
       if(rsAbs(A(i, j)) > tol)

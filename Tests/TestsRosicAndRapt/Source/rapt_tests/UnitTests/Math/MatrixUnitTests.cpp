@@ -1095,7 +1095,7 @@ bool testSparseMatrix()
   // Test conversion from/to dense matrices:
   Mat  dA = MatS::toDense(A);
   MatS A2 = MatS::fromDense(dA);
-  //ok &= A2 == A;   // == not yet implemented
+  ok &= A2 == A;
 
 
   // todo: test replacing elements, also with zero (in which case they should get removed)
