@@ -1225,7 +1225,7 @@ bool testSparseMatrixSolvers()
 
   Vec vals(3);
   Vec vecs({1,2,3, 1,2,3, 1,2,3});
-  numIts = LA::eigenspace(A, &vals[0], &vecs[0], tol, &wrk[0]);
+  numIts = LA::eigenspace(A, &vals[0], &vecs[0], tol, &wrk[0], 1000);
 
   // todo: 
   // -figure out what happens when we have eigenvalues with multiplicities (algebraic and/or

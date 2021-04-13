@@ -696,7 +696,7 @@ bool testPowerIterationDense()
   rsNormalizeChunks(vecs, N);  // for easier comparison
   Vec vals2(N), vecs2(N*N);
   AT::fillWithRandomValues(&vecs2[0], N*N, -1.0, +1.0, 0);  // initial guess
-  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, &wrk[0]);
+  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, &wrk[0], 1000);
   Vec vec2 = rsGetChunk(vecs2, N, N);
   Vec tmp1 = A*vec2;         // matrix times vector
   Vec tmp2 = vals2[1]*vec2;  // scalar times vector
@@ -718,7 +718,7 @@ bool testPowerIterationDense()
   A = fromEigenSystem(vals, vecs);
   vals2.resize(N);
   vecs2.resize(N*N);
-  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], 1.e-13, &wrk[0]);
+  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], 1.e-13, &wrk[0], 1000);
   ok &= checkEigensystem(vals2, vecs2, vals, vecs, 1.e-13);
   // 2D works with (1,(1,1)),(3,(1,-1)) but not with (1,(1,2)),(3,(1,-1))
   // I think, it works only when the eigenvectors are orthogonal. If they are not we probably can't
@@ -728,12 +728,12 @@ bool testPowerIterationDense()
   vals = Vec({  3,    1});  // eigenvalues
   vecs = Vec({6,8, -8,6});  // is also orthogonal, both have norm 100
   A = fromEigenSystem(vals, vecs);
-  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], 1.e-13, &wrk[0]);
+  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], 1.e-13, &wrk[0], 1000);
   ok &= checkEigensystem(vals2, vecs2, vals, vecs, 1.e-12);
 
   vecs = Vec({6,8, 8,6});  // not orthogonal, both have norm 100
   A = fromEigenSystem(vals, vecs);
-  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], 1.e-13, &wrk[0]);
+  its = ILA::eigenspace(A, &vals2[0], &vecs2[0], 1.e-13, &wrk[0], 1000);
   //ok &= checkEigensystem(vals2, vecs2, vals, vecs, 1.e-12);
   Vec w1 = rsGetChunk(vecs2, 0, N);  // extract both found vectors
   Vec w2 = rsGetChunk(vecs2, N, N);

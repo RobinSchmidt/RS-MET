@@ -1898,7 +1898,7 @@ public:
   // largestEigenpair
 
   template<class T, class TMat>
-  static int eigenspace(const TMat& A, T* vals, T* vecs, T tol, T* workspace);
+  static int eigenspace(const TMat& A, T* vals, T* vecs, T tol, T* workspace, int maxIts);
   // rename to eigenViaPower or eigensystemViaEPI (extended power iteration)
   // each eigenvector is found in turn from the largest to the smallest via a variation of the von 
   // Mises iteration in which the projection of the iterates onto the already found eigenspace is
@@ -2107,7 +2107,8 @@ int rsIterativeLinearAlgebra::largestEigenValueAndVector(
 //  eigenspace from each iterate - this should be done right after product(vec, wrk); i think
 
 template<class T, class TMat>
-int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol, T* wrk)
+int rsIterativeLinearAlgebra::eigenspace(
+  const TMat& A, T* vals, T* vecs, T tol, T* wrk, int maxIts)
 {
   // Algorithm:
   // It works like the von Mises vector iteration for one eigenvector at the time, from large to 
@@ -2123,12 +2124,13 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
   // i think, any norm should work, but maxAbs apparently doesn't - why?
 
   int N = numRows(A);
-  int numIts = 0;
+  int totalIts = 0;
   for(int n = 0; n < N; n++) {         // loop over the eigenvectors
     T* val = &vals[n];                 // location of n-th eigenvalue
     T* vec = &vecs[n*N];               // start location of n-th eigenvector
+    int itsPerVec = 0;
     while(true) {
-      numIts++; 
+      itsPerVec++; 
       product(A, vec, wrk);
       for(int i = 0; i < n; i++) {
         T pi = T(0);
@@ -2140,11 +2142,12 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
       T L = norm(wrk, N);
       AT::scale(wrk, N, T(1) / L);        // what if L == 0?
       AT::copy(wrk, vec, N);
-      if(done)
-        break;
+      if(done || itsPerVec >= maxIts) {
+        totalIts += itsPerVec;
+        break;  }
     }
   }
-  return numIts;
+  return totalIts;
 
   // todo: drag the T L = norm(vec, N); AT::scale(vec, N, T(1) / L); into the iteration before
   // forming the product, remove them after the convergence test

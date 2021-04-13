@@ -627,6 +627,7 @@ void orthogonalizedPowerIteration()
   Vec s({3,    2  });             // eigenvalues* (distinct, positive real)
   Vec v({6,8, -8,6});             // eigenvectors (orthogonal, both have norm 100)
   Mat A = fromEigenSystem(s, v);  // A = (2.36, 0.48,  0.48, 2.64) (symmetric)
+  int maxIts = 500;               // maximum number of iterations
   // (*) I use s for the eigenvalues to indicate that they are scalars ("eigenscalars")
 
   // Output variables for algo:
@@ -637,18 +638,18 @@ void orthogonalizedPowerIteration()
   // the algo produces.
 
   // Retrieve eigensystem:
-  AT::fillWithRandomValues(&w[0], N*N, -1.0, +1.0, 0);     // initial guess
-  its = ILA::eigenspace(A, &t[0], &w[0], 1.e-13, &wrk[0]); // its = 81
-  ok  = checkEigensystem(t, w, s, v, 1.e-12);              // yep, works!
+  AT::fillWithRandomValues(&w[0], N*N, -1.0, +1.0, 0);             // initial guess
+  its = ILA::eigenspace(A, &t[0], &w[0], 1.e-13, &wrk[0], maxIts); // its = 81
+  ok  = checkEigensystem(t, w, s, v, 1.e-12);                      // yep, works!
 
   // Now try the same thing with eigenvectors (.6,.8),(.8,.6). These have both have norm 1 and are
   // not orthogonal anymore:
-  v = Vec({.6,.8, .8,.6});                                 // not orthogonal anymore
-  A    = fromEigenSystem(s, v);                            // A is now antisymmetric
-  AT::fillWithRandomValues(&w[0], N*N, -1.0, +1.0, 0);     // initial guess
-  its = ILA::eigenspace(A, &t[0], &w[0], 1.e-13, &wrk[0]); // its = 75
-  ok  = rsIsPermutation(s, t, 1.e-12);                     // eigenvalues are correct
-  ok  = checkEigensystem(t, w, s, v, 1.e-12);              // eigenvectors are wrong
+  v = Vec({.6,.8, .8,.6});                                         // not orthogonal anymore
+  A    = fromEigenSystem(s, v);                                    // A is now antisymmetric
+  AT::fillWithRandomValues(&w[0], N*N, -1.0, +1.0, 0);             // initial guess
+  its = ILA::eigenspace(A, &t[0], &w[0], 1.e-13, &wrk[0], maxIts); // its = 75
+  ok  = rsIsPermutation(s, t, 1.e-12);                             // eigenvalues are correct
+  ok  = checkEigensystem(t, w, s, v, 1.e-12);                      // eigenvectors are wrong
 
   // Test if the found vectors are orthonormal (they should be):
   Mat W = rsToMatrixColumnWise(w, N, N);
@@ -734,7 +735,7 @@ void orthogonalizedPowerIteration()
   //   when the angle is +-90°. make a function that takes a reference vector and angle and two 
   //   eigenvalues that creates the plot
 
-  auto getProjectionRatio = [](Real angle, Real s1, Real s2)
+  auto getProjectionRatio = [&](Real angle, Real s1, Real s2)
   {
     // Function to compute the ratio r12 (as above) as function of the angle between the 
     // eigenvectors
@@ -746,18 +747,21 @@ void orthogonalizedPowerIteration()
     Vec wrk(2), t(2), w(2*2);       // wrk: workspace, t: recovered eigenvalues, w: orthovectors
     int its;                        // number of iterations taken by the algo
     AT::fillWithRandomValues(&w[0], 2*2, -1.0, +1.0, 0);     // initial guess
-    its = ILA::eigenspace(A, &t[0], &w[0], 1.e-8, &wrk[0]);  // that's a high tolerance!
+    its = ILA::eigenspace(A, &t[0], &w[0], 1.e-8, &wrk[0], maxIts);  // that's a high tolerance!
     Mat W = rsToMatrixColumnWise(w, 2, 2);
     Vec w1(2); W.copyColumn(0, &w1[0]);
     Vec w2(2); W.copyColumn(1, &w2[0]);
-    Vec  u2  = w1 + w2;
+    Vec  u2  = w1 + w2;             // or maybe s1*w1 + s2*w2?
+    //Vec  u2  = s1*w1 + s2*w2;       // test
     Vec  p2  = A*u2;
     Real q12 = rsDot(w1, p2);
-    Real q22 = rsDot(w2, p2); 
+    Real q22 = rsDot(w2, p2);       // always(?) equals the smaller eigenvalue
     Real r12 = q12/q22;
-    return r12;
+    Real r21 = q22/q12;
+    //return r21;
+    //return r12;
+    return q12;
   };
-  // doesn't always converge
 
   // Test:
   //Real Q12 = rsDot(v1, p2);  // -0.42857142857126318
@@ -771,14 +775,25 @@ void orthogonalizedPowerIteration()
   Real t12 = rsDot(v1, v2);  // 0.96
 
 
-  Real minAngle =  PI/3;
-  Real maxAngle = +PI/2;
-  int numAngles = 100;
+  Real minAngle = 0.05;  // avoid singularity at 0
+  Real maxAngle = 3.10;  // avoid sigularity at pi
+  int numAngles = 500;
   Vec angles = rsLinearRangeVector(numAngles, minAngle, maxAngle);
   Vec ratios(numAngles);
-  //for(int i = 0; i < numAngles; i++)
-  //  ratios[i] = getProjectionRatio(angles[i], s[0], s[1]);  // this still produces a hang
-  rsPlotVectorsXY(angles, ratios);
+  Vec cotangens(numAngles);
+  Vec secans(numAngles);
+  for(int i = 0; i < numAngles; i++)
+  {
+    ratios[i]  = getProjectionRatio(angles[i], s[0], s[1]);
+    ratios[i] -= 3.0;
+    cotangens[i] = tan(angles[i]-PI/2);      // verify!
+    secans[i]    = -1.0/cos(angles[i]-PI/2); // that's not the secans!
+  }
+  //rsPlotVectorsXY(angles, ratios, cotangens, secans);
+  rsPlotVectorsXY(angles, ratios, cotangens); // we have a partial match!
+
+  //Real tmp = getProjectionRatio(0.1, 3.0, 2.0);
+
 
 
   //Vec angles(numAngles);
