@@ -639,14 +639,11 @@ bool testIterativeLinearSolvers()
   rsFill(x3, 0.0); its = ILA::solveViaCG(A, &x3[0], &b[0], &wrk[0], 1.e-13, 100, true, shift);
   ok &= rsIsCloseTo(x2, x3, 1.e-15);
 
-  // todo: 
-  // -implement production version with shift and compare result to prototype
-  // -test regular CG with shift
-
-
-  // todo: 
+  // ToDo:
+  // -add optional shifting to Richardson iteration (sse Kanzow, pg. 309)
   // -test LSCG with rsSparseMatrix
   // -try LSCG with singular systems (consistent and inconsistent)
+  // -try with complex numbers (replace transpose-product with conjugate-transpose-product)
 
   /*
   // Fails:

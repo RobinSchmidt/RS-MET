@@ -2055,8 +2055,11 @@ int rsIterativeLinearAlgebra::solveViaCG(const TMat& A, T* x, const T* b,
 // -needs tests with singular systems (consistent and inconsistent)
 // -try to incorporate preconditioning...but maybe that should be done in pre/post processing steps
 //  outside this function
-
-
+//
+// oh - the extension to the least squares problem has already a name: CGNR (Conjugate Gradient for 
+// Normal Residual):
+// https://en.wikipedia.org/wiki/Conjugate_gradient_method#Conjugate_gradient_on_the_normal_equations
+// see also: https://web.stanford.edu/group/SOL/software/lsqr/
 
 template<class T, class TMat>
 int rsIterativeLinearAlgebra::largestEigenValueAndVector(
@@ -2147,6 +2150,7 @@ int rsIterativeLinearAlgebra::eigenspace(const TMat& A, T* vals, T* vecs, T tol,
   // forming the product, remove them after the convergence test
   // 
 }
+// -needs a maxIts parameters
 // -maybe get rid of the function that that computes only the largest - give this function another
 //  parameter that determines, how many eigenvalues should be computed, and if it's 1, it just 
 //  reduces to the function that computes the largest.

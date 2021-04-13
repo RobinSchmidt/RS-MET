@@ -603,8 +603,6 @@ void linearIndependence()
 }
 
 
-
-
 void orthogonalizedPowerIteration()
 {
   // Experiments with an algorithm that i came up with that is a simple extension of the power 
@@ -643,9 +641,9 @@ void orthogonalizedPowerIteration()
   its = ILA::eigenspace(A, &t[0], &w[0], 1.e-13, &wrk[0]); // its = 81
   ok  = checkEigensystem(t, w, s, v, 1.e-12);              // yep, works!
 
-  // Now try the same thing with eigenvectors (6,8),(8,6). These have still both norm 100 but are
+  // Now try the same thing with eigenvectors (.6,.8),(.8,.6). These have both have norm 1 and are
   // not orthogonal anymore:
-  v = Vec({6,8, 8,6});                                     // not orthogonal anymore
+  v = Vec({.6,.8, .8,.6});                                 // not orthogonal anymore
   A    = fromEigenSystem(s, v);                            // A is now antisymmetric
   AT::fillWithRandomValues(&w[0], N*N, -1.0, +1.0, 0);     // initial guess
   its = ILA::eigenspace(A, &t[0], &w[0], 1.e-13, &wrk[0]); // its = 75
@@ -670,7 +668,7 @@ void orthogonalizedPowerIteration()
   // Now try to recover the orginal eigenvector v2 from w1,w2 by undoing the Gram-schmidt process
   // ...but how can this be done? Can it be done at all?
   Vec v1(N); V.copyColumn(0, &v1[0]); // todo: implement convenience function: v1 = V.getColumn(0)
-  Vec v2(N); V.copyColumn(1, &v1[0]);
+  Vec v2(N); V.copyColumn(1, &v2[0]);
   Vec w1(N); W.copyColumn(0, &w1[0]);
   Vec w2(N); W.copyColumn(1, &w2[0]);
   Vec Aw2 = A*w2;
@@ -701,7 +699,7 @@ void orthogonalizedPowerIteration()
   // https://arxiv.org/ftp/arxiv/papers/1607/1607.04759.pdf - this apaper discusses an inversion
   // algo for Gram-Schmidt, but that makes use of an additional matrix r(M,N) that is computed 
   // during the forward orthogonalization along with the orthogonalized set of vectors. We don't
-  // have such a matrix available here. Maybe define the (unknwon) denominator as:
+  // have such a matrix available here. Maybe define the (unknown) denominator as:
   //   k2 := |(v2 - <v1_o, v2> * v1_o)|. 
   // Then we may write 
   //   v2_o*k2 = v2 - <v1_o, v2> * v1_o
@@ -711,6 +709,79 @@ void orthogonalizedPowerIteration()
   // works, the algo can be applied to symmetric and antisymmetic parts (A_s, A_a) separately? But 
   // that would only help, if we could find the eigenvectors of A from those of A_s, A_a
 
+  // Other idea:
+  // Form a vector:
+  //   u2 := w1 + w2
+  // and multiply it by the matrix A:
+  //   p2 : = A*u2
+  // then find the projections of p2 onto w1 and w2:
+  //   q12 := <w1, p2>
+  //   q22 := <w2, p2>
+  // and their ratio:
+  //   r12 := q12/q22
+  // i think, this ratio should be the same as the ratio of the corresponding eigenvalues s1/s2? 
+  // Let's try it:
+  Vec  u2  = w1 + w2;
+  Vec  p2  = A*u2;
+  Real q12 = rsDot(w1, p2);  // -0.42857142857126318
+  Real q22 = rsDot(w2, p2);  //  2 == 2nd eigenvalue
+  Real r12 = q12/q22;        // -0.21428571428564130
+  // ...hmmm - nope! but can it somehow help us to reconstruct the projection coeff of v2 onto v1?
+  // -q12 and therfore r12 grows with growing largest eigenvalue s1
+  // -todo: 
+  //  -plot the function r12(s1) for a given s2
+  //  -plot also the dependency on the angle bewteen the eigenvectors - i expect r12 to be +- s1/s2
+  //   when the angle is +-90°. make a function that takes a reference vector and angle and two 
+  //   eigenvalues that creates the plot
+
+  auto getProjectionRatio = [](Real angle, Real s1, Real s2)
+  {
+    // Function to compute the ratio r12 (as above) as function of the angle between the 
+    // eigenvectors
+    Real c = cos(angle);
+    Real s = sin(angle);
+    Vec e({s1,  s2 });              // eigenvalues
+    Vec v({1,0, c,s});              // eigenvectors
+    Mat A = fromEigenSystem(e, v);  // our matrix
+    Vec wrk(2), t(2), w(2*2);       // wrk: workspace, t: recovered eigenvalues, w: orthovectors
+    int its;                        // number of iterations taken by the algo
+    AT::fillWithRandomValues(&w[0], 2*2, -1.0, +1.0, 0);     // initial guess
+    its = ILA::eigenspace(A, &t[0], &w[0], 1.e-8, &wrk[0]);  // that's a high tolerance!
+    Mat W = rsToMatrixColumnWise(w, 2, 2);
+    Vec w1(2); W.copyColumn(0, &w1[0]);
+    Vec w2(2); W.copyColumn(1, &w2[0]);
+    Vec  u2  = w1 + w2;
+    Vec  p2  = A*u2;
+    Real q12 = rsDot(w1, p2);
+    Real q22 = rsDot(w2, p2); 
+    Real r12 = q12/q22;
+    return r12;
+  };
+  // doesn't always converge
+
+  // Test:
+  //Real Q12 = rsDot(v1, p2);  // -0.42857142857126318
+  //Real Q22 = rsDot(v2, p2);  //  0.14857142857163841
+  //Real tmp = acos(q12);      //  2.0137073708683526
+  //tmp = cos(q12);            //  0.90956035167423543
+
+  // This is our target value, that we want to find - the projection of the 2nd eigenvector onto 
+  // the 1st. If we know that projection coeff, we should be able to reconstriuct v2 from the 
+  // available information (i hope):
+  Real t12 = rsDot(v1, v2);  // 0.96
+
+
+  Real minAngle =  PI/3;
+  Real maxAngle = +PI/2;
+  int numAngles = 100;
+  Vec angles = rsLinearRangeVector(numAngles, minAngle, maxAngle);
+  Vec ratios(numAngles);
+  //for(int i = 0; i < numAngles; i++)
+  //  ratios[i] = getProjectionRatio(angles[i], s[0], s[1]);  // this still produces a hang
+  rsPlotVectorsXY(angles, ratios);
+
+
+  //Vec angles(numAngles);
 
 
   int dummy = 0;
