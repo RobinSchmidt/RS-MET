@@ -348,7 +348,8 @@ int main(int argc, char* argv[])
   //maxFlatMaxSteepPrototypeM2N2();
   ////experimentalPrototypeM1N2();  // commented in header
   //splitLowFreqFromDC();
-  ladderMultipole();
+  directFormFreqResp();
+  //ladderMultipole();
   //ladderResonanceModeling();
   //ladderResoShape();
   //ladderThresholds();           // maybe remove - this seemed to be a dead end

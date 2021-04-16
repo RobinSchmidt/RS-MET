@@ -1726,6 +1726,29 @@ void splitLowFreqFromDC()
   int dummy = 0;
 }
 
+template<class T>
+void plotFreqRespZ(const std::vector<T>& b, const std::vector<T>& a)
+{
+  FilterPlotter<T> plt;
+  plt.addFilterSpecificationBA((int)b.size(), &b[0], (int)a.size(), &a[0], 1.0);
+  plt.plotMagnitude(501, 0.0, 0.5, false, false);  
+  // todo: plotMagnitudeAndPhase, take optional parameter for number of samples - should behave
+  // similar to matlab's freqz, move to plotting: 
+  // https://www.mathworks.com/help/signal/ref/freqz.html
+}
+
+void directFormFreqResp()
+{
+  // We plot magnitude- and phase responses of a direct form filter
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  Vec b({0.1});        // feedforward coeffs
+  Vec a({1.0, -0.9});  // feedback coeffs
+  plotFreqRespZ(b, a);  // We get a DC gain of 10 - why? Shouldn't it be 1?
+}
+
 void ladderMultipole()
 {
   // We try to generalize the resonance tuning formulas from here:
@@ -1757,6 +1780,11 @@ void ladderMultipole()
 
     a1 = t / (s-c*t);
     b0 = 1 + a1;
+
+    // test:
+    //Real d  = s-c*t;   // denominator
+    //Real x = s/t - c;
+    //Real a = 1/x;
 
     Real g1 = sqrt((b0*b0) / (1+a1*a1+2*a1*c));
 
@@ -1799,9 +1827,21 @@ void ladderMultipole()
 
   // Observations:
   // -for N=3 and higher, it seems to work
-  // -for N=2, we seem to have severe numerical(?) problems - a1 goes to 1 and b0 to 0
+  // -for N=2, we seem to have severe numerical(?) problems - a1 goes to -1 and b0 to 0.
+  //  -> the denominator s-c*t gets close to -t
   //  -> plot the phase response for N=2 without resonance, maybe that gives a hint what the 
   //  problem is
+  // -maybe the problem is that in the derivation we have undone an atan(y/x) via tan which should 
+  //  actually have been an atan2(y,x)?
+  // -maybe try it with a 1-pole/1-zero filter with its zero at z = -1, such that we have 
+  //  b := b1 = b0, so we still have only 2 degrees of freedom: G1(z) = b(1 + 1/z) / (1 + a1/z),
+  //  maybe for computing a1, we can set b=1 - it should not really matter for the phase response
+  //    phs(G1) = tan(wc-pi)/N) = t = -((a0*b1-a1*b0)*s)/(a0*b0 + a1*b1 + (a0*b1+a1*b0)*c)
+  //  set a0=1, b0=b1=b=1:
+  //    t = -((1-a1)*s)/(1+a1 + (1+a1)*c)
+  //      =  ((a1-1)*s)/(1+a1 + (1+a1)*c)
+  //  wolfram: solve t=((a1-1)*s)/(1+a1 + (1+a1)*c) for a1
+  //    a1 = (c t + s + t)/(s - (c + 1) t) and s!=c t + t and c s + s!=0
   //
   // ToDo: 
   // -Try to derive a formula for the poles in the z-plane. They occur at location where
@@ -1811,7 +1851,9 @@ void ladderMultipole()
   //  ...and only up to N=4 - seems like there is no general formula. we have also
   //  b/(1+a/z) = (b*z)/(a+z) - but that doesn't seem to help
   // -figure out what happens when positive instead of negative feedback is used
-  //
+  // -plot phase responses of 1-pole filters for various values of the pole coefficient - maybe the
+  //  problem is that the phase response does not really pass through -180° when there are only 
+  //  2 poles? ...but i actually don't think so - we'll see....
 }
 
 void ladderResonanceModeling()

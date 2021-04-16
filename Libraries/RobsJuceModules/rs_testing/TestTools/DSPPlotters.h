@@ -49,8 +49,8 @@ public:
   void addFilterSpecificationZPK(const RAPT::rsFilterSpecificationZPK<T>& spec);
 
 
-  void addFilterSpecificationBA(int numeratorOrder, T* numeratorCoeffs, 
-    int denominatorOrder, T* denominatorCoeffs, T sampleRate = inf);
+  void addFilterSpecificationBA(int numeratorOrder, const T* numeratorCoeffs, 
+    int denominatorOrder, const T* denominatorCoeffs, T sampleRate = inf);
   // maybe allow for complex coeffs
 
   void addFilterSpecificationBA(const RAPT::rsFilterSpecificationBA<T>& spec);

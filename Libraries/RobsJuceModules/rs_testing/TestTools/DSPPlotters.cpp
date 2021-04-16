@@ -48,8 +48,8 @@ void FilterPlotter<T>::addFilterSpecificationZPK(const RAPT::rsFilterSpecificati
 }
 
 template <class T>
-void FilterPlotter<T>::addFilterSpecificationBA(int numeratorOrder, T* numeratorCoeffs,
-  int denominatorOrder, T* denominatorCoeffs, T sampleRate)
+void FilterPlotter<T>::addFilterSpecificationBA(int numeratorOrder, const T* numeratorCoeffs,
+  int denominatorOrder, const T* denominatorCoeffs, T sampleRate)
 {
   rsFilterSpecificationBA<T> spec;
   spec.b.resize(numeratorOrder+1);
