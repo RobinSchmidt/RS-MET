@@ -1737,11 +1737,12 @@ void ladderMultipole()
   using Real = double;
   using Vec  = std::vector<Real>;
 
-  int numStages     = 4;               // number of ladder stages
-  int numPlotFreqs  = 501;             // number of frequency samples in the plot
-
+  int numStages     = 3;               // number of ladder stages
+  int numPlotFreqs  = 5001;            // number of frequency samples in the plot
+  Real reso = 0.9;                                    // resonance
   Real fs = 44100;                                    // sample rate
   Vec fc({250, 500, 1000, 2000, 4000, 8000, 16000});  // cutoff frequencies
+  //Vec fc({2000});
 
   // Computes the filter coeffs b0, a1, k for given order N, normalized radian cutoff frequency wc 
   // and resonance r:
@@ -1776,16 +1777,41 @@ void ladderMultipole()
     return rsAbs(H);                 // magnitude of H(z)
   };
 
-  // ...tbc...
+  // Compute and plot the magnitude responses:
+  GNUPlotter plt;
+  Vec f = rsRangeExponential(20., 20000., numPlotFreqs); 
+  Vec M(numPlotFreqs);                               // magnitudes
+  for(size_t i = 0; i < fc.size(); i++)
+  {
+    Real wc = 2 * PI * fc[i] / fs;
+    Real b0, a1, k;
+    computeCoeffs(numStages, wc, reso, b0, a1, k);
+    for(int j = 0; j < numPlotFreqs; j++)
+    {
+      Real w = 2 * PI * f[j] /fs;
+      M[j] = getMagnitudeAt(w, numStages, b0, a1, k);
+      M[j] = rsAmpToDb(M[j]);
+    }
+    plt.addDataArrays(numPlotFreqs, &f[0], &M[0]);
+  }
+  plt.setLogScale("x", 2.0, true);
+  plt.plot();
 
-
-
-
-
-  int dummy = 0;
-
+  // Observations:
+  // -for N=3 and higher, it seems to work
+  // -for N=2, we seem to have severe numerical(?) problems - a1 goes to 1 and b0 to 0
+  //  -> plot the phase response for N=2 without resonance, maybe that gives a hint what the 
+  //  problem is
+  //
   // ToDo: 
+  // -Try to derive a formula for the poles in the z-plane. They occur at location where
+  //  1 + k * GN/z = 0  ->  GN + z/k = 0  ->  (b0 / (1+a1/z))^N + z/k = 0
+  //  wolfram alpha can do it only when we use particular values for N, like:
+  //    solve (b / (1+a/z))^2 + z/k = 0 for z
+  //  ...and only up to N=4 - seems like there is no general formula. we have also
+  //  b/(1+a/z) = (b*z)/(a+z) - but that doesn't seem to help
   // -figure out what happens when positive instead of negative feedback is used
+  //
 }
 
 void ladderResonanceModeling()

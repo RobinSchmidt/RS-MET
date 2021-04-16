@@ -349,7 +349,7 @@ int main(int argc, char* argv[])
   ////experimentalPrototypeM1N2();  // commented in header
   //splitLowFreqFromDC();
   ladderMultipole();
-  ladderResonanceModeling();
+  //ladderResonanceModeling();
   //ladderResoShape();
   //ladderThresholds();           // maybe remove - this seemed to be a dead end
   //ladderFeedbackSaturation();

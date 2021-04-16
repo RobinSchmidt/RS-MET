@@ -107,6 +107,7 @@ public:
 
   /** Returns the filter's magnitude response at the given frequency in Hz. */
   TPar getMagnitudeResponseAt(CRPar frequency);
+  // maybe rename to getMagnitudeAt
 
 
   /** \name Audio Processing */

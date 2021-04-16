@@ -209,6 +209,15 @@ inline void rsPrepend(std::vector<T>& v, const T& newElement)
   v.insert(v.begin(), newElement);
 }
 
+
+template<class T>
+std::vector<T> rsRangeExponential(T min, T max, int N)
+{
+  std::vector<T> r(N);
+  rsArrayTools::fillWithRangeExponential(&r[0], N, min, max);
+  return r;
+}
+
 template<class T>
 std::vector<T> rsRangeLinear(T min, T max, int N)
 {
