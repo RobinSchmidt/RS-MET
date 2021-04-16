@@ -624,7 +624,7 @@ void orthogonalizedPowerIteration()
 
   // Create 2x2 matrix with eigenvalues 3,2 and (orthogonal) eigenvectors (6,8),(-8,6):
   int N = 2;                      // dimensionality
-  Vec s({3,    2  });             // eigenvalues* (distinct, positive real)
+  Vec s({3.0,  2.0});             // eigenvalues* (distinct, positive real)
   Vec v({6,8, -8,6});             // eigenvectors (orthogonal, both have norm 100)
   Mat A = fromEigenSystem(s, v);  // A = (2.36, 0.48,  0.48, 2.64) (symmetric)
   int maxIts = 500;               // maximum number of iterations
@@ -776,27 +776,25 @@ void orthogonalizedPowerIteration()
 
 
   Real minAngle = 0.05;  // avoid singularity at 0
-  Real maxAngle = 3.10;  // avoid sigularity at pi
+  Real maxAngle = 3.10;  // avoid singularity at pi
   int numAngles = 500;
   Vec angles = rsLinearRangeVector(numAngles, minAngle, maxAngle);
   Vec ratios(numAngles);
-  Vec cotangens(numAngles);
-  Vec secans(numAngles);
+  Vec cot_p(numAngles);  // positive cotangent
+  Vec cot_m(numAngles);  // negative cotangent
   for(int i = 0; i < numAngles; i++)
   {
     ratios[i]  = getProjectionRatio(angles[i], s[0], s[1]);
-    ratios[i] -= 3.0;
-    cotangens[i] = tan(angles[i]-PI/2);      // verify!
-    secans[i]    = -1.0/cos(angles[i]-PI/2); // that's not the secans!
+    ratios[i] -= s[0];
+    cot_m[i]   = tan(angles[i] - PI/2);
+    cot_p[i]   = tan(PI/2 - angles[i]);
   }
-  //rsPlotVectorsXY(angles, ratios, cotangens, secans);
-  rsPlotVectorsXY(angles, ratios, cotangens); // we have a partial match!
+  rsPlotVectorsXY(angles, ratios, cot_p, cot_m); 
+  // The black curve (representing q12 shifted by 3 which is the larger eigenvalue) agrees 
+  // partially with the positive and partially with the negative cotangent function. ...but this
+  // seems to work only, if the eigenvalues are 3 and 2 - WTF?
 
-  //Real tmp = getProjectionRatio(0.1, 3.0, 2.0);
 
-
-
-  //Vec angles(numAngles);
 
 
   int dummy = 0;

@@ -97,8 +97,8 @@ int main(int argc, char* argv[])
   //testSubSpaces();        // todo: move to unit tests
   //testSigularValueDecomp();   // dito
   //linearIndependence();
-  eigenstuff();
-  iterativeLinearSolvers();
+  //eigenstuff();
+  //iterativeLinearSolvers();
   //linearSolverPrecision();
 
   //ellipseLineIntersections();
@@ -196,7 +196,7 @@ int main(int argc, char* argv[])
   //triSawOsc();
   //triSawOscAntiAlias();
   //xoxosOsc();
-  shepardTone();
+  //shepardTone();
 
   // Modulators:
   //attackDecayEnvelope();
@@ -348,7 +348,8 @@ int main(int argc, char* argv[])
   //maxFlatMaxSteepPrototypeM2N2();
   ////experimentalPrototypeM1N2();  // commented in header
   //splitLowFreqFromDC();
-  //ladderResonanceModeling();
+  ladderMultipole();
+  ladderResonanceModeling();
   //ladderResoShape();
   //ladderThresholds();           // maybe remove - this seemed to be a dead end
   //ladderFeedbackSaturation();
@@ -469,7 +470,7 @@ int main(int argc, char* argv[])
   //sincResamplerPassbandRipple();
   //sincResamplerSumOfTapWeights();
   //timeWarp();
-  pitchFlattening();
+  //pitchFlattening();
   //phaseLockedCrossfade();
   //phaseLockedCrossfade2();
   //pitchDetectWithSilence();

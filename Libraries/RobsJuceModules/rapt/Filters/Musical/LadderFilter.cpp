@@ -112,6 +112,8 @@ TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency)
   H *= conj(H);                                    // magnitude-squared
   return rsSqrt(H.real());                         // imaginary part should be zero anyway
 
+  // Why not just return rsAbs(H)?
+
   // I wonder, if a simpler formula is possible which avoids going through the complex transfer 
   // function -> computer algebra
 }

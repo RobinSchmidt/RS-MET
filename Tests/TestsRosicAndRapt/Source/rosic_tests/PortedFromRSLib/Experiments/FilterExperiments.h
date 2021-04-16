@@ -32,6 +32,7 @@ void maxFlatMaxSteepPrototypeM2N2();
 
 void splitLowFreqFromDC();
 
+void ladderMultipole();
 void ladderResonanceModeling();
 void ladderResoShape();
 void ladderThresholds();           // maybe remove - this seemed to be a dead end

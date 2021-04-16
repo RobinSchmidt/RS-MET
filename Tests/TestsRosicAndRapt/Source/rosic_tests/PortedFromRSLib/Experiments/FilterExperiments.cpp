@@ -1726,6 +1726,67 @@ void splitLowFreqFromDC()
   int dummy = 0;
 }
 
+void ladderMultipole()
+{
+  // We try to generalize the resonance tuning formulas from here:
+  // http://www.rs-met.com/documents/dsp/ResonanceTuningForTheDigitalMoogFilter.pdf
+  // to a general N stage ladder. I think, we need to replace the computations of t and k in Eq 11 
+  // and 15 by: t = tan((w_c - pi) / N), k = r/g_1^N. We plot the magnitude responsed of filters
+  // with a given resonance settings and different cutoff frequencies
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  int numStages     = 4;               // number of ladder stages
+  int numPlotFreqs  = 501;             // number of frequency samples in the plot
+
+  Real fs = 44100;                                    // sample rate
+  Vec fc({250, 500, 1000, 2000, 4000, 8000, 16000});  // cutoff frequencies
+
+  // Computes the filter coeffs b0, a1, k for given order N, normalized radian cutoff frequency wc 
+  // and resonance r:
+  auto computeCoeffs = [](int N, Real wc, Real r, Real& b0, Real& a1, Real& k)
+  {
+    rsAssert(N >= 2, "Filter order must be at least 2 for getting a resonance"); 
+    // ...because otherwise the phase response does not cross 180° but only approaches it
+
+    Real s = sin(wc);
+    Real c = cos(wc);
+    Real t = tan((wc-PI)/N);
+
+    a1 = t / (s-c*t);
+    b0 = 1 + a1;
+
+    Real g1 = sqrt((b0*b0) / (1+a1*a1+2*a1*c));
+
+    k = r / pow(g1, N);
+  };
+
+  // Computes the magnitude response at the given normalized radian frequency w for given filter 
+  // order and coefficients:
+  auto getMagnitudeAt = [](Real w, int N, Real b0, Real a1, Real k)
+  {
+    using Cmp = std::complex<Real>;
+    Cmp j(  0, 1);                   // imaginary unit
+    Cmp one(1, 0);                   // 1 + 0j
+    Cmp z  = exp(j*w);               // z at which we want to evaluate |H(z)|
+    Cmp G1 = b0 / (one + a1/z);      // transfer function of single stage 
+    Cmp GN = pow(G1, N);             // transfer function of N stages
+    Cmp H  = GN / (one + k * GN/z);  // transfer function H(z) with resonance
+    return rsAbs(H);                 // magnitude of H(z)
+  };
+
+  // ...tbc...
+
+
+
+
+
+  int dummy = 0;
+
+  // ToDo: 
+  // -figure out what happens when positive instead of negative feedback is used
+}
 
 void ladderResonanceModeling()
 {
