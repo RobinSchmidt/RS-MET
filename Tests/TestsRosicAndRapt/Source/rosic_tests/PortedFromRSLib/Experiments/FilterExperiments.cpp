@@ -1727,11 +1727,13 @@ void splitLowFreqFromDC()
 }
 
 template<class T>
-void plotFreqRespZ(const std::vector<T>& b, const std::vector<T>& a)
+void plotFreqRespZ(const std::vector<T>& b, const std::vector<T>& a, int numSamples = 501)
 {
   FilterPlotter<T> plt;
   plt.addFilterSpecificationBA((int)b.size(), &b[0], (int)a.size(), &a[0], 1.0);
-  plt.plotMagnitude(501, 0.0, 0.5, false, false);  
+  plt.plotMagnitude(numSamples, 0.0, 0.5, false, false);  
+
+
   // todo: plotMagnitudeAndPhase, take optional parameter for number of samples - should behave
   // similar to matlab's freqz, move to plotting: 
   // https://www.mathworks.com/help/signal/ref/freqz.html

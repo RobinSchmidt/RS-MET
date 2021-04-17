@@ -81,12 +81,8 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
 
   for(unsigned int i = 0; i < filterSpecsZPK.size(); i++) {
     vector<complex<T>> H = getFrequencyResponse(i, f);
-    vector<T> mag = getMagnitudes(H);
 
-    if(decibels)
-      for(size_t k = 0; k < mag.size(); k++) // factor out into function toDecibels
-        mag[k] = 20*log10(mag[k]);
-
+    vector<T> mag = getMagnitudes(H, decibels);
     data[0][i+1] = mag;  // refactor to data[0][i+1] = getMagnitudeResponse(i, f);
     addGraph(string("i 0 u 1:") + s(i+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
   }
@@ -98,6 +94,15 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
   if(logFreqAxis)
     setLogScale("x", 10); // 10 is the base - maybe try 2
   plot();
+}
+
+template <class T>
+void FilterPlotter<T>::plotFrequencyResponse(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, 
+  bool plotMagnitude, bool decibels, bool plotPhase, bool unwrapPhase)
+{
+
+
+
 }
 
 template <class T>
@@ -189,11 +194,14 @@ vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T>& 
 }
 
 template <class T>
-vector<T> FilterPlotter<T>::getMagnitudes(vector<complex<T>>& H)
+vector<T> FilterPlotter<T>::getMagnitudes(vector<complex<T>>& H, bool dB)
 {
   vector<T> mag(H.size());
-  for(size_t k = 0; k < H.size(); k++)
-    mag[k] = abs(H[k]);
+  T ampFloor = rsDbToAmp(dBFloor);
+  for(size_t k = 0; k < H.size(); k++) {
+    T m = abs(H[k]);
+    if(dB) mag[k] = rsAmp2dBWithCheck(m, ampFloor);
+    else   mag[k] = m; }
   return mag;
 }
 
