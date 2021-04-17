@@ -80,10 +80,8 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
 
   for(unsigned int i = 0; i < filterSpecsZPK.size(); i++) {
     vector<complex<T>> H = getFrequencyResponse(i, f);
-
-    vector<T> mag = getMagnitudes(H, decibels);
-    data[0][i+1] = mag;  // refactor to data[0][i+1] = getMagnitudeResponse(i, f);
-    addGraph(string("i 0 u 1:") + s(i+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
+    data[0][i+1] = getMagnitudes(H, decibels);
+    addGraphLines(i);
   }
 
   // getFrequencyResponse(i, f); should dispatch between zpk and ba, loop should run over
@@ -99,10 +97,10 @@ template <class T>
 void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFreq, 
   bool logFreqAxis, bool plotMagnitude, bool decibels, bool plotPhase, bool unwrap)
 {
-  using uint = unsigned int;
+  //using uint = unsigned int;
 
-  uint numFilters = (int)filterSpecsZPK.size();  // number of filters
-  uint numColumns = 1;                           // 1 for the freq axis values
+  int numFilters = (int)filterSpecsZPK.size();  // number of filters
+  int numColumns = 1;                           // 1 for the freq axis values
   if(plotMagnitude) numColumns += numFilters;
   if(plotPhase)     numColumns += numFilters;
 
@@ -111,24 +109,17 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
   vector<T> f = getFrequencyAxis(numFreqs, lowFreq, highFreq, logFreqAxis);
   data[0][0] = f;
 
-  uint i, j = 0;
-  for(i = 0; i < numFilters; i++)
-  {
+  int j = 0;
+  for(int i = 0; i < numFilters; i++) {
     vector<complex<T>> H = getFrequencyResponse(i, f);
-    if(plotMagnitude)
-    {
+    if(plotMagnitude) {
       data[0][j+1] =  getMagnitudes(H, decibels);
-      addGraph(string("i 0 u 1:") + s(j+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
-      j++;
-    }
-    if(plotPhase)
-    {
+      addGraphLines(j);
+      j++;  }
+    if(plotPhase) {
       data[0][j+1] = getPhases(H, unwrap, true);
-      addGraph(string("i 0 u 1:") + s(j+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
-      j++;
-    }
-  }
-
+      addGraphLines(j);
+      j++; }}
 
   addDataBlockColumnLine(data);
   if(logFreqAxis)
@@ -406,6 +397,15 @@ template <class T>
 bool  FilterPlotter<T>::almostEqual(complex<T> x, complex<T> y, T thresh)
 {
   return abs(x-y) / fmax(abs(x), abs(y)) < thresh;
+}
+
+template <class T>
+void FilterPlotter<T>::addGraphLines(int j)
+{
+  unsigned int ju = (unsigned int) j;
+  addGraph(string("i 0 u 1:") + s(ju+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
+  // todo: maybe have a color argument, or set color automatically based on j - or have a color 
+  // index argument
 }
 
 // template instantiations:

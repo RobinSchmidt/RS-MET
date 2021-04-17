@@ -1732,10 +1732,7 @@ void plotFreqRespZ(const std::vector<T>& b, const std::vector<T>& a, int numSamp
   FilterPlotter<T> plt;
   plt.addFilterSpecificationBA((int)b.size(), &b[0], (int)a.size(), &a[0], 1.0);
   plt.plotFrequencyResponses(numSamples, 0.0, 0.5, false);
-
-  plt.plotMagnitude(numSamples, 0.0, 0.5, false, false);  
-
-
+  //plt.plotMagnitude(numSamples, 0.0, 0.5, false, false);
 
   // todo: plotMagnitudeAndPhase, take optional parameter for number of samples - should behave
   // similar to matlab's freqz, move to plotting: 
