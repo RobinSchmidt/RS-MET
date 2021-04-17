@@ -2543,6 +2543,72 @@ void divergenceToPotential3(const rsBivariatePolynomial<T>& D, rsBivariatePolyno
         P.coeff(m, n+2) = (D.coeff(m, n) - (m+1)*(m+2)*P.coeff(m+2, n)) / ((n+1)*(n+2));
 }
 
+
+//=================================================================================================
+
+/** A class for converting between various colorspaces. 
+
+References:
+  https://www.rapidtables.com/convert/color/index.html  */
+
+template<class T>
+class rsColor
+{
+
+public:
+
+  /** Converts HSL (hue, saturation, luminance) to RGB (red, green, blue). */
+  static void hsl2rgb(T H, T S, T L, T* R, T* G, T* B);
+
+  /** Converts RGB (red, green, blue) to HSL (hue, saturation, luminance). */
+  static void rgb2hsl(T R, T G, T B, T* H, T* S, T* L);
+
+};
+// needs test: try roundtrips between rgb and hsl and some special cases (pure colors, black, 
+// white, gray, etc.)
+// ToDo: implement more conversions - we don't currently need them but for the sake of completeness
+
+
+template<class T>
+void rsColor<T>::hsl2rgb(T H, T S, T L, T* R, T* G, T* B)
+{
+  H  *= T(360);                                    // we expect 0 <= H <= 1 
+  T C = (1 - rsAbs(2*L-1)) * S;
+  T X = C * (1 - rsAbs(fmod(H/60, 2) - 1));
+  T m = L - C/2;
+  if(     H <  60) { *R = C; *G = X; B = 0; }
+  else if(H < 120) { *R = X; *G = C; B = 0; }
+  else if(H < 180) { *R = 0; *G = C; B = X; }
+  else if(H < 240) { *R = 0; *G = X; B = C; }
+  else if(H < 300) { *R = X; *G = 0; B = C; }
+  else             { *R = C; *G = 0; B = X; }
+  *R += m;
+  *G += m;
+  *B += m;
+
+  // see: https://www.rapidtables.com/convert/color/hsl-to-rgb.html
+}
+
+template<class T>
+void rsColor<T>::rgb2hsl(T R, T G, T B, T* H, T* S, T* L)
+{
+  T Cmax = rsMax(R, G, B);
+  T Cmin = rsMin(R, G, B);
+  T D    = Cmax - Cmin;                            // delta
+  if(        D == 0) *H = 0;
+  else if(Cmax == R) *H = 60 * fmod((G-B)/D, 6);
+  else if(Cmax == G) *H = 60 * ((B-R)/D + 2);
+  else if(Cmax == B) *H = 60 * ((R-G)/D + 4);
+  *H /= 360;                                       // convert from 0..360 to 0..1
+  if(D != 0) *S = D / (1 - rsAbs(2*L-1));
+  else       *S = 0;
+  *L = (Cmax + Cmin) / 2;
+
+  // see: https://www.rapidtables.com/convert/color/rgb-to-hsl.html
+}
+
+
+
 //=================================================================================================
 // the stuff below is just for playing around - maybe move code elsewhere, like the research-repo:
 

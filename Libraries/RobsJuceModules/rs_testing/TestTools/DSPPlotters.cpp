@@ -129,6 +129,13 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
 // todo: 
 // -create dual axes for dB and degrees
 // -make the phase responses match the color of the corresponding magnitude response
+// -perhaps we need to move the HSL color conversion to rapt
+// https://www.rapidtables.com/convert/color/hsl-to-rgb.html
+// https://www.rapidtables.com/convert/color/rgb-to-hsl.html
+// https://www.rapidtables.com/convert/color/index.html
+// ...or maybe make it a member of the GNUPlotter class 
+// hsl2rgb(double H, double S, double L, double* R, double* G, double* B)
+
 
 template <class T>
 void FilterPlotter<T>::plotPolesAndZeros(int plotSize)
