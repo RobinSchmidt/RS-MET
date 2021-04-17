@@ -73,11 +73,10 @@ template <class T>
 void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis,
   bool decibels)
 {
-  vector<vector<vector<T>>> data(1);
-  data[0].resize(1 + filterSpecsZPK.size());
+  vector<vector<vector<T>>> data(1);           // 1 dataset
+  data[0].resize(1 + filterSpecsZPK.size());   // 1 col for freq axis and N magnitude responses
   vector<T> f = getFrequencyAxis(numFreqs, lowFreq, highFreq, logFreqAxis);
   data[0][0] = f;
-
 
   for(unsigned int i = 0; i < filterSpecsZPK.size(); i++) {
     vector<complex<T>> H = getFrequencyResponse(i, f);
@@ -97,13 +96,48 @@ void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool l
 }
 
 template <class T>
-void FilterPlotter<T>::plotFrequencyResponse(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, 
-  bool plotMagnitude, bool decibels, bool plotPhase, bool unwrapPhase)
+void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFreq, 
+  bool logFreqAxis, bool plotMagnitude, bool decibels, bool plotPhase, bool unwrap)
 {
+  using uint = unsigned int;
+
+  uint numFilters = (int)filterSpecsZPK.size();  // number of filters
+  uint numColumns = 1;                           // 1 for the freq axis values
+  if(plotMagnitude) numColumns += numFilters;
+  if(plotPhase)     numColumns += numFilters;
+
+  vector<vector<vector<T>>> data(1);           // 1 dataset
+  data[0].resize(numColumns);                  // 
+  vector<T> f = getFrequencyAxis(numFreqs, lowFreq, highFreq, logFreqAxis);
+  data[0][0] = f;
+
+  uint i, j = 0;
+  for(i = 0; i < numFilters; i++)
+  {
+    vector<complex<T>> H = getFrequencyResponse(i, f);
+    if(plotMagnitude)
+    {
+      data[0][j+1] =  getMagnitudes(H, decibels);
+      addGraph(string("i 0 u 1:") + s(j+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
+      j++;
+    }
+    if(plotPhase)
+    {
+      data[0][j+1] = getPhases(H, unwrap, true);
+      addGraph(string("i 0 u 1:") + s(j+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
+      j++;
+    }
+  }
 
 
-
+  addDataBlockColumnLine(data);
+  if(logFreqAxis)
+    setLogScale("x", 10); // 10 is the base - maybe try 2
+  plot();
 }
+// todo: 
+// -create dual axes for dB and degrees
+// -make the phase responses match the color of the corresponding magnitude response
 
 template <class T>
 void FilterPlotter<T>::plotPolesAndZeros(int plotSize)
@@ -171,7 +205,7 @@ vector<T> FilterPlotter<T>::getFrequencyAxis(int numFreqs, T lowFreq, T highFreq
 }
 
 template <class T>
-vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T>& f)
+vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, const vector<T>& f)
 {
   rsFilterSpecificationZPK<T> spec = filterSpecsZPK[index];
   //bool isDigital = spec.sampleRate != inf;
@@ -194,7 +228,7 @@ vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, vector<T>& 
 }
 
 template <class T>
-vector<T> FilterPlotter<T>::getMagnitudes(vector<complex<T>>& H, bool dB)
+vector<T> FilterPlotter<T>::getMagnitudes(const vector<complex<T>>& H, bool dB)
 {
   vector<T> mag(H.size());
   T ampFloor = rsDbToAmp(dBFloor);
@@ -203,6 +237,22 @@ vector<T> FilterPlotter<T>::getMagnitudes(vector<complex<T>>& H, bool dB)
     if(dB) mag[k] = rsAmp2dBWithCheck(m, ampFloor);
     else   mag[k] = m; }
   return mag;
+}
+
+template <class T>
+vector<T> FilterPlotter<T>::getPhases(
+  const std::vector<std::complex<T>>& H, bool unwrap, bool inDegrees)
+{
+  int N = (int) H.size();
+  vector<T> phs(H.size());
+  for(size_t k = 0; k < N; k++)
+    phs[k] = arg(H[k]);
+  if(unwrap)
+    RAPT::rsArrayTools::unwrap(&phs[0], N, T(2*PI));
+  if(inDegrees)
+    for(int k = 0; k < N; k++)
+      phs[k] *= T(180.0/PI);
+  return phs;
 }
 
 template <class T>

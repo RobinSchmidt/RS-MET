@@ -63,7 +63,7 @@ public:
   // plotPhase flag, make a similar function for plotPhase
 
   /** Plots the frequency responses of all the filters. */
-  void plotFrequencyResponse(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, 
+  void plotFrequencyResponses(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis, 
     bool plotMagnitude = true, bool decibels = true,
     bool plotPhase = true, bool unwrapPhase = true);
 
@@ -86,11 +86,15 @@ public:
 
   /** Returns the complex frequency response of the filter with given index at the frequencies 
   given in the vector. */
-  std::vector<std::complex<T>> getFrequencyResponse(int index, std::vector<T>& frequencies);
+  std::vector<std::complex<T>> getFrequencyResponse(int index, const std::vector<T>& frequencies);
 
   /** Extracts the magnitudes from the passed complex frequency response array.  */
-  std::vector<T> getMagnitudes(std::vector<std::complex<T>>& complexFreqResponse, 
+  std::vector<T> getMagnitudes(const std::vector<std::complex<T>>& complexFreqResponse, 
     bool inDecibels = false);
+
+  /** Extracts the phases from the passed complex frequency response array.  */
+  std::vector<T> getPhases(const std::vector<std::complex<T>>& complexFreqResponse, 
+    bool unwrap = true, bool inDegrees = true);
 
   /** Evaluates polynomial defined by its roots at the value z. */
   std::complex<T> polynomialByRoots(std::complex<T> z, std::vector<std::complex<T>>& roots);
