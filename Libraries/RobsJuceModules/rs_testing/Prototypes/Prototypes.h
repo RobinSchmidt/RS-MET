@@ -2662,8 +2662,6 @@ void rsColor<T>::rgb2hex(T R, T G, T B, char* hex, bool sharp, bool null)
   char b = (char) round(T(255) * B);
   rgb2hex(r, g, b, sharp, null);
 }
-// needs more tests
-
 
 template<class T>
 void rsColor<T>::rgb2hex(unsigned char R, unsigned char G, unsigned char B, 
@@ -2680,11 +2678,11 @@ void rsColor<T>::rgb2hex(unsigned char R, unsigned char G, unsigned char B,
   int i = 0;                            // index
   if(sharp) { hex[i] = '#'; i++; }
   hex[i] = toHex((R >> s) & m); i++;
-  hex[i] = toHex( R  & s  & m); i++;
+  hex[i] = toHex( R       & m); i++;
   hex[i] = toHex((G >> s) & m); i++;
-  hex[i] = toHex( G  & s  & m); i++;
+  hex[i] = toHex( G       & m); i++;
   hex[i] = toHex((B >> s) & m); i++;
-  hex[i] = toHex( B  & s  & m); i++;
+  hex[i] = toHex( B       & m); i++;
   if(null) hex[i] = '\0';
 }
 

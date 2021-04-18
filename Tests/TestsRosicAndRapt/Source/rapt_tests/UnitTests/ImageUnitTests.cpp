@@ -224,17 +224,15 @@ bool colorUnitTest()
   // Test conversion to hex colors:
   char hex[8];
   using uchar = unsigned char;
+  using Str = std::string;
+  Color::rgb2hex((uchar)  0, (uchar)  0, (uchar)  0, hex); ok &= Str(hex) == Str("#000000");
+  Color::rgb2hex((uchar)255, (uchar)255, (uchar)255, hex); ok &= Str(hex) == Str("#FFFFFF");
+  Color::rgb2hex((uchar)254, (uchar)254, (uchar)254, hex); ok &= Str(hex) == Str("#FEFEFE");
+  Color::rgb2hex((uchar)125, (uchar) 42, (uchar)143, hex); ok &= Str(hex) == Str("#7D2A8F");
+  Color::rgb2hex((uchar)106, (uchar) 82, (uchar)160, hex); ok &= Str(hex) == Str("#6A52A0");
+  // See: https://www.rapidtables.com/convert/color/rgb-to-hex.html
 
-  Color::rgb2hex((uchar)125, (uchar)42, (uchar)143, hex);  // #7D2A8F
-  // the 2nd hex digit is wrong
 
-  //Color::rgb2hex(0.5f, 0.25f, 0.75f, hex);
-
-
-
-
-
-  // https://www.rapidtables.com/convert/color/rgb-to-hex.html
 
   // https://en.wikipedia.org/wiki/HSL_and_HSV#Hue_and_chroma
   // https://stackoverflow.com/questions/11980292/how-to-wrap-around-a-range
