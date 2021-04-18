@@ -217,6 +217,105 @@ void complementaryFiltersIIR()
   //analyzeComplementaryFilter( complementaryLowpass4p5z()   );  // unstable
 }
 
+
+template<class T>
+rsFilterSpecificationZPK<T> sos2zpk(
+  const T* b0, const T* b1, const T* b2, const T* a1, const T* a2, int numBiquads)
+{
+  rsFilterSpecificationZPK<T> zpk;
+  zpk.z.reserve(numBiquads);
+  zpk.p.reserve(numBiquads);
+
+  using Poly = rsPolynomial<T>;
+  using Cmp  = std::complex<T>;
+  Cmp r1, r2;    // for the 2 complex roots
+  zpk.k = T(1);
+
+  for(int i = 0; i < numBiquads; i++)
+  {
+    // add zero(s) of i-th stage:
+    if(b2[i] == T(0)) {
+      if(b1[i] != T(0))
+        zpk.z.push_back(-b1[i]/b0[i]); }
+    else {
+      Poly::rootsQuadraticComplex(Cmp(b2[i]), Cmp(b1[i]), Cmp(b0[i]), &r1, &r2);
+      zpk.z.push_back(r1);
+      zpk.z.push_back(r2);  }
+
+    // add pole(s) of i-th stage:
+    if(a2[i] == T(0)) {
+      if(a1[i] != T(0))
+        zpk.p.push_back(-a1[i]); }
+    else {
+      Poly::rootsQuadraticComplex(Cmp(a2[i]), Cmp(a1[i]), Cmp(T(1)), &r1, &r2);
+      zpk.p.push_back(r1);
+      zpk.p.push_back(r2);  }
+
+    // accumulate gain of i-th stage:
+    zpk.k *= b0[i]; // is that correct?
+  }
+
+  return zpk;
+}
+// maybe move to rsFilterSpecificationZPK as static member: fromBiquads
+
+void engineersFilterFreqResps()
+{
+  // We plot frequency responses of engineer's filter for various orders. The main aim is actually
+  // to demonstrate how the plotting works..
+
+  int minOrder  = 1;      // minimum filter order
+  int numOrders = 5;      // number of orders
+  int orderInc  = 1;      // spacing between the orders
+  int numFreqs  = 501;    // number of frequency samples
+  double fc     = 1000;   // cutoff frequency
+  double fs     = 44100;  // sample rate
+
+  using EF   = rsEngineersFilter<double, double>;
+  using PTD  = rsPrototypeDesigner<double>;
+  using IIRD = rsInfiniteImpulseResponseDesigner<double>;
+  using ZPK  = rsFilterSpecificationZPK<double>;
+
+  EF flt;
+  flt.setApproximationMethod(PTD::BUTTERWORTH);
+  flt.setSampleRate(fs);
+  flt.setFrequency(fc);
+  flt.setMode(IIRD::LOWPASS);
+
+  FilterPlotter<double> plt;
+  double *a1, *a2, *b0, *b1, *b2;
+  a1 = flt.getAddressA1();
+  a2 = flt.getAddressA2();
+  b0 = flt.getAddressB0();
+  b1 = flt.getAddressB1();
+  b2 = flt.getAddressB2();
+  for(int i = 0; i < numOrders; i++)
+  {
+    int order = minOrder + i*orderInc;
+    flt.setPrototypeOrder(order);
+    //flt.updateCoefficients();
+
+    ZPK zpk = sos2zpk(b0, b1, b2, a1, a2, flt.getNumStages());
+
+    //ZPK zpk = sos2zpk(b0, b1, b2, a1, a2, order); 
+    // order is correct only for non-order-doubling filters types, i.e. lowpass, highpass, shelf. 
+    // For bandpass, etc. we need to pass 2*order
+
+
+
+
+
+
+    int dummy = 0;
+  }
+ 
+
+
+
+
+  int dummy = 0;
+}
+
 void firstOrderFilters()
 {
   typedef rsOnePoleFilter<double, double> FLT;

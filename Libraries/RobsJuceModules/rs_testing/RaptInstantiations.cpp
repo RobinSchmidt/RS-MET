@@ -218,9 +218,12 @@ template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, 
 // duplicate explicit instantiation in gcc
 
 
-template void  RAPT::rsPolynomial<float>::rootsQuadraticComplex(
+template void RAPT::rsPolynomial<float>::rootsQuadraticComplex(
   const std::complex<float>& a0, const std::complex<float>& a1, const std::complex<float>& a2,
   std::complex<float>* x1, std::complex<float>* x2);
+template void RAPT::rsPolynomial<double>::rootsQuadraticComplex(
+  const std::complex<double>& a0, const std::complex<double>& a1, const std::complex<double>& a2,
+  std::complex<double>* x1, std::complex<double>* x2);
 template float RAPT::rsPolynomial<float>::cubicDiscriminant(
   const float& a0, const float& a1, const float& a2, const float& a3);
 

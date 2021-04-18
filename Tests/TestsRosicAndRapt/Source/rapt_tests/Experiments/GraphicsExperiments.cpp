@@ -37,7 +37,6 @@ void colorGradientHSL()
   }
 
   writeImageToFilePPM(imgR, imgG, imgB, "BilinearGradient.ppm");
-  int dummy = 0;
 
   // Observations:
   // -top pixel row is grayscale gradient
@@ -45,6 +44,11 @@ void colorGradientHSL()
   // -pure colors occur at center bottom
   // -hues (in degrees): 0: red, 30: orange, 60: yellow, 90: greenyellow, 120: green, 
   //  150: mint, 180: cyan, 210: sky, 240: blue, 270: purple, 300: magenta, 330: pink
+  //
+  // ToDo:
+  // -create a gradient with fixed luminance of 0.5 - with full saturation, this should give the
+  //  pure colors. hue should go from left to right, saturation from top to bottom (top should be
+  //  gray/unsaturated)
 }
 
 void lineDrawing()

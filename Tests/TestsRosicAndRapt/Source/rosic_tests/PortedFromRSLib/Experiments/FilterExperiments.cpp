@@ -1750,6 +1750,7 @@ void directFormFreqResp()
   Vec a({1.0, -0.9});  // feedback coeffs
   plotFreqRespZ(b, a);  // We get a DC gain of 10 - why? Shouldn't it be 1?
 }
+// todo: plot freq-responses for enigineers filter vor various orders
 
 void ladderMultipole()
 {

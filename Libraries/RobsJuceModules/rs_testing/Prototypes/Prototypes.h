@@ -2609,8 +2609,8 @@ template<class T>
 void rsColor<T>::hsl2rgb(T H, T S, T L, T* R, T* G, T* B)
 {
   H  *= T(360);                                    // we expect 0 <= H <= 1 
-  T C = (1 - rsAbs(2*L-1)) * S;
-  T X = C * (1 - rsAbs(fmod(H/60, 2) - 1));
+  T C = (T(1) - rsAbs(T(2)*L-T(1))) * S;
+  T X = C * (T(1) - rsAbs(fmod(H/T(60), T(2)) - T(1)));
   T m = L - C/2;
   if(     H <  60) { *R = C; *G = X; *B = 0; }
   else if(H < 120) { *R = X; *G = C; *B = 0; }
@@ -2630,14 +2630,14 @@ void rsColor<T>::rgb2hsl(T R, T G, T B, T* H, T* S, T* L)
 {
   T Cmax = rsMax(R, G, B);
   T Cmin = rsMin(R, G, B);
-  T D    = Cmax - Cmin;                            // delta
+  T D    = Cmax - Cmin;                                 // delta
   if(        D == 0) *H = 0;
-  else if(Cmax == R) *H = 60 * rsWrapToInterval((G-B)/D, 0, 6);
-  else if(Cmax == G) *H = 60 * ((B-R)/D + 2);
-  else if(Cmax == B) *H = 60 * ((R-G)/D + 4);
-  *H /= 360;                                       // convert from 0..360 to 0..1
-  *L  = (Cmax + Cmin) / 2;
-  if(D != 0) *S = D / (1 - rsAbs(2 * *L - 1));     // do we need this if?
+  else if(Cmax == R) *H = T(60) * rsWrapToInterval((G-B)/D, T(0), T(6));
+  else if(Cmax == G) *H = T(60) * ((B-R)/D + T(2));
+  else if(Cmax == B) *H = T(60) * ((R-G)/D + T(4));
+  *H /= T(360);                                         // convert from 0..360 to 0..1
+  *L  = (Cmax + Cmin) / T(2);
+  if(D != 0) *S = D / (T(1) - rsAbs(T(2) * *L - T(1))); // do we need this if?
   else       *S = 0;
 
   /*
@@ -2657,9 +2657,10 @@ void rsColor<T>::rgb2hsl(T R, T G, T B, T* H, T* S, T* L)
 template<class T>
 void rsColor<T>::rgb2hex(T R, T G, T B, char* hex, bool sharp, bool null)
 {
-  char r = (char) round(T(255) * R);
-  char g = (char) round(T(255) * G);
-  char b = (char) round(T(255) * B);
+  using uchar = unsigned char;
+  uchar r = (uchar) round(T(255) * R);
+  uchar g = (uchar) round(T(255) * G);
+  uchar b = (uchar) round(T(255) * B);
   rgb2hex(r, g, b, sharp, null);
 }
 

@@ -295,3 +295,16 @@ int rsImageContourPlotter<TPix, TVal>::contourSegmentCoeffs(
 // maybe the logical statements can be simplified by checking things like
 // if (z00-c)*(z01-c) < 0,  >= 0 instead of the complicated and-or statements - but keep this
 // version for unit tests
+
+
+/*
+Ideas:
+-apply filtering to the hue channel - before that, we need to unwrap the hue. that's similar to 
+ phase unwrapping in audio, but instead of just using the (already unwrapped) left neighbor as 
+ reference, we need to consider left, top and maybe topleft neighbors. Maybe we should take the one
+ as reference, which is closest in hue to the current. or maybe also take the other channels
+ (luminance, saturation) into account. or maybe take an average. top row and right column are 
+ treated specially (using only left and top neighbor respectively)
+
+
+*/

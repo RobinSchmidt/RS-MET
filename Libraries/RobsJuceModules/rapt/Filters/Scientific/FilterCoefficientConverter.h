@@ -32,6 +32,7 @@ public:
 
   static void polesAndZerosToBiquadCascade(Complex* poles, Complex* zeros, int order,
     T* b0, T* b1, T* b2, T* a1, T* a2);
+  // maybe define an alias pz2sos
 
   /**  !!! NOT YET FULLY IMPLEMETED !!!
   Converts the coefficients of a cascade biquad of biquad filters each of which having the form:

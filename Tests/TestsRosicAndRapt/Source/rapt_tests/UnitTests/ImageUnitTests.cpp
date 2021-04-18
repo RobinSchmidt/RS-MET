@@ -185,13 +185,14 @@ bool colorUnitTest()
   Real X, Y, Z;      // back-converted values
   Real tol = Real(1.e-5); // We need a quite high tolerance! Are the formulas numerically bad?
 
-
+  /*
   x = 0.0f;
   y = 0.1f;
   z = 0.0f;
   Color::hsl2rgb(x, y, z, &a, &b, &c);
   Color::rgb2hsl(a, b, c, &X, &Y, &Z);
   //Color::rgb2hsl(x, y, z, &a, &b, &c);
+  */
 
   for(int i = 1; i < N; i++)
   {
@@ -207,9 +208,6 @@ bool colorUnitTest()
         ok &= rsIsCloseTo(x, X, tol);
         ok &= rsIsCloseTo(y, Y, tol);
         ok &= rsIsCloseTo(z, Z, tol);
-
-        //rsAssert(ok);
-        // y is wrong whenever k = 0 or k = 10...i think, x too
       }
     }
   }
@@ -224,7 +222,7 @@ bool colorUnitTest()
   // Test conversion to hex colors:
   char hex[8];
   using uchar = unsigned char;
-  using Str = std::string;
+  using Str   = std::string;
   Color::rgb2hex((uchar)  0, (uchar)  0, (uchar)  0, hex); ok &= Str(hex) == Str("#000000");
   Color::rgb2hex((uchar)255, (uchar)255, (uchar)255, hex); ok &= Str(hex) == Str("#FFFFFF");
   Color::rgb2hex((uchar)254, (uchar)254, (uchar)254, hex); ok &= Str(hex) == Str("#FEFEFE");
