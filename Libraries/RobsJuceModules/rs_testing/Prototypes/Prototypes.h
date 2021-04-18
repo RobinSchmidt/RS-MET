@@ -2622,7 +2622,7 @@ void rsColor<T>::rgb2hsl(T R, T G, T B, T* H, T* S, T* L)
   else if(Cmax == G) *H = 60 * ((B-R)/D + 2);
   else if(Cmax == B) *H = 60 * ((R-G)/D + 4);
   *H /= 360;                                       // convert from 0..360 to 0..1
-  if(D != 0) *S = D / (1 - rsAbs(2*L-1));
+  if(D != 0) *S = D / (1 - rsAbs(2 * *L - 1));
   else       *S = 0;
   *L = (Cmax + Cmin) / 2;
 

@@ -18,6 +18,7 @@ bool complexFloat64x2UnitTest();
 bool triangleRasterization();
 bool triangleRasterization2();  // absorb in function above
 bool imagePainterUnitTest();    // implementation is in extra file - maybe mae a GraphicsUnitTests.cpp file for all
+bool colorUnitTest();
 
 // Filter:
 bool prototypeDesignUnitTest();

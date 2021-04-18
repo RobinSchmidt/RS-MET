@@ -74,7 +74,6 @@ bool testAlphaMaskPaintingAntiAliased(rsImagePainterFFF& painter, float x, float
   return result;
 }
 
-
 bool imagePainterUnitTest()
 {
   bool result = true;
@@ -170,3 +169,42 @@ bool imagePainterUnitTest()
   return result;
 }
 
+
+bool colorUnitTest()
+{
+  bool ok = true;
+
+  using Real  = float;
+  using Color = rsColor<Real>;
+
+  // test back-and-forth conversion between HSL and RGB
+
+  int N = 10;    // number of samples along the 3 dimension (HSL or RGB etc.)
+
+  Real x, y, z;  // original values
+  Real a, b, c;  // converted values
+  Real X, Y, Z;  // back-converted values
+
+  for(int i = 0; i <= N; i++)
+  {
+    x = Real(i) / Real(N);
+    for(int j = 0; j <= N; j++)
+    {
+      y = Real(j) / Real(N);
+      for(int k = 0; k <= N; k++)
+      {
+        z = Real(k) / Real(N);
+        Color::hsl2rgb(x, y, z, &a, &b, &c);
+        Color::rgb2hsl(a, b, c, &X, &Y, &Z);
+
+
+        int dummy = 0;
+      }
+    }
+  }
+
+
+
+
+  return ok;
+}
