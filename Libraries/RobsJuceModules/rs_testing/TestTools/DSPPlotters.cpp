@@ -124,13 +124,13 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
   addDataBlockColumnLine(data);
 
   // Set up plotting options and plot:
-  setTitle("Filter Frequency Responses");
+  //setTitle("Filter Frequency Responses");
   if(logFreqAxis)
-    setLogScale("x", 10); // 10 is the base - maybe try 2
-
+    setLogScale("x", 10);
   addCommand("set xrange  [0.03125:32]");   // preliminary
-  addCommand("set yrange  [-100:0]");       // preliminary
-  addCommand("set y2range [-450:0]");       // preliminary
+  addCommand("set yrange  [-90:10]");       // preliminary
+  //addCommand("set y2range [-450:0]");       // preliminary
+  addCommand("set y2range [-405:45]");       // preliminary
   addCommand("set xlabel \"Frequency in kHz\"");
   addCommand("set ylabel \"Magnitude in dB\"");
   addCommand("set y2label \"Phase in Degrees\"");
@@ -138,6 +138,12 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
   addCommand("unset mxtics");   // no minor tics for frequency axis
   addCommand("set ytics 10");   // 10 dB steps for magnitude axis
   addCommand("set y2tics 45");  // 45° steps for phase axis
+
+  setPixelSize(800, 400);
+
+  // todo: figure out the constraints for the relationship between yrange and y2range such that
+  // their ticks match up - maybe because ytics = 10 and y2tics = 45, the ratio yrange and y2range
+  // should be a multiple thereof...maybe y2range/y2tics == yrange/ytics
 
   plot();
 }
