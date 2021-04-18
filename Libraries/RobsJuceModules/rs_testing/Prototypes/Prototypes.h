@@ -2585,6 +2585,10 @@ public:
   static void rgb2hex(T R, T G, T B, char* hex, bool withSharp = true, 
     bool withNullTermination = true);
 
+  static void rgb2hex(unsigned char R, unsigned char G, unsigned char B, 
+    char* hex, bool withSharp = true, bool withNullTermination = true);
+
+
   // https://en.wikipedia.org/wiki/Web_colors#Hex_triplet
 
 
@@ -2653,31 +2657,36 @@ void rsColor<T>::rgb2hsl(T R, T G, T B, T* H, T* S, T* L)
 template<class T>
 void rsColor<T>::rgb2hex(T R, T G, T B, char* hex, bool sharp, bool null)
 {
-  auto toHex = [](char c)
-  {
-    rsAssert(c >= 0 && c <= 15);
-    if(c >= 10) return c + 55; // 65: ASCII code of A and wee need to subtract 10
-    else        return c + 48; // 48: ASCII code of 0
-  };
   char r = (char) round(T(255) * R);
   char g = (char) round(T(255) * G);
   char b = (char) round(T(255) * B);
-  char s = 4;   // shift
-  char m = 15;  // mask
-  int  i = 0;   // index
-  if(sharp) { hex[i] = '#'; i++; }
-  hex[i] = toHex((r >> s) & m); i++;
-  hex[i] = toHex( r  & s  & m); i++;
-  hex[i] = toHex((g >> s) & m); i++;
-  hex[i] = toHex( g  & s  & m); i++;
-  hex[i] = toHex((b >> s) & m); i++;
-  hex[i] = toHex( b  & s  & m); i++;
-  if(null) hex[i] = '\0';
+  rgb2hex(r, g, b, sharp, null);
 }
 // needs more tests
 
 
-
+template<class T>
+void rsColor<T>::rgb2hex(unsigned char R, unsigned char G, unsigned char B, 
+  char* hex, bool sharp, bool null)
+{
+  auto toHex = [](unsigned char c)
+  {
+    rsAssert(c >= 0 && c <= 15);
+    if(c >= 10) return c + 55;          // 65: ASCII code of A and wee need to subtract 10
+    else        return c + 48;          // 48: ASCII code of 0
+  };
+  int s = 4;                            // shift
+  int m = 15;                           // mask
+  int i = 0;                            // index
+  if(sharp) { hex[i] = '#'; i++; }
+  hex[i] = toHex((R >> s) & m); i++;
+  hex[i] = toHex( R  & s  & m); i++;
+  hex[i] = toHex((G >> s) & m); i++;
+  hex[i] = toHex( G  & s  & m); i++;
+  hex[i] = toHex((B >> s) & m); i++;
+  hex[i] = toHex( B  & s  & m); i++;
+  if(null) hex[i] = '\0';
+}
 
 
 template<class T>

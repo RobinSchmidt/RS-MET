@@ -223,9 +223,18 @@ bool colorUnitTest()
 
   // Test conversion to hex colors:
   char hex[8];
-  Color::rgb2hex(0.5f, 0.25f, 0.75f, hex);
+  using uchar = unsigned char;
+
+  Color::rgb2hex((uchar)125, (uchar)42, (uchar)143, hex);  // #7D2A8F
+  // the 2nd hex digit is wrong
+
+  //Color::rgb2hex(0.5f, 0.25f, 0.75f, hex);
 
 
+
+
+
+  // https://www.rapidtables.com/convert/color/rgb-to-hex.html
 
   // https://en.wikipedia.org/wiki/HSL_and_HSV#Hue_and_chroma
   // https://stackoverflow.com/questions/11980292/how-to-wrap-around-a-range
