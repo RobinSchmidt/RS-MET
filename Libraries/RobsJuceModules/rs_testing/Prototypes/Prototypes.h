@@ -2577,6 +2577,16 @@ public:
   /** Converts RGB (red, green, blue) to HSL (hue, saturation, luminance). */
   static void rgb2hsl(T R, T G, T B, T* H, T* S, T* L);
 
+  /** Converts an RGB triple to a C-string with the hexadecimal representation, either with the 
+  sharp symbol # prepended or not. So the char array must have space for 6 or 7 characters, 
+  and one more for the null termination, if so selected. So, with a length of 8 characters, you're
+  always on the save side, but you may get away with one or two less, when one or both flags are 
+  false. */
+  static void rgb2hex(T R, T G, T B, char* hex, bool withSharp = true, 
+    bool withNullTermination = true);
+
+  // https://en.wikipedia.org/wiki/Web_colors#Hex_triplet
+
 
 protected:
 
@@ -2617,21 +2627,16 @@ void rsColor<T>::rgb2hsl(T R, T G, T B, T* H, T* S, T* L)
   T Cmax = rsMax(R, G, B);
   T Cmin = rsMin(R, G, B);
   T D    = Cmax - Cmin;                            // delta
-  if(        D == 0) 
-    *H = 0;
-  else if(Cmax == R) 
-    //*H = 60 * fmod((G-B)/D, 6);
-    *H = 60 * RAPT::rsWrapToInterval((G-B)/D, 0, 6);
-  else if(Cmax == G) 
-    *H = 60 * ((B-R)/D + 2);
-  else if(Cmax == B) 
-    *H = 60 * ((R-G)/D + 4);
+  if(        D == 0) *H = 0;
+  else if(Cmax == R) *H = 60 * rsWrapToInterval((G-B)/D, 0, 6);
+  else if(Cmax == G) *H = 60 * ((B-R)/D + 2);
+  else if(Cmax == B) *H = 60 * ((R-G)/D + 4);
   *H /= 360;                                       // convert from 0..360 to 0..1
   *L  = (Cmax + Cmin) / 2;
-  if(D != 0) *S = D / (1 - rsAbs(2 * *L - 1));
+  if(D != 0) *S = D / (1 - rsAbs(2 * *L - 1));     // do we need this if?
   else       *S = 0;
 
-
+  /*
   // for debug:
   T r,g,b;
   hsl2rgb(*H, *S, *L, &r, &g, &b);
@@ -2640,10 +2645,36 @@ void rsColor<T>::rgb2hsl(T R, T G, T B, T* H, T* S, T* L)
   T db = rsAbs(B - b);
   T tol = 1.e-6;
   rsAssert(dr <= tol && dg <= tol && db <= tol);
-
+  */
 
   // see: https://www.rapidtables.com/convert/color/rgb-to-hsl.html
 }
+
+template<class T>
+void rsColor<T>::rgb2hex(T R, T G, T B, char* hex, bool sharp, bool null)
+{
+  auto toHex = [](char c)
+  {
+    rsAssert(c >= 0 && c <= 15);
+    if(c >= 10) return c + 55; // 65: ASCII code of A and wee need to subtract 10
+    else        return c + 48; // 48: ASCII code of 0
+  };
+  char r = (char) round(T(255) * R);
+  char g = (char) round(T(255) * G);
+  char b = (char) round(T(255) * B);
+  char s = 4;   // shift
+  char m = 15;  // mask
+  int  i = 0;   // index
+  if(sharp) { hex[i] = '#'; i++; }
+  hex[i] = toHex((r >> s) & m); i++;
+  hex[i] = toHex( r  & s  & m); i++;
+  hex[i] = toHex((g >> s) & m); i++;
+  hex[i] = toHex( g  & s  & m); i++;
+  hex[i] = toHex((b >> s) & m); i++;
+  hex[i] = toHex( b  & s  & m); i++;
+  if(null) hex[i] = '\0';
+}
+// needs more tests
 
 
 

@@ -183,7 +183,7 @@ bool colorUnitTest()
   Real x, y, z;      // original values
   Real a, b, c;      // converted values
   Real X, Y, Z;      // back-converted values
-  Real tol = 1.e-5;  // We need a quite high tolerance! Why? Are the formulas numerically bad?
+  Real tol = Real(1.e-5); // We need a quite high tolerance! Are the formulas numerically bad?
 
 
   x = 0.0f;
@@ -192,9 +192,6 @@ bool colorUnitTest()
   Color::hsl2rgb(x, y, z, &a, &b, &c);
   Color::rgb2hsl(a, b, c, &X, &Y, &Z);
   //Color::rgb2hsl(x, y, z, &a, &b, &c);
-
-
-
 
   for(int i = 1; i < N; i++)
   {
@@ -205,19 +202,14 @@ bool colorUnitTest()
       for(int k = 1; k < N; k++)
       {
         z = Real(k) / Real(N);
-
-
         Color::hsl2rgb(x, y, z, &a, &b, &c);
         Color::rgb2hsl(a, b, c, &X, &Y, &Z);
-
         ok &= rsIsCloseTo(x, X, tol);
         ok &= rsIsCloseTo(y, Y, tol);
         ok &= rsIsCloseTo(z, Z, tol);
 
-        rsAssert(ok);
+        //rsAssert(ok);
         // y is wrong whenever k = 0 or k = 10...i think, x too
-
-        int dummy = 0;
       }
     }
   }
@@ -228,6 +220,11 @@ bool colorUnitTest()
   // run only up to N-1, such that we avoid these extreme cases.
 
   // ToDo: add tests for the edge cases as well
+
+  // Test conversion to hex colors:
+  char hex[8];
+  Color::rgb2hex(0.5f, 0.25f, 0.75f, hex);
+
 
 
   // https://en.wikipedia.org/wiki/HSL_and_HSV#Hue_and_chroma

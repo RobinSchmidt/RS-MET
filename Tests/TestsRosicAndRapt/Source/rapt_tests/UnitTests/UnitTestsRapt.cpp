@@ -19,6 +19,9 @@ bool runUnitTestsRapt()
 
   std::cout << "Running unit tests for RAPT\n";
 
+  ok &= runUnitTest(&colorUnitTest,          "rsColor");
+  // move down later
+
   // Data:
   ok &= runUnitTest(&arrayUnitTest,            "rsArrayTools and std::vector stuff");
   ok &= runUnitTest(&testBufferFunctions,      "BufferFunctions");  // merge with rsArrayTools tests
@@ -69,7 +72,7 @@ bool runUnitTestsRapt()
   ok &= runUnitTest(&imagePainterUnitTest,   "rsImagePainter");
   ok &= runUnitTest(&triangleRasterization,  "Triangle Rasterization");
   //ok &= runUnitTest(&triangleRasterization2, "Triangle Rasterization 2"); // merge
-  ok &= runUnitTest(&colorUnitTest,          "rsColor");
+
 
   // Misc:
   ok &= runUnitTest(&blepUnitTest,  "Blit/Blep/Blamp");  // move to generator unit tests
