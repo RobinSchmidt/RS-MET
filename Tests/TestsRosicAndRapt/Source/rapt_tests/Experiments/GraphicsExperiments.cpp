@@ -2,40 +2,49 @@ using namespace RAPT;
 
 void colorGradientHSL()
 {
-  // We create an image with a bilinear gradient in HSL colorspace
+  // We create an image with a bilinear gradient in HSL colorspace. We pick a fixed hue and let the
+  // luminance gradient go from left to right and the saturation gradient from top to bottom.
 
   using Real  = double;
   using RGB   = rsColorRGB<Real>;
   using HSL   = rsColorHSL<Real>;
-  using Color = RGB;
+  using Color = rsColor<Real>;
 
-  int w = 200;               // pixel width
-  int h = 100;               // pixel height
-  Color tl(0.0, 0.0, 0.0);   // top-left
-  Color tr(0.0, 0.0, 1.0);   // top-right
-  Color bl(0.0, 1.0, 0.0);   // bottom-left
-  Color br(1.0, 0.0, 0.0);   // bottom-right
-
+  Real H = 210.0 / 360.0;   // hue
+  int  w = 200;             // pixel width
+  int  h = 100;             // pixel height
+  HSL tl(H, 0.0, 0.0);      // top-left
+  HSL tr(H, 0.0, 1.0);      // top-right
+  HSL bl(H, 1.0, 0.0);      // bottom-left
+  HSL br(H, 1.0, 1.0);      // bottom-right
 
   rsImageF imgR(w, h), imgG(w, h), imgB(w, h);
   for(int iy = 0; iy < h; iy++)
   {  
     Real  y  = Real(iy) / Real(h-1);
-    Color cl = (1.0-y)*tl + y*bl;
-    Color cr = (1.0-y)*tr + y*br;
+    HSL cl = (1.0-y)*tl + y*bl;
+    HSL cr = (1.0-y)*tr + y*br;
     for(int ix = 0; ix < w; ix++)
     {
-      Real  x = Real(ix) / Real(w-1);
-      Color c = (1.0-x)*cl + x*cr;
-      imgR(ix, iy) = float(c.x);
-      imgG(ix, iy) = float(c.y);
-      imgB(ix, iy) = float(c.z);
+      Real x   = Real(ix) / Real(w-1);
+      HSL  hsl = (1.0-x)*cl + x*cr;
+      RGB  rgb;
+      Color::hsl2rgb(hsl.x, hsl.y, hsl.z, &rgb.x, &rgb.y, &rgb.z);
+      imgR(ix, iy) = float(rgb.x);
+      imgG(ix, iy) = float(rgb.y);
+      imgB(ix, iy) = float(rgb.z);
     }
   }
-  // preliminary - we do the gradient in RGB space here - the actual goal is to do it in HSL
 
   writeImageToFilePPM(imgR, imgG, imgB, "BilinearGradient.ppm");
   int dummy = 0;
+
+  // Observations:
+  // -top pixel row is grayscale gradient
+  // -left column is black, right column is white
+  // -pure colors occur at center bottom
+  // -hues (in degrees): 0: red, 30: orange, 60: yellow, 90: greenyellow, 120: green, 
+  //  150: mint, 180: cyan, 210: sky, 240: blue, 270: purple, 300: magenta, 330: pink
 }
 
 void lineDrawing()

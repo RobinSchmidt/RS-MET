@@ -2563,7 +2563,7 @@ public:
 
 
 
-  rsColor(T x, T y, T z) : rsVector3D<T>(x, y, z) {}
+  rsColor(T x = T(0), T y = T(0), T z = T(0)) : rsVector3D<T>(x, y, z) {}
 
 
   rsColor(const rsVector3D<T>& v) : rsVector3D<T>(v) {}
@@ -2598,12 +2598,12 @@ void rsColor<T>::hsl2rgb(T H, T S, T L, T* R, T* G, T* B)
   T C = (1 - rsAbs(2*L-1)) * S;
   T X = C * (1 - rsAbs(fmod(H/60, 2) - 1));
   T m = L - C/2;
-  if(     H <  60) { *R = C; *G = X; B = 0; }
-  else if(H < 120) { *R = X; *G = C; B = 0; }
-  else if(H < 180) { *R = 0; *G = C; B = X; }
-  else if(H < 240) { *R = 0; *G = X; B = C; }
-  else if(H < 300) { *R = X; *G = 0; B = C; }
-  else             { *R = C; *G = 0; B = X; }
+  if(     H <  60) { *R = C; *G = X; *B = 0; }
+  else if(H < 120) { *R = X; *G = C; *B = 0; }
+  else if(H < 180) { *R = 0; *G = C; *B = X; }
+  else if(H < 240) { *R = 0; *G = X; *B = C; }
+  else if(H < 300) { *R = X; *G = 0; *B = C; }
+  else             { *R = C; *G = 0; *B = X; }
   *R += m;
   *G += m;
   *B += m;
