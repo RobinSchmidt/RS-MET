@@ -181,9 +181,19 @@ bool colorUnitTest()
 
   int N = 10;    // number of samples along the 3 dimension (HSL or RGB etc.)
 
-  Real x, y, z;  // original values
-  Real a, b, c;  // converted values
-  Real X, Y, Z;  // back-converted values
+  Real x, y, z;      // original values
+  Real a, b, c;      // converted values
+  Real X, Y, Z;      // back-converted values
+  Real tol = 1.e-8;
+
+
+  x = 0.109999999f;
+  y = 0.0900000036f;
+  z = 0.101999998f;
+  Color::rgb2hsl(x, y, z, &a, &b, &c);
+
+  // fails! it's the  *H = 60 * fmod((G-B)/D, 6); branch, the H value gets negative - maybe fmod 
+  // does not the right thing here?
 
   for(int i = 0; i <= N; i++)
   {
@@ -197,6 +207,12 @@ bool colorUnitTest()
         Color::hsl2rgb(x, y, z, &a, &b, &c);
         Color::rgb2hsl(a, b, c, &X, &Y, &Z);
 
+        ok &= rsIsCloseTo(x, X, tol);
+        ok &= rsIsCloseTo(y, Y, tol);
+        ok &= rsIsCloseTo(z, Z, tol);
+
+        rsAssert(ok);
+        // y is wrong whenever k = 0 or k = 10...i think, x too
 
         int dummy = 0;
       }
@@ -205,6 +221,8 @@ bool colorUnitTest()
 
 
 
+  // https://en.wikipedia.org/wiki/HSL_and_HSV#Hue_and_chroma
+  // https://stackoverflow.com/questions/11980292/how-to-wrap-around-a-range
 
   return ok;
 }

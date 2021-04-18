@@ -2617,14 +2617,30 @@ void rsColor<T>::rgb2hsl(T R, T G, T B, T* H, T* S, T* L)
   T Cmax = rsMax(R, G, B);
   T Cmin = rsMin(R, G, B);
   T D    = Cmax - Cmin;                            // delta
-  if(        D == 0) *H = 0;
-  else if(Cmax == R) *H = 60 * fmod((G-B)/D, 6);
-  else if(Cmax == G) *H = 60 * ((B-R)/D + 2);
-  else if(Cmax == B) *H = 60 * ((R-G)/D + 4);
+  if(        D == 0) 
+    *H = 0;
+  else if(Cmax == R) 
+    //*H = 60 * fmod((G-B)/D, 6);
+    *H = 60 * RAPT::rsWrapToInterval((G-B)/D, 0, 6);
+  else if(Cmax == G) 
+    *H = 60 * ((B-R)/D + 2);
+  else if(Cmax == B) 
+    *H = 60 * ((R-G)/D + 4);
   *H /= 360;                                       // convert from 0..360 to 0..1
+  *L  = (Cmax + Cmin) / 2;
   if(D != 0) *S = D / (1 - rsAbs(2 * *L - 1));
   else       *S = 0;
-  *L = (Cmax + Cmin) / 2;
+
+
+  // for debug:
+  T r,g,b;
+  hsl2rgb(*H, *S, *L, &r, &g, &b);
+  T dr = rsAbs(R - r);
+  T dg = rsAbs(G - g);
+  T db = rsAbs(B - b);
+  T tol = 1.e-6;
+  rsAssert(dr <= tol && dg <= tol && db <= tol);
+
 
   // see: https://www.rapidtables.com/convert/color/rgb-to-hsl.html
 }
