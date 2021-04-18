@@ -110,9 +110,9 @@ T rsPositiveSigmoids<T>::softClipHexic(T x)
 // chosen such that the maximum is at y = 1, the higher the exponent, the more linear the range 
 // around the origin for example (factors have been eyballed)
 // y = x - 0.035*x^11, x - 0.043*x^9, x - 0.057*x^7, x - 0.082*x^5, x - 0.148*x^3
-// maybe n should be (2^k)+1 for fast evaluation by successive squaring, x^5 or x^9 seems to look 
+// maybe N should be (2^k)+1 for fast evaluation by successive squaring, x^5 or x^9 seems to look 
 // best
-// maybe, we can fid a formula for a, given N? 
+// maybe, we can find a formula for a, given N? 
 // we have f(x) = x + a*x^N, f'(x) = 1 + N*a*x^(N-1) and we want to find a such that f(x) = 1 when
 // f'(x) = 0. To find the peak p, we set f'(p) = 0 = 1 + N*a*p^(N-1), solving this for p gives
 // p = (-1/(N*a))^(1/(N-1)) -> put this in f(p) = 1 ....
@@ -160,7 +160,7 @@ T rsNormalizedSigmoids<T>::clippedOddPower(T x, int N)
   x = rsClip(x, -p, p);
   return x - rsPow(x, N);
   // this is a very inefficient prototype - todo: choose some power, like 5 or 9 (if N=(2^k)-1, the
-  // power can be evaluated by repetaed squaring) and precompute the p,a coeffs
+  // power can be evaluated by repeated squaring) and precompute the p,a coeffs
 }
 
 template<class T>
@@ -190,37 +190,29 @@ T rsNormalizedSigmoids<T>::cubicRational(T x)
 template<class T>
 T rsNormalizedSigmoids<T>::cubic(T x)
 {
-  if(x >= 0.0)
-    return rsPositiveSigmoids<T>::cubic(x);
-  else
-    return -rsPositiveSigmoids<T>::cubic(-x);
+  if(x >= 0.0) return  rsPositiveSigmoids<T>::cubic( x);
+  else         return -rsPositiveSigmoids<T>::cubic(-x);
 }
 
 template<class T>
 T rsNormalizedSigmoids<T>::quartic(T x)
 {
-  if(x >= 0.0)
-    return rsPositiveSigmoids<T>::quartic(x);
-  else
-    return -rsPositiveSigmoids<T>::quartic(-x);
+  if(x >= 0.0) return  rsPositiveSigmoids<T>::quartic( x);
+  else         return -rsPositiveSigmoids<T>::quartic(-x);
 }
 
 template<class T>
 T rsNormalizedSigmoids<T>::hexic(T x)
 {
-  if(x >= 0.0)
-    return rsPositiveSigmoids<T>::hexic(x);
-  else
-    return -rsPositiveSigmoids<T>::hexic(-x);
+  if(x >= 0.0) return  rsPositiveSigmoids<T>::hexic( x);
+  else         return -rsPositiveSigmoids<T>::hexic(-x);
 }
 
 template<class T>
 T rsNormalizedSigmoids<T>::softClipHexic(T x)
 {
-  if(x >= 0.0)
-    return rsPositiveSigmoids<T>::softClipHexic(x);
-  else
-    return -rsPositiveSigmoids<T>::softClipHexic(-x);
+  if(x >= 0.0) return  rsPositiveSigmoids<T>::softClipHexic( x);
+  else         return -rsPositiveSigmoids<T>::softClipHexic(-x);
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -64,6 +64,7 @@ void shepardTone();
 
 // Graphics Experiments:
 
+void colorGradientHSL();
 void lineDrawing();
 void lineDrawingThick();
 //void lineDrawingThick2(); // obsolete

@@ -1,5 +1,43 @@
 using namespace RAPT;
 
+void colorGradientHSL()
+{
+  // We create an image with a bilinear gradient in HSL colorspace
+
+  using Real  = double;
+  using RGB   = rsColorRGB<Real>;
+  using HSL   = rsColorHSL<Real>;
+  using Color = RGB;
+
+  int w = 200;               // pixel width
+  int h = 100;               // pixel height
+  Color tl(0.0, 0.0, 0.0);   // top-left
+  Color tr(0.0, 0.0, 1.0);   // top-right
+  Color bl(0.0, 1.0, 0.0);   // bottom-left
+  Color br(1.0, 0.0, 0.0);   // bottom-right
+
+
+  rsImageF imgR(w, h), imgG(w, h), imgB(w, h);
+  for(int iy = 0; iy < h; iy++)
+  {  
+    Real  y  = Real(iy) / Real(h-1);
+    Color cl = (1.0-y)*tl + y*bl;
+    Color cr = (1.0-y)*tr + y*br;
+    for(int ix = 0; ix < w; ix++)
+    {
+      Real  x = Real(ix) / Real(w-1);
+      Color c = (1.0-x)*cl + x*cr;
+      imgR(ix, iy) = float(c.x);
+      imgG(ix, iy) = float(c.y);
+      imgB(ix, iy) = float(c.z);
+    }
+  }
+  // preliminary - we do the gradient in RGB space here - the actual goal is to do it in HSL
+
+  writeImageToFilePPM(imgR, imgG, imgB, "BilinearGradient.ppm");
+  int dummy = 0;
+}
+
 void lineDrawing()
 {
   // Compares different line drawing algorithms. We draw lines of different directions.

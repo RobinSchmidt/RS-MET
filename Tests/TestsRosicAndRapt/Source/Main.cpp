@@ -202,6 +202,7 @@ int main(int argc, char* argv[])
   //attackDecayEnvelope();
 
   // Graphics:
+  colorGradientHSL();
   //lineDrawing();
   //lineDrawingThick();
   ///lineDrawingThick2(); // obsolete

@@ -90,9 +90,9 @@ public:
 
   /** Uses a function f(x) = x + a*x^N where N should be an odd integer. This function is adjusted
   such that its peak value is 1. Doing so puts the x-value of the peak at x = N/(N-1). The input is
-  clipped at this value (positive and negative) befor going into the polynomial. So, in the end, it
-  is a soft-clipper. The higher the exponent, the harde the clipping and the more linear the range 
-  aroundthe origin. */
+  clipped at this value (positive and negative) before going into the polynomial. So, in the end, 
+  it is a soft-clipper. The higher the exponent, the harder the clipping and the more linear the 
+  range around the origin. */
   static T clippedOddPower(T x, int N);
 
   /** A family of sigmoid curves with a parameter p, realizing the function: 
@@ -114,13 +114,12 @@ public:
 
 //=================================================================================================
 
-/**
-
-This class implements a parametrized sigmoid function. The parameter y1 adjusts the value at x=1, 
-so y1 = f(x=1). The value y1 has to in the range 0.5..1.0 (ends inclusive). If you set y1 = 1, you 
-will get a hardclipper. If you set y1 = 0.5, you will get the function y = x / (1+|x|). There are 
-some deeper parameters, but if you leave them at their default settings and just adjust y1, the 
-function will be 2nd order continuous for y1 >= 0.75 and 1st order continuous for y1 < 0.75.
+/** This class implements a parametrized sigmoid function. The parameter y1 adjusts the value at 
+x=1, so y1 = f(x=1). The value y1 has to be in the range 0.5..1.0 (ends inclusive). If you set 
+y1 = 1, you will get a hard clipper. If you set y1 = 0.5, you will get the function 
+y = x / (1+|x|). There are some deeper parameters, but if you leave them at their default settings 
+and just adjust y1, the function will be 2nd order continuous for y1 >= 0.75 and 1st order 
+continuous for y1 < 0.75.
 
 The function is based on the core-function:
 
@@ -129,9 +128,9 @@ f(x) = -------------------------------
         x + a*(b*x^2 + (1-b)*x^3) + 1
 
 where a and b are adjustable parameters. The a-parameter is directly related to the function value 
-at unity y1 defined as y = f(x=1). Because it's more intuitive, the a-parameter will typically set 
-in terms of that value using setValueAt1() which can take value in the range 0.5..1 
-(ends inclusive). As y1 gets closer to 1, the function f(x) becomes kinda strange looking (getting 
+at unity y1 defined as y = f(x=1). Because it's more intuitive, the a-parameter will typically be 
+set in terms of that value using setValueAt1() which can take value in the range 0.5..1 (ends 
+inclusive). As y1 gets closer to 1, the function f(x) becomes kinda strange looking (getting 
 turning points etc.), that's why when y1 is set above some critical breakpoint value yb, we 
 actually use a piecewise function that is the identity-function below a threshold and an 
 appropriately scaled-and-shifted version of the the original function f above the threshhold. That 

@@ -2546,16 +2546,30 @@ void divergenceToPotential3(const rsBivariatePolynomial<T>& D, rsBivariatePolyno
 
 //=================================================================================================
 
-/** A class for converting between various colorspaces. 
+/** A baseclass for representing colors. A color is always represented as a triple of numbers in 
+the range 0..1 but what those numbers mean may differ depending on the color space which is 
+determined by the subclass. For example, in subclass rsColorRGB they may mean red, green, blue and 
+in rsColorHSL they mean hue,saturation, luminance. This baseclass provides static functions to 
+convert between the various color spaces. 
 
 References:
   https://www.rapidtables.com/convert/color/index.html  */
 
 template<class T>
-class rsColor
+class rsColor : public rsVector3D<T>
 {
 
 public:
+
+
+
+  rsColor(T x, T y, T z) : rsVector3D<T>(x, y, z) {}
+
+
+  rsColor(const rsVector3D<T>& v) : rsVector3D<T>(v) {}
+
+
+
 
   /** Converts HSL (hue, saturation, luminance) to RGB (red, green, blue). */
   static void hsl2rgb(T H, T S, T L, T* R, T* G, T* B);
@@ -2563,10 +2577,18 @@ public:
   /** Converts RGB (red, green, blue) to HSL (hue, saturation, luminance). */
   static void rgb2hsl(T R, T G, T B, T* H, T* S, T* L);
 
+
+protected:
+
+  //rsVector3D<T> values;  // A color is always a triple of values
+
 };
 // needs test: try roundtrips between rgb and hsl and some special cases (pure colors, black, 
 // white, gray, etc.)
-// ToDo: implement more conversions - we don't currently need them but for the sake of completeness
+// ToDo: 
+// -implement more conversions - we don't currently need them but for the sake of completeness
+// -maybe have functions like setHue, setLuminance, setSaturation, setRed, setGreen, setBlue
+// -have a function rgb2hex (and maybe hex2rgb too)
 
 
 template<class T>
@@ -2607,6 +2629,33 @@ void rsColor<T>::rgb2hsl(T R, T G, T B, T* H, T* S, T* L)
   // see: https://www.rapidtables.com/convert/color/rgb-to-hsl.html
 }
 
+
+
+
+
+template<class T>
+class rsColorRGB : public rsColor<T>
+{
+
+public:
+
+  using rsColor<T>::rsColor;
+
+
+
+};
+
+
+template<class T>
+class rsColorHSL : public rsColor<T>
+{
+
+public:
+
+  using rsColor<T>::rsColor;
+
+
+};
 
 
 //=================================================================================================

@@ -146,11 +146,7 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
   // as is used in the rsSmoothingFilter. Elan says, this responds better to modulation. i think,
   // coeff = a or coeff = -a
 
-  // also, it would perhaps make more sense to apply the compensation gain at the input side rather
-  // than the output because it depends on the feedback gain k which scales y[4], so it may be the
-  // case that gain*in - k*y[4] makes both terms fit together better. make tests with both variants
-  // maybe use a unit impulse as input and switch between reso = 0 and reso = 1 (and back) in the 
-  // middle of the signal and see which variant produces a smoother output
+
 }
 
 template<class TSig, class TPar>
@@ -163,6 +159,15 @@ inline TSig rsLadderFilter<TSig, TPar>::getSample(CRSig in)
   // g = 1 + k * compensationAmount; instead of g = 1 + k -> filter becomes continuously adjustable 
   // between no compensation and full compensation. Then, we also don't really need the factored 
   // out getSampleNoGain fucntion anymore
+
+  // it would perhaps make more sense to apply the compensation gain at the input side rather
+  // than the output because it depends on the feedback gain k which scales y[4], so it may be the
+  // case that gain*in - k*y[4] makes both terms fit together better. make tests with both variants
+  // maybe use a unit impulse as input and switch between reso = 0 and reso = 1 (and back) in the 
+  // middle of the signal and see which variant produces a smoother output. but on the other hand, 
+  // the clipping behavior may be les desirable - the gain would be boosted before the clipper. But 
+  // maybe that sounds better? Maybe we could also distribute the gain between pre and post via 
+  // another parameter: preGain = gain^(gainDistribution), postGain = gain^(1-gainDistribution)
 }
 
 template<class TSig, class TPar>
@@ -227,6 +232,16 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar
   //TPar b0_4   = *b * *b * *b * *b;
   //TPar dcGain = b0_4 / ((((*a + 4.0) * *a +6.0) * *a + 4.0) * *a + *k * b0_4 + 1.0);
   //*g = 1 / dcGain;
+
+  // The simpler formula can be derived from the more complicated one by observing that the 
+  // denominator is given by:
+  //   d = a^4 + 4*a^3 + 6*a^2 + 4*a + 1 + k*(1+a)^4 = (1+a)^4 + k*(1+a)^4 = (1+k) * (1+a)^4
+  // and the numerator is:
+  //   b0^4 = (1+a)^4 
+  // so we have
+  //   dcGain = b0^4 / d = (1+a)^4 / ((1+k) * (1+a)^4) = 1 / (1+k)
+  // and the reciprocal is just
+  //   g = 1+k
 }
 
 template<class TSig, class TPar>
