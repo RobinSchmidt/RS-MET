@@ -209,10 +209,15 @@ vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, const vecto
   //bool isDigital = spec.sampleRate != inf;
   complex<T> j(0.0, 1.0);                          // imaginary unit
   vector<complex<T>> H(f.size());                  // frequency response
-  for(size_t k = 0; k < f.size(); k++) {
+  for(size_t k = 0; k < f.size(); k++) 
+  {
     complex<T> s = j * complex<T>(freqScale*f[k]); // value on s-plane where we evaluate H
     if(spec.isDigital())
+    {
+      if(freqScale == T(1))                        // this is quirky!
+        s *= 2*PI;
       s = exp(s/spec.sampleRate);                  // conversion of analog "s" to digital "z"
+    }
 
     // debug:
     //complex<T> H1 = filterSpecsZPK[index].transferFunctionAt(s);

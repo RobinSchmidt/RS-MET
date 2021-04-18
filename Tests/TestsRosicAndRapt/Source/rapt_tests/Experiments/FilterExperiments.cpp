@@ -265,7 +265,7 @@ void engineersFilterFreqResps()
   // to demonstrate how the plotting works..
 
   int minOrder  = 1;      // minimum filter order
-  int numOrders = 5;      // number of orders
+  int numOrders = 3;      // number of orders
   int orderInc  = 1;      // spacing between the orders
   int numFreqs  = 501;    // number of frequency samples
   double fc     = 1000;   // cutoff frequency
@@ -293,24 +293,14 @@ void engineersFilterFreqResps()
   {
     int order = minOrder + i*orderInc;
     flt.setPrototypeOrder(order);
-    //flt.updateCoefficients();
-
     ZPK zpk = sos2zpk(b0, b1, b2, a1, a2, flt.getNumStages());
-
-    //ZPK zpk = sos2zpk(b0, b1, b2, a1, a2, order); 
-    // order is correct only for non-order-doubling filters types, i.e. lowpass, highpass, shelf. 
-    // For bandpass, etc. we need to pass 2*order
-
-
-
-
-
-
+    zpk.sampleRate = fs;
+    plt.addFilterSpecificationZPK(zpk);
     int dummy = 0;
   }
- 
 
-
+  plt.plotFrequencyResponses(numFreqs, 20.0, fs/2, true);
+  //plt.plotFrequencyResponses(numFreqs, 20.0, fs/2, true, true, true, false);
 
 
   int dummy = 0;
