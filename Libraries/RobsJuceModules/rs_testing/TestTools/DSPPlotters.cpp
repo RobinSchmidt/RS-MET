@@ -104,11 +104,12 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
   if(plotMagnitude) numColumns += numFilters;
   if(plotPhase)     numColumns += numFilters;
 
+  // Create and add data:
   vector<vector<vector<T>>> data(1);           // 1 dataset
   data[0].resize(numColumns);                  // 
   vector<T> f = getFrequencyAxis(numFreqs, lowFreq, highFreq, logFreqAxis);
-  data[0][0] = f;
-
+  //data[0][0] = f;
+  data[0][0] = T(0.001) * f;  // factor 0.001 because of kHz
   int j = 0;
   for(int i = 0; i < numFilters; i++) {
     vector<complex<T>> H = getFrequencyResponse(i, f);
@@ -118,12 +119,26 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
       j++;  }
     if(plotPhase) {
       data[0][j+1] = getPhases(H, unwrap, true);
-      addGraphLines(j);
+      addGraphLines(j, true);
       j++; }}
-
   addDataBlockColumnLine(data);
+
+  // Set up plotting options and plot:
+  setTitle("Filter Frequency Responses");
   if(logFreqAxis)
     setLogScale("x", 10); // 10 is the base - maybe try 2
+
+  addCommand("set xrange  [0.03125:32]");   // preliminary
+  addCommand("set yrange  [-100:0]");       // preliminary
+  addCommand("set y2range [-450:0]");       // preliminary
+  addCommand("set xlabel \"Frequency in kHz\"");
+  addCommand("set ylabel \"Magnitude in dB\"");
+  addCommand("set y2label \"Phase in Degrees\"");
+  addCommand("set xtics 2");    // factor 2 between (major) frequency axis tics
+  addCommand("unset mxtics");   // no minor tics for frequency axis
+  addCommand("set ytics 10");   // 10 dB steps for magnitude axis
+  addCommand("set y2tics 45");  // 45° steps for phase axis
+
   plot();
 }
 // todo: 
@@ -214,8 +229,7 @@ vector<complex<T>> FilterPlotter<T>::getFrequencyResponse(int index, const vecto
     complex<T> s = j * complex<T>(freqScale*f[k]); // value on s-plane where we evaluate H
     if(spec.isDigital())
     {
-      if(freqScale == T(1))                        // this is quirky!
-        s *= 2*PI;
+      if(freqScale == T(1)) s *= T(2*PI);          // this is quirky!
       s = exp(s/spec.sampleRate);                  // conversion of analog "s" to digital "z"
     }
 
@@ -412,10 +426,14 @@ bool  FilterPlotter<T>::almostEqual(complex<T> x, complex<T> y, T thresh)
 }
 
 template <class T>
-void FilterPlotter<T>::addGraphLines(int j)
+void FilterPlotter<T>::addGraphLines(int j, bool y2)
 {
   unsigned int ju = (unsigned int) j;
-  addGraph(string("i 0 u 1:") + s(ju+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
+  if(y2) addGraph(string("i 0 u 1:") + s(ju+2) + string(" w lines lw 1.5 axes x1y2 notitle"));
+  else   addGraph(string("i 0 u 1:") + s(ju+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
+
+  // the phase responses should use x1y2 instead of x1y1
+
   // todo: maybe have a color argument, or set color automatically based on j - or have a color 
   // index argument
 }

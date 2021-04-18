@@ -134,7 +134,7 @@ protected:
   the tolerance also increases) */
   bool almostEqual(std::complex<T> x, std::complex<T> y, T thresh);
 
-  void addGraphLines(int graphIndex);
+  void addGraphLines(int graphIndex, bool yAxis2 = false);
 
   T freqScale = 1.0;
   T dBFloor   = T(-120);
