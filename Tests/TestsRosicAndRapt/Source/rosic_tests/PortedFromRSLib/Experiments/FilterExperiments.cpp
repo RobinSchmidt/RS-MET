@@ -1779,9 +1779,10 @@ void ladderTransferFunction()
 
   FilterPlotter<Real> plt;
   //plt.addFilterSpecificationBA(ba);
-  ldr.setResonance(0.0); plt.addTransferFunction(ldr.getTransferFunction(),  fs);
-  ldr.setResonance(0.0); plt.addTransferFunction(ldr.getTransferFunction2(), fs);
-  //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction2(), fs);
+  ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunctionOld(),  fs);
+  ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+
+  //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   //ldr.setResonance(0.2); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   //ldr.setResonance(0.4); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);

@@ -109,12 +109,15 @@ public:
   TPar getMagnitudeResponseAt(CRPar frequency);
   // maybe rename to getMagnitudeAt
 
-  /** !!!NOT YET WORKING!!!
-  Returns the transfer function rsRationalFunction object. */
+  /** Returns the transfer function rsRationalFunction object. */
   rsRationalFunction<TPar> getTransferFunction();
 
-  rsRationalFunction<TPar> getTransferFunction2();
-  // alternative implementation
+  /** Old implementation of getTransferFunction, using rsRationalFunction's arithmetic instead of
+  just assigning the coeffs via analytically derived formulas (as the new one does). It's less 
+  efficient and less precise that the new one, but nicely demonstrates how such a thing can be 
+  done. It will also produce a function that is formally 8-pole, but fetaures pole/zero 
+  cancellations. ToDo: move this eventually into the prototypes section. */
+  rsRationalFunction<TPar> getTransferFunctionOld();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */

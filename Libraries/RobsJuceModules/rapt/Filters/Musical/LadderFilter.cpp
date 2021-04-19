@@ -121,27 +121,7 @@ TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency)
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
 {
-  using RF = RAPT::rsRationalFunction<TPar>;
-  TPar tol = 1024 * RS_EPS(TPar);
-  RF G1( { 0, b }, { a, 1 }, tol); // G1(z) = b / (1 + a/z) = (0 + b*z) / (a + 1*z)
-  RF one({ 1    }, { 1    }, tol); // 1 = 1 / 1
-  RF z  ({ 0, 1 }, { 1    }, tol); // z = (0 + 1*z) / 1
-  RF G2 = G1*G1;                   // G1^2
-  RF G3 = G1*G2;                   // G1^3
-  RF G4 = G2*G2;                   // G1^4
-  RF H  = g * (c[0]*one + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + k * G4 / z); // H(z)
-  return H;
-}
-// when getTransferFunction2 is finished, this will be obsolete - however, we should keep the code
-// somewhere in the prototypes section for demo purposes
-
-template<class TSig, class TPar>
-rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction2()
-{
-  using RF = RAPT::rsRationalFunction<TPar>;
-
-  //TPar A  = a+1; A *= A; A *= A;  // A = (a+1)^4
-
+  // Compute some intermediate variables:
   TPar b2 = b*b;        // b^2
   TPar b4 = b2*b2;      // b^4
   TPar a2 = a*a;        // a^2
@@ -151,27 +131,39 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction2()
   TPar d3 = c[3]*b2*b;  // c3 * b^3
   TPar d4 = c[4]*b4;    // c4 * b^4
 
-  std::vector<TPar> D(5);
-  D[4] =  d4 + d3 +   d2 +   d1 +   d0;
-  D[3] = (     d3 + 2*d2 + 3*d1 + 4*d0) * a;
-  D[2] = (            d2 + 3*d1 + 6*d0) * a2;
-  D[1] = (                   d1 + 4*d0) * a2*a;
-  D[0] =                            d0  * a2*a2;
-  // not yet correct!
+  // Compute coefficients of the numerator (note the binomial coeffs in the columns:
+  // (1),(1,1),(1,2,1),(1,3,3,1),(1,4,6,4,1)):
+  using T = TPar;
+  std::vector<TPar> N(5);
+  N[4] = g * (d4 + d3 +      d2 +      d1 +      d0);
+  N[3] = g * (     d3 + T(2)*d2 + T(3)*d1 + T(4)*d0) * a;
+  N[2] = g * (               d2 + T(3)*d1 + T(6)*d0) * a2;
+  N[1] = g * (                         d1 + T(4)*d0) * a2*a;
+  N[0] = g * (                                   d0) * a2*a2;
 
-
-  //RF H({0, 0, 0, 0, b4}, {a2*a2, 4*a*a2, 6*a2, 4*a + b4*k, 1 });
-
-  RF H(D, {a2*a2, 4*a*a2, 6*a2, 4*a + b4*k, 1 });
-
-  // todo: this is correct only for the LP_24 mode - derive the formulas for the other modes
-
-  //RF H({A}, {1, A*k+4*a, 6*a2, 4*a*a2, a2*a2 });
-
+  // Create rational function object and return it (note again the binomial coeffs 1,4,6,4,1):
+  using RF = RAPT::rsRationalFunction<TPar>;
+  RF H(N, {a2*a2, T(4)*a*a2, T(6)*a2, T(4)*a + b4*k, T(1) });
   return H;
 }
+// Maybe make a function getCoeffsBA(TPar* b, TPar* a) which just fills the arrays (of length 5).
+// Beware that the order must be reversed for a polynomial in z^-1 (maybe make it optional to be
+// in this form)
 
-
+template<class TSig, class TPar>
+rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionOld()
+{
+  using RF = RAPT::rsRationalFunction<TPar>;
+  TPar tol = 1024 * RS_EPS(TPar);  // ad hoc
+  RF G1( { 0, b }, { a, 1 }, tol); // G1(z) = b / (1 + a/z) = (0 + b*z) / (a + 1*z)
+  RF one({ 1    }, { 1    }, tol); // 1 = 1 / 1
+  RF z  ({ 0, 1 }, { 1    }, tol); // z = (0 + 1*z) / 1
+  RF G2 = G1*G1;                   // G1^2
+  RF G3 = G1*G2;                   // G1^3
+  RF G4 = G2*G2;                   // G1^4
+  RF H  = g * (c[0]*one + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + k * G4 / z); // H(z)
+  return H;
+}
 
 // audio processing:
 
