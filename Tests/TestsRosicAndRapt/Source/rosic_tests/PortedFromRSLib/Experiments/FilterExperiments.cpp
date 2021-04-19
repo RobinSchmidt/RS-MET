@@ -1765,21 +1765,23 @@ void ladderTransferFunction()
   Real fs  = 44100;   // sample rate
   Real fc  = 1000;    // cutoff frequency
   //Real res = 0.5;     // resonance
-  bool plotPhase = false;
+  bool plotPhase = true;
 
   LDR ldr;
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   //ldr.setResonance(res);
-  //ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
-  ldr.setMode(LDR::modes::LP_6);
+  ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
+  //ldr.setMode(LDR::modes::LP_6);
 
   FilterPlotter<Real> plt;
   //plt.addFilterSpecificationBA(ba);
-  ldr.setResonance(0.0); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.0); plt.addTransferFunction(ldr.getTransferFunction(),  fs);
+  ldr.setResonance(0.0); plt.addTransferFunction(ldr.getTransferFunction2(), fs);
+
   //ldr.setResonance(0.2); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   //ldr.setResonance(0.4); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   //ldr.setResonance(0.6); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   //ldr.setResonance(0.8); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   plt.setPixelSize(800, 400);

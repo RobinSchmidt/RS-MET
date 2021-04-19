@@ -132,6 +132,27 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
   RF H  = g * (c[0]*one + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + k * G4 / z); // H(z)
   return H;
 }
+// when getTransferFunction2 is finished, this will be obsolete - however, we should keep the code
+// somewhere in the prototypes section for demo purposes
+
+template<class TSig, class TPar>
+rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction2()
+{
+  using RF = RAPT::rsRationalFunction<TPar>;
+
+  TPar A  = a+1; A *= A; A *= A;  // A = (a+1)^4
+  TPar a2 = a*a;
+
+  RF H({0, 0, 0, 0, A}, {a2*a2, 4*a*a2, 6*a2, A*k+4*a, 1 });
+
+  // todo: this is correct only for the LP_24 mode - derive the formulas for the other modes
+
+  //RF H({A}, {1, A*k+4*a, 6*a2, 4*a*a2, a2*a2 });
+
+  return H;
+}
+
+
 
 // audio processing:
 

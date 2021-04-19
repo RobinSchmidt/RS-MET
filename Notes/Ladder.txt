@@ -35,9 +35,9 @@ then:
 
 It's a mess! But giving this (the final expression in last line):
 
-  D(z) = 1 + k*G4/z 
-       = 1 + k*(G1^4)/z 
-       = 1 + k*(((1+a) / (1 + a*z))^4)/z 
+  D(z) = 1 + k * G4 / z 
+       = 1 + k * G1^4 / z 
+       = 1 + k * (((1+a)/(1+a*z)))^4 / z 
        
 to wolfram alpha gives:
 
@@ -48,9 +48,83 @@ to wolfram alpha gives:
 which is more helpful. Define:
 
   p    := a^4 k   + 4 a^3 k   + 6 a^2 k   + 4 a k   + k  ?=  k * (a+1)^4
-  q(z) := a^4 z^5 + 4 a^3 z^4 + 6 a^2 z^3 + 4 a z^2 + z  ?=  z * (a+z)^4
+  q(z) := a^4 z^5 + 4 a^3 z^4 + 6 a^2 z^3 + 4 a z^2 + z  
+        = z (a^4 z^4 + 4 a^3 z^3 + 6 a^2 z^2 + 4 a z + 1)
+        = z (a z + 1)^4
   
 then:
 
-  D(z) = (p + q(z)) / ( z (a z + 1)^4 )
+  D(z) = (p + q(z)) / (z (a z + 1)^4)
+       = (p + q(z)) / q(z)
+  
+and therefore:
+
+          G4(z) * q(z)
+  H(z) = --------------
+            p + q(z)
+  
+  Define the inverse of H:
+  
+             p + q(z)     
+   I(z) = ------------- = ------
+           G4(z) * q(z)
+   
+   
+
+
+ or maybe try giving this: 
+   ((1+a)/(1+a*z))^4 / (1 + k * (((1+a)/(1+a*z)))^4 / z)
+ to wolfram alpha...yes - this gives:
+ 
+ 
+                                           (a + 1)^4 z
+   H(z) = ---------------------------------------------------------------------------------------
+           a^4 k + a^4 z^5 + 4 a^3 k + 4 a^3 z^4 + 6 a^2 k + 6 a^2 z^3 + 4 a k + 4 a z^2 + k + z
+
+                 (a + 1)^4 z
+        = -----------------------------
+           (a + 1)^4 k + z (a z + 1)^4
+ 
+ ...yes! success! this looks like an useful expression for implementation. Oh - but that's only 
+ valid for the LP_24 mode. For LP_24/18/12/6/0, we need to pass:
+ 
+   ((1+a)/(1+a*z))^4 / (1 + k * (((1+a)/(1+a*z)))^4 / z)
+   ((1+a)/(1+a*z))^3 / (1 + k * (((1+a)/(1+a*z)))^4 / z)
+   ((1+a)/(1+a*z))^2 / (1 + k * (((1+a)/(1+a*z)))^4 / z)
+   ((1+a)/(1+a*z))^1 / (1 + k * (((1+a)/(1+a*z)))^4 / z)
+ 
+ giving different numerators, namely:
+ 
+   (a + 1)^4 z (a z + 1)^0
+   (a + 1)^3 z (a z + 1)^1
+   (a + 1)^2 z (a z + 1)^2
+   (a + 1)^1 z (a z + 1)^3
+             z (a z + 1)^4 
+             
+  maybe we need to form linear combinations of these numerators with the coeffs c4,..,c0
+  
+  oh no - this is all wrong! we need 
+              *                             *
+   ((1+a)/(1+a/z))^4 / (1 + k * (((1+a)/(1+a/z)))^4 / z)
+   
+ doesn't work, but:
+ 
+   ratexpand(  ((1+a)/(1+a/z))^4 / (1 + k * (((1+a)/(1+a/z)))^4 / z)  )
+   
+ gives:
+                             (a + 1)^4 z^4
+   H(z) = -----------------------------------------------------------
+           a^4 + 4 a^3 z + 6 a^2 z^2 + z^3 ((a + 1)^4 k + 4 a) + z^4
+           
+                                 (a + 1)^4
+        = -----------------------------------------------------------
+           a^4/z^4 + 4*a^3/z^3 + 6*a^2/z^2 + ((a+1)^4*k + 4*a)/z + 1
+   
+
+   
+   
+   
+   
+   
+   
   

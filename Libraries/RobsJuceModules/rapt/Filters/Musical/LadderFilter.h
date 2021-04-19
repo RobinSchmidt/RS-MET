@@ -113,6 +113,9 @@ public:
   Returns the transfer function rsRationalFunction object. */
   rsRationalFunction<TPar> getTransferFunction();
 
+  rsRationalFunction<TPar> getTransferFunction2();
+  // alternative implementation
+
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */
 
