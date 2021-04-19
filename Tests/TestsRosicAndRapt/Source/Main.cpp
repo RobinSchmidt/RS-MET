@@ -133,7 +133,7 @@ int main(int argc, char* argv[])
   //biDirectionalStateInit();
   //biquadTail();
   //complementaryFiltersIIR();
-  engineersFilterFreqResps();
+  //engineersFilterFreqResps();
   //firstOrderFilters();
   //ladderResonanceManipulation();
   //nonUniformMovingAverage();
@@ -350,7 +350,8 @@ int main(int argc, char* argv[])
   //maxFlatMaxSteepPrototypeM2N2();
   ////experimentalPrototypeM1N2();  // commented in header
   //splitLowFreqFromDC();
-  directFormFreqResp();
+  //directFormFreqResp();
+  ladderTransferFunction();
   //ladderMultipole();
   //ladderResonanceModeling();
   //ladderResoShape();

@@ -1752,6 +1752,37 @@ void directFormFreqResp()
 }
 // todo: plot freq-responses for enigineers filter vor various orders
 
+void ladderTransferFunction()
+{
+  // We test the functionality of class rsLadder to return its transfer function in canoncial
+  // BA form
+
+  using Real = double;
+  using LDR  = RAPT::rsLadderFilter<Real, Real>;
+  using RF   = RAPT::rsRationalFunction<Real>;
+
+  Real fs  = 44100;   // sample rate
+  Real fc  = 1000;    // cutoff frequency
+  Real res = 0.9;     // resonance
+
+  LDR ldr;
+  ldr.setSampleRate(fs);
+  ldr.setCutoff(fc);
+  ldr.setResonance(res);
+  //ldr.getSample(0);   // trigger coefficienct update
+
+  RF tf = ldr.getTransferFunction();
+
+
+
+
+
+  //rsLadderResoShapedDD ldr;
+
+
+  int dummy = 0;
+}
+
 void ladderMultipole()
 {
   // We try to generalize the resonance tuning formulas from here:

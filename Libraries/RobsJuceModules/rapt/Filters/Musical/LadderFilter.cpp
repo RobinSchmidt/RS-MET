@@ -118,6 +118,26 @@ TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency)
   // function -> computer algebra
 }
 
+template<class TSig, class TPar>
+rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
+{
+  using RF = RAPT::rsRationalFunction<TPar>;
+  TPar tol = 1024 * RS_EPS(TPar);
+  RF G1( { 0, b }, { a, 1 }, tol); // G1(z) = b / (1 + a/z) = (0 + b*z) / (a + 1*z)
+  RF one({ 1    }, { 1    }, tol); // 1 = 1 / 1
+  RF z  ({ 0, 1 }, { 1    }, tol); // z = (0 + 1*z) / 1
+  RF G2 = G1*G1;                   // G1^2
+  RF G3 = G1*G2;                   // G1^3
+  RF G4 = G2*G2;                   // G1^4
+  RF H  = g * (c[0]*one + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + k * G4 / z); // H(z)
+  return H;
+}
+// todo: define < operator for rsFloat64x2 so this class can be instantiated for 
+// TPar = rsFloat64x2. it should return true if *all* values in the left operand are less than
+// the corresponding values in the right operand (because that's what's typically needed in 
+// numerical algorithms - for convergence test etc.) - it doesn't satisfy the trichotomy rule, 
+// though - or: make a specialization for rsGreaterAbs for rsFloat64x2
+
 // audio processing:
 
 template<class TSig, class TPar>

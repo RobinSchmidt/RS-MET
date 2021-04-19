@@ -2548,9 +2548,10 @@ void divergenceToPotential3(const rsBivariatePolynomial<T>& D, rsBivariatePolyno
 
 /** A baseclass for representing colors. A color is always represented as a triple of numbers in 
 the range 0..1 but what those numbers mean may differ depending on the color space which is 
-determined by the subclass. For example, in subclass rsColorRGB they may mean red, green, blue and 
-in rsColorHSL they mean hue,saturation, luminance. This baseclass provides static functions to 
-convert between the various color spaces. 
+determined by the subclass. For example, in subclass rsColorRGB they mean red, green, blue and in 
+rsColorHSL they mean hue, saturation, luminance. This baseclass stores the 3 values generically in 
+the x,y,z members (which are inherited from the baseclass rsVector3D) and provides static functions
+to convert between the various color spaces.
 
 References:
   https://www.rapidtables.com/convert/color/index.html  */
@@ -2577,6 +2578,9 @@ public:
   /** Converts RGB (red, green, blue) to HSL (hue, saturation, luminance). */
   static void rgb2hsl(T R, T G, T B, T* H, T* S, T* L);
 
+
+
+
   /** Converts an RGB triple to a C-string with the hexadecimal representation, either with the 
   sharp symbol # prepended or not. So the char array must have space for 6 or 7 characters, 
   and one more for the null termination, if so selected. So, with a length of 8 characters, you're
@@ -2585,16 +2589,16 @@ public:
   static void rgb2hex(T R, T G, T B, char* hex, bool withSharp = true, 
     bool withNullTermination = true);
 
+  /** Works the same as rgb2hex(T, T, T, char*, bool, bool), just using unsigned chracters in 
+  0..255 to represent the RGB values. */
   static void rgb2hex(unsigned char R, unsigned char G, unsigned char B, 
     char* hex, bool withSharp = true, bool withNullTermination = true);
 
+  /** Convenience function to convert directly from HSL to hexadecimal. @see rgb2hex */
+  static void hsl2hex(T H, T S, T L, char* hex, bool withSharp = true, 
+    bool withNullTermination = true);
 
   // https://en.wikipedia.org/wiki/Web_colors#Hex_triplet
-
-
-protected:
-
-  //rsVector3D<T> values;  // A color is always a triple of values
 
 };
 // needs test: try roundtrips between rgb and hsl and some special cases (pure colors, black, 
@@ -2687,6 +2691,16 @@ void rsColor<T>::rgb2hex(unsigned char R, unsigned char G, unsigned char B,
   if(null) hex[i] = '\0';
 }
 
+template<class T>
+void rsColor<T>::hsl2hex(T H, T S, T L, char* hex, bool sharp, bool null)
+{
+  T R, G, B;
+  hsl2rgb(H, S, L, &R, &G, &B);
+  rgb2hex(R, G, B, hex, sharp, null);
+}
+
+
+
 
 template<class T>
 class rsColorRGB : public rsColor<T>
@@ -2699,7 +2713,6 @@ public:
 
 
 };
-
 
 template<class T>
 class rsColorHSL : public rsColor<T>

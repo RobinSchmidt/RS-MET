@@ -246,6 +246,18 @@ inline rsFloat64x2* rsCastPointer(double* p) { return reinterpret_cast<rsFloat64
 // test this! it's quite hacky
 
 
+// Explicit specializations of comparison functions that are used in RAPT. They return true, iff 
+// *all* values in the 1st argument are less/greater/etc. than the corresponding values in the 
+// 2nd argument because that's what's typically needed in numerical algorithms (for convergence
+// tests etc.). They don't satisfy the trichotomy rule, though. This rule states that exactly 1
+// of the 3 conditions must hold: x < y, x == y, x > y, but this rule is not useful for numerics.
+// (it's useful for sorting, though...)
+inline bool rsGreaterAbs(const rsFloat64x2& x, const rsFloat64x2& y)
+{
+  return fabs(x[0]) > fabs(y[0]) && fabs(x[1]) > fabs(y[1]);
+}
+// todo: rsLessAbs
+
 
 //inline rsFloat64x2 exp(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(exp(a[0]), exp(a[1])); }
 // without the rs-prefix, i get a shitload of compiler errors related to RealFunctions.h - perhaps because i

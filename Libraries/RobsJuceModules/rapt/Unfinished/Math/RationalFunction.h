@@ -68,6 +68,10 @@ public:
   bool reduce(T tol);
 
 
+  void scaleNumerator(const T& scaler) { num.scale(scaler); }
+
+  void scaleDenominator(const T& scaler) { den.scale(scaler); }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
@@ -266,6 +270,16 @@ protected:
   T tol = T(0);              // tolerance for reduction in the arithmetic operators
 
 };
+
+/** Multiplies a number and a rational function. */
+template<class T>
+inline rsRationalFunction<T> operator*(const T& s, const rsRationalFunction<T>& p)
+{
+  rsRationalFunction<T> q = p;
+  q.scaleNumerator(s);
+  return q;
+}
+
 
 
 //}

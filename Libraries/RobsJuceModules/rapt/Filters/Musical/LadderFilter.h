@@ -58,13 +58,13 @@ public:
   // parameter), shelf
   // maybe rename to Lowpass_6, etc., 
 
-
-  /** \name Construction/Destruction */
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
 
   /** Constructor. */
   rsLadderFilter();
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets the cutoff frequency in Hz. */
@@ -89,7 +89,7 @@ public:
   /** Chooses the filter mode. See the enumeration for available modes. */
   void setMode(int newMode);
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns the gain factor that needs to be applied to the output signal to ensure unit gain
@@ -109,7 +109,11 @@ public:
   TPar getMagnitudeResponseAt(CRPar frequency);
   // maybe rename to getMagnitudeAt
 
+  /** !!!NOT YET WORKING!!!
+  Returns the transfer function rsRationalFunction object. */
+  rsRationalFunction<TPar> getTransferFunction();
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */
 
   /** Returns a single output sample without gain-compensation */
@@ -123,13 +127,10 @@ public:
   /** Processes a buffer of given length. */
   void process(TSig *in, TSig *out, int length);
 
-
-  /** \name Misc */
-
   /** Resets the internal states to zero. To be overriden in subclasses. */
   void reset();
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Coefficient Computations */
 
   /** Given some normalized net feedback loop gain fb (in the range 0..1 where 1 is the 

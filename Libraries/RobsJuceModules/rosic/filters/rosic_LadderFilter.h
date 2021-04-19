@@ -41,6 +41,7 @@ functions (getSample, etc.) are concerned. Setting paramaters (setCutoff, etc.) 
 much as if there would be two separate filters because the coefficient compuations can't be 
 vectorized (yet?) and require to fall back to scalar code. */
 
+/*
 class rsLadderFilter : public RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2> // maybe rename
 {
 
@@ -59,6 +60,7 @@ protected:
   double stereoSpread = 0.0;
 
 };
+*/
 
 
 

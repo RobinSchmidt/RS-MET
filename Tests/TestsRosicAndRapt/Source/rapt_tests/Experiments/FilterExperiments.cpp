@@ -303,6 +303,9 @@ void engineersFilterFreqResps()
   //plt.plotFrequencyResponses(numFreqs, 20.0, fs/2, true, true, true, false);
 
 
+  // Observations:
+  // -the colors need to be adjusted
+
   int dummy = 0;
 }
 

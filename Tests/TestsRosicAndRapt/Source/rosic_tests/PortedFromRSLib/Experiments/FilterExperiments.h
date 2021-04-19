@@ -33,6 +33,7 @@ void maxFlatMaxSteepPrototypeM2N2();
 void splitLowFreqFromDC();
 
 void directFormFreqResp();
+void ladderTransferFunction();
 void ladderMultipole();
 void ladderResonanceModeling();
 void ladderResoShape();

@@ -448,7 +448,7 @@ template class RAPT::rsSmoothingFilter<float, float>;
 template class RAPT::rsLadderFilter<float, float>;
 template class RAPT::rsLadderFilter<double, double>;
 //template class RAPT::rsLadderFilter<rsFloat64x2, double>;
-template class RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2>;
+//template class RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2>;
 template class RAPT::rsPhasorFilter<float, float>;
 template class RAPT::rsPhasorStateMapper<float>;
 template class RAPT::rsStateVariableFilter<float, float>;
