@@ -40,28 +40,38 @@ void  rsLadderFilter<TSig, TPar>::setMixingCoefficients(
 template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::setMode(int newMode)
 {
+  using T = TPar;
   if( newMode >= 0 && newMode < NUM_MODES )
   {
     mode = newMode;
     switch(mode)
     {
-    case FLAT:     { setMixingCoefficients(1,  0,   0,   0,  0); s = 0.5; } break;
-    case LP_6:     { setMixingCoefficients(0,  1,   0,   0,  0); s = 1.0; } break;
-    case LP_12:    { setMixingCoefficients(0,  0,   1,   0,  0); s = 1.0; } break;
-    case LP_18:    { setMixingCoefficients(0,  0,   0,   1,  0); s = 1.0; } break;
-    case LP_24:    { setMixingCoefficients(0,  0,   0,   0,  1); s = 1.0; } break;
-    case HP_6:     { setMixingCoefficients(1, -1,   0,   0,  0); s = 0.0; } break;
-    case HP_12:    { setMixingCoefficients(1, -2,   1,   0,  0); s = 0.0; } break;
-    case HP_18:    { setMixingCoefficients(1, -3,   3,  -1,  0); s = 0.0; } break;
-    case HP_24:    { setMixingCoefficients(1, -4,   6,  -4,  1); s = 0.0; } break;
+    case FLAT:     { setMixingCoefficients(1,  0,   0,   0,  0); s = 0.5;    } break;
+      // check, if the s value makes sense
 
-    // from here, s-values may not be optimal:
-    case BP_6_6:   { setMixingCoefficients(0,  2,  -2,   0,  0); s = 0.0; } break;  // try 0.5
-    case BP_6_12:  { setMixingCoefficients(0,  0,   3,  -3,  0); s = 0.0; } break; // 0.66
-    case BP_6_18:  { setMixingCoefficients(0,  0,   0,   4, -4); s = 0.0; } break; // 0.75
-    case BP_12_6:  { setMixingCoefficients(0,  3,  -6,   3,  0); s = 0.0; } break; // 0.33
-    case BP_12_12: { setMixingCoefficients(0,  0,   4,  -8,  4); s = 0.0; } break;  // 0.5
-    case BP_18_6:  { setMixingCoefficients(0,  4, -12,  12, -4); s = 0.0; } break; // 0.25
+    // lowpasses:
+    case LP_6:     { setMixingCoefficients(0,  1,   0,   0,  0); s = T(1);    } break;
+    case LP_12:    { setMixingCoefficients(0,  0,   1,   0,  0); s = T(1);    } break;
+    case LP_18:    { setMixingCoefficients(0,  0,   0,   1,  0); s = T(1);    } break;
+    case LP_24:    { setMixingCoefficients(0,  0,   0,   0,  1); s = T(1);    } break;
+
+    // highpasses:
+    case HP_6:     { setMixingCoefficients(1, -1,   0,   0,  0); s = T(0);    } break;
+    case HP_12:    { setMixingCoefficients(1, -2,   1,   0,  0); s = T(0);    } break;
+    case HP_18:    { setMixingCoefficients(1, -3,   3,  -1,  0); s = T(0);    } break;
+    case HP_24:    { setMixingCoefficients(1, -4,   6,  -4,  1); s = T(0);    } break;
+
+    // bandpasses:
+    case BP_6_18:  { setMixingCoefficients(0,  0,   0,   4, -4); s = T(0.75); } break; // 0.75
+    case BP_12_12: { setMixingCoefficients(0,  0,   4,  -8,  4); s = T(0.5);  } break; // 0.5
+    case BP_18_6:  { setMixingCoefficients(0,  4, -12,  12, -4); s = T(0.25); } break; // 0.25
+    case BP_6_12:  { setMixingCoefficients(0,  0,   3,  -3,  0); s = T(2./3); } break; // 0.66
+    case BP_12_6:  { setMixingCoefficients(0,  3,  -6,   3,  0); s = T(1./3); } break; // 0.33
+    case BP_6_6:   { setMixingCoefficients(0,  2,  -2,   0,  0); s = T(0.5);  } break; // 0.5
+    // generally: s = slope2 / (slope1 + slope2) where slope2 is the lowpass slope
+
+
+
 
     //// these additional modes were found in a thread on KVR: 
     // http://www.kvraudio.com/forum/viewtopic.php?&t=466588 
@@ -122,19 +132,19 @@ template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
 {
   // Compute some intermediate variables:
-  TPar b2 = b*b;        // b^2
-  TPar b4 = b2*b2;      // b^4
-  TPar a2 = a*a;        // a^2
-  TPar d0 = c[0];       // c0 * b^0
-  TPar d1 = c[1]*b;     // c1 * b^1
-  TPar d2 = c[2]*b2;    // c2 * b^2
-  TPar d3 = c[3]*b2*b;  // c3 * b^3
-  TPar d4 = c[4]*b4;    // c4 * b^4
+  using T = TPar;
+  T b2 = b*b;        // b^2
+  T b4 = b2*b2;      // b^4
+  T a2 = a*a;        // a^2
+  T d0 = c[0];       // c0 * b^0
+  T d1 = c[1]*b;     // c1 * b^1
+  T d2 = c[2]*b2;    // c2 * b^2
+  T d3 = c[3]*b2*b;  // c3 * b^3
+  T d4 = c[4]*b4;    // c4 * b^4
 
   // Compute coefficients of the numerator (note the binomial coeffs in the columns:
   // (1),(1,1),(1,2,1),(1,3,3,1),(1,4,6,4,1)):
-  using T = TPar;
-  std::vector<TPar> N(5);
+  std::vector<T> N(5);
   N[4] = g * (d4 + d3 +      d2 +      d1 +      d0);
   N[3] = g * (     d3 + T(2)*d2 + T(3)*d1 + T(4)*d0) * a;
   N[2] = g * (               d2 + T(3)*d1 + T(6)*d0) * a2;
@@ -142,7 +152,7 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
   N[0] = g * (                                   d0) * a2*a2;
 
   // Create rational function object and return it (note again the binomial coeffs 1,4,6,4,1):
-  using RF = RAPT::rsRationalFunction<TPar>;
+  using RF = RAPT::rsRationalFunction<T>;
   RF H(N, {a2*a2, T(4)*a*a2, T(6)*a2, T(4)*a + b4*k, T(1) });
   return H;
 }

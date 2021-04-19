@@ -1765,29 +1765,29 @@ void ladderTransferFunction()
   Real fs  = 44100;   // sample rate
   Real fc  = 1000;    // cutoff frequency
   //Real res = 0.5;     // resonance
-  bool plotPhase = true;
+  bool plotPhase = false;
 
   LDR ldr;
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   //ldr.setResonance(res);
-  ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
+  //ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
   //ldr.setMode(LDR::modes::HP_24);
   //ldr.setMode(LDR::modes::FLAT);  // still problematic!
-  //ldr.setMode(LDR::modes::BP_18_6);
+  ldr.setMode(LDR::modes::BP_6_12);
+  //ldr.setMode(LDR::modes::LP_6);
 
 
   FilterPlotter<Real> plt;
   //plt.addFilterSpecificationBA(ba);
-  ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunctionOld(),  fs);
-  ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-
+  //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunctionOld(),  fs);
   //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  //ldr.setResonance(0.2); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  //ldr.setResonance(0.4); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.0); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.2); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.4); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  //ldr.setResonance(0.6); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  //ldr.setResonance(0.8); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.6); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.8); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   plt.setPixelSize(800, 400);
   plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
@@ -1814,6 +1814,11 @@ void ladderTransferFunction()
   // -highpasses do not seem to have unit gain at high frequencies - it's a bit less, even without 
   //  resonance
   // -HP_12/6 hass all positive phase response, phase response of HP_18 starts at -90°
+  //-Gain adjustment:
+  // -with BP_12_12 and s=0, the response with and without resonance looks the same for high 
+  //  frequencies and low frequencies are attenuated, with s=1, it looks the same for low 
+  //  frequencies and high frequencies are boosted -> s=0.5 seems the most natural compromise
+  //  ...same for BP_6_6
 
   // ToDo: 
   // -FLAT still makes problems (access violations due to empty pole/zero arrays)
