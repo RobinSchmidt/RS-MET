@@ -46,29 +46,44 @@ void rsLadderFilter<TSig, TPar>::setMode(int newMode)
     mode = newMode;
     switch(mode)
     {
-    case FLAT:     { setMixingCoefficients(1,  0,   0,   0,  0); s = 0.5;    } break;
+    case FLAT:     { setMixingCoefficients(1,  0,   0,   0,  0); s = 0.125;    } break;
       // check, if the s value makes sense
 
     // lowpasses:
-    case LP_6:     { setMixingCoefficients(0,  1,   0,   0,  0); s = T(1);    } break;
-    case LP_12:    { setMixingCoefficients(0,  0,   1,   0,  0); s = T(1);    } break;
-    case LP_18:    { setMixingCoefficients(0,  0,   0,   1,  0); s = T(1);    } break;
+    case LP_6:     { setMixingCoefficients(0,  1,   0,   0,  0); s = T(0.25); } break;
+    case LP_12:    { setMixingCoefficients(0,  0,   1,   0,  0); s = T(0.5);  } break;
+    case LP_18:    { setMixingCoefficients(0,  0,   0,   1,  0); s = T(0.75); } break;
     case LP_24:    { setMixingCoefficients(0,  0,   0,   0,  1); s = T(1);    } break;
+    //case LP_6:     { setMixingCoefficients(0,  1,   0,   0,  0); s = T(1);    } break;
+    //case LP_12:    { setMixingCoefficients(0,  0,   1,   0,  0); s = T(1);    } break;
+    //case LP_18:    { setMixingCoefficients(0,  0,   0,   1,  0); s = T(1);    } break;
+    //case LP_24:    { setMixingCoefficients(0,  0,   0,   0,  1); s = T(1);    } break;
 
     // highpasses:
-    case HP_6:     { setMixingCoefficients(1, -1,   0,   0,  0); s = T(0);    } break;
-    case HP_12:    { setMixingCoefficients(1, -2,   1,   0,  0); s = T(0);    } break;
-    case HP_18:    { setMixingCoefficients(1, -3,   3,  -1,  0); s = T(0);    } break;
-    case HP_24:    { setMixingCoefficients(1, -4,   6,  -4,  1); s = T(0);    } break;
+    case HP_6:     { setMixingCoefficients(1, -1,   0,   0,  0); s = T(0.25); } break;
+    case HP_12:    { setMixingCoefficients(1, -2,   1,   0,  0); s = T(0.5);  } break;
+    case HP_18:    { setMixingCoefficients(1, -3,   3,  -1,  0); s = T(0.75); } break;
+    case HP_24:    { setMixingCoefficients(1, -4,   6,  -4,  1); s = T(1);    } break;
+    //case HP_6:     { setMixingCoefficients(1, -1,   0,   0,  0); s = T(0);    } break;
+    //case HP_12:    { setMixingCoefficients(1, -2,   1,   0,  0); s = T(0);    } break;
+    //case HP_18:    { setMixingCoefficients(1, -3,   3,  -1,  0); s = T(0);    } break;
+    //case HP_24:    { setMixingCoefficients(1, -4,   6,  -4,  1); s = T(0);    } break;
 
     // bandpasses:
-    case BP_6_18:  { setMixingCoefficients(0,  0,   0,   4, -4); s = T(0.75); } break;
-    case BP_12_12: { setMixingCoefficients(0,  0,   4,  -8,  4); s = T(0.5);  } break;
-    case BP_18_6:  { setMixingCoefficients(0,  4, -12,  12, -4); s = T(0.25); } break;
-    case BP_6_12:  { setMixingCoefficients(0,  0,   3,  -3,  0); s = T(2./3); } break;
-    case BP_12_6:  { setMixingCoefficients(0,  3,  -6,   3,  0); s = T(1./3); } break;
-    case BP_6_6:   { setMixingCoefficients(0,  2,  -2,   0,  0); s = T(0.5);  } break;
+    //case BP_6_18:  { setMixingCoefficients(0,  0,   0,   4, -4); s = T(0.75); } break;
+    //case BP_12_12: { setMixingCoefficients(0,  0,   4,  -8,  4); s = T(0.5);  } break;
+    //case BP_18_6:  { setMixingCoefficients(0,  4, -12,  12, -4); s = T(0.25); } break;
+    //case BP_6_12:  { setMixingCoefficients(0,  0,   3,  -3,  0); s = T(2./3); } break;
+    //case BP_12_6:  { setMixingCoefficients(0,  3,  -6,   3,  0); s = T(1./3); } break;
+    //case BP_6_6:   { setMixingCoefficients(0,  2,  -2,   0,  0); s = T(0.5);  } break;
     // generally: s = slope2 / (slope1 + slope2) where slope2 is the lowpass slope
+
+    case BP_6_18:  { setMixingCoefficients(0,  0,   0,   4, -4); s = T(0.125); } break;
+    case BP_12_12: { setMixingCoefficients(0,  0,   4,  -8,  4); s = T(0.125); } break;
+    case BP_18_6:  { setMixingCoefficients(0,  4, -12,  12, -4); s = T(0.125); } break;
+    case BP_6_12:  { setMixingCoefficients(0,  0,   3,  -3,  0); s = T(0.125); } break;
+    case BP_12_6:  { setMixingCoefficients(0,  3,  -6,   3,  0); s = T(0.125); } break;
+    case BP_6_6:   { setMixingCoefficients(0,  2,  -2,   0,  0); s = T(0.125); } break;
 
 
 
@@ -151,14 +166,19 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
   N[1] = g * (                         d1 + T(4)*d0) * a2*a;
   N[0] = g * (                                   d0) * a2*a2;
 
-  // Create rational function object and return it (note again the binomial coeffs 1,4,6,4,1):
+  // Create rational function object and return it (note again the binomial coeffs 1,4,6,4,1) with 
+  // the additional b4*k added in, so the denominator seems to be (a+1)^4 + b4*k*z^3
   using RF = RAPT::rsRationalFunction<T>;
   RF H(N, {a2*a2, T(4)*a*a2, T(6)*a2, T(4)*a + b4*k, T(1) });
   return H;
 }
+// ToDo:
 // Maybe make a function getCoeffsBA(TPar* b, TPar* a) which just fills the arrays (of length 5).
 // Beware that the order must be reversed for a polynomial in z^-1 (maybe make it optional to be
 // in this form)
+// Check, if the patterns with the binomial coeffs extend to an N-stage ladder. If so, write down
+// the general form of the transfer function in canonical form and implement a function that 
+// computes numerator and denominator coeffs for the general case.
 
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionOld()
@@ -186,10 +206,19 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
   y[0]  = rsClip(y[0], TSig(-1), TSig(+1));
   //y[0] /= TSig(1) + y[0]*y[0]; // nonlinearity applied to input plus feedback signal (division could be interesting with complex signals)
   //y[0]  = rsNormalizedSigmoids<TSig>::softClipHexic(y[0]);
-  y[1]  = b*y[0]  - a*y[1];
-  y[2]  = b*y[1]  - a*y[2];
-  y[3]  = b*y[2]  - a*y[3];
-  y[4]  = b*y[3]  - a*y[4];
+
+  // formula with b:
+  //y[1]  = b*y[0] - a*y[1];
+  //y[2]  = b*y[1] - a*y[2];
+  //y[3]  = b*y[2] - a*y[3];
+  //y[4]  = b*y[3] - a*y[4];
+
+  // formula without b:
+  y[1] = y[0] + a * (y[0] - y[1]);
+  y[2] = y[1] + a * (y[1] - y[2]);
+  y[3] = y[2] + a * (y[2] - y[3]);
+  y[4] = y[3] + a * (y[3] - y[4]);
+
   return c[0]*y[0] + c[1]*y[1] + c[2]*y[2] + c[3]*y[3] + c[4]*y[4];
 
   // We should experiment with placing saturation at different points - and, of course, try more 
@@ -199,11 +228,16 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
   // amount of signal squasheing whereas "b" introduces asymmetry.
 
   // maybe try a different update euqation of the form:
-  // y[i] = y[i-1] + coeff * (y[i] - y[i-1]);
-  // as is used in the rsSmoothingFilter. Elan says, this responds better to modulation. i think,
-  // coeff = a or coeff = -a
-
-
+  //   y[i] = y[i-1] + a * (y[i-1] - y[i]);
+  // as is used in the rsSmoothingFilter. Elan says, this responds better to modulation. OK, i 
+  // tried it with quite harsh cutoff modulation (by a square wave) and both formulas produce the 
+  // same result. The difference of the produced files is zero. ...so - maybe make performance 
+  // tests which one is more efficient and use that. maybe investigate the difference in higher 
+  // precision - maybe one formula is numerically more precise than the other? Maybe test 
+  // reso-modulation, too. In this case, it's particluarly interesting, if applying the 
+  // compensation gain pre- or post-filter is the better way. I guess, pre-filter will smooth out
+  // the discontinuities that these switches cause. But pre/post gain should also be checked with
+  // a nonlinearity: pre-gain will drive the distortion much harder at high resonance
 }
 
 template<class TSig, class TPar>

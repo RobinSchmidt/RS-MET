@@ -1764,44 +1764,63 @@ void ladderTransferFunction()
 
   Real fs  = 44100;   // sample rate
   Real fc  = 1000;    // cutoff frequency
-  //Real res = 0.5;     // resonance
   bool plotPhase = true;
 
   LDR ldr;
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   //ldr.setResonance(res);
-  ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
+  //ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
   //ldr.setMode(LDR::modes::HP_24);
-  //ldr.setMode(LDR::modes::FLAT);  // still problematic!
+  ldr.setMode(LDR::modes::FLAT);  // still problematic when reso is zero
   //ldr.setMode(LDR::modes::BP_6_18);
   //ldr.setMode(LDR::modes::LP_6);
 
 
+
+  // Plot frequency responses for resonances from 0.0 to 0.9 in 0.1 steps:
   FilterPlotter<Real> plt;
-  //plt.addFilterSpecificationBA(ba);
-  //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunctionOld(),  fs);
-  //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.0); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.1); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.2); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.3); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.4); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.6); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.7); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.8); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.9); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  auto addPlotWithReso = [&](Real r)
+  { 
+    ldr.setResonance(r); 
+    plt.addTransferFunction(ldr.getTransferFunction(), fs); 
+  };
+  for(int i = 1; i <= 9; i++)
+    addPlotWithReso(0.1 * i);
   plt.setPixelSize(800, 400);
-  plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
+  //plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
 
+  // Plot variuos response types with the same resonane:
+  FilterPlotter<Real> plt2;
+  using Mode = LDR::modes;
+  auto addPlotWithMode = [&](Mode m)
+  {
+    ldr.setMode(m); 
+    plt2.addTransferFunction(ldr.getTransferFunction(), fs); 
+  };
+  ldr.setResonance(0.9);
+  addPlotWithMode(Mode::LP_24);
+  //addPlotWithMode(Mode::LP_18);
+  //addPlotWithMode(Mode::LP_12);
+  //addPlotWithMode(Mode::LP_6);
+  addPlotWithMode(Mode::HP_24);
+  //addPlotWithMode(Mode::HP_18);
+  //addPlotWithMode(Mode::HP_12);
+  //addPlotWithMode(Mode::HP_6);
+  //addPlotWithMode(Mode::BP_6_18);
+  addPlotWithMode(Mode::BP_12_12);
+  //addPlotWithMode(Mode::BP_18_6);
+  //addPlotWithMode(Mode::BP_6_6);
+  //addPlotWithMode(Mode::BP_6_12);
+  //addPlotWithMode(Mode::BP_12_6);
+  //addPlotWithMode(Mode::FLAT);
+  plt2.setPixelSize(800, 400);
+  plt2.plotFrequencyResponses(501, 31.25, 32000, true, true, true, false);
+
+
+  // test - uses getTransferFunctionAt:
   //plotFrequencyResponse(ldr, 501, 31.25, 32000.0, fs, true);
-  // uses getTransferFunctionAt
-
-  // Plot frequency responses for various values of the resonance
-
-  int dummy = 0;
 
   // Observations:
   // -Without resonance, the phase is around -172° at the cutoff frequency. This makes sense 
@@ -1825,6 +1844,8 @@ void ladderTransferFunction()
   //  ...same for BP_6_6
 
   // ToDo: 
+  // -set up the y-ranges correctly - currently, one must use the mousewheel to get the correct
+  //  range
   // -FLAT still makes problems (access violations due to empty pole/zero arrays)
   // -Compare the plot of the computed frequency response with a measured frequency response to see
   //  if they match. OK - i checked against code that uses getTransferFunctionAt and the plot looks
@@ -1835,6 +1856,9 @@ void ladderTransferFunction()
   //  squishes the low ones - maybe r' = r^2...although, it's mostly the rolloff slope that looks
   //  crammed - the development of the peak looks actually quite reasonable
   // -maybe offset the phase curves by -10 dB such that they don't get in the way so much
+  //  but maybe not - that value is only good for lowpass
+  // -plot various response types with high resonance in one plot to compare their peak gains.
+  //  They should be roughly equal.
 }
 
 void ladderMultipole()
@@ -2744,7 +2768,8 @@ void ladderZDFvsUDF()
   double depth = 0.8;           // modulation depth (as scaler for fc)
 
   // create and set up the unit delay feedback filter:
-  rsLadderFilter2DD udf;
+  //rsLadderFilter2DD udf;
+  rsLadderFilter<double, double> udf;
   udf.setCutoff(fc);
   udf.setSampleRate(fs);
   udf.setResonance(r);
@@ -2789,9 +2814,12 @@ void ladderZDFvsUDF()
   //plt.plot();
 
   // Observations:
-  // Whenever the cutoff frequency switches, there is a little discontinuity in the output sinal.
-  // This gives a kind of sizzling effect. The sizzle is stronger in the ZDF version than in the 
-  // UDF version. Moreover, the ZDF version can get unstable (fc = 5000, r = 0.8, depth = 0.8)
+  // -Whenever the cutoff frequency switches, there is a little discontinuity in the output sinal.
+  //  This gives a kind of sizzling effect. The sizzle is stronger in the ZDF version than in the 
+  //  UDF version. Moreover, the ZDF version can get unstable (fc = 5000, r = 0.8, depth = 0.8)
+  // -Actually, it makes qa big difference, if we use rsLadderFilter<double, double> or 
+  //  rsLadderFilter2DD ...aren't they supposed to be the same? the former sounds better but is 
+  //  also more quiet by a factor of about 2
 
 
   // ToDo: try a cascade of 4 1st order filters with 1-pole/1-zero each, instead of just one pole
@@ -2812,6 +2840,12 @@ void ladderZDFvsUDF()
   // ...so we would need an algorithm to find the intersection of 2 conic sections to solve this 
   // problem
 
+}
+
+void ladderResoModulation()
+{
+
+  int dummy = 0;
 }
 
 void resoShapeFeedbackSat()

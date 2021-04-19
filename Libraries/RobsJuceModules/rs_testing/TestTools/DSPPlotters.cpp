@@ -121,8 +121,7 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
   vector<vector<vector<T>>> data(1);           // 1 dataset
   data[0].resize(numColumns);                  // 
   vector<T> f = getFrequencyAxis(numFreqs, lowFreq, highFreq, logFreqAxis);
-  //data[0][0] = f;
-  data[0][0] = T(0.001) * f;  // factor 0.001 because of kHz
+  data[0][0] = T(0.001) * f;                   // factor 0.001 because of kHz
   int j = 0;
   for(int i = 0; i < numFilters; i++) {
     vector<complex<T>> H = getFrequencyResponse(i, f);
@@ -151,6 +150,8 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
   addCommand("unset mxtics");   // no minor tics for frequency axis
   addCommand("set ytics 10");   // 10 dB steps for magnitude axis
   addCommand("set y2tics 45");  // 45° steps for phase axis
+  // ...actually, this should perhaps be left to client code - and then maybe we should have a 
+  // convenience function that does this stuff automatically
 
   // Factor out:
   std::vector<std::string> hexColors = getGraphColors(numFilters);

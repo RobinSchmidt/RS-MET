@@ -50,6 +50,8 @@ void ladderFeedbackSatGrowl2();
 void ladderZDF();
 void ladderZDFvsUDF();
 
+void ladderResoModulation();
+
 void resoShapeFeedbackSat();
 void resoSaturationModes();
 void resoShapeGate();
