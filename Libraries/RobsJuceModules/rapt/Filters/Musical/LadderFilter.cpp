@@ -152,11 +152,11 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction2()
   TPar d4 = c[4]*b4;    // c4 * b^4
 
   std::vector<TPar> D(5);
-  D[4] =  d4 + d3 + d2 + d1 + d0;
-  D[3] = (d3 + 2*d2 + 3*d3 + 4*d0) * a;
-  D[2] = (d2 + 3*d1 + 6*d0) * a2;
-  D[1] = (d1 + 4*d0) * a2*a;
-  D[0] = d0*a2*a2;
+  D[4] =  d4 + d3 +   d2 +   d1 +   d0;
+  D[3] = (     d3 + 2*d2 + 3*d1 + 4*d0) * a;
+  D[2] = (            d2 + 3*d1 + 6*d0) * a2;
+  D[1] = (                   d1 + 4*d0) * a2*a;
+  D[0] =                            d0  * a2*a2;
   // not yet correct!
 
 

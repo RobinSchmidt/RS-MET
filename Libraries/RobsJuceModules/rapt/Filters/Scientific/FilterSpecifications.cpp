@@ -93,8 +93,8 @@ rsFilterSpecificationBA<T> rsFilterSpecificationZPK<T>::toBA() const
 template <class T>
 void rsFilterSpecificationZPK<T>::sortPolesAndZeros()
 {
-  rsHeapSort(&p[0], (int)p.size(), rsComplexLessByImRe<T>);
-  rsHeapSort(&z[0], (int)z.size(), rsComplexLessByImRe<T>);
+  if(p.size() > 0) rsHeapSort(&p[0], (int)p.size(), rsComplexLessByImRe<T>);
+  if(z.size() > 0) rsHeapSort(&z[0], (int)z.size(), rsComplexLessByImRe<T>);
 }
 
 template <class T>
@@ -137,15 +137,15 @@ rsFilterSpecificationZPK<T> rsFilterSpecificationBA<T>::toZPK() const
   if(isDigital()) {
     std::vector<std::complex<T>> tmp = a;
     rsReverse(tmp);
-    rsPolynomial<T>::roots(&tmp[0], (int)tmp.size()-1, &zpk.p[0]);
+    if(zpk.p.size() > 0) rsPolynomial<T>::roots(&tmp[0], (int)tmp.size()-1, &zpk.p[0]);
     tmp = b; 
     rsReverse(tmp);
-    rsPolynomial<T>::roots(&tmp[0], (int)tmp.size()-1, &zpk.z[0]);
+    if(zpk.z.size() > 0) rsPolynomial<T>::roots(&tmp[0], (int)tmp.size()-1, &zpk.z[0]);
     zpk.k = b[0] / a[0];
   }
   else {
-    rsPolynomial<T>::roots(&a[0], (int)a.size()-1, &zpk.p[0]);
-    rsPolynomial<T>::roots(&b[0], (int)b.size()-1, &zpk.z[0]);
+    if(zpk.p.size() > 0) rsPolynomial<T>::roots(&a[0], (int)a.size()-1, &zpk.p[0]);
+    if(zpk.z.size() > 0) rsPolynomial<T>::roots(&b[0], (int)b.size()-1, &zpk.z[0]);
     zpk.k = b[b.size()-1] / a[a.size()-1];
   }
   zpk.sortPolesAndZeros();

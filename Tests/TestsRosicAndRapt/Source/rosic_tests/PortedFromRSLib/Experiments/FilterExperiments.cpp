@@ -1773,7 +1773,9 @@ void ladderTransferFunction()
   //ldr.setResonance(res);
   ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
   //ldr.setMode(LDR::modes::HP_24);
-  //ldr.setMode(LDR::modes::LP_18);
+  //ldr.setMode(LDR::modes::FLAT);  // still problematic!
+  //ldr.setMode(LDR::modes::BP_18_6);
+
 
   FilterPlotter<Real> plt;
   //plt.addFilterSpecificationBA(ba);
@@ -1808,8 +1810,12 @@ void ladderTransferFunction()
   //  -with resonance = 0.6, the root finder does not converge - why? with LP_6, even reso = 0.5
   //   doesn't work - try to find expressions the coeffs of the transfer function via sage - maybe
   //   we run into numerical precision issues
+  // -highpasses do not seem to have unit gain at high frequencies - it's a bit less, even without 
+  //  resonance
+  // -HP_12/6 hass all positive phase response, phase response of HP_18 starts at -90°
 
   // ToDo: 
+  // -FLAT still makes problems (access violations due to empty pole/zero arrays)
   // -Compare the plot of the computed frequency response with a measured frequency response to see
   //  if they match. OK - i checked against code that uses getTransferFunctionAt and the plot looks
   //  the same. Maybe to be sure, also just record the impulse response and compute the frequency
