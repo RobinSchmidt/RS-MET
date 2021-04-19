@@ -70,6 +70,19 @@ void FilterPlotter<T>::addFilterSpecificationBA(const RAPT::rsFilterSpecificatio
 }
 
 template <class T>
+void FilterPlotter<T>::addTransferFunction(const RAPT::rsRationalFunction<T>& tf, T fs)
+{
+  RAPT::rsFilterSpecificationBA<T> ba;
+  ba.sampleRate = fs;
+  rsConvert(tf.getNumerator().getCoeffs(),   ba.b);
+  rsConvert(tf.getDenominator().getCoeffs(), ba.a);
+  if(fs != inf) { // z-domain transfer functions are in terms of z^-1
+    rsArrayTools::reverse(&ba.b[0], (int)ba.b.size());
+    rsArrayTools::reverse(&ba.a[0], (int)ba.a.size()); }
+  addFilterSpecificationBA(ba);
+}
+
+template <class T>
 void FilterPlotter<T>::plotMagnitude(int numFreqs, T lowFreq, T highFreq, bool logFreqAxis,
   bool decibels)
 {

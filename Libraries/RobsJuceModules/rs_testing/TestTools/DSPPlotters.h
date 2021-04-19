@@ -55,6 +55,10 @@ public:
 
   void addFilterSpecificationBA(const RAPT::rsFilterSpecificationBA<T>& spec);
 
+  /** Adds a transfer function. For an analog filter, you should pass inf for the sampleRate.
+  It will be internally converted inot BA and ZPK representations. */
+  void addTransferFunction(const RAPT::rsRationalFunction<T>& tf, T sampleRate);
+
 
 
   /** Plots the magnitude responses of all the filters. */

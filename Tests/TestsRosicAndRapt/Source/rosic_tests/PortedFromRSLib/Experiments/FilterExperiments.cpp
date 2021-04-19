@@ -1764,35 +1764,31 @@ void ladderTransferFunction()
 
   Real fs  = 44100;   // sample rate
   Real fc  = 1000;    // cutoff frequency
-  Real res = 0.5;     // resonance
+  //Real res = 0.5;     // resonance
+  bool plotPhase = false;
 
   LDR ldr;
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
-  ldr.setResonance(res);
+  //ldr.setResonance(res);
   ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
   //ldr.setMode(LDR::modes::LP_12);
-  //ldr.getSample(0);   // trigger coefficient update
-
-  RF H = ldr.getTransferFunction();
-
-  // factor out into convenience function - or let the filter plotter also accept 
-  // rsRationalFunction
-  BA ba;
-  ba.sampleRate = fs;
-  rsConvert(H.getNumerator().getCoeffs(),   ba.b);
-  rsConvert(H.getDenominator().getCoeffs(), ba.a);
-  rsArrayTools::reverse(&ba.b[0], (int)ba.b.size());
-  rsArrayTools::reverse(&ba.a[0], (int)ba.a.size());
 
   FilterPlotter<Real> plt;
-  plt.addFilterSpecificationBA(ba);
+  //plt.addFilterSpecificationBA(ba);
+  ldr.setResonance(0.0); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.2); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.4); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.6); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.8); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   plt.setPixelSize(800, 400);
-  plt.plotFrequencyResponses(501, 31.25, 32000, true);
+  plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
 
   //plotFrequencyResponse(ldr, 501, 31.25, 32000.0, fs, true);
   // uses getTransferFunctionAt
+
+  // Plot frequency responses for various values of the resonance
 
   int dummy = 0;
 
