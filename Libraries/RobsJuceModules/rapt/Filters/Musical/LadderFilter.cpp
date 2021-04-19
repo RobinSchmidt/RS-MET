@@ -62,12 +62,12 @@ void rsLadderFilter<TSig, TPar>::setMode(int newMode)
     case HP_24:    { setMixingCoefficients(1, -4,   6,  -4,  1); s = T(0);    } break;
 
     // bandpasses:
-    case BP_6_18:  { setMixingCoefficients(0,  0,   0,   4, -4); s = T(0.75); } break; // 0.75
-    case BP_12_12: { setMixingCoefficients(0,  0,   4,  -8,  4); s = T(0.5);  } break; // 0.5
-    case BP_18_6:  { setMixingCoefficients(0,  4, -12,  12, -4); s = T(0.25); } break; // 0.25
-    case BP_6_12:  { setMixingCoefficients(0,  0,   3,  -3,  0); s = T(2./3); } break; // 0.66
-    case BP_12_6:  { setMixingCoefficients(0,  3,  -6,   3,  0); s = T(1./3); } break; // 0.33
-    case BP_6_6:   { setMixingCoefficients(0,  2,  -2,   0,  0); s = T(0.5);  } break; // 0.5
+    case BP_6_18:  { setMixingCoefficients(0,  0,   0,   4, -4); s = T(0.75); } break;
+    case BP_12_12: { setMixingCoefficients(0,  0,   4,  -8,  4); s = T(0.5);  } break;
+    case BP_18_6:  { setMixingCoefficients(0,  4, -12,  12, -4); s = T(0.25); } break;
+    case BP_6_12:  { setMixingCoefficients(0,  0,   3,  -3,  0); s = T(2./3); } break;
+    case BP_12_6:  { setMixingCoefficients(0,  3,  -6,   3,  0); s = T(1./3); } break;
+    case BP_6_6:   { setMixingCoefficients(0,  2,  -2,   0,  0); s = T(0.5);  } break;
     // generally: s = slope2 / (slope1 + slope2) where slope2 is the lowpass slope
 
 

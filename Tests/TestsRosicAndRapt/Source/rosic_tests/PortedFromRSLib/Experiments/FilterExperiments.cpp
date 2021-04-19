@@ -1765,16 +1765,16 @@ void ladderTransferFunction()
   Real fs  = 44100;   // sample rate
   Real fc  = 1000;    // cutoff frequency
   //Real res = 0.5;     // resonance
-  bool plotPhase = false;
+  bool plotPhase = true;
 
   LDR ldr;
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   //ldr.setResonance(res);
-  //ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
+  ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
   //ldr.setMode(LDR::modes::HP_24);
   //ldr.setMode(LDR::modes::FLAT);  // still problematic!
-  ldr.setMode(LDR::modes::BP_6_12);
+  //ldr.setMode(LDR::modes::BP_6_18);
   //ldr.setMode(LDR::modes::LP_6);
 
 
@@ -1783,11 +1783,15 @@ void ladderTransferFunction()
   //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunctionOld(),  fs);
   //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   ldr.setResonance(0.0); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.1); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   ldr.setResonance(0.2); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.3); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   ldr.setResonance(0.4); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   ldr.setResonance(0.6); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.7); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   ldr.setResonance(0.8); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.9); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   plt.setPixelSize(800, 400);
   plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
@@ -1826,6 +1830,11 @@ void ladderTransferFunction()
   //  if they match. OK - i checked against code that uses getTransferFunctionAt and the plot looks
   //  the same. Maybe to be sure, also just record the impulse response and compute the frequency
   //  reponse from that (maybe via FFT or via z-transform of the sequence)
+  // -apply a nonlinear mapping to the resonance to make it more even - the graphs are crammed
+  //  towards higher resonance, so we need a function that stretches the high resonances and
+  //  squishes the low ones - maybe r' = r^2...although, it's mostly the rolloff slope that looks
+  //  crammed - the development of the peak looks actually quite reasonable
+  // -maybe offset the phase curves by -10 dB such that they don't get in the way so much
 }
 
 void ladderMultipole()

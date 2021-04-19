@@ -152,7 +152,16 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
   addCommand("set ytics 10");   // 10 dB steps for magnitude axis
   addCommand("set y2tics 45");  // 45° steps for phase axis
 
-  //setPixelSize(800, 400);
+  // Factor out:
+  std::vector<std::string> hexColors = getGraphColors(numFilters);
+  if(plotMagnitude && plotPhase) {
+    std::vector<std::string> hexColors2(2*numFilters);
+    for(int i = 0; i < numFilters; i++) {
+      hexColors2[2*i]   = hexColors[i];
+      hexColors2[2*i+1] = hexColors[i]; }
+    hexColors = hexColors2; }
+  setGraphColors(hexColors);
+
 
   // todo: figure out the constraints for the relationship between yrange and y2range such that
   // their ticks match up - maybe because ytics = 10 and y2tics = 45, the ratio yrange and y2range
@@ -161,14 +170,9 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
   plot();
 }
 // todo: 
-// -make the phase responses match the color of the corresponding magnitude response
-// -perhaps we need to move the HSL color conversion to rapt
-// https://www.rapidtables.com/convert/color/hsl-to-rgb.html
-// https://www.rapidtables.com/convert/color/rgb-to-hsl.html
-// https://www.rapidtables.com/convert/color/index.html
-// done: rsColor in Prototypes.h - some of its functionality should be added to GNUPlotter 
-// (specifically: hsl2hex)
-
+// -draw a vertical line at the Nyquist freq
+// -find the maximum amplitude (in dB) round up to the next 10 dB and use that as maximum for 
+//  the plot, the maxPhase should perhaps be 4.5*maxDB
 
 template <class T>
 void FilterPlotter<T>::plotPolesAndZeros(int plotSize)
@@ -449,11 +453,27 @@ void FilterPlotter<T>::addGraphLines(int j, bool y2)
   unsigned int ju = (unsigned int) j;
   if(y2) addGraph(string("i 0 u 1:") + s(ju+2) + string(" w lines lw 1.5 axes x1y2 notitle"));
   else   addGraph(string("i 0 u 1:") + s(ju+2) + string(" w lines lw 1.5 axes x1y1 notitle"));
+}
 
-  // the phase responses should use x1y2 instead of x1y1
-
-  // todo: maybe have a color argument, or set color automatically based on j - or have a color 
-  // index argument
+template <class T>
+std::vector<std::string> FilterPlotter<T>::getGraphColors(int numGraphs) const
+{
+  using Str = std::string;
+  using Col = rsColor<T>;
+  char hex[7];
+  std::vector<Str> hexColors;
+  T L  = 0.3;
+  T S  = 0.75;
+  T H0 = 0.0;   // start hue
+  for(int i = 0; i < numGraphs; i++)
+  {
+    T c = T(i) / T(numGraphs);
+    T H = H0 + c;
+    if(H > 1) H -= 1;
+    Col::hsl2hex(H, S, L, hex, false, true);
+    hexColors.push_back(Str(hex)); 
+  }
+  return hexColors;
 }
 
 // template instantiations:

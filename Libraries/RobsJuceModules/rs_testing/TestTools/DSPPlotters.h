@@ -138,7 +138,13 @@ protected:
   the tolerance also increases) */
   bool almostEqual(std::complex<T> x, std::complex<T> y, T thresh);
 
+  /** Adds the command for a line graph to the commandfile, i.e. for something like a magnitude- or 
+  phase response. The yAxis2 flag indicates, if the graph uses the second y-axis (on the right of 
+  the graph). For example, when plotting magnitude- and phase responses into a single plot, the 
+  magnitudes may use the left (1st) y-axis and the phases may use the right (2nd) y-axis. */
   void addGraphLines(int graphIndex, bool yAxis2 = false);
+
+  std::vector<std::string> getGraphColors(int numGraphs) const;
 
   T freqScale = 1.0;
   T dBFloor   = T(-120);

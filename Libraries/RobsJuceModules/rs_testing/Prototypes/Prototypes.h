@@ -2665,7 +2665,7 @@ void rsColor<T>::rgb2hex(T R, T G, T B, char* hex, bool sharp, bool null)
   uchar r = (uchar) round(T(255) * R);
   uchar g = (uchar) round(T(255) * G);
   uchar b = (uchar) round(T(255) * B);
-  rgb2hex(r, g, b, sharp, null);
+  rgb2hex(r, g, b, hex, sharp, null);
 }
 
 template<class T>
@@ -2675,7 +2675,7 @@ void rsColor<T>::rgb2hex(unsigned char R, unsigned char G, unsigned char B,
   auto toHex = [](unsigned char c)
   {
     rsAssert(c >= 0 && c <= 15);
-    if(c >= 10) return c + 55;          // 65: ASCII code of A and wee need to subtract 10
+    if(c >= 10) return c + 55;          // 65: ASCII code of A and we need to subtract 10
     else        return c + 48;          // 48: ASCII code of 0
   };
   int s = 4;                            // shift
@@ -2697,6 +2697,7 @@ void rsColor<T>::hsl2hex(T H, T S, T L, char* hex, bool sharp, bool null)
   T R, G, B;
   hsl2rgb(H, S, L, &R, &G, &B);
   rgb2hex(R, G, B, hex, sharp, null);
+  int dummy = 0;
 }
 
 
