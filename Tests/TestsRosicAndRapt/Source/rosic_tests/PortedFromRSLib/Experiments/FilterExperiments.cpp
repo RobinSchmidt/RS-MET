@@ -1771,16 +1771,17 @@ void ladderTransferFunction()
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   //ldr.setResonance(res);
-  ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
-  //ldr.setMode(LDR::modes::LP_12);
+  //ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
+  ldr.setMode(LDR::modes::LP_6);
 
   FilterPlotter<Real> plt;
   //plt.addFilterSpecificationBA(ba);
   ldr.setResonance(0.0); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.2); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.4); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.6); plt.addTransferFunction(ldr.getTransferFunction(), fs);
-  ldr.setResonance(0.8); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  //ldr.setResonance(0.2); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  //ldr.setResonance(0.4); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  //ldr.setResonance(0.6); plt.addTransferFunction(ldr.getTransferFunction(), fs);
+  //ldr.setResonance(0.8); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   plt.setPixelSize(800, 400);
   plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
@@ -1801,6 +1802,9 @@ void ladderTransferFunction()
   // -With increasing resonance, the phase response gets steeper around fc and more flat away from
   //  fc with increasing resonance. The value at fc seems to remain fixed, though.
   // -The LP_12 mode has a phase of -86 at fc - with or without resonance.
+  //  -with resonance = 0.6, the root finder does not converge - why? with LP_6, even reso = 0.5
+  //   doesn't work - try to find expressions the coeffs of the transfer function via sage - maybe
+  //   we run into numerical precision issues
 
   // ToDo: 
   // -Compare the plot of the computed frequency response with a measured frequency response to see
