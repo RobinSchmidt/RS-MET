@@ -59,7 +59,7 @@ void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
   p.addDataArrays(N, &f[0], &dB[0]);
   p.addDataArrays(N, &f[0], &degrees[0]);
   p.setPixelSize(1200, 400);
-  p.setTitle("Filter Frequency Response");
+  //p.setTitle("Filter Frequency Response");
   //p.setGraphColors("A00000", "909000", "008000", "0000A0", "800080",
   //  "A00000", "909000", "008000", "0000A0", "800080" );
   if(logFreq)

@@ -864,3 +864,21 @@ void rsLadderMystran<TSig, TPar>::reset()
   rsArrayTools::fillWithZeros(s, 4);
   zi = 0.0;
 }
+
+//=================================================================================================
+
+/*
+Ideas:
+
+ResoReplacer:
+-Use standard waveforms and anti-alias them with polybleps. Maybe try also morphable waveforms.
+-Add a 2nd resonance wave whose phase q is somehow derived from the primary resonance phase p so 
+ as to achieve a different frequency. Maybe q = a*p where a is a frequency factor and p is some 
+ sort of unwrapped version of the primary measured phase. The unwrapping should be in such a way 
+ that it wraps not with period 2*pi but with k*2*pi where k > 1. I think, this should allow a to 
+ be in the range 1/k..whatever. For the unwrapped primary phase p, we maintain a counter for the 
+ wraparounds which determines k.
+
+
+
+*/

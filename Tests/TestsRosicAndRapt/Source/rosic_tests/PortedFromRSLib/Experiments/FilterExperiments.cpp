@@ -1770,6 +1770,8 @@ void ladderTransferFunction()
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   ldr.setResonance(res);
+  ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
+  //ldr.setMode(LDR::modes::LP_12);
   //ldr.getSample(0);   // trigger coefficient update
 
   RF H = ldr.getTransferFunction();
@@ -1785,8 +1787,12 @@ void ladderTransferFunction()
 
   FilterPlotter<Real> plt;
   plt.addFilterSpecificationBA(ba);
+  plt.setPixelSize(800, 400);
   plt.plotFrequencyResponses(501, 31.25, 32000, true);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
+
+  //plotFrequencyResponse(ldr, 501, 31.25, 32000.0, fs, true);
+  // uses getTransferFunctionAt
 
   int dummy = 0;
 
@@ -1795,12 +1801,16 @@ void ladderTransferFunction()
   //  because it does not yet contain the contribution from the unit delay. (ToDo: figure out 
   //  the formula for exact expected phase at 1 kHz and compare to the plot)
   // -Above around 3.75 kHz, the phase goes up again and goes back to 0° at the Nyquist frequency.
-  //  ...why is that?
   // -With resonance, we actually formally get an 8-pole filter but it has pole-zero cancellations.
+  // -With increasing resonance, the phase response gets steeper around fc and more flat away from
+  //  fc with increasing resonance. The value at fc seems to remain fixed, though.
+  // -The LP_12 mode has a phase of -86 at fc - with or without resonance.
 
   // ToDo: 
   // -Compare the plot of the computed frequency response with a measured frequency response to see
-  //  if they match.
+  //  if they match. OK - i checked against code that uses getTransferFunctionAt and the plot looks
+  //  the same. Maybe to be sure, also just record the impulse response and compute the frequency
+  //  reponse from that (maybe via FFT or via z-transform of the sequence)
 }
 
 void ladderMultipole()

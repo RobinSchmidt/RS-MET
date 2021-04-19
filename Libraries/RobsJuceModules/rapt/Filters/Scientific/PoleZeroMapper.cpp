@@ -555,3 +555,16 @@ bool rsPoleZeroMapper<T>::sFilterRootBefore(const Complex& r1, const Complex& r2
     return true;   // sort roots by (descending, absolute) frequency
   return false;
 }
+
+/*
+ToDo:
+-Implement also the discrete versions of the frequency transformations (Constantinides formulas)
+-Implement this: https://vicanek.de/articles/BiquadFits.pdf and maybe MZTi, too
+ -Maybe use as matching frequencies, 0, fs/2, fc, fu, fu/2 where fu is the lower bandedge freq.
+  If there is no such thing, maybe use fu = fc/2. Avoid using the upper bandedge because that may 
+  actually go above fs/2
+-Maybe we can also derive formulas that match the magnitude only at 4 frequencies and match the
+ phase at fc. ...or maybe match magnitude at 3 frequencies and phase at fc and fs/2
+
+
+*/

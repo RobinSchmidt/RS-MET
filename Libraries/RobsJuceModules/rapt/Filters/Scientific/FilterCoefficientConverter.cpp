@@ -258,3 +258,4 @@ void rsFilterCoefficientConverter<T>::normalizeBiquadStages(T *b0, T *b1, T *b2,
     b2[s]  *= scaler;
   }
 }
+

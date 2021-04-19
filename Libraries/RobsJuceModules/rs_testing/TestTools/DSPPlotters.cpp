@@ -139,7 +139,7 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
   addCommand("set ytics 10");   // 10 dB steps for magnitude axis
   addCommand("set y2tics 45");  // 45° steps for phase axis
 
-  setPixelSize(800, 400);
+  //setPixelSize(800, 400);
 
   // todo: figure out the constraints for the relationship between yrange and y2range such that
   // their ticks match up - maybe because ytics = 10 and y2tics = 45, the ratio yrange and y2range

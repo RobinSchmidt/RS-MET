@@ -1,5 +1,9 @@
-#ifndef RAPT_LADDERFILTER_H
-#define RAPT_LADDERFILTER_H
+#ifndef RAPT_LADDERFILTERS_H
+#define RAPT_LADDERFILTERS_H
+
+// rename to LadderVariations.h
+
+// Various versions and extensions of the basic ladder filter. Currently experimental.
 
 // \todo implement a rsLadderFilter baseclass, have subclasses rsLadderLinearZDF,
 // rsLadderMystran, rsLadderLinear

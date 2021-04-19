@@ -307,4 +307,19 @@ ToDo:
  -maybe make a version based on 1st order allpass filters
 -more generally, the stages could all have a different cutoff frequency and/or mode
  -maybe more flexible response types can be created by this (maybe shelf, peak?)
+-Try to get arbitrary frequency responses out of it by forming the feedback signal also via a 
+ linear combination, like (maybe) so: 
+   y[0]  = in - (k[0]*y[0] + k[1]*y[1] + k[2]*y[2] + k[3]*y[3] + k[4]*y[4]);
+ instead of:
+   y[0]  = in - k*y[4];
+ the coeffs for the k-values are found by equating:
+           c0 + c1*s + c2*s^2 + c3*s^3 + c4*s^4
+   H(s) = --------------------------------------  (not sure, if that's the right formula)
+           k0 + k1*s + k2*s^2 + c3*s^3 + c4*s^4
+ to some desired s-domain transfer function. But this would have to be a different design 
+ procedure without the resonance parameter (i think). Or maybe it should be done in th z-domain.
+ ...not yet sure
+
+
+
 */
