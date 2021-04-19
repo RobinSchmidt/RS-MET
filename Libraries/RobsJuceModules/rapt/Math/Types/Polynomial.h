@@ -165,6 +165,9 @@ public:
   // defaulting to 0...but no - the calls may still be ambiguous from client code, when nothing is 
   // passed...it's also confusing to pass a number into such a getter
 
+  /** Returns a const pointer to our std::vector of coefficients. */
+  const std::vector<T>& getCoeffs() const { return coeffs; }
+
   /** Returns the number of coefficients in this polynomial. */
   int getNumCoeffs() const { return (int)coeffs.size(); }
   // maybe client code should preferably use this, when it wants to know the length of the coeff 

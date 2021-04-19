@@ -1760,27 +1760,47 @@ void ladderTransferFunction()
   using Real = double;
   using LDR  = RAPT::rsLadderFilter<Real, Real>;
   using RF   = RAPT::rsRationalFunction<Real>;
+  using BA   = RAPT::rsFilterSpecificationBA<Real>;
 
   Real fs  = 44100;   // sample rate
   Real fc  = 1000;    // cutoff frequency
-  Real res = 0.9;     // resonance
+  Real res = 0.5;     // resonance
 
   LDR ldr;
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   ldr.setResonance(res);
-  //ldr.getSample(0);   // trigger coefficienct update
+  //ldr.getSample(0);   // trigger coefficient update
 
-  RF tf = ldr.getTransferFunction();
+  RF H = ldr.getTransferFunction();
 
+  // factor out into convenience function - or let the filter plotter also accept 
+  // rsRationalFunction
+  BA ba;
+  ba.sampleRate = fs;
+  rsConvert(H.getNumerator().getCoeffs(),   ba.b);
+  rsConvert(H.getDenominator().getCoeffs(), ba.a);
+  rsArrayTools::reverse(&ba.b[0], (int)ba.b.size());
+  rsArrayTools::reverse(&ba.a[0], (int)ba.a.size());
 
-
-
-
-  //rsLadderResoShapedDD ldr;
-
+  FilterPlotter<Real> plt;
+  plt.addFilterSpecificationBA(ba);
+  plt.plotFrequencyResponses(501, 31.25, 32000, true);
+  //plt.plotPolesAndZeros(400);  // multiplicities not shown
 
   int dummy = 0;
+
+  // Observations:
+  // -Without resonance, the phase is around -172° at the cutoff frequency. This makes sense 
+  //  because it does not yet contain the contribution from the unit delay. (ToDo: figure out 
+  //  the formula for exact expected phase at 1 kHz and compare to the plot)
+  // -Above around 3.75 kHz, the phase goes up again and goes back to 0° at the Nyquist frequency.
+  //  ...why is that?
+  // -With resonance, we actually formally get an 8-pole filter but it has pole-zero cancellations.
+
+  // ToDo: 
+  // -Compare the plot of the computed frequency response with a measured frequency response to see
+  //  if they match.
 }
 
 void ladderMultipole()

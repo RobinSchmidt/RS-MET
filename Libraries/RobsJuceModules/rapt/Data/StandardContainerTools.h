@@ -58,11 +58,19 @@ inline std::vector<T> rsConstantVector(size_t size, T value)
   return v;
 }
 
-/** Copies data from scr to dst. Both must have the same size. */
+/** Copy-converts the data in src to dst, where dst will be resized if necessarry. */
+template<class TSrc, class TDst>
+void rsConvert(const std::vector<TSrc>& src, std::vector<TDst>& dst)
+{
+  dst.resize(src.size());
+  rsArrayTools::convert(&src[0], &dst[0], (int)src.size());
+}
+
+/** Copies data from src to dst, where dst will be resized if necessarry. */
 template<class T>
 void rsCopy(const std::vector<T>& src, std::vector<T>& dst)
 {
-  rsAssert(src.size() == dst.size());
+  dst.resize(src.size());
   rsArrayTools::copy(&src[0], &dst[0], (int)src.size());
 }
 

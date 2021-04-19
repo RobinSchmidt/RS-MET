@@ -132,11 +132,6 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
   RF H  = g * (c[0]*one + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + k * G4 / z); // H(z)
   return H;
 }
-// todo: define < operator for rsFloat64x2 so this class can be instantiated for 
-// TPar = rsFloat64x2. it should return true if *all* values in the left operand are less than
-// the corresponding values in the right operand (because that's what's typically needed in 
-// numerical algorithms - for convergence test etc.) - it doesn't satisfy the trichotomy rule, 
-// though - or: make a specialization for rsGreaterAbs for rsFloat64x2
 
 // audio processing:
 
