@@ -140,10 +140,29 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction2()
 {
   using RF = RAPT::rsRationalFunction<TPar>;
 
-  TPar A  = a+1; A *= A; A *= A;  // A = (a+1)^4
-  TPar a2 = a*a;
+  //TPar A  = a+1; A *= A; A *= A;  // A = (a+1)^4
 
-  RF H({0, 0, 0, 0, A}, {a2*a2, 4*a*a2, 6*a2, A*k+4*a, 1 });
+  TPar b2 = b*b;        // b^2
+  TPar b4 = b2*b2;      // b^4
+  TPar a2 = a*a;        // a^2
+  TPar d0 = c[0];       // c0 * b^0
+  TPar d1 = c[1]*b;     // c1 * b^1
+  TPar d2 = c[2]*b2;    // c2 * b^2
+  TPar d3 = c[3]*b2*b;  // c3 * b^3
+  TPar d4 = c[4]*b4;    // c4 * b^4
+
+  std::vector<TPar> D(5);
+  D[4] =  d4 + d3 + d2 + d1 + d0;
+  D[3] = (d3 + 2*d2 + 3*d3 + 4*d0) * a;
+  D[2] = (d2 + 3*d1 + 6*d0) * a2;
+  D[1] = (d1 + 4*d0) * a2*a;
+  D[0] = d0*a2*a2;
+  // not yet correct!
+
+
+  //RF H({0, 0, 0, 0, b4}, {a2*a2, 4*a*a2, 6*a2, 4*a + b4*k, 1 });
+
+  RF H(D, {a2*a2, 4*a*a2, 6*a2, 4*a + b4*k, 1 });
 
   // todo: this is correct only for the LP_24 mode - derive the formulas for the other modes
 

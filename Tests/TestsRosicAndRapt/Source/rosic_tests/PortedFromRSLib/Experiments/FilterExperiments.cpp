@@ -1772,13 +1772,14 @@ void ladderTransferFunction()
   ldr.setCutoff(fc);
   //ldr.setResonance(res);
   ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
-  //ldr.setMode(LDR::modes::LP_6);
+  //ldr.setMode(LDR::modes::HP_24);
+  //ldr.setMode(LDR::modes::LP_18);
 
   FilterPlotter<Real> plt;
   //plt.addFilterSpecificationBA(ba);
   ldr.setResonance(0.0); plt.addTransferFunction(ldr.getTransferFunction(),  fs);
   ldr.setResonance(0.0); plt.addTransferFunction(ldr.getTransferFunction2(), fs);
-
+  //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction2(), fs);
   //ldr.setResonance(0.2); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   //ldr.setResonance(0.4); plt.addTransferFunction(ldr.getTransferFunction(), fs);
   //ldr.setResonance(0.5); plt.addTransferFunction(ldr.getTransferFunction(), fs);

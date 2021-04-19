@@ -120,10 +120,39 @@ and therefore:
         = -----------------------------------------------------------
            a^4/z^4 + 4*a^3/z^3 + 6*a^2/z^2 + ((a+1)^4*k + 4*a)/z + 1
    
+Numerators: b := a+1
+LP_24: b^4 z^4 (a+z)^0 = b^4 z^4 * (a^0                                            )
+LP_18: b^3 z^3 (a+z)^1 = b^3 z^3 * (a^1 +       * z                                )
+LP_12: b^2 z^2 (a+z)^2 = b^2 z^2 * (a^2 + 2*a   * z +       * z^2                  )
+LP_6:  b^1 z^1 (a+z)^3 = b^1 z^1 * (a^3 + 3*a^2 * z + 3*a   * z^2 +       z^3      )
+FLAT:  b^0 z^0 (a+z)^4 = b^0 z^0 * (a^4 + 4*a^3 * z + 6*a^2 * z^2 + 4*a * z^3 + z^4)
 
-   
-   
-   
+define b2 = b^2, b3 = b^3, etc, c0,..,c4 are the mixing coeffs, and collect coeffs:
+
+z^4: c4*b4*a0 + c3*b3      + c2*b2      + c1*b1      + c0
+z^3: c3*b3*a1 + c2*b2*2*a1 + c1*b1*3*a1 + c0*b0*4*a1
+z^2: c2*b2*a2 + c1*b1*3*a2 + c0*b0*6*a2
+z^1: c1*b1*a3 + c0*b0*4*a3
+z^0: c0*b0*a4
+
+define d0 = c0*b0, d1 = c1*b1, ...
+
+z^4: d4*a0 + d3      + d2      + d1      + d0
+z^3: d3*a1 + d2*2*a1 + d1*3*a1 + d0*4*a1
+z^2: d2*a2 + d1*3*a2 + d0*6*a2
+z^1: d1*a3 + d0*4*a3
+z^0: d0*a4
+
+factor out the a:
+
+z^3: (d3 + d2*2 + d1*3 + d0*4) * a1
+z^2: (d2 + d1*3 + d0*6) * a2
+z^1: (d1 + d0*4) * a3
+
+
+
+
+
    
    
    
