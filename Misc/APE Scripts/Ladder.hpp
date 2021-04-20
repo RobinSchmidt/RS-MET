@@ -18,8 +18,11 @@ public:
   using Rng = ape::Range;
   using Map = Rng::Mapping;
 
-  Par parFreq{ "Freq", Rng(20, 20000, Map::Exp) };  // in Hz
-  Par parReso{ "Reso", Rng(0,  100)             };  // in %
+  Par parFreq { "Freq",  Rng(20,  20000, Map::Exp) }; // in Hz
+  Par parReso { "Reso",  Rng(0,   100)             }; // in %
+  Par parDrive{ "Drive", Rng(-12, 48)              }; // in dB
+  Par parGain { "Gain",  Rng(-48, 12)              }; // in dB
+  
   // ToDo: Mode, Drive (pre-gain), Gain (post-gain), DC, SatShape
   
   // How can we set the parameters to reasonable default values?
@@ -50,8 +53,10 @@ private:
   void process(ape::umatrix<const float> ins, ape::umatrix<float> outs, size_t numFrames) override
   {
     // Pull the values of the parameters for this block and update the DSP objects:
-    const float freq = (float)parFreq;
-    const float reso = (float)parReso;
+    const float freq  = (float)parFreq;
+    const float reso  = (float)parReso * 0.01f;             // convert from percent to raw
+    const float drive = RAPT::rsDbToAmp((float)parDrive);
+    const float gain  = RAPT::rsDbToAmp((float)parGain);
     flt.setCutoff(freq);
     flt.setResonance(reso);
     // todo: set them per sample
@@ -60,8 +65,8 @@ private:
     const auto numChannels = sharedChannels();
     for(size_t n = 0; n < numFrames; ++n)
     {
-      float x = ins[0][n];                    // read input - we just use the 1st channel
-      float y = flt.getSample(x);             // compute output
+      float x = drive * ins[0][n];            // read input - we just use the 1st channel
+      float y = gain  * flt.getSample(x);     // compute output
       for(size_t c = 0; c < numChannels; ++c) // write generated sample into all channels
         outs[c][n] = y;                 
     }
@@ -70,4 +75,11 @@ private:
   }
 };
 
-// ToDo: factor out a class for the pure DSP process
+// Notes:
+// -with high cutoff (> 12 kHz) and full resonance, it starts behaving chatocially
+//  -> oversample by factor 2 (factor out a DSP class that wraps that)
+
+
+
+
+
