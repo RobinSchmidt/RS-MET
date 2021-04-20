@@ -148,35 +148,55 @@ TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency)
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
 {
-  rsAssert(!bilinear, "Formulas work only for no-zero filters");
+  //rsAssert(!bilinear, "Formulas work only for no-zero filters");
   // todo: work out the formulas for the bilinear variant
 
-  // Compute some intermediate variables:
   using T = TPar;
-  T b  = T(1)+a;
-  T b2 = b*b;        // b^2
-  T b4 = b2*b2;      // b^4
-  T a2 = a*a;        // a^2
-  T d0 = c[0];       // c0 * b^0
-  T d1 = c[1]*b;     // c1 * b^1
-  T d2 = c[2]*b2;    // c2 * b^2
-  T d3 = c[3]*b2*b;  // c3 * b^3
-  T d4 = c[4]*b4;    // c4 * b^4
-
-  // Compute coefficients of the numerator (note the binomial coeffs in the columns:
-  // (1),(1,1),(1,2,1),(1,3,3,1),(1,4,6,4,1)):
-  std::vector<T> N(5);
-  N[4] = g * (d4 + d3 +      d2 +      d1 +      d0);
-  N[3] = g * (     d3 + T(2)*d2 + T(3)*d1 + T(4)*d0) * a;
-  N[2] = g * (               d2 + T(3)*d1 + T(6)*d0) * a2;
-  N[1] = g * (                         d1 + T(4)*d0) * a2*a;
-  N[0] = g * (                                   d0) * a2*a2;
-
-  // Create rational function object and return it (note again the binomial coeffs 1,4,6,4,1) with 
-  // the additional b4*k added in, so the denominator seems to be (a+1)^4 + b4*k*z^3
   using RF = RAPT::rsRationalFunction<T>;
-  RF H(N, {a2*a2, T(4)*a*a2, T(6)*a2, T(4)*a + b4*k, T(1) });
-  return H;
+  if(bilinear)
+  {
+    T A  = a+1; A *= A; A *= A;    // A = (a+1)^4
+    T Ak = A*k;
+    T a2 = a*a;                    // a^2
+
+    std::vector<T> D(6);
+    D[0] = Ak;
+    D[1] = 4*(4*a2*a2 + Ak);
+    D[2] = 2*(32*a2*a + 3*Ak);
+    D[3] = 4*(24*a2 + Ak);
+    D[4] = (Ak + 64*a);
+    D[5] = 16;
+
+    RF H({0, g*A, g*4*A, g*6*A, g*4*A, g*A}, D);
+    return H;
+  }
+  else
+  {
+    // Compute some intermediate variables:
+    T b  = T(1)+a;
+    T b2 = b*b;        // b^2
+    T b4 = b2*b2;      // b^4
+    T a2 = a*a;        // a^2
+    T d0 = c[0];       // c0 * b^0
+    T d1 = c[1]*b;     // c1 * b^1
+    T d2 = c[2]*b2;    // c2 * b^2
+    T d3 = c[3]*b2*b;  // c3 * b^3
+    T d4 = c[4]*b4;    // c4 * b^4
+
+    // Compute coefficients of the numerator (note the binomial coeffs in the columns:
+    // (1),(1,1),(1,2,1),(1,3,3,1),(1,4,6,4,1)):
+    std::vector<T> N(5);
+    N[4] = g * (d4 + d3 +      d2 +      d1 +      d0);
+    N[3] = g * (     d3 + T(2)*d2 + T(3)*d1 + T(4)*d0) * a;
+    N[2] = g * (               d2 + T(3)*d1 + T(6)*d0) * a2;
+    N[1] = g * (                         d1 + T(4)*d0) * a2*a;
+    N[0] = g * (                                   d0) * a2*a2;
+
+    // Create rational function object and return it (note again the binomial coeffs 1,4,6,4,1) with 
+    // the additional b4*k added in, so the denominator seems to be (a+1)^4 + b4*k*z^3
+    RF H(N, { a2*a2, T(4)*a*a2, T(6)*a2, T(4)*a + b4*k, T(1) });
+    return H;
+  }
 }
 // ToDo:
 // Maybe make a function getCoeffsBA(TPar* b, TPar* a) which just fills the arrays (of length 5).
@@ -189,17 +209,18 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionOld()
 {
-  // todo: add option for bilinear case...
-
-  using RF = RAPT::rsRationalFunction<TPar>;
-  TPar tol = 1024 * RS_EPS(TPar);  // ad hoc
-  TPar b = 1+a;
-  RF G1( { 0, b }, { a, 1 }, tol); // G1(z) = b / (1 + a/z) = (0 + b*z) / (a + 1*z)
-  RF one({ 1    }, { 1    }, tol); // 1 = 1 / 1
-  RF z  ({ 0, 1 }, { 1    }, tol); // z = (0 + 1*z) / 1
-  RF G2 = G1*G1;                   // G1^2
-  RF G3 = G1*G2;                   // G1^3
-  RF G4 = G2*G2;                   // G1^4
+  using T  = TPar;
+  using RF = RAPT::rsRationalFunction<T>;
+  T tol = 1024 * RS_EPS(T);  // ad hoc
+  T b0, b1;
+  if(bilinear) b0 = b1 = getBilinearB(a);    // needs test
+  else {       b0 = T(1) + a; b1 = T(0);  }
+  RF G1( { b1, b0 }, { a, 1 }, tol); // G1(z) = (b0 + b1/z) / (1 + a/z) = (b1 + b0*z) / (a + 1*z)
+  RF one({ 1      }, { 1    }, tol); // 1 = 1 / 1
+  RF z  ({ 0,  1  }, { 1    }, tol); // z = (0 + 1*z) / 1
+  RF G2 = G1*G1;                     // G1^2
+  RF G3 = G1*G2;                     // G1^3
+  RF G4 = G2*G2;                     // G1^4
   RF H  = g * (c[0]*one + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + k * G4 / z); // H(z)
   return H;
 }
@@ -208,7 +229,6 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionOld()
 
 template<class TSig, class TPar>
 inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
-//inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
 {
   // Apply feedback and saturation:
   //y[4] /= 1 + y[4]*y[4];   // (ad hoc) nonlinearity applied to the feedback signal

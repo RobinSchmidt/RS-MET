@@ -1776,6 +1776,9 @@ void ladderTransferFunction()
   //ldr.setMode(Mode::FLAT);  // still problematic when reso is zero
   //ldr.setMode(Mode::BP_6_18);
   //ldr.setMode(Mode::LP_6);
+  ldr.setBilinear(true);
+  // when setting this to true, the 2nd plot plots only 4 lowpasses - that's wrong! and they also
+  // have wrong gains!
 
 
   // Plot frequency responses for resonances from 0.0 to 0.9 in 0.1 steps:
@@ -1788,7 +1791,7 @@ void ladderTransferFunction()
   for(int i = 0; i <= 9; i++)
     addPlotWithReso(0.1 * i);
   plt.setPixelSize(800, 400);
-  //plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
+  plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
 
   // Plot variuos response types with the same resonane:
@@ -1817,9 +1820,9 @@ void ladderTransferFunction()
   addPlotWithMode(Mode::HP_18);
   addPlotWithMode(Mode::HP_24);
   plt2.setPixelSize(800, 400);
-  //plt2.plotFrequencyResponses(501, 31.25, 32000, true, true, true, false);
+  plt2.plotFrequencyResponses(501, 31.25, 32000, true, true, true, false);
 
-
+  /*
   // test - uses getTransferFunctionAt:
   ldr.setMode(Mode::LP_24);
   ldr.setResonance(0.99); 
@@ -1828,6 +1831,7 @@ void ladderTransferFunction()
   plotFrequencyResponse(ldr, 501, 31.25, 32000.0, fs, true);
   int dummy = 0;
   // ok - that works. next: implement the transfer function computation
+  */
 
   // Observations:
   // -Without resonance, the phase is around -172° at the cutoff frequency. This makes sense 

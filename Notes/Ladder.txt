@@ -150,10 +150,39 @@ z^2: (d2 + d1*3 + d0*6) * a2
 z^1: (d1 + d0*4) * a3
 
 
+for the bilinear version:
 
+b = (1+a)/2; G1(z) = (b+b/z)/(1+a/z); G4 = G1^4; H = G4/(1+k*G4/z); ratexpand(H)
 
+b = (1+a)/2; G1(z) = (b+b/z)/(1+a/z); G4 = G1^4; H = G4/(1+k*G4/z); ratexpand(H)
 
-   
-   
-   
-  
+exceeds standard computation time
+
+Sage:
+
+var("a z k")
+b  = (a+1)/2
+G(z) = (b+b/z)/(1+a/z)
+G4   = G^4
+H    = G4 / (1 + k*G4/z)
+Hs = H.simplify_rational()
+Hs
+
+gives the following mess:
+
+((a^4 + 4*a^3 + 6*a^2 + 4*a + 1)*z^5 + 4*(a^4 + 4*a^3 + 6*a^2 + 4*a + 1)*z^4 + 6*(a^4 + 4*a^3 + 6*a^2 + 4*a + 1)*z^3 + 4*(a^4 + 4*a^3 + 6*a^2 + 4*a + 1)*z^2 + (a^4 + 4*a^3 + 6*a^2 + 4*a + 1)*z)
+/
+(((a^4 + 4*a^3 + 6*a^2 + 4*a + 1)*k + 64*a)*z^4 + 16*z^5 + 4*(24*a^2 + (a^4 + 4*a^3 + 6*a^2 + 4*a + 1)*k)*z^3 + 2*(32*a^3 + 3*(a^4 + 4*a^3 + 6*a^2 + 4*a + 1)*k)*z^2 + (a^4 + 4*a^3 + 6*a^2 + 4*a + 1)*k + 4*(4*a^4 + (a^4 + 4*a^3 + 6*a^2 + 4*a + 1)*k)*z)
+
+Define:
+
+A := (a^4 + 4*a^3 + 6*a^2 + 4*a + 1) = (a+1)^4
+
+then this simplifies to:
+
+                          A*z^5 + 4*A*z^4 + 6*A*z^3 + 4*A*z^2 + A*z
+----------------------------------------------------------------------------------------------------
+16*z^5 + (A*k + 64*a)*z^4 + 4*(24*a^2 + A*k)*z^3 + 2*(32*a^3 + 3*A*k)*z^2 + 4*(4*a^4 + A*k)*z + A*k
+
+...interesting - it's a 5-pole/5-zero filter
+
