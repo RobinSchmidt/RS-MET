@@ -1,0 +1,41 @@
+---------------------------------------------------------------------------------------------------
+Running tests and experiments:
+
+Open: TestsRosicAndRapt.sln
+in:   RS-MET\Tests\TestsRosicAndRapt\Builds\VisualStudio2019
+
+and then in Main.cpp uncomment one or more lines for the experiment(s), you want to run (and 
+comment any experiment that you don't want to run but is currently uncommented). Then compile and 
+run, preferably in debug mode, unless you want to do performance tests. The unit- and performance 
+tests will produce console output for the results. The experiments will produce wave-files in the 
+project directory and/or use GNUPlotCPP to open a window with plots for the results (if you have 
+GNUPlot installed and GNUPlotter correctly set up - the file is in rapt/basics). If so desired, new
+tests and experiments can be added easily.
+
+
+---------------------------------------------------------------------------------------------------
+Running the unit tests for JURA:
+
+Open: TestAppJURA.sln
+in:   RS-MET\Products\Applications\TestAppJURA
+
+...tbc...
+
+
+---------------------------------------------------------------------------------------------------
+Writing APE Scripts:
+
+Open the JUCE PluginHost, for example, using AudioPluginHost.exe from 
+
+RS-MET\Products\Applications\AudioPluginHost\Builds\VisualStudio2017\x64\Release\App\
+
+after you have built the project. Then plug in an APE instance and load the script with which you
+want to work (or create a new one) ...tbc...
+
+
+---------------------------------------------------------------------------------------------------
+Testing ToolChain:
+
+
+---------------------------------------------------------------------------------------------------
+Update to a new JUCE version:
