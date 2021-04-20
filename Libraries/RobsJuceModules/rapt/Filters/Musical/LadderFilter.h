@@ -90,6 +90,9 @@ public:
   /** Chooses the filter mode. See the Mode enum for the available modes. */
   void setMode(int newMode);
 
+  /** Experimental feature - not yet ready for production! */
+  void setBilinear(bool useBilinearTransform) { bilinear = useBilinearTransform; }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
@@ -141,9 +144,9 @@ public:
   /** \name Coefficient Computations */
 
   /** Given some normalized net feedback loop gain fb (in the range 0..1 where 1 is the 
-  self-oscillation/instability limit), cos(wc) and lowpass coefficients a, b, this function 
+  self-oscillation/instability limit), cos(wc) and lowpass coefficient a, this function 
   computes the feedback factor k. */
-  static TPar computeFeedbackFactor(CRPar fb, CRPar cosWc, CRPar a, CRPar b);
+  static TPar computeFeedbackFactor(CRPar fb, CRPar cosWc, CRPar a);
 
   /** Given a desired decay time for the resonance (defined as the time it takes to fall to the
   value 1/e = 0.36..) in seconds and a cutoff frequency in Hz, this function computes the desired
@@ -152,17 +155,16 @@ public:
 
   /** Given a normalized radian cutoff frequency wc (in the range 0...pi) and a normalized overall
   feedback gain fb (in the range 0...1), this function computes the desired coefficients a, b for
-  the one pole filter that realizes the difference equation: y[n] = b*x[n] - a*y[n-1], the
+  the one pole filter that realizes the difference equation: y[n] = (1+a)*x[n] - a*y[n-1], the
   feedback gain k by which the output of a chain of 4 such one-pole units should be fed back into
   the first unit and a compensation gain g that compensates for the loss of DC gain when turning up
   the feedback. */
-  static void computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, TPar *b, TPar *k, TPar *g);
+  static void computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, TPar *k, TPar *g);
   // todo: factor the function into a/b-computation, k-computation, g-computation - but leave 
   // this one as convenience function also
 
-  /** Same as computeCoeffs(double wc, double fb, double *a, double *b, double *k, double *g) but 
-  without the compensation gain computation.  */
-  static void computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *b, TPar *k);
+  /** Same as computeCoeffs(wc, fb, *a, *k, *g) but without the compensation gain computation. */
+  static void computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *k);
 
   // make a static method for the output coefficients c[] 
 
@@ -191,6 +193,7 @@ protected:
   TPar resonance = TPar(0);      // resonance 0..1
   TPar sampleRate = TPar(44100); // samplerate in Hz
   int  mode = Mode::FLAT;        // filter mode (see Mode enum)
+  bool bilinear = false;         // flag to indicate using a zero at z=-1 per stage
   // todo: get rid of sample-rate, just maintain an omega = 2*PI*fc/fs
 
 };

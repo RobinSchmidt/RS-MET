@@ -272,8 +272,9 @@ void rsLadderFilter<TSig, TPar>::reset()
 // coefficient computations:
 
 template<class TSig, class TPar>
-TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(CRPar fb, CRPar cosWc, CRPar a, CRPar b)
+TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(CRPar fb, CRPar cosWc, CRPar a)
 {
+  TPar b  = TPar(1) + a;
   TPar g2 = b*b / (1 + a*a + 2*a*cosWc);
   return fb / (g2*g2);
 }
@@ -296,10 +297,10 @@ TPar rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(CRPar decay, CRPar
 }
 
 template<class TSig, class TPar>
-void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, TPar *b, 
+void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, 
   TPar *k, TPar *g)
 {
-  computeCoeffs(wc, fb, a, b, k);
+  computeCoeffs(wc, fb, a, k);
   //*g = 1 + *k; // this overall gain factor ensures unit gain at DC regardless of resonance
                // damn! this gain works only for the lowpass case...was it always like that?
                // what about the old formula?
@@ -328,7 +329,7 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar
 }
 
 template<class TSig, class TPar>
-void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *b, TPar *k)
+void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *k)
 {
   TPar s, c, t;                     // sin(wc), cos(wc), tan((wc-PI)/4)
   //rsSinCos(wc, &s, &c);
@@ -336,8 +337,7 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar
   c  = rsCos(wc);
   t  = (TPar) rsTan(0.25*(wc-PI));
   *a = t / (s-c*t);
-  *b = 1 + *a;  
-  *k = computeFeedbackFactor(fb, c, *a, *b);
+  *k = computeFeedbackFactor(fb, c, *a);
   // If the cutoff frequency goes to zero wc -> 0, then s -> 0, c -> 1, t -> -1, b -> 0, a -> -1.
   // The coefficient computation for the lowpass stages approaches this limit correctly, but the 
   // formula for the feedback factor k runs into numerical problems when wc -> 0. However, we know
@@ -360,8 +360,7 @@ template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::updateCoefficients()
 {
   TPar wc = 2 * (TPar)PI * cutoff / sampleRate;
-  TPar b;  // dummy
-  computeCoeffs(wc, resonance, s, &a, &b, &k, &g);
+  computeCoeffs(wc, resonance, s, &a, &k, &g);
 }
 
 
