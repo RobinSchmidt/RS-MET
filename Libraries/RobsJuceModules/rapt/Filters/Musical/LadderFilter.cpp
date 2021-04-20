@@ -108,8 +108,11 @@ std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(const std::
   std::complex<TPar> H;              // transfer function with resonance   
   std::complex<TPar> one(1, 0);
 
-  TPar b = TPar(1)+a;    // get rid
-  G1 = b / (one + a/z);
+  TPar b = TPar(1) + a;
+  if(bilinear)
+    G1 = b*(one + one/z) / (one + a/z);
+  else
+    G1 = b / (one + a/z);
   G2 = G1*G1;
   G3 = G2*G1;
   G4 = G3*G1;
@@ -298,18 +301,10 @@ TPar rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(CRPar decay, CRPar
 
 template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, 
-  TPar *k, TPar *g)
+  TPar *k, TPar *g, bool bilinear)
 {
-  computeCoeffs(wc, fb, a, k);
-  //*g = 1 + *k; // this overall gain factor ensures unit gain at DC regardless of resonance
-               // damn! this gain works only for the lowpass case...was it always like that?
-               // what about the old formula?
-  //*g = TPar(1);
-
+  computeCoeffs(wc, fb, a, k, bilinear);
   *g = 1 + s * *k;
-
-  // 1+k is good for all lowpasses, 1 is good for all highpasses, the allpass needs 
-  // perhaps 1 + k/2
 
   //// old formula - has the same problem:
   //// evaluate the magnitude response at DC:
@@ -326,17 +321,21 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar
   //   dcGain = b0^4 / d = (1+a)^4 / ((1+k) * (1+a)^4) = 1 / (1+k)
   // and the reciprocal is just
   //   g = 1+k
+  // update the pdf to include this and when done, this comment can be deleted
 }
 
 template<class TSig, class TPar>
-void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *k)
+void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *k, bool bilinear)
 {
   TPar s, c, t;                     // sin(wc), cos(wc), tan((wc-PI)/4)
   //rsSinCos(wc, &s, &c);
   s  = rsSin(wc);
   c  = rsCos(wc);
   t  = (TPar) rsTan(0.25*(wc-PI));
-  *a = t / (s-c*t);
+  if(bilinear) 
+    *a = (c*t+s+t) / (s-(c+1)*t);  // todo: check, if feedback formula works for this too 
+  else                             // ...i don't think so
+    *a = t / (s-c*t);
   *k = computeFeedbackFactor(fb, c, *a);
   // If the cutoff frequency goes to zero wc -> 0, then s -> 0, c -> 1, t -> -1, b -> 0, a -> -1.
   // The coefficient computation for the lowpass stages approaches this limit correctly, but the 
@@ -360,7 +359,7 @@ template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::updateCoefficients()
 {
   TPar wc = 2 * (TPar)PI * cutoff / sampleRate;
-  computeCoeffs(wc, resonance, s, &a, &k, &g);
+  computeCoeffs(wc, resonance, s, &a, &k, &g, bilinear);
 }
 
 

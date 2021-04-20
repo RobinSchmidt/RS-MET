@@ -1788,7 +1788,7 @@ void ladderTransferFunction()
   for(int i = 0; i <= 9; i++)
     addPlotWithReso(0.1 * i);
   plt.setPixelSize(800, 400);
-  plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
+  //plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
 
   // Plot variuos response types with the same resonane:
@@ -1817,13 +1817,16 @@ void ladderTransferFunction()
   addPlotWithMode(Mode::HP_18);
   addPlotWithMode(Mode::HP_24);
   plt2.setPixelSize(800, 400);
-  plt2.plotFrequencyResponses(501, 31.25, 32000, true, true, true, false);
+  //plt2.plotFrequencyResponses(501, 31.25, 32000, true, true, true, false);
 
 
   // test - uses getTransferFunctionAt:
   ldr.setMode(Mode::LP_24);
   ldr.setResonance(0.0); 
-  //plotFrequencyResponse(ldr, 501, 31.25, 32000.0, fs, true);
+  plotFrequencyResponse(ldr, 501, 31.25, 32000.0, fs, true);
+  ldr.setBilinear(true);
+  plotFrequencyResponse(ldr, 501, 31.25, 32000.0, fs, true);
+  int dummy = 0;
 
   // Observations:
   // -Without resonance, the phase is around -172° at the cutoff frequency. This makes sense 
@@ -1845,6 +1848,9 @@ void ladderTransferFunction()
   //  frequencies and low frequencies are attenuated, with s=1, it looks the same for low 
   //  frequencies and high frequencies are boosted -> s=0.5 seems the most natural compromise
   //  ...same for BP_6_6
+  // -The bilinear phase response is nicer overall (monotonic) but is does not go through -172° 
+  //  but through -188° at the cutoff freq. I think, it's because the phase delay of 1 + 1/z is
+  //  different than the one of 1/z = z^-1
 
   // ToDo: 
   // -set up the y-ranges correctly - currently, one must use the mousewheel to get the correct

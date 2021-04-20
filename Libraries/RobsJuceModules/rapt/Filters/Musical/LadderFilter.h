@@ -159,12 +159,12 @@ public:
   feedback gain k by which the output of a chain of 4 such one-pole units should be fed back into
   the first unit and a compensation gain g that compensates for the loss of DC gain when turning up
   the feedback. */
-  static void computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, TPar *k, TPar *g);
+  static void computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, TPar *k, TPar *g, bool bilinear);
   // todo: factor the function into a/b-computation, k-computation, g-computation - but leave 
   // this one as convenience function also
 
   /** Same as computeCoeffs(wc, fb, *a, *k, *g) but without the compensation gain computation. */
-  static void computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *k);
+  static void computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *k, bool bilinear);
 
   // make a static method for the output coefficients c[] 
 
