@@ -1343,30 +1343,30 @@ bool testPolynomialOperators(std::string &reportString)
 bool testRationalFunction(std::string& reportString)
 {
   std::string testName = "RationalFunction";
-  bool testResult = true;
+  bool ok = true;
 
   typedef rsPolynomial<double> PL;
   typedef rsRationalFunction<double> RF;
 
   std::vector<double> p({ 6,7,1 }), q({-6,-5,1}), g;
-  g = polyGCD(p, q, 0.0);  // result is 1 + x
+  g = RF::polyGCD(p, q, 0.0);  // result is 1 + x
 
   RF r({ 1,2,3 }, { 4, 5, 6, 7 });
   RF s({ 5,6 }, { 5, 7, 11 });
 
   // test arithmetic operators:
   RF t;
-  t = r * s; testResult &= t == RF({ 5,16,27,18 }, { 20,53,109,132,115,77 });
-  t = r / s; testResult &= t == RF({ 5,17,40,43,33 }, { 20,49,60,71,42 });
-  t = r + s; testResult &= t == RF({ 25,66,100,114,75 }, { 20,53,109,132,115,77 }); 
-  t = r - s; testResult &= t == RF({ -15,-32,-20,-28,-9 }, { 20,53,109,132,115,77 });
+  t = r * s; ok &= t == RF({ 5,16,27,18 }, { 20,53,109,132,115,77 });
+  t = r / s; ok &= t == RF({ 5,17,40,43,33 }, { 20,49,60,71,42 });
+  t = r + s; ok &= t == RF({ 25,66,100,114,75 }, { 20,53,109,132,115,77 }); 
+  t = r - s; ok &= t == RF({ -15,-32,-20,-28,-9 }, { 20,53,109,132,115,77 });
 
   // test nesting:
   double x= 4, y1, y2;  // input and outputs
   t = r(s);             // compose/nest functions r and s (r is outer, s is inner)
   y1 = r(s(x));         // evaluate s at x, pass result to r and evaluate r at s(x)
   y2 = t(x);            // evaluate the compsed function t = r(s)
-  testResult &= y1 == y2;
+  ok &= y1 == y2;
 
   // giving this to sage:
   //
@@ -1388,7 +1388,7 @@ bool testRationalFunction(std::string& reportString)
   r = RF({ 2,-3,4,-5 }, { 2, 3 });  // outer
   t = r(s); // 700,-2165, 1204,-1475,518;  2000,-1775,210,172,-40
   y1 = t(5);  // -31.09268...
-  testResult &= rsIsCloseTo(y1, -31.0926829268293, tol);
+  ok &= rsIsCloseTo(y1, -31.0926829268293, tol);
   // our numeric result from the evaluation -31.09.. is the same as the result from sage but
   // our coefficient arrays are different. numerator and denominator still have a common
   // factor -> divide both by their gcd:
@@ -1402,10 +1402,7 @@ bool testRationalFunction(std::string& reportString)
   // https://stackoverflow.com/questions/16628088/euclidean-algorithm-gcd-with-multiple-numbers
   // https://www.geeksforgeeks.org/gcd-two-array-numbers/
 
-
-
-
-  return testResult;
+  return ok;
 }
 
 bool testQuadraticTo3Points()
@@ -2503,7 +2500,8 @@ bool testPolynomial()
     // fails!
 
   testResult &= testRationalFunction(reportString);
-
+  // Maybe this should be a test in its own right, not in testPolynomial - on the other hand, 
+  // dealing with rational functions is mostly manipulation of polynomials.
 
   testResult &= testBivariatePolynomial();
   testResult &= testBivariatePolynomial2();

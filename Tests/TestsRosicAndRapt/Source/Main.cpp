@@ -365,7 +365,7 @@ int main(int argc, char* argv[])
   //ladderFeedbackSatGrowl2();
   //ladderZDF();
   //ladderZDFvsUDF();       // compares cutoff modulation properties
-  ladderResoModulation();
+  //ladderResoModulation();
   //resoShapeFeedbackSat();
   //resoSaturationModes();
   //resoShapeGate();

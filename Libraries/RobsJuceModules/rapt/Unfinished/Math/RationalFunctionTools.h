@@ -1,5 +1,7 @@
 #pragma once 
 
+// file is obsolete - code has been moved into class rsRationalFunction
+
 // Functions that operate on std::vectors to perform polynomial coefficient array manipulations,
 // translated from my python implementation. They should be moved into rsRationalFunction as static
 // meber functions. They are sort of low-level, although they use std::vector...maybe mid-level, but

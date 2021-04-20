@@ -1,3 +1,5 @@
+// file is obsolete - code has been moved into class rsRationalFunction
+
 template<class T>
 T polyEval(std::vector<T>& p, T x)
 {
