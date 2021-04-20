@@ -3,6 +3,7 @@
 
 #include <effect.h>
 
+using namespace ape;
 
 GlobalData(LadderFilter, "Moog-style Ladder Filter");
 
@@ -11,7 +12,24 @@ class LadderFilter : public ape::Effect
   
 public:
 
+  using LDR = RAPT::rsLadderFilter<float, float>;
+
   LadderFilter() {}
+  
+
+  static constexpr typename Param<LDR::modes>::Names ModeNames = 
+  { 
+	"Bypass",
+    "Lowpass_6"
+    "Lowpass_12"
+    "Lowpass_18"
+    "Lowpass_24"
+    "Highpass_6",
+    "Highpass_12",
+    "Highpass_18",
+    "Highpass_24"
+  };
+  
 
   // Shorthands for convenience to reduce boilerplate:
   using Par = ape::Param<float>;
@@ -30,7 +48,7 @@ public:
 
 private:
 
-  RAPT::rsLadderFilter<float, float> flt;
+  LDR flt;
   float sampleRate;
 
   
@@ -76,8 +94,13 @@ private:
 };
 
 // Notes:
-// -with high cutoff (> 12 kHz) and full resonance, it starts behaving chatocially
+// -with high cutoff (> 12 kHz) and 100% resonance, it starts behaving chatocially
 //  -> oversample by factor 2 (factor out a DSP class that wraps that)
+// -with even more resonance (> 100%), the artifacts begin to show already at lower frequencies
+// -When a filter should support resonances > 100, we need a nonlinear parameter mapping, 
+//  maybe 100% should occur at 2/3 or 3/4 of the full range. actually, that would be good anyway
+//  because from 0..50%, not much seems to be happening and before 100, a lot is happening. be 
+//  sure to test this with settings where the drive does not diminish the resonance
 
 
 
