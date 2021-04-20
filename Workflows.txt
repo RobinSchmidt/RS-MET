@@ -45,7 +45,10 @@ Visual Studio Code, Sublime, etc. For editing library code (rapt/rosic) in such 
 be a good idea to do that in Visual Studio, running the TestsRosicAndRapt.sln solution in parallel
 and check occasionally if everything still compiles after the edits. Maybe also run occasionally 
 the relevant unit tests (i.e. uncomment runUnitTestsRapt, etc. in Main.cpp). It's also useful to 
-have Visual Studio open for navigating the library.
+have Visual Studio open for navigating the library. When editing the script in an external editor,
+we need to reload the script in APE (using File -> Open recent). APE does not automatically 
+recognize external changes.
+
 
 
 

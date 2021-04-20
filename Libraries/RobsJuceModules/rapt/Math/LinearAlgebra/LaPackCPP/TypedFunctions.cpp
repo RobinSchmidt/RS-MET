@@ -221,6 +221,11 @@ int xerbla(char *srname, integer *info, ftnlen srname_len)
   return 0;
 } // xerbla
 
+int xerbla(const char* srname, integer* info, ftnlen srname_len)
+{
+  return 0;
+}
+
 
 //=================================================================================================
 // XBlas

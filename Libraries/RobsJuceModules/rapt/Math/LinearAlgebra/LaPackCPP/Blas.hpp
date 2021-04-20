@@ -124,6 +124,9 @@ SRNAME: The name of the routine which called XERBLA.
 INFO:   The position of the invalid parameter in the parameter list of the calling routine. */
 int xerbla(char *srname, integer *info, ftnlen srname_len);
 
+int xerbla(const char *srname, integer *info, ftnlen srname_len);
+// Needed, so we can call it like xerbla("blablabla") without getting compiler warnings from clang
+// that ISO C++11 doesn't allow conversion from string literal to char*
 
 //=================================================================================================
 

@@ -234,7 +234,7 @@ void rsQuantileFilter<T>::convertParameters(
   *L  = (int) round(length * sampleRate);  // length of filter in samples (maybe use floor later?)
   *L  = rsMax(*L, 2);                      // ...needs to be at least 2
 
-  //*q  = quantile * sampleRate * (*L - 1);  // old - why did this ever work?
+  // *q  = quantile * sampleRate * (*L - 1);  // old - why did this ever work?
   *q  = quantile * (*L - 1);               // readout position in sorted array
 
 
@@ -246,7 +246,7 @@ void rsQuantileFilter<T>::convertParameters(
 
 
   *q *= 0.5;                               // found empirically - todo: verify theoretically!
-  //*q *= 0.5 * sampleRate;     // needs test
+  // *q *= 0.5 * sampleRate;     // needs test
 }
 // obsolete - can be deleted soon
 */

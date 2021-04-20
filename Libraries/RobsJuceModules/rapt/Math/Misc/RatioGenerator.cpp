@@ -32,13 +32,13 @@ void rsRatioGenerator<T>::rangeSplits(T* splitPoints, int numSplitPoints, T rati
 
     // split s[k] into two ranges:
     Range rl, ru;
-    if(strategy == 0) splitRange(s[k], rl, ru, r);       // always use r
-    else if(strategy == 1)                               // alternating, ...
-      if(rsIsOdd(n))  splitRange(s[k], rl, ru, r);       // ...odd n uses r
-      else            splitRange(s[k], rl, ru, 1-r);     // ...even n uses 1-r
-    else if(strategy == 2)                               // alternating, ...
-      if(rsIsEven(n)) splitRange(s[k], rl, ru, r);       // ...even n uses r
-      else            splitRange(s[k], rl, ru, 1-r);     // ...odd n uses 1-r
+    if(strategy == 0) splitRange(s[k], rl, ru, r);        // always use r
+    else if(strategy == 1) {                              // alternating, ...
+      if(rsIsOdd(n)) { splitRange(s[k], rl, ru, r);    }  // ...odd n uses r
+      else           { splitRange(s[k], rl, ru, 1-r);  }} // ...even n uses 1-r
+    else if(strategy == 2) {                              // alternating, ...
+      if(rsIsEven(n)) { splitRange(s[k], rl, ru, r);   }  // ...even n uses r
+      else            { splitRange(s[k], rl, ru, 1-r); }} // ...odd n uses 1-r
     // is it somehow possible to continuously morph between the odd and even version of this
     // strategy? ...maybe just "crossfade" the result split-point arrays? that would add another
     // potentially interesting dimension for tweaking ...maybe even vector-crossfade between
