@@ -14,8 +14,6 @@ namespace RAPT
 #include "Math/Statistics.cpp"
 #include "Math/GeometricFunctions.cpp"
 #include "Math/ModularInteger.cpp"
-//#include "Math/RationalFunctionTools.cpp"
-#include "Math/RationalFunction.cpp"
 
 #include "MiscAudio/Interpolator.cpp"
 #include "MiscAudio/DelayLine.cpp"
