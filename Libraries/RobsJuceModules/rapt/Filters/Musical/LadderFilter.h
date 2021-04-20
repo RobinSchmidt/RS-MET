@@ -91,7 +91,8 @@ public:
   void setMode(int newMode);
 
   /** Experimental feature - not yet ready for production! */
-  void setBilinear(bool useBilinearTransform) { bilinear = useBilinearTransform; }
+  void setBilinear(bool useBilinearTransform) 
+  { bilinear = useBilinearTransform; updateCoefficients(); }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */

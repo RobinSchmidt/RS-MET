@@ -104,15 +104,22 @@ void rsLadderFilter<TSig, TPar>::getState(TSig *state)
 template<class TSig, class TPar>
 std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(const std::complex<TPar>& z)
 {
-  std::complex<TPar> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
-  std::complex<TPar> H;              // transfer function with resonance   
-  std::complex<TPar> one(1, 0);
+  using T = TPar;
+  std::complex<T> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
+  std::complex<T> H;              // transfer function with resonance   
+  std::complex<T> one(1, 0);
 
-  TPar b = TPar(1) + a;
+  T b; // = TPar(1) + a;
   if(bilinear)
+  {
+    b  = T(0.5) * (T(1) + a);   // factor out int getB(T a, bool bilinear)
     G1 = b*(one + one/z) / (one + a/z);
+  }
   else
+  {
+    b  = T(1) + a;
     G1 = b / (one + a/z);
+  }
   G2 = G1*G1;
   G3 = G2*G1;
   G4 = G3*G1;
@@ -199,6 +206,11 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
 {
   // Apply feedback and saturation:
   //y[4] /= 1 + y[4]*y[4];   // (ad hoc) nonlinearity applied to the feedback signal
+  // try: y[4] /= 1 / (y[4]*y[4])^n, see https://www.desmos.com/calculator/rjlnhzqecs
+  // (x+x^3)/(1+x^4)  https://www.desmos.com/calculator/wb39hmukry
+  // (x+0.25*x^3)/(1+x^4)  ...very straight in the middle, goes through (0.5,0.5)
+  // (x+0.25*x^3)/(1+x^2)
+
   y[0]  = in - k*y[4];        // linear
   y[0]  = rsClip(y[0], TSig(-1), TSig(+1));  // cheapest
   //y[0] /= TSig(1) + y[0]*y[0]; // nonlinearity applied to input plus feedback signal (division could be interesting with complex signals)
@@ -281,6 +293,9 @@ TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(CRPar fb, CRPar cosWc, CR
   TPar g2 = b*b / (1 + a*a + 2*a*cosWc);
   return fb / (g2*g2);
 }
+// for the bilinear case, we get g2 = (2*b+2*b^2*c) / (1+a^2+2*a*c) where c = cos(wc) = cosWc
+// ...but what is b? i don't think, it's just 1+a. calculate the mag-resp for b=1 at w=0, then use
+// the reciprocal of that for b
 
 template<class TSig, class TPar>
 TPar rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(CRPar decay, CRPar cutoff)
@@ -332,9 +347,11 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar
   s  = rsSin(wc);
   c  = rsCos(wc);
   t  = (TPar) rsTan(0.25*(wc-PI));
-  if(bilinear) 
-    *a = (c*t+s+t) / (s-(c+1)*t);  // todo: check, if feedback formula works for this too 
-  else                             // ...i don't think so
+  if(bilinear)
+    *a = (c*t+s+t) / (s-(c+1)*t);  
+     // todo: check, if feedback formula works for this, too. ...i don't think so. we need to 
+     // evaluate the magnitude response of a bilinear 1st order filter at wc
+  else
     *a = t / (s-c*t);
   *k = computeFeedbackFactor(fb, c, *a);
   // If the cutoff frequency goes to zero wc -> 0, then s -> 0, c -> 1, t -> -1, b -> 0, a -> -1.

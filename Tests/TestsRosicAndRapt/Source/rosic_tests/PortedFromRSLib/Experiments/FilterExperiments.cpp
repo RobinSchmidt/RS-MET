@@ -1848,9 +1848,8 @@ void ladderTransferFunction()
   //  frequencies and low frequencies are attenuated, with s=1, it looks the same for low 
   //  frequencies and high frequencies are boosted -> s=0.5 seems the most natural compromise
   //  ...same for BP_6_6
-  // -The bilinear phase response is nicer overall (monotonic) but is does not go through -172° 
-  //  but through -188° at the cutoff freq. I think, it's because the phase delay of 1 + 1/z is
-  //  different than the one of 1/z = z^-1
+  // -The bilinear phase response is nicer overall (monotonic) 
+  // -the overall gain of the bilinear response is wrong
 
   // ToDo: 
   // -set up the y-ranges correctly - currently, one must use the mousewheel to get the correct
