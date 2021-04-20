@@ -1770,9 +1770,9 @@ void ladderTransferFunction()
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   //ldr.setResonance(res);
-  //ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
+  ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
   //ldr.setMode(LDR::modes::HP_24);
-  ldr.setMode(LDR::modes::FLAT);  // still problematic when reso is zero
+  //ldr.setMode(LDR::modes::FLAT);  // still problematic when reso is zero
   //ldr.setMode(LDR::modes::BP_6_18);
   //ldr.setMode(LDR::modes::LP_6);
 
@@ -1785,10 +1785,10 @@ void ladderTransferFunction()
     ldr.setResonance(r); 
     plt.addTransferFunction(ldr.getTransferFunction(), fs); 
   };
-  for(int i = 1; i <= 9; i++)
+  for(int i = 0; i <= 9; i++)
     addPlotWithReso(0.1 * i);
   plt.setPixelSize(800, 400);
-  //plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
+  plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
 
   // Plot variuos response types with the same resonane:
@@ -1800,21 +1800,23 @@ void ladderTransferFunction()
     plt2.addTransferFunction(ldr.getTransferFunction(), fs); 
   };
   ldr.setResonance(0.9);
+
   addPlotWithMode(Mode::LP_24);
-  //addPlotWithMode(Mode::LP_18);
-  //addPlotWithMode(Mode::LP_12);
+  addPlotWithMode(Mode::LP_18);
+  addPlotWithMode(Mode::LP_12);
   //addPlotWithMode(Mode::LP_6);
-  addPlotWithMode(Mode::HP_24);
-  //addPlotWithMode(Mode::HP_18);
-  //addPlotWithMode(Mode::HP_12);
-  //addPlotWithMode(Mode::HP_6);
   //addPlotWithMode(Mode::BP_6_18);
+  addPlotWithMode(Mode::BP_6_12);
+  //addPlotWithMode(Mode::BP_6_6);
   addPlotWithMode(Mode::BP_12_12);
   //addPlotWithMode(Mode::BP_18_6);
-  //addPlotWithMode(Mode::BP_6_6);
-  //addPlotWithMode(Mode::BP_6_12);
-  //addPlotWithMode(Mode::BP_12_6);
+  addPlotWithMode(Mode::BP_12_6);
   //addPlotWithMode(Mode::FLAT);
+  //addPlotWithMode(Mode::HP_6);
+  addPlotWithMode(Mode::HP_12);
+  addPlotWithMode(Mode::HP_18);
+  addPlotWithMode(Mode::HP_24);
+
   plt2.setPixelSize(800, 400);
   plt2.plotFrequencyResponses(501, 31.25, 32000, true, true, true, false);
 
@@ -1859,6 +1861,8 @@ void ladderTransferFunction()
   //  but maybe not - that value is only good for lowpass
   // -plot various response types with high resonance in one plot to compare their peak gains.
   //  They should be roughly equal.
+  // -maybe try a high-shelf that attenuates abobe the cutoff freq by around 10 dB...maybe the
+  //  gain should be 1/(1+s*k)? because high frequencies get a boost with resonance
 }
 
 void ladderMultipole()

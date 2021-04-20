@@ -40,53 +40,44 @@ void  rsLadderFilter<TSig, TPar>::setMixingCoefficients(
 template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::setMode(int newMode)
 {
+  // Shorthands for convenience:
   using T = TPar;
+  auto set = [&](T c0, T c1, T c2, T c3, T c4, T s)
+  {
+    setMixingCoefficients(c0, c1, c2, c3, c4); 
+    this->s = s;
+  };
+
+  // The actual setup:
   if( newMode >= 0 && newMode < NUM_MODES )
   {
     mode = newMode;
     switch(mode)
     {
-    case FLAT:     { setMixingCoefficients(1,  0,   0,   0,  0); s = 0.125;    } break;
-      // check, if the s value makes sense
+                                                                   // Prototype transfer function
+    case FLAT:     { set(1,  0,   0,   0,  0, T(0.125)); } break;  // 1
 
-    // lowpasses:
-    case LP_6:     { setMixingCoefficients(0,  1,   0,   0,  0); s = T(0.25); } break;
-    case LP_12:    { setMixingCoefficients(0,  0,   1,   0,  0); s = T(0.5);  } break;
-    case LP_18:    { setMixingCoefficients(0,  0,   0,   1,  0); s = T(0.75); } break;
-    case LP_24:    { setMixingCoefficients(0,  0,   0,   0,  1); s = T(1);    } break;
-    //case LP_6:     { setMixingCoefficients(0,  1,   0,   0,  0); s = T(1);    } break;
-    //case LP_12:    { setMixingCoefficients(0,  0,   1,   0,  0); s = T(1);    } break;
-    //case LP_18:    { setMixingCoefficients(0,  0,   0,   1,  0); s = T(1);    } break;
-    //case LP_24:    { setMixingCoefficients(0,  0,   0,   0,  1); s = T(1);    } break;
+      // lowpasses:
+    case LP_6:     { set(0,  1,   0,   0,  0, T(0.25) ); } break;  // (1/(1+s))^1
+    case LP_12:    { set(0,  0,   1,   0,  0, T(0.5)  ); } break;  // (1/(1+s))^2
+    case LP_18:    { set(0,  0,   0,   1,  0, T(0.75) ); } break;  // (1/(1+s))^3
+    case LP_24:    { set(0,  0,   0,   0,  1, T(1)    ); } break;  // (1/(1+s))^4
+    // What about 1/(1+s^4) etc., i.e. Butterworth style? I think, that's not possible because
+    // we are constrained by the rule that all poles should be equal
 
     // highpasses:
-    case HP_6:     { setMixingCoefficients(1, -1,   0,   0,  0); s = T(0.25); } break;
-    case HP_12:    { setMixingCoefficients(1, -2,   1,   0,  0); s = T(0.5);  } break;
-    case HP_18:    { setMixingCoefficients(1, -3,   3,  -1,  0); s = T(0.75); } break;
-    case HP_24:    { setMixingCoefficients(1, -4,   6,  -4,  1); s = T(1);    } break;
-    //case HP_6:     { setMixingCoefficients(1, -1,   0,   0,  0); s = T(0);    } break;
-    //case HP_12:    { setMixingCoefficients(1, -2,   1,   0,  0); s = T(0);    } break;
-    //case HP_18:    { setMixingCoefficients(1, -3,   3,  -1,  0); s = T(0);    } break;
-    //case HP_24:    { setMixingCoefficients(1, -4,   6,  -4,  1); s = T(0);    } break;
+    case HP_6:     { set(1, -1,   0,   0,  0, T(0.25) ); } break;  // (s/(1+s))^1
+    case HP_12:    { set(1, -2,   1,   0,  0, T(0.5)  ); } break;  // (s/(1+s))^2
+    case HP_18:    { set(1, -3,   3,  -1,  0, T(0.75) ); } break;  // (s/(1+s))^3
+    case HP_24:    { set(1, -4,   6,  -4,  1, T(1)    ); } break;  // (s/(1+s))^4
 
     // bandpasses:
-    //case BP_6_18:  { setMixingCoefficients(0,  0,   0,   4, -4); s = T(0.75); } break;
-    //case BP_12_12: { setMixingCoefficients(0,  0,   4,  -8,  4); s = T(0.5);  } break;
-    //case BP_18_6:  { setMixingCoefficients(0,  4, -12,  12, -4); s = T(0.25); } break;
-    //case BP_6_12:  { setMixingCoefficients(0,  0,   3,  -3,  0); s = T(2./3); } break;
-    //case BP_12_6:  { setMixingCoefficients(0,  3,  -6,   3,  0); s = T(1./3); } break;
-    //case BP_6_6:   { setMixingCoefficients(0,  2,  -2,   0,  0); s = T(0.5);  } break;
-    // generally: s = slope2 / (slope1 + slope2) where slope2 is the lowpass slope
-
-    case BP_6_18:  { setMixingCoefficients(0,  0,   0,   4, -4); s = T(0.125); } break;
-    case BP_12_12: { setMixingCoefficients(0,  0,   4,  -8,  4); s = T(0.125); } break;
-    case BP_18_6:  { setMixingCoefficients(0,  4, -12,  12, -4); s = T(0.125); } break;
-    case BP_6_12:  { setMixingCoefficients(0,  0,   3,  -3,  0); s = T(0.125); } break;
-    case BP_12_6:  { setMixingCoefficients(0,  3,  -6,   3,  0); s = T(0.125); } break;
-    case BP_6_6:   { setMixingCoefficients(0,  2,  -2,   0,  0); s = T(0.125); } break;
-
-
-
+    case BP_6_18:  { set(0,  0,   0,   4, -4, T(0.125)); } break;  // (s/(1+s))^1 * (1/(1+s))^3
+    case BP_12_12: { set(0,  0,   4,  -8,  4, T(0.125)); } break;  // (s/(1+s))^2 * (1/(1+s))^2
+    case BP_18_6:  { set(0,  4, -12,  12, -4, T(0.125)); } break;  // (s/(1+s))^3 * (1/(1+s))^1
+    case BP_6_12:  { set(0,  0,   3,  -3,  0, T(0.125)); } break;  // (s/(1+s))^1 * (1/(1+s))^2
+    case BP_12_6:  { set(0,  3,  -6,   3,  0, T(0.125)); } break;  // (s/(1+s))^2 * (1/(1+s))^1
+    case BP_6_6:   { set(0,  2,  -2,   0,  0, T(0.125)); } break;  // (s/(1+s))^1 * (1/(1+s))^1
 
     //// these additional modes were found in a thread on KVR: 
     // http://www.kvraudio.com/forum/viewtopic.php?&t=466588 
@@ -100,6 +91,9 @@ void rsLadderFilter<TSig, TPar>::setMode(int newMode)
     }
     updateCoefficients();
   }
+
+  // The values for s have been found by trial and error to make the peak gain roughly equal 
+  // between the various modes.
 }
 
 // inquiry:
@@ -203,6 +197,9 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
 {
   //y[4] /= 1 + y[4]*y[4];   // (ad hoc) nonlinearity applied to the feedback signal
   y[0]  = in - k*y[4];        // linear
+
+  // ToDo: let the user select the saturationMode: hardClip, tanh, softClip, etc. maybe with an 
+  // optional DC (add before the saturation, subtract after)
   y[0]  = rsClip(y[0], TSig(-1), TSig(+1));
   //y[0] /= TSig(1) + y[0]*y[0]; // nonlinearity applied to input plus feedback signal (division could be interesting with complex signals)
   //y[0]  = rsNormalizedSigmoids<TSig>::softClipHexic(y[0]);
@@ -396,6 +393,15 @@ ToDo:
  procedure without the resonance parameter (i think). Or maybe it should be done in th z-domain.
  ...not yet sure
 
+ -provide different morph modes:
+   MORPH_LP_FLAT_HP:  LP_24, LP_18, LP_12, LP_6, FLAT, HP_6, HP_12, HP_18, HP_24
+   MORPH_LP_BP_HP_24: LP_24, BP_6_18, BP_12_12, BP_18_6, HP_24
+   MORPH_LP_BP_HP_18: LP_18, BP_6_12, BP_12_6, HP_18
+   MORPH_LP_BP_HP_12: LP_12, BP_6_6, HP_12
+   MORPH_LP_BP_HP:    LP_24, LP_18, LP_12, BP_6_12, BP_12_12, BP_12_6, HP_12, HP_18, HP_24
 
+  for a 15 dB/oct lowpass, the prototype would be 1 / (1 + s^2.5), maybe we can approximate it
+  resaonably by 1 / (1 + (s^2 + s^3)/2), see: https://www.desmos.com/calculator/gsbvrxiceb
+  or: always use a 4th order Taylor series of the s^x term
 
 */
