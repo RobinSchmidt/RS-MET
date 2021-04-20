@@ -20,10 +20,10 @@ public:
   static constexpr typename Param<LDR::modes>::Names ModeNames = 
   { 
 	"Bypass",
-    "Lowpass_6"
-    "Lowpass_12"
-    "Lowpass_18"
-    "Lowpass_24"
+    "Lowpass_6",
+    "Lowpass_12",
+    "Lowpass_18",
+    "Lowpass_24",
     "Highpass_6",
     "Highpass_12",
     "Highpass_18",
@@ -42,6 +42,10 @@ public:
   Par parGain { "Gain",  Rng(-48, 12)              }; // in dB
   
   // ToDo: Mode, Drive (pre-gain), Gain (post-gain), DC, SatShape
+  
+  
+  Param<LDR::modes> parMode { "Mode", ModeNames };
+  
   
   // How can we set the parameters to reasonable default values?
 
@@ -77,6 +81,7 @@ private:
     const float gain  = RAPT::rsDbToAmp((float)parGain);
     flt.setCutoff(freq);
     flt.setResonance(reso);
+    flt.setMode(parMode);
     // todo: set them per sample
     
     // Loop over the sample frames:
