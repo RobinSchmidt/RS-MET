@@ -2778,6 +2778,7 @@ void ladderZDFvsUDF()
   udf.setCutoff(fc);
   udf.setSampleRate(fs);
   udf.setResonance(r);
+  udf.setBilinear(true);  // test
 
   // create and set up the zero delay feedback filter:
   rsLadderFilterZDFDD zdf;
@@ -2825,6 +2826,15 @@ void ladderZDFvsUDF()
   // -Actually, it makes qa big difference, if we use rsLadderFilter<double, double> or 
   //  rsLadderFilter2DD ...aren't they supposed to be the same? the former sounds better but is 
   //  also more quiet by a factor of about 2
+  // -The bilinear UDF version sound a bit brighter and louder than the regular version. After
+  //  normalizing both, they still sound different. The regular version seems to have its 
+  //  "rumble" or "lawnmower" a bit more present and at a lower tone. I'd say, bilinear sounds 
+  //  a bit better. Bilinear seems have a higher resonance amplitude. ToDo: write both into a 
+  //  stereo wavefile (maybe with channels individually normalized) for better comparison.
+  //  In some segments, the bilinear version has higher resonance (0.218) and in others, the 
+  //  regular version has higher resonance (0.254). It actually makes for a nice stereo effect
+  //  to have one channel regular and the other bilinear. Maybe use bilinear for mid and regular
+  //  for side channel. But maybe that effect only happens with this aggressive modulation?
 
 
   // ToDo: try a cascade of 4 1st order filters with 1-pole/1-zero each, instead of just one pole

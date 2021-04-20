@@ -217,6 +217,9 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
   // (x+0.25*x^3)/(1+x^4)  ...very straight in the middle, goes through (0.5,0.5)
   // (x+0.25*x^3)/(1+x^2)
 
+  TSig tmp1 = y[0];           // needed for bilinear version only
+  TSig tmp2;
+
   y[0]  = in - k*y[4];        // linear
   y[0]  = rsClip(y[0], TSig(-1), TSig(+1));  // cheapest
   //y[0] /= TSig(1) + y[0]*y[0]; // nonlinearity applied to input plus feedback signal (division could be interesting with complex signals)
@@ -226,10 +229,23 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
   // cheap hardclipping
 
   // Apply the 1st order stages:
-  y[1] = y[0] + a * (y[0] - y[1]);
-  y[2] = y[1] + a * (y[1] - y[2]);
-  y[3] = y[2] + a * (y[2] - y[3]);
-  y[4] = y[3] + a * (y[3] - y[4]);
+  if(bilinear)
+  {
+    TPar b = getBilinearB(a);
+    tmp2 = y[1]; y[1] = b*(y[0] + tmp1) - a*y[1];  // tmp1 = old y[0]
+    tmp1 = y[2]; y[2] = b*(y[1] + tmp2) - a*y[2];  // tmp2 = old y[1]
+    tmp2 = y[3]; y[3] = b*(y[2] + tmp1) - a*y[3];  // tmp1 = old y[2]
+                 y[4] = b*(y[3] + tmp2) - a*y[4];  // tmp2 = old y[3]
+    // Can this be simplified into a similar form as below? maybe like:
+    // y[3] = 0.5*(y[2] + tmp) + a*(y[2] - y[3]) where tmp is the old y[2]?
+  }
+  else
+  {
+    y[1] = y[0] + a * (y[0] - y[1]);
+    y[2] = y[1] + a * (y[1] - y[2]);
+    y[3] = y[2] + a * (y[2] - y[3]);
+    y[4] = y[3] + a * (y[3] - y[4]);
+  }
 
   // Form linear combination of the stage outputs:
   return c[0]*y[0] + c[1]*y[1] + c[2]*y[2] + c[3]*y[3] + c[4]*y[4];
