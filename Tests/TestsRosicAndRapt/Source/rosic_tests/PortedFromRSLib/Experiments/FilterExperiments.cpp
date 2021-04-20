@@ -1822,11 +1822,12 @@ void ladderTransferFunction()
 
   // test - uses getTransferFunctionAt:
   ldr.setMode(Mode::LP_24);
-  ldr.setResonance(0.0); 
+  ldr.setResonance(0.99); 
   plotFrequencyResponse(ldr, 501, 31.25, 32000.0, fs, true);
   ldr.setBilinear(true);
   plotFrequencyResponse(ldr, 501, 31.25, 32000.0, fs, true);
   int dummy = 0;
+  // ok - that works. next: implement the difference equation
 
   // Observations:
   // -Without resonance, the phase is around -172° at the cutoff frequency. This makes sense 
@@ -1848,8 +1849,7 @@ void ladderTransferFunction()
   //  frequencies and low frequencies are attenuated, with s=1, it looks the same for low 
   //  frequencies and high frequencies are boosted -> s=0.5 seems the most natural compromise
   //  ...same for BP_6_6
-  // -The bilinear phase response is nicer overall (monotonic) 
-  // -the overall gain of the bilinear response is wrong
+  // -The bilinear phase response is nicer overall (monotonic)
 
   // ToDo: 
   // -set up the y-ranges correctly - currently, one must use the mousewheel to get the correct

@@ -147,7 +147,7 @@ public:
   /** Given some normalized net feedback loop gain fb (in the range 0..1 where 1 is the 
   self-oscillation/instability limit), cos(wc) and lowpass coefficient a, this function 
   computes the feedback factor k. */
-  static TPar computeFeedbackFactor(CRPar fb, CRPar cosWc, CRPar a);
+  static TPar computeFeedbackFactor(CRPar fb, CRPar cosWc, CRPar a, bool bilinear);
 
   /** Given a desired decay time for the resonance (defined as the time it takes to fall to the
   value 1/e = 0.36..) in seconds and a cutoff frequency in Hz, this function computes the desired
@@ -167,7 +167,7 @@ public:
   /** Same as computeCoeffs(wc, fb, *a, *k, *g) but without the compensation gain computation. */
   static void computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *k, bool bilinear);
 
-  // make a static method for the output coefficients c[] 
+  // make a static method for the output coefficients c[] and s
 
 protected:
 
@@ -177,6 +177,12 @@ protected:
   /** Calculates the one-pole coefficients, feedback-gain and output gain from the parameters. */
   //virtual void updateCoefficients();     // why virtual - can we get rid of this?
   void updateCoefficients(); 
+
+  /** Computes the gain for a single filter stage in the bilinear case. In the no-zero case, 
+  b = 1 + a. In the bilinear case, it's half that. The formula can be derived by defining: 
+  c = cos(w), the magnitude squared is generally: (2*b^2 * (1+c)) / (1 + a^2 + 2*a*c) and setting 
+  w = 0, such that c = 1 and then evaluating the DC gain as if b was 1 and taking the reciprocal.*/
+  static TPar getBilinearB(TPar a) { return TPar(0.5) * (TPar(1) + a); }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */

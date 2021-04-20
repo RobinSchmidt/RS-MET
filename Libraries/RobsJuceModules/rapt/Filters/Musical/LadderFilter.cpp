@@ -112,7 +112,8 @@ std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(const std::
   T b; // = TPar(1) + a;
   if(bilinear)
   {
-    b  = T(0.5) * (T(1) + a);   // factor out int getB(T a, bool bilinear)
+    b =  getBilinearB(a);
+    //b  = T(0.5) * (T(1) + a);   // factor out int getB(T a, bool bilinear)
     G1 = b*(one + one/z) / (one + a/z);
   }
   else
@@ -147,6 +148,9 @@ TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency)
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
 {
+  rsAssert(!bilinear, "Formulas work only for no-zero filters");
+  // todo: work out the formulas for the bilinear variant
+
   // Compute some intermediate variables:
   using T = TPar;
   T b  = T(1)+a;
@@ -185,6 +189,8 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionOld()
 {
+  // todo: add option for bilinear case...
+
   using RF = RAPT::rsRationalFunction<TPar>;
   TPar tol = 1024 * RS_EPS(TPar);  // ad hoc
   TPar b = 1+a;
@@ -287,11 +293,25 @@ void rsLadderFilter<TSig, TPar>::reset()
 // coefficient computations:
 
 template<class TSig, class TPar>
-TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(CRPar fb, CRPar cosWc, CRPar a)
+TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(
+  CRPar fb, CRPar cosWc, CRPar a, bool bilinear)
 {
-  TPar b  = TPar(1) + a;
-  TPar g2 = b*b / (1 + a*a + 2*a*cosWc);
-  return fb / (g2*g2);
+  TPar b, g2;
+
+  if(bilinear)
+  {
+    b  = getBilinearB(a);
+    g2 = (2*b*b*(1+cosWc)) / (1 + a*a + 2*a*cosWc);
+  }
+  else
+  {
+    b  = TPar(1) + a;
+    g2 = b*b / (1 + a*a + 2*a*cosWc);
+  }
+  // can this be simpified further by plugging in the expression for b in terms of a?
+  // optimize: compute reciprocal of g2....
+
+  return fb / (g2*g2); //...then this can be turned into a multiplication
 }
 // for the bilinear case, we get g2 = (2*b+2*b^2*c) / (1+a^2+2*a*c) where c = cos(wc) = cosWc
 // ...but what is b? i don't think, it's just 1+a. calculate the mag-resp for b=1 at w=0, then use
@@ -353,7 +373,7 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar
      // evaluate the magnitude response of a bilinear 1st order filter at wc
   else
     *a = t / (s-c*t);
-  *k = computeFeedbackFactor(fb, c, *a);
+  *k = computeFeedbackFactor(fb, c, *a, bilinear);
   // If the cutoff frequency goes to zero wc -> 0, then s -> 0, c -> 1, t -> -1, b -> 0, a -> -1.
   // The coefficient computation for the lowpass stages approaches this limit correctly, but the 
   // formula for the feedback factor k runs into numerical problems when wc -> 0. However, we know
@@ -414,5 +434,8 @@ ToDo:
   for a 15 dB/oct lowpass, the prototype would be 1 / (1 + s^2.5), maybe we can approximate it
   resaonably by 1 / (1 + (s^2 + s^3)/2), see: https://www.desmos.com/calculator/gsbvrxiceb
   or: always use a 4th order Taylor series of the s^x term
+
+-maybe rename to rsLadderFilterUDF and make a similar class for a ZDF ladder, maybe factor out
+ a common baseclass
 
 */
