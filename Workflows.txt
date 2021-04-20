@@ -9,8 +9,10 @@ comment any experiment that you don't want to run but is currently uncommented).
 run, preferably in debug mode, unless you want to do performance tests. The unit- and performance 
 tests will produce console output for the results. The experiments will produce wave-files in the 
 project directory and/or use GNUPlotCPP to open a window with plots for the results (if you have 
-GNUPlot installed and GNUPlotter correctly set up - the file is in rapt/basics). If so desired, new
-tests and experiments can be added easily.
+GNUPlot installed and GNUPlotter correctly set up - the file is in rapt/Basics). Navigate to the 
+code for a particular test by right-clicking on the function-call and using "Go To 
+Definition/Declaration". If so desired, new tests and experiments can be added easily by just 
+following the apparent pattern.
 
 
 ---------------------------------------------------------------------------------------------------
@@ -27,10 +29,23 @@ Writing APE Scripts:
 
 Open the JUCE PluginHost, for example, using AudioPluginHost.exe from 
 
-RS-MET\Products\Applications\AudioPluginHost\Builds\VisualStudio2017\x64\Release\App\
+  RS-MET\Products\Applications\AudioPluginHost\Builds\VisualStudio2017\x64\Release\App\
 
 after you have built the project. Then plug in an APE instance and load the script with which you
-want to work (or create a new one) ...tbc...
+want to work (or create a new one). My scripts are located in:
+
+  RS-MET\Misc\APE Scripts
+
+Wire up APE as desired. For filters and effects, I like to place a ToolChain instance in front of 
+APE that runs a simple oscillator (for example using Straightliner) and place another instance of
+ToolChain after APE for running some sort of analysis (oscilloscope, spectrum analyzer, etc.). 
+Obviously, you may use different plugins for creating source signals and analyzing the output. For 
+editing the script, it may be convenient to use an external text editor such as Notepad++, 
+Visual Studio Code, Sublime, etc. For editing library code (rapt/rosic) in such a session, it may 
+be a good idea to do that in Visual Studio, running the TestsRosicAndRapt.sln in parallel to check
+occasionally if everything still compiles after the edits.
+
+...tbc...
 
 
 ---------------------------------------------------------------------------------------------------
