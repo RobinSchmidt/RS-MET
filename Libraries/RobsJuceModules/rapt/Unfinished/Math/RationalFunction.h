@@ -183,7 +183,6 @@ public:
   //===============================================================================================
   /** \name Computations on raw coefficient arrays */
 
-
   /** A general routine for performing a partial fraction expansion of a rational function with 
   known poles. You must pass the coefficient arrays of numerator and denominator, the array of 
   poles along with an array of their respective multiplicities (these two arrays are both of length

@@ -1,7 +1,11 @@
 #pragma once 
 
 // Functions that operate on std::vectors to perform polynomial coefficient array manipulations,
-// translated from my python implementation
+// translated from my python implementation. They should be moved into rsRationalFunction as static
+// meber functions. They are sort of low-level, although they use std::vector...maybe mid-level, but
+// they may need to resize the vectors. maybe factor out true low-level functions (operating on raw 
+// arrays) and if the need to resize, they don't actually resize anything but just inform the caller
+// about the new size by a return value.
 
 /* Evaluates the polynomial p a the given x using Horner's algorithm */
 template<class T>

@@ -9,6 +9,20 @@ bool rsRationalFunction<T>::reduce(T tol)
   return true;
 }
 
+
+
+
+
+//-------------------------------------------------------------------------------------------------
+// Computations on std::vector
+
+
+
+
+//-------------------------------------------------------------------------------------------------
+// Computations on raw coefficient arrays
+
+
 template<class T>
 int actualDegree(std::complex<T>* p, int maxDegree, T tol)
 {
