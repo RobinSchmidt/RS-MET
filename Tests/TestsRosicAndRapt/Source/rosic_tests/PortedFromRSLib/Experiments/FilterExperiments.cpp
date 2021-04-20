@@ -1827,7 +1827,7 @@ void ladderTransferFunction()
   ldr.setBilinear(true);
   plotFrequencyResponse(ldr, 501, 31.25, 32000.0, fs, true);
   int dummy = 0;
-  // ok - that works. next: implement the difference equation
+  // ok - that works. next: implement the transfer function computation
 
   // Observations:
   // -Without resonance, the phase is around -172° at the cutoff frequency. This makes sense 
@@ -1869,6 +1869,8 @@ void ladderTransferFunction()
   //  They should be roughly equal.
   // -maybe try a high-shelf that attenuates abobe the cutoff freq by around 10 dB...maybe the
   //  gain should be 1/(1+s*k)? because high frequencies get a boost with resonance
+  // -maybe we could make the "bilinear" parameter continuous from 0 to 1. Then we would indeed
+  //  have a b0 and b1 coeff
 }
 
 void ladderMultipole()

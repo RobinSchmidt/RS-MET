@@ -52,6 +52,8 @@ public:
   
   Param<LDR::Mode> parMode { "Mode", ModeNames };
   
+  Param<bool> parBilinear { "Bilinear" };
+  
   
   // How can we set the parameters to reasonable default values?
 
@@ -88,6 +90,7 @@ private:
     flt.setCutoff(freq);
     flt.setResonance(reso);
     flt.setMode(parMode);
+    flt.setBilinear(parBilinear);
     // todo: set them per sample
     
     // Loop over the sample frames:
@@ -116,6 +119,9 @@ private:
 // -when the resonance is above 100, the drive can be used to diminish the resonance - the signal
 //  gets smashed aginst the limits...however, in a sawtooth, the resonace recovers in the middle
 //  where the signal values are low
+// -the bilinear version behaves differently with respect to these artifacts. it seems to tend to
+//  alias more. regular seems to produce more chaos/noise. but that could be because the 
+//  resonance gets less diminished?
 // -by adjusting the drive just right (during self-oscillations), growl can be achieved
 // -introduce an envelope that can be used cut off the self-oscillation when the input is quiet
 //  -> use an env-follower with instantaneous attack and adjustable decay on the input
