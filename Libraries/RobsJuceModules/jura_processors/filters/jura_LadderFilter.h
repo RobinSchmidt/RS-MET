@@ -22,6 +22,8 @@ class JUCE_API Ladder : public jura::ModulatableAudioModule
 
 public:
 
+  using LDR = RAPT::rsLadderFilter<double, double>;
+
   Ladder(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse = nullptr,
     ModulationManager* modManagerToUse = nullptr);
     

@@ -1761,6 +1761,7 @@ void ladderTransferFunction()
   using LDR  = RAPT::rsLadderFilter<Real, Real>;
   using RF   = RAPT::rsRationalFunction<Real>;
   using BA   = RAPT::rsFilterSpecificationBA<Real>;
+  using Mode = LDR::Mode;
 
   Real fs  = 44100;   // sample rate
   Real fc  = 1000;    // cutoff frequency
@@ -1770,12 +1771,11 @@ void ladderTransferFunction()
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   //ldr.setResonance(res);
-  ldr.setMode(LDR::modes::LP_24);  // the basic "Moog" configuration
-  //ldr.setMode(LDR::modes::HP_24);
-  //ldr.setMode(LDR::modes::FLAT);  // still problematic when reso is zero
-  //ldr.setMode(LDR::modes::BP_6_18);
-  //ldr.setMode(LDR::modes::LP_6);
-
+  ldr.setMode(Mode::LP_24);  // the basic "Moog" configuration
+  //ldr.setMode(Mode::HP_24);
+  //ldr.setMode(Mode::FLAT);  // still problematic when reso is zero
+  //ldr.setMode(Mode::BP_6_18);
+  //ldr.setMode(Mode::LP_6);
 
 
   // Plot frequency responses for resonances from 0.0 to 0.9 in 0.1 steps:
@@ -1793,7 +1793,7 @@ void ladderTransferFunction()
 
   // Plot variuos response types with the same resonane:
   FilterPlotter<Real> plt2;
-  using Mode = LDR::modes;
+
   auto addPlotWithMode = [&](Mode m)
   {
     ldr.setMode(m); 
@@ -1816,12 +1816,13 @@ void ladderTransferFunction()
   addPlotWithMode(Mode::HP_12);
   addPlotWithMode(Mode::HP_18);
   addPlotWithMode(Mode::HP_24);
-
   plt2.setPixelSize(800, 400);
   plt2.plotFrequencyResponses(501, 31.25, 32000, true, true, true, false);
 
 
   // test - uses getTransferFunctionAt:
+  ldr.setMode(Mode::LP_24);
+  ldr.setResonance(0.0); 
   //plotFrequencyResponse(ldr, 501, 31.25, 32000.0, fs, true);
 
   // Observations:
@@ -1942,13 +1943,8 @@ void ladderMultipole()
   plt.plot();
 
   // Observations:
-  // -for N=3 and higher, it seems to work
-  // -for N=2, we seem to have severe numerical(?) problems - a1 goes to -1 and b0 to 0.
-  //  -> the denominator s-c*t gets close to -t
-  //  -> plot the phase response for N=2 without resonance, maybe that gives a hint what the 
-  //  problem is
-  // -maybe the problem is that in the derivation we have undone an atan(y/x) via tan which should 
-  //  actually have been an atan2(y,x)?
+  // -for N >= 3, it seems to work
+  // -for N <= 2, it cannot possibly work, because the phase does not cross -180°
   // -maybe try it with a 1-pole/1-zero filter with its zero at z = -1, such that we have 
   //  b := b1 = b0, so we still have only 2 degrees of freedom: G1(z) = b(1 + 1/z) / (1 + a1/z),
   //  maybe for computing a1, we can set b=1 - it should not really matter for the phase response
@@ -1957,7 +1953,7 @@ void ladderMultipole()
   //    t = -((1-a1)*s)/(1+a1 + (1+a1)*c)
   //      =  ((a1-1)*s)/(1+a1 + (1+a1)*c)
   //  wolfram: solve t=((a1-1)*s)/(1+a1 + (1+a1)*c) for a1
-  //    a1 = (c t + s + t)/(s - (c + 1) t) and s!=c t + t and c s + s!=0
+  //    a1 = (c t + s + t)/(s - (c + 1) t) and s != c t + t and c s + s != 0
   //
   // ToDo: 
   // -Try to derive a formula for the poles in the z-plane. They occur at location where

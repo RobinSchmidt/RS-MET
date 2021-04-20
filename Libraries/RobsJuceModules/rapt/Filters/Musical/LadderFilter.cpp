@@ -1,12 +1,8 @@
 template<class TSig, class TPar>
 rsLadderFilter<TSig, TPar>::rsLadderFilter()
 {
-  sampleRate = 44100.0;
-  cutoff     = 1000.0;
-  resonance  = 0.0;
-  setMode(LP_24);
-  updateCoefficients();
   reset();
+  setMode(Mode::LP_24);
 }
 
 template<class TSig, class TPar>
@@ -42,6 +38,7 @@ void rsLadderFilter<TSig, TPar>::setMode(int newMode)
 {
   // Shorthands for convenience:
   using T = TPar;
+  //using M = Mode;
   auto set = [&](T c0, T c1, T c2, T c3, T c4, T s)
   {
     setMixingCoefficients(c0, c1, c2, c3, c4); 
@@ -49,12 +46,11 @@ void rsLadderFilter<TSig, TPar>::setMode(int newMode)
   };
 
   // The actual setup:
-  if( newMode >= 0 && newMode < NUM_MODES )
+  if( newMode != mode )
   {
     mode = newMode;
     switch(mode)
-    {
-                                                                   // Prototype transfer function
+    {                                                              // Prototype transfer function
     case FLAT:     { set(1,  0,   0,   0,  0, T(0.125)); } break;  // 1
 
       // lowpasses:
@@ -112,6 +108,7 @@ std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(const std::
   std::complex<TPar> H;              // transfer function with resonance   
   std::complex<TPar> one(1, 0);
 
+  TPar b = TPar(1)+a;    // get rid
   G1 = b / (one + a/z);
   G2 = G1*G1;
   G3 = G2*G1;
@@ -142,6 +139,7 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
 {
   // Compute some intermediate variables:
   using T = TPar;
+  T b  = T(1)+a;
   T b2 = b*b;        // b^2
   T b4 = b2*b2;      // b^4
   T a2 = a*a;        // a^2
@@ -179,6 +177,7 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionOld()
 {
   using RF = RAPT::rsRationalFunction<TPar>;
   TPar tol = 1024 * RS_EPS(TPar);  // ad hoc
+  TPar b = 1+a;
   RF G1( { 0, b }, { a, 1 }, tol); // G1(z) = b / (1 + a/z) = (0 + b*z) / (a + 1*z)
   RF one({ 1    }, { 1    }, tol); // 1 = 1 / 1
   RF z  ({ 0, 1 }, { 1    }, tol); // z = (0 + 1*z) / 1
@@ -195,27 +194,23 @@ template<class TSig, class TPar>
 inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
 //inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(TSig in)
 {
+  // Apply feedback and saturation:
   //y[4] /= 1 + y[4]*y[4];   // (ad hoc) nonlinearity applied to the feedback signal
   y[0]  = in - k*y[4];        // linear
-
-  // ToDo: let the user select the saturationMode: hardClip, tanh, softClip, etc. maybe with an 
-  // optional DC (add before the saturation, subtract after)
-  y[0]  = rsClip(y[0], TSig(-1), TSig(+1));
+  y[0]  = rsClip(y[0], TSig(-1), TSig(+1));  // cheapest
   //y[0] /= TSig(1) + y[0]*y[0]; // nonlinearity applied to input plus feedback signal (division could be interesting with complex signals)
-  //y[0]  = rsNormalizedSigmoids<TSig>::softClipHexic(y[0]);
+  //y[0]  = rsNormalizedSigmoids<TSig>::softClipHexic(y[0]);  // most expensive
+  // ToDo: let the user select the saturationMode: hardClip, tanh, softClip, etc. maybe with an 
+  // optional DC (add before the saturation, subtract after) ..do that in subclasses - here, we just do the 
+  // cheap hardclipping
 
-  // formula with b:
-  //y[1]  = b*y[0] - a*y[1];
-  //y[2]  = b*y[1] - a*y[2];
-  //y[3]  = b*y[2] - a*y[3];
-  //y[4]  = b*y[3] - a*y[4];
-
-  // formula without b:
+  // Apply the 1st order stages:
   y[1] = y[0] + a * (y[0] - y[1]);
   y[2] = y[1] + a * (y[1] - y[2]);
   y[3] = y[2] + a * (y[2] - y[3]);
   y[4] = y[3] + a * (y[3] - y[4]);
 
+  // Form linear combination of the stage outputs:
   return c[0]*y[0] + c[1]*y[1] + c[2]*y[2] + c[3]*y[3] + c[4]*y[4];
 
   // We should experiment with placing saturation at different points - and, of course, try more 
@@ -365,6 +360,7 @@ template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::updateCoefficients()
 {
   TPar wc = 2 * (TPar)PI * cutoff / sampleRate;
+  TPar b;  // dummy
   computeCoeffs(wc, resonance, s, &a, &b, &k, &g);
 }
 

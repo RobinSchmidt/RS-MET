@@ -33,8 +33,7 @@ public:
 
 
   /** Enumeration of the available filter modes. */
-  enum modes  // rename to LadderMode or just Mode, see  state handling here: 
-              // https://www.juce.com/doc/tutorial_playing_sound_files
+  enum Mode
   {
     FLAT = 0,   
     LP_6,
@@ -57,6 +56,8 @@ public:
   // add more modes: allpass1/2/3/4, notch(es), maybe peak if possible (perhaps requires gain 
   // parameter), shelf
   // maybe rename to Lowpass_6, etc., 
+  // see https://www.juce.com/doc/tutorial_playing_sound_files
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
@@ -86,7 +87,7 @@ public:
   lowpass - as in the classical Moog filter. */
   void setMixingCoefficients(CRPar c0, CRPar c1, CRPar c2, CRPar c3, CRPar c4);
 
-  /** Chooses the filter mode. See the enumeration for available modes. */
+  /** Chooses the filter mode. See the Mode enum for the available modes. */
   void setMode(int newMode);
 
   //-----------------------------------------------------------------------------------------------
@@ -167,25 +168,30 @@ public:
 
 protected:
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Internal Functions */
                         
   /** Calculates the one-pole coefficients, feedback-gain and output gain from the parameters. */
   //virtual void updateCoefficients();     // why virtual - can we get rid of this?
   void updateCoefficients(); 
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  TSig y[5];        // outputs of the stages 0..4
-  TPar c[5];        // mixing coeffs for stages 0..4
-  TPar a, b;        // leaky integrator coefficients for a stage: y[n] = b*x[n] - a*y[n-1]
-  TPar k;           // feedback gain
-  TPar g;           // output gain
-  TPar s = 1;       // scaler for k in gain computation - make user-parameter ("Fat"?)
-  TPar cutoff;      // cutoff frequency in Hz
-  TPar resonance;   // resonance 0..1
-  TPar sampleRate;  // samplerate in Hz
-  int  mode;        // filter mode (see modes-enum)
+  // Algo parameters and state:
+  TSig y[5];         // outputs of the stages 0..4 (filter state)
+  TPar c[5];         // mixing coeffs for stages 0..4
+  TPar a = TPar(0);  // coeff for a 1-pole stage (depends on cutoff)
+  TPar k = TPar(0);  // feedback gain (depends on resonance)
+  TPar g = TPar(1);  // compensation gain (depends on resonance)
+  TPar s = TPar(1);  // scaler for k in compensation gain computation (depends on mode)
+
+  // User parameters:
+  TPar cutoff = TPar(1000);      // cutoff frequency in Hz
+  TPar resonance = TPar(0);      // resonance 0..1
+  TPar sampleRate = TPar(44100); // samplerate in Hz
+  int  mode = Mode::FLAT;        // filter mode (see Mode enum)
+  // todo: get rid of sample-rate, just maintain an omega = 2*PI*fc/fs
 
 };
 

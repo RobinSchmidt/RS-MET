@@ -23,7 +23,7 @@ rsZeroCrossingPitchDetector<T>::rsZeroCrossingPitchDetector() : formantRemover(3
   //lowpass.setSampleRate(sampleRate);
 
   // new:
-  lowpass.setMode(rsLadderFilter<T,T>::LP_24);
+  lowpass.setMode(rsLadderFilter<T,T>::Mode::LP_24);
   lowpass.setCutoff(50.0);
   lowpass.setSampleRate(sampleRate);
 

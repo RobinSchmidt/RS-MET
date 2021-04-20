@@ -9,8 +9,8 @@ rsScopeScreenScanner<T>::rsScopeScreenScanner()
   sync = false;
   minZeroDistance = 20; // maybe have a maxFrequency parameter instead
   numZerosToReset = 2;  // # zeros to be seen before reset occurs (typically number of cycles seen)
-  //lowpass.setMode(LadderFilter<T,T>::LP_6); // maybe we can use a 1-pole filter - optimize
-  lowpass.setMode(rsLadderFilter<T,T>::BP_6_6);
+  //lowpass.setMode(LadderFilter<T,T>::Mode::LP_6); // maybe we can use a 1-pole filter - optimize
+  lowpass.setMode(rsLadderFilter<T,T>::Mode::BP_6_6);
   lowpass.setCutoff(20.0);
   reset();
 }

@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();  // some tests there are still commented out
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
@@ -351,8 +351,8 @@ int main(int argc, char* argv[])
   ////experimentalPrototypeM1N2();  // commented in header
   //splitLowFreqFromDC();
   //directFormFreqResp();
-  ladderTransferFunction();
-  //ladderMultipole();
+  //ladderTransferFunction();
+  ladderMultipole();
   //ladderResonanceModeling();
   //ladderResoShape();
   //ladderThresholds();           // maybe remove - this seemed to be a dead end

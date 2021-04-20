@@ -365,13 +365,13 @@ void ladderResonanceManipulation()
   withReso.setSampleRate(fs);
   withReso.setCutoff(fc);
   withReso.setResonance(res);
-  withReso.setMode(LDR::LP_24);
+  withReso.setMode(LDR::Mode::LP_24);
 
   LDR noReso;
   noReso.setSampleRate(fs);
   noReso.setCutoff(fc);
   noReso.setResonance(0);
-  noReso.setMode(LDR::LP_24);
+  noReso.setMode(LDR::Mode::LP_24);
 
   // create time axis and input signal;
   vector<float> t(N), x(N);

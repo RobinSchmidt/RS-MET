@@ -17,9 +17,9 @@ public:
   LadderFilter() {}
   
 
-  static constexpr typename Param<LDR::modes>::Names ModeNames = 
+  static constexpr typename Param<LDR::Mode>::Names ModeNames = 
   { 
-	"Bypass",
+    "Bypass",
     "Lowpass_6",
     "Lowpass_12",
     "Lowpass_18",
@@ -27,7 +27,13 @@ public:
     "Highpass_6",
     "Highpass_12",
     "Highpass_18",
-    "Highpass_24"
+    "Highpass_24",
+    "Bandpass_6_6",
+    "Bandpass_6_12",
+    "Bandpass_6_18",
+    "Bandpass_12_6",
+    "Bandpass_12_12",
+    "Bandpass_18_6",
   };
   
 
@@ -37,14 +43,14 @@ public:
   using Map = Rng::Mapping;
 
   Par parFreq { "Freq",  Rng(20,  20000, Map::Exp) }; // in Hz
-  Par parReso { "Reso",  Rng(0,   100)             }; // in %
+  Par parReso { "Reso",  Rng(0,   400)             }; // in %
   Par parDrive{ "Drive", Rng(-12, 48)              }; // in dB
   Par parGain { "Gain",  Rng(-48, 12)              }; // in dB
   
-  // ToDo: Mode, Drive (pre-gain), Gain (post-gain), DC, SatShape
+  // ToDo: Mode, Drive (pre-gain), Gain (post-gain), DC/Asym, SatShape
   
   
-  Param<LDR::modes> parMode { "Mode", ModeNames };
+  Param<LDR::Mode> parMode { "Mode", ModeNames };
   
   
   // How can we set the parameters to reasonable default values?
@@ -106,6 +112,19 @@ private:
 //  maybe 100% should occur at 2/3 or 3/4 of the full range. actually, that would be good anyway
 //  because from 0..50%, not much seems to be happening and before 100, a lot is happening. be 
 //  sure to test this with settings where the drive does not diminish the resonance
+// -it seems like the artifacts can be combatted by using smoother nonlinearities
+// -when the resonance is above 100, the drive can be used to diminish the resonance - the signal
+//  gets smashed aginst the limits...however, in a sawtooth, the resonace recovers in the middle
+//  where the signal values are low
+// -by adjusting the drive just right (during self-oscillations), growl can be achieved
+// -introduce an envelope that can be used cut off the self-oscillation when the input is quiet
+//  -> use an env-follower with instantaneous attack and adjustable decay on the input
+//  -> 2 parameters: env-amount, env-decay
+//  -> maybe it should have a hold-time, too
+//  ...because it can be annyoing when the filter constantly produces sound even without input
+
+
+
 
 
 

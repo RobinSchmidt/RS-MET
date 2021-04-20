@@ -576,6 +576,13 @@ protected:
 
   // array of strings to be used for enum-based parameters (for comboboxes, etc.):
   StringArray stringValues;
+  // todo: addStringValue should take an optional 2nd argument which is an integer that maps to the
+  // enum index - we could call it, for example, like:
+  //   p->addStringValue("Bandpass 6/18 dB/oct", LDR::Mode::BP_6_18);
+  // the parameter class should store pairs of strings with their index. if nothing is passed, it 
+  // just uses a running index. this makes it more flexible: the order in which the options occur
+  // on the menu need to to match the order in the enum - currently, this is required: the enum 
+  // index must match the index of the string in the string-array of options
 
   // mutex lock to acquire when we notify our observers and call our callbacks:
   CriticalSection* mutex = nullptr;
