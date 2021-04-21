@@ -155,20 +155,57 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
   using RF = RAPT::rsRationalFunction<T>;
   if(bilinear)
   {
-    T A  = a+1; A *= A; A *= A;    // A = (a+1)^4
-    T Ak = A*k;
-    T a2 = a*a;                    // a^2
+    T A   = a+1;
+    T A2  = A*A;
+    T A3  = A2*A;
+    T A4  = A2*A2;
+    //T A4  = a+1; A4 *= A4; A4 *= A4;    // A4 = (a+1)^4
+    T A4k = A4*k;
+    T a2  = a*a;                        // a^2
 
+    // create numerator:
     std::vector<T> D(6);
-    D[0] = Ak;
-    D[1] = 4*(4*a2*a2 + Ak);
-    D[2] = 2*(32*a2*a + 3*Ak);
-    D[3] = 4*(24*a2 + Ak);
-    D[4] = (Ak + 64*a);
+    D[0] = A4k;
+    D[1] = 4*(4*a2*a2 + A4k);
+    D[2] = 2*(32*a2*a + 3*A4k);
+    D[3] = 4*(24*a2 + A4k);
+    D[4] = (A4k + 64*a);
     D[5] = 16;
 
-    RF H({0, g*A, g*4*A, g*6*A, g*4*A, g*A}, D);
+    // create denominator:
+    std::vector<T> N(6);
+    N[0]  = T(0);
+
+    // 4th stage:
+    N[1]  = c[4]*1*A4;
+    N[2]  = c[4]*4*A4;
+    N[3]  = c[4]*6*A4;
+    N[4]  = c[4]*4*A4;
+    N[5]  = c[4]*1*A4;
+
+    // 3rd stage:
+    //...
+
+    // 2nd stage:
+    N[1] += 4*c[2]*A2*a2;
+    N[2] += 4*c[2]*2*A3*a;
+    N[3] += 4*c[2]*((a2+4*a+1)*A2);
+    N[4] += 4*c[2]*2*A3;
+    N[5] += 4*c[2]*A2;
+
+    // 1st stage:
+
+    // 0th stage:
+
+    N = g*N;
+
+
+    //RF H({0, g*A, g*4*A, g*6*A, g*4*A, g*A}, D);
+
+    RF H(N, D);
     return H;
+    // that works only for the lowpasses - we need to take into account the c-values. compute the
+    // transfer functions after all the poles and form a weighted sum...
   }
   else
   {

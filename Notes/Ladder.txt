@@ -186,3 +186,54 @@ then this simplifies to:
 
 ...interesting - it's a 5-pole/5-zero filter
 
+we also need the transfer functions after the 1st, 2nd, 3rd lowpass to form their weighted sum for
+the expander-modes - for example, after the 3rd:
+
+var("a z k")
+b  = (a+1)/2
+G(z) = (b+b/z)/(1+a/z)
+H    = G^3 / (1 + k*G^4/z)
+Hs = H.simplify_rational()
+Hs
+
+2*((a^3 + 3*a^2 + 3*a + 1)*z^5 + (a^4 + 6*a^3 + 12*a^2 + 10*a + 3)*z^4 + 3*(a^4 + 4*a^3 + 6*a^2 + 4*a + 1)*z^3 + (3*a^4 + 10*a^3 + 12*a^2 + 6*a + 1)*z^2 + (a^4 + 3*a^3 + 3*a^2 + a)*z)
+/
+((16*z^5 + A*k + 64*a)*z^4 + 4*(24*a^2 + A*k)*z^3 + 2*(32*a^3 + 3*A*k)*z^2 + 4*(4*a^4 + A*k)*z + A*k)
+
+the denominator is (always) same, the numerators are:
+
+
+
+define 
+A2 = (a+1)^2 =                 a^2 + 2*a + 1
+A3 = (a+1)^3 =         a^3 + 3*a^2 + 3*a + 1
+A4 = (a+1)^4 = a^4 + 4*a^3 + 6*a^2 + 4*a + 1 = A
+
+
+
+
+G2 = 4*((a^2 + 2*a + 1)*z^5 + 2*(a^3 + 3*a^2 + 3*a + 1)*z^4 + (a^4 + 6*a^3 + 10*a^2 + 6*a + 1)*z^3 + 2*(a^4 + 3*a^3 + 3*a^2 + a)*z^2 + (a^4 + 2*a^3 + a^2)*z)
+   = 4*(A2*z^5 + 2*A3*z^4 + (a^4 + 6*a^3 + 10*a^2 + 6*a + 1)*z^3 + 2*(a^4 + 3*a^3 + 3*a^2 + a)*z^2 + (a^4 + 2*a^3 + a^2)*z)
+   = 4*(A2*z^5 + 2*A3*z^4 + ((a^2 + 4*a + 1)*A2)*z^3 + 2*(A3*a)*z^2 + A2*a^2*z)
+
+var("a")
+a1 = (a^4 + 2*a^3 + a^2).factor()
+a2 = (a^4 + 3*a^3 + 3*a^2 + a).factor()
+a3 = (a^4 + 6*a^3 + 10*a^2 + 6*a + 1).factor()
+a1, a2, a3
+  -> ((a + 1)^2*a^2, (a + 1)^3*a, (a^2 + 4*a + 1)*(a + 1)^2)
+
+G3: 
+2*(A3*z^5 + (a^4 + 6*a^3 + 12*a^2 + 10*a + 3)*z^4 + 3*A4*z^3 + (3*a^4 + 10*a^3 + 12*a^2 + 6*a + 1)*z^2 + A3*z)
+
+where:
+
+(   a^4 + 6*a^3 + 12*a^2 + 10*a + 3) = (a + 1)^3 (a   + 3) =   (a + 1)^4 + 2 (a + 1)^3
+(3*a^4 + 10*a^3 + 12*a^2 +  6*a + 1) = (a + 1)^3 (3 a + 1) = 3 (a + 1)^4 - 2 (a + 1)^3
+
+
+G4: A4*z^5 + 4*A4*z^4 + 6*A4*z^3 + 4*A4*z^2 + A4*z
+
+
+
+

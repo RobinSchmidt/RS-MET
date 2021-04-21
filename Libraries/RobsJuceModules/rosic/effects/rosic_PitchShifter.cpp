@@ -222,3 +222,22 @@ void PitchShifter::updateDistanceVariables()
 
 
 
+/*
+Ideas:
+-instead using just two tap-out pointers, let the user select, how many
+-let the user select the window function, too
+-the overlap-to-1 condition of the windows can be enforced in realtime for any window and any 
+ overlap factor by just keeping track of the sum of the weights during output accumulation and 
+ diving the output by that number afterwards. of course, that may change the effective shape of the 
+ window (unless it already obeys the sum-to-1 condition for given overlap factor)....but in a 
+ desirable way for this application
+-currently, we use a cosine-squared window with an overlap of 1/2 because that naturally gives the
+ sum-to-one condition - but it may be advatageous to take larger overlaps: 3/2, 3/4, 4/5 (the 
+ distance between the taps is 1/2, 1/3, 1/4, 1/5, ...)
+-do tests: with a stable sinusoidal input, they should be all perfect - but differences may become 
+ obvious when taking an input that features vibrato and/or an envelope. Test also with DC input. 
+ That should also be perfect, i.e. change nothing (except transient artifacts, i.e. some sort 
+ of fade-in at the very beginning). Test it also with material that features strong transients. 
+ Maybe try an impulse (train), too.
+
+*/

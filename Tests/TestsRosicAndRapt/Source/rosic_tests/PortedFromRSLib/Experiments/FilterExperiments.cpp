@@ -1778,7 +1778,7 @@ void ladderTransferFunction()
   //ldr.setMode(Mode::LP_6);
   ldr.setBilinear(true);
   // when setting this to true, the 2nd plot plots only 4 lowpasses - that's wrong! and they also
-  // have wrong gains!
+  // have wrong gains! ..oh - of course! i need to take into account the c[] coeffs!
 
 
   // Plot frequency responses for resonances from 0.0 to 0.9 in 0.1 steps:
@@ -1791,7 +1791,7 @@ void ladderTransferFunction()
   for(int i = 0; i <= 9; i++)
     addPlotWithReso(0.1 * i);
   plt.setPixelSize(800, 400);
-  plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
+  //plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
 
   // Plot variuos response types with the same resonane:
@@ -1804,6 +1804,10 @@ void ladderTransferFunction()
   };
   ldr.setResonance(0.9);
 
+  addPlotWithMode(Mode::LP_12);
+  addPlotWithMode(Mode::LP_24);
+
+  /*
   addPlotWithMode(Mode::LP_24);
   addPlotWithMode(Mode::LP_18);
   addPlotWithMode(Mode::LP_12);
@@ -1819,6 +1823,7 @@ void ladderTransferFunction()
   addPlotWithMode(Mode::HP_12);
   addPlotWithMode(Mode::HP_18);
   addPlotWithMode(Mode::HP_24);
+  */
   plt2.setPixelSize(800, 400);
   plt2.plotFrequencyResponses(501, 31.25, 32000, true, true, true, false);
 
