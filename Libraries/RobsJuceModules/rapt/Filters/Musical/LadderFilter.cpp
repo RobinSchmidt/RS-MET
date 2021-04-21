@@ -264,12 +264,13 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool wi
 
     // G3 contributions:
     N[1] += -c[3]*A3*u3;
-    N[2] +=  c[3]*(A3*(3*a-1)*u3 - 3*A3*u2);
-    N[3] += -c[3]*3*((a4 + 2*a3 - 2*a - 1)*u3 - A3*(2*a-1)*u2 + A3*u);
-    N[4] += -c[3]*(a4 - A3*(a-3)*u3 + 3*a3 + 3*A3*(a-2)*u2 + 3*a2 - 3*A3*(a-1)*u + a);
-    N[5] += -c[3]*(A3*u3-a3-3*A3*u2-3*a2+3*A3*u-3*a-1);
-    // that is questionable. response plot seems to have 14 dB too much gain and the slope looks
-    // a bit too steep, similar to the 24 dB case - verify, rederive
+    N[2] +=  c[3]*(((3*a - 1) * A3)*u3 - 3*A4*u2);
+    N[3] += -c[3]*3*(((a - 1) * A3)*u3 - ((2*a - 1)*A3)*u2 + A4*u);
+    N[4] += -c[3]*A3*(a - (a-3)*u3 + 3*(a-2)*u2 - 3*(a-1)*u);
+    N[5] += -c[3]*A3*U3;
+    // todo: try to simplify further - try to make every term start with c[3]*A3 - if there is no 
+    // A3 try to create one by splitting it off from an A4. try to match the pattern of the G4
+    // code below
 
     // G4 contributions:
     N[1] +=    c[4]*A4*u4;

@@ -1878,8 +1878,8 @@ void ladderTransferFunction()
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   //ldr.setResonance(res);
-  ldr.setMode(Mode::LP_24);  // the basic "Moog" configuration
-  //ldr.setMode(Mode::LP_18);
+  //ldr.setMode(Mode::LP_24);  // the basic "Moog" configuration
+  ldr.setMode(Mode::LP_18);
   //ldr.setMode(Mode::HP_24);
   //ldr.setMode(Mode::FLAT);  // still problematic when reso is zero
   //ldr.setMode(Mode::BP_6_18);
@@ -1887,7 +1887,7 @@ void ladderTransferFunction()
   //ldr.setBilinear(true);
   ldr.setB1(0.23);
 
-
+  /*
   // Plot frequency responses for resonances from 0.0 to 0.9 in 0.1 steps:
   FilterPlotter<Real> plt;
   auto addPlotWithReso = [&](Real r)
@@ -1900,6 +1900,7 @@ void ladderTransferFunction()
   plt.setPixelSize(800, 400);
   plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
+  */
 
 
   // Plot variuos response types with the same resonane:
@@ -1916,7 +1917,7 @@ void ladderTransferFunction()
   //addPlotWithMode(Mode::LP_6);
   //addPlotWithMode(Mode::LP_12);
   addPlotWithMode(Mode::LP_18);   // has around 14 dB too much gain with B1 = 0.23
-  //addPlotWithMode(Mode::LP_24);
+  addPlotWithMode(Mode::LP_24);
 
   /*
   addPlotWithMode(Mode::LP_24);

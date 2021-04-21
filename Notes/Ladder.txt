@@ -278,6 +278,11 @@ A2  = (a+1)^2 =                 a^2 + 2*a + 1
 A3  = (a+1)^3 =         a^3 + 3*a^2 + 3*a + 1
 A4  = (a+1)^4 = a^4 + 4*a^3 + 6*a^2 + 4*a + 1
 A4k = A4*k
+U1  = (u-1)
+U2  = (u-1)^2 = u^2 - 2*u^1 + 1
+U3  = (u-1)^3 = u^3 - 3*u^2 + 3*u^1 - 1
+U4  = (u-1)^4 = u^4 - 4*u^3 + 6*u^2 - 4*u + 1
+
 
 Denominator:
 
@@ -293,8 +298,6 @@ D =
 
 
 
-
-
 Numerator for G3:
 
 - A3*u^3*z 
@@ -304,15 +307,13 @@ Numerator for G3:
 - (A3*u^3 - a^3 - 3*A3*u^2 - 3*a^2 + 3*A3*u - 3*a - 1)*z^5 
 
 verify that! seems to hae a wrong gain...
+
+
  
 
 Numerator for G4:
 
-Define 
-U1 = (u-1)
-U2 = (u-1)^2 = u^2 - 2*u^1 + 1
-U3 = (u-1)^3 = u^3 - 3*u^2 + 3*u^1 - 1
-U4 = (u-1)^4 = u^4 - 4*u^3 + 6*u^2 - 4*u + 1
+
 
     A4*u^4    * z 
 - 4*A4*u^3*U1 * z^2    
