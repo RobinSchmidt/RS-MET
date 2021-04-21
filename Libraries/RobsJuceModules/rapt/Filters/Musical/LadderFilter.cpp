@@ -102,42 +102,39 @@ void rsLadderFilter<TSig, TPar>::getState(TSig *state)
 }
 
 template<class TSig, class TPar>
-std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(const std::complex<TPar>& z)
+std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(
+  const std::complex<TPar>& z, bool withGain)
 {
   using T = TPar;
   std::complex<T> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
   std::complex<T> H;              // transfer function with resonance   
   std::complex<T> one(1, 0);
-
-  T b; // = TPar(1) + a;
-  if(bilinear)
-  {
-    b =  getBilinearB(a);
-    //b  = T(0.5) * (T(1) + a);   // factor out int getB(T a, bool bilinear)
-    G1 = b*(one + one/z) / (one + a/z);
-  }
-  else
-  {
+  T b;
+  if(bilinear) {
+    b  =  getBilinearB(a);
+    G1 = (b + b/z) / (one + a/z); }
+  else {
     b  = T(1) + a;
-    G1 = b / (one + a/z);
-  }
+    G1 = b / (one + a/z); }
   G2 = G1*G1;
   G3 = G2*G1;
   G4 = G3*G1;
-  H  = g * (c[0] + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + k * G4 / z);
+  H  = (c[0] + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + k * G4/z);
 
-  return H;
+  if(withGain) return g*H;
+  else         return   H;
 }
 
 template<class TSig, class TPar>
-TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency)
+TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency, bool withG)
 {
+  using Cmp = std::complex<TPar>;
   TPar w = 2 * TPar(PI) * frequency/sampleRate;
-  std::complex<TPar> j(0, 1);                      // imaginary unit
-  std::complex<TPar> z = rsExp(j*w);               // location in the z-plane
-  std::complex<TPar> H = getTransferFunctionAt(z); // H(z) at our z
-  H *= conj(H);                                    // magnitude-squared
-  return rsSqrt(H.real());                         // imaginary part should be zero anyway
+  Cmp j(0, 1);                             // imaginary unit
+  Cmp z = rsExp(j*w);                      // location in the z-plane
+  Cmp H = getTransferFunctionAt(z, withG); // H(z) at our z
+  H *= conj(H);                            // magnitude-squared
+  return rsSqrt(H.real());                 // imaginary part should be zero anyway
 
   // Why not just return rsAbs(H)?
 

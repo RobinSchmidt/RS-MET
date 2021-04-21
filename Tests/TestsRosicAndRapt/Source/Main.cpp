@@ -352,7 +352,7 @@ int main(int argc, char* argv[])
   //splitLowFreqFromDC();
   //directFormFreqResp();
   ladderResonanceGain();
-  ladderTransferFunction();
+  //ladderTransferFunction();
   //ladderMultipole();
   //ladderResonanceModeling();
   //ladderResoShape();

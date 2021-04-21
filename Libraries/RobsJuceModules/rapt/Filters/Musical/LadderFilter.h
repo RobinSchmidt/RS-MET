@@ -106,24 +106,28 @@ public:
   /** Writes the filter's internal state buffer into the passed array which must be of length 5. */
   void getState(TSig *state);
 
-  /** Returns the filter's z-domain transfer function value at the given value of z. */
-  std::complex<TPar> getTransferFunctionAt(const std::complex<TPar>& z); 
+  /** Returns the filter's z-domain transfer function value at the given value of z. The withGain 
+  flag decides, whether or not the gain compensation factor should by multiplied in (that's the 
+  factor that boosts the whole signal depending on the resonance setting). */
+  std::complex<TPar> getTransferFunctionAt(const std::complex<TPar>& z, bool withGain = true); 
     // z needs to be a const-reference, too?
 
   /** Returns the filter's magnitude response at the given frequency in Hz. */
-  TPar getMagnitudeResponseAt(CRPar frequency);
+  TPar getMagnitudeResponseAt(CRPar frequency, bool withGain = true);
   // maybe rename to getMagnitudeAt, include optional parameter withGain as in getTransferFunction
+  // maybe instead of the frequency in Hz it should take "omega"
 
-  /** Returns the transfer function rsRationalFunction object. The withGain falgs decides, whether
-  or not the gain compensation factor should by multiplied in (that's the factor that boosts the 
-  whole signal depending on the resonance setting) */
+  /** Returns the transfer function as rsRationalFunction object. This is mainly useful for 
+  research and development and not suitable for use actual products and a total no-go to use at 
+  realtime. For plots in products, you should probably use getTransferFunctionAt or 
+  getMagnitudeResponseAt. */
   rsRationalFunction<TPar> getTransferFunction(bool withGain = true);
 
   /** Old implementation of getTransferFunction, using rsRationalFunction's arithmetic instead of
   just assigning the coeffs via analytically derived formulas (as the new one does). It's less 
-  efficient and less precise that the new one, but nicely demonstrates how such a thing can be 
-  done. It will also produce a function that is formally 8-pole, but fetaures pole/zero 
-  cancellations. ToDo: move this eventually into the prototypes section. */
+  efficient and less precise than the new one, but nicely demonstrates how rsRationalFunction can 
+  be used for such computations. It will produce a function that is formally 8-pole, but features 
+  pole/zero cancellations. ToDo: move this eventually into the prototypes section. */
   rsRationalFunction<TPar> getTransferFunctionOld();
 
   //-----------------------------------------------------------------------------------------------

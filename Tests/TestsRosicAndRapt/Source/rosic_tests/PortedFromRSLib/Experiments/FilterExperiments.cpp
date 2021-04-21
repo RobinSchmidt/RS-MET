@@ -1763,14 +1763,54 @@ void ladderResonanceGain()
 
   using Real = double;
   using LDR  = RAPT::rsLadderFilter<Real, Real>;
+  using Vec  = std::vector<Real>;
+  using Mode = LDR::Mode;
 
-  Real fs  = 44100;   // sample rate
-  Real fc  = 1000;    // cutoff frequency
-  Real r   = 0.99;    // resonance (should be high)
+  Real fs       = 44100;   // sample rate
+  Real fc       = 8000;    // cutoff frequency
+  Real r        = 0.99;    // resonance (should be high)
+  bool bilinear = false;   // switch between regular/bilinear mode
+  bool withGain = false;    // switch form plotting with or without compensation gain applied
 
-  // ...tbc...
+  LDR ldr;
+  ldr.setSampleRate(fs);
+  ldr.setCutoff(fc);
+  ldr.setResonance(r);
+  ldr.setBilinear(bilinear);
 
-  int dummy = 0;
+
+  int numFreqs = 1001;
+  Real fLo   = 20;
+  Real fHi   = 20000;
+  Vec  freqs = rsRangeExponential(fLo, fHi, numFreqs);
+  Vec  gains(numFreqs);
+
+  //std::vector<Mode> modes({ Mode::LP_24, Mode::LP_18, Mode::LP_12, Mode::LP_6, Mode::FLAT });
+  std::vector<Mode> modes({ Mode::HP_24, Mode::HP_18, Mode::HP_12, Mode::HP_6, Mode::FLAT });
+
+  GNUPlotter plt;
+  for(size_t i = 0; i < modes.size(); i++) {
+    ldr.setMode(modes[i]);
+    for(int k = 0; k < numFreqs; k++) 
+    {
+      ldr.setCutoff(freqs[k]);
+      gains[k] = ldr.getMagnitudeResponseAt(freqs[k], withGain);
+      gains[k] = rsAmp2dB(gains[k]); 
+    }
+    plt.addDataArrays(numFreqs, &freqs[0], & gains[0]); }
+  plt.setLogScale("x");
+  plt.plot();
+  
+
+  // Observations:
+  // -When withGain = false, the curves of the 4 lowpasses have qualitatively the same shape,
+  //  the LP_24 curve is the lowest and they seem to be rough equidistant for low frequencies
+  //  on a dB scale. The gain goes down towards high frequencies and the effect is most severe
+  //  for LP_24. For FLAT, it doesn't go down at all. For the HP types, it's the same.
+
+
+  // maybe make the resulting s-values static const members of the class...or just static local
+  // constants in the function that needs them
 }
 
 void ladderTransferFunction()
@@ -1847,7 +1887,7 @@ void ladderTransferFunction()
   plt2.setPixelSize(800, 400);
   plt2.plotFrequencyResponses(501, 31.25, 32000, true, true, true, false);
 
-  /*
+
   // test - uses getTransferFunctionAt:
   ldr.setMode(Mode::LP_24);
   ldr.setResonance(0.99); 
@@ -1856,7 +1896,7 @@ void ladderTransferFunction()
   plotFrequencyResponse(ldr, 501, 31.25, 32000.0, fs, true);
   int dummy = 0;
   // ok - that works. next: implement the transfer function computation
-  */
+
 
   // Observations:
   // -Without resonance, the phase is around -172° at the cutoff frequency. This makes sense 
