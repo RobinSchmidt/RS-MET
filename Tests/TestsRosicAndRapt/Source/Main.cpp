@@ -351,6 +351,7 @@ int main(int argc, char* argv[])
   ////experimentalPrototypeM1N2();  // commented in header
   //splitLowFreqFromDC();
   //directFormFreqResp();
+  ladderResonanceGain();
   ladderTransferFunction();
   //ladderMultipole();
   //ladderResonanceModeling();

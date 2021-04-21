@@ -156,7 +156,7 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool wi
     T a2   = a*a;          // a^2
     T a3   = a2*a;         // a^3
     T a4   = a2*a2;        // a^4
-    T A    = a+1;          // == 2*b
+    T A    = a+1;          // a+1 == 2*b
     T A2   = A*A;          // A^2
     T A3   = A2*A;         // A^3
     T A4   = A2*A2;        // A^4

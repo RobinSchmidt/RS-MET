@@ -1752,6 +1752,27 @@ void directFormFreqResp()
 }
 // todo: plot freq-responses for enigineers filter vor various orders
 
+
+void ladderResonanceGain()
+{
+  // An experiment to figure out the appropriate s-values (scalers for k in the compensation gain
+  // formula - this scaler should depend on the mode). The goal is that, at high resonance, all
+  // modes produce the same resonance gain. The 4-pole lowpass is taken as reference. It uses s=1.
+  // Currently, i'm using some rough values that "look nice" i.e. are simple, round numbers and
+  // work as rough approximation - but we want a better match...
+
+  using Real = double;
+  using LDR  = RAPT::rsLadderFilter<Real, Real>;
+
+  Real fs  = 44100;   // sample rate
+  Real fc  = 1000;    // cutoff frequency
+  Real r   = 0.99;    // resonance (should be high)
+
+  // ...tbc...
+
+  int dummy = 0;
+}
+
 void ladderTransferFunction()
 {
   // We test the functionality of class rsLadder to return its transfer function in canoncial
@@ -1866,6 +1887,7 @@ void ladderTransferFunction()
   //  calculated: g = 1 + s*k ->  s = (g-1)/k wher we must set g := desiredGain/measuredGain
   //  and the desired gain is the gain of the 4-pole lowpass, maybe try fc = 100,1000,10000
   //  ...maybe it should be done using a really high resonance like 0.999
+  //  -figure out, if we need different factors for no-zero and bilinear design - i think so.
 
   // ToDo: 
   // -set up the y-ranges correctly - currently, one must use the mousewheel to get the correct
@@ -1887,6 +1909,8 @@ void ladderTransferFunction()
   //  gain should be 1/(1+s*k)? because high frequencies get a boost with resonance
   // -maybe we could make the "bilinear" parameter continuous from 0 to 1. Then we would indeed
   //  have a b0 and b1 coeff
+  // -getTransferFunction is really useful - this feature should be integrated into other filters
+  //  too (like rsBiquadCascade, rsOnePoleFilter, rsStateVariableFilter etc.)
 }
 
 void ladderMultipole()
