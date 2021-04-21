@@ -1764,7 +1764,7 @@ void ladderTransferFunction()
   using Mode = LDR::Mode;
 
   Real fs  = 44100;   // sample rate
-  Real fc  = 100;    // cutoff frequency
+  Real fc  = 1000;    // cutoff frequency
   bool plotPhase = true;
 
   LDR ldr;
@@ -1777,8 +1777,6 @@ void ladderTransferFunction()
   //ldr.setMode(Mode::BP_6_18);
   //ldr.setMode(Mode::LP_6);
   ldr.setBilinear(true);
-  // when setting this to true, the 2nd plot plots only 4 lowpasses - that's wrong! and they also
-  // have wrong gains! ..oh - of course! i need to take into account the c[] coeffs!
 
 
   // Plot frequency responses for resonances from 0.0 to 0.9 in 0.1 steps:
@@ -1791,7 +1789,7 @@ void ladderTransferFunction()
   for(int i = 0; i <= 9; i++)
     addPlotWithReso(0.1 * i);
   plt.setPixelSize(800, 400);
-  //plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
+  plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
 
   // Plot variuos response types with the same resonane:
@@ -1866,7 +1864,8 @@ void ladderTransferFunction()
   //  maybe use some sort of average. the matching can be done by just measuring the resonance gain
   //  (or the peak-freq gain?) with gain compensation turned off. from this, the s-values can be 
   //  calculated: g = 1 + s*k ->  s = (g-1)/k wher we must set g := desiredGain/measuredGain
-  //  and the desired gain is the gain of the 4-pole lowpass
+  //  and the desired gain is the gain of the 4-pole lowpass, maybe try fc = 100,1000,10000
+  //  ...maybe it should be done using a really high resonance like 0.999
 
   // ToDo: 
   // -set up the y-ranges correctly - currently, one must use the mousewheel to get the correct

@@ -146,25 +146,30 @@ TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency)
 }
 
 template<class TSig, class TPar>
-rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
+rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool withGain)
 {
-  // todo: provide an option: bool withGain that decides whether or not the g should be multiplied
-  // in (deafult: yes)
-
-  using T = TPar;
+  using T  = TPar;
   using RF = RAPT::rsRationalFunction<T>;
   if(bilinear)
   {
-    T A   = a+1;     // == 2*b
-    T A2  = A*A;     // A^2
-    T A3  = A2*A;    // A^3
-    T A4  = A2*A2;   // A^4
-    T A4k = A4*k;
-    T a2  = a*a;     // a^2
-    T a3  = a2*a;    // a^3
-    T a4  = a2*a2;   // a^4  
+    // Compute some intermediate variables:
+    T a2   = a*a;          // a^2
+    T a3   = a2*a;         // a^3
+    T a4   = a2*a2;        // a^4
+    T A    = a+1;          // == 2*b
+    T A2   = A*A;          // A^2
+    T A3   = A2*A;         // A^3
+    T A4   = A2*A2;        // A^4
+    T A4k  = A4*k;
+    T C0   = 16*c[0];      // from here, they are relevant only for numerator
+    T C1   =  8*c[1]*A;
+    T C2   =  4*c[2]*A2;
+    T C3   =  2*c[3]*A3;
+    T C4   =    c[4]*A4;
+    T ap3  = a   + 3;
+    T a3p1 = a*3 + 1;
 
-    // create denominator:
+    // Create denominator:
     std::vector<T> D(6);
     D[0] =              A4k;
     D[1] = 4*( 4*a4 +   A4k);
@@ -173,30 +178,19 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
     D[4] =    64*a  +   A4k;
     D[5] =              16;
 
-    // create numerator:
+    // Create numerator:
     std::vector<T> N(6);
-    T C0 = 16*c[0];
-    T C1 =  8*c[1]*A;
-    T C2 =  4*c[2]*A2;
-    T C3 =  2*c[3]*A3;
-    T C4 =    c[4]*A4;
-    T ap3  = a   + 3;
-    T a3p1 = a*3 + 1;
     N[0] =   T(0);
     N[1] =   C0*a4 + C1*a3     + C2*a2         + C3*a    + C4;
     N[2] = 4*C0*a3 + C1*ap3*a2 + C2*A*2*a      + C3*a3p1 + C4*4;
     N[3] = 6*C0*a2 + C1*A*3*a  + C2*(a2+4*a+1) + C3*A*3  + C4*6;
     N[4] = 4*C0*a  + C1*a3p1   + C2*A*2        + C3*ap3  + C4*4;
     N[5] =   C0    + C1        + C2            + C3      + C4;
+    if(withGain) 
+      rsScale(N, g);
 
-
-    //N = g*N;
-    RF H(g*N, D);
-    return H;
-
-    // avoid creation of a new vector for the g*N - instead do something like
-    // if(withGain) rsScale(N, g)
-
+    // Create and return rational function object:
+    return RF(N, D);
   }
   else
   {
@@ -214,16 +208,17 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
     // Compute coefficients of the numerator (note the binomial coeffs in the columns:
     // (1),(1,1),(1,2,1),(1,3,3,1),(1,4,6,4,1)):
     std::vector<T> N(5);
-    N[4] = g * (d4 + d3 +      d2 +      d1 +      d0);
-    N[3] = g * (     d3 + T(2)*d2 + T(3)*d1 + T(4)*d0) * a;
-    N[2] = g * (               d2 + T(3)*d1 + T(6)*d0) * a2;
-    N[1] = g * (                         d1 + T(4)*d0) * a2*a;
-    N[0] = g * (                                   d0) * a2*a2;
+    N[4] = (d4 + d3 +      d2 +      d1 +      d0);
+    N[3] = (     d3 + T(2)*d2 + T(3)*d1 + T(4)*d0) * a;
+    N[2] = (               d2 + T(3)*d1 + T(6)*d0) * a2;
+    N[1] = (                         d1 + T(4)*d0) * a2*a;
+    N[0] = (                                   d0) * a2*a2;
+    if(withGain) 
+      rsScale(N, g);
 
-    // Create rational function object and return it (note again the binomial coeffs 1,4,6,4,1) with 
-    // the additional b4*k added in, so the denominator seems to be (a+1)^4 + b4*k*z^3
-    RF H(N, { a2*a2, T(4)*a*a2, T(6)*a2, T(4)*a + b4*k, T(1) });
-    return H;
+    // Create rational function object and return it (note again the binomial coeffs 1,4,6,4,1) 
+    // with the additional b4*k added in, so the denominator seems to be (a+1)^4 + b4*k*z^3
+    return RF(N, { a2*a2, T(4)*a*a2, T(6)*a2, T(4)*a + b4*k, T(1) });
   }
 }
 // ToDo:

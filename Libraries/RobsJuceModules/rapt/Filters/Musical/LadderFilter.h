@@ -112,10 +112,12 @@ public:
 
   /** Returns the filter's magnitude response at the given frequency in Hz. */
   TPar getMagnitudeResponseAt(CRPar frequency);
-  // maybe rename to getMagnitudeAt
+  // maybe rename to getMagnitudeAt, include optional parameter withGain as in getTransferFunction
 
-  /** Returns the transfer function rsRationalFunction object. */
-  rsRationalFunction<TPar> getTransferFunction();
+  /** Returns the transfer function rsRationalFunction object. The withGain falgs decides, whether
+  or not the gain compensation factor should by multiplied in (that's the factor that boosts the 
+  whole signal depending on the resonance setting) */
+  rsRationalFunction<TPar> getTransferFunction(bool withGain = true);
 
   /** Old implementation of getTransferFunction, using rsRationalFunction's arithmetic instead of
   just assigning the coeffs via analytically derived formulas (as the new one does). It's less 
