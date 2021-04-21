@@ -351,7 +351,7 @@ int main(int argc, char* argv[])
   ////experimentalPrototypeM1N2();  // commented in header
   //splitLowFreqFromDC();
   //directFormFreqResp();
-  ladderResonanceGain();
+  //ladderResonanceGain();
   //ladderTransferFunction();
   //ladderMultipole();
   //ladderResonanceModeling();
@@ -365,7 +365,7 @@ int main(int argc, char* argv[])
   //ladderFeedbackSatGrowl();
   //ladderFeedbackSatGrowl2();
   //ladderZDF();
-  //ladderZDFvsUDF();       // compares cutoff modulation properties
+  ladderZDFvsUDF();       // compares cutoff modulation properties
   //ladderResoModulation();
   //resoShapeFeedbackSat();
   //resoSaturationModes();

@@ -1933,7 +1933,7 @@ void ladderTransferFunction()
   plt2.setPixelSize(800, 400);
   plt2.plotFrequencyResponses(501, 31.25, 32000, true, true, true, false);
 
-
+  /*
   // test - uses getTransferFunctionAt:
   ldr.setMode(Mode::LP_24);
   ldr.setResonance(0.99); 
@@ -1942,6 +1942,7 @@ void ladderTransferFunction()
   plotFrequencyResponse(ldr, 501, 31.25, 32000.0, fs, true);
   int dummy = 0;
   // ok - that works. next: implement the transfer function computation
+  */
 
 
   // Observations:
@@ -2906,7 +2907,8 @@ void ladderZDFvsUDF()
   udf.setCutoff(fc);
   udf.setSampleRate(fs);
   udf.setResonance(r);
-  udf.setBilinear(true);  // test
+  //udf.setBilinear(true);  // test
+  udf.setB1(0.23);
 
   // create and set up the zero delay feedback filter:
   rsLadderFilterZDFDD zdf;

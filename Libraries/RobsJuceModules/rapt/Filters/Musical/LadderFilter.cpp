@@ -122,7 +122,7 @@ std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(
   */
 
   // test:
-  G1 =  (1+a)*(b0 + b1/z) / (one + a/z);
+  G1 =  (1+a)*(B0 + B1/z) / (one + a/z);
 
 
   G2 = G1*G1;
@@ -154,7 +154,7 @@ TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency, bool wi
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool withGain)
 {
-  rsAssert(b1 == 0 || b1 == b0, "Does not yet work in the general case");
+  rsAssert(B1 == 0 || B1 == B0, "Does not yet work in the general case");
   // the formulas below work only for zeroless or zero at z=-1
 
   using T  = TPar;
@@ -245,8 +245,8 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionOld()
   using RF = RAPT::rsRationalFunction<T>;
   T tol = 1024 * RS_EPS(T);  // ad hoc
 
-  T b0 = this->b0 * (1+a);
-  T b1 = this->b1 * (1+a);
+  T b0 = B0 * (1+a);
+  T b1 = B1 * (1+a);
 
   //if(isBilinear()) b0 = b1 = getBilinearB(a);    // needs test
   //else {       b0 = T(1) + a; b1 = T(0);  }
@@ -285,8 +285,9 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
   // cheap hardclipping
 
   // Apply the 1st order stages:
-  if(isBilinear())
+  if(B1 != TPar(0))
   {
+    /*
     TPar b = getBilinearB(a);
     tmp2 = y[1]; y[1] = b*(y[0] + tmp1) - a*y[1];  // tmp1 = old y[0]
     tmp1 = y[2]; y[2] = b*(y[1] + tmp2) - a*y[2];  // tmp2 = old y[1]
@@ -294,9 +295,16 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
                  y[4] = b*(y[3] + tmp2) - a*y[4];  // tmp2 = old y[3]
     // Can this be simplified into a similar form as below? maybe like:
     // y[3] = 0.5*(y[2] + tmp) + a*(y[2] - y[3]) where tmp is the old y[2]?
+    */
 
     // general case: y[3] = (1+a)*(b0*y[2] + b1*tmp1) - a*y[3];
 
+    TPar b0 = (1+a)*B0;
+    TPar b1 = (1+a)*B1;
+    tmp2 = y[1]; y[1] = b0*y[0] + b1*tmp1 - a*y[1];  // tmp1 = old y[0]
+    tmp1 = y[2]; y[2] = b0*y[1] + b1*tmp2 - a*y[2];  // tmp2 = old y[1]
+    tmp2 = y[3]; y[3] = b0*y[2] + b1*tmp1 - a*y[3];  // tmp1 = old y[2]
+                 y[4] = b0*y[3] + b1*tmp2 - a*y[4];  // tmp2 = old y[3]
   }
   else
   {
@@ -371,7 +379,7 @@ template<class TSig, class TPar>
 TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(
   CRPar fb, CRPar cosWc, CRPar a, TPar b1)
 {
-  TPar b, g2;
+  TPar g2;
 
   /*
   if(b1 != TPar(0))
@@ -491,7 +499,7 @@ template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::updateCoefficients()
 {
   TPar wc = 2 * (TPar)PI * cutoff / sampleRate;
-  computeCoeffs(wc, resonance, s, &a, &k, &g, b1);
+  computeCoeffs(wc, resonance, s, &a, &k, &g, B1);
 }
 
 

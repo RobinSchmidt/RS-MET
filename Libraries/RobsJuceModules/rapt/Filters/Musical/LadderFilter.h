@@ -101,7 +101,7 @@ public:
   // when setB1 works correctly, this function will be obsolete
 
   /** Experimental feature - not yet ready for production! */
-  void setB1(CRPar newB1) { b1 = newB1; b0 = TPar(1) - b1; updateCoefficients(); }
+  void setB1(CRPar newB1) { B1 = newB1; B0 = TPar(1) - B1; updateCoefficients(); }
   // This is supposed to use a design for the 1st order stages somewhere in between the regular 
   // zeroless design and the bilinear design with the zero at z = -1. I found that the resonance
   // gain drops off to high frequencies for the zeroless design and gets amplified for the 
@@ -130,10 +130,14 @@ public:
   // maybe rename to getMagnitudeAt, include optional parameter withGain as in getTransferFunction
   // maybe instead of the frequency in Hz it should take "omega"
 
+  /** Returns true, iff the individual 1st order stages are one-poles without a zero. */
+  bool isZeroLess() const  { return B1 == TPar(0); }
+  // rename to isAllPole
 
-  bool isZeroLess() const  { return b1 == TPar(0); }
-
-  bool isBilinear() const { return b1 == b0; }
+  /** Return true, iff the individual 1st order stages feature a zero at z = -1, which is a 
+  typical feature of bilinear lowpass designs (although we do not explicitly use the bilinear
+  transform here). */
+  bool isBilinear() const { return B1 == B0; }
 
   /** Returns the transfer function as rsRationalFunction object. This is mainly useful for 
   research and development and not suitable for use actual products and a total no-go to use at 
@@ -171,8 +175,8 @@ public:
   /** Given some normalized net feedback loop gain fb (in the range 0..1 where 1 is the 
   self-oscillation/instability limit), cos(wc) and lowpass coefficient a, this function 
   computes the feedback factor k. */
-  static TPar computeFeedbackFactor(CRPar fb, CRPar cosWc, CRPar a, TPar b1);
-  // the bilinear parameter will become obsolete
+  static TPar computeFeedbackFactor(CRPar fb, CRPar cosWc, CRPar a, TPar B1);
+  // 
 
   /** Given a desired decay time for the resonance (defined as the time it takes to fall to the
   value 1/e = 0.36..) in seconds and a cutoff frequency in Hz, this function computes the desired
@@ -185,12 +189,14 @@ public:
   feedback gain k by which the output of a chain of 4 such one-pole units should be fed back into
   the first unit and a compensation gain g that compensates for the loss of DC gain when turning up
   the feedback. */
-  static void computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, TPar *k, TPar *g, CRPar b1);
+  static void computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, TPar *k, TPar *g, CRPar B1);
+  // move the B1 parameter before the outputs
   // todo: factor the function into a/b-computation, k-computation, g-computation - but leave 
   // this one as convenience function also
 
   /** Same as computeCoeffs(wc, fb, *a, *k, *g) but without the compensation gain computation. */
-  static void computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *k, CRPar b1);
+  static void computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *k, CRPar B1);
+  // move the B1 parameter before the outputs
 
   // make a static method for the output coefficients c[] and s
 
@@ -231,8 +237,11 @@ protected:
 
   // Experimental:
   //bool bilinear = false;  // flag to indicate using a zero at z=-1 per stage
-  TPar b0 = TPar(1);      // maybe use c1, c2 to indicate that the factor (1+a) is not yet
-  TPar b1 = TPar(0);      // baked in
+  TPar B0 = TPar(1);      // maybe use c1, c2 to indicate that the factor (1+a) is not yet
+  TPar B1 = TPar(0);      // baked in
+  // Numerator coeffs without the (1+a) factor baked in. They should always sum to 1. The actual
+  // b0, b1 coeffs of the first order lowpass are b0 = B0 * (1+a), b1 = B1 * (1+a)
+  // ..that makes one of them redundant - maybe keep only B1
 
 
 };
