@@ -1878,12 +1878,14 @@ void ladderTransferFunction()
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   //ldr.setResonance(res);
-  ldr.setMode(Mode::LP_24);  // the basic "Moog" configuration
+  //ldr.setMode(Mode::LP_24);  // the basic "Moog" configuration
+  ldr.setMode(Mode::LP_18); 
   //ldr.setMode(Mode::HP_24);
   //ldr.setMode(Mode::FLAT);  // still problematic when reso is zero
   //ldr.setMode(Mode::BP_6_18);
   //ldr.setMode(Mode::LP_6);
-  ldr.setBilinear(true);
+  //ldr.setBilinear(true);
+  ldr.setB1(0.23);
 
 
   // Plot frequency responses for resonances from 0.0 to 0.9 in 0.1 steps:
@@ -1912,9 +1914,10 @@ void ladderTransferFunction()
   //addPlotWithMode(Mode::FLAT);
   //addPlotWithMode(Mode::LP_6);
   //addPlotWithMode(Mode::LP_12);
-  //addPlotWithMode(Mode::LP_18);
+  addPlotWithMode(Mode::LP_18);
   //addPlotWithMode(Mode::LP_24);
 
+  /*
   addPlotWithMode(Mode::LP_24);
   addPlotWithMode(Mode::LP_18);
   addPlotWithMode(Mode::LP_12);
@@ -1931,6 +1934,7 @@ void ladderTransferFunction()
   addPlotWithMode(Mode::HP_18);
   addPlotWithMode(Mode::HP_24);
   plt2.setPixelSize(800, 400);
+  */
   plt2.plotFrequencyResponses(501, 31.25, 32000, true, true, true, false);
 
   /*
@@ -2907,7 +2911,6 @@ void ladderZDFvsUDF()
   udf.setCutoff(fc);
   udf.setSampleRate(fs);
   udf.setResonance(r);
-  //udf.setBilinear(true);  // test
   udf.setB1(0.23);
 
   // create and set up the zero delay feedback filter:

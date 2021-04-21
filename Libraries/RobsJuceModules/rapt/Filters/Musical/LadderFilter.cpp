@@ -154,7 +154,7 @@ TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency, bool wi
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool withGain)
 {
-  rsAssert(B1 == 0 || B1 == B0, "Does not yet work in the general case");
+  //rsAssert(B1 == 0 || B1 == B0, "Does not yet work in the general case");
   // the formulas below work only for zeroless or zero at z=-1
 
   using T  = TPar;
@@ -201,7 +201,7 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool wi
     // Create and return rational function object:
     return RF(N, D);
   }
-  else  // no zero
+  else if(B1 == B0)  // no zero
   {
     // Compute some intermediate variables:
     T b  = T(1)+a;
@@ -229,6 +229,50 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool wi
     // with the additional b4*k added in, so the denominator seems to be (a+1)^4 + b4*k*z^3
     return RF(N, { a2*a2, T(4)*a*a2, T(6)*a2, T(4)*a + b4*k, T(1) });
   }
+  else  // the general case
+  {
+    // Compute some intermediate variables:
+    T u    = B1;
+    T u2   = u*u;
+    T u3   = u2*u;
+    T u4   = u2*u2;
+    T a2   = a*a;          // a^2
+    T a3   = a2*a;         // a^3
+    T a4   = a2*a2;        // a^4
+    T A    = a+1;
+    T A2   = A*A;          // A^2
+    T A3   = A2*A;         // A^3
+    T A4   = A2*A2;        // A^4
+    T A4k  = A4*k;
+    T U4   = (u-1); U4 *= U4; U4 *= U4;   // (u-1)^4
+
+    // Create denominator:
+    std::vector<T> D(6);
+    D[0] =     A4k*u4;
+    D[1] = -  (A4k*(4*u4 - 4*u3)              -   a4);
+    D[2] =  2*(A4k*(3*u4 - 6*u3 + 3*u2)       + 2*a3);
+    D[3] = -2*(A4k*(2*u4 - 6*u3 + 6*u2 - 2*u) - 3*a2);
+    D[4] =    (A4k*U4                         + 4*a );
+    D[5] =  1;
+
+    // Create numerator:
+    std::vector<T> N(6);
+    N[0] = T(0);
+
+    // G3 contributions:
+    N[1] += -c[3]*A3*u3;
+    N[2] +=  c[3]*(A3*(3*a-1)*u3 - 3*A3*u2);
+    N[3] += -c[3]*3*((a4 + 2*a3 - 2*a - 1)*u3 - A3*(2*a-1)*u2 + A3*u);
+    N[4] += -c[3]*(a4 - A3*(a-3)*u3 + 3*a3 + 3*A3*(a-2)*u2 + 3*a2 - 3*A3*(a-1)*u + a);
+    N[5] += -c[3]*(A3*u3-a3-3*A3*u2-3*a2+3*A3*u-3*a-1);
+
+
+    if(withGain) 
+      rsScale(N, g);
+    return RF(N, D);
+  }
+
+
 }
 // ToDo:
 // Maybe make a function getCoeffsBA(TPar* b, TPar* a) which just fills the arrays (of length 5).

@@ -251,6 +251,53 @@ where:
 
 G4: A4*z^5 + 4*A4*z^4 + 6*A4*z^3 + 4*A4*z^2 + A4*z
 
+---------------------------------------------------------------------------------------------------
+Now the general ladder, using a constant u to control the zero (u == B1, but we want a 
+one-letter name)
+
+var("a z k u")
+b1 = (a+1)*u
+b0 = (a+1)*(1-u)
+G(z) = (b0+b1/z)/(1+a/z)
+H    = G^3 / (1 + k*G^4/z)
+Hs = H.simplify_rational()
+Hs
+
+...result was long and messy - only the (manually) simplified expressions are shown below...
+
+Define:
+
+a2  = a^2
+a3  = a^3
+A   = (a+1)
+A2  = (a+1)^2 =                 a^2 + 2*a + 1
+A3  = (a+1)^3 =         a^3 + 3*a^2 + 3*a + 1
+A4  = (a+1)^4 = a^4 + 4*a^3 + 6*a^2 + 4*a + 1
+A4k = A4*k
+
+Denominator:
+
+D =
+     A4k*u^4
+-   (A4k*(4*u^4 - 4*u^3)               -   a^4)*z
++ 2*(A4k*(3*u^4 - 6*u^3 + 3*u^2)       + 2*a^3)*z^2
+- 2*(A4k*(2*u^4 - 6*u^3 + 6*u^2 - 2*u) - 3*a^2)*z^3 
++   (A4k*(u-1)^4                       + 4*a  )*z^4 
++                                               z^5 
+
+..try to factor (2*u^4 - 6*u^3 + 6*u^2 - 2*u), etc.
+
+Numerator for G3:
+
+- A3*u^3*z 
++ (A3*(3*a-1)*u^3 - 3*A3*u^2)*z^2
+- 3*((a^4 + 2*a^3 - 2*a - 1)*u^3 - A3*(2*a-1)*u^2 + A3*u)*z^3
+- (a^4 - A3*(a-3)*u^3 + 3*a^3 + 3*A3*(a-2)*u^2 + 3*a^2 - 3*A3*(a-1)*u + a)*z^4 
+- (A3*u^3 - a^3 - 3*A3*u^2 - 3*a^2 + 3*A3*u - 3*a - 1)*z^5 
+
+ 
+
+
 
 
 
