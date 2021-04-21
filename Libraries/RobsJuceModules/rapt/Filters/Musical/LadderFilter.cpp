@@ -110,14 +110,16 @@ std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(
   std::complex<T> H;              // transfer function with resonance   
   std::complex<T> one(1, 0);
 
+  /*
   T b;
-  if(bilinear) {
+  if(isBilinear()) {
     b  =  getBilinearB(a);
     G1 = (b + b/z) / (one + a/z); }
   else {
     b  = T(1) + a;
     G1 = b / (one + a/z); }
   // in general: (1+a)*(b0 + b1/z) / (one + a/z); }
+  */
 
   // test:
   G1 =  (1+a)*(b0 + b1/z) / (one + a/z);
@@ -157,7 +159,7 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool wi
 
   using T  = TPar;
   using RF = RAPT::rsRationalFunction<T>;
-  if(bilinear)             // zero at z = -1
+  if(isBilinear())             // zero at z = -1
   {
     // Compute some intermediate variables:
     T a2   = a*a;          // a^2
@@ -242,9 +244,13 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionOld()
   using T  = TPar;
   using RF = RAPT::rsRationalFunction<T>;
   T tol = 1024 * RS_EPS(T);  // ad hoc
-  T b0, b1;
-  if(bilinear) b0 = b1 = getBilinearB(a);    // needs test
-  else {       b0 = T(1) + a; b1 = T(0);  }
+
+  T b0 = this->b0 * (1+a);
+  T b1 = this->b1 * (1+a);
+
+  //if(isBilinear()) b0 = b1 = getBilinearB(a);    // needs test
+  //else {       b0 = T(1) + a; b1 = T(0);  }
+
   RF G1( { b1, b0 }, { a, 1 }, tol); // G1(z) = (b0 + b1/z) / (1 + a/z) = (b1 + b0*z) / (a + 1*z)
   RF one({ 1      }, { 1    }, tol); // 1 = 1 / 1
   RF z  ({ 0,  1  }, { 1    }, tol); // z = (0 + 1*z) / 1
@@ -279,7 +285,7 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
   // cheap hardclipping
 
   // Apply the 1st order stages:
-  if(bilinear)
+  if(isBilinear())
   {
     TPar b = getBilinearB(a);
     tmp2 = y[1]; y[1] = b*(y[0] + tmp1) - a*y[1];  // tmp1 = old y[0]
@@ -363,10 +369,11 @@ void rsLadderFilter<TSig, TPar>::reset()
 
 template<class TSig, class TPar>
 TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(
-  CRPar fb, CRPar cosWc, CRPar a, bool bilinear, TPar b1)
+  CRPar fb, CRPar cosWc, CRPar a, TPar b1)
 {
   TPar b, g2;
 
+  /*
   if(b1 != TPar(0))
   {
     b  = getBilinearB(a);
@@ -377,6 +384,7 @@ TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(
     b  = TPar(1) + a;
     g2 = b*b / (1 + a*a + 2*a*cosWc);
   }
+  */
   // can this be simpified further by plugging in the expression for b in terms of a?
   // this will become obsolete...
 
@@ -413,9 +421,9 @@ TPar rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(CRPar decay, CRPar
 
 template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, 
-  TPar *k, TPar *g, bool bilinear, CRPar b1)
+  TPar *k, TPar *g, CRPar b1)
 {
-  computeCoeffs(wc, fb, a, k, bilinear, b1);
+  computeCoeffs(wc, fb, a, k, b1);
   *g = 1 + s * *k;
 
   //// old formula - has the same problem:
@@ -437,7 +445,7 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar
 }
 
 template<class TSig, class TPar>
-void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *k, bool bilinear, CRPar b1)
+void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *k, CRPar b1)
 {
   TPar s, c, t;                     // sin(wc), cos(wc), tan((wc-PI)/4)
   //rsSinCos(wc, &s, &c);
@@ -445,17 +453,18 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar
   c  = rsCos(wc);
   t  = (TPar) rsTan(0.25*(wc-PI));
 
-
+  /*
   if(bilinear)
     *a = (c*t+s+t) / (s-(c+1)*t);  
   else
     *a = t / (s-c*t);
+    */
 
   // test:
   TPar b0 = TPar(1)-b1;
   *a = (b0*t + b1*c*t + b1*s) / (-b0*c*t + b0*s - b1*t);
 
-  *k = computeFeedbackFactor(fb, c, *a, bilinear, b1);
+  *k = computeFeedbackFactor(fb, c, *a, b1);
   // If the cutoff frequency goes to zero wc -> 0, then s -> 0, c -> 1, t -> -1, b -> 0, a -> -1.
   // The coefficient computation for the lowpass stages approaches this limit correctly, but the 
   // formula for the feedback factor k runs into numerical problems when wc -> 0. However, we know
@@ -482,7 +491,7 @@ template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::updateCoefficients()
 {
   TPar wc = 2 * (TPar)PI * cutoff / sampleRate;
-  computeCoeffs(wc, resonance, s, &a, &k, &g, bilinear, b1);
+  computeCoeffs(wc, resonance, s, &a, &k, &g, b1);
 }
 
 

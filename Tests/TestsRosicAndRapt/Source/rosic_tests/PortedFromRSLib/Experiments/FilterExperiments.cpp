@@ -1769,16 +1769,14 @@ void ladderResonanceGain()
   Real fs       = 44100;   // sample rate
   Real fc       = 8000;    // cutoff frequency
   Real r        = 0.99;    // resonance (should be high)
-  bool bilinear = false;   // switch between regular/bilinear mode
+  Real b1       = 0.23;    // 0.0: zeroless, 0.5: bilinear, 0.23: good compromise
   bool withGain = false;   // switch from plotting with or without compensation gain applied
 
   LDR ldr;
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   ldr.setResonance(r);
-  ldr.setBilinear(bilinear);
-  //ldr.setB1(0.5);
-
+  ldr.setB1(b1);
 
   int numFreqs = 1001;
   Real fLo   = 10;
@@ -1850,6 +1848,12 @@ void ladderResonanceGain()
 
   // ToDo:
   // -maybe plot not only the resonance gains but also the DC gains
+  // -implement the difference equation for the compromise design and make listening tests
+  //  -> provide a user parameter for b1 in the APE script
+  //  ...then clean up the code
+  // -try to work out the transfer function canonical from for the general case and plot the 
+  //  magnitude- and pahse responses for various b1 values
+  // -get rid of the setBilinear function
 
   // maybe make the resulting s-values static const members of the class...or just static local
   // constants in the function that needs them
