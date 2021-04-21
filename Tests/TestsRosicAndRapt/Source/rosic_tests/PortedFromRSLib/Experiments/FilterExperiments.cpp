@@ -1764,7 +1764,7 @@ void ladderTransferFunction()
   using Mode = LDR::Mode;
 
   Real fs  = 44100;   // sample rate
-  Real fc  = 1000;    // cutoff frequency
+  Real fc  = 100;    // cutoff frequency
   bool plotPhase = true;
 
   LDR ldr;
@@ -1802,13 +1802,14 @@ void ladderTransferFunction()
     ldr.setMode(m); 
     plt2.addTransferFunction(ldr.getTransferFunction(), fs); 
   };
-  ldr.setResonance(0.9);
+  ldr.setResonance(0.99);
 
-  addPlotWithMode(Mode::LP_12);
-  addPlotWithMode(Mode::LP_18);
-  addPlotWithMode(Mode::LP_24);
+  //addPlotWithMode(Mode::FLAT);
+  //addPlotWithMode(Mode::LP_6);
+  //addPlotWithMode(Mode::LP_12);
+  //addPlotWithMode(Mode::LP_18);
+  //addPlotWithMode(Mode::LP_24);
 
-  /*
   addPlotWithMode(Mode::LP_24);
   addPlotWithMode(Mode::LP_18);
   addPlotWithMode(Mode::LP_12);
@@ -1824,7 +1825,6 @@ void ladderTransferFunction()
   addPlotWithMode(Mode::HP_12);
   addPlotWithMode(Mode::HP_18);
   addPlotWithMode(Mode::HP_24);
-  */
   plt2.setPixelSize(800, 400);
   plt2.plotFrequencyResponses(501, 31.25, 32000, true, true, true, false);
 
@@ -1860,6 +1860,13 @@ void ladderTransferFunction()
   //  frequencies and high frequencies are boosted -> s=0.5 seems the most natural compromise
   //  ...same for BP_6_6
   // -The bilinear phase response is nicer overall (monotonic)
+  // -the gains at resonance do not really match exactly - they differ by about 5 dB. set up a 
+  //  numerical matching algorithm to find more exact values for s. ..but this should be done for 
+  //  various cutoffs and resoance values - we need to see, if the values are consistent, otherwise
+  //  maybe use some sort of average. the matching can be done by just measuring the resonance gain
+  //  (or the peak-freq gain?) with gain compensation turned off. from this, the s-values can be 
+  //  calculated: g = 1 + s*k ->  s = (g-1)/k wher we must set g := desiredGain/measuredGain
+  //  and the desired gain is the gain of the 4-pole lowpass
 
   // ToDo: 
   // -set up the y-ranges correctly - currently, one must use the mousewheel to get the correct

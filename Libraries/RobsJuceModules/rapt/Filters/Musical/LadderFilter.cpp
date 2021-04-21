@@ -155,8 +155,8 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
   using RF = RAPT::rsRationalFunction<T>;
   if(bilinear)
   {
-    T A   = a+1;
-    T A2  = A*A;
+    T A   = a+1;     // == 2*b
+    T A2  = A*A;     // A^2
     T A3  = A2*A;    // A^3
     T A4  = A2*A2;   // A^4
     T A4k = A4*k;
@@ -199,15 +199,29 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
     N[5] += 4*c[2]*A2;
 
     // 1st stage:
+    N[1] += 8*c[1]*a3*A;
+    N[2] += 8*c[1]*((a+3)*A*a2);
+    N[3] += 8*c[1]*3*a*A2;
+    N[4] += 8*c[1]*((3*a+1)*A);
+    N[5] += 8*c[1]*A;
 
     // 0th stage:
+    N[1] += 16*c[0]*1*a4;
+    N[2] += 16*c[0]*4*a3;
+    N[3] += 16*c[0]*6*a2;
+    N[4] += 16*c[0]*4*a;
+    N[5] += 16*c[0]*1*1;
 
-    N = g*N;
+    
 
 
-    //RF H({0, g*A, g*4*A, g*6*A, g*4*A, g*A}, D);
+    // todo: optimize things like: D[2] = 2*(32*a3 + 3*A4k); to D[2] = 64*a3 + 6*A4k; etc.
+    // consolidate all contributions into a single assignment:
+    // N[1] = c[0]*(...) + c[1]*(...) + ... + c[4]*(...)
 
-    RF H(N, D);
+
+    //N = g*N;
+    RF H(g*N, D);
     return H;
     // that works only for the lowpasses - we need to take into account the c-values. compute the
     // transfer functions after all the poles and form a weighted sum...
