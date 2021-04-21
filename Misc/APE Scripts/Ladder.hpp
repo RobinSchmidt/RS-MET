@@ -46,13 +46,14 @@ public:
   Par parReso { "Reso",  Rng(0,   400)             }; // in %
   Par parDrive{ "Drive", Rng(-12, 48)              }; // in dB
   Par parGain { "Gain",  Rng(-48, 12)              }; // in dB
+  Par parB1   { "B1",    Rng(0,   0.5)             }; // 0: allpole, 0.5: bilinear
   
   // ToDo: Mode, Drive (pre-gain), Gain (post-gain), DC/Asym, SatShape
   
   
   Param<LDR::Mode> parMode { "Mode", ModeNames };
   
-  Param<bool> parBilinear { "Bilinear" };
+  //Param<bool> parBilinear { "Bilinear" };
   
   
   // How can we set the parameters to reasonable default values?
@@ -90,7 +91,8 @@ private:
     flt.setCutoff(freq);
     flt.setResonance(reso);
     flt.setMode(parMode);
-    flt.setBilinear(parBilinear);
+    flt.setB1(parB1);
+    //flt.setBilinear(parBilinear);
     // todo: set them per sample
     
     // Loop over the sample frames:
