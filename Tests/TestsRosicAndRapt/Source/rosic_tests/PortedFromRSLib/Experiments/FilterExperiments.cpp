@@ -1770,7 +1770,7 @@ void ladderResonanceGain()
   Real fc       = 8000;    // cutoff frequency
   Real r        = 0.99;    // resonance (should be high)
   bool bilinear = false;   // switch between regular/bilinear mode
-  bool withGain = false;    // switch form plotting with or without compensation gain applied
+  bool withGain = false;   // switch from plotting with or without compensation gain applied
 
   LDR ldr;
   ldr.setSampleRate(fs);
@@ -1780,24 +1780,40 @@ void ladderResonanceGain()
 
 
   int numFreqs = 1001;
-  Real fLo   = 20;
-  Real fHi   = 20000;
+  Real fLo   = 10;
+  Real fHi   = fs/2;
   Vec  freqs = rsRangeExponential(fLo, fHi, numFreqs);
   Vec  gains(numFreqs);
 
-  //std::vector<Mode> modes({ Mode::LP_24, Mode::LP_18, Mode::LP_12, Mode::LP_6, Mode::FLAT });
-  std::vector<Mode> modes({ Mode::HP_24, Mode::HP_18, Mode::HP_12, Mode::HP_6, Mode::FLAT });
+  std::vector<Mode> modes({ Mode::LP_24, Mode::LP_18, Mode::LP_12, Mode::LP_6, Mode::FLAT });
+  //std::vector<Mode> modes({ Mode::HP_24, Mode::HP_18, Mode::HP_12, Mode::HP_6, Mode::FLAT });
 
   GNUPlotter plt;
-  for(size_t i = 0; i < modes.size(); i++) {
+  for(size_t i = 0; i < modes.size(); i++) 
+  {
     ldr.setMode(modes[i]);
+
+    // Resonance gains as function of cutoff freq:
     for(int k = 0; k < numFreqs; k++) 
     {
       ldr.setCutoff(freqs[k]);
       gains[k] = ldr.getMagnitudeResponseAt(freqs[k], withGain);
       gains[k] = rsAmp2dB(gains[k]); 
     }
-    plt.addDataArrays(numFreqs, &freqs[0], & gains[0]); }
+    plt.addDataArrays(numFreqs, &freqs[0], & gains[0]); 
+
+    /*
+    // DC gains as function of cutoff freq:
+    for(int k = 0; k < numFreqs; k++) 
+    {
+      ldr.setCutoff(freqs[k]);
+      gains[k] = ldr.getMagnitudeResponseAt(0.0, withGain);
+      gains[k] = rsAmp2dB(gains[k]); 
+    }
+    plt.addDataArrays(numFreqs, &freqs[0], & gains[0]); 
+    */
+
+  }
   plt.setLogScale("x");
   plt.plot();
   
@@ -1807,7 +1823,31 @@ void ladderResonanceGain()
   //  the LP_24 curve is the lowest and they seem to be rough equidistant for low frequencies
   //  on a dB scale. The gain goes down towards high frequencies and the effect is most severe
   //  for LP_24. For FLAT, it doesn't go down at all. For the HP types, it's the same.
+  // -The DC gains have a similar shape, but they are all equal for all types. They seem to start
+  //  around -13.9 dB for low cutoffs and go down to around -25.4 dB for high frequencies but 
+  //  there's a spike at the Nyquist freq: it goes back up to -22.3. sooo - does that mean, k 
+  //  (and therefor s) should depend on the cutoff setting and the current k is correct only
+  //  for low cutoffs? ..with bilinear, it actually goes up: from -13.9 to -6
+  //  -> does that perhaps indicate that we should use something in between regular and bilinear?
+  //  maybe: G1(z) = b*((1-c) + c/z) / (1 + a/z) for some pre-selected c? the regular filter
+  //  has c=0, the bilinear has c=0.5. To tune this correctly, assume we have chosen b0, b1. To 
+  //  find the 1-pole coeff a1, we need to solve: 
+  //    t = ((a1*b0-b1)*s) / (b0 + a1*b1 + (b1+a1*b0)*c)
+  //  where
+  //    t = tan((wc-pi)/4), s = sin(wc), c = cos(wc)
+  //  as always. This gives:
+  //    a1 = (b0 t + b1 c t + b1 s)/(-b0 c t + b0 s - b1 t) 
+  //  regular:  a1 = t / (s-c*t)                   b0 = 1, b1 = 0
+  //  bilinear: a1 = (c*t+s+t) / (s-(c+1)*t)       b0 = b1 = 1 (or 0.5 or - doesnt matter)
+  //  general:  a1 = (b0 t + b1 c t + b1 s) / (-b0 c t + b0 s - b1 t) 
+  // -comparing the plots for regular and bilinear, we see that they deviate from the ideal 
+  //  constant in opposite ways, so it may indeed make sense to strike a compromise between the
+  //  two designs. We can tune it to some optimal default value and give it as additional control
+  //  to the user
 
+
+  // ToDo:
+  // -maybe plot not only the resonance gains but also the DC gains
 
   // maybe make the resulting s-values static const members of the class...or just static local
   // constants in the function that needs them

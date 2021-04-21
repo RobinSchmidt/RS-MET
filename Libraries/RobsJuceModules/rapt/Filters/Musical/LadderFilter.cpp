@@ -425,8 +425,6 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar
   t  = (TPar) rsTan(0.25*(wc-PI));
   if(bilinear)
     *a = (c*t+s+t) / (s-(c+1)*t);  
-     // todo: check, if feedback formula works for this, too. ...i don't think so. we need to 
-     // evaluate the magnitude response of a bilinear 1st order filter at wc
   else
     *a = t / (s-c*t);
   *k = computeFeedbackFactor(fb, c, *a, bilinear);
@@ -445,6 +443,10 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar
   // (k = fb*multiplier) as a function of wc (in the range 0..2*pi) - that will solve also the
   // problem with formulas becoming numerically ill behaved for cutoff frequencies near zero
 }
+// In the general case, that may be in between regular (b0=1,b1=0) and bilinear (b0=b1=1), we may 
+// choose b0,b1 arbitrarily and would compute a1 as:
+//   a1 = (b0 t + b1 c t + b1 s) / (-b0 c t + b0 s - b1 t)
+// maybe implement that, too. We could get rid of the conditionals
 
 // internal functions:
 
