@@ -148,8 +148,8 @@ TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency)
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
 {
-  //rsAssert(!bilinear, "Formulas work only for no-zero filters");
-  // todo: work out the formulas for the bilinear variant
+  // todo: provide an option: bool withGain that decides whether or not the g should be multiplied
+  // in (deafult: yes)
 
   using T = TPar;
   using RF = RAPT::rsRationalFunction<T>;
@@ -168,70 +168,35 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
     std::vector<T> D(6);
     D[0] =              A4k;
     D[1] = 4*( 4*a4 +   A4k);
-    D[2] = 2*(32*a3 + 3*A4k);
+    D[2] =    64*a3 + 6*A4k;
     D[3] = 4*(24*a2 +   A4k);
     D[4] =    64*a  +   A4k;
     D[5] =              16;
 
     // create numerator:
     std::vector<T> N(6);
-    N[0]  = T(0);
-
-    /*
-    // 4th stage:
-    N[1]  = c[4]*1*A4;
-    N[2]  = c[4]*4*A4;
-    N[3]  = c[4]*6*A4;
-    N[4]  = c[4]*4*A4;
-    N[5]  = c[4]*1*A4;
-
-    // 3rd stage:
-    N[1] += 2*c[3]*A3*a;
-    N[2] += 2*c[3]*((3*a+1)*A3);
-    N[3] += 2*c[3]*3*A4;
-    N[4] += 2*c[3]*(a+3)*A3;
-    N[5] += 2*c[3]*A3;
-
-    // 2nd stage:
-    N[1] += 4*c[2]*A2*a2;
-    N[2] += 4*c[2]*2*A3*a;
-    N[3] += 4*c[2]*((a2+4*a+1)*A2);
-    N[4] += 4*c[2]*2*A3;
-    N[5] += 4*c[2]*A2;
-
-    // 1st stage:
-    N[1] += 8*c[1]*a3*A;
-    N[2] += 8*c[1]*((a+3)*A*a2);
-    N[3] += 8*c[1]*3*a*A2;
-    N[4] += 8*c[1]*((3*a+1)*A);
-    N[5] += 8*c[1]*A;
-
-    // 0th stage:
-    N[1] += 16*c[0]*1*a4;
-    N[2] += 16*c[0]*4*a3;
-    N[3] += 16*c[0]*6*a2;
-    N[4] += 16*c[0]*4*a;
-    N[5] += 16*c[0]*1*1;
-    */
-
- 
-    N[1] = 16*c[0]*1*a4 + 8*c[1]*a3*A +         4*c[2]*A2*a2           + 2*c[3]*A3*a         + c[4]*1*A4;
-    N[2] = 16*c[0]*4*a3 + 8*c[1]*((a+3)*A*a2) + 4*c[2]*2*A3*a          + 2*c[3]*((3*a+1)*A3) + c[4]*4*A4;
-    N[3] = 16*c[0]*6*a2 + 8*c[1]*3*a*A2       + 4*c[2]*((a2+4*a+1)*A2) + 2*c[3]*3*A4         + c[4]*6*A4;
-    N[4] = 16*c[0]*4*a  + 8*c[1]*((3*a+1)*A)  + 4*c[2]*2*A3            + 2*c[3]*(a+3)*A3     + c[4]*4*A4;
-    N[5] = 16*c[0]*1*1  + 8*c[1]*A            + 4*c[2]*A2              + 2*c[3]*A3           + c[4]*1*A4;
-
-
-    // todo: optimize things like: D[2] = 2*(32*a3 + 3*A4k); to D[2] = 64*a3 + 6*A4k; etc.
-    // consolidate all contributions into a single assignment:
-    // N[1] = c[0]*(...) + c[1]*(...) + ... + c[4]*(...)
+    T C0 = 16*c[0];
+    T C1 =  8*c[1]*A;
+    T C2 =  4*c[2]*A2;
+    T C3 =  2*c[3]*A3;
+    T C4 =    c[4]*A4;
+    T ap3  = a   + 3;
+    T a3p1 = a*3 + 1;
+    N[0] =   T(0);
+    N[1] =   C0*a4 + C1*a3     + C2*a2         + C3*a    + C4;
+    N[2] = 4*C0*a3 + C1*ap3*a2 + C2*A*2*a      + C3*a3p1 + C4*4;
+    N[3] = 6*C0*a2 + C1*A*3*a  + C2*(a2+4*a+1) + C3*A*3  + C4*6;
+    N[4] = 4*C0*a  + C1*a3p1   + C2*A*2        + C3*ap3  + C4*4;
+    N[5] =   C0    + C1        + C2            + C3      + C4;
 
 
     //N = g*N;
     RF H(g*N, D);
     return H;
-    // that works only for the lowpasses - we need to take into account the c-values. compute the
-    // transfer functions after all the poles and form a weighted sum...
+
+    // avoid creation of a new vector for the g*N - instead do something like
+    // if(withGain) rsScale(N, g)
+
   }
   else
   {
@@ -240,7 +205,7 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
     T b2 = b*b;        // b^2
     T b4 = b2*b2;      // b^4
     T a2 = a*a;        // a^2
-    T d0 = c[0];       // c0 * b^0
+    T d0 = c[0];       // c0 * b^0  rename to C0 as above
     T d1 = c[1]*b;     // c1 * b^1
     T d2 = c[2]*b2;    // c2 * b^2
     T d3 = c[3]*b2*b;  // c3 * b^3
