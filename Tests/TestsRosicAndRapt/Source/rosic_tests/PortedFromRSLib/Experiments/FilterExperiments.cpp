@@ -1777,6 +1777,7 @@ void ladderResonanceGain()
   ldr.setCutoff(fc);
   ldr.setResonance(r);
   ldr.setBilinear(bilinear);
+  //ldr.setB1(0.5);
 
 
   int numFreqs = 1001;
@@ -1816,6 +1817,7 @@ void ladderResonanceGain()
   }
   plt.setLogScale("x");
   plt.plot();
+  int dummy = 0;
   
 
   // Observations:

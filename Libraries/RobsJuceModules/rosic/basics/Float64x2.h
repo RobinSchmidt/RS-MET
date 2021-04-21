@@ -145,6 +145,15 @@ public:
     //return (A[0] == B[0]) && (A[1] == B[1]);
   }
 
+  /** Comparison for equality. For two vectors to be considered unequal, it's sufficient when one
+  of the scalar elements is unequal to the corresponding other. */
+  inline bool operator!=(const rsFloat64x2& b) const
+  { 
+    return !(*this == b);
+    //return (this[0] != b[0]) || (this[1] != b[1]); // produces compiler warning with msc
+                                                     // about recursive call
+  }
+
   /** Comparison for "less-than". For a vector to be considered less than another vector, both
   scalar elements must be less than the corresponding elements in the other vector. This
   definition is a bit arbitrary, but it makes sense for convergence tests in numerical algorithms

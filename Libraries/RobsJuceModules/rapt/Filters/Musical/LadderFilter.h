@@ -92,7 +92,20 @@ public:
 
   /** Experimental feature - not yet ready for production! */
   void setBilinear(bool useBilinearTransform) 
-  { bilinear = useBilinearTransform; updateCoefficients(); }
+  { 
+    bilinear = useBilinearTransform;  // redundant with b0, b1
+    if(bilinear) setB1(TPar(0.5));
+    else         setB1(TPar(0.0));
+    //updateCoefficients(); 
+  }
+  // when setB1 works correctly, this function will be obsolete
+
+  /** Experimental feature - not yet ready for production! */
+  void setB1(CRPar newB1) { b1 = newB1; b0 = TPar(1) - b1; updateCoefficients(); }
+  // This is supposed to use a design for the 1st order stages somewhere in between the regular 
+  // zeroless design and the bilinear design with the zero at z = -1. I found that the resonance
+  // gain drops off to high frequencies for the zeroless design and gets amplified for the 
+  // bilinear design, so it seems to a natural idea to use a design somewhere in between....
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
@@ -153,7 +166,8 @@ public:
   /** Given some normalized net feedback loop gain fb (in the range 0..1 where 1 is the 
   self-oscillation/instability limit), cos(wc) and lowpass coefficient a, this function 
   computes the feedback factor k. */
-  static TPar computeFeedbackFactor(CRPar fb, CRPar cosWc, CRPar a, bool bilinear);
+  static TPar computeFeedbackFactor(CRPar fb, CRPar cosWc, CRPar a, bool bilinear, TPar b1);
+  // the bilinear parameter will become obsolete
 
   /** Given a desired decay time for the resonance (defined as the time it takes to fall to the
   value 1/e = 0.36..) in seconds and a cutoff frequency in Hz, this function computes the desired
@@ -166,12 +180,12 @@ public:
   feedback gain k by which the output of a chain of 4 such one-pole units should be fed back into
   the first unit and a compensation gain g that compensates for the loss of DC gain when turning up
   the feedback. */
-  static void computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, TPar *k, TPar *g, bool bilinear);
+  static void computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar *a, TPar *k, TPar *g, bool bilinear, CRPar b1);
   // todo: factor the function into a/b-computation, k-computation, g-computation - but leave 
   // this one as convenience function also
 
   /** Same as computeCoeffs(wc, fb, *a, *k, *g) but without the compensation gain computation. */
-  static void computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *k, bool bilinear);
+  static void computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar *k, bool bilinear, CRPar b1);
 
   // make a static method for the output coefficients c[] and s
 
@@ -189,6 +203,7 @@ protected:
   c = cos(w), the magnitude squared is generally: (2*b^2 * (1+c)) / (1 + a^2 + 2*a*c) and setting 
   w = 0, such that c = 1 and then evaluating the DC gain as if b was 1 and taking the reciprocal.*/
   static TPar getBilinearB(TPar a) { return TPar(0.5) * (TPar(1) + a); }
+  // i think, in general, they should sum up to 1 + a: b0 + b1 = 1 + a
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
@@ -206,8 +221,13 @@ protected:
   TPar resonance = TPar(0);      // resonance 0..1
   TPar sampleRate = TPar(44100); // samplerate in Hz
   int  mode = Mode::FLAT;        // filter mode (see Mode enum)
-  bool bilinear = false;         // flag to indicate using a zero at z=-1 per stage
   // todo: get rid of sample-rate, just maintain an omega = 2*PI*fc/fs
+
+  // Experimental:
+  bool bilinear = false;  // flag to indicate using a zero at z=-1 per stage
+  TPar b0 = TPar(1);      // maybe use c1, c2 to indicate that the factor (1+a) is not yet
+  TPar b1 = TPar(0);      // baked in
+
 
 };
 
