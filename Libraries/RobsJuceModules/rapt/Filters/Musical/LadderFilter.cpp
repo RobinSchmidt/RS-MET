@@ -157,22 +157,23 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
   {
     T A   = a+1;
     T A2  = A*A;
-    T A3  = A2*A;
-    T A4  = A2*A2;
-    //T A4  = a+1; A4 *= A4; A4 *= A4;    // A4 = (a+1)^4
+    T A3  = A2*A;    // A^3
+    T A4  = A2*A2;   // A^4
     T A4k = A4*k;
-    T a2  = a*a;                        // a^2
-
-    // create numerator:
-    std::vector<T> D(6);
-    D[0] = A4k;
-    D[1] = 4*(4*a2*a2 + A4k);
-    D[2] = 2*(32*a2*a + 3*A4k);
-    D[3] = 4*(24*a2 + A4k);
-    D[4] = (A4k + 64*a);
-    D[5] = 16;
+    T a2  = a*a;     // a^2
+    T a3  = a2*a;    // a^3
+    T a4  = a2*a2;   // a^4  
 
     // create denominator:
+    std::vector<T> D(6);
+    D[0] =              A4k;
+    D[1] = 4*( 4*a4 +   A4k);
+    D[2] = 2*(32*a3 + 3*A4k);
+    D[3] = 4*(24*a2 +   A4k);
+    D[4] =    64*a  +   A4k;
+    D[5] =              16;
+
+    // create numerator:
     std::vector<T> N(6);
     N[0]  = T(0);
 
@@ -184,7 +185,11 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
     N[5]  = c[4]*1*A4;
 
     // 3rd stage:
-    //...
+    N[1] += 2*c[3]*A3*a;
+    N[2] += 2*c[3]*((3*a+1)*A3);
+    N[3] += 2*c[3]*3*A4;
+    N[4] += 2*c[3]*(a+3)*A3;
+    N[5] += 2*c[3]*A3;
 
     // 2nd stage:
     N[1] += 4*c[2]*A2*a2;

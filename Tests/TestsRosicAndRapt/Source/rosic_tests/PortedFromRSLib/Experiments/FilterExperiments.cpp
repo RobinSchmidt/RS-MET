@@ -1805,6 +1805,7 @@ void ladderTransferFunction()
   ldr.setResonance(0.9);
 
   addPlotWithMode(Mode::LP_12);
+  addPlotWithMode(Mode::LP_18);
   addPlotWithMode(Mode::LP_24);
 
   /*
