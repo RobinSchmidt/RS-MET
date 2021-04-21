@@ -1878,8 +1878,8 @@ void ladderTransferFunction()
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   //ldr.setResonance(res);
-  //ldr.setMode(Mode::LP_24);  // the basic "Moog" configuration
-  ldr.setMode(Mode::LP_18); 
+  ldr.setMode(Mode::LP_24);  // the basic "Moog" configuration
+  //ldr.setMode(Mode::LP_18);
   //ldr.setMode(Mode::HP_24);
   //ldr.setMode(Mode::FLAT);  // still problematic when reso is zero
   //ldr.setMode(Mode::BP_6_18);
@@ -1901,6 +1901,7 @@ void ladderTransferFunction()
   plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
 
+
   // Plot variuos response types with the same resonane:
   FilterPlotter<Real> plt2;
 
@@ -1914,7 +1915,7 @@ void ladderTransferFunction()
   //addPlotWithMode(Mode::FLAT);
   //addPlotWithMode(Mode::LP_6);
   //addPlotWithMode(Mode::LP_12);
-  addPlotWithMode(Mode::LP_18);
+  addPlotWithMode(Mode::LP_18);   // has around 14 dB too much gain with B1 = 0.23
   //addPlotWithMode(Mode::LP_24);
 
   /*
@@ -1979,6 +1980,7 @@ void ladderTransferFunction()
   //  and the desired gain is the gain of the 4-pole lowpass, maybe try fc = 100,1000,10000
   //  ...maybe it should be done using a really high resonance like 0.999
   //  -figure out, if we need different factors for no-zero and bilinear design - i think so.
+  // -with B1 = 0.23, the phase at cutoff seem not to be at -172° - WTF?
 
   // ToDo: 
   // -set up the y-ranges correctly - currently, one must use the mousewheel to get the correct

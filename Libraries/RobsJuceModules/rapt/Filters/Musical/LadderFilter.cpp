@@ -201,7 +201,7 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool wi
     // Create and return rational function object:
     return RF(N, D);
   }
-  else if(B1 == B0)  // no zero
+  else if(B1 == T(0))  // no zero
   {
     // Compute some intermediate variables:
     T b  = T(1)+a;
@@ -244,7 +244,10 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool wi
     T A3   = A2*A;         // A^3
     T A4   = A2*A2;        // A^4
     T A4k  = A4*k;
-    T U4   = (u-1); U4 *= U4; U4 *= U4;   // (u-1)^4
+    T U1   = u-1;
+    T U2   = U1*U1;        // (u-1)^2
+    T U3   = U2*U1;        // (u-1)^3
+    T U4   = U2*U2;        // (u-1)^4
 
     // Create denominator:
     std::vector<T> D(6);
@@ -265,6 +268,17 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool wi
     N[3] += -c[3]*3*((a4 + 2*a3 - 2*a - 1)*u3 - A3*(2*a-1)*u2 + A3*u);
     N[4] += -c[3]*(a4 - A3*(a-3)*u3 + 3*a3 + 3*A3*(a-2)*u2 + 3*a2 - 3*A3*(a-1)*u + a);
     N[5] += -c[3]*(A3*u3-a3-3*A3*u2-3*a2+3*A3*u-3*a-1);
+    // that is questionable. response plot seems to have 14 dB too much gain and the slope looks
+    // a bit too steep, similar to the 24 dB case - verify, rederive
+
+    // G4 contributions:
+    N[1] +=    c[4]*A4*u4;
+    N[2] += -4*c[4]*A4*u3*U1;
+    N[3] +=  6*c[4]*A4*u2*U2;
+    N[4] += -4*c[4]*A4*u*U3;
+    N[5] +=    c[4]*A4*U4;
+
+
 
 
     if(withGain) 
