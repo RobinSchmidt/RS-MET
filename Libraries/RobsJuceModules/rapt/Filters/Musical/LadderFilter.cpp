@@ -177,6 +177,7 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
     std::vector<T> N(6);
     N[0]  = T(0);
 
+    /*
     // 4th stage:
     N[1]  = c[4]*1*A4;
     N[2]  = c[4]*4*A4;
@@ -211,8 +212,14 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction()
     N[3] += 16*c[0]*6*a2;
     N[4] += 16*c[0]*4*a;
     N[5] += 16*c[0]*1*1;
+    */
 
-    
+ 
+    N[1] = 16*c[0]*1*a4 + 8*c[1]*a3*A +         4*c[2]*A2*a2           + 2*c[3]*A3*a         + c[4]*1*A4;
+    N[2] = 16*c[0]*4*a3 + 8*c[1]*((a+3)*A*a2) + 4*c[2]*2*A3*a          + 2*c[3]*((3*a+1)*A3) + c[4]*4*A4;
+    N[3] = 16*c[0]*6*a2 + 8*c[1]*3*a*A2       + 4*c[2]*((a2+4*a+1)*A2) + 2*c[3]*3*A4         + c[4]*6*A4;
+    N[4] = 16*c[0]*4*a  + 8*c[1]*((3*a+1)*A)  + 4*c[2]*2*A3            + 2*c[3]*(a+3)*A3     + c[4]*4*A4;
+    N[5] = 16*c[0]*1*1  + 8*c[1]*A            + 4*c[2]*A2              + 2*c[3]*A3           + c[4]*1*A4;
 
 
     // todo: optimize things like: D[2] = 2*(32*a3 + 3*A4k); to D[2] = 64*a3 + 6*A4k; etc.
