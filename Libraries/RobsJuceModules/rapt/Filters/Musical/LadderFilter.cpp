@@ -153,6 +153,7 @@ TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency, bool wi
   // function -> computer algebra
 }
 
+/*
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool withGain)
 {
@@ -265,7 +266,14 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool wi
     N[0] = T(0);
 
     // G3 contributions:
-    N[1] += -c[3]*A4*u3;
+    //N[1] += -c[3]*
+    //N[2] +=  c[3]*
+    //N[3] += -c[3]*
+    //N[4] += -c[3]*
+    //N[5] += -c[3]*
+
+
+    N[1] += -c[3]*A3*u3; // or A4?
     N[2] +=  c[3]*(((3*a - 1) * A3)*u3 - 3*A4*u2);
     N[3] += -c[3]*3*(((a - 1) * A3)*u3 - ((2*a - 1)*A3)*u2 + A4*u);
     N[4] += -c[3]*A3*(a - (a-3)*u3 + 3*(a-2)*u2 - 3*(a-1)*u);
@@ -294,8 +302,6 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool wi
       rsScale(N, g);
     return RF(N, D);
   }
-
-
 }
 // ToDo:
 // Maybe make a function getCoeffsBA(TPar* b, TPar* a) which just fills the arrays (of length 5).
@@ -304,7 +310,9 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool wi
 // Check, if the patterns with the binomial coeffs extend to an N-stage ladder. If so, write down
 // the general form of the transfer function in canonical form and implement a function that 
 // computes numerator and denominator coeffs for the general case.
+*/
 
+/*
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionOld()
 {
@@ -327,6 +335,7 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionOld()
   RF H  = g * (c[0]*one + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + k * G4 / z); // H(z)
   return H;
 }
+*/
 
 // audio processing:
 

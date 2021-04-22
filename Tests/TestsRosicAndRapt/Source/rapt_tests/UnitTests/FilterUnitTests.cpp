@@ -743,7 +743,8 @@ bool ladderUnitTest()
 
   using TSig = double;  // todo: maybe test it with double, float, rsFloat64x2
   using TPar = double;
-  using LDR  = RAPT::rsLadderFilter<TSig, TPar>;
+  //using LDR  = RAPT::rsLadderFilter<TSig, TPar>;
+  using LDR  = rsLadderTest<TSig, TPar>;
   using RF   = RAPT::rsRationalFunction<TPar>;
   using Mode = LDR::Mode;
   using TCmp = std::complex<TPar>;
@@ -808,10 +809,14 @@ bool ladderUnitTest()
   // We need a high tolerance for these tests because getTransferFunctionOld is very imprecise 
   // numerically. ToDo: use two separate tolerances for old and new implementation
 
+
+
+  //ok &= testTransferFuncs1(Mode::LP_18, 0.2, 1.e-1, 1.e-8);
+  // fails
+
   ok &= testTransferFuncs1(Mode::LP_24, 0.0, 1.e-6, 1.e-10);
   ok &= testTransferFuncs1(Mode::LP_24, 0.5, 1.e-1, 1.e-10); // whoa! that's a large tol1!!!
   ok &= testTransferFuncs1(Mode::LP_24, 0.2, 1.e-1, 1.e-10);
-
 
 
 

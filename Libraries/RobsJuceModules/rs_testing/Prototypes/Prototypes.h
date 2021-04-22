@@ -2700,9 +2700,6 @@ void rsColor<T>::hsl2hex(T H, T S, T L, char* hex, bool sharp, bool null)
   int dummy = 0;
 }
 
-
-
-
 template<class T>
 class rsColorRGB : public rsColor<T>
 {
@@ -2725,6 +2722,30 @@ public:
 
 
 };
+
+//=================================================================================================
+
+template<class TSig, class TPar>
+class rsLadderTest : public RAPT::rsLadderFilter<TSig, TPar>
+{
+
+public:
+
+  /** Returns the transfer function as rsRationalFunction object. This is mainly useful for 
+  research and development and not suitable for use actual products and a total no-go to use at 
+  realtime. For plots in products, you should probably use getTransferFunctionAt or 
+  getMagnitudeResponseAt. */
+  rsRationalFunction<TPar> getTransferFunction(bool withGain = true);
+
+  /** Old implementation of getTransferFunction, using rsRationalFunction's arithmetic instead of
+  just assigning the coeffs via analytically derived formulas (as the new one does). It's less 
+  efficient and less precise than the new one, but nicely demonstrates how rsRationalFunction can 
+  be used for such computations. It will produce a function that is formally 8-pole, but features 
+  pole/zero cancellations. ToDo: move this eventually into the prototypes section. */
+  rsRationalFunction<TPar> getTransferFunctionOld();
+
+};
+
 
 
 //=================================================================================================

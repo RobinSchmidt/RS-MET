@@ -1865,7 +1865,8 @@ void ladderTransferFunction()
   // BA form
 
   using Real = double;
-  using LDR  = RAPT::rsLadderFilter<Real, Real>;
+  //using LDR  = RAPT::rsLadderFilter<Real, Real>;
+  using LDR  = rsLadderTest<Real, Real>;
   using RF   = RAPT::rsRationalFunction<Real>;
   using BA   = RAPT::rsFilterSpecificationBA<Real>;
   using Mode = LDR::Mode;

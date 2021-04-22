@@ -160,14 +160,14 @@ public:
   research and development and not suitable for use actual products and a total no-go to use at 
   realtime. For plots in products, you should probably use getTransferFunctionAt or 
   getMagnitudeResponseAt. */
-  rsRationalFunction<TPar> getTransferFunction(bool withGain = true);
+  //rsRationalFunction<TPar> getTransferFunction(bool withGain = true);
 
   /** Old implementation of getTransferFunction, using rsRationalFunction's arithmetic instead of
   just assigning the coeffs via analytically derived formulas (as the new one does). It's less 
   efficient and less precise than the new one, but nicely demonstrates how rsRationalFunction can 
   be used for such computations. It will produce a function that is formally 8-pole, but features 
   pole/zero cancellations. ToDo: move this eventually into the prototypes section. */
-  rsRationalFunction<TPar> getTransferFunctionOld();
+  //rsRationalFunction<TPar> getTransferFunctionOld();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */
