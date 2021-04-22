@@ -1387,7 +1387,7 @@ bool testRationalFunction(std::string& reportString)
   s = RF({ 2,3 }, { 5,-2 });        // inner
   r = RF({ 2,-3,4,-5 }, { 2, 3 });  // outer
   t = r(s); // 700,-2165, 1204,-1475,518;  2000,-1775,210,172,-40
-  y1 = t(5);  // -31.09268...
+  y1 = t(5.0);  // -31.09268...
   ok &= rsIsCloseTo(y1, -31.0926829268293, tol);
   // our numeric result from the evaluation -31.09.. is the same as the result from sage but
   // our coefficient arrays are different. numerator and denominator still have a common

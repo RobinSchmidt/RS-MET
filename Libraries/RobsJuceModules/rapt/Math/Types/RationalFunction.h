@@ -173,7 +173,8 @@ public:
   }
 
   /** Evaluates the function at the given input z whose type may be different from the 
-  coefficient type, for example, for evaluating functions with real coeffs at complex arguments. */
+  coefficient type, for example, for evaluating functions with real coeffs at complex arguments.
+  WARNING: the same considerations as for @see rsPolynomial::operator(TArg) apply. */
   template<class TArg>
   TArg operator()(TArg z) const 
   { 

@@ -5,42 +5,11 @@ rsLadderFilter<TSig, TPar>::rsLadderFilter()
   setMode(Mode::LP_24);
 }
 
-/*
-template<class TSig, class TPar>
-void rsLadderFilter<TSig, TPar>::setCutoff(CRPar newCutoff)
-{
-  cutoff = newCutoff;
-  updateCoefficients();
-}
-
-template<class TSig, class TPar>
-void rsLadderFilter<TSig, TPar>::setSampleRate(CRPar newSampleRate)
-{
-  sampleRate = newSampleRate;
-  updateCoefficients();
-}
-
-template<class TSig, class TPar>
-void rsLadderFilter<TSig, TPar>::setResonance(CRPar newResonance)
-{
-  resonance = newResonance;
-  updateCoefficients();
-}
-
-template<class TSig, class TPar>
-void  rsLadderFilter<TSig, TPar>::setMixingCoefficients(
-  CRPar c0, CRPar c1, CRPar c2, CRPar c3, CRPar c4)
-{
-  c[0] = c0; c[1] = c1; c[2] = c2; c[3] = c3; c[4] = c4;
-}
-*/
-
 template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::setMode(int newMode)
 {
   // Shorthands for convenience:
   using T = TPar;
-  //using M = Mode;
   auto set = [&](T c0, T c1, T c2, T c3, T c4, T s)
   {
     setMixingCoefficients(c0, c1, c2, c3, c4); 
@@ -111,27 +80,11 @@ std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(
   std::complex<T> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
   std::complex<T> H;              // transfer function with resonance   
   std::complex<T> one(1, 0);
-
-  /*
-  T b;
-  if(isBilinear()) {
-    b  =  getBilinearB(a);
-    G1 = (b + b/z) / (one + a/z); }
-  else {
-    b  = T(1) + a;
-    G1 = b / (one + a/z); }
-  // in general: (1+a)*(b0 + b1/z) / (one + a/z); }
-  */
-
-  // test:
   G1 =  (1+a)*(B0 + B1/z) / (one + a/z);
-
-
   G2 = G1*G1;
   G3 = G2*G1;
   G4 = G3*G1;
   H  = (c[0] + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + k * G4/z);
-
   if(withGain) return g*H;
   else         return   H;
 }
@@ -152,190 +105,6 @@ TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency, bool wi
   // I wonder, if a simpler formula is possible which avoids going through the complex transfer 
   // function -> computer algebra
 }
-
-/*
-template<class TSig, class TPar>
-rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool withGain)
-{
-  //rsAssert(B1 == 0 || B1 == B0, "Does not yet work in the general case");
-  // the formulas below work only for zeroless or zero at z=-1
-
-  using T  = TPar;
-  using RF = RAPT::rsRationalFunction<T>;
-  if(isBilinear())             // zero at z = -1
-  {
-    // Compute some intermediate variables:
-    T a2   = a*a;          // a^2
-    T a3   = a2*a;         // a^3
-    T a4   = a2*a2;        // a^4
-    T A    = a+1;          // a+1 == 2*b
-    T A2   = A*A;          // A^2
-    T A3   = A2*A;         // A^3
-    T A4   = A2*A2;        // A^4
-    T A4k  = A4*k;
-    T C0   = 16*c[0];      // from here, they are relevant only for numerator
-    T C1   =  8*c[1]*A;
-    T C2   =  4*c[2]*A2;
-    T C3   =  2*c[3]*A3;
-    T C4   =    c[4]*A4;
-    T ap3  = a   + 3;
-    T a3p1 = a*3 + 1;
-
-    // Create denominator:
-    std::vector<T> D(6);
-    D[0] =              A4k;
-    D[1] = 4*( 4*a4 +   A4k);
-    D[2] =    64*a3 + 6*A4k;
-    D[3] = 4*(24*a2 +   A4k);
-    D[4] =    64*a  +   A4k;
-    D[5] =              16;
-
-    // Create numerator:
-    std::vector<T> N(6);
-    N[0] =   T(0);
-    N[1] =   C0*a4 + C1*a3     + C2*a2         + C3*a    + C4;
-    N[2] = 4*C0*a3 + C1*ap3*a2 + C2*A*2*a      + C3*a3p1 + C4*4;
-    N[3] = 6*C0*a2 + C1*A*3*a  + C2*(a2+4*a+1) + C3*A*3  + C4*6;
-    N[4] = 4*C0*a  + C1*a3p1   + C2*A*2        + C3*ap3  + C4*4;
-    N[5] =   C0    + C1        + C2            + C3      + C4;
-    if(withGain) 
-      rsScale(N, g);
-
-    // Create and return rational function object:
-    return RF(N, D);
-  }
-  else if(B1 == T(0))  // no zero
-  {
-    // Compute some intermediate variables:
-    T b  = T(1)+a;
-    T b2 = b*b;        // b^2
-    T b4 = b2*b2;      // b^4
-    T a2 = a*a;        // a^2
-    T d0 = c[0];       // c0 * b^0  rename to C0 as above
-    T d1 = c[1]*b;     // c1 * b^1
-    T d2 = c[2]*b2;    // c2 * b^2
-    T d3 = c[3]*b2*b;  // c3 * b^3
-    T d4 = c[4]*b4;    // c4 * b^4
-
-    // Compute coefficients of the numerator (note the binomial coeffs in the columns:
-    // (1),(1,1),(1,2,1),(1,3,3,1),(1,4,6,4,1)):
-    std::vector<T> N(5);
-    N[4] = (d4 + d3 +      d2 +      d1 +      d0);
-    N[3] = (     d3 + T(2)*d2 + T(3)*d1 + T(4)*d0) * a;
-    N[2] = (               d2 + T(3)*d1 + T(6)*d0) * a2;
-    N[1] = (                         d1 + T(4)*d0) * a2*a;
-    N[0] = (                                   d0) * a2*a2;
-    if(withGain) 
-      rsScale(N, g);
-
-    // Create rational function object and return it (note again the binomial coeffs 1,4,6,4,1) 
-    // with the additional b4*k added in, so the denominator seems to be (a+1)^4 + b4*k*z^3
-    return RF(N, { a2*a2, T(4)*a*a2, T(6)*a2, T(4)*a + b4*k, T(1) });
-  }
-  else  // the general case
-  {
-    // Compute some intermediate variables:
-    T u    = B1;
-    T u2   = u*u;
-    T u3   = u2*u;
-    T u4   = u2*u2;
-    T a2   = a*a;          // a^2
-    T a3   = a2*a;         // a^3
-    T a4   = a2*a2;        // a^4
-    T A    = a+1;
-    T A2   = A*A;          // A^2
-    T A3   = A2*A;         // A^3
-    T A4   = A2*A2;        // A^4
-    T A4k  = A4*k;
-    T U1   = u-1;
-    T U2   = U1*U1;        // (u-1)^2
-    T U3   = U2*U1;        // (u-1)^3
-    T U4   = U2*U2;        // (u-1)^4
-
-    // Create denominator:
-    std::vector<T> D(6);
-    D[0] =     A4k*u4;
-    D[1] = -  (A4k*(4*u4 - 4*u3)              -   a4);
-    D[2] =  2*(A4k*(3*u4 - 6*u3 + 3*u2)       + 2*a3);
-    D[3] = -2*(A4k*(2*u4 - 6*u3 + 6*u2 - 2*u) - 3*a2);
-    D[4] =    (A4k*U4                         + 4*a );
-    D[5] =  1;
-
-    // Create numerator:
-    std::vector<T> N(6);
-    N[0] = T(0);
-
-    // G3 contributions:
-    //N[1] += -c[3]*
-    //N[2] +=  c[3]*
-    //N[3] += -c[3]*
-    //N[4] += -c[3]*
-    //N[5] += -c[3]*
-
-
-    N[1] += -c[3]*A3*u3; // or A4?
-    N[2] +=  c[3]*(((3*a - 1) * A3)*u3 - 3*A4*u2);
-    N[3] += -c[3]*3*(((a - 1) * A3)*u3 - ((2*a - 1)*A3)*u2 + A4*u);
-    N[4] += -c[3]*A3*(a - (a-3)*u3 + 3*(a-2)*u2 - 3*(a-1)*u);
-    N[5] += -c[3]*A3*U3;
-    // todo: try to simplify further - try to make every term start with c[3]*A3 - if there is no 
-    // A3 try to create one by splitting it off from an A4. try to match the pattern of the G4
-    // code below
-
-    //N[1] += -c[3]*A3*A*u3;
-    //N[2] +=  c[3]*A3*(3*a*u-u-3*A)*u2;
-    //N[3] += -c[3]*A3*3*(a*u2-2*a*u-u2+u+A)*u;
-    //N[4] += -c[3]*A3*(a*U1-3*u)*U2;
-    //N[5] += -c[3]*A3*U3;
-
-    // G4 contributions:
-    N[1] +=    c[4]*A4*u4;
-    N[2] += -4*c[4]*A4*u3*U1;
-    N[3] +=  6*c[4]*A4*u2*U2;
-    N[4] += -4*c[4]*A4*u*U3;
-    N[5] +=    c[4]*A4*U4;
-
-
-
-
-    if(withGain) 
-      rsScale(N, g);
-    return RF(N, D);
-  }
-}
-// ToDo:
-// Maybe make a function getCoeffsBA(TPar* b, TPar* a) which just fills the arrays (of length 5).
-// Beware that the order must be reversed for a polynomial in z^-1 (maybe make it optional to be
-// in this form)
-// Check, if the patterns with the binomial coeffs extend to an N-stage ladder. If so, write down
-// the general form of the transfer function in canonical form and implement a function that 
-// computes numerator and denominator coeffs for the general case.
-*/
-
-/*
-template<class TSig, class TPar>
-rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionOld()
-{
-  using T  = TPar;
-  using RF = RAPT::rsRationalFunction<T>;
-  T tol = 1024 * RS_EPS(T);  // ad hoc
-
-  T b0 = B0 * (1+a);
-  T b1 = B1 * (1+a);
-
-  //if(isBilinear()) b0 = b1 = getBilinearB(a);    // needs test
-  //else {       b0 = T(1) + a; b1 = T(0);  }
-
-  RF G1( { b1, b0 }, { a, 1 }, tol); // G1(z) = (b0 + b1/z) / (1 + a/z) = (b1 + b0*z) / (a + 1*z)
-  RF one({ 1      }, { 1    }, tol); // 1 = 1 / 1
-  RF z  ({ 0,  1  }, { 1    }, tol); // z = (0 + 1*z) / 1
-  RF G2 = G1*G1;                     // G1^2
-  RF G3 = G1*G2;                     // G1^3
-  RF G4 = G2*G2;                     // G1^4
-  RF H  = g * (c[0]*one + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + k * G4 / z); // H(z)
-  return H;
-}
-*/
 
 // audio processing:
 
@@ -456,35 +225,19 @@ TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(
   CRPar fb, CRPar cosWc, CRPar a, TPar b1)
 {
   TPar g2;
-
-  /*
-  if(b1 != TPar(0))
-  {
-    b  = getBilinearB(a);
-    g2 = (2*b*b*(1+cosWc)) / (1 + a*a + 2*a*cosWc);
+  if(b1 == TPar(0)) {  // simple allpole case
+    TPar b = TPar(1) + a;
+    g2 = b*b / (1 + a*a + 2*a*cosWc); 
   }
-  else
-  {
-    b  = TPar(1) + a;
-    g2 = b*b / (1 + a*a + 2*a*cosWc);
+  else {               // general case
+    TPar b0 = TPar(1) - b1;
+    b0 *= (1+a);
+    b1 *= (1+a);
+    g2 = (b0*b0 + b1*b1 + 2*b0*b1*cosWc) / (1 + a*a + 2*a*cosWc);
+    // optimize: compute reciprocal of g2....
   }
-  */
-  // can this be simpified further by plugging in the expression for b in terms of a?
-  // this will become obsolete...
-
-  // test - general case between regular in bilinear:
-  TPar b0 = TPar(1) - b1;
-  b0 *= (1+a);
-  b1 *= (1+a);
-  g2  = (b0*b0 + b1*b1 + 2*b0*b1*cosWc) / (1 + a*a + 2*a*cosWc);
-  // optimize: compute reciprocal of g2....
-
-
   return fb / (g2*g2); //...then this can be turned into a multiplication
 }
-// for the bilinear case, we get g2 = (2*b+2*b^2*c) / (1+a^2+2*a*c) where c = cos(wc) = cosWc
-// ...but what is b? i don't think, it's just 1+a. calculate the mag-resp for b=1 at w=0, then use
-// the reciprocal of that for b
 
 template<class TSig, class TPar>
 TPar rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(CRPar decay, CRPar cutoff)

@@ -154,20 +154,7 @@ public:
   /** Return true, iff the individual 1st order stages feature a zero at z = -1, which is a 
   typical feature of bilinear lowpass designs (although we do not explicitly use the bilinear
   transform here). */
-  bool isBilinear() const { return B1 == B0; }
-
-  /** Returns the transfer function as rsRationalFunction object. This is mainly useful for 
-  research and development and not suitable for use actual products and a total no-go to use at 
-  realtime. For plots in products, you should probably use getTransferFunctionAt or 
-  getMagnitudeResponseAt. */
-  //rsRationalFunction<TPar> getTransferFunction(bool withGain = true);
-
-  /** Old implementation of getTransferFunction, using rsRationalFunction's arithmetic instead of
-  just assigning the coeffs via analytically derived formulas (as the new one does). It's less 
-  efficient and less precise than the new one, but nicely demonstrates how rsRationalFunction can 
-  be used for such computations. It will produce a function that is formally 8-pole, but features 
-  pole/zero cancellations. ToDo: move this eventually into the prototypes section. */
-  //rsRationalFunction<TPar> getTransferFunctionOld();
+  bool isBilinear() const { return B1 == B0; } // replace by B1 == 0.5
 
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */

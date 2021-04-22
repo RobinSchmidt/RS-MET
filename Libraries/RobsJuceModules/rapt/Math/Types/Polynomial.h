@@ -318,9 +318,20 @@ public:
   T operator()(T x) const { return evaluate(x); }
 
   /** Evaluation operator for input arguments whose type differs from the coefficient type. For 
-  example, for evaluating polynomials with real coefficients at complex arguments. */
+  example, for evaluating polynomials with real coefficients at complex arguments. 
+  WARNING: When you have a polynomial p(x) with floating point coefficients and call it 
+  with an integer argument like: y = p(5), the presence of this operator will cause the 
+  coefficients to be converted to integer rather than the argument be converted to float, and if
+  the float is double-precision, there will be no compiler warning about implicit conversion 
+  because the conversion is actually explicit. ithout the presence of this operator, it would work
+  the other way around and the y = p(5) call would do what is presumably the desired behavior. I 
+  think, being able to conveniently evaluate real polynomials at complex arguments outweighs the 
+  inconvenience of having to write y = p(5.0). Most of the time, the argument will be a variable 
+  anyway. */
   template<class TArg>
   TArg operator()(TArg x) const { return evaluateTyped(x, &coeffs[0], getDegree()); }
+  // todo: maybe remove the operator to force the caller to explicitly call evaluateTyped. That's
+  // still convenient enough and adds documentation of the type conversion to the call site
 
   /** Evaluation operator () that takes a polynomial as input and returns another polynomial. This
   implements nesting/composition. The given p is the inner polynomial and "this" is the outer 
