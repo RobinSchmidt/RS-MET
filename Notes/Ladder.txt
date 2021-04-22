@@ -275,7 +275,7 @@ via:
 
 var("a z k u")              # u is shorthand for B1
 N  = 3                      # stage for which we want the numerator
-M  = 5                      # power of for which we want the coeff
+M  = 5                      # power of z for which we want the coeff
 b1 = (a+1)*u
 b0 = (a+1)*(1-u)
 G(z) = (b0+b1/z)/(1+a/z)
@@ -292,10 +292,20 @@ G0 (N=0):
 ...
 
 G1 (N=1):
-...
+z^0:     0
+z^1:    (a + 1) *      u            * a^3
+z^2:   -(a + 1) * (  a*u - a - 3*u) * a^2
+z^3: -3*(a + 1) * (  a*u - a   - u) * a
+z^4:   -(a + 1) * (3*a*u - 3*a - u)
+z^5:   -(a + 1) * (u - 1)
 
 G2 (N=2):
-...
+z^0:     0
+z^1:    (a + 1)^2 *  a^2*u^2
+z^2: -2*(a + 1)^2 * (a*u - a - u)*a*u
+z^3:    (a + 1)^2 * (a^2*u^2 - 2*a^2*u - 4*a*u^2 + a^2 + 4*a*u + u^2)
+z^4:  2*(a + 1)^2 * (a*u - a - u)*(u - 1)
+z^5:    (a + 1)^2 * (u - 1)^2
 
 G3 (N=3):
 z^0:    0
@@ -306,10 +316,12 @@ z^4:  -(a + 1)^3 * (  a*u -   a - 3*u) * (u - 1)^2
 z^5:  -(a + 1)^3                       * (u - 1)^3
 
 G4 (N=4):
-...
-
-
-
+z^0: 0
+z^1:    (a + 1)^4             * u^4
+z^2: -4*(a + 1)^4 * (u - 1)   * u^3
+z^3:  6*(a + 1)^4 * (u - 1)^2 * u^2
+z^4: -4*(a + 1)^4 * (u - 1)^3 * u
+z^5:    (a + 1)^4 * (u - 1)^4
 
 
 

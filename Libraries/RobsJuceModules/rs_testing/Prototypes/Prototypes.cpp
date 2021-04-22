@@ -890,6 +890,27 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunction(bool with
     std::vector<T> N(6);
     N[0] = T(0);
 
+    // G0 contributions:
+    N[1] += c[0]*a4;
+    N[2] += c[0]*4*a3;
+    N[3] += c[0]*6*a2;
+    N[4] += c[0]*4*a;
+    N[5] += c[0]*1;
+
+    // G1 contributions:
+    N[1] += c[1]*(   A *      u            * a3);
+    N[2] += c[1]*(  -A * (  a*u - a - 3*u) * a2);
+    N[3] += c[1]*(-3*A * (  a*u - a   - u) * a );
+    N[4] += c[1]*(  -A * (3*a*u - 3*a - u)     );
+    N[5] += c[1]*(  -A * (u - 1)               );
+
+    // G2 contributions:
+    N[1] += c[2]*(   A2 *  a2*u2);
+    N[2] += c[2]*(-2*A2 * (a*u - a - u)*a*u);
+    N[3] += c[2]*(   A2 * (a2*u2 - 2*a2*u - 4*a*u2 + a2 + 4*a*u + u2));
+    N[4] += c[2]*( 2*A2 * (a*u - a - u)*U1 );
+    N[5] += c[2]*(   A2 * U2);
+
     // G3 contributions:
     N[1] += c[3]*(  A3 *            a             * u3);
     N[2] += c[3]*( -A3 * (3*a*u - 3*a -   u)      * u2);
