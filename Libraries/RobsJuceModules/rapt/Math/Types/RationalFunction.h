@@ -172,11 +172,21 @@ public:
     return num(x) / den(x);
   }
 
+  /** Evaluates the function at the given input z whose type may be different from the 
+  coefficient type, for example, for evaluating functions with real coeffs at complex arguments. */
+  template<class TArg>
+  TArg operator()(TArg z) const 
+  { 
+    return num(z) / den(z);
+  }
+
   /** Compares this rational function to another one for equality. */
   bool operator==(const rsRationalFunction<T>& q) const 
   { 
     return num == q.num && den == q.den;
   }
+
+
 
 
 

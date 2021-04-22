@@ -75,6 +75,21 @@ T rsPolynomial<T>::evaluate(const T& x, const T *a, int degree)
     y = y*x + a[i];
   return y;
 }
+// maybe this is obsolete now due to the function below?
+
+/*
+template<class TArg>
+template<class T>
+TArg rsPolynomial<T>::evaluateTyped(const TArg& x, const T* a, int degree)
+{
+  if(degree < 0)
+    return TArg(0);
+  TArg y = TArg(a[degree]);
+  for(int i = degree-1; i >= 0; i--)
+    y = y*x + TArg(a[i]);
+  return y;
+}
+*/
 
 template<class T>
 std::complex<T> rsPolynomial<T>::evaluateFromRoots(const std::complex<T>& s,

@@ -746,10 +746,58 @@ bool ladderUnitTest()
   using LDR  = RAPT::rsLadderFilter<TSig, TPar>;
   using RF   = RAPT::rsRationalFunction<TPar>;
   using Mode = LDR::Mode;
+  using TCmp = std::complex<TPar>;
 
   // ToDo: set it up and compare the results of getTransferFunctionAt, getTransferFunction and
   // getTransferFunctionOld. They should be equal up to roudoff error. This test is for making sure
   // that the creating of the transfer function works properly..
+
+  TPar sampleRate = 44100;
+
+  LDR ldr;
+  ldr.setSampleRate(sampleRate);
+  ldr.setCutoff(1000);
+  ldr.setResonance(0.9);
+  ldr.setMode(Mode::LP_24);
+  ldr.setB1(0.0);                // allpole (no zero), cheap special case
+  //ldr.setB1(0.5);                // bilinear (zero at z = -1)
+  //ldr.setB1(0.23);                 // sweet spot  
+
+
+  // Compares the results of getTransferFunctionAt, getTransferFunction, getTransferFunctionOld:
+  auto testTransferFunc = [&](TPar cutoff, TPar reso, Mode mode, TPar B1, TPar testFreq, TPar tol)
+  {
+    bool ok = true;
+    ldr.setup(cutoff, reso, mode, B1);
+    TCmp i(0, 1);                              // imaginary unit
+    TPar w   = 2*PI*testFreq / sampleRate;     // normalized radian frequency
+    TCmp z   = exp(i*w);                       // evaluation point in the z-plane
+    TCmp Hz  = ldr.getTransferFunctionAt(z);   // H(z) at z, our reference value
+    RF   H1  = ldr.getTransferFunctionOld();   // H(z) via RF arithmetic...
+    TCmp H1z = H1(z);                          // ...evaluated at z
+    TCmp err = Hz - H1z;
+    ok &= rsAbs(err) <= tol;
+    RF   H2  = ldr.getTransferFunction();      // H(z) via formulas...
+    TCmp H2z = H2(z);                          // ...evaluated at z
+    err      = Hz - H2z;
+    ok &= rsAbs(err) <= tol;
+    return ok;
+  };
+
+  TPar nyquist = sampleRate/2;
+
+  TPar tol = RS_EPS(TPar) * 1.e9;
+  // We need a high tolerance for these tests because getTransferFunctionOld is very imprecise 
+  // numerically. ToDo: use two separate tolerances for old and new implementation
+
+  ok &= testTransferFunc(1000, 0.9, Mode::LP_24, 0.0,    0,    tol);
+  ok &= testTransferFunc(1000, 0.9, Mode::LP_24, 0.0,  500,    tol);
+  ok &= testTransferFunc(1000, 0.9, Mode::LP_24, 0.0, 1000,    tol);
+  ok &= testTransferFunc(1000, 0.9, Mode::LP_24, 0.0, 2000,    tol);
+  ok &= testTransferFunc(1000, 0.9, Mode::LP_24, 0.0, nyquist, tol);
+
+  // todo: test for other filter modes and other values of B1: test at least 0.0, 0.5, 0.23
+
 
 
 

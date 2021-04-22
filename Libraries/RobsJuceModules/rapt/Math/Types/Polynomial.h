@@ -317,9 +317,14 @@ public:
   //T operator()(T x) const { return evaluate(x, &coeffs[0], getDegree()); }
   T operator()(T x) const { return evaluate(x); }
 
-  /** Overloaded evaluation operator () that takes a polynomial as input and returns another 
-  polynomial. This implements nesting/composition. The given x is the inner polynomial and "this" 
-  is the outer polynomial */
+  /** Evaluation operator for input arguments whose type differs from the coefficient type. For 
+  example, for evaluating polynomials with real coefficients at complex arguments. */
+  template<class TArg>
+  TArg operator()(TArg x) const { return evaluateTyped(x, &coeffs[0], getDegree()); }
+
+  /** Evaluation operator () that takes a polynomial as input and returns another polynomial. This
+  implements nesting/composition. The given p is the inner polynomial and "this" is the outer 
+  polynomial, let's say q, then the resulting polynominal is r(x) = q(p(x)). */
   rsPolynomial<T> operator()(const rsPolynomial<T>& p) const
   {
     rsPolynomial<T> r(getDegree() * p.getDegree());
@@ -382,6 +387,21 @@ public:
   constant term, a[1] is the multiplier for x^1, a[2] the multiplier for x^2 and so on until
   a[degree] which is the multiplier for a^degree. */
   static T evaluate(const T& x, const T *a, int degree);
+
+  template<class TArg>
+  static TArg evaluateTyped(const TArg& x, const T *a, int degree)
+  {
+    if(degree < 0)
+      return TArg(0);
+    TArg y = TArg(a[degree]);
+    for(int i = degree-1; i >= 0; i--)
+      y = y*x + TArg(a[i]);
+    return y;
+  }
+  // experimental - intention: evaluate polynomials that have, for example, real coefficients at
+  // complex arguments
+  // we seem to have to use another name and have to put it into the header - figure out, why
+  // ...it's not really desirable, so try to fix that
 
   /** Evaluates the polynomial defined by the array of roots "r" at argument "x". If infinite roots
   are encountered, they are skipped - this is consistent with what we need when evaluating filter

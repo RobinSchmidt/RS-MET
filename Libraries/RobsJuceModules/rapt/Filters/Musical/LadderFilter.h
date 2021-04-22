@@ -69,23 +69,25 @@ public:
   /** \name Setup */
 
   /** Sets the cutoff frequency in Hz. */
-  void setCutoff(CRPar newCutoff);
+  void setCutoff(CRPar newCutoff) { cutoff = newCutoff; updateCoefficients(); }
+
     // maybe rename to setFrequency because we have different modes and the term cutoff applies
     // only to lowpass- and highpass filters (not to bandpass filters, for example)
 
   /** Sets the sample rate in Hz. */
-  void setSampleRate(CRPar newSampleRate);
+  void setSampleRate(CRPar newSampleRate) { sampleRate = newSampleRate; updateCoefficients(); }
 
   /** Sets the resonance. This is the net amount of gain in the feedback loop - so the parameter is
   normalized to the range 0..1 where at 1, the stability/self-oscillation limit is reached. */
-  void setResonance(CRPar newResonance);
+  void setResonance(CRPar newResonance) { resonance = newResonance; updateCoefficients(); }
 
   /** Sets the coefficients by which the different signals, tapped off after successive 1-pole
   lowpass stages, are mixed together to form the final output. c0 multiplies the input, c1 the 
   output of the 1st lowpass stage, and so on. These mixing coefficients determine the general shape
   of the frequency response. For example, if c4 = 1 and all others are 0, we get a 24 dB/oct 
   lowpass - as in the classical Moog filter. */
-  void setMixingCoefficients(CRPar c0, CRPar c1, CRPar c2, CRPar c3, CRPar c4);
+  void setMixingCoefficients(CRPar c0, CRPar c1, CRPar c2, CRPar c3, CRPar c4)
+  { c[0] = c0; c[1] = c1; c[2] = c2; c[3] = c3; c[4] = c4; }
 
   /** Chooses the filter mode. See the Mode enum for the available modes. */
   void setMode(int newMode);
@@ -106,6 +108,21 @@ public:
   // zeroless design and the bilinear design with the zero at z = -1. I found that the resonance
   // gain drops off to high frequencies for the zeroless design and gets amplified for the 
   // bilinear design, so it seems to a natural idea to use a design somewhere in between....
+
+  /** Sets all user parameters at once. */
+  void setup(CRPar newCutoff, CRPar newReso, Mode newMode, CRPar newB1)
+  {
+    cutoff = newCutoff;
+    resonance = newReso;
+    B1 = newB1; 
+    B0 = TPar(1) - B1;       // Get rid of that member! It's redundant: it's always 1-B1.
+    if(newMode != mode) 
+      setMode(newMode);      // this will call updateCoefficients, if newMode != mode ...
+    else
+      updateCoefficients();  // ...otherwise, we need to call it ourselves (that's ugly!)
+  }
+  // ...perhaps, we should use the strategy with the "dirty" flag
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */

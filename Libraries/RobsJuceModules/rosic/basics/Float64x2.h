@@ -139,10 +139,12 @@ public:
   equal. */
   inline bool operator==(const rsFloat64x2& b) const
   {
-    return (this[0] == b[0]) && (this[1] == b[1]);
-    //double* A = asArray();
-    //double* B = b.asArray();
-    //return (A[0] == B[0]) && (A[1] == B[1]);
+    //return (this[0] == b[0]) && (this[1] == b[1]);
+    // gives warning: recursive on all control paths, will cause stack overflow
+
+    double* A = asArray();
+    double* B = b.asArray();
+    return (A[0] == B[0]) && (A[1] == B[1]);
   }
 
   /** Comparison for equality. For two vectors to be considered unequal, it's sufficient when one

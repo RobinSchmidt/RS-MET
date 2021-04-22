@@ -5,6 +5,7 @@ rsLadderFilter<TSig, TPar>::rsLadderFilter()
   setMode(Mode::LP_24);
 }
 
+/*
 template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::setCutoff(CRPar newCutoff)
 {
@@ -32,6 +33,7 @@ void  rsLadderFilter<TSig, TPar>::setMixingCoefficients(
 {
   c[0] = c0; c[1] = c1; c[2] = c2; c[3] = c3; c[4] = c4;
 }
+*/
 
 template<class TSig, class TPar>
 void rsLadderFilter<TSig, TPar>::setMode(int newMode)
