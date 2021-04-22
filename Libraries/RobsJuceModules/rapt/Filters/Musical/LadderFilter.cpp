@@ -131,21 +131,9 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
   // cheap hardclipping
 
   // Apply the 1st order stages:
-  if(B1 != TPar(0))
+  if(B1 != TPar(0)) 
   {
-    /*
-    TPar b = getBilinearB(a);
-    tmp2 = y[1]; y[1] = b*(y[0] + tmp1) - a*y[1];  // tmp1 = old y[0]
-    tmp1 = y[2]; y[2] = b*(y[1] + tmp2) - a*y[2];  // tmp2 = old y[1]
-    tmp2 = y[3]; y[3] = b*(y[2] + tmp1) - a*y[3];  // tmp1 = old y[2]
-                 y[4] = b*(y[3] + tmp2) - a*y[4];  // tmp2 = old y[3]
-    // Can this be simplified into a similar form as below? maybe like:
-    // y[3] = 0.5*(y[2] + tmp) + a*(y[2] - y[3]) where tmp is the old y[2]?
-    */
-
-    // general case: y[3] = (1+a)*(b0*y[2] + b1*tmp1) - a*y[3];
-
-
+    // general case:
     TPar B0 = TPar(1) - B1;
     TPar b0 = (1+a)*B0;
     TPar b1 = (1+a)*B1;
@@ -154,8 +142,9 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
     tmp2 = y[3]; y[3] = b0*y[2] + b1*tmp1 - a*y[3];  // tmp1 = old y[2]
                  y[4] = b0*y[3] + b1*tmp2 - a*y[4];  // tmp2 = old y[3]
   }
-  else
+  else 
   {
+    // allpole case:
     y[1] = y[0] + a * (y[0] - y[1]);
     y[2] = y[1] + a * (y[1] - y[2]);
     y[3] = y[2] + a * (y[2] - y[3]);
@@ -169,16 +158,11 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
   // realistic functions. The y = x / (1 + x^2) that is currently used is not even a proper
   // sigmoid shape (it goes down to zero again) ...but maybe that's not necessarily a bad thing.
   // Maybe try y = b + (x-b) / (1 + a*x^2) with adjustable parameters a and b. "a" adjusts the 
-  // amount of signal squasheing whereas "b" introduces asymmetry.
+  // amount of signal squasheing whereas "b" introduces asymmetry. This is different from just
+  // subtracting b before the nonlinearity and adding it back after it, because the x^2 in 
+  // denominator will be either affected or not
 
-  // maybe try a different update euqation of the form:
-  //   y[i] = y[i-1] + a * (y[i-1] - y[i]);
-  // as is used in the rsSmoothingFilter. Elan says, this responds better to modulation. OK, i 
-  // tried it with quite harsh cutoff modulation (by a square wave) and both formulas produce the 
-  // same result. The difference of the produced files is zero. ...so - maybe make performance 
-  // tests which one is more efficient and use that. maybe investigate the difference in higher 
-  // precision - maybe one formula is numerically more precise than the other? Maybe test 
-  // reso-modulation, too. In this case, it's particluarly interesting, if applying the 
+  // ToDo: test reso-modulation. In this case, it's particluarly interesting, if applying the 
   // compensation gain pre- or post-filter is the better way. I guess, pre-filter will smooth out
   // the discontinuities that these switches cause. But pre/post gain should also be checked with
   // a nonlinearity: pre-gain will drive the distortion much harder at high resonance
@@ -293,17 +277,12 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, TPar *a, TPar
   c  = rsCos(wc);
   t  = (TPar) rsTan(0.25*(wc-PI));
 
-  /*
-  if(bilinear)
-    *a = (c*t+s+t) / (s-(c+1)*t);  
-  else
+  if(b1 == TPar(0))    // allpole case
     *a = t / (s-c*t);
-    */
-
-  // test:
-  TPar b0 = TPar(1)-b1;
-  *a = (b0*t + b1*c*t + b1*s) / (-b0*c*t + b0*s - b1*t);
-
+  else {               // general case
+    TPar b0 = TPar(1)-b1;
+    *a = (b0*t + b1*c*t + b1*s) / (-b0*c*t + b0*s - b1*t); 
+  }
   *k = computeFeedbackFactor(fb, c, *a, b1);
   // If the cutoff frequency goes to zero wc -> 0, then s -> 0, c -> 1, t -> -1, b -> 0, a -> -1.
   // The coefficient computation for the lowpass stages approaches this limit correctly, but the 
@@ -337,7 +316,7 @@ void rsLadderFilter<TSig, TPar>::updateCoefficients()
 
 /*
 ToDo:
--maybe make a version based on a cascade of 1st order highpasses
+-maybe make a version based on a cascade of 1st order highpasses and/or allpasses
  -the mixing coeffs will then be different for the modes
  -we don't need gain-compensation for lowpass anyore (but then we need it for highpass)
 -maybe make also versions based on a LP->HP->LP->HP chain

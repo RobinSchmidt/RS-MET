@@ -963,11 +963,9 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunctionOld()
   using RF = RAPT::rsRationalFunction<T>;
   T tol = 1024 * RS_EPS(T);  // ad hoc
 
+  T B0 = T(1) - B1;
   T b0 = B0 * (1+a);
   T b1 = B1 * (1+a);
-
-  //if(isBilinear()) b0 = b1 = getBilinearB(a);    // needs test
-  //else {       b0 = T(1) + a; b1 = T(0);  }
 
   RF G1( { b1, b0 }, { a, 1 }, tol); // G1(z) = (b0 + b1/z) / (1 + a/z) = (b1 + b0*z) / (a + 1*z)
   RF one({ 1      }, { 1    }, tol); // 1 = 1 / 1

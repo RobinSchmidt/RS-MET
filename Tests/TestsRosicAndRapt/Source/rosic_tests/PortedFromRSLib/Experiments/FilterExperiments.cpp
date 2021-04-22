@@ -1769,14 +1769,14 @@ void ladderResonanceGain()
   Real fs       = 44100;   // sample rate
   Real fc       = 8000;    // cutoff frequency
   Real r        = 0.99;    // resonance (should be high)
-  Real b1       = 0.23;    // 0.0: zeroless, 0.5: bilinear, 0.23: good compromise
+  Real B1       = -0.3;    // 0.0: zeroless, 0.5: bilinear, 0.23: good compromise
   bool withGain = false;   // switch from plotting with or without compensation gain applied
 
   LDR ldr;
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
   ldr.setResonance(r);
-  ldr.setB1(b1);
+  ldr.setB1(B1);
 
   int numFreqs = 1001;
   Real fLo   = 10;
@@ -1819,6 +1819,18 @@ void ladderResonanceGain()
   
 
   // Observations:
+  // -Effect of the B1 parameter:
+  //  -at 0.5 (bilinear) all curves meet at the Nyquist freq. The higher order curves bend upward.
+  //  -at 0.0 the higher order curves bend downward, indicating a loss of resonance gain towards 
+  //   higher frequencies
+  //  -at 0.23, there seems to be the sweet spot where they all are at their flattest
+  //  -with > 0.5, they actually cross each other at the Nyquist freq - what does that mean? does
+  //   it mean, the gain depends on phase?
+  //  -with -0.5, the curves seem to drop to zero at fs/2
+  //  -conclusion: use 0.0 for efficiency or 0.23 for quality and/or make it a user parameter
+
+
+  // old:
   // -When withGain = false, the curves of the 4 lowpasses have qualitatively the same shape,
   //  the LP_24 curve is the lowest and they seem to be rough equidistant for low frequencies
   //  on a dB scale. The gain goes down towards high frequencies and the effect is most severe
@@ -1885,9 +1897,10 @@ void ladderTransferFunction()
   //ldr.setMode(Mode::BP_6_18);
   //ldr.setMode(Mode::LP_6);
   //ldr.setBilinear(true);
-  ldr.setB1(0.23);
+  ldr.setB1(0.0);
 
 
+  /*
   // Plot frequency responses for resonances from 0.0 to 0.9 in 0.1 steps:
   FilterPlotter<Real> plt;
   auto addPlotWithReso = [&](Real r)
@@ -1900,6 +1913,7 @@ void ladderTransferFunction()
   plt.setPixelSize(800, 400);
   plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
+  */
 
 
 
@@ -1916,10 +1930,9 @@ void ladderTransferFunction()
   //addPlotWithMode(Mode::FLAT);
   //addPlotWithMode(Mode::LP_6);
   //addPlotWithMode(Mode::LP_12);
-  addPlotWithMode(Mode::LP_18);   // has around 14 dB too much gain with B1 = 0.23
-  addPlotWithMode(Mode::LP_24);
+  //addPlotWithMode(Mode::LP_18);   // has around 14 dB too much gain with B1 = 0.23
+  //addPlotWithMode(Mode::LP_24);
 
-  /*
   addPlotWithMode(Mode::LP_24);
   addPlotWithMode(Mode::LP_18);
   addPlotWithMode(Mode::LP_12);
@@ -1936,7 +1949,6 @@ void ladderTransferFunction()
   addPlotWithMode(Mode::HP_18);
   addPlotWithMode(Mode::HP_24);
   plt2.setPixelSize(800, 400);
-  */
   plt2.plotFrequencyResponses(501, 31.25, 32000, true, true, true, false);
 
   /*
@@ -2914,7 +2926,7 @@ void ladderZDFvsUDF()
   udf.setCutoff(fc);
   udf.setSampleRate(fs);
   udf.setResonance(r);
-  udf.setB1(0.23);
+  udf.setB1(-0.5);
 
   // create and set up the zero delay feedback filter:
   rsLadderFilterZDFDD zdf;
@@ -2971,6 +2983,8 @@ void ladderZDFvsUDF()
   //  regular version has higher resonance (0.254). It actually makes for a nice stereo effect
   //  to have one channel regular and the other bilinear. Maybe use bilinear for mid and regular
   //  for side channel. But maybe that effect only happens with this aggressive modulation?
+  // -Increasing B1 seems to add presence: with 0.0 it's more muffled than with 0.5. One can 
+  //  also use values > 0.5 or < 0.0. This changes the sound even more
 
 
   // ToDo: try a cascade of 4 1st order filters with 1-pole/1-zero each, instead of just one pole

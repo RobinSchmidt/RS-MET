@@ -35,22 +35,10 @@ public:
   /** Enumeration of the available filter modes. */
   enum Mode
   {
-    FLAT = 0,   
-    LP_6,
-    LP_12,
-    LP_18,
-    LP_24,
-    HP_6,
-    HP_12,
-    HP_18,
-    HP_24,
-    BP_6_6,
-    BP_6_12,
-    BP_6_18,
-    BP_12_6,
-    BP_12_12,
-    BP_18_6,
-
+    FLAT = 0, 
+    LP_6, LP_12, LP_18, LP_24,                            // lowpasses
+    HP_6, HP_12, HP_18, HP_24,                            // highpasses
+    BP_6_6, BP_6_12, BP_6_18, BP_12_6, BP_12_12, BP_18_6, // bandpasses
     NUM_MODES
   };
   // add more modes: allpass1/2/3/4, notch(es), maybe peak if possible (perhaps requires gain 
@@ -93,17 +81,7 @@ public:
   void setMode(int newMode);
 
   /** Experimental feature - not yet ready for production! */
-  void setBilinear(bool bilinear) 
-  { 
-    //bilinear = useBilinearTransform;  // redundant with b0, b1
-    if(bilinear) setB1(TPar(0.5));
-    else         setB1(TPar(0.0));
-    //updateCoefficients(); 
-  }
-  // when setB1 works correctly, this function will be obsolete
-
-  /** Experimental feature - not yet ready for production! */
-  void setB1(CRPar newB1) { B1 = newB1; /*B0 = TPar(1) - B1;*/ updateCoefficients(); }
+  void setB1(CRPar newB1) { B1 = newB1; updateCoefficients(); }
   // This is supposed to use a design for the 1st order stages somewhere in between the regular 
   // zeroless design and the bilinear design with the zero at z = -1. I found that the resonance
   // gain drops off to high frequencies for the zeroless design and gets amplified for the 
@@ -115,7 +93,6 @@ public:
     cutoff = newCutoff;
     resonance = newReso;
     B1 = newB1; 
-    B0 = TPar(1) - B1;       // Get rid of that member! It's redundant: it's always 1-B1.
     if(newMode != mode) 
       setMode(newMode);      // this will call updateCoefficients, if newMode != mode ...
     else
@@ -148,14 +125,12 @@ public:
   // maybe instead of the frequency in Hz it should take "omega"
 
   /** Returns true, iff the individual 1st order stages are one-poles without a zero. */
-  bool isZeroLess() const  { return B1 == TPar(0); }
-  // rename to isAllPole
+  bool isAllPole() const  { return B1 == TPar(0); }
 
   /** Return true, iff the individual 1st order stages feature a zero at z = -1, which is a 
   typical feature of bilinear lowpass designs (although we do not explicitly use the bilinear
   transform here). */
-  //bool isBilinear() const { return B1 == B0; } // replace by B1 == 0.5
-  bool isBilinear() const { return B1 == TPar(0.5); } // replace by B1 == 0.5
+  bool isBilinear() const { return B1 == TPar(0.5); }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */
@@ -214,14 +189,6 @@ protected:
   //virtual void updateCoefficients();     // why virtual - can we get rid of this?
   void updateCoefficients(); 
 
-  /** Computes the gain for a single filter stage in the bilinear case. In the no-zero case, 
-  b = 1 + a. In the bilinear case, it's half that. The formula can be derived by defining: 
-  c = cos(w), the magnitude squared is generally: (2*b^2 * (1+c)) / (1 + a^2 + 2*a*c) and setting 
-  w = 0, such that c = 1 and then evaluating the DC gain as if b was 1 and taking the reciprocal.*/
-  static TPar getBilinearB(TPar a) { return TPar(0.5) * (TPar(1) + a); }
-  // obsolete soon...
-  // i think, in general, they should sum up to 1 + a: b0 + b1 = 1 + a
-
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
@@ -241,13 +208,10 @@ protected:
   // todo: get rid of sample-rate, just maintain an omega = 2*PI*fc/fs
 
   // Experimental:
-  //bool bilinear = false;  // flag to indicate using a zero at z=-1 per stage
-  TPar B0 = TPar(1);      // maybe use c1, c2 to indicate that the factor (1+a) is not yet
-  TPar B1 = TPar(0);      // baked in
-  // Numerator coeffs without the (1+a) factor baked in. They should always sum to 1. The actual
+  TPar B1 = TPar(0);
+  // Numerator coeff b1 for the delayed input sample without the (1+a) factor baked in. Should sum
+  // to 1 with the coeff for the direct input sample B0 (also without 1+a baked in). The actual 
   // b0, b1 coeffs of the first order lowpass are b0 = B0 * (1+a), b1 = B1 * (1+a)
-  // ..that makes one of them redundant - maybe keep only B1
-
 
 };
 
