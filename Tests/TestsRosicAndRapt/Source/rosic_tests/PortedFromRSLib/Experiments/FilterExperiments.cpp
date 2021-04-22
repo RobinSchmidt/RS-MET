@@ -1865,7 +1865,6 @@ void ladderTransferFunction()
   // BA form
 
   using Real = double;
-  //using LDR  = RAPT::rsLadderFilter<Real, Real>;
   using LDR  = rsLadderTest<Real, Real>;
   using RF   = RAPT::rsRationalFunction<Real>;
   using BA   = RAPT::rsFilterSpecificationBA<Real>;
@@ -1888,7 +1887,7 @@ void ladderTransferFunction()
   //ldr.setBilinear(true);
   ldr.setB1(0.23);
 
-  /*
+
   // Plot frequency responses for resonances from 0.0 to 0.9 in 0.1 steps:
   FilterPlotter<Real> plt;
   auto addPlotWithReso = [&](Real r)
@@ -1901,7 +1900,7 @@ void ladderTransferFunction()
   plt.setPixelSize(800, 400);
   plt.plotFrequencyResponses(501, 31.25, 32000, true, true, true, plotPhase);
   //plt.plotPolesAndZeros(400);  // multiplicities not shown
-  */
+
 
 
   // Plot variuos response types with the same resonane:

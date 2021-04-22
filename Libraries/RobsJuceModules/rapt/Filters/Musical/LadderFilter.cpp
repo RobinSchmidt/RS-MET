@@ -77,6 +77,7 @@ std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(
   const std::complex<TPar>& z, bool withGain)
 {
   using T = TPar;
+  TPar B0 = TPar(1) - B1; 
   std::complex<T> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
   std::complex<T> H;              // transfer function with resonance   
   std::complex<T> one(1, 0);
@@ -144,6 +145,8 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
 
     // general case: y[3] = (1+a)*(b0*y[2] + b1*tmp1) - a*y[3];
 
+
+    TPar B0 = TPar(1) - B1;
     TPar b0 = (1+a)*B0;
     TPar b1 = (1+a)*B1;
     tmp2 = y[1]; y[1] = b0*y[0] + b1*tmp1 - a*y[1];  // tmp1 = old y[0]

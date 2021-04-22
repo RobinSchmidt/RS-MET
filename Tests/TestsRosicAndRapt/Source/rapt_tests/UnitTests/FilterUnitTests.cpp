@@ -809,14 +809,25 @@ bool ladderUnitTest()
   // We need a high tolerance for these tests because getTransferFunctionOld is very imprecise 
   // numerically. ToDo: use two separate tolerances for old and new implementation
 
-  ok &= testTransferFuncs1(Mode::FLAT,  0.2, 1.e-1, 1.e-8);
-  ok &= testTransferFuncs1(Mode::LP_6,  0.2, 1.e-1, 1.e-8);
-  ok &= testTransferFuncs1(Mode::LP_12, 0.2, 1.e-1, 1.e-8);
-  ok &= testTransferFuncs1(Mode::LP_18, 0.2, 1.e-1, 1.e-8);
-
+  // Allpole mode:
+  ok &= testTransferFuncs1(Mode::FLAT,  0.0, 1.e-6, 1.e-10); // whoa! that's a large tol1!!!
+  ok &= testTransferFuncs1(Mode::LP_6,  0.0, 1.e-6, 1.e-10);
+  ok &= testTransferFuncs1(Mode::LP_12, 0.0, 1.e-6, 1.e-10);
+  ok &= testTransferFuncs1(Mode::LP_18, 0.0, 1.e-6, 1.e-10);
   ok &= testTransferFuncs1(Mode::LP_24, 0.0, 1.e-6, 1.e-10);
-  ok &= testTransferFuncs1(Mode::LP_24, 0.5, 1.e-1, 1.e-10); // whoa! that's a large tol1!!!
+
+  // General mode:
+  ok &= testTransferFuncs1(Mode::FLAT,  0.2, 1.e-1, 1.e-10); // whoa! that's a large tol1!!!
+  ok &= testTransferFuncs1(Mode::LP_6,  0.2, 1.e-1, 1.e-10);
+  ok &= testTransferFuncs1(Mode::LP_12, 0.2, 1.e-1, 1.e-10);
+  ok &= testTransferFuncs1(Mode::LP_18, 0.2, 1.e-1, 1.e-10);
   ok &= testTransferFuncs1(Mode::LP_24, 0.2, 1.e-1, 1.e-10);
+
+
+
+  //ok &= testTransferFuncs1(Mode::LP_24, 0.0, 1.e-6, 1.e-10);
+  //ok &= testTransferFuncs1(Mode::LP_24, 0.5, 1.e-1, 1.e-10);
+
 
 
 

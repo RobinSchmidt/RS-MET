@@ -103,7 +103,7 @@ public:
   // when setB1 works correctly, this function will be obsolete
 
   /** Experimental feature - not yet ready for production! */
-  void setB1(CRPar newB1) { B1 = newB1; B0 = TPar(1) - B1; updateCoefficients(); }
+  void setB1(CRPar newB1) { B1 = newB1; /*B0 = TPar(1) - B1;*/ updateCoefficients(); }
   // This is supposed to use a design for the 1st order stages somewhere in between the regular 
   // zeroless design and the bilinear design with the zero at z = -1. I found that the resonance
   // gain drops off to high frequencies for the zeroless design and gets amplified for the 
@@ -154,7 +154,8 @@ public:
   /** Return true, iff the individual 1st order stages feature a zero at z = -1, which is a 
   typical feature of bilinear lowpass designs (although we do not explicitly use the bilinear
   transform here). */
-  bool isBilinear() const { return B1 == B0; } // replace by B1 == 0.5
+  //bool isBilinear() const { return B1 == B0; } // replace by B1 == 0.5
+  bool isBilinear() const { return B1 == TPar(0.5); } // replace by B1 == 0.5
 
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */
