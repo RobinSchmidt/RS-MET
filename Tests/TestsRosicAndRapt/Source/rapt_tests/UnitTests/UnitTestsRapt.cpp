@@ -19,6 +19,11 @@ bool runUnitTestsRapt()
 
   std::cout << "Running unit tests for RAPT\n";
 
+  // Test for the currently developed class - it's also again run down there below, but I want
+  // the test for the code i'm currently working on to go first for faster edit/build/test cycles, 
+  // because some of the test take longer to perfom. So this line is volatile:
+  ok &= runUnitTest(&ladderUnitTest, "rsLadder");
+
   // Data:
   ok &= runUnitTest(&arrayUnitTest,            "rsArrayTools and std::vector stuff");
   ok &= runUnitTest(&testBufferFunctions,      "BufferFunctions");  // merge with rsArrayTools tests
@@ -63,6 +68,7 @@ bool runUnitTestsRapt()
   ok &= runUnitTest(&filterSpecUnitTest,     "rsFilterSpecification (BA/ZPK)");
   ok &= runUnitTest(&movingMaximumUnitTest,  "moving maximum filter");
   ok &= runUnitTest(&movingQuantileUnitTest, "moving quantile filter"); // under construction
+  ok &= runUnitTest(&ladderUnitTest,         "rsLadder"); 
 
 
   // Visualization:

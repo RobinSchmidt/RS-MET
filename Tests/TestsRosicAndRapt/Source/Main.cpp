@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  //ok &= runUnitTestsRapt();
+  ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();  // some tests there are still commented out
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 

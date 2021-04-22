@@ -263,7 +263,7 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool wi
     N[0] = T(0);
 
     // G3 contributions:
-    N[1] += -c[3]*A3*u3;
+    N[1] += -c[3]*A4*u3;
     N[2] +=  c[3]*(((3*a - 1) * A3)*u3 - 3*A4*u2);
     N[3] += -c[3]*3*(((a - 1) * A3)*u3 - ((2*a - 1)*A3)*u2 + A4*u);
     N[4] += -c[3]*A3*(a - (a-3)*u3 + 3*(a-2)*u2 - 3*(a-1)*u);
@@ -271,6 +271,12 @@ rsRationalFunction<TPar> rsLadderFilter<TSig, TPar>::getTransferFunction(bool wi
     // todo: try to simplify further - try to make every term start with c[3]*A3 - if there is no 
     // A3 try to create one by splitting it off from an A4. try to match the pattern of the G4
     // code below
+
+    //N[1] += -c[3]*A3*A*u3;
+    //N[2] +=  c[3]*A3*(3*a*u-u-3*A)*u2;
+    //N[3] += -c[3]*A3*3*(a*u2-2*a*u-u2+u+A)*u;
+    //N[4] += -c[3]*A3*(a*U1-3*u)*U2;
+    //N[5] += -c[3]*A3*U3;
 
     // G4 contributions:
     N[1] +=    c[4]*A4*u4;

@@ -736,3 +736,23 @@ bool movingQuantileUnitTest()
 
   return r;
 }
+
+bool ladderUnitTest()
+{
+  bool ok = true;
+
+  using TSig = double;  // todo: maybe test it with double, float, rsFloat64x2
+  using TPar = double;
+  using LDR  = RAPT::rsLadderFilter<TSig, TPar>;
+  using RF   = RAPT::rsRationalFunction<TPar>;
+  using Mode = LDR::Mode;
+
+  // ToDo: set it up and compare the results of getTransferFunctionAt, getTransferFunction and
+  // getTransferFunctionOld. They should be equal up to roudoff error. This test is for making sure
+  // that the creating of the transfer function works properly..
+
+
+
+
+  return ok;
+}
