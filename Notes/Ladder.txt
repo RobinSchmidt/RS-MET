@@ -149,10 +149,9 @@ z^3: (d3 + d2*2 + d1*3 + d0*4) * a1
 z^2: (d2 + d1*3 + d0*6) * a2
 z^1: (d1 + d0*4) * a3
 
+===================================================================================================
 
-for the bilinear version:
-
-b = (1+a)/2; G1(z) = (b+b/z)/(1+a/z); G4 = G1^4; H = G4/(1+k*G4/z); ratexpand(H)
+For the bilinear version:
 
 b = (1+a)/2; G1(z) = (b+b/z)/(1+a/z); G4 = G1^4; H = G4/(1+k*G4/z); ratexpand(H)
 
@@ -202,8 +201,6 @@ Hs
 
 the denominator is (always) same, the numerators are:
 
-
-
 define 
 A  = (a+1)
 A2 = (a+1)^2 =                 a^2 + 2*a + 1
@@ -251,9 +248,84 @@ where:
 
 G4: A4*z^5 + 4*A4*z^4 + 6*A4*z^3 + 4*A4*z^2 + A4*z
 
----------------------------------------------------------------------------------------------------
+===================================================================================================
 Now the general ladder, using a constant u to control the zero (u == B1, but we want a 
-one-letter name)
+one-letter name). This code can be used to produce all numerators, by sweepin N from 0 to 4:
+
+var("a z k u")              # u is shorthand for B1
+N  = 3                      # stage for which we want the numerator
+b1 = (a+1)*u
+b0 = (a+1)*(1-u)
+G(z) = (b0+b1/z)/(1+a/z)
+H    = G^4 / (1 + k*G^4/z)  # replace numerator by G^0,G^1,G^2,G^3 to select the stage
+Hs = H.simplify_rational()
+Hs.numerator().factor()
+
+Doing so, produces the numerators:
+
+G0:                  (a + z)^4          *z
+G1: -(u*z - u - z)  *(a + z)^3*(a + 1)  *z
+G2:  (u*z - u - z)^2*(a + z)^2*(a + 1)^2*z
+G3: -(u*z - u - z)^3*(a + z)  *(a + 1)^3*z
+G4:  (u*z - u - z)^4          *(a + 1)^4*z
+
+Hs.numerator().factor().collect(z) produces longer expressions, but eventually we need coefficients 
+for the powers of z and the coefficients themselves can be factored. This can be done, for example, 
+via:
+
+var("a z k u")              # u is shorthand for B1
+N  = 3                      # stage for which we want the numerator
+M  = 5                      # power of for which we want the coeff
+b1 = (a+1)*u
+b0 = (a+1)*(1-u)
+G(z) = (b0+b1/z)/(1+a/z)
+H    = G^N / (1 + k*G^4/z)  # replace numerator by G^0,G^1,G^2,G^3 to select the stage
+Hs = H.simplify_rational()
+num = Hs.numerator().factor().collect(z)
+num.coefficient(z^M).factor()
+
+and stepping through N = 0..4 and M = 0..5 should use give all the desired numerator coeffs. Doing so 
+produces:
+
+
+G0 (N=0):
+...
+
+G1 (N=1):
+...
+
+G2 (N=2):
+...
+
+G3 (N=3):
+z^0:    0
+z^1:   (a + 1)^3 *            a                    * u^3
+z^2:  -(a + 1)^3 * (3*a*u - 3*a -   u)             * u^2
+z^3: 3*(a + 1)^3 * (  a*u -   a -   u) * (u - 1)   * u
+z^4:  -(a + 1)^3 * (  a*u -   a - 3*u) * (u - 1)^2
+z^5:  -(a + 1)^3                       * (u - 1)^3
+
+G4 (N=4):
+...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------------------------------------------------
+obsolete:
 
 var("a z k u")
 b1 = (a+1)*u

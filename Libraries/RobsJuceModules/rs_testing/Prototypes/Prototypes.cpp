@@ -877,7 +877,7 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunction(bool with
     T U3   = U2*U1;        // (u-1)^3
     T U4   = U2*U2;        // (u-1)^4
 
-                           // Create denominator:
+    // Create denominator:
     std::vector<T> D(6);
     D[0] =     A4k*u4;
     D[1] = -  (A4k*(4*u4 - 4*u3)              -   a4);
@@ -891,27 +891,11 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunction(bool with
     N[0] = T(0);
 
     // G3 contributions:
-    //N[1] += -c[3]*
-    //N[2] +=  c[3]*
-    //N[3] += -c[3]*
-    //N[4] += -c[3]*
-    //N[5] += -c[3]*
-
-
-    N[1] += -c[3]*A3*u3; // or A4?
-    N[2] +=  c[3]*(((3*a - 1) * A3)*u3 - 3*A4*u2);
-    N[3] += -c[3]*3*(((a - 1) * A3)*u3 - ((2*a - 1)*A3)*u2 + A4*u);
-    N[4] += -c[3]*A3*(a - (a-3)*u3 + 3*(a-2)*u2 - 3*(a-1)*u);
-    N[5] += -c[3]*A3*U3;
-    // todo: try to simplify further - try to make every term start with c[3]*A3 - if there is no 
-    // A3 try to create one by splitting it off from an A4. try to match the pattern of the G4
-    // code below
-
-    //N[1] += -c[3]*A3*A*u3;
-    //N[2] +=  c[3]*A3*(3*a*u-u-3*A)*u2;
-    //N[3] += -c[3]*A3*3*(a*u2-2*a*u-u2+u+A)*u;
-    //N[4] += -c[3]*A3*(a*U1-3*u)*U2;
-    //N[5] += -c[3]*A3*U3;
+    N[1] += c[3]*(  A3 *            a             * u3);
+    N[2] += c[3]*( -A3 * (3*a*u - 3*a -   u)      * u2);
+    N[3] += c[3]*(3*A3 * (  a*u -   a -   u) * U1 * u );
+    N[4] += c[3]*( -A3 * (  a*u -   a - 3*u) * U2     );
+    N[5] += c[3]*( -A3                       * U3     );
 
     // G4 contributions:
     N[1] +=    c[4]*A4*u4;
@@ -925,6 +909,24 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunction(bool with
     return RF(N, D);
   }
 }
+// The expressions were obtained with sage via:
+//
+//   var("a z k u")              # u is shorthand for B1
+//   b1 = (a+1)*u
+//   b0 = (a+1)*(1-u)
+//   G(z) = (b0+b1/z)/(1+a/z)
+//   H    = G^4 / (1 + k*G^4/z)  # replace numerator by G^0,G^1,G^2,G^3 to select the stage
+//   Hs = H.simplify_rational()
+//   #Hs
+//   Hs.factor()
+//   #maxima.optimize(Hs)        # It's still a mess! -> optimize manually!
+//
+// and manual simplification of the results, also with the help of sage. Especially, 
+// .factor() and .expand() turned out to be helpful. Also, The binomial theorem could be used a 
+// lot. For each stage, such an expression was derived. They have all the same denominator. The 
+// different numerators must be all weighted by the respective c-coefficient and accumulated.
+//   Hs.factor()
+
 // ToDo:
 // Maybe make a function getCoeffsBA(TPar* b, TPar* a) which just fills the arrays (of length 5).
 // Beware that the order must be reversed for a polynomial in z^-1 (maybe make it optional to be

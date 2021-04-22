@@ -810,9 +810,7 @@ bool ladderUnitTest()
   // numerically. ToDo: use two separate tolerances for old and new implementation
 
 
-
-  //ok &= testTransferFuncs1(Mode::LP_18, 0.2, 1.e-1, 1.e-8);
-  // fails
+  ok &= testTransferFuncs1(Mode::LP_18, 0.2, 1.e-1, 1.e-8);
 
   ok &= testTransferFuncs1(Mode::LP_24, 0.0, 1.e-6, 1.e-10);
   ok &= testTransferFuncs1(Mode::LP_24, 0.5, 1.e-1, 1.e-10); // whoa! that's a large tol1!!!
