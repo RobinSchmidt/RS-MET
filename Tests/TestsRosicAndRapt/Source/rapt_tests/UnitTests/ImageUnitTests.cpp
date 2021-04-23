@@ -194,32 +194,33 @@ bool colorUnitTest()
   //Color::rgb2hsl(x, y, z, &a, &b, &c);
   */
 
-  for(int i = 1; i < N; i++)
-  {
+  // Test HSL/RGB conversions:
+  for(int i = 1; i < N; i++) {
     x = Real(i) / Real(N);
-    for(int j = 1; j < N; j++)
-    {
+    for(int j = 1; j < N; j++) {
       y = Real(j) / Real(N);
-      for(int k = 1; k < N; k++)
-      {
+      for(int k = 1; k < N; k++) {
         z = Real(k) / Real(N);
         Color::hsl2rgb(x, y, z, &a, &b, &c);
         Color::rgb2hsl(a, b, c, &X, &Y, &Z);
         ok &= rsIsCloseTo(x, X, tol);
         ok &= rsIsCloseTo(y, Y, tol);
-        ok &= rsIsCloseTo(z, Z, tol);
-      }
-    }
-  }
-
+        ok &= rsIsCloseTo(z, Z, tol); }}}
   // Seems like the roundtrip HSL -> RGB -> HSL does not work when L = 0. It maps to black and we 
   // loose the hue and saturation information. The same thing happens when L = 1: it maps to white
   // and we also can't recover any hue information from that. That's why the loops start at 1 and
   // run only up to N-1, such that we avoid these extreme cases.
-
   // ToDo: add tests for the edge cases as well
 
-  // Test conversion to hex colors:
+  // Test CIELab to CIEXYZ:
+  x = 0.2f;
+  y = 0.6f;
+  z = 0.4f;
+  Color::lab2xyz(x, y, z, &a, &b, &c);
+  Color::xyz2lab(a, b, c, &X, &Y, &Z);
+
+
+  // Test conversion of RGB to hex colors:
   char hex[8];
   using uchar = unsigned char;
   using Str   = std::string;

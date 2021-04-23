@@ -130,6 +130,12 @@ protected:
   void drawMultiplicities(const std::vector<std::complex<T>>& z, T thresh);
     // not yet tested
 
+  /** Draws vertical lines at the Nyquist frequencies of the various filters. If the filter
+  specifications happen to have all the same sample rate, only a single black line is drawn. 
+  Otherwise, the colors of the lines are matched to the colors of the graphs to which they 
+  apply. */
+  void drawNyquistLines();
+
   /** Returns maximum absolute value of all real an imaginary parts. */
   double maxAbsReIm(const std::vector<std::complex<T>>& x);
 

@@ -2549,11 +2549,12 @@ void divergenceToPotential3(const rsBivariatePolynomial<T>& D, rsBivariatePolyno
 /** A baseclass for representing colors. A color is always represented as a triple of numbers in 
 the range 0..1 but what those numbers mean may differ depending on the color space which is 
 determined by the subclass. For example, in subclass rsColorRGB they mean red, green, blue and in 
-rsColorHSL they mean hue, saturation, luminance. This baseclass stores the 3 values generically in 
+rsColorHSL they mean hue, saturation, lightness. This baseclass stores the 3 values generically in 
 the x,y,z members (which are inherited from the baseclass rsVector3D) and provides static functions
 to convert between the various color spaces.
 
 References:
+  https://en.wikipedia.org/wiki/HSL_and_HSV
   https://www.rapidtables.com/convert/color/index.html  */
 
 template<class T>
@@ -2572,13 +2573,23 @@ public:
 
 
 
-  /** Converts HSL (hue, saturation, luminance) to RGB (red, green, blue). */
+  /** Converts HSL (hue, saturation, lightness) to RGB (red, green, blue). */
   static void hsl2rgb(T H, T S, T L, T* R, T* G, T* B);
 
-  /** Converts RGB (red, green, blue) to HSL (hue, saturation, luminance). */
+  /** Converts RGB (red, green, blue) to HSL (hue, saturation, lightness). */
   static void rgb2hsl(T R, T G, T B, T* H, T* S, T* L);
 
 
+  // under construction:
+
+  static void lab2xyz(T L, T a, T b, T* X, T* Y, T* Z);
+
+  static void xyz2lab(T X, T Y, T Z, T* L, T* a, T* b);
+
+
+  //static void lab2rgb(T L, T a, T b, T* R, T* G, T* B);
+  //static void rgb2lab(T R, T G, T B, T* L, T* a, T* b);
+  //static void lch2rgb(T L, T C, T h, T* R, T* G, T* B);
 
 
   /** Converts an RGB triple to a C-string with the hexadecimal representation, either with the 
@@ -2605,7 +2616,7 @@ public:
 // white, gray, etc.)
 // ToDo: 
 // -implement more conversions - we don't currently need them but for the sake of completeness
-// -maybe have functions like setHue, setLuminance, setSaturation, setRed, setGreen, setBlue
+// -maybe have functions like setHue, setLightness, setSaturation, setRed, setGreen, setBlue
 // -have a function rgb2hex (and maybe hex2rgb too)
 
 
@@ -2658,6 +2669,79 @@ void rsColor<T>::rgb2hsl(T R, T G, T B, T* H, T* S, T* L)
   // see: https://www.rapidtables.com/convert/color/rgb-to-hsl.html
 }
 
+
+template<class T>
+void rsColor<T>::lab2xyz(T L, T a, T b, T* X, T* Y, T* Z)
+{
+  // input: L, a, b (in 0..1 or in 0..255?)
+  // reference white Xr, Yr, Zr taken to be 1, 1, 1
+  //L *= T(255);
+  //a *= T(255);
+  //b *= T(255);
+
+  T e = T(216./24389);       // epsilon, rounded to 0.008856 in CIE standard
+  T k = T(24389./27);        // kappa, rounded to 903.3 in CIE standard
+  T fy = (L+T(16)) / T(116);
+  T fx = fy + a / T(500);
+  T fz = fy - a / T(200);
+  T fx3 = fx*fx*fx;          // fx^3
+  T fz3 = fz*fz*fz;          // fz^3
+  if(fx3 > e) *X = fx3;
+  else        *X = (T(116)*fx-T(16)) / k;
+  if(L > k*e) *Y = (fy*fy*fy)/k;
+  else        *Y = L / k;
+  if(fz3 > e) *Z = fz3;
+  else        *Z = (T(116)*fz-T(16)) / k;
+
+  // see http://www.brucelindbloom.com/index.html?Equations.html
+}
+
+template<class T>
+void rsColor<T>::xyz2lab(T X, T Y, T Z, T* L, T* a, T* b)
+{
+  static const T e = T(216./24389);       // epsilon, rounded to 0.008856 in CIE standard
+  static const T k = T(24389./27);        // kappa, rounded to 903.3 in CIE standard
+  // maybe they should be static class members
+  
+  T fx, fy, fz;
+  
+  if(X > e) fx = cbrt(X);
+  else      fx = (k*X+16) / 116;
+  
+  if(Y > e) fy = cbrt(Y);
+  else      fy = (k*Y+16) / 116;
+  
+  if(Z > e) fz = cbrt(Z);
+  else      fz = (k*Z+16) / 116;
+  // get rid of the duplication! implement a small local helper function toF, so we can write
+  // fx = toF(X); fy = toF(Y); fz = toF(Z);
+  
+  *L = (116*fy - 16);//    / T(255);
+  *a = (500*(fx - fy));//  / T(255);
+  *b = (200*(fy - fz));//  / T(255);
+}
+
+
+
+/*
+template<class T>
+void rsColor<T>::lab2rgb(T L, T a, T b, T* R, T* G, T* B)
+{
+
+}
+// https://stackoverflow.com/questions/7880264/convert-lab-color-to-rgb
+// http://www.easyrgb.com/en/math.php#text8
+// http://www.brucelindbloom.com/
+
+
+template<class T>
+void rsColor<T>::rgb2lab(T R, T G, T B, T* L, T* a, T* b)
+{
+
+}
+// https://de.wikipedia.org/wiki/Lab-Farbraum#Umrechnung_von_RGB_zu_Lab
+*/
+
 template<class T>
 void rsColor<T>::rgb2hex(T R, T G, T B, char* hex, bool sharp, bool null)
 {
@@ -2697,7 +2781,6 @@ void rsColor<T>::hsl2hex(T H, T S, T L, char* hex, bool sharp, bool null)
   T R, G, B;
   hsl2rgb(H, S, L, &R, &G, &B);
   rgb2hex(R, G, B, hex, sharp, null);
-  int dummy = 0;
 }
 
 template<class T>
@@ -2708,7 +2791,9 @@ public:
 
   using rsColor<T>::rsColor;
 
-
+  T getRed()   const { return x; }
+  T getGreen() const { return y; }
+  T getBlue()  const { return z; }
 
 };
 
@@ -2720,8 +2805,38 @@ public:
 
   using rsColor<T>::rsColor;
 
+  T getHue()        const { return x; }
+  T getSaturation() const { return y; }
+  T getLightness()  const { return z; }
 
 };
+
+// todo: implement:
+// https://en.wikipedia.org/wiki/CIELUV
+// https://en.wikipedia.org/wiki/CIELAB_color_space#CIELAB
+// https://de.wikipedia.org/wiki/Lab-Farbraum
+// the wikipedia article on HSL/HSV says:
+// "The usual formulations of HSB and HLS are flawed with respect to the properties of color 
+// vision. Now that users can choose colors visually, or choose colors related to other media 
+// (such as PANTONE), or use perceptually-based systems like L*u*v* and L*a*b*, HSB and HLS should
+// be abandoned."
+// https://en.wikipedia.org/wiki/HSL_and_HSV#Disadvantages
+// i think, in the L*u*v and L*a*b spaces, the we can compute the a,b values as cos(H), sin(H)?
+// ...ah, yes, indeed:  
+// https://en.wikipedia.org/wiki/CIELAB_color_space#Cylindrical_model
+// https://en.wikipedia.org/wiki/CIELUV#Cylindrical_representation_(CIELCH)
+// https://de.wikipedia.org/wiki/LCh-Farbraum
+// https://sensing.konicaminolta.us/us/blog/understanding-the-cie-lch-color-space/
+// we need CIE_HLC or CIE_HLC_uv ...or maybe (a cylidrical version) YUV:
+// https://en.wikipedia.org/wiki/YUV
+// http://www.niwa.nu/2013/05/understanding-yuv-values/
+// ..it has no real yellow, but maybe that's actually good for grpahs in plots
+
+// https://en.wikipedia.org/wiki/CIE_1931_color_space  for XYZ
+// ""The CIE XYZ color space encompasses all color sensations that are visible to a person with 
+// average eyesight. That is why CIE XYZ (Tristimulus values) is a device-invariant representation
+// of color. It serves as a standard reference against which many other color spaces are defined.
+
 
 //=================================================================================================
 

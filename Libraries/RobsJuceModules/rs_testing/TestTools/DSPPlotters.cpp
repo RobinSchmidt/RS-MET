@@ -153,6 +153,8 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
   // ...actually, this should perhaps be left to client code - and then maybe we should have a 
   // convenience function that does this stuff automatically
 
+  //drawNyquistLines(); // not yet implemented
+
   // Factor out:
   std::vector<std::string> hexColors = getGraphColors(numFilters);
   if(plotMagnitude && plotPhase) {
@@ -171,7 +173,7 @@ void FilterPlotter<T>::plotFrequencyResponses(int numFreqs, T lowFreq, T highFre
   plot();
 }
 // todo: 
-// -draw a vertical line at the Nyquist freq
+
 // -find the maximum amplitude (in dB) round up to the next 10 dB and use that as maximum for 
 //  the plot, the maxPhase should perhaps be 4.5*maxDB
 
@@ -197,7 +199,8 @@ void FilterPlotter<T>::plotPolesAndZeros(int plotSize)
     drawMultiplicities(filterSpecsZPK[i].z, thresh);
   }
 
-  // todo: make the colors of the poles, zeros and multiplicities for each filter equal
+  // todo: make the colors of the poles, zeros and multiplicities for each filter equal,
+  // use getGraphColors
 
   setupForPoleZeroPlot(plotSize);
   plot();
@@ -427,6 +430,16 @@ void FilterPlotter<T>::drawMultiplicities(const vector<complex<T>>& z, T thresh)
     if(m[i] > 1)
       addAnnotation(zd[i].real(), zd[i].imag(), " " + to_string(m[i]), "left"); }
 }
+// todo: use different colors for the different filters
+
+template <class T>
+void FilterPlotter<T>::drawNyquistLines()
+{
+  rsError("Not yet implemented");
+}
+// -draw a vertical line at the Nyquist freq
+//  set arrow from x,y0 to x,y1 nohead linecolor "blue"
+//  https://stackoverflow.com/questions/4457046/how-do-i-draw-a-set-of-vertical-lines-in-gnuplot
 
 template <class T>
 double FilterPlotter<T>::maxAbsReIm(const vector<complex<T>>& x)
@@ -463,9 +476,9 @@ std::vector<std::string> FilterPlotter<T>::getGraphColors(int numGraphs) const
   using Col = rsColor<T>;
   char hex[7];
   std::vector<Str> hexColors;
-  T L  = 0.3;
-  T S  = 0.75;
-  T H0 = 0.0;   // start hue
+  T L  = 0.3;   // lightness
+  T S  = 0.75;  // saturation
+  T H0 = 0.0;   // start hue (0.0: red)
   for(int i = 0; i < numGraphs; i++)
   {
     T c = T(i) / T(numGraphs);
@@ -476,6 +489,9 @@ std::vector<std::string> FilterPlotter<T>::getGraphColors(int numGraphs) const
   }
   return hexColors;
 }
+// maybe move this into rsColor - something like: 
+// getRainbowColorsHex(int numColors, T L, T S, bool withSharp, bool WithNull, T startHue = T(0))
+// ...this may be useful in other contexts, too (for example, for plot colors on GUIs)
 
 // template instantiations:
 template class FilterPlotter<float>;
