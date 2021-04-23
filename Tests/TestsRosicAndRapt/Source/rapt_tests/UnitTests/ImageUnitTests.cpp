@@ -213,12 +213,17 @@ bool colorUnitTest()
   // ToDo: add tests for the edge cases as well
 
   // Test CIELab to CIEXYZ:
-  x = 0.2f;
-  y = 0.6f;
-  z = 0.4f;
+  x = 0.3234436f;
+  y = 0.734534f;
+  z = 0.413245f;
+
+  Color::xyz2lab(x, y, z, &a, &b, &c);
+  Color::lab2xyz(a, b, c, &X, &Y, &Z);
+  // Z is wrong
+
   Color::lab2xyz(x, y, z, &a, &b, &c);
   Color::xyz2lab(a, b, c, &X, &Y, &Z);
-
+  // X == x and Y == y but Z != z - actually, Z ~= Y...weird!
 
   // Test conversion of RGB to hex colors:
   char hex[8];

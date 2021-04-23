@@ -2580,7 +2580,7 @@ public:
   static void rgb2hsl(T R, T G, T B, T* H, T* S, T* L);
 
 
-  // under construction:
+  // under construction (still buggy):
 
   static void lab2xyz(T L, T a, T b, T* X, T* Y, T* Z);
 
@@ -2674,21 +2674,26 @@ template<class T>
 void rsColor<T>::lab2xyz(T L, T a, T b, T* X, T* Y, T* Z)
 {
   // input: L, a, b (in 0..1 or in 0..255?)
-  // reference white Xr, Yr, Zr taken to be 1, 1, 1
-  //L *= T(255);
-  //a *= T(255);
-  //b *= T(255);
+  // reference white Xr, Yr, Zr taken to be 1, 1, 1 ...nope! that's wrong!
+  // Use 
+  // Xr = 95.0489, Yr = 100, Zr = 108.8840  for D65, or
+  // Xr = 96.4212, Yr = 100, Zr = 82.5188   for D50
+  // https://en.wikipedia.org/wiki/CIELAB_color_space#From_CIEXYZ_to_CIELAB
+  // https://www.nixsensor.com/free-color-converter/
 
-  T e = T(216./24389);       // epsilon, rounded to 0.008856 in CIE standard
-  T k = T(24389./27);        // kappa, rounded to 903.3 in CIE standard
+
+  T e  = T(216./24389);       // epsilon, rounded to 0.008856 in CIE standard
+  T k  = T(24389./27);        // kappa, rounded to 903.3 in CIE standard
+  T ke = T(8);                // k*e == 216/27 = 8
+
   T fy = (L+T(16)) / T(116);
   T fx = fy + a / T(500);
-  T fz = fy - a / T(200);
+  T fz = fy - b / T(200);
   T fx3 = fx*fx*fx;          // fx^3
   T fz3 = fz*fz*fz;          // fz^3
   if(fx3 > e) *X = fx3;
   else        *X = (T(116)*fx-T(16)) / k;
-  if(L > k*e) *Y = (fy*fy*fy)/k;
+  if(L  > ke) *Y = (fy*fy*fy)/k;            
   else        *Y = L / k;
   if(fz3 > e) *Z = fz3;
   else        *Z = (T(116)*fz-T(16)) / k;
@@ -2702,23 +2707,19 @@ void rsColor<T>::xyz2lab(T X, T Y, T Z, T* L, T* a, T* b)
   static const T e = T(216./24389);       // epsilon, rounded to 0.008856 in CIE standard
   static const T k = T(24389./27);        // kappa, rounded to 903.3 in CIE standard
   // maybe they should be static class members
-  
-  T fx, fy, fz;
-  
-  if(X > e) fx = cbrt(X);
-  else      fx = (k*X+16) / 116;
-  
-  if(Y > e) fy = cbrt(Y);
-  else      fy = (k*Y+16) / 116;
-  
-  if(Z > e) fz = cbrt(Z);
-  else      fz = (k*Z+16) / 116;
-  // get rid of the duplication! implement a small local helper function toF, so we can write
-  // fx = toF(X); fy = toF(Y); fz = toF(Z);
-  
-  *L = (116*fy - 16);//    / T(255);
-  *a = (500*(fx - fy));//  / T(255);
-  *b = (200*(fy - fz));//  / T(255);
+
+  auto toF = [](T v)
+  {
+    if(v > e) return cbrt(v);
+    else      return (k*v+T(16)) / T(116);
+  };
+  T fx = toF(X);
+  T fy = toF(Y);
+  T fz = toF(Z);
+
+  *L = (116*fy - 16);
+  *a = (500*(fx - fy));
+  *b = (200*(fy - fz));
 }
 
 
