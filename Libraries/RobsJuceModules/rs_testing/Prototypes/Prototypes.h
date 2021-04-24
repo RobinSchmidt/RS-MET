@@ -2689,11 +2689,11 @@ void rsColor<T>::lab2xyz(T L, T a, T b, T* X, T* Y, T* Z)
   T fy = (L+T(16)) / T(116);
   T fx = fy + a / T(500);
   T fz = fy - b / T(200);
-  T fx3 = fx*fx*fx;          // fx^3
-  T fz3 = fz*fz*fz;          // fz^3
+  T fx3 = fx*fx*fx;           // fx^3
+  T fz3 = fz*fz*fz;           // fz^3
   if(fx3 > e) *X = fx3;
   else        *X = (T(116)*fx-T(16)) / k;
-  if(L  > ke) *Y = (fy*fy*fy)/k;            
+  if(L  > ke) *Y = (fy*fy*fy)/k;
   else        *Y = L / k;
   if(fz3 > e) *Z = fz3;
   else        *Z = (T(116)*fz-T(16)) / k;

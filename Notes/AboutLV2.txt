@@ -1,0 +1,122 @@
+The information about how to create LV2 plugins is scattered over various places on the web an in
+textfiles shipping with the SDK. Here, i try to collect the important stuff.
+
+---------------------------------------------------------------------------------------------------
+From https://lv2plug.in/
+
+LV2 is an extensible open standard for audio plugins. LV2 has a simple core interface, which is 
+accompanied by extensions that add more advanced functionality. Many types of plugins can be built 
+with LV2, including audio effects, synthesizers, and control processors for modulation and 
+automation. Extensions support more powerful features, such as:
+
+ * Platform-native UIs
+ * Network-transparent plugin control
+ * Portable and archivable persistent state
+ * Non-realtime tasks (like file loading) with sample-accurate export
+ * Semantic control with meaningful control designations and value units
+ * The LV2 specification itself as well as the accompanying libraries are permissively licensed 
+   free software, with support for all major platforms.
+
+---------------------------------------------------------------------------------------------------
+From README.txt in plugins\eg-amp.lv2:
+
+== Simple Amplifier ==
+
+This plugin is a simple example of a basic LV2 plugin with no additional features. It has audio 
+ports which contain an array of `float`, and a control port which contains a single `float`.
+
+LV2 plugins are defined in two parts: code and data. The code is written in C, or any C compatible 
+language such as C++. Static data is described separately in the human and machine friendly 
+http://www.w3.org/TeamSubmission/turtle/[Turtle] syntax.
+
+Generally, the goal is to keep code minimal, and describe as much as possible in the static data.
+There are several advantages to this approach:
+
+ * Hosts can discover and inspect plugins without loading or executing any plugin code.
+ * Plugin data can be used from a wide range of generic tools like scripting languages and command 
+   line utilities.
+ * The standard data model allows the use of existing vocabularies to describe plugins and related
+   information.
+ * The language is extensible, so authors may describe any data without requiring changes to the 
+   LV2 specification.
+ * Labels and documentation are translatable, and available to hosts for display in user 
+   interfaces.
+
+---------------------------------------------------------------------------------------------------
+From manifest.ttl.in in plugins\eg-amp.lv2:
+
+LV2 plugins are installed in a ``bundle'', a directory with a standard structure. Each bundle has
+a Turtle file named `manifest.ttl` which lists the contents of the bundle.
+
+Hosts typically read the manifest of every installed bundle to discover plugins on start-up, so it 
+should be as small as possible for performance reasons. Details that are only useful if the host 
+chooses to load the plugin are stored in other files and linked to from `manifest.ttl`.
+
+LV2 makes use of URIs as globally-unique identifiers for resources. For example, the ID of the 
+plugin described here is `<http://lv2plug.in/plugins/eg-amp>`. Note that URIs are only used as
+identifiers and don't necessarily imply that something can be accessed at that address on the web 
+(though that may be the case).
+
+---------------------------------------------------------------------------------------------------
+From \plugins\eg-params.lv2\README.txt
+
+== Params ==
+
+The basic LV2 mechanism for controls is lv2:ControlPort inherited from LADSPA. Control ports are 
+problematic because they are not sample accurate, support only one type (`float`), and require that
+plugins poll to know when a control has changed.
+
+Parameters can be used instead to address these issues. Parameters can be thought of as properties
+of a plugin instance; they are identified by URI and have a value of any type. This deliberately 
+meshes with the concept of plugin state defined by the LV2 state extension. The state extension 
+allows plugins to save and restore their parameters (along with other internal state information, 
+if necessary).
+
+Parameters are accessed and manipulated using messages sent via a sequence port. The LV2 patch 
+extension defines the standard messages for working with parameters. Typically, only two are used 
+for simple plugins: patch:Set sets a parameter to some value, and patch:Get requests that the 
+plugin send a description of its parameters.
+
+---------------------------------------------------------------------------------------------------
+http://lv2plug.in/ns/ext/dynmanifest
+
+
+
+
+---------------------------------------------------------------------------------------------------
+http://lv2plug.in/ns/extensions/ui
+
+UIs are implemented as an LV2UI_Descriptor loaded via lv2ui_descriptor() in a shared library, and 
+are distributed in bundles just like plugins. UIs are associated with plugins in data. While it is 
+possible to have the plugin UI and the plugin in the same shared object file, it is a good idea to
+keep them separate so that hosts can avoid loading the UI code if they do not need it. A UI MUST 
+specify its class in the RDF data (X11UI in the above example). The class defines what type the UI
+is, for example what graphics toolkit it uses. It is possible to have multiple UIs for the same 
+plugin, or to have the UI for a plugin in a different bundle from the actual plugin. This allows
+plugin UIs to be written independently.
+
+UIs written to this specification do not need to be thread-safe. All functions may only be called 
+in the UI thread. There is only one UI thread (for toolkits, the one the UI main loop runs in). 
+There is no requirement that a UI actually be a graphical widget. Note that UIs are completely 
+separate from plugins. From the plugin's perspective, control from a UI is indistinguishable from 
+any other control, as it all occcurs via ports.
+
+
+
+---------------------------------------------------------------------------------------------------
+From: https://github.com/lv2/lv2
+
+LV2 is a plugin standard for audio systems. It defines a minimal yet extensible C API for plugin 
+code and a format for plugin "bundles". See http://lv2plug.in for more information. This package 
+contains specifications (C headers and Turtle files), documentation generation tools, and example 
+plugins. Building and installation requires only Python 2.6. Building the documentation requires 
+Doxygen.
+
+
+Links:
+
+
+Programming LV2 Plugins: https://lv2plug.in/book/ https://lv2plug.in/pages/developing.html
+
+
+Code Repository: https://github.com/lv2/lv2
