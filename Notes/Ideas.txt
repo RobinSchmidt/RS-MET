@@ -206,6 +206,24 @@ protected:
   setSampleData(...)
   
 -------------------------------------------------------------------------------
+Parameters
+
+-have a baseclass rsParameterBase with virtual functions that allow 
+ rsParameterManager to store an array of them and set/get the value as string,
+ like:
+ void setFromString(const String& s);
+ String getAsString();
+ these functions are used for total recall, i.e. to store states as xml and/or
+ json
+-subclasses can be things like rsParameterNumeric, rsParameterChoice, 
+ rsParameterBool - although, the last one can also be realized as choice with 
+ just two choices
+-maybe there could be two versions of rsParameterChoice, one for which the 
+ mapping to integer enum values is given implicitly by the location of the 
+ string in the array, and one, where it's explicitly assigned
+
+
+-------------------------------------------------------------------------------
 
 NewSynth:
 

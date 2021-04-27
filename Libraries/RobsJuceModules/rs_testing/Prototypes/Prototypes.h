@@ -2579,12 +2579,18 @@ public:
   /** Converts RGB (red, green, blue) to HSL (hue, saturation, lightness). */
   static void rgb2hsl(T R, T G, T B, T* H, T* S, T* L);
 
-
-  // under construction (still buggy):
-
   static void lab2xyz(T L, T a, T b, T* X, T* Y, T* Z);
 
   static void xyz2lab(T X, T Y, T Z, T* L, T* a, T* b);
+
+
+  // under construction:
+
+
+  static void ch2ab(T C, T h, T* a, T* b);
+
+  static void ab2ch(T a, T b, T* C, T* h);
+
 
 
   //static void lab2rgb(T L, T a, T b, T* R, T* G, T* B);
@@ -2721,6 +2727,39 @@ void rsColor<T>::xyz2lab(T X, T Y, T Z, T* L, T* a, T* b)
   *a = (500*(fx - fy));
   *b = (200*(fy - fz));
 }
+
+
+template<class T>
+void rsColor<T>::ch2ab(T C, T h, T* a, T* b)
+{
+  *a = C * cos(h);
+  *b = C * sin(h);
+  // https://de.wikipedia.org/wiki/LCh-Farbraum
+}
+
+template<class T>
+void rsColor<T>::ab2ch(T a, T b, T* C, T* h)
+{
+  *C = rsSqrt(*a * *a + *b * *b);
+  *h = atan2(*b, *a);
+  // https://de.wikipedia.org/wiki/LCh-Farbraum
+}
+
+
+// todo: xyz2rgb - there are many variations, how such a comversion can be done with respect to two
+// things:
+// -which matrix is used
+// -which companding functions is used
+//  -if gamma-companding is used, you have to also specify a value for gamma
+
+// http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html ...how can we turn the matrices
+// there into double precision? maybe by taking M, computing inv(M) in double precision? that gives
+// us a double-precision matrix for inv(M). maybe we can also use the given inv(M) and invert it to 
+// get a double preicison version of M. and then maybe take averages of given and computed? and 
+// maybe iterate that until both matrices converge? the goal is to get as closely as possible to a 
+// perfect roundtrip in double precision. with these rounded matrices, the roundtrip will introduce
+// an error that's determined by the single-precision format, even if double precision is used. 
+// maybe write a general function: rsRefineInversion(rsMatrix& M, rsMatrix& Mi) 
 
 
 
