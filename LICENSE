@@ -1,0 +1,23 @@
+This is repository contains code from various sources and different parts are 
+subject to different licensing schemes. 
+
+For my own code, primarily the DSP libraries rapt and rosic, my plugin 
+framework jura_framework and my actual plugin code in jura_processors, I go
+with a dual licensing scheme similar to juce's: you can use the code under 
+the terms of GPL or some compatibe open source license* or you can arrange for
+a closed source license with me, for which I typically charge a per-product 
+licensing fee, the terms of which I negotiate individually on a case by case 
+basis.
+
+If you want to use the juce-based parts of the library and/or want to make
+VST plugins, you will need to adhere to the licensing terms of Roli and 
+Steinberg, too:
+
+https://juce.com/get-juce
+https://developer.steinberg.help/pages/viewpage.action?pageId=9797944
+
+
+(*) I don't really care about the specifics of GPL and I actually find it a bit
+too restrictive. What I do care about is fairness and advancing and supporting 
+open source culture.
+
