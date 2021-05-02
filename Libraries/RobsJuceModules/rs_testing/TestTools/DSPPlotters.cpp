@@ -476,9 +476,9 @@ std::vector<std::string> FilterPlotter<T>::getGraphColors(int numGraphs) const
   using Col = rsColor<T>;
   char hex[7];
   std::vector<Str> hexColors;
-  T L  = 0.3;   // lightness
-  T S  = 0.75;  // saturation
-  T H0 = 0.0;   // start hue (0.0: red)
+  T L  = T(0.3);   // lightness
+  T S  = T(0.75);  // saturation
+  T H0 = T(0.0);   // start hue (0.0: red)
   for(int i = 0; i < numGraphs; i++)
   {
     T c = T(i) / T(numGraphs);

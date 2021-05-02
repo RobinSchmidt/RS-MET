@@ -35,6 +35,7 @@ bool samplerEngineUnitTest()
   // -create a couple of simple samples (maybe sine-waves or something) and assign them to
   //  regions, trigger notes, record output and compare the produced output to what is expected
   // -set up performance tests, too
+  // -fix the memory leak!
 
 
   return ok;

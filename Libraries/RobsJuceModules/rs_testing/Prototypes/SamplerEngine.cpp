@@ -12,17 +12,13 @@ int rsSamplerEngine<TSig, TPar, TSmp>::addSampleToPool(
   // -maybe the Streamer object should always have two channel pointers, but in case of 
   //  mono-samples, both just point to the same buffer. that may make it easier to handle things
   //  uniformly
-
-  AudioFileStreamPreloaded stream;
-
-  //stream.setData(data, numFrames, numChannels, sampleRate, uniqueName);
   // todo: check, if a sample with the same uniqueName already exists - if so, we have nothing to 
-  // do and may return early
+  // do and may return early with an appropriate code
 
-
-
-
-  return 0; // preliminary
+  AudioFileStreamPreloaded* stream = new AudioFileStreamPreloaded;
+  int result = stream->setData(data, numFrames, numChannels, sampleRate, uniqueName);
+  samplePool.addSample(stream);
+  return result;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -60,6 +56,16 @@ void rsSamplerEngine<TSig, TPar, TSmp>::handleMusicalEvent(const rsMusicalEvent<
 // Function definitions for the helper classes:
 
 
+template<class TSig, class TPar, class TSmp>
+
+int rsSamplerEngine<TSig, TPar, TSmp>::AudioFileStreamPreloaded::setData(
+  TSmp** newData, int numFrames, int numChannels, TPar sampleRate,
+  const std::string& uniqueName)
+{
+
+
+  return 0; // preliminary
+}
 
 
 /*

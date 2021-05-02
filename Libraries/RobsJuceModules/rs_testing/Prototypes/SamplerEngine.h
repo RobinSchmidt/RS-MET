@@ -156,16 +156,33 @@ protected:
   class AudioFileStreamPreloaded : public AudioFileStream 
   {
 
+  public:
+
+    int setData(TSmp** newData, int numFrames, int numChannels, TPar sampleRate, 
+      const std::string& uniqueName);
+    // todo: include fileName etc. later, too
+
+
     void getFrame(int sampleIndex, TSmp* destination) override
     {
-      // ...something to do...
+      int n = sampleIndex;
+      rsAssert(n >= 0 && n < numFrames, "sampleIndex out of range");
+      for(int c = 0; c < this->numChannels; c++)
+        destination[c] = channelPointers[c][n];
+        // What, if the nmuber of output channels shall be different than the number of of channels
+        // in the data? Maybe it's best (most efficient) to ensure that this cannot happen on a 
+        // higher level. We can just let our channelPointers all point to the same actual data, for
+        // example. When the number of output channels of the sampler engine is changed (which 
+        // should happen rarely, if ever), we need to update all channelPointer arrays in all 
+        // AudioFileStreamPreloaded objects.
     }
 
   protected:
 
-
-    TSmp*  flatData;
-    TSmp** channelPointers;     // pointer to the sample data
+    TSmp*  flatData = nullptr;         // pointer to the sample data
+    TSmp** channelPointers = nullptr;  // pointers to the channels
+    // If we store the data in interleaved format, the channelPointers will be not needed and 
+    // getFrame must be implemented differently. Maybe that's better (more efficient)
 
   };
 
@@ -173,14 +190,24 @@ protected:
   class SamplePool
   {
 
-    // todo: 
-    // setup:   addSample, removeSample, clearAllSamples
+  public:
+
+    void addSample(const AudioFileStream* newSample)
+    {
+      // rsAssert(!contains(newSample))
+      samples.push_back(newSample);
+    }
+    // should the pool take ownership? ...i think so
+
+
+    // todo:
+    // setup:   removeSample, clearAllSamples
     // inquiry: hasSample
 
 
   protected:
 
-    std::vector<AudioFileStream*> samples;
+    std::vector<const AudioFileStream*> samples;
 
   };
 
@@ -215,9 +242,13 @@ protected:
 
   class Region;
 
+  /** A group organizes a bunch of regions into a single entity for which performance settings can 
+  be set up which will be applicable in cases where the region does not itself define these 
+  settings, so they act as fallback values. */
   class Group
   {
 
+    // todo: addRegion, removeRegion, etc.
 
   private:
 
@@ -234,9 +265,9 @@ protected:
   };
 
 
-
-
-
+  /** A region contains a sample along with performance settings including information for which 
+  keys and velocities the sample should be played and optionally other constraints for when the the
+  sample should be played and also settings for pitch, volume, pan, filter, envelopes, etc. */
   class Region
   {
 
@@ -266,6 +297,7 @@ protected:
   does not map to any user concept. */
   class RegionSet
   {
+    // todo: addRegion, removeRegion
 
     std::vector<Region*> regions; // pointers to the regions belonging to this set
   };
@@ -302,7 +334,7 @@ protected:
   region) overrides a setting with its own value. **/
 
   int numChannels = 2;
-  /**< The number of output channels. By default, we have two channels, i.e. stereo.  */
+  /**< The number of output channels. By default, we have two channels, i.e. a stereo output. */
 
 
 };
