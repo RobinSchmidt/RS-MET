@@ -24,6 +24,8 @@
       <GROUP id="{86EEC43B-AEDF-BBF9-BF97-B91B0A6A75D6}" name="rapt_tests">
         <FILE id="u8c1f4" name="RaptTests.h" compile="0" resource="0" file="Source/rapt_tests/RaptTests.h"/>
         <GROUP id="{DC26DB91-6388-5853-E13D-90EAAE45AFD9}" name="UnitTests">
+          <FILE id="orZ76J" name="GeneratorUnitTests.cpp" compile="0" resource="0"
+                file="Source/rapt_tests/UnitTests/GeneratorUnitTests.cpp"/>
           <GROUP id="{59E203FE-103B-3F2C-9162-9ECEFBF76A2E}" name="Math">
             <FILE id="NL3RXL" name="DifferentialEquationTests.cpp" compile="0"
                   resource="0" file="Source/rapt_tests/UnitTests/Math/DifferentialEquationTests.cpp"/>

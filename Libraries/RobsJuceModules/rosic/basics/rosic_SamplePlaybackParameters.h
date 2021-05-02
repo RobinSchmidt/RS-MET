@@ -187,7 +187,7 @@ namespace rosic
     void setRecordingSampleRate(double newRecordingSampleRate) 
     {
       if( newRecordingSampleRate > 0.01 )
-        recordingSampleRate = newRecordingSampleRate;    
+        recordingSampleRate = newRecordingSampleRate;
     }
 
     /** Switches the lowpass-/highpass filter for this sample on/off. */

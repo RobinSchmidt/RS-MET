@@ -322,7 +322,7 @@ void FeedbackDelayNetwork16::assignRelativeDelayTimesAlgorithmically(int distrib
     break;
     */
 
-    /*
+   /*
   case PRIME_ALGO_1:
     {
       relativeDelayTimes[ 1] = (13.0/11.0) * desiredDelays[0];
@@ -362,6 +362,7 @@ void FeedbackDelayNetwork16::assignRelativeDelayTimesAlgorithmically(int distrib
     }
     break;
     */
+   
 
   }
   adjustDelayTimes();
@@ -469,6 +470,9 @@ void FeedbackDelayNetwork16::setFeedbackMatrix(int newFeedbackMatrixIndex)
 
 void FeedbackDelayNetwork16::setOutputVector(int newOutputVectorIndex)
 {
+  // For good stereo effect, it seems desirable that the output vectors should be orthogonal and
+  // dense (i guess)
+
   if( newOutputVectorIndex >= 0 && newOutputVectorIndex <  NUM_OUTPUT_VECTORS )
     outputVectorIndex = newOutputVectorIndex;
 

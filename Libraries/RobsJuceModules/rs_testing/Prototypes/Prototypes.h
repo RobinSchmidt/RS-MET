@@ -23,6 +23,7 @@ using namespace RAPT;
 #include "QuantumSystems.h"
 #include "Relativity.h"
 #include "SineParameterEstimator.h"
+#include "SamplerEngine.h"
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant
 to be used for production code but are useful for a more readable proof-of-concept (because of lack
@@ -2571,26 +2572,22 @@ public:
   rsColor(const rsVector3D<T>& v) : rsVector3D<T>(v) {}
 
 
-
-
   /** Converts HSL (hue, saturation, lightness) to RGB (red, green, blue). */
   static void hsl2rgb(T H, T S, T L, T* R, T* G, T* B);
 
   /** Converts RGB (red, green, blue) to HSL (hue, saturation, lightness). */
   static void rgb2hsl(T R, T G, T B, T* H, T* S, T* L);
 
-  static void lab2xyz(T L, T a, T b, T* X, T* Y, T* Z);
 
+  // needs more tests:
+  static void lab2xyz(T L, T a, T b, T* X, T* Y, T* Z);
   static void xyz2lab(T X, T Y, T Z, T* L, T* a, T* b);
 
-
   // under construction:
-
-
   static void ch2ab(T C, T h, T* a, T* b);
-
   static void ab2ch(T a, T b, T* C, T* h);
-
+  // this is the cyclidrical version of L*a*b, the L value remains the same, so it's not included
+  // in the parameters
 
 
   //static void lab2rgb(T L, T a, T b, T* R, T* G, T* B);
@@ -2699,7 +2696,7 @@ void rsColor<T>::lab2xyz(T L, T a, T b, T* X, T* Y, T* Z)
   T fz3 = fz*fz*fz;           // fz^3
   if(fx3 > e) *X = fx3;
   else        *X = (T(116)*fx-T(16)) / k;
-  if(L  > ke) *Y = (fy*fy*fy)/k;
+  if(L  > ke) *Y = fy*fy*fy;
   else        *Y = L / k;
   if(fz3 > e) *Z = fz3;
   else        *Z = (T(116)*fz-T(16)) / k;

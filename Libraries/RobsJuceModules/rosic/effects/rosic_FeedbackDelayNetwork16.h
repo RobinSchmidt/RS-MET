@@ -203,6 +203,11 @@ public:
   void feedInImpulse(float amplitude = 1.f) { impulseAmplitude = amplitude; }
 
   INLINE void getSampleFrameStereo(double* inOutL, double* inOutR);
+  // get rid, use processFrame instead
+
+  INLINE void processFrame(double* inOutL, double* inOutR)
+  { getSampleFrameStereo(inOutL, inOutR); }
+  // alias to getSampleFrameStereo to match API of FeedbackDelayNetwork
 
   //---------------------------------------------------------------------------------------------
   // others:

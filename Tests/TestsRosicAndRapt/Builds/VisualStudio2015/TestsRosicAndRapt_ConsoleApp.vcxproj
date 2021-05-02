@@ -141,6 +141,9 @@
     <ClCompile Include="..\..\Source\Misc\Misc.cpp"/>
     <ClCompile Include="..\..\Source\PerformanceTests\PerformanceTests.cpp"/>
     <ClCompile Include="..\..\Source\UnitTests\UnitTests.cpp"/>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\GeneratorUnitTests.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\DifferentialEquationTests.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -493,6 +496,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter - Copy.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.cpp">
@@ -2361,6 +2367,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SineParameterEstimator.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2499,6 +2508,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\OnePoleFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter - Copy.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\PhasorFilter.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilter.h"/>
@@ -3166,6 +3176,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Prototypes.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\QuantumSystems.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SineParameterEstimator.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Tensor.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\TrivariatePolynomial.h"/>

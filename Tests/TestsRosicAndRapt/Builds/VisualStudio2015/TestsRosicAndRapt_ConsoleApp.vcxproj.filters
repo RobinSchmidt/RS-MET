@@ -379,6 +379,9 @@
     <ClCompile Include="..\..\Source\UnitTests\UnitTests.cpp">
       <Filter>TestsRosicAndRapt\Source\UnitTests</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\UnitTests\GeneratorUnitTests.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\UnitTests\Math\DifferentialEquationTests.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\UnitTests\Math</Filter>
     </ClCompile>
@@ -738,6 +741,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.cpp">
       <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter - Copy.cpp">
+      <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.cpp">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
@@ -2608,6 +2614,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SineParameterEstimator.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
@@ -2951,6 +2960,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.h">
       <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter - Copy.h">
+      <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.h">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
@@ -4951,6 +4963,9 @@
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine.h">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SineParameterEstimator.h">

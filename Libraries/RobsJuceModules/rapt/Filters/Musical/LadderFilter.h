@@ -162,6 +162,9 @@ public:
   value 1/e = 0.36..) in seconds and a cutoff frequency in Hz, this function computes the desired
   normalized net feedback loop gain (in the range 0..1) to achieve this decay time. */
   static TPar resonanceDecayToFeedbackGain(CRPar decay, CRPar cutoff);
+  // Maybe strip the final "Gain" part from the function name. It's too long and also ambiguous 
+  // because "gain" is often interpreted as dB, whereas this function returns a raw multiplier. 
+  // Maybe also shorten "resonance" to "reso"
 
   /** Given a normalized radian cutoff frequency wc (in the range 0...pi) and a normalized overall
   feedback gain fb (in the range 0...1), this function computes the desired coefficients a, b for

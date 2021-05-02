@@ -352,4 +352,11 @@ ToDo:
 -maybe rename to rsLadderFilterUDF and make a similar class for a ZDF ladder, maybe factor out
  a common baseclass
 
+-Make the resonance adjustable in dB because this is what the .sfz format expects:
+ https://sfzformat.com/tutorials/basic_sfz_file
+ For this, we need a formula for the feedback-factor in terms of the resonance in dB. This should 
+ take into account also the makeup gain, so there may be quite some algebra to churn through. At 
+ the end, a formula should result that can be implemented as static member function just like
+ resonanceDecayToFeedbackGain, maybe resonanceLevelToFeedbackGain
+
 */

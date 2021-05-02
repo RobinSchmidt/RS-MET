@@ -194,6 +194,16 @@ bool colorUnitTest()
   //Color::rgb2hsl(x, y, z, &a, &b, &c);
   */
 
+  auto check = [](Real x, Real y, Real z, Real X, Real Y, Real Z, Real tol)
+  {
+    bool ok = true;
+    ok &= rsIsCloseTo(x, X, tol);
+    ok &= rsIsCloseTo(y, Y, tol);
+    ok &= rsIsCloseTo(z, Z, tol);
+    return ok;
+  };
+
+
   // Test HSL/RGB conversions:
   for(int i = 1; i < N; i++) {
     x = Real(i) / Real(N);
@@ -203,9 +213,7 @@ bool colorUnitTest()
         z = Real(k) / Real(N);
         Color::hsl2rgb(x, y, z, &a, &b, &c);
         Color::rgb2hsl(a, b, c, &X, &Y, &Z);
-        ok &= rsIsCloseTo(x, X, tol);
-        ok &= rsIsCloseTo(y, Y, tol);
-        ok &= rsIsCloseTo(z, Z, tol); }}}
+        ok &= check(x,y,z, X,Y,Z, tol); }}}
   // Seems like the roundtrip HSL -> RGB -> HSL does not work when L = 0. It maps to black and we 
   // loose the hue and saturation information. The same thing happens when L = 1: it maps to white
   // and we also can't recover any hue information from that. That's why the loops start at 1 and
@@ -217,13 +225,14 @@ bool colorUnitTest()
   y = 0.734534f;
   z = 0.413245f;
 
-  Color::xyz2lab(x, y, z, &a, &b, &c);
-  Color::lab2xyz(a, b, c, &X, &Y, &Z);
-  // Z is wrong
-
   Color::lab2xyz(x, y, z, &a, &b, &c);
   Color::xyz2lab(a, b, c, &X, &Y, &Z);
-  // X == x and Y == y but Z != z - actually, Z ~= Y...weird!
+  ok &= check(x,y,z, X,Y,Z, tol);
+
+  Color::xyz2lab(x, y, z, &a, &b, &c);
+  Color::lab2xyz(a, b, c, &X, &Y, &Z);
+  ok &= check(x,y,z, X,Y,Z, tol);
+
 
   // Test conversion of RGB to hex colors:
   char hex[8];

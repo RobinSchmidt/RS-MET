@@ -130,7 +130,8 @@ namespace rosic
     float*  sampleData;
     float** channelPointers;
 
-    MutexLock mutex;
+    MutexLock mutex;  // get rid of this! threading should be handled in jura_framework, and/or
+                      // make a subclass SampleBufferSafe that wraps all accesses into mutex-locks
 
     /** Make a copy-constructor unavailable because this class needs deep copying (because of the 
     pointers in the MutexLocks). If you need to create a new object based on an existing one,
