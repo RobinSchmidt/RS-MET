@@ -517,6 +517,8 @@ template class RAPT::rsPeakPicker<double>;
 template class RAPT::rsEnvelopeExtractor<double>;
 
 
+
+
 // misc audio functions
 template void RAPT::rsFadeOut(double* buffer, int start, int end);
 template void RAPT::rsSineAmplitudeAndPhase(double y0, double y1, double w, double *a, double *p);
@@ -592,3 +594,6 @@ template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
 
 template class rsTrivariatePolynomial<double>;
 template class rsPiecewisePolynomial<double>;
+
+template class rsSamplerEngine<rsFloat64x2, double, float>;
+// todo: rsFloat64x2 should be in namespace rosic

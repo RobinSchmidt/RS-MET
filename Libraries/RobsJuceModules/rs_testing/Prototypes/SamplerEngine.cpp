@@ -1,3 +1,43 @@
+//-------------------------------------------------------------------------------------------------
+// Setup:
+
+template<class TSig, class TPar, class TSmp>
+int rsSamplerEngine<TSig, TPar, TSmp>::addSampleToPool(
+  TSmp** data, int numFrames, int numChannels, TPar sampleRate, const std::string& uniqueName)
+{
+  // todo: 
+  // -create and AudioFileStreamPreloaded object
+  // -allocate memory for the storage
+  // -copy the data
+  // -maybe the Streamer object should always have two channel pointers, but in case of 
+  //  mono-samples, both just point to the same buffer. that may make it easier to handle things
+  //  uniformly
+
+  AudioFileStreamPreloaded stream;
+
+  //stream.setData(data, numFrames, numChannels, sampleRate, uniqueName);
+  // todo: check, if a sample with the same uniqueName already exists - if so, we have nothing to 
+  // do and may return early
+
+
+
+
+  return 0; // preliminary
+}
+
+//-------------------------------------------------------------------------------------------------
+// Inquiry:
+
+template<class TSig, class TPar, class TSmp>
+bool rsSamplerEngine<TSig, TPar, TSmp>::shouldRegionPlay(
+  const Region* r, const char key, const char vel)
+{
+  return false; // preliminary
+}
+
+//-------------------------------------------------------------------------------------------------
+// Processing:
+
 template<class TSig, class TPar, class TSmp>
 void rsSamplerEngine<TSig, TPar, TSmp>::processFrame(TSig* frame, int numChannels)
 {
@@ -16,12 +56,10 @@ void rsSamplerEngine<TSig, TPar, TSmp>::handleMusicalEvent(const rsMusicalEvent<
 
 }
 
-template<class TSig, class TPar, class TSmp>
-bool rsSamplerEngine<TSig, TPar, TSmp>::shouldRegionPlay(
-  const Region* r, const char key, const char vel)
-{
-  return false; // preliminary
-}
+//=================================================================================================
+// Function definitions for the helper classes:
+
+
 
 
 /*

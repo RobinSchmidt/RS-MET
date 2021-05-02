@@ -72,6 +72,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
+  int addSampleToPool(TSmp** data, int numFrames, int numChannels, TPar sampleRate, 
+    const std::string& uniqueName);
+  // Maybe should return an error/return code: 
+  // 0: was added successfully, 1: was already there, 2: memory allocation failed, etc. ...
+
   // todo: addGroup, addRegion(int group, ..), removeRegion/Group, clearGroup, clearRegion, 
   // clearInstrument, addSampleToPool, removeSampleFromPool, replaceSampleInPool, setupFromSFZ,
 
@@ -107,15 +112,17 @@ protected:
   public:
 
     /** For random access. Writes the sample frame with given index into the given destination. */
-    virtual void getSampleFrame(int sampleIndex, TSmp* destination) = 0;
+    virtual void getFrame(int sampleIndex, TSmp* destination) = 0;
 
     /** Subclasses may want to override this for optimizing the blockwise access. */
+    /*
     virtual void getBlock(int startIndex, int length, TSmp** destination)
     {
       for(int i = 0; i < length; i++)
-        getSampleFrame(startIndex + i, destination[i]);
+        getFrame(startIndex + i, destination[i]);
         // assumes interleaved storage in memory
     }
+    */
 
   protected:
 
@@ -134,6 +141,11 @@ protected:
     // inquiry: existsOnDisk (idea: we should allow to work with samples that are not stored on 
     // disk but rather pre-rendered programmatically into RAM at runtime)
 
+    //virtual void getFrame(int sampleIndex, TSmp* destination) {}
+
+    // todo: getBlock
+
+
   protected:
 
     std::string fileName;  // without filename extension
@@ -141,17 +153,19 @@ protected:
     std::string path;      // relative path from instrument definition file (e.g. Piano.sfz)
   };
 
-  class AudioFileStreamPreloaded
+  class AudioFileStreamPreloaded : public AudioFileStream 
   {
 
-    void getSampleFrame(int sampleIndex, TSmp* destination) override
+    void getFrame(int sampleIndex, TSmp* destination) override
     {
       // ...something to do...
     }
 
   protected:
 
-    TSmp** data;           // pointer to the sample data
+
+    TSmp*  flatData;
+    TSmp** channelPointers;     // pointer to the sample data
 
   };
 
@@ -286,6 +300,9 @@ protected:
   std::vector<PlaybackSetting> settings;
   /**< Playback settings that apply to all groups within this instrument, unless a group (or 
   region) overrides a setting with its own value. **/
+
+  int numChannels = 2;
+  /**< The number of output channels. By default, we have two channels, i.e. stereo.  */
 
 
 };
