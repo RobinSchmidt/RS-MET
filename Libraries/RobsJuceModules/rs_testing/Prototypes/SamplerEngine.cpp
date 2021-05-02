@@ -1,7 +1,27 @@
+template<class TSig, class TPar, class TSmp>
+void rsSamplerEngine<TSig, TPar, TSmp>::processFrame(TSig* frame, int numChannels)
+{
 
+}
 
+template<class TSig, class TPar, class TSmp>
+void rsSamplerEngine<TSig, TPar, TSmp>::processBlock(TSig** block, int numFrames, int numChannels)
+{
 
+}
 
+template<class TSig, class TPar, class TSmp>
+void rsSamplerEngine<TSig, TPar, TSmp>::handleMusicalEvent(const rsMusicalEvent<TPar>& ev)
+{
+
+}
+
+template<class TSig, class TPar, class TSmp>
+bool rsSamplerEngine<TSig, TPar, TSmp>::shouldRegionPlay(
+  const Region* r, const char key, const char vel)
+{
+  return false; // preliminary
+}
 
 
 /*
@@ -48,5 +68,12 @@ well. But maybe we should have an (optional) exceptional rule for mono outputs t
 all channels.
 
 may use SampleBuffer, SamplePlaybackParameters
+
+Ideas:
+-Could it make sense to define a level above the instrument - maybe an ensemble? Different 
+ instruments in an ensemble could respond to different midi-channels. This would resemble the
+ "multi-timbral" feature commonly seen in hardware romplers.
+-Maybe at some point, we may want to provide more advanced envelope-generators such as the ones
+ seen in Straightliner.
 
 */
