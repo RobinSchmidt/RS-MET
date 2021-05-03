@@ -71,6 +71,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Publically Visible Helper Classes (may be factored out at some point)
 
+  /*
   class SampleMetaData
   {
 
@@ -93,17 +94,20 @@ public:
     // Maybe add: peakAmplitude, rmsAmplitude, etc., maybe Category (harmonic, inharmonic, noisy, 
     // transient, speech, music, ...)
   };
+  */
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  /** Return codes for the setup functions. */
+  /** Return codes for the setup functions. We use encodings as negative integers so we can use 
+  them also for functions which use positive integers as valid return values. */
   enum ReturnCode
   {
-    success,       //< Operation completed successfully. 
-    nothingToDo,   //< There was nothing to actually do. State was already as desired.
-    memAllocFail   //< Memory allocation failure.
+    success      = -1,  //< Operation completed successfully. 
+    nothingToDo  = -2,  //< There was nothing to actually do. State was already as desired.
+    memAllocFail = -3,  //< Memory allocation failure.
+    invalidIndex = -4   //< An invalid index was passed.
   };
   // todo: make it an enum class, maybe include also return codes for inquiry functions such as for
   // "unknown", etc. ...but maybe that's no good idea when we want to use it for functions which
@@ -112,12 +116,24 @@ public:
   // maybe rename "success" to "completed" because "success" has actually a more general meaning:
   // "nothingToDo" is also a kind of "success" (or maybe "workDone" or "workCompleted"
 
+  /** Adds a new sample to our pool of samples. After the sample has been added, regions can be 
+  defined that make use of it. */
   int addSampleToPool(TSmp** data, int numFrames, int numChannels, TPar sampleRate, 
     const std::string& uniqueName);
-  // Maybe should return an error/return code: 
-  // 0: was added successfully, 1: was already there, 2: memory allocation failed, etc. ...
+  // Maybe rename to addSample
   // maybe make a struct SampleMetaData containing: numFrames, numChannels, sampleRate, rootKey
   // todo: take reference to a metaData object
+
+  /** Adds a new group to the instrument definition and returns the index of the group. */
+  int addGroup();
+
+  /** Adds a new region to the group with the given index and returns the index of the region 
+  within the group or ReturnCode::invalidIndex, if the passed groupIndex was invalid. */
+  int addRegion(int groupIndex);
+
+  // todo:
+  // int setRegionSample(int groupIndex, int regionIndex, int sampleIndex); 
+  // setRegionLoKey, setRegionHiKey, setRegionLoVel, setRegionHiVel
 
 
   // todo: addGroup, addRegion(int group, ..), removeRegion/Group, clearGroup, clearRegion, 
@@ -128,16 +144,16 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  // getGroup, getRegion, getStateAsSFZ, isSampleInPool, 
+  // getGroup, getRegion, getStateAsSFZ, isSampleInPool, getNumGroups, getNumRegionsInGroup(int)
+  // getNumRegions()
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  void processFrame(TSig* frame, int numChannels);
-  // maybe numChannles should be a member
+  void processFrame(TSig* frame);
 
-  void processBlock(TSig** block, int numFrames, int numChannels);
+  void processBlock(TSig** block, int numFrames);
 
   void handleMusicalEvent(const rsMusicalEvent<TPar>& ev);
 
@@ -282,16 +298,22 @@ protected:
 
     enum class Type
     {
-      ControllerRange, PitchWheelRange,
+      ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
 
       AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
 
-      FilterCutoff, FilterResoance, FilterType
+      FilterCutoff, FilterResonance, FilterType
 
       //...tbc...
     };
 
   private:
+
+    TPar value = TPar(0);
+    // hmm - it seems, for the controllers, we need 2 values: controller number and value - but it
+    // would be wasteful to store two values for all other settings as well...hmmm...maybe 
+    // groups/regions need to maintain 2 arrays with settings, 1 for the 1-valued settings and 
+    // another for the 2-valued settings - maybe have classes PlaybackSetting, PlaybackSetting2Val
 
   };
 
@@ -307,11 +329,15 @@ protected:
   class Group
   {
 
+  public:
+
+    int addRegion();
+
     // todo: addRegion, removeRegion, etc.
 
   private:
 
-    std::vector<Region*> regions; 
+    std::vector<Region> regions; 
     /**< Pointers to the regions belonging to this group. */
 
     std::vector<PlaybackSetting> settings;
@@ -348,7 +374,9 @@ protected:
       // present in the baseclass...or maybe it should have a more general array of RegionFeatures
       // which may also include loop-settings and the like
 
-    //std::string name;  
+    //std::string name;
+
+    friend class Group;
   };
 
   /** Defines a set of regions. Used to handle note-on/off events efficiently. Not to be confused 
@@ -394,6 +422,8 @@ protected:
 
   int numChannels = 2;
   /**< The number of output channels. By default, we have two channels, i.e. a stereo output. */
+  // maybe that should be determined by TSig? multi-channel output should be realized by using
+  // a multichannel (simd) type
 
 
   //float midiCC[128];     // most recently received controller values in 0...127

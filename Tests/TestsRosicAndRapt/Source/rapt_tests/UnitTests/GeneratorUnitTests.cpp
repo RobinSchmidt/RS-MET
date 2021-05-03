@@ -18,7 +18,7 @@ bool samplerEngineUnitTest()
   VecS sample(N);
   double w = 2*PI*f/fs;
   for(int n = 0; n < N; n++)
-    sample[n] = (float) sin(w*n);
+    sample[n] = (TSmp) sin(w*n);
   rsPlotVector(sample);
 
   // Create an array of pointers to the channels and add the sample to the sample pool in the 
@@ -29,7 +29,8 @@ bool samplerEngineUnitTest()
   se.addSampleToPool(pSmp, N, 1, fs, "Sine440Hz");
 
   // Add a region for the sinewave sample to the sampler engine:
-  //se.addRegion
+  int gi = se.addGroup();     // adds new grouep to instrument definition, gi: group index
+  int ri = se.addRegion(gi);  // adds new region to group gi, ri: region index
 
 
   // ToDo: 

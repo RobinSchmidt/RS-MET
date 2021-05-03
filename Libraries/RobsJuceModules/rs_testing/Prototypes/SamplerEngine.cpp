@@ -2,8 +2,8 @@
 // Setup:
 
 // Shortcuts to reduce verbosity:
-//#define RS_TMPDEC template<class TSig, class TPar, class TSmp>  // template declarations
-//#define RS_SMPENG rsSamplerEngine<TSig, TPar, TSmp>             // sampler engine type
+#define RS_TMPDEC template<class TSig, class TPar, class TSmp>  // template declarations
+#define RS_SMPENG rsSamplerEngine<TSig, TPar, TSmp>             // sampler engine type
 
 template<class TSig, class TPar, class TSmp>
 int rsSamplerEngine<TSig, TPar, TSmp>::addSampleToPool(
@@ -25,6 +25,22 @@ int rsSamplerEngine<TSig, TPar, TSmp>::addSampleToPool(
   return result;
 }
 
+RS_TMPDEC int RS_SMPENG::addGroup()
+{
+  Group g;
+  groups.push_back(g);
+  return ((int) groups.size()) - 1;
+}
+
+RS_TMPDEC int RS_SMPENG::addRegion(int gi)
+{
+  if(gi < 0 || gi >= (int)groups.size()) {
+    rsError("Invalid group index");
+    return ReturnCode::invalidIndex; 
+  }
+  return groups[gi].addRegion();
+}
+
 //-------------------------------------------------------------------------------------------------
 // Inquiry:
 
@@ -39,13 +55,13 @@ bool rsSamplerEngine<TSig, TPar, TSmp>::shouldRegionPlay(
 // Processing:
 
 template<class TSig, class TPar, class TSmp>
-void rsSamplerEngine<TSig, TPar, TSmp>::processFrame(TSig* frame, int numChannels)
+void rsSamplerEngine<TSig, TPar, TSmp>::processFrame(TSig* frame)
 {
 
 }
 
 template<class TSig, class TPar, class TSmp>
-void rsSamplerEngine<TSig, TPar, TSmp>::processBlock(TSig** block, int numFrames, int numChannels)
+void rsSamplerEngine<TSig, TPar, TSmp>::processBlock(TSig** block, int numFrames)
 {
 
 }
@@ -102,6 +118,16 @@ void rsSamplerEngine<TSig, TPar, TSmp>::AudioFileStreamPreloaded::clear()
 
 //-------------------------------------------------------------------------------------------------
 
+RS_TMPDEC int RS_SMPENG::Group::addRegion()
+{
+  RS_SMPENG::Region r;
+  r.group = this;
+  regions.push_back(r);
+  return ((int) regions.size()) - 1;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 template<class TSig, class TPar, class TSmp>
 void rsSamplerEngine<TSig, TPar, TSmp>::SamplePool::clear()
 {
@@ -111,8 +137,8 @@ void rsSamplerEngine<TSig, TPar, TSmp>::SamplePool::clear()
 }
 
 
-//#undef RS_TMPDEC
-//#undef RS_SMPENG
+#undef RS_TMPDEC
+#undef RS_SMPENG
 
 
 
