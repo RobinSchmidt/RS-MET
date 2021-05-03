@@ -595,5 +595,5 @@ template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
 template class rsTrivariatePolynomial<double>;
 template class rsPiecewisePolynomial<double>;
 
-template class rsSamplerEngine<rsFloat64x2, double, float>;
+//template class rsSamplerEngine<rsFloat64x2, double, float>;
 // todo: rsFloat64x2 should be in namespace rosic

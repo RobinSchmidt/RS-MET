@@ -56,11 +56,6 @@ can provide fallback settings for all the groups it contains. If some performanc
 defined anywhere (neither in the instrument, group or region), a neutrally behaving default value 
 will be used.  */
 
-template<class TSig, class TPar, class TSmp> 
-// TSig: type for signals during processing (typically float, double or maybe a SIMD type)
-// TPar: type for continuous numeric parameters (typically float or double)
-// TSmp: type of sample values as they are stored in memory (typically float)
-
 class rsSamplerEngine
 {
 
@@ -120,7 +115,7 @@ public:
 
   private:
 
-    TPar value = TPar(0);
+    float value = 0.f;
     // hmm - it seems, for the controllers, we need 2 values: controller number and value - but it
     // would be wasteful to store two values for all other settings as well...hmmm...maybe 
     // groups/regions need to maintain 2 arrays with settings, 1 for the 1-valued settings and 
@@ -214,7 +209,7 @@ public:
 
   /** Adds a new sample to our pool of samples. After the sample has been added, regions can be 
   defined that make use of it. */
-  int addSampleToPool(TSmp** data, int numFrames, int numChannels, TPar sampleRate, 
+  int addSampleToPool(float** data, int numFrames, int numChannels, float sampleRate, 
     const std::string& uniqueName);
   // Maybe rename to addSample, it should return the index of the sample in the sample-pool
   // maybe make a struct SampleMetaData containing: numFrames, numChannels, sampleRate, rootKey
@@ -266,11 +261,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  void processFrame(TSig* frame);
+  void processFrame(float* frame);
+  // maybe have frameL, frameR inputs
 
-  void processBlock(TSig** block, int numFrames);
+  void processBlock(float** block, int numFrames);
 
-  void handleMusicalEvent(const rsMusicalEvent<TPar>& ev);
+  void handleMusicalEvent(const rsMusicalEvent<float>& ev);
 
   // void processFrameVoice, processBlockVoice
 
@@ -288,7 +284,7 @@ protected:
     virtual ~AudioStream() {}
 
     /** For random access. Writes the sample frame with given index into the given destination. */
-    virtual void getFrame(int sampleIndex, TSmp* destination) = 0;
+    virtual void getFrame(int sampleIndex, float* destination) = 0;
 
     /** Subclasses may want to override this for optimizing the blockwise access. */
     /*
@@ -302,9 +298,9 @@ protected:
 
   protected:
 
-    TPar sampleRate  = TPar(44100);
-    int  numChannels = 0;
-    int  numFrames   = 0;         // maybe use -1 to encode "unknown"? would that be useful?
+    float sampleRate  = 44100.f;
+    int   numChannels = 0;
+    int   numFrames   = 0;         // maybe use -1 to encode "unknown"? would that be useful?
 
   };
 
@@ -327,6 +323,15 @@ protected:
     std::string fileName;  // without filename extension
     std::string extension; // filename extension
     std::string path;      // relative path from instrument definition file (e.g. Piano.sfz)
+
+    // Maybe we should also store the root-directory to which the path is relative, but maybe just
+    // as an integer that selects between various pre-defined root-directories that should exist at
+    // the rsSamplerEngine level. For example: 0: instrument directory, 1: factory sample 
+    // directory, 2: user sample directory, etc. (but not hardcoded - meanings of the indices 
+    // should be flexible). This makes it more reasonably possible to uniquely identify samples. 
+    // It's totally possible to have samples in an instrument with same relative paths and 
+    // filenames but with respect to different root directories. Yes - that would be weird,
+    // but the engine should neverless be able to handle such situations.
   };
 
   // maybe rename to AudioFileStreamRAM, another subclass can be named AudioFileStreamDFD
@@ -339,7 +344,7 @@ protected:
     virtual ~AudioFileStreamPreloaded() { clear(); }
 
 
-    int setData(TSmp** newData, int numFrames, int numChannels, TPar sampleRate, 
+    int setData(float** newData, int numFrames, int numChannels, float sampleRate, 
       const std::string& uniqueName);
     // todo: include fileName etc. later, too
 
@@ -347,7 +352,7 @@ protected:
     void clear();
 
 
-    void getFrame(int sampleIndex, TSmp* destination) override
+    void getFrame(int sampleIndex, float* destination) override
     {
       int n = sampleIndex;
       rsAssert(n >= 0 && n < numFrames, "sampleIndex out of range");
@@ -363,8 +368,8 @@ protected:
 
   protected:
 
-    TSmp*  flatData = nullptr;         // pointer to the sample data
-    TSmp** channelPointers = nullptr;  // pointers to the channels
+    float*  flatData = nullptr;         // pointer to the sample data
+    float** channelPointers = nullptr;  // pointers to the channels
     // If we store the data in interleaved format, the channelPointers will be not needed and 
     // getFrame must be implemented differently. Maybe that's better (more efficient)
 

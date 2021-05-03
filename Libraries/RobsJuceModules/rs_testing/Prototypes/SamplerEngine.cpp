@@ -1,12 +1,8 @@
 //-------------------------------------------------------------------------------------------------
 // Setup:
 
-// Shortcuts to reduce repetitive verbosity:
-#define RS_TMPDEC template<class TSig, class TPar, class TSmp>  // template declarations
-#define RS_SMPENG rsSamplerEngine<TSig, TPar, TSmp>             // sampler engine type
-
-RS_TMPDEC int RS_SMPENG::addSampleToPool(
-  TSmp** data, int numFrames, int numChannels, TPar sampleRate, const std::string& uniqueName)
+int rsSamplerEngine::addSampleToPool(
+  float** data, int numFrames, int numChannels, float sampleRate, const std::string& uniqueName)
 {
   // todo: 
   // -check, if a sample with the same uniqueName already exists - if so, we have nothing to 
@@ -25,14 +21,14 @@ RS_TMPDEC int RS_SMPENG::addSampleToPool(
   return samplePool.addSample(stream);
 }
 
-RS_TMPDEC int RS_SMPENG::addGroup()
+int rsSamplerEngine::addGroup()
 {
   Group g;
   groups.push_back(g);
   return ((int) groups.size()) - 1;
 }
 
-RS_TMPDEC int RS_SMPENG::addRegion(int gi, uchar loKey, uchar hiKey)
+int rsSamplerEngine::addRegion(int gi, uchar loKey, uchar hiKey)
 {
   if(gi < 0 || gi >= (int)groups.size()) {
     rsError("Invalid group index");
@@ -51,17 +47,17 @@ RS_TMPDEC int RS_SMPENG::addRegion(int gi, uchar loKey, uchar hiKey)
 //-------------------------------------------------------------------------------------------------
 // Processing:
 
-RS_TMPDEC void RS_SMPENG::processFrame(TSig* frame)
+void rsSamplerEngine::processFrame(float* frame)
 {
 
 }
 
-RS_TMPDEC void RS_SMPENG::processBlock(TSig** block, int numFrames)
+void rsSamplerEngine::processBlock(float** block, int numFrames)
 {
 
 }
 
-RS_TMPDEC void RS_SMPENG::handleMusicalEvent(const rsMusicalEvent<TPar>& ev)
+void rsSamplerEngine::handleMusicalEvent(const rsMusicalEvent<float>& ev)
 {
 
 }
@@ -69,13 +65,13 @@ RS_TMPDEC void RS_SMPENG::handleMusicalEvent(const rsMusicalEvent<TPar>& ev)
 //-------------------------------------------------------------------------------------------------
 // Internal:
 
-RS_TMPDEC bool RS_SMPENG::shouldRegionPlay(
+bool rsSamplerEngine::shouldRegionPlay(
   const Region* r, const char key, const char vel)
 {
   return false; // preliminary
 }
 
-RS_TMPDEC void RS_SMPENG::addRegionForKey(uchar k, const Region* region)
+void rsSamplerEngine::addRegionForKey(uchar k, const Region* region)
 {
   regionsForKey[k].addRegion(region);
 }
@@ -83,14 +79,14 @@ RS_TMPDEC void RS_SMPENG::addRegionForKey(uchar k, const Region* region)
 //=================================================================================================
 // Function definitions for the helper classes:
 
-RS_TMPDEC int RS_SMPENG::AudioFileStreamPreloaded::setData(
-  TSmp** newData, int numFrames, int numChannels, TPar sampleRate,
+int rsSamplerEngine::AudioFileStreamPreloaded::setData(
+  float** newData, int numFrames, int numChannels, float sampleRate,
   const std::string& uniqueName)
 {
   // Deallocate old and allocate new memory:
   clear();
-  flatData = new TSmp[numChannels*numFrames];
-  channelPointers = new TSmp*[numChannels];
+  flatData = new float[numChannels*numFrames];
+  channelPointers = new float*[numChannels];
   if(flatData == nullptr || channelPointers == nullptr) {
     clear(); return ReturnCode::memAllocFail; }
 
@@ -110,7 +106,7 @@ RS_TMPDEC int RS_SMPENG::AudioFileStreamPreloaded::setData(
   return ReturnCode::success;
 }
 
-RS_TMPDEC void RS_SMPENG::AudioFileStreamPreloaded::clear()
+void rsSamplerEngine::AudioFileStreamPreloaded::clear()
 {
   numChannels = 0;
   numFrames   = 0; 
@@ -124,9 +120,9 @@ RS_TMPDEC void RS_SMPENG::AudioFileStreamPreloaded::clear()
 
 //-------------------------------------------------------------------------------------------------
 
-RS_TMPDEC int RS_SMPENG::Group::addRegion()
+int rsSamplerEngine::Group::addRegion()
 {
-  RS_SMPENG::Region r;
+  rsSamplerEngine::Region r;
   r.group = this;
   regions.push_back(r);
   return ((int) regions.size()) - 1;
@@ -134,19 +130,14 @@ RS_TMPDEC int RS_SMPENG::Group::addRegion()
 
 //-------------------------------------------------------------------------------------------------
 
-RS_TMPDEC void RS_SMPENG::SamplePool::clear()
+void rsSamplerEngine::SamplePool::clear()
 {
   for(size_t i = 0; i < samples.size(); i++)
     delete samples[i];
   samples.clear();
 }
 
-#undef RS_TMPDEC
-#undef RS_SMPENG
-
-
-
-
+//=================================================================================================
 
 /*
 

@@ -3,11 +3,8 @@ bool samplerEngineUnitTest()
 {
   bool ok = true;
 
-  using TSig = rsFloat64x2;           // sampler output signal values
-  using TPar = double;                // parameter values
-  using TSmp = float;                 // sample values, as stored in RAM
-  using VecS = std::vector<TSmp>;     // vector of sample values in RAM
-  using SE   = rsSamplerEngine<TSig, TPar, TSmp>;
+  using VecF = std::vector<float>;     // vector of sample values in RAM
+  using SE   = rsSamplerEngine;
   using RC   = SE::ReturnCode;
   SE se;                              // create the sampler engine object
 
@@ -16,15 +13,15 @@ bool samplerEngineUnitTest()
   double f  = 440.0;  // frequency of sinewave sample
   double a  = 0.5;    // amplitude of sinewave sample
   int    N  = 500;    // length of sinewave sample
-  VecS sample(N);
+  VecF sample(N);
   double w = 2*PI*f/fs;
   for(int n = 0; n < N; n++)
-    sample[n] = (TSmp) sin(w*n);
+    sample[n] = (float) sin(w*n);
   //rsPlotVector(sample);
 
   // Create an array of pointers to the channels and add the sample to the sample pool in the 
   // sampler engine:
-  TSmp* pSmp[2];
+  float* pSmp[2];
   pSmp[0] = &sample[0];
   pSmp[1] = nullptr;
   int si = se.addSampleToPool(pSmp, N, 1, fs, "Sine440Hz");
@@ -42,7 +39,6 @@ bool samplerEngineUnitTest()
   // save a lot of memory operations.
 
   const SE::Region* region = se.getRegion(gi, ri);
-
 
 
   //int rc = se.setRegionSample(gi, ri, si); 
