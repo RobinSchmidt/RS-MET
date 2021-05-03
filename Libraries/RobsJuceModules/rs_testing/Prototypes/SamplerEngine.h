@@ -54,9 +54,7 @@ present, override the group settings (i think - verify!). At the highest level i
 "instrument" itself. Just like groups provide fallback settings for region, the whole instrument 
 can provide fallback settings for all the groups it contains. If some performance parameter isn't 
 defined anywhere (neither in the instrument, group or region), a neutrally behaving default value 
-will be used.
-
-*/
+will be used.  */
 
 template<class TSig, class TPar, class TSmp> 
 // TSig: type for signals during processing (typically float, double or maybe a SIMD type)
@@ -69,9 +67,11 @@ class rsSamplerEngine
 public:
 
   //-----------------------------------------------------------------------------------------------
-  // \name Publically Visible Helper Classes (may be factored out at some point)
+  // \name Helper Classes
 
   using uchar = unsigned char;
+  class Region;
+  class AudioFileStream;
 
   /*
   class SampleMetaData
@@ -98,8 +98,100 @@ public:
   };
   */
 
+  /** A class to represent various additional (and optional) playback settings of a region, group 
+  or instrument. Such additional settings include additional constraints for the circumstances 
+  under which a particular sample should be played. Key- and velocity ranges are the obvious 
+  primary constraints (and they therefore are directly baked into the Region class below), but sfz
+  defines many more. But the settings doesn't need to be playback constraints - that's only one 
+  type of setting. Other types are things like envelope settings, filter frequencies, etc. */
+  class PlaybackSetting
+  {
+
+    enum class Type
+    {
+      ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
+
+      AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
+
+      FilterCutoff, FilterResonance, FilterType
+
+      //...tbc...
+    };
+
+  private:
+
+    TPar value = TPar(0);
+    // hmm - it seems, for the controllers, we need 2 values: controller number and value - but it
+    // would be wasteful to store two values for all other settings as well...hmmm...maybe 
+    // groups/regions need to maintain 2 arrays with settings, 1 for the 1-valued settings and 
+    // another for the 2-valued settings - maybe have classes PlaybackSetting, PlaybackSetting2Val
+
+  };
+
+  /** A group organizes a bunch of regions into a single entity for which performance settings can 
+  be set up which will be applicable in cases where the region does not itself define these 
+  settings, so they act as fallback values. */
+  class Group
+  {
+
+  public:
+
+    int addRegion();
+
+    // todo: removeRegion, etc.
+
+    const Region* getRegion(int i)
+    {
+      if(i < 0 || i >= (int)regions.size()) {
+        rsError("Invalid region index");
+        return nullptr; 
+      }
+      return &regions[i];
+    }
+    // for some reason, i get compiler errors when trying to put this into the cpp file 
+    // -> figure out
+
+  private:
+
+    std::vector<Region> regions;
+    /**< Pointers to the regions belonging to this group. */
+
+    std::vector<PlaybackSetting> settings;
+    /**< Settings that apply to all regions within this group, unless a region overrides them with
+    its own value for a particular setting. */
+
+    // may be add these later:
+    //std::string name;  
+  };
+
+  /** A region contains a sample along with performance settings including information for which 
+  keys and velocities the sample should be played and optionally other constraints for when the the
+  sample should be played and also settings for pitch, volume, pan, filter, envelopes, etc. */
+  class Region
+  {
+
+  private:
+
+    AudioFileStream* sample = nullptr;  
+    Group* group = nullptr;             // pointer to the group to which this region belongs
+
+    char loKey = 0, hiKey = 127;
+    char loVel = 0, hiVel = 127;
+    // todo: maybe package loKey/hiKey, loVel/hiVel into a single char to save memory
 
 
+    std::vector<PlaybackSetting> settings;
+    // for more restrictions (optional) restrictions - sfz can restrict the playback of samples
+    // also based on other state variables such as the last received controller of some number,
+    // last received pitchwheel, etc. ...but maybe a subclass RestrictedRegion should be used
+    // for that - i don't think, it will be used a lot and will just eat up memory when it's
+    // present in the baseclass...or maybe it should have a more general array of RegionFeatures
+    // which may also include loop-settings and the like
+
+    //std::string name;
+
+    friend class Group;
+  };
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
@@ -150,8 +242,22 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-
-  const Region* getRegion(int groupIndex, int regionIndex);
+  /** Returns a pointer to the (const) region object with the given group- and region index or a 
+  nullptr if the combination of indices is invalid. */
+  const Region* getRegion(int groupIndex, int regionIndex)
+  {
+    int gi = groupIndex, ri = regionIndex;
+    if(gi < 0 || gi >= (int)groups.size()) {
+      rsError("Invalid group index");
+      return nullptr; 
+    }
+    return groups[gi].getRegion(ri);
+  }
+  // Maybe it should be non-const - but no: the caller should not be able to change the loKey/hiKey
+  // settings because that would require a change to the regionsForKey array...but maybe we should 
+  // get rid of that anyway - it might be a pointless attempt to optimization -> benchmark!
+  // for some reason, i get compiler errors when trying to put this into the cpp file 
+  // -> figure out
 
   // getGroup, getRegion, getStateAsSFZ, isSampleInPool, getNumGroups, getNumRegionsInGroup(int)
   // getNumRegions()
@@ -172,7 +278,7 @@ public:
 protected:
 
   //-----------------------------------------------------------------------------------------------
-  // \name Internal Helper Classes (may be factored out at some point)
+  // \name Internal Helper Classes
 
   class AudioStream
   {
@@ -298,111 +404,29 @@ protected:
   };
 
 
-  /** A class to represent various additional (and optional) playback settings of a region, group 
-  or instrument. Such additional settings include additional constraints for the circumstances 
-  under which a particular sample should be played. Key- and velocity ranges are the obvious 
-  primary constraints (and they therefore are directly baked into the Region class below), but sfz
-  defines many more. But the settings doesn't need to be playback constraints - that's only one 
-  type of setting. Other types are things like envelope settings, filter frequencies, etc. */
-  class PlaybackSetting
-  {
 
-    enum class Type
-    {
-      ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
-
-      AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
-
-      FilterCutoff, FilterResonance, FilterType
-
-      //...tbc...
-    };
-
-  private:
-
-    TPar value = TPar(0);
-    // hmm - it seems, for the controllers, we need 2 values: controller number and value - but it
-    // would be wasteful to store two values for all other settings as well...hmmm...maybe 
-    // groups/regions need to maintain 2 arrays with settings, 1 for the 1-valued settings and 
-    // another for the 2-valued settings - maybe have classes PlaybackSetting, PlaybackSetting2Val
-
-  };
-
-
-
-
-
-  class Region;
-
-  /** A group organizes a bunch of regions into a single entity for which performance settings can 
-  be set up which will be applicable in cases where the region does not itself define these 
-  settings, so they act as fallback values. */
-  class Group
-  {
-
-  public:
-
-    int addRegion();
-
-    // todo: addRegion, removeRegion, etc.
-
-  private:
-
-    std::vector<Region> regions; 
-    /**< Pointers to the regions belonging to this group. */
-
-    std::vector<PlaybackSetting> settings;
-    /**< Settings that apply to all regions within this group, unless a region overrides them with
-    its own value for a particular setting. */
-
-
-    // may be add these later:
-    //std::string name;  
-  };
-
-
-  /** A region contains a sample along with performance settings including information for which 
-  keys and velocities the sample should be played and optionally other constraints for when the the
-  sample should be played and also settings for pitch, volume, pan, filter, envelopes, etc. */
-  class Region
-  {
-
-  private:
-
-    AudioFileStream* sample = nullptr;  
-    Group* group = nullptr;             // pointer to the group to which this region belongs
-
-    char loKey = 0, hiKey = 127;
-    char loVel = 0, hiVel = 127;
-    // todo: maybe package loKey/hiKey, loVel/hiVel into a single char to save memory
-
-
-    std::vector<PlaybackSetting> settings;
-      // for more restrictions (optional) restrictions - sfz can restrict the playback of samples
-      // also based on other state variables such as the last received controller of some number,
-      // last received pitchwheel, etc. ...but maybe a subclass RestrictedRegion should be used
-      // for that - i don't think, it will be used a lot and will just eat up memory when it's
-      // present in the baseclass...or maybe it should have a more general array of RegionFeatures
-      // which may also include loop-settings and the like
-
-    //std::string name;
-
-    friend class Group;
-  };
 
   /** Defines a set of regions. Used to handle note-on/off events efficiently. Not to be confused 
   with groups. This class exists for purely technical reasons (i.e. implementation details) and 
   does not map to any user concept. */
   class RegionSet
   {
-    // todo: addRegion, removeRegion
 
-    std::vector<Region*> regions; // pointers to the regions belonging to this set
+  public:
+
+    void addRegion(const Region* r) { regions.push_back(r); }
+    // todo: removeRegion, containsRegion
+
+  private:
+
+    std::vector<const Region*> regions; // pointers to the regions belonging to this set
   };
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Internal functions
+
+  void addRegionForKey(uchar k, const Region* region);
 
 
   /** Returns true, iff the given region should play when the given key is pressed with given 
@@ -416,9 +440,18 @@ protected:
   // \name Data
  
   RegionSet regionsForKey[128];
-  /**< For each key, we store a set of regions that may need to be played, when the key is pressed.
-  If they actually need to be played indeed is determined by other constraints as well, such as 
-  velocity, last received controller and/or pitch-wheel values, etc. */
+  /**< For each key, we store a set of regions that *may* need to be played, when the key is 
+  pressed. Whether or not a region is a candidate for playback for a given key is determined by the
+  loKey, hiKey settings of that region. If the playback candidate region then *really* needs to be 
+  played in a particular situation is determined by other constraints as well, such as velocity 
+  range, last received controller and/or pitch-wheel values, etc. The key is the first and primary 
+  filter for which regions need to be played when a noteOn is received and the purpose of this 
+  array is to optimize this primary filter to avoid having to loop through all regions in the 
+  instrument on each received noteOn. Secondary, tertiary, etc. filters may follow and are 
+  implemented by indeed looping through all candidate regions for a given key. It is assumed that 
+  the number of candidate regions for each key is typically much smaller than the total number of 
+  regions in the instrument - like a few instead of a few hundred. */
+  // maybe use a std::vector
 
   SamplePool samplePool;
   /**< The pool of samples that are in use for the currently loaded instrument. The samples are 
@@ -434,7 +467,7 @@ protected:
   int numChannels = 2;
   /**< The number of output channels. By default, we have two channels, i.e. a stereo output. */
   // maybe that should be determined by TSig? multi-channel output should be realized by using
-  // a multichannel (simd) type
+  // a multichannel (simd) type ...maybe get rid and support only stereo output
 
 
   //float midiCC[128];     // most recently received controller values in 0...127

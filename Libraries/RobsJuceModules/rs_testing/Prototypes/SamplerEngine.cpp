@@ -20,8 +20,9 @@ RS_TMPDEC int RS_SMPENG::addSampleToPool(
 
   AudioFileStreamPreloaded* stream = new AudioFileStreamPreloaded;
   int result = stream->setData(data, numFrames, numChannels, sampleRate, uniqueName);
-  samplePool.addSample(stream);
-  return result;
+  if(result == ReturnCode::memAllocFail)
+    return result;
+  return samplePool.addSample(stream);
 }
 
 RS_TMPDEC int RS_SMPENG::addGroup()
@@ -37,23 +38,14 @@ RS_TMPDEC int RS_SMPENG::addRegion(int gi, uchar loKey, uchar hiKey)
     rsError("Invalid group index");
     return ReturnCode::invalidIndex; 
   }
-  int ri = groups[gi].addRegion();      // regiin index within its group
+  int ri = groups[gi].addRegion();      // region index within its group
 
-  // todo: add the region to the regionsForKey in between loKey and hiKey
-
-  //for(int i = loKey; i <= hiKey; i++)
-  //  addRegionForKey(gi, ri);
+  // Add the region to the regionsForKey in between loKey and hiKey
+  const Region* region = getRegion(gi, ri);
+  for(uchar k = loKey; k <= hiKey; k++)
+    addRegionForKey(k, region);
 
   return ri;
-}
-
-//-------------------------------------------------------------------------------------------------
-// Inquiry:
-
-RS_TMPDEC bool RS_SMPENG::shouldRegionPlay(
-  const Region* r, const char key, const char vel)
-{
-  return false; // preliminary
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -72,6 +64,20 @@ RS_TMPDEC void RS_SMPENG::processBlock(TSig** block, int numFrames)
 RS_TMPDEC void RS_SMPENG::handleMusicalEvent(const rsMusicalEvent<TPar>& ev)
 {
 
+}
+
+//-------------------------------------------------------------------------------------------------
+// Internal:
+
+RS_TMPDEC bool RS_SMPENG::shouldRegionPlay(
+  const Region* r, const char key, const char vel)
+{
+  return false; // preliminary
+}
+
+RS_TMPDEC void RS_SMPENG::addRegionForKey(uchar k, const Region* region)
+{
+  regionsForKey[k].addRegion(region);
 }
 
 //=================================================================================================
@@ -187,6 +193,9 @@ could handle more general situations in a sensible way. For stereo-to-mono, it c
 that a mix of both channels would be more sensible - but that rule doesn't seem to generalize 
 well. But maybe we should have an (optional) exceptional rule for mono outputs to use a mixdown of
 all channels.
+
+-maybe it shouldn't be a template: samples and parameters should be stored as float, signal 
+ processing should be done with rsFloat64x2
 
 may use SampleBuffer, SamplePlaybackParameters
 

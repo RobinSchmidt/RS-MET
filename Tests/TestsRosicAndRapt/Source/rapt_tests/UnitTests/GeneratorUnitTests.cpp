@@ -27,8 +27,8 @@ bool samplerEngineUnitTest()
   TSmp* pSmp[2];
   pSmp[0] = &sample[0];
   pSmp[1] = nullptr;
-  se.addSampleToPool(pSmp, N, 1, fs, "Sine440Hz");
-  // should return the sample-index in the sample-pool si
+  int si = se.addSampleToPool(pSmp, N, 1, fs, "Sine440Hz");
+  ok &= si == 0; // should return the sample-index in the sample-pool
 
   // Add a region for the sinewave sample to the sampler engine:
   int gi = se.addGroup();     // add new group to instrument definition, gi: group index
@@ -40,6 +40,10 @@ bool samplerEngineUnitTest()
   // just to be removed again shortly thereafter which is wasteful. Of course, it should be 
   // possible to set it up later, but if it can start with the right setting from the beginning, we
   // save a lot of memory operations.
+
+  const SE::Region* region = se.getRegion(gi, ri);
+
+
 
   //int rc = se.setRegionSample(gi, ri, si); 
   //ok &= rc == RC::success;
