@@ -5,11 +5,11 @@
 
 /** A class for representing musical events such as note-on/off etc. Think of it as a class to 
 represent MIDI events but with some of its anachronistic restrictions lifted, such as the abysmal 
-resolution of values. The template parameter T is supposed to be either float or double. For easy 
-conversion and compatibility with MIDI, we still follow the (now historical) convention that 
-values are in the range 0..127, but now with much higher resolution due to the floating point 
-representation. So, in a nutshell, this is a class for MIDI events but with higher resolution for 
-all the values. */
+resolution of values (typically 7 or 14 bit). The template parameter T is supposed to be either 
+float or double. For easy conversion and compatibility with MIDI, we still follow the (now 
+historical) convention that values are in the range 0..127, but now with much higher resolution 
+due to the floating point representation. So, in a nutshell, this is a class for MIDI events but 
+with higher resolution for all the values. */
 
 template<class T>
 class rsMusicalEvent
@@ -68,14 +68,57 @@ class rsSamplerEngine
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Publically Visible Helper Classes (may be factored out at some point)
+
+  class SampleMetaData
+  {
+
+  public:
+
+    
+  private:
+
+    std::string uniqueName;  // Unique within the context of the instrument definition.
+    std::string fileName;    // Without extension for the format.
+    std::string extension;   // e.g. wav, flac, etc.
+    std::string filePath;    // Relative path with respect to instrument definition file or some
+                             // global sample content directory.
+
+    int  numFrames   = 0;
+    int  numChannels = 0;
+    TPar sampleRate  = TPar(-1);  // in Hz, -1 is code for unknown
+    TPar rootKey     = TPar(-1);  // as MIDI key in 0..127, not necessarily integer
+
+    // Maybe add: peakAmplitude, rmsAmplitude, etc., maybe Category (harmonic, inharmonic, noisy, 
+    // transient, speech, music, ...)
+  };
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
+
+  /** Return codes for the setup functions. */
+  enum ReturnCode
+  {
+    success,       //< Operation completed successfully. 
+    nothingToDo,   //< There was nothing to actually do. State was already as desired.
+    memAllocFail   //< Memory allocation failure.
+  };
+  // todo: make it an enum class, maybe include also return codes for inquiry functions such as for
+  // "unknown", etc. ...but maybe that's no good idea when we want to use it for functions which
+  // need to return valid integers (like, for numChannels, etc. - we could use negative numbers to
+  // encode such things)
+  // maybe rename "success" to "completed" because "success" has actually a more general meaning:
+  // "nothingToDo" is also a kind of "success" (or maybe "workDone" or "workCompleted"
 
   int addSampleToPool(TSmp** data, int numFrames, int numChannels, TPar sampleRate, 
     const std::string& uniqueName);
   // Maybe should return an error/return code: 
   // 0: was added successfully, 1: was already there, 2: memory allocation failed, etc. ...
+  // maybe make a struct SampleMetaData containing: numFrames, numChannels, sampleRate, rootKey
+  // todo: take reference to a metaData object
+
 
   // todo: addGroup, addRegion(int group, ..), removeRegion/Group, clearGroup, clearRegion, 
   // clearInstrument, addSampleToPool, removeSampleFromPool, replaceSampleInPool, setupFromSFZ,
@@ -104,12 +147,14 @@ public:
 protected:
 
   //-----------------------------------------------------------------------------------------------
-  // \name Helper Classes (may be factored out at some point)
+  // \name Internal Helper Classes (may be factored out at some point)
 
   class AudioStream
   {
 
   public:
+
+    virtual ~AudioStream() {}
 
     /** For random access. Writes the sample frame with given index into the given destination. */
     virtual void getFrame(int sampleIndex, TSmp* destination) = 0;
@@ -126,9 +171,9 @@ protected:
 
   protected:
 
-    int sampleRate  = 44100;
-    int numChannels = 1;
-    int numFrames   = 0;         // maybe use -1 to encode "unknown"? would that be useful?
+    TPar sampleRate  = TPar(44100);
+    int  numChannels = 0;
+    int  numFrames   = 0;         // maybe use -1 to encode "unknown"? would that be useful?
 
   };
 
@@ -158,9 +203,16 @@ protected:
 
   public:
 
+
+    virtual ~AudioFileStreamPreloaded() { clear(); }
+
+
     int setData(TSmp** newData, int numFrames, int numChannels, TPar sampleRate, 
       const std::string& uniqueName);
     // todo: include fileName etc. later, too
+
+
+    void clear();
 
 
     void getFrame(int sampleIndex, TSmp* destination) override
@@ -192,6 +244,10 @@ protected:
 
   public:
 
+
+    ~SamplePool() { clear();  }
+
+
     void addSample(const AudioFileStream* newSample)
     {
       // rsAssert(!contains(newSample))
@@ -200,8 +256,11 @@ protected:
     // should the pool take ownership? ...i think so
 
 
+    void clear();
+
+
     // todo:
-    // setup:   removeSample, clearAllSamples
+    // setup:   removeSample
     // inquiry: hasSample
 
 
@@ -336,6 +395,9 @@ protected:
   int numChannels = 2;
   /**< The number of output channels. By default, we have two channels, i.e. a stereo output. */
 
+
+  //float midiCC[128];     // most recently received controller values in 0...127
+  //float midiPitchWheel;  // most recently received pitch-wheel value in -8192...+8291
 
 };
 

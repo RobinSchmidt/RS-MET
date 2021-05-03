@@ -14,11 +14,12 @@ bool samplerEngineUnitTest()
   double fs = 44100;  // sample rate
   double f  = 440.0;  // frequency of sinewave sample
   double a  = 0.5;    // amplitude of sinewave sample
-  int    N  = 5000;   // length of sinewave sample
+  int    N  = 500;    // length of sinewave sample
   VecS sample(N);
   double w = 2*PI*f/fs;
   for(int n = 0; n < N; n++)
     sample[n] = (float) sin(w*n);
+  rsPlotVector(sample);
 
   // Create an array of pointers to the channels and add the sample to the sample pool in the 
   // sampler engine:
@@ -36,6 +37,8 @@ bool samplerEngineUnitTest()
   //  regions, trigger notes, record output and compare the produced output to what is expected
   // -set up performance tests, too
   // -fix the memory leak!
+
+
 
 
   return ok;

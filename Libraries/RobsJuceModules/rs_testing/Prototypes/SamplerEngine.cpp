@@ -1,19 +1,23 @@
 //-------------------------------------------------------------------------------------------------
 // Setup:
 
+// Shortcuts to reduce verbosity:
+//#define RS_TMPDEC template<class TSig, class TPar, class TSmp>  // template declarations
+//#define RS_SMPENG rsSamplerEngine<TSig, TPar, TSmp>             // sampler engine type
+
 template<class TSig, class TPar, class TSmp>
 int rsSamplerEngine<TSig, TPar, TSmp>::addSampleToPool(
   TSmp** data, int numFrames, int numChannels, TPar sampleRate, const std::string& uniqueName)
 {
   // todo: 
-  // -create and AudioFileStreamPreloaded object
-  // -allocate memory for the storage
-  // -copy the data
+  // -check, if a sample with the same uniqueName already exists - if so, we have nothing to 
+  //  do and may return early with an appropriate code
+  // if(isSampleInPool(..)) return ReturnCode::nothingToDo;
+
   // -maybe the Streamer object should always have two channel pointers, but in case of 
   //  mono-samples, both just point to the same buffer. that may make it easier to handle things
   //  uniformly
-  // todo: check, if a sample with the same uniqueName already exists - if so, we have nothing to 
-  // do and may return early with an appropriate code
+
 
   AudioFileStreamPreloaded* stream = new AudioFileStreamPreloaded;
   int result = stream->setData(data, numFrames, numChannels, sampleRate, uniqueName);
@@ -55,17 +59,63 @@ void rsSamplerEngine<TSig, TPar, TSmp>::handleMusicalEvent(const rsMusicalEvent<
 //=================================================================================================
 // Function definitions for the helper classes:
 
-
 template<class TSig, class TPar, class TSmp>
-
 int rsSamplerEngine<TSig, TPar, TSmp>::AudioFileStreamPreloaded::setData(
   TSmp** newData, int numFrames, int numChannels, TPar sampleRate,
   const std::string& uniqueName)
 {
+  // Deallocate old and allocate new memory:
+  clear();
+  flatData = new TSmp[numChannels*numFrames];
+  channelPointers = new TSmp*[numChannels];
+  if(flatData == nullptr || channelPointers == nullptr) {
+    clear(); return ReturnCode::memAllocFail; }
 
+  // Copy the new data into the freshly allocated memory:
+  for(int c = 0; c < numChannels; c++) {
+    channelPointers[c] = &flatData[c*numFrames];
+    for(int n = 0; n < numFrames; n++)
+      channelPointers[c][n] = newData[c][n]; }
+  // Maybe we should have a version of this function which does not need to copy data but instead
+  // just takes over ownership of the passed array. But this would need a parameter for the flat 
+  // data array, too. We'll see, how this meshes with the wavefile loading functions...
 
-  return 0; // preliminary
+  // Update metadata members and report success:
+  this->numChannels = numChannels;
+  this->numFrames   = numFrames;
+  this->sampleRate  = sampleRate;
+  return ReturnCode::success;
 }
+
+template<class TSig, class TPar, class TSmp>
+void rsSamplerEngine<TSig, TPar, TSmp>::AudioFileStreamPreloaded::clear()
+{
+  numChannels = 0;
+  numFrames   = 0; 
+
+  delete[] channelPointers;
+  channelPointers = nullptr; 
+
+  delete[] flatData;
+  flatData = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+template<class TSig, class TPar, class TSmp>
+void rsSamplerEngine<TSig, TPar, TSmp>::SamplePool::clear()
+{
+  for(size_t i = 0; i < samples.size(); i++)
+    delete samples[i];
+  samples.clear();
+}
+
+
+//#undef RS_TMPDEC
+//#undef RS_SMPENG
+
+
+
 
 
 /*
@@ -116,8 +166,21 @@ may use SampleBuffer, SamplePlaybackParameters
 Ideas:
 -Could it make sense to define a level above the instrument - maybe an ensemble? Different 
  instruments in an ensemble could respond to different midi-channels. This would resemble the
- "multi-timbral" feature commonly seen in hardware romplers.
+ "multi-timbral" feature commonly seen in hardware romplers. But maybe that should be done in a
+ class that contains a bunch (16) objects of type rsSamplerEngine. Maybe it should be called
+ rsSamplerEnsemble or something. Maybe the samplePool object should than be shared among the
+ embedded engines. Maybe it should be shared anyway to allow embedding the sampler as plugin in 
+ a DAW and share the imported sample-content with it.
 -Maybe at some point, we may want to provide more advanced envelope-generators such as the ones
  seen in Straightliner.
+-The playback restriction based on last received controller values can be used to do a 
+ waldorf-style wavetable synthesis: Create "WaveTable128" samples that contain 128 single cycles, 
+ assign them to 128 regions and each such region is played only when the last received controller
+ matches, like cycle 50 is played when the controller c that controls the cycle-number is in 
+ 49.5 <= c < 50.5. Maybe we can also use smaller wavetables (like 32) that use crossfading based
+ on the controller...actually we should probably always crossfade between 2 cycles. At 49.5, we 
+ would actually hear a 50/50 mix between cycle 49 and cycle 50
+-To enable that feature, we should probably store the most recently received values of all 
+ controllers
 
 */

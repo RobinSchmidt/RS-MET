@@ -25,7 +25,8 @@ bool runUnitTestsRapt()
   // because some of the test take longer to perfom. So this line is volatile:
   //ok &= runUnitTest(&colorUnitTest,  "rsColor");
   //ok &= runUnitTest(&ladderUnitTest, "rsLadder");
-  ok &= runUnitTest(&samplerEngineUnitTest, "rsSamplerEngine"); // ...todo...
+  ok &= runUnitTest(&samplerEngineUnitTest, "rsSamplerEngine");
+  return ok;
 
   // Data:
   ok &= runUnitTest(&arrayUnitTest,            "rsArrayTools and std::vector stuff");
