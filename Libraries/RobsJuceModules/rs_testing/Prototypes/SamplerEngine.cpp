@@ -1,12 +1,11 @@
 //-------------------------------------------------------------------------------------------------
 // Setup:
 
-// Shortcuts to reduce verbosity:
+// Shortcuts to reduce repetitive verbosity:
 #define RS_TMPDEC template<class TSig, class TPar, class TSmp>  // template declarations
 #define RS_SMPENG rsSamplerEngine<TSig, TPar, TSmp>             // sampler engine type
 
-template<class TSig, class TPar, class TSmp>
-int rsSamplerEngine<TSig, TPar, TSmp>::addSampleToPool(
+RS_TMPDEC int RS_SMPENG::addSampleToPool(
   TSmp** data, int numFrames, int numChannels, TPar sampleRate, const std::string& uniqueName)
 {
   // todo: 
@@ -32,20 +31,26 @@ RS_TMPDEC int RS_SMPENG::addGroup()
   return ((int) groups.size()) - 1;
 }
 
-RS_TMPDEC int RS_SMPENG::addRegion(int gi)
+RS_TMPDEC int RS_SMPENG::addRegion(int gi, uchar loKey, uchar hiKey)
 {
   if(gi < 0 || gi >= (int)groups.size()) {
     rsError("Invalid group index");
     return ReturnCode::invalidIndex; 
   }
-  return groups[gi].addRegion();
+  int ri = groups[gi].addRegion();      // regiin index within its group
+
+  // todo: add the region to the regionsForKey in between loKey and hiKey
+
+  //for(int i = loKey; i <= hiKey; i++)
+  //  addRegionForKey(gi, ri);
+
+  return ri;
 }
 
 //-------------------------------------------------------------------------------------------------
 // Inquiry:
 
-template<class TSig, class TPar, class TSmp>
-bool rsSamplerEngine<TSig, TPar, TSmp>::shouldRegionPlay(
+RS_TMPDEC bool RS_SMPENG::shouldRegionPlay(
   const Region* r, const char key, const char vel)
 {
   return false; // preliminary
@@ -54,20 +59,17 @@ bool rsSamplerEngine<TSig, TPar, TSmp>::shouldRegionPlay(
 //-------------------------------------------------------------------------------------------------
 // Processing:
 
-template<class TSig, class TPar, class TSmp>
-void rsSamplerEngine<TSig, TPar, TSmp>::processFrame(TSig* frame)
+RS_TMPDEC void RS_SMPENG::processFrame(TSig* frame)
 {
 
 }
 
-template<class TSig, class TPar, class TSmp>
-void rsSamplerEngine<TSig, TPar, TSmp>::processBlock(TSig** block, int numFrames)
+RS_TMPDEC void RS_SMPENG::processBlock(TSig** block, int numFrames)
 {
 
 }
 
-template<class TSig, class TPar, class TSmp>
-void rsSamplerEngine<TSig, TPar, TSmp>::handleMusicalEvent(const rsMusicalEvent<TPar>& ev)
+RS_TMPDEC void RS_SMPENG::handleMusicalEvent(const rsMusicalEvent<TPar>& ev)
 {
 
 }
@@ -75,8 +77,7 @@ void rsSamplerEngine<TSig, TPar, TSmp>::handleMusicalEvent(const rsMusicalEvent<
 //=================================================================================================
 // Function definitions for the helper classes:
 
-template<class TSig, class TPar, class TSmp>
-int rsSamplerEngine<TSig, TPar, TSmp>::AudioFileStreamPreloaded::setData(
+RS_TMPDEC int RS_SMPENG::AudioFileStreamPreloaded::setData(
   TSmp** newData, int numFrames, int numChannels, TPar sampleRate,
   const std::string& uniqueName)
 {
@@ -103,8 +104,7 @@ int rsSamplerEngine<TSig, TPar, TSmp>::AudioFileStreamPreloaded::setData(
   return ReturnCode::success;
 }
 
-template<class TSig, class TPar, class TSmp>
-void rsSamplerEngine<TSig, TPar, TSmp>::AudioFileStreamPreloaded::clear()
+RS_TMPDEC void RS_SMPENG::AudioFileStreamPreloaded::clear()
 {
   numChannels = 0;
   numFrames   = 0; 
@@ -128,14 +128,12 @@ RS_TMPDEC int RS_SMPENG::Group::addRegion()
 
 //-------------------------------------------------------------------------------------------------
 
-template<class TSig, class TPar, class TSmp>
-void rsSamplerEngine<TSig, TPar, TSmp>::SamplePool::clear()
+RS_TMPDEC void RS_SMPENG::SamplePool::clear()
 {
   for(size_t i = 0; i < samples.size(); i++)
     delete samples[i];
   samples.clear();
 }
-
 
 #undef RS_TMPDEC
 #undef RS_SMPENG
@@ -151,7 +149,10 @@ Goals:
  that are specifically necessary for the drum sampler. The general architecture should be such 
  that it will possible (and hopefully easy) to implement the full feature set of sfz (and sfz2?) 
  later.
--It should be able to parse sfz files and set itself up accordingly.
+-It should be able to parse sfz files and set itself up accordingly. But maybe that should go into
+ a separate class. It should also be able to export its settings to sfz. Maybe make a class
+ rsSamplerEngineSFZ. Should also warn when features from an imported sfz file are not supported and
+ when the setup is not representable by an sfz file when exporting to sfz.
 -It should support different ways of streaming the audio - at least: 
    (1) all samples are preloaded into RAM
    (2) direct-from-disk streaming (DFD)

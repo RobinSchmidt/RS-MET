@@ -71,6 +71,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Publically Visible Helper Classes (may be factored out at some point)
 
+  using uchar = unsigned char;
+
   /*
   class SampleMetaData
   {
@@ -97,6 +99,8 @@ public:
   */
 
 
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
@@ -120,7 +124,7 @@ public:
   defined that make use of it. */
   int addSampleToPool(TSmp** data, int numFrames, int numChannels, TPar sampleRate, 
     const std::string& uniqueName);
-  // Maybe rename to addSample
+  // Maybe rename to addSample, it should return the index of the sample in the sample-pool
   // maybe make a struct SampleMetaData containing: numFrames, numChannels, sampleRate, rootKey
   // todo: take reference to a metaData object
 
@@ -128,8 +132,10 @@ public:
   int addGroup();
 
   /** Adds a new region to the group with the given index and returns the index of the region 
-  within the group or ReturnCode::invalidIndex, if the passed groupIndex was invalid. */
-  int addRegion(int groupIndex);
+  within the group or ReturnCode::invalidIndex, if the passed groupIndex was invalid. If the key 
+  range is already known, it makes sense to pass it using the optional loKey/hiKey parameters. This
+  can also be set up later, but some memory operations can be saved, if it's known in advance. */
+  int addRegion(int groupIndex, uchar loKey = 0, uchar hiKey = 127);
 
   // todo:
   // int setRegionSample(int groupIndex, int regionIndex, int sampleIndex); 
@@ -143,6 +149,9 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
+
+
+  const Region* getRegion(int groupIndex, int regionIndex);
 
   // getGroup, getRegion, getStateAsSFZ, isSampleInPool, getNumGroups, getNumRegionsInGroup(int)
   // getNumRegions()
@@ -214,6 +223,7 @@ protected:
     std::string path;      // relative path from instrument definition file (e.g. Piano.sfz)
   };
 
+  // maybe rename to AudioFileStreamRAM, another subclass can be named AudioFileStreamDFD
   class AudioFileStreamPreloaded : public AudioFileStream 
   {
 
@@ -237,7 +247,7 @@ protected:
       rsAssert(n >= 0 && n < numFrames, "sampleIndex out of range");
       for(int c = 0; c < this->numChannels; c++)
         destination[c] = channelPointers[c][n];
-        // What, if the nmuber of output channels shall be different than the number of of channels
+        // What, if the number of output channels shall be different than the number of of channels
         // in the data? Maybe it's best (most efficient) to ensure that this cannot happen on a 
         // higher level. We can just let our channelPointers all point to the same actual data, for
         // example. When the number of output channels of the sampler engine is changed (which 
@@ -264,10 +274,11 @@ protected:
     ~SamplePool() { clear();  }
 
 
-    void addSample(const AudioFileStream* newSample)
+    int addSample(const AudioFileStream* newSample)
     {
       // rsAssert(!contains(newSample))
       samples.push_back(newSample);
+      return ((int) samples.size()) - 1;
     }
     // should the pool take ownership? ...i think so
 
@@ -428,6 +439,13 @@ protected:
 
   //float midiCC[128];     // most recently received controller values in 0...127
   //float midiPitchWheel;  // most recently received pitch-wheel value in -8192...+8291
+
+  // Maybe have buffers for the outputs
+  // TSig* outBuffer;
+  // maybe for the pitch-env, we can render the pitch-env itself into the buffer first and then 
+  // overwrite it with the actual output data
+
+  // we may need a pool of filter objects, eq-objects, etc. for the different voices
 
 };
 
