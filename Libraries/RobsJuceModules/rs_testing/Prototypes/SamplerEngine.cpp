@@ -161,43 +161,54 @@ void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int*
       return; }}
   rsError("Region not found");
   // A region should always be found in one (and only one group). If we don't find it, it means
-  // the caller has passed a pointer to a region object that is not part this instrument. If this 
-  // happens, it indicates a bug at the call site.
+  // the caller has passed a pointer to a region object that is not part of this instrument. If 
+  // this happens, it indicates a bug at the call site.
 }
 
 rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region* r)
 {
-  // The behavior for this in situations where the region r is already being played by some voice 
-  // should depend on he playback-mode of the region. If it's in one-shot mode, a new player should
-  // be handed. Otherwise, the old player should be re-used. But this may cause clicks. Maybe a 
-  // new player should be handed and the old one should be flagged for a quick fade-out (a few 
-  // milliseconds)...we'll see
+  // The behavior for this in situations where the region r is already being played by some 
+  // voice/player should depend on the playback-mode of the region. If it's in one-shot mode, a new
+  // player should be handed and the old one should just continue to play along with the new. 
+  // Otherwise, the old player should be re-used. But this may cause clicks. Maybe a new player 
+  // should be handed and the old one should be flagged for a quick fade-out (a few milliseconds). 
+  // Maybe that feature should be optional, controlled by a retriggerFadeOutTime parameter that is 
+  // zero by default (indicating hard, clicking retriggers). Or maybe this fade-out could also be 
+  // set per region instead of globally? Check, if sfz may actually have an opcode for that.
   if(idlePlayers.empty())
     return nullptr; // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = rsGetAndRemoveLast(idlePlayers);
+  rp->setRegionToPlay(r);
   activePlayers.push_back(rp);
   return rp;
 }
 
 int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
 {
-  int numRegions = 0;  // number of regions tha were triggered by this noteOn
-  for(size_t i = 0; i < regionsForKey[key].getNumRegions(); i++)
-  {
+  int numRegions = 0;  // number of regions that were triggered by this noteOn
+  for(size_t i = 0; i < regionsForKey[key].getNumRegions(); i++) {
     const Region* r  = regionsForKey[key].getRegion(i);
     RegionPlayer* rp = getRegionPlayerFor(r);
-    if(rp == nullptr)
-    {
-      // Maybe, we should roll back the addition of all players so far to the activePlayers and 
-      // move them back into the idlePlayers again..
+    if(rp == nullptr) {
+      // Roll back the addition of all players so far to the activePlayers and move them back into
+      // the idlePlayers again. We don't really want notes to play with an incomplete set of 
+      // samples. It's all or nothing - either all samples for the given key get triggered or none
+      // of them:
+      for(int j = 0; i < numRegions; j++) {
+        rp = rsGetAndRemoveLast(activePlayers);
+        idlePlayers.push_back(rp); }
       return ReturnCode::voiceOverload;
     }
     else
-    {
       numRegions++;
-    }
   }
-  return numRegions;
+  return ReturnCode::success;
+  // Another possibility for the return value would have been to return the number of voices that
+  // have been triggered, but we don't do that because then it would be not quite clear what we
+  // should return from noteOff to make the functions somewhat consistent. In noteOff, we could
+  // either return the number of released regions or the number of triggered release samples. Both
+  // would make just as much sense. So, for unambiguous consistency, we let both just return a 
+  // success or failure report. 
 }
 
 int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
@@ -208,7 +219,7 @@ int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
   // ...more to do...
 
 
-  return numRegions;
+  return ReturnCode::success;
 }
 
 
@@ -383,15 +394,14 @@ Goals:
  To implement this, it should use some sort of suitable abstraction of an audio-streamer that can 
  be plopped in. At first, we implement just the (much simpler) preloading version but it should be
  straightforward to add DFD later.
--We need a sort of sample-pool containing all our sample-buffers along with their playback 
- parameters.
 -In th sfz spec, the performance parameters defined for the whole instrument and for groups work as
  fallback values that can be overriden by respective values on a lower level of the hierarchy. The
  drum-sampler needs them to work in an accumulative fashion. For example a cutoff defined for a 
  region should be used as is and the cutoff for the group should be for a 2nd filter through which 
  the signal of the whole group is passed. That's a different semantic. In the original sfz-spec, 
  the group cutoff would just have been overriden by the region setting (i think -> verify). Maybe 
- we should have switches like: goup/instrumentSettingsAccumulate
+ we should have switches like: group/instrumentSettingsAccumulate and/or maybe that should be done
+ in a subclass
 -Loop-points and start/end points shall be floating point numbers. When parsing an sfz file, we 
  just split the number string into pre-dot and post-dot part, parse them separately and store the 
  post-dot part in a double (or TPar) and the pre-dot part in an integer. That way, we won't suffer 
@@ -401,11 +411,14 @@ Goals:
 ToDo:
 -The GUI should show a warning message, when the maximum number of voices is exceeded. SFZ 
  specifies a practically infinite number of voices, so in order to be compliant to the spec, we 
- should always have enough voices available. The original SFZ.exe has 256
+ should always have enough voices available. The original SFZ.exe by rgcaudio has 256 voices, 
+ where the term voice refers to a single region here, so in this terminology, a signle key can 
+ already play multiple voice due to key- and velocity crossfades, for example.
 
 
 Notes:
 
+obsolete:
 Maybe numChannels should be a member variable instead of being passed to process. If the loaded
 sample has a different number of channels than what we need to produce as output, we need sensible 
 rules to deal with that situation, such as: If output is stereo and sample is mono: both outpus 

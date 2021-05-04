@@ -379,4 +379,8 @@ function can alsobe constructed form f as:
   h(x) = f( r^2 - |x|^2 )
 where |x| is the Euclidean norm of the vector x and r is the radius of the bump
 
+
+Here's another intersring cheap sigmoid:
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=521377
+
 */

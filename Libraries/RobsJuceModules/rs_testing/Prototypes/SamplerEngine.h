@@ -629,15 +629,16 @@ protected:
   activePlayers. If no player is available (i.e. idle), this will return a nullptr. */
   RegionPlayer* getRegionPlayerFor(const Region* r);
 
-  /** Handles a noteOn event with given key and velocity and returns the number of voices that
-  were triggred or ReturnCode::voiceOverload, in case the noteOn could not be handled due to 
-  inavailability of a sufficient number of idle voices. */
+  /** Handles a noteOn event with given key and velocity and returns either ReturnCode::success, if
+  we had enough voices available to serve the request or ReturnCode::voiceOverload, in case the 
+  noteOn could not be handled due to inavailability of a sufficient number of idle voices. */
   int handleNoteOn(uchar key, uchar vel);
 
   int handleNoteOff(uchar key, uchar vel);
+  // this should return voiceOverload
 
-  // return code should inform, whether a region was triggered (maybe how many) and should also
-  // return an error code for when not enough idle voices are available
+
+
 
 
 
