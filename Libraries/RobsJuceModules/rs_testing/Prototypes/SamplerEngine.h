@@ -294,10 +294,11 @@ public:
   them also for functions which use positive integers as valid return values. */
   enum ReturnCode
   {
-    success      = -1,  //< Operation completed successfully. 
-    nothingToDo  = -2,  //< There was nothing to actually do. State was already as desired.
-    memAllocFail = -3,  //< Memory allocation failure.
-    invalidIndex = -4   //< An invalid index was passed.
+    success       = -1,  //< Operation completed successfully. 
+    nothingToDo   = -2,  //< There was nothing to actually do. State was already as desired.
+    memAllocFail  = -3,  //< Memory allocation failure.
+    invalidIndex  = -4,  //< An invalid index was passed.
+    voiceOverload = -5   //< Note enough free voices available (for e.g. new noteOn).
   };
   // todo: make it an enum class, maybe include also return codes for inquiry functions such as for
   // "unknown", etc. ...but maybe that's no good idea when we want to use it for functions which
@@ -516,14 +517,23 @@ protected:
     to the assigned region and resets all DSP objects. */
     virtual void prepareToPlay();
 
+    using Biquad = RAPT::rsBiquadDF1<rsFloat64x2, double>; // todo: use TDF2
+
+    const Region* region;          //< The Region object that this object should play
     const AudioFileStream* stream; //< Stream object to get the data from
     rsFloat64x2 amp = 1.0;         //< Amplitude (for both channels)
     int sampleTime = 0;            //< Elapsed time in samples, negative values used for delay
-    const Region* region;          //< The Region object that this object should play.
+    Biquad flt, eq1, eq2, eq3;     //< Filter and equalizers
 
-    // ToDo: add DSP objects. Maybe instead of the delay, we should maintain elapsed sample-time 
-    // which we initialize to negative values, when delay is desired. Actual playback starts at 
-    // zero sample time
+    // ToDo: 
+    // -add more DSP objects: envelope generators, LFOs, we also need to somehow take care
+    //  of the effect sends (reverb, chorus)
+    // -Maybe in addition to elapsed time, we also need to maintain position inside the sample 
+    //  stream. This is not the same thing due to possible delay and looping.
+    // -maybe use a different implementation structure (SVF) for the time-varying filter
+    // -try to optimize ram and/or cpu usage by re-ordering
+    // -env-generators need as state variables: stage (int), time-into-stage (float/double),
+    //  LFO need just phase
   };
 
   /** Defines a set of regions. Used to handle note-on/off events efficiently. Not to be confused 
@@ -537,6 +547,10 @@ protected:
     void addRegion(const Region* r) { regions.push_back(r); }
     // todo: removeRegion, containsRegion
 
+    size_t getNumRegions() const { return regions.size(); }
+
+    const Region* getRegion(size_t i) const { return regions[i]; }
+
   private:
 
     std::vector<const Region*> regions; // pointers to the regions belonging to this set
@@ -546,8 +560,9 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Internal functions
 
-  void addRegionForKey(uchar k, const Region* region);
 
+  /** Adds the given region to our regionsForKey array at the k-th position. */
+  void addRegionForKey(uchar k, const Region* region);
 
   /** Returns true, iff the given region should play when the given key is pressed with given 
   velocity. This will also take into account other playback constraints defined for the region 
@@ -571,6 +586,16 @@ protected:
   This will have the side effects that this player will be removed from idlePlayers and added to 
   activePlayers. If no player is available (i.e. idle), this will return a nullptr. */
   RegionPlayer* getRegionPlayerFor(const Region* r);
+
+  /** Handles a noteOn event with given key and velocity and returns the number of voices that
+  were triggred or ReturnCode::voiceOverload, in case the noteOn could not be handled due to 
+  inavailability of a sufficient number of idle voices. */
+  int handleNoteOn(uchar key, uchar vel);
+
+  int handleNoteOff(uchar key, uchar vel);
+
+  // return code should inform, whether a region was triggered (maybe how many) and should also
+  // return an error code for when not enough idle voices are available
 
 
 
@@ -635,6 +660,19 @@ protected:
 
 };
 
+
+
+
+/** Subclass that contains some extra functions that facilitate testing which should not go into 
+the production code. */
+class rsSamplerEngineTest : public rsSamplerEngine
+{
+
+public:
+
+  static int getRegionPlayerSize() { return sizeof(rsSamplerEngine::RegionPlayer); }
+
+};
 
 
 #endif

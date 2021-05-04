@@ -4,7 +4,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   using VecF = std::vector<float>;     // vector of sample values in RAM
-  using SE   = rsSamplerEngine;
+  using SE   = rsSamplerEngineTest;
   using RC   = SE::ReturnCode;
   using PST  = SE::PlaybackSetting::Type;
   SE se;                              // create the sampler engine object
@@ -38,11 +38,13 @@ bool samplerEngineUnitTest()
   int rc = se.setRegionSample(gi, ri, si); 
   ok &= rc == RC::success;
 
-  //se.setRegionSetting(region, PST::RootKey, 69.f);
+
+  //se.setRegionSetting(region, PST::PitchKeyCenter, 69.f);
 
 
-  // maybe it should be a non-const pointer, so we can actually edit it - or let the edits be done
-  // by the sampler-engine, like se.setRegionSetting(PS::RootKey, 69)
+  // Maybe it should be a non-const pointer, so we can actually edit it - or let the edits be done
+  // by the sampler-engine, like se.setRegionSetting(PS::RootKey, 69). This way, the SamplerEngine
+  // object remains in control over anything that is done to the region, which is a good thing
 
 
 
@@ -61,6 +63,10 @@ bool samplerEngineUnitTest()
   //  regions, trigger notes, record output and compare the produced output to what is expected
   // -set up performance tests, too
 
+
+
+  int regionPlayerSize = SE::getRegionPlayerSize();
+  // 64 without filters and eq, 512 with - move this into some performance test function
 
   rsAssert(ok);
   return ok;

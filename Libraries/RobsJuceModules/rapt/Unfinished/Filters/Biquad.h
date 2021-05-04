@@ -110,7 +110,7 @@ RS_INLINE void rsBiquadDF1<TSig, TCof>::getSampleInPlace(TSig &inOut)
   TSig tmp = inOut;
 
   tmp = (this->b0 * tmp) + (this->b1 * x1 + this->b2 * x2) + (this->a1 * y1 + this->a2 * y2);
-    // parentheses facilitate out-of-order execution
+  // parentheses (may?) facilitate vectorization
 
   x2 = x1;
   x1 = inOut;
@@ -126,7 +126,7 @@ RS_INLINE TSig rsBiquadDF1<TSig, TCof>::getSample(TSig in)
   TSig tmp;
 
   tmp = (this->b0 * in) + (this->b1 * x1 + this->b2 * x2) + (this->a1 * y1 + this->a2 * y2);
-    // parentheses facilitate out-of-order execution
+  // parentheses (may?) facilitate vectorization
 
   x2 = x1;
   x1 = in;

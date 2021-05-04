@@ -4,10 +4,9 @@ rsSamplerEngine::rsSamplerEngine(int maxPolyphony)
   int P = maxPolyphony;
   playerPool.resize(P);
   idlePlayers.resize(P);
-  activePlayers.resize(P);
-  for(int i = 0; i < P; i++) {
-    idlePlayers[i]   = &playerPool[i];
-    activePlayers[i] = nullptr; }
+  activePlayers.reserve(P);
+  for(int i = 0; i < P; i++)
+    idlePlayers[i] = &playerPool[i];
 }
 
 rsSamplerEngine::~rsSamplerEngine()
@@ -95,21 +94,73 @@ void rsSamplerEngine::handleMusicalEvent(const rsMusicalEvent<float>& ev)
 //-------------------------------------------------------------------------------------------------
 // Internal:
 
-bool rsSamplerEngine::shouldRegionPlay(
-  const Region* r, const char key, const char vel)
+bool rsSamplerEngine::shouldRegionPlay(const Region* r, const char key, const char vel)
 {
+  // ToDo: 
+  // -check, if regionsForKey[key] contains the given region, if not, return false..or wait - this
+  //  can and should be already checked in the caller (e.g. handleNoteOn)
+  // -check, if the velocity is with the range for which the region should be played, if not,
+  //  return false
+  // -check, if all other playback constraints for the given region are satisfied - if any of them
+  //  isn't, return false
+  // -the region has passed all constraint filters and should indeed be played: return true
+
   return false; // preliminary
 }
 
 void rsSamplerEngine::addRegionForKey(uchar k, const Region* region)
 {
   regionsForKey[k].addRegion(region);
+  // What, if the region is already there? We should check that before. It's probably not supposed
+  // to happen, but anyway. Well...maybe it is, when the user tweaks loKey/hiKey settings on a GUI.
 }
 
 rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region* r)
 {
-  return nullptr;  // preliminary
+  // The behavior for this in situations where the region r is already being played by some voice 
+  // should depend on he playback-mode of the region. If it's in one-shot mode, a new player should
+  // be handed. Otherwise, the old player should be re-used. But this may cause clicks. Maybe a 
+  // new player should be handed and the old one should be flagged for a quick fade-out (a few 
+  // milliseconds)...we'll see
+  if(idlePlayers.empty())
+    return nullptr; // Maybe we should implement more elaborate voice stealing?
+  RegionPlayer* rp = rsGetAndRemoveLast(idlePlayers);
+  activePlayers.push_back(rp);
+  return rp;
 }
+
+int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
+{
+  int numRegions = 0;  // number of regions tha were triggered by this noteOn
+  for(size_t i = 0; i < regionsForKey[key].getNumRegions(); i++)
+  {
+    const Region* r  = regionsForKey[key].getRegion(i);
+    RegionPlayer* rp = getRegionPlayerFor(r);
+    if(rp == nullptr)
+    {
+      // Maybe, we should roll back the addition of all players so far to the activePlayers and 
+      // move them back into the idlePlayers again..
+      return ReturnCode::voiceOverload;
+    }
+    else
+    {
+      numRegions++;
+    }
+  }
+  return numRegions;
+}
+
+int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
+{
+  // Note-off events may also trigger the playback of regions (note-off samples are a thing)...
+  int numRegions = 0; 
+
+  // ...more to do...
+
+
+  return numRegions;
+}
+
 
 //=================================================================================================
 // Function definitions for the helper classes:
@@ -279,6 +330,11 @@ Goals:
  precision loss for numbers bigger pre-dot part. This should be downward compatible with sfz spec 
  (which has only integer loop points (i think -> verify))
 
+ToDo:
+-The GUI should show a warning message, when the maximum number of voices is exceeded. SFZ 
+ specifies a practically infinite number of voices, so in order to be compliant to the spec, we 
+ should always have enough voices available. The original SFZ.exe has 256
+
 
 Notes:
 
@@ -340,6 +396,11 @@ Problem:
 ->figure out, how other sfz/sampler engines deal with this problem
 -maybe implement a simple RegionPlayer class without any DSP (just pure sample playback) and 
  subclasses with various DSP objects
+-We have 4 biquad objects in series. If the complete filter could be re-expressed as parallel
+ structure, we could make more use of SIMD and could cut down the amount of state by factor 2
+ by using single precision. Maybe we can express the filters as parallel connection of an allpass
+ with a direct path (see DAFX). Maybe this can be done for envelopes and LFOs, too - there, it's
+ even easier bacause they can be computed in parallel anyway. Make classes rsBiquadFloat64x4, etc.
 
 
 SFZ - Resources:
