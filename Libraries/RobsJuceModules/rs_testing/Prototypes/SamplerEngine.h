@@ -141,22 +141,15 @@ public:
 
     ~Group() { clearRegions(); }
 
-    int addRegion();   // make private!
-
-    // todo: removeRegion, etc.
-
     /** Returns the index of the given region within this group, if present or -1 if the region is
     not present in this group. */
-    int getRegionIndex(const Region* region); // make const
-
+    int getRegionIndex(const Region* region) const;
 
     /** Returns true, if the given index i refers toa valid region within this group. */
     bool isRegionIndexValid(int i) const { return i >= 0 && i < (int)regions.size(); }
 
-
-
-
-    const Region* getRegion(int i) const
+    Region* getRegion(int i) const;
+    /*
     {
       if(i < 0 || i >= (int)regions.size()) {
         rsError("Invalid region index");
@@ -165,25 +158,16 @@ public:
       //return &regions[i];
       return regions[i];
     }
+    */
     // for some reason, i get compiler errors when trying to put this into the cpp file 
     // -> figure out
 
-    Region* getRegionNonConst(int i)
-    {
-      if(i < 0 || i >= (int)regions.size()) {
-        rsError("Invalid region index");
-        return nullptr; 
-      }
-      //return &regions[i];
-      return regions[i];
-    }
-    // move to cpp
-
-
-    void clearRegions();   // make private
-    void clearSettings();  // ditto
 
   private:
+
+    int addRegion();   // todo: removeRegion, etc.
+    void clearRegions();
+    void clearSettings();
 
     std::vector<Region*> regions;
     /**< Pointers to the regions belonging to this group. */
@@ -194,6 +178,8 @@ public:
 
     // may be add these later:
     //std::string name;  
+
+    friend class rsSamplerEngine;
   };
 
   /** A region contains a sample along with performance settings including information for which 
@@ -344,44 +330,31 @@ public:
   sample index was invalid. */
   int setRegionSample(int groupIndex, int regionIndex, int sampleIndex); 
 
-  /** Sets a value for a given type of playback setting for the given region. Return either
-  ReturnCode::success
-  */
-  int setRegionSetting(const Region* region, PlaybackSetting::Type type, float value);
+  /** Sets a value for a given type of playback setting for the given region. Returns either
+  ReturnCode::success or ReturnCode::notFound, if the region was not found in this instrument. If 
+  this happens, it indicates a bug on the call site. */
+  int setRegionSetting(Region* region, PlaybackSetting::Type type, float value);
 
-  // todo: setGroupSetting, setInstrumentSetting
-
-  //int setRegionSetting(Region
-
-  // todo:
-  // setRegionLoKey, setRegionHiKey, setRegionLoVel, setRegionHiVel
-
-
-  // todo: removeRegion/Group, clearGroup, clearRegion, 
+  // todo: setGroupSetting, setInstrumentSetting, removeRegion/Group, clearGroup, clearRegion, 
   // clearInstrument, removeSampleFromPool, replaceSampleInPool, setupFromSFZ,
-
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  /** Returns a pointer to the (const) region object with the given group- and region index or a 
-  nullptr if the combination of indices is invalid. */
-  const Region* getRegion(int groupIndex, int regionIndex)
-  {
-    int gi = groupIndex, ri = regionIndex;
-    if(gi < 0 || gi >= (int)groups.size()) {
-      rsError("Invalid group index");
-      return nullptr; 
-    }
-    return groups[gi].getRegion(ri);
-  }
-  // move to cpp
-  // Maybe it should be non-const - but no: the caller should not be able to change the loKey/hiKey
-  // settings because that would require a change to the regionsForKey array...but maybe we should 
-  // get rid of that anyway - it might be a pointless attempt to optimization -> benchmark!
-  // for some reason, i get compiler errors when trying to put this into the cpp file 
-  // -> figure out
+  /** Returns a pointer to the region object with the given group- and region index or a nullptr 
+  if the combination of indices is invalid. If the client wants to edit the region, it can do so 
+  only by using appropriate region-editing functions of the rsSamplerEngine object from which it 
+  has requested the region pointer, for example:
+
+    rsSamplerEngine::Region* r = se.getRegion(gi, ri);   // se is the sampler engine object
+    using PST = rsSamplerEngine::PlaybackSetting::Type;
+    se.setRegionSetting(r, PST::PitchKeyCenter, 69.f);
+  
+  The idea is that client code should not modify the settings of a Region object behind the sampler
+  engine's back because the engine may have to take additional actions when certain aspects of a 
+  region change. This is actually enforced by the fact that Region provides no public setters. */
+  Region* getRegion(int groupIndex, int regionIndex);
 
   // getGroup, getRegion, getStateAsSFZ, isSampleInPool, getNumGroups, getNumRegionsInGroup(int)
   // getNumRegions(), getSampleIndex(const string& uniqueName) ..or maybe it should take a pointer
@@ -597,6 +570,7 @@ protected:
   /** Returns a non-constant point to the region with given index pair, so this allow modifying the
   Region object via the pointer. Use it with care. In particular, don't change the loKey, hiKey 
   settings because such changes require an update of the regionsForKey array. */
+  /*
   Region* getRegionNonConst(int groupIndex, int regionIndex)
   {
     int gi = groupIndex, ri = regionIndex;
@@ -606,6 +580,7 @@ protected:
     }
     return groups[gi].getRegionNonConst(ri);
   }
+  */
   // Move to cpp file or better: get rid and keep only getRegion which shall return a non-const 
   // pointer. Client code actually should be able to modify the region, but only indirectly, 
   // mediated through the sampler engine.

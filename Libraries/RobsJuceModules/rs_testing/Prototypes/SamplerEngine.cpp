@@ -68,13 +68,12 @@ int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
   if(!isSampleIndexValid(si)) {
     rsError("Invalid sample index");
     return ReturnCode::invalidIndex; }
-  Region* r = getRegionNonConst(gi, ri);
+  Region* r = getRegion(gi, ri);
   r->setSampleStream(samplePool.getSampleStream(si));
   return ReturnCode::success;
 }
 
-int rsSamplerEngine::setRegionSetting(
-  const Region* region, PlaybackSetting::Type type, float value)
+int rsSamplerEngine::setRegionSetting(Region* region, PlaybackSetting::Type type, float value)
 {
   // todo: 
   // -check, if the passed region is actually a member of any of the groups - maybe
@@ -89,13 +88,16 @@ int rsSamplerEngine::setRegionSetting(
   findRegion(region, &gi, &ri);
   if(gi == -1 || ri == -1)
     return ReturnCode::notFound;
+  // todo: simplify to hasRegion(region)
 
-  Region* r = getRegionNonConst(gi, ri);
+  Region* r = getRegion(gi, ri);
   // That's a bit dirty - it actually has the same effect as casting away the const from the passed
   // region. The caller may assume, that the passed region remins constant when in fact, it 
   // doesn't. Maybe make the region parameter non-const and prevent the client code from modifying
   // regions directly by other means like making all setters private such that only the 
   // rsSamplerEngine friend class can set them
+
+  rsAssert(r == region);  // todo: operate directly on the passed region
 
   r->settings.push_back(PlaybackSetting(type, value));
   // Preliminary. We need to figure out, if that setting already exists and if so, just change its
@@ -105,6 +107,16 @@ int rsSamplerEngine::setRegionSetting(
   // Maybe we should distinguish between settingAdded and settingModified in the return code. But
   // actually, from the caller's perspective, that information should be irrelevant anyway, so 
   // maybe not.
+}
+
+rsSamplerEngine::Region* rsSamplerEngine::getRegion(int groupIndex, int regionIndex)
+{
+  int gi = groupIndex, ri = regionIndex;
+  if(gi < 0 || gi >= (int)groups.size()) {
+    rsError("Invalid group index");
+    return nullptr; 
+  }
+  return groups[gi].getRegion(ri);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -269,21 +281,27 @@ void rsSamplerEngine::AudioFileStreamPreloaded::clear()
 
 int rsSamplerEngine::Group::addRegion()
 {
-  //rsSamplerEngine::Region r;
-  //r.group = this;
-
   rsSamplerEngine::Region* r = new rsSamplerEngine::Region;
   r->group = this;
   regions.push_back(r);
   return ((int) regions.size()) - 1;
 }
 
-int rsSamplerEngine::Group::getRegionIndex(const rsSamplerEngine::Region* region)
+int rsSamplerEngine::Group::getRegionIndex(const rsSamplerEngine::Region* region) const
 {
   for(size_t i = 0; i < regions.size(); i++)
     if(regions[i] == region)
       return i;
   return -1;
+}
+
+rsSamplerEngine::Region* rsSamplerEngine::Group::getRegion(int i) const
+{
+  if(i < 0 || i >= (int)regions.size()) {
+    rsError("Invalid region index");
+    return nullptr; 
+  }
+  return regions[i];
 }
 
 void rsSamplerEngine::Group::clearRegions()

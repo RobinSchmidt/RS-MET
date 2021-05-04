@@ -34,16 +34,10 @@ bool samplerEngineUnitTest()
   int ri = se.addRegion(gi);  // add new region to group gi, ri: region index
   ok &= ri == 0;
 
-  const SE::Region* r = se.getRegion(gi, ri);
+  SE::Region* r = se.getRegion(gi, ri);
   int rc = se.setRegionSample(gi, ri, si); 
   ok &= rc == RC::success;
   se.setRegionSetting(r, PST::PitchKeyCenter, 69.f);
-
-
-  // Maybe it should be a non-const pointer, so we can actually edit it - or let the edits be done
-  // by the sampler-engine, like se.setRegionSetting(PS::RootKey, 69). This way, the SamplerEngine
-  // object remains in control over anything that is done to the region, which is a good thing
-
 
 
   // todo:
@@ -51,6 +45,8 @@ bool samplerEngineUnitTest()
   //const SE::Group* group2 = region.getGroup();
   //ok &= group1 == group2;
 
+  // todo: factor out the Stream stuff, make sure, that client code can't retrieve an editable
+  // stream object from the sampler engine - at most, a const one
 
 
 
