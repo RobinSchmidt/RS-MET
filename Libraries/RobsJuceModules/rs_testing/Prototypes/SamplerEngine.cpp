@@ -1,3 +1,20 @@
+rsSamplerEngine::rsSamplerEngine(int maxPolyphony)
+{
+  // factor out into setMaxPolyphony:
+  int P = maxPolyphony;
+  playerPool.resize(P);
+  idlePlayers.resize(P);
+  activePlayers.resize(P);
+  for(int i = 0; i < P; i++) {
+    idlePlayers[i]   = &playerPool[i];
+    activePlayers[i] = nullptr; }
+}
+
+rsSamplerEngine::~rsSamplerEngine()
+{
+
+}
+
 //-------------------------------------------------------------------------------------------------
 // Setup:
 
@@ -44,6 +61,19 @@ int rsSamplerEngine::addRegion(int gi, uchar loKey, uchar hiKey)
   return ri;
 }
 
+int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
+{
+  if(!isIndexPairValid(gi, ri)) {
+    rsError("Invalid group- and/or region index");
+    return ReturnCode::invalidIndex; }
+  if(!isSampleIndexValid(si)) {
+    rsError("Invalid sample index");
+    return ReturnCode::invalidIndex; }
+  Region* r = getRegionNonConst(gi, ri);
+  r->setSampleStream(samplePool.getSampleStream(si));
+  return ReturnCode::success;
+}
+
 //-------------------------------------------------------------------------------------------------
 // Processing:
 
@@ -74,6 +104,11 @@ bool rsSamplerEngine::shouldRegionPlay(
 void rsSamplerEngine::addRegionForKey(uchar k, const Region* region)
 {
   regionsForKey[k].addRegion(region);
+}
+
+rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region* r)
+{
+  return nullptr;  // preliminary
 }
 
 //=================================================================================================
@@ -137,6 +172,79 @@ void rsSamplerEngine::SamplePool::clear()
   samples.clear();
 }
 
+//-------------------------------------------------------------------------------------------------
+
+void rsSamplerEngine::RegionPlayer::setRegionToPlay(const rsSamplerEngine::Region* regionToPlay)
+{
+  region = regionToPlay;
+  stream = region->getSampleStream();
+  prepareToPlay();
+}
+
+rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
+{
+  if(sampleTime < 0) {               // Negatively initialized sampleTime implements delay.
+    sampleTime++;                    // We just increment the time and return 0,0. Actual output
+    return rsFloat64x2(0.0, 0.0); }  // will be produced as soon as sampleTime reaches zero.  
+
+
+  return rsFloat64x2(0.0, 0.0);  // preliminary
+}
+
+void rsSamplerEngine::RegionPlayer::processBlock(rsFloat64x2* y, int N)
+{
+  for(int n = 0; n < N; n++)
+    y[n] = getFrame();
+  // preliminary - todo: run the different DSP processes, one after another, over the whole block,
+  // using in-place processing, the steps are (in that order)
+  // -fill y with pitch envelope (including pitch LFO)
+  // -fill y with interpolated raw sample values (or: maybe compute pitch envelope on the fly)
+  // -apply filter (maybe the filter envelope can be computed on the fly)
+  // -apply amp-envelope
+}
+
+void rsSamplerEngine::RegionPlayer::prepareToPlay()
+{
+  rsAssert(region != nullptr);  // This should not happen. Something is wrong.
+
+  // Reset the states of all DSP objects:
+  // flt.reset();
+  // ampEnv.reset();
+  // ...more to do...
+
+  // Initialize all values and DSP objects to default values (maybe factor out):
+  amp = 1.0;
+  sampleTime = 0;
+  // ...more to do... ampEnv.setToDefaults(), etc.
+
+  // Loop through the settings of the region and for each setting that is present, change the 
+  // value from its default to the stored value:
+  const std::vector<PlaybackSetting>& settings = region->getSettings();
+  for(size_t i = 0; i < settings.size(); i++)
+  {
+    using TP = PlaybackSetting::Type;
+    PlaybackSetting setting = settings[i];
+    TP type = setting.getType();
+    double val = (double) setting.getValue();
+    switch(type)
+    {
+
+    //case TP::FilterCutoff: { flt.setCutoff(val);  } break;
+    
+      // ...more to do...
+
+    }
+  }
+
+  // ToDo:
+  // -Maybe within the switch statement set up some flags that indicate, if a particular setting is
+  //  used. If the flag is false, we may skip the associated DSP process in getFrame/processBlock. 
+  //  We may need inquiry functions such as hasFilter, hasAmpEnv, hasPitchEnv, hasFilterEnv, 
+  //  hasPitchLFO. But this makes things more complicated, so maybe it's not really a good idea.
+
+  // -Maybe rename to prepareToPlay and also reset all the DSP objects here
+}
+
 //=================================================================================================
 
 /*
@@ -185,10 +293,12 @@ that a mix of both channels would be more sensible - but that rule doesn't seem 
 well. But maybe we should have an (optional) exceptional rule for mono outputs to use a mixdown of
 all channels.
 
--maybe it shouldn't be a template: samples and parameters should be stored as float, signal 
- processing should be done with rsFloat64x2
+-maybe make a nested namespace Sampler(Engine) (should later become part of rosic) - the nested
+ classes are getting a bit unwieldy
+-maybe rapt should be organized using nested namespaces - maybe look at the doxygen-generated
+ API documentation, how this looks like
 
-may use SampleBuffer, SamplePlaybackParameters
+maybe rename to rsSampler, rsSoundFontPlayer
 
 Ideas:
 -Could it make sense to define a level above the instrument - maybe an ensemble? Different 
@@ -209,5 +319,60 @@ Ideas:
  would actually hear a 50/50 mix between cycle 49 and cycle 50
 -To enable that feature, we should probably store the most recently received values of all 
  controllers
+
+Problem:
+-SFZ actually allows for an unlimited number of regions and it seems that each region needs its
+ own chain of DSP objects. Worse, when a region is retriggered and it is in "one-shot" mode, it is 
+ supposed to be played twice (i.e. overlap with itself), etc. so it seems, we can't really 
+ reasonably allocate "enough" DSP objects to be able to deal with any situation.
+-Ideas: we could have a pool for any kind of supported DSP object (filter, eq, env-gen, lfo, etc.) 
+ and whena noteOn is received, we build up the chain of DSP objects as needed by the region by 
+ grabbing objects from the pools. Problem: the pools may run out of available objects.
+-If we dynamically resize the pools, objects that are currently in use would be deallocated, so 
+ that doesn't work. What we would need would be a sort of dynamically growing array that never
+ deallocates - when it need to grow, it keeps the allocated memory allocated as is and allocates
+ new memory somewher else - it wouldn't be contiguous anymore, but we would be safe from 
+ deallocation.
+-Whenever half of the objects are used up, we would allocate a new chunk of memory equal to the
+ current size, so it would grow exponentially like dynamic arrays typically do.
+-We should probably delegate the allocation of more memory to a worker thread to to its 
+ nondeterministic runtime.
+->figure out, how other sfz/sampler engines deal with this problem
+-maybe implement a simple RegionPlayer class without any DSP (just pure sample playback) and 
+ subclasses with various DSP objects
+
+
+SFZ - Resources:
+https://github.com/sfz/tests/   test sfz files demonstrating various features
+https://sfzformat.com/legacy/   opcode reference
+https://sfzformat.com/headers/  reference for section headers in sfz files
+http://www.drealm.info/sfz/plj-sfz.xhtml  description of the sfz format
+https://www.kvraudio.com/forum/viewtopic.php?f=42&t=508861  kvr forum thread with documentation
+https://sfzinstruments.github.io/  collection of sfz instruments
+
+https://sfzformat.com/software/players/  players (also open source)
+https://plugins4free.com/plugin/217/   sfz by rgcaudio
+
+open source sfz players:
+https://github.com/swesterfeld/liquidsfz/
+https://sfz.tools/sfizz/downloads
+https://github.com/altalogix/SFZero/
+https://github.com/s-oram/Grace/
+
+sfz compatibel samplers
+https://github.com/christophhart/HISE/
+
+deeper into the codebases:
+
+https://github.com/swesterfeld/liquidsfz/tree/master/lib
+https://github.com/swesterfeld/liquidsfz/blob/master/lib/synth.hh
+This seems to do it the simple way: it has a fixed number of voices and if they are used up, no
+more can be added - if i understand it correctly (see alloc_voice, line 230)
+
+
+
+about float vs double:
+https://randomascii.wordpress.com/2012/03/21/intermediate-floating-point-precision/
+
 
 */

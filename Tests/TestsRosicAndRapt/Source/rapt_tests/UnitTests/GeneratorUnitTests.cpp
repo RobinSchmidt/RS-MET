@@ -6,6 +6,7 @@ bool samplerEngineUnitTest()
   using VecF = std::vector<float>;     // vector of sample values in RAM
   using SE   = rsSamplerEngine;
   using RC   = SE::ReturnCode;
+  using PST  = SE::PlaybackSetting::Type;
   SE se;                              // create the sampler engine object
 
   // Create a sinewave as example sample:
@@ -32,17 +33,28 @@ bool samplerEngineUnitTest()
   ok &= gi == 0;
   int ri = se.addRegion(gi);  // add new region to group gi, ri: region index
   ok &= ri == 0;
-  // addRegion should optionally take a loKey and hiKey parameter because it may actually
-  // add entries to the regionsForKey array and if we set up loKey, hiKey later, they may be added
-  // just to be removed again shortly thereafter which is wasteful. Of course, it should be 
-  // possible to set it up later, but if it can start with the right setting from the beginning, we
-  // save a lot of memory operations.
 
   const SE::Region* region = se.getRegion(gi, ri);
+  int rc = se.setRegionSample(gi, ri, si); 
+  ok &= rc == RC::success;
+
+  //se.setRegionSetting(region, PST::RootKey, 69.f);
 
 
-  //int rc = se.setRegionSample(gi, ri, si); 
-  //ok &= rc == RC::success;
+  // maybe it should be a non-const pointer, so we can actually edit it - or let the edits be done
+  // by the sampler-engine, like se.setRegionSetting(PS::RootKey, 69)
+
+
+
+  // todo:
+  //const SE::Group* group1 = se.getGroup(0);
+  //const SE::Group* group2 = region.getGroup();
+  //ok &= group1 == group2;
+
+
+
+
+
 
   // ToDo: 
   // -create a couple of simple samples (maybe sine-waves or something) and assign them to

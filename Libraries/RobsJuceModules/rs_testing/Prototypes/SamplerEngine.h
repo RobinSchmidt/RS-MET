@@ -61,6 +61,15 @@ class rsSamplerEngine
 
 public:
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
+
+  rsSamplerEngine(int maxPolyphony = 16);
+
+  virtual ~rsSamplerEngine();
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Helper Classes
 
@@ -102,25 +111,36 @@ public:
   class PlaybackSetting
   {
 
-    enum class Type
+  public:
+
+    enum Type
     {
       ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
 
+      RootKey,
+
       AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
 
-      FilterCutoff, FilterResonance, FilterType
+      FilterCutoff, FilterResonance, FilterType,
+
+      Unknown,
+      NumTypes
 
       //...tbc...
     };
 
+    Type getType() const { return type; }
+
+    float getValue() const { return value; }
+
   private:
 
+    Type  type  = Type::Unknown;
     float value = 0.f;
     // hmm - it seems, for the controllers, we need 2 values: controller number and value - but it
     // would be wasteful to store two values for all other settings as well...hmmm...maybe 
     // groups/regions need to maintain 2 arrays with settings, 1 for the 1-valued settings and 
     // another for the 2-valued settings - maybe have classes PlaybackSetting, PlaybackSetting2Val
-
   };
 
   /** A group organizes a bunch of regions into a single entity for which performance settings can 
@@ -135,7 +155,14 @@ public:
 
     // todo: removeRegion, etc.
 
-    const Region* getRegion(int i)
+
+    /** Returns true, if the given index i refers toa valid region within this group. */
+    bool isRegionIndexValid(int i) const { return i >= 0 && i < (int)regions.size(); }
+
+
+
+
+    const Region* getRegion(int i) const
     {
       if(i < 0 || i >= (int)regions.size()) {
         rsError("Invalid region index");
@@ -145,6 +172,16 @@ public:
     }
     // for some reason, i get compiler errors when trying to put this into the cpp file 
     // -> figure out
+
+    Region* getRegionNonConst(int i)
+    {
+      if(i < 0 || i >= (int)regions.size()) {
+        rsError("Invalid region index");
+        return nullptr; 
+      }
+      return &regions[i];
+    }
+
 
   private:
 
@@ -165,14 +202,24 @@ public:
   class Region
   {
 
+  public:
+
+    /** Sets the audio stream object that should be used for this region. */
+    void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
+
+    /** Returns a (const) pointer the audio stream object that should be used for this region. */
+    const AudioFileStream* getSampleStream() const { return sampleStream; }
+
+    /** Returns a const reference to our playback settings. */
+    const std::vector<PlaybackSetting>& getSettings() const { return settings; }
+
   private:
 
-    AudioFileStream* sample = nullptr;  
+    const AudioFileStream* sampleStream = nullptr;  
     Group* group = nullptr;             // pointer to the group to which this region belongs
-
-    char loKey = 0, hiKey = 127;
-    char loVel = 0, hiVel = 127;
-    // todo: maybe package loKey/hiKey, loVel/hiVel into a single char to save memory
+    uchar loKey = 0, hiKey = 127;
+    uchar loVel = 0, hiVel = 127;
+    // todo: maybe package loKey/hiKey, loVel/hiVel into a single uchar to save memory
 
 
     std::vector<PlaybackSetting> settings;
@@ -186,7 +233,59 @@ public:
     //std::string name;
 
     friend class Group;
+    friend class rsSamplerEngine;
   };
+
+
+  class SamplePool
+  {
+
+  public:
+
+
+    ~SamplePool() { clear();  }
+
+
+    int addSample(const AudioFileStream* newSample)
+    {
+      // rsAssert(!contains(newSample))
+      samples.push_back(newSample);
+      return ((int) samples.size()) - 1;
+    }
+    // should the pool take ownership? ...i think so
+
+
+    /** Returns true, if the given index i refers to a valid sample index. */
+    bool isSampleIndexValid(int i) const { return i >= 0 && i < (int)samples.size(); }
+
+
+    const AudioFileStream* getSampleStream(int i)
+    {
+      if(!isSampleIndexValid(i)) {
+        rsError("Invalid sample index");
+        return nullptr; }
+      return samples[i];
+    }
+
+    void clear();
+
+
+    // todo:
+    // setup: removeSample...but if regions refer to it, we need to update them, too by 
+    // invalidating their pointers. We either need an observer mechanism (complex and general) or 
+    // we allow reomval of samples only via a member function of the outlying rsSamplerEngine 
+    // class, which also takes care of resetting the sample-streams in all regions that use it
+    // (simpler but less general). Maybe to make it safer, we could also introduce a reference
+    // counter and check, if it is zero, before a stream objects gets removed
+    // inquiry: hasSample
+
+
+  protected:
+
+    std::vector<const AudioFileStream*> samples;
+
+  };
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
@@ -224,13 +323,17 @@ public:
   can also be set up later, but some memory operations can be saved, if it's known in advance. */
   int addRegion(int groupIndex, uchar loKey = 0, uchar hiKey = 127);
 
+  /** Sets the sample to be used for the given region within the given group. */
+  int setRegionSample(int groupIndex, int regionIndex, int sampleIndex); 
+
+  //int setRegionSetting(Region
+
   // todo:
-  // int setRegionSample(int groupIndex, int regionIndex, int sampleIndex); 
   // setRegionLoKey, setRegionHiKey, setRegionLoVel, setRegionHiVel
 
 
-  // todo: addGroup, addRegion(int group, ..), removeRegion/Group, clearGroup, clearRegion, 
-  // clearInstrument, addSampleToPool, removeSampleFromPool, replaceSampleInPool, setupFromSFZ,
+  // todo: removeRegion/Group, clearGroup, clearRegion, 
+  // clearInstrument, removeSampleFromPool, replaceSampleInPool, setupFromSFZ,
 
 
 
@@ -255,7 +358,21 @@ public:
   // -> figure out
 
   // getGroup, getRegion, getStateAsSFZ, isSampleInPool, getNumGroups, getNumRegionsInGroup(int)
-  // getNumRegions()
+  // getNumRegions(), getSampleIndex(const string& uniqueName) ..or maybe it should take a pointer
+  // to a SampleMetaData object
+
+  /** Returns true, iff the given pair of group- and region index is valid, i.e. a region with this
+  pair of indices actually exists in the current instrument definition. */
+  bool isIndexPairValid(int groupIndex, int regionIndex) const
+  {
+    int gi = groupIndex, ri = regionIndex;
+    return gi >= 0 && gi < (int)groups.size() && groups[gi].isRegionIndexValid(ri);
+  }
+
+  /** Returns true, iff the given sample index is valid, i.e. a sample with this index actually 
+  exists our sample pool. */
+  bool isSampleIndexValid(int sampleIndex) const
+  { return samplePool.isSampleIndexValid(sampleIndex); }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -303,6 +420,7 @@ protected:
     int   numFrames   = 0;         // maybe use -1 to encode "unknown"? would that be useful?
 
   };
+  // maybe move out of this class - this may be useful in other contexts, too - maybe templatize
 
   class AudioFileStream : public AudioStream
   {
@@ -320,18 +438,18 @@ protected:
 
   protected:
 
-    std::string fileName;  // without filename extension
-    std::string extension; // filename extension
-    std::string path;      // relative path from instrument definition file (e.g. Piano.sfz)
-
-    // Maybe we should also store the root-directory to which the path is relative, but maybe just
-    // as an integer that selects between various pre-defined root-directories that should exist at
-    // the rsSamplerEngine level. For example: 0: instrument directory, 1: factory sample 
-    // directory, 2: user sample directory, etc. (but not hardcoded - meanings of the indices 
-    // should be flexible). This makes it more reasonably possible to uniquely identify samples. 
-    // It's totally possible to have samples in an instrument with same relative paths and 
-    // filenames but with respect to different root directories. Yes - that would be weird,
-    // but the engine should neverless be able to handle such situations.
+    std::string fileName;  // without filename extension (e.g. Piano_A4)
+    std::string extension; // filename extension (e.g. wav, flac)
+    std::string path;      // relative path from a predefined root directory
+    int rootDirIndex = 0;  // index of root directory (among a couple of predefined choices)
+    // rootDirIndex stores the root-directory to which the path is relative, but just as an integer
+    // index that selects between various pre-defined root-directories that should exist at the 
+    // rsSamplerEngine level. For example: 0: instrument directory (containing e.g. Piano.sfz), 
+    // 1: factory sample directory, 2: user sample directory, etc. (but not hardcoded - meanings of
+    // the indices should be flexible). This makes it more reasonably possible to uniquely identify 
+    // samples. It's totally possible to have samples in an instrument with same relative paths and 
+    // filenames but with respect to different root directories. Yes - that would be weird, but the 
+    // engine should neverless be able to handle such situations.
   };
 
   // maybe rename to AudioFileStreamRAM, another subclass can be named AudioFileStreamDFD
@@ -376,40 +494,37 @@ protected:
   };
 
 
-  class SamplePool
+
+  /** A class for playing back a given Region object. */
+  class RegionPlayer
   {
 
   public:
 
+    /** Sets up the region object that this player should play. */
+    virtual void setRegionToPlay(const Region* regionToPlay);
 
-    ~SamplePool() { clear();  }
+    /** Generates one stereo sample frame at a time. */
+    virtual rsFloat64x2 getFrame();
 
-
-    int addSample(const AudioFileStream* newSample)
-    {
-      // rsAssert(!contains(newSample))
-      samples.push_back(newSample);
-      return ((int) samples.size()) - 1;
-    }
-    // should the pool take ownership? ...i think so
-
-
-    void clear();
-
-
-    // todo:
-    // setup:   removeSample
-    // inquiry: hasSample
-
+    /** Writes a block of given length into the outBuffer. */
+    virtual void processBlock(rsFloat64x2* outBuffer, int length);
 
   protected:
 
-    std::vector<const AudioFileStream*> samples;
+    /** Sets up the internal values for the playback settings (including DSP objects) according
+    to the assigned region and resets all DSP objects. */
+    virtual void prepareToPlay();
 
+    const AudioFileStream* stream; //< Stream object to get the data from
+    rsFloat64x2 amp = 1.0;         //< Amplitude (for both channels)
+    int sampleTime = 0;            //< Elapsed time in samples, negative values used for delay
+    const Region* region;          //< The Region object that this object should play.
+
+    // ToDo: add DSP objects. Maybe instead of the delay, we should maintain elapsed sample-time 
+    // which we initialize to negative values, when delay is desired. Actual playback starts at 
+    // zero sample time
   };
-
-
-
 
   /** Defines a set of regions. Used to handle note-on/off events efficiently. Not to be confused 
   with groups. This class exists for purely technical reasons (i.e. implementation details) and 
@@ -438,6 +553,24 @@ protected:
   velocity. This will also take into account other playback constraints defined for the region 
   and/or its enclosing group. */
   bool shouldRegionPlay(const Region* r, const char key, const char vel);
+
+  /** Returns a non-constant point to the region with given index pair, so this allow modifying the
+  Region object via the pointer. Use it with care. In particular, don't change the loKey, hiKey 
+  settings because such changes require an update of the regionsForKey array. */
+  Region* getRegionNonConst(int groupIndex, int regionIndex)
+  {
+    int gi = groupIndex, ri = regionIndex;
+    if(gi < 0 || gi >= (int)groups.size()) {
+      rsError("Invalid group index");
+      return nullptr; 
+    }
+    return groups[gi].getRegionNonConst(ri);
+  }
+
+  /** Returns a pointer to a player for the given region by grabbing it from the idlePlayers array.
+  This will have the side effects that this player will be removed from idlePlayers and added to 
+  activePlayers. If no player is available (i.e. idle), this will return a nullptr. */
+  RegionPlayer* getRegionPlayerFor(const Region* r);
 
 
 
@@ -469,7 +602,22 @@ protected:
   /**< Playback settings that apply to all groups within this instrument, unless a group (or 
   region) overrides a setting with its own value. **/
 
-  int numChannels = 2;
+  std::vector<RegionPlayer*> activePlayers;
+  /**< Array of pointers to region players that are currently active, i.e. playing. */
+
+  std::vector<RegionPlayer*> idlePlayers;
+  /**< Array of pointers to region players that are currently idel, i.e. not playing, and therefore
+  available to be used for new incoming notes. */
+
+  std::vector<RegionPlayer> playerPool;
+  /**< This is our pool of the actual RegionPlayer objects for which we grab a player when we need
+  to trigger the playback of a region. The invariant is that at any given time, all players in this 
+  pool are either pointed to by some element in the activePlayers or by some element in the 
+  idlePlayers. The size of this array determines our maximum polyphony and the memory usage 
+  without taking memory for the samples into account. */
+
+
+  //int numChannels = 2;
   /**< The number of output channels. By default, we have two channels, i.e. a stereo output. */
   // maybe that should be determined by TSig? multi-channel output should be realized by using
   // a multichannel (simd) type ...maybe get rid and support only stereo output

@@ -149,13 +149,19 @@ void sincResamplerAliasing()
   // recover frequency sweep data from time-warp map (as x-axis for plot)
   RAPT::rsArrayTools::difference(w, yN);
 
-
   plotData(yN, w, y);
-
 
   delete[] x;
   delete[] y;
   delete[] w;
+
+  // Ideas:
+  // Maybe try to approximate windowed sinc interpolation by using a polynomial, constructred to have 
+  // zeros at the integers, except 0:
+  //   p(x) = k * (x-1)*(x+1) * (x-2)*(x+2) * (x-3)*(x+3) * ... * (x-N)*(x+N)
+  //        = k * (x^2 - 1^2) * (x^2 - 2^2) * (x^2 - 3^2) * ... * (x^2 - N^2)
+  // for some suitable k such that p(0) = 1. Multiply that by a tapering polynomial q(x) that is 
+  // 1 at 0 and has zeros of given order M at +-N and (maybe) resembles and 1/x shape
 }
 
 

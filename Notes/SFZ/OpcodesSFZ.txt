@@ -1,0 +1,61 @@
+Sample definition:
+sample=guitar_c4_ff.wav   (Example)
+
+Input controls (playback constraints)
+Opcode         Default  Min      Max        Notes
+lochan         1        1        16
+hichan         16       1        16
+lokey          0        0        127
+hikey          127      0        127
+lovel          0        0        127
+hivel          127      0        127
+loccN          0        0        127        N must be replaced by actual controller number
+hiccN          127      0        127
+lobend         -8192    -8192    +8192
+hibend         +8192    -8192    +8192
+lochanaft      0        0        127
+hichanaft      127      0        127
+lopolyaft      0        0        127
+hipolyaft      127      0        127
+lorand         0.0      0.0      1.0
+hirand         1.0      0.0      1.0
+lobpm          0.0      0.0      500.0
+hibpm          500.0    0.0      500.0
+seq_length     1        1        100
+seq_position   1        1        100
+sw_lokey       0        0        127
+sw_hikey       127      0        127
+sw_last        0        0        127
+sw_down        0        0        127
+sw_up          0        0        127
+sw_previous    none     0        127
+sw_vel         current  current,previous    text type parameter
+trigger        attack   attack,release,first,legato
+group          0        0        2^32
+off_mode       fast     fast,normal
+on_loccN       -1       0        127
+on_hiccN       -1       0        127        -1 encodes unassigned
+
+
+
+Pitch
+pitch_keycenter   60       -127     127     midi note number, 60 is C4 (c4 can be used alternatively)
+pitch_keytrack    100      -1200    1200    cents per key-inc
+
+
+
+
+
+
+
+
+
+
+
+
+shortcuts:
+key: sets lokey, hikey, picth_keycenter to the same note
+
+
+Opcode list taken from here:
+https://sfzformat.com/legacy/

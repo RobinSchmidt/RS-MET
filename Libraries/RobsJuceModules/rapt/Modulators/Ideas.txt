@@ -12,3 +12,8 @@ into a kind of white noise (maybe via fmod) and then apply a narrow bandpass
 filter to that to get a kind of signal-derived pseudo-sinusoidal modulation
 signal. Maybe somehow, we could also use a level detector in this setup to
 make sure that the modulation signal has always about the same level.
+
+maybe try something based on:
+  y = f(x) = (a*exp(x) + b*exp(-x)) / (c*exp(x) + d*exp(-x))
+this can be solved for x, giving:
+  x = 0.5*log((y*d-b) / (a-y*c))
