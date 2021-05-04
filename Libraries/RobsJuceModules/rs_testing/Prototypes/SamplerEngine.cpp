@@ -73,6 +73,22 @@ int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
   return ReturnCode::success;
 }
 
+int rsSamplerEngine::setRegionSetting(
+  const Region* region, PlaybackSetting::Type type, float value)
+{
+  // todo: 
+  // -check, if the passed region is actually a member of any of the groups - maybe
+  //  rsAssert(isRegionValid(region)) or something
+  //  -maybe have a function findRegion(const Region* region, int* groupIndex, int* regionIndex)
+  // -before pushing the setting, we should check, whether the setting is already present and if
+  //  so, just change the value and not push a 2nd, conflicting value
+
+  //region.settings.push_back(PlaybackSetting(type, value));
+
+
+  return ReturnCode::success;  // preliminary
+}
+
 //-------------------------------------------------------------------------------------------------
 // Processing:
 

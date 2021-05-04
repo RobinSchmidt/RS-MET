@@ -51,10 +51,10 @@ defines common settings that apply to all regions within the given group. Groups
 performance parameters of multiple regions at once: If a region does not define a particular 
 performance parameter, the value of the enclosing group will be used. Region specific settings, if 
 present, override the group settings (i think - verify!). At the highest level is the whole 
-"instrument" itself. Just like groups provide fallback settings for region, the whole instrument 
+"instrument" itself. Just like groups provide fallback settings for regions, the whole instrument 
 can provide fallback settings for all the groups it contains. If some performance parameter isn't 
 defined anywhere (neither in the instrument, group or region), a neutrally behaving default value 
-will be used.  */
+will be used, which means the corresponding feature is not used, i.e. bypassed.  */
 
 class rsSamplerEngine
 {
@@ -77,31 +77,6 @@ public:
   class Region;
   class AudioFileStream;
 
-  /*
-  class SampleMetaData
-  {
-
-  public:
-
-    
-  private:
-
-    std::string uniqueName;  // Unique within the context of the instrument definition.
-    std::string fileName;    // Without extension for the format.
-    std::string extension;   // e.g. wav, flac, etc.
-    std::string filePath;    // Relative path with respect to instrument definition file or some
-                             // global sample content directory.
-
-    int  numFrames   = 0;
-    int  numChannels = 0;
-    TPar sampleRate  = TPar(-1);  // in Hz, -1 is code for unknown
-    TPar rootKey     = TPar(-1);  // as MIDI key in 0..127, not necessarily integer
-
-    // Maybe add: peakAmplitude, rmsAmplitude, etc., maybe Category (harmonic, inharmonic, noisy, 
-    // transient, speech, music, ...)
-  };
-  */
-
   /** A class to represent various additional (and optional) playback settings of a region, group 
   or instrument. Such additional settings include additional constraints for the circumstances 
   under which a particular sample should be played. Key- and velocity ranges are the obvious 
@@ -113,11 +88,13 @@ public:
 
   public:
 
+    /** Enumeration of possible types of settings. These types correspond to the opcodes defined
+    in the sfz specification. */
     enum Type
     {
       ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
 
-      RootKey,
+      PitchKeyCenter,
 
       AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
 
@@ -129,9 +106,18 @@ public:
       //...tbc...
     };
 
+    PlaybackSetting(Type type, float value)
+    { this->type = type; this->value = value; }
+
     Type getType() const { return type; }
 
+    /** Returns the stored value. Values are always stored as floats and it is understood that in
+    cases, where the corresponding parameter in the sfz spec is defined to be an integer, we just
+    represent it as that integer with all zeros after the decimal dot. */
     float getValue() const { return value; }
+    // todo: (decide and) document, how choice parameters like filter-type are represented. In sfz,
+    // they are just represented as text. Maybe for each such choice parameter, we need another 
+    // enum to represent its allowed values...
 
   private:
 
@@ -141,6 +127,7 @@ public:
     // would be wasteful to store two values for all other settings as well...hmmm...maybe 
     // groups/regions need to maintain 2 arrays with settings, 1 for the 1-valued settings and 
     // another for the 2-valued settings - maybe have classes PlaybackSetting, PlaybackSetting2Val
+    // or: have indeed all the ccN as different type - but that would blow up the enum excessively
   };
 
   /** A group organizes a bunch of regions into a single entity for which performance settings can 
@@ -324,8 +311,15 @@ public:
   can also be set up later, but some memory operations can be saved, if it's known in advance. */
   int addRegion(int groupIndex, uchar loKey = 0, uchar hiKey = 127);
 
-  /** Sets the sample to be used for the given region within the given group. */
+  /** Sets the sample to be used for the given region within the given group. Returns either
+  ReturnCode::success or ReturnCode::invalidIndex, if the pair of group/region indices and/or the
+  sample index was invalid. */
   int setRegionSample(int groupIndex, int regionIndex, int sampleIndex); 
+
+  /** Sets a value for a given type of playback setting for the given region. */
+  int setRegionSetting(const Region* region, PlaybackSetting::Type type, float value);
+
+  // todo: setGroupSetting, setInstrumentSetting
 
   //int setRegionSetting(Region
 

@@ -34,12 +34,10 @@ bool samplerEngineUnitTest()
   int ri = se.addRegion(gi);  // add new region to group gi, ri: region index
   ok &= ri == 0;
 
-  const SE::Region* region = se.getRegion(gi, ri);
+  const SE::Region* r = se.getRegion(gi, ri);
   int rc = se.setRegionSample(gi, ri, si); 
   ok &= rc == RC::success;
-
-
-  //se.setRegionSetting(region, PST::PitchKeyCenter, 69.f);
+  se.setRegionSetting(r, PST::PitchKeyCenter, 69.f);
 
 
   // Maybe it should be a non-const pointer, so we can actually edit it - or let the edits be done
