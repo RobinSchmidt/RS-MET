@@ -29,11 +29,10 @@ int rsSamplerEngine::addSampleToPool(
   //  mono-samples, both just point to the same buffer. that may make it easier to handle things
   //  uniformly
 
-
   AudioFileStreamPreloaded* stream = new AudioFileStreamPreloaded;
-  int result = stream->setData(data, numFrames, numChannels, sampleRate, uniqueName);
-  if(result == ReturnCode::memAllocFail)
-    return result;
+  bool allocOK = stream->setData(data, numFrames, numChannels, sampleRate, uniqueName);
+  if(allocOK == false)
+    return ReturnCode::memAllocFail;
   return samplePool.addSample(stream);
 }
 
@@ -238,7 +237,7 @@ int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
 //=================================================================================================
 // Function definitions for the helper classes:
 
-int rsSamplerEngine::AudioFileStreamPreloaded::setData(
+bool AudioFileStreamPreloaded::setData(
   float** newData, int numFrames, int numChannels, float sampleRate,
   const std::string& uniqueName)
 {
@@ -247,7 +246,7 @@ int rsSamplerEngine::AudioFileStreamPreloaded::setData(
   flatData = new float[numChannels*numFrames];
   channelPointers = new float*[numChannels];
   if(flatData == nullptr || channelPointers == nullptr) {
-    clear(); return ReturnCode::memAllocFail; }
+    clear(); return false; }  // memory allocation failed
 
   // Copy the new data into the freshly allocated memory:
   for(int c = 0; c < numChannels; c++) {
@@ -262,10 +261,10 @@ int rsSamplerEngine::AudioFileStreamPreloaded::setData(
   this->numChannels = numChannels;
   this->numFrames   = numFrames;
   this->sampleRate  = sampleRate;
-  return ReturnCode::success;
+  return true; // success
 }
 
-void rsSamplerEngine::AudioFileStreamPreloaded::clear()
+void AudioFileStreamPreloaded::clear()
 {
   numChannels = 0;
   numFrames   = 0; 
@@ -313,7 +312,7 @@ void rsSamplerEngine::Group::clearRegions()
 
 //-------------------------------------------------------------------------------------------------
 
-void rsSamplerEngine::SamplePool::clear()
+void SamplePool::clear()
 {
   for(size_t i = 0; i < samples.size(); i++)
     delete samples[i];

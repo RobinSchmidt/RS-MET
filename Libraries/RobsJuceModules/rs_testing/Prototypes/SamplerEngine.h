@@ -37,6 +37,165 @@ protected:
 
 //=================================================================================================
 
+class AudioStream
+{
+
+public:
+
+  virtual ~AudioStream() {}
+
+  /** For random access. Writes the sample frame with given index into the given destination. */
+  virtual void getFrame(int sampleIndex, float* destination) = 0;
+
+  /** Subclasses may want to override this for optimizing the blockwise access. */
+  /*
+  virtual void getBlock(int startIndex, int length, TSmp** destination)
+  {
+  for(int i = 0; i < length; i++)
+  getFrame(startIndex + i, destination[i]);
+  // assumes interleaved storage in memory
+  }
+  */
+
+protected:
+
+  float sampleRate  = 44100.f;
+  int   numChannels = 0;
+  int   numFrames   = 0;         // maybe use -1 to encode "unknown"? would that be useful?
+
+};
+// maybe move out of this class - this may be useful in other contexts, too - maybe templatize
+
+
+class AudioFileStream : public AudioStream
+{
+
+  // ToDo: add == operator based on fileName, extension, path (and maybe (meta)data such as 
+  // sampleRate, numChannels, numFrames, ...)
+
+  // inquiry: existsOnDisk (idea: we should allow to work with samples that are not stored on 
+  // disk but rather pre-rendered programmatically into RAM at runtime)
+
+  //virtual void getFrame(int sampleIndex, TSmp* destination) {}
+
+  // todo: getBlock
+
+
+protected:
+
+  std::string fileName;  // without filename extension (e.g. Piano_A4)
+  std::string extension; // filename extension (e.g. wav, flac)
+  std::string path;      // relative path from a predefined root directory
+  int rootDirIndex = 0;  // index of root directory (among a couple of predefined choices)
+  // rootDirIndex stores the root-directory to which the path is relative, but just as an integer
+  // index that selects between various pre-defined root-directories that should exist at the 
+  // rsSamplerEngine level. For example: 0: instrument directory (containing e.g. Piano.sfz), 
+  // 1: factory sample directory, 2: user sample directory, etc. (but not hardcoded - meanings of
+  // the indices should be flexible). This makes it more reasonably possible to uniquely identify 
+  // samples. It's totally possible to have samples in an instrument with same relative paths and 
+  // filenames but with respect to different root directories. Yes - that would be weird, but the 
+  // engine should neverless be able to handle such situations.
+};
+
+
+// maybe rename to AudioFileStreamRAM, another subclass can be named AudioFileStreamDFD
+class AudioFileStreamPreloaded : public AudioFileStream 
+{
+
+public:
+
+
+  virtual ~AudioFileStreamPreloaded() { clear(); }
+
+
+  /** Returns true, iff everything went alright and false if it failed to allocate the required
+  memory. */
+  bool setData(float** newData, int numFrames, int numChannels, float sampleRate, 
+    const std::string& uniqueName);
+  // todo: include fileName etc. later, too
+
+
+  void clear();
+
+
+  void getFrame(int sampleIndex, float* destination) override
+  {
+    int n = sampleIndex;
+    rsAssert(n >= 0 && n < numFrames, "sampleIndex out of range");
+    for(int c = 0; c < this->numChannels; c++)
+      destination[c] = channelPointers[c][n];
+    // What, if the number of output channels shall be different than the number of of channels
+    // in the data? Maybe it's best (most efficient) to ensure that this cannot happen on a 
+    // higher level. We can just let our channelPointers all point to the same actual data, for
+    // example. When the number of output channels of the sampler engine is changed (which 
+    // should happen rarely, if ever), we need to update all channelPointer arrays in all 
+    // AudioFileStreamPreloaded objects.
+  }
+
+protected:
+
+  float*  flatData = nullptr;         // pointer to the sample data
+  float** channelPointers = nullptr;  // pointers to the channels
+  // If we store the data in interleaved format, the channelPointers will be not needed and 
+  // getFrame must be implemented differently. Maybe that's better (more efficient)
+};
+
+//=================================================================================================
+
+/** A class to represent a pool of audio samples...tbc...
+ToDo: in a more general context, we would probably need a more complex referencing system for the 
+AudioStream objects - regions would need to be something like AudioStreamClients, that 
+register/deregister themselves, etc. Maybe AudioStream should be a subclass of some DataStream 
+baseclass. We'll see... */
+class SamplePool
+{
+
+public:
+
+
+  ~SamplePool() { clear();  }
+
+
+  int addSample(const AudioFileStream* newSample)
+  {
+    // rsAssert(!contains(newSample))
+    samples.push_back(newSample);
+    return ((int) samples.size()) - 1;
+  }
+  // should the pool take ownership? ...i think so
+
+
+  /** Returns true, if the given index i refers to a valid sample index. */
+  bool isSampleIndexValid(int i) const { return i >= 0 && i < (int)samples.size(); }
+
+
+  const AudioFileStream* getSampleStream(int i)
+  {
+    if(!isSampleIndexValid(i)) {
+      rsError("Invalid sample index");
+      return nullptr; }
+    return samples[i];
+  }
+
+  void clear();
+
+  // todo:
+  // setup: removeSample...but if regions refer to it, we need to update them, too by 
+  // invalidating their pointers. We either need an observer mechanism (complex and general) or 
+  // we allow reomval of samples only via a member function of the outlying rsSamplerEngine 
+  // class, which also takes care of resetting the sample-streams in all regions that use it
+  // (simpler but less general). Maybe to make it safer, we could also introduce a reference
+  // counter and check, if it is zero, before a stream objects gets removed
+  // inquiry: hasSample
+
+protected:
+
+  std::vector<const AudioFileStream*> samples;
+
+};
+
+//=================================================================================================
+
 /** Under Construction. Not yet ready for general use. 
 
 A sampler engine whose feature set roughly resembles the sfz specification. It's not necessarily 
@@ -69,14 +228,13 @@ public:
 
   virtual ~rsSamplerEngine();
 
-
   //-----------------------------------------------------------------------------------------------
   // \name Helper Classes
 
   using uchar = unsigned char;
   class Region;
-  class AudioFileStream;
 
+  //-----------------------------------------------------------------------------------------------
   /** A class to represent various additional (and optional) playback settings of a region, group 
   or instrument. Such additional settings include additional constraints for the circumstances 
   under which a particular sample should be played. Key- and velocity ranges are the obvious 
@@ -130,6 +288,7 @@ public:
     // or: have indeed all the ccN as different type - but that would blow up the enum excessively
   };
 
+  //-----------------------------------------------------------------------------------------------
   /** A group organizes a bunch of regions into a single entity for which performance settings can 
   be set up which will be applicable in cases where the region does not itself define these 
   settings, so they act as fallback values. */
@@ -137,7 +296,6 @@ public:
   {
 
   public:
-
 
     ~Group() { clearRegions(); }
 
@@ -148,19 +306,8 @@ public:
     /** Returns true, if the given index i refers toa valid region within this group. */
     bool isRegionIndexValid(int i) const { return i >= 0 && i < (int)regions.size(); }
 
+    /** Returns a pointer to the region with the given index within the group. */
     Region* getRegion(int i) const;
-    /*
-    {
-      if(i < 0 || i >= (int)regions.size()) {
-        rsError("Invalid region index");
-        return nullptr; 
-      }
-      //return &regions[i];
-      return regions[i];
-    }
-    */
-    // for some reason, i get compiler errors when trying to put this into the cpp file 
-    // -> figure out
 
 
   private:
@@ -182,6 +329,7 @@ public:
     friend class rsSamplerEngine;
   };
 
+  //-----------------------------------------------------------------------------------------------
   /** A region contains a sample along with performance settings including information for which 
   keys and velocities the sample should be played and optionally other constraints for when the the
   sample should be played and also settings for pitch, volume, pan, filter, envelopes, etc. */
@@ -202,7 +350,7 @@ public:
     /** Sets the audio stream object that should be used for this region. */
     void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
 
-    const AudioFileStream* sampleStream = nullptr;  
+    const AudioFileStream* sampleStream = nullptr;
     Group* group = nullptr;             // pointer to the group to which this region belongs
     uchar loKey = 0, hiKey = 127;
     uchar loVel = 0, hiVel = 127;
@@ -218,7 +366,7 @@ public:
 
     //std::string name;
 
-    friend class Group;
+    friend class Group;  // do we need this? if not, get rid.
     friend class rsSamplerEngine;
     // The Region class shall not provide any public functions that can modify the region because
     // those could be used by client code to modify the region behind the back of the 
@@ -228,64 +376,6 @@ public:
     // additional actions, if necessary. The same should probably apply to the Group class as well.
     // Is this a known pattern? -> figure out
   };
-
-
-  /** A class to represent a pool of audio samples...tbc...
-  ToDo:
-  Maybe factor out, i.e. move out of rsSamplerEngine. It may be useful in other contexts as well. 
-  The same goes for the AudioStream class and its subclasses. But in a more general context, we 
-  would probably need a more complex referencing system for the AudioStream objects - regions
-  would need to be something like AudioStreamClients, that register/deregister themselves, etc.
-  Maybe AudioStream should be a subclass of some DataStream baseclass. We'll see... */
-  class SamplePool
-  {
-
-  public:
-
-
-    ~SamplePool() { clear();  }
-
-
-    int addSample(const AudioFileStream* newSample)
-    {
-      // rsAssert(!contains(newSample))
-      samples.push_back(newSample);
-      return ((int) samples.size()) - 1;
-    }
-    // should the pool take ownership? ...i think so
-
-
-    /** Returns true, if the given index i refers to a valid sample index. */
-    bool isSampleIndexValid(int i) const { return i >= 0 && i < (int)samples.size(); }
-
-
-    const AudioFileStream* getSampleStream(int i)
-    {
-      if(!isSampleIndexValid(i)) {
-        rsError("Invalid sample index");
-        return nullptr; }
-      return samples[i];
-    }
-
-    void clear();
-
-
-    // todo:
-    // setup: removeSample...but if regions refer to it, we need to update them, too by 
-    // invalidating their pointers. We either need an observer mechanism (complex and general) or 
-    // we allow reomval of samples only via a member function of the outlying rsSamplerEngine 
-    // class, which also takes care of resetting the sample-streams in all regions that use it
-    // (simpler but less general). Maybe to make it safer, we could also introduce a reference
-    // counter and check, if it is zero, before a stream objects gets removed
-    // inquiry: hasSample
-
-
-  protected:
-
-    std::vector<const AudioFileStream*> samples;
-
-  };
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
@@ -392,105 +482,7 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Internal Helper Classes
 
-  class AudioStream
-  {
 
-  public:
-
-    virtual ~AudioStream() {}
-
-    /** For random access. Writes the sample frame with given index into the given destination. */
-    virtual void getFrame(int sampleIndex, float* destination) = 0;
-
-    /** Subclasses may want to override this for optimizing the blockwise access. */
-    /*
-    virtual void getBlock(int startIndex, int length, TSmp** destination)
-    {
-      for(int i = 0; i < length; i++)
-        getFrame(startIndex + i, destination[i]);
-        // assumes interleaved storage in memory
-    }
-    */
-
-  protected:
-
-    float sampleRate  = 44100.f;
-    int   numChannels = 0;
-    int   numFrames   = 0;         // maybe use -1 to encode "unknown"? would that be useful?
-
-  };
-  // maybe move out of this class - this may be useful in other contexts, too - maybe templatize
-
-  class AudioFileStream : public AudioStream
-  {
-
-    // ToDo: add == operator based on fileName, extension, path (and maybe (meta)data such as 
-    // sampleRate, numChannels, numFrames, ...)
-
-    // inquiry: existsOnDisk (idea: we should allow to work with samples that are not stored on 
-    // disk but rather pre-rendered programmatically into RAM at runtime)
-
-    //virtual void getFrame(int sampleIndex, TSmp* destination) {}
-
-    // todo: getBlock
-
-
-  protected:
-
-    std::string fileName;  // without filename extension (e.g. Piano_A4)
-    std::string extension; // filename extension (e.g. wav, flac)
-    std::string path;      // relative path from a predefined root directory
-    int rootDirIndex = 0;  // index of root directory (among a couple of predefined choices)
-    // rootDirIndex stores the root-directory to which the path is relative, but just as an integer
-    // index that selects between various pre-defined root-directories that should exist at the 
-    // rsSamplerEngine level. For example: 0: instrument directory (containing e.g. Piano.sfz), 
-    // 1: factory sample directory, 2: user sample directory, etc. (but not hardcoded - meanings of
-    // the indices should be flexible). This makes it more reasonably possible to uniquely identify 
-    // samples. It's totally possible to have samples in an instrument with same relative paths and 
-    // filenames but with respect to different root directories. Yes - that would be weird, but the 
-    // engine should neverless be able to handle such situations.
-  };
-
-  // maybe rename to AudioFileStreamRAM, another subclass can be named AudioFileStreamDFD
-  class AudioFileStreamPreloaded : public AudioFileStream 
-  {
-
-  public:
-
-
-    virtual ~AudioFileStreamPreloaded() { clear(); }
-
-
-    int setData(float** newData, int numFrames, int numChannels, float sampleRate, 
-      const std::string& uniqueName);
-    // todo: include fileName etc. later, too
-
-
-    void clear();
-
-
-    void getFrame(int sampleIndex, float* destination) override
-    {
-      int n = sampleIndex;
-      rsAssert(n >= 0 && n < numFrames, "sampleIndex out of range");
-      for(int c = 0; c < this->numChannels; c++)
-        destination[c] = channelPointers[c][n];
-        // What, if the number of output channels shall be different than the number of of channels
-        // in the data? Maybe it's best (most efficient) to ensure that this cannot happen on a 
-        // higher level. We can just let our channelPointers all point to the same actual data, for
-        // example. When the number of output channels of the sampler engine is changed (which 
-        // should happen rarely, if ever), we need to update all channelPointer arrays in all 
-        // AudioFileStreamPreloaded objects.
-    }
-
-  protected:
-
-    float*  flatData = nullptr;         // pointer to the sample data
-    float** channelPointers = nullptr;  // pointers to the channels
-    // If we store the data in interleaved format, the channelPointers will be not needed and 
-    // getFrame must be implemented differently. Maybe that's better (more efficient)
-
-  };
 
 
 
