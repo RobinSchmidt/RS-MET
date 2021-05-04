@@ -141,13 +141,13 @@ public:
 
     ~Group() { clearRegions(); }
 
-    int addRegion();
+    int addRegion();   // make private!
 
     // todo: removeRegion, etc.
 
     /** Returns the index of the given region within this group, if present or -1 if the region is
     not present in this group. */
-    int getRegionIndex(const Region* region);
+    int getRegionIndex(const Region* region); // make const
 
 
     /** Returns true, if the given index i refers toa valid region within this group. */
@@ -177,18 +177,16 @@ public:
       //return &regions[i];
       return regions[i];
     }
+    // move to cpp
 
 
-    void clearRegions();
-
-    void clearSettings();
+    void clearRegions();   // make private
+    void clearSettings();  // ditto
 
   private:
 
-    //std::vector<Region> regions;
     std::vector<Region*> regions;
     /**< Pointers to the regions belonging to this group. */
-    // this should be a pointer array
 
     std::vector<PlaybackSetting> settings;
     /**< Settings that apply to all regions within this group, unless a region overrides them with
@@ -206,9 +204,6 @@ public:
 
   public:
 
-    /** Sets the audio stream object that should be used for this region. */
-    void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
-
     /** Returns a (const) pointer the audio stream object that should be used for this region. */
     const AudioFileStream* getSampleStream() const { return sampleStream; }
 
@@ -217,12 +212,15 @@ public:
 
   private:
 
+
+    /** Sets the audio stream object that should be used for this region. */
+    void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
+
     const AudioFileStream* sampleStream = nullptr;  
     Group* group = nullptr;             // pointer to the group to which this region belongs
     uchar loKey = 0, hiKey = 127;
     uchar loVel = 0, hiVel = 127;
     // todo: maybe package loKey/hiKey, loVel/hiVel into a single uchar to save memory
-
 
     std::vector<PlaybackSetting> settings;
     // for more restrictions (optional) restrictions - sfz can restrict the playback of samples
@@ -236,6 +234,13 @@ public:
 
     friend class Group;
     friend class rsSamplerEngine;
+    // The Region class shall not provide any public functions that can modify the region because
+    // those could be used by client code to modify the region behind the back of the 
+    // rsSamplerEngine which could mess things up. Client code can modify regions only through the
+    // appropriate functions of rsSamplerEngine. It acts as man-in-the-middle and can the call the
+    // private setters of the Region (by virtue of being a friend class) and it may also trigger 
+    // additional actions, if necessary. The same should probably apply to the Group class as well.
+    // Is this a known pattern? -> figure out
   };
 
 
@@ -371,6 +376,7 @@ public:
     }
     return groups[gi].getRegion(ri);
   }
+  // move to cpp
   // Maybe it should be non-const - but no: the caller should not be able to change the loKey/hiKey
   // settings because that would require a change to the regionsForKey array...but maybe we should 
   // get rid of that anyway - it might be a pointless attempt to optimization -> benchmark!
@@ -600,7 +606,9 @@ protected:
     }
     return groups[gi].getRegionNonConst(ri);
   }
-  // move to cpp file
+  // Move to cpp file or better: get rid and keep only getRegion which shall return a non-const 
+  // pointer. Client code actually should be able to modify the region, but only indirectly, 
+  // mediated through the sampler engine.
 
 
   /** Finds the group index and region index within the group for the given region and assigns the
@@ -665,7 +673,7 @@ protected:
   /**< Array of pointers to region players that are currently active, i.e. playing. */
 
   std::vector<RegionPlayer*> idlePlayers;
-  /**< Array of pointers to region players that are currently idel, i.e. not playing, and therefore
+  /**< Array of pointers to region players that are currently idle, i.e. not playing, and therefore
   available to be used for new incoming notes. */
 
   std::vector<RegionPlayer> playerPool;

@@ -424,6 +424,23 @@ all channels.
 
 maybe rename to rsSampler, rsSoundFontPlayer
 
+If client code wants to modify regions and groups, it needs to do this by calling appropriate
+functions on the rsSamplerEngine object with a pointer to the region or group to be modified
+as parameter. For example:
+
+  rsSamplerEngine sampler;
+  // ...more stuff...
+  using PST = rsSamplerEngine::PlaybackSetting::Type;
+  sampler.setRegionSetting(region, PST::PitchKeyCenter, 69.f);
+
+This is realized by having Region and Group define only private setters and letting rsSamplerEnigne
+be a friend class, so it may access them. The goal is to prevent client code to modify regions and
+groups behind the back of the sampler, because the sampler may need to take additional actions on 
+such modifications. So, the sampler always acts as "man-in-the-middle" for any such changes to 
+regions and groups. This might actually be a design pattern (-> figure out, if it's a known one).
+This pattern should be used only for very closely coupled (ideally: nested) classes such is the 
+case here.
+
 Ideas:
 -Could it make sense to define a level above the instrument - maybe an ensemble? Different 
  instruments in an ensemble could respond to different midi-channels. This would resemble the
