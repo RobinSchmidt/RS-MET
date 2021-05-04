@@ -85,8 +85,26 @@ int rsSamplerEngine::setRegionSetting(
 
   //region.settings.push_back(PlaybackSetting(type, value));
 
+  int gi, ri;
+  findRegion(region, &gi, &ri);
+  if(gi == -1 || ri == -1)
+    return ReturnCode::notFound;
 
-  return ReturnCode::success;  // preliminary
+  Region* r = getRegionNonConst(gi, ri);
+  // That's a bit dirty - it actually has the same effect as casting away the const from the passed
+  // region. The caller may assume, that the passed region remins constant when in fact, it 
+  // doesn't. Maybe make the region parameter non-const and prevent the client code from modifying
+  // regions directly by other means like making all setters private such that only the 
+  // rsSamplerEngine friend class can set them
+
+  r->settings.push_back(PlaybackSetting(type, value));
+  // Preliminary. We need to figure out, if that setting already exists and if so, just change its
+  // value instead of pushing another value for the same parameter
+
+  return ReturnCode::success;
+  // Maybe we should distinguish between settingAdded and settingModified in the return code. But
+  // actually, from the caller's perspective, that information should be irrelevant anyway, so 
+  // maybe not.
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -129,6 +147,22 @@ void rsSamplerEngine::addRegionForKey(uchar k, const Region* region)
   regionsForKey[k].addRegion(region);
   // What, if the region is already there? We should check that before. It's probably not supposed
   // to happen, but anyway. Well...maybe it is, when the user tweaks loKey/hiKey settings on a GUI.
+}
+
+void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int* ri)
+{
+  *gi = -1;
+  *ri = -1;
+  for(size_t i = 0; i < groups.size(); i++) {
+    int j = groups[i].getRegionIndex(r);
+    if(j != -1) {
+      *gi = (int) i;
+      *ri = j;
+      return; }}
+  rsError("Region not found");
+  // A region should always be found in one (and only one group). If we don't find it, it means
+  // the caller has passed a pointer to a region object that is not part this instrument. If this 
+  // happens, it indicates a bug at the call site.
 }
 
 rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region* r)
@@ -224,10 +258,28 @@ void rsSamplerEngine::AudioFileStreamPreloaded::clear()
 
 int rsSamplerEngine::Group::addRegion()
 {
-  rsSamplerEngine::Region r;
-  r.group = this;
+  //rsSamplerEngine::Region r;
+  //r.group = this;
+
+  rsSamplerEngine::Region* r = new rsSamplerEngine::Region;
+  r->group = this;
   regions.push_back(r);
   return ((int) regions.size()) - 1;
+}
+
+int rsSamplerEngine::Group::getRegionIndex(const rsSamplerEngine::Region* region)
+{
+  for(size_t i = 0; i < regions.size(); i++)
+    if(regions[i] == region)
+      return i;
+  return -1;
+}
+
+void rsSamplerEngine::Group::clearRegions()
+{
+  for(size_t i = 0; i < regions.size(); i++)
+    delete regions[i];
+  regions.clear();
 }
 
 //-------------------------------------------------------------------------------------------------

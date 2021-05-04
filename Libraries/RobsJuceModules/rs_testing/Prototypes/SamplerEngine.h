@@ -138,9 +138,16 @@ public:
 
   public:
 
+
+    ~Group() { clearRegions(); }
+
     int addRegion();
 
     // todo: removeRegion, etc.
+
+    /** Returns the index of the given region within this group, if present or -1 if the region is
+    not present in this group. */
+    int getRegionIndex(const Region* region);
 
 
     /** Returns true, if the given index i refers toa valid region within this group. */
@@ -155,7 +162,8 @@ public:
         rsError("Invalid region index");
         return nullptr; 
       }
-      return &regions[i];
+      //return &regions[i];
+      return regions[i];
     }
     // for some reason, i get compiler errors when trying to put this into the cpp file 
     // -> figure out
@@ -166,14 +174,21 @@ public:
         rsError("Invalid region index");
         return nullptr; 
       }
-      return &regions[i];
+      //return &regions[i];
+      return regions[i];
     }
 
 
+    void clearRegions();
+
+    void clearSettings();
+
   private:
 
-    std::vector<Region> regions;
+    //std::vector<Region> regions;
+    std::vector<Region*> regions;
     /**< Pointers to the regions belonging to this group. */
+    // this should be a pointer array
 
     std::vector<PlaybackSetting> settings;
     /**< Settings that apply to all regions within this group, unless a region overrides them with
@@ -224,6 +239,13 @@ public:
   };
 
 
+  /** A class to represent a pool of audio samples...tbc...
+  ToDo:
+  Maybe factor out, i.e. move out of rsSamplerEngine. It may be useful in other contexts as well. 
+  The same goes for the AudioStream class and its subclasses. But in a more general context, we 
+  would probably need a more complex referencing system for the AudioStream objects - regions
+  would need to be something like AudioStreamClients, that register/deregister themselves, etc.
+  Maybe AudioStream should be a subclass of some DataStream baseclass. We'll see... */
   class SamplePool
   {
 
@@ -285,7 +307,8 @@ public:
     nothingToDo   = -2,  //< There was nothing to actually do. State was already as desired.
     memAllocFail  = -3,  //< Memory allocation failure.
     invalidIndex  = -4,  //< An invalid index was passed.
-    voiceOverload = -5   //< Note enough free voices available (for e.g. new noteOn).
+    voiceOverload = -5,  //< Not enough free voices available (in e.g. new noteOn).
+    notFound      = -6   //< A region, group or whatever was not found.
   };
   // todo: make it an enum class, maybe include also return codes for inquiry functions such as for
   // "unknown", etc. ...but maybe that's no good idea when we want to use it for functions which
@@ -316,7 +339,9 @@ public:
   sample index was invalid. */
   int setRegionSample(int groupIndex, int regionIndex, int sampleIndex); 
 
-  /** Sets a value for a given type of playback setting for the given region. */
+  /** Sets a value for a given type of playback setting for the given region. Return either
+  ReturnCode::success
+  */
   int setRegionSetting(const Region* region, PlaybackSetting::Type type, float value);
 
   // todo: setGroupSetting, setInstrumentSetting
@@ -575,6 +600,21 @@ protected:
     }
     return groups[gi].getRegionNonConst(ri);
   }
+  // move to cpp file
+
+
+  /** Finds the group index and region index within the group for the given region and assigns the
+  output parameters group/regionIndex accordingly. If the region is not found in any of our groups,
+  both will be assigned to -1. This should actually not happen, though: a region should always be 
+  found in one and only one group. In sfz files, there can actually be regions that are not in any
+  group, but in this implementation, we just put them into an additional group (at group index 0), 
+  if necessary. The organization of the sfz file does not need to match the implementation. The 
+  group with index 0 contains either all the free regions or corresponds to the first defined group 
+  in the sfz file, if the file contains no free regions. If -1,-1 is returned, it indicates that 
+  the caller still holds a pointer to a region that doesn't exist anymore in the instrument, which 
+  may indicate a bug at the call site. */
+  void findRegion(const Region* region, int* groupIndex, int* regionIndex);
+
 
   /** Returns a pointer to a player for the given region by grabbing it from the idlePlayers array.
   This will have the side effects that this player will be removed from idlePlayers and added to 
