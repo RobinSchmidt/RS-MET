@@ -7,7 +7,16 @@ bool samplerEngineUnitTest()
   using SE   = rsSamplerEngineTest;
   using RC   = SE::ReturnCode;
   using PST  = SE::PlaybackSetting::Type;
-  SE se;                              // create the sampler engine object
+  using Ev   = rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
+
+
+  int maxLayers = 8;  
+  // Maximum number of layers, actually, according to the sfz spec, this is supposed to be 
+  // theoretically infinite, but i guess, in practice, there has to be some (high) limit which is
+  // never supposed to be reached
+
+  SE se(maxLayers);                     // create the sampler engine object
 
   // Create a sinewave as example sample:
   float fs = 44100;  // sample rate
@@ -37,7 +46,26 @@ bool samplerEngineUnitTest()
   SE::Region* r = se.getRegion(gi, ri);
   int rc = se.setRegionSample(gi, ri, si); 
   ok &= rc == RC::success;
-  se.setRegionSetting(r, PST::PitchKeyCenter, 69.f);
+  se.setRegionSetting(r, PST::PitchKeyCenter, 69.f); // key = 69 is A4 at 440 Hz
+
+  // Now the engine is set up with the sinewave sample in a single region that spans the whole
+  // keyboard. We trigger a note at the original PitchCenterKey with maximum velocity and let the
+  // engine produce N samples. We expect that the output exactly matches the original sample:
+  VecF outL(N), outR(N);
+  ok &= se.getNumIdleLayers()   == maxLayers;
+  ok &= se.getNumActiveLayers() == 0;
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  ok &= se.getNumIdleLayers()   == maxLayers-1;
+  ok &= se.getNumActiveLayers() == 1;
+  for(int n = 0; n < N; n++)
+  {
+    float tmp[2];
+    se.processFrame(tmp);  // this api sucks! change it!
+    outL[n] = tmp[0];
+    outR[n] = tmp[1];
+  }
+
+
 
 
   // todo:

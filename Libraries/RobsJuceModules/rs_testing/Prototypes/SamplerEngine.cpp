@@ -88,14 +88,14 @@ void rsDataSFZ::Group::clearRegions()
 //=================================================================================================
 // rsSamplerEngine
 
-rsSamplerEngine::rsSamplerEngine(int maxPolyphony)
+rsSamplerEngine::rsSamplerEngine(int maxNumLayers)
 {
-  // factor out into setMaxPolyphony:
-  int P = maxPolyphony;
-  playerPool.resize(P);
-  idlePlayers.resize(P);
-  activePlayers.reserve(P);
-  for(int i = 0; i < P; i++)
+  // factor out into setMaxNumLayers
+  int L = maxNumLayers;
+  playerPool.resize(L);
+  idlePlayers.resize(L);
+  activePlayers.reserve(L);
+  for(int i = 0; i < L; i++)
     idlePlayers[i] = &playerPool[i];
 }
 
@@ -224,7 +224,20 @@ void rsSamplerEngine::processBlock(float** block, int numFrames)
 
 void rsSamplerEngine::handleMusicalEvent(const rsMusicalEvent<float>& ev)
 {
+  using Type = rsMusicalEvent<float>::Type;
+  Type  type = ev.getType();
+  float val1 = ev.getValue1();
+  float val2 = ev.getValue2();
+  switch(type)
+  {
+  case Type::noteOn:  handleNoteOn( (uchar)val1, (uchar)val2); break;
+  case Type::noteOff: handleNoteOff((uchar)val1, (uchar)val2); break;
+  // Maybe we should pass the floats directly to noteOn/Off. This would allow for microtuning. 
+  // However, it complicates identifying to which notes a noteOff should apply. Or rather, it's 
+  // not really complicated but requires a design decision: should we require an exact match or 
+  // allow the range key +-0.5? For the moment, this here is good enough, though.
 
+  }
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -386,10 +399,24 @@ void rsSamplerEngine::RegionPlayer::processBlock(rsFloat64x2* y, int N)
   // -apply amp-envelope
 }
 
+bool rsSamplerEngine::RegionPlayer::isPlayable(const Region* region)
+{
+  bool ok = true;
+  ok &= region != nullptr;
+  ok &= region->getGroup() != nullptr;
+  //ok &= region->getGroup()->getInstrument() != nullptr;  // uncomment
+  return ok;
+}
+
 void rsSamplerEngine::RegionPlayer::prepareToPlay()
 {
-  rsAssert(region != nullptr);  // This should not happen. Something is wrong.
+  rsAssert(isPlayable(region));   // This should not happen. Something is wrong.
+  //rsAssert(region != nullptr);  // This should not happen. Something is wrong.
   rsAssert(stream != nullptr);  // Ditto.
+  // factor out into isRegionPlayable/Valid that verifies that all pointers of the region are 
+  // assigned properly
+
+
   resetDspState();              // Reset internal states of all DSP objects
   resetDspSettings();           // Reset all DSP settings to default values
 
@@ -397,7 +424,7 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay()
   // (1) set up the general instrument-wide settings
   // (2) set up group specific settings (may override instrument settings)
   // (3) set up region specific settings (may override group and/or instrument settings)
-  setupDspSettings(region->getGroup()->getInstrument()->getSettings());
+  //setupDspSettings(region->getGroup()->getInstrument()->getSettings()); // uncomment!
   setupDspSettings(region->getGroup()->getSettings());
   setupDspSettings(region->getSettings());
 }
@@ -444,7 +471,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(const std::vector<PlaybackS
   // of the instrument, group and region - we can get access to the group via the pointer stored
   // in the region but what about the instrument? maybe the Group should maintain a pointer to an 
   // enclosing instrument and we should always have exactly one instrument object present. Maybe
-  // the instruemnt definition can be factored out into data structure 
+  // the instrument definition can be factored out into data structure 
   // rsSampleInstrumentDefinition or rsSoundFont and be made independent for the sampler-engine.
   // But how to handle the acces to the samplePool then?
 
@@ -568,7 +595,7 @@ Problem:
  that doesn't work. What we would need would be a sort of dynamically growing array that never
  deallocates - when it need to grow, it keeps the allocated memory allocated as is and allocates
  new memory somewher else - it wouldn't be contiguous anymore, but we would be safe from 
- deallocation.
+ deallocation. make classes rsGrowingArray and rsThreadedGrowingArray
 -Whenever half of the objects are used up, we would allocate a new chunk of memory equal to the
  current size, so it would grow exponentially like dynamic arrays typically do.
 -We should probably delegate the allocation of more memory to a worker thread to to its 

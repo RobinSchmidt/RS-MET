@@ -27,6 +27,15 @@ public:
     // ...tbc...
   };
 
+  rsMusicalEvent(Type eventType, T value1, T value2)
+    : type(eventType), val1(value1), val2(value2) {}
+
+  Type getType() const { return type; }
+
+  T getValue1() const { return val1; }
+
+  T getValue2() const { return val2; }
+
 protected:
 
   Type type;  // e.g. noteOn/Off, controlChange, pitchWheel
@@ -522,7 +531,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Lifetime
 
-  rsSamplerEngine(int maxPolyphony = 16);
+  rsSamplerEngine(int maxNumLayers = 16);
+  // todo: use some higher default value - what is reasonable here needs some testing in realistic
+  // scenarios
 
   virtual ~rsSamplerEngine();
 
@@ -549,6 +560,8 @@ public:
     voiceOverload = -5,  //< Not enough free voices available (in e.g. new noteOn).
     notFound      = -6   //< A region, group or whatever was not found.
   };
+  // rename voiceOverload to layerOverload. in sfz, a voice refers to asingle key which can contain
+  // multiple layers/regions
   // todo: make it an enum class, maybe include also return codes for inquiry functions such as for
   // "unknown", etc. ...but maybe that's no good idea when we want to use it for functions which
   // need to return valid integers (like, for numChannels, etc. - we could use negative numbers to
@@ -622,6 +635,13 @@ public:
   { return samplePool.isSampleIndexValid(sampleIndex); }
 
 
+  int getMaxNumLayers() const { return (int) playerPool.size(); }
+
+  int getNumActiveLayers() const { return (int) activePlayers.size(); }
+
+  int getNumIdleLayers() const { return (int) idlePlayers.size(); }
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
@@ -656,6 +676,9 @@ protected:
     virtual void processBlock(rsFloat64x2* outBuffer, int length);
 
   protected:
+
+    /** A basic sanity check for the given region. Mostly for catching bugs. */
+    virtual bool isPlayable(const Region* region);
 
     /** Sets up the internal values for the playback settings (including DSP objects) according
     to the assigned region and resets all DSP objects. */
@@ -716,6 +739,8 @@ protected:
   velocity. This will also take into account other playback constraints defined for the region 
   and/or its enclosing group. */
   bool shouldRegionPlay(const Region* r, uchar key, uchar vel);
+
+
 
   /** Finds the group index and region index within the group for the given region and assigns the
   output parameters group/regionIndex accordingly. If the region is not found in any of our groups,
@@ -826,6 +851,8 @@ class rsSamplerEngineTest : public rsSamplerEngine
 {
 
 public:
+
+  using rsSamplerEngine::rsSamplerEngine;  // inherit constructors
 
   static int getRegionPlayerSize() { return sizeof(rsSamplerEngine::RegionPlayer); }
 
