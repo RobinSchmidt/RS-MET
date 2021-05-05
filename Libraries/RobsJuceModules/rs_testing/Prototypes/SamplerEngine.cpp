@@ -49,6 +49,40 @@ void SamplePool::clear()
   samples.clear();
 }
 
+//-------------------------------------------------------------------------------------------------
+// rsSamplerEngine::Group
+
+int rsInstrumentDataSFZ::Group::addRegion()
+{
+  rsInstrumentDataSFZ::Region* r = new rsInstrumentDataSFZ::Region;
+  r->group = this;
+  regions.push_back(r);
+  return ((int) regions.size()) - 1;
+}
+
+int rsInstrumentDataSFZ::Group::getRegionIndex(const rsInstrumentDataSFZ::Region* region) const
+{
+  for(size_t i = 0; i < regions.size(); i++)
+    if(regions[i] == region)
+      return (int) i;
+  return -1;
+}
+
+rsInstrumentDataSFZ::Region* rsInstrumentDataSFZ::Group::getRegion(int i) const
+{
+  if(i < 0 || i >= (int)regions.size()) {
+    rsError("Invalid region index");
+    return nullptr; 
+  }
+  return regions[i];
+}
+
+void rsInstrumentDataSFZ::Group::clearRegions()
+{
+  for(size_t i = 0; i < regions.size(); i++)
+    delete regions[i];
+  regions.clear();
+}
 
 //=================================================================================================
 // rsSamplerEngine
@@ -303,40 +337,7 @@ int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
   return ReturnCode::success;
 }
 
-//-------------------------------------------------------------------------------------------------
-// rsSamplerEngine::Group
 
-int rsSamplerEngine::Group::addRegion()
-{
-  rsSamplerEngine::Region* r = new rsSamplerEngine::Region;
-  r->group = this;
-  regions.push_back(r);
-  return ((int) regions.size()) - 1;
-}
-
-int rsSamplerEngine::Group::getRegionIndex(const rsSamplerEngine::Region* region) const
-{
-  for(size_t i = 0; i < regions.size(); i++)
-    if(regions[i] == region)
-      return i;
-  return -1;
-}
-
-rsSamplerEngine::Region* rsSamplerEngine::Group::getRegion(int i) const
-{
-  if(i < 0 || i >= (int)regions.size()) {
-    rsError("Invalid region index");
-    return nullptr; 
-  }
-  return regions[i];
-}
-
-void rsSamplerEngine::Group::clearRegions()
-{
-  for(size_t i = 0; i < regions.size(); i++)
-    delete regions[i];
-  regions.clear();
-}
 
 //-------------------------------------------------------------------------------------------------
 // rsSamplerEngine::RegionPlayer
@@ -479,7 +480,7 @@ all channels.
 -maybe rapt should be organized using nested namespaces - maybe look at the doxygen-generated
  API documentation, how this looks like
 
-maybe rename to rsSampler, rsSoundFontPlayer
+maybe rename to rsSampler, rsSoundFontPlayer, rsSamplerSFZ
 
 If client code wants to modify regions and groups, it needs to do this by calling appropriate
 functions on the rsSamplerEngine object with a pointer to the region or group to be modified
@@ -556,7 +557,9 @@ https://sfzinstruments.github.io/  collection of sfz instruments
 http://ariaengine.com/overview/sfz-format/
 https://www.linuxsampler.org/sfz/    has convenient list of opcodes, also for sfz v2
 http://doc.linuxsampler.org/sfz/
+
 https://noisesculpture.com/cakewalk-synthesizers/
+https://noisesculpture.com/cakewalk-synthesizers-downloads/
 
 
 https://sfzformat.com/software/players/  players (also open source)
@@ -582,6 +585,10 @@ more can be added - if i understand it correctly (see alloc_voice, line 230)
 
 about float vs double:
 https://randomascii.wordpress.com/2012/03/21/intermediate-floating-point-precision/
+
+Ideas for new opcodes:
+sample_dir=factory  (other options: user, here, E:/Samples/MySamples, ../../Samples/Piano, 
+                     default: here)
 
 
 */

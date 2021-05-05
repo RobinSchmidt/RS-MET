@@ -196,45 +196,25 @@ protected:
 };
 // maybe templatize, rename to AudioFileStreamPool
 
+
 //=================================================================================================
 
-/** Under Construction. Not yet ready for general use. 
+/** Data structure to define a sample based instrument conforming to the sfz specification. */
 
-A sampler engine whose feature set roughly resembles the sfz specification. It's not necessarily 
-meant to be feature-complete (certainly not yet) and on the other hand, it may introduce additional
-features, but sfz is the spec after which this engine is roughly modeled. 
-
-An instrument definition in sfz is organized in 3 levels of hierarchy. At the lowest level is the 
-"region" which defines which sample file should be played along with a bunch of performance 
-parameters such as the key- and velocity ranges, at which the sample should be played, its volume, 
-pan, filter and envelope settings and a bunch of other stuff. One level higher is the "group" which 
-defines common settings that apply to all regions within the given group. Groups allow to edit the 
-performance parameters of multiple regions at once: If a region does not define a particular 
-performance parameter, the value of the enclosing group will be used. Region specific settings, if 
-present, override the group settings (i think - verify!). At the highest level is the whole 
-"instrument" itself. Just like groups provide fallback settings for regions, the whole instrument 
-can provide fallback settings for all the groups it contains. If some performance parameter isn't 
-defined anywhere (neither in the instrument, group or region), a neutrally behaving default value 
-will be used, which means the corresponding feature is not used, i.e. bypassed.  */
-
-class rsSamplerEngine
+class rsInstrumentDataSFZ
 {
 
 public:
 
 
   //-----------------------------------------------------------------------------------------------
-  // \name Lifetime
-
-  rsSamplerEngine(int maxPolyphony = 16);
-
-  virtual ~rsSamplerEngine();
-
-  //-----------------------------------------------------------------------------------------------
   // \name Helper Classes
 
   using uchar = unsigned char;
   class Region;
+  class Group;
+  class Instrument;
+
 
   //-----------------------------------------------------------------------------------------------
   /** A class to represent various additional (and optional) playback settings of a region, group 
@@ -291,6 +271,54 @@ public:
   };
 
   //-----------------------------------------------------------------------------------------------
+  /** A region contains a sample along with performance settings including information for which 
+  keys and velocities the sample should be played and optionally other constraints for when the the
+  sample should be played and also settings for pitch, volume, pan, filter, envelopes, etc. */
+  class Region
+  {
+
+  public:
+
+    /** Returns a (const) pointer the audio stream object that should be used for this region. */
+    const AudioFileStream* getSampleStream() const { return sampleStream; }
+
+    /** Returns a const reference to our playback settings. */
+    const std::vector<PlaybackSetting>& getSettings() const { return settings; }
+
+  private:
+
+
+    /** Sets the audio stream object that should be used for this region. */
+    void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
+
+    const AudioFileStream* sampleStream = nullptr;  // try to get rid
+    Group* group = nullptr;             // pointer to the group to which this region belongs
+    uchar loKey = 0, hiKey = 127;
+    uchar loVel = 0, hiVel = 127;
+    // todo: maybe package loKey/hiKey, loVel/hiVel into a single uchar to save memory
+
+    std::vector<PlaybackSetting> settings;
+    // for more restrictions (optional) restrictions - sfz can restrict the playback of samples
+    // also based on other state variables such as the last received controller of some number,
+    // last received pitchwheel, etc. ...but maybe a subclass RestrictedRegion should be used
+    // for that - i don't think, it will be used a lot and will just eat up memory when it's
+    // present in the baseclass...or maybe it should have a more general array of RegionFeatures
+    // which may also include loop-settings and the like
+
+    //std::string name; sample
+
+    friend class Group;  // do we need this? if not, get rid.
+    friend class rsSamplerEngine;  // try to get rid
+    // The Region class shall not provide any public functions that can modify the region because
+    // those could be used by client code to modify the region behind the back of the 
+    // rsSamplerEngine which could mess things up. Client code can modify regions only through the
+    // appropriate functions of rsSamplerEngine. It acts as man-in-the-middle and can the call the
+    // private setters of the Region (by virtue of being a friend class) and it may also trigger 
+    // additional actions, if necessary. The same should probably apply to the Group class as well.
+    // Is this a known pattern? -> figure out
+  };
+
+  //-----------------------------------------------------------------------------------------------
   /** A group organizes a bunch of regions into a single entity for which performance settings can 
   be set up which will be applicable in cases where the region does not itself define these 
   settings, so they act as fallback values. */
@@ -328,56 +356,57 @@ public:
     // may be add these later:
     //std::string name;  
 
-    friend class rsSamplerEngine;
+    friend class rsSamplerEngine;  // try to get rid
   };
+
+  // todo: class Instrument - group should have a pointer to its enclosing instrument
+
+
+protected:
+
+
+};
+
+//=================================================================================================
+
+/** Under Construction. Not yet ready for general use. 
+
+A sampler engine whose feature set roughly resembles the sfz specification. It's not necessarily 
+meant to be feature-complete (certainly not yet) and on the other hand, it may introduce additional
+features, but sfz is the spec after which this engine is roughly modeled. 
+
+An instrument definition in sfz is organized in 3 levels of hierarchy. At the lowest level is the 
+"region" which defines which sample file should be played along with a bunch of performance 
+parameters such as the key- and velocity ranges, at which the sample should be played, its volume, 
+pan, filter and envelope settings and a bunch of other stuff. One level higher is the "group" which 
+defines common settings that apply to all regions within the given group. Groups allow to edit the 
+performance parameters of multiple regions at once: If a region does not define a particular 
+performance parameter, the value of the enclosing group will be used. Region specific settings, if 
+present, override the group settings (i think - verify!). At the highest level is the whole 
+"instrument" itself. Just like groups provide fallback settings for regions, the whole instrument 
+can provide fallback settings for all the groups it contains. If some performance parameter isn't 
+defined anywhere (neither in the instrument, group or region), a neutrally behaving default value 
+will be used, which means the corresponding feature is not used, i.e. bypassed.  */
+
+class rsSamplerEngine
+{
+
+public:
+
 
   //-----------------------------------------------------------------------------------------------
-  /** A region contains a sample along with performance settings including information for which 
-  keys and velocities the sample should be played and optionally other constraints for when the the
-  sample should be played and also settings for pitch, volume, pan, filter, envelopes, etc. */
-  class Region
-  {
+  // \name Lifetime
 
-  public:
+  rsSamplerEngine(int maxPolyphony = 16);
 
-    /** Returns a (const) pointer the audio stream object that should be used for this region. */
-    const AudioFileStream* getSampleStream() const { return sampleStream; }
-
-    /** Returns a const reference to our playback settings. */
-    const std::vector<PlaybackSetting>& getSettings() const { return settings; }
-
-  private:
+  virtual ~rsSamplerEngine();
 
 
-    /** Sets the audio stream object that should be used for this region. */
-    void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
-
-    const AudioFileStream* sampleStream = nullptr;
-    Group* group = nullptr;             // pointer to the group to which this region belongs
-    uchar loKey = 0, hiKey = 127;
-    uchar loVel = 0, hiVel = 127;
-    // todo: maybe package loKey/hiKey, loVel/hiVel into a single uchar to save memory
-
-    std::vector<PlaybackSetting> settings;
-    // for more restrictions (optional) restrictions - sfz can restrict the playback of samples
-    // also based on other state variables such as the last received controller of some number,
-    // last received pitchwheel, etc. ...but maybe a subclass RestrictedRegion should be used
-    // for that - i don't think, it will be used a lot and will just eat up memory when it's
-    // present in the baseclass...or maybe it should have a more general array of RegionFeatures
-    // which may also include loop-settings and the like
-
-    //std::string name; sample
-
-    friend class Group;  // do we need this? if not, get rid.
-    friend class rsSamplerEngine;
-    // The Region class shall not provide any public functions that can modify the region because
-    // those could be used by client code to modify the region behind the back of the 
-    // rsSamplerEngine which could mess things up. Client code can modify regions only through the
-    // appropriate functions of rsSamplerEngine. It acts as man-in-the-middle and can the call the
-    // private setters of the Region (by virtue of being a friend class) and it may also trigger 
-    // additional actions, if necessary. The same should probably apply to the Group class as well.
-    // Is this a known pattern? -> figure out
-  };
+  // for convenience:
+  using uchar = unsigned char;
+  using Region = rsInstrumentDataSFZ::Region; // todo: make a subclass here that adds the stream field
+  using Group  = rsInstrumentDataSFZ::Group;
+  using PlaybackSetting = rsInstrumentDataSFZ::PlaybackSetting;
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
@@ -589,6 +618,9 @@ protected:
 
   //-----------------------------------------------------------------------------------------------
   // \name Data
+
+  rsInstrumentDataSFZ sfz;
+  /**< The data straucture that defines the sfz instrument. */
  
   RegionSet regionsForKey[128];
   /**< For each key, we store a set of regions that *may* need to be played, when the key is 
