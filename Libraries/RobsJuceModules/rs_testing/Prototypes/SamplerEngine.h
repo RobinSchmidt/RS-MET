@@ -98,7 +98,8 @@ protected:
 };
 
 
-// maybe rename to AudioFileStreamRAM, another subclass can be named AudioFileStreamDFD
+// maybe rename to AudioFileStreamRAM, another subclass can be named AudioFileStreamDFD,
+// or ...StreamFromMemory/FromDisk
 class AudioFileStreamPreloaded : public AudioFileStream 
 {
 
@@ -193,6 +194,7 @@ protected:
   std::vector<const AudioFileStream*> samples;
 
 };
+// maybe templatize, rename to AudioFileStreamPool
 
 //=================================================================================================
 
@@ -314,7 +316,7 @@ public:
 
     int addRegion();   // todo: removeRegion, etc.
     void clearRegions();
-    void clearSettings();
+    void clearSettings() { settings.clear(); }
 
     std::vector<Region*> regions;
     /**< Pointers to the regions belonging to this group. */
@@ -364,7 +366,7 @@ public:
     // present in the baseclass...or maybe it should have a more general array of RegionFeatures
     // which may also include loop-settings and the like
 
-    //std::string name;
+    //std::string name; sample
 
     friend class Group;  // do we need this? if not, get rid.
     friend class rsSamplerEngine;
@@ -482,10 +484,6 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Internal Helper Classes
 
-
-
-
-
   /** A class for playing back a given Region object. */
   class RegionPlayer
   {
@@ -550,33 +548,14 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Internal functions
 
-
   /** Adds the given region to our regionsForKey array at the k-th position. */
   void addRegionForKey(uchar k, const Region* region);
+  // maybe rename to addRegionForNoteOn and have a similar functionality for noteOff
 
   /** Returns true, iff the given region should play when the given key is pressed with given 
   velocity. This will also take into account other playback constraints defined for the region 
   and/or its enclosing group. */
-  bool shouldRegionPlay(const Region* r, const char key, const char vel);
-
-  /** Returns a non-constant point to the region with given index pair, so this allow modifying the
-  Region object via the pointer. Use it with care. In particular, don't change the loKey, hiKey 
-  settings because such changes require an update of the regionsForKey array. */
-  /*
-  Region* getRegionNonConst(int groupIndex, int regionIndex)
-  {
-    int gi = groupIndex, ri = regionIndex;
-    if(gi < 0 || gi >= (int)groups.size()) {
-      rsError("Invalid group index");
-      return nullptr; 
-    }
-    return groups[gi].getRegionNonConst(ri);
-  }
-  */
-  // Move to cpp file or better: get rid and keep only getRegion which shall return a non-const 
-  // pointer. Client code actually should be able to modify the region, but only indirectly, 
-  // mediated through the sampler engine.
-
+  bool shouldRegionPlay(const Region* r, uchar key, uchar vel);
 
   /** Finds the group index and region index within the group for the given region and assigns the
   output parameters group/regionIndex accordingly. If the region is not found in any of our groups,
@@ -590,7 +569,6 @@ protected:
   may indicate a bug at the call site. */
   void findRegion(const Region* region, int* groupIndex, int* regionIndex);
 
-
   /** Returns a pointer to a player for the given region by grabbing it from the idlePlayers array.
   This will have the side effects that this player will be removed from idlePlayers and added to 
   activePlayers. If no player is available (i.e. idle), this will return a nullptr. */
@@ -598,16 +576,16 @@ protected:
 
   /** Handles a noteOn event with given key and velocity and returns either ReturnCode::success, if
   we had enough voices available to serve the request or ReturnCode::voiceOverload, in case the 
-  noteOn could not be handled due to inavailability of a sufficient number of idle voices. */
+  noteOn could not be handled due to inavailability of a sufficient number of idle voices. If no
+  sufficient number of idle voices was available and the noteOn should actually have triggered 
+  playback of multiple samples, none of them will be triggered. It's an all-or-nothing thing: we 
+  don't ever trigger playback for only a subset of samples for a given noteOn. */
   int handleNoteOn(uchar key, uchar vel);
 
+  /** Analogous to handleNoteOn. It may also return ReturnCode::voiceOverload in cases where the 
+  noteOff is supposed to trigger relase-samples. In such a case, none of the release-samples will 
+  be triggered. */
   int handleNoteOff(uchar key, uchar vel);
-  // this should return voiceOverload
-
-
-
-
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Data
@@ -624,7 +602,7 @@ protected:
   implemented by indeed looping through all candidate regions for a given key. It is assumed that 
   the number of candidate regions for each key is typically much smaller than the total number of 
   regions in the instrument - like a few instead of a few hundred. */
-  // maybe use a std::vector
+  // maybe use a std::vector, maybe we need a similar array for note-off samples
 
   SamplePool samplePool;
   /**< The pool of samples that are in use for the currently loaded instrument. The samples are 
@@ -667,7 +645,6 @@ protected:
   // overwrite it with the actual output data
 
   // we may need a pool of filter objects, eq-objects, etc. for the different voices
-
 };
 
 

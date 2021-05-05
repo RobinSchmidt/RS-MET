@@ -1,3 +1,58 @@
+//=================================================================================================
+// Function definitions for the helper classes:
+
+bool AudioFileStreamPreloaded::setData(
+  float** newData, int numFrames, int numChannels, float sampleRate,
+  const std::string& uniqueName)
+{
+  // Deallocate old and allocate new memory:
+  clear();
+  flatData = new float[numChannels*numFrames];
+  channelPointers = new float*[numChannels];
+  if(flatData == nullptr || channelPointers == nullptr) {
+    clear(); return false; }  // memory allocation failed
+
+                              // Copy the new data into the freshly allocated memory:
+  for(int c = 0; c < numChannels; c++) {
+    channelPointers[c] = &flatData[c*numFrames];
+    for(int n = 0; n < numFrames; n++)
+      channelPointers[c][n] = newData[c][n]; }
+  // Maybe we should have a version of this function which does not need to copy data but instead
+  // just takes over ownership of the passed array. But this would need a parameter for the flat 
+  // data array, too. We'll see, how this meshes with the wavefile loading functions...
+
+  // Update metadata members and report success:
+  this->numChannels = numChannels;
+  this->numFrames   = numFrames;
+  this->sampleRate  = sampleRate;
+  return true; // success
+}
+
+void AudioFileStreamPreloaded::clear()
+{
+  numChannels = 0;
+  numFrames   = 0; 
+
+  delete[] channelPointers;
+  channelPointers = nullptr; 
+
+  delete[] flatData;
+  flatData = nullptr;
+}
+
+//-------------------------------------------------------------------------------------------------
+
+void SamplePool::clear()
+{
+  for(size_t i = 0; i < samples.size(); i++)
+    delete samples[i];
+  samples.clear();
+}
+
+
+//=================================================================================================
+// rsSamplerEngine
+
 rsSamplerEngine::rsSamplerEngine(int maxPolyphony)
 {
   // factor out into setMaxPolyphony:
@@ -139,18 +194,30 @@ void rsSamplerEngine::handleMusicalEvent(const rsMusicalEvent<float>& ev)
 //-------------------------------------------------------------------------------------------------
 // Internal:
 
-bool rsSamplerEngine::shouldRegionPlay(const Region* r, const char key, const char vel)
+bool rsSamplerEngine::shouldRegionPlay(const Region* r, uchar key, uchar vel)
 {
-  // ToDo: 
-  // -check, if regionsForKey[key] contains the given region, if not, return false..or wait - this
-  //  can and should be already checked in the caller (e.g. handleNoteOn)
-  // -check, if the velocity is with the range for which the region should be played, if not,
-  //  return false
-  // -check, if all other playback constraints for the given region are satisfied - if any of them
-  //  isn't, return false
-  // -the region has passed all constraint filters and should indeed be played: return true
+  // Check, if key/vel are in the required ranges for the region. When this function was called 
+  // from handleNoteOn, the first check is actually redundant because if key is not within the 
+  // key-range of r, r is not supposed to be in regionsForKey[key]. However, we do the check 
+  // anyway, anticipating that the function might get called from somwhere else, too):
+  if(key < r->loKey || key > r->hiKey) return false;
+  if(vel < r->loVel || vel > r->hiVel) return false;
 
-  return false; // preliminary
+
+  // Check, if all other playback constraints for the given region as defined in r->settings are 
+  // satisfied. If any of them isn't, return false:
+  // ...more to do...
+
+  // -to do this efficiently, we should have the settings sorted in some way - the most often
+  //  accessed settings should come first. or last. so we can have two sets of most often accessed
+  //  settings - maybe those which are accessed often from the audio-rendering should come first 
+  //  and those accessed often from the event-processing last. settings that are accessed rarely
+  //  go into the middle section. ..but maybe we shoud avoid accessing the settings from the 
+  //  rendering anyway
+
+
+  // The region has passed all constraint filters and should indeed be played:
+  return true;
 }
 
 void rsSamplerEngine::addRegionForKey(uchar k, const Region* region)
@@ -197,8 +264,11 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region*
 int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
 {
   int numRegions = 0;  // number of regions that were triggered by this noteOn
-  for(size_t i = 0; i < regionsForKey[key].getNumRegions(); i++) {
+  for(size_t i = 0; i < regionsForKey[key].getNumRegions(); i++) 
+  {
     const Region* r  = regionsForKey[key].getRegion(i);
+    if(!shouldRegionPlay(r, key, vel))
+      continue;
     RegionPlayer* rp = getRegionPlayerFor(r);
     if(rp == nullptr) {
       // Roll back the addition of all players so far to the activePlayers and move them back into
@@ -233,50 +303,8 @@ int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
   return ReturnCode::success;
 }
 
-
-//=================================================================================================
-// Function definitions for the helper classes:
-
-bool AudioFileStreamPreloaded::setData(
-  float** newData, int numFrames, int numChannels, float sampleRate,
-  const std::string& uniqueName)
-{
-  // Deallocate old and allocate new memory:
-  clear();
-  flatData = new float[numChannels*numFrames];
-  channelPointers = new float*[numChannels];
-  if(flatData == nullptr || channelPointers == nullptr) {
-    clear(); return false; }  // memory allocation failed
-
-  // Copy the new data into the freshly allocated memory:
-  for(int c = 0; c < numChannels; c++) {
-    channelPointers[c] = &flatData[c*numFrames];
-    for(int n = 0; n < numFrames; n++)
-      channelPointers[c][n] = newData[c][n]; }
-  // Maybe we should have a version of this function which does not need to copy data but instead
-  // just takes over ownership of the passed array. But this would need a parameter for the flat 
-  // data array, too. We'll see, how this meshes with the wavefile loading functions...
-
-  // Update metadata members and report success:
-  this->numChannels = numChannels;
-  this->numFrames   = numFrames;
-  this->sampleRate  = sampleRate;
-  return true; // success
-}
-
-void AudioFileStreamPreloaded::clear()
-{
-  numChannels = 0;
-  numFrames   = 0; 
-
-  delete[] channelPointers;
-  channelPointers = nullptr; 
-
-  delete[] flatData;
-  flatData = nullptr;
-}
-
 //-------------------------------------------------------------------------------------------------
+// rsSamplerEngine::Group
 
 int rsSamplerEngine::Group::addRegion()
 {
@@ -311,15 +339,7 @@ void rsSamplerEngine::Group::clearRegions()
 }
 
 //-------------------------------------------------------------------------------------------------
-
-void SamplePool::clear()
-{
-  for(size_t i = 0; i < samples.size(); i++)
-    delete samples[i];
-  samples.clear();
-}
-
-//-------------------------------------------------------------------------------------------------
+// rsSamplerEngine::RegionPlayer
 
 void rsSamplerEngine::RegionPlayer::setRegionToPlay(const rsSamplerEngine::Region* regionToPlay)
 {
@@ -382,6 +402,13 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay()
 
     }
   }
+  // factor out and call it with the settings - we may need to call it 3 times: with the settings
+  // of the instrument, group and region - we can get access to the group via the pointer stored
+  // in the region but what about the instrument? maybe the Group should maintain a pointer to an 
+  // enclosing instrument and we should always have exactly one instrument object present. Maybe
+  // the instruemnt definition can be factored out into data structure 
+  // rsSampleInstrumentDefinition or rsSoundFont and be made independent for the sampler-engine.
+  // But how to handle the acces to the samplePool then?
 
   // ToDo:
   // -Maybe within the switch statement set up some flags that indicate, if a particular setting is
@@ -519,12 +546,18 @@ Problem:
 
 
 SFZ - Resources:
+https://en.wikipedia.org/wiki/SFZ_(file_format)
 https://github.com/sfz/tests/   test sfz files demonstrating various features
 https://sfzformat.com/legacy/   opcode reference
 https://sfzformat.com/headers/  reference for section headers in sfz files
 http://www.drealm.info/sfz/plj-sfz.xhtml  description of the sfz format
 https://www.kvraudio.com/forum/viewtopic.php?f=42&t=508861  kvr forum thread with documentation
 https://sfzinstruments.github.io/  collection of sfz instruments
+http://ariaengine.com/overview/sfz-format/
+https://www.linuxsampler.org/sfz/    has convenient list of opcodes, also for sfz v2
+http://doc.linuxsampler.org/sfz/
+https://noisesculpture.com/cakewalk-synthesizers/
+
 
 https://sfzformat.com/software/players/  players (also open source)
 https://plugins4free.com/plugin/217/   sfz by rgcaudio

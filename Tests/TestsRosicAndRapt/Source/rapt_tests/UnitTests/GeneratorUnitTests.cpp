@@ -45,8 +45,10 @@ bool samplerEngineUnitTest()
   //const SE::Group* group2 = region.getGroup();
   //ok &= group1 == group2;
 
-  // todo: factor out the Stream stuff, make sure, that client code can't retrieve an editable
-  // stream object from the sampler engine - at most, a const one
+  // todo: factor out the sfz instrument definition stuff from the actual player engine - make
+  // a data structure rsSampleInstrumentSFZ...maybe the Region should not contain a pointer to 
+  // the Stream but just the sample name - we may then make a subclass of Region in the engine
+  // that adds a field for that
 
 
 
