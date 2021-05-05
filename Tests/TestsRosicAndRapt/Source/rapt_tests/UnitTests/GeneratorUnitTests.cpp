@@ -58,14 +58,9 @@ bool samplerEngineUnitTest()
   ok &= se.getNumIdleLayers()   == maxLayers-1;
   ok &= se.getNumActiveLayers() == 1;
   for(int n = 0; n < N; n++)
-  {
-    float tmp[2];
-    se.processFrame(tmp);  // this api sucks! change it!
-    outL[n] = tmp[0];
-    outR[n] = tmp[1];
-  }
-
-
+    se.processFrame(&outL[n], &outR[n]);
+  rsPlotVectors(sample, outL, outR);
+  // left channel looks ok but right channel is zero (actually some denormal numbers)
 
 
   // todo:

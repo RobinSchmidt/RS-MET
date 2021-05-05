@@ -54,7 +54,7 @@ public:
   virtual ~AudioStream() {}
 
   /** For random access. Writes the sample frame with given index into the given destination. */
-  virtual void getFrame(int sampleIndex, float* destination) = 0;
+  virtual void getFrame(int sampleIndex, float* destination) const = 0;
 
   /** Subclasses may want to override this for optimizing the blockwise access. */
   /*
@@ -128,7 +128,7 @@ public:
   void clear();
 
 
-  void getFrame(int sampleIndex, float* destination) override
+  void getFrame(int sampleIndex, float* destination) const override
   {
     int n = sampleIndex;
     rsAssert(n >= 0 && n < numFrames, "sampleIndex out of range");
@@ -141,6 +141,7 @@ public:
     // should happen rarely, if ever), we need to update all channelPointer arrays in all 
     // AudioFileStreamPreloaded objects.
   }
+  // this api sucks! pass a float** destinations
 
 protected:
 
@@ -645,8 +646,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  void processFrame(float* frame);
-  // maybe have frameL, frameR inputs
+  void processFrame(float* left, float* right);
 
   void processBlock(float** block, int numFrames);
 

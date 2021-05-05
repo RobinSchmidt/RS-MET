@@ -212,9 +212,13 @@ rsSamplerEngine::Region* rsSamplerEngine::getRegion(int groupIndex, int regionIn
 //-------------------------------------------------------------------------------------------------
 // Processing:
 
-void rsSamplerEngine::processFrame(float* frame)
+void rsSamplerEngine::processFrame(float* left, float* right)
 {
-
+  rsFloat64x2 out = 0.0;
+  for(size_t i = 0; i < activePlayers.size(); i++)
+    out += activePlayers[i]->getFrame();
+  *left  = (float) out[0];
+  *right = (float) out[1];
 }
 
 void rsSamplerEngine::processBlock(float** block, int numFrames)
@@ -372,7 +376,6 @@ int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
 void rsSamplerEngine::RegionPlayer::setRegionToPlay(const rsSamplerEngine::Region* regionToPlay)
 {
   region = regionToPlay;
-  //stream = region->getSampleStream();  // change to stream = getSampleStreamFor(region)
   stream = getSampleStreamFor(region);
   prepareToPlay();
 }
@@ -383,8 +386,25 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
     sampleTime++;                    // We just increment the time and return 0,0. Actual output
     return rsFloat64x2(0.0, 0.0); }  // will be produced as soon as sampleTime reaches zero.  
 
+  float tmp[2];
+  stream->getFrame(sampleTime, tmp);
 
-  return rsFloat64x2(0.0, 0.0);  // preliminary
+
+  // more stuff to do:
+  // -apply pitch envelope and lfo
+  // -implement interpolation
+  // -apply the DSP processes
+
+
+  sampleTime++; 
+  // sampleTime should probably be of type double and we should have use increment that depends on
+  // the current pitch, i.e. determined by pitchKeyCenter, noteFreq, sampleRates of the file and 
+  // output.
+
+
+  return rsFloat64x2(tmp[0], tmp[1]);  // preliminary
+
+  //return rsFloat64x2(0.0, 0.0);  // preliminary
 }
 
 void rsSamplerEngine::RegionPlayer::processBlock(rsFloat64x2* y, int N)
@@ -410,20 +430,15 @@ bool rsSamplerEngine::RegionPlayer::isPlayable(const Region* region)
 
 void rsSamplerEngine::RegionPlayer::prepareToPlay()
 {
-  rsAssert(isPlayable(region));   // This should not happen. Something is wrong.
-  //rsAssert(region != nullptr);  // This should not happen. Something is wrong.
-  rsAssert(stream != nullptr);  // Ditto.
-  // factor out into isRegionPlayable/Valid that verifies that all pointers of the region are 
-  // assigned properly
-
-
-  resetDspState();              // Reset internal states of all DSP objects
-  resetDspSettings();           // Reset all DSP settings to default values
+  rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
+  rsAssert(stream != nullptr);   // Ditto.
+  resetDspState();               // Reset internal states of all DSP objects
+  resetDspSettings();            // Reset all DSP settings to default values
 
   // To set up the settings, we call setupDspSettings 3 times to:
   // (1) set up the general instrument-wide settings
-  // (2) set up group specific settings (may override instrument settings)
-  // (3) set up region specific settings (may override group and/or instrument settings)
+  // (2) set up group specific settings (this may override instrument settings)
+  // (3) set up region specific settings (this may override group and/or instrument settings)
   //setupDspSettings(region->getGroup()->getInstrument()->getSettings()); // uncomment!
   setupDspSettings(region->getGroup()->getSettings());
   setupDspSettings(region->getSettings());
