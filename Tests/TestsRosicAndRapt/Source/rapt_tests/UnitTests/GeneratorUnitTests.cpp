@@ -15,7 +15,7 @@ bool samplerEngineUnitTest()
   float a  = 0.5;    // amplitude of sinewave sample
   int   N  = 500;    // length of sinewave sample
   VecF sample(N);
-  double w = 2*PI*f/fs;
+  float w = (float)(2*PI*f/fs);
   for(int n = 0; n < N; n++)
     sample[n] = sinf(w*n);
   //rsPlotVector(sample);

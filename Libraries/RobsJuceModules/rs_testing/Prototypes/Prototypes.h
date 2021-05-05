@@ -2646,11 +2646,19 @@ void rsColor<T>::hsl2rgb(T H, T S, T L, T* R, T* G, T* B)
 template<class T>
 void rsColor<T>::rgb2hsl(T R, T G, T B, T* H, T* S, T* L)
 {
+  auto wrap = [](T x, T min, T max)  // todo: use library function
+  {
+    T range = max-min;
+    while(x > max) x -= range;
+    while(x < min) x += range;
+    return x;
+  };
   T Cmax = rsMax(R, G, B);
   T Cmin = rsMin(R, G, B);
   T D    = Cmax - Cmin;                                 // delta
   if(        D == 0) *H = 0;
-  else if(Cmax == R) *H = T(60) * rsWrapToInterval((G-B)/D, T(0), T(6));
+  //else if(Cmax == R) *H = T(60) * rsWrapToInterval((G-B)/D, T(0), T(6));
+  else if(Cmax == R) *H = T(60) * wrap((G-B)/D, T(0), T(6));
   else if(Cmax == G) *H = T(60) * ((B-R)/D + T(2));
   else if(Cmax == B) *H = T(60) * ((R-G)/D + T(4));
   *H /= T(360);                                         // convert from 0..360 to 0..1

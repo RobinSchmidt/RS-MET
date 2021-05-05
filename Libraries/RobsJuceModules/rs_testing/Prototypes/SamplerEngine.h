@@ -236,6 +236,7 @@ public:
 
       PitchKeyCenter,
 
+      Volume,
       AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
 
       FilterCutoff, FilterResonance, FilterType,
@@ -303,13 +304,14 @@ public:
     /** Returns a const reference to our playback settings. */
     const std::vector<PlaybackSetting>& getSettings() const { return settings; }
 
+    /** Returns a pointer to the parent level which encloses this level. In a Region, this would 
+    point to its enclosing Group, in a Group to its enclosing Instrument and in an Instrument, it
+    would remain nullptr (unless we introduce an even higher level such as an "Ensemble"). */
+    const OrganizationLevel* getParent() const { return parent; }
+
   protected:
 
-    // ToDo:
-    // OrganizationLevel* parentLevel = nullptr; 
-    // in a Region, this would point to its enclosing Group, in Group to its enclosing Instrument 
-    // and in Instrument, it would remain nullptr unless we introduce an even higher level such as
-    // an "Ensemble". Then we can get rid of the group pointer in Region
+    OrganizationLevel* parent = nullptr;  
 
     void clearSettings() { settings.clear(); }
 
@@ -328,19 +330,21 @@ public:
 
   public:
 
-    /** Returns a (const) pointer the audio stream object that should be used for this region. */
-    //const AudioFileStream* getSampleStream() const { return sampleStream; }
-
     // replaces getSampleStream
+
+    /** Returns the generic pointer for custom satellite data or objects that are associated with
+    this region. This pointer is intended to be used for some sort of audio stream object that is 
+    used for accessing the sample data. It has been made a generic void pointer to decouple 
+    rsDataSFZ from the AudioFileStream class that is used in rsSamplerEngine. The sampler-engine 
+    assigns this pointer with appropriate stream object and when retriveing them, does an 
+    appropriate type cast. ToDo: try to find a better design, maybe move up into baseclass */
     const void* getCustomPointer() const { return custom; }
 
-    /** Returns a const reference to our playback settings. */
-    //const std::vector<PlaybackSetting>& getSettings() const { return settings; }
+    /** Return a pointer to the group to which this region belongs. */
+    const Group* getGroup() const { return (const Group*) getParent(); }
 
-    const Group* getGroup() const { return group; }
+    //const Group* getGroup() const { return group; }
     // todo: return (const Group*) getParentLevel();
-
-
 
 
     /** Returns the lowest key at which this region will be played. */
@@ -357,7 +361,7 @@ public:
 
   private:
 
-    Group* group = nullptr;  //< Pointer to the group to which this region belongs
+    //Group* group = nullptr;  //< Pointer to the group to which this region belongs
     // mayb get rid by having a general parentLevel pointer defined in the baseclass
 
 
@@ -377,12 +381,7 @@ public:
     // maybe a pointer-to-void named customData should be stored in OrganizationLevel
 
     const void* custom = nullptr;
-    /**< Generic pointer for custom satellite data or objects that are associated with this region. 
-    Intended to be used for some sort of audio stream object that is used for accessing the 
-    sample data. It has been made a generic void pointer to decouple rsDataSFZ from the 
-    AudioFileStream class that is used in rsSamplerEngine. The sampler-engine assigns this
-    pointer with appropriate stream object and when retriveing them, does an appropriate type 
-    cast. ToDo: try to find a better design, maybe move up into baseclass */
+
 
 
 

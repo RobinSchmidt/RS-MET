@@ -55,7 +55,8 @@ void SamplePool::clear()
 int rsDataSFZ::Group::addRegion()
 {
   rsDataSFZ::Region* r = new rsDataSFZ::Region;
-  r->group = this;
+  //r->group = this;
+  r->parent = this;
   regions.push_back(r);
   return ((int) regions.size()) - 1;
 }
@@ -411,6 +412,7 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay()
     double val = (double) setting.getValue();
     switch(type)
     {
+    case TP::Volume: { amp = rsDbToAmp(val); } break;
 
     //case TP::FilterCutoff: { flt.setCutoff(val);  } break;
     
