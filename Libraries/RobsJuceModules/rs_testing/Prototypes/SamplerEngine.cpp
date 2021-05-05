@@ -157,7 +157,8 @@ int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
     rsError("Invalid sample index");
     return ReturnCode::invalidIndex; }
   Region* r = getRegion(gi, ri);
-  r->setSampleStream(samplePool.getSampleStream(si));
+  //r->setSampleStream(samplePool.getSampleStream(si));
+  r->setCustomPointer(samplePool.getSampleStream(si));
   return ReturnCode::success;
 }
 
@@ -297,13 +298,14 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region*
 
 const AudioFileStream* rsSamplerEngine::getSampleStreamFor(const Region* r)
 {
-  return r->getSampleStream();
+  //return r->getSampleStream();
+  return (const AudioFileStream*) r->getCustomPointer();
   // todo: 
-  // -change to return (const AudioFileStream*) r->getCustomData();
   // -some sanity checks may be appropriate here
   // -maybe, if the region itself has stored a nullptr, we should check, if the enclosing group 
   //  defines a stream and if it also doesn't, check the instrument, i.e. walk up the hierarchy 
   //  ladder for fallback streams
+  // -maybe that should be done in getCustomPointer already
 }
 
 int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)

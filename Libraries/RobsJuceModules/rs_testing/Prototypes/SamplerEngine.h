@@ -305,6 +305,12 @@ public:
 
   protected:
 
+    // ToDo:
+    // OrganizationLevel* parentLevel = nullptr; 
+    // in a Region, this would point to its enclosing Group, in Group to its enclosing Instrument 
+    // and in Instrument, it would remain nullptr unless we introduce an even higher level such as
+    // an "Ensemble". Then we can get rid of the group pointer in Region
+
     void clearSettings() { settings.clear(); }
 
     std::vector<PlaybackSetting> settings;
@@ -323,10 +329,19 @@ public:
   public:
 
     /** Returns a (const) pointer the audio stream object that should be used for this region. */
-    const AudioFileStream* getSampleStream() const { return sampleStream; }
+    //const AudioFileStream* getSampleStream() const { return sampleStream; }
+
+    // replaces getSampleStream
+    const void* getCustomPointer() const { return custom; }
 
     /** Returns a const reference to our playback settings. */
     //const std::vector<PlaybackSetting>& getSettings() const { return settings; }
+
+    const Group* getGroup() const { return group; }
+    // todo: return (const Group*) getParentLevel();
+
+
+
 
     /** Returns the lowest key at which this region will be played. */
     uchar getLoKey() const { return loKey; }
@@ -343,19 +358,34 @@ public:
   private:
 
     Group* group = nullptr;  //< Pointer to the group to which this region belongs
+    // mayb get rid by having a general parentLevel pointer defined in the baseclass
 
 
     // todo: setters for loKey,...
 
     /** Sets the audio stream object that should be used for this region. */
-    void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
+    //void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
 
-    const AudioFileStream* sampleStream = nullptr;
+    void setCustomPointer(const void* newPointer) { custom = newPointer; }
+
+
+    //const AudioFileStream* sampleStream = nullptr;
     // try to get rid - that member should be added by rsSamplerEngine::Region which should be
     // a subclass of rsInstrumentDataSFZ::Region, and/or move up into baseclass. maybe to decouple
     // rsDataSFZ from AudioFileStream, just keep it as pointer-to-void which client code may 
     // typecast to any sort of stream...or maybe that coupling makes sense?..hmm - not really.
     // maybe a pointer-to-void named customData should be stored in OrganizationLevel
+
+    const void* custom = nullptr;
+    /**< Generic pointer for custom satellite data or objects that are associated with this region. 
+    Intended to be used for some sort of audio stream object that is used for accessing the 
+    sample data. It has been made a generic void pointer to decouple rsDataSFZ from the 
+    AudioFileStream class that is used in rsSamplerEngine. The sampler-engine assigns this
+    pointer with appropriate stream object and when retriveing them, does an appropriate type 
+    cast. ToDo: try to find a better design, maybe move up into baseclass */
+
+
+
 
     uchar loKey = 0, hiKey = 127;
     uchar loVel = 0, hiVel = 127;
@@ -367,13 +397,6 @@ public:
     // I think, it could be useful to restrict keyranges of groups and even instruments, when
     // they are part of an enseble - for example, for keyboard splits.
 
-    //std::vector<PlaybackSetting> settings;
-    // for more restrictions (optional) restrictions - sfz can restrict the playback of samples
-    // also based on other state variables such as the last received controller of some number,
-    // last received pitchwheel, etc. ...but maybe a subclass RestrictedRegion should be used
-    // for that - i don't think, it will be used a lot and will just eat up memory when it's
-    // present in the baseclass...or maybe it should have a more general array of RegionFeatures
-    // which may also include loop-settings and the like
 
     //std::string name; sample
 
@@ -414,16 +437,11 @@ public:
 
     Group* Instrument = nullptr;  //< Pointer to the instrument to which this group belongs
 
-    int addRegion();   // todo: removeRegion, etc.
+    int addRegion();      // todo: removeRegion, etc.
     void clearRegions();
-    //void clearSettings() { settings.clear(); }
 
     std::vector<Region*> regions;
     /**< Pointers to the regions belonging to this group. */
-
-    //std::vector<PlaybackSetting> settings;
-    /**< Settings that apply to all regions within this group, unless a region overrides them with
-    its own value for a particular setting. */
 
     // may be add these later:
     //std::string name;  
@@ -445,12 +463,19 @@ public:
 
   private:
 
-  };
-  // factor out settings and clearSettings into a subclass OrganizationLevel
+    std::vector<Group> groups;
+    // Should that be an array of pointers, too? Like the regions array in Group? That would make
+    // the implementations of Group and Instrument more consistent but is actually technically not 
+    // necessary. So, for the time being, let's keep it an array of direct value objects.
 
+  };
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
+
+  // todo: factor out some code from rsSamplerEngine - the names of the correponding setters here 
+  // and there should match and rsSamplerEngine should call functions from here and perhaps do
+  // additional stuff, if necessary
 
 
 protected:
