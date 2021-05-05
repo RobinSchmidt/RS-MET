@@ -50,17 +50,17 @@ void SamplePool::clear()
 }
 
 //-------------------------------------------------------------------------------------------------
-// rsSamplerEngine::Group
+// rsDataSFZ:
 
-int rsInstrumentDataSFZ::Group::addRegion()
+int rsDataSFZ::Group::addRegion()
 {
-  rsInstrumentDataSFZ::Region* r = new rsInstrumentDataSFZ::Region;
+  rsDataSFZ::Region* r = new rsDataSFZ::Region;
   r->group = this;
   regions.push_back(r);
   return ((int) regions.size()) - 1;
 }
 
-int rsInstrumentDataSFZ::Group::getRegionIndex(const rsInstrumentDataSFZ::Region* region) const
+int rsDataSFZ::Group::getRegionIndex(const rsDataSFZ::Region* region) const
 {
   for(size_t i = 0; i < regions.size(); i++)
     if(regions[i] == region)
@@ -68,7 +68,7 @@ int rsInstrumentDataSFZ::Group::getRegionIndex(const rsInstrumentDataSFZ::Region
   return -1;
 }
 
-rsInstrumentDataSFZ::Region* rsInstrumentDataSFZ::Group::getRegion(int i) const
+rsDataSFZ::Region* rsDataSFZ::Group::getRegion(int i) const
 {
   if(i < 0 || i >= (int)regions.size()) {
     rsError("Invalid region index");
@@ -77,7 +77,7 @@ rsInstrumentDataSFZ::Region* rsInstrumentDataSFZ::Group::getRegion(int i) const
   return regions[i];
 }
 
-void rsInstrumentDataSFZ::Group::clearRegions()
+void rsDataSFZ::Group::clearRegions()
 {
   for(size_t i = 0; i < regions.size(); i++)
     delete regions[i];
@@ -295,6 +295,17 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region*
   return rp;
 }
 
+const AudioFileStream* rsSamplerEngine::getSampleStreamFor(const Region* r)
+{
+  return r->getSampleStream();
+  // todo: 
+  // -change to return (const AudioFileStream*) r->getCustomData();
+  // -some sanity checks may be appropriate here
+  // -maybe, if the region itself has stored a nullptr, we should check, if the enclosing group 
+  //  defines a stream and if it also doesn't, check the instrument, i.e. walk up the hierarchy 
+  //  ladder for fallback streams
+}
+
 int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
 {
   int numRegions = 0;  // number of regions that were triggered by this noteOn
@@ -345,7 +356,8 @@ int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
 void rsSamplerEngine::RegionPlayer::setRegionToPlay(const rsSamplerEngine::Region* regionToPlay)
 {
   region = regionToPlay;
-  stream = region->getSampleStream();
+  //stream = region->getSampleStream();  // change to stream = getSampleStreamFor(region)
+  stream = getSampleStreamFor(region);
   prepareToPlay();
 }
 
@@ -374,6 +386,7 @@ void rsSamplerEngine::RegionPlayer::processBlock(rsFloat64x2* y, int N)
 void rsSamplerEngine::RegionPlayer::prepareToPlay()
 {
   rsAssert(region != nullptr);  // This should not happen. Something is wrong.
+  rsAssert(stream != nullptr);  // Ditto.
 
   // Reset the states of all DSP objects:
   // flt.reset();
@@ -459,7 +472,9 @@ ToDo:
  should always have enough voices available. The original SFZ.exe by rgcaudio has 256 voices, 
  where the term voice refers to a single region here, so in this terminology, a signle key can 
  already play multiple voice due to key- and velocity crossfades, for example.
-
+-Allow the user to select between storing samples as float or short int (16 Bit) in memory. Allows
+ different trade-off between memory and cpu usage: float needs twice as much memory but doesn't 
+ need on-the-fly type conversion.
 
 Notes:
 

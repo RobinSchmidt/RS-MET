@@ -199,9 +199,9 @@ protected:
 
 //=================================================================================================
 
-/** Data structure to define a sample based instrument conforming to the sfz specification. */
+/** Data structure to define sample based instruments conforming to the sfz specification. */
 
-class rsInstrumentDataSFZ  // rename to rsDataSFZ
+class rsDataSFZ
 {
 
 public:
@@ -217,13 +217,13 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** A class to represent various additional (and optional) playback settings of a region, group 
-  or instrument. Such additional settings include additional constraints for the circumstances 
-  under which a particular sample should be played. Key- and velocity ranges are the obvious 
-  primary constraints (and they therefore are directly baked into the Region class below), but sfz
-  defines many more. But the settings doesn't need to be playback constraints - that's only one 
-  type of setting. Other types are things like envelope settings, filter frequencies, etc. */
-  class PlaybackSetting
+  /** A class to represent various playback settings of a region, group or instrument. Such 
+  settings include constraints for the circumstances under which a particular sample should be 
+  played. Key- and velocity ranges are the obvious primary constraints (and they therefore are 
+  directly baked into the Region class below), but sfz defines many more. But settings don't 
+  need to be playback constraints. Other types are things like envelope settings, filter 
+  frequencies, etc. */
+  class PlaybackSetting  // rename to Setting
   {
 
   public:
@@ -245,35 +245,47 @@ public:
 
       //...tbc...
     };
+    // maybe don't capitalize first letter - make it conistent with other (newer) enums in the 
+    // library
+
+    enum FilterType
+    {
+      Off, Lowpass_6, Lowpass_12, Highpass_6, Highpass_12, Bandpass_6_6, Bandreject_6_6,
+      
+      NumFilterTypes
+    };
 
     PlaybackSetting(Type type, float value)
     { this->type = type; this->value = value; }
 
     Type getType() const { return type; }
 
-    /** Returns the stored value. Values are always stored as floats and it is understood that in
-    cases, where the corresponding parameter in the sfz spec is defined to be an integer, we just
-    represent it as that integer with all zeros after the decimal dot. */
+    /** Returns the stored value for this setting. Values are always stored as floats and it is 
+    understood that in cases, where the corresponding parameter in the sfz spec is defined to be an
+    integer, we just represent it as that integer with all zeros after the decimal dot and the 
+    caller is supposed to convert to int by writing e.g.:
+
+      int intValue = (int)setting.getValue();
+
+    For settings whose value is represented by text that indciates a particular choice, the caller
+    has to look up the int in an enumeration corresponding to the type of the parameter...tbc... */
     float getValue() const { return value; }
     // todo: (decide and) document, how choice parameters like filter-type are represented. In sfz,
     // they are just represented as text. Maybe for each such choice parameter, we need another 
-    // enum to represent its allowed values...
+    // enum to represent its allowed values.
+
+    /** Some settings need to specify an index in addtion to the value. An example is a setting 
+    involving midi control changes. In the sfz file, they are written as e.g. loccN where the N is
+    replaced by the actual controller number, like locc74=20 to indicate, that the sample should
+    only play, if the last received value for CC#74 was >= 20. If indexing not applicable to a 
+    particular setting/opcode, this will return -1. */
+    int getIndex() const { return index; }
 
   private:
 
     Type  type  = Type::Unknown;
     float value = 0.f;
-    // hmm - it seems, for the controllers, we need 2 values: controller number and value - but it
-    // would be wasteful to store two values for all other settings as well...hmmm...maybe 
-    // groups/regions need to maintain 2 arrays with settings, 1 for the 1-valued settings and 
-    // another for the 2-valued settings - maybe have classes PlaybackSetting, PlaybackSetting2Val
-    // or: have indeed all the ccN as different type - but that would blow up the enum excessively
-    // maybe have an additional uchar (or int) member N that is used only for the opcodes with an 
-    // "N" suffix and is zero otherwise. Maybe have a member function getNumber() to read it. It can
-    // be used also for the multi-segment envelope definitions from sfz v2. Maybe uchar is not
-    // enough for them - it would restrict the number of breakpoints to 256, which is plenty but 
-    // maybe not enough in all cases. Or maybe have functions getFloatValue/getIntValue. Or 
-    // getIndex/getValue ..yes - use an int member index
+    int   index = -1;  //< Used e.g. for conrol-change settings. Is -1, if not applicable.
   };
   // Maybe rename to Opcode - but no: "opcodes" are the strings that appear in the sfz file, such
   // "lokey". They map to the Type of the playback setting. Maybe this class should provide the
@@ -340,7 +352,10 @@ public:
 
     const AudioFileStream* sampleStream = nullptr;
     // try to get rid - that member should be added by rsSamplerEngine::Region which should be
-    // a subclass of rsInstrumentDataSFZ::Region
+    // a subclass of rsInstrumentDataSFZ::Region, and/or move up into baseclass. maybe to decouple
+    // rsDataSFZ from AudioFileStream, just keep it as pointer-to-void which client code may 
+    // typecast to any sort of stream...or maybe that coupling makes sense?..hmm - not really.
+    // maybe a pointer-to-void named customData should be stored in OrganizationLevel
 
     uchar loKey = 0, hiKey = 127;
     uchar loVel = 0, hiVel = 127;
@@ -481,9 +496,11 @@ public:
 
   // for convenience:
   using uchar = unsigned char;
-  using Region = rsInstrumentDataSFZ::Region; // todo: make a subclass here that adds the stream field
-  using Group  = rsInstrumentDataSFZ::Group;
-  using PlaybackSetting = rsInstrumentDataSFZ::PlaybackSetting;
+  using Region = rsDataSFZ::Region; // todo: make a subclass here that adds the stream field
+  using Group  = rsDataSFZ::Group;
+  using PlaybackSetting = rsDataSFZ::PlaybackSetting;
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
@@ -680,6 +697,11 @@ protected:
   activePlayers. If no player is available (i.e. idle), this will return a nullptr. */
   RegionPlayer* getRegionPlayerFor(const Region* r);
 
+  /** Returns the AudioFileStream object that is used to stream the actual sample data for the
+  given region. A pointer to this object is supposed to be stored within the region object
+  ...tbc... */
+  static const AudioFileStream* getSampleStreamFor(const Region* r);
+
   /** Handles a noteOn event with given key and velocity and returns either ReturnCode::success, if
   we had enough voices available to serve the request or ReturnCode::voiceOverload, in case the 
   noteOn could not be handled due to inavailability of a sufficient number of idle voices. If no
@@ -696,8 +718,8 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Data
 
-  rsInstrumentDataSFZ sfz;
-  /**< The data straucture that defines the sfz instrument. */
+  rsDataSFZ sfz;
+  /**< The data structure that defines the sfz instrument. */
  
   RegionSet regionsForKey[128];
   /**< For each key, we store a set of regions that *may* need to be played, when the key is 

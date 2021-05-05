@@ -10,14 +10,14 @@ bool samplerEngineUnitTest()
   SE se;                              // create the sampler engine object
 
   // Create a sinewave as example sample:
-  double fs = 44100;  // sample rate
-  double f  = 440.0;  // frequency of sinewave sample
-  double a  = 0.5;    // amplitude of sinewave sample
-  int    N  = 500;    // length of sinewave sample
+  float fs = 44100;  // sample rate
+  float f  = 440.0;  // frequency of sinewave sample
+  float a  = 0.5;    // amplitude of sinewave sample
+  int   N  = 500;    // length of sinewave sample
   VecF sample(N);
   double w = 2*PI*f/fs;
   for(int n = 0; n < N; n++)
-    sample[n] = (float) sin(w*n);
+    sample[n] = sinf(w*n);
   //rsPlotVector(sample);
 
   // Create an array of pointers to the channels and add the sample to the sample pool in the 
