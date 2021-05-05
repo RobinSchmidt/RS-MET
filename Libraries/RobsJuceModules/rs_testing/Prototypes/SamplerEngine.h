@@ -201,7 +201,7 @@ protected:
 
 /** Data structure to define a sample based instrument conforming to the sfz specification. */
 
-class rsInstrumentDataSFZ
+class rsInstrumentDataSFZ  // rename to rsDataSFZ
 {
 
 public:
@@ -268,13 +268,44 @@ public:
     // groups/regions need to maintain 2 arrays with settings, 1 for the 1-valued settings and 
     // another for the 2-valued settings - maybe have classes PlaybackSetting, PlaybackSetting2Val
     // or: have indeed all the ccN as different type - but that would blow up the enum excessively
+    // maybe have an additional uchar (or int) member N that is used only for the opcodes with an 
+    // "N" suffix and is zero otherwise. Maybe have a member function getNumber() to read it. It can
+    // be used also for the multi-segment envelope definitions from sfz v2. Maybe uchar is not
+    // enough for them - it would restrict the number of breakpoints to 256, which is plenty but 
+    // maybe not enough in all cases. Or maybe have functions getFloatValue/getIntValue. Or 
+    // getIndex/getValue ..yes - use an int member index
   };
+  // Maybe rename to Opcode - but no: "opcodes" are the strings that appear in the sfz file, such
+  // "lokey". They map to the Type of the playback setting. Maybe this class should provide the
+  // mapping (maybe std::map or some selfmade class for a 2-way associative array)
+
 
   //-----------------------------------------------------------------------------------------------
-  /** A region contains a sample along with performance settings including information for which 
-  keys and velocities the sample should be played and optionally other constraints for when the the
-  sample should be played and also settings for pitch, volume, pan, filter, envelopes, etc. */
-  class Region
+  /** Baseclass for the 3 organizational levels of the sfz specification, factoring out their 
+  commonalities. Subclasses are Region, Group, Instrument. */
+  class OrganizationLevel
+  {
+
+  public:
+
+    /** Returns a const reference to our playback settings. */
+    const std::vector<PlaybackSetting>& getSettings() const { return settings; }
+
+  protected:
+
+    void clearSettings() { settings.clear(); }
+
+    std::vector<PlaybackSetting> settings;
+
+  };
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** A region is the lowest organizational level ins sfz. It contains a sample along with 
+  performance settings including information for which keys and velocities the sample should be 
+  played and optionally other constraints for when the the sample should be played and also 
+  settings for pitch, volume, pan, filter, envelopes, etc. */
+  class Region : public OrganizationLevel
   {
 
   public:
@@ -283,21 +314,45 @@ public:
     const AudioFileStream* getSampleStream() const { return sampleStream; }
 
     /** Returns a const reference to our playback settings. */
-    const std::vector<PlaybackSetting>& getSettings() const { return settings; }
+    //const std::vector<PlaybackSetting>& getSettings() const { return settings; }
+
+    /** Returns the lowest key at which this region will be played. */
+    uchar getLoKey() const { return loKey; }
+
+    /** Returns the higest key at which this region will be played. */
+    uchar getHiKey() const { return hiKey; }
+
+    /** Returns the lowest velocity at which this region will be played. */
+    uchar getLoVel() const { return loVel; }
+
+    /** Returns the highest velocity at which this region will be played. */
+    uchar getHiVel() const { return hiVel; }
 
   private:
 
+    Group* group = nullptr;  //< Pointer to the group to which this region belongs
+
+
+    // todo: setters for loKey,...
 
     /** Sets the audio stream object that should be used for this region. */
     void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
 
-    const AudioFileStream* sampleStream = nullptr;  // try to get rid
-    Group* group = nullptr;             // pointer to the group to which this region belongs
+    const AudioFileStream* sampleStream = nullptr;
+    // try to get rid - that member should be added by rsSamplerEngine::Region which should be
+    // a subclass of rsInstrumentDataSFZ::Region
+
     uchar loKey = 0, hiKey = 127;
     uchar loVel = 0, hiVel = 127;
-    // todo: maybe package loKey/hiKey, loVel/hiVel into a single uchar to save memory
+    // todo: maybe package loKey/hiKey, loVel/hiVel into a single uchar to save memory.
+    // To prepare for this, provide get/setLoKey() etc. accessors and use them consistently in
+    // rsSamplerEngine. Should these be moved into the baseclass, meaning that groups and 
+    // instruments can also restrict the keyrange additionally? Or is this opcode really 
+    // specifically applicable to regions only? Test with SFZPlayer and replicate its behavior.
+    // I think, it could be useful to restrict keyranges of groups and even instruments, when
+    // they are part of an enseble - for example, for keyboard splits.
 
-    std::vector<PlaybackSetting> settings;
+    //std::vector<PlaybackSetting> settings;
     // for more restrictions (optional) restrictions - sfz can restrict the playback of samples
     // also based on other state variables such as the last received controller of some number,
     // last received pitchwheel, etc. ...but maybe a subclass RestrictedRegion should be used
@@ -321,8 +376,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** A group organizes a bunch of regions into a single entity for which performance settings can 
   be set up which will be applicable in cases where the region does not itself define these 
-  settings, so they act as fallback values. */
-  class Group
+  settings, so they act as fallback values. It's the mid-level of organization in sfz. */
+  class Group : public OrganizationLevel
   {
 
   public:
@@ -342,14 +397,16 @@ public:
 
   private:
 
+    Group* Instrument = nullptr;  //< Pointer to the instrument to which this group belongs
+
     int addRegion();   // todo: removeRegion, etc.
     void clearRegions();
-    void clearSettings() { settings.clear(); }
+    //void clearSettings() { settings.clear(); }
 
     std::vector<Region*> regions;
     /**< Pointers to the regions belonging to this group. */
 
-    std::vector<PlaybackSetting> settings;
+    //std::vector<PlaybackSetting> settings;
     /**< Settings that apply to all regions within this group, unless a region overrides them with
     its own value for a particular setting. */
 
@@ -361,9 +418,29 @@ public:
 
   // todo: class Instrument - group should have a pointer to its enclosing instrument
 
+  //-----------------------------------------------------------------------------------------------
+  /** The instrument is the highest organizational level in sfz. There is actually no section 
+  header in the .sfz file format for the whole instrument that corresponds to this class. The whole
+  content of the sfz file *is* the instrument. But for consistency, we represent it by a class as 
+  well. Maybe later an additional "Ensemble" or "Orchestra" level can be added on top. */
+  class Instrument : public OrganizationLevel
+  {
+
+  public:
+
+  private:
+
+  };
+  // factor out settings and clearSettings into a subclass OrganizationLevel
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
 
 protected:
 
+  Instrument instrument; // Maybe we could maintain an array of such isntruments
 
 };
 
@@ -642,10 +719,12 @@ protected:
 
   std::vector<Group> groups;
   /**< The groups contained in this instrument. Each group may contain set of regions. */
+  // get rid - should go into rsInstrumentDataSFZ::Instrument
 
   std::vector<PlaybackSetting> settings;
   /**< Playback settings that apply to all groups within this instrument, unless a group (or 
   region) overrides a setting with its own value. **/
+  // get rid - should go into sfz.instrument.settings
 
   std::vector<RegionPlayer*> activePlayers;
   /**< Array of pointers to region players that are currently active, i.e. playing. */

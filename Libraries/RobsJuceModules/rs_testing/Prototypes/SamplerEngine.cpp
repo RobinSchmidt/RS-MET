@@ -590,5 +590,8 @@ Ideas for new opcodes:
 sample_dir=factory  (other options: user, here, E:/Samples/MySamples, ../../Samples/Piano, 
                      default: here)
 
+maybe define a subregion header. Idea use the same sample with the mostly same settings but one or
+a few settings differently for different keys...but no - this places too much burden on the 
+playback engine - it would have to scan each region for subregions - no good idea!
 
 */
