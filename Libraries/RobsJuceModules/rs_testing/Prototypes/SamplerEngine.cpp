@@ -390,20 +390,40 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay()
 {
   rsAssert(region != nullptr);  // This should not happen. Something is wrong.
   rsAssert(stream != nullptr);  // Ditto.
+  resetDspState();              // Reset internal states of all DSP objects
+  resetDspSettings();           // Reset all DSP settings to default values
 
+  // To set up the settings, we call setupDspSettings 3 times to:
+  // (1) set up the general instrument-wide settings
+  // (2) set up group specific settings (may override instrument settings)
+  // (3) set up region specific settings (may override group and/or instrument settings)
+  setupDspSettings(region->getGroup()->getInstrument()->getSettings());
+  setupDspSettings(region->getGroup()->getSettings());
+  setupDspSettings(region->getSettings());
+}
+
+void rsSamplerEngine::RegionPlayer::resetDspState()
+{
   // Reset the states of all DSP objects:
   // flt.reset();
   // ampEnv.reset();
   // ...more to do...
+}
 
+void rsSamplerEngine::RegionPlayer::resetDspSettings()
+{
   // Initialize all values and DSP objects to default values (maybe factor out):
   amp = 1.0;
   sampleTime = 0;
-  // ...more to do... ampEnv.setToDefaults(), etc.
+  // ampEnv.setToDefaults(), etc.
+  // ...more to do... 
+}
 
+void rsSamplerEngine::RegionPlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings)
+{
   // Loop through the settings of the region and for each setting that is present, change the 
   // value from its default to the stored value:
-  const std::vector<PlaybackSetting>& settings = region->getSettings();
+  //const std::vector<PlaybackSetting>& settings = region->getSettings();
   for(size_t i = 0; i < settings.size(); i++)
   {
     using TP = PlaybackSetting::Type;
@@ -414,8 +434,8 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay()
     {
     case TP::Volume: { amp = rsDbToAmp(val); } break;
 
-    //case TP::FilterCutoff: { flt.setCutoff(val);  } break;
-    
+      //case TP::FilterCutoff: { flt.setCutoff(val);  } break;
+
       // ...more to do...
 
     }
@@ -433,8 +453,6 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay()
   //  used. If the flag is false, we may skip the associated DSP process in getFrame/processBlock. 
   //  We may need inquiry functions such as hasFilter, hasAmpEnv, hasPitchEnv, hasFilterEnv, 
   //  hasPitchLFO. But this makes things more complicated, so maybe it's not really a good idea.
-
-  // -Maybe rename to prepareToPlay and also reset all the DSP objects here
 }
 
 //=================================================================================================

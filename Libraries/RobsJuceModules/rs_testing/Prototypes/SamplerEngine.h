@@ -201,7 +201,7 @@ protected:
 
 /** Data structure to define sample based instruments conforming to the sfz specification. */
 
-class rsDataSFZ
+class rsDataSFZ // todo: move into its own pair of .h/.cpp files
 {
 
 public:
@@ -308,6 +308,10 @@ public:
     point to its enclosing Group, in a Group to its enclosing Instrument and in an Instrument, it
     would remain nullptr (unless we introduce an even higher level such as an "Ensemble"). */
     const OrganizationLevel* getParent() const { return parent; }
+
+    // todo: float getSetting(PlaybackSetting::Type, int index) this should loop through the 
+    // settings to see, if it finds it and if not call the same method on the parent or return the
+    // default value, if the parent is nullptr.
 
   protected:
 
@@ -428,13 +432,18 @@ public:
     /** Returns true, if the given index i refers toa valid region within this group. */
     bool isRegionIndexValid(int i) const { return i >= 0 && i < (int)regions.size(); }
 
+
+    /** Return a pointer to the instrument to which this group belongs. */
+    const Instrument* getInstrument() const { return (const Instrument*) getParent(); }
+
+
     /** Returns a pointer to the region with the given index within the group. */
     Region* getRegion(int i) const;
 
 
   private:
 
-    Group* Instrument = nullptr;  //< Pointer to the instrument to which this group belongs
+    //Group* Instrument = nullptr;  //< Pointer to the instrument to which this group belongs
 
     int addRegion();      // todo: removeRegion, etc.
     void clearRegions();
@@ -651,6 +660,10 @@ protected:
     /** Sets up the internal values for the playback settings (including DSP objects) according
     to the assigned region and resets all DSP objects. */
     virtual void prepareToPlay();
+
+    virtual void resetDspState();
+    virtual void resetDspSettings();
+    virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings);
 
     using Biquad = RAPT::rsBiquadDF1<rsFloat64x2, double>; // todo: use TDF2
 
