@@ -440,7 +440,7 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
   // output.
 
 
-  return rsFloat64x2(L, R); 
+  return this->amp * rsFloat64x2(L, R); 
 
 
   //return rsFloat64x2(tmp[0], tmp[1]);  // preliminary
@@ -473,24 +473,45 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay()
 {
   rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   rsAssert(stream != nullptr);   // Ditto.
-  resetDspState();               // Reset internal states of all DSP objects
-  resetDspSettings();            // Reset all DSP settings to default values
+
+  bool ok = buildProcessingChain();
+  if(!ok)
+  {
+    //return rsSamplerEngine::ReturnCode::voiceOverload;  // rename to layerOverload
+    // This should actually not happen in therory (as by the sfz spec, and unlimited number of 
+    // layers is available), but in practice, it may happen in extreme situations like triggering a
+    // whole lot of layers at once or in very short succession while already being close to the 
+    // limit, such that we don't have enough pre-allocated players and/or dsp objects available and 
+    // the required additional allocation of more is not fast enough.
+  }
 
   // To set up the settings, we call setupDspSettings 3 times to:
   // (1) set up the general instrument-wide settings
   // (2) set up group specific settings (this may override instrument settings)
   // (3) set up region specific settings (this may override group and/or instrument settings)
+  resetDspState();        // Needs to be done after building the chain
+  resetDspSettings();     // Reset all DSP settings to default values
   //setupDspSettings(region->getGroup()->getInstrument()->getSettings()); // uncomment!
   setupDspSettings(region->getGroup()->getSettings());
   setupDspSettings(region->getSettings());
+
+  // return rsSamplerEngine::ReturnCode::success;
 }
 
 void rsSamplerEngine::RegionPlayer::resetDspState()
 {
-  // Reset the states of all DSP objects:
-  // flt.reset();
-  // ampEnv.reset();
-  // ...more to do...
+  for(size_t i = 0; i < dspChain.size(); i++)
+    dspChain[i]->resetState();
+  for(size_t i = 0; i < modulators.size(); i++)
+    modulators[i]->resetState();
+}
+
+bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
+{
+  // ToDo: build the chain of DSP processors and the set of modulators and wire everything up, as
+  // defined by the region settings...
+
+  return true;  // preliminary
 }
 
 void rsSamplerEngine::RegionPlayer::resetDspSettings()
@@ -506,16 +527,26 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(const std::vector<PlaybackS
 {
   // Loop through the settings of the region and for each setting that is present, change the 
   // value from its default to the stored value:
-  //const std::vector<PlaybackSetting>& settings = region->getSettings();
+  
+  using PS = PlaybackSetting;
+  using TP = PS::Type;
+
+  double amp = 1.0;
+  double pan = 0.0;
+  int panRule = PlaybackSetting::PanRule::linear;
+
+
   for(size_t i = 0; i < settings.size(); i++)
   {
-    using TP = PlaybackSetting::Type;
+
     PlaybackSetting setting = settings[i];
     TP type = setting.getType();
     double val = (double) setting.getValue();
     switch(type)
     {
-    case TP::Volume: { amp = rsDbToAmp(val); } break;
+    case TP::Volume:  { amp     = rsDbToAmp(val); } break;
+    case TP::Pan:     { pan     = val;            } break;
+    case TP::PanRule: { panRule = (int)val;       } break;
 
       //case TP::FilterCutoff: { flt.setCutoff(val);  } break;
 
@@ -523,13 +554,29 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(const std::vector<PlaybackS
 
     }
   }
-  // factor out and call it with the settings - we may need to call it 3 times: with the settings
-  // of the instrument, group and region - we can get access to the group via the pointer stored
-  // in the region but what about the instrument? maybe the Group should maintain a pointer to an 
-  // enclosing instrument and we should always have exactly one instrument object present. Maybe
-  // the instrument definition can be factored out into data structure 
-  // rsSampleInstrumentDefinition or rsSoundFont and be made independent for the sampler-engine.
-  // But how to handle the acces to the samplePool then?
+
+
+  // ToDo: from the computed local amp/pan/panRule variables, compute the amp member (which is
+  // a rsFloat64x2)
+  double t1, t2, t3;  // temporaries
+  switch(panRule)
+  {
+  case PS::PanRule::linear:
+  {
+    t1 = (pan/200.0) + 0.5; // -100..+100 -> 0..1
+    t2 = 1.0 - t1;
+    this->amp = 2.0 * amp * rsFloat64x2(t1, t2);
+  } break;
+  case PS::PanRule::sinCos:
+  {
+    rsError("not yet implemented");
+  } break;
+  }
+
+ 
+
+
+
 
   // ToDo:
   // -Maybe within the switch statement set up some flags that indicate, if a particular setting is
@@ -638,6 +685,24 @@ Ideas:
  would actually hear a 50/50 mix between cycle 49 and cycle 50
 -To enable that feature, we should probably store the most recently received values of all 
  controllers
+-Write a general "instrumentify" algorithm that takes as input a multisample of an instrument 
+ (sampled at multiple keys and maybe also velocities) and produces a (extended) sfz instrument from
+ it. The algorithm should include:
+ -modeling (anti)formants via the sfz eq bands 
+  -should be done on the instrument/masetr level - just one EQ for the sum
+  -may need more than 3 bands
+  -or, use a general pole/zero model (tweakable as sfz filter via its spectral centroid)
+ -splitting of transient and body, use a sort of LA synthesis
+ -maybe try to model the body with a delayline with a pole/zero model filter in its feedback path
+  to model the freq-dependent decay (via its magnitudes) and the inharmonicity (via its phases)
+ -perhaps split body further into harmonic/inharmonic/noisy parts
+ -create an ambience sample that can be mixed in by
+  -randomizing FFT phases (perhaps with a smeared magnitude spectrum)
+  -convolving the sample with exponentially enveloped gaussian noise
+  -these samples should get a filter evelope in the sfz, ideally, of a slope filter, i.e. a filter
+   which doesn't have its cutoff changing over time, but its slope - this models faster decay of 
+   high frequencies
+
 
 Problem:
 -SFZ actually allows for an unlimited number of regions and it seems that each region needs its

@@ -283,7 +283,7 @@ public:
 
       PitchKeyCenter,
 
-      Volume, Pan,
+      Volume, Pan, PanRule,
       AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
 
       FilterCutoff, FilterResonance, FilterType,
@@ -298,10 +298,19 @@ public:
 
     enum FilterType
     {
-      Off, Lowpass_6, Lowpass_12, Highpass_6, Highpass_12, Bandpass_6_6, Bandreject_6_6,
+      off, lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6,
       
-      NumFilterTypes
+      numFilterTypes
     };
+
+
+    enum PanRule
+    {
+      linear, sinCos,
+
+      numPanRules
+    };
+
 
     PlaybackSetting(Type type, float value)
     { this->type = type; this->value = value; }
@@ -707,6 +716,8 @@ protected:
   {
   public:
     virtual void processFrame(rsFloat64x2& inOut) = 0;
+    virtual void resetState() = 0;
+    virtual void resetSettings() = 0;
     // todo: processBlock
   };
 
@@ -714,8 +725,9 @@ protected:
   {
   public:
     virtual double getSample() = 0;
+    virtual void resetState() = 0;
+    virtual void resetSettings() = 0;
     // todo: processBlock
-
   };
 
   class ModulationConnection
@@ -753,6 +765,7 @@ protected:
     to the assigned region and resets all DSP objects. */
     virtual void prepareToPlay();
 
+    virtual bool buildProcessingChain();
     virtual void resetDspState();
     virtual void resetDspSettings();
     virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings);

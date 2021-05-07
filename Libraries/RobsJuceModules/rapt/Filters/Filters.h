@@ -40,6 +40,8 @@ namespace RAPT
 //include "Musical/AttackDecaySineFilter.h" // maybe get rid of writing "Filter" all the time
 //#include "Basic/Equalizer.h"
 
+// make a folder "Adaptive", should include, LMS, RLs, GAL, FTF, Kalman, ...
+
 }
 
 #endif

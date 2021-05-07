@@ -23,16 +23,20 @@ bool samplerEngineUnitTest()
   float f  = 440.0;  // frequency of sinewave sample
   float a  = 0.5;    // amplitude of sinewave sample
   int   N  = 500;    // length of sinewave sample
-  VecF sample(N);
+  VecF sin440(N);    // sine wave
+  VecF cos440(N);    // cosine wave 
   float w = (float)(2*PI*f/fs);
   for(int n = 0; n < N; n++)
-    sample[n] = sinf(w*n);
+  {
+    sin440[n] = sinf(w*n);
+    cos440[n] = cosf(w*n);
+  }
   //rsPlotVector(sample);
 
   // Create an array of pointers to the channels and add the sample to the sample pool in the 
   // sampler engine:
   float* pSmp[2];
-  pSmp[0] = &sample[0];
+  pSmp[0] = &sin440[0];
   pSmp[1] = nullptr;
   int si = se.addSampleToPool(pSmp, N, 1, fs, "Sine440Hz");
   ok &= si == 0; // should return the sample-index in the sample-pool
@@ -60,17 +64,23 @@ bool samplerEngineUnitTest()
   ok &= se.getNumActiveLayers() == 1;
   for(int n = 0; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
-  //rsPlotVectors(sample, outL, outR);
-  ok &= outL == sample && outR == sample;
+  rsPlotVectors(sin440, outL, outR);
+  ok &= outL == sin440 && outR == sin440;
   //se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 0.f));  // is interpreted as note-off
   int i = se.stopAllPlayers();
   ok &= i == 1;
   ok &= se.getNumIdleLayers()   == maxLayers;
   ok &= se.getNumActiveLayers() == 0;
-  // hmm - the note-off should actually just trigger entering the release state. But maybe by 
+  // hmm - a note-off should actually just trigger entering the release state. But maybe by 
   // default, that should indeed just cut off the note immediately. Only when an amp-env with 
-  // nonzero release is used, the player will remain active for a while after note-off
+  // nonzero release is used, the player will remain active for a while after note-off.
+  // ok - we are now actually calling stopAllPlayers which is a hard reset and should indeed stop
+  // all playback immediately. Let's see, if the output is zero:
 
+  for(int n = 0; n < N; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  ok &= rsIsAllZeros(outL);
+  ok &= rsIsAllZeros(outR);
 
 
 
@@ -80,7 +90,29 @@ bool samplerEngineUnitTest()
   // -add a region for the cosine wave
   // -pan the cosine to hard right
   // -check stereo output - left should be the sine, right the cosine
-  se.setRegionSetting(r, PST::Pan, -100.f); // pan to hard left
+  se.setRegionSetting(r, PST::Pan, -100.f);               // pan sine to hard left
+  pSmp[0] = &cos440[0];
+  si = se.addSampleToPool(pSmp, N, 1, fs, "Cosine440Hz"); // add cosine sample to pool
+  ok &= si == 1; 
+  ri = se.addRegion(gi);                                  // add new region for cosine
+  ok &= ri == 1;
+  r = se.getRegion(gi, ri);                               // retrieve pointer to region
+  rc = se.setRegionSample(gi, ri, si);                    // set region sample to cosine
+  ok &= rc == RC::success;
+  se.setRegionSetting(r, PST::PitchKeyCenter, 69.f);      // cosine has same root key as sine
+  se.setRegionSetting(r, PST::Pan, +100.f);               // pan cosine to hard right
+  ok &= se.getNumIdleLayers()   == maxLayers;
+  ok &= se.getNumActiveLayers() == 0;
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  ok &= se.getNumIdleLayers()   == maxLayers-2;
+  ok &= se.getNumActiveLayers() == 2;
+  for(int n = 0; n < N; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  rsPlotVectors(outL, outR); 
+  // this looks like the sum of sine an cosine because pan is not yet implemented - but that is
+  // a good test to keep too - just do it before setting the pan values
+
+
 
 
 

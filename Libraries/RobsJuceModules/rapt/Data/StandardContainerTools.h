@@ -473,6 +473,12 @@ T rsMaxDeviation(const std::vector<T>& x, const std::vector<T>& y)
 }
 
 template<class T>
+bool rsIsAllZeros(const std::vector<T>& x, T tol = T(0))
+{
+  return rsArrayTools::isAllZeros(&x[0], (int) x.size(), tol);
+}
+
+template<class T>
 bool rsIsCloseTo(const std::vector<T>& x, const std::vector<T>& y, T tol)
 {
   if(x.size() != y.size()) 
