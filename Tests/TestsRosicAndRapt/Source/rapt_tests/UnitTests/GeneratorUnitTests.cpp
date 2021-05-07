@@ -64,7 +64,7 @@ bool samplerEngineUnitTest()
   ok &= se.getNumActiveLayers() == 1;
   for(int n = 0; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
-  rsPlotVectors(sin440, outL, outR);
+  //rsPlotVectors(sin440, outL, outR);
   ok &= outL == sin440 && outR == sin440;
   //se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 0.f));  // is interpreted as note-off
   int i = se.stopAllPlayers();
@@ -90,7 +90,6 @@ bool samplerEngineUnitTest()
   // -add a region for the cosine wave
   // -pan the cosine to hard right
   // -check stereo output - left should be the sine, right the cosine
-  se.setRegionSetting(r, PST::Pan, -100.f);               // pan sine to hard left
   pSmp[0] = &cos440[0];
   si = se.addSampleToPool(pSmp, N, 1, fs, "Cosine440Hz"); // add cosine sample to pool
   ok &= si == 1; 
@@ -100,7 +99,6 @@ bool samplerEngineUnitTest()
   rc = se.setRegionSample(gi, ri, si);                    // set region sample to cosine
   ok &= rc == RC::success;
   se.setRegionSetting(r, PST::PitchKeyCenter, 69.f);      // cosine has same root key as sine
-  se.setRegionSetting(r, PST::Pan, +100.f);               // pan cosine to hard right
   ok &= se.getNumIdleLayers()   == maxLayers;
   ok &= se.getNumActiveLayers() == 0;
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
@@ -108,7 +106,43 @@ bool samplerEngineUnitTest()
   ok &= se.getNumActiveLayers() == 2;
   for(int n = 0; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
-  rsPlotVectors(outL, outR); 
+  //rsPlotVectors(outL, outR);
+  ok &= outL == sin440 + cos440;
+  ok &= outR == sin440 + cos440;
+
+  // After having read both samples until the end, trying to produce more output thereafter should
+  // produce all zeros, even if we don't stop all players. The engine should detect that the end of
+  // the sample was reached and stop the players automatically...
+
+
+
+
+  i = se.stopAllPlayers();
+  ok &= i == 2;
+  ok &= se.getNumIdleLayers()   == maxLayers;
+  ok &= se.getNumActiveLayers() == 0;
+  r = se.getRegion(gi, 0);
+  se.setRegionSetting(r, PST::Pan, -100.f);               // pan sine to hard left
+  r = se.getRegion(gi, 1);
+  se.setRegionSetting(r, PST::Pan, +100.f);               // pan cosine to hard right
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  for(int n = 0; n < N; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  //rsPlotVectors(outL, outR); 
+  ok &= outL == (2.f * sin440);
+  ok &= outR == (2.f * cos440);
+  // ToDo: Check, how the sfz player handles the amp/pan parameters with respect to toal gain. 
+  // Should there be a factor of 2 for hard left/right settings or a factor of 0.5 for a center 
+  // setting? Make sure to match the behavior of the reference player. I actually would tend to 
+  // prefer the former because it implies that with the neutral default settings, samples are 
+  // played back as is as opposed to having acquired a gain of 0.5. Maybe if sfz behaves the other
+  // way, we could provide both options by introducing additional pan rules.
+   
+
+
+
+
+
   // this looks like the sum of sine an cosine because pan is not yet implemented - but that is
   // a good test to keep too - just do it before setting the pan values
 

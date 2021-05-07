@@ -565,7 +565,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(const std::vector<PlaybackS
   {
     t1 = (pan/200.0) + 0.5; // -100..+100 -> 0..1
     t2 = 1.0 - t1;
-    this->amp = 2.0 * amp * rsFloat64x2(t1, t2);
+    this->amp = 2.0 * amp * rsFloat64x2(t2, t1);
   } break;
   case PS::PanRule::sinCos:
   {

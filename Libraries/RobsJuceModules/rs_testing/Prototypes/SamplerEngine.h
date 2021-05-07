@@ -304,12 +304,21 @@ public:
     };
 
 
-    enum PanRule
+    enum PanRule  
     {
       linear, sinCos,
 
       numPanRules
     };
+    // Or maybe it should be called PanLaw? Maybe have different variations with respect to total
+    // gain - for linear: either factor 2 for hard left/right setting or a factor of 0.5 for a 
+    // center setting. The former would imply that with neutral default settings, stereo samples 
+    // are played as is. The latter would imply that hard-panned mono samples would be played as is
+    // on their respective channel. Both behaviors may be useful, although, it would be a bit 
+    // redundant because we also have an overall gain parameter as well which can always be used to 
+    // compensate...although a factor of exactly 2 or 0.5 may be hard to achieve because gain is 
+    // given in dB, so the sfz file would have to specify +-6.0205999132796239....., which is 
+    // inconvenient
 
 
     PlaybackSetting(Type type, float value)
