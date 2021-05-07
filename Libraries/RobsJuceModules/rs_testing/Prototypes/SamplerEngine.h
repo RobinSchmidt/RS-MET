@@ -283,7 +283,7 @@ public:
 
       PitchKeyCenter,
 
-      Volume,
+      Volume, Pan,
       AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
 
       FilterCutoff, FilterResonance, FilterType,
@@ -691,11 +691,43 @@ public:
 
   // void processFrameVoice, processBlockVoice
 
+  /** Stops the playback of all currently active RegionPlayers immediately. This is a rather hard 
+  reset which may be appropriate to call when a midi reset message is received or before loading a
+  new patch. It returns the number of players that were affected, i.e. the number of players that 
+  were in active state before the call. */
+  int stopAllPlayers();
+
 
 protected:
 
   //-----------------------------------------------------------------------------------------------
   // \name Internal Helper Classes
+
+  class SignalProcessor
+  {
+  public:
+    virtual void processFrame(rsFloat64x2& inOut) = 0;
+    // todo: processBlock
+  };
+
+  class Modulator
+  {
+  public:
+    virtual double getSample() = 0;
+    // todo: processBlock
+
+  };
+
+  class ModulationConnection
+  {
+
+  private:
+    std::function<void(double)> targetSetter; 
+    double amount = 0.0;  // strength of modulation
+    double refVal = 0.0;  // unmodulated reference value
+  };
+
+
 
   /** A class for playing back a given Region object. */
   class RegionPlayer
@@ -725,13 +757,22 @@ protected:
     virtual void resetDspSettings();
     virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings);
 
-    using Biquad = RAPT::rsBiquadDF1<rsFloat64x2, double>; // todo: use TDF2
-
     const Region* region;          //< The Region object that this object should play
     const AudioFileStream* stream; //< Stream object to get the data from
     rsFloat64x2 amp = 1.0;         //< Amplitude (for both channels)
     int sampleTime = 0;            //< Elapsed time in samples, negative values used for delay
-    Biquad flt, eq1, eq2, eq3;     //< Filter and equalizers
+
+
+    std::vector<Modulator*> modulators;
+    std::vector<SignalProcessor*> dspChain;
+    std::vector<ModulationConnection*> modMatrix;  // not a literal matrix but conceptually
+
+    // We may need a state, too. Can be attack/decay/sustain/release. Or maybe just play/release?
+    // Or maybe no state at all but the triggerRelease just triggers the release of all envelopes?
+
+
+    //using Biquad = RAPT::rsBiquadDF1<rsFloat64x2, double>; // todo: use TDF2
+    //Biquad flt, eq1, eq2, eq3;     //< Filter and equalizers
 
     // ToDo: 
     // -add more DSP objects: envelope generators, LFOs, we also need to somehow take care
@@ -813,6 +854,8 @@ protected:
   noteOff is supposed to trigger relase-samples. In such a case, none of the release-samples will 
   be triggered. */
   int handleNoteOff(uchar key, uchar vel);
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Data

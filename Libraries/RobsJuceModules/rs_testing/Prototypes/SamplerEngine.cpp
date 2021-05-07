@@ -261,6 +261,16 @@ void rsSamplerEngine::handleMusicalEvent(const rsMusicalEvent<float>& ev)
   }
 }
 
+int rsSamplerEngine::stopAllPlayers()
+{
+  int numPlayers = (int) activePlayers.size();
+  for(int i = numPlayers-1; i >= 0; i--)        // just seems nicer to stop them in reverse order
+    idlePlayers.push_back(activePlayers[i]);
+  activePlayers.clear();
+  return numPlayers;
+}
+
+
 //-------------------------------------------------------------------------------------------------
 // Internal:
 
@@ -295,6 +305,8 @@ void rsSamplerEngine::addRegionForKey(uchar k, const Region* region)
   regionsForKey[k].addRegion(region);
   // What, if the region is already there? We should check that before. It's probably not supposed
   // to happen, but anyway. Well...maybe it is, when the user tweaks loKey/hiKey settings on a GUI.
+  // On the other hand, it may actually be useful to be able to duplicate regions, especially on
+  // a GUI: duplicate-and-edit could be a common workflow
 }
 
 void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int* ri)
@@ -345,6 +357,8 @@ const AudioFileStream* rsSamplerEngine::getSampleStreamFor(const Region* r)
 
 int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
 {
+  if(vel == 0) { return handleNoteOff(key, vel); }
+
   int numRegions = 0;  // number of regions that were triggered by this noteOn
   for(size_t i = 0; i < regionsForKey[key].getNumRegions(); i++) 
   {
@@ -379,7 +393,10 @@ int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
   // Note-off events may also trigger the playback of regions (note-off samples are a thing)...
   int numRegions = 0; 
 
-  // ...more to do...
+  // ToDo:
+  // -loop through all activePlayers to find those who are playing the given key
+  // -mark them for going into release state
+  // -later: trigger all regions that should play a release sample for the given key/vel combo
 
 
   return ReturnCode::success;

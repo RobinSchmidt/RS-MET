@@ -60,8 +60,19 @@ bool samplerEngineUnitTest()
   ok &= se.getNumActiveLayers() == 1;
   for(int n = 0; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
-  //rsPlotVectors(sample, outL, outR);  // looks good
+  //rsPlotVectors(sample, outL, outR);
   ok &= outL == sample && outR == sample;
+  //se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 0.f));  // is interpreted as note-off
+  int i = se.stopAllPlayers();
+  ok &= i == 1;
+  ok &= se.getNumIdleLayers()   == maxLayers;
+  ok &= se.getNumActiveLayers() == 0;
+  // hmm - the note-off should actually just trigger entering the release state. But maybe by 
+  // default, that should indeed just cut off the note immediately. Only when an amp-env with 
+  // nonzero release is used, the player will remain active for a while after note-off
+
+
+
 
   // todo:
   // -set pan of the first region to hard left
@@ -69,7 +80,13 @@ bool samplerEngineUnitTest()
   // -add a region for the cosine wave
   // -pan the cosine to hard right
   // -check stereo output - left should be the sine, right the cosine
+  se.setRegionSetting(r, PST::Pan, -100.f); // pan to hard left
 
+
+
+  // -clear the regions
+  // -add sine and cosine samples again, but this time as a single stereo sample
+  // -create a region for that and test the output
 
 
 
