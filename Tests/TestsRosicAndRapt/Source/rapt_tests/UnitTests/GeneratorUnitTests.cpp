@@ -50,7 +50,8 @@ bool samplerEngineUnitTest()
 
   // Now the engine is set up with the sinewave sample in a single region that spans the whole
   // keyboard. We trigger a note at the original PitchCenterKey with maximum velocity and let the
-  // engine produce N samples. We expect that the output exactly matches the original sample:
+  // engine produce N samples. We expect that the output in both channels exactly matches the 
+  // original sample:
   VecF outL(N), outR(N);
   ok &= se.getNumIdleLayers()   == maxLayers;
   ok &= se.getNumActiveLayers() == 0;
@@ -59,8 +60,17 @@ bool samplerEngineUnitTest()
   ok &= se.getNumActiveLayers() == 1;
   for(int n = 0; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
-  rsPlotVectors(sample, outL, outR);
-  // left channel looks ok but right channel is zero (actually some denormal numbers)
+  //rsPlotVectors(sample, outL, outR);  // looks good
+  ok &= outL == sample && outR == sample;
+
+  // todo:
+  // -set pan of the first region to hard left
+  // -add a second sample (maybe a cosine wave of the same frequency)
+  // -add a region for the cosine wave
+  // -pan the cosine to hard right
+  // -check stereo output - left should be the sine, right the cosine
+
+
 
 
   // todo:

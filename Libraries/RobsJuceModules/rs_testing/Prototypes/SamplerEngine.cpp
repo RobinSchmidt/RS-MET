@@ -2,31 +2,48 @@
 // Function definitions for the helper classes:
 
 bool AudioFileStreamPreloaded::setData(
-  float** newData, int numFrames, int numChannels, float sampleRate,
+  float** newData, int numFrames, int numDataChannels, float sampleRate, int numStreamChannels, 
   const std::string& uniqueName)
 {
   // Deallocate old and allocate new memory:
   clear();
-  flatData = new float[numChannels*numFrames];
-  channelPointers = new float*[numChannels];
+  int numChannelsMin = rsMin(numDataChannels, numStreamChannels);
+  flatData = new float[numChannelsMin*numFrames];
+  channelPointers = new float*[numStreamChannels];
   if(flatData == nullptr || channelPointers == nullptr) {
     clear(); return false; }  // memory allocation failed
 
-                              // Copy the new data into the freshly allocated memory:
-  for(int c = 0; c < numChannels; c++) {
-    channelPointers[c] = &flatData[c*numFrames];
-    for(int n = 0; n < numFrames; n++)
-      channelPointers[c][n] = newData[c][n]; }
+  // Copy the new data into the freshly allocated memory:
+  //for(int c = 0; c < numChannels; c++) {
+  //  channelPointers[c] = &flatData[c*numFrames];
+  //  for(int n = 0; n < numFrames; n++)
+  //    channelPointers[c][n] = newData[c][n]; }
   // Maybe we should have a version of this function which does not need to copy data but instead
   // just takes over ownership of the passed array. But this would need a parameter for the flat 
   // data array, too. We'll see, how this meshes with the wavefile loading functions...
 
+
+  for(int c = 0; c < numChannelsMin; c++) 
+    for(int n = 0; n < numFrames; n++)
+      flatData[c*numFrames + n] = newData[c][n];
+  for(int c = 0; c < numStreamChannels; c++)
+    channelPointers[c] = &flatData[c % numChannelsMin];
+
+
+
   // Update metadata members and report success:
-  this->numChannels = numChannels;
+  this->numChannels = numStreamChannels;
   this->numFrames   = numFrames;
   this->sampleRate  = sampleRate;
   return true; // success
 }
+
+/*
+void AudioFileStreamPreloaded::setNumOutputChannels(int newNumChannels)
+{
+  int dummy = 0;
+}
+*/
 
 void AudioFileStreamPreloaded::clear()
 {
@@ -120,7 +137,7 @@ int rsSamplerEngine::addSampleToPool(
   //  uniformly
 
   AudioFileStreamPreloaded* stream = new AudioFileStreamPreloaded;
-  bool allocOK = stream->setData(data, numFrames, numChannels, sampleRate, uniqueName);
+  bool allocOK = stream->setData(data, numFrames, numChannels, sampleRate, 2, uniqueName);
   if(allocOK == false)
     return ReturnCode::memAllocFail;
   return samplePool.addSample(stream);
@@ -386,8 +403,12 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
     sampleTime++;                    // We just increment the time and return 0,0. Actual output
     return rsFloat64x2(0.0, 0.0); }  // will be produced as soon as sampleTime reaches zero.  
 
-  float tmp[2];
-  stream->getFrame(sampleTime, tmp);
+  //float tmp[2];
+  //stream->getFrame(sampleTime, tmp);
+
+  float L, R;
+  stream->getFrameStereo(sampleTime, &L, &R);
+
 
 
   // more stuff to do:
@@ -397,12 +418,15 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
 
 
   sampleTime++; 
-  // sampleTime should probably be of type double and we should have use increment that depends on
-  // the current pitch, i.e. determined by pitchKeyCenter, noteFreq, sampleRates of the file and 
+  // sampleTime should probably be of type double and we should have use an increment that depends 
+  // on the current pitch, i.e. determined by pitchKeyCenter, noteFreq, sampleRates of the file and 
   // output.
 
 
-  return rsFloat64x2(tmp[0], tmp[1]);  // preliminary
+  return rsFloat64x2(L, R); 
+
+
+  //return rsFloat64x2(tmp[0], tmp[1]);  // preliminary
 
   //return rsFloat64x2(0.0, 0.0);  // preliminary
 }
@@ -623,7 +647,9 @@ Problem:
  by using single precision. Maybe we can express the filters as parallel connection of an allpass
  with a direct path (see DAFX). Maybe this can be done for envelopes and LFOs, too - there, it's
  even easier bacause they can be computed in parallel anyway. Make classes rsBiquadFloat64x4, etc.
-
+-try to minimize the state of the RegionPlayer. maybe for the envelopes, it's enough to maintain
+ the sample-time and compute the envelope without keeping state for each - but these are 
+ optimization concerns to be addressed later
 
 SFZ - Resources:
 https://en.wikipedia.org/wiki/SFZ_(file_format)

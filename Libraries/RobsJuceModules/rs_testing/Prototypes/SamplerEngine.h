@@ -56,6 +56,21 @@ public:
   /** For random access. Writes the sample frame with given index into the given destination. */
   virtual void getFrame(int sampleIndex, float* destination) const = 0;
 
+  /** Function for speficically handling stereo signals to allow handling that importnat, common 
+  special case more efficiently than with the more general implementation. */
+  virtual void getFrameStereo(int sampleIndex, float* left, float* right) const = 0;
+
+  /** Sets the number of output channels for this object. By default, this number will be equal to
+  the number of channels in the data, as set by the setData call. However, the number of desired 
+  output channels to be produced may actually be different from that. For example, we may want to
+  produce stereo output from mono data by just copying the single output into both channels. Let
+  M be the number of channels in the data and N be the number of output channels of the stream, 
+  then we will produce: out[n] = data[m % N] where n is the output channel index and m % N the data
+  channel index. */
+  //virtual void setNumOutputChannels(int newNumChannels) = 0;
+
+
+
   /** Subclasses may want to override this for optimizing the blockwise access. */
   /*
   virtual void getBlock(int startIndex, int length, TSmp** destination)
@@ -120,9 +135,14 @@ public:
 
   /** Returns true, iff everything went alright and false if it failed to allocate the required
   memory. */
-  bool setData(float** newData, int numFrames, int numChannels, float sampleRate, 
-    const std::string& uniqueName);
-  // todo: include fileName etc. later, too
+  bool setData(float** newData, int numFrames, int numDataChannels, float sampleRate, 
+    int numStreamChannels, const std::string& uniqueName);
+  // todo: 
+  // -we need to distiguish between the number of channels in the data and the desired number of 
+  //  output channels
+  // -include fileName etc. later, too
+
+  //void setNumOutputChannels(int newNumChannels) override;
 
 
   void clear();
@@ -141,7 +161,24 @@ public:
     // should happen rarely, if ever), we need to update all channelPointer arrays in all 
     // AudioFileStreamPreloaded objects.
   }
-  // this api sucks! pass a float** destinations
+  // this api sucks! pass a float** destinations - but for the sfz player, this is too general
+  // we really need to support only mono and stereo. Maybe make a function getFrameStereo
+
+
+  void getFrameStereo(int sampleIndex, float* left, float* right) const override
+  {
+    rsAssert(numChannels == 2); // Can be used only for stereo signals
+    int n = sampleIndex;
+    *left  = channelPointers[0][n];
+    *right = channelPointers[1][n];
+    //*left  = 0.0;
+    //*right = 0.0;
+  }
+
+  //void getFrameStereo(int sampleIndex, float* destination) const
+
+
+
 
 protected:
 
