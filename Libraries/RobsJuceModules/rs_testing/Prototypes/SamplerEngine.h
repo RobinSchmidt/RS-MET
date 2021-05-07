@@ -69,7 +69,13 @@ public:
   channel index. */
   //virtual void setNumOutputChannels(int newNumChannels) = 0;
 
+  /** Returns the number of sample frames in this stream. */
+  int getNumFrames() const { return numFrames; }
 
+
+
+
+  //virtual bool hasFinished(int sampleTime)
 
   /** Subclasses may want to override this for optimizing the blockwise access. */
   /*
@@ -765,6 +771,11 @@ protected:
     /** Writes a block of given length into the outBuffer. */
     virtual void processBlock(rsFloat64x2* outBuffer, int length);
 
+    /** Returns true, iff this player has finished its playback job, for example by having reached
+    the end of the sample stream and/or amplitude envelope. */
+    virtual bool hasFinished();
+
+
   protected:
 
     /** A basic sanity check for the given region. Mostly for catching bugs. */
@@ -847,17 +858,26 @@ protected:
   both will be assigned to -1. This should actually not happen, though: a region should always be 
   found in one and only one group. In sfz files, there can actually be regions that are not in any
   group, but in this implementation, we just put them into an additional group (at group index 0), 
-  if necessary. The organization of the sfz file does not need to match the implementation. The 
-  group with index 0 contains either all the free regions or corresponds to the first defined group 
-  in the sfz file, if the file contains no free regions. If -1,-1 is returned, it indicates that 
-  the caller still holds a pointer to a region that doesn't exist anymore in the instrument, which 
-  may indicate a bug at the call site. */
+  if necessary. Handling it all uniformly is more elegant and efficient and the organization of the
+  sfz file does not need to match all of our implementation details here exactly. The group with 
+  index 0 contains either all the free regions or corresponds to the first defined group in the sfz
+  file, if the file contains no free regions. If (-1,-1) is returned, it indicates that the caller 
+  still holds a pointer to a region that doesn't exist anymore in the instrument, which may 
+  indicate a bug at the call site. */
   void findRegion(const Region* region, int* groupIndex, int* regionIndex);
 
   /** Returns a pointer to a player for the given region by grabbing it from the idlePlayers array.
   This will have the side effects that this player will be removed from idlePlayers and added to 
-  activePlayers. If no player is available (i.e. idle), this will return a nullptr. */
+  activePlayers. If no player is available (i.e. idle), this will return a nullptr. The caller 
+  should interpret that as a layerOverload condition and return the appropriate return code to 
+  its caller. */
   RegionPlayer* getRegionPlayerFor(const Region* r);
+
+  /** Stops the player at the given "activeIndex" which is the index into our "activePlayers" 
+  array. This results in the removal of the player from "activePlayers" and adding it back to
+  "idlePlayers". The return value is either ReturnCode::success or ReturnCode::invalidIndex, if
+  the activeIndex was not a valid index into our activePlayers array. */
+  int deactivateRegionPlayer(size_t activeIndex);
 
   /** Returns the AudioFileStream object that is used to stream the actual sample data for the
   given region. A pointer to this object is supposed to be stored within the region object
@@ -905,7 +925,7 @@ protected:
 
   std::vector<Group> groups;
   /**< The groups contained in this instrument. Each group may contain set of regions. */
-  // get rid - should go into rsInstrumentDataSFZ::Instrument
+  // get rid - should go into rsDataSFZ::Instrument
 
   std::vector<PlaybackSetting> settings;
   /**< Playback settings that apply to all groups within this instrument, unless a group (or 
@@ -920,11 +940,14 @@ protected:
   available to be used for new incoming notes. */
 
   std::vector<RegionPlayer> playerPool;
-  /**< This is our pool of the actual RegionPlayer objects for which we grab a player when we need
+  /**< This is our pool of the actual RegionPlayer objects from which we grab a player when we need
   to trigger the playback of a region. The invariant is that at any given time, all players in this 
   pool are either pointed to by some element in the activePlayers or by some element in the 
-  idlePlayers. The size of this array determines our maximum polyphony and the memory usage 
+  idlePlayers. The size of this array determines our maximum number of layers and the memory usage 
   without taking memory for the samples into account. */
+  // todo: use a sort of multi-threaded, speculatively pre-allocating, non-deallocating dynamic 
+  // array data structure for that later. The same strategy should then later be used for DSP 
+  // objects as well
 
 
   //int numChannels = 2;

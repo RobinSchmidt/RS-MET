@@ -14,15 +14,16 @@ bool samplerEngineUnitTest()
   int maxLayers = 8;  
   // Maximum number of layers, actually, according to the sfz spec, this is supposed to be 
   // theoretically infinite, but i guess, in practice, there has to be some (high) limit which is
-  // never supposed to be reached
+  // never supposed to be reached. However, for the unit tests, we use an unrealistically low value
+  // to facilitate also testing the behavior when the limits are indeed reached.
 
   SE se(maxLayers);                     // create the sampler engine object
 
-  // Create a sinewave as example sample:
+  // Create a sine- and cosine wave as example samples:
   float fs = 44100;  // sample rate
-  float f  = 440.0;  // frequency of sinewave sample
-  float a  = 0.5;    // amplitude of sinewave sample
-  int   N  = 500;    // length of sinewave sample
+  float f  = 440.0;  // frequency of (co)sinewave sample
+  //float a  = 0.5;    // amplitude of (co)sinewave sample
+  int   N  = 500;    // length of (co)sinewave sample
   VecF sin440(N);    // sine wave
   VecF cos440(N);    // cosine wave 
   float w = (float)(2*PI*f/fs);
@@ -48,7 +49,7 @@ bool samplerEngineUnitTest()
   ok &= ri == 0;
 
   SE::Region* r = se.getRegion(gi, ri);
-  int rc = se.setRegionSample(gi, ri, si); 
+  int rc = se.setRegionSample(gi, ri, si);           // rc: return code
   ok &= rc == RC::success;
   se.setRegionSetting(r, PST::PitchKeyCenter, 69.f); // key = 69 is A4 at 440 Hz
 
@@ -67,10 +68,9 @@ bool samplerEngineUnitTest()
   //rsPlotVectors(sin440, outL, outR);
   ok &= outL == sin440 && outR == sin440;
   //se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 0.f));  // is interpreted as note-off
-  int i = se.stopAllPlayers();
-  ok &= i == 1;
+  ok &= se.getNumActiveLayers() == 0;          // player should have stopped
   ok &= se.getNumIdleLayers()   == maxLayers;
-  ok &= se.getNumActiveLayers() == 0;
+
   // hmm - a note-off should actually just trigger entering the release state. But maybe by 
   // default, that should indeed just cut off the note immediately. Only when an amp-env with 
   // nonzero release is used, the player will remain active for a while after note-off.
@@ -83,13 +83,10 @@ bool samplerEngineUnitTest()
   ok &= rsIsAllZeros(outR);
 
 
-
-  // todo:
-  // -set pan of the first region to hard left
-  // -add a second sample (maybe a cosine wave of the same frequency)
-  // -add a region for the cosine wave
-  // -pan the cosine to hard right
-  // -check stereo output - left should be the sine, right the cosine
+  // Test with 2 regions:
+  // -add a second sample to the pool (a cosine wave of the same frequency)
+  // -add and set up a region for the cosine wave
+  // -expected output: both, left and right should be the sum of sine and cosine
   pSmp[0] = &cos440[0];
   si = se.addSampleToPool(pSmp, N, 1, fs, "Cosine440Hz"); // add cosine sample to pool
   ok &= si == 1; 
@@ -98,7 +95,7 @@ bool samplerEngineUnitTest()
   r = se.getRegion(gi, ri);                               // retrieve pointer to region
   rc = se.setRegionSample(gi, ri, si);                    // set region sample to cosine
   ok &= rc == RC::success;
-  se.setRegionSetting(r, PST::PitchKeyCenter, 69.f);      // cosine has same root key as sine
+  se.setRegionSetting(r, PST::PitchKeyCenter, 69.f);      // cosine is also at A4 = 440 Hz
   ok &= se.getNumIdleLayers()   == maxLayers;
   ok &= se.getNumActiveLayers() == 0;
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
@@ -109,18 +106,18 @@ bool samplerEngineUnitTest()
   //rsPlotVectors(outL, outR);
   ok &= outL == sin440 + cos440;
   ok &= outR == sin440 + cos440;
+  ok &= se.getNumActiveLayers() == 0;                     // players should have stopped
+  ok &= se.getNumIdleLayers()   == maxLayers;
 
   // After having read both samples until the end, trying to produce more output thereafter should
   // produce all zeros, even if we don't stop all players. The engine should detect that the end of
   // the sample was reached and stop the players automatically...
 
 
-
-
-  i = se.stopAllPlayers();
-  ok &= i == 2;
-  ok &= se.getNumIdleLayers()   == maxLayers;
-  ok &= se.getNumActiveLayers() == 0;
+  // Test panning:
+  // -set pan of the first region to hard left
+  // -pan the cosine to hard right
+  // -expected output: left should be the sine, right the cosine
   r = se.getRegion(gi, 0);
   se.setRegionSetting(r, PST::Pan, -100.f);               // pan sine to hard left
   r = se.getRegion(gi, 1);
@@ -131,7 +128,7 @@ bool samplerEngineUnitTest()
   //rsPlotVectors(outL, outR); 
   ok &= outL == (2.f * sin440);
   ok &= outR == (2.f * cos440);
-  // ToDo: Check, how the sfz player handles the amp/pan parameters with respect to toal gain. 
+  // ToDo: Check, how the sfz player handles the amp/pan parameters with respect to total gain. 
   // Should there be a factor of 2 for hard left/right settings or a factor of 0.5 for a center 
   // setting? Make sure to match the behavior of the reference player. I actually would tend to 
   // prefer the former because it implies that with the neutral default settings, samples are 

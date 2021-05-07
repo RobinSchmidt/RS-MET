@@ -233,7 +233,12 @@ void rsSamplerEngine::processFrame(float* left, float* right)
 {
   rsFloat64x2 out = 0.0;
   for(size_t i = 0; i < activePlayers.size(); i++)
+  {
     out += activePlayers[i]->getFrame();
+    if(activePlayers[i]->hasFinished()) {
+      deactivateRegionPlayer(i);
+      i--; }
+  }
   *left  = (float) out[0];
   *right = (float) out[1];
 }
@@ -343,6 +348,17 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region*
   return rp;
 }
 
+int rsSamplerEngine::deactivateRegionPlayer(size_t i)
+{
+  if(i >= activePlayers.size()) {
+    rsError("Invalid player index");
+    return ReturnCode::invalidIndex; }
+  RegionPlayer* p = activePlayers[i];
+  rsRemove(activePlayers, i);
+  idlePlayers.push_back(p);
+  return ReturnCode::success;
+}
+
 const AudioFileStream* rsSamplerEngine::getSampleStreamFor(const Region* r)
 {
   //return r->getSampleStream();
@@ -380,7 +396,7 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
       numRegions++;
   }
   return ReturnCode::success;
-  // Another possibility for the return value would have been to return the number of voices that
+  // Another possibility for the return value would have been to return the number of layers that
   // have been triggered, but we don't do that because then it would be not quite clear what we
   // should return from noteOff to make the functions somewhat consistent. In noteOff, we could
   // either return the number of released regions or the number of triggered release samples. Both
@@ -498,6 +514,23 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay()
   // return rsSamplerEngine::ReturnCode::success;
 }
 
+bool rsSamplerEngine::RegionPlayer::hasFinished()
+{
+  //int numFrames = stream->getNumFrames();
+  //int tmp = stream->getNumFrames() - 1;
+  if( sampleTime >= stream->getNumFrames() )
+    return true;
+
+  // todo: 
+  // -check also, if the amplitude envelope has reached its end
+  // -hmm - maybe, if we allow the frequency envelope to go negative, we could also move 
+  //  backward through the sample, so having reached the end of the stream may not actually be an
+  //  appropriate condition. Or maybe, we should allow more general time-warping envelopes. 
+  //  We'll see
+
+  return false;
+}
+
 void rsSamplerEngine::RegionPlayer::resetDspState()
 {
   for(size_t i = 0; i < dspChain.size(); i++)
@@ -558,7 +591,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(const std::vector<PlaybackS
 
   // ToDo: from the computed local amp/pan/panRule variables, compute the amp member (which is
   // a rsFloat64x2)
-  double t1, t2, t3;  // temporaries
+  double t1, t2;  // temporaries
   switch(panRule)
   {
   case PS::PanRule::linear:
