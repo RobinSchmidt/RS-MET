@@ -67,21 +67,16 @@ bool samplerEngineUnitTest()
     se.processFrame(&outL[n], &outR[n]);
   //rsPlotVectors(sin440, outL, outR);
   ok &= outL == sin440 && outR == sin440;
-  //se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 0.f));  // is interpreted as note-off
-  ok &= se.getNumActiveLayers() == 0;          // player should have stopped
+
+  // After having played both samples until the end, trying to produce more output thereafter 
+  // should produce all zeros, even if we don't stop all players. The engine should detect that 
+  // the end of the sample was reached and stop the players automatically:
+  ok &= se.getNumActiveLayers() == 0;            // player should have stopped
   ok &= se.getNumIdleLayers()   == maxLayers;
-
-  // hmm - a note-off should actually just trigger entering the release state. But maybe by 
-  // default, that should indeed just cut off the note immediately. Only when an amp-env with 
-  // nonzero release is used, the player will remain active for a while after note-off.
-  // ok - we are now actually calling stopAllPlayers which is a hard reset and should indeed stop
-  // all playback immediately. Let's see, if the output is zero:
-
   for(int n = 0; n < N; n++)
-    se.processFrame(&outL[n], &outR[n]);
+    se.processFrame(&outL[n], &outR[n]);         // output should be zero
   ok &= rsIsAllZeros(outL);
   ok &= rsIsAllZeros(outR);
-
 
   // Test with 2 regions:
   // -add a second sample to the pool (a cosine wave of the same frequency)
@@ -109,11 +104,6 @@ bool samplerEngineUnitTest()
   ok &= se.getNumActiveLayers() == 0;                     // players should have stopped
   ok &= se.getNumIdleLayers()   == maxLayers;
 
-  // After having read both samples until the end, trying to produce more output thereafter should
-  // produce all zeros, even if we don't stop all players. The engine should detect that the end of
-  // the sample was reached and stop the players automatically...
-
-
   // Test panning:
   // -set pan of the first region to hard left
   // -pan the cosine to hard right
@@ -128,28 +118,48 @@ bool samplerEngineUnitTest()
   //rsPlotVectors(outL, outR); 
   ok &= outL == (2.f * sin440);
   ok &= outR == (2.f * cos440);
-  // ToDo: Check, how the sfz player handles the amp/pan parameters with respect to total gain. 
-  // Should there be a factor of 2 for hard left/right settings or a factor of 0.5 for a center 
-  // setting? Make sure to match the behavior of the reference player. I actually would tend to 
-  // prefer the former because it implies that with the neutral default settings, samples are 
-  // played back as is as opposed to having acquired a gain of 0.5. Maybe if sfz behaves the other
-  // way, we could provide both options by introducing additional pan rules.
-   
+  ok &= se.getNumActiveLayers() == 0;
+
+  // Test handling of noteOff. At the moment, we have no amp envelope yet, so a noteOff, should 
+  // immediately stop the playback of all layers which it applies to.
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));  // the noteOn, again
+  for(int n = 0; n < N/2; n++)                           // play through half the sample
+    se.processFrame(&outL[n], &outR[n]);
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 0.f));    // this is interpreted as note-off
+  for(int n = N/2; n < N; n++)                           // play through 2nd half
+    se.processFrame(&outL[n], &outR[n]);
+  rsPlotVectors(outL, outR);
+  // out-buffers should be half filled with the starting sections of sine/cosine and the second 
+  // half should be all zeros - does not yet work: buffers contain the full sample, noteOff has
+  // no effect
 
 
 
 
+  // ToDo: implement and test note-off
+  // A note-off should generally trigger entering the release state. But maybe by default, that 
+  // should indeed just cut off the note immediately. Only when an amp-env with nonzero release is
+  // used, the player will remain active for a while after note-off.
+  //se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 0.f));  // is interpreted as note-off
 
-  // this looks like the sum of sine an cosine because pan is not yet implemented - but that is
-  // a good test to keep too - just do it before setting the pan values
+
+  // ToDo: 
+  // -implement and test realtime resampling (linear interpolation at first, later cubic and sinc, 
+  //  maybe some sort of "Elephant" interpolation, too - although, they are supposed to work with
+  //  2x oversampling) 
+  //  -maybe play it at half and twice the original speed, i.e. an octave higher and lower
+  // -implement and test sfz export/import
+  // -add a SFZPlayer-likem simple GUI, so we can import and test actual sfz files
+  // -Check, how the sfz player handles the amp/pan parameters with respect to total gain. 
+  //  Should there be a factor of 2 for hard left/right settings or a factor of 0.5 for a center 
+  //  setting? Make sure to match the behavior of the reference player. I actually would tend to 
+  //  prefer the former because it implies that with the neutral default settings, samples are 
+  //  played back as is as opposed to having acquired a gain of 0.5. Maybe if sfz behaves the other
+  //  way, we could provide both options by introducing additional pan rules.
 
 
 
 
-
-  // -clear the regions
-  // -add sine and cosine samples again, but this time as a single stereo sample
-  // -create a region for that and test the output
 
 
 
