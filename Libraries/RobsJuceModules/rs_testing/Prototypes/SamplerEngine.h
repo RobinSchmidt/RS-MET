@@ -765,6 +765,11 @@ protected:
     /** Sets up the region object that this player should play. */
     virtual void setRegionToPlay(const Region* regionToPlay);
 
+    /** Sets the midi note number for which this player was started. This needs to be set up when 
+    receiving a noteOn. This information is used later when receiving a noteOff to identify which 
+    players need to stop. */
+    void setKey(uchar newKey) { key = newKey; }
+
     /** Generates one stereo sample frame at a time. */
     virtual rsFloat64x2 getFrame();
 
@@ -773,7 +778,11 @@ protected:
 
     /** Returns true, iff this player has finished its playback job, for example by having reached
     the end of the sample stream and/or amplitude envelope. */
-    virtual bool hasFinished();
+    virtual bool hasFinished(); // should be const?
+
+    /** Retrieves the information about the midi note for which this player was started. Used to 
+    identify players that need to stop, when a noteOff is received. @see setKey */
+    uchar getKey() const { return key; }
 
 
   protected:
@@ -794,7 +803,7 @@ protected:
     const AudioFileStream* stream; //< Stream object to get the data from
     rsFloat64x2 amp = 1.0;         //< Amplitude (for both channels)
     int sampleTime = 0;            //< Elapsed time in samples, negative values used for delay
-
+    uchar key = 0;                 //< Midi note number used for starting this player
 
     std::vector<Modulator*> modulators;
     std::vector<SignalProcessor*> dspChain;
@@ -808,6 +817,9 @@ protected:
     //Biquad flt, eq1, eq2, eq3;     //< Filter and equalizers
 
     // ToDo: 
+    // -use double for sampleTime or and additional double or float to represent the 
+    //  fractional part of sampleTime
+    // -maybe use float instead of uchar for the key
     // -add more DSP objects: envelope generators, LFOs, we also need to somehow take care
     //  of the effect sends (reverb, chorus)
     // -Maybe in addition to elapsed time, we also need to maintain position inside the sample 

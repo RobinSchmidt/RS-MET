@@ -241,6 +241,12 @@ void rsSamplerEngine::processFrame(float* left, float* right)
   }
   *left  = (float) out[0];
   *right = (float) out[1];
+
+  // ToDo: Test, if it's more efficient to loop through the activePlayers array backwards. But then
+  // we would need a signed int as loop index to make it work also when size() == 0 because we 
+  // would need to start at size()-1, which would be around 2^64 for size_t. Then, the i-- could be
+  // removed, but that's not the main point. The main point is that the deactivation/removal would 
+  // need less data copying.
 }
 
 void rsSamplerEngine::processBlock(float** block, int numFrames)
@@ -393,7 +399,10 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
       return ReturnCode::voiceOverload;
     }
     else
+    {
+      rp->setKey(key);
       numRegions++;
+    }
   }
   return ReturnCode::success;
   // Another possibility for the return value would have been to return the number of layers that
@@ -407,15 +416,24 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
 int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
 {
   // Note-off events may also trigger the playback of regions (note-off samples are a thing)...
-  int numRegions = 0; 
+  int numRegions = 0;
+  for(int i = int(activePlayers.size()) - 1; i >= 0; i--)
+  {
+    if(activePlayers[i]->getKey() == key)
+      deactivateRegionPlayer(size_t(i));
+      // ToDo: refine this later: we may not want to immediately stop the player but rather 
+      // trigger the release phase and mark for quick fade-out
+  }
+  return ReturnCode::success; // preliminary
 
   // ToDo:
-  // -loop through all activePlayers to find those who are playing the given key
-  // -mark them for going into release state
+  // -Mark them for going into release state, if they have an amp-env or stop them immediately, if
+  //  they don't. Maybe as a later refinement, we could also apply a quick fade-out (over a couple
+  //  of millisecond) instead of a hard stop. That could be useful also in other contexts, such as
+  //  different retrigger modes
   // -later: trigger all regions that should play a release sample for the given key/vel combo
-
-
-  return ReturnCode::success;
+  // -check, if looping forward or backward (implying using int or size_t for i) is more
+  //  efficient
 }
 
 
@@ -589,7 +607,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(const std::vector<PlaybackS
   }
 
 
-  // ToDo: from the computed local amp/pan/panRule variables, compute the amp member (which is
+  // From the computed local amp/pan/panRule variables, compute the amp member (which is
   // a rsFloat64x2)
   double t1, t2;  // temporaries
   switch(panRule)
@@ -605,6 +623,13 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(const std::vector<PlaybackS
     rsError("not yet implemented");
   } break;
   }
+  // ToDo: support the "width" opcode. Implement it by a M/S matrix - we need two rsFloat64
+  // members to represent both rows of it. Then, in the realtime processing call, we let the stream
+  // produce the stereo pair, compute the product of that pair with both rows by element-wise 
+  // multiply and summing the whole vector and then assigning the first output to first sum and
+  // the 2nd to the 2nd. But should width be applied before or after the pan? -> test with 
+  // sfzplayer. I would say, width-before-pan makes more sense from a usability perspective. If 
+  // sfz thinks otherwise, maybe provide both options, switched by an additional opcode
 
  
 

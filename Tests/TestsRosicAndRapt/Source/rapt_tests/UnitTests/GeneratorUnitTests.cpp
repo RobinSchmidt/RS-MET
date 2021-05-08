@@ -107,7 +107,8 @@ bool samplerEngineUnitTest()
   // Test panning:
   // -set pan of the first region to hard left
   // -pan the cosine to hard right
-  // -expected output: left should be the sine, right the cosine
+  // -expected output: left should be the twice sine, right twice the cosine (the factor two arises
+  //  from the pan law)
   r = se.getRegion(gi, 0);
   se.setRegionSetting(r, PST::Pan, -100.f);               // pan sine to hard left
   r = se.getRegion(gi, 1);
@@ -120,15 +121,21 @@ bool samplerEngineUnitTest()
   ok &= outR == (2.f * cos440);
   ok &= se.getNumActiveLayers() == 0;
 
-  // Test handling of noteOff. At the moment, we have no amp envelope yet, so a noteOff, should 
+  // Test handling of noteOff. At the moment, we have no amp envelope yet, so a noteOff should 
   // immediately stop the playback of all layers which it applies to.
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));  // the noteOn, again
   for(int n = 0; n < N/2; n++)                           // play through half the sample
     se.processFrame(&outL[n], &outR[n]);
-  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 0.f));    // this is interpreted as note-off
-  for(int n = N/2; n < N; n++)                           // play through 2nd half
-    se.processFrame(&outL[n], &outR[n]);
-  rsPlotVectors(outL, outR);
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 0.f));    // vel=0 is interpreted as note-off
+  for(int n = N/2; n < N; n++)                           // play through 2nd half, this should...
+    se.processFrame(&outL[n], &outR[n]);                 // ...produce silence
+  for(int n = 0; n < N/2; n++) {
+    ok &= outL[n] == 2.f * sin440[n];
+    ok &= outR[n] == 2.f * cos440[n]; }
+  for(int n = N/2; n < N; n++) {
+    ok &= outL[n] == 0.f;
+    ok &= outR[n] == 0.f; }
+  //rsPlotVectors(outL, outR);
   // out-buffers should be half filled with the starting sections of sine/cosine and the second 
   // half should be all zeros - does not yet work: buffers contain the full sample, noteOff has
   // no effect
