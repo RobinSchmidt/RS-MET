@@ -349,7 +349,7 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region*
   if(idlePlayers.empty())
     return nullptr; // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = rsGetAndRemoveLast(idlePlayers);
-  rp->setRegionToPlay(r);
+  rp->setRegionToPlay(r, sampleRate);
   activePlayers.push_back(rp);
   return rp;
 }
@@ -441,11 +441,12 @@ int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
 //-------------------------------------------------------------------------------------------------
 // rsSamplerEngine::RegionPlayer
 
-void rsSamplerEngine::RegionPlayer::setRegionToPlay(const rsSamplerEngine::Region* regionToPlay)
+void rsSamplerEngine::RegionPlayer::setRegionToPlay(
+  const rsSamplerEngine::Region* regionToPlay, double fs)
 {
   region = regionToPlay;
   stream = getSampleStreamFor(region);
-  prepareToPlay();
+  prepareToPlay(fs);
 }
 
 rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
@@ -459,6 +460,7 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
 
   float L, R;
   stream->getFrameStereo(sampleTime, &L, &R);
+  // todo: add reampling by linear interpolation here
 
 
 
@@ -503,7 +505,7 @@ bool rsSamplerEngine::RegionPlayer::isPlayable(const Region* region)
   return ok;
 }
 
-void rsSamplerEngine::RegionPlayer::prepareToPlay()
+void rsSamplerEngine::RegionPlayer::prepareToPlay(double fs)
 {
   rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   rsAssert(stream != nullptr);   // Ditto.
@@ -525,9 +527,9 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay()
   // (3) set up region specific settings (this may override group and/or instrument settings)
   resetDspState();        // Needs to be done after building the chain
   resetDspSettings();     // Reset all DSP settings to default values
-  //setupDspSettings(region->getGroup()->getInstrument()->getSettings()); // uncomment!
-  setupDspSettings(region->getGroup()->getSettings());
-  setupDspSettings(region->getSettings());
+  //setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs); // uncomment!
+  setupDspSettings(region->getGroup()->getSettings(), fs);
+  setupDspSettings(region->getSettings(), fs);
 
   // return rsSamplerEngine::ReturnCode::success;
 }
@@ -574,7 +576,8 @@ void rsSamplerEngine::RegionPlayer::resetDspSettings()
   // ...more to do... 
 }
 
-void rsSamplerEngine::RegionPlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings)
+void rsSamplerEngine::RegionPlayer::setupDspSettings(
+  const std::vector<PlaybackSetting>& settings, double fs)
 {
   // Loop through the settings of the region and for each setting that is present, change the 
   // value from its default to the stored value:

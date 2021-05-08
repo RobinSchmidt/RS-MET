@@ -762,8 +762,10 @@ protected:
 
   public:
 
-    /** Sets up the region object that this player should play. */
-    virtual void setRegionToPlay(const Region* regionToPlay);
+    /** Sets up the region object that this player should play. You need to also pass the output 
+    sample-rate which is the sample rate at which the player should run (not the sample rate of the
+    audio file associated with the region). */
+    virtual void setRegionToPlay(const Region* regionToPlay, double outputSampleRate);
 
     /** Sets the midi note number for which this player was started. This needs to be set up when 
     receiving a noteOn. This information is used later when receiving a noteOff to identify which 
@@ -792,17 +794,19 @@ protected:
 
     /** Sets up the internal values for the playback settings (including DSP objects) according
     to the assigned region and resets all DSP objects. */
-    virtual void prepareToPlay();
+    virtual void prepareToPlay(double sampleRate);
 
     virtual bool buildProcessingChain();
     virtual void resetDspState();
     virtual void resetDspSettings();
-    virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings);
+    virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings, double sampleRate);
 
     const Region* region;          //< The Region object that this object should play
     const AudioFileStream* stream; //< Stream object to get the data from
     rsFloat64x2 amp = 1.0;         //< Amplitude (for both channels)
-    int sampleTime = 0;            //< Elapsed time in samples, negative values used for delay
+    //int sampleTime = 0;            //< Elapsed time in samples, negative values used for delay
+    double sampleTime = 0.0;       //< Time index in the sample. Negative values used for delay.
+    double increment  = 1.0;       //< Increment of sampleTime per sample
     uchar key = 0;                 //< Midi note number used for starting this player
 
     std::vector<Modulator*> modulators;
@@ -961,6 +965,9 @@ protected:
   // array data structure for that later. The same strategy should then later be used for DSP 
   // objects as well
 
+
+  double sampleRate = 44100.0;
+  /**< Sample rate at which this object runs. */
 
   //int numChannels = 2;
   /**< The number of output channels. By default, we have two channels, i.e. a stereo output. */

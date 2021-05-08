@@ -136,25 +136,22 @@ bool samplerEngineUnitTest()
     ok &= outL[n] == 0.f;
     ok &= outR[n] == 0.f; }
   //rsPlotVectors(outL, outR);
-  // out-buffers should be half filled with the starting sections of sine/cosine and the second 
-  // half should be all zeros - does not yet work: buffers contain the full sample, noteOff has
-  // no effect
 
 
-
-
-  // ToDo: implement and test note-off
-  // A note-off should generally trigger entering the release state. But maybe by default, that 
-  // should indeed just cut off the note immediately. Only when an amp-env with nonzero release is
-  // used, the player will remain active for a while after note-off.
-  //se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 0.f));  // is interpreted as note-off
-
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 81.f, 127.f));  // noteOn, 1 octave above root key
+  for(int n = 0; n < N/2; n++)                           // play the sample at double speed which
+    se.processFrame(&outL[n], &outR[n]);                 // makes it half as long
+  //rsPlotVectors(outL, outR);
 
   // ToDo: 
   // -implement and test realtime resampling (linear interpolation at first, later cubic and sinc, 
   //  maybe some sort of "Elephant" interpolation, too - although, they are supposed to work with
   //  2x oversampling) 
   //  -maybe play it at half and twice the original speed, i.e. an octave higher and lower
+  //  -we need a double for the sample-time and an increment...but later, that increment shall be
+  //   modulated by pitch-env and -lfo
+  //  -should the played note affect the delay?...nah - i don't think so. maybe sfz had an opcode 
+  //   for controlling this? in some situations, that may makes sense, in others not so much
   // -implement and test sfz export/import
   // -add a SFZPlayer-likem simple GUI, so we can import and test actual sfz files
   // -Check, how the sfz player handles the amp/pan parameters with respect to total gain. 
