@@ -336,7 +336,8 @@ void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int*
   // this happens, it indicates a bug at the call site.
 }
 
-rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region* r)
+rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
+  const Region* r, uchar key, uchar vel)
 {
   // The behavior for this in situations where the region r is already being played by some 
   // voice/player should depend on the playback-mode of the region. If it's in one-shot mode, a new
@@ -349,6 +350,7 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region*
   if(idlePlayers.empty())
     return nullptr; // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = rsGetAndRemoveLast(idlePlayers);
+  rp->setKey(key);
   rp->setRegionToPlay(r, sampleRate);
   activePlayers.push_back(rp);
   return rp;
@@ -387,7 +389,7 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
     const Region* r  = regionsForKey[key].getRegion(i);
     if(!shouldRegionPlay(r, key, vel))
       continue;
-    RegionPlayer* rp = getRegionPlayerFor(r);
+    RegionPlayer* rp = getRegionPlayerFor(r, key, vel);
     if(rp == nullptr) {
       // Roll back the addition of all players so far to the activePlayers and move them back into
       // the idlePlayers again. We don't really want notes to play with an incomplete set of 
@@ -400,7 +402,7 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
     }
     else
     {
-      rp->setKey(key);
+      //rp->setKey(key);
       numRegions++;
     }
   }
@@ -451,8 +453,8 @@ void rsSamplerEngine::RegionPlayer::setRegionToPlay(
 
 rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
 {
-  if(sampleTime < 0) {               // Negatively initialized sampleTime implements delay.
-    sampleTime++;                    // We just increment the time and return 0,0. Actual output
+  if(sampleTime < 0.0) {             // Negatively initialized sampleTime implements delay.
+    sampleTime += 1.0;               // We just increment the time and return 0,0. Actual output
     return rsFloat64x2(0.0, 0.0); }  // will be produced as soon as sampleTime reaches zero.  
 
   //float tmp[2];
@@ -470,7 +472,8 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
   // -apply the DSP processes
 
 
-  sampleTime++; 
+  //sampleTime++;
+  sampleTime += increment;
   // sampleTime should probably be of type double and we should have use an increment that depends 
   // on the current pitch, i.e. determined by pitchKeyCenter, noteFreq, sampleRates of the file and 
   // output.
@@ -571,9 +574,10 @@ void rsSamplerEngine::RegionPlayer::resetDspSettings()
 {
   // Initialize all values and DSP objects to default values (maybe factor out):
   amp = 1.0;
-  sampleTime = 0;
-  // ampEnv.setToDefaults(), etc.
+  sampleTime = 0.0;
+  increment  = 1.0;
   // ...more to do... 
+  // reset all processors and modulators
 }
 
 void rsSamplerEngine::RegionPlayer::setupDspSettings(
@@ -584,6 +588,16 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   
   using PS = PlaybackSetting;
   using TP = PS::Type;
+
+
+  double tmp = stream->getSampleRate();
+  increment  = tmp/fs;  // or fs/tmp?
+  increment *= rsPitchOffsetToFreqFactor(double(key) - 69.0);
+
+
+  //double inc = 1.0;   // increment per sample
+
+  // todo: the sampleRate of the file must also be taken into account
 
   double amp = 1.0;
   double pan = 0.0;
@@ -598,9 +612,19 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     double val = (double) setting.getValue();
     switch(type)
     {
-    case TP::Volume:  { amp     = rsDbToAmp(val); } break;
-    case TP::Pan:     { pan     = val;            } break;
-    case TP::PanRule: { panRule = (int)val;       } break;
+    // Amp settings:
+    case TP::Volume:  { amp      = rsDbToAmp(val); } break;
+    case TP::Pan:     { pan      = val;            } break;
+    case TP::PanRule: { panRule  = (int)val;       } break;
+
+    // Pitch settings:
+    case TP::PitchKeyCenter: 
+    { 
+      increment *= rsPitchOffsetToFreqFactor(val - 69.0); 
+    } break;
+
+
+
 
       //case TP::FilterCutoff: { flt.setCutoff(val);  } break;
 
@@ -635,7 +659,8 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   // sfz thinks otherwise, maybe provide both options, switched by an additional opcode
 
  
-
+  // compute increment
+  //inc = fs / rsPitchToFreq(double(key));
 
 
 

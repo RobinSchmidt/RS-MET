@@ -73,7 +73,7 @@ public:
   int getNumFrames() const { return numFrames; }
 
 
-
+  float getSampleRate() const { return sampleRate; }
 
   //virtual bool hasFinished(int sampleTime)
 
@@ -887,7 +887,7 @@ protected:
   activePlayers. If no player is available (i.e. idle), this will return a nullptr. The caller 
   should interpret that as a layerOverload condition and return the appropriate return code to 
   its caller. */
-  RegionPlayer* getRegionPlayerFor(const Region* r);
+  RegionPlayer* getRegionPlayerFor(const Region* r, uchar key, uchar vel);
 
   /** Stops the player at the given "activeIndex" which is the index into our "activePlayers" 
   array. This results in the removal of the player from "activePlayers" and adding it back to

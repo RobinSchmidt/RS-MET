@@ -1,3 +1,34 @@
+ToDo:
+-make the API consistent with regard to 
+ -naming conventions  
+ -parameter ordering (for functions with similar parameter lists)
+-maybe use nested namespaces like RAPT::Data, RAPT::Math, RAPT::Filters, etc. 
+ to get the functionality more ordered and also to render a better doxygen 
+ documentation
+-anticipate using the C++20 module feature - don't use it just yet (we want to 
+ remain C++11 compatible for a while), but organize the structure in a way that 
+ makes it easy to switch to using modules later
+-maybe rename rosic to ramp (Rob's audio and music processors)
+-in rapt (but maybe not in rosic) consistently use omega = 2*pi*freq/sampleRate 
+ in filters instead of frequency and sampleRate which is a redundant and 
+ inefficient parametrization (typically requires more computations to eventually 
+ get the coeffs). in rosic, a freq-and-sampleRate parameterization can be kept as 
+ convenience feature, but rapt is supposed to be more low-level and performance 
+ oriented
+-maybe split the member variables of filter implementations into a "state" and
+ "coeffs" part to allow for easier optimization of memory usage on higher 
+ levels. That may make a big difference especially when many filters with equal
+ settings are used
+-maybe preferably use /**< ... */ instead of /** ... */ for the doxygen stuff
+ for member functions. It's just nicer when the function name appears as 
+ "headline" above the docstring in the code. but check, if intellisense still 
+ displays the docstrings when doing so. It also may not be so suitable for
+ in-class function definitions (but maybe we should avoid them anyway unless
+ they are one-liners - we can still put them in the header file after the class
+ declaration to allow (or even demand) inlining)
+ 
+
+
 Make the following things consistent:
 
 Interface:

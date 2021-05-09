@@ -137,11 +137,18 @@ bool samplerEngineUnitTest()
     ok &= outR[n] == 0.f; }
   //rsPlotVectors(outL, outR);
 
-
+  // Test realtime resampling. Play a note an ovtave above the root key:
   se.handleMusicalEvent(Ev(EvTp::noteOn, 81.f, 127.f));  // noteOn, 1 octave above root key
   for(int n = 0; n < N/2; n++)                           // play the sample at double speed which
     se.processFrame(&outL[n], &outR[n]);                 // makes it half as long
   //rsPlotVectors(outL, outR);
+  ok &= se.getNumActiveLayers() == 0;
+  for(int n = 0; n < N/2; n++) {
+    ok &= outL[n] == 2.f * sin440[2*n];
+    ok &= outR[n] == 2.f * cos440[2*n]; }
+  // other tests to do: set the root-key differently, set the sample-rates for playback and 
+  // audiofile differently, test detuning opcodes
+
 
   // ToDo: 
   // -implement and test realtime resampling (linear interpolation at first, later cubic and sinc, 
