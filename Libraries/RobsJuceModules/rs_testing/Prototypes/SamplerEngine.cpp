@@ -457,34 +457,28 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
     sampleTime += 1.0;               // We just increment the time and return 0,0. Actual output
     return rsFloat64x2(0.0, 0.0); }  // will be produced as soon as sampleTime reaches zero.  
 
-  //float tmp[2];
-  //stream->getFrame(sampleTime, tmp);
+  float L, R;                        // left and right output
 
-  float L, R;
-  stream->getFrameStereo(sampleTime, &L, &R);
-  // todo: add reampling by linear interpolation here
-
-
+  //int intTime = round(sampleTime);
+  int intTime = floor(sampleTime);
+  stream->getFrameStereo(intTime, &L, &R);
+  //stream->getFrameStereo(sampleTime, &L, &R);
+  // This does implicit conversion of double to int by truncation which amounts to the worst 
+  // possible quality resampling scheme. ToDo:
+  // -implement linear interpolation and later also better methods (sinc, elephant, ...)
+  // -keep sample time as combination of int and float to avoid computation of the fractional part
+  //  at each sample and to avoid losing precision for the fractional part when the integer part
+  //  is large (thereby eating up significant digits).
+  // -the interpolation should probably be handled by the AudioStream class to make it re-usable
+  //  also for resampled audio playback in other contexts. Maybe here, we should just call
+  //  stream->getFrameStereo(sampleTimeInt, sampleTimeFrac, &L, &R);
 
   // more stuff to do:
   // -apply pitch envelope and lfo
-  // -implement interpolation
   // -apply the DSP processes
 
-
-  //sampleTime++;
   sampleTime += increment;
-  // sampleTime should probably be of type double and we should have use an increment that depends 
-  // on the current pitch, i.e. determined by pitchKeyCenter, noteFreq, sampleRates of the file and 
-  // output.
-
-
   return this->amp * rsFloat64x2(L, R); 
-
-
-  //return rsFloat64x2(tmp[0], tmp[1]);  // preliminary
-
-  //return rsFloat64x2(0.0, 0.0);  // preliminary
 }
 
 void rsSamplerEngine::RegionPlayer::processBlock(rsFloat64x2* y, int N)
@@ -592,17 +586,13 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
   double tmp = stream->getSampleRate();
   increment  = tmp/fs;  // or fs/tmp?
-  increment *= rsPitchOffsetToFreqFactor(double(key) - 69.0);
+  /*increment *= rsPitchOffsetToFreqFactor(double(key) - 69.0);*/
 
-
-  //double inc = 1.0;   // increment per sample
-
-  // todo: the sampleRate of the file must also be taken into account
+  double rootKey = 69.0;
 
   double amp = 1.0;
   double pan = 0.0;
   int panRule = PlaybackSetting::PanRule::linear;
-
 
   for(size_t i = 0; i < settings.size(); i++)
   {
@@ -620,11 +610,9 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     // Pitch settings:
     case TP::PitchKeyCenter: 
     { 
-      increment *= rsPitchOffsetToFreqFactor(val - 69.0); 
+      rootKey = val;
+      //increment *= rsPitchOffsetToFreqFactor(val - 69.0); // or 69.0 - val
     } break;
-
-
-
 
       //case TP::FilterCutoff: { flt.setCutoff(val);  } break;
 
@@ -632,6 +620,14 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
     }
   }
+
+  double pitchOffset = double(key) - rootKey;
+  increment *= pow(2.0, pitchOffset / 12.0);
+  //increment *= rsPitchOffsetToFreqFactor(double(key) - rootKey); // faster, less precise
+
+
+  // optimize: the two calls to rsPitchOffsetToFreqFactor can actually be absorbed into one, like
+  // rsPitchOffsetToFreqFactor(key - rootKey)
 
 
   // From the computed local amp/pan/panRule variables, compute the amp member (which is
@@ -659,11 +655,6 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   // sfz thinks otherwise, maybe provide both options, switched by an additional opcode
 
  
-  // compute increment
-  //inc = fs / rsPitchToFreq(double(key));
-
-
-
   // ToDo:
   // -Maybe within the switch statement set up some flags that indicate, if a particular setting is
   //  used. If the flag is false, we may skip the associated DSP process in getFrame/processBlock. 

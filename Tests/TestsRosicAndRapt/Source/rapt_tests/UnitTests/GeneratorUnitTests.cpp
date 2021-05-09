@@ -146,6 +146,34 @@ bool samplerEngineUnitTest()
   for(int n = 0; n < N/2; n++) {
     ok &= outL[n] == 2.f * sin440[2*n];
     ok &= outR[n] == 2.f * cos440[2*n]; }
+
+  // Play a note an octave below the root key:
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 57.f, 127.f));
+  for(int n = 0; n < N; n++)                  // play the sample at half speed
+    se.processFrame(&outL[n], &outR[n]);      // this loop goes only through half of it
+  ok &= se.getNumActiveLayers() == 2;         // ..so the 2 layers shall remain active
+  //rsPlotVectors(outL, outR);
+  //rsPlotVectors(sin440, cos440, outL, outR);
+  for(int n = 0; n < N/2; n++) {
+    ok &= outL[2*n] == 2.f * sin440[n];
+    ok &= outR[2*n] == 2.f * cos440[n]; }
+  for(int n = 0; n < N; n++)                  // ...now go through the second half
+    se.processFrame(&outL[n], &outR[n]);
+  float lastL, lastR;
+  se.processFrame(&lastL, &lastR);            // this should repeat the last sample..
+  //ok &= lastL == outL[N-1];  // fails! is zero
+  //ok &= lastR == outR[N-1];  // fails! is zero
+  ok &= se.getNumActiveLayers() == 0;         // ..and turn the layer off
+
+
+
+
+
+
+
+
+
+
   // other tests to do: set the root-key differently, set the sample-rates for playback and 
   // audiofile differently, test detuning opcodes
 

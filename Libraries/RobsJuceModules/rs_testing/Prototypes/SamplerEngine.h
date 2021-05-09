@@ -821,8 +821,10 @@ protected:
     //Biquad flt, eq1, eq2, eq3;     //< Filter and equalizers
 
     // ToDo: 
-    // -use double for sampleTime or and additional double or float to represent the 
-    //  fractional part of sampleTime
+    // -maybe use an int and a float to represent integer and fractional parts of sampleTime 
+    //  separately (we need then also 2 increments). This has two advantages:
+    //  -we don't need to compute the fractional part at each sample
+    //  -the pitch accuracy will not degrade for loops later in the sample
     // -maybe use float instead of uchar for the key
     // -add more DSP objects: envelope generators, LFOs, we also need to somehow take care
     //  of the effect sends (reverb, chorus)
