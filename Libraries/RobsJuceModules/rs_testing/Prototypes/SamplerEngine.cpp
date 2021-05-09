@@ -1,15 +1,16 @@
 //=================================================================================================
 // Function definitions for the helper classes:
 
-bool AudioFileStreamPreloaded::setData(
-  float** newData, int numFrames, int numDataChannels, float sampleRate, int numStreamChannels, 
+template<class T>
+bool AudioFileStreamPreloaded<T>::setData(
+  T** newData, int numFrames, int numDataChannels, T sampleRate, int numStreamChannels, 
   const std::string& uniqueName)
 {
   // Deallocate old and allocate new memory:
   clear();
   int numChannelsMin = rsMin(numDataChannels, numStreamChannels);
-  flatData = new float[numChannelsMin*numFrames];
-  channelPointers = new float*[numStreamChannels];
+  flatData = new T[numChannelsMin*numFrames];
+  channelPointers = new T*[numStreamChannels];
   if(flatData == nullptr || channelPointers == nullptr) {
     clear(); return false; }  // memory allocation failed
 
@@ -29,8 +30,6 @@ bool AudioFileStreamPreloaded::setData(
   for(int c = 0; c < numStreamChannels; c++)
     channelPointers[c] = &flatData[c % numChannelsMin];
 
-
-
   // Update metadata members and report success:
   this->numChannels = numStreamChannels;
   this->numFrames   = numFrames;
@@ -45,7 +44,8 @@ void AudioFileStreamPreloaded::setNumOutputChannels(int newNumChannels)
 }
 */
 
-void AudioFileStreamPreloaded::clear()
+template<class T>
+void AudioFileStreamPreloaded<T>::clear()
 {
   numChannels = 0;
   numFrames   = 0; 
@@ -59,7 +59,8 @@ void AudioFileStreamPreloaded::clear()
 
 //-------------------------------------------------------------------------------------------------
 
-void SamplePool::clear()
+template<class T>
+void SamplePool<T>::clear()
 {
   for(size_t i = 0; i < samples.size(); i++)
     delete samples[i];
@@ -136,7 +137,7 @@ int rsSamplerEngine::addSampleToPool(
   //  mono-samples, both just point to the same buffer. that may make it easier to handle things
   //  uniformly
 
-  AudioFileStreamPreloaded* stream = new AudioFileStreamPreloaded;
+  AudioFileStreamPreloaded<float>* stream = new AudioFileStreamPreloaded<float>;
   bool allocOK = stream->setData(data, numFrames, numChannels, sampleRate, 2, uniqueName);
   if(allocOK == false)
     return ReturnCode::memAllocFail;
@@ -367,10 +368,10 @@ int rsSamplerEngine::deactivateRegionPlayer(size_t i)
   return ReturnCode::success;
 }
 
-const AudioFileStream* rsSamplerEngine::getSampleStreamFor(const Region* r)
+const AudioFileStream<float>* rsSamplerEngine::getSampleStreamFor(const Region* r)
 {
   //return r->getSampleStream();
-  return (const AudioFileStream*) r->getCustomPointer();
+  return (const AudioFileStream<float>*) r->getCustomPointer();
   // todo: 
   // -some sanity checks may be appropriate here
   // -maybe, if the region itself has stored a nullptr, we should check, if the enclosing group 
@@ -460,7 +461,7 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
   float L, R;                        // left and right output
 
   //int intTime = round(sampleTime);
-  int intTime = floor(sampleTime);
+  int intTime = (int) floor(sampleTime);
   stream->getFrameStereo(intTime, &L, &R);
   //stream->getFrameStereo(sampleTime, &L, &R);
   // This does implicit conversion of double to int by truncation which amounts to the worst 
@@ -586,10 +587,8 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
   double tmp = stream->getSampleRate();
   increment  = tmp/fs;  // or fs/tmp?
-  /*increment *= rsPitchOffsetToFreqFactor(double(key) - 69.0);*/
 
   double rootKey = 69.0;
-
   double amp = 1.0;
   double pan = 0.0;
   int panRule = PlaybackSetting::PanRule::linear;
@@ -608,26 +607,23 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     case TP::PanRule: { panRule  = (int)val;       } break;
 
     // Pitch settings:
-    case TP::PitchKeyCenter: 
-    { 
-      rootKey = val;
-      //increment *= rsPitchOffsetToFreqFactor(val - 69.0); // or 69.0 - val
-    } break;
+    case TP::PitchKeyCenter: { rootKey = val; } break;
 
+    // Filter settings:
       //case TP::FilterCutoff: { flt.setCutoff(val);  } break;
 
-      // ...more to do...
+    // Equalizer settings:
+    // .....
 
     }
   }
 
   double pitchOffset = double(key) - rootKey;
   increment *= pow(2.0, pitchOffset / 12.0);
-  //increment *= rsPitchOffsetToFreqFactor(double(key) - rootKey); // faster, less precise
+  //increment *= rsPitchOffsetToFreqFactor(pitchOffset); // faster, less precise - but probably
+  // precise enough, when we switch to int+float for representing increments
 
 
-  // optimize: the two calls to rsPitchOffsetToFreqFactor can actually be absorbed into one, like
-  // rsPitchOffsetToFreqFactor(key - rootKey)
 
 
   // From the computed local amp/pan/panRule variables, compute the amp member (which is

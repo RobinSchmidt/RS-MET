@@ -137,7 +137,7 @@ bool samplerEngineUnitTest()
     ok &= outR[n] == 0.f; }
   //rsPlotVectors(outL, outR);
 
-  // Test realtime resampling. Play a note an ovtave above the root key:
+  // Test realtime downsampling. Play a note an octave above the root key:
   se.handleMusicalEvent(Ev(EvTp::noteOn, 81.f, 127.f));  // noteOn, 1 octave above root key
   for(int n = 0; n < N/2; n++)                           // play the sample at double speed which
     se.processFrame(&outL[n], &outR[n]);                 // makes it half as long
@@ -147,44 +147,31 @@ bool samplerEngineUnitTest()
     ok &= outL[n] == 2.f * sin440[2*n];
     ok &= outR[n] == 2.f * cos440[2*n]; }
 
-  // Play a note an octave below the root key:
+  // Test realtime upsampling. Play a note an octave below the root key:
   se.handleMusicalEvent(Ev(EvTp::noteOn, 57.f, 127.f));
   for(int n = 0; n < N; n++)                  // play the sample at half speed
     se.processFrame(&outL[n], &outR[n]);      // this loop goes only through half of it
   ok &= se.getNumActiveLayers() == 2;         // ..so the 2 layers shall remain active
-  //rsPlotVectors(outL, outR);
   //rsPlotVectors(sin440, cos440, outL, outR);
   for(int n = 0; n < N/2; n++) {
     ok &= outL[2*n] == 2.f * sin440[n];
     ok &= outR[2*n] == 2.f * cos440[n]; }
   for(int n = 0; n < N; n++)                  // ...now go through the second half
     se.processFrame(&outL[n], &outR[n]);
-  float lastL, lastR;
-  se.processFrame(&lastL, &lastR);            // this should repeat the last sample..
-  //ok &= lastL == outL[N-1];  // fails! is zero
-  //ok &= lastR == outR[N-1];  // fails! is zero
-  ok &= se.getNumActiveLayers() == 0;         // ..and turn the layer off
-
-
-
-
-
-
-
-
-
-
-  // other tests to do: set the root-key differently, set the sample-rates for playback and 
+  ok &= se.getNumActiveLayers() == 0;         // now, the 2 layers should be off
+  for(int n = 0; n < N/2; n++) {
+    ok &= outL[2*n] == 2.f * sin440[n+N/2];
+    ok &= outR[2*n] == 2.f * cos440[n+N/2]; }
+  // Other tests to do: set the root-key differently, set the sample-rates for playback and 
   // audiofile differently, test detuning opcodes
 
-
   // ToDo: 
-  // -implement and test realtime resampling (linear interpolation at first, later cubic and sinc, 
-  //  maybe some sort of "Elephant" interpolation, too - although, they are supposed to work with
-  //  2x oversampling) 
-  //  -maybe play it at half and twice the original speed, i.e. an octave higher and lower
+  // -implement and test better realtime resampling (linear interpolation at first, later cubic and
+  //  sinc, maybe some sort of "Elephant" interpolation, too - although, they are supposed to work 
+  //  with 2x oversampling) 
   //  -we need a double for the sample-time and an increment...but later, that increment shall be
-  //   modulated by pitch-env and -lfo
+  //   modulated by pitch-env and -lfo, or maybe use and int and a a float to represent sampleTime
+  //   and increment -> do benchmarks, which is faster
   //  -should the played note affect the delay?...nah - i don't think so. maybe sfz had an opcode 
   //   for controlling this? in some situations, that may makes sense, in others not so much
   // -implement and test sfz export/import
@@ -196,12 +183,6 @@ bool samplerEngineUnitTest()
   //  played back as is as opposed to having acquired a gain of 0.5. Maybe if sfz behaves the other
   //  way, we could provide both options by introducing additional pan rules.
 
-
-
-
-
-
-
   // todo:
   //const SE::Group* group1 = se.getGroup(0);
   //const SE::Group* group2 = region.getGroup();
@@ -209,10 +190,6 @@ bool samplerEngineUnitTest()
 
   // todo: take the settings member of rsSamplerEngine into an instrument call inside
   // rsInstrumentDataSFZ..or maybe don't create an "Instrument" nested class
-
-
-
-
 
   // ToDo: 
   // -create a couple of simple samples (maybe sine-waves or something) and assign them to

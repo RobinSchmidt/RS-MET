@@ -46,6 +46,7 @@ protected:
 
 //=================================================================================================
 
+template<class T>
 class AudioStream
 {
 
@@ -54,11 +55,11 @@ public:
   virtual ~AudioStream() {}
 
   /** For random access. Writes the sample frame with given index into the given destination. */
-  virtual void getFrame(int sampleIndex, float* destination) const = 0;
+  virtual void getFrame(int sampleIndex, T* destination) const = 0;
 
   /** Function for speficically handling stereo signals to allow handling that importnat, common 
   special case more efficiently than with the more general implementation. */
-  virtual void getFrameStereo(int sampleIndex, float* left, float* right) const = 0;
+  virtual void getFrameStereo(int sampleIndex, T* left, T* right) const = 0;
 
   /** Sets the number of output channels for this object. By default, this number will be equal to
   the number of channels in the data, as set by the setData call. However, the number of desired 
@@ -73,7 +74,7 @@ public:
   int getNumFrames() const { return numFrames; }
 
 
-  float getSampleRate() const { return sampleRate; }
+  T getSampleRate() const { return sampleRate; }
 
   //virtual bool hasFinished(int sampleTime)
 
@@ -89,15 +90,15 @@ public:
 
 protected:
 
-  float sampleRate  = 44100.f;
-  int   numChannels = 0;
-  int   numFrames   = 0;         // maybe use -1 to encode "unknown"? would that be useful?
+  T   sampleRate  = T(44100);
+  int numChannels = 0;
+  int numFrames   = 0;         // maybe use -1 to encode "unknown"? would that be useful?
 
 };
 // maybe move out of this class - this may be useful in other contexts, too - maybe templatize
 
-
-class AudioFileStream : public AudioStream
+template<class T>
+class AudioFileStream : public AudioStream<T>
 {
 
   // ToDo: add == operator based on fileName, extension, path (and maybe (meta)data such as 
@@ -130,7 +131,9 @@ protected:
 
 // maybe rename to AudioFileStreamRAM, another subclass can be named AudioFileStreamDFD,
 // or ...StreamFromMemory/FromDisk
-class AudioFileStreamPreloaded : public AudioFileStream 
+
+template<class T>
+class AudioFileStreamPreloaded : public AudioFileStream<T>
 {
 
 public:
@@ -141,7 +144,7 @@ public:
 
   /** Returns true, iff everything went alright and false if it failed to allocate the required
   memory. */
-  bool setData(float** newData, int numFrames, int numDataChannels, float sampleRate, 
+  bool setData(T** newData, int numFrames, int numDataChannels, T sampleRate, 
     int numStreamChannels, const std::string& uniqueName);
   // todo: 
   // -we need to distiguish between the number of channels in the data and the desired number of 
@@ -154,7 +157,7 @@ public:
   void clear();
 
 
-  void getFrame(int sampleIndex, float* destination) const override
+  void getFrame(int sampleIndex, T* destination) const override
   {
     int n = sampleIndex;
     rsAssert(n >= 0 && n < numFrames, "sampleIndex out of range");
@@ -171,7 +174,7 @@ public:
   // we really need to support only mono and stereo. Maybe make a function getFrameStereo
 
 
-  void getFrameStereo(int sampleIndex, float* left, float* right) const override
+  void getFrameStereo(int sampleIndex, T* left, T* right) const override
   {
     rsAssert(numChannels == 2); // Can be used only for stereo signals
     int n = sampleIndex;
@@ -183,13 +186,10 @@ public:
 
   //void getFrameStereo(int sampleIndex, float* destination) const
 
-
-
-
 protected:
 
-  float*  flatData = nullptr;         // pointer to the sample data
-  float** channelPointers = nullptr;  // pointers to the channels
+  T*  flatData = nullptr;         // pointer to the sample data
+  T** channelPointers = nullptr;  // pointers to the channels
   // If we store the data in interleaved format, the channelPointers will be not needed and 
   // getFrame must be implemented differently. Maybe that's better (more efficient)
 };
@@ -201,6 +201,8 @@ ToDo: in a more general context, we would probably need a more complex referenci
 AudioStream objects - regions would need to be something like AudioStreamClients, that 
 register/deregister themselves, etc. Maybe AudioStream should be a subclass of some DataStream 
 baseclass. We'll see... */
+
+template<class T>
 class SamplePool
 {
 
@@ -210,7 +212,7 @@ public:
   ~SamplePool() { clear();  }
 
 
-  int addSample(const AudioFileStream* newSample)
+  int addSample(const AudioFileStream<T>* newSample)
   {
     // rsAssert(!contains(newSample))
     samples.push_back(newSample);
@@ -223,7 +225,7 @@ public:
   bool isSampleIndexValid(int i) const { return i >= 0 && i < (int)samples.size(); }
 
 
-  const AudioFileStream* getSampleStream(int i)
+  const AudioFileStream<T>* getSampleStream(int i)
   {
     if(!isSampleIndexValid(i)) {
       rsError("Invalid sample index");
@@ -244,7 +246,7 @@ public:
 
 protected:
 
-  std::vector<const AudioFileStream*> samples;
+  std::vector<const AudioFileStream<T>*> samples;
 
 };
 // maybe templatize, rename to AudioFileStreamPool
@@ -801,9 +803,9 @@ protected:
     virtual void resetDspSettings();
     virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings, double sampleRate);
 
-    const Region* region;          //< The Region object that this object should play
-    const AudioFileStream* stream; //< Stream object to get the data from
-    rsFloat64x2 amp = 1.0;         //< Amplitude (for both channels)
+    const Region* region;                 //< The Region object that this object should play
+    const AudioFileStream<float>* stream; //< Stream object to get the data from
+    rsFloat64x2 amp = 1.0;                //< Amplitude (for both channels)
     //int sampleTime = 0;            //< Elapsed time in samples, negative values used for delay
     double sampleTime = 0.0;       //< Time index in the sample. Negative values used for delay.
     double increment  = 1.0;       //< Increment of sampleTime per sample
@@ -900,7 +902,7 @@ protected:
   /** Returns the AudioFileStream object that is used to stream the actual sample data for the
   given region. A pointer to this object is supposed to be stored within the region object
   ...tbc... */
-  static const AudioFileStream* getSampleStreamFor(const Region* r);
+  static const AudioFileStream<float>* getSampleStreamFor(const Region* r);
 
   /** Handles a noteOn event with given key and velocity and returns either ReturnCode::success, if
   we had enough voices available to serve the request or ReturnCode::voiceOverload, in case the 
@@ -937,7 +939,7 @@ protected:
   regions in the instrument - like a few instead of a few hundred. */
   // maybe use a std::vector, maybe we need a similar array for note-off samples
 
-  SamplePool samplePool;
+  SamplePool<float> samplePool;
   /**< The pool of samples that are in use for the currently loaded instrument. The samples are 
   pooled to avoid redundant storage in memory when multiple regions use the same sample. */
 
