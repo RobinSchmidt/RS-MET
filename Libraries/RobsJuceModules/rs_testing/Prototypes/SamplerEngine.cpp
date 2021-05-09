@@ -473,9 +473,15 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
   // -the interpolation should probably be handled by the AudioStream class to make it re-usable
   //  also for resampled audio playback in other contexts. Maybe here, we should just call
   //  stream->getFrameStereo(sampleTimeInt, sampleTimeFrac, &L, &R);
+  // -it should probably also receive the increment in order to make a decision for time-scaling
+  //  the sinc, if necessary for anti-aliasing
 
   // more stuff to do:
-  // -apply pitch envelope and lfo
+  // -apply pitch envelope and lfo - these should affect (scale?) the effective increment that we 
+  //  add to sampleTime - but our increment *member* should not be modified, instead, do something
+  //  like sampleTime += increment * incScaler; where incScaler is computed from the pitch 
+  //  modifiers. Maybe create a subclass of SignalProcessor called PitchShifter that has just a
+  //  dummy callback that just stores the desired shift value and we read it out here
   // -apply the DSP processes
 
   sampleTime += increment;
@@ -650,13 +656,31 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   // sfzplayer. I would say, width-before-pan makes more sense from a usability perspective. If 
   // sfz thinks otherwise, maybe provide both options, switched by an additional opcode
 
- 
   // ToDo:
   // -Maybe within the switch statement set up some flags that indicate, if a particular setting is
   //  used. If the flag is false, we may skip the associated DSP process in getFrame/processBlock. 
   //  We may need inquiry functions such as hasFilter, hasAmpEnv, hasPitchEnv, hasFilterEnv, 
   //  hasPitchLFO. But this makes things more complicated, so maybe it's not really a good idea.
 }
+
+//=================================================================================================
+
+void rsSamplerEngineLoaderSFZ::setFromSFZ(rsSamplerEngine* se, const std::string& str)
+{
+
+
+}
+
+std::string rsSamplerEngineLoaderSFZ::getAsSFZ(const rsDataSFZ& sfz)
+{
+  std::string str;
+
+  return str;
+}
+
+
+
+
 
 //=================================================================================================
 

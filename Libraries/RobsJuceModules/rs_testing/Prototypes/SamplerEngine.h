@@ -705,6 +705,12 @@ public:
 
   int getNumIdleLayers() const { return (int) idlePlayers.size(); }
 
+  /** Returns a const pointer to the rsDataSFZ object that represents the current instrument
+  settings. */
+  const rsDataSFZ& getInstrumentData() const { return sfz; }
+    
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -990,8 +996,36 @@ protected:
   // we may need a pool of filter objects, eq-objects, etc. for the different voices
 };
 
+//=================================================================================================
+
+/** A class for setting up an object of class rsSamplerEngine according to a string representing
+an .sfz file. */
+
+class rsSamplerEngineLoaderSFZ
+{
+
+public:
+
+  /** Sets up the given rsSamplerEngine object according to the given string which is supposed to
+  represent the contents of an .sfz file. */
+  static void setFromSFZ(rsSamplerEngine* engine, const std::string& sfzFileContents);
+  // todo: return a return-code, including unknownOpcode, invalidValue, invalidIndex, ...
+
+  /** Given an rsDataSFZ object, this function produces the string that represents the settings in
+  an sfz-file compliant format, i.e. a string that can be written into an .sfz file. */
+  static std::string getAsSFZ(const rsDataSFZ& sfz); 
+
+};
+// Maybe this should not be a separate class and rsSamplerEngine should just have a pair of 
+// functions getAsSFZ/setFromSFZ. We'll see, how complex the code gets. If it's not too complex,
+// integrate it into rsSamplerEngine. Or maybe the code should go into rsDataSFZ...at least, the
+// code related to generating and parsing sfz strings, maybe not the code related to actually
+// setting up the engine object such that the rsDataSFZ remains independent from rsSamplerEngine.
 
 
+
+
+//=================================================================================================
 
 /** Subclass that contains some extra functions that facilitate testing which should not go into 
 the production code. */

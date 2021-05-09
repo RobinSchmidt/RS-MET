@@ -165,7 +165,23 @@ bool samplerEngineUnitTest()
   // Other tests to do: set the root-key differently, set the sample-rates for playback and 
   // audiofile differently, test detuning opcodes
 
+
+  // Test exporting the instrument-definition related state ins an .sfz-file compliant string:
+  using Loader = rsSamplerEngineLoaderSFZ;
+  rsDataSFZ sfzData = se.getInstrumentData();  
+  // This creates actually a copy - this is good to test (deep) copying of these objects, too.
+  // Oh - it's empty. OK, yes - it's because the rsSamplerEngine still has this 
+  // std::vector<Group> groups; which shoudl actually go into the instrument in rsDataSFZ. This 
+  // needs to be refactored first.
+  std::string sfzFile = Loader::getAsSFZ(sfzData);
+
+
+
   // ToDo: 
+  // -implement and test sfz export/import
+  //  -maybe retrive the current instrument settings, set up a 2nd engine object with the same
+  //   settings and compare, if both engines are in the same state with respect to these instrument
+  //   settings, maybe rsSamplerEngineTest should provide such a comparison function
   // -implement and test better realtime resampling (linear interpolation at first, later cubic and
   //  sinc, maybe some sort of "Elephant" interpolation, too - although, they are supposed to work 
   //  with 2x oversampling) 
@@ -174,7 +190,7 @@ bool samplerEngineUnitTest()
   //   and increment -> do benchmarks, which is faster
   //  -should the played note affect the delay?...nah - i don't think so. maybe sfz had an opcode 
   //   for controlling this? in some situations, that may makes sense, in others not so much
-  // -implement and test sfz export/import
+
   // -add a SFZPlayer-likem simple GUI, so we can import and test actual sfz files
   // -Check, how the sfz player handles the amp/pan parameters with respect to total gain. 
   //  Should there be a factor of 2 for hard left/right settings or a factor of 0.5 for a center 

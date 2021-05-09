@@ -8,6 +8,8 @@ ToDo:
 -anticipate using the C++20 module feature - don't use it just yet (we want to 
  remain C++11 compatible for a while), but organize the structure in a way that 
  makes it easy to switch to using modules later
+ https://www.modernescpp.com/index.php/c-20-open-questions-to-modules
+ https://vector-of-bool.github.io/2019/01/27/modules-doa.html
 -maybe rename rosic to ramp (Rob's audio and music processors)
 -in rapt (but maybe not in rosic) consistently use omega = 2*pi*freq/sampleRate 
  in filters instead of frequency and sampleRate which is a redundant and 
