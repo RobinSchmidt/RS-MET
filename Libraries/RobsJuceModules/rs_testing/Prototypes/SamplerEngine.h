@@ -180,8 +180,6 @@ public:
     int n = sampleIndex;
     *left  = channelPointers[0][n];
     *right = channelPointers[1][n];
-    //*left  = 0.0;
-    //*right = 0.0;
   }
 
   //void getFrameStereo(int sampleIndex, float* destination) const
@@ -254,7 +252,12 @@ protected:
 
 //=================================================================================================
 
-/** Data structure to define sample based instruments conforming to the sfz specification. */
+/** Data structure to define sample based instruments conforming to the sfz specification. 
+
+ToDo: 
+-use size_t or int consistently for indexing groups and regions
+-use pointers or references consistently for returning sub-levels
+*/
 
 class rsDataSFZ // todo: move into its own pair of .h/.cpp files
 {
@@ -382,13 +385,15 @@ public:
     would remain nullptr (unless we introduce an even higher level such as an "Ensemble"). */
     const OrganizationLevel* getParent() const { return parent; }
 
+
+
     // todo: float getSetting(PlaybackSetting::Type, int index) this should loop through the 
     // settings to see, if it finds it and if not call the same method on the parent or return the
     // default value, if the parent is nullptr.
 
   protected:
 
-    OrganizationLevel* parent = nullptr;  
+    OrganizationLevel* parent = nullptr;
 
     void clearSettings() { settings.clear(); }
 
@@ -477,6 +482,7 @@ public:
     //std::string name; sample
 
     friend class Group;  // do we need this? if not, get rid.
+    friend class rsDataSFZ;
     friend class rsSamplerEngine;  // try to get rid
     // The Region class shall not provide any public functions that can modify the region because
     // those could be used by client code to modify the region behind the back of the 
@@ -505,6 +511,8 @@ public:
     /** Returns true, if the given index i refers toa valid region within this group. */
     bool isRegionIndexValid(int i) const { return i >= 0 && i < (int)regions.size(); }
 
+    size_t getNumRegions() const { return regions.size(); }
+
 
     /** Return a pointer to the instrument to which this group belongs. */
     const Instrument* getInstrument() const { return (const Instrument*) getParent(); }
@@ -512,6 +520,7 @@ public:
 
     /** Returns a pointer to the region with the given index within the group. */
     Region* getRegion(int i) const;
+    // rename to getRegionPointer ir Ptr
 
 
   private:
@@ -527,6 +536,7 @@ public:
     // may be add these later:
     //std::string name;  
 
+    friend class rsDataSFZ;
     friend class rsSamplerEngine;  // try to get rid
   };
 
@@ -542,13 +552,23 @@ public:
 
   public:
 
-  private:
+    size_t getNumGroups() const { return groups.size(); }
+
+
+    const std::vector<PlaybackSetting>& getGroupSettings(size_t groupIndex) const
+    { return groups[groupIndex].getSettings(); }
+
+
+
+
+  //private:  // make protected later
 
     std::vector<Group> groups;
     // Should that be an array of pointers, too? Like the regions array in Group? That would make
     // the implementations of Group and Instrument more consistent but is actually technically not 
     // necessary. So, for the time being, let's keep it an array of direct value objects.
 
+    friend class rsDataSFZ;
   };
 
   //-----------------------------------------------------------------------------------------------
@@ -559,9 +579,45 @@ public:
   // additional stuff, if necessary
 
 
-protected:
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
 
-  Instrument instrument; // Maybe we could maintain an array of such isntruments
+  size_t getNumGroups() const { return instrument.getNumGroups(); }
+
+
+  const Group& getGroupRef(size_t i) const { return instrument.groups[i]; }
+
+  const Region* getRegionPtr(size_t gi, size_t ri) const 
+  { return instrument.groups[gi].regions[ri]; }
+
+  /** Returns a const reference to the playback settings if the i-th group. */
+  //const std::vector<PlaybackSetting>& getGroupSettings(size_t i) const 
+  //{ return instrument.getGroupSettings(i); }
+
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
+
+  /** Produces the string that represents the settings in an sfz-file compliant format, i.e. a 
+  string that can be written into an .sfz file. */
+  std::string serialize() const;
+
+
+  /** Sets up this data object according to the given string which is supposed to represent the 
+  contents of an .sfz file. */
+  void deserialize(const std::string& sfzFileContents);
+  // todo: return a return-code, including unknownOpcode, invalidValue, invalidIndex, ...
+
+
+
+
+
+//protected:  // preliminarily commented - make protected again later
+
+  Instrument instrument; 
+  // Maybe we could maintain an array of such instruments that define an ensmeble
 
 };
 
@@ -690,7 +746,7 @@ public:
   bool isIndexPairValid(int groupIndex, int regionIndex) const
   {
     int gi = groupIndex, ri = regionIndex;
-    return gi >= 0 && gi < (int)groups.size() && groups[gi].isRegionIndexValid(ri);
+    return gi >= 0 && gi < (int)sfz.instrument.groups.size() && sfz.instrument.groups[gi].isRegionIndexValid(ri);
   }
 
   /** Returns true, iff the given sample index is valid, i.e. a sample with this index actually 
@@ -949,7 +1005,7 @@ protected:
   /**< The pool of samples that are in use for the currently loaded instrument. The samples are 
   pooled to avoid redundant storage in memory when multiple regions use the same sample. */
 
-  std::vector<Group> groups;
+  //std::vector<Group> groups;
   /**< The groups contained in this instrument. Each group may contain set of regions. */
   // get rid - should go into rsDataSFZ::Instrument
 
@@ -1001,7 +1057,7 @@ protected:
 /** A class for setting up an object of class rsSamplerEngine according to a string representing
 an .sfz file. */
 
-class rsSamplerEngineLoaderSFZ
+class rsSamplerEngineLoaderSFZ  // maybe rename to Serializer
 {
 
 public:
@@ -1016,6 +1072,10 @@ public:
   static std::string getAsSFZ(const rsDataSFZ& sfz); 
 
 };
+
+// hmmm...maybe this additional class will not be needed after all - provide de/serialize in
+// rsDataSFZ and maybe also in rsSamplerEngine, where serialize just forwards to sfz.serialize and
+// deserialize may have to take additional actions
 // Maybe this should not be a separate class and rsSamplerEngine should just have a pair of 
 // functions getAsSFZ/setFromSFZ. We'll see, how complex the code gets. If it's not too complex,
 // integrate it into rsSamplerEngine. Or maybe the code should go into rsDataSFZ...at least, the

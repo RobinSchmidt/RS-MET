@@ -166,14 +166,32 @@ bool samplerEngineUnitTest()
   // audiofile differently, test detuning opcodes
 
 
+  const rsDataSFZ& sfzData = se.getInstrumentData();
+  std::string sfzFile = sfzData.serialize();
+  int dummy = 0;
+
+
+
+  /*
   // Test exporting the instrument-definition related state ins an .sfz-file compliant string:
   using Loader = rsSamplerEngineLoaderSFZ;
-  rsDataSFZ sfzData = se.getInstrumentData();  
+  //rsDataSFZ sfzData = se.getInstrumentData();
+  //rsDataSFZ& sfzData = se.getInstrumentData();
+  const rsDataSFZ& sfzData = se.getInstrumentData();
   // This creates actually a copy - this is good to test (deep) copying of these objects, too.
   // Oh - it's empty. OK, yes - it's because the rsSamplerEngine still has this 
-  // std::vector<Group> groups; which shoudl actually go into the instrument in rsDataSFZ. This 
-  // needs to be refactored first.
+  // std::vector<Group> groups; which should actually go into the instrument in rsDataSFZ. This 
+  // needs to be refactored first. ok - done, but we need to protect some variables again...
+  // ...also, i think, we have a shallow copy here now which would actually allow use to change
+  // instrument settings behind the back of the engine. Find some way to make that impossible.
+  // Maybe implement deep copying for the rsDataSFZ class such that all region-pointers in the 
+  // groups actually point to new region objects. Or make rsDataSFZ non-copyable to force using a
+  // const reference like:
+  // const rsDataSFZ& sfzData = se.getInstrumentData();
+  // ok, done - but using a const reference is not enforced yet - either enforce it or indeed 
+  // implement deep copying - or both
   std::string sfzFile = Loader::getAsSFZ(sfzData);
+  */
 
 
 

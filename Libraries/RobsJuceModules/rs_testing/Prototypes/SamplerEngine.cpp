@@ -103,6 +103,54 @@ void rsDataSFZ::Group::clearRegions()
   regions.clear();
 }
 
+std::string rsDataSFZ::serialize() const
+{
+  std::string str;
+
+  using SettingsRef = const std::vector<PlaybackSetting>&;
+  auto writeSettingsToString = [](SettingsRef settings, std::string& str)
+  {
+    // ...something to do....
+    int dummy = 0;
+  };
+
+
+  writeSettingsToString(instrument.getSettings(), str);
+  for(size_t gi = 0; gi < getNumGroups(); gi++)
+  {
+    str += "<group>\n";
+    const Group& g = getGroupRef(gi);
+    writeSettingsToString(g.getSettings(), str);
+    for(size_t ri = 0; ri < g.getNumRegions(); ri++)
+    {
+      str += "<region>\n";
+      const Region* r = getRegionPtr(gi, ri);
+      writeSettingsToString(r->getSettings(), str);
+    }
+  }
+
+  // todo: 
+  // -retrieve settings of the instrument
+  // -write them into the string (using a function writeSettingsToString(settings, str)
+  // -loop over the groups
+  //  -write a group header
+  //  -retrieve group settings
+  //  -write them into the string
+  //  -loop over the regions
+  //   -write a region header
+  //   -retrieve region settings
+  //   -write them into the string
+
+  return str;
+}
+
+void rsDataSFZ::deserialize(const std::string& sfzFileContents)
+{
+
+}
+
+// todo: implement writeToSFZ, loadSFZ (taking filenames as parameters)
+
 //=================================================================================================
 // rsSamplerEngine
 
@@ -147,17 +195,17 @@ int rsSamplerEngine::addSampleToPool(
 int rsSamplerEngine::addGroup()
 {
   Group g;
-  groups.push_back(g);
-  return ((int) groups.size()) - 1;
+  sfz.instrument.groups.push_back(g);
+  return ((int) sfz.instrument.groups.size()) - 1;
 }
 
 int rsSamplerEngine::addRegion(int gi, uchar loKey, uchar hiKey)
 {
-  if(gi < 0 || gi >= (int)groups.size()) {
+  if(gi < 0 || gi >= (int)sfz.instrument.groups.size()) {
     rsError("Invalid group index");
     return ReturnCode::invalidIndex; 
   }
-  int ri = groups[gi].addRegion();      // region index within its group
+  int ri = sfz.instrument.groups[gi].addRegion();      // region index within its group
 
   // Add the region to the regionsForKey in between loKey and hiKey
   const Region* region = getRegion(gi, ri);
@@ -220,11 +268,11 @@ int rsSamplerEngine::setRegionSetting(Region* region, PlaybackSetting::Type type
 rsSamplerEngine::Region* rsSamplerEngine::getRegion(int groupIndex, int regionIndex)
 {
   int gi = groupIndex, ri = regionIndex;
-  if(gi < 0 || gi >= (int)groups.size()) {
+  if(gi < 0 || gi >= (int)sfz.instrument.groups.size()) {
     rsError("Invalid group index");
     return nullptr; 
   }
-  return groups[gi].getRegion(ri);
+  return sfz.instrument.groups[gi].getRegion(ri);
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -325,8 +373,8 @@ void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int*
 {
   *gi = -1;
   *ri = -1;
-  for(size_t i = 0; i < groups.size(); i++) {
-    int j = groups[i].getRegionIndex(r);
+  for(size_t i = 0; i < sfz.instrument.groups.size(); i++) {
+    int j = sfz.instrument.groups[i].getRegionIndex(r);
     if(j != -1) {
       *gi = (int) i;
       *ri = j;
@@ -664,7 +712,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 }
 
 //=================================================================================================
-
+/*
 void rsSamplerEngineLoaderSFZ::setFromSFZ(rsSamplerEngine* se, const std::string& str)
 {
 
@@ -675,9 +723,22 @@ std::string rsSamplerEngineLoaderSFZ::getAsSFZ(const rsDataSFZ& sfz)
 {
   std::string str;
 
+  // todo: 
+  // -retrieve settings of the instrument
+  // -write them into the string (using a function writeSettingsToString(settings, str)
+  // -loop over the groups
+  //  -write a group header
+  //  -retrieve group settings
+  //  -write them into the string
+  //  -loop over the regions
+  //   -write a region header
+  //   -retrieve region settings
+  //   -write them into the string
+
   return str;
 }
-
+*/
+// implement writeToSFZ, loadSFZ (taking filenames as parameters)
 
 
 
