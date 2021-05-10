@@ -110,8 +110,30 @@ std::string rsDataSFZ::serialize() const
   using SettingsRef = const std::vector<PlaybackSetting>&;
   auto writeSettingsToString = [](SettingsRef settings, std::string& str)
   {
-    // ...something to do....
+    for(size_t i = 0; i < settings.size(); i++)
+    {
+      using PST = PlaybackSetting::Type;
+      PlaybackSetting s = settings[i];
+      PST  type = s.getType();
+      float val = s.getValue();
+      int index = s.getIndex();
+      switch(type)
+      {
+      case PST::Volume:          { str += "volume="          + to_string(val) + "\n";  } break;
+      case PST::PitchKeyCenter:  { str += "pitch_keycenter=" + to_string(val) + "\n";  } break;
+        // more to come....
+      }
+    }
     int dummy = 0;
+    // todo: 
+    // -Maybe use custom string conversion funtions because the std::to_string just uses a 
+    //  fixed number of 6 decimal digits after the point. Maybe that's suitable, but maybe not:
+    //  https://www.cplusplus.com/reference/string/to_string/
+    //  ...well, i think, it's not suitable for int params, but we may convert to int
+    // -If the settings define a sample opcode, write that into the string also
+    // -Maybe factor that function out into a static member function
+    // -Maybe factor out a function settingToString...maybe that should be a member of 
+    //  PlaybackSetting. toString/fromString
   };
 
 
@@ -128,25 +150,30 @@ std::string rsDataSFZ::serialize() const
       writeSettingsToString(r->getSettings(), str);
     }
   }
-
-  // todo: 
-  // -retrieve settings of the instrument
-  // -write them into the string (using a function writeSettingsToString(settings, str)
-  // -loop over the groups
-  //  -write a group header
-  //  -retrieve group settings
-  //  -write them into the string
-  //  -loop over the regions
-  //   -write a region header
-  //   -retrieve region settings
-  //   -write them into the string
-
   return str;
+
+  // ToDo: write lokey/hikey settings into the string, they are stored directly in the Region 
+  // object and not also in the settings. Maybe they should be. That would simplify the 
+  // serialization but that may complicate other things due to the introduced redundancy and 
+  // therefore extra care to keep the data consistent. That raises the question, if groups and
+  // instruments also can define lokey/hikey settings and how they are interpreted. If so, maybe
+  // these lokey/hikey members should be moved into the OrganizationLevel baseclass. ToDo: figure
+  // out how SFZPlayer behaves with respect to this maybe by defining those opcoded at all 3 
+  // levels - i guess, it will use the most restrictive setting of all of them
 }
 
 void rsDataSFZ::deserialize(const std::string& sfzFileContents)
 {
-
+  // todo: 
+  // -Take the substring up to the first occurence of "<group>\n"
+  //  -this represents the instrument wide settings, so write them into the respective array
+  // -Split the passed string into substrings representing the groups by finding a "<group>\n"
+  //  header and taking the section up to the next group header or the end of the file.
+  //  -Take the substring up to the first occurence of "<region>\n"
+  //   -this represents the group wide settings, so write them into the respective array
+  //   -Split the group-substring into substrings representing the regions by finding a 
+  //    "<region>\n"
+  //  
 }
 
 // todo: implement writeToSFZ, loadSFZ (taking filenames as parameters)
