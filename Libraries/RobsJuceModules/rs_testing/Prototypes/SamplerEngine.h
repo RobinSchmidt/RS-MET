@@ -578,6 +578,10 @@ public:
   // and there should match and rsSamplerEngine should call functions from here and perhaps do
   // additional stuff, if necessary
 
+  /** Clears the whole instrument definition. */
+  void clearInstrument() { instrument.groups.clear(); }
+  // todo: may wrap into instrument.clear() - don't access the groups array directly
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -618,6 +622,10 @@ public:
 
   Instrument instrument; 
   // Maybe we could maintain an array of such instruments that define an ensmeble
+
+protected:
+
+  static void writeSettingToString(const PlaybackSetting& setting, std::string& str);
 
 };
 

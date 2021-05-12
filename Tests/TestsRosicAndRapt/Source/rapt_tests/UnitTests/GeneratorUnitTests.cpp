@@ -168,7 +168,14 @@ bool samplerEngineUnitTest()
 
   const rsDataSFZ& sfzData = se.getInstrumentData();
   std::string sfzFile = sfzData.serialize();
+  rsDataSFZ sfzData2;
+  sfzData2.deserialize(sfzFile);
+
   int dummy = 0;
+
+  //SE se2;
+  //se2.setupFromSFZ(sfzData2);
+  //ok &= se2.matchesInstrumentDefinition(se);
 
 
 

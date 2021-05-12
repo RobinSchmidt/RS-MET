@@ -112,25 +112,15 @@ std::string rsDataSFZ::serialize() const
   {
     for(size_t i = 0; i < settings.size(); i++)
     {
-      using PST = PlaybackSetting::Type;
-      PlaybackSetting s = settings[i];
-      PST  type = s.getType();
-      float val = s.getValue();
-      int index = s.getIndex();
-      switch(type)
-      {
-      case PST::Volume:          { str += "volume="          + to_string(val) + "\n";  } break;
-      case PST::PitchKeyCenter:  { str += "pitch_keycenter=" + to_string(val) + "\n";  } break;
-        // more to come....
-      }
+      writeSettingToString(settings[i], str);
     }
     int dummy = 0;
-    // todo: 
-    // -Maybe use custom string conversion funtions because the std::to_string just uses a 
-    //  fixed number of 6 decimal digits after the point. Maybe that's suitable, but maybe not:
-    //  https://www.cplusplus.com/reference/string/to_string/
-    //  ...well, i think, it's not suitable for int params, but we may convert to int
-    // -If the settings define a sample opcode, write that into the string also
+
+    // todo:
+    // -If the settings define a sample opcode, write that into the string also - it hink, the 
+    //  sample opcode needs special handling because its value is a string, not corresponidng to 
+    //  any enum value...what, if we later introduce more such string-valued opcodes, such as the
+    //  sample-directory?
     // -Maybe factor that function out into a static member function
     // -Maybe factor out a function settingToString...maybe that should be a member of 
     //  PlaybackSetting. toString/fromString
@@ -162,8 +152,37 @@ std::string rsDataSFZ::serialize() const
   // levels - i guess, it will use the most restrictive setting of all of them
 }
 
-void rsDataSFZ::deserialize(const std::string& sfzFileContents)
+void rsDataSFZ::deserialize(const std::string& str)
 {
+  clearInstrument();
+
+  std::string group  = "<group>\n";   // not sure, whether we should include the \n
+  std::string region = "<region>\n";
+
+
+  bool allGroupsDone = false;
+  size_t i0 = 0;
+  size_t i1 = 0;
+  size_t endOfFile = std::numeric_limits<size_t>::max();
+  while(!allGroupsDone)
+  {
+    size_t i0 = str.find(group, i1);      // start index of the group in the string
+    size_t i1 = str.find(group, i0+1);    // end index of the group in the string
+    if(i1 == endOfFile)
+    {
+      allGroupsDone = true;
+      i1 = str.length() - 1;
+    }
+
+    std::string groupDef = str.substr(i0, i1-i0); // group definitions
+    //int gi = addGroup();
+
+
+    int dummy = 0;
+  }
+
+
+
   // todo: 
   // -Take the substring up to the first occurence of "<group>\n"
   //  -this represents the instrument wide settings, so write them into the respective array
@@ -174,6 +193,27 @@ void rsDataSFZ::deserialize(const std::string& sfzFileContents)
   //   -Split the group-substring into substrings representing the regions by finding a 
   //    "<region>\n"
   //  
+  // http://www.cplusplus.com/reference/string/string/find/
+}
+
+void rsDataSFZ::writeSettingToString(const PlaybackSetting& setting, std::string& s)
+{
+  using PST = PlaybackSetting::Type;
+  PST  type = setting.getType();
+  float val = setting.getValue();
+  int index = setting.getIndex();
+  switch(type)
+  {
+  case PST::Volume:         { s += "volume="          + to_string(val) + "\n";  } break;
+  case PST::PitchKeyCenter: { s += "pitch_keycenter=" + to_string(val) + "\n";  } break;
+    // more to come....
+  }
+
+  // todo: 
+  // -Maybe use custom string conversion functions because the std::to_string just uses a 
+  //  fixed number of 6 decimal digits after the point. Maybe that's suitable, but maybe not:
+  //  https://www.cplusplus.com/reference/string/to_string/
+  //  ...well, i think, it's not suitable for int params, but we may convert to int
 }
 
 // todo: implement writeToSFZ, loadSFZ (taking filenames as parameters)
