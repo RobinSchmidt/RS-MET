@@ -170,6 +170,7 @@ bool samplerEngineUnitTest()
   std::string sfzFile = sfzData.serialize();
   rsDataSFZ sfzData2;
   sfzData2.deserialize(sfzFile);
+  ok &= sfzData2 == sfzData;
 
   int dummy = 0;
 

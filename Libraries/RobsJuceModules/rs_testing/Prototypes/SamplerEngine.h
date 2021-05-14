@@ -358,6 +358,11 @@ public:
     particular setting/opcode, this will return -1. */
     int getIndex() const { return index; }
 
+
+    bool operator==(const PlaybackSetting& rhs) const
+    { return type == rhs.type && value == rhs.value && index == rhs.index; }
+
+
   private:
 
     Type  type  = Type::Unknown;
@@ -446,6 +451,10 @@ public:
     /** Returns the highest velocity at which this region will be played. */
     uchar getHiVel() const { return hiVel; }
 
+
+    bool operator==(const Region& rhs) const;
+
+
   private:
 
     //Group* group = nullptr;  //< Pointer to the group to which this region belongs
@@ -468,10 +477,6 @@ public:
     // maybe a pointer-to-void named customData should be stored in OrganizationLevel
 
     const void* custom = nullptr;
-
-
-
-
 
     uchar loKey = 0, hiKey = 127;
     uchar loVel = 0, hiVel = 127;
@@ -528,6 +533,11 @@ public:
     // rename to getRegionPointer ir Ptr
 
 
+    bool operator==(const Group& rhs) const;
+    // the comparison is quite strict in the sense that the settings must occur in the same order
+
+
+
   private:
 
     //Group* Instrument = nullptr;  //< Pointer to the instrument to which this group belongs
@@ -569,15 +579,15 @@ public:
     { return groups[groupIndex].getSettings(); }
 
 
+    bool operator==(const Instrument& rhs) const 
+    { return settings == rhs.settings && groups == rhs.groups; }
 
 
   //private:  // make protected later
 
-
     // maybe move to public
     int addGroup();      // todo: removeGroup, etc.
     void clearGroups();
-
 
     std::vector<Group> groups;
     // Should that be an array of pointers, too? Like the regions array in Group? That would make
@@ -617,7 +627,7 @@ public:
   //{ return instrument.getGroupSettings(i); }
 
 
-
+  bool operator==(const rsDataSFZ& rhs) const { return instrument == rhs.instrument; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc

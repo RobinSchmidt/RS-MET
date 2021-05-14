@@ -70,6 +70,17 @@ void SamplePool<T>::clear()
 //-------------------------------------------------------------------------------------------------
 // rsDataSFZ:
 
+bool rsDataSFZ::Region::operator==(const rsDataSFZ::Region& rhs) const 
+{ 
+  bool equal = settings == rhs.settings;
+  equal &= loKey == rhs.loKey;
+  equal &= hiKey == rhs.hiKey;
+  equal &= loVel == rhs.loVel;
+  equal &= hiVel == rhs.hiVel;
+  return equal;
+  // What about the customPointer? should we require that to be equal, too?
+}
+
 int rsDataSFZ::Group::addRegion()
 {
   rsDataSFZ::Region* r = new rsDataSFZ::Region;
@@ -102,6 +113,17 @@ void rsDataSFZ::Group::clearRegions()
   regions.clear();
 }
 
+bool rsDataSFZ::Group::operator==(const rsDataSFZ::Group& rhs) const 
+{ 
+  bool equal = settings == rhs.settings;
+  equal &= regions.size() == rhs.regions.size();
+  if(!equal) return false;
+  for(size_t i = 0; i < regions.size(); i++)
+    equal &= *(regions[i]) == *(rhs.regions[i]);
+}
+
+
+
 int rsDataSFZ::Instrument::addGroup()
 {
   rsDataSFZ::Group g;
@@ -114,6 +136,9 @@ void rsDataSFZ::Instrument::clearGroups()
 {
   groups.clear();
 }
+
+
+
 
 std::string rsDataSFZ::serialize() const
 {
@@ -174,25 +199,10 @@ void rsDataSFZ::deserialize(const std::string& str)
   auto getLine = [&](const std::string& str, size_t startIndex)
   {
     size_t endIndex = str.find('\n', startIndex);
-    /*if(endIndex == endOfFile)*/
     if(endIndex >= str.length())
-    {
-      //return std::string();   // return empty string - nah - wrong!
-      //return str;               // ...we need to return the whole str
-
-      // debug:
-      size_t L = str.length()-startIndex;
-      string s = str.substr(startIndex, L);
-      return s;
-
-
-      //return str.substr(startIndex, str.length()-startIndex);
-    }
+      return str.substr(startIndex, str.length()-startIndex);
     else
-    {
-      std::string line = str.substr(startIndex, endIndex-startIndex);
-      return line;
-    }
+      return str.substr(startIndex, endIndex-startIndex);
   };
 
   // Sets up one setting in lvl given in the format "opcode=value":
@@ -203,49 +213,21 @@ void rsDataSFZ::deserialize(const std::string& str)
     std::string value  = str.substr(splitIndex+1, str.length() - splitIndex - 1);
     PlaybackSetting ps = getSettingFromString(opcode, value);
     lvl->addSetting(ps);  // todo: use setSetting (add or overwrite)
-    int dummy = 0;
   };
 
   // Sets up the given level according to the given string which is supposed to contain one setting
   // per line in the format "opocde=value\n":
   auto setupLevel = [&](OrganizationLevel* lvl, const std::string& str)
   {
-    // ToDo: 
-    // -Extract one line at a time
-    // -Split the line at the '=' character into opcode and value
-    // -Set up the setting according to the opcode/value
-
     size_t start = 0;
     while(true)
     {
-      std::string line = getLine(str, start);
-      if(line.length() == 0)
-        break;
-      setupSetting(lvl, line);
+      std::string line = getLine(str, start);   // extract one line at at time
+      if(line.length() == 0) break;
+      setupSetting(lvl, line);                  // set a setting from this line
       start += line.length() + 1;
-      if(start >= str.length())
-        break;
+      if(start >= str.length()) break;
     }
-
-
-    /*
-    size_t start = 0;
-    bool allLinesDone = false;
-    while(!allLinesDone)
-    {
-      std::string line = getLine(str, start);
-      //if(line.length() == 0)
-      if(start >= str.length())
-        allLinesDone = true;
-      else
-      {
-        setupSetting(lvl, line);
-        start += line.length() + 1;
-      }
-    }
-    */
-
-    int dummy = 0;
   };
 
 
@@ -316,23 +298,11 @@ void rsDataSFZ::deserialize(const std::string& str)
     int dummy = 0;
   }
 
-  // todo: 
-  // -Take the substring up to the first occurence of "<group>\n"
-  //  -this represents the instrument wide settings, so write them into the respective array
-  // -Split the passed string into substrings representing the groups by finding a "<group>\n"
-  //  header and taking the section up to the next group header or the end of the file.
-  //  -Take the substring up to the first occurence of "<region>\n"
-  //   -this represents the group wide settings, so write them into the respective array
-  //   -Split the group-substring into substrings representing the regions by finding a 
-  //    "<region>\n"
-  //
-  // -The general structure of this nested block is the same as the enclosing block - try to 
-  //  refactor to get rid of the duplication (maybe it can be implemented recursively):
-  //  
-  // http://www.cplusplus.com/reference/string/string/find/
-
-  // Maybe use string_view for the xtracted substrings to avoid copying the data:
-  // https://en.cppreference.com/w/cpp/header/string_view
+  // ToDo: 
+  // -The general structure of the nested region is the similar to the enclosing group block 
+  //  -> try to refactor to get rid of the duplication (maybe it can be implemented recursively)
+  // -Maybe use string_view for the extracted substrings to avoid copying the data:
+  //  https://en.cppreference.com/w/cpp/header/string_view
 }
 
 void rsDataSFZ::writeSettingToString(const PlaybackSetting& setting, std::string& s)
@@ -344,6 +314,7 @@ void rsDataSFZ::writeSettingToString(const PlaybackSetting& setting, std::string
   switch(type)
   {
   case PST::Volume:         { s += "volume="          + to_string(val) + "\n";  } break;
+  case PST::Pan:            { s += "pan="             + to_string(val) + "\n";  } break;
   case PST::PitchKeyCenter: { s += "pitch_keycenter=" + to_string(val) + "\n";  } break;
     // more to come....
   }
@@ -352,7 +323,9 @@ void rsDataSFZ::writeSettingToString(const PlaybackSetting& setting, std::string
   // -Maybe use custom string conversion functions because the std::to_string just uses a 
   //  fixed number of 6 decimal digits after the point. Maybe that's suitable, but maybe not:
   //  https://www.cplusplus.com/reference/string/to_string/
-  //  ...well, i think, it's not suitable for int params, but we may convert to int
+  //  ...well, i think, it's not suitable for int params, but we may convert to int. I think, a 
+  //  fixed number (maybe 8 or 9..whatever number ensures lossless roundtrips) of total decimal 
+  //  digits is better
 }
 
 rsDataSFZ::PlaybackSetting rsDataSFZ::getSettingFromString(
@@ -360,20 +333,19 @@ rsDataSFZ::PlaybackSetting rsDataSFZ::getSettingFromString(
 {
   using PS  = PlaybackSetting;
   using PST = PS::Type;
-  float val = 0.f;        // preliminary - todo: float val = rsToFloat(valStr);
+  float val = std::stof(valStr);  // maybe use cutom function later
 
-  // ToDo:
-  // -figure out the type of the setting from the opcode
-  // -convert the valStr to the appropriate float
-  // -if applicable, exctract the index from the opcode and set it up in the setting
+  int   idx = -1;
+  // todo: if applicable, exctract the index from the opcode and set it up in the setting by 
+  // passing it as 3rd parameter to the constructor
 
   if(opcode == "volume")          return PS(PST::Volume,         val);
+  if(opcode == "pan")             return PS(PST::Pan,            val);
   if(opcode == "pitch_keycenter") return PS(PST::PitchKeyCenter, val);
   // ...more to come...
 
   return PS(PST::Unknown, 0.f);  // fallback value
 }
-
 
 // todo: implement writeToSFZ, loadSFZ (taking filenames as parameters)
 
