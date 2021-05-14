@@ -424,6 +424,7 @@ public:
 
     /** Return a pointer to the group to which this region belongs. */
     const Group* getGroup() const { return (const Group*) getParent(); }
+    // rename to getParentGroup or getEnclosingGroup
 
     //const Group* getGroup() const { return group; }
     // todo: return (const Group*) getParentLevel();
@@ -554,6 +555,10 @@ public:
   public:
 
     size_t getNumGroups() const { return groups.size(); }
+
+
+    /** Returns a pointer to the region with the given index within the group. */
+    Group* getGroup(int i) { return &groups[i]; }
 
 
     const std::vector<PlaybackSetting>& getGroupSettings(size_t groupIndex) const

@@ -179,55 +179,69 @@ void rsDataSFZ::deserialize(const std::string& str)
   std::string region = "<region>\n";
   size_t Lg = group.length();
   size_t Lr = region.length();
-
+  size_t endOfFile = std::numeric_limits<size_t>::max();
   std::string tmp;                    // for extracted substrings (maybe use string_view)
-  bool allGroupsDone = false;
+
+  // Find start and end index in the string for the first group:
   size_t i0 = str.find(group, 0);
   size_t i1 = str.find(group, i0+1);
-  size_t endOfFile = std::numeric_limits<size_t>::max();
 
   // Set up instrument level:
   tmp = str.substr(0, i0);
   setupLevel(&instrument, tmp);
+
+  // Loop over the the groups within the instrument definition:
+  bool allGroupsDone = false;
   while(!allGroupsDone)
   {
-    i0 = str.find(group, i1);      // start index of the group in the string
-    i1 = str.find(group, i0+1);    // end index of the group in the string
-    if(i1 == endOfFile)
-    {
+    if(i1 == endOfFile) {
       allGroupsDone = true;
-      i1 = str.length() - 1;
-    }
-    std::string groupDef = str.substr(i0, i1-i0); // group definitions
+      i1 = str.length() - 1; }
+
+    // Extract substring with group definition and add a new group to the instrument:
+    std::string groupDef = str.substr(i0, i1-i0); // group definition
     int gi = instrument.addGroup();
+    Group* g = instrument.getGroup(gi);
+    g->parent = &instrument;
 
-    // The structure of this nested block is the same as the enclosing block - try to refactor to
-    // get rid of the duplication (maybe it can be implemented recursively):
+    // Find start and end index in the string for the first region within the current group:
+    size_t j0 = str.find(region, i0);
+    size_t j1 = str.find(region, i0+1);
+
+    // Set up group level:
+    tmp = str.substr(i0+Lg, j0-i0-Lg);
+    setupLevel(g, tmp);
+
+    // Loop over the the regions within the group definition:
     bool allRegionsDone = false;
-
-
-    size_t j0 = 0;
-    size_t j1 = 0;
-
-
     while(!allRegionsDone)
     {
-      j0 = groupDef.find(region, j1);   // start index of the region in the group substring
-      j1 = groupDef.find(region, j0+1); // end index of the region in the group substring
+      // Extract substring with region definition and add a new region to the group:
+      std::string regionDef = groupDef.substr(j0, j1-j0); // region definition
+      int ri = g->addRegion();
+      Region* r = g->getRegion(ri);
+      r->parent = g;
+
+      // Set up region level:
+      tmp = groupDef.substr(j0+Lr, j1-j0-Lr);
+      setupLevel(r, tmp);
+
+      // Find start and end index of next region defintion:
+      j0 = groupDef.find(region, j1); 
+      j1 = groupDef.find(region, j0+1);
 
 
-
-
+      if(j1 == endOfFile) {
+        allRegionsDone = true;
+        j1 = groupDef.length() - 1; }
+      int dummy = 0;
     }
 
-
-
-
-
+    // Find start and end index of next group defintion:
+    i0 = str.find(group, i1);      // start index of the group in the string
+    i1 = str.find(group, i0+1);    // end index of the group in the string
     int dummy = 0;
   }
-
-
 
   // todo: 
   // -Take the substring up to the first occurence of "<group>\n"
@@ -238,6 +252,9 @@ void rsDataSFZ::deserialize(const std::string& str)
   //   -this represents the group wide settings, so write them into the respective array
   //   -Split the group-substring into substrings representing the regions by finding a 
   //    "<region>\n"
+  //
+  // -The general structure of this nested block is the same as the enclosing block - try to 
+  //  refactor to get rid of the duplication (maybe it can be implemented recursively):
   //  
   // http://www.cplusplus.com/reference/string/string/find/
 
