@@ -527,6 +527,7 @@ public:
 
     //Group* Instrument = nullptr;  //< Pointer to the instrument to which this group belongs
 
+    // maybe move to public
     int addRegion();      // todo: removeRegion, etc.
     void clearRegions();
 
@@ -563,6 +564,12 @@ public:
 
   //private:  // make protected later
 
+
+    // maybe move to public
+    int addGroup();      // todo: removeGroup, etc.
+    void clearGroups();
+
+
     std::vector<Group> groups;
     // Should that be an array of pointers, too? Like the regions array in Group? That would make
     // the implementations of Group and Instrument more consistent but is actually technically not 
@@ -579,7 +586,9 @@ public:
   // additional stuff, if necessary
 
   /** Clears the whole instrument definition. */
-  void clearInstrument() { instrument.groups.clear(); }
+  void clearInstrument() 
+  { instrument.clearGroups(); }
+  //{ instrument.groups.clear(); }
   // todo: may wrap into instrument.clear() - don't access the groups array directly
 
 

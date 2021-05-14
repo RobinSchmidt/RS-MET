@@ -73,7 +73,6 @@ void SamplePool<T>::clear()
 int rsDataSFZ::Group::addRegion()
 {
   rsDataSFZ::Region* r = new rsDataSFZ::Region;
-  //r->group = this;
   r->parent = this;
   regions.push_back(r);
   return ((int) regions.size()) - 1;
@@ -101,6 +100,19 @@ void rsDataSFZ::Group::clearRegions()
   for(size_t i = 0; i < regions.size(); i++)
     delete regions[i];
   regions.clear();
+}
+
+int rsDataSFZ::Instrument::addGroup()
+{
+  rsDataSFZ::Group g;
+  g.parent = this;
+  groups.push_back(g);
+  return ((int) groups.size()) - 1;
+}
+
+void rsDataSFZ::Instrument::clearGroups()
+{
+  groups.clear();
 }
 
 std::string rsDataSFZ::serialize() const
@@ -156,26 +168,60 @@ void rsDataSFZ::deserialize(const std::string& str)
 {
   clearInstrument();
 
+  // Sets up the given level according to the given string:
+  auto setupLevel = [](OrganizationLevel* lvl, const std::string& str)
+  {
+
+    int dummy = 0;
+  };
+
   std::string group  = "<group>\n";   // not sure, whether we should include the \n
   std::string region = "<region>\n";
+  size_t Lg = group.length();
+  size_t Lr = region.length();
 
-
+  std::string tmp;                    // for extracted substrings (maybe use string_view)
   bool allGroupsDone = false;
-  size_t i0 = 0;
-  size_t i1 = 0;
+  size_t i0 = str.find(group, 0);
+  size_t i1 = str.find(group, i0+1);
   size_t endOfFile = std::numeric_limits<size_t>::max();
+
+  // Set up instrument level:
+  tmp = str.substr(0, i0);
+  setupLevel(&instrument, tmp);
   while(!allGroupsDone)
   {
-    size_t i0 = str.find(group, i1);      // start index of the group in the string
-    size_t i1 = str.find(group, i0+1);    // end index of the group in the string
+    i0 = str.find(group, i1);      // start index of the group in the string
+    i1 = str.find(group, i0+1);    // end index of the group in the string
     if(i1 == endOfFile)
     {
       allGroupsDone = true;
       i1 = str.length() - 1;
     }
-
     std::string groupDef = str.substr(i0, i1-i0); // group definitions
-    //int gi = addGroup();
+    int gi = instrument.addGroup();
+
+    // The structure of this nested block is the same as the enclosing block - try to refactor to
+    // get rid of the duplication (maybe it can be implemented recursively):
+    bool allRegionsDone = false;
+
+
+    size_t j0 = 0;
+    size_t j1 = 0;
+
+
+    while(!allRegionsDone)
+    {
+      j0 = groupDef.find(region, j1);   // start index of the region in the group substring
+      j1 = groupDef.find(region, j0+1); // end index of the region in the group substring
+
+
+
+
+    }
+
+
+
 
 
     int dummy = 0;
@@ -194,6 +240,9 @@ void rsDataSFZ::deserialize(const std::string& str)
   //    "<region>\n"
   //  
   // http://www.cplusplus.com/reference/string/string/find/
+
+  // Maybe use string_view for the xtracted substrings to avoid copying the data:
+  // https://en.cppreference.com/w/cpp/header/string_view
 }
 
 void rsDataSFZ::writeSettingToString(const PlaybackSetting& setting, std::string& s)
