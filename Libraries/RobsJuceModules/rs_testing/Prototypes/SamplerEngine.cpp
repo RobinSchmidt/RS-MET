@@ -169,14 +169,25 @@ void rsDataSFZ::deserialize(const std::string& str)
   clearInstrument();
   size_t endOfFile = std::numeric_limits<size_t>::max();
 
-
   // Extracts the subtring starting at startIndex up to (and excluding) the next newline '\n' 
-  // charcater:
+  // charcater. If there is no '\n', it will return the string from startIndex up to its end:
   auto getLine = [&](const std::string& str, size_t startIndex)
   {
     size_t endIndex = str.find('\n', startIndex);
-    if(endIndex == endOfFile)
-      return std::string();   // return empty string
+    /*if(endIndex == endOfFile)*/
+    if(endIndex >= str.length())
+    {
+      //return std::string();   // return empty string - nah - wrong!
+      //return str;               // ...we need to return the whole str
+
+      // debug:
+      size_t L = str.length()-startIndex;
+      string s = str.substr(startIndex, L);
+      return s;
+
+
+      //return str.substr(startIndex, str.length()-startIndex);
+    }
     else
     {
       std::string line = str.substr(startIndex, endIndex-startIndex);
@@ -184,14 +195,14 @@ void rsDataSFZ::deserialize(const std::string& str)
     }
   };
 
-  // Sets up one setting in lvl given in the format "opocde=value":
+  // Sets up one setting in lvl given in the format "opcode=value":
   auto setupSetting = [&](OrganizationLevel* lvl, const std::string& str)
   {
     size_t splitIndex = str.find('=', 0);
     std::string opcode = str.substr(0, splitIndex);
     std::string value  = str.substr(splitIndex+1, str.length() - splitIndex - 1);
     PlaybackSetting ps = getSettingFromString(opcode, value);
-    lvl->addSetting(ps);
+    lvl->addSetting(ps);  // todo: use setSetting (add or overwrite)
     int dummy = 0;
   };
 
@@ -205,11 +216,26 @@ void rsDataSFZ::deserialize(const std::string& str)
     // -Set up the setting according to the opcode/value
 
     size_t start = 0;
+    while(true)
+    {
+      std::string line = getLine(str, start);
+      if(line.length() == 0)
+        break;
+      setupSetting(lvl, line);
+      start += line.length() + 1;
+      if(start >= str.length())
+        break;
+    }
+
+
+    /*
+    size_t start = 0;
     bool allLinesDone = false;
     while(!allLinesDone)
     {
       std::string line = getLine(str, start);
-      if(line.length() == 0)
+      //if(line.length() == 0)
+      if(start >= str.length())
         allLinesDone = true;
       else
       {
@@ -217,6 +243,7 @@ void rsDataSFZ::deserialize(const std::string& str)
         start += line.length() + 1;
       }
     }
+    */
 
     int dummy = 0;
   };
