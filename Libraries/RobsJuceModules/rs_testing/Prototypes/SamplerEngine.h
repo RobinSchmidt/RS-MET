@@ -386,6 +386,10 @@ public:
     const OrganizationLevel* getParent() const { return parent; }
 
 
+    void addSetting(const PlaybackSetting& s) { settings.push_back(s); }
+    // Maybe we should have a function setSetting that either adds a new setting or overwrites
+    // an existing one
+
 
     // todo: float getSetting(PlaybackSetting::Type, int index) this should loop through the 
     // settings to see, if it finds it and if not call the same method on the parent or return the
@@ -640,6 +644,11 @@ public:
 protected:
 
   static void writeSettingToString(const PlaybackSetting& setting, std::string& str);
+
+  static PlaybackSetting getSettingFromString(
+    const std::string& opcode, const std::string& value);
+
+
 
 };
 

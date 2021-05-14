@@ -167,26 +167,74 @@ std::string rsDataSFZ::serialize() const
 void rsDataSFZ::deserialize(const std::string& str)
 {
   clearInstrument();
+  size_t endOfFile = std::numeric_limits<size_t>::max();
 
-  // Sets up the given level according to the given string:
-  auto setupLevel = [](OrganizationLevel* lvl, const std::string& str)
+
+  // Extracts the subtring starting at startIndex up to (and excluding) the next newline '\n' 
+  // charcater:
+  auto getLine = [&](const std::string& str, size_t startIndex)
   {
+    size_t endIndex = str.find('\n', startIndex);
+    if(endIndex == endOfFile)
+      return std::string();   // return empty string
+    else
+    {
+      std::string line = str.substr(startIndex, endIndex-startIndex);
+      return line;
+    }
+  };
+
+  // Sets up one setting in lvl given in the format "opocde=value":
+  auto setupSetting = [&](OrganizationLevel* lvl, const std::string& str)
+  {
+    size_t splitIndex = str.find('=', 0);
+    std::string opcode = str.substr(0, splitIndex);
+    std::string value  = str.substr(splitIndex+1, str.length() - splitIndex - 1);
+    PlaybackSetting ps = getSettingFromString(opcode, value);
+    lvl->addSetting(ps);
+    int dummy = 0;
+  };
+
+  // Sets up the given level according to the given string which is supposed to contain one setting
+  // per line in the format "opocde=value\n":
+  auto setupLevel = [&](OrganizationLevel* lvl, const std::string& str)
+  {
+    // ToDo: 
+    // -Extract one line at a time
+    // -Split the line at the '=' character into opcode and value
+    // -Set up the setting according to the opcode/value
+
+    size_t start = 0;
+    bool allLinesDone = false;
+    while(!allLinesDone)
+    {
+      std::string line = getLine(str, start);
+      if(line.length() == 0)
+        allLinesDone = true;
+      else
+      {
+        setupSetting(lvl, line);
+        start += line.length() + 1;
+      }
+    }
 
     int dummy = 0;
   };
+
+
 
   std::string group  = "<group>\n";   // not sure, whether we should include the \n
   std::string region = "<region>\n";
   size_t Lg = group.length();
   size_t Lr = region.length();
-  size_t endOfFile = std::numeric_limits<size_t>::max();
+
   std::string tmp;                    // for extracted substrings (maybe use string_view)
 
   // Find start and end index in the string for the first group:
   size_t i0 = str.find(group, 0);
   size_t i1 = str.find(group, i0+1);
 
-  // Set up instrument level:
+  // Set up instrument level settings:
   tmp = str.substr(0, i0);
   setupLevel(&instrument, tmp);
 
@@ -199,7 +247,7 @@ void rsDataSFZ::deserialize(const std::string& str)
       i1 = str.length() - 1; }
 
     // Extract substring with group definition and add a new group to the instrument:
-    std::string groupDef = str.substr(i0, i1-i0); // group definition
+    std::string groupDef = str.substr(i0, i1-i0); // group definition (todo: use string_view)
     int gi = instrument.addGroup();
     Group* g = instrument.getGroup(gi);
     g->parent = &instrument;
@@ -208,7 +256,7 @@ void rsDataSFZ::deserialize(const std::string& str)
     size_t j0 = str.find(region, i0);
     size_t j1 = str.find(region, i0+1);
 
-    // Set up group level:
+    // Set up group level settings:
     tmp = str.substr(i0+Lg, j0-i0-Lg);
     setupLevel(g, tmp);
 
@@ -216,24 +264,22 @@ void rsDataSFZ::deserialize(const std::string& str)
     bool allRegionsDone = false;
     while(!allRegionsDone)
     {
+      // Find start and end index of next region definition:
+      j0 = groupDef.find(region, j1); 
+      j1 = groupDef.find(region, j0+1);
+      if(j1 == endOfFile) {
+        allRegionsDone = true;
+        j1 = groupDef.length() - 1; }
+
       // Extract substring with region definition and add a new region to the group:
-      std::string regionDef = groupDef.substr(j0, j1-j0); // region definition
+      std::string regionDef = groupDef.substr(j0, j1-j0); // region definition (todo: use string_view)
       int ri = g->addRegion();
       Region* r = g->getRegion(ri);
       r->parent = g;
 
-      // Set up region level:
+      // Set up region level settings:
       tmp = groupDef.substr(j0+Lr, j1-j0-Lr);
       setupLevel(r, tmp);
-
-      // Find start and end index of next region defintion:
-      j0 = groupDef.find(region, j1); 
-      j1 = groupDef.find(region, j0+1);
-
-
-      if(j1 == endOfFile) {
-        allRegionsDone = true;
-        j1 = groupDef.length() - 1; }
       int dummy = 0;
     }
 
@@ -281,6 +327,26 @@ void rsDataSFZ::writeSettingToString(const PlaybackSetting& setting, std::string
   //  https://www.cplusplus.com/reference/string/to_string/
   //  ...well, i think, it's not suitable for int params, but we may convert to int
 }
+
+rsDataSFZ::PlaybackSetting rsDataSFZ::getSettingFromString(
+  const std::string& opcode, const std::string& valStr)
+{
+  using PS  = PlaybackSetting;
+  using PST = PS::Type;
+  float val = 0.f;        // preliminary - todo: float val = rsToFloat(valStr);
+
+  // ToDo:
+  // -figure out the type of the setting from the opcode
+  // -convert the valStr to the appropriate float
+  // -if applicable, exctract the index from the opcode and set it up in the setting
+
+  if(opcode == "volume")          return PS(PST::Volume,         val);
+  if(opcode == "pitch_keycenter") return PS(PST::PitchKeyCenter, val);
+  // ...more to come...
+
+  return PS(PST::Unknown, 0.f);  // fallback value
+}
+
 
 // todo: implement writeToSFZ, loadSFZ (taking filenames as parameters)
 
