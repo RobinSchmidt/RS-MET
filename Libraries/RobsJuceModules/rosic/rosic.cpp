@@ -342,6 +342,7 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "_third_party/SampleTailExtender/HarmonicAnalyser.cpp"
 #include "_third_party/SampleTailExtender/SampleTailExtender.cpp"
 
+
 // restore warning level in msvc:
 #if defined _MSC_VER
 #pragma warning(pop)

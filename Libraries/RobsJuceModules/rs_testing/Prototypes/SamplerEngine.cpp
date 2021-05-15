@@ -380,15 +380,25 @@ int rsSamplerEngine::addSampleToPool(
   //  do and may return early with an appropriate code
   // if(isSampleInPool(..)) return ReturnCode::nothingToDo;
 
-  // -maybe the Streamer object should always have two channel pointers, but in case of 
-  //  mono-samples, both just point to the same buffer. that may make it easier to handle things
-  //  uniformly
-
   AudioFileStreamPreloaded<float>* stream = new AudioFileStreamPreloaded<float>;
   bool allocOK = stream->setData(data, numFrames, numChannels, sampleRate, 2, uniqueName);
   if(allocOK == false)
     return ReturnCode::memAllocFail;
   return samplePool.addSample(stream);
+}
+
+int rsSamplerEngine::loadSampleToPool(const std::string& path)
+{
+  float** data; 
+  int numFrames; 
+  int numChannels; 
+  int sampleRate;
+  rosic::readFloatFromWaveFile(path.c_str(), numChannels, numFrames, sampleRate);
+  if(data == nullptr)
+    return ReturnCode::fileLoadError;
+    // This could mean that the file was not found or the memory allocation failed
+
+  return addSampleToPool(data, numFrames, numChannels, (float) sampleRate, path);
 }
 
 int rsSamplerEngine::addGroup()
@@ -486,8 +496,34 @@ rsSamplerEngine::Region* rsSamplerEngine::getRegion(int groupIndex, int regionIn
 //-------------------------------------------------------------------------------------------------
 // Processing:
 
+void rsSamplerEngine::processFrame(double* left, double* right)
+{
+  rsFloat64x2 out = 0.0;
+  for(size_t i = 0; i < activePlayers.size(); i++)
+  {
+    out += activePlayers[i]->getFrame();
+    if(activePlayers[i]->hasFinished()) {
+      deactivateRegionPlayer(i);
+      i--; }
+  }
+  *left  = out[0];
+  *right = out[1];
+
+  // ToDo: Test, if it's more efficient to loop through the activePlayers array backwards. But then
+  // we would need a signed int as loop index to make it work also when size() == 0 because we 
+  // would need to start at size()-1, which would be around 2^64 for size_t. Then, the i-- could be
+  // removed, but that's not the main point. The main point is that the deactivation/removal would 
+  // need less data copying.
+}
+
 void rsSamplerEngine::processFrame(float* left, float* right)
 {
+  double L, R;
+  processFrame(&L, &R);
+  *left  = (float) L;
+  *right = (float) R;
+
+  /*
   rsFloat64x2 out = 0.0;
   for(size_t i = 0; i < activePlayers.size(); i++)
   {
@@ -498,6 +534,10 @@ void rsSamplerEngine::processFrame(float* left, float* right)
   }
   *left  = (float) out[0];
   *right = (float) out[1];
+  */
+
+  // ToDo: factor out a function that takes 2 pointers to double to be used in 
+  // jura::SamplerModule::processStereoFrame
 
   // ToDo: Test, if it's more efficient to loop through the activePlayers array backwards. But then
   // we would need a signed int as loop index to make it work also when size() == 0 because we 

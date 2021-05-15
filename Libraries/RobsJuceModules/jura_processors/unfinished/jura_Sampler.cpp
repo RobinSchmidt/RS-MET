@@ -15,14 +15,18 @@ AudioModuleEditor* SamplerModule::createEditor(int type)
 
 void SamplerModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
-  jassert(numChannels == 2);
+  //jassert(numChannels == 2);
   //for(int n = 0; n < numSamples; n++)
-  //  core->getSampleFrameStereo(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+  //  core->processFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
 }
 
-void SamplerModule::processStereoFrame(double *left, double *right)
+void SamplerModule::processStereoFrame(double *dL, double *dR)
 {
-  //core->getSampleFrameStereo(left, right);
+  //float fL = (float) (*dL);
+  //float fR = (float) (*dR);
+  //core->processFrame(&fL, &fR);
+  //*dL = fL;
+  //*dR = fR;
 }
 
 void SamplerModule::setSampleRate(double newSampleRate)
@@ -32,7 +36,7 @@ void SamplerModule::setSampleRate(double newSampleRate)
 
 void SamplerModule::reset()
 { 
-  //core->reset(); 
+  //core->reset();
 }
 
 //=================================================================================================
@@ -44,7 +48,7 @@ SamplerEditor::SamplerEditor(SamplerModule* SamplerToEdit)
 
   // ...
 
-  setSize(400, 200);  
+  setSize(400, 200);
 }
 
 void SamplerEditor::resized()

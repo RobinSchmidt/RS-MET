@@ -41,9 +41,44 @@ void rosic::writeToStereoWaveFile(const char* path, double *left, double *right,
   delete[] tmp;
 }
 
-double** rosic::readFromWaveFile(const char* path, int& numChannels, int& numFrames,
-                                 int& sampleRate)
+float** rosic::readFloatFromWaveFile(
+  const char* path, int& numChannels, int& numFrames, int& sampleRate)
 {
+  try
+  {
+    WavInFile file(path);
+    numChannels = file.getNumChannels();
+    numFrames   = file.getNumSamples();
+    sampleRate  = file.getSampleRate();
+    if( numChannels <= 0 || numFrames <= 0 )
+      return nullptr;
+
+    float *fBuffer = new float[numChannels*numFrames];
+    file.read(fBuffer, numChannels*numFrames);
+    if( numChannels > 1 )
+      RAPT::rsArrayTools::deInterleave(fBuffer, numFrames, numChannels);
+
+    float **pointers = new float*[numChannels];
+    for(int c = 0; c < numChannels; c++)
+      pointers[c] = &fBuffer[c*numFrames];
+
+    return pointers;
+  }
+  catch(...)
+  {
+    numChannels = numFrames = sampleRate = 0; return nullptr;
+  }
+
+  // ToDo: 
+  // -check, if the 1st or 2nd call to "new" return a nullptr (indicating allocation failure)
+  //  -if the 1st: return nullptr
+  //  -if the 2nd: clean up 1st and return nullptr
+}
+
+double** rosic::readFromWaveFile(
+  const char* path, int& numChannels, int& numFrames, int& sampleRate)
+{
+  // todo: use the float version, avoid code duplication
   try
   {
     WavInFile file(path);
@@ -59,10 +94,10 @@ double** rosic::readFromWaveFile(const char* path, int& numChannels, int& numFra
       RAPT::rsArrayTools::deInterleave(fBuffer, numFrames, numChannels);
 
     double *dBuffer = new double[numChannels*numFrames];
-    for(int n=0; n<numChannels*numFrames; n++)
+    for(int n = 0; n < numChannels*numFrames; n++)
       dBuffer[n] = (double) fBuffer[n];
     double **pointers = new double*[numChannels];
-    for(int c=0; c<numChannels; c++)
+    for(int c = 0; c < numChannels; c++)
       pointers[c] = &dBuffer[c*numFrames];
 
     delete[] fBuffer;

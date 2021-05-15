@@ -259,7 +259,7 @@ ToDo:
 -use pointers or references consistently for returning sub-levels
 */
 
-class rsDataSFZ // todo: move into its own pair of .h/.cpp files
+class rsDataSFZ // todo: move into its own pair of .h/.cpp files, rename to rsSamplerData
 {
 
 public:
@@ -635,11 +635,13 @@ public:
   /** Produces the string that represents the settings in an sfz-file compliant format, i.e. a 
   string that can be written into an .sfz file. */
   std::string serialize() const;
+  // maybe rename to getAsSFZ
 
 
   /** Sets up this data object according to the given string which is supposed to represent the 
   contents of an .sfz file. */
   void deserialize(const std::string& sfzFileContents);
+  // maybe rename to setFromSFZ
   // todo: return a return-code, including unknownOpcode, invalidValue, invalidIndex, ...
 
 
@@ -720,7 +722,9 @@ public:
     invalidIndex   = -4,  //< An invalid index was passed.
     voiceOverload  = -5,  //< Not enough free voices available (in e.g. new noteOn).
     notFound       = -6,  //< A region, group or whatever was not found.
-    notImplemented = -7   //< Feature not yet implemented (relevant during development).
+    fileLoadError  = -7,  //< A file could not be loaded (reasons: not found or failed alloc).
+
+    notImplemented = -8   //< Feature not yet implemented (relevant during development).
   };
   // rename voiceOverload to layerOverload. in sfz, a voice refers to asingle key which can contain
   // multiple layers/regions
@@ -738,6 +742,10 @@ public:
   // Maybe rename to addSample, it should return the index of the sample in the sample-pool
   // maybe make a struct SampleMetaData containing: numFrames, numChannels, sampleRate, rootKey
   // todo: take reference to a metaData object
+
+  int loadSampleToPool(const std::string& path);
+
+
 
   /** Adds a new group to the instrument definition and returns the index of the group. */
   int addGroup();
@@ -765,6 +773,10 @@ public:
   is well or...  */
   int setupFromSFZ(const rsDataSFZ& sfz);
 
+  /** Sets the sample-rate, at which this engine should operate. This change will affect only 
+  RegionPlayer objects that were started after calling this function. It's supposed to be called in
+  a suspended state anyway, not in the middle of the processing. */
+  void setSampleRate(double newRate) { sampleRate = newRate; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -817,6 +829,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
+  void processFrame(double* left, double* right);
+
   void processFrame(float* left, float* right);
 
   void processBlock(float** block, int numFrames);
@@ -830,6 +844,11 @@ public:
   new patch. It returns the number of players that were affected, i.e. the number of players that 
   were in active state before the call. */
   int stopAllPlayers();
+
+  /** Calls stopAllPlayers. Function is for consistency with the rest of the library. */
+  void reset() { stopAllPlayers(); }
+
+
 
 
 protected:

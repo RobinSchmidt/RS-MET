@@ -10,7 +10,6 @@ bool samplerEngineUnitTest()
   using Ev   = rsMusicalEvent<float>;
   using EvTp = Ev::Type;
 
-
   int maxLayers = 8;  
   // Maximum number of layers, actually, according to the sfz spec, this is supposed to be 
   // theoretically infinite, but i guess, in practice, there has to be some (high) limit which is
@@ -32,7 +31,7 @@ bool samplerEngineUnitTest()
     sin440[n] = sinf(w*n);
     cos440[n] = cosf(w*n);
   }
-  //rsPlotVector(sample);
+  //rsPlotVectors(sin440, cos440);
 
   // Create an array of pointers to the channels and add the sample to the sample pool in the 
   // sampler engine:
@@ -256,6 +255,47 @@ bool samplerEngineUnitTest()
   int regionPlayerSize = SE::getRegionPlayerSize();
   // 64 without filters and eq, 512 with - move this into some performance test function
   // currently 176
+
+  rsAssert(ok);
+  return ok;
+}
+
+bool samplerEngineUnitTestFileIO()
+{
+  // This test also tests the file I/O
+
+  bool ok = true;
+
+  using VecF = std::vector<float>;     // vector of sample values in RAM
+  using SE   = rsSamplerEngineTest;
+  using RC   = SE::ReturnCode;
+  using PST  = SE::PlaybackSetting::Type;
+  using Ev   = rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
+
+  // Create a sine- and cosine wave-file as example samples:
+  float fs = 44100;  // sample rate
+  float f  = 440.0;  // frequency of (co)sinewave sample
+  int   N  = 500;    // length of (co)sinewave sample
+  VecF sin440(N);    // sine wave
+  VecF cos440(N);    // cosine wave 
+  float w = (float)(2*PI*f/fs);
+  for(int n = 0; n < N; n++)
+  {
+    sin440[n] = sinf(w*n);
+    cos440[n] = cosf(w*n);
+  }
+  rosic::writeToMonoWaveFile("Sin440Hz.wav", &sin440[0], N, fs, 16);
+  rosic::writeToMonoWaveFile("Cos440Hz.wav", &cos440[0], N, fs, 16);
+
+  // Create the engine and instruct it to load the just created sample files into its sample pool:
+  int maxLayers = 8;
+  SE se(maxLayers);
+  int si;
+  si = se.loadSampleToPool("Sin440Hz.wav"); ok &= si == 0;
+  si = se.loadSampleToPool("Cos440Hz.wav"); ok &= si == 1;
+  // access violation!
+
 
   rsAssert(ok);
   return ok;
