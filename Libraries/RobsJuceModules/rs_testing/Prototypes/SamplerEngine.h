@@ -714,12 +714,13 @@ public:
   them also for functions which use positive integers as valid return values. */
   enum ReturnCode
   {
-    success       = -1,  //< Operation completed successfully. 
-    nothingToDo   = -2,  //< There was nothing to actually do. State was already as desired.
-    memAllocFail  = -3,  //< Memory allocation failure.
-    invalidIndex  = -4,  //< An invalid index was passed.
-    voiceOverload = -5,  //< Not enough free voices available (in e.g. new noteOn).
-    notFound      = -6   //< A region, group or whatever was not found.
+    success        = -1,  //< Operation completed successfully. 
+    nothingToDo    = -2,  //< There was nothing to actually do. State was already as desired.
+    memAllocFail   = -3,  //< Memory allocation failure.
+    invalidIndex   = -4,  //< An invalid index was passed.
+    voiceOverload  = -5,  //< Not enough free voices available (in e.g. new noteOn).
+    notFound       = -6,  //< A region, group or whatever was not found.
+    notImplemented = -7   //< Feature not yet implemented (relevant during development).
   };
   // rename voiceOverload to layerOverload. in sfz, a voice refers to asingle key which can contain
   // multiple layers/regions
@@ -759,6 +760,10 @@ public:
 
   // todo: setGroupSetting, setInstrumentSetting, removeRegion/Group, clearGroup, clearRegion, 
   // clearInstrument, removeSampleFromPool, replaceSampleInPool, setupFromSFZ,
+
+  /** Sets up the engine from the given sfz data object and returns ReturnCode::success, if all
+  is well or...  */
+  int setupFromSFZ(const rsDataSFZ& sfz);
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1045,10 +1050,10 @@ protected:
   SamplePool<float> samplePool;
   /**< The pool of samples that are in use for the currently loaded instrument. The samples are 
   pooled to avoid redundant storage in memory when multiple regions use the same sample. */
+  // Maybe the pool should be a pointer, so it can be shared between multiple instances and/or with
+  // some other object that also uses the same sample pool (for example, a DAW that uses the sampler
+  // as plugin)
 
-  //std::vector<Group> groups;
-  /**< The groups contained in this instrument. Each group may contain set of regions. */
-  // get rid - should go into rsDataSFZ::Instrument
 
   std::vector<PlaybackSetting> settings;
   /**< Playback settings that apply to all groups within this instrument, unless a group (or 

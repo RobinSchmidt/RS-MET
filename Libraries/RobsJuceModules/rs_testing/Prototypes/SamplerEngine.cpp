@@ -120,6 +120,7 @@ bool rsDataSFZ::Group::operator==(const rsDataSFZ::Group& rhs) const
   if(!equal) return false;
   for(size_t i = 0; i < regions.size(); i++)
     equal &= *(regions[i]) == *(rhs.regions[i]);
+  return equal;
 }
 
 
@@ -462,6 +463,15 @@ int rsSamplerEngine::setRegionSetting(Region* region, PlaybackSetting::Type type
   // actually, from the caller's perspective, that information should be irrelevant anyway, so 
   // maybe not.
 }
+
+int rsSamplerEngine::setupFromSFZ(const rsDataSFZ& sfz)
+{
+  rsError("Not yet implemented");
+  return ReturnCode::notImplemented; // this is still under construction
+}
+
+//-------------------------------------------------------------------------------------------------
+// Inquiry:
 
 rsSamplerEngine::Region* rsSamplerEngine::getRegion(int groupIndex, int regionIndex)
 {

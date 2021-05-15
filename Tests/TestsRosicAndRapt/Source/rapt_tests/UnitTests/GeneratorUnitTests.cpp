@@ -41,6 +41,9 @@ bool samplerEngineUnitTest()
   pSmp[1] = nullptr;
   int si = se.addSampleToPool(pSmp, N, 1, fs, "Sine440Hz");
   ok &= si == 0; // should return the sample-index in the sample-pool
+  // Maybe instead of directly adding the sample-data to the sample-pool, write it to a wave file 
+  // and instruct the engine to read the file, which should in turn add it. Or make and additional 
+  // function loadSampleToPool(sampleDir, fileName)
 
   // Add a region for the sinewave sample to the sampler engine:
   int gi = se.addGroup();     // add new group to instrument definition, gi: group index
@@ -165,19 +168,31 @@ bool samplerEngineUnitTest()
   // Other tests to do: set the root-key differently, set the sample-rates for playback and 
   // audiofile differently, test detuning opcodes
 
-
   const rsDataSFZ& sfzData = se.getInstrumentData();
-  std::string sfzFile = sfzData.serialize();
+  std::string sfzString = sfzData.serialize();
   rsDataSFZ sfzData2;
-  sfzData2.deserialize(sfzFile);
+  sfzData2.deserialize(sfzString);
   ok &= sfzData2 == sfzData;
+  // ToDo:
+  // -Implement and test loadFromFile/safeToFile
+  //  -may have an option whether or not to save the samples, too (and if so, where)
+  // -Test with more complex instruments, featuring:
+  //  -multiple groups (with their own settings)
+  //  -instrument-wide settings
+  // Maybe provide comparison functions with different degrees of strictness, with respect to
+  // in which order the opcodes in the settings occur, the handling of the "custom" pointer in the 
+  // region, etc. Maybe also have a function to "clean up" a data object by keeping only the very 
+  // last setting of a particular kind (the last one would overwrite all others anyway). Maybe it 
+  // should return, how many settings had to be removed. Ideally, we would like to always keep only
+  // at most one setting of each kind.
 
-  int dummy = 0;
 
   //SE se2;
   //se2.setupFromSFZ(sfzData2);
   //ok &= se2.matchesInstrumentDefinition(se);
 
+
+  int dummy = 0;
 
 
   /*
@@ -217,7 +232,7 @@ bool samplerEngineUnitTest()
   //  -should the played note affect the delay?...nah - i don't think so. maybe sfz had an opcode 
   //   for controlling this? in some situations, that may makes sense, in others not so much
 
-  // -add a SFZPlayer-likem simple GUI, so we can import and test actual sfz files
+  // -add a SFZPlayer-like simple GUI, so we can import and test actual sfz files
   // -Check, how the sfz player handles the amp/pan parameters with respect to total gain. 
   //  Should there be a factor of 2 for hard left/right settings or a factor of 0.5 for a center 
   //  setting? Make sure to match the behavior of the reference player. I actually would tend to 
@@ -234,14 +249,13 @@ bool samplerEngineUnitTest()
   // rsInstrumentDataSFZ..or maybe don't create an "Instrument" nested class
 
   // ToDo: 
-  // -create a couple of simple samples (maybe sine-waves or something) and assign them to
-  //  regions, trigger notes, record output and compare the produced output to what is expected
   // -set up performance tests, too
 
 
 
   int regionPlayerSize = SE::getRegionPlayerSize();
   // 64 without filters and eq, 512 with - move this into some performance test function
+  // currently 176
 
   rsAssert(ok);
   return ok;
