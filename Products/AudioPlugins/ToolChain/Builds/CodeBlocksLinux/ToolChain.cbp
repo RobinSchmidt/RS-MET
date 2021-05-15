@@ -8820,6 +8820,30 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/jura_framework/control/jura_VoiceManager - Copy (2).cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/jura_framework/control/jura_VoiceManager - Copy (2).h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/jura_framework/control/jura_VoiceManager - Copy.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/jura_framework/control/jura_VoiceManager - Copy.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/jura_framework/control/jura_VoiceManager.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -10572,6 +10596,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/jura_processors/unfinished/jura_Sampler.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/jura_processors/unfinished/jura_Sampler.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/jura_processors/jura_processors.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -10597,6 +10633,18 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/_Deprecated/MultiArray.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/_Deprecated/RationalFunctionTools.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/_Deprecated/RationalFunctionTools.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -10891,6 +10939,18 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Filters/Basic/SmoothingFilter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Filters/Musical/LadderFilter - Copy.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Filters/Musical/LadderFilter - Copy.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -11646,6 +11706,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Math/Types/RationalFunction.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Math/Types/RationalFunction.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Math/Types/Vector.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -12079,30 +12151,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/Math/Polygon2D.h">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/Math/RationalFunction.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/Math/RationalFunction.h">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/Math/RationalFunctionTools.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/RobsJuceModules/rapt/Unfinished/Math/RationalFunctionTools.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -18451,6 +18499,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/rosic_QuadSource.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/RobsJuceModules/rosic/unfinished/rosic_SamplerEngine.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>

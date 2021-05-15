@@ -2698,6 +2698,12 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_StateManager.cpp">
       <Filter>JUCE Modules\jura_framework\control</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy (2).cpp">
+      <Filter>JUCE Modules\jura_framework\control</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy.cpp">
+      <Filter>JUCE Modules\jura_framework\control</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager.cpp">
       <Filter>JUCE Modules\jura_framework\control</Filter>
     </ClCompile>
@@ -3133,10 +3139,16 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_QuadSource.cpp">
       <Filter>JUCE Modules\jura_processors\unfinished</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_Sampler.cpp">
+      <Filter>JUCE Modules\jura_processors\unfinished</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\jura_processors.cpp">
       <Filter>JUCE Modules\jura_processors</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.cpp">
+      <Filter>JUCE Modules\rapt\_Deprecated</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\RationalFunctionTools.cpp">
       <Filter>JUCE Modules\rapt\_Deprecated</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.cpp">
@@ -3201,6 +3213,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.cpp">
       <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter - Copy.cpp">
+      <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.cpp">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
@@ -3385,6 +3400,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\RationalFunction.cpp">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Vector.cpp">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClCompile>
@@ -3485,12 +3503,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\NumberTheory.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\RationalFunction.cpp">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\RationalFunctionTools.cpp">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Statistics.cpp">
@@ -7230,6 +7242,12 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_StateManager.h">
       <Filter>JUCE Modules\jura_framework\control</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy (2).h">
+      <Filter>JUCE Modules\jura_framework\control</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy.h">
+      <Filter>JUCE Modules\jura_framework\control</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager.h">
       <Filter>JUCE Modules\jura_framework\control</Filter>
     </ClInclude>
@@ -7665,10 +7683,16 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_QuadSource.h">
       <Filter>JUCE Modules\jura_processors\unfinished</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_Sampler.h">
+      <Filter>JUCE Modules\jura_processors\unfinished</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\jura_processors.h">
       <Filter>JUCE Modules\jura_processors</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.h">
+      <Filter>JUCE Modules\rapt\_Deprecated</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\RationalFunctionTools.h">
       <Filter>JUCE Modules\rapt\_Deprecated</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\_Temp\Matrix.h">
@@ -7754,6 +7778,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.h">
       <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter - Copy.h">
+      <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.h">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
@@ -7941,6 +7968,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\RationalFunction.h">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Vector.h">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClInclude>
@@ -8053,12 +8083,6 @@
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Polygon2D.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\RationalFunction.h">
-      <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\RationalFunctionTools.h">
       <Filter>JUCE Modules\rapt\Unfinished\Math</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Rectangle2D.h">
@@ -9673,6 +9697,9 @@
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_QuadSource.h">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerEngine.h">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosicOld.h">

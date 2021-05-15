@@ -99,5 +99,6 @@ namespace jura
 //#include "unfinished/jura_NewSynth.cpp"
 
 #include "unfinished/jura_OscArrays.cpp"
+#include "unfinished/jura_Sampler.cpp"
 
 }

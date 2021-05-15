@@ -1964,6 +1964,12 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_StateManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy (2).cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2399,10 +2405,16 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_QuadSource.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_Sampler.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\jura_processors.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\RationalFunctionTools.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.cpp">
@@ -2466,6 +2478,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter - Copy.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.cpp">
@@ -2651,6 +2666,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\RationalFunction.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Vector.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2751,12 +2769,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\NumberTheory.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\RationalFunction.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\RationalFunctionTools.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Statistics.cpp">
@@ -5005,6 +5017,8 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_ScopedPointerLock.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_SmoothableParameter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_StateManager.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy (2).h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\files\jura_AudioFileInfo.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\files\jura_AudioFileManager.h"/>
@@ -5150,8 +5164,10 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_NewSynth.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_OscArrays.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_QuadSource.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\unfinished\jura_Sampler.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_processors\jura_processors.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\MultiArray.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\_Deprecated\RationalFunctionTools.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\_Temp\Matrix.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\Analysis.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Analysis\EnvelopeFollower.h"/>
@@ -5180,6 +5196,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\OnePoleFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter - Copy.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\PhasorFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilter.h"/>
@@ -5242,6 +5259,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Fraction.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\RationalFunction.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Vector.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Math.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Modulators\Envelopes\BreakpointModulator.h"/>
@@ -5280,8 +5298,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\NumberTheory.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Point2D.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Polygon2D.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\RationalFunction.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\RationalFunctionTools.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Rectangle2D.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Statistics.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Unfinished\Math\Transforms.h"/>
@@ -5820,6 +5836,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_NewSynth.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_Polyphony.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_QuadSource.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerEngine.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosicOld.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>

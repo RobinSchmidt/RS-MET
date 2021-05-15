@@ -147,6 +147,7 @@ namespace jura
 //#include "unfinished/jura_NewSynth.h"
 
 #include "unfinished/jura_OscArrays.h"
+#include "unfinished/jura_Sampler.h"
 
 }
 

@@ -678,14 +678,15 @@ void ToolChain::populateModuleFactory()
   s = "Under Construction";
 
   // Sources:
-  f.registerModuleType([](CS cs)->AM { return new SineOscAudioModule(cs);  },           s, "SineOscillator");
-  f.registerModuleType([](CS cs)->AM { return new SineOscAudioModulePoly(cs);  },       s, "SineOscillatorPoly");
-  f.registerModuleType([](CS cs)->AM { return new TriSawOscModule(cs);  },              s, "TriSawOscillator");
+  f.registerModuleType([](CS cs)->AM { return new SineOscAudioModule(cs);            }, s, "SineOscillator");
+  f.registerModuleType([](CS cs)->AM { return new SineOscAudioModulePoly(cs);        }, s, "SineOscillatorPoly");
+  f.registerModuleType([](CS cs)->AM { return new TriSawOscModule(cs);               }, s, "TriSawOscillator");
   f.registerModuleType([](CS cs)->AM { return new EllipseOscillatorAudioModule(cs);  }, s, "EllipseOscillator");
   f.registerModuleType([](CS cs)->AM { return new RotationOscillatorAudioModule(cs); }, s, "Oscillator3D");
   f.registerModuleType([](CS cs)->AM { return new RayBouncerAudioModule(cs);         }, s, "RayBouncer");
-  f.registerModuleType([](CS cs)->AM { return new Snowflake(cs);         },             s, "Snowflake");
-  f.registerModuleType([](CS cs)->AM { return new WaveOscModule(cs);   }, s, "WaveOscillator");
+  f.registerModuleType([](CS cs)->AM { return new Snowflake(cs);                     }, s, "Snowflake");
+  f.registerModuleType([](CS cs)->AM { return new WaveOscModule(cs);                 }, s, "WaveOscillator");
+  f.registerModuleType([](CS cs)->AM { return new SamplerModule(cs);                 }, s, "Sampler");
   // DualWaveOsc, WaveScanningOsc
   //f.registerModuleType([](CS cs)->AM { return new FourOscSectionAudioModule(cs);     }, s, "FourOscSection");
 
