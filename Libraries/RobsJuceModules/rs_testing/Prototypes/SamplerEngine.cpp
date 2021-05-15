@@ -389,16 +389,22 @@ int rsSamplerEngine::addSampleToPool(
 
 int rsSamplerEngine::loadSampleToPool(const std::string& path)
 {
-  float** data; 
-  int numFrames; 
-  int numChannels; 
+  int numFrames;
+  int numChannels;
   int sampleRate;
-  rosic::readFloatFromWaveFile(path.c_str(), numChannels, numFrames, sampleRate);
+  float** data = rosic::readFloatFromWaveFile(path.c_str(), numChannels, numFrames, sampleRate);
   if(data == nullptr)
     return ReturnCode::fileLoadError;
     // This could mean that the file was not found or the memory allocation failed
 
-  return addSampleToPool(data, numFrames, numChannels, (float) sampleRate, path);
+  int rc = addSampleToPool(data, numFrames, numChannels, (float) sampleRate, path);
+
+  // Clean up data (todo: wrap into utility function - there is actually already one):
+  for(int c = 0; c < numChannels; c++)
+    delete[] data[c];
+  delete[] data;
+
+  return rc;
 }
 
 int rsSamplerEngine::addGroup()
