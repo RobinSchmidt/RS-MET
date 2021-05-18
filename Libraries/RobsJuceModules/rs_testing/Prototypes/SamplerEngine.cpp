@@ -475,9 +475,16 @@ int rsSamplerEngine::setRegionSetting(Region* region, PlaybackSetting::Type type
   // value instead of pushing another value for the same parameter
 
   return ReturnCode::success;
-  // Maybe we should distinguish between settingAdded and settingModified in the return code. But
-  // actually, from the caller's perspective, that information should be irrelevant anyway, so 
-  // maybe not.
+  // Maybe we should distinguish between settingAdded and settingModified in the return code. We 
+  // may also have a distinct nothingToDo path when the setting was already at the desired value. 
+  // But actually, from the caller's perspective, that information should be irrelevant anyway (all
+  // 3 cases indicate success), so maybe not. Maybe, for optimization purposes (for patch recall), 
+  // we should have an "addRegionSetting" function that bypasses these tests - but that assumes 
+  // that the patches do not contain overwrites, which, i guess, should be allowed. Maybe it's best
+  // to not implement such checks at all. It leads to simpler and more efficient patch recall. The 
+  // cost is additonal runtime cpu load for patches that are written improperly, i.e. contain the
+  // same setting-type multiple times. But then, the patch writer would be to blame. Foolproofing
+  // carelessly written patches does not justify the cost, i think.
 }
 
 int rsSamplerEngine::setupFromSFZ(const rsDataSFZ& sfz)

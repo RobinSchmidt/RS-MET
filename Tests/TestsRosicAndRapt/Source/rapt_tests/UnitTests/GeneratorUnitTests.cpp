@@ -53,7 +53,9 @@ bool samplerEngineUnitTest()
   SE::Region* r = se.getRegion(gi, ri);
   int rc = se.setRegionSample(gi, ri, si);           // rc: return code
   ok &= rc == RC::success;
-  se.setRegionSetting(r, PST::PitchKeyCenter, 69.f); // key = 69 is A4 at 440 Hz
+  rc = se.setRegionSetting(r, PST::PitchKeyCenter, 69.f); // key = 69 is A4 at 440 Hz
+  ok &= rc == RC::success;
+
 
   // Now the engine is set up with the sinewave sample in a single region that spans the whole
   // keyboard. We trigger a note at the original PitchCenterKey with maximum velocity and let the
@@ -287,14 +289,66 @@ bool samplerEngineUnitTestFileIO()
   }
   rosic::writeToMonoWaveFile("Sin440Hz.wav", &sin440[0], N, fs, 16);
   rosic::writeToMonoWaveFile("Cos440Hz.wav", &cos440[0], N, fs, 16);
+  // Using "Samples/Sin440Hz.wav" works only, iff the "Samples" folder already exists. ToDo: maybe
+  // writeToMonoWaveFile should create it, if it doesn't exist already.
 
   // Create the engine and instruct it to load the just created sample files into its sample pool:
   int maxLayers = 8;
   SE se(maxLayers);
-  int si;
+  int si;                                            // sample index
   si = se.loadSampleToPool("Sin440Hz.wav"); ok &= si == 0;
   si = se.loadSampleToPool("Cos440Hz.wav"); ok &= si == 1;
-  // access violation!
+
+  // Add a group and to that group, add regions for the sine and cosine:
+  int gi, ri, rc;                                    // group index, region index, return code
+  SE::Region* r;
+  gi = se.addGroup(); ok &= gi == 0;
+
+  // Set up region for sine:
+  ri = se.addRegion(0);                                   ok &= ri == 0;
+  r  = se.getRegion(0, 0);                                ok &= r != nullptr;
+  rc = se.setRegionSample(0, 0, 0);                       ok &= rc == RC::success;
+  rc = se.setRegionSetting(r, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
+  rc = se.setRegionSetting(r, PST::Pan, -100.f);          ok &= rc == RC::success;
+
+  // Set up region for cosine:
+  ri = se.addRegion(0);                                   ok &= ri == 1;
+  r  = se.getRegion(0, 1);                                ok &= r != nullptr;
+  rc = se.setRegionSample(0, 1, 1);                       ok &= rc == RC::success;
+  rc = se.setRegionSetting(r, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
+  rc = se.setRegionSetting(r, PST::Pan, +100.f);          ok &= rc == RC::success;
+
+  // Let the engine produce the sine and cosine:
+  VecF outL(N), outR(N);
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  ok &= se.getNumIdleLayers()   == maxLayers-2;
+  ok &= se.getNumActiveLayers() == 2;
+  for(int n = 0; n < N; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  ok &= se.getNumIdleLayers()   == maxLayers;
+  ok &= se.getNumActiveLayers() == 0;
+
+  // The produced signals should equal 2 times the original sin440,cos440 up to 16 bit 
+  // quantization noise. The factor 2 comes from the pan law.
+  VecF errL = 0.5f * outL - sin440;
+  VecF errR = 0.5f * outR - cos440;
+  float errMax = rsMax(rsMaxAbs(errL), rsMaxAbs(errR));
+  float errMaxDb = rsAmpToDb(errMax);
+  ok &= errMaxDb < 90.f;
+  rsPlotVectors(errL, errR);
+  // The error is around 3 * 10^-5, or around -90.3 dB. Is that within the expectations? 
+  // ToDo: work out exact formula for max-error and compare to that. Maybe also compare signal and
+  // error powers and from that the signal-to-noise ratio - this should come out aroun -98dB.
+
+
+
+
+  // ToDo: 
+  // -export the settings to an sfz file.
+  // -import the sfz file with a new instance and compare the states
+  // -instead of passing the region pointer r to setRegionSetting, pass group/region indices
+  //  -that should be more efficient, because it bypasses the findRegion(region, &gi, &ri); call
+  //   there
 
 
   rsAssert(ok);
