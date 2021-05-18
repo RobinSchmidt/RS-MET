@@ -337,13 +337,23 @@ char* rsReadStringFromFile(const char *filename)
     rewind(handler);              // go back to the start of the file
     buffer = (char*) malloc(sizeof(char) * (string_size + 1) );    // allocate a string
     read_size = fread(buffer, sizeof(char), string_size, handler); // read it all in one go
-    buffer[string_size] = '\0';   // put a \0 in the last position
-    if (string_size != read_size)
-    {
-      // Something went wrong, free memory and set the buffer to NULL
-      free(buffer);
-      buffer = NULL;
-    }
+    //buffer[string_size] = '\0';   // this was the original code
+    buffer[read_size] = '\0';   // put a \0 in the last position
+
+
+
+    //if(string_size != read_size)
+    //{
+    //  // Something went wrong, free memory and set the buffer to NULL
+    //  free(buffer);
+    //  buffer = NULL;
+    //}
+    // We actually run into this branch, apparently due to CR/LF line-ending stuff. In the unit 
+    // test, the file has 7 lines and 116 charcters in total with CR/LF line endings, but the 
+    // function only reads 109 characters. The extra 7 characters apparently are the additional
+    // line ending symbols
+
+
     fclose(handler);    // close the file
   }
   return buffer;
@@ -558,11 +568,28 @@ int rsSamplerEngine::setRegionSetting(Region* region, PlaybackSetting::Type type
   // carelessly written patches does not justify the cost, i think.
 }
 
-int rsSamplerEngine::setupFromSFZ(const rsDataSFZ& sfz)
+int rsSamplerEngine::setupFromSFZ(const rsDataSFZ& newSfz)
 {
-  rsError("Not yet implemented");
+  // ToDo: 
+  // -remove samples from the pool that are only used in the old sfz (member) but not in the newSfz
+  // -load additional samples to the pool that are present only in the newSfz
+  // -set up the pointers to the AudioStream objects in the regions in the newSfz
+  // -assign the sfz member to newSfz
+
+
+  //rsError("Not yet implemented");
   return ReturnCode::notImplemented; // this is still under construction
 }
+
+int rsSamplerEngine::loadFromSFZ(const char* path)
+{
+  rsDataSFZ newSfz;
+  bool wasLoaded = newSfz.loadFromSFZ(path);
+  if(!wasLoaded)
+    return ReturnCode::fileLoadError;
+  return setupFromSFZ(newSfz);
+}
+
 
 //-------------------------------------------------------------------------------------------------
 // Inquiry:

@@ -780,7 +780,10 @@ public:
   /** Writes the current instrument definition into an sfz file with given path. */
   bool saveToSFZ(const char* path) const { return sfz.saveToSFZ(path); }
   // -document, whether path is absolute or relative and if the latter, what is the root
+  // -return a return-code instead of bool
   // -maybe move elsewhere
+
+  int loadFromSFZ(const char* path);
 
 
   /** Sets the sample-rate, at which this engine should operate. This change will affect only 

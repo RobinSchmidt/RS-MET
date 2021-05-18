@@ -341,11 +341,9 @@ bool samplerEngineUnitTestFileIO()
   // error powers and from that the signal-to-noise ratio - this should come out aroun -98dB.
 
 
-  se.saveToSFZ("SineCosine.sfz");
-  // the sample for the region is not yet stored in the file
-
-  //SE se2;
-  //se2.loadSFZ("SineCosine.sfz");
+  se.saveToSFZ("SineCosine.sfz"); // sample for the region is not yet stored in the file
+  SE se2;
+  se2.loadFromSFZ("SineCosine.sfz");
 
 
 
