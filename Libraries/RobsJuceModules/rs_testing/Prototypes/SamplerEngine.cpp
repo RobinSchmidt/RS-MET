@@ -306,26 +306,74 @@ void rsDataSFZ::setFromSFZ(const std::string& str)
   //  https://en.cppreference.com/w/cpp/header/string_view
 }
 
-bool rsDataSFZ::saveToSFZ(const char* path) const
-{
-  std::string sfz = getAsSFZ();
 
-  // Factor out to rosic::rsWriteStringToFile(const char* path, const std::string& str):
-  FILE* fd = fopen(path, "wb");  // "wb": write binary
-  if(fd != NULL) 
-  {
-    fwrite(sfz.c_str(), 1, sfz.length(), fd);
-    fclose(fd); 
-    return true; 
-  }
+
+// Low-level helper functions for file I/O:
+bool rsWriteStringToFile(const char* path, const char* str)
+{
+  // ToDo: provide optional argument for the length, defaults to 0 in which case we use strlen
+
+  FILE* f = fopen(path, "w");
+  if(f != NULL){
+    fwrite(str, 1, strlen(str), f);
+    fclose(f); 
+    return true; }
   else {
     rsError("Unable to open file");
     return false; }
+
+  // https://www.tutorialspoint.com/cprogramming/c_file_io.htm
 }
 
-void rsDataSFZ::loadFromSFZ()
+char* rsReadStringFromFile(const char *filename)
 {
+  char *buffer = NULL;
+  int string_size, read_size;
+  FILE *handler = fopen(filename, "r");
+  if(handler)
+  {
+    fseek(handler, 0, SEEK_END);  // seek the last byte of the file
+    string_size = ftell(handler); // offset from the first to the last byte, filesize
+    rewind(handler);              // go back to the start of the file
+    buffer = (char*) malloc(sizeof(char) * (string_size + 1) );    // allocate a string
+    read_size = fread(buffer, sizeof(char), string_size, handler); // read it all in one go
+    buffer[string_size] = '\0';   // put a \0 in the last position
+    if (string_size != read_size)
+    {
+      // Something went wrong, free memory and set the buffer to NULL
+      free(buffer);
+      buffer = NULL;
+    }
+    fclose(handler);    // close the file
+  }
+  return buffer;
 
+  // Code adapted from here:
+  // https://stackoverflow.com/questions/3463426/in-c-how-should-i-read-a-text-file-and-print-all-strings
+}
+
+bool rsDataSFZ::saveToSFZ(const char* path) const
+{
+  std::string sfz = getAsSFZ();
+  return rsWriteStringToFile(path, sfz.c_str());
+}
+// this has no safeguards against overwriting an existing file!
+
+bool rsDataSFZ::loadFromSFZ(const char* path)
+{
+  char* c_str = rsReadStringFromFile(path);
+  if(c_str)
+  {
+    std::string sfz(c_str);
+    setFromSFZ(sfz);
+    free(c_str);
+    return true; 
+    // actually, setFromSFZ could also go wrong - we should do int rc = setFromSFZ and return rc
+  }
+  else
+    return false;
+
+  // This is clearly not elegant. Get rid of the intermediate c-string!
 }
 
 

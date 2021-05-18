@@ -335,7 +335,7 @@ bool samplerEngineUnitTestFileIO()
   float errMax = rsMax(rsMaxAbs(errL), rsMaxAbs(errR));
   float errMaxDb = rsAmpToDb(errMax);
   ok &= errMaxDb < 90.f;
-  rsPlotVectors(errL, errR);
+  //rsPlotVectors(errL, errR);
   // The error is around 3 * 10^-5, or around -90.3 dB. Is that within the expectations? 
   // ToDo: work out exact formula for max-error and compare to that. Maybe also compare signal and
   // error powers and from that the signal-to-noise ratio - this should come out aroun -98dB.

@@ -646,7 +646,7 @@ public:
   bool saveToSFZ(const char* path) const;
   // todo: return a return-code, including fileWriteError
 
-  void loadFromSFZ();
+  bool loadFromSFZ(const char* path);
   // todo: return a return-code, including sfzFileNotFound, sampleFileNotFound
 
 
