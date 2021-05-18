@@ -634,17 +634,20 @@ public:
 
   /** Produces the string that represents the settings in an sfz-file compliant format, i.e. a 
   string that can be written into an .sfz file. */
-  std::string serialize() const;
-  // maybe rename to getAsSFZ
+  std::string getAsSFZ() const;
 
 
   /** Sets up this data object according to the given string which is supposed to represent the 
   contents of an .sfz file. */
-  void deserialize(const std::string& sfzFileContents);
-  // maybe rename to setFromSFZ
+  void setFromSFZ(const std::string& sfzFileContents);
   // todo: return a return-code, including unknownOpcode, invalidValue, invalidIndex, ...
 
 
+  bool saveToSFZ(const char* path) const;
+  // todo: return a return-code, including fileWriteError
+
+  void loadFromSFZ();
+  // todo: return a return-code, including sfzFileNotFound, sampleFileNotFound
 
 
 
@@ -772,6 +775,13 @@ public:
   /** Sets up the engine from the given sfz data object and returns ReturnCode::success, if all
   is well or...  */
   int setupFromSFZ(const rsDataSFZ& sfz);
+
+
+  /** Writes the current instrument definition into an sfz file with given path. */
+  bool saveToSFZ(const char* path) const { return sfz.saveToSFZ(path); }
+  // -document, whether path is absolute or relative and if the latter, what is the root
+  // -maybe move elsewhere
+
 
   /** Sets the sample-rate, at which this engine should operate. This change will affect only 
   RegionPlayer objects that were started after calling this function. It's supposed to be called in

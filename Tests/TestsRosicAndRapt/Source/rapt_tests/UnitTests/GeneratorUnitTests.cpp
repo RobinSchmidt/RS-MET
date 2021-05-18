@@ -170,9 +170,9 @@ bool samplerEngineUnitTest()
   // audiofile differently, test detuning opcodes
 
   const rsDataSFZ& sfzData = se.getInstrumentData();
-  std::string sfzString = sfzData.serialize();
+  std::string sfzString = sfzData.getAsSFZ();
   rsDataSFZ sfzData2;
-  sfzData2.deserialize(sfzString);
+  sfzData2.setFromSFZ(sfzString);
   ok &= sfzData2 == sfzData;
   // ToDo:
   // -Implement and test loadFromFile/safeToFile
@@ -340,6 +340,12 @@ bool samplerEngineUnitTestFileIO()
   // ToDo: work out exact formula for max-error and compare to that. Maybe also compare signal and
   // error powers and from that the signal-to-noise ratio - this should come out aroun -98dB.
 
+
+  se.saveToSFZ("SineCosine.sfz");
+  // the sample for the region is not yet stored in the file
+
+  //SE se2;
+  //se2.loadSFZ("SineCosine.sfz");
 
 
 

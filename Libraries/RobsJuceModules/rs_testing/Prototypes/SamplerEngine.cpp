@@ -141,7 +141,7 @@ void rsDataSFZ::Instrument::clearGroups()
 
 
 
-std::string rsDataSFZ::serialize() const
+std::string rsDataSFZ::getAsSFZ() const
 {
   std::string str;
 
@@ -190,7 +190,7 @@ std::string rsDataSFZ::serialize() const
   // levels - i guess, it will use the most restrictive setting of all of them
 }
 
-void rsDataSFZ::deserialize(const std::string& str)
+void rsDataSFZ::setFromSFZ(const std::string& str)
 {
   clearInstrument();
   size_t endOfFile = std::numeric_limits<size_t>::max();
@@ -305,6 +305,29 @@ void rsDataSFZ::deserialize(const std::string& str)
   // -Maybe use string_view for the extracted substrings to avoid copying the data:
   //  https://en.cppreference.com/w/cpp/header/string_view
 }
+
+bool rsDataSFZ::saveToSFZ(const char* path) const
+{
+  std::string sfz = getAsSFZ();
+
+  // Factor out to rosic::rsWriteStringToFile(const char* path, const std::string& str):
+  FILE* fd = fopen(path, "wb");  // "wb": write binary
+  if(fd != NULL) 
+  {
+    fwrite(sfz.c_str(), 1, sfz.length(), fd);
+    fclose(fd); 
+    return true; 
+  }
+  else {
+    rsError("Unable to open file");
+    return false; }
+}
+
+void rsDataSFZ::loadFromSFZ()
+{
+
+}
+
 
 void rsDataSFZ::writeSettingToString(const PlaybackSetting& setting, std::string& s)
 {
