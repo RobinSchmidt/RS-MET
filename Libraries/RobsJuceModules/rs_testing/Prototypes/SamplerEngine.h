@@ -101,6 +101,8 @@ template<class T>
 class AudioFileStream : public AudioStream<T>
 {
 
+public:
+
   // ToDo: add == operator based on fileName, extension, path (and maybe (meta)data such as 
   // sampleRate, numChannels, numFrames, ...)
 
@@ -110,6 +112,17 @@ class AudioFileStream : public AudioStream<T>
   //virtual void getFrame(int sampleIndex, TSmp* destination) {}
 
   // todo: getBlock
+
+  /** Returns true, iff the given other stream object uses the same audio file as this. */
+  bool usesSameFile(const AudioFileStream<T>* otherStream) const
+  {
+    bool same = true;
+    same &= fileName     == otherStream->fileName;
+    same &= extension    == otherStream->extension;
+    same &= path         == otherStream->path;
+    same &= rootDirIndex == otherStream->rootDirIndex;
+    return same;
+  }
 
 
 protected:
@@ -217,6 +230,17 @@ public:
     return ((int) samples.size()) - 1;
   }
   // should the pool take ownership? ...i think so
+
+  void removeSample(int i)
+  {
+    rsAssert(i >= 0 && i < (int)samples.size());
+    delete samples[i];
+    rsRemove(samples, (size_t)i);
+  }
+
+
+  /** Returns the number of samples in this pool. */
+  int getNumSamples() const { return (int)samples.size(); }
 
 
   /** Returns true, if the given index i refers to a valid sample index. */
@@ -530,7 +554,7 @@ public:
 
     /** Returns a pointer to the region with the given index within the group. */
     Region* getRegion(int i) const;
-    // rename to getRegionPointer ir Ptr
+    // rename to getRegionPointer or Ptr
 
 
     bool operator==(const Group& rhs) const;
@@ -1011,8 +1035,6 @@ protected:
   and/or its enclosing group. */
   bool shouldRegionPlay(const Region* r, uchar key, uchar vel);
 
-
-
   /** Finds the group index and region index within the group for the given region and assigns the
   output parameters group/regionIndex accordingly. If the region is not found in any of our groups,
   both will be assigned to -1. This should actually not happen, though: a region should always be 
@@ -1032,6 +1054,12 @@ protected:
   should interpret that as a layerOverload condition and return the appropriate return code to 
   its caller. */
   RegionPlayer* getRegionPlayerFor(const Region* r, uchar key, uchar vel);
+
+  /** Returns true, iff the given sample is used in the instrument definition represented by the 
+  given sfz */
+  bool isSampleUsedIn(const AudioFileStream<float>* sample, const rsDataSFZ& sfz);
+  
+
 
   /** Stops the player at the given "activeIndex" which is the index into our "activePlayers" 
   array. This results in the removal of the player from "activePlayers" and adding it back to
@@ -1056,6 +1084,19 @@ protected:
   noteOff is supposed to trigger relase-samples. In such a case, none of the release-samples will 
   be triggered. */
   int handleNoteOff(uchar key, uchar vel);
+
+
+  /** Removes those samples from our sample pool that are not used in the given sfz instrument 
+  specification. Returns the number of samples that were removed. */
+  int removeSamplesNotUsedIn(const rsDataSFZ& sfz);
+
+  /** Adds all samples to our sample pool that are used in the given sfz instrument definition, if
+  they are not already there. Returns the number of samples that were added. */
+  int addSamplesUsedIn(const rsDataSFZ& sfz);
+
+  /** Sets up all the AudioStream pointers in all the regions in our sfz member. */
+  int setupAudioStreams();
+
 
 
 

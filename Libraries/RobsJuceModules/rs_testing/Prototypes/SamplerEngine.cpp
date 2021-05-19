@@ -328,7 +328,8 @@ bool rsWriteStringToFile(const char* path, const char* str)
 char* rsReadStringFromFile(const char *filename)
 {
   char *buffer = NULL;
-  int string_size, read_size;
+  //int string_size, read_size;  // original
+  size_t string_size, read_size;
   FILE *handler = fopen(filename, "r");
   if(handler)
   {
@@ -349,7 +350,7 @@ char* rsReadStringFromFile(const char *filename)
     //  buffer = NULL;
     //}
     // We actually run into this branch, apparently due to CR/LF line-ending stuff. In the unit 
-    // test, the file has 7 lines and 116 charcters in total with CR/LF line endings, but the 
+    // test, the file has 7 lines and 116 characters in total with CR/LF line endings, but the 
     // function only reads 109 characters. The extra 7 characters apparently are the additional
     // line ending symbols
 
@@ -576,9 +577,17 @@ int rsSamplerEngine::setupFromSFZ(const rsDataSFZ& newSfz)
   // -set up the pointers to the AudioStream objects in the regions in the newSfz
   // -assign the sfz member to newSfz
 
+  removeSamplesNotUsedIn(newSfz);
+  addSamplesUsedIn(newSfz);
+  sfz = newSfz;
+  setupAudioStreams();
 
   //rsError("Not yet implemented");
   return ReturnCode::notImplemented; // this is still under construction
+
+
+  // This function needs to be mutexed with anything that accesses the stream-pointers in the sfz
+  // objects
 }
 
 int rsSamplerEngine::loadFromSFZ(const char* path)
@@ -764,6 +773,20 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
   return rp;
 }
 
+bool rsSamplerEngine::isSampleUsedIn(const AudioFileStream<float>* sample, const rsDataSFZ& sfz)
+{
+  for(size_t gi = 0; gi < sfz.getNumGroups(); gi++) {
+    const Group& g = sfz.getGroupRef(gi);
+    for(size_t ri = 0; ri < g.getNumRegions(); ri++) {
+      Region* r = g.getRegion((int)ri);        // the conversion is unelegant - try to get rid
+      const void* ptr = r->getCustomPointer();
+      if(ptr != nullptr) {
+        const AudioFileStream<float>* regionSample = (const AudioFileStream<float>*)ptr;
+        if(regionSample->usesSameFile(sample))
+          return true; }}}
+  return false;
+}
+
 int rsSamplerEngine::deactivateRegionPlayer(size_t i)
 {
   if(i >= activePlayers.size()) {
@@ -846,7 +869,32 @@ int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
   //  efficient
 }
 
+int rsSamplerEngine::removeSamplesNotUsedIn(const rsDataSFZ& sfz)
+{
+  int numRemoved = 0;
+  for(int i = samplePool.getNumSamples()-1; i >= 0; i--) {
+    const AudioFileStream<float>* sample = samplePool.getSampleStream(i);
+    if(!isSampleUsedIn(sample, sfz)) {
+      samplePool.removeSample(i);
+      numRemoved++;
+      i--; }}
+  return numRemoved;
+}
 
+int rsSamplerEngine::addSamplesUsedIn(const rsDataSFZ& sfz)
+{
+  int numAdded = 0;
+
+
+
+  return numAdded;
+}
+
+int rsSamplerEngine::setupAudioStreams()
+{
+
+  return ReturnCode::success;
+}
 
 //-------------------------------------------------------------------------------------------------
 // rsSamplerEngine::RegionPlayer
@@ -1061,7 +1109,8 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   // multiply and summing the whole vector and then assigning the first output to first sum and
   // the 2nd to the 2nd. But should width be applied before or after the pan? -> test with 
   // sfzplayer. I would say, width-before-pan makes more sense from a usability perspective. If 
-  // sfz thinks otherwise, maybe provide both options, switched by an additional opcode
+  // sfz thinks otherwise, maybe provide both options, switched by an additional opcode. sfz also 
+  // has the position opcode. maybe that's post-width and apn pan is pre-width?
 
   // ToDo:
   // -Maybe within the switch statement set up some flags that indicate, if a particular setting is

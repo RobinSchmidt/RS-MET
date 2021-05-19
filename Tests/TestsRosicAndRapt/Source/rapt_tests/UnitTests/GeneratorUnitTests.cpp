@@ -287,8 +287,8 @@ bool samplerEngineUnitTestFileIO()
     sin440[n] = sinf(w*n);
     cos440[n] = cosf(w*n);
   }
-  rosic::writeToMonoWaveFile("Sin440Hz.wav", &sin440[0], N, fs, 16);
-  rosic::writeToMonoWaveFile("Cos440Hz.wav", &cos440[0], N, fs, 16);
+  rosic::writeToMonoWaveFile("Sin440Hz.wav", &sin440[0], N, (int)fs, 16);
+  rosic::writeToMonoWaveFile("Cos440Hz.wav", &cos440[0], N, (int)fs, 16);
   // Using "Samples/Sin440Hz.wav" works only, iff the "Samples" folder already exists. ToDo: maybe
   // writeToMonoWaveFile should create it, if it doesn't exist already.
 
