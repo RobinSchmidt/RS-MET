@@ -460,6 +460,17 @@ public:
 
   public:
 
+
+    /** Sets the sample to be used for this region. This should be a string that represents the 
+    path of the sample relative to some fixed root directory (typically the directory of the sfz 
+    file). */
+    void setSamplePath(const std::string& newPath) { samplePath = newPath; }
+
+
+
+    /** @see setSample */
+    const std::string& getSamplePath() const { return samplePath; }
+
     /** Returns a const reference to our playback settings. */
     const std::vector<PlaybackSetting>& getSettings() const { return settings; }
 
@@ -469,9 +480,20 @@ public:
     const OrganizationLevel* getParent() const { return parent; }
 
 
+
     void addSetting(const PlaybackSetting& s) { settings.push_back(s); }
     // Maybe we should have a function setSetting that either adds a new setting or overwrites
     // an existing one
+
+
+    /** Returns the generic pointer for custom satellite data or objects that are associated with
+    this region. This pointer is intended to be used for some sort of audio stream object that is 
+    used for accessing the sample data. It has been made a generic void pointer to decouple 
+    rsDataSFZ from the AudioFileStream class that is used in rsSamplerEngine. The sampler-engine 
+    assigns this pointer with appropriate stream object and when retriveing them, does an 
+    appropriate type cast. ToDo: try to find a better design, maybe move up into baseclass */
+    const void* getCustomPointer() const { return custom; }
+    // replaces getSampleStream
 
 
     // todo: float getSetting(PlaybackSetting::Type, int index) this should loop through the 
@@ -479,6 +501,31 @@ public:
     // default value, if the parent is nullptr.
 
   protected:
+
+
+    /** Sets the audio stream object that should be used for this region. */
+    //void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
+
+    void setCustomPointer(const void* newPointer) { custom = newPointer; }
+
+    //const AudioFileStream* sampleStream = nullptr;
+    // try to get rid - that member should be added by rsSamplerEngine::Region which should be
+    // a subclass of rsInstrumentDataSFZ::Region, and/or move up into baseclass. maybe to decouple
+    // rsDataSFZ from AudioFileStream, just keep it as pointer-to-void which client code may 
+    // typecast to any sort of stream...or maybe that coupling makes sense?..hmm - not really.
+    // maybe a pointer-to-void named customData should be stored in OrganizationLevel
+
+    std::string samplePath; 
+    // This is the full (relative) path. ToDo: maybe this should be moved into the baseclass. We'll
+    // need to figure out, if the sfz player allows samples to be defined also for groups. The same
+    // goes for the loKey,etc. stuff as well. Actually, the string is redundant here when the 
+    // "custom" pointer actually points to an AudioFileStream, because that stream object also 
+    // stores the path. Maybe revert the custom void pointer to a pointer-to-AudioFileStream again. 
+    // Yes, this will introduce coupling but it gets rid of the redundant storage. Maybe trying to 
+    // decouple it amounts to the "speculative generality" antipattern here - we'll see...
+    // https://refactoring.guru/smells/speculative-generality
+
+    const void* custom = nullptr;
 
     OrganizationLevel* parent = nullptr;
 
@@ -499,30 +546,12 @@ public:
 
   public:
 
-    // replaces getSampleStream
-
-    /** Returns the generic pointer for custom satellite data or objects that are associated with
-    this region. This pointer is intended to be used for some sort of audio stream object that is 
-    used for accessing the sample data. It has been made a generic void pointer to decouple 
-    rsDataSFZ from the AudioFileStream class that is used in rsSamplerEngine. The sampler-engine 
-    assigns this pointer with appropriate stream object and when retriveing them, does an 
-    appropriate type cast. ToDo: try to find a better design, maybe move up into baseclass */
-    const void* getCustomPointer() const { return custom; }
-
     /** Return a pointer to the group to which this region belongs. */
     const Group* getGroup() const { return (const Group*) getParent(); }
     // rename to getParentGroup or getEnclosingGroup
 
     //const Group* getGroup() const { return group; }
     // todo: return (const Group*) getParentLevel();
-
-    /** Sets the sample to be used for this region. This should be a string that represents the 
-    path of the sample relative to some fixed root directory (typically the directory of the sfz 
-    file). */
-    void setSamplePath(const std::string& newPath) { samplePath = newPath; }
-
-    /** @see setSample */
-    const std::string& getSamplePath() const { return samplePath; }
 
     /** Returns the lowest key at which this region will be played. */
     uchar getLoKey() const { return loKey; }
@@ -536,7 +565,6 @@ public:
     /** Returns the highest velocity at which this region will be played. */
     uchar getHiVel() const { return hiVel; }
 
-
     bool operator==(const Region& rhs) const;
 
 
@@ -545,23 +573,7 @@ public:
     //Group* group = nullptr;  //< Pointer to the group to which this region belongs
     // mayb get rid by having a general parentLevel pointer defined in the baseclass
 
-
     // todo: setters for loKey,...
-
-    /** Sets the audio stream object that should be used for this region. */
-    //void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
-
-    void setCustomPointer(const void* newPointer) { custom = newPointer; }
-
-
-    //const AudioFileStream* sampleStream = nullptr;
-    // try to get rid - that member should be added by rsSamplerEngine::Region which should be
-    // a subclass of rsInstrumentDataSFZ::Region, and/or move up into baseclass. maybe to decouple
-    // rsDataSFZ from AudioFileStream, just keep it as pointer-to-void which client code may 
-    // typecast to any sort of stream...or maybe that coupling makes sense?..hmm - not really.
-    // maybe a pointer-to-void named customData should be stored in OrganizationLevel
-
-    const void* custom = nullptr;
 
     uchar loKey = 0, hiKey = 127;
     uchar loVel = 0, hiVel = 127;
@@ -572,16 +584,10 @@ public:
     // specifically applicable to regions only? Test with SFZPlayer and replicate its behavior.
     // I think, it could be useful to restrict keyranges of groups and even instruments, when
     // they are part of an enseble - for example, for keyboard splits.
-
-    std::string samplePath; 
-    // This is the full (relative) path. ToDo: maybe this should be moved into the baseclass. We'll
-    // need to figure out, if the sfz player allows samples to be defined also for groups. The same
-    // goes for the loKey,etc. stuff as well. Actually, the string is redundant here when the 
-    // "custom" pointer actually points to an AudioFileStream, because that stream object also 
-    // stores the path. Maybe revert the custom void pointer to a pointer-to-AudioFileStream again. 
-    // Yes, this will introduce coupling but it gets rid of the redundant storage. Maybe trying to 
-    // decouple it amounts to the "speculative generality" antipattern here - we'll see...
-    // https://refactoring.guru/smells/speculative-generality
+    // -maybe these should go into the baseclass as well
+    // -maybe the getters should use min/max with the stored settings and those of the parent such
+    //  that regions can only further restrict the the range...or maybe they should override the
+    //  group setting -> check, how sfzPlayer behaves
 
     friend class Group;  // do we need this? if not, get rid.
     friend class rsDataSFZ;
@@ -1183,12 +1189,14 @@ protected:
   /** Removes those samples from our sample pool that are not used in the given sfz instrument 
   specification. Returns the number of samples that were removed. */
   int removeSamplesNotUsedIn(const rsDataSFZ& sfz);
+  // maybe rename to removeUnusedSamples. But that name is more ambiguous: it could be interpreted
+  // as "unused in the current sfz member", so maybe don't
 
   /** Adds all samples to our sample pool that are used in the given sfz instrument definition, if
   they are not already there. Returns the number of samples that were added or 
   ReturnCode::fileLoadError if any of the files failed to load. */
   int addSamplesUsedIn(const rsDataSFZ& sfz);
-  // maybe rename to loadSamples...
+  // maybe rename to loadSamples or loadSamplesFor
 
   /** Sets up all the AudioStream pointers in all the regions in our sfz member. */
   int setupAudioStreams();

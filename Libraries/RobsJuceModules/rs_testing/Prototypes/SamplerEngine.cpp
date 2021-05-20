@@ -176,6 +176,9 @@ std::string rsDataSFZ::getAsSFZ() const
     {
       str += "<region>\n";
       const Region* r = getRegionPtr(gi, ri);
+      const std::string& samplePath = r->getSamplePath();
+      if(!samplePath.empty())
+        str += "sample=" + samplePath + '\n';
       writeSettingsToString(r->getSettings(), str);
     }
   }
@@ -213,6 +216,9 @@ void rsDataSFZ::setFromSFZ(const std::string& str)
     size_t splitIndex = str.find('=', 0);
     std::string opcode = str.substr(0, splitIndex);
     std::string value  = str.substr(splitIndex+1, str.length() - splitIndex - 1);
+    if(opcode == "sample") {     // needs to be treated in a special way
+      lvl->setSamplePath(value);
+      return;  }
     PlaybackSetting ps = getSettingFromString(opcode, value);
     lvl->addSetting(ps);  // todo: use setSetting (add or overwrite)
   };
@@ -231,7 +237,6 @@ void rsDataSFZ::setFromSFZ(const std::string& str)
       if(start >= str.length()) break;
     }
   };
-
 
 
   std::string group  = "<group>\n";   // not sure, whether we should include the \n
@@ -418,7 +423,6 @@ rsDataSFZ::PlaybackSetting rsDataSFZ::getSettingFromString(
   using PS  = PlaybackSetting;
   using PST = PS::Type;
   float val = std::stof(valStr);  // maybe use cutom function later
-
   int   idx = -1;
   // todo: if applicable, exctract the index from the opcode and set it up in the setting by 
   // passing it as 3rd parameter to the constructor
@@ -584,20 +588,15 @@ int rsSamplerEngine::setRegionSetting(Region* region, PlaybackSetting::Type type
 
 int rsSamplerEngine::setupFromSFZ(const rsDataSFZ& newSfz)
 {
-  // ToDo: 
-  // -remove samples from the pool that are only used in the old sfz (member) but not in the newSfz
-  // -load additional samples to the pool that are present only in the newSfz
-  // -set up the pointers to the AudioStream objects in the regions in the newSfz
-  // -assign the sfz member to newSfz
-
-  removeSamplesNotUsedIn(newSfz);
-  addSamplesUsedIn(newSfz);
-  sfz = newSfz;
-  setupAudioStreams();
-
-  //rsError("Not yet implemented");
-  return ReturnCode::notImplemented; // this is still under construction
-
+  removeSamplesNotUsedIn(newSfz);     // remove samples that are not needed anymore from memory
+  int rc1 = addSamplesUsedIn(newSfz); // load samples that are needed but not yet loaded
+  sfz = newSfz;                       // replace old sfz instrument definition member with new
+  int rc2 = setupAudioStreams();      // connect regions in new sfz with appropriate stream objects
+  if(rc1 >= 0 && rc2 == ReturnCode::success)
+    return ReturnCode::success;
+  else
+    return ReturnCode::fileLoadError;  
+    // ToDo: be more specific about the error condition
 
   // This function needs to be mutexed with anything that accesses the stream-pointers in the sfz
   // objects
@@ -901,7 +900,7 @@ int rsSamplerEngine::addSamplesUsedIn(const rsDataSFZ& sfz)
       const std::string& path = r->getSamplePath();
       if(!isSampleInPool(path)) {
         int rc = loadSampleToPool(path);
-        if(rc == ReturnCode::success)
+        if(rc >= 0)
           numAdded++;
         else
           allOK = false; }}}
@@ -913,8 +912,38 @@ int rsSamplerEngine::addSamplesUsedIn(const rsDataSFZ& sfz)
 
 int rsSamplerEngine::setupAudioStreams()
 {
+  // Function to connect a Region object with one of our stream objects:
+  auto setupStream = [this](Region* r, const std::string& path)
+  {
+    int si = findSampleIndexInPool(path);
+    if(si == -1)
+      return false;
+    const AudioFileStream<float>* stream = samplePool.getSampleStream(si);
+    r->setCustomPointer(stream);
+    return true;
+  };
+  // ToDo: Maybe change Region* to rsDataSFZ::OrganizationLevel*, so we can assign streams to 
+  // groups and instruments also.
 
-  return ReturnCode::success;
+  bool allOK = true;
+  for(size_t gi = 0; gi < sfz.getNumGroups(); gi++) 
+  {
+    const Group& g = sfz.getGroupRef(gi);
+    for(size_t ri = 0; ri < g.getNumRegions(); ri++) 
+    {
+      Region* r = g.getRegion((int)ri);     // the conversion is unelegant - try to get rid
+      const std::string& path = r->getSamplePath();
+      allOK &= setupStream(r, path);
+    }
+  }
+  // ToDo: Maybe, if getSamplePath returns the empty string, meaning that a region does not define
+  // the sample opcode, assign the stream from the outlying group. If that also doesn't define a
+  // sample, use the stream from the instrument.
+
+  if(allOK)
+    return ReturnCode::success;
+  else
+    return ReturnCode::notFound;  // stream was not found for one or more samples
 }
 
 //-------------------------------------------------------------------------------------------------

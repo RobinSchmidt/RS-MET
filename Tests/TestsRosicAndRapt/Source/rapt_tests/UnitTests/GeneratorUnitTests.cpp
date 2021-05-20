@@ -343,10 +343,27 @@ bool samplerEngineUnitTestFileIO()
   // Save the state of the engine object se into an sfz file, create a new engine object that loads
   // the sfz file and then test, if both engines are indeed in the same state with respect to the
   // instrument definition:
-  se.saveToSFZ("SineCosine.sfz"); // sample for the region is not yet stored in the file
-  SE se2;
+  se.saveToSFZ("SineCosine.sfz");
+  SE se2(maxLayers);
   rc = se2.loadFromSFZ("SineCosine.sfz");
-  //ok &= rc == RC::success;  // does not yet work
+  ok &= rc == RC::success;
+
+  /*
+  // To test, if se2 has really the same instrument definition as se, produce output and compare. 
+  // That's not fool-proof though, but anyway:
+  VecF outL2(N), outR2(N);
+  se2.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  ok &= se2.getNumIdleLayers()   == maxLayers-2;
+  ok &= se2.getNumActiveLayers() == 2;
+  for(int n = 0; n < N; n++)
+    se2.processFrame(&outL2[n], &outR2[n]);
+  ok &= se2.getNumIdleLayers()   == maxLayers;
+  ok &= se2.getNumActiveLayers() == 0;
+  ok &= outL2 == outL;
+  ok &= outR2 == outR;
+  // This test still fails
+  */
+
 
   // ToDo: test, if it also works when the engine already has some of the samples in its pool 
   // already
