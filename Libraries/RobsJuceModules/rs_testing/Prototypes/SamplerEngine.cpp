@@ -4,7 +4,7 @@
 template<class T>
 bool AudioFileStreamPreloaded<T>::setData(
   T** newData, int numFrames, int numDataChannels, T sampleRate, int numStreamChannels, 
-  const std::string& uniqueName)
+  const std::string& path)
 {
   // Deallocate old and allocate new memory:
   clear();
@@ -34,6 +34,7 @@ bool AudioFileStreamPreloaded<T>::setData(
   this->numChannels = numStreamChannels;
   this->numFrames   = numFrames;
   this->sampleRate  = sampleRate;
+  this->path        = path;
   return true; // success
 }
 
@@ -455,15 +456,17 @@ rsSamplerEngine::~rsSamplerEngine()
 // Setup:
 
 int rsSamplerEngine::addSampleToPool(
-  float** data, int numFrames, int numChannels, float sampleRate, const std::string& uniqueName)
+  float** data, int numFrames, int numChannels, float sampleRate, const std::string& path)
 {
   // todo: 
-  // -check, if a sample with the same uniqueName already exists - if so, we have nothing to 
+  // -check, if a sample with the same path already exists - if so, we have nothing to 
   //  do and may return early with an appropriate code
-  // if(isSampleInPool(..)) return ReturnCode::nothingToDo;
+  //   if(isSampleInPool(..)) return ReturnCode::nothingToDo;
+  // -currently, we do such a check in addSamplesUsedIn - maybe it should be done here instead 
+  //  and/or in loadSampleToPool
 
   AudioFileStreamPreloaded<float>* stream = new AudioFileStreamPreloaded<float>;
-  bool allocOK = stream->setData(data, numFrames, numChannels, sampleRate, 2, uniqueName);
+  bool allocOK = stream->setData(data, numFrames, numChannels, sampleRate, 2, path);
   if(allocOK == false)
     return ReturnCode::memAllocFail;
   return samplePool.addSample(stream);
@@ -471,13 +474,17 @@ int rsSamplerEngine::addSampleToPool(
 
 int rsSamplerEngine::loadSampleToPool(const std::string& path)
 {
+  if(isSampleInPool(path))
+    return ReturnCode::nothingToDo;
+
   int numFrames;
   int numChannels;
   int sampleRate;
   float** data = rosic::readFloatFromWaveFile(path.c_str(), numChannels, numFrames, sampleRate);
   if(data == nullptr)
     return ReturnCode::fileLoadError;
-    // This could mean that the file was not found or the memory allocation failed
+    // This could mean that the file was not found or the memory allocation failed. ToDo: be more 
+    // specific which of the two conditions happened
 
   int rc = addSampleToPool(data, numFrames, numChannels, (float) sampleRate, path);
 
@@ -521,8 +528,14 @@ int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
     rsError("Invalid sample index");
     return ReturnCode::invalidIndex; }
   Region* r = getRegion(gi, ri);
-  //r->setSampleStream(samplePool.getSampleStream(si));
-  r->setCustomPointer(samplePool.getSampleStream(si));
+  const AudioFileStream<float>* s = samplePool.getSampleStream(si);
+
+
+  r->setCustomPointer(s);
+  r->setSamplePath(s->getPath());
+  //r->setCustomPointer(samplePool.getSampleStream(si)); // old, may be reactivated to replace
+                                                         // the 2 new calls above
+
   return ReturnCode::success;
 }
 
@@ -660,28 +673,6 @@ void rsSamplerEngine::processFrame(float* left, float* right)
   processFrame(&L, &R);
   *left  = (float) L;
   *right = (float) R;
-
-  /*
-  rsFloat64x2 out = 0.0;
-  for(size_t i = 0; i < activePlayers.size(); i++)
-  {
-    out += activePlayers[i]->getFrame();
-    if(activePlayers[i]->hasFinished()) {
-      deactivateRegionPlayer(i);
-      i--; }
-  }
-  *left  = (float) out[0];
-  *right = (float) out[1];
-  */
-
-  // ToDo: factor out a function that takes 2 pointers to double to be used in 
-  // jura::SamplerModule::processStereoFrame
-
-  // ToDo: Test, if it's more efficient to loop through the activePlayers array backwards. But then
-  // we would need a signed int as loop index to make it work also when size() == 0 because we 
-  // would need to start at size()-1, which would be around 2^64 for size_t. Then, the i-- could be
-  // removed, but that's not the main point. The main point is that the deactivation/removal would 
-  // need less data copying.
 }
 
 void rsSamplerEngine::processBlock(float** block, int numFrames)
@@ -902,19 +893,22 @@ int rsSamplerEngine::removeSamplesNotUsedIn(const rsDataSFZ& sfz)
 int rsSamplerEngine::addSamplesUsedIn(const rsDataSFZ& sfz)
 {
   int numAdded = 0;
+  bool allOK = true;
   for(size_t gi = 0; gi < sfz.getNumGroups(); gi++) {
     const Group& g = sfz.getGroupRef(gi);
     for(size_t ri = 0; ri < g.getNumRegions(); ri++) {
       Region* r = g.getRegion((int)ri);     // the conversion is unelegant - try to get rid
-      const std::string& sample = r->getSample();
-      if(!isSampleInPool(sample))
-        loadSampleToPool(sample);
-      numAdded++; }}
-  return numAdded;
-  // todo: 
-  // -check the return code of loadSampleToPool - it may fail
-  // -count numAdded up only if it doesn't fail
-  // -if any sample loading failed, return ReturnCode::fileLoadError
+      const std::string& path = r->getSamplePath();
+      if(!isSampleInPool(path)) {
+        int rc = loadSampleToPool(path);
+        if(rc == ReturnCode::success)
+          numAdded++;
+        else
+          allOK = false; }}}
+  if(allOK)
+    return numAdded;
+  else
+    return ReturnCode::fileLoadError;
 }
 
 int rsSamplerEngine::setupAudioStreams()

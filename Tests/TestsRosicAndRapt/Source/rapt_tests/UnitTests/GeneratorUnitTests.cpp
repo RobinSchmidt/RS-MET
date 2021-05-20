@@ -340,11 +340,16 @@ bool samplerEngineUnitTestFileIO()
   // ToDo: work out exact formula for max-error and compare to that. Maybe also compare signal and
   // error powers and from that the signal-to-noise ratio - this should come out aroun -98dB.
 
-
+  // Save the state of the engine object se into an sfz file, create a new engine object that loads
+  // the sfz file and then test, if both engines are indeed in the same state with respect to the
+  // instrument definition:
   se.saveToSFZ("SineCosine.sfz"); // sample for the region is not yet stored in the file
   SE se2;
-  se2.loadFromSFZ("SineCosine.sfz");
+  rc = se2.loadFromSFZ("SineCosine.sfz");
+  //ok &= rc == RC::success;  // does not yet work
 
+  // ToDo: test, if it also works when the engine already has some of the samples in its pool 
+  // already
 
 
   // ToDo: 

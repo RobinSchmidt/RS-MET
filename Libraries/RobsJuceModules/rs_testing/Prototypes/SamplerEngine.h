@@ -154,14 +154,15 @@ public:
     //return fileInfo == otherStream->fileInfo;
 
     bool same = true;
-    same &= fileName     == otherStream->fileName;
-    same &= extension    == otherStream->extension;
+    //same &= fileName     == otherStream->fileName;
+    //same &= extension    == otherStream->extension;
     same &= path         == otherStream->path;
     same &= rootDirIndex == otherStream->rootDirIndex;
     return same;
   }
 
-  std::string getPath() const { return path + fileName + extension; }
+  const std::string& getPath() const { return path; }
+  //std::string getPath() const { return path + fileName + extension; }
   // todo: 
   // -don't split the path into 3 fields -> have only a path field which is the full path
   // -return a const reference to that here
@@ -174,8 +175,8 @@ protected:
 
 
    // factor out into class rsFileInfo
-  std::string fileName;  // without filename extension (e.g. Piano_A4)
-  std::string extension; // filename extension (e.g. wav, flac)
+  //std::string fileName;  // without filename extension (e.g. Piano_A4)
+  //std::string extension; // filename extension (e.g. wav, flac)
   std::string path;      // relative path from a predefined root directory
   int rootDirIndex = 0;  // index of root directory (among a couple of predefined choices)
   // rootDirIndex stores the root-directory to which the path is relative, but just as an integer
@@ -208,7 +209,7 @@ public:
   /** Returns true, iff everything went alright and false if it failed to allocate the required
   memory. */
   bool setData(T** newData, int numFrames, int numDataChannels, T sampleRate, 
-    int numStreamChannels, const std::string& uniqueName);
+    int numStreamChannels, const std::string& path);
   // todo: 
   // -we need to distiguish between the number of channels in the data and the desired number of 
   //  output channels
@@ -306,7 +307,7 @@ public:
   }
 
 
-  std::string getSamplePath(int i) const { return getSampleStream(i)->getPath();  }
+  const std::string& getSamplePath(int i) const { return getSampleStream(i)->getPath();  }
 
   void clear();
 
@@ -518,10 +519,10 @@ public:
     /** Sets the sample to be used for this region. This should be a string that represents the 
     path of the sample relative to some fixed root directory (typically the directory of the sfz 
     file). */
-    void setSample(const std::string& newSample) { sample = newSample; }
+    void setSamplePath(const std::string& newPath) { samplePath = newPath; }
 
     /** @see setSample */
-    const std::string& getSample() const { return sample; }
+    const std::string& getSamplePath() const { return samplePath; }
 
     /** Returns the lowest key at which this region will be played. */
     uchar getLoKey() const { return loKey; }
@@ -572,10 +573,15 @@ public:
     // I think, it could be useful to restrict keyranges of groups and even instruments, when
     // they are part of an enseble - for example, for keyboard splits.
 
-    std::string sample; 
-    // This is the full (relative) path. ToDo: maybe this should be moved into the basclass - we'll
+    std::string samplePath; 
+    // This is the full (relative) path. ToDo: maybe this should be moved into the baseclass. We'll
     // need to figure out, if the sfz player allows samples to be defined also for groups. The same
-    // goes for the loKey,etc. stuff as well
+    // goes for the loKey,etc. stuff as well. Actually, the string is redundant here when the 
+    // "custom" pointer actually points to an AudioFileStream, because that stream object also 
+    // stores the path. Maybe revert the custom void pointer to a pointer-to-AudioFileStream again. 
+    // Yes, this will introduce coupling but it gets rid of the redundant storage. Maybe trying to 
+    // decouple it amounts to the "speculative generality" antipattern here - we'll see...
+    // https://refactoring.guru/smells/speculative-generality
 
     friend class Group;  // do we need this? if not, get rid.
     friend class rsDataSFZ;
@@ -827,7 +833,7 @@ public:
   /** Adds a new sample to our pool of samples. After the sample has been added, regions can be 
   defined that make use of it. */
   int addSampleToPool(float** data, int numFrames, int numChannels, float sampleRate, 
-    const std::string& uniqueName);
+    const std::string& path);
   // Maybe rename to addSample, it should return the index of the sample in the sample-pool
   // maybe make a struct SampleMetaData containing: numFrames, numChannels, sampleRate, rootKey
   // todo: take reference to a metaData object
@@ -836,7 +842,13 @@ public:
   relative to some fixed root directory which is typcally the directory in which sfz file resides,
   but later this may be switched to some user and/or factory content directory, too (this requires
   to introduce a new opcode to sfz...maybe root_dir or sample_directory or sample_folder or 
-  something which should be defined once for the whole instrument). */
+  something which should be defined once for the whole instrument). The returns the following
+  return codes: 
+    success:       sample was succesfully loaded into the pool
+    nothingToDo:   sample was already in the pool
+    fileLoadError: sample could not be loaded (maybe the path was wrong?)
+    memAllocFail:  we could not allocate enough memory to load the sample
+  ToDo: verify return codes in unit test  */
   int loadSampleToPool(const std::string& path);
 
 
@@ -874,7 +886,13 @@ public:
   // -return a return-code instead of bool
   // -maybe move elsewhere
 
+  /** Loads the instrument definition given by an sfz file with the given path. Returns 
+  ReturnCode::success if all wen well or ReturnCode::fileLoadError if loading of the sfz or any of 
+  the used samples has failed. */
   int loadFromSFZ(const char* path);
+  // ToDo: In case of failure, maybe return a more specific error code/object, indicating, which 
+  // file(s) exactly failed to load. This is an information that may be eventually displayed to the
+  // user on a GUI.
 
 
   /** Sets the sample-rate, at which this engine should operate. This change will affect only 
@@ -1167,8 +1185,10 @@ protected:
   int removeSamplesNotUsedIn(const rsDataSFZ& sfz);
 
   /** Adds all samples to our sample pool that are used in the given sfz instrument definition, if
-  they are not already there. Returns the number of samples that were added. */
+  they are not already there. Returns the number of samples that were added or 
+  ReturnCode::fileLoadError if any of the files failed to load. */
   int addSamplesUsedIn(const rsDataSFZ& sfz);
+  // maybe rename to loadSamples...
 
   /** Sets up all the AudioStream pointers in all the regions in our sfz member. */
   int setupAudioStreams();
