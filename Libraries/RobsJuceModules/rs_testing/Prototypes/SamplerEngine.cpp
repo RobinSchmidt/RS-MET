@@ -884,9 +884,18 @@ int rsSamplerEngine::removeSamplesNotUsedIn(const rsDataSFZ& sfz)
 int rsSamplerEngine::addSamplesUsedIn(const rsDataSFZ& sfz)
 {
   int numAdded = 0;
-
-
-
+  for(size_t gi = 0; gi < sfz.getNumGroups(); gi++)
+  {
+    const Group& g = sfz.getGroupRef(gi);
+    for(size_t ri = 0; ri < g.getNumRegions(); ri++) 
+    {
+      Region* r = g.getRegion((int)ri);     // the conversion is unelegant - try to get rid
+      const std::string& sample = r->getSample();
+      //if(!isSampleInPool(sample))   // uncomment!
+      //  addSampleToPool(sample);
+      numAdded++;
+    }
+  }
   return numAdded;
 }
 

@@ -97,6 +97,41 @@ protected:
 };
 // maybe move out of this class - this may be useful in other contexts, too - maybe templatize
 
+
+/*
+class rsAudioFileInfo  // maybe rename to rsFileInfo for use in more general context
+{
+
+public:
+
+  bool operator==(const rsAudioFileInfo& rhs) const 
+  { 
+    bool same = true;
+    same &= fileName     == rhs.fileName;
+    same &= extension    == rhs.extension;
+    same &= path         == rhs.path;
+    same &= rootDirIndex == rhs.rootDirIndex;
+    return same;
+  }
+
+protected:
+
+  std::string fileName;  // without filename extension (e.g. Piano_A4)
+  std::string extension; // filename extension (e.g. wav, flac)
+  std::string path;      // relative path from a predefined root directory
+  int rootDirIndex = 0;  // index of root directory (among a couple of predefined choices)
+  // rootDirIndex stores the root-directory to which the path is relative, but just as an integer
+  // index that selects between various pre-defined root-directories that should exist at the 
+  // rsSamplerEngine level. For example: 0: instrument directory (containing e.g. Piano.sfz), 
+  // 1: factory sample directory, 2: user sample directory, etc. (but not hardcoded - meanings of
+  // the indices should be flexible). This makes it more reasonably possible to uniquely identify 
+  // samples. It's totally possible to have samples in an instrument with same relative paths and 
+  // filenames but with respect to different root directories. Yes - that would be weird, but the 
+  // engine should neverless be able to handle such situations.
+};
+*/
+
+
 template<class T>
 class AudioFileStream : public AudioStream<T>
 {
@@ -116,6 +151,8 @@ public:
   /** Returns true, iff the given other stream object uses the same audio file as this. */
   bool usesSameFile(const AudioFileStream<T>* otherStream) const
   {
+    //return fileInfo == otherStream->fileInfo;
+
     bool same = true;
     same &= fileName     == otherStream->fileName;
     same &= extension    == otherStream->extension;
@@ -127,6 +164,10 @@ public:
 
 protected:
 
+  //rsAudioFileInfo fileInfo;
+
+
+   // factor out into class rsFileInfo
   std::string fileName;  // without filename extension (e.g. Piano_A4)
   std::string extension; // filename extension (e.g. wav, flac)
   std::string path;      // relative path from a predefined root directory
@@ -462,6 +503,13 @@ public:
     //const Group* getGroup() const { return group; }
     // todo: return (const Group*) getParentLevel();
 
+    /** Sets the sample to be used for this region. This should be a string that represents the 
+    path of the sample relative to some fixed root directory (typically the directory of the sfz 
+    file). */
+    void setSample(const std::string& newSample) { sample = newSample; }
+
+    /** @see setSample */
+    const std::string& getSample() const { return sample; }
 
     /** Returns the lowest key at which this region will be played. */
     uchar getLoKey() const { return loKey; }
@@ -512,8 +560,10 @@ public:
     // I think, it could be useful to restrict keyranges of groups and even instruments, when
     // they are part of an enseble - for example, for keyboard splits.
 
-
-    //std::string name; sample
+    std::string sample; 
+    // This is the full (relative) path. ToDo: maybe this should be moved into the basclass - we'll
+    // need to figure out, if the sfz player allows samples to be defined also for groups. The same
+    // goes for the loKey,etc. stuff as well
 
     friend class Group;  // do we need this? if not, get rid.
     friend class rsDataSFZ;
