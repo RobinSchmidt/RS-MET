@@ -161,6 +161,12 @@ public:
     return same;
   }
 
+  std::string getPath() const { return path + fileName + extension; }
+  // todo: 
+  // -don't split the path into 3 fields -> have only a path field which is the full path
+  // -return a const reference to that here
+
+
 
 protected:
 
@@ -180,6 +186,9 @@ protected:
   // samples. It's totally possible to have samples in an instrument with same relative paths and 
   // filenames but with respect to different root directories. Yes - that would be weird, but the 
   // engine should neverless be able to handle such situations.
+
+  // todo: maybe keep just the path which should represents the full relative path. It doesn't seem
+  // to be a good idea to split it into 3 parts
 };
 
 
@@ -288,7 +297,7 @@ public:
   bool isSampleIndexValid(int i) const { return i >= 0 && i < (int)samples.size(); }
 
 
-  const AudioFileStream<T>* getSampleStream(int i)
+  const AudioFileStream<T>* getSampleStream(int i) const
   {
     if(!isSampleIndexValid(i)) {
       rsError("Invalid sample index");
@@ -296,12 +305,15 @@ public:
     return samples[i];
   }
 
+
+  std::string getSamplePath(int i) const { return getSampleStream(i)->getPath();  }
+
   void clear();
 
   // todo:
   // setup: removeSample...but if regions refer to it, we need to update them, too by 
   // invalidating their pointers. We either need an observer mechanism (complex and general) or 
-  // we allow reomval of samples only via a member function of the outlying rsSamplerEngine 
+  // we allow removal of samples only via a member function of the outlying rsSamplerEngine 
   // class, which also takes care of resetting the sample-streams in all regions that use it
   // (simpler but less general). Maybe to make it safer, we could also introduce a reference
   // counter and check, if it is zero, before a stream objects gets removed
@@ -820,6 +832,11 @@ public:
   // maybe make a struct SampleMetaData containing: numFrames, numChannels, sampleRate, rootKey
   // todo: take reference to a metaData object
 
+  /** Loads a sample represented by the given path into our samplePool. The path is supposed to be 
+  relative to some fixed root directory which is typcally the directory in which sfz file resides,
+  but later this may be switched to some user and/or factory content directory, too (this requires
+  to introduce a new opcode to sfz...maybe root_dir or sample_directory or sample_folder or 
+  something which should be defined once for the whole instrument). */
   int loadSampleToPool(const std::string& path);
 
 
@@ -898,6 +915,15 @@ public:
   exists our sample pool. */
   bool isSampleIndexValid(int sampleIndex) const
   { return samplePool.isSampleIndexValid(sampleIndex); }
+
+  /** Returns the index of the sample represented by the given string in our sample pool or -1, if
+  the sample is not in the pool. */
+  int findSampleIndexInPool(const std::string& sample) const;
+
+  /** Returns true, if the sample represented by the given string (as relative path with respect to
+  some root directory) is present in our samplePool. */
+  bool isSampleInPool(const std::string& sample) const
+  { return findSampleIndexInPool(sample) != -1; }
 
 
   int getMaxNumLayers() const { return (int) playerPool.size(); }

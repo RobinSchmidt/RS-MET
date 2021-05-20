@@ -613,6 +613,24 @@ rsSamplerEngine::Region* rsSamplerEngine::getRegion(int groupIndex, int regionIn
   return sfz.instrument.groups[gi].getRegion(ri);
 }
 
+int rsSamplerEngine::findSampleIndexInPool(const std::string& sample) const
+{
+  for(int i = 0; i < samplePool.getNumSamples(); i++)
+  {
+    //const std::string& poolSample = samplePool.getSamplePath(i);
+    std::string poolSample = samplePool.getSamplePath(i);
+    if(sample == poolSample)
+      return i;
+  }
+  return -1;
+  // ToDo: 
+  // -factor out the implementation into the SamplePool class, so we can just do:
+  //  return samplePool.findSample(sample) 
+  // -Maybe keep the samplePool sorted, so we can use binary search here. That requires to
+  //  reorder it when new samples are added, but addition of new samples is costly anyway due to 
+  //  disk access, so that probably doesn't really matter.
+}
+
 //-------------------------------------------------------------------------------------------------
 // Processing:
 
@@ -884,19 +902,19 @@ int rsSamplerEngine::removeSamplesNotUsedIn(const rsDataSFZ& sfz)
 int rsSamplerEngine::addSamplesUsedIn(const rsDataSFZ& sfz)
 {
   int numAdded = 0;
-  for(size_t gi = 0; gi < sfz.getNumGroups(); gi++)
-  {
+  for(size_t gi = 0; gi < sfz.getNumGroups(); gi++) {
     const Group& g = sfz.getGroupRef(gi);
-    for(size_t ri = 0; ri < g.getNumRegions(); ri++) 
-    {
+    for(size_t ri = 0; ri < g.getNumRegions(); ri++) {
       Region* r = g.getRegion((int)ri);     // the conversion is unelegant - try to get rid
       const std::string& sample = r->getSample();
-      //if(!isSampleInPool(sample))   // uncomment!
-      //  addSampleToPool(sample);
-      numAdded++;
-    }
-  }
+      if(!isSampleInPool(sample))
+        loadSampleToPool(sample);
+      numAdded++; }}
   return numAdded;
+  // todo: 
+  // -check the return code of loadSampleToPool - it may fail
+  // -count numAdded up only if it doesn't fail
+  // -if any sample loading failed, return ReturnCode::fileLoadError
 }
 
 int rsSamplerEngine::setupAudioStreams()
