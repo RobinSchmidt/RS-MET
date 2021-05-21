@@ -553,6 +553,10 @@ public:
     //const Group* getGroup() const { return group; }
     // todo: return (const Group*) getParentLevel();
 
+    void setLoKey(uchar newKey) { loKey = newKey; }
+
+    void setHiKey(uchar newKey) { hiKey = newKey; }
+
     /** Returns the lowest key at which this region will be played. */
     uchar getLoKey() const { return loKey; }
 
@@ -564,6 +568,10 @@ public:
 
     /** Returns the highest velocity at which this region will be played. */
     uchar getHiVel() const { return hiVel; }
+
+    bool shouldPlayForKey(uchar key) const { return key >= loKey && key <= hiKey; }
+    // todo: later maybe also take loKey/hiKey of group (and instrument) into account, requires to
+    // move loKey/hiKey members into baseclass
 
     bool operator==(const Region& rhs) const;
 
@@ -1117,6 +1125,8 @@ protected:
 
     const Region* getRegion(size_t i) const { return regions[i]; }
 
+    void clear() { regions.clear(); }
+
   private:
 
     std::vector<const Region*> regions; // pointers to the regions belonging to this set
@@ -1126,7 +1136,8 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Internal functions
 
-  /** Adds the given region to our regionsForKey array at the k-th position. */
+  /** Adds the given region to our regionsForKey array at the k-th position iff the region should
+  potentially play at the key k, as determined by the region's loKey,hiKey settings. */
   void addRegionForKey(uchar k, const Region* region);
   // maybe rename to addRegionForNoteOn and have a similar functionality for noteOff
 
@@ -1201,6 +1212,9 @@ protected:
   /** Sets up all the AudioStream pointers in all the regions in our sfz member. */
   int setupAudioStreams();
 
+  /** Sets up ourregionsForKey array according to our sfz member. */
+  void setupRegionsForKey();
+
 
 
 
@@ -1210,7 +1224,8 @@ protected:
   rsDataSFZ sfz;
   /**< The data structure that defines the sfz instrument. */
  
-  RegionSet regionsForKey[128];
+  static const int numKeys = 128;
+  RegionSet regionsForKey[numKeys];
   /**< For each key, we store a set of regions that *may* need to be played, when the key is 
   pressed. Whether or not a region is a candidate for playback for a given key is determined by the
   loKey, hiKey settings of that region. If the playback candidate region then *really* needs to be 

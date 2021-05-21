@@ -513,12 +513,16 @@ int rsSamplerEngine::addRegion(int gi, uchar loKey, uchar hiKey)
     rsError("Invalid group index");
     return ReturnCode::invalidIndex; 
   }
-  int ri = sfz.instrument.groups[gi].addRegion();      // region index within its group
+  int ri = sfz.instrument.groups[gi].addRegion();  // region index within its group
+  // maybe this function should take loKey/hiKey parameters, then the setLo/HiKey calls below may 
+  // be removed
 
   // Add the region to the regionsForKey in between loKey and hiKey
-  const Region* region = getRegion(gi, ri);
+  Region* r = getRegion(gi, ri);
+  r->setLoKey(loKey);
+  r->setHiKey(hiKey);
   for(uchar k = loKey; k <= hiKey; k++)
-    addRegionForKey(k, region);
+    addRegionForKey(k, r);
 
   return ri;
 }
@@ -592,6 +596,7 @@ int rsSamplerEngine::setupFromSFZ(const rsDataSFZ& newSfz)
   int rc1 = addSamplesUsedIn(newSfz); // load samples that are needed but not yet loaded
   sfz = newSfz;                       // replace old sfz instrument definition member with new
   int rc2 = setupAudioStreams();      // connect regions in new sfz with appropriate stream objects
+  setupRegionsForKey();               // updates regionsForKey array
   if(rc1 >= 0 && rc2 == ReturnCode::success)
     return ReturnCode::success;
   else
@@ -736,9 +741,10 @@ bool rsSamplerEngine::shouldRegionPlay(const Region* r, uchar key, uchar vel)
   return true;
 }
 
-void rsSamplerEngine::addRegionForKey(uchar k, const Region* region)
+void rsSamplerEngine::addRegionForKey(uchar k, const Region* r)
 {
-  regionsForKey[k].addRegion(region);
+  if(r->shouldPlayForKey(k))
+    regionsForKey[k].addRegion(r);
   // What, if the region is already there? We should check that before. It's probably not supposed
   // to happen, but anyway. Well...maybe it is, when the user tweaks loKey/hiKey settings on a GUI.
   // On the other hand, it may actually be useful to be able to duplicate regions, especially on
@@ -944,6 +950,19 @@ int rsSamplerEngine::setupAudioStreams()
     return ReturnCode::success;
   else
     return ReturnCode::notFound;  // stream was not found for one or more samples
+}
+
+void rsSamplerEngine::setupRegionsForKey()
+{
+  for(uchar k = 0; k < numKeys; k++)
+    regionsForKey[k].clear();
+  for(size_t gi = 0; gi < sfz.getNumGroups(); gi++) {
+    const Group& g = sfz.getGroupRef(gi);
+    for(size_t ri = 0; ri < g.getNumRegions(); ri++) {
+      Region* r = g.getRegion((int)ri);  // the conversion is unelegant - try to get rid
+      for(uchar k = 0; k < numKeys; k++)
+        addRegionForKey(k, r); }}
+  int dummy = 0;
 }
 
 //-------------------------------------------------------------------------------------------------

@@ -1,3 +1,16 @@
+bool samplerDataUnitTest()
+{
+  bool ok = true;
+
+  using SD = rsDataSFZ;
+
+  SD d1;
+
+  ok &= d1.getNumGroups() == 0;
+
+  rsAssert(ok);
+  return ok;
+}
 
 bool samplerEngineUnitTest()
 {
@@ -347,8 +360,9 @@ bool samplerEngineUnitTestFileIO()
   SE se2(maxLayers);
   rc = se2.loadFromSFZ("SineCosine.sfz");
   ok &= rc == RC::success;
+  // loKey/hiKey settings for the regions are wrong - the sfz recall does not yet include the 
+  // loKey/hiKey settings
 
-  /*
   // To test, if se2 has really the same instrument definition as se, produce output and compare. 
   // That's not fool-proof though, but anyway:
   VecF outL2(N), outR2(N);
@@ -361,8 +375,8 @@ bool samplerEngineUnitTestFileIO()
   ok &= se2.getNumActiveLayers() == 0;
   ok &= outL2 == outL;
   ok &= outR2 == outR;
-  // This test still fails
-  */
+  // This test still fails - i think, when loading an sfz, we also need to update the regionsForKey
+  // array
 
 
   // ToDo: test, if it also works when the engine already has some of the samples in its pool 
