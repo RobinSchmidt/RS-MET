@@ -646,18 +646,15 @@ public:
 
   private:
 
-    //Group* Instrument = nullptr;  //< Pointer to the instrument to which this group belongs
 
     // maybe move to public
     int addRegion(uchar loKey = 0, uchar hiKey = 127);      // todo: removeRegion, etc.
 
     void clearRegions();
 
+    //std::vector<Region> regions;
     std::vector<Region*> regions;
     /**< Pointers to the regions belonging to this group. */
-
-    // may be add these later:
-    //std::string name;  
 
     friend class rsSamplerData;
     friend class rsSamplerEngine;  // try to get rid
@@ -714,6 +711,15 @@ public:
   int addGroup();
 
   int addRegion(int gi, uchar loKey = 0, uchar hiKey = 127);
+
+  void setRegionCustomPointer(int gi, int ri, void* ptr)
+  { instrument.groups[gi].regions[ri]->setCustomPointer(ptr); }
+
+  void setRegionSample(int gi, int ri, const std::string& samplePath)
+  { instrument.groups[gi].regions[ri]->setSamplePath(samplePath); }
+    
+
+
 
   /** Clears the whole instrument definition. */
   void clearInstrument() 

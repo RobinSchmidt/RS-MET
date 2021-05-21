@@ -27,7 +27,9 @@ bool samplerDataUnitTest()
   // Test assignment operator:
   //SD d2 = d1;
   // this triggers an assert - the assignment operator needs to be implemented differently
-  // ..or better: avoid using new operator for adding regions
+  // ..or better: avoid using pointers and new operator for adding regions
+  // -in rsSamplerEngine, refer to regions not by a pointer to the region (in setRegionSetting 
+  //  etc.), but instead by group index and region index
 
   rsAssert(ok);
   return ok;

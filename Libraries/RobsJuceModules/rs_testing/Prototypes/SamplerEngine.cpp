@@ -104,6 +104,12 @@ int rsSamplerData::Group::addRegion(uchar loKey, uchar hiKey)
   r->parent = this;
   r->setLoKey(loKey);
   r->setHiKey(hiKey);
+
+  //rsSamplerData::Region r;
+  //r.parent = this;
+  //r.setLoKey(loKey);
+  //r.setHiKey(hiKey);
+
   regions.push_back(r);
   return ((int) regions.size()) - 1;
 }
@@ -142,8 +148,6 @@ bool rsSamplerData::Group::operator==(const rsSamplerData::Group& rhs) const
   return equal;
 }
 
-
-
 int rsSamplerData::Instrument::addGroup()
 {
   rsSamplerData::Group g;
@@ -157,9 +161,6 @@ void rsSamplerData::Instrument::clearGroups()
   groups.clear();
 }
 
-
-
-
 std::string rsSamplerData::getAsSFZ() const
 {
   std::string str;
@@ -168,16 +169,15 @@ std::string rsSamplerData::getAsSFZ() const
   auto writeSettingsToString = [](SettingsRef settings, std::string& str)
   {
     for(size_t i = 0; i < settings.size(); i++)
-    {
       writeSettingToString(settings[i], str);
-    }
-    int dummy = 0;
 
     // todo:
     // -If the settings define a sample opcode, write that into the string also - it hink, the 
     //  sample opcode needs special handling because its value is a string, not corresponidng to 
     //  any enum value...what, if we later introduce more such string-valued opcodes, such as the
-    //  sample-directory?
+    //  sample-directory? ...hmm...currently, the sample opcode is treated specially below - maybe 
+    //  this should be done here by means of not passing the settings but a reference or pointer
+    //  to the OrganizationLevel
     // -Maybe factor that function out into a static member function
     // -Maybe factor out a function settingToString...maybe that should be a member of 
     //  PlaybackSetting. toString/fromString
@@ -542,14 +542,19 @@ int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
   if(!isSampleIndexValid(si)) {
     rsError("Invalid sample index");
     return ReturnCode::invalidIndex; }
-  Region* r = getRegion(gi, ri);
+
+
   const AudioFileStream<float>* s = samplePool.getSampleStream(si);
 
-
-  r->setCustomPointer(s);
-  r->setSamplePath(s->getPath());
+  //Region* r = getRegion(gi, ri);
+  //r->setCustomPointer(s);
+  //r->setSamplePath(s->getPath());
   //r->setCustomPointer(samplePool.getSampleStream(si)); // old, may be reactivated to replace
                                                          // the 2 new calls above
+
+  // todo: don't retriev a region pointer, replace code by
+  sfz.setRegionCustomPointer(gi, ri, (void*) s);
+  sfz.setRegionSample(gi, ri, s->getPath());
 
   return ReturnCode::success;
 }
