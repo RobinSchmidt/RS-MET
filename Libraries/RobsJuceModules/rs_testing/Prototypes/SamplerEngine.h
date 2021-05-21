@@ -717,7 +717,13 @@ public:
 
   void setRegionSample(int gi, int ri, const std::string& samplePath)
   { instrument.groups[gi].regions[ri]->setSamplePath(samplePath); }
-    
+
+  void setRegionSetting(int gi, int ri, PlaybackSetting::Type type, float value)
+  {
+    instrument.groups[gi].regions[ri]->settings.push_back(PlaybackSetting(type, value));
+    // Preliminary. We need to figure out, if that setting already exists and if so, just change 
+    // its value instead of pushing another value for the same parameter
+  }
 
 
 
@@ -896,6 +902,10 @@ public:
   ReturnCode::success or ReturnCode::notFound, if the region was not found in this instrument. If 
   this happens, it indicates a bug on the call site. */
   int setRegionSetting(Region* region, PlaybackSetting::Type type, float value);
+  // deprecated - use function below
+
+  int setRegionSetting(int groupIndex, int regionIdex, PlaybackSetting::Type type, float value);
+
 
   // todo: setGroupSetting, setInstrumentSetting, removeRegion/Group, clearGroup, clearRegion, 
   // clearInstrument, removeSampleFromPool, replaceSampleInPool, setupFromSFZ,

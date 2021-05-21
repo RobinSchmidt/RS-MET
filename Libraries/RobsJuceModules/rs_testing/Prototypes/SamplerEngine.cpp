@@ -543,22 +543,22 @@ int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
     rsError("Invalid sample index");
     return ReturnCode::invalidIndex; }
 
-
   const AudioFileStream<float>* s = samplePool.getSampleStream(si);
-
-  //Region* r = getRegion(gi, ri);
-  //r->setCustomPointer(s);
-  //r->setSamplePath(s->getPath());
-  //r->setCustomPointer(samplePool.getSampleStream(si)); // old, may be reactivated to replace
-                                                         // the 2 new calls above
-
-  // todo: don't retriev a region pointer, replace code by
   sfz.setRegionCustomPointer(gi, ri, (void*) s);
   sfz.setRegionSample(gi, ri, s->getPath());
-
   return ReturnCode::success;
 }
 
+int rsSamplerEngine::setRegionSetting(int gi, int ri, PlaybackSetting::Type type, float value)
+{
+  if(!isIndexPairValid(gi, ri)) {
+    rsError("Invalid group- and/or region index");
+    return ReturnCode::invalidIndex; }
+  sfz.setRegionSetting(gi, ri, type, value);
+  return ReturnCode::success;
+}
+
+// deprecated:
 int rsSamplerEngine::setRegionSetting(Region* region, PlaybackSetting::Type type, float value)
 {
   // todo: 
