@@ -25,11 +25,14 @@ bool samplerDataUnitTest()
   ri = d1.addRegion(1); ok &= ri == 2;
 
   // Test assignment operator:
-  //SD d2 = d1;
+  SD d2 = d1; // copy assign
+  SD d3(d1);  // copy construct
+
   // this triggers an assert - the assignment operator needs to be implemented differently
   // ..or better: avoid using pointers and new operator for adding regions
   // -in rsSamplerEngine, refer to regions not by a pointer to the region (in setRegionSetting 
   //  etc.), but instead by group index and region index
+  // -oh - no - we need to use pointers because of rsSamplerEngine::regionsForKey
 
   rsAssert(ok);
   return ok;
@@ -397,6 +400,7 @@ bool samplerEngineUnitTestFileIO()
   // array
   */
 
+  // rsSamplerEngine::setupAudioStreams needs new implementation
 
   // ToDo: test, if it also works when the engine already has some of the samples in its pool 
   // already

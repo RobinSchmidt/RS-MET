@@ -342,6 +342,22 @@ class rsSamplerData // todo: move into its own pair of .h/.cpp files, rename to 
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
+
+  /** Default constructor. */
+  rsSamplerData() { }
+
+  /** Copy constructor.   */
+  rsSamplerData(const rsSamplerData& d) { copy(d, *this); }
+
+  /** Copy assignment operator. */
+  //rsSamplerData& operator=(const rsSamplerData& d) { if(this != &d) copy(d, *this); return *this; }
+
+
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Helper Classes
@@ -786,7 +802,7 @@ protected:
   static PlaybackSetting getSettingFromString(
     const std::string& opcode, const std::string& value);
 
-
+  static void copy(const rsSamplerData& src, rsSamplerData& dst);
 
 };
 

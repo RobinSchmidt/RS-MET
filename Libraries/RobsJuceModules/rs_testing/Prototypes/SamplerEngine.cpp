@@ -452,8 +452,13 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
 
   return PS(PST::Unknown, 0.f);  // fallback value
 }
-
 // todo: implement writeToSFZ, loadSFZ (taking filenames as parameters)
+
+void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
+{
+
+  int dummy = 0;
+}
 
 //=================================================================================================
 // rsSamplerEngine

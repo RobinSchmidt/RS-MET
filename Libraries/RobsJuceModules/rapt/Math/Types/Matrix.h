@@ -933,7 +933,7 @@ public:
   /** Copy assignment operator. Copies data from rhs into this object. */
   rsMatrix<T>& operator=(const rsMatrix<T>& rhs)
   {
-    if (this != &rhs) { // self-assignment check expected
+    if(this != &rhs) { // self-assignment check expected
       setShape(rhs.numRows, rhs.numCols);
       rsArrayTools::copy(rhs.dataPointer, this->dataPointer, this->getSize());
     }
