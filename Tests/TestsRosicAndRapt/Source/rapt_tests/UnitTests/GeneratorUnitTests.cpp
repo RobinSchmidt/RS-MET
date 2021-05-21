@@ -86,12 +86,10 @@ bool samplerEngineUnitTest()
   int ri = se.addRegion(gi);  // add new region to group gi, ri: region index
   ok &= ri == 0;
 
-  SE::Region* r = se.getRegion(gi, ri);
   int rc = se.setRegionSample(gi, ri, si);           // rc: return code
   ok &= rc == RC::success;
-  rc = se.setRegionSetting(r, PST::PitchKeyCenter, 69.f); // key = 69 is A4 at 440 Hz
+  rc = se.setRegionSetting(gi, ri, PST::PitchKeyCenter, 69.f); // key = 69 is A4 at 440 Hz
   ok &= rc == RC::success;
-
 
   // Now the engine is set up with the sinewave sample in a single region that spans the whole
   // keyboard. We trigger a note at the original PitchCenterKey with maximum velocity and let the
@@ -127,10 +125,9 @@ bool samplerEngineUnitTest()
   ok &= si == 1; 
   ri = se.addRegion(gi);                                  // add new region for cosine
   ok &= ri == 1;
-  r = se.getRegion(gi, ri);                               // retrieve pointer to region
   rc = se.setRegionSample(gi, ri, si);                    // set region sample to cosine
   ok &= rc == RC::success;
-  se.setRegionSetting(r, PST::PitchKeyCenter, 69.f);      // cosine is also at A4 = 440 Hz
+  se.setRegionSetting(gi, ri, PST::PitchKeyCenter, 69.f);   // cosine is also at A4 = 440 Hz
   ok &= se.getNumIdleLayers()   == maxLayers;
   ok &= se.getNumActiveLayers() == 0;
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
@@ -149,10 +146,8 @@ bool samplerEngineUnitTest()
   // -pan the cosine to hard right
   // -expected output: left should be the twice sine, right twice the cosine (the factor two arises
   //  from the pan law)
-  r = se.getRegion(gi, 0);
-  se.setRegionSetting(r, PST::Pan, -100.f);               // pan sine to hard left
-  r = se.getRegion(gi, 1);
-  se.setRegionSetting(r, PST::Pan, +100.f);               // pan cosine to hard right
+  se.setRegionSetting(gi, 0, PST::Pan, -100.f);           // pan sine to hard left
+  se.setRegionSetting(gi, 1, PST::Pan, +100.f);           // pan cosine to hard right
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
   for(int n = 0; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
@@ -337,22 +332,19 @@ bool samplerEngineUnitTestFileIO()
 
   // Add a group and to that group, add regions for the sine and cosine:
   int gi, ri, rc;                                    // group index, region index, return code
-  SE::Region* r;
   gi = se.addGroup(); ok &= gi == 0;
 
   // Set up region for sine:
   ri = se.addRegion(0);                                   ok &= ri == 0;
-  r  = se.getRegion(0, 0);                                ok &= r != nullptr;
   rc = se.setRegionSample(0, 0, 0);                       ok &= rc == RC::success;
-  rc = se.setRegionSetting(r, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
-  rc = se.setRegionSetting(r, PST::Pan, -100.f);          ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 0, PST::Pan, -100.f);          ok &= rc == RC::success;
 
   // Set up region for cosine:
   ri = se.addRegion(0);                                   ok &= ri == 1;
-  r  = se.getRegion(0, 1);                                ok &= r != nullptr;
   rc = se.setRegionSample(0, 1, 1);                       ok &= rc == RC::success;
-  rc = se.setRegionSetting(r, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
-  rc = se.setRegionSetting(r, PST::Pan, +100.f);          ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 1, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 1, PST::Pan, +100.f);          ok &= rc == RC::success;
 
   // Let the engine produce the sine and cosine:
   VecF outL(N), outR(N);

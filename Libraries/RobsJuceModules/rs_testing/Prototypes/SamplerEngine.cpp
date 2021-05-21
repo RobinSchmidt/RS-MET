@@ -554,52 +554,9 @@ int rsSamplerEngine::setRegionSetting(int gi, int ri, PlaybackSetting::Type type
   if(!isIndexPairValid(gi, ri)) {
     rsError("Invalid group- and/or region index");
     return ReturnCode::invalidIndex; }
+
   sfz.setRegionSetting(gi, ri, type, value);
   return ReturnCode::success;
-}
-
-// deprecated:
-int rsSamplerEngine::setRegionSetting(Region* region, PlaybackSetting::Type type, float value)
-{
-  // todo: 
-  // -check, if the passed region is actually a member of any of the groups - maybe
-  //  rsAssert(isRegionValid(region)) or something
-  //  -maybe have a function findRegion(const Region* region, int* groupIndex, int* regionIndex)
-  // -before pushing the setting, we should check, whether the setting is already present and if
-  //  so, just change the value and not push a 2nd, conflicting value
-
-  //region.settings.push_back(PlaybackSetting(type, value));
-
-  int gi, ri;
-  findRegion(region, &gi, &ri);
-  if(gi == -1 || ri == -1)
-    return ReturnCode::notFound;
-  // todo: simplify to hasRegion(region)
-
-  Region* r = getRegion(gi, ri);
-  // That's a bit dirty - it actually has the same effect as casting away the const from the passed
-  // region. The caller may assume, that the passed region remins constant when in fact, it 
-  // doesn't. Maybe make the region parameter non-const and prevent the client code from modifying
-  // regions directly by other means like making all setters private such that only the 
-  // rsSamplerEngine friend class can set them
-
-  rsAssert(r == region);  // todo: operate directly on the passed region
-
-  r->settings.push_back(PlaybackSetting(type, value));
-  // Preliminary. We need to figure out, if that setting already exists and if so, just change its
-  // value instead of pushing another value for the same parameter
-
-  return ReturnCode::success;
-  // Maybe we should distinguish between settingAdded and settingModified in the return code. We 
-  // may also have a distinct nothingToDo path when the setting was already at the desired value. 
-  // But actually, from the caller's perspective, that information should be irrelevant anyway (all
-  // 3 cases indicate success), so maybe not. Maybe, for optimization purposes (for patch recall), 
-  // we should have an "addRegionSetting" function that bypasses these tests - but that assumes 
-  // that the patches do not contain overwrites, which, i guess, should be allowed. Maybe it's best
-  // to not implement such checks at all. It leads to simpler and more efficient patch recall. The 
-  // cost is additonal runtime cpu load for patches that are written improperly, i.e. contain the
-  // same setting-type multiple times. But then, the patch writer would be to blame. Foolproofing
-  // carelessly written patches does not justify the cost, i think.
 }
 
 int rsSamplerEngine::setupFromSFZ(const rsSamplerData& newSfz)

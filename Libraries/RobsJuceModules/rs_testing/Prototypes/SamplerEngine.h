@@ -898,12 +898,9 @@ public:
   sample index was invalid. */
   int setRegionSample(int groupIndex, int regionIndex, int sampleIndex); 
 
-  /** Sets a value for a given type of playback setting for the given region. Returns either
-  ReturnCode::success or ReturnCode::notFound, if the region was not found in this instrument. If 
+  /** Sets a value for a given type of playback setting a region. Returns either
+  ReturnCode::success or ReturnCode::invalidIndex, if groupIndex and/or regionIndex was invalid. If 
   this happens, it indicates a bug on the call site. */
-  int setRegionSetting(Region* region, PlaybackSetting::Type type, float value);
-  // deprecated - use function below
-
   int setRegionSetting(int groupIndex, int regionIdex, PlaybackSetting::Type type, float value);
 
 
