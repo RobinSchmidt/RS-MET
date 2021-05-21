@@ -337,7 +337,7 @@ ToDo:
 -use pointers or references consistently for returning sub-levels
 */
 
-class rsDataSFZ // todo: move into its own pair of .h/.cpp files, rename to rsSamplerData
+class rsSamplerData // todo: move into its own pair of .h/.cpp files, rename to rsSamplerData
 {
 
 public:
@@ -489,7 +489,7 @@ public:
     /** Returns the generic pointer for custom satellite data or objects that are associated with
     this region. This pointer is intended to be used for some sort of audio stream object that is 
     used for accessing the sample data. It has been made a generic void pointer to decouple 
-    rsDataSFZ from the AudioFileStream class that is used in rsSamplerEngine. The sampler-engine 
+    rsSamplerData from the AudioFileStream class that is used in rsSamplerEngine. The sampler-engine 
     assigns this pointer with appropriate stream object and when retriveing them, does an 
     appropriate type cast. ToDo: try to find a better design, maybe move up into baseclass */
     const void* getCustomPointer() const { return custom; }
@@ -511,7 +511,7 @@ public:
     //const AudioFileStream* sampleStream = nullptr;
     // try to get rid - that member should be added by rsSamplerEngine::Region which should be
     // a subclass of rsInstrumentDataSFZ::Region, and/or move up into baseclass. maybe to decouple
-    // rsDataSFZ from AudioFileStream, just keep it as pointer-to-void which client code may 
+    // rsSamplerData from AudioFileStream, just keep it as pointer-to-void which client code may 
     // typecast to any sort of stream...or maybe that coupling makes sense?..hmm - not really.
     // maybe a pointer-to-void named customData should be stored in OrganizationLevel
 
@@ -598,7 +598,7 @@ public:
     //  group setting -> check, how sfzPlayer behaves
 
     friend class Group;  // do we need this? if not, get rid.
-    friend class rsDataSFZ;
+    friend class rsSamplerData;
     friend class rsSamplerEngine;  // try to get rid
     // The Region class shall not provide any public functions that can modify the region because
     // those could be used by client code to modify the region behind the back of the 
@@ -649,7 +649,8 @@ public:
     //Group* Instrument = nullptr;  //< Pointer to the instrument to which this group belongs
 
     // maybe move to public
-    int addRegion();      // todo: removeRegion, etc.
+    int addRegion(uchar loKey = 0, uchar hiKey = 127);      // todo: removeRegion, etc.
+
     void clearRegions();
 
     std::vector<Region*> regions;
@@ -658,7 +659,7 @@ public:
     // may be add these later:
     //std::string name;  
 
-    friend class rsDataSFZ;
+    friend class rsSamplerData;
     friend class rsSamplerEngine;  // try to get rid
   };
 
@@ -700,7 +701,7 @@ public:
     // the implementations of Group and Instrument more consistent but is actually technically not 
     // necessary. So, for the time being, let's keep it an array of direct value objects.
 
-    friend class rsDataSFZ;
+    friend class rsSamplerData;
   };
 
   //-----------------------------------------------------------------------------------------------
@@ -709,6 +710,10 @@ public:
   // todo: factor out some code from rsSamplerEngine - the names of the correponding setters here 
   // and there should match and rsSamplerEngine should call functions from here and perhaps do
   // additional stuff, if necessary
+
+  int addGroup();
+
+  int addRegion(int gi, uchar loKey, uchar hiKey);
 
   /** Clears the whole instrument definition. */
   void clearInstrument() 
@@ -733,7 +738,7 @@ public:
   //{ return instrument.getGroupSettings(i); }
 
 
-  bool operator==(const rsDataSFZ& rhs) const { return instrument == rhs.instrument; }
+  bool operator==(const rsSamplerData& rhs) const { return instrument == rhs.instrument; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc
@@ -812,9 +817,9 @@ public:
 
   // for convenience:
   using uchar = unsigned char;
-  using Region = rsDataSFZ::Region; // todo: make a subclass here that adds the stream field
-  using Group  = rsDataSFZ::Group;
-  using PlaybackSetting = rsDataSFZ::PlaybackSetting;
+  using Region = rsSamplerData::Region; // todo: make a subclass here that adds the stream field
+  using Group  = rsSamplerData::Group;
+  using PlaybackSetting = rsSamplerData::PlaybackSetting;
 
 
 
@@ -891,7 +896,7 @@ public:
 
   /** Sets up the engine from the given sfz data object and returns ReturnCode::success, if all
   is well or...  */
-  int setupFromSFZ(const rsDataSFZ& sfz);
+  int setupFromSFZ(const rsSamplerData& sfz);
 
 
   /** Writes the current instrument definition into an sfz file with given path. */
@@ -964,9 +969,9 @@ public:
 
   int getNumIdleLayers() const { return (int) idlePlayers.size(); }
 
-  /** Returns a const pointer to the rsDataSFZ object that represents the current instrument
+  /** Returns a const pointer to the rsSamplerData object that represents the current instrument
   settings. */
-  const rsDataSFZ& getInstrumentData() const { return sfz; }
+  const rsSamplerData& getInstrumentData() const { return sfz; }
     
 
 
@@ -1168,7 +1173,7 @@ protected:
 
   /** Returns true, iff the given sample is used in the instrument definition represented by the 
   given sfz */
-  bool isSampleUsedIn(const AudioFileStream<float>* sample, const rsDataSFZ& sfz);
+  bool isSampleUsedIn(const AudioFileStream<float>* sample, const rsSamplerData& sfz);
   
 
 
@@ -1199,14 +1204,14 @@ protected:
 
   /** Removes those samples from our sample pool that are not used in the given sfz instrument 
   specification. Returns the number of samples that were removed. */
-  int removeSamplesNotUsedIn(const rsDataSFZ& sfz);
+  int removeSamplesNotUsedIn(const rsSamplerData& sfz);
   // maybe rename to removeUnusedSamples. But that name is more ambiguous: it could be interpreted
   // as "unused in the current sfz member", so maybe don't
 
   /** Adds all samples to our sample pool that are used in the given sfz instrument definition, if
   they are not already there. Returns the number of samples that were added or 
   ReturnCode::fileLoadError if any of the files failed to load. */
-  int addSamplesUsedIn(const rsDataSFZ& sfz);
+  int addSamplesUsedIn(const rsSamplerData& sfz);
   // maybe rename to loadSamples or loadSamplesFor
 
   /** Sets up all the AudioStream pointers in all the regions in our sfz member. */
@@ -1221,7 +1226,7 @@ protected:
   //-----------------------------------------------------------------------------------------------
   // \name Data
 
-  rsDataSFZ sfz;
+  rsSamplerData sfz;
   /**< The data structure that defines the sfz instrument. */
  
   static const int numKeys = 128;
@@ -1305,20 +1310,20 @@ public:
   static void setFromSFZ(rsSamplerEngine* engine, const std::string& sfzFileContents);
   // todo: return a return-code, including unknownOpcode, invalidValue, invalidIndex, ...
 
-  /** Given an rsDataSFZ object, this function produces the string that represents the settings in
+  /** Given an rsSamplerData object, this function produces the string that represents the settings in
   an sfz-file compliant format, i.e. a string that can be written into an .sfz file. */
-  static std::string getAsSFZ(const rsDataSFZ& sfz); 
+  static std::string getAsSFZ(const rsSamplerData& sfz); 
 
 };
 
 // hmmm...maybe this additional class will not be needed after all - provide de/serialize in
-// rsDataSFZ and maybe also in rsSamplerEngine, where serialize just forwards to sfz.serialize and
+// rsSamplerData and maybe also in rsSamplerEngine, where serialize just forwards to sfz.serialize and
 // deserialize may have to take additional actions
 // Maybe this should not be a separate class and rsSamplerEngine should just have a pair of 
 // functions getAsSFZ/setFromSFZ. We'll see, how complex the code gets. If it's not too complex,
-// integrate it into rsSamplerEngine. Or maybe the code should go into rsDataSFZ...at least, the
+// integrate it into rsSamplerEngine. Or maybe the code should go into rsSamplerData...at least, the
 // code related to generating and parsing sfz strings, maybe not the code related to actually
-// setting up the engine object such that the rsDataSFZ remains independent from rsSamplerEngine.
+// setting up the engine object such that the rsSamplerData remains independent from rsSamplerEngine.
 
 
 

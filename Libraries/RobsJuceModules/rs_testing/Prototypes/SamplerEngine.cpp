@@ -69,9 +69,25 @@ void SamplePool<T>::clear()
 }
 
 //-------------------------------------------------------------------------------------------------
-// rsDataSFZ:
+// rsSamplerData:
 
-bool rsDataSFZ::Region::operator==(const rsDataSFZ::Region& rhs) const 
+int rsSamplerData::addGroup()
+{
+  Group g;
+  instrument.groups.push_back(g);
+  return ((int) instrument.groups.size()) - 1;
+}
+
+int rsSamplerData::addRegion(int gi, uchar loKey, uchar hiKey)
+{
+  if(gi < 0 || gi >= (int)instrument.groups.size()) {
+    rsError("Invalid group index");
+    return -1; }
+  int ri = instrument.groups[gi].addRegion(loKey, hiKey);  // region index within its group
+  return ri;
+}
+
+bool rsSamplerData::Region::operator==(const rsSamplerData::Region& rhs) const 
 { 
   bool equal = settings == rhs.settings;
   equal &= loKey == rhs.loKey;
@@ -82,15 +98,17 @@ bool rsDataSFZ::Region::operator==(const rsDataSFZ::Region& rhs) const
   // What about the customPointer? should we require that to be equal, too?
 }
 
-int rsDataSFZ::Group::addRegion()
+int rsSamplerData::Group::addRegion(uchar loKey, uchar hiKey)
 {
-  rsDataSFZ::Region* r = new rsDataSFZ::Region;
+  rsSamplerData::Region* r = new rsSamplerData::Region;
   r->parent = this;
+  r->setLoKey(loKey);
+  r->setHiKey(hiKey);
   regions.push_back(r);
   return ((int) regions.size()) - 1;
 }
 
-int rsDataSFZ::Group::getRegionIndex(const rsDataSFZ::Region* region) const
+int rsSamplerData::Group::getRegionIndex(const rsSamplerData::Region* region) const
 {
   for(size_t i = 0; i < regions.size(); i++)
     if(regions[i] == region)
@@ -98,7 +116,7 @@ int rsDataSFZ::Group::getRegionIndex(const rsDataSFZ::Region* region) const
   return -1;
 }
 
-rsDataSFZ::Region* rsDataSFZ::Group::getRegion(int i) const
+rsSamplerData::Region* rsSamplerData::Group::getRegion(int i) const
 {
   if(i < 0 || i >= (int)regions.size()) {
     rsError("Invalid region index");
@@ -107,14 +125,14 @@ rsDataSFZ::Region* rsDataSFZ::Group::getRegion(int i) const
   return regions[i];
 }
 
-void rsDataSFZ::Group::clearRegions()
+void rsSamplerData::Group::clearRegions()
 {
   for(size_t i = 0; i < regions.size(); i++)
     delete regions[i];
   regions.clear();
 }
 
-bool rsDataSFZ::Group::operator==(const rsDataSFZ::Group& rhs) const 
+bool rsSamplerData::Group::operator==(const rsSamplerData::Group& rhs) const 
 { 
   bool equal = settings == rhs.settings;
   equal &= regions.size() == rhs.regions.size();
@@ -126,15 +144,15 @@ bool rsDataSFZ::Group::operator==(const rsDataSFZ::Group& rhs) const
 
 
 
-int rsDataSFZ::Instrument::addGroup()
+int rsSamplerData::Instrument::addGroup()
 {
-  rsDataSFZ::Group g;
+  rsSamplerData::Group g;
   g.parent = this;
   groups.push_back(g);
   return ((int) groups.size()) - 1;
 }
 
-void rsDataSFZ::Instrument::clearGroups()
+void rsSamplerData::Instrument::clearGroups()
 {
   groups.clear();
 }
@@ -142,7 +160,7 @@ void rsDataSFZ::Instrument::clearGroups()
 
 
 
-std::string rsDataSFZ::getAsSFZ() const
+std::string rsSamplerData::getAsSFZ() const
 {
   std::string str;
 
@@ -194,7 +212,7 @@ std::string rsDataSFZ::getAsSFZ() const
   // levels - i guess, it will use the most restrictive setting of all of them
 }
 
-void rsDataSFZ::setFromSFZ(const std::string& str)
+void rsSamplerData::setFromSFZ(const std::string& str)
 {
   clearInstrument();
   size_t endOfFile = std::numeric_limits<size_t>::max();
@@ -369,14 +387,14 @@ char* rsReadStringFromFile(const char *filename)
   // https://stackoverflow.com/questions/3463426/in-c-how-should-i-read-a-text-file-and-print-all-strings
 }
 
-bool rsDataSFZ::saveToSFZ(const char* path) const
+bool rsSamplerData::saveToSFZ(const char* path) const
 {
   std::string sfz = getAsSFZ();
   return rsWriteStringToFile(path, sfz.c_str());
 }
 // this has no safeguards against overwriting an existing file!
 
-bool rsDataSFZ::loadFromSFZ(const char* path)
+bool rsSamplerData::loadFromSFZ(const char* path)
 {
   char* c_str = rsReadStringFromFile(path);
   if(c_str)
@@ -394,7 +412,7 @@ bool rsDataSFZ::loadFromSFZ(const char* path)
 }
 
 
-void rsDataSFZ::writeSettingToString(const PlaybackSetting& setting, std::string& s)
+void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::string& s)
 {
   using PST = PlaybackSetting::Type;
   PST  type = setting.getType();
@@ -417,7 +435,7 @@ void rsDataSFZ::writeSettingToString(const PlaybackSetting& setting, std::string
   //  digits is better
 }
 
-rsDataSFZ::PlaybackSetting rsDataSFZ::getSettingFromString(
+rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
   const std::string& opcode, const std::string& valStr)
 {
   using PS  = PlaybackSetting;
@@ -502,25 +520,33 @@ int rsSamplerEngine::loadSampleToPool(const std::string& path)
 
 int rsSamplerEngine::addGroup()
 {
-  Group g;
-  sfz.instrument.groups.push_back(g);
-  return ((int) sfz.instrument.groups.size()) - 1;
+  return sfz.addGroup();
+
+  // old:
+  //Group g;
+  //sfz.instrument.groups.push_back(g);
+  //return ((int) sfz.instrument.groups.size()) - 1;
 }
 
 int rsSamplerEngine::addRegion(int gi, uchar loKey, uchar hiKey)
 {
+  /*
   if(gi < 0 || gi >= (int)sfz.instrument.groups.size()) {
     rsError("Invalid group index");
     return ReturnCode::invalidIndex; 
   }
   int ri = sfz.instrument.groups[gi].addRegion();  // region index within its group
   // maybe this function should take loKey/hiKey parameters, then the setLo/HiKey calls below may 
-  // be removed
+  // be removed, we should actually have a function
+  // sfz.addRegion(gi, loKey, hiKey)
+  */
+
+  int ri = sfz.addRegion(gi, loKey, hiKey);
 
   // Add the region to the regionsForKey in between loKey and hiKey
   Region* r = getRegion(gi, ri);
-  r->setLoKey(loKey);
-  r->setHiKey(hiKey);
+  //r->setLoKey(loKey);
+  //r->setHiKey(hiKey);
   for(uchar k = loKey; k <= hiKey; k++)
     addRegionForKey(k, r);
 
@@ -590,7 +616,7 @@ int rsSamplerEngine::setRegionSetting(Region* region, PlaybackSetting::Type type
   // carelessly written patches does not justify the cost, i think.
 }
 
-int rsSamplerEngine::setupFromSFZ(const rsDataSFZ& newSfz)
+int rsSamplerEngine::setupFromSFZ(const rsSamplerData& newSfz)
 {
   removeSamplesNotUsedIn(newSfz);     // remove samples that are not needed anymore from memory
   int rc1 = addSamplesUsedIn(newSfz); // load samples that are needed but not yet loaded
@@ -609,7 +635,7 @@ int rsSamplerEngine::setupFromSFZ(const rsDataSFZ& newSfz)
 
 int rsSamplerEngine::loadFromSFZ(const char* path)
 {
-  rsDataSFZ newSfz;
+  rsSamplerData newSfz;
   bool wasLoaded = newSfz.loadFromSFZ(path);
   if(!wasLoaded)
     return ReturnCode::fileLoadError;
@@ -787,7 +813,7 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
   return rp;
 }
 
-bool rsSamplerEngine::isSampleUsedIn(const AudioFileStream<float>* sample, const rsDataSFZ& sfz)
+bool rsSamplerEngine::isSampleUsedIn(const AudioFileStream<float>* sample, const rsSamplerData& sfz)
 {
   for(size_t gi = 0; gi < sfz.getNumGroups(); gi++) {
     const Group& g = sfz.getGroupRef(gi);
@@ -883,7 +909,7 @@ int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
   //  efficient
 }
 
-int rsSamplerEngine::removeSamplesNotUsedIn(const rsDataSFZ& sfz)
+int rsSamplerEngine::removeSamplesNotUsedIn(const rsSamplerData& sfz)
 {
   int numRemoved = 0;
   for(int i = samplePool.getNumSamples()-1; i >= 0; i--) {
@@ -895,7 +921,7 @@ int rsSamplerEngine::removeSamplesNotUsedIn(const rsDataSFZ& sfz)
   return numRemoved;
 }
 
-int rsSamplerEngine::addSamplesUsedIn(const rsDataSFZ& sfz)
+int rsSamplerEngine::addSamplesUsedIn(const rsSamplerData& sfz)
 {
   int numAdded = 0;
   bool allOK = true;
@@ -928,7 +954,7 @@ int rsSamplerEngine::setupAudioStreams()
     r->setCustomPointer(stream);
     return true;
   };
-  // ToDo: Maybe change Region* to rsDataSFZ::OrganizationLevel*, so we can assign streams to 
+  // ToDo: Maybe change Region* to rsSamplerData::OrganizationLevel*, so we can assign streams to 
   // groups and instruments also.
 
   bool allOK = true;
@@ -1196,7 +1222,7 @@ void rsSamplerEngineLoaderSFZ::setFromSFZ(rsSamplerEngine* se, const std::string
 
 }
 
-std::string rsSamplerEngineLoaderSFZ::getAsSFZ(const rsDataSFZ& sfz)
+std::string rsSamplerEngineLoaderSFZ::getAsSFZ(const rsSamplerData& sfz)
 {
   std::string str;
 
