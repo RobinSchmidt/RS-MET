@@ -11,12 +11,23 @@ bool samplerDataUnitTest()
   // todo: add some groups/regions and test copy-assignment we need deep copies and that doesn't 
   // seem to work yet
 
-  /*
-  int gi = d1.addGroup();     // add new group to instrument definition, gi: group index
-  ok &= gi == 0;
-  int ri = d1.addRegion(gi);  // add new region to group gi, ri: region index
-  ok &= ri == 0;
-  */
+  int gi, ri;             // gi: group index, ri: region index
+
+  // Add 2 groups:
+  gi = d1.addGroup(); ok &= gi == 0;
+  gi = d1.addGroup(); ok &= gi == 1;
+
+  // Add2 regions to 1st group and 3 regions to 2nd group:
+  ri = d1.addRegion(0); ok &= ri == 0;
+  ri = d1.addRegion(0); ok &= ri == 1;
+  ri = d1.addRegion(1); ok &= ri == 0;
+  ri = d1.addRegion(1); ok &= ri == 1;
+  ri = d1.addRegion(1); ok &= ri == 2;
+
+  // Test assignment operator:
+  //SD d2 = d1;
+  // this triggers an assert - the assignment operator needs to be implemented differently
+  // ..or better: avoid using new operator for adding regions
 
   rsAssert(ok);
   return ok;

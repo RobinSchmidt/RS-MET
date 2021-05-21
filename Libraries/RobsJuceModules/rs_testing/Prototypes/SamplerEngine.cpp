@@ -521,35 +521,16 @@ int rsSamplerEngine::loadSampleToPool(const std::string& path)
 int rsSamplerEngine::addGroup()
 {
   return sfz.addGroup();
-
-  // old:
-  //Group g;
-  //sfz.instrument.groups.push_back(g);
-  //return ((int) sfz.instrument.groups.size()) - 1;
 }
 
 int rsSamplerEngine::addRegion(int gi, uchar loKey, uchar hiKey)
 {
-  /*
-  if(gi < 0 || gi >= (int)sfz.instrument.groups.size()) {
-    rsError("Invalid group index");
-    return ReturnCode::invalidIndex; 
-  }
-  int ri = sfz.instrument.groups[gi].addRegion();  // region index within its group
-  // maybe this function should take loKey/hiKey parameters, then the setLo/HiKey calls below may 
-  // be removed, we should actually have a function
-  // sfz.addRegion(gi, loKey, hiKey)
-  */
-
   int ri = sfz.addRegion(gi, loKey, hiKey);
-
-  // Add the region to the regionsForKey in between loKey and hiKey
+  if(ri == -1)
+    return ReturnCode::invalidIndex;    // gi was an invalid group index
   Region* r = getRegion(gi, ri);
-  //r->setLoKey(loKey);
-  //r->setHiKey(hiKey);
   for(uchar k = loKey; k <= hiKey; k++)
     addRegionForKey(k, r);
-
   return ri;
 }
 

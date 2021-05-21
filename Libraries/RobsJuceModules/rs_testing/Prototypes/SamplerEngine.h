@@ -713,7 +713,7 @@ public:
 
   int addGroup();
 
-  int addRegion(int gi, uchar loKey, uchar hiKey);
+  int addRegion(int gi, uchar loKey = 0, uchar hiKey = 127);
 
   /** Clears the whole instrument definition. */
   void clearInstrument() 
