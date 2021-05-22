@@ -579,6 +579,35 @@ int rsSamplerEngine::loadSampleToPool(const std::string& path)
   return rc;
 }
 
+int rsSamplerEngine::unUseSample(int i)
+{
+  if(i < 0 || i >= samplePool.getNumSamples()){
+    rsError("Invalid sample index");
+    return ReturnCode::invalidIndex; }
+  int numRegions = 0;
+  using StreamPtr = const AudioFileStream<float>*;
+  StreamPtr stream = samplePool.getSampleStream(i);
+  for(int gi = 0; gi < getNumGroups(); gi++) {
+    for(int ri = 0; ri < getNumRegions(gi); ri++) {
+      Region* r = getRegion(gi, ri);
+      StreamPtr regionStream = (StreamPtr) r->getCustomPointer();
+      if(regionStream == stream) {
+        r->setCustomPointer(nullptr);
+        r->setSamplePath("");
+        numRegions++;  }}}
+  return numRegions;
+
+  // todo: maybe try to implement a sort of "forAllRegions" macro that implements the boildplate to
+  // loop over all regions once and for all
+}
+
+int rsSamplerEngine::unUseSample(const std::string& samplePath)
+{
+  int i = findSampleIndexInPool(samplePath);
+  if(i == -1) return 0;
+  return unUseSample(i);
+}
+
 int rsSamplerEngine::addRegion(int gi, uchar loKey, uchar hiKey)
 {
   int ri = sfz.addRegion(gi, loKey, hiKey);

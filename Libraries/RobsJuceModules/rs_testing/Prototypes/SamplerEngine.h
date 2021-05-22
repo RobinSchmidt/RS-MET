@@ -785,12 +785,12 @@ public:
 
   size_t getNumGroups() const { return instrument.getNumGroups(); }
 
+  size_t getNumRegions(int i) const { return instrument.groups[i]->getNumRegions(); }
 
   //const Group& getGroupRef(size_t i) const { return instrument.groups[i]; }
 
   const Group& getGroupRef(size_t i) const { return *instrument.groups[i]; }
-  // replace by getGroupPtr ..maybe renma to just getGroup
-
+  // replace by getGroupPtr ..maybe rename to just getGroup
 
   const Group* getGroupPtr(size_t i) const { return instrument.groups[i]; }
 
@@ -934,6 +934,10 @@ public:
   ToDo: verify return codes in unit test  */
   int loadSampleToPool(const std::string& path);
 
+  /** All regions that use the sample with given index will be assigned to use no sample at all. */
+  int unUseSample(int sampleIndex);
+  int unUseSample(const std::string& path);
+
   /** Adds a new group to the instrument definition and returns the index of the group. */
   int addGroup() { return sfz.addGroup(); }
 
@@ -985,6 +989,10 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
+  int getNumGroups() const { return (int) sfz.getNumGroups(); }
+
+  int getNumRegions(int groupIndex) const { return (int) sfz.getNumRegions(groupIndex); }
+
   /** Returns a pointer to the region object with the given group- and region index or a nullptr 
   if the combination of indices is invalid. If the client wants to edit the region, it can do so 
   only by using appropriate region-editing functions of the rsSamplerEngine object from which it 
@@ -1002,7 +1010,6 @@ public:
   /** Returns the number of regions in the instrument definition that use the sample with the given
   index in out samplePool or ReturnCode::invalidIndex, if the given sampleIndex is invalid. */
   int getNumRegionsUsing(int sampleIndex) const;
-
   int getNumRegionsUsing(const std::string& samplePath) const;
 
   // getGroup, getRegion, getStateAsSFZ, isSampleInPool, getNumGroups, getNumRegionsInGroup(int)

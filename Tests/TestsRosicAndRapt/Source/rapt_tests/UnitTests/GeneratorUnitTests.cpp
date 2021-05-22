@@ -430,10 +430,11 @@ bool samplerEngineUnitTestFileIO()
   //  loaded - the desired behavior is that the engine unloads the cosine an keeps the sine
   si = se.findSampleIndexInPool("Sin440Hz.wav"); ok &= si == 0;
   int n = se.getNumRegionsUsing("Sin440Hz.wav"); ok &= n == 1;
+  n = se.unUseSample("Sin440Hz.wav"); ok &= n == 1;
+  n = se.unUseSample("Sin440Hz.wav"); ok &= n == 0;
+  
+  // should set all regions that use that sample to no sample
 
-
-
-  // n = unUse("Sin440.wav"); // should set all regions that use that sample to no sample
   //rc = se.removeSample(si);
 
 
