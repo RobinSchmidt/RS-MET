@@ -354,7 +354,7 @@ public:
   rsSamplerData(const rsSamplerData& d) { copy(d, *this); }
 
   /** Copy assignment operator. */
-  //rsSamplerData& operator=(const rsSamplerData& d) { if(this != &d) copy(d, *this); return *this; }
+  rsSamplerData& operator=(const rsSamplerData& d) { if(this != &d) copy(d, *this); return *this; }
 
 
 

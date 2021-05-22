@@ -381,14 +381,9 @@ bool samplerEngineUnitTestFileIO()
   // instrument definition:
   se.saveToSFZ("SineCosine.sfz");
   SE se2(maxLayers);
-  //rc = se2.loadFromSFZ("SineCosine.sfz");
-  //ok &= rc == RC::success;
-  // loKey/hiKey settings for the regions are wrong - the sfz recall does not yet include the 
-  // loKey/hiKey settings
-  // i think, the copy-assignment operator of rsSamplerData is not implemented correctly - we need to 
-  // make a deep copy
+  rc = se2.loadFromSFZ("SineCosine.sfz");
+  ok &= rc == RC::success;
 
-  /*
   // To test, if se2 has really the same instrument definition as se, produce output and compare. 
   // That's not fool-proof though, but anyway:
   VecF outL2(N), outR2(N);
@@ -401,22 +396,10 @@ bool samplerEngineUnitTestFileIO()
   ok &= se2.getNumActiveLayers() == 0;
   ok &= outL2 == outL;
   ok &= outR2 == outR;
-  // This test still fails - i think, when loading an sfz, we also need to update the regionsForKey
-  // array
-  */
 
-  // rsSamplerEngine::setupAudioStreams needs new implementation
 
   // ToDo: test, if it also works when the engine already has some of the samples in its pool 
   // already
-
-
-  // ToDo: 
-  // -export the settings to an sfz file.
-  // -import the sfz file with a new instance and compare the states
-  // -instead of passing the region pointer r to setRegionSetting, pass group/region indices
-  //  -that should be more efficient, because it bypasses the findRegion(region, &gi, &ri); call
-  //   there
 
 
   rsAssert(ok);

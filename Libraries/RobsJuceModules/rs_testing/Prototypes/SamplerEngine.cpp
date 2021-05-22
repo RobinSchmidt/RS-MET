@@ -127,11 +127,14 @@ void rsSamplerData::Group::copyDataFrom(const Group* src)
   rsSamplerData::OrganizationLevel::copyDataFrom(src);
   clearRegions();
   settings = src->getSettings();
-  for(size_t i = 0; i < src->getNumRegions(); i++) {
+  for(size_t i = 0; i < src->getNumRegions(); i++) 
+  {
     const rsSamplerData::Region* srcRegion = src->getRegion((int)i);
     rsSamplerData::Region* dstRegion = new rsSamplerData::Region;
+    dstRegion->parent = this;
     dstRegion->copyDataFrom(srcRegion);
-    regions.push_back(dstRegion); }
+    regions.push_back(dstRegion); 
+  }
 }
 
 void rsSamplerData::Group::clearRegions()
@@ -495,14 +498,11 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
 void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
 {
   dst.clearInstrument();
-  for(size_t i = 0; i < src.getNumGroups(); i++)
-  {
+  for(size_t i = 0; i < src.getNumGroups(); i++) {
     const Group* srcGroup = src.getGroupPtr(i);
     Group* dstGroup = new Group;
     dstGroup->copyDataFrom(srcGroup);
-    dst.addGroup(dstGroup);
-  }
-  int dummy = 0;
+    dst.addGroup(dstGroup); }
 }
 
 //=================================================================================================
@@ -1049,6 +1049,9 @@ bool rsSamplerEngine::RegionPlayer::isPlayable(const Region* region)
   ok &= region != nullptr;
   ok &= region->getGroup() != nullptr;
   //ok &= region->getGroup()->getInstrument() != nullptr;  // uncomment
+
+  // test also the custom pointer
+
   return ok;
 }
 
