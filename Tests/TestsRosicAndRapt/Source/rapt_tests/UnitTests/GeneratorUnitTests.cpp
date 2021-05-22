@@ -465,14 +465,19 @@ bool samplerEngineUnitTestFileIO()
   ok &= se.getNumActiveLayers() == 1;
   for(int n = 0; n < N; n++)
     se.processFrame(&outL2[n], &outR2[n]);
+  ok &= se.getNumIdleLayers()   == maxLayers;
+  ok &= se.getNumActiveLayers() == 0;
   errL = 0.5f * outL - outL2; ok &= rsIsAllZeros(errL);
-  errR = 0.5f * outR - outR2; ok &= rsIsAllZeros(errR); 
+  errR = 0.5f * outR - outR2; ok &= rsIsAllZeros(errR);
 
-  //rsPlotVectors(outL2, outR2);
-  // looks like the right channel (blue) is the same as the left, but shifted by one sample to the
-  // left
+  // Save instrument to sfz and load it into engine 3:
+  se.saveToSFZ("SineCosine2.sfz");
+  rc = se3.loadFromSFZ("SineCosine2.sfz");
+  ok &= rc == RC::success;
+  nl = se3.getNumSamplesLoaded();  ok &= nl == 1;
+  nr = se3.getNumSamplesRemoved(); ok &= nr == 2;
+  nf = se3.getNumSamplesFailed();  ok &= nf == 0;
 
-  //rsPlotVectors(errL, errR);  // these should both be zero
 
   // ToDo: 
   // -Test using a custom sfz and/or sample directory. Maybe the engine needs members

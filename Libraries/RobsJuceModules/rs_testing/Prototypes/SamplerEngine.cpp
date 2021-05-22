@@ -995,8 +995,7 @@ int rsSamplerEngine::removeSamplesNotUsedIn(const rsSamplerData& sfz)
     const AudioFileStream<float>* sample = samplePool.getSampleStream(i);
     if(!isSampleUsedIn(sample, sfz)) {
       samplePool.removeSample(i);
-      numSamplesRemoved++;
-      i--; }}
+      numSamplesRemoved++; }}
   return numSamplesRemoved;
 }
 
