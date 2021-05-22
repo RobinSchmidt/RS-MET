@@ -27,8 +27,8 @@ void rosic::writeToMonoWaveFile(const std::string& path, double* signal, int num
   writeToMonoWaveFile(path.c_str(), signal, numFrames, sampleRate, numBits);
 }
 
-void rosic::writeToStereoWaveFile(const char* path, double *left, double *right, int numFrames,
-                                  int sampleRate, int numBits)
+void rosic::writeToStereoWaveFile(
+  const char* path, double *left, double *right, int numFrames, int sampleRate, int numBits)
 {
   WavOutFile file(path, sampleRate, numBits, 2);
   float *tmp = new float[2*numFrames];
@@ -40,6 +40,21 @@ void rosic::writeToStereoWaveFile(const char* path, double *left, double *right,
   file.write(tmp, 2*numFrames);
   delete[] tmp;
 }
+void rosic::writeToStereoWaveFile(
+  const char* path, float* left, float* right, int numFrames, int sampleRate, int numBits)
+{
+  WavOutFile file(path, sampleRate, numBits, 2);
+  float *tmp = new float[2*numFrames];
+  for(int n=0; n<numFrames; n++)
+  {
+    tmp[2*n]   = left[n];
+    tmp[2*n+1] = right[n];
+  }
+  file.write(tmp, 2*numFrames);
+  delete[] tmp;
+}
+// code is almost the same as for the double-precision version - maybe templatize and instantiate
+// for float and double to get rid of duplication
 
 float** rosic::readFloatFromWaveFile(
   const char* path, int& numChannels, int& numFrames, int& sampleRate)

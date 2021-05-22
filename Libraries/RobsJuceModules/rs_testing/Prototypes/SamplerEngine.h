@@ -914,6 +914,10 @@ public:
   // maybe rename "success" to "completed" because "success" has actually a more general meaning:
   // "nothingToDo" is also a kind of "success" (or maybe "workDone" or "workCompleted"
 
+
+  /** Clears the sfz instrument definition and the samplePool */
+  void clearInstrument();
+
   /** Adds a new sample to our pool of samples. After the sample has been added, regions can be 
   defined that make use of it. */
   int addSampleToPool(float** data, int numFrames, int numChannels, float sampleRate, 
@@ -1051,6 +1055,9 @@ public:
   /** Returns the number of layers that are currently not playing, i.e. still available for adding
   a new layer to the playback. */
   int getNumIdleLayers() const { return (int) idlePlayers.size(); }
+
+  /** Returns the number of samples that are currently in our samplePool. */
+  int getNumSamples() const { return samplePool.getNumSamples(); }
 
   /** Returns the number of samples that were loaded to the sample pool in the most recent call to
   setupFromSFZ of loadFromSFZ. */
@@ -1379,6 +1386,12 @@ protected:
   int numSamplesRemoved = 0;  /**< Number of samples that were unloaded. */
   int numSamplesLoaded  = 0;  /**< Number of samples that were loaded. */
   int numSamplesFailed  = 0;  /**< Number of samples that failed to load. */
+
+  // These are not yet used - currently, both are assumed to be the project directory (at least
+  // for the unit tests):
+  std::string sfzDir;         /**< Root directory for .sfz files */
+  std::string wavDir;         /**< Root directory for .wav files */
+
 
 
   //int numChannels = 2;

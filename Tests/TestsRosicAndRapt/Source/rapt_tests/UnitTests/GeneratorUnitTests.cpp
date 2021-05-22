@@ -328,6 +328,7 @@ bool samplerEngineUnitTestFileIO()
   }
   rosic::writeToMonoWaveFile("Sin440Hz.wav", &sin440[0], N, (int)fs, 16);
   rosic::writeToMonoWaveFile("Cos440Hz.wav", &cos440[0], N, (int)fs, 16);
+  rosic::writeToStereoWaveFile("SinCos440Hz.wav", &sin440[0], &cos440[0], N, (int)fs, 16);
   // Using "Samples/Sin440Hz.wav" works only, iff the "Samples" folder already exists. ToDo: maybe
   // writeToMonoWaveFile should create it, if it doesn't exist already.
 
@@ -425,23 +426,23 @@ bool samplerEngineUnitTestFileIO()
   ok &= outL2 == outL;
   ok &= outR2 == outR;
 
-  // ToDo:
-  // -create an sfz patch that uses only the sine sample and load it into an engine that has both 
-  //  loaded - the desired behavior is that the engine unloads the cosine an keeps the sine
+  // Create an sfz patch that uses only the cosine sample and load it into an engine that has both 
+  // loaded. The desired behavior is that the engine unloads the sine an keeps the cosine. The 
+  // output of the right channel should still be the cosine and the left channel should be silent:
   si = se.findSampleIndexInPool("Sin440Hz.wav"); ok &= si == 0;
   int n = se.getNumRegionsUsing("Sin440Hz.wav"); ok &= n == 1;
   n = se.unUseSample("Sin440Hz.wav"); ok &= n == 1;
   n = se.unUseSample("Sin440Hz.wav"); ok &= n == 0;
-  //rc = se.removeSample(si);
+  //rc = se.removeSample(si);  // should not really matter for the rest of the test
   se.saveToSFZ("Cosine.sfz");
   // The 1st region in the sfz file now has no sample assigned at all. Maybe unUseSample should 
-  // optionally(!) remove the regions that have an empty sample now, maybe we should also have a 
-  // function to remove all empty regions
+  // optionally(!) remove the regions that have an empty sample now. Maybe we should also have a 
+  // "cleanUp" function that removes all empty regions
 
-  rc = se2.loadFromSFZ("Cosine.sfz");  // load the cosine-only sfz
+  rc = se2.loadFromSFZ("Cosine.sfz");              // Load the cosine-only sfz int se2
   ok &= rc == RC::success;
-  nl = se2.getNumSamplesLoaded();  ok &= nl == 0;
-  nr = se2.getNumSamplesRemoved(); ok &= nr == 1;
+  nl = se2.getNumSamplesLoaded();  ok &= nl == 0;  // requires no samples to be loaed
+  nr = se2.getNumSamplesRemoved(); ok &= nr == 1;  // but one should be removed (the sine)
   nf = se2.getNumSamplesFailed();  ok &= nf == 0;
   se2.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
   ok &= se2.getNumIdleLayers()   == maxLayers-1;
@@ -451,6 +452,34 @@ bool samplerEngineUnitTestFileIO()
   ok &= rsIsAllZeros(outL2);
   ok &= outR2 == outR;
 
+  // Test using a stereo sample:
+  se.clearInstrument();
+  si = se.loadSampleToPool("SinCos440Hz.wav"); ok &= si == 0;
+  ok &= se.getNumSamples() == 1;
+  gi = se.addGroup();   ok &= gi == 0;
+  ri = se.addRegion(0); ok &= ri == 0;
+  rc = se.setRegionSample(0, 0, 0); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  ok &= se.getNumIdleLayers()   == maxLayers-1;
+  ok &= se.getNumActiveLayers() == 1;
+  for(int n = 0; n < N; n++)
+    se.processFrame(&outL2[n], &outR2[n]);
+  errL = 0.5f * outL - outL2; ok &= rsIsAllZeros(errL);
+  //errR = 0.5f * outR - outR2; ok &= rsIsAllZeros(errR);  // fails!
+  rsPlotVectors(outL2, outR2);
+  // looks like the right channel (blue) is the same as the left, but shifted by one sample to the
+  // left
+
+  //rsPlotVectors(errL, errR);  // these should both be zero
+
+  // ToDo: 
+  // -Test using a custom sfz and/or sample directory. Maybe the engine needs members
+  //  sfzDir, wavDir. If they are empty, the project folder is used by default, but that's not how
+  //  it should work in ToolChain. Perhaps, in ToolChain, we need to re-implement the loading 
+  //  anyway in order to support more file formats. For the moment, we can only use 16 bit wav.
+  //  ...or maybe use the TinyWav library? ...but we also want .flac
+  // -Test using stereo files
 
 
   rsAssert(ok);

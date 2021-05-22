@@ -18,9 +18,11 @@ void writeToMonoWaveFile(const char* path, double* signal, int numFrames, int sa
 void writeToMonoWaveFile(const std::string& path, double* signal, int numFrames, int sampleRate,
   int numBits = 16);
 
-
 /** Writes a stereo signal into a wavefile. */
 void writeToStereoWaveFile(const char* path, double* left, double* right, int numFrames,
+  int sampleRate, int numBits = 16);
+
+void writeToStereoWaveFile(const char* path, float* left, float* right, int numFrames,
   int sampleRate, int numBits = 16);
 
 /** Reads audio-data from a wavefile and returns a pointer to the data. When you access the data

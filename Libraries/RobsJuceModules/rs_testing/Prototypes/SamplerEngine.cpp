@@ -538,6 +538,13 @@ rsSamplerEngine::~rsSamplerEngine()
 //-------------------------------------------------------------------------------------------------
 // Setup:
 
+void rsSamplerEngine::clearInstrument() 
+{ 
+  sfz.clearInstrument(); 
+  samplePool.clear();
+  setupRegionsForKey();   // clears regionsForKey array
+}
+
 int rsSamplerEngine::addSampleToPool(
   float** data, int numFrames, int numChannels, float sampleRate, const std::string& path)
 {
@@ -572,10 +579,10 @@ int rsSamplerEngine::loadSampleToPool(const std::string& path)
   int rc = addSampleToPool(data, numFrames, numChannels, (float) sampleRate, path);
 
   // Clean up data (todo: wrap into utility function - there is actually already one):
-  for(int c = 0; c < numChannels; c++)
-    delete[] data[c];
+  //for(int c = 0; c < numChannels; c++)
+  //  delete[] data[c];
+  delete[] data[0];
   delete[] data;
-
   return rc;
 }
 
@@ -1067,7 +1074,6 @@ void rsSamplerEngine::setupRegionsForKey()
       Region* r = g.getRegion((int)ri);  // the conversion is unelegant - try to get rid
       for(uchar k = 0; k < numKeys; k++)
         addRegionForKey(k, r); }}
-  int dummy = 0;
 }
 
 //-------------------------------------------------------------------------------------------------
