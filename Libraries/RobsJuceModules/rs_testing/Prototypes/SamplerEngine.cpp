@@ -71,14 +71,6 @@ void SamplePool<T>::clear()
 //-------------------------------------------------------------------------------------------------
 // rsSamplerData:
 
-int rsSamplerData::addGroup()
-{
-  return instrument.addGroup();
-  //Group* g = new Group;
-  //instrument.groups.push_back(g);
-  //return ((int) instrument.groups.size()) - 1;
-}
-
 int rsSamplerData::addRegion(int gi, uchar loKey, uchar hiKey)
 {
   if(gi < 0 || gi >= (int)instrument.groups.size()) {
@@ -88,6 +80,26 @@ int rsSamplerData::addRegion(int gi, uchar loKey, uchar hiKey)
   return ri;
 }
 
+void rsSamplerData::OrganizationLevel::copyDataFrom(const OrganizationLevel* lvl)
+{
+  samplePath = lvl->samplePath;
+  settings   = lvl->settings;
+
+  // not sure, if the pointers should be copied - maybe not:
+  //custom = lvl->custom;
+  //parent = lvl->parent;
+}
+
+void rsSamplerData::Region::copyDataFrom(const Region* src)
+{
+  rsSamplerData::OrganizationLevel::copyDataFrom(src);
+  loKey = src->loKey;
+  hiKey = src->hiKey;
+  loVel = src->loVel;
+  hiVel = src->hiVel;
+  int dummy = 0;
+}
+
 bool rsSamplerData::Region::operator==(const rsSamplerData::Region& rhs) const 
 { 
   bool equal = settings == rhs.settings;
@@ -95,6 +107,7 @@ bool rsSamplerData::Region::operator==(const rsSamplerData::Region& rhs) const
   equal &= hiKey == rhs.hiKey;
   equal &= loVel == rhs.loVel;
   equal &= hiVel == rhs.hiVel;
+  equal &= samplePath == rhs.samplePath;
   return equal;
   // What about the customPointer? should we require that to be equal, too?
 }
@@ -107,6 +120,25 @@ int rsSamplerData::Group::addRegion(uchar loKey, uchar hiKey)
   r->setHiKey(hiKey);
   regions.push_back(r);
   return ((int) regions.size()) - 1;
+}
+
+void rsSamplerData::Group::copyDataFrom(const Group* src)
+{
+  rsSamplerData::OrganizationLevel::copyDataFrom(src);
+  clearRegions();
+  settings = src->getSettings();
+  for(size_t i = 0; i < src->getNumRegions(); i++) {
+    const rsSamplerData::Region* srcRegion = src->getRegion((int)i);
+    rsSamplerData::Region* dstRegion = new rsSamplerData::Region;
+    dstRegion->copyDataFrom(srcRegion);
+    regions.push_back(dstRegion); }
+}
+
+void rsSamplerData::Group::clearRegions()
+{
+  for(size_t i = 0; i < regions.size(); i++)
+    delete regions[i];
+  regions.clear();
 }
 
 int rsSamplerData::Group::getRegionIndex(const rsSamplerData::Region* region) const
@@ -126,13 +158,6 @@ rsSamplerData::Region* rsSamplerData::Group::getRegion(int i) const
   return regions[i];
 }
 
-void rsSamplerData::Group::clearRegions()
-{
-  for(size_t i = 0; i < regions.size(); i++)
-    delete regions[i];
-  regions.clear();
-}
-
 bool rsSamplerData::Group::operator==(const rsSamplerData::Group& rhs) const 
 { 
   bool equal = settings == rhs.settings;
@@ -145,8 +170,12 @@ bool rsSamplerData::Group::operator==(const rsSamplerData::Group& rhs) const
 
 int rsSamplerData::Instrument::addGroup()
 {
-  //rsSamplerData::Group g;
   rsSamplerData::Group* g = new rsSamplerData::Group;
+  return addGroup(g);
+}
+
+int rsSamplerData::Instrument::addGroup(rsSamplerData::Group* g)
+{
   g->parent = this;
   groups.push_back(g);
   return ((int) groups.size()) - 1;
@@ -465,8 +494,14 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
 
 void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
 {
-
-
+  dst.clearInstrument();
+  for(size_t i = 0; i < src.getNumGroups(); i++)
+  {
+    const Group* srcGroup = src.getGroupPtr(i);
+    Group* dstGroup = new Group;
+    dstGroup->copyDataFrom(srcGroup);
+    dst.addGroup(dstGroup);
+  }
   int dummy = 0;
 }
 

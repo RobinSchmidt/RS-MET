@@ -485,6 +485,9 @@ public:
     void setSamplePath(const std::string& newPath) { samplePath = newPath; }
 
 
+    void copyDataFrom(const OrganizationLevel* lvl);
+
+
 
     /** @see setSample */
     const std::string& getSamplePath() const { return samplePath; }
@@ -564,6 +567,16 @@ public:
 
   public:
 
+
+
+    void setLoKey(uchar newKey) { loKey = newKey; }
+
+    void setHiKey(uchar newKey) { hiKey = newKey; }
+
+
+    void copyDataFrom(const Region* src);
+
+
     /** Return a pointer to the group to which this region belongs. */
     const Group* getGroup() const { return (const Group*) getParent(); }
     // rename to getParentGroup or getEnclosingGroup
@@ -571,9 +584,7 @@ public:
     //const Group* getGroup() const { return group; }
     // todo: return (const Group*) getParentLevel();
 
-    void setLoKey(uchar newKey) { loKey = newKey; }
 
-    void setHiKey(uchar newKey) { hiKey = newKey; }
 
     /** Returns the lowest key at which this region will be played. */
     uchar getLoKey() const { return loKey; }
@@ -638,6 +649,15 @@ public:
 
     ~Group() { clearRegions(); }
 
+
+    int addRegion(uchar loKey = 0, uchar hiKey = 127);      // todo: removeRegion, etc.
+
+    void copyDataFrom(const Group* scrGroup);
+
+    void clearRegions();
+
+
+
     /** Returns the index of the given region within this group, if present or -1 if the region is
     not present in this group. */
     int getRegionIndex(const Region* region) const;
@@ -665,10 +685,7 @@ public:
   private:
 
 
-    // maybe move to public
-    int addRegion(uchar loKey = 0, uchar hiKey = 127);      // todo: removeRegion, etc.
 
-    void clearRegions();
 
     //std::vector<Region> regions;
     std::vector<Region*> regions;
@@ -709,6 +726,10 @@ public:
 
     // maybe move to public
     int addGroup();      // todo: removeGroup, etc.
+
+    int addGroup(Group* g);
+
+
     void clearGroups();
 
 
@@ -727,7 +748,10 @@ public:
   // and there should match and rsSamplerEngine should call functions from here and perhaps do
   // additional stuff, if necessary
 
-  int addGroup();
+  int addGroup() { return instrument.addGroup(); }
+
+  int addGroup(Group* newGroup) { return instrument.addGroup(newGroup); }
+
 
   int addRegion(int gi, uchar loKey = 0, uchar hiKey = 127);
 
@@ -763,6 +787,9 @@ public:
 
   const Group& getGroupRef(size_t i) const { return *instrument.groups[i]; }
   // replace by getGroupPtr ..maybe renma to just getGroup
+
+
+  const Group* getGroupPtr(size_t i) const { return instrument.groups[i]; }
 
   const Region* getRegionPtr(size_t gi, size_t ri) const 
   { return instrument.groups[gi]->regions[ri]; }

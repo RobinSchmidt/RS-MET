@@ -25,8 +25,11 @@ bool samplerDataUnitTest()
   ri = d1.addRegion(1); ok &= ri == 2;
 
   // Test assignment operator:
-  SD d2 = d1; // copy assign
-  SD d3(d1);  // copy construct
+  SD d2 = d1; ok &= d2 == d1; // copy assign
+  SD d3(d1);  ok &= d3 == d1; // copy construct
+  ok &= d2 == d3;             // equality should be transitive
+
+
 
   // this triggers an assert - the assignment operator needs to be implemented differently
   // ..or better: avoid using pointers and new operator for adding regions
