@@ -337,6 +337,7 @@ bool samplerEngineUnitTestFileIO()
   int si;                                            // sample index
   si = se.loadSampleToPool("Sin440Hz.wav"); ok &= si == 0;
   si = se.loadSampleToPool("Cos440Hz.wav"); ok &= si == 1;
+  si = se.loadSampleToPool("Sin440Hz.wav"); ok &= si == RC::nothingToDo; // already there
 
   // Add a group and to that group, add regions for the sine and cosine:
   int gi, ri, rc;                                    // group index, region index, return code
@@ -383,6 +384,9 @@ bool samplerEngineUnitTestFileIO()
   SE se2(maxLayers);
   rc = se2.loadFromSFZ("SineCosine.sfz");
   ok &= rc == RC::success;
+  si = se2.loadSampleToPool("Sin440Hz.wav"); ok &= si == RC::nothingToDo;
+  si = se2.loadSampleToPool("Cos440Hz.wav"); ok &= si == RC::nothingToDo;
+
 
   // To test, if se2 has really the same instrument definition as se, produce output and compare. 
   // That's not fool-proof though, but anyway:
@@ -397,9 +401,28 @@ bool samplerEngineUnitTestFileIO()
   ok &= outL2 == outL;
   ok &= outR2 == outR;
 
+  // Test, if it also works when the engine already has some of the samples in its pool already. We
+  // create a 3rd, fresh engine object and load the sine sample and the load the sfz. The desired
+  // behavior is that loading the sfz only triggers the cosine sample to be loaded to the pool. The
+  // sine sample is already there and should not be unloaded and then reloaded. We don't really 
+  // have a way to check that automatically, though
+  SE se3(maxLayers);
+  si = se3.loadSampleToPool("Sin440Hz.wav"); ok &= si == 0;
+  rc = se3.loadFromSFZ("SineCosine.sfz");
+  ok &= rc == RC::success;
+  se3.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  ok &= se3.getNumIdleLayers()   == maxLayers-2;
+  ok &= se3.getNumActiveLayers() == 2;
+  for(int n = 0; n < N; n++)
+    se3.processFrame(&outL2[n], &outR2[n]);
+  ok &= se3.getNumIdleLayers()   == maxLayers;
+  ok &= se3.getNumActiveLayers() == 0;
+  ok &= outL2 == outL;
+  ok &= outR2 == outR;
 
-  // ToDo: test, if it also works when the engine already has some of the samples in its pool 
-  // already
+
+
+
 
 
   rsAssert(ok);

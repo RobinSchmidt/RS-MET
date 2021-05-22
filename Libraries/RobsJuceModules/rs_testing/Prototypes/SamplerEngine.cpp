@@ -624,6 +624,11 @@ int rsSamplerEngine::setupFromSFZ(const rsSamplerData& newSfz)
     return ReturnCode::fileLoadError;  
     // ToDo: be more specific about the error condition
 
+  // Maybe have state variables numSamplesAdded, numSamplesRemoved that can be inquired from client
+  // code. this is useful mainly for unit tests but maybe it makes sense to display such info on 
+  // the GUI, too, so the user has some feedback about what patches have a lot of samples in common
+
+
   // This function needs to be mutexed with anything that accesses the stream-pointers in the sfz
   // objects
 }
@@ -808,17 +813,17 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
   return rp;
 }
 
-bool rsSamplerEngine::isSampleUsedIn(const AudioFileStream<float>* sample, const rsSamplerData& sfz)
+bool rsSamplerEngine::isSampleUsedIn(
+  const AudioFileStream<float>* stream, const rsSamplerData& sfz)
 {
+  const std::string& streamPath = stream->getPath();
   for(size_t gi = 0; gi < sfz.getNumGroups(); gi++) {
     const Group& g = sfz.getGroupRef(gi);
     for(size_t ri = 0; ri < g.getNumRegions(); ri++) {
       Region* r = g.getRegion((int)ri);        // the conversion is unelegant - try to get rid
-      const void* ptr = r->getCustomPointer();
-      if(ptr != nullptr) {
-        const AudioFileStream<float>* regionSample = (const AudioFileStream<float>*)ptr;
-        if(regionSample->usesSameFile(sample))
-          return true; }}}
+      const std::string& regionPath = r->getSamplePath();
+      if(regionPath == streamPath)
+        return true; }}
   return false;
 }
 
@@ -1051,9 +1056,7 @@ bool rsSamplerEngine::RegionPlayer::isPlayable(const Region* region)
   ok &= region != nullptr;
   ok &= region->getGroup() != nullptr;
   ok &= region->getGroup()->getInstrument() != nullptr;
-
-  // test also the custom pointer
-
+  ok &= region->getCustomPointer() != nullptr;           // should point to a stream object
   return ok;
 }
 
@@ -1079,7 +1082,7 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay(double fs)
   // (3) set up region specific settings (this may override group and/or instrument settings)
   resetDspState();        // Needs to be done after building the chain
   resetDspSettings();     // Reset all DSP settings to default values
-  //setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs); // uncomment!
+  setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs);
   setupDspSettings(region->getGroup()->getSettings(), fs);
   setupDspSettings(region->getSettings(), fs);
 
