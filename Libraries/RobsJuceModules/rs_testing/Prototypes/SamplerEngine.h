@@ -652,6 +652,8 @@ public:
 
     int addRegion(uchar loKey = 0, uchar hiKey = 127);      // todo: removeRegion, etc.
 
+    int addRegion(Region* newRegion); 
+
     void copyDataFrom(const Group* scrGroup);
 
     void clearRegions();

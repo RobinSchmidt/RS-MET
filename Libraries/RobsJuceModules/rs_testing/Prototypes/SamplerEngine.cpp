@@ -115,9 +115,14 @@ bool rsSamplerData::Region::operator==(const rsSamplerData::Region& rhs) const
 int rsSamplerData::Group::addRegion(uchar loKey, uchar hiKey)
 {
   rsSamplerData::Region* r = new rsSamplerData::Region;
-  r->parent = this;
   r->setLoKey(loKey);
   r->setHiKey(hiKey);
+  return addRegion(r);
+}
+
+int rsSamplerData::Group::addRegion(Region* r)
+{
+  r->parent = this;
   regions.push_back(r);
   return ((int) regions.size()) - 1;
 }
@@ -127,14 +132,11 @@ void rsSamplerData::Group::copyDataFrom(const Group* src)
   rsSamplerData::OrganizationLevel::copyDataFrom(src);
   clearRegions();
   settings = src->getSettings();
-  for(size_t i = 0; i < src->getNumRegions(); i++) 
-  {
+  for(size_t i = 0; i < src->getNumRegions(); i++) {
     const rsSamplerData::Region* srcRegion = src->getRegion((int)i);
     rsSamplerData::Region* dstRegion = new rsSamplerData::Region;
-    dstRegion->parent = this;
     dstRegion->copyDataFrom(srcRegion);
-    regions.push_back(dstRegion); 
-  }
+    addRegion(dstRegion); }
 }
 
 void rsSamplerData::Group::clearRegions()
@@ -1048,7 +1050,7 @@ bool rsSamplerEngine::RegionPlayer::isPlayable(const Region* region)
   bool ok = true;
   ok &= region != nullptr;
   ok &= region->getGroup() != nullptr;
-  //ok &= region->getGroup()->getInstrument() != nullptr;  // uncomment
+  ok &= region->getGroup()->getInstrument() != nullptr;
 
   // test also the custom pointer
 
