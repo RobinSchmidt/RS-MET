@@ -432,10 +432,18 @@ bool samplerEngineUnitTestFileIO()
   int n = se.getNumRegionsUsing("Sin440Hz.wav"); ok &= n == 1;
   n = se.unUseSample("Sin440Hz.wav"); ok &= n == 1;
   n = se.unUseSample("Sin440Hz.wav"); ok &= n == 0;
-  
-  // should set all regions that use that sample to no sample
-
   //rc = se.removeSample(si);
+  se.saveToSFZ("Cosine.sfz");
+  // The 1st region in the sfz file now has no sample assigned at all. Maybe unUseSample should 
+  // optionally(!) remove the regions that have an empty sample now, maybe we should also have a 
+  // function to remove all empty regions
+
+  rc = se2.loadFromSFZ("Cosine.sfz");  // load the cosine-only sfz
+  ok &= rc == RC::success;
+  nl = se2.getNumSamplesLoaded();  ok &= nl == 0;
+  nr = se2.getNumSamplesRemoved(); ok &= nr == 1;
+  nf = se2.getNumSamplesFailed();  ok &= nf == 0;
+
 
 
   rsAssert(ok);

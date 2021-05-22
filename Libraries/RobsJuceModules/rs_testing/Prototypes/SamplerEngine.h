@@ -678,6 +678,7 @@ public:
     /** Returns a pointer to the region with the given index within the group. */
     Region* getRegion(int i) const;
     // rename to getRegionPointer or Ptr
+    // return a const pointer
 
 
     bool operator==(const Group& rhs) const;
@@ -1006,6 +1007,8 @@ public:
   engine's back because the engine may have to take additional actions when certain aspects of a 
   region change. This is actually enforced by the fact that Region provides no public setters. */
   Region* getRegion(int groupIndex, int regionIndex);
+
+  const Region* getRegionConst(int gi, int ri) const { return sfz.getRegionPtr(gi, ri); }
 
   /** Returns the number of regions in the instrument definition that use the sample with the given
   index in out samplePool or ReturnCode::invalidIndex, if the given sampleIndex is invalid. */

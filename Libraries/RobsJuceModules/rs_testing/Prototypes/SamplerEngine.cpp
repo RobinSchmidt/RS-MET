@@ -608,6 +608,9 @@ int rsSamplerEngine::unUseSample(const std::string& samplePath)
   return unUseSample(i);
 }
 
+// todo: implement removeSample - should call unUseSample before actually removing the sample from 
+// the pool to avoid dangling pointers
+
 int rsSamplerEngine::addRegion(int gi, uchar loKey, uchar hiKey)
 {
   int ri = sfz.addRegion(gi, loKey, hiKey);
@@ -697,10 +700,9 @@ int rsSamplerEngine::getNumRegionsUsing(int i) const
   int numRegions = 0;
   using StreamPtr = const AudioFileStream<float>*;
   StreamPtr stream = samplePool.getSampleStream(i);
-  for(int gi = 0; gi < (int)sfz.getNumGroups(); gi++){
-    const Group* g = sfz.getGroupPtr(gi);
-    for(int ri = 0; ri < g->getNumRegions(); ri++) {
-      const Region* r = g->getRegion(ri);
+  for(int gi = 0; gi < getNumGroups(); gi++){
+    for(int ri = 0; ri < getNumRegions(gi); ri++) {
+      const Region* r = getRegionConst(gi, ri);
       StreamPtr regionStream = (StreamPtr) r->getCustomPointer();
       if(regionStream == stream)
         numRegions++; }}
@@ -989,6 +991,10 @@ int rsSamplerEngine::removeSamplesNotUsedIn(const rsSamplerData& sfz)
 
 int rsSamplerEngine::addSamplesUsedIn(const rsSamplerData& sfz)
 {
+  auto isValidSamplePath = [](const std::string& path) { return !path.empty(); };
+  // -maybe make this a member function
+  // -maybe add more sophisticated tests (but not too costly stuff to not slow down loading)
+
   numSamplesLoaded = 0;
   numSamplesFailed = 0;
   bool allOK = true;
@@ -997,7 +1003,7 @@ int rsSamplerEngine::addSamplesUsedIn(const rsSamplerData& sfz)
     for(size_t ri = 0; ri < g.getNumRegions(); ri++) {
       Region* r = g.getRegion((int)ri);     // the conversion is unelegant - try to get rid
       const std::string& path = r->getSamplePath();
-      if(!isSampleInPool(path)) {
+      if(isValidSamplePath(path) && !isSampleInPool(path)) {
         int rc = loadSampleToPool(path);
         if(rc >= 0)
           numSamplesLoaded++;
@@ -1014,6 +1020,9 @@ int rsSamplerEngine::setupAudioStreams()
   // Function to connect a Region object with one of our stream objects:
   auto setupStream = [this](Region* r, const std::string& path)
   {
+    if(path.empty()) {
+      r->setCustomPointer(nullptr);
+      return true; }
     int si = findSampleIndexInPool(path);
     if(si == -1)
       return false;
