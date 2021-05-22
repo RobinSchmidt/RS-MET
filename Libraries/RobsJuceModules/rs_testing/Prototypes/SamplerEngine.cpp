@@ -61,6 +61,15 @@ void AudioFileStreamPreloaded<T>::clear()
 //-------------------------------------------------------------------------------------------------
 
 template<class T>
+int SamplePool<T>::findSample(const std::string& path) const
+{
+  for(size_t i = 0; i < samples.size(); i++) {
+    if(samples[i]->getPath() == path)
+      return (int) i; }
+  return -1;
+}
+
+template<class T>
 void SamplePool<T>::clear()
 {
   for(size_t i = 0; i < samples.size(); i++)
@@ -570,11 +579,6 @@ int rsSamplerEngine::loadSampleToPool(const std::string& path)
   return rc;
 }
 
-int rsSamplerEngine::addGroup()
-{
-  return sfz.addGroup();
-}
-
 int rsSamplerEngine::addRegion(int gi, uchar loKey, uchar hiKey)
 {
   int ri = sfz.addRegion(gi, loKey, hiKey);
@@ -624,7 +628,8 @@ int rsSamplerEngine::setupFromSFZ(const rsSamplerData& newSfz)
     return ReturnCode::fileLoadError;  
     // ToDo: be more specific about the error condition
 
-  // Maybe have state variables numSamplesAdded, numSamplesRemoved that can be inquired from client
+  // Maybe have state variables numSamplesAdded, numSamplesRemoved, numSamplesNotFound that can be 
+  // inquired from client
   // code. this is useful mainly for unit tests but maybe it makes sense to display such info on 
   // the GUI, too, so the user has some feedback about what patches have a lot of samples in common
 
@@ -651,13 +656,44 @@ rsSamplerEngine::Region* rsSamplerEngine::getRegion(int groupIndex, int regionIn
   int gi = groupIndex, ri = regionIndex;
   if(gi < 0 || gi >= (int)sfz.instrument.groups.size()) {
     rsError("Invalid group index");
-    return nullptr; 
-  }
+    return nullptr; }
   return sfz.instrument.groups[gi]->getRegion(ri);
+}
+
+int rsSamplerEngine::getNumRegionsUsing(int i) const
+{
+  if(i < 0 || i >= samplePool.getNumSamples()){
+    rsError("Invalid sample index");
+    return ReturnCode::invalidIndex; }
+  int numRegions = 0;
+  using StreamPtr = const AudioFileStream<float>*;
+  StreamPtr stream = samplePool.getSampleStream(i);
+  for(int gi = 0; gi < (int)sfz.getNumGroups(); gi++){
+    const Group* g = sfz.getGroupPtr(gi);
+    for(int ri = 0; ri < g->getNumRegions(); ri++) {
+      const Region* r = g->getRegion(ri);
+      StreamPtr regionStream = (StreamPtr) r->getCustomPointer();
+      if(regionStream == stream)
+        numRegions++; }}
+  return numRegions;
+
+  // todo: maybe try to implement a sort of "forAllRegions" macro that implements the boildplate to
+  // loop over all regions once and for all
+}
+
+int rsSamplerEngine::getNumRegionsUsing(const std::string& samplePath) const
+{
+  int i = findSampleIndexInPool(samplePath);
+  if(i == -1) 
+    return 0;
+  return getNumRegionsUsing(i);
 }
 
 int rsSamplerEngine::findSampleIndexInPool(const std::string& sample) const
 {
+  return samplePool.findSample(sample);
+
+  /*
   for(int i = 0; i < samplePool.getNumSamples(); i++)
   {
     //const std::string& poolSample = samplePool.getSamplePath(i);
@@ -666,6 +702,7 @@ int rsSamplerEngine::findSampleIndexInPool(const std::string& sample) const
       return i;
   }
   return -1;
+  */
   // ToDo: 
   // -factor out the implementation into the SamplePool class, so we can just do:
   //  return samplePool.findSample(sample) 
@@ -911,19 +948,20 @@ int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
 
 int rsSamplerEngine::removeSamplesNotUsedIn(const rsSamplerData& sfz)
 {
-  int numRemoved = 0;
+  numSamplesRemoved = 0;
   for(int i = samplePool.getNumSamples()-1; i >= 0; i--) {
     const AudioFileStream<float>* sample = samplePool.getSampleStream(i);
     if(!isSampleUsedIn(sample, sfz)) {
       samplePool.removeSample(i);
-      numRemoved++;
+      numSamplesRemoved++;
       i--; }}
-  return numRemoved;
+  return numSamplesRemoved;
 }
 
 int rsSamplerEngine::addSamplesUsedIn(const rsSamplerData& sfz)
 {
-  int numAdded = 0;
+  numSamplesLoaded = 0;
+  numSamplesFailed = 0;
   bool allOK = true;
   for(size_t gi = 0; gi < sfz.getNumGroups(); gi++) {
     const Group& g = sfz.getGroupRef(gi);
@@ -933,11 +971,11 @@ int rsSamplerEngine::addSamplesUsedIn(const rsSamplerData& sfz)
       if(!isSampleInPool(path)) {
         int rc = loadSampleToPool(path);
         if(rc >= 0)
-          numAdded++;
+          numSamplesLoaded++;
         else
-          allOK = false; }}}
-  if(allOK)
-    return numAdded;
+          numSamplesFailed++; }}}
+  if(numSamplesFailed == 0)
+    return numSamplesLoaded;
   else
     return ReturnCode::fileLoadError;
 }

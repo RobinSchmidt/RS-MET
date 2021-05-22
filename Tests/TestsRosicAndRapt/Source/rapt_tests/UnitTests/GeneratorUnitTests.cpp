@@ -386,7 +386,9 @@ bool samplerEngineUnitTestFileIO()
   ok &= rc == RC::success;
   si = se2.loadSampleToPool("Sin440Hz.wav"); ok &= si == RC::nothingToDo;
   si = se2.loadSampleToPool("Cos440Hz.wav"); ok &= si == RC::nothingToDo;
-
+  int nl = se2.getNumSamplesLoaded();  ok &= nl == 2;
+  int nr = se2.getNumSamplesRemoved(); ok &= nr == 0;
+  int nf = se2.getNumSamplesFailed();  ok &= nf == 0;
 
   // To test, if se2 has really the same instrument definition as se, produce output and compare. 
   // That's not fool-proof though, but anyway:
@@ -410,6 +412,9 @@ bool samplerEngineUnitTestFileIO()
   si = se3.loadSampleToPool("Sin440Hz.wav"); ok &= si == 0;
   rc = se3.loadFromSFZ("SineCosine.sfz");
   ok &= rc == RC::success;
+  nl = se3.getNumSamplesLoaded();  ok &= nl == 1;
+  nr = se3.getNumSamplesRemoved(); ok &= nr == 0;
+  nf = se3.getNumSamplesFailed();  ok &= nf == 0;
   se3.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
   ok &= se3.getNumIdleLayers()   == maxLayers-2;
   ok &= se3.getNumActiveLayers() == 2;
@@ -420,9 +425,16 @@ bool samplerEngineUnitTestFileIO()
   ok &= outL2 == outL;
   ok &= outR2 == outR;
 
+  // ToDo:
+  // -create an sfz patch that uses only the sine sample and load it into an engine that has both 
+  //  loaded - the desired behavior is that the engine unloads the cosine an keeps the sine
+  si = se.findSampleIndexInPool("Sin440Hz.wav"); ok &= si == 0;
+  int n = se.getNumRegionsUsing("Sin440Hz.wav"); ok &= n == 1;
 
 
 
+  // n = unUse("Sin440.wav"); // should set all regions that use that sample to no sample
+  //rc = se.removeSample(si);
 
 
   rsAssert(ok);

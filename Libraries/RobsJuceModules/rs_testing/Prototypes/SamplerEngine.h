@@ -293,9 +293,10 @@ public:
   /** Returns the number of samples in this pool. */
   int getNumSamples() const { return (int)samples.size(); }
 
-
   /** Returns true, if the given index i refers to a valid sample index. */
   bool isSampleIndexValid(int i) const { return i >= 0 && i < (int)samples.size(); }
+
+  int findSample(const std::string& path) const;
 
 
   const AudioFileStream<T>* getSampleStream(int i) const
@@ -933,10 +934,8 @@ public:
   ToDo: verify return codes in unit test  */
   int loadSampleToPool(const std::string& path);
 
-
-
   /** Adds a new group to the instrument definition and returns the index of the group. */
-  int addGroup();
+  int addGroup() { return sfz.addGroup(); }
 
   /** Adds a new region to the group with the given index and returns the index of the region 
   within the group or ReturnCode::invalidIndex, if the passed groupIndex was invalid. If the key 
@@ -1000,6 +999,12 @@ public:
   region change. This is actually enforced by the fact that Region provides no public setters. */
   Region* getRegion(int groupIndex, int regionIndex);
 
+  /** Returns the number of regions in the instrument definition that use the sample with the given
+  index in out samplePool or ReturnCode::invalidIndex, if the given sampleIndex is invalid. */
+  int getNumRegionsUsing(int sampleIndex) const;
+
+  int getNumRegionsUsing(const std::string& samplePath) const;
+
   // getGroup, getRegion, getStateAsSFZ, isSampleInPool, getNumGroups, getNumRegionsInGroup(int)
   // getNumRegions(), getSampleIndex(const string& uniqueName) ..or maybe it should take a pointer
   // to a SampleMetaData object
@@ -1027,17 +1032,34 @@ public:
   bool isSampleInPool(const std::string& sample) const
   { return findSampleIndexInPool(sample) != -1; }
 
-
+  /** Returns the maximum number of layers that can play simultaneously. */
   int getMaxNumLayers() const { return (int) playerPool.size(); }
 
+  /** Returns the number of currently playing layers. */
   int getNumActiveLayers() const { return (int) activePlayers.size(); }
 
+  /** Returns the number of layers that are currently not playing, i.e. still available for adding
+  a new layer to the playback. */
   int getNumIdleLayers() const { return (int) idlePlayers.size(); }
+
+  /** Returns the number of samples that were loaded to the sample pool in the most recent call to
+  setupFromSFZ of loadFromSFZ. */
+  int getNumSamplesLoaded() const { return numSamplesLoaded; }
+
+  /** Returns the number of samples that were removed from the sample pool in the most recent call 
+  to setupFromSFZ of loadFromSFZ. */
+  int getNumSamplesRemoved() const { return numSamplesRemoved; }
+
+  /** Returns the number of samples that failed to load to the sample pool in the most recent call 
+  to setupFromSFZ of loadFromSFZ. */
+  int getNumSamplesFailed() const { return numSamplesFailed; }
 
   /** Returns a const pointer to the rsSamplerData object that represents the current instrument
   settings. */
   const rsSamplerData& getInstrumentData() const { return sfz; }
     
+
+
 
 
 
@@ -1342,6 +1364,12 @@ protected:
 
   double sampleRate = 44100.0;
   /**< Sample rate at which this object runs. */
+
+  // Some info that can be inquired from client code after loading a new sfz file:
+  int numSamplesRemoved = 0;  /**< Number of samples that were unloaded. */
+  int numSamplesLoaded  = 0;  /**< Number of samples that were loaded. */
+  int numSamplesFailed  = 0;  /**< Number of samples that failed to load. */
+
 
   //int numChannels = 2;
   /**< The number of output channels. By default, we have two channels, i.e. a stereo output. */
