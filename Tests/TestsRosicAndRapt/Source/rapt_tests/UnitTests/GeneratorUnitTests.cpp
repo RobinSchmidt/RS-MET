@@ -466,8 +466,9 @@ bool samplerEngineUnitTestFileIO()
   for(int n = 0; n < N; n++)
     se.processFrame(&outL2[n], &outR2[n]);
   errL = 0.5f * outL - outL2; ok &= rsIsAllZeros(errL);
-  //errR = 0.5f * outR - outR2; ok &= rsIsAllZeros(errR);  // fails!
-  rsPlotVectors(outL2, outR2);
+  errR = 0.5f * outR - outR2; ok &= rsIsAllZeros(errR); 
+
+  //rsPlotVectors(outL2, outR2);
   // looks like the right channel (blue) is the same as the left, but shifted by one sample to the
   // left
 

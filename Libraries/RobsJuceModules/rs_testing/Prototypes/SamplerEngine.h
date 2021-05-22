@@ -1413,39 +1413,6 @@ protected:
 
 //=================================================================================================
 
-/** A class for setting up an object of class rsSamplerEngine according to a string representing
-an .sfz file. */
-
-class rsSamplerEngineLoaderSFZ  // maybe rename to Serializer
-{
-
-public:
-
-  /** Sets up the given rsSamplerEngine object according to the given string which is supposed to
-  represent the contents of an .sfz file. */
-  static void setFromSFZ(rsSamplerEngine* engine, const std::string& sfzFileContents);
-  // todo: return a return-code, including unknownOpcode, invalidValue, invalidIndex, ...
-
-  /** Given an rsSamplerData object, this function produces the string that represents the settings in
-  an sfz-file compliant format, i.e. a string that can be written into an .sfz file. */
-  static std::string getAsSFZ(const rsSamplerData& sfz); 
-
-};
-
-// hmmm...maybe this additional class will not be needed after all - provide de/serialize in
-// rsSamplerData and maybe also in rsSamplerEngine, where serialize just forwards to sfz.serialize and
-// deserialize may have to take additional actions
-// Maybe this should not be a separate class and rsSamplerEngine should just have a pair of 
-// functions getAsSFZ/setFromSFZ. We'll see, how complex the code gets. If it's not too complex,
-// integrate it into rsSamplerEngine. Or maybe the code should go into rsSamplerData...at least, the
-// code related to generating and parsing sfz strings, maybe not the code related to actually
-// setting up the engine object such that the rsSamplerData remains independent from rsSamplerEngine.
-
-
-
-
-//=================================================================================================
-
 /** Subclass that contains some extra functions that facilitate testing which should not go into 
 the production code. */
 class rsSamplerEngineTest : public rsSamplerEngine

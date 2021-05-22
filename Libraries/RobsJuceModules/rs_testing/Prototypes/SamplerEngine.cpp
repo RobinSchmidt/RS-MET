@@ -27,8 +27,9 @@ bool AudioFileStreamPreloaded<T>::setData(
   for(int c = 0; c < numChannelsMin; c++) 
     for(int n = 0; n < numFrames; n++)
       flatData[c*numFrames + n] = newData[c][n];
-  for(int c = 0; c < numStreamChannels; c++)
-    channelPointers[c] = &flatData[c % numChannelsMin];
+  for(int c = 0; c < numStreamChannels; c++) {
+    int channelStart = (c % numChannelsMin) * numFrames;
+    channelPointers[c] = &flatData[channelStart]; }
 
   // Update metadata members and report success:
   this->numChannels = numStreamChannels;
@@ -1299,38 +1300,6 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   //  We may need inquiry functions such as hasFilter, hasAmpEnv, hasPitchEnv, hasFilterEnv, 
   //  hasPitchLFO. But this makes things more complicated, so maybe it's not really a good idea.
 }
-
-//=================================================================================================
-/*
-void rsSamplerEngineLoaderSFZ::setFromSFZ(rsSamplerEngine* se, const std::string& str)
-{
-
-
-}
-
-std::string rsSamplerEngineLoaderSFZ::getAsSFZ(const rsSamplerData& sfz)
-{
-  std::string str;
-
-  // todo: 
-  // -retrieve settings of the instrument
-  // -write them into the string (using a function writeSettingsToString(settings, str)
-  // -loop over the groups
-  //  -write a group header
-  //  -retrieve group settings
-  //  -write them into the string
-  //  -loop over the regions
-  //   -write a region header
-  //   -retrieve region settings
-  //   -write them into the string
-
-  return str;
-}
-*/
-// implement writeToSFZ, loadSFZ (taking filenames as parameters)
-
-
-
 
 //=================================================================================================
 
