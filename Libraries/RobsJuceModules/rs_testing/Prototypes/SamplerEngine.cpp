@@ -73,9 +73,10 @@ void SamplePool<T>::clear()
 
 int rsSamplerData::addGroup()
 {
-  Group g;
-  instrument.groups.push_back(g);
-  return ((int) instrument.groups.size()) - 1;
+  return instrument.addGroup();
+  //Group* g = new Group;
+  //instrument.groups.push_back(g);
+  //return ((int) instrument.groups.size()) - 1;
 }
 
 int rsSamplerData::addRegion(int gi, uchar loKey, uchar hiKey)
@@ -83,7 +84,7 @@ int rsSamplerData::addRegion(int gi, uchar loKey, uchar hiKey)
   if(gi < 0 || gi >= (int)instrument.groups.size()) {
     rsError("Invalid group index");
     return -1; }
-  int ri = instrument.groups[gi].addRegion(loKey, hiKey);  // region index within its group
+  int ri = instrument.groups[gi]->addRegion(loKey, hiKey);  // region index within its group
   return ri;
 }
 
@@ -104,12 +105,6 @@ int rsSamplerData::Group::addRegion(uchar loKey, uchar hiKey)
   r->parent = this;
   r->setLoKey(loKey);
   r->setHiKey(hiKey);
-
-  //rsSamplerData::Region r;
-  //r.parent = this;
-  //r.setLoKey(loKey);
-  //r.setHiKey(hiKey);
-
   regions.push_back(r);
   return ((int) regions.size()) - 1;
 }
@@ -150,16 +145,30 @@ bool rsSamplerData::Group::operator==(const rsSamplerData::Group& rhs) const
 
 int rsSamplerData::Instrument::addGroup()
 {
-  rsSamplerData::Group g;
-  g.parent = this;
+  //rsSamplerData::Group g;
+  rsSamplerData::Group* g = new rsSamplerData::Group;
+  g->parent = this;
   groups.push_back(g);
   return ((int) groups.size()) - 1;
 }
 
 void rsSamplerData::Instrument::clearGroups()
 {
+  for(size_t i = 0; i < groups.size(); i++)
+    delete groups[i];
   groups.clear();
 }
+
+bool rsSamplerData::Instrument::operator==(const rsSamplerData::Instrument& rhs) const 
+{ 
+  bool equal = settings == rhs.settings;
+  equal &= groups.size() == rhs.groups.size();
+  if(!equal) return false;
+  for(size_t i = 0; i < groups.size(); i++)
+    equal &= *(groups[i]) == *(rhs.groups[i]);
+  return equal;
+}
+
 
 std::string rsSamplerData::getAsSFZ() const
 {
@@ -457,6 +466,7 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
 void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
 {
 
+
   int dummy = 0;
 }
 
@@ -601,7 +611,7 @@ rsSamplerEngine::Region* rsSamplerEngine::getRegion(int groupIndex, int regionIn
     rsError("Invalid group index");
     return nullptr; 
   }
-  return sfz.instrument.groups[gi].getRegion(ri);
+  return sfz.instrument.groups[gi]->getRegion(ri);
 }
 
 int rsSamplerEngine::findSampleIndexInPool(const std::string& sample) const
@@ -730,7 +740,7 @@ void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int*
   *gi = -1;
   *ri = -1;
   for(size_t i = 0; i < sfz.instrument.groups.size(); i++) {
-    int j = sfz.instrument.groups[i].getRegionIndex(r);
+    int j = sfz.instrument.groups[i]->getRegionIndex(r);
     if(j != -1) {
       *gi = (int) i;
       *ri = j;

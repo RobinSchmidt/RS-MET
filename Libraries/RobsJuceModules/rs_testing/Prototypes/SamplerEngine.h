@@ -348,6 +348,8 @@ public:
   /** Default constructor. */
   rsSamplerData() { }
 
+  ~rsSamplerData() { clearInstrument(); }
+
   /** Copy constructor.   */
   rsSamplerData(const rsSamplerData& d) { copy(d, *this); }
 
@@ -692,15 +694,15 @@ public:
 
 
     /** Returns a pointer to the region with the given index within the group. */
-    Group* getGroup(int i) { return &groups[i]; }
+    Group* getGroup(int i) { return groups[i]; }
 
 
     const std::vector<PlaybackSetting>& getGroupSettings(size_t groupIndex) const
-    { return groups[groupIndex].getSettings(); }
+    { return groups[groupIndex]->getSettings(); }
 
 
-    bool operator==(const Instrument& rhs) const 
-    { return settings == rhs.settings && groups == rhs.groups; }
+    bool operator==(const Instrument& rhs) const;
+    //{ return settings == rhs.settings && groups == rhs.groups; }
 
 
   //private:  // make protected later
@@ -709,7 +711,8 @@ public:
     int addGroup();      // todo: removeGroup, etc.
     void clearGroups();
 
-    std::vector<Group> groups;
+
+    std::vector<Group*> groups;
     // Should that be an array of pointers, too? Like the regions array in Group? That would make
     // the implementations of Group and Instrument more consistent but is actually technically not 
     // necessary. So, for the time being, let's keep it an array of direct value objects.
@@ -729,14 +732,14 @@ public:
   int addRegion(int gi, uchar loKey = 0, uchar hiKey = 127);
 
   void setRegionCustomPointer(int gi, int ri, void* ptr)
-  { instrument.groups[gi].regions[ri]->setCustomPointer(ptr); }
+  { instrument.groups[gi]->regions[ri]->setCustomPointer(ptr); }
 
   void setRegionSample(int gi, int ri, const std::string& samplePath)
-  { instrument.groups[gi].regions[ri]->setSamplePath(samplePath); }
+  { instrument.groups[gi]->regions[ri]->setSamplePath(samplePath); }
 
   void setRegionSetting(int gi, int ri, PlaybackSetting::Type type, float value)
   {
-    instrument.groups[gi].regions[ri]->settings.push_back(PlaybackSetting(type, value));
+    instrument.groups[gi]->regions[ri]->settings.push_back(PlaybackSetting(type, value));
     // Preliminary. We need to figure out, if that setting already exists and if so, just change 
     // its value instead of pushing another value for the same parameter
   }
@@ -756,10 +759,13 @@ public:
   size_t getNumGroups() const { return instrument.getNumGroups(); }
 
 
-  const Group& getGroupRef(size_t i) const { return instrument.groups[i]; }
+  //const Group& getGroupRef(size_t i) const { return instrument.groups[i]; }
+
+  const Group& getGroupRef(size_t i) const { return *instrument.groups[i]; }
+  // replace by getGroupPtr ..maybe renma to just getGroup
 
   const Region* getRegionPtr(size_t gi, size_t ri) const 
-  { return instrument.groups[gi].regions[ri]; }
+  { return instrument.groups[gi]->regions[ri]; }
 
   /** Returns a const reference to the playback settings if the i-th group. */
   //const std::vector<PlaybackSetting>& getGroupSettings(size_t i) const 
@@ -974,7 +980,8 @@ public:
   bool isIndexPairValid(int groupIndex, int regionIndex) const
   {
     int gi = groupIndex, ri = regionIndex;
-    return gi >= 0 && gi < (int)sfz.instrument.groups.size() && sfz.instrument.groups[gi].isRegionIndexValid(ri);
+    return gi >= 0 && gi < (int)sfz.instrument.groups.size() 
+      && sfz.instrument.groups[gi]->isRegionIndexValid(ri);
   }
 
   /** Returns true, iff the given sample index is valid, i.e. a sample with this index actually 

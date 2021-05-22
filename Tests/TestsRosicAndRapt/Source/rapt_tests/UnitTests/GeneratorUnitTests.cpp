@@ -33,6 +33,8 @@ bool samplerDataUnitTest()
   // -in rsSamplerEngine, refer to regions not by a pointer to the region (in setRegionSetting 
   //  etc.), but instead by group index and region index
   // -oh - no - we need to use pointers because of rsSamplerEngine::regionsForKey
+  // -actually, we need a pointer array for the groups also because the regions refer back to them
+  // 
 
   rsAssert(ok);
   return ok;
