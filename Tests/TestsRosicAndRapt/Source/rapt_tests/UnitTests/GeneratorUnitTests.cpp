@@ -443,6 +443,13 @@ bool samplerEngineUnitTestFileIO()
   nl = se2.getNumSamplesLoaded();  ok &= nl == 0;
   nr = se2.getNumSamplesRemoved(); ok &= nr == 1;
   nf = se2.getNumSamplesFailed();  ok &= nf == 0;
+  se2.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  ok &= se2.getNumIdleLayers()   == maxLayers-1;
+  ok &= se2.getNumActiveLayers() == 1;
+  for(int n = 0; n < N; n++)
+    se2.processFrame(&outL2[n], &outR2[n]);
+  ok &= rsIsAllZeros(outL2);
+  ok &= outR2 == outR;
 
 
 

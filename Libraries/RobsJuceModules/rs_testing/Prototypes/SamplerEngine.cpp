@@ -817,6 +817,7 @@ bool rsSamplerEngine::shouldRegionPlay(const Region* r, uchar key, uchar vel)
   // anyway, anticipating that the function might get called from somwhere else, too):
   if(key < r->loKey || key > r->hiKey) return false;
   if(vel < r->loVel || vel > r->hiVel) return false;
+  if(r->getCustomPointer() == nullptr) return false;
 
 
   // Check, if all other playback constraints for the given region as defined in r->settings are 
@@ -864,6 +865,8 @@ void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int*
 rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
   const Region* r, uchar key, uchar vel)
 {
+  rsAssert(r->getCustomPointer() != nullptr); // No stream connected
+
   // The behavior for this in situations where the region r is already being played by some 
   // voice/player should depend on the playback-mode of the region. If it's in one-shot mode, a new
   // player should be handed and the old one should just continue to play along with the new. 
@@ -873,7 +876,7 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
   // zero by default (indicating hard, clicking retriggers). Or maybe this fade-out could also be 
   // set per region instead of globally? Check, if sfz may actually have an opcode for that.
   if(idlePlayers.empty())
-    return nullptr; // Maybe we should implement more elaborate voice stealing?
+    return nullptr;  // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = rsGetAndRemoveLast(idlePlayers);
   rp->setKey(key);
   rp->setRegionToPlay(r, sampleRate);
