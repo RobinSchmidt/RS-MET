@@ -2,7 +2,8 @@ bool samplerDataUnitTest()
 {
   bool ok = true;
 
-  using SD = rsSamplerData;
+  //using SD = rsSamplerData;
+  using SD = rosic::rsSamplerData;
 
   SD d1;
 
@@ -48,10 +49,11 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   using VecF = std::vector<float>;     // vector of sample values in RAM
-  using SE   = rsSamplerEngineTest;
+  using SD   = rosic::rsSamplerData;
+  using SE   = rosic::rsSamplerEngineTest;
   using RC   = SE::ReturnCode;
   using PST  = SE::PlaybackSetting::Type;
-  using Ev   = rsMusicalEvent<float>;
+  using Ev   = rosic::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
 
   int maxLayers = 8;  
@@ -208,9 +210,10 @@ bool samplerEngineUnitTest()
   // Other tests to do: set the root-key differently, set the sample-rates for playback and 
   // audiofile differently, test detuning opcodes
 
-  const rsSamplerData& sfzData = se.getInstrumentData();
+  //const rsSamplerData& sfzData = se.getInstrumentData();
+  const SD& sfzData = se.getInstrumentData();
   std::string sfzString = sfzData.getAsSFZ();
-  rsSamplerData sfzData2;
+  SD sfzData2;
   sfzData2.setFromSFZ(sfzString);
   ok &= sfzData2 == sfzData;
   // ToDo:
@@ -308,10 +311,10 @@ bool samplerEngineUnitTestFileIO()
   bool ok = true;
 
   using VecF = std::vector<float>;     // vector of sample values in RAM
-  using SE   = rsSamplerEngineTest;
+  using SE   = rosic::rsSamplerEngineTest;
   using RC   = SE::ReturnCode;
   using PST  = SE::PlaybackSetting::Type;
-  using Ev   = rsMusicalEvent<float>;
+  using Ev   = rosic::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
 
   // Create a sine- and cosine wave-file as example samples:

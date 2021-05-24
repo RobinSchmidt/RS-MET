@@ -1,6 +1,9 @@
 #ifndef RAPT_SAMPLERENGINE_H
 #define RAPT_SAMPLERENGINE_H
 
+// Code in this file (and the .cpp) is now superseded by the version in rosic. Eventually, they may
+// be deleted...
+
 //=================================================================================================
 
 /** A class for representing musical events such as note-on/off etc. Think of it as a class to 
