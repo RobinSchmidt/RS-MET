@@ -13,6 +13,44 @@ AudioModuleEditor* SamplerModule::createEditor(int type)
   return new jura::SamplerEditor(this);
 }
 
+void SamplerModule::setSampleRate(double newSampleRate)
+{ 
+  //core->setSampleRate(newSampleRate); 
+}
+
+void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+  bool markAsClean)
+{
+  AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
+  // This will just set up the basic playback parameters such as max num layers, may polyphony,
+  // resampling quality, etc. The actual instrument definition is loaded from an sfz file that is
+  // defined in the xml just like sample-files are defined in the xml for the wavetable 
+  // oscillator....so...
+  
+  // ToDo:
+  // -obtain sfz file that should be loaded from the xml
+  // -retrieve the sample folder ...either from the xml or from sfz...not sure yet, what's best
+  // -set up the sample folder in the core
+  // -instruct the engine to load the instrument definition from the sfz file
+}
+
+
+XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
+{
+  XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
+
+
+  //if(core != nullptr) // that should actually never be the case
+  //{
+  //  // ToDo: 
+  //  // -add an attribute representing the sfz file path to the xmlState
+  //}
+
+
+  return xmlState;
+}
+
+
 void SamplerModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
   //jassert(numChannels == 2);
@@ -29,10 +67,7 @@ void SamplerModule::processStereoFrame(double *dL, double *dR)
   //*dR = fR;
 }
 
-void SamplerModule::setSampleRate(double newSampleRate)
-{ 
-  //core->setSampleRate(newSampleRate); 
-}
+
 
 void SamplerModule::reset()
 { 

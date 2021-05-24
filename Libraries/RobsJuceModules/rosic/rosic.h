@@ -397,6 +397,10 @@
 #include "unfinished/rosic_ModalFilterBank.h"
 #include "unfinished/rosic_ModalSynth.h"
 
+#include "unfinished/rosic_AudioStream.h"
+#include "unfinished/rosic_SamplerData.h"
+#include "unfinished/rosic_SamplerEngine.h"
+
 // third party:
 #include "_third_party/SampleTailExtender/SampleTailExtender.h"
 

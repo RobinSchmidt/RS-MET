@@ -149,6 +149,9 @@
     <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst">
       <UniqueIdentifier>{B90A44F3-B62D-B5C0-81A2-683D2650AEE6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x">
+      <UniqueIdentifier>{0723C856-9C0F-5AF7-81B2-1986BC1E09E3}</UniqueIdentifier>
+    </Filter>
     <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces">
       <UniqueIdentifier>{DAF30656-5915-0E45-C4E4-54439617D525}</UniqueIdentifier>
     </Filter>
@@ -1218,6 +1221,15 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ustring.cpp">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffect.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffectx.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\vstplugmain.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.cpp">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common</Filter>
@@ -4978,6 +4990,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\transforms\rosic_WaveletTransforms.cpp">
       <Filter>JUCE Modules\rosic\transforms</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_AudioStream.cpp">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_DualFilter.cpp">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClCompile>
@@ -5003,6 +5018,12 @@
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_QuadSource.cpp">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerData.cpp">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerEngine.cpp">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.cpp">
@@ -5822,6 +5843,15 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vsttypes.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\aeffeditor.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffect.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffectx.h">
+      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common</Filter>
@@ -9672,6 +9702,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\transforms\rosic_WaveletTransforms.h">
       <Filter>JUCE Modules\rosic\transforms</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_AudioStream.h">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_DualFilter.h">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClInclude>
@@ -9697,6 +9730,9 @@
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_QuadSource.h">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerData.h">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerEngine.h">

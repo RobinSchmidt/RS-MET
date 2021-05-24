@@ -15,16 +15,26 @@ public:
 
 
   // overriden from AudioModule baseclass:
-  virtual AudioModuleEditor* createEditor(int type) override;
-  virtual void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
-  virtual void processStereoFrame(double *left, double *right) override;
-  virtual void setSampleRate(double newSampleRate) override; 
-  virtual void reset() override;
+  AudioModuleEditor* createEditor(int type) override;
+
+  void setSampleRate(double newSampleRate) override;
+  void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
+    bool markAsClean) override;
+  XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
+
+  void processBlock(double **inOutBuffer, int numChannels, int numSamples) override;
+  void processStereoFrame(double *left, double *right) override;
+
+  void reset() override;
+
+
 
 
 protected:
 
   //rsSamplerEngine* core;
+
+  juce::File sfzFile;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerModule)
 };

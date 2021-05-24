@@ -2506,6 +2506,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\transforms\rosic_WaveletTransforms.cpp">
       <Filter>JUCE Modules\rosic\transforms</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_AudioStream.cpp">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_DualFilter.cpp">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClCompile>
@@ -2531,6 +2534,15 @@
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_QuadSource.cpp">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerData - Copy.cpp">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerData.cpp">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerEngine.cpp">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.cpp">
@@ -2612,6 +2624,12 @@
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine - Copy (2).cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine - Copy.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine.cpp">
@@ -4854,6 +4872,9 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\transforms\rosic_WaveletTransforms.h">
       <Filter>JUCE Modules\rosic\transforms</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_AudioStream.h">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_DualFilter.h">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClInclude>
@@ -4879,6 +4900,12 @@
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_QuadSource.h">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerData.h">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerEngine.h">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\rosicOld.h">
@@ -4963,6 +4990,12 @@
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine - Copy (2).h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine - Copy.h">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine.h">

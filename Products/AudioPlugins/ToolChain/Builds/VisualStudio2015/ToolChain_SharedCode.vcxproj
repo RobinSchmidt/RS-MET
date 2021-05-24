@@ -648,6 +648,15 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ustring.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffect.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffectx.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\vstplugmain.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4302,6 +4311,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\transforms\rosic_WaveletTransforms.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_AudioStream.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_DualFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4327,6 +4339,12 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_QuadSource.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerData.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerEngine.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.cpp">
@@ -4605,6 +4623,9 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstpshpack4.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstspeaker.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vsttypes.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\aeffeditor.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffect.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffectx.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\pluginview.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\hostclasses.h"/>
@@ -5888,6 +5909,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\transforms\rosic_FourierTransformerRadix2.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\transforms\rosic_SpectralManipulator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\transforms\rosic_WaveletTransforms.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_AudioStream.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_DualFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_EllipseOscillator.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_MiscUnfinished.h"/>
@@ -5897,6 +5919,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_NewSynth.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_Polyphony.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_QuadSource.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerData.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerEngine.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosicOld.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.h"/>
