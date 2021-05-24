@@ -4,6 +4,10 @@
 namespace rosic
 {
 
+// ToDo: wrap these functions into a class rsFileInputOutput, maybe shorten function names, the
+// toFile/fromFile stuff is redundant then. Maybe just use writeWaveMono, writeWaveStereo, 
+// readWave, writeText, writeDataAsText
+
 /** This file defines functions for handling audio file I/O. */
 
 /** Writes a mono signal into a wavefile (single precision version). */
@@ -40,6 +44,16 @@ float** readFloatFromWaveFile(const char* path, int& numChannels, int& numFrames
 
 /** Writes the passed string into the file given by 'path' */
 void writeStringToFile(const char* path, const char* stringToWrite);
+// obsolete - get rid - use function below
+
+bool rsWriteStringToFile(const char* path, const char* str);
+// rename - get rid of prefix
+
+char* rsReadStringFromFile(const char *filename);
+// ditto
+
+
+
 
 /** Writes the values stored in x and y into a whitespace delimited ascii data file. */
 void writeDataToFile(const char* path, int numValues, double* x, double* y1, double* y2 = NULL,

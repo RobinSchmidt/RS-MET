@@ -302,63 +302,6 @@ void rsSamplerData::setFromSFZ(const std::string& str)
   //  https://en.cppreference.com/w/cpp/header/string_view
 }
 
-
-
-// Low-level helper functions for file I/O:
-bool rosic::rsWriteStringToFile(const char* path, const char* str)
-{
-  // ToDo: provide optional argument for the length, defaults to 0 in which case we use strlen
-
-  FILE* f = fopen(path, "w");
-  if(f != NULL){
-    fwrite(str, 1, strlen(str), f);
-    fclose(f); 
-    return true; }
-  else {
-    rsError("Unable to open file");
-    return false; }
-
-  // https://www.tutorialspoint.com/cprogramming/c_file_io.htm
-}
-
-char* rosic::rsReadStringFromFile(const char *filename)
-{
-  char *buffer = NULL;
-  //int string_size, read_size;  // original
-  size_t string_size, read_size;
-  FILE *handler = fopen(filename, "r");
-  if(handler)
-  {
-    fseek(handler, 0, SEEK_END);  // seek the last byte of the file
-    string_size = ftell(handler); // offset from the first to the last byte, filesize
-    rewind(handler);              // go back to the start of the file
-    buffer = (char*) malloc(sizeof(char) * (string_size + 1) );    // allocate a string
-    read_size = fread(buffer, sizeof(char), string_size, handler); // read it all in one go
-    //buffer[string_size] = '\0';   // this was the original code
-    buffer[read_size] = '\0';   // put a \0 in the last position
-
-
-
-    //if(string_size != read_size)
-    //{
-    //  // Something went wrong, free memory and set the buffer to NULL
-    //  free(buffer);
-    //  buffer = NULL;
-    //}
-    // We actually run into this branch, apparently due to CR/LF line-ending stuff. In the unit 
-    // test, the file has 7 lines and 116 characters in total with CR/LF line endings, but the 
-    // function only reads 109 characters. The extra 7 characters apparently are the additional
-    // line ending symbols
-
-
-    fclose(handler);    // close the file
-  }
-  return buffer;
-
-  // Code adapted from here:
-  // https://stackoverflow.com/questions/3463426/in-c-how-should-i-read-a-text-file-and-print-all-strings
-}
-
 bool rsSamplerData::saveToSFZ(const char* path) const
 {
   std::string sfz = getAsSFZ();
@@ -375,14 +318,16 @@ bool rsSamplerData::loadFromSFZ(const char* path)
     setFromSFZ(sfz);
     free(c_str);
     return true; 
-    // actually, setFromSFZ could also go wrong - we should do int rc = setFromSFZ and return rc
+    // Actually, setFromSFZ could also go wrong. This would indicate that the file loading 
+    // succeeded but the content of the file could not be parsed (i.e. was malformed or we have a
+    // bug in the parser). Maybe we should return a return code which could be either of:
+    // success, fileLoadError, sfzParseError
   }
   else
     return false;
 
   // This is clearly not elegant. Get rid of the intermediate c-string!
 }
-
 
 void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::string& s)
 {

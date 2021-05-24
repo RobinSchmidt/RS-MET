@@ -4,9 +4,9 @@
 namespace rosic
 {
 
-bool rsWriteStringToFile(const char* path, const char* str);
-char* rsReadStringFromFile(const char *filename);
-// move to FileInputOutput
+//bool rsWriteStringToFile(const char* path, const char* str);
+//char* rsReadStringFromFile(const char *filename);
+//// move to FileInputOutput
 
 /** Data structure to define sample based instruments conforming to the sfz specification. 
 

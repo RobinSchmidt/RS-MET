@@ -138,6 +138,63 @@ void rosic::writeStringToFile(const char* path, const char* stringToWrite)
   }
 }
 
+bool rosic::rsWriteStringToFile(const char* path, const char* str)
+{
+  // ToDo: provide optional argument for the length which defaults to 0 in which case we use strlen
+  // and if it's not 0, we use the passed value and avoid strlen, but maybe we should do
+  // rsAssert(strlen(str) == length).
+
+  FILE* f = fopen(path, "w");
+  if(f != NULL){
+    fwrite(str, 1, strlen(str), f);
+    fclose(f); 
+    return true; }
+  else {
+    RAPT::rsError("Unable to open file");
+    return false; }
+
+  // https://www.tutorialspoint.com/cprogramming/c_file_io.htm
+}
+
+char* rosic::rsReadStringFromFile(const char *filename)
+{
+  // Code adapted from here:
+  // https://stackoverflow.com/questions/3463426/in-c-how-should-i-read-a-text-file-and-print-all-strings
+  // Note that it is pointed out there that the technique of inquiring the length via fseek, ftell 
+  // may not work for binary files. Here, we are dealing with text files, so it should hopefully 
+  // be ok. The unit tests pass, so far.
+
+  char *buffer = NULL;
+  size_t string_size, read_size;
+  FILE *handler = fopen(filename, "r");
+  if(handler)
+  {
+    fseek(handler, 0, SEEK_END);  // seek the last byte of the file
+    string_size = ftell(handler); // offset from the first to the last byte, filesize
+    rewind(handler);              // go back to the start of the file
+    buffer = (char*) malloc(sizeof(char) * (string_size + 1) );    // allocate a string
+    read_size = fread(buffer, sizeof(char), string_size, handler); // read it all in one go
+    buffer[read_size] = '\0';     // put a \0 in the last position
+
+    // The original code had this check:
+    //if(string_size != read_size)
+    //{
+    //  // Something went wrong, free memory and set the buffer to NULL
+    //  free(buffer);
+    //  buffer = NULL;
+    //}
+    // But we actually do run into this branch even if all goes well, apparently due to CR/LF 
+    // line-ending stuff. In a unit test, the file had 7 lines and 116 characters in total with 
+    // CR/LF line endings, but the function only reads 109 characters. The extra 7 characters 
+    // apparently are the additional line ending symbols. ToDo: implement unit tests that write 
+    // and then read files with all 3 possible variants of line endings (CR, LF, CR+LF). Maybe we 
+    // need to write the files in binary mode for this, i.e. use fopen(path, "wb").
+
+    fclose(handler);    // close the file
+  }
+  return buffer;
+}
+
 void rosic::writeDataToFile(const char* path, int numValues, double *x, double *y1, double *y2,
                             double *y3, double *y4, double *y5)
 {
@@ -201,6 +258,8 @@ void rosic::writeDataToFile(const char* path, int numValues, double *x, double *
 
   writeStringToFile(path, str);
   delete[] str;
+
+  // ToDo: get rid of the duplication
 }
 
 /*
