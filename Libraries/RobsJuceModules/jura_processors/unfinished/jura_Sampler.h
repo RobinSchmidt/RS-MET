@@ -1,8 +1,5 @@
 #pragma once
 
-// preliminary - eventually, this should go into the rosic module:
-//#include "../../rs_testing/Prototypes/SamplerEngine.h"
-
 /** A sampler with functionality roughly based on the sfz specification */
 
 class JUCE_API SamplerModule : public jura::AudioModule
@@ -28,12 +25,9 @@ public:
   void reset() override;
 
 
-
-
 protected:
 
-  //rsSamplerEngine* core;
-
+  rosic::rsSamplerEngine engine;
   juce::File sfzFile;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerModule)

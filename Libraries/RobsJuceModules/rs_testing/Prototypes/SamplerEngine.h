@@ -1096,7 +1096,7 @@ public:
 
   void processFrame(float* left, float* right);
 
-  void processBlock(float** block, int numFrames);
+  //void processBlock(float** block, int numFrames);
 
   void handleMusicalEvent(const rsMusicalEvent<float>& ev);
 

@@ -15,7 +15,7 @@ AudioModuleEditor* SamplerModule::createEditor(int type)
 
 void SamplerModule::setSampleRate(double newSampleRate)
 { 
-  //core->setSampleRate(newSampleRate); 
+  engine.setSampleRate(newSampleRate); 
 }
 
 void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
@@ -38,40 +38,27 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
 XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
-
-
-  //if(core != nullptr) // that should actually never be the case
-  //{
-  //  // ToDo: 
-  //  // -add an attribute representing the sfz file path to the xmlState
-  //}
-
-
+  juce::String sfzPath = sfzFile.getRelativePathFrom(getPresetDirectory());
+  xmlState->setAttribute("InstrumentFile", sfzPath);
   return xmlState;
 }
 
 
 void SamplerModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
-  //jassert(numChannels == 2);
-  //for(int n = 0; n < numSamples; n++)
-  //  core->processFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+  jassert(numChannels == 2);
+  for(int n = 0; n < numSamples; n++)
+    engine.processFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
 }
 
 void SamplerModule::processStereoFrame(double *dL, double *dR)
 {
-  //float fL = (float) (*dL);
-  //float fR = (float) (*dR);
-  //core->processFrame(&fL, &fR);
-  //*dL = fL;
-  //*dR = fR;
+  engine.processFrame(dL, dR);
 }
-
-
 
 void SamplerModule::reset()
 { 
-  //core->reset();
+  engine.reset();
 }
 
 //=================================================================================================

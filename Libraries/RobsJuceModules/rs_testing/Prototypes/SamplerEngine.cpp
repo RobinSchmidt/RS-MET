@@ -784,10 +784,12 @@ void rsSamplerEngine::processFrame(float* left, float* right)
   *right = (float) R;
 }
 
+/*
 void rsSamplerEngine::processBlock(float** block, int numFrames)
 {
 
 }
+*/
 
 void rsSamplerEngine::handleMusicalEvent(const rsMusicalEvent<float>& ev)
 {
