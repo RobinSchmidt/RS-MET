@@ -4,7 +4,9 @@
 namespace rosic
 {
 
+//class rsMusicalEvent;  // try to reorganize the code to get rid of this forward declaration
 
+/*
 class rsMusicalEvent
 {
 
@@ -29,6 +31,7 @@ protected:
   //int voice;
 
 };
+*/
 
 //=================================================================================================
 
@@ -204,7 +207,7 @@ public:
   }
 
   /** Event handler. Must be overriden, if the module needs to respond to events. */
-  virtual void handleEvent(rsMusicalEvent* event) {};
+  //virtual void handleEvent(rsMusicalEvent* event) {};
 
   /** under construction */
   void updateModulatedParameters(int voice);

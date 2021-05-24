@@ -1,3 +1,5 @@
+
+
 //=================================================================================================
 // Function definitions for the helper classes:
 
@@ -384,7 +386,7 @@ void rsSamplerData::setFromSFZ(const std::string& str)
 }
 
 
-
+/*
 // Low-level helper functions for file I/O:
 bool rsWriteStringToFile(const char* path, const char* str)
 {
@@ -439,17 +441,18 @@ char* rsReadStringFromFile(const char *filename)
   // Code adapted from here:
   // https://stackoverflow.com/questions/3463426/in-c-how-should-i-read-a-text-file-and-print-all-strings
 }
+*/
 
 bool rsSamplerData::saveToSFZ(const char* path) const
 {
   std::string sfz = getAsSFZ();
-  return rsWriteStringToFile(path, sfz.c_str());
+  return rosic::rsWriteStringToFile(path, sfz.c_str());
 }
 // this has no safeguards against overwriting an existing file!
 
 bool rsSamplerData::loadFromSFZ(const char* path)
 {
-  char* c_str = rsReadStringFromFile(path);
+  char* c_str = rosic::rsReadStringFromFile(path);
   if(c_str)
   {
     std::string sfz(c_str);
