@@ -15,6 +15,8 @@ public:
   AudioModuleEditor* createEditor(int type) override;
 
   void setSampleRate(double newSampleRate) override;
+  void setGain(double newGain);
+
   void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean) override;
   XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
@@ -26,6 +28,8 @@ public:
 
 
 protected:
+
+  virtual void createParameters();
 
   rosic::rsSamplerEngine engine;
   juce::File sfzFile;

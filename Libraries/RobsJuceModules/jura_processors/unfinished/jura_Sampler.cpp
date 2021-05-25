@@ -1,11 +1,22 @@
-// preliminary - eventually, this should go into the rosic module:
-//#include "../../rs_testing/Prototypes/SamplerEngine.cpp"
 
 SamplerModule::SamplerModule(CriticalSection *lockToUse) : AudioModule(lockToUse)
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("Sampler");
   setModuleName("Sampler");
+}
+
+void SamplerModule::createParameters()
+{
+  ScopedLock scopedLock(*lock);
+
+  typedef SamplerModule SM;
+  typedef Parameter Param;
+  Param* p;
+
+  p = new Param("Gain", -48.0, 12.0, 0.1, Parameter::LINEAR); 
+  addObservedParameter(p);
+  p->setValueChangeCallback<SM>(this, &SM::setGain);
 }
 
 AudioModuleEditor* SamplerModule::createEditor(int type)
@@ -18,15 +29,27 @@ void SamplerModule::setSampleRate(double newSampleRate)
   engine.setSampleRate(newSampleRate); 
 }
 
+void SamplerModule::setGain(double newGain)
+{
+  //engine.setGlobalGain(newGain);
+}
+
 void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
   bool markAsClean)
 {
+  // Recall the global playback parameters such as gain, max num layers, max polyphony, resampling 
+  // quality, etc.:
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
-  // This will just set up the basic playback parameters such as max num layers, may polyphony,
-  // resampling quality, etc. The actual instrument definition is loaded from an sfz file that is
-  // defined in the xml just like sample-files are defined in the xml for the wavetable 
-  // oscillator....so...
-  
+
+  // The actual instrument definition is loaded from an sfz file that is defined in the xml (just 
+  // like sample-files are defined in the xml for the wavetable oscillator):
+  juce::String jSfzPath = xmlState.getStringAttribute("InstrumentFile", juce::String());
+  std::string  sSfzPath = jSfzPath.toStdString();
+  engine.loadFromSFZ(sSfzPath.c_str());
+  // doesn't work yet - probably because the file is not in the directory where the engine expects 
+  // it to be. ToDo: We need to set up the sfz directory in the engine and then the engine must 
+  // make use of it
+
   // ToDo:
   // -obtain sfz file that should be loaded from the xml
   // -retrieve the sample folder ...either from the xml or from sfz...not sure yet, what's best
@@ -34,15 +57,14 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
   // -instruct the engine to load the instrument definition from the sfz file
 }
 
-
 XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
   juce::String sfzPath = sfzFile.getRelativePathFrom(getPresetDirectory());
   xmlState->setAttribute("InstrumentFile", sfzPath);
+  //xmlState->setAttribute("SampleDirectory", sampleDir);
   return xmlState;
 }
-
 
 void SamplerModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
@@ -63,8 +85,9 @@ void SamplerModule::reset()
 
 //=================================================================================================
 
-SamplerEditor::SamplerEditor(SamplerModule* SamplerToEdit)
-  : AudioModuleEditor(SamplerToEdit->lock) //, SamplerModule(SamplerToEdit)
+SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
+  //: AudioModuleEditor(samplerToEdit->lock) 
+  : AudioModuleEditor(samplerToEdit)
 {
   ScopedLock scopedLock(*lock);
 
@@ -86,6 +109,9 @@ void SamplerEditor::resized()
 }
 
 /*
+bugs: 
+
+
 Maybe the xml presets for the SamplerModule should contain the filename for an sfz file that sould 
 be loaded plus some global settings such as the maximum number of layers, the resampling algo, etc. 
 Don't use the xml preset to store the actual sfz opcodes. Preset loading would become a nested 
