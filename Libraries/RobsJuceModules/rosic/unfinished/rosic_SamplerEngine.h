@@ -628,6 +628,19 @@ public:
 
   using rsSamplerEngine::rsSamplerEngine;  // inherit constructors
 
+  /** Returns true, iff this object is in the same state (with regard to content of the sample pool
+  and instrument definition) as the given other engine */
+  bool isInSameStateAs(const rsSamplerEngineTest other) const
+  {
+    return sfz == other.sfz; // && samplePool.hasSameContentAs(other.samplePool);
+    // todo: compare also content of samplePool in both objects..the function may optionally allow
+    // a different order of the samples in both pools
+  }
+  // maybe rename to hasSameInstrument - isInSameState may also compare the state with regard to 
+  // activeLayers, etc.
+
+  /** Returns the byte size of the RegionPlayer class. We want to keep this small so we use this 
+  function to keep track of its size in the tests. */
   static int getRegionPlayerSize() { return sizeof(rsSamplerEngine::RegionPlayer); }
 
 };

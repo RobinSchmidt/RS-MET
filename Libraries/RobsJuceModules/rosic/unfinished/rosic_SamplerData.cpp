@@ -380,3 +380,28 @@ void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
     dstGroup->copyDataFrom(srcGroup);
     dst.addGroup(dstGroup); }
 }
+
+/*
+
+-for the sfz-parsing, support separation between opcodes not only by newline but also by space 
+ -any combination of newlines and spaces should be allowed 
+ -maybe std::regex could be used for this or: 
+ -use a simple state machine with states:
+  A: within token, B: within separator, C: token finished
+  -start in state A, index = starIndex
+  -read symbols until C is reached
+   if(state == A && isSeperator(symbol)) {
+     state = A; index++; }
+   if(state == A && !isSeperator(symbol) {
+     state = B; index++ }
+   if(state == B && isSeperator(symbol)) {
+     state = B; index++ }
+   if(state == B && !isSeperator(symbol)) {
+     state = C; break; }
+   return index;
+   where isSeperator(c) returns true, if c is '\n' or ' '
+     
+ make a unit test that programmatically creates different .sfz files representing the same 
+ instrument but with different formatting, render output and compare
+
+*/

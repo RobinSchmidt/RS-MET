@@ -136,7 +136,10 @@ Bugs:
 ToDo:
 -write some more complex .sfz files with multiple samples, regions, groups, etc. 
 -make use of subdirectories for the samples and test, if that works
-
+ -Pluck2.xml loads without errors
+ -the hikey/lokey settings are wrong they are all 0..127. apparently, we don't set them up properly
+  in loadFromSFZ yet
+-override handleMidiEvent to pass the events to the engine
 
 
 

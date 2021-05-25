@@ -481,14 +481,42 @@ bool samplerEngineUnitTestFileIO()
   nr = se3.getNumSamplesRemoved(); ok &= nr == 2;
   nf = se3.getNumSamplesFailed();  ok &= nf == 0;
 
+  // Test hikey/lokey opcodes by defining 2 regions:
+  se.clearInstrument();
+  si = se.loadSampleToPool("Sin440Hz.wav"); ok &= si == 0;
+  si = se.loadSampleToPool("Cos440Hz.wav"); ok &= si == 1;
+  gi = se.addGroup(); ok &= gi == 0;
+  ri = se.addRegion(0, 59, 61); ok &= ri == 0;
+  rc = se.setRegionSample(0, 0, 0); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f); ok &= rc == RC::success;
+  ri = se.addRegion(0, 69, 71); ok &= ri == 1;
+  rc = se.setRegionSample(0, 1, 1); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 1, PST::PitchKeyCenter, 70.f); ok &= rc == RC::success;
+  se.saveToSFZ("tmp.sfz");
+  se2.loadFromSFZ("tmp.sfz");
+  ok &= se2.isInSameStateAs(se);
+  // Fails: lokey/hikey settings are not recalled properly
 
-  // ToDo: 
+
+
+
+
+
+
+
+  // ToDo:
+  // -test using different hikey/lokey settings
+  // -maybe make a local function testSaveLoadRoundTrip(se, ...) that saves the state of se and 
+  //  loads it into a new instance and produces and compares some output of both engines...it also
+  //  needs a list of events that should be used to produce the output...or maybe it should loop
+  //  all keys and velocities within some range and produce a couple of samples for each
+  //  ..or maybe just compare the sfz data object
   // -Test using a custom sfz and/or sample directory. Maybe the engine needs members
   //  sfzDir, wavDir. If they are empty, the project folder is used by default, but that's not how
   //  it should work in ToolChain. Perhaps, in ToolChain, we need to re-implement the loading 
   //  anyway in order to support more file formats. For the moment, we can only use 16 bit wav.
   //  ...or maybe use the TinyWav library? ...but we also want .flac
-  // -Test using stereo files
+  //
 
 
   rsAssert(ok);
