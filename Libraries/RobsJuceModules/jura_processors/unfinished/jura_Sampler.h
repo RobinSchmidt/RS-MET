@@ -34,6 +34,8 @@ protected:
   rosic::rsSamplerEngine engine;
   juce::File sfzFile;
 
+  using ReturnCode = rosic::rsSamplerEngine::ReturnCode;
+
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerModule)
 };
 

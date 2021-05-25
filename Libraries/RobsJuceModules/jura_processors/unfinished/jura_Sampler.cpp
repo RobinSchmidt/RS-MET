@@ -45,16 +45,37 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
   // like sample-files are defined in the xml for the wavetable oscillator):
   juce::String jSfzPath = xmlState.getStringAttribute("InstrumentFile", juce::String());
   std::string  sSfzPath = jSfzPath.toStdString();
-  engine.loadFromSFZ(sSfzPath.c_str());
-  // doesn't work yet - probably because the file is not in the directory where the engine expects 
-  // it to be. ToDo: We need to set up the sfz directory in the engine and then the engine must 
-  // make use of it
+  int rc = engine.loadFromSFZ(sSfzPath.c_str());
+  if(rc == ReturnCode::fileLoadError)
+  {
+    //RAPT::rsError("File load error"); // preliminary, for debug
+    showWarningBox("SFZ Load Error", "File " + jSfzPath + " could not be loaded.");
+    // The .sfz file that was specified in the .xml file was not found
+  }
+  // todo:
+  // -catch other errors, such as sfzParseError, unknownOpcode, sampleLoadError, etc.
+
+  // Notes:
+  // -it currently only works, if the .sfz file and its required .wav files reside in the project
+  //  directory, i.e.:
+  //    RS-MET\Products\AudioPlugins\ToolChain\Builds\VisualStudio2019  
+  //  when launching ToolChain from Visual Studio for debugging or in the same directory where 
+  //  ToolChain.exe resides, i.e.:
+  //    RS-MET\Products\AudioPlugins\ToolChain\Builds\VisualStudio2019\x64\Debug\Standalone Plugin
+  //  when launching the .exe directly
+  // -when using RAPT::rsError("File load error"); directly starting the exe doesn't work. I 
+  //  guess it triggers the error on startup (because it tries to load a file with empty path)
+  //  and the debug break makes the app exit immediately?). 
 
   // ToDo:
-  // -obtain sfz file that should be loaded from the xml
-  // -retrieve the sample folder ...either from the xml or from sfz...not sure yet, what's best
-  // -set up the sample folder in the core
-  // -instruct the engine to load the instrument definition from the sfz file
+  // -Support placing the .sfz and .wav files in different folders. Maybe the path to the .sfz 
+  //  file should be specified relatively to the .xml file. The paths to the .wav files should be
+  //  either relatively to the .sfz file or relatively to some global sample directory that can be
+  //  specified in the xml and/or sfz ...maybe the latter is better but requires us to introduce a 
+  //  new opcode to the sfz spec...maybe sample_folder or sample_directory. options should be
+  // -retrieve the .sfz and sample folder ...the latter either from the xml or from sfz (not sure
+  //  yet, what's best)  
+  // -set up the folders in the engine before caling engine.loadFromSFZ
 }
 
 XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
@@ -109,7 +130,14 @@ void SamplerEditor::resized()
 }
 
 /*
-bugs: 
+Bugs:
+
+
+ToDo:
+-write some more complex .sfz files with multiple samples, regions, groups, etc. 
+-make use of subdirectories for the samples and test, if that works
+
+
 
 
 Maybe the xml presets for the SamplerModule should contain the filename for an sfz file that sould 

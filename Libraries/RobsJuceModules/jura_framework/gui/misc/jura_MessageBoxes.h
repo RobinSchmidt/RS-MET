@@ -1,6 +1,11 @@
 #ifndef jura_MessageBoxes_h
 #define jura_MessageBoxes_h
 
+// wrap them into a class rsShowMessageBox such that the boxes can be invoke via the syntax:
+// rsShowMessageBox::fileNotFound(fileName), etc.
+
+void JUCE_CALLTYPE showWarningBox(const String& title, const String& message);
+
 /** Opens a warning box reporting a memory allocation error. The sourceFunctionName should be the
 name of the function from which the box was summoned. */
 void showMemoryAllocationErrorBox(juce::String sourceFunctionName);
