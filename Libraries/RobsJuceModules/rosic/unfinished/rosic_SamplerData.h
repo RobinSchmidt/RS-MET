@@ -125,6 +125,8 @@ public:
     particular setting/opcode, this will return -1. */
     int getIndex() const { return index; }
 
+    /** Returns the default value for a given type of setting. */
+    static float getDefaultValue(Type type);
 
     bool operator==(const PlaybackSetting& rhs) const
     { return type == rhs.type && value == rhs.value && index == rhs.index; }

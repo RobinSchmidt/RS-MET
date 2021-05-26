@@ -1,6 +1,25 @@
 //-------------------------------------------------------------------------------------------------
 // The internal classes
 
+float rsSamplerData::PlaybackSetting::getDefaultValue(Type type)
+{
+  using TP = PlaybackSetting::Type;
+  switch(type)
+  {
+  case TP::LoKey:          return 0.f;
+  case TP::HiKey:          return 127.f;
+  case TP::LoVel:          return 0.f;
+  case TP::HiVel:          return 127.f;
+
+  case TP::Volume:         return 0.f;
+  case TP::Pan:            return 0.f;
+  case TP::PitchKeyCenter: return 60.f;  // verify!
+  }
+
+  RAPT::rsError("Unknown type of PlaybackSetting, i.e. unknown sfz opcode.");
+  return 0.f;  // maybe we should return NaN?
+}
+
 void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
 {
   using TP = PlaybackSetting::Type;
@@ -169,6 +188,8 @@ std::string rsSamplerData::getAsSFZ() const
   std::string str;
 
   using SettingsRef = const std::vector<PlaybackSetting>&;
+
+  /*
   auto writeSettingsToString = [](SettingsRef settings, std::string& str)
   {
     for(size_t i = 0; i < settings.size(); i++)
@@ -185,15 +206,24 @@ std::string rsSamplerData::getAsSFZ() const
     // -Maybe factor out a function settingToString...maybe that should be a member of 
     //  PlaybackSetting. toString/fromString
   };
+  */
 
+  auto writeSettingsToString2 = [](const OrganizationLevel* lvl, std::string& str)
+  {
+    SettingsRef settings = lvl->getSettings();
+    for(size_t i = 0; i < settings.size(); i++)
+      writeSettingToString(settings[i], str);
+  };
 
-  writeSettingsToString(instrument.getSettings(), str);
+  //writeSettingsToString(instrument.getSettings(), str);
+  writeSettingsToString2(&instrument, str);
   for(int gi = 0; gi < getNumGroups(); gi++)
   {
     str += "<group>\n";
     //const Group& g = getGroupRef(gi);
     const Group* g = getGroup(gi);
-    writeSettingsToString(g->getSettings(), str);
+    //writeSettingsToString(g->getSettings(), str);
+    writeSettingsToString2(g, str);
     for(int ri = 0; ri < g->getNumRegions(); ri++)
     {
       str += "<region>\n";
@@ -201,7 +231,8 @@ std::string rsSamplerData::getAsSFZ() const
       const std::string& samplePath = r->getSamplePath();
       if(!samplePath.empty())
         str += "sample=" + samplePath + '\n';
-      writeSettingsToString(r->getSettings(), str);
+      writeSettingsToString2(r, str);
+      //writeSettingsToString(r->getSettings(), str);
     }
   }
   return str;
@@ -367,6 +398,11 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   PST  type = setting.getType();
   float val = setting.getValue();
   int index = setting.getIndex();
+
+  // This makes the unit test fail - why?:
+  //if(val = PlaybackSetting::getDefaultValue(type))
+  //  return; // default values need not to be stored - todo: maybe optionally store them anyway
+
   switch(type)
   {
   case PST::Volume:         { s += "volume="          + to_string(val) + "\n";  } break;
