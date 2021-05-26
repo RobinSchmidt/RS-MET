@@ -187,9 +187,13 @@ std::string rsSamplerData::getAsSFZ() const
 {
   auto writeSettingsToString = [](const OrganizationLevel* lvl, std::string& str)
   {
+    auto toStr = [](const uchar c) { return std::to_string(c); }; // uchar to string
     const std::string& samplePath = lvl->getSamplePath();
-    if(!samplePath.empty()) 
-      str += "sample=" + samplePath + '\n';
+    if(!samplePath.empty()   ) str += "sample=" + samplePath + '\n';
+    if(lvl->getLoKey() !=   0) str += "lokey=" + toStr(lvl->getLoKey()) + '\n';
+    if(lvl->getHiKey() != 127) str += "hikey=" + toStr(lvl->getHiKey()) + '\n';
+    if(lvl->getLoVel() !=   0) str += "lovel=" + toStr(lvl->getLoVel()) + '\n';
+    if(lvl->getHiVel() != 127) str += "hivel=" + toStr(lvl->getHiVel()) + '\n';
     using SettingsRef = const std::vector<PlaybackSetting>&;
     SettingsRef settings = lvl->getSettings();
     for(size_t i = 0; i < settings.size(); i++)
@@ -211,9 +215,9 @@ std::string rsSamplerData::getAsSFZ() const
   // serialization but that may complicate other things due to the introduced redundancy and 
   // therefore extra care to keep the data consistent. That raises the question, if groups and
   // instruments also can define lokey/hikey settings and how they are interpreted. If so, maybe
-  // these lokey/hikey members should be moved into the OrganizationLevel baseclass. ToDo: figure
-  // out how SFZPlayer behaves with respect to this maybe by defining those opcoded at all 3 
-  // levels - i guess, it will use the most restrictive setting of all of them
+  // these lokey/hikey members should be moved into the OrganizationLevel baseclass. ...done 
+  // ToDo: figure out how SFZPlayer behaves with respect to this maybe by defining those opcodes
+  // at all 3 levels - i guess, it will use the most restrictive setting of all of them
 }
 
 void rsSamplerData::setFromSFZ(const std::string& str)
@@ -238,11 +242,14 @@ void rsSamplerData::setFromSFZ(const std::string& str)
     size_t splitIndex = str.find('=', 0);
     std::string opcode = str.substr(0, splitIndex);
     std::string value  = str.substr(splitIndex+1, str.length() - splitIndex - 1);
+
     if(opcode == "sample") {     // needs to be treated in a special way
       lvl->setSamplePath(value);
       return;  }
+
     PlaybackSetting ps = getSettingFromString(opcode, value);
-    lvl->addSetting(ps);  // todo: use setSetting (add or overwrite)
+    lvl->setSetting(ps);
+    //lvl->addSetting(ps); // todo: use setSetting (add or overwrite)
   };
 
   // Sets up the given level according to the given string which is supposed to contain one setting
@@ -399,8 +406,14 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
   // todo: if applicable, exctract the index from the opcode and set it up in the setting by 
   // passing it as 3rd parameter to the constructor
 
+  if(opcode == "lokey")          return PS(PST::LoKey,         val);
+  if(opcode == "hikey")          return PS(PST::HiKey,         val);
+  if(opcode == "lovel")          return PS(PST::LoVel,         val);
+  if(opcode == "hivel")          return PS(PST::HiVel,         val);
+
   if(opcode == "volume")          return PS(PST::Volume,         val);
   if(opcode == "pan")             return PS(PST::Pan,            val);
+
   if(opcode == "pitch_keycenter") return PS(PST::PitchKeyCenter, val);
   // ...more to come...
 

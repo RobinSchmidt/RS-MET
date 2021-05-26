@@ -628,11 +628,12 @@ public:
 
   /** Returns true, iff this object is in the same state (with regard to content of the sample pool
   and instrument definition) as the given other engine */
-  bool isInSameStateAs(const rsSamplerEngineTest other) const
+  bool isInSameStateAs(const rsSamplerEngineTest& other) const
   {
     return sfz == other.sfz; // && samplePool.hasSameContentAs(other.samplePool);
     // todo: compare also content of samplePool in both objects..the function may optionally allow
     // a different order of the samples in both pools
+    // maybe compare also the regionsForKey arrays
   }
   // maybe rename to hasSameInstrument - isInSameState may also compare the state with regard to 
   // activeLayers, etc.

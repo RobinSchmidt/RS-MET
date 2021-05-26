@@ -481,7 +481,6 @@ bool samplerEngineUnitTestFileIO()
   nr = se3.getNumSamplesRemoved(); ok &= nr == 2;
   nf = se3.getNumSamplesFailed();  ok &= nf == 0;
 
-  /* 
   // Test hikey/lokey opcodes by defining 2 regions:
   se.clearInstrument();
   si = se.loadSampleToPool("Sin440Hz.wav"); ok &= si == 0;
@@ -496,12 +495,8 @@ bool samplerEngineUnitTestFileIO()
   se.saveToSFZ("tmp.sfz");
   se2.loadFromSFZ("tmp.sfz");
   ok &= se2.isInSameStateAs(se);
-  // Fails: lokey/hikey settings are not recalled properly
-  */
-
 
   // ToDo:
-  // -test using different hikey/lokey settings
   // -maybe make a local function testSaveLoadRoundTrip(se, ...) that saves the state of se and 
   //  loads it into a new instance and produces and compares some output of both engines...it also
   //  needs a list of events that should be used to produce the output...or maybe it should loop
@@ -510,9 +505,10 @@ bool samplerEngineUnitTestFileIO()
   // -Test using a custom sfz and/or sample directory. Maybe the engine needs members
   //  sfzDir, wavDir. If they are empty, the project folder is used by default, but that's not how
   //  it should work in ToolChain. Perhaps, in ToolChain, we need to re-implement the loading 
-  //  anyway in order to support more file formats. For the moment, we can only use 16 bit wav.
-  //  ...or maybe use the TinyWav library? ...but we also want .flac
-  //
+  //  anyway in order to support more file formats (in particular, flac). For the moment, we can 
+  //  only use 16 bit wav. ...or maybe use the TinyWav library? ...but we also want .flac
+  // -make SamplePool, AudioStream, SamplerEngine etc. objects or non-copyable - maybe it's
+  //  enough to make AudioStream non-copyable - the feature will then propagate to all aggregates
 
   rsAssert(ok);
   return ok;
