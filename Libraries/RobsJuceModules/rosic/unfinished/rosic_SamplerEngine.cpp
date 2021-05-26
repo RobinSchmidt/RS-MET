@@ -236,21 +236,17 @@ int rsSamplerEngine::findSampleIndexInPool(const std::string& sample) const
 void rsSamplerEngine::processFrame(double* left, double* right)
 {
   rsFloat64x2 out = 0.0;
-  for(size_t i = 0; i < activePlayers.size(); i++)
-  {
+  for(int i = 0; i < (int)activePlayers.size(); i++) {
     out += activePlayers[i]->getFrame();
     if(activePlayers[i]->hasFinished()) {
       deactivateRegionPlayer(i);
-      i--; }
-  }
+      i--; }}
   *left  = out[0];
   *right = out[1];
 
-  // ToDo: Test, if it's more efficient to loop through the activePlayers array backwards. But then
-  // we would need a signed int as loop index to make it work also when size() == 0 because we 
-  // would need to start at size()-1, which would be around 2^64 for size_t. Then, the i-- could be
-  // removed, but that's not the main point. The main point is that the deactivation/removal would 
-  // need less data copying.
+  // ToDo: Test, if it's more efficient to loop through the activePlayers array backwards. Then, 
+  // the i-- in the loop body could be removed, but that's not the main point. The main point is 
+  // that the deactivation/removal would need less data copying.
 }
 
 void rsSamplerEngine::processFrame(float* left, float* right)
@@ -386,9 +382,9 @@ bool rsSamplerEngine::isSampleUsedIn(
   return false;
 }
 
-int rsSamplerEngine::deactivateRegionPlayer(size_t i)
+int rsSamplerEngine::deactivateRegionPlayer(int i)
 {
-  if(i >= activePlayers.size()) {
+  if(i < 0 || i >= activePlayers.size()) {
     rsError("Invalid player index");
     return ReturnCode::invalidIndex; }
   RegionPlayer* p = activePlayers[i];
@@ -428,7 +424,7 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
       for(int j = 0; i < numRegions; j++) {
         rp = rsGetAndRemoveLast(activePlayers);
         idlePlayers.push_back(rp); }
-      return ReturnCode::voiceOverload;
+      return ReturnCode::layerOverload;
     }
     else
     {

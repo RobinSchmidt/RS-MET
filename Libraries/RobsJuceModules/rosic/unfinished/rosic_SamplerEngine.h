@@ -105,20 +105,17 @@ public:
     nothingToDo    = -2,  //< There was nothing to actually do. State was already as desired.
     memAllocFail   = -3,  //< Memory allocation failure.
     invalidIndex   = -4,  //< An invalid index was passed.
-    voiceOverload  = -5,  //< Not enough free voices available (in e.g. new noteOn).
-    notFound       = -6,  //< A region, group or whatever was not found.
+    layerOverload  = -5,  //< Not enough free layers available (in e.g. new noteOn).
+    notFound       = -6,  //< A region, group, sample or whatever was not found.
     fileLoadError  = -7,  //< A file could not be loaded (reasons: not found or failed alloc).
-
     notImplemented = -8   //< Feature not yet implemented (relevant during development).
   };
-  // rename voiceOverload to layerOverload. in sfz, a voice refers to asingle key which can contain
-  // multiple layers/regions
   // todo: make it an enum class, maybe include also return codes for inquiry functions such as for
   // "unknown", etc. ...but maybe that's no good idea when we want to use it for functions which
   // need to return valid integers (like, for numChannels, etc. - we could use negative numbers to
   // encode such things)
-  // maybe rename "success" to "completed" because "success" has actually a more general meaning:
-  // "nothingToDo" is also a kind of "success" (or maybe "workDone" or "workCompleted"
+  // maybe rename "success" to "completed" or "done" because "success" has actually a more general 
+  //  meaning: "nothingToDo" is also a kind of "success" (or maybe "workDone" or "workCompleted"
 
 
   /** Clears the sfz instrument definition and the samplePool */
@@ -200,9 +197,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  int getNumGroups() const { return (int) sfz.getNumGroups(); }
+  /** Returns the number of groups in the instrument. */
+  int getNumGroups() const { return sfz.getNumGroups(); }
 
-  int getNumRegions(int groupIndex) const { return (int) sfz.getNumRegions(groupIndex); }
+  /** Returns the number of regions in the group with given groupIndex. */
+  int getNumRegions(int groupIndex) const { return sfz.getNumRegions(groupIndex); }
+  // todo: maybe assert the groupIndex is valid - if not, return invalidIndex
 
   /** Returns a pointer to the region object with the given group- and region index or a nullptr 
   if the combination of indices is invalid. If the client wants to edit the region, it can do so 
@@ -436,9 +436,9 @@ protected:
     void addRegion(const Region* r) { regions.push_back(r); }
     // todo: removeRegion, containsRegion
 
-    size_t getNumRegions() const { return regions.size(); }
+    int getNumRegions() const { return (int)regions.size(); }
 
-    const Region* getRegion(size_t i) const { return regions[i]; }
+    const Region* getRegion(int i) const { return regions[i]; }
 
     void clear() { regions.clear(); }
 
@@ -485,13 +485,11 @@ protected:
   given sfz */
   bool isSampleUsedIn(const AudioFileStream<float>* sample, const rsSamplerData& sfz);
   
-
-
   /** Stops the player at the given "activeIndex" which is the index into our "activePlayers" 
   array. This results in the removal of the player from "activePlayers" and adding it back to
   "idlePlayers". The return value is either ReturnCode::success or ReturnCode::invalidIndex, if
   the activeIndex was not a valid index into our activePlayers array. */
-  int deactivateRegionPlayer(size_t activeIndex);
+  int deactivateRegionPlayer(int activeIndex);
 
   /** Returns the AudioFileStream object that is used to stream the actual sample data for the
   given region. A pointer to this object is supposed to be stored within the region object

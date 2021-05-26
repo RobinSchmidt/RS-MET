@@ -2536,9 +2536,6 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_QuadSource.cpp">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerData - Copy.cpp">
-      <Filter>JUCE Modules\rosic\unfinished</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerData.cpp">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClCompile>
@@ -2624,15 +2621,6 @@
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.cpp">
-      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine - Copy (2).cpp">
-      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine - Copy.cpp">
-      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SineParameterEstimator.cpp">
@@ -4990,15 +4978,6 @@
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Relativity.h">
-      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine - Copy (2).h">
-      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine - Copy.h">
-      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SamplerEngine.h">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\SineParameterEstimator.h">

@@ -23,7 +23,6 @@ using namespace RAPT;
 #include "QuantumSystems.h"
 #include "Relativity.h"
 #include "SineParameterEstimator.h"
-#include "SamplerEngine.h"
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant
 to be used for production code but are useful for a more readable proof-of-concept (because of lack
