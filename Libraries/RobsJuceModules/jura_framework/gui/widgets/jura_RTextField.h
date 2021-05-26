@@ -67,7 +67,8 @@ public:
 
 protected:
 
-  /** Margin for the text from the left (or right, depending on justification) border of the component (in pixels). */
+  /** Margin for the text from the left (or right, depending on justification) border of the 
+  component (in pixels). */
   static const int horizontalMargin = 4;
 
   // data members:

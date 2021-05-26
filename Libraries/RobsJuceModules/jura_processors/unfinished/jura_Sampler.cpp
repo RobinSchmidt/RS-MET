@@ -1,5 +1,6 @@
 
-SamplerModule::SamplerModule(CriticalSection *lockToUse) : AudioModule(lockToUse)
+SamplerModule::SamplerModule(CriticalSection *lockToUse, MetaParameterManager* metaManagerToUse) 
+  : AudioModuleWithMidiIn(lockToUse, metaManagerToUse)
 {
   ScopedLock scopedLock(*lock);
   setModuleTypeName("Sampler");
@@ -87,6 +88,23 @@ XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool mar
   return xmlState;
 }
 
+void SamplerModule::noteOn(int key, int vel)
+{
+  Event ev(Event::Type::noteOn, (float)key, (float)vel);
+  engine.handleMusicalEvent(ev);
+}
+
+void SamplerModule::noteOff(int key)
+{
+  Event ev(Event::Type::noteOff, (float)key, 0.f);
+  engine.handleMusicalEvent(ev);
+}
+
+//void SamplerModule::handleMidiMessage(MidiMessage message) 
+//{
+//
+//}
+
 void SamplerModule::processBlock(double **inOutBuffer, int numChannels, int numSamples)
 {
   jassert(numChannels == 2);
@@ -106,14 +124,10 @@ void SamplerModule::reset()
 
 //=================================================================================================
 
-SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit)
-  //: AudioModuleEditor(samplerToEdit->lock) 
-  : AudioModuleEditor(samplerToEdit)
+SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit) : AudioModuleEditor(samplerToEdit)
 {
   ScopedLock scopedLock(*lock);
-
-  // ...
-
+  createWidgets();
   setSize(400, 200);
 }
 
@@ -129,16 +143,35 @@ void SamplerEditor::resized()
   // ...
 }
 
+void SamplerEditor::createWidgets()
+{
+  addWidgetSet(sfzFileLoader = new FileSelectionBox);
+  // todo: connect to the FileManager
+
+  addWidget(maxNumLayersSlider = new RDraggableNumber);
+  // todo: connect maxNumLayers parameter in module
+
+
+  addWidget(numLayersLabel = new RTextField);
+
+  addWidget(numLayersField = new RTextField);
+}
+
+
 /*
 Bugs:
 
-
 ToDo:
+-add some widgets to the gui that show: 
+ -numActiveLayers, numActiveVoices, 
+ -loaded sfz file (maybe it should be a load/save widget set)
+ -output level meter
+ -sliders for MaxLayers, ...
+ -menus for: Resampling, SignalFlow (default sfz (setting override), accumulative DSP)
 -write some more complex .sfz files with multiple samples, regions, groups, etc. 
 -make use of subdirectories for the samples and test, if that works
  -Pluck2.xml loads without errors
- -the hikey/lokey settings are wrong they are all 0..127. apparently, we don't set them up properly
-  in loadFromSFZ yet
+
 -override handleMidiEvent to pass the events to the engine
 
 
