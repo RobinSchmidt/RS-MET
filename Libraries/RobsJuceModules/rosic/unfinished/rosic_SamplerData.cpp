@@ -61,8 +61,8 @@ void rsSamplerData::Group::copyDataFrom(const Group* src)
   rsSamplerData::OrganizationLevel::copyDataFrom(src);
   clearRegions();
   settings = src->getSettings();
-  for(size_t i = 0; i < src->getNumRegions(); i++) {
-    const rsSamplerData::Region* srcRegion = src->getRegion((int)i);
+  for(int i = 0; i < src->getNumRegions(); i++) {
+    const rsSamplerData::Region* srcRegion = src->getRegion(i);
     rsSamplerData::Region* dstRegion = new rsSamplerData::Region;
     dstRegion->copyDataFrom(srcRegion);
     addRegion(dstRegion); }
@@ -132,7 +132,6 @@ bool rsSamplerData::Instrument::operator==(const rsSamplerData::Instrument& rhs)
   return equal;
 }
 
-
 std::string rsSamplerData::getAsSFZ() const
 {
   std::string str;
@@ -157,12 +156,12 @@ std::string rsSamplerData::getAsSFZ() const
 
 
   writeSettingsToString(instrument.getSettings(), str);
-  for(size_t gi = 0; gi < getNumGroups(); gi++)
+  for(int gi = 0; gi < getNumGroups(); gi++)
   {
     str += "<group>\n";
     const Group& g = getGroupRef(gi);
     writeSettingsToString(g.getSettings(), str);
-    for(size_t ri = 0; ri < g.getNumRegions(); ri++)
+    for(int ri = 0; ri < g.getNumRegions(); ri++)
     {
       str += "<region>\n";
       const Region* r = getRegionPtr(gi, ri);
@@ -374,7 +373,7 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
 void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
 {
   dst.clearInstrument();
-  for(size_t i = 0; i < src.getNumGroups(); i++) {
+  for(int i = 0; i < src.getNumGroups(); i++) {
     const Group* srcGroup = src.getGroupPtr(i);
     Group* dstGroup = new Group;
     dstGroup->copyDataFrom(srcGroup);

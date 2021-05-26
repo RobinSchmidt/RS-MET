@@ -4,15 +4,10 @@
 namespace rosic
 {
 
-//bool rsWriteStringToFile(const char* path, const char* str);
-//char* rsReadStringFromFile(const char *filename);
-//// move to FileInputOutput
-
 /** Data structure to define sample based instruments conforming to the sfz specification. 
 
 ToDo: 
--use size_t or int consistently for indexing groups and regions
--use pointers or references consistently for returning sub-levels
+-use pointers consistently for returning sub-levels
 */
 
 class rsSamplerData // todo: move into its own pair of .h/.cpp files, rename to rsSamplerData
@@ -302,8 +297,6 @@ public:
     const Group* getGroup() const { return (const Group*) getParent(); }
     // maybe rename to getParentGroup or getEnclosingGroup
 
-    //const Group* getGroup() const { return group; }
-    // todo: return (const Group*) getParentLevel();
 
     bool operator==(const Region& rhs) const;
 
@@ -312,7 +305,6 @@ public:
 
     friend class Group;  // do we need this? if not, get rid.
     friend class rsSamplerData;
-    //friend class rsSamplerEngine;  // try to get rid
     // The Region class shall not provide any public functions that can modify the region because
     // those could be used by client code to modify the region behind the back of the 
     // rsSamplerEngine which could mess things up. Client code can modify regions only through the
@@ -343,7 +335,6 @@ public:
     void clearRegions();
 
 
-
     /** Returns the index of the given region within this group, if present or -1 if the region is
     not present in this group. */
     int getRegionIndex(const Region* region) const;
@@ -351,23 +342,18 @@ public:
     /** Returns true, if the given index i refers toa valid region within this group. */
     bool isRegionIndexValid(int i) const { return i >= 0 && i < (int)regions.size(); }
 
-    size_t getNumRegions() const { return regions.size(); }
-
+    /** Returns the number of regions in this group. */
+    int getNumRegions() const { return (int)regions.size(); }
 
     /** Return a pointer to the instrument to which this group belongs. */
     const Instrument* getInstrument() const { return (const Instrument*) getParent(); }
 
-
     /** Returns a pointer to the region with the given index within the group. */
     Region* getRegion(int i) const;
-    // rename to getRegionPointer or Ptr
-    // return a const pointer
-
+    // maybe return a const pointer
 
     bool operator==(const Group& rhs) const;
     // the comparison is quite strict in the sense that the settings must occur in the same order
-
-
 
   private:
 
@@ -389,14 +375,14 @@ public:
 
   public:
 
-    size_t getNumGroups() const { return groups.size(); }
+    int getNumGroups() const { return (int) groups.size(); }
 
 
     /** Returns a pointer to the region with the given index within the group. */
     Group* getGroup(int i) { return groups[i]; }
 
 
-    const std::vector<PlaybackSetting>& getGroupSettings(size_t groupIndex) const
+    const std::vector<PlaybackSetting>& getGroupSettings(int groupIndex) const
     { return groups[groupIndex]->getSettings(); }
 
 
@@ -462,18 +448,18 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
-  size_t getNumGroups() const { return instrument.getNumGroups(); }
+  int getNumGroups() const { return instrument.getNumGroups(); }
 
-  size_t getNumRegions(int i) const { return instrument.groups[i]->getNumRegions(); }
+  int getNumRegions(int i) const { return instrument.groups[i]->getNumRegions(); }
 
   //const Group& getGroupRef(size_t i) const { return instrument.groups[i]; }
 
-  const Group& getGroupRef(size_t i) const { return *instrument.groups[i]; }
+  const Group& getGroupRef(int i) const { return *instrument.groups[i]; }
   // replace by getGroupPtr ..maybe rename to just getGroup
 
-  const Group* getGroupPtr(size_t i) const { return instrument.groups[i]; }
+  const Group* getGroupPtr(int i) const { return instrument.groups[i]; }
 
-  const Region* getRegionPtr(size_t gi, size_t ri) const 
+  const Region* getRegionPtr(int gi, int ri) const 
   { return instrument.groups[gi]->regions[ri]; }
 
   /** Returns a const reference to the playback settings if the i-th group. */

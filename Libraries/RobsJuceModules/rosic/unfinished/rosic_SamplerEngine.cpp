@@ -303,8 +303,8 @@ bool rsSamplerEngine::shouldRegionPlay(const Region* r, uchar key, uchar vel)
   // from handleNoteOn, the first check is actually redundant because if key is not within the 
   // key-range of r, r is not supposed to be in regionsForKey[key]. However, we do the check 
   // anyway, anticipating that the function might get called from somwhere else, too):
-  if(key < r->loKey || key > r->hiKey) return false;
-  if(vel < r->loVel || vel > r->hiVel) return false;
+  if(key < r->getLoKey() || key > r->getHiKey()) return false;
+  if(vel < r->getLoVel() || vel > r->getHiVel()) return false;
   if(r->getCustomPointer() == nullptr) return false;
 
 
@@ -376,9 +376,9 @@ bool rsSamplerEngine::isSampleUsedIn(
   const AudioFileStream<float>* stream, const rsSamplerData& sfz)
 {
   const std::string& streamPath = stream->getPath();
-  for(size_t gi = 0; gi < sfz.getNumGroups(); gi++) {
+  for(int gi = 0; gi < sfz.getNumGroups(); gi++) {
     const Group& g = sfz.getGroupRef(gi);
-    for(size_t ri = 0; ri < g.getNumRegions(); ri++) {
+    for(int ri = 0; ri < g.getNumRegions(); ri++) {
       Region* r = g.getRegion((int)ri);        // the conversion is unelegant - try to get rid
       const std::string& regionPath = r->getSamplePath();
       if(regionPath == streamPath)
@@ -488,10 +488,10 @@ int rsSamplerEngine::addSamplesUsedIn(const rsSamplerData& sfz)
   numSamplesLoaded = 0;
   numSamplesFailed = 0;
   bool allOK = true;
-  for(size_t gi = 0; gi < sfz.getNumGroups(); gi++) {
+  for(int gi = 0; gi < sfz.getNumGroups(); gi++) {
     const Group& g = sfz.getGroupRef(gi);
-    for(size_t ri = 0; ri < g.getNumRegions(); ri++) {
-      Region* r = g.getRegion((int)ri);     // the conversion is unelegant - try to get rid
+    for(int ri = 0; ri < g.getNumRegions(); ri++) {
+      Region* r = g.getRegion(ri); 
       const std::string& path = r->getSamplePath();
       if(isValidSamplePath(path) && !isSampleInPool(path)) {
         int rc = loadSampleToPool(path);
@@ -524,12 +524,12 @@ int rsSamplerEngine::setupAudioStreams()
   // groups and instruments also.
 
   bool allOK = true;
-  for(size_t gi = 0; gi < sfz.getNumGroups(); gi++) 
+  for(int gi = 0; gi < sfz.getNumGroups(); gi++) 
   {
     const Group& g = sfz.getGroupRef(gi);
-    for(size_t ri = 0; ri < g.getNumRegions(); ri++) 
+    for(int ri = 0; ri < g.getNumRegions(); ri++) 
     {
-      Region* r = g.getRegion((int)ri);     // the conversion is unelegant - try to get rid
+      Region* r = g.getRegion(ri);
       const std::string& path = r->getSamplePath();
       allOK &= setupStream(r, path);
     }
@@ -548,10 +548,10 @@ void rsSamplerEngine::setupRegionsForKey()
 {
   for(uchar k = 0; k < numKeys; k++)
     regionsForKey[k].clear();
-  for(size_t gi = 0; gi < sfz.getNumGroups(); gi++) {
+  for(int gi = 0; gi < sfz.getNumGroups(); gi++) {
     const Group& g = sfz.getGroupRef(gi);
-    for(size_t ri = 0; ri < g.getNumRegions(); ri++) {
-      Region* r = g.getRegion((int)ri);  // the conversion is unelegant - try to get rid
+    for(int ri = 0; ri < g.getNumRegions(); ri++) {
+      Region* r = g.getRegion(ri);
       for(uchar k = 0; k < numKeys; k++)
         addRegionForKey(k, r); }}
 }
