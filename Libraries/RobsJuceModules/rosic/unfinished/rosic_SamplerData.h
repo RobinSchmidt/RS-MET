@@ -4,11 +4,7 @@
 namespace rosic
 {
 
-/** Data structure to define sample based instruments conforming to the sfz specification. 
-
-ToDo: 
--use pointers consistently for returning sub-levels
-*/
+/** Data structure to define sample based instruments conforming to the sfz specification. */
 
 class rsSamplerData // todo: move into its own pair of .h/.cpp files, rename to rsSamplerData
 {
@@ -59,6 +55,8 @@ public:
     in the sfz specification. */
     enum Type
     {
+      LoKey, HiKey, LoVel, HiVel,
+
       ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
 
       PitchKeyCenter,
@@ -159,7 +157,13 @@ public:
     file). */
     void setSamplePath(const std::string& newPath) { samplePath = newPath; }
 
+    /** Sets up the given setting. This may either add it to our array of settings or overwrite the
+    value, if there is already a value stored for the given type. If there are already more values
+    stored for that type (a situation that may arise from badly written sfz files), it will 
+    overwrite the last one, because that's the one that actually counts. */
+    void setSetting(const PlaybackSetting& s);
 
+    /** Adds the given setting to our array of settings. */
     void addSetting(const PlaybackSetting& s) { settings.push_back(s); }
     // Maybe we should have a function setSetting that either adds a new setting or overwrites
     // an existing one, we may also need a function cleanUpSettings that keeps only the last 
@@ -195,6 +199,15 @@ public:
 
     /** Returns a const reference to our playback settings. */
     const std::vector<PlaybackSetting>& getSettings() const { return settings; }
+
+    /** Tries to find a setting of the given type in our settings array and returns the index of 
+    the last stored setting of given type (and with given index, if applicable - like for 
+    controllers), if a setting of the given type was found or -1 if such a setting wasn't found. 
+    Typically, we want to have only one entry of a particular type in the array, but if for some 
+    reason (like a poorly written sfz file) there is more than one, it's the last one that counts 
+    (it will overwrite anything that came before). That's why we return the last index, i.e. we do
+    a linear search starting at the end of the array. */
+    int findSetting(PlaybackSetting::Type type, int index = -1);
 
     // todo: float getSetting(PlaybackSetting::Type, int index) this should loop through the 
     // settings to see, if it finds it and if not call the same method on the parent or return the
@@ -454,12 +467,12 @@ public:
 
   //const Group& getGroupRef(size_t i) const { return instrument.groups[i]; }
 
-  const Group& getGroupRef(int i) const { return *instrument.groups[i]; }
+  //const Group& getGroupRef(int i) const { return *instrument.groups[i]; }
   // replace by getGroupPtr ..maybe rename to just getGroup
 
-  const Group* getGroupPtr(int i) const { return instrument.groups[i]; }
+  const Group* getGroup(int i) const { return instrument.groups[i]; }
 
-  const Region* getRegionPtr(int gi, int ri) const 
+  const Region* getRegion(int gi, int ri) const 
   { return instrument.groups[gi]->regions[ri]; }
 
   /** Returns a const reference to the playback settings if the i-th group. */

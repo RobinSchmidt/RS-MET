@@ -5,7 +5,7 @@ bool AudioFileStreamPreloaded<T>::setData(
 {
   // Deallocate old and allocate new memory:
   clear();
-  int numChannelsMin = rsMin(numDataChannels, numStreamChannels);
+  int numChannelsMin = RAPT::rsMin(numDataChannels, numStreamChannels);
   flatData = new T[numChannelsMin*numFrames];
   channelPointers = new T*[numStreamChannels];
   if(flatData == nullptr || channelPointers == nullptr) {

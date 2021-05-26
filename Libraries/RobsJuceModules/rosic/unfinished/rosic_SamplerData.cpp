@@ -1,12 +1,25 @@
-using namespace RAPT;  // try to get rid
+//-------------------------------------------------------------------------------------------------
+// The internal classes
 
-int rsSamplerData::addRegion(int gi, uchar loKey, uchar hiKey)
+void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
 {
-  if(gi < 0 || gi >= (int)instrument.groups.size()) {
-    rsError("Invalid group index");
-    return -1; }
-  int ri = instrument.groups[gi]->addRegion(loKey, hiKey);  // region index within its group
-  return ri;
+  using TP = PlaybackSetting::Type;
+  TP t = s.getType();
+
+  // Handle the lo/hi key/vel opcodes as special cases:
+  if(t == TP::LoKey) { loKey = (uchar) s.getValue(); return; }
+  if(t == TP::HiKey) { hiKey = (uchar) s.getValue(); return; }
+  if(t == TP::LoVel) { loVel = (uchar) s.getValue(); return; }
+  if(t == TP::HiVel) { hiVel = (uchar) s.getValue(); return; }
+  // ToDo: maybe we should assert that the value is an integer in the range 0..127
+
+  // All other settings are handled by either overwriting the last setting of that type in our 
+  // array, if present or appending the setting, if not present:
+  int i = findSetting(t);
+  if(i != -1) 
+    settings[i] = s;
+  else
+    settings.push_back(s);
 }
 
 void rsSamplerData::OrganizationLevel::copyDataFrom(const OrganizationLevel* lvl)
@@ -17,6 +30,14 @@ void rsSamplerData::OrganizationLevel::copyDataFrom(const OrganizationLevel* lvl
   // not sure, if the pointers should be copied - maybe not:
   //custom = lvl->custom;
   //parent = lvl->parent;
+}
+
+int rsSamplerData::OrganizationLevel::findSetting(PlaybackSetting::Type type, int index)
+{
+  for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
+    if(settings[i].getType() == type && settings[i].getIndex() == index)
+      return (int) i; }
+  return -1;
 }
 
 void rsSamplerData::Region::copyDataFrom(const Region* src)
@@ -86,9 +107,8 @@ int rsSamplerData::Group::getRegionIndex(const rsSamplerData::Region* region) co
 rsSamplerData::Region* rsSamplerData::Group::getRegion(int i) const
 {
   if(i < 0 || i >= (int)regions.size()) {
-    rsError("Invalid region index");
-    return nullptr; 
-  }
+    RAPT::rsError("Invalid region index");
+    return nullptr; }
   return regions[i];
 }
 
@@ -132,6 +152,18 @@ bool rsSamplerData::Instrument::operator==(const rsSamplerData::Instrument& rhs)
   return equal;
 }
 
+//-------------------------------------------------------------------------------------------------
+// The actual rsSamplerData class:
+
+int rsSamplerData::addRegion(int gi, uchar loKey, uchar hiKey)
+{
+  if(gi < 0 || gi >= (int)instrument.groups.size()) {
+    RAPT::rsError("Invalid group index");
+    return -1; }
+  int ri = instrument.groups[gi]->addRegion(loKey, hiKey);  // region index within its group
+  return ri;
+}
+
 std::string rsSamplerData::getAsSFZ() const
 {
   std::string str;
@@ -143,7 +175,7 @@ std::string rsSamplerData::getAsSFZ() const
       writeSettingToString(settings[i], str);
 
     // todo:
-    // -If the settings define a sample opcode, write that into the string also - it hink, the 
+    // -If the settings define a sample opcode, write that into the string also - i think, the 
     //  sample opcode needs special handling because its value is a string, not corresponidng to 
     //  any enum value...what, if we later introduce more such string-valued opcodes, such as the
     //  sample-directory? ...hmm...currently, the sample opcode is treated specially below - maybe 
@@ -159,12 +191,13 @@ std::string rsSamplerData::getAsSFZ() const
   for(int gi = 0; gi < getNumGroups(); gi++)
   {
     str += "<group>\n";
-    const Group& g = getGroupRef(gi);
-    writeSettingsToString(g.getSettings(), str);
-    for(int ri = 0; ri < g.getNumRegions(); ri++)
+    //const Group& g = getGroupRef(gi);
+    const Group* g = getGroup(gi);
+    writeSettingsToString(g->getSettings(), str);
+    for(int ri = 0; ri < g->getNumRegions(); ri++)
     {
       str += "<region>\n";
-      const Region* r = getRegionPtr(gi, ri);
+      const Region* r = getRegion(gi, ri);
       const std::string& samplePath = r->getSamplePath();
       if(!samplePath.empty())
         str += "sample=" + samplePath + '\n';
@@ -374,7 +407,7 @@ void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
 {
   dst.clearInstrument();
   for(int i = 0; i < src.getNumGroups(); i++) {
-    const Group* srcGroup = src.getGroupPtr(i);
+    const Group* srcGroup = src.getGroup(i);
     Group* dstGroup = new Group;
     dstGroup->copyDataFrom(srcGroup);
     dst.addGroup(dstGroup); }

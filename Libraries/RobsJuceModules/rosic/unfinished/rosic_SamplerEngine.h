@@ -218,7 +218,7 @@ public:
   region change. This is actually enforced by the fact that Region provides no public setters. */
   Region* getRegion(int groupIndex, int regionIndex);
 
-  const Region* getRegionConst(int gi, int ri) const { return sfz.getRegionPtr(gi, ri); }
+  const Region* getRegionConst(int gi, int ri) const { return sfz.getRegion(gi, ri); }
 
   /** Returns the number of regions in the instrument definition that use the sample with the given
   index in out samplePool or ReturnCode::invalidIndex, if the given sampleIndex is invalid. */

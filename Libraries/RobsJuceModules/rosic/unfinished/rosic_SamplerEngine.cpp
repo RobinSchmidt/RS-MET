@@ -71,7 +71,7 @@ int rsSamplerEngine::loadSampleToPool(const std::string& path)
 int rsSamplerEngine::unUseSample(int i)
 {
   if(i < 0 || i >= samplePool.getNumSamples()){
-    rsError("Invalid sample index");
+    RAPT::rsError("Invalid sample index");
     return ReturnCode::invalidIndex; }
   int numRegions = 0;
   using StreamPtr = const AudioFileStream<float>*;
@@ -114,10 +114,10 @@ int rsSamplerEngine::addRegion(int gi, uchar loKey, uchar hiKey)
 int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
 {
   if(!isIndexPairValid(gi, ri)) {
-    rsError("Invalid group- and/or region index");
+    RAPT::rsError("Invalid group- and/or region index");
     return ReturnCode::invalidIndex; }
   if(!isSampleIndexValid(si)) {
-    rsError("Invalid sample index");
+    RAPT::rsError("Invalid sample index");
     return ReturnCode::invalidIndex; }
 
   const AudioFileStream<float>* s = samplePool.getSampleStream(si);
@@ -129,7 +129,7 @@ int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
 int rsSamplerEngine::setRegionSetting(int gi, int ri, PlaybackSetting::Type type, float value)
 {
   if(!isIndexPairValid(gi, ri)) {
-    rsError("Invalid group- and/or region index");
+    RAPT::rsError("Invalid group- and/or region index");
     return ReturnCode::invalidIndex; }
 
   sfz.setRegionSetting(gi, ri, type, value);
@@ -175,7 +175,7 @@ rsSamplerEngine::Region* rsSamplerEngine::getRegion(int groupIndex, int regionIn
 {
   int gi = groupIndex, ri = regionIndex;
   if(gi < 0 || gi >= (int)sfz.instrument.groups.size()) {
-    rsError("Invalid group index");
+    RAPT::rsError("Invalid group index");
     return nullptr; }
   return sfz.instrument.groups[gi]->getRegion(ri);
 }
@@ -183,7 +183,7 @@ rsSamplerEngine::Region* rsSamplerEngine::getRegion(int groupIndex, int regionIn
 int rsSamplerEngine::getNumRegionsUsing(int i) const
 {
   if(i < 0 || i >= samplePool.getNumSamples()){
-    rsError("Invalid sample index");
+    RAPT::rsError("Invalid sample index");
     return ReturnCode::invalidIndex; }
   int numRegions = 0;
   using StreamPtr = const AudioFileStream<float>*;
@@ -340,7 +340,7 @@ void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int*
       *gi = (int) i;
       *ri = j;
       return; }}
-  rsError("Region not found");
+  RAPT::rsError("Region not found");
   // A region should always be found in one (and only one group). If we don't find it, it means
   // the caller has passed a pointer to a region object that is not part of this instrument. If 
   // this happens, it indicates a bug at the call site.
@@ -349,7 +349,7 @@ void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int*
 rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
   const Region* r, uchar key, uchar vel)
 {
-  rsAssert(r->getCustomPointer() != nullptr); // No stream connected
+  RAPT::rsAssert(r->getCustomPointer() != nullptr); // No stream connected
 
   // The behavior for this in situations where the region r is already being played by some 
   // voice/player should depend on the playback-mode of the region. If it's in one-shot mode, a new
@@ -361,7 +361,7 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
   // set per region instead of globally? Check, if sfz may actually have an opcode for that.
   if(idlePlayers.empty())
     return nullptr;  // Maybe we should implement more elaborate voice stealing?
-  RegionPlayer* rp = rsGetAndRemoveLast(idlePlayers);
+  RegionPlayer* rp = RAPT::rsGetAndRemoveLast(idlePlayers);
   rp->setKey(key);
   rp->setRegionToPlay(r, sampleRate);
   activePlayers.push_back(rp);
@@ -373,9 +373,9 @@ bool rsSamplerEngine::isSampleUsedIn(
 {
   const std::string& streamPath = stream->getPath();
   for(int gi = 0; gi < sfz.getNumGroups(); gi++) {
-    const Group& g = sfz.getGroupRef(gi);
-    for(int ri = 0; ri < g.getNumRegions(); ri++) {
-      Region* r = g.getRegion((int)ri);        // the conversion is unelegant - try to get rid
+    const Group* g = sfz.getGroup(gi);
+    for(int ri = 0; ri < g->getNumRegions(); ri++) {
+      Region* r = g->getRegion(ri);
       const std::string& regionPath = r->getSamplePath();
       if(regionPath == streamPath)
         return true; }}
@@ -385,10 +385,10 @@ bool rsSamplerEngine::isSampleUsedIn(
 int rsSamplerEngine::deactivateRegionPlayer(int i)
 {
   if(i < 0 || i >= activePlayers.size()) {
-    rsError("Invalid player index");
+    RAPT::rsError("Invalid player index");
     return ReturnCode::invalidIndex; }
   RegionPlayer* p = activePlayers[i];
-  rsRemove(activePlayers, i);
+  RAPT::rsRemove(activePlayers, i);
   idlePlayers.push_back(p);
   return ReturnCode::success;
 }
@@ -410,7 +410,7 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
   if(vel == 0) { return handleNoteOff(key, vel); }
 
   int numRegions = 0;  // number of regions that were triggered by this noteOn
-  for(size_t i = 0; i < regionsForKey[key].getNumRegions(); i++) 
+  for(int i = 0; i < regionsForKey[key].getNumRegions(); i++) 
   {
     const Region* r  = regionsForKey[key].getRegion(i);
     if(!shouldRegionPlay(r, key, vel))
@@ -422,7 +422,7 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
       // samples. It's all or nothing - either all samples for the given key get triggered or none
       // of them:
       for(int j = 0; i < numRegions; j++) {
-        rp = rsGetAndRemoveLast(activePlayers);
+        rp = RAPT::rsGetAndRemoveLast(activePlayers);
         idlePlayers.push_back(rp); }
       return ReturnCode::layerOverload;
     }
@@ -485,9 +485,9 @@ int rsSamplerEngine::addSamplesUsedIn(const rsSamplerData& sfz)
   numSamplesFailed = 0;
   bool allOK = true;
   for(int gi = 0; gi < sfz.getNumGroups(); gi++) {
-    const Group& g = sfz.getGroupRef(gi);
-    for(int ri = 0; ri < g.getNumRegions(); ri++) {
-      Region* r = g.getRegion(ri); 
+    const Group* g = sfz.getGroup(gi);
+    for(int ri = 0; ri < g->getNumRegions(); ri++) {
+      Region* r = g->getRegion(ri); 
       const std::string& path = r->getSamplePath();
       if(isValidSamplePath(path) && !isSampleInPool(path)) {
         int rc = loadSampleToPool(path);
@@ -522,10 +522,10 @@ int rsSamplerEngine::setupAudioStreams()
   bool allOK = true;
   for(int gi = 0; gi < sfz.getNumGroups(); gi++) 
   {
-    const Group& g = sfz.getGroupRef(gi);
-    for(int ri = 0; ri < g.getNumRegions(); ri++) 
+    const Group* g = sfz.getGroup(gi);
+    for(int ri = 0; ri < g->getNumRegions(); ri++) 
     {
-      Region* r = g.getRegion(ri);
+      Region* r = g->getRegion(ri);
       const std::string& path = r->getSamplePath();
       allOK &= setupStream(r, path);
     }
@@ -545,9 +545,9 @@ void rsSamplerEngine::setupRegionsForKey()
   for(uchar k = 0; k < numKeys; k++)
     regionsForKey[k].clear();
   for(int gi = 0; gi < sfz.getNumGroups(); gi++) {
-    const Group& g = sfz.getGroupRef(gi);
-    for(int ri = 0; ri < g.getNumRegions(); ri++) {
-      Region* r = g.getRegion(ri);
+    const Group* g = sfz.getGroup(gi);
+    for(int ri = 0; ri < g->getNumRegions(); ri++) {
+      Region* r = g->getRegion(ri);
       for(uchar k = 0; k < numKeys; k++)
         addRegionForKey(k, r); }}
 }
@@ -623,8 +623,8 @@ bool rsSamplerEngine::RegionPlayer::isPlayable(const Region* region)
 
 void rsSamplerEngine::RegionPlayer::prepareToPlay(double fs)
 {
-  rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
-  rsAssert(stream != nullptr);   // Ditto.
+  RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
+  RAPT::rsAssert(stream != nullptr);   // Ditto.
 
   bool ok = buildProcessingChain();
   if(!ok)
@@ -720,7 +720,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     switch(type)
     {
     // Amp settings:
-    case TP::Volume:  { amp      = rsDbToAmp(val); } break;
+    case TP::Volume:  { amp      = RAPT::rsDbToAmp(val); } break;
     case TP::Pan:     { pan      = val;            } break;
     case TP::PanRule: { panRule  = (int)val;       } break;
 
@@ -757,7 +757,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   } break;
   case PS::PanRule::sinCos:
   {
-    rsError("not yet implemented");
+    RAPT::rsError("not yet implemented");
   } break;
   }
   // ToDo: support the "width" opcode. Implement it by a M/S matrix - we need two rsFloat64
