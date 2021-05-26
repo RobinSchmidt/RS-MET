@@ -185,56 +185,25 @@ int rsSamplerData::addRegion(int gi, uchar loKey, uchar hiKey)
 
 std::string rsSamplerData::getAsSFZ() const
 {
-  std::string str;
-
-  using SettingsRef = const std::vector<PlaybackSetting>&;
-
-  /*
-  auto writeSettingsToString = [](SettingsRef settings, std::string& str)
+  auto writeSettingsToString = [](const OrganizationLevel* lvl, std::string& str)
   {
-    for(size_t i = 0; i < settings.size(); i++)
-      writeSettingToString(settings[i], str);
-
-    // todo:
-    // -If the settings define a sample opcode, write that into the string also - i think, the 
-    //  sample opcode needs special handling because its value is a string, not corresponidng to 
-    //  any enum value...what, if we later introduce more such string-valued opcodes, such as the
-    //  sample-directory? ...hmm...currently, the sample opcode is treated specially below - maybe 
-    //  this should be done here by means of not passing the settings but a reference or pointer
-    //  to the OrganizationLevel
-    // -Maybe factor that function out into a static member function
-    // -Maybe factor out a function settingToString...maybe that should be a member of 
-    //  PlaybackSetting. toString/fromString
-  };
-  */
-
-  auto writeSettingsToString2 = [](const OrganizationLevel* lvl, std::string& str)
-  {
+    const std::string& samplePath = lvl->getSamplePath();
+    if(!samplePath.empty()) 
+      str += "sample=" + samplePath + '\n';
+    using SettingsRef = const std::vector<PlaybackSetting>&;
     SettingsRef settings = lvl->getSettings();
     for(size_t i = 0; i < settings.size(); i++)
       writeSettingToString(settings[i], str);
   };
 
-  //writeSettingsToString(instrument.getSettings(), str);
-  writeSettingsToString2(&instrument, str);
-  for(int gi = 0; gi < getNumGroups(); gi++)
-  {
+  std::string str;
+  writeSettingsToString(&instrument, str);
+  for(int gi = 0; gi < getNumGroups(); gi++) {
     str += "<group>\n";
-    //const Group& g = getGroupRef(gi);
-    const Group* g = getGroup(gi);
-    //writeSettingsToString(g->getSettings(), str);
-    writeSettingsToString2(g, str);
-    for(int ri = 0; ri < g->getNumRegions(); ri++)
-    {
+    writeSettingsToString(getGroup(gi), str);
+    for(int ri = 0; ri < getNumRegions(gi); ri++) {
       str += "<region>\n";
-      const Region* r = getRegion(gi, ri);
-      const std::string& samplePath = r->getSamplePath();
-      if(!samplePath.empty())
-        str += "sample=" + samplePath + '\n';
-      writeSettingsToString2(r, str);
-      //writeSettingsToString(r->getSettings(), str);
-    }
-  }
+      writeSettingsToString(getRegion(gi, ri), str); }}
   return str;
 
   // ToDo: write lokey/hikey settings into the string, they are stored directly in the Region 
