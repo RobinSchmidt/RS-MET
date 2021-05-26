@@ -156,6 +156,8 @@ public:
 
   public:
 
+    //---------------------------------------------------------------------------------------------
+    // \name Setup
 
     /** Sets the sample to be used for this region. This should be a string that represents the 
     path of the sample relative to some fixed root directory (typically the directory of the sfz 
@@ -163,9 +165,35 @@ public:
     void setSamplePath(const std::string& newPath) { samplePath = newPath; }
 
 
+    void addSetting(const PlaybackSetting& s) { settings.push_back(s); }
+    // Maybe we should have a function setSetting that either adds a new setting or overwrites
+    // an existing one, we may also need a function cleanUpSettings that keeps only the last 
+    // setting of a particular kind in our list
+    // todo: deprecate this in favor of setSetting - this should treat loKey, etc specially
+
+
+    void clearSettings() { settings.clear(); }
+    // should this also set loKey/hiKey and loVel/hiVel to 0/127?
+
+
+    void setLoKey(uchar newKey) { loKey = newKey; }
+
+    void setHiKey(uchar newKey) { hiKey = newKey; }
+
+    void setLoVel(uchar newVel) { loVel = newVel; }
+
+    void setHiVel(uchar newVel) { hiVel = newVel; }
+
+
+    /** Sets a custom pointer that can be stored in the region object. @see getCustomPointer. */
+    void setCustomPointer(const void* newPointer) { custom = newPointer; }
+
+
     void copyDataFrom(const OrganizationLevel* lvl);
 
 
+    //---------------------------------------------------------------------------------------------
+    // \name Inquiry
 
     /** @see setSample */
     const std::string& getSamplePath() const { return samplePath; }
@@ -173,39 +201,46 @@ public:
     /** Returns a const reference to our playback settings. */
     const std::vector<PlaybackSetting>& getSettings() const { return settings; }
 
+    // todo: float getSetting(PlaybackSetting::Type, int index) this should loop through the 
+    // settings to see, if it finds it and if not call the same method on the parent or return the
+    // default value, if the parent is nullptr.
+
     /** Returns a pointer to the parent level which encloses this level. In a Region, this would 
     point to its enclosing Group, in a Group to its enclosing Instrument and in an Instrument, it
     would remain nullptr (unless we introduce an even higher level such as an "Ensemble"). */
     const OrganizationLevel* getParent() const { return parent; }
 
+    /** Returns the lowest key at which this region will be played. */
+    uchar getLoKey() const { return loKey; }
 
+    /** Returns the higest key at which this region will be played. */
+    uchar getHiKey() const { return hiKey; }
 
-    void addSetting(const PlaybackSetting& s) { settings.push_back(s); }
-    // Maybe we should have a function setSetting that either adds a new setting or overwrites
-    // an existing one
+    /** Returns the lowest velocity at which this region will be played. */
+    uchar getLoVel() const { return loVel; }
 
+    /** Returns the highest velocity at which this region will be played. */
+    uchar getHiVel() const { return hiVel; }
 
     /** Returns the generic pointer for custom satellite data or objects that are associated with
     this region. This pointer is intended to be used for some sort of audio stream object that is 
     used for accessing the sample data. It has been made a generic void pointer to decouple 
-    rsSamplerData from the AudioFileStream class that is used in rsSamplerEngine. The sampler-engine 
-    assigns this pointer with appropriate stream object and when retriveing them, does an 
-    appropriate type cast. ToDo: try to find a better design, maybe move up into baseclass */
+    rsSamplerData from the AudioFileStream class that is used in rsSamplerEngine. The 
+    sampler-engine assigns this pointer with appropriate stream object and when retriveing them, 
+    does an appropriate type cast. ToDo: try to find a better design, maybe move up into 
+    baseclass */
     const void* getCustomPointer() const { return custom; }
     // replaces getSampleStream
 
 
-    // todo: float getSetting(PlaybackSetting::Type, int index) this should loop through the 
-    // settings to see, if it finds it and if not call the same method on the parent or return the
-    // default value, if the parent is nullptr.
+    bool shouldPlayForKey(uchar key) const { return key >= loKey && key <= hiKey; }
+    // todo: later maybe also take loKey/hiKey parent into account, if not nulltpr
+
 
   protected:
 
-
     /** Sets the audio stream object that should be used for this region. */
     //void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
-
-    void setCustomPointer(const void* newPointer) { custom = newPointer; }
 
     //const AudioFileStream* sampleStream = nullptr;
     // try to get rid - that member should be added by rsSamplerEngine::Region which should be
@@ -220,15 +255,30 @@ public:
     // goes for the loKey,etc. stuff as well. Actually, the string is redundant here when the 
     // "custom" pointer actually points to an AudioFileStream, because that stream object also 
     // stores the path. Maybe revert the custom void pointer to a pointer-to-AudioFileStream again. 
-    // Yes, this will introduce coupling but it gets rid of the redundant storage. Maybe trying to 
-    // decouple it amounts to the "speculative generality" antipattern here - we'll see...
+    // Yes, this will introduce coupling but it gets rid of the redundant storage and the unelegant
+    // (and potentially unsafe) typecast of the void pointer. Maybe trying to decouple it amounts 
+    // to the "speculative generality" antipattern here - we'll see...
     // https://refactoring.guru/smells/speculative-generality
 
     const void* custom = nullptr;
 
     OrganizationLevel* parent = nullptr;
 
-    void clearSettings() { settings.clear(); }
+
+
+    uchar loKey = 0, hiKey = 127;
+    uchar loVel = 0, hiVel = 127;
+    // todo: maybe package loKey/hiKey, loVel/hiVel into a single uchar to save memory.
+    // To prepare for this, provide get/setLoKey() etc. accessors and use them consistently in
+    // rsSamplerEngine. Should these be moved into the baseclass, meaning that groups and 
+    // instruments can also restrict the keyrange additionally? Or is this opcode really 
+    // specifically applicable to regions only? Test with SFZPlayer and replicate its behavior.
+    // I think, it could be useful to restrict keyranges of groups and even instruments, when
+    // they are part of an enseble - for example, for keyboard splits.
+    // -maybe these should go into the baseclass as well
+    // -maybe the getters should use min/max with the stored settings and those of the parent such
+    //  that regions can only further restrict the the range...or maybe they should override the
+    //  group setting -> check, how sfzPlayer behaves
 
     std::vector<PlaybackSetting> settings;
 
@@ -245,68 +295,24 @@ public:
 
   public:
 
-
-
-    void setLoKey(uchar newKey) { loKey = newKey; }
-
-    void setHiKey(uchar newKey) { hiKey = newKey; }
-
-
     void copyDataFrom(const Region* src);
 
 
     /** Return a pointer to the group to which this region belongs. */
     const Group* getGroup() const { return (const Group*) getParent(); }
-    // rename to getParentGroup or getEnclosingGroup
+    // maybe rename to getParentGroup or getEnclosingGroup
 
     //const Group* getGroup() const { return group; }
     // todo: return (const Group*) getParentLevel();
-
-
-
-    /** Returns the lowest key at which this region will be played. */
-    uchar getLoKey() const { return loKey; }
-
-    /** Returns the higest key at which this region will be played. */
-    uchar getHiKey() const { return hiKey; }
-
-    /** Returns the lowest velocity at which this region will be played. */
-    uchar getLoVel() const { return loVel; }
-
-    /** Returns the highest velocity at which this region will be played. */
-    uchar getHiVel() const { return hiVel; }
-
-    bool shouldPlayForKey(uchar key) const { return key >= loKey && key <= hiKey; }
-    // todo: later maybe also take loKey/hiKey of group (and instrument) into account, requires to
-    // move loKey/hiKey members into baseclass
 
     bool operator==(const Region& rhs) const;
 
 
   private:
 
-    //Group* group = nullptr;  //< Pointer to the group to which this region belongs
-    // mayb get rid by having a general parentLevel pointer defined in the baseclass
-
-    // todo: setters for loKey,...
-
-    uchar loKey = 0, hiKey = 127;
-    uchar loVel = 0, hiVel = 127;
-    // todo: maybe package loKey/hiKey, loVel/hiVel into a single uchar to save memory.
-    // To prepare for this, provide get/setLoKey() etc. accessors and use them consistently in
-    // rsSamplerEngine. Should these be moved into the baseclass, meaning that groups and 
-    // instruments can also restrict the keyrange additionally? Or is this opcode really 
-    // specifically applicable to regions only? Test with SFZPlayer and replicate its behavior.
-    // I think, it could be useful to restrict keyranges of groups and even instruments, when
-    // they are part of an enseble - for example, for keyboard splits.
-    // -maybe these should go into the baseclass as well
-    // -maybe the getters should use min/max with the stored settings and those of the parent such
-    //  that regions can only further restrict the the range...or maybe they should override the
-    //  group setting -> check, how sfzPlayer behaves
-
     friend class Group;  // do we need this? if not, get rid.
     friend class rsSamplerData;
-    friend class rsSamplerEngine;  // try to get rid
+    //friend class rsSamplerEngine;  // try to get rid
     // The Region class shall not provide any public functions that can modify the region because
     // those could be used by client code to modify the region behind the back of the 
     // rsSamplerEngine which could mess things up. Client code can modify regions only through the
@@ -366,17 +372,12 @@ public:
   private:
 
 
-
-
-    //std::vector<Region> regions;
     std::vector<Region*> regions;
     /**< Pointers to the regions belonging to this group. */
 
     friend class rsSamplerData;
-    friend class rsSamplerEngine;  // try to get rid
+    //friend class rsSamplerEngine;  // try to get rid
   };
-
-  // todo: class Instrument - group should have a pointer to its enclosing instrument
 
   //-----------------------------------------------------------------------------------------------
   /** The instrument is the highest organizational level in sfz. There is actually no section 
