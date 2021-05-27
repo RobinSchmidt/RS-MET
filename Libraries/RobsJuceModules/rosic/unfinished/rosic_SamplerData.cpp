@@ -230,24 +230,10 @@ void rsSamplerData::setFromSFZ(const std::string& str)
   std::string sep(" \n");  // allowed seperator characters
   auto getToken = [&](const std::string& str, size_t startIndex)
   {
-    // new (under construction):
     int start  = (int) startIndex;
     int length = -1;  // initial value should not matter
     rosic::rsFindToken(str, sep, &start, &length);
     return str.substr(start, length);
-    // last setting is not recalled
-  };
-
-  // old - to be replaced by getToken, when it works
-  auto getLine = [&](const std::string& str, size_t startIndex)
-  {
-    return getToken(str, startIndex);  // transitional
-
-    size_t endIndex = str.find('\n', startIndex);
-    if(endIndex >= str.length())
-      return str.substr(startIndex, str.length()-startIndex);
-    else
-      return str.substr(startIndex, endIndex-startIndex);
   };
 
   // Sets up one setting in lvl given in the format "opcode=value":
@@ -273,13 +259,12 @@ void rsSamplerData::setFromSFZ(const std::string& str)
     size_t start = 0;
     while(true)
     {
-      std::string line  = getLine(str, start);   // extract one line at at time, old
-      std::string token = getToken(str, start);   // extract one token at at time, new
-
-      if(line.length() == 0) break;
-      setupSetting(lvl, line);                  // set a setting from this line
-      start += line.length() + 1;
-      if(start >= str.length()) break;          // may be superfluous?
+      std::string token = getToken(str, start); // extract one token at at time
+      if(token.length() == 0) 
+        break;
+      setupSetting(lvl, token);                 // set a setting from this token
+      start += token.length() + 1;
+      //if(start >= str.length()) break;          // may be superfluous?
     }
   };
 
