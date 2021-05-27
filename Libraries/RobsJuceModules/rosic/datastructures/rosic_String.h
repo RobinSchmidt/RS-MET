@@ -311,6 +311,13 @@ private:
 void removeChar(std::string& str, const char chr);
 std::vector<std::string> tokenize(const std::string& str, const char splitChar);
 
+// start: 
+//  input:    index from which we start searching for the next token
+//  output:   index where the next token actually starts
+// length:    length of the token (output only)
+void rsFindToken(const std::string& str, const std::string& seperators, int* start, int* length);
+
+
 
 } // end namespace rosic
 

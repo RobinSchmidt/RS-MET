@@ -451,4 +451,35 @@ std::vector<std::string> rosic::tokenize(const std::string& str, const char spli
   return result;
 }
 
+void rosic::rsFindToken(
+  const std::string& str, const std::string& seps, int* start, int* length)
+{
+  // Returns true, if the given character c is among the seperator characters:
+  auto isSeperator = [&](const char c) { 
+    return RAPT::rsArrayTools::contains(&seps[0], (int) seps.length(), c); };
 
+  // Parse the substring via state-machine with 3 states:
+  const int inToken     = 0;     // state: we are inside a token
+  const int inSeperator = 1;     // state: we are inside a seperator between tokens
+  const int finished    = 2;     // state: we have found the next seperator
+  int state = inSeperator;       // initially, we start in inSeperator state
+  int i     = *start;            // current position in the string
+  while(i < (int) str.size()) {
+    if(state == inSeperator) {
+      if(!isSeperator(str[i])) {
+        state  = inToken;
+        *start = i; }}
+    else if(state == inToken) {
+      if(isSeperator(str[i]))  {
+        state   = finished;
+        *length = i - *start;
+        break; }}
+    i++; }
+
+  // If we don't end up in "finished" state, we need to do some extra work:
+  if(state == inToken) {
+    *length = (int) str.length() - *start; }
+  else if(state == inSeperator) {
+    *start  = (int) str.length(); // such that caller can use while(start < length)
+    *length = 0; }
+}

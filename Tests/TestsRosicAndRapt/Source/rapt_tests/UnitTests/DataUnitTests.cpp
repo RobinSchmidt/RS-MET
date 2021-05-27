@@ -143,45 +143,10 @@ bool testArrayMisc()
   return r;
 }
 
-
-// start: 
-//  input:    index from which we start searching for the next token
-//  output:   index where the next token actually starts
-// length:    length of the token (output only)
-void finNextToken(const std::string& str, const std::string& seperators, int* start, int* length)
-{
-  // Returns true, if the given character c is among the seperator characters:
-  auto isSeperator = [&](const char c)
-  { return rsArrayTools::contains(&seperators[0], (int) seperators.length(), c); };
-
-  // Parse the substring via state-machine with 3 states:
-  const int inToken     = 0; // state: we are inside a token
-  const int inSeperator = 1; // state: we are inside a seperator between tokens
-  const int finished    = 2; // state: we have found the next seperator
-  int state = inSeperator;   // initially, we start in inSeperator state
-  int i     = *start;        // current position in the string
-  while(i < (int) str.size()) {
-    if(state == inSeperator) {
-      if(!isSeperator(str[i])) {
-        state  = inToken;
-        *start = i;     }}
-    else if(state == inToken) {
-      if(isSeperator(str[i]))  {
-        state   = finished;
-        *length = i - *start;
-        break;  }}
-    i++; }
-
-  // If we don't end up in "finished" state, we need to do something extra:
-  if(state == inToken) {
-    *length = (int) str.length() - *start; }
-  else if(state == inSeperator) {
-    *start  = (int) str.length(); // makes sense, so that caller can use while(start < length)
-    *length = 0; }
-}
-
 bool testTokenize()
 {
+  using namespace rosic; // ToDo: move into rosic tests!
+
   // Test splitting a string at a bunch of given split characters such as whitespaces and newlines.
   // The tokenizer should support tokens being seperated by any number of such split characters. We
   // have the unit test here because a string is basically also just an array (of characters). 
@@ -194,42 +159,42 @@ bool testTokenize()
   int S =  0;  // start of the token
   int L = -1;  // length of token, initial value should be irrelevant
 
-  finNextToken(str, sep, &S, &L); ok &= S ==  0 && L == 3; S += L;  // ABC
-  finNextToken(str, sep, &S, &L); ok &= S ==  4 && L == 2; S += L;  // DE
-  finNextToken(str, sep, &S, &L); ok &= S ==  7 && L == 2; S += L;  // FG
-  finNextToken(str, sep, &S, &L); ok &= S == 10 && L == 2; S += L;  // HI
-  finNextToken(str, sep, &S, &L); ok &= S == 14 && L == 3; S += L;  // JKL
-  finNextToken(str, sep, &S, &L); ok &= S == 18 && L == 2; S += L;  // MN
-  finNextToken(str, sep, &S, &L); ok &= S == 23 && L == 5; S += L;  // OPQRS
-  finNextToken(str, sep, &S, &L); ok &= S == 31 && L == 6; S += L;  // TUVWXY
-  finNextToken(str, sep, &S, &L); ok &= S == 38 && L == 1; S += L;  // Z
+  rsFindToken(str, sep, &S, &L); ok &= S ==  0 && L == 3; S += L;  // ABC
+  rsFindToken(str, sep, &S, &L); ok &= S ==  4 && L == 2; S += L;  // DE
+  rsFindToken(str, sep, &S, &L); ok &= S ==  7 && L == 2; S += L;  // FG
+  rsFindToken(str, sep, &S, &L); ok &= S == 10 && L == 2; S += L;  // HI
+  rsFindToken(str, sep, &S, &L); ok &= S == 14 && L == 3; S += L;  // JKL
+  rsFindToken(str, sep, &S, &L); ok &= S == 18 && L == 2; S += L;  // MN
+  rsFindToken(str, sep, &S, &L); ok &= S == 23 && L == 5; S += L;  // OPQRS
+  rsFindToken(str, sep, &S, &L); ok &= S == 31 && L == 6; S += L;  // TUVWXY
+  rsFindToken(str, sep, &S, &L); ok &= S == 38 && L == 1; S += L;  // Z
 
   // Test some special cases:
   S = 0; L = -1; str = ("ABC");    // only 1 token, no separators
-  finNextToken(str, sep, &S, &L); ok &= S == 0 && L == 3; S += L;
-  finNextToken(str, sep, &S, &L); ok &= S == 3 && L == 0; S += L;
+  rsFindToken(str, sep, &S, &L); ok &= S == 0 && L == 3; S += L;
+  rsFindToken(str, sep, &S, &L); ok &= S == 3 && L == 0; S += L;
   // L == 0 indicates that the end of the string was reached. In practice, one could tokenize a 
   // string in a while(L != 0) loop..or maybe a while(s < str.length()) should also work
 
   S = 0; L = -1; str = ("   ");    // no token, only separators
-  finNextToken(str, sep, &S, &L); ok &= S == 3 && L == 0; S += L;
-  finNextToken(str, sep, &S, &L); ok &= S == 3 && L == 0; S += L;
+  rsFindToken(str, sep, &S, &L); ok &= S == 3 && L == 0; S += L;
+  rsFindToken(str, sep, &S, &L); ok &= S == 3 && L == 0; S += L;
 
   S = 0; L = -1; str = ("");       // empty string
-  finNextToken(str, sep, &S, &L); ok &= S == 0 && L == 0;
-  finNextToken(str, sep, &S, &L); ok &= S == 0 && L == 0;
+  rsFindToken(str, sep, &S, &L); ok &= S == 0 && L == 0;
+  rsFindToken(str, sep, &S, &L); ok &= S == 0 && L == 0;
 
   S = 0; L = -1; str = ("  ABC");  // starts with seperators
-  finNextToken(str, sep, &S, &L); ok &= S == 2 && L == 3; S += L;
+  rsFindToken(str, sep, &S, &L); ok &= S == 2 && L == 3; S += L;
 
   S = 0; L = -1; str = ("ABC  ");  // ends with seperators
-  finNextToken(str, sep, &S, &L); ok &= S == 0 && L == 3; S += L;
-  finNextToken(str, sep, &S, &L); ok &= S == 5 && L == 0; S += L;
+  rsFindToken(str, sep, &S, &L); ok &= S == 0 && L == 3; S += L;
+  rsFindToken(str, sep, &S, &L); ok &= S == 5 && L == 0; S += L;
 
   S = 0; L = -1; str = ("ABC DE"); // ends with token
-  finNextToken(str, sep, &S, &L); ok &= S == 0 && L == 3; S += L;
-  finNextToken(str, sep, &S, &L); ok &= S == 4 && L == 2; S += L;
-  finNextToken(str, sep, &S, &L); ok &= S == 6 && L == 0; S += L;
+  rsFindToken(str, sep, &S, &L); ok &= S == 0 && L == 3; S += L;
+  rsFindToken(str, sep, &S, &L); ok &= S == 4 && L == 2; S += L;
+  rsFindToken(str, sep, &S, &L); ok &= S == 6 && L == 0; S += L;
 
   return ok;
 }
