@@ -143,32 +143,94 @@ bool testArrayMisc()
   return r;
 }
 
+
+// start: 
+//  input:    index from which we start searching for the next token
+//  output:   index where the next token actually starts
+// length:    length of the token (output only)
+void finNextToken(const std::string& str, int* start, int* length)
+{
+  // The names for the states:
+  const int inToken     = 0; // we are inside a token
+  const int inSeperator = 1; // we are inside a seperator between tokens
+  //const int finished    = 2;
+  int state = inSeperator;   // initially, we start in inSeperator state
+  int i     = *start;        // current position in the string
+
+  auto isSeperator = [](const char c)
+  {
+    return c == ' ' || c == '\n';  
+    // preliminary - todo: let caller pass a second string containing all seperator characters
+  };
+
+  while(i < (int) str.size())
+  {
+    if(state == inSeperator)
+    {
+      if(!isSeperator(str[i]))
+      {
+        state  = inToken;
+        *start = i;
+      }
+    }
+    else if(state == inToken)
+    {
+      if(isSeperator(str[i]))
+      {
+        //state   = finished;
+        *length = i - *start;
+        break;
+      }
+    }
+    i++;
+  }
+}
+
+bool testTokenize()
+{
+  // Test splitting a string at a bunch of given split characters such as whitespaces and newlines.
+  // The tokenizer should support tokens being seperated by any number of such split characters. We
+  // have the unit test here because a string is basically also just an array (of characters). 
+  // Maybe someday it can be moved elsewhere, when we have more string processing functions.
+
+  bool ok = true;
+  std::string str("ABC DE FG\nHI \nJKL\nMN   OPQRS \n\N TUVWXY\nZ \n");
+  int S =  0;  // start of the token
+  int L = -1;  // length of token, initial value should be irrelevant
+
+  finNextToken(str, &S, &L); ok &= S == 0 && L == 3; S += L;
+
+  return ok;
+}
+
+
 bool arrayUnitTest()
 {
-  bool r = true;      // test result
+  bool ok = true;
 
   typedef std::vector<int> Vec;
   Vec v({ 1,2,3 }), w({4,5});
   Vec u = v;
   rsAppend(u, w);
-  r &= u == Vec({1,2,3,4,5});
+  ok &= u == Vec({1,2,3,4,5});
   u = v;
   rsAppend(u, u);
-  r &= u == Vec({1,2,3,1,2,3});
+  ok &= u == Vec({1,2,3,1,2,3});
 
 
   Vec a = { 0,1,2,3,4,5,6,7,8,9 };
   rsRemoveRange(a, 4, 7);
-  r &= a == Vec({ 0,1,2,3, 8,9 });
+  ok &= a == Vec({ 0,1,2,3, 8,9 });
 
 
-  r &= testArrayFiltering();
-  r &= testArrayMisc();
+  ok &= testArrayFiltering();
+  ok &= testArrayMisc();
+  ok &= testTokenize();
 
   // int s = sum(3, &u[0]); // sum function doesn't compile
 
 
-  return r;
+  return ok;
 }
 
 

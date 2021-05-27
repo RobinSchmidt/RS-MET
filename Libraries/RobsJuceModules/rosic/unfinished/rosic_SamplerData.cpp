@@ -220,6 +220,9 @@ std::string rsSamplerData::getAsSFZ() const
   // at all 3 levels - i guess, it will use the most restrictive setting of all of them
 }
 
+
+
+
 void rsSamplerData::setFromSFZ(const std::string& str)
 {
   clearInstrument();
@@ -229,6 +232,10 @@ void rsSamplerData::setFromSFZ(const std::string& str)
   // charcater. If there is no '\n', it will return the string from startIndex up to its end:
   auto getLine = [&](const std::string& str, size_t startIndex)
   {
+    // new (under construction):
+
+
+    // old:
     size_t endIndex = str.find('\n', startIndex);
     if(endIndex >= str.length())
       return str.substr(startIndex, str.length()-startIndex);

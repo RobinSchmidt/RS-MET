@@ -28,7 +28,10 @@ bool runUnitTestsRapt()
   ok &= runUnitTest(&samplerDataUnitTest,         "rsSamplerData");
   ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
   ok &= runUnitTest(&samplerEngineUnitTestFileIO, "rsSamplerEngine - File I/O");
-  return ok;
+  //return ok;
+
+
+
 
   // Data:
   ok &= runUnitTest(&arrayUnitTest,            "rsArrayTools and std::vector stuff");
