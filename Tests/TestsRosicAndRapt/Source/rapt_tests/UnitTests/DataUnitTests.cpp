@@ -148,54 +148,36 @@ bool testArrayMisc()
 //  input:    index from which we start searching for the next token
 //  output:   index where the next token actually starts
 // length:    length of the token (output only)
-void finNextToken(const std::string& str, int* start, int* length)
+void finNextToken(const std::string& str, const std::string& seperators, int* start, int* length)
 {
-  // The names for the states:
-  const int inToken     = 0; // we are inside a token
-  const int inSeperator = 1; // we are inside a seperator between tokens
-  const int finished    = 2;
+  // Returns true, if the given character c is among the seperator characters:
+  auto isSeperator = [&](const char c)
+  { return rsArrayTools::contains(&seperators[0], (int) seperators.length(), c); };
+
+  // Parse the substring via state-machine with 3 states:
+  const int inToken     = 0; // state: we are inside a token
+  const int inSeperator = 1; // state: we are inside a seperator between tokens
+  const int finished    = 2; // state: we have found the next seperator
   int state = inSeperator;   // initially, we start in inSeperator state
   int i     = *start;        // current position in the string
-
-  auto isSeperator = [](const char c)
-  {
-    return c == ' ' || c == '\n';  
-    // preliminary - todo: let caller pass a second string containing all seperator characters
-  };
-
-  while(i < (int) str.size())
-  {
-    if(state == inSeperator)
-    {
-      if(!isSeperator(str[i]))
-      {
+  while(i < (int) str.size()) {
+    if(state == inSeperator) {
+      if(!isSeperator(str[i])) {
         state  = inToken;
-        *start = i;
-      }
-    }
-    else if(state == inToken)
-    {
-      if(isSeperator(str[i]))
-      {
+        *start = i;     }}
+    else if(state == inToken) {
+      if(isSeperator(str[i]))  {
         state   = finished;
         *length = i - *start;
-        break;
-      }
-    }
-    i++;
-  }
+        break;  }}
+    i++; }
 
-
-
-  if(state == inToken)
-  {
-    *length = (int) str.length() - *start;
-  }
-  else if(state == inSeperator)
-  {
+  // If we don't end up in "finished" state, we need to do something extra:
+  if(state == inToken) {
+    *length = (int) str.length() - *start; }
+  else if(state == inSeperator) {
     *start  = (int) str.length(); // makes sense, so that caller can use while(start < length)
-    *length = 0;
-  }
+    *length = 0; }
 }
 
 bool testTokenize()
@@ -207,45 +189,47 @@ bool testTokenize()
 
   bool ok = true;
   std::string str("ABC DE FG\nHI \nJKL\nMN   OPQRS \n TUVWXY\nZ \n");
+  std::string sep(" \n");  // seperators
+
   int S =  0;  // start of the token
   int L = -1;  // length of token, initial value should be irrelevant
 
-  finNextToken(str, &S, &L); ok &= S ==  0 && L == 3; S += L;  // ABC
-  finNextToken(str, &S, &L); ok &= S ==  4 && L == 2; S += L;  // DE
-  finNextToken(str, &S, &L); ok &= S ==  7 && L == 2; S += L;  // FG
-  finNextToken(str, &S, &L); ok &= S == 10 && L == 2; S += L;  // HI
-  finNextToken(str, &S, &L); ok &= S == 14 && L == 3; S += L;  // JKL
-  finNextToken(str, &S, &L); ok &= S == 18 && L == 2; S += L;  // MN
-  finNextToken(str, &S, &L); ok &= S == 23 && L == 5; S += L;  // OPQRS
-  finNextToken(str, &S, &L); ok &= S == 31 && L == 6; S += L;  // TUVWXY
-  finNextToken(str, &S, &L); ok &= S == 38 && L == 1; S += L;  // Z
+  finNextToken(str, sep, &S, &L); ok &= S ==  0 && L == 3; S += L;  // ABC
+  finNextToken(str, sep, &S, &L); ok &= S ==  4 && L == 2; S += L;  // DE
+  finNextToken(str, sep, &S, &L); ok &= S ==  7 && L == 2; S += L;  // FG
+  finNextToken(str, sep, &S, &L); ok &= S == 10 && L == 2; S += L;  // HI
+  finNextToken(str, sep, &S, &L); ok &= S == 14 && L == 3; S += L;  // JKL
+  finNextToken(str, sep, &S, &L); ok &= S == 18 && L == 2; S += L;  // MN
+  finNextToken(str, sep, &S, &L); ok &= S == 23 && L == 5; S += L;  // OPQRS
+  finNextToken(str, sep, &S, &L); ok &= S == 31 && L == 6; S += L;  // TUVWXY
+  finNextToken(str, sep, &S, &L); ok &= S == 38 && L == 1; S += L;  // Z
 
   // Test some special cases:
   S = 0; L = -1; str = ("ABC");    // only 1 token, no separators
-  finNextToken(str, &S, &L); ok &= S == 0 && L == 3; S += L;
-  finNextToken(str, &S, &L); ok &= S == 3 && L == 0; S += L;
+  finNextToken(str, sep, &S, &L); ok &= S == 0 && L == 3; S += L;
+  finNextToken(str, sep, &S, &L); ok &= S == 3 && L == 0; S += L;
   // L == 0 indicates that the end of the string was reached. In practice, one could tokenize a 
   // string in a while(L != 0) loop..or maybe a while(s < str.length()) should also work
 
   S = 0; L = -1; str = ("   ");    // no token, only separators
-  finNextToken(str, &S, &L); ok &= S == 3 && L == 0; S += L;
-  finNextToken(str, &S, &L); ok &= S == 3 && L == 0; S += L;
+  finNextToken(str, sep, &S, &L); ok &= S == 3 && L == 0; S += L;
+  finNextToken(str, sep, &S, &L); ok &= S == 3 && L == 0; S += L;
 
   S = 0; L = -1; str = ("");       // empty string
-  finNextToken(str, &S, &L); ok &= S == 0 && L == 0;
-  finNextToken(str, &S, &L); ok &= S == 0 && L == 0;
+  finNextToken(str, sep, &S, &L); ok &= S == 0 && L == 0;
+  finNextToken(str, sep, &S, &L); ok &= S == 0 && L == 0;
 
   S = 0; L = -1; str = ("  ABC");  // starts with seperators
-  finNextToken(str, &S, &L); ok &= S == 2 && L == 3; S += L;
+  finNextToken(str, sep, &S, &L); ok &= S == 2 && L == 3; S += L;
 
   S = 0; L = -1; str = ("ABC  ");  // ends with seperators
-  finNextToken(str, &S, &L); ok &= S == 0 && L == 3; S += L;
-  finNextToken(str, &S, &L); ok &= S == 5 && L == 0; S += L;
+  finNextToken(str, sep, &S, &L); ok &= S == 0 && L == 3; S += L;
+  finNextToken(str, sep, &S, &L); ok &= S == 5 && L == 0; S += L;
 
   S = 0; L = -1; str = ("ABC DE"); // ends with token
-  finNextToken(str, &S, &L); ok &= S == 0 && L == 3; S += L;
-  finNextToken(str, &S, &L); ok &= S == 4 && L == 2; S += L;
-  finNextToken(str, &S, &L); ok &= S == 6 && L == 0; S += L;
+  finNextToken(str, sep, &S, &L); ok &= S == 0 && L == 3; S += L;
+  finNextToken(str, sep, &S, &L); ok &= S == 4 && L == 2; S += L;
+  finNextToken(str, sep, &S, &L); ok &= S == 6 && L == 0; S += L;
 
   return ok;
 }
