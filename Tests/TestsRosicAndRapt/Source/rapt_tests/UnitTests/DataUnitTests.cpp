@@ -221,20 +221,34 @@ bool testTokenize()
   finNextToken(str, &S, &L); ok &= S == 38 && L == 1; S += L;  // Z
 
   // Test some special cases:
-  S = 0; L = -1; str = ("ABC"); // only 1 token, no separators
+  S = 0; L = -1; str = ("ABC");    // only 1 token, no separators
   finNextToken(str, &S, &L); ok &= S == 0 && L == 3; S += L;
   finNextToken(str, &S, &L); ok &= S == 3 && L == 0; S += L;
   // L == 0 indicates that the end of the string was reached. In practice, one could tokenize a 
   // string in a while(L != 0) loop..or maybe a while(s < str.length()) should also work
 
-  S = 0; L = -1; str = ("   "); // no token, only separators
-  finNextToken(str, &S, &L); ok &= S == 3 && L == 0;
-  finNextToken(str, &S, &L); ok &= S == 3 && L == 0;
+  S = 0; L = -1; str = ("   ");    // no token, only separators
+  finNextToken(str, &S, &L); ok &= S == 3 && L == 0; S += L;
+  finNextToken(str, &S, &L); ok &= S == 3 && L == 0; S += L;
 
+  S = 0; L = -1; str = ("");       // empty string
+  finNextToken(str, &S, &L); ok &= S == 0 && L == 0;
+  finNextToken(str, &S, &L); ok &= S == 0 && L == 0;
+
+  S = 0; L = -1; str = ("  ABC");  // starts with seperators
+  finNextToken(str, &S, &L); ok &= S == 2 && L == 3; S += L;
+
+  S = 0; L = -1; str = ("ABC  ");  // ends with seperators
+  finNextToken(str, &S, &L); ok &= S == 0 && L == 3; S += L;
+  finNextToken(str, &S, &L); ok &= S == 5 && L == 0; S += L;
+
+  S = 0; L = -1; str = ("ABC DE"); // ends with token
+  finNextToken(str, &S, &L); ok &= S == 0 && L == 3; S += L;
+  finNextToken(str, &S, &L); ok &= S == 4 && L == 2; S += L;
+  finNextToken(str, &S, &L); ok &= S == 6 && L == 0; S += L;
 
   return ok;
 }
-
 
 bool arrayUnitTest()
 {
