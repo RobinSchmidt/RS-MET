@@ -28,7 +28,7 @@ bool runUnitTestsRapt()
   ok &= runUnitTest(&samplerDataUnitTest,         "rsSamplerData");
   ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
   ok &= runUnitTest(&samplerEngineUnitTestFileIO, "rsSamplerEngine - File I/O");
-  //return ok;
+  return ok;
 
 
 
