@@ -763,7 +763,7 @@ void AudioModulePoly::processStereoFrame(double* left, double* right)
   // actually do not use the mixed signals...or do they? hmmm...well, i guess they may but most 
   // will not
 
-  double sumL, sumR;  // accumulators, todo: use rsFloat64x2
+  double sumL = 0.0, sumR = 0.0;  // accumulators, todo: use rsFloat64x2
   if(monophonic) {
     // In mono mode, use only output of most recently triggered voice that is still active:
     int k = voiceManager->getNewestActiveVoice();
@@ -773,7 +773,7 @@ void AudioModulePoly::processStereoFrame(double* left, double* right)
     // In poly mode, accumulate outputs of all active voices:
     int numActiveVoices = voiceManager->getNumActiveVoices();
     processStereoFramePoly(voicesBuffer, numActiveVoices);
-    sumL = sumR = 0.0;
+    //sumL = sumR = 0.0;
     for(int i = 0; i < numActiveVoices; i += 1) {
       sumL += voicesBuffer[2*i];
       sumR += voicesBuffer[2*i+1]; }}

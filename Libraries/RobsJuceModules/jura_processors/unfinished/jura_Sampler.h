@@ -17,6 +17,10 @@ public:
   void setSampleRate(double newSampleRate) override;
   void setGain(double newGain);
 
+
+  int getNumActiveLayers() const { return engine.getNumActiveLayers(); }
+
+
   void setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
     bool markAsClean) override;
   XmlElement* getStateAsXml(const juce::String& stateName, bool markAsClean) override;
@@ -53,17 +57,19 @@ protected:
 
 /** Editor for SamplerAudioModule */
 
-class JUCE_API SamplerEditor : public jura::AudioModuleEditor, public jura::FileManager
+class JUCE_API SamplerEditor : public jura::AudioModuleEditor, public jura::FileManager, 
+  public Timer
 {
 
 public:
 
   SamplerEditor(SamplerModule* samplerToEdit);
 
-  bool loadFile(const juce::File& fileToLoad) override;
-  bool saveToFile(const juce::File& fileToSaveTo) override;
-
-  void resized() override;
+  // Overrides                                   // overriden from...
+  bool loadFile(const juce::File& f) override;   // FileManager
+  bool saveToFile(const juce::File& f) override; // FileManager
+  void timerCallback() override;                 // Timer
+  void resized() override;                       // AudioModuleEditor
 
 protected:
 

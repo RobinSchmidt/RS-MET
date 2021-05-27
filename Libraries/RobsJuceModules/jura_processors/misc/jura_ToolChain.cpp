@@ -27,6 +27,8 @@ ToolChain::ToolChain(CriticalSection *lockToUse,
   /*, modManager(lockToUse)*/, moduleFactory(lockToUse) // maybe pass the metaManagerToUse to this constructor call
 {
   ScopedLock scopedLock(*lock);
+  //voiceManager.setMaxNumVoices(16);
+  //voiceManager.setNumVoices(16);
   setModuleTypeName("ToolChain");
   modManager = new ModulationManagerPoly(lockToUse);
   modManager->setMetaParameterManager(metaManagerToUse);

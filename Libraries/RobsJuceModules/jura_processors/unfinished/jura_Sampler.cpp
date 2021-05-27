@@ -135,6 +135,8 @@ SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit) : AudioModuleEditor(s
   FileManager::setActiveDirectory(getApplicationDirectory());  // preliminary
   createWidgets();
   setSize(400, 200);
+  //startTimer(20);  // in ms
+  startTimerHz(50);   // in Hz, i.e. fps (frames per second)
 }
 
 bool SamplerEditor::loadFile(const juce::File& fileToLoad)
@@ -147,6 +149,16 @@ bool SamplerEditor::saveToFile(const juce::File& fileToSaveTo)
 {
   RAPT::rsError("not yet implemented");
   return false;
+}
+
+void SamplerEditor::timerCallback()
+{
+  jassert(samplerModule != nullptr);
+
+  int num = samplerModule->getNumActiveLayers();
+  numLayersField->setText(juce::String(num));
+
+  // see: TrackMeterModuleEditor::timerCallback
 }
 
 void SamplerEditor::resized()
@@ -163,12 +175,12 @@ void SamplerEditor::resized()
   x = numLayersLabel->getRight()+2;
   numLayersField->setBounds(x, y, 32, 16);
   x = numLayersField->getRight()+2;
-  maxNumLayersSlider->setBounds(x, y, 32, 16);
+  //maxNumLayersSlider->setBounds(x, y, 32, 16);
 
   // Instrument definition widgets:
   y += 20;
   x  = 2;
-  instrumentLabel->setBounds(x, y, 68, 16);
+  //instrumentLabel->setBounds(x, y, 68, 16);
   x = instrumentLabel->getRight()+2;
   //sfzFileLoader->setBounds(x, y, w-x-4, 16);
 }
@@ -202,8 +214,24 @@ void SamplerEditor::createWidgets()
 
 /*
 Bugs:
+-it seems, sometimes the noteOff is not received or handeld properly - the layer doesn't 
+ immediately stop playing but instead (i think) plays until the end of the sample. It happens when
+ triggering at least 5 notes simultaneously 
+ -has it to do with the voiceManager in ToolChain - that's plausible, because it's currently set to
+  numVoices = maxNumVoices = 4
+ -workaround:
+  -for the moment, i have called setMaxNumVoices(16); in the constructor of rsVoiceManager (it 
+   formerly was called with 4). when trying to call it in the constructor of ToolChain, we hit
+   an assert on noteOn
+ -fix: 
+  -either bypass the voiceManager and treat the sampler as monophonic module (mixing voices 
+   internally
+  -or somehow route layers belonging to different notes to different voice outputs
+  -or make the behavior switchable
 
 ToDo:
+-implement better sfz parsing, allowing tokens be separated by any combinations of whitspaces, 
+ newlines and (maybe) tabs
 -add some widgets to the gui that show: 
  -numActiveLayers, numActiveVoices, cpu-load, memory occupation
  -loaded sfz file (maybe it should be a load/save widget set)

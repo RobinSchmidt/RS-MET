@@ -2429,7 +2429,7 @@ void QuadrifexModuleEditor::setupPopupEditors(int slotIndex)
     //Rectangle r = modulationEditor->lfoEditor->editButton->getBounds();
 
 
-    int x, y;
+    int x = 0, y = 0;
     switch( slotIndex )
     {
     case 0: { x = -240; y = 16;   } break;
