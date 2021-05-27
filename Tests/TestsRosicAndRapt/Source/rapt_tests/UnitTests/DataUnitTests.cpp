@@ -153,7 +153,7 @@ void finNextToken(const std::string& str, int* start, int* length)
   // The names for the states:
   const int inToken     = 0; // we are inside a token
   const int inSeperator = 1; // we are inside a seperator between tokens
-  //const int finished    = 2;
+  const int finished    = 2;
   int state = inSeperator;   // initially, we start in inSeperator state
   int i     = *start;        // current position in the string
 
@@ -177,12 +177,24 @@ void finNextToken(const std::string& str, int* start, int* length)
     {
       if(isSeperator(str[i]))
       {
-        //state   = finished;
+        state   = finished;
         *length = i - *start;
         break;
       }
     }
     i++;
+  }
+
+
+
+  if(state == inToken)
+  {
+    *length = (int) str.length() - *start;
+  }
+  else if(state == inSeperator)
+  {
+    *start  = (int) str.length(); // makes sense, so that caller can use while(start < length)
+    *length = 0;
   }
 }
 
@@ -194,11 +206,31 @@ bool testTokenize()
   // Maybe someday it can be moved elsewhere, when we have more string processing functions.
 
   bool ok = true;
-  std::string str("ABC DE FG\nHI \nJKL\nMN   OPQRS \n\N TUVWXY\nZ \n");
+  std::string str("ABC DE FG\nHI \nJKL\nMN   OPQRS \n TUVWXY\nZ \n");
   int S =  0;  // start of the token
   int L = -1;  // length of token, initial value should be irrelevant
 
+  finNextToken(str, &S, &L); ok &= S ==  0 && L == 3; S += L;  // ABC
+  finNextToken(str, &S, &L); ok &= S ==  4 && L == 2; S += L;  // DE
+  finNextToken(str, &S, &L); ok &= S ==  7 && L == 2; S += L;  // FG
+  finNextToken(str, &S, &L); ok &= S == 10 && L == 2; S += L;  // HI
+  finNextToken(str, &S, &L); ok &= S == 14 && L == 3; S += L;  // JKL
+  finNextToken(str, &S, &L); ok &= S == 18 && L == 2; S += L;  // MN
+  finNextToken(str, &S, &L); ok &= S == 23 && L == 5; S += L;  // OPQRS
+  finNextToken(str, &S, &L); ok &= S == 31 && L == 6; S += L;  // TUVWXY
+  finNextToken(str, &S, &L); ok &= S == 38 && L == 1; S += L;  // Z
+
+  // Test some special cases:
+  S = 0; L = -1; str = ("ABC"); // only 1 token, no separators
   finNextToken(str, &S, &L); ok &= S == 0 && L == 3; S += L;
+  finNextToken(str, &S, &L); ok &= S == 3 && L == 0; S += L;
+  // L == 0 indicates that the end of the string was reached. In practice, one could tokenize a 
+  // string in a while(L != 0) loop..or maybe a while(s < str.length()) should also work
+
+  S = 0; L = -1; str = ("   "); // no token, only separators
+  finNextToken(str, &S, &L); ok &= S == 3 && L == 0;
+  finNextToken(str, &S, &L); ok &= S == 3 && L == 0;
+
 
   return ok;
 }
