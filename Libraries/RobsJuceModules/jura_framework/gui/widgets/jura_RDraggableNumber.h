@@ -6,7 +6,7 @@ class RDraggableNumber : public RSlider
 
 public:
 
-  RDraggableNumber(const juce::String& componentName);
+  RDraggableNumber(const juce::String& componentName = juce::String());
   virtual ~RDraggableNumber();
 
   // others:

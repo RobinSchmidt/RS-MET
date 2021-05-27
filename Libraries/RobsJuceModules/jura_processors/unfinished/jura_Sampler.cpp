@@ -127,34 +127,76 @@ void SamplerModule::reset()
 SamplerEditor::SamplerEditor(SamplerModule* samplerToEdit) : AudioModuleEditor(samplerToEdit)
 {
   ScopedLock scopedLock(*lock);
+  samplerModule = samplerToEdit;
+
+  // initialize the current directory for sfz loading:
+  //FileManager::setActiveDirectory(getSupportDirectory() + "/SamplerInstruments");
+
+  FileManager::setActiveDirectory(getApplicationDirectory());  // preliminary
   createWidgets();
   setSize(400, 200);
 }
 
+bool SamplerEditor::loadFile(const juce::File& fileToLoad)
+{
+  RAPT::rsError("not yet implemented");
+  return false;
+}
+
+bool SamplerEditor::saveToFile(const juce::File& fileToSaveTo)
+{
+  RAPT::rsError("not yet implemented");
+  return false;
+}
+
 void SamplerEditor::resized()
 {
-  ScopedLock scopedLock(*lock);
+  ScopedLock scopedLock(*lock);  // do we actually nee the lock here?
   AudioModuleEditor::resized();
-  int x = 0;
+  int x = 2;
   int y = getPresetSectionBottom()+4;
   int w = getWidth();
   int h = getHeight() - y;
 
-  // ...
+  // Status info widgets
+  numLayersLabel->setBounds(x, y, 48, 16);
+  x = numLayersLabel->getRight()+2;
+  numLayersField->setBounds(x, y, 32, 16);
+  x = numLayersField->getRight()+2;
+  maxNumLayersSlider->setBounds(x, y, 32, 16);
+
+  // Instrument definition widgets:
+  y += 20;
+  x  = 2;
+  instrumentLabel->setBounds(x, y, 68, 16);
+  x = instrumentLabel->getRight()+2;
+  //sfzFileLoader->setBounds(x, y, w-x-4, 16);
 }
 
 void SamplerEditor::createWidgets()
 {
-  addWidgetSet(sfzFileLoader = new FileSelectionBox);
-  // todo: connect to the FileManager
+  addWidget(instrumentLabel = new RTextField);
+  instrumentLabel->setText("Instrument:");
+  instrumentLabel->setDescription("Currently loaded sfz instrument");
+  instrumentLabel->setDescriptionField(infoField);
 
-  addWidget(maxNumLayersSlider = new RDraggableNumber);
-  // todo: connect maxNumLayers parameter in module
-
+  //addWidgetSet(sfzFileLoader = new FileSelectionBox("", this) );
+  // causes a crash on destruction
 
   addWidget(numLayersLabel = new RTextField);
+  numLayersLabel->setText("Layers:");
+  numLayersLabel->setDescription("Number of currently playing layers");
+  numLayersLabel->setDescriptionField(infoField);
 
   addWidget(numLayersField = new RTextField);
+  numLayersField->setText("0");
+  numLayersField->setDescription("Number of currently playing layers");
+  numLayersField->setDescriptionField(infoField);
+
+  addWidget(maxNumLayersSlider = new RDraggableNumber);
+  //maxNumLayersSlider->assignParameter( samplerModule->getParameterByName("MaxNumLayers") );
+  maxNumLayersSlider->setDescription("Number of available layers. Drag up/down to adjust.");
+  maxNumLayersSlider->setDescriptionField(infoField);
 }
 
 
@@ -163,16 +205,31 @@ Bugs:
 
 ToDo:
 -add some widgets to the gui that show: 
- -numActiveLayers, numActiveVoices, 
+ -numActiveLayers, numActiveVoices, cpu-load, memory occupation
  -loaded sfz file (maybe it should be a load/save widget set)
  -output level meter
  -sliders for MaxLayers, ...
- -menus for: Resampling, SignalFlow (default sfz (setting override), accumulative DSP)
+ -menus for: Resampling, SignalFlow (default sfz (setting override), accumulative DSP), mode (DFD, 
+  RAM 32 Bit, RAM 16 Bit)
+ -have an editor for the sfz. 
+  -left is a sort of tree-view browser showing the groups and regions
+  -for the selected region, show lokey/hiKey, lovel/hivel and a text editor with the opcodes
+   ...or maybe some sort of "spreadsheet" like editor - 1 line per opcode, opcodes are sorted by 
+   type, righ-click - insert with a menu of available opcodes
+   -maybe show the region's lokey/hikey lovel/hivel settings as rectangle in an k*(128x128) square
+    (k >= 1 to it a reasonable size)...or maybe 512x256 or something
+  -maybe show a keyboard that shows the currently held notes (maybe the releasing one should be 
+   shown also, but in fainter color - maybe the color could fade with the release time)
 -write some more complex .sfz files with multiple samples, regions, groups, etc. 
 -make use of subdirectories for the samples and test, if that works
  -Pluck2.xml loads without errors
 
--override handleMidiEvent to pass the events to the engine
+-maybe implement multitimbrality:
+ -allow multiple sfz files to be loaded simultaneously that respond to different midi channels
+ -have one engine for each channel
+ -let the engines use a shared sample pool (that will complicate the delete process from the sample
+  pool because then, we should not always delete samples that are not used in some sfz - we must 
+  check all loaded sfzs)
 
 
 

@@ -53,22 +53,32 @@ protected:
 
 /** Editor for SamplerAudioModule */
 
-class JUCE_API SamplerEditor : public jura::AudioModuleEditor
+class JUCE_API SamplerEditor : public jura::AudioModuleEditor, public jura::FileManager
 {
 
 public:
 
   SamplerEditor(SamplerModule* samplerToEdit);
 
-  virtual void resized() override;
+  bool loadFile(const juce::File& fileToLoad) override;
+  bool saveToFile(const juce::File& fileToSaveTo) override;
+
+  void resized() override;
 
 protected:
 
   virtual void createWidgets();
 
+  RTextField *instrumentLabel;
   FileSelectionBox *sfzFileLoader;
+
   RTextField *numLayersLabel, *numLayersField;
   RDraggableNumber *maxNumLayersSlider;
+
+  RTextField *cpuLoadLabel, *cpuLoadField, *ramLoadLabel, *ramLoadField;  
+  // todo: diskLoad - maybe ram should also show the total occupation (by all apps) and the 
+  // remaining available
+
 
   SamplerModule* samplerModule = nullptr;
 

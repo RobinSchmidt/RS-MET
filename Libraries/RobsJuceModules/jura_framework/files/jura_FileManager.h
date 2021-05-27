@@ -29,7 +29,8 @@ true, if so and false otherwise. */
 JUCE_API bool hasDirectoryFiles(const juce::File& directoryToCheck);
 
 // maybe factor out into a file FileTools - put also the XmlTools into this file (they are also
-// related to load/save xml files
+// related to load/save xml files - maybe that should be als a class and these functions should
+// be static member functions
 
 
 //=================================================================================================
@@ -223,7 +224,7 @@ public:
   virtual void updateFileList();
 
   /** A static string member used to locate the company-specific support file folder. By default,
-  it's set to "RS-MET", but since it'S public, you can change that from any convenient place.  */
+  it's set to "RS-MET", but since it's public, you can change that from any convenient place.  */
   static juce::String companyName;
 
 protected:

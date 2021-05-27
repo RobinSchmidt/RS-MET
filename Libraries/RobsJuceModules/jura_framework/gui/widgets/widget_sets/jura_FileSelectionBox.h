@@ -31,6 +31,8 @@ public:
 
   /** Constructor - you must pass a valid (non-NULL) FileManager object. */
   FileSelectionBox(const juce::String& componentName, FileManager *fileManagerToUse);
+  // get rid of the componentName parameter - it just creates boilerplate
+
 
   /** Destructor. */
   virtual ~FileSelectionBox();

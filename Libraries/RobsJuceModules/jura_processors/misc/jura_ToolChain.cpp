@@ -438,7 +438,7 @@ void ToolChain::setStateFromXml(const XmlElement& xmlState, const juce::String& 
 
 void ToolChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
 {
-  activeSlot = -1;  // i think, that's not necessary - should be already -1
+  activeSlot = -1;  // i think, it should be already -1 but better safe than sorry
   int tmpActiveSlot = xmlState.getIntAttribute("ActiveSlot", 1) - 1;
   clearModulesArray();
   int i = 0;
@@ -471,6 +471,21 @@ void ToolChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
       addModule(m);                                      // ...adding it, so the newly created
       i++;                                               // editor has correct initial state
     }
+  }
+
+  // There should be always at least one dummy module:
+  if(size(modules) < 1)
+  {
+    String xmlString = xmlState.createDocument(String()); // for inspection in the debugger
+    jassertfalse;
+    // I think, this should not happen under normal circumstances, but i had it happening a few 
+    // times on start up of the standalone version. Apparently, it tried to recall the state in 
+    // which it was closed, but for some the state xml that gets passed on recall is invalid.
+
+    showWarningBox("XML Load Error", "XML state for toolchain contained no valid slots");
+    addEmptySlot();
+    activeSlot = 0;
+
   }
 }
 
@@ -801,6 +816,7 @@ void ToolChainEditor::updateSelectorArray()
 {
   ScopedLock scopedLock(*lock);
   int numModules   = size(chain->modules);
+  jassert(numModules >= 1);   // there should be always at least one dummy module
   int numSelectors = size(selectors);
   AudioModuleSelector *s;
 
