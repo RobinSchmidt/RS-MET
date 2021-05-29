@@ -15,6 +15,8 @@ void createBass1();
 void createGong1();
 void createPluck1();
 
+void testHighPluck();
+
 
 
 /** A class to generate the low-level parameters for each mode from a bunch of higher level macro

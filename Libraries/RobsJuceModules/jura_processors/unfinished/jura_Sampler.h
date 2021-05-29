@@ -78,7 +78,7 @@ protected:
   RTextField *instrumentLabel;
   FileSelectionBox *sfzFileLoader;
 
-  RTextField *numLayersLabel, *numLayersField;
+  RTextField *numLayersLabel, *numLayersOfLabel, *numLayersField;
   RDraggableNumber *maxNumLayersSlider;
 
   RTextField *cpuLoadLabel, *cpuLoadField, *ramLoadLabel, *ramLoadField;  

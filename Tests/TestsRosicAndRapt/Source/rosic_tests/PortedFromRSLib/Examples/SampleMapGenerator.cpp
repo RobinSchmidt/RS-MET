@@ -241,10 +241,14 @@ void SampleMapGenerator::generateAllSamples(bool printProgress)
   int numKeys = hiKey - loKey + 1;
   for(int k = loKey; k <= hiKey; k++)
   {
+    // todo: instead of k++, use k+=keyIncrement which can be set by the user
+
     if( printProgress == true )
       printf("%s %d %s %d %s", "Generating sample ", k-loKey+1, " of ", numKeys, "\n");
     generateSampleForKey(k);
   }
+  if( printProgress == true )
+    printf("%s", "All samples done\n");
 }
 
 void SampleMapGenerator::generateSampleForKey(int key)

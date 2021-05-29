@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();  // some tests there are still commented out
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
@@ -540,19 +540,6 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Examples:
 
-  // Modal:
-  //createInsertionSortSound();  // move somewhere else
-  //createModalFilterExamples();
-  //createModalFilterBankExamples(); // takes long
-  //createPiano1();
-
-  // sample-map creations (they take long):
-  //createBass1();
-  //createGong1();
-  //createPluck1();
-  // ToDo: create from the same sample-sets also soundfonts with 1,2,3,4,6 samples per octave via
-  // key-crossfading (the default is 12 per octave, i.e. 1 sample per key) - compare them to find 
-  // the best trade-off between size and quality (probably 3 or 4?)
 
   //===============================================================================================
   // RoSiC tests:
@@ -608,7 +595,22 @@ int main(int argc, char* argv[])
 
   //-----------------------------------------------------------------------------------------------
   // Rendering:
-  // ...
+
+  // Modal:
+  //createInsertionSortSound();  // move somewhere else
+  //createModalFilterExamples();
+  //createModalFilterBankExamples(); // takes long
+  //createPiano1();
+
+  // sample-map creations (they take long):
+  //createBass1();
+  //createGong1();
+  //createPluck1();
+  testHighPluck();
+  // ToDo: create from the same sample-sets also soundfonts with 1,2,3,4,6 samples per octave via
+  // key-crossfading (the default is 12 per octave, i.e. 1 sample per key) - compare them to find 
+  // the best trade-off between size and quality (probably 3 or 4?)
+
 
   //===============================================================================================
   // Modular:

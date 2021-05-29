@@ -17,6 +17,7 @@ inline void rsPrintLine(const std::string& message)
 /** This function should be used to indicate a runtime error. */
 inline void rsError(const char *message = nullptr)
 {
+#ifdef RS_DEBUG
   //doNothing(errorMessage);
   // fixes "unreferenced formal parameter" warning - we don't do anything with the message, but 
   // we may want to see it in the debugger 
@@ -26,7 +27,9 @@ inline void rsError(const char *message = nullptr)
   RS_DEBUG_BREAK;
   // \todo have some conditional compilation code based on the DEBUG macro (trigger a break),
   // maybe open an error message box, etc.
+#endif
 }
+// maybe have an else branch that writes to some error log file and/or maybe throws and exception
 
 inline void rsWarning(const char* message = nullptr)
 {

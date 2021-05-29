@@ -730,6 +730,10 @@ void createPluck1()
   int numPartials = 800; 
   rsModalBankParametersD p;
 
+  double minPhase   = 0.0;
+  double maxPhase   = 360.0;
+  int    randomSeed = 0;      // for the randomized phases (standard: 0)
+
   // A0, 22.5 Hz (key 21)
   p.frequency = 22.5;  // will be overwritten anyway
   p.gain      =  1.0;
@@ -737,10 +741,10 @@ void createPluck1()
   p.decay     =  1.5;
   p.f = rsLinearRangeVector(numPartials, 1.0, numPartials);
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
-  p.g[0] *= 0.25;  
+  p.g[0] *= 0.25;    // why? reduce subsonic fundamental?
   p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 5.0, 0.95);
   p.a = p.d;
-  p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
+  p.p = rsRandomVector(numPartials, minPhase, maxPhase, randomSeed);
   g.setModalParametersForKey(21, p);
 
   // A1, 55 Hz (key 33)
@@ -752,7 +756,7 @@ void createPluck1()
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
   p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 4.0, 0.95);
   p.a = p.d;
-  p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
+  p.p = rsRandomVector(numPartials, minPhase, maxPhase, randomSeed);
   g.setModalParametersForKey(33, p);
 
   // A2, 110 Hz (key 45): 
@@ -764,7 +768,7 @@ void createPluck1()
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
   p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 2.5, 0.93);
   p.a = p.d;
-  p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
+  p.p = rsRandomVector(numPartials, minPhase, maxPhase, randomSeed);
   g.setModalParametersForKey(45, p);
 
   // A3, 220 Hz (key 57): 
@@ -776,7 +780,7 @@ void createPluck1()
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
   p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 2.7, 0.80);  // before: 2.35, 0.85
   p.a = p.d;
-  p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
+  p.p = rsRandomVector(numPartials, minPhase, maxPhase, randomSeed);
   g.setModalParametersForKey(57, p);
 
   // A4, 440 Hz (key 69): 
@@ -788,19 +792,23 @@ void createPluck1()
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
   p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 2.9, 0.65);  // before: 2.2, .82
   p.a = p.d;
-  p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
+  p.p = rsRandomVector(numPartials, minPhase, maxPhase, randomSeed);
   g.setModalParametersForKey(69, p);
 
   // A5, 880 Hz (key 81): 
   p.frequency = 880.0;  // will be overwritten anyway
   p.gain      =   1.0;  // test - later set back to 1.0
-  p.attack    =   0.01;
-  p.decay     =   0.4;
+  //p.attack    =   0.01;
+  p.attack    =   0.02;
+  //p.decay     =   0.4;
+  p.decay     =   0.2;
   p.f = rsLinearRangeVector(numPartials, 1.0, numPartials);
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
+  //p.g = rsApplyFunction(p.f, -1.0,  &pow);
   p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 2.4, 0.60); // before 2.0, 0.8
+  //p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 2.0, 0.80); 
   p.a = p.d;
-  p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
+  p.p = rsRandomVector(numPartials, minPhase, maxPhase, randomSeed);
   g.setModalParametersForKey(81, p);
 
   // A6, 1760 Hz (key 93): 
@@ -812,33 +820,120 @@ void createPluck1()
   p.g = rsApplyFunction(p.f, -0.7,  &pow);
   p.d = rsModalFilterBankDD::modeDecayTimes(p.f, 2.0, 0.50); // before: 1.8, 0.75
   p.a = p.d;
-  p.p = rsRandomVector(numPartials, 0.0, 2*PI, 0);
+  p.p = rsRandomVector(numPartials, minPhase, maxPhase, randomSeed);
   g.setModalParametersForKey(93, p);
 
-  g.setKeyRangeToRender(21, 93);
+  g.setKeyRangeToRender(21, 93);  
+  // For production rendering, use 21..93. For preview and sound-design, use smaller range
+  // ToDo: maybe use an increment (default 1, 12 means one sample per octave - which is also good 
+  // for preview), see SampleMapGenerator::generateAllSamples
 
-  // for preview and sounddesign:
-  //g.setKeyRangeToRender(21, 21);
-  //g.setKeyRangeToRender(33, 33);
-  //g.setKeyRangeToRender(45, 45);
-  //g.setKeyRangeToRender(57, 57);
-  //g.setKeyRangeToRender(69, 69);
-  //g.setKeyRangeToRender(81, 81);
-  //g.setKeyRangeToRender(93, 93);
+  g.setTruncationLevel(-80);
+  // For production rendering, use -80 or -60. For preview -40
 
-  //g.setKeyRangeToRender(45, 46);
-  //g.setKeyRangeToRender(33, 45);
-
-  //g.setTruncationLevel(-10);
-  //g.setTruncationLevel(-1);
-  //g.setTruncationLevel(-3);
-  //g.setTruncationLevel(-20);
 
   g.generateSampleMap(true);
+
+  // -the higher notes sound rather synthetic, maybe we need to add some transient sample that has
+  //  frequency content below the fundamental?
+  // -and/or maybe mix in a sample an octave or 2 octaves lower to create subharmonics and partials
+  //  in between the actual ones - maybe it should have a fast decay to affect only the transient
+  //  section
+  // -maybe try a little bit of inharmonicity
+  // -maybe try mixing in a karplus-strong string sound
+
+  // ToDo:
+  // -provide a function g.plotParameters - this should plot the modal parameters as function of 
+  //  the key
+  // -provide load/save functions for the settings
+  // -provide functions to split samples into harmonic, inharmonic, transient, noise (maybe split
+  //  harmonic part further into even/odd)
+  // -these different parts should go into different groups in the sfz
+  // -maybe we should render in 96 kHz and use key-crossfades
 }
 
+void testHighPluck()
+{
+  // We experiment with the creation of a rather high pitched note for a guitarish plucked string 
+  // like sound. The high notes are problematic in the redering above (they sound synthetic), so 
+  // here we specifically experiment with ideas trying to fix this...
 
+  double sampleRate  = 44100;
+  double fundamental = 1000;   // fundamental frequency of the string
+  double minPhase    = 0.0;
+  double maxPhase    = 360.0;
+  double attack      = 0.02;
+  double decay       = 0.3;
+  double length      = 3.0;    // in seconds
+  int    randomSeed  = 0;      // for the randomized phases (standard: 0)
 
+  using Vec = std::vector<double>;
+  using AT  = RAPT::rsArrayTools;
+  using MFB = rsModalFilterBankDD;
+
+  // Create the main signal:
+  int numPartials = (int) floor(0.5*sampleRate / fundamental);
+  int numSamples  = (int) ceil(sampleRate * length);
+  int N = numPartials;
+  Vec frq(N), amp(N), att(N), dec(N), phs(N);
+  frq = rsLinearRangeVector(N, 1.0, N);
+  amp = rsApplyFunction(frq, -0.7,  &pow);          // use variable ampExponent
+  dec = MFB::modeDecayTimes(frq, 2.4, 0.60); // use variables
+  att = dec;
+  phs = rsRandomVector(N, minPhase, maxPhase, randomSeed);
+  MFB mfb;
+  mfb.setReferenceFrequency(fundamental);
+  mfb.setReferenceAttack(attack);
+  mfb.setReferenceDecay(decay);
+  mfb.setModalParameters(frq, amp, att, dec, phs);
+  N = numSamples;
+  Vec x1(N);  // the main signal
+  x1[0] = mfb.getSample(1.0);
+  for(int n = 1; n < N; n++)
+    x1[n] = mfb.getSample(0.0);
+
+  // Create a signal with a subharmonic frequency
+  int divider = 3;
+  double baseFreq = fundamental / divider;
+  numPartials = (int) floor(0.5*sampleRate / baseFreq);
+  N = numPartials;
+  frq = rsLinearRangeVector(N, 1.0, N);
+  amp = rsApplyFunction(frq, -0.0, &pow);     // use variable ampExponent2
+  for(int i = 0; i < divider; i++)            // highpass
+    amp[i] = 0.0;
+  dec = MFB::modeDecayTimes(frq, 20.0, 0.1);  // use variables
+  att = dec;
+  phs = rsRandomVector(N, minPhase, maxPhase, randomSeed);
+  mfb.setReferenceFrequency(baseFreq);
+  mfb.setReferenceAttack(0.02*attack);  // 0.02
+  mfb.setReferenceDecay(0.08*decay);    // 0.06
+  mfb.setModalParameters(frq, amp, att, dec, phs);
+  N = numSamples;
+  Vec x2(N); 
+  mfb.reset();
+  x2[0] = mfb.getSample(1.0);
+  for(int n = 1; n < N; n++)
+    x2[n] = mfb.getSample(0.0);
+
+  AT::normalize(&x1[0], N, 0.5);
+  rosic::writeToMonoWaveFile("HighPluckMain.wav", &x1[0], N, sampleRate);
+  AT::normalize(&x2[0], N, 0.5);
+  rosic::writeToMonoWaveFile("HighPluckSub.wav", &x2[0], N, sampleRate);
+  Vec mix = x1 + x2;
+  rosic::writeToMonoWaveFile("HighPluckMix1.wav", &mix[0], N, sampleRate);
+  mix = x1 - x2;
+  rosic::writeToMonoWaveFile("HighPluckMix2.wav", &mix[0], N, sampleRate);
+  printf("%s", "Done\n");
+
+  // ToDo:
+  // -render transient samples with dividers 2,3,4,5,6,7,8 and use them as mix-in samples that can
+  //  be layered in the sfz
+  // -when rendering sample-sets, maybe don't normalize each sample seperately, instead, normalize
+  //  the whole sample set by the same factor - it's inconvenient to have settings like 
+  //  -7.353135dB in the sfz file
+  // -i think, divider=3 works best
+}
+// ToDo: make it possible to write such rendering scripts in python
 
 void insertionSortSound(double *cycle, int cycleLength, double *signal, int signalLength)
 { 

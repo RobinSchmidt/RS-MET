@@ -7,6 +7,8 @@
 using namespace RSLib;
 
 
+// we have now the AudioStream class in rosic (used by the sampler engine) that provides similar 
+// functionality, so maybe get rid of this:
 struct rsAudioBuffer  // move to RSLib, maybe templatize on the sample-type (double/float)
 {
 
@@ -85,7 +87,7 @@ typedef rsModalBankParameters<double> rsModalBankParametersD;
 
 
 
-
+//=================================================================================================
 
 /** Baseclass for all sample-map generators. */
 
@@ -263,7 +265,12 @@ protected:
 };
 
 
-// SampleMapGeneratorSpectralCluster, etc.
+// ToDo:
+// -write SampleMapGeneratorSpectralCluster, SampleMapGeneratorSinusoidal etc.
+// -provide export/import functionality using a simple textfile format - maybe provide virtual
+//  loadSettings/saveSettings functions
+// -maybe rename writeUnnormalizedSampleForKeyToBuffer to something shorter
+// -implement multithreading (we need one AudioBuffer object per thread)
 
 
 #endif

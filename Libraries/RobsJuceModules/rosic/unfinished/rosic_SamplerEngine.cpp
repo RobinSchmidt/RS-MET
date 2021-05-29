@@ -163,8 +163,9 @@ int rsSamplerEngine::loadFromSFZ(const char* path)
 {
   rsSamplerData newSfz;
   bool wasLoaded = newSfz.loadFromSFZ(path);
-  if(!wasLoaded)
-    return ReturnCode::fileLoadError;
+  if(!wasLoaded) {
+    clearInstrument();
+    return ReturnCode::fileLoadError; }
   return setupFromSFZ(newSfz);
 }
 

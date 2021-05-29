@@ -45,6 +45,10 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
   // The actual instrument definition is loaded from an sfz file that is defined in the xml (just 
   // like sample-files are defined in the xml for the wavetable oscillator):
   juce::String jSfzPath = xmlState.getStringAttribute("InstrumentFile", juce::String());
+  if(jSfzPath.isEmpty()) {
+    engine.clearInstrument();
+    return; }
+
   std::string  sSfzPath = jSfzPath.toStdString();
   int rc = engine.loadFromSFZ(sSfzPath.c_str());
   if(rc == ReturnCode::fileLoadError)
@@ -172,9 +176,11 @@ void SamplerEditor::resized()
 
   // Status info widgets
   numLayersLabel->setBounds(x, y, 48, 16);
-  x = numLayersLabel->getRight()+2;
+  x = numLayersLabel->getRight();
   numLayersField->setBounds(x, y, 32, 16);
-  x = numLayersField->getRight()+2;
+  //x = numLayersField->getRight();
+  //numLayersOfLabel->setBounds(x, y, 16, 16);
+  //x = numLayersOfLabel->getRight();
   //maxNumLayersSlider->setBounds(x, y, 32, 16);
 
   // Instrument definition widgets:
@@ -200,6 +206,11 @@ void SamplerEditor::createWidgets()
   numLayersLabel->setDescription("Number of currently playing layers");
   numLayersLabel->setDescriptionField(infoField);
 
+  addWidget(numLayersOfLabel = new RTextField);
+  numLayersOfLabel->setText("of");
+  numLayersOfLabel->setDescription("Number of currently playing layers");
+  numLayersOfLabel->setDescriptionField(infoField);
+
   addWidget(numLayersField = new RTextField);
   numLayersField->setText("0");
   numLayersField->setDescription("Number of currently playing layers");
@@ -207,6 +218,7 @@ void SamplerEditor::createWidgets()
 
   addWidget(maxNumLayersSlider = new RDraggableNumber);
   //maxNumLayersSlider->assignParameter( samplerModule->getParameterByName("MaxNumLayers") );
+  maxNumLayersSlider->setValue(16);  // preliminary
   maxNumLayersSlider->setDescription("Number of available layers. Drag up/down to adjust.");
   maxNumLayersSlider->setDescriptionField(infoField);
 }
@@ -230,8 +242,14 @@ Bugs:
   -or make the behavior switchable
 
 ToDo:
--implement better sfz parsing, allowing tokens be separated by any combinations of whitspaces, 
- newlines and (maybe) tabs
+-optimize by using block-wise processing instead of sample-by-sample
+-maybe instead of opening a message box on load error, show the error message in the load/save
+ widget set 
+ -maybe the module should keep some sort of atomic integer "status" variable for that purpose that
+  is inquired in the timerCallback
+ -to later show a level meter, we perhaps should refactor the editor of TrackMeter such that some 
+  intermediate class does not derive from Timer - we don't want the embedded editor have manag its 
+  own timer callbacks - that would be redundant - we can do all the required updates here
 -add some widgets to the gui that show: 
  -numActiveLayers, numActiveVoices, cpu-load, memory occupation
  -loaded sfz file (maybe it should be a load/save widget set)

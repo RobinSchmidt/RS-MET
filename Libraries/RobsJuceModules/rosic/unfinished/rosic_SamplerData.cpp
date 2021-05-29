@@ -249,7 +249,12 @@ void rsSamplerData::setFromSFZ(const std::string& str)
 
     PlaybackSetting ps = getSettingFromString(opcode, value);
     lvl->setSetting(ps);
-    //lvl->addSetting(ps); // todo: use setSetting (add or overwrite)
+    //lvl->addSetting(ps); 
+    // The difference between setSetting and addSetting is that setSetting first scans the array
+    // of settings to figure out, if such a setting is already present and if so overwrites it
+    // whereas addSetting just appends the setting no matter what. Clearly the latter is faster but
+    // the former is more fool-proof aginst badly written sfz files. I'm not yet sure, which 
+    // version should be used...we'll see...
   };
 
   // Sets up the given level according to the given string which is supposed to contain one setting
@@ -269,8 +274,10 @@ void rsSamplerData::setFromSFZ(const std::string& str)
   };
 
 
-  std::string group  = "<group>\n";   // not sure, whether we should include the \n
-  std::string region = "<region>\n";
+  //std::string group  = "<group>\n";   // not sure, whether we should include the \n
+  //std::string region = "<region>\n";  // ..probably not
+  std::string group  = "<group>";
+  std::string region = "<region>";
   size_t Lg = group.length();
   size_t Lr = region.length();
 
