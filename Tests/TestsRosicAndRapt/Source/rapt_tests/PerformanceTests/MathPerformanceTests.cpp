@@ -315,39 +315,42 @@ void rsSinCos2(double x, double* s, double* c)
   double xa = rsAbs(x);
   double xs = rsSign(x);
 
-  double y;
-  if(xa < 0.5*PI) {
-    *s = sin(xa);
-    *c = cos(xa); }
-  else {
-    *s = sin(PI-xa);
-    *c = cos(PI-xa); }
+  double o  = double(xa > 0.5*PI);     // |x| is outside range -> reflect to inside
+  double xr = (1.0-o)*xa + o*(PI-xa);
+  *s = sin(xa);
 
-  if(xs == -1.0)
-    *s *= -1.0;
+  double n  = double(x < 0.0);         // x is negative sine needs to be multiplied by -1
+  double fs  = 1 - 2*n;                 // factor conceptually: f = (1-n)*1 + n*(-1)
+  *s *= fs;
 
-  if(xa > 0.5*PI)
-    *c = 0.0;  // preliminary
+  xr  = (1.0-o)*xa + o*(xa-PI);
+  *c  = cos(xa);
+  //double fc = 2*o - 1;
+  //fc *= -fs;
+  //*c *= fc;
 
   // reference values
   double tol = 1.e-14;
-  double S   = sin(x);
-  double C   = cos(x); 
+  double S = sin(x);
+  double C = cos(x); 
   rsAssert(rsIsCloseTo(*s, S, tol));
-  //rsAssert(*c == C);
-  //rsAssert(*s == S && *c == C);
-
+  rsAssert(rsIsCloseTo(*c, C, tol));
 
   // Prototype, later 
-  // -replace the call to sin with a polynomial approximation
-  // -replace branches with a branchless implementation
-  // -templatize and vectorize
+  // -move to Prototypes, implement experiment that plots the error ..or do that in a unit test
+  //  that optionally plots
+  // -replace the call to sin/cos with a polynomial approximation (use odd polynomial for sin, even
+  //  for cos)
+  // -simplify, templatize, vectorize, the <,> operations shall be implemented by some branchless
+  //  SIMD functions
+  // -factor out the range reduction...maybe templatize on FSin, FCos
 }
 
 void sinCosPerformance()
 {
   //static const int N = 10000;  // number of values
-  static const int N = 128;  // number of values
+  //static const int N = 128;  // number of values
+  static const int N = 1024;  // number of values
   float xMin = float(-2*PI);
   float xMax = float(+2*PI);
 
