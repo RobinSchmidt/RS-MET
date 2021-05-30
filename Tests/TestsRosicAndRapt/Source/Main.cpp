@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  //ok &= runUnitTestsRapt();
+  ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();  // some tests there are still commented out
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
@@ -76,7 +76,7 @@ int main(int argc, char* argv[])
 
   //simdPerformance(1.0, rsFloat64x2(1.0));
   //simdPerformance(1.f, rsFloat32x4(1.f));
-  sinCosPerformance();
+  //sinCosPerformance();
   //fftPerformance();
 
   //filterSignConventionPerformance();

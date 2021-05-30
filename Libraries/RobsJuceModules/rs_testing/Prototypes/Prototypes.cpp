@@ -19,6 +19,128 @@
 
 using namespace RAPT;
 
+
+void rsSinCos1(double x, double* s, double* c)
+{
+  // it seems like this code is slower than std::cos/sin
+  // taken from: http://lab.polygonal.de/2007/07/18/fast-and-accurate-sinecosine-approximation/
+  // low precision version:
+
+  // always wrap input angle to -PI..PI:
+  if (x < -3.14159265)
+    x += 6.28318531;
+  else
+    if (x >  3.14159265)
+      x -= 6.28318531;
+
+  // compute sine:
+  if (x < 0)
+    *s = 1.27323954 * x + 0.405284735 * x * x;
+  else
+    *s = 1.27323954 * x - 0.405284735 * x * x;
+
+  // compute cosine: sin(x + PI/2) = cos(x)
+  x += 1.57079632;
+  if (x >  3.14159265)
+    x -= 6.28318531;
+  if(x < 0)
+    *c = 1.27323954 * x + 0.405284735 * x * x;
+  else
+    *c = 1.27323954 * x - 0.405284735 * x * x;
+}
+
+double rsCosApprox1(double x)
+{
+  constexpr double a2 = -4.0 / (PI*PI);
+  return 1.0 + a2 * x*x;
+}
+//var("x a0 a2 a4 a6")
+//f(x)  = a0 + a2*x^2
+//f2(x) = diff(f(x), x, 2)  # 2nd derivative
+//f4(x) = diff(f(x), x, 4)  # 4th derivative
+//eq1 = f(0)  == +1         # 1st requirement
+//eq2 = f(pi) ==  0         # 2nd requirement
+//solve([eq1,eq2],[a0,a2])
+
+double rsCosApprox2(double x)
+{
+  constexpr double pi2 = PI*PI;
+  constexpr double a2 = -24.0 / (5.0 * pi2);
+  constexpr double a4 = +16.0 / (5.0 * pi2*pi2);
+  double x2 = x*x;
+  return 1.0 + a2*x2 + a4*x2*x2;
+}
+//var("x a0 a2 a4 a6")
+//f(x)  = a0 + a2*x^2 + a4*x^4
+//f2(x) = diff(f(x), x, 2)   # 2nd derivative
+//#f4(x) = diff(f(x), x, 4)  # 4th derivative
+//eq1 = f(0)  == +1          # 1st requirement
+//eq2 = f(pi/2) == 0         # 2nd requirement
+//eq3 = f2(pi/2) == 0 
+//solve([eq1,eq2,eq3],[a0,a2,a4])
+
+
+
+
+//var("x a0 a2 a4 a6")
+//f(x)  = a0 + a2*x^2 + a4*x^4 + a6*x^6
+//f2(x) = diff(f(x), x, 2)  # 2nd derivative
+//f4(x) = diff(f(x), x, 4)  # 4th derivative
+//eq1 = f(0)     == 1       # 1st requirement
+//eq2 = f(pi/2)  == 0       # 2nd requirement
+//eq3 = f2(pi/2) == 0       # 3rd requirement
+//eq4 = f4(pi/2) == 0       # 4th requirement
+//solve([eq1,eq2,eq3,eq4],[a0,a2,a4,a6])
+//
+//[[a0 == 1, a2 == -300/61/pi^2, a4 == 240/61/pi^4, a6 == -64/61/pi^6]]
+
+// https://www.desmos.com/calculator/6hvksqmtgl
+
+double rsCos2(double x)
+{
+  double xa = rsAbs(x);
+  double o  = double(xa > 0.5*PI);     // |x| is outside range -> reflect to inside
+  double xr = (1-o)*xa + o*(xa-PI);
+
+  //double y = rsCosApprox1(xr);
+  double y = rsCosApprox2(xr);
+
+  y = (1-o)*y + o*(-y);
+
+  return y;
+}
+
+void rsSinCos2(double x, double* s, double* c)
+{
+  double xa = rsAbs(x);
+  double xs = rsSign(x);
+
+  double o  = double(xa > 0.5*PI);     // |x| is outside range -> reflect to inside
+  double xr = (1.0-o)*xa + o*(PI-xa);
+  *s = sin(xa);
+
+  double n  = double(x < 0.0);         // x is negative sine needs to be multiplied by -1
+  double fs = 1 - 2*n;                 // factor conceptually: f = (1-n)*1 + n*(-1)
+  *s *= fs;
+
+  xr  = (1.0-o)*xa + o*(xa-PI);
+  *c  = cos(xa);  // or do we need xr?
+
+
+  // ToDo:
+  // -replace the call to sin/cos with a polynomial approximation (use odd polynomial for sin, even
+  //  for cos)
+  // -simplify, templatize, vectorize, the <,> operations shall be implemented by some branchless
+  //  SIMD functions
+  // -factor out the range reduction...maybe templatize on FSin, FCos or use function pointers
+  //  for the range-reduced sin/cos functions
+  // -factor out the pure cosine - it doesn't even need to compute the sign, so it could be even 
+  //  more efficient, the sine can then be obtained by a simple shift - but careful: the shift will 
+  //  change the valid domain
+  // -implement an efficient sine-oscillator based on that, should also provide a SIMD version, 
+  //  generating 4 float sines in parallel -> use it in the sinusoidal modeling framework
+}
+
 std::vector<double> solvePentaDiagonalSystem(
   std::vector<double>& M, std::vector<double>& L,
   std::vector<double>& D,

@@ -25,10 +25,10 @@ bool runUnitTestsRapt()
   // because some of the test take longer to perfom. So this line is volatile:
   //ok &= runUnitTest(&colorUnitTest,  "rsColor");
   //ok &= runUnitTest(&ladderUnitTest, "rsLadder");
-  ok &= runUnitTest(&samplerDataUnitTest,         "rsSamplerData");
-  ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
-  ok &= runUnitTest(&samplerEngineUnitTestFileIO, "rsSamplerEngine - File I/O");
-  return ok;
+  //ok &= runUnitTest(&samplerDataUnitTest,         "rsSamplerData");
+  //ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
+  //ok &= runUnitTest(&samplerEngineUnitTestFileIO, "rsSamplerEngine - File I/O");
+  //return ok;
 
 
 
@@ -58,8 +58,6 @@ bool runUnitTestsRapt()
   //ok &= runUnitTest(&testRationalNumber,             "rsRationalNumber"); // is in misc math tests
   ok &= runUnitTest(&testMiscMath,                   "misc math");  // fails on linux ("illegal instruction") - encounters a singular matrix
   ok &= runUnitTest(&testLinearAlgebra,              "rsLinearAlgebra");  // fails on linux ("illegal instruction")
-  ok &= runUnitTest(&testPolynomial,                 "rsPolynomial");
-  //ok &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // fails! ...absorb in rsPolynomial
   ok &= runUnitTest(&testDifferentialEquationSystem, "rsDifferentialEquationSystem");
   ok &= runUnitTest(&testIntegerFunctions,           "integer functions");
   ok &= runUnitTest(&testMoebiusTransform,           "rsMoebiusTransform");
@@ -70,6 +68,8 @@ bool runUnitTestsRapt()
   ok &= runUnitTest(&testPoint2D,                    "rsPoint2D");
   ok &= runUnitTest(&testPolygon2D,                  "rsPolygon2D");
   ok &= runUnitTest(&testMultiArray,                 "rsMultiArray");
+  ok &= runUnitTest(&testPolynomial,                 "rsPolynomial");
+  //ok &= runUnitTest(&polynomialRootsUnitTest,       "rsPolynomial: root finding"); // fails! ...absorb in rsPolynomial
 
 
   // Filters:

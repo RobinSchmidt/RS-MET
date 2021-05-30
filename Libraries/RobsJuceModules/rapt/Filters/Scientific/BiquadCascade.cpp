@@ -169,6 +169,8 @@ TCoef rsBiquadCascade<TSig, TCoef>::getRingingTimeEstimate(CRCoef threshold)
   for(int i = 0; i < numStages; i++)
     rt = rsMax(rt, biquadRingingTime(a1[i], a2[i], threshold));
   return rt;
+  // Or maybe we should add them? the maximum seems more suitable for a parallel connection, but 
+  // this here is a serial connection. -> more experiments needed
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -198,3 +200,13 @@ void rsBiquadCascade<TSig, TCoef>::reset()
     y1[i] = 0.0;
   }
 }
+
+
+/*
+
+ToDo:
+-try to replace the unit delays by N-sample delays. I think, it should replicate the frequency 
+ response several times giving a sort of comb-filter effect. Then, we can make Butteworth combs 
+ etc. using an adapted version of EngineersFilter
+
+*/

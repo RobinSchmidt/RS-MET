@@ -280,77 +280,11 @@ template void simdPerformance(double, rsFloat64x2);
 template void simdPerformance(float, rsFloat32x4);
 
 
-void rsSinCos1(double x, double* s, double* c)
-{
-  // it seems like this code is slower than std::cos/sin
-  // taken from: http://lab.polygonal.de/2007/07/18/fast-and-accurate-sinecosine-approximation/
-  // low precision version:
-
-  // always wrap input angle to -PI..PI:
-  if (x < -3.14159265)
-    x += 6.28318531;
-  else
-    if (x >  3.14159265)
-      x -= 6.28318531;
-
-  // compute sine:
-  if (x < 0)
-    *s = 1.27323954 * x + 0.405284735 * x * x;
-  else
-    *s = 1.27323954 * x - 0.405284735 * x * x;
-
-  // compute cosine: sin(x + PI/2) = cos(x)
-  x += 1.57079632;
-  if (x >  3.14159265)
-    x -= 6.28318531;
-  if(x < 0)
-    *c = 1.27323954 * x + 0.405284735 * x * x;
-  else
-    *c = 1.27323954 * x - 0.405284735 * x * x;
-}
-// todo: try to implement it in a branchless way
-
-void rsSinCos2(double x, double* s, double* c)
-{
-  double xa = rsAbs(x);
-  double xs = rsSign(x);
-
-  double o  = double(xa > 0.5*PI);     // |x| is outside range -> reflect to inside
-  double xr = (1.0-o)*xa + o*(PI-xa);
-  *s = sin(xa);
-
-  double n  = double(x < 0.0);         // x is negative sine needs to be multiplied by -1
-  double fs  = 1 - 2*n;                 // factor conceptually: f = (1-n)*1 + n*(-1)
-  *s *= fs;
-
-  xr  = (1.0-o)*xa + o*(xa-PI);
-  *c  = cos(xa);
-  //double fc = 2*o - 1;
-  //fc *= -fs;
-  //*c *= fc;
-
-  // reference values
-  double tol = 1.e-14;
-  double S = sin(x);
-  double C = cos(x); 
-  rsAssert(rsIsCloseTo(*s, S, tol));
-  rsAssert(rsIsCloseTo(*c, C, tol));
-
-  // Prototype, later 
-  // -move to Prototypes, implement experiment that plots the error ..or do that in a unit test
-  //  that optionally plots
-  // -replace the call to sin/cos with a polynomial approximation (use odd polynomial for sin, even
-  //  for cos)
-  // -simplify, templatize, vectorize, the <,> operations shall be implemented by some branchless
-  //  SIMD functions
-  // -factor out the range reduction...maybe templatize on FSin, FCos
-}
-
 void sinCosPerformance()
 {
   //static const int N = 10000;  // number of values
-  //static const int N = 128;  // number of values
-  static const int N = 1024;  // number of values
+  static const int N = 128;  // number of values
+  //static const int N = 1024;  // number of values
   float xMin = float(-2*PI);
   float xMax = float(+2*PI);
 

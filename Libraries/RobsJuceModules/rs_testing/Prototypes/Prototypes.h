@@ -42,6 +42,15 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //static size_t allBitsButFirst= allBits ^ firstBitOnly;
 */
 
+
+double rsCos2(double x);
+
+void rsSinCos1(double x, double* s, double* c);
+void rsSinCos2(double x, double* s, double* c);
+
+
+
+
 template<class T>
 void weightedSum(const T* x1, int N1, T w1, const T* x2, int N2, T w2, T* y, int Ny)
 {

@@ -318,17 +318,46 @@ bool testPeriodicDistance()
   return r;
 }
 
+bool testSinCos()
+{
+  bool ok = true;
+
+  double xMin = -2*PI;
+  double xMax = +2*PI;
+  double N    = 201;
+
+  using Vec = std::vector<double>;
+  Vec c(N), s(N), c1(N), s1(N), c2(N), s2(N), c3(N);
+  Vec x = rsLinearRangeVector(N, xMin, xMax);
+  for(int i = 0; i < N; i++)
+  {
+    c[i]  = cos(x[i]);
+    s[i]  = sin(x[i]);
+    rsSinCos1(x[i], &s1[i], &c1[i]);
+    rsSinCos2(x[i], &s2[i], &c2[i]);
+    c3[i] = rsCos2(x[i]);
+  }
+  //rsPlotVectorsXY(x, s, c, s1, c1);
+  //rsPlotVectorsXY(x, s, c, s2, c2);
+  rsPlotVectorsXY(x, c, c3);
+
+
+  return ok;
+}
+
+
 bool testRealFunctions()
 {
-  bool testResult = true;
+  bool ok = true;
 
-  testResult &= testAbsAndSign();
-  //testResult &= testHyperbolicFunctions(); // test doesn't pass
-  testResult &= testSinc();
-  testResult &= testFunctionIterators();
-  testResult &= testWrap();
-  testResult &= testWindowFunctions();
-  testResult &= testPeriodicDistance();
+  ok &= testAbsAndSign();
+  //ok &= testHyperbolicFunctions(); // test doesn't pass
+  ok &= testSinc();
+  ok &= testFunctionIterators();
+  ok &= testWrap();
+  ok &= testWindowFunctions();
+  ok &= testPeriodicDistance();
+  ok &= testSinCos();
 
-  return testResult;
+  return ok;
 }
