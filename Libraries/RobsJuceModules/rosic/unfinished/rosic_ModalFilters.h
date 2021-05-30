@@ -117,14 +117,17 @@ protected:
   // allocated variable - but that actually increases cpu load
 
   rsFloat32x4 x1 = 0, v1 = 0, v2 = 0, b0 = 0, b1 = 0, a1 = 0, a2 = 0;
-  // maybe make a subclass for DF1 and TDF1 that need to store x1 - save one memory cell for the
-  // other forms - actually, it turned out that TDF1 is the most cpu efficient version and this one
+  // Maybe make a subclass for DF1 and TDF1 that need to store x1 - save one memory cell for the
+  // other forms. Actually, it turned out that TDF1 is the most cpu efficient version and this one
   // needs the additional storage cell. but maybe when we later use thousands of these filters, the
-  // memory footprint becomes more relevant - do performance tests under such realistic conditions
+  // memory footprint becomes more relevant. Do performance tests under such realistic conditions
   // later - it may turn out to be advantegeous to switch to TDF2 with its lower memory footprint.
 };
 
-// maybe templatize and make two explicit instantiations for rsFloat32x4 (SSE2) and 
-// rsFloat32x16 (AVX2), maybe have two template arguments - for the scalar and vector type
+// -maybe templatize and make two explicit instantiations for rsFloat32x4 (SSE2) and 
+//  rsFloat32x16 (AVX2), maybe have two template arguments - for the scalar and vector type
+// -maybe also make a rsFloat64x2 version - of course, that can't use 4 filters, but maybe 2 is 
+//  enough in some situations. An/or make a rsFloat64x4 version
+// -maybe rename to rsModalFilterFloat32x4
 
 }

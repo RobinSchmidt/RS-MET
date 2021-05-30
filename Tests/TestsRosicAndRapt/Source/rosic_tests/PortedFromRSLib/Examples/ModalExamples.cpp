@@ -878,7 +878,7 @@ void testHighPluck()
   Vec frq(N), amp(N), att(N), dec(N), phs(N);
   frq = rsLinearRangeVector(N, 1.0, N);
   amp = rsApplyFunction(frq, -0.7,  &pow);          // use variable ampExponent
-  dec = MFB::modeDecayTimes(frq, 2.4, 0.60); // use variables
+  dec = MFB::modeDecayTimes(frq, 2.4, 0.30); // use variables
   att = dec;
   phs = rsRandomVector(N, minPhase, maxPhase, randomSeed);
   MFB mfb;
@@ -893,14 +893,16 @@ void testHighPluck()
     x1[n] = mfb.getSample(0.0);
 
   // Create a signal with a subharmonic frequency
-  int divider = 3;
-  double baseFreq = fundamental / divider;
+  int D = 3;  // divider
+  double baseFreq = fundamental / D;
   numPartials = (int) floor(0.5*sampleRate / baseFreq);
   N = numPartials;
   frq = rsLinearRangeVector(N, 1.0, N);
   amp = rsApplyFunction(frq, -0.0, &pow);     // use variable ampExponent2
-  for(int i = 0; i < divider; i++)            // highpass
-    amp[i] = 0.0;
+  for(int i = 0; i < D; i++)                  // highpass
+    amp[i] = 0.0;   
+  for(int i = D-1; i < N; i += D)             // comb
+    amp[i] *= 0.0;
   dec = MFB::modeDecayTimes(frq, 20.0, 0.1);  // use variables
   att = dec;
   phs = rsRandomVector(N, minPhase, maxPhase, randomSeed);
@@ -916,22 +918,24 @@ void testHighPluck()
     x2[n] = mfb.getSample(0.0);
 
   AT::normalize(&x1[0], N, 0.5);
-  rosic::writeToMonoWaveFile("HighPluckMain.wav", &x1[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("HighPluckMain.wav", &x1[0], N, (int)sampleRate);
   AT::normalize(&x2[0], N, 0.5);
-  rosic::writeToMonoWaveFile("HighPluckSub.wav", &x2[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("HighPluckSub.wav", &x2[0], N, (int)sampleRate);
   Vec mix = x1 + x2;
-  rosic::writeToMonoWaveFile("HighPluckMix1.wav", &mix[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("HighPluckMix1.wav", &mix[0], N, (int)sampleRate);
   mix = x1 - x2;
-  rosic::writeToMonoWaveFile("HighPluckMix2.wav", &mix[0], N, sampleRate);
+  rosic::writeToMonoWaveFile("HighPluckMix2.wav", &mix[0], N, (int)sampleRate);
   printf("%s", "Done\n");
 
   // ToDo:
   // -render transient samples with dividers 2,3,4,5,6,7,8 and use them as mix-in samples that can
   //  be layered in the sfz
+  // -they could be generally useful - not only for the Pluck
   // -when rendering sample-sets, maybe don't normalize each sample seperately, instead, normalize
   //  the whole sample set by the same factor - it's inconvenient to have settings like 
   //  -7.353135dB in the sfz file
   // -i think, divider=3 works best
+  // -it actually also works well for lower frequencies
 }
 // ToDo: make it possible to write such rendering scripts in python
 

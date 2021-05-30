@@ -8,7 +8,7 @@ void rsDampedSineFilterCoeffs(
   TPar cw, sw, cp, sp, P;
   rsSinCos(w, &sw, &cw);
   rsSinCos(p, &sp, &cp);
-  P   = exp(-1.0/d);              // = exp(-alpha), pole radius
+  P   = exp(TPar(-1)/d);          // = exp(-alpha), pole radius
   *a1 = TCof(-2*P*cw);            // = -2*P*cos(w)
   *a2 = TCof(P*P);                // = P^2
   *b0 = TCof(A*sp);               // = A*sin(p)

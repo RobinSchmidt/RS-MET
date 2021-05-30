@@ -196,6 +196,9 @@ public:
 class rsEngineersFilterMono : public RAPT::rsEngineersFilter<double, double>
 {
 public:
+
+  using RAPT::rsEngineersFilter<double, double>::rsEngineersFilter;
+
   inline double getSample(double in) { return getSampleDirect2(in); }
   // maybe implement in RAPT::rsEngineersFilter and don't subclass here but use a typedef'd
   // explicit instantiation

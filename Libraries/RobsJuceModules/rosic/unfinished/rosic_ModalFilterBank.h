@@ -2,6 +2,7 @@
 namespace rosic
 {
 
+//=================================================================================================
 /** Implements a whole bank of filters of type rsModalFilterFloatSSE2. */
 
 class rsModalBankFloatSSE2
@@ -25,6 +26,7 @@ public:
     modeFilters[index].setParameters(omega, amplitude, phase, attack, decay,
       deltaOmega, phaseDelta, blend, attackScale, decayScale);
   }
+  // rename to setModeParameters
 
   /*
   void setNumModes(int newNumModes) 
@@ -40,7 +42,7 @@ public:
     RAPT::rsAssert(newIndex >= 0 && newIndex < maxNumModes);
     lowModeIndex = newIndex;
   }
-
+  // rename to setLowModeLimit
 
   /** Index of the highest mode to be produced (range: 0..maxNumModes-1). */
   void setHighModeIndex(int newIndex)
@@ -48,6 +50,7 @@ public:
     RAPT::rsAssert(newIndex >= 0 && newIndex < maxNumModes);
     highModeIndex = newIndex;
   }
+  // rename to setHighModeLimit
 
 
   /** \name Inquiry */
@@ -61,7 +64,11 @@ public:
 
   /** \name Processing */
 
-  //inline rsFloat32x4 getSample(rsFloat32x4 in)
+  /** Produces a 4-vector of the output samples of all 4 of our parallel modal filters, given an 
+  input 4-vector. Typically, this input vector should generated from a scalar input by copying the 
+  scalar value into all 4 slots and the scalar output should be obtained as the sum of the 4 
+  values in the output vector. This is realized in a convenience function with scalar float I/O, 
+  too. */
   inline rsFloat32x4 getSample(const rsFloat32x4& in)
   {
     rsFloat32x4 y(0);
@@ -69,12 +76,23 @@ public:
       y += modeFilters[i].getSample(in);
     return y;
   }
+  // maybe move this function to protected...but maybe not - maybe client code wants to feed 
+  // different signal into the 4 slots to obtain additional variation
 
+  /** Produces one output sample at a time, given an input sample. */
   inline float getSample(float in) 
   { 
     rsFloat32x4 y = getSample(rsFloat32x4(in));
     return y.getSum();
   }
+
+  /** Convenience function double precision I/O. The internal calculations are nevertheless done in 
+  single precision. */
+  inline double getSample(double in)
+  {
+    return (double) getSample((float)in);
+  }
+
 
   // maybe the getSample functions should be made virtual in a baseclass rsModalBank, such 
   // that we can use a pointer to a baseclass in rsModalSynth and instantiate either a SSE2 or
@@ -94,7 +112,9 @@ public:
   // sample-rate anyway, so who cares?
 
 
-  static const int maxNumModes = 1024; // maybe factor out into a baseclass
+  static const int maxNumModes = 1024; 
+  // maybe factor out into a baseclass, maybe make it a non-const member and use a std::vector for
+  // the modeFilters
 
 protected:
 
