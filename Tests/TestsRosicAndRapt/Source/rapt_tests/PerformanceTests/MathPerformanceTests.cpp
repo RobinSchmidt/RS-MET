@@ -308,13 +308,48 @@ void rsSinCos1(double x, double* s, double* c)
   else
     *c = 1.27323954 * x - 0.405284735 * x * x;
 }
+// todo: try to implement it in a branchless way
+
+void rsSinCos2(double x, double* s, double* c)
+{
+  double xa = rsAbs(x);
+  double xs = rsSign(x);
+
+  double y;
+  if(xa < 0.5*PI) {
+    *s = sin(xa);
+    *c = cos(xa); }
+  else {
+    *s = sin(PI-xa);
+    *c = cos(PI-xa); }
+
+  if(xs == -1.0)
+    *s *= -1.0;
+
+  if(xa > 0.5*PI)
+    *c = 0.0;  // preliminary
+
+  // reference values
+  double tol = 1.e-14;
+  double S   = sin(x);
+  double C   = cos(x); 
+  rsAssert(rsIsCloseTo(*s, S, tol));
+  //rsAssert(*c == C);
+  //rsAssert(*s == S && *c == C);
+
+
+  // Prototype, later 
+  // -replace the call to sin with a polynomial approximation
+  // -replace branches with a branchless implementation
+  // -templatize and vectorize
+}
 
 void sinCosPerformance()
 {
   //static const int N = 10000;  // number of values
   static const int N = 128;  // number of values
-  float xMin = 0.f;
-  float xMax = float(2*PI);
+  float xMin = float(-2*PI);
+  float xMax = float(+2*PI);
 
   float x[N], ySin[N], yCos[N];
   rsArrayTools::fillWithRandomValues(x, N, xMin, xMax, 0);
@@ -370,6 +405,15 @@ void sinCosPerformance()
     rsSinCos1(x[n], &ySinD[n], &yCosD[n]);
   cycles = (double) counter.getNumCyclesSinceInit();
   printPerformanceTestResult("rsSinCos1, double", cycles / N);
+
+  counter.init();
+  for(n = 0; n < N; n++)
+    rsSinCos2(x[n], &ySinD[n], &yCosD[n]);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("rsSinCos2, double", cycles / N);
+
+
+  int dummy = 0;
 
   // Conclusion:
   // rsSinCos1 is slower than using std::sin/cos, and the table gives results that can't be real
