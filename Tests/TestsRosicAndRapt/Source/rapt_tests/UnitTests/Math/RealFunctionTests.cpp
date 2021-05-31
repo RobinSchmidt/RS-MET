@@ -318,13 +318,13 @@ bool testPeriodicDistance()
   return r;
 }
 
-bool testSinCos()
+bool testSinCosApproximations()
 {
   bool ok = true;
 
-  double xMin = -2*PI;
-  double xMax = +2*PI;
-  double N    = 201;
+  double xMin = -1.5*PI;
+  double xMax = +1.5*PI;
+  int    N    = 1001;     // number of values between xMin and xMax
 
   using Vec = std::vector<double>;
   Vec c(N), s(N), c1(N), s1(N), c2(N), s2(N), c3(N);
@@ -339,8 +339,12 @@ bool testSinCos()
   }
   //rsPlotVectorsXY(x, s, c, s1, c1);
   //rsPlotVectorsXY(x, s, c, s2, c2);
-  rsPlotVectorsXY(x, c, c3);
+  //rsPlotVectorsXY(x, c, c3, c-c3);
+  rsPlotVectorsXY(x, c-c3);
 
+  // This unit test is not yet finished because the testee functions themselves are not yet 
+  // finished. ToDo: Check if the maximum error is wihtin expected bounds for all the 
+  // approximations
 
   return ok;
 }
@@ -357,7 +361,7 @@ bool testRealFunctions()
   ok &= testWrap();
   ok &= testWindowFunctions();
   ok &= testPeriodicDistance();
-  ok &= testSinCos();
+  ok &= testSinCosApproximations();
 
   return ok;
 }

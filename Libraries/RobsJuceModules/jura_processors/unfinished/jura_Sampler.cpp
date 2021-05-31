@@ -284,4 +284,7 @@ be loaded plus some global settings such as the maximum number of layers, the re
 Don't use the xml preset to store the actual sfz opcodes. Preset loading would become a nested 
 process the outer level is the xml and the inner level is the sfz. The GUI should provide an 
 additional set of load/save widgets for the sfz.
+
+
+
 */

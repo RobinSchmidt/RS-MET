@@ -1053,6 +1053,22 @@ void rsResampler<TSig, TPos>::shiftSinc(TSig *x, TSig *y, int N, TPos amount, TP
   }
 }
 
+/*
+ToDo:
+-Implement a polynomial resampler that is suitable for simd -> use one single polynomial that we 
+ evaluate at multiple points  ..., n-2+f, n-1+f, n+f, n+1+f, n+2+f, ...  where f ist the fractional 
+ position. The evaluated polynomial values should then be multiplied by the sample values and 
+ summed to give the final result (maybe the sum should be divied by the sum of the polynomial 
+ values, such that the sum of all weights is always 1)
+-the polynomial should be constructed as product of a polynomial p(x) with zeros at the integers 
+ and a window polynomial w(x) that is chosen to make the overall polynomial look like a windowed
+ sinc. p(x) = (x+1)*(x-1)*(x+2)*(x-2)*(x+3)*(x-3)*(x+4)*(x-4)*... and w(x) should perhaps be found
+ by a numerical optimization of the frequency response
+-The idea is to eventually use a Float32x16 simd type and have a nice and cheap 16-point 
+ interpolator
+ https://www.desmos.com/calculator/bh2kkuj2t4
+*/
+
 //=================================================================================================
 
 template<class TSig, class TPos>

@@ -49,20 +49,38 @@ void rsSinCos1(double x, double* s, double* c)
     *c = 1.27323954 * x - 0.405284735 * x * x;
 }
 
-double rsCosApprox1(double x)
+// approximations for argumenst rdeuced to the range -0.5*pi..0.5*pi
+double rsCosApproxReduced1(double x)
 {
   constexpr double a2 = -4.0 / (PI*PI);
   return 1.0 + a2 * x*x;
 }
-//var("x a0 a2 a4 a6")
-//f(x)  = a0 + a2*x^2
-//f2(x) = diff(f(x), x, 2)  # 2nd derivative
-//f4(x) = diff(f(x), x, 4)  # 4th derivative
-//eq1 = f(0)  == +1         # 1st requirement
-//eq2 = f(pi) ==  0         # 2nd requirement
+//var("x a0 a2")
+//f(x) = a0 + a2*x^2
+//eq1  = f(0)  == 1         # 1st requirement
+//eq2  = f(pi) == 0         # 2nd requirement
 //solve([eq1,eq2],[a0,a2])
 
-double rsCosApprox2(double x)
+double rsSinApproxReduced1(double x)
+{
+  constexpr double pi2 = PI*PI;
+  constexpr double a1 =  3.0 /  PI;
+  constexpr double a3 = -4.0 / (PI*pi2);
+  double x2 = x*x;
+  return a1*x + a3*x*x2;
+}
+//var("x a1 a3")
+//f(x)  = a1*x + a3*x^3
+//f1(x) = diff(f(x), x, 1)   # 1st derivative
+//eq1 = f( pi/2) == 1        # 1st requirement
+//eq2 = f1(pi/2) == 0        # 2nd requirement
+//solve([eq1,eq2],[a1,a3])
+//
+// [[a1 == 3/pi, a3 == -4/pi^3]]
+
+
+// Controls only the 2nd derivative:
+double rsCosApproxReduced2(double x)
 {
   constexpr double pi2 = PI*PI;
   constexpr double a2 = -24.0 / (5.0 * pi2);
@@ -70,18 +88,43 @@ double rsCosApprox2(double x)
   double x2 = x*x;
   return 1.0 + a2*x2 + a4*x2*x2;
 }
-//var("x a0 a2 a4 a6")
+//var("x a0 a2 a4")
 //f(x)  = a0 + a2*x^2 + a4*x^4
 //f2(x) = diff(f(x), x, 2)   # 2nd derivative
-//#f4(x) = diff(f(x), x, 4)  # 4th derivative
-//eq1 = f(0)  == +1          # 1st requirement
-//eq2 = f(pi/2) == 0         # 2nd requirement
-//eq3 = f2(pi/2) == 0 
+//eq1 = f(0)     == 1        # 1st requirement
+//eq2 = f(pi/2)  == 0        # 2nd requirement
+//eq3 = f2(pi/2) == 0        # 3rd requirement
 //solve([eq1,eq2,eq3],[a0,a2,a4])
 
+// Controls the 1st derivative at pi/2:
+double rsCosApproxReduced2_all(double x)
+{
+  constexpr double pi2 = PI*PI;
+  constexpr double a2 =    (PI-8) / (pi2);
+  constexpr double a4 = -4*(PI-4) / (pi2*pi2);
+  double x2 = x*x;
+  return 1.0 + a2*x2 + a4*x2*x2;
+}
+//var("x a0 a2 a4")
+//f(x)  = a0 + a2*x^2 + a4*x^4
+//f1(x) = diff(f(x), x, 1)    # 1st derivative
+//eq1 = f(0)     ==  1        # 1st requirement
+//eq2 = f(pi/2)  ==  0        # 2nd requirement
+//eq3 = f1(pi/2) == -1        # 3rd requirement
+//solve([eq1,eq2,eq3],[a0,a2,a4])
 
-
-
+// Controls 2nd and 4th derivative at pi/2:
+double rsCosApproxReduced3(double x)
+{
+  constexpr double pi2 = PI*PI;
+  constexpr double pi4 = pi2*pi2;
+  constexpr double a2  = -300.0 / (61.0 * pi2);
+  constexpr double a4  = +240.0 / (61.0 * pi2*pi2);
+  constexpr double a6  = -64.0  / (61.0 * pi2*pi4);
+  double x2 = x*x;
+  double x4 = x2*x2;
+  return 1.0 + a2*x2 + a4*x2*x2 + a6*x2*x4;
+}
 //var("x a0 a2 a4 a6")
 //f(x)  = a0 + a2*x^2 + a4*x^4 + a6*x^6
 //f2(x) = diff(f(x), x, 2)  # 2nd derivative
@@ -91,23 +134,133 @@ double rsCosApprox2(double x)
 //eq3 = f2(pi/2) == 0       # 3rd requirement
 //eq4 = f4(pi/2) == 0       # 4th requirement
 //solve([eq1,eq2,eq3,eq4],[a0,a2,a4,a6])
-//
-//[[a0 == 1, a2 == -300/61/pi^2, a4 == 240/61/pi^4, a6 == -64/61/pi^6]]
 
+
+// Controls the 1st and 2nd derivative at pi/2:
+double rsCosApproxReduced3_all(double x)
+{
+  constexpr double pi2 = PI*PI;
+  constexpr double pi4 = pi2*pi2;
+  constexpr double a2 =  3*(3*PI-16) / (4*pi2);
+  constexpr double a4 = -2*(7*PI-24) / (pi2*pi2);
+  constexpr double a6 =  4*(5*PI-16) / (pi2*pi4);
+  double x2 = x*x;
+  double x4 = x2*x2;
+  return 1.0 + a2*x2 + a4*x4 + a6*x2*x4;
+}
+// [[a0 == 1, a2 == 3/4*(3*pi - 16)/pi^2, a4 == -2*(7*pi - 24)/pi^4, a6 == 4*(5*pi - 16)/pi^6]]
+
+//var("x a0 a2 a4 a6")
+//f(x)  = a0 + a2*x^2 + a4*x^4 + a6*x^6
+//f1(x) = diff(f(x), x, 1)    # 1st derivative
+//f2(x) = diff(f(x), x, 2)    # 2nd derivative
+//eq1 = f(0)     ==  1        # 1st requirement
+//eq2 = f(pi/2)  ==  0        # 2nd requirement
+//eq3 = f1(pi/2) == -1        # 3rd requirement
+//eq4 = f2(pi/2) ==  0        # 4th requirement
+//solve([eq1,eq2,eq3,eq4],[a0,a2,a4,a6])
+
+
+double rsCosApproxReduced4(double x)
+{
+  constexpr double pi2 = PI*PI;
+  constexpr double pi4 = pi2*pi2;
+  constexpr double a2  = -6832.0 / (1385.0 * pi2);
+  constexpr double a4  = +1120.0 / (277.0  * pi2*pi2);
+  constexpr double a6  = -1792.0 / (1385.0 * pi2*pi4);
+  constexpr double a8  = +256.0  / (1385.0 * pi4*pi4);
+  double x2 = x*x;
+  double x4 = x2*x2;
+  return 1.0 + a2*x2 + a4*x2*x2 + a6*x2*x4 + a8*x4*x4;
+}
+//var("x a0 a2 a4 a6 a8")
+//f(x)  = a0 + a2*x^2 + a4*x^4 + a6*x^6 + a8*x^8
+//f2(x) = diff(f(x), x, 2)  # 2nd derivative
+//f4(x) = diff(f(x), x, 4)  # 4th derivative
+//f6(x) = diff(f(x), x, 6)  # 6th derivative
+//eq1 = f(0)     == 1       # 1st requirement
+//eq2 = f(pi/2)  == 0       # 2nd requirement
+//eq3 = f2(pi/2) == 0       # 3rd requirement
+//eq4 = f4(pi/2) == 0       # 4th requirement
+//eq5 = f6(pi/2) == 0       # 5th requirement
+//solve([eq1,eq2,eq3,eq4,eq5],[a0,a2,a4,a6,a8])
+
+
+double rsCosApproxReduced5(double x)
+{
+  constexpr double pi2 = PI*PI;
+  constexpr double pi4 = pi2*pi2;
+  constexpr double pi6 = pi2*pi4;
+  constexpr double a2  = -249300 / (50521 * pi2    );
+  constexpr double a4  = +204960 / (50521 * pi2*pi2);
+  constexpr double a6  = -67200  / (50521 * pi6    );
+  constexpr double a8  = +11520  / (50521 * pi4*pi4);
+  constexpr double a10 = -1024   / (50521 * pi4*pi6);
+  double x2 = x*x;
+  double x4 = x2*x2;
+  double x8 = x4*x4;
+  return 1.0 + a2*x2 + a4*x2*x2 + a6*x2*x4 + a8*x8 + a10*x2*x8;
+}
+//var("x a0 a2 a4 a6 a8 a10")
+//f(x)  = a0 + a2*x^2 + a4*x^4 + a6*x^6 + a8*x^8 + a10*x^10
+//f2(x) = diff(f(x), x, 2)  # 2nd derivative
+//f4(x) = diff(f(x), x, 4)  # 4th derivative
+//f6(x) = diff(f(x), x, 6)  # 6th derivative
+//f8(x) = diff(f(x), x, 8)  # 8th derivative
+//eq1 = f(0)     == 1       # 1st requirement
+//eq2 = f(pi/2)  == 0       # 2nd requirement
+//eq3 = f2(pi/2) == 0       # 3rd requirement
+//eq4 = f4(pi/2) == 0       # 4th requirement
+//eq5 = f6(pi/2) == 0       # 5th requirement
+//eq6 = f8(pi/2) == 0       # 6th requirement
+//solve([eq1,eq2,eq3,eq4,eq5,eq6],[a0,a2,a4,a6,a8,a10])
+
+// It seems like controlling only even derivatives for the cosine gives a larger maximum error but
+// the shape at the junction seems to be smoother compared to controlling even and odd derivatives.
+// Yet another option would be to control function values at various points, like all zeros and/or
+// maxima and minima. Maybe try some more options. The goal is not necessarily to minimize the 
+// maximum error but rather to minimize the audible artifacts when using such an approximation as
+// sine oscillator.
 // https://www.desmos.com/calculator/6hvksqmtgl
 
+// Approximation for arguments reduced to the range -1.5*pi..1.5*pi using internally the functions
+// for the range -0.5pi..0.5pi and some range reduction that can (hopefully) be imlemented in a 
+// branchless way:
 double rsCos2(double x)
 {
   double xa = rsAbs(x);
+
+  // This implements the range reduction from +-1.5pi to +-0.5pi. The double(xa > 0.5*PI) can later
+  // be done with a branchless simd instruction that will contains ones where the condition is true
+  // and zeros where the condition is false. The computation of xr is conceptually a linear 
+  // interpolation with coeffs 0 and 1 between the original and shifted argument:
   double o  = double(xa > 0.5*PI);     // |x| is outside range -> reflect to inside
-  double xr = (1-o)*xa + o*(xa-PI);
+  double xr = xa - o*PI;               // (1-o)*xa + o*(xa-PI)
 
-  //double y = rsCosApprox1(xr);
-  double y = rsCosApprox2(xr);
+  // Call the function for the range-reduced cosine (for the range -pi/2...pi/2):
+  //double y = rsCosApproxReduced1(xr);     // error below 0.1     -> SNR > 20 dB
+  //double y = rsCosApproxReduced2(xr);     // error below 0.01    -> SNR > 40 dB
+  //double y = rsCosApproxReduced2_all(xr);     // max error less than above but less smooth
 
-  y = (1-o)*y + o*(-y);
+  //double y = rsCosApproxReduced3(xr);       // error below 0.001    -> SNR > 60 dB
+  double y = rsCosApproxReduced3_all(xr); // error below 0.0001   -> SNR > 80 dB
 
+  //double y = rsCosApproxReduced4(xr);       // error below 0.0001  -> SNR > 80 dB
+  //double y = rsCosApproxReduced5(xr);       // error below 0.00001  -> SNR > 100 dB
+
+  // Final adjustment to take into account the possible range reduction. This is conceptually a 
+  // linear interpolation with coeffs 0 and 1 between original and negated output value:
+  y = y - 2*o*y;                       // (1-o)*y + o*(-y)
   return y;
+
+  // For the approximations controlling only even derivatives, the error has qualitatively a shape
+  // like cos(x) - cos(3x). Maybe we can create the cos(3x) term by a multiple angle formula and 
+  // subtract an appropriately scaled amount. But for the triple angle formula, we also need an 
+  // appoximate of the sine
+
+  // ToDo: 
+  // -implement approximations of various qualities, maybe up to an SNR of 140 dB
+  // -check if errors are below expected tolerances
 }
 
 void rsSinCos2(double x, double* s, double* c)

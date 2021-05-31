@@ -195,9 +195,9 @@ protected:
   __m128d v; // the value
   //__declspec(align(16)) __m128d v; // the value (define and ALIGN(N) macro for gcc/msc)
 
-  // Note: Subclassing __m128d (instead of having a member of that type) works with the MS compiler
-  // but not with gcc. Apparently, MS allows primitive datatypes to be seen as classes while gcc
-  // doesn't.
+  // Note: Subclassing __m128d instead of having a member of that type works with the microsoft 
+  // compiler but not with gcc. Apparently, msc allows primitive datatypes to be seen as classes 
+  // while gcc doesn't.
 };
 
 // binary arithmetic operators:
@@ -279,14 +279,18 @@ inline bool rsGreaterAbs(const rsFloat64x2& x, const rsFloat64x2& y)
 // https://msdn.microsoft.com/de-de/library/tyy88x2a(v=vs.90).aspx
 // https://msdn.microsoft.com/de-de/library/9b07190d(v=vs.90).aspx
 // http://johanmabille.github.io/blog/2014/10/10/writing-c-plus-plus-wrappers-for-simd-intrinsics-3/
-// https://github.com/p12tic/libsimdpp
-// https://github.com/VcDevel/Vc
-// https://github.com/NumScale/boost.simd
+// https://github.com/p12tic/libsimdpp  SIMD library for x86, ARM and more
+// https://github.com/VcDevel/Vc  ditto
+// https://github.com/agenium-scale/nsimd
 
 // for evaluating elementary math functions without resorting to the scalar versions, see:
 // http://ito-lab.naist.jp/~n-sibata/pdfs/isc10simd.pdf
 
 // reference:
 // http://www.info.univ-angers.fr/pub/richer/ens/l3info/ao/intel_intrinsics.pdf
+
+// ToDo: implement a fallback version to be used, if SSE2 is not available and also a special ARM
+// vesrion (needed for M1 processor, i guess):
+// https://docs.microsoft.com/en-us/cpp/intrinsics/arm-intrinsics?view=msvc-160
 
 #endif

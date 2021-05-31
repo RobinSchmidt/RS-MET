@@ -43,8 +43,8 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 */
 
 
+// some experimental sin/cos approximations
 double rsCos2(double x);
-
 void rsSinCos1(double x, double* s, double* c);
 void rsSinCos2(double x, double* s, double* c);
 

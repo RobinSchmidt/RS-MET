@@ -274,7 +274,7 @@ the ps suffix operates on all elements, the same functions with the ss suffix op
 */
 
 
-#ifdef BLAH // code below obsolete - but maybe keep it as fall back when no SSE is available
+#ifdef RS_NEVER_DEFINED // code below obsolete - but maybe keep it as fall back when no SSE is available
 
 /** This is datatype to represent 4 32-bit floating point numbers at once.
 THIS IS NOT USABLE YET (it currently uses 4 actual floats)

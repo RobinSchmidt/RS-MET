@@ -1808,3 +1808,13 @@ void EqualizerModuleEditor::updatePlotRange()
   }
   plotEditor->updatePlot();
 }
+
+/*
+
+maybe parametrize a biquad via:
+-midFreq, midGain, midWidth (regular bell filter params)
+-lowGain, highGain (would be 0 dB in bell EQ, -inf in BP, 0,-inf in LP etc)
+-or maybe instead of lowGain/highGain have meanGain and gainDelta
+-lowGain/highGain would apply to 0 and infinite freq
+
+*/
