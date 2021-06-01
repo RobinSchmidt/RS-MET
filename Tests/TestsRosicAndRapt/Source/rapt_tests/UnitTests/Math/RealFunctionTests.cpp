@@ -340,7 +340,7 @@ bool testSinCosApproximations()
   //rsPlotVectorsXY(x, s, c, s1, c1);
   //rsPlotVectorsXY(x, s, c, s2, c2);
   //rsPlotVectorsXY(x, c, c3, c-c3);
-  rsPlotVectorsXY(x, c-c3);
+  //rsPlotVectorsXY(x, c-c3);
 
   // This unit test is not yet finished because the testee functions themselves are not yet 
   // finished. ToDo: Check if the maximum error is wihtin expected bounds for all the 

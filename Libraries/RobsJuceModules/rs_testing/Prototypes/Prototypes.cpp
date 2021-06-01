@@ -135,7 +135,6 @@ double rsCosApproxReduced3(double x)
 //eq4 = f4(pi/2) == 0       # 4th requirement
 //solve([eq1,eq2,eq3,eq4],[a0,a2,a4,a6])
 
-
 // Controls the 1st and 2nd derivative at pi/2:
 double rsCosApproxReduced3_all(double x)
 {
@@ -148,8 +147,6 @@ double rsCosApproxReduced3_all(double x)
   double x4 = x2*x2;
   return 1.0 + a2*x2 + a4*x4 + a6*x2*x4;
 }
-// [[a0 == 1, a2 == 3/4*(3*pi - 16)/pi^2, a4 == -2*(7*pi - 24)/pi^4, a6 == 4*(5*pi - 16)/pi^6]]
-
 //var("x a0 a2 a4 a6")
 //f(x)  = a0 + a2*x^2 + a4*x^4 + a6*x^6
 //f1(x) = diff(f(x), x, 1)    # 1st derivative
@@ -160,7 +157,7 @@ double rsCosApproxReduced3_all(double x)
 //eq4 = f2(pi/2) ==  0        # 4th requirement
 //solve([eq1,eq2,eq3,eq4],[a0,a2,a4,a6])
 
-
+// Controls the 2nd, 4th and 6th derivative at pi/2:
 double rsCosApproxReduced4(double x)
 {
   constexpr double pi2 = PI*PI;
@@ -183,6 +180,38 @@ double rsCosApproxReduced4(double x)
 //eq3 = f2(pi/2) == 0       # 3rd requirement
 //eq4 = f4(pi/2) == 0       # 4th requirement
 //eq5 = f6(pi/2) == 0       # 5th requirement
+//solve([eq1,eq2,eq3,eq4,eq5],[a0,a2,a4,a6,a8])
+
+// Controls the 1st, 2nd and 3rd derivative at pi/2:
+double rsCosApproxReduced4_all(double x)
+{
+  constexpr double pi2 = PI*PI;
+  constexpr double pi3 = PI*pi2;
+  constexpr double pi4 = pi2*pi2;
+  constexpr double a2 =  ( 1./96)*(348*PI - pi3 - 1536)/pi2;
+  constexpr double a4 =  (-1./8 )*(244*PI - pi3 -  768)/pi4;
+  constexpr double a6 =  ( 1./2 )*(172*PI - pi3 -  512)/(pi2*pi4);
+  constexpr double a8 =  (-2./3 )*(132*PI - pi3 -  384)/(pi4*pi4);
+  double x2 = x*x;
+  double x4 = x2*x2;
+  return 1.0 + a2*x2 + a4*x4 + a6*x2*x4 + a8*x4*x4;
+}
+// [[a0 == 1, 
+// a2 == 1/96*(348*pi - pi^3 - 1536)/pi^2,
+// a4 == -1/8*(244*pi - pi^3 - 768)/pi^4,
+// a6 == 1/2*(172*pi - pi^3 - 512)/pi^6, 
+// a8 == -2/3*(132*pi - pi^3 - 384)/pi^8]]
+
+//var("x a0 a2 a4 a6 a8")
+//f(x)  = a0 + a2*x^2 + a4*x^4 + a6*x^6 + a8*x^8
+//f1(x) = diff(f(x), x, 1)    # 1st derivative
+//f2(x) = diff(f(x), x, 2)    # 2nd derivative
+//f3(x) = diff(f(x), x, 3)    # 3rd derivative
+//eq1 = f(0)     ==  1        # 1st requirement
+//eq2 = f(pi/2)  ==  0        # 2nd requirement
+//eq3 = f1(pi/2) == -1        # 3rd requirement
+//eq4 = f2(pi/2) ==  0        # 4th requirement
+//eq5 = f3(pi/2) ==  1        # 5th requirement
 //solve([eq1,eq2,eq3,eq4,eq5],[a0,a2,a4,a6,a8])
 
 
@@ -239,13 +268,16 @@ double rsCos2(double x)
 
   // Call the function for the range-reduced cosine (for the range -pi/2...pi/2):
   //double y = rsCosApproxReduced1(xr);     // error below 0.1     -> SNR > 20 dB
+
   //double y = rsCosApproxReduced2(xr);     // error below 0.01    -> SNR > 40 dB
   //double y = rsCosApproxReduced2_all(xr);     // max error less than above but less smooth
 
   //double y = rsCosApproxReduced3(xr);       // error below 0.001    -> SNR > 60 dB
-  double y = rsCosApproxReduced3_all(xr); // error below 0.0001   -> SNR > 80 dB
+  //double y = rsCosApproxReduced3_all(xr); // error below 0.0001   -> SNR > 80 dB
 
-  //double y = rsCosApproxReduced4(xr);       // error below 0.0001  -> SNR > 80 dB
+  double y = rsCosApproxReduced4(xr);       // error below 0.0001  -> SNR > 80 dB
+  //double y = rsCosApproxReduced4_all(xr); // error below 0.00001  -> SNR > 100 dB
+
   //double y = rsCosApproxReduced5(xr);       // error below 0.00001  -> SNR > 100 dB
 
   // Final adjustment to take into account the possible range reduction. This is conceptually a 
@@ -261,6 +293,20 @@ double rsCos2(double x)
   // ToDo: 
   // -implement approximations of various qualities, maybe up to an SNR of 140 dB
   // -check if errors are below expected tolerances
+  // -Check, if the odd derivatives that are not controlled are nevertheless matched, i.e. their 
+  //  values may be wrong at the junction, but maybe at least they match, so the resulting function
+  //  is smooth up to that order. If that's the case, it means, by controlling only even 
+  //  derivatives we may achieve a higher degree of smoothness at the expense of larger maximum 
+  //  error for the same number of coefficients.
+  // -Maybe find a minimax optimized set of coeffs that push the error below the 32bit floating 
+  //  point rounding noise. Maybe try to use special polynomials constructed from multiplying
+  //  simpler polynomials, like: (a0 + a2*x^2 + a4*x^4) * (b0 + b2*x^2 + b4*x^4) 
+  //   = a0*b0 + a0*b2*x^2 + a0*b4*x^4...
+  //  this gives an 8th degree polynomial with only 5 multiplications and 4 additions instead
+  //  of 8 of each. The price is that the coeffs are coupled. We have less degrees of freedom to
+  //  optimize and therefore potentially an error that is greater than for a general optimized
+  //  8th degree polynomial
+
 }
 
 void rsSinCos2(double x, double* s, double* c)
