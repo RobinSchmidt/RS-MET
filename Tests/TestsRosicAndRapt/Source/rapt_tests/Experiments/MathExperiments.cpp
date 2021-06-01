@@ -2152,7 +2152,7 @@ void numericOptimization()
   //int dummy = 0;
 }
 
-void polynomialInterpolation()
+void polynomialSinc()
 {
   // We want to find a polynomial that resembles a windowed sinc to be used for high order 
   // interpolation that is easy to vectorize for simd. The first feature of the sinc that we want
@@ -2161,45 +2161,50 @@ void polynomialInterpolation()
   //
   //   p(x) = c*(x+1)*(x-1)*(x+2)*(x-2)*(x+3)*(x-3)*(x+4)*(x-4)*...
   //
-  // This polynomial by itself does not have the right behavior with regard to its envelope. The 
+  // For some constant c that can be determined by evaluating the product with c=1 and then taking
+  // the reciprocal, such that the scaled polynomial has an amplitude of 1 at x = 0. This 
+  // polynomial by itself does not have the right behavior with regard to its envelope. The 
   // amplitudes of the oscillations grow as one goes further outward:
   //   https://www.desmos.com/calculator/bh2kkuj2t4
   // So, the next step is to produce a suitable window polynomial w(x) that can be multiplied by 
-  // p(x) to make the product look like a windowed sinc. If given a fractional position inot the 
+  // p(x) to make the product look like a windowed sinc. If given a fractional position into the 
   // sample with integer index n and fractional part f, we would evaluate p(x) and w(x) at 
   // f,f+1,f-1,f+2,f-2,f+3,f-3,f+4 and sum the values (maybe dividing by the sum of the weights, 
   // such that the sum of all weights is always 1). The evaluation of p(x) can be nicely optimized
   // by observing that: (x+n)(x-n) = x^2 - n^2 := x2 - n2, so our polynomial above simplifies to:
   //   p(x) = (x2-1)*(x2-4)*(x2-9)*(x2-16) 
-  // where x^2 can be precomputed. By further observing that (x2-n)*(x2-m) = x4 + (1-x2)*n*m, where
-  // x4 := x2^2 = x^4, q := 1-x^2, we can write:
-  //   p(x) = (x4+16*q)*(x4+36*q), where 16 = 1*16, and 36=4*9
-  // ...maybe for higher degree polynomials, we can do even more steps of simplification?
+  // where x^2 can be precomputed. By further observing that (x2-n)*(x2-m) = x4 -(n+m)*x2 + n*m
+  // = x2*(x2-(n+m)) + n*m...hmm...no...i don't think, that this leads to further simplification...
 
 
-  using Real = float;
+  // User parameters:
+  int N = 64;              // number of datapoints
+  int windowExponent = 4;  // determines shape of the window and therefore frequency response
 
-  int N = 500;  // number of datapoints
+
+
+  using Real = double;
+  using Vec = std::vector<Real>;
   Real xMin = -4.f;
   Real xMax = +4.f;
 
-
-  using Vec = std::vector<Real>;
-
   // Various variants to evaluate the polynomial p:
   Real c = 1.f / 576.f;  // found by inspection -> verify
-  auto p1 = [&](Real x)  // naively
+  auto p1 = [&](Real x)  // naively: 8 mul, 4 add, 4 sub
   { return c*(x+1)*(x-1)*(x+2)*(x-2)*(x+3)*(x-3)*(x+4)*(x-4);  };
 
-
+  auto p2 = [&](Real x)  // with x^2: 5 mul, 4 sub
+  { Real x2 = x*x; return c*(x2-1)*(x2-4)*(x2-9)*(x2-16); };
 
   auto w1 = [&](Real x)
   { 
-    x *= 0.25;
-    Real t = (x-1)*(x+1);  // zero at +-1
-    //return -t;
-    return t*t;
+    x *= 0.25;  // todo: use t /= order, where order is the number of positive zero crossings
+    Real t = -(x-1)*(x+1);  // zero at +-1
+    return pow(t, windowExponent);
   };
+  // todo: form a linear combination of t, t^2, t^3...or more generally, a polynomial in t, with 
+  // the goal to achieve a nice frequency response of the resulting interpolator. For that, we 
+  // first should plot the frequency response.
 
 
   Vec x = RAPT::rsRangeLinear(xMin, xMax, N);
@@ -2210,13 +2215,34 @@ void polynomialInterpolation()
     p[n]  = p1(x[n]);
     w[n]  = w1(x[n]);
     pw[n] = p[n] * w[n];
+
+    Real tol = 1.e-14;
+    rsAssert(rsIsCloseTo(p[n], p2(x[n]), tol));
   }
   rsPlotVectorsXY(x, p, w, pw);
 
-  // OK, the zero crossings are as desired. Now we need to find a suitable window. Ideally, the 
-  // evaluation should also be simple
+  int fftSize = 64*N;
+  Vec mag(fftSize), phs(fftSize); 
+  rosic::fftMagnitudesAndPhases(&pw[0], N, &mag[0], &phs[0], fftSize);
+  mag = mag * (1.0/mag[0]);  // normalize at DC
+  rsPlotSpectrum(mag, 0.0, -100.0, false);
+
+
 
   int dummy = 0;
+
+  // Observations:
+  // -the frequency response is generally lowpassish in nature, with passband and stopband ripple
+  // -with increasing windowExponent, the cutoff frequency goes down (bad), the passband ripple
+  //  decreases (good) and the spectral rolloff increases (good)
+
+  // ToDo: 
+  // -maybe also plot the spectrum of the linear interpolator and of a windowed sinc interpolator
+  //  for comparison
+  // -try a linear combination of different window exponents with weigths summing to 1. maybe try
+  //  to use t, t^2, t^4, t^8 (easy to compute)
+  // -introduce a variable for the number of zeros, i.e. the number of samples to use (here 8) and
+  //  implement the code in a generic way.
 
 
   // Altenatively, we may try a polynomial that has a zero also at zero and then divied the whole

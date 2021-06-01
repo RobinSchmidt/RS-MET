@@ -115,7 +115,7 @@ int main(int argc, char* argv[])
 
   //numericOptimization();
 
-  polynomialInterpolation();
+  polynomialSinc();
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();

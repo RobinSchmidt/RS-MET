@@ -97,7 +97,7 @@ void butterworthViaGaussians();
 
 void numericOptimization();
 
-void polynomialInterpolation();
+void polynomialSinc();
 void polynomialPrediction();
 void probabilityLogic();
 void productLogPlot();
