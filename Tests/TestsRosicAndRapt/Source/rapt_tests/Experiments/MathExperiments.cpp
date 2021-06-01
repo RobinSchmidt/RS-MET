@@ -2178,72 +2178,95 @@ void polynomialSinc()
 
 
   // User parameters:
-  int N = 64;              // number of datapoints
-  int windowExponent = 4;  // determines shape of the window and therefore frequency response
-
+  int N = 128;             // number of datapoints
+  int windowExponent = 8;  // determines shape of the window and therefore frequency response
+  int halfNumZeros   = 8;  // number of positive zeros (== 1/2 the total number)
 
 
   using Real = double;
-  using Vec = std::vector<Real>;
-  Real xMin = -4.f;
-  Real xMax = +4.f;
+  using Vec  = std::vector<Real>;
 
-  // Various variants to evaluate the polynomial p:
-  Real c = 1.f / 576.f;  // found by inspection -> verify
-  auto p1 = [&](Real x)  // naively: 8 mul, 4 add, 4 sub
-  { return c*(x+1)*(x-1)*(x+2)*(x-2)*(x+3)*(x-3)*(x+4)*(x-4);  };
+  Real xMin  = -halfNumZeros;
+  Real xMax  = +halfNumZeros;
 
-  auto p2 = [&](Real x)  // with x^2: 5 mul, 4 sub
-  { Real x2 = x*x; return c*(x2-1)*(x2-4)*(x2-9)*(x2-16); };
+  // The raw function with zeros at all integers except 0, evaluated naively:
+  auto p1raw = [&](Real x)
+  {
+    Real y = 1;
+    for(int i = 1; i <= halfNumZeros; i++)
+      y *= (x+i)*(x-i);
+    return y;
+  };
 
+  // The constant by which we need to scale the raw polynomial. This can be known at compile time
+  // when a fixed halfNumZeros is chosen:
+  Real c = 1.0 / p1raw(0.0);
+
+  // The scaled function p(x), evaluated naively: 8 mul, 4 add, 4 sub for halfNumZeros == 4:
+  auto p1 = [&](Real x) { return c*p1raw(x);  };
+
+  // p(x) with optimized evaluation using x^2: 5 mul, 4 sub for halfNumZeros == 4:
+  auto p2 = [&](Real x)  
+  { 
+    Real x2 = x*x; 
+    Real y  = 1;
+    for(int i = 1; i <= halfNumZeros; i++)
+      y *= (x2-i*i);  // i*i is a compile-time constant
+    return c*y;
+  };
+
+  // The window function:
   auto w1 = [&](Real x)
   { 
-    x *= 0.25;  // todo: use t /= order, where order is the number of positive zero crossings
+    x /= halfNumZeros;
     Real t = -(x-1)*(x+1);  // zero at +-1
     return pow(t, windowExponent);
   };
-  // todo: form a linear combination of t, t^2, t^3...or more generally, a polynomial in t, with 
-  // the goal to achieve a nice frequency response of the resulting interpolator. For that, we 
-  // first should plot the frequency response.
+  // ToDo: form a linear combination of t, t^2, t^3...or more generally, a polynomial in t, with 
+  // the goal to achieve a nice frequency response of the resulting interpolator. 
 
 
   Vec x = RAPT::rsRangeLinear(xMin, xMax, N);
   Vec p(N), w(N), pw(N);
-
   for(int n = 0; n < N; n++)
   {
     p[n]  = p1(x[n]);
     w[n]  = w1(x[n]);
     pw[n] = p[n] * w[n];
 
-    Real tol = 1.e-14;
-    rsAssert(rsIsCloseTo(p[n], p2(x[n]), tol));
+    Real err = p2(x[n]) - p[n];
+    Real tol = 1.e-11;
+    rsAssert(rsAbs(err) <= tol);
   }
-  rsPlotVectorsXY(x, p, w, pw);
+  //rsPlotVectorsXY(x, p, w, pw);
+  rsPlotVectorsXY(x, pw);
 
-  int fftSize = 64*N;
+  int fftSize = 128*N;
   Vec mag(fftSize), phs(fftSize); 
   rosic::fftMagnitudesAndPhases(&pw[0], N, &mag[0], &phs[0], fftSize);
   mag = mag * (1.0/mag[0]);  // normalize at DC
   rsPlotSpectrum(mag, 0.0, -100.0, false);
 
 
-
-  int dummy = 0;
-
   // Observations:
-  // -the frequency response is generally lowpassish in nature, with passband and stopband ripple
-  // -with increasing windowExponent, the cutoff frequency goes down (bad), the passband ripple
+  // -The frequency response is generally lowpassish in nature, with passband and stopband ripple
+  // -With increasing windowExponent, the cutoff frequency goes down (bad), the passband ripple
   //  decreases (good) and the spectral rolloff increases (good)
+  // -When increasing the number of zeros, keeping everything else constant, the amount of 
+  //  passband ripple increases. It can be counteracted by choosing a higher window exponent. 
+  //  Seems like the windoExponent should equal halfNumZeros for a good looking freq resp.
+  // -For higher num zeros, the optimized evaluation seems to produce progressively less 
+  //  accurate results (or is it the naive version that gets less accurate? anyway, they diverge)
+  // -A choice of 8,8 seems to give a reasonably good looking response. Maybe, if a datatype
+  //  float32x16 is available, that should the the first choice - we'll see.
 
   // ToDo: 
   // -maybe also plot the spectrum of the linear interpolator and of a windowed sinc interpolator
   //  for comparison
-  // -try a linear combination of different window exponents with weigths summing to 1. maybe try
+  // -try a linear combination of different window exponents with weigths summing to 1. Maybe try
   //  to use t, t^2, t^4, t^8 (easy to compute)
-  // -introduce a variable for the number of zeros, i.e. the number of samples to use (here 8) and
-  //  implement the code in a generic way.
-
+  // -try to expand the optimized form and evaluate it via Horner's rule -> check numerical and 
+  //  performance properties
 
   // Altenatively, we may try a polynomial that has a zero also at zero and then divied the whole
   // thing by x...but we have that expensive division and we also need to take care about avoiding
