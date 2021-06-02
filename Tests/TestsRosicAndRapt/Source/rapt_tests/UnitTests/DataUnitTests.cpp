@@ -915,8 +915,10 @@ bool simdTemplateUnitTest()
   using T = double;
 
   rsSimdVector<T, 2> a2, b2, c2;
+  a2[0] = 2; a2[1] = 3;
+  b2[0] = 7; b2[1] = 5;
 
-  c2 = a2 + b2;
+  c2 = a2 + b2; ok &= c2[0] == 9 && c2[1] == 8;
 
 
   return ok;

@@ -2948,6 +2948,16 @@ public:
   }
 
 
+  /** Access to the i-th element of the vector where i = 0,...,N-1. */
+  inline T& operator[](const int i)
+  { 
+    //static_assert(i >= 0 && i < N);  // C++17 maybe define a macro that wraps it and evaluates
+                                       // to nothing in case of C++<17
+    return v[i]; 
+  }
+  // maybe implement a const version returning a const reference
+
+private:
 
   T v[N];
 
@@ -2965,6 +2975,8 @@ public:
     u.v[0] = v[0] + w.v[0];
     return u;
   }
+
+private:
 
   T v[1];
 
