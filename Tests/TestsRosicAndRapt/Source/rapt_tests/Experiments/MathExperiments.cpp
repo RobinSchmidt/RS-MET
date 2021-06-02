@@ -2178,9 +2178,9 @@ void polynomialSinc()
 
 
   // User parameters:
-  int N = 128;             // number of datapoints
-  int windowExponent = 8;  // determines shape of the window and therefore frequency response
-  int halfNumZeros   = 8;  // number of positive zeros (== 1/2 the total number)
+  int N = 512;              // number of datapoints
+  int windowExponent = 10;  // determines shape of the window and therefore frequency response
+  int halfNumZeros   =  8;  // number of positive zeros (== 1/2 the total number)
 
 
   using Real = double;
@@ -2234,18 +2234,25 @@ void polynomialSinc()
     w[n]  = w1(x[n]);
     pw[n] = p[n] * w[n];
 
-    Real err = p2(x[n]) - p[n];
-    Real tol = 1.e-11;
-    rsAssert(rsAbs(err) <= tol);
+    //Real err = p2(x[n]) - p[n];
+    //Real tol = 1.e-11;   // we need high tolerance for high halfNumZeros
+    //rsAssert(rsAbs(err) <= tol);
   }
   //rsPlotVectorsXY(x, p, w, pw);
-  rsPlotVectorsXY(x, pw);
+  rsPlotVectorsXY(x, pw, w);
+  //rsPlotVectorsXY(x, pw);
 
-  int fftSize = 128*N;
+  int fftSize = 32*N;
+  int plotMax = 1024;
+  //int plotMax = 4*N;
   Vec mag(fftSize), phs(fftSize); 
   rosic::fftMagnitudesAndPhases(&pw[0], N, &mag[0], &phs[0], fftSize);
   mag = mag * (1.0/mag[0]);  // normalize at DC
-  rsPlotSpectrum(mag, 0.0, -100.0, false);
+  for(int n = 0; n < fftSize; n++)
+    mag[n] = rsMax(rsAmp2dB(mag[n]), -200.0);  // convert to dB with floor
+  rsPlotArray(&mag[0], plotMax);
+
+  //rsPlotSpectrum(mag, 0.0, -100.0, false);
 
 
   // Observations:

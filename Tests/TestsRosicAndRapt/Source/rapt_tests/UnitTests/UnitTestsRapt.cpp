@@ -40,11 +40,7 @@ bool runUnitTestsRapt()
   ok &= runUnitTest(&binaryHeapUnitTest,       "rsBinaryHeap");
   ok &= runUnitTest(&ringBufferUnitTest,       "rsDelayBuffer");
   ok &= runUnitTest(&doubleEndedQueueUnitTest, "rsDoubleEndedQueue");
-  ok &= runUnitTest(&float64x2UnitTest,        "rsFloat64x2");
-  ok &= runUnitTest(&float32x4UnitTest,        "rsFloat32x4");
-  ok &= runUnitTest(&complexFloat64x2UnitTest, "std::complex<rsFloat64x2>");
-    // fails on linux ("illegal instruction") ...seems that illegal instruction is our
-    // rsAsserFalse debug-break
+  ok &= runUnitTest(&simdUnitTest,             "SIMD Types");
 
   // Math:
   ok &= runUnitTest(&coordinateMapperUnitTest,       "rsCoordinateMapper2D");

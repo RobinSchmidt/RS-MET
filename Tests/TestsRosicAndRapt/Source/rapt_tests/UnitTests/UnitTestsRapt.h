@@ -10,9 +10,8 @@ bool testBufferFunctions();      // rename or absorb in arrayUnitTests
 bool testSortAndSearch();        // rename to sortAndSearchUnitTest
 bool binaryHeapUnitTest();
 bool doubleEndedQueueUnitTest();
-bool float64x2UnitTest();
-bool float32x4UnitTest();
-bool complexFloat64x2UnitTest();
+bool simdUnitTest();
+
 
 // Drawing:
 bool triangleRasterization();

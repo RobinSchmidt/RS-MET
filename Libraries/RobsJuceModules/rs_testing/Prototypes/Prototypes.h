@@ -2914,6 +2914,84 @@ public:
 
 };
 
+//=================================================================================================
+
+template<class T, int N>
+class rsSimdVector
+{
+
+public:
+
+  rsSimdVector<T, N> operator+(const rsSimdVector<T, N>& w) const
+  {
+    using V2  = rsSimdVector<T, N/2>;
+    using CV2 = const V2;
+
+    rsSimdVector<T, N> u;         // result
+    V2  *uL, *uH;                 // lower and upper half
+    CV2 *vL, *vH, *wL, *wH;
+
+    vL = (CV2*)   &v[0]; vH = (CV2*)   &v[N/2];
+    wL = (CV2*) &w.v[0]; wH = (CV2*) &w.v[N/2];
+    uL = ( V2*) &u.v[0]; uH = ( V2*) &u.v[N/2];
+
+    *uL = *vL + *wL;
+    *uH = *vH + *wH;
+
+    return u;
+
+
+    //rsSimdVector<T, N> u;
+    //for(int i = 0; i < N; i++)
+    //  u[i] = v[i] + w.v[i];
+    //return u;
+  }
+
+
+
+  T v[N];
+
+};
+
+template<class T>
+class rsSimdVector<T, 1>
+{
+
+public:
+
+  rsSimdVector<T, 1> operator+(const rsSimdVector<T, 1>& w) const
+  {
+    rsSimdVector<T, 1> u;
+    u.v[0] = v[0] + w.v[0];
+    return u;
+  }
+
+  T v[1];
+
+};
+
+
+template<>
+class rsSimdVector<float, 4>
+{
+
+public:
+
+};
+
+
+/*
+
+Goal: we want to be able to write something like:
+
+  rsSimdVector<float, 4> x;
+
+to declare a simd vector of 4 floats. The implementation of rsSimdVector<T, N> should either be 
+an explicit specialization of the template or it should invoke rsSimdVector<T, N/2>
+
+
+*/
+
 
 
 //=================================================================================================

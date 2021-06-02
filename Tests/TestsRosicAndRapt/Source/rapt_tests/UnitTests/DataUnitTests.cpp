@@ -906,3 +906,34 @@ bool complexFloat64x2UnitTest()
 
   return r;
 }
+
+
+bool simdTemplateUnitTest()
+{
+  bool ok = true;
+
+  using T = double;
+
+  rsSimdVector<T, 2> a2, b2, c2;
+
+  c2 = a2 + b2;
+
+
+  return ok;
+}
+
+bool simdUnitTest()
+{
+  bool ok = true;
+
+  ok &= float64x2UnitTest();
+  ok &= float32x4UnitTest();
+  ok &= complexFloat64x2UnitTest();
+  // fails on linux ("illegal instruction") ...seems that illegal instruction is our
+  // rsAsserFalse debug-break
+
+  ok &= simdTemplateUnitTest();
+
+
+  return ok;
+}
