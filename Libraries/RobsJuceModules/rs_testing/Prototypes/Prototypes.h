@@ -2916,6 +2916,9 @@ public:
 
 //=================================================================================================
 
+//-------------------------------------------------------------------------------------------------
+/** A class for abstracting SIMD (single instruction, multiple data) processing...tbc... */
+
 template<class T, int N>
 class rsSimdVector
 {
@@ -2970,6 +2973,7 @@ private:
 
 };
 
+//-------------------------------------------------------------------------------------------------
 /** Base case of 1-element "vectors" which degenerate to scalars. */
 
 template<class T>
@@ -2978,8 +2982,8 @@ class rsSimdVector<T, 1>
 
 public:
 
-  using V   = rsSimdVector<T, 1>;
-  using CV  = const V;
+  using V  = rsSimdVector<T, 1>;
+  using CV = const V;
 
   V operator+(CV& w) const { V u; u.v[0] = v[0] + w.v[0]; return u; }
   V operator-(CV& w) const { V u; u.v[0] = v[0] - w.v[0]; return u; }
@@ -2993,17 +2997,42 @@ private:
 
 };
 
+//-------------------------------------------------------------------------------------------------
+/** Explicit specialization for a vector of 4 floats. */
 
-/*
-// explicit specialization for 4 floats:
 template<>
 class rsSimdVector<float, 4>
 {
 
 public:
 
+  using V  = rsSimdVector<float, 4>;
+  using CV = const V;
+
+  static bool isSimdEmulated() { return false; }
+
+  // Constructors:
+  V() {};
+  V(__m128 x) : v(x) {}
+
+  // Arithmetic operators
+  V operator+(CV& w) const { return V(_mm_add_ps(v, w.v)); }
+  V operator-(CV& w) const { return V(_mm_sub_ps(v, w.v)); }
+  V operator*(CV& w) const { return V(_mm_mul_ps(v, w.v)); }
+  V operator/(CV& w) const { return V(_mm_div_ps(v, w.v)); }
+
+  // Access operators
+  V& operator=(const __m128& rhs) { v = rhs; return *this; }
+  float& operator[](const int i) const { return asArray()[i]; }
+
+
+private:
+
+  float* asArray() const { return (float*) &v; }
+  __m128 v;
+
 };
-*/
+
 
 
 /*
