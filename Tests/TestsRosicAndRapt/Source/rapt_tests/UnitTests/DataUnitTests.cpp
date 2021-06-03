@@ -917,8 +917,10 @@ bool simdTemplateUnitTest2()
   a[0] = 2; a[1] = 3;
   b[0] = 7; b[1] = 5;
 
-  c = a + b; ok &= c[0] == 9 && c[1] == 8;
-  c = b - a; ok &= c[0] == 5 && c[1] == 2;
+  c = a+b; ok &= c[0] == a[0]+b[0] && c[1] == a[1]+b[1];
+  c = a-b; ok &= c[0] == a[0]-b[0] && c[1] == a[1]-b[1];
+  c = a*b; ok &= c[0] == a[0]*b[0] && c[1] == a[1]*b[1];
+  c = a/b; ok &= c[0] == a[0]/b[0] && c[1] == a[1]/b[1];
 
   return ok;
 }
@@ -932,8 +934,10 @@ bool simdTemplateUnitTest4()
   a[0] =  2; a[1] =  3; a[2] =  5; a[3] =  7;
   b[0] = 11; b[1] = 13; b[2] = 17; b[3] = 19;
 
-  c = a + b; ok &= c[0] == 13 && c[1] == 16 && c[2] == 22 && c[3] == 26;
-  c = b - a; ok &= c[0] ==  9 && c[1] == 10 && c[2] == 12 && c[3] == 12;
+  c = a+b; ok &= c[0] == a[0]+b[0] && c[1] == a[1]+b[1] && c[2] == a[2]+b[2] && c[3] == a[3]+b[3];
+  c = a-b; ok &= c[0] == a[0]-b[0] && c[1] == a[1]-b[1] && c[2] == a[2]-b[2] && c[3] == a[3]-b[3];
+  c = a*b; ok &= c[0] == a[0]*b[0] && c[1] == a[1]*b[1] && c[2] == a[2]*b[2] && c[3] == a[3]*b[3];
+  c = a/b; ok &= c[0] == a[0]/b[0] && c[1] == a[1]/b[1] && c[2] == a[2]/b[2] && c[3] == a[3]/b[3];
 
   return ok;
 }
@@ -949,6 +953,7 @@ bool simdUnitTest()
   // fails on linux ("illegal instruction") ...seems that illegal instruction is our
   // rsAsserFalse debug-break
 
+  // Test the new implementation:
   ok &= simdTemplateUnitTest2<int>();
   ok &= simdTemplateUnitTest2<float>();
   ok &= simdTemplateUnitTest2<double>();
@@ -956,6 +961,8 @@ bool simdUnitTest()
   ok &= simdTemplateUnitTest4<int>();
   ok &= simdTemplateUnitTest4<float>();
   ok &= simdTemplateUnitTest4<double>();
+
+  // try also with 16 chars
 
 
   return ok;

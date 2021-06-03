@@ -2922,17 +2922,18 @@ class rsSimdVector
 
 public:
 
+  using V   = rsSimdVector<T, N>;
+  using CV  = const V;
   using V2  = rsSimdVector<T, N/2>;
   using CV2 = const V2;
 
   /** Access to the i-th element of the vector where i = 0,...,N-1. */
-  inline T& operator[](const int i)
-  {
-    //static_assert(i >= 0 && i < N);  // C++17 maybe define a macro that wraps it and evaluates
-                                       // to nothing in case of C++<17
-    return v[i];
-  }
+  inline T& operator[](const int i) { rsStaticAssert(i >= 0 && i < N); return v[i]; }
   // maybe implement a const version returning a const reference
+
+
+  inline const T& operator[](const int i) const { rsStaticAssert(i >= 0 && i < N); return v[i]; }
+
 
   static bool isSimdEmulated() { return true; }
   // explicit instantiations that actually do hardware simd, should return false
@@ -2957,50 +2958,10 @@ public:
   CV2& hi() const { return *((CV2*) &v[N/2]); }
 
 
-  rsSimdVector<T, N> operator+(const rsSimdVector<T, N>& w) const
-  {
-    rsSimdVector<T, N> u;           // result
-    u.lo() = this->lo() + w.lo();   // compute lower half of result
-    u.hi() = this->hi() + w.hi();   // compute higher half of result
-
-    /*
-    V2  *uL, *uH;                 // lower and upper half
-    CV2 *vL, *vH, *wL, *wH;
-
-    vL = (CV2*)   &v[0]; vH = (CV2*)   &v[N/2];
-    wL = (CV2*) &w.v[0]; wH = (CV2*) &w.v[N/2];
-    uL = ( V2*) &u.v[0]; uH = ( V2*) &u.v[N/2];
-
-    *uL = *vL + *wL;
-    *uH = *vH + *wH;
-    */
-
-    return u;
-  }
-
-  rsSimdVector<T, N> operator-(const rsSimdVector<T, N>& w) const
-  {
-    rsSimdVector<T, N> u;
-    u.lo() = this->lo() - w.lo();
-    u.hi() = this->hi() - w.hi();
-
-
-    /*
-    V2  *uL, *uH;
-    CV2 *vL, *vH, *wL, *wH;
-
-    vL = (CV2*)   &v[0]; vH = (CV2*)   &v[N/2];
-    wL = (CV2*) &w.v[0]; wH = (CV2*) &w.v[N/2];
-    uL = ( V2*) &u.v[0]; uH = ( V2*) &u.v[N/2];
-
-    *uL = *vL - *wL;
-    *uH = *vH - *wH;
-    */
-
-    return u;
-  }
-
-
+  V operator+(CV& w) const { V u; u.lo() = lo() + w.lo(); u.hi() = hi() + w.hi(); return u; }
+  V operator-(CV& w) const { V u; u.lo() = lo() - w.lo(); u.hi() = hi() - w.hi(); return u; }
+  V operator*(CV& w) const { V u; u.lo() = lo() * w.lo(); u.hi() = hi() * w.hi(); return u; }
+  V operator/(CV& w) const { V u; u.lo() = lo() / w.lo(); u.hi() = hi() / w.hi(); return u; }
 
 
 private:
@@ -3009,17 +2970,21 @@ private:
 
 };
 
+/** Base case of 1-element "vectors" which degenerate to scalars. */
+
 template<class T>
 class rsSimdVector<T, 1>
 {
 
 public:
 
-  rsSimdVector<T, 1> operator+(const rsSimdVector<T, 1>& w) const
-  { rsSimdVector<T, 1> u; u.v[0] = v[0] + w.v[0]; return u; }
+  using V   = rsSimdVector<T, 1>;
+  using CV  = const V;
 
-  rsSimdVector<T, 1> operator-(const rsSimdVector<T, 1>& w) const
-  { rsSimdVector<T, 1> u; u.v[0] = v[0] - w.v[0]; return u; }
+  V operator+(CV& w) const { V u; u.v[0] = v[0] + w.v[0]; return u; }
+  V operator-(CV& w) const { V u; u.v[0] = v[0] - w.v[0]; return u; }
+  V operator*(CV& w) const { V u; u.v[0] = v[0] * w.v[0]; return u; }
+  V operator/(CV& w) const { V u; u.v[0] = v[0] / w.v[0]; return u; }
 
 
 private:

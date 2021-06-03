@@ -59,6 +59,15 @@ inline void rsAssertFalse(const char *errorMessage = nullptr) { rsAssert(false, 
 
 // todo: have functions for logging and printing
 
+inline void rsStaticAssert(bool expression, const char* errorMessage = nullptr)
+{
+#ifdef RS_CPP17
+  static_assert(expression, errorMessage);
+#else
+  rsAssert(expression, errorMessage);
+#endif
+}
+
 
 /*
 Some Notes on hard to catch bugs
