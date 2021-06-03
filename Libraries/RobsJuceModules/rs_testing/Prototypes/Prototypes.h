@@ -2922,12 +2922,48 @@ class rsSimdVector
 
 public:
 
+  using V2  = rsSimdVector<T, N/2>;
+  using CV2 = const V2;
+
+  /** Access to the i-th element of the vector where i = 0,...,N-1. */
+  inline T& operator[](const int i)
+  {
+    //static_assert(i >= 0 && i < N);  // C++17 maybe define a macro that wraps it and evaluates
+                                       // to nothing in case of C++<17
+    return v[i];
+  }
+  // maybe implement a const version returning a const reference
+
+  static bool isSimdEmulated() { return true; }
+  // explicit instantiations that actually do hardware simd, should return false
+
+  //int getEmulationLevel() { }
+  // idea: the function should return an information, about at which level the actual hardware simd
+  // kicks in. 0:: full hardware implementation. 1: the half-vectors use hardware simd, 
+  
+  
+  // 2: quarter-vectors use hardware simd, etc.
+
+  /** Returns a reference to the lower half-vector. */
+  V2& lo() { return *((V2*) &v[0]);  }
+
+  /** Returns a reference to the higher half-vector. */
+  V2& hi() { return *((V2*) &v[N/2]); }
+
+  /** Returns a const reference to the lower half-vector. */
+  CV2& lo() const { return *((CV2*) &v[0]);   }
+
+  /** Returns a const reference to the higher half-vector. */
+  CV2& hi() const { return *((CV2*) &v[N/2]); }
+
+
   rsSimdVector<T, N> operator+(const rsSimdVector<T, N>& w) const
   {
-    using V2  = rsSimdVector<T, N/2>;
-    using CV2 = const V2;
+    rsSimdVector<T, N> u;           // result
+    u.lo() = this->lo() + w.lo();   // compute lower half of result
+    u.hi() = this->hi() + w.hi();   // compute higher half of result
 
-    rsSimdVector<T, N> u;         // result
+    /*
     V2  *uL, *uH;                 // lower and upper half
     CV2 *vL, *vH, *wL, *wH;
 
@@ -2937,25 +2973,35 @@ public:
 
     *uL = *vL + *wL;
     *uH = *vH + *wH;
+    */
 
     return u;
+  }
+
+  rsSimdVector<T, N> operator-(const rsSimdVector<T, N>& w) const
+  {
+    rsSimdVector<T, N> u;
+    u.lo() = this->lo() - w.lo();
+    u.hi() = this->hi() - w.hi();
 
 
-    //rsSimdVector<T, N> u;
-    //for(int i = 0; i < N; i++)
-    //  u[i] = v[i] + w.v[i];
-    //return u;
+    /*
+    V2  *uL, *uH;
+    CV2 *vL, *vH, *wL, *wH;
+
+    vL = (CV2*)   &v[0]; vH = (CV2*)   &v[N/2];
+    wL = (CV2*) &w.v[0]; wH = (CV2*) &w.v[N/2];
+    uL = ( V2*) &u.v[0]; uH = ( V2*) &u.v[N/2];
+
+    *uL = *vL - *wL;
+    *uH = *vH - *wH;
+    */
+
+    return u;
   }
 
 
-  /** Access to the i-th element of the vector where i = 0,...,N-1. */
-  inline T& operator[](const int i)
-  { 
-    //static_assert(i >= 0 && i < N);  // C++17 maybe define a macro that wraps it and evaluates
-                                       // to nothing in case of C++<17
-    return v[i]; 
-  }
-  // maybe implement a const version returning a const reference
+
 
 private:
 
@@ -2970,11 +3016,11 @@ class rsSimdVector<T, 1>
 public:
 
   rsSimdVector<T, 1> operator+(const rsSimdVector<T, 1>& w) const
-  {
-    rsSimdVector<T, 1> u;
-    u.v[0] = v[0] + w.v[0];
-    return u;
-  }
+  { rsSimdVector<T, 1> u; u.v[0] = v[0] + w.v[0]; return u; }
+
+  rsSimdVector<T, 1> operator-(const rsSimdVector<T, 1>& w) const
+  { rsSimdVector<T, 1> u; u.v[0] = v[0] - w.v[0]; return u; }
+
 
 private:
 
@@ -2983,6 +3029,8 @@ private:
 };
 
 
+/*
+// explicit specialization for 4 floats:
 template<>
 class rsSimdVector<float, 4>
 {
@@ -2990,6 +3038,7 @@ class rsSimdVector<float, 4>
 public:
 
 };
+*/
 
 
 /*

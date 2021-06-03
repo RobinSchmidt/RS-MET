@@ -908,21 +908,36 @@ bool complexFloat64x2UnitTest()
 }
 
 
-bool simdTemplateUnitTest()
+template<class T>
+bool simdTemplateUnitTest2()
 {
   bool ok = true;
 
-  using T = double;
+  rsSimdVector<T, 2> a, b, c;
+  a[0] = 2; a[1] = 3;
+  b[0] = 7; b[1] = 5;
 
-  rsSimdVector<T, 2> a2, b2, c2;
-  a2[0] = 2; a2[1] = 3;
-  b2[0] = 7; b2[1] = 5;
-
-  c2 = a2 + b2; ok &= c2[0] == 9 && c2[1] == 8;
-
+  c = a + b; ok &= c[0] == 9 && c[1] == 8;
+  c = b - a; ok &= c[0] == 5 && c[1] == 2;
 
   return ok;
 }
+
+template<class T>
+bool simdTemplateUnitTest4()
+{
+  bool ok = true;
+
+  rsSimdVector<T, 4> a, b, c;
+  a[0] =  2; a[1] =  3; a[2] =  5; a[3] =  7;
+  b[0] = 11; b[1] = 13; b[2] = 17; b[3] = 19;
+
+  c = a + b; ok &= c[0] == 13 && c[1] == 16 && c[2] == 22 && c[3] == 26;
+  c = b - a; ok &= c[0] ==  9 && c[1] == 10 && c[2] == 12 && c[3] == 12;
+
+  return ok;
+}
+
 
 bool simdUnitTest()
 {
@@ -934,7 +949,13 @@ bool simdUnitTest()
   // fails on linux ("illegal instruction") ...seems that illegal instruction is our
   // rsAsserFalse debug-break
 
-  ok &= simdTemplateUnitTest();
+  ok &= simdTemplateUnitTest2<int>();
+  ok &= simdTemplateUnitTest2<float>();
+  ok &= simdTemplateUnitTest2<double>();
+
+  ok &= simdTemplateUnitTest4<int>();
+  ok &= simdTemplateUnitTest4<float>();
+  ok &= simdTemplateUnitTest4<double>();
 
 
   return ok;
