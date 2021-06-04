@@ -145,24 +145,52 @@ public:
   // Constructors:
   V() {};
   V(__m128 x) : v(x) {}
+  V(float a) : v(_mm_set1_ps(a)) {}
+  V(int a) : v(_mm_set1_ps(float(a))) {}
+  V(double a) : v(_mm_set1_ps(float(a))) {}
+  V(float a, float b, float c, float d) : v(_mm_setr_ps(a, b, c, d)) {}
+  V(float* p) { v = _mm_setr_ps(p[0], p[1], p[2], p[3]); }
 
-  // Arithmetic operators
-  V operator+(CV& w) const { return V(_mm_add_ps(v, w.v)); }
-  V operator-(CV& w) const { return V(_mm_sub_ps(v, w.v)); }
-  V operator*(CV& w) const { return V(_mm_mul_ps(v, w.v)); }
-  V operator/(CV& w) const { return V(_mm_div_ps(v, w.v)); }
+
+  //// Arithmetic operators
+  //V operator+(CV& w) const { return V(_mm_add_ps(v, w.v)); }
+  //V operator-(CV& w) const { return V(_mm_sub_ps(v, w.v)); }
+  //V operator*(CV& w) const { return V(_mm_mul_ps(v, w.v)); }
+  //V operator/(CV& w) const { return V(_mm_div_ps(v, w.v)); }
+  // moved outside the class
 
   // Access operators
   V& operator=(const __m128& rhs) { v = rhs; return *this; }
   float& operator[](const int i) const { return asArray()[i]; }
 
 
+  __m128 v;
+
 private:
 
   float* asArray() const { return (float*) &v; }
-  __m128 v;
 
 };
+
+#define V  rsSimdVector<float, 4>
+#define CV const V
+
+// Arithmetic operators
+inline V operator+(CV& a, CV& b) { return V(_mm_add_ps(a.v, b.v)); }
+inline V operator-(CV& a, CV& b) { return V(_mm_sub_ps(a.v, b.v)); }
+inline V operator*(CV& a, CV& b) { return V(_mm_mul_ps(a.v, b.v)); }
+inline V operator/(CV& a, CV& b) { return V(_mm_div_ps(a.v, b.v)); }
+inline V operator+(const V& a) { return a; }          // unary plus
+inline V operator-(const V& a) { return V(0.f) - a; } // unary minus - can we do better?
+// We need to define them outside the class to enable automatic type conversion when the left 
+// argument is a scalar
+
+#undef V
+#undef CV
+
+
+
+
 #endif
 
 // ToDo: rsSimdVector<double, 2> (needs SSE2)
