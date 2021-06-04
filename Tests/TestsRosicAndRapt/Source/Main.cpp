@@ -60,8 +60,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();  // some tests there are still commented out
+  //ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRosic();  // some tests there are still commented out
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
@@ -73,9 +73,7 @@ int main(int argc, char* argv[])
 
   //callbackPerformance();
   //matrixAdressingTest();
-
-  //simdPerformance(1.0, rsFloat64x2(1.0));
-  //simdPerformance(1.f, rsFloat32x4(1.f));
+  simdPerformance();
   //sinCosPerformance();
   //fftPerformance();
 
@@ -115,7 +113,7 @@ int main(int argc, char* argv[])
 
   //numericOptimization();
 
-  polynomialSinc();
+  //polynomialSinc();
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();

@@ -117,7 +117,7 @@ void matrixAdressingTest()
 //}
 
 template<class TScalar, class TVector>
-void simdPerformance(TScalar scl, TVector vec)
+void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
 {
   static const int N = 5000;  // number of vector operations
 
@@ -137,6 +137,10 @@ void simdPerformance(TScalar scl, TVector vec)
   // Print the number of cycles per scalar addition - in the case of vector types, we expect to see
   // the number to be a factor 2 smaller than in the case of scalar types (because we get two
   // scalar additions for each vector addition):
+
+  using STR = std::string;
+
+  std::cout <<  STR("SIMD performance test for ") + dataTypeName + STR("\n");
 
   // scalar = scalar + scalar:
   counter.init();
@@ -258,6 +262,7 @@ void simdPerformance(TScalar scl, TVector vec)
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("tan ", k*cycles);
 
+  std::cout << "\n";
 
 
   //testPerformance(&rsAbs, "rsAbs ", N, -10.0);
@@ -276,8 +281,25 @@ void simdPerformance(TScalar scl, TVector vec)
 
   // rsFloat32x4:
 }
-template void simdPerformance(double, rsFloat64x2);
-template void simdPerformance(float, rsFloat32x4);
+
+// Test instantiations for old versions:
+template void simdPerformance(double, rsFloat64x2, const char*);
+template void simdPerformance(float, rsFloat32x4, const char*);
+
+// Test instantiations for new versions:
+//template void simdPerformance(float, rsSimdVector<float, 4>, const char*);
+// does not yet compile
+
+
+void simdPerformance()
+{
+  // Tests for old versions:
+  simdPerformance(1.0, rsFloat64x2(1.0), "rsFloat64x2");
+  simdPerformance(1.f, rsFloat32x4(1.f), "rsFloat32x4");
+
+  // Tests for new versions:
+  //simdPerformance(1.f, rsSimdVector<float, 4>(), "rsSimdVector<float, 4>");
+}
 
 
 void sinCosPerformance()

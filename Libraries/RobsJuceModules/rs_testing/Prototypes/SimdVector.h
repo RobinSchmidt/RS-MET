@@ -38,7 +38,7 @@ nothing about the availability of the instructions at runtime. Client code will 
 dispatches to code with less SIMD or none at all to make sure that the code runs on machines with 
 lesser instruction sets. */
 
-template<class T, int N>
+template<class T, int N> // T: underlying scalar type, N: vector size (power of 2, >= 2)
 class rsSimdVector
 {
 
@@ -60,9 +60,9 @@ public:
   // explicit instantiations that actually do hardware simd, should return false
 
   //int getEmulationLevel() { }
-  // idea: the function should return an information, about at which level the actual hardware simd
-  // kicks in. 0:: full hardware implementation. 1: the half-vectors use hardware simd, 
-  // 2: quarter-vectors use hardware simd, etc.
+  // idea: the function should return an information, at which level the actual hardware simd
+  // kicks in. 0: full hardware implementation. 1: the half-vectors use hardware simd, 
+  // 2: quarter-vectors use hardware simd, etc., i'm not yet sure, how to implement this
 
 
   V operator+(CV& w) const { V u; u.lo() = lo() + w.lo(); u.hi() = hi() + w.hi(); return u; }
@@ -86,7 +86,7 @@ private:
   CV2& hi() const { return *((CV2*) &v[N/2]); }
 
 
-  T v[N];
+  T v[N]; // maybe we should specify an alignment?
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -166,3 +166,25 @@ private:
 #endif
 
 // ToDo: rsSimdVector<double, 2> (needs SSE2)
+
+// copied form Float64x2 in rosic:
+// for more inspiration, see:
+// https://msdn.microsoft.com/de-de/library/tyy88x2a(v=vs.90).aspx
+// https://msdn.microsoft.com/de-de/library/9b07190d(v=vs.90).aspx
+// http://johanmabille.github.io/blog/2014/10/10/writing-c-plus-plus-wrappers-for-simd-intrinsics-3/
+// https://github.com/p12tic/libsimdpp  SIMD library for x86, ARM and more
+// https://github.com/VcDevel/Vc  ditto
+// https://github.com/agenium-scale/nsimd
+
+//
+// https://github.com/simd-everywhere/simde
+
+// for evaluating elementary math functions without resorting to the scalar versions, see:
+// http://ito-lab.naist.jp/~n-sibata/pdfs/isc10simd.pdf
+
+// reference:
+// http://www.info.univ-angers.fr/pub/richer/ens/l3info/ao/intel_intrinsics.pdf
+
+// ToDo: implement a fallback version to be used, if SSE2 is not available and also a special ARM
+// version (needed for M1 processor, i guess):
+// https://docs.microsoft.com/en-us/cpp/intrinsics/arm-intrinsics?view=msvc-160
