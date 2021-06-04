@@ -89,6 +89,40 @@ private:
   T v[N]; // maybe we should specify an alignment?
 };
 
+// Elementary math functions:
+#define V rsSimdVector<T, N>
+#define TV template<class T, int N> V
+
+// Unary functions:
+TV rsAbs( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsAbs( x[i]); return y; }
+TV rsCos( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsCos( x[i]); return y; }
+TV rsExp( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsExp( x[i]); return y; }
+TV rsLog( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsLog( x[i]); return y; }
+TV rsSin( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSin( x[i]); return y; }
+TV rsSign(V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSign(x[i]); return y; }
+TV rsSqrt(V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSqrt(x[i]); return y; }
+TV rsTan( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsTan( x[i]); return y; }
+// floor, ceil, sign, round, ...
+// maybe write a macros RS_VECTORIZE_1, so we just need to write RS_VECTORIZE_1(rsSin) etc. to 
+// reduce boilerplate. the 1 is for "unary"
+
+// Binary functions:
+// min, max, pow, atan2, fmod, ...
+
+// Ternary functions:
+TV rsClip(V x, V a, V b) { V y; for(int i=0; i<N; i++) y[i]=rsClip(x[i], a[i], b[i]); return y; }
+
+#undef V
+#undef TV
+
+//template<class T, int N>
+//rsSimdVector<T, N> rsSin(rsSimdVector<T, N> x)
+//{
+//  rsSimdVector<T, N> y;
+//  for(int i = 0; i < N; i++)
+//    y[i] = rsSin(x[i]);
+//}
+
 //-------------------------------------------------------------------------------------------------
 
 template<class T, int N>
@@ -131,14 +165,17 @@ private:
 /** Explicit specialization for a vector of 4 floats. */
 
 #ifdef RS_USE_SSE
+#define V  rsSimdVector<float, 4>
+#define CV const V
+
 template<>
 class rsSimdVector<float, 4>
 {
 
 public:
 
-  using V  = rsSimdVector<float, 4>;
-  using CV = const V;
+  //using V  = rsSimdVector<float, 4>;
+  //using CV = const V;
 
   static bool isSimdEmulated() { return false; }
 
@@ -166,14 +203,11 @@ public:
 
   __m128 v;
 
-private:
+//private:
 
   float* asArray() const { return (float*) &v; }
 
 };
-
-#define V  rsSimdVector<float, 4>
-#define CV const V
 
 // Arithmetic operators
 inline V operator+(CV& a, CV& b) { return V(_mm_add_ps(a.v, b.v)); }
@@ -187,10 +221,6 @@ inline V operator-(const V& a) { return V(0.f) - a; } // unary minus - can we do
 
 #undef V
 #undef CV
-
-
-
-
 #endif
 
 // ToDo: rsSimdVector<double, 2> (needs SSE2)

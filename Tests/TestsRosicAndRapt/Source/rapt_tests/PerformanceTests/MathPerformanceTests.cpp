@@ -218,7 +218,8 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
   TVector x = 10;
 
   // clip:
-  counter.init(); for(n = 0; n < N; n++) x = rsClip(x, TScalar(-1), TScalar(1));
+  //counter.init(); for(n = 0; n < N; n++) x = rsClip(x, TScalar(-1), TScalar(1));
+  counter.init(); for(n = 0; n < N; n++) x = rsClip(x, TVector(-1), TVector(1));
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("clip", k*cycles);
 
@@ -287,7 +288,7 @@ template void simdPerformance(double, rsFloat64x2, const char*);
 template void simdPerformance(float, rsFloat32x4, const char*);
 
 // Test instantiations for new versions:
-//template void simdPerformance(float, rsSimdVector<float, 4>, const char*);
+template void simdPerformance(float, rsSimdVector<float, 4>, const char*);
 // does not yet compile, due to elementary math functions not yet defined
 
 
