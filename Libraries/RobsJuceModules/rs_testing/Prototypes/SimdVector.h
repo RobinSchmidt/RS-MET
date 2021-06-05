@@ -78,17 +78,22 @@ public:
   V operator/(CV& w) const { V u; u.lo() = lo() / w.lo(); u.hi() = hi() / w.hi(); return u; }
   // have been moved outside the class to allow scalar left operands
 
+  //V operator+(T s) const { V u; u.lo() = lo() + s; u.hi() = hi() + s; return u; }
+  //V operator-(T s) const { V u; u.lo() = lo() - s; u.hi() = hi() - s; return u; }
+  //V operator*(T s) const { V u; u.lo() = lo() * s; u.hi() = hi() * s; return u; }
+  //V operator/(T s) const { V u; u.lo() = lo() / s; u.hi() = hi() / s; return u; }
+
 
 //private:
 
   /** Returns a reference to the lower half-vector. */
-  V2& lo() { return *((V2*) &v[0]);  }
+  V2& lo() { return *((V2*) &v[0]); }
 
   /** Returns a reference to the higher half-vector. */
   V2& hi() { return *((V2*) &v[N/2]); }
 
   /** Returns a const reference to the lower half-vector. */
-  CV2& lo() const { return *((CV2*) &v[0]);   }
+  CV2& lo() const { return *((CV2*) &v[0]); }
 
   /** Returns a const reference to the higher half-vector. */
   CV2& hi() const { return *((CV2*) &v[N/2]); }
@@ -181,6 +186,11 @@ public:
   V operator*(CV& w) const { V u; u.v[0] = v[0] * w.v[0]; return u; }
   V operator/(CV& w) const { V u; u.v[0] = v[0] / w.v[0]; return u; }
 
+  V operator+(T s) const { V u; u.v[0] = v[0] + s; return u; }
+  V operator-(T s) const { V u; u.v[0] = v[0] - s; return u; }
+  V operator*(T s) const { V u; u.v[0] = v[0] * s; return u; }
+  V operator/(T s) const { V u; u.v[0] = v[0] / s; return u; }
+
 
 private:
 
@@ -237,14 +247,22 @@ public:
 };
 
 // Arithmetic operators:
-inline V operator+(CV& a, CV& b) { return V(_mm_add_ps(a.v, b.v)); }
-inline V operator-(CV& a, CV& b) { return V(_mm_sub_ps(a.v, b.v)); }
-inline V operator*(CV& a, CV& b) { return V(_mm_mul_ps(a.v, b.v)); }
-inline V operator/(CV& a, CV& b) { return V(_mm_div_ps(a.v, b.v)); }
-inline V operator+(const V& a) { return a; }          // unary plus
-inline V operator-(const V& a) { return V(0.f) - a; } // unary minus - can we do better?
+//inline V operator+(CV& a, CV& b) 
+//{ 
+//  return V(_mm_add_ps(a.v, b.v)); 
+//}
+inline V operator+(CV a, CV b) { return V(_mm_add_ps(a.v, b.v)); }
+inline V operator-(CV a, CV b) { return V(_mm_sub_ps(a.v, b.v)); }
+inline V operator*(CV a, CV b) { return V(_mm_mul_ps(a.v, b.v)); }
+inline V operator/(CV a, CV b) { return V(_mm_div_ps(a.v, b.v)); }
+inline V operator+(const V a) { return a; }          // unary plus
+inline V operator-(const V a) { return V(0.f) - a; } // unary minus - can we do better?
 // We need to define them outside the class to enable automatic type conversion when the left 
 // argument is a scalar
+// Passing arguments by const reference has given (very weird!) access violations in the unit test.
+// -> check out other simd libraries, how they pass arguments and check, if passing by value incurs
+// a performance hit (done - doesn't seem to make a difference), check all other operators, maybe 
+// switch to pass-by-value ther, too
 
 #undef V
 #undef CV

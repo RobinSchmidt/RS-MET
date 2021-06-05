@@ -907,61 +907,36 @@ bool complexFloat64x2UnitTest()
   return r;
 }
 
-/*
-// obsolete:
-template<class T>
-bool simdTemplateUnitTest2()
-{
-  bool ok = true;
-
-  rsSimdVector<T, 2> a, b, c;
-  a[0] = 2; a[1] = 3;
-  b[0] = 7; b[1] = 5;
-
-  c = a+b; ok &= c[0] == a[0]+b[0] && c[1] == a[1]+b[1];
-  c = a-b; ok &= c[0] == a[0]-b[0] && c[1] == a[1]-b[1];
-  c = a*b; ok &= c[0] == a[0]*b[0] && c[1] == a[1]*b[1];
-  c = a/b; ok &= c[0] == a[0]/b[0] && c[1] == a[1]/b[1];
-
-  return ok;
-}
-
-template<class T>
-bool simdTemplateUnitTest4()
-{
-  bool ok = true;
-
-  rsSimdVector<T, 4> a, b, c;
-  a[0] =  2; a[1] =  3; a[2] =  5; a[3] =  7;
-  b[0] = 11; b[1] = 13; b[2] = 17; b[3] = 19;
-
-  c = a+b; ok &= c[0] == a[0]+b[0] && c[1] == a[1]+b[1] && c[2] == a[2]+b[2] && c[3] == a[3]+b[3];
-  c = a-b; ok &= c[0] == a[0]-b[0] && c[1] == a[1]-b[1] && c[2] == a[2]-b[2] && c[3] == a[3]-b[3];
-  c = a*b; ok &= c[0] == a[0]*b[0] && c[1] == a[1]*b[1] && c[2] == a[2]*b[2] && c[3] == a[3]*b[3];
-  c = a/b; ok &= c[0] == a[0]/b[0] && c[1] == a[1]/b[1] && c[2] == a[2]/b[2] && c[3] == a[3]/b[3];
-
-  return ok;
-}
-*/
-
 template<class T, int N>
 bool simdTemplateUnitTest()
 {
   bool ok = true;
 
+  // Some variables to work with:
+  rsSimdVector<T, N> a, b, c;
   int i;
 
-  rsSimdVector<T, N> a, b, c;
-  for(i=0; i<N; i++) { a[i] = T(2*i+1); b[i] = T(3)*a[i]; }
-
+  // Test arithmetic operators for vector (op) vector:
+  for(i=0; i<N; i++) { a[i] = T(2*i+1); b[i] = T(3)*a[i]; } // init operands
   c = a+b; for(i=0; i<N; i++) { ok &= c[i] == a[i]+b[i]; }
   c = a-b; for(i=0; i<N; i++) { ok &= c[i] == a[i]-b[i]; }
   c = a*b; for(i=0; i<N; i++) { ok &= c[i] == a[i]*b[i]; }
   c = b/a; for(i=0; i<N; i++) { ok &= c[i] == b[i]/a[i]; }
 
+  // Test arithmetic operators for vector (op) scalar:
+  T s = T(5);  // some scalar
+  bool t;
+  c = a+s; for(i=0; i<N; i++) { ok &= c[i] == a[i]+s; }
+  c = a-s; for(i=0; i<N; i++) { ok &= c[i] == a[i]-s; }
+  c = a*s; for(i=0; i<N; i++) { ok &= c[i] == a[i]*s; }
+  c = a/s; for(i=0; i<N; i++) { ok &= c[i] == a[i]/s; }
+
+  // Test arithmetic operators for scalar (op) vector:
+
+  //c = s+a;  // doesn't compile
+
   return ok;
 }
-
 
 bool simdUnitTest()
 {
@@ -973,27 +948,21 @@ bool simdUnitTest()
   // fails on linux ("illegal instruction") ...seems that illegal instruction is our
   // rsAsserFalse debug-break
 
-  // Test the new implementation:
+  //ok &= simdTemplateUnitTest<float, 8>();  // for debug
 
-  // obsolete:
-  //ok &= simdTemplateUnitTest2<int>();
-  //ok &= simdTemplateUnitTest2<float>();
-  //ok &= simdTemplateUnitTest2<double>();
-  //ok &= simdTemplateUnitTest4<int>();
-  //ok &= simdTemplateUnitTest4<float>();
-  //ok &= simdTemplateUnitTest4<double>();
-
-  ok &= simdTemplateUnitTest<int, 2>();
-  ok &= simdTemplateUnitTest<int, 4>();
-  ok &= simdTemplateUnitTest<int, 8>();
-
-  ok &= simdTemplateUnitTest<float, 2>();
-  ok &= simdTemplateUnitTest<float, 4>();
-  ok &= simdTemplateUnitTest<float, 8>();
-
-  ok &= simdTemplateUnitTest<double, 2>();
-  ok &= simdTemplateUnitTest<double, 4>();
-  ok &= simdTemplateUnitTest<double, 8>();
+  // Test the new implementation:            // has explicit specialization
+  ok &= simdTemplateUnitTest<int,     2>();  // no
+  ok &= simdTemplateUnitTest<int,     4>();  // no
+  ok &= simdTemplateUnitTest<int,     8>();  // no
+  ok &= simdTemplateUnitTest<int,    16>();  // no
+  ok &= simdTemplateUnitTest<float,   2>();  // no
+  ok &= simdTemplateUnitTest<float,   4>();  // yes (but incomplete)
+  ok &= simdTemplateUnitTest<float,   8>();  // no
+  ok &= simdTemplateUnitTest<float,  16>();  // no
+  ok &= simdTemplateUnitTest<double,  2>();  // no
+  ok &= simdTemplateUnitTest<double,  4>();  // no
+  ok &= simdTemplateUnitTest<double,  8>();  // no
+  ok &= simdTemplateUnitTest<double, 16>();  // no
 
   // try also with 16 chars
 
