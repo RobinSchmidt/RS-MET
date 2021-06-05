@@ -84,8 +84,6 @@ public:
   //V operator/(T s) const { V u; u.lo() = lo() / s; u.hi() = hi() / s; return u; }
 
 
-//private:
-
   /** Returns a reference to the lower half-vector. */
   V2& lo() { return *((V2*) &v[0]); }
 
@@ -108,18 +106,18 @@ public:
 #define TIV template<class T, int N> inline V
 
 // Arithmetic operators:
-//TIV operator+(CV& a, CV& b) { V c; c.lo()=a.lo()+b.lo(); c.hi()=a.hi()+b.hi(); return c; }
-//TIV operator-(CV& a, CV& b) { V c; c.lo()=a.lo()-b.lo(); c.hi()=a.hi()-b.hi(); return c; }
-//TIV operator*(CV& a, CV& b) { V c; c.lo()=a.lo()*b.lo(); c.hi()=a.hi()*b.hi(); return c; }
-//TIV operator/(CV& a, CV& b) { V c; c.lo()=a.lo()/b.lo(); c.hi()=a.hi()/b.hi(); return c; }
+//TIV operator+(CV a, CV b) { V c; c.lo()=a.lo()+b.lo(); c.hi()=a.hi()+b.hi(); return c; }
+//TIV operator-(CV a, CV b) { V c; c.lo()=a.lo()-b.lo(); c.hi()=a.hi()-b.hi(); return c; }
+//TIV operator*(CV a, CV b) { V c; c.lo()=a.lo()*b.lo(); c.hi()=a.hi()*b.hi(); return c; }
+//TIV operator/(CV a, CV b) { V c; c.lo()=a.lo()/b.lo(); c.hi()=a.hi()/b.hi(); return c; }
 
-//TIV operator+(const T& a, CV& b) { V c; c.lo()=a+b.lo(); c.hi()=a+b.hi(); return c; }
-//TIV operator-(const T& a, CV& b) { V c; c.lo()=a-b.lo(); c.hi()=a-b.hi(); return c; }
-//TIV operator*(const T& a, CV& b) { V c; c.lo()=a*b.lo(); c.hi()=a*b.hi(); return c; }
-//TIV operator/(const T& a, CV& b) { V c; c.lo()=a/b.lo(); c.hi()=a/b.hi(); return c; }
-//
-//TIV operator+(const V& a) { return a; }        // unary plus
-//TIV operator-(const V& a) { return V(0) - a; } // unary minus - can we do better?
+TIV operator+(const T& a, CV& b) { V c; c.lo()=a+b.lo(); c.hi()=a+b.hi(); return c; }
+TIV operator-(const T& a, CV& b) { V c; c.lo()=a-b.lo(); c.hi()=a-b.hi(); return c; }
+TIV operator*(const T& a, CV& b) { V c; c.lo()=a*b.lo(); c.hi()=a*b.hi(); return c; }
+TIV operator/(const T& a, CV& b) { V c; c.lo()=a/b.lo(); c.hi()=a/b.hi(); return c; }
+TIV operator+(const V& a) { return a; }        // unary plus
+TIV operator-(const V& a) { return V(0) - a; } // unary minus - can we do better?
+// ToDo: try passing arguments by value, check, if this incurs a performance hit
 
 
 // Unary functions:
@@ -172,31 +170,69 @@ a particular combination of type and vector-size can be found, neither for its h
 quarter-vectors, etc., this is the fallback case which the code will eventually compile to, 
 implementing the SIMD as full software emulation operating on scalar values.  */
 
+#define V  rsSimdVector<T, 1>
+#define CV const V
+#define TIV template<class T> inline V
+
 template<class T>
 class rsSimdVector<T, 1>
 {
 
 public:
 
-  using V  = rsSimdVector<T, 1>;
-  using CV = const V;
-
-  V operator+(CV& w) const { V u; u.v[0] = v[0] + w.v[0]; return u; }
-  V operator-(CV& w) const { V u; u.v[0] = v[0] - w.v[0]; return u; }
-  V operator*(CV& w) const { V u; u.v[0] = v[0] * w.v[0]; return u; }
-  V operator/(CV& w) const { V u; u.v[0] = v[0] / w.v[0]; return u; }
-
-  V operator+(T s) const { V u; u.v[0] = v[0] + s; return u; }
-  V operator-(T s) const { V u; u.v[0] = v[0] - s; return u; }
-  V operator*(T s) const { V u; u.v[0] = v[0] * s; return u; }
-  V operator/(T s) const { V u; u.v[0] = v[0] / s; return u; }
+  V() {}
+  V(T a) { v[0] = a; }
 
 
-private:
+  inline T& operator[](const int i) { rsStaticAssert(i == 0); return v[0]; }
+  inline const T& operator[](const int i) const { rsStaticAssert(i == 0); return v[0]; }
+
+  // new:
+  inline V operator+(CV& b) const { return V(v[0]+b.v[0]); }
+  inline V operator-(CV& b) const { return V(v[0]-b.v[0]); }
+  inline V operator*(CV& b) const { return V(v[0]*b.v[0]); }
+  inline V operator/(CV& b) const { return V(v[0]/b.v[0]); }
+
+  // old:
+  //inline V operator+(CV& w) const { V u; u.v[0] = v[0] + w.v[0]; return u; }
+  //inline V operator-(CV& w) const { V u; u.v[0] = v[0] - w.v[0]; return u; }
+  //inline V operator*(CV& w) const { V u; u.v[0] = v[0] * w.v[0]; return u; }
+  //inline V operator/(CV& w) const { V u; u.v[0] = v[0] / w.v[0]; return u; }
+
+  // new:
+  inline V operator+(T s) const { return V(v[0] + s); }
+  inline V operator-(T s) const { return V(v[0] - s); }
+  inline V operator*(T s) const { return V(v[0] * s); }
+  inline V operator/(T s) const { return V(v[0] / s); }
+
+  // old:
+  //inline V operator+(T s) const { V u; u.v[0] = v[0] + s; return u; }
+  //inline V operator-(T s) const { V u; u.v[0] = v[0] - s; return u; }
+  //inline V operator*(T s) const { V u; u.v[0] = v[0] * s; return u; }
+  //inline V operator/(T s) const { V u; u.v[0] = v[0] / s; return u; }
 
   T v[1];
 
 };
+
+// new:
+TIV operator+(T s, CV b) { return V(s + b.v[0]); }
+TIV operator-(T s, CV b) { return V(s - b.v[0]); }
+TIV operator*(T s, CV b) { return V(s * b.v[0]); }
+TIV operator/(T s, CV b) { return V(s / b.v[0]); }
+
+// old:
+//TIV operator+(T s, CV b) { V c; c.v[0] = s + b.v[0]; return c; }
+//TIV operator-(T s, CV b) { V c; c.v[0] = s - b.v[0]; return c; }
+//TIV operator*(T s, CV b) { V c; c.v[0] = s * b.v[0]; return c; }
+//TIV operator/(T s, CV b) { V c; c.v[0] = s / b.v[0]; return c; }
+
+// operations involving at least one degenerate "vector" incur a significant overhead over the raw
+// scalar operations (a factor 3 to 6 in cpu cycles with rsSimdVector<float, 1>)
+
+#undef V
+#undef CV
+#undef TIV
 
 //-------------------------------------------------------------------------------------------------
 /** Explicit specialization for a vector of 4 floats. */
@@ -247,10 +283,10 @@ public:
 };
 
 // Arithmetic operators:
-//inline V operator+(CV& a, CV& b) 
-//{ 
-//  return V(_mm_add_ps(a.v, b.v)); 
-//}
+inline V operator+(float a, CV b) { return V(_mm_add_ps(_mm_set1_ps(a), b.v)); }
+inline V operator-(float a, CV b) { return V(_mm_sub_ps(_mm_set1_ps(a), b.v)); }
+inline V operator*(float a, CV b) { return V(_mm_mul_ps(_mm_set1_ps(a), b.v)); }
+inline V operator/(float a, CV b) { return V(_mm_div_ps(_mm_set1_ps(a), b.v)); }
 inline V operator+(CV a, CV b) { return V(_mm_add_ps(a.v, b.v)); }
 inline V operator-(CV a, CV b) { return V(_mm_sub_ps(a.v, b.v)); }
 inline V operator*(CV a, CV b) { return V(_mm_mul_ps(a.v, b.v)); }
@@ -291,3 +327,13 @@ inline V operator-(const V a) { return V(0.f) - a; } // unary minus - can we do 
 // ToDo: implement a fallback version to be used, if SSE2 is not available and also a special ARM
 // version (needed for M1 processor, i guess):
 // https://docs.microsoft.com/en-us/cpp/intrinsics/arm-intrinsics?view=msvc-160
+
+// Maybe turn this into a SIMD library, split it into several files:
+// -the base implementation with the fallback to scalar code
+// -one file for each explicit specializations, named e.g. Float32x4_SSE, Float32x4_NEON, 
+//  Float32x8_AVX, etc.
+// -maybe create a template for new specializations that contain dummy instructions like:
+//  _simd_add, _simd_set, etc. and a script that reads in the template file and a second file that
+//  contains translations for the dummy instructions for a particular instruction set. _simd_add
+//  would be translated to _mm_add_ps, when the SSE translation file is used, etc. - it's a sort of
+//  code generator

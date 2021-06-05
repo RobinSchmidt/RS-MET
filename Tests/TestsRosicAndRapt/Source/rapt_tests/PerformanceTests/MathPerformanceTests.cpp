@@ -131,7 +131,7 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
   ::ProcessorCycleCounter counter;
   //PerformanceCounter counter;
   double cycles;
-  double k = 1.0/(2*N);
+  double k = 1.0/N;
   int n;
 
   // Oh: this seems to be a remnant from when this function was for testing rsFloat64x2 only - now 
@@ -148,11 +148,11 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
 
   // scalar = scalar + scalar:
   counter.init();
-  for(n = 0; n < 2*N; n++)
+  for(n = 0; n < N; n++)
     accuS = accuS + oneS;
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(accuS);
-  printPerformanceTestResult("scl1 = scl1 + scl2", k*cycles);
+  printPerformanceTestResult("s1 = s1 + s2", k*cycles);
   // write this shorter as s1 = s1 + s2
 
   // vector = vector + vector:
@@ -161,7 +161,7 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
     accuV = accuV + oneV;
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&accuV);
-  printPerformanceTestResult("vec1 = vec1 + vec2", k*cycles);
+  printPerformanceTestResult("v1 = v1 + v2", k*cycles);
 
   // vector = vector + scalar:
   counter.init();
@@ -169,7 +169,7 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
     accuV = accuV + oneS;
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&accuV);
-  printPerformanceTestResult("vec1 = vec1 + scl2", k*cycles);
+  printPerformanceTestResult("v1 = v1 + s2", k*cycles);
 
   // vector = scalar + vector:
   counter.init();
@@ -177,7 +177,7 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
     accuV = oneS + accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&accuV);
-  printPerformanceTestResult("vec1 = scl1 + vec1", k*cycles);
+  printPerformanceTestResult("v1 = s1 + v1", k*cycles);
 
   // vector = scalar - vector:
   counter.init();
@@ -185,7 +185,7 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
     accuV = oneS - accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&accuV);
-  printPerformanceTestResult("vec1 = scl1 - vec1", k*cycles);
+  printPerformanceTestResult("v1 = s1 - v1", k*cycles);
 
   // vector = vector - vector:
   counter.init();
@@ -193,7 +193,7 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
     accuV = oneV - accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&accuV);
-  printPerformanceTestResult("vec1 = vec2 - vec1", k*cycles);
+  printPerformanceTestResult("v1 = v2 - v1", k*cycles);
 
   // vector = vector * vector:
   counter.init();
@@ -201,7 +201,7 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
     accuV = oneV * accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&accuV);
-  printPerformanceTestResult("vec1 = vec2 * vec1", k*cycles);
+  printPerformanceTestResult("v1 = v2 * v1", k*cycles);
 
   // vector = vector / vector:
   counter.init();
@@ -209,7 +209,7 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
     accuV = oneV / accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&accuV);
-  printPerformanceTestResult("vec1 = vec2 / vec1", k*cycles);
+  printPerformanceTestResult("v1 = v2 / v1", k*cycles);
 
   // unary minus:
   counter.init();
@@ -217,7 +217,7 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
     accuV = -accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&accuV);
-  printPerformanceTestResult("vec1 = -vec1      ", k*cycles);
+  printPerformanceTestResult("v1 = -v1      ", k*cycles);
 
 
   TVector x = 10;
@@ -304,14 +304,19 @@ void simdPerformance()
   simdPerformance(1.f, rsFloat32x4(1.f), "rsFloat32x4");
 
   // Tests for new versions:
-  simdPerformance(1.f, rsSimdVector<float,  4>(1.f), "rsSimdVector<float,  4>");
+  simdPerformance(1.f, rsSimdVector<float,  1>(1.f), "rsSimdVector<float, 1>");
+  simdPerformance(1.f, rsSimdVector<float,  2>(1.f), "rsSimdVector<float, 2>");
+  simdPerformance(1.f, rsSimdVector<float,  4>(1.f), "rsSimdVector<float, 4>");
+  simdPerformance(1.f, rsSimdVector<float,  8>(1.f), "rsSimdVector<float, 8>");
+  simdPerformance(1.f, rsSimdVector<float, 16>(1.f), "rsSimdVector<float, 16>");
+
+  // <float, 2> arithmetic operators are slow
 
 
-  //simdPerformance(1.f, rsSimdVector<float,  8>(1.f), "rsSimdVector<float,  8>");
-  // this still leads to compile-errors
-
-
-  //simdPerformance(1.f, rsSimdVector<float, 16>(1.f), "rsSimdVector<float, 16>");
+  //simdPerformance(1.f, rsSimdVector<double,  2>(1.f), "rsSimdVector<double, 2>");
+  //simdPerformance(1.f, rsSimdVector<double,  4>(1.f), "rsSimdVector<double, 4>");
+  //simdPerformance(1.f, rsSimdVector<double,  8>(1.f), "rsSimdVector<double, 8>");
+  //simdPerformance(1.f, rsSimdVector<double, 16>(1.f), "rsSimdVector<double, 16>");
 
 }
 

@@ -925,15 +925,13 @@ bool simdTemplateUnitTest()
 
   // Test arithmetic operators for vector (op) scalar:
   T s = T(5);  // some scalar
-  bool t;
   c = a+s; for(i=0; i<N; i++) { ok &= c[i] == a[i]+s; }
   c = a-s; for(i=0; i<N; i++) { ok &= c[i] == a[i]-s; }
   c = a*s; for(i=0; i<N; i++) { ok &= c[i] == a[i]*s; }
   c = a/s; for(i=0; i<N; i++) { ok &= c[i] == a[i]/s; }
 
   // Test arithmetic operators for scalar (op) vector:
-
-  //c = s+a;  // doesn't compile
+  c = s+a;  // doesn't compile
 
   return ok;
 }
@@ -951,14 +949,17 @@ bool simdUnitTest()
   //ok &= simdTemplateUnitTest<float, 8>();  // for debug
 
   // Test the new implementation:            // has explicit specialization
+  ok &= simdTemplateUnitTest<int,     1>();  // no
   ok &= simdTemplateUnitTest<int,     2>();  // no
   ok &= simdTemplateUnitTest<int,     4>();  // no
   ok &= simdTemplateUnitTest<int,     8>();  // no
   ok &= simdTemplateUnitTest<int,    16>();  // no
+  ok &= simdTemplateUnitTest<float,   1>();  // no
   ok &= simdTemplateUnitTest<float,   2>();  // no
   ok &= simdTemplateUnitTest<float,   4>();  // yes (but incomplete)
   ok &= simdTemplateUnitTest<float,   8>();  // no
   ok &= simdTemplateUnitTest<float,  16>();  // no
+  ok &= simdTemplateUnitTest<double,  1>();  // no
   ok &= simdTemplateUnitTest<double,  2>();  // no
   ok &= simdTemplateUnitTest<double,  4>();  // no
   ok &= simdTemplateUnitTest<double,  8>();  // no
