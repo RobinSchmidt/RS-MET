@@ -134,9 +134,13 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
   double k = 1.0/(2*N);
   int n;
 
+  // Oh: this seems to be a remnant from when this function was for testing rsFloat64x2 only - now 
+  // we have generalized it to deal with any sort of simd-vector - we should get rid of that 2*N
+  // business and just use N:
   // Print the number of cycles per scalar addition - in the case of vector types, we expect to see
   // the number to be a factor 2 smaller than in the case of scalar types (because we get two
   // scalar additions for each vector addition):
+ 
 
   using STR = std::string;
 
@@ -149,6 +153,7 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(accuS);
   printPerformanceTestResult("scl1 = scl1 + scl2", k*cycles);
+  // write this shorter as s1 = s1 + s2
 
   // vector = vector + vector:
   counter.init();
@@ -299,7 +304,15 @@ void simdPerformance()
   simdPerformance(1.f, rsFloat32x4(1.f), "rsFloat32x4");
 
   // Tests for new versions:
-  //simdPerformance(1.f, rsSimdVector<float, 4>(), "rsSimdVector<float, 4>");
+  simdPerformance(1.f, rsSimdVector<float,  4>(1.f), "rsSimdVector<float,  4>");
+
+
+  //simdPerformance(1.f, rsSimdVector<float,  8>(1.f), "rsSimdVector<float,  8>");
+  // this still leads to compile-errors
+
+
+  //simdPerformance(1.f, rsSimdVector<float, 16>(1.f), "rsSimdVector<float, 16>");
+
 }
 
 

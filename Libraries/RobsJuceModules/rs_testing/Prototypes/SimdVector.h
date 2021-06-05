@@ -49,6 +49,13 @@ public:
   using V2  = rsSimdVector<T, N/2>;
   using CV2 = const V2;
 
+
+  V() {}
+  V(T a) { for(int i = 0; i < N; i++) v[i] = a; }
+
+  //V(int a) { for(int i = 0; i < N; i++) v[i] = (T)a; }
+
+
   /** Write Access to the i-th element of the vector where i = 0,...,N-1. */
   inline T& operator[](const int i) { rsStaticAssert(i >= 0 && i < N); return v[i]; }
 
@@ -69,9 +76,10 @@ public:
   V operator-(CV& w) const { V u; u.lo() = lo() - w.lo(); u.hi() = hi() - w.hi(); return u; }
   V operator*(CV& w) const { V u; u.lo() = lo() * w.lo(); u.hi() = hi() * w.hi(); return u; }
   V operator/(CV& w) const { V u; u.lo() = lo() / w.lo(); u.hi() = hi() / w.hi(); return u; }
+  // have been moved outside the class to allow scalar left operands
 
 
-private:
+//private:
 
   /** Returns a reference to the lower half-vector. */
   V2& lo() { return *((V2*) &v[0]);  }
@@ -89,31 +97,50 @@ private:
   T v[N]; // maybe we should specify an alignment?
 };
 
-// Elementary math functions:
+// some macros to shorten the boilerplate:
 #define V rsSimdVector<T, N>
-#define TV template<class T, int N> V
+#define CV const V
+#define TIV template<class T, int N> inline V
+
+// Arithmetic operators:
+//TIV operator+(CV& a, CV& b) { V c; c.lo()=a.lo()+b.lo(); c.hi()=a.hi()+b.hi(); return c; }
+//TIV operator-(CV& a, CV& b) { V c; c.lo()=a.lo()-b.lo(); c.hi()=a.hi()-b.hi(); return c; }
+//TIV operator*(CV& a, CV& b) { V c; c.lo()=a.lo()*b.lo(); c.hi()=a.hi()*b.hi(); return c; }
+//TIV operator/(CV& a, CV& b) { V c; c.lo()=a.lo()/b.lo(); c.hi()=a.hi()/b.hi(); return c; }
+
+//TIV operator+(const T& a, CV& b) { V c; c.lo()=a+b.lo(); c.hi()=a+b.hi(); return c; }
+//TIV operator-(const T& a, CV& b) { V c; c.lo()=a-b.lo(); c.hi()=a-b.hi(); return c; }
+//TIV operator*(const T& a, CV& b) { V c; c.lo()=a*b.lo(); c.hi()=a*b.hi(); return c; }
+//TIV operator/(const T& a, CV& b) { V c; c.lo()=a/b.lo(); c.hi()=a/b.hi(); return c; }
+//
+//TIV operator+(const V& a) { return a; }        // unary plus
+//TIV operator-(const V& a) { return V(0) - a; } // unary minus - can we do better?
+
 
 // Unary functions:
-TV rsAbs( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsAbs( x[i]); return y; }
-TV rsCos( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsCos( x[i]); return y; }
-TV rsExp( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsExp( x[i]); return y; }
-TV rsLog( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsLog( x[i]); return y; }
-TV rsSin( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSin( x[i]); return y; }
-TV rsSign(V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSign(x[i]); return y; }
-TV rsSqrt(V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSqrt(x[i]); return y; }
-TV rsTan( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsTan( x[i]); return y; }
-// floor, ceil, sign, round, ...
+TIV rsAbs( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsAbs( x[i]); return y; }
+TIV rsCos( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsCos( x[i]); return y; }
+TIV rsExp( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsExp( x[i]); return y; }
+TIV rsLog( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsLog( x[i]); return y; }
+TIV rsSin( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSin( x[i]); return y; }
+TIV rsSign(V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSign(x[i]); return y; }
+TIV rsSqrt(V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSqrt(x[i]); return y; }
+TIV rsTan( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsTan( x[i]); return y; }
+// floor, ceil, round, asin, acos, atan, sinh, cosh, tanh, asinh, acosh, atanh, ...
 // maybe write a macros RS_VECTORIZE_1, so we just need to write RS_VECTORIZE_1(rsSin) etc. to 
 // reduce boilerplate. the 1 is for "unary"
+// hmm..actually, we should invoke the functions on the half-vectors instead of looping over the
+// scalars
 
 // Binary functions:
 // min, max, pow, atan2, fmod, ...
 
 // Ternary functions:
-TV rsClip(V x, V a, V b) { V y; for(int i=0; i<N; i++) y[i]=rsClip(x[i], a[i], b[i]); return y; }
+TIV rsClip(V x, V a, V b) { V y; for(int i=0; i<N; i++) y[i]=rsClip(x[i], a[i], b[i]); return y; }
 
 #undef V
-#undef TV
+#undef CV
+#undef TIV
 
 //template<class T, int N>
 //rsSimdVector<T, N> rsSin(rsSimdVector<T, N> x)
@@ -209,7 +236,7 @@ public:
 
 };
 
-// Arithmetic operators
+// Arithmetic operators:
 inline V operator+(CV& a, CV& b) { return V(_mm_add_ps(a.v, b.v)); }
 inline V operator-(CV& a, CV& b) { return V(_mm_sub_ps(a.v, b.v)); }
 inline V operator*(CV& a, CV& b) { return V(_mm_mul_ps(a.v, b.v)); }

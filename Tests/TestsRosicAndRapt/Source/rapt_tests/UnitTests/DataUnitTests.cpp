@@ -907,7 +907,8 @@ bool complexFloat64x2UnitTest()
   return r;
 }
 
-
+/*
+// obsolete:
 template<class T>
 bool simdTemplateUnitTest2()
 {
@@ -941,6 +942,25 @@ bool simdTemplateUnitTest4()
 
   return ok;
 }
+*/
+
+template<class T, int N>
+bool simdTemplateUnitTest()
+{
+  bool ok = true;
+
+  int i;
+
+  rsSimdVector<T, N> a, b, c;
+  for(i=0; i<N; i++) { a[i] = T(2*i+1); b[i] = T(3)*a[i]; }
+
+  c = a+b; for(i=0; i<N; i++) { ok &= c[i] == a[i]+b[i]; }
+  c = a-b; for(i=0; i<N; i++) { ok &= c[i] == a[i]-b[i]; }
+  c = a*b; for(i=0; i<N; i++) { ok &= c[i] == a[i]*b[i]; }
+  c = b/a; for(i=0; i<N; i++) { ok &= c[i] == b[i]/a[i]; }
+
+  return ok;
+}
 
 
 bool simdUnitTest()
@@ -954,16 +974,28 @@ bool simdUnitTest()
   // rsAsserFalse debug-break
 
   // Test the new implementation:
-  ok &= simdTemplateUnitTest2<int>();
-  ok &= simdTemplateUnitTest2<float>();
-  ok &= simdTemplateUnitTest2<double>();
 
-  ok &= simdTemplateUnitTest4<int>();
-  ok &= simdTemplateUnitTest4<float>();
-  ok &= simdTemplateUnitTest4<double>();
+  // obsolete:
+  //ok &= simdTemplateUnitTest2<int>();
+  //ok &= simdTemplateUnitTest2<float>();
+  //ok &= simdTemplateUnitTest2<double>();
+  //ok &= simdTemplateUnitTest4<int>();
+  //ok &= simdTemplateUnitTest4<float>();
+  //ok &= simdTemplateUnitTest4<double>();
+
+  ok &= simdTemplateUnitTest<int, 2>();
+  ok &= simdTemplateUnitTest<int, 4>();
+  ok &= simdTemplateUnitTest<int, 8>();
+
+  ok &= simdTemplateUnitTest<float, 2>();
+  ok &= simdTemplateUnitTest<float, 4>();
+  ok &= simdTemplateUnitTest<float, 8>();
+
+  ok &= simdTemplateUnitTest<double, 2>();
+  ok &= simdTemplateUnitTest<double, 4>();
+  ok &= simdTemplateUnitTest<double, 8>();
 
   // try also with 16 chars
-
 
   return ok;
 }
