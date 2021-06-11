@@ -931,10 +931,47 @@ bool simdTemplateUnitTest()
   c = a/s; for(i=0; i<N; i++) { ok &= c[i] == a[i]/s; }
 
   // Test arithmetic operators for scalar (op) vector:
-  c = s+a;  // doesn't compile
+  c = s+a; for(i=0; i<N; i++) { ok &= c[i] == s+a[i]; }
+  c = s-a; for(i=0; i<N; i++) { ok &= c[i] == s-a[i]; }
+  c = s*a; for(i=0; i<N; i++) { ok &= c[i] == s*a[i]; }
+  c = s/a; for(i=0; i<N; i++) { ok &= c[i] == s/a[i]; }
+
+  // todo: test unary plus/minus, unary math functions, binary math functions, comparison 
+  // operators, copy/conversion constructors, assignment operators
 
   return ok;
 }
+
+bool simdInstantiationUnitTest()
+{
+  // Tests for specific instantitaions of the template
+
+  bool ok = true;
+
+
+  ok &= rsSimdVector<int,  1>::getEmulationLevel() == 0;
+  ok &= rsSimdVector<int,  2>::getEmulationLevel() == 1;
+  ok &= rsSimdVector<int,  4>::getEmulationLevel() == 2;
+  ok &= rsSimdVector<int,  8>::getEmulationLevel() == 3;
+
+  ok &= rsSimdVector<float,  1>::getEmulationLevel() == 0;
+  ok &= rsSimdVector<float,  2>::getEmulationLevel() == 1;
+  ok &= rsSimdVector<float,  4>::getEmulationLevel() == 0;
+  ok &= rsSimdVector<float,  8>::getEmulationLevel() == 1;
+  ok &= rsSimdVector<float, 16>::getEmulationLevel() == 2;
+
+  ok &= rsSimdVector<double, 1>::getEmulationLevel() == 0;
+  ok &= rsSimdVector<double, 2>::getEmulationLevel() == 1;
+  ok &= rsSimdVector<double, 4>::getEmulationLevel() == 2;
+
+
+  // ToDo: 
+  // -the expected outcomes of these tests should later depend on the compiler settings and
+  //  macro definitions...not yet sure, how to implement this
+
+  return ok;
+}
+
 
 bool simdUnitTest()
 {
@@ -964,8 +1001,9 @@ bool simdUnitTest()
   ok &= simdTemplateUnitTest<double,  4>();  // no
   ok &= simdTemplateUnitTest<double,  8>();  // no
   ok &= simdTemplateUnitTest<double, 16>();  // no
-
   // try also with 16 chars
+
+  ok &= simdInstantiationUnitTest();
 
   return ok;
 }

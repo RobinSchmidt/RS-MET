@@ -51,7 +51,12 @@ public:
 
 
   V() {}
-  V(T a) { for(int i = 0; i < N; i++) v[i] = a; }
+  V(T a) { for(int i = 0; i < N; i++) v[i] = a; } 
+  // hmm...loop = baad -> use lo() = a; hi() = a;
+
+  V(CV2& low, CV2& high) { lo() = low; hi() = high; }
+
+
 
   //V(int a) { for(int i = 0; i < N; i++) v[i] = (T)a; }
 
@@ -63,19 +68,33 @@ public:
   inline const T& operator[](const int i) const { rsStaticAssert(i >= 0 && i < N); return v[i]; }
 
 
-  static bool isSimdEmulated() { return true; }
+  //static bool isSimdEmulated() { return true; }
   // explicit instantiations that actually do hardware simd, should return false
+  // obsolete - getEmulationLevel provides more detailed information
 
-  //int getEmulationLevel() { }
-  // idea: the function should return an information, at which level the actual hardware simd
-  // kicks in. 0: full hardware implementation. 1: the half-vectors use hardware simd, 
-  // 2: quarter-vectors use hardware simd, etc., i'm not yet sure, how to implement this
+  /** Returns the level of software emulation that takes place for this particular template 
+  instantiation with the current compiler- and preprocessor settings. If the instantiation 
+  provides full hardware SIMD, this function will return 0. If the hardware SIMD kicks in on the 
+  level of half-vectors, it returns 1. If hardware SIMD kicks in on the level quarter-vectors, it 
+  returns 2. And so on. For example, for rsSimdVector<float, 16> when you only have SSE 
+  available, the 16 element SIMD vector will be emulated by 4 SSE __m128 variables, so the 
+  emulation-level will be 2. */
+  static int getEmulationLevel() { return rsSimdVector<T, N/2>::getEmulationLevel() + 1; }
 
 
-  V operator+(CV& w) const { V u; u.lo() = lo() + w.lo(); u.hi() = hi() + w.hi(); return u; }
-  V operator-(CV& w) const { V u; u.lo() = lo() - w.lo(); u.hi() = hi() - w.hi(); return u; }
-  V operator*(CV& w) const { V u; u.lo() = lo() * w.lo(); u.hi() = hi() * w.hi(); return u; }
-  V operator/(CV& w) const { V u; u.lo() = lo() / w.lo(); u.hi() = hi() / w.hi(); return u; }
+
+  // new:
+  V operator+(CV b) const { return V(lo()+b.lo(), hi()+b.hi()); }
+  V operator-(CV b) const { return V(lo()-b.lo(), hi()-b.hi()); }
+  V operator*(CV b) const { return V(lo()*b.lo(), hi()*b.hi()); }
+  V operator/(CV b) const { return V(lo()/b.lo(), hi()/b.hi()); }
+
+
+  // old:
+  //V operator+(CV& w) const { V u; u.lo() = lo() + w.lo(); u.hi() = hi() + w.hi(); return u; }
+  //V operator-(CV& w) const { V u; u.lo() = lo() - w.lo(); u.hi() = hi() - w.hi(); return u; }
+  //V operator*(CV& w) const { V u; u.lo() = lo() * w.lo(); u.hi() = hi() * w.hi(); return u; }
+  //V operator/(CV& w) const { V u; u.lo() = lo() / w.lo(); u.hi() = hi() / w.hi(); return u; }
   // have been moved outside the class to allow scalar left operands
 
   //V operator+(T s) const { V u; u.lo() = lo() + s; u.hi() = hi() + s; return u; }
@@ -85,16 +104,16 @@ public:
 
 
   /** Returns a reference to the lower half-vector. */
-  V2& lo() { return *((V2*) &v[0]); }
+  inline V2& lo() { return *((V2*) &v[0]); }
 
   /** Returns a reference to the higher half-vector. */
-  V2& hi() { return *((V2*) &v[N/2]); }
+  inline V2& hi() { return *((V2*) &v[N/2]); }
 
   /** Returns a const reference to the lower half-vector. */
-  CV2& lo() const { return *((CV2*) &v[0]); }
+  inline CV2& lo() const { return *((CV2*) &v[0]); }
 
   /** Returns a const reference to the higher half-vector. */
-  CV2& hi() const { return *((CV2*) &v[N/2]); }
+  inline CV2& hi() const { return *((CV2*) &v[N/2]); }
 
 
   T v[N]; // maybe we should specify an alignment?
@@ -132,7 +151,7 @@ TIV rsTan( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsTan( x[i]); return y;
 // floor, ceil, round, asin, acos, atan, sinh, cosh, tanh, asinh, acosh, atanh, ...
 // maybe write a macros RS_VECTORIZE_1, so we just need to write RS_VECTORIZE_1(rsSin) etc. to 
 // reduce boilerplate. the 1 is for "unary"
-// hmm..actually, we should invoke the functions on the half-vectors instead of looping over the
+// ToDo:  actually, we should invoke the functions on the half-vectors instead of looping over the
 // scalars
 
 // Binary functions:
@@ -187,48 +206,28 @@ public:
   inline T& operator[](const int i) { rsStaticAssert(i == 0); return v[0]; }
   inline const T& operator[](const int i) const { rsStaticAssert(i == 0); return v[0]; }
 
-  // new:
   inline V operator+(CV& b) const { return V(v[0]+b.v[0]); }
   inline V operator-(CV& b) const { return V(v[0]-b.v[0]); }
   inline V operator*(CV& b) const { return V(v[0]*b.v[0]); }
   inline V operator/(CV& b) const { return V(v[0]/b.v[0]); }
 
-  // old:
-  //inline V operator+(CV& w) const { V u; u.v[0] = v[0] + w.v[0]; return u; }
-  //inline V operator-(CV& w) const { V u; u.v[0] = v[0] - w.v[0]; return u; }
-  //inline V operator*(CV& w) const { V u; u.v[0] = v[0] * w.v[0]; return u; }
-  //inline V operator/(CV& w) const { V u; u.v[0] = v[0] / w.v[0]; return u; }
-
-  // new:
   inline V operator+(T s) const { return V(v[0] + s); }
   inline V operator-(T s) const { return V(v[0] - s); }
   inline V operator*(T s) const { return V(v[0] * s); }
   inline V operator/(T s) const { return V(v[0] / s); }
 
-  // old:
-  //inline V operator+(T s) const { V u; u.v[0] = v[0] + s; return u; }
-  //inline V operator-(T s) const { V u; u.v[0] = v[0] - s; return u; }
-  //inline V operator*(T s) const { V u; u.v[0] = v[0] * s; return u; }
-  //inline V operator/(T s) const { V u; u.v[0] = v[0] / s; return u; }
+
+  static int getEmulationLevel() { return 0; }
+
 
   T v[1];
 
 };
 
-// new:
 TIV operator+(T s, CV b) { return V(s + b.v[0]); }
 TIV operator-(T s, CV b) { return V(s - b.v[0]); }
 TIV operator*(T s, CV b) { return V(s * b.v[0]); }
 TIV operator/(T s, CV b) { return V(s / b.v[0]); }
-
-// old:
-//TIV operator+(T s, CV b) { V c; c.v[0] = s + b.v[0]; return c; }
-//TIV operator-(T s, CV b) { V c; c.v[0] = s - b.v[0]; return c; }
-//TIV operator*(T s, CV b) { V c; c.v[0] = s * b.v[0]; return c; }
-//TIV operator/(T s, CV b) { V c; c.v[0] = s / b.v[0]; return c; }
-
-// operations involving at least one degenerate "vector" incur a significant overhead over the raw
-// scalar operations (a factor 3 to 6 in cpu cycles with rsSimdVector<float, 1>)
 
 #undef V
 #undef CV
@@ -250,7 +249,8 @@ public:
   //using V  = rsSimdVector<float, 4>;
   //using CV = const V;
 
-  static bool isSimdEmulated() { return false; }
+  //static bool isSimdEmulated() { return false; }
+  static int getEmulationLevel() { return 0; }
 
   // Constructors:
   V() {};
@@ -337,3 +337,5 @@ inline V operator-(const V a) { return V(0.f) - a; } // unary minus - can we do 
 //  contains translations for the dummy instructions for a particular instruction set. _simd_add
 //  would be translated to _mm_add_ps, when the SSE translation file is used, etc. - it's a sort of
 //  code generator
+// -name ideas: AMSAP: as much simd as possible, SIP: simd if possible, SIA: simd if available,
+//  SIPER: simd if possible else recurse

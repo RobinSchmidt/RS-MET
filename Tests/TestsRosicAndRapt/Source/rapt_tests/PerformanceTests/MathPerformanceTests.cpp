@@ -119,14 +119,27 @@ void matrixAdressingTest()
 template<class TScalar, class TVector>
 void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
 {
-  static const int N = 5000;  // number of vector operations
+  static const int N = 1000;  // number of vector operations
+  // maybe we should somehow make sure that the compiler doesn't know this, so it can't unroll
+  // the loops?
 
-  TScalar zeroS = 0;
-  TScalar oneS  = 1;
-  TScalar accuS = 0;
-  TVector zeroV = 0;
-  TVector oneV  = 1;
-  TVector accuV = 0;
+  // ToDo:
+  // -Split the file into:
+  //  -arithmetic operators
+  //  -comparison operators
+  //  -math functions
+  // -Create a data structure to record the measurements of several runs, so we may later do some
+  //  statistical analysis - in particular: remove outliers, compute mean, median, etc.
+  // -maybe create seperate project for the development of the simd class to reduce recompilation 
+  //  times
+  // -maybe write the data into a file and/or draw some plots
+
+  TScalar zeroS(0);
+  TScalar oneS(1);
+  TScalar accuS(0);
+  TVector zeroV(0);
+  TVector oneV(1);
+  TVector accuV(0);
 
   ::ProcessorCycleCounter counter;
   //PerformanceCounter counter;
@@ -134,136 +147,158 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
   double k = 1.0/N;
   int n;
 
-  // Oh: this seems to be a remnant from when this function was for testing rsFloat64x2 only - now 
-  // we have generalized it to deal with any sort of simd-vector - we should get rid of that 2*N
-  // business and just use N:
-  // Print the number of cycles per scalar addition - in the case of vector types, we expect to see
-  // the number to be a factor 2 smaller than in the case of scalar types (because we get two
-  // scalar additions for each vector addition):
- 
-
   using STR = std::string;
-
   std::cout <<  STR("SIMD performance test for ") + dataTypeName + STR("\n");
 
+  // Addition:
   // scalar = scalar + scalar:
-  counter.init();
-  for(n = 0; n < N; n++)
-    accuS = accuS + oneS;
+  counter.init(); for(n = 0; n < N; n++) accuS = accuS + oneS;
   cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(accuS);
-  printPerformanceTestResult("s1 = s1 + s2", k*cycles);
-  // write this shorter as s1 = s1 + s2
-
-  // vector = vector + vector:
-  counter.init();
-  for(n = 0; n < N; n++)
-    accuV = accuV + oneV;
-  cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(&accuV);
-  printPerformanceTestResult("v1 = v1 + v2", k*cycles);
-
-  // vector = vector + scalar:
-  counter.init();
-  for(n = 0; n < N; n++)
-    accuV = accuV + oneS;
-  cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(&accuV);
-  printPerformanceTestResult("v1 = v1 + s2", k*cycles);
+  dontOptimize(accuS); printPerformanceTestResult("s1 = s1 + s2", k*cycles);
 
   // vector = scalar + vector:
-  counter.init();
-  for(n = 0; n < N; n++)
-    accuV = oneS + accuV;
+  counter.init(); for(n = 0; n < N; n++) accuV = oneS + accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(&accuV);
-  printPerformanceTestResult("v1 = s1 + v1", k*cycles);
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = s1 + v1", k*cycles);
+
+  // vector = vector + scalar:
+  counter.init(); for(n = 0; n < N; n++) accuV = accuV + oneS;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = v1 + s2", k*cycles);
+
+  // vector = vector + vector:
+  counter.init(); for(n = 0; n < N; n++) accuV = accuV + oneV;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = v1 + v2", k*cycles);
+
+
+  // Subtraction:
+  // scalar = scalar - scalar:
+  counter.init(); for(n = 0; n < N; n++) accuS = accuS - oneS;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(accuS); printPerformanceTestResult("s1 = s1 - s2", k*cycles);
 
   // vector = scalar - vector:
-  counter.init();
-  for(n = 0; n < N; n++)
-    accuV = oneS - accuV;
+  counter.init(); for(n = 0; n < N; n++) accuV = oneS - accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(&accuV);
-  printPerformanceTestResult("v1 = s1 - v1", k*cycles);
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = s1 - v1", k*cycles);
+
+  // vector = vector - scalar:
+  counter.init(); for(n = 0; n < N; n++) accuV = accuV - oneS;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = v1 - s2", k*cycles);
 
   // vector = vector - vector:
-  counter.init();
-  for(n = 0; n < N; n++)
-    accuV = oneV - accuV;
+  counter.init(); for(n = 0; n < N; n++) accuV = oneV - accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(&accuV);
-  printPerformanceTestResult("v1 = v2 - v1", k*cycles);
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = v2 - v1", k*cycles);
+
+
+  // Multiplication:
+  // scalar = scalar * scalar:
+  counter.init(); for(n = 0; n < N; n++) accuS = accuS * oneS;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(accuS); printPerformanceTestResult("s1 = s1 * s2", k*cycles);
+
+  // vector = scalar * vector:
+  counter.init(); for(n = 0; n < N; n++) accuV = oneS * accuV;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = s1 * v1", k*cycles);
+
+  // vector = vector * scalar:
+  counter.init(); for(n = 0; n < N; n++) accuV = accuV * oneS;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = v1 * s2", k*cycles);
 
   // vector = vector * vector:
-  counter.init();
-  for(n = 0; n < N; n++)
-    accuV = oneV * accuV;
+  counter.init(); for(n = 0; n < N; n++) accuV = oneV * accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(&accuV);
-  printPerformanceTestResult("v1 = v2 * v1", k*cycles);
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = v2 * v1", k*cycles);
+
+
+  // Division:
+  // scalar = scalar / scalar:
+  counter.init(); for(n = 0; n < N; n++) accuS = accuS / oneS;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(accuS); printPerformanceTestResult("s1 = s1 / s2", k*cycles);
+
+  // vector = scalar / vector:
+  counter.init(); for(n = 0; n < N; n++) accuV = oneS / accuV;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = s1 / v1", k*cycles);
+
+  // vector = vector / scalar:
+  counter.init(); for(n = 0; n < N; n++) accuV = accuV / oneS;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = v1 / s2", k*cycles);
 
   // vector = vector / vector:
-  counter.init();
-  for(n = 0; n < N; n++)
-    accuV = oneV / accuV;
+  counter.init(); for(n = 0; n < N; n++) accuV = oneV / accuV;
   cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(&accuV);
-  printPerformanceTestResult("v1 = v2 / v1", k*cycles);
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = v2 / v1", k*cycles);
 
-  // unary minus:
-  counter.init();
-  for(n = 0; n < N; n++)
-    accuV = -accuV;
+
+  // Unary minus:
+  // vector = -scalar
+  counter.init(); for(n = 0; n < N; n++)  accuV = -accuS;
   cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(&accuV);
-  printPerformanceTestResult("v1 = -v1      ", k*cycles);
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = -v1    ", k*cycles);
+
+  // vector = -vector
+  counter.init(); for(n = 0; n < N; n++)  accuV = -accuV;
+  cycles = (double)counter.getNumCyclesSinceInit();
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = -v1    ", k*cycles);
+
+
+
 
 
   TVector x = 10;
 
-  // clip:
+  // Unary math functions:
+
+  // Clip:
   //counter.init(); for(n = 0; n < N; n++) x = rsClip(x, TScalar(-1), TScalar(1));
   counter.init(); for(n = 0; n < N; n++) x = rsClip(x, TVector(-1), TVector(1));
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("clip", k*cycles);
 
-  // abs:
+  // Abs:
   counter.init(); for(n = 0; n < N; n++) x = rsAbs(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("abs ", k*cycles);
 
-  // sign:
+  // Sign:
   counter.init(); for(n = 0; n < N; n++) x = rsSign(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("sign", k*cycles);
 
-  // sqrt:
+  // Sqrt:
   counter.init(); for(n = 0; n < N; n++) x = rsSqrt(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("sqrt", k*cycles);
 
-  // exp:
+  // Exp:
   counter.init(); for(n = 0; n < N; n++) x = rsExp(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("exp ", k*cycles);
 
-  // log:
+  // Log:
   counter.init(); for(n = 0; n < N; n++) x = rsLog(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("log ", k*cycles);
 
-  // sin:
+  // Sin:
   counter.init(); for(n = 0; n < N; n++) x = rsSin(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("sin ", k*cycles);
 
-  // cos:
+  // Cos:
   counter.init(); for(n = 0; n < N; n++) x = rsCos(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("cos ", k*cycles);
 
-  // tan:
+  // Tan:
   counter.init(); for(n = 0; n < N; n++) x = rsTan(x);
   cycles = (double)counter.getNumCyclesSinceInit();
   dontOptimize(&x); printPerformanceTestResult("tan ", k*cycles);
@@ -310,14 +345,30 @@ void simdPerformance()
   simdPerformance(1.f, rsSimdVector<float,  8>(1.f), "rsSimdVector<float, 8>");
   simdPerformance(1.f, rsSimdVector<float, 16>(1.f), "rsSimdVector<float, 16>");
 
-  // <float, 2> arithmetic operators are slow
+  simdPerformance(1.0, rsSimdVector<double,  1>(1.0), "rsSimdVector<double, 1>");
+  simdPerformance(1.0, rsSimdVector<double,  2>(1.0), "rsSimdVector<double, 2>");
+  simdPerformance(1.0, rsSimdVector<double,  4>(1.0), "rsSimdVector<double, 4>");
+  simdPerformance(1.0, rsSimdVector<double,  8>(1.0), "rsSimdVector<double, 8>");
+  simdPerformance(1.0, rsSimdVector<double, 16>(1.0), "rsSimdVector<double, 16>");
 
-
-  //simdPerformance(1.f, rsSimdVector<double,  2>(1.f), "rsSimdVector<double, 2>");
-  //simdPerformance(1.f, rsSimdVector<double,  4>(1.f), "rsSimdVector<double, 4>");
-  //simdPerformance(1.f, rsSimdVector<double,  8>(1.f), "rsSimdVector<double, 8>");
-  //simdPerformance(1.f, rsSimdVector<double, 16>(1.f), "rsSimdVector<double, 16>");
-
+  // Expectations:
+  // -Operations on rsSimdVector<float, 1> should use the same number of CPU cycles as the
+  //  scalar operations. Code should boild down to a zero-cost abstraction of wrapping multiple 
+  //  scalar operations into one
+  // -operations on rsSimdVector<float, 4> should use the same amount of cpu as the old rsFloat32x4
+  //  implementation.
+  // -operations on rsSimdVector<float, 8> should use roughly twice as much cpu as on 
+  //  rsSimdVector<float, 4> when no AVX is used. It should map to a zero-cost abstraction of using
+  //  two __m128 variables
+  //
+  // ToDo:
+  // -create a test porject that somehow lets us automatically do unit tests in different 
+  //  configurations, i.e. with different macros defined...maybe run the same tests multiple times, 
+  //  progressively defining more and more macros, like SSE, SSE2, AVX, AVX2, etc.
+  // -maybe keep the old implementations around as prototype and reference, even when the new ones
+  //  are ready for production
+  // -compare the perfomance of the abstractions with those of the native types, like 
+  //  rsSimdVector<float, 4> with using __m128 directly, etc.
 }
 
 

@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
 
   //callbackPerformance();
   //matrixAdressingTest();
-  simdPerformance();
+  //simdPerformance();
   //sinCosPerformance();
   //fftPerformance();
 
@@ -113,7 +113,7 @@ int main(int argc, char* argv[])
 
   //numericOptimization();
 
-  //polynomialSinc();
+  polynomialSinc();
   //polynomialPrediction();  // not yet implemented
   //probabilityLogic();
   //productLogPlot();
@@ -121,7 +121,7 @@ int main(int argc, char* argv[])
   //ratiosLargeLcm();
   //ratiosEquidistantPowers();
   //ratiosMetallic();
-  //sinCosTable();
+  //sinCosTable();   // new polynomial approximation is called from unit tests
   //twoParamRemap();
 
   // Filter:
