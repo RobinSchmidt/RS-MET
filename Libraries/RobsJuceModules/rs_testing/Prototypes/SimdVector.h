@@ -30,7 +30,8 @@ to get operations mapped to __m256. If you don't have the AVX macro defined but 
 SSE macro defined, the 8-vector code would not compile to 8 scalar instructions but to 2 SSE 
 instructions on the lower and higher __m128 part of the __m256 vector. The class will always try 
 to use as much hardware SIMD as is available as per the macro definitions and emulate the rest in
-software, completely transparent to the client code. 
+software, completely transparent to the client code. Client code will always look the same, 
+regardless of the targeted instruction set.
 
 Of course, this creates some caveats: client code may falsely assume that hardware SIMD processing 
 takes place, when in fact, it's only emulated. Moreover, our compile-time dispatch here says 
@@ -49,31 +50,21 @@ public:
   using V2  = rsSimdVector<T, N/2>;
   using CV2 = const V2;
 
-
   V() {}
-  //V(T a) { for(int i = 0; i < N; i++) v[i] = a; }  // hmm...loop = bad
-  V(T a) { lo() = a; hi() = a; }                     // ...better
-
+  V(T a) { lo() = a; hi() = a; }
   V(CV2& low, CV2& high) { lo() = low; hi() = high; }
-  V(CV2&& low, CV2&& high) { lo() = low; hi() = high; }
+  V(CV2&& low, CV2&& high) { lo() = low; hi() = high; } // do we need this?
   //V(CV2 low, CV2 high) { lo() = low; hi() = high; }
   // When we have the CV2& and CV2 versions both uncommented, we get a compile error:
   // "...constructor overload resolution was ambiguous" for rsSimdVector<double,16>, keeping only
   // one of them gives a compile error for rsSimdVector<float,4> when the new rsAbs implementation
   // is uncommented
 
-
-  //V(int a) { for(int i = 0; i < N; i++) v[i] = (T)a; }
-
-
   /** Write Access to the i-th element of the vector where i = 0,...,N-1. */
   inline T& operator[](const int i) { rsStaticAssert(i >= 0 && i < N); return v[i]; }
 
   /** Read Access to the i-th element of the vector where i = 0,...,N-1. */
   inline const T& operator[](const int i) const { rsStaticAssert(i >= 0 && i < N); return v[i]; }
-
-
-
 
   /** Returns the level of software emulation that takes place for this particular template 
   instantiation with the current compiler- and preprocessor settings. If the instantiation 
@@ -85,12 +76,11 @@ public:
   static int getEmulationLevel() { return V2::getEmulationLevel() + 1; }
 
 
-
-  // new:
   V operator+(CV b) const { return V(lo()+b.lo(), hi()+b.hi()); }
   V operator-(CV b) const { return V(lo()-b.lo(), hi()-b.hi()); }
   V operator*(CV b) const { return V(lo()*b.lo(), hi()*b.hi()); }
   V operator/(CV b) const { return V(lo()/b.lo(), hi()/b.hi()); }
+  // ToDo: try, if it makes a difference (performance-wise), if we have CV& and/or CV&& versions
 
   //V operator+(CV& b) const { return V(lo()+b.lo(), hi()+b.hi()); }
   //V operator-(CV& b) const { return V(lo()-b.lo(), hi()-b.hi()); }
@@ -101,21 +91,6 @@ public:
   //V operator-(CV&& b) const { return V(lo()-b.lo(), hi()-b.hi()); }
   //V operator*(CV&& b) const { return V(lo()*b.lo(), hi()*b.hi()); }
   //V operator/(CV&& b) const { return V(lo()/b.lo(), hi()/b.hi()); }
-
-  //V operator/(CV b) const { return V(V2(lo()/b.lo()), V2(hi()/b.hi())); }
-
-
-  // old:
-  //V operator+(CV& w) const { V u; u.lo() = lo() + w.lo(); u.hi() = hi() + w.hi(); return u; }
-  //V operator-(CV& w) const { V u; u.lo() = lo() - w.lo(); u.hi() = hi() - w.hi(); return u; }
-  //V operator*(CV& w) const { V u; u.lo() = lo() * w.lo(); u.hi() = hi() * w.hi(); return u; }
-  //V operator/(CV& w) const { V u; u.lo() = lo() / w.lo(); u.hi() = hi() / w.hi(); return u; }
-  // have been moved outside the class to allow scalar left operands
-
-  //V operator+(T s) const { V u; u.lo() = lo() + s; u.hi() = hi() + s; return u; }
-  //V operator-(T s) const { V u; u.lo() = lo() - s; u.hi() = hi() - s; return u; }
-  //V operator*(T s) const { V u; u.lo() = lo() * s; u.hi() = hi() * s; return u; }
-  //V operator/(T s) const { V u; u.lo() = lo() / s; u.hi() = hi() / s; return u; }
 
 
   /** Returns a reference to the lower half-vector. */
@@ -134,17 +109,10 @@ public:
   T v[N]; // maybe we should specify an alignment?
 };
 
-// some macros to shorten the boilerplate:
+// Some macros to shorten the boilerplate:
 #define V rsSimdVector<T, N>
 #define CV const V
 #define TIV template<class T, int N> inline V
-//#define V2 rsSimdVector<T, N/2>
-
-// Arithmetic operators:
-//TIV operator+(CV a, CV b) { V c; c.lo()=a.lo()+b.lo(); c.hi()=a.hi()+b.hi(); return c; }
-//TIV operator-(CV a, CV b) { V c; c.lo()=a.lo()-b.lo(); c.hi()=a.hi()-b.hi(); return c; }
-//TIV operator*(CV a, CV b) { V c; c.lo()=a.lo()*b.lo(); c.hi()=a.hi()*b.hi(); return c; }
-//TIV operator/(CV a, CV b) { V c; c.lo()=a.lo()/b.lo(); c.hi()=a.hi()/b.hi(); return c; }
 
 TIV operator+(const T& a, CV& b) { V c; c.lo()=a+b.lo(); c.hi()=a+b.hi(); return c; }
 TIV operator-(const T& a, CV& b) { V c; c.lo()=a-b.lo(); c.hi()=a-b.hi(); return c; }
@@ -165,40 +133,20 @@ TIV rsLog( V x) { return V(rsLog( x.lo()), rsLog( x.hi())); }
 TIV rsSin( V x) { return V(rsSin( x.lo()), rsSin( x.hi())); }
 TIV rsSqrt(V x) { return V(rsSqrt(x.lo()), rsSqrt(x.hi())); }
 TIV rsTan( V x) { return V(rsTan( x.lo()), rsTan( x.hi())); }
-
-// old:
-//TIV rsAbs( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsAbs( x[i]); return y; }
-//TIV rsCos( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsCos( x[i]); return y; }
-//TIV rsExp( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsExp( x[i]); return y; }
-//TIV rsLog( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsLog( x[i]); return y; }
-//TIV rsSin( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSin( x[i]); return y; }
-//TIV rsSign(V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSign(x[i]); return y; }
-//TIV rsSqrt(V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSqrt(x[i]); return y; }
-//TIV rsTan( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsTan( x[i]); return y; }
+// ToDo:
 // floor, ceil, round, asin, acos, atan, sinh, cosh, tanh, asinh, acosh, atanh, ...
 // maybe write a macros RS_VECTORIZE_1, so we just need to write RS_VECTORIZE_1(rsSin) etc. to 
 // reduce boilerplate. the 1 is for "unary"
-// ToDo:  actually, we should invoke the functions on the half-vectors instead of looping over the
-// scalars
 
 // Binary functions:
 // min, max, pow, atan2, fmod, ...
 
 // Ternary functions:
-TIV rsClip(V x, V a, V b) { V y; for(int i=0; i<N; i++) y[i]=rsClip(x[i], a[i], b[i]); return y; }
+TIV rsClip(V x, V a, V b) { return V(rsClip(x.lo(),a.lo(),b.lo()), rsClip(x.hi(),a.hi(),b.hi())); }
 
 #undef V
 #undef CV
 #undef TIV
-//#undef V2
-
-//template<class T, int N>
-//rsSimdVector<T, N> rsSin(rsSimdVector<T, N> x)
-//{
-//  rsSimdVector<T, N> y;
-//  for(int i = 0; i < N; i++)
-//    y[i] = rsSin(x[i]);
-//}
 
 //-------------------------------------------------------------------------------------------------
 
@@ -230,7 +178,6 @@ public:
   V() {}
   V(T a) { v[0] = a; }
 
-
   inline T& operator[](const int i) { rsStaticAssert(i == 0); return v[0]; }
   inline const T& operator[](const int i) const { rsStaticAssert(i == 0); return v[0]; }
 
@@ -244,12 +191,9 @@ public:
   inline V operator*(T s) const { return V(v[0] * s); }
   inline V operator/(T s) const { return V(v[0] / s); }
 
-
   static int getEmulationLevel() { return 0; }
 
-
   T v[1];
-
 };
 
 TIV operator+(T s, CV b) { return V(s + b.v[0]); }
@@ -269,6 +213,10 @@ TIV rsSin( V x) { return V(rsSin( x.v[0])); }
 TIV rsSqrt(V x) { return V(rsSqrt(x.v[0])); }
 TIV rsTan( V x) { return V(rsTan( x.v[0])); }
 
+// Ternary functions:
+TIV rsClip(V x, V a, V b) { return V(rsClip(x.v[0], a.v[0], b.v[0])); }
+
+
 #undef V
 #undef CV
 #undef TIV
@@ -286,18 +234,15 @@ class rsSimdVector<float, 4>
 
 public:
 
-  //using V  = rsSimdVector<float, 4>;
-  //using CV = const V;
   using V2  = rsSimdVector<float, 2>;
   using CV2 = const V2;
 
-  //static bool isSimdEmulated() { return false; }
   static int getEmulationLevel() { return 0; }
 
   // Constructors:
   V() {}
   V(CV& a) : v(a.v) {}
-  //V(CV&& a) : v(a.v) {}
+  //V(CV&& a) : v(a.v) {} // gives compile error - we need to also define the = operator then
   V(__m128 x) : v(x) {}
   V(float a) : v(_mm_set1_ps(a)) {}
   V(int a) : v(_mm_set1_ps(float(a))) {}
@@ -305,8 +250,6 @@ public:
   V(float a, float b, float c, float d) : v(_mm_setr_ps(a, b, c, d)) {}
   V(float* p) { v = _mm_setr_ps(p[0], p[1], p[2], p[3]); }
   V(CV2& low, CV2& high) { lo() = low; hi() = high; }
-
-
 
   //// Arithmetic operators
   //V operator+(CV& w) const { return V(_mm_add_ps(v, w.v)); }
@@ -318,7 +261,6 @@ public:
   // Access operators
   V& operator=(const __m128& rhs) { v = rhs; return *this; }
   float& operator[](const int i) const { return asArray()[i]; }
-
 
   // Ugly boilerplate, because we need lo()/hi() functions here, too:
   float* asArray() const { return (float*) &v; }                 // helper
@@ -381,7 +323,7 @@ inline V operator-(const V a) { return V(0.f) - a; } // unary minus - can we do 
 // -the base implementation with the fallback to scalar code
 // -one file for each explicit specializations, named e.g. Float32x4_SSE, Float32x4_NEON, 
 //  Float32x8_AVX, etc.
-// -maybe create a template for new specializations that contain dummy instructions like:
+// -maybe create a template for new specializations that contains dummy instructions like:
 //  _simd_add, _simd_set, etc. and a script that reads in the template file and a second file that
 //  contains translations for the dummy instructions for a particular instruction set. _simd_add
 //  would be translated to _mm_add_ps, when the SSE translation file is used, etc. - it's a sort of
