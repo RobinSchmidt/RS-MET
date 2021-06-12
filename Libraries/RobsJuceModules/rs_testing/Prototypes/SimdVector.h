@@ -55,7 +55,7 @@ public:
   V(T a) { lo() = a; hi() = a; }                     // ...better
 
   V(CV2& low, CV2& high) { lo() = low; hi() = high; }
-  //V(CV2&& low, CV2&& high) { lo() = low; hi() = high; }
+  V(CV2&& low, CV2&& high) { lo() = low; hi() = high; }
   //V(CV2 low, CV2 high) { lo() = low; hi() = high; }
   // When we have the CV2& and CV2 versions both uncommented, we get a compile error:
   // "...constructor overload resolution was ambiguous" for rsSimdVector<double,16>, keeping only
@@ -138,7 +138,7 @@ public:
 #define V rsSimdVector<T, N>
 #define CV const V
 #define TIV template<class T, int N> inline V
-#define V2 rsSimdVector<T, N/2>
+//#define V2 rsSimdVector<T, N/2>
 
 // Arithmetic operators:
 //TIV operator+(CV a, CV b) { V c; c.lo()=a.lo()+b.lo(); c.hi()=a.hi()+b.hi(); return c; }
@@ -154,20 +154,15 @@ TIV operator+(const V& a) { return a; }        // unary plus
 TIV operator-(const V& a) { return V(0) - a; } // unary minus - can we do better?
 // ToDo: try passing arguments by value, check, if this incurs a performance hit
 
-
 // Unary functions:
-//TIV rsAbs(V x) 
-//{ 
-//  return V(V2(rsAbs(x.lo())), V2(rsAbs(x.hi()))); 
-//}
-//TIV rsAbs(V x) { return V(rsAbs(x.lo()), rsAbs(x.hi())); }
-//TIV rsCos(V x) { return V(rsCos(x.lo()), rsCos(x.hi())); }
+TIV rsAbs(V x) { return V(rsAbs(x.lo()), rsAbs(x.hi())); }
+TIV rsCos(V x) { return V(rsCos(x.lo()), rsCos(x.hi())); }
 // new implementation creates problems - we may need to implement lo()/hi() functions for 
 // the explicit specializations, too
 
 // old:
-TIV rsAbs( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsAbs( x[i]); return y; }
-TIV rsCos( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsCos( x[i]); return y; }
+//TIV rsAbs( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsAbs( x[i]); return y; }
+//TIV rsCos( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsCos( x[i]); return y; }
 TIV rsExp( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsExp( x[i]); return y; }
 TIV rsLog( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsLog( x[i]); return y; }
 TIV rsSin( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSin( x[i]); return y; }
@@ -189,7 +184,7 @@ TIV rsClip(V x, V a, V b) { V y; for(int i=0; i<N; i++) y[i]=rsClip(x[i], a[i], 
 #undef V
 #undef CV
 #undef TIV
-#undef V2
+//#undef V2
 
 //template<class T, int N>
 //rsSimdVector<T, N> rsSin(rsSimdVector<T, N> x)
@@ -258,7 +253,7 @@ TIV operator/(T s, CV b) { return V(s / b.v[0]); }
 
 // Unary functions:
 TIV rsAbs(V x) { return V(rsAbs(x.v[0])); }
-//TIV rsCos(V x) { return V(rsCos(x)); }
+TIV rsCos(V x) { return V(rsCos(x.v[0])); }
 
 #undef V
 #undef CV
@@ -279,18 +274,24 @@ public:
 
   //using V  = rsSimdVector<float, 4>;
   //using CV = const V;
+  using V2  = rsSimdVector<float, 2>;
+  using CV2 = const V2;
 
   //static bool isSimdEmulated() { return false; }
   static int getEmulationLevel() { return 0; }
 
   // Constructors:
-  V() {};
+  V() {}
+  V(CV& a) : v(a.v) {}
+  //V(CV&& a) : v(a.v) {}
   V(__m128 x) : v(x) {}
   V(float a) : v(_mm_set1_ps(a)) {}
   V(int a) : v(_mm_set1_ps(float(a))) {}
   V(double a) : v(_mm_set1_ps(float(a))) {}
   V(float a, float b, float c, float d) : v(_mm_setr_ps(a, b, c, d)) {}
   V(float* p) { v = _mm_setr_ps(p[0], p[1], p[2], p[3]); }
+  V(CV2& low, CV2& high) { lo() = low; hi() = high; }
+
 
 
   //// Arithmetic operators
@@ -305,25 +306,15 @@ public:
   float& operator[](const int i) const { return asArray()[i]; }
 
 
-  __m128 v;
-
-
-  // maybe we should somehow inherit the lo/hi functions ...or implement them here too
-
-//private:
-
-  float* asArray() const { return (float*) &v; }
-
-
-  // ugly boilerplate, we need lo()/hi() functions here, too:
-  using V2  = rsSimdVector<float, 2>;
-  using CV2 = const V2;
-  //inline V2& lo() { return *((V2*) &v); }
+  // Ugly boilerplate, because we need lo()/hi() functions here, too:
+  float* asArray() const { return (float*) &v; }                 // helper
   inline V2& lo() { return *((V2*) &(asArray()[0])); } 
   inline V2& hi() { return *((V2*) &(asArray()[2])); }           // 2 = 4/2 = N/2
-  //inline CV2& lo() const { return *((CV2*) &v); }
   inline CV2& lo() const { return *((CV2*) &(asArray()[0])); }
   inline CV2& hi() const { return *((CV2*) &(asArray()[2])); }
+
+  // The data:
+  __m128 v;
 };
 
 // Arithmetic operators:

@@ -242,7 +242,7 @@ void simdPerformance(TScalar scl, TVector vec, const char* dataTypeName)
   // vector = -scalar
   counter.init(); for(n = 0; n < N; n++)  accuV = -accuS;
   cycles = (double)counter.getNumCyclesSinceInit();
-  dontOptimize(&accuV); printPerformanceTestResult("v1 = -v1    ", k*cycles);
+  dontOptimize(&accuV); printPerformanceTestResult("v1 = -s1    ", k*cycles);
 
   // vector = -vector
   counter.init(); for(n = 0; n < N; n++)  accuV = -accuV;
@@ -335,21 +335,21 @@ template void simdPerformance(float, rsSimdVector<float, 4>, const char*);
 void simdPerformance()
 {
   // Tests for old versions:
-  simdPerformance(1.0, rsFloat64x2(1.0), "rsFloat64x2");
+  //simdPerformance(1.0, rsFloat64x2(1.0), "rsFloat64x2");
   simdPerformance(1.f, rsFloat32x4(1.f), "rsFloat32x4");
 
   // Tests for new versions:
-  simdPerformance(1.f, rsSimdVector<float,  1>(1.f), "rsSimdVector<float, 1>");
-  simdPerformance(1.f, rsSimdVector<float,  2>(1.f), "rsSimdVector<float, 2>");
+  //simdPerformance(1.f, rsSimdVector<float,  1>(1.f), "rsSimdVector<float, 1>");
+  //simdPerformance(1.f, rsSimdVector<float,  2>(1.f), "rsSimdVector<float, 2>");
   simdPerformance(1.f, rsSimdVector<float,  4>(1.f), "rsSimdVector<float, 4>");
   simdPerformance(1.f, rsSimdVector<float,  8>(1.f), "rsSimdVector<float, 8>");
-  simdPerformance(1.f, rsSimdVector<float, 16>(1.f), "rsSimdVector<float, 16>");
+  //simdPerformance(1.f, rsSimdVector<float, 16>(1.f), "rsSimdVector<float, 16>");
 
-  simdPerformance(1.0, rsSimdVector<double,  1>(1.0), "rsSimdVector<double, 1>");
-  simdPerformance(1.0, rsSimdVector<double,  2>(1.0), "rsSimdVector<double, 2>");
-  simdPerformance(1.0, rsSimdVector<double,  4>(1.0), "rsSimdVector<double, 4>");
-  simdPerformance(1.0, rsSimdVector<double,  8>(1.0), "rsSimdVector<double, 8>");
-  simdPerformance(1.0, rsSimdVector<double, 16>(1.0), "rsSimdVector<double, 16>");
+  //simdPerformance(1.0, rsSimdVector<double,  1>(1.0), "rsSimdVector<double, 1>");
+  //simdPerformance(1.0, rsSimdVector<double,  2>(1.0), "rsSimdVector<double, 2>");
+  //simdPerformance(1.0, rsSimdVector<double,  4>(1.0), "rsSimdVector<double, 4>");
+  //simdPerformance(1.0, rsSimdVector<double,  8>(1.0), "rsSimdVector<double, 8>");
+  //simdPerformance(1.0, rsSimdVector<double, 16>(1.0), "rsSimdVector<double, 16>");
 
   // Expectations:
   // -Operations on rsSimdVector<float, 1> should use the same number of CPU cycles as the
@@ -369,6 +369,10 @@ void simdPerformance()
   //  are ready for production
   // -compare the perfomance of the abstractions with those of the native types, like 
   //  rsSimdVector<float, 4> with using __m128 directly, etc.
+
+  // Observations:
+  // -for rsSimdVector<float, 8>, scalar + vector is a lot more expensive than vector + scalar
+  //  -> implement both using the faster algo - it's commutative anyway
 }
 
 

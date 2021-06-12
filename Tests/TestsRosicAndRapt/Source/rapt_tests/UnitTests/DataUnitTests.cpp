@@ -936,8 +936,36 @@ bool simdTemplateUnitTest()
   c = s*a; for(i=0; i<N; i++) { ok &= c[i] == s*a[i]; }
   c = s/a; for(i=0; i<N; i++) { ok &= c[i] == s/a[i]; }
 
-  // todo: test unary plus/minus, unary math functions, binary math functions, comparison 
-  // operators, copy/conversion constructors, assignment operators
+  // Test unary plus/minus:
+  c = +a; for(i=0; i<N; i++) { ok &= c[i] == +a[i]; }
+  c = -a; for(i=0; i<N; i++) { ok &= c[i] == -a[i]; }
+
+  // Test unary math functions:
+  c = rsAbs(a); for(i=0; i<N; i++) { ok &= c[i] == rsAbs(a[i]); }
+  // ...
+
+  // todo: test binary math functions, comparison operators, copy/conversion constructors, 
+  // assignment operators
+
+  return ok;
+}
+
+template<class T, int N>
+bool simdFloatUnitTest()
+{
+  // Like simdTemplateUnitTest but with additional tests that apply only to floating point types, 
+  // such as the transcendental functions (todo: test nan/inf stuff, too)
+
+  bool ok = simdTemplateUnitTest<T, N>();
+
+  rsSimdVector<T, N> a, b, c;
+  int i;
+  for(i=0; i<N; i++) { a[i] = T(2*i+1); b[i] = T(3)*a[i]; } // init operands
+
+  // Test float-specific unary math functions:
+  c = rsCos(a); for(i=0; i<N; i++) { ok &= c[i] == rsCos(a[i]); }
+  c = rsExp(a); for(i=0; i<N; i++) { ok &= c[i] == rsExp(a[i]); }
+  c = rsLog(a); for(i=0; i<N; i++) { ok &= c[i] == rsLog(a[i]); }
 
   return ok;
 }
@@ -964,14 +992,12 @@ bool simdInstantiationUnitTest()
   ok &= rsSimdVector<double, 2>::getEmulationLevel() == 1;
   ok &= rsSimdVector<double, 4>::getEmulationLevel() == 2;
 
-
   // ToDo: 
   // -the expected outcomes of these tests should later depend on the compiler settings and
   //  macro definitions...not yet sure, how to implement this
 
   return ok;
 }
-
 
 bool simdUnitTest()
 {
@@ -991,17 +1017,18 @@ bool simdUnitTest()
   ok &= simdTemplateUnitTest<int,     4>();  // no
   ok &= simdTemplateUnitTest<int,     8>();  // no
   ok &= simdTemplateUnitTest<int,    16>();  // no
-  ok &= simdTemplateUnitTest<float,   1>();  // no
-  ok &= simdTemplateUnitTest<float,   2>();  // no
-  ok &= simdTemplateUnitTest<float,   4>();  // yes (but incomplete)
-  ok &= simdTemplateUnitTest<float,   8>();  // no
-  ok &= simdTemplateUnitTest<float,  16>();  // no
-  ok &= simdTemplateUnitTest<double,  1>();  // no
-  ok &= simdTemplateUnitTest<double,  2>();  // no
-  ok &= simdTemplateUnitTest<double,  4>();  // no
-  ok &= simdTemplateUnitTest<double,  8>();  // no
-  ok &= simdTemplateUnitTest<double, 16>();  // no
   // try also with 16 chars
+
+  ok &= simdFloatUnitTest<float,      1>();  // no
+  ok &= simdFloatUnitTest<float,      2>();  // no
+  ok &= simdFloatUnitTest<float,      4>();  // yes (but incomplete)
+  ok &= simdFloatUnitTest<float,      8>();  // no
+  ok &= simdFloatUnitTest<float,     16>();  // no
+  ok &= simdFloatUnitTest<double,     1>();  // no
+  ok &= simdFloatUnitTest<double,     2>();  // no
+  ok &= simdFloatUnitTest<double,     4>();  // no
+  ok &= simdFloatUnitTest<double,     8>();  // no
+  ok &= simdFloatUnitTest<double,    16>();  // no
 
   ok &= simdInstantiationUnitTest();
 
