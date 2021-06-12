@@ -941,7 +941,8 @@ bool simdTemplateUnitTest()
   c = -a; for(i=0; i<N; i++) { ok &= c[i] == -a[i]; }
 
   // Test unary math functions:
-  c = rsAbs(a); for(i=0; i<N; i++) { ok &= c[i] == rsAbs(a[i]); }
+  c = rsAbs( a); for(i=0; i<N; i++) { ok &= c[i] == rsAbs( a[i]); }
+  c = rsSign(a); for(i=0; i<N; i++) { ok &= c[i] == rsSign(a[i]); }
   // ...
 
   // todo: test binary math functions, comparison operators, copy/conversion constructors, 
@@ -963,9 +964,12 @@ bool simdFloatUnitTest()
   for(i=0; i<N; i++) { a[i] = T(2*i+1); b[i] = T(3)*a[i]; } // init operands
 
   // Test float-specific unary math functions:
-  c = rsCos(a); for(i=0; i<N; i++) { ok &= c[i] == rsCos(a[i]); }
-  c = rsExp(a); for(i=0; i<N; i++) { ok &= c[i] == rsExp(a[i]); }
-  c = rsLog(a); for(i=0; i<N; i++) { ok &= c[i] == rsLog(a[i]); }
+  c = rsCos( a); for(i=0; i<N; i++) { ok &= c[i] == rsCos( a[i]); }
+  c = rsExp( a); for(i=0; i<N; i++) { ok &= c[i] == rsExp( a[i]); }
+  c = rsLog( a); for(i=0; i<N; i++) { ok &= c[i] == rsLog( a[i]); }
+  c = rsSin( a); for(i=0; i<N; i++) { ok &= c[i] == rsSin( a[i]); }
+  c = rsSqrt(a); for(i=0; i<N; i++) { ok &= c[i] == rsSqrt(a[i]); }
+  c = rsTan( a); for(i=0; i<N; i++) { ok &= c[i] == rsTan( a[i]); }
 
   return ok;
 }

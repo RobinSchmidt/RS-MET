@@ -154,21 +154,27 @@ TIV operator+(const V& a) { return a; }        // unary plus
 TIV operator-(const V& a) { return V(0) - a; } // unary minus - can we do better?
 // ToDo: try passing arguments by value, check, if this incurs a performance hit
 
-// Unary functions:
-TIV rsAbs(V x) { return V(rsAbs(x.lo()), rsAbs(x.hi())); }
-TIV rsCos(V x) { return V(rsCos(x.lo()), rsCos(x.hi())); }
-// new implementation creates problems - we may need to implement lo()/hi() functions for 
-// the explicit specializations, too
+// Unary functions (int and float):
+TIV rsAbs(V x)  { return V(rsAbs( x.lo()), rsAbs( x.hi())); }
+TIV rsSign(V x) { return V(rsSign(x.lo()), rsSign(x.hi())); }
+
+// Unary functions (float only):
+TIV rsCos( V x) { return V(rsCos( x.lo()), rsCos( x.hi())); }
+TIV rsExp( V x) { return V(rsExp( x.lo()), rsExp( x.hi())); }
+TIV rsLog( V x) { return V(rsLog( x.lo()), rsLog( x.hi())); }
+TIV rsSin( V x) { return V(rsSin( x.lo()), rsSin( x.hi())); }
+TIV rsSqrt(V x) { return V(rsSqrt(x.lo()), rsSqrt(x.hi())); }
+TIV rsTan( V x) { return V(rsTan( x.lo()), rsTan( x.hi())); }
 
 // old:
 //TIV rsAbs( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsAbs( x[i]); return y; }
 //TIV rsCos( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsCos( x[i]); return y; }
-TIV rsExp( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsExp( x[i]); return y; }
-TIV rsLog( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsLog( x[i]); return y; }
-TIV rsSin( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSin( x[i]); return y; }
-TIV rsSign(V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSign(x[i]); return y; }
-TIV rsSqrt(V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSqrt(x[i]); return y; }
-TIV rsTan( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsTan( x[i]); return y; }
+//TIV rsExp( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsExp( x[i]); return y; }
+//TIV rsLog( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsLog( x[i]); return y; }
+//TIV rsSin( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSin( x[i]); return y; }
+//TIV rsSign(V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSign(x[i]); return y; }
+//TIV rsSqrt(V x) { V y; for(int i = 0; i < N; i++) y[i] = rsSqrt(x[i]); return y; }
+//TIV rsTan( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsTan( x[i]); return y; }
 // floor, ceil, round, asin, acos, atan, sinh, cosh, tanh, asinh, acosh, atanh, ...
 // maybe write a macros RS_VECTORIZE_1, so we just need to write RS_VECTORIZE_1(rsSin) etc. to 
 // reduce boilerplate. the 1 is for "unary"
@@ -251,9 +257,17 @@ TIV operator-(T s, CV b) { return V(s - b.v[0]); }
 TIV operator*(T s, CV b) { return V(s * b.v[0]); }
 TIV operator/(T s, CV b) { return V(s / b.v[0]); }
 
-// Unary functions:
-TIV rsAbs(V x) { return V(rsAbs(x.v[0])); }
-TIV rsCos(V x) { return V(rsCos(x.v[0])); }
+// Unary functions (int and float):
+TIV rsAbs( V x) { return V(rsAbs( x.v[0])); }
+TIV rsSign(V x) { return V(rsSign(x.v[0])); }
+
+// Unary functions (float only):
+TIV rsCos( V x) { return V(rsCos( x.v[0])); }
+TIV rsExp( V x) { return V(rsExp( x.v[0])); }
+TIV rsLog( V x) { return V(rsLog( x.v[0])); }
+TIV rsSin( V x) { return V(rsSin( x.v[0])); }
+TIV rsSqrt(V x) { return V(rsSqrt(x.v[0])); }
+TIV rsTan( V x) { return V(rsTan( x.v[0])); }
 
 #undef V
 #undef CV
