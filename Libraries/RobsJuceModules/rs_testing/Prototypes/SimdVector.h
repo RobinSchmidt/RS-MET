@@ -51,11 +51,16 @@ public:
 
 
   V() {}
-  V(T a) { for(int i = 0; i < N; i++) v[i] = a; } 
-  // hmm...loop = baad -> use lo() = a; hi() = a;
+  //V(T a) { for(int i = 0; i < N; i++) v[i] = a; }  // hmm...loop = bad
+  V(T a) { lo() = a; hi() = a; }                     // ...better
 
   V(CV2& low, CV2& high) { lo() = low; hi() = high; }
-
+  //V(CV2&& low, CV2&& high) { lo() = low; hi() = high; }
+  //V(CV2 low, CV2 high) { lo() = low; hi() = high; }
+  // When we have the CV2& and CV2 versions both uncommented, we get a compile error:
+  // "...constructor overload resolution was ambiguous" for rsSimdVector<double,16>, keeping only
+  // one of them gives a compile error for rsSimdVector<float,4> when the new rsAbs implementation
+  // is uncommented
 
 
   //V(int a) { for(int i = 0; i < N; i++) v[i] = (T)a; }
@@ -68,9 +73,7 @@ public:
   inline const T& operator[](const int i) const { rsStaticAssert(i >= 0 && i < N); return v[i]; }
 
 
-  //static bool isSimdEmulated() { return true; }
-  // explicit instantiations that actually do hardware simd, should return false
-  // obsolete - getEmulationLevel provides more detailed information
+
 
   /** Returns the level of software emulation that takes place for this particular template 
   instantiation with the current compiler- and preprocessor settings. If the instantiation 
@@ -79,7 +82,7 @@ public:
   returns 2. And so on. For example, for rsSimdVector<float, 16> when you only have SSE 
   available, the 16 element SIMD vector will be emulated by 4 SSE __m128 variables, so the 
   emulation-level will be 2. */
-  static int getEmulationLevel() { return rsSimdVector<T, N/2>::getEmulationLevel() + 1; }
+  static int getEmulationLevel() { return V2::getEmulationLevel() + 1; }
 
 
 
@@ -88,6 +91,18 @@ public:
   V operator-(CV b) const { return V(lo()-b.lo(), hi()-b.hi()); }
   V operator*(CV b) const { return V(lo()*b.lo(), hi()*b.hi()); }
   V operator/(CV b) const { return V(lo()/b.lo(), hi()/b.hi()); }
+
+  //V operator+(CV& b) const { return V(lo()+b.lo(), hi()+b.hi()); }
+  //V operator-(CV& b) const { return V(lo()-b.lo(), hi()-b.hi()); }
+  //V operator*(CV& b) const { return V(lo()*b.lo(), hi()*b.hi()); }
+  //V operator/(CV& b) const { return V(lo()/b.lo(), hi()/b.hi()); }
+
+  //V operator+(CV&& b) const { return V(lo()+b.lo(), hi()+b.hi()); }
+  //V operator-(CV&& b) const { return V(lo()-b.lo(), hi()-b.hi()); }
+  //V operator*(CV&& b) const { return V(lo()*b.lo(), hi()*b.hi()); }
+  //V operator/(CV&& b) const { return V(lo()/b.lo(), hi()/b.hi()); }
+
+  //V operator/(CV b) const { return V(V2(lo()/b.lo()), V2(hi()/b.hi())); }
 
 
   // old:
@@ -123,6 +138,7 @@ public:
 #define V rsSimdVector<T, N>
 #define CV const V
 #define TIV template<class T, int N> inline V
+#define V2 rsSimdVector<T, N/2>
 
 // Arithmetic operators:
 //TIV operator+(CV a, CV b) { V c; c.lo()=a.lo()+b.lo(); c.hi()=a.hi()+b.hi(); return c; }
@@ -140,6 +156,16 @@ TIV operator-(const V& a) { return V(0) - a; } // unary minus - can we do better
 
 
 // Unary functions:
+//TIV rsAbs(V x) 
+//{ 
+//  return V(V2(rsAbs(x.lo())), V2(rsAbs(x.hi()))); 
+//}
+//TIV rsAbs(V x) { return V(rsAbs(x.lo()), rsAbs(x.hi())); }
+//TIV rsCos(V x) { return V(rsCos(x.lo()), rsCos(x.hi())); }
+// new implementation creates problems - we may need to implement lo()/hi() functions for 
+// the explicit specializations, too
+
+// old:
 TIV rsAbs( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsAbs( x[i]); return y; }
 TIV rsCos( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsCos( x[i]); return y; }
 TIV rsExp( V x) { V y; for(int i = 0; i < N; i++) y[i] = rsExp( x[i]); return y; }
@@ -163,6 +189,7 @@ TIV rsClip(V x, V a, V b) { V y; for(int i=0; i<N; i++) y[i]=rsClip(x[i], a[i], 
 #undef V
 #undef CV
 #undef TIV
+#undef V2
 
 //template<class T, int N>
 //rsSimdVector<T, N> rsSin(rsSimdVector<T, N> x)
@@ -229,6 +256,10 @@ TIV operator-(T s, CV b) { return V(s - b.v[0]); }
 TIV operator*(T s, CV b) { return V(s * b.v[0]); }
 TIV operator/(T s, CV b) { return V(s / b.v[0]); }
 
+// Unary functions:
+TIV rsAbs(V x) { return V(rsAbs(x.v[0])); }
+//TIV rsCos(V x) { return V(rsCos(x)); }
+
 #undef V
 #undef CV
 #undef TIV
@@ -276,10 +307,23 @@ public:
 
   __m128 v;
 
+
+  // maybe we should somehow inherit the lo/hi functions ...or implement them here too
+
 //private:
 
   float* asArray() const { return (float*) &v; }
 
+
+  // ugly boilerplate, we need lo()/hi() functions here, too:
+  using V2  = rsSimdVector<float, 2>;
+  using CV2 = const V2;
+  //inline V2& lo() { return *((V2*) &v); }
+  inline V2& lo() { return *((V2*) &(asArray()[0])); } 
+  inline V2& hi() { return *((V2*) &(asArray()[2])); }           // 2 = 4/2 = N/2
+  //inline CV2& lo() const { return *((CV2*) &v); }
+  inline CV2& lo() const { return *((CV2*) &(asArray()[0])); }
+  inline CV2& hi() const { return *((CV2*) &(asArray()[2])); }
 };
 
 // Arithmetic operators:
