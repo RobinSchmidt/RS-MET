@@ -104,6 +104,10 @@ public:
 
   /** Returns a const reference to the higher half-vector. */
   inline CV2& hi() const { return *((CV2*) &v[N/2]); }
+  // Do we need to consider endianness to decide which is the lower and which is the upper 
+  // half-vector? Maybe it matters for the actual memory layout - but actually, the memory layout
+  // should probably not need to bother us? I think, we don't really need to care which is which as
+  // long as everything is consistent.
 
 
   T v[N]; // maybe we should specify an alignment?
@@ -123,26 +127,38 @@ TIV operator-(const V& a) { return V(0) - a; } // unary minus - can we do better
 // ToDo: try passing arguments by value, check, if this incurs a performance hit
 
 // Unary functions (int and float):
-TIV rsAbs(V x)  { return V(rsAbs( x.lo()), rsAbs( x.hi())); }
+TIV rsAbs( V x) { return V(rsAbs( x.lo()), rsAbs( x.hi())); }
 TIV rsSign(V x) { return V(rsSign(x.lo()), rsSign(x.hi())); }
 
 // Unary functions (float only):
-TIV rsCos( V x) { return V(rsCos( x.lo()), rsCos( x.hi())); }
+TIV rsFloor(V x) { return V(rsFloor(x.lo()), rsFloor(x.hi())); }
+TIV rsCeil( V x) { return V(rsCeil( x.lo()), rsCeil( x.hi())); }
+TIV rsRound(V x) { return V(rsRound(x.lo()), rsRound(x.hi())); }
+
 TIV rsExp( V x) { return V(rsExp( x.lo()), rsExp( x.hi())); }
 TIV rsLog( V x) { return V(rsLog( x.lo()), rsLog( x.hi())); }
-TIV rsSin( V x) { return V(rsSin( x.lo()), rsSin( x.hi())); }
 TIV rsSqrt(V x) { return V(rsSqrt(x.lo()), rsSqrt(x.hi())); }
-TIV rsTan( V x) { return V(rsTan( x.lo()), rsTan( x.hi())); }
+
+TIV rsSin(V x) { return V(rsSin(x.lo()), rsSin(x.hi())); }
+TIV rsCos(V x) { return V(rsCos(x.lo()), rsCos(x.hi())); }
+TIV rsTan(V x) { return V(rsTan(x.lo()), rsTan(x.hi())); }
+
+TIV rsSinh(V x) { return V(rsSinh(x.lo()), rsSinh(x.hi())); }
+TIV rsCosh(V x) { return V(rsCosh(x.lo()), rsCosh(x.hi())); }
+TIV rsTanh(V x) { return V(rsTanh(x.lo()), rsTanh(x.hi())); }
+
 // ToDo:
-// floor, ceil, round, asin, acos, atan, sinh, cosh, tanh, asinh, acosh, atanh, ...
+// asin, acos, atan, asinh, acosh, atanh, cbrt, expm1, exp2, log2, splitIntFrac, erf, tgamma
 // maybe write a macros RS_VECTORIZE_1, so we just need to write RS_VECTORIZE_1(rsSin) etc. to 
 // reduce boilerplate. the 1 is for "unary"
 
 // Binary functions:
-// min, max, pow, atan2, fmod, ...
+// min, max, pow, atan2, fmod, hypot, logN ...
 
 // Ternary functions:
 TIV rsClip(V x, V a, V b) { return V(rsClip(x.lo(),a.lo(),b.lo()), rsClip(x.hi(),a.hi(),b.hi())); }
+
+// todo: lerp
 
 #undef V
 #undef CV
@@ -206,21 +222,34 @@ TIV rsAbs( V x) { return V(rsAbs( x.v[0])); }
 TIV rsSign(V x) { return V(rsSign(x.v[0])); }
 
 // Unary functions (float only):
-TIV rsCos( V x) { return V(rsCos( x.v[0])); }
-TIV rsExp( V x) { return V(rsExp( x.v[0])); }
-TIV rsLog( V x) { return V(rsLog( x.v[0])); }
-TIV rsSin( V x) { return V(rsSin( x.v[0])); }
-TIV rsSqrt(V x) { return V(rsSqrt(x.v[0])); }
-TIV rsTan( V x) { return V(rsTan( x.v[0])); }
+TIV rsFloor(V x) { return V(rsFloor(x.v[0])); }
+TIV rsCeil( V x) { return V(rsCeil( x.v[0])); }
+TIV rsRound(V x) { return V(rsRound(x.v[0])); }
+
+TIV rsExp(  V x) { return V(rsExp(  x.v[0])); }
+TIV rsLog(  V x) { return V(rsLog(  x.v[0])); }
+TIV rsSqrt( V x) { return V(rsSqrt( x.v[0])); }
+
+TIV rsSin(  V x) { return V(rsSin(  x.v[0])); }
+TIV rsCos(  V x) { return V(rsCos(  x.v[0])); }
+TIV rsTan(  V x) { return V(rsTan(  x.v[0])); }
+
+TIV rsCosh(  V x) { return V(rsCosh(  x.v[0])); }
+TIV rsSinh(  V x) { return V(rsSinh(  x.v[0])); }
+TIV rsTanh(  V x) { return V(rsTanh(  x.v[0])); }
 
 // Ternary functions:
 TIV rsClip(V x, V a, V b) { return V(rsClip(x.v[0], a.v[0], b.v[0])); }
-
 
 #undef V
 #undef CV
 #undef TIV
 
+// Macros for function definitions:
+//#define RS_VECTORIZE_FUNCTION_1(f) 
+
+
+//=================================================================================================
 //-------------------------------------------------------------------------------------------------
 /** Explicit specialization for a vector of 4 floats. */
 

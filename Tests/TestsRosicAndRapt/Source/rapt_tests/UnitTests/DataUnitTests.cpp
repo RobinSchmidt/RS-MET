@@ -964,12 +964,18 @@ bool simdFloatUnitTest()
   for(i=0; i<N; i++) { a[i] = T(2*i+1); b[i] = T(3)*a[i]; } // init operands
 
   // Test float-specific unary math functions:
-  c = rsCos( a); for(i=0; i<N; i++) { ok &= c[i] == rsCos( a[i]); }
-  c = rsExp( a); for(i=0; i<N; i++) { ok &= c[i] == rsExp( a[i]); }
-  c = rsLog( a); for(i=0; i<N; i++) { ok &= c[i] == rsLog( a[i]); }
-  c = rsSin( a); for(i=0; i<N; i++) { ok &= c[i] == rsSin( a[i]); }
-  c = rsSqrt(a); for(i=0; i<N; i++) { ok &= c[i] == rsSqrt(a[i]); }
-  c = rsTan( a); for(i=0; i<N; i++) { ok &= c[i] == rsTan( a[i]); }
+  c = rsCos(  a); for(i=0; i<N; i++) { ok &= c[i] == rsCos(  a[i]); }
+  c = rsExp(  a); for(i=0; i<N; i++) { ok &= c[i] == rsExp(  a[i]); }
+  c = rsLog(  a); for(i=0; i<N; i++) { ok &= c[i] == rsLog(  a[i]); }
+  c = rsSin(  a); for(i=0; i<N; i++) { ok &= c[i] == rsSin(  a[i]); }
+  c = rsSqrt( a); for(i=0; i<N; i++) { ok &= c[i] == rsSqrt( a[i]); }
+  c = rsTan(  a); for(i=0; i<N; i++) { ok &= c[i] == rsTan(  a[i]); }
+  c = rsFloor(a); for(i=0; i<N; i++) { ok &= c[i] == rsFloor(a[i]); }
+  c = rsCeil( a); for(i=0; i<N; i++) { ok &= c[i] == rsCeil( a[i]); }
+  c = rsRound(a); for(i=0; i<N; i++) { ok &= c[i] == rsRound(a[i]); }
+  c = rsCosh( a); for(i=0; i<N; i++) { ok &= c[i] == rsCosh( a[i]); }
+  c = rsSinh( a); for(i=0; i<N; i++) { ok &= c[i] == rsSinh( a[i]); }
+  c = rsTanh( a); for(i=0; i<N; i++) { ok &= c[i] == rsTanh( a[i]); }
 
   return ok;
 }

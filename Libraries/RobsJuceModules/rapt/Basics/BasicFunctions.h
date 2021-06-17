@@ -66,15 +66,33 @@ template<class T> inline bool rsIsFiniteNumbers(T* x, int N)
       return false;
   return true;
 }
+// rename to rsAllFiniteNumbers
 
+template<class T> inline T rsSqrt( T x) { return std::sqrt( x); }
+template<class T> inline T rsExp(  T x) { return std::exp(  x); }
+template<class T> inline T rsLog(  T x) { return std::log(  x); }
+template<class T> inline T rsSin(  T x) { return std::sin(  x); }
+template<class T> inline T rsCos(  T x) { return std::cos(  x); }
+template<class T> inline T rsTan(  T x) { return std::tan(  x); }
+template<class T> inline T rsFloor(T x) { return std::floor(x); }
+template<class T> inline T rsCeil( T x) { return std::ceil( x); }
+template<class T> inline T rsRound(T x) { return std::round(x); }
+//template<class T> inline T rsSinh( T x) { return std::sinh( x); }
+//template<class T> inline T rsCosh( T x) { return std::cosh( x); }
+//template<class T> inline T rsTanh( T x) { return std::tanh( x); }
+// the hyperbolic functions are already defined elsewhere (and differently!)
 
-// abs, sign, floor, ceil
-template<class T> inline T rsSqrt(T x) { return std::sqrt(x); }
-template<class T> inline T rsExp( T x) { return std::exp( x); }
-template<class T> inline T rsLog( T x) { return std::log( x); }
-template<class T> inline T rsSin( T x) { return std::sin( x); }
-template<class T> inline T rsCos( T x) { return std::cos( x); }
-template<class T> inline T rsTan( T x) { return std::tan( x); }
+// todo: 
+// -sort them alphabetically, maybe use a shorthand #define for the common prefix
+//  template<class T> inline T
+// -merge code with RealFunctions.h
+// -maybe wrap into a class rsMathFunctions or rsRealFunctions, do the same with the integer and 
+//  complex functions
+// -add more, see:
+//  https://en.cppreference.com/w/cpp/header/cmath
+//  https://en.cppreference.com/w/cpp/numeric/special_functions (C++17)
+// -wrap and use modf, where appropriate - maybe it optimizes the splitting into int/frac
+
 
 template<class T> inline int rsFloorInt(T x) { return (int) floor(x); }
 template<class T> inline int rsCeilInt( T x) { return (int) ceil(x);  }

@@ -6,7 +6,7 @@ functions (such as sin, exp, log, pow, tanh, etc. - although, we don't duplicate
 functions here) or can be expressed as combinations thereof (involving composition and arithmetic
 operations), like gauss, log2, cheby, etc...  */
 
-// \todo templatize them
+// \todo templatize them, wrap into class rsRealFunctions (do the same for integer functions)
 // \todo maybe have special polynomials like cheby in an extra file - but maybe not
 // \todo move some of them into the cpp file - un-inline
 
@@ -439,8 +439,8 @@ RS_INLINE T rsClip(T x, T min, T max)
 template<class T>
 T rsCosh(T x)
 {
-  T c = 0.5*exp(x);
-  return c+(0.25/c);
+  T c = T(0.5)*exp(x);
+  return c+(T(0.25)/c);
 }
 
 RS_INLINE double rsCosSquaredApprox(double x)
@@ -725,8 +725,8 @@ RS_INLINE void rsSinCos(float x, float* sinResult, float* cosResult)
 template<class T>
 T rsSinh(T x)
 {
-  T c = 0.5*exp(x);
-  return c-(0.25/c);
+  T c = T(0.5)*exp(x);
+  return c-(T(0.25)/c);
 }
 
 template<class T>
