@@ -5,8 +5,9 @@ using namespace rotes;
 //#include "rosic/rosic.h"
 using namespace rosic;
 
-void rotes::testBinomialCoefficients()
+bool rotes::testBinomialCoefficients()
 {
+  bool ok = true;
   unsigned int nMax = 20;
   unsigned int c1, c2;
   for(unsigned int n = 0; n <= nMax; n++)
@@ -15,32 +16,33 @@ void rotes::testBinomialCoefficients()
     {
       c1 = RAPT::rsBinomialCoefficient(      n, k);
       c2 = RAPT::rsBinomialCoefficientUpTo20(n, k);
-      rassert( c1 == c2 );
+      ok &= c1 == c2;
     }
   }
+  return ok;
 }
 
-void rotes::testMathFunctions()
+bool rotes::testMathFunctions()
 {
+  bool ok = true;
+
   double y = rosic::besselI0(30.0);
+  // https://www.wolframalpha.com/input/?i=besseli%5B0%2C30%5D
+  // 7.81672297823977489717389816705295005444944253977947003347688 × 10^11
+  // ...it's not very accurate but in the right ballpark
 
-  //Plotter::plotFunction(besselI0, 0.0, 20.0);
+  //GNUPlotter plt; plt.plotFunctions(501, 0.0, 20.0, &besselI0);
+  // looks like exponential growth - is that correct?
 
-  std::vector<std::complex<double>> roots;
-  roots.push_back(std::complex<double>( 2, 0));
-  roots.push_back(std::complex<double>( 3, 0));
-  roots.push_back(std::complex<double>(-1, 0));
 
-  std::vector<std::complex<double>> coeffs =
-    RAPT::rsPolynomial<double>::rootsToCoeffs(roots);
+  using Cmp = std::complex<double>;
+  using Vec = std::vector<Cmp>;
 
-  std::complex<double> coeffsDbg[8];
-  for(size_t i = 0; i < 8; i++)
-    coeffsDbg[i] = -1000;
-  for(size_t i = 0; i < coeffs.size(); i++)
-    coeffsDbg[i] = coeffs[i];
+  Vec roots({Cmp( 2, 0), Cmp( 3, 0), Cmp(-1, 0)}); // p(x) = (x-2)*(x-3)*(x+1) = x^3-4*x^2+x+6
+  Vec coeffs = RAPT::rsPolynomial<double>::rootsToCoeffs(roots);
+  ok &= coeffs == Vec({6.0,1.0,-4.0,1.0});
 
-  int dummy = 0;
+  return ok;
 }
 
 void rotes::testWindowFunctions()

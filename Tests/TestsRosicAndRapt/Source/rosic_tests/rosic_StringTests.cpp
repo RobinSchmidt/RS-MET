@@ -99,8 +99,21 @@ bool rotes::testStringDoubleConversionsRandom(int numIterations)
     numString           = numberOriginal;
     numberReconstructed = numString.asDouble();
     ok &= numberReconstructed == numberOriginal;
+    //rsAssert(ok);
   }
   return ok;
+  // This test fails, because the double -> string conversion (done via sprintf in 
+  // rsString::initFromDoubleValue) sometimes produces wrong last decimal digits. Probably some
+  // numeric precision issue in sprintf. See:
+  // https://stackoverflow.com/questions/62661223/sprintf-formatting-problem-for-doubles-with-high-precision
+  // https://www.exploringbinary.com/incorrect-round-trip-conversions-in-visual-c-plus-plus/
+  // Maybe use:
+  // https://github.com/ulfjack/ryu or
+  // https://github.com/jk-jeon/Grisu-Exact
+  // https://github.com/jk-jeon/Grisu-Exact11
+  // https://github.com/jk-jeon/fp
+  // or drag in the code from RSLib for rsBigFloat - i have implemented a parsing algo there, too 
+  // and it may be useful anyway
 }
 
 bool rotes::testStringDoubleConversionsSpecialValues()

@@ -3,12 +3,16 @@
 
 // try to get rid of this file
 
-void rotes::testAllRosicClasses()
+bool rotes::testAllRosicClasses()
 {
   // ToDo: split into unit tests and experiments, unit tests should return a bool
+  bool ok = true;
 
-  testRosicString();
-  testRosicBasics();
+  //printf("Warning: in testAllRosicClasses, not all tests are updated yet.\n");
+  rsWarning("In testAllRosicClasses(), not all tests are updated yet.");
+
+  ok &= testRosicString();
+  ok &= testRosicBasics();
   testRosicFile();
   testRosicFilter();
   testRosicGenerators();
@@ -19,6 +23,8 @@ void rotes::testAllRosicClasses()
   testRosicEffects();
   testRosicNumerical();
   testRosicMath();
+
+  return ok;
 }
 
 void rotes::testRosicAnalysis()
@@ -26,12 +32,14 @@ void rotes::testRosicAnalysis()
   testOscilloscopeBuffer();  // creates plot
 }
 
-void rotes::testRosicBasics()
+bool rotes::testRosicBasics()
 {
-  testBinomialCoefficients();
-  testMathFunctions();
+  bool ok = true;
+  ok &= testBinomialCoefficients();  // obsolete thx to rapt, now?
+  ok &= testMathFunctions();
   testWindowFunctions();
   testInterpolation();
+  return ok;
 }
 
 void rotes::testRosicFile()

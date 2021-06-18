@@ -80,8 +80,8 @@ void testConsecutiveExponentialDecay();
 void testOscilloscopeBuffer();
 
 // basics:
-void testBinomialCoefficients();
-void testMathFunctions();
+bool testBinomialCoefficients();    // obsolete thx to rapt, now?
+bool testMathFunctions();
 void testWindowFunctions();
 void testInterpolation();
 void testHermiteTwoPoint1();
@@ -117,9 +117,9 @@ bool testMinimumPhaseReconstruction();
 void testSlewRateLimiterLinear();
 
 // unit test drivers:
-void testAllRosicClasses();
+bool testAllRosicClasses();
 void testRosicAnalysis();
-void testRosicBasics();
+bool testRosicBasics();
 void testRosicFile();
 void testRosicEffects();
 void testRosicFilter();

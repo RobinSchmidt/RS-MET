@@ -117,7 +117,7 @@ void rsString::setFromDoubleValue(const double doubleValue)
   }
 
   // create temporary string long enough to hold all the characters, determine the actually 
-  // required length and copy the repsective part of the temporary string - the c-book says, 
+  // required length and copy the respective part of the temporary string - the c-book says, 
   // strncpy is unreliable with respect to copying the terminating zero, so we do it manually:
   char cString[64];
   sprintf(cString, "%-.17gl", doubleValue);
