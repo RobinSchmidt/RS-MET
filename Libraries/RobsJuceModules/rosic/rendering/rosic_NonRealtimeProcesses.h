@@ -101,7 +101,7 @@ namespace rosic
   even 'fftSize' and (fftSize-1)/2+1 odd 'fftSize'. You may pass a NULL pointer for the phases, if 
   you are not interested in them. */
   void fftMagnitudesAndPhases(double *signalBlock, int blockSize, double *magnitudes, 
-    double *phases, int fftSize);
+    double *phases, int fftSize, bool scale = false);
 
   /** Computes the real cepstrum of a real-valued signal. The real cepstrum is defined as the 
   inverse dicrete Fourier transform of the logarithm of the absolute value of the discrete 

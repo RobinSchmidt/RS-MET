@@ -395,21 +395,27 @@ void rosic::ifftReal(Complex *spectrum, int fftSize, double *signalBlock)
 }
 
 void rosic::fftMagnitudesAndPhases(double *signalBlock, int blockSize, double *magnitudes,
-                                   double *phases, int fftSize)
+                                   double *phases, int fftSize, bool scale)
 {
+  double s = 1.0;
+  if(scale)
+    s = fftSize; // or should it be blockSize?
+
   Complex *spectrum = new Complex[fftSize];
   fft(signalBlock, blockSize, spectrum, fftSize);
   int kMax;
-  if( RAPT::rsIsEven(fftSize) )
+
+  if( RAPT::rsIsEven(fftSize) ) // superfluous - integer division will take care of this anyway
     kMax = fftSize/2;
   else
     kMax = (fftSize-1)/2;
+
   for(int k=0; k<=kMax; k++)
-    magnitudes[k] = spectrum[k].getRadius();
+    magnitudes[k] = s * spectrum[k].getRadius();
   if( phases != NULL )
   {
     for(int k=0; k<=kMax; k++)
-      phases[k]     = spectrum[k].getAngle();
+      phases[k] = spectrum[k].getAngle();
   }
   delete[] spectrum;
 }

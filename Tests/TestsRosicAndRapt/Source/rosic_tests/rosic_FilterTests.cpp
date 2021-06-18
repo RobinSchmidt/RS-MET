@@ -709,9 +709,9 @@ void rotes::testCrossover4Way2()
 { 
   using AT = RAPT::rsArrayTools;
 
-  static const int numBins = 4096;    // also numSamples? if so, use N
+  static const int N       = 4096;    // numSamples, numBins
   double sampleRate        = 44100.0;
-  int    slope11           = 48;   // middlemost slope
+  int    slope11           = 48;      // middlemost slope
   int    slope21           = 48;
   int    slope22           = 48;
   double lowCrossoverFreq  = 250.0;
@@ -731,80 +731,50 @@ void rotes::testCrossover4Way2()
   crossover.setBandActive(true, 1, 0);
   crossover.setBandActive(true, 1, 1);
 
-  // Impulse response variables:
-  double indices[numBins];
-  AT::fillWithIndex(indices, numBins);
-  //float impulseResponsesFloat[8*numBins];
-  //AT::fillWithZeros(impulseResponsesFloat, 8*numBins);
-  //impulseResponsesFloat[0]       = 1.0;  // 1st sample of left input channel
-  //impulseResponsesFloat[numBins] = 1.0;  // 1st sample of right input channel
-  //float **impulseResponsePointers = new float*[8];
-  //for(int i=0; i<8; i++)
-  //  impulseResponsePointers[i] = &impulseResponsesFloat[i*numBins];
-  double impulseResponses[8*numBins];
-  double impulseResponseSum[numBins];
-  //double tmp[8];
-  //rsFloat64x2* pTmp = (rsFloat64x2*) tmp; // cast the pointer
-
-
-  // Obtain the impulse-responses:
-  //crossover.processBuffer(impulseResponsesFloat, numBins);  // !!! TODO: re-activate this and adapt data types
-  //crossover.processBuffer(impulseResponsePointers, numBins);
-  //RAPT::rsArrayTools::convertBuffer(impulseResponsesFloat, impulseResponses, 8*numBins);
+  // Obtain and plot the impulse-responses:
+  double indices[N];
+  AT::fillWithIndex(indices, N);
+  double impulseResponses[8*N];
+  double impulseResponseSum[N];
   auto recordSample = [&](int n, double x)
   {
     double tmp[8];
     AT::fillWithValue(tmp, 8, x);
     crossover.processSampleFrameStereo(tmp);
-    impulseResponses[0*numBins+n] = tmp[0];
-    impulseResponses[2*numBins+n] = tmp[2];
-    impulseResponses[4*numBins+n] = tmp[4];
-    impulseResponses[6*numBins+n] = tmp[6];
+    impulseResponses[0*N+n] = tmp[0];
+    impulseResponses[2*N+n] = tmp[2];
+    impulseResponses[4*N+n] = tmp[4];
+    impulseResponses[6*N+n] = tmp[6];
     impulseResponseSum[n] = tmp[0] + tmp[2] + tmp[4] + tmp[6];
   };
   recordSample(0, 1.0);
-  for(int n = 0; n < numBins; n++)
+  for(int n = 1; n < N; n++)
     recordSample(n, 0.0);
-
-  /*
-  for(int n = 0; n < numBins; n++)
-  {
-    impulseResponseSum[n] =   impulseResponses[0*numBins+n] 
-                            + impulseResponses[2*numBins+n] 
-                            + impulseResponses[4*numBins+n] 
-                            + impulseResponses[6*numBins+n];
-  }
-  */
-
-  // plot impulse responses:
-  plotData(numBins, indices, &impulseResponses[0], &impulseResponses[2*numBins], 
-    &impulseResponses[4*numBins], &impulseResponses[6*numBins], impulseResponseSum);
+  plotData(N, indices, &impulseResponses[0], &impulseResponses[2*N], 
+    &impulseResponses[4*N], &impulseResponses[6*N], impulseResponseSum);
  
-  
-
-  /*
-  // frequency response variables:
-  double  frequencies[numBins];
-  double  omegas[numBins];
-  double  magnitudesLow[numBins];
-  double  magnitudesLowMid[numBins];
-  double  magnitudesHigh[numBins];
-  double  magnitudesHighMid[numBins];
-  double  magnitudesSum[numBins];
-  for(int k=0; k<numBins; k++)
+  // Compute and plot magnitude responses:
+  double frequencies[N];
+  double omegas[N];
+  double magnitudesLow[N];
+  double magnitudesLowMid[N];
+  double magnitudesHigh[N];
+  double magnitudesHighMid[N];
+  double magnitudesSum[N];
+  for(int k = 0; k < N; k++)
   {
-    frequencies[k] = 0.5 * k * sampleRate / (numBins-1);
+    frequencies[k] = k * sampleRate / N;
     omegas[k]      = 2.0 * PI * frequencies[k] / sampleRate;
   }
-  // compute and plot magnitude response of the sum:
-  fftMagnitudesAndPhases(impulseResponseSum, numBins, magnitudesSum, NULL, numBins);
-  RAPT::rsArrayTools::scale(magnitudesSum, numBins, (double)numBins);
-  plotData(numBins, frequencies, magnitudesSum);
-  */
-  
+  fftMagnitudesAndPhases(&impulseResponses[0],   N, magnitudesLow,     NULL, N, true);
+  fftMagnitudesAndPhases(&impulseResponses[2*N], N, magnitudesLowMid,  NULL, N, true);
+  fftMagnitudesAndPhases(&impulseResponses[4*N], N, magnitudesHighMid, NULL, N, true);
+  fftMagnitudesAndPhases(&impulseResponses[6*N], N, magnitudesHigh,    NULL, N, true);
+  fftMagnitudesAndPhases(impulseResponseSum,     N, magnitudesSum,     NULL, N, true);
+  plotData(N/2, frequencies, magnitudesLow, magnitudesLowMid, magnitudesHighMid,
+    magnitudesHigh, magnitudesSum);
 
-  //delete impulseResponsePointers;
-  int dummy = 0;
+  // OK - looks good. ToDo: plot in loglog scale
 }
 
 void rotes::testCrossoverNewVsOld()
