@@ -11,9 +11,9 @@ bool rotes::testAllRosicClasses()
   //printf("Warning: in testAllRosicClasses, not all tests are updated yet.\n");
   rsWarning("In testAllRosicClasses(), not all tests are updated yet.");
 
-  ok &= testRosicString();
+  ok &= testRosicString();  // fails! reason: double/string roundtrip..see comments in the tests
   ok &= testRosicBasics();
-  testRosicFile();
+  ok &= testRosicFile();
   testRosicFilter();
   testRosicGenerators();
   testRosicModulators();
@@ -37,14 +37,17 @@ bool rotes::testRosicBasics()
   bool ok = true;
   ok &= testBinomialCoefficients();  // obsolete thx to rapt, now?
   ok &= testMathFunctions();
-  testWindowFunctions();
-  testInterpolation();
+  //testWindowFunctions();           // is experiment, not unit test
+  //testInterpolation();             // ditto  
   return ok;
 }
 
-void rotes::testRosicFile()
+bool rotes::testRosicFile()
 {
-  testFileTextReadWrite();
+  bool ok = true;
+  ok &= testFileTextReadWrite();
+  // todo: test wavefile read/write
+  return ok;
 }
 
 void rotes::testRosicEffects()

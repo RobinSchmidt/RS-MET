@@ -47,25 +47,26 @@ bool rotes::testMathFunctions()
 
 void rotes::testWindowFunctions()
 {
+  // This is an experiment, not a unit test
+
+  using AT = RAPT::rsArrayTools;
+
   static const int windowLength = 51;
   double windowIndices[windowLength];
-  RAPT::rsArrayTools::fillWithIndex(windowIndices, windowLength);
+  AT::fillWithIndex(windowIndices, windowLength);
   double window[windowLength];
-
-
-  /*
 
   // test summing of time-shifted cosine-power windows:
   WindowDesigner::getWindow(window, windowLength, WindowDesigner::COSINE_SQUARED);
   //WindowDesigner::getCosinePowerWindow(window, windowLength,  8.0);
 
-  //Plotter::plotData(windowLength, windowIndices, window);
+  plotData(windowLength, windowIndices, window);
 
   static const int hopSize      = windowLength/2;
   static const int numWindows   = 16;
   static const int signalLength = numWindows*windowLength - (numWindows-1)*(windowLength-hopSize);
   double signalIndices[signalLength];
-  fillWithIndex(signalIndices, signalLength);
+  AT::fillWithIndex(signalIndices, signalLength);
 
   // scale the window such that the sum of the windows gives unity:
   //double normalizer = (2.0 * (double) hopSize / (double) windowLength);
@@ -74,27 +75,21 @@ void rotes::testWindowFunctions()
   double shiftedWindows[numWindows][signalLength];
   for(int w=0; w<numWindows; w++)
   {
-    fillWithZeros(shiftedWindows[w], signalLength);
+    AT::fillWithZeros(shiftedWindows[w], signalLength);
     int start = w*hopSize;
     for(int n=0; n<windowLength; n++)
       shiftedWindows[w][start+n] = window[n];
   }
 
   double windowSum[signalLength];
-  fillWithZeros(windowSum, signalLength);
+  AT::fillWithZeros(windowSum, signalLength);
   for(int w=0; w<numWindows; w++)
-    add(windowSum, shiftedWindows[w], windowSum, signalLength);
+    AT::add(windowSum, shiftedWindows[w], windowSum, signalLength);
+  plotData(signalLength, signalIndices, shiftedWindows[0], shiftedWindows[1], shiftedWindows[2], shiftedWindows[3], windowSum);
 
-  //Plotter::plotData(signalLength, signalIndices, shiftedWindows[0], shiftedWindows[1], shiftedWindows[2], shiftedWindows[3], windowSum);
-
-  */
-
-
-
-  // test Kaiser window:
+  // Test Kaiser window:
   WindowDesigner::getKaiserWindow(window, windowLength,  1.5);
-  //Plotter::plotData(windowLength, windowIndices, window);
-
+  plotData(windowLength, windowIndices, window);  // looks parabolic - is that correct?
 
   int dummy = 0;
 }

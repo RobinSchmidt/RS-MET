@@ -136,6 +136,7 @@ bool rotes::testStringDoubleConversionsSpecialValues()
   // Direct equality check on NaNs returns always false
 
   /*
+  // obsolete:
   if( numberReconstructed != numberOriginal )
   {
     //if( !(_isnan(numberReconstructed) && _isnan(numberOriginal)) )

@@ -35,7 +35,7 @@ rosic::rsString createStringWithAllCharacters();
 rosic::rsString createStringWithAllPrintableCharacters();
 
 // file:
-void testFileTextReadWrite();  // tests, if we can write a string into a file and retrieve it 
+bool testFileTextReadWrite();  // tests, if we can write a string into a file and retrieve it 
                                // again, the string must not contain non-printable characters
 
 // effects:
@@ -120,7 +120,7 @@ void testSlewRateLimiterLinear();
 bool testAllRosicClasses();
 void testRosicAnalysis();
 bool testRosicBasics();
-void testRosicFile();
+bool testRosicFile();
 void testRosicEffects();
 void testRosicFilter();
 void testRosicGenerators();
