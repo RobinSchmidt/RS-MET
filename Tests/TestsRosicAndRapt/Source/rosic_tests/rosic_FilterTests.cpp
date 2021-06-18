@@ -706,9 +706,10 @@ void rotes::testCrossover4Way()
 
 
 void rotes::testCrossover4Way2()
-{
-  /*
-  static const int numBins = 4096;
+{ 
+  using AT = RAPT::rsArrayTools;
+
+  static const int numBins = 4096;    // also numSamples? if so, use N
   double sampleRate        = 44100.0;
   int    slope11           = 48;   // middlemost slope
   int    slope21           = 48;
@@ -718,7 +719,7 @@ void rotes::testCrossover4Way2()
   double highCrossoverFreq = 6000.0;
   double lowClipValue      = -40.0;   // lower magnitude limit in dB for the plots
 
-  // set up the crossover:
+  // Set up the crossover:
   rosic::rsCrossOver4WayStereo crossover;
   crossover.setSampleRate(sampleRate);
   crossover.setCrossoverFrequency(lowCrossoverFreq,  1, 0);
@@ -730,34 +731,56 @@ void rotes::testCrossover4Way2()
   crossover.setBandActive(true, 1, 0);
   crossover.setBandActive(true, 1, 1);
 
-  // impulse response variables:
+  // Impulse response variables:
   double indices[numBins];
-  RAPT::rsArrayTools::fillWithIndex(indices, numBins);
-  float impulseResponsesFloat[8*numBins];
-  RAPT::rsArrayTools::fillWithZeros(impulseResponsesFloat, 8*numBins);
-  impulseResponsesFloat[0]       = 1.0;  // 1st sample of left input channel
-  impulseResponsesFloat[numBins] = 1.0;  // 1st sample of right input channel
-
-  float **impulseResponsePointers = new float*[8];
-  for(int i=0; i<8; i++)
-    impulseResponsePointers[i] = &impulseResponsesFloat[i*numBins];
-
-  // obtain the impulse-responses:
-  //crossover.processBuffer(impulseResponsesFloat, numBins);  // !!! TODO: re-activate this and adapt data types
-  crossover.processBuffer(impulseResponsePointers, numBins);
+  AT::fillWithIndex(indices, numBins);
+  //float impulseResponsesFloat[8*numBins];
+  //AT::fillWithZeros(impulseResponsesFloat, 8*numBins);
+  //impulseResponsesFloat[0]       = 1.0;  // 1st sample of left input channel
+  //impulseResponsesFloat[numBins] = 1.0;  // 1st sample of right input channel
+  //float **impulseResponsePointers = new float*[8];
+  //for(int i=0; i<8; i++)
+  //  impulseResponsePointers[i] = &impulseResponsesFloat[i*numBins];
   double impulseResponses[8*numBins];
-  RAPT::rsArrayTools::convertBuffer(impulseResponsesFloat, impulseResponses, 8*numBins);
   double impulseResponseSum[numBins];
-  for(int n=0; n<numBins; n++)
+  //double tmp[8];
+  //rsFloat64x2* pTmp = (rsFloat64x2*) tmp; // cast the pointer
+
+
+  // Obtain the impulse-responses:
+  //crossover.processBuffer(impulseResponsesFloat, numBins);  // !!! TODO: re-activate this and adapt data types
+  //crossover.processBuffer(impulseResponsePointers, numBins);
+  //RAPT::rsArrayTools::convertBuffer(impulseResponsesFloat, impulseResponses, 8*numBins);
+  auto recordSample = [&](int n, double x)
   {
-    impulseResponseSum[n] =   impulseResponses[n] + impulseResponses[2*numBins+n] + impulseResponses[4*numBins+n] 
+    double tmp[8];
+    AT::fillWithValue(tmp, 8, x);
+    crossover.processSampleFrameStereo(tmp);
+    impulseResponses[0*numBins+n] = tmp[0];
+    impulseResponses[2*numBins+n] = tmp[2];
+    impulseResponses[4*numBins+n] = tmp[4];
+    impulseResponses[6*numBins+n] = tmp[6];
+    impulseResponseSum[n] = tmp[0] + tmp[2] + tmp[4] + tmp[6];
+  };
+  recordSample(0, 1.0);
+  for(int n = 0; n < numBins; n++)
+    recordSample(n, 0.0);
+
+  /*
+  for(int n = 0; n < numBins; n++)
+  {
+    impulseResponseSum[n] =   impulseResponses[0*numBins+n] 
+                            + impulseResponses[2*numBins+n] 
+                            + impulseResponses[4*numBins+n] 
                             + impulseResponses[6*numBins+n];
   }
+  */
 
   // plot impulse responses:
-  Plotter::plotData(numBins, indices, &impulseResponses[0], &impulseResponses[2*numBins], &impulseResponses[4*numBins], 
-    &impulseResponses[6*numBins], impulseResponseSum);
-  */
+  plotData(numBins, indices, &impulseResponses[0], &impulseResponses[2*numBins], 
+    &impulseResponses[4*numBins], &impulseResponses[6*numBins], impulseResponseSum);
+ 
+  
 
   /*
   // frequency response variables:
@@ -776,8 +799,9 @@ void rotes::testCrossover4Way2()
   // compute and plot magnitude response of the sum:
   fftMagnitudesAndPhases(impulseResponseSum, numBins, magnitudesSum, NULL, numBins);
   RAPT::rsArrayTools::scale(magnitudesSum, numBins, (double)numBins);
-  Plotter::plotData(numBins, frequencies, magnitudesSum);
+  plotData(numBins, frequencies, magnitudesSum);
   */
+  
 
   //delete impulseResponsePointers;
   int dummy = 0;
