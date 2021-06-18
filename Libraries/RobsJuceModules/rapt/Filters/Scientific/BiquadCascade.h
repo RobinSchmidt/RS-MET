@@ -88,7 +88,7 @@ public:
   /** Writes the complex frequency-response of a biquad-cascade at the normalized radian 
   frequencies given in 'w' into the array 'H'. */
   void getFrequencyResponse(TCoef* w, std::complex<TCoef>* H, int numBins, 
-    int accumulationMode = rsFilterAnalyzer<TCoef>::NO_ACCUMULATION);
+    int accumulationMode = rsFilterAnalyzer<TCoef>::NO_ACCUMULATION) const;
 
   /** Writes the magnitdue-response of a biquad-cascade at the normalized radian frequencies given 
   in 'w' into the array 'magnitudes'. Both arrays are assumed to be "numBins" long. "inDecibels" 
@@ -97,17 +97,17 @@ public:
   is true) to the magnitudes which are already there in the "magnitudes"-array. This is useful for 
   calculating the magnitude response of several biquad-cascades in series. */
   void getMagnitudeResponse(TCoef* w, TCoef* magnitudes, int numBins, bool inDecibels = false, 
-    bool accumulate = false);
+    bool accumulate = false) const;
 
   /** Writes the magnitdue-response of a biquad-cascade at the physical frequencies given in 
   'frequencies' into the array 'magnitudes'. */
   void getMagnitudeResponse(TCoef* frequencies, CRCoef sampleRate, TCoef* magnitudes, 
-    int numBins, bool inDecibels = false, bool accumulate = false);
+    int numBins, bool inDecibels = false, bool accumulate = false) const;
 
   /** Returns an estimate of the time (in samples) it takes for the impulse response to ring 
   down to "threshold". The estimate is based on the pole which has the highest Q (i.e. is 
   closest to the unit circle). */
-  TCoef getRingingTimeEstimate(CRCoef threshold);
+  TCoef getRingingTimeEstimate(CRCoef threshold) const;
   // todo: write a function getRingingFrequency - the normalized radian ringing frequency is
   // the angle of the pole that is closest to the unit circle
 

@@ -1,7 +1,9 @@
 #ifndef RAPT_CROSSOVER4WAY_H_INCLUDED
 #define RAPT_CROSSOVER4WAY_H_INCLUDED
 
-/** This class implements a crossover filter to split the signal into several bands (at most 4). */
+/** This class implements a crossover filter to split the signal into several bands (at most 4). 
+
+ToDo: rename to rsLinkwitzRileyCrossover4Way or rsLinkwitzRileyTree4, rsLinkwitzRileySplitter4 */
 
 template<class TSig, class TPar>
 class rsCrossOver4Way
@@ -55,6 +57,22 @@ public:
   void getMagnitudeResponse(TPar* frequencies, TPar* magnitudes, int numBins, 
     int outputChannel, bool inDecibels);
 
+  /** Returns a const reference to the first stage. */
+  const rsLinkwitzRileyCrossOver<TSig, TPar>& getStage1() { return stage1; }
+
+  /** Returns a const reference to the second stage with index i where i = 0 or 1. */
+  const rsLinkwitzRileyCrossOver<TSig, TPar>& getStage2(int i) { return stage2[i]; }
+
+  /** Returns a const reference to the compensation allpass filter for the low branch. This is the 
+  allpass filter that simulates the effect of ht splitting and re-summing in the high branch. */
+  const rsBiquadCascade<TSig, TPar>& getLowBranchAllpass() const
+  { return lowBranchCompensationAllpass; }
+
+  /** Returns a const reference to the compensation allpass filter for the high branch. This is the 
+  allpass filter that simulates the effect of ht splitting and re-summing in the low branch. */
+  const rsBiquadCascade<TSig, TPar>& getHighBranchAllpass() const
+  { return highBranchCompensationAllpass; }
+
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */
 
@@ -84,12 +102,13 @@ protected:
   /** Sets up the allpass filters that compensate for the phase response of the other branch. */
   void setupCompensationAllpasses();
 
-  // we use the crossover-object in a binary tree like structure:
+  // We use the crossover-object in a binary tree like structure:
   rsLinkwitzRileyCrossOver<TSig, TPar> stage1;
   rsLinkwitzRileyCrossOver<TSig, TPar> stage2[2];
 
-  // allpass-filters for compensating for the allpasses that results from addition of sub-branches:
+  // Allpass-filters for compensating for the allpasses that results from addition of sub-branches:
   rsBiquadCascade<TSig, TPar> lowBranchCompensationAllpass, highBranchCompensationAllpass;
+  // use shorter names lowBranchAllpass, high...
 
 };
 

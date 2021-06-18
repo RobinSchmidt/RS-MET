@@ -12,7 +12,11 @@ gain at the cutoff/crossover frequency is -6.02 dB because the Butterworth filte
 
 Stability: it has been stability-tested (with highest slope of 96 dB/oct) for crossover-frequencies 
 down to 20 Hz with sample-rates up to 800 kHz - beyond that (either higher sample-rate or lower 
-crossover-frequency (or both), filters may become numerically unstable). */
+crossover-frequency (or both), filters may become numerically unstable). 
+
+maybe rename to rsLinkwitzRileySplitter2
+
+*/
 
 template<class TSig, class TPar>
 class rsLinkwitzRileyCrossOver
@@ -70,23 +74,22 @@ public:
   /** Fills the 'magnitudes' array with the magnitude response of the lowpass filter evaluated at 
   the frequencies passed in the'frequencies' array. Both arrays are assumed to be numBins long. */
   void getLowpassMagnitudeResponse(TPar* frequencies, TPar* magnitudes, int numBins, 
-    bool inDecibels = false, bool accumulate = false);
+    bool inDecibels = false, bool accumulate = false) const;
 
   /** Fills the 'H' array with the complex freqiuency response of the lowpass filter evaluated at 
   the frequencies passed in the 'frequencies' array. Both arrays are assumed to be numBins long. */
   void getLowpassFrequencyResponse(TPar* frequencies, Complex* H, int numBins, 
-    bool accumulate = false);
+    bool accumulate = false) const;
 
   /** Fills the 'magnitudes' array with the magnitude response of the highpass filter evaluated at
   the frequencies passed in the 'frequencies' array. Both arrays are assumed to be numBins long. */
   void getHighpassMagnitudeResponse(TPar* frequencies, TPar* magnitudes, int numBins, 
-    bool inDecibels = false,
-    bool accumulate = false);
+    bool inDecibels = false, bool accumulate = false) const;
 
   /** Fills the 'H' array with the complex freqiuency response of the highpass filter evaluated at 
   the frequencies passed in the 'frequencies' array. Both arrays are assumed to be numBins long. */
   void getHighpassFrequencyResponse(TPar* frequencies, Complex* H, int numBins, 
-    bool accumulate = false);
+    bool accumulate = false) const;
 
   //-----------------------------------------------------------------------------------------------
   /** \name Audio Processing */

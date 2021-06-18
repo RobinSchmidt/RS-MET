@@ -54,7 +54,7 @@ void rsLinkwitzRileyCrossOver<TSig, TPar>::setButterworthOrder(int newOrder)
 
 template<class TSig, class TPar>
 void rsLinkwitzRileyCrossOver<TSig, TPar>::getLowpassMagnitudeResponse(TPar* frequencies, 
-  TPar* magnitudes, int numBins, bool inDecibels, bool accumulate)
+  TPar* magnitudes, int numBins, bool inDecibels, bool accumulate) const
 {
   if( accumulate == false )
   {
@@ -69,7 +69,7 @@ void rsLinkwitzRileyCrossOver<TSig, TPar>::getLowpassMagnitudeResponse(TPar* fre
 
 template<class TSig, class TPar>
 void rsLinkwitzRileyCrossOver<TSig, TPar>::getLowpassFrequencyResponse(TPar* frequencies, 
-  Complex* H, int numBins, bool accumulate)
+  Complex* H, int numBins, bool accumulate) const
 {
   if( accumulate == false )  
     rsArrayTools::fillWithValue(H, numBins, Complex(1.0));
@@ -86,7 +86,7 @@ void rsLinkwitzRileyCrossOver<TSig, TPar>::getLowpassFrequencyResponse(TPar* fre
 
 template<class TSig, class TPar>
 void rsLinkwitzRileyCrossOver<TSig, TPar>::getHighpassMagnitudeResponse(TPar* frequencies, 
-  TPar* magnitudes, int numBins, bool inDecibels, bool accumulate)
+  TPar* magnitudes, int numBins, bool inDecibels, bool accumulate) const
 {
   Complex* H = new Complex[numBins];
   getHighpassFrequencyResponse(frequencies, H, numBins, false);
@@ -109,7 +109,7 @@ void rsLinkwitzRileyCrossOver<TSig, TPar>::getHighpassMagnitudeResponse(TPar* fr
 
 template<class TSig, class TPar>
 void rsLinkwitzRileyCrossOver<TSig, TPar>::getHighpassFrequencyResponse(TPar* frequencies, 
-  Complex* H, int numBins, bool accumulate)
+  Complex* H, int numBins, bool accumulate) const
 {
   TPar* w = new TPar[numBins];
   rsArrayTools::copy(frequencies, w, numBins);

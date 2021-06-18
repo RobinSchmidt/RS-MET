@@ -60,7 +60,8 @@ void rotes::testRosicEffects()
 
 bool rotes::testRosicFilter()
 {
-  // To disentangle unit tests from experiments - eventually, the experiments should go elsewhere:
+  // To disentangle unit tests from experiments - eventually, the experiments should go elsewhere,
+  // probably they should be alled directly in Main.cpp and only the unit tests shall remain here:
   auto runExperiments = []()
   {
     testLadderFilter();
@@ -78,6 +79,8 @@ bool rotes::testRosicFilter()
     testEngineersFilter();
     testPoleZeroMapping();
     highOrderFilterPolesAndZeros();  // reference output production for RSLib (obsolete?)
+    testCrossover4Way();
+    testCrossover4Way2();
   };
   auto runUnitTests = []()
   {
@@ -89,11 +92,6 @@ bool rotes::testRosicFilter()
 
   //runExperiments();
   bool ok = runUnitTests();
-
-  // the code there is commented - uncomment it and reactivate all tests:
-  //testCrossover4Way(); // linker error
-  testCrossover4Way2();
-
   return ok;
 }
 

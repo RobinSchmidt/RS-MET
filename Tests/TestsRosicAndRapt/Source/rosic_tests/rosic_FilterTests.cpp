@@ -499,10 +499,13 @@ void rotes::testBiquadCascade()
   int dummy = 0;
 }
 
-/*
 void rotes::testCrossover4Way()
 {
-  CrossOver4Way crossover;
+  using AT = RAPT::rsArrayTools;
+  using FA = RAPT::rsFilterAnalyzer<double>;
+  using Complex = std::complex<double>;
+
+  rsCrossOver4Way<double, double> crossover;
 
   double sampleRate        = 44100.0;
   int    slope11           = 24;   // middlemost slope
@@ -512,7 +515,7 @@ void rotes::testCrossover4Way()
   double midCrossoverFreq  = 5000.0;
   double highCrossoverFreq = 10000.0;
 
-  double lowClipValue      = -40.0;   // lower magnitude limit in dB for the plots
+  double lowClipValue      = -80.0;   // lower magnitude limit in dB for the plots
   crossover.setSampleRate(sampleRate);
 
   // frequencies and response-stuff:
@@ -556,27 +559,28 @@ void rotes::testCrossover4Way()
   crossover.setSlope(slope21, 1, 0);
   crossover.setSlope(slope22, 1, 1);
 
-  // obtain lowpass frequency response:
-  crossover.stage1.crossoverL.getLowpassFrequencyResponse(frequencies, H_LP_1_1, numBins, false);
-  FilterAnalyzer::getMagnitudes(H_LP_1_1, magnitudesLP_1_1, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesLP_1_1, numBins);
-  rosic::clipBuffer(magnitudesLP_1_1, numBins, lowClipValue, 10.0);
+  // Obtain lowpass frequency response:
+  crossover.getStage1().getLowpassFrequencyResponse(frequencies, H_LP_1_1, numBins, false);
+  FA::getMagnitudes(H_LP_1_1, magnitudesLP_1_1, numBins);
+  FA::convertToDecibels(magnitudesLP_1_1, numBins);
+  AT::clip(magnitudesLP_1_1, numBins, lowClipValue, 10.0);
 
-  // obtain highpass frequency response:
-  crossover.stage1.crossoverL.getHighpassFrequencyResponse(frequencies, H_HP_1_1, numBins, false);
-  FilterAnalyzer::getMagnitudes(H_HP_1_1, magnitudesHP_1_1, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesHP_1_1, numBins);
-  rosic::clipBuffer(magnitudesHP_1_1, numBins, lowClipValue, 10.0);
+  // Obtain highpass frequency response:
+  crossover.getStage1().getHighpassFrequencyResponse(frequencies, H_HP_1_1, numBins, false);
+  FA::getMagnitudes(H_HP_1_1, magnitudesHP_1_1, numBins);
+  FA::convertToDecibels(magnitudesHP_1_1, numBins);
+  AT::clip(magnitudesHP_1_1, numBins, lowClipValue, 10.0);
 
   // obtain sum frequency response:
-  rosic::add(H_LP_1_1, H_HP_1_1, H_Sum, numBins);
-  FilterAnalyzer::getMagnitudes(H_Sum, magnitudesSum, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesSum, numBins);
+  AT::add(H_LP_1_1, H_HP_1_1, H_Sum, numBins);
+  FA::getMagnitudes(H_Sum, magnitudesSum, numBins);
+  FA::convertToDecibels(magnitudesSum, numBins);
 
-  copy(magnitudesLP_1_1, magnitudesLow, numBins);
-  copy(magnitudesHP_1_1, magnitudesHigh, numBins);
-    
-  //Plotter::plotData(numBins, frequencies, magnitudesLow, magnitudesHigh, magnitudesSum);
+  AT::copy(magnitudesLP_1_1, magnitudesLow,  numBins);  // why?
+  AT::copy(magnitudesHP_1_1, magnitudesHigh, numBins);  // why?
+  plotData(numBins, frequencies, magnitudesLow, magnitudesHigh, magnitudesSum);
+  // Strange: the lowpass looks linear even though we have a linear freq-axis (it should look
+  // linear in a log-log plot)
 
   //-----------------------------------------------------------------------------------------------
   // 3 ways (lower band split further):
@@ -584,35 +588,36 @@ void rotes::testCrossover4Way()
   crossover.setBandActive(true, 1, 0);
 
   // obtain frequency response for low band:
-  crossover.stage1.crossoverL.getLowpassFrequencyResponse(   frequencies, H_LP_1_1, numBins, false);
-  crossover.stage2[0].crossoverL.getLowpassFrequencyResponse(frequencies, H_LP_2_1, numBins, false);
-  rosic::multiply(H_LP_1_1, H_LP_2_1, H_Low, numBins);
-  FilterAnalyzer::getMagnitudes(H_Low, magnitudesLow, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesLow, numBins);
-  rosic::clipBuffer(magnitudesLow, numBins, lowClipValue, 10.0);
+  crossover.getStage1().getLowpassFrequencyResponse(   frequencies, H_LP_1_1, numBins, false);
+  crossover.getStage2(0).getLowpassFrequencyResponse(frequencies, H_LP_2_1, numBins, false);
+  AT::multiply(H_LP_1_1, H_LP_2_1, H_Low, numBins);
+  FA::getMagnitudes(H_Low, magnitudesLow, numBins);
+  FA::convertToDecibels(magnitudesLow, numBins);
+  AT::clip(magnitudesLow, numBins, lowClipValue, 10.0);
 
   // obtain frequency response for low-mid band:
-  crossover.stage2[0].crossoverL.getHighpassFrequencyResponse(frequencies, H_HP_2_1, numBins, false);
-  rosic::multiply(H_LP_1_1, H_HP_2_1, H_LowMid, numBins);
-  FilterAnalyzer::getMagnitudes(H_LowMid, magnitudesLowMid, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesLowMid, numBins);
-  rosic::clipBuffer(magnitudesLowMid, numBins, lowClipValue, 10.0);
+  crossover.getStage2(0).getHighpassFrequencyResponse(frequencies, H_HP_2_1, numBins, false);
+  AT::multiply(H_LP_1_1, H_HP_2_1, H_LowMid, numBins);
+  FA::getMagnitudes(H_LowMid, magnitudesLowMid, numBins);
+  FA::convertToDecibels(magnitudesLowMid, numBins);
+  AT::clip(magnitudesLowMid, numBins, lowClipValue, 10.0);
 
   // obtain frequency response for high band:
-  crossover.stage1.crossoverL.getHighpassFrequencyResponse(frequencies, H_HP_1_1, numBins, false);
-  rosic::copy(H_HP_1_1, H_High, numBins);
-  crossover.highBranchCompensationAllpass.getFrequencyResponse(omegas, H_High, numBins, FilterAnalyzer::MULTIPLICATIVE_ACCUMULATION);
-  FilterAnalyzer::getMagnitudes(H_High, magnitudesHigh, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesHigh, numBins);
-  rosic::clipBuffer(magnitudesHigh, numBins, lowClipValue, 10.0);
+  crossover.getStage1().getHighpassFrequencyResponse(frequencies, H_HP_1_1, numBins, false);
+  AT::copy(H_HP_1_1, H_High, numBins);
+  crossover.getHighBranchAllpass().getFrequencyResponse(omegas, H_High, numBins, 
+    FA::MULTIPLICATIVE_ACCUMULATION);
+  FA::getMagnitudes(H_High, magnitudesHigh, numBins);
+  FA::convertToDecibels(magnitudesHigh, numBins);
+  AT::clip(magnitudesHigh, numBins, lowClipValue, 10.0);
 
   // obtain the summed frequency response:
-  rosic::add(H_Low, H_LowMid, H_Sum, numBins);
-  rosic::add(H_Sum, H_High,   H_Sum, numBins);
-  FilterAnalyzer::getMagnitudes(H_Sum, magnitudesSum, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesSum, numBins);
+  AT::add(H_Low, H_LowMid, H_Sum, numBins);
+  AT::add(H_Sum, H_High,   H_Sum, numBins);
+  FA::getMagnitudes(H_Sum, magnitudesSum, numBins);
+  FA::convertToDecibels(magnitudesSum, numBins);
 
-  //Plotter::plotData(numBins, frequencies, magnitudesLow, magnitudesLowMid, magnitudesHigh, magnitudesSum);
+  plotData(numBins, frequencies, magnitudesLow, magnitudesLowMid, magnitudesHigh, magnitudesSum);
 
   //-----------------------------------------------------------------------------------------------
   // 3 ways (upper band split further):
@@ -621,35 +626,36 @@ void rotes::testCrossover4Way()
   crossover.setBandActive(true,  1, 1);
 
   // obtain frequency response for low band:
-  crossover.stage1.crossoverL.getLowpassFrequencyResponse(frequencies, H_LP_1_1, numBins, false);
-  rosic::copy(H_LP_1_1, H_Low, numBins);
-  crossover.lowBranchCompensationAllpass.getFrequencyResponse(omegas, H_Low, numBins, FilterAnalyzer::MULTIPLICATIVE_ACCUMULATION);
-  FilterAnalyzer::getMagnitudes(H_Low, magnitudesLow, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesLow, numBins);
-  rosic::clipBuffer(magnitudesLow, numBins, lowClipValue, 10.0);
+  crossover.getStage1().getLowpassFrequencyResponse(frequencies, H_LP_1_1, numBins, false);
+  AT::copy(H_LP_1_1, H_Low, numBins);
+  crossover.getLowBranchAllpass().getFrequencyResponse(omegas, H_Low, numBins, 
+    FA::MULTIPLICATIVE_ACCUMULATION);
+  FA::getMagnitudes(H_Low, magnitudesLow, numBins);
+  FA::convertToDecibels(magnitudesLow, numBins);
+  AT::clip(magnitudesLow, numBins, lowClipValue, 10.0);
 
   // obtain frequency response for high-mid band:
-  crossover.stage1.crossoverL.getHighpassFrequencyResponse(  frequencies, H_HP_1_1, numBins, false);
-  crossover.stage2[1].crossoverL.getLowpassFrequencyResponse(frequencies, H_LP_2_2, numBins, false);
-  rosic::multiply(H_HP_1_1, H_LP_2_2, H_HighMid, numBins);
-  FilterAnalyzer::getMagnitudes(H_HighMid, magnitudesHighMid, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesHighMid, numBins);
-  rosic::clipBuffer(magnitudesHighMid, numBins, lowClipValue, 10.0);
+  crossover.getStage1().getHighpassFrequencyResponse(  frequencies, H_HP_1_1, numBins, false);
+  crossover.getStage2(1).getLowpassFrequencyResponse(frequencies, H_LP_2_2, numBins, false);
+  AT::multiply(H_HP_1_1, H_LP_2_2, H_HighMid, numBins);
+  FA::getMagnitudes(H_HighMid, magnitudesHighMid, numBins);
+  FA::convertToDecibels(magnitudesHighMid, numBins);
+  AT::clip(magnitudesHighMid, numBins, lowClipValue, 10.0);
 
   // obtain frequency response for high band:
-  crossover.stage2[1].crossoverL.getHighpassFrequencyResponse(frequencies, H_HP_2_2, numBins, false);
-  rosic::multiply(H_HP_1_1, H_HP_2_2, H_High, numBins);
-  FilterAnalyzer::getMagnitudes(H_High, magnitudesHigh, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesHigh, numBins);
-  rosic::clipBuffer(magnitudesHigh, numBins, lowClipValue, 10.0);
+  crossover.getStage2(1).getHighpassFrequencyResponse(frequencies, H_HP_2_2, numBins, false);
+  AT::multiply(H_HP_1_1, H_HP_2_2, H_High, numBins);
+  FA::getMagnitudes(H_High, magnitudesHigh, numBins);
+  FA::convertToDecibels(magnitudesHigh, numBins);
+  AT::clip(magnitudesHigh, numBins, lowClipValue, 10.0);
 
   // obtain the summed frequency response:
-  rosic::add(H_Low, H_HighMid, H_Sum, numBins);
-  rosic::add(H_Sum, H_High,    H_Sum, numBins);
-  FilterAnalyzer::getMagnitudes(H_Sum, magnitudesSum, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesSum, numBins);
+  AT::add(H_Low, H_HighMid, H_Sum, numBins);
+  AT::add(H_Sum, H_High,    H_Sum, numBins);
+  FA::getMagnitudes(H_Sum, magnitudesSum, numBins);
+  FA::convertToDecibels(magnitudesSum, numBins);
 
-  //Plotter::plotData(numBins, frequencies, magnitudesLow, magnitudesHighMid, magnitudesHigh, magnitudesSum);
+  plotData(numBins, frequencies, magnitudesLow, magnitudesHighMid, magnitudesHigh, magnitudesSum);
 
   //-----------------------------------------------------------------------------------------------
   // 4 ways (upper band split further):
@@ -658,52 +664,53 @@ void rotes::testCrossover4Way()
   crossover.setBandActive(true, 1, 1);
 
   // obtain frequency response for low band:
-  crossover.stage1.crossoverL.getLowpassFrequencyResponse(   frequencies, H_LP_1_1, numBins, false);
-  crossover.stage2[0].crossoverL.getLowpassFrequencyResponse(frequencies, H_LP_2_1, numBins, false);
-  rosic::multiply(H_LP_1_1, H_LP_2_1, H_Low, numBins);
-  crossover.lowBranchCompensationAllpass.getFrequencyResponse(omegas, H_Low, numBins, FilterAnalyzer::MULTIPLICATIVE_ACCUMULATION);
-  FilterAnalyzer::getMagnitudes(H_Low, magnitudesLow, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesLow, numBins);
-  rosic::clipBuffer(magnitudesLow, numBins, lowClipValue, 10.0);
+  crossover.getStage1().getLowpassFrequencyResponse(   frequencies, H_LP_1_1, numBins, false);
+  crossover.getStage2(0).getLowpassFrequencyResponse(frequencies, H_LP_2_1, numBins, false);
+  AT::multiply(H_LP_1_1, H_LP_2_1, H_Low, numBins);
+  crossover.getLowBranchAllpass().getFrequencyResponse(omegas, H_Low, numBins, 
+    FA::MULTIPLICATIVE_ACCUMULATION);
+  FA::getMagnitudes(H_Low, magnitudesLow, numBins);
+  FA::convertToDecibels(magnitudesLow, numBins);
+  AT::clip(magnitudesLow, numBins, lowClipValue, 10.0);
 
   // obtain frequency response for low-mid band:
-  crossover.stage2[0].crossoverL.getHighpassFrequencyResponse(frequencies, H_HP_2_1, numBins, false);
-  rosic::multiply(H_LP_1_1, H_HP_2_1, H_LowMid, numBins);
-  crossover.lowBranchCompensationAllpass.getFrequencyResponse(omegas, H_LowMid, numBins, FilterAnalyzer::MULTIPLICATIVE_ACCUMULATION);
-  FilterAnalyzer::getMagnitudes(H_LowMid, magnitudesLowMid, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesLowMid, numBins);
-  rosic::clipBuffer(magnitudesLowMid, numBins, lowClipValue, 10.0);
+  crossover.getStage2(0).getHighpassFrequencyResponse(frequencies, H_HP_2_1, numBins, false);
+  AT::multiply(H_LP_1_1, H_HP_2_1, H_LowMid, numBins);
+  crossover.getLowBranchAllpass().getFrequencyResponse(omegas, H_LowMid, numBins, 
+    FA::MULTIPLICATIVE_ACCUMULATION);
+  FA::getMagnitudes(H_LowMid, magnitudesLowMid, numBins);
+  FA::convertToDecibels(magnitudesLowMid, numBins);
+  AT::clip(magnitudesLowMid, numBins, lowClipValue, 10.0);
 
   // obtain frequency response for high-mid band:
-  crossover.stage1.crossoverL.getHighpassFrequencyResponse(  frequencies, H_HP_1_1, numBins, false);
-  crossover.stage2[1].crossoverL.getLowpassFrequencyResponse(frequencies, H_LP_2_2, numBins, false);
-  rosic::multiply(H_HP_1_1, H_LP_2_2, H_HighMid, numBins);
-  crossover.highBranchCompensationAllpass.getFrequencyResponse(omegas, H_HighMid, numBins, FilterAnalyzer::MULTIPLICATIVE_ACCUMULATION);
-  FilterAnalyzer::getMagnitudes(H_HighMid, magnitudesHighMid, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesHighMid, numBins);
-  rosic::clipBuffer(magnitudesHighMid, numBins, lowClipValue, 10.0);
+  crossover.getStage1().getHighpassFrequencyResponse(  frequencies, H_HP_1_1, numBins, false);
+  crossover.getStage2(1).getLowpassFrequencyResponse(frequencies, H_LP_2_2, numBins, false);
+  AT::multiply(H_HP_1_1, H_LP_2_2, H_HighMid, numBins);
+  crossover.getHighBranchAllpass().getFrequencyResponse(omegas, H_HighMid, numBins, 
+    FA::MULTIPLICATIVE_ACCUMULATION);
+  FA::getMagnitudes(H_HighMid, magnitudesHighMid, numBins);
+  FA::convertToDecibels(magnitudesHighMid, numBins);
+  AT::clip(magnitudesHighMid, numBins, lowClipValue, 10.0);
 
   // obtain frequency response for high band:
-  crossover.stage2[1].crossoverL.getHighpassFrequencyResponse(frequencies, H_HP_2_2, numBins, false);
-  rosic::multiply(H_HP_1_1, H_HP_2_2, H_High, numBins);
-  crossover.highBranchCompensationAllpass.getFrequencyResponse(omegas, H_High, numBins, FilterAnalyzer::MULTIPLICATIVE_ACCUMULATION);
-  FilterAnalyzer::getMagnitudes(H_High, magnitudesHigh, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesHigh, numBins);
-  rosic::clipBuffer(magnitudesHigh, numBins, lowClipValue, 10.0);
+  crossover.getStage2(1).getHighpassFrequencyResponse(frequencies, H_HP_2_2, numBins, false);
+  AT::multiply(H_HP_1_1, H_HP_2_2, H_High, numBins);
+  crossover.getHighBranchAllpass().getFrequencyResponse(omegas, H_High, numBins, 
+    FA::MULTIPLICATIVE_ACCUMULATION);
+  FA::getMagnitudes(H_High, magnitudesHigh, numBins);
+  FA::convertToDecibels(magnitudesHigh, numBins);
+  AT::clip(magnitudesHigh, numBins, lowClipValue, 10.0);
 
   // obtain the summed frequency response:
-  rosic::add(H_Low, H_LowMid,  H_Sum, numBins);
-  rosic::add(H_Sum, H_HighMid, H_Sum, numBins);
-  rosic::add(H_Sum, H_High,    H_Sum, numBins);
-  FilterAnalyzer::getMagnitudes(H_Sum, magnitudesSum, numBins);
-  FilterAnalyzer::convertToDecibels(magnitudesSum, numBins);
+  AT::add(H_Low, H_LowMid,  H_Sum, numBins);
+  AT::add(H_Sum, H_HighMid, H_Sum, numBins);
+  AT::add(H_Sum, H_High,    H_Sum, numBins);
+  FA::getMagnitudes(H_Sum, magnitudesSum, numBins);
+  FA::convertToDecibels(magnitudesSum, numBins);
 
-  Plotter::plotData(numBins, frequencies, magnitudesLow, magnitudesLowMid, magnitudesHighMid, magnitudesHigh, magnitudesSum);
-
-  int dummy = 0;
+  plotData(numBins, frequencies, magnitudesLow, magnitudesLowMid, magnitudesHighMid, 
+    magnitudesHigh, magnitudesSum);
 }
-*/
-
 
 void rotes::testCrossover4Way2()
 { 
