@@ -23,12 +23,12 @@ bool testRosicString(); // all tests for rosic::String
 bool testCharacterComparisons();
 bool testStringBufferCopying();
 bool testStringIntConversions(int numIterations = 10000);
-void testStringDoubleConversions(); 
-void testStringDoubleConversionsRandom(int numIterations = 10000); 
-void testStringDoubleConversionsSpecialValues(); 
-void testStringDoubleConversionsDenormals(); 
-void testStringDoubleConversionsLarge(); 
-void testStringDoubleConversionsGeometricProgression(double start, double factor);
+bool testStringDoubleConversions();
+bool testStringDoubleConversionsRandom(int numIterations = 10000); 
+bool testStringDoubleConversionsSpecialValues(); 
+bool testStringDoubleConversionsDenormals(); 
+bool testStringDoubleConversionsLarge(); 
+bool testStringDoubleConversionsGeometricProgression(double start, double factor);
 //void testStringConcatenation();
 //void testStringComparison();...
 rosic::rsString createStringWithAllCharacters();

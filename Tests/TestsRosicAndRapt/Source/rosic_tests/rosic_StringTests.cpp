@@ -10,7 +10,7 @@ bool rotes::testRosicString()
   ok &= testCharacterComparisons();
   ok &= testStringBufferCopying();
   ok &= testStringIntConversions();
-  //testStringDoubleConversions();  // fails - why?
+  ok &= testStringDoubleConversions();  // fails!
   return ok;
 }
 
@@ -78,16 +78,19 @@ bool rotes::testStringIntConversions(int numIterations)
   return ok;
 }
 
-void rotes::testStringDoubleConversions()
+bool rotes::testStringDoubleConversions()
 {
-  testStringDoubleConversionsRandom(10000);
-  testStringDoubleConversionsSpecialValues();
-  testStringDoubleConversionsDenormals();
-  testStringDoubleConversionsLarge();
+  bool ok = true;
+  ok &= testStringDoubleConversionsRandom(10000);    // fails!
+  ok &= testStringDoubleConversionsSpecialValues();
+  ok &= testStringDoubleConversionsDenormals();      // fails!
+  ok &= testStringDoubleConversionsLarge();          // fails!
+  return ok;
 }
 
-void rotes::testStringDoubleConversionsRandom(int numIterations)
+bool rotes::testStringDoubleConversionsRandom(int numIterations)
 {
+  bool ok = true;
   double numberOriginal, numberReconstructed;
   rsString numString;
   for(int i=0; i<numIterations; i++)
@@ -95,49 +98,62 @@ void rotes::testStringDoubleConversionsRandom(int numIterations)
     numberOriginal      = RAPT::rsRandomUniform(-1000000.0, 1000000.0);
     numString           = numberOriginal;
     numberReconstructed = numString.asDouble();
-    rassert( numberReconstructed == numberOriginal );
+    ok &= numberReconstructed == numberOriginal;
   }
+  return ok;
 }
 
-void rotes::testStringDoubleConversionsSpecialValues()
+bool rotes::testStringDoubleConversionsSpecialValues()
 {
+  bool ok = true;
   double numberOriginal      = INF;
   rsString numString           = numberOriginal;
   double numberReconstructed = numString.asDouble();
-  rassert( numberReconstructed == numberOriginal );
-
+  ok &= numberReconstructed == numberOriginal;
 
   numberOriginal      = -INF;
   numString           = numberOriginal;
   numberReconstructed = numString.asDouble();
-  rassert( numberReconstructed == numberOriginal );
+  ok &= numberReconstructed == numberOriginal;
 
   numberOriginal      = NAN;
   numString           = numberOriginal;
   numberReconstructed = numString.asDouble();
+  ok &= RAPT::rsIsNaN(numberReconstructed) && RAPT::rsIsNaN(numberOriginal);
+  // Direct equality check on NaNs returns always false
+
+  /*
   if( numberReconstructed != numberOriginal )
   {
     //if( !(_isnan(numberReconstructed) && _isnan(numberOriginal)) )
     if( !(RAPT::rsIsNaN(numberReconstructed) && RAPT::rsIsNaN(numberOriginal)) )
       DEBUG_BREAK; // direct equality check on NaNs seems to always return false
   }
+  */
+  return ok;
 }
 
-void rotes::testStringDoubleConversionsDenormals()
+bool rotes::testStringDoubleConversionsDenormals()
 {
-  testStringDoubleConversionsGeometricProgression(1.0,  0.5/SQRT2);
-  testStringDoubleConversionsGeometricProgression(1.0, -0.5/SQRT2);
+  bool ok = true;
+  ok &= testStringDoubleConversionsGeometricProgression(1.0,  0.5/SQRT2);
+  ok &= testStringDoubleConversionsGeometricProgression(1.0, -0.5/SQRT2);
+  return ok;
 }
 
 
-void rotes::testStringDoubleConversionsLarge()
+bool rotes::testStringDoubleConversionsLarge()
 {
-  testStringDoubleConversionsGeometricProgression(1.0,  SQRT2);
-  testStringDoubleConversionsGeometricProgression(1.0, -SQRT2);
+  bool ok = true;
+  ok &= testStringDoubleConversionsGeometricProgression(1.0,  SQRT2);
+  ok &= testStringDoubleConversionsGeometricProgression(1.0, -SQRT2);
+  return ok;
 }
 
-void rotes::testStringDoubleConversionsGeometricProgression(double start, double factor)
+bool rotes::testStringDoubleConversionsGeometricProgression(double start, double factor)
 {
+  bool ok = true;
+
   double numberOriginal      = start;
   rsString numString           = numberOriginal;
   double numberReconstructed = numString.asDouble();
@@ -148,7 +164,7 @@ void rotes::testStringDoubleConversionsGeometricProgression(double start, double
   if( absFactor < 1.0 )
   {
     limit = 0.0;
-    rassert(absFactor < 0.5);
+    ok &= absFactor < 0.5;
     // factors between 0.5...1.0 will make the iteration stall at a finite denormal number
   }
   else if( absFactor > 1.0 )
@@ -159,9 +175,10 @@ void rotes::testStringDoubleConversionsGeometricProgression(double start, double
     numberOriginal     *= factor;
     numString           = numberOriginal;
     numberReconstructed = numString.asDouble();
-    rassert( numberReconstructed == numberOriginal );
+    ok &= numberReconstructed == numberOriginal;
     iteration++;
   }
+  return ok;
 }
 
 rsString rotes::createStringWithAllCharacters()
