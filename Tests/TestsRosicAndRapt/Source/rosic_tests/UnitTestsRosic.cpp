@@ -29,7 +29,7 @@ bool runUnitTestsRosic()
 
   std::cout << "Running unit tests for rosic\n";
 
-  // These need to be adapted:
+  // These need to be adapted (commented temporarily):
   testAllRosicClasses();
   //testRosicAnalysis();
   //testRosicBasics();
@@ -44,7 +44,7 @@ bool runUnitTestsRosic()
   // hmm...maybe some of those are actually not unit tests but experiments - disentangle that...
 
 
-
+  // These are already adapted:
   ok &= runUnitTest(&testTypeSizes,          "TypeSizes");
   ok &= runUnitTest(&testNumberManipulations,"NumberManipulations");
   ok &= runUnitTest(&testFilterPolynomials,  "FilterPolynomials");
@@ -52,8 +52,6 @@ bool runUnitTestsRosic()
   ok &= runUnitTest(&testModalFilter2,        "ModalFilter2");
   ok &= runUnitTest(&testModalSynth,          "ModalSynth");     // doesn't do anything useful
   ok &= runUnitTest(&testAutoCorrelationPitchDetector, "AutoCorrPitchDetect");
-
-
 
 
   if(ok) std::cout << "rosic: OK\n";

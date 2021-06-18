@@ -4,41 +4,48 @@ using namespace rotes;
 //#include "rosic/rosic.h"
 using namespace rosic;
 
-void rotes::testRosicString()
+bool rotes::testRosicString()
 {
-  testCharacterComparisons();
-  testStringBufferCopying();
-  testStringIntConversions();
+  bool ok = true;
+  ok &= testCharacterComparisons();
+  ok &= testStringBufferCopying();
+  ok &= testStringIntConversions();
   //testStringDoubleConversions();  // fails - why?
+  return ok;
 }
 
-void rotes::testCharacterComparisons()
+bool rotes::testCharacterComparisons()
 {
+  bool ok = true;
+
   char n = '0';
   char A = 'A';
   char B = 'B';
   char a = 'a';
   char b = 'b';
-  rassert( rsString::compareCharacters(n, A) == -1 );
-  rassert( rsString::compareCharacters(n, a) == -1 );
-  rassert( rsString::compareCharacters(A, A) ==  0 );
-  rassert( rsString::compareCharacters(A, a) == -1 );
-  rassert( rsString::compareCharacters(a, A) == +1 );
-  rassert( rsString::compareCharacters(a, a) ==  0 );
-  rassert( rsString::compareCharacters(A, B) == -1 );
-  rassert( rsString::compareCharacters(A, b) == -1 );
-  rassert( rsString::compareCharacters(a, B) == -1 );
-  rassert( rsString::compareCharacters(a, b) == -1 );
-  rassert( rsString::compareCharacters(B, A) == +1 );
-  rassert( rsString::compareCharacters(B, a) == +1 );
-  rassert( rsString::compareCharacters(b, A) == +1 );
-  rassert( rsString::compareCharacters(b, a) == +1 );
 
-  int dummy = 0;
+  ok &= rsString::compareCharacters(n, A) == -1;
+  ok &= rsString::compareCharacters(n, a) == -1;
+  ok &= rsString::compareCharacters(A, A) ==  0;
+  ok &= rsString::compareCharacters(A, a) == -1;
+  ok &= rsString::compareCharacters(a, A) == +1;
+  ok &= rsString::compareCharacters(a, a) ==  0;
+  ok &= rsString::compareCharacters(A, B) == -1;
+  ok &= rsString::compareCharacters(A, b) == -1;
+  ok &= rsString::compareCharacters(a, B) == -1;
+  ok &= rsString::compareCharacters(a, b) == -1;
+  ok &= rsString::compareCharacters(B, A) == +1;
+  ok &= rsString::compareCharacters(B, a) == +1;
+  ok &= rsString::compareCharacters(b, A) == +1;
+  ok &= rsString::compareCharacters(b, a) == +1;
+
+  return ok;
 }
 
-void rotes::testStringBufferCopying()
+bool rotes::testStringBufferCopying()
 {
+  bool ok = true;
+
   static const int charBufferLength = 20;
   char charBufferOriginal[     charBufferLength];
   char charBufferReconstructed[charBufferLength];
@@ -51,11 +58,14 @@ void rotes::testStringBufferCopying()
   string.writeIntoBuffer(charBufferReconstructed, 11);
 
   bool equal = strcmp(charBufferOriginal, charBufferReconstructed) == 0;
-  rassert( equal == true );
+  ok &= equal == true;
+
+  return ok;
 }
 
-void rotes::testStringIntConversions(int numIterations)
+bool rotes::testStringIntConversions(int numIterations)
 {
+  bool ok = true;
   int    numberOriginal, numberReconstructed;
   rsString numString;
   for(int i=0; i<numIterations; i++)
@@ -63,8 +73,9 @@ void rotes::testStringIntConversions(int numIterations)
     numberOriginal      = (int) RAPT::rsRandomUniform(INT_MIN, INT_MAX);
     numString           = numberOriginal;
     numberReconstructed = numString.asInt();
-    rassert( numberReconstructed == numberOriginal );
+    ok &= numberReconstructed == numberOriginal;
   }
+  return ok;
 }
 
 void rotes::testStringDoubleConversions()

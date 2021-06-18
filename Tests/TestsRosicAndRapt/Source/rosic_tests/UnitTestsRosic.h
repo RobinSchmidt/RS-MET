@@ -5,7 +5,7 @@
 
 
 //#include "PortedFromRSLib/UnitTestsRSLib.h" 
-// clean up and copy contents to here - hmm -it's actually not used anymore - figure out, if the 
+// Clean up and copy contents to here - hmm -it's actually not used anymore - figure out, if the 
 // tests from there are already integrated somewhere here - if not, do it
 
 
@@ -18,11 +18,11 @@ namespace rotes  // maybe get rid of this namespace
 // in case of failure
 
 // string
-void testRosicString(); // all tests for rosic::String
-//void testStringComparisons();
-void testCharacterComparisons();
-void testStringBufferCopying();
-void testStringIntConversions(int numIterations = 10000); 
+bool testRosicString(); // all tests for rosic::String
+//void testStringComparisons();   // why commented?
+bool testCharacterComparisons();
+bool testStringBufferCopying();
+bool testStringIntConversions(int numIterations = 10000);
 void testStringDoubleConversions(); 
 void testStringDoubleConversionsRandom(int numIterations = 10000); 
 void testStringDoubleConversionsSpecialValues(); 
