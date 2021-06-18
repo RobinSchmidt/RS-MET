@@ -60,7 +60,7 @@ void rotes::testRosicEffects()
 
 bool rotes::testRosicFilter()
 {
-  // To disentangle unit tests from experiments - eventually, the experimenst should go elsewhere:
+  // To disentangle unit tests from experiments - eventually, the experiments should go elsewhere:
   auto runExperiments = []()
   {
     testLadderFilter();
@@ -68,6 +68,16 @@ bool rotes::testRosicFilter()
     testModalFilterWithAttack();
     testBiquadPhasePlot();
     testFiniteImpulseResponseDesigner();
+    testFilterAnalyzer();
+    testBiquadCascade();
+    testSlopeFilter();
+    testPrototypeDesigner();
+    testLowpassToLowshelf();
+    testBesselPrototypeDesign();
+    testPapoulisPrototypeDesign();
+    testEngineersFilter();
+    testPoleZeroMapping();
+    highOrderFilterPolesAndZeros();  // reference output production for RSLib (obsolete?)
   };
   auto runUnitTests = []()
   {
@@ -80,21 +90,9 @@ bool rotes::testRosicFilter()
   //runExperiments();
   bool ok = runUnitTests();
 
-
-  testFilterAnalyzer();
-  testBiquadCascade();
+  // the code there is commented - uncomment it and reactivate all tests:
   //testCrossover4Way(); // linker error
   testCrossover4Way2();
-  testSlopeFilter();
-  testPrototypeDesigner();
-  testLowpassToLowshelf();
-  testBesselPrototypeDesign();
-  testPapoulisPrototypeDesign();
-  testEngineersFilter();
-  testPoleZeroMapping();
-
-  // reference output production for RSLib:
-  highOrderFilterPolesAndZeros();
 
   return ok;
 }

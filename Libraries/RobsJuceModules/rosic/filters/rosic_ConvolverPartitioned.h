@@ -13,22 +13,17 @@ Best efficiency in relation to the impulse response length is achieved when the 
 of two, the most wasteful case occurs at a length of a power of two plus one.
 
 \todo:
--use a more proper size for the last fftConvolver and delay it's output appropriately
+-use a more proper size for the last fftConvolver and delay it's output appropriately - we often 
+ may use a too long FFT for the last section because the FFT sizes grow by a factor of 2 for each
+ subsequent ConvolverFFT...but for the last section, we may get away with a power of two >= the
+ overhanging length...but then we need to delay the output (i think by the difference between the
+ length currently used and the length that will then be used -> figure out)
 -maybe try to achieve more uniform load by changing the algo...  */
 
 class ConvolverPartitioned
 {
 
 public:
-
-  //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
-
-  /** Constructor. */
-  //ConvolverPartitioned();
-
-  /** Destructor. */
-  //~ConvolverPartitioned();
 
   //-----------------------------------------------------------------------------------------------
   // setup:

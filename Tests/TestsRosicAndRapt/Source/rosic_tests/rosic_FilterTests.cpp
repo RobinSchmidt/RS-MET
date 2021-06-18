@@ -895,9 +895,6 @@ void rotes::testPrototypeDesigner()
   findPolynomialRoots(coeffs, N, roots);
   */
 
-
-
-
   std::complex<double> poles[10];
   std::complex<double> zeros[10];
   rosic::rsPrototypeDesignerD designer;
