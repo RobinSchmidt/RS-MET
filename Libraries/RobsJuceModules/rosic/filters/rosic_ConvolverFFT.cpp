@@ -6,8 +6,6 @@
 
 ConvolverFFT::ConvolverFFT()
 {
-  mutex.lock();
-
   x             = NULL;
   y1            = NULL;
   y2            = NULL;
@@ -23,20 +21,16 @@ ConvolverFFT::ConvolverFFT()
 
   forwardTransformer.setDirection(FourierTransformerRadix2::FORWARD);
   inverseTransformer.setDirection(FourierTransformerRadix2::INVERSE);
-
-  mutex.unlock();
 }
 
 ConvolverFFT::~ConvolverFFT()
 {
-  mutex.lock();
   if( x  != NULL ) delete[] x;
   if( y1 != NULL ) delete[] y1;
   if( y2 != NULL ) delete[] y2;
   if( h  != NULL ) delete[] h;
   if( X  != NULL ) delete[] X;
   if( H  != NULL ) delete[] H;
-  mutex.unlock();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -44,12 +38,9 @@ ConvolverFFT::~ConvolverFFT()
 
 void ConvolverFFT::setImpulseResponse(double *newImpulseResponse, int newLength)
 {
-  mutex.lock();
-
   if( newLength < 0 )
   {
     DEBUG_BREAK;
-    mutex.unlock();
     return;
   }
 
@@ -65,8 +56,6 @@ void ConvolverFFT::setImpulseResponse(double *newImpulseResponse, int newLength)
 
   // transform the impulse response into the FFT domain:
   forwardTransformer.transformRealSignal(h, H);
-
-  mutex.unlock();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -74,50 +63,39 @@ void ConvolverFFT::setImpulseResponse(double *newImpulseResponse, int newLength)
 
 void ConvolverFFT::clearImpulseResponse()
 {
-  mutex.lock();
   h[0] = 1.0;
   for(int k=1; k<M; k++)
     h[k] = 0.0;
   forwardTransformer.transformRealSignal(h, H);
-  mutex.unlock();
 }
 
 void ConvolverFFT::clearInputBuffer()
 {
-  mutex.lock();
   for(int k=0; k<M; k++)
     x[k] = 0.0;
-  mutex.unlock();
 }
 
 void ConvolverFFT::clearOutputBuffer1()
 {
-  mutex.lock();
   for(int k=0; k<M; k++)
     y1[k] = 0.0;
-  mutex.unlock();
 }
 
 void ConvolverFFT::clearOutputBuffer2()
 {
-  mutex.lock();
   for(int k=0; k<M; k++)
     y2[k] = 0.0;
-  mutex.unlock();
 }
 
 void ConvolverFFT::clearBuffers()
 {
-  mutex.lock();
   clearInputBuffer();
   clearOutputBuffer1();
   clearOutputBuffer2();
-  mutex.unlock();
 }
 
 void ConvolverFFT::allocateBuffers(int newImpulseResponseLength)
 {
-  mutex.lock();
   if( newImpulseResponseLength != L )
   {
     L = newImpulseResponseLength;
@@ -147,7 +125,6 @@ void ConvolverFFT::allocateBuffers(int newImpulseResponseLength)
 
     clearBuffers();
   }
-  mutex.unlock();
 }
 
 

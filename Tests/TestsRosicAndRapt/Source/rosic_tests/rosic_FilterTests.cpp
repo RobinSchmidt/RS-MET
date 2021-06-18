@@ -365,7 +365,7 @@ bool rotes::testFiniteImpulseResponseFilter()
   filter.setFrequency(1000.0);
   int L = filter.getKernelLength();
   const double* h = filter.getKernelPointer();
-  rsPlotArray(h, L);
+  //rsPlotArray(h, L);
 
   // Create some noise and apply the filter:
   static const int N = 2000;
@@ -383,11 +383,7 @@ bool rotes::testFiniteImpulseResponseFilter()
   double maxDiff = AT::maxDeviation(&r[0], &y[0], M);
   double tol = 1.e-15; 
   ok &= maxDiff <= tol;
-  rsPlotVectors(x, y, r);
-  // This fails! The outputs are totally different! It looks like the convolver uses a different
-  // impulse-response because it doesn't update the FFT arrays or something? The response seems 
-  // always the same, no matter what frequency we set. OK - i see - it's because of the:
-  // if( newLength != M ) ...we need a more complex logic there
+  //rsPlotVectors(x, y, r);
   
   //writeToStereoWaveFile("D:/TmpAudio/FilteredNoise.wav", noise, filteredNoise, testLength, 44100, 16);
 

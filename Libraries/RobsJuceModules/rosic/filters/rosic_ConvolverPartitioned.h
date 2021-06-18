@@ -25,10 +25,10 @@ public:
   // construction/destruction:
 
   /** Constructor. */
-  ConvolverPartitioned();
+  //ConvolverPartitioned();
 
   /** Destructor. */
-  ~ConvolverPartitioned();
+  //~ConvolverPartitioned();
 
   //-----------------------------------------------------------------------------------------------
   // setup:
@@ -59,28 +59,19 @@ protected:
   // \todo: check whether 64 is the optimal value, maybe use some value that depends on the 
   // overhanging length of the impulse-response
 
-  ConvolverBruteForce directConvolver;   // the single direct convolver for the first block
-  ConvolverFFT* fftConvolvers;           // the FFT based convolvers
-  int numFftConvolvers;                  // number of FFT based block convolvers
-  int M;                                 // length of the impulse response
-  MutexLock mutex;                       // mutex-lock for accessing the fftConvolvers 
-
-  // todo: 
-  // -remove the mutex (thread-sync should be handled by the caller)
-  // -use std::vector<ConvolverFFT> fftConvolvers
+  ConvolverBruteForce directConvolver;     // a single direct convolver for the first block...
+  std::vector<ConvolverFFT> fftConvolvers; // and a bunch of FFT convolvers of increasing length
+  int M = 0;                               // length of the impulse response
 };
-
 
 //-------------------------------------------------------------------------------------------------
 // inlined functions:
 
 INLINE double ConvolverPartitioned::getSample(double in)
 {
-  mutex.lock();
   double tmp = directConvolver.getSample(in);
-  for(int c=0; c<numFftConvolvers; c++)
+  for(size_t c = 0; c < fftConvolvers.size(); c++)
     tmp += fftConvolvers[c].getSample(in);
-  mutex.unlock();
   return tmp;
 }
 
