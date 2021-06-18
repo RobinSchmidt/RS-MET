@@ -109,6 +109,6 @@ void FiniteImpulseResponseFilter::getMagnitudeResponse(
 
 void FiniteImpulseResponseFilter::updateCoefficients()
 {
-  designer.getImpulseResponse(h, kernelLength);
+  designer.getImpulseResponse( h, kernelLength);
   convolver.setImpulseResponse(h, kernelLength);
 }

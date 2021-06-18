@@ -1,92 +1,89 @@
 #ifndef rosic_ConvolverPartitioned_h
 #define rosic_ConvolverPartitioned_h
 
-//// rosic-indcludes:
-//#include "rosic_ConvolverBruteForce.h"
-//#include "rosic_ConvolverFFT.h"
-
 namespace rosic
 {
 
-  /**
+/** This class implements a convolution via partioning the impulse response into several blocks 
+and convolving the input signal with each of these blocks separately. In order to achieve a zero 
+input/output delay, convolution with the first block will be realized by direct convolution and 
+later blocks will be computed by FFT/IFFT. The algorithms used here partitions the impulse response
+in a way which minimizes the the total computation per sample but does not ensure uniform CPU load. 
+Best efficiency in relation to the impulse response length is achieved when the length is a power 
+of two, the most wasteful case occurs at a length of a power of two plus one.
 
-  This class implements a convolution via partioning the impulse response into several blocks and convolving the input signal with each of 
-  these blocks separately. In order to achieve a zero input/output delay, convolution with the first block will be realized by direct 
-  convolution and later blocks will be computed by FFT/IFFT. The algorithms used here partitions the impulse response in a way which 
-  minimizes the the total computation per sample but does not ensure uniform CPU load. Best efficiency in relation to the impulse response 
-  length is achieved when the length is a power of two, the most wasteful case occurs at a length of a power of two plus one.
+\todo:
+-use a more proper size for the last fftConvolver and delay it's output appropriately
+-maybe try to achieve more uniform load by changing the algo...  */
 
-  \todo: 
-  -use a more proper size for the last fftConvolver and delay it's output appropriately
-  -maybe try to achieve more uniform load by changing the algo...
+class ConvolverPartitioned
+{
 
-  */
+public:
 
-  class ConvolverPartitioned
-  {
+  //-----------------------------------------------------------------------------------------------
+  // construction/destruction:
 
-  public:
+  /** Constructor. */
+  ConvolverPartitioned();
 
-    //-------------------------------------------------------------------------------------------------------------------------------------
-    // construction/destruction:
+  /** Destructor. */
+  ~ConvolverPartitioned();
 
-    /** Constructor. */
-    ConvolverPartitioned();
+  //-----------------------------------------------------------------------------------------------
+  // setup:
 
-    /** Destructor. */
-    ~ConvolverPartitioned();
+  /** Sets up the impulse response to be used. */
+  void setImpulseResponse(double* newImpulseResponse, int newLength);
 
-    //-------------------------------------------------------------------------------------------------------------------------------------
-    // setup:
+  //-----------------------------------------------------------------------------------------------
+  // audio processing:
 
-    /** Sets up the impulse response to be used. */
-    void setImpulseResponse(double *newImpulseResponse, int newLength);
+  /** Calculates a single convolved output-sample. */
+  INLINE double getSample(double in);
 
-    //-------------------------------------------------------------------------------------------------------------------------------------
-    // audio processing:
+  //-----------------------------------------------------------------------------------------------
+  // others:
 
-    /** Calculates a single convolved output-sample. */
-    INLINE double getSample(double in);
+  /** Sets the impulse response to an impulse (1 0 0 0....). */
+  void clearImpulseResponse();
 
-    //-------------------------------------------------------------------------------------------------------------------------------------
-    // others:
+  /** Sets the buffer for the previous input samples to zero. */
+  void clearInputBuffers();
 
-    /** Sets the impulse response to an impulse (1 0 0 0....). */
-    void clearImpulseResponse();
+  //===============================================================================================
 
-    /** Sets the buffer for the previous input samples to zero. */
-    void clearInputBuffers();
+protected:
 
-    //=====================================================================================================================================
+  static const int directConvolutionLength = 64;
+  // \todo: check whether 64 is the optimal value, maybe use some value that depends on the 
+  // overhanging length of the impulse-response
 
-  protected:
+  ConvolverBruteForce directConvolver;   // the single direct convolver for the first block
+  ConvolverFFT* fftConvolvers;           // the FFT based convolvers
+  int numFftConvolvers;                  // number of FFT based block convolvers
+  int M;                                 // length of the impulse response
+  MutexLock mutex;                       // mutex-lock for accessing the fftConvolvers 
 
-    static const int directConvolutionLength = 64;  
-      // \todo: check whether 64 is the optimal value, maybe use some value that depends on the overhanging length of the impulse-response
-
-    ConvolverBruteForce   directConvolver; // the single direct convolver for the first block
-    ConvolverFFT          *fftConvolvers;  // the FFT based convolvers
-    int numFftConvolvers;                  // number of FFT based block convolvers
-    int M;                                 // length of the impulse response
-    MutexLock mutex;                       // mutex-lock for accessing the fftConvolvers 
-
-  };
+  // todo: 
+  // -remove the mutex (thread-sync should be handled by the caller)
+  // -use std::vector<ConvolverFFT> fftConvolvers
+};
 
 
-  //---------------------------------------------------------------------------------------------------------------------------------------
-  // inlined functions:
+//-------------------------------------------------------------------------------------------------
+// inlined functions:
 
-  INLINE double ConvolverPartitioned::getSample(double in)
-  {
-    mutex.lock();
-    double tmp = directConvolver.getSample(in);
-    for(int c=0; c<numFftConvolvers; c++)
-      tmp += fftConvolvers[c].getSample(in);
-    mutex.unlock();
+INLINE double ConvolverPartitioned::getSample(double in)
+{
+  mutex.lock();
+  double tmp = directConvolver.getSample(in);
+  for(int c=0; c<numFftConvolvers; c++)
+    tmp += fftConvolvers[c].getSample(in);
+  mutex.unlock();
+  return tmp;
+}
 
-    return tmp;
-  }
-
-} 
+}
 
 #endif 

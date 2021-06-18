@@ -1,7 +1,4 @@
-//#include "rosic_ConvolverPartitioned.h"
-//using namespace rosic;
-
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 ConvolverPartitioned::ConvolverPartitioned()
@@ -20,7 +17,7 @@ ConvolverPartitioned::~ConvolverPartitioned()
   mutex.unlock();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // setup:
 
 void ConvolverPartitioned::setImpulseResponse(double *newImpulseResponse, int newLength)
@@ -34,11 +31,12 @@ void ConvolverPartitioned::setImpulseResponse(double *newImpulseResponse, int ne
     return;
   }
 
-  if( newLength != M )
+  if( newLength != M )  // this is wrong!
   {
     M = newLength;
 
-    directConvolver.setImpulseResponse(newImpulseResponse, RAPT::rsMin(newLength, directConvolutionLength));
+    directConvolver.setImpulseResponse(newImpulseResponse, RAPT::rsMin(newLength, 
+      directConvolutionLength));
 
     int accu          = directConvolutionLength;
     int currentLength = directConvolutionLength;
@@ -60,7 +58,7 @@ void ConvolverPartitioned::setImpulseResponse(double *newImpulseResponse, int ne
     {
       if( c == numFftConvolvers-1 )
       {
-        // last block might be shorter than currentLength, so we pass a zero-padded version:
+        // Last block might be shorter than currentLength, so we pass a zero-padded version:
         double *finalBlock  = new double[currentLength];
         int     finalLength = newLength-currentStart;    // length of non-zero part
         int k;
@@ -70,6 +68,8 @@ void ConvolverPartitioned::setImpulseResponse(double *newImpulseResponse, int ne
           finalBlock[k] = 0.0;
         fftConvolvers[c].setImpulseResponse(finalBlock, currentLength);
         delete[] finalBlock;
+        // ToDo: try to avoid the memory allocation, maybe setImpulseResponse should take an 
+        // optional parameter "zeroPadding"
       }
       else
         fftConvolvers[c].setImpulseResponse(&(newImpulseResponse[currentStart]), currentLength);
@@ -82,7 +82,7 @@ void ConvolverPartitioned::setImpulseResponse(double *newImpulseResponse, int ne
   mutex.unlock();
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // others:
 
 void ConvolverPartitioned::clearImpulseResponse()
@@ -102,7 +102,3 @@ void ConvolverPartitioned::clearInputBuffers()
     fftConvolvers[c].clearInputBuffer();
   mutex.unlock();
 }
-
-
-
-

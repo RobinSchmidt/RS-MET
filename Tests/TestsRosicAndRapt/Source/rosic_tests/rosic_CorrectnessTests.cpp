@@ -11,10 +11,9 @@ bool rotes::testAllRosicClasses()
   //printf("Warning: in testAllRosicClasses, not all tests are updated yet.\n");
   rsWarning("In testAllRosicClasses(), not all tests are updated yet.");
 
-
   ok &= testRosicBasics();
   ok &= testRosicFile();
-  testRosicFilter();
+  ok &= testRosicFilter();
   testRosicGenerators();
   testRosicModulators();
   testRosicNonRealTime();
@@ -59,7 +58,7 @@ void rotes::testRosicEffects()
   testFeedbackDelayNetwork();             // writes wave file
 }
 
-void rotes::testRosicFilter()
+bool rotes::testRosicFilter()
 {
   // To disentangle unit tests from experiments - eventually, the experimenst should go elsewhere:
   auto runExperiments = []()
@@ -74,7 +73,7 @@ void rotes::testRosicFilter()
   {
     bool ok = true;
     ok &= testConvolverPartitioned();
-    ok &= testFiniteImpulseResponseFilter();
+    ok &= testFiniteImpulseResponseFilter();  // fails! convolver imp-resp update is conditional
     return ok;
   };
 
@@ -97,6 +96,7 @@ void rotes::testRosicFilter()
   // reference output production for RSLib:
   highOrderFilterPolesAndZeros();
 
+  return ok;
 }
 
 void rotes::testRosicGenerators()

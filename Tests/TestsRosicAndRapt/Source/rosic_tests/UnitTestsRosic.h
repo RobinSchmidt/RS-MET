@@ -122,7 +122,7 @@ void testRosicAnalysis();
 bool testRosicBasics();
 bool testRosicFile();
 void testRosicEffects();
-void testRosicFilter();
+bool testRosicFilter();
 void testRosicGenerators();
 void testRosicModulators();
 void testRosicMath();
