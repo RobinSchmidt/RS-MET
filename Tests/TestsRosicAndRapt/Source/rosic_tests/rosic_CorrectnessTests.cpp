@@ -5,7 +5,7 @@
 
 void rotes::testAllRosicClasses()
 {
-  // todo: split into unit tests and experiments, unit tests should return a bool
+  // ToDo: split into unit tests and experiments, unit tests should return a bool
   testRosicString();
   testRosicBasics();
   testRosicFile();

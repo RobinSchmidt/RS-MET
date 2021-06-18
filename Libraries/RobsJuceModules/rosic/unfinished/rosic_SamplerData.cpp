@@ -458,8 +458,15 @@ void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
      state = C; break; }
    return index;
    where isSeperator(c) returns true, if c is '\n' or ' '
-     
- make a unit test that programmatically creates different .sfz files representing the same 
+
+   ...done, i think
+
+ToDo:
+-make a unit test that programmatically creates different .sfz files representing the same 
  instrument but with different formatting, render output and compare
+-maybe have an inquiry function that takes an opcode and returns the standard in which this 
+ opcode is defined (sfz, sfz2, aria, rs, ...)
+
+
 
 */

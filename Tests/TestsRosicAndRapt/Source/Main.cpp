@@ -60,8 +60,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  //ok &= runUnitTestsRosic();  // some tests there are still commented out
+  //ok &= runUnitTestsRapt();
+  ok &= runUnitTestsRosic();  // some tests there are still commented out
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
@@ -73,7 +73,7 @@ int main(int argc, char* argv[])
 
   //callbackPerformance();
   //matrixAdressingTest();
-  simdPerformance();
+  //simdPerformance();
   //sinCosPerformance();
   //fftPerformance();
 

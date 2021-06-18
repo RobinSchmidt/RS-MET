@@ -216,8 +216,25 @@ bool samplerEngineUnitTest()
   SD sfzData2;
   sfzData2.setFromSFZ(sfzString);
   ok &= sfzData2 == sfzData;
+
+
+
+
+
   // ToDo:
-  // -Implement and test loadFromFile/safeToFile
+  // -write a performance test for the sampler
+  // -switch to an int+float representation of the current sample position and increment and check, 
+  //  if this improves performance...even if not, it's still better because it doesn't lose 
+  //  precision for later samples
+  // -implement and test fractional delay times
+  // -implement and test opcodes for key- and vel-tracking for:
+  //  pitch, volume, pan, delay
+  // -implement the signal flow: regions -> groups -> instrument, introduce 2 switches in the 
+//    engine: groupSettingsAccumulate, instrumentSettingsAccumulate
+  // -implement opcodes: pos, width, start, loop_start/end, loop_mode
+
+
+  // -Implement and test loadFromFile/saveToFile
   //  -may have an option whether or not to save the samples, too (and if so, where)
   // -Test with more complex instruments, featuring:
   //  -multiple groups (with their own settings)

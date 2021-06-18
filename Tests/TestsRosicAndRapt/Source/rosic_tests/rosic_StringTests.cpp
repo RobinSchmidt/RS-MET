@@ -33,6 +33,8 @@ void rotes::testCharacterComparisons()
   rassert( rsString::compareCharacters(B, a) == +1 );
   rassert( rsString::compareCharacters(b, A) == +1 );
   rassert( rsString::compareCharacters(b, a) == +1 );
+
+  int dummy = 0;
 }
 
 void rotes::testStringBufferCopying()

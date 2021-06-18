@@ -25,10 +25,10 @@ bool runUnitTestsRapt()
   // because some of the test take longer to perfom. So this line is volatile:
   //ok &= runUnitTest(&colorUnitTest,  "rsColor");
   //ok &= runUnitTest(&ladderUnitTest, "rsLadder");
-  //ok &= runUnitTest(&samplerDataUnitTest,         "rsSamplerData");
-  //ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
-  //ok &= runUnitTest(&samplerEngineUnitTestFileIO, "rsSamplerEngine - File I/O");
-  //return ok;
+  ok &= runUnitTest(&samplerDataUnitTest,         "rsSamplerData");
+  ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
+  ok &= runUnitTest(&samplerEngineUnitTestFileIO, "rsSamplerEngine - File I/O");
+  return ok;
 
 
 

@@ -781,6 +781,9 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
 /*
 
+Bugs:
+-when loading a new instrument while a region is playing, it crashes
+
 Goals: 
 -Implement (a subset of) the feature set of the sfz specification, perhaps with some extensions 
  that are specifically necessary for the drum sampler. The general architecture should be such 
@@ -820,6 +823,8 @@ ToDo:
 -Allow the user to select between storing samples as float or short int (16 Bit) in memory. Allows
  different trade-off between memory and cpu usage: float needs twice as much memory but doesn't 
  need on-the-fly type conversion.
+-Optionally resample the samples on loading to the output sample rate using a very high quality 
+ (much better than realtime) resampling algorithm (say Sinc_512)
 
 Notes:
 
@@ -840,7 +845,8 @@ all channels.
 -maybe rapt should be organized using nested namespaces - maybe look at the doxygen-generated
  API documentation, how this looks like
 
-maybe rename to rsSampler, rsSoundFontPlayer, rsSamplerSFZ
+
+maybe rename to rsSampler, rsSamplerSFZ
 
 If client code wants to modify regions and groups, it needs to do this by calling appropriate
 functions on the rsSamplerEngine object with a pointer to the region or group to be modified
