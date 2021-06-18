@@ -80,10 +80,6 @@ void rotes::testLadderFilter()
   Plotter::plotData(N, t, yLo, yHiLo);
   */
 
-
-
-
-  
   static const int N = 6000;
   double t[N];  // time axis
   double x[N];  // input signal
@@ -105,9 +101,7 @@ void rotes::testLadderFilter()
     y[n] = ladder.getSampleTest(x[n]);
 
   plotData(N, t, x, y);
-
-
-
+  // middle section looks terrible - filter seems to explode? -> investigate!
 
   int dummy = 0;
 }
@@ -134,9 +128,6 @@ void rotes::testModalFilter()
   mf2.setPhaseModulation(pm);
 
 
-
-
-
   double t[N], h[N], h2[N];
   RAPT::rsArrayTools::fillWithIndex(t, N);
   h[0]  = mf.getSample(1.0);
@@ -155,7 +146,7 @@ void rotes::testModalFilter()
   //plotData(N, t, h2);
 
 
-  writeImpulseResponseToFile("d:\\TmpData\\ModalImpulseResponse.wav", mf2, (int)fs, (int)fs, 16);
+  //writeImpulseResponseToFile("d:\\TmpData\\ModalImpulseResponse.wav", mf2, (int)fs, (int)fs, 16);
 }
 
 void rotes::testModalFilterWithAttack()
@@ -310,8 +301,12 @@ void rotes::testFiniteImpulseResponseDesigner()
 }
 
 
-void rotes::testConvolverPartitioned()
+bool rotes::testConvolverPartitioned()
 {
+  bool ok = true;
+
+  using AT = RAPT::rsArrayTools;
+
   static const int impulseLength  = 5000;
   static const int responseLength = 201;
   static const int resultLength   = impulseLength+responseLength-1;
@@ -321,58 +316,83 @@ void rotes::testConvolverPartitioned()
   double resultTrue[resultLength];
   double result[resultLength];
   double indices[resultLength];
-  RAPT::rsArrayTools::fillWithIndex(indices,impulseLength);
+  AT::fillWithIndex(indices, impulseLength);
 
-  RAPT::rsArrayTools::fillWithZeros(impulse, impulseLength);
+  AT::fillWithZeros(impulse, impulseLength);
   impulse[1000] = 1.0;
 
-  //FiniteImpulseResponseDesigner designer;
-  //designer.setMode(FiniteImpulseResponseDesigner::LOWPASS);
-  //designer.getImpulseResponse(impulseResponse, responseLength);
-  RAPT::rsArrayTools::fillWithRangeLinear(impulseResponse, responseLength, 1.5, 1.0);
+  // Create an impulse response (a ramp down from 1.5 to 1.0) and convole it with our input impulse
+  // via the naive convolution algorithm for reference:
+  AT::fillWithRangeLinear(impulseResponse, responseLength, 1.5, 1.0);
+  AT::convolve(impulse, impulseLength, impulseResponse, responseLength, resultTrue);
 
-  RAPT::rsArrayTools::convolve(impulse, impulseLength, impulseResponse, responseLength, resultTrue);
-
-
+  // Compute the convolution also via the partitioned FFT algorithm:
   ConvolverPartitioned convolver;
   convolver.setImpulseResponse(impulseResponse, responseLength);
   for(int n=0; n<resultLength; n++)
     result[n] = convolver.getSample(impulse[n]);
 
-  double maxDiff = RAPT::rsArrayTools::maxDeviation(resultTrue, result, resultLength);
-
+  // Check, if the results match:
+  double tol = 1.e-15;  // that's a tight tolerance - it works with msc, though
+  double maxDiff = AT::maxDeviation(resultTrue, result, resultLength);
+  ok &= maxDiff <= tol;
 
   // plot:
-  //Plotter::plotData(impulseLength, indices, impulse);
-  //Plotter::plotData(responseLength, indices, impulseResponse);
-  //Plotter::plotData(resultLength, indices, resultTrue, result);
+  //plotData(impulseLength,  indices, impulse);
+  //plotData(responseLength, indices, impulseResponse);
+  //plotData(resultLength,   indices, resultTrue, result);
+  // the result plot looks wrong but the data looks ok in the debugger - maybe a problem with the
+  // plotting?
 
+  // ToDo: 
+  // -try it with various random inputs and random impulse responses of different lengths, be 
+  //  sure to cover special cases (like length = 0,1,2,4,8 (powers of 2), 3,7,15, 5,9,17, ...)
+  // -if all works, maybe move the convolver to rapt, test it with float, double, rsFloat64x2,
+  //  rsSimdVector<double, 2>, rsSimdVector<float, 2>
 
-
-
-  int dummy = 0;
+  return ok;
 }
 
-void rotes::testFiniteImpulseResponseFilter()
+bool rotes::testFiniteImpulseResponseFilter()
 {
+  bool ok = true;
+  using AT  = RAPT::rsArrayTools;
+  using Vec = std::vector<double>;
+
+  // Create the filter and retrieve its impulse response h with length L:
   FiniteImpulseResponseFilter filter;
   filter.setMode(FiniteImpulseResponseDesigner::BANDPASS);
-  filter.setFrequency(5000.0);
+  filter.setFrequency(2000.0);
+  int L = filter.getKernelLength();
+  const double* h = filter.getKernelPointer();
+  rsPlotArray(h, L);
 
-  // create some noise, filter it and write it into a file:
-  static const int testLength = 44100;
-  double noise[testLength];
-  double filteredNoise[testLength];
-  for(int n=0; n<testLength; n++)
-  {
-    noise[n]         = random(-1.0, 1.0);
-    filteredNoise[n] = filter.getSample(noise[n]);
-  }
+  // Create some noise and apply the filter:
+  static const int N = 2000;
+  int M = N+L+10;
+  Vec x(N), y(M);
+  for(int n = 0; n < N; n++) {
+    x[n] = random(-1.0, 1.0);
+    y[n] = filter.getSample(x[n]); }
+  for(int m = N; m < M; m++)
+    y[m] = filter.getSample(0.0);
 
-  //rosic::convolve(noise, testLength, impulseResponse, length, filteredNoise);
+  // Create reference signal by naive convolution and compare:
+  Vec r(M);
+  AT::convolve(&x[0], N, &h[0], L, &r[0]);
+  double maxDiff = AT::maxDeviation(&r[0], &y[0], M);
+  double tol = 1.e-15; 
+  ok &= maxDiff <= tol;
+  rsPlotVectors(x, y, r);
+  // This fails! The outputs are totally different! It looks like the convolver uses a different
+  // impulse-response because it doesn't update the FFT arrays or something? The response seems 
+  // always the same, no matter what frequency we set
+  
   //writeToStereoWaveFile("D:/TmpAudio/FilteredNoise.wav", noise, filteredNoise, testLength, 44100, 16);
 
-  int dummy = 0;
+  // todo: test even and odd lengths
+
+  return ok;
 }
 
   

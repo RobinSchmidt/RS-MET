@@ -2,7 +2,7 @@
 #define VST_PLUGIN_H
 
 #include "../../../../../RSLib/Code/RSLib.h"
-#include "public.sdk/source/vst2.x/audioeffectx.h"
+#include "public.sdk/source/vst2.x/audioeffectx.h" // replace with vestige.h
 #include <vector>  // for the event buffer
 
 /** This is the baseclass used for the test plugins. It simplifies the interface of the original   

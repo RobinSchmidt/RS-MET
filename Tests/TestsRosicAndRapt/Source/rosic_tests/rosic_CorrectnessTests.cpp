@@ -11,7 +11,7 @@ bool rotes::testAllRosicClasses()
   //printf("Warning: in testAllRosicClasses, not all tests are updated yet.\n");
   rsWarning("In testAllRosicClasses(), not all tests are updated yet.");
 
-  ok &= testRosicString();  // fails! reason: double/string roundtrip..see comments in the tests
+
   ok &= testRosicBasics();
   ok &= testRosicFile();
   testRosicFilter();
@@ -23,6 +23,9 @@ bool rotes::testAllRosicClasses()
   testRosicEffects();
   testRosicNumerical();
   testRosicMath();
+
+  ok &= testRosicString();  // fails! reason: double/string roundtrip..see comments in the tests
+
 
   return ok;
 }
@@ -58,13 +61,27 @@ void rotes::testRosicEffects()
 
 void rotes::testRosicFilter()
 {
-  testLadderFilter();
-  testModalFilter();
-  testModalFilterWithAttack();
-  testBiquadPhasePlot();
-  testFiniteImpulseResponseDesigner();
-  testConvolverPartitioned();
-  testFiniteImpulseResponseFilter();
+  // To disentangle unit tests from experiments - eventually, the experimenst should go elsewhere:
+  auto runExperiments = []()
+  {
+    testLadderFilter();
+    testModalFilter();
+    testModalFilterWithAttack();
+    testBiquadPhasePlot();
+    testFiniteImpulseResponseDesigner();
+  };
+  auto runUnitTests = []()
+  {
+    bool ok = true;
+    ok &= testConvolverPartitioned();
+    ok &= testFiniteImpulseResponseFilter();
+    return ok;
+  };
+
+  //runExperiments();
+  bool ok = runUnitTests();
+
+
   testFilterAnalyzer();
   testBiquadCascade();
   //testCrossover4Way(); // linker error

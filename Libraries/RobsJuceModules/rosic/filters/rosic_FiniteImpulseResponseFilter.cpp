@@ -1,7 +1,5 @@
-//#include "rosic_FiniteImpulseResponseFilter.h"
-//using namespace rosic;
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // construction/destruction:
 
 FiniteImpulseResponseFilter::FiniteImpulseResponseFilter()
@@ -16,7 +14,7 @@ FiniteImpulseResponseFilter::~FiniteImpulseResponseFilter()
   delete[] h;
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // setup:
 
 void FiniteImpulseResponseFilter::setSampleRate(double newSampleRate)
@@ -45,7 +43,8 @@ void FiniteImpulseResponseFilter::setBandwidth(double newBandwidth)
 
 void FiniteImpulseResponseFilter::setImpulseResponseLength(int newLength)
 {
-  //rassert( isOdd(newLength) ); // currently, only odd lengths are supported - nah differentiator may have even length
+  //rassert( isOdd(newLength) ); // currently, only odd lengths are supported 
+                                 // ...nah: a differentiator may have even length
 
   if( newLength != kernelLength )
   {
@@ -70,7 +69,7 @@ void FiniteImpulseResponseFilter::setImpulseResponse(double *newImpulseResponse,
 }
 */
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // inquiry:
 
 Complex FiniteImpulseResponseFilter::getTransferFunctionAt(Complex z)
@@ -86,8 +85,8 @@ Complex FiniteImpulseResponseFilter::getTransferFunctionAt(Complex z)
   return H; // == sum over h[n] * z^(-n)
 }
 
-void FiniteImpulseResponseFilter::getMagnitudeResponse(double *frequencies, double *magnitudes, int numBins, bool inDecibels, 
-                                                       bool accumulate)
+void FiniteImpulseResponseFilter::getMagnitudeResponse(
+  double *frequencies, double *magnitudes, int numBins, bool inDecibels, bool accumulate)
 {
   Complex j(0.0, 1.0);
   for(int k=0; k<numBins; k++)
@@ -96,19 +95,16 @@ void FiniteImpulseResponseFilter::getMagnitudeResponse(double *frequencies, doub
     Complex z = expC(j*w);   // z = e^(j*w)
     double  m = getTransferFunctionAt(z).getRadius();
 
-    // the following occurs very similarly in other filter's getMagnitudeResponse functions - we should encapsulate it into a fucntion:
-    if( inDecibels == false && accumulate == false )
-      magnitudes[k] = m;
-    else if( inDecibels == false && accumulate == true )
-      magnitudes[k] *= m;
-    else if( inDecibels == true && accumulate == false )
-      magnitudes[k] = RAPT::rsAmpToDb(m);
-    else if( inDecibels == true && accumulate == true )
-      magnitudes[k] += RAPT::rsAmpToDb(m);
+    // The following occurs very similarly in other filter's getMagnitudeResponse functions 
+    // -> we should factor it out into a fucntion:
+    if(      inDecibels == false && accumulate == false) magnitudes[k]  = m;
+    else if( inDecibels == false && accumulate == true ) magnitudes[k] *= m;
+    else if( inDecibels == true  && accumulate == false) magnitudes[k]  = RAPT::rsAmpToDb(m);
+    else if( inDecibels == true  && accumulate == true ) magnitudes[k] += RAPT::rsAmpToDb(m);
   }
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // internal functions:
 
 void FiniteImpulseResponseFilter::updateCoefficients()

@@ -44,13 +44,13 @@ bool testFeedbackDelayNetwork();
 bool testMultiComp();
 
 // filters:
-void testLadderFilter();
-void testModalFilter();
-void testModalFilterWithAttack();
-void testBiquadPhasePlot();
-void testFiniteImpulseResponseDesigner();
-void testConvolverPartitioned();
-void testFiniteImpulseResponseFilter();
+void testLadderFilter();                   // is esperiment
+void testModalFilter();                    // is esperiment
+void testModalFilterWithAttack();          // is esperiment
+void testBiquadPhasePlot();                // is esperiment
+void testFiniteImpulseResponseDesigner();  // is esperiment
+bool testConvolverPartitioned();
+bool testFiniteImpulseResponseFilter();
 void testFilterAnalyzer();
 void testBiquadCascade();
 void testCrossover4Way();
