@@ -101,14 +101,14 @@ bool testPolynomialDiffAndInt();
 bool testPolynomialComposition();
 bool testPolynomialWeightedSum();
 bool testPolynomialIntegrationWithPolynomialLimits();
-void testPolynomialRootFinder();
+bool testPolynomialRootFinder();
 void testLinLogEquationSolver();
 void testLinLogEquationSolverOld();
-void testLinearSystemSolver();
+bool testLinearSystemSolver();
 
 // numerical (maybe merge with math - or get rid):
 void testUnivariateScalarFunction();
-void testUnivariateRootFinder();
+//void testUnivariateRootFinder();    // empty
 
 // non-realtime:
 bool testMinimumPhaseReconstruction();
@@ -121,14 +121,16 @@ bool testAllRosicClasses();
 void testRosicAnalysis();
 bool testRosicBasics(bool runExperiments = false);
 bool testRosicFile();
-void testRosicEffects();
+bool testRosicEffects(bool runExperiments = false);
 bool testRosicFilter(bool runExperiments = false);
 void testRosicGenerators(bool runExperiments = false);
 void testRosicModulators(bool runExperiments = false);
-void testRosicMath();
+bool testRosicMath(bool runExperiments = false);
 void testRosicNumerical();
 bool testRosicNonRealTime();
-void testRosicOthers();
+void testRosicOthers(bool runExperiments = false);
+// these runExperiments parameters should go away when the disentanglement of the unit tests from 
+// the experiments is complete
 }
 
 

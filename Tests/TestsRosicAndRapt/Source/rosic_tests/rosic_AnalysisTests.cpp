@@ -1,27 +1,24 @@
-//#include "rosic_AnalysisTests.h"
 using namespace rotes;
-
-//#include "rosic/rosic.h"
-//#include "../Shared/Plotting/rosic_Plotter.h"
 using namespace rosic;
 
 void rotes::testOscilloscopeBuffer()
 {
+  // ToDo: Figure out and document what's going on here - i have no idea anymore!
+
   // test cases: W = 500
   // p = 450:  N=400:y, N=500:y, N=600:y
   // p = 500:  N=400:y, N=500:y, N=600:y
   // p = 550:  N=400:y, N=500:y, N=600:y
 
-
   static const int    L   = 10000;   // total signal length in samples
   static const int    W   = 882;     // display width in pixels
-  static const int    n0  = 882;    // sample-instant at which we obtain the display buffer
+  static const int    n0  = 882;     // sample-instant at which we obtain the display buffer
 
   static const double p   = 441.0;   // period length in samples
-  static const double N   = 882.0;  // number of samples inside time window
+  static const double N   = 882.0;   // number of samples inside time window
 
   static const double fs  = 44100.0; // sample rate
-  static const double f   = fs/p;   // frequency of the test sinusoid
+  static const double f   = fs/p;    // frequency of the test sinusoid
   static const double tau = 0.05;    // damping constant for the test sinusoid
 
   // create the absolute time-axis and the input signal: 

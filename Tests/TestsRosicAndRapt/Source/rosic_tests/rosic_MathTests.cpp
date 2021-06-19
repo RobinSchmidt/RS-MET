@@ -201,7 +201,7 @@ bool rotes::testPolynomialIntegrationWithPolynomialLimits()
   return result;
 }
 
-void rotes::testPolynomialRootFinder()
+bool rotes::testPolynomialRootFinder()
 {
   // we use the polynomial p(x) = x^4 - 7x^3 + 21*x^2 - 23*x - 52 with roots at 2+3i, 2-3i, -1, 4 as test function
   double a1[5] = {-52, -23, 21, -7, 1};
@@ -211,7 +211,8 @@ void rotes::testPolynomialRootFinder()
   static const int maxN     = 20;
   static const int numTests = 1000;
   double range = 10.0;   // range for the real and imaginary parts of the roots
-  double tol   = 5.e-9; // tolerance
+  //double tol   = 5.e-9; // tolerance
+  double tol   = 5.e-8; // tolerance
   std::complex<double> a[maxN+1];     // polynomial coefficients
   std::complex<double> rTrue[maxN];   // true roots
   std::complex<double> rFound[maxN];  // roots that were found
@@ -256,6 +257,7 @@ void rotes::testPolynomialRootFinder()
 
   rassert( result == true );
   int dummy = 0;
+  return result;
 }
 
 
@@ -374,9 +376,9 @@ void rotes::testLinLogEquationSolverOld()
   int dummy = 0;
 }
 
-void rotes::testLinearSystemSolver()
+bool rotes::testLinearSystemSolver()
 {
-  bool testResult = true;
+  bool ok = true;
 
   double x[3];
   double y[3]    = {-4, 15, 11};
@@ -387,12 +389,15 @@ void rotes::testLinearSystemSolver()
   for(int i = 0; i < 3; i++)
     pA[i] = &A[i][0];
 
-  solveLinearSystem(pA, x, y, 3);
+  solveLinearSystem(pA, x, y, 3);  // this is actually obsolete -> deprecate it
 
-  testResult &= (x[0] == 1.0);
-  testResult &= (x[1] == 2.0);
-  testResult &= (x[2] == 3.0);
+  double tol = 1.e-15;
+  ok &= rsIsCloseTo(x[0], 1.0, tol);
+  ok &= rsIsCloseTo(x[1], 2.0, tol);
+  ok &= rsIsCloseTo(x[2], 3.0, tol);
 
-  printf("%s %.2f %.2f %.2f", "Result:", x[0], x[1], x[2]);
-  getchar();
+  //printf("%s %.2f %.2f %.2f", "Result:", x[0], x[1], x[2]);
+  //getchar();
+
+  return ok;
 }

@@ -70,11 +70,18 @@ bool rotes::testFastGeneralizedHadamardTransform()
 
 bool rotes::testFeedbackDelayNetwork()
 {
-  bool result = true;
+  bool result = true;  // get rid! this is not a unit test!
 
   //FeedbackDelayNetwork16 *fdn16 = new FeedbackDelayNetwork16;
 
+  double amplitude = 0.5;       // amplitude of the input impulse
+  double diffusion = 100.0;     // diffusion parametr in percent
+
+
+  using AT = RAPT::rsArrayTools;
+
   FeedbackDelayNetwork fdn;
+  fdn.setDiffusion(diffusion);
 
   static const int N = 100000;
   //double hL[N], hR[N];
@@ -82,13 +89,13 @@ bool rotes::testFeedbackDelayNetwork()
   double *hR = new double[N];
 
 
-  RAPT::rsArrayTools::fillWithImpulse(hL, N);
-  RAPT::rsArrayTools::fillWithImpulse(hR, N);
+  AT::fillWithImpulse(hL, N, amplitude);
+  AT::fillWithImpulse(hR, N, amplitude);
   for(int n = 0; n < N; n++)
     fdn.processFrame(&hL[n], &hR[n]);
 
   double t[N];
-  RAPT::rsArrayTools::fillWithIndex(t, N);
+  AT::fillWithIndex(t, N);
   //Plotter::plotData(N, t, hL, hR);
   //Plotter::plotData(N, t, hL);
 
@@ -99,6 +106,24 @@ bool rotes::testFeedbackDelayNetwork()
   delete[] hL;
   delete[] hR;
   return result;
+
+  // Observations:
+  // -With diffusion set to 100, we indeed get some sort of exponentially decaying white noise, as
+  //  it should be
+  // -The output seems to contain the input impulse, i.e. it's 100% dry + 100% wet...is that 
+  //  correct?
+  // -The diffusion parameter seems to need a nonlinear mapping that gives more precision towards
+  //  higher values - between D=60 and D=100, there is not so much difference
+
+  // ToDo:
+  // -Figure out the distribution of the noise (we need an infinite decay-time for this). It is 
+  //  written in the literature that exponentially decaying Gaussian white noise sounds best for
+  //  a reverb impulse response. Figure out, if it is indeed Gaussian. Maybe it's an Irwin-Hall 
+  //  distribution of order equal to the number of the delaylines? That would seem to make some 
+  //  sense.
+  // -Maybe we can render Gaussian white noise impulse responses with time-variant slope filters
+  //  whose slope increases over time. Maybe we can make a convolution reverb that internally 
+  //  renders impulse response according to that idea.
 }
 
 template<class Effect>

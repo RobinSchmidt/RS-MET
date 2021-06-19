@@ -163,11 +163,10 @@ void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(
     xContainsResult = !xContainsResult;
   }
   if( !xContainsResult )
-    memcpy(y, x, N*sizeof(double)); // try rosic::copy instead, measure performance
-     // huh - shouldn't we copy from y to x? ...but maybe it works because the pointers are also
-     // swapped ->that's confusing, clean this up - maybe just rename the flag into something
-     // neutral
+    memcpy(y, x, N*sizeof(double));  // try rsArrayTools::copy instead, measure performance
+
 }
+// After the algo, x contains garbage - that's not nice
 // todo: try to write the algorithm in a way that works in place - maybe it's sufficient to pull 
 // out the x[2*j], x[2*j+1] into temp variables? ...but i actually don't think so -> figure out!
 // ..i think it would work, if we also write y into slots 2*j, 2*j+1 - but then we would end up
@@ -175,7 +174,16 @@ void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(
 // it could also be counteracted by a subsequent reordering algo, like in the FFT with the 
 // bit-reversed ordering...maybe it's even the same re-ordering here?
 // maybe the algo should be moved to some appropriate place in rapt, too
-// 
+
+// Here is a python implemenation of the FWHT in place:
+// https://en.wikipedia.org/wiki/Fast_Walsh%E2%80%93Hadamard_transform
+// ToDo: 
+// -implement the algo from here and from wikipedia in rapt
+// -make a unit test for both by comparing the results with explicit matrix multiplication of 
+//  matrices created by the Sylvester construction (use the Kronecker-product in rsMatrix for
+//  this)
+// -there is alredy a unit test in testFastGeneralizedHadamardTransform -> extend this
+
 
 void FeedbackDelayNetwork::fastInverseGeneralizedHadamardTransform(
   double *x, int N, int log2N, double *work, double a, double b, double c, double d)

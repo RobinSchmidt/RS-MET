@@ -12,21 +12,25 @@ bool rotes::testAllRosicClasses()
 
   rsWarning("In testAllRosicClasses(), not all tests are updated yet.");
 
-
   bool ok = true;
   ok &= testRosicBasics(runExperiments);
   ok &= testRosicFile();
   ok &= testRosicFilter(runExperiments);
-  testRosicGenerators(runExperiments);    // has no unit tests yet
-  testRosicModulators(runExperiments);    // ditto
   ok &= testRosicNonRealTime();
-  testRosicOthers();
-  testRosicAnalysis();
-  testRosicEffects();
-  testRosicNumerical();
-  testRosicMath();
-
+  ok &= testRosicEffects();
+  ok &= testRosicMath();
   ok &= testRosicString();  // Fails! reason: double/string roundtrip..see comments in the tests
+
+
+  // These functions actually all contain only experiments and not unit tests at all:
+  if(runExperiments)
+  {
+    testRosicGenerators(runExperiments);
+    testRosicModulators(runExperiments);
+    testRosicOthers(runExperiments);
+    testRosicAnalysis();
+    testRosicNumerical();     // get rid - these algos should be part of rapt
+  }
 
   return ok;
 }
@@ -58,10 +62,16 @@ bool rotes::testRosicFile()
   return ok;
 }
 
-void rotes::testRosicEffects()
+bool rotes::testRosicEffects(bool runExperiments)
 {
-  testFastGeneralizedHadamardTransform(); // returns bool 
-  testFeedbackDelayNetwork();             // writes wave file
+  if(runExperiments)
+  {
+    testFeedbackDelayNetwork(); // writes wave file
+  }
+
+  bool ok = true;
+  ok &= testFastGeneralizedHadamardTransform();
+  return ok;
 }
 
 bool rotes::testRosicFilter(bool runExperiments)
@@ -99,7 +109,7 @@ void rotes::testRosicGenerators(bool runExperiments)
     testOscillatorStereo();
     testLorentzSystem();
   }
-  // has not unit tests yet.
+  // has no unit tests yet.
 }
 
 void rotes::testRosicModulators(bool runExperiments)
@@ -110,23 +120,30 @@ void rotes::testRosicModulators(bool runExperiments)
   }
 }
 
-void rotes::testRosicMath()
+bool rotes::testRosicMath(bool runExperiments)
 {
-  testComplexSqrt();
-  testCubicCoeffsTwoPointsAndDerivatives();
-  testPolynomialDiffAndInt();
-  testPolynomialComposition();
-  testPolynomialWeightedSum();
-  testPolynomialIntegrationWithPolynomialLimits();
-  testPolynomialRootFinder();
-  testLinLogEquationSolver();  // creates plot
-  testLinearSystemSolver();
+  if(runExperiments)
+  {
+    testLinLogEquationSolver();  // creates plot
+  }
+
+  bool ok = true;
+  ok &= testComplexSqrt();
+  ok &= testCubicCoeffsTwoPointsAndDerivatives();
+  ok &= testPolynomialDiffAndInt();
+  ok &= testPolynomialComposition();
+  ok &= testPolynomialWeightedSum();
+  ok &= testPolynomialIntegrationWithPolynomialLimits();
+  ok &= testPolynomialRootFinder();
+  ok &= testLinearSystemSolver();
+  return ok;
 }
 
 void rotes::testRosicNumerical()
 {
   testUnivariateScalarFunction();
-  testUnivariateRootFinder();
+  //testUnivariateRootFinder();    // obsolete
+  // ToDo: Numerical algos should all be templatized and go to rapt. These two
 }
 
 bool rotes::testRosicNonRealTime()
@@ -136,7 +153,10 @@ bool rotes::testRosicNonRealTime()
   return ok;
 }
 
-void rotes::testRosicOthers()
-{
-  testSlewRateLimiterLinear();  // creates plot
+void rotes::testRosicOthers(bool runExperiments)
+{  
+  if(runExperiments)
+  {
+    testSlewRateLimiterLinear();  // creates plot
+  }
 }

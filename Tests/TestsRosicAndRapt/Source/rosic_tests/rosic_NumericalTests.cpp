@@ -55,16 +55,17 @@ void rotes::testUnivariateScalarFunction()
 
   // try f(x) = 1 / (x-a)   -> a is a singularity instead of a root
 
+  // todo: return a bool or better, merge with similar tests for rapt - requires to implement
+  // the Ridders algo in rapt, too. The numerical analysis algos should all be templatized and go
+  // to rapt anyway
 
   int dummy = 0;
 }
 
+/*
 void rotes::testUnivariateRootFinder()
 {
  
-
-
-
-
   int dummy = 0;
 }
+*/
