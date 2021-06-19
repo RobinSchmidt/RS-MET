@@ -119,12 +119,12 @@ void testSlewRateLimiterLinear();
 // unit test drivers:
 bool testAllRosicClasses();
 void testRosicAnalysis();
-bool testRosicBasics();
+bool testRosicBasics(bool runExperiments = false);
 bool testRosicFile();
 void testRosicEffects();
-bool testRosicFilter();
-void testRosicGenerators();
-void testRosicModulators();
+bool testRosicFilter(bool runExperiments = false);
+void testRosicGenerators(bool runExperiments = false);
+void testRosicModulators(bool runExperiments = false);
 void testRosicMath();
 void testRosicNumerical();
 void testRosicNonRealTime();

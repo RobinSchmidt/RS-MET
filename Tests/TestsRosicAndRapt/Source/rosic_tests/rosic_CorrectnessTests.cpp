@@ -1,21 +1,24 @@
-//#include "rosic_CorrectnessTests.h"
-//using namespace rotes;
-
-// try to get rid of this file
+// ToDo: Try to get rid of this file by merging the unit tests and experiments here with those for
+// rapt. At the moment, all these testRosic*() functions call a mixture of unit tests (returning a 
+// bool) and experiments (returning nothing, but popping up plots and/or writing wavefiles, etc). 
+// This should be disentangled. Currently, it is controlled by a switch, whether the experiments
+// should run....
 
 bool rotes::testAllRosicClasses()
 {
-  // ToDo: split into unit tests and experiments, unit tests should return a bool
-  bool ok = true;
+  bool runExperiments = false;
+  // This is the switch that decides whether or not the experiments should run (see comment above).
+  // When the experiments are disentangled from the unit tests, this can go away.
 
-  //printf("Warning: in testAllRosicClasses, not all tests are updated yet.\n");
   rsWarning("In testAllRosicClasses(), not all tests are updated yet.");
 
-  ok &= testRosicBasics();
+
+  bool ok = true;
+  ok &= testRosicBasics(runExperiments);
   ok &= testRosicFile();
-  ok &= testRosicFilter();
-  testRosicGenerators();
-  testRosicModulators();
+  ok &= testRosicFilter(runExperiments);
+  testRosicGenerators(runExperiments);    // has no unit tests yet
+  testRosicModulators(runExperiments);
   testRosicNonRealTime();
   testRosicOthers();
   testRosicAnalysis();
@@ -23,8 +26,7 @@ bool rotes::testAllRosicClasses()
   testRosicNumerical();
   testRosicMath();
 
-  ok &= testRosicString();  // fails! reason: double/string roundtrip..see comments in the tests
-
+  ok &= testRosicString();  // Fails! reason: double/string roundtrip..see comments in the tests
 
   return ok;
 }
@@ -34,13 +36,17 @@ void rotes::testRosicAnalysis()
   testOscilloscopeBuffer();  // creates plot
 }
 
-bool rotes::testRosicBasics()
+bool rotes::testRosicBasics(bool runExperiments)
 {
+  if(runExperiments)
+  {
+    testWindowFunctions();
+    testInterpolation();
+  }
+
   bool ok = true;
   ok &= testBinomialCoefficients();  // obsolete thx to rapt, now?
   ok &= testMathFunctions();
-  //testWindowFunctions();           // is experiment, not unit test
-  //testInterpolation();             // ditto  
   return ok;
 }
 
@@ -58,11 +64,9 @@ void rotes::testRosicEffects()
   testFeedbackDelayNetwork();             // writes wave file
 }
 
-bool rotes::testRosicFilter()
+bool rotes::testRosicFilter(bool runExperiments)
 {
-  // To disentangle unit tests from experiments - eventually, the experiments should go elsewhere,
-  // probably they should be alled directly in Main.cpp and only the unit tests shall remain here:
-  auto runExperiments = []()
+  if(runExperiments)
   {
     testLadderFilter();
     testModalFilter();
@@ -81,29 +85,29 @@ bool rotes::testRosicFilter()
     highOrderFilterPolesAndZeros();  // reference output production for RSLib (obsolete?)
     testCrossover4Way();
     testCrossover4Way2();
-  };
-  auto runUnitTests = []()
-  {
-    bool ok = true;
-    ok &= testConvolverPartitioned();
-    ok &= testFiniteImpulseResponseFilter();  // fails! convolver imp-resp update is conditional
-    return ok;
-  };
-
-  //runExperiments();
-  bool ok = runUnitTests();
+  }
+  bool ok = true;
+  ok &= testConvolverPartitioned();
+  ok &= testFiniteImpulseResponseFilter();  // fails! convolver imp-resp update is conditional
   return ok;
 }
 
-void rotes::testRosicGenerators()
+void rotes::testRosicGenerators(bool runExperiments)
 {
-  testOscillatorStereo();
-  testLorentzSystem();  // creates a plot
+  if(runExperiments)
+  {
+    testOscillatorStereo();
+    testLorentzSystem();
+  }
+  // has not unit tests yet.
 }
 
-void rotes::testRosicModulators()
+void rotes::testRosicModulators(bool runExperiments)
 {
-  //testConsecutiveExponentialDecay(); // creates a plot
+  if(runExperiments)
+  {
+    testConsecutiveExponentialDecay();
+  }
 }
 
 void rotes::testRosicMath()

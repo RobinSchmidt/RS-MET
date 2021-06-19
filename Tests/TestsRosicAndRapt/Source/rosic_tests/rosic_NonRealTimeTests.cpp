@@ -1,4 +1,3 @@
-//#include "rosic_NonRealTimeTests.h"
 using namespace rotes;
 
 #include "rosic/rosic.h"
@@ -23,6 +22,8 @@ bool rotes::testMinimumPhaseReconstruction()
   result &= RAPT::rsIsCloseTo(xem[7],  0.77095722011738244, tol);
   result &= RAPT::rsIsCloseTo(xem[8], -0.14508685139545574, tol);
   result &= RAPT::rsIsCloseTo(xem[9], -0.31510948806123357, tol);
+  // Where are these numbers from? matlab/octave?
+
 
   // odd length case:
   double xo[11] = {1, 2, 1, 0, -2, -1, 1, 0, 2, -1, 1};
@@ -41,5 +42,6 @@ bool rotes::testMinimumPhaseReconstruction()
   result &= RAPT::rsIsCloseTo(xom[10], -0.23332932833305497,   tol);
 
   return result;
+  // fails! maybe we need higher tolerance?
 }
 

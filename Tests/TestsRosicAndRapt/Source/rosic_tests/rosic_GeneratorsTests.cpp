@@ -1,16 +1,14 @@
-//#include "rosic_GeneratorsTests.h"
 using namespace rotes;
-
-//#include "rosic/rosic.h"
-//#include "../Shared/Plotting/rosic_Plotter.h"
-//#include "../Shared/Plotting/GNUPlotter.h"
-
-
 using namespace rosic;
 using namespace RAPT;
 
 void rotes::testOscillatorStereo()
 {
+  // We test some functionality the stereo wavetable oscillator used in Straightliner. We pass it
+  // a sawtooth wave, set up some of the oscillator's waveform modification parameters and retrieve
+  // the resulting waveform in its decimated version (which is supposed to be used for plots on the
+  // GUI) and plot it.
+
   // set up the WaveTable:
   static const int prototypeLength = 2048;
   double prototypeWaveFlat[prototypeLength];
@@ -47,15 +45,18 @@ void rotes::testOscillatorStereo()
   plotData2[1] = &plotDataFlat2[plotLength];
   osc.getWaveformForDisplay(plotData2, plotLength);
 
-
   plotData(plotLength, plotIndices, plotData1[0], plotData2[0]);
+
+  // Observations:
+  // The waveform plot looks a bit ugly, jaggy and also, both channels look almost the same but not
+  // quite. Is that supposed to be so?
 }
 
 
 void renderLorenzSoundToFile(int numSamples)
 {
   rosic::LorentzSystem lorentzSystem;
-  lorentzSystem.setPseudoFrequency(500);
+  lorentzSystem.setPseudoFrequency(500); // make this a parameter
 
   int N = numSamples;
   std::vector<double> x(N), y(N), z(N);
@@ -65,7 +66,6 @@ void renderLorenzSoundToFile(int numSamples)
     lorentzSystem.iterateState();
     lorentzSystem.getState(&x[n], &y[n], &z[n]);
   }
-
 
   RAPT::rsArrayTools::normalize(&x[0], N, 1.0, true);
   RAPT::rsArrayTools::normalize(&y[0], N, 1.0, true);
@@ -77,7 +77,10 @@ void renderLorenzSoundToFile(int numSamples)
 
 void rotes::testLorentzSystem()
 {
-  renderLorenzSoundToFile(100000);
+  // Produces and plots output of the 3 variables x,y,z as functions fo time t  of 
+  // rosic::LorentzSystem.
+
+  //renderLorenzSoundToFile(100000);
 
   static const int N = 2000;
 

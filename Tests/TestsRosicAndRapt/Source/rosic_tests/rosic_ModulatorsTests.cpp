@@ -1,56 +1,44 @@
-//#include "rosic_ModulatorsTests.h"
 using namespace rotes;
-
-//#include "rosic/rosic.h"
-//#include "../Shared/Plotting/rosic_Plotter.h"
 using namespace rosic;
 
 void rotes::testConsecutiveExponentialDecay()
 {
+  // We test rosic::AttackDecayEnvelope by recording and plotting its impulse response. We also
+  // plot the cumulative sum of the impulse response which is (supposed to be) the step response.
+  // (ToDo: verify that this is actually the case)
+
+  // todo: rename to testAttackDecayEnv...we have some other such experiments elsewhere - maybe 
+  // move the code together..but maybe not - this here is from rosic, the other is from rapt
+
   static const int numSamples = 3000;
+
+  using AT = RAPT::rsArrayTools;
 
   double indices[numSamples];
   double impulseResponse[numSamples];
   double stepResponse[numSamples];
-  RAPT::rsArrayTools::fillWithIndex(indices, numSamples);
-
-
+  AT::fillWithIndex(indices, numSamples);
 
   AttackDecayEnvelope envGen;
   envGen.setPeakTime(1000 * 500.0 / 44100.0);
   envGen.setDecayTimeConstant(10.0);
   envGen.trigger(false);
-
-  int n;
-  for(n=0; n<numSamples; n++)
+  for(int n = 0; n < numSamples; n++)
     impulseResponse[n] = envGen.getSample();
 
-
-
-  //RAPT::rsArrayTools::copy(impulseResponse, stepResponse, numSamples);
-  //RAPT::rsArrayTools::cumulativeSum(stepResponse, numSamples, 1);
-
-  RAPT::rsArrayTools::cumulativeSum(impulseResponse, stepResponse, numSamples, 1);
-
-
-  double scaler = 1.0 / RAPT::rsArrayTools::maxValue(stepResponse, numSamples);
-  RAPT::rsArrayTools::scale(stepResponse, stepResponse, numSamples, scaler);
-  //ste
-
+  AT::cumulativeSum(impulseResponse, stepResponse, numSamples, 1);
+  AT::normalize(stepResponse, numSamples);
+  // We need to scale it down because otherwise the values go into the thousands and totally dwarf
+  // the plot of the impulse response.
 
   plotData(numSamples, indices, impulseResponse, stepResponse);
 
+  // ToDo: maybe produce the step response not by using a cumulative sum but by actually feeding
+  // a step...maybe verify if the results are the same - i think, they should...right?
 
 
-
-
-
-
-
-  int dummy = 0;
-
-
-
+  // what's this? it looks like the code in testOscillatorStereo. is this a copy/paste remnant?
+  // if so, delete it:
   /*
   // set up the WaveTable:
   static const int prototypeLength = 2048;
