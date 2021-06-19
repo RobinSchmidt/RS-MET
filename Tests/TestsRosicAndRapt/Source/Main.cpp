@@ -54,9 +54,6 @@ int main(int argc, char* argv[])
   //  codebase, the research stuff should go into the research repo, eventually, 
   //  research-experiments may be propagated up into main repo
 
-  //===============================================================================================
-  // RAPT tests:
-
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
@@ -67,6 +64,9 @@ int main(int argc, char* argv[])
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
 
+
+  //===============================================================================================
+  // RAPT tests:
 
   //-----------------------------------------------------------------------------------------------
   // Performance tests:
@@ -232,9 +232,6 @@ int main(int argc, char* argv[])
   // third party code:
   //sampleTailExtenderTest();
 
-
-  //-----------------------------------------------------------------------------------------------
-  // Experiments:
 
   // Math:
   //bandMatrix();                       // under construction
@@ -550,11 +547,12 @@ int main(int argc, char* argv[])
   // Analysis:
 
   // Basics:
+  //testWindowFunctions();
+  //testInterpolation();
 
   // Effects:
-  //testFastGeneralizedHadamardTransform();
-  //testFeedbackDelayNetwork();
-  //testMultiComp();
+  //testFeedbackDelayNetwork(); // writes wave file
+
 
   // File:
 
@@ -586,6 +584,13 @@ int main(int argc, char* argv[])
   //testResetter();
   //testTurtleReverse();
   //testTurtleSource();
+
+  // Modulators:
+  //testConsecutiveExponentialDecay();
+
+  // Others:
+  //testSlewRateLimiterLinear();
+
 
   //-----------------------------------------------------------------------------------------------
   // Demos:

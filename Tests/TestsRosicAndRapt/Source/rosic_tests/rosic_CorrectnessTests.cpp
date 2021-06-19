@@ -42,12 +42,6 @@ void rotes::testRosicAnalysis()
 
 bool rotes::testRosicBasics(bool runExperiments)
 {
-  if(runExperiments)
-  {
-    testWindowFunctions();
-    testInterpolation();
-  }
-
   bool ok = true;
   ok &= testBinomialCoefficients();  // obsolete thx to rapt, now?
   ok &= testMathFunctions();
@@ -64,18 +58,15 @@ bool rotes::testRosicFile()
 
 bool rotes::testRosicEffects(bool runExperiments)
 {
-  if(runExperiments)
-  {
-    testFeedbackDelayNetwork(); // writes wave file
-  }
-
   bool ok = true;
   ok &= testFastGeneralizedHadamardTransform();
+  ok &= testMultiComp();
   return ok;
 }
 
 bool rotes::testRosicFilter(bool runExperiments)
 {
+  // move these to Main.cpp:
   if(runExperiments)
   {
     testLadderFilter();
@@ -104,20 +95,12 @@ bool rotes::testRosicFilter(bool runExperiments)
 
 void rotes::testRosicGenerators(bool runExperiments)
 {
-  if(runExperiments)
-  {
-    testOscillatorStereo();
-    testLorentzSystem();
-  }
-  // has no unit tests yet.
+
 }
 
 void rotes::testRosicModulators(bool runExperiments)
 {
-  if(runExperiments)
-  {
-    testConsecutiveExponentialDecay();
-  }
+
 }
 
 bool rotes::testRosicMath(bool runExperiments)
@@ -149,14 +132,12 @@ void rotes::testRosicNumerical()
 bool rotes::testRosicNonRealTime()
 {
   bool ok = true;
-  ok &= testMinimumPhaseReconstruction(); // maybe move to testRosicMath
+  ok &= testMinimumPhaseReconstruction(); 
+  // maybe move to testRosicMath or better: move the code into rapt
   return ok;
 }
 
 void rotes::testRosicOthers(bool runExperiments)
-{  
-  if(runExperiments)
-  {
-    testSlewRateLimiterLinear();  // creates plot
-  }
+{
+
 }
