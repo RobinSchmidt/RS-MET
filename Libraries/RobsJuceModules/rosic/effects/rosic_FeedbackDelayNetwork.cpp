@@ -142,6 +142,7 @@ void FeedbackDelayNetwork::reset()
   setupReadIndices();
 }
 
+// code is obsolete - we have better code in rapt Transforms now
 void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(
   double *x, int N, int log2N, double *y, double a, double b, double c, double d)
 {

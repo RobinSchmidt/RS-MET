@@ -3,13 +3,17 @@
 
 #include <rapt/rapt.h> // get rid
 
-#include "../RSLib/Core/RSCore.h" // why that? obsolete?
+#include "../RSLib/Core/RSCore.h" 
 using namespace RSLib;
+// Why that? Obsolete? Ah, SampleMapGenerator uses the rsString class from there. ToDo: switch to
+// rosic::String or std::string. ..but it also uses rsFile rsOutputWaveFile, etc -> move them to 
+// rosic, too...merge withe code there. I think, the RSLib versions are extended versions of the 
+// rosic versions anyway, so that should be reasonably easy to do
 
 
 // we have now the AudioStream class in rosic (used by the sampler engine) that provides similar 
 // functionality, so maybe get rid of this:
-struct rsAudioBuffer  // move to RSLib, maybe templatize on the sample-type (double/float)
+struct rsAudioBuffer  // move to rapt, templatize on the sample-type (double/float)
 {
 
   rsAudioBuffer()
@@ -61,6 +65,9 @@ struct rsAudioBuffer  // move to RSLib, maybe templatize on the sample-type (dou
   int numFrames;
   double **data;     // data as 2D array, data[i][j] is the j-th frame of the i-th channel
   double *dataFlat;  // data as flat array, used internally
+  // todo: 
+  // -use rsMatrix from rapt, each row is a channel
+  // -have a field for the sample rate (0 or -1, if unknown)
 
 };
 
@@ -168,20 +175,25 @@ protected:
   /** Genereates a string for a region in the sfz file. The root determines the rootkey of the
   sample to be used (and hence its filename) and lo and hi determine the lower and upper limit
   of the region for which this sample should be used. */
-  rsString getRegionString(int root, int lo, int hi);
+  RSLib::rsString getRegionString(int root, int lo, int hi);
 
 
   /** \name Data */
 
-  rsString outputDirectory;
-  rsString sampleSubDirectory;
+  RSLib::rsString outputDirectory;
+  RSLib::rsString sampleSubDirectory;
 
-  rsString name;
+  RSLib::rsString name;
 
   double gains[128];    // normalization gains for the samples
   double ambGains[128]; // normalization gains for the ambience samples
 
   rsAudioBuffer buffer;
+  // todo: use one buffer for each key to enable joint normalization - it's inconvenient to 
+  // normalize each sample separately and keep track of the applied factors
+
+  // get rid of RSLib, use rosic - maybe copy the RSLib rsString to rosic, also rsFile,
+  // rsFileStream
 
 
   double sampleRate;  // sample-rate for the wavefiles

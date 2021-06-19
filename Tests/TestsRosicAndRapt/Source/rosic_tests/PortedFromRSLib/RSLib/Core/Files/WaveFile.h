@@ -17,19 +17,31 @@ namespace RSLib
 
   public:
 
-     rsWaveFile(const rsString& absolutePath = rsString::empty) 
-       : rsFileStream(absolutePath) 
-     {
-     
-     }
+    rsWaveFile(const rsString& absolutePath = rsString::empty) : rsFileStream(absolutePath) {}
 
-  protected:
+     
+    /** \name Inquiry */
+
+    int getBitsPerSample() const { return header.formatSubChunk.bitsPerSample; }
 
     enum sampleFormats
     {
-      PCM_LINEAR = 1
-              // ...other formats are currently not supported
+    
+      PCM_LINEAR = 1      // ...other formats are currently not supported
+      // todo:
+      //IEEE_FLOAT = 3,
+      //ALAW = 6,
+      //MULAW = 7
     };
+    // see http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html
+
+    int getSampleFormat() const { return header.formatSubChunk.sampleFormat; }
+    // one of the values from enum sampleFormats
+
+
+  protected:
+
+
 
     /** The "RIFF" chunk descriptor part of the header. */
     typedef struct
@@ -51,6 +63,7 @@ namespace RSLib
       short bytesPerSampleFrame;    // == numChannels * bitsPerSample/8
       short bitsPerSample;          // 8, 16, etc.
     } FormatSubChunk;
+    // todo: support also 24, 32 bit int and 32, 64 bit float
 
     /** The data sub-chunk minus the actual data. */
     typedef struct
@@ -68,8 +81,8 @@ namespace RSLib
     } WaveFileHeader;
 
     // data members:
-    WaveFileHeader header;          // holds the header as struct
-    rsUint32         positionInData;  // current position inside the actual raw data (in bytes)
+    WaveFileHeader header;     // holds the header as struct
+    rsUint32 positionInData;   // current position inside the actual raw data (in bytes)
 
   };
 
@@ -159,6 +172,9 @@ namespace RSLib
     virtual ~rsOutputWaveFile() { finalizeHeaderAndCloseFile(); }
 
 
+
+
+
     /** \name Writing */
 
     /** Writes 16 bit integer data into the file. */
@@ -166,6 +182,8 @@ namespace RSLib
 
     /** Writes float data into the file, thereby converting the format if necessary. */
     virtual void write(const float *buffer, int numElems);
+
+    virtual void write(const double *buffer, int numElems);
 
     /** Supplements the missing information about the filesize to the preliminary header and 
     closes the file. */
@@ -186,6 +204,11 @@ namespace RSLib
     /** Converts a buffer of floating point numbers in the range [-1..+1] to 16 bit integer 
     samples in the range [-32768, 32767]. */
     virtual void convertFloatTo16BitInt(const float *inBuffer, rsInt16 *outBuffer, int length);
+
+    int copyBytes4to3(char* x, int N, char* y);
+    // under construction - for every 4 bytes in the input x, it copies the last 3 bytes into the 
+    // output. x is assumed to be N bytes long, the return value is the number of written bytes
+    // used for converting 32 int 24 bit integers
 
   };
 

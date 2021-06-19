@@ -179,5 +179,20 @@ void rsBluesteinFFT(std::complex<T> *a, int N)
 }
 */
 
-// \todo explicit template instantiations for float and double
-//....
+template<class T, int N>
+void rsFGHT(T* A, T a, T b, T c, T d)
+{
+  int h = 1;
+  while(h < N) {
+    for(int i = 0; i < N; i += 2*h) {
+      for(int j = i; j < i+h; j++) {
+        T x = A[j];
+        T y = A[j+h];
+        A[j]   = a*x + b*y;
+        A[j+h] = c*x + d*y;  }}
+    h *= 2;  }
+}
+// adapted from https://en.wikipedia.org/wiki/Fast_Walsh%E2%80%93Hadamard_transform
+
+
+

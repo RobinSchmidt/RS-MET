@@ -63,6 +63,7 @@ bool rotes::testFastGeneralizedHadamardTransform()
   // New implementation:
   AT::copy(x4, y4, 4);
   fght(y4, 4, 2., 3., 5., 7.);
+  //RAPT::rsFGHT<double, 4>(y4, 2., 3., 5., 7.); // linker error - needs instantiation
   ok &= y4[0] ==  4;
   ok &= y4[1] == 24;
   ok &= y4[2] ==  4;
@@ -100,6 +101,7 @@ bool rotes::testFastGeneralizedHadamardTransform()
   // New implementation:
   AT::copy(x8, y8, 8);
   fght(y8, 8, 2., 3., 5., 7.);
+  //RAPT::rsFGHT<double, 8>(y8, 2., 3., 5., 7.);
   ok &= y8[0] ==   149;
   ok &= y8[1] ==   357;
   ok &= y8[2] ==   360;
@@ -131,7 +133,7 @@ bool rotes::testFeedbackDelayNetwork()
   //FeedbackDelayNetwork16 *fdn16 = new FeedbackDelayNetwork16;
 
   double amplitude = 0.5;       // amplitude of the input impulse
-  double diffusion = 100.0;     // diffusion parametr in percent
+  double diffusion = 100.0;     // diffusion parameter in percent
 
 
   using AT = RAPT::rsArrayTools;
@@ -180,6 +182,8 @@ bool rotes::testFeedbackDelayNetwork()
   // -Maybe we can render Gaussian white noise impulse responses with time-variant slope filters
   //  whose slope increases over time. Maybe we can make a convolution reverb that internally 
   //  renders impulse response according to that idea.
+  // -Try diffusion less than zero and greater than 100
+  // -modulate the diffusion, using a filtered (and maybe levelled) version of the output signal
 }
 
 template<class Effect>

@@ -166,10 +166,36 @@ void rsOutputWaveFile::write16Bit(const short *buffer, int numElems)
 
 void rsOutputWaveFile::write(const float *buffer, int numElems)
 {
-  short *shortBuffer = new short[numElems];
-  convertFloatTo16BitInt(buffer, shortBuffer, numElems);
-  write16Bit(shortBuffer, numElems);
-  delete[] shortBuffer;
+  if(getBitsPerSample() == 16)
+  {
+    short* shortBuffer = new short[numElems];
+    convertFloatTo16BitInt(buffer, shortBuffer, numElems);
+    write16Bit(shortBuffer, numElems);
+    delete[] shortBuffer;
+  }
+  else
+    rsError("Required bit format not supported.");
+
+  // ToDo: 
+  // -implement 24 and 32 bit integer and 32, 64 bit floating point formats
+  // -i think, for 24 bit integer we need to convert to 32 bit integer first suing only the lower
+  //  3 bytes and then treat the array of 32bit ints as array of bytes and remove bytes 
+  //  0,4,8,12,...perhaps a general gappedCopy function would be nice
+}
+
+void rsOutputWaveFile::write(const double* buffer, int numElems)
+{
+  float* floatBuffer = new float[numElems];
+  for(int i = 0; i < numElems; i++)
+    floatBuffer[i] = (float) buffer[i];
+  write(floatBuffer, numElems);
+  delete[] floatBuffer;
+  // It's silly to first convert double to float and then float to short or whatever - convert 
+  // directly to target format...but that may introduce code duplication...maybe templatize the
+  // relevant method, so it can be called for double and float
+
+
+  //rsError("Not yet implemented."); // this is still under construction
 }
 
 void rsOutputWaveFile::convertFloatTo16BitInt(const float *inBuffer, rsInt16 *outBuffer, 
@@ -178,7 +204,50 @@ void rsOutputWaveFile::convertFloatTo16BitInt(const float *inBuffer, rsInt16 *ou
   int tmp;
   for(int i=0; i<length; i++)
   {
-    tmp          = (int) (32768.0f * inBuffer[i]);
+    tmp = (int) (32768.f * inBuffer[i]); // or should the factor be 32767.f?
     outBuffer[i] = (short) rsLimitToRange(tmp, -32768, 32767);
   }
+  // Using the factor 32768 is a power of 2 so it has the advantage of not introducing any 
+  // additional rounding error - but if the maximum sample in a normalized buffer happens to be
+  // negative, it will be clipped. Maybe the normalization should take into account the question,
+  // whether the max-sample is negative and use different factors in the different cases. Look at 
+  // how other wav-writing libraries handle this.
+  //
+  // See:
+  // https://github.com/libsndfile/libsndfile
+  // https://github.com/libsndfile/libsndfile/blob/master/src/wav.c
+  // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=520701&p=7323214
+  //
 }
+
+int rsOutputWaveFile::copyBytes4to3(char* x, int N, char* y)
+{
+  rsAssert(N % 4 == 0, "N must be divisible by 4");
+  N /= 4;
+
+  int ix = 1; // the first byte in the input is already skipped (assumed to be 0)
+  int iy = 0;
+  for(int n = 0; n < N; n++)
+  {
+    y[iy+0] = x[ix+0];
+    y[iy+1] = x[ix+1];
+    y[iy+2] = x[ix+2];
+    ix += 4;
+    iy += 3;
+  }
+  // may be generalized to copyElementsMtoN takes as parameters inpzt and output spacing and 
+  // initial offset
+
+  return 3*N;
+}
+// needs test
+
+
+/*
+
+References:
+https://en.wikipedia.org/wiki/WAV
+https://www.aelius.com/njh/wavemetatools/doc/riffmci.pdf
+http://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/WAVE.html
+
+*/

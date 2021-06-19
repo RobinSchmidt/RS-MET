@@ -823,12 +823,12 @@ void createPluck1()
   p.p = rsRandomVector(numPartials, minPhase, maxPhase, randomSeed);
   g.setModalParametersForKey(93, p);
 
-  g.setKeyRangeToRender(21, 93);  
+  g.setKeyRangeToRender(80, 80);  
   // For production rendering, use 21..93. For preview and sound-design, use smaller range
   // ToDo: maybe use an increment (default 1, 12 means one sample per octave - which is also good 
   // for preview), see SampleMapGenerator::generateAllSamples
 
-  g.setTruncationLevel(-80);
+  g.setTruncationLevel(-40);
   // For production rendering, use -80 or -60. For preview -40
 
 
@@ -850,6 +850,12 @@ void createPluck1()
   //  harmonic part further into even/odd)
   // -these different parts should go into different groups in the sfz
   // -maybe we should render in 96 kHz and use key-crossfades
+  // -Try to render the upper keys at a higher sample-rate with supersonic harmonics. Maybe that 
+  //  helps against the synthetic sound. It's plausible that even when downsampling with AA 
+  //  lowpass, the transient portion may be different, because the supersonic harmonics decay so 
+  //  quickly that they supply a broadband signal at the start of the sample (i think). ..that may
+  //  generally an interesting way to render transients: oversampled, supersonic, quickly decaying 
+  //  modes - then downsampled with AA filter.
 }
 
 void testHighPluck()
@@ -925,7 +931,16 @@ void testHighPluck()
   rosic::writeToMonoWaveFile("HighPluckMix1.wav", &mix[0], N, (int)sampleRate);
   mix = x1 - x2;
   rosic::writeToMonoWaveFile("HighPluckMix2.wav", &mix[0], N, (int)sampleRate);
-  printf("%s", "Done\n");
+  mix = x1 * (1.0*x2 + 1.0);  // amp-modulation
+  rosic::writeToMonoWaveFile("HighPluckAmpMod.wav", &mix[0], N, (int)sampleRate);
+
+  printf("%s", "Rendering HighPluck*.wav done\n");
+
+  // Test: write to 24 bit wavefile:
+  RSLib::rsOutputWaveFile wavFile("HighPluckMain24Bit.wav", (int)sampleRate, 16, 1); // todo: use 24
+  wavFile.write(&x1[0], N);
+  // does not yet work
+
 
   // ToDo:
   // -render transient samples with dividers 2,3,4,5,6,7,8 and use them as mix-in samples that can
@@ -935,7 +950,17 @@ void testHighPluck()
   //  the whole sample set by the same factor - it's inconvenient to have settings like 
   //  -7.353135dB in the sfz file
   // -i think, divider=3 works best
-  // -it actually also works well for lower frequencies
+  // -it may actually also be useful for lower keys/frequencies
+  // -it may also help to mix in a second transient with a little delay...and a third
+  //  ...maybe some sort of feedback-echo or resonant comb-filter effect could be useful
+  // -maybe render some sort of broadband bandpass signals that can be combined in various ways
+  //  to be added to the signal. for example, a butterworth from 1100-1900, 2100-2900, 3100-3900, 
+  //  ...
+  // -maybe amplitude-modulate main signal by the transient instead of just adding it
+  //  ...done - gives the transient more of a piano-like transient...todo:
+  //  subtract the original from the amp-modulated to obtain the amp-mod transient for mixing
+  //  in
+
 }
 // ToDo: make it possible to write such rendering scripts in python
 
