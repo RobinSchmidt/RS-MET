@@ -18,8 +18,8 @@ bool rotes::testAllRosicClasses()
   ok &= testRosicFile();
   ok &= testRosicFilter(runExperiments);
   testRosicGenerators(runExperiments);    // has no unit tests yet
-  testRosicModulators(runExperiments);
-  testRosicNonRealTime();
+  testRosicModulators(runExperiments);    // ditto
+  ok &= testRosicNonRealTime();
   testRosicOthers();
   testRosicAnalysis();
   testRosicEffects();
@@ -129,9 +129,11 @@ void rotes::testRosicNumerical()
   testUnivariateRootFinder();
 }
 
-void rotes::testRosicNonRealTime()
+bool rotes::testRosicNonRealTime()
 {
-  testMinimumPhaseReconstruction();
+  bool ok = true;
+  ok &= testMinimumPhaseReconstruction(); // maybe move to testRosicMath
+  return ok;
 }
 
 void rotes::testRosicOthers()

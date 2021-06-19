@@ -127,7 +127,7 @@ void testRosicGenerators(bool runExperiments = false);
 void testRosicModulators(bool runExperiments = false);
 void testRosicMath();
 void testRosicNumerical();
-void testRosicNonRealTime();
+bool testRosicNonRealTime();
 void testRosicOthers();
 }
 

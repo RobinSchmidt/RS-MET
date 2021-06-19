@@ -71,11 +71,16 @@ void SlewRateLimiterLinear::calculateDownwardLimit()
 
 double SlewRateLimiterLinear::calculateStepLimit(double unitStepTime)
 {
-  return 1.0 / (0.001*unitStepTime * sampleRate);
+  // return 1.0 / (0.001*unitStepTime * sampleRate);   // reaches target one sample too early
+  return 1.0 / ((0.001*unitStepTime * sampleRate)+1);  // yep, that seems to work
+  // ToDo: let user set the time in samples, the formual is then:
+  // 1.0 / (stepTimeInSamples+1)
 }
 
 double SlewRateLimiterLinear::getSample(double in) // inline this
 {
   y1 += RAPT::rsClip(in-y1, -downwardLimit, upwardLimit);
   return y1;
+  // This will be branchless, if the rsClip function is branchless (which it is not yet, but it 
+  // can be made so using min/max)
 }

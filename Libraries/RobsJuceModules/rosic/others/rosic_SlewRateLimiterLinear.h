@@ -1,90 +1,87 @@
 #ifndef rosic_SlewRateLimiterLinear_h
 #define rosic_SlewRateLimiterLinear_h
 
-//// rosic-indcludes:
-//#include "../math/rosic_ElementaryFunctionsReal.h"
-
 namespace rosic
 {
 
-  /**
+/** This is a slewrate limiter with user adjustable attack and release time constants. 
 
-  This is a slewrate limiter with user adjustable attack and release time constants. ....
+ToDo:
+-templatize and move to rapt, thereby inline a lot of stuff
+-implement a branchless version of rsClip and use that */
 
-  */
+class SlewRateLimiterLinear
+{
 
-  class SlewRateLimiterLinear  
-  {
+public:
 
-  public:
+  //---------------------------------------------------------------------------------------------
+  // construction/destruction:
 
-    //---------------------------------------------------------------------------------------------
-    // construction/destruction:
+  /** Constructor. */
+  SlewRateLimiterLinear();
 
-    /** Constructor. */
-    SlewRateLimiterLinear();  
+  /** Destructor. */
+  ~SlewRateLimiterLinear();
 
-    /** Destructor. */
-    ~SlewRateLimiterLinear();  
+  //---------------------------------------------------------------------------------------------
+  // parameter settings:
 
-    //---------------------------------------------------------------------------------------------
-    // parameter settings:
+  /** Sets the sample-rate. */
+  void setSampleRate(double newSampleRate);
 
-    /** Sets the sample-rate. */
-    void setSampleRate(double newSampleRate);    
+  /** Sets the attack-time (in milliseconds) - this time which it takes to rise from 0 to 1
+  when the input signal makes an upward step from 0 to 1. */
+  void setAttackTime(double newAttackTime);
 
-    /** Sets the attack-time (in milliseconds) - this time which it takes to rise from 0 to 1
-    when the input signal makes an upward step from 0 to 1. */
-    void setAttackTime(double newAttackTime); 
+  /** Sets the release-time (in milliseconds). ... */
+  void setReleaseTime(double newReleaseTime);
 
-    /** Sets the release-time (in milliseconds). ... */
-    void setReleaseTime(double newReleaseTime);
+  //---------------------------------------------------------------------------------------------
+  // inquiry:
 
-    //---------------------------------------------------------------------------------------------
-    // inquiry:
+  /** Returns the attack-time (in milliseconds). */
+  double getAttackTime() const { return attackTime; }
 
-    /** Returns the attack-time (in milliseconds). */
-    double getAttackTime() const { return attackTime; }
+  /** Returns the release-time. */
+  double getReleaseTime() const { return releaseTime; }
 
-    /** Returns the release-time. */
-    double getReleaseTime() const { return releaseTime; }
+  //---------------------------------------------------------------------------------------------
+  // audio processing:
 
-    //---------------------------------------------------------------------------------------------
-    // audio processing:
+  /** Returns a smoothed input value. */
+  double getSample(double in);
 
-    /** Returns a smoothed input value. */
-    double getSample(double in);
+  //---------------------------------------------------------------------------------------------
+  // others:
 
-    //---------------------------------------------------------------------------------------------
-    // others:
+  void reset();
 
-    void reset();
+  //=============================================================================================
 
-    //=============================================================================================
+protected:
 
-  protected:
+  /** Calculates the maximum difference between current and past output sample, when the current
+  input is greater than the past output. */
+  void calculateUpwardLimit();
 
-    /** Calculates the maximum difference between current and past output sample, when the current
-    input is greater than the past output. */
-    void calculateUpwardLimit();
-
-    /** Calculates the maximum difference between current and past output sample, when the current
-    input is smaller than the past output. */
-    void calculateDownwardLimit();
-
-
-    double calculateStepLimit(double unitStepTime);
+  /** Calculates the maximum difference between current and past output sample, when the current
+  input is smaller than the past output. */
+  void calculateDownwardLimit();
 
 
-    double upwardLimit, downwardLimit;  
-    double y1;                          // previous output sample
-    double sampleRate;                  // the samplerate
-    double attackTime, releaseTime;     // in milliseconds
+  double calculateStepLimit(double unitStepTime);
 
-  };
 
-  //-----------------------------------------------------------------------------------------------
-  // inlined functions:
+  double upwardLimit, downwardLimit;
+  double y1;                          // previous output sample
+  double sampleRate;                  // the samplerate
+  double attackTime, releaseTime;     // in milliseconds
+
+};
+
+//-----------------------------------------------------------------------------------------------
+// inlined functions:
 
 
 
