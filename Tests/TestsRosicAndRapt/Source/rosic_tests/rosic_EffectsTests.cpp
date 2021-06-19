@@ -1,71 +1,127 @@
-//#include "rosic_EffectsTests.h"
 using namespace rotes;
-
-#include "rosic/rosic.h"
+//#include "rosic/rosic.h"  // superfluous?
 using namespace rosic;
-
 using namespace RAPT;
+
+/*
+from https://en.wikipedia.org/wiki/Fast_Walsh%E2%80%93Hadamard_transform
+def fwht(a) -> None:
+    """In-place Fast Walsh–Hadamard Transform of array a."""
+    h = 1
+    while h < len(a):
+        for i in range(0, len(a), h * 2):
+            for j in range(i, i + h):
+                x = a[j]
+                y = a[j + h]
+                a[j] = x + y
+                a[j + h] = x - y
+        h *= 2
+*/
+template<class T>
+void fght(T* A, int N, T a, T b, T c, T d)
+{
+  int h = 1;
+  while(h < N) {
+    for(int i = 0; i < N; i += 2*h) {
+      for(int j = i; j < i+h; j++) {
+        T x = A[j];
+        T y = A[j+h];
+        A[j]   = a*x + b*y;
+        A[j+h] = c*x + d*y;  }}
+    h *= 2;  }
+}
+// maybe make N a template parameter such that the compiler can unroll the loops
 
 bool rotes::testFastGeneralizedHadamardTransform()
 {
-  bool result = true;
+  bool ok = true;
 
-  // 4-point FGWHT:
+  // 4D vector:
   double x4[4] = {4, -8, 12, -4};
   double y4[4];
   double work[8];  // workspace
 
   typedef rosic::FeedbackDelayNetwork FDN;
+  typedef RAPT::rsArrayTools AT;
 
-
-  RAPT::rsArrayTools::copy(x4, y4, 4);
+  // 4-point FWHT:
+  AT::copy(x4, y4, 4);
   FDN::fastGeneralizedHadamardTransform(y4, 4, 2, work);
-  result &= y4[0] ==   4;
-  result &= y4[1] ==  28;
-  result &= y4[2] == -12;
-  result &= y4[3] == - 4;
+  ok &= y4[0] ==   4;
+  ok &= y4[1] ==  28;
+  ok &= y4[2] == -12;
+  ok &= y4[3] == - 4;
 
-  RAPT::rsArrayTools::copy(x4, y4, 4);
+  // 4-point FGHT:
+  AT::copy(x4, y4, 4);
   FDN::fastGeneralizedHadamardTransform(y4, 4, 2, work, 2, 3, 5, 7);
-  result &= y4[0] ==  4;
-  result &= y4[1] == 24;
-  result &= y4[2] ==  4;
-  result &= y4[3] == 44;
+  ok &= y4[0] ==  4;
+  ok &= y4[1] == 24;
+  ok &= y4[2] ==  4;
+  ok &= y4[3] == 44;
+
+  // New implementation:
+  AT::copy(x4, y4, 4);
+  fght(y4, 4, 2., 3., 5., 7.);
+  ok &= y4[0] ==  4;
+  ok &= y4[1] == 24;
+  ok &= y4[2] ==  4;
+  ok &= y4[3] == 44;
 
 
-  // 8-point FWHT:
+  // 8D vector:
   double x8[8] = {1, 4, -2, 3, 0, 1, 4, -1};
   double y8[8];
 
-  RAPT::rsArrayTools::copy(x8, y8, 8);
+  // 8-point FWHT:
+  AT::copy(x8, y8, 8);
   FDN::fastGeneralizedHadamardTransform(y8, 8, 3, work);
-  result &= y8[0] ==  10;
-  result &= y8[1] == - 4;
-  result &= y8[2] ==   2;
-  result &= y8[3] == - 4;
-  result &= y8[4] ==   2;
-  result &= y8[5] == -12;
-  result &= y8[6] ==   6;
-  result &= y8[7] ==   8;
+  ok &= y8[0] ==  10;
+  ok &= y8[1] == - 4;
+  ok &= y8[2] ==   2;
+  ok &= y8[3] == - 4;
+  ok &= y8[4] ==   2;
+  ok &= y8[5] == -12;
+  ok &= y8[6] ==   6;
+  ok &= y8[7] ==   8;
 
-  RAPT::rsArrayTools::copy(x8, y8, 8);
+  // 8-point FGHT:
+  AT::copy(x8, y8, 8);
   FDN::fastGeneralizedHadamardTransform(y8, 8, 3, work, 2, 3, 5, 7);
-  result &= y8[0] ==   149;
-  result &= y8[1] ==   357;
-  result &= y8[2] ==   360;
-  result &= y8[3] ==   862;
-  result &= y8[4] ==   362;
-  result &= y8[5] ==   866;
-  result &= y8[6] ==   875;
-  result &= y8[7] ==  2092;
+  ok &= y8[0] ==   149;
+  ok &= y8[1] ==   357;
+  ok &= y8[2] ==   360;
+  ok &= y8[3] ==   862;
+  ok &= y8[4] ==   362;
+  ok &= y8[5] ==   866;
+  ok &= y8[6] ==   875;
+  ok &= y8[7] ==  2092;
 
-  // forward/backward trafo - check if input is reconstructed:
-  RAPT::rsArrayTools::copy(x8, y8, 8);
+  // New implementation:
+  AT::copy(x8, y8, 8);
+  fght(y8, 8, 2., 3., 5., 7.);
+  ok &= y8[0] ==   149;
+  ok &= y8[1] ==   357;
+  ok &= y8[2] ==   360;
+  ok &= y8[3] ==   862;
+  ok &= y8[4] ==   362;
+  ok &= y8[5] ==   866;
+  ok &= y8[6] ==   875;
+  ok &= y8[7] ==  2092;
+
+
+  // 8D Forward/backward trafo - check if input is reconstructed:
+  AT::copy(x8, y8, 8);
   FDN::fastGeneralizedHadamardTransform(       y8, 8, 3, work, 2, 3, 5, -7);
   FDN::fastInverseGeneralizedHadamardTransform(y8, 8, 3, work, 2, 3, 5, -7);
-  result &= fabs(RAPT::rsArrayTools::maxDeviation(x8, y8, 8)) < 1.e-15;
+  ok &= fabs(RAPT::rsArrayTools::maxDeviation(x8, y8, 8)) < 1.e-15;
 
-  return result;
+  return ok;
+
+  // ToDo: 
+  // -move the FGHT to rapt and the test to the rapt tests
+  // -compare results of bigger sizes with explicit matrix multiplication of matrices created by 
+  //  the Sylvester construction (use the Kronecker-product in rsMatrix for this)
 }
 
 bool rotes::testFeedbackDelayNetwork()
