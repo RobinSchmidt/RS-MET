@@ -117,18 +117,17 @@ bool testMinimumPhaseReconstruction();
 void testSlewRateLimiterLinear();
 
 // unit test drivers:
-bool testAllRosicClasses();
 //void testRosicAnalysis();
-bool testRosicBasics(bool runExperiments = false);
+bool testRosicBasics();
 bool testRosicFile();
-bool testRosicEffects(bool runExperiments = false);
-bool testRosicFilter(bool runExperiments = false);
-//void testRosicGenerators(bool runExperiments = false);
-//void testRosicModulators(bool runExperiments = false);
-bool testRosicMath(bool runExperiments = false);
+bool testRosicEffects();
+bool testRosicFilter();
+//void testRosicGenerators();
+//void testRosicModulators();
+bool testRosicMath();
 bool testRosicNumerical();
 bool testRosicNonRealTime();
-//void testRosicOthers(bool runExperiments = false);
+//void testRosicOthers();
 // these runExperiments parameters should go away when the disentanglement of the unit tests from 
 // the experiments is complete
 }

@@ -1,28 +1,5 @@
 // ToDo: Try to get rid of this file by merging the unit tests and experiments here with those for
-// rapt. At the moment, all these testRosic*() functions call a mixture of unit tests (returning a 
-// bool) and experiments (returning nothing, but popping up plots and/or writing wavefiles, etc). 
-// This should be disentangled. Currently, it is controlled by a switch, whether the experiments
-// should run....
-
-bool rotes::testAllRosicClasses()
-{
-  bool runExperiments = false;
-  // This is the switch that decides whether or not the experiments should run (see comment above).
-  // When the experiments are disentangled from the unit tests, this can go away.
-
-  rsWarning("In testAllRosicClasses(), not all tests are updated yet.");
-
-  bool ok = true;
-  ok &= testRosicBasics(runExperiments);
-  ok &= testRosicFile();
-  ok &= testRosicFilter(runExperiments);
-  ok &= testRosicNonRealTime();
-  ok &= testRosicEffects();
-  ok &= testRosicMath();
-  ok &= testRosicNumerical(); // should go to rapt
-  ok &= testRosicString();    // Fails! reason: double/string roundtrip..see comments in the tests
-  return ok;
-}
+// rapt. 
 
 /*
 void rotes::testRosicAnalysis()
@@ -31,7 +8,7 @@ void rotes::testRosicAnalysis()
 }
 */
 
-bool rotes::testRosicBasics(bool runExperiments)
+bool rotes::testRosicBasics()
 {
   bool ok = true;
   ok &= testBinomialCoefficients();  // obsolete thx to rapt, now?
@@ -47,7 +24,7 @@ bool rotes::testRosicFile()
   return ok;
 }
 
-bool rotes::testRosicEffects(bool runExperiments)
+bool rotes::testRosicEffects()
 {
   bool ok = true;
   ok &= testFastGeneralizedHadamardTransform();
@@ -55,7 +32,7 @@ bool rotes::testRosicEffects(bool runExperiments)
   return ok;
 }
 
-bool rotes::testRosicFilter(bool runExperiments)
+bool rotes::testRosicFilter()
 {
   bool ok = true;
   ok &= testConvolverPartitioned();
@@ -64,18 +41,18 @@ bool rotes::testRosicFilter(bool runExperiments)
 }
 
 /*
-void rotes::testRosicGenerators(bool runExperiments)
+void rotes::testRosicGenerators()
 {
 
 }
 
-void rotes::testRosicModulators(bool runExperiments)
+void rotes::testRosicModulators()
 {
 
 }
 */
 
-bool rotes::testRosicMath(bool runExperiments)
+bool rotes::testRosicMath()
 {
   bool ok = true;
   ok &= testComplexSqrt();
@@ -106,7 +83,7 @@ bool rotes::testRosicNonRealTime()
 }
 
 /*
-void rotes::testRosicOthers(bool runExperiments)
+void rotes::testRosicOthers()
 {
 
 }
