@@ -19,26 +19,17 @@ bool rotes::testAllRosicClasses()
   ok &= testRosicNonRealTime();
   ok &= testRosicEffects();
   ok &= testRosicMath();
-  ok &= testRosicString();  // Fails! reason: double/string roundtrip..see comments in the tests
-
-
-  // These functions actually all contain only experiments and not unit tests at all:
-  if(runExperiments)
-  {
-    testRosicGenerators(runExperiments);
-    testRosicModulators(runExperiments);
-    testRosicOthers(runExperiments);
-    testRosicAnalysis();
-    testRosicNumerical();     // get rid - these algos should be part of rapt
-  }
-
+  ok &= testRosicNumerical(); // should go to rapt
+  ok &= testRosicString();    // Fails! reason: double/string roundtrip..see comments in the tests
   return ok;
 }
 
+/*
 void rotes::testRosicAnalysis()
 {
-  testOscilloscopeBuffer();  // creates plot
+
 }
+*/
 
 bool rotes::testRosicBasics(bool runExperiments)
 {
@@ -66,33 +57,13 @@ bool rotes::testRosicEffects(bool runExperiments)
 
 bool rotes::testRosicFilter(bool runExperiments)
 {
-  // move these to Main.cpp:
-  if(runExperiments)
-  {
-    testLadderFilter();
-    testModalFilter();
-    testModalFilterWithAttack();
-    testBiquadPhasePlot();
-    testFiniteImpulseResponseDesigner();
-    testFilterAnalyzer();
-    testBiquadCascade();
-    testSlopeFilter();
-    testPrototypeDesigner();
-    testLowpassToLowshelf();
-    testBesselPrototypeDesign();
-    testPapoulisPrototypeDesign();
-    testEngineersFilter();
-    testPoleZeroMapping();
-    highOrderFilterPolesAndZeros();  // reference output production for RSLib (obsolete?)
-    testCrossover4Way();
-    testCrossover4Way2();
-  }
   bool ok = true;
   ok &= testConvolverPartitioned();
   ok &= testFiniteImpulseResponseFilter();  // fails! convolver imp-resp update is conditional
   return ok;
 }
 
+/*
 void rotes::testRosicGenerators(bool runExperiments)
 {
 
@@ -102,14 +73,10 @@ void rotes::testRosicModulators(bool runExperiments)
 {
 
 }
+*/
 
 bool rotes::testRosicMath(bool runExperiments)
 {
-  if(runExperiments)
-  {
-    testLinLogEquationSolver();  // creates plot
-  }
-
   bool ok = true;
   ok &= testComplexSqrt();
   ok &= testCubicCoeffsTwoPointsAndDerivatives();
@@ -122,22 +89,25 @@ bool rotes::testRosicMath(bool runExperiments)
   return ok;
 }
 
-void rotes::testRosicNumerical()
+bool rotes::testRosicNumerical()
 {
-  testUnivariateScalarFunction();
-  //testUnivariateRootFinder();    // obsolete
-  // ToDo: Numerical algos should all be templatized and go to rapt. These two
+  bool ok = true;
+  ok &= testUnivariateScalarFunction();
+  return ok;
+  // ToDo: Numerical algos should all be templatized and go to rapt. 
 }
 
 bool rotes::testRosicNonRealTime()
 {
   bool ok = true;
   ok &= testMinimumPhaseReconstruction(); 
-  // maybe move to testRosicMath or better: move the code into rapt
   return ok;
+  // maybe move to testRosicMath or better: move the code into rapt
 }
 
+/*
 void rotes::testRosicOthers(bool runExperiments)
 {
 
 }
+*/

@@ -545,6 +545,7 @@ int main(int argc, char* argv[])
   // Experiments:
 
   // Analysis:
+  //testOscilloscopeBuffer();
 
   // Basics:
   //testWindowFunctions();
@@ -553,8 +554,10 @@ int main(int argc, char* argv[])
   // Effects:
   //testFeedbackDelayNetwork(); // writes wave file
 
-
   // File:
+
+  // Math:
+  //testLinLogEquationSolver();
 
   // Filters:
   //testLadderFilter();
@@ -562,12 +565,8 @@ int main(int argc, char* argv[])
   //testModalFilterWithAttack();
   //testBiquadPhasePlot();
   //testFiniteImpulseResponseDesigner();
-  //testConvolverPartitioned();
-  //testFiniteImpulseResponseFilter();
   //testFilterAnalyzer();
   //testBiquadCascade();
-  //testCrossover4Way();
-  //testCrossover4Way2();
   //testSlopeFilter();
   //testPrototypeDesigner();
   //testLowpassToLowshelf();
@@ -576,6 +575,10 @@ int main(int argc, char* argv[])
   //testEngineersFilter();
   //testPoleZeroMapping();
   //highOrderFilterPolesAndZeros();
+  //testCrossover4Way();
+  //testCrossover4Way2();
+  //testConvolverPartitioned();         // is unit test?
+  //testFiniteImpulseResponseFilter();  // is unit test?
 
   // Genrators:
   //testOscillatorStereo();

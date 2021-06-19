@@ -107,7 +107,7 @@ void testLinLogEquationSolverOld();
 bool testLinearSystemSolver();
 
 // numerical (maybe merge with math - or get rid):
-void testUnivariateScalarFunction();
+bool testUnivariateScalarFunction();
 //void testUnivariateRootFinder();    // empty
 
 // non-realtime:
@@ -118,17 +118,17 @@ void testSlewRateLimiterLinear();
 
 // unit test drivers:
 bool testAllRosicClasses();
-void testRosicAnalysis();
+//void testRosicAnalysis();
 bool testRosicBasics(bool runExperiments = false);
 bool testRosicFile();
 bool testRosicEffects(bool runExperiments = false);
 bool testRosicFilter(bool runExperiments = false);
-void testRosicGenerators(bool runExperiments = false);
-void testRosicModulators(bool runExperiments = false);
+//void testRosicGenerators(bool runExperiments = false);
+//void testRosicModulators(bool runExperiments = false);
 bool testRosicMath(bool runExperiments = false);
-void testRosicNumerical();
+bool testRosicNumerical();
 bool testRosicNonRealTime();
-void testRosicOthers(bool runExperiments = false);
+//void testRosicOthers(bool runExperiments = false);
 // these runExperiments parameters should go away when the disentanglement of the unit tests from 
 // the experiments is complete
 }
