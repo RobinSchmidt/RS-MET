@@ -871,6 +871,8 @@ void testHighPluck()
   double attack      = 0.02;
   double decay       = 0.3;
   double length      = 3.0;    // in seconds
+  double attackFac   = 0.02;   // factor for the attack for the transient
+  double decayFac    = 0.10;   // factor for the decay for the transient  ..0.08
   int    randomSeed  = 0;      // for the randomized phases (standard: 0)
 
   using Vec = std::vector<double>;
@@ -913,8 +915,8 @@ void testHighPluck()
   att = dec;
   phs = rsRandomVector(N, minPhase, maxPhase, randomSeed);
   mfb.setReferenceFrequency(baseFreq);
-  mfb.setReferenceAttack(0.02*attack);  // 0.02
-  mfb.setReferenceDecay(0.08*decay);    // 0.06
+  mfb.setReferenceAttack(attackFac*attack); 
+  mfb.setReferenceDecay(decayFac*decay); 
   mfb.setModalParameters(frq, amp, att, dec, phs);
   N = numSamples;
   Vec x2(N); 
@@ -931,8 +933,17 @@ void testHighPluck()
   rosic::writeToMonoWaveFile("HighPluckMix1.wav", &mix[0], N, (int)sampleRate);
   mix = x1 - x2;
   rosic::writeToMonoWaveFile("HighPluckMix2.wav", &mix[0], N, (int)sampleRate);
-  mix = x1 * (1.0*x2 + 1.0);  // amp-modulation
+
+  // amp-modulation:
+  mix = x1 * (1.0*x2 + 1.0); 
   rosic::writeToMonoWaveFile("HighPluckAmpMod.wav", &mix[0], N, (int)sampleRate);
+  // todo: avoid aliasing by oversampling by 2: upsample by 2 using sinc interpolation, do the 
+  // amp-mod, downsample by 2 again using sinc interpolation...wrap that into a function 
+  // rsAmpModulate(const T* carrier, const T* modulator, int N, T* result, 
+  //   int modIndex = 1, int sincLength = 512)...or maybe that should just implement ring-mod, 
+  // amp-mod can be obtained via original + ringmod, maybe for the ring-mod signal, use a single
+  // mode (or a few) all below the fundamental
+  // 
 
   printf("%s", "Rendering HighPluck*.wav done\n");
 
@@ -940,6 +951,11 @@ void testHighPluck()
   RSLib::rsOutputWaveFile wavFile("HighPluckMain24Bit.wav", (int)sampleRate, 24, 1); // todo: use 24
   wavFile.write(&x1[0], N);
   // does not yet work
+
+  // Observations:
+  // -when increasing the decayFac, the transient of the mix becomes more dirty/gritty. the 
+  //  transient of the amp-modulated becomes just longer
+  // - a decayFac of 0.08 ...0.1
 
 
   // ToDo:
@@ -959,7 +975,8 @@ void testHighPluck()
   // -maybe amplitude-modulate main signal by the transient instead of just adding it
   //  ...done - gives the transient more of a piano-like transient...todo:
   //  subtract the original from the amp-modulated to obtain the amp-mod transient for mixing
-  //  in
+  //  in...but: there is aliasing taking place...maybe for amp-mod, we should oversample by 2 to 
+  //  avoid it
 
 }
 // ToDo: make it possible to write such rendering scripts in python

@@ -110,12 +110,10 @@ namespace RSLib
 
     virtual rsUint32 getSampleRate()       const { return header.formatSubChunk.sampleRate; }
     virtual rsUint32 getNumBitsPerSample() const { return header.formatSubChunk.bitsPerSample; }
-    virtual rsUint32 getDataSizeInBytes()  const { return header.dataSubChunk.totalNumBytesOfData;}
+    virtual rsUint32 getDataSizeInBytes()  const { return header.dataSubChunk.totalNumBytesOfData; }
     virtual rsUint32 getNumChannels()      const { return header.formatSubChunk.numChannels; }
     virtual rsUint32 getNumSampleFrames()  const 
-    { 
-      return getDataSizeInBytes() / header.formatSubChunk.bytesPerSampleFrame; 
-    }
+    { return getDataSizeInBytes() / header.formatSubChunk.bytesPerSampleFrame; }
 
     /** Checks whether the end of the file is reached. */
     virtual int isEndOfFileReached() const;
@@ -194,6 +192,8 @@ namespace RSLib
     /** Supplements the missing information about the filesize to the preliminary header and 
     closes the file. */
     virtual void finalizeHeaderAndCloseFile();
+    // ToDo: maybe the header should be updated after each call to write*, such that the recorded 
+    // file size increases continuously
 
 
 
@@ -201,11 +201,12 @@ namespace RSLib
 
     /** \name Internal Functions */
 
-
     /** Creates the preliminray header which does not yet contain valid data for the file 
     length. */
     virtual void createPreliminaryHeader(const rsUint32 sampleRate, const rsUint32 bitsPerSample, 
       const rsUint32 numChannels);
+    // maybe rename to fillHeaderPreliminary, add a function updateHeader that gets called from
+    // write*
 
     /** Writes the header into the file. */
     virtual void writeHeader();
@@ -221,6 +222,8 @@ namespace RSLib
     converting 32 integers into 24 bit integers represented by 3 bytes each. The return value is 
     the number of bytes written, which is 3*N/4. N must be divisble by 4. */
     virtual int copyBytes4to3(const rsInt8* x, int N, rsInt8* y);
+    // ToDo: test on big endian machines - it will probably fail - we may need an #ifdef in the 
+    // implementation. see comments there
  
 
   };

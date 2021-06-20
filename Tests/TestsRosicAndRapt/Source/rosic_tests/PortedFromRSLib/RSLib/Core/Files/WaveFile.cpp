@@ -48,7 +48,6 @@ bool rsInputWaveFile::openForRead()
   return success;
 }
 
-
 int rsInputWaveFile::read16BitInt(rsInt16 *buffer, int maxElems)  
 {
   // \todo rename maxElemes into something more descriptive
@@ -287,10 +286,22 @@ ToDo:
 -don't use char, short, long - instead use rsInt8, rsInt16, rsInt32 consistently
 -use members of type std::vector for the buffers, resize as necessary -> avoid unecessary 
  allocations
--when saving the same file with 16 and 24 bit then conveting 24 to 16 and subtracting it from
+-write a unit test 
+ -test int -> float -> int roundtrips between float32 and 16 and 24 bit integer data
+-avoid memory allocations in each call to write* -> have std::vector members for various buffers 
+ and resize them in write* as necessary
+-when saving the same file with 16 and 24 bit then converting 24 to 16 and subtracting it from
  the 16bit file, the result is not zero - there's a noise at -90dB (at least when doing it in 
  Audition) ...is that expected? -> do experiments and unit tests (maybe just for the conversions, 
- without necessarily writing to files), also implement dithering
+ without necessarily writing to files), also implement dithering ..but not in this class
+ https://en.wikipedia.org/wiki/Dither
+ https://en.wikipedia.org/wiki/Noise_shaping
+ https://dsp.stackexchange.com/questions/15436/audio-signal-dither-and-noise-shaping
+ https://ieeexplore.ieee.org/document/969564
+
+ LEAST SQUARES THEORY AND DESIGN OF OPTIMAL NOISE SHAPING FILTERS:
+ https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.5.6708&rep=rep1&type=pdf
+
 
 References:
 https://en.wikipedia.org/wiki/WAV
