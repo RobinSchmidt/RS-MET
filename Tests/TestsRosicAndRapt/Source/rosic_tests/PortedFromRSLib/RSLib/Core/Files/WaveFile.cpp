@@ -156,22 +156,46 @@ void rsOutputWaveFile::writeHeader()
 
 void rsOutputWaveFile::write16Bit(const short *buffer, int numElems)
 {
+  // should we assert that numChannles == 1?
   if(numElems < 1) return; // nothing to do
-  //assert(header.formatSubChunk.bitsPerSample == 16);
+  rsAssert(header.formatSubChunk.bitsPerSample == 16);
   int res = (int)fwrite(buffer, 2, numElems, filePointer);
   if(res != numElems)
     rsError("Error while writing to a wav file.");
   positionInData += 2 * numElems;
 }
 
+void rsOutputWaveFile::write24Bit(const rsInt32* buffer, int numElems)
+{
+  // should we assert that numChannles == 1?
+  if(numElems < 1) return; // nothing to do
+  rsAssert(header.formatSubChunk.bitsPerSample == 24);
+  rsInt8* buf8 = new rsInt8[3*numElems];
+  copyBytes4to3((const rsInt8*) buffer, 4*numElems, buf8);
+  int res = (int)fwrite(buf8, 3, numElems, filePointer);
+  if(res != numElems)
+    rsError("Error while writing to a wav file.");
+  positionInData += 3 * numElems;
+  delete[] buf8;
+}
+
 void rsOutputWaveFile::write(const float *buffer, int numElems)
 {
+  // should we assert that numChannles == 1?
+
   if(getBitsPerSample() == 16)
   {
     short* shortBuffer = new short[numElems];
     convertFloatTo16BitInt(buffer, shortBuffer, numElems);
     write16Bit(shortBuffer, numElems);
     delete[] shortBuffer;
+  }
+  if(getBitsPerSample() == 24)
+  {
+    rsInt32* buf32 = new rsInt32[numElems];
+    convertFloatTo24BitInt(buffer, buf32, numElems);
+    write24Bit(buf32, numElems);
+    delete[] buf32;
   }
   else
     rsError("Required bit format not supported.");
@@ -198,15 +222,21 @@ void rsOutputWaveFile::write(const double* buffer, int numElems)
   //rsError("Not yet implemented."); // this is still under construction
 }
 
-void rsOutputWaveFile::convertFloatTo16BitInt(const float *inBuffer, rsInt16 *outBuffer, 
-                                              int length)
+void rsOutputWaveFile::convertFloatTo16BitInt(
+  const float *inBuffer, rsInt16 *outBuffer, int length)
 {
-  int tmp;
-  for(int i=0; i<length; i++)
+  for(int i = 0; i < length; i++)
   {
-    tmp = (int) (32768.f * inBuffer[i]); // or should the factor be 32767.f?
+    int tmp = (int) (32768.f * inBuffer[i]); // or should the factor be 32767.f?
     outBuffer[i] = (short) rsLimitToRange(tmp, -32768, 32767);
   }
+  // ToDo: use round, see
+  // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=552377&start=45
+  // or use:
+  // (((int) ((x * 32767) + 32768.5f)) - 32768)
+  // as mystran suggests, the formula is also here:
+  // https://www.cs.cmu.edu/~rbd/papers/cmj-float-to-int.html
+
   // Using the factor 32768 is a power of 2 so it has the advantage of not introducing any 
   // additional rounding error - but if the maximum sample in a normalized buffer happens to be
   // negative, it will be clipped. Maybe the normalization should take into account the question,
@@ -220,7 +250,18 @@ void rsOutputWaveFile::convertFloatTo16BitInt(const float *inBuffer, rsInt16 *ou
   //
 }
 
-int rsOutputWaveFile::copyBytes4to3(char* x, int N, char* y)
+void rsOutputWaveFile::convertFloatTo24BitInt(
+  const float* inBuffer, rsInt32* outBuffer, int length)
+{
+  // 8388608
+  for(int i = 0; i < length; i++)
+  {
+    int tmp = (int) (8388608.f * inBuffer[i]);    // 8388608 = 2^23
+    outBuffer[i] = rsLimitToRange(tmp, -8388608, 8388607);
+  }
+}
+
+int rsOutputWaveFile::copyBytes4to3(const rsInt8* x, int N, rsInt8* y)
 {
   rsAssert(N % 4 == 0, "N must be divisible by 4");
   N /= 4;

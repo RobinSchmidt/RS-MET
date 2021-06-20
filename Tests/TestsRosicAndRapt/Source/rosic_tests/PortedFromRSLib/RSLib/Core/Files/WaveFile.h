@@ -179,6 +179,11 @@ namespace RSLib
 
     /** Writes 16 bit integer data into the file. */
     virtual void write16Bit(const short *buffer, int numElems);
+    // use rsInt16
+
+    /** Writes 24 bit integer data into the file. Assumes that only the lowest 3 bytes of the 4 
+    byte integers are used. */
+    virtual void write24Bit(const rsInt32 *buffer, int numElems);
 
     /** Writes float data into the file, thereby converting the format if necessary. */
     virtual void write(const float *buffer, int numElems);
@@ -189,9 +194,14 @@ namespace RSLib
     closes the file. */
     virtual void finalizeHeaderAndCloseFile();
 
+
+
   protected:
 
     /** \name Internal Functions */
+
+
+
 
     /** Creates the preliminray header which does not yet contain valid data for the file 
     length. */
@@ -205,7 +215,10 @@ namespace RSLib
     samples in the range [-32768, 32767]. */
     virtual void convertFloatTo16BitInt(const float *inBuffer, rsInt16 *outBuffer, int length);
 
-    int copyBytes4to3(char* x, int N, char* y);
+    virtual void convertFloatTo24BitInt(const float *inBuffer, rsInt32 *outBuffer, int length);
+
+
+    virtual int copyBytes4to3(const rsInt8* x, int N, rsInt8* y);
     // under construction - for every 4 bytes in the input x, it copies the last 3 bytes into the 
     // output. x is assumed to be N bytes long, the return value is the number of written bytes
     // used for converting 32 int 24 bit integers

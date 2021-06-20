@@ -937,7 +937,7 @@ void testHighPluck()
   printf("%s", "Rendering HighPluck*.wav done\n");
 
   // Test: write to 24 bit wavefile:
-  RSLib::rsOutputWaveFile wavFile("HighPluckMain24Bit.wav", (int)sampleRate, 16, 1); // todo: use 24
+  RSLib::rsOutputWaveFile wavFile("HighPluckMain24Bit.wav", (int)sampleRate, 24, 1); // todo: use 24
   wavFile.write(&x1[0], N);
   // does not yet work
 
