@@ -1,7 +1,7 @@
 #ifndef RAPT_TRANSFORMS_H
 #define RAPT_TRANSFORMS_H
 
-// \todo wrap into class
+// \todo wrap into class rsTransforms
 
 /** FFT routine, (C)1996 S.M.Bernsee. Sign = -1 is FFT, 1 is iFFT (inverse)
 
@@ -45,7 +45,8 @@ void rsRadix2FFT(std::complex<T> *buffer, int N);
 
 /** Fast generalized Hadamard transform of length N array A with seed matrix coeffs a,b,c,d. N must
 be a power of 2. It has been made a template parameter rather than a regular function parameter to
-allow the compiler to unroll the loops. It's supposed to be used mainly for FDN reverbs. */
+allow the compiler to unroll the loops. It's supposed to be used mainly for FDN reverbs with fixed
+N. */
 template<class T, int N>
 void rsFGHT(T* A, T a, T b, T c, T d);
 // todo: maybe provide a version that takes N at runtime and call that from the version that takes

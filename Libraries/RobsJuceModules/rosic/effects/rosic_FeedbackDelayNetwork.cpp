@@ -1,5 +1,3 @@
-//#include "rosic_FeedbackDelayNetwork.h"
-//using namespace rosic;
 
 // a little helper function that is supposed to reorder a buffer (of delayline-lengths) that is
 // initially in ascending order in a way that maximizes the average crossfeedback between
@@ -7,7 +5,7 @@
 // we implement it as template function outside the class because we need to apply it to the vector
 // of output-gains as well
 // maybe try the same with a buffer of initially descending lengths - this promotes stroger
-// crossfeedback between the longer delaylines (whearas we currently have stronger crossfeedback
+// crossfeedback between the longer delaylines (wheareas we currently have stronger crossfeedback
 // between shorter delaylines - hmm but that could actually be desirable - higher modes denser)
 template<class T>
 void shuffleBuffer(T *buffer, int length)
@@ -27,13 +25,15 @@ void shuffleBuffer(T *buffer, int length)
     k  /= 2;
   }
 }
+// ToDo: document, how this algo works
+// ..maybe move to prototypes - i think, it's currently not in use anyway
 
 
 // Construction/Destruction:
 
 FeedbackDelayNetwork::FeedbackDelayNetwork()
 {
-  // some test code for development:
+  // some test code for development (move this into an experiment and/or unit test):
   int buf8[8];
   RAPT::rsArrayTools::fillWithIndex(buf8, 8);
   shuffleBuffer(buf8, 8);
@@ -47,31 +47,33 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
   shuffleBuffer(buf32, 32);
 
 
-
-
-
-
-
   delayLines         = NULL;
   readIndices        = NULL;
   writeIndices       = NULL;
   delayLineLengths   = NULL;
   relativeDelayTimes = NULL;
 
-  //numDelayLines      = 2;
-  //log2NumDelayLines  = 1;
-  //numDelayLines      = 4;
+  //numDelayLines      = 4;  // 4 is the minimum, sounds kinda shattery, gritty - not so nice
   //log2NumDelayLines  = 2;
-  //numDelayLines      = 8;
-  //log2NumDelayLines  = 3;
-  numDelayLines      = 16;
-  log2NumDelayLines  = 4;
-  //numDelayLines      = 32;
-  //log2NumDelayLines  = 5;
-  //numDelayLines      = 64;
+  //numDelayLines      = 8;  // 8 has already a nice reverberant character
+  log2NumDelayLines  = 3;
+  numDelayLines      = 16; // 16 sounds smoother, denser, noisier
+  //log2NumDelayLines  = 4;
+  //numDelayLines      = 32; // 32 sounds still denser
+  //log2NumDelayLines  = 5; 
+  //numDelayLines      = 64; // still denser, initial section acquires a snare'ish character
   //log2NumDelayLines  = 6;
-  //numDelayLines      = 128;
+  //numDelayLines      = 128;  // initial "electronic snare" character becomes very apparent
   //log2NumDelayLines  = 7;
+  //numDelayLines      = 256;  // snare sound becomes higher pitched
+  //log2NumDelayLines  = 8;
+
+  // ...conclusion: 
+  // -16 or 32 seems to be the sweet spot for reverb, 8 and 64 are also usable
+  // -larger sizes acquire this weird pitch-sweepdown electronic drum sound
+  //  -maybe that can be avoided by using only a subset of the delaylines for output
+  //  -> experiment with output vectors containing zeros, maybe an output-density parameter
+  //  can be defined
 
   //numDelayLines      = 1024;
   //log2NumDelayLines  = 10;
@@ -192,6 +194,7 @@ void FeedbackDelayNetwork::fastInverseGeneralizedHadamardTransform(
   double s = 1.0 / (a*d - b*c);
   fastGeneralizedHadamardTransform(x, N, log2N, work, s*d, -s*b, -s*c, s*a);
 }
+// also obsolete now
 
 void FeedbackDelayNetwork::setupRelativeDelayTimes()
 {
@@ -211,11 +214,18 @@ void FeedbackDelayNetwork::setupRelativeDelayTimes()
 
 
   for(int i = 0; i < numDelayLines; i++)
-    relativeDelayTimes[i] = pow(dMax, (double) i / (double) numDelayLines);
+  {
+    //relativeDelayTimes[i] = pow(dMax, (double)i / (double)numDelayLines); // old formula
+    relativeDelayTimes[i] = pow(dMax, (double)i / (double)(numDelayLines-1)); // new formula
+  }
+  // old or new makes no qualitative difference
 
 
   shuffleBuffer(relativeDelayTimes, numDelayLines);
-    // put an if(shuffleLengths) around, or make a case-statement switching on an "ordering" member
+  // put an if(shuffleLengths) around, or make a case-statement switching on an "ordering" member
+  // with shuffling, the initial impulses are not so cramped towards the beginning of the response
+  // so it seems beneficial..but should be optional. maybe let the user select between various
+  // shuffling algos
 
   allocateDelayLines();
 
@@ -279,17 +289,13 @@ void FeedbackDelayNetwork::freeDelayLines()
   }
 }
 
-// \todo inle this function later - during development, we want to have it non-inlined and in the
+// \todo inline this function later - during development, we want to have it non-inlined and in the
 // cpp file to decrease build times
 void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
 {
   double delayLineOuts[1024];
   double fhtWorkspace[1024];  
   // later use a members with dynamic allocation, also 1024 is excessive
-
-
-
-
 
 
   int i;
@@ -352,7 +358,12 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
                  - 0.5 * delayLineOuts[i+2]
                  -       delayLineOuts[i+3]);
   }
-
+  // ToDo: 
+  // -check, if left and right impulse responses are uncorrelated
+  // -this output vector implies that 4 delaylines and a 4x4 feedback matrix is the smallest 
+  //  supported case - which makes sense
+  // -use a factor that compensates for the number of delaylines N, maybe 1/sqrt(N), because
+  //  currently, the impulse response gets louder, the more delaylines we use
 
 
   // apply feedback via matrix:
@@ -362,7 +373,7 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
     delayLines[i][writeIndices[i]] += 0.9 * delayLineOuts[i];
 
   // preliminary - later use members:
-  double dryGain = 1.0;
+  double dryGain = 0.0;
   double wetGain = 1.0; // * 1.0/sqrt((double)numDelayLines);
     // compensates for the energy-addition of the delayline-outputs
 

@@ -45,6 +45,7 @@ bool rsInputWaveFile::openForRead()
   success &= isFileFormatSupported();
   if( !success )
     rsError("File format not supported");
+    // should we close the file in this case?
   return success;
 }
 

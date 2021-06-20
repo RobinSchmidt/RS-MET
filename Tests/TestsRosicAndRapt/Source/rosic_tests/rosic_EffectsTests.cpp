@@ -184,6 +184,7 @@ bool rotes::testFeedbackDelayNetwork()
   //  renders impulse response according to that idea.
   // -Try diffusion less than zero and greater than 100
   // -modulate the diffusion, using a filtered (and maybe levelled) version of the output signal
+  // -make an APE project to experiment with the algo and its parameters
 }
 
 template<class Effect>

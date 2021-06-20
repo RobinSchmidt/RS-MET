@@ -89,7 +89,7 @@ namespace RSLib
   //===============================================================================================
 
   /** Class for reading wavefiles. Currently, the use of this class is limited to 16-bit files on 
-  little-endian machines. */
+  little-endian machines. ..oh - and it currently only supports mono signals. */
 
   class RSLib_API rsInputWaveFile : public rsWaveFile
   {
@@ -114,6 +114,10 @@ namespace RSLib
     virtual rsUint32 getNumChannels()      const { return header.formatSubChunk.numChannels; }
     virtual rsUint32 getNumSampleFrames()  const 
     { return getDataSizeInBytes() / header.formatSubChunk.bytesPerSampleFrame; }
+    // hmm - why do these functions return rsUint32 when the variable fields are actually defined 
+    // differently, namely as int? -> make that consistent -> look up wavefile spec, what is 
+    // supposed to be used
+
 
     /** Checks whether the end of the file is reached. */
     virtual int isEndOfFileReached() const;
@@ -121,8 +125,10 @@ namespace RSLib
 
     /** \name Reading */
 
-    /** Initializes the file-stream for reading and reports if this was successful. */
-    virtual bool openForRead();
+    /** Initializes the file-stream for reading and reports if this was successful. Overriden from
+    rsFileStream in order to check, if the file format is supported. It will call rsError, if it 
+    isn't. */
+    virtual bool openForRead() override;
 
     /** Starting from the current position, this function reads the given number of sample-frames 
     from the file and stores them in the passed array. If the file does not contain that many 
@@ -152,8 +158,9 @@ namespace RSLib
 
   //===============================================================================================
 
-  /** Class for writing wavefiles. Currently, the use of this class is limited to 16-bit files on 
-  little-endian machines. */
+  /** Class for writing wavefiles. 
+  
+  Currently, the use of this class is limited to 16/24-bit files on little-endian machines. */
 
   class RSLib_API rsOutputWaveFile : public rsWaveFile
   {

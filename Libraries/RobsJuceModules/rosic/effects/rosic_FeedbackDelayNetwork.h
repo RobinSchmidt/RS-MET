@@ -7,7 +7,7 @@
 namespace rosic
 {
 
-/** Under Construction
+/** Under Construction...maybe move to prototypes
 
 This class ...
 
@@ -92,7 +92,7 @@ public:
   // be when using a matrix with c=-b, d=a or c=b, d=-a - oh - i checked with the 2x2 seed matrix
   // it is unitary indeed does this immply the higher order matrices are unitary too?
   // idea - try arbitrary a,b,c,d and rescale the output to have the same length as the input
-  // vector - thtis makes the system nonlinear - maybe in an interesting way?
+  // vector - this makes the system nonlinear (really?) - maybe in an interesting way?
 
 
   static void fastInverseGeneralizedHadamardTransform(double* x, int N, int log2N, double* work,
@@ -145,6 +145,8 @@ protected:
   double diffusion;
   double a, b;              // the a, b values for the generalized Hadamard transform
 
+
+  // todo: use std::vector
 };
 
 
