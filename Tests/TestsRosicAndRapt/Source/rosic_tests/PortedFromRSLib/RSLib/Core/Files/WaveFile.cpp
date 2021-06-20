@@ -1,3 +1,4 @@
+// move them into the class:
 const static char expectedChunkID[]          = "RIFF";
 const static char expectedFormatDescriptor[] = "WAVE";
 const static char expectedSubChunk1ID[]      = "fmt ";
@@ -90,7 +91,7 @@ int rsInputWaveFile::readAndConvertToFloat(float *buffer, int maxElems)
 
 void rsInputWaveFile::convert16BitToFloat(rsInt16 *inBuffer, float *outBuffer, int length)
 {
-  const double scaler = 1.0 / 32768.0;
+  const double scaler = 1.0 / 32768.0;  // should perhaps use 32767
   for(int i = 0; i < length; i++)
     outBuffer[i] = (float) (scaler * (double) inBuffer[i]);
 }
@@ -182,7 +183,6 @@ void rsOutputWaveFile::write24Bit(const rsInt32* buffer, int numElems)
 void rsOutputWaveFile::write(const float *buffer, int numElems)
 {
   // should we assert that numChannles == 1?
-
   if(getBitsPerSample() == 16)
   {
     short* shortBuffer = new short[numElems];
@@ -201,10 +201,7 @@ void rsOutputWaveFile::write(const float *buffer, int numElems)
     rsError("Required bit format not supported.");
 
   // ToDo: 
-  // -implement 24 and 32 bit integer and 32, 64 bit floating point formats
-  // -i think, for 24 bit integer we need to convert to 32 bit integer first suing only the lower
-  //  3 bytes and then treat the array of 32bit ints as array of bytes and remove bytes 
-  //  0,4,8,12,...perhaps a general gappedCopy function would be nice
+  // -implement 32 bit integer and 32, 64 bit floating point formats
 }
 
 void rsOutputWaveFile::write(const double* buffer, int numElems)
@@ -217,9 +214,6 @@ void rsOutputWaveFile::write(const double* buffer, int numElems)
   // It's silly to first convert double to float and then float to short or whatever - convert 
   // directly to target format...but that may introduce code duplication...maybe templatize the
   // relevant method, so it can be called for double and float
-
-
-  //rsError("Not yet implemented."); // this is still under construction
 }
 
 void rsOutputWaveFile::convertFloatTo16BitInt(
@@ -253,7 +247,6 @@ void rsOutputWaveFile::convertFloatTo16BitInt(
 void rsOutputWaveFile::convertFloatTo24BitInt(
   const float* inBuffer, rsInt32* outBuffer, int length)
 {
-  // 8388608
   for(int i = 0; i < length; i++)
   {
     int tmp = (int) (8388608.f * inBuffer[i]);    // 8388608 = 2^23
@@ -266,7 +259,13 @@ int rsOutputWaveFile::copyBytes4to3(const rsInt8* x, int N, rsInt8* y)
   rsAssert(N % 4 == 0, "N must be divisible by 4");
   N /= 4;
 
-  int ix = 1; // the first byte in the input is already skipped (assumed to be 0)
+  //int ix = 1; 
+  // the first byte in the input is already skipped (assumed to be 0) - doesn't work
+
+  int ix = 0;
+  // hmm - that works - i think it's because integers are stored as little endian. maybe we should
+  // have a conditional compilation like #ifdef RS_BIG_ENDIAN ix = 1 or something
+
   int iy = 0;
   for(int n = 0; n < N; n++)
   {
@@ -276,15 +275,22 @@ int rsOutputWaveFile::copyBytes4to3(const rsInt8* x, int N, rsInt8* y)
     ix += 4;
     iy += 3;
   }
-  // may be generalized to copyElementsMtoN takes as parameters inpzt and output spacing and 
+  // may be generalized to copyElementsMtoN takes as parameters input and output spacing and 
   // initial offset
 
   return 3*N;
 }
-// needs test
-
 
 /*
+
+ToDo:
+-don't use char, short, long - instead use rsInt8, rsInt16, rsInt32 consistently
+-use members of type std::vector for the buffers, resize as necessary -> avoid unecessary 
+ allocations
+-when saving the same file with 16 and 24 bit then conveting 24 to 16 and subtracting it from
+ the 16bit file, the result is not zero - there's a noise at -90dB (at least when doing it in 
+ Audition) ...is that expected? -> do experiments and unit tests (maybe just for the conversions, 
+ without necessarily writing to files), also implement dithering
 
 References:
 https://en.wikipedia.org/wiki/WAV

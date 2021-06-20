@@ -182,7 +182,8 @@ namespace RSLib
     // use rsInt16
 
     /** Writes 24 bit integer data into the file. Assumes that only the lowest 3 bytes of the 4 
-    byte integers are used. */
+    byte integers are used. Note that on little endian systems, "lowest" means "first", but the 
+    caller actually does not need to know or care about this. */
     virtual void write24Bit(const rsInt32 *buffer, int numElems);
 
     /** Writes float data into the file, thereby converting the format if necessary. */
@@ -201,8 +202,6 @@ namespace RSLib
     /** \name Internal Functions */
 
 
-
-
     /** Creates the preliminray header which does not yet contain valid data for the file 
     length. */
     virtual void createPreliminaryHeader(const rsUint32 sampleRate, const rsUint32 bitsPerSample, 
@@ -217,11 +216,12 @@ namespace RSLib
 
     virtual void convertFloatTo24BitInt(const float *inBuffer, rsInt32 *outBuffer, int length);
 
-
+    /** Given a buffer x of N bytes in groups of 4, this copies the content into a buffer of bytes 
+    in groups of 3, leaving out the most significant byte in the source buffer. This is used for
+    converting 32 integers into 24 bit integers represented by 3 bytes each. The return value is 
+    the number of bytes written, which is 3*N/4. N must be divisble by 4. */
     virtual int copyBytes4to3(const rsInt8* x, int N, rsInt8* y);
-    // under construction - for every 4 bytes in the input x, it copies the last 3 bytes into the 
-    // output. x is assumed to be N bytes long, the return value is the number of written bytes
-    // used for converting 32 int 24 bit integers
+ 
 
   };
 
