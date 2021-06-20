@@ -1,45 +1,19 @@
 using namespace rotes;
-//#include "rosic/rosic.h"  // superfluous?
 using namespace rosic;
 using namespace RAPT;
 
-/*
-from https://en.wikipedia.org/wiki/Fast_Walsh%E2%80%93Hadamard_transform
-def fwht(a) -> None:
-    """In-place Fast Walsh–Hadamard Transform of array a."""
-    h = 1
-    while h < len(a):
-        for i in range(0, len(a), h * 2):
-            for j in range(i, i + h):
-                x = a[j]
-                y = a[j + h]
-                a[j] = x + y
-                a[j + h] = x - y
-        h *= 2
-*/
-template<class T>
-void fght(T* A, int N, T a, T b, T c, T d)
-{
-  int h = 1;
-  while(h < N) {
-    for(int i = 0; i < N; i += 2*h) {
-      for(int j = i; j < i+h; j++) {
-        T x = A[j];
-        T y = A[j+h];
-        A[j]   = a*x + b*y;
-        A[j+h] = c*x + d*y;  }}
-    h *= 2;  }
-}
-// maybe make N a template parameter such that the compiler can unroll the loops
-
 bool rotes::testFastGeneralizedHadamardTransform()
 {
+  // ToDo: move the old implementation FDN::fastGeneralizedHadamardTransform into prototypes..maybe
+  // it can eventually be deleted completely when it's clear that the new implementation does
+  // the smae thing and is more efficient
+
   bool ok = true;
 
   // 4D vector:
   double x4[4] = {4, -8, 12, -4};
   double y4[4];
-  double work[8];  // workspace
+  double work[16];  // workspace
 
   typedef rosic::FeedbackDelayNetwork FDN;
   typedef RAPT::rsArrayTools AT;
@@ -62,8 +36,8 @@ bool rotes::testFastGeneralizedHadamardTransform()
 
   // New implementation:
   AT::copy(x4, y4, 4);
-  fght(y4, 4, 2., 3., 5., 7.);
-  //RAPT::rsFGHT<double, 4>(y4, 2., 3., 5., 7.); // linker error - needs instantiation
+  //fght(y4, 4, 2., 3., 5., 7.);
+  RAPT::rsFGHT(y4, 4, 2., 3., 5., 7.); // linker error - needs instantiation
   ok &= y4[0] ==  4;
   ok &= y4[1] == 24;
   ok &= y4[2] ==  4;
@@ -100,8 +74,7 @@ bool rotes::testFastGeneralizedHadamardTransform()
 
   // New implementation:
   AT::copy(x8, y8, 8);
-  fght(y8, 8, 2., 3., 5., 7.);
-  //RAPT::rsFGHT<double, 8>(y8, 2., 3., 5., 7.);
+  RAPT::rsFGHT(y8, 8, 2., 3., 5., 7.);
   ok &= y8[0] ==   149;
   ok &= y8[1] ==   357;
   ok &= y8[2] ==   360;
@@ -110,6 +83,18 @@ bool rotes::testFastGeneralizedHadamardTransform()
   ok &= y8[5] ==   866;
   ok &= y8[6] ==   875;
   ok &= y8[7] ==  2092;
+
+
+  double x16[16] = { 1, 4, -2, 3, 0, 1, 4, -1, -1, -2, -1, -3, 2, 5, 1, -2, };
+  double y16[16];
+  double z16[16];
+  AT::copy(x16, y16, 16);
+  FDN::fastGeneralizedHadamardTransform(y16, 16, 4, work, 2, 3, 5, 7);
+  AT::copy(x16, z16, 16);
+  RAPT::rsFGHT(z16, 16, 2., 3., 5., 7.);
+  ok &= AT::equal(y16, z16, 16);
+  // ok: y16 and z16 are the same - why does it not work within the FDN?
+
 
 
   // 8D Forward/backward trafo - check if input is reconstructed:
@@ -121,9 +106,9 @@ bool rotes::testFastGeneralizedHadamardTransform()
   return ok;
 
   // ToDo: 
-  // -move the FGHT to rapt and the test to the rapt tests
   // -compare results of bigger sizes with explicit matrix multiplication of matrices created by 
   //  the Sylvester construction (use the Kronecker-product in rsMatrix for this)
+  // -make a performance comparison betweenold and new implementation
 }
 
 bool rotes::testFeedbackDelayNetwork()

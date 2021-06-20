@@ -55,16 +55,22 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
 
   //numDelayLines      = 4;  // 4 is the minimum, sounds kinda shattery, gritty - not so nice
   //log2NumDelayLines  = 2;
+
   //numDelayLines      = 8;  // 8 has already a nice reverberant character
-  log2NumDelayLines  = 3;
+  //log2NumDelayLines  = 3;
+
   numDelayLines      = 16; // 16 sounds smoother, denser, noisier
-  //log2NumDelayLines  = 4;
+  log2NumDelayLines  = 4;
+
   //numDelayLines      = 32; // 32 sounds still denser
   //log2NumDelayLines  = 5; 
+
   //numDelayLines      = 64; // still denser, initial section acquires a snare'ish character
   //log2NumDelayLines  = 6;
+
   //numDelayLines      = 128;  // initial "electronic snare" character becomes very apparent
   //log2NumDelayLines  = 7;
+
   //numDelayLines      = 256;  // snare sound becomes higher pitched
   //log2NumDelayLines  = 8;
 
@@ -74,6 +80,9 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
   //  -maybe that can be avoided by using only a subset of the delaylines for output
   //  -> experiment with output vectors containing zeros, maybe an output-density parameter
   //  can be defined
+  // -maybe try to use not one N=64 network but a parallel connection of 4 N=16 networks with
+  //  different delay-sttings - maybe that creates more density and also avoids the pitch-sweepdown
+  // -try different formulas for the relative delay times, currently, apower rule is used
 
   //numDelayLines      = 1024;
   //log2NumDelayLines  = 10;
@@ -293,9 +302,12 @@ void FeedbackDelayNetwork::freeDelayLines()
 // cpp file to decrease build times
 void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
 {
-  double delayLineOuts[1024];
-  double fhtWorkspace[1024];  
-  // later use a members with dynamic allocation, also 1024 is excessive
+  using AT = RAPT::rsArrayTools;
+
+  static const int bufSize = 256; // should be >= numDelayLines
+  double delayLineOuts[bufSize];
+  double fhtWorkspace[bufSize];    // obsolete soon
+  // later maybe use members with dynamic allocation
 
 
   int i;
@@ -317,13 +329,6 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
     // stuff the new input into the delaylines via the injection-vectors:
     //delayLines[i][readIndices[i]] = injectionVectorL[i] * *inOutL + injectionVectorR[i] * *inOutL;
     delayLines[i][writeIndices[i]] = 0.5 * (*inOutL + *inOutR);
-
-
-
-    //int dummy = 0;
-    // huh? when "i" gets larger than 131, it wraps around to zero, so we end up in an endless loop for
-    // FDNs larger than 128. WTF?
-
   }
 
 
@@ -348,7 +353,7 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
   for(i = 0; i < numDelayLines; i += 4)
   {
     //double c = 1.0 / (0.25*i+1);
-    double c = 1.0;
+    double c = 1.0;  // get rid
     wetL += c * (        delayLineOuts[i]
                  - 0.5 * delayLineOuts[i+1]
                  -       delayLineOuts[i+2]
@@ -365,12 +370,12 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
   // -use a factor that compensates for the number of delaylines N, maybe 1/sqrt(N), because
   //  currently, the impulse response gets louder, the more delaylines we use
 
-
-  // apply feedback via matrix:
-  fastGeneralizedHadamardTransform(delayLineOuts, numDelayLines, log2NumDelayLines, fhtWorkspace, 
-    a, b, -b, a);
+  // Apply feedback matrix via a generalized fast Hadamard transform:
+  double feedback = 0.9;    // currently hardcoded decay
+  RAPT::rsFGHT(delayLineOuts, numDelayLines, a, b, -b, a); 
   for(i = 0; i < numDelayLines; i++)
-    delayLines[i][writeIndices[i]] += 0.9 * delayLineOuts[i];
+    delayLines[i][writeIndices[i]] += feedback * delayLineOuts[i];
+
 
   // preliminary - later use members:
   double dryGain = 0.0;

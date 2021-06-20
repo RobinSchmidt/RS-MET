@@ -179,8 +179,8 @@ void rsBluesteinFFT(std::complex<T> *a, int N)
 }
 */
 
-template<class T, int N>
-void rsFGHT(T* A, T a, T b, T c, T d)
+template<class T>
+void rsFGHT(T* A, int N, T a, T b, T c, T d)
 {
   int h = 1;
   while(h < N) {
@@ -194,5 +194,7 @@ void rsFGHT(T* A, T a, T b, T c, T d)
 }
 // adapted from https://en.wikipedia.org/wiki/Fast_Walsh%E2%80%93Hadamard_transform
 
-
+// Maybe it could be useful to do incomplete FGHTs? i.e. let the outer while(h < N) loop only run
+// up to N/2 or N/4, etc? ..we could pass a "divider" parameter or somehow pass a loopLimit 
+// parameter
 
