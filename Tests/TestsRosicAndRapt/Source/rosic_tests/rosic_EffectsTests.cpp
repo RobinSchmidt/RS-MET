@@ -7,7 +7,10 @@ template<class T>
 void rsFGHT3(T* A, int N, T a, T b, T c, T d, T e, T f, T g, T H, T I)
 {
   // Experimental - we try to do something similar with a 3x3 seed matrix. We may base this on 3D
-  // rotations with or without reflections.
+  // rotations with or without reflections. We may have 3 independent parameters to control the
+  // diffusion - we could just give those 3 parameters directly to the user but maybe we can 
+  // somehow give more meaningful parameters like totalDiffusion, diffusionSpread, ...
+  // i suppose, the case with 27 delaylines is most useful for reverb, maybe 9 is also ok
   int h = 1;
   while(h < N) {
     for(int i = 0; i < N; i += 3*h) {
@@ -20,8 +23,45 @@ void rsFGHT3(T* A, int N, T a, T b, T c, T d, T e, T f, T g, T H, T I)
         A[j+2*h] = g*x + H*y + I*z;  }}
     h *= 3;  }
 }
-// Move to rapt
+// ok - works - move to rapt
+// can we generalize this further for computing a matrix vector product:
+// y = A°B°C°... * x, where ° denotes the kronecker product? the function could take as input the 
+// in/out vector and a vector of pointers to matrices..maybe the A,B,C etc matrices do not even 
+// need to be square matrices as long as the final product is a square matrix with the right 
+// dimensions? maybe call it fast kronecker product transform 
+// rsFKPT(T* A, const std:vector<rsMatrix*>& M
+// but first generalize to an NxN seed matrix that gets kroneckered with itself - that's simpler
 
+template<class T>
+void rsFastKroneckerTrafo(std::vector<T>& x, const rsMatrix<T>& M, int L)
+{
+  rsAssert(M.isSquare());
+  int B = M.getNumRows();    // basis, size of the seed matrix M
+  int N = (int) x.size();    // size of M^L where ^ means repeated Kronecker product with itself
+  rsAssert(N == pow(B, L));  // vector has wrong size
+  std::vector<T> t(B);       // temp vector
+
+
+  int h = 1;
+  while(h < N) 
+  {
+    for(int i = 0; i < N; i += B*h) 
+    {
+      for(int j = i; j < i+h; j++) 
+      {
+        for(int k = 0; k < B; k++)  // establish temp vector
+          t[k] = x[j+k*h];
+        for(int k = 0; k < B; k++)
+        {
+          x[j+k*h] = 0;
+          for(int m = 0; m < B; m++)
+            x[j+k*h] += M(k, m) * t[m];
+        }
+      }
+    }
+    h *= B;  
+  }
+}
 
 /** L is the order */
 bool testHadamar2x2(int L)
@@ -65,7 +105,10 @@ bool testHadamar3x3(int L)
   z = x;
   rsFGHT3(&z[0], N, a,b,c,d,e,f,g,h,i);       // output of fast transform
 
-  return z == y;
+  Vec z2 = x;
+  rsFastKroneckerTrafo(z2, H1, L);
+
+  return z == y && z2 == y;
 }
 
 bool rotes::testFastGeneralizedHadamardTransform()
