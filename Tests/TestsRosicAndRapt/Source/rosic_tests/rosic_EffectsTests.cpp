@@ -20,15 +20,36 @@ void rsFGHT3(T* A, int N, T a, T b, T c, T d, T e, T f, T g, T H, T I)
         A[j+2*h] = g*x + H*y + I*z;  }}
     h *= 3;  }
 }
+// Move to rapt
 
-bool testHadamar3x3()
+
+/** L is the order */
+bool testHadamar2x2(int L)
 {
-  bool ok = true;
-
   using Vec = std::vector<double>;
   using Mat = rsMatrix<double>;
 
-  int L = 2;                                 // order of transform (todo: take as parameter)
+  int N = pow(2, L);                         // size of matrix is NxN
+  double a = 2, b = 3, c = 5, d = 7;         // coefficients of seed matrix
+
+  Vec x = rsRandomIntVector(N, -9, +9);
+  Vec y, z;
+  Mat H1(2, 2, {a,b,c,d});                   // seed matrix
+  Mat HN = H1;
+  for(int j = 1; j < L; j++)
+    HN = Mat::getKroneckerProduct(H1, HN);
+  y = HN * x;                                // reference output
+  z = x;
+  rsFGHT(&z[0], N, a,b,c,d);                 // output of fast transform
+
+  return z == y;
+}
+
+bool testHadamar3x3(int L)
+{
+  using Vec = std::vector<double>;
+  using Mat = rsMatrix<double>;
+
   int N = pow(3, L);                         // size of matrix is NxN
   double a =  +2, b =  -7, c =   3,          // coefficients of seed matrix
          d =  -5, e = +13, f = -11,
@@ -36,16 +57,15 @@ bool testHadamar3x3()
 
   Vec x = rsRandomIntVector(N, -9, +9);
   Vec y, z;
-  Mat HN(3, 3, {a,b,c,d,e,f,g,h,i});          // seed matrix
-  for(int i = 1; i < L; i++)
-    HN = Mat::getKroneckerProduct(HN, HN);
+  Mat H1(3, 3, {a,b,c,d,e,f,g,h,i});          // seed matrix
+  Mat HN = H1;
+  for(int j = 1; j < L; j++)
+    HN = Mat::getKroneckerProduct(H1, HN);
   y = HN * x;                                 // reference output
   z = x;
   rsFGHT3(&z[0], N, a,b,c,d,e,f,g,h,i);       // output of fast transform
 
-  ok &= z == y;
-
-  return ok;
+  return z == y;
 }
 
 bool rotes::testFastGeneralizedHadamardTransform()
@@ -146,7 +166,21 @@ bool rotes::testFastGeneralizedHadamardTransform()
   FDN::fastInverseGeneralizedHadamardTransform(y8, 8, 3, work, 2, 3, 5, -7);
   ok &= fabs(RAPT::rsArrayTools::maxDeviation(x8, y8, 8)) < 1.e-15;
 
-  ok &= testHadamar3x3(); // experimental
+  // Tests via Kronekcer products:
+                            // # delaylines
+  ok &= testHadamar2x2(1);  //   2
+  ok &= testHadamar2x2(2);  //   4
+  ok &= testHadamar2x2(3);  //   8
+  ok &= testHadamar2x2(4);  //  16
+  ok &= testHadamar2x2(5);  //  32
+  ok &= testHadamar2x2(6);  //  64
+  ok &= testHadamar2x2(7);  // 128
+  ok &= testHadamar2x2(8);  // 256
+  ok &= testHadamar3x3(1);  //   3
+  ok &= testHadamar3x3(2);  //   9
+  ok &= testHadamar3x3(3);  //  27
+  ok &= testHadamar3x3(4);  //  81
+  ok &= testHadamar3x3(5);  // 243
 
   return ok;
 
