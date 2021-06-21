@@ -35,8 +35,9 @@ rosic::rsString createStringWithAllCharacters();
 rosic::rsString createStringWithAllPrintableCharacters();
 
 // file:
-bool testFileTextReadWrite();  // tests, if we can write a string into a file and retrieve it 
-                               // again, the string must not contain non-printable characters
+bool testFileText();
+bool testFileWave();  
+
 
 // effects:
 bool testFastGeneralizedHadamardTransform();

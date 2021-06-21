@@ -19,8 +19,8 @@ bool rotes::testRosicBasics()
 bool rotes::testRosicFile()
 {
   bool ok = true;
-  ok &= testFileTextReadWrite();
-  // todo: test wavefile read/write
+  ok &= testFileText();
+  ok &= testFileWave();
   return ok;
 }
 

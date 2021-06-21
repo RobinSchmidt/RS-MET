@@ -58,8 +58,12 @@ int main(int argc, char* argv[])
   // Unit tests:
   bool ok = true;
   //ok &= runUnitTestsRapt();
-  //ok &= runUnitTestsRosic();
+  ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
+  // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
+  // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.
+  // ...we may run very exhaustive tests that may take hours - but we don't want to run them as 
+  // often as the quick tests
 
   //mathUnitTests();    // doesn't exist anymore ...it's all in runAllUnitTests now
   //filterUnitTests();  // dito (?)
@@ -550,7 +554,7 @@ int main(int argc, char* argv[])
   //testInterpolation();
 
   // Effects:
-  //testFeedbackDelayNetwork(); // writes wave file
+  testFeedbackDelayNetwork(); // writes wave file
   //algoVerb();
 
   // File:

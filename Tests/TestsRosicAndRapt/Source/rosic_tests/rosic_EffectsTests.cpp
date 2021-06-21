@@ -2,6 +2,52 @@ using namespace rotes;
 using namespace rosic;
 using namespace RAPT;
 
+
+template<class T>
+void rsFGHT3(T* A, int N, T a, T b, T c, T d, T e, T f, T g, T H, T I)
+{
+  // Experimental - we try to do something similar with a 3x3 seed matrix. We may base this on 3D
+  // rotations with or without reflections.
+  int h = 1;
+  while(h < N) {
+    for(int i = 0; i < N; i += 3*h) {
+      for(int j = i; j < i+h; j++) {
+        T x = A[j+0*h];
+        T y = A[j+1*h];
+        T z = A[j+2*h];
+        A[j+0*h] = a*x + b*y + c*z;
+        A[j+1*h] = d*x + e*y + f*z;
+        A[j+2*h] = g*x + H*y + I*z;  }}
+    h *= 3;  }
+}
+
+bool testHadamar3x3()
+{
+  bool ok = true;
+
+  using Vec = std::vector<double>;
+  using Mat = rsMatrix<double>;
+
+  int L = 2;                                 // order of transform (todo: take as parameter)
+  int N = pow(3, L);                         // size of matrix is NxN
+  double a =  +2, b =  -7, c =   3,          // coefficients of seed matrix
+         d =  -5, e = +13, f = -11,
+         g = +17, h = -23, i =  19;
+
+  Vec x = rsRandomIntVector(N, -9, +9);
+  Vec y, z;
+  Mat HN(3, 3, {a,b,c,d,e,f,g,h,i});          // seed matrix
+  for(int i = 1; i < L; i++)
+    HN = Mat::getKroneckerProduct(HN, HN);
+  y = HN * x;                                 // reference output
+  z = x;
+  rsFGHT3(&z[0], N, a,b,c,d,e,f,g,h,i);       // output of fast transform
+
+  ok &= z == y;
+
+  return ok;
+}
+
 bool rotes::testFastGeneralizedHadamardTransform()
 {
   // ToDo: move the old implementation FDN::fastGeneralizedHadamardTransform into prototypes..maybe
@@ -84,7 +130,6 @@ bool rotes::testFastGeneralizedHadamardTransform()
   ok &= y8[6] ==   875;
   ok &= y8[7] ==  2092;
 
-
   double x16[16] = { 1, 4, -2, 3, 0, 1, 4, -1, -1, -2, -1, -3, 2, 5, 1, -2, };
   double y16[16];
   double z16[16];
@@ -95,13 +140,13 @@ bool rotes::testFastGeneralizedHadamardTransform()
   ok &= AT::equal(y16, z16, 16);
   // ok: y16 and z16 are the same - why does it not work within the FDN?
 
-
-
   // 8D Forward/backward trafo - check if input is reconstructed:
   AT::copy(x8, y8, 8);
   FDN::fastGeneralizedHadamardTransform(       y8, 8, 3, work, 2, 3, 5, -7);
   FDN::fastInverseGeneralizedHadamardTransform(y8, 8, 3, work, 2, 3, 5, -7);
   ok &= fabs(RAPT::rsArrayTools::maxDeviation(x8, y8, 8)) < 1.e-15;
+
+  ok &= testHadamar3x3(); // experimental
 
   return ok;
 
@@ -118,7 +163,7 @@ bool rotes::testFeedbackDelayNetwork()
   //FeedbackDelayNetwork16 *fdn16 = new FeedbackDelayNetwork16;
 
   double amplitude = 0.5;       // amplitude of the input impulse
-  double diffusion = 100.0;     // diffusion parameter in percent
+  double diffusion = 120.0;     // diffusion parameter in percent
 
 
   using AT = RAPT::rsArrayTools;
@@ -145,6 +190,7 @@ bool rotes::testFeedbackDelayNetwork()
 
   //rosic::writeToStereoWaveFile("d:\\TmpData\\FDNImpulseResponse.wav", hL, hR, N, 44100, 16);
   rosic::writeToStereoWaveFile("FDNImpulseResponse.wav", hL, hR, N, 44100, 16);
+  printf("%s", "Rendering FDNImpulseResponse.wav done\n");
 
   delete[] hL;
   delete[] hR;
@@ -153,8 +199,11 @@ bool rotes::testFeedbackDelayNetwork()
   // Observations:
   // -With diffusion set to 100, we indeed get some sort of exponentially decaying white noise, as
   //  it should be
-  // -The output seems to contain the input impulse, i.e. it's 100% dry + 100% wet...is that 
-  //  correct?
+  // -with D=200, the left channel is generally louder than the right - maybe our output vector
+  //  is bad for the given distribution of delaytimes? if no soultion can be found, we can also
+  //  just use the two output channels as mid and side wet signal...that might be a good idea 
+  //  anyway because it makes the whole thing more robust aginst such things...and then we can also
+  //  adjust the gain for mid/side separately
   // -The diffusion parameter seems to need a nonlinear mapping that gives more precision towards
   //  higher values - between D=60 and D=100, there is not so much difference
 
@@ -170,6 +219,11 @@ bool rotes::testFeedbackDelayNetwork()
   // -Try diffusion less than zero and greater than 100
   // -modulate the diffusion, using a filtered (and maybe levelled) version of the output signal
   // -make an APE project to experiment with the algo and its parameters
+  // -figure out the amplitude distribution of the white noise when decay time is infinite
+  //  is it Gaussian? if not, can we make it so, maybe by adding outputs of multiple FDNs with
+  //  different settings? or maybe just some low order allpass filter could do the job? -> figure
+  //  out, what an allpass does to the amplitude distribution of uniform white noise and/or
+  //  look at the impulse response
 }
 
 template<class Effect>

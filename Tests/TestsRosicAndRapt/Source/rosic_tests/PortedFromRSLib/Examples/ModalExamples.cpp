@@ -945,24 +945,27 @@ void testHighPluck()
   // mode (or a few) all below the fundamental
   // 
 
-  printf("%s", "Rendering HighPluck*.wav done\n");
 
-  // Test: write to 24 bit wavefile:
+  // Test: write to 24 bit wavefile (todo: make a unit test for this and remove the code here):
   //rsWaveFile
 
   // int24
-  //RSLib::rsOutputWaveFile wavFile("HighPluckMain24Bit.wav", (int)sampleRate, 24, 1);
+  RSLib::rsOutputWaveFile wavFile("HighPluckMain24Bit.wav", (int)sampleRate, 24, 1);
 
   // float32:
   //rsOutputWaveFile wavFile("HighPluckMain32BitFloat.wav", (int)sampleRate, 32, 1, 
   //  rsWaveFile::SampleFormat::IEEE_FLOAT);
 
-  // float64:
-  rsOutputWaveFile wavFile("HighPluckMain64BitFloat.wav", (int)sampleRate, 64, 1, 
-    rsWaveFile::SampleFormat::IEEE_FLOAT);
+  //// float64:
+  //rsOutputWaveFile wavFile("HighPluckMain64BitFloat.wav", (int)sampleRate, 64, 1, 
+  //  rsWaveFile::SampleFormat::IEEE_FLOAT);
 
   wavFile.write(&x1[0], N);
-  // does not yet work
+
+
+
+  printf("%s", "Rendering HighPluck*.wav done\n");
+
 
   // Observations:
   // -when increasing the decayFac, the transient of the mix becomes more dirty/gritty. the 

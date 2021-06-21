@@ -47,10 +47,10 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
 
   //numDelayLines = 4;   // 4 is the minimum, sounds kinda shattery, gritty - not so nice
   //numDelayLines = 8;   // 8 has already a nice reverberant character
-  //numDelayLines   = 16;  // 16 sounds smoother, denser, noisier
+  numDelayLines   = 16;  // 16 sounds smoother, denser, noisier
   //numDelayLines = 32;  // 32 sounds still denser
   //numDelayLines = 64;  // still denser, initial section acquires a snare'ish character
-  numDelayLines = 128; // initial "electronic snare" character becomes very apparent
+  //numDelayLines = 128; // initial "electronic snare" character becomes very apparent
   //numDelayLines = 256; // snare sound becomes higher pitched
   // ...conclusion: 
   // -16 or 32 seems to be the sweet spot for reverb, 8 and 64 are also usable
@@ -84,12 +84,36 @@ void FeedbackDelayNetwork::setDiffusion(double newDiffusion)
   // hmm...seems like we should have a nonlinear mapping - we need more precision in the lower
   // range
 
-  double d = 0.01*diffusion;
+  double d = 0.01*diffusion;  // 0..100 -> 0..1
   //d = d*d*d;  // nah - that's not yet a good mapping
-
   //d = mapLinearToRational(d, +0.7);
-
   //d = d*d;
+
+  // I think, we need an odd function that maps 0 to 0, 1 to 1, 2 to 2, and has adjustable slope s 
+  // at x = 1 (should be s < 1). rationale: the points d = -2 and d = 2 both lead to 3 diffusion 
+  // and the parameter should be periodic: we may wrap to -2 when d > 2 and vice versa - it has a 
+  // period of 4
+  //   f( x) = a1*x +   a3*x^3 +   a5*x^5
+  //   f'(x) = a1   + 3*a3*x^2 + 5*a5*x^4
+  // so:
+  //   f( 1) = 1 = a1   +   a3   +   a5
+  //   f( 2) = 2 = a1*2 +   a3*8 +   a5*32
+  //   f'(1) = s = a1   + 3*a3   + 5*a5 
+  // then adjust s by ear, test with wraparound
+
+  // var("x s a1 a3 a5")
+  // eq1 = a1 +     a3   + a5    == 1
+  // eq2 = a1*2 +   a3*8 + a5*32 == 2
+  // eq3 = a1   + 3*a3 + 5*a5    == s
+  // solve([eq1,eq2,eq3],[a1,a3,a5])
+  //
+  // a1 == -2/3*s + 5/3, a3 == 5/6*s - 5/6, a5 == -1/6*s + 1/6
+  // a1 == -2*s/3 + 5/3, a3 == 5*s/6 - 5/6, a5 == -1*s/6 + 1/6
+  //
+  // with that function, the range between 0..100 is mapped differently than between 200..100 which
+  // may or may not be desirable - the 100..200 range has a different character, so a different 
+  // curve (that's not some sort of mirror image of the 0..100 curve) may actually be desirable
+  // -> listening tests are needed
 
 
   /*
@@ -192,10 +216,11 @@ void FeedbackDelayNetwork::setupRelativeDelayTimes()
   //dMax = 5;
   //dMax = 1.5;
   //dMax = 2;
-  //dMax = 3;
+  dMax = 3;
   //dMax = 4;
   //dMax = 5;
-  dMax = 8;
+  //dMax = 6;
+  //dMax = 8;
   // dMax = 1.5: grouping of primary reflections impulses
   // dMax = 2.0: most compact, i guess
   // dMax = 3.0: seems a goo all around value
@@ -376,6 +401,18 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
   // todo: 
   // -compute feedback factor from a desired decay time RT60
   // -maybe we should take the average delay-time as basis for this calculation
+  // -try the symmetric variant of the FGHT using a,b,b,-a - this here with a,b,-b,a is the 
+  //  antisymmetric variant. only the symmetric variant is actually a special case of the Hadamard
+  //  trafo...but are both actually equivalent for some other setting of diffusion and maybe some 
+  //  permutaion of the delaylines? no - i think, it can't because a,-a are on the diagonal, 
+  //  meaning they are responsible for self feedback - no way can we turn an a,-a into an a,a, so
+  //  the self-feedback is ways same-signed or always different-signed - it's really a different
+  //  family of feedback matrices - so: provide an option to switch between both variants, maybe 
+  //  the option could be named: symmetric...or maybe the name could be based on whether it's
+  //  a pure rotation or a rotation + reflection
+  // -idea: can we also start with a 3x3 seed matrix and would that give us more freedom? ...maybe
+  //  3x3 matrix kroneckered with itself, giving a 27x27 matrix could be interesting as well
+
 
   // preliminary - later use members:
   double dryGain = 0.0;

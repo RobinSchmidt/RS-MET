@@ -264,8 +264,14 @@ void rsOutputWaveFile::convertFloatTo16BitInt(
 {
   for(int i = 0; i < length; i++)
   {
-    int tmp = (int) (32768.f * inBuffer[i]); // or should the factor be 32767.f?
+    //int tmp = (int) (32768.f * inBuffer[i]); // or should the factor be 32767.f?
+    int tmp = (((int) ((inBuffer[i] * 32767) + 32768.5f)) - 32768);
     outBuffer[i] = (short) rsLimitToRange(tmp, -32768, 32767);
+    // so, to get the float back, we would need to do:
+    // floatVal = (((float)(intVal+32768)) - 32768.5f) / 32767.f;
+    // -> test, if this works for an int -> float -> int roundtrip simulating a load/save roundtrip
+    // we can actually do an exhaustive test for all possible 2^16 values here, for 24 bit, an 
+    // exhaustive test may be practical to do rarely
   }
   // ToDo: use round, see
   // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=552377&start=45
@@ -292,7 +298,8 @@ void rsOutputWaveFile::convertFloatTo24BitInt(
 {
   for(int i = 0; i < length; i++)
   {
-    int tmp = (int) (8388608.f * inBuffer[i]);    // 8388608 = 2^23
+    //int tmp = (int) (8388608.f * inBuffer[i]);    // 8388608 = 2^23
+    int tmp = (((int) ((inBuffer[i] * 8388607) + 8388608.5f)) - 8388608);
     outBuffer[i] = rsLimitToRange(tmp, -8388608, 8388607);
   }
 }

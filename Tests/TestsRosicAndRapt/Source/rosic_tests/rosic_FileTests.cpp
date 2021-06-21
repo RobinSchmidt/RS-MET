@@ -1,11 +1,11 @@
-//#include "rosic_FileTests.h"
 using namespace rotes;
-
-//#include "rosic/rosic.h"
 using namespace rosic;
 
-bool rotes::testFileTextReadWrite()
+bool rotes::testFileText()
 {
+  // Tests, if we can write a string into a file and retrieve it again, the string must not 
+  // contain non-printable characters..
+
   bool ok = true;
   rosic::rsFile testTextFile("E:\\TmpData\\testTextFile.txt"); // absolute path
   rsString stringOriginal = createStringWithAllPrintableCharacters();
@@ -14,10 +14,17 @@ bool rotes::testFileTextReadWrite()
   ok &= stringOriginal == stringReconstructed;
   return ok;
 
-  // Todo: 
+  // ToDo: 
   // -use relative path 
   // -use paths where subdirectory does and does not exist
   // -use different path seperators (i.e. forward slash insetad of backslash)
 }
 
+bool rotes::testFileWave()
+{
+  bool ok = true;
+
+
+  return ok;
+}
 

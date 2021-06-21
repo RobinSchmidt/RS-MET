@@ -232,10 +232,35 @@ Offline Sample Editor/Creator
  use AngelScript or python:
  https://docs.python.org/3/extending/index.html#extending-index
  https://docs.python.org/3/extending/embedding.html
+ https://docs.python.org/3/c-api/intro.html#include-files
  -maybe first write a python module containing the relevant synthesis modules 
   and try it in a regular python programming environment
-
-
+-maybe the user should implement a renderSample(key, vel) function and that 
+ function can call other python functions that implement modal synthesis, 
+ filters, envlopes or whatever
+ -the framework would make sure to call the function, whenever a (re)render is
+  necessarry
+ -the user can also write an sfz file or load a template sfz file and the 
+  sample-opcode should actually somehow be redirected to some renderSample 
+  function ...maybe it should also take an additional layer parameter and a
+  sample="Layer1_K45_V100" would translate to a call 
+  renderSample(Layer1_K45_V100) taking the string as argument
+ -the "framework" could be implemented in python, too
+ -or maybe renderSample should just take the sample name as parameter - that's
+  most flexible and generic
+ -maybe we should make a subclass of rsSamplerEngine that overrides loadSample.
+  instead of loading it from disk, it invokes the renderSample function
+-OR: maybe that can be done with APE scripts...but maybe not
+-OR: use AngelScript
+-maybe there should be some way to reference and access previously rendered 
+ samples from the renderSample routine, such that renderSample("Vocoder.wav") 
+ can access the results that were rendered via 
+ renderSample("Pad_Carrier.wav"), renderSample("Loop_Modulator.wav"), for 
+ example, also, before it's called, the frame may somehow check, whether it's
+ actually necessary or if the rendered output is already cached
+-maybe that can be done in the Sampler audio module ..or some subclass thereof
+ ...maybe RenderSampler or something like that
+ 
 -------------------------------------------------------------------------------
 Parameters
 
