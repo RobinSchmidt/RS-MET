@@ -73,29 +73,31 @@ void rsFastKroneckerTrafo(std::vector<T>& x, const std::vector<const rsMatrix<T>
 
   x.resize(rsMax(Nx, Ny));  // kludgy! to avoid access violation when x,y have different size
 
-  int h = 1;
+  int hC = 1;
+  int hR = 1;
   for(size_t m = 0; m < M.size(); m++)    // m: matrix index, loop over the matrices
   {
     int nR = M[m]->getNumRows();
     int nC = M[m]->getNumColumns();
 
 
-    for(int i = 0; i < Nx; i += nC*h)   // verify this when nC != nR
+    for(int i = 0; i < Nx; i += nC*hC)   // verify this when nC != nR
     {
-      for(int j = i; j < i+h; j++)
+      for(int j = i; j < i+hR; j++)     // might be hR?
       {
         for(int k = 0; k < nC; k++)     // this nC seems a safe bet
-          t[k] = x[j+k*h];
+          t[k] = x[j+k*hC];
         for(int k = 0; k < nR; k++) 
         {
-          x[j+k*h] = 0;
+          x[j+k*hR] = 0;
           for(int n = 0; n < nC; n++) 
-            x[j+k*h] += M[m]->at(k, n) * t[n]; // (k,m) are row/col indices in that order
+            x[j+k*hR] += M[m]->at(k, n) * t[n]; // (k,m) are row/col indices in that order
         }
       }
     }
 
-    h *= nC;  // verify!
+    hC *= nC;
+    hR *= nR;
   }
 
 }
@@ -185,17 +187,8 @@ bool testKroneckerProductTrafo()
   M[1] = &M23;
   z = x;
   rsFastKroneckerTrafo(z, M);
-  //ok &= z == y;
-  // Nx,nR,nR: acc vio
-  // Nx,nR,nC: dito
-  // Nx,nC,nR: dito
-  // Nx,nC,nC: z[2],z[3] wrong..but correct values are in the illegal z[3],z[4] slots
-  // Ny,nR,nR: totally wrong values
-  // Ny,nR,nC: dito
-  // Ny,nC,nR: dito
-  // Ny,nC,nC: dito
-  // ...so Nx,nC,nC is the closest match, but what about the reshuffling? maybe we need an offset
-  // of nC-nR somewhere - this would be 1 and explain the offset, try it with a 2x4 matrix
+  //ok &= z == y; // test fails because z is longer than y, but the relevant elements do match
+  // we need to compare only up to index 4
 
   Mat M_24_24 = Mat::getKroneckerProduct(M24, M24);
   x = rsRandomIntVector(16, -9, +9);
@@ -205,11 +198,20 @@ bool testKroneckerProductTrafo()
   z = x;
   rsFastKroneckerTrafo(z, M);
   //ok &= z == y;
-  // hmm...it seems like after the trafo, there are d = nC-nR extra values inserted, just using
-  // x[j+k*h] = ... lead to access violations, maybe we need to use different hC and hR in 
-  // different places
-  // try it with a product of 3 matrices
 
+  // 3 3x3 matrices:
+  Mat M_33_33_33 = Mat::getKroneckerProduct(M_33_33, M33);
+  x = rsRandomIntVector(27, -9, +9);
+  y = M_33_33_33 * x;
+  M.resize(3); M[0] = &M33; M[1] = &M33; M[2] = &M33;
+  z = x; rsFastKroneckerTrafo(z, M);
+  ok &= z == y;
+  // ok, that works - problematic are only the rectangular matrices
+
+  // http://www.mathcs.emory.edu/~nagy/courses/fall10/515/KroneckerIntro.pdf
+
+  // https://math.stackexchange.com/questions/1879933/vector-multiplication-with-multiple-kronecker-products
+  // https://gist.github.com/ahwillia/f65bc70cb30206d4eadec857b98c4065
 
 
 
