@@ -423,3 +423,16 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
   *inOutL = dryGain*(*inOutL) + wetGain*wetL;
   *inOutR = dryGain*(*inOutR) + wetGain*wetR;
 }
+
+
+/*
+
+Ideas:
+-allow a different set of a,b values (diffusion) for each stage, maybe arrange it such that the
+ feedback between longer lines psrads faster and between shorter lines mroe slowly, per roundtrip,
+ such that the total time for the build-up is roughly the same in all lines
+-maybe allow a fully general product of matrices that are multiplied together via the Kronecker 
+ product..maybe call it KronVerb, KronReverb, KronyVerb
+
+
+*/

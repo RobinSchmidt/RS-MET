@@ -28,11 +28,12 @@ void rsFGHT3(T* A, int N, T a, T b, T c, T d, T e, T f, T g, T H, T I)
 // y = A°B°C°... * x, where ° denotes the kronecker product? the function could take as input the 
 // in/out vector and a vector of pointers to matrices..maybe the A,B,C etc matrices do not even 
 // need to be square matrices as long as the final product is a square matrix with the right 
-// dimensions? maybe call it fast kronecker product transform 
+// dimensions? maybe the final matrix doesn't even need to be square? maybe call it fast kronecker
+// product transform 
 // rsFKPT(T* A, const std:vector<rsMatrix*>& M
 
-// But first generalize to an NxN seed matrix that gets kroneckered with itself
-// ...here it is (needs more tests):
+// But first generalize to an NxN seed matrix that gets kroneckered with itself L times
+// ...here it is - seems to work:
 template<class T>
 void rsFastKroneckerTrafo(std::vector<T>& x, const rsMatrix<T>& M, int L)
 {
@@ -53,6 +54,50 @@ void rsFastKroneckerTrafo(std::vector<T>& x, const rsMatrix<T>& M, int L)
             x[j+k*h] += M(k, m) * t[m]; }}}  // accumulate B elements of output vector
     h *= B; }
 }
+// maybe for this, the algo that uses N memory cells for temp storage is actually better, this here
+// uses log(N) extra memory, but that makes the inner loops more complicated
+
+// computes M[0] ° M[1] ° M[2] ° ... ° M[L-1] * x 
+// ..or M[L-1] ° M[L-2] ° M[L-3] ° ... ° M[0] * x 
+template<class T>
+void rsFastKroneckerTrafo(std::vector<T>& x, const std::vector<const rsMatrix<T>*> M)
+{
+  std::vector<T> t(10); 
+  // 10 is preliminary! would be the maximum of the numbers of columns of all matrices
+
+  int N = (int) x.size();  
+  // verify! could also be the output size, i.e. product of all numCols
+
+  int h = 1;
+  for(size_t m = 0; m < M.size(); m++)    // m: matrix index, loop over the matrices
+  {
+    int nR = M[m]->getNumRows();
+    int nC = M[m]->getNumColumns();
+
+
+
+    for(int i = 0; i < N; i += nR*h)   // verify this when nC != nR, could be nC
+    {// no! upper limit must be either input or output size
+
+
+      for(int j = i; j < i+h; j++)
+      {
+        for(int k = 0; k < nC; k++)     // this nC seems a safe bet
+          t[k] = x[j+k*h];
+        for(int k = 0; k < nR; k++) 
+        {
+          x[j+k*h] = 0;
+          for(int n = 0; n < nC; n++)   // this m shadows the outer m? maybe use other variable
+            x[j+k*h] += M[m]->at(k, n) * t[n]; // (k,m) are row/col indices in that order
+        }
+      }
+    }
+
+    h *= nR;  // verify - could be nC
+  }
+
+}
+
 
 /** L is the order */
 bool testHadamar2x2(int L)
@@ -100,6 +145,42 @@ bool testHadamar3x3(int L)
   rsFastKroneckerTrafo(z2, H1, L);           // output of fast generalized transform
   return z == y && z2 == y;
 }
+
+bool testKroneckerProductTrafo()
+{
+  bool ok = true;
+
+  using Vec = std::vector<double>;
+  using Mat = rsMatrix<double>;
+
+  Mat M23(2, 3, {1,2,3,4,5,6});
+  Mat M32(2, 3, {1,2,3,4,5,6});
+  Mat M33(3, 3, {1,2,3,4,5,6,7,8,9});
+
+  std::vector<const Mat*> M(2);
+  M[0] = &M33;
+  M[1] = &M33;
+
+  int Nx = 9;  // input dimensionality, product of all numbers of columns
+  int Ny = 9;  // output dimensionality, product of all numbers of rows
+  int N  = rsMax(Nx, Ny);  // space needed for in place trafo
+
+  Vec x = rsRandomIntVector(N, -9, +9);
+
+  Mat M_33_33 = Mat::getKroneckerProduct(M33, M33);
+  Vec y = M_33_33 * x;
+
+  Vec z = x;
+  rsFastKroneckerTrafo(z, M);
+  ok &= z == y; // wrong!
+
+
+
+
+  return ok;
+}
+
+
 
 bool rotes::testFastGeneralizedHadamardTransform()
 {
@@ -214,6 +295,10 @@ bool rotes::testFastGeneralizedHadamardTransform()
   ok &= testHadamar3x3(3);  //  27
   ok &= testHadamar3x3(4);  //  81
   ok &= testHadamar3x3(5);  // 243
+
+  // Test the more general Kronecker product transform:
+  ok &= testKroneckerProductTrafo();
+
 
   return ok;
 
