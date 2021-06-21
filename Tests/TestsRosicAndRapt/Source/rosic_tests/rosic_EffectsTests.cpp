@@ -65,8 +65,13 @@ void rsFastKroneckerTrafo(std::vector<T>& x, const std::vector<const rsMatrix<T>
   std::vector<T> t(10); 
   // 10 is preliminary! would be the maximum of the numbers of columns of all matrices
 
-  int N = (int) x.size();  
+  int N = (int) x.size();
   // verify! could also be the output size, i.e. product of all numCols
+
+  int Nx = 1; for(size_t m = 0; m < M.size(); m++) Nx *= M[m]->getNumColumns();
+  int Ny = 1; for(size_t m = 0; m < M.size(); m++) Ny *= M[m]->getNumRows(); 
+
+  x.resize(rsMax(Nx, Ny));  // kludgy! to avoid access violation when x,y have different size
 
   int h = 1;
   for(size_t m = 0; m < M.size(); m++)    // m: matrix index, loop over the matrices
@@ -75,11 +80,8 @@ void rsFastKroneckerTrafo(std::vector<T>& x, const std::vector<const rsMatrix<T>
     int nC = M[m]->getNumColumns();
 
 
-
-    for(int i = 0; i < N; i += nR*h)   // verify this when nC != nR, could be nC
-    {// no! upper limit must be either input or output size
-
-
+    for(int i = 0; i < Nx; i += nC*h)   // verify this when nC != nR
+    {
       for(int j = i; j < i+h; j++)
       {
         for(int k = 0; k < nC; k++)     // this nC seems a safe bet
@@ -87,16 +89,18 @@ void rsFastKroneckerTrafo(std::vector<T>& x, const std::vector<const rsMatrix<T>
         for(int k = 0; k < nR; k++) 
         {
           x[j+k*h] = 0;
-          for(int n = 0; n < nC; n++)   // this m shadows the outer m? maybe use other variable
+          for(int n = 0; n < nC; n++) 
             x[j+k*h] += M[m]->at(k, n) * t[n]; // (k,m) are row/col indices in that order
         }
       }
     }
 
-    h *= nR;  // verify - could be nC
+    h *= nC;  // verify!
   }
 
 }
+// maybe the inverse trafo can be computed by using the individual inverse matrices in reverse 
+// order?
 
 
 /** L is the order */
@@ -154,28 +158,63 @@ bool testKroneckerProductTrafo()
   using Mat = rsMatrix<double>;
 
   Mat M23(2, 3, {1,2,3,4,5,6});
-  Mat M32(2, 3, {1,2,3,4,5,6});
+  Mat M24(2, 4, {1,2,3,4,5,6,7,8});
+  Mat M32(3, 2, {1,7,3,4,5,6});
   Mat M33(3, 3, {1,2,3,4,5,6,7,8,9});
 
   std::vector<const Mat*> M(2);
-  M[0] = &M33;
-  M[1] = &M33;
+
 
   int Nx = 9;  // input dimensionality, product of all numbers of columns
   int Ny = 9;  // output dimensionality, product of all numbers of rows
   int N  = rsMax(Nx, Ny);  // space needed for in place trafo
 
   Vec x = rsRandomIntVector(N, -9, +9);
-
   Mat M_33_33 = Mat::getKroneckerProduct(M33, M33);
   Vec y = M_33_33 * x;
+  M[0] = &M33;
+  M[1] = &M33;
 
   Vec z = x;
   rsFastKroneckerTrafo(z, M);
-  ok &= z == y; // wrong!
+  ok &= z == y;
+
+  Mat M_23_23 = Mat::getKroneckerProduct(M23, M23);
+  y = M_23_23 * x;
+  M[0] = &M23;
+  M[1] = &M23;
+  z = x;
+  rsFastKroneckerTrafo(z, M);
+  //ok &= z == y;
+  // Nx,nR,nR: acc vio
+  // Nx,nR,nC: dito
+  // Nx,nC,nR: dito
+  // Nx,nC,nC: z[2],z[3] wrong..but correct values are in the illegal z[3],z[4] slots
+  // Ny,nR,nR: totally wrong values
+  // Ny,nR,nC: dito
+  // Ny,nC,nR: dito
+  // Ny,nC,nC: dito
+  // ...so Nx,nC,nC is the closest match, but what about the reshuffling? maybe we need an offset
+  // of nC-nR somewhere - this would be 1 and explain the offset, try it with a 2x4 matrix
+
+  Mat M_24_24 = Mat::getKroneckerProduct(M24, M24);
+  x = rsRandomIntVector(16, -9, +9);
+  y = M_24_24 * x;
+  M[0] = &M24;
+  M[1] = &M24;
+  z = x;
+  rsFastKroneckerTrafo(z, M);
+  //ok &= z == y;
+  // hmm...it seems like after the trafo, there are d = nC-nR extra values inserted, just using
+  // x[j+k*h] = ... lead to access violations, maybe we need to use different hC and hR in 
+  // different places
+  // try it with a product of 3 matrices
 
 
 
+
+
+  // todo: Use a product of a 2x5 and 4x3 matrix
 
   return ok;
 }
