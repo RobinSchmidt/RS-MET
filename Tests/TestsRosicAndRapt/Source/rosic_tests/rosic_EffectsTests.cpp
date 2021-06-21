@@ -30,8 +30,9 @@ void rsFGHT3(T* A, int N, T a, T b, T c, T d, T e, T f, T g, T H, T I)
 // need to be square matrices as long as the final product is a square matrix with the right 
 // dimensions? maybe call it fast kronecker product transform 
 // rsFKPT(T* A, const std:vector<rsMatrix*>& M
-// but first generalize to an NxN seed matrix that gets kroneckered with itself - that's simpler
 
+// But first generalize to an NxN seed matrix that gets kroneckered with itself
+// ...here it is (needs more tests):
 template<class T>
 void rsFastKroneckerTrafo(std::vector<T>& x, const rsMatrix<T>& M, int L)
 {
@@ -39,28 +40,18 @@ void rsFastKroneckerTrafo(std::vector<T>& x, const rsMatrix<T>& M, int L)
   int B = M.getNumRows();    // basis, size of the seed matrix M
   int N = (int) x.size();    // size of M^L where ^ means repeated Kronecker product with itself
   rsAssert(N == pow(B, L));  // vector has wrong size
-  std::vector<T> t(B);       // temp vector
-
-
+  std::vector<T> t(B);       // temp vector - todo: let user pass workspace
   int h = 1;
-  while(h < N) 
-  {
-    for(int i = 0; i < N; i += B*h) 
-    {
-      for(int j = i; j < i+h; j++) 
-      {
-        for(int k = 0; k < B; k++)  // establish temp vector
+  while(h < N) {
+    for(int i = 0; i < N; i += B*h) {
+      for(int j = i; j < i+h; j++) {
+        for(int k = 0; k < B; k++)           // establish temp vector
           t[k] = x[j+k*h];
-        for(int k = 0; k < B; k++)
-        {
+        for(int k = 0; k < B; k++) {
           x[j+k*h] = 0;
           for(int m = 0; m < B; m++)
-            x[j+k*h] += M(k, m) * t[m];
-        }
-      }
-    }
-    h *= B;  
-  }
+            x[j+k*h] += M(k, m) * t[m]; }}}  // accumulate B elements of output vector
+    h *= B; }
 }
 
 /** L is the order */
@@ -81,8 +72,9 @@ bool testHadamar2x2(int L)
   y = HN * x;                                // reference output
   z = x;
   rsFGHT(&z[0], N, a,b,c,d);                 // output of fast transform
-
-  return z == y;
+  Vec z2 = x;
+  rsFastKroneckerTrafo(z2, H1, L);           // output of fast generalized transform
+  return z == y && z2 == y;
 }
 
 bool testHadamar3x3(int L)
@@ -104,10 +96,8 @@ bool testHadamar3x3(int L)
   y = HN * x;                                 // reference output
   z = x;
   rsFGHT3(&z[0], N, a,b,c,d,e,f,g,h,i);       // output of fast transform
-
   Vec z2 = x;
-  rsFastKroneckerTrafo(z2, H1, L);
-
+  rsFastKroneckerTrafo(z2, H1, L);           // output of fast generalized transform
   return z == y && z2 == y;
 }
 
