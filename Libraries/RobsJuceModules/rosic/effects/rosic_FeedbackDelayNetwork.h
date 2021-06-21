@@ -1,9 +1,6 @@
 #ifndef rosic_FeedbackDelayNetwork_h
 #define rosic_FeedbackDelayNetwork_h
 
-//// rosic-indcludes:
-//#include "../filters/rosic_DampingFilter.h"
-
 namespace rosic
 {
 
@@ -125,28 +122,24 @@ protected:
 
 
 
-  double** delayLines;        // the delaylines themselves
+  double** delayLines;     // the delaylines themselves
   int* readIndices;        // sample-indices where we read from the delaylines
   int* writeIndices;       // sample-indices where we write into the delaylines
   int* delayLineLengths;   // lengths of the delaylines in samples
   //double *outputGains;
-  int    numDelayLines;
-  int    log2NumDelayLines;   // == log2(numDelayLines)
+  int    numDelayLines;    // must be a power of 2 and >= 4
   double sampleRate;
 
 
   double referenceDelayTime;  // the delaytime of the reference delayline (in seconds)
                               // determines perceived room-size
-
   double* relativeDelayTimes;
 
-
-
   double diffusion;
-  double a, b;              // the a, b values for the generalized Hadamard transform
+  double a, b;                // a, b values for the generalized Hadamard transform
 
 
-  // todo: use std::vector
+  // todo: use std::vector for all the arrays
 };
 
 

@@ -948,7 +948,19 @@ void testHighPluck()
   printf("%s", "Rendering HighPluck*.wav done\n");
 
   // Test: write to 24 bit wavefile:
-  RSLib::rsOutputWaveFile wavFile("HighPluckMain24Bit.wav", (int)sampleRate, 24, 1); // todo: use 24
+  //rsWaveFile
+
+  // int24
+  //RSLib::rsOutputWaveFile wavFile("HighPluckMain24Bit.wav", (int)sampleRate, 24, 1);
+
+  // float32:
+  //rsOutputWaveFile wavFile("HighPluckMain32BitFloat.wav", (int)sampleRate, 32, 1, 
+  //  rsWaveFile::SampleFormat::IEEE_FLOAT);
+
+  // float64:
+  rsOutputWaveFile wavFile("HighPluckMain64BitFloat.wav", (int)sampleRate, 64, 1, 
+    rsWaveFile::SampleFormat::IEEE_FLOAT);
+
   wavFile.write(&x1[0], N);
   // does not yet work
 

@@ -313,9 +313,7 @@ int main(int argc, char* argv[])
   //ropewayAlgo();
 //  peakPicker();
 
-
   // Delay:
-  //algoVerb();
   //basicIntegerDelayLine();
 
   // Filter:
@@ -552,7 +550,8 @@ int main(int argc, char* argv[])
   //testInterpolation();
 
   // Effects:
-  testFeedbackDelayNetwork(); // writes wave file
+  //testFeedbackDelayNetwork(); // writes wave file
+  //algoVerb();
 
   // File:
 
@@ -613,7 +612,7 @@ int main(int argc, char* argv[])
   //createBass1();
   //createGong1();
   //createPluck1();
-  //testHighPluck();
+  testHighPluck();
   // ToDo: create from the same sample-sets also soundfonts with 1,2,3,4,6 samples per octave via
   // key-crossfading (the default is 12 per octave, i.e. 1 sample per key) - compare them to find 
   // the best trade-off between size and quality (probably 3 or 4?)

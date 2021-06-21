@@ -25,55 +25,33 @@ void shuffleBuffer(T *buffer, int length)
     k  /= 2;
   }
 }
-// ToDo: document, how this algo works
-// ..maybe move to prototypes - i think, it's currently not in use anyway
+// ToDo: 
+// -document, how this algo works..it seems to reverse the upper half of the buffer and then 
+//  recursively applies the same algo to both half-buffers?
+// -make it a member function
+// -maybe try other shufflings:
+//  -swap first with second half, then do the same recursively on both half-buffers
+//   -maybe combine this with reversal
+//  -swap highest quarter with 2nd-to-lowest, recurse to half-buffers
 
 
 // Construction/Destruction:
 
 FeedbackDelayNetwork::FeedbackDelayNetwork()
 {
-  // some test code for development (move this into an experiment and/or unit test):
-  int buf8[8];
-  RAPT::rsArrayTools::fillWithIndex(buf8, 8);
-  shuffleBuffer(buf8, 8);
+  delayLines         = nullptr;
+  readIndices        = nullptr;
+  writeIndices       = nullptr;
+  delayLineLengths   = nullptr;
+  relativeDelayTimes = nullptr;
 
-  int buf16[16];
-  RAPT::rsArrayTools::fillWithIndex(buf16, 16);
-  shuffleBuffer(buf16, 16);
-
-  int buf32[32];
-  RAPT::rsArrayTools::fillWithIndex(buf32, 32);
-  shuffleBuffer(buf32, 32);
-
-
-  delayLines         = NULL;
-  readIndices        = NULL;
-  writeIndices       = NULL;
-  delayLineLengths   = NULL;
-  relativeDelayTimes = NULL;
-
-  //numDelayLines      = 4;  // 4 is the minimum, sounds kinda shattery, gritty - not so nice
-  //log2NumDelayLines  = 2;
-
-  //numDelayLines      = 8;  // 8 has already a nice reverberant character
-  //log2NumDelayLines  = 3;
-
-  numDelayLines      = 16; // 16 sounds smoother, denser, noisier
-  log2NumDelayLines  = 4;
-
-  //numDelayLines      = 32; // 32 sounds still denser
-  //log2NumDelayLines  = 5; 
-
-  //numDelayLines      = 64; // still denser, initial section acquires a snare'ish character
-  //log2NumDelayLines  = 6;
-
-  //numDelayLines      = 128;  // initial "electronic snare" character becomes very apparent
-  //log2NumDelayLines  = 7;
-
-  //numDelayLines      = 256;  // snare sound becomes higher pitched
-  //log2NumDelayLines  = 8;
-
+  //numDelayLines = 4;   // 4 is the minimum, sounds kinda shattery, gritty - not so nice
+  //numDelayLines = 8;   // 8 has already a nice reverberant character
+  //numDelayLines   = 16;  // 16 sounds smoother, denser, noisier
+  //numDelayLines = 32;  // 32 sounds still denser
+  //numDelayLines = 64;  // still denser, initial section acquires a snare'ish character
+  numDelayLines = 128; // initial "electronic snare" character becomes very apparent
+  //numDelayLines = 256; // snare sound becomes higher pitched
   // ...conclusion: 
   // -16 or 32 seems to be the sweet spot for reverb, 8 and 64 are also usable
   // -larger sizes acquire this weird pitch-sweepdown electronic drum sound
@@ -84,17 +62,11 @@ FeedbackDelayNetwork::FeedbackDelayNetwork()
   //  different delay-sttings - maybe that creates more density and also avoids the pitch-sweepdown
   // -try different formulas for the relative delay times, currently, apower rule is used
 
-  //numDelayLines      = 1024;
-  //log2NumDelayLines  = 10;
-
-
   sampleRate         = 44100.0;
   referenceDelayTime = 20.0/1000.0;  // 20 ms
-  //referenceDelayTime = 0.5/1000.0;  // 2 ms
-
   allocateMemory();
-  //setDiffusion(100.0);
-  setDiffusion(0.0);
+  setDiffusion(100.0);
+  //setDiffusion(0.0);
   reset();
 }
 
@@ -153,11 +125,12 @@ void FeedbackDelayNetwork::reset()
   setupReadIndices();
 }
 
-// code is obsolete - we have better code in rapt Transforms now
+// code is obsolete - we have better code in rapt Transforms now - move to prototypes for reference
+// ...but before doing so, do performance tests - it may be more efficient, even though it doesn't
+// work in place
 void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(
   double *x, int N, int log2N, double *y, double a, double b, double c, double d)
 {
-  //double *y               = (double*) alloca(N*sizeof(double));
   int  N2 = N/2;
   bool xContainsResult = true;
   for(int i = 1; i <= log2N; i++)
@@ -176,7 +149,6 @@ void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(
   }
   if( !xContainsResult )
     memcpy(y, x, N*sizeof(double));  // try rsArrayTools::copy instead, measure performance
-
 }
 // After the algo, x contains garbage - that's not nice
 // todo: try to write the algorithm in a way that works in place - maybe it's sufficient to pull 
@@ -207,8 +179,7 @@ void FeedbackDelayNetwork::fastInverseGeneralizedHadamardTransform(
 
 void FeedbackDelayNetwork::setupRelativeDelayTimes()
 {
-  double dMax = 2.4; // hmmm..actually, this is not really the length of the longest delaylin
-                     // ...find a better name
+  double dMax = 2.4;
 
   //dMax = 5;        // maybe vary this between 1.5...2.5 via a user parameter "Shape"
 
@@ -218,16 +189,46 @@ void FeedbackDelayNetwork::setupRelativeDelayTimes()
   //dMax = (double) numDelayLines / 5.0;
 
   dMax = (double) numDelayLines / 5.0;
-  dMax = 5;
-  dMax = 3;
+  //dMax = 5;
+  //dMax = 1.5;
+  //dMax = 2;
+  //dMax = 3;
+  //dMax = 4;
+  //dMax = 5;
+  dMax = 8;
+  // dMax = 1.5: grouping of primary reflections impulses
+  // dMax = 2.0: most compact, i guess
+  // dMax = 3.0: seems a goo all around value
+  // dMax = 5.0: some later primary reflections are already bathed in noise
+  // dMax = 8.0: primary reflectiosn becoem distinguishable (with N=16)
 
-
+  // Power rule:
   for(int i = 0; i < numDelayLines; i++)
   {
-    //relativeDelayTimes[i] = pow(dMax, (double)i / (double)numDelayLines); // old formula
-    relativeDelayTimes[i] = pow(dMax, (double)i / (double)(numDelayLines-1)); // new formula
+    double D = dMax;
+    double p = (double)i / (double)(numDelayLines-1);
+
+    //relativeDelayTimes[i] = 1.0 + p * (D - 1.0);   // linear rule
+    relativeDelayTimes[i] = pow(D, p);               // power rule
+    //relativeDelayTimes[i] = 1.0 + sqrt(p) * (D - 1.0);   // square-root rule
+    //relativeDelayTimes[i] = 1.0 + cbrt(p) * (D - 1.0);   // cube-root rule
+    //relativeDelayTimes[i] = 1.0 + p*p * (D - 1.0);        // square rule
+    //relativeDelayTimes[i] = 1.0 + p*p*p * (D - 1.0);        // cube rule
   }
-  // old or new makes no qualitative difference
+  // with N = 128, dMax = 3
+  // -Power:  has a clear pitch slide-down
+  // -Linear: has a tonal component at the start
+  // -rules of the form: 1 + p^k * (D-1) have a slide-down effekt for k > 1 and slide-up for
+  //  k < 1 and are tonal for k = 1. The p^k shape is the key here - maybe try a shape in a form
+  //  of a saturation curve or a sinh-like curve..should be neither up-down or down-up
+  // -this can actually be used to synthesize (snare) drum sounds, maybe the initial section
+  //  should be lowpassed a bit
+  //  -to avoid the spikey character at the start, maybe try other input signals like rectangular 
+  //   impulses, triangular, bipolar, etc - maybe make an impulse-generator class that contains the 
+  //   unit-impulse as special case
+  // -with larger dMax, the pitch slides further down and later impulses are more bathed in noise,
+  //  but when it gets too large (8), it begins to lose the pitch-slide effekt and becomes more 
+  //  gritty/noisy
 
 
   shuffleBuffer(relativeDelayTimes, numDelayLines);
@@ -280,21 +281,21 @@ void FeedbackDelayNetwork::allocateDelayLines()
 
 void FeedbackDelayNetwork::freeMemory()
 {
-  delete[] readIndices;        readIndices        = NULL;
-  delete[] writeIndices;       writeIndices       = NULL;
-  delete[] delayLineLengths;   delayLineLengths   = NULL;
-  delete[] relativeDelayTimes; relativeDelayTimes = NULL;
+  delete[] readIndices;        readIndices        = nullptr;
+  delete[] writeIndices;       writeIndices       = nullptr;
+  delete[] delayLineLengths;   delayLineLengths   = nullptr;
+  delete[] relativeDelayTimes; relativeDelayTimes = nullptr;
   freeDelayLines();
 }
 
 void FeedbackDelayNetwork::freeDelayLines()
 {
-  if( delayLines != NULL )
+  if( delayLines != nullptr )
   {
     for(int i = 0; i < numDelayLines; i++)
       delete[] delayLines[i];
     delete[] delayLines;
-    delayLines = NULL;
+    delayLines = nullptr;
   }
 }
 
@@ -302,13 +303,10 @@ void FeedbackDelayNetwork::freeDelayLines()
 // cpp file to decrease build times
 void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
 {
-  using AT = RAPT::rsArrayTools;
+  //using AT = RAPT::rsArrayTools;
 
   static const int bufSize = 256; // should be >= numDelayLines
   double delayLineOuts[bufSize];
-  double fhtWorkspace[bufSize];    // obsolete soon
-  // later maybe use members with dynamic allocation
-
 
   int i;
 
@@ -317,6 +315,8 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
     // increment read/write indices with wraparound:
     writeIndices[i] = (writeIndices[i] + 1) % delayLineLengths[i];
     readIndices[i]  = (readIndices[i]  + 1) % delayLineLengths[i];
+    // optimize: let the buffer-lengths (not actual delayline lengths) be powers of 2 and do the 
+    // wrap-around via bit-mask
 
     // pull out the outputs of the delaylines:
     delayLineOuts[i] = delayLines[i][readIndices[i]];
@@ -352,16 +352,14 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
   // output vectors are orthogonal (but maybe not orthonormal - fix this):
   for(i = 0; i < numDelayLines; i += 4)
   {
-    //double c = 1.0 / (0.25*i+1);
-    double c = 1.0;  // get rid
-    wetL += c * (        delayLineOuts[i]
-                 - 0.5 * delayLineOuts[i+1]
-                 -       delayLineOuts[i+2]
-                 + 0.5 * delayLineOuts[i+3]);
-    wetR += c * (  0.5 * delayLineOuts[i]
-                 +       delayLineOuts[i+1]
-                 - 0.5 * delayLineOuts[i+2]
-                 -       delayLineOuts[i+3]);
+    wetL +=         delayLineOuts[i]
+            - 0.5 * delayLineOuts[i+1]
+            -       delayLineOuts[i+2]
+            + 0.5 * delayLineOuts[i+3];
+    wetR +=   0.5 * delayLineOuts[i]
+            +       delayLineOuts[i+1]
+            - 0.5 * delayLineOuts[i+2]
+            -       delayLineOuts[i+3];
   }
   // ToDo: 
   // -check, if left and right impulse responses are uncorrelated
@@ -371,11 +369,13 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
   //  currently, the impulse response gets louder, the more delaylines we use
 
   // Apply feedback matrix via a generalized fast Hadamard transform:
-  double feedback = 0.9;    // currently hardcoded decay
+  double feedback = 0.9;    // 0.9 currently hardcoded decay
   RAPT::rsFGHT(delayLineOuts, numDelayLines, a, b, -b, a); 
   for(i = 0; i < numDelayLines; i++)
     delayLines[i][writeIndices[i]] += feedback * delayLineOuts[i];
-
+  // todo: 
+  // -compute feedback factor from a desired decay time RT60
+  // -maybe we should take the average delay-time as basis for this calculation
 
   // preliminary - later use members:
   double dryGain = 0.0;

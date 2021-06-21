@@ -216,7 +216,26 @@ Operation:
 -When a noteOn is received, we look up in a table, which regions should be 
  played. This should probably be a std::vector of length 128 of pointers to
  RegionSet objects where each RegionSet is a vector of Region objects
-  
+ 
+-------------------------------------------------------------------------------
+Offline Sample Editor/Creator
+-a program to create sample-sets and sfz files
+-an instrument/patch resembles the sfz structure but the samples are replaced
+ by a chain of modules that define, how the sample should be synthesized, for 
+ example a module chain could look like:
+   impulse generator -> FDN -> amp env -> filter -> pitch env
+ or:
+   noise generator -> modal bank 
+-it can render the sample set and sfz to disk or play it in "realtime" (i.e. 
+ renders only to memory, when a parameter changes)
+-maybe the synthesis can be defined by a scripting language "Synthax", maybe 
+ use AngelScript or python:
+ https://docs.python.org/3/extending/index.html#extending-index
+ https://docs.python.org/3/extending/embedding.html
+ -maybe first write a python module containing the relevant synthesis modules 
+  and try it in a regular python programming environment
+
+
 -------------------------------------------------------------------------------
 Parameters
 

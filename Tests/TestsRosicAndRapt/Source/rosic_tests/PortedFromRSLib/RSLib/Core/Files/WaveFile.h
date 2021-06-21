@@ -24,12 +24,12 @@ namespace RSLib
 
     int getBitsPerSample() const { return header.formatSubChunk.bitsPerSample; }
 
-    enum sampleFormats
+    enum SampleFormat
     {
     
-      PCM_LINEAR = 1      // ...other formats are currently not supported
+      PCM_LINEAR = 1,     // ...other formats are currently not supported
+      IEEE_FLOAT = 3
       // todo:
-      //IEEE_FLOAT = 3,
       //ALAW = 6,
       //MULAW = 7
     };
@@ -171,7 +171,7 @@ namespace RSLib
 
     /** Constructor. Opens the file for writing. */
     rsOutputWaveFile(const rsString& absolutePath, int sampleRate, int bitsPerSample, 
-      int numChannels);
+      int numChannels, int sampleFormat = rsWaveFile::SampleFormat::PCM_LINEAR);
 
     /** Destructor. Finalizes the header and closes the file. */
     virtual ~rsOutputWaveFile() { finalizeHeaderAndCloseFile(); }
@@ -211,7 +211,7 @@ namespace RSLib
     /** Creates the preliminray header which does not yet contain valid data for the file 
     length. */
     virtual void createPreliminaryHeader(const rsUint32 sampleRate, const rsUint32 bitsPerSample, 
-      const rsUint32 numChannels);
+      const rsUint32 numChannels, const rsUint32 sampleFormat);
     // maybe rename to fillHeaderPreliminary, add a function updateHeader that gets called from
     // write*
 
@@ -224,11 +224,11 @@ namespace RSLib
 
     virtual void convertFloatTo24BitInt(const float *inBuffer, rsInt32 *outBuffer, int length);
 
-    /** Given a buffer x of N bytes in groups of 4, this copies the content into a buffer of bytes 
-    in groups of 3, leaving out the most significant byte in the source buffer. This is used for
-    converting 32 integers into 24 bit integers represented by 3 bytes each. The return value is 
-    the number of bytes written, which is 3*N/4. N must be divisble by 4. */
-    virtual int copyBytes4to3(const rsInt8* x, int N, rsInt8* y);
+    /** Given a buffer x of numBytes bytes in groups of 4, this copies the content into a buffer of
+    bytes in groups of 3, leaving out the most significant byte in the source buffer. This is used 
+    for converting 32 integers into 24 bit integers represented by 3 bytes each. The return value 
+    is the number of bytes written, which is 3*N/4. N must be divisble by 4. */
+    virtual int copyBytes4to3(const rsInt8* x, int numBytes, rsInt8* y);
     // ToDo: test on big endian machines - it will probably fail - we may need an #ifdef in the 
     // implementation. see comments there
  

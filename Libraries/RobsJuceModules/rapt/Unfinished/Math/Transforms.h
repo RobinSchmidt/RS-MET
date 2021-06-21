@@ -47,27 +47,12 @@ void rsRadix2FFT(std::complex<T> *buffer, int N);
 be a power of 2.  */
 template<class T>
 void rsFGHT(T* A, int N, T a, T b, T c, T d);
+// ToDo: maybe provide a version that takes N at compile time (as template parameter) to make it 
+// easier for the compiler to unroll the loops.
 
 /** Inverse of rsFGHT. */
 template<class T>
 void rsIFGHT(T* A, int N, T a, T b, T c, T d) 
 { T s = T(1) / (a*d - b*c); rsFGHT(A, N, s*d, -s*b, -s*c, s*a); }
-
-/** Fast generalized Hadamard transform of length N array A with seed matrix coeffs a,b,c,d. N must
-be a power of 2. It has been made a template parameter rather than a regular function parameter to
-allow the compiler to unroll the loops. It's supposed to be used mainly for FDN reverbs with fixed
-N. */
-//template<class T, int N>
-//void rsFGHT(T* A, T a, T b, T c, T d);
-// todo: maybe provide a version that takes N at runtime and call that from the version that takes
-// N at compile time
-
-/** Inverse of rsFGHT. */
-/*
-template<class T, int N>
-void rsIFGHT(T* A, T a, T b, T c, T d) 
-{ T s = T(1) / (a*d - b*c); rsFGHT<T,N>(A, s*d, -s*b, -s*c, s*a); }
-*/
-
 
 #endif

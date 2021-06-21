@@ -105,17 +105,17 @@ int rsInputWaveFile::isEndOfFileReached() const
 // class OutputWaveFile:
 
 rsOutputWaveFile::rsOutputWaveFile(const rsString& absolutePath, int sampleRate, 
-                                   int bitsPerSample, int numChannels) :
+  int bitsPerSample, int numChannels, int sampleFormat) :
 rsWaveFile(absolutePath)
 {
   openForWrite();
   positionInData = 0;
-  createPreliminaryHeader(sampleRate, bitsPerSample, numChannels);
+  createPreliminaryHeader(sampleRate, bitsPerSample, numChannels, sampleFormat);
   writeHeader();
 }
 
-void rsOutputWaveFile::createPreliminaryHeader(rsUint32 sampleRate, rsUint32 bits, 
-                                               rsUint32 channels)
+void rsOutputWaveFile::createPreliminaryHeader(const rsUint32 sampleRate, const rsUint32 bits, 
+  const rsUint32 channels, const rsUint32 sampleFormat)
 {
   // fill in the 'riff' part:
   memcpy(&(header.riffChunkDescriptor.chunkID), expectedChunkID, 4);   // chunkID = 'RIFF'
@@ -125,7 +125,8 @@ void rsOutputWaveFile::createPreliminaryHeader(rsUint32 sampleRate, rsUint32 bit
   // fill in the 'format' part:
   memcpy(&(header.formatSubChunk.subChunk1ID), expectedSubChunk1ID, 4); // subChunk1ID = 'fmt '
   header.formatSubChunk.subChunk1Size       = 0x10;
-  header.formatSubChunk.sampleFormat        = PCM_LINEAR;
+  //header.formatSubChunk.sampleFormat        = PCM_LINEAR;
+  header.formatSubChunk.sampleFormat        = sampleFormat;
   header.formatSubChunk.numChannels         = (short) channels;
   header.formatSubChunk.sampleRate          = sampleRate;
   header.formatSubChunk.bitsPerSample       = (short) bits;
@@ -190,30 +191,72 @@ void rsOutputWaveFile::write(const float *buffer, int numElems)
     write16Bit(shortBuffer, numElems);
     delete[] shortBuffer;
   }
-  if(getBitsPerSample() == 24)
+  else if(getBitsPerSample() == 24)
   {
     rsInt32* buf32 = new rsInt32[numElems];
     convertFloatTo24BitInt(buffer, buf32, numElems);
     write24Bit(buf32, numElems);
     delete[] buf32;
   }
+  else if(getBitsPerSample() == 32)
+  {
+    if(getSampleFormat() == SampleFormat::PCM_LINEAR)
+    {
+      // todo:
+      //rsInt32* buf32 = new rsInt32[numElems];
+      //convertFloatTo32BitInt(buffer, buf32, numElems);
+      //write32Bit(buf32, numElems);
+      //delete[] buf32;
+    }
+    if(getSampleFormat() == SampleFormat::IEEE_FLOAT)
+    {
+      int res = (int)fwrite(buffer, 4, numElems, filePointer);
+      if(res != numElems)
+        rsError("Error while writing to a wav file.");
+      positionInData += 4 * numElems;
+    }
+  }
+  else if(getBitsPerSample() == 64 && getSampleFormat() == SampleFormat::IEEE_FLOAT)
+  {
+
+  }
   else
     rsError("Required bit format not supported.");
 
   // ToDo: 
-  // -implement 32 bit integer and 32, 64 bit floating point formats
+  // -implement 8,32 bit integer and 64 bit floating point formats
+  // -implement handling of multichannel data...maybe this function here can be used for that, but
+  //  we need to interleave the data - maybe the caller should do that and here, we may only 
+  //  provide a convenience function for that ...maybe it should not allocate memeory but 
+  //  interleave -> write -> de-interleave everything in place, maybe the function should have a
+  //  boolean parameter isInterleaved
+  // -maybe implement A-law and mu-law
+  //  https://web.archive.org/web/20110719132013/http://hazelware.luggle.com/tutorials/mulawcompression.html
+  //  ...but no - that's a lossy compression that only applies to 16 bit data, so we don't really
+  //  want to encode files like this - but it may be the case that we occasionally need to decode
+  //  them, so maybe it should be integrated for completeness
 }
 
 void rsOutputWaveFile::write(const double* buffer, int numElems)
 {
-  float* floatBuffer = new float[numElems];
-  for(int i = 0; i < numElems; i++)
-    floatBuffer[i] = (float) buffer[i];
-  write(floatBuffer, numElems);
-  delete[] floatBuffer;
-  // It's silly to first convert double to float and then float to short or whatever - convert 
-  // directly to target format...but that may introduce code duplication...maybe templatize the
-  // relevant method, so it can be called for double and float
+  if(getBitsPerSample() == 64 && getSampleFormat() == SampleFormat::IEEE_FLOAT)
+  {
+    int res = (int)fwrite(buffer, 8, numElems, filePointer);
+    if(res != numElems)
+      rsError("Error while writing to a wav file.");
+    positionInData += 8 * numElems;
+  }
+  else
+  {
+    float* floatBuffer = new float[numElems];
+    for(int i = 0; i < numElems; i++)
+      floatBuffer[i] = (float)buffer[i];
+    write(floatBuffer, numElems);
+    delete[] floatBuffer;
+    // It's silly to first convert double to float and then float to short or whatever - convert 
+    // directly to target format...but that may introduce code duplication...maybe templatize the
+    // relevant method, so it can be called for double and float
+  }
 }
 
 void rsOutputWaveFile::convertFloatTo16BitInt(
@@ -257,28 +300,26 @@ void rsOutputWaveFile::convertFloatTo24BitInt(
 int rsOutputWaveFile::copyBytes4to3(const rsInt8* x, int N, rsInt8* y)
 {
   rsAssert(N % 4 == 0, "N must be divisible by 4");
-  N /= 4;
-
-  //int ix = 1; 
-  // the first byte in the input is already skipped (assumed to be 0) - doesn't work
-
-  int ix = 0;
-  // hmm - that works - i think it's because integers are stored as little endian. maybe we should
-  // have a conditional compilation like #ifdef RS_BIG_ENDIAN ix = 1 or something
-
-  int iy = 0;
-  for(int n = 0; n < N; n++)
-  {
+  N /= 4;          // N is now the number of samples, not the number of bytes anymore
+  int ix = 0;      // index into x array
+  int iy = 0;      // index into y array
+  for(int n = 0; n < N; n++) {
     y[iy+0] = x[ix+0];
     y[iy+1] = x[ix+1];
     y[iy+2] = x[ix+2];
     ix += 4;
-    iy += 3;
-  }
-  // may be generalized to copyElementsMtoN takes as parameters input and output spacing and 
-  // initial offset
+    iy += 3; }
+  return 3*N;      // 3*N is the number of bytes written into y
 
-  return 3*N;
+  // Notes:
+  // -I think, initializing ix = 0 works only on little endian machines. On big endian machines, we
+  //  may need ix = 1 or ix = 3 -> try that. Maybe we should have a conditional compilation like 
+  //  #ifdef RS_BIG_ENDIAN ix = 1 or something
+  // -Algorithm can be generalized to copyElementsMtoN that takes as parameters input and output 
+  //  spacings M,N and initial offsets for ix, iy (deault 0) -> maybe implement that in a general 
+  //  way in rsArrayTools. I think, it can be used in place, if N < M (verify!). Or maybe it should
+  //  be named copyWithGaps, copyGapped(T* x, int sx, T* y, int sy, int N, int ix = 0, iy = 0)
+  //  sx,,sy are the spacings, ix, iy the initial offsets/indices (0 <= ix < sx, ...)
 }
 
 /*
