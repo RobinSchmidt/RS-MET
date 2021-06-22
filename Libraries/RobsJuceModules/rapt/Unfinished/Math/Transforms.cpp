@@ -167,7 +167,9 @@ void rsRadix2FFT(std::complex<T> *a, int N)
 // it may have to take the n-th root of unity as argument...i guess that's our initial value for 
 // wm? ...maybe then, the function can be take as is - the template parameter should not be the 
 // real type T that underlies the complex type, but the complex type itself, which can then be
-// replaced by the modular integer?
+// replaced by something like rsModularInteger? -> test it to do a fast FFT convolution of two 
+// sequences of modular integers...can we also devise a Bluestein-like algorithm for sequences
+// of arbitrary length for modular integers?
 
 /*
 template<class T>
@@ -178,7 +180,7 @@ void rsBluesteinFFT(std::complex<T> *a, int N)
 */
 
 template<class T>
-void rsFGHT(T* A, int N, T a, T b, T c, T d)
+void rsTransforms::kronecker2x2(T* A, int N, T a, T b, T c, T d)
 {
   int h = 1;
   while(h < N) {
@@ -190,9 +192,42 @@ void rsFGHT(T* A, int N, T a, T b, T c, T d)
         A[j+h] = c*x + d*y;  }}
     h *= 2;  }
 }
-// adapted from https://en.wikipedia.org/wiki/Fast_Walsh%E2%80%93Hadamard_transform
 
-// Maybe it could be useful to do incomplete FGHTs? i.e. let the outer while(h < N) loop only run
-// up to N/2 or N/4, etc? ..we could pass a "divider" parameter or somehow pass a loopLimit 
-// parameter
+template<class T>
+void rsTransforms::hadamard(T* A, int N)
+{
+  int h = 1;
+  while(h < N) {
+    for(int i = 0; i < N; i += 2*h) {
+      for(int j = i; j < i+h; j++) {
+        T x = A[j];
+        T y = A[j+h];
+        A[j]   = x + y;
+        A[j+h] = x - y;  }}
+    h *= 2;  }
+}
+
+
+//-------------------------------------------------------------------------------------------------
+
+// Deprecated alias names:
+template<class T> 
+void rsFGHT(T* A, int N, T a, T b, T c, T d) { rsTransforms::kronecker2x2(A, N, a, b, c, d); }
+
+
+//-------------------------------------------------------------------------------------------------
+/*
+
+ToDo:
+-Wavelet transforms: Gabor, Daubechies, Walsh, ...
+-Fourier, Hadamard, Walsh, Householder, Givens, Toeplitz (?)
+-KarhunenLoeve/Eigenvector/PCA 
+ http://fourier.eng.hmc.edu/e161/lectures/klt/node3.html
+ https://link.springer.com/chapter/10.1007/978-3-540-72943-3_10
+-Add a variants of the Kronecker transforms that use an additional workspace array and avoid the
+ internal temp variables - then benchmark them against the in-place algo. Maybe, these out-of-place
+ should first go into prototypes, and be added to the library only when it is found that they are
+ faster
+
+*/
 

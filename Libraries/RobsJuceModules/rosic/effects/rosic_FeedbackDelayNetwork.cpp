@@ -396,7 +396,8 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
 
   // Apply feedback matrix via a generalized fast Hadamard transform:
   double feedback = 0.9;    // 0.9 currently hardcoded decay
-  RAPT::rsFGHT(delayLineOuts, numDelayLines, a, b, -b, a); 
+  //RAPT::rsFGHT(delayLineOuts, numDelayLines, a, b, -b, a); 
+  RAPT::rsTransforms::kronecker2x2(delayLineOuts, numDelayLines, a, b, -b, a); 
   for(i = 0; i < numDelayLines; i++)
     delayLines[i][writeIndices[i]] += feedback * delayLineOuts[i];
   // todo: 
@@ -430,11 +431,24 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
 
 Ideas:
 -allow a different set of a,b values (diffusion) for each stage, maybe arrange it such that the
- feedback between longer lines psrads faster and between shorter lines mroe slowly, per roundtrip,
+ feedback between longer lines spreads faster and between shorter lines more slowly, per roundtrip,
  such that the total time for the build-up is roughly the same in all lines
 -maybe allow a fully general product of matrices that are multiplied together via the Kronecker 
  product..maybe call it KronVerb, KronReverb, KronyVerb
 -maybe we could introduce a permutation as part of the feedback, maybe that could be time-varying
  to introduce further randomness
+-try a Kronecker trafo with complex coeffs. oh - and figure out for which choices of a,b,c,d the
+ resulting matrix is unitary - will it be when using a matrix with c=-b, d=a or c=b, d=-a. 
+ oh - i checked with the 2x2 seed matrix it is unitary indeed does this imply the higher order 
+ matrices are unitary too? yes, i think preserving unitariness this is a general feature of the 
+ Kronecker product. 
+-Try using dual numbers or hyperbolic numbers...dual numbers could indeed be interesting in an FDN
+ because they model derivatives...maybe that leads to some sort of highpass feature? ..can we also 
+ have a number system tha simulates integration?
+-Try arbitrary a,b,c,d and rescale the output to have the same length as the input vector - this 
+ makes the system nonlinear (really?) - maybe in an interesting way?
+-Maybe it could be useful to do incomplete Kronekcer trafos, i.e. let the outer while(h < N) loop
+ only run up to N/2 or N/4, etc? ..we could pass a "divider" parameter or somehow pass a 
+ loopLimit parameter
 
 */

@@ -3,10 +3,13 @@
 
 // ToDo: 
 // -Try to minimize the visibility of these macros to client code by
-//  -organzing the #inclusion in such a way, that not every client file that includes rapt.h
+//  -organzing the #inclusions in such a way, that not every client file that includes rapt.h
 //   is forced to see them
-//  -using #undef in the main include file to undo the definitions (may make a special .h file
-//   MacroUndefinitions.h
+//  -using #undef in the main rapt.h include file to undo the definitions (maybe make a special
+//   file MacroUndefinitions.h that can be included at the end of rapt.h)
+//  -inclusion of the undef-file will make the macros unavailable in rosic. ...unless we include 
+//   this file here from rosic.h again
+//  -we may also need to re-include the def-file it in rapt.cpp
 
 //#ifdef _MSC_VER
 //  #define RS_INLINE __forceinline
@@ -59,7 +62,9 @@
   #define RS_DEPRECATED(funcDef)                   funcDef
   #define RS_DEPRECATED_WITH_BODY(funcDef, body)   funcDef body
 #endif
-// see juce_PlatformDefs.h
+// see juce_PlatformDefs.h, juce has further macros: JUCE_DEPRECATED_STATIC, 
+// JUCE_DECLARE_DEPRECATED_STATIC, JUCE_CATCH_DEPRECATED_CODE_MISUSE
+// -> figure out what these do and maybe mimick them, too
 
 // Compiler hinting:
 #if defined(__GNUC__) && __GNUC__ >= 4

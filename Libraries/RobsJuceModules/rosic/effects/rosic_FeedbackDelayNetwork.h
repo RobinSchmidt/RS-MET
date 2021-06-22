@@ -74,40 +74,11 @@ public:
   etc.). */
   void reset();
 
-  /** Performs a generalized fast Hadamard transform on the input vector x with seed-matrix
-  values a, b, c, d. For more details, refer to my paper "A Generalization of the Hadamard
-  Transform". When the default values are used, it reduces to the standard Hadamard
-  transform without scaling or sequency based ordering. The result will again end up in
-  x. N is supposed to be a power of two that gives the vector's dimensionality and log2N should
-  be the base-2 logarithm of N. The "work" pointer should point to an array (of the same length
-  as x) that can be used as internal workspace.
-  \todo move this function out of this class - it might be useful in other contexts as well */
-  static void fastGeneralizedHadamardTransform(double* x, int N, int log2N, double* work,
-    double a = 1.0, double b = 1.0, double c = 1.0, double d = -1.0);
-  // todo: maybe try a generalized Hadamard trafo with complex coeffs
-  // oh - and figure out for which choices of a,b,c,d the resulting matrix is unitary - will it 
-  // be when using a matrix with c=-b, d=a or c=b, d=-a - oh - i checked with the 2x2 seed matrix
-  // it is unitary indeed does this immply the higher order matrices are unitary too?
-  // idea - try arbitrary a,b,c,d and rescale the output to have the same length as the input
-  // vector - this makes the system nonlinear (really?) - maybe in an interesting way?
 
-
-  //static void fastInverseGeneralizedHadamardTransform(double* x, int N, int log2N, double* work,
-  //  double a = 1.0, double b = 1.0, double c = 1.0, double d = -1.0);
-
-  RS_DEPRECATED_WITH_BODY(
-  static void fastInverseGeneralizedHadamardTransform(
-    double* x, int N, int log2N, double* work,
-    double a = 1.0, double b = 1.0, double c = 1.0, double d = -1.0),
-  { RAPT::rsIFGHT(x, N, a,b,c,d); } )   // this is the replacement
-
-
-  // JUCE_DEPRECATED_WITH_BODY (virtual bool shouldDropFilesWhenDraggedExternally (const String&, Component*, StringArray&, bool&), { return false; })
-
-protected:
 
 
 
+protected:
 
 
   /** Sets up the relative delay-times according to the selected algorithm. */
@@ -128,9 +99,6 @@ protected:
   /** Frees the memory for the delaylines. */
   void freeDelayLines();
 
-
-
-
   double** delayLines;     // the delaylines themselves
   int* readIndices;        // sample-indices where we read from the delaylines
   int* writeIndices;       // sample-indices where we write into the delaylines
@@ -145,16 +113,37 @@ protected:
   double* relativeDelayTimes;
 
   double diffusion;
-  double a, b;                // a, b values for the generalized Hadamard transform
+  // ToDo: have 3 diffusion coeffs that can be used to compute Euler angles for a 3x3 rotation
+  // matrix that will be used in a 3x3 kronecker tarnsform (currently we only provide the 2x2
+  // version)
 
+  double a, b;
+  // a, b values for the generalized Hadamard transform. ToDo: use a,b,c,d as members and assign
+  // either c = -b, d = a or c = b,d = -a depending on a user switch
 
   // todo: use std::vector for all the arrays
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Deprecated
+
+public:
+
+
+   /** The "work" pointer should point to an array (of the same length as x) that can be used as 
+   internal workspace.  
+   \todo move this function out of this class - it might be useful in other contexts as well */
+  RS_DEPRECATED( // replacement: RAPT::rsFGHT
+  static void fastGeneralizedHadamardTransform(double* x, int N, int log2N, double* work,
+    double a = 1.0, double b = 1.0, double c = 1.0, double d = -1.0));
+
+
+  RS_DEPRECATED_WITH_BODY(
+    static void fastInverseGeneralizedHadamardTransform(
+      double* x, int N, int log2N, double* work,
+      double a = 1.0, double b = 1.0, double c = 1.0, double d = -1.0),
+    { RAPT::rsIFGHT(x, N, a,b,c,d); } )   // this is the replacement
+
 };
-
-
-
-
-
 
 }
 
