@@ -1,6 +1,7 @@
 #ifndef RAPT_MATRIX_H
 #define RAPT_MATRIX_H
 
+//=================================================================================================
 
 /** A class for representing 2x2 matrices. They are treated as a special case because a lot of
 things which are impractical in the general case can be done for the 2x2 case. For example, it's
@@ -63,6 +64,16 @@ public:
   rsVector2D<T> getEigenvector2() const
   { rsVector2D<T> v; rsLinearAlgebra::eigenvector2x2_2(a, b, c, d, &v.x, &v.y, true); return v; }
 
+  // ToDo: 
+  // -Document, what counts as 1 and 2...i think, the smaller eigenvalue counts as eigenvalue 1, due 
+  //  to the way, we do the +- business for the square-root in the solution formula for the 
+  //  quadratic equation. That seems to be the most sensible convention.
+  // -Document what happens when the eigenvalue of a real matrix happens to be complex. In this 
+  //  case, the functions above must fail -> document in which way and/or maybe implement functions
+  //  to compute complex eigenvalues and -vectors
+  // -Implement a getEigenSystem() function that computes both eigenvalues and -vectors at once, 
+  //  avoiding redundant calculations. Maybe also getEigenValues, getEigenVectors
+
   /** Returns the inverse of this matrix. */
   rsMatrix2x2<T> getInverse() const
   { T D = getDeterminant(); T s = T(1) / D; return rsMatrix2x2<T>(s*d, -s*b, -s*c, s*a); }
@@ -77,7 +88,7 @@ public:
   }
   // doesn't work with complex matrices
 
-  /** Computes n-th power of matrix using closed form formula from:
+  /** Computes n-th power of the matrix using closed form formula from:
   https://people.math.carleton.ca/~williams/papers/pdf/175.pdf , Eq. 2
   https://distill.pub/2017/momentum/ (section "Dynamics of momentum")
   ...it has been tested with real matrices with real eigenvalues (distinct and equal) - but what
@@ -97,6 +108,15 @@ public:
     else
       return pow(ev1, n-1) * (T(n) * *this - T(n-1) * ev1*I);
   }
+  // ToDo:
+  // Needs more tests, especially for the case when the eigenvalues are almost equal. I think,
+  // we should use a relative tolerance, maybe based on ev1/ev2. If the quotient is too close 
+  // to +1, use the 2nd branch. Then, test it for double and float.
+  // What about non-integer powers? Does the formula also work for those? Try it and compare 
+  // results to matrix power computed by Taylor expansion, maybe using sqrt as example, i.e. 
+  // n = 0.5. What about n = -1? Would that be the inverse matrix?
+  // What about the matrix exponential? And maybe sine and cosine, too? Maybe even logarithm? See
+  // the code for geometric algebra in the Research repo for possible algorithms.
 
 
   //-----------------------------------------------------------------------------------------------
@@ -129,9 +149,11 @@ public:
   rsMatrix2x2<T> operator/(const T divisor) const
   { T s = T(1) / divisor; return rsMatrix2x2<T> (s*a, s*b, s*c, s*d); }
 
-  // todo: left multiplication w = v^H * A
-
-  // todo: operators that take a scalar as left or right argument, +=, -=, *=, /=
+  // ToDo: 
+  // -left multiplication w = v^H * A
+  // -operators that take a scalar as left or right argument, +=, -=, *=, /=
+  // -allow element access via A(i,j) operator to resemble interface of the general rsMatrix - that
+  //  may be inefficient but sometimes convenient
 
 
   //-----------------------------------------------------------------------------------------------
@@ -173,9 +195,12 @@ public:
     //x.x = Ai.a * b.x + Ai.b * b.y;
     //x.y = Ai.c * b.x + Ai.d * b.y;
   }
-  // todo: optimize, handle singluar matrices: in the overdetermined case, produce a least squares
-  // approximation, in the underdetermined case, produce a minimum norm solution
-  // maybe implement it without using rsVector2D - just take references to coordinates instead
+  // ToDo: 
+  // -handle singluar matrices: in the overdetermined case, produce a least squares
+  //  approximation, in the underdetermined case, produce a minimum norm solution, maybe that 
+  //  should be in a function solveSingular
+  // -maybe implement it without using rsVector2D - just take references to coordinates instead
+  //
 
   /** Like solve, but checks for division by zero and assigns zero to the result in this case. */
   static void solveSave(const rsMatrix2x2<T>& A, rsVector2D<T>& x, const rsVector2D<T>& b)
@@ -186,6 +211,7 @@ public:
     x.x = s * (A.d * b.x - A.b * b.y);
     x.y = s * (A.a * b.y - A.c * b.x);
   }
+  // ToDo: maybe use an absolute threshold that defaults to zero, like: if(abs(D) <= thresh) { ... } 
 
 };
 
@@ -196,17 +222,85 @@ inline rsMatrix2x2<T> operator*(const T& s, const rsMatrix2x2<T>& A)
   return rsMatrix2x2<T>(s*A.a, s*A.b, s*A.c, s*A.d);
 }
 
+//=================================================================================================
+
+/** Under construction...it works but is still lacking functionality...
+
+Class for representing 3x3 matrices...  */
+
+template<class T>
+class rsMatrix3x3
+{
+
+public:
+
+  rsMatrix3x3() {}
+
+  rsMatrix3x3(T a, T b, T c, T d, T e, T f, T g, T h, T i)
+  { setValues(a, b, c, d, e, f, g, h, i); }
 
 
+  void setValues(T a, T b, T c, T d, T e, T f, T g, T h, T i) 
+  { 
+    A[0] = a; A[1] = b; A[2] = c;
+    A[3] = d; A[4] = e; A[5] = f;
+    A[6] = g; A[7] = h; A[8] = i;
+  }
+
+
+  /** Element access for read and write. */
+  T& operator()(const int i, const int j) { return A[flatIndex(i, j)]; }
+
+  /** Element access for read only. */
+  const T& operator()(const int i, const int j) const { return A[flatIndex(i, j)]; }
+
+  // ToDo: arithmetic operators, 
+
+protected:
+
+  inline int flatIndex(const int i, const int j) const
+  {
+    rsAssert(i >= 0 && i < 3, "invalid row index");
+    rsAssert(j >= 0 && j < 3, "invalid column index");
+    return 3*i + j;
+  }
+
+  T A[9];  // array of coeffs, capitalized  because we want to use "a" for the 1st element
+
+};
+
+
+// ToDo: 
+// -rsMatrix2x3 (useful for 3D -> 2D projections in graphics)
+// -rsMatrix3x2 (maybe useful in differential geometry of 2D surfaces embedded in 3D)
+// -maybe the small matrices should go into a dedicated SmallMatrices.h file. Maybe the same
+//  should be done for the small vectors in Vector.h -> move 2D/3D to SmallVectors.h - wait:
+//  there are only small vectors in Vector.h, so maybe just rename it to SmallVectors.h
+// -These "small" versions should go up to 4 - 4D is sometimes needed when using homogeneous
+//  coordinates in graphics (and also in relativity)
 
 
 //=================================================================================================
 
 /** This is a class for treating raw C-arrays as matrices. It does not store/own the actual matrix
 data. It just acts as wrapper around an existing array for conveniently accessing and manipulating
-matrix elements via row/column indicies using the () operator with two integers. */
-// todo:
-// -create benchmarks for and optimize elementary row- and column operations
+matrix elements via row/column indicies using the () operator with two integers. The matrix data is 
+treated as being stored in row-major format. 
+
+Note: LaPack assumes column-major format, so the storage is not compatible. To mix rsMatrix with
+LaPack routines, you will need to do transpositions in memory. I think, row-major is better for
+computing matrix-vector products, access pattern wise and its also sometimes convenient to be able
+to address a row of a matrix as vector/array. Column-major storage may be more convenient and 
+efficient for certain other operations that i found to be less common in my typical audio related 
+applications, so i opted for row-major. ....your mileage may vary. */
+
+// ToDo:
+// -create benchmarks for and optimize elementary row- and column operations and matrix-vector
+//  multiplication (these are the most important linear algebra operations, so they should be fast)
+//  -> implement benchmarks
+// -maybe make the storage format more flexible by using strides (allows for column major storage
+//  and also block submatrices without copying)...but measure the performance impact - if it's too 
+//  costly, then maybe don't
 
 template<class T>
 class rsMatrixView
@@ -793,7 +887,8 @@ public:
   /** Read only access - used mainly internally with const reference arguments (for example,
   in add). */
   const T& at(const int i, const int j) const { return dataPointer[flatIndex(i, j)]; }
-  // maybe rename to get - do we actually need this? - if not, get rid!
+  // maybe rename to get - do we actually need this? - if not, get rid! it's sometimes convenient
+  // when we have a pointer to a matrix. The syntax A->at(i,j) clearer nicer than (*A)(i,j)
 
   // void set(i, j, val) ...to make it compatible with old implementation
 

@@ -2,10 +2,33 @@ using namespace rotes;
 using namespace rosic;
 using namespace RAPT;
 
+// Move to prototypes or RAPT:
 
 template<class T>
-void rsFGHT3(T* A, int N, T a, T b, T c, T d, T e, T f, T g, T H, T I)
+void rsFGHT3(T* v, int N, const rsMatrix3x3<T>& A)
 {
+  int h = 1;
+  while(h < N) {
+    for(int i = 0; i < N; i += 3*h) {
+      for(int j = i; j < i+h; j++) {
+        T x = v[j+0*h];
+        T y = v[j+1*h];
+        T z = v[j+2*h];
+        v[j+0*h] = A(0,0) * x + A(0,1) * y + A(0,2) * z;
+        v[j+1*h] = A(1,0) * x + A(1,1) * y + A(1,2) * z;
+        v[j+2*h] = A(2,0) * x + A(2,1) * y + A(2,2) * z; }}
+    h *= 3;  }
+}
+// maybe call this rsFastKroneckerTrafo3x3
+
+template<class T>
+void rsFGHT3(T* v, int N, T a, T b, T c, T d, T e, T f, T g, T H, T I)
+{
+  rsMatrix3x3<T> A(a, b, c, d, e, f, g, H, I);
+  rsFGHT3(v, N, A);
+  return;
+
+
   // Experimental - we try to do something similar with a 3x3 seed matrix. We may base this on 3D
   // rotations with or without reflections. We may have 3 independent parameters to control the
   // diffusion - we could just give those 3 parameters directly to the user but maybe we can 
@@ -15,22 +38,27 @@ void rsFGHT3(T* A, int N, T a, T b, T c, T d, T e, T f, T g, T H, T I)
   while(h < N) {
     for(int i = 0; i < N; i += 3*h) {
       for(int j = i; j < i+h; j++) {
-        T x = A[j+0*h];
-        T y = A[j+1*h];
-        T z = A[j+2*h];
-        A[j+0*h] = a*x + b*y + c*z;
-        A[j+1*h] = d*x + e*y + f*z;
-        A[j+2*h] = g*x + H*y + I*z;  }}
+        T x = v[j+0*h];
+        T y = v[j+1*h];
+        T z = v[j+2*h];
+        v[j+0*h] = a*x + b*y + c*z;
+        v[j+1*h] = d*x + e*y + f*z;
+        v[j+2*h] = g*x + H*y + I*z;  }}
     h *= 3;  }
 }
-// ok - works - move to rapt
-// can we generalize this further for computing a matrix vector product:
-// y = A°B°C°... * x, where ° denotes the kronecker product? the function could take as input the 
-// in/out vector and a vector of pointers to matrices..maybe the A,B,C etc matrices do not even 
-// need to be square matrices as long as the final product is a square matrix with the right 
-// dimensions? maybe the final matrix doesn't even need to be square? maybe call it fast kronecker
-// product transform 
-// rsFKPT(T* A, const std:vector<rsMatrix*>& M
+// -ok - works - move to rapt
+// -use it in the FDN, based on a rotation matrix defined in terms of Euler angles, maybe using
+//  rsRotationXYZ for the computation of the coeffs
+// -can we generalize this further for computing a matrix vector product:
+//  y = A°B°C°... * x, where ° denotes the kronecker product? the function could take as input the 
+//  in/out vector and a vector of pointers to matrices..maybe the A,B,C etc matrices do not even 
+//  need to be square matrices as long as the final product is a square matrix with the right 
+//  dimensions? maybe the final matrix doesn't even need to be square? maybe call it fast kronecker
+//  product transform rsFKPT(T* A, const std:vector<rsMatrix*>& M
+// -maybe the seed matrix should be given as a reference to rsMatrix3x3
+// -ToDo: make benchmarks measuring the version taking the 3x3 matrix versus the version 
+//  taking a,b,c,d,... maybe with the latter, the compiler is more inclined to use registers for 
+//  the arguments? but with so many arguments, that might not be possible
 
 // But first generalize to an NxN seed matrix that gets kroneckered with itself L times
 // ...here it is - seems to work:
@@ -59,59 +87,68 @@ void rsFastKroneckerTrafo(std::vector<T>& x, const rsMatrix<T>& M, int L)
 
 // computes M[0] ° M[1] ° M[2] ° ... ° M[L-1] * x 
 // ..or M[L-1] ° M[L-2] ° M[L-3] ° ... ° M[0] * x 
+// currently works only when for all matrices dim(input) >= dim(output)
 template<class T>
 void rsFastKroneckerTrafo(std::vector<T>& x, const std::vector<const rsMatrix<T>*> M)
 {
-  std::vector<T> t(10); 
-  // 10 is preliminary! would be the maximum of the numbers of columns of all matrices
-
-  int N = (int) x.size();
-  // verify! could also be the output size, i.e. product of all numCols
-
   int Nx = 1; for(size_t m = 0; m < M.size(); m++) Nx *= M[m]->getNumColumns();
   int Ny = 1; for(size_t m = 0; m < M.size(); m++) Ny *= M[m]->getNumRows(); 
-
-  x.resize(rsMax(Nx, Ny));  // kludgy! to avoid access violation when x,y have different size
-
+  int Nt = 0; for(size_t m = 0; m < M.size(); m++) Nt  = rsMax(Nt, M[m]->getNumColumns());
+  std::vector<T> t(Nt);     // temp storage
+  int N = rsMax(Nx, Ny);
+  x.resize(N);
   int hC = 1;
   int hR = 1;
-  for(size_t m = 0; m < M.size(); m++)    // m: matrix index, loop over the matrices
-  {
+  for(size_t m = 0; m < M.size(); m++) {   // m: matrix index, loop over the matrices
     int nR = M[m]->getNumRows();
     int nC = M[m]->getNumColumns();
-
-
-    for(int i = 0; i < Nx; i += nC*hC)   // verify this when nC != nR
-    {
-      for(int j = i; j < i+hR; j++)     // might be hR?
-      {
-        for(int k = 0; k < nC; k++)     // this nC seems a safe bet
+    //int nM = rsMin(nC, nR);
+    for(int i = 0; i < Nx; i += nC*hC) {    // old - not sure about Nx,nC,hC
+    //for(int i = 0; i < N; i += nC*hC) {   // using N gives access violation
+    //for(int i = 0; i < N; i += nM*hC) {   
+      for(int j = i; j < i+hR; j++) {
+        for(int k = 0; k < nC; k++)        // must store 2 temps
           t[k] = x[j+k*hC];
-        for(int k = 0; k < nR; k++) 
-        {
+        for(int k = 0; k < nR; k++) {      // must write 3 outputs
           x[j+k*hR] = 0;
-          for(int n = 0; n < nC; n++) 
-            x[j+k*hR] += M[m]->at(k, n) * t[n]; // (k,m) are row/col indices in that order
-        }
-      }
-    }
+          for(int n = 0; n < nC; n++)      // each output must accumulate 2 values
+            x[j+k*hR] += M[m]->at(k, n) * t[n]; }}}
+    hC *= nC;     // old, not sure
+    //hC *= nM;
+    hR *= nR; }
+  x.resize(Ny);
+  // The comments "must store 2 temps" etc. refer to an attempt to use a product of 2 3x2 matrices,
+  // for which the function does not yet work. Something is still wrong when 
+  // dim(input) < dim(output) for any of the factor matrices, i guess. If the output vector is 
+  // larger then the input vector, it may be plausibe, that the j-loop must iterate over more 
+  // elements...maybe j = i; j < i+max(hR,hC); j++
 
-    hC *= nC;
-    hR *= nR;
-  }
-
+  //
+  // ...this is still under construction. other cases seem to work, though
 }
-// maybe the inverse trafo can be computed by using the individual inverse matrices in reverse 
-// order?
+// ToDo:
+// -move to prototypes
+// -rename to rsKroneckerVectorProduct
+// -implement production version that takes a raw pointer to the x/y vector (and a workspace)
+// -maybe take a larger workspace and avoid the internal copying that is needed for the "in-place"
+//  operation
+// -maybe the inverse trafo can be computed by using the individual inverse matrices in reverse 
+//  order?
+//
+// See:
+// http://www.mathcs.emory.edu/~nagy/courses/fall10/515/KroneckerIntro.pdf
+// https://math.stackexchange.com/questions/1879933/vector-multiplication-with-multiple-kronecker-products
+// https://gist.github.com/ahwillia/f65bc70cb30206d4eadec857b98c4065
 
+// Move to math tests:
 
 /** L is the order */
-bool testHadamar2x2(int L)
+bool testKronecker2x2(int L)
 {
   using Vec = std::vector<double>;
   using Mat = rsMatrix<double>;
 
-  int N = pow(2, L);                         // size of matrix is NxN
+  int N = (int)pow(2, L);                    // size of matrix is NxN
   double a = 2, b = 3, c = 5, d = 7;         // coefficients of seed matrix
 
   Vec x = rsRandomIntVector(N, -9, +9);
@@ -127,8 +164,9 @@ bool testHadamar2x2(int L)
   rsFastKroneckerTrafo(z2, H1, L);           // output of fast generalized transform
   return z == y && z2 == y;
 }
+// maybe rename to testKronecker
 
-bool testHadamar3x3(int L)
+bool testKronecker3x3(int L)
 {
   using Vec = std::vector<double>;
   using Mat = rsMatrix<double>;
@@ -148,7 +186,7 @@ bool testHadamar3x3(int L)
   z = x;
   rsFGHT3(&z[0], N, a,b,c,d,e,f,g,h,i);       // output of fast transform
   Vec z2 = x;
-  rsFastKroneckerTrafo(z2, H1, L);           // output of fast generalized transform
+  rsFastKroneckerTrafo(z2, H1, L);            // output of fast generalized transform
   return z == y && z2 == y;
 }
 
@@ -181,15 +219,14 @@ bool testKroneckerProductTrafo()
   rsFastKroneckerTrafo(z, M);
   ok &= z == y;
 
+  // x has dim 9, y has dim 4:
   Mat M_23_23 = Mat::getKroneckerProduct(M23, M23);
-  y = M_23_23 * x;
-  M[0] = &M23;
-  M[1] = &M23;
+  y = M_23_23 * x; M[0] = &M23; M[1] = &M23;
   z = x;
   rsFastKroneckerTrafo(z, M);
-  //ok &= z == y; // test fails because z is longer than y, but the relevant elements do match
-  // we need to compare only up to index 4
+  ok &= z == y; 
 
+  // x has dim 16, y has dim 4:
   Mat M_24_24 = Mat::getKroneckerProduct(M24, M24);
   x = rsRandomIntVector(16, -9, +9);
   y = M_24_24 * x;
@@ -197,7 +234,33 @@ bool testKroneckerProductTrafo()
   M[1] = &M24;
   z = x;
   rsFastKroneckerTrafo(z, M);
+  ok &= z == y;
+
+  // x has dim 2, y has dim 3:
+  x = rsRandomIntVector(2, -9, +9);
+  y = M32 * x; M.resize(1); M[0] = &M32;
+  z = x; rsFastKroneckerTrafo(z, M);
+  ok &= z == y;
+  // ok, works
+
+  // todo: try 2x2 ° 3x2 and 3x2 ° 2x2
+
+  // x has dim 4, y has dim 9:
+  Mat M_32_32 = Mat::getKroneckerProduct(M32, M32);
+  x = rsRandomIntVector(4, -9, +9);
+  y = M_32_32 * x; M.resize(2); M[0] = &M32; M[1] = &M32;
+  z = x; rsFastKroneckerTrafo(z, M);
   //ok &= z == y;
+  // FAILS! maybe we need to zero out the y extra values before running the algo - nope
+  // they are zero - maybe the upper limit for i must be max(Nx,Ny) -> nope, access violation
+  // ...maybe one of the inner loops must be run up to max(nC,nR) ..but no: the innermost loops
+  // must run over exactly as many values as they are - anything else would make no sense
+  // or: Nx must be replaced by N in the outer loop and nC by nM = min(nC,nR)
+  // in this case, nR < nC, so nR is the minimum of both (in the previous tests it was always 
+  // >= nC and these cases work). We also have Nx < Ny here for the first time in the tests
+  // ..in each inner iteration, we must read 2 x-values and write 3 y-values - check that
+  // maybe the loop limits are ok, but i must add offsets to the write locations, i.e. use
+  // x[j+k*hM] =  instead of  x[j+k*hR] = where hM = max(hR,hC)
 
   // 3 3x3 matrices:
   Mat M_33_33_33 = Mat::getKroneckerProduct(M_33_33, M33);
@@ -206,14 +269,17 @@ bool testKroneckerProductTrafo()
   M.resize(3); M[0] = &M33; M[1] = &M33; M[2] = &M33;
   z = x; rsFastKroneckerTrafo(z, M);
   ok &= z == y;
-  // ok, that works - problematic are only the rectangular matrices
 
-  // http://www.mathcs.emory.edu/~nagy/courses/fall10/515/KroneckerIntro.pdf
-
-  // https://math.stackexchange.com/questions/1879933/vector-multiplication-with-multiple-kronecker-products
-  // https://gist.github.com/ahwillia/f65bc70cb30206d4eadec857b98c4065
-
-
+  // There are interesting identities for Kronecker products, for example:
+  //   vec(B*Q*A^T) = (A°B)*vec(Q)
+  // where A,B,Q are matrices, vec() turns a matrix into a vector by stacking its columns, * is
+  // matrix multiplication and ° is the Kronecker product. See:
+  //   https://ieeexplore.ieee.org/document/7864371
+  // or:
+  //  (A°B)^T  = A^T  ° B^T
+  //  (A°B)^-1 = A^-1 ° B^-1
+  //  (A°B)*(C°D) = A*C°B*D  ...i don't know, which product takes precedence here -> figure out!
+  // ToDo: dig out more such identities and verify them numerically
 
 
   // todo: Use a product of a 2x5 and 4x3 matrix
@@ -221,8 +287,7 @@ bool testKroneckerProductTrafo()
   return ok;
 }
 
-
-
+// move to rapt math tests:
 bool rotes::testFastGeneralizedHadamardTransform()
 {
   // ToDo: move the old implementation FDN::fastGeneralizedHadamardTransform into prototypes..maybe
@@ -322,24 +387,23 @@ bool rotes::testFastGeneralizedHadamardTransform()
   ok &= fabs(RAPT::rsArrayTools::maxDeviation(x8, y8, 8)) < 1.e-15;
 
   // Tests via Kronekcer products:
-                            // # delaylines
-  ok &= testHadamar2x2(1);  //   2
-  ok &= testHadamar2x2(2);  //   4
-  ok &= testHadamar2x2(3);  //   8
-  ok &= testHadamar2x2(4);  //  16
-  ok &= testHadamar2x2(5);  //  32
-  ok &= testHadamar2x2(6);  //  64
-  ok &= testHadamar2x2(7);  // 128
-  ok &= testHadamar2x2(8);  // 256
-  ok &= testHadamar3x3(1);  //   3
-  ok &= testHadamar3x3(2);  //   9
-  ok &= testHadamar3x3(3);  //  27
-  ok &= testHadamar3x3(4);  //  81
-  ok &= testHadamar3x3(5);  // 243
+                              // # delaylines
+  ok &= testKronecker2x2(1);  //   2
+  ok &= testKronecker2x2(2);  //   4
+  ok &= testKronecker2x2(3);  //   8
+  ok &= testKronecker2x2(4);  //  16
+  ok &= testKronecker2x2(5);  //  32
+  ok &= testKronecker2x2(6);  //  64
+  ok &= testKronecker2x2(7);  // 128
+  ok &= testKronecker2x2(8);  // 256
+  ok &= testKronecker3x3(1);  //   3
+  ok &= testKronecker3x3(2);  //   9
+  ok &= testKronecker3x3(3);  //  27
+  ok &= testKronecker3x3(4);  //  81
+  ok &= testKronecker3x3(5);  // 243
 
   // Test the more general Kronecker product transform:
   ok &= testKroneckerProductTrafo();
-
 
   return ok;
 

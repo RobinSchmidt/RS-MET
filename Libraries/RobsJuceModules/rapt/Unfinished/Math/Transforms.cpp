@@ -7,17 +7,13 @@ void smbFft(T *fftBuffer, long fftFrameSize, long sign)
 
   logN = (long)(log((double)fftFrameSize)/log(2.)+.5); // pass this value as parameter
 
-  // bit-reversed ordering (?):
-  for(i = 2; i < 2*fftFrameSize-2; i += 2)
-  {
-    for(bitm = 2, j = 0; bitm < 2*fftFrameSize; bitm <<= 1)
-    {
+  // Bit-reversed ordering (?):
+  for(i = 2; i < 2*fftFrameSize-2; i += 2) {
+    for(bitm = 2, j = 0; bitm < 2*fftFrameSize; bitm <<= 1) {
       if(i & bitm)
         j++;
-      j <<= 1;
-    }
-    if(i < j)
-    {
+      j <<= 1; }
+    if(i < j) {
       p1      = fftBuffer+i;
       p2      = fftBuffer+j;
       temp    = *p1;
@@ -25,28 +21,23 @@ void smbFft(T *fftBuffer, long fftFrameSize, long sign)
       *(p2++) = temp;
       temp    = *p1;
       *p1     = *p2;
-      *p2     = temp;
-    }
-  }
+      *p2     = temp;  }}
 
-  // the actual FFT:
-  for(k = 0, le = 2; k < logN; k++)
-  {
+  // The actual FFT:
+  for(k = 0, le = 2; k < logN; k++) {
     le  <<= 1;
     le2   = le>>1;
     ur    = 1.0;
     ui    = 0.0;
     arg   = (T)PI/(le2>>1);
     wr    =      cos(arg);
-    wi    = sign*sin(arg);     // use trigonometric recursion (maybe with extended precision)
-    for(j = 0; j < le2; j += 2)
-    {
+    wi    = sign*sin(arg);
+    for(j = 0; j < le2; j += 2) {  
       p1r = fftBuffer+j;
       p1i = p1r+1;
       p2r = p1r+le2;
       p2i = p2r+1;
-      for(i = j; i < 2*fftFrameSize; i += le)
-      {
+      for(i = j; i < 2*fftFrameSize; i += le) {
         tr    = *p2r * ur - *p2i * ui;
         ti    = *p2r * ui + *p2i * ur;
         *p2r  = *p1r - tr;
@@ -56,13 +47,10 @@ void smbFft(T *fftBuffer, long fftFrameSize, long sign)
         p1r  += le;
         p1i  += le;
         p2r  += le;
-        p2i  += le;
-      }
+        p2i  += le;  }
       tr = ur*wr - ui*wi;
       ui = ur*wi + ui*wr;
-      ur = tr;
-    }
-  }
+      ur = tr;  }}
 }
 
 template<class T>
@@ -132,7 +120,9 @@ void rsRadix2FFT(std::complex<T> *a, int N)
   // The algorithm was ported from algorithm 4.2 in the book "Inside the FFT black box" and 
   // then simplified. All twiddle factors are computed on the fly via recursion. There's just one
   // single complex exponential (i.e. a sin/cos pair) evaluation in the whole routine. That's 
-  // perhaps not very advisable from a numeric point of view but very nice mathematically. 
+  // perhaps not very advisable from a numeric point of view but very nice mathematically. But for
+  // number theoretic transform (i.e. FFT using the roots of unity of modular arithmetic), that's
+  // no issue, so that seems desirable when the algo is adapted for that.
 
   int np = 1;          // NumOfProblems
   int h  = N/2;        // HalfSize -> distance between butterflied values?
@@ -140,7 +130,9 @@ void rsRadix2FFT(std::complex<T> *a, int N)
   int jl;              // JLast
   std::complex<T> tmp; // Temp
   std::complex<T> wj;  // W (current twiddle factor), maybe rename to wjk or wkj
-  std::complex<T> wm = exp(std::complex<T>(T(0), T(-2.0*PI/N))); // multiplier for twiddle factor, todo: use polar() 
+  std::complex<T> wm = exp(std::complex<T>(T(0), T(-2.0*PI/N))); 
+  // Multiplier for twiddle factor, todo: use polar(), maybe using +2.0 instead of -2.0 will give 
+  // the inverse trafo?
 
   // \todo use setRadiusAndAngle for initializing wm (more efficient), we also do not need to 
   // include the ComplexFunctions.inl
@@ -170,6 +162,12 @@ void rsRadix2FFT(std::complex<T> *a, int N)
 
   rsArrayTools::orderBitReversed(a, N, (int)(rsLog2(N)+0.5)); // descramble outputs
 }
+// ToDo: adapt algo for finite fields - see:
+// https://crypto.stackexchange.com/questions/63614/finding-the-n-th-root-of-unity-in-a-finite-field
+// it may have to take the n-th root of unity as argument...i guess that's our initial value for 
+// wm? ...maybe then, the function can be take as is - the template parameter should not be the 
+// real type T that underlies the complex type, but the complex type itself, which can then be
+// replaced by the modular integer?
 
 /*
 template<class T>

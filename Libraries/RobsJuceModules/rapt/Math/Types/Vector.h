@@ -21,7 +21,8 @@ public:
 
   /** Returns the squared Euclidean norm of this vector. */
   T getSquaredEuclideanNorm() { return x*x + y*y; }
-  // rename to squaredNorm or getSquaredLength or getSquaredNorm
+  // rename to squaredNorm or getSquaredLength or getSquaredNorm or maybe implement a free function
+  // rsNorm - that's more convenient for writing generic algorithms using various kinds of vectors
 
   /** Returns the Euclidean norm of this vector. */
   T getEuclideanNorm() { return sqrt(getSquaredEuclideanNorm()); }
