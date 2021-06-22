@@ -103,13 +103,13 @@ void rsFastKroneckerTrafo(std::vector<T>& x, const std::vector<const rsMatrix<T>
     int nR = M[m]->getNumRows();
     int nC = M[m]->getNumColumns();
     //int nM = rsMin(nC, nR);
-    for(int i = 0; i < Nx; i += nC*hC) {    // old - not sure about Nx,nC,hC
-    //for(int i = 0; i < N; i += nC*hC) {   // using N gives access violation
-    //for(int i = 0; i < N; i += nM*hC) {   
-      for(int j = i; j < i+hR; j++) {
-        for(int k = 0; k < nC; k++)        // must store 2 temps
+    //int hMx = rsMax(hC, hR);   // 
+    //int hMn = rsMin(hC, hR); 
+    for(int i = 0; i < Nx; i += nC*hC) {   // i: base read index into input vector
+      for(int j = i; j < i+hR; j++) {      // j: base write index into output vector
+        for(int k = 0; k < nC; k++)        // we must store 2 temps
           t[k] = x[j+k*hC];
-        for(int k = 0; k < nR; k++) {      // must write 3 outputs
+        for(int k = 0; k < nR; k++) {      // we must write 3 outputs
           x[j+k*hR] = 0;
           for(int n = 0; n < nC; n++)      // each output must accumulate 2 values
             x[j+k*hR] += M[m]->at(k, n) * t[n]; }}}
@@ -123,6 +123,27 @@ void rsFastKroneckerTrafo(std::vector<T>& x, const std::vector<const rsMatrix<T>
   // larger then the input vector, it may be plausibe, that the j-loop must iterate over more 
   // elements...maybe j = i; j < i+max(hR,hC); j++
 
+  // hM = rsMax(hC,hR):
+  // hR,hR: 3x2 fails, others ok
+  // hR,hM: all fail
+  // hM,hR: all fail
+  // hM,hM: all fail
+  //
+  // hM = rsMin(hC,hR):
+  // hR,hR: 3x2 fails, others ok
+  // hR,hM: 3x2 fails, others ok
+  // hM,hR: 3x2 fails, others ok
+  // hM,hM: 3x2 fails, others ok
+
+  // hMx,hMn: all fail
+  // hMn,hMx: all fail
+
+  // -maybe the j-loop should use max(hC,hR) but the offset should use min(hC,hR)
+  // -maybe it cannot possibly work, because we store just 2 temps but overwrite 3 - we don't store 
+  //  enough temp data -> implement the algo with swap/workspace-vector - this is also simpler
+
+  // ...hM doesn't seem to be useful
+  // maybe we need to use hM, hM, together with running the i-loop to N
   //
   // ...this is still under construction. other cases seem to work, though
 }
@@ -139,6 +160,57 @@ void rsFastKroneckerTrafo(std::vector<T>& x, const std::vector<const rsMatrix<T>
 // http://www.mathcs.emory.edu/~nagy/courses/fall10/515/KroneckerIntro.pdf
 // https://math.stackexchange.com/questions/1879933/vector-multiplication-with-multiple-kronecker-products
 // https://gist.github.com/ahwillia/f65bc70cb30206d4eadec857b98c4065
+
+template<class T>
+void rsFastKroneckerTrafo2(std::vector<T>& v, const std::vector<const rsMatrix<T>*> M)
+{
+  int Nx = 1; for(size_t m = 0; m < M.size(); m++) Nx *= M[m]->getNumColumns();
+  int Ny = 1; for(size_t m = 0; m < M.size(); m++) Ny *= M[m]->getNumRows();
+  int N = rsMax(Nx, Ny);
+  std::vector<T> t(N);     // temp storage
+  v.resize(N);
+  T* x = &v[0];
+  T* y = &t[0];
+  int hC = 1;
+  int hR = 1;
+  bool xContainsResult = true;
+  for(size_t m = 0; m < M.size(); m++) 
+  {
+    int nR = M[m]->getNumRows();
+    int nC = M[m]->getNumColumns();
+    int Nm = N / nC;  // or N / nR?
+    for(int i = 0; i < Nx; i += nC*hC) 
+    {
+      for(int j = 0; j < Nm; j++) 
+      {
+        for(int k = 0; k < Nm; k++)
+        {
+          y[j+k*Nm] = 0;
+          for(int n = 0; n < nC; n++)
+            y[j+k*Nm] += M[m]->at(k, n) * x[nC*j+n];  // or nC*j+n?  
+        }
+
+        // from FDN:
+        //y[j]    = a*x[2*j] + b*x[2*j+1];
+        //y[j+N2] = c*x[2*j] + d*x[2*j+1];
+      }
+    }
+    // nC,nC:
+    // nC,nR: fail
+
+    hC *= nC;
+    hR *= nR; 
+    RAPT::rsSwap(x, y);
+    xContainsResult = !xContainsResult;
+  }
+
+  if( !xContainsResult )
+    memcpy(y, x, N*sizeof(T)); 
+  v.resize(Ny);
+}
+
+
+
 
 // Move to math tests:
 
@@ -209,22 +281,20 @@ bool testKroneckerProductTrafo()
   int Ny = 9;  // output dimensionality, product of all numbers of rows
   int N  = rsMax(Nx, Ny);  // space needed for in place trafo
 
-  Vec x = rsRandomIntVector(N, -9, +9);
+  Vec x,y,z;
+
+  x = rsRandomIntVector(N, -9, +9);
   Mat M_33_33 = Mat::getKroneckerProduct(M33, M33);
-  Vec y = M_33_33 * x;
+  y = M_33_33 * x;
   M[0] = &M33;
   M[1] = &M33;
-
-  Vec z = x;
-  rsFastKroneckerTrafo(z, M);
-  ok &= z == y;
+  z = x; rsFastKroneckerTrafo( z, M); ok &= z == y;
+  z = x; rsFastKroneckerTrafo2(z, M); ok &= z == y;
 
   // x has dim 9, y has dim 4:
   Mat M_23_23 = Mat::getKroneckerProduct(M23, M23);
   y = M_23_23 * x; M[0] = &M23; M[1] = &M23;
-  z = x;
-  rsFastKroneckerTrafo(z, M);
-  ok &= z == y; 
+  z = x; rsFastKroneckerTrafo(z, M); ok &= z == y; 
 
   // x has dim 16, y has dim 4:
   Mat M_24_24 = Mat::getKroneckerProduct(M24, M24);
@@ -249,8 +319,9 @@ bool testKroneckerProductTrafo()
   Mat M_32_32 = Mat::getKroneckerProduct(M32, M32);
   x = rsRandomIntVector(4, -9, +9);
   y = M_32_32 * x; M.resize(2); M[0] = &M32; M[1] = &M32;
-  z = x; rsFastKroneckerTrafo(z, M);
-  //ok &= z == y;
+  //z = x; rsFastKroneckerTrafo(z, M);
+  z = x; rsFastKroneckerTrafo2(z, M);
+  ok &= z == y;
   // FAILS! maybe we need to zero out the y extra values before running the algo - nope
   // they are zero - maybe the upper limit for i must be max(Nx,Ny) -> nope, access violation
   // ...maybe one of the inner loops must be run up to max(nC,nR) ..but no: the innermost loops
@@ -281,6 +352,8 @@ bool testKroneckerProductTrafo()
   //  (A°B)*(C°D) = A*C°B*D  ...i don't know, which product takes precedence here -> figure out!
   // ToDo: dig out more such identities and verify them numerically
 
+  // see also: HADAMARD, KHATRI-RAO, KRONECKER AND OTHER MATRIX PRODUCTS
+  // https://www.math.ualberta.ca/ijiss/SS-Volume-4-2008/No-1-08/SS-08-01-17.pdf
 
   // todo: Use a product of a 2x5 and 4x3 matrix
 
