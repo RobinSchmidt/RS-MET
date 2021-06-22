@@ -178,12 +178,14 @@ void rsFastKroneckerTrafo2(std::vector<T>& v, const std::vector<const rsMatrix<T
   {
     int nR = M[m]->getNumRows();
     int nC = M[m]->getNumColumns();
-    int Nm = N / nC;  // or N / nR?
+    int Nm = N / nC;  // or N / nR?  rename to NC ..maybe it should be Nx/nR
+    int NR = N / nR;  // should be Ny/nR
+
     for(int i = 0; i < Nx; i += nC*hC) 
     {
       for(int j = 0; j < Nm; j++) 
       {
-        for(int k = 0; k < Nm; k++)
+        for(int k = 0; k < nR; k++)  
         {
           y[j+k*Nm] = 0;
           for(int n = 0; n < nC; n++)
@@ -195,8 +197,20 @@ void rsFastKroneckerTrafo2(std::vector<T>& v, const std::vector<const rsMatrix<T
         //y[j+N2] = c*x[2*j] + d*x[2*j+1];
       }
     }
-    // nC,nC:
+    // nC,nC: fail, but first two are correct
     // nC,nR: fail
+    // nR,nR: 
+    // nR,nC:
+
+    // lets try more with Nm = N/Nc, M[m]->at(k, n) * x[nC*j+n]  ..lets use:
+    // y[j+k*Nm]: wrong order, a 0 in between
+    // y[j+k*nR]: wrong numbers (only the 0th matches)
+    // y[j+k*nC]: wrong order, a 0 in between
+    // y[j+k*NR]: wrong numbers
+
+    // maybe we need N/Nr
+
+ 
 
     hC *= nC;
     hR *= nR; 
@@ -289,12 +303,13 @@ bool testKroneckerProductTrafo()
   M[0] = &M33;
   M[1] = &M33;
   z = x; rsFastKroneckerTrafo( z, M); ok &= z == y;
-  z = x; rsFastKroneckerTrafo2(z, M); ok &= z == y;
+  //z = x; rsFastKroneckerTrafo2(z, M); ok &= z == y;
 
   // x has dim 9, y has dim 4:
   Mat M_23_23 = Mat::getKroneckerProduct(M23, M23);
   y = M_23_23 * x; M[0] = &M23; M[1] = &M23;
-  z = x; rsFastKroneckerTrafo(z, M); ok &= z == y; 
+  z = x; rsFastKroneckerTrafo( z, M); ok &= z == y; 
+  z = x; rsFastKroneckerTrafo2(z, M); ok &= z == y; 
 
   // x has dim 16, y has dim 4:
   Mat M_24_24 = Mat::getKroneckerProduct(M24, M24);
