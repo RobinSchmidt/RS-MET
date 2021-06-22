@@ -192,7 +192,7 @@ void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(
 //  this)
 // -there is alredy a unit test in testFastGeneralizedHadamardTransform -> extend this
 
-
+/*
 void FeedbackDelayNetwork::fastInverseGeneralizedHadamardTransform(
   double *x, int N, int log2N, double *work, double a, double b, double c, double d)
 {
@@ -200,6 +200,7 @@ void FeedbackDelayNetwork::fastInverseGeneralizedHadamardTransform(
   fastGeneralizedHadamardTransform(x, N, log2N, work, s*d, -s*b, -s*c, s*a);
 }
 // also obsolete now
+*/
 
 void FeedbackDelayNetwork::setupRelativeDelayTimes()
 {
@@ -433,6 +434,7 @@ Ideas:
  such that the total time for the build-up is roughly the same in all lines
 -maybe allow a fully general product of matrices that are multiplied together via the Kronecker 
  product..maybe call it KronVerb, KronReverb, KronyVerb
-
+-maybe we could introduce a permutation as part of the feedback, maybe that could be time-varying
+ to introduce further randomness
 
 */

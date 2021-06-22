@@ -178,40 +178,31 @@ void rsFastKroneckerTrafo2(std::vector<T>& v, const std::vector<const rsMatrix<T
   {
     int nR = M[m]->getNumRows();
     int nC = M[m]->getNumColumns();
-    int Nm = N / nC;  // or N / nR?  rename to NC ..maybe it should be Nx/nR
-    int NR = N / nR;  // should be Ny/nR
+    int NC = Nx / nC;  // or N / nR?  rename to NC ..maybe it should be Nx/nR
+    int NR = Ny / nR;  // should be Ny/nR
 
     for(int i = 0; i < Nx; i += nC*hC) 
     {
-      for(int j = 0; j < Nm; j++) 
+      for(int j = 0; j < NC; j++) 
       {
         for(int k = 0; k < nR; k++)  
         {
-          y[j+k*Nm] = 0;
+          y[j+k*NC] = 0;
           for(int n = 0; n < nC; n++)
-            y[j+k*Nm] += M[m]->at(k, n) * x[nC*j+n];  // or nC*j+n?  
+            y[j+k*NC] += M[m]->at(k, n) * x[nC*j+n];  // or nC*j+n?  
         }
+
+        // y[j+k*NC]: wrong order, a 0 in between
+        // y[j+k*NR]: wrong numbers
+        // y[j+k*nR]: wrong numbers (only the 0th matches)
+        // y[j+k*nC]: wrong order, a 0 in between
+        // y[j+k]:    wrong numbers
 
         // from FDN:
         //y[j]    = a*x[2*j] + b*x[2*j+1];
         //y[j+N2] = c*x[2*j] + d*x[2*j+1];
       }
     }
-    // nC,nC: fail, but first two are correct
-    // nC,nR: fail
-    // nR,nR: 
-    // nR,nC:
-
-    // lets try more with Nm = N/Nc, M[m]->at(k, n) * x[nC*j+n]  ..lets use:
-    // y[j+k*Nm]: wrong order, a 0 in between
-    // y[j+k*nR]: wrong numbers (only the 0th matches)
-    // y[j+k*nC]: wrong order, a 0 in between
-    // y[j+k*NR]: wrong numbers
-
-    // maybe we need N/Nr
-
- 
-
     hC *= nC;
     hR *= nR; 
     RAPT::rsSwap(x, y);
@@ -257,7 +248,7 @@ bool testKronecker3x3(int L)
   using Vec = std::vector<double>;
   using Mat = rsMatrix<double>;
 
-  int N = pow(3, L);                         // size of matrix is NxN
+  int N = (int) pow(3, L);                   // size of matrix is NxN
   double a =  +2, b =  -7, c =   3,          // coefficients of seed matrix
          d =  -5, e = +13, f = -11,
          g = +17, h = -23, i =  19;

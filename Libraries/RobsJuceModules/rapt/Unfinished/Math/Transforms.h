@@ -4,7 +4,11 @@
 // \todo wrap into class rsTransforms and name the particular transforms only fourier, kronecker,
 // hadamard, walshHadamerd, etc. - the DFT can be named fourierNaive or fourierSlow, the arbitrary
 // size version fourierBluestein, also have fourierRadix2_DIT, _DIF, fourierRadix4, fourierRadix8,
-// fourierRadix3, wavelets: gabor, daubechies, ...
+// fourierRadix3, wavelets: gabor, daubechies, ... -> wrap the old functions into an 
+//   RS_DEPRECATED( T oldFunc(T p) { return newFunc(p); } )
+// macro. See, how juce does that and imitate that. Maybe the templatizeation introduces another
+// complication, so maybe a special macro RS_DEPRECATE_T for function templates is needed (but
+// it may use the regular RS_DEPRECATED macro
 
 /** FFT routine, (C)1996 S.M.Bernsee. Sign = -1 is FFT, 1 is iFFT (inverse)
 

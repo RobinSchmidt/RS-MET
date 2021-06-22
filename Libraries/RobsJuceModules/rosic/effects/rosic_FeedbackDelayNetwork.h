@@ -92,8 +92,17 @@ public:
   // vector - this makes the system nonlinear (really?) - maybe in an interesting way?
 
 
-  static void fastInverseGeneralizedHadamardTransform(double* x, int N, int log2N, double* work,
-    double a = 1.0, double b = 1.0, double c = 1.0, double d = -1.0);
+  //static void fastInverseGeneralizedHadamardTransform(double* x, int N, int log2N, double* work,
+  //  double a = 1.0, double b = 1.0, double c = 1.0, double d = -1.0);
+
+  RS_DEPRECATED_WITH_BODY(
+  static void fastInverseGeneralizedHadamardTransform(
+    double* x, int N, int log2N, double* work,
+    double a = 1.0, double b = 1.0, double c = 1.0, double d = -1.0),
+  { RAPT::rsIFGHT(x, N, a,b,c,d); } )   // this is the replacement
+
+
+  // JUCE_DEPRECATED_WITH_BODY (virtual bool shouldDropFilesWhenDraggedExternally (const String&, Component*, StringArray&, bool&), { return false; })
 
 protected:
 

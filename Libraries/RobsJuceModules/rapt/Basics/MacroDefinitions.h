@@ -1,6 +1,13 @@
 #ifndef RAPT_MACRODEFINITIONS_H_INCLUDED
 #define RAPT_MACRODEFINITIONS_H_INCLUDED
 
+// ToDo: 
+// -Try to minimize the visibility of these macros to client code by
+//  -organzing the #inclusion in such a way, that not every client file that includes rapt.h
+//   is forced to see them
+//  -using #undef in the main include file to undo the definitions (may make a special .h file
+//   MacroUndefinitions.h
+
 //#ifdef _MSC_VER
 //  #define RS_INLINE __forceinline
 //  #define ASM(x) __asm {x}
@@ -26,8 +33,35 @@
 #endif
 #define RS_ASSERT_FALSE RS_ASSERT(false) 
 
-// compiler hinting:
 
+// Compiler identification:
+// preliminary - later wrap that into #ifdef conditons
+#define RS_COMPILER_MSC 1        // microsoft compiler
+//#define RS_COMPILER_GCC 1     // gnu compiler collection
+//#define RS_COMPILER_CLANG 1
+
+
+// Deprecation:
+#define RS_WARN_DEPRECATED 1 // comment to disable deprecation warnings
+#ifdef DOXYGEN
+  #define RS_DEPRECATED(functionDef)
+  #define RS_DEPRECATED_WITH_BODY(functionDef, body)
+#elif RS_COMPILER_MSC && RS_WARN_DEPRECATED
+  #define RS_DEPRECATED_ATTRIBUTE                  __declspec(deprecated)
+  #define RS_DEPRECATED(funcDef)                   RS_DEPRECATED_ATTRIBUTE funcDef
+  #define RS_DEPRECATED_WITH_BODY(funcDef, body)   RS_DEPRECATED_ATTRIBUTE funcDef body
+#elif (RS_COMPILER_GCC || RS_COMPILER_CLANG) && RS_WARN_DEPRECATED
+  #define RS_DEPRECATED_ATTRIBUTE                  __attribute__ ((deprecated))
+  #define RS_DEPRECATED(funcDef)                   funcDef RS_DEPRECATED_ATTRIBUTE
+  #define RS_DEPRECATED_WITH_BODY(funcDef, body)   funcDef RS_DEPRECATED_ATTRIBUTE body
+#else
+  #define RS_DEPRECATED_ATTRIBUTE
+  #define RS_DEPRECATED(funcDef)                   funcDef
+  #define RS_DEPRECATED_WITH_BODY(funcDef, body)   funcDef body
+#endif
+// see juce_PlatformDefs.h
+
+// Compiler hinting:
 #if defined(__GNUC__) && __GNUC__ >= 4
 #define RS_LIKELY(x)   (__builtin_expect((x), 1))
 #define RS_UNLIKELY(x) (__builtin_expect((x), 0))
