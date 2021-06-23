@@ -32,9 +32,32 @@ public:
   transform (i.e. FFT using the roots of unity of modular arithmetic), that's no issue, so that 
   seems desirable when the algo is instantiated for that. For quick and dirty prototype code, the 
   numeric precision is probably still good enough and production code should use optimized routines
-  with precomputed twiddle factors anyway, for example using class rsFourierTransformerRadix2. */
+  with (precisely) precomputed twiddle factors anyway, because that's more accurate and presumably
+  also more efficient (maybe, but it will need to access two arrays instead of just one). This is 
+  the way, it's done in class rsFourierTransformerRadix2, for example (which uses Ouura FFT). */
   template<class T>
   static void fourierRadix2DIF(T *x, int N, T WN);
+
+  /** Invokes fourierRadix2DIF with WN = e^(-2*i*pi/N). This result in the regular FFT for complex
+  number types. */
+  template<class T>
+  static void fourierRadix2DIF(std::complex<T> *x, int N)
+  { fourierRadix2DIF(x, N, exp(std::complex<T>(T(0), T(-2.0*PI/N)))); }
+
+  /** Invokes fourierRadix2DIF with WN = e^(+2*i*pi/N). This result in the inverse FFT for complex
+  number types, except for the scaling by 1/N. */
+  template<class T>
+  static void fourierInvUnscaledRadix2DIF(std::complex<T> *x, int N)
+  { fourierRadix2DIF(x, N, exp(std::complex<T>(T(0), T(+2.0*PI/N)))); }
+
+  /** Invokes fourierRadix2DIF with WN = e^(+2*i*pi/N). This result in the inverse FFT for complex
+  number types. */
+  template<class T>
+  static void fourierInvRadix2DIF(std::complex<T> *x, int N)
+  { fourierInvUnscaledRadix2DIF(x, N); rsArrayTools::scale(x, N, T(1)/T(N)); }
+
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -84,6 +107,10 @@ public:
   template<class T>
   static void kronecker3x3(T* v, int N, const rsMatrix3x3<T>& A);
 
+  // ToDo:
+  //template<class T>
+  //static void kroneckerInv3x3(T* v, int N, const rsMatrix3x3<T>& A)
+  //{ kronecker3x3(v, N, A.getInverse()); }
 
 };
 
@@ -127,27 +154,28 @@ resulting magnitude and phase arrays are both of length N/2 due to the symmetry 
 transform of a real signal. */
 template<class T>
 void rsMagnitudeAndPhase(T *signal, int N, T *magnitudes, T *phases = NULL);
+// this is a convenience function mainly for prototyping that allocates heap memory
 // rename to fourierMagPhs or fourierPolar
 
-/** Inverse transformation of rsFFT. */
-template<class T>
-void rsIFFT(std::complex<T> *buffer, int N);
 
-/** A radix-2 FFT-routine. */
-template<class T>
-void rsRadix2FFT(std::complex<T> *buffer, int N);
+template<class T> // replacement: rsLinearTransforms::fourierInvRadix2DIF
+RS_DEPRECATED(void rsIFFT(std::complex<T> *buffer, int N));
 
-/** An FFT-routine for arbitrary input sizes that uses the Bluestein algorithm. */
-//template<class T>
-//void rsBluesteinFFT(rsComplex<T> *buffer, int N);
+template<class T> RS_DEPRECATED_WITH_BODY(
+void rsRadix2FFT(std::complex<T>* x, int N),
+{ rsLinearTransforms::fourierRadix2DIF(x, N); })  // use that directly instead!
 
 template<class T> RS_DEPRECATED_WITH_BODY(
   void rsFGHT(T* A, int N, T a, T b, T c, T d),
-  { rsLinearTransforms::kronecker2x2(A, N, a, b, c, d); }) // use that directly instead!
+  { rsLinearTransforms::kronecker2x2(A, N, a, b, c, d); })    // use that directly instead!
 
 template<class T> RS_DEPRECATED_WITH_BODY(
   void rsIFGHT(T* A, int N, T a, T b, T c, T d),
   { rsLinearTransforms::kroneckerInv2x2(A, N, a, b, c, d); }) // use that directly instead!
+
+/** An FFT-routine for arbitrary input sizes that uses the Bluestein algorithm. */
+//template<class T>
+//void rsBluesteinFFT(rsComplex<T> *buffer, int N);
 
 
 #endif

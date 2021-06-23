@@ -53,6 +53,7 @@ void smbFft(T *fftBuffer, long fftFrameSize, long sign)
       ur = tr;  }}
 }
 
+// move to prototypes - this is really not meant to be used anywhere in production code:
 template<class T>
 void rsDFT(std::complex<T> *x, int N) // maybe have a boolean "inverse" parameter
 {
@@ -82,15 +83,7 @@ void rsFFT(std::complex<T> *a, int N)
 template<class T>
 void rsIFFT(std::complex<T> *a, int N)
 {
-  // see "Understanding Digital Signal Processing", page 427:
-  rsConjugate(a, N);
-  rsFFT(a, N);
-  rsConjugate(a, N);
-  rsArrayTools::scale(a, N, T(1)/N);
-  // \todo check, if this works for arbitrary (non power-of-two) N
-  // shouldn't it be possible to just use a "sign" in the core FFT routine that just switches the
-  // exponent of the twiddle factor to be positive or negative (->more efficient, we don't need to
-  // iterate through the arrays - but i'm not sure, if it works with arbitrary lengths)
+  rsLinearTransforms::fourierInvRadix2DIF(a, N);
 }
 
 template<class T>
@@ -114,62 +107,6 @@ void rsMagnitudeAndPhase(T *signal, int N, T *magnitudes, T *phases)
   delete[] tmp;
 }
 
-template<class T>
-void rsRadix2FFT(std::complex<T> *a, int N)
-{
-  std::complex<T> wm = exp(std::complex<T>(T(0), T(-2.0*PI/N))); 
-  rsLinearTransforms::fourierRadix2DIF(a, N, wm);
-  return;
-  // Multiplier for twiddle factor, todo: use polar(), maybe using +2.0 instead of -2.0 will give 
-  // the inverse trafo?
-
-  // obsolete now - has been factored otu into rsLinearTransforms::fourierRadix2DIF
-  /*
-  int np = 1;          // NumOfProblems
-  int h  = N/2;        // HalfSize -> distance between butterflied values?
-  int jf;              // JFirst
-  int jl;              // JLast
-  std::complex<T> tmp; // Temp
-  std::complex<T> wj;  // W (current twiddle factor), maybe rename to wjk or wkj
-
-  // \todo use setRadiusAndAngle for initializing wm (more efficient), we also do not need to 
-  // include the ComplexFunctions.inl
-
-  // \todo maybe use long double precision for twiddle factors to avoid excessive error 
-  // accumulation in the recursions
-
-  while(h > 0)
-  {
-    for(int k = 0; k < np; k++)        // loop over the sub-FFTs
-    {
-      wj = std::complex<T>(1.0, 0.0);  // init twiddle factor for current sub-FFT
-      jf = 2*k*h;                      // first index for k-th sub-FFT
-      jl = jf+h-1;                     // last index for k-th sub-FFT
-      for(int j = jf; j <= jl; j++)    // loop over the values
-      {
-        tmp    = a[j];
-        a[j]   =     tmp+a[j+h];       // upper wing of Gentleman-Sande butterfly
-        a[j+h] = wj*(tmp-a[j+h]);      // lower wing
-        wj *= wm;                      // update twiddle factor for next iteration
-      }
-    }
-    np *= 2;  // next stage has twice as much sub-FFTs
-    h  /= 2;  // distance between butterflied values halves - maybe use bit-shift
-    wm *= wm; // twiddle factor rotates twice as fast in next stage
-  }
-
-  rsArrayTools::orderBitReversed(a, N, (int)(rsLog2(N)+0.5)); // descramble outputs
-  */
-}
-// ToDo: adapt algo for finite fields - see:
-// https://crypto.stackexchange.com/questions/63614/finding-the-n-th-root-of-unity-in-a-finite-field
-// it may have to take the n-th root of unity as argument...i guess that's our initial value for 
-// wm? ...maybe then, the function can be take as is - the template parameter should not be the 
-// real type T that underlies the complex type, but the complex type itself, which can then be
-// replaced by something like rsModularInteger? -> test it to do a fast FFT convolution of two 
-// sequences of modular integers...can we also devise a Bluestein-like algorithm for sequences
-// of arbitrary length for modular integers?
-
 /*
 template<class T>
 void rsBluesteinFFT(std::complex<T> *a, int N)
@@ -179,26 +116,34 @@ void rsBluesteinFFT(std::complex<T> *a, int N)
 */
 
 template<class T>
-static void rsLinearTransforms::fourierRadix2DIF(T* a, int N, T wm)
+static void rsLinearTransforms::fourierRadix2DIF(T* a, int N, T W)
 {
-  int np = 1;    // NumOfProblems
-  int h  = N/2;  // HalfSize -> distance between butterflied values?
+  int n = 1;          // NumOfProblems
+  int h = N/2;        // HalfSize -> distance between butterflied values?
   while(h > 0) {                       // loop over the problems(?)
-    for(int k = 0; k < np; k++) {      // loop over the sub-FFTs
-      T wj = T(1);                     // init twiddle factor for current sub-FFT, W
+    for(int k = 0; k < n; k++) {       // loop over the sub-FFTs
+      T Wjk = T(1);                    // init twiddle factor for current sub-FFT, W^(j*k)?
       int jf = 2*k*h;                  // first index for k-th sub-FFT, JFirst
       int jl = jf+h-1;                 // last index for k-th sub-FFT, JLast
       for(int j = jf; j <= jl; j++) {  // loop over the values
-        T tmp  = a[j];
-        a[j]   =  tmp + a[j+h];        // upper wing of Gentleman-Sande butterfly
-        a[j+h] = (tmp - a[j+h])*wj;    // lower wing
-        wj *= wm; }}                   // update twiddle factor for next iteration
-    np *= 2;     // next stage has twice as much sub-FFTs
-    h  /= 2;     // distance between butterflied values halves - maybe use bit-shift
-    wm *= wm; }  // twiddle factor rotates twice as fast in next stage
+        T aj   = a[j];                 // temporary
+        a[j]   =  aj + a[j+h];         // upper wing of Gentleman-Sande butterfly
+        a[j+h] = (aj - a[j+h])*Wjk;    // lower wing
+        Wjk *= W; }}                   // update twiddle factor for next iteration
+    n *= 2;           // next stage has twice as much sub-FFTs
+    h /= 2;           // distance between butterflied values halves
+    W *= W; }         // twiddle factor rotates twice as fast in next stage, W_N = W_(N/2)?
   rsArrayTools::orderBitReversed(a, N, (int)(rsLog2(N)+0.5)); // descramble outputs
-  // maybe use a special, optimized rsLog2Int function
 }
+// ToDo:
+// -maybe use a special, optimized rsLog2Int function, i think it would need to check for the 
+//  index of the highest bit - maybe some bitwise operation can figure this out
+//  https://stackoverflow.com/questions/671815/what-is-the-fastest-most-efficient-way-to-find-the-highest-set-bit-msb-in-an-i
+//  Answer 4: "The Debruin technique should only be used when the input is already a power of two"
+//  or: http://graphics.stanford.edu/~seander/bithacks.html#IntegerLogObvious
+//  or: https://stackoverflow.com/questions/11376288/fast-computing-of-log2-for-64-bit-integers
+//      this has nice 2 functions for uint32 and uint64
+// -maybe use bit-shifts instead of n *= 2, h /= 2, h = N/2
 
 template<class T>
 void rsLinearTransforms::hadamard(T* A, int N)
@@ -244,19 +189,6 @@ void rsLinearTransforms::kronecker3x3(T* v, int N, const rsMatrix3x3<T>& A)
     h *= 3;  }
 }
 
-
-
-
-
-//-------------------------------------------------------------------------------------------------
-
-/*
-// Deprecated alias names:
-template<class T> 
-void rsFGHT(T* A, int N, T a, T b, T c, T d) { rsTransforms::kronecker2x2(A, N, a, b, c, d); }
-*/
-
-
 //-------------------------------------------------------------------------------------------------
 /*
 
@@ -277,8 +209,40 @@ ToDo:
  should first go into prototypes, and be added to the library only when it is found that they are
  faster
 -DCT, DST, Mellin
+-test the FFT algo for finite fields by doing a fast FFT convolution of two sequences of modular 
+ integers and comparing that to the result of a naive convolution, see:
+ https://crypto.stackexchange.com/questions/63614/finding-the-n-th-root-of-unity-in-a-finite-field
+-implement arbitrary length FFT using the Bluestein algorithm
+-implement a decimation in time FFT
+-maybe implement a radix-3 FFT because it may be useful to have FFTs based on different primes
+ because when we want to do NTTs, because (i think), the radix is required to be coprime with 
+ length of the array (otherwise N-th roots of unity don't exist, or something). Or does it need to
+ be coprime to the modulus? or both? -> figure out
+-can we also devise a Bluestein-like algorithm for sequences of arbitrary length for modular 
+ integers? 
+-what about a tranform based on the outer product of a vector: y = A*x, where A = v * v^T
+ -> A is also a Kronecker product, so it should be possible to invert by the same algo but having
+    elements of v replaced by their reciprocals
+ -> what, if we choose v = x? Can we still invert it simply if v (i.e. x) is unknown?
 
-make a class rsTimeFrequencyRepresentation using various transforms
+
+Ideas:
+-Wavelet transforms split the signal into lowpass and highpass part at each stage, leading to 
+ power-of-2 lengths. Maybe try to split into 3 parts at each stage (low/mid/high), maybe using
+ something like: yL = (xL+xM+xR)/3, yM = (xR-xL)/2, yH = xM-(xL+xR)/2. where xL,xL,xR are left
+ middle, right inputs and yL,yM,yH are low/mid/high outputs. Idea: yL approximates the value, yM
+ the 1st derivative, yH the 2nd derivative all at tM which is the time instant of xM. This would 
+ lead to power-of-3 lengths. Maybe generalize the idea to splitting into N parts, where the 
+ formulas are based on N-th order derivative estimators. What about the integral? That would seem 
+ to require to make use of data from the previous block to init an integrator formula at the left 
+ end of the block, for example: yM = (xL+xM+xR)/3, yL = yL[tM-3] + yM, yH = (xR-xL)/2 - but that's
+ just a constant amount (a single value) of extra storage per block - maybe call it DIV-trafo 
+ (derivative, integral, value)...or VID...maybe it's good for video, indeed :-) ..but i think, a 
+ good trafo for video should make use of spatial neighbours, too, not only of temporal ones. Maybe
+ try that with rendered videos, like the SIRP model. Maybe make it lossy in the last of the 8 bits
+ per pixel, amounting to dithering...for video, dithering should be spatial, not temporal...maybe
+ something based on Floyd-Steinberg algorithm
+-make a class rsTimeFrequencyRepresentation using various transforms
 
 */
 

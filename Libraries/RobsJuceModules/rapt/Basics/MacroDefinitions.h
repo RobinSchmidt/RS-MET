@@ -44,7 +44,31 @@
 //#define RS_COMPILER_CLANG 1
 
 
-// Deprecation:
+/** Deprecation macros. To depracte a function declaration (in this case rsIFFT) use:
+
+  template<class T> // replacement: rsLinearTransforms::fourierInvRadix2DIF
+  RS_DEPRECATED(void rsIFFT(std::complex<T> *buffer, int N));
+
+In this case, the function (rsIFFT) is defined elsewhere, and just calls the new function that 
+acts as the new replacement for the old, deprecated function:
+
+  template<class T>
+  void rsIFFT(std::complex<T> *a, int N) { rsLinearTransforms::fourierInvRadix2DIF(a, N); }
+
+i.e. the old, deprecated name will remain available as alias for the new function name, but using
+it will issue deprecation warnings during compilation. We can also do the following:
+
+  template<class T> RS_DEPRECATED_WITH_BODY(
+    void rsRadix2FFT(std::complex<T>* x, int N),
+    { rsLinearTransforms::fourierRadix2DIF(x, N); })  // use that directly instead!
+
+to deprecate a function and call the new function directly inside the old in just a single macro. 
+When using these macros, take care of the placement of the commas and semicolons. It's easy to 
+make mistakes and then it will not compile. If the deprecated functions are not templatized, then
+the template<class T> thing can just be removed and the T will be replaced by an actual type. It's
+good practice to always hint in a comment, what the replacement is, i.e. how client code should be
+updated to get rid of the deprecation warnings. */
+
 #define RS_WARN_DEPRECATED 1 // comment to disable deprecation warnings
 #ifdef DOXYGEN
   #define RS_DEPRECATED(functionDef)
@@ -70,6 +94,8 @@
 // the new, also inheriting constructors? maybe define a macor RS_DEPRECTE_CLASS
 // maybe try it with rsPolynomial -> rename it to rsPolynom ...but maybe not - that's not widely 
 // used as an english word
+
+
 
 // Compiler hinting:
 #if defined(__GNUC__) && __GNUC__ >= 4

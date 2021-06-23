@@ -65,12 +65,20 @@ Update to a new JUCE version:
 My Programming Environment prefs
 
 Common:
-Fonts: to find a good font, go here: https://www.programmingfonts.org/, my favorites:
+Fonts: to find a good font, go here: https://www.programmingfonts.org/, my favorites from there:
+
 Agave, B612 Mono, Bitstream Vera Sans Mono, Borg Sans Mono, BPmono, Bront DejaVu Sans Mono, 
 Bront Ubunutu Mono, Code New Roman, D2Coding, Envy Code R, Fantasque Sans Mono, Inconsolata, 
 Iosevka, Liberation Mono, Lilex, Mononoki, Share Tech Mono, Ubuntu Mono
 
+Editor Font: 
+-Consolas 9pt or 10pt
+-Inconsolata SemiExpanded Medium 10pt
+-Lucida Sans 9pt (fits more lines on screen), 
+
+
 Visual Studio:
+
 
 XCode:
 
@@ -80,6 +88,9 @@ Jupyter Lab:
 
 Notepad++
 DeskPins
+
+
+
 
 
 ToDo: git/github, Rendering Sample Sets, Images, Videos

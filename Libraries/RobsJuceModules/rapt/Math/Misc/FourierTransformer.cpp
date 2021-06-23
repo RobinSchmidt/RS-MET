@@ -542,3 +542,10 @@ void rsFourierTransformerBluestein<T>::updateNormalizationFactor()
     N, direction, normalizationMode);
 }
 
+/*
+
+
+https://dsp.stackexchange.com/questions/24375/fastest-implementation-of-fft-in-c
+https://github.com/project-gemmi/benchmarking-fft/
+
+*/

@@ -450,11 +450,14 @@ Ideas:
  have a number system tha simulates integration?
 -Try arbitrary a,b,c,d and rescale the output to have the same length as the input vector - this 
  makes the system nonlinear (really?) - maybe in an interesting way?
--Maybe it could be useful to do incomplete Kronekcer trafos, i.e. let the outer while(h < N) loop
+-Maybe it could be useful to do incomplete Kronecker trafos, i.e. let the outer while(h < N) loop
  only run up to N/2 or N/4, etc? ..we could pass a "divider" parameter or somehow pass a 
  loopLimit parameter
 -When using the 3x3 version, we have 3 density parameters - we could modulate them by 3 different
  modulation frequencies (mod signals are obtained by bandpassing the rectified (and possibly 
  leveled) output - or maybe the leveling should come after the bandpass)
+ -maybe the 3x3 rotation should be specified not in terms of Euler angles but by an axis and an 
+  angle..or maybe in some other way -> figure out how 3D rotations are most conveniently 
+  parametrized in graphics
 
 */

@@ -295,6 +295,10 @@ inline T rsNextPowerOfTwo(T x)
     accu *= 2;
   return accu;
 }
+// Try to find a better algo, here is one that finds the next smaller power of 2:
+// https://www.geeksforgeeks.org/find-significant-set-bit-number/
+// it could be adapted by multiplying the result y by 2, unless it is already a power of 2, i.e.
+// unless x==y - this could perhaps be done in a branchless way
 
 // general fallback version:
 template<class T>
