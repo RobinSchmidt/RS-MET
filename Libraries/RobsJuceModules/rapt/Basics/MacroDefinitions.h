@@ -65,6 +65,11 @@
 // see juce_PlatformDefs.h, juce has further macros: JUCE_DEPRECATED_STATIC, 
 // JUCE_DECLARE_DEPRECATED_STATIC, JUCE_CATCH_DEPRECATED_CODE_MISUSE
 // -> figure out what these do and maybe mimick them, too
+// Will these macros work also for classes, such that we can declare a class-name deprecated but at
+// the same time define the old name as alias for the new one? Maybe the old should inherit from 
+// the new, also inheriting constructors? maybe define a macor RS_DEPRECTE_CLASS
+// maybe try it with rsPolynomial -> rename it to rsPolynom ...but maybe not - that's not widely 
+// used as an english word
 
 // Compiler hinting:
 #if defined(__GNUC__) && __GNUC__ >= 4

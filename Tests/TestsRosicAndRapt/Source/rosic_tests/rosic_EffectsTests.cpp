@@ -5,27 +5,11 @@ using namespace RAPT;
 // Move to prototypes or RAPT:
 
 template<class T>
-void rsFGHT3(T* v, int N, const rsMatrix3x3<T>& A)
-{
-  int h = 1;
-  while(h < N) {
-    for(int i = 0; i < N; i += 3*h) {
-      for(int j = i; j < i+h; j++) {
-        T x = v[j+0*h];
-        T y = v[j+1*h];
-        T z = v[j+2*h];
-        v[j+0*h] = A(0,0) * x + A(0,1) * y + A(0,2) * z;
-        v[j+1*h] = A(1,0) * x + A(1,1) * y + A(1,2) * z;
-        v[j+2*h] = A(2,0) * x + A(2,1) * y + A(2,2) * z; }}
-    h *= 3;  }
-}
-// maybe call this rsFastKroneckerTrafo3x3
-
-template<class T>
 void rsFGHT3(T* v, int N, T a, T b, T c, T d, T e, T f, T g, T H, T I)
 {
   rsMatrix3x3<T> A(a, b, c, d, e, f, g, H, I);
-  rsFGHT3(v, N, A);
+  //rsFGHT3(v, N, A);
+  rsLinearTransforms::kronecker3x3(v, N, A);
   return;
 
 

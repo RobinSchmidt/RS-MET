@@ -179,8 +179,24 @@ void rsBluesteinFFT(std::complex<T> *a, int N)
 }
 */
 
+
+
 template<class T>
-void rsTransforms::kronecker2x2(T* A, int N, T a, T b, T c, T d)
+void rsLinearTransforms::hadamard(T* A, int N)
+{
+  int h = 1;
+  while(h < N) {
+    for(int i = 0; i < N; i += 2*h) {
+      for(int j = i; j < i+h; j++) {
+        T x = A[j];
+        T y = A[j+h];
+        A[j]   = x + y;
+        A[j+h] = x - y;  }}
+    h *= 2;  }
+}
+
+template<class T>
+void rsLinearTransforms::kronecker2x2(T* A, int N, T a, T b, T c, T d)
 {
   int h = 1;
   while(h < N) {
@@ -194,25 +210,32 @@ void rsTransforms::kronecker2x2(T* A, int N, T a, T b, T c, T d)
 }
 
 template<class T>
-void rsTransforms::hadamard(T* A, int N)
+void rsLinearTransforms::kronecker3x3(T* v, int N, const rsMatrix3x3<T>& A)
 {
   int h = 1;
   while(h < N) {
-    for(int i = 0; i < N; i += 2*h) {
+    for(int i = 0; i < N; i += 3*h) {
       for(int j = i; j < i+h; j++) {
-        T x = A[j];
-        T y = A[j+h];
-        A[j]   = x + y;
-        A[j+h] = x - y;  }}
-    h *= 2;  }
+        T x = v[j+0*h];
+        T y = v[j+1*h];
+        T z = v[j+2*h];
+        v[j+0*h] = A(0,0) * x + A(0,1) * y + A(0,2) * z;
+        v[j+1*h] = A(1,0) * x + A(1,1) * y + A(1,2) * z;
+        v[j+2*h] = A(2,0) * x + A(2,1) * y + A(2,2) * z; }}
+    h *= 3;  }
 }
+
+
+
 
 
 //-------------------------------------------------------------------------------------------------
 
+/*
 // Deprecated alias names:
 template<class T> 
 void rsFGHT(T* A, int N, T a, T b, T c, T d) { rsTransforms::kronecker2x2(A, N, a, b, c, d); }
+*/
 
 
 //-------------------------------------------------------------------------------------------------
@@ -220,7 +243,10 @@ void rsFGHT(T* A, int N, T a, T b, T c, T d) { rsTransforms::kronecker2x2(A, N, 
 
 ToDo:
 -Wavelet transforms: Gabor, Daubechies, Walsh, ...
--Fourier, Hadamard, Walsh, Householder, Givens, Toeplitz (?)
+-Fourier, Hadamard, Walsh, Householder, Givens, Toeplitz (?), Slant (uses sawtooths as basis 
+ functions)..what about using rectangular waves? is that what the Hadamard trafo does? ..find a way
+ to plot the basis vectors of the transforms - set one coeff one and all others zero and perform an 
+ inverse transform - this should give the basis vector corresponding to the coeff that was set to 1
 -KarhunenLoeve/Eigenvector/PCA 
  http://fourier.eng.hmc.edu/e161/lectures/klt/node3.html
  https://link.springer.com/chapter/10.1007/978-3-540-72943-3_10

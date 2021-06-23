@@ -116,10 +116,15 @@ protected:
   // ToDo: have 3 diffusion coeffs that can be used to compute Euler angles for a 3x3 rotation
   // matrix that will be used in a 3x3 kronecker tarnsform (currently we only provide the 2x2
   // version)
+  // maybe rename to density, "diffusion" may refer to some allpass pre- or post-process
 
   double a, b;
   // a, b values for the generalized Hadamard transform. ToDo: use a,b,c,d as members and assign
-  // either c = -b, d = a or c = b,d = -a depending on a user switch
+  // either c = -b, d = a or c = b,d = -a depending on a user switch. maybe use rsMatrix2x2
+
+  RAPT::rsMatrix3x3<double> seedMat3x3;
+
+  bool use3x3 = false; // switches betwen 2x2 and 3x3 seed matrices
 
   // todo: use std::vector for all the arrays
 

@@ -396,8 +396,11 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
 
   // Apply feedback matrix via a generalized fast Hadamard transform:
   double feedback = 0.9;    // 0.9 currently hardcoded decay
-  //RAPT::rsFGHT(delayLineOuts, numDelayLines, a, b, -b, a); 
-  RAPT::rsTransforms::kronecker2x2(delayLineOuts, numDelayLines, a, b, -b, a); 
+
+  using LT = RAPT::rsLinearTransforms;
+  if(use3x3) LT::kronecker3x3(delayLineOuts, numDelayLines, seedMat3x3);
+  else       LT::kronecker2x2(delayLineOuts, numDelayLines, a, b, -b, a);
+
   for(i = 0; i < numDelayLines; i++)
     delayLines[i][writeIndices[i]] += feedback * delayLineOuts[i];
   // todo: 

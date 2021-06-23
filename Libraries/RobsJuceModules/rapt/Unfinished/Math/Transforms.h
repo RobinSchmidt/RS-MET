@@ -1,18 +1,15 @@
 #ifndef RAPT_TRANSFORMS_H
 #define RAPT_TRANSFORMS_H
 
-/** A collection of important transforms for signal vectors. By "transform" we mean here in 
-general something like the matrix vector product:
+/** A collection of linear transforms for signal vectors where by "linear transform" we mean here 
+in general something like a matrix vector product  y = A*x  where x and y are input- and output 
+vectors respectively and A is a matrix. Many of the important linear transforms used in signal 
+processing do not require the explicit computation of a matrix-vector product, which is an O(N^2) 
+process, but can use more efficient algorithms. The most notable example of these is certainly the 
+fast Fourier transform (FFT), which can be computed by an O(N*log(N)) algorithm. But there are many
+others, each with its own unique features and application domain. */
 
-  y = A*x
-
-where x and y are input- and output vectors respectively and A is a matrix. Many of the important 
-transforms used in signal processing do not require the explicit computation of a matrix-vector 
-product, which is an O(N^2) process, but can use more efficient algorithms. The most notable 
-example of these is certainly the fast Fourier transform (FFT), which can be computed by an 
-O(N*log(N)) algorithm. But there are many others...  */
-
-class rsTransforms
+class rsLinearTransforms
 {
 
 public:
@@ -22,6 +19,21 @@ public:
 
   //template<class T>
   //static void fourier(std::complex<T> *buffer, int N);
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Fourier-alike Transforms (using non-sinusoidal waveshapes?)
+
+  /** Fast Hadamard transform without scaling or sequency based ordering. The algorithm works in 
+  place without allocating heap memory and was ported from here:
+    https://en.wikipedia.org/wiki/Fast_Walsh%E2%80%93Hadamard_transform
+  Calling hadamard(x, N) gives the same result as calling kronecker2x2(x, N, 1, 1, 1, -1), but the
+  algorithm here is a bit simpler. In particular, the multiplications could be thrown away. */
+  template<class T>
+  static void hadamard(T* x, int N);
+  // needs test
+  // https://en.wikipedia.org/wiki/Hadamard_transform
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Kronecker Transforms
@@ -44,18 +56,17 @@ public:
   // -Implement kronkecker3x3, kroneckerNxN, kroneckerMxN (see rosic_EffectsTests.cpp for 
   //  prototypes)
 
-
-  //-----------------------------------------------------------------------------------------------
-  // \name Misc Transforms
-
-  /** Fast Hadamard transform without scaling or sequency based ordering. The algorithm works in 
-  place without allocating heap memory and was ported from here:
-    https://en.wikipedia.org/wiki/Fast_Walsh%E2%80%93Hadamard_transform
-  Calling hadamard(x, N) gives the same result as calling kronecker2x2(x, N, 1, 1, 1, -1), but the
-  algorithm here is a bit simpler. In particular, the multiplications could be thrown away. */
+  /** Inverse transform of kronecker2x2(). It is obtained by simply using the very same fast 
+  Kronecker transform algorithm but with an inverted seed matrix. */
   template<class T>
-  static void hadamard(T* x, int N);
-  // needs test
+  static void kroneckerInv2x2(T* x, int N, T a, T b, T c, T d)
+  { T s = T(1) / (a*d - b*c); kronecker2x2(x, N, s*d, -s*b, -s*c, s*a); }
+
+  /** Fast Kronecker transform of a length N array x using the given 3x3 seed matrix. N must be a
+  power of 3. @see kronecker2x2()  */
+  template<class T>
+  static void kronecker3x3(T* v, int N, const rsMatrix3x3<T>& A);
+
 
 };
 
@@ -113,15 +124,13 @@ void rsRadix2FFT(std::complex<T> *buffer, int N);
 //template<class T>
 //void rsBluesteinFFT(rsComplex<T> *buffer, int N);
 
-template<class T> // use rsTransforms::kronecker2x2 instead!
-RS_DEPRECATED(void rsFGHT(T* A, int N, T a, T b, T c, T d));
+template<class T> RS_DEPRECATED_WITH_BODY(
+  void rsFGHT(T* A, int N, T a, T b, T c, T d),
+  { rsLinearTransforms::kronecker2x2(A, N, a, b, c, d); }) // use that directly instead!
 
-
-/** Inverse of rsFGHT. */
-template<class T>
-void rsIFGHT(T* A, int N, T a, T b, T c, T d) 
-{ T s = T(1) / (a*d - b*c); rsFGHT(A, N, s*d, -s*b, -s*c, s*a); }
-
+template<class T> RS_DEPRECATED_WITH_BODY(
+  void rsIFGHT(T* A, int N, T a, T b, T c, T d),
+  { rsLinearTransforms::kroneckerInv2x2(A, N, a, b, c, d); }) // use that directly instead!
 
 
 #endif
