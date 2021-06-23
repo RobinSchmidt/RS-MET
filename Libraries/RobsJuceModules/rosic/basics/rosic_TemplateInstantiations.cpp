@@ -55,6 +55,9 @@ template void RAPT::dfst(int, double *, double *, int *, double *);
 // ...try what happens now, if we delete these instantiations again (and maybe revert fft4g to its
 // old state - maybe it was using the rapt version in rosic that made the difference...)
 
+//template void RAPT::rsLinearTransforms::fourierRadix2DIF(
+//  std::complex<double> *buffer, int N, std::complex<double> w0);
+
 template class RAPT::rsNodeBasedFunction<double>;
 template class RAPT::rsParametricBellFunction<double>;
 template class RAPT::rsPositiveBellFunctions<double>;

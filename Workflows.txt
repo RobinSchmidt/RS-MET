@@ -58,3 +58,29 @@ Testing ToolChain:
 
 ---------------------------------------------------------------------------------------------------
 Update to a new JUCE version:
+
+
+
+---------------------------------------------------------------------------------------------------
+My Programming Environment prefs
+
+Common:
+Fonts: to find a good font, go here: https://www.programmingfonts.org/, my favorites:
+Agave, B612 Mono, Bitstream Vera Sans Mono, Borg Sans Mono, BPmono, Bront DejaVu Sans Mono, 
+Bront Ubunutu Mono, Code New Roman, D2Coding, Envy Code R, Fantasque Sans Mono, Inconsolata, 
+Iosevka, Liberation Mono, Lilex, Mononoki, Share Tech Mono, Ubuntu Mono
+
+Visual Studio:
+
+XCode:
+
+Jupyter Notebook:
+
+Jupyter Lab:
+
+Notepad++
+DeskPins
+
+
+ToDo: git/github, Rendering Sample Sets, Images, Videos
+

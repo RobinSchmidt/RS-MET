@@ -453,5 +453,8 @@ Ideas:
 -Maybe it could be useful to do incomplete Kronekcer trafos, i.e. let the outer while(h < N) loop
  only run up to N/2 or N/4, etc? ..we could pass a "divider" parameter or somehow pass a 
  loopLimit parameter
+-When using the 3x3 version, we have 3 density parameters - we could modulate them by 3 different
+ modulation frequencies (mod signals are obtained by bandpassing the rectified (and possibly 
+ leveled) output - or maybe the leveling should come after the bandpass)
 
 */

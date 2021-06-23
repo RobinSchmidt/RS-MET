@@ -117,22 +117,20 @@ void rsMagnitudeAndPhase(T *signal, int N, T *magnitudes, T *phases)
 template<class T>
 void rsRadix2FFT(std::complex<T> *a, int N)
 {
-  // The algorithm was ported from algorithm 4.2 in the book "Inside the FFT black box" and 
-  // then simplified. All twiddle factors are computed on the fly via recursion. There's just one
-  // single complex exponential (i.e. a sin/cos pair) evaluation in the whole routine. That's 
-  // perhaps not very advisable from a numeric point of view but very nice mathematically. But for
-  // number theoretic transform (i.e. FFT using the roots of unity of modular arithmetic), that's
-  // no issue, so that seems desirable when the algo is adapted for that.
+  std::complex<T> wm = exp(std::complex<T>(T(0), T(-2.0*PI/N))); 
+  rsLinearTransforms::fourierRadix2DIF(a, N, wm);
+  return;
+  // Multiplier for twiddle factor, todo: use polar(), maybe using +2.0 instead of -2.0 will give 
+  // the inverse trafo?
 
+  // obsolete now - has been factored otu into rsLinearTransforms::fourierRadix2DIF
+  /*
   int np = 1;          // NumOfProblems
   int h  = N/2;        // HalfSize -> distance between butterflied values?
   int jf;              // JFirst
   int jl;              // JLast
   std::complex<T> tmp; // Temp
   std::complex<T> wj;  // W (current twiddle factor), maybe rename to wjk or wkj
-  std::complex<T> wm = exp(std::complex<T>(T(0), T(-2.0*PI/N))); 
-  // Multiplier for twiddle factor, todo: use polar(), maybe using +2.0 instead of -2.0 will give 
-  // the inverse trafo?
 
   // \todo use setRadiusAndAngle for initializing wm (more efficient), we also do not need to 
   // include the ComplexFunctions.inl
@@ -161,6 +159,7 @@ void rsRadix2FFT(std::complex<T> *a, int N)
   }
 
   rsArrayTools::orderBitReversed(a, N, (int)(rsLog2(N)+0.5)); // descramble outputs
+  */
 }
 // ToDo: adapt algo for finite fields - see:
 // https://crypto.stackexchange.com/questions/63614/finding-the-n-th-root-of-unity-in-a-finite-field
@@ -179,7 +178,27 @@ void rsBluesteinFFT(std::complex<T> *a, int N)
 }
 */
 
-
+template<class T>
+static void rsLinearTransforms::fourierRadix2DIF(T* a, int N, T wm)
+{
+  int np = 1;    // NumOfProblems
+  int h  = N/2;  // HalfSize -> distance between butterflied values?
+  while(h > 0) {                       // loop over the problems(?)
+    for(int k = 0; k < np; k++) {      // loop over the sub-FFTs
+      T wj = T(1);                     // init twiddle factor for current sub-FFT, W
+      int jf = 2*k*h;                  // first index for k-th sub-FFT, JFirst
+      int jl = jf+h-1;                 // last index for k-th sub-FFT, JLast
+      for(int j = jf; j <= jl; j++) {  // loop over the values
+        T tmp  = a[j];
+        a[j]   =  tmp + a[j+h];        // upper wing of Gentleman-Sande butterfly
+        a[j+h] = (tmp - a[j+h])*wj;    // lower wing
+        wj *= wm; }}                   // update twiddle factor for next iteration
+    np *= 2;     // next stage has twice as much sub-FFTs
+    h  /= 2;     // distance between butterflied values halves - maybe use bit-shift
+    wm *= wm; }  // twiddle factor rotates twice as fast in next stage
+  rsArrayTools::orderBitReversed(a, N, (int)(rsLog2(N)+0.5)); // descramble outputs
+  // maybe use a special, optimized rsLog2Int function
+}
 
 template<class T>
 void rsLinearTransforms::hadamard(T* A, int N)
@@ -242,11 +261,14 @@ void rsFGHT(T* A, int N, T a, T b, T c, T d) { rsTransforms::kronecker2x2(A, N, 
 /*
 
 ToDo:
--Wavelet transforms: Gabor, Daubechies, Walsh, ...
+-Wavelet transforms: Gabor, Daubechies, Haar, ...
+ https://en.wikipedia.org/wiki/Haar_wavelet
 -Fourier, Hadamard, Walsh, Householder, Givens, Toeplitz (?), Slant (uses sawtooths as basis 
  functions)..what about using rectangular waves? is that what the Hadamard trafo does? ..find a way
  to plot the basis vectors of the transforms - set one coeff one and all others zero and perform an 
  inverse transform - this should give the basis vector corresponding to the coeff that was set to 1
+ https://en.wikipedia.org/wiki/Walsh_function
+ https://en.wikipedia.org/wiki/Dyadic_transformation (sawtooth?)
 -KarhunenLoeve/Eigenvector/PCA 
  http://fourier.eng.hmc.edu/e161/lectures/klt/node3.html
  https://link.springer.com/chapter/10.1007/978-3-540-72943-3_10
@@ -254,6 +276,9 @@ ToDo:
  internal temp variables - then benchmark them against the in-place algo. Maybe, these out-of-place
  should first go into prototypes, and be added to the library only when it is found that they are
  faster
+-DCT, DST, Mellin
+
+make a class rsTimeFrequencyRepresentation using various transforms
 
 */
 

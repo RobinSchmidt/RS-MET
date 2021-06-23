@@ -17,8 +17,24 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Fourier Transforms
 
-  //template<class T>
-  //static void fourier(std::complex<T> *buffer, int N);
+  /** A radix-2 FFT using a decimation in frequency (DIF) algorithm. The third parameter WN, is the
+  primitive N-th root of unity, which, when T is a complex type, is given by e^(-2*i*pi/N) for a 
+  forward FFT or e^(+2*i*pi/N) for an inverse FFT (verify that!). I have opted to require client 
+  code to pass this primitive N-th root of unity to make it possible to instantiate the routine 
+  also for the case when T is a modular integer type in which case the FFT is also known NTT as 
+  for "number theoretic transform" (but this has not yet been tested). See:
+    https://ccrma.stanford.edu/~jos/st/Number_Theoretic_Transform.html
+  The algorithm was adapted from algorithm 4.2 in the book "Inside the FFT black box" and then
+  simplified. All twiddle factors are computed on the fly via recursion. For a complex FFT, the 
+  caller just needs one single complex exponential (i.e. a sin/cos pair) evaluation and then call 
+  this routine with that basic twiddle factor. The recursion is perhaps not very advisable from a 
+  numeric point of view due to floating point error accumulation but for number theoretic 
+  transform (i.e. FFT using the roots of unity of modular arithmetic), that's no issue, so that 
+  seems desirable when the algo is instantiated for that. For quick and dirty prototype code, the 
+  numeric precision is probably still good enough and production code should use optimized routines
+  with precomputed twiddle factors anyway, for example using class rsFourierTransformerRadix2. */
+  template<class T>
+  static void fourierRadix2DIF(T *x, int N, T WN);
 
 
   //-----------------------------------------------------------------------------------------------
@@ -33,6 +49,7 @@ public:
   static void hadamard(T* x, int N);
   // needs test
   // https://en.wikipedia.org/wiki/Hadamard_transform
+
 
 
   //-----------------------------------------------------------------------------------------------
