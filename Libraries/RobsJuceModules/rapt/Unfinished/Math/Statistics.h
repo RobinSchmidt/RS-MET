@@ -25,6 +25,8 @@ void rsCrossCorrelationDirect(T x[], T y[], int N, T r[]);
 /** FFT based computation of cross-correlation - more efficient for long sequences. */
 template<class T>
 void rsCrossCorrelationFFT(T x[], T y[], int N, T r[]);
+// allocates heap memory - ToDo: make a workspace based version but keep this as convenience 
+// function
 
 /** FFT based computation of autocorrelation. For FFT-based computuation, the autocorrelation
 saves some computations compared to the cross-correlation, that's why we have a separate

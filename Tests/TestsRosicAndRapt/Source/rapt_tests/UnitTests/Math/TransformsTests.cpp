@@ -11,9 +11,8 @@ void interleaveWithZeros(T *x, T *y, int xLength, int factor)
 // move into the RSCore library
 
 
-bool testSmbFFT(std::string &reportString)
+bool testSmbFFT()
 {
-  std::string testName = "SmbFFT";
   bool testResult = true;
 
   static const int N = 16;
@@ -66,7 +65,7 @@ bool testSmbFFT(std::string &reportString)
   double error = rsArrayTools::maxDeviation(X, T, 2*N);
   testResult &= (error < 1.e-6);  // a rather large margin is required
 
-  appendTestResultToReport(reportString, testName, testResult);
+  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
 
@@ -127,8 +126,10 @@ bool testRsFFT(std::string &reportString)
 
   // check a forward/inverse turnaround cycle:
   rsArrayTools::copy(x, y, N);
-  rsFFT( y, N);
-  rsIFFT(y, N);
+  //rsFFT( y, N);
+  //rsIFFT(y, N);
+  rsLinearTransforms::fourierRadix2DIF(   y, N);
+  rsLinearTransforms::fourierInvRadix2DIF(y, N);
   error = 0.0;
   for(n = 0; n < N; n++)
     error = rsMax(error, abs(x[n]-y[n]));
@@ -444,7 +445,7 @@ bool testTransforms()
   bool testResult = true;
 
   // test FFT routines:
-  testResult &= testSmbFFT(dummy);
+  testResult &= testSmbFFT();
   testResult &= testRsFFT(dummy);
   testResult &= testFourierTransformerRadix2(dummy);
   testResult &= testVariousFourierTransforms(dummy);

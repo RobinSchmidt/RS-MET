@@ -64,24 +64,22 @@ Update to a new JUCE version:
 ---------------------------------------------------------------------------------------------------
 My Programming Environment prefs
 
-Common:
-Fonts: to find a good font, go here: https://www.programmingfonts.org/, my favorites from there:
-
-Agave, B612 Mono, Bitstream Vera Sans Mono, Borg Sans Mono, BPmono, Bront DejaVu Sans Mono, 
-Bront Ubunutu Mono, Code New Roman, D2Coding, Envy Code R, Fantasque Sans Mono, Inconsolata, 
-Iosevka, Liberation Mono, Lilex, Mononoki, Share Tech Mono, Ubuntu Mono
-
 Editor Font: 
 -Consolas 9pt or 10pt (is default in Visual Studio)
 -Inconsolata SemiExpanded Medium 10pt (glyphs are 7x9 pixels)
  (there is also a proportial version of this called Consolata)
 -Lucida Sans 9pt (fits more lines on screen)
 
-
-
-
 Visual Studio:
-
+-3 Panes
+ -Left: tabs for Solution Explorer, Class View, Team Explorer, Object Browser
+ -Mid: Code Editor
+ -Right: tabs for: Output, Find Symbol Results, Error List, Call Hierarchy
+  When debugging, split horizotally, 
+  top: Locals, Autos, Watches, ...
+  bottom: Call Stack, Threads, Diagnostic Tools, Output, Breakpoints, ...
+-Toolbars (in Tools -> Customize): Build, Debug, Standard, Text Editor
+-Options (in Tools): Color Theme: Dark
 
 XCode:
 
@@ -98,3 +96,11 @@ DeskPins
 
 ToDo: git/github, Rendering Sample Sets, Images, Videos
 
+---------------------------------------------------------------------------------------------------
+Notes:
+
+Fonts: to find a good font, go here: https://www.programmingfonts.org/, my favorites from there:
+
+Agave, B612 Mono, Bitstream Vera Sans Mono, Borg Sans Mono, BPmono, Bront DejaVu Sans Mono, 
+Bront Ubunutu Mono, Code New Roman, D2Coding, Envy Code R, Fantasque Sans Mono, Inconsolata, 
+Iosevka, Liberation Mono, Lilex, Mononoki, Share Tech Mono, Ubuntu Mono

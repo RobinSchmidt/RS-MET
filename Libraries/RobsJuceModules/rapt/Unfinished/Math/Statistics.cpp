@@ -14,25 +14,25 @@ void rsCrossCorrelationDirect(T x[], T y[], int N, T r[])
 template<class T>
 void rsCrossCorrelationFFT(T x[], T y[], int N, T r[])
 {
-  // create zero-padded sequences such that no foldover occurs (use a power of 2 for the FFT) and
+  // Create zero-padded sequences such that no foldover occurs (use a power of 2 for the FFT) and
   // obtain the two FFT spectra:
   int Np = 2*rsNextPowerOfTwo(N);
   std::complex<T> *X = new std::complex<T>[Np];
   std::complex<T> *Y = new std::complex<T>[Np];
   rsArrayTools::convert(x, X, N);
   rsArrayTools::convert(y, Y, N);
-  rsFFT(X, Np);
-  rsFFT(Y, Np);
+  rsLinearTransforms::fourierRadix2DIF(X, Np);
+  rsLinearTransforms::fourierRadix2DIF(Y, Np);
 
-  // compute cross power spectrum, store it in X (see text below Eq.12.0.11 in: Numerical
+  // Compute cross power spectrum, store it in X (see text below Eq.12.0.11 in: Numerical
   // Recipies in C, 2nd Ed.):
   int n;
   X[0] = X[0] * Y[0];
   for(n = 1; n < Np; n++)
     X[n] = X[n] * Y[Np-n];
 
-  // obtain cross correlation by IFFT, copy to output and cleanup:
-  rsIFFT(X, Np);
+  // Obtain cross correlation by IFFT, copy to output and cleanup:
+  rsLinearTransforms::fourierInvRadix2DIF(X, Np);
   for(n = 0; n < N; n++)
     r[n] = X[n].real();
   delete[] X;
@@ -57,14 +57,14 @@ void rsAutoCorrelationFFT(T x[], int N, T r[])
   int Np = 2*rsNextPowerOfTwo(N);
   std::complex<T> *X = new std::complex<T>[Np];
   rsArrayTools::convert(x, X, N);
-  rsFFT(X, Np);
+  rsLinearTransforms::fourierRadix2DIF(X, Np);
   int n;
   X[0] = X[0] * X[0];
   for(n = 1; n < Np; n++)
     X[n] = X[n] * conj(X[n]);
-  // We can't use X[n]*X[Np-n] because the X-array is getting messed inside the loop itself, so
-  // we use Eq.12.0.11 as is.
-  rsIFFT(X, Np);
+    // We can't use X[n]*X[Np-n] because the X-array is getting messed inside the loop itself, so
+    // we use Eq.12.0.11 as is.
+  rsLinearTransforms::fourierInvRadix2DIF(X, Np);
   for(n = 0; n < N; n++)
     r[n] = X[n].real();
   delete[] X;

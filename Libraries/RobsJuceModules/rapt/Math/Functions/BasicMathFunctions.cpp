@@ -120,6 +120,23 @@ inline bool rsIsPowerOfTwo(unsigned int x)
   }
   return false;
 }
+// ToDo: use an algorithm based on finding the highest bit
+
+inline bool rsIsPowerOfN(unsigned int x, unsigned int N)
+{
+  if(x == 0) return false;       // 0 is not the power of any number
+  if(x == 1) return true;        // 1 = N^0 for any N
+  unsigned int r = x % N;        // remainder
+  while(x >= N) {
+    if(r != 0) 
+      return false;
+    r = x % N;
+    x /=  N;   }                 // x is divisble by N
+  return r == 0;
+}
+// We cannot use repeated multiplications because this may overflow, wrap around and return wrong
+// results or maybe even hang. Instead we repeatedly divide x by N. As soond as we encounter a 
+// nonzero remainder, it means the iterate was not divisible by N, so it can't be a power of N. 
 
 /*
 template<class T>

@@ -42,35 +42,52 @@ bool coordinateMapperUnitTest()
 
 bool correlationUnitTest()
 {
-  bool r = true;      // test result
+  bool ok = true;              // test result
 
-  static const int N = 11;   // signal length (todo: make this a variable in a loop to test
+  static const int N = 11;    // signal length (todo: make this a variable in a loop to test
                               // with different lengths)
   static const int M = 2*N-1; // length of correlation sequence
 
-  double x[N], y[N], xr[N], yr[N];  // inputs and reversed versions
-  double c1[M], c2[M], c3[M];       // correlation sequences (results)
-  rsArrayTools::fillWithRandomValues(x, N, -1, +1, 0);
-  rsArrayTools::fillWithRandomValues(y, N, -1, +1, 1);
-  rsArrayTools::reverse(x, xr, N);
-  rsArrayTools::reverse(y, yr, N);
+  using AT = rsArrayTools;
 
-  // obtain cross-correlation sequences via various algorithms:
+  double x[N], y[N], xr[N], yr[N];    // inputs and reversed versions
+  double c1[M], c2[M], c3[M], c4[M];  // correlation sequences (results)
+  //AT::fillWithRandomValues(x, N, -1, +1, 0);
+  //AT::fillWithRandomValues(y, N, -1, +1, 1);
+  AT::fillWithRandomIntegers(x, N, -9, +9, 0);
+  AT::fillWithRandomIntegers(y, N, -9, +9, 1);
+  AT::reverse(x, xr, N);
+  AT::reverse(y, yr, N);
+
+  // Obtain cross-correlation sequences via various algorithms:
   rsCrossCorrelationDirect(x, y, N, c1);
-  rsCrossCorrelationFFT(   x, y, N, c2);
-  rsArrayTools::convolve(       x, N, yr, N, c3);
+  rsCrossCorrelationDirect(y, x, N, c2);  // should it be commutative? it's not!
+  rsCrossCorrelationFFT(   x, y, N, c3);
+  AT::convolve(x, N, yr, N, c4);
 
-  // results should all be the same up to roundoff:
-
-  // c3 is completely different - wtf? ...oh - it seems, the rsCrossCorrelation functions only
+  // Results should all be the same up to roundoff:
+  double err;
+  double tol = 1.e-13;
+  //err = AT::maxDeviation(c1, c2, N); ok &= err <= tol; // nope!
+  err = AT::maxDeviation(c1, c3, N); ok &= err <= tol;
+  //err = AT::maxDeviation(c1, c4, N); ok &= err <= tol;
+  // c4 is completely different - wtf? ...oh - it seems, the rsCrossCorrelation functions only
   // return the 2nd half of the array - well, yeah, the results are only of length N whereas
-  // rsArrayTools::convolve produces a result of length 2*N-1
+  // rsArrayTools::convolve produces a result of length 2*N-1. c4 is also completely different
+  // except for the first coeff
+
+  // Test autocorrelation:
+  rsCrossCorrelationDirect(x, x, N, c1);
+  rsAutoCorrelationFFT(    x,    N, c2);
+  err = AT::maxDeviation(c1, c2, N); ok &= err <= tol;
+
+
 
 
   // try de-biasing a convolution result:
-  rsArrayTools::fillWithValue(x, N, 1.0);
-  rsArrayTools::fillWithValue(y, N, 1.0);
-  rsArrayTools::convolve(x, N, y, N, c3);
+  AT::fillWithValue(x, N, 1.0);
+  AT::fillWithValue(y, N, 1.0);
+  AT::convolve(x, N, y, N, c3);
   for(int n = 0; n < N; n++)
   {
     double scale = double(N)/double(N-n);
@@ -81,7 +98,7 @@ bool correlationUnitTest()
   // ok - looks good
 
 
-  return r;
+  return ok;
 }
 
 // move to RAPT - CurveFitting ...hmm...but actually it's not a curve-fit in the least-squares

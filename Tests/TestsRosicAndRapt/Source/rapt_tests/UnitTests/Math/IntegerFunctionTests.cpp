@@ -342,21 +342,43 @@ bool testGcdAndCo()
   return r;
 }
 
+bool testMiscIntegerFunctions()
+{
+  bool ok = true;
+
+  ok &= rsIsPowerOfN( 0, 3) == false;
+  ok &= rsIsPowerOfN( 1, 3) == true;   //  1 = 3^0
+  ok &= rsIsPowerOfN( 2, 3) == false;
+  ok &= rsIsPowerOfN( 3, 3) == true;   //  3 = 3^1
+  ok &= rsIsPowerOfN( 4, 3) == false;
+  ok &= rsIsPowerOfN( 8, 3) == false;
+  ok &= rsIsPowerOfN( 9, 3) == true;   //  9 = 3^2
+  ok &= rsIsPowerOfN(10, 3) == false;
+  ok &= rsIsPowerOfN(26, 3) == false;
+  ok &= rsIsPowerOfN(27, 3) == true;   // 27 = 3^3
+  ok &= rsIsPowerOfN(28, 3) == false;
+  ok &= rsIsPowerOfN(30, 3) == false;
+
+  return ok;
+}
+
 
 bool testIntegerFunctions()
 {
   std::string testName = "rsIntegerFunctions";
   std::string dummy;
-  bool testResult = true;
+  bool ok = true;
 
-  testResult &= testIntAbs(dummy);
-  testResult &= testSumAndProduct();
-  testResult &= testBinomialCoefficients(dummy);
-  testResult &= testMultinomialCoefficients(dummy);
-  testResult &= testMultinomialFormula(dummy);
-  testResult &= testLeviCivita(dummy);
-  testResult &= testGcdAndCo();
+  ok &= testIntAbs(dummy);
+  ok &= testSumAndProduct();
+  ok &= testBinomialCoefficients(dummy);
+  ok &= testMultinomialCoefficients(dummy);
+  ok &= testMultinomialFormula(dummy);
+  ok &= testLeviCivita(dummy);
+  ok &= testGcdAndCo();
+  ok &= testMiscIntegerFunctions();
+
 
   //appendTestResultToReport(reportString, testName, testResult);
-  return testResult;
+  return ok;
 }

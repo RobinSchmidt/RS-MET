@@ -48,6 +48,9 @@ inline bool rsIsCloseTo(T x, T targetValue, T tolerance);
 /** Checks, if x is a power of 2. */
 inline bool rsIsPowerOfTwo(unsigned int x);
 
+/** Checks, if x is a power of N. */
+inline bool rsIsPowerOfN(unsigned int x, unsigned int N);
+
 /** Returns true when min <= x <= max, false otherwise. */
 template<class T>
 inline bool rsIsInRange(T x, T min, T max);

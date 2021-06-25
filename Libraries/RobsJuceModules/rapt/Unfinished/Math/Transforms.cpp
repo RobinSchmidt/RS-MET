@@ -74,7 +74,10 @@ template<class T>
 void rsFFT(std::complex<T> *a, int N)
 {
   if(rsIsPowerOfTwo(N))
-    rsRadix2FFT(a, N);
+  {
+    //rsRadix2FFT(a, N);
+    rsLinearTransforms::fourierRadix2DIF(a, N);
+  }
   else
   {
     rsError("Arbitrary length FFT not yet implemented");
@@ -180,7 +183,7 @@ void rsLinearTransforms::kronecker2x2(T* A, int N, T a, T b, T c, T d)
 template<class T>
 void rsLinearTransforms::kronecker3x3(T* v, int N, const rsMatrix3x3<T>& A)
 {
-  //rsAssert(rsIsPowerOfThree(N), "N must be a power of 3");
+  rsAssert(rsIsPowerOfN(N, 3), "N must be a power of 3");
   int h = 1;
   while(h < N) {
     for(int i = 0; i < N; i += 3*h) {
