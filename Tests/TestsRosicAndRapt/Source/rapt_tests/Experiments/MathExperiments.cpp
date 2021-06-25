@@ -3080,6 +3080,90 @@ void twoParamRemap()
   //http://gnuplot.sourceforge.net/demo/contours.html
 }
 
+
+void numberTheoreticTrafo()
+{
+  // We work with modular arithmetic in Z_p with p = 97 (which is a prime)...
+
+  // Sage code to find the primitive n-th roots of unity for n = 2^k, k = 1,..,5
+  //
+  // p = 97
+  // Zp = Integers(p)
+  // root_list = Zp.zeta(16, all=True);  # replace the 16 by 2,4,8,32 for the other roots
+  // root_list
+  //
+  // gives the following roots:
+  //
+  //  2: 96
+  //  4: 75, 22
+  //  8: 64, 50, 47, 33
+  // 16: 89, 85, 79, 70, 27, 18, 12, 8
+  // 32: 78, 77, 69, 67, 63, 55, 52, 51, 46, 45, 42, 34, 30, 28, 20, 19
+  //
+  // Interestingly, for n = 64, there are no solutions anymore. Is it generally true that n-th 
+  // roots exist only for n < p/2?. For any n, we can just pick any of the n-th roots..right? Or 
+  // should we pick the smallest? For the time being, i have just picked the first from the list.
+  // The inverses of these roots can be found by:
+  //
+  // root_list = [96, 75, 64, 89, 78]
+  // [inverse_mod(x, 97) for x in root_list]
+  //
+  // which gives [96, 22, 47, 12, 51], similarly, the inverses of the possible FFT lengths can be 
+  // found by:
+  //
+  // length_list = [2, 4, 8, 16, 32]
+  // [inverse_mod(x, 97) for x in length_list]
+  //
+  // which gives [49, 73, 85, 91, 94]. These are all the magic numbers, we need to do NTTs in Z_97.
+  // We'll keep them around in a table. For practical work, a much larger prime number should be 
+  // chosen
+
+  // Our magic numbers:
+  int numRoots     = 5;
+  int modulus      = 97;
+  int roots[5]     = { 96, 75, 64, 89, 78 };  // we can pick any
+  int rootsInv[5]  = { 96, 22, 47, 12, 51 }; 
+  int lengthInv[5] = { 49, 73, 85, 91, 94 };
+
+  // Check, if the magic numbers satisfy the requirements:
+  using ModInt = RAPT::rsModularInteger<rsUint64>;
+  ModInt one = ModInt(1, modulus);
+  ModInt a, b, c;
+  bool ok = true;
+  for(int i = 0; i < numRoots; i++)
+  {
+    int n = rsPowInt(2, i+1);
+    a = ModInt(n,            modulus);
+    b = ModInt(lengthInv[i], modulus);
+    c = a * b;
+    ok &= c == one;
+
+    a = ModInt(roots[i],    modulus);
+    b = ModInt(rootsInv[i], modulus);
+    c = a * b;
+    ok &= c == one;
+
+    c = a;
+    for(int j = 1; j < n; j++) {
+      ok &= c != one; 
+      c *= a;  }
+    ok &= c == one;
+  }
+  rsAssert(ok);
+
+  
+
+
+
+  // https://doc.sagemath.org/html/en/prep/Quickstarts/Number-Theory.html
+  // https://doc.sagemath.org/html/en/tutorial/tour_numtheory.html
+
+  int dummy = 0;
+}
+
+
+
+
 // fun stuff:
 
 //=================================================================================================

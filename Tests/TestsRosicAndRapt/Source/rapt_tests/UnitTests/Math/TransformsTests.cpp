@@ -200,7 +200,8 @@ bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRad
 
   // compute spectrum via RAPT::rsRadix2FFT and compare:
   AR::copy(&x[0], &X[0], N);
-  RAPT::rsRadix2FFT(&X[0], N);
+  //RAPT::rsRadix2FFT(&X[0], N);
+  rsLinearTransforms::fourierRadix2DIF(&X[0], N);
   r &= rsAlmostEqual(T, X, tol);
 
   // use the rsFourierTransformerRadix2 object:
@@ -213,7 +214,8 @@ bool testFourierTrafoRadix2(int N) // maybe rename to testComplexFourierTrafoRad
 
   // now test inverse trafos:
   AR::copy(&T[0], &x[0], N); // target spectrum into signal buffer x for in-place iFFT
-  RAPT::rsIFFT(&x[0], N);
+  //RAPT::rsIFFT(&x[0], N);
+  rsLinearTransforms::fourierInvRadix2DIF(&x[0], N);
   r &= rsAlmostEqual(t, x, tol);
 
   ft.setDirection(FT::INVERSE);
@@ -296,6 +298,16 @@ bool testVariousFourierTransforms(std::string &reportString)
   appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }
+
+bool testNumberTheoreticTransform()
+{
+  bool ok = true;
+
+
+
+  return ok;
+};
+
 
 
 bool testCorrelation(std::string &reportString)
@@ -442,13 +454,14 @@ bool testTransforms()
 {
   std::string testName = "Transforms";
   std::string dummy;
-  bool testResult = true;
+  bool ok = true;
 
   // test FFT routines:
-  testResult &= testSmbFFT();
-  testResult &= testRsFFT(dummy);
-  testResult &= testFourierTransformerRadix2(dummy);
-  testResult &= testVariousFourierTransforms(dummy);
+  ok &= testSmbFFT();
+  ok &= testRsFFT(dummy);
+  ok &= testFourierTransformerRadix2(dummy);
+  ok &= testVariousFourierTransforms(dummy);
+  ok &= testNumberTheoreticTransform();
 
-  return testResult;
+  return ok;
 }

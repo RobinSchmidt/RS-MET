@@ -68,12 +68,12 @@ rsModularInteger<T> rsModularInteger<T>::operator*(const rsModularInteger<T> &ot
   return rsModularInteger<T>(r, modulus);
 }
 
-template<class T>
-rsModularInteger<T> rsModularInteger<T>::operator/(const rsModularInteger<T> &other)
-{
-  rsAssert( modulus == other.modulus );
-  return *this * rsModularInverse(other.value, modulus);
-}
+//template<class T>
+//rsModularInteger<T> rsModularInteger<T>::operator/(const rsModularInteger<T> &other)
+//{
+//  rsAssert( modulus == other.modulus );
+//  return *this * rsModularInverse(other.value, modulus);
+//}
 // what, if there is no modular inverse (i think, it exists only if the value is coprime with the 
 // modulus - verify)
 
@@ -95,12 +95,12 @@ rsModularInteger<T>& rsModularInteger<T>::operator*=(const rsModularInteger<T> &
   *this = *this * other;
   return *this;
 }
-template<class T>
-rsModularInteger<T>& rsModularInteger<T>::operator/=(const rsModularInteger<T> &other)
-{
-  *this = *this / other;
-  return *this;
-}
+//template<class T>
+//rsModularInteger<T>& rsModularInteger<T>::operator/=(const rsModularInteger<T> &other)
+//{
+//  *this = *this / other;
+//  return *this;
+//}
 template<class T>
 rsModularInteger<T>& rsModularInteger<T>::operator++()
 {
@@ -115,6 +115,7 @@ rsModularInteger<T>& rsModularInteger<T>::operator--()
 }
 
 /*
+
 Ideas:
 -templatize on the integer type to use - allow for arbitrary size integers
 -make it work also for negative values (-> verify, if the % operator works correctly, when the 
@@ -139,5 +140,15 @@ ToDo:
  actually is relative to how big it could be at most - a sort of measure how-much-mutually-prime two 
  numbers are as opposed to a simple boolean yes/no, pairs with a smaller value are more simply 
  related
+
+Finding n-th roots of unity:
+https://en.wikipedia.org/wiki/Root_of_unity_modulo_n
+https://math.stackexchange.com/questions/158344/how-to-find-the-solutions-for-the-n-th-root-of-unity-in-modular-arithmetic
+
+https://people.cs.ksu.edu//~rhowell/calculator/  there's java source-code
+https://people.cs.ksu.edu//~rhowell/calculator/how.html
+
+https://doc.sagemath.org/html/en/prep/Quickstarts/Number-Theory.html
+
 
 */

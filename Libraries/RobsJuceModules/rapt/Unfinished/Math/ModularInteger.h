@@ -21,6 +21,9 @@ public:
 
   /** \name Construction/Destruction */
 
+  /** Default constructor. Leaves value and modulus uninitialized. */
+  rsModularInteger() {}
+
   /** Constructor. You may initialize the number by passing some unsigned 64-bit integer. */
   rsModularInteger(rsUint64 initialValue, rsUint64 modulusToUse);
 
@@ -30,7 +33,8 @@ public:
 
   /** \name Operators */
 
-  rsModularInteger& operator=(const rsModularInteger& other);
+  rsModularInteger& operator=(const rsModularInteger& b)
+  { value = b.value; modulus = b.modulus; return *this; }
 
   rsModularInteger operator-() const;
 
@@ -40,12 +44,12 @@ public:
   rsModularInteger operator+(const rsModularInteger& other);
   rsModularInteger operator-(const rsModularInteger& other);
   rsModularInteger operator*(const rsModularInteger& other);
-  rsModularInteger operator/(const rsModularInteger& other);
+  //rsModularInteger operator/(const rsModularInteger& other);
 
   rsModularInteger& operator+=(const rsModularInteger& other);
   rsModularInteger& operator-=(const rsModularInteger& other);
   rsModularInteger& operator*=(const rsModularInteger& other);
-  rsModularInteger& operator/=(const rsModularInteger& other);
+  //rsModularInteger& operator/=(const rsModularInteger& other);
 
   rsModularInteger& operator++();
   rsModularInteger& operator--();
