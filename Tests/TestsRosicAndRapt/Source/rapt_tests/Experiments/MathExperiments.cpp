@@ -3128,7 +3128,8 @@ void numberTheoreticTrafo()
 
   // Check, if the magic numbers satisfy the requirements:
   using ModInt = RAPT::rsModularInteger<rsUint64>;
-  ModInt one = ModInt(1, modulus);
+  ModInt zero = ModInt(0, modulus);
+  ModInt one  = ModInt(1, modulus);
   ModInt a, b, c;
   bool ok = true;
   for(int i = 0; i < numRoots; i++)
@@ -3171,7 +3172,7 @@ void numberTheoreticTrafo()
   using VecM = std::vector<ModInt>;
   using LT = rsLinearTransforms;
   int N = 16;                       // FFT/NTT size - todo: determine from Lx,Lh the desired length
-  int k = 4;                        // log2(N)
+  int k = 4-1;                      // log2(N) - 1
   VecM buf1(N), buf2(N);
   for(int i = 0;  i < Lx; i++) buf1[i] = ModInt(x[i], modulus);
   for(int i = Lx; i < N;  i++) buf1[i] = ModInt(0,    modulus);
@@ -3192,7 +3193,18 @@ void numberTheoreticTrafo()
   
 
 
-  // Hmm...it doesn't work yet - try to make a simple NTT/iNTT roundtrip
+  // Hmm...it doesn't work yet - try to make a simple NTT/iNTT roundtrip:
+  for(int i = 0;  i < Lx; i++) buf1[i] = ModInt(x[i], modulus);
+  for(int i = Lx; i < N;  i++) buf1[i] = ModInt(0,    modulus);
+  WN = ModInt(rootsInv[k],  modulus); LT::fourierRadix2DIF(&buf1[0], N, WN);
+  WN = ModInt(roots[k],     modulus); LT::fourierRadix2DIF(&buf1[0], N, WN);
+  S  = ModInt(lengthInv[k], modulus); // scaler 1/N
+  for(int i = 0; i < N; i++)
+    buf1[i] = S * buf1[i];
+  for(int i = 0;  i < Lx; i++) ok &= (buf1[i] == ModInt(x[i], modulus));
+  for(int i = Lx; i < N;  i++) ok &= (buf1[i] == ModInt(0,    modulus));
+  // OK, the roundtrip works. Maybe the sequences are too long such that we get circular 
+  // convolution?
 
 
   // https://doc.sagemath.org/html/en/prep/Quickstarts/Number-Theory.html
