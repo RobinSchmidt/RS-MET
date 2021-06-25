@@ -128,7 +128,8 @@ static void rsLinearTransforms::fourierRadix2DIF(T* a, int N, T W)
   int h = N/2;        // HalfSize -> distance between butterflied values?
   while(h > 0) {                       // loop over the problems(?)
     for(int k = 0; k < n; k++) {       // loop over the sub-FFTs
-      T Wjk = T(1);                    // init twiddle factor for current sub-FFT, W^(j*k)?
+      //T Wjk = T(1);                    // init twiddle factor for current sub-FFT, W^(j*k)?
+      T Wjk  = rsUnityValue(W);        // init twiddle factor for current sub-FFT, W^(j*k)?
       int jf = 2*k*h;                  // first index for k-th sub-FFT, JFirst
       int jl = jf+h-1;                 // last index for k-th sub-FFT, JLast
       for(int j = jf; j <= jl; j++) {  // loop over the values

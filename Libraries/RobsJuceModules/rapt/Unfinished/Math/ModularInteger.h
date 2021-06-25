@@ -63,7 +63,8 @@ public:
 
 /** Explicit template instantiation, to be used by the rsPow template-function. */
 template<class T>
-rsModularInteger<T> rsUnityValue(rsModularInteger<T> value);
+rsModularInteger<T> rsUnityValue(rsModularInteger<T> value)
+{ return rsModularInteger<T>(T(1), value.modulus); }
 
 
 #endif

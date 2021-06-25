@@ -351,8 +351,8 @@ template void RAPT::rsDFT(std::complex<double> *buffer, int N);
 template void RAPT::rsFFT(std::complex<double> *buffer, int N);
 template void RAPT::rsIFFT(std::complex<double> *buffer, int N);
 
-//template void RAPT::rsLinearTransforms::fourierRadix2DIF(
-//  std::complex<float> *buffer, int N, std::complex<float> w0);
+template void RAPT::rsLinearTransforms::fourierRadix2DIF(
+  RAPT::rsModularInteger<rsUint64> *buffer, int N, RAPT::rsModularInteger<rsUint64> w0);
 
 template void RAPT::rsMagnitudeAndPhase(double *signal, int N, double *magnitudes, double *phases);
 template void RAPT::rsCrossCorrelation(float x[], float y[], int N, float r[], bool removeBias);

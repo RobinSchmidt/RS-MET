@@ -3167,18 +3167,32 @@ void numberTheoreticTrafo()
   for(int i = 0; i < Ly; i++) 
     y[i] %= modulus;
 
-  // Do NTT-based convolution:
+  // Prepare NTT buffers:
   using VecM = std::vector<ModInt>;
+  using LT = rsLinearTransforms;
   int N = 16;                       // FFT/NTT size - todo: determine from Lx,Lh the desired length
+  int k = 4;                        // log2(N)
   VecM buf1(N), buf2(N);
   for(int i = 0;  i < Lx; i++) buf1[i] = ModInt(x[i], modulus);
   for(int i = Lx; i < N;  i++) buf1[i] = ModInt(0,    modulus);
   for(int i = 0;  i < Lh; i++) buf2[i] = ModInt(h[i], modulus);
   for(int i = Lh; i < N;  i++) buf2[i] = ModInt(0,    modulus);
-  
-  // ...more to do...
+
+  // Do NTT-based convolution:
+  ModInt WN = ModInt(rootsInv[k], modulus);  // twiddle factor for forward NTT
+  LT::fourierRadix2DIF(&buf1[0], N, WN);     // transform buffer 1
+  LT::fourierRadix2DIF(&buf2[0], N, WN);     // transform buffer 2
+  for(int i = 0; i < N; i++)
+    buf1[i] = buf1[i] * buf2[i];             // spectral multiplication, result goes to buffer 1
+  WN = ModInt(roots[k], modulus);            // twiddle factor for inverse NTT
+  LT::fourierRadix2DIF(&buf1[0], N, WN);     // unscaled inverse NTT
+  ModInt S(lengthInv[k], modulus);           // scaler 1/N
+  for(int i = 0; i < N; i++)
+    buf1[i] = S * buf1[i];                   // do the scaling
   
 
+
+  // Hmm...it doesn't work yet - try to make a simple NTT/iNTT roundtrip
 
 
   // https://doc.sagemath.org/html/en/prep/Quickstarts/Number-Theory.html
