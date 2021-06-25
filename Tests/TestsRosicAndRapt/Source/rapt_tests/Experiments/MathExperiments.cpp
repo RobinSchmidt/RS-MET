@@ -3120,8 +3120,9 @@ void numberTheoreticTrafo()
 
   // Our magic numbers:
   int numRoots     = 5;
+  int maxN         = 32;                      // = 2^5 = 2^numRoots
   int modulus      = 97;
-  int roots[5]     = { 96, 75, 64, 89, 78 };  // we can pick any
+  int roots[5]     = { 96, 75, 64, 89, 78 };  // We can pick any, i think,
   int rootsInv[5]  = { 96, 22, 47, 12, 51 }; 
   int lengthInv[5] = { 49, 73, 85, 91, 94 };
 
@@ -3151,6 +3152,31 @@ void numberTheoreticTrafo()
   }
   rsAssert(ok);
 
+
+  // Create two sequences of integers and convolve them using naive convolution and reduce to the 
+  // modulus afterwards. It should not matter whether do the reduction afterwards or after each 
+  // operation:
+  using VecI = std::vector<int>;
+  VecI x  = VecI({11,32,15,75,51});       // input signal
+  VecI h  = VecI({65,72,42,28,91,14,32}); // impulse response
+  int  Lx = rsSize(x);                    // length of x
+  int  Lh = rsSize(h);                    // length of h
+  int  Ly = Lx+Lh-1;                      // length of result
+  VecI y(Ly);                             // result (of convolution)
+  rsArrayTools::convolve(&x[0], Lx, &h[0], Lh, &y[0]);
+  for(int i = 0; i < Ly; i++) 
+    y[i] %= modulus;
+
+  // Do NTT-based convolution:
+  using VecM = std::vector<ModInt>;
+  int N = 16;                       // FFT/NTT size - todo: determine from Lx,Lh the desired length
+  VecM buf1(N), buf2(N);
+  for(int i = 0;  i < Lx; i++) buf1[i] = ModInt(x[i], modulus);
+  for(int i = Lx; i < N;  i++) buf1[i] = ModInt(0,    modulus);
+  for(int i = 0;  i < Lh; i++) buf2[i] = ModInt(h[i], modulus);
+  for(int i = Lh; i < N;  i++) buf2[i] = ModInt(0,    modulus);
+  
+  // ...more to do...
   
 
 

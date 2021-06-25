@@ -76,6 +76,7 @@ template int rsArrayTools::findSplitIndex(const int* A, int N, int key);
 template int rsArrayTools::copyIfMatching(const int *, int *, int, const int *, int);
 template int rsArrayTools::copyIfNotMatching(const int *, int *, int, const int *, int);
 template void rsArrayTools::copySection(const int *source, int sourceLength, int *destination, int copyStart, int copyLength);
+template void rsArrayTools::convolve(const int *x, int Lx, const int *h, int Lh, int *y);
 template void rsArrayTools::cumulativeSum(const int *x, int *y, int length, int order);
 template void rsArrayTools::fillWithRangeLinear(int* x, int N, int min, int max);
 template void rsArrayTools::fillWithRandomValues(int* x, int N, double min, double max, int seed);
