@@ -149,6 +149,7 @@ https://people.cs.ksu.edu//~rhowell/calculator/  there's java source-code
 https://people.cs.ksu.edu//~rhowell/calculator/how.html
 
 https://doc.sagemath.org/html/en/prep/Quickstarts/Number-Theory.html
+https://doc.sagemath.org/html/en/tutorial/tour_numtheory.html
 
 
 */

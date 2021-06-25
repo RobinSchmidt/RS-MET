@@ -3171,8 +3171,8 @@ void numberTheoreticTrafo()
   // Prepare NTT buffers:
   using VecM = std::vector<ModInt>;
   using LT = rsLinearTransforms;
-  int N = 16;                       // FFT/NTT size - todo: determine from Lx,Lh the desired length
-  int k = 4-1;                      // log2(N) - 1
+  int N = 32;                       // FFT/NTT size - todo: determine from Lx,Lh the desired length
+  int k = 5-1;                      // log2(N) - 1
   VecM buf1(N), buf2(N);
   for(int i = 0;  i < Lx; i++) buf1[i] = ModInt(x[i], modulus);
   for(int i = Lx; i < N;  i++) buf1[i] = ModInt(0,    modulus);
@@ -3187,28 +3187,17 @@ void numberTheoreticTrafo()
     buf1[i] = buf1[i] * buf2[i];             // spectral multiplication, result goes to buffer 1
   WN = ModInt(roots[k], modulus);            // twiddle factor for inverse NTT
   LT::fourierRadix2DIF(&buf1[0], N, WN);     // unscaled inverse NTT
-  ModInt S(lengthInv[k], modulus);           // scaler 1/N
+  ModInt S(lengthInv[k], modulus);           // scaler = 1/N
   for(int i = 0; i < N; i++)
     buf1[i] = S * buf1[i];                   // do the scaling
-  
+  for(int i = 0;  i < Ly; i++) ok &= (buf1[i] == ModInt(y[i], modulus));
+  for(int i = Ly; i < N;  i++) ok &= (buf1[i] == ModInt(0,    modulus));
 
-
-  // Hmm...it doesn't work yet - try to make a simple NTT/iNTT roundtrip:
-  for(int i = 0;  i < Lx; i++) buf1[i] = ModInt(x[i], modulus);
-  for(int i = Lx; i < N;  i++) buf1[i] = ModInt(0,    modulus);
-  WN = ModInt(rootsInv[k],  modulus); LT::fourierRadix2DIF(&buf1[0], N, WN);
-  WN = ModInt(roots[k],     modulus); LT::fourierRadix2DIF(&buf1[0], N, WN);
-  S  = ModInt(lengthInv[k], modulus); // scaler 1/N
-  for(int i = 0; i < N; i++)
-    buf1[i] = S * buf1[i];
-  for(int i = 0;  i < Lx; i++) ok &= (buf1[i] == ModInt(x[i], modulus));
-  for(int i = Lx; i < N;  i++) ok &= (buf1[i] == ModInt(0,    modulus));
-  // OK, the roundtrip works. Maybe the sequences are too long such that we get circular 
-  // convolution?
-
-
-  // https://doc.sagemath.org/html/en/prep/Quickstarts/Number-Theory.html
-  // https://doc.sagemath.org/html/en/tutorial/tour_numtheory.html
+  // Observations:
+  // -with the sequence lengths Lx = 5, Lh = 7, we need an NTT size of 32 to make it work. 
+  //  Apparently, with shorter length, we run into circular convolution. The length of the result
+  //  is 7+5-1 = 11. I think, the NTT size must be at least twice the length of the result, so 
+  //  16 < 22 is not enough
 
   int dummy = 0;
 }
