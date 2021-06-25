@@ -130,8 +130,7 @@ Ideas:
   of the original modulus and finally take the remainder with respect to the original modulus and 
   still get the same result (verify this) - so if, in the middle of the computations, we encounter 
   different moduli we could choose (the smallest) one, which is compatible with both moduli in this 
-  sense
- -would that make sense?
+  sense...would that make sense?
 -does the notion of a modular rational number make any sense? i.e. numerator and/or denominator are 
  modular integers?
 
@@ -150,6 +149,9 @@ https://people.cs.ksu.edu//~rhowell/calculator/how.html
 
 https://doc.sagemath.org/html/en/prep/Quickstarts/Number-Theory.html
 https://doc.sagemath.org/html/en/tutorial/tour_numtheory.html
+
+
+https://mosullivan.sdsu.edu/Teaching/sdsu-sage-tutorial/mathstruct.html
 
 
 */

@@ -128,8 +128,7 @@ static void rsLinearTransforms::fourierRadix2DIF(T* a, int N, T W)
   int h = N/2;        // HalfSize -> distance between butterflied values?
   while(h > 0) {                       // loop over the problems(?)
     for(int k = 0; k < n; k++) {       // loop over the sub-FFTs
-      //T Wjk = T(1);                    // init twiddle factor for current sub-FFT, W^(j*k)?
-      T Wjk  = rsUnityValue(W);        // init twiddle factor for current sub-FFT, W^(j*k)?
+      T Wjk  = rsUnityValue(W);        // init twiddle factor W^(j*k) for current sub-FFT to 1
       int jf = 2*k*h;                  // first index for k-th sub-FFT, JFirst
       int jl = jf+h-1;                 // last index for k-th sub-FFT, JLast
       for(int j = jf; j <= jl; j++) {  // loop over the values
@@ -137,7 +136,7 @@ static void rsLinearTransforms::fourierRadix2DIF(T* a, int N, T W)
         a[j]   =  aj + a[j+h];         // upper wing of Gentleman-Sande butterfly
         a[j+h] = (aj - a[j+h])*Wjk;    // lower wing
         Wjk *= W; }}                   // update twiddle factor for next iteration
-    n *= 2;           // next stage has twice as much sub-FFTs
+    n *= 2;           // next stage has twice as many sub-FFTs
     h /= 2;           // distance between butterflied values halves
     W *= W; }         // twiddle factor rotates twice as fast in next stage, W_N = W_(N/2)?
   rsArrayTools::orderBitReversed(a, N, (int)(rsLog2(N)+0.5)); // descramble outputs

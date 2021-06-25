@@ -3083,7 +3083,13 @@ void twoParamRemap()
 
 void numberTheoreticTrafo()
 {
-  // We work with modular arithmetic in Z_p with p = 97 (which is a prime)...
+  // We implement a fast convolution by means of a number theorectic transform (NTT). An NTT is 
+  // similar to an FFT, but instead of working in the field of complex numbers, it works in a 
+  // finite field Z_p of modular integers. Here, we work with p = 97 which is a prime, which 
+  // guarantees that all the required "magic numbers" exist in this field. We need the N-th roots
+  // of unity and their inverses where N = 2^k for all N less than maxN/2, where maxN is the
+  // maximum supported transform size and we also need the inveres of all these N (verify - i may
+  // have the factor 2 wrong...)
 
   // Sage code to find the primitive n-th roots of unity for n = 2^k, k = 1,..,5
   //
@@ -3092,7 +3098,7 @@ void numberTheoreticTrafo()
   // root_list = Zp.zeta(16, all=True);  # replace the 16 by 2,4,8,32 for the other roots
   // root_list
   //
-  // gives the following roots:
+  // gives the following lists of roots:
   //
   //  2: 96
   //  4: 75, 22
@@ -3101,14 +3107,14 @@ void numberTheoreticTrafo()
   // 32: 78, 77, 69, 67, 63, 55, 52, 51, 46, 45, 42, 34, 30, 28, 20, 19
   //
   // Interestingly, for n = 64, there are no solutions anymore. Is it generally true that n-th 
-  // roots exist only for n < p/2?. For any n, we can just pick any of the n-th roots..right? Or 
+  // roots exist only for n < p/2?. For any n, we can just pick any of the n-th roots. Right? Or 
   // should we pick the smallest? For the time being, i have just picked the first from the list.
-  // The inverses of these roots can be found by:
+  // The inverses of these roots can be found by, e.g.:
   //
   // root_list = [96, 75, 64, 89, 78]
   // [inverse_mod(x, 97) for x in root_list]
   //
-  // which gives [96, 22, 47, 12, 51], similarly, the inverses of the possible FFT lengths can be 
+  // which gives [96, 22, 47, 12, 51] Similarly, the inverses of the possible FFT lengths can be 
   // found by:
   //
   // length_list = [2, 4, 8, 16, 32]
@@ -3116,15 +3122,17 @@ void numberTheoreticTrafo()
   //
   // which gives [49, 73, 85, 91, 94]. These are all the magic numbers, we need to do NTTs in Z_97.
   // We'll keep them around in a table. For practical work, a much larger prime number should be 
-  // chosen
+  // chosen. I think, ideally, it should be as large as possible to give maximum headroom for the
+  // computations, so perhaps the largest prime less than 2^64 is the best choice?
 
   // Our magic numbers:
   int numRoots     = 5;
-  int maxN         = 32;                      // = 2^5 = 2^numRoots
+  int maxN         = 32;                      // = 2^5 = 2^numRoots, maximum supported trafo size
   int modulus      = 97;
   int roots[5]     = { 96, 75, 64, 89, 78 };  // We can pick any, i think,
   int rootsInv[5]  = { 96, 22, 47, 12, 51 }; 
   int lengthInv[5] = { 49, 73, 85, 91, 94 };
+  // For production code, wrap them in a class or struct
 
   // Check, if the magic numbers satisfy the requirements:
   using ModInt = RAPT::rsModularInteger<rsUint64>;
@@ -3147,15 +3155,15 @@ void numberTheoreticTrafo()
 
     c = a;
     for(int j = 1; j < n; j++) {
-      ok &= c != one; 
-      c *= a;  }
+      ok &= c != one;              // Root should be primitive, we should not get 1 for any power
+      c *= a;  }                   // ...less than n (i.e. n/2, n/3, etc.)
     ok &= c == one;
   }
   rsAssert(ok);
 
 
   // Create two sequences of integers and convolve them using naive convolution and reduce to the 
-  // modulus afterwards. It should not matter whether do the reduction afterwards or after each 
+  // modulus afterwards. It doesn't matter whether do the reduction afterwards or after each 
   // operation:
   using VecI = std::vector<int>;
   VecI x  = VecI({11,32,15,75,51});       // input signal
@@ -3190,14 +3198,89 @@ void numberTheoreticTrafo()
   ModInt S(lengthInv[k], modulus);           // scaler = 1/N
   for(int i = 0; i < N; i++)
     buf1[i] = S * buf1[i];                   // do the scaling
-  for(int i = 0;  i < Ly; i++) ok &= (buf1[i] == ModInt(y[i], modulus));
+  for(int i = 0;  i < Ly; i++) ok &= (buf1[i] == ModInt(y[i], modulus));  // check result
   for(int i = Ly; i < N;  i++) ok &= (buf1[i] == ModInt(0,    modulus));
 
   // Observations:
-  // -with the sequence lengths Lx = 5, Lh = 7, we need an NTT size of 32 to make it work. 
+  // -With the sequence lengths Lx = 5, Lh = 7, we need an NTT size of 32 to make it work. 
   //  Apparently, with shorter length, we run into circular convolution. The length of the result
   //  is 7+5-1 = 11. I think, the NTT size must be at least twice the length of the result, so 
   //  16 < 22 is not enough
+
+  // Questions:
+  // -Does the modulus really need to be a prime or is it enough, when all desired N-th roots of 
+  //  unity, their inverses and the inverses of all desired lengths exist? Being prime is a 
+  //  sufficient condition for all of this, but maybe it's not a necessary one?
+  // -Do we actually need to store all roots of unity? isn't the highest order root enough, i.e.
+  //  the 16th, and the others can be obtained by repeated squaring?
+
+  // ToDo:
+  // -Find a more practical (i.e. larger) prime and the magic numbers for it using Sage.
+  // -Implement a class template similar to rsModularInteger but with the modulus as template 
+  //  parameter, ...also the number of lengths, i.e. numRoots.
+  // -Use that in the partinioned convolver - maybe ConvolverFFT and ConvolverNTT (to be written)
+  //  should have a common baseclass with common interface
+  // -Implement a class for that, storing the modulus and the magic numbers.
+  // -
+
+  // The largest prime less than 2^64 is p = 18446744073709551557 and can be found with sage via:
+  //   random_prime(2^64, proof=true, lbound=2^64-59)
+  // Now, let's find our magic numbers for p ...damn! Z_p seems to have only 2nd and 4th roots of 
+  // unity. I thought, primality is a sufficient condition for all N-th roots to exist. Is this not
+  // the case?
+  // See:
+  // http://www.apfloat.org/ntt.html
+  // https://www.nayuki.io/page/number-theoretic-transform-integer-dft
+  // https://ieeexplore.ieee.org/document/1162555
+  // https://ieeexplore.ieee.org/document/1672090
+  // https://web.archive.org/web/20130425232048/http://www.cse.psu.edu/~furer/Papers/mult.pdf
+  // https://en.wikipedia.org/wiki/Talk%3ANumber-theoretic_transform
+
+  // http://www.faginfamily.net/barry/Papers/Discrete%20Weighted%20Transforms.pdf
+  // says: p = 2^61 - 1 is a Mersenne prime and 
+  // h = 2147483648 + 1033321771269002680i is primitive root of unity in Z_p...oh! it has a 
+  // imaginary part? Is this some sort of complex modular arithemtic?
+
+  // https://www.programmersought.com/article/13432387902/
+  // 998244353,1004535809, 469762049, 998244353
+
+  // https://www.programmersought.com/article/8906403181/ has list of primes fot NTT, the largest
+  // is 4179340454199820289, which seems to correspond to around 61 bit: giving wolfram alpha 
+  // log2(4179340454199820289.0), gives back 61.85798... OK, that seems good - let's try to find 
+  // the roots of unity:
+  //
+  // p = 4179340454199820289 
+  // Zp = Integers(p)
+  // root_list = Zp.zeta(2^10, all=False);  # replace the 2^10 by 2^11, etc
+  // root_list
+  //
+  //  1: 4179340454199820288
+  //  2: 3360066027580426122
+  //  3: 3324705732702508476
+  //  4: 4093416561646622555
+  //  5: 4129893269131444668
+  //  6: 4086220048833014884
+  //  7: 4075462463776626479
+  //  8: 4128470768322469725
+  //  9: 4161514758139463127
+  // 10: 4178097261067721820
+  // 11: 4176218026832679610
+  // 12: 4178374021926307362
+  // 13: 4177450540047517585
+  // 14: 4179324170293557359
+  // 15: 4179136626770643812
+  // 16: SageMathCell gave up
+  //
+  // Oh, oh! The algo to compute them seems to scale exponentially in k! With k=15, it already 
+  // takes 2 minutes. And with k=16, SageMathCell did not return anything anymore. There was no 
+  // result, but the busy indicator disappeared. Probably, a maximum computation time was 
+  // exceeded. Maybe try it with wolfram alpha - perhaps they have a faster algo? Or use a local
+  // installation of Sage.
+
+  // Why do so many start with 417? The distribution is interesting - very skewed towards the upper
+  // limit - why is that the case?
+
+
 
   int dummy = 0;
 }

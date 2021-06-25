@@ -77,6 +77,7 @@ ToDo:
   ...or maybe we do not need to take the remainder after each multiplcation but only one at the
   end (or whenever there's an risk of overflow)
  -use the lower 23 bits of 32 bit integers, if the input comes from float32
+-May avoid the bit-reversed ordering
 
 Ideas:
 -To balance the load of the FFT computations, "de-atomize" the FFT routine and compute at each 
@@ -85,6 +86,9 @@ Ideas:
 -To this end, introduce a class rsFourierTransformerBalanced that accepts samples and the input, 
  one at a time, does some FFT operations and returns. At the next sample, it does some more and 
  returns. After N samples have been accepted, the full FFT of the previous block should be available
+ -it may be beneficial to replace the for-loops with while-loops - then we can directly jump into the 
+  funtion and continue where we left off, for any value of h,k,j,jf,jl,Wjk ...which, i think, are
+  needed for the status of the FFT, i.e. these should be passed as (struct of) reference parameters
 
 
 Questions:

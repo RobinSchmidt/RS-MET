@@ -142,12 +142,17 @@ NTT Convolver:
  end (or whenever there's an risk of overflow)
 -Maybe we can assume that the number is always <= 2*m (m being the modulus), if that's the case, we 
  can replace the mod operation by: if(x >= m) x -= m; That could also be done branchless like:
- x = (1-c)*x + c*(x-m)  where  c = (x < m)
--Try to map the float range -1.0..+1.0 to a range large enough to represent 24 bit integers...and 
- maybe spend 2 or 3 extra bits..Let's say, we use the range of 26 bit integers, then multipying 2 
- of them needs at most 52 for the resul, so with 64 bit integers, we should have enough headroom to 
- avoid overflow. ..Oh but the overflow occurs already at the modulus, Maybe choose the largest 
- prime below 2^64
+ x = (1-c)*x + c*(x-m)  where  c = (x < m), complexities:
+          mul                           add
+ complex: 4 mul, 1 add, 1 sub           1 add
+ modular: 3 mul, 1 cmp, 1 add, 1 sub    2 add, 1 cmp, 2 mul, 2 sub
+     or:  1 mul, 1 mod                  1 add, 1 mod
+-Map the float range -1.0..+1.0 to a range large enough to represent 24 bit integers...and maybe 
+ spend 2 or 3 extra bits..Let's say, we use the range of 26 bit integers, then multipying 2 of them 
+ needs at most 52 for the resul, so with 64 bit integers, we should have enough headroom to avoid 
+ overflow. ..Oh but the overflow occurs already at the modulus, Maybe choose the largest prime 
+ below 2^64
+-Maybe we can try modular arithmetic based on a power of 2 and do radix-3 NTTs?
 
 */
 
