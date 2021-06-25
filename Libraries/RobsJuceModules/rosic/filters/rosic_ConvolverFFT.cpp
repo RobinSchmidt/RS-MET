@@ -128,3 +128,26 @@ void ConvolverFFT::allocateBuffers(int newImpulseResponseLength)
 }
 
 
+/*
+
+
+Ideas:
+
+NTT Convolver:
+-Implement a convolver based on a number theorectic transform rsConvolverNTT
+-Figure out if modular arithemtic is faster than complex. Certainly, if the modulus is a power of 2 
+ such the we may use bitmasking for the modulo operation...but for NTT, we need the modulus to be a 
+ prime (i think)
+-Maybe we do not need to take the remainder after each multiplcation but only one at the very
+ end (or whenever there's an risk of overflow)
+-Maybe we can assume that the number is always <= 2*m (m being the modulus), if that's the case, we 
+ can replace the mod operation by: if(x >= m) x -= m; That could also be done branchless like:
+ x = (1-c)*x + c*(x-m)  where  c = (x < m)
+-Try to map the float range -1.0..+1.0 to a range large enough to represent 24 bit integers...and 
+ maybe spend 2 or 3 extra bits..Let's say, we use the range of 26 bit integers, then multipying 2 
+ of them needs at most 52 for the resul, so with 64 bit integers, we should have enough headroom to 
+ avoid overflow. ..Oh but the overflow occurs already at the modulus, Maybe choose the largest 
+ prime below 2^64
+
+*/
+

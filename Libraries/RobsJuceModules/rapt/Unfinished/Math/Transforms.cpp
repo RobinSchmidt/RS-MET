@@ -5,7 +5,9 @@ void smbFft(T *fftBuffer, long fftFrameSize, long sign)
   T tr, ti, ur, ui, *p1r, *p1i, *p2r, *p2i;
   long i, bitm, j, le, le2, k, logN;
 
-  logN = (long)(log((double)fftFrameSize)/log(2.)+.5); // pass this value as parameter
+  logN = (long)(log((double)fftFrameSize)/log(2.)+.5); 
+  // todo: pass this value as parameter or use a special rsLog2Int function, see comments below
+  // rsLinearTransforms::fourierRadix2DIF
 
   // Bit-reversed ordering (?):
   for(i = 2; i < 2*fftFrameSize-2; i += 2) {
@@ -118,6 +120,7 @@ void rsBluesteinFFT(std::complex<T> *a, int N)
 template<class T>
 static void rsLinearTransforms::fourierRadix2DIF(T* a, int N, T W)
 {
+  rsAssert(rsIsPowerOfTwo(N), "N must be a power of 2");
   int n = 1;          // NumOfProblems
   int h = N/2;        // HalfSize -> distance between butterflied values?
   while(h > 0) {                       // loop over the problems(?)
@@ -136,8 +139,7 @@ static void rsLinearTransforms::fourierRadix2DIF(T* a, int N, T W)
   rsArrayTools::orderBitReversed(a, N, (int)(rsLog2(N)+0.5)); // descramble outputs
 }
 // ToDo:
-// -maybe use a special, optimized rsLog2Int function, i think it would need to check for the 
-//  index of the highest bit - maybe some bitwise operation can figure this out
+// -use a special, optimized rsLog2Int function, using a check for the index of the highest bit:
 //  https://stackoverflow.com/questions/671815/what-is-the-fastest-most-efficient-way-to-find-the-highest-set-bit-msb-in-an-i
 //  Answer 4: "The Debruin technique should only be used when the input is already a power of two"
 //  or: http://graphics.stanford.edu/~seander/bithacks.html#IntegerLogObvious
@@ -148,6 +150,7 @@ static void rsLinearTransforms::fourierRadix2DIF(T* a, int N, T W)
 template<class T>
 void rsLinearTransforms::hadamard(T* A, int N)
 {
+  rsAssert(rsIsPowerOfTwo(N), "N must be a power of 2");
   int h = 1;
   while(h < N) {
     for(int i = 0; i < N; i += 2*h) {
@@ -162,6 +165,7 @@ void rsLinearTransforms::hadamard(T* A, int N)
 template<class T>
 void rsLinearTransforms::kronecker2x2(T* A, int N, T a, T b, T c, T d)
 {
+  rsAssert(rsIsPowerOfTwo(N), "N must be a power of 2");
   int h = 1;
   while(h < N) {
     for(int i = 0; i < N; i += 2*h) {
@@ -176,6 +180,7 @@ void rsLinearTransforms::kronecker2x2(T* A, int N, T a, T b, T c, T d)
 template<class T>
 void rsLinearTransforms::kronecker3x3(T* v, int N, const rsMatrix3x3<T>& A)
 {
+  //rsAssert(rsIsPowerOfThree(N), "N must be a power of 3");
   int h = 1;
   while(h < N) {
     for(int i = 0; i < N; i += 3*h) {
@@ -195,7 +200,7 @@ void rsLinearTransforms::kronecker3x3(T* v, int N, const rsMatrix3x3<T>& A)
 ToDo:
 -Wavelet transforms: Gabor, Daubechies, Haar, ...
  https://en.wikipedia.org/wiki/Haar_wavelet
--Fourier, Hadamard, Walsh, Householder, Givens, Toeplitz (?), Slant (uses sawtooths as basis 
+-Walsh, Householder, Givens, Toeplitz (?), Slant (uses sawtooths as basis 
  functions)..what about using rectangular waves? is that what the Hadamard trafo does? ..find a way
  to plot the basis vectors of the transforms - set one coeff one and all others zero and perform an 
  inverse transform - this should give the basis vector corresponding to the coeff that was set to 1
@@ -204,7 +209,7 @@ ToDo:
 -KarhunenLoeve/Eigenvector/PCA 
  http://fourier.eng.hmc.edu/e161/lectures/klt/node3.html
  https://link.springer.com/chapter/10.1007/978-3-540-72943-3_10
--Add a variants of the Kronecker transforms that use an additional workspace array and avoid the
+-Add variant of the Kronecker transforms that use an additional workspace array and avoid the
  internal temp variables - then benchmark them against the in-place algo. Maybe, these out-of-place
  should first go into prototypes, and be added to the library only when it is found that they are
  faster
@@ -212,18 +217,22 @@ ToDo:
 -test the FFT algo for finite fields by doing a fast FFT convolution of two sequences of modular 
  integers and comparing that to the result of a naive convolution, see:
  https://crypto.stackexchange.com/questions/63614/finding-the-n-th-root-of-unity-in-a-finite-field
--implement arbitrary length FFT using the Bluestein algorithm
+-implement arbitrary length FFT using the Bluestein algorithm, test it for complex and modular 
+ integer types
 -implement a decimation in time FFT
 -maybe implement a radix-3 FFT because it may be useful to have FFTs based on different primes
  because when we want to do NTTs, because (i think), the radix is required to be coprime with 
  length of the array (otherwise N-th roots of unity don't exist, or something). Or does it need to
- be coprime to the modulus? or both? -> figure out
+ be coprime to the modulus? or both? -> figure out..or maybe the array length must be coprime
+ with the modulus? ...we have 3 numbers: length, modulus, radix
 -can we also devise a Bluestein-like algorithm for sequences of arbitrary length for modular 
  integers? 
 -what about a tranform based on the outer product of a vector: y = A*x, where A = v * v^T
  -> A is also a Kronecker product, so it should be possible to invert by the same algo but having
     elements of v replaced by their reciprocals
  -> what, if we choose v = x? Can we still invert it simply if v (i.e. x) is unknown?
+ -> maybe try C = E{x * x^T} where E is the expectation value, C is the covariance matrix, i think
+    this matrix can be formed as outer product of the autocorrelation vector of x
 
 
 Ideas:
@@ -243,6 +252,8 @@ Ideas:
  per pixel, amounting to dithering...for video, dithering should be spatial, not temporal...maybe
  something based on Floyd-Steinberg algorithm
 -make a class rsTimeFrequencyRepresentation using various transforms
+
+-can fourierRadix2DIF vectorized by having WN a vector of [W W^2 W^4 W^8]?
 
 */
 

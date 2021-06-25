@@ -2,12 +2,23 @@
 #define RAPT_TRANSFORMS_H
 
 /** A collection of linear transforms for signal vectors where by "linear transform" we mean here 
-in general something like a matrix vector product  y = A*x  where x and y are input- and output 
-vectors respectively and A is a matrix. Many of the important linear transforms used in signal 
-processing do not require the explicit computation of a matrix-vector product, which is an O(N^2) 
-process, but can use more efficient algorithms. The most notable example of these is certainly the 
-fast Fourier transform (FFT), which can be computed by an O(N*log(N)) algorithm. But there are many
-others, each with its own unique features and application domain. */
+in general something like a matrix-vector product of the form:
+  
+  y = A * x
+
+where x and y are input- and output vectors respectively and A is the matrix that defines the 
+transformation. Many of the important linear transforms used in signal processing do not require 
+the explicit computation of a matrix-vector product, which is an O(N^2) process, but can use more 
+efficient algorithms, due to the special structure of the matrix. The most notable example of 
+these is certainly the fast Fourier transform (FFT), which can be computed by an O(N*log(N)) 
+algorithm. But there are many others, each with its own unique features and application domain. 
+
+Note that the Fourier transforms here are mostly convenience functions with no attempt to be 
+particularly fast or precise. They may be good enough for prototyping, but production code that 
+needs a lot of FFTs of the same size should use rsFourierTransformerRadix2 because that class 
+precomputes the twiddle factors for the given size, avoiding some computations in the actual FFT 
+and also avoiding error accumulation in the twiddle factors due to the recursion in the algos 
+used here. */
 
 class rsLinearTransforms
 {
@@ -17,12 +28,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Fourier Transforms
 
-  /** A radix-2 FFT using a decimation in frequency (DIF) algorithm. The third parameter WN, is the
-  primitive N-th root of unity, which, when T is a complex type, is given by e^(-2*i*pi/N) for a 
-  forward FFT or e^(+2*i*pi/N) for an inverse FFT (verify that!). I have opted to require client 
-  code to pass this primitive N-th root of unity to make it possible to instantiate the routine 
-  also for the case when T is a modular integer type in which case the FFT is also known NTT as 
-  for "number theoretic transform" (but this has not yet been tested). See:
+  /** A radix-2 FFT using a decimation in frequency (DIF) algorithm. The third parameter WN is a
+  primitive N-th root of unity that the caller must pass. When T is a complex type, WN should be 
+  e^(-2*i*pi/N) for a forward FFT or e^(+2*i*pi/N) for an inverse FFT. I have opted to require 
+  client code to pass this primitive N-th root of unity to make it possible to instantiate the 
+  routine also unchanged for the case when T is a modular integer type in which case the FFT is 
+  also known NTT as for "number theoretic transform" (but this has not yet been tested). See:
     https://ccrma.stanford.edu/~jos/st/Number_Theoretic_Transform.html
   The algorithm was adapted from algorithm 4.2 in the book "Inside the FFT black box" and then
   simplified. All twiddle factors are computed on the fly via recursion. For a complex FFT, the 
@@ -34,7 +45,9 @@ public:
   numeric precision is probably still good enough and production code should use optimized routines
   with (precisely) precomputed twiddle factors anyway, because that's more accurate and presumably
   also more efficient (maybe, but it will need to access two arrays instead of just one). This is 
-  the way, it's done in class rsFourierTransformerRadix2, for example (which uses Ouura FFT). */
+  the way, it's done in class rsFourierTransformerRadix2, for example (which uses Ouura FFT). The 
+  advantage of this implementation is that it requires no additional storage space for the twiddle
+  factors. */
   template<class T>
   static void fourierRadix2DIF(T *x, int N, T WN);
 
@@ -44,20 +57,21 @@ public:
   static void fourierRadix2DIF(std::complex<T> *x, int N)
   { fourierRadix2DIF(x, N, exp(std::complex<T>(T(0), T(-2.0*PI/N)))); }
 
-  /** Invokes fourierRadix2DIF with WN = e^(+2*i*pi/N). This result in the inverse FFT for complex
-  number types, except for the scaling by 1/N. */
-  template<class T>
-  static void fourierInvUnscaledRadix2DIF(std::complex<T> *x, int N)
-  { fourierRadix2DIF(x, N, exp(std::complex<T>(T(0), T(+2.0*PI/N)))); }
-
-  /** Invokes fourierRadix2DIF with WN = e^(+2*i*pi/N). This result in the inverse FFT for complex
-  number types. */
+  /** Inverse transform of fourierRadix2DIF() for complex types. Invokes fourierRadix2DIF with 
+  WN = e^(+2*i*pi/N) and then scales the output by 1/N. */
   template<class T>
   static void fourierInvRadix2DIF(std::complex<T> *x, int N)
   { fourierInvUnscaledRadix2DIF(x, N); rsArrayTools::scale(x, N, T(1)/T(N)); }
 
-
-
+  /** Invokes fourierRadix2DIF with WN = e^(+2*i*pi/N). This result in the inverse FFT for complex
+  number types, except for the scaling by 1/N. It may be occasionally useful to bypass the scaling,
+  for example, because you have already done the scaling after a forward FFT (which is actually 
+  a very typical thing do in FFT analysis, because there we want the actual amplitudes of the 
+  sines which do not depend on N, but DSP textbooks typically have the convention the other way
+  around). That's why the unscaled transform has been factored out.  */
+  template<class T>
+  static void fourierInvUnscaledRadix2DIF(std::complex<T> *x, int N)
+  { fourierRadix2DIF(x, N, exp(std::complex<T>(T(0), T(+2.0*PI/N)))); }
 
 
   //-----------------------------------------------------------------------------------------------
@@ -136,7 +150,7 @@ must be a power of 2. It expects a complex input signal (see footnote 2), ie. wh
 In that case, the transform of the frequencies of interest is in fftBuffer[0...fftFrameSize]. */
 template<class T>
 void smbFft(T *fftBuffer, long fftFrameSize, long sign);
-// fourierBernsee
+// rename to fourierBernsee, move to prototypes
 
 /** A direct implementation of the DFT with the slow O(N^2) complexitiy scaling. Its main utility
 is to check the outputs of the FFT algorithms for debugging.
@@ -144,6 +158,7 @@ is to check the outputs of the FFT algorithms for debugging.
 */
 template<class T>
 void rsDFT(std::complex<T> *buffer, int N);
+// maybe move to prototypes
 
 /** A general purpose FFT-routine for complex inputs. */
 template<class T>
@@ -155,7 +170,7 @@ transform of a real signal. */
 template<class T>
 void rsMagnitudeAndPhase(T *signal, int N, T *magnitudes, T *phases = NULL);
 // this is a convenience function mainly for prototyping that allocates heap memory
-// rename to fourierMagPhs or fourierPolar
+// rename to fourierMagPhs or fourierPolar - maybe move to prototypes
 
 
 template<class T> // replacement: rsLinearTransforms::fourierInvRadix2DIF

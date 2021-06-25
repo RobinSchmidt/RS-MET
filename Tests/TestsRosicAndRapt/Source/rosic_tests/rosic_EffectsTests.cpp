@@ -201,7 +201,7 @@ void rsFastKroneckerTrafo2(std::vector<T>& v, const std::vector<const rsMatrix<T
 
 
 
-// Move to math tests:
+// Move to TransformsTests.cpp:
 
 /** L is the order */
 bool testKronecker2x2(int L)

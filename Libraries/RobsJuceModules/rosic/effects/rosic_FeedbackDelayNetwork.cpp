@@ -127,14 +127,14 @@ void FeedbackDelayNetwork::setDiffusion(double newDiffusion)
     d = 0.875 - 2.625*d + 2.75 * d*d;
   */
 
-  // i think, this required mapping comes about because the percived diffusion depends on the ratio
-  // a/b which has singularities quickly towards the ends of of the interval ...maybe some tan or
-  // atan based formula could help?
+  // i think, this required mapping comes about because the perceived diffusion depends on the 
+  // ratio a/b which has singularities quickly towards the ends of of the interval ...maybe some 
+  // tan or atan based formula could help?
 
   RAPT::rsSinCos(d*PI/4, &b, &a);
 
   // \todo - when introducing modulation for d (or the angle phi), check if it is better to
-  // modulate the angle before or after the non linear mapping. if the modulation is applied before
+  // modulate the angle before or after the non-linear mapping. if the modulation is applied before
   // the mapping, we should wrap the modulated value into 0...1 before the sin/cos
 }
 
@@ -173,6 +173,8 @@ void FeedbackDelayNetwork::fastGeneralizedHadamardTransform(
   }
   if( !xContainsResult )
     memcpy(y, x, N*sizeof(double));  // try rsArrayTools::copy instead, measure performance
+  // actually, we can simplify this, based on whether log2N is even of odd and get rid of that
+  // flip-flopping flag
 }
 // After the algo, x contains garbage - that's not nice
 // todo: try to write the algorithm in a way that works in place - maybe it's sufficient to pull 
@@ -399,7 +401,7 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
 
   using LT = RAPT::rsLinearTransforms;
   if(use3x3) LT::kronecker3x3(delayLineOuts, numDelayLines, seedMat3x3);
-  else       LT::kronecker2x2(delayLineOuts, numDelayLines, a, b, -b, a);
+  else       LT::kronecker2x2(delayLineOuts, numDelayLines, a, b, -b, a); // use seedMat2x2
 
   for(i = 0; i < numDelayLines; i++)
     delayLines[i][writeIndices[i]] += feedback * delayLineOuts[i];
@@ -432,32 +434,113 @@ void FeedbackDelayNetwork::processFrame(double *inOutL, double *inOutR)
 
 /*
 
+ToDo:
+
+-the memory management is totally silly - way to many re-allocations
+ -allocate memory for all delaylines once in the constructor (via an allocate function) and then
+  use pointers into that memory
+
 Ideas:
+
 -allow a different set of a,b values (diffusion) for each stage, maybe arrange it such that the
  feedback between longer lines spreads faster and between shorter lines more slowly, per roundtrip,
  such that the total time for the build-up is roughly the same in all lines
+
 -maybe allow a fully general product of matrices that are multiplied together via the Kronecker 
  product..maybe call it KronVerb, KronReverb, KronyVerb
+
 -maybe we could introduce a permutation as part of the feedback, maybe that could be time-varying
  to introduce further randomness
+
 -try a Kronecker trafo with complex coeffs. oh - and figure out for which choices of a,b,c,d the
  resulting matrix is unitary - will it be when using a matrix with c=-b, d=a or c=b, d=-a. 
  oh - i checked with the 2x2 seed matrix it is unitary indeed does this imply the higher order 
  matrices are unitary too? yes, i think preserving unitariness this is a general feature of the 
  Kronecker product. 
+
 -Try using dual numbers or hyperbolic numbers...dual numbers could indeed be interesting in an FDN
  because they model derivatives...maybe that leads to some sort of highpass feature? ..can we also 
  have a number system tha simulates integration?
+
 -Try arbitrary a,b,c,d and rescale the output to have the same length as the input vector - this 
  makes the system nonlinear (really?) - maybe in an interesting way?
+
 -Maybe it could be useful to do incomplete Kronecker trafos, i.e. let the outer while(h < N) loop
  only run up to N/2 or N/4, etc? ..we could pass a "divider" parameter or somehow pass a 
  loopLimit parameter
+
 -When using the 3x3 version, we have 3 density parameters - we could modulate them by 3 different
  modulation frequencies (mod signals are obtained by bandpassing the rectified (and possibly 
  leveled) output - or maybe the leveling should come after the bandpass)
  -maybe the 3x3 rotation should be specified not in terms of Euler angles but by an axis and an 
   angle..or maybe in some other way -> figure out how 3D rotations are most conveniently 
   parametrized in graphics
+
+-to avoid the initial predelay (the delay before the 1st reflection arrives), maybe use multiple
+ output taps (that are not part of the feeback loop)...maybe it's sufficient to let only one 
+ delayline have multiple output taps (perhaps the shortest...or the longest, if we want these 
+ output spikes to intermix with the build-up of the reflections)...or maybe use a dedicated 
+ delayline for the early reflections, maybe the early reflections should be spatialized via
+ HRTF processing
+
+-try a different ordering of the delaylines using the shuffling function in the cpp file.
+ this is supposed to be better for the diffusion parameter: short delaylines would mostly
+ crossfeed long ones and vice versa. if this is used, shuffle the output gains in the same way
+ (-> introduce output vectors as members and throw the same function at them) ...hmm but maybe
+ not - it seems that shuffled delayline-length together with non-shuffled output vector work well
+ - especiall with low diffusion
+
+-introduce modulation of the angle "phi" by rectifying the FDNs output signal (maybe use
+ the mono-sum), pass it into a pair of filters tuned to the modulation-frequency and are 90
+ degrees out of phase (use the ModalFilter class for this). Two out-of-phase signals are needed in
+ order to obatin the instantaneous envelope of the modulation signal in order to divide by it to
+ obtain an amplitude-normalized modulation signal from either of the two filter outputs (perhaps
+ use the sine-component). 
+
+-For the output vector: it doesn't seem desirable to just repeat the first 4 values multiple times, 
+ because that seems to lead to constructive interference in the left channel and destructive 
+ interference in the right channel between the 1st and 2nd order reflections. Maybe permute the 
+ next 4 values (in the same way for left and right output vector). It also seems a bit unnatural 
+ that they have only 2 values for the amplitude. Maybe start with two random vectors and 
+ orthogonalize them via Gram-Schmidt. Maybe do the same for the injection vectors. Maybe after 
+ orthogonalization, do a (joint) sorting such that the values where (aL^2 + aR^2) are greatest come 
+ first where aL,aR are the output weights for left and right. We want the first feq reflections be 
+ loudest.
+
+-Provide a function compute the poles. The eigenvalues of the feedback matrix can be easily 
+ computed, see here:
+ https://en.wikipedia.org/wiki/Kronecker_product
+ https://en.wikipedia.org/wiki/Kronecker_product#Abstract_properties
+ ...we can easily compute the eigenvalues! the eigenvalues of a Kronecker product of two matrices
+ A,B are given by the products of their eigenvalues...that may be helpful in figuring out 
+ expressions for the poles of the FDN and maybe even to place the resonance frequencies of the
+ FDN deliberately. I think, the eigenvalues of a 2D rotation matrix is just the complex number on
+ the unit circle corresponding to the rotation angle (and the eigenvectors are not real). But what 
+ about the delays? They have impact on the poles, too. I think, the number of poles may be equal to
+ the product of the delaytimes in samples? Is that correct?
+
+
+Resources:
+
+Julius Smith:
+https://www.dsprelated.com/freebooks/pasp/Feedback_Delay_Networks_FDN.html
+https://www.dsprelated.com/freebooks/pasp/FDN_Reverberation.html
+
+Digital delay networks for designing artificial reverberators (Jean-Marc Jot, Antoine Chaigne):
+https://www.researchgate.net/publication/243779004_Digital_delay_networks_for_designing_artificial_reverberators
+
+Maximally diffusive yet efficient feedback delay networks for artificial reverberation (Davide Rocchesso)
+https://www.researchgate.net/publication/3342318_Maximally_diffusive_yet_efficient_feedback_delay_networks_for_artificial_reverberation
+
+Sebastian Schlecht:
+Feedback Delay Networks in Artificial Reverberation and Reverberation Enhancement (PhD Thesis):
+https://www.researchgate.net/publication/322951473_Feedback_Delay_Networks_in_Artificial_Reverberation_and_Reverberation_Enhancement
+https://dafx2020.mdw.ac.at/proceedings/papers/DAFx2020_paper_53.pdf (with matlab toolbox)
+
+Choosing Optimal Delays for Feedback Delay Networks:
+http://pub.dega-akustik.de/DAGA_2014/data/articles/000025.pdf
+
+there was also some paper by Miller Puckette..
+
 
 */

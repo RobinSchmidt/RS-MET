@@ -4,23 +4,7 @@
 namespace rosic
 {
 
-/** Under Construction...maybe move to prototypes
-
-This class ...
-
-\todo try a different ordering of the delaylines using the shuffling function in the cpp file.
-this is supposed to be better for the diffusion parameter: short delaylines would mostly
-crossfeed long ones and vice versa. if this is used, shuffle the output gains in the same way
-(-> introduce output vectors as members and throw the same function at them) ...hmm but maybe
-not - it seems that shuffled delayline-length together with non-shuffled output vector work well
-- especiall with low diffusion
-
-\todo introduce modulation of the angle "phi" by rectifying the FDNs output signal (maybe use
-the mono-sum), pass it into a pair of filters tuned to the modulation-frequency and are 90
-degrees out of phase (use the ModalFilter class for this). Two out-of-phase signals are needed in
-order to obatin the instantaneous envelope of the modulation signal in order to divide by it to
-obtain an amplitude-normalized modulation signal from either of the two filter outputs (perhaps
-use the sine-component). */
+/** Under Construction...maybe move to prototypes  */
 
 class FeedbackDelayNetwork
 {
@@ -137,7 +121,7 @@ public:
    /** The "work" pointer should point to an array (of the same length as x) that can be used as 
    internal workspace.  
    \todo move this function out of this class - it might be useful in other contexts as well */
-  RS_DEPRECATED( // replacement: RAPT::rsFGHT
+  RS_DEPRECATED( // replacement: RAPT::rsLinearTransforms::kronecker2x2
   static void fastGeneralizedHadamardTransform(double* x, int N, int log2N, double* work,
     double a = 1.0, double b = 1.0, double c = 1.0, double d = -1.0));
 
@@ -146,7 +130,7 @@ public:
     static void fastInverseGeneralizedHadamardTransform(
       double* x, int N, int log2N, double* work,
       double a = 1.0, double b = 1.0, double c = 1.0, double d = -1.0),
-    { RAPT::rsIFGHT(x, N, a,b,c,d); } )   // this is the replacement
+    { RAPT::rsLinearTransforms::kroneckerInv2x2(x, N, a,b,c,d); } )   // this is the replacement
 
 };
 

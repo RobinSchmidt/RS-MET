@@ -72,9 +72,12 @@ Bront Ubunutu Mono, Code New Roman, D2Coding, Envy Code R, Fantasque Sans Mono, 
 Iosevka, Liberation Mono, Lilex, Mononoki, Share Tech Mono, Ubuntu Mono
 
 Editor Font: 
--Consolas 9pt or 10pt
--Inconsolata SemiExpanded Medium 10pt
--Lucida Sans 9pt (fits more lines on screen), 
+-Consolas 9pt or 10pt (is default in Visual Studio)
+-Inconsolata SemiExpanded Medium 10pt (glyphs are 7x9 pixels)
+ (there is also a proportial version of this called Consolata)
+-Lucida Sans 9pt (fits more lines on screen)
+
+
 
 
 Visual Studio:

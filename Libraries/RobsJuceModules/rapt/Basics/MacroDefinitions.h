@@ -99,11 +99,11 @@ updated to get rid of the deprecation warnings. */
 
 // Compiler hinting:
 #if defined(__GNUC__) && __GNUC__ >= 4
-#define RS_LIKELY(x)   (__builtin_expect((x), 1))
-#define RS_UNLIKELY(x) (__builtin_expect((x), 0))
+  #define RS_LIKELY(x)   (__builtin_expect((x), 1))
+  #define RS_UNLIKELY(x) (__builtin_expect((x), 0))
 #else
-#define RS_LIKELY(x)   (x)
-#define RS_UNLIKELY(x) (x)
+  #define RS_LIKELY(x)   (x)
+  #define RS_UNLIKELY(x) (x)
 #endif
 // this can be used to hint the compiler that some condition is likely to evaluate to true (or 
 // false, for example:

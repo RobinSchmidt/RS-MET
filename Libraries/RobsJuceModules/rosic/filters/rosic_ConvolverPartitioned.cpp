@@ -64,3 +64,37 @@ void ConvolverPartitioned::clearInputBuffers()
   for(size_t c = 0; c < fftConvolvers.size(); c++)
     fftConvolvers[c].clearInputBuffer();
 }
+
+
+/*
+
+ToDo:
+-templatize and move to rapt
+-experiment with using integer arithmetic to avoid roundoff noise - this requires using NTT instead
+ of complex FFT...maybe that's faster 
+ -is modular arithemtic is faster than complex? -> benchmark! certainly, if the modulus is apower 
+  of 2 such the we may use bitmasking for the modulo operation...but does that work for NTT?
+  ...or maybe we do not need to take the remainder after each multiplcation but only one at the
+  end (or whenever there's an risk of overflow)
+ -use the lower 23 bits of 32 bit integers, if the input comes from float32
+
+Ideas:
+-To balance the load of the FFT computations, "de-atomize" the FFT routine and compute at each 
+ sample a few operations of all running FFTs, rather then just accumulating samples at each sample and 
+ triggering full one-go FFTs at some samples
+-To this end, introduce a class rsFourierTransformerBalanced that accepts samples and the input, 
+ one at a time, does some FFT operations and returns. At the next sample, it does some more and 
+ returns. After N samples have been accepted, the full FFT of the previous block should be available
+
+
+Questions:
+-using uinform block-sizes, input spectra can be re-used by just passing the input spectrum to the
+ next block...but can this also be made to work, when the next block has twice the length...isn't 
+ the DIF-FFT splitting the signal in the time-domain into two halves - that would mean, one half is 
+ already computed and we only need to compute the other half
+
+Resources:
+http://www.cs.ust.hk/mjg_lib/bibs/DPSu/DPSu.Files/Ga95.PDF
+https://www.researchgate.net/publication/280979094_Partitioned_convolution_algorithms_for_real-time_auralization
+
+*/

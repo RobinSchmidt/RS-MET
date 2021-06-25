@@ -449,6 +449,5 @@ bool testTransforms()
   testResult &= testFourierTransformerRadix2(dummy);
   testResult &= testVariousFourierTransforms(dummy);
 
-  //appendTestResultToReport(reportString, testName, testResult);
   return testResult;
 }

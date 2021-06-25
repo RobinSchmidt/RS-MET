@@ -168,9 +168,7 @@ public:
   The commutator captures, how non-commutative two matrices behave when being multiplied. If the
   two matrices commute (i.e. behave commutatively), their commutator is the zero matrix. */
   static rsMatrix2x2<T> commutator(const rsMatrix2x2<T>& A, const rsMatrix2x2<T>& B)
-  {
-    return A*B - B*A;
-  }
+  { return A*B - B*A; }
   // see: https://en.wikipedia.org/wiki/Commutator#Ring_theory
   // maybe implement also the anticommutatior defined there as: {A,B} = A*B + B*A
 
@@ -336,8 +334,7 @@ public:
     numRows = newNumRows;
     numCols = newNumColumns;
   }
-  // maybe rename to setShape for consistency with the rest of the library...otoh, reshape is
-  // consistent with NumPy
+  // maybe rename or make an alias "reshape" to be consistent with NumPy, MatLab, etc.
 
   /** Resets the number of rows and columns to zero and the dataPointer to nullptr. Should be 
   called whenever you need to invalidate our pointer member. */
@@ -447,7 +444,8 @@ public:
         return true;
     return false;
   }
-  // needs test
+  // needs test, todo: document for what this is good for...i think, it's a condition for which 
+  // certain linear algebra operations don't work
 
   /** Returns true, iff this matrix (denoted as A) is symmetric (up to a given tolerance), i.e. 
   A(i,j) == A(j,i) for all i,j. Symmetry considerations usually apply only to square matrices. If 
@@ -456,7 +454,7 @@ public:
   {
     if(numRows != numCols) return false;  // non-square matrices are never considered symmetric
     for(int i = 1; i < numRows; i++) {
-      for(int j = i; j < numCols; j++) {
+      for(int j = i; j < numCols; j++) {  
         T d = rsAbs(at(i,j) - at(j,i));
         if(d > tol)
           return false; }}
@@ -464,6 +462,9 @@ public:
   }
   // needs test, todo: implement test for antisymmetry - the structure is the same, just that we 
   // need to use at(i,j) + at(j,i) instead of at(i,j) - at(j,i)
+  // shouldn't the inner j-loop start at j+1? A(i,j) is always equal to A(j,i) when i==j, so it 
+  // seems, we are checking one value too many...but that will not translate to the check for 
+  // antisymmetry because A(i,i) is only equal to -A(i,i) when it's zero
 
 
   /** Returns a const pointer to the data for read access as a flat array. */
@@ -519,7 +520,7 @@ public:
   {
     T t = T(0);
     for(int i = 0; i < rsMin(this->numRows, this->numCols); ++i)
-      t = t + this->at(i, i);   // use +=
+      t = t + this->at(i, i);   // todo: use +=
     return t;
   }
 
@@ -794,7 +795,8 @@ public:
         (*B)(j,i) = A.at(i,j);
   }
   // B is a pointer and not a reference because it's an output - adopt that idiom generally:
-  // output variables are always passed as pointers, never as references
+  // output variables are always passed as pointers, never as references to make it visible in 
+  // client code when a function parameter is an output
 
   /** Transposes the square matrix A in place. */
   static void transposeSquare(rsMatrixView<T>* A)
@@ -806,7 +808,7 @@ public:
   }
 
   /** Computes the Kronecker product between matrices A and B and stores the result in C. Assumes,
-  that C has the right dimensions. For more info, see the documentation of
+  that C has the right dimensions. For more info, see the documentation of 
   rsMatrix::getKroneckerProduct. */
   static void kroneckerProduct(
     const rsMatrixView<T>& A, const rsMatrixView<T>& B, rsMatrixView<T>* C)
@@ -844,6 +846,8 @@ public:
       for(int j = 0; j < getNumRows(); j++)
         y[i] += at(j, i) * x[j]; }
   }
+  // todo: maybe rename to transposeProduct or productTransposed and/or implement functions that 
+  // use the  Hermitian transpose maybe productHermitian
 
 
   /** Convenience function to compute matrix-vector product y = A*x, taking a raw array for x as
@@ -926,7 +930,6 @@ protected:
   T *dataPointer = nullptr;      // pointer to the actual data
 
 };
-
 
 //=================================================================================================
 
@@ -1110,9 +1113,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Manipulations */
 
-
-
-
   /** Transposes this matrix, i.e. the rows become columns and vice versa. Avoids reallocation in
   case of square-matrices and row- and column vectors. */
   void transpose()
@@ -1191,7 +1191,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Decompositions */
 
-  // getLowerUpperDecomposition ...or decomposeLU, decomposeQR, decomposeSVD
+  // getLowerUpperDecomposition ...or decomposeLU, decomposeQR, decomposeSVD 
+  // ...but i think, they should go into rsLinearAlgebra
 
 
   //-----------------------------------------------------------------------------------------------
@@ -1291,9 +1292,10 @@ public:
   /** \name Misc */
 
   static int numHeapAllocations;
-    // instrumentation for unit-testing - it's actually the number of *potential* heap-allocations,
-    // namely, the number of calls to data.resize() which may or may not re-allocate memory
-    // maybe get rid of this and implement the allocation test using a custom allocator
+  // This member is just an instrumentation for unit-testing of the copy elision in copy 
+  // constructors and assignment. It's actually the number of *potential* heap-allocations, namely,
+  // the number of calls to data.resize() which may or may not re-allocate memory.
+  // ToDo: try to get rid of this and implement the allocation test using a custom allocator
 
 protected:
 
@@ -1325,7 +1327,8 @@ inline rsMatrix<T> operator*(const T& s, const rsMatrix<T>& A)
   return B;
 }
 
-/** Multiplies a row vector x with a matrix: y = x * A. The result y is another row vector. */
+/** Multiplies a row vector x with a matrix: y = x * A. The result y is another row vector: 
+(MxN)*(PxQ) = MxQ with M=1 */
 template<class T>
 std::vector<T> operator*(const std::vector<T>& x, const rsMatrix<T>& A)
 {
