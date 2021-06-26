@@ -236,7 +236,8 @@ ToDo:
  -> what, if we choose v = x? Can we still invert it simply if v (i.e. x) is unknown?
  -> maybe try C = E{x * x^T} where E is the expectation value, C is the covariance matrix, i think
     this matrix can be formed as outer product of the autocorrelation vector of x
-
+-Implement radix2-DIT algo and also radix-3 algo(s) ...maybe we can do a radix-3 NTT with a modulus
+ that is a power of 2?
 
 Ideas:
 -Wavelet transforms split the signal into lowpass and highpass part at each stage, leading to 

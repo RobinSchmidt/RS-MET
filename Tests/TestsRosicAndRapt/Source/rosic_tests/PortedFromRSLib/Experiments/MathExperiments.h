@@ -72,6 +72,7 @@ void primeSieveAtkin();
 void primeSieve();
 void primeDistribution();
 void numberTheoreticTransform();
+void numberTheoreticTrafoModuli();
 
 
 

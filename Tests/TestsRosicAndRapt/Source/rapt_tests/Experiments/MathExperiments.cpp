@@ -3080,16 +3080,18 @@ void twoParamRemap()
   //http://gnuplot.sourceforge.net/demo/contours.html
 }
 
-
 void numberTheoreticTrafo()
 {
   // We implement a fast convolution by means of a number theorectic transform (NTT). An NTT is 
   // similar to an FFT, but instead of working in the field of complex numbers, it works in a 
-  // finite field Z_p of modular integers. Here, we work with p = 97 which is a prime, which 
+  // finite field Z_p of modular integers. Here, we work with p = 97, which is a prime, which 
   // guarantees that all the required "magic numbers" exist in this field. We need the N-th roots
   // of unity and their inverses where N = 2^k for all N less than maxN/2, where maxN is the
   // maximum supported transform size and we also need the inveres of all these N (verify - i may
-  // have the factor 2 wrong...)
+  // have the factor 2 wrong...). ...I'm also not sure anymore that p being prime ensures the 
+  // existence of all desired N-th roots of unity (where N = 2^k for all k < p). Maybe it only 
+  // ensures, that they are invertible, if the yhappen to exist? I think, typically, there is some 
+  // highest k, for which the root exists, but it may be much less than p/2...figure out..
 
   // Sage code to find the primitive n-th roots of unity for n = 2^k, k = 1,..,5
   //
@@ -3278,13 +3280,80 @@ void numberTheoreticTrafo()
   // installation of Sage.
 
   // Why do so many start with 417? The distribution is interesting - very skewed towards the upper
-  // limit - why is that the case?
-
-
+  // limit - why is that the case? Maybe the algo does just a linear search starting at the highest
+  // possible number?
 
   int dummy = 0;
 }
 
+void numberTheoreticTrafoModuli()
+{
+  // We try to find moduli (and related magic numbers) that are suitable for NTT convolution. It 
+  // would be nice, if we could use a power-of-2 modulus, because then the modular arithmetic 
+  // simplifies (we can use bitmasks), ideally 2^64 (then we don't even need a mask). But that 
+  // immediately rules out radix-2 NTTs (i think, the length must be coprime with the modulus or 
+  // something). But maybe radix-3, radix-5, radix-7 etc. can be made to work? Their sizes are 
+  // coprime with power-of-2 moduli. We investigate some powers of 2 for the modulus and try to 
+  // figure out which N = 3^k th roots of unity exist (for radix-3), if their inverses also exist
+  // and if the inverses of the 3^k values themsleves exist. That's all that is needed for there to
+  // be an NTT of the desired kind, if i'm not mistaken.
+
+
+  rsUint64 B = 2;               // base
+  rsUint64 P = 16;              // power
+  rsUint64 M = rsPowInt(B, P);  // candidate modulus, 2^64 wraps around to 0
+  rsUint64 R = 3;               // candidate radix
+
+  // Sage can not help, this code:
+  //
+  // R = 3
+  // k = 1
+  // M = 2^16
+  // Zp = Integers(M)
+  // root_list = Zp.zeta(R^k);  # replace the k
+  // root_list
+  //
+  // produces and error message: "NotImplementedError: factorization of polynomials over rings with
+  // composite characteristic is not implemented". Maybe, for a preliminary investingation using 
+  // small numbers (small P), we can just do an exhaustive search. Later, for bigger and more 
+  // realistic P, we may have to look for some software that can handle the job. Maybe Mathematica?
+
+  auto findRoot = [](rsUint64 N, rsUint64 M) // N: N-th root of unity, M: modulus
+  {
+    return 0LL;
+  };
+
+  auto findInverse = [](rsUint64 x, rsUint64 M) // x: number, M: modulus
+  {
+    return 0LL;
+  };
+
+  using Vec = std::vector<rsUint64>;
+  Vec roots, rootsInv, lengths, lengthsInv;
+  rsUint64 N = R;  // N =  R^k
+  while(N < M)
+  {
+    rsUint64 r = findRoot(N, M);
+    if(r != 0)
+    {
+      lengths.push_back(N);
+      roots.push_back(r);
+      lengthsInv.push_back(findInverse(N,M));
+      roots.push_back(findInverse(r,M));
+    }
+    N *= R;
+  }
+
+  int dummy = 0;
+
+
+  // ToDo:
+  // -Print some multiplication tables for general small composite numbers like 4,6,8,9,10,12,...
+  //  and try to find rules for when our desired magic numbers may exist. That may help in the 
+  //  search for suitable moduli. To this end, maybe implement a general 
+  //  rsToString(const rsMatrix&) function (that could be useful for other stuff as well) and 
+  //  collect the multiplication tables into rsMatrix
+}
 
 
 
