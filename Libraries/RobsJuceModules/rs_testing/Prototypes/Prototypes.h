@@ -2567,6 +2567,13 @@ Rename this to rsModularIntegerNTT_128 and replace rsUint64 by rsUint128...once 
 thing. I think, this may work with 128 bit wide integers. Make a class rsModularIntegerNTT_64 using
 3221225473 as modulus. */
 
+//typedef signed int rsInt32;
+
+//typedef __uint128 rsUint128;  // gcc?
+//typedef __int128_t rsUint128;   // msc
+//typedef uint128_t rsUint128;   // msc
+
+
 class rsModularIntegerNTT
 {
 
@@ -2574,10 +2581,50 @@ public:
 
   using ModInt = rsModularIntegerNTT;
 
-  rsUint64 value;
+  rsUint64 value;  // i think, we need a 128 bit wide integer type for this modulus
 
   rsModularIntegerNTT() {}
   rsModularIntegerNTT(rsUint64 x) : value(x) {}
+
+  ModInt operator+(const ModInt& b)
+  {
+    return (value + b.value) % modulus;
+  }
+
+  ModInt operator*(const ModInt& b)
+  {
+    return (value * b.value) % modulus;
+  }
+
+  ModInt& operator+=(const ModInt& b) { *this = *this+b; return *this; }
+  ModInt& operator*=(const ModInt& b) { *this = *this*b; return *this; }
+
+
+  bool operator==(const ModInt& b) const { return value == b.value; }
+  bool operator!=(const ModInt& b) const { return value != b.value; }
+
+
+  // The magic numbers (definitions of the arrays are in .cpp file):
+  static const rsUint64 modulus = 4179340454199820289;
+  static const rsUint64 roots[15];      // N-th roots of unity for N = 2^(k+1), k is array index
+  static const rsUint64 rootsInv[15];   // modular inverses of the roots
+  static const rsUint64 lengthsInv[15]; // modular inverses of the lengths N
+
+};
+
+//-------------------------------------------------------------------------------------------------
+
+class rsModularIntegerNTT_64
+{
+
+public:
+
+  using ModInt = rsModularIntegerNTT_64;
+
+  rsUint64 value;  // i think, we need a 128 bit wide integer type for this modulus
+
+  rsModularIntegerNTT_64() {}
+  rsModularIntegerNTT_64(rsUint64 x) : value(x) {}
 
   ModInt operator+(const ModInt& b)
   {
@@ -2604,12 +2651,15 @@ public:
 
 
   // The magic numbers (definitions of the arrays are in .cpp file):
-  static const rsUint64 modulus = 4179340454199820289;
+  static const rsUint64 modulus = 3221225473;
   static const rsUint64 roots[15];      // N-th roots of unity for N = 2^(k+1), k is array index
   static const rsUint64 rootsInv[15];   // modular inverses of the roots
   static const rsUint64 lengthsInv[15]; // modular inverses of the lengths N
 
 };
+
+
+
 
 //=================================================================================================
 

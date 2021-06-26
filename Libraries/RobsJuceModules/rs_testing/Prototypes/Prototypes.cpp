@@ -1185,6 +1185,76 @@ const rsUint64 rsModularIntegerNTT::lengthsInv[15] =
 
 //-------------------------------------------------------------------------------------------------
 
+// ToDo: write a little sage script to figure out these values and fill the tables:
+
+const rsUint64 rsModularIntegerNTT_64::roots[15] =
+{
+  3221225472,
+  2207278994,
+  2607818977,
+  2831384513,
+  3154294145,
+  3003263009,
+  3017814531,
+  3220790800,
+  3207219178,
+  3220512096,
+  3217240014,
+  3221031619,
+  3220623453,
+  3220981849,
+  3221224630
+};
+
+const rsUint64 rsModularIntegerNTT_64::rootsInv[15] =
+{
+  3221225472,
+  1013946479,
+  2190011530,
+  1626607911,
+   122509875,
+   885572692,
+   511341355,
+  1442890367,
+   261910979,
+  1771302162,
+   203364025,
+  1775783335,
+  2302174028,
+   149793384,
+  1448214062
+};
+
+const rsUint64 rsModularIntegerNTT_64::lengthsInv[15] =
+{
+  1610612737,
+  2415919105,
+  2818572289,
+  3019898881,
+  3120562177,
+  3170893825,
+  3196059649,
+  3208642561,
+  3214934017,
+  3218079745,
+  3219652609,
+  3220439041,
+  3220832257,
+  3221028865,
+  3221127169
+};
+
+// k  = 1                        # exponent for length N = 2^k
+// p  = 3221225473               # modulus
+// Zp = Integers(p)
+// r  = Zp.zeta(2^k, all=False); # currentl root
+// N  = Zp(2^k)                  # current length (exponent = array index + 2)
+// ri = 1/r                      # inverse root
+// Ni = 1/N                      # inverse length
+// k, N, r, ri, Ni
+
+//-------------------------------------------------------------------------------------------------
+
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunction(bool withGain)
 {

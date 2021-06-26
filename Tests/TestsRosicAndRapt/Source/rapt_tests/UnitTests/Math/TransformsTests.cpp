@@ -303,7 +303,7 @@ bool testNumberTheoreticTransform()
 {
   bool ok = true;
 
-  using ModInt = rsModularIntegerNTT;
+  using ModInt = rsModularIntegerNTT_64;
 
   static const int numRoots = 15;
   int maxN  = rsPowInt(2, numRoots);
@@ -490,7 +490,7 @@ bool testTransforms()
   ok &= testRsFFT(dummy);
   ok &= testFourierTransformerRadix2(dummy);
   ok &= testVariousFourierTransforms(dummy);
-  //ok &= testNumberTheoreticTransform();  // still fails, i think due to overflow -> we need a smaller modulus
+  ok &= testNumberTheoreticTransform();  // still fails, i think due to overflow -> we need a smaller modulus
 
   return ok;
 }
