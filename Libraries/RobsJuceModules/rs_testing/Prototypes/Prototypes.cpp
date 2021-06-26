@@ -1118,8 +1118,70 @@ const rsUint64 rsModularIntegerNTT::roots[15] =
   4179324170293557359,
   4179136626770643812
 };
-// There may be be even higher order roots, but SageMathCell was not able to produce them, probably
-// due to exceeded computation time
+
+const rsUint64 rsModularIntegerNTT::rootsInv[15] =
+{
+  4179340454199820288,
+  819274426619394167,
+  1324460247237108937,
+  2371771477745282871,
+  411660242129521289,
+  1632617699591430033,
+  145924037567102543,
+  2873393256140181485,
+  3938187127825272781,
+  4043479916509059316,
+  2571746520142147840,
+  3191651436916646396,
+  2791086557696422406,
+  2638202074896170702,
+  3121307387385914037
+};
+
+const rsUint64 rsModularIntegerNTT::lengthsInv[15] =
+{
+  2089670227099910145,
+  3134505340649865217,
+  3656922897424842753,
+  3918131675812331521,
+  4048736065006075905,
+  4114038259602948097,
+  4146689356901384193,
+  4163014905550602241,
+  4171177679875211265,
+  4175259067037515777,
+  4177299760618668033,
+  3191651436916646396,
+  4178830280804532225,
+  4179085367502176257,
+  4179212910850998273
+};
+
+// The modulus 4179340454199820289 was found on this page:
+// https://www.programmersought.com/article/8906403181/ 
+// and the roots were generated with the sage code:
+//
+// p = 4179340454199820289 
+// Zp = Integers(p)
+// root_list = Zp.zeta(2^10, all=False);  # replace the 2^10 by 2^11, etc
+// root_list
+//
+// one at a time, replacing the 2^10 by 2^1, 2^2, ... up to 2^15. There may be even higher order
+// roots, but SageMathCell was not able to produce them, probably due to exceeded computation time.
+// The result for 2^15 already took about 2 minutes. Once we have the roots themselvese, their 
+// inverses and the inverses of the corresponding array lengths can be found one at a time by:
+//
+// p  = 4179340454199820289      # modulus
+// Zp = Integers(p)
+// r  = Zp(4179340454199820288)  # current root
+// N  = Zp(2^1)                  # current length (exponent = array index + 2)
+// ri = 1/r                      # inverse root
+// Ni = 1/N                      # inverse length
+// r, ri, Ni
+//
+// and replacing the 4179340454199820288 with the current root and the 1 in 2^1 with the array 
+// index of the current root +1. ToDo: find more roots, maybe using a local installation of sage
+// or some other math software.
 
 //-------------------------------------------------------------------------------------------------
 

@@ -3305,7 +3305,8 @@ void numberTheoreticTrafoModuli()
   //  bit based NTTs https://oeis.org/A000668
   // -Or a Fermat prime of the form 2^n + 1, like 2^32 + 1 = 4294967297 or 
   //  2^64 + 1 = 18446744073709551617 ...but 2^64 + 1 does not fit into 64 bit, even 2^64 doesn't.
-  //  But maybe with soem trickery with the overflow flag, we can nevertheless use them?
+  //  But maybe with soem trickery with the overflow flag, we can nevertheless use them? Maybe we
+  //  can detect the overflow and repair the result in this case
 
   // ToDo:
   // -Implement a class template similar to rsModularInteger but with the modulus as template 

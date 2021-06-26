@@ -2556,31 +2556,26 @@ void divergenceToPotential3(const rsBivariatePolynomial<T>& D, rsBivariatePolyno
 //=================================================================================================
 
 /** A class for representing modular integers with respect to the modulus 4179340454199820289 which
-is suitable for number theoretic transforms using 64 bit unsigned integers. */
+is suitable for radix-2 number theoretic transforms using 64 bit unsigned integers. */
 
 class rsModularIntegerNTT
 {
 
 public:
 
-protected:
-
   rsUint64 value;
 
-  // The magic numbers:
+
+
+protected:
+
+  // The magic numbers (definitions of the arrays are in .cpp file):
   static const rsUint64 modulus = 4179340454199820289;
   static const rsUint64 roots[15];      // N-th roots of unity for N = 2^(k+1), k is array index
   static const rsUint64 rootsInv[15];   // modular inverses of the roots
   static const rsUint64 lengthsInv[15]; // modular inverses of the lengths N
-  // roots is defined in .cpp file, the other arrays not yet
 
 };
-
-
-
-
-
-
 
 //=================================================================================================
 
