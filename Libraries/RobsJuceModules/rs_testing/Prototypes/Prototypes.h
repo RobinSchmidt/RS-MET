@@ -2626,7 +2626,10 @@ public:
   rsModularIntegerNTT_64() {}
   rsModularIntegerNTT_64(rsUint64 x) : value(x) {}
 
-  ModInt operator+(const ModInt& b) { return (value + b.value) % modulus; }
+  ModInt operator+(const ModInt& b) 
+  { 
+    return (value + b.value) % modulus; 
+  }
   // Maybe instead of explicit mod, do something like subtracting the modulus if the result is 
   // larger that the modulus in a branch-free way, like:
   // rsUint64 tmp = value + b.value;
@@ -2652,7 +2655,7 @@ public:
 
   // The magic numbers (definitions of the arrays are in .cpp file):
   static const rsUint64 modulus  = 3221225473;
-  static const int      numRoots = 16;         // there are more but we have not yet found them
+  static const int      numRoots = 30;         // 
   static const rsUint64 roots[numRoots];       // N-th roots of unity for N = 2^(k+1), k is array index
   static const rsUint64 rootsInv[numRoots];    // modular inverses of the roots
   static const rsUint64 lengthsInv[numRoots];  // modular inverses of the lengths N

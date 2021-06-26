@@ -307,6 +307,8 @@ bool testNumberTheoreticTransform()
 
   // Test the magic numbers:
   static const int numRoots = ModInt::numRoots;
+
+
   int maxN  = rsPowInt(2, numRoots);
   ModInt a, b, c;
   ModInt one  = ModInt(1);
@@ -323,11 +325,19 @@ bool testNumberTheoreticTransform()
     c = a * b;
     ok &= c == one;
 
+    int k = i+1;
     c = a;
-    for(int j = 1; j < n; j++) {
-      ok &= c != one;              // Root should be primitive, we should not get 1 for any power
-      c *= a;  }                   // ...less than n (i.e. n/2, n/3, etc.)
+    for(int j = 1; j <= k; j++) {
+      ok &= c != one;
+      c *= c;  }
     ok &= c == one;
+
+    //c = a;
+    //for(int j = 1; j < n; j++) {
+    //  ok &= c != one;              // Root should be primitive, we should not get 1 for any power
+    //  c *= a;  }                   // ...less than n (i.e. n/2, n/3, etc.)
+    //ok &= c == one;
+    //// this loop takes long for high n - unsurprisingly, since n grows exponentially
   }
 
 
