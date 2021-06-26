@@ -1100,6 +1100,29 @@ void rsModalFilterFloatSSE2::setParameters(double w, double A, double p,
 
 //-------------------------------------------------------------------------------------------------
 
+const rsUint64 rsModularIntegerNTT::roots[15] =
+{
+  4179340454199820288,
+  3360066027580426122,
+  3324705732702508476,
+  4093416561646622555,
+  4129893269131444668,
+  4086220048833014884,
+  4075462463776626479,
+  4128470768322469725,
+  4161514758139463127,
+  4178097261067721820,
+  4176218026832679610,
+  4178374021926307362,
+  4177450540047517585,
+  4179324170293557359,
+  4179136626770643812
+};
+// There may be be even higher order roots, but SageMathCell was not able to produce them, probably
+// due to exceeded computation time
+
+//-------------------------------------------------------------------------------------------------
+
 template<class TSig, class TPar>
 rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunction(bool withGain)
 {

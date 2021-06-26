@@ -345,11 +345,14 @@ template void RAPT::rsPascalTriangleLine(double* y, int N);
 template void RAPT::rsPascalTriangleLine(float*  y, int N);
 template void RAPT::rsPascalTriangleLine(std::complex<double>* y, int N);
 
-
+// deprecate them:
 template void RAPT::smbFft(float *fftBuffer, long fftFrameSize, long sign);
 template void RAPT::rsDFT(std::complex<double> *buffer, int N);
 template void RAPT::rsFFT(std::complex<double> *buffer, int N);
 template void RAPT::rsIFFT(std::complex<double> *buffer, int N);
+
+template RAPT::rsModularInteger<rsUint64> RAPT::rsPow(
+  const RAPT::rsModularInteger<rsUint64>& x, int n);
 
 template void RAPT::rsLinearTransforms::fourierRadix2DIF(
   RAPT::rsModularInteger<rsUint64> *buffer, int N, RAPT::rsModularInteger<rsUint64> w0);

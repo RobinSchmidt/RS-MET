@@ -3203,6 +3203,8 @@ void numberTheoreticTrafo()
   for(int i = 0;  i < Ly; i++) ok &= (buf1[i] == ModInt(y[i], modulus));  // check result
   for(int i = Ly; i < N;  i++) ok &= (buf1[i] == ModInt(0,    modulus));
 
+  int dummy = 0;
+
   // Observations:
   // -With the sequence lengths Lx = 5, Lh = 7, we need an NTT size of 32 to make it work. 
   //  Apparently, with shorter length, we run into circular convolution. The length of the result
@@ -3215,9 +3217,97 @@ void numberTheoreticTrafo()
   //  sufficient condition for all of this, but maybe it's not a necessary one?
   // -Do we actually need to store all roots of unity? isn't the highest order root enough, i.e.
   //  the 16th, and the others can be obtained by repeated squaring?
+}
+
+void numberTheoreticTrafoModuli()
+{
+  // We try to find moduli (and related magic numbers) that are suitable for NTT convolution. It 
+  // would be nice, if we could use a power-of-2 modulus, because then the modular arithmetic 
+  // simplifies (we can use bitmasks), ideally 2^64 (then we don't even need a mask). But that 
+  // immediately rules out radix-2 NTTs (i think, the length must be coprime with the modulus or 
+  // something). But maybe radix-3, radix-5, radix-7 etc. can be made to work? Their sizes are 
+  // coprime with power-of-2 moduli. We investigate some powers of 2 for the modulus and try to 
+  // figure out which N = 3^k th roots of unity exist (for radix-3), if their inverses also exist
+  // and if the inverses of the 3^k values themsleves exist. That's all that is needed for there to
+  // be an NTT of the desired kind, if i'm not mistaken.
+
+
+  rsUint64 B = 2;               // base
+  rsUint64 P = 16;              // power
+  rsUint64 M = rsPowInt(B, P);  // candidate modulus, 2^64 wraps around to 0
+  rsUint64 R = 3;               // candidate radix
+
+  // Sage can not help, this code:
+  //
+  // R = 3
+  // k = 1
+  // M = 2^16
+  // Zp = Integers(M)
+  // root_list = Zp.zeta(R^k);  # replace the k
+  // root_list
+  //
+  // produces and error message: "NotImplementedError: factorization of polynomials over rings with
+  // composite characteristic is not implemented". Maybe, for a preliminary investingation using 
+  // small numbers (small P), we can just do an exhaustive search. Later, for bigger and more 
+  // realistic P, we may have to look for some software that can handle the job. Maybe Mathematica?
+
+  using ModInt = RAPT::rsModularInteger<rsUint64>;
+
+  auto findRoot = [](rsUint64 N, rsUint64 M) // N: N-th root of unity, M: modulus
+  {
+    for(rsUint64 x = M-1; x > 0; x--) {
+      ModInt xM(x, M);
+      ModInt yM = rsPow(xM, (int)N);
+      if(yM.value == 1)
+        return xM.value; }
+    return 0ULL;
+  };
+
+  auto findInverse = [](rsUint64 x, rsUint64 M) // x: number, M: modulus
+  {
+    return 0LL;
+  };
+
+  using Vec = std::vector<rsUint64>;
+  Vec roots, rootsInv, lengths, lengthsInv;
+  rsUint64 N = R;  // N =  R^k
+  while(N < M)
+  {
+    rsUint64 r = findRoot(N, M);
+    if(r != 0)
+    {
+      lengths.push_back(N);
+      roots.push_back(r);
+      //lengthsInv.push_back(findInverse(N,M));
+      //rootsInv.push_back(findInverse(r,M));
+    }
+    N *= R;
+  }
+  int dummy = 0;
+  // I think, it would make more sense to rund the loop from high to low values, too, because if 
+  // a root for a high power is found, i think, we can be sure that the other roots also exist and 
+  // we may obtain them by multiplying by some power of R
+
+  // Observations:
+  // -For B=2,R=3, it seems that the only root of unity is the trivial one: 1 itself. We don't find
+  //  any others. Maybe that means the whole idea is not workable, because the desired roots of
+  //  unity do not exist?
 
   // ToDo:
-  // -Find a more practical (i.e. larger) prime and the magic numbers for it using Sage.
+  // -Print some multiplication tables for general small composite numbers like 4,6,8,9,10,12,...
+  //  and try to find rules for when our desired magic numbers may exist. That may help in the 
+  //  search for suitable moduli. To this end, maybe implement a general 
+  //  rsToString(const rsMatrix&) function (that could be useful for other stuff as well) and 
+  //  collect the multiplication tables into rsMatrix
+  // -Maybe we can use Mersenne primes of the form 2^n - 1 or 2^n + 1 for the modulus? I think, the
+  //  modular arithmetic can still be implemented via bit masking. Then we can perhaps again use 
+  //  the radix-2 NTT. The Mersenne prime 2^31 - 1 and 2^61 - 1 could be both useful (for 32 and 64
+  //  bit based NTTs https://oeis.org/A000668
+  // -Or a Fermat prime of the form 2^n + 1, like 2^32 + 1 = 4294967297 or 
+  //  2^64 + 1 = 18446744073709551617 ...but 2^64 + 1 does not fit into 64 bit, even 2^64 doesn't.
+  //  But maybe with soem trickery with the overflow flag, we can nevertheless use them?
+
+  // ToDo:
   // -Implement a class template similar to rsModularInteger but with the modulus as template 
   //  parameter, ...also the number of lengths, i.e. numRoots.
   // -Use that in the partinioned convolver - maybe ConvolverFFT and ConvolverNTT (to be written)
@@ -3270,10 +3360,10 @@ void numberTheoreticTrafo()
   // 12: 4178374021926307362
   // 13: 4177450540047517585
   // 14: 4179324170293557359
-  // 15: 4179136626770643812
+  // 15: 4179136626770643812  takes about 2 minutes
   // 16: SageMathCell gave up
   //
-  // Oh, oh! The algo to compute them seems to scale exponentially in k! With k=15, it already 
+  // Oh, oh! The algo to compute them seems to scale exponentially in k. With k=15, it already 
   // takes 2 minutes. And with k=16, SageMathCell did not return anything anymore. There was no 
   // result, but the busy indicator disappeared. Probably, a maximum computation time was 
   // exceeded. Maybe try it with wolfram alpha - perhaps they have a faster algo? Or use a local
@@ -3281,78 +3371,8 @@ void numberTheoreticTrafo()
 
   // Why do so many start with 417? The distribution is interesting - very skewed towards the upper
   // limit - why is that the case? Maybe the algo does just a linear search starting at the highest
-  // possible number?
-
-  int dummy = 0;
-}
-
-void numberTheoreticTrafoModuli()
-{
-  // We try to find moduli (and related magic numbers) that are suitable for NTT convolution. It 
-  // would be nice, if we could use a power-of-2 modulus, because then the modular arithmetic 
-  // simplifies (we can use bitmasks), ideally 2^64 (then we don't even need a mask). But that 
-  // immediately rules out radix-2 NTTs (i think, the length must be coprime with the modulus or 
-  // something). But maybe radix-3, radix-5, radix-7 etc. can be made to work? Their sizes are 
-  // coprime with power-of-2 moduli. We investigate some powers of 2 for the modulus and try to 
-  // figure out which N = 3^k th roots of unity exist (for radix-3), if their inverses also exist
-  // and if the inverses of the 3^k values themsleves exist. That's all that is needed for there to
-  // be an NTT of the desired kind, if i'm not mistaken.
-
-
-  rsUint64 B = 2;               // base
-  rsUint64 P = 16;              // power
-  rsUint64 M = rsPowInt(B, P);  // candidate modulus, 2^64 wraps around to 0
-  rsUint64 R = 3;               // candidate radix
-
-  // Sage can not help, this code:
-  //
-  // R = 3
-  // k = 1
-  // M = 2^16
-  // Zp = Integers(M)
-  // root_list = Zp.zeta(R^k);  # replace the k
-  // root_list
-  //
-  // produces and error message: "NotImplementedError: factorization of polynomials over rings with
-  // composite characteristic is not implemented". Maybe, for a preliminary investingation using 
-  // small numbers (small P), we can just do an exhaustive search. Later, for bigger and more 
-  // realistic P, we may have to look for some software that can handle the job. Maybe Mathematica?
-
-  auto findRoot = [](rsUint64 N, rsUint64 M) // N: N-th root of unity, M: modulus
-  {
-    return 0LL;
-  };
-
-  auto findInverse = [](rsUint64 x, rsUint64 M) // x: number, M: modulus
-  {
-    return 0LL;
-  };
-
-  using Vec = std::vector<rsUint64>;
-  Vec roots, rootsInv, lengths, lengthsInv;
-  rsUint64 N = R;  // N =  R^k
-  while(N < M)
-  {
-    rsUint64 r = findRoot(N, M);
-    if(r != 0)
-    {
-      lengths.push_back(N);
-      roots.push_back(r);
-      lengthsInv.push_back(findInverse(N,M));
-      roots.push_back(findInverse(r,M));
-    }
-    N *= R;
-  }
-
-  int dummy = 0;
-
-
-  // ToDo:
-  // -Print some multiplication tables for general small composite numbers like 4,6,8,9,10,12,...
-  //  and try to find rules for when our desired magic numbers may exist. That may help in the 
-  //  search for suitable moduli. To this end, maybe implement a general 
-  //  rsToString(const rsMatrix&) function (that could be useful for other stuff as well) and 
-  //  collect the multiplication tables into rsMatrix
+  // possible number? Maybe when starting at the high end, the algo is more likely to find a root 
+  // more quickly?
 }
 
 

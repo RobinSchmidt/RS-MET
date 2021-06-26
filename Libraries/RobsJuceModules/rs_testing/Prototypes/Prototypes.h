@@ -2553,6 +2553,34 @@ void divergenceToPotential3(const rsBivariatePolynomial<T>& D, rsBivariatePolyno
         P.coeff(m, n+2) = (D.coeff(m, n) - (m+1)*(m+2)*P.coeff(m+2, n)) / ((n+1)*(n+2));
 }
 
+//=================================================================================================
+
+/** A class for representing modular integers with respect to the modulus 4179340454199820289 which
+is suitable for number theoretic transforms using 64 bit unsigned integers. */
+
+class rsModularIntegerNTT
+{
+
+public:
+
+protected:
+
+  rsUint64 value;
+
+  // The magic numbers:
+  static const rsUint64 modulus = 4179340454199820289;
+  static const rsUint64 roots[15];      // N-th roots of unity for N = 2^(k+1), k is array index
+  static const rsUint64 rootsInv[15];   // modular inverses of the roots
+  static const rsUint64 lengthsInv[15]; // modular inverses of the lengths N
+  // roots is defined in .cpp file, the other arrays not yet
+
+};
+
+
+
+
+
+
 
 //=================================================================================================
 
