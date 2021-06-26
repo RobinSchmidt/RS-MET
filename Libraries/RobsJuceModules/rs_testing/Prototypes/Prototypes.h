@@ -2556,18 +2556,52 @@ void divergenceToPotential3(const rsBivariatePolynomial<T>& D, rsBivariatePolyno
 //=================================================================================================
 
 /** A class for representing modular integers with respect to the modulus 4179340454199820289 which
-is suitable for radix-2 number theoretic transforms using 64 bit unsigned integers. */
+is suitable for radix-2 number theoretic transforms using 64 bit unsigned integers. 
+
+...nope! That doesn't work! We get immediately overflow when multiplying a root with itself. I 
+think, the modulus must be less than 2^32 to avoid this. 2^31 - 1 actually happens to be a Mersenne
+prime ...maybe that should be used? Maybe that can simplify the modulo operation? But no, for this, 
+not even a 4th root of unity exists. Using a radix of 3, we only get roots upt to 3^2 = 9.
+
+Rename this to rsModularIntegerNTT_128 and replace rsUint64 by rsUint128...once we have such a 
+thing. I think, this may work with 128 bit wide integers. Make a class rsModularIntegerNTT_64 using
+3221225473 as modulus. */
 
 class rsModularIntegerNTT
 {
 
 public:
 
+  using ModInt = rsModularIntegerNTT;
+
   rsUint64 value;
 
+  rsModularIntegerNTT() {}
+  rsModularIntegerNTT(rsUint64 x) : value(x) {}
+
+  ModInt operator+(const ModInt& b)
+  {
+    return (value + b.value) % modulus;
+  }
+  // Maybe instead of explicit mod, do something like subtracting the modulus if the result is 
+  // larger that the modulus in a branch-free way, like:
+  // rsUint64 tmp = value + b.value;
+  // rsUint64 g   = tmp >= modulus;
+  // return (1-g)*tmp + g*(tmp-modulus);
+  // this replaces the % by a cmp, 2*, 2-, 1+, 1=
+
+  ModInt operator*(const ModInt& b)
+  {
+    return (value * b.value) % modulus;
+  }
+
+  ModInt& operator+=(const ModInt& b) { *this = *this+b; return *this; }
+  ModInt& operator*=(const ModInt& b) { *this = *this*b; return *this; }
 
 
-protected:
+  bool operator==(const ModInt& b) const { return value == b.value; }
+  bool operator!=(const ModInt& b) const { return value != b.value; }
+
 
   // The magic numbers (definitions of the arrays are in .cpp file):
   static const rsUint64 modulus = 4179340454199820289;
