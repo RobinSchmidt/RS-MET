@@ -3243,6 +3243,7 @@ void numberTheoreticTrafoModuli()
   //rsUint64 P = 16;              // power
   //rsUint64 M = rsPowInt(B, P);  // candidate modulus, 2^64 wraps around to 0
 
+  //rsUint64 M = 3221225473;
   //rsUint64 M = 7681;
   rsUint64 M = 97;
   rsUint64 R = 2;               // candidate radix
@@ -3282,24 +3283,53 @@ void numberTheoreticTrafoModuli()
 
   auto findInverse = [](rsUint64 x, rsUint64 M) // x: number, M: modulus
   {
-    return 0LL;
+    rsInt64 tmp = rsModularInverse(rsInt64(x), rsInt64(M));
+    if(tmp >= 0) return rsUint64(tmp);
+    else         return M - rsUint64(tmp);
   };
 
   using Vec = std::vector<rsUint64>;
   Vec roots, rootsInv, lengths, lengthsInv;
   rsUint64 N = R;  // N =  R^k
+
+  RSLib::rsFileStream file("MagicNumbers.txt");
+ 
   while(N < M)
   {
     rsUint64 r = findRoot(N, M);
     if(r != 0)
     {
+      rsUint64 ri = findInverse(r, M);
+      rsUint64 Ni = findInverse(N, M);
+
       lengths.push_back(N);
       roots.push_back(r);
-      //lengthsInv.push_back(findInverse(N,M));
-      //rootsInv.push_back(findInverse(r,M));
+      lengthsInv.push_back(Ni);
+      rootsInv.push_back(ri);
+
+      bool openSuccess = file.openForAppend();
+      if(openSuccess) {
+        std::string str;
+        str  = "N = "   + to_string(N)  + "   ";
+        str += "1/N = " + to_string(Ni) + "   ";
+        str += "r = "   + to_string(r)  + "   ";
+        str += "1/r = " + to_string(ri) + "\n";
+
+        //str  = "N   = " + to_string(N)  + "\n";
+        //str += "1/N = " + to_string(Ni) + "\n";
+        //str += "r   = " + to_string(r)  + "\n";
+        //str += "1/r = " + to_string(ri) + "\n\n";
+        file.appendText(str);
+        file.close(); }
     }
     N *= R;
   }
+
+  // Implement functions to write arrays of numbers to files:
+  //rsWriteToFile(roots, "Roots.txt", "%d");
+
+
+
   int dummy = 0;
   // I think, it would make more sense to rund the loop from high to low values, too, because if 
   // a root for a high power is found, i think, we can be sure that the other roots also exist and 

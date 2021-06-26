@@ -327,7 +327,7 @@ template rsUint32 RAPT::rsLcm(rsUint32, rsUint32);
 template rsUint32 RAPT::rsMultinomialCoefficient(rsUint32* n, rsUint32 k);
 template rsUint32 RAPT::rsMultinomialCoefficientUpTo12(rsUint32* n, rsUint32 k);
 template int RAPT::rsLeviCivita(int indices[], int N);
-
+template rsInt64 RAPT::rsModularInverse(const rsInt64&, const rsInt64&);
 template void RAPT::rsStirlingNumbersFirstKind(int **s, int nMax);
 template void RAPT::rsFillPrimeTable(int*, rsUint32, rsUint32);
 template void RAPT::rsEGCD(int x, int y, int& a, int& b, int& g);
@@ -337,6 +337,8 @@ template int RAPT::rsPrimeModularInverse2(const int& x, const int& p);
 template int RAPT::rsChineseRemainderTheorem(int* remainders, int* moduli, rsUint32 count);
 //template rsUint32 RAPT::rsChineseRemainderTheorem(rsUint32* remainders, rsUint32* moduli, rsUint32 count);
 template void RAPT::rsFillPrimeTable(rsUint32 *primes, rsUint32 numPrimes, rsUint32 bufferSize);
+
+
 
 template class RAPT::rsModularInteger<rsUint64>;
 

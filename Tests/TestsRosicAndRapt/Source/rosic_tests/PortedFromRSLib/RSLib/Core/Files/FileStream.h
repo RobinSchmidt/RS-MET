@@ -21,7 +21,8 @@ namespace RSLib
     {
       CLOSED,
       OPEN_FOR_WRITE,
-      OPEN_FOR_READ
+      OPEN_FOR_READ,
+      OPEN_FOR_APPEND
     };
 
 
@@ -49,7 +50,7 @@ namespace RSLib
     virtual bool isOpen() const { return fileState != CLOSED; }
 
     /** Returns true when the file is open for writing, false otherwise. */
-    virtual bool isOpenForWrite() const { return fileState == OPEN_FOR_WRITE; }
+    virtual bool isOpenForWrite() const { return fileState == OPEN_FOR_WRITE || OPEN_FOR_APPEND; }
 
     /** Returns true when the file is open for reading, false otherwise. */
     virtual bool isOpenForRead() const { return fileState == OPEN_FOR_READ; }
@@ -58,10 +59,13 @@ namespace RSLib
     /** \name Opening/Closing */
 
     /** Tries to open the file for writing and returns if this was successful. */
-    virtual bool openForWrite() { return open("wb", OPEN_FOR_WRITE); }
+    virtual bool openForWrite()  { return open("wb", OPEN_FOR_WRITE); }
 
     /** Tries to open the file for reading and returns if this was successful. */
-    virtual bool openForRead() { return open("rb", OPEN_FOR_READ); }
+    virtual bool openForRead()   { return open("rb", OPEN_FOR_READ); }
+
+    /** Tries to open the file for appending and returns if this was successful. */
+    virtual bool openForAppend() { return open("ab", OPEN_FOR_APPEND); }
 
     /** Closes the file in case it is open (otherwise does nothing). */
     virtual void closeIfOpen();
