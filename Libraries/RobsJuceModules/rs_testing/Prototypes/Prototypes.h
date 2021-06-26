@@ -2574,7 +2574,7 @@ thing. I think, this may work with 128 bit wide integers. Make a class rsModular
 //typedef uint128_t rsUint128;   // msc
 
 
-class rsModularIntegerNTT
+class rsModularIntegerNTT // rename to rsModularIntegerNTT_128
 {
 
 public:
@@ -2626,21 +2626,21 @@ public:
   rsModularIntegerNTT_64() {}
   rsModularIntegerNTT_64(rsUint64 x) : value(x) {}
 
-  ModInt operator+(const ModInt& b)
-  {
-    return (value + b.value) % modulus;
-  }
+  ModInt operator+(const ModInt& b) { return (value + b.value) % modulus; }
   // Maybe instead of explicit mod, do something like subtracting the modulus if the result is 
   // larger that the modulus in a branch-free way, like:
   // rsUint64 tmp = value + b.value;
   // rsUint64 g   = tmp >= modulus;
   // return (1-g)*tmp + g*(tmp-modulus);
   // this replaces the % by a cmp, 2*, 2-, 1+, 1=
+  // we have actually plenty of headroom for additions, so we may do a lot of them without using 
+  // mod and then only reduce once ...maybe that can be done better with radix-4 or radix-8 NTTs, 
+  // when we can arrange the operations in a way to avoid a lot of the % operations. For 
+  // multiplications, we need to immediately reduce, so let's try to avoid them as much as 
+  // possible - for example, in the FFT routine, we compute twiddle factors on the fly by 
+  // multiplications - but we may use tables instead
 
-  ModInt operator*(const ModInt& b)
-  {
-    return (value * b.value) % modulus;
-  }
+  ModInt operator*(const ModInt& b) { return (value * b.value) % modulus; }
 
   ModInt& operator+=(const ModInt& b) { *this = *this+b; return *this; }
   ModInt& operator*=(const ModInt& b) { *this = *this*b; return *this; }
@@ -2651,10 +2651,11 @@ public:
 
 
   // The magic numbers (definitions of the arrays are in .cpp file):
-  static const rsUint64 modulus = 3221225473;
-  static const rsUint64 roots[15];      // N-th roots of unity for N = 2^(k+1), k is array index
-  static const rsUint64 rootsInv[15];   // modular inverses of the roots
-  static const rsUint64 lengthsInv[15]; // modular inverses of the lengths N
+  static const rsUint64 modulus  = 3221225473;
+  static const int      numRoots = 16;         // there are more but we have not yet found them
+  static const rsUint64 roots[numRoots];       // N-th roots of unity for N = 2^(k+1), k is array index
+  static const rsUint64 rootsInv[numRoots];    // modular inverses of the roots
+  static const rsUint64 lengthsInv[numRoots];  // modular inverses of the lengths N
 
 };
 

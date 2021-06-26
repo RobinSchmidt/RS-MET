@@ -1185,9 +1185,26 @@ const rsUint64 rsModularIntegerNTT::lengthsInv[15] =
 
 //-------------------------------------------------------------------------------------------------
 
-// ToDo: write a little sage script to figure out these values and fill the tables:
+// The numbers in these tables were created using SageMath with the following script:
+//
+// k  = 1                        # exponent for length N = 2^k
+// p  = 3221225473               # modulus
+// Zp = Integers(p)
+// r  = Zp.zeta(2^k, all=False); # currentl root
+// N  = Zp(2^k)                  # current length (exponent = array index + 2)
+// ri = 1/r                      # inverse root
+// Ni = 1/N                      # inverse length
+// k, N, r, ri, Ni
+//
+// and running it for one value of k at a time, k is the array index plus 1, r is the root, ri its 
+// inverse and Ni the inverse of the length. k,N are only printed out for reference - it's r,ri,Ni
+// that are relevant. For values of k higher than 16, the script just takes too long, but there 
+// should be even higher order roots - but we need another software to find them. Maybe it's 
+// feasible to write a little exhaustive search routing in C++. We have to check up to 2^32 
+// numbers per root, so that's 4 billion tests per root which may indeed be feasible to do. So far,
+// we can support NTT lengths up to 2^16 = 65536 which is already quite useful in practice
 
-const rsUint64 rsModularIntegerNTT_64::roots[15] =
+const rsUint64 rsModularIntegerNTT_64::roots[numRoots] =
 {
   3221225472,
   2207278994,
@@ -1203,10 +1220,11 @@ const rsUint64 rsModularIntegerNTT_64::roots[15] =
   3221031619,
   3220623453,
   3220981849,
-  3221224630
+  3221224630,
+  3221209783
 };
 
-const rsUint64 rsModularIntegerNTT_64::rootsInv[15] =
+const rsUint64 rsModularIntegerNTT_64::rootsInv[numRoots] =
 {
   3221225472,
   1013946479,
@@ -1222,10 +1240,11 @@ const rsUint64 rsModularIntegerNTT_64::rootsInv[15] =
   1775783335,
   2302174028,
    149793384,
-  1448214062
+  1448214062,
+   931465900
 };
 
-const rsUint64 rsModularIntegerNTT_64::lengthsInv[15] =
+const rsUint64 rsModularIntegerNTT_64::lengthsInv[numRoots] =
 {
   1610612737,
   2415919105,
@@ -1241,17 +1260,11 @@ const rsUint64 rsModularIntegerNTT_64::lengthsInv[15] =
   3220439041,
   3220832257,
   3221028865,
-  3221127169
+  3221127169,
+  3221176321
 };
 
-// k  = 1                        # exponent for length N = 2^k
-// p  = 3221225473               # modulus
-// Zp = Integers(p)
-// r  = Zp.zeta(2^k, all=False); # currentl root
-// N  = Zp(2^k)                  # current length (exponent = array index + 2)
-// ri = 1/r                      # inverse root
-// Ni = 1/N                      # inverse length
-// k, N, r, ri, Ni
+
 
 //-------------------------------------------------------------------------------------------------
 

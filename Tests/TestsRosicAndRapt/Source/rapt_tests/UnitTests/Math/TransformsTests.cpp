@@ -305,9 +305,9 @@ bool testNumberTheoreticTransform()
 
   using ModInt = rsModularIntegerNTT_64;
 
-  static const int numRoots = 15;
+  // Test the magic numbers:
+  static const int numRoots = ModInt::numRoots;
   int maxN  = rsPowInt(2, numRoots);
-
   ModInt a, b, c;
   ModInt one  = ModInt(1);
   for(int i = 0; i < numRoots; i++)
@@ -329,9 +329,13 @@ bool testNumberTheoreticTransform()
       c *= a;  }                   // ...less than n (i.e. n/2, n/3, etc.)
     ok &= c == one;
   }
-  //rsAssert(ok);
 
-  // ok - this still fails - i think, we produce overflow in the multiplication
+
+  // ToDo: test NTT convolution...maybe implement a convenience function 
+  //   rsConvolveNTT(rsUint64* x, rsUint64* h, int N, rsUint64* y)
+  // for that. It should work similar to rsArrayTools::convolve. Figure out, by how much both 
+  // arrays may be filled...mayb both to N/2? or one up to N/2, the other upt to N/2+1? maybe
+  // we can even fill up one up to N-n1-1 when n is the number of elements in the other?
 
 
   return ok;
