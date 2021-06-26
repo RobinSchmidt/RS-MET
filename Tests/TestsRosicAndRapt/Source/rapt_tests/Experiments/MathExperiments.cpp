@@ -3243,9 +3243,9 @@ void numberTheoreticTrafoModuli()
   //rsUint64 P = 16;              // power
   //rsUint64 M = rsPowInt(B, P);  // candidate modulus, 2^64 wraps around to 0
 
-  //rsUint64 M = 3221225473;
+  rsUint64 M = 3221225473;
   //rsUint64 M = 7681;
-  rsUint64 M = 97;
+  //rsUint64 M = 97;
   rsUint64 R = 2;               // candidate radix
 
   // Sage can not help, this code:
@@ -3264,19 +3264,30 @@ void numberTheoreticTrafoModuli()
 
   using ModInt = RAPT::rsModularInteger<rsUint64>;
 
-  auto findRoot = [](rsUint64 N, rsUint64 M) // N: N-th root of unity, M: modulus
+  auto findRoot = [](rsUint64 N, rsUint64 M, int k) // N: N-th root of unity, M: modulus
   {
     for(rsUint64 x = M-1; x > 0; x--) 
     {
-      ModInt xM(x, M);
-      ModInt yM(1, M);
+      ModInt yM(x, M);
       int i;
-      for(i = 1; i <= N; i++) {
-        yM = yM * xM;
-        if(yM.value == 1)
+      for(i = 1; i <= k; i++) {
+        yM = yM * yM;      // i think, repeated squaring works only for radix R = 2 - in general,
+        if(yM.value == 1)  // we must repeatedly do: yM = yM^R
           break;    }
-      if(yM.value == 1 && i == N)
-        return xM.value;
+      if(yM.value == 1 && i == k)
+        return x;
+
+
+
+      //ModInt xM(x, M);
+      //ModInt yM(1, M);
+      //int i;
+      //for(i = 1; i <= N; i++) {
+      //  yM = yM * xM;
+      //  if(yM.value == 1)
+      //    break;    }
+      //if(yM.value == 1 && i == N)
+      //  return xM.value;
     }
     return 0ULL;
   };
@@ -3293,10 +3304,12 @@ void numberTheoreticTrafoModuli()
   rsUint64 N = R;  // N =  R^k
 
   RSLib::rsFileStream file("MagicNumbers.txt");
- 
+  int k = 1;
   while(N < M)
   {
-    rsUint64 r = findRoot(N, M);
+    rsUint64 r = findRoot(N, M, k);
+    if(r == 0)
+      break;
     if(r != 0)
     {
       rsUint64 ri = findInverse(r, M);
@@ -3314,20 +3327,15 @@ void numberTheoreticTrafoModuli()
         str += "1/N = " + to_string(Ni) + "   ";
         str += "r = "   + to_string(r)  + "   ";
         str += "1/r = " + to_string(ri) + "\n";
-
-        //str  = "N   = " + to_string(N)  + "\n";
-        //str += "1/N = " + to_string(Ni) + "\n";
-        //str += "r   = " + to_string(r)  + "\n";
-        //str += "1/r = " + to_string(ri) + "\n\n";
         file.appendText(str);
         file.close(); }
     }
     N *= R;
+    rsPrintLine(std::string("Number of roots found: ") + to_string(k));
+    k++;
   }
-
-  // Implement functions to write arrays of numbers to files:
-  //rsWriteToFile(roots, "Roots.txt", "%d");
-
+  // This loops finds all the roots but after that, it doesn't stop searching! I think we must 
+  // break, when N *= R would lead to overflow.
 
 
   int dummy = 0;
