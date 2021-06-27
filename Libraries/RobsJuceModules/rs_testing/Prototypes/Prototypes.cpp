@@ -1230,41 +1230,48 @@ const rsUint64 rsModularIntegerNTT_64::lengthsInv[numRoots] =
 
 std::vector<int> rsConvolveNTT(const std::vector<int>& x, const std::vector<int>& h)
 {
-  using ModInt = rsModularIntegerNTT_64;
-  using AT     = rsArrayTools;
-  using LT     = rsLinearTransforms;
+  // Shorthands for convenience:
+  using AT = rsArrayTools;
+  using LT = rsLinearTransforms;
+  using MI = rsModularIntegerNTT_64;
 
   // Figure out lengths:
-  int Nx = (int) x.size();          // length of input signal
-  int Nh = (int) h.size();          // length of impulse response
-  int Ny = Nx+Nh-1;                 // length of output signal 
-  int N  = 2*rsNextPowerOfTwo(Ny);  // length of NTT buffer...do we need the factor 2?
-  int k  = (int)rsLog2(N) - 1;      // index of twiddle factor.
-  //int k  = (int)rsLog2(N) + 1;   // test
+  int Nx = (int) x.size();         // length of input signal
+  int Nh = (int) h.size();         // length of impulse response
+  int Ny = Nx+Nh-1;                // length of output signal 
+  int N  = 2*rsNextPowerOfTwo(Ny); // length of NTT buffer
+  int k  = (int)rsLog2(N) - 1;     // index of twiddle factor
 
   // Prepare NTT buffers:
-  std::vector<ModInt> X(N), H(N);
+  std::vector<MI> X(N), H(N);
   AT::convert(&x[0], &X[0], Nx); AT::fillWithZeros(&X[Nx], N-Nx);
   AT::convert(&h[0], &H[0], Nh); AT::fillWithZeros(&H[Nh], N-Nh);
 
   // Do NTT-based convolution:
-  ModInt WN = ModInt(ModInt::rootsInv[k]);  // twiddle factor for forward NTT
-  LT::fourierRadix2DIF(&X[0], N, WN);       // transform X
-  LT::fourierRadix2DIF(&H[0], N, WN);       // transform H
-  for(int i = 0; i < N; i++)                // spectral multiplication, 
-    X[i] = X[i] * H[i];                     // ...result goes to X
-  WN = ModInt(ModInt::roots[k]);            // twiddle factor for inverse NTT
-  LT::fourierRadix2DIF(&X[0], N, WN);       // unscaled inverse NTT
-  ModInt S(ModInt::lengthsInv[k]);          // scaler = 1/N
+  MI WN = MI(MI::rootsInv[k]);        // twiddle factor for forward NTT
+  LT::fourierRadix2DIF(&X[0], N, WN); // transform X
+  LT::fourierRadix2DIF(&H[0], N, WN); // transform H
+  for(int i = 0; i < N; i++)          // spectral multiplication, 
+    X[i] = X[i] * H[i];               // ...result goes to X
+  WN = MI(MI::roots[k]);              // twiddle factor for inverse NTT
+  LT::fourierRadix2DIF(&X[0], N, WN); // unscaled inverse NTT
+  MI S(MI::lengthsInv[k]);            // scaler = 1/N
   for(int i = 0; i < N; i++)
-    X[i] = S * X[i];                        // do the scaling
+    X[i] = S * X[i];                  // this magic scaling turns garbage into result
 
   // Convert result to output:
   std::vector<int> y(Ny);
   AT::convert(&X[0], &y[0], Ny);
   return y;
 }
-// Something is still wrong with this. The results are garbage.
+// For production code, we don't really need to scale the whole X[i] by S. It's enough to do it up
+// to Ny and we also can write the result values directly into y. It's really amazing, how the X 
+// array looks like total garbage and the final (modular) multiplication by the number S magically
+// turns the garbage into our desired convolution result. ...feels almost like dealing with 
+// cryptography - the NTT totally is some sort of crypto-FFT! :-) Maybe we can encrypt sequences
+// by modular convolution and decrypt by deconvoltion...but wait...modular convolution is not 
+// really what we are doing her. We actually compute a regular integer convolution by means of 
+// going through modular arithmetic. But the end result is just regular convolved integer array.
 
 //-------------------------------------------------------------------------------------------------
 

@@ -346,10 +346,10 @@ bool testNumberTheoreticTransform()
   }
 
   // Test NTT convolution (maybe factor out):
-  //int Nx = 100;      // length of input signal
-  //int Nh = 20;       // length of impulse response
-  int Nx = 5;        // length of input signal
-  int Nh = 7;        // length of impulse response
+  int Nx = 100;      // length of input signal
+  int Nh = 20;       // length of impulse response
+  //int Nx = 5;        // length of input signal
+  //int Nh = 7;        // length of impulse response
   int Ny = Nx+Nh-1;  // length of output signal 
   int mask = 31;     // to avoid overflow in convolution result
   VecI32 x(Nx), h(Nh), y(Ny);
@@ -359,27 +359,23 @@ bool testNumberTheoreticTransform()
   for(int i = 0; i < Nh; i++) 
     h[i] = ng.getSampleRaw() & mask;
   AT::convolve(&x[0], Nx, &h[0], Nh, &y[0]);
-  //rsPlotVectors(x, h, y); // The signals are actually periodic with period mask+1! Why?
-
-
-
-
   VecI32 y2 = rsConvolveNTT(x, h);
   ok &= y2 == y;  
-  // FAILS!!!
-
-  rsPlotVectors(x, h, y, y2);
+  rsPlotVectors(x, h, y, y2); // The signals are actually periodic with period mask+1! Why?
 
 
-  // ToDo: test NTT convolution...maybe implement a convenience function 
-  //   rsConvolveNTT(rsUint64* x, rsUint64* h, int N, rsUint64* y)
-  // for that. It should work similar to rsArrayTools::convolve. Figure out, by how much both 
-  // arrays may be filled...mayb both to N/2? or one up to N/2, the other upt to N/2+1? maybe
-  // we can even fill up one up to N-n1-1 when n is the number of elements in the other?
+  // ToDo: 
+  // -Try it with different array lengths. Maybe make a sub-function testConvNTT that takes
+  //  Nx, Nh, mask and the random seed and call it a couple of times with different inputs.
+  // -Figure out at which point we get overflow. This may depend on the mask as well as the 
+  //  lengths. When overflow occurs, probably both, naive and NTT convolution will produce
+  //  total garbage - but probably different garbage. When using this in production, we need to
+  //  take care of avoiding overflow, maybe by clipping the inputs and restricting the lengths.
 
   // Also: measure the performance of complex vs modular arithmetic. write optimized NTT routines 
   // that use reducing to the modulus not after every add/sub but only after a group, if possible. 
-  // Maybe that works better with high-radix FFT algos
+  // Maybe that works better with high-radix FFT algos. We should also prefer addition over 
+  // subtraction because subtraction is a bit more expensive.
 
 
   return ok;

@@ -2635,7 +2635,8 @@ public:
     // Can we do this in a branchless way? If not, implement unary minus and express subtraction as 
     // addition of negative....maybe we can just do: 
     //   return (modulus + value - b.value) % modulus
-    // that would indeed be branchless
+    // that would indeed be branchless but again involves the (supposedly expensive) modulo 
+    // operator...but we really need to measure, what is expensive and what is not
   }
   // Maybe instead of explicit mod, do something like subtracting the modulus if the result is 
   // larger that the modulus in a branch-free way, like:
