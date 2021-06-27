@@ -2667,6 +2667,8 @@ public:
 
 };
 
+/** NTT-convolution routine based on rsModularIntegerNTT_64. */
+std::vector<int> rsConvolveNTT(const std::vector<int>& x, const std::vector<int>& h);
 
 
 

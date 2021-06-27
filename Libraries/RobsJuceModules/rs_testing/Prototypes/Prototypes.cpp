@@ -1228,6 +1228,44 @@ const rsUint64 rsModularIntegerNTT_64::lengthsInv[numRoots] =
   3221225377, 3221225425, 3221225449, 3221225461, 3221225467, 3221225470
 };
 
+std::vector<int> rsConvolveNTT(const std::vector<int>& x, const std::vector<int>& h)
+{
+  using ModInt = rsModularIntegerNTT_64;
+  using AT     = rsArrayTools;
+  using LT     = rsLinearTransforms;
+
+  // Figure out lengths:
+  int Nx = (int) x.size();          // length of input signal
+  int Nh = (int) h.size();          // length of impulse response
+  int Ny = Nx+Nh-1;                 // length of output signal 
+  int N  = 2*rsNextPowerOfTwo(Ny);  // length of NTT buffer...do we need the factor 2?
+  int k  = (int)rsLog2(N) - 1;      // index of twiddle factor.
+  //int k  = (int)rsLog2(N) + 1;   // test
+
+  // Prepare NTT buffers:
+  std::vector<ModInt> X(N), H(N);
+  AT::convert(&x[0], &X[0], Nx); AT::fillWithZeros(&X[Nx], N-Nx);
+  AT::convert(&h[0], &H[0], Nh); AT::fillWithZeros(&H[Nh], N-Nh);
+
+  // Do NTT-based convolution:
+  ModInt WN = ModInt(ModInt::rootsInv[k]);  // twiddle factor for forward NTT
+  LT::fourierRadix2DIF(&X[0], N, WN);       // transform X
+  LT::fourierRadix2DIF(&H[0], N, WN);       // transform H
+  for(int i = 0; i < N; i++)                // spectral multiplication, 
+    X[i] = X[i] * H[i];                     // ...result goes to X
+  WN = ModInt(ModInt::roots[k]);            // twiddle factor for inverse NTT
+  LT::fourierRadix2DIF(&X[0], N, WN);       // unscaled inverse NTT
+  ModInt S(ModInt::lengthsInv[k]);          // scaler = 1/N
+  for(int i = 0; i < N; i++)
+    X[i] = S * X[i];                        // do the scaling
+
+  // Convert result to output:
+  std::vector<int> y(Ny);
+  AT::convert(&X[0], &y[0], Ny);
+  return y;
+}
+// Something is still wrong with this. The results are garbage.
+
 //-------------------------------------------------------------------------------------------------
 
 template<class TSig, class TPar>

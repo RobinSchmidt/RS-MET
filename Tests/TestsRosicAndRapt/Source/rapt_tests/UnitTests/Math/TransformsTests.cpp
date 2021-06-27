@@ -346,8 +346,10 @@ bool testNumberTheoreticTransform()
   }
 
   // Test NTT convolution (maybe factor out):
-  int Nx = 100;      // length of input signal
-  int Nh = 20;       // length of impulse response
+  //int Nx = 100;      // length of input signal
+  //int Nh = 20;       // length of impulse response
+  int Nx = 5;        // length of input signal
+  int Nh = 7;        // length of impulse response
   int Ny = Nx+Nh-1;  // length of output signal 
   int mask = 31;     // to avoid overflow in convolution result
   VecI32 x(Nx), h(Nh), y(Ny);
@@ -360,40 +362,9 @@ bool testNumberTheoreticTransform()
   //rsPlotVectors(x, h, y); // The signals are actually periodic with period mask+1! Why?
 
 
-  auto convolveNTT = [](const VecI32& x, const VecI32& h)
-  {
-    // Figure out lengths:
-    int Nx = (int) x.size();          // length of input signal
-    int Nh = (int) h.size();          // length of impulse response
-    int Ny = Nx+Nh-1;                 // length of output signal 
-    int N  = 2*rsNextPowerOfTwo(Ny);  // length of NTT buffer...do we need the factor 2?
-    int k  = (int)rsLog2(N) - 1;      // index of twiddle factor.
 
-    // Prepare NTT buffers:
-    std::vector<ModInt> X(N), H(N);
-    AT::convert(&x[0], &X[0], Nx);
-    AT::convert(&h[0], &H[0], Nh);
 
-    // Do NTT-based convolution:
-    using LT = rsLinearTransforms;
-    ModInt WN = ModInt(ModInt::rootsInv[k]);  // twiddle factor for forward NTT
-    LT::fourierRadix2DIF(&X[0], N, WN);       // transform X
-    LT::fourierRadix2DIF(&H[0], N, WN);       // transform H
-    for(int i = 0; i < N; i++)                // spectral multiplication, 
-      X[i] = X[i] * H[i];                     // ...result goes to X
-    WN = ModInt(ModInt::roots[k]);            // twiddle factor for inverse NTT
-    LT::fourierRadix2DIF(&X[0], N, WN);       // unscaled inverse NTT
-    ModInt S(ModInt::lengthsInv[k]);          // scaler = 1/N
-    for(int i = 0; i < N; i++)
-      X[i] = S * X[i];                        // do the scaling
-
-    // Convert result to output:
-    VecI32 y(Ny);
-    AT::convert(&X[0], &y[0], Ny);
-    return y;
-  };
-
-  VecI32 y2 = convolveNTT(x, h);
+  VecI32 y2 = rsConvolveNTT(x, h);
   ok &= y2 == y;  
   // FAILS!!!
 

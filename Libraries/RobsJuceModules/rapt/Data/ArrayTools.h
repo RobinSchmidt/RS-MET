@@ -364,7 +364,7 @@ public:
   /** Fills the passed array with all zeros - the type must have a constructor that takes an int
   and initializes to the zero element when 0 is passed. */
   template <class T>
-  static void fillWithZeros(T *buffer, int length);
+  static inline void fillWithZeros(T *buffer, int length);
   // rename to clear and/or make alias
 
   /** Filters the signal in input buffer x and stores the result in output buffer y. The filter
@@ -1018,6 +1018,13 @@ inline void rsArrayTools::fillWithImpulse(T *buffer, int length, T value, int po
   rsAssert(position >= 0 && position < length, "Impulse location out of range");
   fillWithZeros(buffer, length);
   buffer[position] = value;
+}
+
+template <class T>
+inline void rsArrayTools::fillWithZeros(T *buffer, int length)
+{
+  for(int i = 0; i < length; i++)
+    buffer[i] = T(0);
 }
 
 template <class T>

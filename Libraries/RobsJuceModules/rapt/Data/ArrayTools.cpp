@@ -393,13 +393,6 @@ int rsArrayTools::firstIndexWithNonZeroValue(const T *buffer, int N)
 }
 
 template <class T>
-void rsArrayTools::fillWithZeros(T *buffer, int length)
-{
-  for(int i = 0; i < length; i++)
-    buffer[i] = T(0);
-}
-
-template <class T>
 void rsArrayTools::deConvolve(const T *y, int yLength, const T *h, int hLength, T *x)
 {
   int m = firstIndexWithNonZeroValue(h, hLength);

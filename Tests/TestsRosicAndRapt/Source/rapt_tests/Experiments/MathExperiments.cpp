@@ -3127,14 +3127,24 @@ void numberTheoreticTrafo()
   // chosen. I think, ideally, it should be as large as possible to give maximum headroom for the
   // computations, so perhaps the largest prime less than 2^64 is the best choice?
 
+  using uint = unsigned int;
+
   // Our magic numbers:
-  int numRoots     = 5;
-  int maxN         = 32;                      // = 2^5 = 2^numRoots, maximum supported trafo size
-  int modulus      = 97;
-  int roots[5]     = { 96, 75, 64, 89, 78 };  // We can pick any, i think,
-  int rootsInv[5]  = { 96, 22, 47, 12, 51 }; 
-  int lengthInv[5] = { 49, 73, 85, 91, 94 };
-  // For production code, wrap them in a class or struct
+  //uint numRoots     = 5;
+  //uint maxN         = 32;                      // = 2^5 = 2^numRoots, maximum supported trafo size
+  //uint modulus      = 97;
+  //uint roots[5]     = { 96, 75, 64, 89, 78 };  // We can pick any, i think,
+  //uint rootsInv[5]  = { 96, 22, 47, 12, 51 }; 
+  //uint lengthInv[5] = { 49, 73, 85, 91, 94 };
+
+  // Try it with the (first five) numbers from rsModularIntegerNTT_64
+  uint numRoots     = 5;
+  uint maxN         = 32;                      // = 2^5 = 2^numRoots, maximum supported trafo size
+  uint modulus      = 3221225473;
+  uint roots[5]     = { 3221225472, 2207278994, 2607818977, 2831384513, 3154294145 };
+  uint rootsInv[5]  = { 3221225472, 1013946479, 2190011530, 1626607911,  122509875 }; 
+  uint lengthInv[5] = { 1610612737, 2415919105, 2818572289, 3019898881, 3120562177 };
+
 
   // Check, if the magic numbers satisfy the requirements:
   using ModInt = RAPT::rsModularInteger<rsUint64>;
@@ -3142,8 +3152,7 @@ void numberTheoreticTrafo()
   ModInt one  = ModInt(1, modulus);
   ModInt a, b, c;
   bool ok = true;
-  for(int i = 0; i < numRoots; i++)
-  {
+  for(int i = 0; i < numRoots; i++) {
     int n = rsPowInt(2, i+1);
     a = ModInt(n,            modulus);
     b = ModInt(lengthInv[i], modulus);
@@ -3159,7 +3168,7 @@ void numberTheoreticTrafo()
     for(int j = 1; j < n; j++) {
       ok &= c != one;              // Root should be primitive, we should not get 1 for any power
       c *= a;  }                   // ...less than n (i.e. n/2, n/3, etc.)
-    ok &= c == one;
+    ok &= c == one; 
   }
   rsAssert(ok);
 
@@ -3202,8 +3211,11 @@ void numberTheoreticTrafo()
     buf1[i] = S * buf1[i];                   // do the scaling
   for(int i = 0;  i < Ly; i++) ok &= (buf1[i] == ModInt(y[i], modulus));  // check result
   for(int i = Ly; i < N;  i++) ok &= (buf1[i] == ModInt(0,    modulus));
+  rsAssert(ok);
 
-  int dummy = 0;
+  VecI y2 = rsConvolveNTT(x, h);
+  ok &= y2 == y;
+  rsAssert(ok);
 
   // Observations:
   // -With the sequence lengths Lx = 5, Lh = 7, we need an NTT size of 32 to make it work. 
