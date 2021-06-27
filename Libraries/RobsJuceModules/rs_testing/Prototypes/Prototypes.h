@@ -2565,7 +2565,8 @@ not even a 4th root of unity exists. Using a radix of 3, we only get roots upt t
 
 Rename this to rsModularIntegerNTT_128 and replace rsUint64 by rsUint128...once we have such a 
 thing. I think, this may work with 128 bit wide integers. Make a class rsModularIntegerNTT_64 using
-3221225473 as modulus. */
+3221225473 as modulus.  ...done...and this does indeed work and supports radix-2 NTTs up to length
+N = 2^30 ....that should be more than enough in practice */
 
 //typedef signed int rsInt32;
 
@@ -2621,15 +2622,13 @@ public:
 
   using ModInt = rsModularIntegerNTT_64;
 
-  rsUint64 value;  // i think, we need a 128 bit wide integer type for this modulus
+  rsUint64 value;
 
   rsModularIntegerNTT_64() {}
   rsModularIntegerNTT_64(rsUint64 x) : value(x) {}
 
-  ModInt operator+(const ModInt& b) 
-  { 
-    return (value + b.value) % modulus; 
-  }
+  ModInt operator+(const ModInt& b) { return (value + b.value) % modulus; }
+  ModInt operator-(const ModInt& b) { return (value - b.value) % modulus; }
   // Maybe instead of explicit mod, do something like subtracting the modulus if the result is 
   // larger that the modulus in a branch-free way, like:
   // rsUint64 tmp = value + b.value;
@@ -2653,12 +2652,18 @@ public:
   bool operator!=(const ModInt& b) const { return value != b.value; }
 
 
+  operator rsUint64() const { return value; }
+
   // The magic numbers (definitions of the arrays are in .cpp file):
   static const rsUint64 modulus  = 3221225473;
-  static const int      numRoots = 30;         // 
+  static const int      numRoots = 30;         // 30 is the number of (2^k)th roots of unity that exist for the modulus
   static const rsUint64 roots[numRoots];       // N-th roots of unity for N = 2^(k+1), k is array index
   static const rsUint64 rootsInv[numRoots];    // modular inverses of the roots
   static const rsUint64 lengthsInv[numRoots];  // modular inverses of the lengths N
+  // They actually all fit into a 32 bit integer, so it's a bit wasteful to store them as 64 bit. 
+  // But the 64 bit format is how they are needed in the computations...so..I'm not sure what's the 
+  // best way to store them...If conversion from uint32 to uint64 is free, then it would seem 
+  // better to store them 32 bit format...we'll see.
 
 };
 

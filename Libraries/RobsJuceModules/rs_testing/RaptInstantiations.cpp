@@ -87,10 +87,14 @@ template void rsArrayTools::rightShift(int *buffer, int length, int numPlaces);
 // rsArrayTools<rsUint32>
 template bool rsArrayTools::contains(const rsUint32 *buffer, int length, rsUint32 elementToFind);
 template void rsArrayTools::copy(const rsUint32 *src, rsUint32 *dst, int N);
+//template void rsArrayTools::convolve(const rsUint32 *x, int Lx, const rsUint32 *h, int Lh, rsUint32 *y);
 template void rsArrayTools::fillWithRangeLinear(rsUint32* x, int N, rsUint32 min, rsUint32 max);
 template int rsArrayTools::firstIndexWithNonZeroValue(const rsUint32 *a, int N);
 template void rsArrayTools::fillWithZeros(rsUint32 *buffer, int length);
 template rsUint32 rsArrayTools::maxValue(const rsUint32 *x, int length);
+
+// rsArrayTools<rsUint64>
+template void rsArrayTools::convolve(const rsUint64 *x, int Lx, const rsUint64 *h, int Lh, rsUint64 *y);
 
 // rsArrayTools<float>
 template void rsArrayTools::fillWithRange(float* x, int N, float min, float max, float shape);
@@ -358,6 +362,12 @@ template RAPT::rsModularInteger<rsUint64> RAPT::rsPow(
 
 template void RAPT::rsLinearTransforms::fourierRadix2DIF(
   RAPT::rsModularInteger<rsUint64> *buffer, int N, RAPT::rsModularInteger<rsUint64> w0);
+template void RAPT::rsLinearTransforms::fourierRadix2DIF(
+  rsModularIntegerNTT_64 *buffer, int N, rsModularIntegerNTT_64 w0);
+  // todo: add namespace identifier to rsModularIntegerNTT_64...maybe it should go to RAPT, too?
+  // or does it better fir inot rosic? ...it's not a template, but we may want to use it in 
+  // templates to NTT-convolve double or float arrays - we'll see
+
 
 template void RAPT::rsMagnitudeAndPhase(double *signal, int N, double *magnitudes, double *phases);
 template void RAPT::rsCrossCorrelation(float x[], float y[], int N, float r[], bool removeBias);
