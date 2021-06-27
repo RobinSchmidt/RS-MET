@@ -2628,7 +2628,15 @@ public:
   rsModularIntegerNTT_64(rsUint64 x) : value(x) {}
 
   ModInt operator+(const ModInt& b) { return (value + b.value) % modulus; }
-  ModInt operator-(const ModInt& b) { return (value - b.value) % modulus; }
+  ModInt operator-(const ModInt& b) 
+  { 
+    if( b.value > value ) return modulus + value - b.value;
+    else                  return           value - b.value;
+    // Can we do this in a branchless way? If not, implement unary minus and express subtraction as 
+    // addition of negative....maybe we can just do: 
+    //   return (modulus + value - b.value) % modulus
+    // that would indeed be branchless
+  }
   // Maybe instead of explicit mod, do something like subtracting the modulus if the result is 
   // larger that the modulus in a branch-free way, like:
   // rsUint64 tmp = value + b.value;
