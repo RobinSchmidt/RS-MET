@@ -62,7 +62,8 @@
 #define RS_TINY RS_MIN(float)
 
 
-
+// Move into a class rsBitTwiddling or rsBits and then get rid of the redundant "Bit" part in the 
+// names
 static constexpr int allBits = -1;                                      // all bits are 1
 static constexpr int allBitsButFirst = std::numeric_limits<int>::max(); // only 1st bit is 1
 static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 1st bit is 0

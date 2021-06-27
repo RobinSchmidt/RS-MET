@@ -345,40 +345,57 @@ bool testNumberTheoreticTransform()
     // ensure that it all works. 
   }
 
-  // Test NTT convolution (maybe factor out):
-  int Nx = 100;      // length of input signal
-  int Nh = 20;       // length of impulse response
-  //int Nx = 5;        // length of input signal
-  //int Nh = 7;        // length of impulse response
-  int Ny = Nx+Nh-1;  // length of output signal 
-  int mask = 31;     // to avoid overflow in convolution result
-  VecI32 x(Nx), h(Nh), y(Ny);
-  rsNoiseGenerator<unsigned int> ng;
-  for(int i = 0; i < Nx; i++) 
-    x[i] = ng.getSampleRaw() & mask;
-  for(int i = 0; i < Nh; i++) 
-    h[i] = ng.getSampleRaw() & mask;
-  AT::convolve(&x[0], Nx, &h[0], Nh, &y[0]);
-  VecI32 y2 = rsConvolveNTT(x, h);
-  ok &= y2 == y;  
-  rsPlotVectors(x, h, y, y2); // The signals are actually periodic with period mask+1! Why?
+  // Test NTT convolution:
+  auto testConvNTT = [](int Nx, int Nh, int mask = RAPT::allBits, int seed = 0)
+  {
+    int Ny = Nx+Nh-1;  // length of output signal 
+    VecI32 x(Nx), h(Nh), y(Ny);
+    rsNoiseGenerator<unsigned int> ng;
+    ng.setSeed(seed);
+    for(int i = 0; i < Nx; i++) 
+      x[i] = ng.getSampleRaw() & mask;
+    for(int i = 0; i < Nh; i++) 
+      h[i] = ng.getSampleRaw() & mask;
+    AT::convolve(&x[0], Nx, &h[0], Nh, &y[0]);
+    VecI32 y2 = rsConvolveNTT(x, h);
+    //rsPlotVectors(x, h, y, y2); 
+      // The signals are actually periodic with period mask+1! Why? (assuming that mask mask away
+      // a couple of leading bits)
+    return y2 == y;  
+  };
+  ok &= testConvNTT(900, 90,    63);
+  ok &= testConvNTT(100, 20,    15);
+  ok &= testConvNTT(100, 20,    31);
+  ok &= testConvNTT(100, 20,    63);
+  ok &= testConvNTT(100, 27,    63);  // Ny = 126
+  ok &= testConvNTT(100, 28,    63);  // Ny = 127
+  ok &= testConvNTT(100, 29,    63);  // Ny = 128
+  ok &= testConvNTT(100, 30,    63);  // Ny = 129
+  ok &= testConvNTT(100, 20,  2047);  // mask = 2^11 - 1
+  ok &= testConvNTT(100, 20,  8191);  // mask = 2^13 - 1
+  ok &= testConvNTT(100, 20, 16383);  // mask = 2^14 - 1
+  //ok &= testConvNTT(100, 20, 32767);  // mask = 2^15 - 1  -> fails
+  //ok &= testConvNTT(100, 20, 65535);  // mask = 2^16 - 1  -> fails
 
+  return ok;
 
   // ToDo: 
-  // -Try it with different array lengths. Maybe make a sub-function testConvNTT that takes
-  //  Nx, Nh, mask and the random seed and call it a couple of times with different inputs.
   // -Figure out at which point we get overflow. This may depend on the mask as well as the 
   //  lengths. When overflow occurs, probably both, naive and NTT convolution will produce
   //  total garbage - but probably different garbage. When using this in production, we need to
   //  take care of avoiding overflow, maybe by clipping the inputs and restricting the lengths.
+  //  ...ok - done: for Nx = 100, Nh = 20, the limit is mask = 16383
+  // -We get overflow even for moderate lengths: (950,95,63) overflows, (900,90,63) still works
+  // -Is it possible to avoid overflow or make it less likely by using signed (modular) integers?
+  //  Is that even possible? Or do we already implícitly represent negative numbers by their 
+  //  equivalence to modulus - x, for a number -x where x is positive?
+  // -We should be able to push the limit of failure for direct convolution by converting to int64.
+  //  But that doesn't really help with the NTT convolution.
 
   // Also: measure the performance of complex vs modular arithmetic. write optimized NTT routines 
   // that use reducing to the modulus not after every add/sub but only after a group, if possible. 
   // Maybe that works better with high-radix FFT algos. We should also prefer addition over 
   // subtraction because subtraction is a bit more expensive.
-
-
-  return ok;
 };
 
 
