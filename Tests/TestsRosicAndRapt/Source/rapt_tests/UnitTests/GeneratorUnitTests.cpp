@@ -210,27 +210,63 @@ bool samplerEngineUnitTest()
   // Other tests to do: set the root-key differently, set the sample-rates for playback and 
   // audiofile differently, test detuning opcodes
 
-  //const rsSamplerData& sfzData = se.getInstrumentData();
   const SD& sfzData = se.getInstrumentData();
   std::string sfzString = sfzData.getAsSFZ();
   SD sfzData2;
   sfzData2.setFromSFZ(sfzString);
   ok &= sfzData2 == sfzData;
+  //SE se2;
+  //se2.setupFromSFZ(sfzData2);
+  //ok &= se2.matchesInstrumentDefinition(se);
+
+
+  // Test delay: the 1st (left) channel gets a delay of 20 samples, the right channel is not 
+  // affected:
+  int delaySamples = 20;
+  float delaySeconds = delaySamples / fs;
+  se.setRegionSetting(0, 0, PST::Delay, delaySeconds);
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));  // the noteOn, again
+  for(int n = 0; n < N; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  for(int n = 0; n < delaySamples; n++) 
+  {
+    ok &= outL[n] == 0.f;
+    ok &= outR[n] == 2.f * cos440[n];
+  }
+  for(int n = delaySamples; n < N; n++) 
+  {
+    float out = outL[n];
+    float tgt = 2.f * sin440[n-delaySamples];
+    // the delay seems to be off by one sample
+    
+    
+    //ok &= outL[n] == 2.f * sin440[n-delaySamples];
+    //float err = outL[n] - 2.f * sin440[n-delaySamples];
+
+
+    ok &= outR[n] == 2.f * cos440[n];
+  }
+  rsPlotVectors(sin440, outL, outR);
+  rsPlotVectors(sin440, outL, outL - 2.f * sin440);
+
+
+  int dummy = 0;
 
 
 
 
 
   // ToDo:
+  // -implement and test fractional delay times
+  // -implement and test opcodes for key- and vel-tracking for:
+  //  pitch, volume, pan, delay
   // -write a performance test for the sampler
   // -switch to an int+float representation of the current sample position and increment and check, 
   //  if this improves performance...even if not, it's still better because it doesn't lose 
   //  precision for later samples
-  // -implement and test fractional delay times
-  // -implement and test opcodes for key- and vel-tracking for:
-  //  pitch, volume, pan, delay
   // -implement the signal flow: regions -> groups -> instrument, introduce 2 switches in the 
-//    engine: groupSettingsAccumulate, instrumentSettingsAccumulate
+  //  engine: groupSettingsAccumulate, instrumentSettingsAccumulate - test, if fallback vs 
+  //  accumulate works as intended
   // -implement opcodes: pos, width, start, loop_start/end, loop_mode
 
 
@@ -245,15 +281,6 @@ bool samplerEngineUnitTest()
   // last setting of a particular kind (the last one would overwrite all others anyway). Maybe it 
   // should return, how many settings had to be removed. Ideally, we would like to always keep only
   // at most one setting of each kind.
-
-
-  //SE se2;
-  //se2.setupFromSFZ(sfzData2);
-  //ok &= se2.matchesInstrumentDefinition(se);
-
-
-  int dummy = 0;
-
 
   /*
   // Test exporting the instrument-definition related state ins an .sfz-file compliant string:

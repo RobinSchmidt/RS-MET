@@ -69,7 +69,7 @@ the template<class T> thing can just be removed and the T will be replaced by an
 good practice to always hint in a comment, what the replacement is, i.e. how client code should be
 updated to get rid of the deprecation warnings. */
 
-#define RS_WARN_DEPRECATED 1 // comment to disable deprecation warnings
+//#define RS_WARN_DEPRECATED 1 // comment to disable deprecation warnings
 #ifdef DOXYGEN
   #define RS_DEPRECATED(functionDef)
   #define RS_DEPRECATED_WITH_BODY(functionDef, body)

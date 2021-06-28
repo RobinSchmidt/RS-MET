@@ -64,6 +64,8 @@ public:
       Volume, Pan, PanRule,
       AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
 
+      Delay,
+
       FilterCutoff, FilterResonance, FilterType,
 
       Unknown,

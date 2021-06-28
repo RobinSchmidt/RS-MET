@@ -728,6 +728,12 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     // Pitch settings:
     case TP::PitchKeyCenter: { rootKey = val; } break;
 
+    //
+    case TP::Delay:          
+    { 
+      sampleTime = -val * fs; 
+    }  break;
+
     // Filter settings:
       //case TP::FilterCutoff: { flt.setCutoff(val);  } break;
 
@@ -933,17 +939,16 @@ Problem:
  optimization concerns to be addressed later
 
 SFZ - Resources:
+https://sfzformat.com/legacy/   opcode reference
+https://www.linuxsampler.org/sfz/    has convenient list of opcodes, also for sfz v2
 https://en.wikipedia.org/wiki/SFZ_(file_format)
 https://github.com/sfz/tests/   test sfz files demonstrating various features
-https://sfzformat.com/legacy/   opcode reference
 https://sfzformat.com/headers/  reference for section headers in sfz files
 http://www.drealm.info/sfz/plj-sfz.xhtml  description of the sfz format
 https://www.kvraudio.com/forum/viewtopic.php?f=42&t=508861  kvr forum thread with documentation
 https://sfzinstruments.github.io/  collection of sfz instruments
 http://ariaengine.com/overview/sfz-format/
-https://www.linuxsampler.org/sfz/    has convenient list of opcodes, also for sfz v2
 http://doc.linuxsampler.org/sfz/
-
 https://noisesculpture.com/cakewalk-synthesizers/
 https://noisesculpture.com/cakewalk-synthesizers-downloads/
 
