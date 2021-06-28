@@ -31,21 +31,35 @@ bool rotes::testFileWave()
 
   // Test roundtrip of 16 bit numbers through conversion to 32 bit float:
   float f;
-  f = WF::int16ToFloat32(-32768);  // maps to -1.00004578
-  f = WF::int16ToFloat32(+32767);  // maps to +0.999984741
-  for(rsInt16 i = -32768; i <= 32767; i++)
+  int   i;
+  f = WF::int16ToFloat32(-32768);    // maps to -1.00004578
+  f = WF::int16ToFloat32(+32767);    // maps to +0.999984741
+  i = WF::float32ToInt16(-1.f);      // maps to -32767
+  i = WF::float32ToInt16(+1.f);      // maps to +32767
+  for(i = -32768; i <= 32767; i++)
   {
-    f = WF::int16ToFloat32(i);
+    f = WF::int16ToFloat32((rsInt16) i);
     rsInt16 j = WF::float32ToInt16(f);
     ok &= i == j;
-    if(i == 32767)
-      break;          // without that, we enter an infinite loop
   }
 
-  // ToDo:
-  // -do the same test for all possible 24bit values
-
+  // The same for 24 bit numbers:
+  f = WF::int24ToFloat32(-8388608);  // maps to -1.00000012
+  f = WF::int24ToFloat32(+8388607);  // maps to +1.00000000
+  i = WF::float32ToInt24(-1.f);      // maps to -8388607
+  i = WF::float32ToInt24(+1.f);      // maps to +8388607
+  for(i = -8388608; i <= 8388607; i++)
+  {
+    f = WF::int24ToFloat32(i);
+    rsInt32 j = WF::float32ToInt24(f);
+    ok &= i == j;
+  }
 
   return ok;
+
+  // ToDo:
+  // -for the sake of completeness, implement and test 8 bit conversion
+  // -test actually writing and reading files in various formats (different bit-depths, 
+  //  sample-rates, numbers of channels, etc.)
 }
 

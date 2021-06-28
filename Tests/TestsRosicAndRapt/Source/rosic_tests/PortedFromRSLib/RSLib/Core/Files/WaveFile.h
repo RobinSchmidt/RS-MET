@@ -41,14 +41,29 @@ namespace RSLib
 
     static inline float int16ToFloat32(rsInt16 x)
     {
-      return (((float)(x+32768)) - 32768.5f) / 32767.f;
+      //return (((float)(x+32768)) - 32768.5f) / 32767.f;
+      return (((float)(x+32768)) - 32768.5f) * (1.f/32767.f);
     }
+
+    static inline float int24ToFloat32(rsInt32 x)
+    {
+      //return (((float)(x+8388608)) - 8388608.5f) / 8388607.f;
+      return (((float)(x+8388608)) - 8388608.5f) * (1.f/8388607.f);
+    }
+
 
     static inline rsInt16 float32ToInt16(float x)
     {
       int tmp = (((int) ((x * 32767) + 32768.5f)) - 32768);
       return (rsInt16) rsLimitToRange(tmp, -32768, 32767);
     }
+
+    static inline rsInt32 float32ToInt24(float x)
+    {
+      int tmp = (((int) ((x * 8388607) + 8388608.5f)) - 8388608);
+      return (rsInt32) rsLimitToRange(tmp, -8388608, 8388607);
+    }
+
 
 
   protected:
