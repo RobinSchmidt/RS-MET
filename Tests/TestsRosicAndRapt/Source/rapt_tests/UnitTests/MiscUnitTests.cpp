@@ -221,7 +221,10 @@ public:
     std::vector<std::complex<double>> y, x = rsComplexRandomVector(N, -1.0, +1.0); y = x;
     //ifft(  &y[0], N); RAPT::rsArrayTools::scale(&y[0], N, 1.0/N); // actual
     ifft(  &y[0], N);  // actual
-    rsIFFT(&x[0], N);  // target
+
+    //rsIFFT(&x[0], N);  // old, target
+    rsLinearTransforms::fourierInvRadix2DIF(&x[0], N); // target
+
     return rsAlmostEqual(x, y, tol);
   }
 

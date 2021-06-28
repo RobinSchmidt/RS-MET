@@ -72,7 +72,7 @@ public:
 protected:
 
   T scale = T(2.0/4294967296.0);
-  T shift = T(-1.0);
+  T shift = T(-1);
 
   unsigned long seed  = 0;
 	unsigned long state = 0;

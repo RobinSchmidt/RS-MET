@@ -50,7 +50,8 @@ namespace RSLib
       //return (((float)(x+8388608)) - 8388608.5f) / 8388607.f;
       return (((float)(x+8388608)) - 8388608.5f) * (1.f/8388607.f);
     }
-
+    // todo: test, if the values obtained from replacing division by multiplication are the same as
+    // those obtained by division
 
     static inline rsInt16 float32ToInt16(float x)
     {

@@ -3152,7 +3152,7 @@ void numberTheoreticTrafo()
   ModInt one  = ModInt(1, modulus);
   ModInt a, b, c;
   bool ok = true;
-  for(int i = 0; i < numRoots; i++) {
+  for(int i = 0; i < (int)numRoots; i++) {
     int n = rsPowInt(2, i+1);
     a = ModInt(n,            modulus);
     b = ModInt(lengthInv[i], modulus);
@@ -3179,8 +3179,8 @@ void numberTheoreticTrafo()
   using VecI = std::vector<int>;
   VecI x  = VecI({11,32,15,75,51});       // input signal
   VecI h  = VecI({65,72,42,28,91,14,32}); // impulse response
-  int  Lx = rsSize(x);                    // length of x
-  int  Lh = rsSize(h);                    // length of h
+  int  Lx = (int)rsSize(x);               // length of x
+  int  Lh = (int)rsSize(h);               // length of h
   int  Ly = Lx+Lh-1;                      // length of result
   VecI y(Ly);                             // result (of convolution)
   rsArrayTools::convolve(&x[0], Lx, &h[0], Lh, &y[0]);

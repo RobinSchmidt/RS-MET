@@ -208,6 +208,7 @@ bool testKronecker2x2(int L)
 {
   using Vec = std::vector<double>;
   using Mat = rsMatrix<double>;
+  using LT  = rsLinearTransforms;
 
   int N = (int)pow(2, L);                    // size of matrix is NxN
   double a = 2, b = 3, c = 5, d = 7;         // coefficients of seed matrix
@@ -220,7 +221,8 @@ bool testKronecker2x2(int L)
     HN = Mat::getKroneckerProduct(H1, HN);
   y = HN * x;                                // reference output
   z = x;
-  rsFGHT(&z[0], N, a,b,c,d);                 // output of fast transform
+  //rsFGHT(&z[0], N, a,b,c,d);                 // output of fast transform
+  LT::kronecker2x2(&z[0], N, a,b,c,d);       // output of fast transform
   Vec z2 = x;
   rsFastKroneckerTrafo(z2, H1, L);           // output of fast generalized transform
   return z == y && z2 == y;
@@ -364,8 +366,11 @@ bool rotes::testFastGeneralizedHadamardTransform()
   double y4[4];
   double work[16];  // workspace
 
-  typedef rosic::FeedbackDelayNetwork FDN;
-  typedef RAPT::rsArrayTools AT;
+  //typedef rosic::FeedbackDelayNetwork FDN;
+  //typedef RAPT::rsArrayTools AT;
+  using FDN = rosic::FeedbackDelayNetwork;
+  using AT  = RAPT::rsArrayTools;
+  using LT  = RAPT::rsLinearTransforms;
 
   // 4-point FWHT:
   AT::copy(x4, y4, 4);
@@ -385,7 +390,8 @@ bool rotes::testFastGeneralizedHadamardTransform()
 
   // New implementation:
   AT::copy(x4, y4, 4);
-  RAPT::rsFGHT(y4, 4, 2., 3., 5., 7.);
+  //RAPT::rsFGHT(y4, 4, 2., 3., 5., 7.);
+  LT::kronecker2x2(y4, 4, 2., 3., 5., 7.);
   ok &= y4[0] ==  4;
   ok &= y4[1] == 24;
   ok &= y4[2] ==  4;
@@ -422,7 +428,8 @@ bool rotes::testFastGeneralizedHadamardTransform()
 
   // New implementation:
   AT::copy(x8, y8, 8);
-  RAPT::rsFGHT(y8, 8, 2., 3., 5., 7.);
+  //RAPT::rsFGHT(y8, 8, 2., 3., 5., 7.);
+  LT::kronecker2x2(y8, 8, 2., 3., 5., 7.);
   ok &= y8[0] ==   149;
   ok &= y8[1] ==   357;
   ok &= y8[2] ==   360;
@@ -446,7 +453,7 @@ bool rotes::testFastGeneralizedHadamardTransform()
   AT::copy(x8, y8, 8);
   FDN::fastGeneralizedHadamardTransform(       y8, 8, 3, work, 2, 3, 5, -7);
   FDN::fastInverseGeneralizedHadamardTransform(y8, 8, 3, work, 2, 3, 5, -7);
-  ok &= fabs(RAPT::rsArrayTools::maxDeviation(x8, y8, 8)) < 1.e-15;
+  ok &= fabs(AT::maxDeviation(x8, y8, 8)) < 1.e-15;
 
   // Tests via Kronekcer products:
                               // # delaylines

@@ -68,3 +68,13 @@ void ConvolverBruteForce::clearInputBuffer()
     x[k] = 0.0;
   mutex.unlock();
 }
+
+
+/*
+
+ToDo:
+-Get rid of the mutex stuff. Thread safety should not be the reponsibility of a DSP class.
+-Maybe implement some sort of nonlinear generalization using instead of a sum ove h[k]*x[n-k] some 
+ user-defined function f(h[k],x[n-k],k). May try something like f(x,h,k) = h*x + c*h*x^3
+
+*/
