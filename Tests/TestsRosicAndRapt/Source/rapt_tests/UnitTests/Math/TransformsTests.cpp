@@ -385,7 +385,11 @@ bool testNumberTheoreticTransform()
   //  total garbage - but probably different garbage. When using this in production, we need to
   //  take care of avoiding overflow, maybe by clipping the inputs and restricting the lengths.
   //  ...ok - done: for Nx = 100, Nh = 20, the limit is mask = 16383
-  // -We get overflow even for moderate lengths: (950,95,63) overflows, (900,90,63) still works
+  // -We get overflow even for moderate lengths: (950,95,63) overflows, (900,90,63) still works,
+  //  so it seems, the NTT convolution is not practical for audio, where we have to deal with
+  //  long impulse responses. We could still chop the data into very short segments, though...maybe
+  //  NTT for short segments, FFT for the longer ones - but then, the additional complexity of
+  //  having different methods is hard to justify.
   // -Is it possible to avoid overflow or make it less likely by using signed (modular) integers?
   //  Is that even possible? Or do we already implícitly represent negative numbers by their 
   //  equivalence to modulus - x, for a number -x where x is positive?

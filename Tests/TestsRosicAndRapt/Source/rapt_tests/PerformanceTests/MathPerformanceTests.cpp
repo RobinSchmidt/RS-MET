@@ -10,7 +10,8 @@ void fftPerformance()
 
   // create dummy data to perform the tests on:
   //std::vector<int> sizes = { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 };
-  std::vector<int> sizes = { 1, 2, 4, 8, 16, 32, 64, 128};
+  //std::vector<int> sizes = { 1, 2, 4, 8, 16, 32, 64, 128};
+  std::vector<int> sizes = { 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192 };
   size_t numSizes = sizes.size();
   int maxSize = sizes[numSizes-1];
   //std::vector<double> noise = createNoise(maxSize, -1.0, 1.0);
@@ -25,13 +26,27 @@ void fftPerformance()
   pa.addTest(&dft, "DFT");
   pa.addTest(&fft, "FFT");
   pa.setTestInputSizes(sizes);
+  // maybe instead of an array of input sizes, it should take an array of pointers to datasets
 
   // run tests and print report:
   pa.runTests();
   std::string report = pa.getReport();
   std::cout << report;
+  pa.plotResults();  // todo...should plot means, variances, min/max, median and the raw data
+                     // as scatter-plot
 
-  // maybe plot means with error bars for variances, maybe also plot mins/maxes/medians/modes
+  // ToDo:
+  // -Test various FFT routines, including FFTW and commercial ones. Switch the availability of 
+  //  these in the library by #defines, a la RS_USE_GPL, RS_USE_MKL, RS_USE_IPP, etc., so client
+  //  code can decide at compile time the (combination of) licensing and thereby make certain parts
+  //  of the library un/available
+  // -Maybe plot means with error bars for variances, maybe also plot mins/maxes/medians/modes. 
+  //  That should actually be done in some sort of performance test framework.  Maybe a class 
+  //  rsPerformance tester that takes a std::function which it is supposed to measure. Then, it 
+  //  takes a bunch of of tests and computes statistics (mean, median, min, max, variance, etc.).
+  //  Maybe, before taking mean and variance, outliers should be are removed, where the ourlierness
+  //  is defined by being some factor below and above the median. And/or do scatter plots showing
+  //  all the data raw.
 }
 
 

@@ -3,7 +3,7 @@
 
 #include <rapt/rapt.h> // get rid
 
-#include "../RSLib/Core/RSCore.h" 
+#include "../RSLib/Core/RSCore.h" // get rid
 using namespace RSLib;
 // Why that? Obsolete? Ah, SampleMapGenerator uses the rsString class from there. ToDo: switch to
 // rosic::String or std::string. ..but it also uses rsFile rsOutputWaveFile, etc -> move them to 

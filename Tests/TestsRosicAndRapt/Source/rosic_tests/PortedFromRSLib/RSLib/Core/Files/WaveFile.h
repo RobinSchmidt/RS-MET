@@ -39,6 +39,18 @@ namespace RSLib
     // one of the values from enum sampleFormats
 
 
+    static inline float int16ToFloat32(rsInt16 x)
+    {
+      return (((float)(x+32768)) - 32768.5f) / 32767.f;
+    }
+
+    static inline rsInt16 float32ToInt16(float x)
+    {
+      int tmp = (((int) ((x * 32767) + 32768.5f)) - 32768);
+      return (rsInt16) rsLimitToRange(tmp, -32768, 32767);
+    }
+
+
   protected:
 
 

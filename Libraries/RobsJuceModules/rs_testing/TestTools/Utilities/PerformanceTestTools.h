@@ -184,10 +184,6 @@ public:
 };
 */
 
-
-
-
-
 #endif
 
 /* Maybe make another version based on this:
@@ -217,12 +213,12 @@ It runs the tests multiple times (how many is something you can set up), gathers
 perform statistical analysis afterwards. In the simplest case, you might be interested in how
 minimum, average or maximum running times of the various functions differ. On a more
 sophisticated level, you might be interested in variances and statistical significance of
-differences in the averages. This class is meant to do the appropriate statistical tests
+differences in the averages. This class is meant to do the appropriate statistical tests...
 
-todo:
+ToDo:
 -computations for the statiscal tests should be factored out
--it should be possible to make plots that show how the performance depends on input size - with
- error-bars and multiple graphs   */
+-it should be possible to make plots that show how the performance depends on input size with
+ error-bars and multiple graphs using GNUPlotCPP.  */
 
 class PerformanceAnalyzer
 {
@@ -254,7 +250,7 @@ public:
     // input sizes, we may want to run the test less often because it takes too mauch time to run
     // multiple times)
 
-  /** Sets up, how large a deviation form the median is allowed before a datapoint is considered
+  /** Sets up, how large a deviation from the median is allowed before a datapoint is considered
   an outlier with invalid value and thrown away. For example, passing 0.5 and 3.0 will mean that
   values below 0.5 times the median and above 3.0 times the median will be cosidered invalid
   outliers. */
@@ -286,11 +282,13 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry:
 
-  /** Creates a report string that summarizes the results. */
+  /** Creates a report string that summarizes the results. Meant to be displayed on the console or 
+  written into a file. */
   std::string getReport();
 
-  // void plotResults()
-  // may be better handled by another, higher level class
+  /** Not yet implemented. */
+  void plotResults();
+
 
   /** Returns the number of valid datapoints that were obtained for the test with given index and
   input size index. Due to removal of outliers, this value may be different from the value passed
@@ -334,11 +332,10 @@ protected:
   std::vector<std::function<void(int)>*> tests; // tests themselves
   std::vector<int> inputSizes;
 
-
   int numRuns = 30; // later use an array to allow smaller numRuns for large input sizes
   double smallOutlier = -std::numeric_limits<double>::infinity();
   double largeOutlier =  std::numeric_limits<double>::infinity();
-
+    // shouldn't the smallOutlier be zero? I think, it's meant to represent a ratio.
 
   std::vector<std::vector<std::vector<double>>> rawData;
     // raw results, 1st index: function, 2nd: input-size, 3rd: datapoint
@@ -348,6 +345,7 @@ protected:
   PerformanceCounterTSC cpuCounter;
 
 };
-// test with 2 functions (like Ooura FFT, rsFFT), 5 input sizes (128...2048), 30 runs
+// todo: test with 2 functions (like Ooura FFT, rsFFT), 5 input sizes (128...2048), 30 runs, see
+// fftPerformance in MathPerformanceTests.cpp
 
 #endif

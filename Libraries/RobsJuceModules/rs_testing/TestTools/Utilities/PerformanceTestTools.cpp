@@ -63,12 +63,19 @@ void PerformanceAnalyzer::runTests()
         (*tests[i])((int)inputSizes[j]);  // run test i with input size (indexed by) j
         double cycles = (double)cpuCounter.getNumCyclesSinceInit();
         rawData[i][j][k] = cycles; }}}
+
+  // Factor out into processResults:
   removeOutliers();
   computeMeansAndVariances();
+  // Maybe we should not remove them but rather flag the outliers? Then we could not take them 
+  // into account in the statistical analysis but still plot them in a scatter plot, perhaps with
+  // a different color or different symbol like: normal data point: filled circle, outlier: cross
 }
 
 std::string PerformanceAnalyzer::getReport()
 {
+  rsError("Not yet implemented");
+
   std::string report;
 
   // formatting variables:
@@ -76,12 +83,7 @@ std::string PerformanceAnalyzer::getReport()
   //int columnWidth   = 6;
   //int maxNameLength = 6; // preliminary
 
-
   //size_t i, j;
-
-  // todo: remove outliers
-
-  computeMeansAndVariances();
 
   report += "Mean Values\n";
 
@@ -92,6 +94,13 @@ std::string PerformanceAnalyzer::getReport()
 
   return report;
 }
+
+void PerformanceAnalyzer::plotResults()
+{
+  rsError("Not yet implemented");
+}
+// may this be better handled by another, higher level class?
+
 
 void PerformanceAnalyzer::initResultArray()
 {
@@ -129,3 +138,13 @@ void PerformanceAnalyzer::computeMeansAndVariances()
 
   // maybe refactor into computeMeans and computeVariances
 }
+
+/*
+
+-Maybe specifying the size of the input is not enough in all cases. Maybe sometimes we want to test
+ different datasets of the same size? Maybe we should have a more general API to pass datasets 
+ instead of sizes? How is the data to be generated anyway? ...maybe the caller should pass 
+ functions that generate the data? Or maybe we should just store a bunch of void-pointers that
+ point to the datasets and it's up to the user-provided function to cast and interpret them?
+
+*/

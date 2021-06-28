@@ -1270,8 +1270,12 @@ std::vector<int> rsConvolveNTT(const std::vector<int>& x, const std::vector<int>
 // turns the garbage into our desired convolution result. ...feels almost like dealing with 
 // cryptography - the NTT totally is some sort of crypto-FFT! :-) Maybe we can encrypt sequences
 // by modular convolution and decrypt by deconvoltion...but wait...modular convolution is not 
-// really what we are doing her. We actually compute a regular integer convolution by means of 
+// really what we are doing here. We actually compute a regular integer convolution by means of 
 // going through modular arithmetic. But the end result is just regular convolved integer array.
+// But the whole thing only works for short sequences of small numbers because the overflow 
+// problems kick in really soon. That's a bit sad because it means, we can't use it for convolution
+// reverb :-( Maybe with a 128 bit integer type, it could become practical? -> try it with 
+// rsBigInt.
 
 //-------------------------------------------------------------------------------------------------
 
