@@ -89,13 +89,14 @@ Ideas:
  -it may be beneficial to replace the for-loops with while-loops - then we can directly jump into the 
   funtion and continue where we left off, for any value of h,k,j,jf,jl,Wjk ...which, i think, are
   needed for the status of the FFT, i.e. these should be passed as (struct of) reference parameters
-
+-Try to exploit the fact that the inputs for the forward FFT are zero-padded
 
 Questions:
 -using uinform block-sizes, input spectra can be re-used by just passing the input spectrum to the
  next block...but can this also be made to work, when the next block has twice the length...isn't 
  the DIF-FFT splitting the signal in the time-domain into two halves - that would mean, one half is 
- already computed and we only need to compute the other half
+ already computed and we only need to compute the other half. A 256-point FFT buffer would not have 
+ to be computed from scratch, but we would somehow "upgrade" a previously computed 128-point buffer?
 
 Resources:
 http://www.cs.ust.hk/mjg_lib/bibs/DPSu/DPSu.Files/Ga95.PDF

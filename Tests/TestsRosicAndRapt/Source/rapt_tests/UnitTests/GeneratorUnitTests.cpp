@@ -219,35 +219,47 @@ bool samplerEngineUnitTest()
   //se2.setupFromSFZ(sfzData2);
   //ok &= se2.matchesInstrumentDefinition(se);
 
+  // Remove the 1st region (sin440) -> cos440 should become 1st region, then re-assign the sample
+  // for 1st region to sine
+
 
   // Test delay: the 1st (left) channel gets a delay of 20 samples, the right channel is not 
   // affected:
-  int delaySamples = 20;
+  int delaySamples = 10;
   float delaySeconds = delaySamples / fs;
+  //se.removeRegion(0, 1);                       // todo...
+  //se.setRegionSetting(0, 0, PST::Pan, 0.f);    // ...to make the testing easier
   se.setRegionSetting(0, 0, PST::Delay, delaySeconds);
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));  // the noteOn, again
   for(int n = 0; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
-  for(int n = 0; n < delaySamples; n++) 
-  {
+  for(int n = 0; n < delaySamples; n++) {
     ok &= outL[n] == 0.f;
-    ok &= outR[n] == 2.f * cos440[n];
-  }
-  for(int n = delaySamples; n < N; n++) 
-  {
-    float out = outL[n];
-    float tgt = 2.f * sin440[n-delaySamples];
-    // the delay seems to be off by one sample
-    
-    
-    //ok &= outL[n] == 2.f * sin440[n-delaySamples];
-    //float err = outL[n] - 2.f * sin440[n-delaySamples];
+    ok &= outR[n] == 2.f * cos440[n];  }
+  float tol = 1.e-7;  // ~= 140 dB SNR
+  for(int n = delaySamples; n < N; n++) {
+    ok &= rsIsCloseTo(outL[n], 2.f * sin440[n-delaySamples], tol);
+    // todo: 
+    // -implement and use getSinAt(float, pos); that interpolates in our sin440 sample
 
 
-    ok &= outR[n] == 2.f * cos440[n];
-  }
-  rsPlotVectors(sin440, outL, outR);
-  rsPlotVectors(sin440, outL, outL - 2.f * sin440);
+    ok &= outR[n] == 2.f * cos440[n]; }
+  //rsPlotVectors(sin440, outL, outR);
+  rsPlotVectors(2.f*sin440, outL);
+  //rsPlotVectors(sin440, outL, outL - 2.f * sin440);
+
+  // When using delaySamples = 1, it seem to work, but 20 doesn't. It seems to work up to 2, with 3
+  // or more, it fails. i think, it has to do with floating point increments and rounding errors
+  // for the sampleTime variable in rsSamplerEngine::RegionPlayer::getFrame. When using 3, it 
+  // actually gets delayed by 4...i would expect that the first sample might be missing but 
+  // otherwise the delay would be correct...but it's off by one sample. With 2 the initial 
+  // sampleTime is -1.999999... with 3, it's -3.00000001, so with 2, the if(sampleTime < 0.0) 
+  // triggers 2 times but with 3 it actually triggers 4 times...but that should really only cause a
+  // missing initial sample, not an additional sample of delay....ah . it's because we were using
+  // floor on the sampleTime - we should use round or better: interpolation....ok fixed using 
+  // rounding for now - later we should interpolate, then we will need a toleracnce for this test 
+  // here.
+  // ToDo: test also fractionla delays like 10.5, 
 
 
   int dummy = 0;
@@ -258,6 +270,7 @@ bool samplerEngineUnitTest()
 
   // ToDo:
   // -implement and test fractional delay times
+  // -implement and test removeRegion
   // -implement and test opcodes for key- and vel-tracking for:
   //  pitch, volume, pan, delay
   // -write a performance test for the sampler

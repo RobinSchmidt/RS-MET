@@ -46,7 +46,7 @@ public:
   directly baked into the Region class below), but sfz defines many more. But settings don't 
   need to be playback constraints. Other types are things like envelope settings, filter 
   frequencies, etc. */
-  class PlaybackSetting  // rename to Setting
+  class PlaybackSetting  // rename to Setting...or maybe not - it's too generic
   {
 
   public:
@@ -55,22 +55,30 @@ public:
     in the sfz specification. */
     enum Type
     {
+      // Input controls:
       LoKey, HiKey, LoVel, HiVel,
-
       ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
 
+      // Muted: convenient to switch regiosn or groups off wihthout removing them - check if 
+      // sfz has such a thing
+
+      // Pitch:
       PitchKeyCenter,
 
+      // Amplitude:
       Volume, Pan, PanRule,
       AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
+      // ToDo: Width, Position
 
+      // Filtering:
       Delay,
-
       FilterCutoff, FilterResonance, FilterType,
+
+      // Looping:
+
 
       Unknown,
       NumTypes
-
       //...tbc...
     };
     // maybe don't capitalize first letter - make it conistent with other (newer) enums in the 

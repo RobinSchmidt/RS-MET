@@ -420,7 +420,7 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
     if(rp == nullptr) {
       // Roll back the addition of all players so far to the activePlayers and move them back into
       // the idlePlayers again. We don't really want notes to play with an incomplete set of 
-      // samples. It's all or nothing - either all samples for the given key get triggered or none
+      // samples. It's all or nothing - either all regions for the given key get triggered or none
       // of them:
       for(int j = 0; i < numRegions; j++) {
         rp = RAPT::rsGetAndRemoveLast(activePlayers);
@@ -570,11 +570,16 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
     sampleTime += 1.0;               // We just increment the time and return 0,0. Actual output
     return rsFloat64x2(0.0, 0.0); }  // will be produced as soon as sampleTime reaches zero.  
 
+
   float L, R;                        // left and right output
 
   //int intTime = round(sampleTime);
-  int intTime = (int) floor(sampleTime);
-  stream->getFrameStereo(intTime, &L, &R);
+  ////int intTime = (int) floor(sampleTime);
+  //stream->getFrameStereo(intTime, &L, &R);
+
+  stream->getFrameStereo((float)sampleTime, &L, &R);  // try to avoid the conversion to float
+
+
   //stream->getFrameStereo(sampleTime, &L, &R);
   // This does implicit conversion of double to int by truncation which amounts to the worst 
   // possible quality resampling scheme. ToDo:

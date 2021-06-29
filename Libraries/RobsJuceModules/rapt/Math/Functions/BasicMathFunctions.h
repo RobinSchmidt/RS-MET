@@ -170,7 +170,7 @@ back to the default implementation, which returns T(1). It's also useful for mod
 create 1 with the same modulus as some other number. */
 template<class T>
 inline T rsUnityValue(T value);
-// Merge with Basics, maybe rename to rsOne
+// Merge with Basics, maybe rename to rsOne or rsOneValue..but no - that's ambiguous
 
 /** Wraps the number to the interval 0...length. */
 inline double rsWrapAround(double numberToWrap, double length);

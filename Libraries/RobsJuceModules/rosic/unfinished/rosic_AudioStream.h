@@ -19,6 +19,30 @@ public:
   special case more efficiently than with the more general implementation. */
   virtual void getFrameStereo(int sampleIndex, T* left, T* right) const = 0;
 
+
+  /** Computes a stereo output frame at possibly non-integer sample positions. The baseclass 
+  implementation does this by simple linear interpolation. Subclasses may override this for using
+  better quality interpolation and/or optimization purposes. */
+  virtual void getFrameStereo(T samplePosition, T* left, T* right) const
+  {
+    if(samplePosition < T(0)) {
+      RAPT::rsError("getFrameStereo not yet implemented for samplePosition < 0");
+      *left = *right = T(0); }
+    int sampleIndex = (int) samplePosition;
+    T frac = samplePosition - sampleIndex;
+    T xL0, xR0, xL1, xR1;
+    getFrameStereo(sampleIndex,   &xL0, &xR0);
+    getFrameStereo(sampleIndex+1, &xL1, &xR1);
+    *left  = (T(1)-frac) * xL0 + frac * xL1;
+    *right = (T(1)-frac) * xR0 + frac * xR1;
+
+    // ToDo: 
+    // -make a function that takes sampleIndex and frac as separate arguments
+    // -try to optimize using modf: https://en.cppreference.com/w/cpp/numeric/math/modf
+  }
+
+
+
   /** Sets the number of output channels for this object. By default, this number will be equal to
   the number of channels in the data, as set by the setData call. However, the number of desired
   output channels to be produced may actually be different from that. For example, we may want to
