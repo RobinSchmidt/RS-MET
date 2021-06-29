@@ -355,6 +355,8 @@ public:
 
     int addRegion(Region* newRegion); 
 
+    bool removeRegion(int i);
+
     void copyDataFrom(const Group* scrGroup);
 
     void clearRegions();
@@ -445,8 +447,14 @@ public:
 
   int addGroup(Group* newGroup) { return instrument.addGroup(newGroup); }
 
+  /** Adds a region to the group with the given groupIndex and returns the region index within the
+  group of the newly added region or -1 if the grouIndex was invalid. */
+  int addRegion(int groupIndex, uchar loKey = 0, uchar hiKey = 127);
 
-  int addRegion(int gi, uchar loKey = 0, uchar hiKey = 127);
+  /** Removes the region with given index from the group with given index and returns true, if this
+  was successful and false if it wasn't, which happens when the index pair is invalid. */
+  bool removeRegion(int groupIndex, int regionIndex);
+
 
   void setRegionCustomPointer(int gi, int ri, void* ptr)
   { instrument.groups[gi]->regions[ri]->setCustomPointer(ptr); }

@@ -111,6 +111,27 @@ int rsSamplerEngine::addRegion(int gi, uchar loKey, uchar hiKey)
   return ri;
 }
 
+int rsSamplerEngine::removeRegion(int gi, int ri)
+{
+  if(!isIndexPairValid(gi, ri)) {
+    RAPT::rsError("Invalid group- and/or region index");
+    return ReturnCode::invalidIndex; }
+
+  // Delete all our pointers to the region that will be deleted (maybe factor out into 
+  // deleteAllPointersTo(r)):
+  Region* r = getRegion(gi, ri);
+  RAPT::rsAssert(r != nullptr);
+  for(int k = 0; k <= numKeys; k++)
+    regionsForKey[k].removeRegion(r);
+
+  // Remove region from the rsSamplerData object
+  bool success = sfz.removeRegion(gi, ri);
+  if(success) 
+    return ReturnCode::success;
+  else        
+    return ReturnCode::notFound;
+}
+
 int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
 {
   if(!isIndexPairValid(gi, ri)) {

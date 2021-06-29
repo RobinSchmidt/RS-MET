@@ -321,7 +321,9 @@ inline size_t rsFind(const std::vector<T>& v, T elementToFind)
   for(size_t i = 0; i < v.size(); i++)
     if(v[i] == elementToFind)
       return i;
-  return v.size(); // as convention, return vector-length, if element is not found
+  return v.size(); 
+  // as convention, return vector-length, if element is not found - this is consitent with the 
+  // standard library but not with the rest of rapt, which used signed integers and -1...hmm...
 }
 
 template<class T>

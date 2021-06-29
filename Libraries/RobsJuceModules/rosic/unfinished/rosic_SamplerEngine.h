@@ -155,6 +155,9 @@ public:
   can also be set up later, but some memory operations can be saved, if it's known in advance. */
   int addRegion(int groupIndex, uchar loKey = 0, uchar hiKey = 127);
 
+
+  int removeRegion(int groupIndex, int regionIndex);
+
   /** Sets the sample to be used for the given region within the given group. Returns either
   ReturnCode::success or ReturnCode::invalidIndex, if the pair of group/region indices and/or the
   sample index was invalid. */
@@ -164,6 +167,7 @@ public:
   ReturnCode::success or ReturnCode::invalidIndex, if groupIndex and/or regionIndex was invalid. If 
   this happens, it indicates a bug on the call site. */
   int setRegionSetting(int groupIndex, int regionIdex, PlaybackSetting::Type type, float value);
+
 
 
   // todo: setGroupSetting, setInstrumentSetting, removeRegion/Group, clearGroup, clearRegion, 
@@ -431,8 +435,36 @@ protected:
 
   public:
 
-    void addRegion(const Region* r) { regions.push_back(r); }
-    // todo: removeRegion, containsRegion
+
+    int findRegionIndex(const Region* r) const
+    { 
+      if(regions.empty()) return -1;
+      return RAPT::rsArrayTools::findIndexOf(&regions[0], r, (int)regions.size()); 
+    }
+
+    bool containsRegion(const Region* r) const {  return findRegionIndex(r) != -1; }
+
+    void addRegion(const Region* r) 
+    { 
+      if(containsRegion(r)) {
+        RAPT::rsError("Don't add regions twice!"); return; }
+      regions.push_back(r); 
+    }
+
+    bool removeRegion(int i)
+    {
+      if(i < 0 || i >= (int)regions.size())  {
+        RAPT::rsError("Invalid region index"); return false; }
+      RAPT::rsRemove(regions, i);
+      return true;
+    }
+
+    bool removeRegion(const Region* r)
+    {
+      return removeRegion(findRegionIndex(r));
+    }
+
+    // todo: removeRegion, containsRegion, findRegion
 
     int getNumRegions() const { return (int)regions.size(); }
 

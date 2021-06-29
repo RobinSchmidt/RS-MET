@@ -96,6 +96,16 @@ int rsSamplerData::Group::addRegion(Region* r)
   return ((int) regions.size()) - 1;
 }
 
+bool rsSamplerData::Group::removeRegion(int i)
+{
+  if(i < 0 || i >= (int) regions.size())
+    return false;
+
+  RAPT::rsError("Not yet implemented"); // something to do
+
+  return true;
+}
+
 void rsSamplerData::Group::copyDataFrom(const Group* src)
 {
   rsSamplerData::OrganizationLevel::copyDataFrom(src);
@@ -181,6 +191,14 @@ int rsSamplerData::addRegion(int gi, uchar loKey, uchar hiKey)
     return -1; }
   int ri = instrument.groups[gi]->addRegion(loKey, hiKey);  // region index within its group
   return ri;
+}
+
+bool rsSamplerData::removeRegion(int gi, int ri)
+{
+  if(gi < 0 || gi >= (int)instrument.groups.size()) {
+    RAPT::rsError("Invalid group index");
+    return false; }
+  return instrument.groups[gi]->removeRegion(ri);
 }
 
 std::string rsSamplerData::getAsSFZ() const
