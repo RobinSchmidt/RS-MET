@@ -121,8 +121,10 @@ int rsSamplerEngine::removeRegion(int gi, int ri)
   // deleteAllPointersTo(r)):
   Region* r = getRegion(gi, ri);
   RAPT::rsAssert(r != nullptr);
-  for(int k = 0; k <= numKeys; k++)
+  for(int k = 0; k < numKeys; k++)
     regionsForKey[k].removeRegion(r);
+  for(size_t i = 0; i < activePlayers.size(); i++)
+    activePlayers[i]->setRegionToPlay(nullptr, 0.0);
 
   // Remove region from the rsSamplerData object
   bool success = sfz.removeRegion(gi, ri);
@@ -411,7 +413,8 @@ int rsSamplerEngine::deactivateRegionPlayer(int i)
     return ReturnCode::invalidIndex; }
   RegionPlayer* p = activePlayers[i];
   RAPT::rsRemove(activePlayers, i);
-  idlePlayers.push_back(p);
+  p->setRegionToPlay(nullptr, 0.0); // don't keep the pointer to avoid it dangling when the region
+  idlePlayers.push_back(p);         // is removed
   return ReturnCode::success;
 }
 
@@ -581,6 +584,8 @@ void rsSamplerEngine::RegionPlayer::setRegionToPlay(
   const rsSamplerEngine::Region* regionToPlay, double fs)
 {
   region = regionToPlay;
+  if(region == nullptr)
+    return;
   stream = getSampleStreamFor(region);
   prepareToPlay(fs);
 }

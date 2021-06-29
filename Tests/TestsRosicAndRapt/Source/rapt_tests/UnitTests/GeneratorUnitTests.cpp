@@ -71,11 +71,13 @@ bool samplerEngineUnitTest()
   int   N  = 500;    // length of (co)sinewave sample
   VecF sin440(N);    // sine wave
   VecF cos440(N);    // cosine wave 
+  VecF zeros(N);     // zero samples, silence
   float w = (float)(2*PI*f/fs);
   for(int n = 0; n < N; n++)
   {
     sin440[n] = sinf(w*n);
     cos440[n] = cosf(w*n);
+    zeros[n]  = 0.f;
   }
   //rsPlotVectors(sin440, cos440);
 
@@ -220,10 +222,39 @@ bool samplerEngineUnitTest()
   //ok &= se2.matchesInstrumentDefinition(se);
 
   // Remove the 1st region (sin440) -> cos440 should become 1st region, then re-assign the sample
-  // for 1st region to sine
+  // for 1st region to sine. Do the removal in the middle of playback - desired bevavior: it still 
+  // plays to the end, but the next time the key is triggered, it doesn't start playing anymore. 
+  // This works because in RegionPlayer::getFrame/processBlock, the region pointer is not 
+  // referenced anymore. It's referenced only when the playback starts...but what about noteOff?
+  // At the moment, it also doesn't reference the region pointer, but later we will want to trigger 
+  // the release...maybe we can do that without referencing the region pointer, by setting up the 
+  // envelopes already at the start...but what if a release sample should get triggered?
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  for(int n = 0; n < N/2; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  se.removeRegion(0, 0);
+  for(int n = N/2; n < N; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  //rsPlotVectors(outL, outR); 
+  ok &= outL == (2.f * sin440);
+  ok &= outR == (2.f * cos440);
+  ok &= se.getNumActiveLayers() == 0;
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  for(int n = 0; n < N; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  //rsPlotVectors(outL, outR); 
+  ok &= outL == zeros;
+  ok &= outR == (2.f * cos440);
+  se.setRegionSample(0, 0, 0);
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  for(int n = 0; n < N; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  ok &= outL == zeros;
+  ok &= outR == (2.f * sin440);
+  rsPlotVectors(outL, outR); 
 
 
-  // Computes a lineraly interpolated value from the gievn vector at the given position:
+  // Computes a linearly interpolated value from the gievn vector at the given position:
   auto getSampleAt = [](const std::vector<float>& v, float pos)
   {
     if(pos < 0.f) return 0.f;
@@ -244,24 +275,24 @@ bool samplerEngineUnitTest()
   // affected:
   float delaySamples = 10.75f;
   float delaySeconds = delaySamples / fs;
-  //se.removeRegion(0, 1);                       // todo...
-  //se.setRegionSetting(0, 0, PST::Pan, 0.f);    // ...to make the testing easier
+  se.setRegionSetting(0, 0, PST::Pan, 0.f);    // ...to make the testing easier
   se.setRegionSetting(0, 0, PST::Delay, delaySeconds);
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));  // the noteOn, again
   for(int n = 0; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
   for(int n = 0; n < delaySamples; n++) {
     ok &= outL[n] == 0.f;
-    ok &= outR[n] == 2.f * cos440[n];  }
+    ok &= outR[n] == 0.f;  }
   float tol = 1.e-7;  // ~= 140 dB SNR
   for(int n = delaySamples; n < N; n++) 
   {
-    ok &= rsIsCloseTo(outL[n], 2.f * getSampleAt(sin440, n-delaySamples), tol);
-    ok &= outR[n] == 2.f * cos440[n]; 
+    float tgt = getSampleAt(sin440, n-delaySamples);
+    ok &= rsIsCloseTo(outL[n], tgt, tol);
+    ok &= rsIsCloseTo(outR[n], tgt, tol);
   }
 
   //rsPlotVectors(sin440, outL, outR);
-  rsPlotVectors(2.f*sin440, outL);
+  rsPlotVectors(sin440, outL);
   //rsPlotVectors(sin440, outL, outL - 2.f * sin440);
 
   // When using delaySamples = 1, it seem to work, but 20 doesn't. It seems to work up to 2, with 3

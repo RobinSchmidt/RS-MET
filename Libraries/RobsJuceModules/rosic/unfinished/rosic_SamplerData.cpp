@@ -100,9 +100,8 @@ bool rsSamplerData::Group::removeRegion(int i)
 {
   if(i < 0 || i >= (int) regions.size())
     return false;
-
-  RAPT::rsError("Not yet implemented"); // something to do
-
+  delete regions[i];
+  RAPT::rsRemove(regions, i);
   return true;
 }
 
