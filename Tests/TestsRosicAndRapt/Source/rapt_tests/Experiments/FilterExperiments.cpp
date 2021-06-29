@@ -1860,9 +1860,9 @@ void quantileFilter()
 template<class T, int M>  // M: simd vector size
 void simdFilter()
 {
-  // We try to simd-vectorize a filter by packing M samples into the input...
+  // We try to simd-vectorize a filter by packing M samples into the input...that doesn't work yet
 
-  int N = 20*M;               // number of samples, must be divisible by M
+  int N = 5*M;               // number of samples, must be divisible by M
   float b0 = 2.f, b1 = 3.f;   // filter coeffs
 
   using simdVec = rsSimdVector<T, M>;
@@ -1883,18 +1883,9 @@ void simdFilter()
 
   // Vectorize x:
   std::vector<simdVec> vx(N/M), vy(N/M);
-  for(int n = 0; n < N/M; n++)  // use M instead of 4
-  //for(int n = 0; n < N/M; n += 4) 
+  for(int n = 0; n < N/M; n++) 
   {
     vx[n].set(x[n+0*M], x[n+1*M], x[n+2*M], x[n+3*M]);
-
-    //vx[n].set(x[n*M+0], x[n*M+1], x[n*M+2], x[n*M+3]);
-
-
-    //vx[n].set(x[n+3*M], x[n+2*M], x[n+1*M], x[n+0*M]);
-    //vx[n].set(x[n+0], x[n+1], x[n+2], x[n+3]);*/
-    //vx[n].set(x[n*M+0], x[n*M+1], x[n*M+2], x[n*M+3]);
-    int dummy = 0;
   }
 
   // Filter vectorized x:
@@ -1905,6 +1896,20 @@ void simdFilter()
     vy[n] = b0*vx0 + b1*vx1;
     vx1 = vx0;
   }
+
+  // Devectorize y:
+  VecN z(N);
+  for(int n = 0; n < N/M; n++)
+  {
+    z[M*n+0] = vy[n][0];
+    z[M*n+1] = vy[n][1];
+    z[M*n+2] = vy[n][2];
+    z[M*n+3] = vy[n][3];
+  }
+
+  // ääähhhmmm...nope - this is not how it works!
+
+
 
 
 

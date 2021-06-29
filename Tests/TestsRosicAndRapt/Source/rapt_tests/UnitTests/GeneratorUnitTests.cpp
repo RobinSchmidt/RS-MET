@@ -223,9 +223,26 @@ bool samplerEngineUnitTest()
   // for 1st region to sine
 
 
+  // Computes a lineraly interpolated value from the gievn vector at the given position:
+  auto getSampleAt = [](const std::vector<float>& v, float pos)
+  {
+    if(pos < 0.f) return 0.f;
+
+    int   i = (int) pos;
+    float f = pos - (float)i;
+
+    float x0 = 0.f, x1 = 0.f;
+    int N = (int)v.size();
+    if(i   < N) x0 = v[i];
+    if(i+1 < N) x1 = v[i+1];
+
+    return (1.f - f) * x0 + f * x1;
+  };
+  // maybe move to library as rsInterpolateAt or rsLerpAt
+
   // Test delay: the 1st (left) channel gets a delay of 20 samples, the right channel is not 
   // affected:
-  int delaySamples = 10;
+  float delaySamples = 10.75f;
   float delaySeconds = delaySamples / fs;
   //se.removeRegion(0, 1);                       // todo...
   //se.setRegionSetting(0, 0, PST::Pan, 0.f);    // ...to make the testing easier
@@ -237,13 +254,12 @@ bool samplerEngineUnitTest()
     ok &= outL[n] == 0.f;
     ok &= outR[n] == 2.f * cos440[n];  }
   float tol = 1.e-7;  // ~= 140 dB SNR
-  for(int n = delaySamples; n < N; n++) {
-    ok &= rsIsCloseTo(outL[n], 2.f * sin440[n-delaySamples], tol);
-    // todo: 
-    // -implement and use getSinAt(float, pos); that interpolates in our sin440 sample
+  for(int n = delaySamples; n < N; n++) 
+  {
+    ok &= rsIsCloseTo(outL[n], 2.f * getSampleAt(sin440, n-delaySamples), tol);
+    ok &= outR[n] == 2.f * cos440[n]; 
+  }
 
-
-    ok &= outR[n] == 2.f * cos440[n]; }
   //rsPlotVectors(sin440, outL, outR);
   rsPlotVectors(2.f*sin440, outL);
   //rsPlotVectors(sin440, outL, outL - 2.f * sin440);
