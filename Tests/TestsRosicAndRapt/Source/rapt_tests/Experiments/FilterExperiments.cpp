@@ -1856,3 +1856,34 @@ void quantileFilter()
   //quantileFilterDual();  // tests the dual-quantile filter (with highpass mode, etc.)
   quantileFilterResonant();
 }
+
+template<class T, int M>  // M: simd vector size
+void simdFilter()
+{
+  // We try to simd-vectorize a filter by packing M samples into the input...
+
+  int N = 20*M;               // number of samples, must be divisible by M
+  float b0 = 2.f, b1 = 3.f;   // filter coeffs
+
+  using simdVec = rsSimdVector<T, M>;
+  using VecN    = std::vector<float>;
+  VecN x = rsConvert(rsRandomIntVector(N, -9, 9, 0), float());
+  VecN y(N);
+
+  // filter the regular, scalar way:
+  float x1 = 0.f;
+  for(int n = 0; n < N; n++)
+  {
+    float x0 = x[n];
+    y[n] = b0*x0 + b1*x1;
+    x1 = x0;
+  }
+
+  rsPlotVectors(x, y);
+
+
+
+  int dummy = 0;
+}
+
+template void simdFilter<float, 4>();

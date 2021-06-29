@@ -69,5 +69,7 @@ void fakeResoDifferentDelays();
 
 void quantileFilter();
 
+template<class T, int N> void simdFilter();
+
 
 #endif

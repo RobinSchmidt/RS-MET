@@ -570,20 +570,9 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
     sampleTime += 1.0;               // We just increment the time and return 0,0. Actual output
     return rsFloat64x2(0.0, 0.0); }  // will be produced as soon as sampleTime reaches zero.  
 
-
   float L, R;                        // left and right output
-
-  //int intTime = round(sampleTime);
-  ////int intTime = (int) floor(sampleTime);
-  //stream->getFrameStereo(intTime, &L, &R);
-
   stream->getFrameStereo((float)sampleTime, &L, &R);  // try to avoid the conversion to float
-
-
-  //stream->getFrameStereo(sampleTime, &L, &R);
-  // This does implicit conversion of double to int by truncation which amounts to the worst 
-  // possible quality resampling scheme. ToDo:
-  // -implement linear interpolation and later also better methods (sinc, elephant, ...)
+  // -implement better interpolation methods (sinc, elephant, ...)
   // -keep sample time as combination of int and float to avoid computation of the fractional part
   //  at each sample and to avoid losing precision for the fractional part when the integer part
   //  is large (thereby eating up significant digits).
@@ -600,6 +589,14 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
   //  modifiers. Maybe create a subclass of SignalProcessor called PitchShifter that has just a
   //  dummy callback that just stores the desired shift value and we read it out here
   // -apply the DSP processes
+
+
+  //rsFloat64x2
+
+
+  //for(size_t i = 0; i < dspChain.size(); i++)
+  //  dspChain[i]->processFrame(out);
+
 
   sampleTime += increment;
   return this->amp * rsFloat64x2(L, R); 

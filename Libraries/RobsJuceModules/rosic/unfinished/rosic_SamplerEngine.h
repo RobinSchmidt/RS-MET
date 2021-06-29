@@ -309,7 +309,7 @@ public:
   void reset() { stopAllPlayers(); }
 
 
-
+  //===============================================================================================
 
 protected:
 
@@ -342,8 +342,6 @@ protected:
     double amount = 0.0;  // strength of modulation
     double refVal = 0.0;  // unmodulated reference value
   };
-
-
 
   /** A class for playing back a given Region object. */
   class RegionPlayer

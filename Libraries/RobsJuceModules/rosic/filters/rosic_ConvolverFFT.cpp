@@ -154,5 +154,11 @@ NTT Convolver:
  below 2^64
 -Maybe we can try modular arithmetic based on a power of 2 and do radix-3 NTTs?
 
+FHT Convolver:
+-Implement convolution based on the fast discrete Hartley transform -> avoids complex arithmetic:
+ https://en.wikipedia.org/wiki/Discrete_Hartley_transform
+ RADIX-2 FAST HARTLEY TRANSFORM REVISITED: https://arxiv.org/ftp/arxiv/papers/1503/1503.03794.pdf
+ https://www.researchgate.net/publication/291912452_FAST_ALGORITHMS_FOR_THE_DISCRETE_HARTLEY_TRANSFORM
+
 */
 

@@ -66,6 +66,19 @@ void rsConvert(const std::vector<TSrc>& src, std::vector<TDst>& dst)
   rsArrayTools::convert(&src[0], &dst[0], (int)src.size());
 }
 
+/** The dummy is for letting the comiler figure out the destination type. The syntax to convert to
+a float vector if doubleVec is a vector of doubles is for example:
+
+   std::vector<float> floatVec = rsConvert(doubleVec, float());
+*/
+template<class TSrc, class TDst>
+std::vector<TDst> rsConvert(const std::vector<TSrc>& x, TDst dummy)
+{
+  std::vector<TDst> y(x.size());
+  RAPT::rsArrayTools::convert(&x[0], &y[0], (int) x.size());
+  return y;
+}
+
 /** Copies data from src to dst, where dst will be resized if necessarry. */
 template<class T>
 void rsCopy(const std::vector<T>& src, std::vector<T>& dst)
