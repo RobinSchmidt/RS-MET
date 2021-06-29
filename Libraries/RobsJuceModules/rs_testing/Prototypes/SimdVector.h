@@ -280,6 +280,12 @@ public:
   V(float* p) { v = _mm_setr_ps(p[0], p[1], p[2], p[3]); }
   V(CV2& low, CV2& high) { lo() = low; hi() = high; }
 
+  // Setup:
+  void set(float a, float b, float c, float d) { v = _mm_setr_ps(a, b, c, d); }
+    // has no template yet...i think, the template needs to be variadic
+
+
+
   //// Arithmetic operators
   //V operator+(CV& w) const { return V(_mm_add_ps(v, w.v)); }
   //V operator-(CV& w) const { return V(_mm_sub_ps(v, w.v)); }

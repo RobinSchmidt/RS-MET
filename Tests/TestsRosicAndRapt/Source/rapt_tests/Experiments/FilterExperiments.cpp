@@ -1866,6 +1866,8 @@ void simdFilter()
   float b0 = 2.f, b1 = 3.f;   // filter coeffs
 
   using simdVec = rsSimdVector<T, M>;
+  //using simdVec = rsFloat32x4;
+
   using VecN    = std::vector<float>;
   VecN x = rsConvert(rsRandomIntVector(N, -9, 9, 0), float());
   VecN y(N);
@@ -1878,6 +1880,34 @@ void simdFilter()
     y[n] = b0*x0 + b1*x1;
     x1 = x0;
   }
+
+  // Vectorize x:
+  std::vector<simdVec> vx(N/M), vy(N/M);
+  for(int n = 0; n < N/M; n++)  // use M instead of 4
+  //for(int n = 0; n < N/M; n += 4) 
+  {
+    vx[n].set(x[n+0*M], x[n+1*M], x[n+2*M], x[n+3*M]);
+
+    //vx[n].set(x[n*M+0], x[n*M+1], x[n*M+2], x[n*M+3]);
+
+
+    //vx[n].set(x[n+3*M], x[n+2*M], x[n+1*M], x[n+0*M]);
+    //vx[n].set(x[n+0], x[n+1], x[n+2], x[n+3]);*/
+    //vx[n].set(x[n*M+0], x[n*M+1], x[n*M+2], x[n*M+3]);
+    int dummy = 0;
+  }
+
+  // Filter vectorized x:
+  simdVec vx1 = 0.f;
+  for(int n = 0; n < N/M; n++)
+  {
+    simdVec vx0 = vx[n];
+    vy[n] = b0*vx0 + b1*vx1;
+    vx1 = vx0;
+  }
+
+
+
 
   rsPlotVectors(x, y);
 
