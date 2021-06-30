@@ -251,7 +251,7 @@ bool samplerEngineUnitTest()
     se.processFrame(&outL[n], &outR[n]);
   ok &= outL == zeros;
   ok &= outR == (2.f * sin440);
-  rsPlotVectors(outL, outR); 
+  //rsPlotVectors(outL, outR); 
 
 
   // Computes a linearly interpolated value from the gievn vector at the given position:
@@ -269,13 +269,22 @@ bool samplerEngineUnitTest()
 
     return (1.f - f) * x0 + f * x1;
   };
-  // maybe move to library as rsInterpolateAt or rsLerpAt
+  // move up or maybe move to library as rsInterpolateAt or rsLerpAt
+  // hmmm...we assume here that between v[-1] and v[0], there is silence and between v[N-1] and 
+  // v[N] we ramp linearly down to zero...maybe we should make that consistent - either ramp up and
+  // ramp down or don't ramp at all - but the latter requires special handling of pos == N-1: if
+  // it's exactly N-1, we should return the last sample, if it's slightly (e.g. 0.0001) above, 
+  // return 0...that seems complicated. ramping up at the start seems more consistent with how the
+  // linear interpolator filter kernel looks like...should the sampler engine also behave this way,
+  // i.e. when we play a samplem that contains a single impulse and play it back at 1/10 of the 
+  // normal speed, it would ramp up and down over 10 samples? ...but that's not feasible because it
+  // would require the region to start producing output before it was triggered...or wait..maybe 
+  // not
 
-  // Test delay: the 1st (left) channel gets a delay of 20 samples, the right channel is not 
-  // affected:
+  // Test delay:
   float delaySamples = 10.75f;
   float delaySeconds = delaySamples / fs;
-  se.setRegionSetting(0, 0, PST::Pan, 0.f);    // ...to make the testing easier
+  se.setRegionSetting(0, 0, PST::Pan, 0.f);              // back to center, makes testing easier
   se.setRegionSetting(0, 0, PST::Delay, delaySeconds);
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));  // the noteOn, again
   for(int n = 0; n < N; n++)
@@ -290,23 +299,7 @@ bool samplerEngineUnitTest()
     ok &= rsIsCloseTo(outL[n], tgt, tol);
     ok &= rsIsCloseTo(outR[n], tgt, tol);
   }
-
-  //rsPlotVectors(sin440, outL, outR);
-  rsPlotVectors(sin440, outL);
-  //rsPlotVectors(sin440, outL, outL - 2.f * sin440);
-
-  // When using delaySamples = 1, it seem to work, but 20 doesn't. It seems to work up to 2, with 3
-  // or more, it fails. i think, it has to do with floating point increments and rounding errors
-  // for the sampleTime variable in rsSamplerEngine::RegionPlayer::getFrame. When using 3, it 
-  // actually gets delayed by 4...i would expect that the first sample might be missing but 
-  // otherwise the delay would be correct...but it's off by one sample. With 2 the initial 
-  // sampleTime is -1.999999... with 3, it's -3.00000001, so with 2, the if(sampleTime < 0.0) 
-  // triggers 2 times but with 3 it actually triggers 4 times...but that should really only cause a
-  // missing initial sample, not an additional sample of delay....ah . it's because we were using
-  // floor on the sampleTime - we should use round or better: interpolation....ok fixed using 
-  // rounding for now - later we should interpolate, then we will need a toleracnce for this test 
-  // here.
-  // ToDo: test also fractionla delays like 10.5, 
+  //rsPlotVectors(sin440, outL);
 
 
   int dummy = 0;

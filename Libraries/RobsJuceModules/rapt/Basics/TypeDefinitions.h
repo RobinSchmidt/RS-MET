@@ -37,6 +37,11 @@ typedef double rsFloat64;
 /** 80-bit floating point number */
 typedef long double rsFloat80;
 
+// Maybe get rid of them and just use int8_t, uint8_t, etc. see:
+// https://www.quora.com/If-there-is-128-bit-integer-type-introduce-in-the-C-standard-what-would-it-be-called-as-a-general-name
+// long double is not 80 bits wide on x64 anymore, so it seems, we need to get rid of that, too
+// ...although that's kinda bad because the extended precision is sometimes useful
+
 /** Pointer to a function that takes a double parameter and returns a double */
 typedef double(*FunctionPointerDoubleToDouble) (double);
 

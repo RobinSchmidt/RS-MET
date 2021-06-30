@@ -133,7 +133,7 @@ public:
   relative to some fixed root directory which is typcally the directory in which sfz file resides,
   but later this may be switched to some user and/or factory content directory, too (this requires
   to introduce a new opcode to sfz...maybe root_dir or sample_directory or sample_folder or 
-  something which should be defined once for the whole instrument). The returns the following
+  something which should be defined once for the whole instrument). It returns the following
   return codes: 
     success:       sample was succesfully loaded into the pool
     nothingToDo:   sample was already in the pool
@@ -155,7 +155,9 @@ public:
   can also be set up later, but some memory operations can be saved, if it's known in advance. */
   int addRegion(int groupIndex, uchar loKey = 0, uchar hiKey = 127);
 
-
+  /** Removes the region with given group- and region index from the instrument. If a note is 
+  currently playing that makes use of this region. it will continue to play as is (with the region)
+  but the next time it's triggered, the region will not be part of it anymore. */
   int removeRegion(int groupIndex, int regionIndex);
 
   /** Sets the sample to be used for the given region within the given group. Returns either
@@ -168,6 +170,30 @@ public:
   this happens, it indicates a bug on the call site. */
   int setRegionSetting(int groupIndex, int regionIdex, PlaybackSetting::Type type, float value);
 
+  /** Decides if the group settings should be applied on top of the region settings (true) or if 
+  they should just act as fallback values for when a region doesn't define them (false). The 
+  "on top" mode means that if a region defines a gain of -6dB and its enclosing group defines a 
+  gain of -3dB, the total gain will be -9dB. The "fallback" mode means that the region will just 
+  use it's defined -6dB gain and only if that would not be defined, it would fall back to the 
+  group's -3dB setting. The latter behavior is the default in sfz (verify!) but the the former is 
+  also often convenient. */
+  void setGroupSettingsOnTop(bool onTop) { groupSettingsOnTop = onTop; }
+
+  /** Decides if the group modulations should be applied on top of the region modulations (true) or
+  if their settings should just act as fallback values for when a region doesn't define them 
+  (false). Note that technically, we don't have a set of modulators per group. Instead, if "on top"
+  mode is selected all RegionPlayers must actually duplicate all their modulators, one using the
+  region's own settings and one using the enclosing group's settings and add them up before 
+  applying. It doesn't seem to make a lot of sense to run common modulators per-group. Think of an
+  envelope: it gets triggered with the note that starts the RegionPlayer, so it must be part of the
+  RegionPlayer. */
+  void setGroupModulationsOnTop(bool onTop) { groupModulationsOnTop = onTop; }
+
+  /** Like setGroupSettingsOnTop, but for the instrument settings. */
+  void setInstrumentSettingsOnTop(bool onTop) { instrumentSettingsOnTop = onTop; }
+
+  /** Like setGroupModulationsOnTop, but for the instrument modulations. */
+  void setInstrumentModulationsOnTop(bool onTop) { instrumentModulationsOnTop = onTop; }
 
 
   // todo: setGroupSetting, setInstrumentSetting, removeRegion/Group, clearGroup, clearRegion, 
@@ -342,7 +368,7 @@ protected:
   {
 
   private:
-    std::function<void(double)> targetSetter; 
+    std::function<void(double)> targetSetter; // target callback that sets some parameter
     double amount = 0.0;  // strength of modulation
     double refVal = 0.0;  // unmodulated reference value
   };
@@ -357,6 +383,8 @@ protected:
     sample-rate which is the sample rate at which the player should run (not the sample rate of the
     audio file associated with the region). */
     virtual void setRegionToPlay(const Region* regionToPlay, double outputSampleRate);
+
+    const Region* getRegionToPlay() const { return region; }
 
     /** Sets the midi note number for which this player was started. This needs to be set up when 
     receiving a noteOn. This information is used later when receiving a noteOff to identify which 
@@ -426,6 +454,17 @@ protected:
     // -env-generators need as state variables: stage (int), time-into-stage (float/double),
     //  LFO need just phase
   };
+
+
+  /** A class for collecting all the SignalProcessors that apply to a given group. This is used 
+  only when */
+  class GroupProcessor
+  {
+
+  public:
+
+  };
+
 
   /** Defines a set of regions. Used to handle note-on/off events efficiently. Not to be confused 
   with groups. This class exists for purely technical reasons (i.e. implementation details) and 
@@ -625,6 +664,14 @@ protected:
   // for the unit tests):
   std::string sfzDir;         /**< Root directory for .sfz files */
   std::string wavDir;         /**< Root directory for .wav files */
+
+  // Flags to decide if the group- and/or instrument settings and/or modulations should be applied 
+  // on top of the region settings/modulations:
+  bool groupSettingsOnTop         = false;
+  bool instrumentSettingsOnTop    = false;
+  bool groupModulationsOnTop      = false;
+  bool instrumentModulationsOnTop = false;
+
 
 
 

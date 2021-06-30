@@ -124,7 +124,9 @@ int rsSamplerEngine::removeRegion(int gi, int ri)
   for(int k = 0; k < numKeys; k++)
     regionsForKey[k].removeRegion(r);
   for(size_t i = 0; i < activePlayers.size(); i++)
-    activePlayers[i]->setRegionToPlay(nullptr, 0.0);
+    if(activePlayers[i]->getRegionToPlay() == r)
+      activePlayers[i]->setRegionToPlay(nullptr, 0.0);
+      // the idlePlayers are supposed to have a nullptr anyway
 
   // Remove region from the rsSamplerData object
   bool success = sfz.removeRegion(gi, ri);
