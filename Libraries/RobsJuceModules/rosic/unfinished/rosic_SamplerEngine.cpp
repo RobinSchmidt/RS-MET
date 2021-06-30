@@ -161,6 +161,29 @@ int rsSamplerEngine::setRegionSetting(int gi, int ri, PlaybackSetting::Type type
   return ReturnCode::success;
 }
 
+int rsSamplerEngine::setGroupSetting(int i, PlaybackSetting::Type type, float value)
+{
+  if(!isGroupIndexValid(i)) {
+    RAPT::rsError("Invalid group index");
+    return ReturnCode::invalidIndex; }
+
+  sfz.setGroupSetting(i, type, value);
+  return ReturnCode::success;
+}
+// ToDo:
+// Maybe that error checking should be done in rsSamplerData such that here, we only need to do:
+//   return sfz.setGroupSetting(i, type, value);
+// ...but the return codes are defined here. Maybe they should be moved to rsSamplerData, too, Or
+// it should define its own return codes and here we "translate" them like:
+//   return translateReturnCode(sfz.setGroupSetting(i, type, value));
+// because the engine may need a few more and different return codes so it actually does make sense
+// to define them here and it's also more convenient API wise. But it will add more code. Maybe the
+// return codes shoudl be defined in a class of their own. Maybe that class will actually be useful
+// in other contexts as well. Maybe move it into rosic/infrastructure as class rsReturnCode. Or 
+// maybe even move it into RAPT. But some things like "layerOverload" are actually specific to the
+// sampler. Maybe they could be defined in a subclass? Or we specify a more general "overload" 
+// code.
+
 int rsSamplerEngine::setupFromSFZ(const rsSamplerData& newSfz)
 {
   removeSamplesNotUsedIn(newSfz);     // remove samples that are not needed anymore from memory

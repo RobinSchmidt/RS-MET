@@ -276,10 +276,13 @@ bool samplerEngineUnitTest()
   // it's exactly N-1, we should return the last sample, if it's slightly (e.g. 0.0001) above, 
   // return 0...that seems complicated. ramping up at the start seems more consistent with how the
   // linear interpolator filter kernel looks like...should the sampler engine also behave this way,
-  // i.e. when we play a samplem that contains a single impulse and play it back at 1/10 of the 
+  // i.e. when we play a sample that contains a single impulse and play it back at 1/10 of the 
   // normal speed, it would ramp up and down over 10 samples? ...but that's not feasible because it
   // would require the region to start producing output before it was triggered...or wait..maybe 
-  // not
+  // not. It could be feasible, if we replace  if(sampleTime < 0.0)  by  if(sampleTime < 1.0) in
+  // rsSamplerEngine::RegionPlayer::getFrame and implement the  stream->getFrameStereo  call in the
+  // same way as above. ...but it will work only if delay is used...but such minute details are 
+  // perhaps not very important anyway
 
   // Test delay:
   float delaySamples = 10.75f;
@@ -300,6 +303,22 @@ bool samplerEngineUnitTest()
     ok &= rsIsCloseTo(outR[n], tgt, tol);
   }
   //rsPlotVectors(sin440, outL);
+
+
+  // Test setGroupSettingsOnTop: We set the volume of the group and the region and check the 
+  // behavior in both modes:
+  float regionAmp = 0.5f;
+  float groupAmp  = 0.25f;
+  //float instrumentAmplitude  = 0.75f;
+  se.setRegionSetting(0, 0, PST::Delay, 0.f);  // Turn delay off again
+  se.setRegionSetting(0, 0, PST::Volume, rsAmpToDb(regionAmp));
+  se.setGroupSetting( 0,    PST::Volume, rsAmpToDb(groupAmp));
+  se.setGroupSettingsOnTop(false);
+
+
+  // ToDo: We also need a unsetRegionSetting, unsetGroupSetting, etc. Maybe before implementing, 
+  // them it would ineed make sense to refactor such that the error conditions are detected in 
+  // rsSamplerData...that requires to define the ReturnCodes somewhere else....
 
 
   int dummy = 0;

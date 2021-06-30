@@ -366,7 +366,7 @@ public:
     not present in this group. */
     int getRegionIndex(const Region* region) const;
 
-    /** Returns true, if the given index i refers toa valid region within this group. */
+    /** Returns true, if the given index i refers to a valid region within this group. */
     bool isRegionIndexValid(int i) const { return i >= 0 && i < (int)regions.size(); }
 
     /** Returns the number of regions in this group. */
@@ -411,6 +411,10 @@ public:
 
     const std::vector<PlaybackSetting>& getGroupSettings(int groupIndex) const
     { return groups[groupIndex]->getSettings(); }
+
+
+    /** Returns true, if the given index i refers to a valid group within this instrument. */
+    bool isGroupIndexValid(int i) const { return i >= 0 && i < (int)groups.size(); }
 
 
     bool operator==(const Instrument& rhs) const;
@@ -465,6 +469,13 @@ public:
   void setRegionSetting(int gi, int ri, PlaybackSetting::Type type, float value)
   {
     instrument.groups[gi]->regions[ri]->settings.push_back(PlaybackSetting(type, value));
+    // Preliminary. We need to figure out, if that setting already exists and if so, just change 
+    // its value instead of pushing another value for the same parameter
+  }
+
+  void setGroupSetting(int gi, PlaybackSetting::Type type, float value)
+  {
+    instrument.groups[gi]->settings.push_back(PlaybackSetting(type, value));
     // Preliminary. We need to figure out, if that setting already exists and if so, just change 
     // its value instead of pushing another value for the same parameter
   }

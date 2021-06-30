@@ -170,13 +170,19 @@ public:
   this happens, it indicates a bug on the call site. */
   int setRegionSetting(int groupIndex, int regionIdex, PlaybackSetting::Type type, float value);
 
+  int setGroupSetting(int groupIndex, PlaybackSetting::Type type, float value);
+
+
+
   /** Decides if the group settings should be applied on top of the region settings (true) or if 
   they should just act as fallback values for when a region doesn't define them (false). The 
   "on top" mode means that if a region defines a gain of -6dB and its enclosing group defines a 
   gain of -3dB, the total gain will be -9dB. The "fallback" mode means that the region will just 
   use it's defined -6dB gain and only if that would not be defined, it would fall back to the 
   group's -3dB setting. The latter behavior is the default in sfz (verify!) but the the former is 
-  also often convenient. */
+  also often convenient. 
+  This doesn't do anything yet...this feature is not yet implemented - for the time being, it's 
+  just the infrastructure. */
   void setGroupSettingsOnTop(bool onTop) { groupSettingsOnTop = onTop; }
 
   /** Decides if the group modulations should be applied on top of the region modulations (true) or
@@ -259,12 +265,15 @@ public:
   // getNumRegions(), getSampleIndex(const string& uniqueName) ..or maybe it should take a pointer
   // to a SampleMetaData object
 
+  /** Returns true, iff the given group index is valid, i.e. >= 0 and < numGroups. */
+  bool isGroupIndexValid(int i) const { return sfz.instrument.isGroupIndexValid(i); }
+
   /** Returns true, iff the given pair of group- and region index is valid, i.e. a region with this
   pair of indices actually exists in the current instrument definition. */
   bool isIndexPairValid(int groupIndex, int regionIndex) const
   {
     int gi = groupIndex, ri = regionIndex;
-    return gi >= 0 && gi < (int)sfz.instrument.groups.size() 
+    return sfz.instrument.isGroupIndexValid(gi)
       && sfz.instrument.groups[gi]->isRegionIndexValid(ri);
   }
 
