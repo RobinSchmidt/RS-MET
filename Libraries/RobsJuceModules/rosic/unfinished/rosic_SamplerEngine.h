@@ -93,30 +93,8 @@ public:
   using PlaybackSetting = rsSamplerData::PlaybackSetting;
 
 
-
   //-----------------------------------------------------------------------------------------------
   // \name Setup
-
-  /** Return codes for the setup functions. We use encodings as negative integers so we can use 
-  them also for functions which use positive integers as valid return values. */
-  enum ReturnCode
-  {
-    success        = -1,  //< Operation completed successfully. 
-    nothingToDo    = -2,  //< There was nothing to actually do. State was already as desired.
-    memAllocFail   = -3,  //< Memory allocation failure.
-    invalidIndex   = -4,  //< An invalid index was passed.
-    layerOverload  = -5,  //< Not enough free layers available (in e.g. new noteOn).
-    notFound       = -6,  //< A region, group, sample or whatever was not found.
-    fileLoadError  = -7,  //< A file could not be loaded (reasons: not found or failed alloc).
-    notImplemented = -8   //< Feature not yet implemented (relevant during development).
-  };
-  // todo: make it an enum class, maybe include also return codes for inquiry functions such as for
-  // "unknown", etc. ...but maybe that's no good idea when we want to use it for functions which
-  // need to return valid integers (like, for numChannels, etc. - we could use negative numbers to
-  // encode such things)
-  // maybe rename "success" to "completed" or "done" because "success" has actually a more general 
-  //  meaning: "nothingToDo" is also a kind of "success" (or maybe "workDone" or "workCompleted"
-
 
   /** Clears the sfz instrument definition and the samplePool */
   void clearInstrument();
@@ -150,7 +128,7 @@ public:
   int addGroup() { return sfz.addGroup(); }
 
   /** Adds a new region to the group with the given index and returns the index of the region 
-  within the group or ReturnCode::invalidIndex, if the passed groupIndex was invalid. If the key 
+  within the group or rsReturnCode::invalidIndex, if the passed groupIndex was invalid. If the key 
   range is already known, it makes sense to pass it using the optional loKey/hiKey parameters. This
   can also be set up later, but some memory operations can be saved, if it's known in advance. */
   int addRegion(int groupIndex, uchar loKey = 0, uchar hiKey = 127);
@@ -161,12 +139,12 @@ public:
   int removeRegion(int groupIndex, int regionIndex);
 
   /** Sets the sample to be used for the given region within the given group. Returns either
-  ReturnCode::success or ReturnCode::invalidIndex, if the pair of group/region indices and/or the
+  rsReturnCode::success or rsReturnCode::invalidIndex, if the pair of group/region indices and/or the
   sample index was invalid. */
   int setRegionSample(int groupIndex, int regionIndex, int sampleIndex); 
 
   /** Sets a value for a given type of playback setting a region. Returns either
-  ReturnCode::success or ReturnCode::invalidIndex, if groupIndex and/or regionIndex was invalid. If 
+  rsReturnCode::success or rsReturnCode::invalidIndex, if groupIndex and/or regionIndex was invalid. If 
   this happens, it indicates a bug on the call site. */
   int setRegionSetting(int groupIndex, int regionIdex, PlaybackSetting::Type type, float value);
 
@@ -205,7 +183,7 @@ public:
   // todo: setGroupSetting, setInstrumentSetting, removeRegion/Group, clearGroup, clearRegion, 
   // clearInstrument, removeSampleFromPool, replaceSampleInPool, setupFromSFZ,
 
-  /** Sets up the engine from the given sfz data object and returns ReturnCode::success, if all
+  /** Sets up the engine from the given sfz data object and returns rsReturnCode::success, if all
   is well or...  */
   int setupFromSFZ(const rsSamplerData& sfz);
 
@@ -217,7 +195,7 @@ public:
   // -maybe move elsewhere
 
   /** Loads the instrument definition given by an sfz file with the given path. Returns 
-  ReturnCode::success if all wen well or ReturnCode::fileLoadError if loading of the sfz or any of 
+  rsReturnCode::success if all wen well or rsReturnCode::fileLoadError if loading of the sfz or any of 
   the used samples has failed. */
   int loadFromSFZ(const char* path);
   // ToDo: In case of failure, maybe return a more specific error code/object, indicating, which 
@@ -257,7 +235,7 @@ public:
   const Region* getRegionConst(int gi, int ri) const { return sfz.getRegion(gi, ri); }
 
   /** Returns the number of regions in the instrument definition that use the sample with the given
-  index in out samplePool or ReturnCode::invalidIndex, if the given sampleIndex is invalid. */
+  index in our samplePool or rsReturnCode::invalidIndex, if the given sampleIndex is invalid. */
   int getNumRegionsUsing(int sampleIndex) const;
   int getNumRegionsUsing(const std::string& samplePath) const;
 
@@ -266,16 +244,12 @@ public:
   // to a SampleMetaData object
 
   /** Returns true, iff the given group index is valid, i.e. >= 0 and < numGroups. */
-  bool isGroupIndexValid(int i) const { return sfz.instrument.isGroupIndexValid(i); }
+  bool isGroupIndexValid(int i) const { return sfz.isGroupIndexValid(i); }
 
   /** Returns true, iff the given pair of group- and region index is valid, i.e. a region with this
   pair of indices actually exists in the current instrument definition. */
   bool isIndexPairValid(int groupIndex, int regionIndex) const
-  {
-    int gi = groupIndex, ri = regionIndex;
-    return sfz.instrument.isGroupIndexValid(gi)
-      && sfz.instrument.groups[gi]->isRegionIndexValid(ri);
-  }
+  { return sfz.isIndexPairValid(groupIndex, regionIndex); }
 
   /** Returns true, iff the given sample index is valid, i.e. a sample with this index actually 
   exists our sample pool. */
@@ -565,7 +539,7 @@ protected:
   
   /** Stops the player at the given "activeIndex" which is the index into our "activePlayers" 
   array. This results in the removal of the player from "activePlayers" and adding it back to
-  "idlePlayers". The return value is either ReturnCode::success or ReturnCode::invalidIndex, if
+  "idlePlayers". The return value is either rsReturnCode::success or rsReturnCode::invalidIndex, if
   the activeIndex was not a valid index into our activePlayers array. */
   int deactivateRegionPlayer(int activeIndex);
 
@@ -574,15 +548,15 @@ protected:
   ...tbc... */
   static const AudioFileStream<float>* getSampleStreamFor(const Region* r);
 
-  /** Handles a noteOn event with given key and velocity and returns either ReturnCode::success, if
-  we had enough voices available to serve the request or ReturnCode::voiceOverload, in case the 
+  /** Handles a noteOn event with given key and velocity and returns either rsReturnCode::success, if
+  we had enough voices available to serve the request or rsReturnCode::voiceOverload, in case the 
   noteOn could not be handled due to inavailability of a sufficient number of idle voices. If no
   sufficient number of idle voices was available and the noteOn should actually have triggered 
   playback of multiple samples, none of them will be triggered. It's an all-or-nothing thing: we 
   don't ever trigger playback for only a subset of samples for a given noteOn. */
   int handleNoteOn(uchar key, uchar vel);
 
-  /** Analogous to handleNoteOn. It may also return ReturnCode::voiceOverload in cases where the 
+  /** Analogous to handleNoteOn. It may also return rsReturnCode::voiceOverload in cases where the 
   noteOff is supposed to trigger relase-samples. In such a case, none of the release-samples will 
   be triggered. */
   int handleNoteOff(uchar key, uchar vel);
@@ -596,7 +570,7 @@ protected:
 
   /** Adds all samples to our sample pool that are used in the given sfz instrument definition, if
   they are not already there. Returns the number of samples that were added or 
-  ReturnCode::fileLoadError if any of the files failed to load. */
+  rsReturnCode::fileLoadError if any of the files failed to load. */
   int addSamplesUsedIn(const rsSamplerData& sfz);
   // maybe rename to loadSamples or loadSamplesFor
 

@@ -44,10 +44,10 @@ protected:
 
   // Shorthands for convenience:
   using Engine = rosic::rsSamplerEngine;
-  using ReturnCode = rosic::rsSamplerEngine::ReturnCode;
+  using ReturnCode = rosic::rsReturnCode;
   using Event = rosic::rsMusicalEvent<float>;
 
-  rosic::rsSamplerEngine engine;
+  Engine engine;
   juce::File sfzFile;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerModule)

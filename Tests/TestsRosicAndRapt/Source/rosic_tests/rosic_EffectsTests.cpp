@@ -550,6 +550,11 @@ bool rotes::testFeedbackDelayNetwork()
   //  different settings? or maybe just some low order allpass filter could do the job? -> figure
   //  out, what an allpass does to the amplitude distribution of uniform white noise and/or
   //  look at the impulse response
+  // -Try running two networks in parallel with exact same settings except for the reverb time. 
+  //  That allows us to mix two different exponential decays for early and late stage and mix them
+  //  to taste, similar to the way it is done withe modal filters. If done via SIMD, it doesn't 
+  //  even need to make the processing much more expensive. the ratio of both outputs can be used 
+  //  to measure time which in turn can be used to further shape the envelope
 }
 
 template<class Effect>

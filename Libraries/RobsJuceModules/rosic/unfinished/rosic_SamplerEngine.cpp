@@ -33,28 +33,28 @@ int rsSamplerEngine::addSampleToPool(
   // todo: 
   // -check, if a sample with the same path already exists - if so, we have nothing to 
   //  do and may return early with an appropriate code
-  //   if(isSampleInPool(..)) return ReturnCode::nothingToDo;
+  //   if(isSampleInPool(..)) return rsReturnCode::nothingToDo;
   // -currently, we do such a check in addSamplesUsedIn - maybe it should be done here instead 
   //  and/or in loadSampleToPool
 
   AudioFileStreamPreloaded<float>* stream = new AudioFileStreamPreloaded<float>;
   bool allocOK = stream->setData(data, numFrames, numChannels, sampleRate, 2, path);
   if(allocOK == false)
-    return ReturnCode::memAllocFail;
+    return rsReturnCode::memAllocFail;
   return samplePool.addSample(stream);
 }
 
 int rsSamplerEngine::loadSampleToPool(const std::string& path)
 {
   if(isSampleInPool(path))
-    return ReturnCode::nothingToDo;
+    return rsReturnCode::nothingToDo;
 
   int numFrames;
   int numChannels;
   int sampleRate;
   float** data = rosic::readFloatFromWaveFile(path.c_str(), numChannels, numFrames, sampleRate);
   if(data == nullptr)
-    return ReturnCode::fileLoadError;
+    return rsReturnCode::fileLoadError;
     // This could mean that the file was not found or the memory allocation failed. ToDo: be more 
     // specific which of the two conditions happened
 
@@ -72,7 +72,7 @@ int rsSamplerEngine::unUseSample(int i)
 {
   if(i < 0 || i >= samplePool.getNumSamples()){
     RAPT::rsError("Invalid sample index");
-    return ReturnCode::invalidIndex; }
+    return rsReturnCode::invalidIndex; }
   int numRegions = 0;
   using StreamPtr = const AudioFileStream<float>*;
   StreamPtr stream = samplePool.getSampleStream(i);
@@ -104,7 +104,7 @@ int rsSamplerEngine::addRegion(int gi, uchar loKey, uchar hiKey)
 {
   int ri = sfz.addRegion(gi, loKey, hiKey);
   if(ri == -1)
-    return ReturnCode::invalidIndex;    // gi was an invalid group index
+    return rsReturnCode::invalidIndex;    // gi was an invalid group index
   Region* r = getRegion(gi, ri);
   for(uchar k = loKey; k <= hiKey; k++)
     addRegionForKey(k, r);
@@ -115,7 +115,7 @@ int rsSamplerEngine::removeRegion(int gi, int ri)
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
-    return ReturnCode::invalidIndex; }
+    return rsReturnCode::invalidIndex; }
 
   // Delete all our pointers to the region that will be deleted (maybe factor out into 
   // deleteAllPointersTo(r)):
@@ -131,58 +131,35 @@ int rsSamplerEngine::removeRegion(int gi, int ri)
   // Remove region from the rsSamplerData object
   bool success = sfz.removeRegion(gi, ri);
   if(success) 
-    return ReturnCode::success;
+    return rsReturnCode::success;
   else        
-    return ReturnCode::notFound;
+    return rsReturnCode::notFound;
 }
 
 int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
-    return ReturnCode::invalidIndex; }
+    return rsReturnCode::invalidIndex; }
   if(!isSampleIndexValid(si)) {
     RAPT::rsError("Invalid sample index");
-    return ReturnCode::invalidIndex; }
+    return rsReturnCode::invalidIndex; }
 
   const AudioFileStream<float>* s = samplePool.getSampleStream(si);
   sfz.setRegionCustomPointer(gi, ri, (void*) s);
   sfz.setRegionSample(gi, ri, s->getPath());
-  return ReturnCode::success;
+  return rsReturnCode::success;
 }
 
 int rsSamplerEngine::setRegionSetting(int gi, int ri, PlaybackSetting::Type type, float value)
 {
-  if(!isIndexPairValid(gi, ri)) {
-    RAPT::rsError("Invalid group- and/or region index");
-    return ReturnCode::invalidIndex; }
-
-  sfz.setRegionSetting(gi, ri, type, value);
-  return ReturnCode::success;
+  return sfz.setRegionSetting(gi, ri, type, value);
 }
 
 int rsSamplerEngine::setGroupSetting(int i, PlaybackSetting::Type type, float value)
 {
-  if(!isGroupIndexValid(i)) {
-    RAPT::rsError("Invalid group index");
-    return ReturnCode::invalidIndex; }
-
-  sfz.setGroupSetting(i, type, value);
-  return ReturnCode::success;
+  return sfz.setGroupSetting(i, type, value);
 }
-// ToDo:
-// Maybe that error checking should be done in rsSamplerData such that here, we only need to do:
-//   return sfz.setGroupSetting(i, type, value);
-// ...but the return codes are defined here. Maybe they should be moved to rsSamplerData, too, Or
-// it should define its own return codes and here we "translate" them like:
-//   return translateReturnCode(sfz.setGroupSetting(i, type, value));
-// because the engine may need a few more and different return codes so it actually does make sense
-// to define them here and it's also more convenient API wise. But it will add more code. Maybe the
-// return codes shoudl be defined in a class of their own. Maybe that class will actually be useful
-// in other contexts as well. Maybe move it into rosic/infrastructure as class rsReturnCode. Or 
-// maybe even move it into RAPT. But some things like "layerOverload" are actually specific to the
-// sampler. Maybe they could be defined in a subclass? Or we specify a more general "overload" 
-// code.
 
 int rsSamplerEngine::setupFromSFZ(const rsSamplerData& newSfz)
 {
@@ -191,10 +168,10 @@ int rsSamplerEngine::setupFromSFZ(const rsSamplerData& newSfz)
   sfz = newSfz;                       // replace old sfz instrument definition member with new
   int rc2 = setupAudioStreams();      // connect regions in new sfz with appropriate stream objects
   setupRegionsForKey();               // updates regionsForKey array
-  if(rc1 >= 0 && rc2 == ReturnCode::success)
-    return ReturnCode::success;
+  if(rc1 >= 0 && rc2 == rsReturnCode::success)
+    return rsReturnCode::success;
   else
-    return ReturnCode::fileLoadError;  
+    return rsReturnCode::fileLoadError;  
     // ToDo: be more specific about the error condition
 
   // Maybe have state variables numSamplesAdded, numSamplesRemoved, numSamplesNotFound that can be 
@@ -213,7 +190,7 @@ int rsSamplerEngine::loadFromSFZ(const char* path)
   bool wasLoaded = newSfz.loadFromSFZ(path);
   if(!wasLoaded) {
     clearInstrument();
-    return ReturnCode::fileLoadError; }
+    return rsReturnCode::fileLoadError; }
   return setupFromSFZ(newSfz);
 }
 
@@ -233,7 +210,7 @@ int rsSamplerEngine::getNumRegionsUsing(int i) const
 {
   if(i < 0 || i >= samplePool.getNumSamples()){
     RAPT::rsError("Invalid sample index");
-    return ReturnCode::invalidIndex; }
+    return rsReturnCode::invalidIndex; }
   int numRegions = 0;
   using StreamPtr = const AudioFileStream<float>*;
   StreamPtr stream = samplePool.getSampleStream(i);
@@ -435,12 +412,12 @@ int rsSamplerEngine::deactivateRegionPlayer(int i)
 {
   if(i < 0 || i >= activePlayers.size()) {
     RAPT::rsError("Invalid player index");
-    return ReturnCode::invalidIndex; }
+    return rsReturnCode::invalidIndex; }
   RegionPlayer* p = activePlayers[i];
   RAPT::rsRemove(activePlayers, i);
   p->setRegionToPlay(nullptr, 0.0); // don't keep the pointer to avoid it dangling when the region
   idlePlayers.push_back(p);         // is removed
-  return ReturnCode::success;
+  return rsReturnCode::success;
 }
 
 const AudioFileStream<float>* rsSamplerEngine::getSampleStreamFor(const Region* r)
@@ -474,7 +451,7 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
       for(int j = 0; i < numRegions; j++) {
         rp = RAPT::rsGetAndRemoveLast(activePlayers);
         idlePlayers.push_back(rp); }
-      return ReturnCode::layerOverload;
+      return rsReturnCode::layerOverload;
     }
     else
     {
@@ -482,7 +459,7 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
       numRegions++;
     }
   }
-  return ReturnCode::success;
+  return rsReturnCode::success;
   // Another possibility for the return value would have been to return the number of layers that
   // have been triggered, but we don't do that because then it would be not quite clear what we
   // should return from noteOff to make the functions somewhat consistent. In noteOff, we could
@@ -502,7 +479,7 @@ int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
       // ToDo: refine this later: we may not want to immediately stop the player but rather 
       // trigger the release phase and mark for quick fade-out
   }
-  return ReturnCode::success; // preliminary
+  return rsReturnCode::success; // preliminary
 
   // ToDo:
   // -Mark them for going into release state, if they have an amp-env or stop them immediately, if
@@ -548,7 +525,7 @@ int rsSamplerEngine::addSamplesUsedIn(const rsSamplerData& sfz)
   if(numSamplesFailed == 0)
     return numSamplesLoaded;
   else
-    return ReturnCode::fileLoadError;
+    return rsReturnCode::fileLoadError;
 }
 
 int rsSamplerEngine::setupAudioStreams()
@@ -585,9 +562,9 @@ int rsSamplerEngine::setupAudioStreams()
   // sample, use the stream from the instrument.
 
   if(allOK)
-    return ReturnCode::success;
+    return rsReturnCode::success;
   else
-    return ReturnCode::notFound;  // stream was not found for one or more samples
+    return rsReturnCode::notFound;  // stream was not found for one or more samples
 }
 
 void rsSamplerEngine::setupRegionsForKey()
@@ -683,7 +660,7 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay(double fs)
   bool ok = buildProcessingChain();
   if(!ok)
   {
-    //return rsSamplerEngine::ReturnCode::voiceOverload;  // rename to layerOverload
+    //return rsSamplerEngine::rsReturnCode::voiceOverload;  // rename to layerOverload
     // This should actually not happen in therory (as by the sfz spec, and unlimited number of 
     // layers is available), but in practice, it may happen in extreme situations like triggering a
     // whole lot of layers at once or in very short succession while already being close to the 
@@ -701,7 +678,7 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay(double fs)
   setupDspSettings(region->getGroup()->getSettings(), fs);
   setupDspSettings(region->getSettings(), fs);
 
-  // return rsSamplerEngine::ReturnCode::success;
+  // return rsSamplerEngine::rsReturnCode::success;
 }
 
 bool rsSamplerEngine::RegionPlayer::hasFinished()

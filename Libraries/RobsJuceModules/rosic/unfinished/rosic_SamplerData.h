@@ -4,6 +4,33 @@
 namespace rosic
 {
 
+
+/** Return codes for the setup functions. We use encodings as negative integers so we can use 
+them also for functions which use positive integers as valid return values. */
+enum rsReturnCode
+{
+  success        = -1,  //< Operation completed successfully. 
+  nothingToDo    = -2,  //< There was nothing to actually do. State was already as desired.
+  memAllocFail   = -3,  //< Memory allocation failure.
+  invalidIndex   = -4,  //< An invalid index was passed.
+  layerOverload  = -5,  //< Not enough free layers available (in e.g. new noteOn).
+  notFound       = -6,  //< A region, group, sample or whatever was not found.
+  fileLoadError  = -7,  //< A file could not be loaded (reasons: not found or failed alloc).
+  notImplemented = -8   //< Feature not yet implemented (relevant during development).
+};
+// todo: make it an enum class, maybe include also return codes for inquiry functions such as for
+// "unknown", etc. ...but maybe that's no good idea when we want to use it for functions which
+// need to return valid integers (like, for numChannels, etc. - we could use negative numbers to
+// encode such things)
+// -maybe rename "success" to "completed" or "done" because "success" has actually a more general 
+//   meaning: "nothingToDo" is also a kind of "success" (or maybe "workDone" or "workCompleted"
+// -maybe include a general code for "failed" 
+// -rename the layerOverload to a general "overload" or ressourcesUsedUp or something - to make the
+//  enum more genrally useful
+
+
+
+
 /** Data structure to define sample based instruments conforming to the sfz specification. */
 
 class rsSamplerData // todo: move into its own pair of .h/.cpp files, rename to rsSamplerData
@@ -466,31 +493,29 @@ public:
   void setRegionSample(int gi, int ri, const std::string& samplePath)
   { instrument.groups[gi]->regions[ri]->setSamplePath(samplePath); }
 
-  void setRegionSetting(int gi, int ri, PlaybackSetting::Type type, float value)
-  {
-    instrument.groups[gi]->regions[ri]->settings.push_back(PlaybackSetting(type, value));
-    // Preliminary. We need to figure out, if that setting already exists and if so, just change 
-    // its value instead of pushing another value for the same parameter
-  }
+  rsReturnCode setRegionSetting(int gi, int ri, PlaybackSetting::Type type, float value);
 
-  void setGroupSetting(int gi, PlaybackSetting::Type type, float value)
-  {
-    instrument.groups[gi]->settings.push_back(PlaybackSetting(type, value));
-    // Preliminary. We need to figure out, if that setting already exists and if so, just change 
-    // its value instead of pushing another value for the same parameter
-  }
+  rsReturnCode setGroupSetting(int gi, PlaybackSetting::Type type, float value);
 
 
 
   /** Clears the whole instrument definition. */
-  void clearInstrument() 
-  { instrument.clearGroups(); }
+  void clearInstrument() { instrument.clearGroups(); }
   //{ instrument.groups.clear(); }
   // todo: may wrap into instrument.clear() - don't access the groups array directly
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
+
+  bool isIndexPairValid(int groupIndex, int regionIndex) const
+  { 
+    int gi = groupIndex, ri = regionIndex;
+    return instrument.isGroupIndexValid(gi) && instrument.groups[gi]->isRegionIndexValid(ri);
+  }
+
+  bool isGroupIndexValid(int i) const { return instrument.isGroupIndexValid(i); }
+
 
   int getNumGroups() const { return instrument.getNumGroups(); }
 

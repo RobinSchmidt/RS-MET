@@ -200,6 +200,36 @@ bool rsSamplerData::removeRegion(int gi, int ri)
   return instrument.groups[gi]->removeRegion(ri);
 }
 
+rsReturnCode rsSamplerData::setRegionSetting(int gi, int ri, PlaybackSetting::Type type, float value)
+{
+  if(!isIndexPairValid(gi, ri)) {
+    RAPT::rsError("Invalid group- and/or region index");
+    return rsReturnCode::invalidIndex; }
+
+  //sfz.setRegionSetting(gi, ri, type, value);
+  instrument.groups[gi]->regions[ri]->settings.push_back(PlaybackSetting(type, value));
+  // Preliminary. We need to figure out, if that setting already exists and if so, just change 
+  // its value instead of pushing another value for the same parameter. Implement it in way so we 
+  // can call it here as: settings->set(PlaybackSetting::Type type, float value)
+
+
+  return rsReturnCode::success;
+}
+
+rsReturnCode rsSamplerData::setGroupSetting(int gi, PlaybackSetting::Type type, float value)
+{
+  if(!isGroupIndexValid(gi)) {
+    RAPT::rsError("Invalid group index");
+    return rsReturnCode::invalidIndex; }
+
+  instrument.groups[gi]->settings.push_back(PlaybackSetting(type, value));
+  // Preliminary. We need to figure out, if that setting already exists and if so, just change 
+  // its value instead of pushing another value for the same parameter
+
+
+  return rsReturnCode::success;
+}
+
 std::string rsSamplerData::getAsSFZ() const
 {
   auto writeSettingsToString = [](const OrganizationLevel* lvl, std::string& str)

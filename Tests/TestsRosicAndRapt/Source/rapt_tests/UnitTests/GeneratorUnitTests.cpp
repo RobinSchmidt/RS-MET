@@ -49,9 +49,10 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   using VecF = std::vector<float>;     // vector of sample values in RAM
+  using AT   = RAPT::rsArrayTools;
   using SD   = rosic::rsSamplerData;
   using SE   = rosic::rsSamplerEngineTest;
-  using RC   = SE::ReturnCode;
+  using RC   = rosic::rsReturnCode;
   using PST  = SE::PlaybackSetting::Type;
   using Ev   = rosic::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
@@ -285,7 +286,7 @@ bool samplerEngineUnitTest()
   // perhaps not very important anyway
 
   // Test delay:
-  float delaySamples = 10.75f;
+  float delaySamples = 15.75f;
   float delaySeconds = delaySamples / fs;
   se.setRegionSetting(0, 0, PST::Pan, 0.f);              // back to center, makes testing easier
   se.setRegionSetting(0, 0, PST::Delay, delaySeconds);
@@ -313,12 +314,61 @@ bool samplerEngineUnitTest()
   se.setRegionSetting(0, 0, PST::Delay, 0.f);  // Turn delay off again
   se.setRegionSetting(0, 0, PST::Volume, rsAmpToDb(regionAmp));
   se.setGroupSetting( 0,    PST::Volume, rsAmpToDb(groupAmp));
+
+
+  auto testNote = [&](
+    float key, float vel, const VecF& targetL, const VecF& targetR, float tol = 0.f)
+  {
+    se.handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
+    for(int n = 0; n < N; n++)
+      se.processFrame(&outL[n], &outR[n]);
+    float errL = AT::maxDeviation(&outL[0], &targetL[0], N);
+    float errR = AT::maxDeviation(&outR[0], &targetR[0], N);
+    return errL <= tol && errR <= tol;
+  };
+  // ToDo: move up and use it to reduce boilerplate for many other tests as well
+
   se.setGroupSettingsOnTop(false);
+  //se.reset();
+  ok &= testNote(69.f, 127.f, regionAmp*sin440, regionAmp*sin440);
+  // -if we don't do the reset, the initial section is wrong (that's expected) and we get a huge 
+  //  (10^37) spike at floor(delaySamples) - that's of course not expected!
+
+  /*
+  // todo:
+  se.setGroupSettingsOnTop(true);
+  se.reset();
+  ok &= testNote(69.f, 127.f, groupAmp*regionAmp*sin440, groupAmp*regionAmp*sin440);
+
+  se.unsetRegionSetting(0, 0, PST::Volume);
+  se.reset();
+  ok &= testNote(69.f, 127.f, groupAmp*sin440, groupAmp*sin440);
+
+  se.setGroupSettingsOnTop(false);
+  se.reset();
+  ok &= testNote(69.f, 127.f, groupAmp*sin440, groupAmp*sin440);
+  */
+
+
+
+
+  //se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  //for(int n = 0; n < N; n++)
+  //  se.processFrame(&outL[n], &outR[n]);
+  //ok &= outL == 0.5f * sin440;
+  //ok &= outR == 0.5f * sin440;
+  // maybe factor this out into a function: 
+  //   testNoteOutput(69.f, 127.f, 0.5f * sin440, 0.5f* sin440)
+  // which returns a bool. use it to reduce the boilerplate in the tests. it should take the key 
+  // and vel and expected left and right signals (and maybe a tolerance)
+
+
+
 
 
   // ToDo: We also need a unsetRegionSetting, unsetGroupSetting, etc. Maybe before implementing, 
-  // them it would ineed make sense to refactor such that the error conditions are detected in 
-  // rsSamplerData...that requires to define the ReturnCodes somewhere else....
+  // them it would indeed make sense to refactor such that the error conditions are detected in 
+  // rsSamplerData...that requires to define the rsReturnCodes somewhere else....
 
 
   int dummy = 0;
@@ -428,7 +478,7 @@ bool samplerEngineUnitTestFileIO()
 
   using VecF = std::vector<float>;     // vector of sample values in RAM
   using SE   = rosic::rsSamplerEngineTest;
-  using RC   = SE::ReturnCode;
+  using RC   = rosic::rsReturnCode;
   using PST  = SE::PlaybackSetting::Type;
   using Ev   = rosic::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
