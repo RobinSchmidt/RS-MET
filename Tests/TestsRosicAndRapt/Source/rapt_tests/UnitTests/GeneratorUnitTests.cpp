@@ -286,7 +286,7 @@ bool samplerEngineUnitTest()
   // perhaps not very important anyway
 
   // Test delay:
-  float delaySamples = 15.75f;
+  float delaySamples = 10.75f;
   float delaySeconds = delaySamples / fs;
   se.setRegionSetting(0, 0, PST::Pan, 0.f);              // back to center, makes testing easier
   se.setRegionSetting(0, 0, PST::Delay, delaySeconds);
@@ -329,10 +329,9 @@ bool samplerEngineUnitTest()
   // ToDo: move up and use it to reduce boilerplate for many other tests as well
 
   se.setGroupSettingsOnTop(false);
-  //se.reset();
+  se.reset();
   ok &= testNote(69.f, 127.f, regionAmp*sin440, regionAmp*sin440);
-  // -if we don't do the reset, the initial section is wrong (that's expected) and we get a huge 
-  //  (10^37) spike at floor(delaySamples) - that's of course not expected!
+
 
   /*
   // todo:

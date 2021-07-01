@@ -4,7 +4,7 @@
 namespace rosic
 {
 
-template<class T>   // maybe it should got into rapt
+template<class T>   // maybe it should go into rapt
 class AudioStream 
 {
 
@@ -22,23 +22,26 @@ public:
 
   /** Computes a stereo output frame at possibly non-integer sample positions. The baseclass 
   implementation does this by simple linear interpolation. Subclasses may override this for using
-  better quality interpolation and/or optimization purposes. */
+  better quality interpolation and/or optimization purposes. If the samplePosition is outside the 
+  valid range 0 <= samplePosition <= N-1, the signal there is taken to be zero. At positions in
+  between -1..0 and N-1..N, linear interpolation will take place between the first (or last) actual
+  sample and zero. */
   virtual void getFrameStereo(T samplePosition, T* left, T* right) const
   {
-    if(samplePosition < T(0)) {
-      RAPT::rsError("getFrameStereo not yet implemented for samplePosition < 0");
-      *left = *right = T(0); }
-    int sampleIndex = (int) samplePosition;
-    T frac = samplePosition - sampleIndex;
-    T xL0, xR0, xL1, xR1;
-    getFrameStereo(sampleIndex,   &xL0, &xR0);
-    getFrameStereo(sampleIndex+1, &xL1, &xR1);
-    *left  = (T(1)-frac) * xL0 + frac * xL1;
-    *right = (T(1)-frac) * xR0 + frac * xR1;
+    int i = (int) samplePosition;      // integer part
+    T   f = samplePosition - T(i);     // fractional part
+    T xL0(0), xR0(0), xL1(0), xR1(0);
+    if(isValidFrameIndex(i  )) getFrameStereo(i,   &xL0, &xR0);
+    if(isValidFrameIndex(i+1)) getFrameStereo(i+1, &xL1, &xR1);
+    *left  = (T(1)-f) * xL0 + f * xL1;
+    *right = (T(1)-f) * xR0 + f * xR1;
 
     // ToDo: 
-    // -make a function that takes sampleIndex and frac as separate arguments
-    // -try to optimize using modf: https://en.cppreference.com/w/cpp/numeric/math/modf
+    // -Make a function that takes sampleIndex and frac as separate arguments
+    // -Make an unsafe version that avoids the isValidFrameIndex checks
+    // -Write a function that fills a whole buffer instead of producing one sample at a time. That
+    //  function should figure out safe bounds once and make use of the unsafe version per sample.
+    // -Try to optimize using modf: https://en.cppreference.com/w/cpp/numeric/math/modf
   }
 
 
@@ -57,6 +60,8 @@ public:
 
 
   T getSampleRate() const { return sampleRate; }
+
+  bool isValidFrameIndex(int i) const { return i >= 0 && i < numFrames; }
 
   //virtual bool hasFinished(int sampleTime)
 
