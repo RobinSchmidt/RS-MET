@@ -306,6 +306,7 @@ bool samplerEngineUnitTest()
   //rsPlotVectors(sin440, outL);
 
 
+  // move this into samplerEngine2UnitTest
   // Test setGroupSettingsOnTop: We set the volume of the group and the region and check the 
   // behavior in both modes:
   float regionAmp = 0.5f;
@@ -326,11 +327,14 @@ bool samplerEngineUnitTest()
     float errR = AT::maxDeviation(&outR[0], &targetR[0], N);
     return errL <= tol && errR <= tol;
   };
-  // ToDo: move up and use it to reduce boilerplate for many other tests as well
+  // ToDo: move up and use it to reduce boilerplate for many other tests as well - maybe make it
+  // a free function, taking the engine as reference argument
 
   se.setGroupSettingsOnTop(false);
   se.reset();
   ok &= testNote(69.f, 127.f, regionAmp*sin440, regionAmp*sin440);
+
+
 
 
   /*
@@ -362,9 +366,6 @@ bool samplerEngineUnitTest()
   // and vel and expected left and right signals (and maybe a tolerance)
 
 
-
-
-
   // ToDo: We also need a unsetRegionSetting, unsetGroupSetting, etc. Maybe before implementing, 
   // them it would indeed make sense to refactor such that the error conditions are detected in 
   // rsSamplerData...that requires to define the rsReturnCodes somewhere else....
@@ -372,22 +373,17 @@ bool samplerEngineUnitTest()
 
   int dummy = 0;
 
-
-
-
-
   // ToDo:
-  // -implement and test fractional delay times
-  // -implement and test removeRegion
+  // -implement the signal flow: regions -> groups -> instrument, introduce 2 switches in the 
+  //  engine: groupSettingsAccumulate, instrumentSettingsAccumulate - test, if fallback vs 
+  //  accumulate works as intended ...check, if fallback is actually indeed the sfz behavior, i 
+  //  just assumed so
   // -implement and test opcodes for key- and vel-tracking for:
   //  pitch, volume, pan, delay
   // -write a performance test for the sampler
   // -switch to an int+float representation of the current sample position and increment and check, 
   //  if this improves performance...even if not, it's still better because it doesn't lose 
   //  precision for later samples
-  // -implement the signal flow: regions -> groups -> instrument, introduce 2 switches in the 
-  //  engine: groupSettingsAccumulate, instrumentSettingsAccumulate - test, if fallback vs 
-  //  accumulate works as intended
   // -implement opcodes: pos, width, start, loop_start/end, loop_mode
 
 
@@ -463,7 +459,7 @@ bool samplerEngineUnitTest()
 
   int regionPlayerSize = SE::getRegionPlayerSize();
   // 64 without filters and eq, 512 with - move this into some performance test function
-  // currently 176
+  // currently 160
 
   rsAssert(ok);
   return ok;

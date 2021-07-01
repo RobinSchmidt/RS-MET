@@ -170,7 +170,11 @@ public:
   region's own settings and one using the enclosing group's settings and add them up before 
   applying. It doesn't seem to make a lot of sense to run common modulators per-group. Think of an
   envelope: it gets triggered with the note that starts the RegionPlayer, so it must be part of the
-  RegionPlayer. */
+  RegionPlayer. ...or actually, it could make sense to trigger the modulators with the first 
+  RegionPlayer for each group - this is not a useful behavior for envelopes, but it could be for 
+  LFOs, sequencers, etc. ...maybe the modulators should have 3 modes: override/fallback, 
+  accumulate/duplicate, accumulate...actually, it would be useful, if this could be set for each 
+  modulator individually. */
   void setGroupModulationsOnTop(bool onTop) { groupModulationsOnTop = onTop; }
 
   /** Like setGroupSettingsOnTop, but for the instrument settings. */
@@ -324,18 +328,17 @@ public:
 
   //===============================================================================================
 
-protected:
-
   //-----------------------------------------------------------------------------------------------
   // \name Internal Helper Classes
+
 
   class SignalProcessor
   {
   public:
     virtual void processFrame(rsFloat64x2& inOut) = 0;
+    virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
     virtual void resetState() = 0;
     virtual void resetSettings() = 0;
-    // todo: processBlock
   };
 
   class Modulator
@@ -345,6 +348,20 @@ protected:
     virtual void resetState() = 0;
     virtual void resetSettings() = 0;
     // todo: processBlock
+  };
+
+
+protected:
+
+  class SignalProcessorChain
+  {
+  public:
+    void processFrame(rsFloat64x2& inOut);
+    void processBlock(rsFloat64x2* inOut, int N);
+    void resetState();
+    void resetSettings();
+  protected:
+    std::vector<SignalProcessor*> processors;
   };
 
   class ModulationConnection
@@ -365,7 +382,7 @@ protected:
     /** Sets up the region object that this player should play. You need to also pass the output 
     sample-rate which is the sample rate at which the player should run (not the sample rate of the
     audio file associated with the region). */
-    virtual void setRegionToPlay(const Region* regionToPlay, double outputSampleRate);
+    void setRegionToPlay(const Region* regionToPlay, double outputSampleRate);
 
     const Region* getRegionToPlay() const { return region; }
 
@@ -375,14 +392,14 @@ protected:
     void setKey(uchar newKey) { key = newKey; }
 
     /** Generates one stereo sample frame at a time. */
-    virtual rsFloat64x2 getFrame();
+    rsFloat64x2 getFrame();
 
     /** Writes a block of given length into the outBuffer. */
-    virtual void processBlock(rsFloat64x2* outBuffer, int length);
+    void processBlock(rsFloat64x2* outBuffer, int length);
 
     /** Returns true, iff this player has finished its playback job, for example by having reached
     the end of the sample stream and/or amplitude envelope. */
-    virtual bool hasFinished(); // should be const?
+    bool hasFinished(); // should be const?
 
     /** Retrieves the information about the midi note for which this player was started. Used to 
     identify players that need to stop, when a noteOff is received. @see setKey */
@@ -392,16 +409,16 @@ protected:
   protected:
 
     /** A basic sanity check for the given region. Mostly for catching bugs. */
-    virtual bool isPlayable(const Region* region);
+    bool isPlayable(const Region* region);
 
     /** Sets up the internal values for the playback settings (including DSP objects) according
     to the assigned region and resets all DSP objects. */
-    virtual void prepareToPlay(double sampleRate);
+    void prepareToPlay(double sampleRate);
 
-    virtual bool buildProcessingChain();
-    virtual void resetDspState();
-    virtual void resetDspSettings();
-    virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings, double sampleRate);
+    bool buildProcessingChain();
+    void resetDspState();
+    void resetDspSettings();
+    void setupDspSettings(const std::vector<PlaybackSetting>& settings, double sampleRate);
 
     const Region* region;                 //< The Region object that this object should play
     const AudioFileStream<float>* stream; //< Stream object to get the data from
@@ -412,8 +429,8 @@ protected:
     uchar key = 0;                 //< Midi note number used for starting this player
 
     std::vector<Modulator*> modulators;
-    std::vector<SignalProcessor*> dspChain;
     std::vector<ModulationConnection*> modMatrix;  // not a literal matrix but conceptually
+    SignalProcessorChain dspChain;
 
     // We may need a state, too. Can be attack/decay/sustain/release. Or maybe just play/release?
     // Or maybe no state at all but the triggerRelease just triggers the release of all envelopes?
@@ -436,15 +453,25 @@ protected:
     // -try to optimize ram and/or cpu usage by re-ordering
     // -env-generators need as state variables: stage (int), time-into-stage (float/double),
     //  LFO need just phase
+    // -Why are so many functions declared virtual? there are not supposed to be any subclasses.
+    //  -> remove the virtual declarations
   };
 
 
   /** A class for collecting all the SignalProcessors that apply to a given group. This is used 
-  only when */
-  class GroupProcessor
+  only when the group's DSP settings should go on top of the region's settings */
+  class GroupPlayer  // maybe rename to GroupPlayer
   {
 
   public:
+
+    /** Generates one stereo sample frame at a time. */
+    virtual rsFloat64x2 getFrame();
+
+  protected:
+
+    std::vector<RegionPlayer*> regionPlayers;
+    SignalProcessorChain dspChain;
 
   };
 
@@ -612,13 +639,14 @@ protected:
   // as plugin)
 
 
-  std::vector<PlaybackSetting> settings;
+  //std::vector<PlaybackSetting> settings;
   /**< Playback settings that apply to all groups within this instrument, unless a group (or 
   region) overrides a setting with its own value. **/
   // get rid - should go into sfz.instrument.settings
 
   std::vector<RegionPlayer*> activePlayers;
   /**< Array of pointers to region players that are currently active, i.e. playing. */
+  // rename to activeRegionPlayers
 
   std::vector<RegionPlayer*> idlePlayers;
   /**< Array of pointers to region players that are currently idle, i.e. not playing, and therefore
@@ -633,6 +661,14 @@ protected:
   // todo: use a sort of multi-threaded, speculatively pre-allocating, non-deallocating dynamic 
   // array data structure for that later. The same strategy should then later be used for DSP 
   // objects as well
+
+  // under construction:
+  std::vector<GroupPlayer*> activeGroupPlayers;
+  std::vector<GroupPlayer*> idleGroupPlayers;
+  std::vector<GroupPlayer>  groupPlayerPool;
+
+
+
 
 
   double sampleRate = 44100.0;
@@ -654,6 +690,7 @@ protected:
   bool instrumentSettingsOnTop    = false;
   bool groupModulationsOnTop      = false;
   bool instrumentModulationsOnTop = false;
+  // maybe move this into a subclass rsSamplerEngine2 - this is an added non-sfz feature
 
 
 
@@ -673,6 +710,23 @@ protected:
   // overwrite it with the actual output data
 
   // we may need a pool of filter objects, eq-objects, etc. for the different voices
+};
+
+//=================================================================================================
+
+/** A subclass of rsSamplerEngine that adds a couple of features. In particular, it's meant for
+adding those features that are not part of the original SFZ specification, such as the ability to
+apply the group- and instrument-wide settings on top of the region settings instead of using them
+as fallback values. */
+
+class rsSamplerEngine2 : public rsSamplerEngine
+{
+
+public:
+
+
+protected:
+
 };
 
 //=================================================================================================

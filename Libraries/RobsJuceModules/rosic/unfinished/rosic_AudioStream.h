@@ -15,7 +15,7 @@ public:
   /** For random access. Writes the sample frame with given index into the given destination. */
   virtual void getFrame(int sampleIndex, T* destination) const = 0;
 
-  /** Function for speficically handling stereo signals to allow handling that importnat, common
+  /** Function for speficically handling stereo signals to allow handling that important, common
   special case more efficiently than with the more general implementation. */
   virtual void getFrameStereo(int sampleIndex, T* left, T* right) const = 0;
 

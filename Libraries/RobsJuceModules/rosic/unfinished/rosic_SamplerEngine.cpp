@@ -262,17 +262,31 @@ int rsSamplerEngine::findSampleIndexInPool(const std::string& sample) const
 void rsSamplerEngine::processFrame(double* left, double* right)
 {
   rsFloat64x2 out = 0.0;
-  for(int i = 0; i < (int)activePlayers.size(); i++) {
-    out += activePlayers[i]->getFrame();
-    if(activePlayers[i]->hasFinished()) {
-      deactivateRegionPlayer(i);
-      i--; }}
+  if(groupSettingsOnTop)
+  {
+    for(int i = 0; i < (int)activeGroupPlayers.size(); i++)
+      out += activeGroupPlayers[i]->getFrame();
+  }
+  else
+  {
+    for(int i = 0; i < (int)activePlayers.size(); i++) {
+      out += activePlayers[i]->getFrame();
+      if(activePlayers[i]->hasFinished()) {
+        deactivateRegionPlayer(i);
+        i--;  }}
+    // ToDo: Test, if it's more efficient to loop through the activePlayers array backwards. Then, 
+    // the i-- in the loop body could be removed, but that's not the main point. The main point is 
+    // that the deactivation/removal would need less data copying.
+  }
   *left  = out[0];
   *right = out[1];
 
-  // ToDo: Test, if it's more efficient to loop through the activePlayers array backwards. Then, 
-  // the i-- in the loop body could be removed, but that's not the main point. The main point is 
-  // that the deactivation/removal would need less data copying.
+  // ToDo:
+  // -Try to get rid of the conditional by always using the groupPlayers array. If we are in
+  //  non-on-top mode, just use always just a single active GroupPlayer (i.e. the 
+  //  activeGroupPlayers just has a length of 1). But then, the (then empty) GroupPlayer's 
+  //  dspChain wil always be applied...but maybe with block-processing, the cost will be negligible
+
 }
 
 void rsSamplerEngine::processFrame(float* left, float* right)
@@ -580,6 +594,15 @@ void rsSamplerEngine::setupRegionsForKey()
 }
 
 //-------------------------------------------------------------------------------------------------
+// rsSamplerEngine::SignalProcessorChain
+
+void rsSamplerEngine::SignalProcessorChain::resetState()
+{
+  for(size_t i = 0; i < processors.size(); i++)
+    processors[i]->resetState();
+}
+
+//-------------------------------------------------------------------------------------------------
 // rsSamplerEngine::RegionPlayer
 
 void rsSamplerEngine::RegionPlayer::setRegionToPlay(
@@ -700,8 +723,7 @@ bool rsSamplerEngine::RegionPlayer::hasFinished()
 
 void rsSamplerEngine::RegionPlayer::resetDspState()
 {
-  for(size_t i = 0; i < dspChain.size(); i++)
-    dspChain[i]->resetState();
+  dspChain.resetState();
   for(size_t i = 0; i < modulators.size(); i++)
     modulators[i]->resetState();
 }
