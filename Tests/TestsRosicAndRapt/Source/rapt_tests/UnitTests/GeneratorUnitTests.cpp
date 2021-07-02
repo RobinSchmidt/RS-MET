@@ -296,8 +296,8 @@ bool samplerEngineUnitTest()
   for(int n = 0; n < delaySamples; n++) {
     ok &= outL[n] == 0.f;
     ok &= outR[n] == 0.f;  }
-  float tol = 1.e-7;  // ~= 140 dB SNR
-  for(int n = delaySamples; n < N; n++) 
+  float tol = 1.e-7f;  // ~= 140 dB SNR
+  for(int n = (int) delaySamples; n < N; n++) 
   {
     float tgt = getSampleAt(sin440, n-delaySamples);
     ok &= rsIsCloseTo(outL[n], tgt, tol);
@@ -330,15 +330,13 @@ bool samplerEngineUnitTest()
   // ToDo: move up and use it to reduce boilerplate for many other tests as well - maybe make it
   // a free function, taking the engine as reference argument
 
+
+  /*
+  // todo - goes into another test, maybe samplerEngineRoutingUnitTest:
   se.setGroupSettingsOnTop(false);
   se.reset();
   ok &= testNote(69.f, 127.f, regionAmp*sin440, regionAmp*sin440);
 
-
-
-
-  /*
-  // todo:
   se.setGroupSettingsOnTop(true);
   se.reset();
   ok &= testNote(69.f, 127.f, groupAmp*regionAmp*sin440, groupAmp*regionAmp*sin440);
@@ -459,7 +457,8 @@ bool samplerEngineUnitTest()
 
   int regionPlayerSize = SE::getRegionPlayerSize();
   // 64 without filters and eq, 512 with - move this into some performance test function
-  // currently 160
+  // currently 160, with virtual functions, it had 16 bytes more. Apparently, that's what the 
+  // vtable takes
 
   rsAssert(ok);
   return ok;

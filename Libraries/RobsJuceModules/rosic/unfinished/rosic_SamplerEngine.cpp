@@ -262,22 +262,35 @@ int rsSamplerEngine::findSampleIndexInPool(const std::string& sample) const
 void rsSamplerEngine::processFrame(double* left, double* right)
 {
   rsFloat64x2 out = 0.0;
-  if(groupSettingsOnTop)
-  {
-    for(int i = 0; i < (int)activeGroupPlayers.size(); i++)
-      out += activeGroupPlayers[i]->getFrame();
-  }
-  else
-  {
-    for(int i = 0; i < (int)activePlayers.size(); i++) {
-      out += activePlayers[i]->getFrame();
-      if(activePlayers[i]->hasFinished()) {
-        deactivateRegionPlayer(i);
-        i--;  }}
+
+  for(int i = 0; i < (int)activePlayers.size(); i++) {
+    out += activePlayers[i]->getFrame();
+    if(activePlayers[i]->hasFinished()) {
+      deactivateRegionPlayer(i);
+      i--;  }}
     // ToDo: Test, if it's more efficient to loop through the activePlayers array backwards. Then, 
     // the i-- in the loop body could be removed, but that's not the main point. The main point is 
     // that the deactivation/removal would need less data copying.
-  }
+
+
+  //if(groupSettingsOnTop)
+  //{
+  //  for(int i = 0; i < (int)activeGroupPlayers.size(); i++)
+  //    out += activeGroupPlayers[i]->getFrame();
+  //}
+  //else
+  //{
+  //  for(int i = 0; i < (int)activePlayers.size(); i++) {
+  //    out += activePlayers[i]->getFrame();
+  //    if(activePlayers[i]->hasFinished()) {
+  //      deactivateRegionPlayer(i);
+  //      i--;  }}
+  //  // ToDo: Test, if it's more efficient to loop through the activePlayers array backwards. Then, 
+  //  // the i-- in the loop body could be removed, but that's not the main point. The main point is 
+  //  // that the deactivation/removal would need less data copying.
+  //}
+
+
   *left  = out[0];
   *right = out[1];
 
@@ -286,7 +299,6 @@ void rsSamplerEngine::processFrame(double* left, double* right)
   //  non-on-top mode, just use always just a single active GroupPlayer (i.e. the 
   //  activeGroupPlayers just has a length of 1). But then, the (then empty) GroupPlayer's 
   //  dspChain wil always be applied...but maybe with block-processing, the cost will be negligible
-
 }
 
 void rsSamplerEngine::processFrame(float* left, float* right)
@@ -837,6 +849,26 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
 //=================================================================================================
 
+void rsSamplerEngine2::processFrame(double* left, double* right)
+{
+  if(!groupSettingsOnTop) {
+    rsSamplerEngine::processFrame(left, right); return; } // fall back to baseclass implementation
+
+  rsFloat64x2 out = 0.0;
+  for(int i = 0; i < (int)activeGroupPlayers.size(); i++)
+    out += activeGroupPlayers[i]->getFrame();
+  *left  = out[0];
+  *right = out[1];
+}
+
+int rsSamplerEngine2::stopAllPlayers()
+{
+  RAPT::rsError("Not yet implemented"); // ...something to do...
+  return 0; // should return the number of players that were stopped
+}
+
+//=================================================================================================
+
 /*
 
 Bugs:
@@ -959,6 +991,11 @@ Ideas:
   -these samples should get a filter evelope in the sfz, ideally, of a slope filter, i.e. a filter
    which doesn't have its cutoff changing over time, but its slope - this models faster decay of 
    high frequencies
+
+-maybe have a multi-output version (e.g. 16 stereo outs) and allow groups to be routed to different
+ output busses. 16 seems nice because of the possible correspondence to the 16 available midi 
+ channels. an/or maybe introduce another "ensemble" level above the instrument and allows whole 
+ instruments to go to different busses - should go into rsSamplerEngine2
 
 
 Problem:

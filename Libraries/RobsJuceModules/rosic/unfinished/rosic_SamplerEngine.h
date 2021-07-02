@@ -152,36 +152,7 @@ public:
 
 
 
-  /** Decides if the group settings should be applied on top of the region settings (true) or if 
-  they should just act as fallback values for when a region doesn't define them (false). The 
-  "on top" mode means that if a region defines a gain of -6dB and its enclosing group defines a 
-  gain of -3dB, the total gain will be -9dB. The "fallback" mode means that the region will just 
-  use it's defined -6dB gain and only if that would not be defined, it would fall back to the 
-  group's -3dB setting. The latter behavior is the default in sfz (verify!) but the the former is 
-  also often convenient. 
-  This doesn't do anything yet...this feature is not yet implemented - for the time being, it's 
-  just the infrastructure. */
-  void setGroupSettingsOnTop(bool onTop) { groupSettingsOnTop = onTop; }
 
-  /** Decides if the group modulations should be applied on top of the region modulations (true) or
-  if their settings should just act as fallback values for when a region doesn't define them 
-  (false). Note that technically, we don't have a set of modulators per group. Instead, if "on top"
-  mode is selected all RegionPlayers must actually duplicate all their modulators, one using the
-  region's own settings and one using the enclosing group's settings and add them up before 
-  applying. It doesn't seem to make a lot of sense to run common modulators per-group. Think of an
-  envelope: it gets triggered with the note that starts the RegionPlayer, so it must be part of the
-  RegionPlayer. ...or actually, it could make sense to trigger the modulators with the first 
-  RegionPlayer for each group - this is not a useful behavior for envelopes, but it could be for 
-  LFOs, sequencers, etc. ...maybe the modulators should have 3 modes: override/fallback, 
-  accumulate/duplicate, accumulate...actually, it would be useful, if this could be set for each 
-  modulator individually. */
-  void setGroupModulationsOnTop(bool onTop) { groupModulationsOnTop = onTop; }
-
-  /** Like setGroupSettingsOnTop, but for the instrument settings. */
-  void setInstrumentSettingsOnTop(bool onTop) { instrumentSettingsOnTop = onTop; }
-
-  /** Like setGroupModulationsOnTop, but for the instrument modulations. */
-  void setInstrumentModulationsOnTop(bool onTop) { instrumentModulationsOnTop = onTop; }
 
 
   // todo: setGroupSetting, setInstrumentSetting, removeRegion/Group, clearGroup, clearRegion, 
@@ -306,13 +277,13 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
-  void processFrame(double* left, double* right);
 
-  void processFrame(float* left, float* right);
 
-  void processBlock(float** block, int numFrames);
+  virtual void processFrame(double* left, double* right);
 
-  void handleMusicalEvent(const rsMusicalEvent<float>& ev);
+  virtual void processFrame(float* left, float* right);
+
+  virtual void processBlock(float** block, int numFrames);
 
   // void processFrameVoice, processBlockVoice
 
@@ -320,10 +291,15 @@ public:
   reset which may be appropriate to call when a midi reset message is received or before loading a
   new patch. It returns the number of players that were affected, i.e. the number of players that 
   were in active state before the call. */
-  int stopAllPlayers();
+  virtual int stopAllPlayers();
+
+
 
   /** Calls stopAllPlayers. Function is for consistency with the rest of the library. */
   void reset() { stopAllPlayers(); }
+
+  void handleMusicalEvent(const rsMusicalEvent<float>& ev);
+
 
 
   //===============================================================================================
@@ -457,25 +433,6 @@ protected:
     //  -> remove the virtual declarations
   };
 
-
-  /** A class for collecting all the SignalProcessors that apply to a given group. This is used 
-  only when the group's DSP settings should go on top of the region's settings */
-  class GroupPlayer  // maybe rename to GroupPlayer
-  {
-
-  public:
-
-    /** Generates one stereo sample frame at a time. */
-    virtual rsFloat64x2 getFrame();
-
-  protected:
-
-    std::vector<RegionPlayer*> regionPlayers;
-    SignalProcessorChain dspChain;
-
-  };
-
-
   /** Defines a set of regions. Used to handle note-on/off events efficiently. Not to be confused 
   with groups. This class exists for purely technical reasons (i.e. implementation details) and 
   does not map to any user concept. */
@@ -581,12 +538,12 @@ protected:
   sufficient number of idle voices was available and the noteOn should actually have triggered 
   playback of multiple samples, none of them will be triggered. It's an all-or-nothing thing: we 
   don't ever trigger playback for only a subset of samples for a given noteOn. */
-  int handleNoteOn(uchar key, uchar vel);
+  virtual int handleNoteOn(uchar key, uchar vel);
 
   /** Analogous to handleNoteOn. It may also return rsReturnCode::voiceOverload in cases where the 
   noteOff is supposed to trigger relase-samples. In such a case, none of the release-samples will 
   be triggered. */
-  int handleNoteOff(uchar key, uchar vel);
+  virtual int handleNoteOff(uchar key, uchar vel);
 
 
   /** Removes those samples from our sample pool that are not used in the given sfz instrument 
@@ -606,8 +563,6 @@ protected:
 
   /** Sets up ourregionsForKey array according to our sfz member. */
   void setupRegionsForKey();
-
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -662,14 +617,6 @@ protected:
   // array data structure for that later. The same strategy should then later be used for DSP 
   // objects as well
 
-  // under construction:
-  std::vector<GroupPlayer*> activeGroupPlayers;
-  std::vector<GroupPlayer*> idleGroupPlayers;
-  std::vector<GroupPlayer>  groupPlayerPool;
-
-
-
-
 
   double sampleRate = 44100.0;
   /**< Sample rate at which this object runs. */
@@ -683,16 +630,6 @@ protected:
   // for the unit tests):
   std::string sfzDir;         /**< Root directory for .sfz files */
   std::string wavDir;         /**< Root directory for .wav files */
-
-  // Flags to decide if the group- and/or instrument settings and/or modulations should be applied 
-  // on top of the region settings/modulations:
-  bool groupSettingsOnTop         = false;
-  bool instrumentSettingsOnTop    = false;
-  bool groupModulationsOnTop      = false;
-  bool instrumentModulationsOnTop = false;
-  // maybe move this into a subclass rsSamplerEngine2 - this is an added non-sfz feature
-
-
 
 
   //int numChannels = 2;
@@ -715,17 +652,111 @@ protected:
 //=================================================================================================
 
 /** A subclass of rsSamplerEngine that adds a couple of features. In particular, it's meant for
-adding those features that are not part of the original SFZ specification, such as the ability to
-apply the group- and instrument-wide settings on top of the region settings instead of using them
-as fallback values. */
+adding those features that are not part of the original SFZ specification. These include more 
+flexible signal routing capabilities like the ability to apply the group- and instrument-wide 
+settings on top of the region settings instead of using them as fallback values. */
 
 class rsSamplerEngine2 : public rsSamplerEngine
 {
 
 public:
 
+  // for convenience:
+  using uchar = unsigned char;
+  //using Region = rsSamplerData::Region; // todo: make a subclass here that adds the stream field
+  //using Group  = rsSamplerData::Group;
+  //using PlaybackSetting = rsSamplerData::PlaybackSetting;
+
+
+  /** Decides if the group settings should be applied on top of the region settings (true) or if 
+  they should just act as fallback values for when a region doesn't define them (false). The 
+  "on top" mode means that if a region defines a gain of -6dB and its enclosing group defines a 
+  gain of -3dB, the total gain will be -9dB. The "fallback" mode means that the region will just 
+  use it's defined -6dB gain and only if that would not be defined, it would fall back to the 
+  group's -3dB setting. The latter behavior is the default in sfz (verify!) but the the former is 
+  also often convenient. 
+  This doesn't do anything yet...this feature is not yet implemented - for the time being, it's 
+  just the infrastructure. */
+  void setGroupSettingsOnTop(bool onTop) { groupSettingsOnTop = onTop; }
+
+  /** Decides if the group modulations should be applied on top of the region modulations (true) or
+  if their settings should just act as fallback values for when a region doesn't define them 
+  (false). Note that technically, we don't have a set of modulators per group. Instead, if "on top"
+  mode is selected all RegionPlayers must actually duplicate all their modulators, one using the
+  region's own settings and one using the enclosing group's settings and add them up before 
+  applying. It doesn't seem to make a lot of sense to run common modulators per-group. Think of an
+  envelope: it gets triggered with the note that starts the RegionPlayer, so it must be part of the
+  RegionPlayer. ...or actually, it could make sense to trigger the modulators with the first 
+  RegionPlayer for each group - this is not a useful behavior for envelopes, but it could be for 
+  LFOs, sequencers, etc. ...maybe the modulators should have 3 modes: override/fallback, 
+  accumulate/duplicate, accumulate...actually, it would be useful, if this could be set for each 
+  modulator individually. */
+  void setGroupModulationsOnTop(bool onTop) { groupModulationsOnTop = onTop; }
+
+  /** Like setGroupSettingsOnTop, but for the instrument settings. */
+  void setInstrumentSettingsOnTop(bool onTop) { instrumentSettingsOnTop = onTop; }
+
+  /** Like setGroupModulationsOnTop, but for the instrument modulations. */
+  void setInstrumentModulationsOnTop(bool onTop) { instrumentModulationsOnTop = onTop; }
+
+
+
+
+  void processFrame(double* left, double* right) override;
+
+  //void processFrame(float* left, float* right) override;
+
+  //void processBlock(float** block, int numFrames) override;
+
+  // void processFrameVoice, processBlockVoice
+
+  /** Stops the playback of all currently active RegionPlayers immediately. This is a rather hard 
+  reset which may be appropriate to call when a midi reset message is received or before loading a
+  new patch. It returns the number of players that were affected, i.e. the number of players that 
+  were in active state before the call. */
+  int stopAllPlayers() override;
+
 
 protected:
+
+
+  int handleNoteOn(uchar key, uchar vel) override;
+
+  int handleNoteOff(uchar key, uchar vel) override;
+
+
+
+  /** A class for collecting all the SignalProcessors that apply to a given group. This is used 
+  only when the group's DSP settings should go on top of the region's settings */
+  class GroupPlayer  // maybe rename to GroupPlayer
+  {
+
+  public:
+
+    /** Generates one stereo sample frame at a time. */
+    virtual rsFloat64x2 getFrame();
+
+  protected:
+
+    std::vector<RegionPlayer*> regionPlayers;
+    SignalProcessorChain dspChain;
+
+  };
+
+
+  // Flags to decide if the group- and/or instrument settings and/or modulations should be applied 
+  // on top of the region settings/modulations:
+  bool groupSettingsOnTop         = false;
+  bool instrumentSettingsOnTop    = false;
+  bool groupModulationsOnTop      = false;
+  bool instrumentModulationsOnTop = false;
+  // maybe move this into a subclass rsSamplerEngine2 - this is an added non-sfz feature
+
+
+  // under construction:
+  std::vector<GroupPlayer*> activeGroupPlayers;
+  std::vector<GroupPlayer*> idleGroupPlayers;
+  std::vector<GroupPlayer>  groupPlayerPool;
 
 };
 
