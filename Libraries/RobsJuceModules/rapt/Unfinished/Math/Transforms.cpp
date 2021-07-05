@@ -238,6 +238,12 @@ ToDo:
     this matrix can be formed as outer product of the autocorrelation vector of x
 -Implement radix2-DIT algo and also radix-3 algo(s) ...maybe we can do a radix-3 NTT with a modulus
  that is a power of 2?
+-Implement sequency based ordering for the Hadamard trafo:
+   https://en.wikipedia.org/wiki/Walsh_matrix#Sequency_ordering
+   https://en.wikipedia.org/wiki/Gray_code
+ "The sequency ordering of the rows of the Walsh matrix can be derived from the ordering of the 
+  Hadamard matrix by first applying the bit-reversal permutation and then the Gray-code 
+  permutation"
 
 Ideas:
 -Wavelet transforms split the signal into lowpass and highpass part at each stage, leading to 

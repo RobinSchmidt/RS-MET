@@ -27,9 +27,7 @@ bool runUnitTestsRapt()
   //ok &= runUnitTest(&ladderUnitTest, "rsLadder");
 
   // these tests should go into UnitTestsRosic.cpp:
-  ok &= runUnitTest(&samplerDataUnitTest,         "rsSamplerData");
   ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
-  ok &= runUnitTest(&samplerEngineUnitTestFileIO, "rsSamplerEngine - File I/O");
   return ok;
 
 

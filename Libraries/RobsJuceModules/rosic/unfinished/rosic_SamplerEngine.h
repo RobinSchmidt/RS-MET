@@ -96,6 +96,9 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
+  /** Sets the maximum number of layers/regions that can be played simultaneously. */
+  virtual void setMaxNumLayers(int newMax);
+
   /** Clears the sfz instrument definition and the samplePool */
   void clearInstrument();
 
@@ -525,7 +528,7 @@ protected:
   array. This results in the removal of the player from "activePlayers" and adding it back to
   "idlePlayers". The return value is either rsReturnCode::success or rsReturnCode::invalidIndex, if
   the activeIndex was not a valid index into our activePlayers array. */
-  int deactivateRegionPlayer(int activeIndex);
+  int stopRegionPlayer(int activeIndex);
 
   /** Returns the AudioFileStream object that is used to stream the actual sample data for the
   given region. A pointer to this object is supposed to be stored within the region object
@@ -668,6 +671,12 @@ public:
   //using PlaybackSetting = rsSamplerData::PlaybackSetting;
 
 
+  rsSamplerEngine2(int maxNumLayers);
+
+
+  void setMaxNumLayers(int newMax) override;
+
+
   /** Decides if the group settings should be applied on top of the region settings (true) or if 
   they should just act as fallback values for when a region doesn't define them (false). The 
   "on top" mode means that if a region defines a gain of -6dB and its enclosing group defines a 
@@ -734,12 +743,15 @@ protected:
   public:
 
     /** Generates one stereo sample frame at a time. */
-    virtual rsFloat64x2 getFrame();
+    rsFloat64x2 getFrame();
 
   protected:
 
     std::vector<RegionPlayer*> regionPlayers;
     SignalProcessorChain dspChain;
+
+    rsSamplerEngine2* engine = nullptr;
+    // We need a communication channel to the enclosing sampler-engine.
 
   };
 
@@ -757,6 +769,8 @@ protected:
   std::vector<GroupPlayer*> activeGroupPlayers;
   std::vector<GroupPlayer*> idleGroupPlayers;
   std::vector<GroupPlayer>  groupPlayerPool;
+  // I think, we need as many GroupPlayers as there are RegionPlayers because in the worst case,
+  // each region could be within its own group...although that's probably really uncommon
 
 };
 

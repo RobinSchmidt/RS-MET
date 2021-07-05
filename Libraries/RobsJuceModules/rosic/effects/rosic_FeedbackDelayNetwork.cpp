@@ -475,6 +475,8 @@ Ideas:
  -maybe the 3x3 rotation should be specified not in terms of Euler angles but by an axis and an 
   angle..or maybe in some other way -> figure out how 3D rotations are most conveniently 
   parametrized in graphics
+ -maybe we could make 3 groups of delaylines (like short, medium, long or somehow sorted by 
+  harmonic relationships) and have the 3 angles control the intermixing between any pair of groups
 
 -to avoid the initial predelay (the delay before the 1st reflection arrives), maybe use multiple
  output taps (that are not part of the feeback loop)...maybe it's sufficient to let only one 
@@ -519,6 +521,51 @@ Ideas:
  about the delays? They have impact on the poles, too. I think, the number of poles may be equal to
  the product of the delaytimes in samples? Is that correct?
 
+-Maybe apply a nonlinear waveshaping function in the feedback loop. The idea is to modify the 
+ effective feedback strength depending on the signal level. Maybe something that has a slope < 1 
+ around zero and approaches unit slope at higher values - may lead to a sort of cutting off the 
+ tail early as in gated reverb. But maybe it's better to do this based on an envelope detector.
+
+-Implement a pre-diffuser based on a series of allpass delays. Try short lengths with prime numbers
+ like 2,3,5,7. Maybe their feedback coeff should be related to the length (lower for longer ones). 
+ Or maybe use post-diffuser with different delays for left and right channel, for example:
+ L: 5,13,17,31, R: 7,11,19,29 - the corresponding L/R pairs are chosen to be twin primes and the 
+ total delay is the same for left and right: 5+13+17+31 = 7+11+19+29 = 66. Or maybe include these 
+ allpasses also in the feedback loop - maybe at the input of the delaylines but after the feedback 
+ point.
+
+-Compute delayline lengths from geometric considerations. For example, use the modal distribution 
+ of rectangular rooms. The formula for the modal frequencies is:
+   f ~ sqrt( nx^2/Lx^2 + ny^2/Ly^2 + nz^2/Lz^2 ) where nx,ny,nz are the 3 independent modal indices
+ (including zero!) and Lx,Ly,Lz are the dimensions of the room. The delays should then be 
+ reciprocals of these (i think).
+
+-Maybe try powers of the golden ration (reduced to the octave [1,2)
+
+-Instead of using the 2 produced outputs for left/right, try using them for mid/side. Maybe 
+ introduce a stereo width parameter as well
+
+-Introduce delay-based panning of the middle delaylines, as explained here:
+ https://www.kvraudio.com/forum/viewtopic.php?f=33&t=123095
+
+-For modulation: Schlecht suggests that modulation should be confined to mid- and high frequencies 
+ (above 400 Hz). This can't be done by modulating he matrix but maybe we could modulate the 
+ effective delayline lengths by putting a (modulated, 1st or 2nd order) allpass in series which 
+ only affects the delay of high-frequencies. He suggests to split the signal and use a modulated 
+ feedback matrix only for the high frequencies. We could implement using multiplpe feedback 
+ matrices in parallel efficiently by using simd - with rsFloat32x4, we can compute 4 different 
+ feedback matrices at the same time, so we could use it for both: early vs late decay and 
+ modulated vs unmodulated
+
+-At the moment, we use a common damping factor for all delaylines. That may be justified when 
+ there's a lot of crosstalk between the delaylines (i.e. high feedback diffusion), but when the 
+ matrix is more like parallel bank of combs, really each delayline should have its own attenuation 
+ coeff
+
+-Would it make sense to replace the delaylines with bidirectional delayline as used in waveguide 
+ modeling? ..i.e. a feedback waveguide network (FWN)
+
+
 
 Resources:
 
@@ -542,5 +589,14 @@ http://pub.dega-akustik.de/DAGA_2014/data/articles/000025.pdf
 
 there was also some paper by Miller Puckette..
 
+
+About reverb in general:
+https://valhalladsp.com/2011/01/21/reverbs-diffusion-allpass-delays-and-metallic-artifacts/
+https://www.kvraudio.com/forum/viewtopic.php?t=564078
+
+
+Sound material for quality assessment:
+https://tech.ebu.ch/publications/sqamcd
+https://tech.ebu.ch/docs/tech/tech3253.pdf
 
 */

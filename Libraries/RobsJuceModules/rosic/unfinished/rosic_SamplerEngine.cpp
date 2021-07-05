@@ -3,13 +3,7 @@
 
 rsSamplerEngine::rsSamplerEngine(int maxNumLayers)
 {
-  // factor out into setMaxNumLayers
-  int L = maxNumLayers;
-  playerPool.resize(L);
-  idlePlayers.resize(L);
-  activePlayers.reserve(L);
-  for(int i = 0; i < L; i++)
-    idlePlayers[i] = &playerPool[i];
+  setMaxNumLayers(maxNumLayers);
 }
 
 rsSamplerEngine::~rsSamplerEngine()
@@ -19,6 +13,16 @@ rsSamplerEngine::~rsSamplerEngine()
 
 //-------------------------------------------------------------------------------------------------
 // Setup:
+
+void rsSamplerEngine::setMaxNumLayers(int newMax)
+{
+  int L = newMax;
+  playerPool.resize(L);
+  idlePlayers.resize(L);
+  activePlayers.reserve(L);
+  for(int i = 0; i < L; i++)
+    idlePlayers[i] = &playerPool[i];
+}
 
 void rsSamplerEngine::clearInstrument() 
 { 
@@ -266,7 +270,7 @@ void rsSamplerEngine::processFrame(double* left, double* right)
   for(int i = 0; i < (int)activePlayers.size(); i++) {
     out += activePlayers[i]->getFrame();
     if(activePlayers[i]->hasFinished()) {
-      deactivateRegionPlayer(i);
+      stopRegionPlayer(i);
       i--;  }}
     // ToDo: Test, if it's more efficient to loop through the activePlayers array backwards. Then, 
     // the i-- in the loop body could be removed, but that's not the main point. The main point is 
@@ -434,7 +438,7 @@ bool rsSamplerEngine::isSampleUsedIn(
   return false;
 }
 
-int rsSamplerEngine::deactivateRegionPlayer(int i)
+int rsSamplerEngine::stopRegionPlayer(int i)
 {
   if(i < 0 || i >= activePlayers.size()) {
     RAPT::rsError("Invalid player index");
@@ -501,7 +505,7 @@ int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
   for(int i = int(activePlayers.size()) - 1; i >= 0; i--)
   {
     if(activePlayers[i]->getKey() == key)
-      deactivateRegionPlayer(size_t(i));
+      stopRegionPlayer(size_t(i));
       // ToDo: refine this later: we may not want to immediately stop the player but rather 
       // trigger the release phase and mark for quick fade-out
   }
@@ -761,21 +765,32 @@ void rsSamplerEngine::RegionPlayer::resetDspSettings()
 void rsSamplerEngine::RegionPlayer::setupDspSettings(
   const std::vector<PlaybackSetting>& settings, double fs)
 {
-  // Loop through the settings of the region and for each setting that is present, change the 
-  // value from its default to the stored value:
+  // ToDo: 
+  // -Let the function have a boolean parameter to decide whether the settings should be taken 
+  //  as is or accumulate on top of what we already have for this setting.
+  // -The caller should then call this once for the instrument settings with the flag being false, 
+  //  then again for the group settings with the flag depending on whether instrument settings 
+  //  should accumulate and then again for the region settings with the flag depending on whether 
+  //  group settings should accumulate
+
+  bool onTop = false;   // make this a function parameter
+
   
   using PS = PlaybackSetting;
   using TP = PS::Type;
 
 
   double tmp = stream->getSampleRate();
-  increment  = tmp/fs;  // or fs/tmp?
+  if(onTop) increment *= tmp/fs;
+  else      increment  = tmp/fs;
 
   double rootKey = 69.0;
   double amp = 1.0;
   double pan = 0.0;
   int panRule = PlaybackSetting::PanRule::linear;
 
+  // Loop through the settings of the region and for each setting that is present, change the 
+  // value from its default to the stored value:
   for(size_t i = 0; i < settings.size(); i++)
   {
 
@@ -793,9 +808,10 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     case TP::PitchKeyCenter: { rootKey = val; } break;
 
     //
-    case TP::Delay:          
+    case TP::Delay:
     { 
-      sampleTime = -val * fs; 
+      if(onTop) sampleTime += -val * fs; 
+      else      sampleTime  = -val * fs; 
     }  break;
 
     // Filter settings:
@@ -824,7 +840,8 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   {
     t1 = (pan/200.0) + 0.5; // -100..+100 -> 0..1
     t2 = 1.0 - t1;
-    this->amp = 2.0 * amp * rsFloat64x2(t2, t1);
+    if(onTop) this->amp *= 2.0 * amp * rsFloat64x2(t2, t1);
+    else      this->amp  = 2.0 * amp * rsFloat64x2(t2, t1);
   } break;
   case PS::PanRule::sinCos:
   {
@@ -849,6 +866,50 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
 //=================================================================================================
 
+rsSamplerEngine2::rsSamplerEngine2(int maxNumLayers)
+{
+  setMaxNumLayers(maxNumLayers);
+}
+
+void rsSamplerEngine2::setMaxNumLayers(int newMax)
+{
+  rsSamplerEngine::setMaxNumLayers(newMax);
+  int L = newMax;
+  groupPlayerPool.resize(L);
+  idleGroupPlayers.resize(L);
+  activeGroupPlayers.reserve(L);
+  for(int i = 0; i < L; i++)
+    idleGroupPlayers[i] = &groupPlayerPool[i];
+}
+
+int rsSamplerEngine2::handleNoteOn(uchar key, uchar vel)
+{
+  int rc = rsSamplerEngine::handleNoteOn(key, vel);  // return code
+
+  // ToDo:
+  // -figure out, how many regions were triggered by this baseclass call
+  // -add pointers to the freshly triggered RegionPlayers to an appropriate GroupPlayer, not that
+  //  one key can trigger multiple regions belonging to different groups
+
+
+  return rc;  // preliminary
+}
+
+int rsSamplerEngine2::handleNoteOff(uchar key, uchar vel)
+{
+  int rc = rsSamplerEngine::handleNoteOff(key, vel);  // return code
+
+  // ToDo:
+  // -figure out, how many regions for release-samples were triggered by this baseclass call
+  // -add pointers to the freshly triggered RegionPlayers as in handleNoteOn
+
+
+  return rc;  // preliminary
+}
+// ToDo: 
+// -override also stopRegionPlayer - we need to remove it from one of our activeGroupPlayers, too
+
+
 void rsSamplerEngine2::processFrame(double* left, double* right)
 {
   if(!groupSettingsOnTop) {
@@ -857,6 +918,7 @@ void rsSamplerEngine2::processFrame(double* left, double* right)
   rsFloat64x2 out = 0.0;
   for(int i = 0; i < (int)activeGroupPlayers.size(); i++)
     out += activeGroupPlayers[i]->getFrame();
+
   *left  = out[0];
   *right = out[1];
 }
@@ -866,6 +928,19 @@ int rsSamplerEngine2::stopAllPlayers()
   RAPT::rsError("Not yet implemented"); // ...something to do...
   return 0; // should return the number of players that were stopped
 }
+
+//-------------------------------------------------------------------------------------------------
+
+rsFloat64x2 rsSamplerEngine2::GroupPlayer::getFrame()
+{
+  rsFloat64x2 out = 0.0;
+
+
+  //dspChain.processFrame(out); // apply group DSP processes
+
+  return out;
+}
+
 
 //=================================================================================================
 
@@ -996,6 +1071,14 @@ Ideas:
  output busses. 16 seems nice because of the possible correspondence to the 16 available midi 
  channels. an/or maybe introduce another "ensemble" level above the instrument and allows whole 
  instruments to go to different busses - should go into rsSamplerEngine2
+
+Questions:
+-How are the group-DSP processes supposed to be modulated? For this to make any sense, we 
+ would indeed need per-group modulators. But that does not really fit with the idea that 
+ RegionPlayers need to duplicate the modulators when there's group modulation on top. Take an 
+ envelope for filter cutoff..the per-region envelope and per-group envelope would get added to
+ obtain the *region's* cutoff, if modulators accuumulate. ..but an additonal per-group filter would
+ just remain static?
 
 
 Problem:

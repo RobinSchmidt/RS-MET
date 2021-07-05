@@ -44,7 +44,7 @@ bool samplerDataUnitTest()
   return ok;
 }
 
-bool samplerEngineUnitTest()
+bool samplerEngineUnitTest1()
 {
   bool ok = true;
 
@@ -464,6 +464,46 @@ bool samplerEngineUnitTest()
   return ok;
 }
 
+bool samplerEngine2UnitTest()
+{
+  // We test the extended functionality of rsSamplerEngine2, in particular, the signal routing 
+  // through per group DSP processes.
+
+  bool ok = true;
+
+  using VecF = std::vector<float>;     // vector of sample values in RAM
+  using AT   = RAPT::rsArrayTools;
+  using SE   = rosic::rsSamplerEngine2;
+  using RC   = rosic::rsReturnCode;
+  using PST  = SE::PlaybackSetting::Type;
+  using Ev   = rosic::rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
+
+  // Create a sine wave as example sample:
+  float fs = 44100;  // sample rate
+  float f  = 440.0;  // frequency of wave
+  int   N  = 500;    // length of (co)sinewave sample
+  VecF sin440(N);    // sine wave
+  for(int n = 0; n < N; n++)
+    sin440[n] = sinf((float)(2*PI*f/fs) * n);
+
+  // Create the sampler engine object and set up a region with the sine sample:
+  int maxLayers = 8;  
+  SE se(maxLayers);
+  float* pSmp[2];
+  pSmp[0] = &sin440[0];
+  pSmp[1] = nullptr;
+  int si = se.addSampleToPool(pSmp, N, 1, fs, "Sine440Hz");    ok &= si == 0;
+  int gi = se.addGroup();                                      ok &= gi == 0;
+  int ri = se.addRegion(gi);                                   ok &= ri == 0;
+  int rc = se.setRegionSample(gi, ri, si);                     ok &= rc == RC::success;
+  rc = se.setRegionSetting(gi, ri, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
+
+
+  rsAssert(ok);
+  return ok;
+}
+
 bool samplerEngineUnitTestFileIO()
 {
   // This test also tests the file I/O
@@ -669,6 +709,21 @@ bool samplerEngineUnitTestFileIO()
   //  only use 16 bit wav. ...or maybe use the TinyWav library? ...but we also want .flac
   // -make SamplePool, AudioStream, SamplerEngine etc. objects or non-copyable - maybe it's
   //  enough to make AudioStream non-copyable - the feature will then propagate to all aggregates
+
+  rsAssert(ok);
+  return ok;
+}
+
+
+
+bool samplerEngineUnitTest()
+{
+  bool ok = true;
+
+  ok &= samplerDataUnitTest();
+  ok &= samplerEngineUnitTest1();
+  ok &= samplerEngine2UnitTest();
+  ok &= samplerEngineUnitTestFileIO();
 
   rsAssert(ok);
   return ok;
