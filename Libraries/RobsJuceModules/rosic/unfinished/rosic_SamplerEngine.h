@@ -330,6 +330,17 @@ public:
     // todo: processBlock
   };
 
+  /** A struct that can be returned from midi event handling functions to inform the caller, how 
+  the event has changed the playback status of the engine. For example, a noteOn event will 
+  typically result in the start of playback for one or more layers/regions. This will be reflected
+  in the numLayersStarted field. */
+  struct PlayStatusChange
+  {
+    int numLayersStarted = 0;
+    int numLayersStopped = 0;
+  };
+  // ToDo: have also fields for numProcessorsAdded/Removed, numModulatorsAdded/Removed, etc.
+
 
 protected:
 
@@ -340,6 +351,8 @@ protected:
     void processBlock(rsFloat64x2* inOut, int N);
     void resetState();
     void resetSettings();
+    void reset() { resetState(); resetSettings(); }
+    void clear() { processors.clear(); }
   protected:
     std::vector<SignalProcessor*> processors;
   };
@@ -720,10 +733,10 @@ public:
 
   // void processFrameVoice, processBlockVoice
 
-  /** Stops the playback of all currently active RegionPlayers immediately. This is a rather hard 
-  reset which may be appropriate to call when a midi reset message is received or before loading a
-  new patch. It returns the number of players that were affected, i.e. the number of players that 
-  were in active state before the call. */
+  /** Overriden from baseclass. Stops the playback of all currently active RegionPlayers 
+  immediately - just as in the baseclass implementation. The overriden function also takes care of
+  moving the active groiup players back into their idle state. The returned integer is still the 
+  number of stopped region players, just as in the baseclass implementation. */
   int stopAllPlayers() override;
 
 
@@ -746,14 +759,18 @@ protected:
     /** Generates one stereo sample frame at a time. */
     rsFloat64x2 getFrame();
 
+    /** Resets the internal state. */
+    void reset();
+
   protected:
 
     std::vector<RegionPlayer*> regionPlayers;
     SignalProcessorChain dspChain;
 
-    rsSamplerEngine2* engine = nullptr;
-    // We need a communication channel to the enclosing sampler-engine.
+    rsSamplerEngine2* engine = nullptr; // for communication channel with enclosing sampler-engine
 
+
+    friend class rsSamplerEngine2;
   };
 
 

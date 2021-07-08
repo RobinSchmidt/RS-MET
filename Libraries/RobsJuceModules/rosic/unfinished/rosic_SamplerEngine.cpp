@@ -500,7 +500,11 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
   // should return from noteOff to make the functions somewhat consistent. In noteOff, we could
   // either return the number of released regions or the number of triggered release samples. Both
   // would make just as much sense. So, for unambiguous consistency, we let both just return a 
-  // success or failure report. 
+  // success or failure report.
+
+  // ToDo: 
+  // -maybe introduce a sort of PlayStatusChange struct, containing fields for: numLayersStarted,
+  //  numLayersStopped
 }
 
 int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
@@ -883,17 +887,20 @@ void rsSamplerEngine2::setMaxNumLayers(int newMax)
   groupPlayerPool.resize(L);
   idleGroupPlayers.resize(L);
   activeGroupPlayers.reserve(L);
-  for(int i = 0; i < L; i++)
+  for(int i = 0; i < L; i++) {
     idleGroupPlayers[i] = &groupPlayerPool[i];
+    idleGroupPlayers[i]->engine = this; }
 }
 
 int rsSamplerEngine2::handleNoteOn(uchar key, uchar vel)
 {
   int rc = rsSamplerEngine::handleNoteOn(key, vel);  // return code
 
+
+
   // ToDo:
   // -figure out, how many regions were triggered by this baseclass call
-  // -add pointers to the freshly triggered RegionPlayers to an appropriate GroupPlayer, not that
+  // -add pointers to the freshly triggered RegionPlayers to an appropriate GroupPlayer, note that
   //  one key can trigger multiple regions belonging to different groups
 
 
@@ -930,9 +937,17 @@ void rsSamplerEngine2::processFrame(double* left, double* right)
 
 int rsSamplerEngine2::stopAllPlayers()
 {
-  RAPT::rsError("Not yet implemented"); // ...something to do...
-  return 0; // should return the number of players that were stopped...or should it?
+  int numRegionPlayersStopped = rsSamplerEngine::stopAllPlayers();
+  int numGroupPlayers = (int) activeGroupPlayers.size();
+  for(int i = numGroupPlayers-1; i >= 0; i--) {
+    activeGroupPlayers[i]->reset();
+    idleGroupPlayers.push_back(activeGroupPlayers[i]); }
+  activeGroupPlayers.clear();
+  return numRegionPlayersStopped;
 }
+// ToDo: 
+// -in addition to move the players back into their idle pool, we also need to move the dsp
+//  objects back
 
 //-------------------------------------------------------------------------------------------------
 
@@ -945,6 +960,14 @@ rsFloat64x2 rsSamplerEngine2::GroupPlayer::getFrame()
 
   return out;
 }
+
+void rsSamplerEngine2::GroupPlayer::reset()
+{
+  regionPlayers.clear();
+  //dspChain.reset();
+  dspChain.clear();
+}
+
 
 
 //=================================================================================================
