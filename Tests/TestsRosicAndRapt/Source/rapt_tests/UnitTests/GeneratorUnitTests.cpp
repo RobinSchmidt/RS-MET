@@ -775,8 +775,10 @@ bool samplerEngineUnitTest()
 
   ok &= samplerDataUnitTest();
   ok &= samplerEngineUnitTest1();
-  ok &= samplerEngine2UnitTest();
   ok &= samplerEngineUnitTestFileIO();
+
+  ok &= samplerEngine2UnitTest();
+
 
   rsAssert(ok);
   return ok;

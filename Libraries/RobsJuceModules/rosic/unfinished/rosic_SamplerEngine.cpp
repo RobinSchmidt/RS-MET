@@ -323,7 +323,8 @@ void rsSamplerEngine::processBlock(float** block, int numFrames)
 
 }
 
-void rsSamplerEngine::handleMusicalEvent(const rsMusicalEvent<float>& ev)
+rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleMusicalEvent(
+  const rsMusicalEvent<float>& ev)
 {
   using Type = rsMusicalEvent<float>::Type;
   Type  type = ev.getType();
@@ -331,13 +332,14 @@ void rsSamplerEngine::handleMusicalEvent(const rsMusicalEvent<float>& ev)
   float val2 = ev.getValue2();
   switch(type)
   {
-  case Type::noteOn:  handleNoteOn( (uchar)val1, (uchar)val2); break;
-  case Type::noteOff: handleNoteOff((uchar)val1, (uchar)val2); break;
+  case Type::noteOn:  return handleNoteOn( (uchar)val1, (uchar)val2); break;
+  case Type::noteOff: return handleNoteOff((uchar)val1, (uchar)val2); break;
   // Maybe we should pass the floats directly to noteOn/Off. This would allow for microtuning. 
   // However, it complicates identifying to which notes a noteOff should apply. Or rather, it's 
   // not really complicated but requires a design decision: should we require an exact match or 
   // allow the range key +-0.5? For the moment, this here is good enough, though.
 
+  default: return PlayStatusChange();
   }
 }
 
@@ -467,11 +469,11 @@ const AudioFileStream<float>* rsSamplerEngine::getSampleStreamFor(const Region* 
   // -maybe that should be done in getCustomPointer already
 }
 
-int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
+rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
 {
   if(vel == 0) { return handleNoteOff(key, vel); }
 
-  int numRegions = 0;  // number of regions that were triggered by this noteOn
+  PlayStatusChange psc;
   for(int i = 0; i < regionsForKey[key].getNumRegions(); i++) 
   {
     const Region* r  = regionsForKey[key].getRegion(i);
@@ -483,18 +485,21 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
       // the idlePlayers again. We don't really want notes to play with an incomplete set of 
       // samples. It's all or nothing - either all regions for the given key get triggered or none
       // of them:
-      for(int j = 0; i < numRegions; j++) {
+      for(int j = 0; i < psc.numLayersStarted; j++) {
         rp = RAPT::rsGetAndRemoveLast(activePlayers);
         idlePlayers.push_back(rp); }
-      return rsReturnCode::layerOverload;
+      psc.numLayersStarted = 0;
     }
     else
     {
       //rp->setKey(key);
-      numRegions++;
+      psc.numLayersStarted++;
     }
   }
-  return rsReturnCode::success;
+  return psc;
+
+
+  //return rsReturnCode::success;
   // Another possibility for the return value would have been to return the number of layers that
   // have been triggered, but we don't do that because then it would be not quite clear what we
   // should return from noteOff to make the functions somewhat consistent. In noteOff, we could
@@ -507,18 +512,25 @@ int rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
   //  numLayersStopped
 }
 
-int rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
+rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
 {
   // Note-off events may also trigger the playback of regions (note-off samples are a thing)...
-  int numRegions = 0;
+  //int numRegions = 0;
+  PlayStatusChange psc;
   for(int i = int(activePlayers.size()) - 1; i >= 0; i--)
   {
     if(activePlayers[i]->getKey() == key)
+    {
       stopRegionPlayer(size_t(i));
+      psc.numLayersStopped++;
       // ToDo: refine this later: we may not want to immediately stop the player but rather 
       // trigger the release phase and mark for quick fade-out
+    }
   }
-  return rsReturnCode::success; // preliminary
+  return psc;
+
+
+  //return rsReturnCode::success; // preliminary
 
   // ToDo:
   // -Mark them for going into release state, if they have an amp-env or stop them immediately, if
@@ -620,6 +632,12 @@ void rsSamplerEngine::setupRegionsForKey()
 
 //-------------------------------------------------------------------------------------------------
 // rsSamplerEngine::SignalProcessorChain
+
+void rsSamplerEngine::SignalProcessorChain::processFrame(rsFloat64x2& inOut)
+{
+  for(size_t i = 0; i < processors.size(); i++)
+    processors[i]->processFrame(inOut);
+}
 
 void rsSamplerEngine::SignalProcessorChain::resetState()
 {
@@ -892,31 +910,20 @@ void rsSamplerEngine2::setMaxNumLayers(int newMax)
     idleGroupPlayers[i]->engine = this; }
 }
 
-int rsSamplerEngine2::handleNoteOn(uchar key, uchar vel)
+rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, uchar vel)
 {
-  int rc = rsSamplerEngine::handleNoteOn(key, vel);  // return code
-
-
-
-  // ToDo:
-  // -figure out, how many regions were triggered by this baseclass call
-  // -add pointers to the freshly triggered RegionPlayers to an appropriate GroupPlayer, note that
-  //  one key can trigger multiple regions belonging to different groups
-
-
-  return rc;  // preliminary
+  PlayStatusChange psc = rsSamplerEngine::handleNoteOn(key, vel);
+  if(groupSettingsOnTop)       // Don't update the group players, if they are not used anyway
+    updateGroupPlayers(psc);
+  return psc;
 }
 
-int rsSamplerEngine2::handleNoteOff(uchar key, uchar vel)
+rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOff(uchar key, uchar vel)
 {
-  int rc = rsSamplerEngine::handleNoteOff(key, vel);  // return code
-
-  // ToDo:
-  // -figure out, how many regions for release-samples were triggered by this baseclass call
-  // -add pointers to the freshly triggered RegionPlayers as in handleNoteOn
-
-
-  return rc;  // preliminary
+  PlayStatusChange psc = rsSamplerEngine::handleNoteOff(key, vel);
+  if(groupSettingsOnTop)
+    updateGroupPlayers(psc);
+  return psc;
 }
 // ToDo: 
 // -override also stopRegionPlayer - we need to remove it from one of our activeGroupPlayers, too
@@ -949,15 +956,50 @@ int rsSamplerEngine2::stopAllPlayers()
 // -in addition to move the players back into their idle pool, we also need to move the dsp
 //  objects back
 
+void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc)
+{
+  // Figure out, how many regions were triggered and add pointers to the freshly triggered 
+  // RegionPlayers to an appropriate GroupPlayer - either to one that is already playing or grab a 
+  // new one from the idle ones and add it to the active ones:
+  int numLayersNow    = getNumActiveLayers();
+  int numLayersBefore = numLayersNow - psc.numLayersStarted;
+  for(int i = numLayersBefore; i < numLayersNow; i++) {
+    RegionPlayer* rp = activePlayers[i];
+    const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
+    int gpi = getActiveGroupPlayerIndexFor(grp);
+    if(gpi != -1)
+      activeGroupPlayers[gpi]->addRegionPlayer(rp);
+    else
+      startGroupPlayerFor(rp); }
+}
+
+int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const rsSamplerData::Group* group)
+{
+  for(size_t i = 0; i < activeGroupPlayers.size(); i++)
+    if(activeGroupPlayers[i]->group == group)
+      return (int) i;
+  return -1;
+}
+
+void rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp)
+{
+  GroupPlayer* gp = RAPT::rsGetAndRemoveLast(idleGroupPlayers);
+  const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
+  gp->addRegionPlayer(rp);
+  gp->group = grp;
+  activeGroupPlayers.push_back(gp);
+  // ToDo: 
+  // -we need to set up the DSP chain for the new gp
+}
+
 //-------------------------------------------------------------------------------------------------
 
 rsFloat64x2 rsSamplerEngine2::GroupPlayer::getFrame()
 {
   rsFloat64x2 out = 0.0;
-
-
-  //dspChain.processFrame(out); // apply group DSP processes
-
+  for(size_t i = 0; i < regionPlayers.size(); i++)
+    out += regionPlayers[i]->getFrame();
+  dspChain.processFrame(out);
   return out;
 }
 
@@ -966,6 +1008,12 @@ void rsSamplerEngine2::GroupPlayer::reset()
   regionPlayers.clear();
   //dspChain.reset();
   dspChain.clear();
+}
+
+void rsSamplerEngine2::GroupPlayer::addRegionPlayer(rsSamplerEngine::RegionPlayer* newPlayer) 
+{ 
+  RAPT::rsAssert(!RAPT::rsContains(regionPlayers, newPlayer));
+  regionPlayers.push_back(newPlayer); 
 }
 
 

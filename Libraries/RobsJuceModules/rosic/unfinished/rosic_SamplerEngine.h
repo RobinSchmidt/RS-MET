@@ -76,6 +76,51 @@ class rsSamplerEngine
 public:
 
 
+  // For convenience:
+  using uchar = unsigned char;
+  using Region = rsSamplerData::Region; // todo: make a subclass here that adds the stream field
+  using Group  = rsSamplerData::Group;
+  using PlaybackSetting = rsSamplerData::PlaybackSetting;
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Internal Helper Classes
+
+  /** Baseclass for signal processors that can be applied to layers while they are the played back. 
+  Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
+  class SignalProcessor
+  {
+  public:
+    virtual void processFrame(rsFloat64x2& inOut) = 0;
+    virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
+    virtual void resetState() = 0;
+    virtual void resetSettings() = 0;
+  };
+
+  /** Baseclass for modulators that can be applied to parameters of signal processors. Subclasses
+  can be envelopes, LFOs, etc. */
+  class Modulator
+  {
+  public:
+    virtual double getSample() = 0;
+    virtual void resetState() = 0;
+    virtual void resetSettings() = 0;
+    // todo: processBlock
+  };
+
+  /** A struct that can be returned from midi event handling functions to inform the caller, how 
+  the event has changed the playback status of the engine. For example, a noteOn event will 
+  typically result in the start of playback for one or more layers/regions. This will be reflected
+  in the numLayersStarted field. */
+  struct PlayStatusChange
+  {
+    int numLayersStarted = 0;
+    int numLayersStopped = 0;
+  };
+  // ToDo: have also fields for numProcessorsAdded/Removed, numModulatorsAdded/Removed, etc.
+
+
   //-----------------------------------------------------------------------------------------------
   // \name Lifetime
 
@@ -84,14 +129,6 @@ public:
   // scenarios
 
   virtual ~rsSamplerEngine();
-
-
-  // for convenience:
-  using uchar = unsigned char;
-  using Region = rsSamplerData::Region; // todo: make a subclass here that adds the stream field
-  using Group  = rsSamplerData::Group;
-  using PlaybackSetting = rsSamplerData::PlaybackSetting;
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
@@ -296,51 +333,18 @@ public:
   new patch. It returns the number of players that were affected, i.e. the number of players that 
   were in active state before the call. */
   virtual int stopAllPlayers();
-
-
+  // todo: return a PlayStatusChange
 
   /** Calls stopAllPlayers. Function is for consistency with the rest of the library. */
   void reset() { stopAllPlayers(); }
 
-  void handleMusicalEvent(const rsMusicalEvent<float>& ev);
-
-
+  /** Handles a musical (i.e. midi) event. This will typically change the playback status of the 
+  engine, for example by triggering the playback of one or more layers/region. If this status 
+  change is relevant for the caller, it can inspect the returned PlayStatusChange after the call,
+  otherwise, the caller may ignore it. */
+  PlayStatusChange handleMusicalEvent(const rsMusicalEvent<float>& ev);
 
   //===============================================================================================
-
-  //-----------------------------------------------------------------------------------------------
-  // \name Internal Helper Classes
-
-
-  class SignalProcessor
-  {
-  public:
-    virtual void processFrame(rsFloat64x2& inOut) = 0;
-    virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
-    virtual void resetState() = 0;
-    virtual void resetSettings() = 0;
-  };
-
-  class Modulator
-  {
-  public:
-    virtual double getSample() = 0;
-    virtual void resetState() = 0;
-    virtual void resetSettings() = 0;
-    // todo: processBlock
-  };
-
-  /** A struct that can be returned from midi event handling functions to inform the caller, how 
-  the event has changed the playback status of the engine. For example, a noteOn event will 
-  typically result in the start of playback for one or more layers/regions. This will be reflected
-  in the numLayersStarted field. */
-  struct PlayStatusChange
-  {
-    int numLayersStarted = 0;
-    int numLayersStopped = 0;
-  };
-  // ToDo: have also fields for numProcessorsAdded/Removed, numModulatorsAdded/Removed, etc.
-
 
 protected:
 
@@ -549,18 +553,21 @@ protected:
   ...tbc... */
   static const AudioFileStream<float>* getSampleStreamFor(const Region* r);
 
-  /** Handles a noteOn event with given key and velocity and returns either rsReturnCode::success, if
-  we had enough voices available to serve the request or rsReturnCode::voiceOverload, in case the 
-  noteOn could not be handled due to inavailability of a sufficient number of idle voices. If no
-  sufficient number of idle voices was available and the noteOn should actually have triggered 
+  /** Handles a noteOn event with given key and velocity and returns 
+  
+  obsolete:
+  either rsReturnCode::success, 
+  if we had enough voices available to serve the request or rsReturnCode::voiceOverload, in case 
+  the noteOn could not be handled due to inavailability of a sufficient number of idle voices. If 
+  no sufficient number of idle voices was available and the noteOn should actually have triggered 
   playback of multiple samples, none of them will be triggered. It's an all-or-nothing thing: we 
   don't ever trigger playback for only a subset of samples for a given noteOn. */
-  virtual int handleNoteOn(uchar key, uchar vel);
+  virtual PlayStatusChange handleNoteOn(uchar key, uchar vel);
 
   /** Analogous to handleNoteOn. It may also return rsReturnCode::voiceOverload in cases where the 
   noteOff is supposed to trigger relase-samples. In such a case, none of the release-samples will 
   be triggered. */
-  virtual int handleNoteOff(uchar key, uchar vel);
+  virtual PlayStatusChange handleNoteOff(uchar key, uchar vel);
 
 
   /** Removes those samples from our sample pool that are not used in the given sfz instrument 
@@ -743,9 +750,9 @@ public:
 protected:
 
 
-  int handleNoteOn(uchar key, uchar vel) override;
+  PlayStatusChange handleNoteOn(uchar key, uchar vel) override;
 
-  int handleNoteOff(uchar key, uchar vel) override;
+  PlayStatusChange handleNoteOff(uchar key, uchar vel) override;
 
 
 
@@ -762,16 +769,40 @@ protected:
     /** Resets the internal state. */
     void reset();
 
+    /** Adds a new region player to our regionPlayers array. */
+    void addRegionPlayer(RegionPlayer* newPlayer);
+
   protected:
 
     std::vector<RegionPlayer*> regionPlayers;
+    // Pointers to the players for all the regions in this group.
+
     SignalProcessorChain dspChain;
+    // The chain of additional per-group signal processors that apply to the group as a whole.
 
-    rsSamplerEngine2* engine = nullptr; // for communication channel with enclosing sampler-engine
+    const rsSamplerData::Group* group = nullptr;
+    // Pointer to the group object which is played back by this player
 
+    rsSamplerEngine2* engine = nullptr; 
+    // Needed for communication channel with enclosing sampler-engine..can we get rid of this?
 
     friend class rsSamplerEngine2;
   };
+
+
+  /** Updates our active/idleGroupPlayer arrays according to a status change in the 
+  active/idleRegionPlayer arrays...tbc... */
+  void updateGroupPlayers(PlayStatusChange psc);
+
+  /** Returns the index within our activeGroupPlayers array at which the group player for the given
+  group is located or -1 if there is no currently active player for the given group. */
+  int getActiveGroupPlayerIndexFor(const rsSamplerData::Group* group);
+
+  /** This starts a new group player for the given region player. This is used in e.g. handleNoteOn
+  when region players were triggered for which we do not already have an active group player in 
+  use. */
+  void startGroupPlayerFor(RegionPlayer* regionPlayer);
+
 
 
   // Flags to decide if the group- and/or instrument settings and/or modulations should be applied 
