@@ -497,6 +497,7 @@ public:
 
   rsReturnCode setGroupSetting(int gi, PlaybackSetting::Type type, float value);
 
+  rsReturnCode setInstrumentSetting(PlaybackSetting::Type type, float value);
 
 
   /** Clears the whole instrument definition. */

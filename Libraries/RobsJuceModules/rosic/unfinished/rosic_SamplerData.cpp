@@ -230,6 +230,14 @@ rsReturnCode rsSamplerData::setGroupSetting(int gi, PlaybackSetting::Type type, 
   return rsReturnCode::success;
 }
 
+rsReturnCode rsSamplerData::setInstrumentSetting(PlaybackSetting::Type type, float value)
+{
+  instrument.settings.push_back(PlaybackSetting(type, value));
+  // Preliminary. see above
+
+  return rsReturnCode::success;
+}
+
 std::string rsSamplerData::getAsSFZ() const
 {
   auto writeSettingsToString = [](const OrganizationLevel* lvl, std::string& str)

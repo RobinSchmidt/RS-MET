@@ -44,6 +44,29 @@ bool samplerDataUnitTest()
   return ok;
 }
 
+bool testSamplerNote(rosic::rsSamplerEngine* se, float key, float vel, 
+  const std::vector<float>& targetL, const const std::vector<float>& targetR, 
+  float tol = 0.f)
+{
+  using AT   = RAPT::rsArrayTools;
+  using Ev   = rosic::rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
+
+  int N = (int) targetL.size();
+  rsAssert((int)targetR.size() == N);
+  std::vector<float> outL(N), outR(N);
+
+  se->handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
+  for(int n = 0; n < N; n++)
+    se->processFrame(&outL[n], &outR[n]);
+  float errL = AT::maxDeviation(&outL[0], &targetL[0], N);
+  float errR = AT::maxDeviation(&outR[0], &targetR[0], N);
+  //rsPlotVectors(outL, outR); // uncomment for debugging
+  return errL <= tol && errR <= tol;
+};
+// maybe have a bool resetBefore that optionally resets the engine before playing...but maybe it's
+// better when the caller does the reset directly, if desired - it's not much longer but clearer
+
 bool samplerEngineUnitTest1()
 {
   bool ok = true;
@@ -328,7 +351,8 @@ bool samplerEngineUnitTest1()
     return errL <= tol && errR <= tol;
   };
   // ToDo: move up and use it to reduce boilerplate for many other tests as well - maybe make it
-  // a free function, taking the engine as reference argument
+  // a free function, taking the engine as reference argument...or a pointer
+  // done: testSamplerNote ...use that function in the tests above to reduce the boilerplate
 
 
   /*
@@ -484,6 +508,7 @@ bool samplerEngine2UnitTest()
   float f  = 440.0;  // frequency of wave
   int   N  = 500;    // length of (co)sinewave sample
   VecF sin440(N);    // sine wave
+  VecF tgt;          // target output in tests
   for(int n = 0; n < N; n++)
     sin440[n] = sinf((float)(2*PI*f/fs) * n);
 
@@ -499,8 +524,36 @@ bool samplerEngine2UnitTest()
   int rc = se.setRegionSample(gi, ri, si);                     ok &= rc == RC::success;
   rc = se.setRegionSetting(gi, ri, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
 
+  // Set up volume opcode for region and group:
+  float regionAmp = 0.5f;
+  float groupAmp  = 0.25f;
+  float instrAmp  = 1.5f;
+  se.setRegionSetting(0, 0, PST::Volume, rsAmpToDb(regionAmp));
+  se.setGroupSetting( 0,    PST::Volume, rsAmpToDb(groupAmp));
+  se.setInstrumentSetting(  PST::Volume, rsAmpToDb(instrAmp));
 
-  rsAssert(ok);
+  // In the default setting, the regionAmp should override the instrument and the group setting,
+  // so the produced output should only have the region volume applied:
+  se.reset();
+  tgt = regionAmp*sin440;
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt);
+  ok &= se.getNumActiveLayers() == 0;  // rename to getNumActiveRegions or getNumPlayingRegions
+  //ok &= se.getNumActiveGroups() == 0;
+
+  // Set up the engine such that the group settings are applied on top of the region settings:
+  se.setGroupSettingsOnTop(true);
+  tgt = groupAmp*regionAmp*sin440;
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt);
+  ok &= se.getNumActiveLayers() == 0;
+
+
+
+
+  // ToDo: do the same test for other parameters like delay, pan, pitch, etc.
+
+
+
+  rsAssert(ok, "samplerEngine2UnitTest failed");
   return ok;
 }
 

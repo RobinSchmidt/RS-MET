@@ -153,7 +153,7 @@ public:
 
   int setGroupSetting(int groupIndex, PlaybackSetting::Type type, float value);
 
-
+  int setInstrumentSetting(PlaybackSetting::Type type, float value);
 
 
 
@@ -248,6 +248,7 @@ public:
 
   /** Returns the number of currently playing layers. */
   int getNumActiveLayers() const { return (int) activePlayers.size(); }
+  // todo: rename to getNumActiveRegions or getNumPlayingRegions
 
   /** Returns the number of layers that are currently not playing, i.e. still available for adding
   a new layer to the playback. */

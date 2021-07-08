@@ -165,6 +165,11 @@ int rsSamplerEngine::setGroupSetting(int i, PlaybackSetting::Type type, float va
   return sfz.setGroupSetting(i, type, value);
 }
 
+int rsSamplerEngine::setInstrumentSetting(PlaybackSetting::Type type, float value)
+{
+  return sfz.setInstrumentSetting(type, value);
+}
+
 int rsSamplerEngine::setupFromSFZ(const rsSamplerData& newSfz)
 {
   removeSamplesNotUsedIn(newSfz);     // remove samples that are not needed anymore from memory
@@ -926,7 +931,7 @@ void rsSamplerEngine2::processFrame(double* left, double* right)
 int rsSamplerEngine2::stopAllPlayers()
 {
   RAPT::rsError("Not yet implemented"); // ...something to do...
-  return 0; // should return the number of players that were stopped
+  return 0; // should return the number of players that were stopped...or should it?
 }
 
 //-------------------------------------------------------------------------------------------------
