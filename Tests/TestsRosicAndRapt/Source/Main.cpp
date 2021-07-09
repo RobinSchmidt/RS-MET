@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
   // Unit tests:
   bool ok = true;
   ok &= runUnitTestsRapt();
-  //ok &= runUnitTestsRosic();
+  ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.
@@ -230,7 +230,7 @@ int main(int argc, char* argv[])
   //fractal();
   //differentialGeometry();
 
-  // just for fun:
+  // just for fun (todo: move to research repo):
   //groupString();
   //primeAlternatingSums();
   //divisibility();
@@ -262,7 +262,7 @@ int main(int argc, char* argv[])
   //numericDifferentiation();
   //numericIntegration(); // a.k.a. numeric "quadrature"
   //nonUniformArrayDiffAndInt();  // numeric differentiation and integration of sampled data
-//  uniformArrayDiffAndInt();  // under construction
+  //uniformArrayDiffAndInt();  // under construction
   //vertexMeshGradient();
   //vertexMeshHessian();
 
@@ -318,7 +318,7 @@ int main(int argc, char* argv[])
   ////zeroCrossingPitchDetector(); // triggers assert
   //zeroCrossingPitchDetectorTwoTones();
   //ropewayAlgo();
-//  peakPicker();
+  //peakPicker();
 
   // Delay:
   //basicIntegerDelayLine();
@@ -326,7 +326,7 @@ int main(int argc, char* argv[])
   // Filter:
   //bandwidthScaling();
   //butterworthEnergy();
-//  stateVariableFilter();
+  //stateVariableFilter();
   //stateVariableFilterMorph();
   //stateVectorFilter();   // just a stub, at the moment
   //biquadModulation();   // compares modulation properties of various biquad structures
@@ -404,7 +404,7 @@ int main(int argc, char* argv[])
   //cubicCrossfade();
   //decimate();
   //pythagoreanTuning();    // move to some music/music-theory section
-  //recursiveSineSweep();
+  recursiveSineSweep();
   //recursiveSineWithCubicPhase();
   //ringModNoise();
   //slewRateLimiterLinear();
@@ -435,7 +435,7 @@ int main(int argc, char* argv[])
   //beatingSines();
   //envelopeDeBeating();
   //sineRecreation();               // maybe move elsewhere
-//  sineRecreationBandpassNoise();
+  //sineRecreationBandpassNoise();
   //sineWithPhaseCatchUp();       // dito
   //partialExtractionTriple();
   //partialExtractionViaBiquadTriple();

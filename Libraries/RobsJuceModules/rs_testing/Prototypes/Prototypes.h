@@ -173,6 +173,91 @@ void rsCircularShift(int* a, int N, int k);
 
 //=================================================================================================
 
+/** Computes approximate powers recursively.
+
+see: https://www.kvraudio.com/forum/viewtopic.php?f=33&t=567563
+*/
+
+template<class T>
+class rsPowerIterator
+{
+
+public:
+
+  rsPowerIterator(T power, T epsilon)
+  {
+    setup(power, epsilon);
+    reset();
+  }
+
+
+  void setup(T power, T epsilon)
+  {
+    p  = power;
+    e  = epsilon;
+    y0 = pow(e, p);
+    z0 = T(1)/e;
+    s  = T(1) / (pow(T(1)+e, p) - y0);  // scaler
+  }
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+  /** Returns one output value at a time (and updates internal state variables for next call).
+  Is dx = segmentLength / sampleRate?  */
+  inline T getValue(T dx)
+  {
+    x += dx; 
+
+    z -= dx*z*z; 
+    //z = z*(T(1)-dx*z);  // algebraically equivalent to z -= dx*z*z;
+
+    y += dx*z*p*y;
+    //y += p*y*dx / (x+e);  // not using z, more accurate than y += dx*z*p*y;
+
+    return s*(y-y0);
+  }
+
+
+  void reset()
+  {
+    x = T(0);
+    y = y0;
+    z = z0;
+  }
+
+protected:
+
+  T x, y, z;  // state variables
+  T y0, z0;   // initial values for y,z, x0 = 0
+  T s;        // precomputed scaler
+  T e, p;     // user parameters: "epsilon" and the power/exponent
+
+};
+
+// Idea: We want to compute an iterative approximation of y = x^p where x = 0..1 and p, the power, 
+// is a parameter. We actually compute y = (x+e)^p where e ("epsilon") is a small number, such as 
+// 0.0001. The idea is to initialize by x = 0, y = e^p and then iteratively increment x by dx and y
+// by dy. To compute dy, consider 
+//   dy/dx = (d/dx) (x+e)^p = p * (x+e)^(p-1) = p * (x+e)^p / (x+e) = p * y / (x+e)
+// so our increment for y can be computed from y and dx as:
+//   dy = p*y*dx / (x+e)
+// to get rid of the division, we define:
+//   z = 1 / (x+e) = (x+e)^-1
+// Taking the derivative of z with respect to x:
+//   dz/dx = -(x+e)^-2 = -z^2
+// gives a formula for an increment for z in terms of z and dx:
+//   dz = -z^2 * dx
+// so the full algorithm is:
+//   initialize: x = 0; y = e^p; z = 1/e;
+//   iterate:    x += dx; z += -z*z*dx; y += z*p*y*dx;
+// As output, we use a shifted and scaled version of y:
+//   output = (y-e^p) / ((1+e)^p - e^p)
+// where e^p is our y[0]
+
+
+//=================================================================================================
+
 /** Simulates the dynamics of a rotating rigid body around its three pricipal axes of intertia. If
 they are all different, when it initially rotates around the axis of the middle/intermediate moment
 of inertia with some small perturbation of having a rotational component around any of the other

@@ -549,7 +549,24 @@ bool samplerEngine2UnitTest()
 
 
 
-  // ToDo: do the same test for other parameters like delay, pan, pitch, etc.
+  // ToDo: 
+  // -When setting up the region players, we need to take into account, whether the settings should
+  //  have override or accumulate behavior
+  //  getRegionPlayerFor, rsSamplerEngine::RegionPlayer::setRegionToPlay, prepareToPlay
+  //  need to take 2 boolean parameters for groupSettingsOnTop, instrumentSettingsOnTop
+  // -do the same test for other parameters like delay, pan, pitch, etc.
+  // -we need to also try it with processes that do not just modify, what algo parameters the 
+  //  RegionPlayers use (this is the case for volume, delay, pitch) but that actually apply two
+  //  independent DSP processes. That would be the case for a filter. For this, we need to 
+  //  implement the DSP chain functionality. ...the maybe implement the filter first. it should 
+  //  support 1st order lowpass/highpass, 2nd order bandpass etc...maybe implement it using 
+  //  rsBiquad first - later switch to rsStateVariableFilter...which may need some modifications.
+  //  maybe let the user also use the ladder filter. or maybe use the rsStateVectorFilter
+  // -maybe the baseclass should already support these "on top" settings but implement them by
+  //  duplicating/triplicating the DSP processes in each RegionPlayer, if the accumulate option is
+  //  chosen. The subclass uses the GroupPlayer only for optimization purposes and to change the 
+  //  signal flow (mix before fx - that matters only for nonlinear effects
+  // -maybe rename the subclass rsSamplerEngineRoutable
 
 
 

@@ -1402,3 +1402,23 @@ void rsBreakpointModulator<T>::addSlave(rsBreakpointModulator* newSlave)
   // this flag will prevent the destructor of the slave from trying to delete the parameter-set 
   // which is now shared - only masters delete their parameter-set on destruction
 }
+
+
+/*
+
+ToDo:
+
+-implement a shape that can morph between "analog", "linear" and "anti-analog", via the:
+   if(slope == 0.0)
+     y = x;
+   else
+     y = (exp(slope * x) - 1.0) / (exp(slope) - 1.0);
+ where slope - [-20..20], see post by vasyan in this thread:
+   https://www.kvraudio.com/forum/viewtopic.php?f=33&t=567563
+ If implemented directly, maybe the expm1 should be used instead of exp for better precision near
+ zero, but here we implement the exp iteratively anyway.
+
+-implement a power-rule shape, as explained by Big Tick in the same thread. There's some 
+ experimental code for that in Prototypes.h (class rsPowerIterator)
+
+*/

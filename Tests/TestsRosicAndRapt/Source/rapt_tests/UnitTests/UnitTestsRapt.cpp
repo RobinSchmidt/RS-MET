@@ -26,9 +26,9 @@ bool runUnitTestsRapt()
   //ok &= runUnitTest(&colorUnitTest,  "rsColor");
   //ok &= runUnitTest(&ladderUnitTest, "rsLadder");
 
-  // these tests should go into UnitTestsRosic.cpp:
-  ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
-  return ok;
+  //// these tests should go into UnitTestsRosic.cpp:
+  //ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
+  //return ok;
 
 
 
@@ -84,9 +84,7 @@ bool runUnitTestsRapt()
   // move down later
 
   // Generators:
-  ok &= runUnitTest(&samplerDataUnitTest,         "rsSamplerData");
   ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
-  ok &= runUnitTest(&samplerEngineUnitTestFileIO, "rsSamplerEngine - File I/O");
 
   // Misc:
   ok &= runUnitTest(&blepUnitTest,  "Blit/Blep/Blamp");  // move to generator unit tests

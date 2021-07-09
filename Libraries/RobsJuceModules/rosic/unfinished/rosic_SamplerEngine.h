@@ -410,12 +410,14 @@ protected:
 
     /** Sets up the internal values for the playback settings (including DSP objects) according
     to the assigned region and resets all DSP objects. */
-    void prepareToPlay(double sampleRate);
+    void prepareToPlay(double sampleRate, bool groupSettingsOnTop = false, 
+      bool instrumentSettingsOnTop = false);
 
     bool buildProcessingChain();
     void resetDspState();
     void resetDspSettings();
-    void setupDspSettings(const std::vector<PlaybackSetting>& settings, double sampleRate);
+    void setupDspSettings(const std::vector<PlaybackSetting>& settings, 
+      double sampleRate, bool onTop = false);
 
     const Region* region;                 //< The Region object that this object should play
     const AudioFileStream<float>* stream; //< Stream object to get the data from

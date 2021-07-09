@@ -718,7 +718,8 @@ bool rsSamplerEngine::RegionPlayer::isPlayable(const Region* region)
   return ok;
 }
 
-void rsSamplerEngine::RegionPlayer::prepareToPlay(double fs)
+void rsSamplerEngine::RegionPlayer::prepareToPlay(
+  double fs, bool groupSettingsOnTop, bool instrumentSettingsOnTop)
 {
   RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   RAPT::rsAssert(stream != nullptr);   // Ditto.
@@ -741,8 +742,8 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay(double fs)
   resetDspState();        // Needs to be done after building the chain
   resetDspSettings();     // Reset all DSP settings to default values
   setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs);
-  setupDspSettings(region->getGroup()->getSettings(), fs);
-  setupDspSettings(region->getSettings(), fs);
+  setupDspSettings(region->getGroup()->getSettings(), fs, instrumentSettingsOnTop);
+  setupDspSettings(region->getSettings(), fs, groupSettingsOnTop);
 
   // return rsSamplerEngine::rsReturnCode::success;
 }
@@ -790,7 +791,7 @@ void rsSamplerEngine::RegionPlayer::resetDspSettings()
 }
 
 void rsSamplerEngine::RegionPlayer::setupDspSettings(
-  const std::vector<PlaybackSetting>& settings, double fs)
+  const std::vector<PlaybackSetting>& settings, double fs, bool onTop)
 {
   // ToDo: 
   // -Let the function have a boolean parameter to decide whether the settings should be taken 
@@ -800,7 +801,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   //  should accumulate and then again for the region settings with the flag depending on whether 
   //  group settings should accumulate
 
-  bool onTop = false;   // make this a function parameter
+  //bool onTop = false;   // make this a function parameter
 
   
   using PS = PlaybackSetting;

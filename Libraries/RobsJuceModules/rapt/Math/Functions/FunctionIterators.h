@@ -63,6 +63,9 @@ class rsSineIterator
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
+
   /** Standard constructor. Sets the iterator up for producing y[n] = a * sin(w*n + p) with
   a = 1, w = 1, p = 0. It initializes the recursion coefficient and state variables using
   precomuted constants, so no costly call to setup() is invoked. */
@@ -74,7 +77,7 @@ public:
     // calling setup(1, 0, 1) would compute these values, but that would be more costly.
     // maybe initialize all to zero
 
-    setup(0.05, 0.0, 1.0);
+    //setup(0.05, 0.0, 1.0);  // ??! for debug?
   }
 
   /** Constructor. You have to pass the normalized radian frequency "w" and may optionally pass
@@ -84,14 +87,14 @@ public:
   y[0] = a*sin(p), the next call gives y[1] = a*sin(w+p), then y[2] = a*sin(2*w+p), and so on. */
   rsSineIterator(T w, T p = 0.0, T a = 1.0) { setup(w, p, a); }
 
-
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
   /** Sets up the sine oscillator such that the next call to getValue will return
   y[0] = a*sin(p), then the next call gives y[1] = a*sin(w + p), then
   y[2] = a*sin(2*w + p), and so on. So, the object will behave exactly in the same way as
   after creating it with the constructor using the same arguments */
   void setup(T w = 1.0, T p = 0.0, T a = 1.0);
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
@@ -142,7 +145,7 @@ here's an interesting thread about a recursive sine oscillator:
 https://dsp.stackexchange.com/questions/124/how-to-implement-a-digital-oscillator
 especially the amplitude drift compensation approach with a taylor expansion of
 1 / (sqrt(re^2 + im^2)) ~= (1/2) * (3 - (re^2 + im^2))
-every 1000 (ot something) samples
+every 1000 (or something) samples
 
 */
 #endif
