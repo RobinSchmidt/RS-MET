@@ -132,20 +132,4 @@ protected:
 
 };
 
-/*
-todo:
-rsSineCosineIterator : public rsComplexExponentialIterator
-rsExponentialIterator, rsLinearIterator, rsQuadraticIterator, rsCubicIterator, 
-rsPolynomialIterator,
-for the polynomial iterators, see Salomon - Computer Graphics, page 275ff ("Fast Calculation of the 
-Curve" and page 698 ("Forward Differences")
-other functions: sinh, cosh, tanh, 1/cosh, 1/cosh^2 (gaussian-like?)
-
-here's an interesting thread about a recursive sine oscillator:
-https://dsp.stackexchange.com/questions/124/how-to-implement-a-digital-oscillator
-especially the amplitude drift compensation approach with a taylor expansion of
-1 / (sqrt(re^2 + im^2)) ~= (1/2) * (3 - (re^2 + im^2))
-every 1000 (or something) samples
-
-*/
 #endif

@@ -1421,4 +1421,17 @@ ToDo:
 -implement a power-rule shape, as explained by Big Tick in the same thread. There's some 
  experimental code for that in Prototypes.h (class rsPowerIterator)
 
+-Could it make sense to use different factors in the exponents for the growinng and decaying 
+ exponential for the tanh and sinh shape? could we get asymmetric generalizations with that?
+ nope: https://www.desmos.com/calculator/ojprpbni8j  we don't get new shapes. This can also be
+ seen from the formula: tanh(x) = e^(2*x-1) / e^(2*x+1). But for the sinh, it actually does give 
+ new shapes: https://www.desmos.com/calculator/mnupdosqui  we could actually be even more flexible
+ by using y = (a*exp(b*x) + c*exp(d*x)) / (e*exp(f*x) + g*exp(h*x))...maybe we could even also add
+ constants to numerator and denominator. That would give us a lot of more shapes. 
+
+-We could also use a sum of two decaying exponentials with different decay-times. Could be nice for
+ piano envelopes (fast early ecay, slower late decay), Maybe call it BiExponential. This could have
+ 3 shape parameters: Exponentiality: -20..+20, DecaySpread, DecayMix
+ 
+
 */

@@ -182,21 +182,28 @@ bool testSineIterator(double w, double p, double a)
 
 bool testPowerIterator(double p, double e)
 {
-  double tol = 1.e-10;  // tolerance
-  int N = 2001;         // number of iterations, with 1001, we get an all-zero output for
-                        // p = 0, e = 0.001
+  double tol = 1.e-10;    // tolerance
+  int N = 2001;           // number of iterations, with 1001, we get an all-zero output for
+                          // p = 0, e = 0.001
+  int oversampling = 100;
 
   rsPowerIterator<double> it(p, e);
 
   std::vector<double> x(N), y(N), yt(N);
   x = rsLinearRangeVector(N, 0.0, 1.0);
-  double dx = 1.0 / (N-1);
+  //double dx = 1.0 / ((N-1)*oversampling); // or 1.0 / (N*oversampling-1)?
+  double dx = 1.0 / (N*oversampling-1); 
 
   for(int n = 0; n < N; n++)
   {
     //yt[n] = pow(x[n], p);
-    yt[n] = pow(x[n]+e, p);  // but it should be sclaed and shifted!
-    y[n]  = it.getValue(dx);
+    yt[n] = pow(x[n]+e, p);  // but it should be scaled and shifted!
+
+
+    double yn;
+    for(int i = 0; i < oversampling; i++)
+      yn = it.getValue(dx);
+    y[n] = yn;
   }
 
   rsPlotVectorsXY(x, yt, y);
@@ -207,7 +214,6 @@ bool testPowerIterator(double p, double e)
   // Nope! That doesn't work yet. I tried to implement this technique posted by Big Tick:
   // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=567563
   // ...hmm - could this be a numerical accuracy issue? Maybe it will work better with smaller dx, 
-  // i.e. higher N? Maybe try it with oversampling using rsDecimate
 }
 
 bool testFunctionIterators()
@@ -223,10 +229,10 @@ bool testFunctionIterators()
   ok &= testSineIterator(2.5,  0.3, 1.2);
   ok &= testSineIterator(2.5, -0.3, 1.2);
 
-  // This does not yet work:
+  // This does not yet work - at least not very well:
   //ok &= testPowerIterator(0.5, 0.001); 
   //ok &= testPowerIterator(2.0, 0.001);
-  //ok &= testPowerIterator(2.0, 0.0001);  // doesn't work when z-based formula is used
+  //ok &= testPowerIterator(2.0, 0.0001); // doesn't work without oversampling when z-based formula is used
 
   return ok;
 }

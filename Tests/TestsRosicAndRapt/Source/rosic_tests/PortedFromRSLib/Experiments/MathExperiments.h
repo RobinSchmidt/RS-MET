@@ -74,6 +74,7 @@ void primeDistribution();
 void numberTheoreticTransform();
 void numberTheoreticTrafoModuli();
 
+void powerIterator();
 
 
 

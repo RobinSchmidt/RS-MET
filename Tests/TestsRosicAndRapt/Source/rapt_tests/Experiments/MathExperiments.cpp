@@ -3444,6 +3444,51 @@ void numberTheoreticTrafoModuli()
 }
 
 
+void powerIterator()
+{
+  // We want to iteratively compute an approximatiosn of y(x) = x^p and z(x) = 1/x. The z = 1/x 
+  // function is actually needed in the computation of y = x^p.
+
+  int    N  = 1000;   // number of  data points to generate
+  double x0 = 1.0;    // start value for the x-values
+  double h  = 0.01;   // step size
+  double p  = 0.5;    // the power
+
+
+  using Vec = std::vector<double>;
+
+  // Compute abscissa values and true values for y(x) and z(x):
+  Vec x(N), y(N), z(N);
+  for(int n = 0; n < N; n++)
+  {
+    x[n] = x0 + n*h;
+    z[n] = 1.0 / x[n];
+    y[n] = pow(x[n], p);
+  }
+
+  // Compute approximation using a 1st order iterative formula:
+  Vec x1(N), y1(N), z1(N);
+  double xn = x[0];
+  double yn = y[0];
+  double zn = z[0];
+  for(int n = 0; n < N; n++)
+  {
+    x1[n] = xn;
+    z1[n] = zn;
+    y1[n] = yn;
+    xn += h;
+    zn -= h*zn*zn;   // verify!
+    yn += h*zn*p*yn; // verify!
+  }
+
+
+
+
+  //rsPlotVectorsXY(x, y, z);
+
+  rsPlotVectorsXY(x, y, z, y1, z1);
+}
+
 
 // fun stuff:
 
