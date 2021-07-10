@@ -3730,23 +3730,14 @@ void reciprocalIterator()
   for(int n = 0; n < N-4; n++)
   {
     fn = [&](double z) { return y[n+2] 
-      + (h/90)*(29*f(z) + 124*f(y[n+3]) + 24*f(y[n+2]) + 4*f(y[n+1]) - f(y[n]) ); };
-
-    //y[n+4] = newton(fn, fnp, y[n+3]);
-    // HANGS!!! ..actually already for n = 1. The computed value y4ms[4] which is computed in the
-    // n=0 iteration is already totally off. The Newton iterations also takes a whopping 122 
-    // iterations to compute this (wrong) value...something seems to be very wrong. It's almost as 
-    // if fnp is not the correct derivative of fn...can this be? ToDo try the Newton iteration
-    // for a single value maybe with modified (simplified) fn and observe, what the Newton 
-    // iteration does to figure out, what throws it off
-
+      + (h/90)*(29*f(z) + 124*f(y[n+3]) + 24*f(y[n+2]) + 4*f(y[n+1]) - f(y[n])) - z; };
+    y[n+4] = newton(fn, fnp, y[n+3]);
   }
   Vec e4ms = y4ms - yt;
 
 
 
-  // Errors of Adams-Moulton and Milne-Simpson for 2-step and 4-step
-  rsPlotVectorsXY(x, e2am, e2ms, e4am, e4ms);
+
 
 
 
@@ -3769,9 +3760,8 @@ void reciprocalIterator()
   // Errors of Adams-Bashforth and Adams-Moulton methods of various orders:
   rsPlotVectorsXY(x, e4ab, e2am, e5ab, e3am);
 
-
-
-
+  // Errors of Adams-Moulton and Milne-Simpson for 2-step and 4-step
+  rsPlotVectorsXY(x, e2am, e2ms, e4am, e4ms);
 
   // Results and error of 1st and 2nd order Nyström method:
   rsPlotVectorsXY(x, yt, y1f, y2n);
@@ -3806,12 +3796,20 @@ void reciprocalIterator()
   //  trapezoidal method?
   // -The accuracy of the n-step Adams-Moulton method is better than an (n+2)-step Adams-Bashforth
   //  method.
+  // -The 2- and 4-step Milne-Simpson methods also oscillate, the 2-step method more so than the
+  //  4-step method. This is different from the Nyström methods, where higher order methods 
+  //  oscillate more than the lower order ones.
+  // -What Nyström and Milne-Simpson have in common is that the use the value 2 samples past as the
+  //  starting point: to compute y[n], they do somthing like y[n-2] + ... rather than y[n-1] + ...
+  //  as the other methods do. Both show oscillations, so oscillation my be realted to that 
+  //  feature. Q: Is this like the "leapfrog" method? -> figure out relation to that
 
   // Conclusions:
-  // -Adams-Bashforth methods seem to be well suited for this problem, Nyström methods not so much.
-  // -Implicit methods such as Adams-Moudlton are more costly per computed value but make up for it
-  //  by being more accurate so one may be able to choose a larger step size. I think, they also 
-  //  have better stability properties.
+  // -Adams-Bashforth methods seem to be well suited for this problem. 
+  // -The implicit Adams-Moulton method is more costly per computed value than the explicit 
+  //  Adams-Bashforth method but make up for it by being more accurate so one may be able to choose
+  //  a larger step size. I think, they also have better stability (verify!).
+  // -Nyström and Milne-Simpson methods are not suitable for this problem.
 
   // ToDo:
   // -Implement implicit solver schemes (Adams-Moulton (done), Milne-Simpson, BDF)
