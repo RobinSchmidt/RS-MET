@@ -3458,21 +3458,21 @@ void powerIterator()
   using Vec = std::vector<double>;
 
   // Compute abscissa values and true values for y(x) and z(x):
-  Vec x(N), y(N), z(N);
+  Vec xt(N), yt(N), zt(N);
   for(int n = 0; n < N; n++)
   {
-    x[n] = x0 + n*h;
-    z[n] = 1.0 / x[n];
-    y[n] = pow(x[n], p);
+    xt[n] = x0 + n*h;
+    zt[n] = 1.0 / xt[n];
+    yt[n] = pow(xt[n], p);
   }
 
   // Compute approximation using a 1st order iterative formula. Computing xn iteratively is 
   // actually trivial and useless, but for completeness the computation has been included here:
   Vec x1(N), y1(N), z1(N);
   double xn, yn, zn; // x[n], y[n], z[n]
-  xn = x[0];
-  yn = y[0];
-  zn = z[0];
+  xn = xt[0];
+  yn = yt[0];
+  zn = zt[0];
   for(int n = 0; n < N; n++) {
     x1[n] = xn; z1[n] = zn; y1[n] = yn;
     xn += h;
@@ -3481,8 +3481,8 @@ void powerIterator()
   }
 
   // Alternative way to compute it, that more clearly resembles the textbook formula:
-  y1[0] = y[0];
-  z1[0] = z[0];
+  y1[0] = yt[0];
+  z1[0] = zt[0];
   for(int n = 0; n < N-1; n++)
   {
     z1[n+1] = z1[n] + h*(-z1[n]*z1[n]);
@@ -3499,18 +3499,45 @@ void powerIterator()
   // usage of the c-coefficient
 
   // Now compute z(x) = 1/x via a 2nd order, 2-step Nyström formula:
-  Vec y2(N), z2(N);
-  y2[0] = y[0]; y2[1] = y[1];
-  z2[0] = z[0]; z2[1] = z[1];
+  Vec y2n(N), z2n(N);
+  //y2n[0] = y[0]; y2n[1] = y[1];
+  z2n[0] = zt[0]; z2n[1] = zt[1];
   for(int n = 0; n < N-2; n++)
-    z2[n+2] = z2[n] + 2*h*(-z2[n+1]*z2[n+1]);
+    z2n[n+2] = z2n[n] + 2*h*(-z2n[n+1]*z2n[n+1]);
 
+  // Now via a 3nd order, 3-step Nyström formula:
+  Vec y3n(N), z3n(N);
+  //y3n[0] = y[0]; y3n[1] = y[1]; y3n[2] = y[2];
+  z3n[0] = zt[0]; z3n[1] = zt[1]; z3n[2] = zt[2];
+  auto f = [](double x) { return -x*x; };  // for convenience
+  for(int n = 0; n < N-3; n++)
+    z3n[n+3] = z3n[n+1] + (h/3) * (7*f(z3n[n+2]) - 2*f(z3n[n+1]) + f(z3n[n]));
 
+  // 4th order Nyström:
+  Vec y4n(N), z4n(N);
+  //y4n[0] = y[0]; y4n[1] = y[1]; y4n[2] = y[2]; y4n[3] = y[3];
+  z4n[0] = zt[0]; z4n[1] = zt[1]; z4n[2] = zt[2]; z4n[3] = zt[3];
+  for(int n = 0; n < N-4; n++)
+  {
+    //z4n[n+4] = z4n[n+2] + (h/3) * (8*f(z4n)
+
+  }
 
 
   //rsPlotVectorsXY(x, y, z);
-  //rsPlotVectorsXY(x, y, z, y1, z1);
-  rsPlotVectorsXY(x, z, z1, z2);
+
+  rsPlotVectorsXY(xt, yt, zt, y1, z1);
+
+  rsPlotVectorsXY(xt, zt, z1, z2n);
+
+  rsPlotArraysXY(800, &xt[0], &zt[0], &z2n[0], &z3n[0]);
+
+  // Plot errors of 2nd and 3rd order Nystöm method:
+  Vec e2n = z2n - zt;
+  Vec e3n = z3n - zt;
+  rsPlotArraysXY(800, &xt[0], &e2n[0], &e3n[0]);
+
+
 
 
 
@@ -3522,6 +3549,9 @@ void powerIterator()
   //  method but later builds up unstable oscillations. Also, towards the later section, even the
   //  mean value of the alternative Nyström solution detoriates more from the true solution than 
   //  the 1st order (forward Euler) solution.
+  // -The 3rd order Nyström method explodes even faster, even though the oscillations get dampened
+  //  out over time. They increase initially, but slower than in the 2nd order method, but later
+  //  an non-alternating explosion takes over.
 
   // ToDo:
   // -Figure out, if using a linear combination of old and new z can also improve the higher order
@@ -3538,8 +3568,91 @@ void powerIterator()
   // -Implement a multistep ODE solver. It should take a couple of initial values that the client
   //  code supplies. Client can choose to compute them directly of via 1-step method, such as 
   //  Runge-Kutta. Maybe implement also an implicit solver using Adams-Moulton and Milne-Simplson
-  //  (see Numerik, p 322) and BDF methods (backward differentiation formula)
+  //  (see Numerik, p 322) and BDF methods (backward differentiation formula), see:
+  //  https://en.wikipedia.org/wiki/Backward_differentiation_formula
+  //  The explicity solvers can be implemented with just one evaluation of f per generated value by
+  //  storing the past f-values from previous calls
+  // -Maybe move the code to compute the reciprocal recursively by various multistep formulas
+  //  into its own function reciprocalIterator. This function here should focus on the power
+  //  function y = x^p, taking a way to compute the reciprocal as given
 
+
+
+  // also interesting:
+  // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=567563&sid=c1cfc136c438d3e75d69d39d3912b84f&start=15
+  // https://www.desmos.com/calculator/iceqafamt8
+
+}
+
+void reciprocalIterator()
+{
+  // We want to iteratively compute an approximation of y(x) = 1/x. To do this, we find the ODE
+  // whose solution our target function y(x) is. This can be found by differentiating:
+  // y' = (x^-1)' = -x^(-2) = -y^2, so our ODE is y' = -y^2. We define f(y) := -y^2 to be 
+  // consistent with much of the ODE literature.
+  
+  int    N  = 1000;   // number of data points to generate
+  double x0 = 0.2;    // start value for the x-values
+  double h  = 0.01;   // step size
+
+  // Compute abscissa values and true values for y(x):
+  using Vec = std::vector<double>;
+  Vec x(N), yt(N);
+  for(int n = 0; n < N; n++) {
+    x[n]  = x0 + n*h;
+    yt[n] = 1.0 / x[n]; }
+
+  // Some local variables for convenience:
+  auto f = [](double x) { return -x*x; }; // y' = f(y) = -y^2
+  double* y;                              // shorthand for currently computed approximation of y
+
+  // Compute solution iteratively by 1st order forward Euler method:
+  Vec y1(N); y = &y1[0];
+  y[0] = yt[0];
+  for(int n = 0; n < N-1; n++)
+    y[n+1] = y[n] + h * f(y[n]);
+  Vec e1 = y1 - yt;
+
+  // Now with 2nd order Nyström method:
+  Vec y2n(N); y = &y2n[0];
+  y[0] = yt[0]; y[1] = yt[1];
+  for(int n = 0; n < N-2; n++)
+    y[n+2] = y[n] + 2*h * f(y[n+1]);
+  Vec e2n = y2n - yt;
+
+  // 3rd order Nyström:
+  Vec y3n(N); y = &y3n[0];
+  y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2];
+  for(int n = 0; n < N-3; n++)
+    y[n+3] = y[n+1] + (h/3) * (7*f(y[n+2]) - 2*f(y[n+1]) + f(y[n]));
+  Vec e3n = y3n - yt;
+
+  // 4th order Nyström:
+  Vec y4n(N); y = &y4n[0];
+  y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2]; y[3] = yt[3];
+  for(int n = 0; n < N-4; n++)
+    y[n+4] = y[n+2] + (h/3) * (8*f(y[n+3]) - 5*f(y[n+2]) + 4*f(y[n+1]) - f(y[n]));
+  Vec e4n = y4n - yt;
+
+
+  // Results and error of 1st and 2nd order Nyström method:
+  rsPlotVectorsXY(x, yt, y1, y2n);
+  rsPlotVectorsXY(x, e1, e2n);
+
+  // Results and error of 2nd and 3rd order Nyström method:
+  rsPlotArraysXY(800, &x[0], &yt[0], &y2n[0], &y3n[0]);
+  rsPlotArraysXY(800, &x[0], &e2n[0], &e3n[0]);
+
+  // Results and error of 3rd and 4th order Nyström method:
+  rsPlotArraysXY(350, &x[0], &yt[0], &y3n[0], &y4n[0]);
+  rsPlotArraysXY(350, &x[0], &e3n[0], &e4n[0]);
+
+
+
+
+
+  // See also:
+  // https://www.researchgate.net/publication/257143339_Construction_of_Improved_Runge-Kutta_Nystrom_Method_for_Solving_Second-Order_Ordinary_Differential_Equations
 }
 
 

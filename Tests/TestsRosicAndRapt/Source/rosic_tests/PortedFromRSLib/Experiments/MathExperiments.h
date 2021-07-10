@@ -75,7 +75,7 @@ void numberTheoreticTransform();
 void numberTheoreticTrafoModuli();
 
 void powerIterator();
-
+void reciprocalIterator();
 
 
 

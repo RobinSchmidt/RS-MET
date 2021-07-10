@@ -129,7 +129,8 @@ int main(int argc, char* argv[])
   //twoParamRemap();
   //numberTheoreticTrafo();
   //numberTheoreticTrafoModuli();
-  powerIterator();
+  //powerIterator();
+  reciprocalIterator();
 
   // Filter:
   //bandSplittingTwoWay();
