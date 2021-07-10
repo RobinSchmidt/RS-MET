@@ -3498,85 +3498,20 @@ void powerIterator()
   // ToDo: maybe use different arrays for this - maybe z1c, y1c where the c stands for the
   // usage of the c-coefficient
 
-  // Now compute z(x) = 1/x via a 2nd order, 2-step Nyström formula:
-  Vec y2n(N), z2n(N);
-  //y2n[0] = y[0]; y2n[1] = y[1];
-  z2n[0] = zt[0]; z2n[1] = zt[1];
-  for(int n = 0; n < N-2; n++)
-    z2n[n+2] = z2n[n] + 2*h*(-z2n[n+1]*z2n[n+1]);
-
-  // Now via a 3nd order, 3-step Nyström formula:
-  Vec y3n(N), z3n(N);
-  //y3n[0] = y[0]; y3n[1] = y[1]; y3n[2] = y[2];
-  z3n[0] = zt[0]; z3n[1] = zt[1]; z3n[2] = zt[2];
-  auto f = [](double x) { return -x*x; };  // for convenience
-  for(int n = 0; n < N-3; n++)
-    z3n[n+3] = z3n[n+1] + (h/3) * (7*f(z3n[n+2]) - 2*f(z3n[n+1]) + f(z3n[n]));
-
-  // 4th order Nyström:
-  Vec y4n(N), z4n(N);
-  //y4n[0] = y[0]; y4n[1] = y[1]; y4n[2] = y[2]; y4n[3] = y[3];
-  z4n[0] = zt[0]; z4n[1] = zt[1]; z4n[2] = zt[2]; z4n[3] = zt[3];
-  for(int n = 0; n < N-4; n++)
-  {
-    //z4n[n+4] = z4n[n+2] + (h/3) * (8*f(z4n)
-
-  }
-
 
   //rsPlotVectorsXY(x, y, z);
 
   rsPlotVectorsXY(xt, yt, zt, y1, z1);
-
-  rsPlotVectorsXY(xt, zt, z1, z2n);
-
-  rsPlotArraysXY(800, &xt[0], &zt[0], &z2n[0], &z3n[0]);
-
-  // Plot errors of 2nd and 3rd order Nystöm method:
-  Vec e2n = z2n - zt;
-  Vec e3n = z3n - zt;
-  rsPlotArraysXY(800, &xt[0], &e2n[0], &e3n[0]);
-
-
-
 
 
   // Observations:
   // -For the 1st order method, we can improve the accuracy of the x^p approximation by using a 
   //  linear combination of the old and new approximate z value, like: zUsed = c*zNew + (1-c)*zOld.
   //  Empirically, a value of c = -0.7 seems to give good results. Maybe c should be -p?
-  // -The 2nd order Nyström method for z(x) = 1/x is initially more accurate than the 1st order 
-  //  method but later builds up unstable oscillations. Also, towards the later section, even the
-  //  mean value of the alternative Nyström solution detoriates more from the true solution than 
-  //  the 1st order (forward Euler) solution.
-  // -The 3rd order Nyström method explodes even faster, even though the oscillations get dampened
-  //  out over time. They increase initially, but slower than in the 2nd order method, but later
-  //  an non-alternating explosion takes over.
 
   // ToDo:
   // -Figure out, if using a linear combination of old and new z can also improve the higher order
   //  methods.
-  // -Figure out, if it's possible to stabilize the 2nd order Nyström method. Maybe by some sort of
-  //  2-point averaging filter?
-  // -Try to apply the technique to other interesting functions such as: Gaussian, 1/(1+x^2), tan,
-  //  tanh, atan, ...
-  // -Implement 3rd and 4th order Nyström (formulas in Numerik (Meister), p. 322) and 
-  //  Adams-Bashforth of orders 2..5 (formulas on wikipedia:
-  //  https://en.wikipedia.org/wiki/Linear_multistep_method#Adams%E2%80%93Bashforth_methods)
-  // -Try to figure out general formulas for the coefficients of arbitrary order Nyström and 
-  //  Adams-Bashforth methods. Maybe implement the formula given on wikipedia in Sage.
-  // -Implement a multistep ODE solver. It should take a couple of initial values that the client
-  //  code supplies. Client can choose to compute them directly of via 1-step method, such as 
-  //  Runge-Kutta. Maybe implement also an implicit solver using Adams-Moulton and Milne-Simplson
-  //  (see Numerik, p 322) and BDF methods (backward differentiation formula), see:
-  //  https://en.wikipedia.org/wiki/Backward_differentiation_formula
-  //  The explicity solvers can be implemented with just one evaluation of f per generated value by
-  //  storing the past f-values from previous calls
-  // -Maybe move the code to compute the reciprocal recursively by various multistep formulas
-  //  into its own function reciprocalIterator. This function here should focus on the power
-  //  function y = x^p, taking a way to compute the reciprocal as given
-
-
 
   // also interesting:
   // https://www.kvraudio.com/forum/viewtopic.php?f=33&t=567563&sid=c1cfc136c438d3e75d69d39d3912b84f&start=15
@@ -3634,6 +3569,35 @@ void reciprocalIterator()
     y[n+4] = y[n+2] + (h/3) * (8*f(y[n+3]) - 5*f(y[n+2]) + 4*f(y[n+1]) - f(y[n]));
   Vec e4n = y4n - yt;
 
+  // 2nd order Adams-Bashforth:
+  Vec y2ab(N); y = &y2ab[0];
+  y[0] = yt[0]; y[1] = yt[1];
+  for(int n = 0; n < N-2; n++)
+    y[n+2] = y[n+1] + (h/2) * (3*f(y[n+1]) - f(y[n]));
+  Vec e2ab = y2ab - yt;
+
+  // Form a linear combination of 1st order and 2nd order Adams-Bashforth. This reduces the error 
+  // further:
+  double c = 0.92; // weight for 2nd order solution
+  Vec yMix = c*y2ab + (1-c)*y1;
+  Vec eMix = yMix - yt;
+
+  // 3rd order Adams-Bashforth:
+  Vec y3ab(N); y = &y3ab[0];
+  y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2];
+  for(int n = 0; n < N-3; n++)
+    y[n+3] = y[n+2] + (h/12) * (23*f(y[n+2]) - 16*f(y[n+1]) + 5*f(y[n]));
+  Vec e3ab = y3ab - yt;
+
+
+  // Errors of Adams-Bashforth methods of various orders:
+  rsPlotVectorsXY(x, e1, e2ab, e3ab);
+
+  // Results and error of 1st and 2nd order Adams-Bashforth method and error of the mix between 1st
+  // and 2nd order method:
+  rsPlotVectorsXY(x, yt, y1, y2ab);
+  rsPlotVectorsXY(x, e1, e2ab);
+  rsPlotVectorsXY(x, e1, e2ab, eMix);
 
   // Results and error of 1st and 2nd order Nyström method:
   rsPlotVectorsXY(x, yt, y1, y2n);
@@ -3648,8 +3612,36 @@ void reciprocalIterator()
   rsPlotArraysXY(350, &x[0], &e3n[0], &e4n[0]);
 
 
+  // Observations:
+  // -The 2nd order Nyström method for z(x) = 1/x is initially more accurate than the 1st order 
+  //  method but later builds up unstable oscillations. Also, towards the later section, even the
+  //  mean value of the alternative Nyström solution detoriates more from the true solution than 
+  //  the 1st order (forward Euler) solution.
+  // -The 3rd order Nyström method explodes even faster, even though the oscillations get dampened
+  //  out over time. They increase initially, but slower than in the 2nd order method, but later
+  //  an non-alternating explosion takes over.
+  // -The 2nd order Adams-Bashforth method seems to be stable and reduces the by an order of 
+  //  magnitude compared to the 1st order method. However, the error can be further reduced, by 
+  //  taking a linear combination of the results of 1st and 2nd order solutions because the error
+  //  has a similar shape but opposite signs. Taking about 0.92 of the 2nd order and 0.08 = 1-0.92
+  //  of the 1st order solution gives a very accurate result
 
-
+  // ToDo:
+  // -Figure out, if it's possible to stabilize the Nyströms methods. Maybe by some sort of
+  //  2-point averaging filter?
+  // -Try to apply the technique to other interesting functions such as: Gaussian, 1/(1+x^2), tan,
+  //  tanh, atan, ...
+  // -Implement Adams-Bashforth of orders 2..5 (formulas on wikipedia:
+  //  https://en.wikipedia.org/wiki/Linear_multistep_method#Adams%E2%80%93Bashforth_methods)
+  // -Try to figure out general formulas for the coefficients of arbitrary order Nyström and 
+  //  Adams-Bashforth methods. Maybe implement the formula given on wikipedia in Sage.
+  // -Implement a multistep ODE solver. It should take a couple of initial values that the client
+  //  code supplies. Client can choose to compute them directly of via 1-step method, such as 
+  //  Runge-Kutta. Maybe implement also an implicit solver using Adams-Moulton and Milne-Simplson
+  //  (see Numerik, p 322) and BDF methods (backward differentiation formula), see:
+  //  https://en.wikipedia.org/wiki/Backward_differentiation_formula
+  //  The explicity solvers can be implemented with just one evaluation of f per generated value by
+  //  storing the past f-values from previous calls
 
   // See also:
   // https://www.researchgate.net/publication/257143339_Construction_of_Improved_Runge-Kutta_Nystrom_Method_for_Solving_Second-Order_Ordinary_Differential_Equations
