@@ -3447,7 +3447,7 @@ void numberTheoreticTrafoModuli()
 void powerIterator()
 {
   // We want to iteratively compute an approximatiosn of y(x) = x^p and z(x) = 1/x. The z = 1/x 
-  // function is actually needed in the computation of y = x^p.
+  // function is needed in the computation of y = x^p.
 
   int    N  = 1000;   // number of  data points to generate
   double x0 = 0.2;    // start value for the x-values
@@ -3519,12 +3519,34 @@ void powerIterator()
 
 }
 
+template<class T>
+T newton(const std::function<T(T)>& f, const std::function<T(T)>& fp, T x0, T yt = T(0))
+{
+  T tol = 1.e-10;  // preliminary
+  T x   = x0;
+  int its = 0;
+  while(true)
+  {
+    T y = f(x);  
+    if(rsAbs(y) <= tol)
+      break;
+    x -= y / fp(x);
+    its++;
+  }
+  return x;
+}
+// todo: use yt for the target value, move to rsRootFinder
+
 void reciprocalIterator()
 {
   // We want to iteratively compute an approximation of y(x) = 1/x. To do this, we find the ODE
-  // whose solution our target function y(x) is. This can be found by differentiating:
+  // whose solution is given by our target function y(x). This can be found by differentiating:
   // y' = (x^-1)' = -x^(-2) = -y^2, so our ODE is y' = -y^2. We define f(y) := -y^2 to be 
   // consistent with much of the ODE literature.
+  // Over time, this experiment has turned more into one of testing different multistep ODE solver 
+  // methods (applied to the given ODE above). Maybe rename the function to multiStepSolvers. Or 
+  // maybe reciprocalMultiStep or multistepReciprocal. The code here can serve as reference 
+  // prototype for eventually implementing a multistep ODE solver for RAPT.
   
   int    N  = 1000;   // number of data points to generate
   double x0 = 0.2;    // start value for the x-values
@@ -3538,17 +3560,26 @@ void reciprocalIterator()
     yt[n] = 1.0 / x[n]; }
 
   // Some local variables for convenience:
-  auto f = [](double x) { return -x*x; }; // y' = f(y) = -y^2
-  double* y;                              // shorthand for currently computed approximation of y
+  using Func = std::function<double(double)>;
+  Func f  = [](double y) { return -y*y; }; // y' = f(y) = -y^2
+  Func fp = [](double y) { return -2*y; }; // derivative of f(y) for Newton iteration
+  //auto f  = [](double y) { return -y*y; }; // y' = f(y) = -y^2
+  //auto fp = [](double y) { return -2*y; }; // derivative of f(y) for Newton iteration
+  double* y;                               // shorthand for currently computed approximation of y
 
-  // Compute solution iteratively by 1st order forward Euler method:
+
+  // Now, we compute solution iteratively by various methods...
+
+  // The explicit methods:
+
+  // 1st order forward Euler:
   Vec y1f(N); y = &y1f[0];
   y[0] = yt[0];
   for(int n = 0; n < N-1; n++)
     y[n+1] = y[n] + h * f(y[n]);
   Vec e1f = y1f - yt;
 
-  // Now with 2nd order Nyström method:
+  // 2nd order Nyström:
   Vec y2n(N); y = &y2n[0];
   y[0] = yt[0]; y[1] = yt[1];
   for(int n = 0; n < N-2; n++)
@@ -3604,11 +3635,89 @@ void reciprocalIterator()
                                  - 1274*f(y[n+1]) +  251*f(y[n]));
   Vec e5ab = y5ab - yt;
 
+  /*
+  // Test the newton iteration (todo: move into a unit test):
+  double a = 9;  // number from which we want to extract the sqrt
+  Func testFunc  = [&](double x) { return x*x - a; };
+  Func testFuncD = [&](double x) { return 2*x; };
+  double b = newton(testFunc, testFuncD, 5.0, 0.0); // should compute sqrt(9) = 3, uses 5 as guess
+  */
 
-  // Backward Euler method:
-  // ...
+  // Now for the implicit methods. They are more complicated because the value that we want to 
+  // compute appears on the left and right hand side of the equation (in general nonlinearly, so we 
+  // can't just isolate it on one side). This is solved by setting up the equation as a 
+  // root-finding problem at each step and solving it via Newton iteration, taking as initial guess 
+  // the previous value.
+
+  // The backward Euler method. It's defined by: y[n+1] = y[n] + h * f(y[n+1]). For convenience, 
+  // let's define z := y[n+1]. Now we need to solve y[n] + h*f(z) - z = 0 for z at each step. 
+  Func fn, fnp;
+  Vec y1b(N); y = &y1b[0];
+  y[0] = yt[0];
+  for(int n = 0; n < N-1; n++)
+  {
+    fn  = [&](double z) { return y[n] + h*f(z) - z; };
+    fnp = [&](double z) { return h*fp(z) - 1; };
+    y[n+1] = newton(fn, fnp, y[n]);
+  }
+  Vec e1b = y1b - yt;
+
+  // The trapezoidal rule: y[n+1] = y[n] + (h/2) * (f(y[n+1]) + f(y[n])) is an implicit 1-step 
+  // method of order 2 (i think - verify!):
+  Vec y1t(N); y = &y1t[0];
+  y[0] = yt[0];
+  for(int n = 0; n < N-1; n++)
+  {
+    fn  = [&](double z) { return y[n] + (h/2)*(f(z)+f(y[n])) - z; };
+    fnp = [&](double z) { return (h/2)*fp(z) - 1; };
+    y[n+1] = newton(fn, fnp, y[n]);
+  }
+  Vec e1t = y1t - yt;
+
+  // 2-step Adams-Moulton: y[n+2] = y[n+1] + (h/12) * (5*f(y[n+2]) + 8*f(y[n+1]) - f(y[n]))
+  Vec y2am(N); y = &y2am[0];
+  y[0] = yt[0]; y[1] = yt[1];
+  for(int n = 0; n < N-2; n++)
+  {
+    fn  = [&](double z) { return y[n+1] + (h/12)*(5*f(z) + 8*f(y[n+1]) - f(y[n])) - z; };
+    fnp = [&](double z) { return (5*h/12)*fp(z) - 1; };
+    y[n+2] = newton(fn, fnp, y[n+1]);
+  }
+  Vec e2am = y2am - yt;
+
+  // 3-step Adams-Moulton: y[n+3] = y[n+2] + (h/24) * ...
+  // ... (9*f(y[n+3]) + 19*f(y[n+2]) - 5*f(y[n+1]) + f(y[n]) )
+  Vec y3am(N); y = &y3am[0];
+  y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2];
+  for(int n = 0; n < N-3; n++)
+  {
+    fn = [&](double z) { return 
+      y[n+2] + (h/24)*(9*f(z) + 19*f(y[n+2]) - 5*f(y[n+1]) + f(y[n])) - z; };
+    fnp = [&](double z) { return (9*h/24)*fp(z) - 1; };
+    y[n+3] = newton(fn, fnp, y[n+2]);
+  }
+  Vec e3am = y3am - yt;
+
+  // 4-step Adams-Moulton: y[n+4] = y[n+3] + (h/720) * ...
+  // ... (251*f(y[n+4]) + 646*f(y[n+3]) - 264*f(y[n+2]) + 106*f(y[n+1]) - 19*f(y[n]) )
+  Vec y4am(N); y = &y4am[0];
+  y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2]; y[3] = yt[3];
+  for(int n = 0; n < N-4; n++)
+  {
+    fn = [&](double z) { return y[n+3] 
+      + (h/720)*(251*f(z) + 646*f(y[n+3]) - 264*f(y[n+2]) + 106*f(y[n+1]) - 19*f(y[n])) - z; };
+    fnp = [&](double z) { return (251*h/720)*fp(z) - 1; };
+    y[n+4] = newton(fn, fnp, y[n+3]);
+  }
+  Vec e4am = y4am - yt;
 
 
+
+
+
+  // Results and errors of 1st order forward and backward Euler and trapezoidal methods:
+  rsPlotVectorsXY(x, yt, y1f, y1b, y1t);
+  rsPlotVectorsXY(x, e1f, e1b, e1t);
 
   // Results and error of 1st and 2nd order Adams-Bashforth method and error of the mix between 1st
   // and 2nd order method:
@@ -3617,6 +3726,9 @@ void reciprocalIterator()
 
   // Errors of Adams-Bashforth methods of various orders:
   rsPlotVectorsXY(x, e1f, e2ab, e3ab, e4ab, e5ab);
+
+  // Errors of Adams-Moulton methods of various orders:
+  rsPlotVectorsXY(x, e1b, e1t, e2am, e3am, e4am);
 
   // Results and error of 1st and 2nd order Nyström method:
   rsPlotVectorsXY(x, yt, y1f, y2n);
@@ -3646,12 +3758,17 @@ void reciprocalIterator()
   //  of the 1st order solution gives a very accurate result.
   // -Higher order Adams-Bashforth methods do also seem to be stable for this problem and with each
   //  order increase, the error goes down by some factor of around 5.
+  // -The 1st order forward and backward methods produce errors of similar shape but opposite sign
+  //  which suggests to use a mix of both to increase accuracy. But maybe such a mix yields the 
+  //  trapezoidal method?
 
   // Conclusions:
   // -Adams-Bashforth methods seem to be well suited for this problem, Nyström methods not so much.
 
   // ToDo:
-  // -Implement implicit solver schemes (Adams-Moulton, Milne-Simpson)
+  // -Implement implicit solver schemes (Adams-Moulton (done), Milne-Simpson, BDF)
+  // -compare errors of Adams-Bashforth and Adams-Moulton
+  // -Maybe plot the relative error.
   // -Figure out, if it's possible to stabilize the Nyströms methods. Maybe by some sort of
   //  2-point averaging filter?
   // -Try to apply the technique to other interesting functions such as: Gaussian, 1/(1+x^2), tan,
