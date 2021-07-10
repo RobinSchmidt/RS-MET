@@ -532,7 +532,9 @@ Ideas:
  L: 5,13,17,31, R: 7,11,19,29 - the corresponding L/R pairs are chosen to be twin primes and the 
  total delay is the same for left and right: 5+13+17+31 = 7+11+19+29 = 66. Or maybe include these 
  allpasses also in the feedback loop - maybe at the input of the delaylines but after the feedback 
- point.
+ point. Maybe the feedback coeff of each allpass should be inversely proportional to the allpass 
+ length/delay, or some power of it (with exponent <= 1). Maybe try to also use a post-diffuser. It 
+ shouldn't make a difference for an LTI-FDN, but if we go non-LTI, it may matter
 
 -Compute delayline lengths from geometric considerations. For example, use the modal distribution 
  of rectangular rooms. The formula for the modal frequencies is:

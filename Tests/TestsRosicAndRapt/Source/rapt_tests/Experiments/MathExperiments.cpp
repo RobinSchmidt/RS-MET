@@ -3450,9 +3450,9 @@ void powerIterator()
   // function is actually needed in the computation of y = x^p.
 
   int    N  = 1000;   // number of  data points to generate
-  double x0 = 1.0;    // start value for the x-values
+  double x0 = 0.2;    // start value for the x-values
   double h  = 0.01;   // step size
-  double p  = 0.5;    // the power
+  double p  = 0.7;    // the power
 
 
   using Vec = std::vector<double>;
@@ -3466,27 +3466,80 @@ void powerIterator()
     y[n] = pow(x[n], p);
   }
 
-  // Compute approximation using a 1st order iterative formula:
+  // Compute approximation using a 1st order iterative formula. Computing xn iteratively is 
+  // actually trivial and useless, but for completeness the computation has been included here:
   Vec x1(N), y1(N), z1(N);
-  double xn = x[0];
-  double yn = y[0];
-  double zn = z[0];
-  for(int n = 0; n < N; n++)
-  {
-    x1[n] = xn;
-    z1[n] = zn;
-    y1[n] = yn;
+  double xn, yn, zn; // x[n], y[n], z[n]
+  xn = x[0];
+  yn = y[0];
+  zn = z[0];
+  for(int n = 0; n < N; n++) {
+    x1[n] = xn; z1[n] = zn; y1[n] = yn;
     xn += h;
-    zn -= h*zn*zn;   // verify!
-    yn += h*zn*p*yn; // verify!
+    zn -= h*zn*zn;
+    yn += h*zn*p*yn; 
   }
+
+  // Alternative way to compute it, that more clearly resembles the textbook formula:
+  y1[0] = y[0];
+  z1[0] = z[0];
+  for(int n = 0; n < N-1; n++)
+  {
+    z1[n+1] = z1[n] + h*(-z1[n]*z1[n]);
+
+    //y1[n+1] = y1[n] + h*(p*z1[n+1]*y1[n]);   // use the new z: works not so well
+    y1[n+1] = y1[n] + h*(p*z1[n]*y1[n]);       // use the old z: works actually better
+
+    // Try using a linear combination of old and new z:
+    //double c = -0.7;     // coeff for the new z
+    //double z = c*z1[n+1] + (1-c)*z1[n];
+    //y1[n+1] = y1[n] + h*(p*z*y1[n]);         // yes! this work even better!
+  }
+  // ToDo: maybe use different arrays for this - maybe z1c, y1c where the c stands for the
+  // usage of the c-coefficient
+
+  // Now compute z(x) = 1/x via a 2nd order, 2-step Nyström formula:
+  Vec y2(N), z2(N);
+  y2[0] = y[0]; y2[1] = y[1];
+  z2[0] = z[0]; z2[1] = z[1];
+  for(int n = 0; n < N-2; n++)
+    z2[n+2] = z2[n] + 2*h*(-z2[n+1]*z2[n+1]);
 
 
 
 
   //rsPlotVectorsXY(x, y, z);
+  //rsPlotVectorsXY(x, y, z, y1, z1);
+  rsPlotVectorsXY(x, z, z1, z2);
 
-  rsPlotVectorsXY(x, y, z, y1, z1);
+
+
+  // Observations:
+  // -For the 1st order method, we can improve the accuracy of the x^p approximation by using a 
+  //  linear combination of the old and new approximate z value, like: zUsed = c*zNew + (1-c)*zOld.
+  //  Empirically, a value of c = -0.7 seems to give good results. Maybe c should be -p?
+  // -The 2nd order Nyström method for z(x) = 1/x is initially more accurate than the 1st order 
+  //  method but later builds up unstable oscillations. Also, towards the later section, even the
+  //  mean value of the alternative Nyström solution detoriates more from the true solution than 
+  //  the 1st order (forward Euler) solution.
+
+  // ToDo:
+  // -Figure out, if using a linear combination of old and new z can also improve the higher order
+  //  methods.
+  // -Figure out, if it's possible to stabilize the 2nd order Nyström method. Maybe by some sort of
+  //  2-point averaging filter?
+  // -Try to apply the technique to other interesting functions such as: Gaussian, 1/(1+x^2), tan,
+  //  tanh, atan, ...
+  // -Implement 3rd and 4th order Nyström (formulas in Numerik (Meister), p. 322) and 
+  //  Adams-Bashforth of orders 2..5 (formulas on wikipedia:
+  //  https://en.wikipedia.org/wiki/Linear_multistep_method#Adams%E2%80%93Bashforth_methods)
+  // -Try to figure out general formulas for the coefficients of arbitrary order Nyström and 
+  //  Adams-Bashforth methods. Maybe implement the formula given on wikipedia in Sage.
+  // -Implement a multistep ODE solver. It should take a couple of initial values that the client
+  //  code supplies. Client can choose to compute them directly of via 1-step method, such as 
+  //  Runge-Kutta. Maybe implement also an implicit solver using Adams-Moulton and Milne-Simplson
+  //  (see Numerik, p 322) and BDF methods (backward differentiation formula)
+
 }
 
 
