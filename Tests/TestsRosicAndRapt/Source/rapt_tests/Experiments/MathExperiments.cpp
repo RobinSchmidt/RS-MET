@@ -3654,10 +3654,10 @@ void reciprocalIterator()
   Func fn, fnp;
   Vec y1b(N); y = &y1b[0];
   y[0] = yt[0];
+  fnp = [&](double z) { return h*fp(z) - 1; };
   for(int n = 0; n < N-1; n++)
   {
     fn  = [&](double z) { return y[n] + h*f(z) - z; };
-    fnp = [&](double z) { return h*fp(z) - 1; };
     y[n+1] = newton(fn, fnp, y[n]);
   }
   Vec e1b = y1b - yt;
@@ -3666,10 +3666,10 @@ void reciprocalIterator()
   // method of order 2 (i think - verify!):
   Vec y1t(N); y = &y1t[0];
   y[0] = yt[0];
+  fnp = [&](double z) { return (h/2)*fp(z) - 1; };
   for(int n = 0; n < N-1; n++)
   {
-    fn  = [&](double z) { return y[n] + (h/2)*(f(z)+f(y[n])) - z; };
-    fnp = [&](double z) { return (h/2)*fp(z) - 1; };
+    fn = [&](double z) { return y[n] + (h/2)*(f(z)+f(y[n])) - z; };
     y[n+1] = newton(fn, fnp, y[n]);
   }
   Vec e1t = y1t - yt;
@@ -3677,10 +3677,10 @@ void reciprocalIterator()
   // 2-step Adams-Moulton: y[n+2] = y[n+1] + (h/12) * (5*f(y[n+2]) + 8*f(y[n+1]) - f(y[n]))
   Vec y2am(N); y = &y2am[0];
   y[0] = yt[0]; y[1] = yt[1];
+  fnp = [&](double z) { return (5*h/12)*fp(z) - 1; };
   for(int n = 0; n < N-2; n++)
   {
-    fn  = [&](double z) { return y[n+1] + (h/12)*(5*f(z) + 8*f(y[n+1]) - f(y[n])) - z; };
-    fnp = [&](double z) { return (5*h/12)*fp(z) - 1; };
+    fn = [&](double z) { return y[n+1] + (h/12)*(5*f(z) + 8*f(y[n+1]) - f(y[n])) - z; };
     y[n+2] = newton(fn, fnp, y[n+1]);
   }
   Vec e2am = y2am - yt;
@@ -3689,28 +3689,64 @@ void reciprocalIterator()
   // ... (9*f(y[n+3]) + 19*f(y[n+2]) - 5*f(y[n+1]) + f(y[n]) )
   Vec y3am(N); y = &y3am[0];
   y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2];
+  fnp = [&](double z) { return (9*h/24)*fp(z) - 1; };
   for(int n = 0; n < N-3; n++)
   {
     fn = [&](double z) { return 
       y[n+2] + (h/24)*(9*f(z) + 19*f(y[n+2]) - 5*f(y[n+1]) + f(y[n])) - z; };
-    fnp = [&](double z) { return (9*h/24)*fp(z) - 1; };
     y[n+3] = newton(fn, fnp, y[n+2]);
   }
   Vec e3am = y3am - yt;
 
   // 4-step Adams-Moulton: y[n+4] = y[n+3] + (h/720) * ...
-  // ... (251*f(y[n+4]) + 646*f(y[n+3]) - 264*f(y[n+2]) + 106*f(y[n+1]) - 19*f(y[n]) )
+  // ... ( 251*f(y[n+4]) + 646*f(y[n+3]) - 264*f(y[n+2]) + 106*f(y[n+1]) - 19*f(y[n]) ):
   Vec y4am(N); y = &y4am[0];
   y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2]; y[3] = yt[3];
+  fnp = [&](double z) { return (251*h/720)*fp(z) - 1; };
   for(int n = 0; n < N-4; n++)
   {
     fn = [&](double z) { return y[n+3] 
       + (h/720)*(251*f(z) + 646*f(y[n+3]) - 264*f(y[n+2]) + 106*f(y[n+1]) - 19*f(y[n])) - z; };
-    fnp = [&](double z) { return (251*h/720)*fp(z) - 1; };
     y[n+4] = newton(fn, fnp, y[n+3]);
   }
   Vec e4am = y4am - yt;
 
+  // 2-step Milne-Simpson: y[n+2] = y[n] + (h/3) * (f(y[n+2]) + 4*f(y[n+1]) + f(y[n])):
+  Vec y2ms(N); y = &y2ms[0];
+  y[0] = yt[0]; y[1] = yt[1];
+  fnp = [&](double z) { return (1*h/3)*fp(z) - 1; };
+  for(int n = 0; n < N-2; n++)
+  {
+    fn = [&](double z) { return y[n] + (h/3)*(f(z) + 4*f(y[n+1]) + f(y[n])) - z; };
+    y[n+2] = newton(fn, fnp, y[n+1]);
+  }
+  Vec e2ms = y2ms - yt;
+
+  // 4-step Milne-Simpson: y[n+4] = y[n+2] + (h/90) * ... 
+  // ... ( 29*f(y[n+4]) + 124*f(y[n+3]) + 24*f(y[n+2]) + 4*f(y[n+1]) - f(y[n]) ):
+  Vec y4ms(N); y = &y4ms[0];
+  y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2]; y[3] = yt[3];
+  fnp = [&](double z) { return (29*h/90)*fp(z) - 1; };
+  for(int n = 0; n < N-4; n++)
+  {
+    fn = [&](double z) { return y[n+2] 
+      + (h/90)*(29*f(z) + 124*f(y[n+3]) + 24*f(y[n+2]) + 4*f(y[n+1]) - f(y[n]) ); };
+
+    //y[n+4] = newton(fn, fnp, y[n+3]);
+    // HANGS!!! ..actually already for n = 1. The computed value y4ms[4] which is computed in the
+    // n=0 iteration is already totally off. The Newton iterations also takes a whopping 122 
+    // iterations to compute this (wrong) value...something seems to be very wrong. It's almost as 
+    // if fnp is not the correct derivative of fn...can this be? ToDo try the Newton iteration
+    // for a single value maybe with modified (simplified) fn and observe, what the Newton 
+    // iteration does to figure out, what throws it off
+
+  }
+  Vec e4ms = y4ms - yt;
+
+
+
+  // Errors of Adams-Moulton and Milne-Simpson for 2-step and 4-step
+  rsPlotVectorsXY(x, e2am, e2ms, e4am, e4ms);
 
 
 
@@ -3729,6 +3765,13 @@ void reciprocalIterator()
 
   // Errors of Adams-Moulton methods of various orders:
   rsPlotVectorsXY(x, e1b, e1t, e2am, e3am, e4am);
+
+  // Errors of Adams-Bashforth and Adams-Moulton methods of various orders:
+  rsPlotVectorsXY(x, e4ab, e2am, e5ab, e3am);
+
+
+
+
 
   // Results and error of 1st and 2nd order Nyström method:
   rsPlotVectorsXY(x, yt, y1f, y2n);
@@ -3761,9 +3804,14 @@ void reciprocalIterator()
   // -The 1st order forward and backward methods produce errors of similar shape but opposite sign
   //  which suggests to use a mix of both to increase accuracy. But maybe such a mix yields the 
   //  trapezoidal method?
+  // -The accuracy of the n-step Adams-Moulton method is better than an (n+2)-step Adams-Bashforth
+  //  method.
 
   // Conclusions:
   // -Adams-Bashforth methods seem to be well suited for this problem, Nyström methods not so much.
+  // -Implicit methods such as Adams-Moudlton are more costly per computed value but make up for it
+  //  by being more accurate so one may be able to choose a larger step size. I think, they also 
+  //  have better stability properties.
 
   // ToDo:
   // -Implement implicit solver schemes (Adams-Moulton (done), Milne-Simpson, BDF)
