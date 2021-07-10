@@ -3542,11 +3542,11 @@ void reciprocalIterator()
   double* y;                              // shorthand for currently computed approximation of y
 
   // Compute solution iteratively by 1st order forward Euler method:
-  Vec y1(N); y = &y1[0];
+  Vec y1f(N); y = &y1f[0];
   y[0] = yt[0];
   for(int n = 0; n < N-1; n++)
     y[n+1] = y[n] + h * f(y[n]);
-  Vec e1 = y1 - yt;
+  Vec e1f = y1f - yt;
 
   // Now with 2nd order Nyström method:
   Vec y2n(N); y = &y2n[0];
@@ -3579,7 +3579,7 @@ void reciprocalIterator()
   // Form a linear combination of 1st order and 2nd order Adams-Bashforth. This reduces the error 
   // further:
   double c = 0.92; // weight for 2nd order solution
-  Vec yMix = c*y2ab + (1-c)*y1;
+  Vec yMix = c*y2ab + (1-c)*y1f;
   Vec eMix = yMix - yt;
 
   // 3rd order Adams-Bashforth:
@@ -3589,19 +3589,38 @@ void reciprocalIterator()
     y[n+3] = y[n+2] + (h/12) * (23*f(y[n+2]) - 16*f(y[n+1]) + 5*f(y[n]));
   Vec e3ab = y3ab - yt;
 
+  // 4th order Adams-Bashforth:
+  Vec y4ab(N); y = &y4ab[0];
+  y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2]; y[3] = yt[3];
+  for(int n = 0; n < N-4; n++)
+    y[n+4] = y[n+3] + (h/24) * (55*f(y[n+3]) - 59*f(y[n+2]) + 37*f(y[n+1]) - 9*f(y[n]));
+  Vec e4ab = y4ab - yt;
 
-  // Errors of Adams-Bashforth methods of various orders:
-  rsPlotVectorsXY(x, e1, e2ab, e3ab);
+  // 5th order Adams-Bashforth:
+  Vec y5ab(N); y = &y5ab[0];
+  y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2]; y[3] = yt[3]; y[4] = yt[4];
+  for(int n = 0; n < N-5; n++)
+    y[n+5] = y[n+4] + (h/720) * (  1901*f(y[n+4]) - 2774*f(y[n+3]) + 2616*f(y[n+2]) 
+                                 - 1274*f(y[n+1]) +  251*f(y[n]));
+  Vec e5ab = y5ab - yt;
+
+
+  // Backward Euler method:
+  // ...
+
+
 
   // Results and error of 1st and 2nd order Adams-Bashforth method and error of the mix between 1st
   // and 2nd order method:
-  rsPlotVectorsXY(x, yt, y1, y2ab);
-  rsPlotVectorsXY(x, e1, e2ab);
-  rsPlotVectorsXY(x, e1, e2ab, eMix);
+  rsPlotVectorsXY(x, yt, y1f, y2ab);
+  rsPlotVectorsXY(x, e1f, e2ab, eMix);
+
+  // Errors of Adams-Bashforth methods of various orders:
+  rsPlotVectorsXY(x, e1f, e2ab, e3ab, e4ab, e5ab);
 
   // Results and error of 1st and 2nd order Nyström method:
-  rsPlotVectorsXY(x, yt, y1, y2n);
-  rsPlotVectorsXY(x, e1, e2n);
+  rsPlotVectorsXY(x, yt, y1f, y2n);
+  rsPlotVectorsXY(x, e1f, e2n);
 
   // Results and error of 2nd and 3rd order Nyström method:
   rsPlotArraysXY(800, &x[0], &yt[0], &y2n[0], &y3n[0]);
@@ -3624,9 +3643,15 @@ void reciprocalIterator()
   //  magnitude compared to the 1st order method. However, the error can be further reduced, by 
   //  taking a linear combination of the results of 1st and 2nd order solutions because the error
   //  has a similar shape but opposite signs. Taking about 0.92 of the 2nd order and 0.08 = 1-0.92
-  //  of the 1st order solution gives a very accurate result
+  //  of the 1st order solution gives a very accurate result.
+  // -Higher order Adams-Bashforth methods do also seem to be stable for this problem and with each
+  //  order increase, the error goes down by some factor of around 5.
+
+  // Conclusions:
+  // -Adams-Bashforth methods seem to be well suited for this problem, Nyström methods not so much.
 
   // ToDo:
+  // -Implement implicit solver schemes (Adams-Moulton, Milne-Simpson)
   // -Figure out, if it's possible to stabilize the Nyströms methods. Maybe by some sort of
   //  2-point averaging filter?
   // -Try to apply the technique to other interesting functions such as: Gaussian, 1/(1+x^2), tan,
@@ -3640,8 +3665,11 @@ void reciprocalIterator()
   //  Runge-Kutta. Maybe implement also an implicit solver using Adams-Moulton and Milne-Simplson
   //  (see Numerik, p 322) and BDF methods (backward differentiation formula), see:
   //  https://en.wikipedia.org/wiki/Backward_differentiation_formula
-  //  The explicity solvers can be implemented with just one evaluation of f per generated value by
-  //  storing the past f-values from previous calls
+  //  The explicit solvers can be implemented with just one evaluation of f per generated value by
+  //  storing the past f-values from previous calls. Implicit solvers may use Newton iteration 
+  //  using an initial guess produced by an explicit method.
+  // -Implement a function that computes the coefficients for arbitrary order Adams-Bashforth
+  //  methods
 
   // See also:
   // https://www.researchgate.net/publication/257143339_Construction_of_Improved_Runge-Kutta_Nystrom_Method_for_Solving_Second-Order_Ordinary_Differential_Equations
