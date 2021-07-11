@@ -3537,52 +3537,6 @@ T newton(const std::function<T(T)>& f, const std::function<T(T)>& fp, T x0, T yt
 }
 // todo: use yt for the target value, move to rsRootFinder
 
-/*
-// under construction
-template<class T>
-std::vector<T> coeffsAdamsBashforth(int order)
-{
-  using Poly = rsPolynomial<T>;
-  int s = order;
-  std::vector<T> b(s);
-  T sign = T(1);                        // for the (-1)^j
-  for(int j = 0; j < s; j++) {
-    Poly p({ T(1) });
-    for(int i = 0; i < s; i++) 
-      if(i != j)
-        p = p * Poly({T(i), T(1)});  
-    T d = p.definiteIntegral(T(0), T(1));
-    b[s-j-1] = (sign*d) / (rsFactorial(j) * rsFactorial(s-j-1));
-    sign *= T(-1);  }
-  return b;
-}
-
-template<class T>
-std::vector<T> coeffsAdamsMoulton(int order)
-{
-  using Poly = rsPolynomial<T>;
-  int s = order;
-  std::vector<T> b(s+1);
-  T sign = T(1);
-  for(int j = 0; j <= s; j++) {
-    Poly p({ T(1) });
-    for(int i = 0; i <= s; i++) 
-      if(i != j)
-        p = p * Poly({T(i-1), T(1)}); 
-    T d = p.definiteIntegral(T(0), T(1));
-    b[s-j] = (sign*d) / (rsFactorial(j) * rsFactorial(s-j));
-    sign *= T(-1); }
-  return b;
-}
-*/
-// ToDo: move to prototypes, implement unit tests, fix warnings in rsPolynomial, test it for higher
-// orders than we currently have
-
-// https://en.wikipedia.org/wiki/Linear_multistep_method#Adams%E2%80%93Bashforth_methods
-// Maybe the algo can be turned into an O(N) algo by not creating the polynomial p from scratch 
-// leaving out the i=j factor each time but instead construction a "master" polynomial and dividing
-// out the i=j factor in each iteration.
-
 void reciprocalIterator()
 {
   // We want to iteratively compute an approximation of y(x) = 1/x. To do this, we find the ODE
@@ -3689,20 +3643,6 @@ void reciprocalIterator()
   double b = newton(testFunc, testFuncD, 5.0, 0.0); // should compute sqrt(9) = 3, uses 5 as guess
   */
 
-  // Test the coefficient generators (todo: move to unit test)
-  //Vec coeffs = coeffsAdamsBashforth<double>(4);
-  /*
-  using Frac = rsFraction<int>;
-  std::vector<Frac> b;
-  b = coeffsAdamsBashforth<Frac>(4);
-  b = coeffsAdamsBashforth<Frac>(5);
-  b = coeffsAdamsMoulton<Frac>(3);
-  b = coeffsAdamsMoulton<Frac>(4);
-  */
-
-
-
-
 
   // Now for the implicit methods. They are more complicated because the value that we want to 
   // compute appears on the left and right hand side of the equation (in general nonlinearly, so we 
@@ -3796,11 +3736,22 @@ void reciprocalIterator()
   }
   Vec e4ms = y4ms - yt;
 
-  // 2-step BDF:
+  // 2-step BDF: y[n+2] = -(1/3)*y[n] + (4/3)*y[n+1] + (2/3)*h*f(y[n+2]), 1-step BDF would be 
+  // backward Euler again, so we don't include it here.
+  Vec y2bdf(N); y = &y2bdf[0];
+  y[0] = yt[0]; y[1] = yt[1];
+  fnp = [&](double z) { return (2*h/3)*fp(z) - 1; };
+  for(int n = 0; n < N-2; n++)
+  {
+    fn = [&](double z) { return (-1./3)*y[n] + (4./3)*y[n+1] + (2./3)*h*f(z) - z; };
+    y[n+2] = newton(fn, fnp, y[n+1]);
+  }
+  Vec e2bdf = y2bdf - yt;
 
 
 
-
+  // Errors of BDF methods:
+  rsPlotVectorsXY(x, e1b, e2bdf);
 
 
   // Results and errors of 1st order forward and backward Euler and trapezoidal methods:

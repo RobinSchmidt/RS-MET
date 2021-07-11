@@ -51,7 +51,7 @@ void rsSinCos2(double x, double* s, double* c);
 
 
 /** Computes the coefficients for an Adams-Bashforth multistep method for numerically solving an 
-ODE. Directly implements the formula given here:
+ordinary differential equation (ODE). Directly implements the formula given here:
   https://en.wikipedia.org/wiki/Linear_multistep_method#Adams%E2%80%93Bashforth_methods
 without any attempt to optimize the efficiency. I recommend to use rsFraction<int> for the template
 parameter T. Maybe the algo can be turned into an O(N) algo by not creating the polynomial p from 
@@ -69,7 +69,7 @@ std::vector<T> coeffsAdamsBashforth(int order)
     Poly p({ T(1) });
     for(int i = 0; i < s; i++) 
       if(i != j)
-        p = p * Poly({T(i), T(1)});  
+        p = p * Poly({T(i), T(1)});
     T d = p.definiteIntegral(T(0), T(1));
     b[s-j-1] = (sign*d) / (rsFactorial(j) * rsFactorial(s-j-1));
     sign *= T(-1);  }
