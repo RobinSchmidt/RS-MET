@@ -3543,19 +3543,39 @@ std::vector<T> coeffsAdamsBashforth(int order)
 {
   using Poly = rsPolynomial<T>;
   int s = order;
-  std::vector<T> c(s);
+  std::vector<T> b(s);
   T sign = T(1);                        // for the (-1)^j
   for(int j = 0; j < s; j++) {
-    Poly p({T(1)});
-    for(int i = 0; i < s; i++) {
-      if(i != j) {
-        Poly pi({T(i), T(1)});
-        p = p * pi;  }}
-    T d  = p.definiteIntegral(T(0), T(1));
-    c[j] = (sign*d) / (rsFactorial(j) * rsFactorial(s-j-1));
+    Poly p({ T(1) });
+    for(int i = 0; i < s; i++) 
+      if(i != j)
+        p = p * Poly({T(i), T(1)});  
+    T d = p.definiteIntegral(T(0), T(1));
+    b[s-j-1] = (sign*d) / (rsFactorial(j) * rsFactorial(s-j-1));
     sign *= T(-1);  }
-  return c;
+  return b;
 }
+
+template<class T>
+std::vector<T> coeffsAdamsMoulton(int order)
+{
+  using Poly = rsPolynomial<T>;
+  int s = order;
+  std::vector<T> b(s+1);
+  T sign = T(1);
+  for(int j = 0; j <= s; j++) {
+    Poly p({ T(1) });
+    for(int i = 0; i <= s; i++) 
+      if(i != j)
+        p = p * Poly({T(i-1), T(1)}); 
+    T d = p.definiteIntegral(T(0), T(1));
+    b[s-j] = (sign*d) / (rsFactorial(j) * rsFactorial(s-j));
+    sign *= T(-1); }
+  return b;
+}
+// ToDo: move to prototypes, implement unit tests, fix warnings in rsPolynomial, test it for higher
+// orders than we currently have
+
 // https://en.wikipedia.org/wiki/Linear_multistep_method#Adams%E2%80%93Bashforth_methods
 // Maybe the algo can be truned into an O(N) algo by not creating the polynomial p from scratch 
 // leaving out the i=j factor each time but instead construction a "master" polynomial and dividing
@@ -3671,7 +3691,13 @@ void reciprocalIterator()
   //Vec coeffs = coeffsAdamsBashforth<double>(4);
 
   using Frac = rsFraction<int>;
-  std::vector<Frac> coeffs = coeffsAdamsBashforth<Frac>(4);
+  std::vector<Frac> b;
+  b = coeffsAdamsBashforth<Frac>(4);
+  b = coeffsAdamsBashforth<Frac>(5);
+  b = coeffsAdamsMoulton<Frac>(3);
+  b = coeffsAdamsMoulton<Frac>(4);
+
+
 
 
 
