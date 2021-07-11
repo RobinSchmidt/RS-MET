@@ -3537,6 +3537,7 @@ T newton(const std::function<T(T)>& f, const std::function<T(T)>& fp, T x0, T yt
 }
 // todo: use yt for the target value, move to rsRootFinder
 
+/*
 // under construction
 template<class T>
 std::vector<T> coeffsAdamsBashforth(int order)
@@ -3573,11 +3574,12 @@ std::vector<T> coeffsAdamsMoulton(int order)
     sign *= T(-1); }
   return b;
 }
+*/
 // ToDo: move to prototypes, implement unit tests, fix warnings in rsPolynomial, test it for higher
 // orders than we currently have
 
 // https://en.wikipedia.org/wiki/Linear_multistep_method#Adams%E2%80%93Bashforth_methods
-// Maybe the algo can be truned into an O(N) algo by not creating the polynomial p from scratch 
+// Maybe the algo can be turned into an O(N) algo by not creating the polynomial p from scratch 
 // leaving out the i=j factor each time but instead construction a "master" polynomial and dividing
 // out the i=j factor in each iteration.
 
@@ -3689,13 +3691,14 @@ void reciprocalIterator()
 
   // Test the coefficient generators (todo: move to unit test)
   //Vec coeffs = coeffsAdamsBashforth<double>(4);
-
+  /*
   using Frac = rsFraction<int>;
   std::vector<Frac> b;
   b = coeffsAdamsBashforth<Frac>(4);
   b = coeffsAdamsBashforth<Frac>(5);
   b = coeffsAdamsMoulton<Frac>(3);
   b = coeffsAdamsMoulton<Frac>(4);
+  */
 
 
 

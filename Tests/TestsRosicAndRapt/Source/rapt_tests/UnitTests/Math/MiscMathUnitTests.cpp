@@ -259,8 +259,50 @@ bool testNumDiffStencils()
 
   return r;
 
-  // todo: try some weird stencils (asymmetric and/or non-equidistant, even  number of points,...)
+  // ToDo: 
+  // -Try some weird stencils (asymmetric and/or non-equidistant, even  number of points,...)
+  // -Use rsFraction instead of double to represent the stencil coeffs. But that requires to 
+  //  instantiate rsNumericDifferentiator for rsFraction which may be a weird thing to to because 
+  //  calculus typically uses real numbers, not rational ones...hmmm...
 }
+
+bool testAdamsMethodsCoeffs()
+{
+  bool ok = true;
+  using Frc = rsFraction<int>;
+  using Vec = std::vector<Frc>;
+  Vec b;
+
+  // Adams-Bashforth:
+  b = coeffsAdamsBashforth<Frc>(1);              // == forward Euler
+  ok &= b == Vec({ Frc(1,1) });
+  b = coeffsAdamsBashforth<Frc>(2);
+  ok &= b == Vec({ Frc(-1,2), Frc(3,2) });
+  b = coeffsAdamsBashforth<Frc>(3);
+  ok &= b == Vec({ Frc(5,12), Frc(-16,12), Frc(23,12) });
+  b = coeffsAdamsBashforth<Frc>(4);
+  ok &= b == Vec({ Frc(-9,24), Frc(37,24), Frc(-59,24), Frc(55,24) });
+  b = coeffsAdamsBashforth<Frc>(5);
+  ok &= b == Vec({ Frc(251,720), Frc(-1274,720), Frc(2616,720), Frc(-2774,720), Frc(1901,720) });
+
+  // Adams-Moulton:
+  b = coeffsAdamsMoulton<Frc>(0);                // == backward Euler
+  ok &= b == Vec({ Frc(1,1) });
+  b = coeffsAdamsMoulton<Frc>(1);                // == trapezoidal
+  ok &= b == Vec({ Frc(1,2), Frc(1,2) });
+  b = coeffsAdamsMoulton<Frc>(2);
+  ok &= b == Vec({ Frc(-1,12), Frc(2,3), Frc(5,12) });
+  b = coeffsAdamsMoulton<Frc>(3);
+  ok &= b == Vec({ Frc(1,24), Frc(-5,24), Frc(19,24), Frc(9,24) });
+  b = coeffsAdamsMoulton<Frc>(4);
+  ok &= b == Vec({ Frc(-19,720), Frc(106,720), Frc(-264,720), Frc(646,720), Frc(251,720) });
+
+  return ok;
+
+  // The target values were taken from wikipedia:
+  // https://en.wikipedia.org/wiki/Linear_multistep_method
+}
+
 
 // Compute Hessian using NumDiff::hessianTimesVector - for each unit vector, we compute one row
 // of the Hessian. ...maybe move to ScratchPad or Prototypes
@@ -954,22 +996,23 @@ bool testMiscMath()
 {
   std::string dummy;    // get rid
 
-  bool testResult = true;
+  bool ok = true;
 
-  testResult &= testFraction();
-  testResult &= testExponentialCurveFitting(  dummy);
-  testResult &= testRootFinding(              dummy);
-  testResult &= testGradientBasedOptimization(dummy);
-  testResult &= testMinSqrDifFixSum(          dummy);
-  testResult &= testPhaseUnwrapStuff(         dummy);
-  testResult &= testNumDiffStencils();
-  testResult &= testScalarFieldDerivatives();
-  testResult &= testVectorFieldDerivatives();
-  testResult &= testCurl();
-  //testResult &= testNumericMinimization();  // has been moved to experiments
+  ok &= testFraction();
+  ok &= testExponentialCurveFitting(  dummy);
+  ok &= testRootFinding(              dummy);
+  ok &= testGradientBasedOptimization(dummy);
+  ok &= testMinSqrDifFixSum(          dummy);
+  ok &= testPhaseUnwrapStuff(         dummy);
+  ok &= testNumDiffStencils();
+  ok &= testAdamsMethodsCoeffs();
+  ok &= testScalarFieldDerivatives();
+  ok &= testVectorFieldDerivatives();
+  ok &= testCurl();
+  //ok &= testNumericMinimization();  // has been moved to experiments
 
-  //testResult &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
-  //testResult &= testMultiLayerPerceptron(     dummy); // maybe move to experiments
+  //ok &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
+  //ok &= testMultiLayerPerceptron(     dummy); // maybe move to experiments
 
-  return testResult;
+  return ok;
 }

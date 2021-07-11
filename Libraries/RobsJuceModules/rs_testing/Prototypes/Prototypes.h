@@ -50,7 +50,51 @@ void rsSinCos1(double x, double* s, double* c);
 void rsSinCos2(double x, double* s, double* c);
 
 
+/** Computes the coefficients for an Adams-Bashforth multistep method for numerically solving an 
+ODE. Directly implements the formula given here:
+  https://en.wikipedia.org/wiki/Linear_multistep_method#Adams%E2%80%93Bashforth_methods
+without any attempt to optimize the efficiency. I recommend to use rsFraction<int> for the template
+parameter T. Maybe the algo can be turned into an O(N) algo by not creating the polynomial p from 
+scratch leaving out the i=j factor each time but instead construction a "master" polynomial and 
+dividing out the i=j factor in each iteration. Oh, and the factorials could be computed more 
+efficiently, too. */
+template<class T>
+std::vector<T> coeffsAdamsBashforth(int order)
+{
+  using Poly = rsPolynomial<T>;
+  int s = order;
+  std::vector<T> b(s);
+  T sign = T(1);                        // for the (-1)^j
+  for(int j = 0; j < s; j++) {
+    Poly p({ T(1) });
+    for(int i = 0; i < s; i++) 
+      if(i != j)
+        p = p * Poly({T(i), T(1)});  
+    T d = p.definiteIntegral(T(0), T(1));
+    b[s-j-1] = (sign*d) / (rsFactorial(j) * rsFactorial(s-j-1));
+    sign *= T(-1);  }
+  return b;
+}
 
+/** Similar to coeffsAdamsBashforth. See:
+  https://en.wikipedia.org/wiki/Linear_multistep_method#Adams%E2%80%93Moulton_methods  */
+template<class T>
+std::vector<T> coeffsAdamsMoulton(int order)
+{
+  using Poly = rsPolynomial<T>;
+  int s = order;
+  std::vector<T> b(s+1);
+  T sign = T(1);
+  for(int j = 0; j <= s; j++) {
+    Poly p({ T(1) });
+    for(int i = 0; i <= s; i++) 
+      if(i != j)
+        p = p * Poly({T(i-1), T(1)}); 
+    T d = p.definiteIntegral(T(0), T(1));
+    b[s-j] = (sign*d) / (rsFactorial(j) * rsFactorial(s-j));
+    sign *= T(-1); }
+  return b;
+}
 
 template<class T>
 void weightedSum(const T* x1, int N1, T w1, const T* x2, int N2, T w2, T* y, int Ny)
