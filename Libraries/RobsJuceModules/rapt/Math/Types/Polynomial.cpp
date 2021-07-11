@@ -57,8 +57,6 @@ void rsPolynomial<T>::truncateTrailingZeros(const T& thresh)
 
 
 
-
-
 //=================================================================================================
 // raw number crunching routines operating on coefficient arrays:
 
@@ -429,11 +427,11 @@ void rsPolynomial<T>::shiftArgument(const T *a, T *as, int N, T x0)
   rsUint32 *pt = new rsUint32[length];
   rsCreatePascalTriangle(pt, numLines);
   T *x0n = new T[N+1];  // +- x0^n, the alternation comes from the minus in (x-x0)^n
-  x0n[0] = 1.0;
+  x0n[0] = T(1);
   for(rsUint32 n = 1; n <= Nu; n++)
     x0n[n] = -x0 * x0n[n-1];
   for(rsUint32 n = 0; n <= Nu; n++) {
-    as[n] = 0.0;
+    as[n] = T(0);
     for(rsUint32 k = n; k <= Nu; k++)
       as[n] += T(rsPascalTriangle(pt, k, k-n)) * x0n[k-n] * a[k]; }
   delete[] pt;
@@ -945,10 +943,10 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, std::complex<T>* a
   int nF = rsCopyFiniteValues(r, rF, N);
   rsArrayTools::fillWithZeros(a, N+1);
   if(nF == 0)
-    a[0] = 1.0;
+    a[0] = T(1);
   else {
     a[0] = -rF[0];
-    a[1] = 1.0;
+    a[1] = T(1);
     for(int M = 2; M <= nF; M++) {
       a[M] = a[M-1];
       std::complex<T> rM = rF[M-1];
@@ -1037,16 +1035,16 @@ void rsPolynomial<T>::cubicCoeffsTwoPointsAndDerivatives(T *a, const T *y, const
   a[0] = y[0];
   a[1] = dy[0];
   a[2] = T(3)*(y[1]-a[1]-a[0])-dy[1]+a[1];
-  a[3] = T(1.0/3.0)*(dy[1]-T(2)*a[2]-a[1]);
+  a[3] = (T(1)/T(3)) * (dy[1]-T(2)*a[2]-a[1]);
 }
 
 template<class T>
 void rsPolynomial<T>::cubicCoeffsFourPoints(T *a, const T *y)
 {
   a[0] = y[0];
-  a[2] = T(0.5)*(y[-1]+y[1]-T(2)*a[0]);
-  a[3] = T(1.0/6.0)*(y[2]-y[1]+y[-1]-a[0]-T(4)*a[2]);
-  a[1] = T(0.5)*(y[1]-y[-1]-T(2)*a[3]);
+  a[2] = (T(1)/T(2))*(y[-1]+y[1]-T(2)*a[0]);
+  a[3] = (T(1)/T(6))*(y[2]-y[1]+y[-1]-a[0]-T(4)*a[2]);
+  a[1] = (T(1)/T(2))*(y[1]-y[-1]-T(2)*a[3]);
 }
 
 // move to a function rsMatrixView:vandermonde(const T* x, int N, T* V)
@@ -1056,7 +1054,7 @@ T** rsPolynomial<T>::vandermondeMatrix(const T *x, int N)
   T **A; rsArrayTools::allocateSquareArray2D(A, N);
   for(int i = 0; i < N; i++) {
     T xi  = x[i];
-    T xij = 1.0;  // xi^j
+    T xij = T(1);  // xi^j
     for(int j = 0; j < N; j++) {
       A[i][j] = xij;
       xij *= xi; }}
@@ -1201,7 +1199,8 @@ void rsPolynomial<T>::fitQuadraticLagrange(T* a, const T* x, const T* y)
 template<class T>
 void rsPolynomial<T>::fitQuadratic_0_1_2(T *a, const T *y)
 {
-  a[2] = T(0.5)*(y[0]+y[2])-y[1];
+  //a[2] = T(0.5)*(y[0]+y[2])-y[1];
+  a[2] = (T(1)/T(2))*(y[0]+y[2])-y[1];
   a[1] = y[1]-y[0]-a[2];
   a[0] = y[0];
 }
@@ -1210,14 +1209,17 @@ template<class T>
 void rsPolynomial<T>::fitQuadratic_m1_0_1(T *a, const T *y)
 {
   a[0] = y[1];
-  a[1] = T(0.5)*(y[2]-y[0]);
+  a[1] = (T(1)/T(2))*(y[2]-y[0]);
+  //a[1] = T(0.5)*(y[2]-y[0]);
   a[2] = y[2] - a[0] - a[1];
 }
 
 template<class T>
 T rsPolynomial<T>::quadraticExtremumPosition(const T *a)
 {
-  return T(-0.5) * a[1]/a[2]; // it's the client's responsibility to ensure that a[2] is nonzero
+  return (T(-1)/T(2)) * a[1]/a[2]; // it's the client's responsibility to ensure that a[2] is nonzero
+
+  //return T(-0.5) * a[1]/a[2]; // it's the client's responsibility to ensure that a[2] is nonzero
 }
 
 template<class T>
@@ -1283,22 +1285,22 @@ void rsPolynomial<T>::besselPolynomial(T *a, int degree)
 {
   int m, n;
   for(n=0; n<=degree; n++)
-    a[n] = 0.0;
+    a[n] = T(0);
 
   if( degree == 0 ) {
-    a[0] = 1.0;
+    a[0] = T(1);
     return; }
   else if( degree == 1 )  {
-    a[0] = 1.0;
-    a[1] = 1.0;
+    a[0] = T(1);
+    a[1] = T(1);
     return; }
 
   // the general case is treated by recursion:
-  a[0]  = 1.0;
+  a[0]  = T(1);
   T *b1 = new T[degree+1]; // why +1?
   T *b2 = new T[degree+1];
-  b2[0] = 1.0; b2[1] = 0.0;
-  b1[0] = 1.0; b1[1] = 1.0;
+  b2[0] = T(1); b2[1] = T(0);
+  b1[0] = T(1); b1[1] = T(1);
   for(n = 2; n <= degree; n++) {
     T c = (T) (2*n-1);
     for(m = n; m >  0; m--)   a[m]  = c*b1[m-1];
@@ -1315,12 +1317,16 @@ template<class T>
 template<class R>
 void rsPolynomial<T>::legendrePolynomial(R *a, int degree)
 {
-  if(degree == 0) { a[0] = 1.0;             return; }
-  if(degree == 1) { a[0] = 0.0; a[1] = 1.0; return; }
+  if(degree == 0) { a[0] = T(1);              return; }
+  if(degree == 1) { a[0] = T(0); a[1] = T(1); return; }
 
-  a[0] = -0.5;
-  a[1] =  0.0;
-  a[2] =  1.5;
+  //a[0] = -0.5;
+  //a[1] =  0.0;
+  //a[2] =  1.5;
+  a[0] = T(-1)/T(2);
+  a[1] = T(0);
+  a[2] = T(3)/T(2);
+
   if(degree == 2)
     return;
 
@@ -1331,7 +1337,7 @@ void rsPolynomial<T>::legendrePolynomial(R *a, int degree)
   for(i = 0; i <= degree; i++) {
     b1[i] = b2[i] = 0.0;
   }
-  b2[1] = 1.0;
+  b2[1] = T(1);
 
   for(i = 3; i <= degree; i++) {
     for(j = 0; j <= i; j++) {
@@ -1366,11 +1372,11 @@ void rsPolynomial<T>::jacobiRecursion(T *c, int n, T *c1, T *c2, T a, T b)
 {
   // initialization:
   if( n == 0 ) {
-    c[0] = 1.0;
+    c[0] = T(1);
     return; }
   if( n == 1 ) {
-    c[0] = T(0.5)*(a-b);
-    c[1] = T(0.5)*(a+b+T(2));
+    c[0] = (T(1)/T(2))*(a-b);
+    c[1] = (T(1)/T(2))*(a+b+T(2));
     return; }
 
   // recursion:
@@ -1389,9 +1395,9 @@ void rsPolynomial<T>::jacobiPolynomials(T **c, T a, T b, int maxDegree)
 template<class T>
 void rsPolynomial<T>::legendreRecursion(T *a, int n, T *a1, T *a2)
 {
-  if( n == 0 ) { a[0] = 1.0;             return; }
-  if( n == 1 ) { a[0] = 0.0; a[1] = 1.0; return; }
-  threeTermRecursion(a, T(n), n, a1, 0.0, T(2*n)-T(1), a2, -(T(n)-T(1))); // soem Ts can be moved out
+  if( n == 0 ) { a[0] = T(1);             return; }
+  if( n == 1 ) { a[0] = T(0); a[1] = T(1); return; }
+  threeTermRecursion(a, T(n), n, a1, T(0), T(2*n)-T(1), a2, -(T(n)-T(1))); // soem Ts can be moved out
   // Legendre polynomials are a special case of Jacobi polynomials, so this would also work:
   // jacobiRecursion(a, n, a1, a2, 0.0, 0.0);
 }
@@ -1426,7 +1432,7 @@ void rsPolynomial<T>::maxSlopeMonotonic(R *w, int n)
   {
     for(i = 0; i < k+1; i++)
     {
-      a[i] = 0.0;
+      a[i] = T(0);
     }
     if(k & 1)
     {
@@ -1445,8 +1451,8 @@ void rsPolynomial<T>::maxSlopeMonotonic(R *w, int n)
   }
   for(i = 0; i <= n; i++)
   {
-    s[i] = 0.0;
-    w[i] = 0.0;
+    s[i] = T(0);
+    w[i] = T(0);
   }
 
   // form s[] = sum of a[i]*P[i]
@@ -1464,7 +1470,7 @@ void rsPolynomial<T>::maxSlopeMonotonic(R *w, int n)
   //  form v[] = square of s[]:
   for(i = 0; i <= 2*k+2; i++)
   {
-    v[i] = 0.0;
+    v[i] = T(0);
   }
   for(i = 0; i <= k; i++)
   {
@@ -1475,7 +1481,7 @@ void rsPolynomial<T>::maxSlopeMonotonic(R *w, int n)
   }
 
   // modify integrand for even 'n':
-  v[2*k+1] = 0.0;
+  v[2*k+1] = T(0);
   if((n & 1) == 0)
   {
     for(i = n; i >= 0; i--)
@@ -1489,15 +1495,15 @@ void rsPolynomial<T>::maxSlopeMonotonic(R *w, int n)
   {
     v[i+1] = v[i]/(T)(i+1.0);
   }
-  v[0] = 0.0;
+  v[0] = T(0);
 
   // clear s[] for use in computing definite integral:
   for(i = 0; i < (n+2); i++)
   {
-    s[i] = 0.0;
+    s[i] = T(0);
   }
-  s[0] = -1.0;
-  s[1] =  2.0;
+  s[0] = T(-1);
+  s[1] = T( 2);
 
   // calculate definite integral:
   for(i = 1; i <= n; i++)
@@ -1521,7 +1527,7 @@ void rsPolynomial<T>::maxSlopeMonotonic(R *w, int n)
     }
   }
   if((n & 1) == 0)
-    w[1] = 0.0;
+    w[1] = T(0);
 
   delete [] v;
   delete [] p;

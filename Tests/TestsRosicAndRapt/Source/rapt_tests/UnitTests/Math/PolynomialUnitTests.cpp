@@ -208,47 +208,79 @@ bool testCubicCoeffsFourPoints(std::string &reportString)
 bool testCubicCoeffsTwoPointsAndDerivatives(std::string &reportString)
 {
   std::string testName = "CubicCoeffsTwoPointsAndDerivatives";
-  bool testResult = true;
+  bool ok = true;
 
   double  x[2] = {-3, 2};
   double  y[2] = {-2, 5};
   double dy[2] = { 7, 3};
   double  a[4];
 
-  rsPolynomial<double>::cubicCoeffsTwoPointsAndDerivatives(a, x, y, dy);
+  using PolyD = rsPolynomial<double>;
+
+  PolyD::cubicCoeffsTwoPointsAndDerivatives(a, x, y, dy);
 
   // check results:
   double yc, dyc;       // computed values
   double tol = 1.e-14;  // tolerance
 
-  rsPolynomial<double>::evaluateWithDerivative(x[0], a, 3, &yc, &dyc);
-  testResult &= rsIsCloseTo( yc,  y[0], tol);
-  testResult &= rsIsCloseTo(dyc, dy[0], tol);
+  PolyD::evaluateWithDerivative(x[0], a, 3, &yc, &dyc);
+  ok &= rsIsCloseTo( yc,  y[0], tol);
+  ok &= rsIsCloseTo(dyc, dy[0], tol);
 
-  rsPolynomial<double>::evaluateWithDerivative(x[1], a, 3, &yc, &dyc);
-  testResult &= rsIsCloseTo( yc,  y[1], tol);
-  testResult &= rsIsCloseTo(dyc, dy[1], tol);
+  PolyD::evaluateWithDerivative(x[1], a, 3, &yc, &dyc);
+  ok &= rsIsCloseTo( yc,  y[1], tol);
+  ok &= rsIsCloseTo(dyc, dy[1], tol);
 
   // test, if in the special case where x1=0, x2=1:
   x[0] = 0.0;
   x[1] = 1.0;
-  rsPolynomial<double>::cubicCoeffsTwoPointsAndDerivatives(a, x, y, dy);
-  rsPolynomial<double>::evaluateWithDerivative(x[0], a, 3, &yc, &dyc);
-  testResult &= rsIsCloseTo( yc,  y[0], tol);
-  testResult &= rsIsCloseTo(dyc, dy[0], tol);
-  rsPolynomial<double>::evaluateWithDerivative(x[1], a, 3, &yc, &dyc);
-  testResult &= rsIsCloseTo( yc,  y[1], tol);
-  testResult &= rsIsCloseTo(dyc, dy[1], tol);
+  PolyD::cubicCoeffsTwoPointsAndDerivatives(a, x, y, dy);
+  PolyD::evaluateWithDerivative(x[0], a, 3, &yc, &dyc);
+  ok &= rsIsCloseTo( yc,  y[0], tol);
+  ok &= rsIsCloseTo(dyc, dy[0], tol);
+  PolyD::evaluateWithDerivative(x[1], a, 3, &yc, &dyc);
+  ok &= rsIsCloseTo( yc,  y[1], tol);
+  ok &= rsIsCloseTo(dyc, dy[1], tol);
 
   // test, if the simplified algorithm for the special case returns the same coeffs:
   double b[4];
-  rsPolynomial<double>::cubicCoeffsTwoPointsAndDerivatives(b, y, dy);
-  testResult &= rsIsCloseTo(a[0], b[0], tol);
-  testResult &= rsIsCloseTo(a[1], b[1], tol);
-  testResult &= rsIsCloseTo(a[2], b[2], tol);
-  testResult &= rsIsCloseTo(a[3], b[3], tol);
+  PolyD::cubicCoeffsTwoPointsAndDerivatives(b, y, dy);
+  ok &= rsIsCloseTo(a[0], b[0], tol);
+  ok &= rsIsCloseTo(a[1], b[1], tol);
+  ok &= rsIsCloseTo(a[2], b[2], tol);
+  ok &= rsIsCloseTo(a[3], b[3], tol);
 
-  return testResult;
+
+  // Do the same test for polynomials with rational coeffs:
+  using Frac  = rsFraction<int>;
+  using VecF  = std::vector<Frac>;
+  using PolyF = rsPolynomial<Frac>;
+
+  VecF xf( { Frac(-3), Frac(2) });
+  VecF yf( { Frac(-2), Frac(5) });
+  VecF dyf({ Frac( 7), Frac(3) });
+  VecF af(4);
+
+  PolyF::cubicCoeffsTwoPointsAndDerivatives(&af[0], &xf[0], &yf[0], &dyf[0]);
+  Frac ycf, dycf;
+  PolyF::evaluateWithDerivative(xf[0], &af[0], 3, &ycf, &dycf);
+  ok &= ycf  == yf[0];
+  ok &= dycf == dyf[0];
+  PolyF::evaluateWithDerivative(xf[1], &af[0], 3, &ycf, &dycf);
+  ok &= ycf  == yf[1];
+  ok &= dycf == dyf[1];
+
+  xf[0] = 0;
+  xf[1] = 1;
+  PolyF::cubicCoeffsTwoPointsAndDerivatives(&af[0], &xf[0], &yf[0], &dyf[0]);
+  VecF bf(4);
+  PolyF::cubicCoeffsTwoPointsAndDerivatives(&bf[0], &yf[0], &dyf[0]);
+  ok &= bf == af;
+ 
+
+
+
+  return ok;
 }
 
 

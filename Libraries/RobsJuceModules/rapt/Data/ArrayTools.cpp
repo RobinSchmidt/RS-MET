@@ -1130,11 +1130,25 @@ void rsArrayTools::multiply(const T1 *buffer1, const T2 *buffer2, TR *result, in
     // does not compile when T1 == std::complex<float> and T2 == double. This occurs in
     // rsPolynomial<T>::evaluateWithDerivatives when we call 
     // rsArrayTools::multiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
-    // becasue the rsFactorials array is an array of doubles...
+    // because the rsFactorials array is an array of doubles. Maybe it should be an array of
+    // integers or maybe uint64 - but take care of overflow...hmm...i think
+    // factorial(31) = 8222838654177922817725562880000000 is not representable by 64 bit integers
+    // ..it does indeed overflow. maybe check, how well the large factorials are actually 
+    // represented as double - compare them to what sage produces with commands like:
+    // N(factorial(31), digits=18)
 
     //result[i] = TR(buffer1[i]) * TR(buffer2[i]);
     // ...so we need to do the conversion to the result type for both operands separately, not just
-    // for the result itself
+    // for the result itself. But this may lead to other problems such as less precise results when
+    // TR == float and T1 == T2 == double because the rounding occurs already for each operand and 
+    // then again after the multiplication whereas when  converting only the result, the 
+    // multiplication is still done in double precision...hmmm...before changing anything here, we 
+    // need to have good unit tests in place. Maybe it's not a good idea to have a routine that 
+    // does multiplication-and-conversion. Maybe client code should be forced to pass arrays of 
+    // matching types. Why do we need this mul-and-convert as single operation anyway? ...maybe we
+    // should try to get rid of it...but forcing client code to pass arrays of the same type may
+    // force client code to create temp arrays...maybe the reason for this function to exist is to
+    // avoid that -> document that!
   }
 }
 

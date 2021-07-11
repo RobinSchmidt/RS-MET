@@ -4,8 +4,11 @@
 /** Collection of functions for linear algebra such as solving systems of linear equations, matrix 
 inversion, etc.
 
-ToDo: get rid of rs-prefix in the function names (they are now wrapped into a class which already 
-has the prefix)
+ToDo: 
+-get rid of rs-prefix in the function names (they are now wrapped into a class which already 
+ has the prefix)
+-rename to rsLinearAlgebraOld and eventually deprecate it in favor of rsLinearAlgebraNew which 
+ should then be named rsLinearAlgebra
 */
 
 class rsLinearAlgebra
@@ -91,7 +94,7 @@ public:
   is Gaussian elimination with partial pivoting (...i think -> verify this). */
   template<class T>
   static bool rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N);
-  // deprecate!..but keep around for the comments
+  // deprecate! use rsMatrix instead ...but keep around for the comments
 
   // todo: add functions to solve NxM systems with N != M (find minimum-norm solution for 
   // underdetermined systems and least-squares approximation for overdetermined systems...

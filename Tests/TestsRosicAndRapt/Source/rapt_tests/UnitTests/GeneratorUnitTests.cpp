@@ -45,7 +45,7 @@ bool samplerDataUnitTest()
 }
 
 bool testSamplerNote(rosic::rsSamplerEngine* se, float key, float vel, 
-  const std::vector<float>& targetL, const const std::vector<float>& targetR, 
+  const std::vector<float>& targetL, const std::vector<float>& targetR, 
   float tol = 0.f)
 {
   using AT   = RAPT::rsArrayTools;

@@ -792,7 +792,9 @@ public:
   {
     return rsLinearAlgebra::rsChangeOfBasisRowWise(Q, R, a, b, degree+1);
   }
-  // make const-correct - first make functions in rsLinearAlgebra const-correct
+  // ToDo:
+  // -make const-correct - first make functions in rsLinearAlgebra const-correct
+  // -actually, it should be deprecated and replaced by a version using rsMatrix
 
   /** Computes polynomial coefficients from the roots. 
   \todo: get rid of that - replace by function below */

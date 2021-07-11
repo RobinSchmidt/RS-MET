@@ -3891,9 +3891,33 @@ void reciprocalIterator()
   //  https://en.wikipedia.org/wiki/Backward_differentiation_formula
   //  The explicit solvers can be implemented with just one evaluation of f per generated value by
   //  storing the past f-values from previous calls. Implicit solvers may use Newton iteration 
-  //  using an initial guess produced by an explicit method.
+  //  using an initial guess produced by an explicit method. In a practical implementation, we 
+  //  would not re-evaluate f so many times as in, for example:
+  //    y[n+4] = y[n+3] + (h/24) * (55*f(y[n+3]) - 59*f(y[n+2]) + 37*f(y[n+1]) - 9*f(y[n]));
+  //  (taken from 4-step Adams-Bashforth). Instead, we would store the previously computed f values
+  //  together with the previously computed y values (the f values are also known as y' values)
   // -Implement a function that computes the coefficients for arbitrary order Adams-Bashforth
   //  methods
+  // -It seems Adams methods use a lot of past y' (or f) values and only one past y-value whereas
+  //  BDF method use a lot of past y-values but only one past f value. What about methods that use
+  //  a bunch of both types? wouldn't that give yet better accuray? ah - see 
+  //  "A First Course in the Numerical Analysis of Differential Equations" pg 25 ff. order of 
+  //  accuracy is not the only relevant criterion
+
+  // Ideas:
+  // -Maybe an adaptive stepsize control can be implemented by letting the stepsize grow or 
+  //  shrink by a factor of 2. Let's say, we have a 4-step method. In the case of shrinking the 
+  //  stepsize, we need a memory of y[n],..,y[n-4]. We pass a 4th degree polynomial to our most 
+  //  recent 4 datapoints and evaluate it at values halfway between our knwon values to produce
+  //  the denser history, i.e. we produce y[n-0.5], y[n-1.5], etc. and use these (interleaved with
+  //  our original history data) as new most recent 4 points - thus we have halved the stepsize. In
+  //  case of growing (doubling) the stepsize, we just discard y[n-1],y[n-3],y[n-5],y[n-7]...yes, 
+  //  we need to keep a history twice as long as the current stepsize dictates and if we have grown 
+  //  the stepsize in one step, we can't grow it again in the very next step because we don't have 
+  //  enough history. So, growth is more limited than shrinkage, which is better than the other way 
+  //  around, Maybe in case of growth we should also filter the past outputs witha 2-point average.
+  //  ..and maybe do the growth only if the filtered values are close enough to the unfiltered ones
+
 
   // See also:
   // https://www.researchgate.net/publication/257143339_Construction_of_Improved_Runge-Kutta_Nystrom_Method_for_Solving_Second-Order_Ordinary_Differential_Equations

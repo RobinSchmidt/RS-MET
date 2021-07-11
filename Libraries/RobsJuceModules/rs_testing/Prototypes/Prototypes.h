@@ -96,6 +96,12 @@ std::vector<T> coeffsAdamsMoulton(int order)
   return b;
 }
 
+// ToDo: implement similar methods to generate coeffs for other types of solvers such as 
+// Runge-Kutta:
+// https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
+// https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods
+// https://www.ams.org/journals/mcom/1962-16-080/S0025-5718-1962-0150954-0/S0025-5718-1962-0150954-0.pdf
+
 template<class T>
 void weightedSum(const T* x1, int N1, T w1, const T* x2, int N2, T w2, T* y, int Ny)
 {
