@@ -3537,6 +3537,30 @@ T newton(const std::function<T(T)>& f, const std::function<T(T)>& fp, T x0, T yt
 }
 // todo: use yt for the target value, move to rsRootFinder
 
+// under construction
+template<class T>
+std::vector<T> coeffsAdamsBashforth(int order)
+{
+  using Poly = rsPolynomial<T>;
+  int s = order;
+  std::vector<T> c(s);
+  T sign = T(1);                        // for the (-1)^j
+  for(int j = 0; j < s; j++) {
+    Poly p({T(1)});
+    for(int i = 0; i < s; i++) {
+      if(i != j) {
+        Poly pi({T(i), T(1)});
+        p = p * pi;  }}
+    T d  = p.definiteIntegral(T(0), T(1));
+    c[j] = (sign*d) / (rsFactorial(j) * rsFactorial(s-j-1));
+    sign *= T(-1);  }
+  return c;
+}
+// https://en.wikipedia.org/wiki/Linear_multistep_method#Adams%E2%80%93Bashforth_methods
+// Maybe the algo can be truned into an O(N) algo by not creating the polynomial p from scratch 
+// leaving out the i=j factor each time but instead construction a "master" polynomial and dividing
+// out the i=j factor in each iteration.
+
 void reciprocalIterator()
 {
   // We want to iteratively compute an approximation of y(x) = 1/x. To do this, we find the ODE
@@ -3643,6 +3667,14 @@ void reciprocalIterator()
   double b = newton(testFunc, testFuncD, 5.0, 0.0); // should compute sqrt(9) = 3, uses 5 as guess
   */
 
+  // Test the coefficient generators (todo: move to unit test)
+  //Vec coeffs = coeffsAdamsBashforth<double>(4);
+
+  using Frac = rsFraction<int>;
+  std::vector<Frac> coeffs = coeffsAdamsBashforth<Frac>(4);
+
+
+
   // Now for the implicit methods. They are more complicated because the value that we want to 
   // compute appears on the left and right hand side of the equation (in general nonlinearly, so we 
   // can't just isolate it on one side). This is solved by setting up the equation as a 
@@ -3735,7 +3767,7 @@ void reciprocalIterator()
   }
   Vec e4ms = y4ms - yt;
 
-
+  // 2-step BDF:
 
 
 
@@ -3836,6 +3868,10 @@ void reciprocalIterator()
 
   // See also:
   // https://www.researchgate.net/publication/257143339_Construction_of_Improved_Runge-Kutta_Nystrom_Method_for_Solving_Second-Order_Ordinary_Differential_Equations
+
+  // Sundials ODE library:
+  // https://computing.llnl.gov/projects/sundials/sundials-software
+  // https://github.com/LLNL/sundials
 }
 
 

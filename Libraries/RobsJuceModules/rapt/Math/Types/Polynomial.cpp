@@ -141,7 +141,7 @@ template <class T>
 void rsPolynomial<T>::evaluateWithDerivative(const T& x, const T *a, int degree, T *y, T *yd)
 {
   *y  = a[degree];
-  *yd = 0.0;
+  *yd = T(0);
   for(int i = degree-1; i >= 0; i--) {
     *yd = *yd * x + *y;
     *y  = *y  * x + a[i];
