@@ -3748,10 +3748,67 @@ void reciprocalIterator()
   }
   Vec e2bdf = y2bdf - yt;
 
+  // 3-step BDF: y[n+3] = (18/11)*y[n+2] - (9/11)*y[n+1] + (2/11)*y[n] + (6/11)*h*f(y[n+3]):
+  Vec y3bdf(N); y = &y3bdf[0];
+  y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2];
+  fnp = [&](double z) { return (6*h/11)*fp(z) - 1; };
+  for(int n = 0; n < N-3; n++)
+  {
+    fn = [&](double z) { return (18./11)*y[n+2] - (9./11)*y[n+1] + (2./11)*y[n] 
+      + (6./11)*h*f(z) - z; };
+    y[n+3] = newton(fn, fnp, y[n+2]);
+  }
+  Vec e3bdf = y3bdf - yt;
+  // todo: factor out the 1/11
+
+  // 4-step BDF: y[n+4] =   (48/25)*y[n+3] - (36/25)*y[n+2] + (16/25)*y[n+1] - (3/25)*y[n] 
+  //                      + (12/25)*h*f(y[n+4])
+  Vec y4bdf(N); y = &y4bdf[0];
+  y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2]; y[3] = yt[3];
+  fnp = [&](double z) { return (12*h/25)*fp(z) - 1; };
+  for(int n = 0; n < N-4; n++)
+  {
+    fn = [&](double z) { return (48./25)*y[n+3] - (36./25)*y[n+2] + (16./25)*y[n+1] 
+      - (3./25)*y[n] + (12./25)*h*f(z) - z; };
+    y[n+4] = newton(fn, fnp, y[n+3]);
+  }
+  Vec e4bdf = y4bdf - yt;
+
+  // 5-step BDF: y[n+5] =  (300/137)*y[n+4] - (300/137)*y[n+3] + (200/137)*y[n+2] - (75/137)*y[n+1] 
+  //                     + (12/137)*y[n] + (60/137)*h*f(y[n+4])
+  Vec y5bdf(N); y = &y5bdf[0];
+  y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2]; y[3] = yt[3]; y[4] = yt[4];
+  fnp = [&](double z) { return (60*h/137)*fp(z) - 1; };
+  for(int n = 0; n < N-5; n++)
+  {
+    fn = [&](double z) { return (300./137)*y[n+4] - (300./137)*y[n+3] + (200./137)*y[n+2] 
+      - (75./137)*y[n+1] + (12./137)*y[n] + (60./137)*h*f(z) - z; };
+    y[n+5] = newton(fn, fnp, y[n+4]);
+  }
+  Vec e5bdf = y5bdf - yt;
+
+
+  // todo: use simplified notation: y5 instead of y[n+5], etc. apply this to the comments above 
+
+  // 6-step BDF: y6 = (1/147) * (360*y5 - 450*y4 + 400*y3 - 225*y2 + 72*y1 - 10*y0 + 60*h*f(y6))
+  Vec y6bdf(N); y = &y6bdf[0];
+  y[0] = yt[0]; y[1] = yt[1]; y[2] = yt[2]; y[3] = yt[3]; y[4] = yt[4]; y[5] = yt[5];
+  fnp = [&](double z) { return (60*h/147)*fp(z) - 1; };
+  for(int n = 0; n < N-6; n++)
+  {
+    fn = [&](double z) { return (1./147) * (360*y[n+5] - 450*y[n+4] + 400*y[n+3] - 225*y[n+2] 
+      + 72*y[n+1] - 10*y[n+0] + 60*h*f(z)) - z; };
+    y[n+6] = newton(fn, fnp, y[n+5]); 
+  }
+  Vec e6bdf = y6bdf - yt; // nope!
 
 
   // Errors of BDF methods:
-  rsPlotVectorsXY(x, e1b, e2bdf);
+  rsPlotVectorsXY(x, e1b, e2bdf, e3bdf, e4bdf, e5bdf, e6bdf);
+
+  // Errors of Adams-Moulton and BDF methods of various orders:
+  rsPlotVectorsXY(x, e2am, e2bdf, e3am, e3bdf, e4am, e4bdf);
+  // ...this is weird and desrves a closer look
 
 
   // Results and errors of 1st order forward and backward Euler and trapezoidal methods:
@@ -3846,7 +3903,10 @@ void reciprocalIterator()
   //  would not re-evaluate f so many times as in, for example:
   //    y[n+4] = y[n+3] + (h/24) * (55*f(y[n+3]) - 59*f(y[n+2]) + 37*f(y[n+1]) - 9*f(y[n]));
   //  (taken from 4-step Adams-Bashforth). Instead, we would store the previously computed f values
-  //  together with the previously computed y values (the f values are also known as y' values)
+  //  together with the previously computed y values (the f values are also known as y' values).
+  //  Maybe we can use a lower accuracy explicit Adams-Bashforth predictor together with a higher 
+  //  accuracy implicit Adams-Moulton or BDF corrector and use the absolute difference (divided by 
+  //  the corrected value) as error estimate to drive the step-size adaption.
   // -Implement a function that computes the coefficients for arbitrary order Adams-Bashforth
   //  methods
   // -It seems Adams methods use a lot of past y' (or f) values and only one past y-value whereas
