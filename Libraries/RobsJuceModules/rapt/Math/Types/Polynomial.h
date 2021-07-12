@@ -45,6 +45,12 @@ to confusion like the compiler using a nested complex type which makes no sense.
 //  -arithmetic operators that take a number as second (left or right) argument
 //  -maybe we could meaningfully define <,<=, ...? look at how python or other scientific libraries
 //   handle that - in my own python polynomial class, i'm taking the asymptotic behavior
+//  -In the rs_testing module, we have instantiations for float, double, std::complex<double>, 
+//   rsFraction<int> but not yet for std::complex<float>, int because this does not yet work.
+//   -> Make it so! We also still get warnings from the rsFraction instatiation -> fix them! Try to
+//   also instatiate it for more complicated types such as rsBigFloat, rsMatrix, rsMultiVector and 
+//   maybe even for rsPolynomial itself and/or rsRationalFunction. Make rational functions of 
+//   matrices and matrices of rational functions - this should all work together nicely
 
 
 template<class T>

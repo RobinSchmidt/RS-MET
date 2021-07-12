@@ -162,7 +162,15 @@ void rsPolynomial<T>::evaluateWithDerivatives(const T& x, const T *a, int degree
   rsArrayTools::multiply(&results[2], &rsFactorials[2], &results[2], numDerivatives-1);
   // todo: maybe lift the restriction to < 32 derivatives by computing additional factorials on 
   // the fly, if needed - but we need to be careful about overflow - i think 31! will already 
-  // overflow int64...yep...easily
+  // overflow int64...yep...easily. Using a table of fixed precision floating point numbers would
+  // also seem to be undesirable when this function is used with a multiprecision type T or a 
+  // rational type with big integers. In these cases, on the fly computation seems more desirable.
+  // on the other hand, a table may be more efficient in the (common) case of T = double.
+  // -> figure out, in which contexts this function is used, i.e. if we really need it to be as 
+  // performant as possible and also figure out, if on-the-fly computation incurs greater numerical
+  // error than using the table - if the answer to both questions is no, than on-the-fly compuation
+  // may be preferable due to its broader applicability - and it will also fix a warning when 
+  // instantiating for rsFraction
 }
 
 template<class T>

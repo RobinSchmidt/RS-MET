@@ -24,6 +24,8 @@ using namespace RAPT;
 #include "Relativity.h"
 #include "SimdVector.h"
 #include "SineParameterEstimator.h"
+#include "OdeSolver.h"
+
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant
 to be used for production code but are useful for a more readable proof-of-concept (because of lack
@@ -95,12 +97,30 @@ std::vector<T> coeffsAdamsMoulton(int order)
     sign *= T(-1); }
   return b;
 }
+// These are now superseded by the static functions in class rsOdeCoeffs. But maybe we should keep 
+// them as prototypes anyway and then optimize the functions in rsOdeCoeffs
 
-// ToDo: implement similar methods to generate coeffs for other types of solvers such as 
-// Runge-Kutta:
-// https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods
-// https://en.wikipedia.org/wiki/List_of_Runge%E2%80%93Kutta_methods
-// https://www.ams.org/journals/mcom/1962-16-080/S0025-5718-1962-0150954-0/S0025-5718-1962-0150954-0.pdf
+
+template<class T>
+T newton(const std::function<T(T)>& f, const std::function<T(T)>& fp, T x0, T yt = T(0))
+{
+  T tol = 1.e-10;  // preliminary
+  T x   = x0;
+  int its = 0;
+  while(true)
+  {
+    T y = f(x);    // should that be y = f(x) - yt; ?
+    if(rsAbs(y) <= tol)
+      break;
+    x -= y / fp(x);
+    its++;
+  }
+  return x;
+}
+// todo: use yt for the target value, provide a maxIts parameter, move to rsRootFinder, maybe 
+// detect divergence
+
+
 
 template<class T>
 void weightedSum(const T* x1, int N1, T w1, const T* x2, int N2, T w2, T* y, int Ny)

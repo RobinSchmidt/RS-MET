@@ -14,6 +14,7 @@
 #include "QuantumSystems.cpp"
 #include "Relativity.cpp"
 #include "SineParameterEstimator.cpp"
+#include "OdeSolver.cpp"
 
 //#include "SinusoidalModeling.cpp" // moved to rapt
 

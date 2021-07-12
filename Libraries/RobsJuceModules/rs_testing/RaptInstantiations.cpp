@@ -212,7 +212,7 @@ template class RAPT::rsPolynomial<std::complex<double>>;
 template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int
-// todo: instantiate rsPolynomial also for float, int and rsFraction<int>, maybe also for 
+// todo: instantiate rsPolynomial also for float, int, maybe also for 
 // rsMatrix<float>, etc.
 
 template void RAPT::rsPolynomial<double>::divideByMonomialInPlace(double*, int, double, double*);

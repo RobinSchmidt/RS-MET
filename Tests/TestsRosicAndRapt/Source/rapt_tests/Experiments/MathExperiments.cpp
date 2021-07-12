@@ -3519,25 +3519,7 @@ void powerIterator()
 
 }
 
-template<class T>
-T newton(const std::function<T(T)>& f, const std::function<T(T)>& fp, T x0, T yt = T(0))
-{
-  T tol = 1.e-10;  // preliminary
-  T x   = x0;
-  int its = 0;
-  while(true)
-  {
-    T y = f(x);  
-    if(rsAbs(y) <= tol)
-      break;
-    x -= y / fp(x);
-    its++;
-  }
-  return x;
-}
-// todo: use yt for the target value, move to rsRootFinder
-
-void reciprocalIterator()
+void reciprocalIterator() // rename to odeMultiStep
 {
   // We want to iteratively compute an approximation of y(x) = 1/x. To do this, we find the ODE
   // whose solution is given by our target function y(x). This can be found by differentiating:
@@ -3563,8 +3545,6 @@ void reciprocalIterator()
   using Func = std::function<double(double)>;
   Func f  = [](double y) { return -y*y; }; // y' = f(y) = -y^2
   Func fp = [](double y) { return -2*y; }; // derivative of f(y) for Newton iteration
-  //auto f  = [](double y) { return -y*y; }; // y' = f(y) = -y^2
-  //auto fp = [](double y) { return -2*y; }; // derivative of f(y) for Newton iteration
   double* y;                               // shorthand for currently computed approximation of y
 
 
@@ -3612,6 +3592,7 @@ void reciprocalIterator()
   double c = 0.92; // weight for 2nd order solution
   Vec yMix = c*y2ab + (1-c)*y1f;
   Vec eMix = yMix - yt;
+  // todo: move to the plotting code below
 
   // 3rd order Adams-Bashforth:
   Vec y3ab(N); y = &y3ab[0];
@@ -3800,15 +3781,8 @@ void reciprocalIterator()
       + 72*y[n+1] - 10*y[n+0] + 60*h*f(z)) - z; };
     y[n+6] = newton(fn, fnp, y[n+5]); 
   }
-  Vec e6bdf = y6bdf - yt; // nope!
+  Vec e6bdf = y6bdf - yt;
 
-
-  // Errors of BDF methods:
-  rsPlotVectorsXY(x, e1b, e2bdf, e3bdf, e4bdf, e5bdf, e6bdf);
-
-  // Errors of Adams-Moulton and BDF methods of various orders:
-  rsPlotVectorsXY(x, e2am, e2bdf, e3am, e3bdf, e4am, e4bdf);
-  // ...this is weird and desrves a closer look
 
 
   // Results and errors of 1st order forward and backward Euler and trapezoidal methods:
@@ -3826,8 +3800,14 @@ void reciprocalIterator()
   // Errors of Adams-Moulton methods of various orders:
   rsPlotVectorsXY(x, e1b, e1t, e2am, e3am, e4am);
 
+  // Errors of BDF methods:
+  rsPlotVectorsXY(x, e1b, e2bdf, e3bdf, e4bdf, e5bdf, e6bdf);
+
   // Errors of Adams-Bashforth and Adams-Moulton methods of various orders:
   rsPlotVectorsXY(x, e4ab, e2am, e5ab, e3am);
+
+  // Errors of Adams-Moulton and BDF methods of various orders:
+  rsPlotVectorsXY(x, e2am, e4bdf, e3am, e5bdf, e4am, e6bdf);
 
   // Errors of Adams-Moulton and Milne-Simpson for 2-step and 4-step
   rsPlotVectorsXY(x, e2am, e2ms, e4am, e4ms);
@@ -3872,6 +3852,14 @@ void reciprocalIterator()
   //  starting point: to compute y[n], they do somthing like y[n-2] + ... rather than y[n-1] + ...
   //  as the other methods do. Both show oscillations, so oscillation my be realted to that 
   //  feature. Q: Is this like the "leapfrog" method? -> figure out relation to that
+  // -Seems like the BDF-n method have an accuracy comparable to Adams-Moulton methods of order 
+  //  n-2. Apparently the better stability is payed for by less accuracy, so maybe we should resort
+  //  to BDF only in case of stiff equations
+  // -Generally, the absolute error follows an up-down shape not quite unlike the attack/decay 
+  //  envelope. I guess, the initial increase is what should be expected (the error starts at zero 
+  //  and then builds up) and maybe the later decay can be explained by the fact that the solution 
+  //  itself has decaying behavior. Maybe we should plot the relative error instead. This will 
+  //  probably show a steady increase...
 
   // Conclusions:
   // -Adams-Bashforth methods seem to be well suited for this problem. 
@@ -3886,8 +3874,6 @@ void reciprocalIterator()
   // -Maybe plot the relative error.
   // -Figure out, if it's possible to stabilize the Nyströms methods. Maybe by some sort of
   //  2-point averaging filter?
-  // -Try to apply the technique to other interesting functions such as: Gaussian, 1/(1+x^2), tan,
-  //  tanh, atan, ...
   // -Implement Adams-Bashforth of orders 2..5 (formulas on wikipedia:
   //  https://en.wikipedia.org/wiki/Linear_multistep_method#Adams%E2%80%93Bashforth_methods)
   // -Try to figure out general formulas for the coefficients of arbitrary order Nyström and 
@@ -3914,6 +3900,16 @@ void reciprocalIterator()
   //  a bunch of both types? wouldn't that give yet better accuray? ah - see 
   //  "A First Course in the Numerical Analysis of Differential Equations" pg 25 ff. order of 
   //  accuracy is not the only relevant criterion
+  // -Try to apply the technique to other interesting functions such as: Gaussian, 1/(1+x^2n), tan,
+  //  tanh, atan, exp(-0.1*x) + exp(-10*x) (stiff?)
+  //    y(x) = 1/(1+x^(2*n))  ->  y' = -y^2 * 2*n * x^(2*n-1)
+  //    y(x) = exp(-a*x^2)    ->  y' = -2*a*x*y
+  //  these require our function f(y) = y' to also take x as argument. Maybe the general ODE 
+  //  solver should have an API that lets the user specify the function as f(x,y). Strictly 
+  //  speaking, if y can a vector, that would not be needed because we could add a 0th component
+  //  that just uses the identity function and has derivative 1. But i think, the API is more
+  //  convenient, if we treat the independent variable separately.
+
 
   // Ideas:
   // -Maybe an adaptive stepsize control can be implemented by letting the stepsize grow or 
@@ -3928,6 +3924,10 @@ void reciprocalIterator()
   //  enough history. So, growth is more limited than shrinkage, which is better than the other way 
   //  around, Maybe in case of growth we should also filter the past outputs witha 2-point average.
   //  ..and maybe do the growth only if the filtered values are close enough to the unfiltered ones
+  // -Maybe instead of modeling the solution as a polynomial that passes through the past points, 
+//    model it as a sum of exponentials: y(x) = sum_i a_i * exp(b_i * x) where i = 1,..,N. The 
+//    initial values y_0, y_0' can be used to determine the coeffs if N=1, for N=2, we'll also need
+//    y_-1, y_-1', etc.
 
 
   // See also:
