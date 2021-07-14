@@ -3530,7 +3530,10 @@ void gaussianIterator()
   // taken the derivative y'(x) = 2*a*x*y and solve that approximately via an initial value 
   // solver. But since this will only give an approximate solution, the technique above is better.
   // However, for functions other than the Gaussian, this approach may be be useful
-  
+
+  //   z(x)   = exp(2*a*h*x)
+  //   z(x+h) = exp(2*a*h*(x+h)) = exp(2*a*h*x) * exp(2*a*h*h) = z(x) * exp(2*a*h*h)
+
   // ...tbc...
 
   int    N  = 1000;   // number of data points to generate
@@ -3541,26 +3544,32 @@ void gaussianIterator()
   // Compute abscissa values and true values for y(x):
   using Vec = std::vector<double>;
   Vec x(N), yt(N), zt(N);
-  for(int n = 0; n < N; n++) 
+  for(int n = 0; n < N; n++)
   {
     x[n]  = x0 + n*h;
-    yt[n] = exp(a*x[n]*x[n]); 
+    yt[n] = exp(a*x[n]*x[n]);
     zt[n] = exp(2*a*h*x[n]);      // helper function
   }
 
   // Compute y(x) by exact recursion:
-  Vec yr(N);
-  yr[0] = yt[0];  // the initial value must be computed directly
-  double s = exp(a*h*h);
+  Vec yr(N), zr(N);
+  yr[0] = yt[0]; zr[0] = zt[0];  // initial values copied from directly computed values
+  double s = exp(a*h*h);         // scaler
+  double d = s*s;                // == exp(2*a*h*h), decay for exponential z(x)
   for(int n = 1; n < N; n++)
   {
-    yr[n] = yr[n-1] * zt[n-1] * s;
+    //yr[n] = yr[n-1] * zt[n-1] * s;  // using the exact z(x)
+    yr[n] = yr[n-1] * zr[n-1] * s;    // using the recursive z(x)
+    zr[n] = zr[n-1] * d;
   }
 
 
   Vec errAbs = yr - yt;
   Vec errRel = errAbs / yt;
 
+
+
+  //rsPlotVectorsXY(x, zt, zr);
   //rsPlotVectorsXY(x, yt, zt);
   rsPlotVectorsXY(x, yt, yr, errRel);
 }
