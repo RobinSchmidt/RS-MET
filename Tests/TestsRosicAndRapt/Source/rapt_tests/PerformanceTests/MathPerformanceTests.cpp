@@ -391,31 +391,59 @@ void simdPerformance()
 }
 
 
+template<class T>
+inline T rsPitchToFreqViaPow(T pitch)
+{
+  //return T(8.1757989156437073336828122976033 * exp(0.057762265046662109118102676788181 * pitch));
+  return 440.0*( pow(2.0, (pitch-69.0)/12.0) ); // naive, slower but numerically more precise
+}
+
 void sinCosPerformance()
 {
+  // Maybe rename to mathFuncsPerformance and add tests for other elementary functions here, such
+  // as exp, log, tan, tanh, ... maybe also some special functions like tgamma
+
   //static const int N = 10000;  // number of values
-  static const int N = 128;  // number of values
-  //static const int N = 1024;  // number of values
+  //static const int N = 128;  // number of values
+  static const int N = 1024;  // number of values
   float xMin = float(-2*PI);
   float xMax = float(+2*PI);
 
-  float x[N], ySin[N], yCos[N];
+  float  x[N],  ySin[N],  yCos[N];
+  double xD[N], ySinD[N], yCosD[N];
   rsArrayTools::fillWithRandomValues(x, N, xMin, xMax, 0);
-  PerformanceCounterQPC counter;
+  //PerformanceCounterQPC counter;   // gives implausible result
+  //PerformanceCounterPMC counter;   // trigger exception "No symbol file loaded"
+  PerformanceCounterTSC counter;     // ...the good old Agner Fog implementation actually works
   int n;
+  double cycles;
 
-  rsSinCosTable<float>  table(1024);
-  rsSinCosTable<double> tableD(1024);
+  int tableSize = 1024;
+  rsSinCosTable<float>  table(tableSize);
+  rsSinCosTable<double> tableD(tableSize);
 
   // measure cost of sin/cos standard library functions:
+
+  // sin(float), cos(float):
   counter.init();
   for(n = 0; n < N; n++)
   {
-    ySin[n] = sin(x[n]);
-    yCos[n] = cos(x[n]);
+    ySin[n]  = sin(x[n]);
+    yCos[n]  = cos(x[n]);
   }
-  double cycles = (double) counter.getNumCyclesSinceInit();
-  printPerformanceTestResult("Standard library, float", cycles / N);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("Standard library, float, sin,cos", cycles / N);
+
+  // sin(doubl), cos(double):
+  counter.init();
+  for(n = 0; n < N; n++)
+  {
+    ySinD[n] = sin(x[n]);
+    yCosD[n] = cos(x[n]);
+  }
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("Standard library, double, sin,cos", cycles / N);
+
 
   // measure cost of rsSinCosTable<float> using rounding:
   counter.init();
@@ -439,7 +467,7 @@ void sinCosPerformance()
   printPerformanceTestResult("Table, cubic, float", cycles / N);
 
   // measure cost of rsSinCosTable<double> using linear interpolation:
-  double xD[N], ySinD[N], yCosD[N];
+
   rsArrayTools::fillWithRandomValues(xD, N, xMin, xMax, 0);
   counter.init();
   for(n = 0; n < N; n++)
@@ -460,10 +488,43 @@ void sinCosPerformance()
   cycles = (double) counter.getNumCyclesSinceInit();
   printPerformanceTestResult("rsSinCos2, double", cycles / N);
 
+  counter.init();
+  for(n = 0; n < N; n++)
+    rsSinCosApprox4(x[n], &ySinD[n], &yCosD[n]);
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("rsSinCosApprox4, double", cycles / N);
+
+
+  // rsPitchToFreq:
+  counter.init();
+  for(n = 0; n < N; n++) 
+    ySinD[n] = rsPitchToFreq(x[n]);  // rename ySinD to something more generic like y1D
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("rsPitchToFreq, double", cycles / N);
+
+  counter.init();
+  for(n = 0; n < N; n++) 
+    ySinD[n] = rsPitchToFreqViaPow(x[n]);  // rename ySinD to something more generic like y1D
+  cycles = (double) counter.getNumCyclesSinceInit();
+  printPerformanceTestResult("rsPitchToFreqViaPow, double", cycles / N);
+
+
+  dontOptimize(&ySin);
+  dontOptimize(&yCos);
+  dontOptimize(&ySinD);
+  dontOptimize(&yCosD);
+
+
 
   int dummy = 0;
 
-  // Conclusion:
-  // rsSinCos1 is slower than using std::sin/cos, and the table gives results that can't be real
-  // (i get values around 0.3 cycles per sin/cos pair). Something must be wrong with the test code.
+
+
+  // Conclusions:
+  // -rsSinCos1 is slower than using std::sin/cos, and the table gives results that can't be real
+  //  (i get values around 0.3 cycles per sin/cos pair). Something must be wrong with the test 
+  //  code.
+
+  // ToDo:
+  // -try to remove the code duplication
 }

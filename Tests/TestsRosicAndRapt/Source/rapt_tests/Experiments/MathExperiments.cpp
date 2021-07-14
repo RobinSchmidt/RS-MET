@@ -3519,6 +3519,53 @@ void powerIterator()
 
 }
 
+void gaussianIterator()
+{
+  // We iteratively produce a Gaussian bell function y(x) = exp(a*x^2) where a < 0 and compare it
+  // to a directly computed function. To derive the iterative/recursive rule, we consider:
+  //   y(x+h) = exp(a*(x+h)^2) = exp(a*(x^2+2*h*x+h^2)) = exp(a*x^2)*exp(2*a*h*x)*exp(a*h^2)
+  //          = y(x) * exp(2*a*h*x)*exp(a*h^2)
+  // where the 2nd factor is just a regular decaying exponential, of which we already know how to 
+  // compute it recursively and the 3rd factor is just a constant. Alternatively, we could have
+  // taken the derivative y'(x) = 2*a*x*y and solve that approximately via an initial value 
+  // solver. But since this will only give an approximate solution, the technique above is better.
+  // However, for functions other than the Gaussian, this approach may be be useful
+  
+  // ...tbc...
+
+  int    N  = 1000;   // number of data points to generate
+  double x0 = -5.0;    // start value for the x-values
+  double h  = 0.01;   // step size
+  double a  = -0.2;   // factor in front of the x in the exponent
+
+  // Compute abscissa values and true values for y(x):
+  using Vec = std::vector<double>;
+  Vec x(N), yt(N), zt(N);
+  for(int n = 0; n < N; n++) 
+  {
+    x[n]  = x0 + n*h;
+    yt[n] = exp(a*x[n]*x[n]); 
+    zt[n] = exp(2*a*h*x[n]);      // helper function
+  }
+
+  // Compute y(x) by exact recursion:
+  Vec yr(N);
+  yr[0] = yt[0];  // the initial value must be computed directly
+  double s = exp(a*h*h);
+  for(int n = 1; n < N; n++)
+  {
+    yr[n] = yr[n-1] * zt[n-1] * s;
+  }
+
+
+  Vec errAbs = yr - yt;
+  Vec errRel = errAbs / yt;
+
+  //rsPlotVectorsXY(x, yt, zt);
+  rsPlotVectorsXY(x, yt, yr, errRel);
+}
+
+
 void reciprocalIterator() // rename to odeMultiStep
 {
   // We want to iteratively compute an approximation of y(x) = 1/x. To do this, we find the ODE

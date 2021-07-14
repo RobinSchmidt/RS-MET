@@ -50,7 +50,7 @@ void rsSinCos1(double x, double* s, double* c)
     *c = 1.27323954 * x - 0.405284735 * x * x;
 }
 
-// approximations for argumenst rdeuced to the range -0.5*pi..0.5*pi
+// approximations for arguments rdeuced to the range -0.5*pi..0.5*pi
 double rsCosApproxReduced1(double x)
 {
   constexpr double a2 = -4.0 / (PI*PI);
@@ -250,7 +250,9 @@ double rsCosApproxReduced5(double x)
 // Yet another option would be to control function values at various points, like all zeros and/or
 // maxima and minima. Maybe try some more options. The goal is not necessarily to minimize the 
 // maximum error but rather to minimize the audible artifacts when using such an approximation as
-// sine oscillator.
+// sine oscillator, so maybe as error measure we should look at the total harmonic distortion in 
+// the spectrum and optimize that. Maybe try it with a frequency that visits the wrap-around points
+// often and closely.
 // https://www.desmos.com/calculator/6hvksqmtgl
 
 // Approximation for arguments reduced to the range -1.5*pi..1.5*pi using internally the functions
@@ -276,8 +278,8 @@ double rsCos2(double x)
   //double y = rsCosApproxReduced3(xr);       // error below 0.001    -> SNR > 60 dB
   //double y = rsCosApproxReduced3_all(xr); // error below 0.0001   -> SNR > 80 dB
 
-  double y = rsCosApproxReduced4(xr);       // error below 0.0001  -> SNR > 80 dB
-  //double y = rsCosApproxReduced4_all(xr); // error below 0.00001  -> SNR > 100 dB
+  //double y = rsCosApproxReduced4(xr);       // error below 0.0001  -> SNR > 80 dB
+  double y = rsCosApproxReduced4_all(xr); // error below 0.00001  -> SNR > 100 dB
 
   //double y = rsCosApproxReduced5(xr);       // error below 0.00001  -> SNR > 100 dB
 
@@ -289,10 +291,12 @@ double rsCos2(double x)
   // For the approximations controlling only even derivatives, the error has qualitatively a shape
   // like cos(x) - cos(3x). Maybe we can create the cos(3x) term by a multiple angle formula and 
   // subtract an appropriately scaled amount. But for the triple angle formula, we also need an 
-  // appoximate of the sine
+  // appoximate of the sine...soo that would call for approximating sin/cos jointly
 
   // ToDo: 
-  // -implement approximations of various qualities, maybe up to an SNR of 140 dB
+  // -implement approximations of various qualities, maybe with SNR between 60 and 160 dB, the 4
+  //  derivative version attains 100 dB...but maybe that can be improved further by numeric 
+  //  optimization of the coeffs
   // -check if errors are below expected tolerances
   // -Check, if the odd derivatives that are not controlled are nevertheless matched, i.e. their 
   //  values may be wrong at the junction, but maybe at least they match, so the resulting function
@@ -326,7 +330,6 @@ void rsSinCos2(double x, double* s, double* c)
   xr  = (1.0-o)*xa + o*(xa-PI);
   *c  = cos(xa);  // or do we need xr?
 
-
   // ToDo:
   // -replace the call to sin/cos with a polynomial approximation (use odd polynomial for sin, even
   //  for cos)
@@ -340,6 +343,27 @@ void rsSinCos2(double x, double* s, double* c)
   // -implement an efficient sine-oscillator based on that, should also provide a SIMD version, 
   //  generating 4 float sines in parallel -> use it in the sinusoidal modeling framework
 }
+
+void rsSinCosApprox4(double x, double* s, double* c)
+{
+  double xa = rsAbs(x);
+  double xs = rsSign(x);
+
+  double o  = double(xa > 0.5*PI);     // |x| is outside range -> reflect to inside
+  double xr = (1.0-o)*xa + o*(PI-xa);
+  *s = rsCosApproxReduced4(xa);
+   // this is still WRONG!!! we need a function rsSinApproxReduced4! but for benchmark, this is ok
+   // as a stand in
+
+  double n  = double(x < 0.0);         // x is negative sine needs to be multiplied by -1
+  double fs = 1 - 2*n;                 // factor conceptually: f = (1-n)*1 + n*(-1)
+  *s *= fs;
+
+  xr  = (1.0-o)*xa + o*(xa-PI);
+  *c  = rsCosApproxReduced4(xa);  // or do we need xr?
+}
+
+
 
 std::vector<double> solvePentaDiagonalSystem(
   std::vector<double>& M, std::vector<double>& L,

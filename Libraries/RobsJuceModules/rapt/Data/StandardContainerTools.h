@@ -628,7 +628,6 @@ inline std::vector<T> operator/(const std::vector<T>& v, const T& x)
   return result;
 }
 
-
 /** Divides a scalar by a vector. */
 template<class T>
 inline std::vector<T> operator/(const T& x, const std::vector<T>& v)
@@ -639,6 +638,17 @@ inline std::vector<T> operator/(const T& x, const std::vector<T>& v)
   return result;
 }
 
+/** Divides two vectors element wise. */
+template<class T>
+inline std::vector<T> operator/(const std::vector<T>& x, const std::vector<T>& y)
+{
+  size_t N = x.size();
+  rsAssert(y.size() == N);
+  std::vector<T> result(N);
+  for(size_t i = 0; i < N; i++)
+    result[i] = x[i] / y[i];
+  return result;
+}
 
 /** Adds a scalar to a vector. */
 template<class T>

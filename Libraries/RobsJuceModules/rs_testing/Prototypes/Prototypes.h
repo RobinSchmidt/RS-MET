@@ -46,10 +46,11 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 */
 
 
-// some experimental sin/cos approximations
+// some experimental sin/cos approximations:
 double rsCos2(double x);
 void rsSinCos1(double x, double* s, double* c);
 void rsSinCos2(double x, double* s, double* c);
+void rsSinCosApprox4(double x, double* s, double* c);
 
 
 /** Computes the coefficients for an Adams-Bashforth multistep method for numerically solving an 

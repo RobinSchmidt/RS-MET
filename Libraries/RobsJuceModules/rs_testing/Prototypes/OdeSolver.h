@@ -53,7 +53,7 @@ forward Euler method. Subclasses are supposed to extend that basic functionality
 sophisticated solver methods, error estimation, stepsize control, etc. */
 
 template<class Tx, class Ty>
-class rsOdeSolverBase
+class rsOdeSolverBase   // renam to rsInitialValueSolver, we may also want rsBoundaryValueSolver
 {
 
 public:
@@ -63,13 +63,13 @@ public:
 
   /** Sets the function F to be used to compute y' = F(x,y). It takes the y' as output parameter 
   in order to avoid having to return in by value which would be costly, if Ty is a type that 
-  allocates heap memory such as std::vector. Moreover, it allows us to pass a initial guess in case
-  F implements an implicit root finding algorithm, i.e. F is given implicitly as F(x,y,y') = 0. The
-  passed value for y' will be the y' value from the previous call to doStep. */
+  allocates heap memory such as std::vector. Moreover, it allows us to pass an initial guess in 
+  case F implements an implicit root finding algorithm, i.e. F is given implicitly as 
+  F(x,y,y') = 0. The passed value for y' will be the y' value from the previous call to doStep. */
   void setFunction(const Func& newFunction) { F = newFunction; }
 
   void setStepSize(Tx newStepSize) { h = newStepSize; }
-  // maybe it should have a2nd boolean parameter "fixed" that can be used later by subclasses to 
+  // maybe it should have a 2nd boolean parameter "fixed" that can be used later by subclasses to 
   // switch between fixed and variable step sizes
 
   /** Performs one integration step at a time. The baseclass implementation just does the 
@@ -81,6 +81,7 @@ public:
     x += h;       // advance x by stepsize h
     y += h*yd;    // advance y by a forward Euler step
   }
+  // maybe it should take a bool adaptStepSize defaulting to false
 
   /** Resets x,y,y' to 0. Does not reset the setp-size (should it? maybe not). */
   virtual void reset() { x = 0; y = 0; yd = 0; }
@@ -105,32 +106,79 @@ protected:
 
 };
 
+//=================================================================================================
+
+/** Implements explicit or implicit single step methods such as Runge-Kutta, ... */
+
+template<class Tx, class Ty>
+class rsOdeSolverSingleStep : public rsOdeSolverBase<Tx, Ty>
+{
+
+public:
+
+  enum class StepMethod
+  {                   // implicit
+    forwardEuler,     //
+    backwardEuler,    //   yes
+    trapezoidal,      //   yes
+    midpoint,         //
+    heun,             //
+    rungeKutta3,
+    rungeKutta4,
+    cashKarp
+    // ...
+  };
 
 
 
+protected:
+
+  // We need a std::function for solving the implicit equation that occurs in implicit methods. The
+  // explicity methods can ignore that...or wait...do we? or do we have to solve a linear system in
+  // case of an implicit method?
+
+  // Butcher tableau:
+  rsMatrix<Tx> A;
+  std::vector<Tx> c, b;  // nodes and weights
+
+  StepMethod stepMethod = StepMethod::forwardEuler;
+
+  // maybe we should have a predictorMethod and a correctorMethod where use of the corrector is 
+  // optional
+
+};
+
+//=================================================================================================
 
 /** A class that implements multistep ODE solvers such as Adams-Bashforth, Adams-Moulton, Nyström,
 backward difference formula (BDF), etc. */
 
-/*
+
 template<class Tx, class Ty>
-class rsOdeSolverMultiStep
+class rsOdeSolverMultiStep : public rsOdeSolverSingleStep<Tx, Ty>
 {
 
 public:
 
   using Vec  = std::vector<Ty>;
-  using Func = std::function<void(Tx x, const Ty& y, Ty& yd)>;
+  //using Func = std::function<void(Tx x, const Ty& y, Ty& yd)>;
   // Type for the function to compute y' from y should take both as reference parameters, such that 
   // we can use std::vector as type T without having to re-allocate.
 
   
 protected:
 
+
+
+  Vec Y, Yd; // arrays of stored past values of y, y': Y[0] = y[n], Y[1] = y[n-1], ...
+
+
+  /*
   Tx   x;     // the independent variable...maybe use t
-  Vec  y, yd; // stored past values of y, y'
+
   Func F;     // function to compute y' = F(x,y)
   //Func fp;    // 
+  */
 
 };
-*/
+

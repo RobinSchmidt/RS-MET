@@ -123,7 +123,7 @@ protected:
 
 //=================================================================================================
 
-/** A cycle counter based on
+/** A cycle counter for windows only based on
 https://msdn.microsoft.com/en-us/library/windows/desktop/dn553408(v=vs.85).aspx */
 
 class PerformanceCounterQPC
