@@ -235,20 +235,21 @@ public:
   }
 
   /** Like prepareForBackwardPass without parameter, but does not assume the input signal to go 
-  down to zero in the tail but instead to settle to some arbitrary constant value c. */
+  down to zero in the tail but instead to settle to some arbitrary constant value c. It can be 
+  more appropriate for handling the boundaries in image processing applications to use the value
+  of the boundray pixel for c. */
   void prepareForBackwardPass(TSig c)
   {
-    // use the simpler function above, if possible:
-    if(c == TSig(0)) { 
-      prepareForBackwardPass(); return; }
+    // Use the simpler function above, if possible:
+    if(c == TSig(0)) { prepareForBackwardPass(); return; }
 
-    // compute some intermediate values:
+    // Compute some intermediate values:
     TPar a2 = a1*a1;                                // a1^2
     TPar a3 = a1*a2;                                // a1^3
     TPar cx = b0*a1 + (a2-a1)*b1 - b0;              // coeff for x1 in update of y1
     TPar cc = b0*(b0*a1 + (a1+TPar(1))*b1) + b1*b1; // coeff for c in update of y1
 
-    // compute new state variables:
+    // Compute new state variables:
     x1 = b0*c + a1*y1 + b1*x1;                      // update x1
     y1 = (cc*c - cx*x1) / (a3-a2-a1+TPar(1));       // update y1 using updated x1
   }
@@ -260,14 +261,13 @@ public:
   errors). The optional parameters xL,xR (L,R stand for left,right), which default to zero, are 
   used for telling the filter, how the input signal x should be assumed to continue outside the 
   range of valid sample indices. We will assume that x[n] = xL for n < 0 and 
-  x[n] = xR for n >= N. */
+  x[n] = xR for n >= N. In image processing, it may make sense to use the values of the boundary
+  pixels for that, i.e. use xL = x[0], xR = x[N-1]. In audio processing, it may make more sense 
+  to set both to zero, which is the default. */
   void applyForwardBackward(TSig* x, TSig* y, int N, TSig xL = TSig(0), TSig xR = TSig(0))
   {
-    // forward pass:
-    setStateForConstInput( xL); for(int n = 0;   n <  N; n++) y[n] = getSample(x[n]);
-
-    // backward pass:
-    prepareForBackwardPass(xR); for(int n = N-1; n >= 0; n--) y[n] = getSample(y[n]);
+    setStateForConstInput( xL); for(int n = 0;   n <  N; n++) y[n] = getSample(x[n]); // forward 
+    prepareForBackwardPass(xR); for(int n = N-1; n >= 0; n--) y[n] = getSample(y[n]); // backward
   }
 
   /** Like applyForwardBackward, but does the backward pass first and then the forward pass. This 
@@ -281,7 +281,7 @@ public:
 
   /** Applies the filter bidirectionally with a stride (i.e. index-distance between two successive 
   samples) that is not necessarrily unity. This may be useful for filtering along a particular 
-  dimension in multidimensional arrays such as images. */
+  dimension in multidimensional arrays such as pixel columns in images. */
   void applyForwardBackward(TSig* x, TSig* y, int N, int stride, 
     TSig xL = TSig(0), TSig xR = TSig(0))
   {

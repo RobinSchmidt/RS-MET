@@ -3524,22 +3524,27 @@ void gaussianIterator()
   // We iteratively produce a Gaussian bell function y(x) = exp(a*x^2) where a < 0 and compare it
   // to a directly computed function. To derive the iterative/recursive rule, we consider:
   //   y(x+h) = exp(a*(x+h)^2) = exp(a*(x^2+2*h*x+h^2)) = exp(a*x^2)*exp(2*a*h*x)*exp(a*h^2)
-  //          = y(x) * exp(2*a*h*x)*exp(a*h^2)
-  // where the 2nd factor is just a regular decaying exponential, of which we already know how to 
-  // compute it recursively and the 3rd factor is just a constant. Alternatively, we could have
-  // taken the derivative y'(x) = 2*a*x*y and solve that approximately via an initial value 
-  // solver. But since this will only give an approximate solution, the technique above is better.
-  // However, for functions other than the Gaussian, this approach may be be useful
-
+  //          = y(x) * exp(2*a*h*x) * exp(a*h^2)
+  // where the 2nd factor is just a regular decaying exponential, which we shall define as z(x). 
+  // We already routinely compute such things recursively and in this case, it can be done by 
+  // considering:
   //   z(x)   = exp(2*a*h*x)
-  //   z(x+h) = exp(2*a*h*(x+h)) = exp(2*a*h*x) * exp(2*a*h*h) = z(x) * exp(2*a*h*h)
+  //   z(x+h) = exp(2*a*h*(x+h)) = exp(2*a*h*x) * exp(2*a*h*h) = z(x) * exp(2*a*h*h) = z(x) * d
+  // where we have defined d as the decay factor. The 3rd factor is just a constant scale factor 
+  // given by:
+  //   s = exp(a*h^2)
+  // from which we also see that d = s^2, which is also quite convenient.
+  // Alternatively to consider y(x+h), we could have considered the derivative y'(x) = 2*a*x*y and
+  // solve that approximately via an initial value solver. But since this will only give an 
+  // approximate solution, the technique above is better. However, other functions may not admit 
+  // such a computationally efficient exact recursion. In these cases, the approach via an ODE may 
+  // be useful.
 
-  // ...tbc...
 
-  int    N  = 1000;   // number of data points to generate
+  int    N  = 1000;    // number of data points to generate
   double x0 = -5.0;    // start value for the x-values
-  double h  = 0.01;   // step size
-  double a  = -0.2;   // factor in front of the x in the exponent
+  double h  =  0.01;   // step size
+  double a  = -0.2;    // factor in front of the x in the exponent
 
   // Compute abscissa values and true values for y(x):
   using Vec = std::vector<double>;
@@ -3548,30 +3553,113 @@ void gaussianIterator()
   {
     x[n]  = x0 + n*h;
     yt[n] = exp(a*x[n]*x[n]);
-    zt[n] = exp(2*a*h*x[n]);      // helper function
+    zt[n] = exp(2*a*h*x[n]);
   }
 
-  // Compute y(x) by exact recursion:
+  // Compute z(x) and y(x) by exact recursion:
   Vec yr(N), zr(N);
   yr[0] = yt[0]; zr[0] = zt[0];  // initial values copied from directly computed values
   double s = exp(a*h*h);         // scaler
   double d = s*s;                // == exp(2*a*h*h), decay for exponential z(x)
+  Vec errAbs(N), errRel(N);      // absolute and relative error
   for(int n = 1; n < N; n++)
   {
     //yr[n] = yr[n-1] * zt[n-1] * s;  // using the exact z(x)
     yr[n] = yr[n-1] * zr[n-1] * s;    // using the recursive z(x)
     zr[n] = zr[n-1] * d;
+    errAbs[n] = yr[n] - yt[n];
+    errRel[n] = errAbs[n] / yt[n];
+  }
+
+  // Compute y(x) by an approximate recursion using the ODE, solved via the forward Euler method:
+  Vec ye(N);
+  ye[0] = yt[0];
+  for(int n = 0; n < N-1; n++)
+    ye[n+1] = ye[n] + h * (2*a*x[n]*ye[n]);  // y[n+1] = y[n] + h * y'[n]
+
+  // Plot results:
+  rsPlotVectorsXY(x, yt, yr, ye);
+  rsPlotVectorsXY(x, errAbs, errRel);
+
+  // Observations:
+  // -When using the exact z(x) together with the recursion for y(x), the (accumulated) relative 
+  //  error in the last datapoint is around 2.7e-15. When we use the recursively computed z(x), 
+  //  it's around 1.7e-11.
+  // -With the exact z(x) the errors look quite noisy but with the recursive z(x), the absolute 
+  //  error has also a bell shape (with maximum a bit to the right of y(x)'s peak) and the 
+  //  relative error increases monotonically in a superlinear way (looks like a parabola).
+  // -The solution of the inexact recursion via the forward Euler ODE solver lies entirely below 
+  //  the correct function. The error at the peak is around 2.2%. The shape looks OK, though.
+
+  // ToDo:
+  // -Figure out, how the error of exact and approximate recursions behave when we choose a smaller
+  //  stepsize h. Maybe the error of the exact recursion increases due to more error accumulation 
+  //  and that of the approximate recursion decreases due to lower approximation error? ...could 
+  //  there even be a break-even point? ...but that would weird. And what about better ODE solver 
+  //  formulas such as Adams-Bashforth?
+  // -Maybe introduce another parameter "mu" for the center of the peak, so we can trigger it at
+  //  t = 0 like an envelope. In this case, we may also want to shift and scale the resulting 
+  //  envelope to exactly hit zero at both ends and 1 at the peak.
+  // -Can this recursion some be modified to admit for an input as in a filter? Maybe something 
+  //  like: zr[n] = zr[n-1] * d + c * in; where c is some coeff that makes the Gaussian the unit 
+  //  impulse response? But this is not a  (linear) filter - we from a product of past outputs: 
+  //  y[n-1] * z[n-1] - so the response to a sum of inputs would not be the sum of the responses
+  //  to the separate inputs...hmmm...
+  // -Use it as attack or release shape for an envelope. It think, tacking it to a flat sustain
+  //  gives infinite smoothness at the junction.
+
+  // -Try to derive a recursion for the bump function https://en.wikipedia.org/wiki/Bump_function
+  //    y(x) = exp(-1/(1-x^2))
+}
+
+void expPolyIterator()
+{
+  // As a generalization of the recursion for the Gaussian y(x) = exp(a*x^2), we now consider
+  //   y(x) = exp(p(x)) 
+  // where p(x) is a polynomial:
+  //   p(x) = a0 + a1*x + a2*x^2 + a3*x^3 + ...
+  // we can write y(x) as:
+  //   y(x) = exp(a0) * exp(a1*x) * exp(a2*x2) * exp(a3*x^3) * ...
+  // Let's consider the exp(a3*x^3) factor, which we shall denote by z3(x)
+  //   z3(x)   = exp(a3*x^3) 
+  //   z3(x+h) = exp(a3*(x+h)^3) = exp( a3 * (x^3 + 3*x^2*h + 3*x*h^2 + h^3) )
+  //           = exp(a3*x^3) * exp(a3*3*h*x^2) * exp(a3*3*h^2*x) * exp(a3*h^3)
+  //           = z3(x) * ...
+  // we see that the second factor exp(a3*3*h*x^2) also produces an x^2 factor which would have to
+  // multiplied by the x^2 factor that already arises from z2(a2*x^2). I think, in general, we get
+  // 4 factors and the coefficient in each factor is obtained by a sum of the a-coeffs weighted by
+  // binomial coefficients -> todo: work out the details....
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  //using Poly = rsPolynomial<Real>;
+
+  int  N  = 1000;    // number of data points to generate
+  Real x0 = -5.0;    // start value for the x-values
+  Real h  =  0.01;   // step size
+  Real a0 =  0.0;    // polynomial coeffs
+  Real a1 = -0.5;
+  Real a2 = -0.4;
+  Real a3 = -0.3;
+  Real a4 = -0.2;
+  Real k  =  0.1;    // overall scaler for p(x), controls width
+
+  // Compute x-axis and ground truth:
+  using Vec = std::vector<double>;
+  Vec x(N), yt(N);
+  Real t, p;
+  for(int n = 0; n < N; n++)
+  {
+    x[n]  = x0 + n*h;
+    t = x[n];                                        // temp, shorthand
+    p = a0 + a1*t + a2*t*t + a3*t*t*t + a4*t*t*t*t;  // our polynomial p(x)
+    yt[n] = exp(k*p);
   }
 
 
-  Vec errAbs = yr - yt;
-  Vec errRel = errAbs / yt;
+  rsPlotVectorsXY(x, yt);
 
-
-
-  //rsPlotVectorsXY(x, zt, zr);
-  //rsPlotVectorsXY(x, yt, zt);
-  rsPlotVectorsXY(x, yt, yr, errRel);
+  int dummy = 0;
 }
 
 
@@ -3948,7 +4036,10 @@ void reciprocalIterator() // rename to odeMultiStep
   //  together with the previously computed y values (the f values are also known as y' values).
   //  Maybe we can use a lower accuracy explicit Adams-Bashforth predictor together with a higher 
   //  accuracy implicit Adams-Moulton or BDF corrector and use the absolute difference (divided by 
-  //  the corrected value) as error estimate to drive the step-size adaption.
+  //  the corrected value) as error estimate to drive the step-size adaption. For implementing a 
+  //  predictor/corrector scheme, see:
+  //  https://en.wikiversity.org/wiki/Adams-Bashforth_and_Adams-Moulton_methods
+  //  https://en.wikipedia.org/wiki/Predictor%E2%80%93corrector_method
   // -Implement a function that computes the coefficients for arbitrary order Adams-Bashforth
   //  methods
   // -It seems Adams methods use a lot of past y' (or f) values and only one past y-value whereas

@@ -338,6 +338,11 @@ above, but i currently can't see, how this happens. We would be left with
   x1 = b*y1 + d*x1, y1 = -cx*x1 / (b^3-b^2-b+1)
 ...how is the denominator supposed to become (1-b^2)?
 
+Try to apply this technique to higher order filters by expressing them as parallel connection of
+complex first order filters via partial fraction expansion. Work out the exact formulas for the 
+states for the biquad. Any higher order filter will likely be implemented as a biquad cascade 
+anyway, so this enables us up to do correctly initialized bidirectional filters of any order.
+
 
 
 

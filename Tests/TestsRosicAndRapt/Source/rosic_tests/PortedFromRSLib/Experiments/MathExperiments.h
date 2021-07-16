@@ -76,6 +76,7 @@ void numberTheoreticTrafoModuli();
 
 void powerIterator();
 void gaussianIterator();
+void expPolyIterator();
 void reciprocalIterator();
 
 

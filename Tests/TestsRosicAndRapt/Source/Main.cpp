@@ -130,8 +130,10 @@ int main(int argc, char* argv[])
   //numberTheoreticTrafo();
   //numberTheoreticTrafoModuli();
   //powerIterator();
-  gaussianIterator();
+  //gaussianIterator();
+  expPolyIterator();
   //reciprocalIterator();  // rename to multiStepSolverIVP (initial value problem)
+
 
   // Filter:
   //bandSplittingTwoWay();

@@ -1,0 +1,68 @@
+We want to derive a recursion to compute equdistant values of a function y(x) = exp(p(x)) where 
+p(x) is a polynomial. As example, we'll look at a degree 4 polynomial. For reasons that will 
+become apparent soon, we'll introduce the index "4" to the polynomial p(x) and the overall
+function y(x) to become p4(x) and y4(x) respectively. So what we want to compute is:
+
+  y4(x) = exp(p4(x)) 
+        = exp(a0 + a1*x + a2*x^2 + a3*x^3 + a4*x^4)
+
+We assume that we already have computed the value y4(x) for some x and now we want to compute
+the next value that is a stepsize h further. So, we want to compute:
+
+  y4(x+h) = exp(a0 + a1*(x+h) + a2*(x+h)^2 + a3*(x+h)^3 + a4*(x+h)^4)
+
+We propose that we can find a polynomial p3(x) and hence a function y3(x) = exp(p3(x)) such that:
+
+  y4(x+h) = y4(x) * y3(x) 
+          = exp(p4(x) + p3(x))
+
+and we want to figure out, what the polynomial p3(x) must be to make this work. As the notation 
+suggests, it will turn out that p3(x) will come out as a degree 3 polynomial. This is convenient 
+because it will enable us to apply the same ansatz to p3 to arrive at a degree 2 polynomial and so
+on. At the moment, it is not supposed to be obvious why this should work, so let's work out p3(x).
+We start with p4(x+h) and expand it according to the binomial theorem:
+
+  p4(x+h) = a0 + a1*(x+h) + a2*(x+h)^2 + a3*(x+h)^3 + a4*(x+h)^4
+          = a0 * (                                      h^0)  +
+            a1 * (                                  x + h^1)  +
+            a2 * (                      x^2 + 2*h^1*x + h^2)  + 
+            a3 * (          x^3 + 3*h^1*x^2 + 3*h^2*x + h^3)  +
+            a4 * (x^4 + 4*h*x^3 + 6*h^2*x^2 + 4*h^3*x + h^4)
+
+Let's compare coefficients for the various powers of x in p4(x) and p4(x+h):
+
+      p4(x)  p4(x+h)
+x^0:   a0    b0 := a0*1*h^0 + a1*1*h^1 + a2*1*h^2 + a3*1*h^3 + a4*h^4
+x^1:   a1    b1 := a1*1*h^0 + a2*2*h^1 + a3*3*h^2 + a4*4*h^3
+x^2:   a2    b2 := a2*1*h^0 + a3*3*h^1 + a4*6*h^2
+x^3:   a3    b3 := a3*1*h^0 + a4*4*h^1
+x^4:   a4    b4 := a4*1*h^0
+
+where we have introduced the notation b0,..,b4 to denote the coefficients of p4(x+h). We recognize
+that the general formula for th i-th b-coefficient is given by:
+
+  bi = sum_{j=i}^4 aj * B(j,j-i) * h^(j-i)
+
+where B(n,k) is the "n-choose-k" binomial coefficient. We define p3(x) to be the correction 
+polynomial that must be added to p4(x) to obtain p4(x+h), so we require:
+
+  p4(x+h) = p4(x) + p3(x)  ->  p3(x) = p4(x+h) - p4(x)
+
+and the coefficients of the correction polynomial p3(x) are denoted as c0,..,c4 and each ci is 
+given by 
+
+  ci = ai - bi. 
+  
+Now is the time to appreciate (from our table above) that b4 = a4, so c4 = 0. Yes! That means, our
+correction polynomial p3(x) did indeed come out as a degree 3 polynomial. From the general equation
+for binomial coefficients B(j,j) = 1, we conclude that the correction polynomial will always be of 
+a degree one less than our original polynomial, so the procedure is not specific to degree 4. In
+particular, that also means that we can now apply the same procedure to our degree 3 correction to
+get a degree 2 correction for that, and so on. Having found the correction polynomials of all 
+degrees down to zero. The eventual goal is to produce y4(x+h) recursively in a algorithm like:
+
+  y0(x+h) = y0(x)         = const
+  y1(x+h) = y1(x) * y0(x) = exponential
+  y2(x+h) = y2(x) * y1(x) = gaussian
+  y3(x+h) = y3(x) * y2(x)
+  y4(x+h) = y4(x) * y3(x)
