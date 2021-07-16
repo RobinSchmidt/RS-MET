@@ -61,8 +61,11 @@ particular, that also means that we can now apply the same procedure to our degr
 get a degree 2 correction for that, and so on. Having found the correction polynomials of all 
 degrees down to zero. The eventual goal is to produce y4(x+h) recursively in a algorithm like:
 
-  y0(x+h) = y0(x)         = const
-  y1(x+h) = y1(x) * y0(x) = exponential
-  y2(x+h) = y2(x) * y1(x) = gaussian
-  y3(x+h) = y3(x) * y2(x)
   y4(x+h) = y4(x) * y3(x)
+  y3(x+h) = y3(x) * y2(x)
+  y2(x+h) = y2(x) * y1(x) = gaussian
+  y1(x+h) = y1(x) * y0(x) = exponential
+  y0(x+h) = y0(x)         = const
+
+
+

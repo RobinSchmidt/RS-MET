@@ -3632,32 +3632,79 @@ void expPolyIterator()
 
   using Real = double;
   using Vec  = std::vector<Real>;
-  //using Poly = rsPolynomial<Real>;
+  using Poly = rsPolynomial<Real>;
 
-  int  N  = 1000;    // number of data points to generate
+  int  N  = 20;    // number of data points to generate
   Real x0 = -5.0;    // start value for the x-values
   Real h  =  0.01;   // step size
-  Real a0 =  0.0;    // polynomial coeffs
-  Real a1 = -0.5;
-  Real a2 = -0.4;
-  Real a3 = -0.3;
-  Real a4 = -0.2;
   Real k  =  0.1;    // overall scaler for p(x), controls width
+  Real a4[5];        // polynomial coeffs excluding the k factor
+  a4[0] =  0.0; 
+  a4[1] = -0.5;
+  a4[2] = -0.4;
+  a4[3] = -0.3;
+  a4[4] = -0.2;
 
-  // Compute x-axis and ground truth:
+  // Bake the k-factor into the polynomial coeffs:
+  for(int i = 0; i < 5; i++)
+    a4[i] *= k;
+
+  // Compute x-axis and ground truth yt:
   using Vec = std::vector<double>;
   Vec x(N), yt(N);
-  Real t, p;
+  Real p;
   for(int n = 0; n < N; n++)
   {
     x[n]  = x0 + n*h;
-    t = x[n];                                        // temp, shorthand
-    p = a0 + a1*t + a2*t*t + a3*t*t*t + a4*t*t*t*t;  // our polynomial p(x)
-    yt[n] = exp(k*p);
+    p = Poly::evaluate(x[n], a4, 5);  // p4(x)
+    yt[n] = exp(p);                   // y4(x), true/target value
   }
 
+  // Create arrays of the coeffs for the correction polynomials:
+  auto corrector = [](const Real* a, Real h, int N, Real* c)
+  {
+    for(int i = 0; i <= N-1; i++)
+    {
+      Real bi = 0;
+      for(int j = i; j <= N; j++)
+      {
+        bi += a[j] * pow(h, j-i) * rsBinomialCoefficient(j, j-i);
+        //bi += a[j] * pow(h, j-i) * rsBinomialCoefficient(j-i, j);
+        //bi += a[j] * pow(h, i-j) * rsBinomialCoefficient(j, j-i);
+      }
+      c[i] = a[i] - bi;
+    }
+  };
+  Real a3[4], a2[3], a1[2], a0[1];
+  corrector(a4, h, 4, a3);
+  corrector(a3, h, 3, a2);
+  corrector(a2, h, 2, a1);
+  corrector(a1, h, 1, a0);
 
-  rsPlotVectorsXY(x, yt);
+  // Compute the initial values:
+  Real y0, y1, y2, y3, y4;
+  y0 = exp(Poly::evaluate(x0, a0, 0));
+  y1 = exp(Poly::evaluate(x0, a1, 1));
+  y2 = exp(Poly::evaluate(x0, a2, 2));
+  y3 = exp(Poly::evaluate(x0, a3, 3));
+  y4 = exp(Poly::evaluate(x0, a4, 4));
+
+  // Compute y4(x) recursively:
+  Vec yr(N);
+  for(int n = 0; n < N; n++)
+  {
+    yr[n] = y4;
+    y4 *= y3;
+    y3 *= y2;
+    y2 *= y1;
+    y1 *= y0;
+  }
+  // Nope! Something is still wrong1
+
+
+
+  //rsPlotVectorsXY(x, yt);
+  rsPlotArraysXY(N, &x[0], &yt[0], &yr[0]);
 
   int dummy = 0;
 }
