@@ -43,8 +43,48 @@ void rsSineIterator<T>::setup(T w, T p, T a)
   s1 = a*sin(p-    w);
   s2 = a*sin(p-2.0*w);
   // Try to optimize computations of s1,s2 using addition theorems - i think, we may save one call
-  // to sin
+  // to sin - but maybe that should be done in a separate function "setupFast"
 }
+
+//=================================================================================================
+
+
+template<class T, int N>
+void rsPolynomialIterator<T, N>::setup(T* a, T h, T x0)
+{
+  using Poly = rsPolynomial<T>;
+
+  y[N] = Poly::evaluate(x0, a, N); 
+  T c[N+1];
+  for(int m = N-1; m >= 0; m--)
+  {
+
+
+    for(int i = 0; i <= N-1; i++)
+    {
+      T bi(0);
+      for(int j = i; j <= N; j++)
+        bi += a[j] * pow(h, j-i) * rsBinomialCoefficient(j, j-i);
+      c[i] = bi - a[i]; 
+      // this is wrong! in each iteration, the a-array needs to be the c-array from the previous 
+      // iteration, not the original a-array all the time
+    }
+
+    y[m] = Poly::evaluate(x0, c, m); 
+
+
+  }
+
+
+
+
+  int dummy = 0;
+
+  // ToDo: optimize the call to rsBinomialCoefficient and pow
+}
+
+
+
 
 
 /*
@@ -52,7 +92,7 @@ void rsSineIterator<T>::setup(T w, T p, T a)
 ToDo:
 -rsSineCosineIterator : public rsComplexExponentialIterator
 -rsExponentialIterator, rsLinearIterator, rsQuadraticIterator, rsCubicIterator, 
- rsPolynomialIterator,
+ rsPolynomialIterator, rsPolyExpIterator, rsCubicExpIterator
 -for the polynomial iterators, see Salomon - Computer Graphics, page 275ff ("Fast Calculation of 
  the Curve" and page 698 ("Forward Differences")
 -other functions: sinh, cosh, tanh, 1/cosh, 1/cosh^2 (gaussian-like?)

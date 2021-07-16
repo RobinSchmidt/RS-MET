@@ -32,7 +32,7 @@ public:
   /** Returns one output value at a time (and updates the internal state variables for
   the next call). After intialization (or reset), the first call will return w[0] = a = a*z^0,
   the next call gives w[1] = a*z^1, then w[2] = a*z^2, and so on. */
-  RS_INLINE std::complex<T> getValue()
+  inline std::complex<T> getValue()
   {
     std::complex<T> ww = w;
     w *= z;
@@ -91,8 +91,8 @@ public:
   // \name Setup
 
   /** Sets up the sine oscillator such that the next call to getValue will return
-  y[0] = a*sin(p), then the next call gives y[1] = a*sin(w + p), then
-  y[2] = a*sin(2*w + p), and so on. So, the object will behave exactly in the same way as
+  y[0] = a*sin(p), then the next call gives y[1] = a*sin(p + w), then y[2] = a*sin(p + 2*w), 
+  then y[3] = a*sin(p + 3*w), and so on. So, the object will behave exactly in the same way as
   after creating it with the constructor using the same arguments */
   void setup(T w = 1.0, T p = 0.0, T a = 1.0);
 
@@ -113,7 +113,7 @@ public:
   // \name Processing
 
   /** Returns one output value at a time (and updates internal state variables for next call). */
-  RS_INLINE T getValue()
+  inline T getValue()
   {
     T tmp = a1*s1 - s2;
     s2 = s1;
@@ -129,6 +129,46 @@ protected:
 
   T a1 = T(0);             // recursion coefficient
   T s1 = T(0), s2 = T(0);  // past sine outputs
+
+};
+
+//=================================================================================================
+
+/**
+
+under construction - does not yet work
+*/
+
+template<class T, int N>
+class rsPolynomialIterator
+{
+
+public:
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  void setup(T* newCoeffs, T newStepSize, T initialValue);
+
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing
+
+  /** Returns one output value at a time (and updates internal state variables for next call). */
+  inline T getValue()
+  {
+    T r = y[N];                  // result
+    for(int i = N; i > 0; i--) 
+      y[i] += y[i-1];            // state update
+    return r;
+  }
+
+
+protected:
+
+  T y[N+1];
 
 };
 

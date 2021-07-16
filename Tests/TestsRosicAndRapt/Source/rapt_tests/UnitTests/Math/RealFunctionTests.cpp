@@ -180,6 +180,35 @@ bool testSineIterator(double w, double p, double a)
   return eMax <= tol;
 }
 
+bool testPolynomialIterator()
+{
+  bool ok = true;
+
+  rsPolynomialIterator<float, 3> it;
+
+  int   N    = 1000;            // number of iterations
+  float a[4] = { 7, 5, 3, 2 };  // polynomial coefficients
+  float h    =  0.1f;           // stepsize
+  float x0   = -3.0f;           // initial value for x
+
+  it.setup(a, h, x0);
+  for(int n = 0; n < N; n++)
+  {
+    float x  = x0 + n*h;
+    float yt = rsPolynomial<float>::evaluate(x, a, 3);
+    float y  = it.getValue();
+    float e  = y - yt;
+  }
+  // the first two values look good, but then it goes off
+
+
+
+
+
+
+  return ok;
+}
+
 bool testPowerIterator(double p, double e)
 {
   double tol = 1.e-10;    // tolerance
@@ -228,6 +257,7 @@ bool testFunctionIterators()
   ok &= testComplexExponentialIterator(a, rsComplexDbl(0.7, 0.8)); // |z| > 1
   ok &= testSineIterator(2.5,  0.3, 1.2);
   ok &= testSineIterator(2.5, -0.3, 1.2);
+  ok &= testPolynomialIterator();
 
   // This does not yet work - at least not very well:
   //ok &= testPowerIterator(0.5, 0.001); 

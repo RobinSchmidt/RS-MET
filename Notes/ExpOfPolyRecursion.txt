@@ -39,9 +39,9 @@ x^3:   a3    b3 := a3*1*h^0 + a4*4*h^1
 x^4:   a4    b4 := a4*1*h^0
 
 where we have introduced the notation b0,..,b4 to denote the coefficients of p4(x+h). We recognize
-that the general formula for th i-th b-coefficient is given by:
+that the general formula for the i-th b-coefficient is given by:
 
-  bi = sum_{j=i}^4 aj * B(j,j-i) * h^(j-i)   -> verify that!
+  bi = sum_{j=i}^4 aj * B(j,j-i) * h^(j-i)
 
 where B(n,k) is the "n-choose-k" binomial coefficient. We define p3(x) to be the correction 
 polynomial that must be added to p4(x) to obtain p4(x+h), so we require:
@@ -65,7 +65,20 @@ degrees down to zero. The eventual goal is to produce y4(x+h) recursively in an 
   y3(x+h) = y3(x) * y2(x)
   y2(x+h) = y2(x) * y1(x) = gaussian
   y1(x+h) = y1(x) * y0(x) = exponential
-  y0(x+h) = y0(x)         = const
+  y0(x+h) = y0(x)         = constant
 
+We would need to compute the initial values y0(x),..,y4(x) directly and then compute 
+y0(x+h),..,y4(x+h) recursively, form there y0(x+2*h),..,y4(x+2*h) also recursively and so on.
+
+Applications:
+As long as the polynomials are supposed to be real, we are now in a position to compute various
+sorts of "bump" functions. But things get more intersting when we allow polynomials with complex
+coefficients. We'll get complex exponentials with a polynomial envelope for the instantaneous phase
+and amplitude. That may be useful in additive synthesis, where we typically want to use cubic 
+segments for the instantaneous phase and linear or cubic segments for the instantaneous amplitude. 
+Complex sinusoids with such envelopes should be possible to compute recursively by this technique.
+But note that the amplitude envelope will (i think) come out as cubic in the dB domain rather than
+the linear amplitude domain (..which may actually be desirable..we'll see)
+...tbc...
 
 

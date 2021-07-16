@@ -3651,13 +3651,13 @@ void expPolyIterator()
 
   // Compute x-axis and ground truth yt:
   using Vec = std::vector<double>;
-  Vec x(N), yt(N);
+  Vec x(N), pt(N), yt(N);
   Real p;
   for(int n = 0; n < N; n++)
   {
     x[n]  = x0 + n*h;
-    p = Poly::evaluate(x[n], a4, 4);  // p4(x)
-    yt[n] = exp(p);                   // y4(x), true/target value
+    pt[n] = Poly::evaluate(x[n], a4, 4);  // p4(x)
+    yt[n] = exp(pt[n]);                   // y4(x), true/target value
   }
 
   // Create arrays of the coeffs for the correction polynomials:
@@ -3678,27 +3678,26 @@ void expPolyIterator()
   corrector(a1, h, 1, a0);
 
   // Compute the initial values:
+  Real p0, p1, p2, p3, p4;
   Real y0, y1, y2, y3, y4;
-  y0 = exp(Poly::evaluate(x0, a0, 0));
-  y1 = exp(Poly::evaluate(x0, a1, 1));
-  y2 = exp(Poly::evaluate(x0, a2, 2));
-  y3 = exp(Poly::evaluate(x0, a3, 3));
-  y4 = exp(Poly::evaluate(x0, a4, 4));
+  p0 = Poly::evaluate(x0, a0, 0);  y0 = exp(p0);
+  p1 = Poly::evaluate(x0, a1, 1);  y1 = exp(p1);
+  p2 = Poly::evaluate(x0, a2, 2);  y2 = exp(p2);
+  p3 = Poly::evaluate(x0, a3, 3);  y3 = exp(p3);
+  p4 = Poly::evaluate(x0, a4, 4);  y4 = exp(p4);
 
   // Compute y4(x) recursively:
-  Vec yr(N);
+  Vec yr(N), pr(N);
   for(int n = 0; n < N; n++)
   {
-    yr[n] = y4;
-    y4 *= y3;
-    y3 *= y2;
-    y2 *= y1;
-    y1 *= y0;
+    pr[n] = p4; p4 += p3; p3 += p2; p2 += p1; p1 += p0;
+    yr[n] = y4; y4 *= y3; y3 *= y2; y2 *= y1; y1 *= y0;
   }
 
+  // Compute absolute and relative error and plot results:
   Vec errAbs = yr - yt;
   Vec errRel = errAbs / yt;
-
+  rsPlotVectorsXY(x, pt, pr);
   rsPlotVectorsXY(x, yt, yr);
   rsPlotVectorsXY(x, errAbs, errRel);
 
@@ -3708,9 +3707,7 @@ void expPolyIterator()
   //  relative error always increases with the same degree as the polynomial?
 
   // ToDo:
-  // -Implement also a recursive polynomial evaluator that uses the same technique except that we
-  //  leave out the exponential function. The recursive rule will than be additive rather than
-  //  multiplicative
+  // -Implement classes rsPolynomialIterator and rsExpPolyIterator (as subclass of the former)
 
   int dummy = 0;
 }

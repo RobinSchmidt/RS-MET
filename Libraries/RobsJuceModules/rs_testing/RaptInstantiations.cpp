@@ -381,10 +381,10 @@ template class RAPT::rsFourierTransformerBluestein<float>;
 template class RAPT::rsFourierTransformerRadix2<double>;
 template class RAPT::rsFourierTransformerBluestein<double>;
 
-
-
 template class RAPT::rsSineIterator<double>;
 template class RAPT::rsComplexExponentialIterator<double>;
+template class RAPT::rsPolynomialIterator<float, 3>;
+
 
 template double RAPT::rsNormalizedSinc(double x);
 template double RAPT::rsSineIntegral(double x);
@@ -458,6 +458,8 @@ template void RAPT::rsNumericDifferentiator<double>::laplacian2D_2(
   const rsGraph<rsVector2D<double>, double>& mesh, const std::vector<double>& u, 
   std::vector<double>& L);
 
+//-------------------------------------------------------------------------------------------------
+// Filters:
 
 template double RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(double fl, double fu);
 template double RAPT::rsBandwidthConverter::bandedgesToAbsoluteBandwidth(double fl, double fu);
