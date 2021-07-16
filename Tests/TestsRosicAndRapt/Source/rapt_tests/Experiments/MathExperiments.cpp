@@ -3634,7 +3634,7 @@ void expPolyIterator()
   using Vec  = std::vector<Real>;
   using Poly = rsPolynomial<Real>;
 
-  int  N  = 20;    // number of data points to generate
+  int  N  = 1000;    // number of data points to generate
   Real x0 = -5.0;    // start value for the x-values
   Real h  =  0.01;   // step size
   Real k  =  0.1;    // overall scaler for p(x), controls width
@@ -3656,7 +3656,7 @@ void expPolyIterator()
   for(int n = 0; n < N; n++)
   {
     x[n]  = x0 + n*h;
-    p = Poly::evaluate(x[n], a4, 5);  // p4(x)
+    p = Poly::evaluate(x[n], a4, 4);  // p4(x)
     yt[n] = exp(p);                   // y4(x), true/target value
   }
 
@@ -3667,12 +3667,8 @@ void expPolyIterator()
     {
       Real bi = 0;
       for(int j = i; j <= N; j++)
-      {
         bi += a[j] * pow(h, j-i) * rsBinomialCoefficient(j, j-i);
-        //bi += a[j] * pow(h, j-i) * rsBinomialCoefficient(j-i, j);
-        //bi += a[j] * pow(h, i-j) * rsBinomialCoefficient(j, j-i);
-      }
-      c[i] = a[i] - bi;
+      c[i] = bi - a[i];
     }
   };
   Real a3[4], a2[3], a1[2], a0[1];
@@ -3699,12 +3695,22 @@ void expPolyIterator()
     y2 *= y1;
     y1 *= y0;
   }
-  // Nope! Something is still wrong1
 
+  Vec errAbs = yr - yt;
+  Vec errRel = errAbs / yt;
 
+  rsPlotVectorsXY(x, yt, yr);
+  rsPlotVectorsXY(x, errAbs, errRel);
 
-  //rsPlotVectorsXY(x, yt);
-  rsPlotArraysXY(N, &x[0], &yt[0], &yr[0]);
+  // Observations:
+  // -The absolute error again resembles the original bump.
+  // -The relative error looks like an x^4 function. Maybe the general rule is that the accumulated 
+  //  relative error always increases with the same degree as the polynomial?
+
+  // ToDo:
+  // -Implement also a recursive polynomial evaluator that uses the same technique except that we
+  //  leave out the exponential function. The recursive rule will than be additive rather than
+  //  multiplicative
 
   int dummy = 0;
 }

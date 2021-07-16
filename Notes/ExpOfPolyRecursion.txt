@@ -1,4 +1,4 @@
-We want to derive a recursion to compute equdistant values of a function y(x) = exp(p(x)) where 
+We want to derive a recursion to compute equidistant values of a function y(x) = exp(p(x)) where 
 p(x) is a polynomial. As example, we'll look at a degree 4 polynomial. For reasons that will 
 become apparent soon, we'll introduce the index "4" to the polynomial p(x) and the overall
 function y(x) to become p4(x) and y4(x) respectively. So what we want to compute is:
@@ -41,7 +41,7 @@ x^4:   a4    b4 := a4*1*h^0
 where we have introduced the notation b0,..,b4 to denote the coefficients of p4(x+h). We recognize
 that the general formula for th i-th b-coefficient is given by:
 
-  bi = sum_{j=i}^4 aj * B(j,j-i) * h^(j-i)
+  bi = sum_{j=i}^4 aj * B(j,j-i) * h^(j-i)   -> verify that!
 
 where B(n,k) is the "n-choose-k" binomial coefficient. We define p3(x) to be the correction 
 polynomial that must be added to p4(x) to obtain p4(x+h), so we require:
@@ -51,15 +51,15 @@ polynomial that must be added to p4(x) to obtain p4(x+h), so we require:
 and the coefficients of the correction polynomial p3(x) are denoted as c0,..,c4 and each ci is 
 given by 
 
-  ci = ai - bi. 
-  
+  ci = bi - ai
+
 Now is the time to appreciate (from our table above) that b4 = a4, so c4 = 0. Yes! That means, our
 correction polynomial p3(x) did indeed come out as a degree 3 polynomial. From the general equation
 for binomial coefficients B(j,j) = 1, we conclude that the correction polynomial will always be of 
 a degree one less than our original polynomial, so the procedure is not specific to degree 4. In
 particular, that also means that we can now apply the same procedure to our degree 3 correction to
-get a degree 2 correction for that, and so on. Having found the correction polynomials of all 
-degrees down to zero. The eventual goal is to produce y4(x+h) recursively in a algorithm like:
+get a degree 2 correction for that, and so on until we have found the correction polynomials of all 
+degrees down to zero. The eventual goal is to produce y4(x+h) recursively in an algorithm like:
 
   y4(x+h) = y4(x) * y3(x)
   y3(x+h) = y3(x) * y2(x)
