@@ -149,7 +149,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  void setup(T* newCoeffs, T newStepSize, T initialValue);
+  void setup(const T* newCoeffs, T newStepSize, T initialValue);
 
 
 

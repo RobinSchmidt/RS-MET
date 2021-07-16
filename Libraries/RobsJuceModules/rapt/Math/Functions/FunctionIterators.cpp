@@ -50,37 +50,39 @@ void rsSineIterator<T>::setup(T w, T p, T a)
 
 
 template<class T, int N>
-void rsPolynomialIterator<T, N>::setup(T* a, T h, T x0)
+void rsPolynomialIterator<T, N>::setup(const T* aIn, T h, T x0)
 {
   using Poly = rsPolynomial<T>;
 
-  y[N] = Poly::evaluate(x0, a, N); 
-  T c[N+1];
-  for(int m = N-1; m >= 0; m--)
+  auto corrector = [](const T* a, T h, int N, T* c)
   {
-
-
     for(int i = 0; i <= N-1; i++)
     {
-      T bi(0);
+      T bi = 0;
       for(int j = i; j <= N; j++)
         bi += a[j] * pow(h, j-i) * rsBinomialCoefficient(j, j-i);
-      c[i] = bi - a[i]; 
-      // this is wrong! in each iteration, the a-array needs to be the c-array from the previous 
-      // iteration, not the original a-array all the time
+      c[i] = bi - a[i];
     }
+  };
 
-    y[m] = Poly::evaluate(x0, c, m); 
 
 
+  T a[N+1];
+  T c[N+1];
+  rsArrayTools::copy(aIn, a, N+1);
+  for(int m = N; m >= 0; m--)
+  {
+    y[m] = Poly::evaluate(x0, a, m); 
+    corrector(a, h, m, c);
+    rsArrayTools::copy(c, a, m+1);     // is m sufficient?
   }
 
-
-
-
-  int dummy = 0;
-
-  // ToDo: optimize the call to rsBinomialCoefficient and pow
+  // ToDo: 
+  // -Try to make it possible to use corrector() in place, maybe that could require writing into
+  //  the output array c in the reverse direction and reversing the result before returning
+  // -optimize the call to rsBinomialCoefficient and pow
+  // -Maybe make a special implementation for cubic polynomials that hardcodes the required 
+  //  binomial coeffs
 }
 
 

@@ -184,26 +184,33 @@ bool testPolynomialIterator()
 {
   bool ok = true;
 
-  rsPolynomialIterator<float, 3> it;
-
   int   N    = 1000;            // number of iterations
   float a[4] = { 7, 5, 3, 2 };  // polynomial coefficients
-  float h    =  0.1f;           // stepsize
-  float x0   = -3.0f;           // initial value for x
+  float h    =  0.01f;          // stepsize
+  float x0   = -5.0f;           // initial value for x
 
+  rsPolynomialIterator<float, 3> it;
   it.setup(a, h, x0);
+  std::vector<float> x(N), y(N), yt(N), errA(N), errR(N);
   for(int n = 0; n < N; n++)
   {
-    float x  = x0 + n*h;
-    float yt = rsPolynomial<float>::evaluate(x, a, 3);
-    float y  = it.getValue();
-    float e  = y - yt;
+    x[n]    = x0 + n*h;
+    yt[n]   = rsPolynomial<float>::evaluate(x[n], a, 3);
+    y[n]    = it.getValue();
+    errA[n] = y[n] - yt[n];
+    errR[n] = errA[n] / yt[n];
   }
-  // the first two values look good, but then it goes off
 
-
-
-
+  float tol = 0.013;  // error is quite large
+  ok &= rsMaxDeviation(y, yt) <= tol;
+  //rsPlotVectorsXY(x, yt, y, errA);
+  //rsPlotVectorsXY(x, errA, errR);
+  // The error accumulation is quite significant. Maybe we can reduce it by computing the initial
+  // state in extended precision such that we at least start with a clean state...although actually
+  // in the initial section, the error passes through zero several times which may mean that some
+  // initermediate states are actually quite clean by coincidence. But that's not necessarily so:
+  // just because the output has zero error at some instant does not mean that the full state is
+  // free of error.
 
 
   return ok;
