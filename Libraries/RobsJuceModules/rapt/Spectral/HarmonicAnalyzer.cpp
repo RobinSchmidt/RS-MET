@@ -671,6 +671,12 @@ void rsHarmonicAnalyzer<T>::fillWindow()
 
 /*
 
+
+ToDo:
+-improve frequency estimation by this technique:
+ https://www.researchgate.net/publication/298982929_The_XQIFFT_Increasing_the_Accuracy_of_Quadratic_Interpolation_of_Spectral_Peaks_via_Exponential_Magnitude_Spectrum_Weighting
+
+
 Ideas:
 
 Currently, we stretch every cycle of the input signal to some fixed cycleLength (the power of two
@@ -736,7 +742,13 @@ exactly to incorporate the frequency information that is already available by th
 (and similar information that will be available at the two additional datapoints)...maybe some sort
 of "best-fit" strategy (whatever that means in this context) could make sense?
 
-
+Maybe it could also make sense to measure the time derivatives of instantaneous frequency and 
+amplitude. This could be done by taking the FFT one sample before and one after the actual target 
+sample point and taking the differences of the values divided by 2-times the sampling interval. 
+Then, we may not need the FFT at the center datapoint: the values themselves can be computed as 
+averages of the measured values at n-1 and n+1. These derivatives could then be used in resynthesis
+to determine a cubic polynomial for the instantaneous amplitude and a quintic for the instantaneous 
+phase. ..but it would require us to add 2 more fields to rsInstantaneousSineParameters
 
 ToDo: 
 
@@ -746,6 +758,9 @@ this kind of sinusoidal analysis, so we may not need any others anymore and coul
 some point to clean up the interface...but who knows - for the time being, i'll leave them in, just 
 in case...maybe at a later stage, the usage of other windows can be retained in an experimental 
 subclass somewhere outside the main library
+
+
+
 
 
 */

@@ -261,7 +261,7 @@ void recursiveSineWithCubicPhaseNew()
   T   p0  = 0.3;       // start phase
   T   p1  = 1.7;       // end phase (modulo 2pi)
   T   f0  = 100;       // start frequency
-  T   f1  = 120;       // end frequency
+  T   f1  = 200;       // end frequency
   //T   a0  = 1;         // start amplitude ...later
   //T   a1  = 1;         // end amplitude
 
@@ -272,13 +272,11 @@ void recursiveSineWithCubicPhaseNew()
   T tmp = p0 + (N-1)*wm;    // unwrapped end phase should be near this value
   p1 = rsConsistentUnwrappedValue(tmp, p1, T(0), T(2*PI));
   T coeffsPhs[4];
-  //y0 = p0; y0[1] = w0;
-  //y1 = p1; y1[1] = w1;
+  //fitCubicWithDerivative(T(0), T(N), p0, p1, w0, w1, 
+  //  &coeffsPhs[3], &coeffsPhs[2], &coeffsPhs[1], &coeffsPhs[0]);
   fitCubicWithDerivative(T(0), T(N-1), p0, p1, w0, w1, 
     &coeffsPhs[3], &coeffsPhs[2], &coeffsPhs[1], &coeffsPhs[0]);
-    // this API sucks! change it, so we can just pass the pointer to coeffsPhs
-
-  //getHermiteCoeffs1(y0, y1, coeffsPhs);
+    // ToDo: this API sucks! change it, so we can just pass the pointer to coeffsPhs
 
   // Compute ground truth for reference:
   using Vec  = std::vector<T>;
@@ -291,15 +289,30 @@ void recursiveSineWithCubicPhaseNew()
     yt[n] = sin(p);  // todo: also include an instantaneous amplitude (cubic or linear)
   }
 
-
-
-
-
+  // Compute the sweeping sinusoid iteratively:
   using Complex = std::complex<T>;
+  Complex coeffs[4];
+  for(int i = 0; i < 4; i++)
+    coeffs[i] = Complex(0, coeffsPhs[i]);
+    // ToDo: include a real part that will serve for applying an amplitude envelope
   rsExpPolyIterator<Complex, 3> osc;
+  osc.setup(coeffs, T(1), p0);
+  Vec y(N);
+  for(int n = 0; n < N; n++)
+  {
+    Complex yc = osc.getValue();
+    y[n] = yc.imag(); // the imaginary part is the sine component
+  }
 
+  //rsPlotVectorsXY(t, yt);
+  rsPlotVectorsXY(t, yt, y);
+  rsPlotArraysXY(N-1, &t[0], &yt[0], &y[1]); // advance iterative version by one sample
+  rsPlotArraysXY(N-1, &t[0], &yt[1], &y[0]); // advance reference version by one sample
 
-  rsPlotVectorsXY(t, yt);
+  // Observations:
+  // -the iterative sine looks good but it's one sample ahead - or is it? in any case, it is 
+  //  time-shifted...it looks like the advance is more like half a sample
+  //  -> try to compute the complex exponential directly and compare with iterative
 
 
   // ToDo:
@@ -310,6 +323,8 @@ void recursiveSineWithCubicPhaseNew()
   //  when it's used in an additive synth - that may be desirable from a performance point of view 
   //  anyway
   // -Check stability as function of frequency
+  // -Test whether it's numerically better to use N-1 for the end time in fitCubicWithDerivative 
+  //  with h = 1 in osc.setup or to use 1-1/fs for fit.. and h=1/fs 
 
 
   int dummy = 0;
@@ -319,7 +334,10 @@ void recursiveSineWithCubicPhase()
 {
   //recursiveSineWithCubicPhaseOld();
   recursiveSineWithCubicPhaseNew<double>();
-  //recursiveSineWithCubicPhaseNew<float>();
+
+  //recursiveSineWithCubicPhaseNew<float>();  
+  // does not yet compile, we need instantiations of 
+  // rsConsistentUnwrappedValue, fitCubicWithDerivative
 }
 
 
