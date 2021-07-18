@@ -193,7 +193,8 @@ void getHermiteCoeffs1(const T *y0, const T *y1, T *a)
 }
 // ToDo: make a variant that takes x0, x1 as additional parameters - it should call this function
 // internally and then convert the coeffs by considering the nested polynomial:
-// p(x) = a0 + a1*(a*x+b) + a2*(a*x+b)^2 + a3*(a*x+b)^3 where a,b can be computed from x0,x1
+// p(x) = a0 + a1*(a*x+b) + a2*(a*x+b)^2 + a3*(a*x+b)^3 where a,b can be computed from x0,x1.
+// Or maybe it's numerically better to directly solve the system of equations?
 
 template<class T>
 void getHermiteCoeffs2(const T *y0, const T *y1, T *a)

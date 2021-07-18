@@ -384,6 +384,10 @@ template class RAPT::rsFourierTransformerBluestein<double>;
 template class RAPT::rsSineIterator<double>;
 template class RAPT::rsComplexExponentialIterator<double>;
 template class RAPT::rsPolynomialIterator<float, 3>;
+template class RAPT::rsExpPolyIterator<double, 4>;
+
+template class RAPT::rsPolynomialIterator<std::complex<float>, 3>;
+template class RAPT::rsPolynomialIterator<std::complex<double>, 3>;
 
 
 template double RAPT::rsNormalizedSinc(double x);

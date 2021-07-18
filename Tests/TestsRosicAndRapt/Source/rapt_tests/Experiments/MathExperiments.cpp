@@ -3521,6 +3521,9 @@ void powerIterator()
 
 void gaussianIterator()
 {
+  // Note: The technique demonstrated here is now superseded by RAPT::rsExpPolyIterator. The 
+  // code here actually just implements what this class does for the special case of N=2.
+
   // We iteratively produce a Gaussian bell function y(x) = exp(a*x^2) where a < 0 and compare it
   // to a directly computed function. To derive the iterative/recursive rule, we consider:
   //   y(x+h) = exp(a*(x+h)^2) = exp(a*(x^2+2*h*x+h^2)) = exp(a*x^2)*exp(2*a*h*x)*exp(a*h^2)
@@ -3614,6 +3617,9 @@ void gaussianIterator()
 
 void expPolyIterator()
 {
+  // Tests and demostartes the use RAPT::rsExpPolyIterator to iteratively evaluate the exponential
+  // function of a polynomial y(x) = exp(p(x))
+
   // As a generalization of the recursion for the Gaussian y(x) = exp(a*x^2), we now consider
   //   y(x) = exp(p(x)) 
   // where p(x) is a polynomial:
@@ -3638,60 +3644,36 @@ void expPolyIterator()
   Real x0 = -5.0;    // start value for the x-values
   Real h  =  0.01;   // step size
   Real k  =  0.1;    // overall scaler for p(x), controls width
-  Real a4[5];        // polynomial coeffs excluding the k factor
-  a4[0] =  0.0; 
-  a4[1] = -0.5;
-  a4[2] = -0.4;
-  a4[3] = -0.3;
-  a4[4] = -0.2;
+  Real a[5];         // polynomial coeffs excluding the k factor
+  a[0] =  0.0; 
+  a[1] = -0.5;
+  a[2] = -0.4;
+  a[3] = -0.3;
+  a[4] = -0.2;
 
   // Bake the k-factor into the polynomial coeffs:
   for(int i = 0; i < 5; i++)
-    a4[i] *= k;
+    a[i] *= k;
 
-  // Compute x-axis and ground truth yt:
+  // Compute x-axis and ground truth pt, yt for polynomial p(x) and for exp(p(x)):
   using Vec = std::vector<double>;
   Vec x(N), pt(N), yt(N);
   Real p;
   for(int n = 0; n < N; n++)
   {
     x[n]  = x0 + n*h;
-    pt[n] = Poly::evaluate(x[n], a4, 4);  // p4(x)
-    yt[n] = exp(pt[n]);                   // y4(x), true/target value
+    pt[n] = Poly::evaluate(x[n], a, 4);  // p(x)
+    yt[n] = exp(pt[n]);                  // y(x), true/target value
   }
 
-  // Create arrays of the coeffs for the correction polynomials:
-  auto corrector = [](const Real* a, Real h, int N, Real* c)
-  {
-    for(int i = 0; i <= N-1; i++)
-    {
-      Real bi = 0;
-      for(int j = i; j <= N; j++)
-        bi += a[j] * pow(h, j-i) * rsBinomialCoefficient(j, j-i);
-      c[i] = bi - a[i];
-    }
-  };
-  Real a3[4], a2[3], a1[2], a0[1];
-  corrector(a4, h, 4, a3);
-  corrector(a3, h, 3, a2);
-  corrector(a2, h, 2, a1);
-  corrector(a1, h, 1, a0);
-
-  // Compute the initial values:
-  Real p0, p1, p2, p3, p4;
-  Real y0, y1, y2, y3, y4;
-  p0 = Poly::evaluate(x0, a0, 0);  y0 = exp(p0);
-  p1 = Poly::evaluate(x0, a1, 1);  y1 = exp(p1);
-  p2 = Poly::evaluate(x0, a2, 2);  y2 = exp(p2);
-  p3 = Poly::evaluate(x0, a3, 3);  y3 = exp(p3);
-  p4 = Poly::evaluate(x0, a4, 4);  y4 = exp(p4);
-
-  // Compute y4(x) recursively:
+  // Compute p(x) and y(x) iteratively:
+  rsPolynomialIterator<Real, 4> polyIter;  polyIter.setup(a, h, x0);
+  rsExpPolyIterator<   Real, 4> expIter;   expIter.setup( a, h, x0);
   Vec yr(N), pr(N);
   for(int n = 0; n < N; n++)
   {
-    pr[n] = p4; p4 += p3; p3 += p2; p2 += p1; p1 += p0;
-    yr[n] = y4; y4 *= y3; y3 *= y2; y2 *= y1; y1 *= y0;
+    pr[n] = polyIter.getValue();
+    yr[n] = expIter.getValue();
   }
 
   // Compute absolute and relative error and plot results:
@@ -3707,7 +3689,9 @@ void expPolyIterator()
   //  relative error always increases with the same degree as the polynomial?
 
   // ToDo:
-  // -Implement classes rsPolynomialIterator and rsExpPolyIterator (as subclass of the former)
+  // -Try to use a cubic rsExpPolyIterator for std::complex to generate a complex sinusoid with 
+  //  cubic envelope for the instantaneous phase. Compare result to directly calculated values, in
+  //  particular, pay attention to roundoff accumulation
 
   int dummy = 0;
 }

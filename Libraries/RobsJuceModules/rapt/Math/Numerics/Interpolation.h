@@ -22,14 +22,16 @@ template<class T>
 void rsCubicSplineCoeffsFourPoints(T *a, T *y);
 
 /** Fits a cubic polynomial of the form:
-\f[ f(x) = a3*x^3 + a2*x^2 + a1*x + a0  \f]
+  \f[ f(x) = a3*x^3 + a2*x^2 + a1*x + a0  \f]
 to two points (x1,y1), (x2,y2) and matches values of the derivative (given by yd1, yd2) at these
-points.
-\todo change order of a coeffs - but make sure that all client code using this is updated
-accordingly. or maybe pass an array a[4] - this will force client code to be updated  */
+points.  */
 template<class T>
 void fitCubicWithDerivative(T x1, T x2, T y1, T y2, T yd1,
   T yd2, T *a3, T *a2, T *a1, T *a0);
+// \todo change order of a coeffs - but make sure that all client code using this is updated
+// accordingly. or maybe pass an array a[4] - this will force client code to be updated. Or 
+// deprecate and replace by a version that takes a pointer to an a-array 
+
 
 /** Similar to fitCubicWithDerivative, but the x-coodinates of the two points are fixed at x0=0,
 x1=1 such that we fit the points (0,y0), (1,y1) and match values of the derivative (given by yd0,

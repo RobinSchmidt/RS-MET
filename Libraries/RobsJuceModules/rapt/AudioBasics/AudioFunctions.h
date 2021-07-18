@@ -88,7 +88,7 @@ It is also consistent with the tentative unwrapped value in the sense that is at
 preliminaryUnwrappedValue +- (rangeMax-rangeMin)/2 but also a multiple of (rangeMax-rangeMin) away
 from targetWrappedValue. This function is useful for finding unwrapped phase values that should be 
 consistent with some measured phase-value from the base-range (of 0..2pi, say) but should also be 
-in the neighbourhood of some unwapped value that may be the result of integrating/accumulating a 
+in the neighbourhood of some unwrapped value that may be the result of integrating/accumulating a 
 frequency over time. */
 template<class T>
 T rsConsistentUnwrappedValue(T preliminaryUnwrappedValue, T targetWrappedValue, 

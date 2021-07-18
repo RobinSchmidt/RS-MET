@@ -66,15 +66,17 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Lifetime
 
-  /** Standard constructor. Sets the iterator up for producing y[n] = a * sin(w*n + p) with
-  a = 1, w = 1, p = 0. It initializes the recursion coefficient and state variables using
-  precomuted constants, so no costly call to setup() is invoked. */
+  /** Standard constructor. Directly after creation, calling geValue will just produce silence, 
+  i.e. y[n] = 0 * sin(0*n + 0). If you want to produce an actual sinusoid, you need to call setup 
+  after creation or alternatively, the parametrized constructor below. */
   rsSineIterator()
   {
-    a1 = T( 1.0806046117362795);
-    s1 = T(-0.84147098480789650);
-    s2 = T(-0.90929742682568171);
+    //a1 = T( 1.0806046117362795);
+    //s1 = T(-0.84147098480789650);
+    //s2 = T(-0.90929742682568171);
     // calling setup(1, 0, 1) would compute these values, but that would be more costly.
+    // ...maybe do a direct in-class initialization - measure if that makes a difference in 
+    // creation cost
     // maybe initialize all to zero
 
     //setup(0.05, 0.0, 1.0);  // ??! for debug?
@@ -99,8 +101,13 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
+  /** Returns the current normalized radian frequency. Note that the value is computed/retrieved 
+  from the recursion coefficient, so it may be subject to roundoff errors with respect to the value
+  that was passed to setup (we don't store the user parameters here to keep the object size 
+  small). */
   T getOmega() const { return acos(T(0.5)*a1); }  //  a1 = 2.0*cos(w);
 
+  /*
   T getPhase() const 
   {
     T p = asin(s1);
@@ -108,6 +115,14 @@ public:
       p += T(PI);    // needs test
     return p;
   }
+  */
+  // ...nope! this does not yet work!
+  // -is this the phase of the last or next call to getValue? maybe the function should be named 
+  //  accordingly: getNextPhase, getPreviousPhase or getLastPhase - getNextPhase is 
+  //  getLastPhase + getOmega
+  // -what is the supposed output range? [-pi, +pi)? or [0, 2pi)? document this!
+
+  // what about getAmplitude?
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -134,12 +149,14 @@ protected:
 
 //=================================================================================================
 
-/**
+/** under construction...works already but setup is still in an inefficient prototype stage... 
 
-under construction - does not yet work
-*/
+A class for iteratively evaluating a polynomial p(x). To use it, you need to instantiate it for the 
+desired type T for coefficients and output and degree N. To initialize the iterative evaluation, 
+you call setup with the polynomial coefficents, stepsize h and initial value x0. After that, the 
+1st call to getValue will return p(x0), the 2nd p(x0+h), the 3rd p(x0+2*h) and so on. */
 
-template<class T, int N>
+template<class T, int N>     // T: type for coeffs and output, N: degree of the polynomial
 class rsPolynomialIterator
 {
 
@@ -150,7 +167,6 @@ public:
   // \name Setup
 
   void setup(const T* newCoeffs, T newStepSize, T initialValue);
-
 
 
   //-----------------------------------------------------------------------------------------------
@@ -171,5 +187,40 @@ protected:
   T y[N+1];
 
 };
+
+
+/** Similar to rsPolynomialIterator, but instead of iteratively evaluating a polynomial p(x) itself, 
+it evaluates the exponential function of that polynomial, i.e. exp(p(x)).
+
+Warning: i think, this may be numerically unstable, especially for larger N...more tests needed.  */
+
+template<class T, int N>
+class rsExpPolyIterator : public rsPolynomialIterator<T, N>
+{
+
+public:
+
+  void setup(const T* newCoeffs, T newStepSize, T initialValue)
+  {
+    rsPolynomialIterator<T, N>::setup(newCoeffs, newStepSize, initialValue);
+    for(int i = 0; i <= N; i++) 
+      y[i] = exp(y[i]);
+  }
+  // todo: maybe make a version that lets the user specify a basis b..i think, we just need to 
+  // multiply all y[i] by log(b) (inside the exp call)
+
+  inline T getValue()
+  {
+    T r = y[N];                  // result
+    for(int i = N; i > 0; i--) 
+      y[i] *= y[i-1];            // state update
+    return r;
+  }
+
+};
+
+
+
+
 
 #endif

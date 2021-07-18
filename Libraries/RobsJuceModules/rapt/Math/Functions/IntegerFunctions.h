@@ -1,7 +1,8 @@
 #ifndef RAPT_INTEGERFUNCTIONS_H_INCLUDED
 #define RAPT_INTEGERFUNCTIONS_H_INCLUDED
 
-// wrap functions into class rsIntFuncs, make similar classes rsRealFuncs, rsComplexFuncs
+// wrap functions into class rsIntegerFunctions, make similar classes rsRealFunctions, 
+// rsComplexFunctions
 
 /** Calculates the binomial coefficient n over k. */
 template<class TUInt>
@@ -21,10 +22,12 @@ P[k] = B(n,k) * p^k * (1-p)^(n-k) where B(n,k) is the binomial coefficient "n-ch
 only up to n = 34 - above that, internal overflow occurs. */
 template<class TUInt>
 void rsBinomialDistribution(double *P, TUInt n, double p);
-// todo: use the recursive algorithm (see function binomialDistribution MathExperiments.cpp
-// in the test project -> more efficient and avoids overflow - but may introduce roundoff error, 
-// unless used with exact rational numbers) ...this naive implementation here should then probably 
-// used only for prototype and test code and the recursive algo for production
+// todo: 
+// -use the recursive algorithm (see function binomialDistribution MathExperiments.cpp
+//  in the test project -> more efficient and avoids overflow - but may introduce roundoff error, 
+//  unless used with exact rational numbers) ...this naive implementation here should then probably 
+//  used only for prototype and test code and the recursive algo for production
+// -move into class rsStatistics
 
 /** Kronecker delta function. Returns 1, if i == j and 0 otherwise. */
 template<class TInt>

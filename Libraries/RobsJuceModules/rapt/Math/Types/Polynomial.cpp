@@ -1343,7 +1343,7 @@ void rsPolynomial<T>::legendrePolynomial(R *a, int degree)
   R *b2 = new R [degree+1];
 
   for(i = 0; i <= degree; i++) {
-    b1[i] = b2[i] = 0.0;
+    b1[i] = b2[i] = T(0);
   }
   b2[1] = T(1);
 
@@ -1351,7 +1351,7 @@ void rsPolynomial<T>::legendrePolynomial(R *a, int degree)
     for(j = 0; j <= i; j++) {
       b1[j] = b2[j];
       b2[j] = a[j];
-      a[j]  = 0.0;
+      a[j]  = T(0);
     }
     for(j = i-2; j >= 0; j-=2) {
       a[j] -= (i-1)*b1[j]/i;

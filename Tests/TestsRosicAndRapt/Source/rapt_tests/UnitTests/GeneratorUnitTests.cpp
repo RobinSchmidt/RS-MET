@@ -797,6 +797,6 @@ bool samplerEngineUnitTest()
   ok &= samplerEngine2UnitTest();
 
 
-  rsAssert(ok);
+  rsAssert(ok, "samplerEngineUnitTest failed");
   return ok;
 }

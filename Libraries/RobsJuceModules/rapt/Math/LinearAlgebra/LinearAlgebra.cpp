@@ -204,10 +204,12 @@ bool rsLinearAlgebra::rsSolveLinearSystemInPlace(T **A, T *x, T *b, int N)
   T tol = T(1.e-12); // ad hoc, seems reasonable for T == double
   // ToDo: use something based on std::numeric_limits<T> and/or let the user pick a threshold. 
   // also, It should probably be a relative value. If T is something like rsFraction, we may want
-  // to use an entirely different criterion. Maybe we should implement a templated rsIsBetterPivot
-  // and rsIsValidPivot with different explicit specializations for rsFraction and 
-  // float/double/complex etc. Oh - and what if T is itself a matrix type as in block matrices? In
-  // this case, we need an invertible matrix as pivot.
+  // to use an entirely different criterion, like using simpler fractions as pivots to decrease the
+  // likelihood of integer overflow. Numerators and denominators of fractions tend to blow up 
+  // quickly (exponentially?) in a sequence of arithmetic operations. Maybe we should implement a
+  // templated rsIsBetterPivot and rsIsValidPivot with different explicit specializations for 
+  // rsFraction and float/double/complex etc. Oh - and what if T is itself a matrix type as in 
+  // block matrices? In this case, we need an invertible matrix as pivot. 
 
   // outermost loop over the rows to be scaled and subtracted from the rows below them:
   for(i = 0; i < N; i++)

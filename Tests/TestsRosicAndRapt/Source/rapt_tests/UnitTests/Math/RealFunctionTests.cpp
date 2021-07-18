@@ -157,6 +157,8 @@ bool testComplexExponentialIterator(rsComplexDbl a, rsComplexDbl z)
 
 bool testSineIterator(double w, double p, double a)
 {
+  bool ok = true;
+
   double tol = 1.e-10;  // tolerance
   double y;             // computed value
   double yt;            // target value
@@ -164,53 +166,89 @@ bool testSineIterator(double w, double p, double a)
   double eMax = 0.0;    // maximum error
   int N = 1000;         // number of iterations
 
-  // create the iterator for sinusoids:
+  // Create the iterator for sinusoids:
   rsSineIterator<double> it(w, p, a);
 
-  // compute values and target values ans measure the maximum distance:
+  // Check retrieval of normalized radian frequency:
+  double w2 = it.getOmega();
+  ok &= rsIsCloseTo(w, w2, tol);
+
+
+  // Compute values and target values ans measure the maximum distance:
+  double p1, p2, a2;
   for(int n = 0; n < N; n++)
   {
-    yt = a * sin(w*n + p);
+    p1 = w*n + p;          // instantaneous target phase ..maybe we need to wrap it
+    //p2 = it.getPhase();    // at n==4,8,.. we get nan!!
+    yt = a * sin(p1);  
     y  = it.getValue();
     e  = fabs(yt-y) / y;
     if( e > eMax )
       eMax = e;
+
+    // Check retrieval of instantaneous phase and amplitude;
+
+    //a2 = it.getAmplitude(); // not yet implemented
   }
 
-  return eMax <= tol;
+  ok &=  eMax <= tol;
+
+  return ok;
 }
 
 bool testPolynomialIterator()
 {
   bool ok = true;
 
-  int   N    = 1000;            // number of iterations
-  float a[4] = { 7, 5, 3, 2 };  // polynomial coefficients
+  int   N    = 500;            // number of iterations
+  //float a[4] = { 7, 5, 3, 2 };  // polynomial coefficients
+  //float a[4] = { 0.7, -0.5, 0.3, -0.1 };  // polynomial coefficients
+  float a[4] = { +0.7, -0.5, +0.3, -0.1 };  // polynomial coefficients
+  //float a[4] = { 7, -5, 3, -2 };  // polynomial coefficients
   float h    =  0.01f;          // stepsize
-  float x0   = -5.0f;           // initial value for x
+  float x0   = -2.5f;           // initial value for x
 
-  rsPolynomialIterator<float, 3> it;
-  it.setup(a, h, x0);
-  std::vector<float> x(N), y(N), yt(N), errA(N), errR(N);
+  rsPolynomialIterator<float, 3> pIt;
+  rsExpPolyIterator<float, 3> eIt;
+  pIt.setup(a, h, x0);
+  eIt.setup(a, h, x0);
+  std::vector<float> p(N), pt(N), pErrA(N), pErrR(N), x(N);
+  std::vector<float> y(N), yt(N), yErrA(N), yErrR(N);
   for(int n = 0; n < N; n++)
   {
-    x[n]    = x0 + n*h;
-    yt[n]   = rsPolynomial<float>::evaluate(x[n], a, 3);
-    y[n]    = it.getValue();
-    errA[n] = y[n] - yt[n];
-    errR[n] = errA[n] / yt[n];
+    x[n]     = x0 + n*h;
+
+    pt[n]    = rsPolynomial<float>::evaluate(x[n], a, 3);
+    p[n]     = pIt.getValue();
+    pErrA[n] = p[n] - pt[n];
+    pErrR[n] = pErrA[n] / pt[n];
+
+    yt[n]    = exp(pt[n]);
+    y[n]     = eIt.getValue();
+    yErrA[n] = y[n] - yt[n];
+    yErrR[n] = yErrA[n] / yt[n];
   }
 
-  float tol = 0.013;  // error is quite large
-  ok &= rsMaxDeviation(y, yt) <= tol;
-  //rsPlotVectorsXY(x, yt, y, errA);
-  //rsPlotVectorsXY(x, errA, errR);
+
+  float err;
+  err = rsMaxDeviation(p, pt); ok &= err <= 5.e-5;
+  err = rsMaxDeviation(y, yt); ok &= err <= 0.1;     // error is large!
+
+  //rsPlotVectorsXY(x, pt, p, pErrA);
+  //rsPlotVectorsXY(x, pErrA, pErrR);
+
+  //rsPlotVectorsXY(x, yt, y, yErrA);
+  //rsPlotVectorsXY(x, yErrA, yErrR);
+
+
   // The error accumulation is quite significant. Maybe we can reduce it by computing the initial
   // state in extended precision such that we at least start with a clean state...although actually
   // in the initial section, the error passes through zero several times which may mean that some
-  // initermediate states are actually quite clean by coincidence. But that's not necessarily so:
+  // intermediate states are actually quite clean by coincidence. But that's not necessarily so:
   // just because the output has zero error at some instant does not mean that the full state is
-  // free of error.
+  // free of error. In production code, we should re-initialize periodically with exactly computed
+  // values. How long should the interval be? If it's not at least of order 100, it may become
+  // questionable, if iterative evaluation makes any sense at all. 
 
 
   return ok;

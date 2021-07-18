@@ -48,39 +48,46 @@ void rsSineIterator<T>::setup(T w, T p, T a)
 
 //=================================================================================================
 
-
 template<class T, int N>
 void rsPolynomialIterator<T, N>::setup(const T* aIn, T h, T x0)
 {
   using Poly = rsPolynomial<T>;
 
+  // Given the coefficients of a degree N polynomial in a(x) and a stepsize h, this function 
+  // computes the coefficients for the degree N-1 correction polynomial c(x) such that
+  // a(x) + c(x) = a(x+h). It may be used in place, i.e. c may point to the same array as a.
   auto corrector = [](const T* a, T h, int N, T* c)
   {
     for(int i = 0; i <= N-1; i++)
     {
       T bi = 0;
       for(int j = i; j <= N; j++)
-        bi += a[j] * pow(h, j-i) * rsBinomialCoefficient(j, j-i);
+        bi += a[j] * pow(h, j-i) * T(rsBinomialCoefficient(j, j-i));
       c[i] = bi - a[i];
     }
   };
-
-
+  // maybe make this available as public static member function - oh, but maybe it should go into 
+  // class rsPolynomial so it doesn't get instantiated again and again for every N
+  // maybe it should be called getDifferencePolynomial or finiteDifference, forwardDifference or 
+  // something ...well, there is already rsPolynomial::finiteDifference which actually already does
+  // the same thing...but the implementation there sucks (allocates heap memory, etc.)...i think, 
+  // it should be replaced by (a better version of) the code above
 
   T a[N+1];
-  T c[N+1];
   rsArrayTools::copy(aIn, a, N+1);
   for(int m = N; m >= 0; m--)
   {
     y[m] = Poly::evaluate(x0, a, m); 
-    corrector(a, h, m, c);
-    rsArrayTools::copy(c, a, m+1);     // is m sufficient?
+    corrector(a, h, m, a);
   }
 
   // ToDo: 
-  // -Try to make it possible to use corrector() in place, maybe that could require writing into
-  //  the output array c in the reverse direction and reversing the result before returning
-  // -optimize the call to rsBinomialCoefficient and pow
+  // -optimize the call to rsBinomialCoefficient and maybe also avoid pow...maybe provide a variant
+  //  of the function that lets the caller pass a table of binomial coefficients and keep this 
+  //  function as convenience function for prototyping (maybe add a qualilfier "Slow") to make it
+  //  apparent at the call site
+  //  ...or can we compute them at compile time by template trickery? see
+  //  https://en.wikipedia.org/wiki/Compile-time_function_execution
   // -Maybe make a special implementation for cubic polynomials that hardcodes the required 
   //  binomial coeffs
 }

@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
@@ -131,7 +131,7 @@ int main(int argc, char* argv[])
   //numberTheoreticTrafoModuli();
   //powerIterator();
   //gaussianIterator();
-  expPolyIterator();
+  //expPolyIterator();
   //reciprocalIterator();  // rename to multiStepSolverIVP (initial value problem)
 
 
@@ -410,7 +410,7 @@ int main(int argc, char* argv[])
   //decimate();
   //pythagoreanTuning();    // move to some music/music-theory section
   //recursiveSineSweep();
-  //recursiveSineWithCubicPhase();
+  recursiveSineWithCubicPhase();
   //ringModNoise();
   //slewRateLimiterLinear();
   //stretchedCorrelation();

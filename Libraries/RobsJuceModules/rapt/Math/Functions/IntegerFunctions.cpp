@@ -41,6 +41,8 @@ TInt rsDelta(TInt i, TInt j)
 {
   return (TInt)(i == j); // \todo: maybe inline this and templatize it on the return type
 }
+// todo; inline, maybe rename to rsKroneckerDelta  ..."delta" is too generic - it means different 
+// things in different contexts
 
 template<class TUInt>
 TUInt rsFactorial(TUInt n)

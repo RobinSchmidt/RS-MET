@@ -140,7 +140,7 @@ void recursiveSineSweep()
   // that way, b would always have unit magnitude and its angle would oscillate with zero mean.
 }
 
-void recursiveSineWithCubicPhase()
+void recursiveSineWithCubicPhaseOld()
 {
   // We try to obtain a recursive sine generator whose phase is given by a cubic polynomial. That
   // means, we want to create a signal:
@@ -218,7 +218,6 @@ void recursiveSineWithCubicPhase()
 
     // updates/recursion:
     e1 *= p1;    // update rotating phasor 1
-
     p2 *= q2;    // update rotation factor 2
     e2 *= p2;    // update rotating phasor 2
   }
@@ -245,7 +244,84 @@ void recursiveSineWithCubicPhase()
   // approximations (tables or polynomial) or use SIMD-iFFT, generating the output of K voices
   // simultaneously (try with rsFloat32x4 to generate 4 voices at once - can be scaled up using
   // other simd types
+
+  // ToDo: 
+  // -the idea may now be realized via rsExpPolyIterator<Complex, 3> -> do that
+  // 
 }
+
+template<class T>
+void recursiveSineWithCubicPhaseNew()
+{
+  // ..ok, now let's try the same thing using rsExpPolyIterator<std::complex<T>, 3>
+
+  // User parameters:
+  int N   = 1000;      // number of samples
+  T   fs  = 44100;     // sample rate
+  T   p0  = 0.3;       // start phase
+  T   p1  = 1.7;       // end phase (modulo 2pi)
+  T   f0  = 100;       // start frequency
+  T   f1  = 120;       // end frequency
+  //T   a0  = 1;         // start amplitude ...later
+  //T   a1  = 1;         // end amplitude
+
+  // Compute polynomial coeffs for phase:
+  T w0  = 2*PI*f0/fs;
+  T w1  = 2*PI*f1/fs;
+  T wm  = 0.5 * (w0 + w1);  // mean omega during segment
+  T tmp = p0 + (N-1)*wm;    // unwrapped end phase should be near this value
+  p1 = rsConsistentUnwrappedValue(tmp, p1, T(0), T(2*PI));
+  T coeffsPhs[4];
+  //y0 = p0; y0[1] = w0;
+  //y1 = p1; y1[1] = w1;
+  fitCubicWithDerivative(T(0), T(N-1), p0, p1, w0, w1, 
+    &coeffsPhs[3], &coeffsPhs[2], &coeffsPhs[1], &coeffsPhs[0]);
+    // this API sucks! change it, so we can just pass the pointer to coeffsPhs
+
+  //getHermiteCoeffs1(y0, y1, coeffsPhs);
+
+  // Compute ground truth for reference:
+  using Vec  = std::vector<T>;
+  using Poly = rsPolynomial<T>;
+  Vec t(N), yt(N);
+  for(int n = 0; n < N; n++)
+  {
+    t[n]  = T(n) / fs;
+    T p   = Poly::evaluate(T(n), coeffsPhs, 3); // instantaneous phase
+    yt[n] = sin(p);  // todo: also include an instantaneous amplitude (cubic or linear)
+  }
+
+
+
+
+
+  using Complex = std::complex<T>;
+  rsExpPolyIterator<Complex, 3> osc;
+
+
+  rsPlotVectorsXY(t, yt);
+
+
+  // ToDo:
+  // -Figure out, if (and how) the numerical stability depends on the polynomial coeffs? Maybe it
+  //  gets more unstable the larger the higher order coeffs are?
+  // -Check stability as function of sample rate? will higher sample rates be better or worse for
+  //  stability? If lower sample rates are better, we may need to implement realtime upsampling 
+  //  when it's used in an additive synth - that may be desirable from a performance point of view 
+  //  anyway
+  // -Check stability as function of frequency
+
+
+  int dummy = 0;
+}
+
+void recursiveSineWithCubicPhase()
+{
+  //recursiveSineWithCubicPhaseOld();
+  recursiveSineWithCubicPhaseNew<double>();
+  //recursiveSineWithCubicPhaseNew<float>();
+}
+
 
 
 void ringModNoise()
