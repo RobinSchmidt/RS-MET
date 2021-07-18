@@ -260,8 +260,8 @@ void recursiveSineWithCubicPhaseNew()
   T   fs  = 44100;     // sample rate
   T   p0  = 0.3;       // start phase
   T   p1  = 1.7;       // end phase (modulo 2pi)
-  T   f0  = 100;       // start frequency
-  T   f1  = 200;       // end frequency
+  T   f0  = 200;       // start frequency
+  T   f1  = 300;       // end frequency
   //T   a0  = 1;         // start amplitude ...later
   //T   a1  = 1;         // end amplitude
 
@@ -272,8 +272,6 @@ void recursiveSineWithCubicPhaseNew()
   T tmp = p0 + (N-1)*wm;    // unwrapped end phase should be near this value
   p1 = rsConsistentUnwrappedValue(tmp, p1, T(0), T(2*PI));
   T coeffsPhs[4];
-  //fitCubicWithDerivative(T(0), T(N), p0, p1, w0, w1, 
-  //  &coeffsPhs[3], &coeffsPhs[2], &coeffsPhs[1], &coeffsPhs[0]);
   fitCubicWithDerivative(T(0), T(N-1), p0, p1, w0, w1, 
     &coeffsPhs[3], &coeffsPhs[2], &coeffsPhs[1], &coeffsPhs[0]);
     // ToDo: this API sucks! change it, so we can just pass the pointer to coeffsPhs
@@ -296,36 +294,60 @@ void recursiveSineWithCubicPhaseNew()
     coeffs[i] = Complex(0, coeffsPhs[i]);
     // ToDo: include a real part that will serve for applying an amplitude envelope
   rsExpPolyIterator<Complex, 3> osc;
-  osc.setup(coeffs, T(1), p0);
+  osc.setup(coeffs, T(1), T(0));
   Vec y(N);
   for(int n = 0; n < N; n++)
-  {
-    Complex yc = osc.getValue();
-    y[n] = yc.imag(); // the imaginary part is the sine component
-  }
+    y[n] = osc.getValue().imag(); // imaginary part is the sine component
 
-  //rsPlotVectorsXY(t, yt);
+  // Compute error, plot results::
+  Vec err = y - yt;
   rsPlotVectorsXY(t, yt, y);
-  rsPlotArraysXY(N-1, &t[0], &yt[0], &y[1]); // advance iterative version by one sample
-  rsPlotArraysXY(N-1, &t[0], &yt[1], &y[0]); // advance reference version by one sample
+  rsPlotVectorsXY(t, err);
 
   // Observations:
-  // -the iterative sine looks good but it's one sample ahead - or is it? in any case, it is 
-  //  time-shifted...it looks like the advance is more like half a sample
-  //  -> try to compute the complex exponential directly and compare with iterative
+  // -The error increases nonmonotonically in a manner that looks like a sine with a growing
+  //  (exponential?) envelope.
+  // -With T=double, N=1000, f0 = 100, f1 = 200, the maximum error is around 4.e-9
+  // -When the sweep is stronger (i.e. f1-f0 is larger), the error oscillates faster 
+  // -Using f0=100 and increasing f1, the maximum grows bigger but then also decreases again:
+  //  it's greater for f1=300 than for f1=400, for example (these values are already 
+  //  unrealistically large in an additive synth setting where we re-initialize at each cycle).
+  // -It doesn't seem to matter, if the sweep is upward or downward.
+  // -Using extreme frequencies like f0=20000, f1=22000 still works (which it has to in order to 
+  //  be any useful for an additive synth engine).
+  // -Increasing the number of sample points from 1000 to 4000 does increase the final error, but
+  //  not as much as one could expect. It seems like the growth rate goes down when N goes up.
 
+  // Conclusions:
+  // -With T=double, it seems to be okay to use this for buffer lengths of N=1000 or more which
+  //  makes the algo viable for an additive synth engine. 
+  // -With T=float ...
 
   // ToDo:
+  // -test it with higher N and float
+  // -Implement and test to use a cubic (or linear) envelope for the amplitude, too. I think, the
+  //  ground truth signal needs to do a cubic interpolation the dB domain which implies that both 
+  //  amplitudes a0, a1 must be nonzero
   // -Figure out, if (and how) the numerical stability depends on the polynomial coeffs? Maybe it
   //  gets more unstable the larger the higher order coeffs are?
   // -Check stability as function of sample rate? will higher sample rates be better or worse for
   //  stability? If lower sample rates are better, we may need to implement realtime upsampling 
   //  when it's used in an additive synth - that may be desirable from a performance point of view 
   //  anyway
-  // -Check stability as function of frequency
   // -Test whether it's numerically better to use N-1 for the end time in fitCubicWithDerivative 
   //  with h = 1 in osc.setup or to use 1-1/fs for fit.. and h=1/fs 
+  // -Wrap the functionality into a class rsSineSweeper or rsSineSweepIterator
 
+  // Ideas:
+  // -I think, an additive synth engine should re-initialize either when the next cycle of the 
+  //  fundamental arrives or if 1024 samples have passed...or something around that value. 
+  //  Q: Can we spread the CPU load such that not all partials need to recalc at the same time, 
+  //  maybe by splitting the partials into 4 or 8 groups where each has its own recalc time? 
+  //  Group 1 recalcs at 0,1024,2048,.. group 2 at 0,256,1280,2304, etc. Or: instead of 
+  //  recalculating the inital values y[0],..,y[3] from the sinusoidal parameters during playback,
+  //  precompute them during patch load and store them away so we do not to recompute...but what 
+  //  when we wnat another frequency? maybe the initial states for two different frequencies are 
+  //  simply related? -> figure out
 
   int dummy = 0;
 }
