@@ -305,6 +305,8 @@ template int RAPT::rsLinearAlgebraNew::makeDiagonal(
 //  double yd2, double *a3, double *a2, double *a1, double *a0);
 template void RAPT::fitCubicWithDerivativeFixedX(double y0, double y1, double yd0, double yd1,
   double *a3, double *a2, double *a1, double *a0);
+template void RAPT::fitCubicWithDerivative(float x1, float x2, float y1, float y2, float yd1,
+  float yd2, float *a3, float *a2, float *a1, float *a0);
 
 
 template class RAPT::UnivariateScalarFunction<double>;
@@ -557,6 +559,9 @@ template double RAPT::rsSineFrequencyAt(const double *x, int N, int n0, bool ref
 template double RAPT::rsSinePhaseAt(double *x, int N, int n0, double w);
 template double RAPT::rsSinePhaseAtViaZeros(double *x, int N, int n0, int precision);
 template double RAPT::rsGetShiftForBestMatch(double *x1, double *x2, int N, bool deBias);
+
+template float RAPT::rsConsistentUnwrappedValue(float, float, float, float);
+
 
 template double RAPT::rsCentroid(double *x, int N);
 template double RAPT::rsCentroidOfEnergy(double *x, int N);

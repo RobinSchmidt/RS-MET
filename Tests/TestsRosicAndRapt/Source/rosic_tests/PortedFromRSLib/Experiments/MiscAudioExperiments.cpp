@@ -142,6 +142,8 @@ void recursiveSineSweep()
 
 void recursiveSineWithCubicPhaseOld()
 {
+  // Obsolete...
+
   // We try to obtain a recursive sine generator whose phase is given by a cubic polynomial. That
   // means, we want to create a signal:
   //   x(t) = cos(a0 + a1*t + a2*t^2 + a3*t^3)
@@ -251,19 +253,19 @@ void recursiveSineWithCubicPhaseOld()
 }
 
 template<class T>
-void recursiveSineWithCubicPhaseNew()
+void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
 {
   // ..ok, now let's try the same thing using rsExpPolyIterator<std::complex<T>, 3>
 
   // User parameters:
-  int N   = 1000;      // number of samples
+  int N   = 2000;      // number of samples
   T   fs  = 44100;     // sample rate
   T   p0  = 0.3;       // start phase
   T   p1  = 1.7;       // end phase (modulo 2pi)
   T   f0  = 200;       // start frequency
   T   f1  = 300;       // end frequency
-  //T   a0  = 1;         // start amplitude ...later
-  //T   a1  = 1;         // end amplitude
+  T   a0  = 1.0;       // start amplitude
+  T   a1  = 0.2;       // end amplitude
 
   // Compute polynomial coeffs for phase:
   T w0  = 2*PI*f0/fs;
@@ -276,6 +278,14 @@ void recursiveSineWithCubicPhaseNew()
     &coeffsPhs[3], &coeffsPhs[2], &coeffsPhs[1], &coeffsPhs[0]);
     // ToDo: this API sucks! change it, so we can just pass the pointer to coeffsPhs
 
+  // Compute polynomial coeffs for log-amplitude:
+  T l0 = log(a0);
+  T l1 = log(a1);
+  T dl = (l1 - l0) / T(N-1);
+  T coeffsLogAmp[4];
+  fitCubicWithDerivative(T(0), T(N-1), l0, l1, dl, dl, 
+    &coeffsLogAmp[3], &coeffsLogAmp[2], &coeffsLogAmp[1], &coeffsLogAmp[0]);
+
   // Compute ground truth for reference:
   using Vec  = std::vector<T>;
   using Poly = rsPolynomial<T>;
@@ -283,16 +293,17 @@ void recursiveSineWithCubicPhaseNew()
   for(int n = 0; n < N; n++)
   {
     t[n]  = T(n) / fs;
-    T p   = Poly::evaluate(T(n), coeffsPhs, 3); // instantaneous phase
-    yt[n] = sin(p);  // todo: also include an instantaneous amplitude (cubic or linear)
+    T p   = Poly::evaluate(T(n), coeffsPhs,    3); // instantaneous phase
+    T a   = Poly::evaluate(T(n), coeffsLogAmp, 3);
+    a     = exp(a);
+    yt[n] = a * sin(p);
   }
 
   // Compute the sweeping sinusoid iteratively:
   using Complex = std::complex<T>;
   Complex coeffs[4];
   for(int i = 0; i < 4; i++)
-    coeffs[i] = Complex(0, coeffsPhs[i]);
-    // ToDo: include a real part that will serve for applying an amplitude envelope
+    coeffs[i] = Complex(coeffsLogAmp[i], coeffsPhs[i]);
   rsExpPolyIterator<Complex, 3> osc;
   osc.setup(coeffs, T(1), T(0));
   Vec y(N);
@@ -307,7 +318,8 @@ void recursiveSineWithCubicPhaseNew()
   // Observations:
   // -The error increases nonmonotonically in a manner that looks like a sine with a growing
   //  (exponential?) envelope.
-  // -With T=double, N=1000, f0 = 100, f1 = 200, the maximum error is around 4.e-9
+  // -With N=1000, f0=100, f1=200, a0=a1=1, the maximum error is around 4.e-9 with T=double and 
+  //  4.e-4 with T=float
   // -When the sweep is stronger (i.e. f1-f0 is larger), the error oscillates faster 
   // -Using f0=100 and increasing f1, the maximum grows bigger but then also decreases again:
   //  it's greater for f1=300 than for f1=400, for example (these values are already 
@@ -317,14 +329,17 @@ void recursiveSineWithCubicPhaseNew()
   //  be any useful for an additive synth engine).
   // -Increasing the number of sample points from 1000 to 4000 does increase the final error, but
   //  not as much as one could expect. It seems like the growth rate goes down when N goes up.
+  // -The error towards the end seems to grow especially large when a1 is much greater than a0.
+  //  This is not surprising because we measure the absolute error which will get larger when the
+  //  signal itself gets larger.
 
   // Conclusions:
   // -With T=double, it seems to be okay to use this for buffer lengths of N=1000 or more which
   //  makes the algo viable for an additive synth engine. 
-  // -With T=float ...
+  // -With T=float, the error seems to be too large to use this in an additive engine.
 
   // ToDo:
-  // -test it with higher N and float
+  // -include parameters to control the derivative of the log amplitudeat start and end
   // -Implement and test to use a cubic (or linear) envelope for the amplitude, too. I think, the
   //  ground truth signal needs to do a cubic interpolation the dB domain which implies that both 
   //  amplitudes a0, a1 must be nonzero
@@ -348,18 +363,33 @@ void recursiveSineWithCubicPhaseNew()
   //  precompute them during patch load and store them away so we do not to recompute...but what 
   //  when we wnat another frequency? maybe the initial states for two different frequencies are 
   //  simply related? -> figure out
+  // -Can we avoid the error growth by strategically using values for the parameters that are 
+  //  exactly representable numbers? Maybe the each voice need to run at its own sample rate and we
+  //  resample on the fly
+  // -Could there be another recursion that is numerically more stable?
+  // -Maybe to avoid discontinuities, we could use start values for the next cycle those values
+  //  for instantaneous phase, freq, amp, whereever the oscillator ends up. With this, we may 
+  //  actually be able to use float with a recalc interval of around 1000. This requires formulas
+  //  to retrieve instantaneous log-amp, log-amp derivative, phase and omega from the oscillator.
+  //  ...maybe when we arrive at the new datapoint, just look read the phase and mangitude that osc
+  //  currently has (stored in y[3]), call getValue another times, look at those new phases and 
+  //  magnitudes, too and estimate the derivatives by a finite difference...but maybe there's a 
+  //  more exact formula - but if not, this shouldn't be too bad
+
 
   int dummy = 0;
+
+
+  // see also:
+  // https://www.vicanek.de/articles/QuadOsc.pdf
+  // https://arxiv.org/pdf/cs/0406049.pdf (direct calculation via polynomials)
 }
 
 void recursiveSineWithCubicPhase()
 {
   //recursiveSineWithCubicPhaseOld();
-  recursiveSineWithCubicPhaseNew<double>();
-
-  //recursiveSineWithCubicPhaseNew<float>();  
-  // does not yet compile, we need instantiations of 
-  // rsConsistentUnwrappedValue, fitCubicWithDerivative
+  //recursiveSineWithCubicPhaseNew<double>();
+  recursiveSineWithCubicPhaseNew<float>();  
 }
 
 
