@@ -110,7 +110,8 @@ void rsSineSweepIterator<T>::setup(const rsSineSweepIterator<T>::Parameters& p)
   for(int i = 0; i < 4; i++)
     coeffs[i] = std::complex<T>(coeffsLogAmp[i], coeffsPhs[i]);
 
-  core.setup(coeffs, T(1), T(0));
+  //core.setup(coeffs, T(1), T(0));  //
+  core.setup(coeffs, T(1), p.t0);  //
 }
 
 
@@ -119,8 +120,7 @@ void rsSineSweepIterator<T>::setup(const rsSineSweepIterator<T>::Parameters& p)
 
 ToDo:
 -rsSineCosineIterator : public rsComplexExponentialIterator
--rsExponentialIterator, rsLinearIterator, rsQuadraticIterator, rsCubicIterator, 
- rsPolynomialIterator, rsPolyExpIterator, rsCubicExpIterator
+-rsExponentialIterator, rsLinearIterator, rsQuadraticIterator, rsCubicIterator, rsCubicExpIterator
 -for the polynomial iterators, see Salomon - Computer Graphics, page 275ff ("Fast Calculation of 
  the Curve" and page 698 ("Forward Differences")
 -other functions: sinh, cosh, tanh, 1/cosh, 1/cosh^2 (gaussian-like?)
@@ -152,5 +152,8 @@ here's an interesting thread about a recursive sine oscillator:
 especially the amplitude drift compensation approach with a taylor expansion of
   1 / (sqrt(re^2 + im^2)) ~= (1/2) * (3 - (re^2 + im^2))
 every 1000 (or something) samples
+
+Here also: https://www.vicanek.de/articles/QuadOsc.pdf ..Martin says that this recursion has better
+numeric stability
 
 */

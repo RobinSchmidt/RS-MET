@@ -188,6 +188,7 @@ protected:
 
 };
 
+//=================================================================================================
 
 /** Similar to rsPolynomialIterator, but instead of iteratively evaluating a polynomial p(x) itself, 
 it evaluates the exponential function of that polynomial, i.e. exp(p(x)).
@@ -204,16 +205,16 @@ public:
   {
     rsPolynomialIterator<T, N>::setup(newCoeffs, newStepSize, initialValue);
     for(int i = 0; i <= N; i++) 
-      y[i] = exp(y[i]);
+      this->y[i] = rsExp(y[i]);  
   }
   // todo: maybe make a version that lets the user specify a basis b..i think, we just need to 
   // multiply all y[i] by log(b) (inside the exp call)
 
   inline T getValue()
   {
-    T r = y[N];                  // result
+    T r = y[N];                    // result
     for(int i = N; i > 0; i--) 
-      y[i] *= y[i-1];            // state update
+      this->y[i] *= this->y[i-1];  // state update
     return r;
   }
 
@@ -221,31 +222,69 @@ public:
 
 //=================================================================================================
 
+/** Iteratively computes a sinusoidal frequency sweep using a cubic rsExpPolyIterator. That means,
+the instantaneous phase and the logarithm of the instantaneous amplitude are given by cubic 
+polynomials. The polynomials are set up in terms of user parameters that are compatible with the 
+sinusoidal modeling framework. The intention is to use this class to synthesize a sinusoidal
+partial efficiently in a realtime context. Computation of one output sample requires 3 complex 
+multiplications (i.e. 12 real muls, 3 adds, 3 subs) and the class lends itself well to 
+vectorization (i.e. usage with T = rsSimdVector<float, 16> or something). The driver class has to 
+take care of not letting the accumulated roundoff error grow out of control. In a typical 
+situation, one should probably re-initialize the state with a proper direct calculation every 
+couple of hundreds or thousands of samples ...tbc...  */
+
 template<class T>
 class rsSineSweepIterator
 {
 
-
 public:
 
+  /** Structure for the user parameters that determine the cubic polynomials for instantaneous 
+  phase and logarithm of instantaneous amplitude. There are always two values indexed by 0 or 1, 
+  standing for the start and the end of the synthesized sweep. */
   struct Parameters
   {
-    T t0, t1; // time
-    T p0, p1; // phase
-    T w0, w1; // omega = 2*pi*frequency/sampleRate
-    T l0, l1; // log(amplitude)
-    T r0, r1; // "raise" (derivative of log of amplitude)
+    T t0, t1; /**< time stamps in samples */
+    T p0, p1; /**< unwrapped(!) phases in radians */
+    T w0, w1; /**< omega = 2*pi*frequency/sampleRate */
+    T l0, l1; /**< log(amplitude) */
+    T r0, r1; /**< "raise" (derivative of log of amplitude with respect to t in samples) */
   };
 
+  /** Sets up the initial state according to the user parameters. */
   void setup(const Parameters& params);
 
   // todo:
   //inline T getPhase()     const { return std::arg(core.y[N]); }
   //inline T getAmplitude() const { return std::abs(core.y[N]); }
 
+  /** Computes a complex output value within which the imaginary part is the actual sine wave as 
+  required by the sinusoidal modeling framework and the real part is a corresponding cosine 
+  quadrature component that you get for free due to the way the algorithm works. And it updates 
+  the state for the next call. */
+  inline std::complex<T> getComplexValue() { return core.getValue(); }
 
+  /** Convenience function to compute the sine only (and update the state). */
+  inline T getSine()   { return getComplexValue().imag(); }
 
-  inline T getValue() { return core.getValue().imag(); }
+  /** Convenience function to compute the cosine only (and update the state). Note that you should 
+  not call getSine and after that getCosine if you need both values because that would trigger two 
+  state updates where you probably intend just one. If you need both values, use either 
+  getComplexValue or getSineAndCosine. */
+  inline T getCosine() { return getComplexValue().real(); }
+
+  /** Computes both, the original sine and its quadrature component. This has no extra cost 
+  compared to calling either getSine or getCosine to produce either of the outputs because
+  both must be computed internally anyway. It's mostly meant as convenience function though because 
+  it may be more efficient, if the driver just calls getComplexValue instead (that may save two 
+  assignments). */
+  inline void getSineAndCosine(T* sine, T* cosine)
+  {
+    std::complex<T> w = getComplexValue();
+    *cosine = w.real();
+    *sine   = w.imag();
+  }
+
 
 protected:
 

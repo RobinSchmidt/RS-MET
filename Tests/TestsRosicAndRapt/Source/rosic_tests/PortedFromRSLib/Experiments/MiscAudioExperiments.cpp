@@ -253,19 +253,19 @@ void recursiveSineWithCubicPhaseOld()
 }
 
 template<class T>
-void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
+void recursiveCubicSineSweep()  // rename to recursiveCubicSineSweep
 {
   // ..ok, now let's try the same thing using rsSineSweepIterator
 
   // User parameters:
-  int N   = 2000;      // number of samples
+  int N   = 2048;      // number of samples
   T   fs  = 44100;     // sample rate
-  T   p0  = 0.3;       // start phase
-  T   p1  = 1.7;       // end phase (modulo 2pi)
-  T   f0  = 200;       // start frequency
-  T   f1  = 400;       // end frequency
-  T   a0  = 1.0;       // start amplitude
-  T   a1  = 0.1;       // end amplitude
+  T   p0  = PI/4;      // start phase
+  T   p1  = PI/4;      // end phase (modulo 2pi)
+  T   f0  = 500;       // start frequency
+  T   f1  = 0;         // end frequency
+  T   a0  = 0.01;      // start amplitude
+  T   a1  = 0.01;      // end amplitude
 
   // Compute polynomial coeffs for phase:
   T w0  = 2*PI*f0/fs;
@@ -284,6 +284,8 @@ void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
   T r0 = (l1 - l0) / T(N-1);
   T r1 = r0;
   //r1 *= 2.5;  // test
+  r0 = 0.01; r1 = -r0;  // test for gaboret
+  //r0 = 0.005; r1 = 0.0;  // test for gaboret
   T coeffsLogAmp[4];
   fitCubicWithDerivative(T(0), T(N-1), l0, l1, r0, r1, 
     &coeffsLogAmp[3], &coeffsLogAmp[2], &coeffsLogAmp[1], &coeffsLogAmp[0]);
@@ -291,14 +293,15 @@ void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
   // Compute ground truth for reference:
   using Vec  = std::vector<T>;
   using Poly = rsPolynomial<T>;
-  Vec t(N), yt(N);
+  Vec t(N), yts(N), ytc(N);
   for(int n = 0; n < N; n++)
   {
-    t[n]  = T(n) / fs;
-    T p   = Poly::evaluate(T(n), coeffsPhs,    3); // instantaneous phase
-    T a   = Poly::evaluate(T(n), coeffsLogAmp, 3);
-    a     = exp(a);
-    yt[n] = a * sin(p);
+    t[n]   = T(n) / fs;
+    T p    = Poly::evaluate(T(n), coeffsPhs,    3); // instantaneous phase
+    T a    = Poly::evaluate(T(n), coeffsLogAmp, 3);
+    a      = exp(a);
+    yts[n] = a * sin(p);
+    ytc[n] = a * cos(p);
   }
 
   // Compute the sweeping sinusoid via rsSineSweepIterator:
@@ -311,14 +314,19 @@ void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
   p.l0 = l0;   p.l1 = l1;
   p.r0 = r0;   p.r1 = r1;
   sweeper.setup(p);
-  Vec y(N);
+  Vec ys(N), yc(N);
   for(int n = 0; n < N; n++)
-    y[n] = sweeper.getValue();
+    sweeper.getSineAndCosine(&ys[n], &yc[n]);
 
   // Compute error, plot results::
-  Vec err = y - yt;
-  rsPlotVectorsXY(t, yt, y);
-  rsPlotVectorsXY(t, err);
+  Vec errs = ys - yts;
+  Vec errc = yc - ytc;
+  rsPlotVectorsXY(t, yts, ys);  // plotting the sine error should be enough
+  rsPlotVectorsXY(t, errs);
+  rsPlotVectorsXY(t, ys, yc);
+
+  //rsArrayTools::normalize(&yt[0], N);
+  //rosic::writeToMonoWaveFile("SineSweep.wav", &yt[0], N, fs);
 
   // Observations:
   // -The error increases nonmonotonically in a manner that looks like a sine with a growing
@@ -339,6 +347,9 @@ void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
   //  signal itself gets larger.
   // -When using r1 = 2.5 * r0, the error get really large at the end with T=float. It's ok with 
   //  T=double though. It seems, for r1 != r0, we will really need double precision
+  // -With f0=f1=0, p0=p1=pi/2, a0 != a1, we can create pure exponentials
+  // -Wit a0=a1=0.01, r0 = 0.01, r1 = -r0, we can create a gaboret
+  // -With a0=0.001, a1=1, r0=0.005, r1=0, we can create the left half of a sort of gaboret 
 
   // Conclusions:
   // -With T=double, it seems to be okay to use this for buffer lengths of N=1000 or more which
@@ -397,8 +408,8 @@ void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
 void recursiveSineWithCubicPhase()
 {
   //recursiveSineWithCubicPhaseOld();
-  recursiveSineWithCubicPhaseNew<double>();
-  recursiveSineWithCubicPhaseNew<float>();  
+  recursiveCubicSineSweep<double>();
+  recursiveCubicSineSweep<float>();
 }
 
 
