@@ -255,7 +255,7 @@ void recursiveSineWithCubicPhaseOld()
 template<class T>
 void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
 {
-  // ..ok, now let's try the same thing using rsExpPolyIterator<std::complex<T>, 3>
+  // ..ok, now let's try the same thing using rsSineSweepIterator
 
   // User parameters:
   int N   = 2000;      // number of samples
@@ -263,9 +263,9 @@ void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
   T   p0  = 0.3;       // start phase
   T   p1  = 1.7;       // end phase (modulo 2pi)
   T   f0  = 200;       // start frequency
-  T   f1  = 300;       // end frequency
+  T   f1  = 400;       // end frequency
   T   a0  = 1.0;       // start amplitude
-  T   a1  = 0.2;       // end amplitude
+  T   a1  = 0.1;       // end amplitude
 
   // Compute polynomial coeffs for phase:
   T w0  = 2*PI*f0/fs;
@@ -281,9 +281,11 @@ void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
   // Compute polynomial coeffs for log-amplitude:
   T l0 = log(a0);
   T l1 = log(a1);
-  T dl = (l1 - l0) / T(N-1);
+  T r0 = (l1 - l0) / T(N-1);
+  T r1 = r0;
+  //r1 *= 2.5;  // test
   T coeffsLogAmp[4];
-  fitCubicWithDerivative(T(0), T(N-1), l0, l1, dl, dl, 
+  fitCubicWithDerivative(T(0), T(N-1), l0, l1, r0, r1, 
     &coeffsLogAmp[3], &coeffsLogAmp[2], &coeffsLogAmp[1], &coeffsLogAmp[0]);
 
   // Compute ground truth for reference:
@@ -299,16 +301,19 @@ void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
     yt[n] = a * sin(p);
   }
 
-  // Compute the sweeping sinusoid iteratively:
-  using Complex = std::complex<T>;
-  Complex coeffs[4];
-  for(int i = 0; i < 4; i++)
-    coeffs[i] = Complex(coeffsLogAmp[i], coeffsPhs[i]);
-  rsExpPolyIterator<Complex, 3> osc;
-  osc.setup(coeffs, T(1), T(0));
+  // Compute the sweeping sinusoid via rsSineSweepIterator:
+  using Sweeper = rsSineSweepIterator<T>;
+  Sweeper sweeper;
+  Sweeper::Parameters p;
+  p.t0 = T(0); p.t1 = T(N-1);
+  p.p0 = p0;   p.p1 = p1;
+  p.w0 = w0;   p.w1 = w1;
+  p.l0 = l0;   p.l1 = l1;
+  p.r0 = r0;   p.r1 = r1;
+  sweeper.setup(p);
   Vec y(N);
   for(int n = 0; n < N; n++)
-    y[n] = osc.getValue().imag(); // imaginary part is the sine component
+    y[n] = sweeper.getValue();
 
   // Compute error, plot results::
   Vec err = y - yt;
@@ -332,6 +337,8 @@ void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
   // -The error towards the end seems to grow especially large when a1 is much greater than a0.
   //  This is not surprising because we measure the absolute error which will get larger when the
   //  signal itself gets larger.
+  // -When using r1 = 2.5 * r0, the error get really large at the end with T=float. It's ok with 
+  //  T=double though. It seems, for r1 != r0, we will really need double precision
 
   // Conclusions:
   // -With T=double, it seems to be okay to use this for buffer lengths of N=1000 or more which
@@ -351,7 +358,9 @@ void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
   //  anyway
   // -Test whether it's numerically better to use N-1 for the end time in fitCubicWithDerivative 
   //  with h = 1 in osc.setup or to use 1-1/fs for fit.. and h=1/fs 
-  // -Wrap the functionality into a class rsSineSweeper or rsSineSweepIterator
+  // -What if the frequency is zero? 
+  // -Can we produce gaborets? the amp should be low at both ends have a positive sloe at the start
+  //  and negative slope at the end
 
   // Ideas:
   // -I think, an additive synth engine should re-initialize either when the next cycle of the 
@@ -371,10 +380,10 @@ void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
   //  for instantaneous phase, freq, amp, whereever the oscillator ends up. With this, we may 
   //  actually be able to use float with a recalc interval of around 1000. This requires formulas
   //  to retrieve instantaneous log-amp, log-amp derivative, phase and omega from the oscillator.
-  //  ...maybe when we arrive at the new datapoint, just look read the phase and mangitude that osc
-  //  currently has (stored in y[3]), call getValue another times, look at those new phases and 
+  //  ...maybe when we arrive at the new datapoint, just read the phase and mangitude that osc
+  //  currently has (stored in y[3]), call getValue once more, look at those new phases and 
   //  magnitudes, too and estimate the derivatives by a finite difference...but maybe there's a 
-  //  more exact formula - but if not, this shouldn't be too bad
+  //  more exact formula - but if not, this approach shouldn't be too bad
 
 
   int dummy = 0;
@@ -388,7 +397,7 @@ void recursiveSineWithCubicPhaseNew()  // rename to recursiveCubicSineSweep
 void recursiveSineWithCubicPhase()
 {
   //recursiveSineWithCubicPhaseOld();
-  //recursiveSineWithCubicPhaseNew<double>();
+  recursiveSineWithCubicPhaseNew<double>();
   recursiveSineWithCubicPhaseNew<float>();  
 }
 

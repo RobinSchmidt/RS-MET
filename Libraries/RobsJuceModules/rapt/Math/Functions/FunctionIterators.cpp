@@ -92,7 +92,26 @@ void rsPolynomialIterator<T, N>::setup(const T* aIn, T h, T x0)
   //  binomial coeffs
 }
 
+//=================================================================================================
 
+template<class T>
+void rsSineSweepIterator<T>::setup(const rsSineSweepIterator<T>::Parameters& p)
+{
+  T coeffsPhs[4];
+  fitCubicWithDerivative(p.t0, p.t1, p.p0, p.p1, p.w0, p.w1, 
+    &coeffsPhs[3], &coeffsPhs[2], &coeffsPhs[1], &coeffsPhs[0]);
+    // ToDo: this API sucks! change it, so we can just pass the pointer to coeffsPhs
+
+  T coeffsLogAmp[4];
+  fitCubicWithDerivative(p.t0, p.t1, p.l0, p.l1, p.r0, p.r1, 
+    &coeffsLogAmp[3], &coeffsLogAmp[2], &coeffsLogAmp[1], &coeffsLogAmp[0]);
+
+  std::complex<T> coeffs[4];
+  for(int i = 0; i < 4; i++)
+    coeffs[i] = std::complex<T>(coeffsLogAmp[i], coeffsPhs[i]);
+
+  core.setup(coeffs, T(1), T(0));
+}
 
 
 

@@ -219,7 +219,40 @@ public:
 
 };
 
+//=================================================================================================
 
+template<class T>
+class rsSineSweepIterator
+{
+
+
+public:
+
+  struct Parameters
+  {
+    T t0, t1; // time
+    T p0, p1; // phase
+    T w0, w1; // omega = 2*pi*frequency/sampleRate
+    T l0, l1; // log(amplitude)
+    T r0, r1; // "raise" (derivative of log of amplitude)
+  };
+
+  void setup(const Parameters& params);
+
+  // todo:
+  //inline T getPhase()     const { return std::arg(core.y[N]); }
+  //inline T getAmplitude() const { return std::abs(core.y[N]); }
+
+
+
+  inline T getValue() { return core.getValue().imag(); }
+
+protected:
+
+  rsExpPolyIterator<std::complex<T>, 3> core;
+  // todo: implement and use a special optimized rsExpCubicIterator
+
+};
 
 
 

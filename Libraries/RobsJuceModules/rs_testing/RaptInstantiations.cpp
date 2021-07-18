@@ -390,6 +390,11 @@ template class RAPT::rsExpPolyIterator<double, 4>;
 
 template class RAPT::rsPolynomialIterator<std::complex<float>, 3>;
 template class RAPT::rsPolynomialIterator<std::complex<double>, 3>;
+// may become obsolete when the rsSineSweepIterator is finished...unless we use a special 
+// rsExpCubicIterator there later...
+
+template class RAPT::rsSineSweepIterator<float>;
+template class RAPT::rsSineSweepIterator<double>;
 
 
 template double RAPT::rsNormalizedSinc(double x);
