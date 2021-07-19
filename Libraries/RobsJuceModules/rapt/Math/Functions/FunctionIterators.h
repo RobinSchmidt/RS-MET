@@ -205,7 +205,7 @@ public:
   {
     rsPolynomialIterator<T, N>::setup(newCoeffs, newStepSize, initialValue);
     for(int i = 0; i <= N; i++) 
-      this->y[i] = rsExp(y[i]);  
+      this->y[i] = rsExp(this->y[i]);  
   }
   // todo: maybe make a version that lets the user specify a basis b..i think, we just need to 
   // multiply all y[i] by log(b) (inside the exp call)
@@ -246,9 +246,9 @@ public:
   {
     T t0, t1; /**< time stamps in samples */
     T p0, p1; /**< unwrapped(!) phases in radians */
-    T w0, w1; /**< omega = 2*pi*frequency/sampleRate */
+    T w0, w1; /**< omega = 2*pi*frequency/sampleRate, derivative of the phase */
     T l0, l1; /**< log(amplitude) */
-    T r0, r1; /**< "raise" (derivative of log of amplitude with respect to t in samples) */
+    T r0, r1; /**< "raise", derivative of log of amplitude with respect to t in samples */
   };
 
   /** Sets up the initial state according to the user parameters. */

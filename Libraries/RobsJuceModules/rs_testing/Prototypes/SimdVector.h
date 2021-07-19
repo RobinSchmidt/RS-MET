@@ -365,3 +365,6 @@ inline V operator-(const V a) { return V(0.f) - a; } // unary minus - can we do 
 //  code generator
 // -name ideas: AMSAP: as much simd as possible, SIP: simd if possible, SIA: simd if available,
 //  SIPER: simd if possible else recurse
+
+// Also interesting:
+// http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1101r0.html Vector Length Agnostic SIMD

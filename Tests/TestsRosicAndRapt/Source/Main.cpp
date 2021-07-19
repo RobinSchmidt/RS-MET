@@ -209,6 +209,7 @@ int main(int argc, char* argv[])
   //triSawOscAntiAlias();
   //xoxosOsc();
   //shepardTone();
+  additiveEngine();
 
   // Modulators:
   //attackDecayEnvelope();

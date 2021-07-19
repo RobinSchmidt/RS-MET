@@ -2708,3 +2708,14 @@ void shepardTone()
 
   int dummy = 0;
 }
+
+void additiveEngine()
+{
+  // under construction
+
+  using ASE = rsAdditiveSynthEngine<16>;
+  ASE ase;
+
+
+  int dummy = 0;
+}

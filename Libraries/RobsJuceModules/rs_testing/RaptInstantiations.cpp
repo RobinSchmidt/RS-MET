@@ -634,5 +634,7 @@ template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
 template class rsTrivariatePolynomial<double>;
 template class rsPiecewisePolynomial<double>;
 
+template class rsAdditiveSynthEngine<16>; // 16 is the simd-vector size
+
 //template class rsSamplerEngine<rsFloat64x2, double, float>;
 // todo: rsFloat64x2 should be in namespace rosic
