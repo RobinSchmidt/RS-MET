@@ -2704,7 +2704,7 @@ void shepardTone()
   //   also doesn't fix is - but is probably a good idea anyway
   //  -it seems like the phase jumps suddenly - maybe it's not a good idea to multiply the phase
   //   itself by the factor?
-  // -what about using using an actual filter instead of the pseduo-filter?
+  // -what about using using an actual filter instead of the pseudo-filter?
 
   int dummy = 0;
 }
@@ -2713,9 +2713,32 @@ void additiveEngine()
 {
   // under construction
 
-  using ASE = rsAdditiveSynthEngine<16>;
-  ASE ase;
+  int N = 5000;   // number of samples
 
+  static const int simdSize = 16;
+
+  using SweeperBank = rsSineSweeperBankIterative<float, simdSize>;
+  using Voice       = rsAdditiveSynthVoice<simdSize>;
+  using Patch       = rsAdditiveKeyPatch;
+
+  // Create a patch with a single partial representing an exponential sine sweep
+  Patch patch;
+
+  // Create a sweeper bank object to be used by the voice (the pool of such sweeper-banks is later
+  // supposed to be owned by the additive synth engine, individual voices will get their bank to 
+  // use assigned on noteOn)
+  SweeperBank sweeperBank;
+
+
+
+  Voice voice;
+  voice.setPatch(&patch);
+  voice.setSweeperBank(&sweeperBank);
+  voice.startPlaying();
+  std::vector<float> xL(N), xR(N);
+
+  // ToDo:
+  // -Create a sinusoidal model for an exponential frequency sweep and let the engine synthesize it
 
   int dummy = 0;
 }

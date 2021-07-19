@@ -248,8 +248,11 @@ public:
     T p0, p1; /**< unwrapped(!) phases in radians */
     T w0, w1; /**< omega = 2*pi*frequency/sampleRate, derivative of the phase */
     T l0, l1; /**< log(amplitude) */
-    T r0, r1; /**< "raise", derivative of log of amplitude with respect to t in samples */
+    T r0, r1; /**< "rise", derivative of log of amplitude with respect to t in samples */
   };
+  // maybe rename r0,r1 to f0,f1 for "fade"..but it's more ambiguous - could be confused with freq
+  // and it's not clear if it's fae-in or -out..or c0,c1 for crescendo
+
 
   /** Sets up the initial state according to the user parameters. */
   void setup(const Parameters& params);

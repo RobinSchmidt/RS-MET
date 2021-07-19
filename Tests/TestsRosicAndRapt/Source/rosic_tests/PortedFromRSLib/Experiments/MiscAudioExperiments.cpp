@@ -97,6 +97,10 @@ void pythagoreanTuning()
 
 void recursiveSineSweep()
 {
+  // Superseded by recursiveCubicSineSweep - the cubic sweep includes the linear as special case.
+  // Well, it's actually not the frequency that sweeps cubcially but the instantaneous phase, so 
+  // the freq trajectory is actually just a quadratic there. Anyway the linear case in included.
+
   // We create a linearly sweeeping complex exponential from which sine and cosine sweeps can be 
   // obtained by taking real and imaginary parts. We note that a complex eponential with constant
   // frequency can be obtained by the recursion z[n] = a * z[n-1] where a is a complex number of unit
@@ -140,6 +144,7 @@ void recursiveSineSweep()
   // that way, b would always have unit magnitude and its angle would oscillate with zero mean.
 }
 
+/*
 void recursiveSineWithCubicPhaseOld()
 {
   // Obsolete...
@@ -251,6 +256,7 @@ void recursiveSineWithCubicPhaseOld()
   // -the idea may now be realized via rsExpPolyIterator<Complex, 3> -> do that
   // 
 }
+*/
 
 template<class T>
 void recursiveCubicSineSweep()  // rename to recursiveCubicSineSweep
@@ -262,7 +268,7 @@ void recursiveCubicSineSweep()  // rename to recursiveCubicSineSweep
   T   fs  = 44100;     // sample rate
   T   p0  = PI/4;      // start phase
   T   p1  = PI/4;      // end phase (modulo 2pi)
-  T   f0  = 500;       // start frequency
+  T   f0  = 400;       // start frequency
   T   f1  = 0;         // end frequency
   T   a0  = 0.01;      // start amplitude
   T   a1  = 0.01;      // end amplitude
@@ -323,7 +329,11 @@ void recursiveCubicSineSweep()  // rename to recursiveCubicSineSweep
   Vec errc = yc - ytc;
   rsPlotVectorsXY(t, yts, ys);  // plotting the sine error should be enough
   rsPlotVectorsXY(t, errs);
-  rsPlotVectorsXY(t, ys, yc);
+  //rsPlotVectorsXY(t, ys, yc);
+
+  // Test: plot "left/right" and "mid/side":
+  //T k = sqrt(0.5);
+  //rsPlotVectorsXY(t, ys, yc, k*(ys+yc), k*(ys-yc));
 
   //rsArrayTools::normalize(&yt[0], N);
   //rosic::writeToMonoWaveFile("SineSweep.wav", &yt[0], N, fs);
@@ -407,8 +417,9 @@ void recursiveCubicSineSweep()  // rename to recursiveCubicSineSweep
 
 void recursiveSineWithCubicPhase()
 {
-  //recursiveSineWithCubicPhaseOld();
-  recursiveCubicSineSweep<double>();
+  //recursiveSineWithCubicPhaseOld(); // obsolete
+
+  //recursiveCubicSineSweep<double>();
   recursiveCubicSineSweep<float>();
 }
 
