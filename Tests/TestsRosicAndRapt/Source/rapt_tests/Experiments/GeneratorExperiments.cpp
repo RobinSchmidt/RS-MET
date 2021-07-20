@@ -2713,32 +2713,55 @@ void additiveEngine()
 {
   // under construction
 
-  int N = 5000;   // number of samples
+  static const int simdSize = 16; // For other sizes, we will need more template instantiations
 
-  static const int simdSize = 16;
+  int N = 2000;   // number of samples
+  double sampleRate = 44100;
 
   using SweeperBank = rsSineSweeperBankIterative<float, simdSize>;
   using Voice       = rsAdditiveSynthVoice<simdSize>;
   using Patch       = rsAdditiveKeyPatch;
+  using BP          = Patch::Breakpoint;
+  using SP          = Patch::SineParams;
 
-  // Create a patch with a single partial representing an exponential sine sweep
+  // Create a patch with a single partial representing sine that sweeps around 
   Patch patch;
+  BP bp0, bp1, bp2, bp3, bp4;
+  bp0.time = 0.0f; bp0.addSine(SP(1000.f, 0.400f)); patch.addBreakpoint(bp0);
+  bp1.time = 0.1f; bp1.addSine(SP(2000.f, 0.200f)); patch.addBreakpoint(bp1);
+  bp2.time = 0.2f; bp2.addSine(SP( 500.f, 0.500f)); patch.addBreakpoint(bp2);
+  bp3.time = 0.3f; bp3.addSine(SP( 100.f, 0.200f)); patch.addBreakpoint(bp3);
+  bp4.time = 0.4f; bp4.addSine(SP(   0.f, 0.001f)); patch.addBreakpoint(bp4); // almost zero
+  patch.convertUserToAlgoUnits(sampleRate, true);
 
   // Create a sweeper bank object to be used by the voice (the pool of such sweeper-banks is later
   // supposed to be owned by the additive synth engine, individual voices will get their bank to 
-  // use assigned on noteOn)
+  // use assigned on noteOn):
   SweeperBank sweeperBank;
 
-
-
+  // Create a voice, set it up with the patch and the sweeper bank and play:
   Voice voice;
   voice.setPatch(&patch);
   voice.setSweeperBank(&sweeperBank);
   voice.startPlaying();
   std::vector<float> xL(N), xR(N);
+  for(int n = 0; n < N; n++)
+    voice.processFrame(&xL[n], &xR[n]);
+
+  // plot the output:
+  rsPlotVectors(xL, xR);
 
   // ToDo:
   // -Create a sinusoidal model for an exponential frequency sweep and let the engine synthesize it
+
+  // hmmm...maybe we should decide in advance how many breakpoints and how many sines there are
+  // and pre-allocate a continuous chunk of memory to hold all the data...but maybe we should have
+  // two datastructures for patches: one for editing (which allows dynamic allocations of 
+  // breakpoints and sines per breakpoint) and one compact format for playback which uses 
+  // contiguous, pre-allocated memory...maybe they should be named PatchEditable and PatchPlayable
+  // ...yes, we need that anyway because we need to organize the breakpoint data in simd-groups,
+  // too
+
 
   int dummy = 0;
 }

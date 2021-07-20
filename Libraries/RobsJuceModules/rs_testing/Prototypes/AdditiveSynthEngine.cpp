@@ -11,6 +11,13 @@ void rsSineSweeperBankIterative<T, N>::setNumOscillators(int newLimit)
 }
 
 template<class T, int N>
+void rsSineSweeperBankIterative<T, N>::init(int index, float t0, float t1, float w0, 
+  float w1, float a0, float a1, float p0, float p1, float r0, float r1)
+{
+
+}
+
+template<class T, int N>
 void rsSineSweeperBankIterative<T, N>::processFrame(float* left, float* right)
 {
 
@@ -20,6 +27,26 @@ template<class T, int N>
 void rsSineSweeperBankIterative<T, N>::reset()
 {
 
+}
+
+//=================================================================================================
+
+void rsAdditiveKeyPatch::convertUserToAlgoUnits(float sampleRate, bool logAmplitude)
+{
+  float freqToOmega = 2*PI/sampleRate;
+  for(size_t i = 0; i < breakpoints.size(); i++)
+  {
+    Breakpoint* bp = &breakpoints[i];
+    bp->time = round(sampleRate * bp->time);
+    for(size_t j = 0; j < bp->params.size(); j++)
+    {
+      SineParams* sp = &(bp->params[j]);
+      sp->freq *= freqToOmega;
+      sp->phase = RAPT::rsDegreeToRadiant(sp->phase);
+      if(logAmplitude)
+        sp->gain = log(sp->gain);
+    }
+  }
 }
 
 //=================================================================================================
@@ -74,6 +101,32 @@ template<int N>
 void rsAdditiveSynthVoice<N>::initSweepers(const rsAdditiveKeyPatch::Breakpoint* bpStart,
   const rsAdditiveKeyPatch::Breakpoint* bpEnd, bool reInitAmpAndPhase)
 {
+  rsAssert(bpStart->params.size() == bpEnd->params.size());
+  // number of partials must remain the same during the playback...maybe lift that restriction 
+  // later
+
+  // ToDo: We actually need the breakpoint-data in simd-goups, too...so yeah, i think, we really
+  // need two vesrions of the patch class: one for editing and one for playback and a conversion 
+  // routine
+
+  /*
+  //RAPT::rsSineSweepIterator::Parameters tmpParams;
+
+  size_t numPartials = bpStart->params.size();  
+  rsAdditiveKeyPatch::SineParams paramsStart, paramsEnd;
+  for(size_t i = 0; i < numPartials; i++)
+  {
+    paramsStart = bpStart->params[i];
+    paramsEnd   = bpEnd->params[i];
+
+    //tmpParams.t0 = 0.f;
+    //tmpPara
+
+
+    int dummy = 0;
+
+  }
+  */
 
 
   int dummy = 0;

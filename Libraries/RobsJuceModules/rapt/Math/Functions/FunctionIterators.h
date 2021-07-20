@@ -252,6 +252,8 @@ public:
   };
   // maybe rename r0,r1 to f0,f1 for "fade"..but it's more ambiguous - could be confused with freq
   // and it's not clear if it's fae-in or -out..or c0,c1 for crescendo
+  // maybe drag this struct out of the class and call it rsSineSweepParameters so it may be used
+  // by other implementation, too
 
 
   /** Sets up the initial state according to the user parameters. */
