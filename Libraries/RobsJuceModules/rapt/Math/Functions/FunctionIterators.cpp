@@ -95,7 +95,7 @@ void rsPolynomialIterator<T, N>::setup(const T* aIn, T h, T x0)
 //=================================================================================================
 
 template<class T>
-void rsSineSweepIterator<T>::setup(const rsSineSweepIterator<T>::Parameters& p)
+void rsSineSweepIterator<T>::setup(const rsSweepParameters<T>& p)
 {
   T coeffsPhs[4];
   fitCubicWithDerivative(p.t0, p.t1, p.p0, p.p1, p.w0, p.w1, 
@@ -110,8 +110,10 @@ void rsSineSweepIterator<T>::setup(const rsSineSweepIterator<T>::Parameters& p)
   for(int i = 0; i < 4; i++)
     coeffs[i] = std::complex<T>(coeffsLogAmp[i], coeffsPhs[i]);
 
-  //core.setup(coeffs, T(1), T(0));  //
-  core.setup(coeffs, T(1), p.t0);  //
+  core.setup(coeffs, T(1), p.t0);
+
+  // Could it be numerically better, if we normalize the time interval to 0..1 before computing the
+  // polynomial coeffs? -> experiments needed
 }
 
 

@@ -31,7 +31,9 @@ void rsSineSweeperBankIterative<T, N>::reset()
 
 //=================================================================================================
 
-void rsAdditiveKeyPatch::convertUserToAlgoUnits(float sampleRate, bool logAmplitude)
+template<int N>
+void rsAdditiveSynthVoice<N>::EditablePatch::convertUserToAlgoUnits(
+  float sampleRate, bool logAmplitude)
 {
   float freqToOmega = 2*PI/sampleRate;
   for(size_t i = 0; i < breakpoints.size(); i++)
@@ -48,33 +50,209 @@ void rsAdditiveKeyPatch::convertUserToAlgoUnits(float sampleRate, bool logAmplit
     }
   }
 }
+// superfluous - directly use PlayablePatch::setupFrom
 
-//=================================================================================================
+
+template<int N>
+bool rsAdditiveSynthVoice<N>::EditablePatch::isWellFormed() const
+{
+  size_t numBreakpoints = breakpoints.size();
+  if(numBreakpoints == 0)        return true;  // Patch is empty. This is allowed.
+  if(numBreakpoints == 1)        return false; // One breakpoint does not define a segment.
+  if(breakpoints[0].time != 0.0) return false; // Time must start at zero.
+
+  // Check, if time-stamps are strictly increasing with a time-delta of at least 1/20000 seconds.
+  // Rationale: We assume that we may have one breakpoint per cycle and 20 kHz is more than high 
+  // enough for a fundamental frequency. In fact, it's already unrealistically high, but
+  // from a technical point of view, we must just make sure that the spacing between breakpoints is
+  // at least one sample (right?) and we assume that the engine runs at least at 44.1 kHz 
+  // sample-rate.
+  double minTimeDelta = 1.0 / 20000.0;
+  for(int i = 0; i < numBreakpoints-1; i++)
+    if(breakpoints[i+1].time - breakpoints[i].time < minTimeDelta)
+      return false;
+
+  // Check, if all breakpoints have the same number of partials. This is required because...tbc...
+  int numPartials0 = breakpoints[0].getNumPartials();
+  for(int i = 1; i < numBreakpoints; i++)
+    if(breakpoints[i].getNumPartials() != numPartials0)
+      return false;
+
+  return true;
+
+  // ToDo: 
+  // -Try to restrict the API of EditablePatch such that client code can't even produce malformed 
+  //  patches. Then, the utility of this function should be merely for internal sanity checks for 
+  //  debugging and should probably not be compiled into release versions.
+}
+
+template<int N>
+int rsAdditiveSynthVoice<N>::EditablePatch::getNumPartials() const
+{
+  int num = 0;
+  for(size_t i = 0; i < breakpoints.size(); i++)
+    num = rsMax(num, breakpoints[i].getNumPartials());
+  return num;
+
+  // ToDo:
+  // -If we can assume that all breakpoints have the same number of partials, then it's sufficient
+  //  to just return breakpoints[0].getNumPartials() ...or zero if the size of breakpoints is zero.
+}
+
+
+/** Returns the smallest multiple of N that is greater or equal to x. */
+int rsCeilMultiple(int x, int N)
+{
+  rsAssert(x >= 0 && N > 0); 
+  return ((x+N-1)/N)*N;
+}
+// needs tests, move to library
+
+template<int N>
+void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
+  const rsAdditiveSynthVoice<N>::EditablePatch& patch, double sampleRate, bool applyLog)
+{
+  rsAssert(patch.isWellFormed());
+
+  // Memory (re-)allocation:
+  int numPartials = patch.getNumPartials();
+  numSimdGroups   = rsCeilMultiple(numPartials, N) / N;
+  numBreakpoints  = patch.getNumBreakpoints();
+  params.setShape(numBreakpoints, numSimdGroups);
+
+  //rsSimdVector<float, N> zeroVec(0.f);
+  //params.fill(zeroVec);
+  // doesn't work - todo: write a function init that sets all values to zero
+
+  // Conversion factors:
+  double freqToOmega = 2.0*PI/sampleRate;
+  double degToRad    = PI/180.0;
+
+  // Shorthands:
+  using Breakpoint = rsAdditiveSynthVoice<N>::EditablePatch::Breakpoint;
+  using SineParams = rsAdditiveSynthVoice<N>::EditablePatch::SineParams;
+
+  // Temporaries:
+  double tL, tR, nL, nR, pL, pR, wL, wR, aL, aR, rL, rR; // params for one partial
+  rsSweepParameters<rsSimdVector<float, N>> p;           // params for one simd group
+
+  // Loop over the breakpoints:
+  for(int breakpointIndex = 0; breakpointIndex < numBreakpoints-1; breakpointIndex++)
+  {
+    int i = breakpointIndex;
+    const Breakpoint* bpL = patch.getBreakpoint(i);
+    const Breakpoint* bpR = patch.getBreakpoint(i+1);
+
+    tL = sampleRate * bpL->time;
+    tR = sampleRate * bpR->time;
+    nL = round(tL);
+    nR = round(tR);
+
+    double dt = tR - tL;  
+    // Or should it be nR-nL? That may also have to depend on how we handle phase correction etc.
+
+    // Loop over the partials in current breakpoint:
+    int partialIndex = 0; // index of current partial within the patch
+    int groupIndex   = 0; // index of current simd-group (to which the current partial belongs)
+    int indexInGroup = 0; // index of current partial within the current simd group
+    while(partialIndex < numPartials)
+    {
+      int j = partialIndex;  // shorthand
+      const SineParams* spL = &(bpL->params[j]);
+      const SineParams* spR = &(bpR->params[j]);
+
+      // Convert parameters from user- to algo-units
+      pL = degToRad * spL->phase;
+      pR = degToRad * spR->phase;
+      wL = freqToOmega * spL->freq;
+      wR = freqToOmega * spR->freq;
+      aL = spL->gain;  // maybe use gL for "gain"
+      aR = spR->gain;
+      if(applyLog) {
+        aL = log(aL);
+        aR = log(aR); }
+      rL = (aR - aL) / dt; // verify this!
+      rR = rL;             // we currently only use a linear (log-)amp env with constant slope
+
+
+      // Write the converted parameters into the appropriate positions in the simd vectors:
+      j = indexInGroup;
+      p.t0[j] = float(0 ); p.t1[j] = float(dt); // or should we use tL,tR or nL,nR?
+      p.p0[j] = float(pL); p.p1[j] = float(pR);
+      p.w0[j] = float(wL); p.w1[j] = float(wR);
+      p.l0[j] = float(aL); p.l1[j] = float(aR);
+      p.r0[j] = float(rL); p.r1[j] = float(rR);
+
+      // Do loop variable increments and and handle assignment of simd-vector and wraparound, if 
+      // we have reahced the end of a simd group:
+      partialIndex++;
+      indexInGroup++;
+      if(indexInGroup == N) {
+        params(breakpointIndex, groupIndex) = p;
+        groupIndex++;
+        indexInGroup = 0;  }
+    }
+
+    /*
+    // The last simd-group may not be fully populated with partials, so we fill up the rest of it
+    // silence-producing partials:
+    while(partialIndex < N*numSimdGroups)
+    {
+    
+      // ...more to do...
+
+
+      partialIndex++;
+    }
+    // maybe we 
+    */
+
+
+    int dummy = 0;
+  }
+
+
+  int dummy = 0;
+
+  // ToDo: 
+  // -There's some redundancy in the computations: we may use the old converted pR,wR,aR,rR as
+  //  pL,wL,aL,rL in the next iteration...oh - but not...that would work only, if the inner loop
+  //  would be over the breakpoints and the outer over the partials...but that may have a less 
+  //  desirable access pattern and introduce other complications
+  // -We may account for the rounding of the time stamps by adjusting the phase and amplitude 
+  //  values a bit: take the difference d between exact and rounded value and advance phases by
+  //  d*w and amplitude by d*r. ..can we also account for changes in w and r themselves? that would
+  //  require an estimate of the time derivative of w and r which can be computed by (wR-wL)/dt
+  //  and (rR-rL)/dt...if we do this, we should correct w,r before using them to correct p,a 
+  //  (i think)...or maybe use the average of original and corrected values - that's and estimate
+  //  of w,r at dt/2...i think...
+}
 
 template<int N>
 void rsAdditiveSynthVoice<N>::startPlaying()
 {
-  goToBreakpoint(0, true);
+  handleBreakpoint(0, true);
   playing = true;
 }
 
 template<int N>
-void rsAdditiveSynthVoice<N>::goToBreakpoint(int index, bool reInitAmpAndPhase)
+void rsAdditiveSynthVoice<N>::handleBreakpoint(int i, bool reInitAmpAndPhase)
 {
-  if(patch->getNumBreakpoints() > index+1)
+  if(patch->getNumBreakpoints() > i+1)
   {
-    const rsAdditiveKeyPatch::Breakpoint* start = patch->getBreakpoint(index);
-    const rsAdditiveKeyPatch::Breakpoint* end   = patch->getBreakpoint(index+1);
-    initSweepers(start, end, reInitAmpAndPhase);
-    nextBreakpointIndex = index+1;
-    samplesToNextBreakpoint = (int) end->time - (int) start->time;
+    // When there is another breakpoint after the breakpoint with index i, we set the sweepers up
+    // to play the segment between breakpoints i and i+1:
+    initSweepers(i, i+1, reInitAmpAndPhase);
+    nextBreakpointIndex = i+1;
+    samplesToNextBreakpoint = patch->getBreakpointTime(i+1) - patch->getBreakpointTime(i);
   }
   else
   {
-    // When there is no breakpoint after bpIndex, we have reached the end and stop the playback:
-    nextBreakpointIndex = 0;
-    samplesToNextBreakpoint = 0;
+    // When there is no more breakpoint after the breakpoint with index i, i.e. when we have now
+    // reached the final breakpoint, we stop the playback (and do some cleanup):
     playing = false;
+    nextBreakpointIndex = 0;     // i think, it's not really relevant, but it's just cleaner
+    samplesToNextBreakpoint = 0; // ditto
   }
 }
 
@@ -82,10 +260,11 @@ template<int N>
 void rsAdditiveSynthVoice<N>::processFrame(float* left, float *right)
 {
   if(samplesToNextBreakpoint == 0)
-    goToBreakpoint(nextBreakpointIndex, alwaysReInit);
+    handleBreakpoint(nextBreakpointIndex, alwaysReInit);
   if(!playing)
     return;
   sweeperBank->processFrame(left, right);
+  samplesToNextBreakpoint--;
 }
 
 template<int N>
@@ -98,10 +277,9 @@ void rsAdditiveSynthVoice<N>::reset()
 }
 
 template<int N>
-void rsAdditiveSynthVoice<N>::initSweepers(const rsAdditiveKeyPatch::Breakpoint* bpStart,
-  const rsAdditiveKeyPatch::Breakpoint* bpEnd, bool reInitAmpAndPhase)
+void rsAdditiveSynthVoice<N>::initSweepers(int i0, int i1, bool reInitAmpAndPhase)
 {
-  rsAssert(bpStart->params.size() == bpEnd->params.size());
+  //rsAssert(bpStart->params.size() == bpEnd->params.size());
   // number of partials must remain the same during the playback...maybe lift that restriction 
   // later
 

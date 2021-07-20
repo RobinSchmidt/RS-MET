@@ -313,7 +313,7 @@ void recursiveCubicSineSweep()  // rename to recursiveCubicSineSweep
   // Compute the sweeping sinusoid via rsSineSweepIterator:
   using Sweeper = rsSineSweepIterator<T>;
   Sweeper sweeper;
-  Sweeper::Parameters p;
+  rsSweepParameters<T> p;
   p.t0 = T(0); p.t1 = T(N-1);
   p.p0 = p0;   p.p1 = p1;
   p.w0 = w0;   p.w1 = w1;

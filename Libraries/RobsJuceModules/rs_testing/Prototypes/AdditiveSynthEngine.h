@@ -39,6 +39,7 @@ public:
   virtual void init(int index, float t0, float t1, float w0, float w1, float a0, float a1, 
     float p0, float p1, float r0, float r1) = 0;
 
+
   virtual void processFrame(float* left, float* right) = 0; 
 
   virtual void reset() = 0;
@@ -109,7 +110,7 @@ template<class T>
 class rsArray2D    // move to RAPT into Data folder
 {
 
-
+public:
 
   void setShape(int newDim1, int newDim2)
   {
@@ -119,6 +120,11 @@ class rsArray2D    // move to RAPT into Data folder
   }
   // todo: optionally retain old data (true by default - rationale: it's safer and optimizations 
   // that sacrifice safety should be explicit)
+
+  void fill(const T& value)
+  {
+    RAPT::rsArrayTools::fillWithValue(&data[0], (int) data.size(), value);
+  }
 
 
   /** Read and write access to elements with index pair i,j. */
@@ -142,123 +148,112 @@ protected:
 
 //=================================================================================================
 
-/** Data structure to represent a patch for a particular key (midi note) for the additive 
-synthesis engine. */
-struct rsAdditiveKeyPatch  // turn into class, rename into rsAdditiveKeyPatchEditable
-{
-
-  /** Represents the parameters in one of two units, depending on the context. One set of units
-  is for presenting them to the user and the other is for internal use in the algorithm. */
-  struct SineParams
-  {
-    SineParams(){}
-    SineParams(float freq_, float gain_, float phase_ = 0.f) 
-      : freq(freq_), gain(gain_), phase(phase_) { }
-
-    float freq  = 0.f;  // in Hz (user), as omega = 2*pi*fs/fs (algo)
-    float gain  = 0.f;  // as raw factor (user, direct algos), log of factor (iterative algos)
-    float phase = 0.f;  // in degrees (user), radians (algo), some algos may ignore it
-  };
-
-  struct Breakpoint  // maybe mae it a class
-  {
-    float time = 0.f;   // in seconds (user), samples (algo)
-
-    void addSine(const SineParams& newSine) { params.push_back(newSine); }
-
-    std::vector<SineParams> params;
-  };
-
-  void addBreakpoint(Breakpoint bp) { breakpoints.push_back(bp); }
-
-  void clear() { /*startPhases.clear();*/ breakpoints.clear(); }
-
-
-  void convertUserToAlgoUnits(float sampleRate, bool logAmplitude);
-
-
-
-  int getNumBreakpoints() const { return (int) breakpoints.size(); }
-
-  const Breakpoint* getBreakpoint(int i) const { return &breakpoints[i]; }
-
-
-
-
-protected:
-
-  //std::vector<float>      startPhases;
-  std::vector<Breakpoint> breakpoints;
-
-  //int key = 0;
-
-};
-// make this class internal to rsAdditiveSynthVoice to reduce library surface area
-
-//=================================================================================================
-
-/** This also represents a patch for a particular key like rsAdditiveKeyPatchEditable, but has a
-different data layout to facilitate efficient playback. This layout but impedes efficient editing,
-so for editing patches, the other class is used and once a patch is finished, it can be converted
-into a more "playable" version in one go as preprocessing. */
-
-class rsAdditiveKeyPatchPlayable
-{
-
-public:
-
-  /** Sets up this object from the given editable patch. */
-  void setupFrom(const rsAdditiveKeyPatch& patch);
-
-protected:
-
-  int simdSize = 0;
-  // maybe this needs to be a template parameter because we may need to use 
-  // rsSineSweepParameters<rsSimdVector>
-
-  int numBreakpoints = 0;
-  int numPartials = 0;
-  std::vector<int> timeStamps;
-
-
-  
-  // rsArray2D<rsSineSweepParameters> params;
-  // 1st index: breakpoint, 2nd: partial (or maybe simd-group of partials)
-
-};
-// make this class internal to rsAdditiveSynthVoice to reduce library surface area
-
-//=================================================================================================
-
 /** Single voice for the additive synthesis engine based on oscillator banks using SIMD 
 processing. It the plural "banks" because different implementations are available with different 
 tradeoffs with respect to accuracy and efficiency. */
 
-template<int N>  // N: size of the SIMD vectors
+template<int N>             // N: size of the SIMD vectors use NSimd
 class rsAdditiveSynthVoice
 {
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Classes
+
+  /** Data structure to represent a patch for a particular key (midi note). */
+  struct EditablePatch  // maybe turn into class
+  {
+    // ToDo: use double for all parameters
+
+    /** Represents the parameters in one of two units, depending on the context. One set of units
+    is for presenting them to the user and the other is for internal use in the algorithm. */
+    struct SineParams
+    {
+      SineParams(){}
+      SineParams(double freq_, double gain_, double phase_ = 0) 
+        : freq(freq_), gain(gain_), phase(phase_) { }
+
+      double freq  = 0;  // in Hz (user), as omega = 2*pi*fs/fs (algo)
+      double gain  = 0;  // as raw factor (user, direct algos), log of factor (iterative algos)
+      double phase = 0;  // in degrees (user), radians (algo), some algos may ignore it
+    };
+
+    struct Breakpoint  // maybe mae it a class
+    {
+      double time = 0;   // in seconds (user), samples (algo)
+      void addSine(const SineParams& newSine) { params.push_back(newSine); }
+      int getNumPartials() const { return (int) params.size(); }
+      std::vector<SineParams> params;  // rename to partials or sines
+    };
+
+    void addBreakpoint(Breakpoint bp) { breakpoints.push_back(bp); }
+
+    void clear() { breakpoints.clear(); }
 
 
+    void convertUserToAlgoUnits(float sampleRate, bool logAmplitude);
+    // seems superfluous now - we should directly convert into a PlayablePatch
+
+
+    int getNumBreakpoints() const { return (int) breakpoints.size(); }
+
+    int getNumPartials() const;
+
+    bool isWellFormed() const;
+    // -time-stamps of breakpoints miust start at zero and be strictly increasing
+    // -all breakpoints must have the same number of partials
+
+    const Breakpoint* getBreakpoint(int i) const { return &breakpoints[i]; }
+
+  protected:
+
+    std::vector<Breakpoint> breakpoints;
+
+  };
+
+  /** This also represents a patch for a particular key like EditablePatch, but has a different 
+  data layout to facilitate efficient playback. But this layout impedes efficient editing, so for 
+  editing patches, EditablePatch is used and once a patch is ready, it can be converted into a
+  "playable" version in one go as preprocessing via setupFrom. */
+  class PlayablePatch
+  {
+
+  public:
+
+    /** Sets up this object from the given editable patch. ...tbc... */
+    void setupFrom(const EditablePatch& patch, double sampleRate, bool applyLogToAmplitude);
+
+
+    int getNumBreakpoints() const { return numBreakpoints; }
+
+    int getBreakpointTime(int i) const { return timeStamps[i]; }
+
+
+  protected:
+
+    int numBreakpoints = 0;       // number of breakpoints   
+    int numSimdGroups  = 0;       // number of SIMD-groups of partials
+    std::vector<int> timeStamps;  // time-stamps of the breakpoints in samples
+    rsArray2D<RAPT::rsSweepParameters<rsSimdVector<float, N>>> params;
+    // 1st index: breakpoint, 2nd: simd-group of partials
+
+  };
 
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-
-  void setPatch(rsAdditiveKeyPatch* newPatch) { patch = newPatch; }
-  // patch must be in the format where the units are for the algorithm
+  void setPatch(PlayablePatch* newPatch) { patch = newPatch; }
 
   void setSweeperBank(rsSineSweeperBank* newBank) { sweeperBank = newBank; }
-
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
   void startPlaying();
 
-  void goToBreakpoint(int index, bool reInitAmpAndPhase);
+  void handleBreakpoint(int index, bool reInitAmpAndPhase); 
+  // move to protected
 
   void processFrame(float* left, float* right);
 
@@ -266,14 +261,12 @@ public:
 
 protected:
 
-  void initSweepers(const rsAdditiveKeyPatch::Breakpoint* bpStart, 
-    const rsAdditiveKeyPatch::Breakpoint* bpEnd, bool reInitAmpAndPhase);
+  void initSweepers(int startBreakpointIndex, int endBreakpointIndex, bool reInitAmpAndPhase);
 
 
   rsSineSweeperBank* sweeperBank = nullptr;
 
-  rsAdditiveKeyPatch* patch = nullptr;
-  //rsAdditiveKeyPatchPlayable *patch = nullptr; // ..todo
+  PlayablePatch* patch = nullptr;
 
   int nextBreakpointIndex     = 0;
   int samplesToNextBreakpoint = 0;

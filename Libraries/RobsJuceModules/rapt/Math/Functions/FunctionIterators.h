@@ -222,6 +222,27 @@ public:
 
 //=================================================================================================
 
+/** Structure for the user parameters that determine the cubic polynomials for instantaneous 
+phase and logarithm of instantaneous amplitude for the rsSineSweepIterator. There are always two 
+values indexed by 0 or 1, standing for the start and the end of the synthesized sweep. It's not an
+internal class inside rsSineSweepIterator to facilitate other implementations of the sine-sweeper 
+that may use the same paramatrization. */
+template<class T>
+struct rsSweepParameters  // maybe rename to rsCubicSweepParameters
+{
+  T t0, t1; /**< time stamps in samples */
+  T p0, p1; /**< unwrapped(!) phases in radians */
+  T w0, w1; /**< omega = 2*pi*frequency/sampleRate, derivative of the phase */
+  T l0, l1; /**< log(amplitude) */
+  T r0, r1; /**< "rise", derivative of log of amplitude with respect to t in samples */
+};
+// -maybe rename r0,r1 to f0,f1 for "fade"..but it's more ambiguous - could be confused with freq
+//  and it's not clear if it's fade-in or -out..or c0,c1 for crescendo
+// -maybe rename l0,l1 to a0,a1 (for amplitude) or g0,g1 (for gain).. "gain" can mean either 
+//  amplitude or some logarithmic measure of it - which is intentional because indeed different
+//  implementation may interpret it differently
+
+
 /** Iteratively computes a sinusoidal frequency sweep using a cubic rsExpPolyIterator. That means,
 the instantaneous phase and the logarithm of the instantaneous amplitude are given by cubic 
 polynomials. The polynomials are set up in terms of user parameters that are compatible with the 
@@ -232,7 +253,6 @@ vectorization (i.e. usage with T = rsSimdVector<float, 16> or something). The dr
 take care of not letting the accumulated roundoff error grow out of control. In a typical 
 situation, one should probably re-initialize the state with a proper direct calculation every 
 couple of hundreds or thousands of samples ...tbc...  */
-
 template<class T>
 class rsSineSweepIterator
 {
@@ -242,14 +262,14 @@ public:
   /** Structure for the user parameters that determine the cubic polynomials for instantaneous 
   phase and logarithm of instantaneous amplitude. There are always two values indexed by 0 or 1, 
   standing for the start and the end of the synthesized sweep. */
-  struct Parameters
-  {
-    T t0, t1; /**< time stamps in samples */
-    T p0, p1; /**< unwrapped(!) phases in radians */
-    T w0, w1; /**< omega = 2*pi*frequency/sampleRate, derivative of the phase */
-    T l0, l1; /**< log(amplitude) */
-    T r0, r1; /**< "rise", derivative of log of amplitude with respect to t in samples */
-  };
+  //struct Parameters
+  //{
+  //  T t0, t1; /**< time stamps in samples */
+  //  T p0, p1; /**< unwrapped(!) phases in radians */
+  //  T w0, w1; /**< omega = 2*pi*frequency/sampleRate, derivative of the phase */
+  //  T l0, l1; /**< log(amplitude) */
+  //  T r0, r1; /**< "rise", derivative of log of amplitude with respect to t in samples */
+  //};
   // maybe rename r0,r1 to f0,f1 for "fade"..but it's more ambiguous - could be confused with freq
   // and it's not clear if it's fae-in or -out..or c0,c1 for crescendo
   // maybe drag this struct out of the class and call it rsSineSweepParameters so it may be used
@@ -257,7 +277,7 @@ public:
 
 
   /** Sets up the initial state according to the user parameters. */
-  void setup(const Parameters& params);
+  void setup(const rsSweepParameters<T>& params);
 
   // todo:
   //inline T getPhase()     const { return std::arg(core.y[N]); }

@@ -2720,19 +2720,21 @@ void additiveEngine()
 
   using SweeperBank = rsSineSweeperBankIterative<float, simdSize>;
   using Voice       = rsAdditiveSynthVoice<simdSize>;
-  using Patch       = rsAdditiveKeyPatch;
+  using Patch       = Voice::EditablePatch;
   using BP          = Patch::Breakpoint;
   using SP          = Patch::SineParams;
 
   // Create a patch with a single partial representing sine that sweeps around 
   Patch patch;
   BP bp0, bp1, bp2, bp3, bp4;
-  bp0.time = 0.0f; bp0.addSine(SP(1000.f, 0.400f)); patch.addBreakpoint(bp0);
-  bp1.time = 0.1f; bp1.addSine(SP(2000.f, 0.200f)); patch.addBreakpoint(bp1);
-  bp2.time = 0.2f; bp2.addSine(SP( 500.f, 0.500f)); patch.addBreakpoint(bp2);
-  bp3.time = 0.3f; bp3.addSine(SP( 100.f, 0.200f)); patch.addBreakpoint(bp3);
-  bp4.time = 0.4f; bp4.addSine(SP(   0.f, 0.001f)); patch.addBreakpoint(bp4); // almost zero
-  patch.convertUserToAlgoUnits(sampleRate, true);
+  bp0.time = 0.0; bp0.addSine(SP(1000.0, 0.400)); patch.addBreakpoint(bp0);
+  bp1.time = 0.1; bp1.addSine(SP(2000.0, 0.200)); patch.addBreakpoint(bp1);
+  bp2.time = 0.2; bp2.addSine(SP( 500.0, 0.500)); patch.addBreakpoint(bp2);
+  bp3.time = 0.3; bp3.addSine(SP( 100.0, 0.200)); patch.addBreakpoint(bp3);
+  bp4.time = 0.4; bp4.addSine(SP(   0.0, 0.001)); patch.addBreakpoint(bp4); // almost zero
+  Voice::PlayablePatch playPatch;
+  playPatch.setupFrom(patch, sampleRate, true);
+  // patch.convertUserToAlgoUnits(sampleRate, true); // obsolete
 
   // Create a sweeper bank object to be used by the voice (the pool of such sweeper-banks is later
   // supposed to be owned by the additive synth engine, individual voices will get their bank to 
@@ -2741,7 +2743,7 @@ void additiveEngine()
 
   // Create a voice, set it up with the patch and the sweeper bank and play:
   Voice voice;
-  voice.setPatch(&patch);
+  voice.setPatch(&playPatch);
   voice.setSweeperBank(&sweeperBank);
   voice.startPlaying();
   std::vector<float> xL(N), xR(N);
