@@ -1,20 +1,25 @@
+/** Returns the smallest multiple of N that is greater or equal to x. */
+int rsCeilMultiple(int x, int N)
+{
+  rsAssert(x >= 0 && N > 0); 
+  return ((x+N-1)/N)*N;
+}
+// helper function, needs tests, move to library
+
+
+
 template<class T, int N>
 void rsSineSweeperBankIterative<T, N>::setMaxNumOscillators(int newLimit)
 {
-
+  int numSimdGroups = rsCeilMultiple(newLimit, N) / N;
+  simdGroups.resize(numSimdGroups);
 }
 
 template<class T, int N>
-void rsSineSweeperBankIterative<T, N>::setNumOscillators(int newLimit)
+void rsSineSweeperBankIterative<T, N>::setNumActiveGroups(int newLimit)
 {
 
-}
-
-template<class T, int N>
-void rsSineSweeperBankIterative<T, N>::init(int index, float t0, float t1, float w0, 
-  float w1, float a0, float a1, float p0, float p1, float r0, float r1)
-{
-
+  int dummy = 0;
 }
 
 template<class T, int N>
@@ -100,13 +105,7 @@ int rsAdditiveSynthVoice<N>::EditablePatch::getNumPartials() const
 }
 
 
-/** Returns the smallest multiple of N that is greater or equal to x. */
-int rsCeilMultiple(int x, int N)
-{
-  rsAssert(x >= 0 && N > 0); 
-  return ((x+N-1)/N)*N;
-}
-// needs tests, move to library
+
 
 template<int N>
 void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
@@ -119,10 +118,8 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
   numSimdGroups   = rsCeilMultiple(numPartials, N) / N;
   numBreakpoints  = patch.getNumBreakpoints();
   params.setShape(numBreakpoints, numSimdGroups);
-
-  //rsSimdVector<float, N> zeroVec(0.f);
-  //params.fill(zeroVec);
-  // doesn't work - todo: write a function init that sets all values to zero
+  params.memsetAllZero();
+  timeStamps.resize(numBreakpoints);
 
   // Conversion factors:
   double freqToOmega = 2.0*PI/sampleRate;
@@ -147,7 +144,7 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
     tR = sampleRate * bpR->time;
     nL = round(tL);
     nR = round(tR);
-
+    timeStamps[i] = (int)nL;
     double dt = tR - tL;  
     // Or should it be nR-nL? That may also have to depend on how we handle phase correction etc.
 
@@ -192,31 +189,11 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
         groupIndex++;
         indexInGroup = 0;  }
     }
-
-    /*
-    // The last simd-group may not be fully populated with partials, so we fill up the rest of it
-    // silence-producing partials:
-    while(partialIndex < N*numSimdGroups)
-    {
-    
-      // ...more to do...
-
-
-      partialIndex++;
-    }
-    // maybe we 
-    */
-
-
-    int dummy = 0;
   }
-
-
-  int dummy = 0;
 
   // ToDo: 
   // -There's some redundancy in the computations: we may use the old converted pR,wR,aR,rR as
-  //  pL,wL,aL,rL in the next iteration...oh - but not...that would work only, if the inner loop
+  //  pL,wL,aL,rL in the next iteration...oh - but no:...that would work only, if the inner loop
   //  would be over the breakpoints and the outer over the partials...but that may have a less 
   //  desirable access pattern and introduce other complications
   // -We may account for the rounding of the time stamps by adjusting the phase and amplitude 
@@ -313,6 +290,8 @@ void rsAdditiveSynthVoice<N>::initSweepers(int i0, int i1, bool reInitAmpAndPhas
 
 /*
 
+ToDo: make rsExp work when T = std::complex<rsSimdVector<float,N>>
+
 Ideas:
 
 -The user should be able to set up the engine in terms of breakpoints where each breakpoint 
@@ -405,5 +384,8 @@ from it without any change.
 ...hmm...not sure, if that's a good idea...i think, from a perceptual point of view, smaller 
 groups may make more sense...but then, when we provide an API for setting up settings for
 groups, their size may actually have to be different from the simd vector size anyway
+
+// see also:
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=553578&p=7911364
 
 */

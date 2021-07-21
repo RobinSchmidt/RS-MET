@@ -637,5 +637,15 @@ template class rsPiecewisePolynomial<double>;
 template class rsSineSweeperBankIterative<float, 16>; // 16 is the simd-vector size
 template class rsAdditiveSynthVoice<16>; 
 
+//template class std::complex<rsSimdVector<float, 16>>;  
+// test - doesn't compile. the problem are things like _Isnan, _IsInf, etc. std::complex seems to 
+// assume the underlying real type to be float, double or long double and nothing else...what's the 
+// point of having a template then? i also wan complex integers, fractions, multiprecision numbers,
+// simd-vectors, etc.....
+
+//template class std::complex<int>; // compiles because can be converted to double
+//template class std::complex<RAPT::rsFraction<int>>; // doesn't compile
+
+
 //template class rsSamplerEngine<rsFloat64x2, double, float>;
 // todo: rsFloat64x2 should be in namespace rosic

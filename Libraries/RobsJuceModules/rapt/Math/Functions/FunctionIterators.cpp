@@ -90,6 +90,10 @@ void rsPolynomialIterator<T, N>::setup(const T* aIn, T h, T x0)
   //  https://en.wikipedia.org/wiki/Compile-time_function_execution
   // -Maybe make a special implementation for cubic polynomials that hardcodes the required 
   //  binomial coeffs
+  // -Maybe have two template parameters, one for the state y and one for the type used for a,h,x0 
+  //  here. The idea is to use double precision for a,h,x0 and single for y, such that the initial
+  //  state does not already have too much roundoff error. 
+  //  (See Hamming: Numerical Methods..., 2nd ed., pg. 156)
 }
 
 //=================================================================================================
@@ -121,6 +125,15 @@ void rsSineSweepIterator<T>::setup(const rsSweepParameters<T>& p)
 /*
 
 ToDo:
+
+-For rsSineSweepIterator, use a self-written rsComplex class. std::complex doesn't seem to admit 
+ usage of simd vector types for T, or in fact, any type other than float, double, long double. See
+ https://en.cppreference.com/w/cpp/numeric/complex
+   "The specializations std::complex<float>, std::complex<double>, and std::complex<long double> 
+    are LiteralTypes for representing and manipulating complex numbers. The effect of instantiating 
+    the template complex for any other type is unspecified." 
+ Seems like std::complex is not as flexible i i'd like it to be.
+
 -rsSineCosineIterator : public rsComplexExponentialIterator
 -rsExponentialIterator, rsLinearIterator, rsQuadraticIterator, rsCubicIterator, rsCubicExpIterator
 -for the polynomial iterators, see Salomon - Computer Graphics, page 275ff ("Fast Calculation of 

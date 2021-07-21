@@ -101,16 +101,16 @@ template<class T>
 void fitCubicWithDerivative(T x1, T x2, T y1, T y2, T yd1,
   T yd2, T *a3, T *a2, T *a1, T *a0)
 {
-  *a3 = -( x2*(yd2+yd1) + x1*(-yd2-yd1) - 2*y2 + 2*y1 );
-  *a2 = x1*(x2*(yd2-yd1)-3*y2) + (x2*x2)*(yd2+2*yd1) + (x1*x1)*(-2*yd2-yd1)
-       - 3*x2*y2 + (3*x2+3*x1)*y1;
-  *a1 = x1*((x2*x2)*(2*yd2+yd1)-6*x2*y2) - (x1*x1*x1)*yd2 + (x1*x1)*x2*(-yd2-2*yd1)
-       + (x2*x2*x2)*yd1 + 6*x1*x2*y1;
+  *a3 = -( x2*(yd2+yd1) + x1*(-yd2-yd1) - T(2)*y2 + T(2)*y1 );
+  *a2 = x1*(x2*(yd2-yd1)-T(3)*y2) + (x2*x2)*(yd2+T(2)*yd1) + (x1*x1)*(T(-2)*yd2-yd1)
+       - T(3)*x2*y2 + (T(3)*x2+T(3)*x1)*y1;
+  *a1 = x1*((x2*x2)*(T(2)*yd2+yd1)-T(6)*x2*y2) - (x1*x1*x1)*yd2 + (x1*x1)*x2*(-yd2-T(2)*yd1)
+       + (x2*x2*x2)*yd1 + T(6)*x1*x2*y1;
   *a1 = -*a1;
-  *a0 = (x1*x1)*((x2*x2)*(yd2-yd1)-3*x2*y2) + (x1*x1*x1)*(y2-x2*yd2) + x1*(x2*x2*x2)*yd1
-       + (3*x1*(x2*x2)-(x2*x2*x2))*y1;
+  *a0 = (x1*x1)*((x2*x2)*(yd2-yd1)-T(3)*x2*y2) + (x1*x1*x1)*(y2-x2*yd2) + x1*(x2*x2*x2)*yd1
+       + (T(3)*x1*(x2*x2)-(x2*x2*x2))*y1;
 
-  T scaler = 1.0 / ( -(x2*x2*x2) + 3*x1*(x2*x2) - 3*x1*x1*x2 + (x1*x1*x1) );
+  T scaler = T(1) / ( -(x2*x2*x2) + T(3)*x1*(x2*x2) - T(3)*x1*x1*x2 + (x1*x1*x1) );
   *a3 *= scaler;
   *a2 *= scaler;
   *a1 *= scaler;

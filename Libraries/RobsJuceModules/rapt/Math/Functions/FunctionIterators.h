@@ -314,7 +314,8 @@ public:
 protected:
 
   rsExpPolyIterator<std::complex<T>, 3> core;
-  // todo: implement and use a special optimized rsExpCubicIterator
+  // todo: 
+  // -implement and use a special optimized rsExpCubicIterator
 
 };
 

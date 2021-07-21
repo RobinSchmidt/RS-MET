@@ -37,7 +37,8 @@ Of course, this creates some caveats: client code may falsely assume that hardwa
 takes place, when in fact, it's only emulated. Moreover, our compile-time dispatch here says 
 nothing about the availability of the instructions at runtime. Client code will still need runtime 
 dispatches to code with less SIMD or none at all to make sure that the code runs on machines with 
-lesser instruction sets. */
+lesser instruction sets or the compiled product must provide different binaries for different 
+instruction sets. */
 
 template<class T, int N> // T: underlying scalar type, N: vector size (power of 2, >= 2)
 class rsSimdVector
@@ -50,20 +51,30 @@ public:
   using V2  = rsSimdVector<T, N/2>;
   using CV2 = const V2;
 
-  V() {}
-  V(T a) { lo() = a; hi() = a; }
-  V(CV2& low, CV2& high) { lo() = low; hi() = high; }
-  V(CV2&& low, CV2&& high) { lo() = low; hi() = high; } // do we need this?
+  rsSimdVector() {}
+  rsSimdVector(T a) { lo() = a; hi() = a; }
+  rsSimdVector(CV2& low, CV2& high) { lo() = low; hi() = high; }
+  rsSimdVector(CV2&& low, CV2&& high) { lo() = low; hi() = high; } // do we need this?
   //V(CV2 low, CV2 high) { lo() = low; hi() = high; }
   // When we have the CV2& and CV2 versions both uncommented, we get a compile error:
   // "...constructor overload resolution was ambiguous" for rsSimdVector<double,16>, keeping only
   // one of them gives a compile error for rsSimdVector<float,4> when the new rsAbs implementation
   // is uncommented
 
-  /** Write Access to the i-th element of the vector where i = 0,...,N-1. */
+  //V() {}
+  //V(T a) { lo() = a; hi() = a; }
+  //V(CV2& low, CV2& high) { lo() = low; hi() = high; }
+  //V(CV2&& low, CV2&& high) { lo() = low; hi() = high; } // do we need this?
+  ////V(CV2 low, CV2 high) { lo() = low; hi() = high; }
+  // When we have the CV2& and CV2 versions both uncommented, we get a compile error:
+  // "...constructor overload resolution was ambiguous" for rsSimdVector<double,16>, keeping only
+  // one of them gives a compile error for rsSimdVector<float,4> when the new rsAbs implementation
+  // is uncommented
+
+  /** Write access to the i-th element of the vector where i = 0,...,N-1. */
   inline T& operator[](const int i) { rsStaticAssert(i >= 0 && i < N); return v[i]; }
 
-  /** Read Access to the i-th element of the vector where i = 0,...,N-1. */
+  /** Read access to the i-th element of the vector where i = 0,...,N-1. */
   inline const T& operator[](const int i) const { rsStaticAssert(i >= 0 && i < N); return v[i]; }
 
   /** Returns the level of software emulation that takes place for this particular template 
@@ -75,12 +86,49 @@ public:
   emulation-level will be 2. */
   static int getEmulationLevel() { return V2::getEmulationLevel() + 1; }
 
+  /** Comparison for "less-than". For a vector to be considered less than another vector, all
+  scalar elements must be less than the corresponding elements in the other vector. This
+  definition is a bit arbitrary, but it makes sense for convergence tests in numerical algorithms
+  (such as root finding) when the algorithm checks, whether a variable is within a given tolerance.
+  These checks will evaluate to true only when all elements are within the tolerance, which is
+  typically what is desired. */
+  inline bool operator<(CV& b) const { return (lo() < b.lo()) && (hi() < b.hi()); }
+
+  /** Converts the vector to a scalar by adding up all values. That's also a bit arbitrary. The 
+  rationale is twofold:
+  (2) In many practical situations, we want to perform a bunch of operations in parallel and at the
+  end we are indeed interested in their sum.
+  (1) the implementation std::complex does some _IsNan, _IsInf etc. tests that rely 
+  on converting the underlying real datatype to double and using the sum will make it inf or nan 
+  whenever one of the values if inf or nan...however when one is inf and one is -inf, the sum will 
+  be nan...hmmm */
+  //inline operator T() const { return lo() + hi(); }
+  // hmmm... implementing that operator causes other problems: now, when we want to add a vector 
+  // and a scalar, the compiler apparently tries to convert the vector into a scalar rather than 
+  // the other way around (which is the desired behavior).
+
+  /** Comparison for equality. For two vectors to be considered equal, all their scalar elements
+  must be equal.  */
+  inline bool operator==(CV& b) const { return (lo() == b.lo()) && (hi() == b.hi()); }
+
+
+
 
   V operator+(CV b) const { return V(lo()+b.lo(), hi()+b.hi()); }
   V operator-(CV b) const { return V(lo()-b.lo(), hi()-b.hi()); }
   V operator*(CV b) const { return V(lo()*b.lo(), hi()*b.hi()); }
   V operator/(CV b) const { return V(lo()/b.lo(), hi()/b.hi()); }
   // ToDo: try, if it makes a difference (performance-wise), if we have CV& and/or CV&& versions
+
+
+  V& operator+=(CV& b) { return *this = (*this) + b; }
+  V& operator-=(CV& b) { return *this = (*this) - b; }
+  V& operator*=(CV& b) { return *this = (*this) * b; }
+  V& operator/=(CV& b) { return *this = (*this) / b; }
+  // ToDo: figure out, if there's a more efficient way to do it, 
+  // maybe we should do: lo() += b.lo(); hi() += b.hi(); return *this;
+
+
 
   //V operator+(CV& b) const { return V(lo()+b.lo(), hi()+b.hi()); }
   //V operator-(CV& b) const { return V(lo()-b.lo(), hi()-b.hi()); }
@@ -191,8 +239,11 @@ class rsSimdVector<T, 1>
 
 public:
 
-  V() {}
-  V(T a) { v[0] = a; }
+  rsSimdVector() {}
+  rsSimdVector(T a) { v[0] = a; }
+
+  //V() {}
+  //V(T a) { v[0] = a; }
 
   inline T& operator[](const int i) { rsStaticAssert(i == 0); return v[0]; }
   inline const T& operator[](const int i) const { rsStaticAssert(i == 0); return v[0]; }
@@ -206,6 +257,14 @@ public:
   inline V operator-(T s) const { return V(v[0] - s); }
   inline V operator*(T s) const { return V(v[0] * s); }
   inline V operator/(T s) const { return V(v[0] / s); }
+
+
+  inline V& operator+=(CV& b) { return *this = (*this) + b; }
+  inline V& operator-=(CV& b) { return *this = (*this) - b; }
+  inline V& operator*=(CV& b) { return *this = (*this) * b; }
+  inline V& operator/=(CV& b) { return *this = (*this) / b; }
+  // ToDo: figure out, if there's a more efficient way to do it, 
+  // maybe v[0] += b.v[0]; rteurn *this;
 
   static int getEmulationLevel() { return 0; }
 
@@ -269,16 +328,27 @@ public:
   static int getEmulationLevel() { return 0; }
 
   // Constructors:
-  V() {}
-  V(CV& a) : v(a.v) {}
-  //V(CV&& a) : v(a.v) {} // gives compile error - we need to also define the = operator then
-  V(__m128 x) : v(x) {}
-  V(float a) : v(_mm_set1_ps(a)) {}
-  V(int a) : v(_mm_set1_ps(float(a))) {}
-  V(double a) : v(_mm_set1_ps(float(a))) {}
-  V(float a, float b, float c, float d) : v(_mm_setr_ps(a, b, c, d)) {}
-  V(float* p) { v = _mm_setr_ps(p[0], p[1], p[2], p[3]); }
-  V(CV2& low, CV2& high) { lo() = low; hi() = high; }
+  rsSimdVector() {}
+  rsSimdVector(CV& a) : v(a.v) {}
+  //rsSimdVector(CV&& a) : v(a.v) {} // gives compile error - we need to also define the = operator then?
+  rsSimdVector(__m128 x) : v(x) {}
+  rsSimdVector(float a) : v(_mm_set1_ps(a)) {}
+  rsSimdVector(int a) : v(_mm_set1_ps(float(a))) {}
+  rsSimdVector(double a) : v(_mm_set1_ps(float(a))) {}
+  rsSimdVector(float a, float b, float c, float d) : v(_mm_setr_ps(a, b, c, d)) {}
+  rsSimdVector(float* p) { v = _mm_setr_ps(p[0], p[1], p[2], p[3]); }
+  rsSimdVector(CV2& low, CV2& high) { lo() = low; hi() = high; }
+
+  //V() {}
+  //V(CV& a) : v(a.v) {}
+  //////V(CV&& a) : v(a.v) {} // gives compile error - we need to also define the = operator then
+  //V(__m128 x) : v(x) {}
+  //V(float a) : v(_mm_set1_ps(a)) {}
+  //V(int a) : v(_mm_set1_ps(float(a))) {}
+  //V(double a) : v(_mm_set1_ps(float(a))) {}
+  //V(float a, float b, float c, float d) : v(_mm_setr_ps(a, b, c, d)) {}
+  //V(float* p) { v = _mm_setr_ps(p[0], p[1], p[2], p[3]); }
+  //V(CV2& low, CV2& high) { lo() = low; hi() = high; }
 
   // Setup:
   void set(float a, float b, float c, float d) { v = _mm_setr_ps(a, b, c, d); }
@@ -292,6 +362,19 @@ public:
   //V operator*(CV& w) const { return V(_mm_mul_ps(v, w.v)); }
   //V operator/(CV& w) const { return V(_mm_div_ps(v, w.v)); }
   // moved outside the class
+
+  inline V& operator+=(CV& b) { v = _mm_add_ps(v, b.v); return *this; }
+  inline V& operator-=(CV& b) { v = _mm_sub_ps(v, b.v); return *this; }
+  inline V& operator*=(CV& b) { v = _mm_mul_ps(v, b.v); return *this; }
+  inline V& operator/=(CV& b) { v = _mm_div_ps(v, b.v); return *this; }
+  // ToDo: figure out, if there's a more efficient way to do it
+
+
+  // STILL WRONG! just placeholders to satisfy the compiler
+  //inline bool operator<(CV& b)  const { return false; }
+  //inline bool operator==(CV& b) const { return false; }
+
+
 
   // Access operators
   V& operator=(const __m128& rhs) { v = rhs; return *this; }
@@ -324,11 +407,99 @@ inline V operator-(const V a) { return V(0.f) - a; } // unary minus - can we do 
 // Passing arguments by const reference has given (very weird!) access violations in the unit test.
 // -> check out other simd libraries, how they pass arguments and check, if passing by value incurs
 // a performance hit (done - doesn't seem to make a difference), check all other operators, maybe 
-// switch to pass-by-value ther, too
+// switch to pass-by-value there, too
 
 #undef V
 #undef CV
 #endif
+
+//=================================================================================================
+// Operators and functions for complex numbers formed of simd-vectors: We need explicit 
+// specializations because the implementations provided by the standard library don't compile
+
+// Hmm...i don't get it to compile...maybe i need to revert to my own rsComplex class again. We 
+// need implement all operators and functions in a branchless and comparisonless way, so it 
+// vectorizes nicely. The culprit with std::complex seems to be the division operator which uses 
+// branching and there are also tests like _IsNan etc. which do not really play well with 
+// vectorization. I tried to provide explicit specializations for the division to sort of 
+// "override" the std behavior, but no avail because the /= operator needs to be implemented in 
+// class (right?), so it can't be (pseude)overriden by explicit specialization. However, it may
+// be possible to actually override it by subclassing std::complex: 
+// template<class T>
+// class rsComplex : public std::complex<T>  { ... }
+
+
+/*
+#define VR rsSimdVector<T, N>                 // real vector
+#define CVR const VR
+
+#define V  std::complex<rsSimdVector<T, N>>
+#define CV const V
+#define TIV template<class T, int N> inline V
+
+TIV operator+(CV& a, CV& b) { V c; c.real(a.real() + b.real()); c.imag(a.imag() + b.imag()); return c; }
+TIV operator-(CV& a, CV& b) { V c; c.real(a.real() - b.real()); c.imag(a.imag() - b.imag()); return c; }
+
+// still wrong - just to satisfy the compiler:
+TIV operator*(CV& a, CV& b) { V c; return c; }
+
+TIV operator/(CV&  a, CV&  b) { V c; return c; }
+TIV operator/(CVR& a, CV&  b) { V c; return c; }
+TIV operator/(CV&  a, CVR& b) { V c; return c; }
+TIV& operator/=(CV&  a, CV&  b) { return a; }
+TIV& operator/=(CVR& a, CV&  b) { return a; }
+TIV& operator/=(CV&  a, CVR& b) { return a; }
+
+
+#undef VR
+#undef CVR
+
+#undef V
+#undef CV
+#undef TIV
+*/
+
+
+/** UNDER CONSTRUCTION
+Computes the complex exponential of z. */
+/*
+template<class T, int N>
+inline std::complex<rsSimdVector<T, N>> rsExp(const std::complex<rsSimdVector<T, N>>& z)
+{
+  using V  = rsSimdVector<T, N>;
+  using V2 = rsSimdVector<T, N/2>;
+
+  // e^z = e^(a + i*b) = e^a * e^(i*b) = e^a * (cos(b) + i*sin(b))
+  //V2& reLo = z.real().lo();
+
+
+
+  int  dummy = 0;
+
+
+  std::complex<rsSimdVector<T, N>> w;
+
+  // something to do...
+  return w;
+
+  //// from ComplexFloat64x2.h:
+  //// e^z = e^(a + i*b) = e^a * e^(i*b) = e^a * (cos(b) + i*sin(b))
+  //double* re = z.real().asArray();  // real parts
+  //double* im = z.imag().asArray();  // imag parts
+  //double r0  = exp(re[0]);          // radius of 1st complex result
+  //double r1  = exp(re[1]);          // radius of 2nd complex result
+  //double re0 = r0 * cos(im[0]);     // real part of 1st complex result
+  //double im0 = r0 * sin(im[0]);     // imag part of 1st complex result
+  //double re1 = r1 * cos(im[1]);     // real part of 2nd complex result
+  //double im1 = r1 * sin(im[1]);     // imag part of 2nd complex result
+  //rsFloat64x2 vre(re0, re1);        // vector of resulting real parts
+  //rsFloat64x2 vim(im0, im1);        // vector of resulting imag parts
+  //return std::complex<rsFloat64x2>(vre, vim);
+}
+*/
+
+
+
 
 // ToDo: rsSimdVector<double, 2> (needs SSE2)
 
@@ -368,3 +539,19 @@ inline V operator-(const V a) { return V(0.f) - a; } // unary minus - can we do 
 
 // Also interesting:
 // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1101r0.html Vector Length Agnostic SIMD
+
+
+// https://www.codeproject.com/Articles/874396/Crunching-Numbers-with-AVX-and-AVX
+
+// On combining SIMD with complex
+// https://github.com/VcDevel/Vc/issues/197
+// https://stackoverflow.com/questions/53677757/simd-vectors-complex-numbers
+// https://stackoverflow.com/questions/39509746/how-to-square-two-complex-doubles-with-256-bit-avx-vectors/39521257#39521257
+// https://discourse.mc-stan.org/t/fully-functional-std-complex-specializations-and-overloads/12113
+
+// Ah - OK - perhaps i should indeed use my own implementation rsComplex:
+// https://en.cppreference.com/w/cpp/numeric/complex
+// The specializations std::complex<float>, std::complex<double>, and std::complex<long double> 
+// are LiteralTypes for representing and manipulating complex numbers. The effect of instantiating 
+// the template complex for any other type is unspecified. Seems like std::complex is not as 
+// flexible i i'd like it to be

@@ -30,13 +30,18 @@ public:
 
   double toDouble() const { return double(num) / double(den); }
 
+  //operator double() const { return double(num) / double(den); }
+  // Perhaps it's not a good idea to allow implicit conversions to double. Client code should be
+  // explicit.
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Arithmetic operators
 
-  // unary minus:
+  // unary plus and minus:
+  rsFraction operator+() const { return rsFraction(+num, den); }
   rsFraction operator-() const { return rsFraction(-num, den); }
-  // optimization: this should avoid calling canonicalize()
+  // optimization: these may avoid calling canonicalize()
 
   // +,-,*,/ where both arguments are fractions:
   rsFraction operator+(const rsFraction& b) const { return rsFraction(num*b.den + b.num*den, den * b.den); }
@@ -59,6 +64,8 @@ public:
   rsFraction& operator-=(const T& b) { return *this = (*this) - b; }
   rsFraction& operator*=(const T& b) { return *this = (*this) * b; }
   rsFraction& operator/=(const T& b) { return *this = (*this) / b; }
+
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -107,26 +114,30 @@ rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
 
 
 // ToDo:
-// -maybe use algorithms for the arithmetic operators that make overflow less likely (divide by gcd 
+// -Maybe use algorithms for the arithmetic operators that make overflow less likely (divide by gcd 
 //  before computing products, use lcm in + and - instead of just computing products, etc.).
-// -implement some functions like pow (with integer exponent)..maybe using the ^ operator - but 
+// -Implement some functions like pow (with integer exponent)..maybe using the ^ operator - but 
 //  care has to be taken to parenthesize expressions like (r^i) inside longer expressions due to 
 //  C++ precendence rules
-// -maybe detect if overflow will happen and trigger an assert
-// -implement functions to convert to double or float and/or operators for implicit conversion
+// -Maybe detect if overflow will happen and trigger an assert
+// -Implement functions to convert to double or float and/or operators for implicit conversion
 //  (but maybe that's not a good idea - conversions should probably always be explicit)
-// -in the Prototypes section, there's some stuff for converting between fractions and their
-//  continued fraction representation - maybe drag that over. 
+// -In the Prototypes section, there's some stuff for converting between fractions and their
+//  continued fraction representation - maybe drag that in. 
 // -intAndFracPart via div and mod. r = n/d = i+f -> n = d*(i+f)
+// -Maybe try to instantiate it for T = rsPolynomial. If that works at all, compare results to
+//  rsRationalFunction...maybe that can even be rendered obsolete? ...but i don't think so, if only 
+//  for efficiency reasons.
 //
 // Notes:
-// -maybe it's sometimes convenient to keep it in unreduced form - it may be easier to spot 
+// -Maybe it's sometimes convenient to keep fractions in unreduced form. It may be easier to spot 
 //  patterns in sequences of unreduced rational numbers that come from some computation
-// -but this will be relevant only for research code, not production code
-// -maybe we could introduce a compile-time switch (maybe a boolen template parameter) that 
-//  controls if we canonicalize or not
-// -enforced canonical representation is important for the == operator to work properly...maybe it 
-//  should be implemented in a way that admits non-canonical representations? 
-//  a/b == c/d  <->  a*d == b*c
+//  -but this will be relevant only for research code, not production code
+//  -maybe we could introduce a compile-time switch (maybe a boolen template parameter) that 
+//   controls if we canonicalize or not
+//  -enforced canonical representation is important for the == operator to work properly...maybe it 
+//   should be implemented in a way that admits non-canonical representations? 
+//   a/b == c/d  <->  a*d == b*c
+//  -maybe we should have a sub- or baseclass rsUnreducedFraction
 
 #endif

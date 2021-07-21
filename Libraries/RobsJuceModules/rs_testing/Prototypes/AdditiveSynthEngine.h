@@ -26,28 +26,30 @@ protected:
 /** Abstract baseclass to define the common interface for all our different implementations of a 
 bank of sinusoidal oscillators with sweeping frequency and fading amplitude. */
 
+template<class T, int N>
 class rsSineSweeperBank
 {
 
 public:
 
+  //using CVec = const rsSimdVector<T, N>;
+
+  using Parameters = RAPT::rsSweepParameters<rsSimdVector<T, N>>;
 
   virtual void setMaxNumOscillators(int newLimit) = 0;
 
-  virtual void setNumOscillators(int newNumber) = 0;
+  virtual void setNumActiveGroups(int newNumber) = 0;
 
-  virtual void init(int index, float t0, float t1, float w0, float w1, float a0, float a1, 
-    float p0, float p1, float r0, float r1) = 0;
+  virtual void setup(int simdGroupIndex, const Parameters& params) = 0;
 
-
-  virtual void processFrame(float* left, float* right) = 0; 
+  virtual void processFrame(float* left, float* right) = 0;
+  // maybe have a double variant, too
 
   virtual void reset() = 0;
 
-
-
-
 };
+// i think this needs a template parameter N for th simd-size, then init should take simd-vector
+// parameters and the "index" parameter can go away
 
 //=================================================================================================
 
@@ -57,7 +59,7 @@ directly either exactly or by various polynomial approximations delivering diffe
 fidelity and eating different amounts of CPU time ...tbc... */
 
 template<class T, int N>
-class rsSineSweeperBankDirect : public rsSineSweeperBank
+class rsSineSweeperBankDirect : public rsSineSweeperBank<T, N>
 {
 
 public:
@@ -75,15 +77,27 @@ groups that are processed in parallel. The template parameter T is the underlyin
 N is the size of the groups, i.e. the size of the simd vectors. ...tbc... */
 
 template<class T, int N>
-class rsSineSweeperBankIterative : public rsSineSweeperBank
+class rsSineSweeperBankIterative : public rsSineSweeperBank<T, N>
 {
 
 public:
 
+  using Parameters = RAPT::rsSweepParameters<rsSimdVector<T, N>>;
+
   void setMaxNumOscillators(int newLimit) override;
-  void setNumOscillators(int newNumber) override;
-  void init(int index, float t0, float t1, float w0, float w1, float a0, float a1, 
-    float p0, float p1, float r0, float r1) override;
+
+
+  void setNumActiveGroups(int newNumber) override;
+
+  void setup(int i, const Parameters& p) override 
+  { 
+    //simdGroups[i].setup(p); 
+    // Does not yet compile due to rsExp not accepting a complex simd vector. It's generally 
+    // problematic to use std::complex<T> with T being a simd-type
+  }
+
+
+
   void processFrame(float* left, float* right) override;
   void reset() override;
 
@@ -124,6 +138,13 @@ public:
   void fill(const T& value)
   {
     RAPT::rsArrayTools::fillWithValue(&data[0], (int) data.size(), value);
+  }
+
+  int getSize() const { return dim1 * dim2; }
+
+  void memsetAllZero()
+  {
+    memset(&data[0], 0, sizeof(T) * (size_t)getSize()); 
   }
 
 
@@ -245,7 +266,7 @@ public:
 
   void setPatch(PlayablePatch* newPatch) { patch = newPatch; }
 
-  void setSweeperBank(rsSineSweeperBank* newBank) { sweeperBank = newBank; }
+  void setSweeperBank(rsSineSweeperBank<float, N>* newBank) { sweeperBank = newBank; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
@@ -264,7 +285,7 @@ protected:
   void initSweepers(int startBreakpointIndex, int endBreakpointIndex, bool reInitAmpAndPhase);
 
 
-  rsSineSweeperBank* sweeperBank = nullptr;
+  rsSineSweeperBank<float, N>* sweeperBank = nullptr;
 
   PlayablePatch* patch = nullptr;
 
