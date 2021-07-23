@@ -259,23 +259,6 @@ class rsSineSweepIterator
 
 public:
 
-  /** Structure for the user parameters that determine the cubic polynomials for instantaneous 
-  phase and logarithm of instantaneous amplitude. There are always two values indexed by 0 or 1, 
-  standing for the start and the end of the synthesized sweep. */
-  //struct Parameters
-  //{
-  //  T t0, t1; /**< time stamps in samples */
-  //  T p0, p1; /**< unwrapped(!) phases in radians */
-  //  T w0, w1; /**< omega = 2*pi*frequency/sampleRate, derivative of the phase */
-  //  T l0, l1; /**< log(amplitude) */
-  //  T r0, r1; /**< "rise", derivative of log of amplitude with respect to t in samples */
-  //};
-  // maybe rename r0,r1 to f0,f1 for "fade"..but it's more ambiguous - could be confused with freq
-  // and it's not clear if it's fae-in or -out..or c0,c1 for crescendo
-  // maybe drag this struct out of the class and call it rsSineSweepParameters so it may be used
-  // by other implementation, too
-
-
   /** Sets up the initial state according to the user parameters. */
   void setup(const rsSweepParameters<T>& params);
 
@@ -287,7 +270,8 @@ public:
   required by the sinusoidal modeling framework and the real part is a corresponding cosine 
   quadrature component that you get for free due to the way the algorithm works. And it updates 
   the state for the next call. */
-  inline std::complex<T> getComplexValue() { return core.getValue(); }
+  //inline std::complex<T> getComplexValue() { return core.getValue(); }
+  inline rsComplex<T> getComplexValue() { return core.getValue(); }
 
   /** Convenience function to compute the sine only (and update the state). */
   inline T getSine()   { return getComplexValue().imag(); }
@@ -305,7 +289,7 @@ public:
   assignments). */
   inline void getSineAndCosine(T* sine, T* cosine)
   {
-    std::complex<T> w = getComplexValue();
+    rsComplex<T> w = getComplexValue();
     *cosine = w.real();
     *sine   = w.imag();
   }
@@ -313,8 +297,8 @@ public:
 
 protected:
 
-  rsExpPolyIterator<std::complex<T>, 3> core;
-  // todo: 
+  rsExpPolyIterator<rsComplex<T>, 3> core;
+  // ToDo: 
   // -implement and use a special optimized rsExpCubicIterator
 
 };

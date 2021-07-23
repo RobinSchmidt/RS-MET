@@ -62,7 +62,8 @@ void rsPolynomialIterator<T, N>::setup(const T* aIn, T h, T x0)
     {
       T bi = 0;
       for(int j = i; j <= N; j++)
-        bi += a[j] * pow(h, j-i) * T(rsBinomialCoefficient(j, j-i));
+        bi += a[j] * rsPow(h, j-i) * T(rsBinomialCoefficient(j, j-i));
+        //bi += a[j] * pow(h, j-i) * T(rsBinomialCoefficient(j, j-i));
       c[i] = bi - a[i];
     }
   };
@@ -110,9 +111,9 @@ void rsSineSweepIterator<T>::setup(const rsSweepParameters<T>& p)
   fitCubicWithDerivative(p.t0, p.t1, p.l0, p.l1, p.r0, p.r1, 
     &coeffsLogAmp[3], &coeffsLogAmp[2], &coeffsLogAmp[1], &coeffsLogAmp[0]);
 
-  std::complex<T> coeffs[4];
+  rsComplex<T> coeffs[4];
   for(int i = 0; i < 4; i++)
-    coeffs[i] = std::complex<T>(coeffsLogAmp[i], coeffsPhs[i]);
+    coeffs[i] = rsComplex<T>(coeffsLogAmp[i], coeffsPhs[i]);
 
   core.setup(coeffs, T(1), p.t0);
 

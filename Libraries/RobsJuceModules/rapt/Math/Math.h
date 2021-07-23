@@ -20,6 +20,7 @@ namespace RAPT
 #include "Types/Polynomial.h"
 #include "Types/RationalFunction.h"
 #include "Types/Fraction.h"
+#include "Types/Complex.h"
 
 #include "LinearAlgebra/LinearAlgebraNew.h"
 // the required order of the includes is a bit messy - maybe matrices, vectors, tensors, 

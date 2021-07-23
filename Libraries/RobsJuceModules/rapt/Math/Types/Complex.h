@@ -78,18 +78,19 @@ public:
 
 
 
-protected:
+//protected:
 
   T re, im; // Don't change order or add further fields! Some algorithms rely on the data layout.
 
 };
 
 template<class T> 
-inline rsComplex<T> rsInverse() 
+inline rsComplex<T> rsInverse(const rsComplex<T> &z) 
 { 
-  T s = T(1) / (re*re + im*im); 
-  return rsComplex(s*re, -s*im); 
+  T s = T(1) / (z.re*z.re + z.im*z.im); 
+  return rsComplex(s*z.re, -s*z.im); 
 }
+// maybe rename to rsInv
 
 template<class T>
 inline rsComplex<T> operator+(const rsComplex<T> &z, const rsComplex<T> &w)
@@ -169,13 +170,59 @@ inline rsComplex<T> operator/(const T &r, const rsComplex<T> &z)
   return rsComplex<T>(s*z.re, -s*z.im);
 }
 
+//=================================================================================================
+// Elementary math functions for complex numbers:
+
+template<class T>
+rsComplex<T> rsAbs(rsComplex<T> z)
+{
+  return rsSqrt(z.re*z.re + z.im*z.im); // try hypot, measure performance
+}
+
+template<class T>
+rsComplex<T> rsArg(rsComplex<T> z)
+{
+  return rsAtan2(z.im, z.re);
+}
+
+template<class T>
+rsComplex<T> rsExp(rsComplex<T> z)
+{
+  rsComplex<T> w;
+  T r = rsExp(z.re);             // compute radius of w
+  rsSinCos(z.im, &w.im, &w.re);  // set angle of w
+  w.re *= r; w.im *= r;          // set radius of w
+  return w;
+}
+// needs test
+
+template<class T>
+rsComplex<T> rsLog(rsComplex<T> z)
+{
+  rsComplex<T> tmp;
+  tmp.re = rsLog(rsAbs(z));
+  tmp.im = rsArg(z);
+  return tmp;
+}
+
+template<class T>
+rsComplex<T> rsPow(rsComplex<T> basis, rsComplex<T> exponent)
+{
+  return rsExp(exponent * rsLog((rsComplex<T>)basis));
+}
 
 
 // ToDo: 
-// -Impement rsAbs, rsArg, rsConj, rsExp
-// -Do unit tests comparing it with T = float or double to std::complex, but also instantiate it for
-//  int, rsFraction, rsSimdVector and check that it works
-
+// -Do tests comparing it with T = float or double to std::complex with regard to numerical 
+//  accuracy, handling of edge cases (inf, nan, etc.) and performance. Also instantiate it for int,
+//  rsFraction, rsSimdVector and check that it works. Try it also with a type that uses heap memory
+//  like rsMatrix.
+// -Implement rsConj, rsSin, rsCos, etc. and also a couple of special functions (elliptic, etc.)
+// -Switch rsEngineersFilter back to using rsComplex to facilitate vectorization...basically, 
+//  switch all uses of std::complex to rsComplex - while keeping an eye on the impact on numerical
+//  accuracy.
+// -Maybe allow implicit conversion to/from std::complex for convenience
+// -Maybe let the elementary functions take their arguments by const reference
 
 
 #endif

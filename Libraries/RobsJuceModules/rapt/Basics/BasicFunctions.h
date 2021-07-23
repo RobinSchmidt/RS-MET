@@ -82,6 +82,8 @@ template<class T> inline T rsRound(T x) { return std::round(x); }
 //template<class T> inline T rsTanh( T x) { return std::tanh( x); }
 // the hyperbolic functions are already defined elsewhere (and differently!)
 
+template<class T> inline T rsAtan2(T y, T x) { return std::atan2(y, x); }
+
 // todo: 
 // -sort them alphabetically, maybe use a shorthand #define for the common prefix
 //  template<class T> inline T
@@ -92,6 +94,7 @@ template<class T> inline T rsRound(T x) { return std::round(x); }
 //  https://en.cppreference.com/w/cpp/header/cmath
 //  https://en.cppreference.com/w/cpp/numeric/special_functions (C++17)
 // -wrap and use modf, where appropriate - maybe it optimizes the splitting into int/frac
+// -maybe take the arguments by const reference
 
 
 template<class T> inline int rsFloorInt(T x) { return (int) floor(x); }
