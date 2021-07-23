@@ -28,9 +28,13 @@ void rsSineSweeperBankIterative<T, N>::setNumActiveGroups(int newNumber)
 template<class T, int N>
 void rsSineSweeperBankIterative<T, N>::processFrame(float* left, float* right)
 {
-
-  int dummy = 0;
+  rsSimdVector<float, N> v(0.f);
+  for(size_t i = 0; i < simdGroups.size(); i++)
+    v += simdGroups[i].getSine();
+  *left = *right = v.sum();
 }
+//
+// https://rust-lang.github.io/packed_simd/perf-guide/vert-hor-ops.html
 
 template<class T, int N>
 void rsSineSweeperBankIterative<T, N>::reset()
@@ -157,25 +161,38 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
     int partialIndex = 0; // index of current partial within the patch
     int groupIndex   = 0; // index of current simd-group (to which the current partial belongs)
     int indexInGroup = 0; // index of current partial within the current simd group
-    while(partialIndex < numPartials)
+    //while(partialIndex < numPartials)
+    while(partialIndex < N*numSimdGroups)
     {
       int j = partialIndex;  // shorthand
-      const SineParams* spL = &(bpL->params[j]);
-      const SineParams* spR = &(bpR->params[j]);
 
-      // Convert parameters from user- to algo-units
-      pL = degToRad * spL->phase;
-      pR = degToRad * spR->phase;
-      wL = freqToOmega * spL->freq;
-      wR = freqToOmega * spR->freq;
-      aL = spL->gain;  // maybe use gL for "gain"
-      aR = spR->gain;
-      if(applyLog) {
-        aL = log(aL);
-        aR = log(aR); }
-      rL = (aR - aL) / dt; // verify this!
-      rR = rL;             // we currently only use a linear (log-)amp env with constant slope
 
+      if(j < numPartials)
+      {
+        const SineParams* spL = &(bpL->params[j]);
+        const SineParams* spR = &(bpR->params[j]);
+
+        // Convert parameters from user- to algo-units
+        pL = degToRad * spL->phase;
+        pR = degToRad * spR->phase;
+        wL = freqToOmega * spL->freq;
+        wR = freqToOmega * spR->freq;
+        aL = spL->gain;  // maybe use gL for "gain"
+        aR = spR->gain;
+        if(applyLog) {
+          aL = log(aL);
+          aR = log(aR);
+        }
+        rL = (aR - aL) / dt; // verify this!
+        rR = rL;             // we currently only use a linear (log-)amp env with constant slope
+      }
+      else
+      {
+        pL = pR = wL = wR = 0;  // phase and omega is 0
+        aL = aR = rL = rR = 0;  // log-amp and rise is 0
+        nL = 0;                 // left sample time is 0
+        nR = 1;                 // right sample time is taken to be 1 to avoid nans
+      }
 
       // Write the converted parameters into the appropriate positions in the simd vectors:
       j = indexInGroup;
@@ -190,14 +207,30 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
       // we have reahced the end of a simd group:
       partialIndex++;
       indexInGroup++;
-      if(indexInGroup == N || partialIndex == numPartials) {
+      //if(indexInGroup == N || partialIndex == numPartials) 
+      if(indexInGroup == N) 
+      {
         params(breakpointIndex, groupIndex) = p;
         groupIndex++;
-        indexInGroup = 0;  }
+        indexInGroup = 0;  
+      }
     }
+
+    /*
+    // Loops over the empty dummy partials:
+    while(partialIndex < N*numSimdGroups)
+    {
+      int j = partialIndex;  // shorthand
+
+    }
+    */
+
   }
 
-  // ToDo: 
+  // ToDo:
+  // -For those partials that do not have valid data, we need to use some dummy values other than 
+  //  zero because zero values will give rise to nans... i think, maybe it's p.t1 variable that is to 
+  //  blame - maybe just setting that to 1 could fix it?
   // -There's some redundancy in the computations: we may use the old converted pR,wR,aR,rR as
   //  pL,wL,aL,rL in the next iteration...oh - but no:...that would work only, if the inner loop
   //  would be over the breakpoints and the outer over the partials...but that may have a less 
@@ -272,10 +305,6 @@ void rsAdditiveSynthVoice<N>::initSweepers(int i0, int i1, bool reInitAmpAndPhas
   {
     GroupParams& p = patch->getParams(i0, j);
     sweeperBank->setup(j, p);
-
-    // there are inf and nan values!
-
-    int dummy = 0;
   }
 }
 

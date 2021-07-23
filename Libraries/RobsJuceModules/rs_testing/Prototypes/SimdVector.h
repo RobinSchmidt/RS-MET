@@ -111,7 +111,10 @@ public:
   must be equal.  */
   inline bool operator==(CV& b) const { return (lo() == b.lo()) && (hi() == b.hi()); }
 
-
+  T sum() const 
+  { 
+    return lo().sum() + hi().sum(); 
+  }
 
 
   V operator+(CV b) const { return V(lo()+b.lo(), hi()+b.hi()); }
@@ -355,6 +358,16 @@ public:
     // has no template yet...i think, the template needs to be variadic
 
 
+  float sum() const 
+  { 
+    float* a =  asArray();
+    return a[0] + a[1] + a[2] + a[3]; 
+  }
+  // may not be optimal, see
+  // https://www.kvraudio.com/forum/viewtopic.php?t=198503
+  // also interesting: if/else (branch with simd)
+  // https://community.vcvrack.com/t/condition-phase-wrapping-and-summing-with-simd/10476
+
 
   //// Arithmetic operators
   //V operator+(CV& w) const { return V(_mm_add_ps(v, w.v)); }
@@ -373,6 +386,11 @@ public:
   // STILL WRONG! just placeholders to satisfy the compiler
   //inline bool operator<(CV& b)  const { return false; }
   //inline bool operator==(CV& b) const { return false; }
+
+  // horizontal sum:
+
+
+
 
 
 
@@ -408,6 +426,9 @@ inline V operator-(const V a) { return V(0.f) - a; } // unary minus - can we do 
 // -> check out other simd libraries, how they pass arguments and check, if passing by value incurs
 // a performance hit (done - doesn't seem to make a difference), check all other operators, maybe 
 // switch to pass-by-value there, too
+
+
+
 
 #undef V
 #undef CV
@@ -539,6 +560,9 @@ inline std::complex<rsSimdVector<T, N>> rsExp(const std::complex<rsSimdVector<T,
 
 // Also interesting:
 // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1101r0.html Vector Length Agnostic SIMD
+
+// other simd library doc:
+// https://ti.uni-bielefeld.de/downloads/publications/templateSIMD.pdf
 
 
 // https://www.codeproject.com/Articles/874396/Crunching-Numbers-with-AVX-and-AVX
