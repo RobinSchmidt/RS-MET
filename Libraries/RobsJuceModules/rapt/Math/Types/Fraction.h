@@ -91,6 +91,7 @@ protected:
   void canonicalize() { reduce(); if(den < 0) { num = -num; den = -den; }  }
 
 
+
   T num, den;  // numerator and denominator (they are always kept canonical)
 
 };
@@ -128,7 +129,10 @@ rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
 // -Maybe try to instantiate it for T = rsPolynomial. If that works at all, compare results to
 //  rsRationalFunction...maybe that can even be rendered obsolete? ...but i don't think so, if only 
 //  for efficiency reasons.
-//
+// -Try to implement reduce and canonicalize in a branchless way to admit T to be a SIMD type. But 
+//  this requires a branchless implementation of rsGcd, or at least an implementation that runs the 
+//  while loop until it has finished for all components.
+
 // Notes:
 // -Maybe it's sometimes convenient to keep fractions in unreduced form. It may be easier to spot 
 //  patterns in sequences of unreduced rational numbers that come from some computation

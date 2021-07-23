@@ -132,7 +132,8 @@ ToDo:
    "The specializations std::complex<float>, std::complex<double>, and std::complex<long double> 
     are LiteralTypes for representing and manipulating complex numbers. The effect of instantiating 
     the template complex for any other type is unspecified." 
- Seems like std::complex is not as flexible i i'd like it to be.
+ Seems like std::complex is not as flexible i i'd like it to be. ...that applies also to 
+ rsComplexExponentialIterator
 
 -rsSineCosineIterator : public rsComplexExponentialIterator
 -rsExponentialIterator, rsLinearIterator, rsQuadraticIterator, rsCubicIterator, rsCubicExpIterator
