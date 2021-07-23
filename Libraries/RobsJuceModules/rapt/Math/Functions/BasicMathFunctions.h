@@ -309,8 +309,10 @@ inline T rsNextPowerOfTwo(T x)
 template<class T>
 inline void rsSinCos(T x, T* sinResult, T* cosResult)
 {
-  *sinResult = sin(x);
-  *cosResult = cos(x);
+  *sinResult = rsSin(x);
+  *cosResult = rsCos(x);
+  //*sinResult = sin(x);
+  //*cosResult = cos(x);
 }
 
 // explicit specialization for double:

@@ -90,7 +90,8 @@ inline rsComplex<T> rsInverse(const rsComplex<T> &z)
   T s = T(1) / (z.re*z.re + z.im*z.im); 
   return rsComplex(s*z.re, -s*z.im); 
 }
-// maybe rename to rsInv
+// maybe rename to rsInv, specify that rsInv should, by convention, always mean the left inverse for 
+// types for which it matters
 
 template<class T>
 inline rsComplex<T> operator+(const rsComplex<T> &z, const rsComplex<T> &w)
@@ -217,7 +218,8 @@ rsComplex<T> rsPow(rsComplex<T> basis, rsComplex<T> exponent)
 //  accuracy, handling of edge cases (inf, nan, etc.) and performance. Also instantiate it for int,
 //  rsFraction, rsSimdVector and check that it works. Try it also with a type that uses heap memory
 //  like rsMatrix.
-// -Implement rsConj, rsSin, rsCos, etc. and also a couple of special functions (elliptic, etc.)
+// -Implement rsConj, rsSin, rsCos, etc. and also a couple of special functions (elliptic, etc.). 
+//  But that requires them to be implemented in a branchless way.
 // -Switch rsEngineersFilter back to using rsComplex to facilitate vectorization...basically, 
 //  switch all uses of std::complex to rsComplex - while keeping an eye on the impact on numerical
 //  accuracy.

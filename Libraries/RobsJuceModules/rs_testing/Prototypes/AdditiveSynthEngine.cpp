@@ -12,20 +12,24 @@ template<class T, int N>
 void rsSineSweeperBankIterative<T, N>::setMaxNumOscillators(int newLimit)
 {
   int numSimdGroups = rsCeilMultiple(newLimit, N) / N;
-  simdGroups.resize(numSimdGroups);
+  // ToDo: rsCeilMultiple multiplies by N and here we divide by N again - that can be optimized.
+
+
+  simdGroups.reserve(numSimdGroups);
 }
 
 template<class T, int N>
-void rsSineSweeperBankIterative<T, N>::setNumActiveGroups(int newLimit)
+void rsSineSweeperBankIterative<T, N>::setNumActiveGroups(int newNumber)
 {
-
-  int dummy = 0;
+  rsAssert(newNumber <= (int) simdGroups.capacity());
+  simdGroups.resize(newNumber);
 }
 
 template<class T, int N>
 void rsSineSweeperBankIterative<T, N>::processFrame(float* left, float* right)
 {
 
+  int dummy = 0;
 }
 
 template<class T, int N>
@@ -208,8 +212,8 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
 template<int N>
 void rsAdditiveSynthVoice<N>::startPlaying()
 {
-  handleBreakpoint(0, true);
   playing = true;
+  handleBreakpoint(0, true);
 }
 
 template<int N>
@@ -256,35 +260,18 @@ void rsAdditiveSynthVoice<N>::reset()
 template<int N>
 void rsAdditiveSynthVoice<N>::initSweepers(int i0, int i1, bool reInitAmpAndPhase)
 {
-  //rsAssert(bpStart->params.size() == bpEnd->params.size());
-  // number of partials must remain the same during the playback...maybe lift that restriction 
-  // later
-
-  // ToDo: We actually need the breakpoint-data in simd-goups, too...so yeah, i think, we really
-  // need two vesrions of the patch class: one for editing and one for playback and a conversion 
-  // routine
-
-  /*
-  //RAPT::rsSineSweepIterator::Parameters tmpParams;
-
-  size_t numPartials = bpStart->params.size();  
-  rsAdditiveKeyPatch::SineParams paramsStart, paramsEnd;
-  for(size_t i = 0; i < numPartials; i++)
+  rsAssert(i0 >= 0 && i1 < patch->getNumBreakpoints());
+  rsAssert(i1 == i0+1); // maybe lift that restriction later to allow loops
+  using GroupParams = const RAPT::rsSweepParameters<rsSimdVector<float, N>>;
+  for(int j = 0; j < patch->getNumSimdGroups(); j++)
   {
-    paramsStart = bpStart->params[i];
-    paramsEnd   = bpEnd->params[i];
+    GroupParams& pL = patch->getParams(i0, j);
+    GroupParams& pR = patch->getParams(i1, j);
 
-    //tmpParams.t0 = 0.f;
-    //tmpPara
-
+    // values are still all zero
 
     int dummy = 0;
-
   }
-  */
-
-
-  int dummy = 0;
 }
 
 

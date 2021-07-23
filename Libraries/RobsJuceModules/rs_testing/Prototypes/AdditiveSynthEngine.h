@@ -42,6 +42,8 @@ public:
 
   virtual void setup(int simdGroupIndex, const Parameters& params) = 0;
 
+  virtual int getNumActiveGroups() const = 0;
+
   virtual void processFrame(float* left, float* right) = 0;
   // maybe have a double variant, too
 
@@ -89,12 +91,11 @@ public:
 
   void setNumActiveGroups(int newNumber) override;
 
-  void setup(int i, const Parameters& p) override 
-  { 
-    //simdGroups[i].setup(p); 
-    // Does not yet compile due to rsExp not accepting a complex simd vector. It's generally 
-    // problematic to use std::complex<T> with T being a simd-type
-  }
+  void setup(int i, const Parameters& p) override { simdGroups[i].setup(p); }
+
+
+  int getNumActiveGroups() const override { return (int) simdGroups.size(); }
+
 
 
 
@@ -150,6 +151,8 @@ public:
 
   /** Read and write access to elements with index pair i,j. */
   T& operator()(const int i, const int j) { return data[flatIndex(i, j)]; }
+
+  const T& operator()(const int i, const int j) const { return data[flatIndex(i, j)]; }
 
   /** Converts a pair of indices i,j to a flat array index. */
   int flatIndex(const int i, const int j) const
@@ -248,7 +251,15 @@ public:
 
     int getNumBreakpoints() const { return numBreakpoints; }
 
+    int getNumSimdGroups() const { return numSimdGroups; }
+
     int getBreakpointTime(int i) const { return timeStamps[i]; }
+
+    const RAPT::rsSweepParameters<rsSimdVector<float, N>>& getParams(int i, int j) const
+    {
+     
+      return params(i, j);
+    }
 
 
   protected:
