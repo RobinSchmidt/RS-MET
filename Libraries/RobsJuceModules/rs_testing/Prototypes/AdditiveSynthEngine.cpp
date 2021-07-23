@@ -122,7 +122,7 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
   numSimdGroups   = rsCeilMultiple(numPartials, N) / N;
   numBreakpoints  = patch.getNumBreakpoints();
   params.setShape(numBreakpoints, numSimdGroups);
-  params.memsetAllZero();
+  //params.memsetAllZero();  // superfluous
   timeStamps.resize(numBreakpoints);
 
   // Conversion factors:
@@ -136,6 +136,7 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
   // Temporaries:
   double tL, tR, nL, nR, pL, pR, wL, wR, aL, aR, rL, rR; // params for one partial
   rsSweepParameters<rsSimdVector<float, N>> p;           // params for one simd group
+  memset(&p, 0, sizeof(p));
 
   // Loop over the breakpoints:
   for(int breakpointIndex = 0; breakpointIndex < numBreakpoints-1; breakpointIndex++)
@@ -178,7 +179,8 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
 
       // Write the converted parameters into the appropriate positions in the simd vectors:
       j = indexInGroup;
-      p.t0[j] = float(0 ); p.t1[j] = float(dt); // or should we use tL,tR or nL,nR?
+      //p.t0[j] = float(0 ); p.t1[j] = float(dt); // or should we use tL,tR or nL,nR?
+      p.t0[j] = float(0 ); p.t1[j] = float(nR-nL);
       p.p0[j] = float(pL); p.p1[j] = float(pR);
       p.w0[j] = float(wL); p.w1[j] = float(wR);
       p.l0[j] = float(aL); p.l1[j] = float(aR);
@@ -188,7 +190,7 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
       // we have reahced the end of a simd group:
       partialIndex++;
       indexInGroup++;
-      if(indexInGroup == N) {
+      if(indexInGroup == N || partialIndex == numPartials) {
         params(breakpointIndex, groupIndex) = p;
         groupIndex++;
         indexInGroup = 0;  }
@@ -212,6 +214,9 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
 template<int N>
 void rsAdditiveSynthVoice<N>::startPlaying()
 {
+  if(sweeperBank == nullptr || patch == nullptr)
+    return;
+  sweeperBank->setNumActiveGroups(patch->getNumSimdGroups());
   playing = true;
   handleBreakpoint(0, true);
 }
@@ -265,10 +270,10 @@ void rsAdditiveSynthVoice<N>::initSweepers(int i0, int i1, bool reInitAmpAndPhas
   using GroupParams = const RAPT::rsSweepParameters<rsSimdVector<float, N>>;
   for(int j = 0; j < patch->getNumSimdGroups(); j++)
   {
-    GroupParams& pL = patch->getParams(i0, j);
-    GroupParams& pR = patch->getParams(i1, j);
+    GroupParams& p = patch->getParams(i0, j);
+    sweeperBank->setup(j, p);
 
-    // values are still all zero
+    // there are inf and nan values!
 
     int dummy = 0;
   }

@@ -2740,11 +2740,12 @@ void additiveEngine()
   // supposed to be owned by the additive synth engine, individual voices will get their bank to 
   // use assigned on noteOn):
   SweeperBank sweeperBank;
+  sweeperBank.setMaxNumOscillators(40);  // should give 3 groups of 16 that allow 48 partials
 
   // Create a voice, set it up with the patch and the sweeper bank and play:
   Voice voice;
-  voice.setPatch(&playPatch);
   voice.setSweeperBank(&sweeperBank);
+  voice.setPatch(&playPatch);
   voice.startPlaying();
   std::vector<float> xL(N), xR(N);
   for(int n = 0; n < N; n++)
@@ -2754,6 +2755,9 @@ void additiveEngine()
   rsPlotVectors(xL, xR);
 
   // ToDo:
+  // -the unused sweepers contain nan values. i think, it's because of using memset zero and then
+  //  taking the log?...or is there some division going on? hmm..it seems the real interpolation
+  //  coeffs already go nan, the scaler becomes inf in fitCubicWithDerivative
   // -Create a sinusoidal model for an exponential frequency sweep and let the engine synthesize it
 
   // hmmm...maybe we should decide in advance how many breakpoints and how many sines there are

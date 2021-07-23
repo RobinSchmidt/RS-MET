@@ -91,7 +91,10 @@ public:
 
   void setNumActiveGroups(int newNumber) override;
 
-  void setup(int i, const Parameters& p) override { simdGroups[i].setup(p); }
+  void setup(int i, const Parameters& p) override 
+  { 
+    simdGroups[i].setup(p); 
+  }
 
 
   int getNumActiveGroups() const override { return (int) simdGroups.size(); }
