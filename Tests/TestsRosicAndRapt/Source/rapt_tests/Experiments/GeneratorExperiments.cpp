@@ -2715,8 +2715,9 @@ void additiveEngine()
 
   static const int simdSize = 16; // For other sizes, we will need more template instantiations
 
-  int N = 2000;   // number of samples
-  double sampleRate = 44100;
+  int N = 5000;   // number of samples
+  //double sampleRate = 44100;
+  double sampleRate = 10000;
 
   using SweeperBank = rsSineSweeperBankIterative<float, simdSize>;
   using Voice       = rsAdditiveSynthVoice<simdSize>;
@@ -2727,11 +2728,11 @@ void additiveEngine()
   // Create a patch with a single partial representing sine that sweeps around 
   Patch patch;
   BP bp0, bp1, bp2, bp3, bp4;
-  bp0.time = 0.0; bp0.addSine(SP(1000.0, 0.400)); patch.addBreakpoint(bp0);
-  bp1.time = 0.1; bp1.addSine(SP(2000.0, 0.200)); patch.addBreakpoint(bp1);
-  bp2.time = 0.2; bp2.addSine(SP( 500.0, 0.500)); patch.addBreakpoint(bp2);
+  bp0.time = 0.0; bp0.addSine(SP( 100.0, 0.400)); patch.addBreakpoint(bp0);
+  bp1.time = 0.1; bp1.addSine(SP( 100.0, 0.200)); patch.addBreakpoint(bp1);
+  bp2.time = 0.2; bp2.addSine(SP( 100.0, 0.500)); patch.addBreakpoint(bp2);
   bp3.time = 0.3; bp3.addSine(SP( 100.0, 0.200)); patch.addBreakpoint(bp3);
-  bp4.time = 0.4; bp4.addSine(SP(   0.0, 0.001)); patch.addBreakpoint(bp4); // almost zero
+  bp4.time = 0.4; bp4.addSine(SP( 100.0, 0.010)); patch.addBreakpoint(bp4); // almost zero
   Voice::PlayablePatch playPatch;
   playPatch.setupFrom(patch, sampleRate, true);
   // patch.convertUserToAlgoUnits(sampleRate, true); // obsolete
@@ -2747,17 +2748,18 @@ void additiveEngine()
   voice.setSweeperBank(&sweeperBank);
   voice.setPatch(&playPatch);
   voice.startPlaying();
-  std::vector<float> xL(N), xR(N);
+  std::vector<float> t(N), xL(N), xR(N);
+  t = RAPT::rsRangeLinear(0.f, float((N-1)/sampleRate), N);
   for(int n = 0; n < N; n++)
     voice.processFrame(&xL[n], &xR[n]);
 
+
+
   // plot the output:
-  rsPlotVectors(xL, xR);
+  rsPlotVectorsXY(t, xL, xR);
 
   // ToDo:
-  // -the unused sweepers contain nan values. i think, it's because of using memset zero and then
-  //  taking the log?...or is there some division going on? hmm..it seems the real interpolation
-  //  coeffs already go nan, the scaler becomes inf in fitCubicWithDerivative
+  // -we need to unwrap the phase!
   // -Create a sinusoidal model for an exponential frequency sweep and let the engine synthesize it
 
   // hmmm...maybe we should decide in advance how many breakpoints and how many sines there are
