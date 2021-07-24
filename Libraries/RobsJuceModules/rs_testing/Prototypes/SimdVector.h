@@ -204,11 +204,11 @@ TIV rsTanh(V x) { return V(rsTanh(x.lo()), rsTanh(x.hi())); }
 // reduce boilerplate. the 1 is for "unary"
 
 // Binary functions:
-// min, max, pow, atan2, fmod, hypot, logN ...
+TIV rsAtan2(V y, V x) { return V( rsAtan2(y.lo(), x.lo()), rsAtan2(y.hi(), x.hi()) ); }
+// todo: min, max, pow, fmod, hypot, logN ...
 
 // Ternary functions:
 TIV rsClip(V x, V a, V b) { return V(rsClip(x.lo(),a.lo(),b.lo()), rsClip(x.hi(),a.hi(),b.hi())); }
-
 // todo: lerp
 
 #undef V
@@ -299,6 +299,9 @@ TIV rsTan(  V x) { return V(rsTan(  x.v[0])); }
 TIV rsCosh(  V x) { return V(rsCosh(  x.v[0])); }
 TIV rsSinh(  V x) { return V(rsSinh(  x.v[0])); }
 TIV rsTanh(  V x) { return V(rsTanh(  x.v[0])); }
+
+// Binary functions:
+TIV rsAtan2(V y, V x) { return V(rsAtan2(y.v[0], x.v[0])); }
 
 // Ternary functions:
 TIV rsClip(V x, V a, V b) { return V(rsClip(x.v[0], a.v[0], b.v[0])); }

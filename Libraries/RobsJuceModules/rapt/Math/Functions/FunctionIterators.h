@@ -181,6 +181,8 @@ public:
     return r;
   }
 
+  inline T peekState(int i) const { return y[i]; }
+
 
 protected:
 
@@ -263,8 +265,16 @@ public:
   void setup(const rsSweepParameters<T>& params);
 
   // todo:
-  //inline T getPhase()     const { return std::arg(core.y[N]); }
-  //inline T getAmplitude() const { return std::abs(core.y[N]); }
+  inline T getPhase()     const 
+  { 
+    return rsArg(core.peekState(3)); 
+  }
+
+
+  inline T getAmplitude() const 
+  { 
+    return rsAbs(core.peekState(3)); 
+  }
 
   /** Computes a complex output value within which the imaginary part is the actual sine wave as 
   required by the sinusoidal modeling framework and the real part is a corresponding cosine 

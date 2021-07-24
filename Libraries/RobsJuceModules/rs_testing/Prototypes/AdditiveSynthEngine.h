@@ -44,6 +44,13 @@ public:
 
   virtual int getNumActiveGroups() const = 0;
 
+  /** Should return instantaneous phase. */
+  virtual rsSimdVector<T, N> getPhase(int groupIndex) const = 0;
+
+  /** Should return instantaneous amplitude. */
+  virtual rsSimdVector<T, N> getAmplitude(int groupIndex) const = 0;
+
+
   virtual void processFrame(float* left, float* right) = 0;
   // maybe have a double variant, too
 
@@ -99,7 +106,11 @@ public:
 
   int getNumActiveGroups() const override { return (int) simdGroups.size(); }
 
+  virtual rsSimdVector<T, N> getPhase(int i) const override
+  { return simdGroups[i].getPhase(); }
 
+  virtual rsSimdVector<T, N> getAmplitude(int i) const override
+  { return simdGroups[i].getAmplitude(); }
 
 
   void processFrame(float* left, float* right) override;
@@ -204,6 +215,7 @@ public:
       double freq  = 0;  // in Hz (user), as omega = 2*pi*fs/fs (algo)
       double gain  = 0;  // as raw factor (user, direct algos), log of factor (iterative algos)
       double phase = 0;  // in degrees (user), radians (algo), some algos may ignore it
+      // double fade = 0; // derivative of gain
     };
 
     struct Breakpoint  // maybe mae it a class
@@ -218,8 +230,11 @@ public:
 
     void clear() { breakpoints.clear(); }
 
+    /** Fills the phase values of all breakpoints with artificial values obtained from integrating 
+    the instantaneous frequency. */
+    void createArtificialPhases();
 
-    void convertUserToAlgoUnits(float sampleRate, bool logAmplitude);
+    //void convertUserToAlgoUnits(float sampleRate, bool logAmplitude);
     // seems superfluous now - we should directly convert into a PlayablePatch
 
 
@@ -232,6 +247,8 @@ public:
     // -all breakpoints must have the same number of partials
 
     const Breakpoint* getBreakpoint(int i) const { return &breakpoints[i]; }
+
+    Breakpoint* getBreakpoint(int i) { return &breakpoints[i]; }
 
   protected:
 
@@ -281,6 +298,19 @@ public:
   void setPatch(PlayablePatch* newPatch) { patch = newPatch; }
 
   void setSweeperBank(rsSineSweeperBank<float, N>* newBank) { sweeperBank = newBank; }
+
+  /** Selects whether the self-correction of instantaneous amplitude and phase to counteract 
+  numerical drift should be smooth (default) or not. The non-smooth way is mostly for testing and 
+  development. In a real world application, there's probably no good reason to not want it to be 
+  smooth. */
+  void setSmoothCorrection(bool smooth) { alwaysReInit = !smooth; }
+
+  // void setPhaseless(bool); 
+  // todo: 
+  // -Implement phaseless synthesis 
+  //  -is cheaper (needs only a quadratic polynomial iterator)
+  //  -phase can't be controlled directly - it just is what it is
+  //  -amplitude correction may be more complicated, we'll see
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing

@@ -2713,12 +2713,22 @@ void additiveEngine()
 {
   // under construction
 
-  static const int simdSize = 16; // For other sizes, we will need more template instantiations
+  // We test the additive synthesis engine by syntesizing a signal with sawtooth-like harmonics,
+  // but the whole signal features frequency sweeps and amplitude fades.
 
-  int N = 5000;   // number of samples
-  //double sampleRate = 44100;
-  double sampleRate = 10000;
 
+
+  static const int simdSize = 16; 
+  // For other sizes, we will need more template instantiations. Maybe make this a (template) 
+  // parameter for this function...
+
+  // User parameters:
+  int    numPartials = 20;     // number of harmonics ..not yet used
+  double sampleRate  = 44100;  // use 4410 for plot, 44100 for wavefile write
+  double length      = 0.6;    // signal length in seconds
+
+
+  // For convenience:
   using SweeperBank = rsSineSweeperBankIterative<float, simdSize>;
   using Voice       = rsAdditiveSynthVoice<simdSize>;
   using Patch       = Voice::EditablePatch;
@@ -2727,15 +2737,19 @@ void additiveEngine()
 
   // Create a patch with a single partial representing sine that sweeps around 
   Patch patch;
-  BP bp0, bp1, bp2, bp3, bp4;
-  bp0.time = 0.0; bp0.addSine(SP( 100.0, 0.400)); patch.addBreakpoint(bp0);
-  bp1.time = 0.1; bp1.addSine(SP( 100.0, 0.200)); patch.addBreakpoint(bp1);
-  bp2.time = 0.2; bp2.addSine(SP( 100.0, 0.500)); patch.addBreakpoint(bp2);
-  bp3.time = 0.3; bp3.addSine(SP( 100.0, 0.200)); patch.addBreakpoint(bp3);
-  bp4.time = 0.4; bp4.addSine(SP( 100.0, 0.010)); patch.addBreakpoint(bp4); // almost zero
+  BP bp0, bp1, bp2, bp3, bp4, bp5;
+  bp0.time = 0.0; bp0.addSine(SP( 119.0, 0.400)); patch.addBreakpoint(bp0);
+  bp1.time = 0.1; bp1.addSine(SP( 503.0, 0.200)); patch.addBreakpoint(bp1);
+  bp2.time = 0.2; bp2.addSine(SP( 101.0, 0.500)); patch.addBreakpoint(bp2);
+  bp3.time = 0.3; bp3.addSine(SP(  37.0, 0.200)); patch.addBreakpoint(bp3);
+  //bp4.time = 0.4; bp4.addSine(SP( 400.0, 0.100)); patch.addBreakpoint(bp4);
+  bp4.time = 0.4; bp4.addSine(SP( 20.0, 0.100)); patch.addBreakpoint(bp4);
+  bp5.time = 0.5; bp5.addSine(SP( 20.0, 0.010)); patch.addBreakpoint(bp5);
+  patch.createArtificialPhases();
+
+  // Convert the patch into playable form:
   Voice::PlayablePatch playPatch;
   playPatch.setupFrom(patch, sampleRate, true);
-  // patch.convertUserToAlgoUnits(sampleRate, true); // obsolete
 
   // Create a sweeper bank object to be used by the voice (the pool of such sweeper-banks is later
   // supposed to be owned by the additive synth engine, individual voices will get their bank to 
@@ -2748,6 +2762,7 @@ void additiveEngine()
   voice.setSweeperBank(&sweeperBank);
   voice.setPatch(&playPatch);
   voice.startPlaying();
+  int N = (int) (length * sampleRate);  // signal length in samples
   std::vector<float> t(N), xL(N), xR(N);
   t = RAPT::rsRangeLinear(0.f, float((N-1)/sampleRate), N);
   for(int n = 0; n < N; n++)
@@ -2756,11 +2771,48 @@ void additiveEngine()
 
 
   // plot the output:
-  rsPlotVectorsXY(t, xL, xR);
+  //rsPlotVectorsXY(t, xL, xR);
+
+  rosic::writeToMonoWaveFile("Additive.wav", &xL[0], N, sampleRate);
+
+  // Observations:
+  // -After the last breakpoint, the output just keeps doing what it was doing before with regard 
+  //  to decaying and sweeping. That's actually a desirable behavior. We can precompute, how long 
+  //  it will take to decay away and set up a counter to kijj the voice when the last breakpoint is 
+  //  reached. But maybe we should set another breakpoint with the same freq behind it to avoid 
+  //  certain decay-sweep artifacts
+  // -at 44100, we see a discontinuity at 0.3s. Maybe that's due to phase and/or amplitude drift? 
+  //  We don't see it at 4410. But it's weird, i tried various different sampleRates like
+  //  16000,32000, and it doesn't show up ..well, at 22050 there's a very small discontinuity. At 
+  //  88200, another jump occurs at t=0.1. It looks like it's mor an amplitude jump rather than a 
+  //  phase jump. At 176000, it goes totally crazy.
+
+  // Conclusions
+  // -At fs=44100, a datapoint density of 10 per second seems to be sufficient to keep numeric 
+  //  error accumulation under control. That's one datapoint per couple-of-thousands of samples.
+  // -Higher sample rates are problematic, so in practice, we should probably run it at a fixed
+  //  sample-rate of 44100 (or 48000) and resample on the fly, if the user runs the synth at
+  //  88.2 or 96 or even higher sample rates. That will also save CPU. OR: introduce more 
+  //  intermediate datapoints at higher sample rates.
 
   // ToDo:
-  // -we need to unwrap the phase!
+  // -add more harmonics, maybe 20 or 25 with amplitudes falling off as 1/n like in a sawtooth
+  // -compute and use target phases from integrating the w
+  // -if we accidentally set the same breakpoint twice, ge get a crash in playback - fix it
+  // -in rsAdditiveSynthVoice<N>::initSweepers, we also need to take into account reInitAmpAndPhase
+  //  if false, we must figure out the current instantaneous phase/amp of the osc and use that (maybe
+  //  we need one extra call to getSine before inquiring the values because we actually want the 
+  //  values at the next call to processFrame)
+  // -Implement a different sweeper based on actually evaluating the sine and use that as 
+  //  reference. ..hmm..or create a reference signal by some other means
   // -Create a sinusoidal model for an exponential frequency sweep and let the engine synthesize it
+
+  // Ideas:
+  // -If it turns out that the computations in sweeperBank->setup are too costly, maybe we can
+  //  precompute the y-state of the sweepers. ..But we need a simple formula to convert these state
+  //  variables when we want to get a different frequency. In y(t) = exp(a0 + a1*t + a2*t^2 ...)
+  //  we would need to multiply the polynomial coeffs by the freq-ratio between target freq and
+  //  currently set freq? ->  derive the formula
 
   // hmmm...maybe we should decide in advance how many breakpoints and how many sines there are
   // and pre-allocate a continuous chunk of memory to hold all the data...but maybe we should have

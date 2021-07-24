@@ -52,7 +52,6 @@ public:
     im    = re*z.im + im*z.re; 
     re = tmp; return *this; 
   }
-  // needs test
 
   rsComplex& operator/=(const rsComplex &z)
   {
@@ -61,6 +60,7 @@ public:
     T i = s * (im*z.re - re*z.im);
     re = r; im = i; return *this;
   }
+  // needs test
 
   rsComplex& operator+=(const T &r) { re += r; return *this; }
   rsComplex& operator-=(const T &r) { re -= r; return *this; }
@@ -175,13 +175,17 @@ inline rsComplex<T> operator/(const T &r, const rsComplex<T> &z)
 // Elementary math functions for complex numbers:
 
 template<class T>
-rsComplex<T> rsAbs(rsComplex<T> z)
+//rsComplex<T> rsAbs(rsComplex<T> z)
+T rsAbs(rsComplex<T> z)
 {
-  return rsSqrt(z.re*z.re + z.im*z.im); // try hypot, measure performance
+  return rsSqrt(z.re*z.re + z.im*z.im); 
+  // try hypot, measure performance...but first make sure that hypot doesn't branch, if it does,
+  // maybe try to implement a branchless rsHypot
 }
 
 template<class T>
-rsComplex<T> rsArg(rsComplex<T> z)
+//rsComplex<T> rsArg(rsComplex<T> z)
+T rsArg(rsComplex<T> z)
 {
   return rsAtan2(z.im, z.re);
 }
@@ -195,7 +199,6 @@ rsComplex<T> rsExp(rsComplex<T> z)
   w.re *= r; w.im *= r;          // set radius of w
   return w;
 }
-// needs test
 
 template<class T>
 rsComplex<T> rsLog(rsComplex<T> z)

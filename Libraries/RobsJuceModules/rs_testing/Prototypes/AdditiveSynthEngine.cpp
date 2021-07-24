@@ -44,6 +44,7 @@ void rsSineSweeperBankIterative<T, N>::reset()
 
 //=================================================================================================
 
+/*
 template<int N>
 void rsAdditiveSynthVoice<N>::EditablePatch::convertUserToAlgoUnits(
   float sampleRate, bool logAmplitude)
@@ -63,7 +64,32 @@ void rsAdditiveSynthVoice<N>::EditablePatch::convertUserToAlgoUnits(
     }
   }
 }
+*/
 // superfluous - directly use PlayablePatch::setupFrom
+
+template<int N>
+void rsAdditiveSynthVoice<N>::EditablePatch::createArtificialPhases()
+{ 
+  for(int i = 1; i < getNumBreakpoints(); i++)
+  {
+    Breakpoint* bpL = getBreakpoint(i-1);
+    Breakpoint* bpR = getBreakpoint(i);
+    double dt = bpR->time - bpL->time;
+    for(int j = 0; j < bpL->getNumPartials(); j++)
+    {
+      SineParams* spL = &(bpL->params[j]);
+      SineParams* spR = &(bpR->params[j]);
+      double fM  = 0.5 * (spL->freq + spR->freq);        // mean frequency
+      double wM  = fM * 360;                             // omega in degrees per second
+      double pT  = spL->phase + wM * dt;                 // target phase
+      spR->phase = rsWrapToInterval(pT, -180.0, +180.0); // wrapped into -180..+180
+      int dummy = 0;
+    }
+  }
+}
+// needs tests...
+
+// todo: implement a function that generates amplitude derivatives to make the amp-env smoother
 
 
 template<int N>
@@ -121,6 +147,9 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
 {
   rsAssert(patch.isWellFormed());
 
+  //bool usePhase = true;  
+  // make parameter...or maybe remove - artificial phase should be created by the EditablePatch
+
   // Memory (re-)allocation:
   int numPartials = patch.getNumPartials();
   numSimdGroups   = rsCeilMultiple(numPartials, N) / N;
@@ -154,7 +183,8 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
     nL = round(tL);
     nR = round(tR);
     timeStamps[i] = (int)nL;
-    double dt = tR - tL;  
+    double dt = tR - tL;
+    double dn = nR - nL;
     // Or should it be nR-nL? That may also have to depend on how we handle phase correction etc.
 
     // Loop over the partials in current breakpoint:
@@ -177,13 +207,32 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
         pR = degToRad * spR->phase;
         wL = freqToOmega * spL->freq;
         wR = freqToOmega * spR->freq;
+
+        // unwrap phase (factor out):
+        double wm  = 0.5 * (wL + wR);     // mean omega during segment
+
+        double tmp = pL + (nR-nL-1)*wm;   // unwrapped end phase should be near this value
+                                          // is the -1 correct?
+        pR = rsConsistentUnwrappedValue(tmp, pR, 0.0, 2.0*PI);
+
+        // nope:
+        //if(usePhase)
+        //  pR = rsConsistentUnwrappedValue(tmp, pR, 0.0, 2.0*PI);
+        //else
+        //{
+        //  pR = tmp;
+        //  // i think, this is still wrong - we also need to use the old pR for pL
+        //}
+
+
         aL = spL->gain;  // maybe use gL for "gain"
         aR = spR->gain;
         if(applyLog) {
           aL = log(aL);
           aR = log(aR);
         }
-        rL = (aR - aL) / dt; // verify this!
+        rL = (aR - aL) / dt; // verify this! i think, we need dn?
+        //rL = (aR - aL) / dn; // test ..doesn't seem to make a difference
         rR = rL;             // we currently only use a linear (log-)amp env with constant slope
       }
       else
@@ -196,7 +245,6 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
 
       // Write the converted parameters into the appropriate positions in the simd vectors:
       j = indexInGroup;
-      //p.t0[j] = float(0 ); p.t1[j] = float(dt); // or should we use tL,tR or nL,nR?
       p.t0[j] = float(0 ); p.t1[j] = float(nR-nL);
       p.p0[j] = float(pL); p.p1[j] = float(pR);
       p.w0[j] = float(wL); p.w1[j] = float(wR);
@@ -207,7 +255,6 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
       // we have reahced the end of a simd group:
       partialIndex++;
       indexInGroup++;
-      //if(indexInGroup == N || partialIndex == numPartials) 
       if(indexInGroup == N) 
       {
         params(breakpointIndex, groupIndex) = p;
@@ -216,14 +263,6 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
       }
     }
 
-    /*
-    // Loops over the empty dummy partials:
-    while(partialIndex < N*numSimdGroups)
-    {
-      int j = partialIndex;  // shorthand
-
-    }
-    */
 
   }
 
@@ -300,18 +339,54 @@ void rsAdditiveSynthVoice<N>::initSweepers(int i0, int i1, bool reInitAmpAndPhas
 {
   rsAssert(i0 >= 0 && i1 < patch->getNumBreakpoints());
   rsAssert(i1 == i0+1); // maybe lift that restriction later to allow loops
-  using GroupParams = const RAPT::rsSweepParameters<rsSimdVector<float, N>>;
-  for(int j = 0; j < patch->getNumSimdGroups(); j++)
+
+  using SimdVector  = rsSimdVector<float, N>;
+  using GroupParams = RAPT::rsSweepParameters<SimdVector>;
+
+
+  if(reInitAmpAndPhase)
   {
-    GroupParams& p = patch->getParams(i0, j);
-    sweeperBank->setup(j, p);
+    for(int j = 0; j < patch->getNumSimdGroups(); j++)
+      sweeperBank->setup(j, patch->getParams(i0, j));
+  }
+  else
+  {
+    // We need to compute one sample more to put the bank into the desired state to retrieve the 
+    // instantaneous phase and amplitude (or do we? figure out by using very dense datapoints):
+    float fDummy; sweeperBank->processFrame(&fDummy, &fDummy);
+
+    for(int j = 0; j < patch->getNumSimdGroups(); j++)
+    {
+      GroupParams p = patch->getParams(i0, j);
+
+      SimdVector p0, l0, dl, dt, r0;
+      p0 = sweeperBank->getPhase(j);
+      l0 = rsLog(sweeperBank->getAmplitude(j));
+
+      // for test/debug:
+      SimdVector phaseErr, lgAmpErr;
+      phaseErr = p0 - p.p0;
+      lgAmpErr = l0 - p.l0;
+
+      // Modify p.p0, p.l0, p.r0, (p.r1):
+      p.p0 = p0;
+      p.l0 = l0;
+      dl   = p.l1 - p.l0;
+      dt   = p.t1 - p.t0;
+      r0   = dl / dt;
+      p.r0 = r0;
+
+
+
+
+
+      sweeperBank->setup(j, p);
+    }
   }
 }
 
 
 /*
-
-ToDo: make rsExp work when T = std::complex<rsSimdVector<float,N>>
 
 Ideas:
 
