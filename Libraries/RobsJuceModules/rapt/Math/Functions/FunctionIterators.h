@@ -228,22 +228,16 @@ public:
 phase and logarithm of instantaneous amplitude for the rsSineSweepIterator. There are always two 
 values indexed by 0 or 1, standing for the start and the end of the synthesized sweep. It's not an
 internal class inside rsSineSweepIterator to facilitate other implementations of the sine-sweeper 
-that may use the same paramatrization. */
+that may use the same paramatrization but a different algorithm. */
 template<class T>
 struct rsSweepParameters  // maybe rename to rsCubicSweepParameters
 {
-  T t0, t1; /**< time stamps in samples */
-  T p0, p1; /**< unwrapped(!) phases in radians */
-  T w0, w1; /**< omega = 2*pi*frequency/sampleRate, derivative of the phase */
-  T l0, l1; /**< log(amplitude) */
-  T r0, r1; /**< "rise", derivative of log of amplitude with respect to t in samples */
+  T t0, t1; /**< time:  in samples */
+  T p0, p1; /**< phase: in radians, p1 must be unwrapped with respect to p0 */
+  T w0, w1; /**< omega: 2*pi*frequency/sampleRate, derivative of the phase */
+  T g0, g1; /**< gain:  amplitude or log(amplitude) depending on implementation */
+  T f0, f1; /**< fade:  derivative of gain with respect to t (t in samples) */
 };
-// -maybe rename r0,r1 to f0,f1 for "fade"..but it's more ambiguous - could be confused with freq
-//  and it's not clear if it's fade-in or -out..or c0,c1 for crescendo
-// -maybe rename l0,l1 to a0,a1 (for amplitude) or g0,g1 (for gain).. "gain" can mean either 
-//  amplitude or some logarithmic measure of it - which is intentional because indeed different
-//  implementation may interpret it differently
-
 
 /** Iteratively computes a sinusoidal frequency sweep using a cubic rsExpPolyIterator. That means,
 the instantaneous phase and the logarithm of the instantaneous amplitude are given by cubic 
@@ -261,20 +255,21 @@ class rsSineSweepIterator
 
 public:
 
-  /** Sets up the initial state according to the user parameters. */
+  /** Sets up the initial state according to the user parameters. Gain parameters g0,g1 are 
+  supposed to be the logarithms of the actual amplitudes. */
   void setup(const rsSweepParameters<T>& params);
 
   // todo:
-  inline T getPhase()     const 
-  { 
-    return rsArg(core.peekState(3)); 
-  }
 
+  inline T getPhase() const { return rsArg(core.peekState(3)); }
+  // rename to getLastPhase, implement also getNextPhase - i think, it can be computed by:
+  // rsArg(core.peekState(3) * core.peekState(2))
 
-  inline T getAmplitude() const 
-  { 
-    return rsAbs(core.peekState(3)); 
-  }
+  inline T getAmplitude() const { return rsAbs(core.peekState(3)); }
+  // rename to getLastAmplitude, implement also getNextAmplitude ..or getLast/NextGain..hmm maybe 
+  // not - amplitude is correct because it is indeed the raw amplitude
+
+  // maybe also implement getLast/NextOmega/Fade
 
   /** Computes a complex output value within which the imaginary part is the actual sine wave as 
   required by the sinusoidal modeling framework and the real part is a corresponding cosine 

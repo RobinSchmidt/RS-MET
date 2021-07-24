@@ -15,9 +15,15 @@ class rsSineSweepOsc
 
 public:
 
+  void setup(const RAPT::rsSweepParameters<T>& params);
+
+
 protected:
 
-  T pos;  // position in 0..1
+  T pos  = T(0);   // normalized position in 0..1
+  T inc  = T(0);   // phase increment per sample
+  T amp  = T(0);   // amplitude
+  T fade = T(0);   // amplitude increment per sample
 
 };
 
@@ -73,7 +79,16 @@ class rsSineSweeperBankDirect : public rsSineSweeperBank<T, N>
 
 public:
 
+  using Parameters = RAPT::rsSweepParameters<rsSimdVector<T, N>>;
+
+
+
+
 protected:
+
+  void setMaxNumGroups(int newNumber) { simdGroups.resize(newNumber); }
+  using SimdGroup = rsSineSweepOsc<rsSimdVector<T, N>>;
+  std::vector<SimdGroup> simdGroups;
 
 };
 
@@ -91,27 +106,16 @@ class rsSineSweeperBankIterative : public rsSineSweeperBank<T, N>
 
 public:
 
+  using SimdVec    = rsSimdVector<T, N>;
   using Parameters = RAPT::rsSweepParameters<rsSimdVector<T, N>>;
 
   void setMaxNumOscillators(int newLimit) override;
-
-
   void setNumActiveGroups(int newNumber) override;
-
-  void setup(int i, const Parameters& p) override 
-  { 
-    simdGroups[i].setup(p); 
-  }
-
+  void setup(int i, const Parameters& p) override  { simdGroups[i].setup(p);  }
 
   int getNumActiveGroups() const override { return (int) simdGroups.size(); }
-
-  virtual rsSimdVector<T, N> getPhase(int i) const override
-  { return simdGroups[i].getPhase(); }
-
-  virtual rsSimdVector<T, N> getAmplitude(int i) const override
-  { return simdGroups[i].getAmplitude(); }
-
+  SimdVec getPhase(int i) const override { return simdGroups[i].getPhase(); }
+  SimdVec getAmplitude(int i) const override { return simdGroups[i].getAmplitude(); }
 
   void processFrame(float* left, float* right) override;
   void reset() override;
@@ -119,12 +123,8 @@ public:
 
 protected:
 
-
-
   void setMaxNumGroups(int newNumber) { simdGroups.resize(newNumber); }
-
   using SimdGroup = rsSineSweepIterator<rsSimdVector<T, N>>;
-
   std::vector<SimdGroup> simdGroups;
 
 };
@@ -230,12 +230,19 @@ public:
 
     void clear() { breakpoints.clear(); }
 
-    /** Fills the phase values of all breakpoints with artificial values obtained from integrating 
-    the instantaneous frequency. */
+    /** Fills the phase values of all breakpoints with artificial data obtained from numerically 
+    integrating the instantaneous frequency data. A trapezoidal rule is used. */
     void createArtificialPhases();
 
-    //void convertUserToAlgoUnits(float sampleRate, bool logAmplitude);
-    // seems superfluous now - we should directly convert into a PlayablePatch
+    /** Fills the fade values of all breakpoints with artificial data obtained from numerically 
+    differentiating the instantaneous gain data. If smooth is true, we will ensure that the end 
+    value at a breakpoint n will match the start value at breakpoint n+1 and the values themselves
+    are computed by a central difference. If smooth is false, we will use a single fade value for a 
+    whole segment, i.e. a linear fade (in the log amplitude domain) applies to the whole segment. 
+    The value itself will be obtained by a difference between semgment's start and endpoints. The 
+    fade value used for the next semgent will not necessarily be the same, i.e. there may be jumps
+    in the gain derivative at the breakpoints. */
+    void createArtificialFades(bool smooth = true);
 
 
     int getNumBreakpoints() const { return (int) breakpoints.size(); }
@@ -299,32 +306,41 @@ public:
 
   void setSweeperBank(rsSineSweeperBank<float, N>* newBank) { sweeperBank = newBank; }
 
+  /** Controls the shape of the amp envelope between the breakpoints. If true, we will make the 
+  amp-derivative match at the breakpoints using a two-sided finite difference for the target 
+  values. If false, we'll a linear ramp in the log-amp domain between two breakpoints. */
+  void setSmoothAmpEnvelope(bool smooth) { smoothAmpEnv = smooth; }
+
   /** Selects whether the self-correction of instantaneous amplitude and phase to counteract 
-  numerical drift should be smooth (default) or not. The non-smooth way is mostly for testing and 
-  development. In a real world application, there's probably no good reason to not want it to be 
-  smooth. */
-  void setSmoothCorrection(bool smooth) { alwaysReInit = !smooth; }
+  numerical drift should be smooth (default) or not. In non-smooth mode, we just re-initialize the
+  start values for each segment with whatever the data at the breakpoint says the values should
+  be. In smooth mode instead, we measure the instantaneous values of phase and amplitudes and use 
+  these as start values for the segment, avoiding any discontinuity in cases when they have drifted 
+  away from what we have aimed for (according to the next breakpoint data). In non-smooth mode, the 
+  accumulated error for instantaneous phase and amplitude should look like a sort of sawtooth and 
+  in smooth mode it should look like a sort of wiggly saturation curve. The non-smooth way is 
+  mostly for testing and development. In a real world application, there's probably no good reason 
+  to not want it to be smooth. */
+  void setSmoothDeDrift(bool smooth) { alwaysReInit = !smooth; }
 
   // void setPhaseless(bool); 
-  // todo: 
-  // -Implement phaseless synthesis 
-  //  -is cheaper (needs only a quadratic polynomial iterator)
-  //  -phase can't be controlled directly - it just is what it is
-  //  -amplitude correction may be more complicated, we'll see
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing
 
+  /** Should be called once before repatedly calling processFrame to initialize everything for the 
+  playback. */
   void startPlaying();
 
-  void handleBreakpoint(int index, bool reInitAmpAndPhase); 
-  // move to protected
-
   void processFrame(float* left, float* right);
+  // maybe just return a float...rename to getSample. output is mono anyway
 
   void reset();
 
 protected:
+
+  void handleBreakpoint(int index, bool reInitAmpAndPhase); 
+  // maybe move to protected
 
   void initSweepers(int startBreakpointIndex, int endBreakpointIndex, bool reInitAmpAndPhase);
 
@@ -337,12 +353,19 @@ protected:
   int samplesToNextBreakpoint = 0;
   bool playing = false;
 
+
+
+  // Some parameters to control the interpolation between the datapoints:
+
+  bool smoothAmpEnv = true;
+
+
   bool alwaysReInit = false; 
-  // For experimentation. If true, we will re-initialize the instantaneous phase and amplitude at 
-  // each breakpoint to the value prescribed in the patch rather than starting from where the osc
-  // currently is. It's probably not desirable to ever set this to true as it will just introduce
-  // discontinuities in cases of severe numeric drift. If this turns out to be the case, this 
-  // field can be removed.
+  /**< For experimentation. If true, we will re-initialize the instantaneous phase and amplitude at 
+  each breakpoint to the value prescribed in the patch rather than starting from where the osc
+  currently is. It's probably not desirable to ever set this to true as it will just introduce
+  discontinuities in cases of severe numeric drift. If this turns out to be the case, this 
+  field can be removed. **/
 
 };
 

@@ -285,15 +285,15 @@ void recursiveCubicSineSweep()  // rename to recursiveCubicSineSweep
     // ToDo: this API sucks! change it, so we can just pass the pointer to coeffsPhs
 
   // Compute polynomial coeffs for log-amplitude:
-  T l0 = log(a0);
-  T l1 = log(a1);
-  T r0 = (l1 - l0) / T(N-1);
-  T r1 = r0;
-  //r1 *= 2.5;  // test
+  T g0 = log(a0);
+  T g1 = log(a1);
+  T r0 = (g1 - g0) / T(N-1);
+  T r1 = r0;    // "r" for "rise", "f" is already taken for frequency
+  //f1 *= 2.5;  // test
   r0 = 0.01; r1 = -r0;  // test for gaboret
   //r0 = 0.005; r1 = 0.0;  // test for gaboret
   T coeffsLogAmp[4];
-  fitCubicWithDerivative(T(0), T(N-1), l0, l1, r0, r1, 
+  fitCubicWithDerivative(T(0), T(N-1), g0, g1, r0, r1, 
     &coeffsLogAmp[3], &coeffsLogAmp[2], &coeffsLogAmp[1], &coeffsLogAmp[0]);
 
   // Compute ground truth for reference:
@@ -317,8 +317,8 @@ void recursiveCubicSineSweep()  // rename to recursiveCubicSineSweep
   p.t0 = T(0); p.t1 = T(N-1);
   p.p0 = p0;   p.p1 = p1;
   p.w0 = w0;   p.w1 = w1;
-  p.l0 = l0;   p.l1 = l1;
-  p.r0 = r0;   p.r1 = r1;
+  p.g0 = g0;   p.g1 = g1;
+  p.f0 = r0;   p.f1 = r1;
   sweeper.setup(p);
   Vec ys(N), yc(N);
   for(int n = 0; n < N; n++)

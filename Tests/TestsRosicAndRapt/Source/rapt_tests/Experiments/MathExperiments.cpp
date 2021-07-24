@@ -3658,7 +3658,7 @@ void expPolyIterator()
   // Compute x-axis and ground truth pt, yt for polynomial p(x) and for exp(p(x)):
   using Vec = std::vector<double>;
   Vec x(N), pt(N), yt(N);
-  Real p;
+  //Real p;
   for(int n = 0; n < N; n++)
   {
     x[n]  = x0 + n*h;

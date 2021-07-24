@@ -175,7 +175,7 @@ bool testSineIterator(double w, double p, double a)
 
 
   // Compute values and target values ans measure the maximum distance:
-  double p1, p2, a2;
+  double p1;// p2, a2;
   for(int n = 0; n < N; n++)
   {
     p1 = w*n + p;          // instantaneous target phase ..maybe we need to wrap it
@@ -203,7 +203,7 @@ bool testPolynomialIterator()
   int   N    = 500;            // number of iterations
   //float a[4] = { 7, 5, 3, 2 };  // polynomial coefficients
   //float a[4] = { 0.7, -0.5, 0.3, -0.1 };  // polynomial coefficients
-  float a[4] = { +0.7, -0.5, +0.3, -0.1 };  // polynomial coefficients
+  float a[4] = { +0.7f, -0.5f, +0.3f, -0.1f };  // polynomial coefficients
   //float a[4] = { 7, -5, 3, -2 };  // polynomial coefficients
   float h    =  0.01f;          // stepsize
   float x0   = -2.5f;           // initial value for x

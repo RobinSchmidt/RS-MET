@@ -44,29 +44,6 @@ void rsSineSweeperBankIterative<T, N>::reset()
 
 //=================================================================================================
 
-/*
-template<int N>
-void rsAdditiveSynthVoice<N>::EditablePatch::convertUserToAlgoUnits(
-  float sampleRate, bool logAmplitude)
-{
-  float freqToOmega = 2*PI/sampleRate;
-  for(size_t i = 0; i < breakpoints.size(); i++)
-  {
-    Breakpoint* bp = &breakpoints[i];
-    bp->time = round(sampleRate * bp->time);
-    for(size_t j = 0; j < bp->params.size(); j++)
-    {
-      SineParams* sp = &(bp->params[j]);
-      sp->freq *= freqToOmega;
-      sp->phase = RAPT::rsDegreeToRadiant(sp->phase);
-      if(logAmplitude)
-        sp->gain = log(sp->gain);
-    }
-  }
-}
-*/
-// superfluous - directly use PlayablePatch::setupFrom
-
 template<int N>
 void rsAdditiveSynthVoice<N>::EditablePatch::createArtificialPhases()
 { 
@@ -89,8 +66,11 @@ void rsAdditiveSynthVoice<N>::EditablePatch::createArtificialPhases()
 }
 // needs tests...
 
-// todo: implement a function that generates amplitude derivatives to make the amp-env smoother
-
+template<int N>
+void rsAdditiveSynthVoice<N>::EditablePatch::createArtificialFades(bool smooth)
+{
+  // ...something to do...
+}
 
 template<int N>
 bool rsAdditiveSynthVoice<N>::EditablePatch::isWellFormed() const
@@ -147,15 +127,11 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
 {
   rsAssert(patch.isWellFormed());
 
-  //bool usePhase = true;  
-  // make parameter...or maybe remove - artificial phase should be created by the EditablePatch
-
   // Memory (re-)allocation:
   int numPartials = patch.getNumPartials();
   numSimdGroups   = rsCeilMultiple(numPartials, N) / N;
   numBreakpoints  = patch.getNumBreakpoints();
   params.setShape(numBreakpoints, numSimdGroups);
-  //params.memsetAllZero();  // superfluous
   timeStamps.resize(numBreakpoints);
 
   // Conversion factors:
@@ -208,22 +184,11 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
         wL = freqToOmega * spL->freq;
         wR = freqToOmega * spR->freq;
 
-        // unwrap phase (factor out):
+        // unwrap phase (factor out into computeTargetPhase):
         double wm  = 0.5 * (wL + wR);     // mean omega during segment
-
         double tmp = pL + (nR-nL-1)*wm;   // unwrapped end phase should be near this value
                                           // is the -1 correct?
         pR = rsConsistentUnwrappedValue(tmp, pR, 0.0, 2.0*PI);
-
-        // nope:
-        //if(usePhase)
-        //  pR = rsConsistentUnwrappedValue(tmp, pR, 0.0, 2.0*PI);
-        //else
-        //{
-        //  pR = tmp;
-        //  // i think, this is still wrong - we also need to use the old pR for pL
-        //}
-
 
         aL = spL->gain;  // maybe use gL for "gain"
         aR = spR->gain;
@@ -231,9 +196,12 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
           aL = log(aL);
           aR = log(aR);
         }
+
+        // factor out into computeTargetFade:
         rL = (aR - aL) / dt; // verify this! i think, we need dn?
         //rL = (aR - aL) / dn; // test ..doesn't seem to make a difference
         rR = rL;             // we currently only use a linear (log-)amp env with constant slope
+
       }
       else
       {
@@ -248,8 +216,8 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
       p.t0[j] = float(0 ); p.t1[j] = float(nR-nL);
       p.p0[j] = float(pL); p.p1[j] = float(pR);
       p.w0[j] = float(wL); p.w1[j] = float(wR);
-      p.l0[j] = float(aL); p.l1[j] = float(aR);
-      p.r0[j] = float(rL); p.r1[j] = float(rR);
+      p.g0[j] = float(aL); p.g1[j] = float(aR);
+      p.f0[j] = float(rL); p.f1[j] = float(rR);
 
       // Do loop variable increments and and handle assignment of simd-vector and wraparound, if 
       // we have reahced the end of a simd group:
@@ -338,11 +306,17 @@ template<int N>
 void rsAdditiveSynthVoice<N>::initSweepers(int i0, int i1, bool reInitAmpAndPhase)
 {
   rsAssert(i0 >= 0 && i1 < patch->getNumBreakpoints());
-  rsAssert(i1 == i0+1); // maybe lift that restriction later to allow loops
+
+  rsAssert(i1 == i0+1); 
+  // maybe lift that restriction later to allow loops...actually, we don't even need i1 
+  // -> remove parameter
+
+  // we can also get rid of the reInitAmpAndPhase parameter by using below:
+  // if(alwaysReInit || i0 == 0)
+
 
   using SimdVector  = rsSimdVector<float, N>;
   using GroupParams = RAPT::rsSweepParameters<SimdVector>;
-
 
   if(reInitAmpAndPhase)
   {
@@ -353,33 +327,17 @@ void rsAdditiveSynthVoice<N>::initSweepers(int i0, int i1, bool reInitAmpAndPhas
   {
     // We need to compute one sample more to put the bank into the desired state to retrieve the 
     // instantaneous phase and amplitude (or do we? figure out by using very dense datapoints):
-    float fDummy; sweeperBank->processFrame(&fDummy, &fDummy);
+    //float fDummy; sweeperBank->processFrame(&fDummy, &fDummy);
+    // ..without looks smoother but that could also be due to interplay between rounding, etc.
+    // -> it looks good so far, but we need some unit tests that compare it against some exactly 
+    // and directly computed reference output
 
     for(int j = 0; j < patch->getNumSimdGroups(); j++)
     {
       GroupParams p = patch->getParams(i0, j);
-
-      SimdVector p0, l0, dl, dt, r0;
-      p0 = sweeperBank->getPhase(j);
-      l0 = rsLog(sweeperBank->getAmplitude(j));
-
-      // for test/debug:
-      SimdVector phaseErr, lgAmpErr;
-      phaseErr = p0 - p.p0;
-      lgAmpErr = l0 - p.l0;
-
-      // Modify p.p0, p.l0, p.r0, (p.r1):
-      p.p0 = p0;
-      p.l0 = l0;
-      dl   = p.l1 - p.l0;
-      dt   = p.t1 - p.t0;
-      r0   = dl / dt;
-      p.r0 = r0;
-
-
-
-
-
+      p.p0 = sweeperBank->getPhase(j);
+      p.g0 = rsLog(sweeperBank->getAmplitude(j));
+      p.f0 = (p.g1 - p.g0) / (p.t1 - p.t0);
       sweeperBank->setup(j, p);
     }
   }
@@ -389,6 +347,14 @@ void rsAdditiveSynthVoice<N>::initSweepers(int i0, int i1, bool reInitAmpAndPhas
 /*
 
 Ideas:
+
+-Get a smoother the amplitude envelope by:
+ -using the same value for r0 at datapoint n+1 as was used for r1 at datapoint n
+ -precomputeing the fade-values by using a two-sided finite difference
+ -in initSweepers, use as r0 an estimated amp-rise value obtained from the measured instantaneous 
+  amplitude "now" and the one one sample furrther (obtained by calling getValue once and meauring it 
+  again)...maybe, while we are at it, we can also estimate the phase derivative and use that for 
+  smoothing the freq trajectory
 
 -The user should be able to set up the engine in terms of breakpoints where each breakpoint 
  contains a set of rsInstantaneousSineParams for each partial. Note that this enforces to have the
@@ -461,6 +427,15 @@ Ideas:
  the startpoint and at the endpoint we only prescribe freq and amp. The target value for the 
  phase at the startpoint is just the final osc-phase is and the amp-raise is determined by the 
  difference of log-amps of the target amp at the next breakpoint and the final osc-amp.
+ phaseless synthesis:
+ -is cheaper (uses only a quadratic polynomial iterator)
+ -phase can't be controlled directly at the breakpoints (it just is whatever it is)
+ -we can't have smooth amp envelopes. But we can have quadratic amp-envs - that could help to 
+ reduce the discontinuities but not completely eliminate them. Maybe at least a "semi-smooth" amp 
+ env can be done. Maybe prescribe a single target derivative to the center of the segment, using 
+ the mean of the 2 derivative values at start and end which would be used in the cubic case.
+ -amplitude de-drift may be more complicated to implement (or maybe not - we'll see)
+
 
 Notes:
 
@@ -480,6 +455,15 @@ from it without any change.
 ...hmm...not sure, if that's a good idea...i think, from a perceptual point of view, smaller 
 groups may make more sense...but then, when we provide an API for setting up settings for
 groups, their size may actually have to be different from the simd vector size anyway
+
+Maybe restrict the sample-rate to be fs <= 80 kHz, when the user requests a higher sample rate, 
+divide it by an integer that puts it into the 40-80 kHz range and upsample internally. That should 
+be done on the level of the polyphonic engine, after all voices have been mixed together.
+
+Maybe if the datapoints in a patch are spaced apart further than, say, 5000 samples, insert 
+artificial datapoints halfway between them. Maybe have a setting minDeDriftInterval
+..hmm...if we do that, we may actually admit higher 
+sample rates...
 
 // see also:
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=553578&p=7911364

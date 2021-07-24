@@ -2723,29 +2723,33 @@ void additiveEngine()
   // parameter for this function...
 
   // User parameters:
-  int    numPartials = 20;     // number of harmonics ..not yet used
-  double sampleRate  = 44100;  // use 4410 for plot, 44100 for wavefile write
+  int    maxPartials = 40;     // maximum number of partials, the engine should admit
+  int    numPartials = 20;     // actual number of harmonics produced (not yet used)
+  double sampleRate  = 4410;   // use 4410 for plot, 44100 or more for wavefile write
   double length      = 0.6;    // signal length in seconds
+  bool   smoothAmp   = false;  // match fade values at breakpoints (or not)
 
 
   // For convenience:
-  using SweeperBank = rsSineSweeperBankIterative<float, simdSize>;
-  using Voice       = rsAdditiveSynthVoice<simdSize>;
-  using Patch       = Voice::EditablePatch;
-  using BP          = Patch::Breakpoint;
-  using SP          = Patch::SineParams;
+  using SweeperBankI = rsSineSweeperBankIterative<float, simdSize>;
+  using SweeperBankD = rsSineSweeperBankDirect<float, simdSize>;
+  using Voice        = rsAdditiveSynthVoice<simdSize>;
+  using Patch        = Voice::EditablePatch;
+  using BP           = Patch::Breakpoint;
+  using SP           = Patch::SineParams;
 
   // Create a patch with a single partial representing sine that sweeps around 
   Patch patch;
   BP bp0, bp1, bp2, bp3, bp4, bp5;
-  bp0.time = 0.0; bp0.addSine(SP( 119.0, 0.400)); patch.addBreakpoint(bp0);
-  bp1.time = 0.1; bp1.addSine(SP( 503.0, 0.200)); patch.addBreakpoint(bp1);
+  bp0.time = 0.0; bp0.addSine(SP(  89.0, 0.400)); patch.addBreakpoint(bp0);
+  bp1.time = 0.1; bp1.addSine(SP( 203.0, 0.200)); patch.addBreakpoint(bp1);
   bp2.time = 0.2; bp2.addSine(SP( 101.0, 0.500)); patch.addBreakpoint(bp2);
   bp3.time = 0.3; bp3.addSine(SP(  37.0, 0.200)); patch.addBreakpoint(bp3);
   //bp4.time = 0.4; bp4.addSine(SP( 400.0, 0.100)); patch.addBreakpoint(bp4);
   bp4.time = 0.4; bp4.addSine(SP( 20.0, 0.100)); patch.addBreakpoint(bp4);
   bp5.time = 0.5; bp5.addSine(SP( 20.0, 0.010)); patch.addBreakpoint(bp5);
   patch.createArtificialPhases();
+  patch.createArtificialFades(smoothAmp);
 
   // Convert the patch into playable form:
   Voice::PlayablePatch playPatch;
@@ -2754,26 +2758,30 @@ void additiveEngine()
   // Create a sweeper bank object to be used by the voice (the pool of such sweeper-banks is later
   // supposed to be owned by the additive synth engine, individual voices will get their bank to 
   // use assigned on noteOn):
-  SweeperBank sweeperBank;
-  sweeperBank.setMaxNumOscillators(40);  // should give 3 groups of 16 that allow 48 partials
+  SweeperBankI sweeperBankI;
+  sweeperBankI.setMaxNumOscillators(maxPartials);  // should give 3 groups of 16 that allow 48 partials
 
   // Create a voice, set it up with the patch and the sweeper bank and play:
   Voice voice;
-  voice.setSweeperBank(&sweeperBank);
+  voice.setSweeperBank(&sweeperBankI);
   voice.setPatch(&playPatch);
   voice.startPlaying();
   int N = (int) (length * sampleRate);  // signal length in samples
-  std::vector<float> t(N), xL(N), xR(N);
+  std::vector<float> t(N), x1(N), x2(N);
   t = RAPT::rsRangeLinear(0.f, float((N-1)/sampleRate), N);
   for(int n = 0; n < N; n++)
-    voice.processFrame(&xL[n], &xR[n]);
+    voice.processFrame(&x1[n], &x1[n]);  // use x1 for left and right - it's mono anyway
+
+  // Create a sweeper bank that uses direct computation and generate the same signal using that:
+  //SweeperBankD sweeperBankD;
+  //sweeperBankD.setMaxNumOscillators(maxPartials);
 
 
 
   // plot the output:
-  //rsPlotVectorsXY(t, xL, xR);
+  rsPlotVectorsXY(t, x1);
 
-  rosic::writeToMonoWaveFile("Additive.wav", &xL[0], N, sampleRate);
+  //rosic::writeToMonoWaveFile("Additive.wav", &x1[0], N, sampleRate);
 
   // Observations:
   // -After the last breakpoint, the output just keeps doing what it was doing before with regard 
@@ -2786,6 +2794,11 @@ void additiveEngine()
   //  16000,32000, and it doesn't show up ..well, at 22050 there's a very small discontinuity. At 
   //  88200, another jump occurs at t=0.1. It looks like it's mor an amplitude jump rather than a 
   //  phase jump. At 176000, it goes totally crazy.
+  // -the 88.2 version sound and looks rounder - but i guess that has to do with the settings of 
+  //  the fade at start and end - i think, we can make the 44.1 version rounder too, by using a 
+  //  different computation of the fades, taking into account the neighbor datapoints..maybe we 
+  //  should run a 2-point MA filter over the fade values or use some sort of weighted average
+
 
   // Conclusions
   // -At fs=44100, a datapoint density of 10 per second seems to be sufficient to keep numeric 
@@ -2796,6 +2809,12 @@ void additiveEngine()
   //  intermediate datapoints at higher sample rates.
 
   // ToDo:
+  // -implement and test functions to compute instantaneous phase,freq,amp,fade and compare with 
+  //  target values, plot errors - i expect the error to start at zero and increase up to the first
+  //  breakpoint and then sort of saturate when smooth de-drifting is selected or restart fresh 
+  //  from zero when we use non-smooth de-drifting
+  // -let rsAdditiveSynthVoice have a processFrameExact function that generates reference output
+  //  ..or have another subclass of rsSineSweeperBank: rsSineSweeperBankExact
   // -add more harmonics, maybe 20 or 25 with amplitudes falling off as 1/n like in a sawtooth
   // -compute and use target phases from integrating the w
   // -if we accidentally set the same breakpoint twice, ge get a crash in playback - fix it

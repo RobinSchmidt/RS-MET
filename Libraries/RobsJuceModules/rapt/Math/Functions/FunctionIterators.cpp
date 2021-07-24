@@ -108,7 +108,7 @@ void rsSineSweepIterator<T>::setup(const rsSweepParameters<T>& p)
     // ToDo: this API sucks! change it, so we can just pass the pointer to coeffsPhs
 
   T coeffsLogAmp[4];
-  fitCubicWithDerivative(p.t0, p.t1, p.l0, p.l1, p.r0, p.r1, 
+  fitCubicWithDerivative(p.t0, p.t1, p.g0, p.g1, p.f0, p.f1, 
     &coeffsLogAmp[3], &coeffsLogAmp[2], &coeffsLogAmp[1], &coeffsLogAmp[0]);
 
   rsComplex<T> coeffs[4];
