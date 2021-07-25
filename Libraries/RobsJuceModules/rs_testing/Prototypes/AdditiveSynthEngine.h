@@ -215,7 +215,7 @@ public:
       double freq  = 0;  // in Hz (user), as omega = 2*pi*fs/fs (algo)
       double gain  = 0;  // as raw factor (user, direct algos), log of factor (iterative algos)
       double phase = 0;  // in degrees (user), radians (algo), some algos may ignore it
-      // double fade = 0; // derivative of gain
+      double fade  = 0;  // derivative of gain
     };
 
     struct Breakpoint  // maybe mae it a class
@@ -223,6 +223,9 @@ public:
       double time = 0;   // in seconds (user), samples (algo)
       void addSine(const SineParams& newSine) { params.push_back(newSine); }
       int getNumPartials() const { return (int) params.size(); }
+
+      SineParams* getParams(int i) { return &params[i]; }
+
       std::vector<SineParams> params;  // rename to partials or sines
     };
 
@@ -273,7 +276,8 @@ public:
   public:
 
     /** Sets up this object from the given editable patch. ...tbc... */
-    void setupFrom(const EditablePatch& patch, double sampleRate, bool applyLogToAmplitude);
+    void setupFrom(const EditablePatch& patch, double sampleRate, bool applyLogToAmplitude, 
+      bool useFadeValues);
 
 
     int getNumBreakpoints() const { return numBreakpoints; }

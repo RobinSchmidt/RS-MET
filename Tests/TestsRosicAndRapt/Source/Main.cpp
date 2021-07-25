@@ -209,7 +209,7 @@ int main(int argc, char* argv[])
   //triSawOscAntiAlias();
   //xoxosOsc();
   //shepardTone();
-  additiveEngine();
+//  additiveEngine();
 
   // Modulators:
   //attackDecayEnvelope();
@@ -257,8 +257,7 @@ int main(int argc, char* argv[])
   //bandLimitedStep();
 
   //chebychevInterpolant();
-  //naturalCubicSpline();
-  //naturalCubicSpline2();
+  cubicSplines();
   //cubicInterpolationNonEquidistant();   // move to unit tests
   //hyperbolicFunctions();
   //splineInterpolationNonEquidistant();

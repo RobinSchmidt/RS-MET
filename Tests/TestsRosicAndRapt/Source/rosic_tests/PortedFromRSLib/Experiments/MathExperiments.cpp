@@ -872,7 +872,9 @@ void chebychevInterpolant()
 
 void naturalCubicSpline()
 {
-  // Tests the natural cubic spline interpolation using the test function 1/(1+x^2).
+  // Tests the natural cubic spline interpolation using the test function 1/(1+x^2), which is also
+  // known as Runge funtcion. It is often used as example for polynomial interpolation because it 
+  // tends to expose its problems.
 
   std::vector<double> x = { -5, -3, -1, 0, 1, 2, 3, 4, 5 };
   int N = (int)x.size();
@@ -937,7 +939,13 @@ void naturalCubicSpline2()
   //   segments that go directly into and out of it and its immediate neighbours
 }
 
-void cubicInterpolationNonEquidistant() // turn into unit-test
+void cubicSplines()
+{
+  naturalCubicSpline();
+  naturalCubicSpline2();
+}
+
+void cubicInterpolationNonEquidistant() // todo: turn into unit-test and move to unit-tests
 {
   bool testResult = true;
 

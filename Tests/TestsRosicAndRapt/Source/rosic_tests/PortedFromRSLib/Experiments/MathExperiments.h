@@ -24,8 +24,7 @@ void sineParameters();
 void bandLimitedStep();
 void cubicInterpolationNonEquidistant();   // move to unit tests
 void chebychevInterpolant();
-void naturalCubicSpline();
-void naturalCubicSpline2();
+void cubicSplines();
 void hyperbolicFunctions(); 
 void splineInterpolationNonEquidistant();
 void rationalInterpolation();

@@ -28,10 +28,24 @@ void rsSineSweeperBankIterative<T, N>::setNumActiveGroups(int newNumber)
 template<class T, int N>
 void rsSineSweeperBankIterative<T, N>::processFrame(float* left, float* right)
 {
+  rsComplex<rsSimdVector<float, N>> v(0.f);
+  for(size_t i = 0; i < simdGroups.size(); i++)
+    v += simdGroups[i].getComplexValue();
+  *left  = v.re.sum();
+  *right = v.im.sum();
+
+  // we need to do:
+  //float offset = (float) getNumDummyPartials()
+  //*left -= offset;
+  // because the dummy partials prodcue 1 for the real part. dummy partials are those in the 
+  // simd-group that are not utilized..numDummyPartials = N*numActibeGroups - numPartials
+
+  /*
   rsSimdVector<float, N> v(0.f);
   for(size_t i = 0; i < simdGroups.size(); i++)
     v += simdGroups[i].getSine();
   *left = *right = v.sum();
+  */
 }
 //
 // https://rust-lang.github.io/packed_simd/perf-guide/vert-hor-ops.html
@@ -69,7 +83,37 @@ void rsAdditiveSynthVoice<N>::EditablePatch::createArtificialPhases()
 template<int N>
 void rsAdditiveSynthVoice<N>::EditablePatch::createArtificialFades(bool smooth)
 {
-  // ...something to do...
+  int B = getNumBreakpoints();
+  int P = getNumPartials();
+  if(B < 2 || P < 1)
+    return;
+
+  using ND = rsNumericDifferentiator<double>;
+
+  std::vector<double> t(B), g(B), f(B);
+
+  for(int i = 0; i < B; i++)
+    t[i] = getBreakpoint(i)->time;
+
+  for(int j = 0; j < P; j++)
+  {
+    for(int i = 0; i < B; i++)
+    {
+      g[i] = getBreakpoint(i)->getParams(j)->gain;
+      g[i] = rsLog(g[i]);  // maybe make that conversion optional
+    }
+
+    if(smooth)
+      ND::derivative(&t[0], &g[0], &f[0], B, false); // maybe try true
+    else
+      for(int i = 0; i < B-1; i++)
+        f[i] = (g[i+1] - g[i]) / (t[i+1] - t[i]);
+
+    for(int i = 0; i < B; i++)
+      getBreakpoint(i)->getParams(j)->fade = f[i];
+
+    //rsPlotVectorsXY(t,g,f);
+  }
 }
 
 template<int N>
@@ -118,12 +162,10 @@ int rsAdditiveSynthVoice<N>::EditablePatch::getNumPartials() const
   //  to just return breakpoints[0].getNumPartials() ...or zero if the size of breakpoints is zero.
 }
 
-
-
-
 template<int N>
 void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
-  const rsAdditiveSynthVoice<N>::EditablePatch& patch, double sampleRate, bool applyLog)
+  const rsAdditiveSynthVoice<N>::EditablePatch& patch, double sampleRate, bool applyLog, 
+  bool useFadeValues)
 {
   rsAssert(patch.isWellFormed());
 
@@ -143,7 +185,7 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
   using SineParams = rsAdditiveSynthVoice<N>::EditablePatch::SineParams;
 
   // Temporaries:
-  double tL, tR, nL, nR, pL, pR, wL, wR, aL, aR, rL, rR; // params for one partial
+  double tL, tR, nL, nR, pL, pR, wL, wR, gL, gR, fL, fR; // params for one partial
   rsSweepParameters<rsSimdVector<float, N>> p;           // params for one simd group
   memset(&p, 0, sizeof(p));
 
@@ -190,34 +232,49 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
                                           // is the -1 correct?
         pR = rsConsistentUnwrappedValue(tmp, pR, 0.0, 2.0*PI);
 
-        aL = spL->gain;  // maybe use gL for "gain"
-        aR = spR->gain;
+        gL = spL->gain;
+        gR = spR->gain;
         if(applyLog) {
-          aL = log(aL);
-          aR = log(aR);
+          gL = log(gL);
+          gR = log(gR);
         }
 
+        /*
         // factor out into computeTargetFade:
         rL = (aR - aL) / dt; // verify this! i think, we need dn?
         //rL = (aR - aL) / dn; // test ..doesn't seem to make a difference
         rR = rL;             // we currently only use a linear (log-)amp env with constant slope
+        */
+
+        if(useFadeValues)
+        {
+          fL = spL->fade / sampleRate;
+          fR = spR->fade / sampleRate;
+        }
+        else
+        {
+          fL = (gR - gL) / dt; 
+          fR = fL;
+        }
+
+        int dummy = 0;
 
       }
       else
       {
         pL = pR = wL = wR = 0;  // phase and omega is 0
-        aL = aR = rL = rR = 0;  // log-amp and rise is 0
+        gL = gR = fL = fR = 0;  // log-amp and rise is 0
         nL = 0;                 // left sample time is 0
         nR = 1;                 // right sample time is taken to be 1 to avoid nans
       }
 
       // Write the converted parameters into the appropriate positions in the simd vectors:
       j = indexInGroup;
-      p.t0[j] = float(0 ); p.t1[j] = float(nR-nL);
+      p.t0[j] = float(0 ); p.t1[j] = float(nR-nL);  // or nR-nL-1?
       p.p0[j] = float(pL); p.p1[j] = float(pR);
       p.w0[j] = float(wL); p.w1[j] = float(wR);
-      p.g0[j] = float(aL); p.g1[j] = float(aR);
-      p.f0[j] = float(rL); p.f1[j] = float(rR);
+      p.g0[j] = float(gL); p.g1[j] = float(gR);
+      p.f0[j] = float(fL); p.f1[j] = float(fR);
 
       // Do loop variable increments and and handle assignment of simd-vector and wraparound, if 
       // we have reahced the end of a simd group:

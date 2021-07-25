@@ -2725,9 +2725,9 @@ void additiveEngine()
   // User parameters:
   int    maxPartials = 40;     // maximum number of partials, the engine should admit
   int    numPartials = 20;     // actual number of harmonics produced (not yet used)
-  double sampleRate  = 4410;   // use 4410 for plot, 44100 or more for wavefile write
+  double sampleRate  = 44100;  // use 4410 for plot, 44100 or more for wavefile write
   double length      = 0.6;    // signal length in seconds
-  bool   smoothAmp   = false;  // match fade values at breakpoints (or not)
+  bool   smoothAmp   = false;  // match fade values at breakpoints (or not)...causes problems
 
 
   // For convenience:
@@ -2741,19 +2741,24 @@ void additiveEngine()
   // Create a patch with a single partial representing sine that sweeps around 
   Patch patch;
   BP bp0, bp1, bp2, bp3, bp4, bp5;
-  bp0.time = 0.0; bp0.addSine(SP(  89.0, 0.400)); patch.addBreakpoint(bp0);
-  bp1.time = 0.1; bp1.addSine(SP( 203.0, 0.200)); patch.addBreakpoint(bp1);
-  bp2.time = 0.2; bp2.addSine(SP( 101.0, 0.500)); patch.addBreakpoint(bp2);
-  bp3.time = 0.3; bp3.addSine(SP(  37.0, 0.200)); patch.addBreakpoint(bp3);
+  bp0.time = 0.0; bp0.addSine(SP( 100.0, 0.400)); patch.addBreakpoint(bp0);
+  bp1.time = 0.1; bp1.addSine(SP( 200.0, 0.200)); patch.addBreakpoint(bp1);
+  bp2.time = 0.2; bp2.addSine(SP( 100.0, 0.500)); patch.addBreakpoint(bp2);
+  bp3.time = 0.3; bp3.addSine(SP(  35.0, 0.200)); patch.addBreakpoint(bp3);
   //bp4.time = 0.4; bp4.addSine(SP( 400.0, 0.100)); patch.addBreakpoint(bp4);
   bp4.time = 0.4; bp4.addSine(SP( 20.0, 0.100)); patch.addBreakpoint(bp4);
   bp5.time = 0.5; bp5.addSine(SP( 20.0, 0.010)); patch.addBreakpoint(bp5);
   patch.createArtificialPhases();
   patch.createArtificialFades(smoothAmp);
 
+  // maybe the gain values should be passed in decibels...hmm...but maybe later we want to allow 
+  // envelopes in the linear amplitude domain as well ... the reason we don't is purely technical,
+  // it's what the algo natrually produces
+
+
   // Convert the patch into playable form:
   Voice::PlayablePatch playPatch;
-  playPatch.setupFrom(patch, sampleRate, true);
+  playPatch.setupFrom(patch, sampleRate, true, smoothAmp);
 
   // Create a sweeper bank object to be used by the voice (the pool of such sweeper-banks is later
   // supposed to be owned by the additive synth engine, individual voices will get their bank to 
@@ -2767,21 +2772,30 @@ void additiveEngine()
   voice.setPatch(&playPatch);
   voice.startPlaying();
   int N = (int) (length * sampleRate);  // signal length in samples
-  std::vector<float> t(N), x1(N), x2(N);
+  std::vector<float> t(N), xL(N), xR(N), amp(N), phs(N);
   t = RAPT::rsRangeLinear(0.f, float((N-1)/sampleRate), N);
   for(int n = 0; n < N; n++)
-    voice.processFrame(&x1[n], &x1[n]);  // use x1 for left and right - it's mono anyway
+  {
+    voice.processFrame(&xL[n], &xR[n]);
+
+    xL[n] -= 15.f;
+    // preliminary to remove DC offset, see rsSineSweeperBankIterative<T, N>::processFrame what we
+    // should really do about that
+
+    amp[n] = sqrt(xL[n]*xL[n] + xR[n]*xR[n]);  // instantaneous amplitude
+  }
+  // use x1 for left and right - it's mono anyway..maybe use sine for left and cosine for right
 
   // Create a sweeper bank that uses direct computation and generate the same signal using that:
   //SweeperBankD sweeperBankD;
   //sweeperBankD.setMaxNumOscillators(maxPartials);
 
-
+  //xL = xL - 15.f;
 
   // plot the output:
-  rsPlotVectorsXY(t, x1);
+  //rsPlotVectorsXY(t, xL, xR, amp);
 
-  //rosic::writeToMonoWaveFile("Additive.wav", &x1[0], N, sampleRate);
+  rosic::writeToStereoWaveFile("Additive.wav", &xL[0], &xR[0], N, sampleRate);
 
   // Observations:
   // -After the last breakpoint, the output just keeps doing what it was doing before with regard 
@@ -2798,6 +2812,25 @@ void additiveEngine()
   //  the fade at start and end - i think, we can make the 44.1 version rounder too, by using a 
   //  different computation of the fades, taking into account the neighbor datapoints..maybe we 
   //  should run a 2-point MA filter over the fade values or use some sort of weighted average
+  // -with 44100, the smoothAmp option doesn't work - the amp explodes. it looks ok fo 4410...but 
+  //  already for 5000 - it start to get quite wrong: the BP at 0.2 reaches ony 0.4 not 0.5 as it 
+  //  should. at 6000, things get really weird - oh - at 4000 also..maybe try other ways to 
+  //  prescribe the fade values
+  //  ...how about letting them all be zero? ...or letting them be zero in case of when the left
+  //  and right neighbor breakpoints have opposite sign, otherwise use the forward difference.
+  //  or: fit a natural cubic spline to the amp-data and take its derivative for the fade values.
+  //  that should be smoother anyway
+  //  -commenting out p.f0 = ...in initSweepers does not seem to help, it does change things a bit
+  //   but it's not getting much better or any better at all
+  //  -actually, the amp-env is not smooth, even with the option active - the derivative has jumps
+  //   that may be due to the reassignment in initSweepers
+  // -the real part a has a DC offset of 15 - that's the number of unused partials in the 
+  //  simd-group
+  // -Apply smoothing to the frequency data in a similar way as proposed above for the gain/fade:
+  //  fit a (natural) cubic spline to the (unwrapped) instantaneous phase data and take its 
+  //  derivative. That should make the phase 2nd order smooth and therefore the frequency 1st order
+  //  smooth (i.e. matching derivatives). this implies that at the breakpoints, the instantaneous 
+  //  freqs will be modified - the user data is treated as preliminary, tentative.
 
 
   // Conclusions
