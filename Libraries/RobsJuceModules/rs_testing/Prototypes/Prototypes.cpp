@@ -21,6 +21,18 @@
 
 using namespace RAPT;
 
+std::vector<double> splineSlopes(const std::vector<double>& x, const std::vector<double>& y,
+  bool prescribe2ndDeriv, double ypStart, double ypEnd)
+{
+  int N = (int) x.size();
+  rsAssert((int)y.size() == N);
+
+  std::vector<double> s(N);       // the slopes
+
+
+  return s;
+}
+
 
 void rsSinCos1(double x, double* s, double* c)
 {
@@ -353,8 +365,9 @@ void rsSinCosApprox4(double x, double* s, double* c)
   double o  = double(xa > 0.5*PI);     // |x| is outside range -> reflect to inside
   double xr = (1.0-o)*xa + o*(PI-xa);
   *s = rsCosApproxReduced4(xa);
-   // this is still WRONG!!! we need a function rsSinApproxReduced4! but for benchmark, this is ok
-   // as a stand in
+  // This is still WRONG!!! We need a function rsSinApproxReduced4! but for benchmark, this is ok
+  // as a stand in - an actual sine approximation should have similar complexity. But perhaps, 
+  // it's better tor approximate sine and cosine jointly
 
   double n  = double(x < 0.0);         // x is negative sine needs to be multiplied by -1
   double fs = 1 - 2*n;                 // factor conceptually: f = (1-n)*1 + n*(-1)
@@ -363,7 +376,12 @@ void rsSinCosApprox4(double x, double* s, double* c)
   xr  = (1.0-o)*xa + o*(xa-PI);
   *c  = rsCosApproxReduced4(xa);  // or do we need xr?
 }
-
+// ToDo: 
+// -Implement approximations to the exponential function in the interval 1..2 using the same 
+//  approach (matching value and derivatives at both endpoints). That makes for a smooth 
+//  approximation, when we splice together such segments (scaled by 2^(float-exponent)).
+//  Maybe try Chebychev approximation, too (i think, this finds an interpolation polynomial where
+//  the evaluation points are given by the roots of a Chebychev polynomial)
 
 
 std::vector<double> solvePentaDiagonalSystem(

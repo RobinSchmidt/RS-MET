@@ -27,9 +27,7 @@ bool movingMaximumUnitTest();
 // Math:
 bool coordinateMapperUnitTest();
 bool correlationUnitTest();
-bool fitRationalUnitTest();
-bool interpolatingFunctionUnitTest();
-bool resampleNonUniform();
+bool interpolationUnitTest();
 bool rootFinderUnitTest();
 bool polynomialRootsUnitTest(); // the new explicit formulas - move to PolynomialUnitTests
 

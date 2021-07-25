@@ -172,8 +172,6 @@ polynomial - test with the results are the same as with regular polynomial inter
 fitting routine should get as inputs the arrays of x and y values and an array of function-pointers
 for the basis functions (maybe std::function) and give back the coeffs as usual */
 
-
-
 bool interpolatingFunctionUnitTest()
 {
   bool r = true;      // test result
@@ -285,6 +283,28 @@ bool resampleNonUniform()
 
   return r;
 }
+
+bool splineSlopesUnitTest()
+{
+  bool ok = true;
+
+
+  return ok;
+}
+
+bool interpolationUnitTest()
+{
+  bool ok = true;
+
+  ok &= fitRationalUnitTest();  // fails on linux ("illegal instruction") - encounters singular matrix
+  ok &= interpolatingFunctionUnitTest();
+  ok &= resampleNonUniform();
+  ok &= splineSlopesUnitTest();
+
+  return ok;
+};
+
+
 
 // For testing the root-finder, we use a 3rd oder polynomial as example function with roots at
 // -1, +1, +2. We define a function and a functor that implements that function in order to pass it

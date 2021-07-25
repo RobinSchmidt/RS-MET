@@ -45,6 +45,20 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //static size_t allBitsButFirst= allBits ^ firstBitOnly;
 */
 
+/** Given abscissa and ordinate values in x and y, this function computes the slopes at the 
+x-locations, i.e. values for the 1st derivative of y, and returns them as vector which is of the 
+same length as x and y. If these slopes are later used in cubic Hermite interpolation, the Hermite 
+interpolant will actually become a spline interpolant, i.e. an interpolant that is 2nd order smooth
+at the junctions. If you just use numerical differentiation to obtain such slope values, 2nd order
+smoothness will in general not happen. Conversely, the computed slopes themselves can also be seen
+as another way of obtaining numerical estimates of the 1st derivative. If prescribe2ndDeriv is 
+true, the final 2 parameters prescribe values for the 2nd derivative at the endpoints (defaulting 
+to zero, leading to what is called a "natural" cubic spline). If it is false, these values will be 
+interpreted as prescriptions for the 1st derivative at the endpoints (leading to what is called a 
+"complete" cubic spline. ..tbc... */
+std::vector<double> splineSlopes(const std::vector<double>& x, const std::vector<double>& y, 
+  bool prescribe2ndDeriv = true, double ypStart = 0.0, double ypEnd = 0.0);
+// maybe the production version of this should go into rsNumericalDifferentiator
 
 // some experimental sin/cos approximations:
 double rsCos2(double x);

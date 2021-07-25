@@ -897,10 +897,10 @@ void naturalCubicSpline()
   plt.plot();
 }
 
-void naturalCubicSpline2()
+void compareCubicSplines()
 {
-  // Tests the natural cubic spline interpolation using random values with random x-distances 
-  // between them. 
+  // Interpolates random data (random x-distances and y-values) using a natural and Hermite cubic 
+  // spline.
 
   int N = 30; // number of input data points
   std::vector<double> x(N), y(N);
@@ -910,23 +910,37 @@ void naturalCubicSpline2()
   double yMax  = +1.0;
   double xScl  =  1.0;   // scale factor for x-values
 
-
   createRandomDataXY(&x[0], &y[0], N, xScl*dxMin, xScl*dxMax, yMin, yMax);
 
   int Ni = 1001;
-  std::vector<double> xi(Ni), yi(Ni);
+  std::vector<double> xi(Ni), yiN(Ni), yiH(Ni);
   RAPT::rsArrayTools::fillWithRangeLinear(&xi[0], Ni, x[0], x[N-1]);
 
-  RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni, 1.0); // Natural
-  //RAPT::rsInterpolateSpline(&x[0], &y[0], N, &xi[0], &yi[0], Ni, 1);   // Hermite
+  RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, &xi[0], &yiN[0], Ni, 1.0); // Natural
+  RAPT::rsInterpolateSpline( &x[0], &y[0], N, &xi[0], &yiH[0], Ni, 1);   // Hermite
+
+  // todo: 
+  // -generalize to let the user set values for the 2nd derivatives at the endpoints
+  // -"complete" cubic spline: instead of prescribing values for the 2nd derivatives, prescribe 
+  //  values for the 1st (use finite differences from the data for the target values)
+  // -move into class rsInterpolation
+
 
   // maybe factor out (it's the same as above):
   GNUPlotter plt;
-  plt.addDataArrays(Ni, &xi[0], &yi[0]);
-  plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#808080\" notitle");
+  plt.addDataArrays(Ni, &xi[0], &yiN[0]);
+  plt.addGraph("index 0 using 1:2 with lines lw 2 lc rgb \"#A00000\" notitle");  // red
+
+  plt.addDataArrays(Ni, &xi[0], &yiH[0]);
+  plt.addGraph("index 1 using 1:2 with lines lw 2 lc rgb \"#0000C0\" notitle");  // blue
+
   plt.addDataArrays(N, &x[0], &y[0]);
-  plt.addGraph("index 1 using 1:2 with points pt 7 ps 1.2 lc rgb \"#000000\" notitle");
+  plt.addGraph("index 2 using 1:2 with points pt 7 ps 1.2 lc rgb \"#000000\" notitle");
   plt.plot();
+
+  // Observations:
+  // -The Hermite interpolant overshoots less than the spline. The improved smoothness of the 
+  //  spline (to match the 2nd derivative, too) comes at the price of higher overshoot.
 
   // ToDo:
   // -maybe plot a cubic Hermite spline interpolant for comparison
@@ -942,7 +956,7 @@ void naturalCubicSpline2()
 void cubicSplines()
 {
   naturalCubicSpline();
-  naturalCubicSpline2();
+  compareCubicSplines();
 }
 
 void cubicInterpolationNonEquidistant() // todo: turn into unit-test and move to unit-tests

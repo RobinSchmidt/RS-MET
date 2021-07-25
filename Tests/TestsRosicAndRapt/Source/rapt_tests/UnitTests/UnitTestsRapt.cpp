@@ -44,9 +44,7 @@ bool runUnitTestsRapt()
 
   // Math:
   ok &= runUnitTest(&coordinateMapperUnitTest,       "rsCoordinateMapper2D");
-  ok &= runUnitTest(&fitRationalUnitTest,            "fit rational");   // fails on linux ("illegal instruction") - encounters singular matrix
-  ok &= runUnitTest(&interpolatingFunctionUnitTest,  "rsInterpolatingFunction");
-  ok &= runUnitTest(&resampleNonUniform,             "resampleNonUniform");
+  ok &= runUnitTest(&interpolationUnitTest,          "Interpolation and curve fitting");
   ok &= runUnitTest(&rootFinderUnitTest,             "rsRootFinder");
   ok &= runUnitTest(&correlationUnitTest,            "correlation");
   ok &= runUnitTest(&testVector,                     "rsVector");
