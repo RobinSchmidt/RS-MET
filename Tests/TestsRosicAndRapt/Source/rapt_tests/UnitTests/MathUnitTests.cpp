@@ -286,8 +286,31 @@ bool resampleNonUniform()
 
 bool splineSlopesUnitTest()
 {
+  // Example taken from Meister - Numerik, page 62. It's the Runge function 1/(1+x^2). Maybe 
+  // evaluate it at more points
+
   bool ok = true;
 
+  using Vec = std::vector<double>;
+  int N = 5;
+
+  Vec x({ -1,0,1,2,3 }), y({ 0.5,1,0.5,0.2,0.1 });
+  Vec t({39, -3, -27, -9, 3}); t = t / 50.0;        // target values for slope
+
+  Vec s = splineSlopes(x, y, true, 0.0, 0.0);       // natural spline
+  Vec r = s - t;                                    // error
+  // it's close but not quite right
+
+  t = Vec({175, 6, -199, -50, -21}) / 350.0;
+  s = splineSlopes(x, y, false, +0.5, -0.06);
+  r = s - t;
+  // that looks good!
+
+  // ToDo: 
+  // -Test it using data obtained from a cubic. In this case, the computed spline derivatives 
+  //  should exactly match those of the original polynomial, regardless where the datapoints are.
+  //  ...but only if we completely specify the spline, i.e. prescribe either 1st or 2nd derivative
+  //  values at the end which should match those of the original polynomial
 
   return ok;
 }

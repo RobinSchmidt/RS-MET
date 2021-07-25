@@ -22,15 +22,54 @@
 using namespace RAPT;
 
 std::vector<double> splineSlopes(const std::vector<double>& x, const std::vector<double>& y,
-  bool prescribe2ndDeriv, double ypStart, double ypEnd)
+  bool prescribe2ndDeriv, double k1, double k2)
 {
+  // Implementation follows Meister - Numerik, pg. 59f. There's a lot of redundant data that can be 
+  // optimized away in production code.
+
   int N = (int) x.size();
   rsAssert((int)y.size() == N);
+  using Vec = std::vector<double>;
 
-  std::vector<double> s(N);       // the slopes
+  // Compute intermediate variables:
+  Vec dx(N-1), dy(N-1);
+  for(int i = 0; i < N-1; i++) {
+    dx[i] = x[i+1] - x[i];
+    dy[i] = y[i+1] - y[i]; }
 
+  // Create the entries of the tridiagonal matrix:
+  Vec l(N-2), d(N-2), r(N-2);
+  for(int i = 0; i < N-2; i++) {
+    l[i] = dx[i+1];
+    r[i] = dx[i];
+    d[i] = 2*(l[i] + r[i]); }
+  if(prescribe2ndDeriv) {
+    rsPrepend(d, 2.);
+    rsAppend( d, 2.);
+    rsPrepend(r, 1.);
+    rsAppend( l, 1.); }
+  else {
+    rsPrepend(d, 1.);
+    rsAppend( d, 1.);
+    rsPrepend(r, 0.);
+    rsAppend( l, 0.); }
 
-  return s;
+  // Create the right hand side:
+  Vec R(N-2);
+  for(int i = 0; i < N-2; i++)
+    R[i] = 3*(dy[i+1]*dx[i]/dx[i+1] + dy[i]*dx[i+1]/dx[i]);
+  if(prescribe2ndDeriv) {
+    int M = N-2;  // last index in dx and dy
+    rsPrepend(R, 3*(dy[0]/dx[0] - k1*dx[0]));
+    rsAppend( R, 3*(dy[M]/dx[M] - k2*dx[M])); }
+  else {
+    rsPrepend(R, k1);
+    rsAppend( R, k2); }
+
+  // Solve the tridiagonal system for the slopes and return the result:
+  Vec S(N);       // the slopes
+  rsLinearAlgebra::rsSolveTridiagonalSystem(&l[0], &d[0], &r[0], &R[0], &S[0], N);
+  return S;
 }
 
 
