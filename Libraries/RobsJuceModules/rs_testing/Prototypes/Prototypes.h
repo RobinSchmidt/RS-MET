@@ -56,8 +56,9 @@ true, the final 2 parameters prescribe values for the 2nd derivative at the endp
 to zero, leading to what is called a "natural" cubic spline). If it is false, these values will be 
 interpreted as prescriptions for the 1st derivative at the endpoints (leading to what is called a 
 "complete" cubic spline. ..tbc... */
-std::vector<double> splineSlopes(const std::vector<double>& x, const std::vector<double>& y, 
-  bool prescribe2ndDeriv = true, double ypStart = 0.0, double ypEnd = 0.0);
+template<class T>
+std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y, 
+  bool prescribe2ndDeriv = true, T ypStart = T(0), T ypEnd = T(0));
 // maybe the production version of this should go into rsNumericalDifferentiator
 
 // some experimental sin/cos approximations:

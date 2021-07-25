@@ -21,15 +21,16 @@
 
 using namespace RAPT;
 
-std::vector<double> splineSlopes(const std::vector<double>& x, const std::vector<double>& y,
-  bool prescribe2ndDeriv, double k1, double k2)
+template<class T>
+std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y,
+  bool prescribe2ndDeriv, T k1, T k2)
 {
   // Implementation follows Meister - Numerik, pg. 59f. There's a lot of redundant data that can be 
   // optimized away in production code.
 
   int N = (int) x.size();
   rsAssert((int)y.size() == N);
-  using Vec = std::vector<double>;
+  using Vec = std::vector<T>;
 
   // Compute intermediate variables:
   Vec dx(N-1), dy(N-1);
@@ -44,10 +45,10 @@ std::vector<double> splineSlopes(const std::vector<double>& x, const std::vector
     r[i] = dx[i];
     d[i] = 2*(l[i] + r[i]); }
   if(prescribe2ndDeriv) {
-    rsPrepend(d, 2.);
-    rsAppend( d, 2.);
-    rsPrepend(r, 1.);
-    rsAppend( l, 1.); }
+    rsPrepend(d, 2.);      // 2
+    rsAppend( d, 2.);      // 2
+    rsPrepend(r, 1.);      // 1
+    rsAppend( l, 1.); }    // 1
   else {
     rsPrepend(d, 1.);
     rsAppend( d, 1.);
@@ -60,8 +61,8 @@ std::vector<double> splineSlopes(const std::vector<double>& x, const std::vector
     R[i] = 3*(dy[i+1]*dx[i]/dx[i+1] + dy[i]*dx[i+1]/dx[i]);
   if(prescribe2ndDeriv) {
     int M = N-2;  // last index in dx and dy
-    rsPrepend(R, 3*(dy[0]/dx[0] - k1*dx[0]));
-    rsAppend( R, 3*(dy[M]/dx[M] - k2*dx[M])); }
+    rsPrepend(R, 3*(dy[0]/dx[0]) - k1*dx[0]);    // 3*
+    rsAppend( R, 3*(dy[M]/dx[M]) - k2*dx[M]); }  // 3*
   else {
     rsPrepend(R, k1);
     rsAppend( R, k2); }
@@ -70,7 +71,14 @@ std::vector<double> splineSlopes(const std::vector<double>& x, const std::vector
   Vec S(N);       // the slopes
   rsLinearAlgebra::rsSolveTridiagonalSystem(&l[0], &d[0], &r[0], &R[0], &S[0], N);
   return S;
+
+  // See:
+  // https://mathworld.wolfram.com/CubicSpline.html
 }
+template std::vector<double> splineSlopes(const std::vector<double>& x, 
+  const std::vector<double>& y, bool prescribe2ndDeriv, double k1, double k2);
+
+
 
 
 void rsSinCos1(double x, double* s, double* c)

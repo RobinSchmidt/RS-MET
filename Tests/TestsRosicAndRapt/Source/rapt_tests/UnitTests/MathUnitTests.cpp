@@ -284,6 +284,7 @@ bool resampleNonUniform()
   return r;
 }
 
+template<class T>
 bool splineSlopesUnitTest()
 {
   // Example taken from Meister - Numerik, page 62. It's the Runge function 1/(1+x^2). Maybe 
@@ -291,18 +292,26 @@ bool splineSlopesUnitTest()
 
   bool ok = true;
 
-  using Vec = std::vector<double>;
+  using Vec = std::vector<T>;
   int N = 5;
 
-  Vec x({ -1,0,1,2,3 }), y({ 0.5,1,0.5,0.2,0.1 });
-  Vec t({39, -3, -27, -9, 3}); t = t / 50.0;        // target values for slope
+  Vec x({ -1,0,1,2,3 }), y(N); // ({ 0.5,1,0.5,0.2,0.1 });
+  for(int i = 0; i < N; i++)
+    y[i] = T(1) / (1 + x[i]*x[i]);
 
-  Vec s = splineSlopes(x, y, true, 0.0, 0.0);       // natural spline
+  Vec t({39, -3, -27, -9, 3}); t = t / T(50);       // target values for slope
+  Vec s = splineSlopes(x, y, true, T(0), T(0));     // natural spline
   Vec r = s - t;                                    // error
-  // it's close but not quite right
+  // it's close but not quite right...hmm...the equations look all good...could it be an error in 
+  // the book? or do we have a catastrophic precision loss? ...try it with rational numbers
 
-  t = Vec({175, 6, -199, -50, -21}) / 350.0;
-  s = splineSlopes(x, y, false, +0.5, -0.06);
+  //// for debug:
+  //T xi[10], yi[10];
+  //RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, xi,yi,10,0.0);
+  
+
+  t = Vec({175, 6, -199, -50, -21}) / T(350);
+  s = splineSlopes(x, y, false, T(1)/2, -T(6)/100);
   r = s - t;
   // that looks good!
 
@@ -322,7 +331,7 @@ bool interpolationUnitTest()
   ok &= fitRationalUnitTest();  // fails on linux ("illegal instruction") - encounters singular matrix
   ok &= interpolatingFunctionUnitTest();
   ok &= resampleNonUniform();
-  ok &= splineSlopesUnitTest();
+  ok &= splineSlopesUnitTest<double>();
 
   return ok;
 };
