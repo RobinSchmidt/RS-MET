@@ -412,20 +412,20 @@ bool rsLinearAlgebra::rsInvertMatrix(T **A, int N)
 template<class T>
 bool rsLinearAlgebra::rsSolveTridiagonalSystem(T *lower, T *main, T *upper, T *rhs, T *solution, int N)
 {
-  if(main[0] == 0.0)
+  if(main[0] == T(0))
   {
     rsError("Division by zero.");
     return false;
   }
 
-  double divisor = main[0];
-  double *tmp    = new double[N];
+  T divisor = main[0];
+  T *tmp    = new T[N];
   solution[0]    = rhs[0] / divisor;
   for(int n = 1; n < N; n++)
   {
     tmp[n]  = upper[n-1] / divisor;
     divisor = main[n] - lower[n-1]*tmp[n];
-    if(divisor == 0.0)
+    if(divisor == T(0))
     {
       rsError("Division by zero.");
       delete[] tmp;

@@ -285,7 +285,7 @@ bool resampleNonUniform()
 }
 
 template<class T>
-bool splineSlopesUnitTest()
+bool splineSlopesUnitTest(T tol)
 {
   // Example taken from Meister - Numerik, page 62. It's the Runge function 1/(1+x^2). Maybe 
   // evaluate it at more points
@@ -299,21 +299,17 @@ bool splineSlopesUnitTest()
   for(int i = 0; i < N; i++)
     y[i] = T(1) / (1 + x[i]*x[i]);
 
-  Vec t({39, -3, -27, -9, 3}); t = t / T(50);       // target values for slope
-  Vec s = splineSlopes(x, y, true, T(0), T(0));     // natural spline
-  Vec r = s - t;                                    // error
-  // it's close but not quite right...hmm...the equations look all good...could it be an error in 
-  // the book? or do we have a catastrophic precision loss? ...try it with rational numbers
-
-  //// for debug:
-  //T xi[10], yi[10];
-  //RAPT::rsNaturalCubicSpline(&x[0], &y[0], N, xi,yi,10,0.0);
-  
+  Vec t({39, -3, -27, -9, 3}); t = t / T(50);   // target values for slope
+  Vec s = splineSlopes(x, y, true, T(0), T(0)); // natural spline
+  Vec r = s - t;                                // error
+  ok &= rsIsCloseTo(s, t, tol);
 
   t = Vec({175, 6, -199, -50, -21}) / T(350);
   s = splineSlopes(x, y, false, T(1)/2, -T(6)/100);
   r = s - t;
-  // that looks good!
+  ok &= rsIsCloseTo(s, t, tol);
+
+
 
   // ToDo: 
   // -Test it using data obtained from a cubic. In this case, the computed spline derivatives 
@@ -331,7 +327,8 @@ bool interpolationUnitTest()
   ok &= fitRationalUnitTest();  // fails on linux ("illegal instruction") - encounters singular matrix
   ok &= interpolatingFunctionUnitTest();
   ok &= resampleNonUniform();
-  ok &= splineSlopesUnitTest<double>();
+  ok &= splineSlopesUnitTest<rsFraction<int>>(0);
+  ok &= splineSlopesUnitTest<double>(1.e-15);
 
   return ok;
 };

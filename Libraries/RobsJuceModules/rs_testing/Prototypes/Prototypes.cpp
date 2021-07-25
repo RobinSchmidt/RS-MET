@@ -25,8 +25,9 @@ template<class T>
 std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y,
   bool prescribe2ndDeriv, T k1, T k2)
 {
-  // Implementation follows Meister - Numerik, pg. 59f. There's a lot of redundant data that can be 
-  // optimized away in production code.
+  // Implementation follows Meister - Numerik, pg. 59f. (but there's a mistake in the book: the 1 
+  // and 2 in the bottom right of the matrix are exchanged). There's a lot of redundant data that 
+  // can be optimized away in production code.
 
   int N = (int) x.size();
   rsAssert((int)y.size() == N);
@@ -45,15 +46,15 @@ std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y,
     r[i] = dx[i];
     d[i] = 2*(l[i] + r[i]); }
   if(prescribe2ndDeriv) {
-    rsPrepend(d, 2.);      // 2
-    rsAppend( d, 2.);      // 2
-    rsPrepend(r, 1.);      // 1
-    rsAppend( l, 1.); }    // 1
+    rsPrepend(d, T(2));
+    rsAppend( d, T(1));      // book says 2
+    rsPrepend(r, T(1));
+    rsAppend( l, T(2)); }    // book says 1
   else {
-    rsPrepend(d, 1.);
-    rsAppend( d, 1.);
-    rsPrepend(r, 0.);
-    rsAppend( l, 0.); }
+    rsPrepend(d, T(1));
+    rsAppend( d, T(1));
+    rsPrepend(r, T(0));
+    rsAppend( l, T(0)); }
 
   // Create the right hand side:
   Vec R(N-2);
@@ -61,8 +62,8 @@ std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y,
     R[i] = 3*(dy[i+1]*dx[i]/dx[i+1] + dy[i]*dx[i+1]/dx[i]);
   if(prescribe2ndDeriv) {
     int M = N-2;  // last index in dx and dy
-    rsPrepend(R, 3*(dy[0]/dx[0]) - k1*dx[0]);    // 3*
-    rsAppend( R, 3*(dy[M]/dx[M]) - k2*dx[M]); }  // 3*
+    rsPrepend(R, 3*(dy[0]/dx[0]) - k1*dx[0]);
+    rsAppend( R, 3*(dy[M]/dx[M]) - k2*dx[M]); }
   else {
     rsPrepend(R, k1);
     rsAppend( R, k2); }
@@ -72,12 +73,23 @@ std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y,
   rsLinearAlgebra::rsSolveTridiagonalSystem(&l[0], &d[0], &r[0], &R[0], &S[0], N);
   return S;
 
+  // ToDo:
+  // -Write more unit tests with more general datapoints. Generate the datapoints from a cubic 
+  //  polynomial. When we pass the right derivative values for the endpoints, all the slopes should
+  //  be exact at all points.
+  // -Implement periodic conditions - we will get matrix entries in the top-right and bottom-left
+  //  corner an we will need an algorithm that can solve such systems efficiently
+  // -Maybe write an algorithm that produces the control-points for cubic Bezier splines. Weitz has
+  //  videos about that.
+
   // See:
   // https://mathworld.wolfram.com/CubicSpline.html
 }
 template std::vector<double> splineSlopes(const std::vector<double>& x, 
   const std::vector<double>& y, bool prescribe2ndDeriv, double k1, double k2);
-
+template std::vector<rsFraction<int>> splineSlopes(const std::vector<rsFraction<int>>& x, 
+  const std::vector<rsFraction<int>>& y, bool prescribe2ndDeriv, 
+  rsFraction<int> k1, rsFraction<int> k2);
 
 
 
