@@ -13,7 +13,9 @@ class rsFraction
 public:
 
   rsFraction(T numerator = T(0), T denominator = T(1)) : num(numerator), den(denominator)
-  { canonicalize(); }
+  { 
+    canonicalize(); 
+  }
 
 
   //-----------------------------------------------------------------------------------------------

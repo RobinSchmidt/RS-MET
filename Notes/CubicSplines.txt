@@ -1,0 +1,87 @@
+We have 8 datapoints x0,..,x7 and y0,..,y7 and want to find the cubic spline through these points.
+Our polynomial segments and its first 2 derivatives are given by (Eq. 1):
+
+  p_i(x)   = a_i + b_i*(x-x_i) + c_i*(x-x_i)^2 + d_i*(x-x_i)^3
+  p_i'(x)  = b_i + 2*c_i*(x-x_i) + 3*d_i*(x-x_i)^2
+  p_i''(x) = 2*c_i + 6*d_i*(x-x_i)
+
+There are 7 of these segments, indexed 0,..,6. For these egements, we require (Eq. 2):
+ 
+  p_i  (x_i)     = y_i                   i = 0,..,7  ->  function values match data at left node
+  p_i  (x_{i+1}) = y_{i+1}               i = 0,..,6  ->  function values match data at right node
+  p_i' (x_{i+1}) = p_{i+1}' (x_{i+1})    i = 0,..,6  ->  1st derivatives match at inner nodes
+  p_i''(x_{i+1}) = p_{i+1}''(x_{i+1})    i = 0,..,6  ->  2nd derivatives match at inner nodes
+
+The 1st line immediately implies that our a_i coefficients must be equal to the corresponding given
+y_i values. Writing out the other 3 lines (thereby already replacing a_i by y_i) gives:
+
+  p0(x1) = y0 + b0*(x1-x0) + c0*(x1-x0)^2 + d0*(x1-x0)^3
+    ...
+  p6(x7) = y6 + b6*(x7-x6) + c6*(x7-x6)^2 + d6*(x7-x6)^3
+
+  p0'(x1) = p1'(x1) = b0 + 2*c0*(x1-x0) + 3*d0*(x1-x0)^2 = b1 + 2*c1*(x2-x1) + 3*d1*(x2-x1)^2
+    ...
+  p5'(x6) = p6'(x6) = b5 + 2*c5*(x6-x5) + 3*d5*(x6-x5)^2 = b6 + 2*c6*(x7-x6) + 3*d6*(x7-x6)^2
+  
+  p0''(x1) = p1''(x1) = 2*c0 + 6*(x1-x0) = 2*c1 + 6*(x2-x1)
+    ...
+  p5''(x6) = p6''(x6) = 2*c5 + 6*(x6-x5) = 2*c6 + 6*(x7-x6)
+  
+introducing: h_i = x_{i+1} - x_i for i = 0,..,6, this becomes shorter:
+
+  p0(x1) = y0 + b0*h0 + c0*h0^2 + d0*h0^3
+    ...
+  p6(x7) = y6 + b6*h6 + c6*h6^2 + d6*h6^3
+  
+  p0'(x1) = p1'(x1) = b0 + 2*c0*h0 + 3*d0*h0^2 = b1 + 2*c1*h1 + 3*d1*h1^2
+    ...
+  p5'(x6) = p6'(x6) = b5 + 2*c5*h5 + 3*d5*h5^2 = b6 + 2*c6*h6 + 3*d6*h6^2
+  
+  p0''(x1) = p1''(x1) = 2*c0 + 6*h0 = 2*c1 + 6*h1
+    ...
+  p5''(x6) = p6''(x6) = 2*c5 + 6*h5 = 2*c6 + 6*h6
+
+We could proceed by directly deriving a system of linear equations for the remaining unknown 
+b_i, c_i, d_i coefficients. Instead, we set out to derive a system of equations for the slopes 
+(i.e. 1st derivatives) s_i, i = 1,..,6 at all the inner datapoints (we will say something about the
+endpoints with indices 0 and 7 later). These slopes can subsequently be used in a cubic Hermite
+interpolation scheme, such that the Hermite interpolant will become the spline interpolant. They 
+may also serve as numerical estimates for the 1st derivatives in an algorithm that works with 
+numerical differentiation on data. Using any other numerical differentiation method to obtain 
+slope values for cubic Hermite interpolation will, in general, only lead to a 1st order smooth 
+interpolant (values and slopes match at the nodes) whereas this technique leads to a 2nd order 
+smooth interpolant (curvatures match also). It may be noted that empicirally, using a more 
+common finite differencing approach to find target values for the slopes gave Hermite interpolants 
+with less overshoot, so don't conclude, that this way of finding numerical slopes is better in
+all applications. There's a tradeoff between smoothness and overshoot to be made here.
+
+We note that the b_i coeffs must actually be equal to our (yet unknown) slope values s_i, so in the
+following, we will also replace b_i by s_i (in addition to our replacement of a_i by the known 
+y_i). From lines 2 and 3 of Eq. 2 together with our ansatz of Eq. 1, we have:
+
+  y_{i+1} = y_i + s_i*h_i + c_i*h_i^2 + d_i*h_i^3
+  s_{i+1} = s_i + 2*c_i*h_i + 3*d_i*h_i^2
+
+Which we interpret as a system of 2 equations for c_i, d_i. We introduce z_i := y_{i+1} - y_{i}
+for i = 0,...,6 and solve the 2x2 system for c_i, d_i (Eq. 3):
+
+  c_i = ( 3*z_i - (2*s_i + s_{i+1})*h_i) / h_i^2
+  d_i = (-2*z_i + (  s_i + s_{i+1})*h_i) / h_i^3
+
+From line 4 of Eq 2: p_i''(x_{i+1}) = p_{i+1}''(x_{i+1}) together with line 3 of Eq 1: 
+p_i''(x) = 2*c_i + 6*(x-x_i), we can derive:
+
+  2*c_i + 6*d_i*h_i = 2*c_{i+1}    ...-> verify!
+
+
+...tbc...
+
+
+
+References:
+
+This derivation closely follows the one given in "Numerik - Eine lebendige und gut verständliche
+Einführung mit vielen Beispielen" by Andreas Meister and Thomas Sonar, page 59f. We use a slightly
+different notation that is hopefully simpler (no double-indexing for coeffs) and closer to an
+implementation in languages with 0-based array indexing. ...there are also some mistakes in the 
+book...tbc

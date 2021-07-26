@@ -26,8 +26,12 @@ std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y,
   bool prescribe2ndDeriv, T k1, T k2)
 {
   // Implementation follows Meister - Numerik, pg. 59f. (but there's a mistake in the book: the 1 
-  // and 2 in the bottom right of the matrix are exchanged). There's a lot of redundant data that 
-  // can be optimized away in production code.
+  // and 2 in the bottom right of the matrix are exchanged). ..well...at least, that's how we get a
+  // match with the example in the book - but that might be wrong, too. The  matrix as printed in 
+  // the book, seems actually to be consistent with the one on wolfram mathworld...hmm...figure 
+  // out! maybe re-derive
+  
+  // There's a lot of redundant data that can be optimized away in production code.
 
   int N = (int) x.size();
   rsAssert((int)y.size() == N);
@@ -62,8 +66,8 @@ std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y,
     R[i] = 3*(dy[i+1]*dx[i]/dx[i+1] + dy[i]*dx[i+1]/dx[i]);
   if(prescribe2ndDeriv) {
     int M = N-2;  // last index in dx and dy
-    rsPrepend(R, 3*(dy[0]/dx[0]) - k1*dx[0]);
-    rsAppend( R, 3*(dy[M]/dx[M]) - k2*dx[M]); }
+    rsPrepend(R, 3*(dy[0]/dx[0]) - k1*dx[0]/2);    // book has no /2
+    rsAppend( R, 3*(dy[M]/dx[M]) - k2*dx[M]/2); }  // ditto
   else {
     rsPrepend(R, k1);
     rsAppend( R, k2); }

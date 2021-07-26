@@ -582,3 +582,6 @@ inline std::complex<rsSimdVector<T, N>> rsExp(const std::complex<rsSimdVector<T,
 // are LiteralTypes for representing and manipulating complex numbers. The effect of instantiating 
 // the template complex for any other type is unspecified. Seems like std::complex is not as 
 // flexible i i'd like it to be
+
+// For elementary function evaluation, see:
+// https://www.kvraudio.com/forum/viewtopic.php?p=7161124#p7161124 exp/pow

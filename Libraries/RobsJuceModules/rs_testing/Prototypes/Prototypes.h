@@ -55,7 +55,10 @@ as another way of obtaining numerical estimates of the 1st derivative. If prescr
 true, the final 2 parameters prescribe values for the 2nd derivative at the endpoints (defaulting 
 to zero, leading to what is called a "natural" cubic spline). If it is false, these values will be 
 interpreted as prescriptions for the 1st derivative at the endpoints (leading to what is called a 
-"complete" cubic spline. ..tbc... */
+"complete" cubic spline. ..tbc... 
+
+this is still buggy and needs unit-tests and experiments
+*/
 template<class T>
 std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y, 
   bool prescribe2ndDeriv = true, T ypStart = T(0), T ypEnd = T(0));
