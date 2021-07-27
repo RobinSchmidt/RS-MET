@@ -51,13 +51,13 @@ std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y,
     d[i] = 2*(l[i] + r[i]); }
   if(prescribe2ndDeriv) {
     rsPrepend(d, T(2));
-    rsAppend( d, T(1));      // book says 2
     rsPrepend(r, T(1));
+    rsAppend( d, T(1));      // book says 2
     rsAppend( l, T(2)); }    // book says 1
   else {
     rsPrepend(d, T(1));
-    rsAppend( d, T(1));
     rsPrepend(r, T(0));
+    rsAppend( d, T(1));
     rsAppend( l, T(0)); }
 
   // Create the right hand side:

@@ -329,7 +329,7 @@ bool splineSlopesUnitTest(T tol)
   r = s - t;
   ok &= rsIsCloseTo(s, t, tol);
   // It's weird to prescribe the 2nd derivative at the left boundary of the final segment rather
-  // than on its right boundary
+  // than at its right boundary
 
   //rsPlotVector(r);
   // error starts small at left and grows big at right end...maybe the equation for the last 

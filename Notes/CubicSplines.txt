@@ -73,9 +73,137 @@ p_i''(x) = 2*c_i + 6*(x-x_i), we can derive:
 
   2*c_i + 6*d_i*h_i = 2*c_{i+1}    ...-> verify!
 
+Plugging the expressions above for c_i, d_i into that leads (after some tedium) to:
 
+    h_i*s_{i-1} + 2*(h_i + h_{i-1})*s_i + h_{i-1}*s_{i+1} 
+  = 3*(z_{i-1}*h_i/h_{i-1} + z_i*h_{i-1}/h_i)
+
+which is a tridiagonal system of equations for s1,...,s6. For the slopes s0,s7 at the boundary 
+points, we are free to impose two more requirements. The system generally looks like:
+
+  |m0 hm 0  0  0  0  0  0 |   |s0|   |r0|
+  |h1 m1 h0 0  0  0  0  0 |   |s1|   |r1|
+  |0  h2 m2 h1 0  0  0  0 |   |s2|   |r2|
+  |0  0  h3 m3 h2 0  0  0 | * |s3| = |r3|
+  |0  0  0  h4 m4 h3 0  0 |   |s4|   |r4|
+  |0  0  0  0  h5 m5 h4 0 |   |s5|   |r5|
+  |0  0  0  0  0  h6 m6 h5|   |s6|   |r6|
+  |0  0  0  0  0  0  h7 m7|   |s7|   |r7|
+
+where the elements of the right hand side vector are given by:
+
+  r_i = 3*(z_{i-1}*h_i/h_{i-1} + z_i*h_{i-1}/h_i)   i = 1,..,6
+  
+the elements of the main diagonal are given by:
+
+  m_i = 2*(h_i + h_{i-1})   i = 1,...,6
+
+and the elements h0,...,h6 appear on the upper and lower diagonal. 
+
+Boundary Conditions
+-------------------
+
+Now we turn to the question, where to get values from for elements with indices 0 and 7 and the 
+strange hm element in the top left (for h_{-1}). We need to provide two additional requirements 
+that determine how the spline will behave at the boundaries. In the simplest case, we could just 
+prescribe values for the slopes s0 and s7 at the boundaries. That leads to what is called the 
+"complete" spline and amounts to setting:
+
+  m0 = 1, hm = 0, h7 = 0, m7 = 1, r0 = s0, r7 = s7
+
+Another boundary condition known as the "natural" cubic spline requires the 2nd derivatives to 
+vanish at the boundaries. We'll be a bit more general here and allow to prescribe arbitrary values 
+k0 and k7 for the 2nd derivative at these boundaries. For the left boundary, we have:
+
+  k0 = 2*c0                                2nd derivative of p0 at x0, p0''(x0), given
+  c0 = (3*z0 - (2*s0 + s1)*h0) / h0^2      1st line of Eq. 3 with i=0
+
+These two equations can be combined into a single equation involving s0 and s1 as unknowns by 
+solving the 1st for c0 and plugging the result into the 2nd. This gives:
+
+  2*s0 + s1 = 3*z0/h0 - k0*h0/2
+
+from which we read off the matrix elements m0,hm and right-hand-side vector element r0:
+
+  m0 = 2, hm = 1, r0 = 3*z0/h0 - k0*h0/2
+
+For the right boundary, it gets a little more complicated because we need to use the p6'' equation
+at x7, whereas before, we used the p0'' equation at x0, in which case another term became zero. Now
+we have:
+
+  k7 = 2*c6 + 6*d6*h6                      2nd derivative of p6 at x7, p6''(x7), given
+  c6 = ( 3*z6 - (2*s6 + s7)*h6) / h6^2     1st line of Eq. 3 with i=6
+  d6 = (-2*z6 + (  s6 + s7)*h6) / h6^3     2nd line ...
+
+Now we have 3 equations that we need to turn into one involving s6 and s7 as unknowns. This tedium 
+is relegated to appendix A. The result is:
+
+  (1/(3*h6)) * s6 + (2/(3*h6)) * s7 =  z6/h6^2 + k7/6
+
+from which we read off:
+
+  h7 = 1/(3*h6), m7 = 2/(3*h6), r7 = z6/h6^2 + k7/6
+
+
+  
+  
+Appendix A - Derivation of right boundary condition for natural spline:
+
+Let's solve k7 = 2*c6 + 6*d6*h6 for c6:
+
+  k7 = 2*c6 + 6*d6*h6  ->  (k7 - 6*d6*h6)/2 = c6
+
+Plug that into the 2nd:
+
+  (k7 - 6*d6*h6)/2 = ( 3*z6 - (2*s6 + s7)*h6) / h6^2
+
+Solve that for d6:
+  
+  2*(3*z6 - (2*s6 + s7)*h6)/h6^2 - k7 = -6*d6*h6
+  (k7 - 2*(3*z6 - (2*s6 + s7)*h6)/h6^2) = 6*d6*h6
+  ((k7 - 2*(3*z6 - (2*s6 + s7)*h6)/h6^2))/(6*h6) = d6
+  
+and plug it into the 3rd:
+
+  ((k7 - 2*(3*z6 - (2*s6 + s7)*h6)/h6^2))/(6*h6) = (-2*z6 + (s6 + s7)*h6) / h6^3
+
+OK - that's a mess, lets' use sage:
+
+  var("k7 z6 s6 s7 h6")
+  eq1 = ((k7 - 2*(3*z6 - (2*s6 + s7)*h6)/h6^2))/(6*h6) == (-2*z6 + (s6 + s7)*h6) / h6^3
+  expand(eq1)
+  
+which gives:
+
+  1/6*k7/h6 + 2/3*s6/h6^2 + 1/3*s7/h6^2 - z6/h6^3 == s6/h6^2 + s7/h6^2 - 2*z6/h6^3
+
+and bring all known term to the right and all unknown terms (those involving s6 and s7) to the 
+left:
+ 
+   2/3*s6/h6^2 + 1/3*s7/h6^2 - s6/h6^2 - s7/h6^2 = - 2*z6/h6^3 - 1/6*k7/h6 + z6/h6^3
+
+multiply by h6 and sort:
+
+  2/3*s6/h6 - s6/h6 + 1/3*s7/h6 - s7/h6 = -2*z6/h6^2 + z6/h6^2 - 1/6*k7
+ 
+and simplify
+
+  (-1/(3*h6)) * s6 - (2/(3*h6)) * s7 =  -z6/h6^2 - k7/6
+  (1/(3*h6)) * s6 + (2/(3*h6)) * s7 =  z6/h6^2 + k7/6
+
+from which we read off:
+
+  h7 = 1/(3*h6), m7 = 2/(3*h6), r7 = z6/h6^2 + k7/6
+   
 ...tbc...
 
+-Periodic boundary conditions:
+ -i think, the user must give the spacing between the last datapoint x7 and the wrapped-around 
+  first datapoint x0 (which aliases to x8) which goes into some sort of h7, so m7 = 2*(h7+h6) and
+  m0 = 2*(h0+h7)?
+ -the matrix gets nonzero top-right and bottom-left elements which requires application of the
+  https://en.wikipedia.org/wiki/Sherman%E2%80%93Morrison_formula (see Weitz video on Bezier 
+  splines)
 
 
 References:
