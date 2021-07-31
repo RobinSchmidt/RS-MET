@@ -33,6 +33,43 @@ bool rsLinearAlgebraNew::solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixV
 }
 
 template<class T>
+void rsLinearAlgebraNew::solveTridiagonal(int N, const T* L, T* D, const T* U, T* x, T* b)
+{
+  // Gaussian elimination (without pivoting):
+  for(int i = 1; i < N; i++) {
+    T k = L[i-1] / D[i-1];
+    D[i] -= k*U[i-1];
+    //L[i] -= k*D[i-1];  // not necessary, see comment below
+    b[i] -= k*b[i-1]; }
+
+  // Backsubstitution:
+  x[N-1] = b[N-1] / D[N-1];
+  for(int i = N-2; i >= 0; i--)
+    x[i] = (b[i] - U[i]*x[i+1]) / D[i];
+
+  // Notes:
+  // -The commented L[i] -= ... is what we do conceptually to zero out the L[i] element but there's 
+  //  no need to actually do it because we will not read the L[i] element anymore because we know 
+  //  that from then on, it's supposed to be zero anyway. Not having to modify the L or U arrays is
+  //  nice because it means   // that we can have L and U const pointers, allowing the caller to 
+  //  use the same array for both. Having equal lower and upper diagonals (possibly with a shift) 
+  //  does occur in practice, for example, in cubic spline interpolation.
+  // -This algo here seems equivalent to the one givene here:
+  //    https://www.cfd-online.com/Wiki/Tridiagonal_matrix_algorithm_-_TDMA_(Thomas_algorithm)
+  //  but different from the one givene here:
+  //    https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
+
+  // ToDo:
+  // -Can x and b be the same? I think so. -> document
+  // -Make a version that solves the system for two (or maybe M?) right-hand-sides simulatneously. 
+  //  This is needed for the Sherman-Morrison-Woodbury formula (for cubic splines with periodic 
+  //  boundary conditions)
+  // -Implement solveWrappedTriDiag (should use Sherman-Morrison-Woodbury), then implement spline
+  //  interpolation with different boundray conditions. 
+
+}
+
+template<class T>
 T rsLinearAlgebraNew::determinant(const rsMatrixView<T>& A)
 {
   int N = A.getNumRows();
@@ -158,7 +195,7 @@ int rsLinearAlgebraNew::makeTriangular(rsMatrixView<T>& A, rsMatrixView<T>& B, i
 // soon as it encounters a situation where there are only zeros in th i-th column below the 
 // diagonla element A(i,i) such that no pivot can be found - ith should then return i - it should
 // always return the number of successful elimination steps - how does this number relate to the 
-// rank - it can't be the rank itself because when the matix already is triangular, we take no step
+// rank - it can't be the rank itself because when the matrix already is triangular, we take no step
 // at all but it may still have full rank -  i think, the rank is given by the greatest index i for
 // which A(i,i) is nonzero after the function returns
 
@@ -221,7 +258,7 @@ std::vector<T> rsLinearAlgebraNew::solveOld(rsMatrix<T> A, std::vector<T> b)
 // for the new rsMatrix class - use the new elementary row-operations - try to use as little extra 
 // memory as possible - and if some is needed, use workspace parameters.
 // It's a bit of a frankensteinization of new code (using rsMatrix as input) and old code (using 
-// the old implementation of Gaussian elimination)
+// the old implementation of Gaussian elimination). 
 
 
 /*
@@ -241,6 +278,10 @@ ToDo:
  argument may equal the 2nd (E,E here) - i think, E must be upper triangular such that during the
  elimination only zeros get subtracted - but the algo may swap rows - so perhaps it works only if
  E is diagonal? in this case, whatever gets swapped, we will only ever add zeros to the rows
+-maybe implement Gaussian elimination with full pivoting
+-maybe implement solvers with pre-conditioning and/or iterative refinement to improve numerical 
+ precision
+-
 
 
  -why is it that Gaussian elimination doesn't need to keep track of the swaps - or is this just 

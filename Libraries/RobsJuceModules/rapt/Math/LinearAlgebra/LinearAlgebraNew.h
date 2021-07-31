@@ -7,7 +7,15 @@ inversion, etc.
 Many algorithms destroy the original input matrices and/or right-hand-sides in the course of their 
 operation. If a parameter like a pointer to an array or a reference to an rsMatrixView is passed as
 non-const, client code should always assume that the argument will contain either a desired result 
-or garbage when the function returns. If you need to keep the inputs, pass a copy. */
+or garbage when the function returns. If you need to keep the inputs, pass a copy. 
+
+
+ToDo:
+-Maybe have independent types for the matrix elements and the vector elements. In some computer 
+ graphics algorithms, the solution- and right-hand-side vectors are themselves composed of vectors 
+ as their elements (whereas the matrix elements are still just scalars).
+
+*/
 
 class rsLinearAlgebraNew
 {
@@ -57,12 +65,23 @@ public:
   -> figure out.  */
   template<class T>
   static bool solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
-  // doesn't allocate, todo: document, when this may be used in place
-  // maybe pass arguments as A,B,X - outputs should come last - check, how the old versions does 
-  // it
-  // document return value: it returns true, iff the linear system has a unique solution - it will
-  // fail whenever there are no solutions or a continuum of solutions
-  // maybe it should also return the rank?
+  // -doesn't allocate, todo: document, when this may be used in place
+  // -maybe pass arguments as A,B,X - outputs should come last - check, how the old versions does 
+  //  it
+  // -document return value: it returns true, iff the linear system has a unique solution - it will
+  //  fail whenever there are no solutions or a continuum of solutions
+  // -maybe it should also return the rank?
+  // -maybe rename to solveGaussPartialPivot or ..RowPivot, implement also solveGaussFullPivot, 
+  //  maybe keep the unqualified "solve" as alias for convenience..or maybe the unqualified solve 
+  //  should take an additional parameter that selects the algorithm (which may default to Gaussian
+  //  elimination with partial pivoting). maybe the algo parameter should be a bitfield: one 
+  //  segment selects the core algo, another the preconditioner, yet another the incremental 
+  //  refinement, etc.
+
+  template<class T>
+  static void solveTridiagonal(int N, const T* lowerDiag, T* mainDiag, 
+    const T* upperDiag, T* x, T* b);
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Subspaces */

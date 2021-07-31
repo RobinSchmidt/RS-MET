@@ -180,7 +180,7 @@ template void rsMatrixTools::matrixInPlaceMultiply(double **A, double **B, int N
 //-------------------------------------------------------------------------------------------------
 // Math:
 
-//template RAPT::rsLinearAlgebra<float>; // doens't work bcs the template parameters are decalred in the member functions
+//template RAPT::rsLinearAlgebra<float>; // doens't work bcs the template parameters are declared in the member functions
 template void rsLinearAlgebra::rsSolveLinearSystem2x2(const double A[2][2], double x[2], const double y[2]);
 template void rsLinearAlgebra::rsSolveLinearSystem3x3(const double A[3][3], double x[3], const double y[3]);
 
@@ -202,6 +202,11 @@ template bool rsLinearAlgebra::rsChangeOfBasisMatrixRowWise(   double **A, doubl
 template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, const cmplxD *b, int N);
 
 template std::vector<double> rsLinearAlgebraNew::solveOld(rsMatrix<double> A, std::vector<double> b);
+
+template void rsLinearAlgebraNew::solveTridiagonal(int N, const double* lowerDiag, 
+  double* mainDiag, const double* upperDiag, double* x, double* b);
+
+
 
 template class RAPT::rsMatrixOld<double>;  // try to get rid
 

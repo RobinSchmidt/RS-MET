@@ -86,6 +86,13 @@ std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y,
   //  corner an we will need an algorithm that can solve such systems efficiently
   // -Maybe write an algorithm that produces the control-points for cubic Bezier splines. Weitz has
   //  videos about that.
+  // -Let the user specify the boundary conditions independently for left and right boundary. When 
+  //  we want to loop through spline-envelopes, we may want to use periodic boundary conditions when
+  //  the loop is repeated, but may use a prescribed slope on the left when we first enter the 
+  //  loop and a prescribed slope on the right, when we leave it, where the slope prescriptions 
+  //  come from a spline interpolant taking into account the preceding and following sections. So,
+  //  in the loop itself, we would have 3 sets of coeffs/slopes: one that is used on first entry,
+  //  one that is used during repetition and one that is used in the last cycle before leaving.
 
   // See:
   // https://mathworld.wolfram.com/CubicSpline.html
@@ -471,9 +478,11 @@ void solveTriDiagGauss(const std::vector<double>& L, std::vector<double>& D,
 
     //L[i] -= k*D[i-1];
     // This is what we do conceptually to zero out the L[i] element. There's no need to actually do
-    // it because we will not read the L[i] element anymore. That's nice because it means that we 
-    // can have L and U const references, allowing the caller to use the same array for both 
-    // (having L and U refer to the same array does occur in practice, maybe with a shift).
+    // it because we will not read the L[i] element anymore because we know that from now on, it's 
+    // supposed to be zero anyway. Not having to modify the L or U arrays is nice because it means 
+    // that we can have L and U const references, allowing the caller to use the same array for 
+    // both. Having equal lower and upper diagonals (possibly with a shift) does occur in practice, 
+    // for example, in cubic spline interpolation.
   }
 
   // Backsubstitution:

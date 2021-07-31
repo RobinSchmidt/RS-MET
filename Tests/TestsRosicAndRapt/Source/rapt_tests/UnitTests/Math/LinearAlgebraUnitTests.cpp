@@ -353,6 +353,8 @@ bool testTridiagonalSystemNew()
 
   using Vec = std::vector<double>;
   using Mat = rsMatrix<double>;
+  using LA  = RAPT::rsLinearAlgebraNew;
+
 
   // The coefficient matrix:
   Mat A(5, 5, {+2, -1,  0,  0,  0,
@@ -372,7 +374,7 @@ bool testTridiagonalSystemNew()
   Mat A2 = A;
   Mat B2 = B;
   Mat X(5, 2);
-  rsLinearAlgebraNew::solve(A2, X, B2);
+  LA::solve(A2, X, B2);
   B2 = A*X;  // should give back B
   double tol = 1.e-14;
   ok &= B2.equals(B, tol);
@@ -385,7 +387,8 @@ bool testTridiagonalSystemNew()
   Vec x(5);
   Vec b2 = b;
   Vec D2 = D;
-  solveTriDiagGauss(L, D2, U, x, b2);
+  //solveTriDiagGauss(L, D2, U, x, b2);  // prototype
+  LA::solveTridiagonal(5, &L[0], &D2[0], &U[0], &x[0], &b2[0]);
   b2 = A*x;
   ok &= rsIsCloseTo(b, b2, tol);
 
@@ -395,7 +398,14 @@ bool testTridiagonalSystemNew()
   b3 = A*x;
   ok &= rsIsCloseTo(b, b3, tol);
 
-  Vec b4 = 0.5*(b2+b3);
+  // Try cancelling the numerical error (it seems to be directed into opposite directions in the 
+  // two implementations:
+  Vec b4 = 0.5*(b2+b3); 
+  // ...seems indeed closer to b than either b2 or b3 alone..but actually, such a step should be 
+  // applied to the solution vectors x, not b...but this is just a quick and dirty test.
+  // ToDo: figure out, if this really can be exploited in any meaningful to improve numerical 
+  // precision
+
 
   return ok;
 }
