@@ -79,8 +79,15 @@ public:
   //  refinement, etc.
 
   template<class T>
-  static void solveTridiagonal(int N, const T* lowerDiag, T* mainDiag, 
-    const T* upperDiag, T* x, T* b);
+  static void solveTridiagonal(int N, const T* lowerDiag, T* mainDiag, const T* upperDiag, 
+    T* x, T* b);
+
+  /** Like solveTridiagonal but solves the system for multiple right hand sides at ones, collected 
+  as the columns of B. The solutions vectors are the corresponding columns of X. The size N of the
+  system is inferred from the number of rows in B and X (which must match). */
+  template<class T>
+  static void solveTridiagonal(const T* lowerDiag, T* mainDiag, const T* upperDiag, 
+    rsMatrixView<T>& X, rsMatrixView<T>& B);
 
 
   //-----------------------------------------------------------------------------------------------

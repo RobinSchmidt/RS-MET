@@ -394,7 +394,8 @@ bool testTridiagonalSystemNew()
 
   // Solve the system via the other tridiagonal algorithm:
   Vec b3 = b; D2 = D;
-  solveTriDiagThomas(L, D2, U, x, b3);
+  Vec U2 = U;
+  solveTriDiagThomas(L, D, U2, x, b3); // Thomas messes with U but leaves D alone
   b3 = A*x;
   ok &= rsIsCloseTo(b, b3, tol);
 
@@ -406,6 +407,11 @@ bool testTridiagonalSystemNew()
   // ToDo: figure out, if this really can be exploited in any meaningful to improve numerical 
   // precision
 
+  D2 = D;
+  B2 = B;
+  LA::solveTridiagonal(&L[0], &D2[0], &U[0], X, B2);
+  B2 = A*X;
+  ok &= B2.equals(B, tol);
 
   return ok;
 }

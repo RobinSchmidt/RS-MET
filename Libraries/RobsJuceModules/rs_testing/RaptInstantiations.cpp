@@ -206,6 +206,9 @@ template std::vector<double> rsLinearAlgebraNew::solveOld(rsMatrix<double> A, st
 template void rsLinearAlgebraNew::solveTridiagonal(int N, const double* lowerDiag, 
   double* mainDiag, const double* upperDiag, double* x, double* b);
 
+template void rsLinearAlgebraNew::solveTridiagonal(const double* lowerDiag, double* mainDiag, 
+  const double* upperDiag, RAPT::rsMatrixView<double>& X, RAPT::rsMatrixView<double>& B);
+
 
 
 template class RAPT::rsMatrixOld<double>;  // try to get rid

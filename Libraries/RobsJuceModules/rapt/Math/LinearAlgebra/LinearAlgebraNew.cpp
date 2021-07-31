@@ -66,8 +66,34 @@ void rsLinearAlgebraNew::solveTridiagonal(int N, const T* L, T* D, const T* U, T
   //  boundary conditions)
   // -Implement solveWrappedTriDiag (should use Sherman-Morrison-Woodbury), then implement spline
   //  interpolation with different boundray conditions. 
-
 }
+
+template<class T>
+void rsLinearAlgebraNew::solveTridiagonal(const T* L, T* D, const T* U, 
+  rsMatrixView<T>& X, rsMatrixView<T>& B)
+{
+  rsAssert(X.hasSameShapeAs(B));
+  int N = B.getNumRows();
+  int M = B.getNumColumns();
+
+  // Gaussian elimination:
+  T k;
+  for(int i = 1; i < N; i++) {
+    k = L[i-1] / D[i-1];
+    D[i] -= k*U[i-1];
+    for(int j = 0; j < M; j++)
+      B(i,j) -= k*B(i-1,j);  }
+
+  // Backsubstitution:
+  k = T(1) / D[N-1];
+  for(int j = 0; j < M; j++)
+    X(N-1,j) = B(N-1,j) * k;
+  for(int i = N-2; i >= 0; i--) {
+    k = T(1) / D[i];
+    for(int j = 0; j < M; j++)
+      X(i,j) = (B(i,j) - U[i]*X(i+1,j)) * k; }
+}
+
 
 template<class T>
 T rsLinearAlgebraNew::determinant(const rsMatrixView<T>& A)
