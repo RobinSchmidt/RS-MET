@@ -406,9 +406,6 @@ bool rsLinearAlgebra::rsInvertMatrix(T **A, int N)
   return !matrixIsSingular;
 }
 
-
-
-
 template<class T>
 bool rsLinearAlgebra::rsSolveTridiagonalSystem(T *lower, T *main, T *upper, T *rhs, T *solution, int N)
 {
@@ -438,6 +435,12 @@ bool rsLinearAlgebra::rsSolveTridiagonalSystem(T *lower, T *main, T *upper, T *r
 
   delete[] tmp;
   return true;
+
+  // ToDo: get rid of the memory allocation, either by using a workspace pointer or (better) by 
+  // somehow avoiding using a temp-array altogether. Maybe it's acceptable to destroy the rhs 
+  // and/or the matrix, if this is needed to make it work. Often, it's only constructed to solve
+  // a single system. See the implementation for pentadiagonal systems below. It doesn't use any 
+  // temp arrays
 }
 
 template<class T>

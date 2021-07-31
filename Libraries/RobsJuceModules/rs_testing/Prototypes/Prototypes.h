@@ -57,12 +57,13 @@ to zero, leading to what is called a "natural" cubic spline). If it is false, th
 interpreted as prescriptions for the 1st derivative at the endpoints (leading to what is called a 
 "complete" cubic spline. ..tbc... 
 
-this is still buggy and needs unit-tests and experiments
+this needs unit-tests and experiments
 */
 template<class T>
 std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y, 
   bool prescribe2ndDeriv = true, T ypStart = T(0), T ypEnd = T(0));
 // maybe the production version of this should go into rsNumericalDifferentiator
+// todo: also implement periodic boundary conditions
 
 // some experimental sin/cos approximations:
 double rsCos2(double x);
@@ -170,6 +171,13 @@ void weightedSum(const T* x1, int N1, T w1, const T* x2, int N2, T w2, T* y, int
 }
 // todo: document, write test, move into rsArrayTools
 
+
+void solveTriDiagGauss(const std::vector<double>& lowerDiag, std::vector<double>& mainDiag, 
+  const std::vector<double>& upperDiag, std::vector<double>& x, std::vector<double>& b);
+
+void solveTriDiagThomas(const std::vector<double>& lowerDiag, const std::vector<double>& mainDiag, 
+  std::vector<double>& upperDiag, std::vector<double>& x, std::vector<double>& b);
+
 /** Solves a pentadiagonal linear system of equations with given diagonals and right-hand side
 using a simple algorithm without pivot-search. lowerDiag1 is the one directly below the main
 diagonal, lowerDiag2 the one below lowerDiag1 - and similarly for upperDiag1/upperDiag2. In the
@@ -192,6 +200,9 @@ std::vector<double> pentaDiagMatVecMul(
   std::vector<double>& mainDiag,
   std::vector<double>& upperDiag1, std::vector<double>& upperDiag2,
   std::vector<double>& input);
+
+
+
 
 /** Minimizes the sum of squared differences between adjacent array elements under the constraint
 that the sums of adjacent array elements must be equal to given values. The input array s is the

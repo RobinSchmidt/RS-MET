@@ -19,19 +19,19 @@ D0 U0 V0 00 00 00 00   x0   B0
 00 00 00 00 00 00 D6   x6   B6
 
 let's initialize:
-D0 = d0, U0 = u0, V0 = v0, B0 = b0
-L0 = l0, D1 = d1, U1 = u1, V1 = v1
-and subtract k=L0/D0 times the 1st row (index 0) from the 2nd row (index 1), 
-this gives for the new first two rows:
+  D0 = d0, U0 = u0, V0 = v0, B0 = b0
+  L0 = l0, D1 = d1, U1 = u1, V1 = v1
+and subtract k=L0/D0 times the 1st row (index 0) from the 2nd row (index 1), this gives for the 
+new first two rows:
 
 D0 U0 V0 00 00 00 00   x0   B0
 L0 D1 U1 V1 00 00 00   x1   B1
 ...other rows stay the same...
 
 where the new, updated values of the 2nd row are: 
-L0 = L0-k*D0=0, D1 = D1-k*U0, U1 = U1-k*V0, V1 = V1-k*0 = V1, B1 = B1-k*B0
-Lets now define M0=m0 and also subtract k=M0/D0 times the first row (index 0) 
-from the 3rd row (index 2), this gives:
+  L0 = L0-k*D0=0, D1 = D1-k*U0, U1 = U1-k*V0, V1 = V1-k*0 = V1, B1 = B1-k*B0
+Lets now define M0=m0 and also subtract k=M0/D0 times the first row (index 0) from the 3rd row 
+(index 2), this gives:
 
 D0 U0 V0 00 00 00 00   x0   B0
 L0 D1 U1 V1 00 00 00   x1   B1
@@ -39,14 +39,13 @@ M0 L1 D2 U2 V2 00 00   x2   B2
 ...no changes...
 
 where the new, updated values of the 3rd row are:
-M0 = M0 - k*D0=0, L1 = L1 - k*U0, D2 = D2 - k*V0, 
-U2 = U2-k*0 = U2, V2 = V2 - k*0 = V2, B2 = B2 - k*B0
-now we have obtained an all-zero first column except for the fist element at
-position 0,0, where the element is D0. Next, we want also the element L1 to 
-become zero (without destroying the zeros in our first column). To achieve that,
-we define k=L1/D1 and subtract k times the 2nd row (index 1) from the 3rd 
-(index 2). We proceed in the same manner to create more zero-colums. The 
-algorithm is generally
+  M0 = M0 - k*D0=0, L1 = L1 - k*U0, D2 = D2 - k*V0, 
+  U2 = U2-k*0 = U2, V2 = V2 - k*0 = V2, B2 = B2 - k*B0
+now we have obtained an all-zero first column except for the fist element at position 0,0, where 
+the element is D0. Next, we want also the element L1 to become zero (without destroying the zeros 
+in our first column). To achieve that, we define k=L1/D1 and subtract k times the 2nd row (index 1) 
+from the 3rd (index 2). We proceed in the same manner to create more zero-columns. The algorithm is 
+generally
 
 1:
 init arrays D=d, U=u, V=v, L=l, M=m, B=b
@@ -90,7 +89,78 @@ and the x4 case shows also the general pattern for i down to 0:
 
 x[i] = (B[i] - U[i]*x[i+1] - V[i]*x[i+2]) / D[i]
 
-===============================================================================
+===================================================================================================
+
+Solving a tridiagonal system:
+
+d0 u0 00 00 00 00 00   x0   b0
+l0 d1 u1 00 00 00 00   x1   b1
+00 l1 d2 u2 00 00 00   x2   b2
+00 00 l2 d3 u3 00 00 * x3 = b3
+00 00 00 l3 d4 u4 00   x4   b4
+00 00 00 00 l4 d5 u5   x5   b5
+00 00 00 00 00 l5 d6   x6   b6
+
+let's subtract k=l0/d0 times the 1st row (index 0) from the 2nd row (index 1), this gives for the 
+new first two rows:
+
+d0 u0 00 00 00 00 00   x0   b0
+L0 D1 u1 00 00 00 00   x1   B1
+...rest stays the same...
+
+where L0 := l0-k*d0 = l0-(l0/d0)*d0 = 0, D1 := d1-k*u0, B1 = b1-k*b0. Now let k=l1/D1 and subtract 
+k times the 2nd row (index 1) from the 3rd (index 2):
+
+D0 u0 00 00 00 00 00   x0   B0
+L0 D1 u1 00 00 00 00   x1   B1
+00 L1 D2 u2 00 00 00   x2   B2
+
+where L1 := L1-k*D1 = L1-(L1/D1)*D1 = 0, D2 := D2-k*u1, B2 := B2 - k*B1
+
+in general:
+for(i = 1; i < N; i++)
+{
+  k = l[i-1] / d[i-1];
+  d[i] = d[i] - k*u[i-1];
+  b[i] = b[i] - k*b[i-1];
+  //l[i] = l[i] - k*d[i-1];  // not really necessary to actually do this
+}
+
+at the end of this, the system is in upper triangular, bidiagonal form:
+
+D0 u0 00 00 00 00 00   x0   B0
+00 D1 u1 00 00 00 00   x1   B1
+00 00 D2 u2 00 00 00   x2   B2
+00 00 00 D3 u3 00 00 * x3 = B3
+00 00 00 00 D4 u4 00   x4   B4
+00 00 00 00 00 D5 u5   x5   B5
+00 00 00 00 00 00 D6   x6   B6
+ 
+and we can find the solution by backsubstitution:
+
+x6 = B6/D6
+x5 = (B5 - u5*x6)/D5
+x4 = (B4 - u4*x5)/D4
+
+...we should do the process for several rhs vectors at the same time to facilitate use of the
+Sherman-Morrison-Woodbury formula (it needs to solve a tridiagonal system for 2 rhs vectors)
+
+hmm - Weitz' Thomas-algorithm (at 15 min) actually does different things:
+https://www.youtube.com/watch?v=0oUo1d6PpGU
+does this create an upper triangular matrix?...try it.
+
+This seems to be the same algo as in Weitz' video:
+https://de.wikipedia.org/wiki/Thomas-Algorithmus
+https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
+
+hmm...yeah - i've implemented both and they both seem to work, but do totally different things. The
+numerical error also seems to be different -> investigate further, if one is more precise than the
+other. I think, my variant could be slightly more efficient (not sure) but it has the also 
+desirable feature that it doesn't need to write into the L or U vectors (it modifies only D), 
+whereas the Thomas algo modifies U (and keeps D intact) which rules out using the same array for U 
+and L (which could otherwise be done in spline interpolation).
+
+===================================================================================================
 
 Band-Diagonal system with pivoting
 
@@ -118,7 +188,7 @@ D0 D1 D2 D3 D4 D5 D6 D7
 L0 L1 L2 L3 L4 L5 L6 00
 M0 M1 M2 M3 M4 M5 00 00
 
-note that the storgae matrix needs only (Nu+Nl+1)xN space whereas the originla 
+note that the storage matrix needs only (Nu+Nl+1)xN space whereas the original 
 matrix needs NxN. Nevertheless, with the format chosen, we can still do the 
 regular elementary row operations and they
 

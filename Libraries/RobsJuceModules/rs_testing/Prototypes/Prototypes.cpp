@@ -52,8 +52,9 @@ std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y,
   if(prescribe2ndDeriv) {
     rsPrepend(d, T(2));
     rsPrepend(r, T(1));
-    rsAppend( d, T(1));      // book says 2
-    rsAppend( l, T(2)); }    // book says 1
+    T tmp = T(1)/(T(3)*dx[N-2]);
+    rsAppend( d, T(2)*tmp);      // book says 2
+    rsAppend( l, tmp);   }       // book says 1
   else {
     rsPrepend(d, T(1));
     rsPrepend(r, T(0));
@@ -66,8 +67,8 @@ std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y,
     R[i] = 3*(dy[i+1]*dx[i]/dx[i+1] + dy[i]*dx[i+1]/dx[i]);
   if(prescribe2ndDeriv) {
     int M = N-2;  // last index in dx and dy
-    rsPrepend(R, 3*(dy[0]/dx[0]) - k1*dx[0]/2);    // book has no /2
-    rsAppend( R, 3*(dy[M]/dx[M]) - k2*dx[M]/2); }  // ditto
+    rsPrepend(R, 3*(dy[0]/dx[0]) - k1*dx[0]/T(2));   // book says 3*(dy[0]/dx[0]) - k1*dx[0]
+    rsAppend( R, dy[M]/(dx[M]*dx[M]) + k2/T(6));   } // book says 3*(dy[M]/dx[M]) - k2*dx[M]
   else {
     rsPrepend(R, k1);
     rsAppend( R, k2); }
@@ -446,6 +447,67 @@ void rsSinCosApprox4(double x, double* s, double* c)
 //  Maybe try Chebychev approximation, too (i think, this finds an interpolation polynomial where
 //  the evaluation points are given by the roots of a Chebychev polynomial)
 
+
+void solveTriDiagGauss(const std::vector<double>& L, std::vector<double>& D, 
+  const std::vector<double>& U, std::vector<double>& x, std::vector<double>& b)
+{
+  int N = (int) D.size();
+  rsAssert(L.size() == N-1);
+  rsAssert(U.size() == N-1);
+  rsAssert(x.size() == N);
+  rsAssert(b.size() == N);
+
+  // later, when B is matrix
+  //rsAssert(X.getNumRows() == N);
+  //rsAssert(B.getNumRows() == N);
+  //rsAssert(X.getNumColumns() == B.getNumColumns());
+
+  // Gaussian elimination (without pivoting):
+  for(int i = 1; i < N; i++)
+  {
+    double k = L[i-1] / D[i-1];
+    D[i] -= k*U[i-1];
+    b[i] -= k*b[i-1];
+
+    //L[i] -= k*D[i-1];
+    // This is what we do conceptually to zero out the L[i] element. There's no need to actually do
+    // it because we will not read the L[i] element anymore. That's nice because it means that we 
+    // can have L and U const references, allowing the caller to use the same array for both 
+    // (having L and U refer to the same array does occur in practice, maybe with a shift).
+  }
+
+  // Backsubstitution:
+  x[N-1] = b[N-1] / D[N-1];
+  for(int i = N-2; i >= 0; i--)
+    x[i] = (b[i] - U[i]*x[i+1]) / D[i];
+}
+// can x and b be the same? i think so.
+
+void solveTriDiagThomas(const std::vector<double>& a, const std::vector<double>& b, 
+  std::vector<double>& c, std::vector<double>& x, std::vector<double>& d)
+{
+  int N = (int) b.size();
+  rsAssert(a.size() == N-1);
+  rsAssert(c.size() == N-1);
+  rsAssert(x.size() == N);
+  rsAssert(d.size() == N);
+
+  c[0] /= b[0];
+  for(int i = 1; i < N-1; i++)
+    c[i] /= b[i] - c[i-1] * a[i-1];
+
+  d[0] /= b[0];
+  for(int i = 1; i < N; i++)
+    d[i] = (d[i]-d[i-1]*a[i-1]) / (b[i] - c[i-1]*a[i-1]);
+
+  x[N-1] = d[N-1];
+  for(int i = N-2; i >= 0; i--)
+    x[i] = d[i] - c[i]*x[i+1];
+
+  // Implements this algorithm:
+  // https://de.wikipedia.org/wiki/Thomas-Algorithmus
+  // https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
+}
 
 std::vector<double> solvePentaDiagonalSystem(
   std::vector<double>& M, std::vector<double>& L,

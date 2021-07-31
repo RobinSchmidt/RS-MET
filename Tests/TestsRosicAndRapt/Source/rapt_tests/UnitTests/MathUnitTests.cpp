@@ -295,6 +295,7 @@ bool splineSlopesUnitTest(T tol)
   using Vec = std::vector<T>;
   int N = 5;
 
+  /*
   Vec x({ -1,0,1,2,3 }), y(N); 
   for(int i = 0; i < N; i++)
     y[i] = T(1) / (1 + x[i]*x[i]);// ({ 0.5,1,0.5,0.2,0.1 });
@@ -308,34 +309,36 @@ bool splineSlopesUnitTest(T tol)
   s = splineSlopes(x, y, false, T(1)/2, -T(6)/100);
   r = s - t;
   ok &= rsIsCloseTo(s, t, tol);
+  */
 
-  // Now create some unequally spaced data using a cubic polynomial
+  Vec x, y, t, s, r;
+
+  // We create some unequally spaced data using a cubic polynomial. The cubic spline should exactly
+  // match the original polynomial at all x, iff we also prescribe the correct values for the (1st 
+  // or 2nd) derivative at the boundary points. In this case, the computed slopes should of course 
+  // also match the actual slopes of the polynomial at the sampling points:
   x = Vec({ -5,-3,-2,-1,2,3,5,6,8 });
   N = (int) x.size();;
   y.resize(N);
   t.resize(N);
-  rsPolynomial<T> p({ 7,5,3,2 }); // 7 + 5*x + 3*x^2 + 2*x^3
+  rsPolynomial<T> p({ 7,5,3,2 });              // our polynomial is y(x) = 7 + 5*x + 3*x^2 + 2*x^3
   for(int i = 0; i < N; i++) {
-    y[i] = p.evaluate(x[i]);
-    t[i] = p.derivativeAt(x[i]); }
-  s = splineSlopes(x, y, false, t[0], t[N-1]);
-  ok &= rsIsCloseTo(s, t, tol);
+    y[i] = p.evaluate(x[i]);                   // evaluate polynomial at the x[i]
+    t[i] = p.derivativeAt(x[i]); }             // target values for the computed slopes
+  s = splineSlopes(x, y, false, t[0], t[N-1]); // prescribe correct slopes at boundary points
+  ok &= rsIsCloseTo(s, t, tol);                // computed slopes should match target slopes
   // works only when T=double, apparently, we get integer overflow with fractions
 
-  // Prescribe 2nd derivatives at the endpoints:
+  // Now, we prescribe 2nd derivatives at the endpoints instead of 1st derivatives:
   T k0 = p.derivativeAt(x[0],   2);
-  T k1 = p.derivativeAt(x[N-2], 2);
+  T k1 = p.derivativeAt(x[N-1], 2);
   s = splineSlopes(x, y, true, k0, k1);
   r = s - t;
   ok &= rsIsCloseTo(s, t, tol);
-  // It's weird to prescribe the 2nd derivative at the left boundary of the final segment rather
-  // than at its right boundary
 
   //rsPlotVector(r);
   // error starts small at left and grows big at right end...maybe the equation for the last 
   // datapoint is wrong
-
-
 
   // ToDo: 
   // -Test it using data obtained from a cubic. In this case, the computed spline derivatives 

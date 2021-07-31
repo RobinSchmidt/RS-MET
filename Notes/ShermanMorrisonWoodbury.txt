@@ -1,0 +1,65 @@
+If A is a regular NxN matrix and u,v,d are vectors in R^N where v^T * A^-1 * u != 1, then
+
+                                    A^-1*u * v^T * A^-1*d
+  (A + u*v^T)^-1 * d = A^-1 * d -  -----------------------                                  (Eq. 1)
+                                      1 + v^T * A^-1*u
+
+Let's call p = A^-1*d and q = A-^1*u, then we can compute our desired end result r as:
+
+             v^T*p
+  r = p - ----------- * q                                                                   (Eq. 2)
+           1 + v^T*q
+
+so, if we can compute A^-1*d and A^-1*u efficiently, we also have a way of computing
+(A + u*v^T)^-1 * d efficiently. Let's assume we have a matrix M which is almost tridiagonal but 
+also has nonzero entries at the top-right and bottom left. Let it be of the general form (as 
+example 7x7):
+
+       b1 c1 0  0  0  0  a1
+       a2 b2 c2 0  0  0  0
+       0  a3 b3 c3 0  0  0
+  M =  0  0  a4 b4 c4 0  0
+       0  0  0  a5 b5 c5 0
+       0  0  0  0  a6 b6 c6
+       c7 0  0  0  0  a7 b7
+
+where the a1 and c7 elements can be thought of a being wrapped around row-wise. We want to express 
+M as a sum: M = T + u * v^T where T should be tridiagonal. We strategically choose 
+
+  u = (1  0 0 0 0 0 1 )^T                                                                   (Eq. 3)
+  v = (c7 0 0 0 0 0 a1)^T
+
+such that:
+
+            c7 0  0  0  0  0  a1
+            0  0  0  0  0  0  0
+            0  0  0  0  0  0  0
+  u * v^T = 0  0  0  0  0  0  0
+            0  0  0  0  0  0  0
+            0  0  0  0  0  0  0
+            c7 0  0  0  0  0  a1
+
+so we need T to be M - u * v^T which is indeed tridiagonal (thanks to our choice of u and v):
+
+       B1 c1 0  0  0  0  0
+       a2 b2 c2 0  0  0  0
+       0  a3 b3 c3 0  0  0
+  T =  0  0  a4 b4 c4 0  0
+       0  0  0  a5 b5 c5 0
+       0  0  0  0  a6 b6 c6
+       0  0  0  0  0  a7 B7
+
+where B1 = b1-c7 and B7 = b7-a1. If we now need to solve M*x = b for some unknown vector x and some
+right hand side b, where M is of the form as above, we first modify the M matrix into a tridiagonal
+matrix T by subtracting c7 from b1 and a1 from b7 and solve the two systems T*p = b, T*q = u and 
+once p and q are known, apply Eq. 2 to find x.
+
+ToDo:
+-implement this as solveWrappedTriDiag and test it
+-use the implementation to implement a cubic spline with periodic boundary conditions
+
+
+https://www.youtube.com/watch?v=0oUo1d6PpGU at 16:30
+https://en.wikipedia.org/wiki/Sherman%E2%80%93Morrison_formula
+https://en.wikipedia.org/wiki/Woodbury_matrix_identity
+https://de.wikipedia.org/wiki/Sherman-Morrison-Woodbury-Formel

@@ -5,7 +5,7 @@ Our polynomial segments and its first 2 derivatives are given by (Eq. 1):
   p_i'(x)  = b_i + 2*c_i*(x-x_i) + 3*d_i*(x-x_i)^2
   p_i''(x) = 2*c_i + 6*d_i*(x-x_i)
 
-There are 7 of these segments, indexed 0,..,6. For these egements, we require (Eq. 2):
+There are 7 of these segments, indexed 0,..,6. For these segments, we require (Eq. 2):
  
   p_i  (x_i)     = y_i                   i = 0,..,7  ->  function values match data at left node
   p_i  (x_{i+1}) = y_{i+1}               i = 0,..,6  ->  function values match data at right node
@@ -50,7 +50,7 @@ may also serve as numerical estimates for the 1st derivatives in an algorithm th
 numerical differentiation on data. Using any other numerical differentiation method to obtain 
 slope values for cubic Hermite interpolation will, in general, only lead to a 1st order smooth 
 interpolant (values and slopes match at the nodes) whereas this technique leads to a 2nd order 
-smooth interpolant (curvatures match also). It may be noted that empicirally, using a more 
+smooth interpolant (curvatures match also). It may be noted that empirically, using a more 
 common finite differencing approach to find target values for the slopes gave Hermite interpolants 
 with less overshoot, so don't conclude, that this way of finding numerical slopes is better in
 all applications. There's a tradeoff between smoothness and overshoot to be made here.
@@ -203,7 +203,7 @@ from which we read off:
   m0 = 2*(h0+h7)?
  -the matrix gets nonzero top-right and bottom-left elements which requires application of the
   https://en.wikipedia.org/wiki/Sherman%E2%80%93Morrison_formula (see Weitz video on Bezier 
-  splines)
+  splines https://www.youtube.com/watch?v=0oUo1d6PpGU 16:30)
 
 
 References:

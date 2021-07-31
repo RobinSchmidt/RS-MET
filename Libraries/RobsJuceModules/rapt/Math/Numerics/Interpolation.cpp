@@ -116,7 +116,9 @@ void fitCubicWithDerivative(T x1, T x2, T y1, T y2, T yd1,
   *a1 *= scaler;
   *a0 *= scaler;
 
-  // maybe precompute x1*x1*x1, x2*x2*x2 for optimization
+  // ToDo: 
+  // -precompute x1*x1*x1, x2*x2*x2 for optimization, also x1*x1, x2*x2
+  // -change API to let the user pass a pointer to an a-array instead of 4 seperate pointers
 }
 
 template<class T>

@@ -314,10 +314,9 @@ bool testGaussJordanInversion()
   return testResult;
 }
 
-bool testTridiagonalSystem()
+bool testTridiagonalSystemOld()
 {
-  std::string testName = "TridiagonalSystem";
-  bool testResult = true;
+  bool ok = true;
 
   double xt[5];
   double x[5];
@@ -343,10 +342,73 @@ bool testTridiagonalSystem()
   // compare results:
   double tol = 1.e-14;
   for(int i = 0; i < 5; i++)
-    testResult &= fabs(x[i]-xt[i]) < tol;
+    ok &= fabs(x[i]-xt[i]) < tol;
 
-  return testResult;
+  return ok;
 }
+
+bool testTridiagonalSystemNew()
+{
+  bool ok = true;
+
+  using Vec = std::vector<double>;
+  using Mat = rsMatrix<double>;
+
+  // The coefficient matrix:
+  Mat A(5, 5, {+2, -1,  0,  0,  0,
+               +3, +5, +3,  0,  0,
+                0, +2, -3, -5,  0,
+                0,  0, +5, -2, +6,
+                0,  0,  0, -3, -7 });
+
+  // The 2 right hand sides:
+  Mat B(5, 2, {-4, -2,
+               +3, -3,
+               +1, +4,
+               -5, -2,
+               -2, +1 });
+
+  // Solve via standard Gaussian elimination:
+  Mat A2 = A;
+  Mat B2 = B;
+  Mat X(5, 2);
+  rsLinearAlgebraNew::solve(A2, X, B2);
+  B2 = A*X;  // should give back B
+  double tol = 1.e-14;
+  ok &= B2.equals(B, tol);
+
+  // Solve the system via the tridiagonal algorithm:
+  Vec L({+3,+2,+5,-3});
+  Vec D({+2,+5,-3,-2,-7});
+  Vec U({-1,+3,-5,+6});
+  Vec b(5); B.copyColumn(0, &b[0]);  // maybe make convenience function B.getColumn()
+  Vec x(5);
+  Vec b2 = b;
+  Vec D2 = D;
+  solveTriDiagGauss(L, D2, U, x, b2);
+  b2 = A*x;
+  ok &= rsIsCloseTo(b, b2, tol);
+
+  // Solve the system via the other tridiagonal algorithm:
+  Vec b3 = b; D2 = D;
+  solveTriDiagThomas(L, D2, U, x, b3);
+  b3 = A*x;
+  ok &= rsIsCloseTo(b, b3, tol);
+
+  Vec b4 = 0.5*(b2+b3);
+
+  return ok;
+}
+
+bool testTridiagonalSystem()
+{
+  bool ok = true;
+
+  ok &= testTridiagonalSystemOld();
+  ok &= testTridiagonalSystemNew();
+
+  return ok;
+};
 
 // todo: Gram-Schmidt orthogonalization of a set of basis vectors
 

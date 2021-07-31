@@ -125,6 +125,7 @@ public:
   template<class T>
   static bool rsSolveTridiagonalSystem(T *lowerDiagonal, T *mainDiagonal, T *upperDiagonal, 
     T *rightHandSide, T *solution, int N);
+  // allocates memory
 
   /** Solves a pentadiagonal linear system of equations with given diagonals and right-hand side 
   using a simple algorithm without pivot-search. lowerDiag1 is the one directly below the main 
