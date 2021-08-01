@@ -88,6 +88,31 @@ void rsLinearAlgebraNew::solveTridiagonal2Rhs(
 }
 
 template<class T>
+void rsLinearAlgebraNew::solveWrappedTridiagonal(
+  int N, const T* L, T* D, const T* U, T* x, T* b, T* w)
+{
+  // Modify the diagonal of the matrix:
+  D[0]   -= U[N-1];
+  D[N-1] -= L[0];
+
+  // Establish 2nd RHS vector:
+  rsArrayTools::fillWithZeros(w, N);
+  w[0]   = T(1);
+  w[N-1] = T(1);
+
+  // Solve the modified system for the 2 RHS vectors b and w in place (i.e. solutions also go into
+  // b and w):
+  solveTridiagonal2Rhs(N, &L[1], D, U, b, b, w, w);
+
+  // Compute the solution of the original system as linear combination of the 2 solutions b and w:
+  T vp = U[N-1]*b[0] + L[0]*b[N-1];
+  T vq = U[N-1]*w[0] + L[0]*w[N-1];
+  T s  = vp / (T(1) + vq);
+  for(int i = 0; i < N; i++)
+    x[i] = b[i] - s*w[i];
+}
+
+template<class T>
 void rsLinearAlgebraNew::solveTridiagonal(const T* L, T* D, const T* U, 
   rsMatrixView<T>& X, rsMatrixView<T>& B)
 {

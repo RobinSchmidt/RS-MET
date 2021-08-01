@@ -426,7 +426,9 @@ bool testTridiagonalSystemNew()
 
   // That was just for getting reference output, now really via Sherman:
   Vec L2 = L; D2 = D; U2 = U; b2 = b;
-  solveWrappedTriDiag(L2, D2, U2, x, b2); // x should match 1st column of X
+  Vec wrk(5);
+  //solveWrappedTriDiag(L2, D2, U2, x, b2); // x should match 1st column of X
+  LA::solveWrappedTridiagonal(5, &L2[0], &D2[0], &U2[0], &x[0], &b2[0], &wrk[0]);
   b2 = A*x;                               // ...but we check here, if A*x actually indeed gives
   ok &= rsIsCloseTo(b, b2, tol);          // back b
 

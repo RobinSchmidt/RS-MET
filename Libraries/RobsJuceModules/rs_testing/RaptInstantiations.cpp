@@ -203,11 +203,16 @@ template bool rsLinearAlgebra::rsSolveLinearSystem(cmplxD **A, cmplxD *x, const 
 
 template std::vector<double> rsLinearAlgebraNew::solveOld(rsMatrix<double> A, std::vector<double> b);
 
-template void rsLinearAlgebraNew::solveTridiagonal(int N, const double* lowerDiag, 
-  double* mainDiag, const double* upperDiag, double* x, double* b);
+template void rsLinearAlgebraNew::solveTridiagonal(int N, const double* L, double* D, const double* U, 
+  double* x, double* b);
+
+template void rsLinearAlgebraNew::solveWrappedTridiagonal(int N, const double* L, double* D, 
+  const double* U, double* x, double* b, double* wrk);
 
 template void rsLinearAlgebraNew::solveTridiagonal(const double* lowerDiag, double* mainDiag, 
   const double* upperDiag, RAPT::rsMatrixView<double>& X, RAPT::rsMatrixView<double>& B);
+
+
 
 
 
