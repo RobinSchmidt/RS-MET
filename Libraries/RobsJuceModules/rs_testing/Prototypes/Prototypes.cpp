@@ -518,6 +518,47 @@ void solveTriDiagThomas(const std::vector<double>& a, const std::vector<double>&
   // https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
 }
 
+void solveWrappedTriDiag(const std::vector<double>& L, std::vector<double>& D, 
+  const std::vector<double>& U, std::vector<double>& x, std::vector<double>& b)
+{
+  int N = (int) D.size();
+  rsAssert(L.size() == N);
+  rsAssert(U.size() == N);
+  rsAssert(x.size() == N);
+  rsAssert(b.size() == N);
+
+  // Modify the diagonal of the matrix:
+  D[0]   -= U[N-1];
+  D[N-1] -= L[0];
+
+  // Establish the two rhs vectors for which we must solve the modified tridiagonal system. The 
+  // 1st rhs is just the original rhs and the 2nd is (1 0 0 ... 0 0 1):
+  std::vector<double> u(N), v(N);
+  u[0]   = 1;
+  u[N-1] = 1;
+  v[0]   = U[N-1];  // v may actually not be needed explicitly
+  v[N-1] = L[0];
+
+  // Solve the system for the 2 rhs vectors b and u, results go into p and q:
+  std::vector<double> p(N), q(N);
+  RAPT::rsLinearAlgebraNew::solveTridiagonal2Rhs(
+    N, &L[1], &D[0], &U[0], &p[0], &b[0], &q[0], &u[0]);
+
+  // The overall result is given by a linear combination of the 2 solutions p and q:
+  double vp = rsDot(v, p);    // can be optimized: only first and last element of v are nonzero
+  double vq = rsDot(v, q);    // dito
+  double s  = vp / (1 + vq);
+  for(int i = 0; i < N; i++)
+    x[i] = p[i] - s*q[i];
+
+  // I think, a production implementation may get away with N additional storage cells: In 
+  // solveTridiagonal, we may use the same array for the rhs and solution vectors. This calls for
+  // an additional storage array for holding u and then q. In the outer algo, we may use the same 
+  // array for x and p. The vector v does not need to be created explicity: we may directly compute
+  // vp and vq as vp = U[N-1]*p[0] + L[0]*p[N-1]; vq = U[N-1]*q[0] + L[0]*q[N-1]; This works 
+  // because U and L are not modified by solve...
+}
+
 std::vector<double> solvePentaDiagonalSystem(
   std::vector<double>& M, std::vector<double>& L,
   std::vector<double>& D,

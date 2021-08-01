@@ -51,12 +51,12 @@ void rsLinearAlgebraNew::solveTridiagonal(int N, const T* L, T* D, const T* U, T
   // -The commented L[i] -= ... is what we do conceptually to zero out the L[i] element but there's 
   //  no need to actually do it because we will not read the L[i] element anymore because we know 
   //  that from then on, it's supposed to be zero anyway. Not having to modify the L or U arrays is
-  //  nice because it means   // that we can have L and U const pointers, allowing the caller to 
-  //  use the same array for both. Having equal lower and upper diagonals (possibly with a shift) 
-  //  does occur in practice, for example, in cubic spline interpolation.
-  // -This algo here seems equivalent to the one givene here:
+  //  nice because it means that we can have L and U const pointers, allowing the caller to use the 
+  //  same array for both. Having equal lower and upper diagonals (possibly with a shift) does 
+  //  occur in practice, for example, in cubic spline interpolation.
+  // -This algo here seems equivalent to the one given here:
   //    https://www.cfd-online.com/Wiki/Tridiagonal_matrix_algorithm_-_TDMA_(Thomas_algorithm)
-  //  but different from the one givene here:
+  //  but different from the one given here:
   //    https://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
 
   // ToDo:
@@ -66,6 +66,25 @@ void rsLinearAlgebraNew::solveTridiagonal(int N, const T* L, T* D, const T* U, T
   //  boundary conditions)
   // -Implement solveWrappedTriDiag (should use Sherman-Morrison-Woodbury), then implement spline
   //  interpolation with different boundray conditions. 
+}
+
+template<class T>
+void rsLinearAlgebraNew::solveTridiagonal2Rhs(
+  int N, const T* L, T* D, const T* U, T* x1, T* b1, T* x2, T* b2)
+{
+  T k;
+  for(int i = 1; i < N; i++) {
+    k = L[i-1] / D[i-1];
+    D[i]  -= k*U[i-1];
+    b1[i] -= k*b1[i-1]; 
+    b2[i] -= k*b2[i-1]; }
+  k = T(1) / D[N-1];
+  x1[N-1] = b1[N-1] * k;
+  x2[N-1] = b2[N-1] * k;
+  for(int i = N-2; i >= 0; i--) {
+    k = T(1) / D[i];
+    x1[i] = (b1[i] - U[i]*x1[i+1]) * k;
+    x2[i] = (b2[i] - U[i]*x2[i+1]) * k; }
 }
 
 template<class T>

@@ -407,13 +407,33 @@ bool testTridiagonalSystemNew()
   // ToDo: figure out, if this really can be exploited in any meaningful to improve numerical 
   // precision
 
+  // Solve the tridiagonal system with 2 rhs vectors:
   D2 = D;
   B2 = B;
   LA::solveTridiagonal(&L[0], &D2[0], &U[0], X, B2);
   B2 = A*X;
   ok &= B2.equals(B, tol);
 
+  // Now let's use the Sherman-Morrison-Woodbury formula for a "wrapped" system, where the 
+  // secondary diagonals wrap around row-wise:
+  rsPrepend(L, -2.0); A(0, 4) = -2.0;  // first element of L goes into top-right
+  rsAppend( U, -3.0); A(4, 0) = -3.0;  // last elemnt of U goes into bottom-left
+  A2 = A; 
+  B2 = B;
+  LA::solve(A2, X, B2);      // for reference
+  B2 = A*X;                  // should give back B
+  ok &= B2.equals(B, tol);
+
+  // That was just for getting reference output, now really via Sherman:
+  Vec L2 = L; D2 = D; U2 = U; b2 = b;
+  solveWrappedTriDiag(L2, D2, U2, x, b2); // x should match 1st column of X
+  b2 = A*x;                               // ...but we check here, if A*x actually indeed gives
+  ok &= rsIsCloseTo(b, b2, tol);          // back b
+
   return ok;
+
+  // ToDo:
+  // -Maybe provide a production implementation of solveTriDiagThomas
 }
 
 bool testTridiagonalSystem()

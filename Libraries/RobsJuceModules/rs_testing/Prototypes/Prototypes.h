@@ -178,6 +178,9 @@ void solveTriDiagGauss(const std::vector<double>& lowerDiag, std::vector<double>
 void solveTriDiagThomas(const std::vector<double>& lowerDiag, const std::vector<double>& mainDiag, 
   std::vector<double>& upperDiag, std::vector<double>& x, std::vector<double>& b);
 
+void solveWrappedTriDiag(const std::vector<double>& lowerDiag, std::vector<double>& mainDiag, 
+  const std::vector<double>& upperDiag, std::vector<double>& x, std::vector<double>& b);
+
 /** Solves a pentadiagonal linear system of equations with given diagonals and right-hand side
 using a simple algorithm without pivot-search. lowerDiag1 is the one directly below the main
 diagonal, lowerDiag2 the one below lowerDiag1 - and similarly for upperDiag1/upperDiag2. In the

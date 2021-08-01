@@ -82,6 +82,13 @@ public:
   static void solveTridiagonal(int N, const T* lowerDiag, T* mainDiag, const T* upperDiag, 
     T* x, T* b);
 
+  /** Solves a trididagonal system for 2 right hand side vectors in one go. It's intended to 
+  facilitate the application of the Sherman-Morrison-Woodbury formula to problems with periodic
+  boundary conditions. */
+  template<class T>
+  static void solveTridiagonal2Rhs(int N, const T* lowerDiag, T* mainDiag, const T* upperDiag, 
+    T* x1, T* b1, T* x2, T* b2);
+
   /** Like solveTridiagonal but solves the system for multiple right hand sides at ones, collected 
   as the columns of B. The solutions vectors are the corresponding columns of X. The size N of the
   system is inferred from the number of rows in B and X (which must match). */
