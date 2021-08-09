@@ -82,8 +82,14 @@ std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y,
   // -Write more unit tests with more general datapoints. Generate the datapoints from a cubic 
   //  polynomial. When we pass the right derivative values for the endpoints, all the slopes should
   //  be exact at all points.
-  // -Implement periodic conditions - we will get matrix entries in the top-right and bottom-left
-  //  corner an we will need an algorithm that can solve such systems efficiently
+  // -Implement periodic boundray conditions - we will get matrix entries in the top-right and 
+  //  bottom-left corner. 
+  // -Maybe the type of boundary condition should set up independently for left and right boundary.
+  //  Have two interger boundaryConditionType parameters (0: natural, 1: complete, 2: periodic), 
+  //  defaulting to 0 and two type T boundaryConditionValue parameters (defaulting to 0). In case
+  //  of periodic conditions, the values are interpreted as x[-1] and x[N] and should typically be
+  //  x[0]-dxL, x[N-1]+dxR...hmmm..or maybe the user should give dxL, dxR directly and they should
+  //  typically be the same value?
   // -Maybe write an algorithm that produces the control-points for cubic Bezier splines. Weitz has
   //  videos about that.
   // -Let the user specify the boundary conditions independently for left and right boundary. When 
@@ -557,6 +563,13 @@ void solveWrappedTriDiag(const std::vector<double>& L, std::vector<double>& D,
   // array for x and p. The vector v does not need to be created explicity: we may directly compute
   // vp and vq as vp = U[N-1]*p[0] + L[0]*p[N-1]; vq = U[N-1]*q[0] + L[0]*q[N-1]; This works 
   // because U and L are not modified by solve...
+
+  // ToDo:
+  // -Implement a version that admits arbitrary vectors for u,v ...but i think, in general, the 
+  //  resulting matrix will not be tridiagonal, so that may not be useful. I think, only the first 
+  //  or second elements and last or second-to-last elements of u and v may be nonzero, so we may 
+  //  at most cancel the top-right, and top-almost-right and/or bottom-left and bottom-almost-left
+  //  elements in the matrix without destroying tridigonality.
 }
 
 std::vector<double> solvePentaDiagonalSystem(

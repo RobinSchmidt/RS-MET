@@ -1909,7 +1909,34 @@ void simdFilter()
 
   // ääähhhmmm...nope - this is not how it works!
 
-
+  // -Maybe try it with an exponential decay filter
+  // -The M decimated filters should have their time constants shortened by a factor of M. Maybe we
+  //  should take the M-th power of the original recursion coeff.
+  // -Try to generate the correct impulse-response first. We may need to compute M initial states 
+  //  in a direct (non-vectorized) way
+  // -To make the decimation impulse-invariant with respect to the original filter, we may need to
+  //  average the input signal in some way...maybe it whould work like:
+  //  MA -> exp-decay-filter -> extract
+  // -Maybe we need special coeffs to feed the inputs into the M filters, like if an impulse 
+  //  occured at tap k (k=0,..,M-1), the filter at tap i (i=0,..,M-1) should weight it the the 
+  //  recurson coeff to the power of k-i or i-k or something. With "tap" i mean here the different
+  //  phases of the filter (like in a polyphase filter)
+  // -Consider the difference equation: y[n] = x[n] + c*y[n-1]. Assume that a new vector of M=4 
+  //  input samples X[0],X[1],X[2],X[3] arrives and we want to find the coeffs by which each of 
+  //  these values should go into our 4 partial filters. Let the coefficient a_ij denote the coeff
+  //  by which X[i] goes into partial filter j. I think we need:
+  //    a_00 = a_11 = a_22 = a33 = c^0 = 1    (no delay or advance)
+  //    a_01 = a_12 = a_23       = c^1        (simulates delayed arrival by 1 sample)
+  //    a_10 = a_21 = a_32       = c^-1       (simulates arrival 1 sample earlier)
+  //    a_02 = a_13              = c^2
+  //    a_20 = a_31              = c^-2
+  //    a_03                     = c^3
+  //    a_30                     = c^-3
+  //  multiplication by these factors simulates the effect of the sample arriving with an 
+  //  appropriate time delay (or time advance). Maybe we also need an additional factor of 1/M to 
+  //  compensate for the summation. Maybe that matrix should be called something like decimation 
+  //  matrix: it applies a matrix to M subsequent input samples to establish the input vector to 
+  //  the filter that operates at a decimated sample rate. This matrix is specific to the filter. 
 
 
 

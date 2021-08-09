@@ -83,7 +83,10 @@ public:
   elements and 'lowerDiag' and 'upperDiag' represent the the diagonals below  and above the main 
   diagonal respectively and should have N-1 elements. They are read from top-left to bottom-right. 
   The 'rightHandSide' argument represents the right hand side of the equation (vector with N 
-  elements) and 'solution' ís where the solution vector will be stored (also N elements). 
+  elements) and 'solution' ís where the solution vector will be stored (also N elements). The 
+  mainDiag and rightHandSide vectors are destroyed in the process, the other diags are only for 
+  read access. It can work in place, i.e. the solution may point to the same array as the RHS 
+  vector, such that the RHS will be overwritten by the solution.
   
   In some sources, the algorithm used here is called "Thomas algorithm":
     https://www.cfd-online.com/Wiki/Tridiagonal_matrix_algorithm_-_TDMA_(Thomas_algorithm)
@@ -92,7 +95,7 @@ public:
   They are apparently both just variants of the same idea. We use the variant here that modifies 
   the main diagonal and leaves the upper and lower diagonals as is. (The other variant is 
   implemented somewhere in the prototypes. ToDo: maybe investigate the differences with regard to 
-  numerical accuracy, stability and efficiency.) */
+  numerical accuracy, stability and efficiency.). */
   template<class T>
   static void solveTridiagonal(int N, const T* lowerDiag, T* mainDiag, const T* upperDiag, 
     T* solution, T* rightHandSide);
@@ -100,12 +103,13 @@ public:
   /** Solves a trididagonal system for 2 right hand side vectors b1,b2 in one go, storing the 
   corresponding solution vetors in x1,x2. It's intended to facilitate the application of the 
   Sherman-Morrison-Woodbury formula to problems with periodic boundary conditions. It's used by
-  solveWrappedTridiagonal. */
+  solveWrappedTridiagonal. It can work in place, i.e. x1 may be the same array as b1 and x2 may be 
+  the same as b2. */
   template<class T>
   static void solveTridiagonal2Rhs(int N, const T* lowerDiag, T* mainDiag, const T* upperDiag, 
     T* x1, T* b1, T* x2, T* b2);
 
-  /** Solves an "almost tridiagonal" system where the matrix is of the form (6x6 example):
+  /** Solves a perturbed tridiagonal system where the matrix is of the form (6x6 example):
 
      D0 U0 0  0  0  L0
      L1 D1 U1 0  0  0
@@ -114,19 +118,20 @@ public:
      0  0  0  L4 D4 U4
      U5 0  0  0  L5 D5
 
-  so, in the first and last row, the elements of the lower and upper diagonal are sort of wrapped
-  around horizontally: L0 would actually belong to the left of D0 and U5 to the right of D5, but 
-  that would be beyond the matrix boundaries, so their positions are wrapped around to the 
-  rightmost and leftmost position in the same row. Such systems occur in cubic spline interpolation
-  problems with periodic boundary conditions (and maybe also in ODEs? -> figure out!). 
+  so, in the first and last row, some elements on the lower and upper diagonal are sort of wrapped
+  around horizontally: to fit the pattern, L0 would actually belong to the left of D0 and U5 to the
+  right of D5, but that would be beyond the matrix boundaries, so their positions are wrapped 
+  around to the rightmost and leftmost position in the same row. Such systems occur in cubic spline
+  interpolation problems with periodic boundary conditions (maybe also in ODEs?). 
 
   So that means that all 3 diagonals U,D,L (for upper,diag,lower) must have N elements (in contrast
-  to the non-wrapped solveTridiagonal where U and L only have N-1 elements). The algorithm also 
-  requires an additional workspace array which must also be of length N. The algorithm is based on
-  combining the regular tridiagonal solver algorithm with the Sherman-Morrison-Woodbury formula. */
+  to the non-wrapped solveTridiagonal where U and L only have N-1 elements). The algorithm is based 
+  on combining the regular tridiagonal ("Thomas") solver algorithm with the 
+  Sherman-Morrison-Woodbury formula. In this case here, the solution and right-hand-side vectors 
+  may not point to the same array, i.e. it cannot work in place. */
   template<class T>
   static void solveWrappedTridiagonal(int N, const T* lowerDiag, T* mainDiag, const T* upperDiag, 
-    T* solution, T* rightHandSide, T* workspace);
+    T* solution, T* rightHandSide);
 
   /** Like solveTridiagonal but solves the system for multiple right hand sides at ones, collected 
   as the columns of B. The solutions vectors are the corresponding columns of X. The size N of the

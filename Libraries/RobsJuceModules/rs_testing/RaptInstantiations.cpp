@@ -207,7 +207,7 @@ template void rsLinearAlgebraNew::solveTridiagonal(int N, const double* L, doubl
   double* x, double* b);
 
 template void rsLinearAlgebraNew::solveWrappedTridiagonal(int N, const double* L, double* D, 
-  const double* U, double* x, double* b, double* wrk);
+  const double* U, double* x, double* b);
 
 template void rsLinearAlgebraNew::solveTridiagonal(const double* lowerDiag, double* mainDiag, 
   const double* upperDiag, RAPT::rsMatrixView<double>& X, RAPT::rsMatrixView<double>& B);
