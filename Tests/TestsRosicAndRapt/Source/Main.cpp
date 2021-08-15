@@ -57,8 +57,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
+  //ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.
@@ -159,7 +159,7 @@ int main(int argc, char* argv[])
   //poleZeroPrototype();  // new implementation - but we don't need that
   //seriesConnectionDecay();
   //quantileFilter();
-  simdFilter<float, 4>();  // doesn't work
+  //simdFilter<float, 4>();  // doesn't work
 
   // Physics:
   //doublePendulum(); // takes long
@@ -257,7 +257,7 @@ int main(int argc, char* argv[])
   //bandLimitedStep();
 
   //chebychevInterpolant();
-  cubicSplines();
+  //cubicSplines();
   //cubicInterpolationNonEquidistant();   // move to unit tests
   //hyperbolicFunctions();
   //splineInterpolationNonEquidistant();
@@ -389,7 +389,7 @@ int main(int argc, char* argv[])
   // Modal Filters/Synthesis:
   //twoPoleFilter();
   //modalFilter();        // impulse response of decaying-sine filter
-  //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
+  modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
   //attackDecayFilter();  // ...hmm..almost redundant
   //modalTwoModes();
   //dampedSineFilterDesign();

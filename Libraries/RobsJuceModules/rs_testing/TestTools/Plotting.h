@@ -88,18 +88,28 @@ axis f. */
 void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
   std::vector<double>& degrees, bool logFreq = true);
 
+template<class T>
+std::vector<T> getOmegas(int N, T fMin, T fMax, T fs, bool logFreq)
+{
+  std::vector<T> w(N);
+  if(logFreq) RAPT::rsArrayTools::fillWithRangeExponential(&w[0], N, fMin, fMax);
+  else        RAPT::rsArrayTools::fillWithRangeLinear(&w[0], N, fMin, fMax);
+  RAPT::rsArrayTools::scale(&w[0], N, 2*PI/fs);
+  return w;
+}
+
 /** Plots the frequency response of the given filter. The class must have a function
 getTransferFunctionAt... */
 template<class TSig, class TFlt>
 inline void plotFrequencyResponse(TFlt &filter, int N, TSig fMin, TSig fMax, TSig fs, bool logFreq)
 {
   // create w array (normalized radian frequencies):
-  std::vector<TSig> w(N);
-  if(logFreq)
-    RAPT::rsArrayTools::fillWithRangeExponential(&w[0], N, fMin, fMax);
-  else
-    RAPT::rsArrayTools::fillWithRangeLinear(&w[0], N, fMin, fMax);
-  RAPT::rsArrayTools::scale(&w[0], N, 2*PI/fs);
+  //std::vector<TSig> w(N);
+  //if(logFreq) RAPT::rsArrayTools::fillWithRangeExponential(&w[0], N, fMin, fMax);
+  //else        RAPT::rsArrayTools::fillWithRangeLinear(&w[0], N, fMin, fMax);
+  //RAPT::rsArrayTools::scale(&w[0], N, 2*PI/fs);
+
+  std::vector<TSig> w = getOmegas(N, fMin, fMax, fs, logFreq);
 
   // compute magnitude and phase response:
   std::vector<std::complex<TSig>> H = getFrequencyResponse(filter, w);
@@ -121,8 +131,21 @@ inline void plotFrequencyResponse(TFlt &filter, int N, TSig fMin, TSig fMax, TSi
   plotFrequencyResponse(w, dB, phs, logFreq);
 }
 
+void plotFrequencyResponseReIm(std::vector<double>& f, std::vector<double>& re,
+  std::vector<double>& im, bool logFreq = true);
 
-
+template<class TSig, class TFlt>
+inline void plotFrequencyResponseReIm(TFlt& filter, int N, TSig fMin, TSig fMax, TSig fs, bool logFreq)
+{
+  std::vector<TSig> w = getOmegas(N, fMin, fMax, fs, logFreq);
+  std::vector<std::complex<TSig>> H = getFrequencyResponse(filter, w);
+  std::vector<TSig> re(N), im(N);
+  for(int k = 0; k < N; k++) {
+    re[k] = H[k].real();
+    im[k] = H[k].imag(); }
+  RAPT::rsArrayTools::scale(&w[0], N, fs/(2*PI));
+  plotFrequencyResponseReIm(w, re, im, logFreq);
+}
 
 // new, dragged over from RSLib tests (TestUtilities.h):
 

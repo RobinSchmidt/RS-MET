@@ -81,6 +81,31 @@ void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
   p.plot();
 }
 
+void plotFrequencyResponseReIm(std::vector<double>& f, std::vector<double>& re,
+  std::vector<double>& im, bool logFreq)
+{
+  int N = (int) f.size();
+  GNUPlotter p;
+  p.addDataArrays(N, &f[0], &re[0]);
+  p.addDataArrays(N, &f[0], &im[0]);
+  p.setPixelSize(1200, 400);
+
+  if(logFreq)
+    p.addCommand("set logscale x");
+
+  p.addCommand("set xlabel \"Frequency in Hz\"");
+  //p.addCommand("set ylabel \"Real part\"");
+  //p.addCommand("set y2label \"Imaginary part\"");
+
+  //p.addCommand("set ytics 0.1"); 
+  //p.addCommand("set y2tics 0.1");
+
+  p.addGraph("i 0 u 1:2 w lines lw 1.5 axes x1y1 notitle");
+  p.addGraph("i 1 u 1:2 w lines lw 1.5 axes x1y2 notitle");
+  p.plot();
+}
+
+
 
 
 template<class T>

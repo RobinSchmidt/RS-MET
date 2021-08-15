@@ -52,12 +52,12 @@ void modalFilterFreqResp()
   double dec = 0.1;    // decay time constant in seconds
   double phs = 45;     // phase in degrees
 
-
   rsModalFilterWithAttackDD mf;
   mf.setModalParameters(frq, amp, att, dec, phs, fs, 1.0);
 
   plotImpulseResponse(  mf, 10000, 1.0);
   plotFrequencyResponse(mf, 5000, 20.0, fs/2, fs, true);
+  plotFrequencyResponseReIm(mf, 5000, 20.0, fs/2, fs, true);
 }
 
 // hmm...this is now a bit redundant:
