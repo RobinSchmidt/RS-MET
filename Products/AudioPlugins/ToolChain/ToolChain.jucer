@@ -143,11 +143,10 @@
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="ToolChain"
-                       osxCompatibility="10.9 SDK" osxArchitecture="64BitUniversal"
-                       enablePluginBinaryCopyStep="1"/>
+                       osxCompatibility="10.14 SDK" osxArchitecture="Native" enablePluginBinaryCopyStep="1"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="ToolChain"
-                       osxCompatibility="10.9 SDK" osxArchitecture="64BitUniversal"
-                       linkTimeOptimisation="1" enablePluginBinaryCopyStep="1"/>
+                       osxCompatibility="10.14 SDK" osxArchitecture="Native" linkTimeOptimisation="1"
+                       enablePluginBinaryCopyStep="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="rosic" path="../../../Libraries/RobsJuceModules"/>

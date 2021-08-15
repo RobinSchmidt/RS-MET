@@ -587,15 +587,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ustring.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffect.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffectx.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\vstplugmain.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1973,12 +1964,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_StateManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy (2).cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -2487,9 +2472,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter - Copy.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.cpp">
@@ -4562,9 +4544,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstpshpack4.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vstspeaker.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vsttypes.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\aeffeditor.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffect.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffectx.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\pluginview.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\vst\hosting\hostclasses.h"/>
@@ -5038,8 +5017,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_ScopedPointerLock.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_SmoothableParameter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_StateManager.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy (2).h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\files\jura_AudioFileInfo.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\files\jura_AudioFileManager.h"/>
@@ -5217,7 +5194,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\MovingWindowFilters.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\OnePoleFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.h"/>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter - Copy.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\PhasorFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\StateVariableFilter.h"/>
@@ -5277,6 +5253,7 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\NumericCalculus.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\Optimization.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\RootFinder.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Complex.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Fraction.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Matrix.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Polynomial.h"/>

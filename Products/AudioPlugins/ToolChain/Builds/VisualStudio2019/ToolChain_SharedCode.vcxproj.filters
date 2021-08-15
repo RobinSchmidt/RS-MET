@@ -149,9 +149,6 @@
     <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst">
       <UniqueIdentifier>{B90A44F3-B62D-B5C0-81A2-683D2650AEE6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x">
-      <UniqueIdentifier>{0723C856-9C0F-5AF7-81B2-1986BC1E09E3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces">
       <UniqueIdentifier>{DAF30656-5915-0E45-C4E4-54439617D525}</UniqueIdentifier>
     </Filter>
@@ -1221,15 +1218,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base\ustring.cpp">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffect.cpp">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffectx.cpp">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\vstplugmain.cpp">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.cpp">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common</Filter>
@@ -2710,12 +2698,6 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_StateManager.cpp">
       <Filter>JUCE Modules\jura_framework\control</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy (2).cpp">
-      <Filter>JUCE Modules\jura_framework\control</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy.cpp">
-      <Filter>JUCE Modules\jura_framework\control</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager.cpp">
       <Filter>JUCE Modules\jura_framework\control</Filter>
     </ClCompile>
@@ -3225,9 +3207,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.cpp">
       <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter - Copy.cpp">
-      <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.cpp">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
@@ -5844,15 +5823,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst\vsttypes.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\aeffeditor.h">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffect.h">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x\audioeffectx.h">
-      <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\pluginterfaces\vst2.x</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common\memorystream.h">
       <Filter>JUCE Modules\juce_audio_processors\format_types\VST3_SDK\public.sdk\source\common</Filter>
     </ClInclude>
@@ -7272,12 +7242,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_StateManager.h">
       <Filter>JUCE Modules\jura_framework\control</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy (2).h">
-      <Filter>JUCE Modules\jura_framework\control</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager - Copy.h">
-      <Filter>JUCE Modules\jura_framework\control</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\jura_framework\control\jura_VoiceManager.h">
       <Filter>JUCE Modules\jura_framework\control</Filter>
     </ClInclude>
@@ -7809,9 +7773,6 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Basic\SmoothingFilter.h">
       <Filter>JUCE Modules\rapt\Filters\Basic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter - Copy.h">
-      <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Filters\Musical\LadderFilter.h">
       <Filter>JUCE Modules\rapt\Filters\Musical</Filter>
     </ClInclude>
@@ -7988,6 +7949,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Numerics\RootFinder.h">
       <Filter>JUCE Modules\rapt\Math\Numerics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Complex.h">
+      <Filter>JUCE Modules\rapt\Math\Types</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rapt\Math\Types\Fraction.h">
       <Filter>JUCE Modules\rapt\Math\Types</Filter>
