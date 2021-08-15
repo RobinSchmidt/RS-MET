@@ -775,14 +775,14 @@
 		12F9C0DCCFD0FE8DE84625C4 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 			};
 			name = Debug;
 		};
 		8CAAC8924A7B29D87F56A4D7 = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 			};
 			name = Release;
 		};
@@ -830,7 +830,7 @@
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST/";
 				LIBRARY_STYLE = Bundle;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "-bundle -lToolChain";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
 				PRODUCT_NAME = "ToolChain";
@@ -885,7 +885,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST/";
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "-bundle -lToolChain";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
 				PRODUCT_NAME = "ToolChain";
@@ -938,7 +938,7 @@
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/Components/";
 				LIBRARY_STYLE = Bundle;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "-bundle -lToolChain";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
@@ -994,7 +994,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/Components/";
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "-bundle -lToolChain";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
@@ -1043,7 +1043,7 @@
 				);
 				INFOPLIST_FILE = Info-Standalone_Plugin.plist;
 				INFOPLIST_PREPROCESS = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "-lToolChain";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
 				PRODUCT_NAME = "ToolChain";
@@ -1092,7 +1092,7 @@
 				INFOPLIST_FILE = Info-Standalone_Plugin.plist;
 				INFOPLIST_PREPROCESS = NO;
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				OTHER_LDFLAGS = "-lToolChain";
 				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
 				PRODUCT_NAME = "ToolChain";
@@ -1139,7 +1139,7 @@
 					"$(inherited)",
 				);
 				INSTALL_PATH = "@executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
 				PRODUCT_NAME = "ToolChain";
 				SKIP_INSTALL = YES;
@@ -1188,7 +1188,7 @@
 				);
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rs-met.ToolChain;
 				PRODUCT_NAME = "ToolChain";
 				SKIP_INSTALL = YES;
