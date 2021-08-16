@@ -259,13 +259,49 @@ rsFilterSpecificationZPK<T> sos2zpk(
 }
 // maybe move to rsFilterSpecificationZPK as static member: fromBiquads
 
+void engineersFilterFreqResp()
+{
+  // filter parameters:
+  double fs  = 44100;  // samplerate in Hz
+  double fc  = 100;    // center or cutoff frequency in Hz
+  double bw  = 2.0;    // bandwidth in octaves     
+  int    ord = 7;      // prototype order
+
+  using EF   = rsEngineersFilter<double, double>;
+  using PTD  = rsPrototypeDesigner<double>;
+  using IIRD = rsInfiniteImpulseResponseDesigner<double>;
+
+  EF flt;
+  //flt.setApproximationMethod(PTD::BUTTERWORTH);
+  flt.setApproximationMethod(PTD::ELLIPTIC);
+  flt.setSampleRate(fs);
+  flt.setFrequency(fc);
+  flt.setBandwidth(bw);
+  flt.setMode(IIRD::BANDPASS);
+  //flt.setMode(IIRD::LOWPASS);
+  //flt.setMode(IIRD::HIGHPASS);
+  //flt.setMode(IIRD::PEAK);
+  //flt.setMode(IIRD::LOW_SHELV);
+  //flt.setMode(IIRD::HIGH_SHELV);
+  //flt.setMode(IIRD::BANDREJECT);
+  flt.setGain(10.0);
+  flt.setRipple(1.0);
+  flt.setStopbandRejection(100.0); 
+  flt.setPrototypeOrder(ord);
+
+  //plotImpulseResponse(      flt, 5000, 1.0);
+  //plotFrequencyResponse(    flt, 5000, 10.0, 1000.0, fs, true);
+  //plotFrequencyResponseReIm(flt, 5000, 10.0, 1000.0, fs, true);
+  plotMagAndRingResponse(   flt, 5000, 10.0, 1000.0, fs, true);
+}
+
 void engineersFilterFreqResps()
 {
   // We plot frequency responses of engineer's filter for various orders. The main aim is actually
   // to demonstrate how the plotting works..
 
   int minOrder  = 1;      // minimum filter order
-  int numOrders = 3;      // number of orders
+  int numOrders = 5;      // number of orders
   int orderInc  = 1;      // spacing between the orders
   int numFreqs  = 501;    // number of frequency samples
   double fc     = 1000;   // cutoff frequency

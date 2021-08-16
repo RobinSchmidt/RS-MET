@@ -85,6 +85,9 @@ public:
   /** Returns the global gain factor. */
   //TCoef getGlobalGainFactor() const { return gain; }
 
+  /** Returns the complex transfer function at the given value of z. */
+  std::complex<TCoef> getTransferFunctionAt(std::complex<TCoef> z);
+
   /** Writes the complex frequency-response of a biquad-cascade at the normalized radian 
   frequencies given in 'w' into the array 'H'. */
   void getFrequencyResponse(TCoef* w, std::complex<TCoef>* H, int numBins, 

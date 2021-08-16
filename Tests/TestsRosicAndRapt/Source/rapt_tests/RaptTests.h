@@ -13,6 +13,7 @@ void bandSplittingTreeAlgo();
 void bandSplitFreqResponses();
 void complementaryFiltersIIR();
 void firstOrderFilters();
+void engineersFilterFreqResp();
 void engineersFilterFreqResps();
 void ladderResonanceManipulation();
 // insert movingAverage here

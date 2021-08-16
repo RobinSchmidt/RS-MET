@@ -55,9 +55,10 @@ void modalFilterFreqResp()
   rsModalFilterWithAttackDD mf;
   mf.setModalParameters(frq, amp, att, dec, phs, fs, 1.0);
 
-  plotImpulseResponse(  mf, 10000, 1.0);
-  plotFrequencyResponse(mf, 5000, 20.0, fs/2, fs, true);
-  plotFrequencyResponseReIm(mf, 5000, 20.0, fs/2, fs, true);
+  plotImpulseResponse(      mf, 10000,  1.0);
+  plotFrequencyResponse(    mf, 5000, 10.0, 1000.0, fs, true);
+  //plotFrequencyResponseReIm(mf, 5000, 10.0, 1000.0, fs, true);
+  plotMagAndRingResponse(   mf, 5000, 10.0, 1000.0, fs, true);
 }
 
 // hmm...this is now a bit redundant:

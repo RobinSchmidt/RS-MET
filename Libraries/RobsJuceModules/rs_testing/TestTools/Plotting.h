@@ -139,13 +139,57 @@ inline void plotFrequencyResponseReIm(TFlt& filter, int N, TSig fMin, TSig fMax,
 {
   std::vector<TSig> w = getOmegas(N, fMin, fMax, fs, logFreq);
   std::vector<std::complex<TSig>> H = getFrequencyResponse(filter, w);
+  RAPT::rsArrayTools::scale(&w[0], N, fs/(2*PI));
   std::vector<TSig> re(N), im(N);
   for(int k = 0; k < N; k++) {
     re[k] = H[k].real();
     im[k] = H[k].imag(); }
-  RAPT::rsArrayTools::scale(&w[0], N, fs/(2*PI));
+
   plotFrequencyResponseReIm(w, re, im, logFreq);
 }
+
+/** Magnitude- and ringing response. The concept of "ringing response" is still VERY sketchy and 
+experimental. See this thread: https://www.kvraudio.com/forum/viewtopic.php?f=33&t=569114 */
+template<class TSig, class TFlt>
+inline void plotMagAndRingResponse(
+  TFlt& filter, int N, TSig fMin, TSig fMax, TSig fs, bool logFreq)
+{
+  // This is the same as in function above - maybe factor out:
+  std::vector<TSig> w = getOmegas(N, fMin, fMax, fs, logFreq);
+  std::vector<std::complex<TSig>> H = getFrequencyResponse(filter, w);
+  RAPT::rsArrayTools::scale(&w[0], N, fs/(2*PI));
+  std::vector<TSig> re(N), im(N);
+  for(int k = 0; k < N; k++) {
+    re[k] = H[k].real();
+    im[k] = H[k].imag(); }
+
+  // Compute numeric derivatives of real and imaginary parts:
+  using ND = rsNumericDifferentiator<TSig>;
+  std::vector<TSig> dre(N), dim(N);          // derivatives of re and im
+  ND::derivative(&w[0], &re[0], &dre[0], N);
+  ND::derivative(&w[0], &im[0], &dim[0], N);
+
+  // Compute magnitudes of frequency response and its derivative:
+  std::vector<TSig> mag(N), dmag(N);
+  for(int k = 0; k < N; k++) 
+  {
+    mag[k]   = sqrt( re[k]* re[k] +  im[k]* im[k]);
+    dmag[k]  = sqrt(dre[k]*dre[k] + dim[k]*dim[k]);
+    dmag[k] *= w[k];  // test - makes plots symmetric
+  }
+
+  // plot:
+  plotFrequencyResponseReIm(w, mag, dmag, logFreq);
+
+  // Observations: 
+  // -Multiplying dmag[k] by w[k] makes the response symmetrical for ellitpic bandpasses, but maybe
+  //  the asymmetry is actually a legit feature because from the impulse response, it seems like 
+  //  the lower bandedge does indeed ring longer. Maybe the multiplication by w[k] gives the number 
+  //  of cycles of ringing, not the absolute time?
+  // -I think, the plotting code normalizes the data internally. The plots both hit 1.0 but i think
+  //  the data does not necessarily.
+}
+
 
 // new, dragged over from RSLib tests (TestUtilities.h):
 

@@ -143,6 +143,7 @@ int main(int argc, char* argv[])
   //biDirectionalStateInit();
   //biquadTail();
   //complementaryFiltersIIR();
+  engineersFilterFreqResp();
   //engineersFilterFreqResps();
   //firstOrderFilters();
   //ladderResonanceManipulation();
@@ -389,7 +390,7 @@ int main(int argc, char* argv[])
   // Modal Filters/Synthesis:
   //twoPoleFilter();
   //modalFilter();        // impulse response of decaying-sine filter
-  modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
+  //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
   //attackDecayFilter();  // ...hmm..almost redundant
   //modalTwoModes();
   //dampedSineFilterDesign();

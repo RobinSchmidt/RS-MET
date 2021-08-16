@@ -58,12 +58,15 @@ void plotFrequencyResponse(std::vector<double>& f, std::vector<double>& dB,
   GNUPlotter p;
   p.addDataArrays(N, &f[0], &dB[0]);
   p.addDataArrays(N, &f[0], &degrees[0]);
-  p.setPixelSize(1200, 400);
+  //p.setPixelSize(1200, 400);
+  p.setPixelSize(900, 300);
   //p.setTitle("Filter Frequency Response");
   //p.setGraphColors("A00000", "909000", "008000", "0000A0", "800080",
   //  "A00000", "909000", "008000", "0000A0", "800080" );
   if(logFreq)
     p.addCommand("set logscale x");
+  p.setRange(f[0], f[N-1]);   // set only the x-range
+
   //p.addCommand("set xrange  [0.0625:16]");
   //p.addCommand("set yrange  [-100:0]");
   //p.addCommand("set y2range [-450:0]");
@@ -88,10 +91,12 @@ void plotFrequencyResponseReIm(std::vector<double>& f, std::vector<double>& re,
   GNUPlotter p;
   p.addDataArrays(N, &f[0], &re[0]);
   p.addDataArrays(N, &f[0], &im[0]);
-  p.setPixelSize(1200, 400);
+  //p.setPixelSize(1200, 400);
+  p.setPixelSize(900, 300);
 
   if(logFreq)
     p.addCommand("set logscale x");
+  p.setRange(f[0], f[N-1]);
 
   p.addCommand("set xlabel \"Frequency in Hz\"");
   //p.addCommand("set ylabel \"Real part\"");

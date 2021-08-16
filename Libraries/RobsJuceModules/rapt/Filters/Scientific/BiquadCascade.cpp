@@ -131,6 +131,16 @@ void rsBiquadCascade<TSig, TCoef>::turnIntoAllpass()
 // inquiry:
 
 template<class TSig, class TCoef>
+std::complex<TCoef> rsBiquadCascade<TSig, TCoef>::getTransferFunctionAt(std::complex<TCoef> z)
+{ 
+  std::complex<TCoef> H(TCoef(1), TCoef(0));
+  for(int i = 0; i < numStages; i++)
+    H *= rsFilterAnalyzer<TCoef>::getBiquadTransferFunctionAt(
+      b0[i], b1[i], b2[i], a1[i], a2[i], z);
+  return H;
+}
+
+template<class TSig, class TCoef>
 void rsBiquadCascade<TSig, TCoef>::getFrequencyResponse(TCoef* w, std::complex<TCoef>* H, 
   int numBins, int accumulationMode) const
 {
