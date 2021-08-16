@@ -27,7 +27,13 @@ Building RAPT:
 and the client code is responsible
 -
  
- 
+Building on Mac/ARM:
+https://forum.juce.com/t/juce-and-macos-11-arm/40285/114
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=552147 
+https://www.kvraudio.com/forum/viewtopic.php?f=31&t=550513&start=30
+...I'll probably need to update JUCE first - it's about time anyway 
+
+
 CPU usage in VSTHost:
 nothing:                         1.8%
 TestPluginJUCE (release, x64):   4.6%
