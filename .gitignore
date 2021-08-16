@@ -26,3 +26,7 @@
 Misc/UnusedCode/RSLibAndTests/RSLibTests/GeneratedFiles
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2015/x64/Debug/
 
+*.ipch
+*.opendb
+*.db
+Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Debug/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt
