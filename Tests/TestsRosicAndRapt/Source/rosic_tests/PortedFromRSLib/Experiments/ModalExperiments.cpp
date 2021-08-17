@@ -90,13 +90,15 @@ void attackDecayFilter()
 void modalTwoModes()
 {
   double fs  = 44100;
-  double at  = 0.05;  // attack - needs to be nonzero for numerical reasons (->try to fix)
+  double at  = 0.0001;  // attack - needs to be nonzero for numerical reasons (->try to fix)
 
   // mode parameter arrays:
   typedef std::vector<double> Vec;
   Vec frq = { 1.0, 4.0 };
   Vec amp = { 1.0, 1.0 };
-  Vec phs = { 0.0, 0.0 };
+  //Vec phs = { 0.0, 0.0 };
+  Vec phs = { 0.0, 180 };
+  //Vec phs = { 180, 0.0 };
   Vec dec = { 0.2, 0.2 };
   Vec att = { at,  at  };
 
@@ -109,8 +111,17 @@ void modalTwoModes()
   mfb.setModalParameters(frq, amp, att, dec, phs);
 
   // plots:
-  plotImpulseResponse(  mfb, 5000, 1.0);
-  plotFrequencyResponse(mfb, 5000, 0.0, 500.0, fs, false);
+  plotImpulseResponse(      mfb, 5000, 1.0);
+  plotFrequencyResponse(    mfb, 5000, 0.0, 500.0, fs, false);
+
+  // The ringing responses do not yet seem to give reasonably interpretable numeric results, but 
+  // maybe it's an issue with the numerical derivative. Both modes have the same decay time, so 
+  // their absolute ringing times (in seconds) should be equal and their relative ringing times (in 
+  // cycles) should be different by a factor of 4 (== f2/f1)
+  plotFrequencyResponseReIm(mfb, 5000, 10.0, 1000.0, fs, true);
+  plotMagAndRingResponse(   mfb, 5000, 10.0, 1000.0, fs, true);
+
+
 
   // Observations:
   // frq: 1,4; amp: 1,1; dec: 0.2,0.2, att: 0.0001:
@@ -119,7 +130,7 @@ void modalTwoModes()
   //   (geometric mean of 100 and 400)
   //  -phase response goes from 0° down to -180° and back up to 0°, passing through 90° at the
   //   resonances and antiresonance, transition is quite steep/squarish
-  // phs: 0,pi or pi,0
+  // phs: 0,180 or 180,0
   //  -two sharp resonances at 100,400
   //  -phase monotonically decresing from 0 to -90 then to -180
   //   ...wait - it starts at +180 - something must be wrong about the plot/unwrapping

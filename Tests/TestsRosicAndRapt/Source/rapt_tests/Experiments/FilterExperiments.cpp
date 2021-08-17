@@ -259,8 +259,26 @@ rsFilterSpecificationZPK<T> sos2zpk(
 }
 // maybe move to rsFilterSpecificationZPK as static member: fromBiquads
 
-void engineersFilterFreqResp()
+void engineersFilterRingResp()
 {
+  // We plot the magnitude response of a filter together with a new kind of response that attempts
+  // to show the amount of ringing of the filter as function of frequency. Ringing is in this 
+  // context seen as a sine-like oscillation with a (more or less) stable frequency in the filter's
+  // impulse- and step-response. It is desired that the function shows a strong peak at the 
+  // resonance frequency of a (2-pole) resonator, at the ringing frequency of an allpass, at the 
+  // cutoff frequency of a (steep) lowpass, etc. - it shoould peak at whatever frequency we expect 
+  // strong ringing for the given filter at hand. Clearly, the fact that allpass filters can 
+  // feature ringing shows that looking at the magnitude response alone will be not enough. 
+  // Likewise, the fact that a steep linear- or zero-phase lowpass filter features ringing shows 
+  // that looking at the phase response alone won't be enough either. We instead look at a 
+  // combination of the two. In such cases, it's often useful to take a step back and look and 
+  // real and imaginary parts instead because they are on a more equal footing. Observing that 
+  // "ringing" occurs whenever "something happens" in the frequency response, we look at the 
+  // absolute value of the derivative of the frequency response (as a complex function of a real 
+  // variable).
+
+  // See this thread: https://www.kvraudio.com/forum/viewtopic.php?f=33&t=569114 
+
   // filter parameters:
   double fs  = 44100;  // samplerate in Hz
   double fc  = 100;    // center or cutoff frequency in Hz
@@ -273,7 +291,11 @@ void engineersFilterFreqResp()
 
   EF flt;
   //flt.setApproximationMethod(PTD::BUTTERWORTH);
-  flt.setApproximationMethod(PTD::ELLIPTIC);
+  //flt.setApproximationMethod(PTD::ELLIPTIC);
+  flt.setApproximationMethod(PTD::CHEBYCHEV);
+  //flt.setApproximationMethod(PTD::INVERSE_CHEBYCHEV);
+  //flt.setApproximationMethod(PTD::BESSEL);
+  //flt.setApproximationMethod(PTD::PAPOULIS);
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
   flt.setBandwidth(bw);
@@ -286,13 +308,43 @@ void engineersFilterFreqResp()
   //flt.setMode(IIRD::BANDREJECT);
   flt.setGain(10.0);
   flt.setRipple(1.0);
-  flt.setStopbandRejection(100.0); 
+  flt.setStopbandRejection(60.0); 
   flt.setPrototypeOrder(ord);
 
-  //plotImpulseResponse(      flt, 5000, 1.0);
-  //plotFrequencyResponse(    flt, 5000, 10.0, 1000.0, fs, true);
+  //plotImpulseResponse(      flt, 10000, 1.0);
+  //plotFrequencyResponse(    flt,  5000, 10.0, 1000.0, fs, true);
   //plotFrequencyResponseReIm(flt, 5000, 10.0, 1000.0, fs, true);
-  plotMagAndRingResponse(   flt, 5000, 10.0, 1000.0, fs, true);
+  plotMagAndRingResponse(   flt,  5000, 10.0, 1000.0, fs, true);  // experimental
+
+  // Observations:
+  // -Notation: H(f): complex frequency response, H'(f): derivative of H(f) with respect to f, 
+  //  R_i(f): i-th attempt of defining a "ringing response"
+  // -The function R_1(f) := abs(H'(f)) does indeed show peaks at the bandedge frequencies.
+  // -The function R_2(f) := abs(H'(f)) * f seems to make the plot symmetrical on a log-freq axis
+  // -I think, R_1 is proportional to the absolute ringing time (in seconds) and R_2 is 
+  //  proportional to the relative ringing time (in cycles) -> verify!
+
+  // ToDo:
+  // -Apply both functions to a series of two high-shelvers (maybe at 50 and 200 Hz) to see, if the
+  //  measured ringing amount is the same at both stairsteps or if it depends on the actual 
+  //  magnitude at the given frequency.
+  // -If it depends on magnitude and we want a magnitude independent measure, divide by abs(H). If
+  //  it does not depend on magnitude but we want a magnitude dependent measure, multiply by 
+  //  abs(H). The goal is to separate the aspect of "ringing time" from the aspect of 
+  //  "ringing gain". So we may get 2 more canditates:
+  //    R_3(f) = R_2(f) / abs(H)
+  //    R_4(f) = R_2(f) * abs(H)
+  //  and/or, we could also have based them on R_1(f)
+  // -Try to find a function that, in the case of a resonator, represents the decay time of a given 
+  //  freq. Maybe measure it by driving the filter at the frequency into steady state, turn the 
+  //  input signal off (smoothly, to avoid a strong switch-off transient!) and measure the tail 
+  //  length. That technique may apply to other filter types, too.
+  // -try leaving out the sqrt
+  // -what happens, when we chain a bunch of (equal) filters? I guess, using N filters of same type
+  //  in series just raises the response to the power of N?, just like with magnitude? Or will it 
+  //  multiply by N just like with phase?
+  // -test with allpasses, pure delay, FIR filters (windowed sinc, boxcar)
+  // -write the findings up into a paper, maybe "Filter Ringing as Function of Frequency"
 }
 
 void engineersFilterFreqResps()

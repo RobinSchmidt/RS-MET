@@ -30,3 +30,4 @@ Products/AudioPlugins/ToolChain/Builds/VisualStudio2015/x64/Debug/
 *.opendb
 *.db
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Debug/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt
+*.png

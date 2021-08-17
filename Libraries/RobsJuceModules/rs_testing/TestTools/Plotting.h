@@ -175,7 +175,8 @@ inline void plotMagAndRingResponse(
   {
     mag[k]   = sqrt( re[k]* re[k] +  im[k]* im[k]);
     dmag[k]  = sqrt(dre[k]*dre[k] + dim[k]*dim[k]);
-    dmag[k] *= w[k];  // test - makes plots symmetric
+    dmag[k] *= w[k];     // test - makes plots symmetric
+    //dmag[k] *= dmag[k];  // test - undo sqrt...hmm...nope
   }
 
   // plot:
@@ -188,6 +189,10 @@ inline void plotMagAndRingResponse(
   //  of cycles of ringing, not the absolute time?
   // -I think, the plotting code normalizes the data internally. The plots both hit 1.0 but i think
   //  the data does not necessarily.
+
+  // ToDo:
+  // -Try if it makes a difference, if we do the multiplication by w[k] before computing the 
+  //  magnitude or even before computing the derivative
 }
 
 
