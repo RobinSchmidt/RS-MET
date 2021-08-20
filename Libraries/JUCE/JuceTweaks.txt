@@ -35,7 +35,11 @@ to update to a new version of juce, the following steps are necessary:
 
 -re-create projects for TestPluginJuce with the new projucer and make it build
  -juce::Image final declaration has to be removed (i have subclasses of it)
- -this will compile jura_framework
+ -this will compile rapt and rosic
+
+-re-create IDE projects and build and run TestAppJURA
+ -this will compile romos, jura_framework, jura_processors
+  
 -make ToolChain build
 
 -merge the update branch with the master branch

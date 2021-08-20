@@ -1,7 +1,7 @@
 XmlElement* stringToXml(const String& xmlStr)
 {
   XmlDocument xmlDoc(xmlStr);
-  return xmlDoc.getDocumentElement();
+  return xmlDoc.getDocumentElement().get();
 }
 
 XmlElement* getXmlFromFile(const File &fileToLoadFrom)
@@ -9,7 +9,7 @@ XmlElement* getXmlFromFile(const File &fileToLoadFrom)
   if( fileToLoadFrom.existsAsFile() )
   {
     XmlDocument myDocument(fileToLoadFrom);
-    XmlElement *xml = myDocument.getDocumentElement();
+    XmlElement *xml = myDocument.getDocumentElement().get();
     return xml;
   }
   else

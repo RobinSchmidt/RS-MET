@@ -9,11 +9,11 @@
               pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="TestPluginJUCEAU" pluginRTASCategory=""
               aaxIdentifier="com.RS-MET.TestPluginJUCE" pluginAAXCategory="2"
-              jucerVersion="5.4.3" companyName="RS-MET" companyWebsite="www.rs-met.com"
-              companyEmail="robin@rs-met.com" displaySplashScreen="1" reportAppUsage="1"
-              splashScreenColour="Dark" buildStandalone="1" enableIAA="0" cppLanguageStandard="11"
-              companyCopyright="RS-MET" pluginFormats="buildVST,buildAU,buildStandalone"
-              pluginCharacteristicsValue="pluginWantsMidiIn">
+              companyName="RS-MET" companyWebsite="www.rs-met.com" companyEmail="robin@rs-met.com"
+              displaySplashScreen="1" reportAppUsage="1" splashScreenColour="Dark"
+              buildStandalone="1" enableIAA="0" cppLanguageStandard="11" companyCopyright="RS-MET"
+              pluginFormats="buildVST,buildAU,buildStandalone" pluginCharacteristicsValue="pluginWantsMidiIn"
+              jucerFormatVersion="1">
   <MAINGROUP id="J7WzKP" name="TestPluginJUCE">
     <GROUP id="{5348A3D7-BFCF-B722-2C65-2A345253A7EB}" name="Source">
       <FILE id="NOmWFA" name="PluginProcessor.cpp" compile="1" tion="0" file="Source/PluginProcessor.cpp"/>

@@ -2,9 +2,9 @@
 
 <JUCERPROJECT id="G5rTLi" name="TestAppJURA" projectType="guiapp" version="1.0.0"
               bundleIdentifier="com.yourcompany.TestAppJURA" includeBinaryInAppConfig="1"
-              jucerVersion="5.4.3" companyName="RS-MET" companyWebsite="www.rs-met.com"
-              companyEmail="robin@rs-met.com" displaySplashScreen="1" reportAppUsage="1"
-              splashScreenColour="Dark" cppLanguageStandard="11" companyCopyright="RS-MET">
+              companyName="RS-MET" companyWebsite="www.rs-met.com" companyEmail="robin@rs-met.com"
+              displaySplashScreen="1" reportAppUsage="1" splashScreenColour="Dark"
+              cppLanguageStandard="11" companyCopyright="RS-MET" jucerFormatVersion="1">
   <MAINGROUP id="K1ItHv" name="TestAppJURA">
     <GROUP id="{E7DA5915-A163-B06A-6F1B-762E629AA87C}" name="Source">
       <GROUP id="{F297B51F-ADA4-24A8-B081-EC977DA1BEC7}" name="Tests">

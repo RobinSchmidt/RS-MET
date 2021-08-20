@@ -90,7 +90,7 @@ void saveAudioSampleBufferToFile(AudioSampleBuffer* bufferToSave, File fileToSav
     return;
 
   // create a FileOutputStream to write into:
-  FileOutputStream* outputStream = fileToSaveTo.createOutputStream();
+  FileOutputStream* outputStream = fileToSaveTo.createOutputStream().get();
 
   // create a writer for the stream:
   AudioFormatWriter *writer = audioFormat->createWriterFor(outputStream, sampleRateToUse, 
