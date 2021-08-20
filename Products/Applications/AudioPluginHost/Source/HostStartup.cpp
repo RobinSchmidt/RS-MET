@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 6 End-User License
+   Agreement and JUCE Privacy Policy (both effective as of the 16th June 2020).
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-6-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -24,9 +23,9 @@
   ==============================================================================
 */
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include <JuceHeader.h>
 #include "UI/MainHostWindow.h"
-#include "Filters/InternalFilters.h"
+#include "Plugins/InternalPlugins.h"
 
 #if ! (JUCE_PLUGINHOST_VST || JUCE_PLUGINHOST_VST3 || JUCE_PLUGINHOST_AU)
  #error "If you're building the audio plugin host, you probably want to enable VST and/or AU support"
@@ -76,7 +75,7 @@ public:
         File fileToOpen;
 
        #if JUCE_ANDROID || JUCE_IOS
-        fileToOpen = FilterGraph::getDefaultGraphDocumentOnMobile();
+        fileToOpen = PluginGraph::getDefaultGraphDocumentOnMobile();
        #else
         for (int i = 0; i < getCommandLineParameterArray().size(); ++i)
         {
@@ -112,9 +111,9 @@ public:
     void suspended() override
     {
        #if JUCE_ANDROID || JUCE_IOS
-        if (GraphDocumentComponent* graph = mainWindow->graphHolder.get())
-            if (FilterGraph* ioGraph = graph->graph.get())
-                ioGraph->saveDocument (FilterGraph::getDefaultGraphDocumentOnMobile());
+        if (auto graph = mainWindow->graphHolder.get())
+            if (auto ioGraph = graph->graph.get())
+                ioGraph->saveDocument (PluginGraph::getDefaultGraphDocumentOnMobile());
        #endif
     }
 
@@ -126,10 +125,12 @@ public:
             JUCEApplicationBase::quit();
     }
 
-    void backButtonPressed() override
+    bool backButtonPressed() override
     {
         if (mainWindow->graphHolder != nullptr)
             mainWindow->graphHolder->hideLastSidePanel();
+
+        return true;
     }
 
     const String getApplicationName() override       { return "Juce Plug-In Host"; }
@@ -148,7 +149,130 @@ static PluginHostApp& getApp()                    { return *dynamic_cast<PluginH
 ApplicationProperties& getAppProperties()         { return *getApp().appProperties; }
 ApplicationCommandManager& getCommandManager()    { return getApp().commandManager; }
 
-bool isOnTouchDevice()                            { return Desktop::getInstance().getMainMouseSource().isTouch(); }
+bool isOnTouchDevice()
+{
+    static bool isTouch = Desktop::getInstance().getMainMouseSource().isTouch();
+    return isTouch;
+}
+
+//==============================================================================
+static AutoScale autoScaleFromString (StringRef str)
+{
+    if (str.isEmpty())                     return AutoScale::useDefault;
+    if (str == CharPointer_ASCII { "0" })  return AutoScale::scaled;
+    if (str == CharPointer_ASCII { "1" })  return AutoScale::unscaled;
+
+    jassertfalse;
+    return AutoScale::useDefault;
+}
+
+static const char* autoScaleToString (AutoScale autoScale)
+{
+    if (autoScale == AutoScale::scaled)    return "0";
+    if (autoScale == AutoScale::unscaled)  return "1";
+
+    return {};
+}
+
+AutoScale getAutoScaleValueForPlugin (const String& identifier)
+{
+    if (identifier.isNotEmpty())
+    {
+        auto plugins = StringArray::fromLines (getAppProperties().getUserSettings()->getValue ("autoScalePlugins"));
+        plugins.removeEmptyStrings();
+
+        for (auto& plugin : plugins)
+        {
+            auto fromIdentifier = plugin.fromFirstOccurrenceOf (identifier, false, false);
+
+            if (fromIdentifier.isNotEmpty())
+                return autoScaleFromString (fromIdentifier.fromFirstOccurrenceOf (":", false, false));
+        }
+    }
+
+    return AutoScale::useDefault;
+}
+
+void setAutoScaleValueForPlugin (const String& identifier, AutoScale s)
+{
+    auto plugins = StringArray::fromLines (getAppProperties().getUserSettings()->getValue ("autoScalePlugins"));
+    plugins.removeEmptyStrings();
+
+    auto index = [identifier, plugins]
+    {
+        auto it = std::find_if (plugins.begin(), plugins.end(),
+                                [&] (const String& str) { return str.startsWith (identifier); });
+
+        return (int) std::distance (plugins.begin(), it);
+    }();
+
+    if (s == AutoScale::useDefault && index != plugins.size())
+    {
+        plugins.remove (index);
+    }
+    else
+    {
+        auto str = identifier + ":" + autoScaleToString (s);
+
+        if (index != plugins.size())
+            plugins.getReference (index) = str;
+        else
+            plugins.add (str);
+    }
+
+    getAppProperties().getUserSettings()->setValue ("autoScalePlugins", plugins.joinIntoString ("\n"));
+}
+
+static bool isAutoScaleAvailableForPlugin (const PluginDescription& description)
+{
+    return autoScaleOptionAvailable
+          && description.pluginFormatName.containsIgnoreCase ("VST");
+}
+
+bool shouldAutoScalePlugin (const PluginDescription& description)
+{
+    if (! isAutoScaleAvailableForPlugin (description))
+        return false;
+
+    const auto scaleValue = getAutoScaleValueForPlugin (description.fileOrIdentifier);
+
+    return (scaleValue == AutoScale::scaled
+              || (scaleValue == AutoScale::useDefault
+                    && getAppProperties().getUserSettings()->getBoolValue ("autoScalePluginWindows")));
+}
+
+void addPluginAutoScaleOptionsSubMenu (AudioPluginInstance* pluginInstance,
+                                       PopupMenu& menu)
+{
+    if (pluginInstance == nullptr)
+        return;
+
+    auto description = pluginInstance->getPluginDescription();
+
+    if (! isAutoScaleAvailableForPlugin (description))
+        return;
+
+    auto identifier = description.fileOrIdentifier;
+
+    PopupMenu autoScaleMenu;
+
+    autoScaleMenu.addItem ("Default",
+                           true,
+                           getAutoScaleValueForPlugin (identifier) == AutoScale::useDefault,
+                           [identifier] { setAutoScaleValueForPlugin (identifier, AutoScale::useDefault); });
+
+    autoScaleMenu.addItem ("Enabled",
+                           true,
+                           getAutoScaleValueForPlugin (identifier) == AutoScale::scaled,
+                           [identifier] { setAutoScaleValueForPlugin (identifier, AutoScale::scaled); });
+
+    autoScaleMenu.addItem ("Disabled",
+                           true,
+                           getAutoScaleValueForPlugin (identifier) == AutoScale::unscaled,
+                           [identifier] { setAutoScaleValueForPlugin (identifier, AutoScale::unscaled); });
+
+    menu.addSubMenu ("Auto-scale window", autoScaleMenu);
+}
 
 // This kicks the whole thing off..
 START_JUCE_APPLICATION (PluginHostApp)

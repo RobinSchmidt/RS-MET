@@ -7,20 +7,36 @@ To make it work, i had to tweak/hack the juce library a bit:
 
 
 
-to update to a new version of juce, the following steps are necessarry:
+to update to a new version of juce, the following steps are necessary:
+
 -download latest version of juce
--create a new git branch and switch to it
+-create a new git branch for the update and switch to it
 -replace content of the JUCE/modules folder (maybe keep the juce_VSTInterface.h)
+
 -replace Projucer code and make it build (don't copy the JUCECompileEngine.dll)
  -making it build requires to set the juce module path and re-generate the IDE 
   project with the projucer itself (a binary version is usally included in the 
-  juce distribution) 
+  juce distribution, for example, as Projucer.exe for the windows version in the 
+  main JUCE folder) 
  -changing the path involves setting it for one module, clicking on the 
-  gear-symbol and then taking over that path for all other modules
+  gear-symbol (the one at the bottom-right in the left column) and then taking over
+  that path for all other modules...oh - but since  juce 6.0.8, there's this 
+  newjuce_build_tools module which is in a different folder than the other juce 
+  modules - so that needs to be set differently after the "taking over" action  
+  
+-replace the AudioPluginHost code and make it build and run again
+ -since juce 6.0.8, this also involves replacing the examples/ folder right next to
+  the "Applications" folder inside which the AudioPluginHost project resides
+ -after building the host, it crashes immediately when launching it because it tries
+  to load a certain samples that we don't have in this repo. this can be fixed by 
+  changing the code of the loadNewSample(), loadImpulseResponse(), 
+  createAssetInputStream(), calls to load the dummy.wav that we actually do have in the 
+  repo (which is just a couple of zero samples)
+
 -re-create projects for TestPluginJuce with the new projucer and make it build
  -juce::Image final declaration has to be removed (i have subclasses of it)
  -this will compile jura_framework
 -make ToolChain build
--replace the PluginHost code and make it build
+
 -merge the update branch with the master branch
 

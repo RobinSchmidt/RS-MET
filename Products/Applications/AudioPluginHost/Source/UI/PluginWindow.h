@@ -2,17 +2,16 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2017 - ROLI Ltd.
+   Copyright (c) 2020 - Raw Material Software Limited
 
    JUCE is an open source library subject to commercial or open-source
    licensing.
 
-   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
-   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
-   27th April 2017).
+   By using JUCE, you agree to the terms of both the JUCE 6 End-User License
+   Agreement and JUCE Privacy Policy (both effective as of the 16th June 2020).
 
-   End User License Agreement: www.juce.com/juce-5-licence
-   Privacy Policy: www.juce.com/juce-5-privacy-policy
+   End User License Agreement: www.juce.com/juce-6-licence
+   Privacy Policy: www.juce.com/juce-privacy-policy
 
    Or: You may also use this code under the terms of the GPL v3 (see
    www.gnu.org/licenses).
@@ -26,20 +25,20 @@
 
 #pragma once
 
-#include "../Filters/FilterIOConfiguration.h"
+#include "../Plugins/IOConfigurationWindow.h"
 
-class FilterGraph;
+class PluginGraph;
 
 /**
-    A window that shows a log of parameter change messagse sent by the plugin.
+    A window that shows a log of parameter change messages sent by the plugin.
 */
-class FilterDebugWindow : public AudioProcessorEditor,
+class PluginDebugWindow : public AudioProcessorEditor,
                           public AudioProcessorParameter::Listener,
                           public ListBoxModel,
                           public AsyncUpdater
 {
 public:
-    FilterDebugWindow (AudioProcessor& proc)
+    PluginDebugWindow (AudioProcessor& proc)
         : AudioProcessorEditor (proc), audioProc (proc)
     {
         setSize (500, 200);
@@ -111,8 +110,8 @@ private:
         list.scrollToEnsureRowIsOnscreen (log.size() - 1);
     }
 
-    constexpr static int maxLogSize = 300;
-    constexpr static int logSizeTrimThreshold = 400;
+    constexpr static const int maxLogSize = 300;
+    constexpr static const int logSizeTrimThreshold = 400;
 
     ListBox list { "Log", this };
 
@@ -154,10 +153,10 @@ public:
 
        #if JUCE_IOS || JUCE_ANDROID
         auto screenBounds = Desktop::getInstance().getDisplays().getTotalBounds (true).toFloat();
-
         auto scaleFactor = jmin ((screenBounds.getWidth() - 50) / getWidth(), (screenBounds.getHeight() - 50) / getHeight());
+
         if (scaleFactor < 1.0f)
-            setSize (getWidth() * scaleFactor, getHeight() * scaleFactor);
+            setSize ((int) (getWidth() * scaleFactor), (int) (getHeight() * scaleFactor));
 
         setTopLeftPosition (20, 20);
        #else
@@ -198,7 +197,8 @@ public:
 private:
     float getDesktopScaleFactor() const override     { return 1.0f; }
 
-    static AudioProcessorEditor* createProcessorEditor (AudioProcessor& processor, PluginWindow::Type type)
+    static AudioProcessorEditor* createProcessorEditor (AudioProcessor& processor,
+                                                        PluginWindow::Type type)
     {
         if (type == PluginWindow::Type::normal)
         {
@@ -208,17 +208,10 @@ private:
             type = PluginWindow::Type::generic;
         }
 
-        if (type == PluginWindow::Type::generic)
-            return new GenericAudioProcessorEditor (&processor);
-
-        if (type == PluginWindow::Type::programs)
-            return new ProgramAudioProcessorEditor (processor);
-
-        if (type == PluginWindow::Type::audioIO)
-            return new FilterIOConfigurationWindow (processor);
-
-        if (type == PluginWindow::Type::debug)
-            return new FilterDebugWindow (processor);
+        if (type == PluginWindow::Type::generic)  return new GenericAudioProcessorEditor (processor);
+        if (type == PluginWindow::Type::programs) return new ProgramAudioProcessorEditor (processor);
+        if (type == PluginWindow::Type::audioIO)  return new IOConfigurationWindow (processor);
+        if (type == PluginWindow::Type::debug)    return new PluginDebugWindow (processor);
 
         jassertfalse;
         return {};
@@ -233,6 +226,7 @@ private:
             case Type::programs:   return "Programs";
             case Type::audioIO:    return "IO";
             case Type::debug:      return "Debug";
+            case Type::numTypes:
             default:               return {};
         }
     }
@@ -293,7 +287,7 @@ private:
             }
 
             void refresh() override {}
-            void audioProcessorChanged (AudioProcessor*) override {}
+            void audioProcessorChanged (AudioProcessor*, const ChangeDetails&) override {}
             void audioProcessorParameterChanged (AudioProcessor*, int, float) override {}
 
             AudioProcessor& owner;
