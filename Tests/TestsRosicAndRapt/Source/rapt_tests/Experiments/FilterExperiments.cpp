@@ -291,8 +291,8 @@ void engineersFilterRingResp()
 
   EF flt;
   //flt.setApproximationMethod(PTD::BUTTERWORTH);
-  //flt.setApproximationMethod(PTD::ELLIPTIC);
-  flt.setApproximationMethod(PTD::CHEBYCHEV);
+  flt.setApproximationMethod(PTD::ELLIPTIC);
+  //flt.setApproximationMethod(PTD::CHEBYCHEV);
   //flt.setApproximationMethod(PTD::INVERSE_CHEBYCHEV);
   //flt.setApproximationMethod(PTD::BESSEL);
   //flt.setApproximationMethod(PTD::PAPOULIS);
@@ -308,10 +308,10 @@ void engineersFilterRingResp()
   //flt.setMode(IIRD::BANDREJECT);
   flt.setGain(10.0);
   flt.setRipple(1.0);
-  flt.setStopbandRejection(60.0); 
+  flt.setStopbandRejection(20.0); 
   flt.setPrototypeOrder(ord);
 
-  //plotImpulseResponse(      flt, 10000, 1.0);
+  plotImpulseResponse(      flt, 10000, 1.0);
   //plotFrequencyResponse(    flt,  5000, 10.0, 1000.0, fs, true);
   //plotFrequencyResponseReIm(flt, 5000, 10.0, 1000.0, fs, true);
   plotMagAndRingResponse(   flt,  5000, 10.0, 1000.0, fs, true);  // experimental
@@ -345,6 +345,43 @@ void engineersFilterRingResp()
   //  multiply by N just like with phase?
   // -test with allpasses, pure delay, FIR filters (windowed sinc, boxcar)
   // -write the findings up into a paper, maybe "Filter Ringing as Function of Frequency"
+
+  // Questions:
+  // -Is H'(w) just the imaginary part of the complex derivative of H(s) at s = j*w? I think so. If
+  //  this is the case, it will be easier to evaluate the desired derivative analytically for a 
+  //  given rational H(s)...but wait - no: we actually want a complex derivative into the imaginary
+  //  direction, the above would give the imaginary direction of a complex derivative. Can we 
+  //  define such a derivative more generally: given a function w = f(z), consider the 1D 
+  //  derivative at a given fixed real part (here zero) into the direction of the imaginary axis. 
+  //  It's like a vector valued partial derivative...maybe the 1st row or column of the Jacobi 
+  //  matrix when we consider f(z) as a 2D vector field: 
+  //    f(z) = u(x,y) + j*v(x,y)  ->  f(x,y) = (u(x,y), v(x,y))
+  //  could other combinations of partial derivatives reveal further information? (magnitude of)
+  //  derivative along the real axis? divergence? curl? maybe the magnitude of the gradient can 
+  //  reveal pole (or zero) proximity? ...but wait: it's a vector field, the gradient is a matrix.
+  //  maybe look at the gradient of the magnitude (squared). We need an analytical framework that
+  //  can deal with bivariate rational functions H(x,y) = N(x,y) / D(x,y). Create a class
+  //  rsBivariateRationalFunction using two rsBivariatePolynomial members. It should be able to 
+  //  compute partial derivatives, gradients, etc. ...maybe also path integrals
+  // -What about lookign at the 2nd derivative of the phase response? Could this be some sort of 
+  //  measure of dispersion? ...but i think, that's what the group delay is for
+  // -Can evaluation of the transfer function along the real axis reveal something interesting? 
+  //  Maybe how strong the filter responds to exponentially decaying functions as function of the 
+  //  decay? can this be related to some concept of transient response, maybe? ...like: responds 
+  //  strongly to quick transients and weakly to slow transients or vice versa?
+  // -What about trying to find a scalar potential for the vector field defined by the transfer 
+  //  function? Maybe we need to take the complex conjugate because of the conjugation involved in 
+  //  forming "Polya vcetor fields"?
+
+  // Ideas:
+  // -what other kinds of responses can we derive from the transfer-function, frequency-response or
+  //  the time responses?
+  //  -Maybe define a drop-response as function of two frequencies w0,w1 as 
+  //   abs(H(j*w1)) - abs(H(j*w2)) which measures, how much the magnitude response drops off between 
+  //   the two given frequencies
+  //  -Can we find a potential function of the transfer-function and interpret it somehow? maybe 
+  //   also by considering differences of values at various points (along the w-axis). These 
+  //   differences represent line integrals of soem kind
 }
 
 void engineersFilterFreqResps()
