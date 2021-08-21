@@ -56,6 +56,8 @@
 #endif
 
 #include <emmintrin.h>    // SSE2
+// see https://github.com/facebook/zstd/issues/718 for issue with compiling on arm, maybe we need
+// a guard like RS_USE_SSE2 for this and a fallback scalar implementation, if SSE2 is not available
 
 //#ifndef __APPLE__
 //#include <malloc.h>     // for alloca - try to get rid - alloca is bad, mkay?

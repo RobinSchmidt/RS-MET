@@ -214,7 +214,7 @@ public:
 
   inline T getValue()
   {
-    T r = y[N];                    // result
+    T r = this->y[N];                    // result
     for(int i = N; i > 0; i--) 
       this->y[i] *= this->y[i-1];  // state update
     return r;
