@@ -970,7 +970,7 @@ void GNUPlotter::systemCall(const std::string &callString)
   delete[] cString;
 }
 
-void GNUPlotter::assert(bool condition, const char* errorMessage)
+void GNUPlotter::assume(bool condition, const char* errorMessage)
 {
   if(!condition) {
     std::cout << errorMessage;

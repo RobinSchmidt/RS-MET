@@ -34,3 +34,9 @@ Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Debug/ConsoleApp/TestsRosicA
 *.sfz
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/.vs/ToolChain/v16/Solution.VC.db-shm
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/.vs/ToolChain/v16/Solution.VC.db-wal
+Products/.DS_Store
+Products/AudioPlugins/.DS_Store
+Products/examples/.DS_Store
+Products/AudioPlugins/TestPluginJUCE/.DS_Store
+Products/AudioPlugins/ToolChain/.DS_Store
+Products/AudioPlugins/ToolChain/Builds/.DS_Store

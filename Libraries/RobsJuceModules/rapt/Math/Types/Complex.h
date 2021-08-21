@@ -88,7 +88,7 @@ template<class T>
 inline rsComplex<T> rsInverse(const rsComplex<T> &z) 
 { 
   T s = T(1) / (z.re*z.re + z.im*z.im); 
-  return rsComplex(s*z.re, -s*z.im); 
+  return rsComplex<T>(s*z.re, -s*z.im);
 }
 // maybe rename to rsInv, specify that rsInv should, by convention, always mean the left inverse for 
 // types for which it matters

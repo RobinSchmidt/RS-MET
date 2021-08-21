@@ -620,7 +620,8 @@ protected:
   // filter state, algo parameters, infrastructure:
   //T y     = 0.0;   // previous output sample (for feedback)
   T delay = 0.0;   // required delay to implement highpass by subtraction
-  std::atomic<bool> dirty = true;  // flag to indicate that algo params must be recalculated
+  //std::atomic<bool> dirty = true;  // flag to indicate that algo params must be recalculated
+  std::atomic<bool> dirty(true);  // flag to indicate that algo params must be recalculated
 
   // embedded objects:
   rsQuantileFilterCore2<T> core;
