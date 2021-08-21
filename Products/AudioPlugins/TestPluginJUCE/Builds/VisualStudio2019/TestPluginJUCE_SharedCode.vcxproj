@@ -63,7 +63,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>E:\Programming\C++\RS-MET\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\..\JuceLibraryCode;E:\Programming\C++\RS-MET\Libraries\JUCE\modules;..\..\..\..\..\Libraries\RobsJuceModules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\..\JuceLibraryCode;..\..\..\..\..\Libraries\JUCE\modules;..\..\..\..\..\Libraries\RobsJuceModules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2019_78A5026=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=1;JucePlugin_Build_Unity=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -103,7 +103,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>E:\Programming\C++\RS-MET\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\..\JuceLibraryCode;E:\Programming\C++\RS-MET\Libraries\JUCE\modules;..\..\..\..\..\Libraries\RobsJuceModules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\..\JuceLibraryCode;..\..\..\..\..\Libraries\JUCE\modules;..\..\..\..\..\Libraries\RobsJuceModules;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2019_78A5026=1;JUCE_APP_VERSION=1.0.0;JUCE_APP_VERSION_HEX=0x10000;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=1;JucePlugin_Build_Unity=0;JUCE_SHARED_CODE=1;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>

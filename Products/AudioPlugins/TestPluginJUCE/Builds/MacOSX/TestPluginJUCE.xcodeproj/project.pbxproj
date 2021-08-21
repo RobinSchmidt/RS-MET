@@ -71,8 +71,8 @@
 		013E17D6F20282FCC1D8B4E6 /* System/Library/Frameworks/CoreAudio.framework */ /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		0192685CC077C49236899642 /* System/Library/Frameworks/Accelerate.framework */ /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		0296F0559F6299D6E022CBEB /* Info-Standalone_Plugin.plist */ /* Info-Standalone_Plugin.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-Standalone_Plugin.plist"; path = "Info-Standalone_Plugin.plist"; sourceTree = SOURCE_ROOT; };
-		086F5674EA81B624C9CAE43E /* ~/JUCE/modules/juce_audio_basics */ /* juce_audio_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_basics; path = "~/JUCE/modules/juce_audio_basics"; sourceTree = "<absolute>"; };
 		088FD47F799AD43F9BB08D7B /* ../../JuceLibraryCode/include_juce_events.mm */ /* include_juce_events.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_events.mm; path = ../../JuceLibraryCode/include_juce_events.mm; sourceTree = SOURCE_ROOT; };
+		09B08E23AF1C251154E34DD6 /* ../../../../../Libraries/JUCE/modules/juce_graphics */ /* juce_graphics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_graphics; path = ../../../../../Libraries/JUCE/modules/juce_graphics; sourceTree = SOURCE_ROOT; };
 		09C4F62198BF4F8E563A2A53 /* System/Library/Frameworks/Carbon.framework */ /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = System/Library/Frameworks/Carbon.framework; sourceTree = SDKROOT; };
 		0ABDEFD73E2FCA35CF694E23 /* ../../JuceLibraryCode/JuceHeader.h */ /* JuceHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = SOURCE_ROOT; };
 		0AF8D045E151E70271EE54CC /* ../../JuceLibraryCode/include_juce_graphics.mm */ /* include_juce_graphics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_graphics.mm; path = ../../JuceLibraryCode/include_juce_graphics.mm; sourceTree = SOURCE_ROOT; };
@@ -81,13 +81,15 @@
 		14E2B71A52DF5C324216CFE5 /* System/Library/Frameworks/QuartzCore.framework */ /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		16270DFD0BDC311CB816B267 /* ../../JuceLibraryCode/include_juce_gui_basics.mm */ /* include_juce_gui_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_basics.mm; path = ../../JuceLibraryCode/include_juce_gui_basics.mm; sourceTree = SOURCE_ROOT; };
 		19F57D0D4232079C1A0A6C9D /* ../../JuceLibraryCode/include_juce_gui_extra.mm */ /* include_juce_gui_extra.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_gui_extra.mm; path = ../../JuceLibraryCode/include_juce_gui_extra.mm; sourceTree = SOURCE_ROOT; };
+		20E06CEF2812B67C026459E1 /* ../../../../../Libraries/JUCE/modules/juce_audio_plugin_client */ /* juce_audio_plugin_client */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_plugin_client; path = ../../../../../Libraries/JUCE/modules/juce_audio_plugin_client; sourceTree = SOURCE_ROOT; };
+		2247EF8AFA45C2FEEB0FD7C1 /* ../../../../../Libraries/JUCE/modules/juce_core */ /* juce_core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_core; path = ../../../../../Libraries/JUCE/modules/juce_core; sourceTree = SOURCE_ROOT; };
+		239BEEA9F4D7B922B42F1447 /* ../../../../../Libraries/JUCE/modules/juce_gui_extra */ /* juce_gui_extra */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_extra; path = ../../../../../Libraries/JUCE/modules/juce_gui_extra; sourceTree = SOURCE_ROOT; };
+		23AF82B55C04E36960912807 /* ../../../../../Libraries/RobsJuceModules/rapt */ /* rapt */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rapt; path = ../../../../../Libraries/RobsJuceModules/rapt; sourceTree = SOURCE_ROOT; };
 		27D24C040D850257D284175A /* System/Library/Frameworks/WebKit.framework */ /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		281E2A72570C802B147BC392 /* System/Library/Frameworks/AudioUnit.framework */ /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
-		2F51800427A6DF4450B2A913 /* ~/JUCE/modules/juce_core */ /* juce_core */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_core; path = "~/JUCE/modules/juce_core"; sourceTree = "<absolute>"; };
+		2ACF0EE3054BBF28A7CCBDA6 /* ../../../../../Libraries/JUCE/modules/juce_audio_processors */ /* juce_audio_processors */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_processors; path = ../../../../../Libraries/JUCE/modules/juce_audio_processors; sourceTree = SOURCE_ROOT; };
 		33263E66981C5CEC6A5C3F8C /* System/Library/Frameworks/AudioToolbox.framework */ /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		3393E5F9FF87CC90BDA75CE0 /* ~/JUCE/modules/juce_audio_devices */ /* juce_audio_devices */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_devices; path = "~/JUCE/modules/juce_audio_devices"; sourceTree = "<absolute>"; };
 		35F1EF0EFC66957E31FA04A5 /* ../../JuceLibraryCode/AppConfig.h */ /* AppConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppConfig.h; path = ../../JuceLibraryCode/AppConfig.h; sourceTree = SOURCE_ROOT; };
-		4F3F8DF59C6D38B7121A3926 /* ~/modules/rosic */ /* rosic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rosic; path = "~/modules/rosic"; sourceTree = "<absolute>"; };
 		50F7F38ABF4E22F5AECB4952 /* ../../JuceLibraryCode/include_juce_audio_plugin_client_VST_utils.mm */ /* include_juce_audio_plugin_client_VST_utils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_plugin_client_VST_utils.mm; path = ../../JuceLibraryCode/include_juce_audio_plugin_client_VST_utils.mm; sourceTree = SOURCE_ROOT; };
 		523019254D5754C45F5B55D4 /* ../../JuceLibraryCode/include_juce_data_structures.mm */ /* include_juce_data_structures.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_data_structures.mm; path = ../../JuceLibraryCode/include_juce_data_structures.mm; sourceTree = SOURCE_ROOT; };
 		5376EEE61316CF154B36B570 /* ../../Source/PluginEditor.h */ /* PluginEditor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PluginEditor.h; path = ../../Source/PluginEditor.h; sourceTree = SOURCE_ROOT; };
@@ -97,34 +99,32 @@
 		5CAFF2EAAA302FC93948D1FD /* ../../JuceLibraryCode/include_rapt.cpp */ /* include_rapt.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_rapt.cpp; path = ../../JuceLibraryCode/include_rapt.cpp; sourceTree = SOURCE_ROOT; };
 		62FC7CFD3585236F7E8246C1 /* System/Library/Frameworks/CoreAudioKit.framework */ /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
 		634F66F40C07EED29D784DFC /* ../../JuceLibraryCode/include_juce_core.mm */ /* include_juce_core.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_core.mm; path = ../../JuceLibraryCode/include_juce_core.mm; sourceTree = SOURCE_ROOT; };
-		6F1E2627C1B0D5238850D321 /* ~/JUCE/modules/juce_graphics */ /* juce_graphics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_graphics; path = "~/JUCE/modules/juce_graphics"; sourceTree = "<absolute>"; };
+		6F9EFE4394C4AE1B60293734 /* ../../../../../Libraries/JUCE/modules/juce_audio_formats */ /* juce_audio_formats */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_formats; path = ../../../../../Libraries/JUCE/modules/juce_audio_formats; sourceTree = SOURCE_ROOT; };
+		704E49D1F4F7026756A5083F /* ../../../../../Libraries/JUCE/modules/juce_gui_basics */ /* juce_gui_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_basics; path = ../../../../../Libraries/JUCE/modules/juce_gui_basics; sourceTree = SOURCE_ROOT; };
+		75A822D80169D0EF5180264D /* ../../../../../Libraries/RobsJuceModules/rosic */ /* rosic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rosic; path = ../../../../../Libraries/RobsJuceModules/rosic; sourceTree = SOURCE_ROOT; };
 		75CC23E150BFF74298170553 /* ../../JuceLibraryCode/include_juce_audio_plugin_client_utils.cpp */ /* include_juce_audio_plugin_client_utils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_plugin_client_utils.cpp; path = ../../JuceLibraryCode/include_juce_audio_plugin_client_utils.cpp; sourceTree = SOURCE_ROOT; };
 		77167EBD1704429AE497C969 /* ../../JuceLibraryCode/include_juce_audio_processors.mm */ /* include_juce_audio_processors.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_processors.mm; path = ../../JuceLibraryCode/include_juce_audio_processors.mm; sourceTree = SOURCE_ROOT; };
 		7963D91220DB4803A50EB5EC /* ../../Source/PluginProcessor.cpp */ /* PluginProcessor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PluginProcessor.cpp; path = ../../Source/PluginProcessor.cpp; sourceTree = SOURCE_ROOT; };
 		7A3E1CE46572E6DDB40D5CE1 /* VST */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestPluginJUCE.vst; sourceTree = BUILT_PRODUCTS_DIR; };
 		807E17AE9EA0009EB7919F59 /* System/Library/Frameworks/IOKit.framework */ /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		82144C2CE7BF813B080AC867 /* ~/JUCE/modules/juce_events */ /* juce_events */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_events; path = "~/JUCE/modules/juce_events"; sourceTree = "<absolute>"; };
 		830A4E15F8BFEB9B534D8593 /* ../../JuceLibraryCode/include_juce_audio_plugin_client_AU_2.mm */ /* include_juce_audio_plugin_client_AU_2.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_plugin_client_AU_2.mm; path = ../../JuceLibraryCode/include_juce_audio_plugin_client_AU_2.mm; sourceTree = SOURCE_ROOT; };
 		886EAC1A040BBFE529EE115C /* ../../JuceLibraryCode/include_juce_audio_plugin_client_VST2.cpp */ /* include_juce_audio_plugin_client_VST2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_plugin_client_VST2.cpp; path = ../../JuceLibraryCode/include_juce_audio_plugin_client_VST2.cpp; sourceTree = SOURCE_ROOT; };
-		8C162311F6D8F33F3B0BF317 /* ~/JUCE/modules/juce_data_structures */ /* juce_data_structures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_data_structures; path = "~/JUCE/modules/juce_data_structures"; sourceTree = "<absolute>"; };
-		90907864EF4B83A8D188BF57 /* ~/JUCE/modules/juce_audio_utils */ /* juce_audio_utils */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_utils; path = "~/JUCE/modules/juce_audio_utils"; sourceTree = "<absolute>"; };
-		912348C19B5DA9455E8B9B98 /* ~/JUCE/modules/juce_audio_plugin_client */ /* juce_audio_plugin_client */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_plugin_client; path = "~/JUCE/modules/juce_audio_plugin_client"; sourceTree = "<absolute>"; };
+		97E84E8FEA22F6D8DC921F2B /* ../../../../../Libraries/JUCE/modules/juce_audio_devices */ /* juce_audio_devices */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_devices; path = ../../../../../Libraries/JUCE/modules/juce_audio_devices; sourceTree = SOURCE_ROOT; };
 		9965DD293DD73D93F2EDFD52 /* ../../JuceLibraryCode/include_rapt_templates.cpp */ /* include_rapt_templates.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_rapt_templates.cpp; path = ../../JuceLibraryCode/include_rapt_templates.cpp; sourceTree = SOURCE_ROOT; };
+		A8223F4F94F7467119E6B7D4 /* ../../../../../Libraries/JUCE/modules/juce_audio_basics */ /* juce_audio_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_basics; path = ../../../../../Libraries/JUCE/modules/juce_audio_basics; sourceTree = SOURCE_ROOT; };
 		B0259FFF2558799510646A07 /* ../../JuceLibraryCode/include_juce_audio_basics.mm */ /* include_juce_audio_basics.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_basics.mm; path = ../../JuceLibraryCode/include_juce_audio_basics.mm; sourceTree = SOURCE_ROOT; };
-		B0A162D1E5B7E55EB137527C /* ~/JUCE/modules/juce_gui_extra */ /* juce_gui_extra */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_extra; path = "~/JUCE/modules/juce_gui_extra"; sourceTree = "<absolute>"; };
 		B8AB6DF9EE284FA2320F238F /* System/Library/Frameworks/Cocoa.framework */ /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
-		B9553AFC3C6950673A913A9B /* ~/JUCE/modules/juce_gui_basics */ /* juce_gui_basics */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_gui_basics; path = "~/JUCE/modules/juce_gui_basics"; sourceTree = "<absolute>"; };
 		BA9BAC7BB33669151BB1019F /* ../../JuceLibraryCode/include_juce_audio_plugin_client_AU_1.mm */ /* include_juce_audio_plugin_client_AU_1.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_plugin_client_AU_1.mm; path = ../../JuceLibraryCode/include_juce_audio_plugin_client_AU_1.mm; sourceTree = SOURCE_ROOT; };
-		BBD3AC87C614A9648D985531 /* ~/modules/rapt */ /* rapt */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rapt; path = "~/modules/rapt"; sourceTree = "<absolute>"; };
 		C057943F76DFCCED7531BEDD /* ../../JuceLibraryCode/include_juce_audio_plugin_client_Standalone.cpp */ /* include_juce_audio_plugin_client_Standalone.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_juce_audio_plugin_client_Standalone.cpp; path = ../../JuceLibraryCode/include_juce_audio_plugin_client_Standalone.cpp; sourceTree = SOURCE_ROOT; };
-		C3E98524E801F199B75734FE /* ~/JUCE/modules/juce_audio_processors */ /* juce_audio_processors */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_processors; path = "~/JUCE/modules/juce_audio_processors"; sourceTree = "<absolute>"; };
 		C7997200E13086DF07CB9896 /* Info-VST.plist */ /* Info-VST.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-VST.plist"; path = "Info-VST.plist"; sourceTree = SOURCE_ROOT; };
 		CF7FC9143A4A2707EA76E4C0 /* ../../JuceLibraryCode/include_rosic.cpp */ /* include_rosic.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_rosic.cpp; path = ../../JuceLibraryCode/include_rosic.cpp; sourceTree = SOURCE_ROOT; };
 		D36BDB23A0A85ED9928D1808 /* System/Library/Frameworks/CoreMIDI.framework */ /* CoreMIDI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMIDI.framework; path = System/Library/Frameworks/CoreMIDI.framework; sourceTree = SDKROOT; };
+		D4C7E45C4475937DBF048F12 /* ../../../../../Libraries/JUCE/modules/juce_data_structures */ /* juce_data_structures */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_data_structures; path = ../../../../../Libraries/JUCE/modules/juce_data_structures; sourceTree = SOURCE_ROOT; };
 		D72C3147105E827F3DAFD752 /* ../../Source/PluginEditor.cpp */ /* PluginEditor.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PluginEditor.cpp; path = ../../Source/PluginEditor.cpp; sourceTree = SOURCE_ROOT; };
-		E41AC194B2476942DA45A80A /* ~/JUCE/modules/juce_audio_formats */ /* juce_audio_formats */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_formats; path = "~/JUCE/modules/juce_audio_formats"; sourceTree = "<absolute>"; };
+		E421A806284FB86AB3889F20 /* ../../../../../Libraries/JUCE/modules/juce_events */ /* juce_events */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_events; path = ../../../../../Libraries/JUCE/modules/juce_events; sourceTree = SOURCE_ROOT; };
 		E663DD22AD3A368146028AC1 /* ../../JuceLibraryCode/include_juce_audio_utils.mm */ /* include_juce_audio_utils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = include_juce_audio_utils.mm; path = ../../JuceLibraryCode/include_juce_audio_utils.mm; sourceTree = SOURCE_ROOT; };
 		EB3DC3F2D425E83DD8B9CA0E /* System/Library/Frameworks/DiscRecording.framework */ /* DiscRecording.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiscRecording.framework; path = System/Library/Frameworks/DiscRecording.framework; sourceTree = SDKROOT; };
+		EFC3C8C20A895558D1C15754 /* ../../../../../Libraries/JUCE/modules/juce_audio_utils */ /* juce_audio_utils */ = {isa = PBXFileReference; lastKnownFileType = folder; name = juce_audio_utils; path = ../../../../../Libraries/JUCE/modules/juce_audio_utils; sourceTree = SOURCE_ROOT; };
 		F33E41CFD675D13B30287332 /* AU */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestPluginJUCE.component; sourceTree = BUILT_PRODUCTS_DIR; };
 		F8225EA543B52E7037E272A2 /* Shared Code */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTestPluginJUCE.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F97EEDFF76D54F7D42D8E9D2 /* Info-AU.plist */ /* Info-AU.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Info-AU.plist"; path = "Info-AU.plist"; sourceTree = SOURCE_ROOT; };
@@ -303,20 +303,20 @@
 		EBBB2E70A490851531D9355A /* JUCE Modules */ = {
 			isa = PBXGroup;
 			children = (
-				086F5674EA81B624C9CAE43E,
-				3393E5F9FF87CC90BDA75CE0,
-				E41AC194B2476942DA45A80A,
-				912348C19B5DA9455E8B9B98,
-				C3E98524E801F199B75734FE,
-				90907864EF4B83A8D188BF57,
-				2F51800427A6DF4450B2A913,
-				8C162311F6D8F33F3B0BF317,
-				82144C2CE7BF813B080AC867,
-				6F1E2627C1B0D5238850D321,
-				B9553AFC3C6950673A913A9B,
-				B0A162D1E5B7E55EB137527C,
-				BBD3AC87C614A9648D985531,
-				4F3F8DF59C6D38B7121A3926,
+				A8223F4F94F7467119E6B7D4,
+				97E84E8FEA22F6D8DC921F2B,
+				6F9EFE4394C4AE1B60293734,
+				20E06CEF2812B67C026459E1,
+				2ACF0EE3054BBF28A7CCBDA6,
+				EFC3C8C20A895558D1C15754,
+				2247EF8AFA45C2FEEB0FD7C1,
+				D4C7E45C4475937DBF048F12,
+				E421A806284FB86AB3889F20,
+				09B08E23AF1C251154E34DD6,
+				704E49D1F4F7026756A5083F,
+				239BEEA9F4D7B922B42F1447,
+				23AF82B55C04E36960912807,
+				75A822D80169D0EF5180264D,
 			);
 			name = "JUCE Modules";
 			sourceTree = "<group>";
@@ -688,16 +688,16 @@
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode",
-					"$(SRCROOT)/~/JUCE/modules",
-					"$(SRCROOT)/~/modules",
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules",
+					"$(SRCROOT)/../../../../../Libraries/RobsJuceModules",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/~/JUCE/modules $(SRCROOT)/~/modules $(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../../Libraries/JUCE/modules $(SRCROOT)/../../../../../Libraries/RobsJuceModules $(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
 				PRODUCT_NAME = "TestPluginJUCE";
 				SKIP_INSTALL = YES;
@@ -746,11 +746,11 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode",
-					"$(SRCROOT)/~/JUCE/modules",
-					"$(SRCROOT)/~/modules",
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules",
+					"$(SRCROOT)/../../../../../Libraries/RobsJuceModules",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-VST.plist;
@@ -759,7 +759,7 @@
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/~/JUCE/modules $(SRCROOT)/~/modules $(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../../Libraries/JUCE/modules $(SRCROOT)/../../../../../Libraries/RobsJuceModules $(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client";
 				OTHER_LDFLAGS = "-bundle -lTestPluginJUCE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
 				PRODUCT_NAME = "TestPluginJUCE";
@@ -857,11 +857,11 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode",
-					"$(SRCROOT)/~/JUCE/modules",
-					"$(SRCROOT)/~/modules",
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules",
+					"$(SRCROOT)/../../../../../Libraries/RobsJuceModules",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-AU.plist;
@@ -870,7 +870,7 @@
 				LIBRARY_STYLE = Bundle;
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/~/JUCE/modules $(SRCROOT)/~/modules $(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../../Libraries/JUCE/modules $(SRCROOT)/../../../../../Libraries/RobsJuceModules $(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client";
 				OTHER_LDFLAGS = "-bundle -lTestPluginJUCE";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\" -I \"$(DEVELOPER_DIR)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AudioUnit.framework/Headers\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
@@ -962,11 +962,11 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode",
-					"$(SRCROOT)/~/JUCE/modules",
-					"$(SRCROOT)/~/modules",
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules",
+					"$(SRCROOT)/../../../../../Libraries/RobsJuceModules",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-VST.plist;
@@ -974,7 +974,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/VST/";
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/~/JUCE/modules $(SRCROOT)/~/modules $(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../../Libraries/JUCE/modules $(SRCROOT)/../../../../../Libraries/RobsJuceModules $(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client";
 				OTHER_LDFLAGS = "-bundle -lTestPluginJUCE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
 				PRODUCT_NAME = "TestPluginJUCE";
@@ -1013,18 +1013,18 @@
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode",
-					"$(SRCROOT)/~/JUCE/modules",
-					"$(SRCROOT)/~/modules",
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules",
+					"$(SRCROOT)/../../../../../Libraries/RobsJuceModules",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-Standalone_Plugin.plist;
 				INFOPLIST_PREPROCESS = NO;
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/~/JUCE/modules $(SRCROOT)/~/modules $(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../../Libraries/JUCE/modules $(SRCROOT)/../../../../../Libraries/RobsJuceModules $(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client";
 				OTHER_LDFLAGS = "-lTestPluginJUCE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
 				PRODUCT_NAME = "TestPluginJUCE";
@@ -1063,17 +1063,17 @@
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode",
-					"$(SRCROOT)/~/JUCE/modules",
-					"$(SRCROOT)/~/modules",
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules",
+					"$(SRCROOT)/../../../../../Libraries/RobsJuceModules",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/~/JUCE/modules $(SRCROOT)/~/modules $(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../../Libraries/JUCE/modules $(SRCROOT)/../../../../../Libraries/RobsJuceModules $(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
 				PRODUCT_NAME = "TestPluginJUCE";
 				SKIP_INSTALL = YES;
@@ -1114,11 +1114,11 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode",
-					"$(SRCROOT)/~/JUCE/modules",
-					"$(SRCROOT)/~/modules",
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules",
+					"$(SRCROOT)/../../../../../Libraries/RobsJuceModules",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-AU.plist;
@@ -1126,7 +1126,7 @@
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/Components/";
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/~/JUCE/modules $(SRCROOT)/~/modules $(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../../Libraries/JUCE/modules $(SRCROOT)/../../../../../Libraries/RobsJuceModules $(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client";
 				OTHER_LDFLAGS = "-bundle -lTestPluginJUCE";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\" -I \"$(DEVELOPER_DIR)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/AudioUnit.framework/Headers\"";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
@@ -1166,17 +1166,17 @@
 				);
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK",
 					"$(SRCROOT)/../../JuceLibraryCode",
-					"$(SRCROOT)/~/JUCE/modules",
-					"$(SRCROOT)/~/modules",
-					"$(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules",
+					"$(SRCROOT)/../../../../../Libraries/RobsJuceModules",
+					"$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client",
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = Info-Standalone_Plugin.plist;
 				INFOPLIST_PREPROCESS = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/~/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/~/JUCE/modules $(SRCROOT)/~/modules $(SRCROOT)/~/JUCE/modules/juce_audio_plugin_client";
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK $(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../../Libraries/JUCE/modules $(SRCROOT)/../../../../../Libraries/RobsJuceModules $(SRCROOT)/../../../../../Libraries/JUCE/modules/juce_audio_plugin_client";
 				OTHER_LDFLAGS = "-lTestPluginJUCE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestPluginJUCE;
 				PRODUCT_NAME = "TestPluginJUCE";
