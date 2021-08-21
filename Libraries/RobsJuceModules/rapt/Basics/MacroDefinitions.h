@@ -11,6 +11,29 @@
 //   this file here from rosic.h again
 //  -we may also need to re-include the def-file it in rapt.cpp
 
+// Identify compiler:
+#ifdef _MSC_VER  
+  #define RS_COMPILER_MSC 1        // microsoft compiler
+#elif __GNUC__   
+  #define RS_COMPILER_GCC 1        // gnu compiler collection
+#elif __clang__  
+  #define RS_COMPILER_CLANG 1      // clang compiler
+#endif
+
+// Identify build target architecture:
+// ...todo: identify, whether we are on X86_64, X86_32, ARM_64, etc. and define some macros
+// accordingly
+#ifdef RS_COMPILER_MSC
+  #ifdef _M_X64
+    #define RS_ARCHITECHTURE_X64 1  
+  #endif
+#endif
+
+// Identify operating system:
+// ...
+
+
+
 //#ifdef _MSC_VER
 //  #define RS_INLINE __forceinline
 //  #define ASM(x) __asm {x}
@@ -36,12 +59,6 @@
 #endif
 #define RS_ASSERT_FALSE RS_ASSERT(false) 
 
-
-// Compiler identification:
-// preliminary - later wrap that into #ifdef conditons
-#define RS_COMPILER_MSC 1        // microsoft compiler
-//#define RS_COMPILER_GCC 1     // gnu compiler collection
-//#define RS_COMPILER_CLANG 1
 
 
 /** Deprecation macros. To depracte a function declaration (in this case rsIFFT) use:
@@ -136,5 +153,11 @@ updated to get rid of the deprecation warnings. */
 #endif
 */
 //_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON)
+
+// See:
+// https://blog.kowalczyk.info/article/j/guide-to-predefined-macros-in-c-compilers-gcc-clang-msvc-etc..html
+// https://sourceforge.net/p/predef/wiki/Home/
+// https://sourceforge.net/p/predef/wiki/Compilers/
+// https://sourceforge.net/p/predef/wiki/Architectures/
 
 #endif

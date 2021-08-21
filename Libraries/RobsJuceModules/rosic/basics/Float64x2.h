@@ -290,7 +290,9 @@ inline bool rsGreaterAbs(const rsFloat64x2& x, const rsFloat64x2& y)
 // http://www.info.univ-angers.fr/pub/richer/ens/l3info/ao/intel_intrinsics.pdf
 
 // ToDo: implement a fallback version to be used, if SSE2 is not available and also a special ARM
-// vesrion (needed for M1 processor, i guess):
-// https://docs.microsoft.com/en-us/cpp/intrinsics/arm-intrinsics?view=msvc-160
+// version (needed for M1 processor, i guess):
+//   https://docs.microsoft.com/en-us/cpp/intrinsics/arm-intrinsics?view=msvc-160
+//   https://docs.microsoft.com/en-us/cpp/intrinsics/arm64-intrinsics?view=msvc-160
+//   https://docs.microsoft.com/en-us/cpp/intrinsics/intrinsics-available-on-all-architectures?view=msvc-160
 
 #endif

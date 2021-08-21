@@ -677,6 +677,8 @@ protected:
   void systemCall(const std::string &callString);
 
   void assume(bool condition, const char* errorMessage = nullptr);
+  // it's like assert, but we can't all it assert because this breaks compilation on mac, i guess 
+  // because of a name clash with the C-macro
 
   /** Adds the command for actually plotting the data to the commandfile. */
   void addPlotCommand(bool splot = false);

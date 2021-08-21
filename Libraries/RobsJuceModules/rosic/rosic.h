@@ -51,6 +51,8 @@
 //#include <new>
 //#include <iterator>
 
+/*
+// old:
 #ifdef _MSC_VER           // Elans says, this is needed to compile on mac
 #include <intrin.h>       // for some reason, it's needed on Elan's machine but not on mine
 #endif
@@ -58,6 +60,13 @@
 #include <emmintrin.h>    // SSE2
 // see https://github.com/facebook/zstd/issues/718 for issue with compiling on arm, maybe we need
 // a guard like RS_USE_SSE2 for this and a fallback scalar implementation, if SSE2 is not available
+*/
+
+// new:
+#ifdef RS_ARCHITECHTURE_X64
+  #include <intrin.h>       // for SSE   (i think)
+  #include <emmintrin.h>    // for SSE2
+#endif
 
 //#ifndef __APPLE__
 //#include <malloc.h>     // for alloca - try to get rid - alloca is bad, mkay?

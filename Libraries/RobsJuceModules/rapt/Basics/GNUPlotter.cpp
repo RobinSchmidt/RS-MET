@@ -808,7 +808,7 @@ void GNUPlotter::drawArrow(const std::string& attr,
 void GNUPlotter::drawPolyLine(const std::string& attributes, 
   const std::vector<double>& x, const std::vector<double>& y)
 {
-  assert(x.size() == y.size(), "x and y must have the same size");
+  assume(x.size() == y.size(), "x and y must have the same size");
   for(int i = 0; i < (int)x.size() - 1; i++)
     drawLine(attributes, x[i], y[i], x[i+1], y[i+1]);
   // It's awkward that we have to draw a polyline as a bunch of lines which in turn are just arrows
@@ -818,7 +818,7 @@ void GNUPlotter::drawPolyLine(const std::string& attributes,
 void GNUPlotter::drawPolygon(const std::string& attributes,
   const std::vector<double>& x, const std::vector<double>& y)
 {
-  assert(x.size() == y.size(), "x and y must have the same size");
+  assume(x.size() == y.size(), "x and y must have the same size");
   if(x.size() < 3) return; // we don't draw degenerate polygons
   std::string cmd = "set object polygon from ";
   for(size_t i = 0; i < x.size(); i++)

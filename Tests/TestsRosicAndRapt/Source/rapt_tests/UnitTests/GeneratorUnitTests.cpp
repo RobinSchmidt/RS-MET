@@ -61,7 +61,7 @@ bool testSamplerNote(rosic::rsSamplerEngine* se, float key, float vel,
     se->processFrame(&outL[n], &outR[n]);
   float errL = AT::maxDeviation(&outL[0], &targetL[0], N);
   float errR = AT::maxDeviation(&outR[0], &targetR[0], N);
-  rsPlotVectors(targetL, targetR, outL, outR); // uncomment for debugging
+  //rsPlotVectors(targetL, targetR, outL, outR); // uncomment for debugging
   return errL <= tol && errR <= tol;
 };
 // maybe have a bool resetBefore that optionally resets the engine before playing...but maybe it's
