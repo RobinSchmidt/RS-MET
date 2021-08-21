@@ -44,7 +44,7 @@ bool StateFileManager::loadStateFromXmlFile(const File& fileToLoadFrom)
   if( fileToLoadFrom.existsAsFile() )
   {
     XmlDocument myDocument(fileToLoadFrom);
-    XmlElement* xmlState = myDocument.getDocumentElement().get();
+    XmlElement* xmlState = myDocument.getDocumentElement();
     if( xmlState != NULL )
     {
       setStateFromXml(*xmlState, fileToLoadFrom.getFileNameWithoutExtension(), true);

@@ -15,21 +15,21 @@
         <Option type="2"/>
         <Option compiler="gcc"/>
         <Compiler>
-          <Add option="-DLINUX=1"/>
-          <Add option="-DDEBUG=1"/>
-          <Add option="-D_DEBUG=1"/>
-          <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=1"/>
-          <Add option="-DJUCE_APP_VERSION=2017.12.26"/>
-          <Add option="-DJUCE_APP_VERSION_HEX=0x7e10c1a"/>
-          <Add option="-DJucePlugin_Build_VST=1"/>
-          <Add option="-DJucePlugin_Build_VST3=0"/>
-          <Add option="-DJucePlugin_Build_AU=0"/>
-          <Add option="-DJucePlugin_Build_AUv3=0"/>
-          <Add option="-DJucePlugin_Build_RTAS=0"/>
-          <Add option="-DJucePlugin_Build_AAX=0"/>
-          <Add option="-DJucePlugin_Build_Standalone=1"/>
-          <Add option="-DJucePlugin_Build_Unity=0"/>
-          <Add option="-DJUCE_SHARED_CODE=1"/>
+          <Add option="-DLINUX=&quot;1&quot;"/>
+          <Add option="-DDEBUG=&quot;1&quot;"/>
+          <Add option="-D_DEBUG=&quot;1&quot;"/>
+          <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=&quot;1&quot;"/>
+          <Add option="-DJUCE_APP_VERSION=&quot;2017.12.26&quot;"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=&quot;0x7e10c1a&quot;"/>
+          <Add option="-DJucePlugin_Build_VST=&quot;1&quot;"/>
+          <Add option="-DJucePlugin_Build_VST3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AU=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AUv3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_RTAS=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AAX=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Standalone=&quot;1&quot;"/>
+          <Add option="-DJucePlugin_Build_Unity=&quot;0&quot;"/>
+          <Add option="-DJUCE_SHARED_CODE=&quot;1&quot;"/>
           <Add option="-m64"/>
           <Add option="-O0"/>
           <Add option="-std=c++11"/>
@@ -37,7 +37,7 @@
           <Add option="-g"/>
           <Add option="-fPIC"/>
           <Add option="-fPIC"/>
-          <Add option="&#96;pkg-config --cflags alsa freetype2 x11 xext xinerama libcurl&#96;"/>
+          <Add option="&#96;pkg-config --cflags alsa freetype2 libcurl&#96;"/>
           <Add option="-pthread"/>
           <Add directory="."/>
           <Add directory="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"/>
@@ -50,10 +50,10 @@
         </Compiler>
         <Linker>
           <Add option="-m64"/>
-          <Add option="&#96;pkg-config --libs alsa freetype2 x11 xext xinerama libcurl&#96;"/>
+          <Add option="&#96;pkg-config --libs alsa freetype2 libcurl&#96;"/>
+          <Add library="rt"/>
           <Add library="dl"/>
           <Add library="pthread"/>
-          <Add library="rt"/>
         </Linker>
       </Target>
       <Target title="VST | Debug">
@@ -65,20 +65,20 @@
         <Option compiler="gcc"/>
         <Option external_deps="bin/Debug/libToolChain.a"/>
         <Compiler>
-          <Add option="-DLINUX=1"/>
-          <Add option="-DDEBUG=1"/>
-          <Add option="-D_DEBUG=1"/>
-          <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=1"/>
-          <Add option="-DJUCE_APP_VERSION=2017.12.26"/>
-          <Add option="-DJUCE_APP_VERSION_HEX=0x7e10c1a"/>
-          <Add option="-DJucePlugin_Build_VST=1"/>
-          <Add option="-DJucePlugin_Build_VST3=0"/>
-          <Add option="-DJucePlugin_Build_AU=0"/>
-          <Add option="-DJucePlugin_Build_AUv3=0"/>
-          <Add option="-DJucePlugin_Build_RTAS=0"/>
-          <Add option="-DJucePlugin_Build_AAX=0"/>
-          <Add option="-DJucePlugin_Build_Standalone=0"/>
-          <Add option="-DJucePlugin_Build_Unity=0"/>
+          <Add option="-DLINUX=&quot;1&quot;"/>
+          <Add option="-DDEBUG=&quot;1&quot;"/>
+          <Add option="-D_DEBUG=&quot;1&quot;"/>
+          <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=&quot;1&quot;"/>
+          <Add option="-DJUCE_APP_VERSION=&quot;2017.12.26&quot;"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=&quot;0x7e10c1a&quot;"/>
+          <Add option="-DJucePlugin_Build_VST=&quot;1&quot;"/>
+          <Add option="-DJucePlugin_Build_VST3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AU=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AUv3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_RTAS=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AAX=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Standalone=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Unity=&quot;0&quot;"/>
           <Add option="-m64"/>
           <Add option="-O0"/>
           <Add option="-std=c++11"/>
@@ -86,7 +86,7 @@
           <Add option="-g"/>
           <Add option="-fPIC"/>
           <Add option="-fPIC"/>
-          <Add option="&#96;pkg-config --cflags alsa freetype2 x11 xext xinerama libcurl&#96;"/>
+          <Add option="&#96;pkg-config --cflags alsa freetype2 libcurl&#96;"/>
           <Add option="-pthread"/>
           <Add directory="."/>
           <Add directory="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"/>
@@ -101,10 +101,10 @@
           <Add option="&quot;bin/Debug/libToolChain.a&quot;"/>
           <Add option="-m64"/>
           <Add option="-shared"/>
-          <Add option="&#96;pkg-config --libs alsa freetype2 x11 xext xinerama libcurl&#96;"/>
+          <Add option="&#96;pkg-config --libs alsa freetype2 libcurl&#96;"/>
+          <Add library="rt"/>
           <Add library="dl"/>
           <Add library="pthread"/>
-          <Add library="rt"/>
           <Add directory="&quot;bin/Debug&quot;"/>
         </Linker>
       </Target>
@@ -117,20 +117,20 @@
         <Option compiler="gcc"/>
         <Option external_deps="bin/Debug/libToolChain.a"/>
         <Compiler>
-          <Add option="-DLINUX=1"/>
-          <Add option="-DDEBUG=1"/>
-          <Add option="-D_DEBUG=1"/>
-          <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=1"/>
-          <Add option="-DJUCE_APP_VERSION=2017.12.26"/>
-          <Add option="-DJUCE_APP_VERSION_HEX=0x7e10c1a"/>
-          <Add option="-DJucePlugin_Build_VST=0"/>
-          <Add option="-DJucePlugin_Build_VST3=0"/>
-          <Add option="-DJucePlugin_Build_AU=0"/>
-          <Add option="-DJucePlugin_Build_AUv3=0"/>
-          <Add option="-DJucePlugin_Build_RTAS=0"/>
-          <Add option="-DJucePlugin_Build_AAX=0"/>
-          <Add option="-DJucePlugin_Build_Standalone=1"/>
-          <Add option="-DJucePlugin_Build_Unity=0"/>
+          <Add option="-DLINUX=&quot;1&quot;"/>
+          <Add option="-DDEBUG=&quot;1&quot;"/>
+          <Add option="-D_DEBUG=&quot;1&quot;"/>
+          <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=&quot;1&quot;"/>
+          <Add option="-DJUCE_APP_VERSION=&quot;2017.12.26&quot;"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=&quot;0x7e10c1a&quot;"/>
+          <Add option="-DJucePlugin_Build_VST=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_VST3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AU=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AUv3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_RTAS=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AAX=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Standalone=&quot;1&quot;"/>
+          <Add option="-DJucePlugin_Build_Unity=&quot;0&quot;"/>
           <Add option="-m64"/>
           <Add option="-O0"/>
           <Add option="-std=c++11"/>
@@ -138,7 +138,7 @@
           <Add option="-g"/>
           <Add option="-fPIC"/>
           <Add option="-fPIC"/>
-          <Add option="&#96;pkg-config --cflags alsa freetype2 x11 xext xinerama libcurl&#96;"/>
+          <Add option="&#96;pkg-config --cflags alsa freetype2 libcurl&#96;"/>
           <Add option="-pthread"/>
           <Add directory="."/>
           <Add directory="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"/>
@@ -152,10 +152,10 @@
         <Linker>
           <Add option="&quot;bin/Debug/libToolChain.a&quot;"/>
           <Add option="-m64"/>
-          <Add option="&#96;pkg-config --libs alsa freetype2 x11 xext xinerama libcurl&#96;"/>
+          <Add option="&#96;pkg-config --libs alsa freetype2 libcurl&#96;"/>
+          <Add library="rt"/>
           <Add library="dl"/>
           <Add library="pthread"/>
-          <Add library="rt"/>
           <Add directory="&quot;bin/Debug&quot;"/>
         </Linker>
       </Target>
@@ -167,27 +167,27 @@
         <Option type="2"/>
         <Option compiler="gcc"/>
         <Compiler>
-          <Add option="-DLINUX=1"/>
-          <Add option="-DNDEBUG=1"/>
-          <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=1"/>
-          <Add option="-DJUCE_APP_VERSION=2017.12.26"/>
-          <Add option="-DJUCE_APP_VERSION_HEX=0x7e10c1a"/>
-          <Add option="-DJucePlugin_Build_VST=1"/>
-          <Add option="-DJucePlugin_Build_VST3=0"/>
-          <Add option="-DJucePlugin_Build_AU=0"/>
-          <Add option="-DJucePlugin_Build_AUv3=0"/>
-          <Add option="-DJucePlugin_Build_RTAS=0"/>
-          <Add option="-DJucePlugin_Build_AAX=0"/>
-          <Add option="-DJucePlugin_Build_Standalone=1"/>
-          <Add option="-DJucePlugin_Build_Unity=0"/>
-          <Add option="-DJUCE_SHARED_CODE=1"/>
+          <Add option="-DLINUX=&quot;1&quot;"/>
+          <Add option="-DNDEBUG=&quot;1&quot;"/>
+          <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=&quot;1&quot;"/>
+          <Add option="-DJUCE_APP_VERSION=&quot;2017.12.26&quot;"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=&quot;0x7e10c1a&quot;"/>
+          <Add option="-DJucePlugin_Build_VST=&quot;1&quot;"/>
+          <Add option="-DJucePlugin_Build_VST3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AU=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AUv3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_RTAS=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AAX=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Standalone=&quot;1&quot;"/>
+          <Add option="-DJucePlugin_Build_Unity=&quot;0&quot;"/>
+          <Add option="-DJUCE_SHARED_CODE=&quot;1&quot;"/>
           <Add option="-m64"/>
           <Add option="-O3"/>
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
           <Add option="-fPIC"/>
           <Add option="-fPIC"/>
-          <Add option="&#96;pkg-config --cflags alsa freetype2 x11 xext xinerama libcurl&#96;"/>
+          <Add option="&#96;pkg-config --cflags alsa freetype2 libcurl&#96;"/>
           <Add option="-pthread"/>
           <Add directory="."/>
           <Add directory="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"/>
@@ -201,10 +201,10 @@
         <Linker>
           <Add option="-m64"/>
           <Add option="-s"/>
-          <Add option="&#96;pkg-config --libs alsa freetype2 x11 xext xinerama libcurl&#96;"/>
+          <Add option="&#96;pkg-config --libs alsa freetype2 libcurl&#96;"/>
+          <Add library="rt"/>
           <Add library="dl"/>
           <Add library="pthread"/>
-          <Add library="rt"/>
         </Linker>
       </Target>
       <Target title="VST | Release">
@@ -216,26 +216,26 @@
         <Option compiler="gcc"/>
         <Option external_deps="bin/Release/libToolChain.a"/>
         <Compiler>
-          <Add option="-DLINUX=1"/>
-          <Add option="-DNDEBUG=1"/>
-          <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=1"/>
-          <Add option="-DJUCE_APP_VERSION=2017.12.26"/>
-          <Add option="-DJUCE_APP_VERSION_HEX=0x7e10c1a"/>
-          <Add option="-DJucePlugin_Build_VST=1"/>
-          <Add option="-DJucePlugin_Build_VST3=0"/>
-          <Add option="-DJucePlugin_Build_AU=0"/>
-          <Add option="-DJucePlugin_Build_AUv3=0"/>
-          <Add option="-DJucePlugin_Build_RTAS=0"/>
-          <Add option="-DJucePlugin_Build_AAX=0"/>
-          <Add option="-DJucePlugin_Build_Standalone=0"/>
-          <Add option="-DJucePlugin_Build_Unity=0"/>
+          <Add option="-DLINUX=&quot;1&quot;"/>
+          <Add option="-DNDEBUG=&quot;1&quot;"/>
+          <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=&quot;1&quot;"/>
+          <Add option="-DJUCE_APP_VERSION=&quot;2017.12.26&quot;"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=&quot;0x7e10c1a&quot;"/>
+          <Add option="-DJucePlugin_Build_VST=&quot;1&quot;"/>
+          <Add option="-DJucePlugin_Build_VST3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AU=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AUv3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_RTAS=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AAX=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Standalone=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Unity=&quot;0&quot;"/>
           <Add option="-m64"/>
           <Add option="-O3"/>
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
           <Add option="-fPIC"/>
           <Add option="-fPIC"/>
-          <Add option="&#96;pkg-config --cflags alsa freetype2 x11 xext xinerama libcurl&#96;"/>
+          <Add option="&#96;pkg-config --cflags alsa freetype2 libcurl&#96;"/>
           <Add option="-pthread"/>
           <Add directory="."/>
           <Add directory="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"/>
@@ -251,10 +251,10 @@
           <Add option="-m64"/>
           <Add option="-s"/>
           <Add option="-shared"/>
-          <Add option="&#96;pkg-config --libs alsa freetype2 x11 xext xinerama libcurl&#96;"/>
+          <Add option="&#96;pkg-config --libs alsa freetype2 libcurl&#96;"/>
+          <Add library="rt"/>
           <Add library="dl"/>
           <Add library="pthread"/>
-          <Add library="rt"/>
           <Add directory="&quot;bin/Release&quot;"/>
         </Linker>
       </Target>
@@ -267,26 +267,26 @@
         <Option compiler="gcc"/>
         <Option external_deps="bin/Release/libToolChain.a"/>
         <Compiler>
-          <Add option="-DLINUX=1"/>
-          <Add option="-DNDEBUG=1"/>
-          <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=1"/>
-          <Add option="-DJUCE_APP_VERSION=2017.12.26"/>
-          <Add option="-DJUCE_APP_VERSION_HEX=0x7e10c1a"/>
-          <Add option="-DJucePlugin_Build_VST=0"/>
-          <Add option="-DJucePlugin_Build_VST3=0"/>
-          <Add option="-DJucePlugin_Build_AU=0"/>
-          <Add option="-DJucePlugin_Build_AUv3=0"/>
-          <Add option="-DJucePlugin_Build_RTAS=0"/>
-          <Add option="-DJucePlugin_Build_AAX=0"/>
-          <Add option="-DJucePlugin_Build_Standalone=1"/>
-          <Add option="-DJucePlugin_Build_Unity=0"/>
+          <Add option="-DLINUX=&quot;1&quot;"/>
+          <Add option="-DNDEBUG=&quot;1&quot;"/>
+          <Add option="-DJUCER_CODEBLOCKS_LINUX_191E0897=&quot;1&quot;"/>
+          <Add option="-DJUCE_APP_VERSION=&quot;2017.12.26&quot;"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=&quot;0x7e10c1a&quot;"/>
+          <Add option="-DJucePlugin_Build_VST=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_VST3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AU=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AUv3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_RTAS=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AAX=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Standalone=&quot;1&quot;"/>
+          <Add option="-DJucePlugin_Build_Unity=&quot;0&quot;"/>
           <Add option="-m64"/>
           <Add option="-O3"/>
           <Add option="-std=c++11"/>
           <Add option="-mstackrealign"/>
           <Add option="-fPIC"/>
           <Add option="-fPIC"/>
-          <Add option="&#96;pkg-config --cflags alsa freetype2 x11 xext xinerama libcurl&#96;"/>
+          <Add option="&#96;pkg-config --cflags alsa freetype2 libcurl&#96;"/>
           <Add option="-pthread"/>
           <Add directory="."/>
           <Add directory="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK"/>
@@ -301,10 +301,10 @@
           <Add option="&quot;bin/Release/libToolChain.a&quot;"/>
           <Add option="-m64"/>
           <Add option="-s"/>
-          <Add option="&#96;pkg-config --libs alsa freetype2 x11 xext xinerama libcurl&#96;"/>
+          <Add option="&#96;pkg-config --libs alsa freetype2 libcurl&#96;"/>
+          <Add library="rt"/>
           <Add library="dl"/>
           <Add library="pthread"/>
-          <Add library="rt"/>
           <Add directory="&quot;bin/Release&quot;"/>
         </Linker>
       </Target>
@@ -714,19 +714,13 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/utilities/juce_CatmullRomInterpolator.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/utilities/juce_CatmullRomInterpolator.h">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/utilities/juce_Decibels.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/utilities/juce_GenericInterpolator.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -744,13 +738,19 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/utilities/juce_LagrangeInterpolator.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/utilities/juce_Interpolators.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/utilities/juce_LagrangeInterpolator.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/utilities/juce_Interpolators.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/utilities/juce_LagrangeInterpolator.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -769,6 +769,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/utilities/juce_SmoothedValue.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_basics/utilities/juce_WindowedSincInterpolator.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -834,7 +840,139 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/juce_MidiInput.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPacket.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPackets.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPBytestreamInputHandler.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPConversion.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPConverters.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPDispatcher.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPFactory.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPIterator.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPMidi1ToBytestreamTranslator.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPMidi1ToMidi2DefaultTranslator.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPMidi1ToMidi2DefaultTranslator.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPProtocols.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPReceiver.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPSysEx7.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPSysEx7.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPTests.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPU32InputHandler.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPUtils.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPUtils.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPView.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/ump/juce_UMPView.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/juce_MidiDevices.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/juce_MidiDevices.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -852,19 +990,697 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/juce_MidiOutput.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/include/oboe/AudioStream.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/midi_io/juce_MidiOutput.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/include/oboe/AudioStreamBase.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/include/oboe/AudioStreamBuilder.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/include/oboe/AudioStreamCallback.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/include/oboe/Definitions.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/include/oboe/LatencyTuner.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/include/oboe/Oboe.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/include/oboe/ResultWithValue.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/include/oboe/StabilizedCallback.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/include/oboe/Utilities.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/include/oboe/Version.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/aaudio/AAudioLoader.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/aaudio/AAudioLoader.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/aaudio/AudioStreamAAudio.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/aaudio/AudioStreamAAudio.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/AudioClock.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/AudioSourceCaller.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/AudioSourceCaller.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/AudioStream.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/AudioStreamBuilder.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/DataConversionFlowGraph.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/DataConversionFlowGraph.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/FilterAudioStream.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/FilterAudioStream.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/FixedBlockAdapter.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/FixedBlockAdapter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/FixedBlockReader.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/FixedBlockReader.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/FixedBlockWriter.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/FixedBlockWriter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/LatencyTuner.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/MonotonicCounter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/OboeDebug.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/QuirksManager.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/QuirksManager.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/SourceFloatCaller.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/SourceFloatCaller.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/SourceI16Caller.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/SourceI16Caller.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/StabilizedCallback.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/Trace.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/Trace.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/Utilities.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/common/Version.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/fifo/FifoBuffer.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/fifo/FifoBuffer.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/fifo/FifoController.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/fifo/FifoController.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/fifo/FifoControllerBase.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/fifo/FifoControllerBase.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/fifo/FifoControllerIndirect.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/fifo/FifoControllerIndirect.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/HyperbolicCosineWindow.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/IntegerRatio.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/IntegerRatio.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/KaiserWindow.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/LinearResampler.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/LinearResampler.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/MultiChannelResampler.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/MultiChannelResampler.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/PolyphaseResampler.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/PolyphaseResampler.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/PolyphaseResamplerMono.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/PolyphaseResamplerMono.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/PolyphaseResamplerStereo.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/PolyphaseResamplerStereo.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/SincResampler.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/SincResampler.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/SincResamplerStereo.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/resampler/SincResamplerStereo.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/ChannelCountConverter.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/ChannelCountConverter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/ClipToRange.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/ClipToRange.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/FlowGraphNode.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/FlowGraphNode.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/ManyToMultiConverter.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/ManyToMultiConverter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/MonoToMultiConverter.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/MonoToMultiConverter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/MultiToMonoConverter.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/MultiToMonoConverter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/RampLinear.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/RampLinear.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SampleRateConverter.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SampleRateConverter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SinkFloat.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SinkFloat.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SinkI16.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SinkI16.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SinkI24.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SinkI24.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SourceFloat.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SourceFloat.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SourceI16.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SourceI16.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SourceI24.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/flowgraph/SourceI24.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/AudioInputStreamOpenSLES.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/AudioInputStreamOpenSLES.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/AudioOutputStreamOpenSLES.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/AudioOutputStreamOpenSLES.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/AudioStreamBuffered.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/AudioStreamBuffered.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/AudioStreamOpenSLES.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/AudioStreamOpenSLES.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/EngineOpenSLES.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/EngineOpenSLES.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/OpenSLESUtilities.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/OpenSLESUtilities.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/OutputMixerOpenSLES.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/src/opensles/OutputMixerOpenSLES.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/CMakeLists.txt">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/oboe/readme.md">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_android_Audio.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_android_HighPerformanceAudioHelpers.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -930,7 +1746,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_mac_CoreMidi.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_devices/native/juce_mac_CoreMidi.mm">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -1296,385 +2112,397 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/books/coupled/res_books_51.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/books/coupled/res_books_51.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/books/coupled/res_books_stereo.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/books/coupled/res_books_stereo.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/books/floor/floor_books.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/books/floor/floor_books.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/books/uncoupled/res_books_uncoupled.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/books/uncoupled/res_books_uncoupled.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/floor_all.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/floor_all.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/psych_8.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/psych_8.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/psych_11.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/psych_11.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/psych_16.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/psych_16.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/psych_44.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/psych_44.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/residue_8.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/residue_8.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/residue_16.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/residue_16.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/residue_44.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/residue_44.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/residue_44p51.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/residue_44p51.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/residue_44u.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/residue_44u.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/setup_8.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/setup_8.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/setup_11.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/setup_11.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/setup_16.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/setup_16.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/setup_22.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/setup_22.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/setup_32.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/setup_32.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/setup_44.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/setup_44.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/setup_44p51.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/setup_44p51.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/setup_44u.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/setup_44u.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/modes/setup_X.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/modes/setup_X.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/analysis.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/analysis.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/backends.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/backends.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/bitrate.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/bitrate.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/bitrate.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/bitrate.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/block.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/block.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/codebook.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/codebook.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/codebook.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/codebook.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/codec_internal.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/codec_internal.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/envelope.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/envelope.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/envelope.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/envelope.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/floor0.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/floor0.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/floor1.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/floor1.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/highlevel.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/highlevel.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/info.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/info.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/lookup.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/lookup.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/lookup.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/lookup.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/lookup_data.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/lookup_data.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/lpc.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/lpc.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/lpc.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/lpc.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/lsp.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/lsp.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/lsp.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/lsp.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/mapping0.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/mapping0.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/masking.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/masking.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/mdct.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/mdct.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/mdct.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/mdct.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/misc.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/misc.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/os.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/misc.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/psy.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/os.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/psy.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/psy.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/registry.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/psy.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/registry.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/registry.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/res0.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/registry.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/scales.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/res0.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/sharedbook.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/scales.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/smallft.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/sharedbook.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/smallft.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/smallft.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/synthesis.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/smallft.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/vorbisenc.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/synthesis.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/vorbisfile.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/vorbisenc.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/window.c">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/vorbisfile.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.2/lib/window.h">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/window.c">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/lib/window.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/libvorbis-1.3.7/README.md">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -1693,6 +2521,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/config_types.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_formats/codecs/oggvorbis/crctable.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -2388,6 +3222,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/utility/juce_CreatePluginFilter.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/utility/juce_FakeMouseMoveGenerator.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -2401,12 +3241,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/utility/juce_IncludeSystemHeaders.h">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_plugin_client/utility/juce_PluginHostType.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -2682,6 +3516,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/base/README.md">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/pluginterfaces/base/conststringtable.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -2952,6 +3792,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/pluginterfaces/vst/ivsttestplugprovider.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/pluginterfaces/vst/ivstunits.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -2977,6 +3823,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/pluginterfaces/LICENSE.txt">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/pluginterfaces/README.md">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -3109,6 +3961,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/public.sdk/LICENSE.txt">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/format_types/VST3_SDK/public.sdk/README.md">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -3348,7 +4206,19 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_AudioParameterBool.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_AudioParameterBool.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_AudioParameterChoice.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -3360,7 +4230,19 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_AudioParameterFloat.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_AudioParameterFloat.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_AudioParameterInt.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -3372,7 +4254,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_AudioProcessorParameters.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_AudioProcessorParameterWithID.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -3391,6 +4273,36 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_AudioProcessorValueTreeState.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_ParameterAttachments.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_ParameterAttachments.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_PluginHostType.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_PluginHostType.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_audio_processors/utilities/juce_RangedAudioParameter.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -3864,6 +4776,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/files/juce_RangedDirectoryIterator.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/files/juce_RangedDirectoryIterator.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/files/juce_TemporaryFile.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -3996,6 +4920,18 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/memory/juce_AllocationHooks.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/memory/juce_AllocationHooks.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/memory/juce_Atomic.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -4117,18 +5053,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/misc/juce_RuntimePermissions.h">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/misc/juce_StdFunctionCompat.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/misc/juce_StdFunctionCompat.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -4303,6 +5227,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/native/juce_posix_SharedCode.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/native/juce_wasm_SystemStats.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -4519,6 +5449,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/system/juce_CompilerSupport.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/system/juce_CompilerWarnings.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -4824,6 +5760,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/threads/juce_WaitableEvent.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/threads/juce_WaitableEvent.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -4873,6 +5815,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/unit_tests/juce_UnitTest.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_core/unit_tests/juce_UnitTestCategories.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -6162,6 +7110,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_graphics/image_formats/pnglib/pngdebug.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_graphics/image_formats/pnglib/pngerror.c">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -7140,12 +8094,6 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/layout/juce_GridUnitTests.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/layout/juce_GroupComponent.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -7566,6 +8514,36 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/x11/juce_linux_X11_DragAndDrop.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/x11/juce_linux_X11_Symbols.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/x11/juce_linux_X11_Symbols.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/x11/juce_linux_XWindowSystem.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/x11/juce_linux_XWindowSystem.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_android_ContentSharer.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -7620,25 +8598,7 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_linux_X11.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_linux_X11.h">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_linux_X11_Clipboard.cpp">
-      <Option target="Shared Code | Debug"/>
-      <Option target="Shared Code | Release"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_linux_X11_Windowing.cpp">
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_linux_Windowing.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -7687,6 +8647,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_win32_FileChooser.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_basics/native/juce_win32_ScopedThreadDPIAwarenessSetter.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -8268,6 +9234,12 @@
       <Option compile="0"/>
       <Option link="0"/>
     </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/embedding/juce_HWNDComponent.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/embedding/juce_NSViewComponent.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
@@ -8509,6 +9481,12 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/native/juce_win32_ActiveXComponent.cpp">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../../../../Libraries/JUCE/modules/juce_gui_extra/native/juce_win32_HWNDComponent.cpp">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>
@@ -18639,6 +19617,12 @@
       <Option target="Shared Code | Release"/>
     </Unit>
     <Unit filename="../../JuceLibraryCode/JuceHeader.h">
+      <Option target="Shared Code | Debug"/>
+      <Option target="Shared Code | Release"/>
+      <Option compile="0"/>
+      <Option link="0"/>
+    </Unit>
+    <Unit filename="../../JuceLibraryCode/JucePluginDefines.h">
       <Option target="Shared Code | Debug"/>
       <Option target="Shared Code | Release"/>
       <Option compile="0"/>

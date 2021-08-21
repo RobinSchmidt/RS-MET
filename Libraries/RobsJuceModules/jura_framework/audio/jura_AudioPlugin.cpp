@@ -188,7 +188,7 @@ void AudioPlugin::setStateInformation(const void* data, int sizeInBytes)
   {
     // todo: retrieve values of the MetaParameters
 
-    XmlElement* const xml = getXmlFromBinary(data, sizeInBytes).get();
+    XmlElement* const xml = getXmlFromBinary(data, sizeInBytes);
     //ParameterObserver::globalAutomationSwitch = false; // why this - threading problems? -> interferes with total recall in quadrifex
     ParameterObserver::setGuiAutomationSwitch(false);
     wrappedAudioModule->setStateFromXml(*xml, "recalled by host", false);
