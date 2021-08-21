@@ -32,3 +32,5 @@ Products/AudioPlugins/ToolChain/Builds/VisualStudio2015/x64/Debug/
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/x64/Debug/ConsoleApp/TestsRosicAndRapt_ConsoleApp.vcxproj.FileListAbsolute.txt
 *.png
 *.sfz
+Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/.vs/ToolChain/v16/Solution.VC.db-shm
+Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/.vs/ToolChain/v16/Solution.VC.db-wal

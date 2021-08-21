@@ -304,6 +304,11 @@ AudioPluginWithMidiIn* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy
 {
   // wraps audio module into plugin with midi input
   jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn(numParameters);
+
+  plugIn->setEditorSizeLimits(400, 300, 800, 600); 
+  // new, test - seems we need it since the juce update - todo: edit the default values in class
+  // jura::AudioPlugin
+
   AudioModuleType *module = new AudioModuleType(&plugIn->plugInLock, &plugIn->metaParaManager);
   module->setSaveAndRecallMetaParameters(true);
   plugIn->setAudioModuleToWrap(module);

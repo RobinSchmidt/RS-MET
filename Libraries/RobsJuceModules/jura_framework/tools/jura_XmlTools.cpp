@@ -1,7 +1,11 @@
 XmlElement* stringToXml(const String& xmlStr)
 {
   XmlDocument xmlDoc(xmlStr);
-  return xmlDoc.getDocumentElement();
+
+  //return xmlDoc.getDocumentElement();  // old
+  return new XmlElement(*xmlDoc.getDocumentElement().get()); 
+  // new: returns a deep copy - preliminary, todo: return the std::unique_ptr now returned from 
+  // getDocumentElement directly
 }
 
 XmlElement* getXmlFromFile(const File &fileToLoadFrom)
@@ -9,11 +13,12 @@ XmlElement* getXmlFromFile(const File &fileToLoadFrom)
   if( fileToLoadFrom.existsAsFile() )
   {
     XmlDocument myDocument(fileToLoadFrom);
-    XmlElement *xml = myDocument.getDocumentElement();
+    //XmlElement *xml = myDocument.getDocumentElement(); // old
+    XmlElement *xml = new XmlElement(*myDocument.getDocumentElement().get()); // new, preliminary
     return xml;
   }
   else
-    return NULL;
+    return nullptr;
 }
 
 XmlElement* getXmlFromFile(const String &fileNameToLoadFrom)
