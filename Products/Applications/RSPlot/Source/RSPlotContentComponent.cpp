@@ -7,7 +7,8 @@ RSPlotContentComponent::RSPlotContentComponent(
   const String &newEditorName) : Component(newEditorName)
 {
   setSize(800, 600-24);
-  dataFileName    = String::empty;
+  //dataFileName    = String::empty;  // old
+  dataFileName = String();  // new
 
   // initialize the data-arrays:
   xFamilyPointer = new double*[maxNumCurves];
@@ -191,14 +192,16 @@ void RSPlotContentComponent::rButtonClicked(RButton *buttonThatWasClicked)
     w = fileSetup->imageWidthEditLabel->getText().getIntValue();
     h = fileSetup->imageHeightEditLabel->getText().getIntValue();
     if( currentPlotterComponent == CURVE_FAMILY_PLOT )
-      curveFamilyPlot->openExportDialog(w, h, String(("png")), File::nonexistent);
+      curveFamilyPlot->openExportDialog(w, h, String(("png")), File()); // new
+      //curveFamilyPlot->openExportDialog(w, h, String(("png")), File::nonexistent); // old
   }
   else if(buttonThatWasClicked == fileSetup->svgExportButton )
   {
     w = fileSetup->imageWidthEditLabel->getText().getIntValue();
     h = fileSetup->imageHeightEditLabel->getText().getIntValue();
     if( currentPlotterComponent == CURVE_FAMILY_PLOT )
-      curveFamilyPlot->openExportDialog(w, h, String(("svg")), File::nonexistent);
+      curveFamilyPlot->openExportDialog(w, h, String(("svg")), File());  // new
+      //curveFamilyPlot->openExportDialog(w, h, String(("svg")), File::nonexistent); // old
   }
 
   else if( buttonThatWasClicked == dataSetup->loadButton )
@@ -917,7 +920,8 @@ bool RSPlotContentComponent::setStateFromXml(const XmlElement &xmlState)
  }
  else if( dataSetup->dataSourceComboBox->getText() == String(("File")) )
  {
-   dataFileName = xmlState.getStringAttribute(String(("DataFile")), String::empty);
+   //dataFileName = xmlState.getStringAttribute(String(("DataFile")), String::empty); // old
+   dataFileName = xmlState.getStringAttribute(String(("DataFile")), String()); // new
  }
 
  // set automatic re-rendering back to true and calculate the data:
