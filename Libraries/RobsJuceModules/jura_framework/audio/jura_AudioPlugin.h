@@ -176,8 +176,10 @@ protected:
   //ComponentBoundsConstrainer* editorBoundsConstrainer = nullptr;
   int editorWidthMin  = 1;
   int editorHeightMin = 1;
-  int editorWidthMax  = INT_MAX;
-  int editorHeightMax = INT_MAX;
+  int editorWidthMax  = 100000;
+  int editorHeightMax = 100000;
+  //int editorWidthMax  = INT_MAX;  // breaks with juce 6.0.8, maps to negative value - why?
+  //int editorHeightMax = INT_MAX;
   // Maybe replace these with a pointer to a juce::ComponentBoundsConstrainer that is initially a 
   // nullptr an which client code can set via a setEditorBoundsConstrainer function that can be 
   // called in the createPluginFilter function. This object should delete the passed object on
@@ -290,7 +292,6 @@ template<class AudioModuleType>
 AudioPlugin* JUCE_CALLTYPE createPluginWithoutMidi(AudioModuleType *dummy, int numParameters = 10)
 {
   // wraps audio module into plugin without midi input
-  /*jura::AudioPlugin *plugIn = new jura::AudioPlugin(nullptr);*/
   jura::AudioPlugin *plugIn = new jura::AudioPlugin(numParameters);
   AudioModuleType   *module = new AudioModuleType(&plugIn->plugInLock, &plugIn->metaParaManager);
   module->setSaveAndRecallMetaParameters(true);
@@ -304,16 +305,10 @@ AudioPluginWithMidiIn* JUCE_CALLTYPE createPluginWithMidi(AudioModuleType *dummy
 {
   // wraps audio module into plugin with midi input
   jura::AudioPluginWithMidiIn *plugIn = new jura::AudioPluginWithMidiIn(numParameters);
-
-  plugIn->setEditorSizeLimits(400, 300, 800, 600); 
-  // new, test - seems we need it since the juce update - todo: edit the default values in class
-  // jura::AudioPlugin
-
   AudioModuleType *module = new AudioModuleType(&plugIn->plugInLock, &plugIn->metaParaManager);
   module->setSaveAndRecallMetaParameters(true);
   plugIn->setAudioModuleToWrap(module);
   return plugIn;
-
   // only the 1st line is different, the others are duplicated -> factor out
 }
 

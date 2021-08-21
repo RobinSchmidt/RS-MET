@@ -24,6 +24,7 @@ AudioPlugin::AudioPlugin(int numParameters)
                                     .withOutput("Output", AudioChannelSet::stereo()))
 {
   ScopedLock sl(plugInLock);
+
   //setProcessingPrecision(doublePrecision); // nope - this is supposed to be called by th host
   initialiseJuce_GUI();  // why do we need this?
   //configureInsAndOuts();
