@@ -68,6 +68,22 @@
   #include <emmintrin.h>    // for SSE2
 #endif
 
+/*
+// newer - doesn't work when RS_USE_SSE is not defined:
+#ifdef RS_INSTRUCTION_SET_SSE
+  #include <intrin.h> 
+#endif
+#ifdef RS_INSTRUCTION_SET_SSE2
+  #include <emmintrin.h>
+#endif
+// hmm - rosci doesn't compile when intrin.h is not included. It seems intrin.h is not only for the 
+// SSE instructions but also for __cpuid and rdtsc which are used in ProcessorCycleCounter. Maybe 
+// we should get rid of it (i.e. only use the one in the rs_testing module.
+*/
+
+
+// todo: use RS_INSTRUCTION_SET_SSE(2) macros
+
 //#ifndef __APPLE__
 //#include <malloc.h>     // for alloca - try to get rid - alloca is bad, mkay?
 //#endif
