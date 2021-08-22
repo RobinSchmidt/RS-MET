@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
   //biDirectionalStateInit();
   //biquadTail();
   //complementaryFiltersIIR();
-  engineersFilterRingResp();
+  engineersFilterRingResp();   // ringing response (experimental idea)
   //engineersFilterFreqResps();
   //firstOrderFilters();
   //ladderResonanceManipulation();

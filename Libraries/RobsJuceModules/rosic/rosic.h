@@ -63,7 +63,7 @@
 */
 
 // new:
-#ifdef RS_ARCHITECHTURE_X64
+#ifdef RS_ARCHITECTURE_X64
   #include <intrin.h>       // for SSE   (i think)
   #include <emmintrin.h>    // for SSE2
 #endif

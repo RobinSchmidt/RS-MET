@@ -311,7 +311,8 @@ void engineersFilterRingResp()
   flt.setStopbandRejection(20.0); 
   flt.setPrototypeOrder(ord);
 
-  plotImpulseResponse(      flt, 10000, 1.0);
+  // Plot different filter responses:
+  //plotImpulseResponse(      flt, 10000, 1.0);
   //plotFrequencyResponse(    flt,  5000, 10.0, 1000.0, fs, true);
   //plotFrequencyResponseReIm(flt, 5000, 10.0, 1000.0, fs, true);
   plotMagAndRingResponse(   flt,  5000, 10.0, 1000.0, fs, true);  // experimental
@@ -331,7 +332,7 @@ void engineersFilterRingResp()
   // -If it depends on magnitude and we want a magnitude independent measure, divide by abs(H). If
   //  it does not depend on magnitude but we want a magnitude dependent measure, multiply by 
   //  abs(H). The goal is to separate the aspect of "ringing time" from the aspect of 
-  //  "ringing gain". So we may get 2 more canditates:
+  //  "ringing gain". So we may get 2 more candidates:
   //    R_3(f) = R_2(f) / abs(H)
   //    R_4(f) = R_2(f) * abs(H)
   //  and/or, we could also have based them on R_1(f)
@@ -363,6 +364,10 @@ void engineersFilterRingResp()
   //  can deal with bivariate rational functions H(x,y) = N(x,y) / D(x,y). Create a class
   //  rsBivariateRationalFunction using two rsBivariatePolynomial members. It should be able to 
   //  compute partial derivatives, gradients, etc. ...maybe also path integrals
+  // -hmm..actually if H(z) is analytic at a given z0, it does not matter from which direction we
+  //  approach z0, so the derivative of H(z) with respect to w (approaching z0 along the imaginary
+  //  axis) does not need to be distinguished from the derivative approaching from any other 
+  //  direction and all the vector-analytic combinations of derivatives may simplify.
   // -What about lookign at the 2nd derivative of the phase response? Could this be some sort of 
   //  measure of dispersion? ...but i think, that's what the group delay is for
   // -Can evaluation of the transfer function along the real axis reveal something interesting? 

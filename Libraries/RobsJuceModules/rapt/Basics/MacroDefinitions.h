@@ -11,6 +11,16 @@
 //   this file here from rosic.h again
 //  -we may also need to re-include the def-file it in rapt.cpp
 
+
+// Build configuration macros:
+#define RS_USE_SSE2 1
+// These macros are actually supposed to be set by client code to determine the build config, so 
+// they should perhaps reside in another file. Maybe a file BuildConfig.h that resides next to
+// rapt.h and is included right before this one. Or maybe they should be placed into the .jucer 
+// files? But no: this would imply a proliferation of exporters in Projucer, which are a
+// pain to maintain anyway. Also, we don't really want to depend on Projucer for all builds. 
+// We'll see... For the time being, they are here.
+
 // Identify compiler:
 #ifdef _MSC_VER  
   #define RS_COMPILER_MSC 1        // microsoft compiler
@@ -21,16 +31,30 @@
 #endif
 
 // Identify build target architecture:
-// ...todo: identify, whether we are on X86_64, X86_32, ARM_64, etc. and define some macros
-// accordingly
 #ifdef RS_COMPILER_MSC
   #ifdef _M_X64
-    #define RS_ARCHITECHTURE_X64 1  
+    #define RS_ARCHITECTURE_X64 1
+  #endif
+#elif defined(RS_COMPILER_GCC) || defined(RS_COMPILER_CLANG)
+  #ifdef __x86_64__
+    #define RS_ARCHITECTURE_X64 1
   #endif
 #endif
+// todo: 
+// -Verify the gcc/clang branch and add macro definition RS_ARCHITECTURE_ARM64 for ARM processors
+// -Maybe we should also check the "-arch" settings of the compiler? Currently, we just assume that
+//  the build machine is the same architecture as the target machine, but that doesn't need to be 
+//  the case.
 
 // Identify operating system:
 // ...
+
+
+// Identify instruction set architecture (ISA) to build for. This depends on the build target 
+// architecture and some configuration macros set by client code.
+#if defined(RS_ARCHITECTURE_X64) && defined(RS_USE_SSE2)
+  #define RS_INSTRUCTION_SET_SSE2 1
+#endif
 
 
 
@@ -159,5 +183,10 @@ updated to get rid of the deprecation warnings. */
 // https://sourceforge.net/p/predef/wiki/Home/
 // https://sourceforge.net/p/predef/wiki/Compilers/
 // https://sourceforge.net/p/predef/wiki/Architectures/
+
+// https://abseil.io/docs/cpp/platforms/macros
+
+
+// https://stackoverflow.com/questions/23934862/what-predefined-macro-can-i-use-to-detect-the-target-architecture-in-clang/41666292
 
 #endif
