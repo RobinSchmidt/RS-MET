@@ -13,7 +13,7 @@
 
 
 // Build configuration macros:
-#define RS_USE_SSE2
+//#define RS_USE_SSE2
 // These macros are actually supposed to be set by client code to determine the build config, so 
 // they should perhaps reside in another file. Maybe a file BuildConfig.h that resides next to
 // rapt.h and is included right before this one. Or maybe they should be placed into the .jucer 
