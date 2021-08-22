@@ -12,6 +12,44 @@
 
 /** Fallback implementation. */
 
+class rsFloat32x4
+{
+
+public:
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Construction */
+
+  /** Standard constructor. Leaves all 4 elements uninitialized. */
+  inline rsFloat32x4() {}
+
+  /** Constructor that initializes all elements to the given value. */
+  inline rsFloat32x4(float a) { v[0] = v[1] = v[2] = v[3] = a; }
+
+  /** Constructs a value from int (needed for implicit conversions). */
+  inline rsFloat32x4(int a) { v[0] = v[1] = v[2] = v[3] = (float)a; }
+
+  /** Constructs a value from double (needed for implicit conversions). */
+  inline rsFloat32x4(double a) { v[0] = v[1] = v[2] = v[3] = (float)a; }
+
+  /** Constructor that initializes the elements from four floats. */
+  inline rsFloat32x4(float a, float b, float c, float d) { v[0] = a; v[1] = b; v[2] = c; v[3] = d; }
+
+  /** Constructor that initializes the elements from a 4-value array of floats. */
+  inline rsFloat32x4(float* p) { v[0] = p[0]; v[1] = p[1]; v[2] = p[2]; v[3] = p[3]; }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+
+
+protected:
+
+  double v[4];  // todo: maybe use an alignment specifier
+
+};
+
+
 
 
 
@@ -24,8 +62,10 @@
 
 class rsFloat32x4
 {
+
 public:
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Construction */
 
   /** Standard constructor. Leaves both elements uninitialized. */
@@ -52,6 +92,7 @@ public:
   /** Constructor that initializes the elements from a 4-value array of floats. */
   inline rsFloat32x4(float* p) { v = _mm_setr_ps(p[0], p[1], p[2], p[3]); }
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns our vector as array of 4 floats. */
@@ -74,7 +115,7 @@ public:
   /** Returns the maximum of the values of both scalar elements in the vector. */
   //inline float getMax() const { float* a = asArray(); return (a[0] > a[1]) ? a[0] : a[1]; }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets all 4 elements to the given number a. */
@@ -96,7 +137,7 @@ public:
   //inline void set(size_t i, float a)  { asArray()[i] = a; }
   // redundant with array access operator - maybe delete from rsFloat64x2, too
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Constants */
 
   /** Returns a vector that has a zero for all scalar elements. */
@@ -125,7 +166,7 @@ public:
     return r;
   }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
   /** Allows the four float values to be accessed (for reading and writing) as if this would be an

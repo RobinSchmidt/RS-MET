@@ -387,7 +387,10 @@ inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) { return _mm_sqrt_pd(a); }
 #endif  // #if defined(RS_NO_SIMD_FLOAT64X2)
 
 // ToDo:
-// -factor out a baseclass rsFloat64x2Base that contains those member functions that do not call
+// -delete redundant documentation in SSE2 implementation, keep it only in the fallback 
+//  implementation
+// -maybe factor out a baseclass rsFloat64x2Base that contains those member functions that do not 
+//  call
 //  specific SIMD instructions
 // -make rsFloat64x2 a subclass of that baseclass and override thos inherited members that need to
 //  be modified
