@@ -41,18 +41,105 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
+  /** Returns our vector as array of 4 floats. */
+  inline const float* asArray() const { return v; }
+
+  /** Returns our vector as constant array of 4 floats. */
+  inline float* asArray() { return v; }
+
+  /** Returns the vector element with index i (valid indices are 0,1,2,3). */
+  inline float get(size_t i) const { return asArray()[i]; }
+  // redundant with [] ...but this is const
+
+  /** Writes our vector into the 4-element float array p. (needs test, maybe implement a similar
+  function for rsFloat64x2 - this has been added after copy/paste ) */
+  inline void get(float* p) const { p[0] = v[0]; p[1] = v[1]; p[2] = v[2]; p[3] = v[3]; }
+
+  /** Returns the sum of the values of both scalar elements in the vector. */
+  inline float getSum() const { return v[0]+v[1]+v[2]+v[3]; }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets all 4 elements to the given number a. */
+  inline void set(float a) 
+  { 
+    v[0] = v[1] = v[2] = v[3] = a;
+  }
+
+  /** Sets the 4 elements to the given numbers. */
+  inline void set(float a, float b, float c, float d) { v[0] = a; v[1] = b; v[2] = c; v[3] = d; }
+
+  /** Sets the 4 elements to the given integers, thereby converting them to float. */
+  inline void set(int a, int b, int c, int d) { set((float) a, (float) b, (float) c, (float) d); }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Constants */
+
+  // the SSE implementation has code here...maybe copy it over and edit it or get rid of it in
+  // the SSE version...it doesn't seem to be used
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Operators */
+
+  /** Allows the four float values to be accessed (for reading and writing) as if this would be an
+  array of four floats. Valid indices are 0,1,2,3. */
+  inline float& operator[](const int i) { return asArray()[i]; }
+
+  inline const float& operator[](const int i) const { return asArray()[i]; }
+
+  // arithmetic operators:
+  inline rsFloat32x4& operator+=(const rsFloat32x4& b) { v[0] += b.v[0]; v[1] += b.v[1]; v[2] += b.v[2]; v[3] += b.v[3]; return *this; }
+  inline rsFloat32x4& operator-=(const rsFloat32x4& b) { v[0] -= b.v[0]; v[1] -= b.v[1]; v[2] -= b.v[2]; v[3] -= b.v[3]; return *this; }
+  inline rsFloat32x4& operator*=(const rsFloat32x4& b) { v[0] *= b.v[0]; v[1] *= b.v[1]; v[2] *= b.v[2]; v[3] *= b.v[3]; return *this; }
+  inline rsFloat32x4& operator/=(const rsFloat32x4& b) { v[0] /= b.v[0]; v[1] /= b.v[1]; v[2] /= b.v[2]; v[3] /= b.v[3]; return *this; }
+
+  /** Comparison for equality. For two vectors to be considered equal, all scalar elements must be
+  equal. */
+  inline bool operator==(const rsFloat32x4& b) const
+  { return v[0] == b[0] && v[1] == b[1] && v[2] == b[2] && v[3] == b[3]; }
 
 
 protected:
 
-  double v[4];  // todo: maybe use an alignment specifier
+  float v[4];  // todo: maybe use an alignment specifier
 
 };
 
+// binary arithmetic operators:
+inline rsFloat32x4 operator+(const rsFloat32x4& a, const rsFloat32x4& b) { return rsFloat32x4(a[0]+b[0], a[1]+b[1], a[2]+b[2], a[3]+b[3]); }
+inline rsFloat32x4 operator-(const rsFloat32x4& a, const rsFloat32x4& b) { return rsFloat32x4(a[0]-b[0], a[1]-b[1], a[2]-b[2], a[3]-b[3]); }
+inline rsFloat32x4 operator*(const rsFloat32x4& a, const rsFloat32x4& b) { return rsFloat32x4(a[0]*b[0], a[1]*b[1], a[2]*b[2], a[3]*b[3]); }
+inline rsFloat32x4 operator/(const rsFloat32x4& a, const rsFloat32x4& b) { return rsFloat32x4(a[0]/b[0], a[1]/b[1], a[2]/b[2], a[3]/b[3]); }
 
 
+// limiting functions::
+inline rsFloat32x4 rsMin(const rsFloat32x4& a, const rsFloat32x4& b) 
+{ 
+  return rsFloat32x4(std::min(a[0], b[0]), std::min(a[1], b[1]), std::min(a[2], b[2]), std::min(a[3], b[3]));
+}
+inline rsFloat32x4 rsMax(const rsFloat32x4& a, const rsFloat32x4& b) 
+{ 
+  return rsFloat32x4(std::max(a[0], b[0]), std::max(a[1], b[1]), std::max(a[2], b[2]), std::max(a[3], b[3]));
+}
 
+inline rsFloat32x4 rsAbs(const rsFloat32x4& a) 
+{ 
+  return rsFloat32x4(std::abs(a[0]), std::abs(a[1]), std::abs(a[2]), std::abs(a[3]));
+}
 
+inline rsFloat32x4 rsSqrt(const rsFloat32x4& a) 
+{ 
+  return rsFloat32x4(std::sqrt(a[0]), std::sqrt(a[1]), std::sqrt(a[2]), std::sqrt(a[3]));
+}
+
+inline float rsSign(float x) { return float(0.f < x) - float(x < 0.f); } // why needed?
+inline rsFloat32x4 rsSign(rsFloat32x4 a)
+{
+  return rsFloat32x4(rsSign(a[0]), rsSign(a[1]), rsSign(a[2]), rsSign(a[3]));
+}
 
 
 #elif defined(RS_INSTRUCTION_SET_SSE)
@@ -273,11 +360,13 @@ inline rsFloat32x4 operator-(const rsFloat32x4& a) { return rsFloat32x4(0.f) - a
 
 inline rsFloat32x4 rsClip(const rsFloat32x4& x, const rsFloat32x4& min, const rsFloat32x4& max) { return rsMax(rsMin(x, max), min); }
 
-inline rsFloat32x4 rsExp(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(exp(a[0]), exp(a[1]), exp(a[2]), exp(a[3])); }
-inline rsFloat32x4 rsLog(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(log(a[0]), log(a[1]), log(a[2]), log(a[3])); }
-inline rsFloat32x4 rsSin(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(sin(a[0]), sin(a[1]), sin(a[2]), sin(a[3])); }
-inline rsFloat32x4 rsCos(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(cos(a[0]), cos(a[1]), cos(a[2]), cos(a[3])); }
-inline rsFloat32x4 rsTan(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(tan(a[0]), tan(a[1]), tan(a[2]), tan(a[3])); }
+inline rsFloat32x4 rsExp(const rsFloat32x4& x) { const float* a = x.asArray(); return rsFloat32x4(exp(a[0]), exp(a[1]), exp(a[2]), exp(a[3])); }
+inline rsFloat32x4 rsLog(const rsFloat32x4& x) { const float* a = x.asArray(); return rsFloat32x4(log(a[0]), log(a[1]), log(a[2]), log(a[3])); }
+inline rsFloat32x4 rsSin(const rsFloat32x4& x) { const float* a = x.asArray(); return rsFloat32x4(sin(a[0]), sin(a[1]), sin(a[2]), sin(a[3])); }
+inline rsFloat32x4 rsCos(const rsFloat32x4& x) { const float* a = x.asArray(); return rsFloat32x4(cos(a[0]), cos(a[1]), cos(a[2]), cos(a[3])); }
+inline rsFloat32x4 rsTan(const rsFloat32x4& x) { const float* a = x.asArray(); return rsFloat32x4(tan(a[0]), tan(a[1]), tan(a[2]), tan(a[3])); }
+// simplify this! get rid of a
+
 // maybe implement recriprocal and reciprocal sqrt (there are intrinsics for these)
 
 //=================================================================================================

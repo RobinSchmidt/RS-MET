@@ -74,6 +74,12 @@ public:
   inline void set0(double a) { set(size_t(0), a); }
   inline void set1(double a) { set(size_t(1), a); }
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Constants */
+
+  // the SSE implementation has code here...maybe copy it over and edit it or get rid of it in
+  // the SSE version...it doesn't seem to be used
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */
@@ -126,7 +132,6 @@ inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b)
   return rsFloat64x2(std::min(a[0], b[0]), std::min(a[1], b[1]));
   //return rsFloat64x2(rsMin(a[0], b[0]), rsMin(a[1], b[1])); // doesn't compile (msc) - why?
 }
-
 inline rsFloat64x2 rsMax(const rsFloat64x2& a, const rsFloat64x2& b) 
 { 
   return rsFloat64x2(std::max(a[0], b[0]), std::max(a[1], b[1]));
@@ -142,9 +147,7 @@ inline rsFloat64x2 rsSqrt(const rsFloat64x2& a)
   return rsFloat64x2(std::sqrt(a[0]), std::sqrt(a[1]));
 }
 
-
 inline double rsSign(double x) { return double(0.0 < x) - double(x < 0.0); } // why needed?
-
 inline rsFloat64x2 rsSign(rsFloat64x2 a)
 {
   return rsFloat64x2(rsSign(a[0]), rsSign(a[1]));

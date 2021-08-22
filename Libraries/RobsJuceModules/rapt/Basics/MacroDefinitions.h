@@ -13,7 +13,7 @@
 
 
 // Build configuration macros:
-#define RS_USE_SSE
+//#define RS_USE_SSE
 //#define RS_USE_SSE2  // if you define this, RS_USE_SSE should also be defined
 // These macros are actually supposed to be set by client code to determine the build config, so 
 // they should perhaps reside in another file. Maybe a file BuildConfig.h that resides next to
