@@ -4,9 +4,23 @@
 //#include <emmintrin.h>
 //#include <xmmintrin.h>
 
+/** The code here is completely analogous to rsFloat64x2. */
+
+
+//=================================================================================================
+#if defined(RS_NO_SIMD_FLOAT32X4)
+
+/** Fallback implementation. */
+
+
+
+
+
+
+#elif defined(RS_INSTRUCTION_SET_SSE)
 //=================================================================================================
 
-/** This class was copied/pasted/edited from rsFloat64x2 and is completely analogous. */
+/** SSE implementation. */
 
 class rsFloat32x4
 {
@@ -188,16 +202,10 @@ inline rsFloat32x4 operator+(const rsFloat32x4& a, const rsFloat32x4& b) { retur
 inline rsFloat32x4 operator-(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_sub_ps(a, b); }
 inline rsFloat32x4 operator*(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_mul_ps(a, b); }
 inline rsFloat32x4 operator/(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_div_ps(a, b); }
-inline rsFloat32x4 operator+(const rsFloat32x4& a) { return a; }                    // unary plus
-inline rsFloat32x4 operator-(const rsFloat32x4& a) { return rsFloat32x4(0.f) - a; } // unary minus
 
 // limiting functions::
 inline rsFloat32x4 rsMin(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_min_ps(a, b); }
 inline rsFloat32x4 rsMax(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_max_ps(a, b); }
-inline rsFloat32x4 rsClip(const rsFloat32x4& x, const rsFloat32x4& min, const rsFloat32x4& max)
-{
-  return rsMax(rsMin(x, max), min);
-}
 
 // bit-manipulations and related functions:
 inline rsFloat32x4 rsBitAnd(const rsFloat32x4& a, const rsFloat32x4& b) { return _mm_and_ps(a, b); }
@@ -210,8 +218,20 @@ inline rsFloat32x4 rsSign(const rsFloat32x4& a)
   return rsBitOr(signOnly, rsFloat32x4::one());
 }
 
-// math functions (except for sqrt, we need to fall back to the scalar versions):
 inline rsFloat32x4 rsSqrt(const rsFloat32x4& a) { return _mm_sqrt_ps(a); }
+
+#else
+#error One of SIMD instruction sets or RS_NO_SIMD_FLOAT32X4 has to be defined.
+#endif  // #if defined(RS_NO_SIMD_FLOAT32X4)
+
+//=================================================================================================
+// Functions and operators that do not depend on any particular instruction set:
+
+inline rsFloat32x4 operator+(const rsFloat32x4& a) { return a; }                    // unary plus
+inline rsFloat32x4 operator-(const rsFloat32x4& a) { return rsFloat32x4(0.f) - a; } // unary minus
+
+inline rsFloat32x4 rsClip(const rsFloat32x4& x, const rsFloat32x4& min, const rsFloat32x4& max) { return rsMax(rsMin(x, max), min); }
+
 inline rsFloat32x4 rsExp(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(exp(a[0]), exp(a[1]), exp(a[2]), exp(a[3])); }
 inline rsFloat32x4 rsLog(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(log(a[0]), log(a[1]), log(a[2]), log(a[3])); }
 inline rsFloat32x4 rsSin(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(sin(a[0]), sin(a[1]), sin(a[2]), sin(a[3])); }
@@ -219,7 +239,8 @@ inline rsFloat32x4 rsCos(const rsFloat32x4& x) { float* a = x.asArray(); return 
 inline rsFloat32x4 rsTan(const rsFloat32x4& x) { float* a = x.asArray(); return rsFloat32x4(tan(a[0]), tan(a[1]), tan(a[2]), tan(a[3])); }
 // maybe implement recriprocal and reciprocal sqrt (there are intrinsics for these)
 
-
+//=================================================================================================
+// Notes:
 
 // see here for optimized vector math functions - free and open-source:
 // http://gruntthepeon.free.fr/ssemath/

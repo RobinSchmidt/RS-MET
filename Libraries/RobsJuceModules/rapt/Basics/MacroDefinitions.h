@@ -13,7 +13,8 @@
 
 
 // Build configuration macros:
-//#define RS_USE_SSE2
+#define RS_USE_SSE
+//#define RS_USE_SSE2  // if you define this, RS_USE_SSE should also be defined
 // These macros are actually supposed to be set by client code to determine the build config, so 
 // they should perhaps reside in another file. Maybe a file BuildConfig.h that resides next to
 // rapt.h and is included right before this one. Or maybe they should be placed into the .jucer 
@@ -52,15 +53,24 @@
 
 // Identify instruction set architecture (ISA) to build for. This depends on the build target 
 // architecture and some configuration macros set by client code.
+#if defined(RS_ARCHITECTURE_X64) && defined(RS_USE_SSE)
+  #define RS_INSTRUCTION_SET_SSE
+#endif
 #if defined(RS_ARCHITECTURE_X64) && defined(RS_USE_SSE2)
   #define RS_INSTRUCTION_SET_SSE2
 #endif
+// maybe we can use SSE also fo X86 in 32bit builds?
 
 // If this macros is defined, it indicates that none of SIMD instruction sets should be used, i.e.
 // the scalar fallback implementations should be used:
-#if !defined(RS_USE_SSE2)  // later, use "or", i.e. || with other simd instruction sets
-  #define RS_NO_SIMD
+#if !defined(RS_USE_SSE)  // later, use "or", i.e. || with other simd instruction sets
+  #define RS_NO_SIMD_FLOAT32X4
 #endif
+#if !defined(RS_USE_SSE2)  // later, use "or", i.e. || with other simd instruction sets
+  #define RS_NO_SIMD_FLOAT64X2
+#endif
+
+
 
 //#ifdef _MSC_VER
 //  #define RS_INLINE __forceinline

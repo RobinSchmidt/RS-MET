@@ -1,7 +1,7 @@
 #ifndef RAPT_FLOAT64X2_H_INCLUDED
 #define RAPT_FLOAT64X2_H_INCLUDED
 
-#if defined(RS_NO_SIMD)
+#if defined(RS_NO_SIMD_FLOAT64X2)
 
 //=================================================================================================
 /**Fallback implementation to be used, if no SIMD instruction set is available */
@@ -383,8 +383,8 @@ inline rsFloat64x2 rsSign(const rsFloat64x2& a)
 inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) { return _mm_sqrt_pd(a); }
 
 #else
-#error One of SIMD instruction sets or RS_NO_SIMD has to be defined.
-#endif  // #if defined(RS_NO_SIMD)
+#error One of SIMD instruction sets or RS_NO_SIMD_FLOAT64X2 has to be defined.
+#endif  // #if defined(RS_NO_SIMD_FLOAT64X2)
 
 // ToDo:
 // -factor out a baseclass rsFloat64x2Base that contains those member functions that do not call
