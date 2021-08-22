@@ -1,6 +1,10 @@
 #ifndef RAPT_FLOAT64X2_H_INCLUDED
 #define RAPT_FLOAT64X2_H_INCLUDED
 
+
+
+#ifdef RS_INSTRUCTION_SET_SSE2
+
 //=================================================================================================
 
 /** A class for convenient handling of SIMD optimizations for a vector of two double-precision
@@ -205,14 +209,45 @@ inline rsFloat64x2 operator+(const rsFloat64x2& a, const rsFloat64x2& b) { retur
 inline rsFloat64x2 operator-(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_sub_pd(a, b); }
 inline rsFloat64x2 operator*(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_mul_pd(a, b); }
 inline rsFloat64x2 operator/(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_div_pd(a, b); }
-inline rsFloat64x2 operator+(const rsFloat64x2& a) { return a; }                    // unary plus
-inline rsFloat64x2 operator-(const rsFloat64x2& a) { return rsFloat64x2(0.0) - a; } // unary minus
-// the binary operators with a scalar for the left or right hand side do not have to be defined due
-// to implicit conversions
+// versions for scalar left or right operand do not have to be defined due to implicit conversions
 
 // limiting functions::
 inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_min_pd(a, b); }
 inline rsFloat64x2 rsMax(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_max_pd(a, b); }
+
+// bit-manipulations and related functions:
+inline rsFloat64x2 rsBitAnd(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_and_pd(a, b); }
+inline rsFloat64x2 rsBitOr( const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_or_pd( a, b); }
+inline rsFloat64x2 rsBitXor(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_xor_pd(a, b); }
+
+inline rsFloat64x2 rsAbs(const rsFloat64x2& a) { return rsBitAnd(a, rsFloat64x2::signBitZero()); }
+
+inline rsFloat64x2 rsSign(const rsFloat64x2& a)
+{
+  rsFloat64x2 signOnly = rsBitAnd(a, rsFloat64x2::signBitOne());
+  return rsBitOr(signOnly, rsFloat64x2::one());
+}
+
+#else
+
+//=================================================================================================
+// Fallback implementation to be used, if no SIMD instruction set is available:
+
+
+// ...
+
+
+
+
+#endif  // RS_INSTRUCTION_SET_SSE2
+
+//=================================================================================================
+// Functions that do not depend on any particular instruction set:
+
+inline rsFloat64x2 operator+(const rsFloat64x2& a) { return a; }                    // unary plus
+inline rsFloat64x2 operator-(const rsFloat64x2& a) { return rsFloat64x2(0.0) - a; } // unary minus
+
+
 inline rsFloat64x2 rsClip(const rsFloat64x2& x, const rsFloat64x2& min, const rsFloat64x2& max)
 {
   return rsMax(rsMin(x, max), min);
@@ -222,22 +257,12 @@ inline rsFloat64x2 rsClip(const rsFloat64x2& x, const rsFloat64x2& min, const rs
 //  return rsMax(rsMin(x, max), min);
 //}
 
-// bit-manipulations and related functions:
-inline rsFloat64x2 rsBitAnd(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_and_pd(a, b); }
-inline rsFloat64x2 rsBitOr( const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_or_pd( a, b); }
-inline rsFloat64x2 rsBitXor(const rsFloat64x2& a, const rsFloat64x2& b) { return _mm_xor_pd(a, b); }
-inline rsFloat64x2 rsAbs(const rsFloat64x2& a) { return rsBitAnd(a, rsFloat64x2::signBitZero()); }
-inline rsFloat64x2 rsSign(const rsFloat64x2& a)
-{
-  rsFloat64x2 signOnly = rsBitAnd(a, rsFloat64x2::signBitOne());
-  return rsBitOr(signOnly, rsFloat64x2::one());
-}
+
 
 // reordering elements:
 inline rsFloat64x2 rsSwap(const rsFloat64x2& x) { return rsFloat64x2(x[1], x[0]); }
 // for rsFloat32x4, have a function rsReorder(rsFloat32x4 x, int to0, int to1, int to2, int to3)
 // ...or maybe the to1, ...etc. can be template arguments, evaluated at compile time (might be faster)?
-
 
 // math functions (except for sqrt, we need to fall back to the scalar versions):
 inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) { return _mm_sqrt_pd(a); }
@@ -250,12 +275,10 @@ inline rsFloat64x2 rsTan(const rsFloat64x2& x) { double* a = x.asArray(); return
 // get rid of the rs-prefix for all functions ...maybe we can get rid of that temporary a - we have the [] operator
 // now - so x[0], x[1] should also work
 
-
 // typecasting of pointers (to arrays) back and forth between double and rsFloat64x2:
 inline double* rsCastPointer(rsFloat64x2* p) { return reinterpret_cast<double*> (p);      }
 inline rsFloat64x2* rsCastPointer(double* p) { return reinterpret_cast<rsFloat64x2*> (p); }
 // test this! it's quite hacky
-
 
 // Explicit specializations of comparison functions that are used in RAPT. They return true, iff 
 // *all* values in the 1st argument are less/greater/etc. than the corresponding values in the 
@@ -268,6 +291,10 @@ inline bool rsGreaterAbs(const rsFloat64x2& x, const rsFloat64x2& y)
   return fabs(x[0]) > fabs(y[0]) && fabs(x[1]) > fabs(y[1]);
 }
 // todo: rsLessAbs
+
+
+
+
 
 
 //inline rsFloat64x2 exp(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(exp(a[0]), exp(a[1])); }
@@ -295,4 +322,6 @@ inline bool rsGreaterAbs(const rsFloat64x2& x, const rsFloat64x2& y)
 //   https://docs.microsoft.com/en-us/cpp/intrinsics/arm64-intrinsics?view=msvc-160
 //   https://docs.microsoft.com/en-us/cpp/intrinsics/intrinsics-available-on-all-architectures?view=msvc-160
 
-#endif
+
+
+#endif // RAPT_FLOAT64X2_H_INCLUDED
