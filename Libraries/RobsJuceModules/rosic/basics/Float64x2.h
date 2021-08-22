@@ -422,11 +422,11 @@ inline rsFloat64x2 rsSwap(const rsFloat64x2& x) { return rsFloat64x2(x[1], x[0])
 // ...or maybe the to1, ...etc. can be template arguments, evaluated at compile time (might be faster)?
 
 // math functions (except for sqrt, we need to fall back to the scalar versions):
-inline rsFloat64x2 rsExp(const rsFloat64x2& x) { const double* a = x.asArray(); return rsFloat64x2(exp(a[0]), exp(a[1])); }
-inline rsFloat64x2 rsLog(const rsFloat64x2& x) { const double* a = x.asArray(); return rsFloat64x2(log(a[0]), log(a[1])); }
-inline rsFloat64x2 rsSin(const rsFloat64x2& x) { const double* a = x.asArray(); return rsFloat64x2(sin(a[0]), sin(a[1])); }
-inline rsFloat64x2 rsCos(const rsFloat64x2& x) { const double* a = x.asArray(); return rsFloat64x2(cos(a[0]), cos(a[1])); }
-inline rsFloat64x2 rsTan(const rsFloat64x2& x) { const double* a = x.asArray(); return rsFloat64x2(tan(a[0]), tan(a[1])); }
+inline rsFloat64x2 rsExp(const rsFloat64x2& x) { return rsFloat64x2(exp(x[0]), exp(x[1])); }
+inline rsFloat64x2 rsLog(const rsFloat64x2& x) { return rsFloat64x2(log(x[0]), log(x[1])); }
+inline rsFloat64x2 rsSin(const rsFloat64x2& x) { return rsFloat64x2(sin(x[0]), sin(x[1])); }
+inline rsFloat64x2 rsCos(const rsFloat64x2& x) { return rsFloat64x2(cos(x[0]), cos(x[1])); }
+inline rsFloat64x2 rsTan(const rsFloat64x2& x) { return rsFloat64x2(tan(x[0]), tan(x[1])); }
 // todo: asin, acos, atan, atan2, sinh, cosh, tanh, asinh, acosh, atanh, pow, fmod, floor, ceil
 // get rid of the rs-prefix for all functions ...maybe we can get rid of that temporary a - we have the [] operator
 // now - so x[0], x[1] should also work

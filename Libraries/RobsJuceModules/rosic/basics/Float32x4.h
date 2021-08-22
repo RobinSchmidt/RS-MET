@@ -360,11 +360,11 @@ inline rsFloat32x4 operator-(const rsFloat32x4& a) { return rsFloat32x4(0.f) - a
 
 inline rsFloat32x4 rsClip(const rsFloat32x4& x, const rsFloat32x4& min, const rsFloat32x4& max) { return rsMax(rsMin(x, max), min); }
 
-inline rsFloat32x4 rsExp(const rsFloat32x4& x) { const float* a = x.asArray(); return rsFloat32x4(exp(a[0]), exp(a[1]), exp(a[2]), exp(a[3])); }
-inline rsFloat32x4 rsLog(const rsFloat32x4& x) { const float* a = x.asArray(); return rsFloat32x4(log(a[0]), log(a[1]), log(a[2]), log(a[3])); }
-inline rsFloat32x4 rsSin(const rsFloat32x4& x) { const float* a = x.asArray(); return rsFloat32x4(sin(a[0]), sin(a[1]), sin(a[2]), sin(a[3])); }
-inline rsFloat32x4 rsCos(const rsFloat32x4& x) { const float* a = x.asArray(); return rsFloat32x4(cos(a[0]), cos(a[1]), cos(a[2]), cos(a[3])); }
-inline rsFloat32x4 rsTan(const rsFloat32x4& x) { const float* a = x.asArray(); return rsFloat32x4(tan(a[0]), tan(a[1]), tan(a[2]), tan(a[3])); }
+inline rsFloat32x4 rsExp(const rsFloat32x4& x) { return rsFloat32x4(exp(x[0]), exp(x[1]), exp(x[2]), exp(x[3])); }
+inline rsFloat32x4 rsLog(const rsFloat32x4& x) { return rsFloat32x4(log(x[0]), log(x[1]), log(x[2]), log(x[3])); }
+inline rsFloat32x4 rsSin(const rsFloat32x4& x) { return rsFloat32x4(sin(x[0]), sin(x[1]), sin(x[2]), sin(x[3])); }
+inline rsFloat32x4 rsCos(const rsFloat32x4& x) { return rsFloat32x4(cos(x[0]), cos(x[1]), cos(x[2]), cos(x[3])); }
+inline rsFloat32x4 rsTan(const rsFloat32x4& x) { return rsFloat32x4(tan(x[0]), tan(x[1]), tan(x[2]), tan(x[3])); }
 // simplify this! get rid of a
 
 // maybe implement recriprocal and reciprocal sqrt (there are intrinsics for these)
