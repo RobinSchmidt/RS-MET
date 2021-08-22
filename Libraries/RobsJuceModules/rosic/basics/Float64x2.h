@@ -14,6 +14,7 @@ class rsFloat64x2
 {
 public:
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Construction */
 
   /** Standard constructor. Leaves both elements uninitialized. */
@@ -38,10 +39,12 @@ public:
     v = _mm_setr_pd(values[0], values[1]);
   }
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   /** Returns our vector as array of 2 doubles. */
   inline double* asArray() const { return (double*) &v; }
+  // maybe should not be const, but there should be an additional const version
 
   /** Returns the vector element with index i (valid indices are 0 and 1). */
   inline double get(size_t i) const { return asArray()[i]; }
@@ -70,7 +73,7 @@ public:
   /** Returns the maximum of the values of both scalar elements in the vector. */
   inline double getMax() const { double* a = asArray(); return (a[0] > a[1]) ? a[0] : a[1]; }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets both elements to a. */
@@ -91,7 +94,7 @@ public:
   //inline void set1(double a) { asArray()[1] = a; }
 
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Constants */
 
   /** Returns a vector that has a zero for both scalar elements. */
@@ -121,7 +124,7 @@ public:
     return r;
   }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
   /** Allows the two double values to be accessed (for reading and writing) as if this would be an
@@ -229,15 +232,114 @@ inline rsFloat64x2 rsSign(const rsFloat64x2& a)
   return rsBitOr(signOnly, rsFloat64x2::one());
 }
 
+inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) { return _mm_sqrt_pd(a); }
+
 #else
 
 //=================================================================================================
 // Fallback implementation to be used, if no SIMD instruction set is available:
+// todo: move this up above the SSE2 implementation, using #ifdef RS_NO_SIMD
 
 class rsFloat64x2
 {
 
 public:
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Construction */
+
+  /** Standard constructor. Leaves both elements uninitialized. */
+  inline rsFloat64x2() {}
+
+  /** Constructor that initializes both elements to the given value. */
+  inline rsFloat64x2(double a) { v[0] = v[1] = a; }
+
+  /** Constructs a value from int (needed for implicit conversions). */
+  inline rsFloat64x2(int a) { v[0] = v[1] = (double) a; }
+
+  /** Constructor that initializes the elements from two doubles. */
+  inline rsFloat64x2(double a, double b) { v[0] = a; v[1] = b; }
+
+  /** Constructor that initializes the elements from a 2-value array of doubles. */
+  inline rsFloat64x2(double* values) { v[0] = values[0]; v[1] = values[1]; }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Inquiry */
+
+  /** Returns our vector as array of 2 doubles. */
+  inline double* asArray() { return &v[0]; }
+
+  /** Returns our vector as constant array of 2 doubles. */
+  inline const double* asArray() const { return &v[0]; }
+
+  /** Returns the vector element with index i (valid indices are 0 and 1). */
+  inline double get(size_t i) const { return asArray()[i]; }
+
+  /** Writes the two double into v0 and v1. */
+  inline void get(double& v0, double& v1) const { v0 = v[0]; v1 = v[1]; }
+
+  /** Returns the 1st value (index 0). */
+  inline double get0() const { return get(0); }
+
+  /** Returns the 2nd value (index 1). */
+  inline double get1() const { return get(1); }
+
+  /** Returns the sum of the values of both scalar elements in the vector. */
+  inline double getSum() const { const double* a = asArray(); return a[0]+a[1]; }
+
+  /** Returns the minimum of the values of both scalar elements in the vector. */
+  inline double getMin() const { const double* a = asArray(); return (a[0] < a[1]) ? a[0] : a[1]; }
+
+  /** Returns the maximum of the values of both scalar elements in the vector. */
+  inline double getMax() const { const double* a = asArray(); return (a[0] > a[1]) ? a[0] : a[1]; }
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets both elements to a. */
+  inline void set(double a) { v[0] = v[1] = a; }
+
+  /** Sets the first element to a and the second element to b. */
+  inline void set(double a, double b) { v[0] = a; v[1] = b; }
+
+  /** Sets the vector element with index i (valid indices are 0 and 1). */
+  inline void set(size_t i, double a)  { asArray()[i] = a; }
+
+  inline void set0(double a) { set(size_t(0), a); }
+  inline void set1(double a) { set(size_t(1), a); }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Operators */
+
+  /** Allows the two double values to be accessed (for reading and writing) as if this would be an
+  array of two doubles. Valid indices are 0 and 1. */
+  inline double& operator[](const int i) { return asArray()[i]; }
+
+  inline const double& operator[](const int i) const { return asArray()[i]; }
+
+
+  // arithmetic operators:
+  inline rsFloat64x2& operator+=(const rsFloat64x2& b) { v[0] += b.v[0]; v[1] += b.v[1]; return *this; }
+  inline rsFloat64x2& operator-=(const rsFloat64x2& b) { v[0] -= b.v[0]; v[1] -= b.v[1]; return *this; }
+  inline rsFloat64x2& operator*=(const rsFloat64x2& b) { v[0] *= b.v[0]; v[1] *= b.v[1]; return *this; }
+  inline rsFloat64x2& operator/=(const rsFloat64x2& b) { v[0] /= b.v[0]; v[1] /= b.v[1]; return *this; }
+
+  /** Comparison for equality. For two vectors to be considered equal, both scalar elements must be
+  equal. */
+  inline bool operator==(const rsFloat64x2& b) const { return v[0] == b.v[0] && v[1] == b.v[1]; }
+
+  /** Comparison for equality. For two vectors to be considered unequal, it's sufficient when one
+  of the scalar elements is unequal to the corresponding other. */
+  inline bool operator!=(const rsFloat64x2& b) const { return !(*this == b); }
+
+  /** Comparison for "less-than". For a vector to be considered less than another vector, both
+  scalar elements must be less than the corresponding elements in the other vector. This
+  definition is a bit arbitrary, but it makes sense for convergence tests in numerical algorithms
+  (such as root finding) when the algorithm checks, whether a variable is within a given tolerance.
+  These checks will evaluate to true only when both elements are within the tolerance, which is
+  typically what is desired. */
+  inline bool operator<(const rsFloat64x2& b) const { return v[0] < b.v[0] && v[1] < b.v[1]; }
 
 
 protected:
@@ -246,6 +348,41 @@ protected:
 
 };
 
+// binary arithmetic operators:
+inline rsFloat64x2 operator+(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(a[0]+b[0], a[1]+b[1]); }
+inline rsFloat64x2 operator-(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(a[0]-b[0], a[1]-b[1]); }
+inline rsFloat64x2 operator*(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(a[0]*b[0], a[1]*b[1]); }
+inline rsFloat64x2 operator/(const rsFloat64x2& a, const rsFloat64x2& b) { return rsFloat64x2(a[0]/b[0], a[1]/b[1]); }
+
+// limiting functions::
+inline rsFloat64x2 rsMin(const rsFloat64x2& a, const rsFloat64x2& b) 
+{ 
+  return rsFloat64x2(std::min(a[0], b[0]), std::min(a[1], b[1]));
+  //return rsFloat64x2(rsMin(a[0], b[0]), rsMin(a[1], b[1])); // doesn't compile (msc) - why?
+}
+
+inline rsFloat64x2 rsMax(const rsFloat64x2& a, const rsFloat64x2& b) 
+{ 
+  return rsFloat64x2(std::max(a[0], b[0]), std::max(a[1], b[1]));
+}
+
+inline rsFloat64x2 rsAbs(const rsFloat64x2& a) 
+{ 
+  return rsFloat64x2(std::abs(a[0]), std::abs(a[1]));
+}
+
+inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) 
+{ 
+  return rsFloat64x2(std::sqrt(a[0]), std::sqrt(a[1]));
+}
+
+
+inline double rsSign(double x) { return double(0.0 < x) - double(x < 0.0); } // why needed?
+
+inline rsFloat64x2 rsSign(rsFloat64x2 a)
+{
+  return rsFloat64x2(rsSign(a[0]), rsSign(a[1]));
+}
 
 #endif  // RS_INSTRUCTION_SET_SSE2
 
@@ -279,12 +416,11 @@ inline rsFloat64x2 rsSwap(const rsFloat64x2& x) { return rsFloat64x2(x[1], x[0])
 // ...or maybe the to1, ...etc. can be template arguments, evaluated at compile time (might be faster)?
 
 // math functions (except for sqrt, we need to fall back to the scalar versions):
-inline rsFloat64x2 rsSqrt(const rsFloat64x2& a) { return _mm_sqrt_pd(a); }
-inline rsFloat64x2 rsExp(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(exp(a[0]), exp(a[1])); }
-inline rsFloat64x2 rsLog(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(log(a[0]), log(a[1])); }
-inline rsFloat64x2 rsSin(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(sin(a[0]), sin(a[1])); }
-inline rsFloat64x2 rsCos(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(cos(a[0]), cos(a[1])); }
-inline rsFloat64x2 rsTan(const rsFloat64x2& x) { double* a = x.asArray(); return rsFloat64x2(tan(a[0]), tan(a[1])); }
+inline rsFloat64x2 rsExp(const rsFloat64x2& x) { const double* a = x.asArray(); return rsFloat64x2(exp(a[0]), exp(a[1])); }
+inline rsFloat64x2 rsLog(const rsFloat64x2& x) { const double* a = x.asArray(); return rsFloat64x2(log(a[0]), log(a[1])); }
+inline rsFloat64x2 rsSin(const rsFloat64x2& x) { const double* a = x.asArray(); return rsFloat64x2(sin(a[0]), sin(a[1])); }
+inline rsFloat64x2 rsCos(const rsFloat64x2& x) { const double* a = x.asArray(); return rsFloat64x2(cos(a[0]), cos(a[1])); }
+inline rsFloat64x2 rsTan(const rsFloat64x2& x) { const double* a = x.asArray(); return rsFloat64x2(tan(a[0]), tan(a[1])); }
 // todo: asin, acos, atan, atan2, sinh, cosh, tanh, asinh, acosh, atanh, pow, fmod, floor, ceil
 // get rid of the rs-prefix for all functions ...maybe we can get rid of that temporary a - we have the [] operator
 // now - so x[0], x[1] should also work

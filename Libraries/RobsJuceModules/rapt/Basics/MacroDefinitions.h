@@ -56,8 +56,11 @@
   #define RS_INSTRUCTION_SET_SSE2
 #endif
 
-
-
+// If this macros is defined, it indicates that none of SIMD instruction sets should be used, i.e.
+// the scalar fallback implementations should be used:
+#if !defined(RS_USE_SSE2)  // later, use "or", i.e. || with other simd instruction sets
+  #define RS_NO_SIMD
+#endif
 
 //#ifdef _MSC_VER
 //  #define RS_INLINE __forceinline
