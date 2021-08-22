@@ -13,7 +13,7 @@
 
 
 // Build configuration macros:
-#define RS_USE_SSE2 1
+#define RS_USE_SSE2
 // These macros are actually supposed to be set by client code to determine the build config, so 
 // they should perhaps reside in another file. Maybe a file BuildConfig.h that resides next to
 // rapt.h and is included right before this one. Or maybe they should be placed into the .jucer 
@@ -33,11 +33,11 @@
 // Identify build target architecture:
 #ifdef RS_COMPILER_MSC
   #ifdef _M_X64
-    #define RS_ARCHITECTURE_X64 1
+    #define RS_ARCHITECTURE_X64
   #endif
 #elif defined(RS_COMPILER_GCC) || defined(RS_COMPILER_CLANG)
   #ifdef __x86_64__
-    #define RS_ARCHITECTURE_X64 1
+    #define RS_ARCHITECTURE_X64
   #endif
 #endif
 // todo: 
@@ -53,8 +53,9 @@
 // Identify instruction set architecture (ISA) to build for. This depends on the build target 
 // architecture and some configuration macros set by client code.
 #if defined(RS_ARCHITECTURE_X64) && defined(RS_USE_SSE2)
-  #define RS_INSTRUCTION_SET_SSE2 1
+  #define RS_INSTRUCTION_SET_SSE2
 #endif
+
 
 
 

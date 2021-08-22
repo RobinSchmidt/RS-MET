@@ -109,6 +109,7 @@ public:
     static const __m128d   r = _mm_set1_pd(d);
     return r;
   }
+  // todo: move outside class such that fallback implementation does not need to implement it
 
   /** Returns a vector that has for both scalars a one for the sign bit and the rest zeros. This is
   useful for implementing the sign function. */
@@ -233,13 +234,26 @@ inline rsFloat64x2 rsSign(const rsFloat64x2& a)
 //=================================================================================================
 // Fallback implementation to be used, if no SIMD instruction set is available:
 
+class rsFloat64x2
+{
 
-// ...
+public:
 
 
+protected:
+
+  double v[2];  // todo: maybe use an alignment specifier
+
+};
 
 
 #endif  // RS_INSTRUCTION_SET_SSE2
+
+// ToDo:
+// -factor out a baseclass rsFloat64x2Base that contains those member functions that do not call
+//  specific SIMD instructions
+// -make rsFloat64x2 a subclass of that baseclass and override thos inherited members that need to
+//  be modified
 
 //=================================================================================================
 // Functions that do not depend on any particular instruction set:
