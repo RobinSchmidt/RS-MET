@@ -121,7 +121,7 @@ void rsBluesteinFFT(std::complex<T> *a, int N)
 */
 
 template<class T>
-static void rsLinearTransforms::fourierRadix2DIF(T* a, int N, T W)
+void rsLinearTransforms::fourierRadix2DIF(T* a, int N, T W)
 {
   rsAssert(rsIsPowerOfTwo(N), "N must be a power of 2");
   int n = 1;          // NumOfProblems

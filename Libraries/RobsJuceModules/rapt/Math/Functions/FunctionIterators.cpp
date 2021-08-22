@@ -56,12 +56,12 @@ void rsPolynomialIterator<T, N>::setup(const T* aIn, T h, T x0)
   // Given the coefficients of a degree N polynomial in a(x) and a stepsize h, this function 
   // computes the coefficients for the degree N-1 correction polynomial c(x) such that
   // a(x) + c(x) = a(x+h). It may be used in place, i.e. c may point to the same array as a.
-  auto corrector = [](const T* a, T h, int N, T* c)
+  auto corrector = [](const T* a, T h, int n, T* c)
   {
-    for(int i = 0; i <= N-1; i++)
+    for(int i = 0; i <= n-1; i++)
     {
       T bi = 0;
-      for(int j = i; j <= N; j++)
+      for(int j = i; j <= n; j++)
         bi += a[j] * rsPow(h, j-i) * T(rsBinomialCoefficient(j, j-i));
         //bi += a[j] * pow(h, j-i) * T(rsBinomialCoefficient(j, j-i));
       c[i] = bi - a[i];

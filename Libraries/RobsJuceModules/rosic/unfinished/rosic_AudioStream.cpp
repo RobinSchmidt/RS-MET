@@ -41,8 +41,8 @@ void AudioFileStreamPreloaded::setNumOutputChannels(int newNumChannels)
 template<class T>
 void AudioFileStreamPreloaded<T>::clear()
 {
-  numChannels = 0;
-  numFrames   = 0; 
+  //numChannels = 0;
+  //numFrames   = 0; 
 
   delete[] channelPointers;
   channelPointers = nullptr; 

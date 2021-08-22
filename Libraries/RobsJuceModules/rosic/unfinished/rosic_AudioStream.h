@@ -213,7 +213,7 @@ public:
   void getFrame(int sampleIndex, T* destination) const override
   {
     int n = sampleIndex;
-    RAPT::rsAssert(n >= 0 && n < numFrames, "sampleIndex out of range");
+    //RAPT::rsAssert(n >= 0 && n < numFrames, "sampleIndex out of range");
     for(int c = 0; c < this->numChannels; c++)
       destination[c] = channelPointers[c][n];
     // What, if the number of output channels shall be different than the number of of channels
@@ -229,7 +229,7 @@ public:
 
   void getFrameStereo(int sampleIndex, T* left, T* right) const override
   {
-    RAPT::rsAssert(numChannels == 2); // Can be used only for stereo signals
+    //RAPT::rsAssert(numChannels == 2); // Can be used only for stereo signals
     int n = sampleIndex;
     *left  = channelPointers[0][n];
     *right = channelPointers[1][n];
