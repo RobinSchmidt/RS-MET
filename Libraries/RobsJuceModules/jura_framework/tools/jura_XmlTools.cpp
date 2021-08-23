@@ -29,7 +29,8 @@ XmlElement* getXmlFromFile(const String &fileNameToLoadFrom)
 bool saveXmlToFile(const XmlElement &xmlToSave, const File &fileToSaveTo, bool askForOverwrite)
 {
   // turn the XmlElement thing into a text document:
-  String myXmlDoc = xmlToSave.createDocument(String());
+  //String myXmlDoc = xmlToSave.createDocument(String());
+  String myXmlDoc = xmlToSave.toString();
 
   if( fileToSaveTo.existsAsFile() )
   {

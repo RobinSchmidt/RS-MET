@@ -226,9 +226,9 @@ void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMess
 {
   ScopedLock scopedLock(plugInLock);
 
-  // enable flush-to-zero (FTZ) and denormals-are-zero (DAZ) mode:
-  _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
-  _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
+  // enable fitzdazzing: set flush-to-zero (FTZ) and denormals-are-zero (DAZ) mode:
+  _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);            // #defined in xmmintrin.h
+  _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);    // #defined in pmmintrin.h
   // see here: https://software.intel.com/en-us/node/523328
 
   if(wrappedAudioModule != nullptr)

@@ -478,16 +478,16 @@ void ToolChain::recallSlotsFromXml(const XmlElement &xmlState, bool markAsClean)
   // There should be always at least one dummy module:
   if(size(modules) < 1)
   {
-    String xmlString = xmlState.createDocument(String()); // for inspection in the debugger
+    //String xmlString = xmlState.createDocument(String()); // for inspection in the debugger
+    String xmlString = xmlState.toString(); // for inspection in the debugger
     jassertfalse;
     // I think, this should not happen under normal circumstances, but i had it happening a few 
     // times on start up of the standalone version. Apparently, it tried to recall the state in 
-    // which it was closed, but for some the state xml that gets passed on recall is invalid.
+    // which it was closed, but for some reason the state xml that gets passed on recall is invalid.
 
-    showWarningBox("XML Load Error", "XML state for toolchain contained no valid slots");
+    showWarningBox("XML Load Error", "XML state for ToolChain contained no valid slots");
     addEmptySlot();
     activeSlot = 0;
-
   }
 }
 

@@ -233,7 +233,8 @@ void ImageSavingDialog::saveNow()
 
     XmlElement* theSVG = ownerSystem->getPlotAsSVG(w, h);
 
-    String myXmlDoc = theSVG->createDocument(String());
+    /*String myXmlDoc = theSVG->createDocument(String());*/
+    String myXmlDoc = theSVG->toString();
     fileToSaveTo.create();
     fileToSaveTo.appendText(myXmlDoc);
 

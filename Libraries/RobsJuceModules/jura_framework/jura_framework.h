@@ -32,8 +32,14 @@
 //#include <stdio.h>
 #include <float.h>
 #include <limits.h>
-#include <xmmintrin.h>   // for FTZ (flush-to-zero)
-#include <pmmintrin.h>   // for DAZ (denormals-are-zero)
+
+
+//#include <xmmintrin.h>   // for FTZ (flush-to-zero)
+//#include <pmmintrin.h>   // for DAZ (denormals-are-zero)
+// These lead to compilation errors on ARM processors. For these, there's another way for that.
+// Huh? ToolChain actually compiles (on pc/windows) without these
+
+
 #include <functional>
 
 //#include <juce_core/juce_core.h>
@@ -42,7 +48,7 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 //#include <juce_graphics/juce_graphics.h>
 //#include <juce_gui_basics/juce_gui_basics.h>
-using namespace juce;
+using namespace juce;  // get rid of that
 
 //#include <rapt/rapt.h> // maybe include rosic instead? rosic now depends on rapt
 #include <rosic/rosic.h>
