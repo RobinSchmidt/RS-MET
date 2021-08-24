@@ -415,10 +415,10 @@
         <CONFIGURATION isDebug="0" name="Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="rs_testing"/>
-        <MODULEPATH id="rosic"/>
-        <MODULEPATH id="romos"/>
-        <MODULEPATH id="rapt"/>
+        <MODULEPATH id="rs_testing" path="../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="rosic" path="../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="romos" path="../../Libraries/RobsJuceModules"/>
+        <MODULEPATH id="rapt" path="../../Libraries/RobsJuceModules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
