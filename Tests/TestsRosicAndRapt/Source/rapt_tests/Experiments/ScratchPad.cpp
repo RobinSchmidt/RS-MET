@@ -1953,7 +1953,7 @@ public:
   void getFrenetFrame(T t, T h, Vec3* v, Vec3* n, Vec3* b)
   {
     getPosVelAcc(t, h, b, v, n);  // b is used as dummy here, t is done - it's the velocity
-    n.normalize();                // n is normalized acceleration
+    n->normalize();               // n is normalized acceleration
     b = cross(v, n);              // binormal is cross-product between tangent and normal
   }
   // maybe it's useful, if this function would also return the position p

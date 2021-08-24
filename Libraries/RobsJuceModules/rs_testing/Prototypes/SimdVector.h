@@ -76,6 +76,9 @@ public:
 
   /** Read access to the i-th element of the vector where i = 0,...,N-1. */
   inline const T& operator[](const int i) const { rsStaticAssert(i >= 0 && i < N); return v[i]; }
+  
+  // ToDo: implement a set() function that takes N parameters of type T - maybe we need to
+  // implement this using variadic templates
 
   /** Returns the level of software emulation that takes place for this particular template 
   instantiation with the current compiler- and preprocessor settings. If the instantiation 
@@ -316,9 +319,9 @@ TIV rsClip(V x, V a, V b) { return V(rsClip(x.v[0], a.v[0], b.v[0])); }
 
 //=================================================================================================
 //-------------------------------------------------------------------------------------------------
-/** Explicit specialization for a vector of 4 floats. */
+/** Explicit specializations for a vector of 4 floats. */
 
-#ifdef RS_USE_SSE
+#ifdef RS_INSTRUCTION_SET_SSE
 #define V  rsSimdVector<float, 4>
 #define CV const V
 
@@ -391,11 +394,6 @@ public:
   //inline bool operator==(CV& b) const { return false; }
 
   // horizontal sum:
-
-
-
-
-
 
   // Access operators
   V& operator=(const __m128& rhs) { v = rhs; return *this; }

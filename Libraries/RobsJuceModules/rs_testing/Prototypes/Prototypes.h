@@ -1040,16 +1040,16 @@ public:
   /** Sets the sample rate at which this filter should operate. May re-allocate memory. */
   void setSampleRate(T newSampleRate)
   {
-    sampleRate = newSampleRate;
+    this->sampleRate = newSampleRate;
     allocateResources();
-    resoHighpass.setSampleRate(sampleRate);
+    resoHighpass.setSampleRate(this->sampleRate);
     Base::dirty = true;
   }
 
   /** Sets the maximum length (in seconds) for this filter. May re-allocate memory. */
   void setMaxLength(T newMaxLength)
   {
-    maxLength = newMaxLength;
+    this->maxLength = newMaxLength;
     allocateResources();
     Base::dirty = true;
   }
@@ -1059,8 +1059,8 @@ public:
   depending on the situation - so, if possible, it's recommended to set both at the same time. */
   void setSampleRateAndMaxLength(T newSampleRate, T newMaxLength)
   {
-    sampleRate = newSampleRate;
-    maxLength  = newMaxLength;
+    this->sampleRate = newSampleRate;
+    this->maxLength  = newMaxLength;
     allocateResources();
     Base::dirty = true;
   }
@@ -1086,15 +1086,15 @@ public:
   /** Produces one output sample from a given input sample. */
   T getSample(T x)
   {
-    delayLine.getSample(x);
-    if(dirty) 
+    this->delayLine.getSample(x);
+    if(this->dirty)
       updateInternals();
-    T yL = core.getSample(x);                   // lowpass part
-    T yD = delayLine[delayScl*delay];           // delayed input
-    T yH = yD - yL;                             // highpass part
-    T yF = loGain * yL + hiGain * yH;           // non-resonant filtered output
-    T yR = getResonance(x, yL, yD);             // (pseudo) resonance
-    return (T(1)-resoMix) * yF + resoMix * yR;  // crossfade between non-resonant and resonance
+    T yL = this->core.getSample(x);                       // lowpass part
+    T yD = this->delayLine[this->delayScl * this->delay]; // delayed input
+    T yH = yD - yL;                                       // highpass part
+    T yF = this->loGain * yL + this->hiGain * yH;         // non-resonant filtered output
+    T yR = getResonance(x, yL, yD);                       // (pseudo) resonance
+    return (T(1)-resoMix) * yF + resoMix * yR;            // crossfade between non-reso and reso
   }
   // maybe factor out a function to produce lowpass and highpass getSampleLoHi or something at the
   // same time - client code may find that useful - or maybe getOutputs to be consistent with
@@ -1115,8 +1115,8 @@ public:
   convenient to call it from client code, too. */
   virtual void updateInternals()
   {
-    double L = length*sampleRate;
-    core.setLengthAndQuantile(   L, quantile);
+    double L = this->length * this->sampleRate;
+    this->core.setLengthAndQuantile(L, this->quantile);
 
     minCore.setLengthAndQuantile(L, T(0));
     maxCore.setLengthAndQuantile(L, T(1));
@@ -1126,12 +1126,12 @@ public:
     //maxCore.setLengthAndQuantile(rsMax(L, 10.0), T(1));
 
 
-    delay = T(0.5)*(L-1);
+    this->delay = T(0.5)*(L-1);
 
-    T f = getFrequency();
+    T f = this->getFrequency();
 
     //T w = T(2*PI)*sampleRate/length; // == 2*PI*sampleRate*frequency
-    T w = T(2*PI) * f  / sampleRate; // == 2*PI*frequency/sampleRate
+    T w = T(2*PI) * f  / this->sampleRate; // == 2*PI*frequency/sampleRate
     bandpass.setFrequencyAndAbsoluteBandwidth(w, T(0.00001));  // preliminary
     // todo: let the resonance frequency have an adjustable pitch-offset with respect to core 
     // filters...maybe the min/max cores could have an offset as well
@@ -1152,7 +1152,7 @@ public:
     resoHighpass.setFrequency(fHp);
 
 
-    dirty = false;
+    this->dirty = false;
   }
 
 
@@ -1191,7 +1191,7 @@ protected:
     T a = T(1);    // preliminary - should later depend on cutoff in some way
 
     // experimental:
-    T p = 2*getFrequency()/sampleRate;  // 0..1 as f goes 0..fs
+    T p = 2*this->getFrequency()/this->sampleRate;  // 0..1 as f goes 0..fs
     //p = 1-p; p = p*p; a = 1 / (0.1 + p);
     //p = cos(0.5*PI*p); a = 1 / (0.1 + p);
     p = 1-sin(0.5*PI*p); a = 1 / (0.1 + p);
@@ -1215,7 +1215,7 @@ protected:
     // sense and have the same effect regardless of input volume and bandwidth setting
 
     T a = T(1);  // scaler to control the resonance amplitude
-    T f = getFrequency();
+    T f = this->getFrequency();
     //a = 10 / length;
     //a = T(1) + T(4)*rsClip(f / T(20000), T(0), T(1)); 
     // yes, we need a factor, but we also need a highpass, otherwise we just amplify noise
@@ -1237,7 +1237,7 @@ protected:
   virtual void allocateResources() override
   {
     Base::allocateResources();
-    int mL = getMaxRequiredLengthInSamples();
+    int mL = this->getMaxRequiredLengthInSamples();
     minCore.setMaxLength(mL);
     maxCore.setMaxLength(mL);
   }
@@ -3160,9 +3160,9 @@ public:
 
   using rsColor<T>::rsColor;
 
-  T getRed()   const { return x; }
-  T getGreen() const { return y; }
-  T getBlue()  const { return z; }
+  T getRed()   const { return this->x; }
+  T getGreen() const { return this->y; }
+  T getBlue()  const { return this->z; }
 
 };
 
@@ -3174,9 +3174,9 @@ public:
 
   using rsColor<T>::rsColor;
 
-  T getHue()        const { return x; }
-  T getSaturation() const { return y; }
-  T getLightness()  const { return z; }
+  T getHue()        const { return this->x; }
+  T getSaturation() const { return this->y; }
+  T getLightness()  const { return this->z; }
 
 };
 

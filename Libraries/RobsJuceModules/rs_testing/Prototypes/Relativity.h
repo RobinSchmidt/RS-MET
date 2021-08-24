@@ -179,7 +179,7 @@ public:
 
   T getSquaredNorm() const { return a*a + b*b + c*c + d*d; }
 
-  T getNorm() const { return sqrt(getSquaredNorm); }
+  T getNorm() const { return sqrt(getSquaredNorm()); }
 
   rsQuaternion<T> conj() const { return rsQuaternion<T>(a, -b, -c, -d); }
 

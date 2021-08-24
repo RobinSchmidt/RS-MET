@@ -2081,7 +2081,8 @@ void setupNeighbourWeight(rsGraph<rsVector2D<T>, T>& mesh, int i, int k, T p, T 
   Vec2 dik = vk - vi;                 // difference vector
 
   T r = rsNorm(dik);                  // distance or radius
-  T w = pow(radius, -p);              // weight determined by distance
+  //T w = pow(radius, -p);        // weight determined by distance
+  T w = pow(r, -p);                   // weight determined by distance
 
   // compute and set up additional weighting factor dertmined by the (in)depence of edge direction 
   // ik from the other edge direction in, n=0,...,N-1 where N is the number of neighbors of 
