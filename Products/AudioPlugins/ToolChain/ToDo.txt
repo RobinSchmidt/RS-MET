@@ -1,4 +1,12 @@
-  Bugs:
+
+Try to support LV2, see:
+https://jatinchowdhury18.medium.com/building-lv2-plugins-with-juce-and-cmake-d1f8937dbac3
+https://github.com/lv2-porting-project/JUCE
+https://github.com/lvtk/jlv2
+https://github.com/DISTRHO/JUCE
+
+
+Bugs:
   -here, someone says, that the sequencer in AcidDevil always runs at 140 bpm
    https://www.kvraudio.com/forum/viewtopic.php?p=7257577#p7257577
   -Quadrifex: set the routing to 1+2+3+4 and mute effect 4 - some parts of the graphics turn red 

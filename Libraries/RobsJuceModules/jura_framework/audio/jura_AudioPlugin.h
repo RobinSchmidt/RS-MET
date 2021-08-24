@@ -131,7 +131,7 @@ public:
   //virtual String getParameterName(int parameterIndex, int maximumStringLength) override;
 
   //-----------------------------------------------------------------------------------------------
-  // data:
+  // Internals (ToDo: try to move all into the protected section):
 
   AudioModule *wrappedAudioModule = nullptr;  // the wrapped jura::AudioModule
 
@@ -142,7 +142,8 @@ public:
 
 
   MetaParameterManager metaParaManager;
-   // needs to be public to be accessible for the AudioModule wrapper functions
+  // Needs to be public to be accessible for the AudioModule wrapper functions. 
+
 
 protected:
 
@@ -151,6 +152,9 @@ protected:
   /** Creates the parameters that are reported to the host. Called internally from the
   constructor. */
   void createHostAutomatableParameters(int numParameters);
+
+  /** Sets the flush-to-zero (FTZ) and denormals-are-zero (DAZ) mode. Called from processBlock. */
+  inline void enableFitzdazzing();
 
   /** The number of channels that is desired for the in/out buffer that is passed to the
   processBlock callback. You may set that value in the constructor of your subclass. If the number

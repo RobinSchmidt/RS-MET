@@ -37,7 +37,8 @@
 //#include <xmmintrin.h>   // for FTZ (flush-to-zero)
 //#include <pmmintrin.h>   // for DAZ (denormals-are-zero)
 // These lead to compilation errors on ARM processors. For these, there's another way for that.
-// Huh? ToolChain actually compiles (on pc/windows) without these
+// Huh? ToolChain actually compiles (on pc/windows) without these. Maybe JUCE has included
+// them already?
 
 
 #include <functional>

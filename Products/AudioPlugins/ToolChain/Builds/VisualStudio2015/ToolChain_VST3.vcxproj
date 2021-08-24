@@ -18,12 +18,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2FDC76D4-58A7-57A5-9DC5-00858BE4E45E}</ProjectGuid>
+    <ProjectGuid>{6610AED7-918D-BECC-BFF2-41B19A21A5BB}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props"/>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'"
                  Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <PlatformToolset>v140</PlatformToolset>
@@ -31,7 +31,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'"
                  Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v140</PlatformToolset>
@@ -39,7 +39,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug Win32|Win32'"
                  Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <WholeProgramOptimization>false</WholeProgramOptimization>
     <PlatformToolset>v140</PlatformToolset>
@@ -54,19 +54,19 @@
   </ImportGroup>
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <TargetExt>.exe</TargetExt>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\Standalone Plugin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\Standalone Plugin\</IntDir>
+    <TargetExt>.vst3</TargetExt>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\VST3\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\VST3\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ToolChain</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(LibraryPath);$(SolutionDir)$(Platform)\$(Configuration)\Shared Code</LibraryPath>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\Standalone Plugin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\Standalone Plugin\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\VST3\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\VST3\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ToolChain</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(LibraryPath);$(SolutionDir)$(Platform)\$(Configuration)\Shared Code</LibraryPath>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Win32|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\Standalone Plugin\</OutDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Win32|Win32'">$(Platform)\$(Configuration)\Standalone Plugin\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug Win32|Win32'">$(SolutionDir)$(Platform)\$(Configuration)\VST3\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug Win32|Win32'">$(Platform)\$(Configuration)\VST3\</IntDir>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug Win32|Win32'">ToolChain</TargetName>
     <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug Win32|Win32'">true</GenerateManifest>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug Win32|Win32'">$(LibraryPath);$(SolutionDir)$(Platform)\$(Configuration)\Shared Code</LibraryPath>
@@ -83,7 +83,7 @@
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\..\JuceLibraryCode;..\..\..\..\..\Libraries\JUCE\modules;..\..\..\..\..\Libraries\RobsJuceModules;../../../../../../RS-Private/Libaries/VST/vstsdk2.4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2017.12.26;JUCE_APP_VERSION_HEX=0x7e10c1a;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=1;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2017.12.26;JUCE_APP_VERSION_HEX=0x7e10c1a;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=1;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -99,7 +99,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)\ToolChain.exe</OutputFile>
+      <OutputFile>$(OutDir)\ToolChain.vst3</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcmt.lib; msvcrt.lib;;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -127,7 +127,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\..\JuceLibraryCode;..\..\..\..\..\Libraries\JUCE\modules;..\..\..\..\..\Libraries\RobsJuceModules;../../../../../../RS-Private/Libaries/VST/vstsdk2.4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2017.12.26;JUCE_APP_VERSION_HEX=0x7e10c1a;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=1;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2017.12.26;JUCE_APP_VERSION_HEX=0x7e10c1a;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=1;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -143,7 +143,7 @@
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)\ToolChain.exe</OutputFile>
+      <OutputFile>$(OutDir)\ToolChain.vst3</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -175,7 +175,7 @@
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\..\JuceLibraryCode;..\..\..\..\..\Libraries\JUCE\modules;..\..\..\..\..\Libraries\RobsJuceModules;../../../../../../RS-Private/Libaries/VST/vstsdk2.4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2017.12.26;JUCE_APP_VERSION_HEX=0x7e10c1a;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=1;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2017.12.26;JUCE_APP_VERSION_HEX=0x7e10c1a;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=1;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -191,7 +191,7 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <OutputFile>$(OutDir)\ToolChain.exe</OutputFile>
+      <OutputFile>$(OutDir)\ToolChain.vst3</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreSpecificDefaultLibraries>libcmt.lib; msvcrt.lib;;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -210,17 +210,15 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_plugin_client\Standalone\juce_StandaloneFilterApp.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_plugin_client\VST3\juce_VST3_Wrapper.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_plugin_client\juce_audio_plugin_client_Standalone.cpp">
+    <ClCompile Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_plugin_client\juce_audio_plugin_client_VST3.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_plugin_client_Standalone.cpp"/>
+    <ClCompile Include="..\..\JuceLibraryCode\include_juce_audio_plugin_client_VST3.cpp"/>
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Libraries\JUCE\modules\juce_audio_plugin_client\Standalone\juce_StandaloneFilterWindow.h"/>
-  </ItemGroup>
+  <ItemGroup/>
   <ItemGroup>
     <ResourceCompile Include=".\resources.rc"/>
   </ItemGroup>

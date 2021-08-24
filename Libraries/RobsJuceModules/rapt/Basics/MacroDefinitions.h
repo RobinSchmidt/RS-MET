@@ -13,14 +13,16 @@
 
 
 // Build configuration macros:
-//#define RS_USE_SSE
-//#define RS_USE_SSE2  // if you define this, RS_USE_SSE should also be defined
+#define RS_USE_SSE
+#define RS_USE_SSE2  // if you define this, RS_USE_SSE should also be defined
 // These macros are actually supposed to be set by client code to determine the build config, so 
 // they should perhaps reside in another file. Maybe a file BuildConfig.h that resides next to
 // rapt.h and is included right before this one. Or maybe they should be placed into the .jucer 
 // files? But no: this would imply a proliferation of exporters in Projucer, which are a
 // pain to maintain anyway. Also, we don't really want to depend on Projucer for all builds. 
 // We'll see... For the time being, they are here.
+// ToDo: introduce similar macros for AVX and NEON. These will become relevant when we include the 
+// new rsSimdVector class into rapt (which is currently in the Prototypes in rs_testing)
 
 // Identify compiler:
 #ifdef _MSC_VER  
@@ -30,19 +32,24 @@
 #elif __clang__  
   #define RS_COMPILER_CLANG 1      // clang compiler
 #endif
+// ToDo: support intel compiler
 
 // Identify build target architecture:
 #ifdef RS_COMPILER_MSC
-  #ifdef _M_X64
+  #if defined(_M_X64)
     #define RS_ARCHITECTURE_X64
+  #elif defined(_M_ARM64)             // verify this!
+    #define RS_ARCHITECTURE_ARM64
   #endif
 #elif defined(RS_COMPILER_GCC) || defined(RS_COMPILER_CLANG)
-  #ifdef __x86_64__
+  #if defined(__x86_64__)
     #define RS_ARCHITECTURE_X64
+  #elif defined(__aarch64__)
+    #define RS_ARCHITECTURE_ARM64
   #endif
 #endif
 // todo: 
-// -Verify the gcc/clang branch and add macro definition RS_ARCHITECTURE_ARM64 for ARM processors
+// -Verify the gcc/clang branch
 // -Maybe we should also check the "-arch" settings of the compiler? Currently, we just assume that
 //  the build machine is the same architecture as the target machine, but that doesn't need to be 
 //  the case.

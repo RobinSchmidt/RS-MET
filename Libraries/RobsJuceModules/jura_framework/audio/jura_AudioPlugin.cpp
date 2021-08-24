@@ -222,14 +222,39 @@ bool AudioPlugin::isBusesLayoutSupported(const BusesLayout& layout) const
   return r;
 }
 
+inline void AudioPlugin::enableFitzdazzing()
+{
+#if defined(RS_ARCHITECTURE_X64)
+
+  _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);            // #defined in xmmintrin.h
+  _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);    // #defined in pmmintrin.h
+  // see here: https://software.intel.com/en-us/node/523328
+
+#elif defined(RS_ARCHITECTURE_ARM64)
+
+
+  // see: https://developer.arm.com/documentation/dui0473/m/neon-programming/when-to-use-flush-to-zero-mode-in-neon
+  // 
+  // todo: implement unit tests for treatment of denormals 
+  // -try to feed dernormal inputs into processBlock, this:
+  //  https://developer.arm.com/documentation/dui0473/m/pge1423730082105
+  //  says that this should trigger an exception. could this become problematic?
+  // -see also: https://discourse.julialang.org/t/50x-speed-difference-in-gemv-for-different-values-in-vector/2755/6
+
+#endif
+
+  // See also:
+  // https://blog.audio-tk.com/2016/09/20/audio-toolkit-handling-denormals/
+}
+
 void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMessages)
 {
   ScopedLock scopedLock(plugInLock);
 
-  // enable fitzdazzing: set flush-to-zero (FTZ) and denormals-are-zero (DAZ) mode:
-  _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);            // #defined in xmmintrin.h
-  _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);    // #defined in pmmintrin.h
-  // see here: https://software.intel.com/en-us/node/523328
+  // ToDo: int ftzDazState = getFtzDazState();
+  enableFitzdazzing();  
+  // ToDo: maybe call only once in prepareToPlay() - but no, other plugins in the chain may 
+  // potentially modify this between calls
 
   if(wrappedAudioModule != nullptr)
   {
@@ -241,7 +266,9 @@ void AudioPlugin::processBlock(AudioBuffer<double> &buffer, MidiBuffer &midiMess
   else
     buffer.clear();
 
-  // ... maybe we should restore the original FTZ/DAZ settings here? other plugins down the chain
+
+  // setFtzDazState(ftzDazState);
+  // ...we should restore the original FTZ/DAZ settings here? other plugins down the chain
   // may want to have denormals...well...that's very unlikely, but still
 
   // maybe we should have a function that avoids acquiring the lock and setting denormal flags that

@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="Lt8ojO" name="ToolChain" projectType="audioplug" version="2017.12.26"
               bundleIdentifier="com.rs-met.ToolChain" includeBinaryInAppConfig="1"
-              buildVST="1" buildVST3="0" buildAU="1" buildAUv3="0" buildRTAS="0"
+              buildVST="1" buildVST3="1" buildAU="1" buildAUv3="0" buildRTAS="0"
               buildAAX="0" pluginName="ToolChain" pluginDesc="ToolChain" pluginManufacturer="RS-MET"
               pluginManufacturerCode="RSMT" pluginCode="TlCn" pluginChannelConfigs=""
               pluginIsSynth="0" pluginWantsMidiIn="1" pluginProducesMidiOut="0"
@@ -11,8 +11,8 @@
               companyName="RS-MET" companyWebsite="www.rs-met.com" companyEmail="robin@rs-met.com"
               displaySplashScreen="1" reportAppUsage="1" splashScreenColour="Dark"
               buildStandalone="1" enableIAA="0" cppLanguageStandard="11" companyCopyright="RS-MET"
-              pluginFormats="buildVST,buildAU,buildStandalone" pluginCharacteristicsValue="pluginWantsMidiIn"
-              headerPath="../../../../../../RS-Private/Libaries/vstsdk2.4"
+              pluginFormats="buildAU,buildStandalone,buildVST,buildVST3" pluginCharacteristicsValue="pluginWantsMidiIn"
+              headerPath="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"
               jucerFormatVersion="1">
   <MAINGROUP id="J7WzKP" name="ToolChain">
     <GROUP id="{5348A3D7-BFCF-B722-2C65-2A345253A7EB}" name="Source">

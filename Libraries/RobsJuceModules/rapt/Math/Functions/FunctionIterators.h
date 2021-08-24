@@ -192,10 +192,10 @@ protected:
 
 //=================================================================================================
 
-/** Similar to rsPolynomialIterator, but instead of iteratively evaluating a polynomial p(x) itself, 
-it evaluates the exponential function of that polynomial, i.e. exp(p(x)).
+/** Similar to rsPolynomialIterator, but instead of iteratively evaluating a polynomial p(x) 
+itself, it evaluates the exponential function of that polynomial, i.e. exp(p(x)).
 
-Warning: i think, this may be numerically unstable, especially for larger N...more tests needed.  */
+Warning: i think, this may be numerically unstable, especially for larger N. Tests needed.  */
 
 template<class T, int N>
 class rsExpPolyIterator : public rsPolynomialIterator<T, N>
@@ -214,7 +214,7 @@ public:
 
   inline T getValue()
   {
-    T r = this->y[N];                    // result
+    T r = this->y[N];              // result
     for(int i = N; i > 0; i--) 
       this->y[i] *= this->y[i-1];  // state update
     return r;
@@ -275,7 +275,6 @@ public:
   required by the sinusoidal modeling framework and the real part is a corresponding cosine 
   quadrature component that you get for free due to the way the algorithm works. And it updates 
   the state for the next call. */
-  //inline std::complex<T> getComplexValue() { return core.getValue(); }
   inline rsComplex<T> getComplexValue() { return core.getValue(); }
 
   /** Convenience function to compute the sine only (and update the state). */

@@ -82,7 +82,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\..\JuceLibraryCode;..\..\..\..\..\Libraries\JUCE\modules;..\..\..\..\..\Libraries\RobsJuceModules;../../../../../../RS-Private/Libaries/vstsdk2.4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\..\JuceLibraryCode;..\..\..\..\..\Libraries\JUCE\modules;..\..\..\..\..\Libraries\RobsJuceModules;../../../../../../RS-Private/Libaries/VST/vstsdk2.4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2017.12.26;JUCE_APP_VERSION_HEX=0x7e10c1a;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -126,7 +126,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\..\JuceLibraryCode;..\..\..\..\..\Libraries\JUCE\modules;..\..\..\..\..\Libraries\RobsJuceModules;../../../../../../RS-Private/Libaries/vstsdk2.4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\..\JuceLibraryCode;..\..\..\..\..\Libraries\JUCE\modules;..\..\..\..\..\Libraries\RobsJuceModules;../../../../../../RS-Private/Libaries/VST/vstsdk2.4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2017.12.26;JUCE_APP_VERSION_HEX=0x7e10c1a;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -174,7 +174,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\..\JuceLibraryCode;..\..\..\..\..\Libraries\JUCE\modules;..\..\..\..\..\Libraries\RobsJuceModules;../../../../../../RS-Private/Libaries/vstsdk2.4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\..\Libraries\JUCE\modules\juce_audio_processors\format_types\VST3_SDK;..\..\JuceLibraryCode;..\..\..\..\..\Libraries\JUCE\modules;..\..\..\..\..\Libraries\RobsJuceModules;../../../../../../RS-Private/Libaries/VST/vstsdk2.4;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2015_78A5022=1;JUCE_APP_VERSION=2017.12.26;JUCE_APP_VERSION_HEX=0x7e10c1a;JucePlugin_Build_VST=1;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;JucePlugin_Build_Unity=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
