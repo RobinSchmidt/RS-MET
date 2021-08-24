@@ -192,7 +192,26 @@ char* rosic::rsReadStringFromFile(const char *filename)
 
     fclose(handler);    // close the file
   }
+  else
+  {
+    int l_errno = errno;
+    printf("unable to open '%s': %s (errno=%d)\n", handler, strerror(l_errno), l_errno);
+    int dummy = 0;
+  }
   return buffer;
+  
+  // It doesn't work on mac, see:
+  // https://stackoverflow.com/questions/23974831/problems-with-fopen-function-on-mac
+  // https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man3/fopen.3.html
+  // https://macosx.com/threads/file-paths-and-fopen.28639/
+  // https://discussions.apple.com/thread/1454949
+  // It says, the file must be in the same directory as the program, which is actually the case. I
+  // load e.g. Drums.xml in the Sampler which triggers this function to load Drums.sfz which fails.
+  // Both the xml and sfz are in the same folder as ToolChain.app
+  // The errno check gives: "No such file or directory (errno=2)"
+  // I think, the working directory is not the same as the executable directory
+  // I tried to move all the files into the project directory (where the .xcodeproject) file
+  // resides) but that didin't help.
 }
 
 void rosic::writeDataToFile(const char* path, int numValues, double *x, double *y1, double *y2,
