@@ -1,0 +1,944 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		10D17AAF69E8ED354E29E9AE /* RecentFilesMenuTemplate.nib */ = {isa = PBXBuildFile; fileRef = 1D8466D79E87018077DD65DC; };
+		15DAE00878ADCB94DACDD8B4 /* ConsoleApp */ = {isa = PBXBuildFile; fileRef = DA53637351E08BF16F336C87; };
+		192E57FA2D25B013959DD648 /* ../../Source/PerformanceTests/PerformanceTests.cpp */ = {isa = PBXBuildFile; fileRef = B0519FEE0B1A4B872C5701D9; };
+		2B4E8CF40E3496957DD37686 /* ../../Source/Main.cpp */ = {isa = PBXBuildFile; fileRef = 143C9C82CD6907E110AB5A67; };
+		53900367193CA98EF368FA35 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/RSCore.cpp */ = {isa = PBXBuildFile; fileRef = 3B9749309344BFA662964C48; };
+		5987762DFAC0F06D2C55AB38 /* ../../Source/Misc/Misc.cpp */ = {isa = PBXBuildFile; fileRef = A822338188B2D2E5BF6D9F41; };
+		72EDC5EED9E5E93AD33B0D5F /* ../../JuceLibraryCode/include_romos.cpp */ = {isa = PBXBuildFile; fileRef = 69B5FBEC6A5C26B5AC0EC685; };
+		7806CA3808034EF240747CD3 /* ../../JuceLibraryCode/include_rapt_templates.cpp */ = {isa = PBXBuildFile; fileRef = 926C9F678516B38CDF2959F8; };
+		78DB2D37D2B21E3303570715 /* ../../JuceLibraryCode/include_rs_testing.cpp */ = {isa = PBXBuildFile; fileRef = AD6B1E0F5BBCBEFBFB4AD2CD; };
+		83576A2CFF0E49D0D3B3382D /* ../../JuceLibraryCode/include_rapt.cpp */ = {isa = PBXBuildFile; fileRef = D2236B4549A72DF34A03F258; };
+		8C826A941E6933DB5B3F5CBA /* ../../Source/Experiments/Experiments.cpp */ = {isa = PBXBuildFile; fileRef = 22F56D67A25C6E980741550B; };
+		94679D8D785661D249E13298 /* ../../JuceLibraryCode/include_rosic.cpp */ = {isa = PBXBuildFile; fileRef = EAF101374E835E81E407A874; };
+		E8F33A3C520F2790D53A588B /* ../../Source/UnitTests/UnitTests.cpp */ = {isa = PBXBuildFile; fileRef = DCBCBB76B076D6B4AE1142FC; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		007CD0A33864106F23BDE9D1 /* ../../Source/rapt_tests/UnitTests/DrawingUnitTests.cpp */ /* DrawingUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DrawingUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/DrawingUnitTests.cpp; sourceTree = SOURCE_ROOT; };
+		0225E089503EA658FE8F2377 /* ../../Source/rosic_tests/UnitTestsRosic.h */ /* UnitTestsRosic.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnitTestsRosic.h; path = ../../Source/rosic_tests/UnitTestsRosic.h; sourceTree = SOURCE_ROOT; };
+		02B8083E6834D8F5E2A18883 /* ../../Source/rosic_tests/PortedFromRSLib/Examples/SampleMapGenerator.h */ /* SampleMapGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SampleMapGenerator.h; path = ../../Source/rosic_tests/PortedFromRSLib/Examples/SampleMapGenerator.h; sourceTree = SOURCE_ROOT; };
+		02DDE78B24C3F355AE46DDC7 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/PhaseVocoderExperiments.h */ /* PhaseVocoderExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PhaseVocoderExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/PhaseVocoderExperiments.h; sourceTree = SOURCE_ROOT; };
+		040C7AA7BAE7EC17AAD37AEE /* ../../Source/rosic_tests/rosic_OthersTests.cpp */ /* rosic_OthersTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rosic_OthersTests.cpp; path = ../../Source/rosic_tests/rosic_OthersTests.cpp; sourceTree = SOURCE_ROOT; };
+		0531A27680CE9E6DB8E2736F /* ../../Source/rapt_tests/Experiments/GraphicsExperiments.cpp */ /* GraphicsExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GraphicsExperiments.cpp; path = ../../Source/rapt_tests/Experiments/GraphicsExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		05D1C85316D99E8EE34B4C51 /* ../../Source/rosic_tests/UnitTestsRosic.cpp */ /* UnitTestsRosic.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = UnitTestsRosic.cpp; path = ../../Source/rosic_tests/UnitTestsRosic.cpp; sourceTree = SOURCE_ROOT; };
+		06F5B6674DB0556E473BDA98 /* ../../Source/rapt_tests/UnitTests/Math/VectorUnitTests.cpp */ /* VectorUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = VectorUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/VectorUnitTests.cpp; sourceTree = SOURCE_ROOT; };
+		074BA7C0FB9F8CF4EF632190 /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/MiscAudioTests.cpp */ /* MiscAudioTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MiscAudioTests.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/MiscAudioTests.cpp; sourceTree = SOURCE_ROOT; };
+		08754940B5F387438B87941F /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/ConicsURLs.txt */ /* ConicsURLs.txt */ = {isa = PBXFileReference; lastKnownFileType = text.txt; name = ConicsURLs.txt; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/ConicsURLs.txt; sourceTree = SOURCE_ROOT; };
+		0B42F05C551BA64705ACB3D8 /* ../../Source/rosic_tests/PortedFromRSLib/UnitTestsRSLib.h */ /* UnitTestsRSLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnitTestsRSLib.h; path = ../../Source/rosic_tests/PortedFromRSLib/UnitTestsRSLib.h; sourceTree = SOURCE_ROOT; };
+		0BF4A895A78A1038E4E5493D /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Flags.cpp */ /* Flags.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Flags.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Flags.cpp; sourceTree = SOURCE_ROOT; };
+		0C4F5D199B15471001F1DCBD /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Logger.h */ /* Logger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Logger.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Logger.h; sourceTree = SOURCE_ROOT; };
+		0D8E93A0B16F59EAB2FC64F6 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/String.cpp */ /* String.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = String.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/String.cpp; sourceTree = SOURCE_ROOT; };
+		0DD44E29DDE0790E7A088620 /* ../../Source/rapt_tests/UnitTests/Math/MoebiusTransformTests.cpp */ /* MoebiusTransformTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MoebiusTransformTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/MoebiusTransformTests.cpp; sourceTree = SOURCE_ROOT; };
+		0EF52DA173C1E2BF7DF34ACB /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringPair.cpp */ /* KeyValueStringPair.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = KeyValueStringPair.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringPair.cpp; sourceTree = SOURCE_ROOT; };
+		143C9C82CD6907E110AB5A67 /* ../../Source/Main.cpp */ /* Main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Main.cpp; path = ../../Source/Main.cpp; sourceTree = SOURCE_ROOT; };
+		149CDEDA5B5219489AD73C2D /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Parameter.cpp */ /* Parameter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Parameter.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Parameter.cpp; sourceTree = SOURCE_ROOT; };
+		14AAEF27AD3FDCC4584353D6 /* ../../Source/rosic_tests/PortedFromRSLib/UnitTests/NumberManipulationsTests.cpp */ /* NumberManipulationsTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NumberManipulationsTests.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/UnitTests/NumberManipulationsTests.cpp; sourceTree = SOURCE_ROOT; };
+		1515B4D2DF6DAC1D9B3C42D1 /* ../../Source/rosic_tests/rosic_StringTests.cpp */ /* rosic_StringTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rosic_StringTests.cpp; path = ../../Source/rosic_tests/rosic_StringTests.cpp; sourceTree = SOURCE_ROOT; };
+		1607CB47C33E3409F56D2E15 /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/ModalTests.cpp */ /* ModalTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ModalTests.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/ModalTests.cpp; sourceTree = SOURCE_ROOT; };
+		16E6BD249C4694AC4EE7DEF9 /* ../../Source/rapt_tests/UnitTests/DataUnitTests.cpp */ /* DataUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DataUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/DataUnitTests.cpp; sourceTree = SOURCE_ROOT; };
+		176F629FFF5CE718626231F5 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/ModalExperiments.cpp */ /* ModalExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ModalExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/ModalExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		1A1FF67DFDBF46543F17DF86 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/PartialExtractionExperiments.cpp */ /* PartialExtractionExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PartialExtractionExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/PartialExtractionExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		1B03FBF6C86A2C74BDB1AA6A /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/MathTests.cpp */ /* MathTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MathTests.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/MathTests.cpp; sourceTree = SOURCE_ROOT; };
+		1B06B892830C2265B579DB5C /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/DelayExperiments.h */ /* DelayExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DelayExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/DelayExperiments.h; sourceTree = SOURCE_ROOT; };
+		1B12FFC0AB133F1A8F9AF619 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/InfiniteDataStream.h */ /* InfiniteDataStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InfiniteDataStream.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/InfiniteDataStream.h; sourceTree = SOURCE_ROOT; };
+		1C97D13DADB5BD723CBFCE81 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/CellularExperiments.cpp */ /* CellularExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CellularExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/CellularExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		1CAD47A95988294A312875F7 /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/CoreTests.h */ /* CoreTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CoreTests.h; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/CoreTests.h; sourceTree = SOURCE_ROOT; };
+		1D8466D79E87018077DD65DC /* RecentFilesMenuTemplate.nib */ /* RecentFilesMenuTemplate.nib */ = {isa = PBXFileReference; lastKnownFileType = file.nib; name = RecentFilesMenuTemplate.nib; path = RecentFilesMenuTemplate.nib; sourceTree = SOURCE_ROOT; };
+		1DC80EA032879A6E112815F8 /* ../../Source/rapt_tests/UnitTests/Math/Point2DTests.cpp */ /* Point2DTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Point2DTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/Point2DTests.cpp; sourceTree = SOURCE_ROOT; };
+		1E176D0450A5E3496CACE44D /* ../../Source/rapt_tests/UnitTests/MathUnitTests.cpp */ /* MathUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MathUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/MathUnitTests.cpp; sourceTree = SOURCE_ROOT; };
+		1EC39954B08CD7482AFEBDF2 /* ../../Source/rapt_tests/PerformanceTests/MiscPerformanceTests.cpp */ /* MiscPerformanceTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MiscPerformanceTests.cpp; path = ../../Source/rapt_tests/PerformanceTests/MiscPerformanceTests.cpp; sourceTree = SOURCE_ROOT; };
+		1F929012E78CA9A40F66A62B /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/SystemInformation.h */ /* SystemInformation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SystemInformation.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/SystemInformation.h; sourceTree = SOURCE_ROOT; };
+		203B1AECBFC671E5B0653D47 /* ../../Source/rapt_tests/RaptTests.h */ /* RaptTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RaptTests.h; path = ../../Source/rapt_tests/RaptTests.h; sourceTree = SOURCE_ROOT; };
+		2182ED301BEF1F950D9731B1 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Tree.h */ /* Tree.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Tree.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Tree.h; sourceTree = SOURCE_ROOT; };
+		21BDE8754B3007B8D442EED5 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/ResamplingExperiments.h */ /* ResamplingExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ResamplingExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/ResamplingExperiments.h; sourceTree = SOURCE_ROOT; };
+		22F56D67A25C6E980741550B /* ../../Source/Experiments/Experiments.cpp */ /* Experiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Experiments.cpp; path = ../../Source/Experiments/Experiments.cpp; sourceTree = SOURCE_ROOT; };
+		26C1987CEDB3E7CCF102367E /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.h */ /* PerformanceTestsRSLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PerformanceTestsRSLib.h; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.h; sourceTree = SOURCE_ROOT; };
+		28EF555365FB48D2C169107A /* ../../Source/rosic_tests/PortedFromRSLib/ExamplesRSLib.cpp */ /* ExamplesRSLib.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ExamplesRSLib.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/ExamplesRSLib.cpp; sourceTree = SOURCE_ROOT; };
+		2A09EF6920B624257D42E620 /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/CoreTests.cpp */ /* CoreTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = CoreTests.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/CoreTests.cpp; sourceTree = SOURCE_ROOT; };
+		2CC238AB14C39B7C0084DC67 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/ArrayFunctions.h */ /* ArrayFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ArrayFunctions.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/ArrayFunctions.h; sourceTree = SOURCE_ROOT; };
+		2D557C1FD50EF89F347896B5 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/MathBasics.inl */ /* MathBasics.inl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MathBasics.inl; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/MathBasics.inl; sourceTree = SOURCE_ROOT; };
+		30EF6D82E872DB41915343B2 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/SortAndSearch.inl */ /* SortAndSearch.inl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SortAndSearch.inl; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/SortAndSearch.inl; sourceTree = SOURCE_ROOT; };
+		31703B4981F10DC2C28F6BB4 /* ~/modules/rapt */ /* rapt */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rapt; path = "~/modules/rapt"; sourceTree = "<absolute>"; };
+		32451C05C156426B2ECD109C /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/WaveFile.h */ /* WaveFile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WaveFile.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/WaveFile.h; sourceTree = SOURCE_ROOT; };
+		34985B04580C476535AEB246 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/SaturationExperiments.cpp */ /* SaturationExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SaturationExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/SaturationExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		34A667FB55AC2D394B0D7B15 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringTree.cpp */ /* KeyValueStringTree.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = KeyValueStringTree.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringTree.cpp; sourceTree = SOURCE_ROOT; };
+		38DCC82E0641AF901E5EF6EA /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/MatrixFunctions.inl */ /* MatrixFunctions.inl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MatrixFunctions.inl; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/MatrixFunctions.inl; sourceTree = SOURCE_ROOT; };
+		3A1EDE12BA768CDFF2F18AD3 /* ../../Source/rosic_tests/PortedFromRSLib/UnitTests/FilterTests.cpp */ /* FilterTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FilterTests.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/UnitTests/FilterTests.cpp; sourceTree = SOURCE_ROOT; };
+		3B9749309344BFA662964C48 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/RSCore.cpp */ /* RSCore.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RSCore.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/RSCore.cpp; sourceTree = SOURCE_ROOT; };
+		3CCD7F65F906CF7F705F3D85 /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/ModalTests.h */ /* ModalTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ModalTests.h; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/ModalTests.h; sourceTree = SOURCE_ROOT; };
+		3CF38E99715675637B8919CC /* ../../Source/rapt_tests/UnitTests/Math/MiscMathUnitTests.cpp */ /* MiscMathUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MiscMathUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/MiscMathUnitTests.cpp; sourceTree = SOURCE_ROOT; };
+		3D31391C57A98D5A93F1C1AC /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/FilterExperiments.cpp */ /* FilterExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FilterExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/FilterExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		3D38E46658B7998DC79D75F4 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/String.h */ /* String.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = String.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/String.h; sourceTree = SOURCE_ROOT; };
+		3EAD02E8E448C57E69EFF5D4 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/StandardHeaders.h */ /* StandardHeaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = StandardHeaders.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/StandardHeaders.h; sourceTree = SOURCE_ROOT; };
+		3EC0A55020F21C0038AEAE61 /* ../../Source/rapt_tests/UnitTests/Math/RealFunctionTests.cpp */ /* RealFunctionTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = RealFunctionTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/RealFunctionTests.cpp; sourceTree = SOURCE_ROOT; };
+		3F33275066C59411B4850104 /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/AnalysisTests.h */ /* AnalysisTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnalysisTests.h; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/AnalysisTests.h; sourceTree = SOURCE_ROOT; };
+		41205D80E7960632026112D1 /* ../../Source/rapt_tests/UnitTests/Math/MultiArrayTests.cpp */ /* MultiArrayTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MultiArrayTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/MultiArrayTests.cpp; sourceTree = SOURCE_ROOT; };
+		41217E9C02172B32B61AA471 /* ../../Source/rosic_tests/PortedFromRSLib/Examples/ModalExamples.h */ /* ModalExamples.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ModalExamples.h; path = ../../Source/rosic_tests/PortedFromRSLib/Examples/ModalExamples.h; sourceTree = SOURCE_ROOT; };
+		41CECB95FDAC0B47CFF98D71 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/MathExperiments.h */ /* MathExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MathExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/MathExperiments.h; sourceTree = SOURCE_ROOT; };
+		4200537010208A235907D7CD /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/PhysicsExperiments.cpp */ /* PhysicsExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PhysicsExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/PhysicsExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		4279A9CBBDE2D4387E3DEB69 /* ../../Source/rapt_tests/UnitTests/Math/Polygon2DTests.cpp */ /* Polygon2DTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Polygon2DTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/Polygon2DTests.cpp; sourceTree = SOURCE_ROOT; };
+		43B0A541138EB7034F42ABA8 /* ../../Source/rosic_tests/rosic_GeneratorsTests.cpp */ /* rosic_GeneratorsTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rosic_GeneratorsTests.cpp; path = ../../Source/rosic_tests/rosic_GeneratorsTests.cpp; sourceTree = SOURCE_ROOT; };
+		43D9AB08A04B6B7DDD4BBAE3 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/DelayExperiments.cpp */ /* DelayExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DelayExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/DelayExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		44170EC5818FF0CEEC0EFC59 /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/MathTests.h */ /* MathTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MathTests.h; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/MathTests.h; sourceTree = SOURCE_ROOT; };
+		44C4231C39054584FBA89749 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/MiscAudioExperiments.h */ /* MiscAudioExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MiscAudioExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/MiscAudioExperiments.h; sourceTree = SOURCE_ROOT; };
+		45CECF36114BBB3C3FCB07C9 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringPair.h */ /* KeyValueStringPair.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyValueStringPair.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringPair.h; sourceTree = SOURCE_ROOT; };
+		461E25E72206EF125145877D /* ../../Source/rapt_tests/PerformanceTests/AudioPerformanceTests.cpp */ /* AudioPerformanceTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AudioPerformanceTests.cpp; path = ../../Source/rapt_tests/PerformanceTests/AudioPerformanceTests.cpp; sourceTree = SOURCE_ROOT; };
+		46501819F0F871640FE4C4FB /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/ArrayFunctions.inl */ /* ArrayFunctions.inl */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ArrayFunctions.inl; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/ArrayFunctions.inl; sourceTree = SOURCE_ROOT; };
+		48013E12FDCC03B34F51394D /* ../../Source/rosic_tests/PortedFromRSLib/UnUsedTestsRSLib.cpp */ /* UnUsedTestsRSLib.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = UnUsedTestsRSLib.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/UnUsedTestsRSLib.cpp; sourceTree = SOURCE_ROOT; };
+		4B09C7ED48F226F34886EC92 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/MatrixFunctions.h */ /* MatrixFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MatrixFunctions.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/MatrixFunctions.h; sourceTree = SOURCE_ROOT; };
+		4B1F12C3508CBFF98D0D1B5E /* ../../Source/rapt_tests/UnitTests/GeneratorUnitTests.cpp */ /* GeneratorUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GeneratorUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/GeneratorUnitTests.cpp; sourceTree = SOURCE_ROOT; };
+		4B9E11E7B91660AD8A827BEB /* ../../Source/rosic_tests/PortedFromRSLib/Examples/SampleMapGenerator.cpp */ /* SampleMapGenerator.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SampleMapGenerator.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Examples/SampleMapGenerator.cpp; sourceTree = SOURCE_ROOT; };
+		50167A2A74B9A63966F2F572 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/NumberManipulations.cpp */ /* NumberManipulations.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NumberManipulations.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/NumberManipulations.cpp; sourceTree = SOURCE_ROOT; };
+		50371B1A3E2C818358A47657 /* ../../Source/Experiments/Experiments.h */ /* Experiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Experiments.h; path = ../../Source/Experiments/Experiments.h; sourceTree = SOURCE_ROOT; };
+		509C137E7884B1402DB64EE8 /* ../../Source/Experiments/PrototypesForAPE.cpp */ /* PrototypesForAPE.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PrototypesForAPE.cpp; path = ../../Source/Experiments/PrototypesForAPE.cpp; sourceTree = SOURCE_ROOT; };
+		512339140D8FC8D6E41EAC90 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringTree.h */ /* KeyValueStringTree.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyValueStringTree.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringTree.h; sourceTree = SOURCE_ROOT; };
+		529E3036BD5924762356E730 /* ../../Source/rapt_tests/UnitTests/Math/MatrixUnitTests.cpp */ /* MatrixUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MatrixUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/MatrixUnitTests.cpp; sourceTree = SOURCE_ROOT; };
+		54753493A56D9680978A2758 /* ../../Source/rapt_tests/UnitTests/Math/PolynomialUnitTests.cpp */ /* PolynomialUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PolynomialUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/PolynomialUnitTests.cpp; sourceTree = SOURCE_ROOT; };
+		55A7D8C11070302D93740949 /* ../../Source/rapt_tests/UnitTests/Math/DifferentialEquationTests.cpp */ /* DifferentialEquationTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = DifferentialEquationTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/DifferentialEquationTests.cpp; sourceTree = SOURCE_ROOT; };
+		564528ADB103DAC200F8BF10 /* ../../Source/rosic_tests/PortedFromRSLib/UnitTests/ModalTests.cpp */ /* ModalTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ModalTests.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/UnitTests/ModalTests.cpp; sourceTree = SOURCE_ROOT; };
+		605914F241B6B8254E616464 /* ../../Source/rapt_tests/UnitTests/Math/NumberTheoryTests.cpp */ /* NumberTheoryTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NumberTheoryTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/NumberTheoryTests.cpp; sourceTree = SOURCE_ROOT; };
+		60F83F7424BB6882C1D97839 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/MacroDefinitions.h */ /* MacroDefinitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MacroDefinitions.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/MacroDefinitions.h; sourceTree = SOURCE_ROOT; };
+		6315F68F833E67B2B5498442 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/ResamplingExperiments.cpp */ /* ResamplingExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ResamplingExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/ResamplingExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		64CFFDBDEAE7AC4082492C99 /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/AnalysisTests.cpp */ /* AnalysisTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AnalysisTests.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/AnalysisTests.cpp; sourceTree = SOURCE_ROOT; };
+		666852EF78AEC0B9C93D8583 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/File.h */ /* File.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = File.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/File.h; sourceTree = SOURCE_ROOT; };
+		6894AB5222937B83AD93A745 /* ../../Source/rapt_tests/UnitTests/Math/TransformsTests.cpp */ /* TransformsTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TransformsTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/TransformsTests.cpp; sourceTree = SOURCE_ROOT; };
+		68CE5A1C8171DB8A14B88919 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/NumberManipulations.h */ /* NumberManipulations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NumberManipulations.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/NumberManipulations.h; sourceTree = SOURCE_ROOT; };
+		69B5FBEC6A5C26B5AC0EC685 /* ../../JuceLibraryCode/include_romos.cpp */ /* include_romos.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_romos.cpp; path = ../../JuceLibraryCode/include_romos.cpp; sourceTree = SOURCE_ROOT; };
+		69F2C5A4B6A65708B68C4227 /* ../../Source/rosic_tests/rosic_ModulatorsTests.cpp */ /* rosic_ModulatorsTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rosic_ModulatorsTests.cpp; path = ../../Source/rosic_tests/rosic_ModulatorsTests.cpp; sourceTree = SOURCE_ROOT; };
+		6A13CC3BAA253143EAC4D6FC /* ../../Source/rosic_tests/PortedFromRSLib/UnitTests/TypeSizeTests.cpp */ /* TypeSizeTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = TypeSizeTests.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/UnitTests/TypeSizeTests.cpp; sourceTree = SOURCE_ROOT; };
+		6B0FBC688808AB3D49740333 /* ../../Source/rapt_tests/Experiments/ScratchPad.cpp */ /* ScratchPad.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ScratchPad.cpp; path = ../../Source/rapt_tests/Experiments/ScratchPad.cpp; sourceTree = SOURCE_ROOT; };
+		6B82FEF12FDE8E0F08AFA69E /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringArray.h */ /* KeyValueStringArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyValueStringArray.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringArray.h; sourceTree = SOURCE_ROOT; };
+		6BD9A064F1A6DC7B4BC92CA5 /* ../../Source/rosic_tests/rosic_FilterTests.cpp */ /* rosic_FilterTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rosic_FilterTests.cpp; path = ../../Source/rosic_tests/rosic_FilterTests.cpp; sourceTree = SOURCE_ROOT; };
+		6C76ADF12D8392C8C1D41FC5 /* ../../JuceLibraryCode/AppConfig.h */ /* AppConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AppConfig.h; path = ../../JuceLibraryCode/AppConfig.h; sourceTree = SOURCE_ROOT; };
+		6F461688295EEA38E53D47BD /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/KeyValueMap.h */ /* KeyValueMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyValueMap.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/KeyValueMap.h; sourceTree = SOURCE_ROOT; };
+		6F6A60A0ADCDEFB644F8BD2B /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Flags.h */ /* Flags.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Flags.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Flags.h; sourceTree = SOURCE_ROOT; };
+		7039FE0BD8DC7EAF35DC2769 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/TypeDefinitions.h */ /* TypeDefinitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TypeDefinitions.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/TypeDefinitions.h; sourceTree = SOURCE_ROOT; };
+		7186907C8B38C69CBDBE465F /* ../../Source/rapt_tests/UnitTests/SortAndSearchTests.cpp */ /* SortAndSearchTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SortAndSearchTests.cpp; path = ../../Source/rapt_tests/UnitTests/SortAndSearchTests.cpp; sourceTree = SOURCE_ROOT; };
+		727116DAB97C420BDCAEA912 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/PhysicsExperiments.h */ /* PhysicsExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PhysicsExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/PhysicsExperiments.h; sourceTree = SOURCE_ROOT; };
+		75B45FBC12525CF60A417A7B /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/PhaseVocoderExperiments.cpp */ /* PhaseVocoderExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PhaseVocoderExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/PhaseVocoderExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		75DCE7F786E548E8EB58BC40 /* ../../Source/rapt_tests/Experiments/MathExperiments.cpp */ /* MathExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MathExperiments.cpp; path = ../../Source/rapt_tests/Experiments/MathExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		761B6BE373C9009CE4ACAF64 /* ../../Source/rapt_tests/PerformanceTests/MathPerformanceTests.cpp */ /* MathPerformanceTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MathPerformanceTests.cpp; path = ../../Source/rapt_tests/PerformanceTests/MathPerformanceTests.cpp; sourceTree = SOURCE_ROOT; };
+		797055AD6BFA0F4FBABA0A49 /* ../../Source/rapt_tests/Experiments/ModulatorExperiments.cpp */ /* ModulatorExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ModulatorExperiments.cpp; path = ../../Source/rapt_tests/Experiments/ModulatorExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		7A4AEC915A393CE8BDEA3AF5 /* ../../Source/ToDo.txt */ /* ToDo.txt */ = {isa = PBXFileReference; lastKnownFileType = text.txt; name = ToDo.txt; path = ../../Source/ToDo.txt; sourceTree = SOURCE_ROOT; };
+		7CEBDD0834F546659E8EC16F /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/File.cpp */ /* File.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = File.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/File.cpp; sourceTree = SOURCE_ROOT; };
+		7D43BF1E1262754E5B90BDC1 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/AnalysisExperiments.h */ /* AnalysisExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AnalysisExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/AnalysisExperiments.h; sourceTree = SOURCE_ROOT; };
+		7D57F5AA829CDF26FAEF14D4 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Parameter.h */ /* Parameter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Parameter.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Parameter.h; sourceTree = SOURCE_ROOT; };
+		7F44DEA1DC506EBD77B6E9AE /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringArray.cpp */ /* KeyValueStringArray.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = KeyValueStringArray.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Text/KeyValueStringArray.cpp; sourceTree = SOURCE_ROOT; };
+		84CDD9FB7ADA6748585E6DC7 /* ../../Source/rosic_tests/PortedFromRSLib/Examples/ModalExamples.cpp */ /* ModalExamples.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ModalExamples.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Examples/ModalExamples.cpp; sourceTree = SOURCE_ROOT; };
+		85793761541BF9A22E112411 /* ../../Source/rapt_tests/UnitTests/Math/Triangle2DTests.cpp */ /* Triangle2DTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Triangle2DTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/Triangle2DTests.cpp; sourceTree = SOURCE_ROOT; };
+		85C9787DB15E2897B61FA82B /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Callback.h */ /* Callback.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Callback.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Callback.h; sourceTree = SOURCE_ROOT; };
+		862D14795CE08B6C117DF4DB /* ../../Source/rapt_tests/UnitTests/FilterUnitTests.cpp */ /* FilterUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FilterUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/FilterUnitTests.cpp; sourceTree = SOURCE_ROOT; };
+		87578C2D8F8C445077443BE1 /* ../../Source/rosic_tests/rosic_AnalysisTests.cpp */ /* rosic_AnalysisTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rosic_AnalysisTests.cpp; path = ../../Source/rosic_tests/rosic_AnalysisTests.cpp; sourceTree = SOURCE_ROOT; };
+		88A03998152C8B464C2F8097 /* ../../Source/rapt_tests/UnitTests/UnitTestsRapt.h */ /* UnitTestsRapt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnitTestsRapt.h; path = ../../Source/rapt_tests/UnitTests/UnitTestsRapt.h; sourceTree = SOURCE_ROOT; };
+		88F53FEEA612C0ECF9DB5C3D /* ../../Source/rapt_tests/UnitTests/Math/IntegerFunctionTests.cpp */ /* IntegerFunctionTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = IntegerFunctionTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/IntegerFunctionTests.cpp; sourceTree = SOURCE_ROOT; };
+		8AD5C576B600E719ACE281DB /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/CellularExperiments.h */ /* CellularExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CellularExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/CellularExperiments.h; sourceTree = SOURCE_ROOT; };
+		8BA59C113018B81A0F939A55 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/ErrorHandling.h */ /* ErrorHandling.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ErrorHandling.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/ErrorHandling.h; sourceTree = SOURCE_ROOT; };
+		926C9F678516B38CDF2959F8 /* ../../JuceLibraryCode/include_rapt_templates.cpp */ /* include_rapt_templates.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_rapt_templates.cpp; path = ../../JuceLibraryCode/include_rapt_templates.cpp; sourceTree = SOURCE_ROOT; };
+		979DD4451C4180F55D978E0A /* ../../JuceLibraryCode/JuceHeader.h */ /* JuceHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JuceHeader.h; path = ../../JuceLibraryCode/JuceHeader.h; sourceTree = SOURCE_ROOT; };
+		98ECA2FB4368A3D12494C28F /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/MathExperiments.cpp */ /* MathExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MathExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/MathExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		9C97255903F085AE90D8BB3D /* ../../Source/rapt_tests/UnitTests/BufferFunctionTests.cpp */ /* BufferFunctionTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = BufferFunctionTests.cpp; path = ../../Source/rapt_tests/UnitTests/BufferFunctionTests.cpp; sourceTree = SOURCE_ROOT; };
+		9C9EC5BFB991AF03DDF4BB78 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/MiscAudioExperiments.cpp */ /* MiscAudioExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MiscAudioExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/MiscAudioExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		9CED56DF54A12DC7E7F314E7 /* ~/modules/rs_testing */ /* rs_testing */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rs_testing; path = "~/modules/rs_testing"; sourceTree = "<absolute>"; };
+		A13906CA451B07BA9F89604C /* ../../Source/rosic_tests/PortedFromRSLib/ExperimentsRSLib.cpp */ /* ExperimentsRSLib.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ExperimentsRSLib.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/ExperimentsRSLib.cpp; sourceTree = SOURCE_ROOT; };
+		A1BE562D2F9826EBB33F86AC /* ../../Source/rapt_tests/UnitTests/Math/LinearAlgebraUnitTests.cpp */ /* LinearAlgebraUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = LinearAlgebraUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/Math/LinearAlgebraUnitTests.cpp; sourceTree = SOURCE_ROOT; };
+		A29874B3E8E84EC80B9B9908 /* ../../Source/rosic_tests/PortedFromRSLib/UnitTests/PitchDetectorTests.cpp */ /* PitchDetectorTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PitchDetectorTests.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/UnitTests/PitchDetectorTests.cpp; sourceTree = SOURCE_ROOT; };
+		A405EDE1696605F139E3E87E /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/ModulatorExperiments.h */ /* ModulatorExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ModulatorExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/ModulatorExperiments.h; sourceTree = SOURCE_ROOT; };
+		A504B10116B0931963552E38 /* ../../Source/rosic_tests/rosic_CorrectnessTests.cpp */ /* rosic_CorrectnessTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rosic_CorrectnessTests.cpp; path = ../../Source/rosic_tests/rosic_CorrectnessTests.cpp; sourceTree = SOURCE_ROOT; };
+		A516EB8D0213F8DD27507BA8 /* ../../Source/Experiments/PrototypesForAPE.h */ /* PrototypesForAPE.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrototypesForAPE.h; path = ../../Source/Experiments/PrototypesForAPE.h; sourceTree = SOURCE_ROOT; };
+		A529D9EC03B0A2BCEF6AE0E9 /* ../../Source/rosic_tests/PortedFromRSLib/ExamplesRSLib.h */ /* ExamplesRSLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ExamplesRSLib.h; path = ../../Source/rosic_tests/PortedFromRSLib/ExamplesRSLib.h; sourceTree = SOURCE_ROOT; };
+		A5CE368647CC355741AD5D7A /* ../../Source/rapt_tests/UnitTests/ImageUnitTests.cpp */ /* ImageUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ImageUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/ImageUnitTests.cpp; sourceTree = SOURCE_ROOT; };
+		A822338188B2D2E5BF6D9F41 /* ../../Source/Misc/Misc.cpp */ /* Misc.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Misc.cpp; path = ../../Source/Misc/Misc.cpp; sourceTree = SOURCE_ROOT; };
+		A8C606AE62883023F93D5DFE /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/SortAndSearch.h */ /* SortAndSearch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SortAndSearch.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/SortAndSearch.h; sourceTree = SOURCE_ROOT; };
+		ABFCC2AE5AB1B6FAA83B2B93 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/ModulatorExperiments.cpp */ /* ModulatorExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ModulatorExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/ModulatorExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		AD6B1E0F5BBCBEFBFB4AD2CD /* ../../JuceLibraryCode/include_rs_testing.cpp */ /* include_rs_testing.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_rs_testing.cpp; path = ../../JuceLibraryCode/include_rs_testing.cpp; sourceTree = SOURCE_ROOT; };
+		B0519FEE0B1A4B872C5701D9 /* ../../Source/PerformanceTests/PerformanceTests.cpp */ /* PerformanceTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PerformanceTests.cpp; path = ../../Source/PerformanceTests/PerformanceTests.cpp; sourceTree = SOURCE_ROOT; };
+		B14AB9AEEFB6D743DE6A9B00 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/OscillatorExperiments.cpp */ /* OscillatorExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = OscillatorExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/OscillatorExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		B2D258654D05CEC3A9AA57EA /* ../../Source/rosic_tests/PortedFromRSLib/UnitTests/MiscAudioTests.cpp */ /* MiscAudioTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MiscAudioTests.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/UnitTests/MiscAudioTests.cpp; sourceTree = SOURCE_ROOT; };
+		B70FE679AA7909DD455AD09B /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/MathBasics.h */ /* MathBasics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MathBasics.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/MathBasics.h; sourceTree = SOURCE_ROOT; };
+		B8479E71CBF5443A98134144 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/SaturationExperiments.h */ /* SaturationExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SaturationExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/SaturationExperiments.h; sourceTree = SOURCE_ROOT; };
+		B8F69A9F48FC1608479C24B1 /* ../../Source/rosic_tests/rosic_NumericalTests.cpp */ /* rosic_NumericalTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rosic_NumericalTests.cpp; path = ../../Source/rosic_tests/rosic_NumericalTests.cpp; sourceTree = SOURCE_ROOT; };
+		C03D560A1F4C5D25E4712814 /* ../../Source/rosic_tests/rosic_MathTests.cpp */ /* rosic_MathTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rosic_MathTests.cpp; path = ../../Source/rosic_tests/rosic_MathTests.cpp; sourceTree = SOURCE_ROOT; };
+		C1A300D4CDE8E8345AD32FF3 /* ~/modules/rosic */ /* rosic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rosic; path = "~/modules/rosic"; sourceTree = "<absolute>"; };
+		C3E6D489C63258F10E9B01B0 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/FileInputOutput.h */ /* FileInputOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FileInputOutput.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/FileInputOutput.h; sourceTree = SOURCE_ROOT; };
+		C5491F704A88ED43ED750F42 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/SystemInformation.cpp */ /* SystemInformation.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = SystemInformation.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/SystemInformation.cpp; sourceTree = SOURCE_ROOT; };
+		C55D926335DCF62A0085F7F4 /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.cpp */ /* PerformanceTestsRSLib.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PerformanceTestsRSLib.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTestsRSLib.cpp; sourceTree = SOURCE_ROOT; };
+		C5EA9D8D63B79C2B23E82113 /* ../../Source/PerformanceTests/PerformanceTests.h */ /* PerformanceTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PerformanceTests.h; path = ../../Source/PerformanceTests/PerformanceTests.h; sourceTree = SOURCE_ROOT; };
+		C6C3FFA114581241EED20AF7 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/FileStream.h */ /* FileStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FileStream.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/FileStream.h; sourceTree = SOURCE_ROOT; };
+		C76709F04E80F0F1FF5A43BB /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/ModalExperiments.h */ /* ModalExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ModalExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/ModalExperiments.h; sourceTree = SOURCE_ROOT; };
+		C81C40109A025EC4E70AD996 /* ../../Source/Misc/Misc.h */ /* Misc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Misc.h; path = ../../Source/Misc/Misc.h; sourceTree = SOURCE_ROOT; };
+		C92CD42BF5442F411A6687E4 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Range.h */ /* Range.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Range.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Range.h; sourceTree = SOURCE_ROOT; };
+		CB4928CF77E3F82E024D6C4E /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/ConstantDefinitions.h */ /* ConstantDefinitions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ConstantDefinitions.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/ConstantDefinitions.h; sourceTree = SOURCE_ROOT; };
+		CBB26BA50373CADB8EA0AFB2 /* ../../Source/rosic_tests/PortedFromRSLib/UnUsedTestsRSLib.h */ /* UnUsedTestsRSLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnUsedTestsRSLib.h; path = ../../Source/rosic_tests/PortedFromRSLib/UnUsedTestsRSLib.h; sourceTree = SOURCE_ROOT; };
+		CDAA11E393BE76471688DAD2 /* ../../Source/rapt_tests/UnitTests/MiscUnitTests.cpp */ /* MiscUnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MiscUnitTests.cpp; path = ../../Source/rapt_tests/UnitTests/MiscUnitTests.cpp; sourceTree = SOURCE_ROOT; };
+		D2236B4549A72DF34A03F258 /* ../../JuceLibraryCode/include_rapt.cpp */ /* include_rapt.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_rapt.cpp; path = ../../JuceLibraryCode/include_rapt.cpp; sourceTree = SOURCE_ROOT; };
+		D2D4A05C60820DCAB6C16486 /* ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/MiscAudioTests.h */ /* MiscAudioTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MiscAudioTests.h; path = ../../Source/rosic_tests/PortedFromRSLib/PerformanceTests/MiscAudioTests.h; sourceTree = SOURCE_ROOT; };
+		D466467A648E82D1E7F19520 /* ~/modules/romos */ /* romos */ = {isa = PBXFileReference; lastKnownFileType = folder; name = romos; path = "~/modules/romos"; sourceTree = "<absolute>"; };
+		D6EEB8480A5F0FA3D92B9B2B /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/ErrorHandling.cpp */ /* ErrorHandling.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ErrorHandling.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/ErrorHandling.cpp; sourceTree = SOURCE_ROOT; };
+		D730A15D7913172381803663 /* ../../Source/rosic_tests/rosic_NonRealTimeTests.cpp */ /* rosic_NonRealTimeTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rosic_NonRealTimeTests.cpp; path = ../../Source/rosic_tests/rosic_NonRealTimeTests.cpp; sourceTree = SOURCE_ROOT; };
+		D8573EB7324C17482A83D5D3 /* ../../Source/rapt_tests/UnitTests/UnitTestsRapt.cpp */ /* UnitTestsRapt.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = UnitTestsRapt.cpp; path = ../../Source/rapt_tests/UnitTests/UnitTestsRapt.cpp; sourceTree = SOURCE_ROOT; };
+		DA53637351E08BF16F336C87 /* ConsoleApp */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestsRosicAndRapt; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCBCBB76B076D6B4AE1142FC /* ../../Source/UnitTests/UnitTests.cpp */ /* UnitTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = UnitTests.cpp; path = ../../Source/UnitTests/UnitTests.cpp; sourceTree = SOURCE_ROOT; };
+		DCFC13868E12CA6F524F9DDF /* ../../Source/rosic_tests/rosic_EffectsTests.cpp */ /* rosic_EffectsTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rosic_EffectsTests.cpp; path = ../../Source/rosic_tests/rosic_EffectsTests.cpp; sourceTree = SOURCE_ROOT; };
+		DD768B63A1C9A7BAE2439754 /* ../../Source/rosic_tests/rosic_FileTests.cpp */ /* rosic_FileTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rosic_FileTests.cpp; path = ../../Source/rosic_tests/rosic_FileTests.cpp; sourceTree = SOURCE_ROOT; };
+		DF6C5AC9F0078FD6E1A999C1 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/FileStream.cpp */ /* FileStream.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FileStream.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/FileStream.cpp; sourceTree = SOURCE_ROOT; };
+		DFE107F17470B0CA06BA36D6 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Array.h */ /* Array.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Array.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/Array.h; sourceTree = SOURCE_ROOT; };
+		E2A58AF345B7B23F4546AB8C /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/FileInputOutput.cpp */ /* FileInputOutput.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FileInputOutput.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/FileInputOutput.cpp; sourceTree = SOURCE_ROOT; };
+		E3C79F68B9FAC280CC447B6B /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/RSCore.h */ /* RSCore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RSCore.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/RSCore.h; sourceTree = SOURCE_ROOT; };
+		E3E03C77A05B9700C40FA07A /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/List.h */ /* List.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = List.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Containers/List.h; sourceTree = SOURCE_ROOT; };
+		E518753119B87BEABF4456B3 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/OscillatorExperiments.h */ /* OscillatorExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OscillatorExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/OscillatorExperiments.h; sourceTree = SOURCE_ROOT; };
+		E687C07CA16E136C55A6D8F1 /* ../../Source/rosic_tests/PortedFromRSLib/UnitTestsRSLib.cpp */ /* UnitTestsRSLib.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = UnitTestsRSLib.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/UnitTestsRSLib.cpp; sourceTree = SOURCE_ROOT; };
+		E92F128294461467F6588E87 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/WaveFile.cpp */ /* WaveFile.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = WaveFile.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Files/WaveFile.cpp; sourceTree = SOURCE_ROOT; };
+		E93767196D1E36C7E27E165C /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Logger.cpp */ /* Logger.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Logger.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Misc/Logger.cpp; sourceTree = SOURCE_ROOT; };
+		EA36847B31BDAB798AEA7172 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/AnalysisExperiments.cpp */ /* AnalysisExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = AnalysisExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/AnalysisExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		EAF101374E835E81E407A874 /* ../../JuceLibraryCode/include_rosic.cpp */ /* include_rosic.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_rosic.cpp; path = ../../JuceLibraryCode/include_rosic.cpp; sourceTree = SOURCE_ROOT; };
+		EEE31173F19240C415558108 /* ../../Source/rosic_tests/rosic_BasicsTests.cpp */ /* rosic_BasicsTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = rosic_BasicsTests.cpp; path = ../../Source/rosic_tests/rosic_BasicsTests.cpp; sourceTree = SOURCE_ROOT; };
+		F6109DF096BE124BE5982BF9 /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/Setup.h */ /* Setup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Setup.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Definitions/Setup.h; sourceTree = SOURCE_ROOT; };
+		F6D68916DDA11F69C3D37400 /* ../../Source/rosic_tests/PortedFromRSLib/ExperimentsRSLib.h */ /* ExperimentsRSLib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ExperimentsRSLib.h; path = ../../Source/rosic_tests/PortedFromRSLib/ExperimentsRSLib.h; sourceTree = SOURCE_ROOT; };
+		F78B3A77A8561458AC199E24 /* ../../Source/rapt_tests/Experiments/GeneratorExperiments.cpp */ /* GeneratorExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GeneratorExperiments.cpp; path = ../../Source/rapt_tests/Experiments/GeneratorExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		F94C7766ECA96C2068D5C362 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/PartialExtractionExperiments.h */ /* PartialExtractionExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PartialExtractionExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/PartialExtractionExperiments.h; sourceTree = SOURCE_ROOT; };
+		FAB110BF84BC243FB7AC35E4 /* ../../Source/rapt_tests/Experiments/FilterExperiments.cpp */ /* FilterExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = FilterExperiments.cpp; path = ../../Source/rapt_tests/Experiments/FilterExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		FDB02CB4561E682B7CA2080C /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/FilterExperiments.h */ /* FilterExperiments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = FilterExperiments.h; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/FilterExperiments.h; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B6648253504110DFEC8FF935 = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		009CFA32A34379AA7B1CABB1 /* PerformanceTests */ = {
+			isa = PBXGroup;
+			children = (
+				461E25E72206EF125145877D,
+				761B6BE373C9009CE4ACAF64,
+				1EC39954B08CD7482AFEBDF2,
+			);
+			name = PerformanceTests;
+			sourceTree = "<group>";
+		};
+		009F0B0E7A3DAB1C0D1DFE8B /* JUCE Modules */ = {
+			isa = PBXGroup;
+			children = (
+				31703B4981F10DC2C28F6BB4,
+				D466467A648E82D1E7F19520,
+				C1A300D4CDE8E8345AD32FF3,
+				9CED56DF54A12DC7E7F314E7,
+			);
+			name = "JUCE Modules";
+			sourceTree = "<group>";
+		};
+		1681A262BAD637C9E9DDA965 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2019A7DD0018D558BB975E75 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				AD4F872F6B390619E019AEA0,
+				009F0B0E7A3DAB1C0D1DFE8B,
+				6598DAFFCACF5E0747E5D714,
+				BEDF690941070976B3C0B228,
+				1681A262BAD637C9E9DDA965,
+				742D3AB547A40618903249C7,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		218121C6BC4C36752FDD8F18 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				2CC238AB14C39B7C0084DC67,
+				46501819F0F871640FE4C4FB,
+				B70FE679AA7909DD455AD09B,
+				2D557C1FD50EF89F347896B5,
+				4B09C7ED48F226F34886EC92,
+				38DCC82E0641AF901E5EF6EA,
+				50167A2A74B9A63966F2F572,
+				68CE5A1C8171DB8A14B88919,
+				A8C606AE62883023F93D5DFE,
+				30EF6D82E872DB41915343B2,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
+		369DDF9C2EBDA30652CFA736 /* UnitTests */ = {
+			isa = PBXGroup;
+			children = (
+				4B1F12C3508CBFF98D0D1B5E,
+				A7E9C37D23574423477AD0FF,
+				88A03998152C8B464C2F8097,
+				9C97255903F085AE90D8BB3D,
+				7186907C8B38C69CBDBE465F,
+				16E6BD249C4694AC4EE7DEF9,
+				007CD0A33864106F23BDE9D1,
+				862D14795CE08B6C117DF4DB,
+				A5CE368647CC355741AD5D7A,
+				1E176D0450A5E3496CACE44D,
+				CDAA11E393BE76471688DAD2,
+				D8573EB7324C17482A83D5D3,
+			);
+			name = UnitTests;
+			sourceTree = "<group>";
+		};
+		46367B0309278EBB3B45148F /* Examples */ = {
+			isa = PBXGroup;
+			children = (
+				84CDD9FB7ADA6748585E6DC7,
+				41217E9C02172B32B61AA471,
+				4B9E11E7B91660AD8A827BEB,
+				02B8083E6834D8F5E2A18883,
+			);
+			name = Examples;
+			sourceTree = "<group>";
+		};
+		46BE310DC75C077FDCBBCAD6 /* Definitions */ = {
+			isa = PBXGroup;
+			children = (
+				CB4928CF77E3F82E024D6C4E,
+				60F83F7424BB6882C1D97839,
+				F6109DF096BE124BE5982BF9,
+				3EAD02E8E448C57E69EFF5D4,
+				7039FE0BD8DC7EAF35DC2769,
+			);
+			name = Definitions;
+			sourceTree = "<group>";
+		};
+		5766606C5B0F0C29ECE220F8 /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				7CEBDD0834F546659E8EC16F,
+				666852EF78AEC0B9C93D8583,
+				E2A58AF345B7B23F4546AB8C,
+				C3E6D489C63258F10E9B01B0,
+				DF6C5AC9F0078FD6E1A999C1,
+				C6C3FFA114581241EED20AF7,
+				E92F128294461467F6588E87,
+				32451C05C156426B2ECD109C,
+			);
+			name = Files;
+			sourceTree = "<group>";
+		};
+		61EC31091915FA772874BF09 /* Experiments */ = {
+			isa = PBXGroup;
+			children = (
+				FAB110BF84BC243FB7AC35E4,
+				F78B3A77A8561458AC199E24,
+				0531A27680CE9E6DB8E2736F,
+				75DCE7F786E548E8EB58BC40,
+				797055AD6BFA0F4FBABA0A49,
+				6B0FBC688808AB3D49740333,
+			);
+			name = Experiments;
+			sourceTree = "<group>";
+		};
+		64EFC8BFCD889C05A9321982 /* PerformanceTests */ = {
+			isa = PBXGroup;
+			children = (
+				B0519FEE0B1A4B872C5701D9,
+				C5EA9D8D63B79C2B23E82113,
+			);
+			name = PerformanceTests;
+			sourceTree = "<group>";
+		};
+		6598DAFFCACF5E0747E5D714 /* JUCE Library Code */ = {
+			isa = PBXGroup;
+			children = (
+				6C76ADF12D8392C8C1D41FC5,
+				D2236B4549A72DF34A03F258,
+				926C9F678516B38CDF2959F8,
+				69B5FBEC6A5C26B5AC0EC685,
+				EAF101374E835E81E407A874,
+				AD6B1E0F5BBCBEFBFB4AD2CD,
+				979DD4451C4180F55D978E0A,
+			);
+			name = "JUCE Library Code";
+			sourceTree = "<group>";
+		};
+		742D3AB547A40618903249C7 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DA53637351E08BF16F336C87,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		74BA144A15163C855B8F361C /* PerformanceTests */ = {
+			isa = PBXGroup;
+			children = (
+				64CFFDBDEAE7AC4082492C99,
+				3F33275066C59411B4850104,
+				2A09EF6920B624257D42E620,
+				1CAD47A95988294A312875F7,
+				1B03FBF6C86A2C74BDB1AA6A,
+				44170EC5818FF0CEEC0EFC59,
+				074BA7C0FB9F8CF4EF632190,
+				D2D4A05C60820DCAB6C16486,
+				1607CB47C33E3409F56D2E15,
+				3CCD7F65F906CF7F705F3D85,
+			);
+			name = PerformanceTests;
+			sourceTree = "<group>";
+		};
+		76D00C5D05AF34A6A4285167 /* PortedFromRSLib */ = {
+			isa = PBXGroup;
+			children = (
+				48013E12FDCC03B34F51394D,
+				CBB26BA50373CADB8EA0AFB2,
+				DAEDDF1E9CEDBF2A27D21CC1,
+				28EF555365FB48D2C169107A,
+				A529D9EC03B0A2BCEF6AE0E9,
+				A13906CA451B07BA9F89604C,
+				F6D68916DDA11F69C3D37400,
+				C55D926335DCF62A0085F7F4,
+				26C1987CEDB3E7CCF102367E,
+				E687C07CA16E136C55A6D8F1,
+				0B42F05C551BA64705ACB3D8,
+				BB0A6964F5ABA0D5C8636DE2,
+				74BA144A15163C855B8F361C,
+				7BF1A7477B31CF4A4B992F7C,
+				46367B0309278EBB3B45148F,
+			);
+			name = PortedFromRSLib;
+			sourceTree = "<group>";
+		};
+		7BF1A7477B31CF4A4B992F7C /* Experiments */ = {
+			isa = PBXGroup;
+			children = (
+				EA36847B31BDAB798AEA7172,
+				7D43BF1E1262754E5B90BDC1,
+				1C97D13DADB5BD723CBFCE81,
+				8AD5C576B600E719ACE281DB,
+				08754940B5F387438B87941F,
+				43D9AB08A04B6B7DDD4BBAE3,
+				1B06B892830C2265B579DB5C,
+				3D31391C57A98D5A93F1C1AC,
+				FDB02CB4561E682B7CA2080C,
+				98ECA2FB4368A3D12494C28F,
+				41CECB95FDAC0B47CFF98D71,
+				9C9EC5BFB991AF03DDF4BB78,
+				44C4231C39054584FBA89749,
+				176F629FFF5CE718626231F5,
+				C76709F04E80F0F1FF5A43BB,
+				ABFCC2AE5AB1B6FAA83B2B93,
+				A405EDE1696605F139E3E87E,
+				B14AB9AEEFB6D743DE6A9B00,
+				E518753119B87BEABF4456B3,
+				1A1FF67DFDBF46543F17DF86,
+				F94C7766ECA96C2068D5C362,
+				75B45FBC12525CF60A417A7B,
+				02DDE78B24C3F355AE46DDC7,
+				4200537010208A235907D7CD,
+				727116DAB97C420BDCAEA912,
+				6315F68F833E67B2B5498442,
+				21BDE8754B3007B8D442EED5,
+				34985B04580C476535AEB246,
+				B8479E71CBF5443A98134144,
+			);
+			name = Experiments;
+			sourceTree = "<group>";
+		};
+		8709E4A765C997C17420DA9B /* Experiments */ = {
+			isa = PBXGroup;
+			children = (
+				22F56D67A25C6E980741550B,
+				50371B1A3E2C818358A47657,
+				509C137E7884B1402DB64EE8,
+				A516EB8D0213F8DD27507BA8,
+			);
+			name = Experiments;
+			sourceTree = "<group>";
+		};
+		884E057AE14290EE50D97629 /* rosic_tests */ = {
+			isa = PBXGroup;
+			children = (
+				76D00C5D05AF34A6A4285167,
+				87578C2D8F8C445077443BE1,
+				EEE31173F19240C415558108,
+				A504B10116B0931963552E38,
+				DCFC13868E12CA6F524F9DDF,
+				DD768B63A1C9A7BAE2439754,
+				6BD9A064F1A6DC7B4BC92CA5,
+				43B0A541138EB7034F42ABA8,
+				C03D560A1F4C5D25E4712814,
+				69F2C5A4B6A65708B68C4227,
+				D730A15D7913172381803663,
+				B8F69A9F48FC1608479C24B1,
+				040C7AA7BAE7EC17AAD37AEE,
+				1515B4D2DF6DAC1D9B3C42D1,
+				05D1C85316D99E8EE34B4C51,
+				0225E089503EA658FE8F2377,
+			);
+			name = rosic_tests;
+			sourceTree = "<group>";
+		};
+		8ABBA00328F2D3C7C62A1E7A /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				7F44DEA1DC506EBD77B6E9AE,
+				6B82FEF12FDE8E0F08AFA69E,
+				0EF52DA173C1E2BF7DF34ACB,
+				45CECF36114BBB3C3FCB07C9,
+				34A667FB55AC2D394B0D7B15,
+				512339140D8FC8D6E41EAC90,
+				0D8E93A0B16F59EAB2FC64F6,
+				3D38E46658B7998DC79D75F4,
+			);
+			name = Text;
+			sourceTree = "<group>";
+		};
+		8B733865DD5BE84460F15693 /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				7A4AEC915A393CE8BDEA3AF5,
+				B112FBD07BE0E2AD39D7B1B5,
+				64EFC8BFCD889C05A9321982,
+				FCEA5819381F2D61289D752A,
+				B287276D6FA73EBBAA5D9616,
+				8709E4A765C997C17420DA9B,
+				884E057AE14290EE50D97629,
+				143C9C82CD6907E110AB5A67,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		926B6FA6E73B38C5B24BB3E5 /* Containers */ = {
+			isa = PBXGroup;
+			children = (
+				DFE107F17470B0CA06BA36D6,
+				0BF4A895A78A1038E4E5493D,
+				6F6A60A0ADCDEFB644F8BD2B,
+				1B12FFC0AB133F1A8F9AF619,
+				6F461688295EEA38E53D47BD,
+				E3E03C77A05B9700C40FA07A,
+				C92CD42BF5442F411A6687E4,
+				2182ED301BEF1F950D9731B1,
+			);
+			name = Containers;
+			sourceTree = "<group>";
+		};
+		A7E9C37D23574423477AD0FF /* Math */ = {
+			isa = PBXGroup;
+			children = (
+				55A7D8C11070302D93740949,
+				88F53FEEA612C0ECF9DB5C3D,
+				A1BE562D2F9826EBB33F86AC,
+				529E3036BD5924762356E730,
+				3CF38E99715675637B8919CC,
+				0DD44E29DDE0790E7A088620,
+				41205D80E7960632026112D1,
+				605914F241B6B8254E616464,
+				1DC80EA032879A6E112815F8,
+				4279A9CBBDE2D4387E3DEB69,
+				54753493A56D9680978A2758,
+				3EC0A55020F21C0038AEAE61,
+				6894AB5222937B83AD93A745,
+				85793761541BF9A22E112411,
+				06F5B6674DB0556E473BDA98,
+			);
+			name = Math;
+			sourceTree = "<group>";
+		};
+		AD4F872F6B390619E019AEA0 /* TestsRosicAndRapt */ = {
+			isa = PBXGroup;
+			children = (
+				8B733865DD5BE84460F15693,
+			);
+			name = TestsRosicAndRapt;
+			sourceTree = "<group>";
+		};
+		B112FBD07BE0E2AD39D7B1B5 /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				A822338188B2D2E5BF6D9F41,
+				C81C40109A025EC4E70AD996,
+			);
+			name = Misc;
+			sourceTree = "<group>";
+		};
+		B287276D6FA73EBBAA5D9616 /* rapt_tests */ = {
+			isa = PBXGroup;
+			children = (
+				203B1AECBFC671E5B0653D47,
+				369DDF9C2EBDA30652CFA736,
+				009CFA32A34379AA7B1CABB1,
+				61EC31091915FA772874BF09,
+			);
+			name = rapt_tests;
+			sourceTree = "<group>";
+		};
+		B2C510AD28281F3828D1ED9D /* Misc */ = {
+			isa = PBXGroup;
+			children = (
+				85C9787DB15E2897B61FA82B,
+				D6EEB8480A5F0FA3D92B9B2B,
+				8BA59C113018B81A0F939A55,
+				E93767196D1E36C7E27E165C,
+				0C4F5D199B15471001F1DCBD,
+				149CDEDA5B5219489AD73C2D,
+				7D57F5AA829CDF26FAEF14D4,
+				C5491F704A88ED43ED750F42,
+				1F929012E78CA9A40F66A62B,
+			);
+			name = Misc;
+			sourceTree = "<group>";
+		};
+		BB0A6964F5ABA0D5C8636DE2 /* UnitTests */ = {
+			isa = PBXGroup;
+			children = (
+				3A1EDE12BA768CDFF2F18AD3,
+				B2D258654D05CEC3A9AA57EA,
+				564528ADB103DAC200F8BF10,
+				14AAEF27AD3FDCC4584353D6,
+				A29874B3E8E84EC80B9B9908,
+				6A13CC3BAA253143EAC4D6FC,
+			);
+			name = UnitTests;
+			sourceTree = "<group>";
+		};
+		BEDF690941070976B3C0B228 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				1D8466D79E87018077DD65DC,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		DAEDDF1E9CEDBF2A27D21CC1 /* RSLib */ = {
+			isa = PBXGroup;
+			children = (
+				F3B60067A1962E6808474A7B,
+			);
+			name = RSLib;
+			sourceTree = "<group>";
+		};
+		F3B60067A1962E6808474A7B /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				926B6FA6E73B38C5B24BB3E5,
+				46BE310DC75C077FDCBBCAD6,
+				5766606C5B0F0C29ECE220F8,
+				B2C510AD28281F3828D1ED9D,
+				8ABBA00328F2D3C7C62A1E7A,
+				218121C6BC4C36752FDD8F18,
+				3B9749309344BFA662964C48,
+				E3C79F68B9FAC280CC447B6B,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
+		FCEA5819381F2D61289D752A /* UnitTests */ = {
+			isa = PBXGroup;
+			children = (
+				DCBCBB76B076D6B4AE1142FC,
+			);
+			name = UnitTests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		968E98FAF4D148D740C33E43 /* TestsRosicAndRapt - ConsoleApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE3864F8798FCA901DAA6A82;
+			buildPhases = (
+				163084B01027987F9B8117E2,
+				8A1A506530F39BC33B567CE8,
+				B6648253504110DFEC8FF935,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "TestsRosicAndRapt - ConsoleApp";
+			productName = TestsRosicAndRapt;
+			productReference = DA53637351E08BF16F336C87;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		DD3FF3CC4410D65D2E927B21 = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1240;
+				ORGANIZATIONNAME = "";
+			};
+			buildConfigurationList = 11005F42A13972EB6B6CB307;
+			compatibilityVersion = "Xcode 3.2";
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 2019A7DD0018D558BB975E75;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				968E98FAF4D148D740C33E43,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		163084B01027987F9B8117E2 = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				10D17AAF69E8ED354E29E9AE,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8A1A506530F39BC33B567CE8 = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5987762DFAC0F06D2C55AB38,
+				192E57FA2D25B013959DD648,
+				E8F33A3C520F2790D53A588B,
+				8C826A941E6933DB5B3F5CBA,
+				53900367193CA98EF368FA35,
+				2B4E8CF40E3496957DD37686,
+				83576A2CFF0E49D0D3B3382D,
+				7806CA3808034EF240747CD3,
+				72EDC5EED9E5E93AD33B0D5F,
+				94679D8D785661D249E13298,
+				78DB2D37D2B21E3303570715,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		176AC9CC466EABCF98B62341 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = NO;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PRODUCT_NAME = "TestsRosicAndRapt";
+				SDKROOT = macosx;
+				WARNING_CFLAGS = "-Wreorder";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		34237BED2DFB688967896968 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_DEBUG=1",
+					"DEBUG=1",
+					"DONT_SET_USING_JUCE_NAMESPACE=1",
+					"RS_PLOTTING=1",
+					"JUCER_XCODE_MAC_F6D2F4CF=1",
+					"JUCE_APP_VERSION=1.0.0",
+					"JUCE_APP_VERSION_HEX=0x10000",
+					"JucePlugin_Build_VST=0",
+					"JucePlugin_Build_VST3=0",
+					"JucePlugin_Build_AU=0",
+					"JucePlugin_Build_AUv3=0",
+					"JucePlugin_Build_RTAS=0",
+					"JucePlugin_Build_AAX=0",
+					"JucePlugin_Build_Standalone=0",
+					"JucePlugin_Build_Unity=0",
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode",
+					"$(SRCROOT)/~/modules",
+					"$(inherited)",
+				);
+				INSTALL_PATH = "/usr/bin";
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/~/modules";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestsRosicAndRapt;
+				PRODUCT_NAME = "TestsRosicAndRapt";
+				USE_HEADERMAP = NO;
+				VALID_ARCHS = "i386 x86_64 arm64 arm64e";
+			};
+			name = Debug;
+		};
+		492A5126845666606FC850C7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "";
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = NO;
+				GCC_C_LANGUAGE_STANDARD = c11;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
+				GCC_WARN_MISSING_PARENTHESES = YES;
+				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "TestsRosicAndRapt";
+				SDKROOT = macosx;
+				WARNING_CFLAGS = "-Wreorder";
+				ZERO_LINK = NO;
+			};
+			name = Debug;
+		};
+		FAFBEC9BC1BE336DDE38CDB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++11";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_LINK_OBJC_RUNTIME = NO;
+				CODE_SIGN_IDENTITY = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
+				DEAD_CODE_STRIPPING = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"_NDEBUG=1",
+					"NDEBUG=1",
+					"DONT_SET_USING_JUCE_NAMESPACE=1",
+					"RS_PLOTTING=1",
+					"JUCER_XCODE_MAC_F6D2F4CF=1",
+					"JUCE_APP_VERSION=1.0.0",
+					"JUCE_APP_VERSION_HEX=0x10000",
+					"JucePlugin_Build_VST=0",
+					"JucePlugin_Build_VST3=0",
+					"JucePlugin_Build_AU=0",
+					"JucePlugin_Build_AUv3=0",
+					"JucePlugin_Build_RTAS=0",
+					"JucePlugin_Build_AAX=0",
+					"JucePlugin_Build_Standalone=0",
+					"JucePlugin_Build_Unity=0",
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../JuceLibraryCode",
+					"$(SRCROOT)/~/modules",
+					"$(inherited)",
+				);
+				INSTALL_PATH = "/usr/bin";
+				LLVM_LTO = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/~/modules";
+				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestsRosicAndRapt;
+				PRODUCT_NAME = "TestsRosicAndRapt";
+				USE_HEADERMAP = NO;
+				VALID_ARCHS = "i386 x86_64 arm64 arm64e";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		11005F42A13972EB6B6CB307 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				176AC9CC466EABCF98B62341,
+				492A5126845666606FC850C7,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		AE3864F8798FCA901DAA6A82 = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				34237BED2DFB688967896968,
+				FAFBEC9BC1BE336DDE38CDB0,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = DD3FF3CC4410D65D2E927B21 /* Project object */;
+}

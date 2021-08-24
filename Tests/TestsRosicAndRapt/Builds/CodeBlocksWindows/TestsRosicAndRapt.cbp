@@ -15,23 +15,23 @@
         <Option type="1"/>
         <Option compiler="gcc"/>
         <Compiler>
-          <Add option="-D__MINGW__=1"/>
+          <Add option="-D__MINGW__=&quot;1&quot;"/>
           <Add option="-D__MINGW_EXTENSION="/>
-          <Add option="-DDEBUG=1"/>
-          <Add option="-D_DEBUG=1"/>
-          <Add option="-DDONT_SET_USING_JUCE_NAMESPACE=1"/>
-          <Add option="-DRS_PLOTTING=1"/>
-          <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=1"/>
-          <Add option="-DJUCE_APP_VERSION=1.0.0"/>
-          <Add option="-DJUCE_APP_VERSION_HEX=0x10000"/>
-          <Add option="-DJucePlugin_Build_VST=0"/>
-          <Add option="-DJucePlugin_Build_VST3=0"/>
-          <Add option="-DJucePlugin_Build_AU=0"/>
-          <Add option="-DJucePlugin_Build_AUv3=0"/>
-          <Add option="-DJucePlugin_Build_RTAS=0"/>
-          <Add option="-DJucePlugin_Build_AAX=0"/>
-          <Add option="-DJucePlugin_Build_Standalone=0"/>
-          <Add option="-DJucePlugin_Build_Unity=0"/>
+          <Add option="-DDEBUG=&quot;1&quot;"/>
+          <Add option="-D_DEBUG=&quot;1&quot;"/>
+          <Add option="-DDONT_SET_USING_JUCE_NAMESPACE=&quot;1&quot;"/>
+          <Add option="-DRS_PLOTTING=&quot;1&quot;"/>
+          <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=&quot;1&quot;"/>
+          <Add option="-DJUCE_APP_VERSION=&quot;1.0.0&quot;"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=&quot;0x10000&quot;"/>
+          <Add option="-DJucePlugin_Build_VST=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_VST3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AU=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AUv3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_RTAS=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AAX=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Standalone=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Unity=&quot;0&quot;"/>
           <Add option="-m64"/>
           <Add option="-O0"/>
           <Add option="-std=c++11"/>
@@ -54,22 +54,22 @@
         <Option type="1"/>
         <Option compiler="gcc"/>
         <Compiler>
-          <Add option="-D__MINGW__=1"/>
+          <Add option="-D__MINGW__=&quot;1&quot;"/>
           <Add option="-D__MINGW_EXTENSION="/>
-          <Add option="-DNDEBUG=1"/>
-          <Add option="-DDONT_SET_USING_JUCE_NAMESPACE=1"/>
-          <Add option="-DRS_PLOTTING=1"/>
-          <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=1"/>
-          <Add option="-DJUCE_APP_VERSION=1.0.0"/>
-          <Add option="-DJUCE_APP_VERSION_HEX=0x10000"/>
-          <Add option="-DJucePlugin_Build_VST=0"/>
-          <Add option="-DJucePlugin_Build_VST3=0"/>
-          <Add option="-DJucePlugin_Build_AU=0"/>
-          <Add option="-DJucePlugin_Build_AUv3=0"/>
-          <Add option="-DJucePlugin_Build_RTAS=0"/>
-          <Add option="-DJucePlugin_Build_AAX=0"/>
-          <Add option="-DJucePlugin_Build_Standalone=0"/>
-          <Add option="-DJucePlugin_Build_Unity=0"/>
+          <Add option="-DNDEBUG=&quot;1&quot;"/>
+          <Add option="-DDONT_SET_USING_JUCE_NAMESPACE=&quot;1&quot;"/>
+          <Add option="-DRS_PLOTTING=&quot;1&quot;"/>
+          <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=&quot;1&quot;"/>
+          <Add option="-DJUCE_APP_VERSION=&quot;1.0.0&quot;"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=&quot;0x10000&quot;"/>
+          <Add option="-DJucePlugin_Build_VST=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_VST3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AU=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AUv3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_RTAS=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AAX=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Standalone=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Unity=&quot;0&quot;"/>
           <Add option="-m64"/>
           <Add option="-O3"/>
           <Add option="-std=c++11"/>
@@ -92,23 +92,23 @@
         <Option type="1"/>
         <Option compiler="gcc"/>
         <Compiler>
-          <Add option="-D__MINGW__=1"/>
+          <Add option="-D__MINGW__=&quot;1&quot;"/>
           <Add option="-D__MINGW_EXTENSION="/>
-          <Add option="-DDEBUG=1"/>
-          <Add option="-D_DEBUG=1"/>
-          <Add option="-DDONT_SET_USING_JUCE_NAMESPACE=1"/>
-          <Add option="-DRS_PLOTTING=1"/>
-          <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=1"/>
-          <Add option="-DJUCE_APP_VERSION=1.0.0"/>
-          <Add option="-DJUCE_APP_VERSION_HEX=0x10000"/>
-          <Add option="-DJucePlugin_Build_VST=0"/>
-          <Add option="-DJucePlugin_Build_VST3=0"/>
-          <Add option="-DJucePlugin_Build_AU=0"/>
-          <Add option="-DJucePlugin_Build_AUv3=0"/>
-          <Add option="-DJucePlugin_Build_RTAS=0"/>
-          <Add option="-DJucePlugin_Build_AAX=0"/>
-          <Add option="-DJucePlugin_Build_Standalone=0"/>
-          <Add option="-DJucePlugin_Build_Unity=0"/>
+          <Add option="-DDEBUG=&quot;1&quot;"/>
+          <Add option="-D_DEBUG=&quot;1&quot;"/>
+          <Add option="-DDONT_SET_USING_JUCE_NAMESPACE=&quot;1&quot;"/>
+          <Add option="-DRS_PLOTTING=&quot;1&quot;"/>
+          <Add option="-DJUCER_CODEBLOCKS_WINDOWS_8F9AFD66=&quot;1&quot;"/>
+          <Add option="-DJUCE_APP_VERSION=&quot;1.0.0&quot;"/>
+          <Add option="-DJUCE_APP_VERSION_HEX=&quot;0x10000&quot;"/>
+          <Add option="-DJucePlugin_Build_VST=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_VST3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AU=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AUv3=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_RTAS=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_AAX=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Standalone=&quot;0&quot;"/>
+          <Add option="-DJucePlugin_Build_Unity=&quot;0&quot;"/>
           <Add option="-m32"/>
           <Add option="-O0"/>
           <Add option="-std=c++11"/>
@@ -1686,20 +1686,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Basic/SmoothingFilter.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Musical/LadderFilter - Copy.cpp">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rapt/Filters/Musical/LadderFilter - Copy.h">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
@@ -10527,13 +10513,6 @@
       <Option link="0"/>
     </Unit>
     <Unit filename="../../../../Libraries/RobsJuceModules/rosic/unfinished/rosic_QuadSource.h">
-      <Option target="ConsoleApp | Debug"/>
-      <Option target="ConsoleApp | Release"/>
-      <Option target="ConsoleApp | Debug 32-bit"/>
-      <Option compile="0"/>
-      <Option link="0"/>
-    </Unit>
-    <Unit filename="../../../../Libraries/RobsJuceModules/rosic/unfinished/rosic_SamplerData - Copy.cpp">
       <Option target="ConsoleApp | Debug"/>
       <Option target="ConsoleApp | Release"/>
       <Option target="ConsoleApp | Debug 32-bit"/>
