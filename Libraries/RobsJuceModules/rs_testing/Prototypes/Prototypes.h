@@ -3209,6 +3209,9 @@ public:
 
 //=================================================================================================
 
+/** Subclass of rsLadderFilter with some additional functionality that shall not (yet) go into the
+production version. */
+
 template<class TSig, class TPar>
 class rsLadderTest : public RAPT::rsLadderFilter<TSig, TPar>
 {
@@ -3225,10 +3228,48 @@ public:
   just assigning the coeffs via analytically derived formulas (as the new one does). It's less 
   efficient and less precise than the new one, but nicely demonstrates how rsRationalFunction can 
   be used for such computations. It will produce a function that is formally 8-pole, but features 
-  pole/zero cancellations. ToDo: move this eventually into the prototypes section. */
+  pole/zero cancellations. */
   rsRationalFunction<TPar> getTransferFunctionOld();
 
 };
+
+//=================================================================================================
+
+/** Just for testing, if a class compiles that defines comparison operators with same input 
+parameters but different return types. */
+
+/*
+template<class T>
+class rsOperatorTest
+{
+
+public:
+
+  rsOperatorTest(T a) { v = a; }
+
+
+  inline bool operator<(const rsOperatorTest& b) const 
+  {
+    return (v < b.v);
+  }
+
+  //inline T operator<(const rsOperatorTest& b) const 
+  //{
+  //  if(v < b.v) return T(1);
+  //  else        return T(0);
+  }
+  // Nope - doesn't compile - gives error: "operator redefinition ...". I think, in the simd
+  // classes, the implementation should return a bool which should implement a logical "and" of
+  // all the scalar results. If we need a 0 or 1 of the given type for branchless code, a function
+  // should be used (like compareLess, compareLessOrEqual, etc.)
+
+protected:
+
+  T v = T(0);
+
+};
+*/
+
 
 //=================================================================================================
 // the stuff below is just for playing around - maybe move code elsewhere, like the research-repo:

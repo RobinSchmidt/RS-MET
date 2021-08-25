@@ -395,7 +395,7 @@ template<class T>
 inline T rsPitchToFreqViaPow(T pitch)
 {
   //return T(8.1757989156437073336828122976033 * exp(0.057762265046662109118102676788181 * pitch));
-  return 440.0*( pow(2.0, (pitch-69.0)/12.0) ); // naive, slower but numerically more precise
+  return T(440)*( pow(T(2), (pitch-T(69))/T(12)) ); // naive, slower but numerically more precise
 }
 
 void sinCosPerformance()

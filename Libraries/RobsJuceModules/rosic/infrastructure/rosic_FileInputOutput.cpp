@@ -166,7 +166,7 @@ char* rosic::rsReadStringFromFile(const char *filename)
 
   char *buffer = NULL;
   size_t string_size, read_size;
-  FILE *handler = fopen(filename, "r");
+  FILE *handler = fopen(filename, "r"); // should be named handle, without the r
   if(handler)
   {
     fseek(handler, 0, SEEK_END);  // seek the last byte of the file
@@ -195,7 +195,8 @@ char* rosic::rsReadStringFromFile(const char *filename)
   else
   {
     int l_errno = errno;
-    printf("unable to open '%s': %s (errno=%d)\n", handler, strerror(l_errno), l_errno);
+    RAPT::rsError(strerror(l_errno));
+    //printf("unable to open '%s': %s (errno=%d)\n", handler, strerror(l_errno), l_errno);
     int dummy = 0;
   }
   return buffer;

@@ -2015,7 +2015,16 @@ void simdFilter()
   std::vector<simdVec> vx(N/M), vy(N/M);
   for(int n = 0; n < N/M; n++) 
   {
-    vx[n].set(x[n+0*M], x[n+1*M], x[n+2*M], x[n+3*M]);
+    vx[n][0] = x[n+0*M];
+    vx[n][1] = x[n+1*M];
+    vx[n][2] = x[n+2*M];
+    vx[n][3] = x[n+3*M];
+
+    // Better:
+    //vx[n].set(x[n+0*M], x[n+1*M], x[n+2*M], x[n+3*M]);
+    // But this does not compile when RS_USE_SSE is not defined because ony in the explicit 
+    // specialization we hae such a set function that takes 4 parameters. In the fallback version,
+    // it will perhaps need to be implemented by means of variadic templates
   }
 
   // Filter vectorized x:

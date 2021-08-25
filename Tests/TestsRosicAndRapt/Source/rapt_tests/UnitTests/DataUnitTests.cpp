@@ -994,13 +994,22 @@ bool simdInstantiationUnitTest()
 
   ok &= rsSimdVector<float,  1>::getEmulationLevel() == 0;
   ok &= rsSimdVector<float,  2>::getEmulationLevel() == 1;
+
+#if !defined(RS_NO_SIMD_FLOAT32X4)
   ok &= rsSimdVector<float,  4>::getEmulationLevel() == 0;
   ok &= rsSimdVector<float,  8>::getEmulationLevel() == 1;
   ok &= rsSimdVector<float, 16>::getEmulationLevel() == 2;
+#else
+  ok &= rsSimdVector<float,  4>::getEmulationLevel() == 2;
+  ok &= rsSimdVector<float,  8>::getEmulationLevel() == 3;
+  ok &= rsSimdVector<float, 16>::getEmulationLevel() == 4;
+#endif
+
 
   ok &= rsSimdVector<double, 1>::getEmulationLevel() == 0;
   ok &= rsSimdVector<double, 2>::getEmulationLevel() == 1;
   ok &= rsSimdVector<double, 4>::getEmulationLevel() == 2;
+  // using real simd for float64x2 is not yet implemented
 
   // ToDo: 
   // -the expected outcomes of these tests should later depend on the compiler settings and
@@ -1041,6 +1050,11 @@ bool simdUnitTest()
   ok &= simdFloatUnitTest<double,    16>();  // no
 
   ok &= simdInstantiationUnitTest();
+
+
+  // Test:
+  //using TestClass = rsOperatorTest<double>;
+  //TestClass a(3.0), b(5.0);
 
   return ok;
 }

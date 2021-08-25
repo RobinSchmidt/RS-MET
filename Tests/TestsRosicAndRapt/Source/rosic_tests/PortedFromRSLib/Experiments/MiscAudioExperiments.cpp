@@ -265,19 +265,19 @@ void recursiveCubicSineSweep()  // rename to recursiveCubicSineSweep
 
   // User parameters:
   int N   = 2048;      // number of samples
-  T   fs  = 44100;     // sample rate
-  T   p0  = PI/4;      // start phase
-  T   p1  = PI/4;      // end phase (modulo 2pi)
-  T   f0  = 400;       // start frequency
-  T   f1  = 0;         // end frequency
-  T   a0  = 0.01;      // start amplitude
-  T   a1  = 0.01;      // end amplitude
+  T   fs  = T(44100);  // sample rate
+  T   p0  = T(PI/4);   // start phase
+  T   p1  = T(PI/4);   // end phase (modulo 2pi)
+  T   f0  = T(400);    // start frequency
+  T   f1  = T(0);      // end frequency
+  T   a0  = T(0.01);   // start amplitude
+  T   a1  = T(0.01);   // end amplitude
 
   // Compute polynomial coeffs for phase:
-  T w0  = 2*PI*f0/fs;
-  T w1  = 2*PI*f1/fs;
-  T wm  = 0.5 * (w0 + w1);  // mean omega during segment
-  T tmp = p0 + (N-1)*wm;    // unwrapped end phase should be near this value
+  T w0  = T(2*PI)*f0/fs;
+  T w1  = T(2*PI)*f1/fs;
+  T wm  = T(0.5) * (w0 + w1);  // mean omega during segment
+  T tmp = p0 + (N-1)*wm;       // unwrapped end phase should be near this value
   p1 = rsConsistentUnwrappedValue(tmp, p1, T(0), T(2*PI));
   T coeffsPhs[4];
   fitCubicWithDerivative(T(0), T(N-1), p0, p1, w0, w1, 
@@ -290,8 +290,8 @@ void recursiveCubicSineSweep()  // rename to recursiveCubicSineSweep
   T r0 = (g1 - g0) / T(N-1);
   T r1 = r0;    // "r" for "rise", "f" is already taken for frequency
   //f1 *= 2.5;  // test
-  r0 = 0.01; r1 = -r0;  // test for gaboret
-  //r0 = 0.005; r1 = 0.0;  // test for gaboret
+  r0 = T(0.01); r1 = -r0;  // test for gaboret
+  //r0 = T(0.005); r1 = 0.0;  // test for gaboret
   T coeffsLogAmp[4];
   fitCubicWithDerivative(T(0), T(N-1), g0, g1, r0, r1, 
     &coeffsLogAmp[3], &coeffsLogAmp[2], &coeffsLogAmp[1], &coeffsLogAmp[0]);

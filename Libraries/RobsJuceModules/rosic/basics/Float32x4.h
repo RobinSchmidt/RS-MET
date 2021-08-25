@@ -98,8 +98,8 @@ public:
 
   /** Comparison for equality. For two vectors to be considered equal, all scalar elements must be
   equal. */
-  inline bool operator==(const rsFloat32x4& b) const
-  { return v[0] == b[0] && v[1] == b[1] && v[2] == b[2] && v[3] == b[3]; }
+  //inline bool operator==(const rsFloat32x4& b) const
+  //{ return v[0] == b[0] && v[1] == b[1] && v[2] == b[2] && v[3] == b[3]; }
 
 
 protected:
@@ -273,6 +273,7 @@ public:
 
   /** Comparison for equality. For two vectors to be considered equal, all scalar elements must be
   equal. */
+  /*
   inline bool operator==(const rsFloat32x4& b) const
   {
     float* a = asArray();
@@ -281,10 +282,13 @@ public:
     // todo: check, if there's an intrinsic vector comparison function...
     // check with rsFloat64x2, too - and why there is no stack overflow when using this[0]....
   }
+  */
 
 
   // maybe these operators really should return an rsFloat32x4 - like the agner fog implementation
 
+  /*
+  // drag them out of the class - the implementation is the same in both cases
   inline bool operator<(const rsFloat32x4& b) const
   {
     float* a = asArray();
@@ -308,6 +312,7 @@ public:
     float* a = asArray();
     return a[0] <= b[0] && a[1] <= b[1] && a[2] <= b[2] && a[3] <= b[3];
   }
+  */
 
 
 
@@ -358,16 +363,27 @@ inline rsFloat32x4 rsSqrt(const rsFloat32x4& a) { return _mm_sqrt_ps(a); }
 inline rsFloat32x4 operator+(const rsFloat32x4& a) { return a; }                    // unary plus
 inline rsFloat32x4 operator-(const rsFloat32x4& a) { return rsFloat32x4(0.f) - a; } // unary minus
 
-inline rsFloat32x4 rsClip(const rsFloat32x4& x, const rsFloat32x4& min, const rsFloat32x4& max) { return rsMax(rsMin(x, max), min); }
+// Comparisons:
+inline bool operator< (const rsFloat32x4& a, const rsFloat32x4& b) { return a[0] <  b[0] && a[1] <  b[1] && a[2] <  b[2] && a[3] <  b[3]; }
+inline bool operator<=(const rsFloat32x4& a, const rsFloat32x4& b) { return a[0] <= b[0] && a[1] <= b[1] && a[2] <= b[2] && a[3] <= b[3]; }
+inline bool operator> (const rsFloat32x4& a, const rsFloat32x4& b) { return a[0] >  b[0] && a[1] >  b[1] && a[2] >  b[2] && a[3] >  b[3]; }
+inline bool operator>=(const rsFloat32x4& a, const rsFloat32x4& b) { return a[0] >= b[0] && a[1] >= b[1] && a[2] >= b[2] && a[3] >= b[3]; }
+inline bool operator==(const rsFloat32x4& a, const rsFloat32x4& b) { return a[0] == b[0] && a[1] == b[1] && a[2] == b[2] && a[3] == b[3]; }
+inline bool operator!=(const rsFloat32x4& a, const rsFloat32x4& b) { return !(a == b); }
 
+// Math:
 inline rsFloat32x4 rsExp(const rsFloat32x4& x) { return rsFloat32x4(exp(x[0]), exp(x[1]), exp(x[2]), exp(x[3])); }
 inline rsFloat32x4 rsLog(const rsFloat32x4& x) { return rsFloat32x4(log(x[0]), log(x[1]), log(x[2]), log(x[3])); }
 inline rsFloat32x4 rsSin(const rsFloat32x4& x) { return rsFloat32x4(sin(x[0]), sin(x[1]), sin(x[2]), sin(x[3])); }
 inline rsFloat32x4 rsCos(const rsFloat32x4& x) { return rsFloat32x4(cos(x[0]), cos(x[1]), cos(x[2]), cos(x[3])); }
 inline rsFloat32x4 rsTan(const rsFloat32x4& x) { return rsFloat32x4(tan(x[0]), tan(x[1]), tan(x[2]), tan(x[3])); }
-// simplify this! get rid of a
+
+inline rsFloat32x4 rsClip(const rsFloat32x4& x, const rsFloat32x4& min, const rsFloat32x4& max) { return rsMax(rsMin(x, max), min); }
+
 
 // maybe implement recriprocal and reciprocal sqrt (there are intrinsics for these)
+
+
 
 //=================================================================================================
 // Notes:

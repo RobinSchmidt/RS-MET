@@ -2795,7 +2795,7 @@ void additiveEngine()
   // plot the output:
   //rsPlotVectorsXY(t, xL, xR, amp);
 
-  rosic::writeToStereoWaveFile("Additive.wav", &xL[0], &xR[0], N, sampleRate);
+  rosic::writeToStereoWaveFile("Additive.wav", &xL[0], &xR[0], N, (int)sampleRate);
 
   // Observations:
   // -After the last breakpoint, the output just keeps doing what it was doing before with regard 

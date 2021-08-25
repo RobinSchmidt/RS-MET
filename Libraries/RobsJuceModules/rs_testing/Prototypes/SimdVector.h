@@ -77,8 +77,12 @@ public:
   /** Read access to the i-th element of the vector where i = 0,...,N-1. */
   inline const T& operator[](const int i) const { rsStaticAssert(i >= 0 && i < N); return v[i]; }
   
-  // ToDo: implement a set() function that takes N parameters of type T - maybe we need to
-  // implement this using variadic templates
+  // ToDo: 
+  // -implement a set() function that takes N parameters of type T - maybe we need to
+  //  implement this using variadic templates
+  // -implement some sort rsIfThenElse function taking a scalar predicate and two possible
+  //  result values, to be used like y = rsIfThenElse([](T x) { return x < 0; }, 1.0, 0.0);
+  //  this example would implement y = x < 0 ? 1.0 : 0.0;
 
   /** Returns the level of software emulation that takes place for this particular template 
   instantiation with the current compiler- and preprocessor settings. If the instantiation 
@@ -113,6 +117,15 @@ public:
   /** Comparison for equality. For two vectors to be considered equal, all their scalar elements
   must be equal.  */
   inline bool operator==(CV& b) const { return (lo() == b.lo()) && (hi() == b.hi()); }
+
+
+  //inline bool operator< (CV& b) const { return (lo() <  b.lo()) && (hi() <  b.hi()); }
+  //inline bool operator<=(CV& b) const { return (lo() <= b.lo()) && (hi() <= b.hi()); }
+  //inline bool operator> (CV& b) const { return (lo() >  b.lo()) && (hi() >  b.hi()); }
+  //inline bool operator>=(CV& b) const { return (lo() >= b.lo()) && (hi() >= b.hi()); }
+
+
+
 
   T sum() const 
   { 
@@ -273,6 +286,8 @@ public:
   // maybe v[0] += b.v[0]; rteurn *this;
 
   static int getEmulationLevel() { return 0; }
+
+  T sum() const { return v[0]; }
 
   T v[1];
 };
