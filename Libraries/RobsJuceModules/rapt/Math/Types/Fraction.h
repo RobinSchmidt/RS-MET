@@ -134,6 +134,10 @@ rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
 // -Try to implement reduce and canonicalize in a branchless way to admit T to be a SIMD type. But 
 //  this requires a branchless implementation of rsGcd, or at least an implementation that runs the 
 //  while loop until it has finished for all components.
+// -Maybe represent +inf, -inf, nan as 1/0, -1/0, 0/0 and implement rsIsInf, rsIsNan for rsFraction
+//  ...but this requires even more branching in all arithmetic operators. There's a tradeoff to be 
+//  made between efficiency and feature-set - but this class is not meant for realtime-dsp (that we 
+//  do with floats)
 
 // Notes:
 // -Maybe it's sometimes convenient to keep fractions in unreduced form. It may be easier to spot 

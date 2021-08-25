@@ -4,16 +4,16 @@
 /** A class for representing polynomials and doing computations with them. Much of the code is 
 implemented as static member functions that operate directly on arrays of the type T, so you don't
 have to create an instance of class rsPolynomial to use its functionality. However, for 
-convenience, you may also instantiate polynomial objects and then you can do arithemetic operations
+convenience, you may also instantiate polynomial objects and then you can do arithmetic operations
 with these objects directly, for example writing code like:
 
   rsPolynomial<double> r = p*q;
 
-where p and q are both polynomials and so is r - and the * operator implements polynomial 
-multiplication. But doing it this way is recommended mostly for prototyping only because creating
-polynomials involves dynamic memory allocations. For production (especially real-time) code, it's 
-better to operate on pre-allocated arrays with the static functions - this makes the code harder to 
-read but more efficient.
+where p and q are both polynomials and so is r and the * operator implements polynomial 
+multiplication, i,e. convolution of the coefficient arrays. But doing it this way is recommended 
+only for prototyping because creating polynomials involves dynamic memory allocations. For 
+production (especially real-time) code, it's better to operate on pre-allocated arrays with the 
+static functions. This makes the code harder to read but more efficient and predictable.
 
 There are some static functions that use their own template parameter types independent from the 
 "T" that is used to instantiate the class. That's the case, for example, for functions that expect 
@@ -21,37 +21,8 @@ real inputs and produce complex outputs (like root-finders) which then use "R" f
 and std::complex<R> for the complex type. This is done because this class template should be able
 to be instantiated for real and complex types "T", so using the same template parameter could lead
 to confusion like the compiler using a nested complex type which makes no sense.
-....under construction....tbc...  */
 
-// todo: 
-// -in the low-level function interfaces, use consistently "degree" or "aDeg", "bDeg" etc. 
-//  instead of the generic N, aN, bN etc. to make it clear to the caller that the degree must be 
-//  passed and *NOT* the length of the coefficient array (which is one more than the degree). 
-//  Conflating the two is a constant source of confusion and off-by-one bugs and even heap 
-//  corruptions.
-// -use consistently input arrays as first and output arrays as last parameters for example in
-//  interpolant, fitQuadraticDirect -> this will silenty break client code, so be extra careful to
-//  adapt the code at *every* call site - it should be a consistent pattern through the library:
-//  inputs first, then outputs...hmm - but that doesn't really work well when we want to have some
-//  inputs optional - optional parameters must come last...hmmmm....maybe use:
-//  required inputs, outputs, optional inputs - what about optional outputs? (for example, when we
-//  fill an output-array only when a non-nullptr is passed?)...see what rsArrayTools does...
-//  ...or maybe such an enforced consistency might not be a good idea, after all?
-// -implement greatest common divisor algorithm (maybe the one for the integers can be
-//  used as is?)
-// -implement missing operators:
-//  -operator() that takes a polynomial and returns another polynomial as result (implements 
-//   nesting)
-//  -arithmetic operators that take a number as second (left or right) argument
-//  -maybe we could meaningfully define <,<=, ...? look at how python or other scientific libraries
-//   handle that - in my own python polynomial class, i'm taking the asymptotic behavior
-//  -In the rs_testing module, we have instantiations for float, double, std::complex<double>, 
-//   rsFraction<int> but not yet for std::complex<float>, int because this does not yet work.
-//   -> Make it so! We also still get warnings from the rsFraction instatiation -> fix them! Try to
-//   also instatiate it for more complicated types such as rsBigFloat, rsMatrix, rsMultiVector and 
-//   maybe even for rsPolynomial itself and/or rsRationalFunction. Make rational functions of 
-//   matrices and matrices of rational functions - this should all work together nicely
-
+....documentation under construction....tbc...  */
 
 template<class T>
 class rsPolynomial

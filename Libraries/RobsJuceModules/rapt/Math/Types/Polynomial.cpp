@@ -109,6 +109,13 @@ std::complex<T> rsPolynomial<T>::evaluateFromRootsOneLeftOut(
 {
   return evaluateFromRoots(x, r, i) * evaluateFromRoots(x, &r[i+1], nr-i-1);
 }
+// We get compilation problems on mac when we instantiate rsPolynomial<std::complex<double>>
+// because it tries to call isnan for a std::complex. This has to do with the nested complex
+// type that is created when rsPolynomial instantiates a function that is meant for real 
+// inputs but complex outputs...or something. maybe we need to do something like in
+//   evaluateWithTwoDerivativesAndError
+// namely, use another templae parameter as in: template<class R>
+
 
 template<class T>
 T rsPolynomial<T>::evaluateDerivative(const T& x, const T* a, int N)
@@ -1616,7 +1623,7 @@ void rsPolynomial<T>::rsPartialFractionExpansion(
 
 */
 
-
+//=================================================================================================
 
 /*
 todo: define the set of rational functions R(x) = P(x)/Q(x) where P, Q are polynomials
@@ -1668,6 +1675,38 @@ and a bool for the negaive sign)..the (unsigned) integer class could also be a t
 so we may use rsBigInteger
 ...rational numbers could be constructed from floating point numbers by computing their continued
 fraction expansion
+
+
+ToDo: 
+-in the low-level function interfaces, use consistently "degree" or "aDeg", "bDeg" etc. 
+ instead of the generic N, aN, bN etc. to make it clear to the caller that the degree must be 
+ passed and *NOT* the length of the coefficient array (which is one more than the degree). 
+ Conflating the two is a constant source of confusion and off-by-one bugs and even heap 
+ corruptions.
+-use consistently input arrays as first and output arrays as last parameters for example in
+ interpolant, fitQuadraticDirect -> this will silenty break client code, so be extra careful to
+ adapt the code at *every* call site - it should be a consistent pattern through the library:
+ inputs first, then outputs...hmm - but that doesn't really work well when we want to have some
+ inputs optional - optional parameters must come last...hmmmm....maybe use:
+ required inputs, outputs, optional inputs - what about optional outputs? (for example, when we
+ fill an output-array only when a non-nullptr is passed?)...see what rsArrayTools does...
+ ...or maybe such an enforced consistency might not be a good idea, after all?
+-implement greatest common divisor algorithm (maybe the one for the integers can be
+ used as is?)
+-implement missing operators:
+ -operator() that takes a polynomial and returns another polynomial as result (implements 
+  nesting)
+ -arithmetic operators that take a number as second (left or right) argument
+ -maybe we could meaningfully define <,<=, ...? look at how python or other scientific libraries
+  handle that - in my own python polynomial class, i'm taking the asymptotic behavior
+-In the rs_testing module, we have instantiations for float, double, std::complex<double>, 
+ rsFraction<int> but not yet for std::complex<float>, int because this does not yet work.
+ -> Make it so! We also still get warnings from the rsFraction instantiation -> fix them! Try 
+ to also instatiate it for more complicated types such as rsBigFloat, rsMatrix, rsMultiVector 
+ and maybe even for rsPolynomial itself and/or rsRationalFunction. Make rational functions of 
+ matrices and matrices of rational functions - this should all work together nicely.
+-We may also want bivariate rational functions to implement and investigate some interesting 
+ math
 
 */
 
