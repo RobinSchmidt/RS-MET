@@ -95,7 +95,7 @@ std::complex<T> rsPolynomial<T>::evaluateFromRoots(const std::complex<T>& s,
 {
   std::complex<T> result = T(1);
   for(int i = 0; i < N; i++) {
-    if(!isInfinite(r[i]))
+    if(!rsIsInfinite(r[i]))
       result *= (s - r[i]);
   }
   return result;

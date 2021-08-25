@@ -84,7 +84,7 @@ void rsPoleZeroMapper<T>::sLowpassToHighpass(Complex *r, Complex *rNew, int N, T
 {
   for(int n = 0; n < N; n++)
   {
-    if( isInfinite(r[n]) )
+    if( rsIsInfinite(r[n]) )
       rNew[n] = Complex(0.0, 0.0);
     else
       rNew[n] = wc / r[n];
@@ -135,7 +135,7 @@ void rsPoleZeroMapper<T>::sLowpassToBandpass(Complex* z, Complex* p, T* k, Compl
   sLowpassToBandpass(p, pNew, N, wc, bw);
   for(int n = 0; n < N; n++)
   {
-    if( isInfinite(z[n]) )
+    if( rsIsInfinite(z[n]) )
     {
       zNew[n]   = Complex(0.0,       0.0);
       zNew[N+n] = Complex(RS_INF(T), 0.0);
@@ -173,7 +173,7 @@ void rsPoleZeroMapper<T>::sLowpassToBandreject(Complex* z, Complex* p, T* k, Com
   Complex sz = Complex(0.0, wc);
   for(int n = 0; n < N; n++)
   {
-    if( isInfinite(z[n]) )
+    if( rsIsInfinite(z[n]) )
     {
       zNew[n]   =  sz;
       zNew[N+n] = -sz;
@@ -237,7 +237,7 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToHighpass(Complex* prototypePoles, Com
   for(int i = 0; i < prototypeOrder; i++)
   {
     targetPoles[i] = targetCutoff / prototypePoles[i];
-    if( isInfinite(prototypeZeros[i]) )
+    if( rsIsInfinite(prototypeZeros[i]) )
       targetZeros[i] = Complex(0.0, 0.0);
     else
       targetZeros[i] = targetCutoff / prototypeZeros[i];
@@ -354,7 +354,7 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandpass(Complex* prototypePoles, Com
     targetPoles[2*k+1] = tmp1 - tmp2;
 
     // transform zeros:
-    if( isInfinite(prototypeZeros[k]) )
+    if( rsIsInfinite(prototypeZeros[k]) )
     {
       targetZeros[2*k]   = RS_INF(T);
       targetZeros[2*k+1] = 0.0;
@@ -467,7 +467,7 @@ void rsPoleZeroMapper<T>::sPlanePrototypeToBandreject(Complex* prototypePoles,
 
     // transform zeros:
     Complex j(0.0, 1.0); // imaginary unit
-    if( isInfinite(prototypeZeros[k]) )
+    if( rsIsInfinite(prototypeZeros[k]) )
     {
       targetZeros[2*k]   =  j*wc;
       targetZeros[2*k+1] = -j*wc;
@@ -521,7 +521,7 @@ void rsPoleZeroMapper<T>::bilinearAnalogToDigital(Complex* poles, int numPoles, 
 
   for(i = 0; i < numZeros; i++)
   {
-    if( isInfinite(zeros[i]) )
+    if( rsIsInfinite(zeros[i]) )
       zeros[i] = Complex(-1.0, 0.0);
     else
     {

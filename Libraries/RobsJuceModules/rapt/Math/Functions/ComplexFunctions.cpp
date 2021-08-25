@@ -226,7 +226,7 @@ int rsGetNumFiniteValues(std::complex<T> *a, int N)
   int result = 0;
   for(int n = 0; n < N; n++)
   {
-    if(!isInfinite(a[n]))
+    if(!rsIsInfinite(a[n]))
       result++;
   }
   return result;
@@ -237,7 +237,7 @@ int rsCopyFiniteValues(const std::complex<T> *z, std::complex<T> *zF, int N)
 {
   int m = 0;
   for(int n = 0; n < N; n++) {
-    if(!isInfinite(z[n])) {
+    if(!rsIsInfinite(z[n])) {
       zF[m] = z[n];
       m++; }}
   return m;
@@ -249,7 +249,7 @@ std::complex<T> rsProductOfFiniteFactors(std::complex<T> *a, int N)
   std::complex<T> result = std::complex<T>(1.0, 0.0);
   for(int n = 0; n < N; n++)
   {
-    if(!isInfinite(a[n]))
+    if(!rsIsInfinite(a[n]))
       result *= a[n];
   }
   return result;

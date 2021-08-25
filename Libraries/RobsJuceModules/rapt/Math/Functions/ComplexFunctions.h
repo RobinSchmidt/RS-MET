@@ -95,7 +95,7 @@ std::complex<T> rsTanhC(std::complex<T> z);
 /** Returns true if real or imaginary part (or both) are plus or minus infinity, false 
 otherwise. */
 template<class T>
-inline bool isInfinite(std::complex<T> z)
+inline bool rsIsInfinite(std::complex<T> z)
 {
   if(  z.real() == RS_INF(T) || z.real() == -RS_INF(T) 
     || z.imag() == RS_INF(T) || z.imag() == -RS_INF(T) )

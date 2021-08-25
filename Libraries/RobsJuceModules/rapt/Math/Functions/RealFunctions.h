@@ -715,12 +715,13 @@ RS_INLINE void rsSinCos(double x, double* sinResult, double* cosResult)
     //#endif
 }
 */
-
+/*
 RS_INLINE void rsSinCos(float x, float* sinResult, float* cosResult)
 {
   *sinResult = sin(x);
   *cosResult = cos(x);
 }
+*/
 
 template<class T>
 T rsSinh(T x)

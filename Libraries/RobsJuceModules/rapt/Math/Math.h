@@ -15,6 +15,8 @@ namespace RAPT
 #include "LinearAlgebra/BandDiagonalSolver.hpp"
 #include "LinearAlgebra/LinearAlgebra.h"
 
+#include "Functions/BasicMathFunctions.h"
+
 #include "Types/Vector.h"  // move to LinearAlgebra
 #include "Types/Matrix.h"
 #include "Types/Polynomial.h"
@@ -26,15 +28,11 @@ namespace RAPT
 // the required order of the includes is a bit messy - maybe matrices, vectors, tensors, 
 // polynomials and rational functions should be in an "Algebra" folder
 
-
-
-
 #include "Misc/FourierTransformer.h"
 #include "Misc/Statistics.h"
 #include "Misc/CurveFitting.h"
 #include "Misc/RatioGenerator.h"
 
-#include "Functions/BasicMathFunctions.h"
 //#include "Functions/IntegerFunctions.h"  // moved up bcs rsFraction needs rsGcd
 #include "Functions/InterpolatingFunction.h"
 #include "Functions/NodeBasedFunction.h"

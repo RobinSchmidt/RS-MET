@@ -1335,7 +1335,7 @@ template<class T>
 void removeInfiniteValues(vector<complex<T>>& z)
 {
   for(size_t i = 0; i < z.size(); i++) {
-    if(RAPT::isInfinite(z[i])) {   // as rs prefix
+    if(RAPT::rsIsInfinite(z[i])) {   // as rs prefix
       z.erase(z.begin() + i);
       i--; }}
 }
