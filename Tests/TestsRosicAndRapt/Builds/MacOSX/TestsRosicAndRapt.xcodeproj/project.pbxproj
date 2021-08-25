@@ -813,7 +813,7 @@
 					"$(inherited)",
 				);
 				INSTALL_PATH = "/usr/bin";
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../Libraries/RobsJuceModules";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestsRosicAndRapt;
 				PRODUCT_NAME = "TestsRosicAndRapt";
@@ -908,7 +908,7 @@
 				);
 				INSTALL_PATH = "/usr/bin";
 				LLVM_LTO = YES;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
 				MTL_HEADER_SEARCH_PATHS = "$(SRCROOT)/../../JuceLibraryCode $(SRCROOT)/../../../../Libraries/RobsJuceModules";
 				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.TestsRosicAndRapt;
 				PRODUCT_NAME = "TestsRosicAndRapt";
