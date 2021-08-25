@@ -363,20 +363,20 @@ public:
   T evaluate(T x) const { return evaluate(x, &coeffs[0], getDegree()); }
 
   /** Evaluates the first derivative of this polynomial at the given x. */
-  T derivativeAt(const T& x) 
+  T derivativeAt(const T& x) const
   { return evaluateDerivative(x, &coeffs[0], getDegree()); }
 
   /** Evaluates the order-th derivative of this polynomial at the given x. Works also for the 0th 
   derivative, which is the function value itself. ...but the order must be non-negative. */
-  T derivativeAt(const T& x, int order) 
+  T derivativeAt(const T& x, int order) const
   { return evaluateDerivative(x, &coeffs[0], getDegree(), order); }
   // todo: maybe make it also work for negative orders (in which case the antiderivative of 
   // given order will be evaluated (setting integration constants to zero))
 
-  T integralAt(const T& x, const T c = T(0))
+  T integralAt(const T& x, const T c = T(0)) const
   { return evaluateIntegral(x, &coeffs[0], getDegree(), c); }
 
-  T definiteIntegral(const T& lowerLimit, const T& upperLimit)
+  T definiteIntegral(const T& lowerLimit, const T& upperLimit) const
   { return integralAt(upperLimit) - integralAt(lowerLimit); }
 
 

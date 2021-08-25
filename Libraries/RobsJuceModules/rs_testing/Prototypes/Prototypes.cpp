@@ -1519,7 +1519,10 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunction(bool with
 
   using T  = TPar;
   using RF = RAPT::rsRationalFunction<T>;
-  if(isBilinear())             // zero at z = -1
+  T  a = this->a;
+  T* c = this->c;
+  T  k = this->k;
+  if(this->isBilinear())             // zero at z = -1
   {
     // Compute some intermediate variables:
     T a2   = a*a;          // a^2
@@ -1556,12 +1559,12 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunction(bool with
     N[4] = 4*C0*a  + C1*a3p1   + C2*A*2        + C3*ap3  + C4*4;
     N[5] =   C0    + C1        + C2            + C3      + C4;
     if(withGain) 
-      rsScale(N, g);
+      rsScale(N, this->g);
 
     // Create and return rational function object:
     return RF(N, D);
   }
-  else if(B1 == T(0))  // no zero
+  else if(this->B1 == T(0))  // no zero
   {
     // Compute some intermediate variables:
     T b  = T(1)+a;
@@ -1583,7 +1586,7 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunction(bool with
     N[1] = (                         d1 + T(4)*d0) * a2*a;
     N[0] = (                                   d0) * a2*a2;
     if(withGain) 
-      rsScale(N, g);
+      rsScale(N, this->g);
 
     // Create rational function object and return it (note again the binomial coeffs 1,4,6,4,1) 
     // with the additional b4*k added in, so the denominator seems to be (a+1)^4 + b4*k*z^3
@@ -1592,7 +1595,7 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunction(bool with
   else  // the general case
   {
     // Compute some intermediate variables:
-    T u    = B1;
+    T u    = this->B1;
     T u2   = u*u;
     T u3   = u2*u;
     T u4   = u2*u2;
@@ -1658,7 +1661,7 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunction(bool with
     N[5] +=    c[4]*A4*U4;
 
     if(withGain) 
-      rsScale(N, g);
+      rsScale(N, this->g);
     return RF(N, D);
   }
 }
@@ -1693,11 +1696,12 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunctionOld()
 {
   using T  = TPar;
   using RF = RAPT::rsRationalFunction<T>;
+  T   a = this->a;
+  T*  c = this->c;
   T tol = 1024 * RS_EPS(T);  // ad hoc
-
-  T B0 = T(1) - B1;
-  T b0 = B0 * (1+a);
-  T b1 = B1 * (1+a);
+  T B0  = T(1) - this->B1;
+  T b0  = B0 * (1+a);
+  T b1  = this->B1 * (1+a);
 
   RF G1( { b1, b0 }, { a, 1 }, tol); // G1(z) = (b0 + b1/z) / (1 + a/z) = (b1 + b0*z) / (a + 1*z)
   RF one({ 1      }, { 1    }, tol); // 1 = 1 / 1
@@ -1705,7 +1709,7 @@ rsRationalFunction<TPar> rsLadderTest<TSig, TPar>::getTransferFunctionOld()
   RF G2 = G1*G1;                     // G1^2
   RF G3 = G1*G2;                     // G1^3
   RF G4 = G2*G2;                     // G1^4
-  RF H  = g * (c[0]*one + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + k * G4 / z); // H(z)
+  RF H  = this->g * (c[0]*one + c[1]*G1 + c[2]*G2 + c[3]*G3 + c[4]*G4) / (one + this->k * G4 / z); // H(z)
   return H;
 }
 

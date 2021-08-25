@@ -3,20 +3,26 @@
 // a quick and dirty implementation to create a directory which may not yet exist (but its parent
 // is assumed to exist) -  move to somewhere in RSLib, when when finished and cleaned:
 
-#ifdef _MSC_VER
-#include <direct.h>  // for msvc - otherwise maybe dirent.h
-#else
-#include <dirent.h>
-//#include <sys/types.h>
-//#include <sys/stat.h>
+#if defined(_MSC_VER)
+  #include <direct.h>
+#elif defined(__clang__)
+  #include <dirent.h>
+  #include <sys/stat.h>
+#else  // GCC?
+  #include <dirent.h>
+  //#include <sys/types.h>
+  //#include <sys/stat.h>    // seems to be needed on clang
 #endif
 
 void rsCreateDirectoryIfNonExistent(const RSLib::rsString &path)
 {
   char *cString = path.getAsZeroTerminatedString();
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
   if( _mkdir( cString ) != 0 )
+#elif defined(__clang__)
+  if( mkdir(cString, S_IRWXU | S_IRWXG | S_IRWXO) != 0 )   // verify the 0777
+  // see https://www.gnu.org/software/libc/manual/html_node/Permission-Bits.html
 #else
   //if( mkdir(cString, 0777) != 0 )
   if( mkdir(cString) != 0 )

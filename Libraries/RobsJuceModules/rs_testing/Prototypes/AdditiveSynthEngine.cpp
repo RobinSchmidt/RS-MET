@@ -181,8 +181,8 @@ void rsAdditiveSynthVoice<N>::PlayablePatch::setupFrom(
   double degToRad    = PI/180.0;
 
   // Shorthands:
-  using Breakpoint = rsAdditiveSynthVoice<N>::EditablePatch::Breakpoint;
-  using SineParams = rsAdditiveSynthVoice<N>::EditablePatch::SineParams;
+  using Breakpoint = typename rsAdditiveSynthVoice<N>::EditablePatch::Breakpoint;
+  using SineParams = typename rsAdditiveSynthVoice<N>::EditablePatch::SineParams;
 
   // Temporaries:
   double tL, tR, nL, nR, pL, pR, wL, wR, gL, gR, fL, fR; // params for one partial

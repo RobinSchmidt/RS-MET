@@ -326,14 +326,14 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getHarmonicConjugate() const
 template<class T> 
 T rsBivariatePolynomial<T>::doubleIntegralXY(T x0, T x1, T y0, T y1) const
 {
-  rsPolynomial<T>& ix = integralX(x0, x1);  // still a function of y
+  const rsPolynomial<T>& ix = integralX(x0, x1);  // still a function of y
   return ix.definiteIntegral(y0, y1);       // just a number
 }
 
 template<class T> 
 T rsBivariatePolynomial<T>::doubleIntegralYX(T x0, T x1, T y0, T y1) const
 {
-  rsPolynomial<T>& iy = integralY(y0, y1);  // still a function of x
+  const rsPolynomial<T>& iy = integralY(y0, y1);  // still a function of x
   return iy.definiteIntegral(x0, x1);       // just a number
 }
 // make function names consistent maybe rename definiteIntegral to integral...but this could lead
