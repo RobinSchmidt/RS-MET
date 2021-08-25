@@ -41,3 +41,16 @@ Products/AudioPlugins/TestPluginJUCE/.DS_Store
 Products/AudioPlugins/ToolChain/.DS_Store
 Products/AudioPlugins/ToolChain/Builds/.DS_Store
 Products/AudioPlugins/TestPluginJUCE/Builds/.DS_Store
+Products/AudioPlugins/ToolChain/Builds/MacOSX/build/
+*.xcworkspacedata
+*.xcuserstate
+*.xcscheme
+*.plist
+*.xcsettings
+*.xcbkptlist
+Products/AudioPlugins/ToolChain/Builds/MacOSX/.DS_Store
+Tests/.DS_Store
+Tests/TestsRosicAndRapt/.DS_Store
+Tests/TestsRosicAndRapt/Builds/.DS_Store
+Tests/TestsRosicAndRapt/Builds/MacOSX/.DS_Store
+.DS_Store
