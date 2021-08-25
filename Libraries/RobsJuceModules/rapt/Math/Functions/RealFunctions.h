@@ -282,9 +282,8 @@ T rsSech(T x);
 
 /** Calculates sine and cosine of x - this is more efficient than calling sin(x) and cos(x)
 seperately. */
-RS_INLINE void rsSinCos(double x, double* sinResult, double* cosResult);
-
-RS_INLINE void rsSinCos(float x, float* sinResult, float* cosResult);
+//RS_INLINE void rsSinCos(double x, double* sinResult, double* cosResult);
+//RS_INLINE void rsSinCos(float x, float* sinResult, float* cosResult);
 
 /** Unnormalized sinc function: sinc(x) = sin(x)/x. It has zero crossings at multiples of pi
 (except at 0*pi where the value is 1) and the value of the integral from minus to plus infinity
