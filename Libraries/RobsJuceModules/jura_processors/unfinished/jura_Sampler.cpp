@@ -38,6 +38,14 @@ void SamplerModule::setGain(double newGain)
 void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
   bool markAsClean)
 {
+  // This is a bit quick-and dirty. On windows, the current working directory is the application
+  // directory anyway, unless the app is started from the debugger, in which case it's the 
+  // project directory. On the mac, the current working directory is root, i.e. "/", regardless
+  // how the app is started. For commandline apps on mac started from the debugger, it's /build
+  // inside the project directory. ToDo: find a cleaner way to handle directories.
+  File appDir = File(getApplicationDirectory());
+  appDir.setAsCurrentWorkingDirectory();
+
   // Recall the global playback parameters such as gain, max num layers, max polyphony, resampling 
   // quality, etc.:
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
@@ -49,7 +57,7 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
     engine.clearInstrument();
     return; }
 
-  std::string  sSfzPath = jSfzPath.toStdString();
+  std::string sSfzPath = jSfzPath.toStdString();
   int rc = engine.loadFromSFZ(sSfzPath.c_str());
   if(rc == ReturnCode::fileLoadError)
   {
@@ -81,6 +89,10 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
   // -retrieve the .sfz and sample folder ...the latter either from the xml or from sfz (not sure
   //  yet, what's best)  
   // -set up the folders in the engine before caling engine.loadFromSFZ
+  // ToDo (maybe): 
+  // -extract the directory from the path
+  // -set the current working directory to that directory
+  // -use as sSfzPath below only the part of the path with the directory stripped off
 }
 
 XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool markAsClean)

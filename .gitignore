@@ -57,3 +57,4 @@ Tests/TestsRosicAndRapt/Builds/MacOSX/.DS_Store
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/testTextFile.txt
 Tests/TestsRosicAndRapt/Builds/VisualStudio2019/testTextFile2.txt
 Tests/TestsRosicAndRapt/Builds/MacOSX/build/
+Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Debug/Standalone Plugin/Drums.xml

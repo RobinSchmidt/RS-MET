@@ -39,7 +39,13 @@
 #include <stdlib.h>     // needed on OSX for atoi, atof, rand, abs
 #include <iostream>     // cout is used in GradientBasedMinimizer.cpp (maybe get rid)
 #include <climits>      // for INT_MAX on linux
-#include <unistd.h>     // for getcwd ("get current working directory"), needed for debugging
+
+#ifdef _MSC_VER
+  #include <direct.h> 
+#else
+  #include <unistd.h>     // for getcwd ("get current working directory"), needed for debugging
+#endif
+
 //#include <string.h>
 //#include <vector>
 //#include <errno.h>

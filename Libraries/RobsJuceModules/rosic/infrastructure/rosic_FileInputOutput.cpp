@@ -172,7 +172,12 @@ char* rosic::rsReadStringFromFile(const char *filename)
   // when trying to load and sfz file in ToolChain, from the TestsRosicAndRapt commandline app,
   // it's:
   //   "/Users/rob/Desktop/RS-MET/Tests/TestsRosicAndRapt/Builds/MacOSX/build/Debug"
-  // apparently, an app uses the root folder as current working directory, if nothing else is said
+  // apparently, an app uses the root folder as current working directory, if nothing else is said.
+  // On windows, when ToolChain is launched in the debugger, it's
+  //   E:\Programming\C++\RS-MET\Products\AudioPlugins\ToolChain\Builds\VisualStudio2019
+  // and when ToolChain is started directly, i think, it's the folder where the program resides
+  // I think, to set the working directory, the command is not setcwd but chdir:
+  //   https://pubs.opengroup.org/onlinepubs/009695399/functions/chdir.html
 
   char *buffer = NULL;
   size_t string_size, read_size;
