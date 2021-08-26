@@ -413,6 +413,10 @@ bool rsSamplerData::saveToSFZ(const char* path) const
 
 bool rsSamplerData::loadFromSFZ(const char* path)
 {
+  // just for debug, to figure out, in which directory the mac expects the sfz file:
+  //rsWriteStringToFile("TestFile.sfz", "blablabla");
+  // that fails, too with an "Unable to open file" error. Could it have to do with permission?
+  
   char* c_str = rsReadStringFromFile(path);
   if(c_str)
   {

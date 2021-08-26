@@ -14,6 +14,9 @@ code for a particular test by right-clicking on the function-call and using "Go 
 Definition/Declaration". If so desired, new tests and experiments can be added easily by just 
 following the apparent pattern.
 
+Note that on the Mac, the created files end up in the user's home folder ("rob" on my machine) 
+when TestsRosicAndRapt is executed directly (e.g. with double-click from Finder). On the other 
+hand, when executed from Xcode (e.g. via the "Play" button), they end up in the in build/Debug.
 
 ---------------------------------------------------------------------------------------------------
 Running the unit tests for JURA:

@@ -163,6 +163,16 @@ char* rosic::rsReadStringFromFile(const char *filename)
   // Note that it is pointed out there that the technique of inquiring the length via fseek, ftell 
   // may not work for binary files. Here, we are dealing with text files, so it should hopefully 
   // be ok. The unit tests pass, so far.
+  
+  // for debug:
+  char workingDir[1024];
+  getcwd(workingDir, 1024);
+  // On mac, this gives a slash:
+  //   "/"
+  // when trying to load and sfz file in ToolChain, from the TestsRosicAndRapt commandline app,
+  // it's:
+  //   "/Users/rob/Desktop/RS-MET/Tests/TestsRosicAndRapt/Builds/MacOSX/build/Debug"
+  // apparently, an app uses the root folder as current working directory, if nothing else is said
 
   char *buffer = NULL;
   size_t string_size, read_size;

@@ -794,7 +794,7 @@ bool samplerEngineUnitTest()
   ok &= samplerEngineUnitTest1();
   ok &= samplerEngineUnitTestFileIO();
 
-  ok &= samplerEngine2UnitTest();
+  //ok &= samplerEngine2UnitTest();
 
 
   //rsAssert(ok, "samplerEngineUnitTest failed");
