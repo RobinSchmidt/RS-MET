@@ -561,8 +561,9 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::multiplyY(const rsPolynomial<
 // this assumes row-major storage of matrices
 
 template<class T>
-void rsBivariatePolynomial<T>::splitRealImag(const rsBivariatePolynomial<std::complex<T>>& p,
-  rsBivariatePolynomial<T>& pRe, rsBivariatePolynomial<T>& pIm)
+template<class R>
+void rsBivariatePolynomial<T>::splitRealImag(const rsBivariatePolynomial<std::complex<R>>& p,
+  rsBivariatePolynomial<R>& pRe, rsBivariatePolynomial<R>& pIm)
 {
   int m = p.getDegreeX();
   int n = p.getDegreeY();
@@ -575,10 +576,11 @@ void rsBivariatePolynomial<T>::splitRealImag(const rsBivariatePolynomial<std::co
 }
 
 template<class T>
-void rsBivariatePolynomial<T>::polyaVectorField(const rsPolynomial<std::complex<T>>& p,
-  rsBivariatePolynomial<T>& px, rsBivariatePolynomial<T>& py)
+template<class R>
+void rsBivariatePolynomial<T>::polyaVectorField(const rsPolynomial<std::complex<R>>& p,
+  rsBivariatePolynomial<R>& px, rsBivariatePolynomial<R>& py)
 {
-  using Complex = std::complex<T>;
+  using Complex = std::complex<R>;
   using BiPolyC = rsBivariatePolynomial<Complex>;
   Complex one(1, 0), im(0, 1);
   BiPolyC bp = BiPolyC::composeWithLinear(p, one, im); // bp(x, y) = p(x + i*y) = p(z)
@@ -586,23 +588,29 @@ void rsBivariatePolynomial<T>::polyaVectorField(const rsPolynomial<std::complex<
   py.negate();                                         // apply complex conjugation
 }
 
-// ToDo:
-// -compute Hessian and its determinant and maybe (squared) eigenvalues and -vectors
-// -root finding: find points (x,y) for which p(x,y) = 0. i think, these are in general not 
-//  isolated points but rather curves - for example, when p(x,y) = x^2 + y^2 - 1, the unit circle
-//  gives the set of zeros and there we have y^2 = sqrt(1- x^2)...not sure how to deal with this
-// -maybe implement constrained optimization via Lagarange multipliers - find extremum of p(x,y)
-//  subject to c(x,y) = 0 where c is the constraint - the Lagrange function will be a trivariate 
-//  polynomial
-// -implement differentiation of implictit function (Kaprfinger, pg. 560)
-// -implement differential operators in polar-coordinates (needs bivariate rational function for
-//  the 1/r factor)
-// -can we compute path integrals along circular or elliptic arcs? their parametric description 
-//  involves sin/cos but their implicit description is polynomial. the explicit description as
-//  y = f(x) involves the sqrt - but maybe we can somehow evade this by integrating not with 
-//  respect to x but with respect to x^2 - maybe this can help:
-//  https://en.wikipedia.org/wiki/Riemann%E2%80%93Stieltjes_integral
-//  -figure out first, if the result is actually a polynomial (when one or both limits are left as
-//   free parameters)...well...nope...i think, that can't be the case - arc lengths are in general
-//   transcendental numbers
+//=================================================================================================
+/*
+
+ToDo:
+-compute Hessian and its determinant and maybe (squared) eigenvalues and -vectors
+-root finding: find points (x,y) for which p(x,y) = 0. i think, these are in general not 
+ isolated points but rather curves - for example, when p(x,y) = x^2 + y^2 - 1, the unit circle
+ gives the set of zeros and there we have y^2 = sqrt(1- x^2)...not sure how to deal with this
+-maybe implement constrained optimization via Lagarange multipliers - find extremum of p(x,y)
+ subject to c(x,y) = 0 where c is the constraint - the Lagrange function will be a trivariate 
+ polynomial
+-implement differentiation of implictit function (Kaprfinger, pg. 560)
+-implement differential operators in polar-coordinates (needs bivariate rational function for
+ the 1/r factor)
+-can we compute path integrals along circular or elliptic arcs? their parametric description 
+ involves sin/cos but their implicit description is polynomial. the explicit description as
+ y = f(x) involves the sqrt - but maybe we can somehow evade this by integrating not with 
+ respect to x but with respect to x^2 - maybe this can help:
+ https://en.wikipedia.org/wiki/Riemann%E2%80%93Stieltjes_integral
+ -figure out first, if the result is actually a polynomial (when one or both limits are left as
+  free parameters)...well...nope...i think, that can't be the case - arc lengths are in general
+  transcendental numbers
+-Maybe use rsComplex instead of std::complex (also in rsPolynomial)
+
+*/
 

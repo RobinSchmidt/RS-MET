@@ -213,19 +213,12 @@ template void rsLinearAlgebraNew::solveTridiagonal(const double* lowerDiag, doub
   const double* upperDiag, RAPT::rsMatrixView<double>& X, RAPT::rsMatrixView<double>& B);
 
 
-
-
-
 template class RAPT::rsMatrixOld<double>;  // try to get rid
-
 
 template class RAPT::rsPolynomial<float>;
 template class RAPT::rsPolynomial<double>;
-
-// doesn't compile on mac:
 template class RAPT::rsPolynomial<std::complex<double>>;
 template class RAPT::rsPolynomial<RAPT::rsFraction<int>>;
-
 //template class RAPT::rsPolynomial<std::complex<float>>;  // template doesn't compile with float
 //template  class RAPT::rsPolynomial<int>;                 // template doesn't compile with int
 // todo: instantiate rsPolynomial also for float, int, maybe also for 
@@ -630,8 +623,6 @@ template void RAPT::rsBiDirectionalFilter::applyButterworthBandpassBwInHz(const 
 // Instantiations of (prototype) classes that are not (yet) in the RAPT namespace
 
 template class rsBivariatePolynomial<double>;
-
-// doesn't compile on mac:
 template class rsBivariatePolynomial<std::complex<double>>;
 
 // it's really annoying that we have to instantiate these member functions separately - maybe move 

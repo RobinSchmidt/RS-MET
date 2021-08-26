@@ -349,6 +349,8 @@ public:
 
   T definiteIntegral(const T& lowerLimit, const T& upperLimit) const
   { return integralAt(upperLimit) - integralAt(lowerLimit); }
+  // maybe rename to integral
+
 
 
 

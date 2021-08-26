@@ -3,9 +3,9 @@
 
 /** Class for representing bivariate polynomials, i.e. polynomials in two variables x and y. They 
 are represented by an MxN matrix A of coefficients which is supposed to be sandwiched between two 
-vectors of powers of x and y as in X^T * A * Y, where X,Y denote the vectors constructed from 
-powers of x and y and ^T denotes transposition, making X^T a row vector. For example, a polynomial
-that has degree 2 in x and degree 3 in y looks like:
+vectors of powers of x and y as in p(x,y) = X^T * A * Y, where X,Y denote the vectors constructed 
+from powers of x and y and ^T denotes transposition, making X^T a row vector. For example, a 
+polynomial that has degree 2 in x and degree 3 in y looks like:
 
   p(x,y) = |x^0 x^1 x^2| * |a00 a01 a02 a03| * |y^0|
                            |a10 a11 a12 a13|   |y^1|
@@ -85,7 +85,7 @@ public:
   // \name Arithmetic
 
   /** Computes the coefficients of a bivariate polynomial r that is given as the product of two
-  univariate polynomial p and q that are functions of x and y alone, respectively, such that 
+  univariate polynomials p and q that are functions of x and y alone, respectively, such that 
   r(x,y) = p(x) * q(y). */
   static rsBivariatePolynomial<T> multiply(const rsPolynomial<T>& p, const rsPolynomial<T>& q);
 
@@ -106,26 +106,24 @@ public:
   static rsPolynomial<T> compose(const rsBivariatePolynomial<T>& p,
     const rsPolynomial<T>& x, const rsPolynomial<T>& y);
 
-
-
   /** Multiplies this bivariate polynomial with a univariate polynomial in y only and returns the 
   result which is again a bivariate polynomial. This amounts to convolving each row of our 
   coefficient matrix with the coefficient array of p. */
   rsBivariatePolynomial<T> multiplyY(const rsPolynomial<T>& p) const;
+  // todo: make a similar multiplyX method - this needs to convolve the columns with p, so we will
+  // need a convolution routine with strides
 
 
   void negate() { coeffs.negate(); }
 
   void scale(T s) { coeffs.scale(s); }
 
-  // todo: make a similar multiplyX method - this needs to convolve the columns with p, so we will
-  // need a convolution routine with strides
-
 
   /** Given a complex valued bivariate polynomial, this function splits it into two real-valued 
   bivariate polynomials...tbc... */
-  static void splitRealImag(const rsBivariatePolynomial<std::complex<T>>& p,
-    rsBivariatePolynomial<T>& pRe, rsBivariatePolynomial<T>& pIm);
+  template<class R>
+  static void splitRealImag(const rsBivariatePolynomial<std::complex<R>>& p,
+    rsBivariatePolynomial<R>& pRe, rsBivariatePolynomial<R>& pIm);
 
 
   template<class T2>
@@ -146,8 +144,9 @@ public:
   z = x + i*y. The reason for this seemingly unnatural negation is that the resulting vector field 
   will be conservative when the original function is analytic. This is a desirable property for 
   vector fields and it does not hold true without the negation (-> verify that).  */
-  static void polyaVectorField(const rsPolynomial<std::complex<T>>& p,
-    rsBivariatePolynomial<T>& px, rsBivariatePolynomial<T>& py);
+  template<class R>
+  static void polyaVectorField(const rsPolynomial<std::complex<R>>& p,
+    rsBivariatePolynomial<R>& px, rsBivariatePolynomial<R>& py);
 
 
   //-----------------------------------------------------------------------------------------------
@@ -222,6 +221,8 @@ public:
   //  negation through to the getPolyaPotential
   // -document how it can be easisly checked, if a potential exists - i think, the condition is 
   //  px_x == py_y or similar
+  // -ToDo: provide a function that can verify, if px,py satisfy the desired conservativity 
+  //  condition. may isHarmonic() already be the desired function? if so, document that.
 
   /** The Polya vector field of an analytic complex function (such as a polynomial) is 
   conservative, so a potential exists for such a Polya vector field. This function computes that 
@@ -319,15 +320,13 @@ public:
   // i made up this name - figure out, if there is a more proper name for that, maybe loopFlux,
   // fluxThroughLoop
 
-  // todo: implement flux integral around a rectangular loop
-
   // todo:
+  // -implement flux integral around a rectangular loop (done? outfluxIntegral?)
   // -implement scalar path integrals - they are possible only numerically, due to the square-root 
   //  in the integrand (for the speed) ...except when x(t), y(t) are both linear - in this case, the 
   //  speed is a constant number and we can just scale everything by it
   // -implement flux and circulation integrals, if possible - compare results to double integral
   //  (Gauss' and Green's theorem - the vector field must satisfy some conditions for them to hold)
-
 
 
   //-----------------------------------------------------------------------------------------------
