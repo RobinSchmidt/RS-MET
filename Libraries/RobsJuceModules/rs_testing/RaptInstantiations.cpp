@@ -626,7 +626,7 @@ template class rsBivariatePolynomial<double>;
 template class rsBivariatePolynomial<std::complex<double>>;
 
 // it's really annoying that we have to instantiate these member functions separately - maybe move 
-// their code to the header file - it is short anyway:
+// their code to the header file, so it can be inlined - it is short anyway:
 template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
   rsPolynomial<double> a, rsPolynomial<double> b) const;
 template rsPolynomial<double> rsBivariatePolynomial<double>::integralY(
@@ -639,6 +639,11 @@ template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
   rsPolynomial<double> a, double b) const;
 template rsPolynomial<double> rsBivariatePolynomial<double>::integralX(
   double a, rsPolynomial<double> b) const;
+template rsBivariatePolynomial<double> rsBivariatePolynomial<double>::getPolyaPotential(
+  const rsPolynomial<std::complex<double>>& p);
+
+
+
 
 template class rsTrivariatePolynomial<double>;
 template class rsPiecewisePolynomial<double>;
