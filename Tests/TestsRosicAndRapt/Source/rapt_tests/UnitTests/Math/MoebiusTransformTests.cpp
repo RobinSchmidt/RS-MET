@@ -1,6 +1,10 @@
 
 bool testMoebiusTransform()
 {
+  // This test fails on mac. I guess that's due to the exact float comparisons - we may need a
+  // tolerance. But before implementing that, it may make sense to switch to using rsComplex
+  // instead of std::complex.
+  
   std::string testName = "rsMoebiusTransform";
   bool testResult = true;
 

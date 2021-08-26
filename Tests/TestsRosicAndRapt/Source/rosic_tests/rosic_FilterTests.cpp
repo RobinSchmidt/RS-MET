@@ -329,8 +329,10 @@ bool rotes::testConvolverPartitioned()
   // Compute the convolution also via the partitioned FFT algorithm:
   ConvolverPartitioned convolver;
   convolver.setImpulseResponse(impulseResponse, responseLength);
-  for(int n=0; n<resultLength; n++)
+  for(int n = 0; n < impulseLength; n++)
     result[n] = convolver.getSample(impulse[n]);
+  for(int n = impulseLength; n < resultLength; n++)
+    result[n] = convolver.getSample(0.0);
 
   // Check, if the results match:
   double tol = 1.e-15;  // that's a tight tolerance - it works with msc, though
