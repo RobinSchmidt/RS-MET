@@ -748,7 +748,7 @@ bool ladderUnitTest()
   using LDR  = rsLadderTest<TSig, TPar>;
   using RF   = RAPT::rsRationalFunction<TPar>;
   using Mode = LDR::Mode;
-  using TCmp = std::complex<TPar>;
+  using TCmp = rsComplex<TPar>;
 
   // ToDo: set it up and compare the results of getTransferFunctionAt, getTransferFunction and
   // getTransferFunctionOld. They should be equal up to roudoff error. This test is for making sure
@@ -775,7 +775,7 @@ bool ladderUnitTest()
     ldr.setup(cutoff, reso, mode, B1);
     TCmp i(0, 1);                               // imaginary unit
     TPar w    = 2*PI*testFreq / sampleRate;     // normalized radian frequency
-    TCmp z    = exp(i*w);                       // evaluation point in the z-plane
+    TCmp z    = rsExp(i*w);                     // evaluation point in the z-plane
     TCmp Hz   = ldr.getTransferFunctionAt(z);   // H(z) at z, our reference value
     RF   H1   = ldr.getTransferFunctionOld();   // H(z) via RF arithmetic...
     TCmp H1z  = H1(z);                          // ...evaluated at z

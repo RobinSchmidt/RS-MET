@@ -175,7 +175,12 @@ inline rsComplex<T> operator/(const T &r, const rsComplex<T> &z)
 // Elementary math functions for complex numbers:
 
 template<class T>
-//rsComplex<T> rsAbs(rsComplex<T> z)
+rsComplex<T> rsConj(rsComplex<T> z)
+{
+  return rsComplex<T>(z.re, -z.im);
+}
+
+template<class T>
 T rsAbs(rsComplex<T> z)
 {
   return rsSqrt(z.re*z.re + z.im*z.im); 
@@ -184,7 +189,6 @@ T rsAbs(rsComplex<T> z)
 }
 
 template<class T>
-//rsComplex<T> rsArg(rsComplex<T> z)
 T rsArg(rsComplex<T> z)
 {
   return rsAtan2(z.im, z.re);

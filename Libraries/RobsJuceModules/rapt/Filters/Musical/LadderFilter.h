@@ -116,7 +116,7 @@ public:
   /** Returns the filter's z-domain transfer function value at the given value of z. The withGain 
   flag decides, whether or not the gain compensation factor should by multiplied in (that's the 
   factor that boosts the whole signal depending on the resonance setting). */
-  std::complex<TPar> getTransferFunctionAt(const std::complex<TPar>& z, bool withGain = true); 
+  rsComplex<TPar> getTransferFunctionAt(const rsComplex<TPar>& z, bool withGain = true); 
     // z needs to be a const-reference, too?
 
   /** Returns the filter's magnitude response at the given frequency in Hz. */

@@ -73,14 +73,14 @@ void rsLadderFilter<TSig, TPar>::getState(TSig *state)
 }
 
 template<class TSig, class TPar>
-std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(
-  const std::complex<TPar>& z, bool withGain)
+rsComplex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(
+  const rsComplex<TPar>& z, bool withGain)
 {
   using T = TPar;
   TPar B0 = TPar(1) - B1; 
-  std::complex<T> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
-  std::complex<T> H;              // transfer function with resonance   
-  std::complex<T> one(1, 0);
+  rsComplex<T> G1, G2, G3, G4; // transfer functions of n-th stage output, n = 1..4
+  rsComplex<T> H;              // transfer function with resonance   
+  rsComplex<T> one(1, 0);
   G1 =  (1+a)*(B0 + B1/z) / (one + a/z);
   G2 = G1*G1;
   G3 = G2*G1;
@@ -93,12 +93,12 @@ std::complex<TPar> rsLadderFilter<TSig, TPar>::getTransferFunctionAt(
 template<class TSig, class TPar>
 TPar rsLadderFilter<TSig, TPar>::getMagnitudeResponseAt(CRPar frequency, bool withG)
 {
-  using Cmp = std::complex<TPar>;
+  using Cmp = rsComplex<TPar>;
   TPar w = 2 * TPar(PI) * frequency/sampleRate;
   Cmp j(0, 1);                             // imaginary unit
   Cmp z = rsExp(j*w);                      // location in the z-plane
   Cmp H = getTransferFunctionAt(z, withG); // H(z) at our z
-  H *= conj(H);                            // magnitude-squared
+  H *= rsConj(H);                          // magnitude-squared
   return rsSqrt(H.real());                 // imaginary part should be zero anyway
 
   // Why not just return rsAbs(H)?
