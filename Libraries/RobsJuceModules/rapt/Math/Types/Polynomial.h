@@ -777,13 +777,15 @@ public:
 
   /** Computes polynomial coefficients from the roots. 
   \todo: get rid of that - replace by function below */
-  static std::vector<std::complex<T>> rootsToCoeffs(const std::vector<std::complex<T>>& roots);
+  template<class R>
+  static std::vector<std::complex<R>> rootsToCoeffs(const std::vector<std::complex<R>>& roots);
   // allocates heap memory - todo: avoid that
 
   /** Computes polynomial coefficients from the roots. The roots should be passed in the array "r"
   of length "N", the coefficients will be returned in the array "a" of length "N" + 1. The
   coefficient for the highest power a[N] will be normalized to unity. */
-  static void rootsToCoeffs(const std::complex<T> *r, std::complex<T> *a, int N);
+  template<class R>
+  static void rootsToCoeffs(const std::complex<R> *r, std::complex<R> *a, int N);
   // allocates heap memory - todo: avoid that
   // rename to finiteRootsToCoeffs
 

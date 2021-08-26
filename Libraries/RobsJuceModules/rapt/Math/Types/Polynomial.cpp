@@ -926,10 +926,11 @@ R rsPolynomial<T>::rootNear(R x, const R* a, int degree, const R& min, const R& 
 // conversions:
 
 template<class T>
-std::vector<std::complex<T>> rsPolynomial<T>::rootsToCoeffs(
-  const std::vector<std::complex<T>>& roots)
+template<class R>
+std::vector<std::complex<R>> rsPolynomial<T>::rootsToCoeffs(
+  const std::vector<std::complex<R>>& roots)
 {
-  std::vector<std::complex<T>> coeffs(roots.size()+1);
+  std::vector<std::complex<R>> coeffs(roots.size()+1);
   if(roots.size() < 1)
     return coeffs;
   rootsToCoeffs(&roots[0], &coeffs[0], (int) roots.size());
@@ -954,9 +955,10 @@ std::vector<std::complex<T>> rsPolynomial<T>::rootsToCoeffs(
 }
 
 template<class T>
-void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, std::complex<T>* a, int N)
+template<class R>
+void rsPolynomial<T>::rootsToCoeffs(const std::complex<R>* r, std::complex<R>* a, int N)
 {
-  std::complex<T>* rF = new std::complex<T>[N]; // only the finite roots
+  std::complex<R>* rF = new std::complex<R>[N]; // only the finite roots
   int nF = rsCopyFiniteValues(r, rF, N);
   rsArrayTools::fillWithZeros(a, N+1);
   if(nF == 0)
@@ -966,7 +968,7 @@ void rsPolynomial<T>::rootsToCoeffs(const std::complex<T>* r, std::complex<T>* a
     a[1] = T(1);
     for(int M = 2; M <= nF; M++) {
       a[M] = a[M-1];
-      std::complex<T> rM = rF[M-1];
+      std::complex<R> rM = rF[M-1];
       for(int n = M-1; n >= 1; n--)
         a[n] = a[n-1] - rM*a[n];
       a[0] = -rM*a[0];
