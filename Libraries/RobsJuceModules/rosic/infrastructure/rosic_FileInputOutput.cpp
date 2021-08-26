@@ -196,8 +196,6 @@ char* rosic::rsReadStringFromFile(const char *filename)
   {
     int l_errno = errno;
     RAPT::rsError(strerror(l_errno));
-    //printf("unable to open '%s': %s (errno=%d)\n", handler, strerror(l_errno), l_errno);
-    int dummy = 0;
   }
   return buffer;
   
