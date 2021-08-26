@@ -301,10 +301,11 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getPotential(
 
 
 template<class T>
-rsBivariatePolynomial<T> rsBivariatePolynomial<T>::getPolyaPotential(
-  const rsPolynomial<std::complex<T>>& p)
+template<class R>
+rsBivariatePolynomial<R> rsBivariatePolynomial<T>::getPolyaPotential(
+  const rsPolynomial<std::complex<R>>& p)
 {
-  rsBivariatePolynomial<T> px, py;
+  rsBivariatePolynomial<R> px, py;
   polyaVectorField(p, px, py);
   return getPotential(px, py);       // (px, py) is a potential field -> compute its potential
 }
@@ -473,6 +474,7 @@ rsBivariatePolynomial<T> rsBivariatePolynomial<T>::composeWithLinear(
   return r;
 }
 // todo:
+// -T may be complex but p,a,b may be real
 // -let the workspace be passed by the user
 // -operate on a pre-allocated rsMatrixView
 // -the polynomial p should be passed as raw coefficient array

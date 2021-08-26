@@ -97,6 +97,7 @@ public:
 
   /** Computes the coefficients of a bivariate polynomial r that is given as the composition of 
   a linear combination of x and y and a univariate polynomial p: r(x,y) = p(a*x + b*y). */
+  //template<class P>
   static rsBivariatePolynomial<T> composeWithLinear(const rsPolynomial<T>& p, T a, T b);
 
   static rsBivariatePolynomial<T> composeWithLinearOld(const rsPolynomial<T>& p, T a, T b);
@@ -229,7 +230,8 @@ public:
   potential for a given (complex) Polynomial. The result is a bivariate real polynomial whose 
   partial derivatives with respect to x and y give the real part and the negative imaginary part 
   of the original complex polynomial. */
-  static rsBivariatePolynomial<T> getPolyaPotential(const rsPolynomial<std::complex<T>>& p);
+  template<class R>
+  static rsBivariatePolynomial<R> getPolyaPotential(const rsPolynomial<std::complex<R>>& p);
 
 
   rsBivariatePolynomial<T> getHarmonicConjugate() const;
