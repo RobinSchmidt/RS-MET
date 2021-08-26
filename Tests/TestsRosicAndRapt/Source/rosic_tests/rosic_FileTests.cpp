@@ -10,17 +10,26 @@ bool rotes::testFileText()
   // contain non-printable characters..
 
   bool ok = true;
-  rosic::rsFile testTextFile("E:\\TmpData\\testTextFile.txt"); // absolute path
+  //rosic::rsFile testTextFile("E:\\TmpData\\testTextFile.txt"); // absolute path
+  rosic::rsFile testTextFile("testTextFile.txt"); // path relavtive from current directory
   rsString stringOriginal = createStringWithAllPrintableCharacters();
   testTextFile.appendText(stringOriginal);
   rsString stringReconstructed = testTextFile.readFileAsString();
   ok &= stringOriginal == stringReconstructed;
+
+  rosic::rsWriteStringToFile("testTextFile2.txt", stringOriginal.getRawString());
+  char* stringReconstructed2 = rosic::rsReadStringFromFile("testTextFile2.txt");
+  int cmp = strcmp(stringOriginal.getRawString(), stringReconstructed2);
+  ok &= cmp == 0;
+  free(stringReconstructed2);
+
   return ok;
 
   // ToDo: 
   // -use relative path 
   // -use paths where subdirectory does and does not exist
   // -use different path seperators (i.e. forward slash insetad of backslash)
+  // -test rsWriteStringToFile, rsReadStringFromFile
 }
 
 bool rotes::testFileWave()

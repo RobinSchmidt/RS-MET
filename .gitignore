@@ -54,3 +54,5 @@ Tests/TestsRosicAndRapt/.DS_Store
 Tests/TestsRosicAndRapt/Builds/.DS_Store
 Tests/TestsRosicAndRapt/Builds/MacOSX/.DS_Store
 .DS_Store
+Tests/TestsRosicAndRapt/Builds/VisualStudio2019/testTextFile.txt
+Tests/TestsRosicAndRapt/Builds/VisualStudio2019/testTextFile2.txt
