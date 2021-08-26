@@ -426,7 +426,9 @@ bool rsSamplerData::loadFromSFZ(const char* path)
     return true; 
     // Actually, setFromSFZ could also go wrong. This would indicate that the file loading 
     // succeeded but the content of the file could not be parsed (i.e. was malformed or we have a
-    // bug in the parser). Maybe we should return a return code which could be either of:
+    // bug in the parser). It could also mean that even though the sfz file itself is ok, we failed
+    // to load one or more of the samples - maybe they are not found where they are supposed to be
+    // Maybe we should return a return code which could be either of:
     // success, fileLoadError, sfzParseError
   }
   else
