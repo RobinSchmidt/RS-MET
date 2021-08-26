@@ -394,15 +394,17 @@ public:
   /** Evaluates the polynomial defined by the array of roots "r" at argument "x". If infinite roots
   are encountered, they are skipped - this is consistent with what we need when evaluating filter
   transfer functions that have zeros at infinity. */
-  static std::complex<T> evaluateFromRoots(const std::complex<T>& x,
-    const std::complex<T>* roots, int numRoots);
+  template<class R>
+  static std::complex<R> evaluateFromRoots(const std::complex<R>& x,
+    const std::complex<R>* roots, int numRoots);
 
   /** Like evaluateFromRoots but leaves one root out in the evaluation. This is equivalent to 
   evaluating the polynomial and divide the result by the linear factor corresponding to the left
   out root (at the given x), i.e. evaluating g(x) = f(x)/(x-r_i) where r_i is the i-th root that
   has been left out. */
-  static std::complex<T> evaluateFromRootsOneLeftOut(const std::complex<T>& x,
-    const std::complex<T>* roots, int numRoots, int leaveOutIndex);
+  template<class R>
+  static std::complex<R> evaluateFromRootsOneLeftOut(const std::complex<R>& x,
+    const std::complex<R>* roots, int numRoots, int leaveOutIndex);
 
   /** Evaluates the first derivative of the polynomial a at the given x.  */
   static T evaluateDerivative(const T& x, const T *a, int degree);

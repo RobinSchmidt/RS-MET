@@ -90,8 +90,9 @@ TArg rsPolynomial<T>::evaluateTyped(const TArg& x, const T* a, int degree)
 */
 
 template<class T>
-std::complex<T> rsPolynomial<T>::evaluateFromRoots(const std::complex<T>& s,
-  const std::complex<T>* r, int N)
+template<class R>
+std::complex<R> rsPolynomial<T>::evaluateFromRoots(const std::complex<R>& s,
+  const std::complex<R>* r, int N)
 {
   std::complex<T> result = T(1);
   for(int i = 0; i < N; i++) {
@@ -104,8 +105,9 @@ std::complex<T> rsPolynomial<T>::evaluateFromRoots(const std::complex<T>& s,
 // as well
 
 template<class T>
-std::complex<T> rsPolynomial<T>::evaluateFromRootsOneLeftOut(
-  const std::complex<T>& x, const std::complex<T>* r, int nr, int i)
+template<class R>
+std::complex<R> rsPolynomial<T>::evaluateFromRootsOneLeftOut(
+  const std::complex<R>& x, const std::complex<R>* r, int nr, int i)
 {
   return evaluateFromRoots(x, r, i) * evaluateFromRoots(x, &r[i+1], nr-i-1);
 }
