@@ -38,7 +38,8 @@ Mac OSX:
 -copy "RS-MET" folder into:
  Users/[UserName]/Library
 -If you can't find these folders in "Finder" (they are hidden), click on your
- main harddisk, choose "Go" from the menu and enter the path directly.
+ main harddisk, choose "Go" from the menu and enter the path directly. Or 
+ better: Use Shift + Cmd + . to make hidden files visible.
 
 -------------------------------------------------------------------------------
 
