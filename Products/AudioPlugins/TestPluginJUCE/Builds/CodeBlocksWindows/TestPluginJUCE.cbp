@@ -42,6 +42,7 @@
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"/>
         </Compiler>
         <Linker>
           <Add option="-m64"/>
@@ -94,6 +95,7 @@
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"/>
         </Compiler>
         <Linker>
           <Add option="&quot;bin/Debug/TestPluginJUCE.lib&quot;"/>
@@ -148,6 +150,7 @@
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"/>
         </Compiler>
         <Linker>
           <Add option="&quot;bin/Debug/TestPluginJUCE.lib&quot;"/>
@@ -200,6 +203,7 @@
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"/>
         </Compiler>
         <Linker>
           <Add option="-m64"/>
@@ -251,6 +255,7 @@
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"/>
         </Compiler>
         <Linker>
           <Add option="&quot;bin/Release/TestPluginJUCE.lib&quot;"/>
@@ -304,6 +309,7 @@
           <Add directory="../../JuceLibraryCode"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"/>
         </Compiler>
         <Linker>
           <Add option="&quot;bin/Release/TestPluginJUCE.lib&quot;"/>

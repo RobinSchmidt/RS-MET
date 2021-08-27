@@ -45,6 +45,7 @@
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"/>
           <Add directory="/usr/include/freetype2"/>
         </Compiler>
         <Linker>
@@ -93,6 +94,7 @@
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"/>
           <Add directory="/usr/include/freetype2"/>
         </Compiler>
         <Linker>
@@ -144,6 +146,7 @@
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"/>
           <Add directory="/usr/include/freetype2"/>
         </Compiler>
         <Linker>
@@ -192,6 +195,7 @@
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"/>
           <Add directory="/usr/include/freetype2"/>
         </Compiler>
         <Linker>
@@ -239,6 +243,7 @@
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"/>
           <Add directory="/usr/include/freetype2"/>
         </Compiler>
         <Linker>
@@ -289,6 +294,7 @@
           <Add directory="../../../../../Libraries/JUCE/modules"/>
           <Add directory="../../../../../Libraries/RobsJuceModules"/>
           <Add directory="../../../../../Libraries/JUCE/modules"/>
+          <Add directory="../../../../../../RS-Private/Libaries/VST/vstsdk2.4"/>
           <Add directory="/usr/include/freetype2"/>
         </Compiler>
         <Linker>
