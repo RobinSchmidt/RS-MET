@@ -502,6 +502,10 @@ void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
 
 /*
 
+Notes:
+-When writing .sfz files, make sure to use the forward slash "/" as seperator in the sample paths.
+ Using the backslash "\" will lead to failure of file loading on mac.
+
 -for the sfz-parsing, support separation between opcodes not only by newline but also by space 
  -any combination of newlines and spaces should be allowed 
  -maybe std::regex could be used for this or: 

@@ -164,9 +164,9 @@ char* rosic::rsReadStringFromFile(const char *filename)
   // may not work for binary files. Here, we are dealing with text files, so it should hopefully 
   // be ok. The unit tests pass, so far.
   
-  // for debug:
-  char workingDir[1024];
-  getcwd(workingDir, 1024);
+  // for debug (needs uncommenting some includes in rosic.h to compile, see comments there):
+  //char workingDir[1024];
+  //getcwd(workingDir, 1024);
   // On mac, this gives a slash:
   //   "/"
   // when trying to load and sfz file in ToolChain, from the TestsRosicAndRapt commandline app,
@@ -209,8 +209,8 @@ char* rosic::rsReadStringFromFile(const char *filename)
   }
   else
   {
-    int l_errno = errno;
-    RAPT::rsError(strerror(l_errno));
+    int errnoInt = errno;                // is this needed?
+    RAPT::rsError(strerror(errnoInt));   // ...or could we use errno directly here?
   }
   return buffer;
   

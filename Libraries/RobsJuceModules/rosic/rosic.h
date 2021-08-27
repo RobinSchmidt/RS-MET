@@ -40,11 +40,14 @@
 #include <iostream>     // cout is used in GradientBasedMinimizer.cpp (maybe get rid)
 #include <climits>      // for INT_MAX on linux
 
+/*
+// for getcwd ("get current working directory"), needed for debugging:
 #ifdef _MSC_VER
   #include <direct.h> 
 #else
-  #include <unistd.h>     // for getcwd ("get current working directory"), needed for debugging
+  #include <unistd.h>
 #endif
+*/
 
 //#include <string.h>
 //#include <vector>
@@ -74,8 +77,11 @@
   #include <intrin.h>       // for SSE   (i think)
   #include <emmintrin.h>    // for SSE2
 #endif
+// todo: use RS_INSTRUCTION_SET_SSE(2) macros
+
 
 /*
+// obsolete?:
 // newer - doesn't work when RS_USE_SSE is not defined:
 #ifdef RS_INSTRUCTION_SET_SSE
   #include <intrin.h> 
@@ -89,7 +95,7 @@
 */
 
 
-// todo: use RS_INSTRUCTION_SET_SSE(2) macros
+
 
 //#ifndef __APPLE__
 //#include <malloc.h>     // for alloca - try to get rid - alloca is bad, mkay?
