@@ -31,7 +31,8 @@ rsBiquadCascade<TSig, TCoef>::rsBiquadCascade(int newMaxNumStages)
 
   initBiquadCoeffs();
   reset();
-  numStages = maxNumStages;
+  //numStages = maxNumStages;  // shouldn't his be set to zero?
+  numStages = 0;
 }
 
 template<class TSig, class TCoef>

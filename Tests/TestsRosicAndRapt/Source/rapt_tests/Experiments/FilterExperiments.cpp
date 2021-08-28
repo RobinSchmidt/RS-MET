@@ -259,7 +259,7 @@ rsFilterSpecificationZPK<T> sos2zpk(
 }
 // maybe move to rsFilterSpecificationZPK as static member: fromBiquads
 
-void engineersFilterRingResp()
+void engineersFilterRingResp1()
 {
   // We plot the magnitude response of a filter together with a new kind of response that attempts
   // to show the amount of ringing of the filter as function of frequency. Ringing is in this 
@@ -352,6 +352,7 @@ void engineersFilterRingResp()
   //  in series just raises the response to the power of N?, just like with magnitude? Or will it 
   //  multiply by N just like with phase?
   // -test with allpasses, pure delay, FIR filters (windowed sinc, boxcar)
+  // -test bandpass vs notch - with the same Q, their ring-responses should be similar
   // -write the findings up into a paper, maybe "Filter Ringing as Function of Frequency"
 
   // Questions:
@@ -393,7 +394,73 @@ void engineersFilterRingResp()
   //   the two given frequencies
   //  -Can we find a potential function of the transfer-function and interpret it somehow? maybe 
   //   also by considering differences of values at various points (along the w-axis). These 
-  //   differences represent line integrals of soem kind
+  //   differences represent line integrals of some kind
+}
+
+void engineersFilterRingResp2()
+{
+  // We plot the ringin response of a series connection of 2 high-shelving filters in order to see,
+  // if it depends on the actual magnitude...tbc...
+
+  // User parameters:
+  double fs    = 44100;  // samplerate in Hz
+
+  // Filter 1:
+  double frq1  = 50.0;   // frequency
+  double gain1 = 2.0;    // gain as factor
+  int    ord1  = 15;     // prototype order
+
+  // Filter 2:
+  double frq2  = 200.0;
+  double gain2 = 2.0;
+  int    ord2  = 15;
+
+  using EF   = rsEngineersFilter<double, double>;
+  using PTD  = rsPrototypeDesigner<double>;
+  using IIRD = rsInfiniteImpulseResponseDesigner<double>;
+
+  // Create and setup filter 1:
+  EF flt1;
+  flt1.setApproximationMethod(PTD::BUTTERWORTH);
+  flt1.setMode(IIRD::HIGH_SHELV);
+  flt1.setSampleRate(fs);
+  flt1.setFrequency(frq1);
+  flt1.setGain(rsAmp2dB(gain1));
+  flt1.setPrototypeOrder(ord1);
+
+  // Create and setup filter 2:
+  EF flt2;
+  flt2.setApproximationMethod(PTD::BUTTERWORTH);
+  flt2.setMode(IIRD::HIGH_SHELV);
+  flt2.setSampleRate(fs);
+  flt2.setFrequency(frq2);
+  flt2.setGain(rsAmp2dB(gain2));
+  flt2.setPrototypeOrder(ord2);
+
+  // Create and setup combined filter:
+  int numBiquads = (ord1 + ord2 + 2) / 2;  // todo: take into account order doubling of BP,PK,etc.
+  rsBiquadCascade<double, double> flt(numBiquads);
+  flt.chainWith(flt1);
+  flt.chainWith(flt2);
+
+  // Plot ringing responses:
+  //plotMagAndRingResponse(flt1, 5000, 10.0, 1000.0, fs, true); 
+  //plotMagAndRingResponse(flt2, 5000, 10.0, 1000.0, fs, true); 
+  plotMagAndRingResponse(flt,  5000, 10.0, 1000.0, fs, true); 
+
+  // Observations:
+  // -With gain1 = 2.0, gain2 = 2.0:
+  //  -When we don't divide by the magnitude, the 2nd peak is indeed roughly twice as high as the
+  //   first. But that's really only very rough - the 1st peak is actually quite a bit higher than 
+  //   half of the 2nd.
+  // -With gain1 = 2.0, gain2 = 0.5:
+  //  -When we don't divide by tze magnitude, both peak have equal height of around 2.2 and shape.
+}
+
+void engineersFilterRingResp()
+{
+  //engineersFilterRingResp1();
+  engineersFilterRingResp2();
 }
 
 void engineersFilterFreqResps()
