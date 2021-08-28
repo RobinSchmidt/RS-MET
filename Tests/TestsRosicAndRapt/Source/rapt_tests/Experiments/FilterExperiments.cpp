@@ -282,7 +282,7 @@ void engineersFilterRingResp1()
   // filter parameters:
   double fs  = 44100;  // samplerate in Hz
   double fc  = 100;    // center or cutoff frequency in Hz
-  double bw  = 2.0;    // bandwidth in octaves     
+  double bw  = 2.0;    // bandwidth in octaves
   int    ord = 7;      // prototype order
 
   using EF   = rsEngineersFilter<double, double>;
@@ -299,13 +299,13 @@ void engineersFilterRingResp1()
   flt.setSampleRate(fs);
   flt.setFrequency(fc);
   flt.setBandwidth(bw);
-  flt.setMode(IIRD::BANDPASS);
   //flt.setMode(IIRD::LOWPASS);
   //flt.setMode(IIRD::HIGHPASS);
+  flt.setMode(IIRD::BANDPASS);
+  //flt.setMode(IIRD::BANDREJECT);
   //flt.setMode(IIRD::PEAK);
   //flt.setMode(IIRD::LOW_SHELV);
   //flt.setMode(IIRD::HIGH_SHELV);
-  //flt.setMode(IIRD::BANDREJECT);
   flt.setGain(10.0);
   flt.setRipple(1.0);
   flt.setStopbandRejection(20.0); 
@@ -324,25 +324,16 @@ void engineersFilterRingResp1()
   // -The function R_2(f) := abs(H'(f)) * f seems to make the plot symmetrical on a log-freq axis
   // -I think, R_1 is proportional to the absolute ringing time (in seconds) and R_2 is 
   //  proportional to the relative ringing time (in cycles) -> verify!
+  // -An elliptic bandpass or bandreject filter does indeed show strong spikes in the so defined 
+  //  "ringing response" around the passband edge frequencies
+
+  // -A narrow 1st order bandpass with bw = 0.2 has a broader ringing response peak at the center
+  //  frequency than the corresponding notch with otherwise equal settings, the height of the 
+  //  peaks is the same though. With a wide bandpass (bw >= 2), the single ringing maximum splits 
+  //  into two. The effect is very pronounced at bw = 3. This splitting happens at around bw = 5.2
+  //  for the corresponding notch.
 
   // ToDo:
-  // -Apply both functions to a series of two high-shelvers (maybe at 50 and 200 Hz) to see, if the
-  //  measured ringing amount is the same at both stairsteps or if it depends on the actual 
-  //  magnitude at the given frequency.
-  //  -to do this, it would be useful to have a function that creates an rsFilterSpecificationZPK
-  //   from an rsBiquadCascade object
-  //  -then we can set up e.g. two elliptic shelvers as biquad cascades (EngineersFilter is a 
-  //   subclass thereof), convert both into ZPK form, create the FilterSpecifications, combine them 
-  //   into a single one (maybe the class should implement the * operator, or provide a member 
-  //   function to create a series connection)
-  //  -maybe we can also do the combination with the biquad cascades ...maybe implement both
-  // -If it depends on magnitude and we want a magnitude independent measure, divide by abs(H). If
-  //  it does not depend on magnitude but we want a magnitude dependent measure, multiply by 
-  //  abs(H). The goal is to separate the aspect of "ringing time" from the aspect of 
-  //  "ringing gain". So we may get 2 more candidates:
-  //    R_3(f) = R_2(f) / abs(H)
-  //    R_4(f) = R_2(f) * abs(H)
-  //  and/or, we could also have based them on R_1(f)
   // -Try to find a function that, in the case of a resonator, represents the decay time of a given 
   //  freq. Maybe measure it by driving the filter at the frequency into steady state, turn the 
   //  input signal off (smoothly, to avoid a strong switch-off transient!) and measure the tail 
@@ -472,7 +463,7 @@ void engineersFilterRingResp2()
 void engineersFilterRingResp()
 {
   engineersFilterRingResp1();
-  engineersFilterRingResp2();
+  //engineersFilterRingResp2();
 }
 
 void engineersFilterFreqResps()
