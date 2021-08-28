@@ -95,6 +95,23 @@ void rsBiquadCascade<TSig, TCoef>::copySettingsFrom(rsBiquadCascade *other)
 }
 
 template<class TSig, class TCoef>
+void rsBiquadCascade<TSig, TCoef>::chainWith(const rsBiquadCascade<TSig, TCoef>& bq)
+{
+  int M = getNumStages();
+  int N = bq.getNumStages();
+  if(M+N > maxNumStages) {
+    rsError("Too many filter stages"); return; }
+  for(int i = 0; i < N; i++) {
+    b0[M+i] = bq.b0[i];
+    b1[M+i] = bq.b1[i];
+    b2[M+i] = bq.b2[i];
+    a1[M+i] = bq.a1[i];
+    a2[M+i] = bq.a2[i]; }
+  numStages = M+N;
+  // ToDo: maybe return a bool: 1 if successful, 0 otherwise (in the error branch)
+}
+
+template<class TSig, class TCoef>
 void rsBiquadCascade<TSig, TCoef>::turnIntoAllpass()
 {
   for(int i = 0; i < numStages; i++)

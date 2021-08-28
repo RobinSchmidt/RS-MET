@@ -329,6 +329,13 @@ void engineersFilterRingResp()
   // -Apply both functions to a series of two high-shelvers (maybe at 50 and 200 Hz) to see, if the
   //  measured ringing amount is the same at both stairsteps or if it depends on the actual 
   //  magnitude at the given frequency.
+  //  -to do this, it would be useful to have a function that creates an rsFilterSpecificationZPK
+  //   from an rsBiquadCascade object
+  //  -then we can set up e.g. two elliptic shelvers as biquad cascades (EngineersFilter is a 
+  //   subclass thereof), convert both into ZPK form, create the FilterSpecifications, combine them 
+  //   into a single one (maybe the class should implement the * operator, or provide a member 
+  //   function to create a series connection)
+  //  -maybe we can also do the combination with the biquad cascades ...maybe implement both
   // -If it depends on magnitude and we want a magnitude independent measure, divide by abs(H). If
   //  it does not depend on magnitude but we want a magnitude dependent measure, multiply by 
   //  abs(H). The goal is to separate the aspect of "ringing time" from the aspect of 

@@ -48,6 +48,13 @@ public:
   /** Copies the settings (numStages and the coefficients) from another instance of this class. */
   void copySettingsFrom(rsBiquadCascade *other);
 
+  /** Puts the given other biquad cascade in chain with this one. If this filter has currently M
+  stages and the other has N stages, this will increase the number of stages of this filter to M+N.
+  We will just copy the biquad coefficients of the other filter into our coefficients with a 
+  proper offset into our coefficient arrays, i.e. starting at the M-th one. The caller should
+  ensure that M+N is <= our maxNumStages variable. */
+  void chainWith(const rsBiquadCascade<TSig, TCoef>& other);
+
   /** Turns this biquad-cascade into an allpass filter that has the same poles as the original 
   filter. The zeros are moevd to positions that are reflections of the poles in the unit circle. */
   void turnIntoAllpass();
