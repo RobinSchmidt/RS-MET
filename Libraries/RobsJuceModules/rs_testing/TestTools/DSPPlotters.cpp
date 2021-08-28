@@ -499,7 +499,6 @@ template class FilterPlotter<double>;
 
 //=================================================================================================
 
-
 template <class T>
 void SpectrumPlotter<T>::plotDecibelSpectra(int signalLength, const T *x0, const T *x1,
   const T *x2, const T *x3, const T *x4, const T *x5, const T *x6, const T *x7, const T *x8,
@@ -621,11 +620,7 @@ void SpectrogramPlotter<T>::addSpectrogramData(GNUPlotter& p, int numFrames, int
   delete[] f;
 }
 
-
-
-
 //=================================================================================================
-
 
 template <class T>
 void SinusoidalModelPlotter<T>::addModelToPlot(
@@ -900,3 +895,22 @@ void GraphPlotter<T>::plotGraph2D(rsGraph<rsVector2D<T>, T>& m, std::vector<int>
 
 template class GraphPlotter<float>;  // move elsewhere
 template class GraphPlotter<double>;  // move elsewhere
+
+/*
+
+Ideas:
+-Maybe provide facilities to add markers to interesting points: zero-crossings, 
+ minima/maxima/saddles, inflection points, etc. Find them by performing numeric differentiation and
+ parabolic interpolation. The found points should also be added to the curve data. Maybe the 
+ markers could be something more fancy than just filled circles: at the zeros, we could place 
+ tangent segments, at the extrema, we could place osculating circles, at the inflection points, we 
+ could also place tangent segments. ...hmm - maybe at the zeros, simple markers are more 
+ appropriate. Maybe a circle outline and a tangent and normal to the function graph forming a sort
+ of graph-aligned crosshairs. Maybe write the nuemric values into the plot. Maybe this should be 
+ done on a lower level, i.e. in GNUPlotter. In 2D and 3D curves, we could draw a Frenet frame, 
+ perhaps in this case, the zero crossing of the coordinate functions are not so relevant because 
+ they have no relation to the local shape (translation of the whole curve will place them somewhere
+ else on the curve)
+
+
+*/

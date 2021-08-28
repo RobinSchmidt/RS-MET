@@ -175,8 +175,20 @@ inline void plotMagAndRingResponse(
   {
     mag[k]   = sqrt( re[k]* re[k] +  im[k]* im[k]);
     dmag[k]  = sqrt(dre[k]*dre[k] + dim[k]*dim[k]);
-    dmag[k] *= w[k];     // test - makes plots symmetric
-    //dmag[k] *= dmag[k];  // test - undo sqrt...hmm...nope
+
+    dmag[k] *= w[k];
+    // This makes plots symmetric. I think, when we do that, we get a relative ringing time, i.e.
+    // expressed in number-of-cycles instead of in seconds
+
+    //dmag[k] *= dmag[k];  
+    // test - undo sqrt...hmm...nope
+
+    //dmag[k] /= mag[k];
+    //dmag[k] /= (1 + mag[k]);  // ad-hoc remedy against the division by zero
+    // divide by magnitude to make measure independent of magnitude
+    // This seems to work well for allpole filters but has problems when we have zeros on the 
+    // imaginary axis (like in notch filters, elliptic filters, etc.). This is not surprising 
+    // because it implies a division by zero.
   }
 
   // plot:

@@ -352,7 +352,7 @@ void engineersFilterRingResp1()
   //  in series just raises the response to the power of N?, just like with magnitude? Or will it 
   //  multiply by N just like with phase?
   // -test with allpasses, pure delay, FIR filters (windowed sinc, boxcar)
-  // -test bandpass vs notch - with the same Q, their ring-responses should be similar
+  // -test a narrow bandpass vs a notch - with the same Q, their ring-responses should be similar
   // -write the findings up into a paper, maybe "Filter Ringing as Function of Frequency"
 
   // Questions:
@@ -444,22 +444,34 @@ void engineersFilterRingResp2()
   flt.chainWith(flt2);
 
   // Plot ringing responses:
-  //plotMagAndRingResponse(flt1, 5000, 10.0, 1000.0, fs, true); 
-  //plotMagAndRingResponse(flt2, 5000, 10.0, 1000.0, fs, true); 
-  plotMagAndRingResponse(flt,  5000, 10.0, 1000.0, fs, true); 
+  //plotMagAndRingResponse(flt1, 5000, 10.0, 1000.0, fs, true);
+  //plotMagAndRingResponse(flt2, 5000, 10.0, 1000.0, fs, true);
+  plotMagAndRingResponse(flt, 5000, 10.0, 1000.0, fs, true);
+  //plotImpulseResponse(   flt, 5000,  1.0);  // does not reveal much
 
   // Observations:
   // -With gain1 = 2.0, gain2 = 2.0:
   //  -When we don't divide by the magnitude, the 2nd peak is indeed roughly twice as high as the
   //   first. But that's really only very rough - the 1st peak is actually quite a bit higher than 
   //   half of the 2nd.
+  //  -When we do divide by the magintude, both peaks seem to be the same height. However, dividing 
+  //   by the magnitude seems to be a bad idea in general due to ptotential division-by-zero issues
+  //   which are apparent in elliptic filters (and probably notches, too). Dividing by 1+mag 
+  //   instead of just mag itself fixes the division by zero, but then the heights are still 
+  //   unequal here
   // -With gain1 = 2.0, gain2 = 0.5:
-  //  -When we don't divide by tze magnitude, both peak have equal height of around 2.2 and shape.
+  //  -When we don't divide by the magnitude, both peak have equal height of around 2.2 and 
+  //   equal shape.
+
+  // Conclusions:
+  // -Due to the potential issues with division by zero, it does not seem to be a good idea to 
+  //  divide by the magnitude response - at least not, when the filters features zeros. For allpole
+  //  filters, it could make sense, but we want a measure that is universally applicable.
 }
 
 void engineersFilterRingResp()
 {
-  //engineersFilterRingResp1();
+  engineersFilterRingResp1();
   engineersFilterRingResp2();
 }
 

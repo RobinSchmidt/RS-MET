@@ -68,3 +68,4 @@ void rsPlotDecibels(int N, T* x, T *mag)
   delete[] dB;
 }
 template void rsPlotDecibels(int N, double* x, double *mag);
+
