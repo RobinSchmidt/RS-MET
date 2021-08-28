@@ -5,7 +5,10 @@
 std::complex only admits float, double and long double for the underlying real type, but we 
 sometimes need other types of complex numbers, too. Especially important are SIMD types, which is
 the reason why we avoid branches in the implementation, because they do not tend to play nicely 
-with SIMD. Avoiding branches may at times scarifice numerical accuracy (todo: elaborate). */
+with SIMD. Avoiding branches may at times scarifice numerical accuracy (todo: elaborate). 
+
+Update: rsSqrt(rsComplex) currently actually involves branching - todo: implement it in a 
+branchless way */
 
 template<class T>
 class rsComplex
@@ -37,7 +40,7 @@ public:
   /** \name Operators */
 
   bool operator==(const rsComplex& z) const { return re == z.re && im == z.im; }
-  bool operator!=(const rsComplex& z) const { return !(re == im); }
+  bool operator!=(const rsComplex& z) const { return !(*this == z); }
 
   rsComplex operator+() const { return rsComplex(+re, +im); }
   rsComplex operator-() const { return rsComplex(-re, -im); }
@@ -173,6 +176,7 @@ inline rsComplex<T> operator/(const T &r, const rsComplex<T> &z)
 
 //=================================================================================================
 // Elementary math functions for complex numbers:
+// \todo: pass arguments by const reference, maybe move into extra file
 
 template<class T>
 rsComplex<T> rsConj(rsComplex<T> z)
@@ -218,6 +222,56 @@ rsComplex<T> rsPow(rsComplex<T> basis, rsComplex<T> exponent)
 {
   return rsExp(exponent * rsLog((rsComplex<T>)basis));
 }
+
+/** Under construction */
+template<class T>
+rsComplex<T> rsSqrt(const rsComplex<T>& z)
+{
+  // preliminary, based on std::complex:
+  std::complex<T> zs(z.re, z.im);
+  std::complex<T> ws = std::sqrt(zs);
+  return rsComplex<T>(ws.real(), ws.imag());
+
+  /*
+  T r = rsAbs(z);
+  T p = rsArg(z);
+  r  = rsSqrt(r);
+  p *= T(0.5);
+  rsComplex<T> w;
+  rsSinCos(p, &w.im, &w.re);  // set angle of w
+  w.re *= r; w.im *= r;       // set radius of w
+  return w;
+  */
+
+  /*
+  T r2 = T(0.5) * rsAbs(z);
+  T x2 = T(0.5) * z.re;
+  T s  = rsSign(z.im);
+  return rsComplex<T>(rsSqrt(r2 + x2), s * rsSqrt(r2 - x2));
+  // see: https://en.wikipedia.org/wiki/Square_root#Algebraic_formula
+  */
+
+  // ToDo:
+  // -Test performance and numerical accuracy, compare it to an implementation based on the 
+  //  polar form, i.e. sqrt(z) = sqrt(r) * exp(i*p/2) where r is the radius and p the phase of z.
+  // -Test behavior when z.im == 0. Wikipedia says, we need the sign function to return 1 in this
+  //  case whereas rsSign returns 0. But i think, that should not matter.
+  // -Actually the current implementation of rsSign uses a branch via the < comparison. That's 
+  //  undesirable for simd. But the bool value returned by "<" is then converted into T anyway. We
+  //  should replace the "<" by some sort of vector valued function that assigns 1 to all scalars
+  //  where the condition holds and 0 to all scalars where it doesn't hold
+}
+
+/** Computes the 2 roots (zeros) of the quadratic equation x^2 + p*x + q = 0. */
+template<class T>
+inline void rsSolveQuadraticEquation(
+  const rsComplex<T>& p, const rsComplex<T>& q, rsComplex<T>& root1, rsComplex<T>& root2)
+{
+  rsComplex<T> tmp = rsSqrt(T(0.25)*p*p - q);
+  root1 = T(-0.5)*p + tmp;
+  root2 = T(-0.5)*p - tmp;
+}
+
 
 
 // ToDo: 

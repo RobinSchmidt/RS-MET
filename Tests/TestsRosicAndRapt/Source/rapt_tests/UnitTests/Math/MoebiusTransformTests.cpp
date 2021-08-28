@@ -7,7 +7,7 @@ bool testMoebiusTransform()
   
   bool ok = true;
 
-  using Complex      = std::complex<double>;
+  using Complex      = rsComplex<double>;
   using MoebiusTrafo = rsMoebiusTransform<double>;
 
   Complex i(0, 1);     // imaginary unit
@@ -16,15 +16,15 @@ bool testMoebiusTransform()
   Complex det, fp1, fp2;
 
   // Test the rsSqrtC function (move this later to testComplexFunctions):
-  ok &= (sqrt(+3.0 + 4.0*i) == (2.0 + 1.0*i));
-  ok &= (sqrt(+3.0 - 4.0*i) == (2.0 - 1.0*i));
-  ok &= (sqrt(-3.0 + 4.0*i) == (1.0 + 2.0*i));
-  ok &= (sqrt(-3.0 - 4.0*i) == (1.0 - 2.0*i));
+  ok &= (rsSqrt(+3.0 + 4.0*i) == (2.0 + 1.0*i));
+  ok &= (rsSqrt(+3.0 - 4.0*i) == (2.0 - 1.0*i));
+  ok &= (rsSqrt(-3.0 + 4.0*i) == (1.0 + 2.0*i));
+  ok &= (rsSqrt(-3.0 - 4.0*i) == (1.0 - 2.0*i));
 
-  ok &= (sqrt(+8.0 + 6.0*i) == (3.0 + 1.0*i));
-  ok &= (sqrt(+8.0 - 6.0*i) == (3.0 - 1.0*i));
-  ok &= (sqrt(-8.0 + 6.0*i) == (1.0 + 3.0*i));
-  ok &= (sqrt(-8.0 - 6.0*i) == (1.0 - 3.0*i));
+  ok &= (rsSqrt(+8.0 + 6.0*i) == (3.0 + 1.0*i));
+  ok &= (rsSqrt(+8.0 - 6.0*i) == (3.0 - 1.0*i));
+  ok &= (rsSqrt(-8.0 + 6.0*i) == (1.0 + 3.0*i));
+  ok &= (rsSqrt(-8.0 - 6.0*i) == (1.0 - 3.0*i));
 
   // \todo use rsSqrt, use rsIsCloseTo with tolerance
 
@@ -44,7 +44,7 @@ bool testMoebiusTransform()
   // Test inversion (the inverse of M1 applied to w = M1(z) should recover z):
   MoebiusTrafo invM1 = M1.getInverse();
   w = invM1.getMappedNumber(w);
-  ok &= rsIsCloseTo(abs(z-w), 0., 1.e-14);
+  ok &= rsIsCloseTo(rsAbs(z-w), 0., 1.e-14);
 
   // Test composition (M1 composed with its inverse should give the identity):
   MoebiusTrafo idM = M1.followedBy(invM1);
@@ -59,9 +59,9 @@ bool testMoebiusTransform()
   // Test fixpoint computation:
   M1.getFixPoints(fp1, fp2);
   w = M1.getMappedNumber(fp1);
-  ok &= rsIsCloseTo( abs(fp1-w), 0., 1.e-14);
+  ok &= rsIsCloseTo( rsAbs(fp1-w), 0., 1.e-14);
   w = M1.getMappedNumber(fp2);
-  ok &= rsIsCloseTo( abs(fp2-w), 0., 1.e-14);
+  ok &= rsIsCloseTo( rsAbs(fp2-w), 0., 1.e-14);
 
   /*
   M1.normalize();

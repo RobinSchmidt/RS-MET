@@ -140,6 +140,7 @@ inline int rsRoundToInt(T x) { return (int) ::round(x); }
 /** Returns +1 for x > 0, -1 for x < 0 and 0 for x == 0. */
 template <class T>
 inline T rsSign(T x) { return T(T(0) < x) - (x < T(0)); }
+// This implementation may not be suitable for use in rsSqrt(rsComplex z). See comments there.
 
 /** Calculates sine and cosine of x - this may (depending on datatype, compiler and instruction 
 set) be more efficient than calling sin(x) and cos(x) seperately. */
