@@ -4,13 +4,17 @@
 /** This is a class for representing Moebius transformations in the complex plane. A Moebius
 transformation is a defined as a transformation of the general form:
 
-\f[ w = M(z) = \frac{a z + b}{c z + d} \f]
+  \f[ w = M(z) = \frac{a z + b}{c z + d} \f]
 
 where \f$ a, b, c, d \f$ are complex constants.
 
+
+
 \todo implement normalization, implement fixpoint calculation
       (we need the rsSqrtC function for that), test it
-\todo maybe make a baseclass ConformalMap  */
+\todo maybe make a baseclass rsConformalMap 
+
+*/
 
 template<class T>
 class rsMoebiusTransform
@@ -18,40 +22,30 @@ class rsMoebiusTransform
 
 public:
 
-  /** \name Construction/Destruction */
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
 
   /** Constructor. Initializes to the identity transform \f$ a = d = 1, b = c = 0 \f$. */
-  rsMoebiusTransform()
-  {
-    setCoefficients(1, 0, 0, 1);
-  }
+  rsMoebiusTransform() { setCoefficients(T(1), T(0), T(0), T(1)); }
 
   /** Constructor. Initializes the coefficients with the given values.  */
-  rsMoebiusTransform(std::complex<T> a, std::complex<T> b,
-    std::complex<T> c, std::complex<T> d)
-  {
-    setCoefficients(a, b, c, d);
-  }
+  rsMoebiusTransform(const std::complex<T>& a, const std::complex<T>& b,
+    const std::complex<T>& c, const std::complex<T>& d)
+  { setCoefficients(a, b, c, d); }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   void setCoefficients(std::complex<T> a, std::complex<T> b,
     std::complex<T> c, std::complex<T> d)
-  {
-    this->a = a;
-    this->b = b;
-    this->c = c;
-    this->d = d;
-  }
+  { this->a = a; this->b = b; this->c = c; this->d = d; }
 
   /* Normalizes this transform such that the determinant becomes unity. This will determine the
-  coefficients up to an inversion of sign.
-  not pinpoint the coefficients uniquely.  */
+  coefficients up to an inversion of sign. not pinpoint the coefficients uniquely.  */
   void normalize()
   {
-    std::complex<T> s, phi;
-    s = 1.0 / sqrt(getDeterminant());
+    std::complex<T> s, phi;                // what is phi for?
+    s = T(1) / sqrt(getDeterminant());
     a *= s;
     b *= s;
     c *= s;
@@ -70,26 +64,21 @@ public:
   }
   */
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Inquiry */
 
   inline std::complex<T> getA() const { return a; }
   inline std::complex<T> getB() const { return b; }
   inline std::complex<T> getC() const { return c; }
   inline std::complex<T> getD() const { return d; }
+  // remove, make a,b,c,d public
 
   /** Returns the determinant of this transform. */
-  std::complex<T> getDeterminant() const
-  {
-    return a*d - b*c;
-  }
+  std::complex<T> getDeterminant() const { return a*d - b*c; }
 
   /** Returns true when this transform is singular. This means that the whole complex plane will
   be collapsed the single point \f$ a/c \f$ by application of the trnasformation. */
-  bool isSingular() const
-  {
-    return getDeterminant() == std::complex<T>(0,0);
-  }
+  bool isSingular() const { return getDeterminant() == std::complex<T>(0,0); }
 
   /** Returns true when this Moebius transform is an identity transformation. The condition for
   this to be the case is \f$ a = d \neq 0, b = c = 0 \f$. */
@@ -133,7 +122,7 @@ public:
   "multiplier" of the transform and check its real and imaginary parts or something
   */
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Operators */
 
   /** Compares two transforms for equality. Equality is defined here as the condition, that all
@@ -156,8 +145,8 @@ public:
     return !(*this == t);
   }
 
-
-  /** \name Factory Functions */
+  //-----------------------------------------------------------------------------------------------
+  /** \name Factory Functions (move to Lifetime) */
 
   /** Returns an identity transform. */
   static const rsMoebiusTransform<T> identity()
@@ -165,7 +154,7 @@ public:
     return rsMoebiusTransform<T>(1, 0, 0, 1);
   }
 
-  /** Returns a transform that sacles a complex number \f$ z \f$ by some complex constant
+  /** Returns a transform that scales a complex number \f$ z \f$ by some complex constant 
   \f$ k \f$. */
   static const rsMoebiusTransform<T> complexScaling(std::complex<T> k)
   {
@@ -195,7 +184,7 @@ public:
     // \todo: optimize (by factoring out and precomputation of common subexpressions)
   }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Related Transformations */
 
   /** Returns a transformation that represets this transformation followed by the transformation
@@ -222,7 +211,7 @@ public:
     return r;
   }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Application */
 
   /** Applies the transform to the given complex number. */
@@ -241,13 +230,14 @@ public:
 
 protected:
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  std::complex<T> a, b, c, d;
+  std::complex<T> a, b, c, d;  // use rsComplex
 
 };
 
-//-----------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------
 // implementation:
 
 template<class T>
@@ -255,6 +245,6 @@ void rsMoebiusTransform<T>::applyTo(std::complex<T> &z) const
 {
   z = (a*z + b) / (c*z + d);
 }
-
+// move into class
 
 #endif

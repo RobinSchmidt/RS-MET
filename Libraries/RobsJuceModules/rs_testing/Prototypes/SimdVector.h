@@ -126,11 +126,8 @@ public:
 
 
 
-
-  T sum() const 
-  { 
-    return lo().sum() + hi().sum(); 
-  }
+  /** Computes the sum of all scalar elements in the vector. */
+  T sum() const { return lo().sum() + hi().sum(); }
 
 
   V operator+(CV b) const { return V(lo()+b.lo(), hi()+b.hi()); }
@@ -598,3 +595,7 @@ inline std::complex<rsSimdVector<T, N>> rsExp(const std::complex<rsSimdVector<T,
 
 // For elementary function evaluation, see:
 // https://www.kvraudio.com/forum/viewtopic.php?p=7161124#p7161124 exp/pow
+
+// VCVRack has also a template-based simd solution similar to the idea above:
+// https://github.com/VCVRack/Rack/blob/v1/include/simd/vector.hpp
+// https://github.com/VCVRack/Rack/blob/v1/include/simd/functions.hpp
