@@ -97,7 +97,7 @@ DeskPins
 
 
 
-ToDo: git/github, Rendering Sample Sets, Images, Videos
+ToDo: git/github, Rendering Sample Sets, Images, Videos, updating juce
 
 ---------------------------------------------------------------------------------------------------
 Notes:

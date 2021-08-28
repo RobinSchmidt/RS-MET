@@ -38,13 +38,22 @@ void SamplerModule::setGain(double newGain)
 void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
   bool markAsClean)
 {
+  File appDir = File(getApplicationDirectory());
+  appDir.setAsCurrentWorkingDirectory();
   // This is a bit quick-and dirty. On windows, the current working directory is the application
   // directory anyway, unless the app is started from the debugger, in which case it's the 
   // project directory. On the mac, the current working directory is root, i.e. "/", regardless
   // how the app is started. For commandline apps on mac started from the debugger, it's /build
-  // inside the project directory. ToDo: find a cleaner way to handle directories.
-  File appDir = File(getApplicationDirectory());
-  appDir.setAsCurrentWorkingDirectory();
+  // inside the project directory. ToDo: find a cleaner way to handle directories. Maybe instead of
+  // setting the current working directory, do something like engine.setCurrentSfzRootDirectory()
+  // which should set the directory, relative to which the passed paths are interpreted when
+  // loadFromSfz is called. hmm...when we set the sfz root director to the xml directory, we may 
+  // get porblems when setStateFromXml is called in a total recall situation - in this case, there
+  // is no xml file, but we still need some way to know where to look for the sfz file. Maybe the 
+  // xml itself should specify the sfz root folder in an attribute? If the sfz is not found, open
+  // a dialog that allows the user to locate it. Store the location somewhere and in the next call
+  // to getStateAsXml, write it into the xml, such that next time, the updated path is used.
+
 
   // Recall the global playback parameters such as gain, max num layers, max polyphony, resampling 
   // quality, etc.:
@@ -295,7 +304,7 @@ Maybe the xml presets for the SamplerModule should contain the filename for an s
 be loaded plus some global settings such as the maximum number of layers, the resampling algo, etc. 
 Don't use the xml preset to store the actual sfz opcodes. Preset loading would become a nested 
 process the outer level is the xml and the inner level is the sfz. The GUI should provide an 
-additional set of load/save widgets for the sfz.
+additional set of load/save widgets for the sfz and maybe an sfz editor.
 
 
 

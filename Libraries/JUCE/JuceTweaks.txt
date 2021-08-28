@@ -10,6 +10,7 @@ To make it work, i had to tweak/hack the juce library a bit:
 to update to a new version of juce, the following steps are necessary:
 
 -download latest version of juce
+-carefully read the relevant parts of BREAKING-CHANGES.txt
 -create a new git branch for the update and switch to it
 -replace content of the JUCE/modules folder (maybe keep the juce_VSTInterface.h)
 
