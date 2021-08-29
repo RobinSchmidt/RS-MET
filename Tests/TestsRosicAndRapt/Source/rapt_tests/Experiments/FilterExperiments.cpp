@@ -283,7 +283,7 @@ void engineersFilterRingResp1()
   double fs  = 44100;  // samplerate in Hz
   double fc  = 100;    // center or cutoff frequency in Hz
   double bw  = 2.0;    // bandwidth in octaves
-  int    ord = 7;      // prototype order
+  int    ord = 5;      // prototype order
 
   using EF   = rsEngineersFilter<double, double>;
   using PTD  = rsPrototypeDesigner<double>;
@@ -438,14 +438,20 @@ void engineersFilterRingResp2()
   //plotMagAndRingResponse(flt1, 5000, 10.0, 1000.0, fs, true);
   //plotMagAndRingResponse(flt2, 5000, 10.0, 1000.0, fs, true);
   plotMagAndRingResponse(flt, 5000, 10.0, 1000.0, fs, true);
-  //plotImpulseResponse(   flt, 5000,  1.0);  // does not reveal much
+  plotImpulseResponse(   flt, 5000, 1.0);
+
+  // Plot responses of an allpass version of the filter:
+  flt.turnIntoAllpass();
+  plotMagAndRingResponse(flt, 5000, 10.0, 1000.0, fs, true);
+  plotImpulseResponse(   flt, 5000, 1.0);
+
 
   // Observations:
   // -With gain1 = 2.0, gain2 = 2.0:
   //  -When we don't divide by the magnitude, the 2nd peak is indeed roughly twice as high as the
   //   first. But that's really only very rough - the 1st peak is actually quite a bit higher than 
   //   half of the 2nd.
-  //  -When we do divide by the magintude, both peaks seem to be the same height. However, dividing 
+  //  -When we do divide by the magnitude, both peaks seem to be the same height. However, dividing 
   //   by the magnitude seems to be a bad idea in general due to ptotential division-by-zero issues
   //   which are apparent in elliptic filters (and probably notches, too). Dividing by 1+mag 
   //   instead of just mag itself fixes the division by zero, but then the heights are still 
@@ -453,17 +459,32 @@ void engineersFilterRingResp2()
   // -With gain1 = 2.0, gain2 = 0.5:
   //  -When we don't divide by the magnitude, both peak have equal height of around 2.2 and 
   //   equal shape.
-
+  // -Turning the filter into an allpass also yields a symmetric response. Whether we divide by the
+  //  magnitude or not does not matter in this case (obviously, since the magnitude is 1 
+  //  everywhere). But what would that do to FIR filters?
+  //  -the ringing amount of the allpass is around 1 (in 0.99..1.015)
+  //  -the impulse response looks initially more like chirping than ringing (i.e. a frequency 
+  //   sweepdown) and the later section looks rather irregular
+  //
   // Conclusions:
   // -Due to the potential issues with division by zero, it does not seem to be a good idea to 
   //  divide by the magnitude response - at least not, when the filters features zeros. For allpole
   //  filters, it could make sense, but we want a measure that is universally applicable.
+  //
+  // Questions:
+  // -What about the 2nd derivative? Maybe instead of dividing by the magnitude, we could divide by 
+  //  a sum of magnitude and 2nd derivative? Maybe it happens that the 2nd derivative is nonzero 
+  //  whenever the magnitude is zero and that could avoid the division-by-zero problems? 
+  //  -> plot 2nd derivative
+  // -What about the integral? could that reveal something useful, too? -> plot it!
+  //  -> maybe plot (magnitudes of) derivatives and integrals of various orders and try to figure
+  //  out if these plots can reveal anything useful
 }
 
 void engineersFilterRingResp()
 {
   engineersFilterRingResp1();
-  //engineersFilterRingResp2();
+  engineersFilterRingResp2();
 }
 
 void engineersFilterFreqResps()

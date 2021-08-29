@@ -185,10 +185,10 @@ inline void plotMagAndRingResponse(
 
     //dmag[k] /= mag[k];
     //dmag[k] /= (1 + mag[k]);  // ad-hoc remedy against the division by zero
-    // divide by magnitude to make measure independent of magnitude
-    // This seems to work well for allpole filters but has problems when we have zeros on the 
-    // imaginary axis (like in notch filters, elliptic filters, etc.). This is not surprising 
-    // because it implies a division by zero.
+    // divide by magnitude to make measure independent of magnitude. This seems to work well for 
+    // allpole filters but has problems when we have zeros on the imaginary axis (like in notch 
+    // filters, elliptic filters, etc.). This is not surprising because it implies a division by 
+    // zero.
   }
 
   // plot:
@@ -200,7 +200,8 @@ inline void plotMagAndRingResponse(
   //  the lower bandedge does indeed ring longer. Maybe the multiplication by w[k] gives the number 
   //  of cycles of ringing, not the absolute time?
   // -I think, the plotting code normalizes the data internally. The plots both hit 1.0 but i think
-  //  the data does not necessarily.
+  //  the data does not necessarily. ...hmm - nope - sometimes, it does not hi 1.0. That seems to 
+  //  be a coincidence that happens in some cases.
 
   // ToDo:
   // -Try if it makes a difference, if we do the multiplication by w[k] before computing the 
