@@ -3092,83 +3092,15 @@ void meshHessianViaTaylorErrorVsDistance()
   int dummy = 0;
 }
 
-
-
-void meshLaplacianAlgorithms1()
+void vertexMeshHessian()
 {
-  // Compares two methods of computing the Laplacian: by evaluating the Hessian and then taking its 
-  // trace (that's the brute force, inefficient way) and using the difference of the value at the 
-  // vertex and the (weighted) average of its neighborhood.
-
-  using Vec2 = rsVector2D<double>;
-  using Vec  = std::vector<double>;
-  using ND   = rsNumericDifferentiator<double>;
-
-  std::function<double(double, double)> f, f_xx, f_yy;
-  double a = 0.75;
-  double b = 0.5;
-  f    = [&](double x, double y)->double { return      sin(a*x) *     exp(b*y); };
-  f_xx = [&](double x, double y)->double { return -a*a*sin(a*x) *     exp(b*y); };
-  f_yy = [&](double x, double y)->double { return      sin(a*x) * b*b*exp(b*y);  };
-  // We have introduced factors a,b, because if they are both 1, the Laplacian happens to become 
-  // identically zero which is no good test case
-
-  int numSides = 5;
-  double h = 1./8;
-  Vec2 x0(1, 1);
-  rsGraph<Vec2, double> mesh;
-
-  createMeshForHessianEstimation(mesh, numSides, h, x0);
-  GraphPlotter<double> meshPlotter;
-  //meshPlotter.plotGraph2D(mesh, {0});
-
-  int N = mesh.getNumVertices();
-
-  // Compute Laplacian by brute force:
-  Vec u_xx(N), u_xy(N), u_yx(N), u_yy(N);
-  meshHessian(mesh, f, u_xx, u_xy, u_yx, u_yy);
-  Vec u_L1 = u_xx + u_yy;
-
-  // Compute Laplacian by neighborhood average:
-  Vec u(N), u_L2(N);
-  fillMeshValues(mesh, f, u);
-  ND::laplacian2D_2(mesh, u, u_L2); // this function works only for regular neighborhood geometries
-
-  // Compute Laplacian by convenience function:
-  Vec u_L3(N);
-  ND::laplacian2D(mesh, &u[0], &u_L3[0]);
-
-  // Compute true value and errors:
-  double L  = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value
-  double e1 = L - u_L1[0];                          // error of first estimate
-  double e2 = L - u_L2[0];                          // error of second estimate
-  double e3 = L - u_L3[0];                          // same as e1 as it should be
-
-  // Observations:
-  // -u_L2[0] is more accurate than u_L1[0], so the more efficient algo is also more accurate
-  // -unfortunately, that seems to be the case only if the neighbors are all the same distance
-  //  away from the center vertex (see other experiment below) - can the formula be generalized to 
-  //  work with more general neighborhood geometries?
-  // -the basic idea is that the Laplacian measures by how much the value differs from its local
-  //  neighborhood
-
-
-  // ToDo:
-  // -test both algorithms with less regular geometries - maybe create random neighborhoods and 
-  //  check, if the fast algo always produces better results than the slow
-  //  ...hmm - that raises the question what sort of neighborhoods the neighbors should have 
-  //  - maybe instead of estimating 1st derivatives, assign them to exact values - this should make
-  //  the Hessian estimate more accurate, so we may need a less restrictive requirement
-
-  // see: https://en.wikipedia.org/wiki/Discrete_Laplace_operator
-
-  int dummy = 0;
+  meshHessianErrorVsDistance();
+  meshHessianViaTaylorErrorVsDistance();
 }
-
 
 // still tyring to figure out the right formula:
 template<class T>
-void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, 
+void laplacian2D_1(const rsGraph<rsVector2D<T>, T>& mesh, 
   const std::vector<T>& u, std::vector<T>& L)
 {
   using Vec2 = rsVector2D<T>;
@@ -3261,6 +3193,25 @@ void laplacian2D_2(const rsGraph<rsVector2D<T>, T>& mesh,
 // unrelated, but could be useful for mesh-generation:
 // https://en.wikipedia.org/wiki/Laplacian_smoothing
 
+template<class T>
+void laplacian2D_3(const rsGraph<rsVector2D<T>, T>& mesh,
+  const std::vector<T>& u, std::vector<T>& L)
+{
+  // 3rd attempt, idea:
+  // -We first estimate the gradient at the center point using rsNumericDifferentiator::gradient2D.
+  // -From this gradient, we compute the directional derivatives into the directions of the 
+  //  neighbors (via a dot product).
+  // -From the neighbor's value together with the directional derivative, we try to predict the
+  //  center value (or maybe the other way around: try to predict the neighbor value from the 
+  //  center value and directional derivative).
+  // -The error between prediction and actual value is computed.
+  // -The (weighted) average over all neighbors of this prediction error is our estimate for the 
+  //  Laplacian.
+
+  rsFill(L, T(0));  // preliminary
+}
+
+
 /*
 void meshLaplacianErrorVsDistance()
 {
@@ -3270,6 +3221,78 @@ void meshLaplacianErrorVsDistance()
 
 }
 */
+
+void meshLaplacianAlgorithms1()
+{
+  // Compares two methods of computing the Laplacian: by evaluating the Hessian and then taking its 
+  // trace (that's the brute force, inefficient way) and using the difference of the value at the 
+  // vertex and the (weighted) average of its neighborhood.
+
+  using Vec2 = rsVector2D<double>;
+  using Vec  = std::vector<double>;
+  using ND   = rsNumericDifferentiator<double>;
+
+  std::function<double(double, double)> f, f_xx, f_yy;
+  double a = 0.75;
+  double b = 0.5;
+  f    = [&](double x, double y)->double { return      sin(a*x) *     exp(b*y); };
+  f_xx = [&](double x, double y)->double { return -a*a*sin(a*x) *     exp(b*y); };
+  f_yy = [&](double x, double y)->double { return      sin(a*x) * b*b*exp(b*y);  };
+  // We have introduced factors a,b, because if they are both 1, the Laplacian happens to become 
+  // identically zero which is no good test case
+
+  int numSides = 5;
+  double h = 1./8;
+  Vec2 x0(1, 1);
+  rsGraph<Vec2, double> mesh;
+
+  createMeshForHessianEstimation(mesh, numSides, h, x0);
+  GraphPlotter<double> meshPlotter;
+  //meshPlotter.plotGraph2D(mesh, {0});
+
+  int N = mesh.getNumVertices();
+
+  // Compute Laplacian by brute force, i.e. computing the full Hessian and then summing the 
+  // diagonal elements:
+  Vec u_xx(N), u_xy(N), u_yx(N), u_yy(N);
+  meshHessian(mesh, f, u_xx, u_xy, u_yx, u_yy);
+  Vec u_L1 = u_xx + u_yy;
+
+  // Compute Laplacian by neighborhood average:
+  Vec u(N), u_L2(N);
+  fillMeshValues(mesh, f, u);
+  ND::laplacian2D_2(mesh, u, u_L2); // this function works only for regular neighborhood geometries
+
+  // Compute Laplacian by convenience function:
+  Vec u_L3(N);
+  ND::laplacian2D(mesh, &u[0], &u_L3[0]);
+
+  // Compute true value and errors:
+  double L  = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value
+  double e1 = L - u_L1[0];                          // error of first estimate
+  double e2 = L - u_L2[0];                          // error of second estimate
+  double e3 = L - u_L3[0];                          // same as e1 as it should be
+
+  // Observations:
+  // -u_L2[0] is more accurate than u_L1[0], so the more efficient algo is also more accurate
+  // -unfortunately, that seems to be the case only if the neighbors are all the same distance
+  //  away from the center vertex (see other experiment below) - can the formula be generalized to 
+  //  work with more general neighborhood geometries?
+  // -the basic idea is that the Laplacian measures by how much the value differs from its local
+  //  neighborhood
+
+
+  // ToDo:
+  // -test both algorithms with less regular geometries - maybe create random neighborhoods and 
+  //  check, if the fast algo always produces better results than the slow
+  //  ...hmm - that raises the question what sort of neighborhoods the neighbors should have 
+  //  - maybe instead of estimating 1st derivatives, assign them to exact values - this should make
+  //  the Hessian estimate more accurate, so we may need a less restrictive requirement
+
+  // see: https://en.wikipedia.org/wiki/Discrete_Laplace_operator
+
+  int dummy = 0;
+}
 
 void meshLaplacianAlgorithms2()
 {
@@ -3362,15 +3385,19 @@ void meshLaplacianAlgorithms2()
   //  sum at the end by the maximum of the squared distances - this will also save a lot of 
   //  divisions
 
-  // try it with the new, experimental implementation:
-  laplacian2D(mesh, u, u_L);
+  // try it with the new, experimental implementations:
+  laplacian2D_1(mesh, u, u_L);
   double eh12_1 = L - u_L[0]; 
 
-
   laplacian2D_2(mesh, u, u_L);
-  double eh12_2 = L - u_L[0]; 
+  double eh12_2 = L - u_L[0];    // much better than the 1st
 
-  double ratio = L / u_L[0]; 
+  laplacian2D_3(mesh, u, u_L);
+  double eh12_3 = L - u_L[0];    // not yet implemented
+
+  // shouldn't the error be u_L[0] - L, i.e. estimate minus true?
+
+  //double ratio = L / u_L[0]; // why is this relevant?
 
   int dummy = 0;
 
@@ -3403,15 +3430,16 @@ void meshLaplacianAlgorithms2()
     }
   }
   */
-
 }
 
-void vertexMeshHessian()
+
+
+
+
+void vertexMeshLaplacian()
 {
-  //meshHessianErrorVsDistance();
-  meshHessianViaTaylorErrorVsDistance();
-  //meshLaplacianAlgorithms1();
-  //meshLaplacianAlgorithms2();
+  meshLaplacianAlgorithms1();
+  meshLaplacianAlgorithms2();
 }
 
 // End of mesh derivatives

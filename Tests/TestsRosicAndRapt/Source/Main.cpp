@@ -57,8 +57,8 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
-  ok &= runUnitTestsRosic();
+  //ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.
@@ -143,7 +143,7 @@ int main(int argc, char* argv[])
   //biDirectionalStateInit();
   //biquadTail();
   //complementaryFiltersIIR();
-  engineersFilterRingResp();   // ringing response (experimental idea)
+  //engineersFilterRingResp();   // ringing response (experimental idea)
   //engineersFilterFreqResps();
   //firstOrderFilters();
   //ladderResonanceManipulation();
@@ -248,7 +248,7 @@ int main(int argc, char* argv[])
 
 
   // Math:
-  //bandMatrix();                       // under construction
+  //bandMatrix();                           // under construction
   //pentaDiagnonalMatrix();
   //pentaDiagnonalMatrix2();
   //minSqrdDifsForFixSums();
@@ -259,23 +259,24 @@ int main(int argc, char* argv[])
 
   //chebychevInterpolant();
   //cubicSplines();
-  //cubicInterpolationNonEquidistant();   // move to unit tests
+  //cubicInterpolationNonEquidistant();     // move to unit tests
   //hyperbolicFunctions();
   //splineInterpolationNonEquidistant();
   //rationalInterpolation();
   //splineInterpolationAreaNormalized();
 
   //numericDifferentiation();
-  //numericIntegration(); // a.k.a. numeric "quadrature"
-  //nonUniformArrayDiffAndInt();  // numeric differentiation and integration of sampled data
-  //uniformArrayDiffAndInt();  // under construction
+  //numericIntegration();                   // a.k.a. numeric "quadrature"
+  //nonUniformArrayDiffAndInt();            // differentiation and integration of sampled data
+  //uniformArrayDiffAndInt();               // under construction
   //vertexMeshGradient();
   //vertexMeshHessian();
+  vertexMeshLaplacian();
 
-  //convolvePolynomials();   // obsolete
+  //convolvePolynomials();                  // obsolete
   //convolvePiecewise();
   //shiftPolynomial();
-  ////void stretchPolynomial();  // commented in header
+  ////void stretchPolynomial();             // commented in header
   //monotonicPolynomials();
   //mixedPolynomialRoots();
   //parametricBell();
@@ -290,7 +291,7 @@ int main(int argc, char* argv[])
   //bernoulliNumbers();
   //sequenceSquareRoot();
   //conicSystem();
-  ////logisticMapNoise(); // takes long to compute
+  ////logisticMapNoise();                   // takes long to compute
   //bigFloatErrors();
   //primeRecursion();
   ////primeSieveSchmidt1(); // crashes
@@ -298,7 +299,7 @@ int main(int argc, char* argv[])
   //primeSieveAtkin();
   ////primeSieve();  // crashes
   //primeDistribution();
-  ////numberTheoreticTransform(); // triggers assert
+  ////numberTheoreticTransform();           // triggers assert
   //variousFunctions();
   //functionOperators();
 

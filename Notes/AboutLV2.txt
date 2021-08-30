@@ -120,3 +120,23 @@ Programming LV2 Plugins: https://lv2plug.in/book/ https://lv2plug.in/pages/devel
 
 
 Code Repository: https://github.com/lv2/lv2
+
+---------------------------------------------------------------------------------------------------
+Links for building LV2 plugins with JUCE:
+
+Tutorial:
+https://jatinchowdhury18.medium.com/building-lv2-plugins-with-juce-and-cmake-d1f8937dbac3
+
+JUCE forks with LV2 support:
+https://github.com/lv2-porting-project/JUCE
+https://github.com/DISTRHO/JUCE, https://github.com/DISTRHO/DISTRHO-Ports
+
+Forum discussions:
+https://forum.juce.com/t/juce-lv2-plugin-wrapper/14209
+https://github.com/juce-framework/JUCE/issues/123
+
+...looks like i should first switch to cmake for building plugins, which is required since JUCE 6.x
+anyway:
+https://github.com/juce-framework/JUCE/blob/master/docs/CMake%20API.md
+
+

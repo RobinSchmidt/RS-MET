@@ -1727,12 +1727,25 @@ public:
   void reserve(int numElements) { elements.reserve(numElements); }
 
 
-  /** Fast insertion of an element. Just appends it to the end. */
-  void insert(int i, int j, T val)
+  /** Fast insertion of an element. It just appends it to the end without any regard to checking, 
+  whether or not such an element already exists (that caller should be sure, that it doesn't) and
+  without taking care of inserting it at the right position. It's much faster to build a matrix 
+  using this method as opposed to using set() but it must be used with care because you may end up
+  with an inconsistent state of the object. To restore consistency, you may have to call 
+  sortElements (not yet implemented) afterwards to make sure that it's correctly sorted because 
+  otherwise, random access of elements will not work. If all you want is to compute matrix-vector
+  products, you actually do not need random access, but it's nevertheless good practice to keep the
+  object in a consistent state anyway...tbc... */
+  void appendFastAndUnsafe(int i, int j, T val)
   {
     Element e(i, j, T(val));
     elements.push_back(e);
   }
+  // todo:
+  // -implement sortElements
+  // -maybe rename to insertFastUnsafe or appendFastAndUnsafe
+  // -add a method isConsistent() which can be used by client code to check object consistency 
+  //  after using fast and usafe methods to build a matrix
 
   /** Sets the element at position (i,j) to the given new value. This may lead to insertion of a 
   new element (if there's no element yet at i,j) or removal of existing elements (if val is 
@@ -1757,6 +1770,12 @@ public:
   // -element removal needs tests
   // -maybe provide an add method that accumulates into an already existing weight instead of
   //  overwriting it
+
+  void sortElements()
+  {
+    std::sort(elements.begin(), elements.end());
+    //RAPT::rsHeapSort(&elements[0], getNumElements()); // linker error
+  }
 
 
 

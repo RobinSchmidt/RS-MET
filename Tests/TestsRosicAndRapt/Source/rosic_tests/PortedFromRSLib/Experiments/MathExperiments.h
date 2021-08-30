@@ -36,6 +36,7 @@ void uniformArrayDiffAndInt();
 void iteratedNumDiff();
 void vertexMeshGradient();
 void vertexMeshHessian();
+void vertexMeshLaplacian();
 
 void convolvePolynomials();
 void convolvePiecewise();
