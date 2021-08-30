@@ -1720,23 +1720,18 @@ public:
     return N;
   }
 
-
   //-----------------------------------------------------------------------------------------------
-  /** \name Accessors. Element access via these is slow, so they should probably be only used, when 
-  a matrix is built once and for all as a precomputation. When the matrix is used later e.g. in an
-  iterative linear solver, you will probably want to use more efficient functions like product. */
+  // \name Setup
 
-  /** Read access. */
-  T operator()(int i, int j) 
-  { 
-    Element e(i, j, T(0));
-    if(elements.empty()) 
-      return T(0);
-    size_t k = (size_t) rsArrayTools::findSplitIndex(&elements[0], getNumElements(), e);
-    if(k >= elements.size() || e < elements[k])
-      return T(0);
-    else
-      return elements[k].value;
+  /** Reserves storage space for the given number of elements. */
+  void reserve(int numElements) { elements.reserve(numElements); }
+
+
+  /** Fast insertion of an element. Just appends it to the end. */
+  void insert(int i, int j, T val)
+  {
+    Element e(i, j, T(val));
+    elements.push_back(e);
   }
 
   /** Sets the element at position (i,j) to the given new value. This may lead to insertion of a 
@@ -1758,26 +1753,60 @@ public:
       else
         rsRemove(elements, k); }
   }
-  // todo: element removal needs tests
+  // todo: 
+  // -element removal needs tests
+  // -maybe provide an add method that accumulates into an already existing weight instead of
+  //  overwriting it
 
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Accessors. Element access via these is slow, so they should probably be only used, when 
+  a matrix is built once and for all as a precomputation. When the matrix is used later e.g. in an
+  iterative linear solver, you will probably want to use more efficient functions like product. */
+
+  /** Read access. */
+  T operator()(int i, int j) 
+  { 
+    Element e(i, j, T(0));
+    if(elements.empty()) 
+      return T(0);
+    size_t k = (size_t) rsArrayTools::findSplitIndex(&elements[0], getNumElements(), e);
+    if(k >= elements.size() || e < elements[k])
+      return T(0);
+    else
+      return elements[k].value;
+  }
 
   //-----------------------------------------------------------------------------------------------
 
   /** Computes the matrix-vector product y = A*x where x must be numCols long and y must be numRows 
   long. The complexity is O(N+K) where N is the number of rows and K is the number of nonzero 
   elements. */
-  void product(const T* x, T* y) const
+  template<class Tx, class Ty>
+  void product(const Tx* x, Ty* y) const
   {
-    rsAssert(x != y, "Can't be used in place");
+    rsAssert((void*)x != (void*)y, "Can't be used in place");
     for(int j = 0; j < numRows; j++)
-      y[j] = T(0);
+      y[j] = Ty(0);
     for(size_t k = 0; k < elements.size(); k++)
-      y[elements[k].i] += elements[k].value * x[elements[k].j];
+      y[elements[k].i] += Ty(elements[k].value * x[elements[k].j]);
   }
+  //void product(const T* x, T* y) const
+  //{
+  //  rsAssert(x != y, "Can't be used in place");
+  //  for(int j = 0; j < numRows; j++)
+  //    y[j] = T(0);
+  //  for(size_t k = 0; k < elements.size(); k++)
+  //    y[elements[k].i] += elements[k].value * x[elements[k].j];
+  //}
   // -maybe include optional strideX, strideY parameters - or maybe implement a separate function 
   //  with strides
   // -how can we implement the product with the transposed matrix? would it be
   //    y[elements[k].j] += elements[k].value * x[elements[k].i];
+
+
+
 
 
   /** Computes the matrix-vector product y = A*x and returns the maximum absolute value of the 
@@ -1890,7 +1919,6 @@ protected:
   
   std::vector<Element> elements;
 
-
 };
 // ToDo: 
 // -Make another implementation (with the same interface) that stores rows. This saves one 
@@ -1900,8 +1928,9 @@ protected:
 //  operation in iterative linear solvers, which are the main application of sparse matrices.
 // -Maybe templatize also on the integer type used for indices i,j. Users may want to use short
 //  integers (16 bit) to save even more storage space, especially when T is float because then 
-//  one entry is exactly 64 bits long). Maybe use TIdx, TVal for the two template parameters.
-// -make a class rsSparseTensor
+//  one entry is exactly 2*16+32 = 64 bits long). Maybe use TIdx, TVal for the two template 
+//  parameters.
+// -Make a class rsSparseTensor
 
 template<class T>
 rsSparseMatrix<T> rsSparseMatrix<T>::fromDense(const rsMatrix<T>& A, T tolRel)
