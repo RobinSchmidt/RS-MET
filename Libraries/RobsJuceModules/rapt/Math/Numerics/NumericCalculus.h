@@ -485,6 +485,13 @@ public:
     gradient2D(mesh, &u[0], &u_x[0], &u_y[0]);
   }
 
+  static rsVector2D<T> gradient2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, int i)
+  {
+    rsVector2D<T> g;
+    gradient2D(mesh, &u[0], i, &g.x, &g.y);
+    return g;
+  }
+
   static void laplacian2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, T* L)
   { std::vector<T> wrk(3*mesh.getNumVertices()); laplacian2D(mesh, u, L, &wrk[0]); }
   // allocates

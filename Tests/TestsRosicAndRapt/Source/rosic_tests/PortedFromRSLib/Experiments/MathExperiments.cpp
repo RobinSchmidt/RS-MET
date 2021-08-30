@@ -3176,7 +3176,7 @@ void laplacian2D_2(const rsGraph<rsVector2D<T>, T>& mesh,
     T mean = uSum/wSum;
     L[i]   = mean - u[i];
 
-    L[i] *= T(12)/dMax;        
+    L[i] *= T(12)/dMax;
     // found empricially, seems to work for numSides = 6
   }
 }
@@ -3209,6 +3209,37 @@ void laplacian2D_3(const rsGraph<rsVector2D<T>, T>& mesh,
   //  Laplacian.
 
   rsFill(L, T(0));  // preliminary
+
+  using ND   = rsNumericDifferentiator<T>;
+
+  using Vec2 = rsVector2D<T>;
+  int N = mesh.getNumVertices();
+  rsAssert((int) u.size() == N);
+  rsAssert((int) L.size() == N);
+  for(int i = 0; i < N; i++)                       // loop over all vertices, i: vertex index
+  {
+    Vec2 vi = mesh.getVertexData(i);               // location of current vertex i
+    Vec2 gi = ND::gradient2D(mesh, &u[0], i);      // gradient estimate at vertex i
+    T wSum(T(0));                                  // sum of weights
+    T eSum(T(0));                                  // sum of prediction errors
+
+    for(int k = 0; k < mesh.getNumEdges(i); k++)   // loop over vi's neighbors
+    {
+      int  j   = mesh.getEdgeTarget(i, k);         // index of current neighbor
+      T    w   = mesh.getEdgeData(i, k);           // edge weight
+      Vec2 vj  = mesh.getVertexData(j);            // location of current neighbor
+      Vec2 dji = vj - vi;                          // difference vector
+      T    gij = rsDot(gi, dji);                   // directional derivative in direction dji
+      T    pj  = u[i] + gij;                       // prediction of u[j] from u[i] and gij
+      T    uj  = u[j];                             // actual value of u[j]
+      T    ej  = uj - pj;                          // error = actual - predicted
+      eSum += w*ej;                                // accumulate error
+      wSum += w;                                   // accumulate weights
+    }
+
+    T eAvg = eSum / wSum;                          // weighted average of errors...
+    L[i]   = eAvg;                                 // ...is estimate for Laplacian
+  }
 }
 
 
@@ -3358,8 +3389,8 @@ void meshLaplacianAlgorithms2()
     Vec2 dv = vk - x0;
     mesh.setVertexData(k, x0 + 0.5*dv);
   }
-  assignEdgeWeights(mesh, p);  // recompute mesh-weights according to new distances
-  meshPlotter.plotGraph2D(mesh, {0});
+  assignEdgeWeights(mesh, p);            // recompute mesh-weights according to new distances
+  //meshPlotter.plotGraph2D(mesh, {0});  // plot the mesh
   fillMeshValues(mesh, f, u);
   ND::laplacian2D_2(mesh, u, u_L);
   //laplacian2D(mesh, u, u_L);
@@ -3393,7 +3424,7 @@ void meshLaplacianAlgorithms2()
   double eh12_2 = L - u_L[0];    // much better than the 1st
 
   laplacian2D_3(mesh, u, u_L);
-  double eh12_3 = L - u_L[0];    // not yet implemented
+  double eh12_3 = L - u_L[0];    // doesn't seem to work
 
   // shouldn't the error be u_L[0] - L, i.e. estimate minus true?
 
