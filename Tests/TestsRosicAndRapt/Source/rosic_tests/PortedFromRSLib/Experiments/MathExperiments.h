@@ -80,6 +80,8 @@ void expPolyIterator();
 void reciprocalIterator();
 
 //-------------------------------------------------------------------------------------------------
+// Functions for delaing with meshes - their implementations are in a a separate .cpp file 
+// MeshExperiments.cpp because the amount of code is quite large
 
 void vertexMeshGradient();
 void vertexMeshHessian();
