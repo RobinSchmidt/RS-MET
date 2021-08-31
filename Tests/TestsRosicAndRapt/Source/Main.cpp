@@ -270,9 +270,9 @@ int main(int argc, char* argv[])
   //nonUniformArrayDiffAndInt();            // differentiation and integration of sampled data
   //uniformArrayDiffAndInt();               // under construction
 
-  vertexMeshGradient();                   // implementations are in MeshExperiments.cpp
+  //vertexMeshGradient();                   // implementations are in MeshExperiments.cpp
   vertexMeshHessian();
-  vertexMeshLaplacian();
+  //vertexMeshLaplacian();
 
   //convolvePolynomials();                  // obsolete
   //convolvePiecewise();

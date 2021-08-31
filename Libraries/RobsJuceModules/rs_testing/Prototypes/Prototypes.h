@@ -25,6 +25,7 @@ using namespace RAPT;
 #include "SimdVector.h"
 #include "SineParameterEstimator.h"
 #include "OdeSolver.h"
+#include "MeshStuff.h"
 #include "AdditiveSynthEngine.h"
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant

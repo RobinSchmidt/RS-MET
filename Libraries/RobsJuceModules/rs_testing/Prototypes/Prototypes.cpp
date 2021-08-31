@@ -15,6 +15,7 @@
 #include "Relativity.cpp"
 #include "SineParameterEstimator.cpp"
 #include "OdeSolver.cpp"
+#include "MeshStuff.cpp"
 #include "AdditiveSynthEngine.cpp"
 
 //#include "SinusoidalModeling.cpp" // moved to rapt
