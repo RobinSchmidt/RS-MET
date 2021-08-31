@@ -1938,7 +1938,8 @@ void uniformArrayDiffAndInt()
 
 
 //=================================================================================================
-// Mesh derivatives (it's a lot of code - maybe a separate file would be in order):
+// Mesh derivatives. It's a lot of code - maybe a separate file MeshFunctions.cpp would be in 
+// order. This could then also contain mesh generator prototypes etc.:
 
 /** Fills edges of a graph of 2D vectors (as vertices) with a user supplied function that takes as
 input the source and target vector and returns a scalar that can be used as weight for the edge 
@@ -2734,10 +2735,12 @@ void exactHessian(rsGraph<rsVector2D<T>, T>& mesh,
     u_yy[i] = f_yy(vi.x, vi.y); }
 }
 template<class T>
-void meshHessian(rsGraph<rsVector2D<T>, T>& mesh, std::function<T(T, T)>& f,
+void meshHessianViaGradGrad(rsGraph<rsVector2D<T>, T>& mesh, std::function<T(T, T)>& f,
   std::vector<T>& u_xx, std::vector<T>& u_xy,
   std::vector<T>& u_yx, std::vector<T>& u_yy)
 {
+  // Computes the Hessian by first computing the gradient and then computing the gradients of the
+  // two partial derivatives, i.e. the two elements of the gradient vector.
   int N = (int)mesh.getNumVertices();
   std::vector<T> u(N), u_x(N), u_y(N);           // temporaries
   for(int i = 0; i < N; i++) {
@@ -2757,7 +2760,7 @@ rsMatrix2x2<T> hessianErrorMatrix(rsGraph<rsVector2D<T>, T>& mesh, int i,
   Vec U_xx(N), U_xy(N), U_yx(N), U_yy(N);                               // exact values
   exactHessian(mesh, U_xx, U_xy, U_yx, U_yy, f_xx, f_xy, f_yx, f_yy);
   Vec u_xx(N), u_xy(N), u_yx(N), u_yy(N);                               // numeric estimates
-  meshHessian(mesh, f, u_xx, u_xy, u_yx, u_yy);
+  meshHessianViaGradGrad(mesh, f, u_xx, u_xy, u_yx, u_yy);
   Vec e_xx = U_xx - u_xx; Vec e_xy = U_xy - u_xy;                       // errors
   Vec e_yx = U_yx - u_yx; Vec e_yy = U_yy - u_yy;
   rsMatrix2x2<T> E;
@@ -2900,7 +2903,8 @@ void solveSymmetric3x3(
 // move to library...hmm..i this really any better than just doing Gaussian elimination?
 // -> benchmark!
 
-// Computes Hessian, when the gradient is already known
+// Computes Hessian, when the gradient is already known - needs more testig - test it with the exact
+// gradient, mabye using a qudratic function, i.e. f(x,y) = A + B*x + C*y + D*x^2 + E*y^2 + F*x*y
 template<class T>
 void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh, 
   const T* u, const T* u_x, const T* u_y, int i,
@@ -3098,6 +3102,25 @@ void vertexMeshHessian()
   meshHessianViaTaylorErrorVsDistance();
 }
 
+// First computes gradient, then Hessian, then Laplacian
+template<class T>
+void laplacian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh,
+  const std::vector<T>& u, std::vector<T>& L)
+{
+  using Vec = std::vector<T>;
+  using ND  = rsNumericDifferentiator<T>;
+  int N = mesh.getNumVertices();
+  Vec u_x(N), u_y(N), u_xx(N), u_xy(N), u_yy(N);
+  ND::gradient2D(    mesh, &u[0], &u_x[0], &u_y[0]);
+  hessian2DViaTaylor(mesh, &u[0], &u_x[0], &u_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
+  for(int i = 0; i < N; i++)
+    L[i] = u_xx[i] + u_yy[i];
+
+  // ToDo: move to rsNumericDifferentiator, implement a version that generates a sparse matrix A to
+  // compute L = A*u
+  // ...hmm - produces large error - ToDo: test hessian2DViaTaylor
+}
+
 // still tyring to figure out the right formula:
 template<class T>
 void laplacian2D_1(const rsGraph<rsVector2D<T>, T>& mesh, 
@@ -3222,24 +3245,37 @@ void laplacian2D_3(const rsGraph<rsVector2D<T>, T>& mesh,
     Vec2 gi = ND::gradient2D(mesh, &u[0], i);      // gradient estimate at vertex i
     T wSum(T(0));                                  // sum of weights
     T eSum(T(0));                                  // sum of prediction errors
-
-    for(int k = 0; k < mesh.getNumEdges(i); k++)   // loop over vi's neighbors
+    int M = mesh.getNumEdges(i);                   // number of neighbors of vertex i
+    for(int k = 0; k < M; k++)                     // loop over vi's neighbors
     {
       int  j   = mesh.getEdgeTarget(i, k);         // index of current neighbor
-      T    w   = mesh.getEdgeData(i, k);           // edge weight
+      //T    w   = mesh.getEdgeData(i, k);           // edge weight
+      T    w   = 1;                                // test
       Vec2 vj  = mesh.getVertexData(j);            // location of current neighbor
       Vec2 dji = vj - vi;                          // difference vector
       T    gij = rsDot(gi, dji);                   // directional derivative in direction dji
       T    pj  = u[i] + gij;                       // prediction of u[j] from u[i] and gij
       T    uj  = u[j];                             // actual value of u[j]
       T    ej  = uj - pj;                          // error = actual - predicted
-      eSum += w*ej;                                // accumulate error
+
+      // test:
+      T h   = rsNorm(dji);                         // distance between vi and vj
+
+
+      //eSum += w*ej;                                // accumulate error
+      eSum += w*ej/h;                              // accumulate error
+
+
       wSum += w;                                   // accumulate weights
     }
 
     T eAvg = eSum / wSum;                          // weighted average of errors...
     L[i]   = eAvg;                                 // ...is estimate for Laplacian
+
+    //L[i]  *= M;  // test
   }
+
+  // doesn't work - maybe we need to divide by the distance h
 }
 
 
@@ -3286,7 +3322,7 @@ void meshLaplacianAlgorithms1()
   // Compute Laplacian by brute force, i.e. computing the full Hessian and then summing the 
   // diagonal elements:
   Vec u_xx(N), u_xy(N), u_yx(N), u_yy(N);
-  meshHessian(mesh, f, u_xx, u_xy, u_yx, u_yy);
+  meshHessianViaGradGrad(mesh, f, u_xx, u_xy, u_yx, u_yy);
   Vec u_L1 = u_xx + u_yy;
 
   // Compute Laplacian by neighborhood average:
@@ -3297,6 +3333,8 @@ void meshLaplacianAlgorithms1()
   // Compute Laplacian by convenience function:
   Vec u_L3(N);
   ND::laplacian2D(mesh, &u[0], &u_L3[0]);
+
+  // ToDo: compute Laplacian via Taylor
 
   // Compute true value and errors:
   double L  = f_xx(x0.x, x0.y) + f_yy(x0.x, x0.y);  // true value
@@ -3426,6 +3464,10 @@ void meshLaplacianAlgorithms2()
   laplacian2D_3(mesh, u, u_L);
   double eh12_3 = L - u_L[0];    // doesn't seem to work
 
+  laplacian2DViaTaylor(mesh, u, u_L);
+  double eh12_T = u_L[0] - L;    // large error :-O
+
+
   // shouldn't the error be u_L[0] - L, i.e. estimate minus true?
 
   //double ratio = L / u_L[0]; // why is this relevant?
@@ -3446,6 +3488,8 @@ void meshLaplacianAlgorithms2()
 
   // todo: compute error for h, compute error for 2*h, compute error for half of the neighbors at 
   // distance h and the other half at distance 2*h
+
+  // -try it with a linear function - the Laplacian should be zero
 
 
   /*

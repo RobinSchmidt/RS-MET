@@ -270,7 +270,7 @@ int main(int argc, char* argv[])
   //nonUniformArrayDiffAndInt();            // differentiation and integration of sampled data
   //uniformArrayDiffAndInt();               // under construction
   //vertexMeshGradient();
-  //vertexMeshHessian();
+  vertexMeshHessian();
   vertexMeshLaplacian();
 
   //convolvePolynomials();                  // obsolete
