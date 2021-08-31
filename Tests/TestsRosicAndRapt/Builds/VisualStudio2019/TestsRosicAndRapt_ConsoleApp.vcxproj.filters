@@ -475,6 +475,9 @@
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\MathExperiments.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\rapt_tests\Experiments\MeshExperiments.cpp">
+      <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\rapt_tests\Experiments\ModulatorExperiments.cpp">
       <Filter>TestsRosicAndRapt\Source\rapt_tests\Experiments</Filter>
     </ClCompile>

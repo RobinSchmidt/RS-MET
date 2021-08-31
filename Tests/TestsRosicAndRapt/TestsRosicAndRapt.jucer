@@ -95,6 +95,8 @@
                 file="Source/rapt_tests/Experiments/GraphicsExperiments.cpp"/>
           <FILE id="NqLe9c" name="MathExperiments.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/MathExperiments.cpp"/>
+          <FILE id="G7dRM0" name="MeshExperiments.cpp" compile="0" resource="0"
+                file="Source/rapt_tests/Experiments/MeshExperiments.cpp"/>
           <FILE id="P5GhjY" name="ModulatorExperiments.cpp" compile="0" resource="0"
                 file="Source/rapt_tests/Experiments/ModulatorExperiments.cpp"/>
           <FILE id="lmG5sg" name="ScratchPad.cpp" compile="0" resource="0" file="Source/rapt_tests/Experiments/ScratchPad.cpp"/>

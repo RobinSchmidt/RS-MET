@@ -269,7 +269,8 @@ int main(int argc, char* argv[])
   //numericIntegration();                   // a.k.a. numeric "quadrature"
   //nonUniformArrayDiffAndInt();            // differentiation and integration of sampled data
   //uniformArrayDiffAndInt();               // under construction
-  //vertexMeshGradient();
+
+  vertexMeshGradient();                   // implementations are in MeshExperiments.cpp
   vertexMeshHessian();
   vertexMeshLaplacian();
 

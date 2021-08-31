@@ -158,6 +158,7 @@
 		A822338188B2D2E5BF6D9F41 /* ../../Source/Misc/Misc.cpp */ /* Misc.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Misc.cpp; path = ../../Source/Misc/Misc.cpp; sourceTree = SOURCE_ROOT; };
 		A8C606AE62883023F93D5DFE /* ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/SortAndSearch.h */ /* SortAndSearch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SortAndSearch.h; path = ../../Source/rosic_tests/PortedFromRSLib/RSLib/Core/Utilities/SortAndSearch.h; sourceTree = SOURCE_ROOT; };
 		ABFCC2AE5AB1B6FAA83B2B93 /* ../../Source/rosic_tests/PortedFromRSLib/Experiments/ModulatorExperiments.cpp */ /* ModulatorExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ModulatorExperiments.cpp; path = ../../Source/rosic_tests/PortedFromRSLib/Experiments/ModulatorExperiments.cpp; sourceTree = SOURCE_ROOT; };
+		AC80F06A3F1691AFCEF1D2C1 /* ../../Source/rapt_tests/Experiments/MeshExperiments.cpp */ /* MeshExperiments.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = MeshExperiments.cpp; path = ../../Source/rapt_tests/Experiments/MeshExperiments.cpp; sourceTree = SOURCE_ROOT; };
 		AD6B1E0F5BBCBEFBFB4AD2CD /* ../../JuceLibraryCode/include_rs_testing.cpp */ /* include_rs_testing.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = include_rs_testing.cpp; path = ../../JuceLibraryCode/include_rs_testing.cpp; sourceTree = SOURCE_ROOT; };
 		AEA46F697E3A02C423E0F6D8 /* ../../../../Libraries/RobsJuceModules/rosic */ /* rosic */ = {isa = PBXFileReference; lastKnownFileType = folder; name = rosic; path = ../../../../Libraries/RobsJuceModules/rosic; sourceTree = SOURCE_ROOT; };
 		B0519FEE0B1A4B872C5701D9 /* ../../Source/PerformanceTests/PerformanceTests.cpp */ /* PerformanceTests.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PerformanceTests.cpp; path = ../../Source/PerformanceTests/PerformanceTests.cpp; sourceTree = SOURCE_ROOT; };
@@ -342,6 +343,7 @@
 				F78B3A77A8561458AC199E24,
 				0531A27680CE9E6DB8E2736F,
 				75DCE7F786E548E8EB58BC40,
+				AC80F06A3F1691AFCEF1D2C1,
 				797055AD6BFA0F4FBABA0A49,
 				6B0FBC688808AB3D49740333,
 			);

@@ -34,9 +34,9 @@ void numericIntegration();
 void nonUniformArrayDiffAndInt();
 void uniformArrayDiffAndInt();
 void iteratedNumDiff();
-void vertexMeshGradient();
-void vertexMeshHessian();
-void vertexMeshLaplacian();
+//void vertexMeshGradient();
+//void vertexMeshHessian();
+//void vertexMeshLaplacian();
 
 void convolvePolynomials();
 void convolvePiecewise();
@@ -78,6 +78,12 @@ void powerIterator();
 void gaussianIterator();
 void expPolyIterator();
 void reciprocalIterator();
+
+//-------------------------------------------------------------------------------------------------
+
+void vertexMeshGradient();
+void vertexMeshHessian();
+void vertexMeshLaplacian();
 
 
 
