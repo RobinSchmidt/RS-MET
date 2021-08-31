@@ -971,7 +971,7 @@ void solveSymmetric3x3(
 // move to library...hmm..i this really any better than just doing Gaussian elimination?
 // -> benchmark!
 
-// Computes Hessian, when the gradient is already known - needs more testig - test it with the exact
+// Computes Hessian, when the gradient is already known - needs more testing - test it with the exact
 // gradient, mabye using a qudratic function, i.e. f(x,y) = A + B*x + C*y + D*x^2 + E*y^2 + F*x*y
 template<class T>
 void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh, 
@@ -1164,11 +1164,75 @@ void meshHessianViaTaylorErrorVsDistance()
   int dummy = 0;
 }
 
+void testHessianRectangularMesh()
+{
+  // Creates a somewhat more realistic mesh and tests the computation of the Hessian on it.
+
+  // Setup:
+  using Real = double;
+  int densityX = 9;                     // number of x-samples
+  int densityY = 17;                    // number of y-samples
+  Real A = 1.f;
+  Real B = 2.f;
+  Real C = 3.f;
+  Real D = 4.f;
+  Real E = 5.f;
+  Real F = 6.f;
+
+  // Create the exact functions to compute u(x,y) and its various derivatives:
+  std::function<Real(Real, Real)> f, f_x, f_y, f_xx, f_xy, f_yy;
+  f    = [&](Real x, Real y)->Real { return A + B*x + C*y +   D*x*x +   E*y*y + F*x*y; };
+  f_x  = [&](Real x, Real y)->Real { return     B         + 2*D*x             + F*y  ; };
+  f_y  = [&](Real x, Real y)->Real { return           C             + 2*E*y   + F*x  ; };
+  f_xx = [&](Real x, Real y)->Real { return                   2*D                    ; };
+  f_xy = [&](Real x, Real y)->Real { return                                   + F    ; };
+  f_yy = [&](Real x, Real y)->Real { return                           2*E            ; };
+
+  // For convenience:
+  using Vec  = std::vector<Real>;
+  using Vec2 = rsVector2D<Real>;
+  using AT   = rsArrayTools;
+
+  // Create the mesh:
+  rsMeshGenerator2D<Real> meshGen;
+  meshGen.setNumSamples(densityX, densityY);
+  meshGen.setTopology(rsMeshGenerator2D<Real>::Topology::torus);
+  meshGen.setParameterRange(0.f, 1.f, 0.f, 1.f);             // rename to setRange
+  meshGen.updateMeshes();                                    // get rid of this
+  rsGraph<Vec2, Real> mesh = meshGen.getParameterMesh();    // rename mesh to graphMesh, getP.. to getMesh
+  int N = mesh.getNumVertices();
+
+  // Compute function values and exact derivtaives on the mesh:
+  Vec u(N);                                            // Mesh function values
+  Vec U_x(N), U_y(N), U_xx(N), U_xy(N), U_yy(N), L(N); // Gradient, Hessian and Laplacian (exact)
+  for(int i = 0; i < N; i++)
+  {
+    Vec2 v  = mesh.getVertexData(i);
+    u   [i] = f(   v.x, v.y);
+    U_x [i] = f_x( v.x, v.y);
+    U_y [i] = f_y( v.x, v.y);
+    U_xx[i] = f_xx(v.x, v.y);
+    U_xy[i] = f_xy(v.x, v.y);
+    U_yy[i] = f_yy(v.x, v.y);
+    L   [i] = U_xx[i] + U_yy[i];
+  }
+
+  // Compute Hessian numerically via Taylor using the exact gradient:
+  Vec u_xx(N), u_xy(N), u_yy(N);
+  hessian2DViaTaylor(mesh, &u[0], &U_x[0], &U_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
+
+
+  GraphPlotter<Real> plt;
+  //plt.plotGraph2D(mesh);
+
+  int dummy = 0;
+}
 
 void vertexMeshHessian()
 {
-  meshHessianErrorVsDistance();
-  meshHessianViaTaylorErrorVsDistance();
+  //meshHessianErrorVsDistance();
+  //meshHessianViaTaylorErrorVsDistance();
+  testHessianRectangularMesh();
 }
 
 // First computes gradient, then Hessian, then Laplacian

@@ -270,7 +270,8 @@ template class RAPT::rsMatrix<double>;
 template std::vector<double> RAPT::rsLinearAlgebraNew::solve(
   const rsMatrixView<double>& A, const std::vector<double>& B);
 
-
+template std::vector<float> RAPT::rsLinearAlgebraNew::solve(
+  const rsMatrixView<float>& A, const std::vector<float>& B);
 
 template std::vector<std::complex<double>> RAPT::rsLinearAlgebraNew::solve(
   const rsMatrixView<std::complex<double>>& A,
