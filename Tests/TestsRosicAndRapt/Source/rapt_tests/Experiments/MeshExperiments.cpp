@@ -204,6 +204,25 @@ void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
 }
 
 template<class T>
+void computeEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh, T weightExponent)
+{
+  using Vec2 = rsVector2D<T>;
+  for(int i = 0; i < mesh.getNumVertices(); i++)
+  {
+    Vec2 vi = mesh.getVertexData(i);
+    for(int k = 0; k < mesh.getNumEdges(i); k++)
+    {
+      int  j  = mesh.getEdgeTarget(i, k);
+      Vec2 vj = mesh.getVertexData(j);
+      Vec2 dv = vj - vi;                   // difference vector
+      T d     = rsNorm(dv);                // distance between Vi and vj
+      T w     = pow(d, -weightExponent);   // edge weight
+      mesh.setEdgeData(i, k, w);
+    }
+  }
+}
+
+template<class T>
 void assignEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh, T p)
 {
   int N = (int)mesh.getNumVertices();
@@ -790,7 +809,8 @@ void meshGradientErrorVsIrregularity()
   int numTests = 20;     // number of tests/steps
   Real h       = 1./16;  // approximation stepsize
   Real randMin = 0.0;    // minimum randomization (as fraction of h)
-  Real randMax = 1.0;    // maximum randomization (as fraction of h)
+  Real randMax = 0.2;    // maximum randomization (as fraction of h)
+  Real weight  = 4.0;    // weighting exponent
   Vec2 v0(1, 1);         // position of center vertex
 
 
@@ -803,8 +823,8 @@ void meshGradientErrorVsIrregularity()
   // Create measurement data:
   Vec randAmount = rsLinearRangeVector(numTests, randMin, randMax);
   Vec error(numTests);   // actually log10 of error
-  rsGraph<Vec2, double> mesh;
-  GraphPlotter<double> meshPlotter;
+  rsGraph<Vec2, Real> mesh;
+  GraphPlotter<Real> meshPlotter;
   for(int i = 0; i < numTests; i++)
   {
     // Create mesh for a particular setting for randomization
@@ -812,6 +832,7 @@ void meshGradientErrorVsIrregularity()
     mesh.addVertex(v0);
     addPolygonalNeighbours(mesh, 0, numSides, h, 0.0);
     randomizeVertexPositions(mesh, h*randAmount[i], h*randAmount[i], 0, randSeed);
+    computeEdgeWeights(mesh, weight);
     //meshPlotter.plotGraph2D(mesh, {0});
 
     // Compute and the record the estimation error at vertex 0:
@@ -820,10 +841,19 @@ void meshGradientErrorVsIrregularity()
   }
   rsPlotVectorsXY(randAmount, error);
 
-
   // Observations:
   // -For the regular mesh, the error is of the order of e-10, but even with slight randomization
-  //  it shaprly increases to e-2 and then it continues to increase to about e-1
+  //  it sharply increases and then it continues to increase slowly
+  // -Using weighting does not seem to make much of a difference:
+
+  // ToDo:
+  // -Try using other weighting functions, perhaps we have just the wrong rule. We currently use an
+  //  inverse power of the distance as weighting rule: w = pow(d, -p) where d is the distance and p
+  //  is a parameter (here, our "weight" variable). Maybe something else works better? Maybe try
+  //  an exponential function like w = exp(-p*d). Maybe we should also take into account the 
+  //  relative positions of the neighbors. When two neighbors are at (almost) the same position, 
+  //  they should get less weight. In the limit, when they are at exactly the same position, they 
+  //  should count as one, i.e. their weights should be divided by two.
 
   int dummy = 0;
 }
@@ -832,9 +862,9 @@ void vertexMeshGradient()
 {
   //vertexMeshGradient1();  // somewhat obsolete now - maybe delete at some point
 
-  //meshGradientErrorVsDistance();
-  //meshGradientErrorVsWeight();   // todo: try with geometries other than regular polygons
-  //meshGradientErrorVsAngle();
+  meshGradientErrorVsDistance();
+  meshGradientErrorVsWeight();   // todo: try with geometries other than regular polygons
+  meshGradientErrorVsAngle();
   meshGradientErrorVsIrregularity();
 }
 
