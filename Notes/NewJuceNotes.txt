@@ -1,3 +1,15 @@
+As of version 6.x, JUCE uses CMake as build system. The Projucer is still there and seems to still
+work, but somewhere, the doc says, that for plugin projects, one now needs to use CMake. See:
+
+https://github.com/juce-framework/JUCE/blob/master/docs/CMake%20API.md
+https://forum.juce.com/t/native-built-in-cmake-support-in-juce/38700
+https://forum.juce.com/t/learning-cmake-done-right-with-juce-6/40582/2
+
+
+
+---------------------------------------------------------------------------------------------------
+older:
+
 -classes like SliderListener have been replaced with Slider::Listener
 -the subcomoponents may now be direct members instead of pointers, so we don't
  need to call deleteAllChildren in the destructor of components 
