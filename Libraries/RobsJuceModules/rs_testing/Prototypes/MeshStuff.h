@@ -1,3 +1,6 @@
+
+//=================================================================================================
+
 // maybe rename to rsSurfaceMeshGenerator, use rsVector3D instead of 2D for the geometry to make 
 // more sense
 // maybe make other classes that can create more general patterns of connectivity
@@ -417,3 +420,9 @@ protected:
 //  -for a simple cone, do this only for the top row, a simple cone can also degenerate to a disc
 //   when the height of the cone is zero (i.e. z-values are all equal)
 // -for best flexibility, the user 3 functions fx(u,v), fy(u,v), fz(u,v) to compute coordinates
+
+//=================================================================================================
+
+template<class T>
+void randomizeVertexPositions(rsGraph<rsVector2D<T>, T>& mesh, T dx, T dy, 
+  int minNumNeighbors = 0, int seed = 0);

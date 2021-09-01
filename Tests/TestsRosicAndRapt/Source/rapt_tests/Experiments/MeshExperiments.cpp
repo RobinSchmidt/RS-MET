@@ -291,8 +291,6 @@ void fillMeshHessian(rsGraph<rsVector2D<T>, T>& mesh,
     u_yy[i] = f_yy(vi.x, vi.y); }
 }
 
-
-
 void meshGradientErrorVsDistance()
 {
   // We plot the error between the estimated partial derivatives and true partial derivatives as
@@ -677,7 +675,6 @@ void meshGradientErrorVsWeight()  // rename to vertexMeshGradientWeighting
   int dummy = 0;
 }
 
-
 void meshGradientErrorVsAngle()
 {
   // We try to find a formula for optimal weights that take into account the correlations between
@@ -776,12 +773,69 @@ void meshGradientErrorVsAngle()
   int dummy = 0;
 }
 
+void meshGradientErrorVsIrregularity()
+{
+  // We create a neighborhood of a given number of vertices and investigate, how the estimation 
+  // error changes, when we randomize the positions of neighbors more and more. We intially start
+  // with a regular polygon with neighbors at a fixed distance, then randomize them, then randomize
+  // some more, etc.
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using Vec2 = rsVector2D<Real>;
+
+  // Setup:
+  int numSides = 8;      // number of neighbors
+  int randSeed = 0;      // seed for random number generator
+  int numTests = 20;     // number of tests/steps
+  Real h       = 1./16;  // approximation stepsize
+  Real randMin = 0.0;    // minimum randomization (as fraction of h)
+  Real randMax = 1.0;    // maximum randomization (as fraction of h)
+  Vec2 v0(1, 1);         // position of center vertex
+
+
+  // Define example function and its partial derivatives:
+  std::function<Real(Real, Real)> f, f_x, f_y;
+  f   = [&](Real x, Real y)->Real { return sin(x) * exp(y); };
+  f_x = [&](Real x, Real y)->Real { return cos(x) * exp(y); };
+  f_y = [&](Real x, Real y)->Real { return sin(x) * exp(y); };
+
+  // Create measurement data:
+  Vec randAmount = rsLinearRangeVector(numTests, randMin, randMax);
+  Vec error(numTests);   // actually log10 of error
+  rsGraph<Vec2, double> mesh;
+  GraphPlotter<double> meshPlotter;
+  for(int i = 0; i < numTests; i++)
+  {
+    // Create mesh for a particular setting for randomization
+    mesh.clear();
+    mesh.addVertex(v0);
+    addPolygonalNeighbours(mesh, 0, numSides, h, 0.0);
+    randomizeVertexPositions(mesh, h*randAmount[i], h*randAmount[i], 0, randSeed);
+    //meshPlotter.plotGraph2D(mesh, {0});
+
+    // Compute and the record the estimation error at vertex 0:
+    Real e = gradientError(mesh, 0, f, f_x, f_y);
+    error[i] = log10(e);
+  }
+  rsPlotVectorsXY(randAmount, error);
+
+
+  // Observations:
+  // -For the regular mesh, the error is of the order of e-10, but even with slight randomization
+  //  it shaprly increases to e-2 and then it continues to increase to about e-1
+
+  int dummy = 0;
+}
+
 void vertexMeshGradient()
 {
   //vertexMeshGradient1();  // somewhat obsolete now - maybe delete at some point
-  meshGradientErrorVsDistance();
-  meshGradientErrorVsWeight();   // todo: try with geometries other than regular polygons
-  meshGradientErrorVsAngle();
+
+  //meshGradientErrorVsDistance();
+  //meshGradientErrorVsWeight();   // todo: try with geometries other than regular polygons
+  //meshGradientErrorVsAngle();
+  meshGradientErrorVsIrregularity();
 }
 
 template<class T>
@@ -1166,12 +1220,17 @@ void meshHessianViaTaylorErrorVsDistance()
 
 void testHessianRectangularMesh()
 {
-  // Creates a somewhat more realistic mesh and tests the computation of the Hessian on it.
+  // Creates a somewhat more realistic mesh and tests the computation of the Hessian on it. As 
+  // function, we use quadratic form: f(x,y) = A + B*x + C*y + D*x^2 + E*y^2 + F*x*y
+  // i think, it should be possible to etsimate the gradient and Hessian exactly for this function
+  // (-> verify!)
 
   // Setup:
   using Real = double;
-  int densityX = 9;                     // number of x-samples
-  int densityY = 17;                    // number of y-samples
+  int densityX = 11;                    // number of x-samples
+  int densityY = 11;                    // number of y-samples
+  Real randX   = 0.2 / densityX;        // randomization amount of x-coordinates
+  Real randY   = 0.2 / densityY;        // randomization amount of y-coordinates
   Real A = 1.f;
   Real B = 2.f;
   Real C = 3.f;
@@ -1192,17 +1251,28 @@ void testHessianRectangularMesh()
   using Vec  = std::vector<Real>;
   using Vec2 = rsVector2D<Real>;
   using AT   = rsArrayTools;
+  using ND   = rsNumericDifferentiator<Real>;
 
   // Create the mesh:
   rsMeshGenerator2D<Real> meshGen;
   meshGen.setNumSamples(densityX, densityY);
-  meshGen.setTopology(rsMeshGenerator2D<Real>::Topology::torus);
+  meshGen.setTopology(rsMeshGenerator2D<Real>::Topology::plane);
   meshGen.setParameterRange(0.f, 1.f, 0.f, 1.f);             // rename to setRange
   meshGen.updateMeshes();                                    // get rid of this
-  rsGraph<Vec2, Real> mesh = meshGen.getParameterMesh();    // rename mesh to graphMesh, getP.. to getMesh
-  int N = mesh.getNumVertices();
+  rsGraph<Vec2, Real> mesh = meshGen.getParameterMesh();     // rename mesh to graphMesh, getP.. to getMesh
+  randomizeVertexPositions(mesh, randX, randY);            // looks wrong
+  // todo: assign edge weights
 
-  // Compute function values and exact derivtaives on the mesh:
+
+
+
+
+
+  // Compute function values and exact derivtaives on the mesh. Maybe wrap these into a class and 
+  // then provide functions to generate various mesh functions, such here, we can just do:
+  // MeshData md = getMeshDataQuadraticForm(); ..SinCos, SinExp, etc such that we can conveniently
+  // switch back and forth between various functions:
+  int N = mesh.getNumVertices();
   Vec u(N);                                            // Mesh function values
   Vec U_x(N), U_y(N), U_xx(N), U_xy(N), U_yy(N), L(N); // Gradient, Hessian and Laplacian (exact)
   for(int i = 0; i < N; i++)
@@ -1217,13 +1287,34 @@ void testHessianRectangularMesh()
     L   [i] = U_xx[i] + U_yy[i];
   }
 
+  // Plot the mesh:
+  GraphPlotter<Real> plt;
+  plt.plotGraph2D(mesh);
+
   // Compute Hessian numerically via Taylor using the exact gradient:
   Vec u_xx(N), u_xy(N), u_yy(N);
   hessian2DViaTaylor(mesh, &u[0], &U_x[0], &U_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
+  rsPlotVectors(u_xx-U_xx, u_xy-U_xy, u_yy-U_yy);
+  // Looks generally good, but some values are wrong. Maybe these are the boundary values?
+
+  // Now the same thing but with a numeric gradient:
+  Vec u_x(N), u_y(N);
+  ND::gradient2D(mesh, u, u_x, u_y);
+  hessian2DViaTaylor(mesh, &u[0], &u_x[0], &u_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
+  rsPlotVectors(u_x-U_x, u_y-U_y);
+  // Seems to have also problems at the boundaries
+
+  // Now using the gradient-of-gradient algorithm:
+  Vec u_yx(N);
+  meshHessianViaGradGrad(mesh, f, u_xx, u_xy, u_yx, u_yy);    // todo: pass u instead of f
+  rsPlotVectors(u_xx-U_xx, u_xy-U_xy, u_yx-U_xy, u_yy-U_yy);
+  // Has also problems at the boundaries
 
 
-  GraphPlotter<Real> plt;
-  //plt.plotGraph2D(mesh);
+
+
+  // ToDo: 
+  // -randomize the vertex positions and check, if it still works
 
   int dummy = 0;
 }
