@@ -854,6 +854,15 @@ void meshGradientErrorVsIrregularity()
   //  relative positions of the neighbors. When two neighbors are at (almost) the same position, 
   //  they should get less weight. In the limit, when they are at exactly the same position, they 
   //  should count as one, i.e. their weights should be divided by two.
+  // -Perhaps, the weight w_k of a vertex v_k should be inversely proportional to some power of 
+  //  the distance d_k from the center point v_i (closer -> more weight) but also proportional to
+  //  the sum of the distances to all other neighbors (if it has more far away nieghbors, it gets 
+  //  more weight)
+  // -define d_k as the distance between v_i and v_k and s_k as the sum (or average) of the 
+  //  distances to all other neighbors: s_k is a measure of well the the neighbor v_k is separated
+  //  from all other neighbors. maybe try something like s^q / d^p
+  // -Compare the gradient estimation via directional derivatives to a full 2D fit of 6 points 
+  //  (2D quadratic approximation)
 
   int dummy = 0;
 }
@@ -862,9 +871,9 @@ void vertexMeshGradient()
 {
   //vertexMeshGradient1();  // somewhat obsolete now - maybe delete at some point
 
-  meshGradientErrorVsDistance();
-  meshGradientErrorVsWeight();   // todo: try with geometries other than regular polygons
-  meshGradientErrorVsAngle();
+  //meshGradientErrorVsDistance();
+  //meshGradientErrorVsWeight();   // todo: try with geometries other than regular polygons
+  //meshGradientErrorVsAngle();
   meshGradientErrorVsIrregularity();
 }
 

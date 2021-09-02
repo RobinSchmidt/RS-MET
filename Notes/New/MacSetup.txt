@@ -1,0 +1,67 @@
+Showing hidden files and directories in Finder:
+https://www.macworld.co.uk/how-to/show-hidden-files-mac-3520878/
+Use: Cmd + Shift + .
+
+
+File permissions:
+https://developer.apple.com/forums/thread/666611
+
+Open terminal in Sampler folder and enter:
+codesign --force --deep --sign - ToolChain.app
+...but that doesn't seem to help
+
+- codesign --force --deep --sign - ToolChain.app
+....nope
+
+https://www.reddit.com/r/MacOSBeta/comments/lk0099/solved_you_do_not_have_permission_to_open_the/
+
+
+https://www.youtube.com/watch?v=EWGiCUNY9gc
+
+
+
+How to fix "you do not have permission to open the application "Game app", another easy solution
+https://www.youtube.com/watch?v=sWSySXfR17c
+
+Open terminal (right-click on the Sampler folder, choose "New terminal at folder"), enter:
+
+sudo spctl --master-disable 
+
+go to: System Preferences -> Security and Privacy -> click the lock -> enter password
+
+Click on "Anywhere", in the terminal enter:
+
+sudo chmod -R 755 ToolChain.app
+
+restart computer
+
+double click on the app and confirm to open it
+
+
+
+...done - doesn't help - i still get the error
+
+
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=531663
+https://forum.juce.com/t/upgraded-to-big-sur-and-now-my-codesigning-fails-on-10-11-and-earlier/42812/46
+
+todo: 
+-Test, if the same problem occurs with AudioPluginHost, rationale: the new JUCE says that for 
+ plugin projects, one should use the new cmake build system. So maybe the culprit is that I'm still
+ using the Projucer. But that doesn't apply to standalone projects
+
+
+After download Sampler.7z, this worked:
+
+-copy archive to home folder
+-uncompress (by double-click)
+ ->trying to launch gives "no permission" error
+-enter in terminal: codesign --force --deep --sign - ToolChain.app
+ ->still the same error
+-enter in terminal: sudo chmod -R 755 ToolChain.app
+ ..and enter the password
+ ->still the same error
+-copy ToolChain.app to another folder, like [home]/temp
+ ->it can now be launched from there
+-copying it back into the original folder, replacing the original file
+ ->it can now be launched from there, too
