@@ -42,13 +42,26 @@ protected:
 
   virtual void createParameters();
 
+  /** Sets up the member variables that define where the app expects sfz-files, samples, etc. 
+  Called in constructor. */
+  virtual void setupDirectories();
+
+  /** Checks, whether or not an .sfz file with the given path exists. The path is supposed to be 
+  relative with respect to our "sfzRootDir" member. */
+  virtual bool doesSfzFileExist(const juce::String& path);
+
   // Shorthands for convenience:
   using Engine = rosic::rsSamplerEngine;
   using ReturnCode = rosic::rsReturnCode;
   using Event = rosic::rsMusicalEvent<float>;
 
   Engine engine;
-  juce::File sfzFile;
+  //juce::File sfzFile;
+
+  // under construction:
+  juce::String sfzRootDir;
+  //juce::String sampleRootDir;
+
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerModule)
 };

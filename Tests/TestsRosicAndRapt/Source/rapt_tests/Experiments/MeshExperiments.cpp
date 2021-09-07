@@ -204,19 +204,39 @@ void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
 }
 
 template<class T>
-void computeEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh, T weightExponent)
+void computeEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh, T p, T q = 0)
 {
   using Vec2 = rsVector2D<T>;
   for(int i = 0; i < mesh.getNumVertices(); i++)
   {
     Vec2 vi = mesh.getVertexData(i);
-    for(int k = 0; k < mesh.getNumEdges(i); k++)
+    int  K  =  mesh.getNumEdges(i);        // number of neighbors
+    for(int k = 0; k < K; k++)
     {
       int  j  = mesh.getEdgeTarget(i, k);
       Vec2 vj = mesh.getVertexData(j);
       Vec2 dv = vj - vi;                   // difference vector
       T d     = rsNorm(dv);                // distance between Vi and vj
-      T w     = pow(d, -weightExponent);   // edge weight
+      T w     = pow(d, -p);                // edge weight
+
+
+      // new - compute sum of distances between vj and all other neighbors vn of vi:
+      T s(0);
+      for(int m = 0; m < K; m++)
+      {
+        if(m != k)
+        {
+          int  n  = mesh.getEdgeTarget(i, m);
+          Vec2 vn = mesh.getVertexData(n);
+          s += rsNorm(vj - vn);
+        }
+      }
+      w *= pow(s, q);
+     
+
+
+
+
       mesh.setEdgeData(i, k, w);
     }
   }
@@ -810,7 +830,8 @@ void meshGradientErrorVsIrregularity()
   Real h       = 1./16;  // approximation stepsize
   Real randMin = 0.0;    // minimum randomization (as fraction of h)
   Real randMax = 0.2;    // maximum randomization (as fraction of h)
-  Real weight  = 4.0;    // weighting exponent
+  Real p       = 4.0;    // weighting exponent for center distance
+  Real q       = 0.0;    // weighting exponent for separation
   Vec2 v0(1, 1);         // position of center vertex
 
 
@@ -832,7 +853,7 @@ void meshGradientErrorVsIrregularity()
     mesh.addVertex(v0);
     addPolygonalNeighbours(mesh, 0, numSides, h, 0.0);
     randomizeVertexPositions(mesh, h*randAmount[i], h*randAmount[i], 0, randSeed);
-    computeEdgeWeights(mesh, weight);
+    computeEdgeWeights(mesh, p, q);
     //meshPlotter.plotGraph2D(mesh, {0});
 
     // Compute and the record the estimation error at vertex 0:
@@ -861,6 +882,26 @@ void meshGradientErrorVsIrregularity()
   // -define d_k as the distance between v_i and v_k and s_k as the sum (or average) of the 
   //  distances to all other neighbors: s_k is a measure of well the the neighbor v_k is separated
   //  from all other neighbors. maybe try something like s^q / d^p
+  // -The weighting function should have the following features:
+   // -if all neighbors are in the same spot, they all get the same weight
+  //  -in a regular arrangement, they all get the same weights
+  //  -if N are in the same spot and 1 is in another spot, the 1 should get relative weight of 1
+  //   and in the the cluster of N, each should get relative weight of 1/N
+  //  -when 2 neighbors are on the same radial line from the center point, the outer one may 
+  //   actually need a negtaive weight (rationale: consider the 1D function f(x) = x^2 at x=2
+  //   and two point at 2.1 and 2.2: both secnats will overestimate the tangent...but wait: we 
+  //   don't use secants, we use a least squares algo...hmm...we'll see
+  //  -maybe not only the distances between the neighbors are relevant but also their scalar 
+  //   product (after subtracting off the center)
+  // -Test weighting function(s) numerically with:
+  //  -2 points, 1 fixed, 1 rotating
+  //  -2 points, 1 fixed, 1 going outward (on the same line, or opposite, or perpendicular,...)
+  //  -only randomized angles (there's actually a formula for computing mesh Laplacians involving
+  //   the angles - maybe it has to with it?)
+  //   -all points have the same distance, so p becomes irrelevant which is convenient to 
+  //    investigate only the part of the formula that deals with the mutual neighbor positions
+  //  -only randomized radii
+  //  -consider also the 1D case, maybe use it as starting point
   // -Compare the gradient estimation via directional derivatives to a full 2D fit of 6 points 
   //  (2D quadratic approximation)
 

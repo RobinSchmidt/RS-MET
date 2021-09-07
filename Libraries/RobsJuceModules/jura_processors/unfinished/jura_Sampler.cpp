@@ -5,6 +5,7 @@ SamplerModule::SamplerModule(CriticalSection *lockToUse, MetaParameterManager* m
   ScopedLock scopedLock(*lock);
   setModuleTypeName("Sampler");
   setModuleName("Sampler");
+  setupDirectories();
 }
 
 void SamplerModule::createParameters()
@@ -18,6 +19,38 @@ void SamplerModule::createParameters()
   p = new Param("Gain", -48.0, 12.0, 0.1, Parameter::LINEAR); 
   addObservedParameter(p);
   p->setValueChangeCallback<SM>(this, &SM::setGain);
+}
+
+void SamplerModule::setupDirectories()
+{
+  ScopedLock scopedLock(*lock);
+  sfzRootDir = jura::getSupportDirectory() + File::getSeparatorString() + "SFZ";
+
+  // Sanity check:
+  juce::File sfzDirAsFile(sfzRootDir);
+  if(!sfzDirAsFile.exists())
+    showWarningBox("Error", "SFZ directory: " + sfzRootDir + " does not exist.");
+  else if(!sfzDirAsFile.isDirectory())
+    showWarningBox("Error", "SFZ directory: " + sfzRootDir + " is not a directory.");
+
+  // ToDo:
+  //engine.setSfzRootDir(sfzRootDir.c_str());  
+
+
+  // todo: 
+  // -assign sampleRootDir, then allow the samples to be located either in the sampleRootDir
+  //  *or* as relative path with respect to the .sfz file. Maybe the sampler engine should search 
+  //  for the files in the following directories (in  that order):
+  //  -subdirectory of the .sfz file
+  //  -user defined sample directory
+  //  -global default sample directory (defined app-wide)
+}
+
+bool SamplerModule::doesSfzFileExist(const juce::String& relativePath)
+{
+  juce::String path = sfzRootDir + File::getSeparatorString() + relativePath;
+  juce::File sfzFile(path);
+  return sfzFile.existsAsFile();
 }
 
 AudioModuleEditor* SamplerModule::createEditor(int type)
@@ -54,7 +87,6 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
   // a dialog that allows the user to locate it. Store the location somewhere and in the next call
   // to getStateAsXml, write it into the xml, such that next time, the updated path is used.
 
-
   // Recall the global playback parameters such as gain, max num layers, max polyphony, resampling 
   // quality, etc.:
   AudioModule::setStateFromXml(xmlState, stateName, markAsClean);
@@ -66,6 +98,17 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
     engine.clearInstrument();
     return; }
 
+  // Check, if such an instrument file exists in the folder where we expect it:
+  if(!doesSfzFileExist(jSfzPath))
+  {
+    showWarningBox("SFZ Load Error", "File " + jSfzPath + " does not exist.");
+    // ToDo: Maybe have a warning box with a more comprehensive error message that makes some 
+    // suggestions why this could have happened. In this case, it could be that the sfzRootDir
+    // does not exist on the machine
+  }
+
+
+
   std::string sSfzPath = jSfzPath.toStdString();
   int rc = engine.loadFromSFZ(sSfzPath.c_str());
   if(rc == ReturnCode::fileLoadError)
@@ -76,6 +119,7 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
   }
   // todo:
   // -catch other errors, such as sfzParseError, unknownOpcode, sampleLoadError, etc.
+  // -figure out, hwat exactly went wrong and show a more specific error message
 
   // Notes:
   // -it currently only works, if the .sfz file and its required .wav files reside in the project
@@ -107,9 +151,14 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
 XmlElement* SamplerModule::getStateAsXml(const juce::String& stateName, bool markAsClean)
 {
   XmlElement *xmlState = AudioModule::getStateAsXml(stateName, markAsClean);
+
+  /*
+  // old:
   juce::String sfzPath = sfzFile.getRelativePathFrom(getPresetDirectory());
   xmlState->setAttribute("InstrumentFile", sfzPath);
   //xmlState->setAttribute("SampleDirectory", sampleDir);
+  */
+
   return xmlState;
 }
 

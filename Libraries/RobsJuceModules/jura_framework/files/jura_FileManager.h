@@ -1,6 +1,8 @@
 #ifndef jura_FileManager_h
 #define jura_FileManager_h
 
+// ToDo: move them into a FileTools.h/cpp file, Maybe wrap them as static functions into a class.
+
 /** Returns the directory of the current application (or .dll) as String. */
 JUCE_API juce::String getApplicationDirectory();
 
@@ -15,7 +17,7 @@ be found. */
 JUCE_API juce::String getSupportDirectory();
  // maybe move these 4 functions as static functions into FileManager
 
-/** Given a path tha may contain backslashes, this function returns a version of that path where 
+/** Given a path that may contain backslashes, this function returns a version of that path where 
 the backslashes have been replaced by forward slashes. */
 JUCE_API juce::File convertBackslashToSlash(const juce::File& path);
 // not yet tested
@@ -51,6 +53,7 @@ public:
     else
       return 0;
   }
+  // todo: Check, if arguments can be const references. If so, use them!
 
   juce_UseDebuggingNewOperator;
 };
@@ -77,6 +80,7 @@ public:
   juce_UseDebuggingNewOperator;
 
 };
+// todo: rename to FileManagerObserver
 
 //=================================================================================================
 

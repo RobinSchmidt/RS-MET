@@ -1,3 +1,8 @@
+This file is just for some quick and dirty notes about how get certain things to work on apple. 
+This is sometimes a less than straightforward trial and error process, hence this file to note down 
+what worked out.
+
+
 Showing hidden files and directories in Finder:
 https://www.macworld.co.uk/how-to/show-hidden-files-mac-3520878/
 Use: Cmd + Shift + .
@@ -65,3 +70,6 @@ After download Sampler.7z, this worked:
  ->it can now be launched from there
 -copying it back into the original folder, replacing the original file
  ->it can now be launched from there, too
+ 
+ 
+ https://www.shirt-pocket.com/SuperDuper/SuperDuperDescription.html
