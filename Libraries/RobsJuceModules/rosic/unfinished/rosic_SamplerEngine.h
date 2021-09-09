@@ -203,8 +203,15 @@ public:
   int setupFromSFZ(const rsSamplerData& sfz);
 
 
+  /**Sets up the root directory, with respect to which sfz file paths are interpreted in saveToSfz 
+  and loadFromSfz. This is supposed to be an absolute path. Returns false in case, the directory 
+  doesn't exist. */
+  bool setSfzRootDir(const char* path) { return sfz.setSfzRootDir(path); }
+  //  Under construction...
+
   /** Writes the current instrument definition into an sfz file with given path. */
   bool saveToSFZ(const char* path) const { return sfz.saveToSFZ(path); }
+  // -don't use all caps in SFZ
   // -document, whether path is absolute or relative and if the latter, what is the root
   // -return a return-code instead of bool
   // -maybe move elsewhere
@@ -654,8 +661,8 @@ protected:
 
   // These are not yet used - currently, both are assumed to be the project directory (at least
   // for the unit tests):
-  std::string sfzDir;         /**< Root directory for .sfz files */
-  std::string wavDir;         /**< Root directory for .wav files */
+  //std::string sfzDir;         /**< Root directory for .sfz files */
+  //std::string wavDir;         /**< Root directory for .wav files */
 
 
   //int numChannels = 2;

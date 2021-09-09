@@ -24,7 +24,8 @@ void SamplerModule::createParameters()
 void SamplerModule::setupDirectories()
 {
   ScopedLock scopedLock(*lock);
-  sfzRootDir = jura::getSupportDirectory() + File::getSeparatorString() + "SFZ";
+  juce::String sep = File::getSeparatorString();
+  sfzRootDir = jura::getSupportDirectory() + sep + "SFZ" + sep;
 
   // Sanity check:
   juce::File sfzDirAsFile(sfzRootDir);
@@ -33,9 +34,10 @@ void SamplerModule::setupDirectories()
   else if(!sfzDirAsFile.isDirectory())
     showWarningBox("Error", "SFZ directory: " + sfzRootDir + " is not a directory.");
 
-  // ToDo:
-  //engine.setSfzRootDir(sfzRootDir.c_str());  
-
+  // Tell the engine, where to find the sfz files:
+  bool ok = engine.setSfzRootDir(sfzRootDir.toStdString().c_str());
+  if(!ok)
+    showWarningBox("Error", "SFZ directory: " + sfzRootDir + " could not be set.");
 
   // todo: 
   // -assign sampleRootDir, then allow the samples to be located either in the sampleRootDir
