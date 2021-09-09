@@ -193,10 +193,36 @@ int rsSamplerEngine::setupFromSFZ(const rsSamplerData& newSfz)
   // objects
 }
 
-int rsSamplerEngine::loadFromSFZ(const char* path)
+bool rsSamplerEngine::setSfzRootDir(const char* path) 
+{ 
+  sfzDir = path;
+  return true;
+
+  // preliminary - todo:
+
+  //if(!rsFile::isValidPath(path))
+  //  return false;
+  //else {
+  //  sfzDir = path;
+  //  return true; }
+
+  // ToDo: 
+  // -Check, if the last character is the seperator character, i.e. "/" or "\". This is currently 
+  //  assumed to be the case. If it's not, either append it here to fix the situation or raise an
+  //  error...
+}
+
+bool rsSamplerEngine::saveToSFZ(const char* path, bool pathIsAbsolute) const
 {
+  std::string absPath = getAbsolutePath(path, pathIsAbsolute);
+  return sfz.saveToSFZ(path);
+}
+
+int rsSamplerEngine::loadFromSFZ(const char* path, bool pathIsAbsolute)
+{
+  std::string absPath = getAbsolutePath(path, pathIsAbsolute);
   rsSamplerData newSfz;
-  bool wasLoaded = newSfz.loadFromSFZ(path);
+  bool wasLoaded = newSfz.loadFromSFZ(absPath.c_str());
   if(!wasLoaded) {
     clearInstrument();
     return rsReturnCode::fileLoadError; }
@@ -263,6 +289,16 @@ int rsSamplerEngine::findSampleIndexInPool(const std::string& sample) const
   // -Maybe keep the samplePool sorted, so we can use binary search here. That requires to
   //  reorder it when new samples are added, but addition of new samples is costly anyway due to 
   //  disk access, so that probably doesn't really matter.
+}
+
+std::string rsSamplerEngine::getAbsolutePath(const char* path, bool pathIsAbsolute) const
+{
+  std::string absPath;
+  if(pathIsAbsolute)
+    absPath = std::string(path);
+  else
+    absPath = sfzDir + std::string(path); // or do we need to insert a separator "/" or "\"?
+  return absPath;
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -566,7 +602,8 @@ int rsSamplerEngine::addSamplesUsedIn(const rsSamplerData& sfz)
     const Group* g = sfz.getGroup(gi);
     for(int ri = 0; ri < g->getNumRegions(); ri++) {
       Region* r = g->getRegion(ri); 
-      const std::string& path = r->getSamplePath();
+      const std::string& relativePath = r->getSamplePath();
+      std::string path = getAbsolutePath(relativePath.c_str());  // preliminary
       if(isValidSamplePath(path) && !isSampleInPool(path)) {
         int rc = loadSampleToPool(path);
         if(rc >= 0)
@@ -577,6 +614,14 @@ int rsSamplerEngine::addSamplesUsedIn(const rsSamplerData& sfz)
     return numSamplesLoaded;
   else
     return rsReturnCode::fileLoadError;
+
+  // ToDo:
+  // -the preliminary path = getAbsolutePath(relativePath.c_str()); should probably not use the
+  //  getAbsolutePath function which is actually meant for the sfz files. Instead, we should 
+  //  perhaps interpret the r->getSamplePath() as being relative to the .sfz file. At the moment,
+  //  we interpret it as relative to the sfz root folder. If the sfz file actually resides in that
+  //  sfz root folder, all is well. But in general, we should not assume this to be the case.
+  // -do this chaneg also in setupAudioStreams below
 }
 
 int rsSamplerEngine::setupAudioStreams()
@@ -604,13 +649,16 @@ int rsSamplerEngine::setupAudioStreams()
     for(int ri = 0; ri < g->getNumRegions(); ri++) 
     {
       Region* r = g->getRegion(ri);
-      const std::string& path = r->getSamplePath();
+      const std::string& relativePath = r->getSamplePath();
+      std::string path = getAbsolutePath(relativePath.c_str());  // preliminary
       allOK &= setupStream(r, path);
     }
   }
-  // ToDo: Maybe, if getSamplePath returns the empty string, meaning that a region does not define
-  // the sample opcode, assign the stream from the outlying group. If that also doesn't define a
-  // sample, use the stream from the instrument.
+  // ToDo: 
+  // -See comment in addSamplesUsedIn - the same applies here as well
+  // -Maybe, if getSamplePath returns the empty string, meaning that a region does not define
+  //  the sample opcode, assign the stream from the outlying group. If that also doesn't define a
+  //  sample, use the stream from the instrument.
 
   if(allOK)
     return rsReturnCode::success;

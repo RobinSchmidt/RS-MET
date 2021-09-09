@@ -202,28 +202,25 @@ public:
   is well or...  */
   int setupFromSFZ(const rsSamplerData& sfz);
 
-
-  /**Sets up the root directory, with respect to which sfz file paths are interpreted in saveToSfz 
+  /** Sets up the root directory, with respect to which sfz file paths are interpreted in saveToSfz 
   and loadFromSfz. This is supposed to be an absolute path. Returns false in case, the directory 
   doesn't exist. */
-  bool setSfzRootDir(const char* path) { return sfz.setSfzRootDir(path); }
-  //  Under construction...
+  bool setSfzRootDir(const char* path);
 
-  /** Writes the current instrument definition into an sfz file with given path. */
-  bool saveToSFZ(const char* path) const { return sfz.saveToSFZ(path); }
+  /** Writes the current instrument definition into an sfz file with given path which can be given
+  as absolute path or relative with respect what was set via setSfzRootDir. */
+  bool saveToSFZ(const char* path, bool pathIsAbsolute = false) const;
   // -don't use all caps in SFZ
-  // -document, whether path is absolute or relative and if the latter, what is the root
   // -return a return-code instead of bool
-  // -maybe move elsewhere
 
-  /** Loads the instrument definition given by an sfz file with the given path. Returns 
-  rsReturnCode::success if all wen well or rsReturnCode::fileLoadError if loading of the sfz or any of 
-  the used samples has failed. */
-  int loadFromSFZ(const char* path);
+  /** Loads the instrument definition given by an sfz file with the given path which can be given
+  as absolute path or relative with respect what was set via setSfzRootDir. Returns 
+  rsReturnCode::success if all wen well or rsReturnCode::fileLoadError if loading of the sfz or any
+  of the used samples has failed. */
+  int loadFromSFZ(const char* path, bool pathIsAbsolute = false);
   // ToDo: In case of failure, maybe return a more specific error code/object, indicating, which 
   // file(s) exactly failed to load. This is an information that may be eventually displayed to the
   // user on a GUI.
-
 
   /** Sets the sample-rate, at which this engine should operate. This change will affect only 
   RegionPlayer objects that were started after calling this function. It's supposed to be called in
@@ -317,8 +314,11 @@ public:
   settings. */
   const rsSamplerData& getInstrumentData() const { return sfz; }
     
-
-
+  /** Given a path which can be either relative to our sfzDir or absolute, this function returns 
+  the corresponding absolute path as std::stirng. That means, if pathIsAbsolute is true, it just 
+  converts the given char-array to a std::string as is and pathIsAbsolute is false, it assumes that
+  the given path is relative and prepends the sfzDir in the returned string */
+  std::string getAbsolutePath(const char* path, bool pathIsAbsolute = false) const;
 
 
 
@@ -661,7 +661,7 @@ protected:
 
   // These are not yet used - currently, both are assumed to be the project directory (at least
   // for the unit tests):
-  //std::string sfzDir;         /**< Root directory for .sfz files */
+  std::string sfzDir;         /**< Root directory for .sfz files */
   //std::string wavDir;         /**< Root directory for .wav files */
 
 

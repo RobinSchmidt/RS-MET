@@ -555,14 +555,12 @@ public:
 
 
 
-  bool setSfzRootDir(const char* path);
-  // Under construction... - move to rsSamplerEngine and in load/save always assume absolute paths
 
 
-  bool saveToSFZ(const char* path, bool pathIsAbsolute = false) const;
+  bool saveToSFZ(const char* path) const;
   // todo: return a return-code, including fileWriteError
 
-  bool loadFromSFZ(const char* path, bool pathIsAbsolute = false);
+  bool loadFromSFZ(const char* path);
   // todo: return a return-code, including sfzFileNotFound, sampleFileNotFound
 
 
@@ -580,18 +578,6 @@ protected:
     const std::string& opcode, const std::string& value);
 
   static void copy(const rsSamplerData& src, rsSamplerData& dst);
-
-  /** Given a path which can be either relative to our sfzDir or absolute, this function returns 
-  the corresponding absolute path as std::stirng. That means, if pathIsAbsolute is true, it just 
-  converts the given char-array to a std::string as is and pathIsAbsolute is false, it assumes that
-  the given path is relative and prepends the sfzDir in the returned string */
-  std::string getAbsolutePath(const char* path, bool pathIsAbsolute = false) const;
-
-
-  std::string sfzDir;         /**< Root directory for .sfz files */
-  //std::string wavDir;         /**< Root directory for .wav files */
-  // hmm - i think, it would be better to have them as members in rsSamplerEngine because when
-  // loading a new sfz, a new rsSamplerData object is created
 
 };
 

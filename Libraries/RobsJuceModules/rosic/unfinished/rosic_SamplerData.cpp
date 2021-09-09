@@ -404,53 +404,20 @@ void rsSamplerData::setFromSFZ(const std::string& str)
   //  https://en.cppreference.com/w/cpp/header/string_view
 }
 
-bool rsSamplerData::setSfzRootDir(const char* path)
+bool rsSamplerData::saveToSFZ(const char* path) const
 {
-  sfzDir = path;
-  return true;
-
-  // preliminary - todo:
-
-  //if(!rsFile::isValidPath(path))
-  //  return false;
-  //else {
-  //  sfzDir = path;
-  //  return true; }
-
-  // ToDo: 
-  // -Check, if the last character is the seperator character, i.e. "/" or "\". This is currently 
-  //  assumed to be the case. If it's not, either append it here to fix the situation or raise an
-  //  error...
-}
-
-std::string rsSamplerData::getAbsolutePath(const char* path, bool pathIsAbsolute) const
-{
-  std::string absPath;
-  if(pathIsAbsolute)
-    absPath = std::string(path);
-  else
-    absPath = sfzDir + std::string(path); // or do we need to insert a separator "/" or "\"?
-  return absPath;
-}
-
-bool rsSamplerData::saveToSFZ(const char* path, bool pathIsAbsolute) const
-{
-  std::string absPath = getAbsolutePath(path, pathIsAbsolute);
   std::string sfz = getAsSFZ();
-  return rsWriteStringToFile(absPath.c_str(), sfz.c_str());  // new
-  //return rsWriteStringToFile(path, sfz.c_str());           // old
+  return rsWriteStringToFile(path, sfz.c_str());
 }
 // this has no safeguards against overwriting an existing file!
 
-bool rsSamplerData::loadFromSFZ(const char* path, bool pathIsAbsolute)
+bool rsSamplerData::loadFromSFZ(const char* path)
 {
   // just for debug, to figure out, in which directory the mac expects the sfz file:
   //rsWriteStringToFile("TestFile.sfz", "blablabla");
   // that fails, too with an "Unable to open file" error. Could it have to do with permission?
 
-  std::string absPath = getAbsolutePath(path, pathIsAbsolute);
-  //char* c_str = rsReadStringFromFile(path);  // old
-  char* c_str = rsReadStringFromFile(absPath.c_str());  // new
+  char* c_str = rsReadStringFromFile(path);
   if(c_str)
   {
     std::string sfz(c_str);
