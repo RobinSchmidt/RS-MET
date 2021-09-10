@@ -50,6 +50,7 @@ void SamplerModule::setupDirectories()
 
 bool SamplerModule::doesSfzFileExist(const juce::String& relativePath)
 {
+  ScopedLock scopedLock(*lock);
   juce::String path = sfzRootDir + File::getSeparatorString() + relativePath;
   juce::File sfzFile(path);
   return sfzFile.existsAsFile();
@@ -62,6 +63,7 @@ AudioModuleEditor* SamplerModule::createEditor(int type)
 
 void SamplerModule::setSampleRate(double newSampleRate)
 { 
+  ScopedLock scopedLock(*lock);
   engine.setSampleRate(newSampleRate); 
 }
 
@@ -73,6 +75,8 @@ void SamplerModule::setGain(double newGain)
 void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::String& stateName,
   bool markAsClean)
 {
+  ScopedLock scopedLock(*lock);
+
   File appDir = File(getApplicationDirectory());
   appDir.setAsCurrentWorkingDirectory();
   // This is a bit quick-and dirty. On windows, the current working directory is the application
@@ -298,7 +302,10 @@ void SamplerEditor::createWidgets()
 
 /*
 Bugs:
--it seems, sometimes the noteOff is not received or handeld properly - the layer doesn't 
+-on Mac, the colors of ToolChain are wrong - seems like red and blue are swapped or something?
+-when switching the preset while holding a note, it crashes (at least on mac)
+ -> maybe we need to acquirre the lock in setStateFromXml (done -> needs tests)
+-it seems, sometimes the noteOff is not received or handled properly - the layer doesn't 
  immediately stop playing but instead (i think) plays until the end of the sample. It happens when
  triggering at least 5 notes simultaneously 
  -has it to do with the voiceManager in ToolChain - that's plausible, because it's currently set to
@@ -314,6 +321,7 @@ Bugs:
   -or make the behavior switchable
 
 ToDo:
+-show, which .sfz file is loaded and give the user a text editor to edit it
 -optimize by using block-wise processing instead of sample-by-sample
 -maybe instead of opening a message box on load error, show the error message in the load/save
  widget set 

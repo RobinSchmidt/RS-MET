@@ -315,7 +315,7 @@ public:
   const rsSamplerData& getInstrumentData() const { return sfz; }
     
   /** Given a path which can be either relative to our sfzDir or absolute, this function returns 
-  the corresponding absolute path as std::stirng. That means, if pathIsAbsolute is true, it just 
+  the corresponding absolute path as std::string. That means, if pathIsAbsolute is true, it just 
   converts the given char-array to a std::string as is and pathIsAbsolute is false, it assumes that
   the given path is relative and prepends the sfzDir in the returned string */
   std::string getAbsolutePath(const char* path, bool pathIsAbsolute = false) const;
