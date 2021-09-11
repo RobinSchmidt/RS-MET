@@ -7,6 +7,20 @@
 // files, less confusion. ..oh - i think, the declarations are actually in the wrong 
 // MathExperiments.h...The experiments cod is all a bit messy anyway -> clean up!
 
+
+void derivativeFormulas1D()
+{
+
+  int dummy = 0;
+}
+
+void derivativeFormulas()
+{
+  // Tests formulas for numerical estimation of a derivative on irregularly spaced data.
+
+  derivativeFormulas1D();
+}
+
 /** Fills edges of a graph of 2D vectors (as vertices) with a user supplied function that takes as
 input the source and target vector and returns a scalar that can be used as weight for the edge 
 between the two vertices. */
@@ -597,10 +611,10 @@ void meshGradientErrorVsWeight()  // rename to vertexMeshGradientWeighting
   double a = PI / numSides;         // rotation angle of the outer polygon
   Vec2   x0(1, 1);                  // position of center vertex
 
-  s  = 2;    // test - doesn't make a difference qualitativesly
-  a *= 1.0;  // if a = PI / numSides (as as assigned above), we see a sharp minimum at p = numSides, 
-             // scaling a down shifts the minimum up and makes it less sharp, scaling it up seems to
-             // have less effect -> more research needed
+  s  = 2;    // test - doesn't make a difference qualitatively
+  a *= 1.0;  // if a = PI / numSides (as as assigned above), we see a sharp minimum at 
+             // p = numSides, scaling a down shifts the minimum up and makes it less sharp, scaling
+             // it up seems to have less effect -> more research needed
 
   int fine = 10;
   Vec p = rsLinearRangeVector(fine*Np+1, 0.0, double(Np));
@@ -624,12 +638,13 @@ void meshGradientErrorVsWeight()  // rename to vertexMeshGradientWeighting
     errX[i] = ev.x;
     errY[i] = ev.y;
     err[i]  = rsMax(rsAbs(ev.x), rsAbs(ev.y));
+    //err[i]  = rsNorm(ev);
   }
 
   // Plot mesh and estimation error as function of p:
   meshPlotter.plotGraph2D(mesh);
   rsPlotVectorsXY(p, err, errX, errY);
-  //rsPlotVectorsXY(p, err);
+  rsPlotVectorsXY(p, err);
 
   // plot the example function (choose one - plotting one after another doesn't work):
   GNUPlotter plt;
@@ -645,52 +660,54 @@ void meshGradientErrorVsWeight()  // rename to vertexMeshGradientWeighting
   // a question of the grid generation, not of the derivative estimation formula, i think
 
 
-
   // Observations:
-  // -the sweet spot seems to be at p == numSides, in fact, there is a sharp minimum 
+  // -The sweet spot seems to be at p == numSides. The error minimum there is actually very sharp!
   //  ...this is a very unexpected result!
-  //  -maybe when we have more information from inner neighbors available, we can more and more 
+  //  -Maybe when we have more information from inner neighbors available, we can more and more 
   //   afford to discard the additional information from the outer neighbors - they just don't add
   //   much useful information anymore
-  // -seems to hold only for numSides >= 3, for 2, it seems to be slightly larger, like 2.2
-  // -seems to hold only when a = PI / numSides, choosing, for example, half that value, the 
+  // -Seems to hold only for numSides >= 3, for 2, it seems to be slightly larger, like 2.2
+  // -Seems to hold only when a = PI / numSides, choosing, for example, half that value, the 
   //  minimum is further to the right and less sharp (at least for numSides = 5)
-  // -if the angle is zero (an unrealistic scenario - that would be a stupid grid!), the function
+  // -If the angle is zero (an unrealistic scenario - that would be a stupid grid!), the function
   //  is monotonically decreasing, but the decrease gets quite shallow after p > numSides, so 
   //  p = numSides looks like a reasonable choice in this case, too
-  // -seems the sharp dip occurs only when a = PI / numSides, when a = 0, the function 
+  // -Seems the sharp dip occurs only when a = PI / numSides, when a = 0, the function 
   //  monotonically decreases - higher values of p tend to given more and more weight to the
   //  closest neighbor - in the limit, the closest neighbor alone will make the decision, which 
   //  makes sense because it has the most accurate estimate for the directional derivative
-  // -when plotting the error for x- and y-coordinate separately and together with the abs-max 
+  // -When plotting the error for x- and y-coordinate separately and together with the abs-max 
   //  of both (defined as "the" error), we see that the minimum of the error occurs near but not 
   //  exactly at the point where the two separate errors cross
-  // -the weights may get really large - especially when h is small and p is large - maybe we 
-  //  should renormalize the weights such that the maximum weight is 1 - maybe write a function
+  //  -Using the Euclidean norm instead af the abs-max produces a very similar error shape, so that
+  //   doesn't seem to make any importanz difference.
+  // -The weights may get really large - especially when h is small and p is large. Maybe we 
+  //  should renormalize the weights such that the maximum weight is 1. Maybe write a function
   //  normalizeWeights that is called *once after both* calls to addPolygonalNeighbours in the loop
 
   // ToDo:
-  // -figure out, if this rule also holds for less regular configurations of neighbor vertices or
+  // -Figure out, if this rule also holds for less regular configurations of neighbor vertices or
   //  if it's an artifact of the specific geometry chosen here
-  // -try especially those geometric configurations that commonly occur in an actual mesh
-  // -maybe try a 3-edge stencil where the edges have different lengths (like 0.5, 1, 2)
-  // -maybe try it with a lot of random lengths and angles - collect statistical evidence 
-  // -figure out what the optimal weighting is when the edges do not form a regular polygon
-  // -maybe the optimal weights should also depend on the correlations between all the neighbour 
+  // -Try especially those geometric configurations that commonly occur in an actual mesh
+  // -Maybe try a 3-edge stencil where the edges have different lengths (like 0.5, 1, 2)
+  // -Maybe try it with a lot of random lengths and angles - collect statistical evidence 
+  // -Figure out what the optimal weighting is when the edges do not form a regular polygon
+  // -Maybe the optimal weights should also depend on the correlations between all the neighbour 
   //  edges - if two neighbors are in the same spot, they should count as one - try it with 3 
   //  neighbours, 2 of which are in the same spot...maybe the weight of a vector should be 
   //  inversely related to the sum of its projection onto all the others
-  // -maybe use as another factor in determining the weights something like:
+  // -Maybe use as another factor in determining the weights something like:
   //  wi *= 1 - abs(sum_k <vi,vk>)^q / N ...the term after the minus should measure, how strong
   //  the vector vi is linearly dependent on all others (maybe the summand for k=i should not enter
   //  the sum)
   //  -vi: i-th direction vector, N: number of neighbours of the current node (not node i!), 
   //   wi: weight, q: user parameter
-  //  -maybe each term should be normalized: <vi,vk>/(norm(vi)*norm(vk))
-  //  -test this formula (and maybe variations of it) with 3 edges: v1,v2 in the x- and 
+  //  -Maybe each term should be normalized: <vi,vk>/(norm(vi)*norm(vk))
+  //  -Test this formula (and maybe variations of it) with 3 edges: v1,v2 in the x- and 
   //   y-directions and a third v3, sweeping a circle - plot accuracy vs angle with and without 
   //   this formula
   //   -when v3==v1, we want weights: w1=w3=0.5, w2=1 - check, if the formula produces this
+  //  -Test it also with 3 fixed neighbors and another set of 3 rotating around
   // -the way, the weights are currently used: 
   //    A.a += w * dv.x * dv.x;  // or do we need to use w^2 here?
   //    A.b += w * dv.x * dv.y;  // ...and here
@@ -708,8 +725,12 @@ void meshGradientErrorVsWeight()  // rename to vertexMeshGradientWeighting
   //  what is our matrix A?...i think, it's X^T * X
 
   // Conclusion:
-  // -to optimize the accuracy of the estimated derivaties, we should:
-  //  -use a grid where the edges form regular polygon and use a weighting with p = numSides
+  // -To optimize the accuracy of the estimated derivaties, we should use a grid where the edges 
+  //  form regular polygon and use a weighting with p = numSides.
+  // -For a more irregular distribtuion of neighbors, we still need to figure out a good formula 
+  //  for the weights. Such a formula should probably take into account the position of a given 
+  //  neighbor with respect to all other neighbors, maybe using correlations and/or mutual 
+  //  distances.
 
   int dummy = 0;
 }
@@ -725,8 +746,8 @@ void meshGradientErrorVsAngle()
   using Vec  = std::vector<double>;
   using Vec2 = rsVector2D<double>;
 
-
-  int numAngles = 360;  // stepping in 1 degree steps
+  int formula   = 0;    // formula for the weighting
+  int numAngles = 721;  // stepping the angle in 0.5 degree steps
   double h = 1./16;     // approximation stepsize
   Vec2   v0(1, 1);      // position of center vertex
 
@@ -754,7 +775,7 @@ void meshGradientErrorVsAngle()
   //mesh.addVertex(v);
   //mesh.addEdge(0, 4);
   // todo: maybe also experiment with the 3 vectors having different lengths - we want a formula 
-  // that gives accurate results even for weird meshes - and then in prcatice actually use good 
+  // that gives accurate results even for weird meshes - and then in practice actually use good 
   // meshes
 
   GraphPlotter<double> meshPlotter;
@@ -768,22 +789,29 @@ void meshGradientErrorVsAngle()
     double dx = cos(a);
     double dy = sin(a);
     mesh.setVertexData(3, Vec2(v0.x + h*dx, v0.y + h*dy));
+    weightEdgesByPositions(mesh, formula);
     Vec2 err = gradientErrorVector(mesh, 0, f, f_x, f_y);
     errX[i] = err.x;
     errY[i] = err.y;
     errors[i] = rsMax(rsAbs(err.x), rsAbs(err.y));
+    //errors[i] = rsNorm(err);
     //meshPlotter.plotGraph2D(mesh);
   }
 
   angles = angles * (180/PI);
-  //rsPlotVectorsXY(angles, errors, errX, errY);
-  rsPlotVectorsXY(angles, errX, errY);
-  rsPlotVectorsXY(angles, errors);
+  rsPlotVectorsXY(angles, errors, errX, errY);
+  //rsPlotVectorsXY(angles, errX, errY);
+  //rsPlotVectorsXY(angles, errors);
 
   // Observations:
-  // -without any weighting, the angular dependency of the error has a somwhat sharp minimum at 
-  //  around 135 degrees for v0 = (1,1) - however, that minimum is somewhere else for v0 = (2,2)
-  // -i actually expeced to see error minima whenever v3 is at at a multiple of a 45° angle and 
+  // -Without any weighting (i.e. formula == 0), the angular dependency of the error has a somewhat
+  //  sharp minimum at around 135° degrees for v0 = (1,1). However, that minimum is somewhere else
+  //  for v0 = (2,2) ...but: then it's near 315° which is off by 180° from 135°, so it seems that 
+  //  adding a 3rd neighbor is most effective, when it's 45° outside the 90° wedge spanned by the 
+  //  two fixed neighbors.
+  //  -Using the Euclidean norm instead of the minimum of x,y-errors, the maximum is less sharp
+  //   and shifted towards 140°  
+  // -i actually expected to see error minima whenever v3 is at at a multiple of a 45° angle and 
   //  maxima, whenever v3 coincides with v1 or v2 - but that doesn't seem to be the case
   //  -the reason for expecting this is that when v3 is equal to one of the other 2 vectors, we 
   //   have effectively only 2 evaluation points. I thought, the further away the 3rd 
@@ -808,6 +836,17 @@ void meshGradientErrorVsAngle()
   //  on the lengths of the individual edges and not about their interrelations...but maybe more 
   //  research into this at some point might be a good idea.
 
+  // ToDo:
+  // -Try it with 2 fixed neighbors at 0° and 120°. Probably, the best position for the 3rd 
+  //  neighbor is 240° in this case
+  // -Try it with 3 fixed neighbors, letting a 4th rotate. Also, try letting 3 other neighbors 
+  //  rotate.
+  // -Compare the error of the mesh using the additional neighbor(s) also with a reference mesh 
+  //  that doesn't use the additional neighbors. Maybe, for some positions (like, when it coincides
+  //  with an existing fixed neighbor), the additional neighbor may make the error even worse by 
+  //  giving too much (i.e. twice as much) weight to that neighbor (unless compensated by an 
+  //  appropriate weighting function, which is what we are trying to figure out). Maybe try this 
+  //  with 4 fixed and 1 rotating neighbor.
 
   int dummy = 0;
 }
@@ -888,8 +927,8 @@ void meshGradientErrorVsIrregularity()
   //  -if N are in the same spot and 1 is in another spot, the 1 should get relative weight of 1
   //   and in the the cluster of N, each should get relative weight of 1/N
   //  -when 2 neighbors are on the same radial line from the center point, the outer one may 
-  //   actually need a negtaive weight (rationale: consider the 1D function f(x) = x^2 at x=2
-  //   and two point at 2.1 and 2.2: both secnats will overestimate the tangent...but wait: we 
+  //   actually need a negative weight (rationale: consider the 1D function f(x) = x^2 at x=2
+  //   and two point at 2.1 and 2.2: both secants will overestimate the tangent...but wait: we 
   //   don't use secants, we use a least squares algo...hmm...we'll see
   //  -maybe not only the distances between the neighbors are relevant but also their scalar 
   //   product (after subtracting off the center)
@@ -912,9 +951,9 @@ void vertexMeshGradient()
 {
   //vertexMeshGradient1();  // somewhat obsolete now - maybe delete at some point
 
-  //meshGradientErrorVsDistance();
-  //meshGradientErrorVsWeight();   // todo: try with geometries other than regular polygons
-  //meshGradientErrorVsAngle();
+  meshGradientErrorVsDistance();
+  meshGradientErrorVsWeight();   // todo: try with geometries other than regular polygons
+  meshGradientErrorVsAngle();
   meshGradientErrorVsIrregularity();
 }
 
