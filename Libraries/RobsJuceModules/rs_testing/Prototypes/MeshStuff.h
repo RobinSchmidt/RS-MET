@@ -431,9 +431,17 @@ void randomizeVertexPositions(rsGraph<rsVector2D<T>, T>& mesh, T dx, T dy,
 template<class T>
 void initEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh);
 
-/** Accumulates another factor into the edge-weights that is determined by their individual 
-positions with respect to the center node and the other neighbor nodes. Different formulas are 
-implemented to facilitate experimentation: 0: no weighting, 1: mutual distances, 2: mutual 
-correlations, ....tbc.... */
+/** Accumulates a factor into the edge-weights that is determined by their individual distances 
+from the center node. The weight is given by 1/d^p where d is the distance and p is an exponent 
+that can either be set for all nodes by the caller by passing a value for p, or - if nothing is 
+passed - automatically chosen on a per node basis. In the latter case, we will use 
+p = numNeighbors. That has been found experimentally to be the optimal value...at least for certain 
+geometries of the neighborhood.....more research needed....tbc... */
+template<class T>
+void weightEdgesByDistances(rsGraph<rsVector2D<T>, T>& mesh, T p = RS_NAN(T));
+
+/** Accumulates a factor into the edge-weights that is determined by their individual positions 
+with respect to the center node and the other neighbor nodes. Different formulas are implemented to
+facilitate experimentation: 0: no weighting, 1: mutual distances, 2: mutual correlations, ...tbc */
 template<class T>
 void weightEdgesByPositions(rsGraph<rsVector2D<T>, T>& mesh, int formula = 0);

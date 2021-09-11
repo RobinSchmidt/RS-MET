@@ -5,7 +5,7 @@ void randomizeVertexPositions(rsGraph<rsVector2D<T>, T>& mesh, T dx, T dy,
   using Vec2 = rsVector2D<T>;
   rsNoiseGenerator<T> ng;
   ng.setSeed(seed);
-  T rnd;
+  //T rnd;
   for(int k = 0; k < mesh.getNumVertices(); k++) 
   {
     if(mesh.getNumEdges(k) >= minNumNeighbors)
@@ -33,6 +33,36 @@ template void initEdgeWeights(rsGraph<rsVector2D<double>, double>& mesh);
 
 
 template<class T>
+void weightEdgesByDistances(rsGraph<rsVector2D<T>, T>& mesh, T p)
+{  
+  using Vec2 = rsVector2D<T>;
+  T q = p;
+  for(int i = 0; i < mesh.getNumVertices(); i++)
+  {
+    Vec2 v_i = mesh.getVertexData(i);
+    if(rsIsNaN(p))
+      q = (T)mesh.getNumEdges(i);
+    for(int k = 0; k < mesh.getNumEdges(i); k++)
+    {
+      int  j   = mesh.getEdgeTarget(i, k);    // index of target vertex
+      Vec2 v_j = mesh.getVertexData(j);       // position of target vertex
+      T d = rsNorm(v_j - v_i);                // distance between v_i and v_j
+      T w = mesh.getEdgeData(i, k);
+      w  *= pow(d, -q);
+      mesh.setEdgeData(i, k, w);
+      int dummy = 0;
+    }
+  }
+  // ToDo: 
+  //  -instead of w =...; w *= ...; mesh.setEdge...; use a convenience function 
+  //   mesh.scaleEdgeData(i, k, s) which does: setEdgeData(i, k, s*getEdgeData(i, k))
+  //   where s = pow(d, -q);
+
+  int dummy = 0;
+}
+template void weightEdgesByDistances(rsGraph<rsVector2D<double>, double>& mesh, double p);
+
+template<class T>
 T getNeighborSeparation(rsGraph<rsVector2D<T>, T>& mesh, int i, int k)
 {
   // Computes a measure of seperateness of the k-th neighbor of node i.
@@ -44,18 +74,18 @@ T getNeighborSeparation(rsGraph<rsVector2D<T>, T>& mesh, int i, int k)
   T    s_ik = T(0);
   for(int m = 0; m < mesh.getNumEdges(i); m++)
   {
-    if(m != k)
+    if(m != k)       // maybe try it without this conditional
     {
       int  n    = mesh.getEdgeTarget(i, m);
       Vec2 v_n  = mesh.getVertexData(n);
       T    d_jn = rsNorm(v_n - v_j);
       s_ik += d_jn;  // maybe we should use some power p: pow(d_jn, p)
+                     // maybe try multiplative accumulation (init with 1)
     }
   }
 
   return s_ik;
 }
-
 
 template<class T>
 void weightEdgesByMutualDistance(rsGraph<rsVector2D<T>, T>& mesh)
@@ -85,5 +115,12 @@ void weightEdgesByPositions(rsGraph<rsVector2D<T>, T>& mesh, int formula)
 {
   if(formula == 0) {                                    return; }
   if(formula == 1) { weightEdgesByMutualDistance(mesh); return; }
+
+  // ToDo: implement a formula using the mutual correlations of the neighbors c(k,m)
 }
 template void weightEdgesByPositions(rsGraph<rsVector2D<double>, double>& mesh, int formula);
+
+// ToDo:
+// -Maybe move all functions that have to do with computing or manipulating edge-weighst into a 
+//  class, maybe rsMeshWeightCalculator or something
+// -Move the weightEdgesByDirection from the research codebase to here

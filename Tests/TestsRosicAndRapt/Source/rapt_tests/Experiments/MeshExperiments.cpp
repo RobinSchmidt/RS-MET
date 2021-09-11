@@ -791,7 +791,9 @@ void meshGradientErrorVsAngle()
     double dy = sin(a);
     mesh.setVertexData(3, Vec2(v0.x + h*dx, v0.y + h*dy));
 
+    // factor out into a single call to: weightCalculator.calcWeights(mesh):
     initEdgeWeights(mesh);
+    weightEdgesByDistances(mesh);
     weightEdgesByPositions(mesh, formula);
 
     Vec2 err = gradientErrorVector(mesh, 0, f, f_x, f_y);
