@@ -1,39 +1,15 @@
-template<class T>
-void randomizeVertexPositions(rsGraph<rsVector2D<T>, T>& mesh, T dx, T dy, 
-  int minNumNeighbors, int seed)
-{
-  using Vec2 = rsVector2D<T>;
-  rsNoiseGenerator<T> ng;
-  ng.setSeed(seed);
-  //T rnd;
-  for(int k = 0; k < mesh.getNumVertices(); k++) 
-  {
-    if(mesh.getNumEdges(k) >= minNumNeighbors)
-    {
-      Vec2 v = mesh.getVertexData(k);
-      v.x += dx * ng.getSample();
-      v.y += dy * ng.getSample();
-      mesh.setVertexData(k, v);
-    }
-  }
-}
-template void randomizeVertexPositions(rsGraph<rsVector2D<double>, double>& mesh, 
-  double dx, double dy, int minNumNeighbors, int seed);
-
-
+//=================================================================================================
 
 template<class T>
-void initEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh)
+void rsMeshWeightCalculator2D<T>::initEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh)
 {
   for(int i = 0; i < mesh.getNumVertices(); i++)
     for(int k = 0; k < mesh.getNumEdges(i); k++)
       mesh.setEdgeData(i, k, T(1));
 }
-template void initEdgeWeights(rsGraph<rsVector2D<double>, double>& mesh);
-
 
 template<class T>
-void weightEdgesByDistances(rsGraph<rsVector2D<T>, T>& mesh, T p)
+void rsMeshWeightCalculator2D<T>::weightEdgesByDistances(rsGraph<rsVector2D<T>, T>& mesh, T p)
 {  
   using Vec2 = rsVector2D<T>;
   T q = p;
@@ -60,10 +36,9 @@ void weightEdgesByDistances(rsGraph<rsVector2D<T>, T>& mesh, T p)
 
   int dummy = 0;
 }
-template void weightEdgesByDistances(rsGraph<rsVector2D<double>, double>& mesh, double p);
 
 template<class T>
-T getNeighborSeparation(rsGraph<rsVector2D<T>, T>& mesh, int i, int k)
+T rsMeshWeightCalculator2D<T>::getNeighborSeparation(rsGraph<rsVector2D<T>, T>& mesh, int i, int k)
 {
   // Computes a measure of seperateness of the k-th neighbor of node i.
 
@@ -88,7 +63,7 @@ T getNeighborSeparation(rsGraph<rsVector2D<T>, T>& mesh, int i, int k)
 }
 
 template<class T>
-void weightEdgesByMutualDistance(rsGraph<rsVector2D<T>, T>& mesh)
+void rsMeshWeightCalculator2D<T>::weightEdgesByMutualDistance(rsGraph<rsVector2D<T>, T>& mesh)
 {
   using Vec2 = rsVector2D<T>;
   T q(+1.00);  // todo: make parameter
@@ -109,18 +84,42 @@ void weightEdgesByMutualDistance(rsGraph<rsVector2D<T>, T>& mesh)
   int dummy = 0;
 }
 
-
 template<class T>
-void weightEdgesByPositions(rsGraph<rsVector2D<T>, T>& mesh, int formula)
+void rsMeshWeightCalculator2D<T>::weightEdgesByPositions(
+  rsGraph<rsVector2D<T>, T>& mesh, int formula)
 {
   if(formula == 0) {                                    return; }
   if(formula == 1) { weightEdgesByMutualDistance(mesh); return; }
 
   // ToDo: implement a formula using the mutual correlations of the neighbors c(k,m)
 }
-template void weightEdgesByPositions(rsGraph<rsVector2D<double>, double>& mesh, int formula);
+
+template class rsMeshWeightCalculator2D<double>;  // explicit instantiation for double
 
 // ToDo:
 // -Maybe move all functions that have to do with computing or manipulating edge-weighst into a 
 //  class, maybe rsMeshWeightCalculator or something
 // -Move the weightEdgesByDirection from the research codebase to here
+
+//=================================================================================================
+
+template<class T>
+void randomizeVertexPositions(rsGraph<rsVector2D<T>, T>& mesh, T dx, T dy, 
+  int minNumNeighbors, int seed)
+{
+  using Vec2 = rsVector2D<T>;
+  rsNoiseGenerator<T> ng;
+  ng.setSeed(seed);
+  for(int k = 0; k < mesh.getNumVertices(); k++) 
+  {
+    if(mesh.getNumEdges(k) >= minNumNeighbors)
+    {
+      Vec2 v = mesh.getVertexData(k);
+      v.x += dx * ng.getSample();
+      v.y += dy * ng.getSample();
+      mesh.setVertexData(k, v);
+    }
+  }
+}
+template void randomizeVertexPositions(rsGraph<rsVector2D<double>, double>& mesh, 
+  double dx, double dy, int minNumNeighbors, int seed);

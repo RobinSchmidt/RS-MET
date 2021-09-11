@@ -746,6 +746,7 @@ void meshGradientErrorVsAngle()
 
   using Vec  = std::vector<double>;
   using Vec2 = rsVector2D<double>;
+  using MWC  = rsMeshWeightCalculator2D<double>;
 
   int formula   = 0;    // formula for the weighting
   int numAngles = 721;  // stepping the angle in 0.5 degree steps
@@ -792,9 +793,9 @@ void meshGradientErrorVsAngle()
     mesh.setVertexData(3, Vec2(v0.x + h*dx, v0.y + h*dy));
 
     // factor out into a single call to: weightCalculator.calcWeights(mesh):
-    initEdgeWeights(mesh);
-    weightEdgesByDistances(mesh);
-    weightEdgesByPositions(mesh, formula);
+    MWC::initEdgeWeights(mesh);
+    MWC::weightEdgesByDistances(mesh);
+    MWC::weightEdgesByPositions(mesh, formula);
 
     Vec2 err = gradientErrorVector(mesh, 0, f, f_x, f_y);
     errX[i] = err.x;
