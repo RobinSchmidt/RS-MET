@@ -427,6 +427,10 @@ template<class T>
 void randomizeVertexPositions(rsGraph<rsVector2D<T>, T>& mesh, T dx, T dy, 
   int minNumNeighbors = 0, int seed = 0);
 
+/** Initializes all edge weights to 1. */
+template<class T>
+void initEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh);
+
 /** Accumulates another factor into the edge-weights that is determined by their individual 
 positions with respect to the center node and the other neighbor nodes. Different formulas are 
 implemented to facilitate experimentation: 0: no weighting, 1: mutual distances, 2: mutual 

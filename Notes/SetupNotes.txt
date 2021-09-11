@@ -10,3 +10,8 @@ go on the "Default" tree item and set the path to the debugger, in my case:
 for debugging 32 bit builds. Debugger type is set to GDB. It's also important to 
 uncheck the "Disable startup scripts (-nx) (GDB only)" checkbox in order to be able
 to see the contents of a std::vector
+
+
+To install github desktop on linux, see:
+https://gist.github.com/berkorbay/6feda478a00b0432d13f1fc0a50467f1
+https://dev.to/rahedmir/is-github-desktop-available-for-gnu-linux-4a69

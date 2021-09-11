@@ -37,6 +37,7 @@ void fillEdges(rsGraph<rsVector2D<T>, T>& g,
       T ed   = f(vi, vk);                        // compute edge data via user supplied function
       g.setEdgeData(i, j, ed); }}                // ...and store it at the edge
 }
+// move to MeshStuff.h
 
 void vertexMeshGradient1()
 {
@@ -789,7 +790,10 @@ void meshGradientErrorVsAngle()
     double dx = cos(a);
     double dy = sin(a);
     mesh.setVertexData(3, Vec2(v0.x + h*dx, v0.y + h*dy));
+
+    initEdgeWeights(mesh);
     weightEdgesByPositions(mesh, formula);
+
     Vec2 err = gradientErrorVector(mesh, 0, f, f_x, f_y);
     errX[i] = err.x;
     errY[i] = err.y;
@@ -829,6 +833,10 @@ void meshGradientErrorVsAngle()
   //  a bit like piecewise rectified sines
   //  -maybe these notches are due to taking the maximum of x- and y-error - todo: plot x- and
   //   y-error separately -> done: they look smooth
+  //
+  // Update - using formulas based on mutual distances, etc:
+  // -formula 0: baseline, reference, all weights 1
+  // -formula 1: doesn't seem to give a consistent improvement
 
   // Conclusion:
   // -Trying to take into account the angles of the neighbours with respect to one another does not 
@@ -951,10 +959,10 @@ void vertexMeshGradient()
 {
   //vertexMeshGradient1();  // somewhat obsolete now - maybe delete at some point
 
-  meshGradientErrorVsDistance();
-  meshGradientErrorVsWeight();   // todo: try with geometries other than regular polygons
+  //meshGradientErrorVsDistance();
+  //meshGradientErrorVsWeight();   // todo: try with geometries other than regular polygons
   meshGradientErrorVsAngle();
-  meshGradientErrorVsIrregularity();
+  //meshGradientErrorVsIrregularity();
 }
 
 template<class T>
