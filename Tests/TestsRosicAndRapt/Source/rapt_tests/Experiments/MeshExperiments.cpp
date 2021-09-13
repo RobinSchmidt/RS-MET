@@ -349,8 +349,7 @@ void taylorExpansion2D(rsGraph<rsVector2D<T>, T>& mesh, const T* u,
 {
   using Vec2 = rsVector2D<T>;
   using Mat  = rsMatrix<T>;
-  //static const T half = (T(1)/T(2));
-
+  static const T half = (T(1)/T(2));
   Mat A, x, b;                 // for the matrix equation
   x.setShape(5, 1);            // x := (g_x, g_y, H_xx, H_xy, H_yy)
   for(int i = 0; i < mesh.getNumVertices(); i++)
@@ -363,12 +362,13 @@ void taylorExpansion2D(rsGraph<rsVector2D<T>, T>& mesh, const T* u,
     {
       int  j  = mesh.getEdgeTarget(i, k);
       Vec2 vj = mesh.getVertexData(j);
+      Vec2 dj = vj   - vi;
       b(k, 0) = u[j] - u[i];
-      A(k, 0) = vj.x;
-      A(k, 1) = vj.y;
-      A(k, 2) = vj.x * vj.x * 0.5;
-      A(k, 3) = vj.x * vj.y;
-      A(k, 4) = vj.y * vj.y * 0.5;
+      A(k, 0) = dj.x;
+      A(k, 1) = dj.y;
+      A(k, 2) = dj.x * dj.x * half;
+      A(k, 3) = dj.x * dj.y;
+      A(k, 4) = dj.y * dj.y * half;
     }
     solveOptimal(A, x, b);
     u_x[i]  = x(0, 0);
@@ -376,10 +376,7 @@ void taylorExpansion2D(rsGraph<rsVector2D<T>, T>& mesh, const T* u,
     u_xx[i] = x(2, 0);
     u_xy[i] = x(3, 0);
     u_yy[i] = x(4, 0);
-    int dummy = 0;
   }
-
-  int dummy = 0;
 }
 
 void meshGradientErrorVsDistance()
@@ -1472,6 +1469,14 @@ void testHessianRectangularMesh()
   taylorExpansion2D(mesh, &u[0], &u_x[0], &u_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
   rsPlotVectors(u_x-U_x, u_y-U_y);
   rsPlotVectors(u_xx-U_xx, u_xy-U_xy, u_yy-U_yy);
+  // ToDo: 
+  // -Plot the number of neighbors for reference. We expect the estimate to be exact whenever
+  //  that number is >= 5 because 5 neighbors are needed for the system to be critically 
+  //  determined.
+  // -Try the Taylor expansion approach with a function that is not an exact quadratic form. Try to
+  //  introduce error weighting in the overdetermined case.
+  // -Figure out if we can improve the results of underdetermined cases by using weighting or an
+  //  entirely different minimization criterion.
 
   // Now the same thing but with a numeric gradient:
   //MWC::weightEdgesByDistances(mesh);     // test
