@@ -71,11 +71,23 @@ void solveOptimal(rsMatrix<T>& A, rsMatrix<T>& X, rsMatrix<T>& B)
   if(M <  N) { solveMinimumNorm( A, X, B);         return; }  // less equations than unknowns
   
   // ToDo: 
-  // -In the ciritically determined case, use a "solveRobust" function that also works for singular 
+  // -In the critically determined case, use a "solveRobust" function that also works for singular 
   //  systems. It should return a least-squares solution in case of an inconsistent system and a 
   //  minimum-norm solution in case of a consistent system.
   // -In the under- and overdetermined cases, also use the robust algorithm as sub-algorithm to 
   //  solve the internal NxN system (or is it MxM?).
+  // -Maybe generalize to using weighted least squares and minimum weighted norm. The caller should 
+  //  then pass a set of weights.
+  // -In the case of the underdetermined system resulting from computing mesh gradients and 
+  //  Hessians with less than 5 neighbors, maybe minimize not the norm but instead the determinant
+  //  of the Hessian ...would that make sense? What's the significance of that determinant anyway?
+  //  Maybe try to minimize (various measures of) curvature...or maybe minimize the Laplacian. The 
+  //  goal should be to explain as much as possible linearly and resort to the nonlinear terms only
+  //  after using the lienar ones up to their fullest extent, so to speak. I don't really know, if 
+  //  that makes any sense, though. The rationale is to prefer linear explanations of the data over
+  //  nonlinear ones as much as possible.
+  // -For computing the sparse matrices that are needed to compute u_x, u_y, u_xx, u_xy, u_yy from
+  //  a vector of u values, we may indeed need the full pseudo-inverse
 }
 template void solveOptimal(rsMatrix<double>& A, rsMatrix<double>& X, rsMatrix<double>& B);
 

@@ -342,6 +342,16 @@ void fillMeshHessian(rsGraph<rsVector2D<T>, T>& mesh,
     u_yy[i] = f_yy(vi.x, vi.y); }
 }
 
+
+template<class T>
+void taylorExpansion2D(rsGraph<rsVector2D<T>, T>& mesh, const T* u, 
+  T* u_x, T* u_y, T* u_xx, T* u_xy, T* u_yy)
+{
+
+
+  int dummy = 0;
+}
+
 void meshGradientErrorVsDistance()
 {
   // We plot the error between the estimated partial derivatives and true partial derivatives as
@@ -1155,7 +1165,7 @@ void solveSymmetric3x3(
 // -> benchmark!
 
 // Computes Hessian, when the gradient is already known - needs more testing - test it with the exact
-// gradient, mabye using a qudratic function, i.e. f(x,y) = A + B*x + C*y + D*x^2 + E*y^2 + F*x*y
+// gradient, mabye using a quadratic function, i.e. f(x,y) = A + B*x + C*y + D*x^2 + E*y^2 + F*x*y
 template<class T>
 void hessian2DViaTaylor(const rsGraph<rsVector2D<T>, T>& mesh, 
   const T* u, const T* u_x, const T* u_y, int i,
@@ -1347,6 +1357,9 @@ void meshHessianViaTaylorErrorVsDistance()
   int dummy = 0;
 }
 
+
+
+
 void testHessianRectangularMesh()
 {
   // Creates a somewhat more realistic mesh and tests the computation of the Hessian on it. As 
@@ -1394,16 +1407,14 @@ void testHessianRectangularMesh()
   // todo: assign edge weights
 
 
-
-
-
-
   // Compute function values and exact derivtaives on the mesh. Maybe wrap these into a class and 
   // then provide functions to generate various mesh functions, such here, we can just do:
   // MeshData md = getMeshDataQuadraticForm(); ..SinCos, SinExp, etc such that we can conveniently
   // switch back and forth between various functions:
   int N = mesh.getNumVertices();
   Vec u(N);                                            // Mesh function values
+  Vec u_x(N), u_y(N);                                  // Gradient (numerical)
+  Vec u_xx(N), u_xy(N), u_yx(N), u_yy(N);              // Hessian (numerical)
   Vec U_x(N), U_y(N), U_xx(N), U_xy(N), U_yy(N), L(N); // Gradient, Hessian and Laplacian (exact)
   for(int i = 0; i < N; i++)
   {
@@ -1422,19 +1433,19 @@ void testHessianRectangularMesh()
   plt.plotGraph2D(mesh);
 
   // Compute Hessian numerically via Taylor using the exact gradient:
-  Vec u_xx(N), u_xy(N), u_yy(N);
   hessian2DViaTaylor(mesh, &u[0], &U_x[0], &U_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
   rsPlotVectors(u_xx-U_xx, u_xy-U_xy, u_yy-U_yy);
   // Looks generally good, but some values are wrong. Maybe these are the boundary values?
 
   // Compute Hessian using a direct 2nd order 2D Taylor expansion without estimating the gradient 
   // first - this should also give exact results:
-  // ...
+  taylorExpansion2D(mesh, &u[0], &u_x[0], &u_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
+  rsPlotVectors(u_x-U_x, u_y-U_y);
+  rsPlotVectors(u_xx-U_xx, u_xy-U_xy, u_yy-U_yy);
 
   // Now the same thing but with a numeric gradient:
   //MWC::weightEdgesByDistances(mesh);     // test
   //MWC::weightEdgesByPositions(mesh, 1);
-  Vec u_x(N), u_y(N), u_yx(N);
   ND::gradient2D(mesh, u, u_x, u_y);
   hessian2DViaTaylor(mesh, &u[0], &u_x[0], &u_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
   rsPlotVectors(u_x-U_x, u_y-U_y);
