@@ -218,6 +218,8 @@ void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
   }
 }
 
+
+// soon obsolete - this stuff is now done in rsMeshWeightCalculator2D
 template<class T>
 void computeEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh, T p, T q = 0)
 {
@@ -247,16 +249,11 @@ void computeEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh, T p, T q = 0)
         }
       }
       w *= pow(s, q);
-     
-
-
-
-
+    
       mesh.setEdgeData(i, k, w);
     }
   }
 }
-
 template<class T>
 void assignEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh, T p)
 {
@@ -875,12 +872,12 @@ void meshGradientErrorVsIrregularity()
 
   // Setup:
   int numSides = 8;      // number of neighbors
-  int randSeed = 0;      // seed for random number generator
+  int randSeed = 1;      // seed for random number generator
   int numTests = 20;     // number of tests/steps
   Real h       = 1./16;  // approximation stepsize
   Real randMin = 0.0;    // minimum randomization (as fraction of h)
   Real randMax = 0.2;    // maximum randomization (as fraction of h)
-  Real p       = 4.0;    // weighting exponent for center distance
+  Real p       = 4.0;    // weighting exponent for center distance (i think, numSides is best)
   Real q       = 0.0;    // weighting exponent for separation
   Vec2 v0(1, 1);         // position of center vertex
 
@@ -914,7 +911,9 @@ void meshGradientErrorVsIrregularity()
 
   // Observations:
   // -For the regular mesh, the error is of the order of e-10, but even with slight randomization
-  //  it sharply increases and then it continues to increase slowly
+  //  it sharply increases and then it continues to increase slowly.
+  // -With numSides = 8, p = 4.0 seems to be a good value. This is in contrast to earlier findings
+  //  with regular geometries, where a value of p = numSides = 8 seemed to be best.
   // -Using weighting does not seem to make much of a difference:
 
   // ToDo:
@@ -962,10 +961,10 @@ void vertexMeshGradient()
 {
   //vertexMeshGradient1();  // somewhat obsolete now - maybe delete at some point
 
-  //meshGradientErrorVsDistance();
-  //meshGradientErrorVsWeight();   // todo: try with geometries other than regular polygons
+  meshGradientErrorVsDistance();
+  meshGradientErrorVsWeight();   // todo: try with geometries other than regular polygons
   meshGradientErrorVsAngle();
-  //meshGradientErrorVsIrregularity();
+  meshGradientErrorVsIrregularity();
 }
 
 template<class T>
@@ -1382,6 +1381,7 @@ void testHessianRectangularMesh()
   using Vec2 = rsVector2D<Real>;
   using AT   = rsArrayTools;
   using ND   = rsNumericDifferentiator<Real>;
+  using MWC  = rsMeshWeightCalculator2D<Real>;
 
   // Create the mesh:
   rsMeshGenerator2D<Real> meshGen;
@@ -1427,18 +1427,29 @@ void testHessianRectangularMesh()
   rsPlotVectors(u_xx-U_xx, u_xy-U_xy, u_yy-U_yy);
   // Looks generally good, but some values are wrong. Maybe these are the boundary values?
 
+  // Compute Hessian using a direct 2nd order 2D Taylor expansion without estimating the gradient 
+  // first - this should also give exact results:
+  // ...
+
   // Now the same thing but with a numeric gradient:
-  Vec u_x(N), u_y(N);
+  //MWC::weightEdgesByDistances(mesh);     // test
+  //MWC::weightEdgesByPositions(mesh, 1);
+  Vec u_x(N), u_y(N), u_yx(N);
   ND::gradient2D(mesh, u, u_x, u_y);
   hessian2DViaTaylor(mesh, &u[0], &u_x[0], &u_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
   rsPlotVectors(u_x-U_x, u_y-U_y);
-  // Seems to have also problems at the boundaries
+  rsPlotVectors(u_xx-U_xx, u_xy-U_xy, u_yx-U_xy, u_yy-U_yy);
+  // -Error is very high, already for the gradient estimate -> seems like something is wrong
+  //  -> try using a different edge weighting function -> uncommenting the MWC:: stuff doesn't seem
+  //     to help
+  //  -> try a direct Taylor expansion
+  // -Seems to have also problems at the boundaries
 
   // Now using the gradient-of-gradient algorithm:
-  Vec u_yx(N);
   meshHessianViaGradGrad(mesh, f, u_xx, u_xy, u_yx, u_yy);    // todo: pass u instead of f
   rsPlotVectors(u_xx-U_xx, u_xy-U_xy, u_yx-U_xy, u_yy-U_yy);
-  // Has also problems at the boundaries
+  // -Error is even higher
+  // -Has also problems at the boundaries
 
 
 

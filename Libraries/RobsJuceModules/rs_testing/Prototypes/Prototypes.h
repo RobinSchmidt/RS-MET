@@ -46,6 +46,17 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //static size_t allBitsButFirst= allBits ^ firstBitOnly;
 */
 
+
+/** Under construction.
+Solves the linear system A*x = b in an "optimal" regardless of the question whether the system is
+over-, under- or critically determined. If it's critically determined and the matrix is regular, 
+this just boils down to finding the exact solution. In the overdetermined case, it finds a 
+least-squares approximation to a solution. in the underdetermined case, it finds the minimum-norm
+solution among the infinitely many. 
+...but what if a critically determined system is singular? ...tbc... */
+template<class T>
+void solveOptimal(rsMatrix<T>& A, rsMatrix<T>& X, rsMatrix<T>& B);
+
 /** Given abscissa and ordinate values in x and y, this function computes the slopes at the 
 x-locations, i.e. values for the 1st derivative of y, and returns them as vector which is of the 
 same length as x and y. If these slopes are later used in cubic Hermite interpolation, the Hermite 

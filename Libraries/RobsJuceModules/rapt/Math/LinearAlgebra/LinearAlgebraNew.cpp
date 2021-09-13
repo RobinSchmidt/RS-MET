@@ -61,11 +61,11 @@ void rsLinearAlgebraNew::solveTridiagonal(int N, const T* L, T* D, const T* U, T
 
   // ToDo:
   // -Can x and b be the same? I think so. -> document
-  // -Make a version that solves the system for two (or maybe M?) right-hand-sides simulatneously. 
+  // -Make a version that solves the system for two (or maybe M?) right-hand-sides simultaneously. 
   //  This is needed for the Sherman-Morrison-Woodbury formula (for cubic splines with periodic 
   //  boundary conditions)
   // -Implement solveWrappedTriDiag (should use Sherman-Morrison-Woodbury), then implement spline
-  //  interpolation with different boundray conditions. 
+  //  interpolation with different boundary conditions. 
 }
 
 template<class T>
@@ -353,7 +353,7 @@ ToDo:
 -maybe implement Gaussian elimination with full pivoting
 -maybe implement solvers with pre-conditioning and/or iterative refinement to improve numerical 
  precision
--
+-drag over the solvePentaDiagonal function from the prototypes
 
 
  -why is it that Gaussian elimination doesn't need to keep track of the swaps - or is this just 

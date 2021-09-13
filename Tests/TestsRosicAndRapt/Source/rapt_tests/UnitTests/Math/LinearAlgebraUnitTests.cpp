@@ -784,8 +784,8 @@ bool testPowerIterationDense()
   vec = rsRandomVector(N, 0, 1);
   its = ILA::largestEigenValueAndVector(A, &val, &vec[0], tol, &wrk[0]);
   // yep, works: val == 3 and vec == (3,6,3)/sqrt(54) 
-  // todo: add automatic check, test with negative largest eigenvalue - it wil probably fail 
-  // because we need to swicth the convergence test to using isScalarMultiple as in eigenspace
+  // todo: add automatic check, test with negative largest eigenvalue - it will probably fail 
+  // because we need to switch the convergence test to using isScalarMultiple as in eigenspace
 
 
   // move this code into the experiments section (partially done - see orthogonalizedPowerIteration
@@ -797,17 +797,17 @@ bool testPowerIterationDense()
   AT::fillWithRandomValues(&vecs2[0], N*N, -1.0, +1.0, 0);  // initial guess
   its = ILA::eigenspace(A, &vals2[0], &vecs2[0], tol, &wrk[0], 1000);
   Vec vec2 = rsGetChunk(vecs2, N, N);
-  Vec tmp1 = A*vec2;         // matrix times vector
-  Vec tmp2 = vals2[1]*vec2;  // scalar times vector
-  rsNormalizeChunks(vecs2, N);  // should not change anything, vecs 2 is already normalized
+  Vec tmp1 = A*vec2;            // matrix times vector
+  Vec tmp2 = vals2[1]*vec2;     // scalar times vector
+  rsNormalizeChunks(vecs2, N);  // should not change anything, vecs2 is already normalized
   tol = 1.e-7;
   Mat E = rsToMatrixColumnWise(vecs2, N, N);
   //bool ortho = areColumnsOrthogonal(E);
   //ok &= checkEigensystem(vals2, vecs2, vals, vecs, tol);
   // the 1st eigenvector matches but the other 2 do not - but all eigenvalues are correct, so the
-  // iteration actuall must have converged to the right eigenvalue. but maybe we have some issue
+  // iteration actually must have converged to the right eigenvalue. But maybe we have some issue
   // with some projections being subtracted or not before leaving the function?
-  // yep: we copy wrk int vec before leaving and wrk has the projections removed ..but that's
+  // yep: we copy wrk into vec before leaving and wrk has the projections removed ..but that's
   // actually right, isnt it?
 
   // try it with a simpler problem: 2D, eigenvectors (1,1),(1,-1)
@@ -821,8 +821,8 @@ bool testPowerIterationDense()
   ok &= checkEigensystem(vals2, vecs2, vals, vecs, 1.e-13);
   // 2D works with (1,(1,1)),(3,(1,-1)) but not with (1,(1,2)),(3,(1,-1))
   // I think, it works only when the eigenvectors are orthogonal. If they are not we probably can't
-  // just project by inner products. it may nevertheless work with the eigenvalues because we 
-  // subtract some portion in the directions of the already foun eigenvectors - but not everything?
+  // just project by inner products. It may nevertheless work with the eigenvalues because we 
+  // subtract some portion in the directions of the already found eigenvectors - but not everything?
 
   vals = Vec({  3,    1});  // eigenvalues
   vecs = Vec({6,8, -8,6});  // is also orthogonal, both have norm 100
@@ -870,24 +870,52 @@ bool testPowerIterationDense()
   // -figure out what happens when we have eigenvalues with multiplicities (algebraic and/or
   //  geometric)
 
-  // Deflation for symmetric matrices works by subtracting sum_i (lamda_i * V_i * V_i^T)
+  // Deflation for symmetric matrices works by subtracting sum_i (lambda_i * V_i * V_i^T)
   // https://www.math.tamu.edu/~dallen/linear_algebra/chpt6.pdf  pg 417
 
   return ok;
 }
 
+bool testSolveOptimal()
+{
+  bool ok = true;
+
+  using Real = double;
+  using Mat  = rsMatrix<Real>;
+
+  Mat A, b, x;
+
+  // Solve overdetermined system:
+  A = Mat(5, 2, { 1,1, 2.05,-1, 3.06,1, -1.02,2, 4.08,-1 });
+  b = Mat(5, 1, { 1.98, 0.95, 3.98, 0.92, 2.90 });
+  x = Mat(2, 1);
+  solveOptimal(A, x, b);
+  Real tol = 1.e-13;
+  ok &= rsIsCloseTo(x(0,0), 9.631014000267910e-01, tol);
+  ok &= rsIsCloseTo(x(1,0), 9.885433442637638e-01, tol); 
+  // Octave (via https://sagecell.sagemath.org/):
+  //   %%output_precision(10)  % doesn't work
+  //   format long
+  //   A = [1 1;2.05 -1;3.06 1;-1.02 2;4.08 -1];
+  //   b = [1.98;0.95;3.98;0.92;2.90];
+  //   x = pinv(A)*b
+  // produces:
+  //   x = 9.631014000267910e-01, 9.885433442637638e-01
 
 
 
 
+
+
+  return ok;
+}
 
 bool testLinearAlgebra()
 {
-  std::string reportString = "LinearAlgebra"; // dummy-string - delete later
   bool ok = true;
 
   // LAPACK based solvers:
-  //ok &= testBandDiagonalSolver();  // fails with gcc
+  ok &= testBandDiagonalSolver();  // fails with gcc
 
   // Old (2D array based) solvers:
   ok &= testMatrix2x2();
@@ -901,6 +929,7 @@ bool testLinearAlgebra()
   // New (flat array based) direct solvers:
   ok &= testNullSpace();
   ok &= testLinearSystemViaGauss2();
+  ok &= testSolveOptimal();
 
   // Iterative linear algebra:
   ok &= testIterativeLinAlgBasics();

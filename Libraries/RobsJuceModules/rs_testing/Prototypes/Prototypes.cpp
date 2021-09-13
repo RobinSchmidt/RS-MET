@@ -22,6 +22,72 @@
 
 using namespace RAPT;
 
+
+template<class T>
+void solveLeastSquares(rsMatrix<T>& A, rsMatrix<T>& X, rsMatrix<T>& B)
+{
+  rsMatrix<T> AT  = A.getTranspose();       // A^T
+  rsMatrix<T> ATB = AT * B;                 // A^T * B
+  rsMatrix<T> ATA = AT * A;                 // A^T * A
+  rsLinearAlgebraNew::solve(ATA, X, ATB);   // A^T * A * X = A^T * B  ->  solve for X
+
+  // The algorithm is based on the formula:
+  //   x = (A^T * A)^(-1) * A^T * b
+  // which means that we need to solve the linear system:
+  //   A^T * A * x = A^T * b
+  // See: http://people.csail.mit.edu/bkph/articles/Pseudo_Inverse.pdf 
+}
+
+template<class T>
+void solveMinimumNorm(rsMatrix<T>& A, rsMatrix<T>& X, rsMatrix<T>& B)
+{
+  rsMatrix<T> AT  = A.getTranspose();                // A^T
+  rsMatrix<T> AAT = A * AT;                          // A * A^T
+  rsMatrix<T> Z(B.getNumRows(), B.getNumColumns());  // allocate intermediate solution
+  rsLinearAlgebraNew::solve(AAT, Z, B);              // A * A^T * Z = B  ->  solve for Z
+  X = AT * Z;   // todo: avoid (re)assigning X, operate on allocated memory
+
+  // The algorithm is based on the formula:
+  //   x = A^T * (A * A^T)^(-1) * b
+  // which means that we need to solve the linear system:
+  //   A * A^T * z = b
+  // for the intermediate vector z and then compute x from z via:
+  //   x = A^T * z
+  // See: http://people.csail.mit.edu/bkph/articles/Pseudo_Inverse.pdf 
+}
+
+template<class T>
+void solveOptimal(rsMatrix<T>& A, rsMatrix<T>& X, rsMatrix<T>& B)
+{
+  // Sanity checks:
+  rsAssert(X.getNumColumns() == B.getNumColumns());
+  rsAssert(A.getNumRows()    == B.getNumRows());
+  rsAssert(A.getNumColumns() == X.getNumRows());
+
+  int M = A.getNumRows();
+  int N = A.getNumColumns();
+  if(M == N) { rsLinearAlgebraNew::solve(A, X, B); return; }  // as many equations as unknowns
+  if(M >  N) { solveLeastSquares(A, X, B);         return; }  // more equations than unknowns
+  if(M <  N) { solveMinimumNorm( A, X, B);         return; }  // less equations than unknowns
+  
+  // ToDo: 
+  // -In the ciritically determined case, use a "solveRobust" function that also works for singular 
+  //  systems. It should return a least-squares solution in case of an inconsistent system and a 
+  //  minimum-norm solution in case of a consistent system.
+  // -In the under- and overdetermined cases, also use the robust algorithm as sub-algorithm to 
+  //  solve the internal NxN system (or is it MxM?).
+}
+template void solveOptimal(rsMatrix<double>& A, rsMatrix<double>& X, rsMatrix<double>& B);
+
+// See:
+// http://people.csail.mit.edu/bkph/articles/Pseudo_Inverse.pdf    solutions using A^T
+// http://pages.cs.wisc.edu/~amos/412/lecture-notes/lecture17.pdf  dito
+// https://en.wikipedia.org/wiki/Underdetermined_system
+// https://en.wikipedia.org/wiki/Overdetermined_system
+// https://www.johndcook.com/blog/2018/05/06/least-squares/      solution via SVD
+// https://math.stackexchange.com/questions/3361312/qr-and-lq-solver-for-over-and-under-determined-systems
+
+
 template<class T>
 std::vector<T> splineSlopes(const std::vector<T>& x, const std::vector<T>& y,
   bool prescribe2ndDeriv, T k1, T k2)

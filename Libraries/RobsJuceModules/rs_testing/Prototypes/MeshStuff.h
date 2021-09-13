@@ -423,11 +423,30 @@ protected:
 
 //=================================================================================================
 
+/** A class to compute edge weights for a 2D mesh using various formulas. 
+
+The class is meant for experimentation with the goal to find a formula that minimizes the error in
+gradient estimation in meshes via a weighted-least-squares approach. */
+
 template<class T>
 class rsMeshWeightCalculator2D
 {
 
 public:
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
+
+  //void setDistancePower(T p) { distancePower = p; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Calculation
+
+
+
+
 
   /** Initializes all edge weights to 1. */
   static void initEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh);
@@ -454,6 +473,10 @@ public:
 protected:
 
   static T getNeighborSeparation(rsGraph<rsVector2D<T>, T>& mesh, int i, int k);
+
+  T distancePower = RS_NAN(T); // nan encodes to choose the power automatically
+
+
 
 };
 
