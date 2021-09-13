@@ -48,10 +48,10 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 
 
 /** Under construction.
-Solves the linear system A*x = b in an "optimal" regardless of the question whether the system is
-over-, under- or critically determined. If it's critically determined and the matrix is regular, 
-this just boils down to finding the exact solution. In the overdetermined case, it finds a 
-least-squares approximation to a solution. in the underdetermined case, it finds the minimum-norm
+Solves the linear system A*x = b in an "optimal" way regardless of the question whether the system 
+is over-, under- or critically determined. If it's critically determined and the matrix is regular, 
+this just boils down to finding the unique exact solution. In the overdetermined case, it finds a 
+least-squares approximation to a solution. In the underdetermined case, it finds the minimum-norm
 solution among the infinitely many. 
 ...but what if a critically determined system is singular? ...tbc... */
 template<class T>

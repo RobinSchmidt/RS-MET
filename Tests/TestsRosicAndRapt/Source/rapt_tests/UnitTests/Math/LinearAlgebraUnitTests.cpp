@@ -902,9 +902,22 @@ bool testSolveOptimal()
   // produces:
   //   x = 9.631014000267910e-01, 9.885433442637638e-01
 
-
-
-
+  // Solve underdetermined system:
+  A = Mat(2, 4, { 1,2,3,4, -5,3,2,7 });
+  b = Mat(2, 1, { 1,2 });
+  x = Mat(4, 1);
+  solveOptimal(A, x, b);
+  ok &= rsIsCloseTo(x(0,0), -7.797833935018039e-02, tol);
+  ok &= rsIsCloseTo(x(1,0),  7.870036101083033e-02, tol);
+  ok &= rsIsCloseTo(x(2,0),  7.292418772563182e-02, tol);
+  ok &= rsIsCloseTo(x(3,0),  1.754512635379062e-01, tol);
+  // Octave:
+  //   format long
+  //   A = [1 2 3 4;-5 3 2 7];
+  //   b = [1; 2];
+  //   x = pinv(A)*b
+  // produces:
+  //   x = -7.797833935018039e-02,7.870036101083033e-02,7.292418772563182e-02,1.754512635379062e-01
 
 
   return ok;
