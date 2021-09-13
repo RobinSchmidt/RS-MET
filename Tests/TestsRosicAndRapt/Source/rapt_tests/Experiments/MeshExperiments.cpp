@@ -342,12 +342,42 @@ void fillMeshHessian(rsGraph<rsVector2D<T>, T>& mesh,
     u_yy[i] = f_yy(vi.x, vi.y); }
 }
 
-
+/** Does not yet work! */
 template<class T>
 void taylorExpansion2D(rsGraph<rsVector2D<T>, T>& mesh, const T* u, 
   T* u_x, T* u_y, T* u_xx, T* u_xy, T* u_yy)
 {
+  using Vec2 = rsVector2D<T>;
+  using Mat  = rsMatrix<T>;
+  //static const T half = (T(1)/T(2));
 
+  Mat A, x, b;                 // for the matrix equation
+  x.setShape(5, 1);            // x := (g_x, g_y, H_xx, H_xy, H_yy)
+  for(int i = 0; i < mesh.getNumVertices(); i++)
+  {
+    Vec2 vi = mesh.getVertexData(i);
+    int  K  = mesh.getNumEdges(i);       // number of neighbors of vertex i
+    A.setShape(K, 5);
+    b.setShape(K, 1);
+    for(int k = 0; k < K; k++)
+    {
+      int  j  = mesh.getEdgeTarget(i, k);
+      Vec2 vj = mesh.getVertexData(j);
+      b(k, 0) = u[j] - u[i];
+      A(k, 0) = vj.x;
+      A(k, 1) = vj.y;
+      A(k, 2) = vj.x * vj.x * 0.5;
+      A(k, 3) = vj.x * vj.y;
+      A(k, 4) = vj.y * vj.y * 0.5;
+    }
+    solveOptimal(A, x, b);
+    u_x[i]  = x(0, 0);
+    u_y[i]  = x(1, 0);
+    u_xx[i] = x(2, 0);
+    u_xy[i] = x(3, 0);
+    u_yy[i] = x(4, 0);
+    int dummy = 0;
+  }
 
   int dummy = 0;
 }
@@ -1430,11 +1460,11 @@ void testHessianRectangularMesh()
 
   // Plot the mesh:
   GraphPlotter<Real> plt;
-  plt.plotGraph2D(mesh);
+  //plt.plotGraph2D(mesh);  // uncomment again when taylorExpansion2D is done
 
   // Compute Hessian numerically via Taylor using the exact gradient:
   hessian2DViaTaylor(mesh, &u[0], &U_x[0], &U_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
-  rsPlotVectors(u_xx-U_xx, u_xy-U_xy, u_yy-U_yy);
+  //rsPlotVectors(u_xx-U_xx, u_xy-U_xy, u_yy-U_yy); // uncomment again when taylorExpansion2D is done
   // Looks generally good, but some values are wrong. Maybe these are the boundary values?
 
   // Compute Hessian using a direct 2nd order 2D Taylor expansion without estimating the gradient 

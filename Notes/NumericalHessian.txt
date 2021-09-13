@@ -10,7 +10,7 @@ central difference:
 
   f_x ~= (f(x+hx,y) - f(x-hx,y)) / (2*hx)
   
-and then we may use a central difference with repect to y on f_x:
+and then we may use a central difference with respect to y on f_x:
 
   f_xy ~= (f_x(x,y+hy) - f_x(x,y-hy)) / (2*hy)
         = (f(x+hx,y+hy) + f(x-hx,y-hy) - f(x+hx,y-hy) - f(x-hx,y+hy)) / (4*hx*hy)

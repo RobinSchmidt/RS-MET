@@ -12,7 +12,7 @@ Let's call p = A^-1*d and q = A-^1*u, then we can compute our desired end result
 
 so, if we can compute A^-1*d and A^-1*u efficiently, we also have a way of computing
 (A + u*v^T)^-1 * d efficiently. Let's assume we have a matrix M which is almost tridiagonal but 
-also has nonzero entries at the top-right and bottom left. Let it be of the general form (as 
+also has nonzero entries at the top-right and bottom-left. Let it be of the general form (as 
 example 7x7):
 
        b1 c1 0  0  0  0  a1
@@ -55,7 +55,7 @@ matrix T by subtracting c7 from b1 and a1 from b7 and solve the two systems T*p 
 once p and q are known, apply Eq. 2 to find x.
 
 ToDo:
--implement this as solveWrappedTriDiag and test it
+-implement this as solveWrappedTriDiag and test it (-> done)
 -use the implementation to implement a cubic spline with periodic boundary conditions
 
 
