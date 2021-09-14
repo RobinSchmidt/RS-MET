@@ -498,7 +498,7 @@ neighbors is degenerate - like having two neighbors in the same spot). If a node
 neighbors, we use a least-squares fitting approach. If a node has less than 5 neighbors, we use a 
 minimum-norm solution (ToDo: maybe do soemthing better) ...tbc... */
 template<class T>
-void taylorExpansion2D(rsGraph<rsVector2D<T>, T>& mesh, const T* u, 
+void taylorExpansion2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, 
   T* u_x, T* u_y, T* u_xx, T* u_xy, T* u_yy);
 // maybe rename to derivatives2D, fitQuadratic2D, gradAndHessian2D
 
@@ -526,7 +526,7 @@ void createPolygonMesh(rsGraph<rsVector2D<T>, T>& mesh, int numSides, T radius,
 
 
 template<class T>
-void fillMeshValues(rsGraph<rsVector2D<T>, T>& mesh, const std::function<T(T, T)>& f, 
+void fillMeshValues(const rsGraph<rsVector2D<T>, T>& mesh, const std::function<T(T, T)>& f, 
   std::vector<T>& u)  
 {
   for(int i = 0; i < mesh.getNumVertices(); i++) {
@@ -535,7 +535,7 @@ void fillMeshValues(rsGraph<rsVector2D<T>, T>& mesh, const std::function<T(T, T)
 }
 
 template<class T>
-void fillMeshGradient(rsGraph<rsVector2D<T>, T>& mesh, 
+void fillMeshGradient(const rsGraph<rsVector2D<T>, T>& mesh, 
   const std::function<T(T, T)>& f_x, 
   const std::function<T(T, T)>& f_y,
   std::vector<T>& u_x, std::vector<T>& u_y)
@@ -547,7 +547,7 @@ void fillMeshGradient(rsGraph<rsVector2D<T>, T>& mesh,
 }
 
 template<class T>
-void fillMeshHessian(rsGraph<rsVector2D<T>, T>& mesh, 
+void fillMeshHessian(const rsGraph<rsVector2D<T>, T>& mesh, 
   const std::function<T(T, T)>& f_xx, 
   const std::function<T(T, T)>& f_xy, 
   const std::function<T(T, T)>& f_yy,

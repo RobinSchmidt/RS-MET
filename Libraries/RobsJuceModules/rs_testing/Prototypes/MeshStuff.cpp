@@ -126,7 +126,7 @@ template void randomizeVertexPositions(rsGraph<rsVector2D<double>, double>& mesh
 
 
 template<class T>
-void taylorExpansion2D(rsGraph<rsVector2D<T>, T>& mesh, const T* u, 
+void taylorExpansion2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u, 
   T* u_x, T* u_y, T* u_xx, T* u_xy, T* u_yy)
 {
   using Vec2 = rsVector2D<T>;
@@ -172,7 +172,7 @@ void taylorExpansion2D(rsGraph<rsVector2D<T>, T>& mesh, const T* u,
   // -For the overdetermined case, try a weighted least squares using weights inversely 
   //  proportional to (some power of) the distance
 }
-template void taylorExpansion2D(rsGraph<rsVector2D<double>, double>& mesh, const double* u, 
+template void taylorExpansion2D(const rsGraph<rsVector2D<double>, double>& mesh, const double* u, 
   double* u_x, double* u_y, double* u_xx, double* u_xy, double* u_yy);
 
 

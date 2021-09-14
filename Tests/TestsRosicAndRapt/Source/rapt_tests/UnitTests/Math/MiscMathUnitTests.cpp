@@ -992,10 +992,6 @@ bool testFraction()  // maybe move up
   return res;
 }
 
-
-
-
-
 bool testMeshDerivatives()
 {
   bool ok = true;
@@ -1005,6 +1001,7 @@ bool testMeshDerivatives()
   using Vec2 = rsVector2D<Real>;
   using Vec  = std::vector<Real>;
   using Mesh = rsGraph<Vec2, Real>;
+  using MWC  = rsMeshWeightCalculator2D<Real>;
 
   // Parameters of the quadratic form:
   //   u(x,y) = A + B*x + C*y + D*x*x + E*y*y + F*x*y
@@ -1023,72 +1020,96 @@ bool testMeshDerivatives()
 
   // Create the exact functions to compute u(x,y) and its various derivatives:
   std::function<Real(Real, Real)> f, f_x, f_y, f_xx, f_xy, f_yy;
-  f    = [&](Real x, Real y)->Real { return A + B*x + C*y +   D*x*x +   E*y*y + F*x*y; };
-  f_x  = [&](Real x, Real y)->Real { return     B         + 2*D*x             + F*y  ; };
-  f_y  = [&](Real x, Real y)->Real { return           C             + 2*E*y   + F*x  ; };
-  f_xx = [&](Real x, Real y)->Real { return                   2*D                    ; };
-  f_xy = [&](Real x, Real y)->Real { return                                   + F    ; };
-  f_yy = [&](Real x, Real y)->Real { return                           2*E            ; };
+  f    = [&](Real x, Real y) { return A + B*x + C*y +   D*x*x +   E*y*y + F*x*y; };
+  f_x  = [&](Real x, Real y) { return     B         + 2*D*x             + F*y  ; };
+  f_y  = [&](Real x, Real y) { return           C             + 2*E*y   + F*x  ; };
+  f_xx = [&](Real x, Real y) { return                   2*D                    ; };
+  f_xy = [&](Real x, Real y) { return                                   + F    ; };
+  f_yy = [&](Real x, Real y) { return                           2*E            ; };
 
-
-  Mesh mesh;
-  GraphPlotter<Real> plt;
-
-
-
-  Real tol = 1.e-12;
-
-  // When the number of neighbors is >= 5, the numerical estimation of the 5 derivatives u_x, u_y,
-  // u_xx, u_xy, u_yy should be exact because the given function is indeed a quadratic form:
-  for(int m = 5; m < 10; m++)
+  // Verifies that the estimates for the derivatives u_x, u_y, u_xx, u_xx, u_xy, u_yy are within
+  // the given tolerance:
+  auto verify = [&](const Mesh& mesh, Real tol) 
   {
-    int N = m+1;                                   // number of nodes
+    // Allocate memory for mesh functions:
+    int N = mesh.getNumVertices();
     Vec u(N);                                      // mesh function values
     Vec u_x(N), u_y(N), u_xx(N), u_xy(N), u_yy(N); // gradient and Hessian (numerical)
     Vec U_x(N), U_y(N), U_xx(N), U_xy(N), U_yy(N); // gradient and Hessian (exact)
+  
+    // Compute values and derivatives exactly:
+    fillMeshValues(  mesh, f, u);                               // mesh values u
+    fillMeshGradient(mesh, f_x, f_y, U_x, U_y);                 // exact gradient
+    fillMeshHessian( mesh, f_xx, f_xy, f_yy, U_xx, U_xy, U_yy); // exact Hessian
 
-    // Generate mesh, compute function values and exact derivatives:
-    createPolygonMesh(mesh, m, h, v0, angle);                  // generate mesh
-    fillMeshValues(mesh, f, u);                                // mesh values u
-    fillMeshGradient(mesh, f_x, f_y, U_x, U_y);                // exact gradient
-    fillMeshHessian(mesh, f_xx, f_xy, f_yy, U_xx, U_xy, U_yy); // exact Hessian
-
-    // Estimate mesh derivatives numerically:
+    // Estimate mesh derivatives numerically and compare exact and estimated values at index 0. 
+    // They should match up to roundoff. At all other indices, garbage is to be expected because 
+    // they only have one neighbor:
+    bool ok = true;
     taylorExpansion2D(mesh, &u[0], &u_x[0], &u_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
-
-    // Compare exact and estimated values at index 0. They should match upt to roundoff. At all 
-    // other indices, garbage is to be expected because they only have one neighbor:
     ok &= rsIsCloseTo(u_x[0],  U_x[0],  tol);
     ok &= rsIsCloseTo(u_y[0],  U_y[0],  tol);
     ok &= rsIsCloseTo(u_xx[0], U_xx[0], tol);
     ok &= rsIsCloseTo(u_xy[0], U_xy[0], tol);
     ok &= rsIsCloseTo(u_yy[0], U_yy[0], tol);
+    return ok;
+  };
 
+  // When the number of neighbors is >= 5, the numerical estimation of the 5 derivatives u_x, u_y,
+  // u_xx, u_xy, u_yy should be exact because the given function is indeed a quadratic form:
+  Mesh mesh;               // for our mesh
+  GraphPlotter<Real> plt;  // for occasionaly plotting the mesh for debugging purposes
+  for(int m = 5; m < 10; m++)
+  {
+    createPolygonMesh(mesh, m, h, v0, angle);
     //plt.plotGraph2D(mesh);
+    ok &= verify(mesh, 1.e-12);
+    int seed = 3;
+    randomizeVertexPositions(mesh, 0.5*h, 0.5*h, 0, seed);
+    //plt.plotGraph2D(mesh);
+    ok &= verify(mesh, 1.e-12);
+    MWC::weightEdgesByDistances(mesh);
+    ok &= verify(mesh, 1.e-12);
   }
+
+  return ok;
+
 
 
   // ToDo: 
-  // -check, if it still works with weighting - it should make no difference
-  // -check it with irregular neighborhoods - should also make no difference
+  // -Check, if the estimation error decreases (at least) quadratically as function of h. Maybe 
+  //  with more than 5 neighbors, we should expect an even higher amount of decrease, at least, 
+  //  when the geometry is regular? Test this also for functions that are not exact quadratic 
+  //  forms (maybe add a cubic term or something - or maybe use f(x,y) = sin(x)*exp(y). Or maybe
+  //  add an exponential term like G*exp(a*x*y) or G*sin(x)*exp(y).
   // -check the error with less than 5 neighbors (this is more an experiment than unit test)
-  // -
+  //  -2 neighbors: make it fit a linear function exactly. Set u_xx = = u_xy = u_yy = 0. To test 
+  //   this, we need to set D = E = F = 0.
+  //  -3 neighbors: make it fit a linear function exactly and match the Laplacian. To test this, we
+  //   we need u(x,y) to have F = 0 and E = D such that H_xx == H_yy and H_xy = 0. Only then the 
+  //   non-Laplacian 2nd order terms will have a zero contribution....elaborate...
+  // -4 neighbors: make the gradient terms match and let H_xx and H_yy match in case where 
+  //  H_xy = 0.
+  // -Plot the actual mesh function. Maybe implement it in GraphPlotter<Real> so we can call
+  //  plt.plotMeshFunction(mesh, u)
+
+
 
   // Notes:
   // -In case of under- and overdetermined systems, the weighting should have different meaning:
   //  -In the overdetrmined case, we weight the error that is made for each neighbor, i.e. for each 
   //   equation.
   //  -In the underdetrmined case, we may actually hit all (2,3 or 4) neighbors exactly by 
-  //   different quadratic forms - which one is selected is nopt uniquely determined anymore and we 
-  //   are likely to select the wrong one
-
-
-
-
-
-  return ok;
+  //   different quadratic forms. Which one is selected is nopt uniquely determined anymore and we 
+  //   are likely to select the wrong one. That's why we get estimation errors in this case. We may
+  //   weight the size of different dimensions in the "minimum-norm" minimization differently 
+  //   though. For example weighting the dimensions by w_x, w_y, w_xx, w_xy, w_yy. If we have two
+  //   neighbors and have w_x = w_y = 0 and w_xx = w_xy = w_yy = 1, we would minimize the entries
+  //   of the Hessian only - which should give 0 for u_xx, u_xy, u_yy and a perfectly matched 
+  //   gradient in cases where u is actually linear. But this requires to re-derive the 
+  //   minimum-norm formula with weights applied to the dimensions in the minimization term. We 
+  //   can't just weight equations
 }
-
 
 bool testMiscMath()
 {
