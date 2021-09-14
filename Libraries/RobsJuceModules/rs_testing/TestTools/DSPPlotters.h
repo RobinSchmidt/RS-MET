@@ -337,7 +337,13 @@ public:
   can pass an array of vertex indices for vertices to be highlighted. These are drawn with bigger 
   dots and thicker edges and their nighbors are also bigger than usual but not quite as big as the 
   actually highlighted vertices. */
-  void plotGraph2D(rsGraph<rsVector2D<T>, T>& m, std::vector<int> highlight = std::vector<int>());
+  void plotGraph2D(const rsGraph<rsVector2D<T>, T>& m, 
+    std::vector<int> highlight = std::vector<int>());
+  // make static
+
+
+  /** Under construction */
+  static void plotMeshFunction(const rsGraph<rsVector2D<T>, T>& m, const std::vector<T>& u);
 
 };
 

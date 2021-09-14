@@ -814,9 +814,9 @@ template class SinusoidalModelPlotter<double>;  // move elsewhere
 //=================================================================================================
 
 template <class T>
-void GraphPlotter<T>::plotGraph2D(rsGraph<rsVector2D<T>, T>& m, std::vector<int> highlight)
+void GraphPlotter<T>::plotGraph2D(const rsGraph<rsVector2D<T>, T>& m, std::vector<int> highlight)
 {
-  GNUPlotter plt; // get rid - use "this"
+  GNUPlotter plt; // get rid - use "this" - or make the function static
 
   double dotRadius = 0.005; 
 
@@ -892,6 +892,28 @@ void GraphPlotter<T>::plotGraph2D(rsGraph<rsVector2D<T>, T>& m, std::vector<int>
   plt.setPixelSize(600, 600);
   plt.plot();
 }
+
+template <class T>
+void GraphPlotter<T>::plotMeshFunction(const rsGraph<rsVector2D<T>, T>& m, const std::vector<T>& u)
+{
+  int N = m.getNumVertices();
+  rsAssert((int) u.size() == N);
+
+  std::vector<T> x(N), y(N);
+  for(int i = 0; i < N; i++)
+  {
+    rsVector2D<T> vi = m.getVertexData(i);
+    x[i] = vi.x;
+    y[i] = vi.y;
+  }
+
+
+  GNUPlotter plt;
+  plt.addDataArrays(N, &x[0], &y[0], &u[0]);
+  //plt.addCommand("set view 60,320");
+  plt.plot3D();
+}
+
 
 template class GraphPlotter<float>;  // move elsewhere
 template class GraphPlotter<double>;  // move elsewhere

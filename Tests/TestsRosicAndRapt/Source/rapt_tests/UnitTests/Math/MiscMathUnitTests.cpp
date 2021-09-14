@@ -1014,8 +1014,8 @@ bool testMeshDerivatives()
   Real F = 6.f;
 
   // Parameter for mesh:
-  Real h     = 0.125;      // distance
-  Vec2 v0    = Vec2(1, 1); // center
+  Real h     = 2.0;        // distance
+  Vec2 v0    = Vec2(2, 3); // center
   Real angle = 0.0;
 
   // Create the exact functions to compute u(x,y) and its various derivatives:
@@ -1026,6 +1026,10 @@ bool testMeshDerivatives()
   f_xx = [&](Real x, Real y) { return                   2*D                    ; };
   f_xy = [&](Real x, Real y) { return                                   + F    ; };
   f_yy = [&](Real x, Real y) { return                           2*E            ; };
+
+  // Create some objects for later use:
+  Mesh mesh;               // for our mesh
+  GraphPlotter<Real> plt;  // for occasionaly plotting the mesh for debugging purposes
 
   // Verifies that the estimates for the derivatives u_x, u_y, u_xx, u_xx, u_xy, u_yy are within
   // the given tolerance:
@@ -1041,6 +1045,7 @@ bool testMeshDerivatives()
     fillMeshValues(  mesh, f, u);                               // mesh values u
     fillMeshGradient(mesh, f_x, f_y, U_x, U_y);                 // exact gradient
     fillMeshHessian( mesh, f_xx, f_xy, f_yy, U_xx, U_xy, U_yy); // exact Hessian
+    //plt.plotMeshFunction(mesh, u);
 
     // Estimate mesh derivatives numerically and compare exact and estimated values at index 0. 
     // They should match up to roundoff. At all other indices, garbage is to be expected because 
@@ -1057,23 +1062,21 @@ bool testMeshDerivatives()
 
   // When the number of neighbors is >= 5, the numerical estimation of the 5 derivatives u_x, u_y,
   // u_xx, u_xy, u_yy should be exact because the given function is indeed a quadratic form:
-  Mesh mesh;               // for our mesh
-  GraphPlotter<Real> plt;  // for occasionaly plotting the mesh for debugging purposes
-  for(int m = 5; m < 10; m++)
+  for(int m = 5; m < 20; m++)
   {
+    Real tol = 1.e-13;
     createPolygonMesh(mesh, m, h, v0, angle);
     //plt.plotGraph2D(mesh);
-    ok &= verify(mesh, 1.e-12);
+    ok &= verify(mesh, tol);
     int seed = 3;
     randomizeVertexPositions(mesh, 0.5*h, 0.5*h, 0, seed);
     //plt.plotGraph2D(mesh);
-    ok &= verify(mesh, 1.e-12);
+    ok &= verify(mesh, tol);
     MWC::weightEdgesByDistances(mesh);
-    ok &= verify(mesh, 1.e-12);
+    ok &= verify(mesh, tol);
   }
 
   return ok;
-
 
 
   // ToDo: 
@@ -1092,6 +1095,9 @@ bool testMeshDerivatives()
   //  H_xy = 0.
   // -Plot the actual mesh function. Maybe implement it in GraphPlotter<Real> so we can call
   //  plt.plotMeshFunction(mesh, u)
+  // -Implement a better plotMeshFunction function. It should place the nodes a circles/spheres
+  //  into 3D and draw an edge between them, if an edge is present - so we need to place circles
+  //  and lines into 3D space
 
 
 
