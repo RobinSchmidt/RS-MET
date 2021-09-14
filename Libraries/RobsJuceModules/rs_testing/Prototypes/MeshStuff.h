@@ -502,3 +502,22 @@ void taylorExpansion2D(rsGraph<rsVector2D<T>, T>& mesh, const T* u,
   T* u_x, T* u_y, T* u_xx, T* u_xy, T* u_yy);
 // maybe rename to derivatives2D, fitQuadratic2D, gradAndHessian2D
 
+/** Fills edges of a graph of 2D vectors (as vertices) with a user supplied function that takes as
+input the source and target vector and returns a scalar that can be used as weight for the edge 
+between the two vertices. */
+template<class T>
+void fillEdges(rsGraph<rsVector2D<T>, T>& g, 
+  const std::function<T(rsVector2D<T>, rsVector2D<T>)>& f);
+
+/** Adds a polygonal neighborhood to vertex i. Used by createPolygonMesh. */
+template<class T>
+void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
+  int numSides, T radius, T angle = T(0), T p = T(0), bool symmetric = true);
+
+/** Creates a mesh in the shape of a regular polygon with the center vertex being at index 0 and the 
+neighbors arranged circularly around it at indices 1,2,3,...,numSides. The neighbors are all at the
+same distance given by "radius". The "angle" is the initial angle - the default value 0 means that
+the 1st neighbor will be in the direction of the x-axis. */
+template<class T>
+void createPolygonMesh(rsGraph<rsVector2D<T>, T>& mesh, int numSides, T radius, 
+  rsVector2D<T> center = rsVector2D<T>(0,0), T angle = T(0));

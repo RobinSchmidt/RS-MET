@@ -992,6 +992,50 @@ bool testFraction()  // maybe move up
   return res;
 }
 
+
+
+
+
+bool testMeshDerivatives()
+{
+  bool ok = true;
+
+  // Shorthands for convenience:
+  using Real = double;
+  using Vec2 = rsVector2D<Real>;
+  using Vec  = std::vector<Real>;
+  using Mesh = rsGraph<Vec2, Real>;
+
+  // Parameters of the quadratic form:
+  //   u(x,y) = A + B*x + C*y + D*x*x + E*y*y + F*x*y
+  // that we use as example function:
+  Real A = 1.f;
+  Real B = 2.f;
+  Real C = 3.f;
+  Real D = 4.f;
+  Real E = 5.f;
+  Real F = 6.f;
+
+  // Create the exact functions to compute u(x,y) and its various derivatives:
+  std::function<Real(Real, Real)> f, f_x, f_y, f_xx, f_xy, f_yy;
+  f    = [&](Real x, Real y)->Real { return A + B*x + C*y +   D*x*x +   E*y*y + F*x*y; };
+  f_x  = [&](Real x, Real y)->Real { return     B         + 2*D*x             + F*y  ; };
+  f_y  = [&](Real x, Real y)->Real { return           C             + 2*E*y   + F*x  ; };
+  f_xx = [&](Real x, Real y)->Real { return                   2*D                    ; };
+  f_xy = [&](Real x, Real y)->Real { return                                   + F    ; };
+  f_yy = [&](Real x, Real y)->Real { return                           2*E            ; };
+
+
+
+
+  //GraphPlotter<Real> plt;
+  //plt.plotGraph2D(mesh);
+
+
+  return ok;
+}
+
+
 bool testMiscMath()
 {
   std::string dummy;    // get rid
@@ -1004,11 +1048,15 @@ bool testMiscMath()
   ok &= testGradientBasedOptimization(dummy);
   ok &= testMinSqrDifFixSum(          dummy);
   ok &= testPhaseUnwrapStuff(         dummy);
+
+
+  // move these into a testNumericCalculus file:
   ok &= testNumDiffStencils();
   ok &= testAdamsMethodsCoeffs();
   ok &= testScalarFieldDerivatives();
   ok &= testVectorFieldDerivatives();
   ok &= testCurl();
+  ok &= testMeshDerivatives();
   //ok &= testNumericMinimization();  // has been moved to experiments
 
   //ok &= testMultiLayerPerceptronOld(  dummy); // produces verbose output

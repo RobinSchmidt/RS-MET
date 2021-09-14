@@ -174,3 +174,54 @@ void taylorExpansion2D(rsGraph<rsVector2D<T>, T>& mesh, const T* u,
 }
 template void taylorExpansion2D(rsGraph<rsVector2D<double>, double>& mesh, const double* u, 
   double* u_x, double* u_y, double* u_xx, double* u_xy, double* u_yy);
+
+
+
+template<class T>
+void fillEdges(rsGraph<rsVector2D<T>, T>& g, 
+  const std::function<T(rsVector2D<T>, rsVector2D<T>)>& f)
+{
+  using Vec = rsVector2D<T>;
+  for(int i = 0; i < g.getNumVertices(); i++) {
+    Vec vi = g.getVertexData(i);                 // vector stored at source vertex i
+    for(int j = 0; j < g.getNumEdges(i); j++) {
+      int k  = g.getEdgeTarget(i, j);            // index of target vertex
+      Vec vk = g.getVertexData(k);               // vector stored at target vertex k
+      T ed   = f(vi, vk);                        // compute edge data via user supplied function
+      g.setEdgeData(i, j, ed); }}                // ...and store it at the edge
+}
+template void fillEdges(rsGraph<rsVector2D<double>, double>& g, 
+  const std::function<double(rsVector2D<double>, rsVector2D<double>)>& f);
+template void fillEdges(rsGraph<rsVector2D<float>, float>& g, 
+  const std::function<float(rsVector2D<float>, rsVector2D<float>)>& f);
+
+template<class T>
+void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i, int numSides, T radius, 
+  T angle, T p, bool symmetric)
+{
+  int N = (int)mesh.getNumVertices();
+  using Vec2 = rsVector2D<T>;
+  Vec2 vi = mesh.getVertexData(i);
+  for(int j = 0; j < numSides; j++)
+  {
+    T a = T(angle + 2*j*PI / numSides); // angle
+    if(numSides == 2) a /= 2;           // special case for "2-gon": use 2 perpendiculars
+    T dx = radius*cos(a);               // x-distance
+    T dy = radius*sin(a);               // y-distance
+    T w  = pow(radius, -p);             // edge weight
+    Vec2 vj(vi.x + dx, vi.y + dy);      // position of neighbor vertex
+    mesh.addVertex(vj);                 // add the new neighbour to mesh
+    mesh.addEdge(i, j+N, w, symmetric); // add edge to the new neighbor and back
+  }
+}
+
+template<class T>
+void createPolygonMesh(rsGraph<rsVector2D<T>, T>& mesh, int numSides, T radius, 
+  rsVector2D<T> center, T angle)
+{
+  mesh.clear();
+  mesh.addVertex(center);
+  addPolygonalNeighbours(mesh, 0, numSides, radius, angle); 
+}
+template void createPolygonMesh(rsGraph<rsVector2D<double>, double>& mesh, int numSides, 
+  double radius, rsVector2D<double> center, double angle);

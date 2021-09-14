@@ -8,15 +8,11 @@
 // MathExperiments.h...The experiments cod is all a bit messy anyway -> clean up!
 
 
-
-
-
 void derivativeFormulas1D()
 {
 
   int dummy = 0;
 }
-
 
 void derivativeFormulas()
 {
@@ -24,24 +20,6 @@ void derivativeFormulas()
 
   derivativeFormulas1D();
 }
-
-/** Fills edges of a graph of 2D vectors (as vertices) with a user supplied function that takes as
-input the source and target vector and returns a scalar that can be used as weight for the edge 
-between the two vertices. */
-template<class T>
-void fillEdges(rsGraph<rsVector2D<T>, T>& g, 
-  const std::function<T(rsVector2D<T>, rsVector2D<T>)>& f)
-{
-  using Vec = rsVector2D<T>;
-  for(int i = 0; i < g.getNumVertices(); i++) {
-    Vec vi = g.getVertexData(i);                 // vector stored at source vertex i
-    for(int j = 0; j < g.getNumEdges(i); j++) {
-      int k  = g.getEdgeTarget(i, j);            // index of target vertex
-      Vec vk = g.getVertexData(k);               // vector stored at target vertex k
-      T ed   = f(vi, vk);                        // compute edge data via user supplied function
-      g.setEdgeData(i, j, ed); }}                // ...and store it at the edge
-}
-// move to MeshStuff.h
 
 void vertexMeshGradient1()
 {
@@ -202,6 +180,9 @@ void setupNeighbourWeight(rsGraph<rsVector2D<T>, T>& mesh, int i, int k, T p, T 
   int dummy = 0;
 }
 
+
+/*
+
 template<class T>
 void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
   int numSides, T radius, T angle = T(0), T p = T(0), bool symmetric = true)
@@ -222,6 +203,7 @@ void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
   }
 }
 
+*/
 
 // soon obsolete - this stuff is now done in rsMeshWeightCalculator2D
 template<class T>
@@ -386,10 +368,16 @@ void meshGradientErrorVsDistance()
     for(int j = 0; j < (int)h.size(); j++)
     {
       // Create mesh for a particular setting for numSides and stepsize h:
+      /*
       mesh.clear();
       mesh.addVertex(x0);
       addPolygonalNeighbours(mesh, 0, numSides, h[j], angle);  // unweighted
+      */
+      createPolygonMesh(mesh, numSides, h[j], x0, angle);
       //if(numSides >= 3 && j == 0) meshPlotter.plotGraph2D(mesh, {0});  // plot stencil for paper
+
+
+
 
       // Compute and the record the estimation error at vertex 0:
       Real e = gradientError(mesh, 0, f, f_x, f_y);
@@ -1029,6 +1017,7 @@ T hessianError(rsGraph<rsVector2D<T>, T>& mesh, int i,
   rsMatrix2x2<T> E = hessianErrorMatrix(mesh, i, f, f_xx, f_xy, f_yx, f_yy);
   return rsMax(rsAbs(E.a), rsAbs(E.b), rsAbs(E.c), rsAbs(E.d));
 }
+
 template<class T>
 void createMeshForHessianEstimation(rsGraph<rsVector2D<T>, T>& mesh, int numSides, T h, 
   rsVector2D<T> x0)
