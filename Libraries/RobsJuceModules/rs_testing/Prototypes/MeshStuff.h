@@ -521,3 +521,41 @@ the 1st neighbor will be in the direction of the x-axis. */
 template<class T>
 void createPolygonMesh(rsGraph<rsVector2D<T>, T>& mesh, int numSides, T radius, 
   rsVector2D<T> center = rsVector2D<T>(0,0), T angle = T(0));
+
+
+
+
+template<class T>
+void fillMeshValues(rsGraph<rsVector2D<T>, T>& mesh, const std::function<T(T, T)>& f, 
+  std::vector<T>& u)  
+{
+  for(int i = 0; i < mesh.getNumVertices(); i++) {
+    rsVector2D<T> vi = mesh.getVertexData(i);
+    u[i] = f(vi.x, vi.y); }
+}
+
+template<class T>
+void fillMeshGradient(rsGraph<rsVector2D<T>, T>& mesh, 
+  const std::function<T(T, T)>& f_x, 
+  const std::function<T(T, T)>& f_y,
+  std::vector<T>& u_x, std::vector<T>& u_y)
+{
+  for(int i = 0; i < mesh.getNumVertices(); i++) {
+    rsVector2D<T> vi = mesh.getVertexData(i);
+    u_x[i] = f_x(vi.x, vi.y);
+    u_y[i] = f_y(vi.x, vi.y); }
+}
+
+template<class T>
+void fillMeshHessian(rsGraph<rsVector2D<T>, T>& mesh, 
+  const std::function<T(T, T)>& f_xx, 
+  const std::function<T(T, T)>& f_xy, 
+  const std::function<T(T, T)>& f_yy,
+  std::vector<T>& u_xx, std::vector<T>& u_xy, std::vector<T>& u_yy)
+{
+  for(int i = 0; i < mesh.getNumVertices(); i++) {
+    rsVector2D<T> vi = mesh.getVertexData(i);
+    u_xx[i] = f_xx(vi.x, vi.y);
+    u_xy[i] = f_xy(vi.x, vi.y);
+    u_yy[i] = f_yy(vi.x, vi.y); }
+}

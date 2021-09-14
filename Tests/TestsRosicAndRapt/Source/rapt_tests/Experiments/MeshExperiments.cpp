@@ -180,31 +180,6 @@ void setupNeighbourWeight(rsGraph<rsVector2D<T>, T>& mesh, int i, int k, T p, T 
   int dummy = 0;
 }
 
-
-/*
-
-template<class T>
-void addPolygonalNeighbours(rsGraph<rsVector2D<T>, T>& mesh, int i,
-  int numSides, T radius, T angle = T(0), T p = T(0), bool symmetric = true)
-{
-  int N = (int)mesh.getNumVertices();
-  using Vec2 = rsVector2D<T>;
-  Vec2 vi = mesh.getVertexData(i);
-  for(int j = 0; j < numSides; j++)
-  {
-    T a = T(angle + 2*j*PI / numSides); // angle
-    if(numSides == 2) a /= 2;           // special case for "2-gon": use 2 perpendiculars
-    T dx = radius*cos(a);               // x-distance
-    T dy = radius*sin(a);               // y-distance
-    T w  = pow(radius, -p);             // edge weight
-    Vec2 vj(vi.x + dx, vi.y + dy);      // position of neighbor vertex
-    mesh.addVertex(vj);                 // add the new neighbour to mesh
-    mesh.addEdge(i, j+N, w, symmetric); // add edge to the new neighbor and back
-  }
-}
-
-*/
-
 // soon obsolete - this stuff is now done in rsMeshWeightCalculator2D
 template<class T>
 void computeEdgeWeights(rsGraph<rsVector2D<T>, T>& mesh, T p, T q = 0)
@@ -295,39 +270,6 @@ T gradientError(rsGraph<rsVector2D<T>, T>& mesh, int i,
 // todo: maybe instead of computing the error at a single vertex, return the error vector (error
 // at all vertices) ...maybe also output the x- and y-error separately for more detailed analysis
 
-template<class T>
-void fillMeshValues(rsGraph<rsVector2D<T>, T>& mesh, const std::function<T(T, T)>& f, 
-  std::vector<T>& u)  
-{
-  for(int i = 0; i < mesh.getNumVertices(); i++) {
-    rsVector2D<T> vi = mesh.getVertexData(i);
-    u[i] = f(vi.x, vi.y); }
-}
-template<class T>
-void fillMeshGradient(rsGraph<rsVector2D<T>, T>& mesh, 
-  const std::function<T(T, T)>& f_x, 
-  const std::function<T(T, T)>& f_y,
-  std::vector<T>& u_x, std::vector<T>& u_y)
-{
-  for(int i = 0; i < mesh.getNumVertices(); i++) {
-    rsVector2D<T> vi = mesh.getVertexData(i);
-    u_x[i] = f_x(vi.x, vi.y);
-    u_y[i] = f_y(vi.x, vi.y); }
-}
-template<class T>
-void fillMeshHessian(rsGraph<rsVector2D<T>, T>& mesh, 
-  const std::function<T(T, T)>& f_xx, 
-  const std::function<T(T, T)>& f_xy, 
-  const std::function<T(T, T)>& f_yy,
-  std::vector<T>& u_xx, std::vector<T>& u_xy, std::vector<T>& u_yy)
-{
-  for(int i = 0; i < mesh.getNumVertices(); i++) {
-    rsVector2D<T> vi = mesh.getVertexData(i);
-    u_xx[i] = f_xx(vi.x, vi.y);
-    u_xy[i] = f_xy(vi.x, vi.y);
-    u_yy[i] = f_yy(vi.x, vi.y); }
-}
-
 void meshGradientErrorVsDistance()
 {
   // We plot the error between the estimated partial derivatives and true partial derivatives as
@@ -368,16 +310,8 @@ void meshGradientErrorVsDistance()
     for(int j = 0; j < (int)h.size(); j++)
     {
       // Create mesh for a particular setting for numSides and stepsize h:
-      /*
-      mesh.clear();
-      mesh.addVertex(x0);
-      addPolygonalNeighbours(mesh, 0, numSides, h[j], angle);  // unweighted
-      */
       createPolygonMesh(mesh, numSides, h[j], x0, angle);
       //if(numSides >= 3 && j == 0) meshPlotter.plotGraph2D(mesh, {0});  // plot stencil for paper
-
-
-
 
       // Compute and the record the estimation error at vertex 0:
       Real e = gradientError(mesh, 0, f, f_x, f_y);

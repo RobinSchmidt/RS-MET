@@ -1016,6 +1016,11 @@ bool testMeshDerivatives()
   Real E = 5.f;
   Real F = 6.f;
 
+  // Parameter for mesh:
+  Real h     = 0.125;      // distance
+  Vec2 v0    = Vec2(1, 1); // center
+  Real angle = 0.0;
+
   // Create the exact functions to compute u(x,y) and its various derivatives:
   std::function<Real(Real, Real)> f, f_x, f_y, f_xx, f_xy, f_yy;
   f    = [&](Real x, Real y)->Real { return A + B*x + C*y +   D*x*x +   E*y*y + F*x*y; };
@@ -1026,10 +1031,59 @@ bool testMeshDerivatives()
   f_yy = [&](Real x, Real y)->Real { return                           2*E            ; };
 
 
+  Mesh mesh;
+  GraphPlotter<Real> plt;
 
 
-  //GraphPlotter<Real> plt;
-  //plt.plotGraph2D(mesh);
+
+  Real tol = 1.e-12;
+
+  // When the number of neighbors is >= 5, the numerical estimation of the 5 derivatives u_x, u_y,
+  // u_xx, u_xy, u_yy should be exact because the given function is indeed a quadratic form:
+  for(int m = 5; m < 10; m++)
+  {
+    int N = m+1;                                   // number of nodes
+    Vec u(N);                                      // mesh function values
+    Vec u_x(N), u_y(N), u_xx(N), u_xy(N), u_yy(N); // gradient and Hessian (numerical)
+    Vec U_x(N), U_y(N), U_xx(N), U_xy(N), U_yy(N); // gradient and Hessian (exact)
+
+    // Generate mesh, compute function values and exact derivatives:
+    createPolygonMesh(mesh, m, h, v0, angle);                  // generate mesh
+    fillMeshValues(mesh, f, u);                                // mesh values u
+    fillMeshGradient(mesh, f_x, f_y, U_x, U_y);                // exact gradient
+    fillMeshHessian(mesh, f_xx, f_xy, f_yy, U_xx, U_xy, U_yy); // exact Hessian
+
+    // Estimate mesh derivatives numerically:
+    taylorExpansion2D(mesh, &u[0], &u_x[0], &u_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
+
+    // Compare exact and estimated values at index 0. They should match upt to roundoff. At all 
+    // other indices, garbage is to be expected because they only have one neighbor:
+    ok &= rsIsCloseTo(u_x[0],  U_x[0],  tol);
+    ok &= rsIsCloseTo(u_y[0],  U_y[0],  tol);
+    ok &= rsIsCloseTo(u_xx[0], U_xx[0], tol);
+    ok &= rsIsCloseTo(u_xy[0], U_xy[0], tol);
+    ok &= rsIsCloseTo(u_yy[0], U_yy[0], tol);
+
+    //plt.plotGraph2D(mesh);
+  }
+
+
+  // ToDo: 
+  // -check, if it still works with weighting - it should make no difference
+  // -check it with irregular neighborhoods - should also make no difference
+  // -check the error with less than 5 neighbors (this is more an experiment than unit test)
+  // -
+
+  // Notes:
+  // -In case of under- and overdetermined systems, the weighting should have different meaning:
+  //  -In the overdetrmined case, we weight the error that is made for each neighbor, i.e. for each 
+  //   equation.
+  //  -In the underdetrmined case, we may actually hit all (2,3 or 4) neighbors exactly by 
+  //   different quadratic forms - which one is selected is nopt uniquely determined anymore and we 
+  //   are likely to select the wrong one
+
+
+
 
 
   return ok;
