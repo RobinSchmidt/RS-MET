@@ -270,7 +270,7 @@ int main(int argc, char* argv[])
   //nonUniformArrayDiffAndInt();            // differentiation and integration of sampled data
   //uniformArrayDiffAndInt();               // under construction
 
-  //derivativeFormulas();                   // still empty
+  derivativeFormulas();                   // still empty
   //vertexMeshGradient();                   // implementations are in MeshExperiments.cpp
   vertexMeshHessian();
   //vertexMeshLaplacian();

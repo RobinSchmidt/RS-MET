@@ -486,3 +486,19 @@ template<class T>
 void randomizeVertexPositions(rsGraph<rsVector2D<T>, T>& mesh, T dx, T dy, 
   int minNumNeighbors = 0, int seed = 0);
 
+
+/** Needs more tests.
+
+For each vertex in the given mesh, this function numerically estimates the first and 2nd partial 
+derivatives u_x, u_y, u_xx, u_xy, u_yy from the function values on the mesh given in u. It does so
+by considering the values of u at the vertex of interest and its direct neighbors and fitting a 2D
+Taylor expansion to these points. If a node has exactly 5 neighbors, their values together with the
+value at the node itself uniquely determine the 5 unknown derivatives (unless the geometry of the
+neighbors is degenerate - like having two neighbors in the same spot). If a node has more than 5 
+neighbors, we use a least-squares fitting approach. If a node has less than 5 neighbors, we use a 
+minimum-norm solution (ToDo: maybe do soemthing better) ...tbc... */
+template<class T>
+void taylorExpansion2D(rsGraph<rsVector2D<T>, T>& mesh, const T* u, 
+  T* u_x, T* u_y, T* u_xx, T* u_xy, T* u_yy);
+// maybe rename to derivatives2D, fitQuadratic2D, gradAndHessian2D
+

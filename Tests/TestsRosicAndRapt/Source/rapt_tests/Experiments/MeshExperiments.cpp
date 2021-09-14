@@ -8,11 +8,15 @@
 // MathExperiments.h...The experiments cod is all a bit messy anyway -> clean up!
 
 
+
+
+
 void derivativeFormulas1D()
 {
 
   int dummy = 0;
 }
+
 
 void derivativeFormulas()
 {
@@ -340,43 +344,6 @@ void fillMeshHessian(rsGraph<rsVector2D<T>, T>& mesh,
     u_xx[i] = f_xx(vi.x, vi.y);
     u_xy[i] = f_xy(vi.x, vi.y);
     u_yy[i] = f_yy(vi.x, vi.y); }
-}
-
-/** Does not yet work! */
-template<class T>
-void taylorExpansion2D(rsGraph<rsVector2D<T>, T>& mesh, const T* u, 
-  T* u_x, T* u_y, T* u_xx, T* u_xy, T* u_yy)
-{
-  using Vec2 = rsVector2D<T>;
-  using Mat  = rsMatrix<T>;
-  static const T half = (T(1)/T(2));
-  Mat A, x, b;                 // for the matrix equation
-  x.setShape(5, 1);            // x := (g_x, g_y, H_xx, H_xy, H_yy)
-  for(int i = 0; i < mesh.getNumVertices(); i++)
-  {
-    Vec2 vi = mesh.getVertexData(i);
-    int  K  = mesh.getNumEdges(i);       // number of neighbors of vertex i
-    A.setShape(K, 5);
-    b.setShape(K, 1);
-    for(int k = 0; k < K; k++)
-    {
-      int  j  = mesh.getEdgeTarget(i, k);
-      Vec2 vj = mesh.getVertexData(j);
-      Vec2 dj = vj   - vi;
-      b(k, 0) = u[j] - u[i];
-      A(k, 0) = dj.x;
-      A(k, 1) = dj.y;
-      A(k, 2) = dj.x * dj.x * half;
-      A(k, 3) = dj.x * dj.y;
-      A(k, 4) = dj.y * dj.y * half;
-    }
-    solveOptimal(A, x, b);
-    u_x[i]  = x(0, 0);
-    u_y[i]  = x(1, 0);
-    u_xx[i] = x(2, 0);
-    u_xy[i] = x(3, 0);
-    u_yy[i] = x(4, 0);
-  }
 }
 
 void meshGradientErrorVsDistance()
@@ -1439,6 +1406,7 @@ void testHessianRectangularMesh()
   // MeshData md = getMeshDataQuadraticForm(); ..SinCos, SinExp, etc such that we can conveniently
   // switch back and forth between various functions:
   int N = mesh.getNumVertices();
+  Vec nb(N);                                           // number of neighbors
   Vec u(N);                                            // Mesh function values
   Vec u_x(N), u_y(N);                                  // Gradient (numerical)
   Vec u_xx(N), u_xy(N), u_yx(N), u_yy(N);              // Hessian (numerical)
@@ -1446,6 +1414,7 @@ void testHessianRectangularMesh()
   for(int i = 0; i < N; i++)
   {
     Vec2 v  = mesh.getVertexData(i);
+    nb  [i] = (Real)mesh.getNumEdges(i);
     u   [i] = f(   v.x, v.y);
     U_x [i] = f_x( v.x, v.y);
     U_y [i] = f_y( v.x, v.y);
@@ -1457,22 +1426,29 @@ void testHessianRectangularMesh()
 
   // Plot the mesh:
   GraphPlotter<Real> plt;
-  //plt.plotGraph2D(mesh);  // uncomment again when taylorExpansion2D is done
+  plt.plotGraph2D(mesh);  // uncomment again when taylorExpansion2D is done
 
   // Compute Hessian numerically via Taylor using the exact gradient:
   hessian2DViaTaylor(mesh, &u[0], &U_x[0], &U_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
-  //rsPlotVectors(u_xx-U_xx, u_xy-U_xy, u_yy-U_yy); // uncomment again when taylorExpansion2D is done
+  rsPlotVectors(u_xx-U_xx, u_xy-U_xy, u_yy-U_yy); // uncomment again when taylorExpansion2D is done
   // Looks generally good, but some values are wrong. Maybe these are the boundary values?
 
   // Compute Hessian using a direct 2nd order 2D Taylor expansion without estimating the gradient 
-  // first - this should also give exact results:
+  // first, i.e. do a joint estimation of gradient and Hessian. This should also give exact results 
+  // for nodes whose number of neighbors is >= 5:
   taylorExpansion2D(mesh, &u[0], &u_x[0], &u_y[0], &u_xx[0], &u_xy[0], &u_yy[0]);
-  rsPlotVectors(u_x-U_x, u_y-U_y);
-  rsPlotVectors(u_xx-U_xx, u_xy-U_xy, u_yy-U_yy);
+  rsPlotVectors(0.1*nb, u_x-U_x, u_y-U_y);
+  rsPlotVectors(0.1*nb, u_xx-U_xx, u_xy-U_xy, u_yy-U_yy);
   // ToDo: 
   // -Plot the number of neighbors for reference. We expect the estimate to be exact whenever
   //  that number is >= 5 because 5 neighbors are needed for the system to be critically 
   //  determined.
+  //  -> Done, but unfortunately, we don't have any nodes with 5 neighbors, even though it looks 
+  //     like it form the plot - but maybe these edges go only into 1 direction
+  //  -> Anyway, for nunNeighbors < 5, we get large errors and for numNeighbors = 8, the error is
+  //     zero, as it should be
+  //  -> Implement an experiment that tests the error dependency from the number of neighbors using
+  //     2D Taylor more systematically
   // -Try the Taylor expansion approach with a function that is not an exact quadratic form. Try to
   //  introduce error weighting in the overdetermined case.
   // -Figure out if we can improve the results of underdetermined cases by using weighting or an
