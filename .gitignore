@@ -45,7 +45,6 @@ Products/AudioPlugins/ToolChain/Builds/MacOSX/build/
 *.xcworkspacedata
 *.xcuserstate
 *.xcscheme
-*.plist
 *.xcsettings
 *.xcbkptlist
 Products/AudioPlugins/ToolChain/Builds/MacOSX/.DS_Store
