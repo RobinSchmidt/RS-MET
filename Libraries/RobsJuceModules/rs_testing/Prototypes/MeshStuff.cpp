@@ -193,28 +193,44 @@ void taylorExpansion2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u,
   //  maybe certain norms can be used, too:
   //    https://en.wikipedia.org/wiki/Matrix_norm#Matrix_norms_induced_by_vector_norms
   //  ...it says there that for symmetric matrices "the 2-norm is precisely the spectral radius".
-  //  We have b=c ...so maybe instead of estimating a,b,d = H_xx, 2*H_xy, H_yy (2* could als be /2)
+  //  We have b=c ...so maybe instead of estimating a,b,d = H_xx, 2*H_xy, H_yy (2* could be /2)
   //  we should try to estimate Tr(A), det(A), rho(A). see also:
   //    https://nhigham.com/2021/02/02/what-is-a-unitarily-invariant-norm/
   //  The Frobenius norm is unitarily invariant. In general, for a 2x2 matrix A = (a,b; c,d), we 
   //  can compute the following "interesting numbers" to characterize the matrix in a somewhat
   //  coordinate independent way:
-  //    T := a+d                         trace
+  //    T := a+d                         trace, twice the mean of eigenvalues
   //    D := a*d - b*c                   determinant
   //    F := a^2 + b^2 + c^2 + d^2       Frobenius norm
-  //    d := a*a + 4*b*c - 2*a*d + d*d   discriminant (term made up by me)
-  //    R := (T + sqrt(d))/2             larger eigenvalue, spectral radius, maximum grow factor
-  //    S := (T - sqrt(d))/2             smaller eigenvalue, maximum shrink factor
-  //  Maybe try to use T,D,d instead of a,b,d for a symmetric 2x2 matrix. The discriminant d says 
+  //    V := a*a + 4*b*c - 2*a*d + d*d   twice the variance of eigenvalues, discriminant (my term)
+  //    R := (T + sqrt(V))/2             larger eigenvalue, spectral radius, maximum grow factor
+  //    S := (T - sqrt(V))/2             smaller eigenvalue, maximum shrink factor
+  //  Maybe try to use T,D,V instead of a,b,d for a symmetric 2x2 matrix. The discriminant V says 
   //  something about both eigenvalues. In fact, if we also know T, we can comptute them both. Or
-  //  try (T,D,F), (T,d,F)...try various things and figure out which combination gives better 
+  //  try (T,D,F), (T,V,F)...try various things and figure out which combination gives better 
   //  estimations of values of a quadratic form...that may, of course, depend on the particular 
-  //  function chosen. The Frobenius norm seem to be invariant only under unitary transformations,
+  //  function chosen. The Frobenius norm seems to be invariant only under unitary transformations,
   //  i.e. rotations...but maybe that's good enough. Are the others actually indeed invariant under
   //  any change opf basis? -> figure out, do also numerical tests for this. In a more general 
-  //  setting where we don't assume b = c, maybe use (T,D,F,d) instead of (a,b,c,d). Solve the 4
+  //  setting where we don't assume b = c, maybe use (T,D,F,V) instead of (a,b,c,d). Solve the 4
   //  equations for a,b,c,d to find formulas for converting back
-
+  // -What about the gradient vector? Can we characterize it in a coordinate independent way as 
+  //  well? It's length is an invariant. Is there another invariant by which we can reconstruct its 
+  //  components when the length is also known?
+  // -What other interesting coordinate independent geometric properties could there be? What about 
+  //  a measure of "twist" - maybe the difference in direction of the gradient: take gradient g0 at 
+  //  v0, normalize it to get g0n, take gradient at v0+h*g0n, normalize that again, take difference
+  //  to g0n, let h go to zero
+  // -If we assume c=b, solve the T-equation for a, plug the expression for a into the D-equation 
+  //  and solve for b^2 (=b*c) and then plug the results for a and b^2 into the V-equation, d drops 
+  //  out and we are left with V = T^2 - 4*D. Similarly, using the F-equation instead of the 
+  //  V-equation, again d drops out and we get F = T^2 - 2*D. That means, in case of a symmetric 
+  //  matrix, the invariants F and V are not independent from T and D. So it seems, in order to be 
+  //  able to reconstruct a,b,d, we need a 3rd, independent invariant. Is there such a thing? Maybe
+  //  try these things:
+  //  -angle between eigenvectors
+  //  -norms of the columns: a^2 + c^2, b^2 + d^2
+  //  -inner product of the 2 columns (seen as vectors): a*b + c*d
 }
 template void taylorExpansion2D(const rsGraph<rsVector2D<double>, double>& mesh, const double* u, 
   double* u_x, double* u_y, double* u_xx, double* u_xy, double* u_yy);

@@ -1085,7 +1085,7 @@ bool testMeshDerivatives()
   //  when the geometry is regular? Test this also for functions that are not exact quadratic 
   //  forms (maybe add a cubic term or something - or maybe use f(x,y) = sin(x)*exp(y). Or maybe
   //  add an exponential term like G*exp(a*x*y) or G*sin(x)*exp(y).
-  // -check the error with less than 5 neighbors (this is more an experiment than unit test)
+  // -check the error with less than 5 neighbors (this is more an experiment than a unit test)
   //  -2 neighbors: make it fit a linear function exactly. Set u_xx = = u_xy = u_yy = 0. To test 
   //   this, we need to set D = E = F = 0.
   //  -3 neighbors: make it fit a linear function exactly and match the Laplacian. To test this, we
