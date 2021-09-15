@@ -820,6 +820,9 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Tests\jura_framework\UnitTestsMisc.cpp">
+      <Filter>TestAppJURA\Source\Tests\jura_framework</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Tests\jura_framework\UnitTestsModulation.cpp">
       <Filter>TestAppJURA\Source\Tests\jura_framework</Filter>
     </ClCompile>
@@ -5358,6 +5361,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Tests\jura_framework\UnitTestsMisc.h">
+      <Filter>TestAppJURA\Source\Tests\jura_framework</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Tests\jura_framework\UnitTestsModulation.h">
       <Filter>TestAppJURA\Source\Tests\jura_framework</Filter>
     </ClInclude>

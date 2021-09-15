@@ -9,6 +9,9 @@
     <GROUP id="{E7DA5915-A163-B06A-6F1B-762E629AA87C}" name="Source">
       <GROUP id="{F297B51F-ADA4-24A8-B081-EC977DA1BEC7}" name="Tests">
         <GROUP id="{F3F7881C-7C54-A2FA-9122-5E0D063993E6}" name="jura_framework">
+          <FILE id="Ch5TuM" name="UnitTestsMisc.cpp" compile="1" resource="0"
+                file="Source/Tests/jura_framework/UnitTestsMisc.cpp"/>
+          <FILE id="iQA4jt" name="UnitTestsMisc.h" compile="0" resource="0" file="Source/Tests/jura_framework/UnitTestsMisc.h"/>
           <FILE id="TxkfK5" name="UnitTestsModulation.cpp" compile="1" resource="0"
                 file="Source/Tests/jura_framework/UnitTestsModulation.cpp"/>
           <FILE id="ZvFHun" name="UnitTestsModulation.h" compile="0" resource="0"

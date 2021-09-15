@@ -139,6 +139,7 @@
     <Lib/>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\Tests\jura_framework\UnitTestsMisc.cpp"/>
     <ClCompile Include="..\..\Source\Tests\jura_framework\UnitTestsModulation.cpp"/>
     <ClCompile Include="..\..\Source\Tests\jura_framework\UnitTestsParameter.cpp"/>
     <ClCompile Include="..\..\Source\Tests\jura_processors\UnitTestsToolChain.cpp"/>
@@ -4495,6 +4496,7 @@
     <ClCompile Include="..\..\JuceLibraryCode\include_rosic.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\Tests\jura_framework\UnitTestsMisc.h"/>
     <ClInclude Include="..\..\Source\Tests\jura_framework\UnitTestsModulation.h"/>
     <ClInclude Include="..\..\Source\Tests\jura_framework\UnitTestsParameter.h"/>
     <ClInclude Include="..\..\Source\Tests\jura_processors\UnitTestsToolChain.h"/>

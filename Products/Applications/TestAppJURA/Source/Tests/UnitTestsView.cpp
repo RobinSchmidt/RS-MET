@@ -12,11 +12,12 @@ void UnitTestsView::runTest(int testIndex)
 
   if(includeTest(PARAMETERS)) tests.add(new UnitTestParameter);
   if(includeTest(MODULATION)) tests.add(new UnitTestModulation);
+  if(includeTest(MISC))       tests.add(new UnitTestMisc);
+
   if(includeTest(TOOL_CHAIN)) tests.add(new UnitTestToolChain);
 
   //beginTest();
   runTests(tests);
-
 
 
   for(int i = 0; i < tests.size(); i++)
@@ -69,9 +70,14 @@ bool UnitTestsView::includeTest(int testIndex)
 {
   juce::String selection = testSelectorBox->getSelectedItemText();
   if(selection == "All Tests")                             return true;
+
   if(selection == "Parameters" && testIndex == PARAMETERS) return true;
   if(selection == "Modulation" && testIndex == MODULATION) return true;
+  if(selection == "Misc"       && testIndex == MISC)       return true;
+
   if(selection == "ToolChain"  && testIndex == TOOL_CHAIN) return true;
+
+
   return false;
 }
 
@@ -82,10 +88,14 @@ void UnitTestsView::createWidgets()
 
   testSelectorBox = new RComboBox;
   testSelectorBox->addItem(ALL,        "All Tests");
+
   testSelectorBox->addItem(PARAMETERS, "Parameters");
   testSelectorBox->addItem(MODULATION, "Modulation");
-  testSelectorBox->addItem(MODULATION, "ToolChain");
   //testSelectorBox->addItem(WIDGETS, "Widgets");
+  testSelectorBox->addItem(MISC,       "Misc");
+
+  testSelectorBox->addItem(MODULATION, "ToolChain");
+
   testSelectorBox->selectItemFromText("All Tests", false);
   addWidget(testSelectorBox);
 

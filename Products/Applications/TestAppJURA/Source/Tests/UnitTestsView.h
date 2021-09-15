@@ -3,6 +3,8 @@
 
 #include "jura_framework/UnitTestsParameter.h"
 #include "jura_framework/UnitTestsModulation.h"
+#include "jura_framework/UnitTestsMisc.h"
+
 #include "jura_processors/UnitTestsToolChain.h"
 
 /** A component to perform unit tests for jura classes, print results, etc. */
@@ -19,6 +21,8 @@ public:
     PARAMETERS,
     MODULATION,
     TOOL_CHAIN,
+    MISC,
+
 
     NUM_UNIT_TESTS
   };
