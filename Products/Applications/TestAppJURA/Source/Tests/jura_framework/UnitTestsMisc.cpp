@@ -20,15 +20,12 @@ void UnitTestMisc::runTestColor()
   using HSL = jura::ColourAHSL;
   using RGB = juce::Colour;
 
-
-  auto equal = [](RGB c1, RGB c2) { return c1 == c2; };
-
   // Tests, if the given hsl values convert correctly to the given target rgb values:
   auto testHSL2RGB = [&](float h, float s, float l, uint8 r, uint8 g, uint8 b)
   {
     HSL hsl(h, s, l);
     RGB rgb = hsl.getAsJuceColour();
-    expect(equal(rgb, RGB(r, g, b)));
+    expect(rgb == RGB(r, g, b));
   };
 
   // Create HSL colors with S=0.5, L=0.5 and H going from 0 to 1 in 0.1 steps and check the result
