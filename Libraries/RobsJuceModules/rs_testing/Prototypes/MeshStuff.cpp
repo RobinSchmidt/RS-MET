@@ -171,6 +171,50 @@ void taylorExpansion2D(const rsGraph<rsVector2D<T>, T>& mesh, const T* u,
   //  involving Laplacian, etc ...see text in the private repo
   // -For the overdetermined case, try a weighted least squares using weights inversely 
   //  proportional to (some power of) the distance
+
+  // ToDo:
+  // -Make a similar function, but instead of estimating u_xx and u_yy, etimate u_xx + u_yy and
+  //  u_xx - u_xy. I think this requires the change:
+  //    A(k, 2) = (dj.x * dj.x + dj.y * dj.y) * half;  // not sure about the half...
+  //    A(k, 3) = (dj.x * dj.x - dj.y * dj.y) * half;  // dito
+  //  rationale: u_xx + u_yy is better interpretable (it's the Laplacian)
+  // -Consider the function as a 3D surface: (x(u,v), y(u,v), z(u,v)) = (u, v, f(u,v)). Warning:
+  //  in surface notation, u means our first independent parameter (i.e. 1st coordinate), in the 
+  //  notation of PDE solvers, u means the function vaules, i.e. the height z ...maybe change 
+  //  notation u, u_x, etc. to z, z_x etc. - on the other hand, we here have x(u,v) = u, 
+  //  y(u,v) = v anyway, so we don't actually need a notation for u and v and could instead just 
+  //  use x,y directly. We need to be careful when applying formulas from differential geometry, 
+  //  then. We would then have for the 1st partial derivatives of the surface with respect to the
+  //  coordinates: x_u = y_v = 1, x_v = y_u = 0, z_u = f_x, z_v = f_y. Whatever we end up doing: 
+  //  watch out for this potoential source of confusion.
+  // -Instead of using matrix entries a,b,c,d, express a 2x2 matrix in terms of its invariants, 
+  //  such as trace, determinant, eigenvalues/vectors
+  //    https://en.wikipedia.org/wiki/Invariant_(mathematics)
+  //  maybe certain norms can be used, too:
+  //    https://en.wikipedia.org/wiki/Matrix_norm#Matrix_norms_induced_by_vector_norms
+  //  ...it says there that for symmetric matrices "the 2-norm is precisely the spectral radius".
+  //  We have b=c ...so maybe instead of estimating a,b,d = H_xx, 2*H_xy, H_yy (2* could als be /2)
+  //  we should try to estimate Tr(A), det(A), rho(A). see also:
+  //    https://nhigham.com/2021/02/02/what-is-a-unitarily-invariant-norm/
+  //  The Frobenius norm is unitarily invariant. In general, for a 2x2 matrix A = (a,b; c,d), we 
+  //  can compute the following "interesting numbers" to characterize the matrix in a somewhat
+  //  coordinate independent way:
+  //    T := a+d                         trace
+  //    D := a*d - b*c                   determinant
+  //    F := a^2 + b^2 + c^2 + d^2       Frobenius norm
+  //    d := a*a + 4*b*c - 2*a*d + d*d   discriminant (term made up by me)
+  //    R := (T + sqrt(d))/2             larger eigenvalue, spectral radius, maximum grow factor
+  //    S := (T - sqrt(d))/2             smaller eigenvalue, maximum shrink factor
+  //  Maybe try to use T,D,d instead of a,b,d for a symmetric 2x2 matrix. The discriminant d says 
+  //  something about both eigenvalues. In fact, if we also know T, we can comptute them both. Or
+  //  try (T,D,F), (T,d,F)...try various things and figure out which combination gives better 
+  //  estimations of values of a quadratic form...that may, of course, depend on the particular 
+  //  function chosen. The Frobenius norm seem to be invariant only under unitary transformations,
+  //  i.e. rotations...but maybe that's good enough. Are the others actually indeed invariant under
+  //  any change opf basis? -> figure out, do also numerical tests for this. In a more general 
+  //  setting where we don't assume b = c, maybe use (T,D,F,d) instead of (a,b,c,d). Solve the 4
+  //  equations for a,b,c,d to find formulas for converting back
+
 }
 template void taylorExpansion2D(const rsGraph<rsVector2D<double>, double>& mesh, const double* u, 
   double* u_x, double* u_y, double* u_xx, double* u_xy, double* u_yy);

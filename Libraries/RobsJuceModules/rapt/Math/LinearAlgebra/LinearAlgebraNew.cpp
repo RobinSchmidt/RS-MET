@@ -374,4 +374,11 @@ matrix "division" is an arithmetic operation - we'll see
  the arrays - oh - but inverse returns a matrix and we really want it to be that way because 
  it's the most convenient way - so the dependency is perhaps inavoidable
 
+
+ Interesting reads:
+ https://nhigham.com/2021/02/02/what-is-a-unitarily-invariant-norm/
+ https://nhigham.com/2020/07/28/what-is-the-polar-decomposition/
+ https://nhigham.com/2015/11/24/faster-svd-via-polar-decomposition/
+ https://nhigham.com/2020/04/03/what-is-a-generalized-inverse/
+
 */

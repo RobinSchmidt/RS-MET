@@ -1091,8 +1091,10 @@ bool testMeshDerivatives()
   //  -3 neighbors: make it fit a linear function exactly and match the Laplacian. To test this, we
   //   we need u(x,y) to have F = 0 and E = D such that H_xx == H_yy and H_xy = 0. Only then the 
   //   non-Laplacian 2nd order terms will have a zero contribution....elaborate...
-  // -4 neighbors: make the gradient terms match and let H_xx and H_yy match in case where 
-  //  H_xy = 0.
+  //   -hmm - maybe it's a better idea to assume the Laplacian to be zero? because a lot of 
+  //    differential equations actually satisfy this "Laplace equation"
+  //  -4 neighbors: make the gradient terms match and let H_xx and H_yy match in case where 
+  //   H_xy = 0.
   // -Plot the actual mesh function. Maybe implement it in GraphPlotter<Real> so we can call
   //  plt.plotMeshFunction(mesh, u)
   // -Implement a better plotMeshFunction function. It should place the nodes a circles/spheres
