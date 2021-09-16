@@ -340,22 +340,12 @@ void fillRectWithBilinearGradientSlow(Graphics &graphics, int x, int y, int w, i
   delete[] pixelData;
 }
 
-inline void setPixelRGB(uint8* p, uint8 r, uint8 g, uint8 b)
-{
-#ifndef _MSC_VER   // #ifdef JUCE_LITTLE_ENDIAN seems to not solve the wrong-color thing
-  p[0] = r;
-  p[1] = g;
-  p[2] = b;
-#else
-  p[0] = b;  // blue comes first,
-  p[1] = g;  // green comes second,
-  p[2] = r;  // red comes third in memory
-#endif
-}
-
 void fillRectWithBilinearGradient(Graphics &graphics, int x, int y, int w, int h,
   Colour topLeftColour, Colour topRightColour, Colour bottomLeftColour, Colour bottomRightColour)
 {
+  // ToDo:
+  // -use float instead of double
+
   //// We create a 2x2 pixel image with the given 4 colors and scale it up. The interpolation will
   //// create the gradient:
   //Image img(Image::ARGB, 2, 2, false);

@@ -43,5 +43,30 @@ void UnitTestMisc::runTestColor()
   testHSL2RGB(0.9f, 0.5f, 0.5f, 191,  63, 140);
   testHSL2RGB(1.0f, 0.5f, 0.5f, 191,  63,  63);
 
+  // OK - this test passes on mac too. I guess, the wrong colors are caused by a different 
+  // ordering of r,g,b on may (maybe r and b swapped) and in our bilinear gradient rendering 
+  // function we assume an r,g,b ordering. ToDo: write a function that figures out what ordering is 
+  // used on the given machine by using juce::Color and setting it to full red (or green or blue) 
+  // and retrieving the 32-bit integer that represents the RGBA value. Instead of directly using
+  // +0, +1, +2 for the indexing of the channels, use +R, +G, +B where R,G,B are some permutation 
+  // of 0,1,2 determined by the color ordering of the machine
+
+  //RGB red   = RGB::fromRGBA(255,   0,   0, 255);
+  //RGB green = RGB::fromRGBA(  0, 255,   0, 255);
+  //RGB blue  = RGB::fromRGBA(  0,   0, 255, 255);
+
+
+  // Figure out the in-memory ordering of the channels:
+  using ARGB = juce::PixelARGB;
+  PixelARGB fullAlpha(255,   0,   0,   0);  // full alpha, all colors zero
+  PixelARGB fullRed(    0, 255,   0,   0);  // full red, everything else zero (including alpha)
+  PixelARGB fullGreen(  0,   0, 255,   0);
+  PixelARGB fullBlue(   0,   0,   0, 255);  
+
+
+
+  // test setPixelRGB in jura_GraphicsTools.h
+  // see PixelARGB::getInARGBMemoryOrder
+
   int dummy = 0;
 }

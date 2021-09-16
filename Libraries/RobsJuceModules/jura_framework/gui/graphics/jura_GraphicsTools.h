@@ -1,7 +1,7 @@
 #ifndef jura_GraphicsTools_h
 #define jura_GraphicsTools_h
 
-// Maybe wrap these functions into a class rsDrawer at some point 
+// Maybe wrap these functions into a class rsDrawer or rsImageTools at some point 
 
 /** Copies the pixel-data from one image into another. For this to work, the images must be 
 compatible (same dimensions and pixel-format). */
@@ -204,6 +204,35 @@ JUCE_API void drawAxisX(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double
 
 JUCE_API void drawAxisY(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double>& mapper, 
   double xPosition, const juce::String& label, Colour color);
+
+
+inline void setPixelRGB(uint8* p, uint8 r, uint8 g, uint8 b)
+{
+#if JUCE_MAC
+  p[0] = r;
+  p[1] = g;
+  p[2] = b;
+#else
+  p[0] = b;       // blue comes first
+  p[1] = g;       // green comes second
+  p[2] = r;       // red comes third in memory
+#endif
+
+/*
+//old:
+#ifndef _MSC_VER   // #ifdef JUCE_LITTLE_ENDIAN seems to not solve the wrong-color thing
+  p[0] = r;
+  p[1] = g;
+  p[2] = b;
+#else
+  p[0] = b;       // blue comes first,
+  p[1] = g;       // green comes second,
+  p[2] = r;       // red comes third in memory
+#endif
+  // This does not yet seem to work correctly on my new M1 mac
+  // see juce::PixelRGB, PixelARGB, Colour
+*/
+}
 
 
 

@@ -64,3 +64,4 @@ Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Release/VST3/ToolCha
 Products/Applications/AudioPluginHost/Builds/MacOSX/build/
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Debug/Shared Code/ToolChain_SharedCode.vcxproj.FileListAbsolute.txt
 Products/AudioPlugins/ToolChain/Builds/VisualStudio2019/x64/Debug/Standalone Plugin/ToolChain_StandalonePlugin.vcxproj.FileListAbsolute.txt
+Products/Applications/TestAppJURA/Builds/VisualStudio2019/x64/Debug/App/TestAppJURA_App.vcxproj.FileListAbsolute.txt
