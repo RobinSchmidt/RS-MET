@@ -209,15 +209,25 @@ JUCE_API void drawAxisY(XmlElement* svg, const RAPT::rsCoordinateMapper2D<double
 inline void setPixelRGB(uint8* p, uint8 r, uint8 g, uint8 b)
 {
 #if JUCE_MAC
-  p[0] = r;
+  p[0] = b;
   p[1] = g;
-  p[2] = b;
+  p[2] = r;
 #else
   p[0] = b;       // blue comes first
   p[1] = g;       // green comes second
   p[2] = r;       // red comes third in memory
 #endif
-
+  // hmm - it seems that on the new mac mini, we also have the colors in bgr order
+  // ToDo: Check again on the old one - if it turns out to need rgb, figure out how we can handle
+  // it in such a way that it works on all platforms. Maybe we need to do a runtime check and
+  // based on that initialize some redIndex, blueIndex, greenIndex variables (what about alpha?).
+  // Maybe these variables can be global (initialized on startup) or static members in some sort
+  // of rsPlatform class. Then here, we would do: p[rsPlatform::redIndex] = r, etc. I think, for
+  // performance reasons, it's more desirable, if this can be inquired at compile time but if
+  // that's not possible, we may need to bite the bullet. We'll see... At the moment, the code
+  // above works as desired on a windows PC and the M1 mac. If it doesn't work on some platform,
+  // this will be noticed by ugly colors due to the swapped red and blue channels.
+  
 /*
 //old:
 #ifndef _MSC_VER   // #ifdef JUCE_LITTLE_ENDIAN seems to not solve the wrong-color thing
