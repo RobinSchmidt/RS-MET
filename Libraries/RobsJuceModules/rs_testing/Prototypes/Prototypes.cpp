@@ -26,9 +26,9 @@ using namespace RAPT;
 template<class T>
 void rsTaylorToPade(const std::vector<T>& t, std::vector<T>& p, std::vector<T>& q)
 {
-  int M = (int) p.size() - 1;           // degree of numerator
-  int N = (int) q.size() - 1;           // degree of denominator
-  rsAssert((int) t.size() - 1 == M+N);  // sanity check
+  int M =  (int) p.size() - 1;           // degree of numerator
+  int N =  (int) q.size() - 1;           // degree of denominator
+  rsAssert((int) t.size() - 1 == M+N);   // sanity check
 
   // Establish matrix A and rhs vector b:
   rsMatrix<T> A(N, N), b(N, 1);
@@ -55,6 +55,13 @@ void rsTaylorToPade(const std::vector<T>& t, std::vector<T>& p, std::vector<T>& 
   //   require that the "solve" call can work in place, i.e. x and b pointing to the same array.
   // -Make a convenience function that takes rsPolynomial as input and returns rsRationalFunction
   // -Implement an inverse function rsPadeToTaylor
+  // -Maybe implement in rsPolynomial some factory functions that produce Taylor polynomials of 
+  //  some important functions such as exp, sin, cos, log, sinh, cosh, tanh, atan, pow, etc.
+  //  Maybe call them taylorExp(int order, T x0 = T(0)), etc. These can then be subsequently used
+  //  to produce Pade approximants via this conversion function. Maybe We could have 
+  //  padeExp(int numOrder, int denOrder, int x0), padeSin(), padeCos(), etc. in rsRationalFunction
+  // -Maybe implement some framework to find least-squares rational approximations of arbitrary
+  //  functions using Pade approximants as initial guess
 }
 template void rsTaylorToPade(const std::vector<double>& T, std::vector<double>& P, 
   std::vector<double>& Q);

@@ -523,7 +523,8 @@ void rsNumericIntegral(const Tx *x, const Ty *y, Ty *yi, int N, Ty c = Ty(0));
 
 /** just a stub, at the moment */
 
-template<class Tx, class Ty>
+//template<class Tx, class Ty>
+template<class T>
 class rsNumericIntegrator
 {
 
@@ -532,21 +533,46 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Setup
 
-  void setNumberOfSamplePoints(int newNumSamples) { numSamples = newNumSamples; }
+  //void setNumberOfSamplePoints(int newNumSamples) { numSamples = newNumSamples; }
 
 
   //-----------------------------------------------------------------------------------------------
   // \name Integration
 
-  /** Computes the definite integral of f in the interval from a to b. */
-  //Ty integrate(const std::function<Ty(Tx)>& f, Tx a, Tx b);
+  /** Computes the definite integral of f in the interval from a to b using the trapezoidal rule 
+  with the given number N of intervals. */
+  template<class Tx, class F>
+  static T trapezoidal(const F& f, const Tx& a, const Tx& b, int N);
 
 
 protected:
 
-  int numSamples = 10;
+  //int numSamples = 10;
 
 };
+
+template<class T>
+template<class Tx, class F>
+T rsNumericIntegrator<T>::trapezoidal(const F& f, const Tx& a, const Tx& b, int N)
+{
+  T A(0);                           // accumulated area
+  T fL = f(a);                      // function value at left boundary of subinterval
+  T dx = (b-a) / N;                 // interval size
+  for(int i = 1; i <= N; i++)
+  {
+    T xR = a + i * dx;              // right boundary of subinterval
+    T fR = f(xR);                   // function value at xR
+    A += dx * T(0.5) * (fL + fR);   // trapezoidal rule
+    fL = fR;                        // current fR is next fL
+  }
+  return A;
+}
+// maybe move to cpp file
+
+// todo: 
+// -implement midpoint formula
+// -maybe try to use xR += dx for otimization - but that might give more roundoff error 
+//  accumulation
 
 
 #endif

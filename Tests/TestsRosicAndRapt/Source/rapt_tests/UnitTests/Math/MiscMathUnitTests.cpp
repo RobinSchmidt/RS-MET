@@ -1119,6 +1119,54 @@ bool testMeshDerivatives()
   //   can't just weight equations
 }
 
+bool testNumericIntegration()
+{
+  bool ok = true;
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+  using NI   = rsNumericIntegrator<Real>;
+  using AT   = rsArrayTools;
+
+
+  // Numerically integrate f(x) = x^2 from 0 to 1 using N sample points. The correct solution is 
+  // 1/3.
+  //std::function<Real(Real)> f;
+  auto f = [](Real x) { return x*x; };  // f(x) = x^2
+  Real a = 0.0;                         // lower integration limit
+  Real b = 1.0;                         // upper integration limit
+  Real A = 1./3;                        // actual area
+  int  N = 10;                          // number of intervals
+  Vec x(N+1), y(N+1), yi(N+1);
+
+  // Create sampled data and use the data-based numeric integration routine. It computes the whole
+  // antiderivative functions for all the sample points. The value we are interested in is the 
+  // final value in the produced array:
+  AT::fillWithRangeLinear(&x[0], N+1, a, b);
+  for(int i = 0; i <= N; i++) 
+    y[i] = f(x[i]);
+  rsNumericIntegral(&x[0], &y[0], &yi[0], N+1);
+  //rsPlotVectorsXY(x, y, yi);
+  Real A1 = yi[N];                            // area estimate 1
+  Real d1 = A1 - A;                           // error 1
+
+  // Compute the area directly and compare results. They should be the same up to numerical 
+  // roundoff:
+  Real A2 = NI::trapezoidal(f, 0.0, 1.0, N);  // area estimate 2
+  Real d2 = A2 - A;                           // error 2
+  Real tol = 1.e-14;
+  ok &= rsIsCloseTo(A1, A2, tol);
+
+  // ToDo: check, if the actual value of the error is as expected. It sould be
+  // (1/N)*(0.5*0.0^2 + 0.1^2 + 0.2^2 + ... + 0.9^2 + 0.5*1.0^2) - 1/3
+  Real Ae = (1./N);  // expected numerically computed area...
+  Ae *= (f(0.0)/2+f(0.1)+f(0.2)+f(0.3)+f(0.4)+f(0.5)+f(0.6)+f(0.7)+f(0.8)+f(0.9)+f(1.0)/2);
+  ok &= rsIsCloseTo(A1, Ae, tol);
+
+
+  return ok;
+}
+
 bool testMiscMath()
 {
   std::string dummy;    // get rid
@@ -1140,6 +1188,7 @@ bool testMiscMath()
   ok &= testVectorFieldDerivatives();
   ok &= testCurl();
   ok &= testMeshDerivatives();
+  ok &= testNumericIntegration();
   //ok &= testNumericMinimization();  // has been moved to experiments
 
   //ok &= testMultiLayerPerceptronOld(  dummy); // produces verbose output
