@@ -2510,11 +2510,18 @@ bool testPadeApproximation()
   // Coeffs for Pade approximation with qudratic numerator and cubic denominator:
   Vec P(3), Q(4); 
 
-
   rsTaylorToPade(T, P, Q);
-
+  double tol = 1.e-13;
+  ok &= rsIsCloseTo(P, Vec({1,  0.4, 0.05        }), tol);
+  ok &= rsIsCloseTo(Q, Vec({1, -0.6, 0.15, -1./60}), tol);
   // exp[2/3](x) = (60 + 24*x + 3*x^2) / (60 - 36*x + 9*x^2 - x^3)
   //             = (1 + 0.4*x + 0.05*x^2) / (1 - 0.6*x + 0.15*x^2 - 0.01666*x^3)
+
+  P.resize(4);
+  Q.resize(3);
+  //rsTaylorToPade(T, P, Q);  // vector subscript out of range
+  // ...seems like it works only for deg(Q) > deg(P)
+
 
   // see: https://mathworld.wolfram.com/PadeApproximant.html
 

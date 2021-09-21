@@ -44,7 +44,14 @@ We already know everything on the rhs, so we can directly compute a0,a1,a2.
 
 ...i think, in general, we get an NxN linear system with an all-zeros rhs for the b-coeffs and once
 they have been computed, we are left with a triangular (M+1)x(M+1) system for the a-coeffs where 
-the b-coeffs appear on the rhs?
+the b-coeffs appear on the rhs? Let's try it with  M=3, N=2:
+
+  a0 + a1*x + a2*x^2 + a3*x^3 = (b0+b1*x+b2*x^2) * (c0+c1*x+c2*x^2+c3*x^3+c4*x^4+c5*x^5)
+                              = x^0 * (b0*c0) + 
+                                x^1 * (b0*c1 + b1*c0) + 
+                                ...
+
+
 
 ToDo:
 -Implement and test the algorithm on some well known Taylor series such as for exp. Compare 

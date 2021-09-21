@@ -42,6 +42,21 @@ void rsTaylorToPade(const std::vector<T>& t, std::vector<T>& p, std::vector<T>& 
     }
   rsLinearAlgebraNew::solve(A, x, b);
 
+  // Copy solution (ToDo: optimize away by using rsMatrixView for x):
+  q[0] = T(1);
+  for(int i = 0; i < N; i++)
+    q[i+1] = x(i, 0);
+
+
+  // Solve for the numerator coeffs:
+  for(int i = 0; i <= M; i++)
+  {
+    p[i] = T(0);
+    for(int j = 0; j <= i; j++)
+    {
+      p[i] += q[j] * t[i-j];  // verify i-j ...may be wrong
+    }
+  }
 
 
   int dummy = 0;
