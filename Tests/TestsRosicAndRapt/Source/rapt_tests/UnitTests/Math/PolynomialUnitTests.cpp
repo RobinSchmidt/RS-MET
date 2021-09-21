@@ -2519,11 +2519,28 @@ bool testPadeApproximation()
 
   P.resize(4);
   Q.resize(3);
-  //rsTaylorToPade(T, P, Q);  // vector subscript out of range
-  // ...seems like it works only for deg(Q) > deg(P)
+  rsTaylorToPade(T, P, Q);
+  ok &= rsIsCloseTo(P, Vec({1,  0.6, 0.15, 1./60}),  tol);
+  ok &= rsIsCloseTo(Q, Vec({1, -0.4, 0.05        }), tol);
+  // exp[3/2](x) = (60 + 36*x + 9*x^2 + x^3) / (60 - 24*x + 3*x^2)
+  //             = (1 + 0.6*x + 0.15*x^2 + 0.01666*x^3) / (1 - 0.4*x^2 + 0.05*x^2)
 
+  P.resize(3);
+  Q.resize(3);
+  T.resize(5);
+  rsTaylorToPade(T, P, Q);
+  ok &= rsIsCloseTo(P, Vec({1,  0.5, 1./12}),  tol);
+  ok &= rsIsCloseTo(Q, Vec({1, -0.5, 1./12}),  tol);
+  // exp[2/2](x) = (12 + 6*x + x^2) / (12 - 6*x + x^2)
+  //             = (1 + 0.5*x + 0.08333*x^2) / (1 - 0.5*x + 0.08333*x^2)
 
-  // see: https://mathworld.wolfram.com/PadeApproximant.html
+  // Target coeffs taken from: https://mathworld.wolfram.com/PadeApproximant.html
+  // There's actually an interesting symmetry between exp[2/3] and exp[3/2]. Does this hold in
+  // general?
+
+  // ToDo: 
+  // -test extreme cases (M=0 or N=0)
+  // -test some higher order approximations
 
 
 

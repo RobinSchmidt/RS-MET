@@ -52,9 +52,14 @@ void rsTaylorToPade(const std::vector<T>& t, std::vector<T>& p, std::vector<T>& 
   for(int i = 0; i <= M; i++)
   {
     p[i] = T(0);
-    for(int j = 0; j <= i; j++)
+
+    //int jMax = i;    // seems to work only for N > M
+    int jMax = rsMin(i, N);
+
+    for(int j = 0; j <= jMax; j++)
     {
-      p[i] += q[j] * t[i-j];  // verify i-j ...may be wrong
+      int k = i-j;         // verify i-j ...may be wrong
+      p[i] += q[j] * t[k];
     }
   }
 

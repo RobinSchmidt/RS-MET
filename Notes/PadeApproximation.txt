@@ -49,10 +49,32 @@ the b-coeffs appear on the rhs? Let's try it with  M=3, N=2:
   a0 + a1*x + a2*x^2 + a3*x^3 = (b0+b1*x+b2*x^2) * (c0+c1*x+c2*x^2+c3*x^3+c4*x^4+c5*x^5)
                               = x^0 * (b0*c0) + 
                                 x^1 * (b0*c1 + b1*c0) + 
-                                ...
+                                x^2 * (b0*c2 + b1*c1 + b2*c0) +
+                                x^3 * (b0*c3 + b1*c2 + b2*c1) +
+                                x^4 * (b0*c4 + b1*c3 + b2*c2) +
+                                x^5 * (b0*c5 + b1*c4 + b2*c3)
+
+In the lhs, terms with x^4 or higher are not present, so we have:
+
+  x^4: 0 = b0*c4 + b1*c3 + b2*c2
+  x^5: 0 = b0*c5 + b1*c4 + b2*c3
+
+which, with b0 = 1, gives the 2x2 system:
+
+  |c3 c2| * |b1| = |-c4|
+  |c4 c3|   |b2|   |-c5|
+
+after solving that, we find the a-coeffs from:
+
+  x^0: a0 = b0*c0
+  x^1: a1 = b0*c1 + b1*c0
+  x^2: a2 = b0*c2 + b1*c1 + b2*c0
+  x^3: a3 = b0*c3 + b1*c2 + b2*c1
 
 
 
+
+  
 ToDo:
 -Implement and test the algorithm on some well known Taylor series such as for exp. Compare 
  computed Pade approximants to what SageMath and wolfram alpha produce.
