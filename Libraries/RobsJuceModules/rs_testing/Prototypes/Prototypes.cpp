@@ -30,41 +30,31 @@ void rsTaylorToPade(const std::vector<T>& t, std::vector<T>& p, std::vector<T>& 
   int N = (int) q.size() - 1;           // degree of denominator
   rsAssert((int) t.size() - 1 == M+N);  // sanity check
 
-  // Solve for the denominator coeffs:
-  rsMatrix<T> A(N, N), b(N, 1), x(N, 1); // x can be a rsMatrixView, referring to &q[1]
+  // Establish matrix A and rhs vector b:
+  rsMatrix<T> A(N, N), b(N, 1);
   for(int i = 0; i < N; i++)
-    b(i, 0) = -t[M+1+i];                 // verify!
+    b(i, 0) = -t[M+1+i];
   for(int i = 0; i < N; i++)
     for(int j = 0; j < N; j++)
-    {
-      int k = M+i-j;                    // verify!
-      A(i, j) = t[k];
-    }
+      A(i, j) = t[M+i-j];
+
+  // Solve linear system A*x = b for the denominator coeffs:
+  q[0] = T(1);
+  rsMatrixView<T> x(N, 1, &q[1]);
   rsLinearAlgebraNew::solve(A, x, b);
 
-  // Copy solution (ToDo: optimize away by using rsMatrixView for x):
-  q[0] = T(1);
-  for(int i = 0; i < N; i++)
-    q[i+1] = x(i, 0);
-
-
   // Solve for the numerator coeffs:
-  for(int i = 0; i <= M; i++)
-  {
+  for(int i = 0; i <= M; i++) {
     p[i] = T(0);
+    for(int j = 0; j <= rsMin(i, N); j++)
+      p[i] += q[j] * t[i-j]; }
 
-    //int jMax = i;    // seems to work only for N > M
-    int jMax = rsMin(i, N);
-
-    for(int j = 0; j <= jMax; j++)
-    {
-      int k = i-j;         // verify i-j ...may be wrong
-      p[i] += q[j] * t[k];
-    }
-  }
-
-
-  int dummy = 0;
+  // ToDo:
+  // -Implement a production version using a workspace of size N^2 + N (for A and b)
+  //  -Maybe the size can be reduced to N^2 if we use q temporarily for the b-coeffs. This would
+  //   require that the "solve" call can work in place, i.e. x and b pointing to the same array.
+  // -Make a convenience function that takes rsPolynomial as input and returns rsRationalFunction
+  // -Implement an inverse function rsPadeToTaylor
 }
 template void rsTaylorToPade(const std::vector<double>& T, std::vector<double>& P, 
   std::vector<double>& Q);

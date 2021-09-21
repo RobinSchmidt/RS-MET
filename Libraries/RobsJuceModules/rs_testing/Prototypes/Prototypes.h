@@ -46,9 +46,7 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //static size_t allBitsButFirst= allBits ^ firstBitOnly;
 */
 
-/** Does not yet work in all cases! Seems to work for deg(q) > deg(p)
-
-Converts a Taylor approximation with coeffs given in t into a Pade approximation with numerator 
+/** Converts a Taylor approximation with coeffs given in t into a Pade approximation with numerator 
 coeffs in p and denominator coeffs in q. It is assumed that p and q already have the correct sizes. 
 The degrees of the polynomials p and q must add up to the degree of t: deg(p) + deg(q) = deg(t). 
 The degree of a polynomial represented by its coefficient array is always size() - 1. */

@@ -62,7 +62,7 @@ public:
   place, i.e. it does not allocate any extra memory. The process destroys the contents of A and B. 
   In general, X and B must be distinct but in certain cases, one may use it in place, i.e. X == B. 
   I'm not sure yet, but i think, it works, iff B is diagonal ...or maybe triangular is enough? 
-  -> figure out.  */
+  and/or if X and B are vectors?  ->  figure out and document.  */
   template<class T>
   static bool solve(rsMatrixView<T>& A, rsMatrixView<T>& X, rsMatrixView<T>& B);
   // -doesn't allocate, todo: document, when this may be used in place

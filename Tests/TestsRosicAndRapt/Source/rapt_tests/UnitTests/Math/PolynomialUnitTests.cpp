@@ -2542,8 +2542,6 @@ bool testPadeApproximation()
   // -test extreme cases (M=0 or N=0)
   // -test some higher order approximations
 
-
-
   return ok;
 }
 
