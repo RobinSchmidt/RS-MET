@@ -2498,47 +2498,73 @@ bool testPiecewisePolynomial()
   return r;
 }
 
+bool testPadeApproximation()
+{
+  bool ok = true;
+
+  using Vec = std::vector<double>;
+
+  // 5th degree Taylor coeffs for exp(x):
+  Vec T({1, 1, 1./2, 1./6, 1./24, 1./120}); // c_k = 1/k!
+
+  // Coeffs for Pade approximation with qudratic numerator and cubic denominator:
+  Vec P(3), Q(4); 
+
+
+  rsTaylorToPade(T, P, Q);
+
+  // exp[2/3](x) = (60 + 24*x + 3*x^2) / (60 - 36*x + 9*x^2 - x^3)
+  //             = (1 + 0.4*x + 0.05*x^2) / (1 - 0.6*x + 0.15*x^2 - 0.01666*x^3)
+
+  // see: https://mathworld.wolfram.com/PadeApproximant.html
+
+
+
+  return ok;
+}
+
 bool testPolynomial()
 {
   std::string reportString = "Polynomial"; // dummy -> remove
-  bool testResult = true;
+  bool ok = true;
 
-  testResult &= testConvolution(                              reportString);
-  testResult &= testCubicCoeffsFourPoints(                    reportString);
-  testResult &= testCubicCoeffsTwoPointsAndDerivatives(       reportString);
-  testResult &= testPolynomialEvaluation(                     reportString);
-  testResult &= testPolynomialDivision(                       reportString);
-  testResult &= testPolynomialArgumentShift(                  reportString);
-  testResult &= testPolynomialDiffAndInt(                     reportString);
-  testResult &= testPolynomialFiniteDifference(               reportString);
-  testResult &= testPolynomialComposition(                    reportString);
-  testResult &= testPolynomialWeightedSum(                    reportString);
-  testResult &= testPolynomialIntegrationWithPolynomialLimits(reportString);
-  testResult &= testPolynomialInterpolation(                  reportString);
-  testResult &= testPolynomialRootFinder(                     reportString);
-  testResult &= testPartialFractionExpansion(                 reportString);
-  testResult &= testPartialFractionExpansion2(                reportString);
-  testResult &= testPolynomialBaseChange(                     reportString);
-  testResult &= testPolynomialRecursion(                      reportString);
-  testResult &= testJacobiPolynomials(                        reportString);
-  testResult &= testSpecialPolynomials();
-  testResult &= testQuadraticTo3Points();
+  ok &= testConvolution(                              reportString);
+  ok &= testCubicCoeffsFourPoints(                    reportString);
+  ok &= testCubicCoeffsTwoPointsAndDerivatives(       reportString);
+  ok &= testPolynomialEvaluation(                     reportString);
+  ok &= testPolynomialDivision(                       reportString);
+  ok &= testPolynomialArgumentShift(                  reportString);
+  ok &= testPolynomialDiffAndInt(                     reportString);
+  ok &= testPolynomialFiniteDifference(               reportString);
+  ok &= testPolynomialComposition(                    reportString);
+  ok &= testPolynomialWeightedSum(                    reportString);
+  ok &= testPolynomialIntegrationWithPolynomialLimits(reportString);
+  ok &= testPolynomialInterpolation(                  reportString);
+  ok &= testPolynomialRootFinder(                     reportString);
+  ok &= testPartialFractionExpansion(                 reportString);
+  ok &= testPartialFractionExpansion2(                reportString);
+  ok &= testPolynomialBaseChange(                     reportString);
+  ok &= testPolynomialRecursion(                      reportString);
+  ok &= testJacobiPolynomials(                        reportString);
+  ok &= testSpecialPolynomials();
+  ok &= testQuadraticTo3Points();
 
   // under construction:
-  testResult &= testPowersChebychevExpansionConversion(       reportString);
+  ok &= testPowersChebychevExpansionConversion(       reportString);
 
   // polynomial class:
-  testResult &= testPolynomialOperators(                      reportString);
+  ok &= testPolynomialOperators(                      reportString);
     // fails!
 
-  testResult &= testRationalFunction(reportString);
+  ok &= testRationalFunction(reportString);
+  ok &= testPadeApproximation();
   // Maybe this should be a test in its own right, not in testPolynomial - on the other hand, 
   // dealing with rational functions is mostly manipulation of polynomials.
 
-  testResult &= testBivariatePolynomial();
-  testResult &= testBivariatePolynomial2();
-  testResult &= testTrivariatePolynomial(); // this takes long
-  testResult &= testPiecewisePolynomial();
+  ok &= testBivariatePolynomial();
+  ok &= testBivariatePolynomial2();
+  ok &= testTrivariatePolynomial(); // this takes long
+  ok &= testPiecewisePolynomial();
 
-  return testResult;
+  return ok;
 }

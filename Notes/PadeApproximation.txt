@@ -1,6 +1,6 @@
-A (N/M) Pade approximant to a function is constructed by equating a rational function with 
-numerator degree N and denominator degree M to a Taylor approximant of degree N+M. Let's consider 
-an example with N=2, M=3. We have:
+A (M/N) Pade approximant to a function is constructed by equating a rational function with 
+numerator degree M and denominator degree N to a Taylor approximant of degree M+N. Let's consider 
+an example with M=2, N=3. We have:
 
    a0 + a1*x + a2*x^2
   ----------------------------- = c0 + c1*x + c2*x^2 + c3*x^3 + c4*x^4 + c5*x^5
@@ -8,19 +8,19 @@ an example with N=2, M=3. We have:
 
 where we assume the c_i to be known and we want to figure out the a_i and b_i. Without loss of 
 generality, we may assume b0 = 1 but for making the patterns more apparent, we'll write out b0. The 
-next thing to do is to multiply the rhs by the numerator:
+next thing to do is to bring the numerator over to the rhs:
   
   a0 + a1*x + a2*x^2 = (b0+b1*x+b2*x^2+b3*x^3) * (c0+c1*x+c2*x^2+c3*x^3+c4*x^4+c5*x^5)
                      = x^0 * (b0*c0) +
                        x^1 * (b0*c1 + b1*c0) +
                        x^2 * (b0*c2 + b1*c1 + b2*c0)
                        x^3 * (b0*c3 + b1*c2 + b2*c1 + b3*c0) + 
-                       x^4 * (b0*c4 + b1*c3 + b2*c2 + b3*c1 + b4*c0) + 
-                       x^5 * (b0*c5 + b1*c4 + b2*c3 + b3*c2 + b4*c1 + b5*c0)
+                       x^4 * (b0*c4 + b1*c3 + b2*c2 + b3*c1) + 
+                       x^5 * (b0*c5 + b1*c4 + b2*c3 + b3*c2)
 
-Now we need to equate the coefficients for like powers of x on the lhs and rhs. We actually already 
-know that b4 = b5 = 0. We also observe that the lhs has no terms with a power of 3 or higher, so 
-their a-coeffs are zero. So let's first look at the coeffs for x^3,x^4,x^5. We need to have:
+Now we need to equate the coefficients for like powers of x in the lhs and rhs. We note that the 
+lhs has no terms with a power of 3 or higher, so their coeffs in the lhs are zero. So let's first 
+look at the coeffs for x^3,x^4,x^5. We need to have:
 
   x^3: 0 = b0*c3 + b1*c2 + b2*c1 + b3*c0
   x^4: 0 = b0*c4 + b1*c3 + b2*c2 + b3*c1
@@ -42,8 +42,8 @@ remaining system is already triangular.
 
 We already know everything on the rhs, so we can directly compute a0,a1,a2.
 
-...i think, in general, we get an MxM linear system with an all-zeros rhs for the b-coeffs and once
-they have been computed, we are left with a triangular (N+1)x(N+1) system for the a-coeffs where 
+...i think, in general, we get an NxN linear system with an all-zeros rhs for the b-coeffs and once
+they have been computed, we are left with a triangular (M+1)x(M+1) system for the a-coeffs where 
 the b-coeffs appear on the rhs?
 
 ToDo:
@@ -53,5 +53,13 @@ ToDo:
  this to the Taylor coeffs that result from actually carrying out the differentiations. Maybe the 
  resulting procedure is a better (more efficient and/or numerically accurate?) way to find Taylor
  series for rational functions?
+-Can it happen that the matrix is singular? If so, what then?
 
 See: https://www.youtube.com/watch?v=szMaPkJEMrw ...especially at around 6:18 for the linear system
+
+See also:
+https://en.wikipedia.org/wiki/Pad%C3%A9_approximant
+this suggests an algorithm based on the extended Euclidean algorithm for polynomials
+
+Wolfram suggests also an algorithm based on equating coeffs:
+https://mathworld.wolfram.com/PadeApproximant.html

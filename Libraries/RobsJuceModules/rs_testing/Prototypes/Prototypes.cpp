@@ -24,6 +24,32 @@ using namespace RAPT;
 
 
 template<class T>
+void rsTaylorToPade(const std::vector<T>& t, std::vector<T>& p, std::vector<T>& q)
+{
+  int M = (int) p.size() - 1;           // degree of numerator
+  int N = (int) q.size() - 1;           // degree of denominator
+  rsAssert((int) t.size() - 1 == M+N);  // sanity check
+
+  // Solve for the denominator coeffs:
+  rsMatrix<T> A(N, N), b(N, 1), x(N, 1); // x can be a rsMatrixView, referring to &q[1]
+  for(int i = 0; i < N; i++)
+    b(i, 0) = -t[M+1+i];                 // verify!
+  for(int i = 0; i < N; i++)
+    for(int j = 0; j < N; j++)
+    {
+      int k = M+i-j;                    // verify!
+      A(i, j) = t[k];
+    }
+  rsLinearAlgebraNew::solve(A, x, b);
+
+
+
+  int dummy = 0;
+}
+template void rsTaylorToPade(const std::vector<double>& T, std::vector<double>& P, 
+  std::vector<double>& Q);
+
+template<class T>
 void solveLeastSquares(rsMatrix<T>& A, rsMatrix<T>& X, rsMatrix<T>& B)
 {
   rsMatrix<T> AT  = A.getTranspose();       // A^T

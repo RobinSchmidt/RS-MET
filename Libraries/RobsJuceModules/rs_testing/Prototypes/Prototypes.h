@@ -46,6 +46,12 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //static size_t allBitsButFirst= allBits ^ firstBitOnly;
 */
 
+/** Converts a Taylor approximation with coeffs given in t into a Pade approximation with numerator 
+coeffs in p and denominator coeffs in q. It is assumed that p and q already have the correct sizes. 
+The degrees of the polynomials p and q must add up to the degree of t: deg(p) + deg(q) = deg(t). 
+The degree of a polynomial represented by its coefficient array is always size() - 1. */
+template<class T>
+void rsTaylorToPade(const std::vector<T>& t, std::vector<T>& p, std::vector<T>& q);
 
 /** Under construction.
 Solves the linear system A*x = b in an "optimal" way regardless of the question whether the system 
