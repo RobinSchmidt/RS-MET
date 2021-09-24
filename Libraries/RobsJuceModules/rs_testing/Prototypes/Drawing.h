@@ -248,3 +248,7 @@ inline bool rsAlmostEqual(const rsPixelRGB& x, const rsPixelRGB& y, const rsPixe
 
 rsImage<rsPixelRGB> rsConvertImage(
   const rsImage<float>& R, const rsImage<float>& G, const rsImage<float>& B, bool clip);
+
+void rsConvertImage(
+  const rsImage<float>& R, const rsImage<float>& G, const rsImage<float>& B, bool clip, 
+  rsImage<rsPixelRGB>& img);

@@ -929,14 +929,14 @@ int clipTriangleToUnitSquare2(const rsVector2DF& a, const rsVector2DF& b, const 
 
 //=================================================================================================
 
-rsImage<rsPixelRGB> rsConvertImage(
-  const rsImage<float>& R, const rsImage<float>& G, const rsImage<float>& B, bool clip)
+void rsConvertImage(
+  const rsImage<float>& R, const rsImage<float>& G, const rsImage<float>& B, bool clip,
+  rsImage<rsPixelRGB>& img)
 {
   int w = R.getWidth();
   int h = R.getHeight();
   rsAssert(G.hasShape(w, h));
   rsAssert(B.hasShape(w, h));
-  rsImage<rsPixelRGB> img(w, h);
   if(clip) {
     for(int j = 0; j < h; j++) {
       for(int i = 0; i < w; i++) {
@@ -949,6 +949,17 @@ rsImage<rsPixelRGB> rsConvertImage(
         img(i, j).r = (unsigned char)(255.f * R(i, j));
         img(i, j).g = (unsigned char)(255.f * G(i, j));
         img(i, j).b = (unsigned char)(255.f * B(i, j)); }}}
+}
+
+rsImage<rsPixelRGB> rsConvertImage(
+  const rsImage<float>& R, const rsImage<float>& G, const rsImage<float>& B, bool clip)
+{
+  int w = R.getWidth();
+  int h = R.getHeight();
+  //rsAssert(G.hasShape(w, h));
+  //rsAssert(B.hasShape(w, h));
+  rsImage<rsPixelRGB> img(w, h);
+  rsConvertImage(R, G, B, clip, img);
   return img;
 }
 //template class rsImage<rsPixelRGB>; 
