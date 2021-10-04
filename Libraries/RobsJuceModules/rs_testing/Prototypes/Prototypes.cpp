@@ -62,6 +62,15 @@ void rsTaylorToPade(const std::vector<T>& t, std::vector<T>& p, std::vector<T>& 
   //  padeExp(int numOrder, int denOrder, int x0), padeSin(), padeCos(), etc. in rsRationalFunction
   // -Maybe implement some framework to find least-squares rational approximations of arbitrary
   //  functions using Pade approximants as initial guess
+  // -Use Pade approximations for filter design:
+  //  -Prescribe a desired transfer function, not necessarily rational, such as H(z) = exp(a*z)
+  //  -Find the Taylor series (centered at 0, aka McLaurin series)
+  //  -Convert Taylor series to Pade
+  //  -Examples: H(z) = exp(i*z) ...some sort of complex rotation of the frequency axis?
+  //  -Instead of prescribing a function and finding its Taylor series, we may also directly 
+  //   prescribe a polynomial (i.e. FIR) transfer function. Maybe that can be infinite, too? Maybe
+  //   a Hilbert filter would be H(z) = sum_k (-1)^k / k  for k != 0 and 0 for k = 0? Can we find 
+  //   an expression for the Taylor coeffs of that?
 }
 template void rsTaylorToPade(const std::vector<double>& T, std::vector<double>& P, 
   std::vector<double>& Q);

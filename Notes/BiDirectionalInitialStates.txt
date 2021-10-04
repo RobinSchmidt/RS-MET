@@ -63,7 +63,7 @@ forward pass and the filter coeffs a,b as:
 
   k = 1/b; p = a*yOld/(b*b-1); c = -p*k; s(1) = yNew = c - p*(b-k);
   
-This can be further simplifed into:
+This can be further simplified into:
 
   ┌───────────────────────────┐
   │ yNew = a*yOld*b / (1-b*b) │
@@ -234,7 +234,7 @@ to get:
          + v k^n + k^2 (q-v)) + d (k^(n+1) (q-v) 
          + v k^(n+1) + v k^n + k (q-v))))/(k^2 - 1) and c element Z
 
-The k^(-2 (n-1) + n - 1) (k^n - 1) factor in the first line can be simplifed to (k^n - 1)/k^(n-1),
+The k^(-2 (n-1) + n - 1) (k^n - 1) factor in the first line can be simplified to (k^n - 1)/k^(n-1),
 furthermore, let's define:
 
   K := k^(n-1)  ->  K*k = k^n, K*k^2 = k^(n+1), K*k^3 = k^(n+2)
@@ -312,7 +312,7 @@ which gives:
   y = -((a*b + (b^2 - b)*d - a)*q - (a^2*b + (a*b + a)*d + d^2)*r)/(b^3 - b^2 - b + 1)
 
 This can now be manipulated manually into the following final result, which can be used in the 
-implementation of the filter's state assigment:
+implementation of the filter's state assignment:
 
   ┌─────────────────────────────────────┐
   │ cr = a*(a*b + (b+1)*d) + d*d        │  coeff for r in update of y1
@@ -338,6 +338,8 @@ above, but i currently can't see, how this happens. We would be left with
   x1 = b*y1 + d*x1, y1 = -cx*x1 / (b^3-b^2-b+1)
 ...how is the denominator supposed to become (1-b^2)?
 
+
+ToDo:
 Try to apply this technique to higher order filters by expressing them as parallel connection of
 complex first order filters via partial fraction expansion. Work out the exact formulas for the 
 states for the biquad. Any higher order filter will likely be implemented as a biquad cascade 
@@ -352,6 +354,8 @@ anyway, so this enables us up to do correctly initialized bidirectional filters 
 
 
 ===================================================================================================
+Below is just messy stuff that i tried but from which i did not yet get any useful results. I 
+didn't delete it because it may potentially be picked up later again...
 
 k := 1/b
 
@@ -428,17 +432,62 @@ s(n) = 2^(-n) ((-sqrt(a^2 + 4 b)/b - a/b)^n sum_(k_1 =0)^(n - 1)-(2^(-k_1 - 1) (
 S := sqrt(a^2 + 4 b)
 s(n) = 2^(-n) ((-S/b - a/b)^n sum_(k_1 =0)^(n - 1)-(2^(-k_1 - 1) (S - a) t(k_1) ((S - a)/b)^(k_1) (1/(S + a))^(-k_1) (-(S + a)/b)^(-k_1))/S + (S/b - a/b)^n sum_(k_2 =0)^(n - 1)-(2^(-k_2 - 1) t(k_2) (1/(S + a))^(-k_2 - 1))/S) + c_1 2^(-n) (-S/b - a/b)^n + c_2 2^(-n) (S/b - a/b)^n
 
-maybe to fix the 2nd constant we need to apply as 2nd boundary condition ds(inf) = 0 where
-ds[n] = s[n+1] - s[n] 
+...hmmm...that's unwieldy
+
+-Maybe to fix the 2nd constant we need to apply as 2nd boundary condition ds(inf) = 0 where
+ ds[n] = s[n+1] - s[n] 
+-Maybe for two-pole filters (and higher order) filters, we should express them as parallel 
+ connection of complex one-pole filters and use our solution for one-pole-filters above. For image
+ filters, we may approximate a Gaussian filter by using multiple first order lowpass filters in 
+ series. Highpass is obtained by identity-minus-lowpass and bandpass and bandreject are obtained by 
+ series and parallel connection of lowpass and highpass. And/or maybe use connections using allpass
+ filters - maybe there's a type in which a1 is not close to 1 to avoid numerical problems in the 
+ formula in prepareForBackwardPass
+ 
+...OK - let's try the partial fraction expansion approach - we have:
+
+  y[n] = x[n] + a*y[n-1] + b*y[n-2]
+
+corresponding to the transfer function:
+
+                1                r1           r2
+  H(z) = ----------------- = ---------- + ----------
+          1 + a/z + b/z^2     1 - p1/z     1 - p2/z
+
+with the poles p1,p2 and corresponding residues r1,r2. We assume here that the poles p1,p2 are 
+distinct. For finding those poles and residues from the coeffs a,b, there's code somewhere in the 
+codebase, so we consider that subproblem solved. What remains to be done is to find formulas to 
+re-assign the filter states y[n-1], y[n-2] (short: y1,y2) from their known values after the forward 
+pass and the coeffs a,b. To this end, we may first convert the state variables y1,y2 into final 
+states of a parallel connection of two 1-poles. Let's call them v[n-1], w[n-1] (short: v1,w1). 
+Having found v1,w1, we can re-assign them using the formulas from above (together with 
+r1,r2,p1,p2) and then convert back to y1,y2. So, what we need are back-and-forth conversion 
+formulas between y1,y2 and v1,w1 with given a,b,r1,r2,p1,p2. Let's consider the next 2 output 
+samples of the original filter, assuming the input is switched to zero. These are:
+
+  o1 = a*y1 + b*y2
+  o2 = a*o1 + b*y1 = a*(a*y1 + b*y2) + b*y1 = (a^2+b)*y1 + a*b*y2
+
+Likewise, the next two output samples for the same filter in parallel form are:
+
+  o1 = m1*v1   + m2*w1        m1 := -p1, m2 := -p2
+  o2 = m1^2*v1 + m2^2*w1
+
+and they must of course match the o1,o2 of the original filter because the parallel form is 
+supposed to be the same filter just with a different implementation structure. So, we get the 
+following 2x2 system:
+
+  m1*v1   + m2*w1   =  a     *y1 +   b*y2 
+  m1^2*v1 + m2^2*w1 = (a^2+b)*y1 + a*b*y2
+
+which we can solve for v1,w1 in terms of y1,y2 or vice versa...
 
 
-maybe for two-pole filters (and higher order) filters, we should express them as parallel 
-connection of complex one-pole filters and use our solution for one-pole-filters above. For image
-filters, we may approximate a Gaussian filter by using multiple first order lowpass filters in 
-series. Highpass is obtained by identity-minus-lowpass and bandpass and bandreject are obtained by 
-series and parallel connection of lowpass and highpass. And/or maybe use connections using allpass
-filters - maybe there's a type in which a1 is not close to 1 to avoid numerical problems in the 
-formula in prepareForBackwardPass
+ToDo:
+-implement and test it
+-derive case when the poles p1,p2 are equal - then implement and test it
+-derive formulas for a full biquad. maybe it makes sense to consider it as a series of a 2-pole and
+ an FIR part
 
 ---------------------------------------------------------------------------------------------------
 Two-Pole/One-Zero
@@ -480,7 +529,7 @@ This gives an ugly result:
 
 t(n) = -(2^(-n - 1) (a^2 g (a - sqrt(a^2 + 4 b))^n + 2 b g (a - sqrt(a^2 + 4 b))^n + a g sqrt(a^2 + 4 b) (a - sqrt(a^2 + 4 b))^n - a^2 g (sqrt(a^2 + 4 b) + a)^n - 2 b g (sqrt(a^2 + 4 b) + a)^n + a g sqrt(a^2 + 4 b) (sqrt(a^2 + 4 b) + a)^n - a h (a - sqrt(a^2 + 4 b))^n - h sqrt(a^2 + 4 b) (a - sqrt(a^2 + 4 b))^n + a h (sqrt(a^2 + 4 b) + a)^n - h sqrt(a^2 + 4 b) (sqrt(a^2 + 4 b) + a)^n))/(b sqrt(a^2 + 4 b))
 
-but with some manual extraction of common subexpressions and simplfications, we can turn this into:
+but with some manual extraction of common subexpressions and simplifications, we can turn this into:
 
   S = sqrt(a*a + 4*b)
   T = a - S 

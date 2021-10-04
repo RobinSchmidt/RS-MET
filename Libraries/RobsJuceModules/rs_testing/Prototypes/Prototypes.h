@@ -3152,7 +3152,8 @@ void rsColor<T>::ab2ch(T a, T b, T* C, T* h)
 // us a double-precision matrix for inv(M). maybe we can also use the given inv(M) and invert it to 
 // get a double preicison version of M. and then maybe take averages of given and computed? and 
 // maybe iterate that until both matrices converge? the goal is to get as closely as possible to a 
-// perfect roundtrip in double precision. with these rounded matrices, the roundtrip will introduce
+// perfect roundtrip in double precision whiel at the same time staying as closely as possible to 
+// the original given matrices. with these rounded matrices, the roundtrip will introduce
 // an error that's determined by the single-precision format, even if double precision is used. 
 // maybe write a general function: rsRefineInversion(rsMatrix& M, rsMatrix& Mi) 
 
