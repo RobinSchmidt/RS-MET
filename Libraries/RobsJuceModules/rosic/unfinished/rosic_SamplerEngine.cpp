@@ -129,7 +129,7 @@ int rsSamplerEngine::removeRegion(int gi, int ri)
     regionsForKey[k].removeRegion(r);
   for(size_t i = 0; i < activePlayers.size(); i++)
     if(activePlayers[i]->getRegionToPlay() == r)
-      activePlayers[i]->setRegionToPlay(nullptr, 0.0);
+      activePlayers[i]->setRegionToPlay(nullptr, 0.0, groupSettingsOnTop, instrumentSettingsOnTop);
       // the idlePlayers are supposed to have a nullptr anyway
 
   // Remove region from the rsSamplerData object
@@ -462,7 +462,7 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
     return nullptr;  // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = RAPT::rsGetAndRemoveLast(idlePlayers);
   rp->setKey(key);
-  rp->setRegionToPlay(r, sampleRate);
+  rp->setRegionToPlay(r, sampleRate, groupSettingsOnTop, instrumentSettingsOnTop);
   activePlayers.push_back(rp);
   return rp;
 }
@@ -488,8 +488,9 @@ int rsSamplerEngine::stopRegionPlayer(int i)
     return rsReturnCode::invalidIndex; }
   RegionPlayer* p = activePlayers[i];
   RAPT::rsRemove(activePlayers, i);
-  p->setRegionToPlay(nullptr, 0.0); // don't keep the pointer to avoid it dangling when the region
-  idlePlayers.push_back(p);         // is removed
+  p->setRegionToPlay(nullptr, 0.0, groupSettingsOnTop, instrumentSettingsOnTop); 
+    // don't keep the pointer to avoid it dangling when the region is removed
+  idlePlayers.push_back(p);       
   return rsReturnCode::success;
 }
 
@@ -696,14 +697,14 @@ void rsSamplerEngine::SignalProcessorChain::resetState()
 //-------------------------------------------------------------------------------------------------
 // rsSamplerEngine::RegionPlayer
 
-void rsSamplerEngine::RegionPlayer::setRegionToPlay(
-  const rsSamplerEngine::Region* regionToPlay, double fs)
+void rsSamplerEngine::RegionPlayer::setRegionToPlay(const rsSamplerEngine::Region* regionToPlay, 
+  double fs, bool groupSettingsOnTop, bool instrumentSettingsOnTop)
 {
   region = regionToPlay;
   if(region == nullptr)
     return;
   stream = getSampleStreamFor(region);
-  prepareToPlay(fs);
+  prepareToPlay(fs, groupSettingsOnTop, instrumentSettingsOnTop);
 }
 
 rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
@@ -789,7 +790,7 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay(
   // (3) set up region specific settings (this may override group and/or instrument settings)
   resetDspState();        // Needs to be done after building the chain
   resetDspSettings();     // Reset all DSP settings to default values
-  setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs);
+  setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, false);
   setupDspSettings(region->getGroup()->getSettings(), fs, instrumentSettingsOnTop);
   setupDspSettings(region->getSettings(), fs, groupSettingsOnTop);
 

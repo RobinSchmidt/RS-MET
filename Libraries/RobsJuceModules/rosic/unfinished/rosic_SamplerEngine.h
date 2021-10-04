@@ -385,8 +385,15 @@ protected:
 
     /** Sets up the region object that this player should play. You need to also pass the output 
     sample-rate which is the sample rate at which the player should run (not the sample rate of the
-    audio file associated with the region). */
-    void setRegionToPlay(const Region* regionToPlay, double outputSampleRate);
+    audio file associated with the region). The groupSettingsOnTop parameter determines whether the 
+    group settings should be applied on top the region settings (instead of having the region 
+    settings override them). Likewise, instrumentSettingsOnTop = true lets the instrument settings 
+    be applied on top of group settings (instead of letting group settings override them). */
+    void setRegionToPlay(const Region* regionToPlay, double outputSampleRate,
+      bool groupSettingsOnTop, bool instrumentSettingsOnTop);
+   // todo: later maybe have default values (false) for the settingsOnTop variables for 
+    // convenience - but for implementing the signal-flow stuff, it makes sense to enforce the 
+    // caller to apps a value
 
     const Region* getRegionToPlay() const { return region; }
 
@@ -417,17 +424,13 @@ protected:
 
     /** Sets up the internal values for the playback settings (including DSP objects) according
     to the assigned region and resets all DSP objects. */
-    void prepareToPlay(double sampleRate, bool groupSettingsOnTop = false, 
-      bool instrumentSettingsOnTop = false);
-    // todo: later maybe have default values (false) for the settingsOnTop variables for 
-    // convenience - but for implementing the signal-flow stuff, it makes sense to enforce the 
-    // caller to apps a value
-
+    void prepareToPlay(double sampleRate, bool groupSettingsOnTop, bool instrumentSettingsOnTop);
+ 
     bool buildProcessingChain();
     void resetDspState();
     void resetDspSettings();
     void setupDspSettings(const std::vector<PlaybackSetting>& settings, 
-      double sampleRate, bool onTop = false);
+      double sampleRate, bool onTop);
     // see comment at prepareToPlay - maybe make onTop default to false
 
     const Region* region;                 //< The Region object that this object should play
@@ -669,6 +672,27 @@ protected:
   //std::string wavDir;         /**< Root directory for .wav files */
 
 
+
+
+
+
+  // Some member variables for features whose implementation is actually deferred to the subclass
+  // rsSamplerEngine2. For convenience of implementation, we already need them to be members of 
+  // this baseclass here. In this class here, they are always false and we don't even have setters 
+  // for them. Having them as baseclass members avoids the necessity to pass around an excessive 
+  // amount of parameters to certain member functions. Their existence here is a provision to 
+  // enable features in the subclass.
+  //
+  // Flags to decide if the group- and/or instrument settings and/or modulations should be applied 
+  // on top of the region settings/modulations. This is a feature not present in the sfz spec. 
+  bool groupSettingsOnTop         = false;
+  bool instrumentSettingsOnTop    = false;
+  bool groupModulationsOnTop      = false;
+  bool instrumentModulationsOnTop = false;
+
+
+
+
   //int numChannels = 2;
   /**< The number of output channels. By default, we have two channels, i.e. a stereo output. */
   // maybe that should be determined by TSig? multi-channel output should be realized by using
@@ -818,13 +842,7 @@ protected:
 
 
 
-  // Flags to decide if the group- and/or instrument settings and/or modulations should be applied 
-  // on top of the region settings/modulations:
-  bool groupSettingsOnTop         = false;
-  bool instrumentSettingsOnTop    = false;
-  bool groupModulationsOnTop      = false;
-  bool instrumentModulationsOnTop = false;
-  // maybe move this into a subclass rsSamplerEngine2 - this is an added non-sfz feature
+
 
 
   // under construction:
