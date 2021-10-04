@@ -858,8 +858,10 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
 
   double tmp = stream->getSampleRate();
-  if(onTop) increment *= tmp/fs;
-  else      increment  = tmp/fs;
+  if(onTop) 
+    increment *= tmp/fs;
+  else 
+    increment  = tmp/fs;
 
   double rootKey = 69.0;
   double amp = 1.0;
@@ -983,13 +985,22 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOff(uchar key, uch
 
 void rsSamplerEngine2::processFrame(double* left, double* right)
 {
-  if(!groupSettingsOnTop) {
-    rsSamplerEngine::processFrame(left, right); return; } // fall back to baseclass implementation
+  // Fall back to baseclass implementation, if appropriate:
+  if(!groupSettingsOnTop) {  // todo: add || !instrumentSettingsOnTop ...maybe
+    rsSamplerEngine::processFrame(left, right); return; } 
 
+  // Accumulate output from the group players:
   rsFloat64x2 out = 0.0;
   for(int i = 0; i < (int)activeGroupPlayers.size(); i++)
     out += activeGroupPlayers[i]->getFrame();
 
+  // Stop region players that have finished playing:
+  for(int i = 0; i < (int)activePlayers.size(); i++) {
+    if(activePlayers[i]->hasFinished()) {
+      stopRegionPlayer(i);
+      i--; }}
+
+  // Assign outputs:
   *left  = out[0];
   *right = out[1];
 }
