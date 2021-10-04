@@ -768,6 +768,9 @@ public:
 
 
 
+  /** Returns the number of currently playing group players. */
+  int getNumActiveGroupPlayers() const { return (int) activeGroupPlayers.size(); }
+
 
   void processFrame(double* left, double* right) override;
 
@@ -854,7 +857,7 @@ protected:
 
   /** Stops the groupPlayer with the given activeIndex, i.e. moves it from the activeGroupPlayers
   array to the idleGroupPlayers array. */
-  void stopGroupPlayer(int activeIndex);
+  int stopGroupPlayer(int activeIndex);
 
 
 

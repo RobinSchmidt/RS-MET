@@ -46,7 +46,7 @@ bool samplerDataUnitTest()
 
 bool testSamplerNote(rosic::rsSamplerEngine* se, float key, float vel, 
   const std::vector<float>& targetL, const std::vector<float>& targetR, 
-  float tol = 0.f)
+  float tol = 0.f, bool plot = false)
 {
   using AT   = RAPT::rsArrayTools;
   using Ev   = rosic::rsMusicalEvent<float>;
@@ -61,7 +61,8 @@ bool testSamplerNote(rosic::rsSamplerEngine* se, float key, float vel,
     se->processFrame(&outL[n], &outR[n]);
   float errL = AT::maxDeviation(&outL[0], &targetL[0], N);
   float errR = AT::maxDeviation(&outR[0], &targetR[0], N);
-  //rsPlotVectors(targetL, targetR, outL, outR); // uncomment for debugging
+  if(plot)
+    rsPlotVectors(targetL, targetR, outL, outR);
   return errL <= tol && errR <= tol;
 };
 // maybe have a bool resetBefore that optionally resets the engine before playing...but maybe it's
@@ -538,20 +539,23 @@ bool samplerEngine2UnitTest()
   tgt = regionAmp*sin440;
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt);
   ok &= se.getNumActiveLayers() == 0;  // rename to getNumActiveRegions or getNumPlayingRegions
-  //ok &= se.getNumActiveGroups() == 0;
+  ok &= se.getNumActiveGroupPlayers() == 0;
 
   // Set up the engine such that the group settings are applied on top of the region settings:
   se.setGroupSettingsOnTop(true);
   tgt = groupAmp*regionAmp*sin440;
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt);
   ok &= se.getNumActiveLayers() == 0;
+  ok &= se.getNumActiveGroupPlayers() == 0;
 
   // Now set it up such that also the instrument settings are applied on top. Now all 3 settings 
   // should accumulate:
   se.setInstrumentSettingsOnTop(true);
   tgt = instrAmp*groupAmp*regionAmp*sin440;
-  //ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt); // fails
-  //ok &= se.getNumActiveLayers() == 0;
+  float tol = 1.e-7f;  // why can't we use 0 tolerance?
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, false);
+  ok &= se.getNumActiveLayers() == 0;
+  ok &= se.getNumActiveGroupPlayers() == 0;
 
 
   // ToDo: 
