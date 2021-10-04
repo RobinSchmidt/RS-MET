@@ -851,7 +851,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
   //bool onTop = false;   // make this a function parameter
 
-  
+
   using PS = PlaybackSetting;
   using TP = PS::Type;
 
@@ -916,8 +916,10 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   {
     t1 = (pan/200.0) + 0.5; // -100..+100 -> 0..1
     t2 = 1.0 - t1;
-    if(onTop) this->amp *= 2.0 * amp * rsFloat64x2(t2, t1);
-    else      this->amp  = 2.0 * amp * rsFloat64x2(t2, t1);
+    if(onTop) 
+      this->amp *= 2.0 * amp * rsFloat64x2(t2, t1);
+    else      
+      this->amp  = 2.0 * amp * rsFloat64x2(t2, t1);
   } break;
   case PS::PanRule::sinCos:
   {

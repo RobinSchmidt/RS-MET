@@ -137,6 +137,8 @@ T rsNormalizedSigmoids<T>::clip(T x)
     return +1.0;
   return x;
 }
+// todo: do it branch free via 0.5 * (abs(x+1) - abs(x-1))
+// https://www.desmos.com/calculator/4hkxkw7xnv
 
 template<class T>
 T rsNormalizedSigmoids<T>::atan(T x)

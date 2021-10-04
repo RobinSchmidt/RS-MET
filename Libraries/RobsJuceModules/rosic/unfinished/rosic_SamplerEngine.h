@@ -419,12 +419,16 @@ protected:
     to the assigned region and resets all DSP objects. */
     void prepareToPlay(double sampleRate, bool groupSettingsOnTop = false, 
       bool instrumentSettingsOnTop = false);
+    // todo: later maybe have default values (false) for the settingsOnTop variables for 
+    // convenience - but for implementing the signal-flow stuff, it makes sense to enforce the 
+    // caller to apps a value
 
     bool buildProcessingChain();
     void resetDspState();
     void resetDspSettings();
     void setupDspSettings(const std::vector<PlaybackSetting>& settings, 
       double sampleRate, bool onTop = false);
+    // see comment at prepareToPlay - maybe make onTop default to false
 
     const Region* region;                 //< The Region object that this object should play
     const AudioFileStream<float>* stream; //< Stream object to get the data from

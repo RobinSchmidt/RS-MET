@@ -543,8 +543,11 @@ bool samplerEngine2UnitTest()
   // Set up the engine such that the group settings are applied on top of the region settings:
   se.setGroupSettingsOnTop(true);
   tgt = groupAmp*regionAmp*sin440;
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt);  // fails
   ok &= se.getNumActiveLayers() == 0;
+  // This test still fails. what we need to do is to set up the region player's "amp" member 
+  // as groupAmp*regionAmp  in RegionPlayer::setupDspSettings. we need to use the onTop variable
+  // to swicth between override and accumulation
 
 
 
@@ -790,11 +793,14 @@ bool samplerEngineUnitTest()
 {
   bool ok = true;
 
+
+  ok &= samplerEngine2UnitTest();  // new tests
+
   ok &= samplerDataUnitTest();
   ok &= samplerEngineUnitTest1();
   ok &= samplerEngineUnitTestFileIO();
 
-  //ok &= samplerEngine2UnitTest();
+
 
 
   //rsAssert(ok, "samplerEngineUnitTest failed");
