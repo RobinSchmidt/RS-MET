@@ -982,12 +982,44 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOff(uchar key, uch
 // ToDo: 
 // -override also stopRegionPlayer - we need to remove it from one of our activeGroupPlayers, too
 
+int rsSamplerEngine2::stopRegionPlayer(int activeIndex)
+{
+  // Figure out, to which GroupPlayer the RegionPlayer with given activeIndex belongs and remove it
+  // from the GroupPlayer. If this removal causes the GroupPlayer to become empty, also remove the 
+  // GroupPlayer itself from the active ones:
+  RegionPlayer* rp = activePlayers[activeIndex];
+  for(int i = 0; i < (int)activeGroupPlayers.size(); i++)
+  {
+    if(activeGroupPlayers[i]->contains(rp))
+    {
+      GroupPlayer* gp = activeGroupPlayers[i];
+      gp->removeRegionPlayer(rp);
+      if(gp->hasNoRegionPlayers())
+      {
+        stopGroupPlayer(i);
+        break;                    // there can be only one and we have found it - we are done!
+      }
+    }
+  }
+  // ToDo: add code that verifies that rp is in exactly one of the active groupPlayers - maybe have
+  // rsAssert(getNumContainingActiveGroupPlayers(rp) == 1) or something like that
+
+
+  return rsSamplerEngine::stopRegionPlayer(activeIndex); // preliminary
+  // this is not enough: the activePlayer[i] should also be removed from the groupPlayer 
+  // which it is part of. if, after that removal, the group player is empty, the groupPlayer itself
+  // should be removed from the activeGroupPlayers. maybe we should override stopRegionPlayer here
+  // ...ok - the new code above tries to do just that
+
+}
 
 void rsSamplerEngine2::processFrame(double* left, double* right)
 {
   // Fall back to baseclass implementation, if appropriate:
-  if(!groupSettingsOnTop) {  // todo: add || !instrumentSettingsOnTop ...maybe
+  if(!groupSettingsOnTop) { 
     rsSamplerEngine::processFrame(left, right); return; } 
+  // todo: maybe add || !instrumentSettingsOnTop? does that make sense? ...maybe later when DSP 
+  // process are to be applied, too
 
   // Accumulate output from the group players:
   rsFloat64x2 out = 0.0;
@@ -1055,6 +1087,14 @@ void rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp)
   // -we need to set up the DSP chain for the new gp
 }
 
+void rsSamplerEngine2::stopGroupPlayer(int activeIndex)
+{
+  RAPT::rsAssert(activeIndex < (int) activeGroupPlayers.size());
+
+
+  return;
+}
+
 //-------------------------------------------------------------------------------------------------
 
 rsFloat64x2 rsSamplerEngine2::GroupPlayer::getFrame()
@@ -1079,7 +1119,11 @@ void rsSamplerEngine2::GroupPlayer::addRegionPlayer(rsSamplerEngine::RegionPlaye
   regionPlayers.push_back(newPlayer); 
 }
 
-
+void rsSamplerEngine2::GroupPlayer::removeRegionPlayer(RegionPlayer* player)
+{
+  RAPT::rsAssert(RAPT::rsContains(regionPlayers, player)); // ToDo: add and use rsContainsOnce
+  RAPT::rsRemoveFirstOccurrence(regionPlayers, player);
+}
 
 //=================================================================================================
 

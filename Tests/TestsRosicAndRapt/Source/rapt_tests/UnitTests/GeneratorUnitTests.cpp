@@ -544,10 +544,14 @@ bool samplerEngine2UnitTest()
   se.setGroupSettingsOnTop(true);
   tgt = groupAmp*regionAmp*sin440;
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt);
-  ok &= se.getNumActiveLayers() == 0;  // fails
+  ok &= se.getNumActiveLayers() == 0;
 
-
-
+  // Now set it up such that also the instrument settings are applied on top. Now all 3 settings 
+  // should accumulate:
+  se.setInstrumentSettingsOnTop(true);
+  tgt = instrAmp*groupAmp*regionAmp*sin440;
+  //ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt); // fails
+  //ok &= se.getNumActiveLayers() == 0;
 
 
   // ToDo: 

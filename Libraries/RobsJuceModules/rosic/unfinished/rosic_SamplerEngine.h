@@ -562,7 +562,7 @@ protected:
   array. This results in the removal of the player from "activePlayers" and adding it back to
   "idlePlayers". The return value is either rsReturnCode::success or rsReturnCode::invalidIndex, if
   the activeIndex was not a valid index into our activePlayers array. */
-  int stopRegionPlayer(int activeIndex);
+  virtual int stopRegionPlayer(int activeIndex);
 
   /** Returns the AudioFileStream object that is used to stream the actual sample data for the
   given region. A pointer to this object is supposed to be stored within the region object
@@ -791,6 +791,8 @@ protected:
 
   PlayStatusChange handleNoteOff(uchar key, uchar vel) override;
 
+  int stopRegionPlayer(int activeIndex) override;
+
 
 
   /** A class for collecting all the SignalProcessors that apply to a given group. This is used 
@@ -808,6 +810,16 @@ protected:
 
     /** Adds a new region player to our regionPlayers array. */
     void addRegionPlayer(RegionPlayer* newPlayer);
+
+    /** Removes the given player from our regionPlayers array. */
+    void removeRegionPlayer(RegionPlayer* player);
+
+    /** Returns true, iff the given regionPlayer is part of this GroupPlayer, i.e.  */
+    bool contains(RegionPlayer* rp) { return RAPT::rsContains(regionPlayers, rp); }
+    // ToDo: make parameter rp const - for some reason, it doesn't compile
+
+    /** Returns true, iff this GroupPlayer has no RegionPlayer objects running. */
+    bool hasNoRegionPlayers() { return regionPlayers.empty(); }
 
   protected:
 
@@ -839,6 +851,10 @@ protected:
   when region players were triggered for which we do not already have an active group player in 
   use. */
   void startGroupPlayerFor(RegionPlayer* regionPlayer);
+
+  /** Stops the groupPlayer with the given activeIndex, i.e. moves it from the activeGroupPlayers
+  array to the idleGroupPlayers array. */
+  void stopGroupPlayer(int activeIndex);
 
 
 

@@ -362,7 +362,7 @@ inline void rsSetZero(std::vector<T>& v)
 }
 
 template<class T>
-inline bool rsContains(std::vector<T>& v, T elementToCheckFor)
+inline bool rsContains(std::vector<T>& v, const T elementToCheckFor)
 {
   for(size_t i = 0; i < v.size(); i++)
     if(v[i] == elementToCheckFor)
