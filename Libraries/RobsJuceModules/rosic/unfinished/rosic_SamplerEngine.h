@@ -385,12 +385,12 @@ protected:
 
     /** Sets up the region object that this player should play. You need to also pass the output 
     sample-rate which is the sample rate at which the player should run (not the sample rate of the
-    audio file associated with the region). The groupSettingsOnTop parameter determines whether the 
-    group settings should be applied on top the region settings (instead of having the region 
-    settings override them). Likewise, instrumentSettingsOnTop = true lets the instrument settings 
-    be applied on top of group settings (instead of letting group settings override them). */
+    audio file associated with the region). The groupSettingsOverride parameter determines whether 
+    the group settings should override the instrument settings (true) or be applied on top of them 
+    (false). Likewise, regionSettingsOverride = true lets the region settings override the group 
+    settings. */
     void setRegionToPlay(const Region* regionToPlay, double outputSampleRate,
-      bool groupSettingsOnTop, bool instrumentSettingsOnTop);
+      bool groupSettingsOverride, bool regionSettingsOverride);
    // todo: later maybe have default values (false) for the settingsOnTop variables for 
     // convenience - but for implementing the signal-flow stuff, it makes sense to enforce the 
     // caller to apps a value
@@ -425,14 +425,14 @@ protected:
 
     /** Sets up the internal values for the playback settings (including DSP objects) according
     to the assigned region and resets all DSP objects. */
-    void prepareToPlay(double sampleRate, bool groupSettingsOnTop, bool instrumentSettingsOnTop);
+    void prepareToPlay(double sampleRate, bool groupSettingsOverride, bool regionSettingsOverride);
     // change API to take group/regionSettingsAccumulate as parameters
  
     bool buildProcessingChain();
     void resetDspState();
     void resetDspSettings();
     void setupDspSettings(const std::vector<PlaybackSetting>& settings, 
-      double sampleRate, bool onTop);
+      double sampleRate, bool overrideOldSetting);
     // see comment at prepareToPlay - maybe make onTop default to false
     // change API: replace onTop with override
 
@@ -688,10 +688,6 @@ protected:
   //
   // Flags to decide if the group- and/or instrument settings and/or modulations should be applied 
   // on top of the region settings/modulations. This is a feature not present in the sfz spec. 
-  //bool groupSettingsOnTop         = false;
-  //bool instrumentSettingsOnTop    = false;
-  //bool groupModulationsOnTop      = false;
-  //bool instrumentModulationsOnTop = false;
   bool groupSettingsOverride  = true;
   bool regionSettingsOverride = true;
   // todo:

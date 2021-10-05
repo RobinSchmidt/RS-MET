@@ -537,7 +537,7 @@ bool samplerEngine2UnitTest()
   // so the produced output should only have the region volume applied:
   se.reset();
   tgt = regionAmp*sin440;
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 0.f, false);
   ok &= se.getNumActiveLayers() == 0;  // rename to getNumActiveRegions or getNumPlayingRegions
   ok &= se.getNumActiveGroupPlayers() == 0;
 
@@ -569,6 +569,11 @@ bool samplerEngine2UnitTest()
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
 
+
+
+  // change API then update all calls to
+  // RegionPlayer::setRegionToPlay, RegionPlayer::prepareToPlay, setupDspSettings
+
   // ToDo: remove the region setting - in this case, we should new see a combination of instrument 
   // and group setting:
 
@@ -579,10 +584,6 @@ bool samplerEngine2UnitTest()
 
 
   // ToDo: 
-  // -When setting up the region players, we need to take into account, whether the settings should
-  //  have override or accumulate behavior
-  //  getRegionPlayerFor, rsSamplerEngine::RegionPlayer::setRegionToPlay, prepareToPlay
-  //  need to take 2 boolean parameters for groupSettingsOnTop, instrumentSettingsOnTop
   // -do the same test for other parameters like delay, pan, pitch, etc.
   // -we need to also try it with processes that do not just modify, what algo parameters the 
   //  RegionPlayers use (this is the case for volume, delay, pitch) but that actually apply two

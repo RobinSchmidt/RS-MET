@@ -129,7 +129,7 @@ int rsSamplerEngine::removeRegion(int gi, int ri)
     regionsForKey[k].removeRegion(r);
   for(size_t i = 0; i < activePlayers.size(); i++)
     if(activePlayers[i]->getRegionToPlay() == r)
-      activePlayers[i]->setRegionToPlay(nullptr, 0.0, !regionSettingsOverride, !groupSettingsOverride);
+      activePlayers[i]->setRegionToPlay(nullptr, 0.0, groupSettingsOverride, regionSettingsOverride);
       // the idlePlayers are supposed to have a nullptr anyway
 
   // Remove region from the rsSamplerData object
@@ -318,6 +318,7 @@ void rsSamplerEngine::processFrame(double* left, double* right)
     // that the deactivation/removal would need less data copying.
 
 
+  // probably obsolete - that stuff is handled in the subclass:
   //if(groupSettingsOnTop)
   //{
   //  for(int i = 0; i < (int)activeGroupPlayers.size(); i++)
@@ -462,7 +463,7 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
     return nullptr;  // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = RAPT::rsGetAndRemoveLast(idlePlayers);
   rp->setKey(key);
-  rp->setRegionToPlay(r, sampleRate, !regionSettingsOverride, !groupSettingsOverride);
+  rp->setRegionToPlay(r, sampleRate, groupSettingsOverride, regionSettingsOverride);
   activePlayers.push_back(rp);
   return rp;
 }
@@ -488,7 +489,7 @@ int rsSamplerEngine::stopRegionPlayer(int i)
     return rsReturnCode::invalidIndex; }
   RegionPlayer* p = activePlayers[i];
   RAPT::rsRemove(activePlayers, i);
-  p->setRegionToPlay(nullptr, 0.0, !regionSettingsOverride, !groupSettingsOverride); 
+  p->setRegionToPlay(nullptr, 0.0, groupSettingsOverride, regionSettingsOverride); 
     // don't keep the pointer to avoid it dangling when the region is removed
   idlePlayers.push_back(p);       
   return rsReturnCode::success;
@@ -698,13 +699,13 @@ void rsSamplerEngine::SignalProcessorChain::resetState()
 // rsSamplerEngine::RegionPlayer
 
 void rsSamplerEngine::RegionPlayer::setRegionToPlay(const rsSamplerEngine::Region* regionToPlay, 
-  double fs, bool groupSettingsOnTop, bool instrumentSettingsOnTop)
+  double fs, bool groupSettingsOverride, bool regionSettingsOverride)
 {
   region = regionToPlay;
   if(region == nullptr)
     return;
   stream = getSampleStreamFor(region);
-  prepareToPlay(fs, groupSettingsOnTop, instrumentSettingsOnTop);
+  prepareToPlay(fs, groupSettingsOverride, regionSettingsOverride);
 }
 
 rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
@@ -768,7 +769,7 @@ bool rsSamplerEngine::RegionPlayer::isPlayable(const Region* region)
 }
 
 void rsSamplerEngine::RegionPlayer::prepareToPlay(
-  double fs, bool groupSettingsOnTop, bool instrumentSettingsOnTop)
+  double fs, bool groupSettingsOverride, bool regionSettingsOverride)
 {
   RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   RAPT::rsAssert(stream != nullptr);   // Ditto.
@@ -790,9 +791,9 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay(
   // (3) set up region specific settings (this may override group and/or instrument settings)
   resetDspState();        // Needs to be done after building the chain
   resetDspSettings();     // Reset all DSP settings to default values
-  setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, false);
-  setupDspSettings(region->getGroup()->getSettings(), fs, instrumentSettingsOnTop);
-  setupDspSettings(region->getSettings(), fs, groupSettingsOnTop);
+  setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, true);
+  setupDspSettings(region->getGroup()->getSettings(), fs, groupSettingsOverride);
+  setupDspSettings(region->getSettings(), fs, regionSettingsOverride);
 
   // return rsSamplerEngine::rsReturnCode::success;
 }
@@ -840,7 +841,7 @@ void rsSamplerEngine::RegionPlayer::resetDspSettings()
 }
 
 void rsSamplerEngine::RegionPlayer::setupDspSettings(
-  const std::vector<PlaybackSetting>& settings, double fs, bool onTop)
+  const std::vector<PlaybackSetting>& settings, double fs, bool overrideOldSetting)
 {
   // ToDo: 
   // -Let the function have a boolean parameter to decide whether the settings should be taken 
@@ -850,7 +851,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   //  should accumulate and then again for the region settings with the flag depending on whether 
   //  group settings should accumulate
 
-  //bool onTop = false;   // make this a function parameter
+  bool onTop = !overrideOldSetting; // maybe get rif and use overrideOldSetting directly
 
 
   using PS = PlaybackSetting;
