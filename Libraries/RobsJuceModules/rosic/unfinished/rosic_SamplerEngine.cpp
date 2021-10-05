@@ -925,6 +925,8 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     t2 = 1.0 - t1;
     if(onTop) this->amp *= 2.0 * amp * rsFloat64x2(t2, t1);
     else      this->amp  = 2.0 * amp * rsFloat64x2(t2, t1);
+    // i'm not sure about the factor 2 -> check against sfz+ ..such a factor might be undesirable
+    // in "onTop" mode: when 3 panners pan hard-left or right, we'll actually get a boost of 8
   } break;
   case PS::PanRule::sinCos:
   {

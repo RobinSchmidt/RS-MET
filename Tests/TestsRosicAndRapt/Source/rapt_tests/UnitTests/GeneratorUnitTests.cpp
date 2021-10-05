@@ -1,3 +1,18 @@
+
+// Helper functions:
+
+// pan is suppoesed to be in -1...+1
+template<class T>
+void rsApplyPan(std::vector<T>& L, std::vector<T>& R, T pan, bool constPow = false)
+{
+  int N = L.size(); rsAssert(R.size() == N);
+  using AT = RAPT::rsArrayTools;
+
+  T t = (pan + 1) * 0.5;     // -1...+1  ->   0...1
+  AT::scale(&L[0], N, 2 * (1 - t));
+  AT::scale(&R[0], N, 2 *      t);
+}
+
 bool samplerDataUnitTest()
 {
   bool ok = true;
@@ -510,6 +525,7 @@ bool samplerEngine2UnitTest()
   int   N  = 500;    // length of (co)sinewave sample
   VecF sin440(N);    // sine wave
   VecF tgt;          // target output in tests
+  VecF tgtL, tgtR;   // ...for when we need different left and right target signal
   for(int n = 0; n < N; n++)
     sin440[n] = sinf((float)(2*PI*f/fs) * n);
 
@@ -524,6 +540,9 @@ bool samplerEngine2UnitTest()
   int ri = se.addRegion(gi);                                   ok &= ri == 0;
   int rc = se.setRegionSample(gi, ri, si);                     ok &= rc == RC::success;
   rc = se.setRegionSetting(gi, ri, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
+
+  //---------------------------------------------------------------------------
+  // Test accumulation of amp setting:
 
   // Set up volume opcode for region and group:
   float regionAmp = 0.5f;
@@ -569,12 +588,9 @@ bool samplerEngine2UnitTest()
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
 
-  // ToDo: remove the region setting - in this case, we should new see a combination of instrument 
-  // and group setting:
+  //---------------------------------------------------------------------------
+  // Test accumulation of pan setting:
 
-  // ToDo: test accumulation of pan setting:
-  se.setRegionSettingsOverride(true);                         // not required but anyway
-  se.setGroupSettingsOverride(true);                          // group settings override again
   se.clearAllSfzSettings();                                   // remove all the amp settings
   rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);  // restore the rootkey setting
   ok &= rc == RC::success;
@@ -585,30 +601,34 @@ bool samplerEngine2UnitTest()
   se.setGroupSetting( 0,    PST::Pan, groupPan);
   se.setInstrumentSetting(  PST::Pan, instrPan);
 
-  tgt = sin440;
-  // that's actually not what we should expect -> figure out what we should actually expect as 
-  // amplitudes for L/R - how should pan settings accumulate? it should be equivalent to having 
-  // 2 or 3 panners ins series
+  // We want to see only the region pan:
+  se.setGroupSettingsOverride(true);     // group settings override again
+  se.setRegionSettingsOverride(true);    // not required but anyway
+  tgtL = tgtR = sin440;
+  rsApplyPan(tgtL, tgtR, regionPan/100);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6, false); 
 
-  //ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, true); 
-  // is still supposed to fail bcs our target signal tgt is not yet correct
-  // left has amp 0.9, right has amp 1.1
-
+  // Now we want to see region and group pan combined:
   se.setRegionSettingsOverride(false);
-  //ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, true); 
-  // left: 0.72, right: 1.32
+  tgtL = tgtR = sin440;
+  rsApplyPan(tgtL, tgtR, regionPan/100);
+  rsApplyPan(tgtL, tgtR, groupPan /100);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6, false);
 
+  // Now we want to see region, group and instrument pan combined:
   se.setGroupSettingsOverride(false);
-  //ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, true); 
-  // left: 0.504, right: 1.716
+  tgtL = tgtR = sin440;
+  rsApplyPan(tgtL, tgtR, regionPan/100);
+  rsApplyPan(tgtL, tgtR, groupPan /100);
+  rsApplyPan(tgtL, tgtR, instrPan /100);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6, false);
 
   // ToDo: test it also with constant power pan rule
 
+  //---------------------------------------------------------------------------
+  // ToDo: test delay accumulation:
 
 
-
-  // ToDo:
-  // -make it work for the other parameters, too (pan, delay, etc.)
 
 
   // ToDo: 
