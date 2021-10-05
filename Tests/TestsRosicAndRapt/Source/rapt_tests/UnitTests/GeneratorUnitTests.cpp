@@ -640,7 +640,7 @@ bool samplerEngine2UnitTest()
   // ToDo: test it also with constant power pan rule
 
   //---------------------------------------------------------------------------
-  // ToDo: test delay accumulation:
+  // Test delay accumulation:
 
   se.clearAllSfzSettings();                                   // remove all the amp settings
   rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);  // restore the rootkey setting
@@ -674,6 +674,20 @@ bool samplerEngine2UnitTest()
   rsApplyDelay(tgt, groupDelay);
   rsApplyDelay(tgt, instrDelay);
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+
+  //---------------------------------------------------------------------------
+  // Test pitch accumulation 
+  
+  // ...hmmm...we currently only have the PitchKeyCenter opcode available to manipulate the pitch
+  // and for this, accumulation makes actually no sense - probably, this parameter should always 
+  // work in override mode. todo: implement the detune opcode - this does make sense for 
+  // accumulation and is the cleaner way to implement detuning anyway. maybe we should also have a
+  // detuneHz opcode -> check sfz spec, if such a thing exists
+
+
+
+
+
 
 
   // ToDo: 

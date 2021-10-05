@@ -866,6 +866,11 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   double tmp = stream->getSampleRate();
   if(onTop) increment *= tmp/fs;
   else      increment  = tmp/fs;
+  // ...wait - that makes no sense - we shall not accumulate 1/fs factors...maybe this function
+  // should compute the increment in seconds and the caller should be responsible for the final
+  // multiplication by 1/fs? maybe we should have an outer function 
+  // setupDspSettingsFor(Region* r) and prepareToPlay call that with the region pointer. then we 
+  // do the triple-override-accumulate call there and finally divide inc by fs there
 
   double rootKey = 69.0;
   double amp = 1.0;
@@ -884,8 +889,8 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     {
     // Amp settings:
     case TP::Volume:  { amp      = RAPT::rsDbToAmp(val); } break;
-    case TP::Pan:     { pan      = val;            } break;
-    case TP::PanRule: { panRule  = (int)val;       } break;
+    case TP::Pan:     { pan      = val;                  } break;
+    case TP::PanRule: { panRule  = (int)val;             } break;
 
     // Pitch settings:
     case TP::PitchKeyCenter: { rootKey = val; } break;
