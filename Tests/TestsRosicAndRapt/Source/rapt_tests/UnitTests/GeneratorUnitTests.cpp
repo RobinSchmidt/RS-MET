@@ -597,6 +597,11 @@ bool samplerEngine2UnitTest()
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
 
+
+  // ToDo: test behavior when there is no region setting available...maybe test also when there is
+  // only a region and instrument setting
+
+
   //---------------------------------------------------------------------------
   // Test accumulation of pan setting:
 
@@ -668,12 +673,7 @@ bool samplerEngine2UnitTest()
   rsApplyDelay(tgt, regionDelay);
   rsApplyDelay(tgt, groupDelay);
   rsApplyDelay(tgt, instrDelay);
-  //rsPlotVector(tgt);  // looks good
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true);
-  // this fails...ahh - i think because of the delay, then engine did not yet finish playing, so
-  // we see a tail from the previous test - but then why does this not happen already in the 2nd
-  // test?
-
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
 
 
   // ToDo: 

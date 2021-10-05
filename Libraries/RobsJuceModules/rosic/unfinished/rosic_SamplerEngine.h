@@ -746,18 +746,6 @@ public:
   void setMaxNumLayers(int newMax) override;
 
 
-  /** Decides if the group settings should be applied on top of the region settings (true) or if 
-  they should just act as fallback values for when a region doesn't define them (false). The 
-  "on top" mode means that if a region defines a gain of -6dB and its enclosing group defines a 
-  gain of -3dB, the total gain will be -9dB. The "fallback" mode means that the region will just 
-  use it's defined -6dB gain and only if that would not be defined, it would fall back to the 
-  group's -3dB setting. The latter behavior is the default in sfz (verify!) but the the former is 
-  also often convenient. 
-  This doesn't do anything yet...this feature is not yet implemented - for the time being, it's 
-  just the infrastructure. */
-  //void setGroupSettingsOnTop(bool onTop) { groupSettingsOnTop = onTop; }
-  // deprecated
-
   /** Decides if the group modulations should be applied on top of the region modulations (true) or
   if their settings should just act as fallback values for when a region doesn't define them 
   (false). Note that technically, we don't have a set of modulators per group. Instead, if "on top"
@@ -771,28 +759,30 @@ public:
   accumulate/duplicate, accumulate...actually, it would be useful, if this could be set for each 
   modulator individually. */
   //void setGroupModulationsOnTop(bool onTop) { groupModulationsOnTop = onTop; }
-  // deprecated
-
-  /** Like setGroupSettingsOnTop, but for the instrument settings. */
-  //void setInstrumentSettingsOnTop(bool onTop) { instrumentSettingsOnTop = onTop; }
-  // deprecated
-
-  /** Like setGroupModulationsOnTop, but for the instrument modulations. */
-  //void setInstrumentModulationsOnTop(bool onTop) { instrumentModulationsOnTop = onTop; }
-  // deprecated
+  // deprecated ...the comment may still be relevant for implementing the override vs accumulate
+  // modes for modulations, so it has not yet been deleted
 
 
-
-  // replacements for the deprecated "OnTop" functions above:
-  void setGroupSettingsOverride(bool shouldOverride) 
-  { 
-    groupSettingsOverride = shouldOverride;
-    reset();  // changing this setting is disruptive - we need a reset
-  }
-
+  /** Decides if the region settings should override the group (and instrument) settings (true) or
+  be applied on top of those settings (false). To override them means that the group settings are
+  just used as fallback values for when a region doesn't define them. The "on top" mode means that 
+  if a region defines a gain of -6dB and its enclosing group defines a gain of -3dB, the total gain
+  of the region will be -9dB. The "fallback" mode means that the region will just use it's defined 
+  -6dB gain and only if that would not be defined, it would fall back to the group's -3dB setting.
+  The latter behavior is the default in sfz (verify!) but the the former is also often convenient 
+  and the desired behavior in ModeAudio's drum sampler. */
   void setRegionSettingsOverride(bool shouldOverride) 
   { 
     regionSettingsOverride = shouldOverride;
+    reset();  // changing this setting is disruptive - we need a reset
+  }
+
+  /** Similar to setRegionSettingsOverride, but for the instrument and group settings, i.e. it 
+  decides whether the group settings should override the instrument settings or be apllied on top
+  of them. */
+  void setGroupSettingsOverride(bool shouldOverride) 
+  { 
+    groupSettingsOverride = shouldOverride;
     reset();
   }
 

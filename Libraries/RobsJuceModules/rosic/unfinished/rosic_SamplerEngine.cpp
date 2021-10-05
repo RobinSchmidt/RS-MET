@@ -971,8 +971,7 @@ void rsSamplerEngine2::setMaxNumLayers(int newMax)
 rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, uchar vel)
 {
   PlayStatusChange psc = rsSamplerEngine::handleNoteOn(key, vel);
-  //if(!regionSettingsOverride)     // Don't update the group players, if they are not used anyway
-  if(!canFallBackToBaseclass())
+  if(!canFallBackToBaseclass())   // Don't update the group players, if they are not used anyway
     updateGroupPlayers(psc);
   return psc;
 }
@@ -980,20 +979,16 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, ucha
 rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOff(uchar key, uchar vel)
 {
   PlayStatusChange psc = rsSamplerEngine::handleNoteOff(key, vel);
-  //if(!regionSettingsOverride)
   if(!canFallBackToBaseclass())
     updateGroupPlayers(psc);
   return psc;
 }
-// ToDo: 
-// -override also stopRegionPlayer - we need to remove it from one of our activeGroupPlayers, too
 
 int rsSamplerEngine2::stopRegionPlayer(int activeIndex)
 {
   // ToDo: add code that verifies that rp is in exactly one of the active groupPlayers - maybe have
   // rsAssert(getNumContainingActiveGroupPlayers(rp) == 1) or something like that. that maybe 
   // useful to call in other places, too
-
 
   // Figure out, to which GroupPlayer the RegionPlayer with given activeIndex belongs and remove it
   // from the GroupPlayer. If this removal causes the GroupPlayer to become empty, also remove the 
@@ -1011,17 +1006,9 @@ int rsSamplerEngine2::stopRegionPlayer(int activeIndex)
 
 void rsSamplerEngine2::processFrame(double* left, double* right)
 {
-  // Fall back to baseclass implementation, if appropriate:
-  // canFallBackToBaseclass
-  if(canFallBackToBaseclass())   // newer
-  //if(regionSettingsOverride && groupSettingsOverride)   // new
-  //if(regionSettingsOverride)   // old
-  { 
-    rsSamplerEngine::processFrame(left, right); 
-    return; 
-  } 
-  // the old implementation should misbehave when there's and instrument- and group setting but no
-  // region setting -> test this
+  // Fall back to more efficient (because simpler) baseclass code, if possible:
+  if(canFallBackToBaseclass()) { 
+    rsSamplerEngine::processFrame(left, right); return; } 
 
   // Accumulate output from the group players:
   rsFloat64x2 out = 0.0;
