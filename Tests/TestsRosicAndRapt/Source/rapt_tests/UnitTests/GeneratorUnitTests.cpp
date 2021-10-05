@@ -13,6 +13,14 @@ void rsApplyPan(std::vector<T>& L, std::vector<T>& R, T pan, bool constPow = fal
   AT::scale(&R[0], N, 2 *      t);
 }
 
+// delay is supposed to be in samples - todo allow non-integer delays
+template<class T>
+void rsApplyDelay(std::vector<T>& x, int delay)
+{
+  rsArrayTools::shift(&x[0], (int) x.size(), delay);
+}
+
+
 bool samplerDataUnitTest()
 {
   bool ok = true;
@@ -628,11 +636,43 @@ bool samplerEngine2UnitTest()
   //---------------------------------------------------------------------------
   // ToDo: test delay accumulation:
 
+  se.clearAllSfzSettings();                                   // remove all the amp settings
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);  // restore the rootkey setting
+  int regionDelay = 10;   // in samples - todo: use float
+  int groupDelay  = 20;
+  int instrDelay  = 30;
+  se.setRegionSetting(0, 0, PST::Delay, regionDelay / fs);
+  se.setGroupSetting( 0,    PST::Delay, groupDelay  / fs);
+  se.setInstrumentSetting(  PST::Delay, instrDelay  / fs);
+
+  // We want to see only the region delay:
+  se.setGroupSettingsOverride(true);
+  se.setRegionSettingsOverride(true); 
+  tgt = sin440;
+  rsApplyDelay(tgt, regionDelay);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+
+  // Now we want to see region and group delay combined:
+  se.setRegionSettingsOverride(false);
+  tgt = sin440;
+  rsApplyDelay(tgt, regionDelay);
+  rsApplyDelay(tgt, groupDelay);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+
+  // Now we want to see region, group and instrument delay combined:
+  se.setGroupSettingsOverride(false);
+  tgt = sin440;
+  rsApplyDelay(tgt, regionDelay);
+  rsApplyDelay(tgt, groupDelay);
+  rsApplyDelay(tgt, instrDelay);
+  rsPlotVector(tgt);
+  //ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true);
+  // this fails
 
 
 
   // ToDo: 
-  // -do the same test for other parameters like delay, pan, pitch, etc.
+  // -do the same test for other parameters like delay, pitch, etc.
   // -we need to also try it with processes that do not just modify, what algo parameters the 
   //  RegionPlayers use (this is the case for volume, delay, pitch) but that actually apply two
   //  independent DSP processes. That would be the case for a filter. For this, we need to 

@@ -111,6 +111,7 @@ template void rsArrayTools::negateOdd( const float *x, float *y, int N);
 template int rsArrayTools::maxDeviationIndex(const float *buffer1, const float *buffer2, int length);
 template void rsArrayTools::reverse(const float* x, float* y, int length);
 //template void rsArrayTools::reverse(float* x, int length);
+template void rsArrayTools::shift(float *buffer, int length, int numPlaces);
 
 // rsArrayTools<double>
 template void rsArrayTools::applyFunction(const double *x, double *y, int N, double (*f) (double));
