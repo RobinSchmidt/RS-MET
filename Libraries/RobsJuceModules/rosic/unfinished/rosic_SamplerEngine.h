@@ -689,6 +689,11 @@ protected:
   bool instrumentSettingsOnTop    = false;
   bool groupModulationsOnTop      = false;
   bool instrumentModulationsOnTop = false;
+  // todo:
+  // -do not distinguish between "settings" and "modulations" - the distinction is too fuzzy for a 
+  //  meaningful user concept
+  // -rename flags to group/instrumentSettingsOverride with reversed semantics (defaulting to true)
+  //  -this better reflects whats going on in the code and is less confusing for the user
 
 
 

@@ -557,6 +557,21 @@ bool samplerEngine2UnitTest()
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
 
+  // Now set the groupSettingsOnTop flag to false, leaving the instrumentSettingsOnTop flag true.
+  // Behavior: (1) the group-settings are accumulated with the instrument settings, (2) this 
+  // accumulant is overwritten by the region settings. So, overall, we expect that only the 
+  // regionAmp is effective:
+  se.setGroupSettingsOnTop(false); // todo: rename to setGroupSettingsOverride with revered semantics
+  tgt = regionAmp*sin440;
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 0.0, false);
+  ok &= se.getNumActiveLayers() == 0;
+  ok &= se.getNumActiveGroupPlayers() == 0;
+
+
+
+  // ToDo:
+  // -make it work for the other parameters, too (pan, delay, etc.)
+
 
   // ToDo: 
   // -When setting up the region players, we need to take into account, whether the settings should

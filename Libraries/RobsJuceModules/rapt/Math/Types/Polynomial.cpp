@@ -1712,5 +1712,10 @@ ToDo:
 -We may also want bivariate rational functions to implement and investigate some interesting 
  math
 
+ Other methods for root finding (here, we use the Laguerre method:)
+ https://en.wikipedia.org/wiki/Durand%E2%80%93Kerner_method
+ https://en.wikipedia.org/wiki/Jenkins%E2%80%93Traub_algorithm (very popular, i think)
+
+
 */
 
