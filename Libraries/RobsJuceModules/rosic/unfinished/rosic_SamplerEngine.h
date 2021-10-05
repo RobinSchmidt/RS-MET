@@ -818,6 +818,9 @@ protected:
 
   int stopRegionPlayer(int activeIndex) override;
 
+  /** Returns true, iff the settings are such that the additional features of this subclass are not
+  used so we can fall back to the (simpler) baseclass implementations in our overrides. */
+  bool canFallBackToBaseclass() const { return regionSettingsOverride && groupSettingsOverride; }
 
 
   /** A class for collecting all the SignalProcessors that apply to a given group. This is used 

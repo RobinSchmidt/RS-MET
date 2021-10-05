@@ -590,6 +590,7 @@ bool samplerEngine2UnitTest()
   // group settings override instrument settings irrelevant in cases when a region setting is 
   // available (which is the case here). The region setting will override the combined 
   // instrument + group setting:
+  //se.reset();
   se.setRegionSettingsOverride(true);
   tgt = regionAmp*sin440;
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 0.0, false);
@@ -652,12 +653,17 @@ bool samplerEngine2UnitTest()
   rsApplyDelay(tgt, regionDelay);
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
 
+  ok &= se.getNumActiveLayers() == 1;       // works
+  ok &= se.getNumActiveGroupPlayers() == 1; // fails
+
+
+
   // Now we want to see region and group delay combined:
   se.setRegionSettingsOverride(false);
   tgt = sin440;
   rsApplyDelay(tgt, regionDelay);
   rsApplyDelay(tgt, groupDelay);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true);
 
   // Now we want to see region, group and instrument delay combined:
   se.setGroupSettingsOverride(false);
@@ -665,9 +671,11 @@ bool samplerEngine2UnitTest()
   rsApplyDelay(tgt, regionDelay);
   rsApplyDelay(tgt, groupDelay);
   rsApplyDelay(tgt, instrDelay);
-  rsPlotVector(tgt);
-  //ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true);
-  // this fails
+  //rsPlotVector(tgt);  // looks good
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true);
+  // this fails...ahh - i think because of the delay, then engine did not yet finish playing, so
+  // we see a tail from the previous test - but then why does this not happen already in the 2nd
+  // test?
 
 
 

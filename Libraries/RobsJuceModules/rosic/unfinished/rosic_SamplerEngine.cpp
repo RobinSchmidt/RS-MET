@@ -971,7 +971,8 @@ void rsSamplerEngine2::setMaxNumLayers(int newMax)
 rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, uchar vel)
 {
   PlayStatusChange psc = rsSamplerEngine::handleNoteOn(key, vel);
-  if(!regionSettingsOverride)     // Don't update the group players, if they are not used anyway
+  //if(!regionSettingsOverride)     // Don't update the group players, if they are not used anyway
+  if(!canFallBackToBaseclass())
     updateGroupPlayers(psc);
   return psc;
 }
@@ -979,7 +980,8 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, ucha
 rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOff(uchar key, uchar vel)
 {
   PlayStatusChange psc = rsSamplerEngine::handleNoteOff(key, vel);
-  if(!regionSettingsOverride)
+  //if(!regionSettingsOverride)
+  if(!canFallBackToBaseclass())
     updateGroupPlayers(psc);
   return psc;
 }
@@ -1010,10 +1012,16 @@ int rsSamplerEngine2::stopRegionPlayer(int activeIndex)
 void rsSamplerEngine2::processFrame(double* left, double* right)
 {
   // Fall back to baseclass implementation, if appropriate:
-  if(regionSettingsOverride) { 
-    rsSamplerEngine::processFrame(left, right); return; } 
-  // todo: maybe add || groupSettingsOverride? does that make sense? ...maybe later when DSP 
-  // process are to be applied, too
+  // canFallBackToBaseclass
+  if(canFallBackToBaseclass())   // newer
+  //if(regionSettingsOverride && groupSettingsOverride)   // new
+  //if(regionSettingsOverride)   // old
+  { 
+    rsSamplerEngine::processFrame(left, right); 
+    return; 
+  } 
+  // the old implementation should misbehave when there's and instrument- and group setting but no
+  // region setting -> test this
 
   // Accumulate output from the group players:
   rsFloat64x2 out = 0.0;
