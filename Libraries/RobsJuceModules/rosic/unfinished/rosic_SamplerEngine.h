@@ -192,6 +192,11 @@ public:
 
   int setInstrumentSetting(PlaybackSetting::Type type, float value);
 
+  void clearAllSfzSettings()
+  {
+    sfz.clearAllSettings();
+  }
+
 
 
 

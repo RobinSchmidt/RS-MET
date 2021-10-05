@@ -211,7 +211,8 @@ public:
 
 
     void clearSettings() { settings.clear(); }
-    // should this also set loKey/hiKey and loVel/hiVel to 0/127?
+    // should this also set loKey/hiKey and loVel/hiVel back to their default values of 0/127? 
+    // i actually think so...
 
 
     void setLoKey(uchar newKey) { loKey = newKey; }
@@ -498,6 +499,13 @@ public:
   rsReturnCode setGroupSetting(int gi, PlaybackSetting::Type type, float value);
 
   rsReturnCode setInstrumentSetting(PlaybackSetting::Type type, float value);
+
+
+  void clearAllRegionSettings();
+  void clearAllGroupSettings();
+  void clearAllInstrumentSettings();
+  void clearAllSettings();
+
 
 
   /** Clears the whole instrument definition. */

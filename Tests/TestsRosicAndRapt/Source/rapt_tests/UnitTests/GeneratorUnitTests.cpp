@@ -569,13 +569,41 @@ bool samplerEngine2UnitTest()
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
 
-
-
-  // change API then update all calls to
-  // RegionPlayer::setRegionToPlay, RegionPlayer::prepareToPlay, setupDspSettings
-
   // ToDo: remove the region setting - in this case, we should new see a combination of instrument 
   // and group setting:
+
+  // ToDo: test accumulation of pan setting:
+  se.setRegionSettingsOverride(true);                         // not required but anyway
+  se.setGroupSettingsOverride(true);                          // group settings override again
+  se.clearAllSfzSettings();                                   // remove all the amp settings
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);  // restore the rootkey setting
+  ok &= rc == RC::success;
+  float regionPan = 10.f;   // slightly right, pan range is -100...+100
+  float groupPan  = 20.f;
+  float instrPan  = 30.f;
+  se.setRegionSetting(0, 0, PST::Pan, regionPan);
+  se.setGroupSetting( 0,    PST::Pan, groupPan);
+  se.setInstrumentSetting(  PST::Pan, instrPan);
+
+  tgt = sin440;
+  // that's actually not what we should expect -> figure out what we should actually expect as 
+  // amplitudes for L/R - how should pan settings accumulate? it should be equivalent to having 
+  // 2 or 3 panners ins series
+
+  //ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, true); 
+  // is still supposed to fail bcs our target signal tgt is not yet correct
+  // left has amp 0.9, right has amp 1.1
+
+  se.setRegionSettingsOverride(false);
+  //ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, true); 
+  // left: 0.72, right: 1.32
+
+  se.setGroupSettingsOverride(false);
+  //ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, true); 
+  // left: 0.504, right: 1.716
+
+  // ToDo: test it also with constant power pan rule
+
 
 
 

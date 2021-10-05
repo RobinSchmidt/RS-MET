@@ -238,6 +238,34 @@ rsReturnCode rsSamplerData::setInstrumentSetting(PlaybackSetting::Type type, flo
   return rsReturnCode::success;
 }
 
+void rsSamplerData::clearAllRegionSettings()
+{
+  for(size_t gi = 0; gi < instrument.groups.size(); gi++)
+    for(size_t ri = 0; ri < instrument.groups[gi]->regions.size(); ri++)
+      instrument.groups[gi]->regions[ri]->clearSettings();
+}
+
+void rsSamplerData::clearAllGroupSettings()
+{
+  for(size_t gi = 0; gi < instrument.groups.size(); gi++)
+    instrument.groups[gi]->clearSettings();
+}
+
+void rsSamplerData::clearAllInstrumentSettings()
+{
+  instrument.clearSettings();
+  //instrument.settings.clear();
+}
+
+void rsSamplerData::clearAllSettings()
+{
+  clearAllRegionSettings();
+  clearAllGroupSettings();
+  clearAllInstrumentSettings();
+}
+// needs test
+
+
 std::string rsSamplerData::getAsSFZ() const
 {
   auto writeSettingsToString = [](const OrganizationLevel* lvl, std::string& str)

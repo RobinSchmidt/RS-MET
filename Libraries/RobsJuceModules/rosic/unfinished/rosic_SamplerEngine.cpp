@@ -851,7 +851,12 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   //  should accumulate and then again for the region settings with the flag depending on whether 
   //  group settings should accumulate
 
-  bool onTop = !overrideOldSetting; // maybe get rif and use overrideOldSetting directly
+  bool onTop = !overrideOldSetting; // maybe get rid and use overrideOldSetting directly
+
+  // ToDo: factor out the repetitive if(onTop)...into a local helper function 
+  // set(double& setting, double value, bool onTop, bool multiplicative = false)
+  // ...or maybe the multiplicative bool should be an int with values: 0: additive, 
+  // 1: multiplicative, 2: dunno yet, ...
 
 
   using PS = PlaybackSetting;
@@ -859,10 +864,8 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
 
   double tmp = stream->getSampleRate();
-  if(onTop) 
-    increment *= tmp/fs;
-  else 
-    increment  = tmp/fs;
+  if(onTop) increment *= tmp/fs;
+  else      increment  = tmp/fs;
 
   double rootKey = 69.0;
   double amp = 1.0;
@@ -920,10 +923,8 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   {
     t1 = (pan/200.0) + 0.5; // -100..+100 -> 0..1
     t2 = 1.0 - t1;
-    if(onTop) 
-      this->amp *= 2.0 * amp * rsFloat64x2(t2, t1);
-    else      
-      this->amp  = 2.0 * amp * rsFloat64x2(t2, t1);
+    if(onTop) this->amp *= 2.0 * amp * rsFloat64x2(t2, t1);
+    else      this->amp  = 2.0 * amp * rsFloat64x2(t2, t1);
   } break;
   case PS::PanRule::sinCos:
   {
