@@ -394,6 +394,7 @@ protected:
    // todo: later maybe have default values (false) for the settingsOnTop variables for 
     // convenience - but for implementing the signal-flow stuff, it makes sense to enforce the 
     // caller to apps a value
+    // change API to take group/regionSettingsAccumulate as parameters
 
     const Region* getRegionToPlay() const { return region; }
 
@@ -425,6 +426,7 @@ protected:
     /** Sets up the internal values for the playback settings (including DSP objects) according
     to the assigned region and resets all DSP objects. */
     void prepareToPlay(double sampleRate, bool groupSettingsOnTop, bool instrumentSettingsOnTop);
+    // change API to take group/regionSettingsAccumulate as parameters
  
     bool buildProcessingChain();
     void resetDspState();
@@ -432,6 +434,7 @@ protected:
     void setupDspSettings(const std::vector<PlaybackSetting>& settings, 
       double sampleRate, bool onTop);
     // see comment at prepareToPlay - maybe make onTop default to false
+    // change API: replace onTop with override
 
     const Region* region;                 //< The Region object that this object should play
     const AudioFileStream<float>* stream; //< Stream object to get the data from
@@ -685,10 +688,12 @@ protected:
   //
   // Flags to decide if the group- and/or instrument settings and/or modulations should be applied 
   // on top of the region settings/modulations. This is a feature not present in the sfz spec. 
-  bool groupSettingsOnTop         = false;
-  bool instrumentSettingsOnTop    = false;
-  bool groupModulationsOnTop      = false;
-  bool instrumentModulationsOnTop = false;
+  //bool groupSettingsOnTop         = false;
+  //bool instrumentSettingsOnTop    = false;
+  //bool groupModulationsOnTop      = false;
+  //bool instrumentModulationsOnTop = false;
+  bool groupSettingsOverride  = true;
+  bool regionSettingsOverride = true;
   // todo:
   // -do not distinguish between "settings" and "modulations" - the distinction is too fuzzy for a 
   //  meaningful user concept
@@ -749,7 +754,8 @@ public:
   also often convenient. 
   This doesn't do anything yet...this feature is not yet implemented - for the time being, it's 
   just the infrastructure. */
-  void setGroupSettingsOnTop(bool onTop) { groupSettingsOnTop = onTop; }
+  //void setGroupSettingsOnTop(bool onTop) { groupSettingsOnTop = onTop; }
+  // deprecated
 
   /** Decides if the group modulations should be applied on top of the region modulations (true) or
   if their settings should just act as fallback values for when a region doesn't define them 
@@ -763,13 +769,23 @@ public:
   LFOs, sequencers, etc. ...maybe the modulators should have 3 modes: override/fallback, 
   accumulate/duplicate, accumulate...actually, it would be useful, if this could be set for each 
   modulator individually. */
-  void setGroupModulationsOnTop(bool onTop) { groupModulationsOnTop = onTop; }
+  //void setGroupModulationsOnTop(bool onTop) { groupModulationsOnTop = onTop; }
+  // deprecated
 
   /** Like setGroupSettingsOnTop, but for the instrument settings. */
-  void setInstrumentSettingsOnTop(bool onTop) { instrumentSettingsOnTop = onTop; }
+  //void setInstrumentSettingsOnTop(bool onTop) { instrumentSettingsOnTop = onTop; }
+  // deprecated
 
   /** Like setGroupModulationsOnTop, but for the instrument modulations. */
-  void setInstrumentModulationsOnTop(bool onTop) { instrumentModulationsOnTop = onTop; }
+  //void setInstrumentModulationsOnTop(bool onTop) { instrumentModulationsOnTop = onTop; }
+  // deprecated
+
+
+
+  // replacements for the deprecated "OnTop" functions above:
+  void setGroupSettingsOverride(bool shouldOverride) { groupSettingsOverride = shouldOverride; }
+  void setRegionSettingsOverride(bool shouldOverride) { regionSettingsOverride = shouldOverride; }
+
 
 
 

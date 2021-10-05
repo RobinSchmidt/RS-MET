@@ -541,31 +541,36 @@ bool samplerEngine2UnitTest()
   ok &= se.getNumActiveLayers() == 0;  // rename to getNumActiveRegions or getNumPlayingRegions
   ok &= se.getNumActiveGroupPlayers() == 0;
 
-  // Set up the engine such that the group settings are applied on top of the region settings:
-  se.setGroupSettingsOnTop(true);
+  // Set up the engine such that the region settings do not override the group settings but instead
+  // region settings and group settings are combined:
+  se.setRegionSettingsOverride(false);
   tgt = groupAmp*regionAmp*sin440;
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
 
-  // Now set it up such that also the instrument settings are applied on top. Now all 3 settings 
-  // should accumulate:
-  se.setInstrumentSettingsOnTop(true);
+  // Set up the engine such that the group settings do not override the instrument settings but 
+  // instead group settings and instrument settings are combined. The region settings are combined
+  // into that, too (from the setting before):
+  se.setGroupSettingsOverride(false);
   tgt = instrAmp*groupAmp*regionAmp*sin440;
   float tol = 1.e-7f;  // why can't we use 0 tolerance?
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, false);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
 
-  // Now set the groupSettingsOnTop flag to false, leaving the instrumentSettingsOnTop flag true.
-  // Behavior: (1) the group-settings are accumulated with the instrument settings, (2) this 
-  // accumulant is overwritten by the region settings. So, overall, we expect that only the 
-  // regionAmp is effective:
-  se.setGroupSettingsOnTop(false); // todo: rename to setGroupSettingsOverride with revered semantics
+  // Now set the regionSettingsOverride back to true. That renders the question whether or not 
+  // group settings override instrument settings irrelevant in cases when a region setting is 
+  // available (which is the case here). The region setting will override the combined 
+  // instrument + group setting:
+  se.setRegionSettingsOverride(true);
   tgt = regionAmp*sin440;
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 0.0, false);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
+
+  // ToDo: remove the region setting - in this case, we should new see a combination of instrument 
+  // and group setting:
 
 
 

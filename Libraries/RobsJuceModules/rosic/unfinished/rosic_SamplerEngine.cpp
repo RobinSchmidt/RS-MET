@@ -129,7 +129,7 @@ int rsSamplerEngine::removeRegion(int gi, int ri)
     regionsForKey[k].removeRegion(r);
   for(size_t i = 0; i < activePlayers.size(); i++)
     if(activePlayers[i]->getRegionToPlay() == r)
-      activePlayers[i]->setRegionToPlay(nullptr, 0.0, groupSettingsOnTop, instrumentSettingsOnTop);
+      activePlayers[i]->setRegionToPlay(nullptr, 0.0, !regionSettingsOverride, !groupSettingsOverride);
       // the idlePlayers are supposed to have a nullptr anyway
 
   // Remove region from the rsSamplerData object
@@ -462,7 +462,7 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
     return nullptr;  // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = RAPT::rsGetAndRemoveLast(idlePlayers);
   rp->setKey(key);
-  rp->setRegionToPlay(r, sampleRate, groupSettingsOnTop, instrumentSettingsOnTop);
+  rp->setRegionToPlay(r, sampleRate, !regionSettingsOverride, !groupSettingsOverride);
   activePlayers.push_back(rp);
   return rp;
 }
@@ -488,7 +488,7 @@ int rsSamplerEngine::stopRegionPlayer(int i)
     return rsReturnCode::invalidIndex; }
   RegionPlayer* p = activePlayers[i];
   RAPT::rsRemove(activePlayers, i);
-  p->setRegionToPlay(nullptr, 0.0, groupSettingsOnTop, instrumentSettingsOnTop); 
+  p->setRegionToPlay(nullptr, 0.0, !regionSettingsOverride, !groupSettingsOverride); 
     // don't keep the pointer to avoid it dangling when the region is removed
   idlePlayers.push_back(p);       
   return rsReturnCode::success;
@@ -967,7 +967,7 @@ void rsSamplerEngine2::setMaxNumLayers(int newMax)
 rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, uchar vel)
 {
   PlayStatusChange psc = rsSamplerEngine::handleNoteOn(key, vel);
-  if(groupSettingsOnTop)       // Don't update the group players, if they are not used anyway
+  if(!regionSettingsOverride)     // Don't update the group players, if they are not used anyway
     updateGroupPlayers(psc);
   return psc;
 }
@@ -975,7 +975,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, ucha
 rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOff(uchar key, uchar vel)
 {
   PlayStatusChange psc = rsSamplerEngine::handleNoteOff(key, vel);
-  if(groupSettingsOnTop)
+  if(!regionSettingsOverride)
     updateGroupPlayers(psc);
   return psc;
 }
@@ -1006,9 +1006,9 @@ int rsSamplerEngine2::stopRegionPlayer(int activeIndex)
 void rsSamplerEngine2::processFrame(double* left, double* right)
 {
   // Fall back to baseclass implementation, if appropriate:
-  if(!groupSettingsOnTop) { 
+  if(regionSettingsOverride) { 
     rsSamplerEngine::processFrame(left, right); return; } 
-  // todo: maybe add || !instrumentSettingsOnTop? does that make sense? ...maybe later when DSP 
+  // todo: maybe add || groupSettingsOverride? does that make sense? ...maybe later when DSP 
   // process are to be applied, too
 
   // Accumulate output from the group players:
