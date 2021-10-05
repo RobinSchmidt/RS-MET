@@ -652,18 +652,15 @@ bool samplerEngine2UnitTest()
   tgt = sin440;
   rsApplyDelay(tgt, regionDelay);
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
-
-  ok &= se.getNumActiveLayers() == 1;       // works
-  ok &= se.getNumActiveGroupPlayers() == 1; // fails
-
-
+  ok &= se.getNumActiveLayers() == 1;        // it's still playing due to the delay
+  ok &= se.getNumActiveGroupPlayers() == 0;  // no group player is/was used due to settings
 
   // Now we want to see region and group delay combined:
   se.setRegionSettingsOverride(false);
   tgt = sin440;
   rsApplyDelay(tgt, regionDelay);
   rsApplyDelay(tgt, groupDelay);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
 
   // Now we want to see region, group and instrument delay combined:
   se.setGroupSettingsOverride(false);

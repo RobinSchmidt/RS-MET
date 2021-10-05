@@ -784,8 +784,17 @@ public:
 
 
   // replacements for the deprecated "OnTop" functions above:
-  void setGroupSettingsOverride(bool shouldOverride) { groupSettingsOverride = shouldOverride; }
-  void setRegionSettingsOverride(bool shouldOverride) { regionSettingsOverride = shouldOverride; }
+  void setGroupSettingsOverride(bool shouldOverride) 
+  { 
+    groupSettingsOverride = shouldOverride;
+    reset();  // changing this setting is disruptive - we need a reset
+  }
+
+  void setRegionSettingsOverride(bool shouldOverride) 
+  { 
+    regionSettingsOverride = shouldOverride;
+    reset();
+  }
 
 
 
