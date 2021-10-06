@@ -736,24 +736,41 @@ bool samplerEngine2UnitTest()
   // The error of the pitch estimation is around 2 cents...that's quite a large error actually.
   // Try to improve this at some point!I think, the algo should give better results!
 
-  // Test override mode. We expect to see only the region transpose and tune:
+  // Test override mode. We expect to see only the region transpose and tune. That's 
+  // 69 + 1 + 10/100 = 70.1
   se.setGroupSettingsOverride(true);
   se.setRegionSettingsOverride(true);
   getSamplerNote(&se, 69.f, 127.f, outL, outR);
   //rsPlotVectors(outL, outR);
   ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 70.1f, tol);
 
+  // Now we want to see region and group transpose combined. That's
+  // 69 + 1 + 2 + 10/100 + 20/100 = 72.3
+  se.setRegionSettingsOverride(false);
+  getSamplerNote(&se, 69.f, 127.f, outL, outR);
+  //rsPlotVectors(outL, outR);
+  ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 72.3f, tol);
+  // that works! ...i'm actually surprised that it does -> figure out why
+
+  // Now we want to see region, group and instrument transpose combined. That's
+  // 69 + 1 + 2 + 3 + 10/100 + 20/100 + 30/100 = 75.6
+  se.setGroupSettingsOverride(false);
+  getSamplerNote(&se, 69.f, 127.f, outL, outR);
+  ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 75.6f, tol);
+  // ok - works, too
+
+  // ToDo: check what happens when region setting and/or group setting and/or instrument setting
+  // are removed and if it behaves as expected. we may need functionality to delete particular 
+  // opcodes like se.removeRegionSetting(0, 0, PST::Tune) etc.
 
   int dummy = 0;
   
   // -For PitchKeyCenter, accumulation makes actually no sense. So maybe, this parameter should 
-  //  always work in override mode.
-  // -For the test, we'll probably need a high tolerance in order to be able to tolerate the 
-  //  interpolation errors. Could we perhaps make use of fundamental frequency estimation algorithm
-  //  on the output instead of comparing signals directly?
-  // -Maybe a triangle wave would be a better test signal to test transposition because for it,
-  //  linear interpolation will actually create exact results, provided that the wave contains 
-  //  samples at its corners. But this does not hold anymore when the wave is resampled twice.
+  //  always work in override mode. Check what happens, when the instrument and or group also
+  //  defines a pitch keycenter. We currently wouldn't notice any problems with that because the
+  //  keycenter is only defined for the region
+
+
 
 
   // Maybe we should also have a detuneHz opcode -> check sfz spec, if such a thing exists 
