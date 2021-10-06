@@ -891,9 +891,12 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   // caller scales it by rsPitchOffsetToFreqFactor / fs
 
 
-  double amp = 1.0;
-  double pan = 0.0;
-  int panRule = PlaybackSetting::PanRule::linear;
+  double amp        = 1.0;  // raw factor, computed "volume" opcode which is given in dB
+  double pan        = 0.0;  // -100...+100
+  double tuneCoarse = 0.0;  // in semitones
+  double tuneFine   = 0.0;  // in cents
+
+  int    panRule    = PlaybackSetting::PanRule::linear;
 
   // Loop through the settings of the region and for each setting that is present, change the 
   // value from its default to the stored value:
@@ -911,7 +914,9 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     case TP::PanRule: { panRule  = (int)val;             } break;
 
     // Pitch settings:
-    case TP::PitchKeyCenter: { rootKey = val; } break;
+    case TP::PitchKeyCenter: { rootKey    = val; } break;
+    case TP::Transpose:      { tuneCoarse = val; } break;
+    case TP::Tune:           { tuneFine   = val; } break;
 
     //
     case TP::Delay:
@@ -929,7 +934,9 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     }
   }
 
+  double tune = tuneCoarse + 0.01 * tuneFine;
   double pitchOffset = double(key) - rootKey;
+  pitchOffset += tune;
   increment *= pow(2.0, pitchOffset / 12.0);
   //increment *= rsPitchOffsetToFreqFactor(pitchOffset); // faster, less precise - but probably
   // precise enough, when we switch to int+float for representing increments

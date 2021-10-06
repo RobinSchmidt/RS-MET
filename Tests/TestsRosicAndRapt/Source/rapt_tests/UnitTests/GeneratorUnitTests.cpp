@@ -741,13 +741,8 @@ bool samplerEngine2UnitTest()
   se.setRegionSettingsOverride(true);
   getSamplerNote(&se, 69.f, 127.f, outL, outR);
   //rsPlotVectors(outL, outR);
+  ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 70.1f, tol);
 
-  ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 69.0f, tol);
-  // just to test the rsEstimateMidiPitch strategy before having implemented transpose and tune
-
-  // ...what we later need to do is this:
-  //ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 70.1f, tol);
-  // but this still fails because we do not yet have implemented handling of transpose and detune
 
   int dummy = 0;
   
