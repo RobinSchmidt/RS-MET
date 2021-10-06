@@ -13,11 +13,14 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Type type)
 
   case TP::Volume:         return 0.f;
   case TP::Pan:            return 0.f;
-  case TP::PitchKeyCenter: return 60.f;  // verify!
+
+  case TP::PitchKeyCenter: return 60.f;
+  case TP::Transpose:      return  0.f;
+  case TP::Tune:           return  0.f;
   }
 
   RAPT::rsError("Unknown type of PlaybackSetting, i.e. unknown sfz opcode.");
-  return 0.f;  // maybe we should return NaN?
+  return 0.f;  // maybe we should return NaN? but no - that would be evil!
 }
 
 void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
@@ -480,7 +483,11 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   {
   case PST::Volume:         { s += "volume="          + to_string(val) + "\n";  } break;
   case PST::Pan:            { s += "pan="             + to_string(val) + "\n";  } break;
+
   case PST::PitchKeyCenter: { s += "pitch_keycenter=" + to_string(val) + "\n";  } break;
+  case PST::Transpose:      { s += "transpose="       + to_string(val) + "\n";  } break;
+  case PST::Tune:           { s += "tune="            + to_string(val) + "\n";  } break;
+
     // more to come....
   }
 
@@ -491,6 +498,7 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   //  ...well, i think, it's not suitable for int params, but we may convert to int. I think, a 
   //  fixed number (maybe 8 or 9..whatever number ensures lossless roundtrips) of total decimal 
   //  digits is better
+
 }
 
 rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
@@ -503,20 +511,25 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
   // todo: if applicable, exctract the index from the opcode and set it up in the setting by 
   // passing it as 3rd parameter to the constructor
 
-  if(opcode == "lokey")          return PS(PST::LoKey,         val);
-  if(opcode == "hikey")          return PS(PST::HiKey,         val);
-  if(opcode == "lovel")          return PS(PST::LoVel,         val);
-  if(opcode == "hivel")          return PS(PST::HiVel,         val);
+  // Key range:
+  if(opcode == "lokey")           return PS(PST::LoKey,          val);
+  if(opcode == "hikey")           return PS(PST::HiKey,          val);
+  if(opcode == "lovel")           return PS(PST::LoVel,          val);
+  if(opcode == "hivel")           return PS(PST::HiVel,          val);
 
+  // Amplitude:
   if(opcode == "volume")          return PS(PST::Volume,         val);
   if(opcode == "pan")             return PS(PST::Pan,            val);
 
+  // Pitch:
   if(opcode == "pitch_keycenter") return PS(PST::PitchKeyCenter, val);
+  if(opcode == "transpose")       return PS(PST::Transpose,      val);
+  if(opcode == "tune")            return PS(PST::Tune,           val);
+
   // ...more to come...
 
   return PS(PST::Unknown, 0.f);  // fallback value
 }
-// todo: implement writeToSFZ, loadSFZ (taking filenames as parameters)
 
 void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
 {
@@ -559,6 +572,16 @@ ToDo:
  instrument but with different formatting, render output and compare
 -maybe have an inquiry function that takes an opcode and returns the standard in which this 
  opcode is defined (sfz, sfz2, aria, rs, ...)
+
+-In the sfz-spec, it says that the pitch_keycenter opcode can also be specified as e.g. c#4
+ -> support that syntax in the sfz parser!
+
+Refactor:
+-Maybe make a struct that contains the integer enum index for the opcode (e.g. PST::Pan), the 
+ sfz opcode string (e.g. "pan"), the default value (e.g. 0.f). That avoids having to change 
+ 3 places (PlaybackSetting::getDefaultValue, writeSettingToString, getSettingFromString) when 
+ adding a new opcode. It will most likely also reduce the overall amount of code. The code in these
+ functions is very reptitive anyway.
 
 
 

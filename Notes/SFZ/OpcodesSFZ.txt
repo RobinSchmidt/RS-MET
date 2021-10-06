@@ -41,6 +41,8 @@ on_hiccN       -1       0        127        -1 encodes unassigned
 Pitch
 pitch_keycenter   60       -127     127     midi note number, 60 is C4 (c4 can be used alternatively)
 pitch_keytrack    100      -1200    1200    cents per key-inc
+transpose         0        -127     127     semitones?
+tune              0        -100     100     cents
 
 
 

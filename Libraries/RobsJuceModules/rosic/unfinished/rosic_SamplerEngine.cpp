@@ -787,7 +787,7 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay(
 
   resetDspState();        // Needs to be done after building the chain
   resetDspSettings();     // Reset all DSP settings to default values
-  setupDspSettingsFor(region, groupSettingsOverride, regionSettingsOverride, fs);
+  setupDspSettingsFor(region, fs, groupSettingsOverride, regionSettingsOverride);
   // todo: move fs before the override parameters for consistency
 
   // old:
@@ -841,7 +841,7 @@ void rsSamplerEngine::RegionPlayer::resetDspSettings()
 }
 
 void rsSamplerEngine::RegionPlayer::setupDspSettingsFor(
-  const Region* r, bool groupSettingsOverride, bool regionSettingsOverride, double fs)
+  const Region* r, double fs, bool groupSettingsOverride, bool regionSettingsOverride)
 {
   // To set up the settings, we call setupDspSettings 3 times to:
   // (1) set up the general instrument-wide settings

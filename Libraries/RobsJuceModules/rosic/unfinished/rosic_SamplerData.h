@@ -90,8 +90,7 @@ public:
       // sfz has such a thing
 
       // Pitch:
-      PitchKeyCenter,
-      //DetuneCoarse, DetuneFine
+      PitchKeyCenter, Transpose, Tune,
 
       // Amplitude:
       Volume, Pan, PanRule,
@@ -564,13 +563,18 @@ public:
 
 
 
-
-
+  /** Writes the data represented by this object into an .sfz file with given path. Warning: This
+  function has no safeguards against overwriting an existing file - it will just do it! */
   bool saveToSFZ(const char* path) const;
   // todo: return a return-code, including fileWriteError
 
+  /** Sets up this object according to a given .sfz file. Returns true when the file could be 
+  found. ToDo: inform also about parsing success vs errors */
   bool loadFromSFZ(const char* path);
-  // todo: return a return-code, including sfzFileNotFound, sampleFileNotFound
+  // todo: 
+  // -it currently returns true when the file is found, even when it can't be parsed - that's not 
+  //  good -> return a return-code, including sfzFileNotFound, sampleFileNotFound
+  //
 
 
 
