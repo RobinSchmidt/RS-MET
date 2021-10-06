@@ -507,6 +507,8 @@ public:
 
   rsReturnCode removeRegionSetting(int gi, int ri, PlaybackSetting::Type type);
 
+  rsReturnCode removeGroupSetting(int gi, PlaybackSetting::Type type);
+
 
   void clearAllRegionSettings();
   void clearAllGroupSettings();

@@ -249,9 +249,20 @@ rsReturnCode rsSamplerData::setGroupSetting(int gi, PlaybackSetting::Type type, 
   // Preliminary. We need to figure out, if that setting already exists and if so, just change 
   // its value instead of pushing another value for the same parameter
 
-
   return rsReturnCode::success;
 }
+
+rsReturnCode rsSamplerData::removeGroupSetting(int gi, PlaybackSetting::Type type)
+{
+  if(!isGroupIndexValid(gi)) {
+    RAPT::rsError("Invalid group index");
+    return rsReturnCode::invalidIndex; }
+  bool wasRemoved = instrument.groups[gi]->removeSetting(type);
+  if(wasRemoved) return rsReturnCode::success;
+  else           return rsReturnCode::nothingToDo;
+}
+
+
 
 rsReturnCode rsSamplerData::setInstrumentSetting(PlaybackSetting::Type type, float value)
 {

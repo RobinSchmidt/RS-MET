@@ -762,8 +762,24 @@ bool samplerEngine2UnitTest()
   // ToDo: check what happens when region setting and/or group setting and/or instrument setting
   // are removed and if it behaves as expected. we may need functionality to delete particular 
   // opcodes like se.removeRegionSetting(0, 0, PST::Tune) etc.
+
+  // Remove the transpose setting for the region. We expect to see a combination of transpose
+  // settings of instrument and group and a combination of the tune settings of all 3, so the pitch
+  // should be: 69 + 2 + 3 + 0.1 + 0.2 + 0.3 = 74.6
   ok &= se.removeRegionSetting(0, 0, PST::Transpose) == RC::success;
-  ok &= se.removeRegionSetting(0, 0, PST::Transpose) == RC::nothingToDo; 
+  ok &= se.removeRegionSetting(0, 0, PST::Transpose) == RC::nothingToDo;
+  //se.reset();  // what happens if we don't reset? seems to make no difference
+  getSamplerNote(&se, 69.f, 127.f, outL, outR);
+  ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 74.6f, tol);
+
+  // Remove tune setting from group. p = 69 + 2 + 3 + 0.1 + 0.3 = 74.4
+  ok &= se.removeGroupSetting(0, PST::Tune) == RC::success;
+  ok &= se.removeGroupSetting(0, PST::Tune) == RC::nothingToDo;
+  getSamplerNote(&se, 69.f, 127.f, outL, outR);
+  //rsPlotVector(outL);
+  ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 74.4f, tol);
+
+
 
   // we are in accumulate mode for both, so after that removal, we should see a combinations of
   // instrument and group transpose...but still see the region's tune

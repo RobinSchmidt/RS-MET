@@ -198,6 +198,11 @@ public:
     return sfz.removeRegionSetting(groupIndex, regionIdex, type); 
   }
 
+  rsReturnCode removeGroupSetting(int groupIndex, PlaybackSetting::Type type)
+  { 
+    return sfz.removeGroupSetting(groupIndex, type); 
+  }
+
 
   void clearAllSfzSettings()
   {
