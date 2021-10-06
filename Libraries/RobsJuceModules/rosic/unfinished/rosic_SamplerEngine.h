@@ -192,6 +192,13 @@ public:
 
   int setInstrumentSetting(PlaybackSetting::Type type, float value);
 
+
+  rsReturnCode removeRegionSetting(int groupIndex, int regionIdex, PlaybackSetting::Type type)
+  { 
+    return sfz.removeRegionSetting(groupIndex, regionIdex, type); 
+  }
+
+
   void clearAllSfzSettings()
   {
     sfz.clearAllSettings();

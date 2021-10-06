@@ -209,6 +209,11 @@ public:
     // setting of a particular kind in our list
     // todo: deprecate this in favor of setSetting - this should treat loKey, etc specially
 
+    /** Removes all the settings of given type. Typically, there should be at most one of any given
+    type, but this may not be the case for poorly written sfz files. Returns true, if there was at
+    least one item actually removed, i.e. it returns false only if no such setting was found in the 
+    array. */
+    bool removeSetting(PlaybackSetting::Type type);
 
     void clearSettings() { settings.clear(); }
     // should this also set loKey/hiKey and loVel/hiVel back to their default values of 0/127? 
@@ -499,6 +504,8 @@ public:
   rsReturnCode setGroupSetting(int gi, PlaybackSetting::Type type, float value);
 
   rsReturnCode setInstrumentSetting(PlaybackSetting::Type type, float value);
+
+  rsReturnCode removeRegionSetting(int gi, int ri, PlaybackSetting::Type type);
 
 
   void clearAllRegionSettings();

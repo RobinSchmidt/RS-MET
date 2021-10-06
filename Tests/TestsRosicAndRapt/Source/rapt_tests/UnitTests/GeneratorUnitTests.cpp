@@ -762,6 +762,11 @@ bool samplerEngine2UnitTest()
   // ToDo: check what happens when region setting and/or group setting and/or instrument setting
   // are removed and if it behaves as expected. we may need functionality to delete particular 
   // opcodes like se.removeRegionSetting(0, 0, PST::Tune) etc.
+  ok &= se.removeRegionSetting(0, 0, PST::Transpose) == RC::success;
+  ok &= se.removeRegionSetting(0, 0, PST::Transpose) == RC::nothingToDo; 
+
+  // we are in accumulate mode for both, so after that removal, we should see a combinations of
+  // instrument and group transpose...but still see the region's tune
 
   int dummy = 0;
   

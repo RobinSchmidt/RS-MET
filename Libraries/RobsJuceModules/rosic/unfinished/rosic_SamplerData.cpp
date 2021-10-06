@@ -44,6 +44,17 @@ void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
     settings.push_back(s);
 }
 
+bool rsSamplerData::OrganizationLevel::removeSetting(PlaybackSetting::Type type)
+{
+  bool wasRemoved = false;
+  for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
+    if(settings[i].getType() == type) {
+      RAPT::rsRemove(settings, i);
+      wasRemoved = true;  }}
+  return wasRemoved;
+  // We can't use size_t for i because the -1 would create an access violation when size() = 0
+}
+
 void rsSamplerData::OrganizationLevel::copyDataFrom(const OrganizationLevel* lvl)
 {
   samplePath = lvl->samplePath;
@@ -215,8 +226,17 @@ rsReturnCode rsSamplerData::setRegionSetting(int gi, int ri, PlaybackSetting::Ty
   // its value instead of pushing another value for the same parameter. Implement it in way so we 
   // can call it here as: settings->set(PlaybackSetting::Type type, float value)
 
-
   return rsReturnCode::success;
+}
+
+rsReturnCode rsSamplerData::removeRegionSetting(int gi, int ri, PlaybackSetting::Type type)
+{
+  if(!isIndexPairValid(gi, ri)) {
+    RAPT::rsError("Invalid group- and/or region index");
+    return rsReturnCode::invalidIndex; }
+  bool wasRemoved = instrument.groups[gi]->regions[ri]->removeSetting(type);
+  if(wasRemoved) return rsReturnCode::success;
+  else           return rsReturnCode::nothingToDo;
 }
 
 rsReturnCode rsSamplerData::setGroupSetting(int gi, PlaybackSetting::Type type, float value)
