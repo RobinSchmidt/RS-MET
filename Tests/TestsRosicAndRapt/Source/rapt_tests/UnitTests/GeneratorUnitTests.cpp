@@ -685,6 +685,23 @@ bool samplerEngine2UnitTest()
   // detuneHz opcode -> check sfz spec, if such a thing exists
 
 
+  // ...wait...the code for the accumulation of parameters will not work as desired because some
+  // user parameters are themselves accumulative. Take PitchKeyCenter, DetuneCoarse, DetuneFine: 
+  // all accumulate into the increment. Check what happens in the different when a group defines 
+  // coarse and fine and the region defines only one of them? or vice versa. I think, we cannot 
+  // just accumulate all values into the increment as we currently do. If we are in override mode 
+  // and the group has already baked both of its detunes into the increment, we won't get them out
+  // again with the current code. But that's what we would need. Maybe we need a temporary 
+  // data-structure to hold the accumulated or overriden parameters seperately. Test it with the 
+  // following settings: 
+  //   Instr:  coarse: 1 semitone,  fine: 10 cents
+  //   Group:  coarse: 2 semitones, fine: 20 cents
+  //   Region: coarse: 4 semitones, fine: 40 cents
+  // 
+
+
+  // The same problem may arise when we want to support the stereo-width opcode because it 
+  // interferes with Pan
 
 
 

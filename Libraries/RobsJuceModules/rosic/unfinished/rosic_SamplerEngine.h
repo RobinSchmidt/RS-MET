@@ -436,6 +436,8 @@ protected:
     bool buildProcessingChain();
     void resetDspState();
     void resetDspSettings();
+    void setupDspSettingsFor(const Region* r, bool groupSettingsOverride, 
+      bool regionSettingsOverride, double sampleRate);
     void setupDspSettings(const std::vector<PlaybackSetting>& settings, 
       double sampleRate, bool overrideOldSetting);
     // see comment at prepareToPlay - maybe make onTop default to false

@@ -785,15 +785,15 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay(
     // the required additional allocation of more is not fast enough.
   }
 
-  // To set up the settings, we call setupDspSettings 3 times to:
-  // (1) set up the general instrument-wide settings
-  // (2) set up group specific settings (this may override instrument settings)
-  // (3) set up region specific settings (this may override group and/or instrument settings)
   resetDspState();        // Needs to be done after building the chain
   resetDspSettings();     // Reset all DSP settings to default values
-  setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, true);
-  setupDspSettings(region->getGroup()->getSettings(), fs, groupSettingsOverride);
-  setupDspSettings(region->getSettings(), fs, regionSettingsOverride);
+  setupDspSettingsFor(region, groupSettingsOverride, regionSettingsOverride, fs);
+  // todo: move fs before the override parameters for consistency
+
+  // old:
+  //setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, true);
+  //setupDspSettings(region->getGroup()->getSettings(), fs, groupSettingsOverride);
+  //setupDspSettings(region->getSettings(), fs, regionSettingsOverride);
 
   // return rsSamplerEngine::rsReturnCode::success;
 }
@@ -840,6 +840,18 @@ void rsSamplerEngine::RegionPlayer::resetDspSettings()
   // reset all processors and modulators
 }
 
+void rsSamplerEngine::RegionPlayer::setupDspSettingsFor(
+  const Region* r, bool groupSettingsOverride, bool regionSettingsOverride, double fs)
+{
+  // To set up the settings, we call setupDspSettings 3 times to:
+  // (1) set up the general instrument-wide settings
+  // (2) set up group specific settings (this may override instrument settings)
+  // (3) set up region specific settings (this may override group and/or instrument settings)
+  setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, true);
+  setupDspSettings(region->getGroup()->getSettings(), fs, groupSettingsOverride);
+  setupDspSettings(region->getSettings(), fs, regionSettingsOverride);
+}
+
 void rsSamplerEngine::RegionPlayer::setupDspSettings(
   const std::vector<PlaybackSetting>& settings, double fs, bool overrideOldSetting)
 {
@@ -873,6 +885,12 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   // do the triple-override-accumulate call there and finally divide inc by fs there
 
   double rootKey = 69.0;
+  // i think, the caller setupDspSettingsFor should handle that - the PitchKeyCenter never 
+  // accumulates but nevertheless, we need to accumulate some other things into inc, so it may be 
+  // best to set/accumulate inc in seconds here and after we have the inclrement in seconds, the
+  // caller scales it by rsPitchOffsetToFreqFactor / fs
+
+
   double amp = 1.0;
   double pan = 0.0;
   int panRule = PlaybackSetting::PanRule::linear;

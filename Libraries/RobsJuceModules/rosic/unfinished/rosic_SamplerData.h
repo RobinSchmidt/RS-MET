@@ -91,6 +91,7 @@ public:
 
       // Pitch:
       PitchKeyCenter,
+      //DetuneCoarse, DetuneFine
 
       // Amplitude:
       Volume, Pan, PanRule,
