@@ -67,6 +67,20 @@ bool samplerDataUnitTest()
   return ok;
 }
 
+/** Fills the outL, outR arrays with the output of the given sampler engine for the given note. */
+void getSamplerNote(rosic::rsSamplerEngine* se, float key, float vel,
+  std::vector<float>& outL, std::vector<float>& outR)
+{
+  rsAssert(outL.size() == outR.size());
+  using Ev   = rosic::rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
+  se->handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
+  for(int n = 0; n < (int) outL.size(); n++)
+    se->processFrame(&outL[n], &outR[n]);
+}
+// should we clear the outL/R arrays first? maybe not, if we want instruments to accumuluate 
+// their outputs in ToolChain
+
 bool testSamplerNote(rosic::rsSamplerEngine* se, float key, float vel, 
   const std::vector<float>& targetL, const std::vector<float>& targetR, 
   float tol = 0.f, bool plot = false)
@@ -90,6 +104,8 @@ bool testSamplerNote(rosic::rsSamplerEngine* se, float key, float vel,
 };
 // maybe have a bool resetBefore that optionally resets the engine before playing...but maybe it's
 // better when the caller does the reset directly, if desired - it's not much longer but clearer
+// factor out a getSamplerOutput(rosic::rsSamplerEngine* se, float key, float vel, 
+// const std::vector<float>& targetL, const std::vector<float>& targetR, bool plot) function
 
 bool samplerEngineUnitTest1()
 {
@@ -528,12 +544,13 @@ bool samplerEngine2UnitTest()
   using EvTp = Ev::Type;
 
   // Create a sine wave as example sample:
-  float fs = 44100;  // sample rate
-  float f  = 440.0;  // frequency of wave
-  int   N  = 500;    // length of (co)sinewave sample
-  VecF sin440(N);    // sine wave
-  VecF tgt;          // target output in tests
-  VecF tgtL, tgtR;   // ...for when we need different left and right target signal
+  float fs = 44100;      // sample rate
+  float f  = 440.0;      // frequency of wave
+  int   N  = 500;        // length of (co)sinewave sample
+  VecF sin440(N);        // sine wave
+  VecF tgt;              // target output in tests
+  VecF tgtL, tgtR;       // ...for when we need different left and right target signal
+  VecF outL(N), outR(N); // for the output signals
   for(int n = 0; n < N; n++)
     sin440[n] = sinf((float)(2*PI*f/fs) * n);
 
@@ -677,12 +694,43 @@ bool samplerEngine2UnitTest()
 
   //---------------------------------------------------------------------------
   // Test pitch accumulation 
+
+  // Set up the transposition and tune opcodes (for coarse and fine detune):
+  float regionTrans = 1;   // "transpose" opcode (in semitones, i think)
+  float groupTrans  = 2;
+  float instrTrans  = 3;
+  float regionTune  = 10;  // "tune" opcode (in cents)
+  float groupTune   = 20;
+  float instrTune   = 30;
+  se.clearAllSfzSettings();                              // remove all the amp settings
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);  // restore the rootkey setting
+  se.setRegionSetting(0, 0, PST::Transpose, regionTrans);
+  se.setGroupSetting( 0,    PST::Transpose, groupTrans);
+  se.setInstrumentSetting(  PST::Transpose, instrTrans);
+  se.setRegionSetting(0, 0, PST::Tune,      regionTune);
+  se.setGroupSetting( 0,    PST::Tune,      groupTune);
+  se.setInstrumentSetting(  PST::Tune,      instrTune);
+
+  // Test override mode. We expect to see only the region transpose and tune:
+  se.setGroupSettingsOverride(true);
+  se.setRegionSettingsOverride(true);
+  getSamplerNote(&se, 69.f, 127.f, outL, outR);
+  rsPlotVectors(outL, outR);
+  //ok &= rsIsCloseTo(estimateMidiPitch(outL), 70.1f, 0.0001f);
+  int dummy = 0;
   
-  // ...hmmm...we currently only have the PitchKeyCenter opcode available to manipulate the pitch
-  // and for this, accumulation makes actually no sense - probably, this parameter should always 
-  // work in override mode. todo: implement the detune opcode - this does make sense for 
-  // accumulation and is the cleaner way to implement detuning anyway. maybe we should also have a
-  // detuneHz opcode -> check sfz spec, if such a thing exists
+  // -For PitchKeyCenter, accumulation makes actually no sense. So maybe, this parameter should 
+  //  always work in override mode.
+  // -For the test, we'll probably need a high tolerance in order to be able to tolerate the 
+  //  interpolation errors. Could we perhaps make use of fundamental frequency estimation algorithm
+  //  on the output instead of comparing signals directly?
+  // -Maybe a triangle wave would be a better test signal to test transposition because for it,
+  //  linear interpolation will actually create exact results, provided that the wave contains 
+  //  samples at its corners. But this does not hold anymore when the wave is resampled twice.
+
+
+  // Maybe we should also have a detuneHz opcode -> check sfz spec, if such a thing exists 
+  // (-> nope, not in sfz 1.0 at least)
 
 
   // ...wait...the code for the accumulation of parameters will not work as desired because some
