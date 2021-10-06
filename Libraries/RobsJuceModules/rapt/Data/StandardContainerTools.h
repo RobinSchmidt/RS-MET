@@ -78,6 +78,8 @@ std::vector<TDst> rsConvert(const std::vector<TSrc>& x, TDst dummy)
   RAPT::rsArrayTools::convert(&x[0], &y[0], (int) x.size());
   return y;
 }
+// couldn't we get rid of the dummy by requiring the caller to call it like
+// std::vector<float> floatVec = rsConvert<float>(doubleVec);
 
 /** Copies data from src to dst, where dst will be resized if necessarry. */
 template<class T>

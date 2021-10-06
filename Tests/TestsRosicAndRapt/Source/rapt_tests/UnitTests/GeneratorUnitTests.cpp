@@ -20,6 +20,27 @@ void rsApplyDelay(std::vector<T>& x, int delay)
   rsArrayTools::shift(&x[0], (int) x.size(), delay);
 }
 
+template<class T>
+T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
+{
+  std::vector<double> xd = rsConvert(x, double());
+  rsCycleMarkFinder<double> cmf(sampleRate);
+
+  cmf.setSubSampleApproximationPrecision(0);
+  std::vector<double> marks = cmf.findCycleMarks(&xd[0], (int)x.size());
+
+  //rsPlotSignalWithMarkers(&xd[0], (int)xd.size(), &marks[0], (int)marks.size());
+  // not very precise, the setSubSampleApproximationPrecision call seems to have no effect
+  // ..oh - in the plot we only have a linear interpolation, so maybe our etsimated values are 
+  // indeed more precise than eyballing - but with precision setting of zero, we should actually
+  // find the zeros of an linear interpolant...hmmm...investigate this at some point
+
+  double T = (marks[1] - marks[0]) / sampleRate;  // period of 1st cycle in seconds
+  double f = 1/T;
+  double p = rsFreqToPitch(f);
+  return p; 
+}
+
 
 bool samplerDataUnitTest()
 {
@@ -711,12 +732,23 @@ bool samplerEngine2UnitTest()
   se.setGroupSetting( 0,    PST::Tune,      groupTune);
   se.setInstrumentSetting(  PST::Tune,      instrTune);
 
+  tol = 0.02f; 
+  // The error of the pitch estimation is around 2 cents...that's quite a large error actually.
+  // Try to improve this at some point!I think, the algo should give better results!
+
   // Test override mode. We expect to see only the region transpose and tune:
   se.setGroupSettingsOverride(true);
   se.setRegionSettingsOverride(true);
   getSamplerNote(&se, 69.f, 127.f, outL, outR);
-  rsPlotVectors(outL, outR);
-  //ok &= rsIsCloseTo(estimateMidiPitch(outL), 70.1f, 0.0001f);
+  //rsPlotVectors(outL, outR);
+
+  ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 69.0f, tol);
+  // just to test the rsEstimateMidiPitch strategy before having implemented transpose and tune
+
+  // ...what we later need to do is this:
+  //ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 70.1f, tol);
+  // but this still fails because we do not yet have implemented handling of transpose and detune
+
   int dummy = 0;
   
   // -For PitchKeyCenter, accumulation makes actually no sense. So maybe, this parameter should 
