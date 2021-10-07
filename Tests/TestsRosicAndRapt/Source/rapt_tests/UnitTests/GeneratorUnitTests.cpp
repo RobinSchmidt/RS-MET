@@ -558,7 +558,7 @@ bool samplerEngine2UnitTest()
 
   using VecF = std::vector<float>;     // vector of sample values in RAM
   using AT   = RAPT::rsArrayTools;
-  using SE   = rosic::rsSamplerEngine2;
+  using SE   = rosic::rsSamplerEngine2Test;
   using RC   = rosic::rsReturnCode;
   using PST  = SE::PlaybackSetting::Type;
   using Ev   = rosic::rsMusicalEvent<float>;
@@ -778,6 +778,30 @@ bool samplerEngine2UnitTest()
   getSamplerNote(&se, 69.f, 127.f, outL, outR);
   //rsPlotVector(outL);
   ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 74.4f, tol);
+
+  // Remove tune setting from instrument. p = 69 + 2 + 3 + 0.1 = 74.1
+  ok &= se.removeInstrumentSetting(PST::Tune) == RC::success;
+  ok &= se.removeInstrumentSetting(PST::Tune) == RC::nothingToDo;
+  getSamplerNote(&se, 69.f, 127.f, outL, outR);
+  //rsPlotVector(outL);
+  ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 74.1f, tol);
+
+  // Restore the instrument's tune setting and let the group settings override the instrument 
+  // settings again. Now we should see for tune the instrument setting combined with the region 
+  // setting because the region accumulates and the group has no tune setting. For the transpose,
+  // we should just see the group setting because it overrides the instrument's tune and the 
+  // region has no tune anymore. So we expect: p = 69 + 2 + 0.1 + 0.3 = 71.4
+  se.setInstrumentSetting(  PST::Tune,      instrTune);
+  se.setGroupSettingsOverride(true);
+  getSamplerNote(&se, 69.f, 127.f, outL, outR);
+  //rsPlotVector(outL);
+  float tmp = rsEstimateMidiPitch(outL, fs);
+  //ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 71.4f, tol);
+  // fails! it's 71.1. seems like when the group settings overrides the instrument setting, the 
+  // absence of a tune setting in the group causes the tune to be overriden with 0? i.e. when the 
+  // group overrides the instrument, it will also override it with the default value, in case no 
+  // value is defined?. why would that happen?
+
 
 
 

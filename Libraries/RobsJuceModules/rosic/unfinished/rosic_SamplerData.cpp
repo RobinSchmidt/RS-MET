@@ -262,14 +262,19 @@ rsReturnCode rsSamplerData::removeGroupSetting(int gi, PlaybackSetting::Type typ
   else           return rsReturnCode::nothingToDo;
 }
 
-
-
 rsReturnCode rsSamplerData::setInstrumentSetting(PlaybackSetting::Type type, float value)
 {
   instrument.settings.push_back(PlaybackSetting(type, value));
   // Preliminary. see above
 
   return rsReturnCode::success;
+}
+
+rsReturnCode rsSamplerData::removeInstrumentSetting(PlaybackSetting::Type type)
+{
+  bool wasRemoved = instrument.removeSetting(type);
+  if(wasRemoved) return rsReturnCode::success;
+  else           return rsReturnCode::nothingToDo;
 }
 
 void rsSamplerData::clearAllRegionSettings()

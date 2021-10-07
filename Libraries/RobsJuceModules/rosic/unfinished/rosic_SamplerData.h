@@ -509,6 +509,8 @@ public:
 
   rsReturnCode removeGroupSetting(int gi, PlaybackSetting::Type type);
 
+  rsReturnCode removeInstrumentSetting(PlaybackSetting::Type type);
+
 
   void clearAllRegionSettings();
   void clearAllGroupSettings();
