@@ -1087,6 +1087,9 @@ Bugs:
   it should be - seems like updateSelectorArray is called too late (asynchronously)
   -maybe in audioModuleWillBeDeleted, we should call a function deleteSelector(index) similar to
    deleteEditor(index) instead of scheduleSelectorArrayUpdate
+-start the standalone app in clean slate state, plug in echolab, close app -> memleak
+ actually, the memleak also happens, when we just re-open it in a state with ehcolab loaded and 
+ close it
 -If a limiter (or gain) is placed after a poly-sine osc and the modulator is placed after the 
  limiter, the limiter has no effect
 -load a fresh SineOscillatorStereo and play a not: silence. we only get sound if we wire (for 

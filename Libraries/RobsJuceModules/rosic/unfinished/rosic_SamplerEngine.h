@@ -759,7 +759,7 @@ public:
   //using PlaybackSetting = rsSamplerData::PlaybackSetting;
 
 
-  rsSamplerEngine2(int maxNumLayers);
+  rsSamplerEngine2(int maxNumLayers = 16);
 
 
   void setMaxNumLayers(int newMax) override;

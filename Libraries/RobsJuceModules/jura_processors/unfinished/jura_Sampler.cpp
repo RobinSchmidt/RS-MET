@@ -19,6 +19,10 @@ void SamplerModule::createParameters()
   p = new Param("Gain", -48.0, 12.0, 0.1, Parameter::LINEAR); 
   addObservedParameter(p);
   p->setValueChangeCallback<SM>(this, &SM::setGain);
+
+  p = new Param("OpcodesAccumulate", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
+  addObservedParameter(p);
+  p->setValueChangeCallback<SM>(this, &SM::setOpcodeAccumulationMode);
 }
 
 void SamplerModule::setupDirectories()
@@ -54,6 +58,11 @@ bool SamplerModule::doesSfzFileExist(const juce::String& relativePath)
   juce::String path = sfzRootDir + File::getSeparatorString() + relativePath;
   juce::File sfzFile(path);
   return sfzFile.existsAsFile();
+}
+
+void SamplerModule::setOpcodeAccumulationMode(bool shouldAccumulate)
+{
+  engine.setOpcodesAccumulate(shouldAccumulate);
 }
 
 AudioModuleEditor* SamplerModule::createEditor(int type)
@@ -113,8 +122,6 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
     // does not exist on the machine
   }
 
-
-
   std::string sSfzPath = jSfzPath.toStdString();
   int rc = engine.loadFromSFZ(sSfzPath.c_str());
   if(rc == ReturnCode::fileLoadError)
@@ -127,6 +134,8 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
   // -catch other errors, such as sfzParseError, unknownOpcode, sampleLoadError, etc.
   // -figure out, hwat exactly went wrong and show a more specific error message
 
+
+
   // Notes:
   // -it currently only works, if the .sfz file and its required .wav files reside in the project
   //  directory, i.e.:
@@ -138,6 +147,8 @@ void SamplerModule::setStateFromXml(const XmlElement& xmlState, const juce::Stri
   // -when using RAPT::rsError("File load error"); directly starting the exe doesn't work. I 
   //  guess it triggers the error on startup (because it tries to load a file with empty path)
   //  and the debug break makes the app exit immediately?). 
+  //  ...i think, this should be fixed now because we now load the sfz files from the proper 
+  //  content directory
 
   // ToDo:
   // -Support placing the .sfz and .wav files in different folders. Maybe the path to the .sfz 

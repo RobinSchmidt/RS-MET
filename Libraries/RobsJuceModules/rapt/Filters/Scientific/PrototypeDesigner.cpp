@@ -1431,3 +1431,22 @@ void rsPrototypeDesigner<T>::pickNonRedundantPolesAndZeros(Complex *zTmp, Comple
   rsArrayTools::reverse(z, L+r);
 }
 */
+
+
+/*
+
+ToDo:
+
+Implement more response types:
+-Parabolic: On the characteristics of Monotonic L, Halpern, and parabolic filters
+ https://www.researchgate.net/publication/251816527_On_the_characteristics_of_Monotonic_L_Halpern_and_parabolic_filters
+-Generalized Halpern: The generalized Halpern filter
+ https://ieeexplore.ieee.org/document/1455448
+-Transitional: Transition between flat magnitude and flat group delay low pass recursive digital filters
+ https://www.semanticscholar.org/paper/Transition-between-flat-magnitude-and-flat-group-Stamenkovic-Dejanovi%C4%87/d1fb7d567609998ab1c7a47c7c41e009dd636cb8
+ maybe implement a general transition function that takes the poles and zeros of two filters and the
+ morph parameter m in 0..1 as input and produces the poles and zeros of the transitional filter as 
+ output. Maybe there should be a version that assumes that the poles and zeros are already ordered 
+ according to their correspondeces in both filters and one that doesn't have such an assumption, i.e.
+ sorts them by itself and call the other function.
+*/

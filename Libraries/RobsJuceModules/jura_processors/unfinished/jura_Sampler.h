@@ -40,6 +40,12 @@ public:
 
 protected:
 
+  /** Creates the parameters of the sampler that sit directly in the xml file. They have nothing to
+  do with the opcodes defined in the sfz files and they also do not alter the sfz settings that the
+  engine works with. Anything that is controlled by these parameters is either post-processing step
+  of the engine's output or controls a global behavior that is not specified in the sfz 
+  specification such as the resampling quality, the selection whether opcodes should work 
+  accumulatively or overridingly, polyphony, a global gain, etc.. */
   virtual void createParameters();
 
   /** Sets up the member variables that define where the app expects sfz-files, samples, etc. 
@@ -50,8 +56,13 @@ protected:
   relative with respect to our "sfzRootDir" member. */
   virtual bool doesSfzFileExist(const juce::String& path);
 
+  void setOpcodeAccumulationMode(bool shouldAccumulate);
+
   // Shorthands for convenience:
-  using Engine = rosic::rsSamplerEngine;
+  //using Engine = rosic::rsSamplerEngine;  // old
+  using Engine = rosic::rsSamplerEngine2;   // new
+
+
   using ReturnCode = rosic::rsReturnCode;
   using Event = rosic::rsMusicalEvent<float>;
 
@@ -61,6 +72,8 @@ protected:
   // under construction:
   juce::String sfzRootDir;
   //juce::String sampleRootDir;
+
+
 
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SamplerModule)

@@ -30,3 +30,9 @@ AudioProcessor* JUCE_CALLTYPE createPluginFilter()
   //plugIn->setAudioModuleToWrap(module);
   //return plugIn;
 }
+
+/*
+BUGS:
+-plug
+
+*/

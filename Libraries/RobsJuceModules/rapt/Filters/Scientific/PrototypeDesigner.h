@@ -28,7 +28,10 @@ template<class T>
 class rsPrototypeDesigner
 {
 
-  typedef std::complex<T> Complex; // preliminary
+  typedef std::complex<T> Complex; 
+  // preliminary - maybe we should switch back to using rsComplex because std::complex only 
+  // supports float, double and long double for the type T but we may need it for SIMD types or
+  // multi-precision types, too. rsComplex does not have that restriction.
 
 public:
 
