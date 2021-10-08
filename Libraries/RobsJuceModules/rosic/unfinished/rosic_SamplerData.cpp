@@ -65,7 +65,26 @@ void rsSamplerData::OrganizationLevel::copyDataFrom(const OrganizationLevel* lvl
   //parent = lvl->parent;
 }
 
-int rsSamplerData::OrganizationLevel::findSetting(PlaybackSetting::Type type, int index)
+float rsSamplerData::OrganizationLevel::getSettingValue(
+  PlaybackSetting::Type type, int index, bool accumulate) const
+{
+  float val = PlaybackSetting::getDefaultValue(type);  // init to global fallback value
+  int i = findSetting(type, index);
+
+  if(i != -1)                        // setting was found 
+    val = settings[i].getValue();    //   -> retrieve value
+  else                               // setting was not found
+    if(parent != nullptr)            //   -> try to fall back to parent's value   
+      val = parent->getSettingValue(type, index, accumulate);
+
+  if(accumulate && parent != nullptr)
+    return val * parent->getSettingValue(type, index, accumulate);
+  else
+    return val;
+}
+// needs tests
+
+int rsSamplerData::OrganizationLevel::findSetting(PlaybackSetting::Type type, int index) const
 {
   for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
     if(settings[i].getType() == type && settings[i].getIndex() == index)

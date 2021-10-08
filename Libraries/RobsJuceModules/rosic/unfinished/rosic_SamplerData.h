@@ -245,6 +245,14 @@ public:
     /** Returns a const reference to our playback settings. */
     const std::vector<PlaybackSetting>& getSettings() const { return settings; }
 
+    /** Returns the value of the given setting, if present. If not present, it will try to figure 
+    out the parent's setting and so on all the way up the (3-level) hierarchy. If such a setting is
+    found in none of the levels, the default value for that setting will be returned. If accumulate
+    is true, the settings of the different hierarchy levels will be added up, otherwise, the 
+    setting in the lower level will override the settimg in the enclosing higher level. */
+    float getSettingValue(
+      PlaybackSetting::Type type, int index = -1, bool accumulate = false) const;
+
     /** Tries to find a setting of the given type in our settings array and returns the index of 
     the last stored setting of given type (and with given index, if applicable - like for 
     controllers), if a setting of the given type was found or -1 if such a setting wasn't found. 
@@ -252,7 +260,7 @@ public:
     reason (like a poorly written sfz file) there is more than one, it's the last one that counts 
     (it will overwrite anything that came before). That's why we return the last index, i.e. we do
     a linear search starting at the end of the array. */
-    int findSetting(PlaybackSetting::Type type, int index = -1);
+    int findSetting(PlaybackSetting::Type type, int index = -1) const;
 
     // todo: float getSetting(PlaybackSetting::Type, int index) this should loop through the 
     // settings to see, if it finds it and if not call the same method on the parent or return the

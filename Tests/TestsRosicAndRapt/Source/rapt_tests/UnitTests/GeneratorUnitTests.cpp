@@ -724,7 +724,7 @@ bool samplerEngine2UnitTest()
   float groupTune   = 20;
   float instrTune   = 30;
   se.clearAllSfzSettings();                               // remove all the amp settings
-  //se.setGroupSetting( 0,    PST::PitchKeyCenter, 50.f);   // should always be overriden
+  se.setGroupSetting( 0,    PST::PitchKeyCenter, 50.f);   // should always be overriden
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);   // restore the rootkey setting
   se.setRegionSetting(0, 0, PST::Transpose, regionTrans);
   se.setGroupSetting( 0,    PST::Transpose, groupTrans);

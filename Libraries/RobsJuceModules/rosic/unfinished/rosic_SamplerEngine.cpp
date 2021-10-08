@@ -850,6 +850,15 @@ void rsSamplerEngine::RegionPlayer::setupDspSettingsFor(
   setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, true);
   setupDspSettings(region->getGroup()->getSettings(), fs, groupSettingsOverride);
   setupDspSettings(region->getSettings(), fs, regionSettingsOverride);
+
+  // The code above will have set up the increment assuming that the current key matches the 
+  // rootKey of the sample, Now, as final step, we also adjust it according to the difference 
+  // between the played key and the sample's rootKey. This is not done in the code above because
+  // it makes no sense to accumulate this parameter
+  float rootKey = region->getSettingValue(PlaybackSetting::Type::PitchKeyCenter, -1, 
+    !regionSettingsOverride);
+
+  int dummy = 0;
 }
 
 void rsSamplerEngine::RegionPlayer::setupDspSettings(
