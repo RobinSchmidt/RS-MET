@@ -6,6 +6,7 @@ SamplerModule::SamplerModule(CriticalSection *lockToUse, MetaParameterManager* m
   setModuleTypeName("Sampler");
   setModuleName("Sampler");
   setupDirectories();
+  createParameters();
 }
 
 void SamplerModule::createParameters()

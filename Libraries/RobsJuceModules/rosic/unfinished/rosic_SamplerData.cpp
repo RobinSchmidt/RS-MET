@@ -579,6 +579,10 @@ void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
 
 /*
 
+Bugs:
+-when the opcode value in the sfz file is given without decimal dot, e.g. volume=-6 instead of 
+ volume=-6.0, it crashes
+
 Notes:
 -When writing .sfz files, make sure to use the forward slash "/" as seperator in the sample paths.
  Using the backslash "\" will lead to failure of file loading on mac.

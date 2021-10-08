@@ -723,8 +723,9 @@ bool samplerEngine2UnitTest()
   float regionTune  = 10;  // "tune" opcode (in cents)
   float groupTune   = 20;
   float instrTune   = 30;
-  se.clearAllSfzSettings();                              // remove all the amp settings
-  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);  // restore the rootkey setting
+  se.clearAllSfzSettings();                               // remove all the amp settings
+  //se.setGroupSetting( 0,    PST::PitchKeyCenter, 50.f);   // should always be overriden
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);   // restore the rootkey setting
   se.setRegionSetting(0, 0, PST::Transpose, regionTrans);
   se.setGroupSetting( 0,    PST::Transpose, groupTrans);
   se.setInstrumentSetting(  PST::Transpose, instrTrans);
@@ -802,6 +803,8 @@ bool samplerEngine2UnitTest()
   // group overrides the instrument, it will also override it with the default value, in case no 
   // value is defined?. why would that happen?
 
+
+  // with se.setGroupSetting( 0,    PST::PitchKeyCenter, 50.f) uncommented, the test fails
 
 
 

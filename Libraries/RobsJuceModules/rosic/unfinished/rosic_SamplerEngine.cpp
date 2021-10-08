@@ -1153,6 +1153,13 @@ void rsSamplerEngine2::GroupPlayer::removeRegionPlayer(RegionPlayer* player)
 
 Bugs:
 -when loading a new instrument while a region is playing, it crashes
+-seems like pitch_keycenter tries to accumulate, too, when in accumulative mode. try patch 
+ Pluck1_1perOct_GVol9_RVol6_A.xml - it loads Pluck1_1perOct_GVol9_RVol6.sfz which has group and 
+ region settings for volume, pitch_keycenter only for the regions. the playback pitch is wayyy too
+ low - add a pitch_keycenter opcode for the gorup in the unit test which is diiferent from region's
+ value...i think, it may take the group's setting and never overwrite it? and that defaults to 60
+ whereas the actual rootkey is 21 in the patch
+
 
 Goals: 
 -Implement (a subset of) the feature set of the sfz specification, perhaps with some extensions 
