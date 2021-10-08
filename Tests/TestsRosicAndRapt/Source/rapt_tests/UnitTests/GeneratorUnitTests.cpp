@@ -546,6 +546,7 @@ bool samplerEngineUnitTest1()
   // vtable takes
 
   rsAssert(ok);
+
   return ok;
 }
 
@@ -610,7 +611,7 @@ bool samplerEngine2UnitTest()
   // region settings and group settings are combined:
   se.setRegionSettingsOverride(false);
   tgt = groupAmp*regionAmp*sin440;
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 0.0f, false);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
 

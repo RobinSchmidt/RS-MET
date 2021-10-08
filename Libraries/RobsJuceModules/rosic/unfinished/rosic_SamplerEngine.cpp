@@ -855,10 +855,15 @@ void rsSamplerEngine::RegionPlayer::setupDspSettingsFor(
   // rootKey of the sample, Now, as final step, we also adjust it according to the difference 
   // between the played key and the sample's rootKey. This is not done in the code above because
   // it makes no sense to accumulate this parameter
-  float rootKey = region->getSettingValue(PlaybackSetting::Type::PitchKeyCenter, -1, 
-    !regionSettingsOverride);
-
-  int dummy = 0;
+  increment *= stream->getSampleRate() / fs;
+  double rootKey = region->getSettingValue(PlaybackSetting::Type::PitchKeyCenter, -1, false);
+  double pitchOffset = double(key) - rootKey;
+  //increment *= RAPT::rsPitchOffsetToFreqFactor(pitchOffset); 
+  increment *= pow(2.0, pitchOffset / 12.0);
+  // The formula using rsPitchOffsetToFreqFactor is imprecise: when we have a pitchOffset of 
+  // exactly -12, for example, we want the increment be multiplied by exactly 0.5, but using this
+  // function, the factor comes out as 0.49999..., so we use the more precise (and more 
+  // expensive) call to pow. It's not per-sample here code anyway, so we may afford that.
 }
 
 void rsSamplerEngine::RegionPlayer::setupDspSettings(
@@ -884,16 +889,16 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   using TP = PS::Type;
 
 
-  double tmp = stream->getSampleRate();
-  if(onTop) increment *= tmp/fs;
-  else      increment  = tmp/fs;
+  //double tmp = stream->getSampleRate();
+  //if(onTop) increment *= tmp/fs;
+  //else      increment  = tmp/fs;
   // ...wait - that makes no sense - we shall not accumulate 1/fs factors...maybe this function
   // should compute the increment in seconds and the caller should be responsible for the final
   // multiplication by 1/fs? maybe we should have an outer function 
   // setupDspSettingsFor(Region* r) and prepareToPlay call that with the region pointer. then we 
   // do the triple-override-accumulate call there and finally divide inc by fs there
 
-  double rootKey = 69.0;
+  //double rootKey = 69.0;
   // i think, the caller setupDspSettingsFor should handle that - the PitchKeyCenter never 
   // accumulates but nevertheless, we need to accumulate some other things into inc, so it may be 
   // best to set/accumulate inc in seconds here and after we have the inclrement in seconds, the
@@ -904,7 +909,6 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   double pan        = 0.0;  // -100...+100
   double tuneCoarse = 0.0;  // in semitones
   double tuneFine   = 0.0;  // in cents
-
   int    panRule    = PlaybackSetting::PanRule::linear;
 
   // Loop through the settings of the region and for each setting that is present, change the 
@@ -923,7 +927,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     case TP::PanRule: { panRule  = (int)val;             } break;
 
     // Pitch settings:
-    case TP::PitchKeyCenter: { rootKey    = val; } break;
+    //case TP::PitchKeyCenter: { rootKey    = val; } break;
     case TP::Transpose:      { tuneCoarse = val; } break;
     case TP::Tune:           { tuneFine   = val; } break;
 
@@ -943,10 +947,18 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     }
   }
 
-  double tune = tuneCoarse + 0.01 * tuneFine;
-  double pitchOffset = double(key) - rootKey;
-  pitchOffset += tune;
-  increment *= pow(2.0, pitchOffset / 12.0);
+
+  double tune   = tuneCoarse + 0.01 * tuneFine;
+  double factor = pow(2.0, tune / 12.0);
+  if(onTop) this->increment *= factor;
+  else      this->increment  = factor;
+
+
+
+
+  //double pitchOffset = double(key) - rootKey;
+  //pitchOffset += tune;
+  //increment *= pow(2.0, pitchOffset / 12.0);
   //increment *= rsPitchOffsetToFreqFactor(pitchOffset); // faster, less precise - but probably
   // precise enough, when we switch to int+float for representing increments
 
