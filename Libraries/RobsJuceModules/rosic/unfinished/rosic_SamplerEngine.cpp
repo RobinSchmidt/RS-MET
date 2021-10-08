@@ -869,47 +869,15 @@ void rsSamplerEngine::RegionPlayer::setupDspSettingsFor(
 void rsSamplerEngine::RegionPlayer::setupDspSettings(
   const std::vector<PlaybackSetting>& settings, double fs, bool overrideOldSetting)
 {
-  // ToDo: 
-  // -Let the function have a boolean parameter to decide whether the settings should be taken 
-  //  as is or accumulate on top of what we already have for this setting.
-  // -The caller should then call this once for the instrument settings with the flag being false, 
-  //  then again for the group settings with the flag depending on whether instrument settings 
-  //  should accumulate and then again for the region settings with the flag depending on whether 
-  //  group settings should accumulate
-
-  bool onTop = !overrideOldSetting; // maybe get rid and use overrideOldSetting directly
-
-  // ToDo: factor out the repetitive if(onTop)...into a local helper function 
-  // set(double& setting, double value, bool onTop, bool multiplicative = false)
-  // ...or maybe the multiplicative bool should be an int with values: 0: additive, 
-  // 1: multiplicative, 2: dunno yet, ...
-
-
   using PS = PlaybackSetting;
   using TP = PS::Type;
-
-
-  //double tmp = stream->getSampleRate();
-  //if(onTop) increment *= tmp/fs;
-  //else      increment  = tmp/fs;
-  // ...wait - that makes no sense - we shall not accumulate 1/fs factors...maybe this function
-  // should compute the increment in seconds and the caller should be responsible for the final
-  // multiplication by 1/fs? maybe we should have an outer function 
-  // setupDspSettingsFor(Region* r) and prepareToPlay call that with the region pointer. then we 
-  // do the triple-override-accumulate call there and finally divide inc by fs there
-
-  //double rootKey = 69.0;
-  // i think, the caller setupDspSettingsFor should handle that - the PitchKeyCenter never 
-  // accumulates but nevertheless, we need to accumulate some other things into inc, so it may be 
-  // best to set/accumulate inc in seconds here and after we have the inclrement in seconds, the
-  // caller scales it by rsPitchOffsetToFreqFactor / fs
-
 
   double amp        = 1.0;  // raw factor, computed "volume" opcode which is given in dB
   double pan        = 0.0;  // -100...+100
   double tuneCoarse = 0.0;  // in semitones
   double tuneFine   = 0.0;  // in cents
   int    panRule    = PlaybackSetting::PanRule::linear;
+  bool   onTop      = !overrideOldSetting; // maybe get rid 
 
   // Loop through the settings of the region and for each setting that is present, change the 
   // value from its default to the stored value:
@@ -927,7 +895,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     case TP::PanRule: { panRule  = (int)val;             } break;
 
     // Pitch settings:
-    //case TP::PitchKeyCenter: { rootKey    = val; } break;
+    //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
     case TP::Transpose:      { tuneCoarse = val; } break;
     case TP::Tune:           { tuneFine   = val; } break;
 
@@ -946,23 +914,10 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
     }
   }
-
-
   double tune   = tuneCoarse + 0.01 * tuneFine;
   double factor = pow(2.0, tune / 12.0);
   if(onTop) this->increment *= factor;
   else      this->increment  = factor;
-
-
-
-
-  //double pitchOffset = double(key) - rootKey;
-  //pitchOffset += tune;
-  //increment *= pow(2.0, pitchOffset / 12.0);
-  //increment *= rsPitchOffsetToFreqFactor(pitchOffset); // faster, less precise - but probably
-  // precise enough, when we switch to int+float for representing increments
-
-
 
 
   // From the computed local amp/pan/panRule variables, compute the amp member (which is
@@ -984,6 +939,12 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     RAPT::rsError("not yet implemented");
   } break;
   }
+
+  // ToDo: factor out the repetitive if(onTop)...into a local helper function 
+  // set(double& setting, double value, bool onTop, bool multiplicative = false)
+  // ...or maybe the multiplicative bool should be an int with values: 0: additive, 
+  // 1: multiplicative, 2: dunno yet, ...
+
   // ToDo: support the "width" opcode. Implement it by a M/S matrix - we need two rsFloat64
   // members to represent both rows of it. Then, in the realtime processing call, we let the stream
   // produce the stereo pair, compute the product of that pair with both rows by element-wise 
