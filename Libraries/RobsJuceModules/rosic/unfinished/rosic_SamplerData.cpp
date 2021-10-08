@@ -78,11 +78,15 @@ float rsSamplerData::OrganizationLevel::getSettingValue(
       val = parent->getSettingValue(type, index, accumulate);
 
   if(accumulate && parent != nullptr)
-    return val * parent->getSettingValue(type, index, accumulate);
+    return val + parent->getSettingValue(type, index, accumulate);
   else
     return val;
 }
-// needs tests
+// needs tests...maybe the accumulation is not always a straightforward forward addition. Think of
+// Pan for example, which has a more complex accumulation behavior. 3 panners in series with 
+// setting of +50 will not have the same effect as one with +150 (which is out of the legal range 
+// anyway)...but maybe the accumulate feature is not even needed in this function - may get rid of
+// it
 
 int rsSamplerData::OrganizationLevel::findSetting(PlaybackSetting::Type type, int index) const
 {
