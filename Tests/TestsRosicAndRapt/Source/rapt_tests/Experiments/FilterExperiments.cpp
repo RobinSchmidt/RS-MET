@@ -317,6 +317,25 @@ void engineersFilterRingResp1()
   //plotFrequencyResponseReIm(flt, 5000, 10.0, 1000.0, fs, true);
   plotMagAndRingResponse(   flt,  5000, 10.0, 1000.0, fs, true);  // experimental
 
+
+  /*
+  // temporary throw-away code, for generating a pic for the kvr forum:
+  flt.setApproximationMethod(PTD::INVERSE_CHEBYCHEV);
+  flt.setSampleRate(44100);
+  flt.setFrequency(1000);
+  flt.setMode(IIRD::LOWPASS);
+  flt.setStopbandRejection(80.0); 
+  flt.setPrototypeOrder(10);
+  plotImpulseResponse(   flt, 1200, 1.0, true, -200.0);
+  plotMagAndRingResponse(flt, 5000, 100.0, 10000.0, 44100.0, true); 
+  // This suggests a way to estimate the ringing time numerically: just fit a straight line to
+  // the peaks of this function. This will give a decay time constant in dB/sample from which the 
+  // ringing time can be computed
+  // ...maybe move this code into another function
+  */
+
+
+
   // Observations:
   // -Notation: H(f): complex frequency response, H'(f): derivative of H(f) with respect to f, 
   //  R_i(f): i-th attempt of defining a "ringing response"
@@ -390,8 +409,8 @@ void engineersFilterRingResp1()
 
 void engineersFilterRingResp2()
 {
-  // We plot the ringin response of a series connection of 2 high-shelving filters in order to see,
-  // if it depends on the actual magnitude...tbc...
+  // We plot the ringing response of a series connection of 2 high-shelving filters in order to 
+  // see, if it depends on the actual magnitude...tbc...
 
   // User parameters:
   double fs    = 44100;  // samplerate in Hz

@@ -368,6 +368,8 @@ std::string rsSamplerData::getAsSFZ() const
 void rsSamplerData::setFromSFZ(const std::string& str)
 {
   clearInstrument();
+  if(str.empty())
+    return;
   size_t endOfFile = std::numeric_limits<size_t>::max();
 
   // Extracts the subtring starting at startIndex up to (and excluding) the next newline '\n' 
@@ -463,7 +465,8 @@ void rsSamplerData::setFromSFZ(const std::string& str)
     while(!allRegionsDone)
     {
       // Find start and end index of next region definition:
-      j0 = groupDef.find(region, j1); 
+      j0 = groupDef.find(region, j1);
+      RAPT::rsAssert(j0 != endOfFile);  // for debug - gets triggered when we have empty regions
       j1 = groupDef.find(region, j0+1);
       if(j1 == endOfFile) {
         allRegionsDone = true;

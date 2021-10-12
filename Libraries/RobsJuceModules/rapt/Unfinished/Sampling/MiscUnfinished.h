@@ -301,6 +301,8 @@ public:
                             // should not be used anymore)
   };
   // old - to be replaced by enum class:
+  // todo: implement the YIN algorithm, see https://www.youtube.com/watch?v=W585xR3bjLM, 
+  // http://audition.ens.fr/adc/pdf/2002_JASA_YIN.pdf
 
   /** Selects the algorithm by which this object will determine where one cycle ends and the next
   cycle starts. @see algorithms. */

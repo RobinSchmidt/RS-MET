@@ -47,7 +47,8 @@ bool samplerDataUnitTest()
   bool ok = true;
 
   //using SD = rsSamplerData;
-  using SD = rosic::rsSamplerData;
+  using SD  = rosic::rsSamplerData;
+  using PST = SD::PlaybackSetting::Type;
 
   SD d1;
 
@@ -57,6 +58,7 @@ bool samplerDataUnitTest()
   // seem to work yet
 
   int gi, ri;             // gi: group index, ri: region index
+  std::string sfz;
 
   // Add 2 groups:
   gi = d1.addGroup(); ok &= gi == 0;
@@ -73,6 +75,32 @@ bool samplerDataUnitTest()
   SD d2 = d1; ok &= d2 == d1; // copy assign
   SD d3(d1);  ok &= d3 == d1; // copy construct
   ok &= d2 == d3;             // equality should be transitive
+
+  // Test parsing of some degenerate sfz strings:
+  sfz = "";
+  d2.setFromSFZ(sfz);  // should result in an empty instrument
+  //ok &= d2.isEmpty();  // implement this
+
+  sfz = "<region>";
+  d2.setFromSFZ(sfz); // crashes! the parser gest tripped up by empty regions
+  // crash: in rsSamplerData::setFromSFZ, j0 = 18446744073709551615
+
+  // Set volume settings for instrument, group(0), and region(0,0):
+  d1.setInstrumentSetting(  PST::Volume, -2.f);
+  d1.setGroupSetting(0,     PST::Volume, -3.f);
+  d1.setRegionSetting(0, 0, PST::Volume, -5.f);
+
+  // To test sfz generaion and parsing, retrieve the sfz string, set up d2 from the string and 
+  // check, if it equal to d1:
+  sfz = d1.getAsSFZ();
+  d2.setFromSFZ(sfz);
+  ok &= d2 == d1;
+
+
+
+
+
+  // ToDo: make a more complex sfz patch, using more opcodes, samples, etc.
 
 
 
@@ -1082,17 +1110,26 @@ bool samplerEngineUnitTestFileIO()
 }
 
 
+bool samplerEngine2UnitTestFileIO()
+{
+  bool ok = true;
+
+
+  return ok;
+}
+
 
 bool samplerEngineUnitTest()
 {
   bool ok = true;
 
-
-  ok &= samplerEngine2UnitTest();  // new tests
-
   ok &= samplerDataUnitTest();
   ok &= samplerEngineUnitTest1();
   ok &= samplerEngineUnitTestFileIO();
+
+  // new tests:
+  ok &= samplerEngine2UnitTest(); 
+  //ok &= samplerEngine2UnitTestFileIO();
 
 
 

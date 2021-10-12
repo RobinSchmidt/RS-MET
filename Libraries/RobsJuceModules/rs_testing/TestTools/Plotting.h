@@ -61,9 +61,16 @@ inline std::vector<T> ampToDb(const std::vector<T>& x, T minDb)
 
 /** Plots N samples of the impulse response of the passed filter. */
 template<class TSig, class TFlt>
-inline void plotImpulseResponse(TFlt &filter, int length, TSig scale)
+inline void plotImpulseResponse(TFlt &filter, int length, TSig scale, bool dB = false, 
+  TSig dbFloor = TSig(-100))
 {
   std::vector<TSig> y = impulseResponse(filter, length, scale);
+  if(dB)
+  {
+    TSig floorAmp = rsDbToAmp(dbFloor);
+    for(size_t i = 0; i < y.size(); i++)
+      y[i] = rsAmpToDb(rsMax(rsAbs(y[i]), floorAmp));
+  }
   GNUPlotter plt;
   plt.addDataArrays(length, &y[0]);
   plt.plot();

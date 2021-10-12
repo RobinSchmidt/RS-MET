@@ -717,7 +717,7 @@ T rsArrayTools::geometricMean(const T* x, int N)
   m = exp(m);
   return m;
 }
-// I think, it's numerically better behaved to sum up the logarithms and take the exp at the and 
+// I think, it's numerically better behaved to sum up the logarithms and take the exp at the end 
 // rather than accumulating multiplicatively and extracting the N-th root - but that should be 
 // verified experimentally.
 
@@ -737,6 +737,16 @@ T rsArrayTools::generalizedMean(const T* x, int N, T p)
 // Maybe use m += exp(p * log(x[i]) - might be more effient than pow - but also less precise. Maybe
 // take the min or max for abs(p) > thresh for some threshold...but that threshold must also be
 // obtained empirically...and reasonable values may depend on the array values
+//
+// ToDo: 
+// -implement also a function to compute a "circular mean", see:
+//    https://www.youtube.com/watch?v=cYVmcaRAbJg
+//    https://arxiv.org/abs/1108.2141 "Intrinsic Means on the Circle ..."
+//    https://ieeexplore.ieee.org/document/4217894
+//    https://math.stackexchange.com/questions/4230404/how-can-i-calculate-the-mean-position-on-the-circle-or-mean-direction
+//  this could be useful to compute the mean of various phase angles
+// -maybe implement a further generalization that takes the sum over some (strictly monotonic) 
+//  function f(x), divides by N and then applies the inverse of f
 
 template <class T>
 void rsArrayTools::impulseResponse(T *h, int hLength, const T *b, int bOrder, const T *a, int aOrder)

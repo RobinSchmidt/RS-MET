@@ -3,7 +3,7 @@ void rsLine2D<T>::twoPointToImplicit(T x0, T y0, T x1, T y1, T* A, T* B, T* C, b
 {
   *A = y0 - y1; // == -dy
   *B = x1 - x0; // ==  dx
-  *C = -(x0 * *A + y0 * *B);
+  *C = -(x0 * *A + y0 * *B); // could actually use x0*y1-y0*x1 - perhaps better numerically
   if(normalize)
   {
     T s = 1 / sqrt(*A * *A + *B * *B);

@@ -1718,6 +1718,15 @@ void polynomialRegression()
   //   -it requires the data to be normalized, such that x and y goes from -1..+1 
   //    -we need an affine trafo before and one after the actual polynomial
   //   -we may want to convert the chebychev regression coeffs to power-coeffs after fitting
+
+  // -ToDo: 
+  //  -implement fitting a Gaussian bell cirve to data, see:
+  //     https://www.youtube.com/watch?v=jezAWd6GFRg
+  //   it fits a 2nd order polynomial to the log of the data. the polynomial coeffs can the diractly
+  //   be converted to mean, variance and scale-factor
+  //  -adds function to the library that does regression in terms of arbitrary basis functions, 
+  //   passed as std::vector<std::function> or something like that...oh...seems like we have 
+  //   something like that already done below in gaussianRegression
 }
 
 void gaussianRegression()
@@ -1933,8 +1942,8 @@ void butterworthViaGaussians()
   // error oscillates - no convergence
 
   // todo: plot the sum of Gaussians after optimization - hmm - the improvement is not very 
-  // impressive...i think, something is still wrong
-  // optimize also with scipy and compare results
+  // impressive (from 0.027 to 0.011) i think, something is still wrong
+  // -> optimize also with scipy and compare results
 
   errFunc.plot(pFinal);
 
