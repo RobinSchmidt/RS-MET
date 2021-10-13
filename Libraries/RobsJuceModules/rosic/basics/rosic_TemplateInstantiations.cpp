@@ -24,7 +24,13 @@ namespace RAPT {
 //  const std::complex<double>* h, int Nh, std::complex<double> *y);
 
 //template int RAPT::rsArrayTools::binarySearch(const double* A, double key, int imin, int imax);
-template void RAPT::rsArrayTools::fillWithRandomValues(rsFloat32x4* x, int N, double min, double max, int seed);
+template void RAPT::rsArrayTools::clip(double *buffer, const int length,
+  const double min, const double max);
+template void RAPT::rsArrayTools::fillWithIndex(double *buffer, int length);
+template void RAPT::rsArrayTools::fillWithRandomValues(rsFloat32x4* x, int N,
+  double min, double max, int seed);
+template int RAPT::rsArrayTools::maxIndex(const double *buffer, int length);
+template int RAPT::rsArrayTools::minIndex(const double *buffer, int length);
 template double RAPT::rsArrayTools::meanSquare(const double *x, int N);
 
 //-------------------------------------------------------------------------------------------------
@@ -96,7 +102,9 @@ template double RAPT::getDelayedSampleAsymmetricHermite1(double d, double *y, do
 template double RAPT::getDelayedSampleLinear(double d, double *y);
 template void RAPT::rsNaturalCubicSpline(const double *x, const double *y, int N, const double *xi, double *yi, int Ni, double scaleRhs);
 
-
+template double RAPT::rsPolynomial<double>::cubicRootNear(double x, const double& a,
+  const double& b, const double& c, const double& d, const double& min, const double& max,
+  int maxIterations);
 //template class RAPT::rsPolynomial<std::complex<double>>; 
 // produces lots of errors because of comparison operators - maybe introduce a sort of 
 // rsComplexAbs(T x) function that resolves to the identity when T is a real type
