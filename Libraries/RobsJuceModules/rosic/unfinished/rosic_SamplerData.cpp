@@ -596,6 +596,7 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
 void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
 {
   dst.clearInstrument();
+  dst.instrument.copyDataFrom(&src.instrument);
   for(int i = 0; i < src.getNumGroups(); i++) {
     const Group* srcGroup = src.getGroup(i);
     Group* dstGroup = new Group;
