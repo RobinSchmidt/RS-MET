@@ -710,9 +710,16 @@ void rsSamplerEngine::RegionPlayer::setRegionToPlay(const rsSamplerEngine::Regio
 
 rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
 {
-  if(sampleTime < 0.0) {             // Negatively initialized sampleTime implements delay.
-    sampleTime += 1.0;               // We just increment the time and return 0,0. Actual output
-    return rsFloat64x2(0.0, 0.0); }  // will be produced as soon as sampleTime reaches zero.  
+  // Negatively initialized sampleTime implements delay. If we are still "waiting", we just 
+  // increment the time and return 0,0. Actual output will be produced as soon as sampleTime 
+  // reaches zero. 
+  if(sampleTime < 0.0) 
+  {             
+    sampleTime += 1.0;
+    //if(sampleTime >= 0.0)
+    //  sampleTime += offset;
+    return rsFloat64x2(0.0, 0.0); 
+  }
 
   float L, R;                        // left and right output
   stream->getFrameStereo((float)sampleTime, &L, &R);  // try to avoid the conversion to float
@@ -802,10 +809,11 @@ bool rsSamplerEngine::RegionPlayer::hasFinished()
 {
   //int numFrames = stream->getNumFrames();
   //int tmp = stream->getNumFrames() - 1;
-  if( sampleTime >= stream->getNumFrames() )
+  if( sampleTime >= stream->getNumFrames() )  // old
+  //if( sampleTime >= endTime )                   // new
     return true;
 
-  // todo: 
+  // todo:
   // -check also, if the amplitude envelope has reached its end
   // -hmm - maybe, if we allow the frequency envelope to go negative, we could also move 
   //  backward through the sample, so having reached the end of the stream may not actually be an
@@ -833,11 +841,23 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
 void rsSamplerEngine::RegionPlayer::resetDspSettings()
 {
   // Initialize all values and DSP objects to default values (maybe factor out):
-  amp = 1.0;
+  amp        = 1.0;
   sampleTime = 0.0;
   increment  = 1.0;
-  // ...more to do... 
-  // reset all processors and modulators
+  offset     = 0.f;
+
+  endTime    = stream->getNumFrames();  
+  // Maybe use -1? That may require updating unit tests. But maybe it's appropriate to use 
+  // numFrames when assuming linear interpolation. I think, for general interpolators, we should 
+  // use endTime = numFrames - 1 + kernelSize/2. Test this very high downshifting factors and maybe
+  // with a sample that is just 1 sample long with a value of 1. We should see the interpolation 
+  // kernel as output.
+
+  loopStart  = 0.f;
+  loopEnd    = 0.f;
+  loopMode   = 0;
+
+  // ToDo: reset all processors and modulators....
 }
 
 void rsSamplerEngine::RegionPlayer::setupDspSettingsFor(
@@ -864,6 +884,13 @@ void rsSamplerEngine::RegionPlayer::setupDspSettingsFor(
   // exactly -12, for example, we want the increment be multiplied by exactly 0.5, but using this
   // function, the factor comes out as 0.49999..., so we use the more precise (and more 
   // expensive) call to pow. It's not per-sample here code anyway, so we may afford that.
+
+  // If there is no delay to be considered, we advance the sample time into the sample by the 
+  // desired offset. Otherwise, sampleTime will have been initialized to -delaySamples and we leave
+  // it at that. In this case, the offset will be handled in getFrame etc..:
+  //if(sampleTime >= 0.0)
+  //  sampleTime = offset;
+  // makes unit test fail
 }
 
 void rsSamplerEngine::RegionPlayer::setupDspSettings(
@@ -877,6 +904,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   double tuneCoarse = 0.0;  // in semitones
   double tuneFine   = 0.0;  // in cents
   int    panRule    = PlaybackSetting::PanRule::linear;
+  int    offset     = 0;
   bool   onTop      = !overrideOldSetting; // maybe get rid 
 
   // Loop through the settings of the region and for each setting that is present, change the 
@@ -905,6 +933,13 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
       if(onTop) sampleTime += -val * fs; 
       else      sampleTime  = -val * fs; 
     }  break;
+
+    case TP::Offset:
+    { 
+      if(onTop) offset += val; 
+      else      offset  = val; 
+    }  break;
+
 
     // Filter settings:
       //case TP::FilterCutoff: { flt.setCutoff(val);  } break;
@@ -959,6 +994,9 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   //  used. If the flag is false, we may skip the associated DSP process in getFrame/processBlock. 
   //  We may need inquiry functions such as hasFilter, hasAmpEnv, hasPitchEnv, hasFilterEnv, 
   //  hasPitchLFO. But this makes things more complicated, so maybe it's not really a good idea.
+  // -Implement position and width opcodes. Maybe we should maintain a 2x2 gain matrix as member
+  //  and all the different amp, pan, width, pos, etc. settings accumulate into this matrix. But 
+  //  always compare results to sfz+ which serves as reference engine
 }
 
 //=================================================================================================

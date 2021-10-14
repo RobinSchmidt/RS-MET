@@ -86,7 +86,7 @@ public:
       LoKey, HiKey, LoVel, HiVel,
       ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
 
-      // Muted: convenient to switch regiosn or groups off wihthout removing them - check if 
+      // Muted: convenient to switch regions or groups off wihthout removing them - check if 
       // sfz has such a thing
 
       // Pitch:
@@ -97,11 +97,14 @@ public:
       AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
       // ToDo: Width, Position
 
-      // Filtering:
-      Delay,
+      // Player:
+      Delay, Offset, 
+      // ToDo: loop-stuff
+
+      // Filter:
       FilterCutoff, FilterResonance, FilterType,
 
-      // Looping:
+
 
 
       Unknown,

@@ -19,6 +19,8 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Type type)
   case TP::Tune:           return  0.f;
 
   case TP::Delay:          return 0.f;
+  case TP::Offset:         return 0.f;
+
   }
 
   RAPT::rsError("Unknown type of PlaybackSetting, i.e. unknown sfz opcode.");
@@ -559,6 +561,7 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   case PST::Tune:           { add(s, "tune",            val);  } break;
 
   case PST::Delay:          { add(s, "delay",           val);  } break;
+  case PST::Offset:         { add(s, "offset",          val);  } break;
 
   // more to come....
 
@@ -605,6 +608,8 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
 
   // Sample Player:
   if(opcode == "delay")           return PS(PST::Delay,          val);
+  if(opcode == "offset")          return PS(PST::Offset,         val);
+
   // todo:  offset, end, count, loop_mode, loop_start, loop_end
   // maybe: delay_random, delay_ccN, offset_random, offset_ccN, sync_beats, sync_offset
 

@@ -445,6 +445,11 @@ bool samplerEngineUnitTest1()
     ok &= rsIsCloseTo(outR[n], tgt, tol);
   }
   //rsPlotVectors(sin440, outL);
+  VecF tgt = sin440;
+  rsApplyDelay(tgt, delaySamples);
+  //rsPlotVectors(tgt, outL); 
+  // Looks off by 1 sample but the test says it's ok. why? Ah: rsApplyDelay takes an int delay, so
+  // it uses a truncated value of 10.0
 
 
   // move this into samplerEngine2UnitTest
@@ -598,9 +603,9 @@ bool samplerEngineUnitTest1()
 
 
   int regionPlayerSize = SE::getRegionPlayerSize();
-  // 64 without filters and eq, 512 with - move this into some performance test function
-  // currently 160, with virtual functions, it had 16 bytes more. Apparently, that's what the 
-  // vtable takes
+  // -Currently at 176
+  // -With virtual functions, it had 16 bytes more. Apparently, that's what the vftable take.
+  // -Move this into some performance test function
 
   rsAssert(ok);
 
@@ -742,7 +747,7 @@ bool samplerEngine2UnitTest()
   rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);  // restore the rootkey setting
   int regionDelay = 10;   // in samples - todo: use float
   int groupDelay  = 20;
-  int instrDelay  = 30;
+  int instrDelay  = 40;
   se.setRegionSetting(0, 0, PST::Delay, regionDelay / fs);
   se.setGroupSetting( 0,    PST::Delay, groupDelay  / fs);
   se.setInstrumentSetting(  PST::Delay, instrDelay  / fs);
@@ -770,6 +775,37 @@ bool samplerEngine2UnitTest()
   rsApplyDelay(tgt, groupDelay);
   rsApplyDelay(tgt, instrDelay);
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+
+
+  //---------------------------------------------------------------------------
+  // Test offset accumulation:
+
+  float regionOffset = 10;   // "offset" opcode in seconds
+  float groupOffset  = 20;
+  float instrOffset  = 40;
+  se.clearAllSfzSettings();
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);
+  se.setRegionSetting(0, 0, PST::Offset, regionOffset / fs);
+  se.setGroupSetting( 0,    PST::Offset, groupOffset  / fs);
+  se.setInstrumentSetting(  PST::Offset, instrOffset  / fs);
+
+  // We want to see only the region offset:
+  se.setGroupSettingsOverride(true);
+  se.setRegionSettingsOverride(true); 
+  tgt = sin440;
+  rsApplyDelay(tgt, -regionOffset);  // offset is like a negative delay
+  //ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true); // does not yet work
+  ok &= se.getNumActiveLayers() == 0;
+  ok &= se.getNumActiveGroupPlayers() == 0; 
+
+  int dummy = 0;
+
+
+  // ToDo: 
+  // -test offset together with delay. offset should jump forward in the sample, delay should
+  //  delay it
+  // -maybe allow floating point offsets, maybe even negative ones
+
 
   //---------------------------------------------------------------------------
   // Test pitch accumulation 
@@ -861,14 +897,7 @@ bool samplerEngine2UnitTest()
   // group overrides the instrument, it will also override it with the default value, in case no 
   // value is defined?. why would that happen?
 
-  /*
-  //---------------------------------------------------------------------------
-  // Test delay accumulation:
-  float regionDelay = 10;   // "delay" opcode in seconds
-  float groupDelay  = 20;
-  float instrDelay  = 40;
-  se.clearAllSfzSettings();                               // remove all the amp settings
-  */
+
 
 
 
@@ -880,7 +909,7 @@ bool samplerEngine2UnitTest()
   // we are in accumulate mode for both, so after that removal, we should see a combinations of
   // instrument and group transpose...but still see the region's tune
 
-  int dummy = 0;
+  //int dummy = 0;
   
   // -For PitchKeyCenter, accumulation makes actually no sense. So maybe, this parameter should 
   //  always work in override mode. Check what happens, when the instrument and or group also
