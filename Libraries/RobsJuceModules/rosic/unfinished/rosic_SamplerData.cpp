@@ -38,7 +38,7 @@ void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
   // ToDo: maybe we should assert that the value is an integer in the range 0..127
 
   // All other settings are handled by either overwriting the last setting of that type in our 
-  // array, if present or appending the setting, if not present:
+  // array, if present or by appending the setting, if not present:
   int i = findSetting(t);
   if(i != -1) 
     settings[i] = s;
@@ -84,7 +84,7 @@ float rsSamplerData::OrganizationLevel::getSettingValue(
   else
     return val;
 }
-// needs tests...maybe the accumulation is not always a straightforward forward addition. Think of
+// needs tests...maybe the accumulation is not always a straightforward addition. Think of
 // Pan for example, which has a more complex accumulation behavior. 3 panners in series with 
 // setting of +50 will not have the same effect as one with +150 (which is out of the legal range 
 // anyway)...but maybe the accumulate feature is not even needed in this function - may get rid of
@@ -549,29 +549,31 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
     str += opcodeName + std::string("=") + to_string(value) + "\n";
   };
 
-
   switch(type)
   {
-  case PST::Volume:         { s += "volume="          + to_string(val) + "\n";  } break;
-  case PST::Pan:            { s += "pan="             + to_string(val) + "\n";  } break;
+  case PST::Volume:         { add(s, "volume",          val);  } break;
+  case PST::Pan:            { add(s, "pan",             val);  } break;
 
-  case PST::PitchKeyCenter: { s += "pitch_keycenter=" + to_string(val) + "\n";  } break;
-  case PST::Transpose:      { s += "transpose="       + to_string(val) + "\n";  } break;
-  case PST::Tune:           { s += "tune="            + to_string(val) + "\n";  } break;
+  case PST::PitchKeyCenter: { add(s, "pitch_keycenter", val);  } break;
+  case PST::Transpose:      { add(s, "transpose",       val);  } break;
+  case PST::Tune:           { add(s, "tune",            val);  } break;
 
-  case PST::Delay:          { s += "delay="           + to_string(val) + "\n";  } break;
+  case PST::Delay:          { add(s, "delay",           val);  } break;
 
-    // more to come....
+  // more to come....
+
+  default:                  { RAPT::rsError("Unknown Opcode"); }
   }
 
-  // todo: 
+  // ToDo: 
   // -Maybe use custom string conversion functions because the std::to_string just uses a 
   //  fixed number of 6 decimal digits after the point. Maybe that's suitable, but maybe not:
   //  https://www.cplusplus.com/reference/string/to_string/
   //  ...well, i think, it's not suitable for int params, but we may convert to int. I think, a 
   //  fixed number (maybe 8 or 9..whatever number ensures lossless roundtrips) of total decimal 
   //  digits is better
-
+  // -Why are the lokey, hikey, lovel, hivel opcodes not handled here? I think, it's because they 
+  //  are handled already by the caller because they require special treatment. Document this!
 }
 
 rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
