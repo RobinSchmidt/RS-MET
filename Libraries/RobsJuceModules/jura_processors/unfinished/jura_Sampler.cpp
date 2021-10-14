@@ -333,6 +333,7 @@ Bugs:
   -or make the behavior switchable
 
 ToDo:
+-show on the GUI, which mode we are in (Override/Accumulate) and let the user change that
 -show, which .sfz file is loaded and give the user a text editor to edit it
 -optimize by using block-wise processing instead of sample-by-sample
 -maybe instead of opening a message box on load error, show the error message in the load/save

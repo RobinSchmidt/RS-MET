@@ -850,7 +850,7 @@ bool samplerEngine2UnitTest()
   // setting because the region accumulates and the group has no tune setting. For the transpose,
   // we should just see the group setting because it overrides the instrument's tune and the 
   // region has no tune anymore. So we expect: p = 69 + 2 + 0.1 + 0.3 = 71.4
-  se.setInstrumentSetting(  PST::Tune,      instrTune);
+  se.setInstrumentSetting(PST::Tune, instrTune);
   se.setGroupSettingsOverride(true);
   getSamplerNote(&se, 69.f, 127.f, outL, outR);
   //rsPlotVector(outL);
@@ -860,6 +860,17 @@ bool samplerEngine2UnitTest()
   // absence of a tune setting in the group causes the tune to be overriden with 0? i.e. when the 
   // group overrides the instrument, it will also override it with the default value, in case no 
   // value is defined?. why would that happen?
+
+  /*
+  //---------------------------------------------------------------------------
+  // Test delay accumulation:
+  float regionDelay = 10;   // "delay" opcode in seconds
+  float groupDelay  = 20;
+  float instrDelay  = 40;
+  se.clearAllSfzSettings();                               // remove all the amp settings
+  */
+
+
 
 
   // with se.setGroupSetting( 0,    PST::PitchKeyCenter, 50.f) uncommented, the test fails

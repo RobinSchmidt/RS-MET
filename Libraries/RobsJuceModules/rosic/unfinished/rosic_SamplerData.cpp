@@ -17,6 +17,8 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Type type)
   case TP::PitchKeyCenter: return 60.f;
   case TP::Transpose:      return  0.f;
   case TP::Tune:           return  0.f;
+
+  case TP::Delay:          return 0.f;
   }
 
   RAPT::rsError("Unknown type of PlaybackSetting, i.e. unknown sfz opcode.");
@@ -541,6 +543,13 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   //if(val = PlaybackSetting::getDefaultValue(type))
   //  return; // default values need not to be stored - todo: maybe optionally store them anyway
 
+  // Helper function to add an opcode with value to the string str:
+  auto add = [](std::string& str, const char* opcodeName, float value)
+  {
+    str += opcodeName + std::string("=") + to_string(value) + "\n";
+  };
+
+
   switch(type)
   {
   case PST::Volume:         { s += "volume="          + to_string(val) + "\n";  } break;
@@ -549,6 +558,8 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   case PST::PitchKeyCenter: { s += "pitch_keycenter=" + to_string(val) + "\n";  } break;
   case PST::Transpose:      { s += "transpose="       + to_string(val) + "\n";  } break;
   case PST::Tune:           { s += "tune="            + to_string(val) + "\n";  } break;
+
+  case PST::Delay:          { s += "delay="           + to_string(val) + "\n";  } break;
 
     // more to come....
   }
@@ -587,6 +598,14 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
   if(opcode == "pitch_keycenter") return PS(PST::PitchKeyCenter, val);
   if(opcode == "transpose")       return PS(PST::Transpose,      val);
   if(opcode == "tune")            return PS(PST::Tune,           val);
+  // todo:  pitch_keytrack, pitch_veltrack, bend_up, bend_down, bend_step 
+  // maybe: pitch_random
+
+  // Sample Player:
+  if(opcode == "delay")           return PS(PST::Delay,          val);
+  // todo:  offset, end, count, loop_mode, loop_start, loop_end
+  // maybe: delay_random, delay_ccN, offset_random, offset_ccN, sync_beats, sync_offset
+
 
   // ...more to come...
 
