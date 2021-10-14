@@ -716,8 +716,8 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
   if(sampleTime < 0.0) 
   {             
     sampleTime += 1.0;
-    //if(sampleTime >= 0.0)
-    //  sampleTime += offset;
+    if(sampleTime >= 0.0)
+      sampleTime += offset;
     return rsFloat64x2(0.0, 0.0); 
   }
 
@@ -809,8 +809,8 @@ bool rsSamplerEngine::RegionPlayer::hasFinished()
 {
   //int numFrames = stream->getNumFrames();
   //int tmp = stream->getNumFrames() - 1;
-  if( sampleTime >= stream->getNumFrames() )  // old
-  //if( sampleTime >= endTime )                   // new
+  //if( sampleTime >= stream->getNumFrames() )  // old
+  if( sampleTime >= endTime )                   // new
     return true;
 
   // todo:
@@ -887,10 +887,9 @@ void rsSamplerEngine::RegionPlayer::setupDspSettingsFor(
 
   // If there is no delay to be considered, we advance the sample time into the sample by the 
   // desired offset. Otherwise, sampleTime will have been initialized to -delaySamples and we leave
-  // it at that. In this case, the offset will be handled in getFrame etc..:
-  //if(sampleTime >= 0.0)
-  //  sampleTime = offset;
-  // makes unit test fail
+  // it at that. In this case, the offset will be handled in getFrame etc.:
+  if(sampleTime >= 0.0)
+    sampleTime = offset;
 }
 
 void rsSamplerEngine::RegionPlayer::setupDspSettings(
@@ -904,7 +903,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   double tuneCoarse = 0.0;  // in semitones
   double tuneFine   = 0.0;  // in cents
   int    panRule    = PlaybackSetting::PanRule::linear;
-  int    offset     = 0;
+  //int    offset     = 0;
   bool   onTop      = !overrideOldSetting; // maybe get rid 
 
   // Loop through the settings of the region and for each setting that is present, change the 

@@ -780,23 +780,40 @@ bool samplerEngine2UnitTest()
   //---------------------------------------------------------------------------
   // Test offset accumulation:
 
-  float regionOffset = 10;   // "offset" opcode in seconds
+  float regionOffset = 10;   // "offset" opcode in samples
   float groupOffset  = 20;
   float instrOffset  = 40;
   se.clearAllSfzSettings();
   rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);
-  se.setRegionSetting(0, 0, PST::Offset, regionOffset / fs);
-  se.setGroupSetting( 0,    PST::Offset, groupOffset  / fs);
-  se.setInstrumentSetting(  PST::Offset, instrOffset  / fs);
+  se.setRegionSetting(0, 0, PST::Offset, regionOffset);
+  se.setGroupSetting( 0,    PST::Offset, groupOffset);
+  se.setInstrumentSetting(  PST::Offset, instrOffset);
 
   // We want to see only the region offset:
   se.setGroupSettingsOverride(true);
   se.setRegionSettingsOverride(true); 
   tgt = sin440;
   rsApplyDelay(tgt, -regionOffset);  // offset is like a negative delay
-  //ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true); // does not yet work
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0; 
+
+  // We want to see region and group offset:
+  se.setRegionSettingsOverride(false);
+  tgt = sin440;
+  rsApplyDelay(tgt, -regionOffset); 
+  rsApplyDelay(tgt, -groupOffset); 
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+
+  // We want to see region, group and instrument offset:
+  se.setGroupSettingsOverride(false);
+  tgt = sin440;
+  rsApplyDelay(tgt, -regionOffset); 
+  rsApplyDelay(tgt, -groupOffset); 
+  rsApplyDelay(tgt, -instrOffset); 
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+
+
 
   int dummy = 0;
 
