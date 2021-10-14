@@ -1,6 +1,37 @@
 
 // Helper functions:
 
+// Computes a linearly interpolated value from the given vector at the given position:
+template<class T>
+T getSampleAt(const std::vector<T>& v, T pos)
+{
+  if(pos < T(0)) return T(0);
+
+  int   i = (int) pos;
+  T f = pos - (T)i;
+
+  T x0(0), x1(0);
+  int N = (int)v.size();
+  if(i   < N) x0 = v[i];
+  if(i+1 < N) x1 = v[i+1];
+
+  return (T(1) - f) * x0 + f * x1;
+};
+// move up or maybe move to library as rsInterpolateAt or rsLerpAt
+// hmmm...we assume here that between v[-1] and v[0], there is silence and between v[N-1] and 
+// v[N] we ramp linearly down to zero...maybe we should make that consistent - either ramp up and
+// ramp down or don't ramp at all - but the latter requires special handling of pos == N-1: if
+// it's exactly N-1, we should return the last sample, if it's slightly (e.g. 0.0001) above, 
+// return 0...that seems complicated. ramping up at the start seems more consistent with how the
+// linear interpolator filter kernel looks like...should the sampler engine also behave this way,
+// i.e. when we play a sample that contains a single impulse and play it back at 1/10 of the 
+// normal speed, it would ramp up and down over 10 samples? ...but that's not feasible because it
+// would require the region to start producing output before it was triggered...or wait..maybe 
+// not. It could be feasible, if we replace  if(sampleTime < 0.0)  by  if(sampleTime < 1.0) in
+// rsSamplerEngine::RegionPlayer::getFrame and implement the  stream->getFrameStereo  call in the
+// same way as above. ...but it will work only if delay is used...but such minute details are 
+// perhaps not very important anyway
+
 // pan is suppoesed to be in -1...+1
 template<class T>
 void rsApplyPan(std::vector<T>& L, std::vector<T>& R, T pan, bool constPow = false)
@@ -396,36 +427,6 @@ bool samplerEngineUnitTest1()
   //rsPlotVectors(outL, outR); 
 
 
-  // Computes a linearly interpolated value from the gievn vector at the given position:
-  auto getSampleAt = [](const std::vector<float>& v, float pos)
-  {
-    if(pos < 0.f) return 0.f;
-
-    int   i = (int) pos;
-    float f = pos - (float)i;
-
-    float x0 = 0.f, x1 = 0.f;
-    int N = (int)v.size();
-    if(i   < N) x0 = v[i];
-    if(i+1 < N) x1 = v[i+1];
-
-    return (1.f - f) * x0 + f * x1;
-  };
-  // move up or maybe move to library as rsInterpolateAt or rsLerpAt
-  // hmmm...we assume here that between v[-1] and v[0], there is silence and between v[N-1] and 
-  // v[N] we ramp linearly down to zero...maybe we should make that consistent - either ramp up and
-  // ramp down or don't ramp at all - but the latter requires special handling of pos == N-1: if
-  // it's exactly N-1, we should return the last sample, if it's slightly (e.g. 0.0001) above, 
-  // return 0...that seems complicated. ramping up at the start seems more consistent with how the
-  // linear interpolator filter kernel looks like...should the sampler engine also behave this way,
-  // i.e. when we play a sample that contains a single impulse and play it back at 1/10 of the 
-  // normal speed, it would ramp up and down over 10 samples? ...but that's not feasible because it
-  // would require the region to start producing output before it was triggered...or wait..maybe 
-  // not. It could be feasible, if we replace  if(sampleTime < 0.0)  by  if(sampleTime < 1.0) in
-  // rsSamplerEngine::RegionPlayer::getFrame and implement the  stream->getFrameStereo  call in the
-  // same way as above. ...but it will work only if delay is used...but such minute details are 
-  // perhaps not very important anyway
-
   // Test delay:
   float delaySamples = 10.75f;
   float delaySeconds = delaySamples / fs;
@@ -447,9 +448,9 @@ bool samplerEngineUnitTest1()
   //rsPlotVectors(sin440, outL);
   VecF tgt = sin440;
   rsApplyDelay(tgt, delaySamples);
-  //rsPlotVectors(tgt, outL); 
+  rsPlotVectors(tgt, outL); 
   // Looks off by 1 sample but the test says it's ok. why? Ah: rsApplyDelay takes an int delay, so
-  // it uses a truncated value of 10.0
+  // it uses a truncated value of 10.0 - todo: implement a function that takes a float delay
 
 
   // move this into samplerEngine2UnitTest
@@ -813,6 +814,22 @@ bool samplerEngine2UnitTest()
   rsApplyDelay(tgt, -instrOffset); 
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
 
+
+  //---------------------------------------------------------------------------
+  // Test offset and delay (but only for the region setting):
+
+  se.clearAllSfzSettings();
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);
+  se.setRegionSetting(0, 0, PST::Offset, regionOffset);
+  se.setRegionSetting(0, 0, PST::Delay,  regionDelay / fs);
+  tgt = sin440;
+  rsApplyDelay(tgt, -regionOffset); 
+  rsApplyDelay(tgt,  regionDelay);
+  //ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true);
+  // Still fails. They are actually in sync but the sampler has skipped the first sample
+
+  // when uncommenting stream->getFrame... stuff RegionPlayer::getFrame, it produces nonzero 
+  // values - but they are slightly wrong and this messes up also another test
 
 
   int dummy = 0;

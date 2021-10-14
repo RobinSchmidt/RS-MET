@@ -710,6 +710,8 @@ void rsSamplerEngine::RegionPlayer::setRegionToPlay(const rsSamplerEngine::Regio
 
 rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
 {
+  float L, R;                        // left and right output
+
   // Negatively initialized sampleTime implements delay. If we are still "waiting", we just 
   // increment the time and return 0,0. Actual output will be produced as soon as sampleTime 
   // reaches zero. 
@@ -717,11 +719,17 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
   {             
     sampleTime += 1.0;
     if(sampleTime >= 0.0)
-      sampleTime += offset;
+    {
+      sampleTime += offset;   // old
+      //sampleTime += offset - 1; // new
+
+      //stream->getFrameStereo((float)sampleTime, &L, &R);
+      //return this->amp * rsFloat64x2(L, R); 
+    }
     return rsFloat64x2(0.0, 0.0); 
   }
 
-  float L, R;                        // left and right output
+
   stream->getFrameStereo((float)sampleTime, &L, &R);  // try to avoid the conversion to float
   // -implement better interpolation methods (sinc, elephant, ...)
   // -keep sample time as combination of int and float to avoid computation of the fractional part
@@ -744,10 +752,8 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
 
   //rsFloat64x2
 
-
   //for(size_t i = 0; i < dspChain.size(); i++)
   //  dspChain[i]->processFrame(out);
-
 
   sampleTime += increment;
   return this->amp * rsFloat64x2(L, R); 
