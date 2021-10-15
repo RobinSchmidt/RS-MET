@@ -1,5 +1,5 @@
 
-void rsSamplerFilter::setup(rsSamplerFilter::Mode mode, float freq, float reso)
+void rsSamplerFilter::setup(rsSamplerFilter::Type type, float cutoff, float resonance)
 {
 
 

@@ -28,7 +28,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  enum class Mode // maybe rename to Type for consistency with sfz terminology
+  enum class Type // maybe rename to Type for consistency with sfz terminology
   {
     // Biquad filter modes:
     BYPASS,
@@ -48,7 +48,7 @@ public:
     LDR_LPF_24
   };
 
-  void setup(Mode mode, float cutoff, float resonance);
+  void setup(Type type, float cutoff, float resonance);
 
 
   //-----------------------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  Mode   mode = Mode::BYPASS;  // maybe don't keep as member
+  Type   type = Type::BYPASS;  // maybe don't keep as member
   Coeffs coeffs;
   State  state;
 
