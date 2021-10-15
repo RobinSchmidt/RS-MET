@@ -17,12 +17,18 @@ class rsSamplerFilter
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
+
   rsSamplerFilter()
   {
 
   }
 
-  enum class Mode
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  enum class Mode // maybe rename to Type for consistency with sfz terminology
   {
     // Biquad filter modes:
     BYPASS,
@@ -41,6 +47,15 @@ public:
     LDR_LPF_18,
     LDR_LPF_24
   };
+
+  void setup(Mode mode, float cutoff, float resonance);
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
+
+  void processFrame(float& L, float& R);
+
 
 
 protected:
@@ -62,7 +77,6 @@ protected:
   };
   struct BiquadState
   {
-    BiquadState() {}
     TSig x1, x2, y1, y2;
   };
 
@@ -72,7 +86,6 @@ protected:
   };
   struct StateVarState
   {
-    StateVarState() {}
     TSig s1, s2;
   };
 
@@ -83,7 +96,6 @@ protected:
   };
   struct LadderState
   {
-    LadderState() {}
     TSig y1, y2, y3, y4;
   };
 
@@ -97,17 +109,19 @@ protected:
   };
   union State
   {
-    State() {}
-    //BiquadState   bqd;
+    State() {}                   // without it, msc complains
+    BiquadState   bqd;
     StateVarState svf;
     LadderState   ldr;
   };
 
 
+
+
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  Mode   mode = Mode::BYPASS;
+  Mode   mode = Mode::BYPASS;  // maybe don't keep as member
   Coeffs coeffs;
   State  state;
 

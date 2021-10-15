@@ -1220,14 +1220,14 @@ bool samplerEngineUnitTestFileIO()
 }
 
 
-bool samplerProcessors()
+bool samplerProcessorsTest()
 {
   bool ok = true;
 
   rosic::rsSamplerFilter flt;
 
 
-  int filterSize = sizeof(rosic::rsSamplerFilter);  // currently 32 - try to keep it small
+  int filterSize = sizeof(rosic::rsSamplerFilter);  // currently 64 - try to keep it small
 
 
 
@@ -1248,7 +1248,7 @@ bool samplerEngineUnitTest()
 
   // new tests:
   ok &= samplerEngine2UnitTest(); 
-  ok &= samplerProcessors();
+  ok &= samplerProcessorsTest();
 
 
 
