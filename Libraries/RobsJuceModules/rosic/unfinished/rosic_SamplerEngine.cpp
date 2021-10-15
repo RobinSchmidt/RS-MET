@@ -1264,6 +1264,18 @@ This pattern should be used only for very closely coupled (ideally: nested) clas
 case here.
 
 Ideas:
+-For the filter, make a special class rsSamplerFilter or rsMultiModeFilter which may interpret its 
+ states and coeffs differently, depending on the selected mode (can implement ladder, svf (2 in 
+ series or parallel), biquad, etc.).
+-Maybe for the signals, use rsFloat32x4. fits better with usage of float for the parameters. Maybe
+ we can use the 2 extra channels to our advantage as well. Maybe they can store the Hilbert trafo
+ of the signals in the actual channels. Or maybe it can carry along some metadata that can be 
+ used in subsequent DSP algos. Maybe instantaneous amp/phase? Maybe mid/side signals? We'll find a 
+ way of using them. ...but it should be some data that can be easily generated in realtime because
+ we don't want to store it in the RAM. Or maybe we could process 2 sample frames at a time? But if
+ this turns out to be doable, there's no reason to stop at 2. If we have enough simd width, we 
+ could also process 8 samples at a time. This could work for waveshapers and FIR filters...but IIR
+ filters? maybe not....
 -Could it make sense to define a level above the instrument - maybe an ensemble? Different 
  instruments in an ensemble could respond to different midi-channels. This would resemble the
  "multi-timbral" feature commonly seen in hardware romplers. But maybe that should be done in a

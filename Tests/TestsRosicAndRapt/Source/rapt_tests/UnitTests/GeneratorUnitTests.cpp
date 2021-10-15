@@ -52,6 +52,15 @@ void rsApplyDelay(std::vector<T>& x, int delay)
 }
 
 template<class T>
+void rsApplyDelay(std::vector<T>& x, T delay)
+{
+  std::vector<T> tmp = x;  // do we need this?
+  for(int i = 0; i < (int) x.size(); i++)
+    x[i] = getSampleAt(tmp, T(i-delay));
+}
+
+
+template<class T>
 T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
 {
   std::vector<double> xd = rsConvert(x, double());
@@ -448,9 +457,7 @@ bool samplerEngineUnitTest1()
   //rsPlotVectors(sin440, outL);
   VecF tgt = sin440;
   rsApplyDelay(tgt, delaySamples);
-  rsPlotVectors(tgt, outL); 
-  // Looks off by 1 sample but the test says it's ok. why? Ah: rsApplyDelay takes an int delay, so
-  // it uses a truncated value of 10.0 - todo: implement a function that takes a float delay
+  //rsPlotVectors(tgt, outL); 
 
 
   // move this into samplerEngine2UnitTest
@@ -1213,13 +1220,19 @@ bool samplerEngineUnitTestFileIO()
 }
 
 
-bool samplerEngine2UnitTestFileIO()
+bool samplerProcessors()
 {
   bool ok = true;
+
+  rosic::rsSamplerFilter flt;
+
+
 
 
   return ok;
 }
+
+
 
 
 bool samplerEngineUnitTest()
@@ -1232,7 +1245,7 @@ bool samplerEngineUnitTest()
 
   // new tests:
   ok &= samplerEngine2UnitTest(); 
-  //ok &= samplerEngine2UnitTestFileIO();
+  ok &= samplerProcessors();
 
 
 
