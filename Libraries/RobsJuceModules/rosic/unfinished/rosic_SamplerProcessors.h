@@ -71,7 +71,7 @@ protected:
   // todo: maybe templatize this class and use float for TPar, and rsfloat32x2 for TSig in the 
   // sampler
 
-  struct BiquadVars             // biquad filter, using DF2 (todo: try TDF1)
+  struct BiquadVars             // biquad filter, using DF2 (todo: try TDF1 -> smaller state)
   { 
     TSig  x1, x2, y1, y2;       // state
     TCoef b0, b1, b2, a1, a2;   // coeffs

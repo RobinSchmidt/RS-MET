@@ -1250,30 +1250,43 @@ bool samplerFilterTest()
   using Ev   = rosic::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
 
-
   // Create a pinkish noise as example sample:
-  float fs  = 44100;     // sample rate
-  float slp = -3.01;     // spectral slope of the noise
-  int   N   = 500;       // length of (co)sinewave sample
-  VecF noise;            // noise sample
-  VecF tgt;              // target output in tests
-  VecF tgtL, tgtR;       // ...for when we need different left and right target signal
-  VecF outL(N), outR(N); // for the output signals
-  noise = createColoredNoise(N, slp);   // maybe use a sawtooth wave instead
-  rsPlotVector(noise);
+  float fs     = 44100.f; // sample rate
+  float cutoff = 1000.f;  // filter cutoff
+  float reso   = 0.f;     // filter resonance
+  float slope  = -3.01;   // spectral slope of the noise
+  int   N      = 500;     // length of (co)sinewave sample
+  VecF noise;             // noise sample
+  VecF tgt(N);            // target output in tests
+  VecF outL(N), outR(N);  // for the output signals
+  noise = createColoredNoise(N, slope);   // maybe use a sawtooth wave instead
+  //rsPlotVector(noise);
 
+  // Filter the noise to establish the target signal:
+  RAPT::rsStateVariableFilter<float, float> svf;
+  svf.setSampleRate(fs);
+  svf.setFrequency(cutoff);
+  //svf.setResonance(reso); // we need a conversion formula, resonance is in dB
+  for(int n = 0; n < N; n++)
+    tgt[n] = svf.getSample(noise[n]);
+  //rsPlotVector(tgt);
 
+  // Create and set up sampler engine:
+  SE se;
+  float *pSmp = &noise[0];
+  se.addSampleToPool(&pSmp, N, 1, fs, "Noise");
+  se.addGroup();
+  se.addRegion(0);
+  se.setRegionSample( 0, 0, 0);
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f);
+  se.setRegionSetting(0, 0, PST::FilterCutoff,    cutoff);
+  se.setRegionSetting(0, 0, PST::FilterResonance, reso);
 
-
-  //for(int n = 0; n < N; n++)
-  //  sin440[n] = sinf((float)(2*PI*f/fs) * n);
+  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  // predictably fails!
 
   // ToDo:
-  // -Create an engine and load it with a noise sample
-  // -Set up the filter opcode
-  // -Filter the noise using regular library filters and the engine and compare results
-
-
+  // -Implement filtering in rsSamplerEngine 
 
 
   rsAssert(ok);
