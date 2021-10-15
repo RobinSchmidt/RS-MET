@@ -7,7 +7,7 @@ T getSampleAt(const std::vector<T>& v, T pos)
 {
   if(pos < T(0)) return T(0);
 
-  int   i = (int) pos;
+  int i = (int) pos;
   T f = pos - (T)i;
 
   T x0(0), x1(0);
@@ -31,6 +31,51 @@ T getSampleAt(const std::vector<T>& v, T pos)
 // rsSamplerEngine::RegionPlayer::getFrame and implement the  stream->getFrameStereo  call in the
 // same way as above. ...but it will work only if delay is used...but such minute details are 
 // perhaps not very important anyway
+
+// New implementation, may make the one above obsolete
+// -xL,xR are values that indicate, how the signal is supposed to continue beyond the left and 
+//  right boundaries
+template<class T>
+T getSampleAtNew(const std::vector<T>& v, T pos, T xL = T(0), T xR = T(0))
+{
+  int N = (int)v.size();
+  if(pos <= T(-1)) return xL;
+  if(pos >= T(N) ) return xR;
+
+  int i = (int) floor(pos);       // floor of position
+  T   f = pos - (T)i;             // fractional part of pos
+
+  if(i   >= 0) xL = v[i];
+  if(i+1 <  N) xR = v[i+1];
+
+  return (T(1) - f) * xL + f * xR;
+}
+// needs verification
+
+bool testGetSampleAt()  // unit test for function above
+{
+  bool ok = true;
+  using Vec = std::vector<float>;
+
+  Vec v;  // empty vector
+
+  float y;
+
+  float xL =  9.f;
+  float xR = 11.f;
+
+  // For an empty vector, it ramps from xL to xR for pos in -1,..,0:
+  y = getSampleAtNew(v, -1.25f, xL, xR); ok &= y == xL;
+  y = getSampleAtNew(v, -1.f,   xL, xR); ok &= y == xL;
+  y = getSampleAtNew(v, -0.75f, xL, xR); ok &= y == 0.75*xL + 0.25*xR;
+  y = getSampleAtNew(v, -0.5f,  xL, xR); ok &= y == (xL+xR)/2.f;
+  y = getSampleAtNew(v, -0.25f, xL, xR); ok &= y == 0.25*xL + 0.75*xR;
+  y = getSampleAtNew(v,  0.f,   xL, xR); ok &= y == xR;
+  y = getSampleAtNew(v, +1.f,   xL, xR); ok &= y == xR;
+  y = getSampleAtNew(v, +1.25f, xL, xR); ok &= y == xR;
+
+  return ok;
+}
 
 // pan is suppoesed to be in -1...+1
 template<class T>
@@ -1284,6 +1329,9 @@ bool samplerFilterTest()
 
   //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
   // predictably fails!
+
+  ok &= testGetSampleAt();
+  // this should go into a rapt unit test
 
   // ToDo:
   // -Implement filtering in rsSamplerEngine 
