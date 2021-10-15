@@ -64,15 +64,52 @@ bool testGetSampleAt()  // unit test for function above
   float xL =  9.f;
   float xR = 11.f;
 
-  // For an empty vector, it ramps from xL to xR for pos in -1,..,0:
+  // For an empty vector, it ramps from xL to xR for pos in -1..0:
   y = getSampleAtNew(v, -1.25f, xL, xR); ok &= y == xL;
   y = getSampleAtNew(v, -1.f,   xL, xR); ok &= y == xL;
   y = getSampleAtNew(v, -0.75f, xL, xR); ok &= y == 0.75*xL + 0.25*xR;
   y = getSampleAtNew(v, -0.5f,  xL, xR); ok &= y == (xL+xR)/2.f;
   y = getSampleAtNew(v, -0.25f, xL, xR); ok &= y == 0.25*xL + 0.75*xR;
   y = getSampleAtNew(v,  0.f,   xL, xR); ok &= y == xR;
+  y = getSampleAtNew(v, +0.25f, xL, xR); ok &= y == xR;
   y = getSampleAtNew(v, +1.f,   xL, xR); ok &= y == xR;
   y = getSampleAtNew(v, +1.25f, xL, xR); ok &= y == xR;
+
+  // For a 1-element vector with the sole element v[0] = y0, we expect to see a ramp from xL to x0
+  // for pos in -1...0 and a ramp from x0 to xR for pos in 0...+1:
+  float x0 = 20.0f;  // rename to x0
+  v.push_back(x0);
+  y = getSampleAtNew(v, -1.25f, xL, xR); ok &= y == xL;
+  y = getSampleAtNew(v, -1.f,   xL, xR); ok &= y == xL;
+  y = getSampleAtNew(v, -0.75f, xL, xR); ok &= y == 0.75*xL + 0.25*x0;
+  y = getSampleAtNew(v, -0.25f, xL, xR); ok &= y == 0.25*xL + 0.75*x0;
+  y = getSampleAtNew(v,  0.f,   xL, xR); ok &= y == x0;
+  y = getSampleAtNew(v, +0.25f, xL, xR); ok &= y == 0.75*x0 + 0.25*xR;
+  y = getSampleAtNew(v, +0.75f, xL, xR); ok &= y == 0.25*x0 + 0.75*xR;
+  y = getSampleAtNew(v, +1.f,   xL, xR); ok &= y == xR;
+  y = getSampleAtNew(v, +1.25f, xL, xR); ok &= y == xR;
+
+  // For a 2-element vector, with elements x0,x1, we expect to see a ramp from xL to x0
+  // for pos in -1...0, a linear interpolation between x0 and x1 for pos in 0...1 and a ramp from 
+  // x1 to xR for pos in 1...2:
+  float x1 = 25.0f;
+  v.push_back(x1);
+  y = getSampleAtNew(v, -1.25f, xL, xR); ok &= y == xL;
+  y = getSampleAtNew(v, -1.f,   xL, xR); ok &= y == xL;
+  y = getSampleAtNew(v, -0.75f, xL, xR); ok &= y == 0.75*xL + 0.25*x0;
+  y = getSampleAtNew(v, -0.25f, xL, xR); ok &= y == 0.25*xL + 0.75*x0;
+  y = getSampleAtNew(v,  0.f,   xL, xR); ok &= y == x0;
+  y = getSampleAtNew(v, +0.25f, xL, xR); ok &= y == 0.75*x0 + 0.25*x1;
+  y = getSampleAtNew(v, +0.75f, xL, xR); ok &= y == 0.25*x0 + 0.75*x1;
+  y = getSampleAtNew(v, +1.f,   xL, xR); ok &= y == x1;
+  y = getSampleAtNew(v, +1.25f, xL, xR); ok &= y == 0.75*x1 + 0.25*xR;
+  y = getSampleAtNew(v, +1.75f, xL, xR); ok &= y == 0.25*x1 + 0.75*xR;
+  y = getSampleAtNew(v, +2.f,   xL, xR); ok &= y == xR;
+  y = getSampleAtNew(v, +2.25f, xL, xR); ok &= y == xR;
+
+  // ToDo: maybe make a little function that can be called like: 
+  //   ok &= test(-0.75, 0.75*xL + 0.25*x0); etc. to reduce boilerplate
+
 
   return ok;
 }
