@@ -1267,6 +1267,9 @@ Ideas:
 -For the filter, make a special class rsSamplerFilter or rsMultiModeFilter which may interpret its 
  states and coeffs differently, depending on the selected mode (can implement ladder, svf (2 in 
  series or parallel), biquad, etc.).
+-Maybe implement the accumulating mode already in the baseclass but there, do indeed use 3 filters
+ per region player. The subclass is responsible for the optimization of using only 1 filter per 
+ group and only one for the whole instrument.
 -Maybe for the signals, use rsFloat32x4. fits better with usage of float for the parameters. Maybe
  we can use the 2 extra channels to our advantage as well. Maybe they can store the Hilbert trafo
  of the signals in the actual channels. Or maybe it can carry along some metadata that can be 

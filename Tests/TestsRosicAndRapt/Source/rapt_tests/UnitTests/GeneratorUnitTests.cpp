@@ -59,7 +59,6 @@ void rsApplyDelay(std::vector<T>& x, T delay)
     x[i] = getSampleAt(tmp, T(i-delay));
 }
 
-
 template<class T>
 T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
 {
@@ -81,6 +80,27 @@ T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
   return p; 
 }
 
+template<class T>
+std::vector<T> createColoredNoise(int N, T spectralSlope, int seed = 0)
+{
+  // Create white noise:
+  std::vector<T> y(N);
+  RAPT::rsNoiseGenerator<T> ng;
+  ng.setSeed(seed);
+  for(int n = 0; n < N; n++)
+    y[n] = ng.getSample();
+
+  // Apply coloring:
+  rosic::SlopeFilter flt;
+  flt.setSlope(spectralSlope);
+  for(int n = 0; n < N; n++)
+    y[n] = flt.getSample(y[n]);
+
+  return y;
+}
+// move to test tools
+
+//=================================================================================================
 
 bool samplerDataUnitTest()
 {
@@ -1219,17 +1239,57 @@ bool samplerEngineUnitTestFileIO()
   return ok;
 }
 
+bool samplerFilterTest()
+{
+  bool ok = true;
+
+  using VecF = std::vector<float>;     // vector of sample values in RAM
+  using SE   = rosic::rsSamplerEngineTest;
+  //using RC   = rosic::rsReturnCode;
+  using PST  = SE::PlaybackSetting::Type;
+  using Ev   = rosic::rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
+
+
+  // Create a pinkish noise as example sample:
+  float fs  = 44100;     // sample rate
+  float slp = -3.01;     // spectral slope of the noise
+  int   N   = 500;       // length of (co)sinewave sample
+  VecF noise;            // noise sample
+  VecF tgt;              // target output in tests
+  VecF tgtL, tgtR;       // ...for when we need different left and right target signal
+  VecF outL(N), outR(N); // for the output signals
+  noise = createColoredNoise(N, slp);   // maybe use a sawtooth wave instead
+  rsPlotVector(noise);
+
+
+
+
+  //for(int n = 0; n < N; n++)
+  //  sin440[n] = sinf((float)(2*PI*f/fs) * n);
+
+  // ToDo:
+  // -Create an engine and load it with a noise sample
+  // -Set up the filter opcode
+  // -Filter the noise using regular library filters and the engine and compare results
+
+
+
+
+  rsAssert(ok);
+  return ok;
+}
 
 bool samplerProcessorsTest()
 {
   bool ok = true;
 
-  rosic::rsSamplerFilter flt;
+  //rosic::rsSamplerFilter flt;
 
 
   int filterSize = sizeof(rosic::rsSamplerFilter);  // currently 64 - try to keep it small
 
-
+  ok &= samplerFilterTest();
 
   rsAssert(ok);
   return ok;

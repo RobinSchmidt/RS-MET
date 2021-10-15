@@ -17,6 +17,9 @@ void rsSamplerFilter::processFrame(float& L, float& R)
 /*
 
 rsSamplerFilter:
+-Maybe make also a struct for very basic 1-pole/1-zero filter. It can be realized by the biquad 
+ (and by the other structures, too), but maybe it's more efficient to do it like that. I expect 
+ that a simple 1st order lowpass is a quite common thing to use.
 -why actually split the variables into coeffs and state - maybe lump them together completely
  maybe that saves some amount of padding as well (declare the "big" TSign variables first). 
  That also eases the implementation. The filters can have their own getSample methods

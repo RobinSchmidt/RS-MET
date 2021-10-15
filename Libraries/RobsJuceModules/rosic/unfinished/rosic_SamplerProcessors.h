@@ -63,72 +63,48 @@ protected:
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data Structures. We use structs to define the coefficient sets and internal states
-  of the different filter topologies and then make unions from the structs to represent either of 
-  these. Then, we declare members of these union types to store our data. */
+  of the different filter topologies and then make a union from the structs to represent either of 
+  these. Then, we declare a member of the union type to store our data. */
 
   using TCoef = float;
   using TSig  = RAPT::rsVector2D<float>;  // for stereo
   // todo: maybe templatize this class and use float for TPar, and rsfloat32x2 for TSig in the 
   // sampler
 
-  struct BiquadCoeffs
-  {
-    TCoef b0, b1, b2, a1, a2;
+  struct BiquadVars             // biquad filter, using DF2 (todo: try TDF1)
+  { 
+    TSig  x1, x2, y1, y2;       // state
+    TCoef b0, b1, b2, a1, a2;   // coeffs
   };
-  struct BiquadState
+  struct StateVars              // state variable filter (using ZDF)
   {
-    TSig x1, x2, y1, y2;
+    TSig  s1, s2;               // state
+    TCoef R;                    // damping(?)
   };
-
-  struct StateVarCoeffs
+  struct LadderVars             // ladder filter (using UDF)
   {
-
-  };
-  struct StateVarState
-  {
-    TSig s1, s2;
-  };
-
-  struct LadderCoeffs
-  {
+    TSig  y1, y2, y3, y4;       // state
     TCoef a, k;                 // filter and feedback coeffs
     TCoef c0, c1, c2, c3, c4;   // output gains
   };
-  struct LadderState
+  union FilterVars              // Try to find a better name
   {
-    TSig y1, y2, y3, y4;
+    FilterVars() {}             // without it, msc complains
+
+    BiquadVars bqd;
+    StateVars  svf;
+    LadderVars ldr;
   };
-
-
-  union Coeffs
-  {
-    BiquadCoeffs   bqd;
-    StateVarCoeffs svf;
-    LadderCoeffs   ldr;
-
-  };
-  union State
-  {
-    State() {}                   // without it, msc complains
-    BiquadState   bqd;
-    StateVarState svf;
-    LadderState   ldr;
-  };
-
-
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  Type   type = Type::BYPASS;  // maybe don't keep as member
-  Coeffs coeffs;
-  State  state;
-
+  Type       type = Type::BYPASS;  // maybe don't keep as member
+  FilterVars vars;
 
   // ToDo: maybe include also a state-vector filter (maybe rename to state phasor filter to avoid
   // name clash in abbreviation)
-
 };
 
 //=================================================================================================
