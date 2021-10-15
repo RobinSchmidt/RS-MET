@@ -1227,8 +1227,11 @@ bool samplerProcessors()
   rosic::rsSamplerFilter flt;
 
 
+  int filterSize = sizeof(rosic::rsSamplerFilter);  // currently 32 - try to keep it small
 
 
+
+  rsAssert(ok);
   return ok;
 }
 

@@ -47,7 +47,9 @@ protected:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Data Structures */
+  /** \name Data Structures. We use structs to define the coefficient sets and internal states
+  of the different filter topologies and then make unions from the structs to represent either of 
+  these. Then, we declare members of these union types to store our data. */
 
   using TCoef = float;
   using TSig  = RAPT::rsVector2D<float>;  // for stereo
@@ -60,6 +62,7 @@ protected:
   };
   struct BiquadState
   {
+    BiquadState() {}
     TSig x1, x2, y1, y2;
   };
 
@@ -69,7 +72,8 @@ protected:
   };
   struct StateVarState
   {
-
+    StateVarState() {}
+    TSig s1, s2;
   };
 
   struct LadderCoeffs
@@ -79,24 +83,24 @@ protected:
   };
   struct LadderState
   {
+    LadderState() {}
     TSig y1, y2, y3, y4;
   };
 
 
-
-  // make unions from these different structs
-
   union Coeffs
   {
     BiquadCoeffs   bqd;
-    LadderCoeffs   ldr;
     StateVarCoeffs svf;
+    LadderCoeffs   ldr;
+
   };
   union State
   {
-    BiquadState   bqd;
-    LadderState   ldr;
+    State() {}
+    //BiquadState   bqd;
     StateVarState svf;
+    LadderState   ldr;
   };
 
 
@@ -104,8 +108,8 @@ protected:
   /** \name Data */
 
   Mode   mode = Mode::BYPASS;
-  //Coeffs coeffs;
-  //State  state;
+  Coeffs coeffs;
+  State  state;
 
 
   // ToDo: maybe include also a state-vector filter (maybe rename to state phasor filter to avoid

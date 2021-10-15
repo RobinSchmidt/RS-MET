@@ -57,11 +57,13 @@ public:
   static bool arePointsOnSameSideOfLine(const rsVector2D<T> &p1, const rsVector2D<T> &p2,
     const rsVector2D<T> &a, const rsVector2D<T> &b)
   {
-    rsVector2D<T> aa = a, bb = b, pp1 = p1, pp2 = p2; // needed because Point::operator- 
-                                                            // is not const
+    rsVector2D<T> aa = a, bb = b, pp1 = p1, pp2 = p2; 
+    // needed because rsVector2D::operator- is not const -> fix this
+
     T cp1 = rsVector2D<T>::crossProduct(bb-aa, pp1-aa);
     T cp2 = rsVector2D<T>::crossProduct(bb-aa, pp2-aa);
-    if(rsVector2D<T>::scalarProduct(cp1, cp2) >= 0)
+    //if(rsVector2D<T>::scalarProduct(cp1, cp2) >= 0)  // old - wrong? doesn't seem to make sense
+    if(cp1*cp2 >= 0)  // new - makes more sense but is a gues -> verify
       return true;
     else
       return false;

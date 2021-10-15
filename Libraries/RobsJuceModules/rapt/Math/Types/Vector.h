@@ -12,8 +12,14 @@ public:
   /** The 2 cartesian coordinate values. */
   T x, y;
 
+
+
   /** Constructor. Initializes coordinates with the passed values. */
-  rsVector2D(T _x = 0, T _y = 0) : x(_x), y(_y) {}
+  rsVector2D(T _x, T _y) : x(_x), y(_y) {}
+
+  /** Standard constructor. Leaves vector elements uninitialized. */
+  rsVector2D() {}
+
   // for optimization, make a constructor without initialization
 
   //-----------------------------------------------------------------------------------------------
@@ -167,8 +173,7 @@ T rsNorm(const rsVector2D<T>& a)
 // allow syntax a.norm(); have also a.squaredNorm()
 
 
-
-// todo: dot, cross
+// todo: rsCross
 
 //=================================================================================================
 
