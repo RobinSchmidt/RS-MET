@@ -25,3 +25,46 @@ rsSamplerFilter:
  extend sfz to support 4 instead of 3 bands when we later can realize 2 bands per filter...
 
 */
+
+
+//=================================================================================================
+
+/** Class where all the boilerplate for making DSP processors available in the sample goes. */
+
+class rsSamplerProcessors
+{
+
+public:
+
+  class Filter : public rsSamplerEngine::SignalProcessor
+  {
+
+  public:
+
+    void processFrame(rsFloat64x2& inOut) override
+    {
+
+    }
+
+    void processBlock(rsFloat64x2* inOut, int N) override
+    {
+
+    }
+
+    void resetState() override
+    {
+
+    }
+
+    void resetSettings() override
+    {
+
+    }
+
+  protected:
+
+    rsSamplerFilter core;
+
+  };
+
+};

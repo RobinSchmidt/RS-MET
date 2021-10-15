@@ -65,6 +65,21 @@ public:
   class Group;
   class Instrument;
 
+  /** Enumeration of the different signal processor types that may be used in the definition of 
+  instruments. It's actually not really fundamentally necessary to represent the instrument's data
+  itself because the information about what sorts of processors are used is already implicitly 
+  given in the opcodes. However, to facilitate the actual playback of an instrument in a sampler 
+  engine, this small amount of redundancy is convenient (in particular, to build the DSP chain for
+  a region player). */
+  enum SignalProcessorType
+  {
+    Filter,
+    Waveshaper,
+    Compressor
+    // ...
+  };
+  // under construction
+
 
   //-----------------------------------------------------------------------------------------------
   /** A class to represent various playback settings of a region, group or instrument. Such 
@@ -218,9 +233,13 @@ public:
     array. */
     bool removeSetting(PlaybackSetting::Type type);
 
-    void clearSettings() { settings.clear(); }
+    void clearSettings() // rename to clear
+    { 
+      settings.clear();
+      signalProcessors.clear();
+    }
     // should this also set loKey/hiKey and loVel/hiVel back to their default values of 0/127? 
-    // i actually think so...
+    // i actually think so...also the signalProcessors
 
 
     void setLoKey(uchar newKey) { loKey = newKey; }
@@ -301,6 +320,22 @@ public:
     // todo: later maybe also take loKey/hiKey parent into account, if not nulltpr
 
 
+    const std::vector<SignalProcessorType>& getProcessingChain() const
+    { return signalProcessors; }
+    // This is supposed to return a reference to an array of processor types that is used by the 
+    // engine to build the dsp chain when this region should be played.
+    // ToDo:
+    // -define an enum ProcessorType, containing Filter, Waveshaper, Compressor, etc.
+    // -add a std::vector<ProcessorType> member (that's what this function returns a reference to)
+    // -when setting up an opcode that requires a certain processor that is not already in the list,
+    //  add it
+    // -where necessary, do this addition also in the sfz-parser
+    // -the order in which the processors appear in the chain shoulöd reflect the order in which 
+    //  their opcodes appear in the sfz (or, if setup is done programmatically, the order in which
+    //  the opcodes were added)
+
+
+
   protected:
 
     /** Sets the audio stream object that should be used for this region. */
@@ -345,6 +380,12 @@ public:
     //  group setting -> check, how sfzPlayer behaves
 
     std::vector<PlaybackSetting> settings;
+
+
+    std::vector<SignalProcessorType> signalProcessors;
+    /** Listing of the types of signal processors used in this instrument in the same order like how
+    they should be applied (we assume a serial connection). */
+    // should be member of the region
 
   };
 
@@ -427,6 +468,10 @@ public:
     // the comparison is quite strict in the sense that the settings must occur in the same order
 
   private:
+
+
+
+
 
 
     std::vector<Region*> regions;
@@ -531,7 +576,11 @@ public:
 
 
   /** Clears the whole instrument definition. */
-  void clearInstrument() { instrument.clearGroups(); }
+  void clearInstrument() 
+  { 
+    instrument.clearGroups();
+    //signalProcessors.clear();
+  }
   //{ instrument.groups.clear(); }
   // todo: may wrap into instrument.clear() - don't access the groups array directly
 
@@ -566,8 +615,10 @@ public:
   //const std::vector<PlaybackSetting>& getGroupSettings(size_t i) const 
   //{ return instrument.getGroupSettings(i); }
 
-
   bool operator==(const rsSamplerData& rhs) const { return instrument == rhs.instrument; }
+
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Misc
@@ -613,6 +664,9 @@ protected:
     const std::string& opcode, const std::string& value);
 
   static void copy(const rsSamplerData& src, rsSamplerData& dst);
+
+
+
 
 };
 

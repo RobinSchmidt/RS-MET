@@ -47,6 +47,8 @@ public:
     LDR_LPF_18,
     LDR_LPF_24
   };
+  // hmm...maybe split the type into two parts: topology (svf, ladder, etc.), mode (lpf, hpf, etc.)
+
 
   void setup(Type type, float cutoff, float resonance);
 
@@ -56,6 +58,11 @@ public:
 
   void processFrame(float& L, float& R);
 
+
+  void resetState()
+  {
+
+  }
 
 
 protected:
@@ -75,6 +82,14 @@ protected:
   { 
     TSig  x1, x2, y1, y2;       // state
     TCoef b0, b1, b2, a1, a2;   // coeffs
+    void resetState() { x1 = x2 = y1 = y2 = TSig(0); }
+    void initCoeffs() { b0 = TCoef(1); b1 = b2 = a1 = a2 = TCoef(0); }
+    TSig getSample(const TSig& in)
+    {
+      TSig y = b0*in + b1*x1 + b2*x2 - a1*y1 - a2*y2;  // compute output
+      x2 = x1; x1 = in; y2 = y1; y1 = y;               // update state
+      return y;
+    }
   };
   struct StateVars              // state variable filter (using ZDF)
   {
@@ -100,7 +115,7 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  Type       type = Type::BYPASS;  // maybe don't keep as member
+  Type type = Type::BYPASS;
   FilterVars vars;
 
   // ToDo: maybe include also a state-vector filter (maybe rename to state phasor filter to avoid
@@ -108,6 +123,9 @@ protected:
 };
 
 //=================================================================================================
+
+
+
 
 
 }

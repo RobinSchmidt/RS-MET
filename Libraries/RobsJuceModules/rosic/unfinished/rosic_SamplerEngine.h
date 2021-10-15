@@ -674,11 +674,6 @@ protected:
   // as plugin)
 
 
-  //std::vector<PlaybackSetting> settings;
-  /**< Playback settings that apply to all groups within this instrument, unless a group (or 
-  region) overrides a setting with its own value. **/
-  // get rid - should go into sfz.instrument.settings
-
   std::vector<RegionPlayer*> activePlayers;
   /**< Array of pointers to region players that are currently active, i.e. playing. */
   // rename to activeRegionPlayers
@@ -697,7 +692,6 @@ protected:
   // array data structure for that later. The same strategy should then later be used for DSP 
   // objects as well
 
-
   double sampleRate = 44100.0;
   /**< Sample rate at which this object runs. */
 
@@ -713,9 +707,6 @@ protected:
 
 
 
-
-
-
   // Some member variables for features whose implementation is actually deferred to the subclass
   // rsSamplerEngine2. For convenience of implementation, we already need them to be members of 
   // this baseclass here. In this class here, they are always false and we don't even have setters 
@@ -727,11 +718,11 @@ protected:
   // on top of the region settings/modulations. This is a feature not present in the sfz spec. 
   bool groupSettingsOverride  = true;
   bool regionSettingsOverride = true;
-  // todo:
-  // -do not distinguish between "settings" and "modulations" - the distinction is too fuzzy for a 
-  //  meaningful user concept
-  // -rename flags to group/instrumentSettingsOverride with reversed semantics (defaulting to true)
-  //  -this better reflects whats going on in the code and is less confusing for the user
+
+
+  // Our pools of DSP objects (under construction):
+  std::vector<rsSamplerFilter*> idleFilters;
+  std::vector<rsSamplerFilter>  filterPool;
 
 
 
