@@ -28,41 +28,40 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  enum class Type // maybe rename to Type for consistency with sfz terminology
+  enum class Type // maybe don't use all-caps for the types
   {
     // Biquad filter modes:
-    BYPASS,
-    LPF_6,
-    HPF_6,
+    Bypass,
+    Lowpass_6,
+    Highpass_6,
 
     // State variable filter modes:
-    SVF_LPF_12,
-    SVF_LPF_24,
-    SVF_HPF_12,
-    SVF_HPF_24,
+    SVF_Lowpass_12,
+    SVF_Lowpass_24,
+    SVF_Highpass_12,
+    SVF_Highpass_24,
 
     // Ladder filter modes:
-    LDR_LPF_6,
-    LDR_LPF_12,
-    LDR_LPF_18,
-    LDR_LPF_24
+    LDR_Lowpass_6,
+    LDR_Lowpass_12,
+    LDR_Lowpass_18,
+    LDR_Lowpass_24
   };
-  // hmm...maybe split the type into two parts: topology (svf, ladder, etc.), mode (lpf, hpf, etc.)
+  // hmm...
+  // -maybe split the type into two parts: topology (svf, ladder, etc.), mode (lpf, hpf, etc.)
+  // -maybe we can use a bitfield: 2 bits for the topology, 6 bits for the type within the selected
+  //  topology, makes a total of 8 bits to specify the mode in a structured way
 
 
   void setup(Type type, float cutoff, float resonance);
+  void initCoeffs();
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
   void processFrame(float& L, float& R);
-
-
-  void resetState()
-  {
-
-  }
+  void resetState();
 
 
 protected:
@@ -115,7 +114,7 @@ protected:
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
-  Type type = Type::BYPASS;
+  Type type = Type::Bypass;
   FilterVars vars;
 
   // ToDo: maybe include also a state-vector filter (maybe rename to state phasor filter to avoid
@@ -123,6 +122,34 @@ protected:
 };
 
 //=================================================================================================
+
+/**  */
+
+class rsSamplerWaveShaper
+{
+
+
+  enum class Shape
+  {
+    None,
+    Tanh,
+    HardClip,
+    SoftClipCubic,
+    SoftClipHexic
+    // ...etc.
+  };
+
+  
+protected:
+
+  Shape shape = Shape::None;
+  float preGain, dcOffset, postGain;
+  float shapePar1, shapePar2;            // meaning depends on chosen shape
+
+  // what about oversampling..but maybe that should be reserved to an advanced variant? or maybe
+  // that should apply to a region as a whole?
+
+};
 
 
 

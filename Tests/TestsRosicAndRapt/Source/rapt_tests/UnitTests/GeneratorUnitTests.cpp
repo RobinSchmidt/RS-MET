@@ -1330,13 +1330,9 @@ bool samplerFilterTest()
 
   ok &= testGetSampleAt(); // preliminary - should go into a rapt unit test
 
-
   using VecF = std::vector<float>;     // vector of sample values in RAM
   using SE   = rosic::rsSamplerEngineTest;
-  //using RC   = rosic::rsReturnCode;
   using PST  = SE::PlaybackSetting::Type;
-  using Ev   = rosic::rsMusicalEvent<float>;
-  using EvTp = Ev::Type;
 
   // Create a pinkish noise as example sample:
   float fs     = 44100.f; // sample rate
@@ -1369,19 +1365,49 @@ bool samplerFilterTest()
   se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f);
   se.setRegionSetting(0, 0, PST::FilterCutoff,    cutoff);
   se.setRegionSetting(0, 0, PST::FilterResonance, reso);
-
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
-  // predictably fails!
-
+  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  // predictably fails! filter is not yet implemented
 
 
-  // ToDo:
-  // -Implement filtering in rsSamplerEngine 
+
+  // ToDo - Implement filtering in rsSamplerEngine, plan:
+  // -In rsSsamplerData, correctly maintain OrganizationLevel::signalProcessors, i.e. whenever an
+  //  opcode is encountered in add/setSetting that sets a parameter of a DSP object that does not
+  //  yet exist in the array (e.g. PST::FilterCutoff when no SignalProcessorType::Filter) yet 
+  //  exists in the array), add it
+  // -In RegionPlayer::buildProcessingChain, inquire that array, loop through it and add DSPs to
+  //  the dspChain as necessary. How to do that exactly should depend on override vs accumulate
+  //  mode setting. in override mode, we only need a dsp chain for the region, etc.
+  // -Maybe after thenDSP has been added to the chain, it should be set up directly. Doing it in
+  //  RegionPlayer::setupDspSettings would be a mess to implement. Then setupDspSettings should
+  //  be renamed to setupPlaybackSettings...but maybe that function should go away entirely..but 
+  //  maybe not...hmmm
 
 
   rsAssert(ok);
   return ok;
 }
+
+bool samplerWaveShaperTest()
+{
+  bool ok = true;
+
+  using VecF = std::vector<float>;
+  using SE   = rosic::rsSamplerEngineTest;
+  using PST  = SE::PlaybackSetting::Type;
+
+
+
+  // ToDo: 
+  // -Figure out, if there is already an existing extension to sfz that defines opcodes for 
+  //  waveshaping. If so, use these. Otherwise define opcodes: dist_drive, dist_shape, dist_gain
+  //  ..or maybe distort_ or distortion_
+
+  rsAssert(ok);
+  return ok;
+}
+
+
 
 bool samplerProcessorsTest()
 {
@@ -1389,10 +1415,20 @@ bool samplerProcessorsTest()
 
   //rosic::rsSamplerFilter flt;
 
+  //using SP = rosic::rsSamplerProcessors;  // doesn't compile
+  int size;
+  size = sizeof(rosic::rsSamplerFilter);       // 64
+  size = sizeof(rosic::rsSamplerWaveShaper);   // 24
+  //size = sizeof(SP::Filter);
+  //size = sizeof(SP::WaveShaper);
 
-  int filterSize = sizeof(rosic::rsSamplerFilter);  // currently 64 - try to keep it small
 
+
+  ok &= samplerWaveShaperTest();
   ok &= samplerFilterTest();
+
+
+
 
   rsAssert(ok);
   return ok;
@@ -1419,3 +1455,18 @@ bool samplerEngineUnitTest()
   //rsAssert(ok, "samplerEngineUnitTest failed");
   return ok;
 }
+
+/*
+
+ToDo:
+-maybe wrap all the sampler-related code into a a sub-namespace rosic::Sampler
+ -the, the names of the classes may get rid of the "Sampler" part - that would then be redundant, 
+  i.e. classes are named Data, Engine, SignalProcessor, Modulator, etc.
+ -the SignalProcessor and Modulator class could be dragged out of the Engine
+ -maybe the RegionPlayer class, too
+
+ resources:
+ http://sfzformat.com/legacy/           basic opcode reference
+ http://drealm.info/sfz/plj-sfz.xhtml   explanantions and some unofficial opcodes
+
+*/
