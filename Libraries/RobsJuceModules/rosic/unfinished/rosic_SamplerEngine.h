@@ -108,6 +108,7 @@ public:
     virtual void resetSettings() = 0;
     // todo: processBlock
   };
+  // maybe drag them out of the class, maybe make a sub-namespace rosic::Sampler
 
   /** A struct that can be returned from midi event handling functions to inform the caller, how 
   the event has changed the playback status of the engine. For example, a noteOn event will 

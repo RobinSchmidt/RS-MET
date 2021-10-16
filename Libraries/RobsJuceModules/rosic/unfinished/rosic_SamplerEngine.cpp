@@ -843,6 +843,18 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
 
   using DspType = rsSamplerData::SignalProcessorType;
   const std::vector<DspType>& dspTypeChain = region->getProcessingChain();
+  for(size_t i = 0; i < dspTypeChain.size(); i++)
+  {
+    DspType type = dspTypeChain[i];
+
+    // ToDo:
+    //SignalProcessor* dsp = getSignalProcessor(type);
+    //dspChain.processors.push_back(dsp);
+    // maybe for getSignalProcessor, we need a pointer to the outlying rsSamplerEngine object or
+    // some sort of rsSamplerProcessorPool object
+
+    int dummy = 0;
+  }
 
 
   return true;  
@@ -858,12 +870,12 @@ void rsSamplerEngine::RegionPlayer::resetDspSettings()
   increment  = 1.0;
   offset     = 0.f;
 
-  endTime    = stream->getNumFrames();  
-  // Maybe use -1? That may require updating unit tests. But maybe it's appropriate to use 
+  endTime    = (float)stream->getNumFrames();  
+  // Maybe use -1? That may require updating the unit tests. But maybe it's appropriate to use 
   // numFrames when assuming linear interpolation. I think, for general interpolators, we should 
-  // use endTime = numFrames - 1 + kernelSize/2. Test this very high downshifting factors and maybe
-  // with a sample that is just 1 sample long with a value of 1. We should see the interpolation 
-  // kernel as output.
+  // use endTime = numFrames - 1 + kernelSize/2. Test this with very high downshifting factors and
+  // maybe with a sample that is just 1 sample long with a value of 1. We should see the 
+  // interpolation kernel as output.
 
   loopStart  = 0.f;
   loopEnd    = 0.f;
@@ -947,8 +959,8 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
     case TP::Offset:
     { 
-      if(onTop) offset += val; 
-      else      offset  = val; 
+      if(onTop) offset += float(val); 
+      else      offset  = float(val); 
     }  break;
 
 

@@ -1392,9 +1392,10 @@ bool samplerWaveShaperTest()
 {
   bool ok = true;
 
-  using VecF = std::vector<float>;
-  using SE   = rosic::rsSamplerEngineTest;
-  using PST  = SE::PlaybackSetting::Type;
+  using VecF  = std::vector<float>;
+  using SE    = rosic::rsSamplerEngineTest;
+  using PST   = SE::PlaybackSetting::Type;
+  using Shape = rosic::rsSamplerWaveShaper::Shape;
 
   // Create a sinewave as example sample:
   float fs = 44100;  // sample rate
@@ -1405,14 +1406,22 @@ bool samplerWaveShaperTest()
   float w = (float)(2*PI*f/fs);
   for(int n = 0; n < N; n++)
     sin440[n] = sinf(w*n);
-  rsPlotVector(sin440);
+  //rsPlotVector(sin440);
 
   // Waveshaper settings:
-  float preGain  = 4.0f;
-  float postGain = 0.5f;
-  float dcOffset = 0.2;
-  //Shape shape    = Shape::tanh;
+  float drive  = 4.0f;
+  //float postGain = 0.5f;
+  float dcOffset = 0.0;
+  Shape shape    = Shape::Tanh;
 
+  // Create target signal:
+  for(int n = 0; n < N; n++)
+    tgt[n] = tanh(drive * sin440[n]);
+  //rsPlotVector(tgt);
+  // todo: use a cheap approximation to tanh and/or rsTanh (based on exp), maybe use exp based on
+  // 2Dat's code (somewher on the kvr forum)...also implement mystran's "random cheap sigmoid"
+  // maybe use the quake alo for the inverse sqrt...but first things first...and the first thing is
+  // to put the infrastructure in place
 
   // Create and set up sampler engine:
   SE se;
@@ -1422,9 +1431,15 @@ bool samplerWaveShaperTest()
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
-  se.setRegionSetting(0, 0, PST::DistShape,       1.f);  // todo: use enum value
-  se.setRegionSetting(0, 0, PST::DistDrive,      preGain);
-  //se.setRegionSetting(0, 0, PST::DistGain,       postGain);
+  se.setRegionSetting(0, 0, PST::DistShape,      float(shape));
+  se.setRegionSetting(0, 0, PST::DistDrive,      drive);
+  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  // predictably fails! dsp stuff is not yet implemented...i think, i should first refactor by
+  // creating a sub-namespace rosic::Sampler where everything sampler-related goes. then drag out
+  // the SignalProcessor class out of the class rsSamplerEngine, then make a class 
+  // SignalProcessorPool, let the engine maintian such a pool as member, then let the RegionPlayer
+  // maintain a pointer to it from where it may grab its processors. maybe the RegionPlayer itself
+  // may also be dragged out then
 
 
 

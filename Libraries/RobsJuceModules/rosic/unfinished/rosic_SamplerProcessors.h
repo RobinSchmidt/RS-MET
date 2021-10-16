@@ -128,6 +128,7 @@ protected:
 class rsSamplerWaveShaper
 {
 
+public:
 
   enum class Shape
   {
