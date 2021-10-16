@@ -1,3 +1,5 @@
+namespace rosic {
+namespace Sampler {
 
 void rsSamplerFilter::setup(rsSamplerFilter::Type type, float cutoff, float resonance)
 {
@@ -75,6 +77,8 @@ public:
 
 };
 
+
+}} // namespaces
 
 
 //=================================================================================================

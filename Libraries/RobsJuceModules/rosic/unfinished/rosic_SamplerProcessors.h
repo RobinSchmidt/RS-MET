@@ -1,15 +1,15 @@
 #ifndef rosic_SamplerProcessors_h
 #define rosic_SamplerProcessors_h
 
-namespace rosic
-{
+namespace rosic {
+namespace Sampler {
 
 
 //=================================================================================================
 
-/** A multimode filter that implements not only different filter frequency response types (like 
-lowpass, highbpass, bandpass, etc.) but even completely differently structured filters. Depending 
-on what mode has been chosen, the internal state and coefficient data may be interpreted in 
+/** A multimode filter that implements not only different filter frequency response types (like
+lowpass, highbpass, bandpass, etc.) but even completely differently structured filters. Depending
+on what mode has been chosen, the internal state and coefficient data may be interpreted in
 different ways.... */
 
 class rsSamplerFilter
@@ -69,7 +69,7 @@ protected:
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data Structures. We use structs to define the coefficient sets and internal states
-  of the different filter topologies and then make a union from the structs to represent either of 
+  of the different filter topologies and then make a union from the structs to represent either of
   these. Then, we declare a member of the union type to store our data. */
 
   using TCoef = float;
@@ -78,7 +78,7 @@ protected:
   // sampler
 
   struct BiquadVars             // biquad filter, using DF2 (todo: try TDF1 -> smaller state)
-  { 
+  {
     TSig  x1, x2, y1, y2;       // state
     TCoef b0, b1, b2, a1, a2;   // coeffs
     void resetState() { x1 = x2 = y1 = y2 = TSig(0); }
@@ -140,7 +140,7 @@ public:
     // ...etc.
   };
 
-  
+
 protected:
 
   Shape shape = Shape::None;
@@ -153,8 +153,6 @@ protected:
 };
 
 
+}} // namespaces
 
-
-
-}
 #endif

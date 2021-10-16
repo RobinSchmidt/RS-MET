@@ -1,17 +1,18 @@
 #ifndef rosic_SamplerEngine_h
 #define rosic_SamplerEngine_h
 
-namespace rosic
-{
+namespace rosic {
+
+//namespace Sampler {
 
 //=================================================================================================
 
-/** A class for representing musical events such as note-on/off etc. Think of it as a class to 
-represent MIDI events but with some of its anachronistic restrictions lifted, such as the abysmal 
-resolution of values (typically 7 or 14 bit). The template parameter T is supposed to be either 
-float or double. For easy conversion and compatibility with MIDI, we still follow the (now 
-historical) convention that values are in the range 0..127, but now with much higher resolution 
-due to the floating point representation. So, in a nutshell, this is a class for MIDI events but 
+/** A class for representing musical events such as note-on/off etc. Think of it as a class to
+represent MIDI events but with some of its anachronistic restrictions lifted, such as the abysmal
+resolution of values (typically 7 or 14 bit). The template parameter T is supposed to be either
+float or double. For easy conversion and compatibility with MIDI, we still follow the (now
+historical) convention that values are in the range 0..127, but now with much higher resolution
+due to the floating point representation. So, in a nutshell, this is a class for MIDI events but
 with higher resolution for all the values. */
 
 template<class T>
@@ -51,23 +52,23 @@ protected:
 
 //=================================================================================================
 
-/** Under Construction. Not yet ready for general use. 
+/** Under Construction. Not yet ready for general use.
 
-A sampler engine whose feature set roughly resembles the sfz specification. It's not necessarily 
+A sampler engine whose feature set roughly resembles the sfz specification. It's not necessarily
 meant to be feature-complete (certainly not yet) and on the other hand, it may introduce additional
-features, but sfz is the spec after which this engine is roughly modeled. 
+features, but sfz is the spec after which this engine is roughly modeled.
 
-An instrument definition in sfz is organized in 3 levels of hierarchy. At the lowest level is the 
-"region" which defines which sample file should be played along with a bunch of performance 
-parameters such as the key- and velocity ranges, at which the sample should be played, its volume, 
-pan, filter and envelope settings and a bunch of other stuff. One level higher is the "group" which 
-defines common settings that apply to all regions within the given group. Groups allow to edit the 
-performance parameters of multiple regions at once: If a region does not define a particular 
-performance parameter, the value of the enclosing group will be used. Region specific settings, if 
-present, override the group settings (i think - verify!). At the highest level is the whole 
-"instrument" itself. Just like groups provide fallback settings for regions, the whole instrument 
-can provide fallback settings for all the groups it contains. If some performance parameter isn't 
-defined anywhere (neither in the instrument, group or region), a neutrally behaving default value 
+An instrument definition in sfz is organized in 3 levels of hierarchy. At the lowest level is the
+"region" which defines which sample file should be played along with a bunch of performance
+parameters such as the key- and velocity ranges, at which the sample should be played, its volume,
+pan, filter and envelope settings and a bunch of other stuff. One level higher is the "group" which
+defines common settings that apply to all regions within the given group. Groups allow to edit the
+performance parameters of multiple regions at once: If a region does not define a particular
+performance parameter, the value of the enclosing group will be used. Region specific settings, if
+present, override the group settings (i think - verify!). At the highest level is the whole
+"instrument" itself. Just like groups provide fallback settings for regions, the whole instrument
+can provide fallback settings for all the groups it contains. If some performance parameter isn't
+defined anywhere (neither in the instrument, group or region), a neutrally behaving default value
 will be used, which means the corresponding feature is not used, i.e. bypassed.  */
 
 class rsSamplerEngine
@@ -87,7 +88,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Internal Helper Classes
 
-  /** Baseclass for signal processors that can be applied to layers while they are the played back. 
+  /** Baseclass for signal processors that can be applied to layers while they are the played back.
   Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
   class SignalProcessor
   {
@@ -110,8 +111,8 @@ public:
   };
   // maybe drag them out of the class, maybe make a sub-namespace rosic::Sampler
 
-  /** A struct that can be returned from midi event handling functions to inform the caller, how 
-  the event has changed the playback status of the engine. For example, a noteOn event will 
+  /** A struct that can be returned from midi event handling functions to inform the caller, how
+  the event has changed the playback status of the engine. For example, a noteOn event will
   typically result in the start of playback for one or more layers/regions. This will be reflected
   in the numLayersStarted field. */
   struct PlayStatusChange
@@ -140,20 +141,20 @@ public:
   /** Clears the sfz instrument definition and the samplePool */
   void clearInstrument();
 
-  /** Adds a new sample to our pool of samples. After the sample has been added, regions can be 
+  /** Adds a new sample to our pool of samples. After the sample has been added, regions can be
   defined that make use of it. */
-  int addSampleToPool(float** data, int numFrames, int numChannels, float sampleRate, 
+  int addSampleToPool(float** data, int numFrames, int numChannels, float sampleRate,
     const std::string& path);
   // Maybe rename to addSample, it should return the index of the sample in the sample-pool
   // maybe make a struct SampleMetaData containing: numFrames, numChannels, sampleRate, rootKey
   // todo: take reference to a metaData object
 
-  /** Loads a sample represented by the given path into our samplePool. The path is supposed to be 
+  /** Loads a sample represented by the given path into our samplePool. The path is supposed to be
   relative to some fixed root directory which is typcally the directory in which sfz file resides,
   but later this may be switched to some user and/or factory content directory, too (this requires
-  to introduce a new opcode to sfz...maybe root_dir or sample_directory or sample_folder or 
+  to introduce a new opcode to sfz...maybe root_dir or sample_directory or sample_folder or
   something which should be defined once for the whole instrument). It returns the following
-  return codes: 
+  return codes:
     success:       sample was succesfully loaded into the pool
     nothingToDo:   sample was already in the pool
     fileLoadError: sample could not be loaded (maybe the path was wrong?)
@@ -168,13 +169,13 @@ public:
   /** Adds a new group to the instrument definition and returns the index of the group. */
   int addGroup() { return sfz.addGroup(); }
 
-  /** Adds a new region to the group with the given index and returns the index of the region 
-  within the group or rsReturnCode::invalidIndex, if the passed groupIndex was invalid. If the key 
+  /** Adds a new region to the group with the given index and returns the index of the region
+  within the group or rsReturnCode::invalidIndex, if the passed groupIndex was invalid. If the key
   range is already known, it makes sense to pass it using the optional loKey/hiKey parameters. This
   can also be set up later, but some memory operations can be saved, if it's known in advance. */
   int addRegion(int groupIndex, uchar loKey = 0, uchar hiKey = 127);
 
-  /** Removes the region with given group- and region index from the instrument. If a note is 
+  /** Removes the region with given group- and region index from the instrument. If a note is
   currently playing that makes use of this region. it will continue to play as is (with the region)
   but the next time it's triggered, the region will not be part of it anymore. */
   int removeRegion(int groupIndex, int regionIndex);
@@ -182,10 +183,10 @@ public:
   /** Sets the sample to be used for the given region within the given group. Returns either
   rsReturnCode::success or rsReturnCode::invalidIndex, if the pair of group/region indices and/or the
   sample index was invalid. */
-  int setRegionSample(int groupIndex, int regionIndex, int sampleIndex); 
+  int setRegionSample(int groupIndex, int regionIndex, int sampleIndex);
 
   /** Sets a value for a given type of playback setting a region. Returns either
-  rsReturnCode::success or rsReturnCode::invalidIndex, if groupIndex and/or regionIndex was invalid. If 
+  rsReturnCode::success or rsReturnCode::invalidIndex, if groupIndex and/or regionIndex was invalid. If
   this happens, it indicates a bug on the call site. */
   int setRegionSetting(int groupIndex, int regionIdex, PlaybackSetting::Type type, float value);
 
@@ -195,18 +196,18 @@ public:
 
 
   rsReturnCode removeRegionSetting(int groupIndex, int regionIdex, PlaybackSetting::Type type)
-  { 
-    return sfz.removeRegionSetting(groupIndex, regionIdex, type); 
+  {
+    return sfz.removeRegionSetting(groupIndex, regionIdex, type);
   }
 
   rsReturnCode removeGroupSetting(int groupIndex, PlaybackSetting::Type type)
-  { 
-    return sfz.removeGroupSetting(groupIndex, type); 
+  {
+    return sfz.removeGroupSetting(groupIndex, type);
   }
 
   rsReturnCode removeInstrumentSetting(PlaybackSetting::Type type)
-  { 
-    return sfz.removeInstrumentSetting(type); 
+  {
+    return sfz.removeInstrumentSetting(type);
   }
 
 
@@ -225,8 +226,8 @@ public:
   is well or...  */
   int setupFromSFZ(const rsSamplerData& sfz);
 
-  /** Sets up the root directory, with respect to which sfz file paths are interpreted in saveToSfz 
-  and loadFromSfz. This is supposed to be an absolute path. Returns false in case, the directory 
+  /** Sets up the root directory, with respect to which sfz file paths are interpreted in saveToSfz
+  and loadFromSfz. This is supposed to be an absolute path. Returns false in case, the directory
   doesn't exist. */
   bool setSfzRootDir(const char* path);
 
@@ -237,7 +238,7 @@ public:
   // -return a return-code instead of bool
 
   /** Loads the instrument definition given by an sfz file with the given path which can be given
-  as absolute path or relative with respect what was set via setSfzRootDir. Returns 
+  as absolute path or relative with respect what was set via setSfzRootDir. Returns
   rsReturnCode::success if all wen well or rsReturnCode::fileLoadError if loading of the sfz or any
   of the used samples has failed. */
   int loadFromSFZ(const char* path, bool pathIsAbsolute = false);
@@ -245,7 +246,7 @@ public:
   // file(s) exactly failed to load. This is an information that may be eventually displayed to the
   // user on a GUI.
 
-  /** Sets the sample-rate, at which this engine should operate. This change will affect only 
+  /** Sets the sample-rate, at which this engine should operate. This change will affect only
   RegionPlayer objects that were started after calling this function. It's supposed to be called in
   a suspended state anyway, not in the middle of the processing. */
   void setSampleRate(double newRate) { sampleRate = newRate; }
@@ -260,17 +261,17 @@ public:
   int getNumRegions(int groupIndex) const { return sfz.getNumRegions(groupIndex); }
   // todo: maybe assert the groupIndex is valid - if not, return invalidIndex
 
-  /** Returns a pointer to the region object with the given group- and region index or a nullptr 
-  if the combination of indices is invalid. If the client wants to edit the region, it can do so 
-  only by using appropriate region-editing functions of the rsSamplerEngine object from which it 
+  /** Returns a pointer to the region object with the given group- and region index or a nullptr
+  if the combination of indices is invalid. If the client wants to edit the region, it can do so
+  only by using appropriate region-editing functions of the rsSamplerEngine object from which it
   has requested the region pointer, for example:
 
     rsSamplerEngine::Region* r = se.getRegion(gi, ri);   // se is the sampler engine object
     using PST = rsSamplerEngine::PlaybackSetting::Type;
     se.setRegionSetting(r, PST::PitchKeyCenter, 69.f);
-  
+
   The idea is that client code should not modify the settings of a Region object behind the sampler
-  engine's back because the engine may have to take additional actions when certain aspects of a 
+  engine's back because the engine may have to take additional actions when certain aspects of a
   region change. This is actually enforced by the fact that Region provides no public setters. */
   Region* getRegion(int groupIndex, int regionIndex);
 
@@ -291,32 +292,38 @@ public:
   /** Returns true, iff the given pair of group- and region index is valid, i.e. a region with this
   pair of indices actually exists in the current instrument definition. */
   bool isIndexPairValid(int groupIndex, int regionIndex) const
-  { return sfz.isIndexPairValid(groupIndex, regionIndex); }
+  {
+    return sfz.isIndexPairValid(groupIndex, regionIndex);
+  }
 
-  /** Returns true, iff the given sample index is valid, i.e. a sample with this index actually 
-  exists our sample pool. */
+/** Returns true, iff the given sample index is valid, i.e. a sample with this index actually
+exists our sample pool. */
   bool isSampleIndexValid(int sampleIndex) const
-  { return samplePool.isSampleIndexValid(sampleIndex); }
+  {
+    return samplePool.isSampleIndexValid(sampleIndex);
+  }
 
-  /** Returns the index of the sample represented by the given string in our sample pool or -1, if
-  the sample is not in the pool. */
+/** Returns the index of the sample represented by the given string in our sample pool or -1, if
+the sample is not in the pool. */
   int findSampleIndexInPool(const std::string& sample) const;
 
   /** Returns true, if the sample represented by the given string (as relative path with respect to
   some root directory) is present in our samplePool. */
   bool isSampleInPool(const std::string& sample) const
-  { return findSampleIndexInPool(sample) != -1; }
+  {
+    return findSampleIndexInPool(sample) != -1;
+  }
 
-  /** Returns the maximum number of layers that can play simultaneously. */
-  int getMaxNumLayers() const { return (int) playerPool.size(); }
+/** Returns the maximum number of layers that can play simultaneously. */
+  int getMaxNumLayers() const { return (int)playerPool.size(); }
 
   /** Returns the number of currently playing layers. */
-  int getNumActiveLayers() const { return (int) activePlayers.size(); }
+  int getNumActiveLayers() const { return (int)activePlayers.size(); }
   // todo: rename to getNumActiveRegions or getNumPlayingRegions
 
   /** Returns the number of layers that are currently not playing, i.e. still available for adding
   a new layer to the playback. */
-  int getNumIdleLayers() const { return (int) idlePlayers.size(); }
+  int getNumIdleLayers() const { return (int)idlePlayers.size(); }
 
   /** Returns the number of samples that are currently in our samplePool. */
   int getNumSamples() const { return samplePool.getNumSamples(); }
@@ -325,20 +332,20 @@ public:
   setupFromSFZ of loadFromSFZ. */
   int getNumSamplesLoaded() const { return numSamplesLoaded; }
 
-  /** Returns the number of samples that were removed from the sample pool in the most recent call 
+  /** Returns the number of samples that were removed from the sample pool in the most recent call
   to setupFromSFZ of loadFromSFZ. */
   int getNumSamplesRemoved() const { return numSamplesRemoved; }
 
-  /** Returns the number of samples that failed to load to the sample pool in the most recent call 
+  /** Returns the number of samples that failed to load to the sample pool in the most recent call
   to setupFromSFZ of loadFromSFZ. */
   int getNumSamplesFailed() const { return numSamplesFailed; }
 
   /** Returns a const pointer to the rsSamplerData object that represents the current instrument
   settings. */
   const rsSamplerData& getInstrumentData() const { return sfz; }
-    
-  /** Given a path which can be either relative to our sfzDir or absolute, this function returns 
-  the corresponding absolute path as std::string. That means, if pathIsAbsolute is true, it just 
+
+  /** Given a path which can be either relative to our sfzDir or absolute, this function returns
+  the corresponding absolute path as std::string. That means, if pathIsAbsolute is true, it just
   converts the given char-array to a std::string as is and pathIsAbsolute is false, it assumes that
   the given path is relative and prepends the sfzDir in the returned string */
   std::string getAbsolutePath(const char* path, bool pathIsAbsolute = false) const;
@@ -358,9 +365,9 @@ public:
 
   // void processFrameVoice, processBlockVoice
 
-  /** Stops the playback of all currently active RegionPlayers immediately. This is a rather hard 
+  /** Stops the playback of all currently active RegionPlayers immediately. This is a rather hard
   reset which may be appropriate to call when a midi reset message is received or before loading a
-  new patch. It returns the number of players that were affected, i.e. the number of players that 
+  new patch. It returns the number of players that were affected, i.e. the number of players that
   were in active state before the call. */
   virtual int stopAllPlayers();
   // todo: return a PlayStatusChange
@@ -368,8 +375,8 @@ public:
   /** Calls stopAllPlayers. Function is for consistency with the rest of the library. */
   void reset() { stopAllPlayers(); }
 
-  /** Handles a musical (i.e. midi) event. This will typically change the playback status of the 
-  engine, for example by triggering the playback of one or more layers/region. If this status 
+  /** Handles a musical (i.e. midi) event. This will typically change the playback status of the
+  engine, for example by triggering the playback of one or more layers/region. If this status
   change is relevant for the caller, it can inspect the returned PlayStatusChange after the call,
   otherwise, the caller may ignore it. */
   PlayStatusChange handleMusicalEvent(const rsMusicalEvent<float>& ev);
@@ -406,11 +413,11 @@ protected:
 
   public:
 
-    /** Sets up the region object that this player should play. You need to also pass the output 
+    /** Sets up the region object that this player should play. You need to also pass the output
     sample-rate which is the sample rate at which the player should run (not the sample rate of the
-    audio file associated with the region). The groupSettingsOverride parameter determines whether 
-    the group settings should override the instrument settings (true) or be applied on top of them 
-    (false). Likewise, regionSettingsOverride = true lets the region settings override the group 
+    audio file associated with the region). The groupSettingsOverride parameter determines whether
+    the group settings should override the instrument settings (true) or be applied on top of them
+    (false). Likewise, regionSettingsOverride = true lets the region settings override the group
     settings. */
     void setRegionToPlay(const Region* regionToPlay, double outputSampleRate,
       bool groupSettingsOverride, bool regionSettingsOverride);
@@ -421,8 +428,8 @@ protected:
 
     const Region* getRegionToPlay() const { return region; }
 
-    /** Sets the midi note number for which this player was started. This needs to be set up when 
-    receiving a noteOn. This information is used later when receiving a noteOff to identify which 
+    /** Sets the midi note number for which this player was started. This needs to be set up when
+    receiving a noteOn. This information is used later when receiving a noteOff to identify which
     players need to stop. */
     void setKey(uchar newKey) { key = newKey; }
 
@@ -436,7 +443,7 @@ protected:
     the end of the sample stream and/or amplitude envelope. */
     bool hasFinished(); // should be const?
 
-    /** Retrieves the information about the midi note for which this player was started. Used to 
+    /** Retrieves the information about the midi note for which this player was started. Used to
     identify players that need to stop, when a noteOff is received. @see setKey */
     uchar getKey() const { return key; }
 
@@ -450,13 +457,13 @@ protected:
     to the assigned region and resets all DSP objects. */
     void prepareToPlay(double sampleRate, bool groupSettingsOverride, bool regionSettingsOverride);
     // change API to take group/regionSettingsAccumulate as parameters
- 
+
     bool buildProcessingChain();
     void resetDspState();
     void resetDspSettings();
-    void setupDspSettingsFor(const Region* r, double sampleRate, bool groupSettingsOverride, 
+    void setupDspSettingsFor(const Region* r, double sampleRate, bool groupSettingsOverride,
       bool regionSettingsOverride);
-    void setupDspSettings(const std::vector<PlaybackSetting>& settings, 
+    void setupDspSettings(const std::vector<PlaybackSetting>& settings,
       double sampleRate, bool overrideOldSetting);
     // see comment at prepareToPlay - maybe make onTop default to false
     // change API: replace onTop with override
@@ -511,8 +518,8 @@ protected:
     //  -> remove the virtual declarations
   };
 
-  /** Defines a set of regions. Used to handle note-on/off events efficiently. Not to be confused 
-  with groups. This class exists for purely technical reasons (i.e. implementation details) and 
+  /** Defines a set of regions. Used to handle note-on/off events efficiently. Not to be confused
+  with groups. This class exists for purely technical reasons (i.e. implementation details) and
   does not map to any user concept. */
   class RegionSet
   {
@@ -521,24 +528,26 @@ protected:
 
 
     int findRegionIndex(const Region* r) const
-    { 
+    {
       if(regions.empty()) return -1;
-      return RAPT::rsArrayTools::findIndexOf(&regions[0], r, (int)regions.size()); 
+      return RAPT::rsArrayTools::findIndexOf(&regions[0], r, (int)regions.size());
     }
 
-    bool containsRegion(const Region* r) const {  return findRegionIndex(r) != -1; }
+    bool containsRegion(const Region* r) const { return findRegionIndex(r) != -1; }
 
-    void addRegion(const Region* r) 
-    { 
+    void addRegion(const Region* r)
+    {
       if(containsRegion(r)) {
-        RAPT::rsError("Don't add regions twice!"); return; }
-      regions.push_back(r); 
+        RAPT::rsError("Don't add regions twice!"); return;
+      }
+      regions.push_back(r);
     }
 
     bool removeRegion(int i)
     {
       if(i < 0 || i >= (int)regions.size())  {
-        RAPT::rsError("Invalid region index"); return false; }
+        RAPT::rsError("Invalid region index"); return false;
+      }
       RAPT::rsRemove(regions, i);
       return true;
     }
@@ -570,36 +579,36 @@ protected:
   void addRegionForKey(uchar k, const Region* region);
   // maybe rename to addRegionForNoteOn and have a similar functionality for noteOff
 
-  /** Returns true, iff the given region should play when the given key is pressed with given 
-  velocity. This will also take into account other playback constraints defined for the region 
+  /** Returns true, iff the given region should play when the given key is pressed with given
+  velocity. This will also take into account other playback constraints defined for the region
   and/or its enclosing group. */
   bool shouldRegionPlay(const Region* r, uchar key, uchar vel);
 
   /** Finds the group index and region index within the group for the given region and assigns the
   output parameters group/regionIndex accordingly. If the region is not found in any of our groups,
-  both will be assigned to -1. This should actually not happen, though: a region should always be 
+  both will be assigned to -1. This should actually not happen, though: a region should always be
   found in one and only one group. In sfz files, there can actually be regions that are not in any
-  group, but in this implementation, we just put them into an additional group (at group index 0), 
+  group, but in this implementation, we just put them into an additional group (at group index 0),
   if necessary. Handling it all uniformly is more elegant and efficient and the organization of the
-  sfz file does not need to match all of our implementation details here exactly. The group with 
+  sfz file does not need to match all of our implementation details here exactly. The group with
   index 0 contains either all the free regions or corresponds to the first defined group in the sfz
-  file, if the file contains no free regions. If (-1,-1) is returned, it indicates that the caller 
-  still holds a pointer to a region that doesn't exist anymore in the instrument, which may 
+  file, if the file contains no free regions. If (-1,-1) is returned, it indicates that the caller
+  still holds a pointer to a region that doesn't exist anymore in the instrument, which may
   indicate a bug at the call site. */
   void findRegion(const Region* region, int* groupIndex, int* regionIndex);
 
   /** Returns a pointer to a player for the given region by grabbing it from the idlePlayers array.
-  This will have the side effects that this player will be removed from idlePlayers and added to 
-  activePlayers. If no player is available (i.e. idle), this will return a nullptr. The caller 
-  should interpret that as a layerOverload condition and return the appropriate return code to 
+  This will have the side effects that this player will be removed from idlePlayers and added to
+  activePlayers. If no player is available (i.e. idle), this will return a nullptr. The caller
+  should interpret that as a layerOverload condition and return the appropriate return code to
   its caller. */
   RegionPlayer* getRegionPlayerFor(const Region* r, uchar key, uchar vel);
 
-  /** Returns true, iff the given sample is used in the instrument definition represented by the 
+  /** Returns true, iff the given sample is used in the instrument definition represented by the
   given sfz */
   bool isSampleUsedIn(const AudioFileStream<float>* sample, const rsSamplerData& sfz);
-  
-  /** Stops the player at the given "activeIndex" which is the index into our "activePlayers" 
+
+  /** Stops the player at the given "activeIndex" which is the index into our "activePlayers"
   array. This results in the removal of the player from "activePlayers" and adding it back to
   "idlePlayers". The return value is either rsReturnCode::success or rsReturnCode::invalidIndex, if
   the activeIndex was not a valid index into our activePlayers array. */
@@ -610,31 +619,31 @@ protected:
   ...tbc... */
   static const AudioFileStream<float>* getSampleStreamFor(const Region* r);
 
-  /** Handles a noteOn event with given key and velocity and returns 
-  
+  /** Handles a noteOn event with given key and velocity and returns
+
   obsolete:
-  either rsReturnCode::success, 
-  if we had enough voices available to serve the request or rsReturnCode::voiceOverload, in case 
-  the noteOn could not be handled due to inavailability of a sufficient number of idle voices. If 
-  no sufficient number of idle voices was available and the noteOn should actually have triggered 
-  playback of multiple samples, none of them will be triggered. It's an all-or-nothing thing: we 
+  either rsReturnCode::success,
+  if we had enough voices available to serve the request or rsReturnCode::voiceOverload, in case
+  the noteOn could not be handled due to inavailability of a sufficient number of idle voices. If
+  no sufficient number of idle voices was available and the noteOn should actually have triggered
+  playback of multiple samples, none of them will be triggered. It's an all-or-nothing thing: we
   don't ever trigger playback for only a subset of samples for a given noteOn. */
   virtual PlayStatusChange handleNoteOn(uchar key, uchar vel);
 
-  /** Analogous to handleNoteOn. It may also return rsReturnCode::voiceOverload in cases where the 
-  noteOff is supposed to trigger relase-samples. In such a case, none of the release-samples will 
+  /** Analogous to handleNoteOn. It may also return rsReturnCode::voiceOverload in cases where the
+  noteOff is supposed to trigger relase-samples. In such a case, none of the release-samples will
   be triggered. */
   virtual PlayStatusChange handleNoteOff(uchar key, uchar vel);
 
 
-  /** Removes those samples from our sample pool that are not used in the given sfz instrument 
+  /** Removes those samples from our sample pool that are not used in the given sfz instrument
   specification. Returns the number of samples that were removed. */
   int removeSamplesNotUsedIn(const rsSamplerData& sfz);
   // maybe rename to removeUnusedSamples. But that name is more ambiguous: it could be interpreted
   // as "unused in the current sfz member", so maybe don't
 
   /** Adds all samples to our sample pool that are used in the given sfz instrument definition, if
-  they are not already there. Returns the number of samples that were added or 
+  they are not already there. Returns the number of samples that were added or
   rsReturnCode::fileLoadError if any of the files failed to load. */
   int addSamplesUsedIn(const rsSamplerData& sfz);
   // maybe rename to loadSamples or loadSamplesFor
@@ -651,24 +660,24 @@ protected:
 
   rsSamplerData sfz;
   /**< The data structure that defines the sfz instrument. */
- 
+
   static const int numKeys = 128;
   RegionSet regionsForKey[numKeys];
-  /**< For each key, we store a set of regions that *may* need to be played, when the key is 
+  /**< For each key, we store a set of regions that *may* need to be played, when the key is
   pressed. Whether or not a region is a candidate for playback for a given key is determined by the
-  loKey, hiKey settings of that region. If the playback candidate region then *really* needs to be 
-  played in a particular situation is determined by other constraints as well, such as velocity 
-  range, last received controller and/or pitch-wheel values, etc. The key is the first and primary 
-  filter for which regions need to be played when a noteOn is received and the purpose of this 
-  array is to optimize this primary filter to avoid having to loop through all regions in the 
-  instrument on each received noteOn. Secondary, tertiary, etc. filters may follow and are 
-  implemented by indeed looping through all candidate regions for a given key. It is assumed that 
-  the number of candidate regions for each key is typically much smaller than the total number of 
+  loKey, hiKey settings of that region. If the playback candidate region then *really* needs to be
+  played in a particular situation is determined by other constraints as well, such as velocity
+  range, last received controller and/or pitch-wheel values, etc. The key is the first and primary
+  filter for which regions need to be played when a noteOn is received and the purpose of this
+  array is to optimize this primary filter to avoid having to loop through all regions in the
+  instrument on each received noteOn. Secondary, tertiary, etc. filters may follow and are
+  implemented by indeed looping through all candidate regions for a given key. It is assumed that
+  the number of candidate regions for each key is typically much smaller than the total number of
   regions in the instrument - like a few instead of a few hundred. */
   // maybe use a std::vector, maybe we need a similar array for note-off samples
 
   SamplePool<float> samplePool;
-  /**< The pool of samples that are in use for the currently loaded instrument. The samples are 
+  /**< The pool of samples that are in use for the currently loaded instrument. The samples are
   pooled to avoid redundant storage in memory when multiple regions use the same sample. */
   // Maybe the pool should be a pointer, so it can be shared between multiple instances and/or with
   // some other object that also uses the same sample pool (for example, a DAW that uses the sampler
@@ -685,9 +694,9 @@ protected:
 
   std::vector<RegionPlayer> playerPool;
   /**< This is our pool of the actual RegionPlayer objects from which we grab a player when we need
-  to trigger the playback of a region. The invariant is that at any given time, all players in this 
-  pool are either pointed to by some element in the activePlayers or by some element in the 
-  idlePlayers. The size of this array determines our maximum number of layers and the memory usage 
+  to trigger the playback of a region. The invariant is that at any given time, all players in this
+  pool are either pointed to by some element in the activePlayers or by some element in the
+  idlePlayers. The size of this array determines our maximum number of layers and the memory usage
   without taking memory for the samples into account. */
   // todo: use a sort of multi-threaded, speculatively pre-allocating, non-deallocating dynamic 
   // array data structure for that later. The same strategy should then later be used for DSP 
@@ -722,8 +731,8 @@ protected:
 
 
   // Our pools of DSP objects (under construction):
-  std::vector<rsSamplerFilter*> idleFilters;
-  std::vector<rsSamplerFilter>  filterPool;
+  //std::vector<rsSamplerFilter*> idleFilters;
+  //std::vector<rsSamplerFilter>  filterPool;
 
 
 
@@ -748,8 +757,8 @@ protected:
 //=================================================================================================
 
 /** A subclass of rsSamplerEngine that adds a couple of features. In particular, it's meant for
-adding those features that are not part of the original SFZ specification. These include more 
-flexible signal routing capabilities like the ability to apply the group- and instrument-wide 
+adding those features that are not part of the original SFZ specification. These include more
+flexible signal routing capabilities like the ability to apply the group- and instrument-wide
 settings on top of the region settings instead of using them as fallback values. */
 
 class rsSamplerEngine2 : public rsSamplerEngine
@@ -771,29 +780,29 @@ public:
 
 
   /** Decides if the group modulations should be applied on top of the region modulations (true) or
-  if their settings should just act as fallback values for when a region doesn't define them 
+  if their settings should just act as fallback values for when a region doesn't define them
   (false). Note that technically, we don't have a set of modulators per group. Instead, if "on top"
   mode is selected all RegionPlayers must actually duplicate all their modulators, one using the
-  region's own settings and one using the enclosing group's settings and add them up before 
+  region's own settings and one using the enclosing group's settings and add them up before
   applying. It doesn't seem to make a lot of sense to run common modulators per-group. Think of an
   envelope: it gets triggered with the note that starts the RegionPlayer, so it must be part of the
-  RegionPlayer. ...or actually, it could make sense to trigger the modulators with the first 
-  RegionPlayer for each group - this is not a useful behavior for envelopes, but it could be for 
-  LFOs, sequencers, etc. ...maybe the modulators should have 3 modes: override/fallback, 
-  accumulate/duplicate, accumulate...actually, it would be useful, if this could be set for each 
+  RegionPlayer. ...or actually, it could make sense to trigger the modulators with the first
+  RegionPlayer for each group - this is not a useful behavior for envelopes, but it could be for
+  LFOs, sequencers, etc. ...maybe the modulators should have 3 modes: override/fallback,
+  accumulate/duplicate, accumulate...actually, it would be useful, if this could be set for each
   modulator individually. */
   //void setGroupModulationsOnTop(bool onTop) { groupModulationsOnTop = onTop; }
   // deprecated ...the comment may still be relevant for implementing the override vs accumulate
   // modes for modulations, so it has not yet been deleted
 
-  /** Decides whether sfz opcodes work accumulatively or in override mode where the latter is the 
-  default, as specified by the sfz spec and the former is another kind of behavior which is also 
-  sometimes useful. "Override", in this context, means that a region opcode, if present, will 
-  override the corresponding opcode of the enclosing group and/or instrument. Likewise, a group 
-  opcode, if present, will  override the corresponding opcode of the instrument. "Accumulate", on 
-  the other hand, means that group opcodes will be applied on top of instrument opcodes and region 
-  opcodes will be applied on top of group (and/or instrument) opcodes. For example, if a group 
-  specifies a volume of -6dB and a region within the group specifies a volume of -3dB, the 
+  /** Decides whether sfz opcodes work accumulatively or in override mode where the latter is the
+  default, as specified by the sfz spec and the former is another kind of behavior which is also
+  sometimes useful. "Override", in this context, means that a region opcode, if present, will
+  override the corresponding opcode of the enclosing group and/or instrument. Likewise, a group
+  opcode, if present, will  override the corresponding opcode of the instrument. "Accumulate", on
+  the other hand, means that group opcodes will be applied on top of instrument opcodes and region
+  opcodes will be applied on top of group (and/or instrument) opcodes. For example, if a group
+  specifies a volume of -6dB and a region within the group specifies a volume of -3dB, the
   resulting volume of the region in playback will be -9dB in accumulative mode and -3dB in override
   mode. -3dB is what you should get as per the sfz spec [verify!]. */
   void setOpcodesAccumulate(bool shouldAccumulate)
@@ -804,7 +813,7 @@ public:
   }
 
   /** Returns the number of currently playing group players. */
-  int getNumActiveGroupPlayers() const { return (int) activeGroupPlayers.size(); }
+  int getNumActiveGroupPlayers() const { return (int)activeGroupPlayers.size(); }
 
 
   void processFrame(double* left, double* right) override;
@@ -815,9 +824,9 @@ public:
 
   // void processFrameVoice, processBlockVoice
 
-  /** Overriden from baseclass. Stops the playback of all currently active RegionPlayers 
+  /** Overriden from baseclass. Stops the playback of all currently active RegionPlayers
   immediately - just as in the baseclass implementation. The overriden function also takes care of
-  moving the active groiup players back into their idle state. The returned integer is still the 
+  moving the active groiup players back into their idle state. The returned integer is still the
   number of stopped region players, just as in the baseclass implementation. */
   int stopAllPlayers() override;
 
@@ -836,7 +845,7 @@ protected:
   bool canFallBackToBaseclass() const { return regionSettingsOverride && groupSettingsOverride; }
 
 
-  /** A class for collecting all the SignalProcessors that apply to a given group. This is used 
+  /** A class for collecting all the SignalProcessors that apply to a given group. This is used
   only when the group's DSP settings should go on top of the region's settings */
   class GroupPlayer  // maybe rename to GroupPlayer
   {
@@ -873,14 +882,14 @@ protected:
     const rsSamplerData::Group* group = nullptr;
     // Pointer to the group object which is played back by this player
 
-    rsSamplerEngine2* engine = nullptr; 
+    rsSamplerEngine2* engine = nullptr;
     // Needed for communication channel with enclosing sampler-engine..can we get rid of this?
 
     friend class rsSamplerEngine2;
   };
 
 
-  /** Updates our active/idleGroupPlayer arrays according to a status change in the 
+  /** Updates our active/idleGroupPlayer arrays according to a status change in the
   active/idleRegionPlayer arrays...tbc... */
   void updateGroupPlayers(PlayStatusChange psc);
 
@@ -889,7 +898,7 @@ protected:
   int getActiveGroupPlayerIndexFor(const rsSamplerData::Group* group);
 
   /** This starts a new group player for the given region player. This is used in e.g. handleNoteOn
-  when region players were triggered for which we do not already have an active group player in 
+  when region players were triggered for which we do not already have an active group player in
   use. */
   void startGroupPlayerFor(RegionPlayer* regionPlayer);
 
@@ -909,7 +918,7 @@ protected:
 
 //=================================================================================================
 
-/** Subclass that contains some extra functions that facilitate testing which should not go into 
+/** Subclass that contains some extra functions that facilitate testing which should not go into
 the production code.
 
 ToDo: maybe move into the test project or the rs_testing juce module */
@@ -933,7 +942,7 @@ public:
   // maybe rename to hasSameInstrument - isInSameState may also compare the state with regard to 
   // activeLayers, etc.
 
-  /** Returns the byte size of the RegionPlayer class. We want to keep this small so we use this 
+  /** Returns the byte size of the RegionPlayer class. We want to keep this small so we use this
   function to keep track of its size in the tests. */
   static int getRegionPlayerSize() { return sizeof(rsSamplerEngine::RegionPlayer); }
 
@@ -952,23 +961,23 @@ public:
 
   /** Decides if the region settings should override the group (and instrument) settings (true) or
   be applied on top of those settings (false). To override them means that the group settings are
-  just used as fallback values for when a region doesn't define them. The "on top" mode means that 
+  just used as fallback values for when a region doesn't define them. The "on top" mode means that
   if a region defines a gain of -6dB and its enclosing group defines a gain of -3dB, the total gain
-  of the region will be -9dB. The "fallback" mode means that the region will just use it's defined 
+  of the region will be -9dB. The "fallback" mode means that the region will just use it's defined
   -6dB gain and only if that would not be defined, it would fall back to the group's -3dB setting.
-  The latter behavior is the default in sfz (verify!) but the the former is also often convenient 
+  The latter behavior is the default in sfz (verify!) but the the former is also often convenient
   and the desired behavior in ModeAudio's drum sampler. */
-  void setRegionSettingsOverride(bool shouldOverride) 
-  { 
+  void setRegionSettingsOverride(bool shouldOverride)
+  {
     regionSettingsOverride = shouldOverride;
     reset();  // changing this setting is disruptive - we need a reset
   }
 
-  /** Similar to setRegionSettingsOverride, but for the instrument and group settings, i.e. it 
+  /** Similar to setRegionSettingsOverride, but for the instrument and group settings, i.e. it
   decides whether the group settings should override the instrument settings or be apllied on top
   of them. */
-  void setGroupSettingsOverride(bool shouldOverride) 
-  { 
+  void setGroupSettingsOverride(bool shouldOverride)
+  {
     groupSettingsOverride = shouldOverride;
     reset();
   }
@@ -980,11 +989,7 @@ public:
 };
 
 
+//} // namespace Sampler
+} // namespace rosic
 
-
-
-
-
-
-}
 #endif

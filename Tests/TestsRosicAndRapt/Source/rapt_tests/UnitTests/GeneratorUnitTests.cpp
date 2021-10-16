@@ -1395,7 +1395,8 @@ bool samplerWaveShaperTest()
   using VecF  = std::vector<float>;
   using SE    = rosic::rsSamplerEngineTest;
   using PST   = SE::PlaybackSetting::Type;
-  using Shape = rosic::rsSamplerWaveShaper::Shape;
+  //using WS    = rosic::Sampler::rsSamplerWaveShaper;
+  using Shape = rosic::Sampler::rsSamplerWaveShaper::Shape;
 
   // Create a sinewave as example sample:
   float fs = 44100;  // sample rate
@@ -1440,7 +1441,15 @@ bool samplerWaveShaperTest()
   // SignalProcessorPool, let the engine maintian such a pool as member, then let the RegionPlayer
   // maintain a pointer to it from where it may grab its processors. maybe the RegionPlayer itself
   // may also be dragged out then
-
+  // -would be nice, if we could wrap the namespace Sampler around the includes in rosic.h/cpp
+  //  but for that, we first need to move all the namespace rosic stuff there, too
+  // -maybe try to do this taks with a python script, see
+  //  https://stackoverflow.com/questions/1120707/using-python-to-execute-a-command-on-every-file-in-a-folder
+  //  the answer using pathlib seems to be the simplest way to do it
+  // -before that, merge the current update_juce branch to master
+  // -create a new branch develop where we can do all this stuff, see also:
+  //  https://newbedev.com/how-to-iterate-over-files-in-a-given-directory
+  //  https://www.codegrepper.com/code-examples/python/loop+through+all+files+in+a+directory+python
 
 
   // ToDo: 
@@ -1462,8 +1471,8 @@ bool samplerProcessorsTest()
 
   //using SP = rosic::rsSamplerProcessors;  // doesn't compile
   int size;
-  size = sizeof(rosic::rsSamplerFilter);       // 64
-  size = sizeof(rosic::rsSamplerWaveShaper);   // 24
+  size = sizeof(rosic::Sampler::rsSamplerFilter);       // 64
+  size = sizeof(rosic::Sampler::rsSamplerWaveShaper);   // 24
   //size = sizeof(SP::Filter);
   //size = sizeof(SP::WaveShaper);
 

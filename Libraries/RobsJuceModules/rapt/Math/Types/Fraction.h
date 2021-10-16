@@ -149,5 +149,9 @@ rsFraction<T> operator/(const T& i, const rsFraction<T>& r)
 //   should be implemented in a way that admits non-canonical representations? 
 //   a/b == c/d  <->  a*d == b*c
 //  -maybe we should have a sub- or baseclass rsUnreducedFraction
+// -For a potentially better algorithm for computing the sum of two fractions, see the comment in 
+//  implementation of the += operator here:
+//  https://www.boost.org/doc/libs/1_77_0/boost/rational.hpp
+
 
 #endif
