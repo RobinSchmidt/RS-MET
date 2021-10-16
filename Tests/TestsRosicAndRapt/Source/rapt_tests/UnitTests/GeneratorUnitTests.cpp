@@ -139,6 +139,9 @@ void rsApplyDelay(std::vector<T>& x, T delay)
   std::vector<T> tmp = x;  // do we need this?
   for(int i = 0; i < (int) x.size(); i++)
     x[i] = getSampleAt(tmp, T(i-delay));
+  // ToDo: use getSampleAtNew and update the unit tests accordingly
+  // ...maybe before doing that, move getSampleAtNew into rsArrayTools, mabye as 
+  // lerp(TSig* x, int N, TPos n)
 }
 
 template<class T>
@@ -1325,6 +1328,9 @@ bool samplerFilterTest()
 {
   bool ok = true;
 
+  ok &= testGetSampleAt(); // preliminary - should go into a rapt unit test
+
+
   using VecF = std::vector<float>;     // vector of sample values in RAM
   using SE   = rosic::rsSamplerEngineTest;
   //using RC   = rosic::rsReturnCode;
@@ -1337,7 +1343,7 @@ bool samplerFilterTest()
   float cutoff = 1000.f;  // filter cutoff
   float reso   = 0.f;     // filter resonance
   float slope  = -3.01;   // spectral slope of the noise
-  int   N      = 500;     // length of (co)sinewave sample
+  int   N      = 500;     // length of sample
   VecF noise;             // noise sample
   VecF tgt(N);            // target output in tests
   VecF outL(N), outR(N);  // for the output signals
@@ -1364,11 +1370,10 @@ bool samplerFilterTest()
   se.setRegionSetting(0, 0, PST::FilterCutoff,    cutoff);
   se.setRegionSetting(0, 0, PST::FilterResonance, reso);
 
-  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
   // predictably fails!
 
-  ok &= testGetSampleAt();
-  // this should go into a rapt unit test
+
 
   // ToDo:
   // -Implement filtering in rsSamplerEngine 
@@ -1400,14 +1405,14 @@ bool samplerEngineUnitTest()
 {
   bool ok = true;
 
+  // new tests:
+  ok &= samplerProcessorsTest();
+  ok &= samplerEngine2UnitTest(); 
+
+  // old tests:
   ok &= samplerDataUnitTest();
   ok &= samplerEngineUnitTest1();
   ok &= samplerEngineUnitTestFileIO();
-
-  // new tests:
-  ok &= samplerEngine2UnitTest(); 
-  ok &= samplerProcessorsTest();
-
 
 
 
