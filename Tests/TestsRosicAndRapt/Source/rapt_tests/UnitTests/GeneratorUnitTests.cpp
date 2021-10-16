@@ -1396,6 +1396,36 @@ bool samplerWaveShaperTest()
   using SE   = rosic::rsSamplerEngineTest;
   using PST  = SE::PlaybackSetting::Type;
 
+  // Create a sinewave as example sample:
+  float fs = 44100;  // sample rate
+  float f  = 440.0;  // frequency of (co)sinewave sample
+  int   N  = 500;    // length of (co)sinewave sample
+  VecF sin440(N);    // sine wave
+  VecF tgt(N);       // target output in tests
+  float w = (float)(2*PI*f/fs);
+  for(int n = 0; n < N; n++)
+    sin440[n] = sinf(w*n);
+  rsPlotVector(sin440);
+
+  // Waveshaper settings:
+  float preGain  = 4.0f;
+  float postGain = 0.5f;
+  float dcOffset = 0.2;
+  //Shape shape    = Shape::tanh;
+
+
+  // Create and set up sampler engine:
+  SE se;
+  float *pSmp = &sin440[0];
+  se.addSampleToPool(&pSmp, N, 1, fs, "Sine440");
+  se.addGroup();
+  se.addRegion(0);
+  se.setRegionSample( 0, 0, 0);
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
+  se.setRegionSetting(0, 0, PST::DistShape,       1.f);  // todo: use enum value
+  se.setRegionSetting(0, 0, PST::DistDrive,      preGain);
+  //se.setRegionSetting(0, 0, PST::DistGain,       postGain);
+
 
 
   // ToDo: 
@@ -1468,5 +1498,7 @@ ToDo:
  resources:
  http://sfzformat.com/legacy/           basic opcode reference
  http://drealm.info/sfz/plj-sfz.xhtml   explanantions and some unofficial opcodes
+
+maybe open a thread at kvr..something like SFZ: interpreting and extending the format specification
 
 */

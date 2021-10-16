@@ -555,6 +555,11 @@ bool rotes::testFeedbackDelayNetwork()
   //  to taste, similar to the way it is done withe modal filters. If done via SIMD, it doesn't 
   //  even need to make the processing much more expensive. the ratio of both outputs can be used 
   //  to measure time which in turn can be used to further shape the envelope
+  // -Try to use a different set of a,b,c,d parameters in the kronekcer trafe for each level, i.e.
+  //  a different diffusion coeff for each level. Figure out, what difference it makes if high
+  //  coeffs are at lower or higher levels. Maybe define 2 2x2 matrices M1 = a1,b1,c1,d1 and 
+  //  M2 = a2,b2,c2,d2 and visualize their Kronecker products kron(M1,M2) and kron(M2,M1) as 
+  //  heatmaps
 }
 
 template<class Effect>

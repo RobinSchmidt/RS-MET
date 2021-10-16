@@ -566,7 +566,7 @@ int main(int argc, char* argv[])
   //testInterpolation();
 
   // Effects:
-  //testFeedbackDelayNetwork(); // writes wave file
+  testFeedbackDelayNetwork(); // writes wave file
   //algoVerb();
 
   // File:

@@ -117,9 +117,11 @@ public:
       // ToDo: loop-stuff
 
       // Filter:
-      FilterCutoff, FilterResonance, FilterType,
+      FilterType, FilterCutoff, FilterResonance, 
 
-
+      // Some of my own extensions
+      // Distortion:
+      DistShape, DistDrive,  // DistGain...may be redundant with Volume
 
 
       Unknown,

@@ -21,6 +21,14 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Type type)
   case TP::Delay:          return 0.f;
   case TP::Offset:         return 0.f;
 
+  // Filter: the spec says, if the cutoff is not specified, it should deactivate the filter...how
+  // can we capture this here? maybe return -1 as code?
+
+  // Extensions:
+  case TP::DistShape:      return 0.f;
+  case TP::DistDrive:      return 0.f;
+  //case TP::DistGain:       return 0.f;
+
   }
 
   RAPT::rsError("Unknown type of PlaybackSetting, i.e. unknown sfz opcode.");
@@ -553,17 +561,25 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
 
   switch(type)
   {
-  case PST::Volume:         { add(s, "volume",          val);  } break;
-  case PST::Pan:            { add(s, "pan",             val);  } break;
+  case PST::Volume:          { add(s, "volume",          val);  } break;
+  case PST::Pan:             { add(s, "pan",             val);  } break;
 
-  case PST::PitchKeyCenter: { add(s, "pitch_keycenter", val);  } break;
-  case PST::Transpose:      { add(s, "transpose",       val);  } break;
-  case PST::Tune:           { add(s, "tune",            val);  } break;
+  case PST::PitchKeyCenter:  { add(s, "pitch_keycenter", val);  } break;
+  case PST::Transpose:       { add(s, "transpose",       val);  } break;
+  case PST::Tune:            { add(s, "tune",            val);  } break;
 
-  case PST::Delay:          { add(s, "delay",           val);  } break;
-  case PST::Offset:         { add(s, "offset",          val);  } break;
+  case PST::Delay:           { add(s, "delay",           val);  } break;
+  case PST::Offset:          { add(s, "offset",          val);  } break;
 
-  // more to come....
+  case PST::FilterType:      { add(s, "fil_type",        val);  } break;
+  case PST::FilterCutoff:    { add(s, "cutoff",          val);  } break;
+  case PST::FilterResonance: { add(s, "resonance",       val);  } break;
+
+
+  // Extensions:
+  case PST::DistShape:       { add(s, "dist_shape",      val);  } break;
+  case PST::DistDrive:       { add(s, "dist_drive",      val);  } break;
+
 
   default:                  { RAPT::rsError("Unknown Opcode"); }
   }
@@ -590,28 +606,38 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
   // passing it as 3rd parameter to the constructor
 
   // Key range:
-  if(opcode == "lokey")           return PS(PST::LoKey,          val);
-  if(opcode == "hikey")           return PS(PST::HiKey,          val);
-  if(opcode == "lovel")           return PS(PST::LoVel,          val);
-  if(opcode == "hivel")           return PS(PST::HiVel,          val);
+  if(opcode == "lokey")           return PS(PST::LoKey,           val);
+  if(opcode == "hikey")           return PS(PST::HiKey,           val);
+  if(opcode == "lovel")           return PS(PST::LoVel,           val);
+  if(opcode == "hivel")           return PS(PST::HiVel,           val);
 
   // Amplitude:
-  if(opcode == "volume")          return PS(PST::Volume,         val);
-  if(opcode == "pan")             return PS(PST::Pan,            val);
+  if(opcode == "volume")          return PS(PST::Volume,          val);
+  if(opcode == "pan")             return PS(PST::Pan,             val);
 
   // Pitch:
-  if(opcode == "pitch_keycenter") return PS(PST::PitchKeyCenter, val);
-  if(opcode == "transpose")       return PS(PST::Transpose,      val);
-  if(opcode == "tune")            return PS(PST::Tune,           val);
+  if(opcode == "pitch_keycenter") return PS(PST::PitchKeyCenter,  val);
+  if(opcode == "transpose")       return PS(PST::Transpose,       val);
+  if(opcode == "tune")            return PS(PST::Tune,            val);
   // todo:  pitch_keytrack, pitch_veltrack, bend_up, bend_down, bend_step 
   // maybe: pitch_random
 
   // Sample Player:
-  if(opcode == "delay")           return PS(PST::Delay,          val);
-  if(opcode == "offset")          return PS(PST::Offset,         val);
+  if(opcode == "delay")           return PS(PST::Delay,           val);
+  if(opcode == "offset")          return PS(PST::Offset,          val);
 
   // todo:  offset, end, count, loop_mode, loop_start, loop_end
   // maybe: delay_random, delay_ccN, offset_random, offset_ccN, sync_beats, sync_offset
+
+  // Filter:
+  if(opcode == "fil_type")        return PS(PST::FilterType,      val);
+  if(opcode == "cutoff")          return PS(PST::FilterCutoff,    val);
+  if(opcode == "resonance")       return PS(PST::FilterResonance, val);
+
+
+  // Extensions:
+  if(opcode == "dist_shape")      return PS(PST::DistShape,       val);
+  if(opcode == "dist_drive")      return PS(PST::DistDrive,       val);
 
 
   // ...more to come...
