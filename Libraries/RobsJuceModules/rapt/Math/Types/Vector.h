@@ -25,6 +25,7 @@ public:
   int such as in code like: value = T(0); which has typically has scalar type T. But sometimes, we
   may want it to be a vector, too. */
   rsVector2D(int i) : x(T(i)), y(T(i)) {}
+  // hmm - maybe we should only initialize the 1st element to i and the other to 0?
 
   // for optimization, make a constructor without initialization
 

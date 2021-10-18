@@ -37,7 +37,10 @@ template<class T>
 void rsPolynomial<T>::setRoots(const T* newRoots, int numRoots, T scaler)
 {
   coeffs.resize(numRoots+1);
-  rootsToCoeffs(newRoots, &coeffs[0], numRoots, scaler);
+  if(numRoots == 0)
+    coeffs[0] = scaler;
+  else
+    rootsToCoeffs(newRoots, &coeffs[0], numRoots, scaler);
 }
 
 template<class T>

@@ -831,7 +831,7 @@ public:
 
   /** Given an array that contains values that have been subject to some kind wrap-around into some
   period p, this function (heuristically) unwraps them again. This is useful for plotting a 
-  phase-response - if you have an array of angles in the interval -pi..pi (as you will get when 
+  phase-response: if you have an array of angles in the interval -pi..pi (as you will get when 
   using arg(std::complex z) on a transfer function value), subtract off 2*pi, and unwrap with 
   period 2*pi. */
   template<class T>

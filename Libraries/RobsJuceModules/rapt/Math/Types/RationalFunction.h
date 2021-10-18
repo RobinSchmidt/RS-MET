@@ -3,7 +3,9 @@
 //namespace RAPT
 //{
 
-/** A class for representing rational functions R(x) = P(x) / Q(x) where P and Q are both 
+/** Under construction. Not yet ready for use in production.
+
+A class for representing rational functions R(x) = P(x) / Q(x) where P and Q are both 
 polynomials in x. Rational functions are important in signal processing because the transfer 
 functions of linear time invariant systems (a.k.a. filters) are of that type. The class provides 
 facilities for performing arithmetic with rational functions (including composition), evaluation,
@@ -27,9 +29,11 @@ class rsRationalFunction
 public:
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Construction/Destruction */
+  /** \name Lifetime */
 
-  rsRationalFunction() {}
+  /** Standard constructor. Initializes the numerator polynomial to the constant zero and the 
+  denominator polynomial to the constant one. */
+  rsRationalFunction() { den[0] = T(1); }
 
   rsRationalFunction(
     const std::vector<T>& numeratorCoeffs, 
@@ -64,7 +68,11 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
-  // setNumerator, setDenominator // for polynomial and std::vector and maybe plain arrays
+  void setNumeratorCoeffs(  const std::vector<T>& newCoeffs) { num.setCoeffs(newCoeffs); }
+
+  void setDenominatorCoeffs(const std::vector<T>& newCoeffs) { den.setCoeffs(newCoeffs); }
+
+  // maybe have setNumerator, setDenominator taking a reference to rsPolynomial objects
 
   bool reduce(T tol);
 
@@ -81,6 +89,13 @@ public:
 
   int getNumeratorDegree()   const { return num.getDegree(); }
   int getDenominatorDegree() const { return den.getDegree(); }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Evaluation */
+
+  void valueAndDerivativeAt(const T& x, T* y, T* yp) const;
+
 
 
   //-----------------------------------------------------------------------------------------------
@@ -196,6 +211,8 @@ public:
 
   //===============================================================================================
   /** \name Computations on std::vector */
+  // maybe these should go somewhere into the prototypes - maybe after the corresponding functions
+  // that operate on raw coefficient are completed
 
   /** Evaluates the polynomial p a the given x using Horner's algorithm */
   static T polyEval(std::vector<T>& p, T x);

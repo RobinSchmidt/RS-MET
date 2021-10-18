@@ -9,6 +9,16 @@ bool rsRationalFunction<T>::reduce(T tol)
   return true;
 }
 
+template<class T>
+void rsRationalFunction<T>::valueAndDerivativeAt(const T& x, T* y, T* yp) const
+{
+  T n, np, d, dp;
+  num.valueAndSlopeAt(x, &n, &np); // compute value n and derivative np of numerator
+  den.valueAndSlopeAt(x, &d, &dp); // compute value d and derivative dp of denominator
+  *y  = n / d;                     // compute and assign function value 
+  *yp = (np*d-dp*n) / (d*d);       // compute and assign derivative via quotient rule
+}
+
 //-------------------------------------------------------------------------------------------------
 // Computations on std::vector
 // Functions that operate on std::vectors to perform polynomial coefficient array manipulations,
@@ -343,6 +353,7 @@ void rsRationalFunction<T>::partialFractionExpansionMultiplePoles(
 }
 // todo: try to figure out an extended version of the cover-up method that is used for distinct 
 // poles and use it as alternative algorithm... and/or use the residue method
+// then move this implementation into prototypes
 
 
 template<class T>

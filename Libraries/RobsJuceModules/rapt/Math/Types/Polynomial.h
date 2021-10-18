@@ -351,6 +351,13 @@ public:
   { return integralAt(upperLimit) - integralAt(lowerLimit); }
   // maybe rename to integral
 
+  // -maybe rename evaluate to valueAt (or make an alias) and derivative to slopeAt
+  // -also implement a valueAndSlopeAt function
+
+  void valueAndSlopeAt(const T& x, T* y, T* yp) const
+  {
+    evaluateWithDerivative(x, &coeffs[0], getDegree(), y, yp);
+  }
 
 
 
