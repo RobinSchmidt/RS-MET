@@ -175,6 +175,14 @@ bool rsLessAbs(const std::complex<T>& left, const T& right)
   return rsAbsSquared(left) < right*right;
 }
 
+template <class T>
+bool rsIsCloseTo(const std::complex<T>& a, const std::complex<T>& b, const T& tol)
+{
+  std::complex<T> d = a-b;  // difference between a and b
+  T m2 = rsAbsSquared(d);   // magnitude squared of difference
+  return m2 <= tol*tol;
+}
+
 
 template <class T>
 bool rsLessOrEqual(const T& left, const T& right)
