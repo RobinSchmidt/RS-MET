@@ -94,7 +94,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Evaluation */
 
-  void valueAndDerivativeAt(const T& x, T* y, T* yp) const;
+  void valueAndSlopeAt(const T& x, T* y, T* yp) const;
 
 
 

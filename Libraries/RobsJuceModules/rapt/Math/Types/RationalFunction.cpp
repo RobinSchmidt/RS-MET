@@ -10,13 +10,16 @@ bool rsRationalFunction<T>::reduce(T tol)
 }
 
 template<class T>
-void rsRationalFunction<T>::valueAndDerivativeAt(const T& x, T* y, T* yp) const
+void rsRationalFunction<T>::valueAndSlopeAt(const T& x, T* y, T* yp) const
 {
   T n, np, d, dp;
   num.valueAndSlopeAt(x, &n, &np); // compute value n and derivative np of numerator
   den.valueAndSlopeAt(x, &d, &dp); // compute value d and derivative dp of denominator
   *y  = n / d;                     // compute and assign function value 
   *yp = (np*d-dp*n) / (d*d);       // compute and assign derivative via quotient rule
+
+  // ToDo: 
+  // -maybe precompute 1/d and replace the divisions by multiplications
 }
 
 //-------------------------------------------------------------------------------------------------
