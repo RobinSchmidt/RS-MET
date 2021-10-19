@@ -1,11 +1,33 @@
 
 
+rsFractalImageRenderer::rsFractalImageRenderer()
+{
+
+
+  int dummy = 0;
+}
+
+
+std::vector<rsFloat32x4> rsFractalImageRenderer::render(
+  const std::vector<Vec2D> locations, int maxIs)
+{
+  int numPixels = (int) locations.size();
+
+
+  std::vector<rsFloat32x4> pixelColors(numPixels);
+
+
+  return pixelColors;
+}
+
 
 /*
 
 ToDo:
 
 rsFractalImageRenderer:
+-maybe we should have different variants of render() using different stopping criteria, e.g. 
+ convergence, divergence ...or maybe that should be controlled by a setter
 -Iteration Modes: 
  -NewtonComplex (as we do here)
  -NewtonVector (general 2D vector-field, using inverse Jacobian for Newton steps)
@@ -27,6 +49,8 @@ rsFractalImageRenderer:
  -Maybe in this context, it's convenient, when it operates on a vector of (x,y)-coordinates 
   rather than on an image with on-the-fly computation of coordinates
 
+-Provide some feedback about the state of the computation, maybe in % maybe with 2 decimal digits 
+ after the point
 
 -Implement a different kind of fractal renderer based on Lindenmayer systems - maybe 
  rsFractalVector/Drawing/LineRenderer 

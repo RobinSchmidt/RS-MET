@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="TestsRosicAndRapt\Source\Misc">
@@ -1407,6 +1408,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\_third_party\kiss_fft_v1_2_6\test\pstats.c">
       <Filter>JUCE Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\_third_party\kiss_fft_v1_2_6\test\tailscrap.m">
+      <Filter>JUCE Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\_third_party\kiss_fft_v1_2_6\test\test_real.c">
       <Filter>JUCE Modules\rosic\_third_party\kiss_fft_v1_2_6\test</Filter>
     </ClCompile>
@@ -2584,6 +2588,9 @@
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FiniteAutomaton.cpp">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FractalRenderer.cpp">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Ideas.cpp">
@@ -4953,6 +4960,9 @@
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FiniteAutomaton.h">
+      <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\FractalRenderer.h">
       <Filter>JUCE Modules\rs_testing\Prototypes</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Ideas.h">

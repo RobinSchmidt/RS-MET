@@ -1764,14 +1764,8 @@ void mandelbrot(rsImage<float>& img, int maxIterations,
 // formulas of the inner loop here - avoid overhead of using std::function...or maybe make an 
 // optimized function int mandelbrot(x, y, maxNumIts)
 
-void fractal()
+void renderMandelbrot(int w, int h, int numIts = 300)
 {
-  int w = 500;
-  int h = 500;
-
-  int numIterations = 300;
-
-
   double xMin = -1.5;
   double xMax = +0.5;
   double yMin = -1.0;
@@ -1781,18 +1775,20 @@ void fractal()
 
   using IP = rsImageProcessor<float>;
   rsImageF img(w, h);
-  mandelbrot(img, numIterations, xMin, xMax, yMin, yMax);
+  mandelbrot(img, numIts, xMin, xMax, yMin, yMax);
   IP::normalize(img);
   IP::gammaCorrection(img, 0.2f);
   // maybe apply gamma, contrast, etc.
 
   writeImageToFilePPM(img, "Mandelbrot.ppm");
+  rsPrintLine("Done");
+
 
   // Observations:
   // -with a smaller number of iterations, some points that actually do not belong to the set are
   //  falsely considered to be within the set - so increasing the number of iterations 
   //  progressively removes spurious white* points (compare 100 vs 200 to see the effect) 
-  //  (* if we draw pointsinside the set white and points outside the set black)
+  //  (* if we draw points inside the set white and points outside the set black)
   // -when brightness is proportional to the number of iterations, points near the boundary of the
   //  set ten to get colored brighter that points further outside the set
 
@@ -1804,6 +1800,29 @@ void fractal()
 // https://math.stackexchange.com/questions/1099/mandelbrot-like-sets-for-functions-other-than-fz-z2c
 // https://math.stackexchange.com/questions/1398218/determine-coordinates-for-mandelbrot-set-zoom/1398356
 
+void renderNewtonFractal()
+{
+
+
+  using Complex = std::complex<double>;
+
+  Complex i(0.0, 1.0);
+  std::vector<Complex> roots({ 1.0, i, -1.0, -i });
+
+
+  rsFractalImageRenderer renderer;
+
+
+
+  rsPrintLine("Done");
+}
+
+void fractal()
+{
+  renderNewtonFractal();
+  //renderMandelbrot(500, 500);
+  //renderMandelbrot(2000, 2000);
+}
 
 void parametricCurve2D()
 {
