@@ -31,6 +31,7 @@ public:
   interpret it here, we just assign it according to the user-defined function. */
   void setColoringFunction(const std::function<Color(const std::vector<Vec2D>& t)> newFunc)
   { coloringFunction = newFunc; }
+  // maybe the function should also take the initial value z0 and parameter p as arguments?
 
 
 
@@ -45,6 +46,7 @@ public:
   color should be at each such point according to the user defined iterationFunction, 
   coloringFunctions, etc. */
   std::vector<Color> render(const std::vector<Vec2D> locations, int maxNumIterations);
+  // maybe use rsMatrix instead of std::vector
 
 
 

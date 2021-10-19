@@ -1802,15 +1802,36 @@ void renderMandelbrot(int w, int h, int numIts = 300)
 
 void renderNewtonFractal()
 {
-
-
   using Complex = std::complex<double>;
+  using Vec2D   = RAPT::rsVector2D<double>;
 
+  // Define iteration function. The function results from applying the Newton iteration rule 
+  // zNew = z - f(z)/f'(z) to the function f(z) = z^4 - 1:
+  auto iterFunc = [](Vec2D v, Vec2D p)
+  {
+    Complex z(v.x, v.y);
+    Complex z2 = z*z;
+    Complex w  = (3.0*z2*z2-1.0) / (4.0*z2*z); // (3 z^4 - 1) / (4 z^3)
+    return Vec2D(w.real(), w.imag());
+  };
+
+  // Define coloring function. The parameter t is the trajectory:
   Complex i(0.0, 1.0);
   std::vector<Complex> roots({ 1.0, i, -1.0, -i });
+  auto colorFunc = [](const std::vector<Vec2D>& t)
+  {
+    rsFloat32x4 color;
+
+    // ...
+
+    return color;
+  };
 
 
+  // Set up the renderer:
   rsFractalImageRenderer renderer;
+  renderer.setIterationFunction(iterFunc);
+  renderer.setColoringFunction(colorFunc);
 
 
 
