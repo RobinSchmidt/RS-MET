@@ -1,3 +1,26 @@
+maybe re-organize library as follows:
+
+RENC: Rob's Elementary Number Crunchers (Basics, Data, Math, (some) Filters, maybe Physics)
+RAPT: Rob's Audio Processing Templates
+RIPT: Rob's Image Processing Templates
+RAMP: Rob's Audio and Music Processors (formerly rosic)
+RIGT: Rob's Image and Graphics Toolkit (with abstractions for hardware render backends)
+
+Dependencies:
+RENC: None (except included libraries, e.g. Ooura-FFT)
+RAPT: RENC
+RIPT: RENC
+RIGT: RIPT
+RAMP: RAPT, maybe RIGT
+
+alternative names:
+RAMP: RASS: Rob's Audio Software Suite
+
+...when doing this, have an eye on easy transition to C++20 modules at some point (at the moment,
+I want to remain compatible with C++11, though - let's see when JUCE does such a transition, if at 
+all)
+
+
 
 -------------------------------------------------------------------------------
 make a class rsChoices where a 64-bit integer is used to represent a couple of

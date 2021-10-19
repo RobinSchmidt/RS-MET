@@ -192,3 +192,21 @@ T rsNormalizedSinc(T x)
 {
   return rsSinc(PI*x);
 }
+
+
+/*
+
+Ideas:
+
+-rsSoftAbs(x) = x * tanh(a*x) where a controls the softness, see: 
+   https://www.desmos.com/calculator/7at9bzeszu
+ maybe also try some other sigmoid functions instead of tanh. But be aware that this will make 
+ small signals even smaller which may be undesirable in amplitude envelope estimation. But in this
+ context, the softening would be pointless anyway because the abs is typically lowpassed 
+ afterwards. Maybe it's useful for a soft rectifier-like distortion. ...maybe make a FuncShaper 
+ preset "SoftRectifier". With a = 1, near zero, it will look like x^2 and far from zero, it will 
+ look like |x|
+
+
+
+*/

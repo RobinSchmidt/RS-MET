@@ -46,6 +46,35 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //static size_t allBitsButFirst= allBits ^ firstBitOnly;
 */
 
+
+
+/** Returns the index of the element in the array A (of length N) that is the best match to the 
+given x according to some function "isCloser" that determines which of two given values is closer 
+to a reference value. If there are multiple best matches in A with the same (minimal) distance to 
+x, it will return the index of either the first or last of them, depending on whether the isCloser 
+function uses a < or <= comparison for determining closeness (use <, if you want the first). The 
+isCloser function should take 3 arguments a,b,r of type T and return true, iff a is closer to r 
+than b (r is the reference value). */
+template<class T, class F>
+int findBestMatch(T* A, int N, const T& x, const F& isCloser)
+{
+  T   minVal = A[0];
+  int minIdx = 0;
+  for(int i = 0; i < N; i++)  // maybe we cant start at i = 1
+  {
+    if(isCloser(A[i], minVal, x)) 
+    {
+      minVal = A[i];
+      minIdx = i;
+    }
+  }
+  return minIdx;
+}
+// todo: 
+// -move into rsArrayTools ...but maybe re-order the parameters of isCloser to a,r,b, maybe rename
+//  isCloser to isBetterMatch
+// -write unit test
+
 /** Converts a Taylor approximation with coeffs given in t into a Pade approximation with numerator 
 coeffs in p and denominator coeffs in q. It is assumed that p and q already have the correct sizes. 
 The degrees of the polynomials p and q must add up to the degree of t: deg(p) + deg(q) = deg(t). 

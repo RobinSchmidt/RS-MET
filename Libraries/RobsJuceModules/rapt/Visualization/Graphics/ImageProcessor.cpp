@@ -240,7 +240,7 @@ TVal rsImageContourPlotter<TPix, TVal>::contourPixelCoverage(
       A = I-A; } break; }
   return A;
 }
-// These simplified formulas (compared to the general formula for traingel areas) work only
+// These simplified formulas (compared to the general formula for traingle areas) work only
 // because we know in which order contourSegmentCoeffs returns the coeffs. Maybe we should make it
 // swappable whether to use >= or < - sometimes we may want to invert the result - when drawing the
 // bin-fills, we sometimes want to fill with the inverted weight ..i think - figure out - if so,
@@ -298,6 +298,7 @@ int rsImageContourPlotter<TPix, TVal>::contourSegmentCoeffs(
 
 
 /*
+
 Ideas:
 -apply filtering to the hue channel - before that, we need to unwrap the hue. that's similar to 
  phase unwrapping in audio, but instead of just using the (already unwrapped) left neighbor as 
@@ -306,5 +307,17 @@ Ideas:
  (luminance, saturation) into account. or maybe take an average. top row and right column are 
  treated specially (using only left and top neighbor respectively)
 
+-Compute mean and variance per pixel:
+ -mean is just obtained by gaussian blur
+ -variance: subtract mean from original -> square it -> blur it -> take sqrt
+
+-HDR-like effect (i hope):
+ -assume the input is a floating-point rendering, i.e. dark pixels have nevertheless an 
+  uncompromised relative precision due to the float format, so we don't really need the multiple
+  different brightness versions of the same image that arise in HDR photography
+ -adjust (per pixel) brightness and contrast according to some function that is based on the 
+  (per pixel) values of mean and variance, i.e. apply a nonlinear mapping to each pixel's 
+  brightness that is controlled by the mean and variance
+ -maybe a similar process should be applied to saturation, too (but not to hue)
 
 */
