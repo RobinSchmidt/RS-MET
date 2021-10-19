@@ -17,6 +17,7 @@
 #include "OdeSolver.cpp"
 #include "MeshStuff.cpp"
 #include "AdditiveSynthEngine.cpp"
+#include "FractalRenderer.cpp"
 
 //#include "SinusoidalModeling.cpp" // moved to rapt
 

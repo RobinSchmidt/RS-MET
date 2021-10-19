@@ -83,6 +83,15 @@ ToDo:
  resulting procedure is a better (more efficient and/or numerically accurate?) way to find Taylor
  series for rational functions?
 -Can it happen that the matrix is singular? If so, what then?
+-maybe implement a function that takes a std::function as input and returns its Pade coeffs by 
+ first constructing the Taylor approximant using numerical derivatives. We should use a numerical 
+ differentiation formula whose approximation order is somewhat higher than M+N, so maybe use M+N+k
+ datapoints of the function and fit a degree M+N+k-1 degree polynomial to them and the evaluate
+ the derivatives of that polynomial. the number k should be high enough such that the final 
+ accuracy is reasonable - some experimentation may be needed but maybe we can also find a 
+ theoretical criterion for what k should be. Maybe uses datapoints not equally spaced but 
+ distributed like the roots of a Chebychev polynomial. Maybe the function should return an 
+ rsRationalFunction object
 
 See: https://www.youtube.com/watch?v=szMaPkJEMrw ...especially at around 6:18 for the linear system
 

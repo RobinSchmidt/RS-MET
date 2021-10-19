@@ -27,6 +27,7 @@ using namespace RAPT;
 #include "OdeSolver.h"
 #include "MeshStuff.h"
 #include "AdditiveSynthEngine.h"
+#include "FractalRenderer.h"
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant
 to be used for production code but are useful for a more readable proof-of-concept (because of lack

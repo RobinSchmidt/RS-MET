@@ -31,7 +31,7 @@ class rsPolynomial
 public:
 
   //-----------------------------------------------------------------------------------------------
-  /** \name Construction */
+  /** \name Lifetime */
 
   /** Creates a polynomial of given degree. Allocates memory for the coefficients and optionally
   intializes them with zeros. */
