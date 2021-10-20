@@ -3009,10 +3009,12 @@ public:
   // this is the cyclidrical version of L*a*b, the L value remains the same, so it's not included
   // in the parameters
 
+  static void xyz2rgb(T X, T Y, T Z, T* R, T* G, T* B);
 
-  //static void lab2rgb(T L, T a, T b, T* R, T* G, T* B);
+
+  static void lab2rgb(T L, T a, T b, T* R, T* G, T* B);
   //static void rgb2lab(T R, T G, T B, T* L, T* a, T* b);
-  //static void lch2rgb(T L, T C, T h, T* R, T* G, T* B);
+  static void lch2rgb(T L, T C, T h, T* R, T* G, T* B);
 
 
   /** Converts an RGB triple to a C-string with the hexadecimal representation, either with the 
@@ -3157,8 +3159,9 @@ void rsColor<T>::xyz2lab(T X, T Y, T Z, T* L, T* a, T* b)
 template<class T>
 void rsColor<T>::ch2ab(T C, T h, T* a, T* b)
 {
-  *a = C * cos(h);
-  *b = C * sin(h);
+  h  *= 2*PI;        // experimental
+  *a  = C * cos(h);  // don't we need a factor of 2*pi or something?
+  *b  = C * sin(h); 
   // https://de.wikipedia.org/wiki/LCh-Farbraum
 }
 
@@ -3170,9 +3173,25 @@ void rsColor<T>::ab2ch(T a, T b, T* C, T* h)
   // https://de.wikipedia.org/wiki/LCh-Farbraum
 }
 
+template<class T>
+void rsColor<T>::xyz2rgb(T X, T Y, T Z, T* R, T* G, T* B)
+{
+  //rsError("not yet ready to use");
 
-// todo: xyz2rgb - there are many variations, how such a comversion can be done with respect to two
-// things:
+  *R = X *  3.2406 + Y * -1.5372 + Z * -0.4986;
+  *G = X * -0.9689 + Y *  1.8758 + Z *  0.0415;
+  *B = X *  0.0557 + Y * -0.2040 + Z *  1.0570;
+
+  if(*R > 0.0031308) *R = 1.055 * pow(*R, (1. / 2.4)) - 0.055;
+  else               *R = 12.92 * *R;
+  if(*G > 0.0031308) *G = 1.055 * pow(*G, (1. / 2.4)) - 0.055;
+  else               *G = 12.92 * *G;
+  if(*B > 0.0031308) *B = 1.055 * pow(*B, (1. / 2.4)) - 0.055;
+  else               *B = 12.92 * *B;
+
+  // clean this up!
+}
+// there are many variations, how such a comversion can be done with respect to two things:
 // -which matrix is used
 // -which companding functions is used
 //  -if gamma-companding is used, you have to also specify a value for gamma
@@ -3188,12 +3207,12 @@ void rsColor<T>::ab2ch(T a, T b, T* C, T* h)
 // maybe write a general function: rsRefineInversion(rsMatrix& M, rsMatrix& Mi) 
 
 
-
-/*
 template<class T>
 void rsColor<T>::lab2rgb(T L, T a, T b, T* R, T* G, T* B)
 {
-
+  T X, Y, Z;
+  lab2xyz(L, a, b, &X, &Y, &Z);
+  xyz2rgb(X, Y, Z, R, G, B);
 }
 // https://stackoverflow.com/questions/7880264/convert-lab-color-to-rgb
 // http://www.easyrgb.com/en/math.php#text8
@@ -3201,12 +3220,23 @@ void rsColor<T>::lab2rgb(T L, T a, T b, T* R, T* G, T* B)
 
 
 template<class T>
+void rsColor<T>::lch2rgb(T L, T C, T h, T* R, T* G, T* B)
+{
+  T a, b;
+  ch2ab(C, h, &a, &b);
+  lab2rgb(L, a, b, R, G, B);
+}
+
+
+/*
+template<class T>
 void rsColor<T>::rgb2lab(T R, T G, T B, T* L, T* a, T* b)
 {
 
 }
 // https://de.wikipedia.org/wiki/Lab-Farbraum#Umrechnung_von_RGB_zu_Lab
 */
+
 
 template<class T>
 void rsColor<T>::rgb2hex(T R, T G, T B, char* hex, bool sharp, bool null)
@@ -3252,30 +3282,33 @@ void rsColor<T>::hsl2hex(T H, T S, T L, char* hex, bool sharp, bool null)
 template<class T>
 class rsColorRGB : public rsColor<T>
 {
-
 public:
-
   using rsColor<T>::rsColor;
-
   T getRed()   const { return this->x; }
   T getGreen() const { return this->y; }
   T getBlue()  const { return this->z; }
-
 };
 
 template<class T>
 class rsColorHSL : public rsColor<T>
 {
-
 public:
-
   using rsColor<T>::rsColor;
-
   T getHue()        const { return this->x; }
   T getSaturation() const { return this->y; }
   T getLightness()  const { return this->z; }
-
 };
+
+template<class T>
+class rsColorLCH : public rsColor<T>
+{
+public:
+  using rsColor<T>::rsColor;
+  T getLightness() const { return this->x; }
+  T getChroma()    const { return this->y; }
+  T getHue()       const { return this->z; }
+};
+
 
 // todo: implement:
 // https://en.wikipedia.org/wiki/CIELUV

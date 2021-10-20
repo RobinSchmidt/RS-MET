@@ -19,7 +19,6 @@ rsImage<rsFloat32x4> rsFractalImageRenderer::render()
   rsImage<Color> img(wo, ho);         // image to render on, may be oversampled
   std::vector<Vec2D> t;               // trajectory of iterates
   t.reserve(maxIts);
-  //double x, y;
   for(int j = 0; j < ho; j++)
   {
     for(int i = 0; i < wo; i++)

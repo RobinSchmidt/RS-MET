@@ -2,28 +2,27 @@ using namespace RAPT;
 
 void colorGradientHSL()
 {
-  // We create an image with a bilinear gradient in HSL colorspace. We pick a fixed hue and let the
-  // luminance gradient go from left to right and the saturation gradient from top to bottom.
+  int  w = 200;             // pixel width
+  int  h = 100;             // pixel height
 
   using Real  = double;
   using RGB   = rsColorRGB<Real>;
   using HSL   = rsColorHSL<Real>;
   using Color = rsColor<Real>;
 
+  // Create an image with a bilinear gradient in HSL colorspace. We pick a fixed hue and let the
+  // lightness gradient go from left to right and the saturation gradient from top to bottom:
   Real H = 210.0 / 360.0;   // hue
-  int  w = 200;             // pixel width
-  int  h = 100;             // pixel height
-  HSL tl(H, 0.0, 0.0);      // top-left
+  HSL tl(H, 0.0, 0.0);      // top-left        use generic Color
   HSL tr(H, 0.0, 1.0);      // top-right
   HSL bl(H, 1.0, 0.0);      // bottom-left
   HSL br(H, 1.0, 1.0);      // bottom-right
-
   rsImageF imgR(w, h), imgG(w, h), imgB(w, h);
   for(int iy = 0; iy < h; iy++)
   {  
     Real  y  = Real(iy) / Real(h-1);
-    HSL cl = (1.0-y)*tl + y*bl;
-    HSL cr = (1.0-y)*tr + y*br;
+    HSL cl = (1.0-y)*tl + y*bl;      // color left
+    HSL cr = (1.0-y)*tr + y*br;      // color right
     for(int ix = 0; ix < w; ix++)
     {
       Real x   = Real(ix) / Real(w-1);
@@ -35,8 +34,37 @@ void colorGradientHSL()
       imgB(ix, iy) = float(rgb.z);
     }
   }
+  writeImageToFilePPM(imgR, imgG, imgB, "GradientLightnessSaturationHSL.ppm");
 
-  writeImageToFilePPM(imgR, imgG, imgB, "BilinearGradient.ppm");
+  // Now do a similar thing in LCH (lightness, chroma (~saturation), hue)
+  tl.x = 0.f; tl.y = 0.f; tl.z = H;
+  tr.x = 1.f; tr.y = 0.f; tr.z = H;
+  bl.x = 0.f; bl.y = 1.f; bl.z = H;
+  br.x = 1.f; br.y = 1.f; br.z = H;
+  for(int iy = 0; iy < h; iy++)
+  {  
+    Real  y  = Real(iy) / Real(h-1);
+    Color cl = (1.0-y)*tl + y*bl;      // color left
+    Color cr = (1.0-y)*tr + y*br;      // color right
+    for(int ix = 0; ix < w; ix++)
+    {
+      Real  x   = Real(ix) / Real(w-1);
+      Color lch = (1.0-x)*cl + x*cr;
+      RGB rgb;
+      Color::lch2rgb(lch.x, lch.y, lch.z, &rgb.x, &rgb.y, &rgb.z);
+      imgR(ix, iy) = float(rgb.x);
+      imgG(ix, iy) = float(rgb.y);
+      imgB(ix, iy) = float(rgb.z);
+    }
+  }
+  writeImageToFilePPM(imgR, imgG, imgB, "GradientLightnessChromaLCH.ppm");
+
+  // https://de.wikipedia.org/wiki/LCh-Farbraum
+
+
+
+
+  int dummy = 0;
 
   // Observations:
   // -top pixel row is grayscale gradient
@@ -49,6 +77,15 @@ void colorGradientHSL()
   // -create a gradient with fixed luminance of 0.5 - with full saturation, this should give the
   //  pure colors. hue should go from left to right, saturation from top to bottom (top should be
   //  gray/unsaturated)
+  // -Implement unit test -> should test roundtrips and a couple of conversion examples with known
+  //  target results
+
+
+  // Ideas:
+  // -other color space: 
+  //    saturation := max(r,g,b) - min(r,g,b)
+  //    luminance  := sqrt(wr*r^2 + wg*g^2 + wb*b^2)     // with weights wr,wg,wb
+  //    hue        := 
 }
 
 void lineDrawing()
@@ -1803,12 +1840,16 @@ void renderMandelbrot(int w, int h, int numIts = 300)
 void renderNewtonFractal()
 {
   // User parameters:
-  double xMin   = -2.0;
-  double xMax   = +2.0;
-  double yMin   = -2.0;
-  double yMax   = +2.0;
-  int    w      =  512;      // image width in pixels
-  int    h      =  512;      // image height
+  //double xMin   = -2.0;
+  //double xMax   = +2.0;
+  //double yMin   = -2.0;
+  //double yMax   = +2.0;
+  double xMin   = -1.9;
+  double xMax   = -0.8;
+  double yMin   = +0.8;
+  double yMax   = +1.9;
+  int    w      = 1000;      // image width in pixels
+  int    h      = 1000;      // image height
   int    maxIts =  100;      // maximum number of iterations
   double tol    =  1.e-14;   // tolerance in convergence test
 
@@ -1821,18 +1862,19 @@ void renderNewtonFractal()
   auto iterFunc = [](Vec2D v, Vec2D p)
   {
     Complex z(v.x, v.y);
-
-    // debug:
-    Complex f  = z*z*z*z - 1.0;           // f(z)  = z^4 - 1
-    Complex fp = 4.0 * z*z*z;             // f'(z) = 4 * z^3
-    Complex zn = z - f/fp;                // zNew  = z - f(x) / f'(z)
-    return Vec2D(zn.real(), zn.imag());   // ...ok - this seems to work
-
-    // This does not work - why? It should be algebraically equivalent:
     Complex z2 = z*z;
-    Complex w  = (3.0*z2*z2-1.0) / (4.0*z2*z); // (3 z^4 - 1) / (4 z^3)
+
+    // Literal Newton iteration formula (uses 1 div, 3 mul, 2 sub):
+    Complex f  = z2*z2 - 1.0;             // f(z)  = z^4 - 1
+    Complex fp = 4.0 * z2*z;              // f'(z) = 4 * z^3
+    Complex zn = z - f/fp;                // zNew  = z - f(x) / f'(z)
+    return Vec2D(zn.real(), zn.imag());
+
+    // Algebraically equivalent (uses 1 div, 4 mul, 1 add):
+    Complex w = (3.0*z2*z2+1.0) / (4.0*z2*z); // (3 z^4 - 1) / (4 z^3)
     return Vec2D(w.real(), w.imag());
-    // I think, for f(z) = z^n - 1, we would get zNew = ((n-1) z^n - 1) / (n z^(n-1)) 
+
+    // I think, for f(z) = z^n - 1, we would get zNew = ((n-1) z^n + 1) / (n z^(n-1)) 
     // -> verify! If correct, implement a function that creates such iterFuncs
   };
 
@@ -1863,7 +1905,6 @@ void renderNewtonFractal()
   };
 
 
-
   // Set up the renderer:
   rsFractalImageRenderer renderer;
   renderer.setIterationFunction(iterFunc);
@@ -1878,12 +1919,16 @@ void renderNewtonFractal()
   rsImage<Color> imgRaw = renderer.render();
 
   // ToDo:
-  // -apply some post-processing
+  // -implement oversampling
+  // -apply some post-processing, maybe this should be also callback based, i.e. we define a
+  //  postProcess function that takes a raw-image as input and produces a final RGB image
+  // -maybe symmetrize the image via averaging or crossfading with flipped version
+  // -implement better color-spaces and use them in the coloring algo
 
   rsImage<rsPixelRGB> img = rsConvertImage(imgRaw, true);
   writeImageToFilePPM(img, "NewtonFractalDeg4.ppm");
   rsPrintLine("Newton fractal done");
-  // Looks wrong: very noisy and rotated by 45°
+
 
 
   // Ideas:
