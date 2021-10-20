@@ -8,16 +8,48 @@ rsFractalImageRenderer::rsFractalImageRenderer()
 }
 
 
-std::vector<rsFloat32x4> rsFractalImageRenderer::render(
-  const std::vector<Vec2D> locations, int maxIs)
+rsImage<rsFloat32x4> rsFractalImageRenderer::render()
 {
-  int numPixels = (int) locations.size();
+  int wo = w * oversample;
+  int ho = h * oversample;
+  rsImage<Color> img(wo, ho);
 
 
-  std::vector<rsFloat32x4> pixelColors(numPixels);
+  std::vector<Vec2D> t;  // trajectory
+  t.reserve(maxIts);
 
 
-  return pixelColors;
+  double x, y;
+  for(int j = 0; j < ho; j++)
+  {
+    for(int i = 0; i < wo; i++)
+    {
+      t.clear();
+      x = rsLinToLin((double)i, 0.0, double(wo-1), xMin, xMax);
+      y = rsLinToLin((double)j, double(ho-1), 0.0, yMin, yMax);
+      Vec2D z(x, y);   // vector iterates
+      Vec2D p(x, y);   // fixed parameter
+      t.push_back(z);  // store 0-th iterate in trajectory
+      for(int k = 0; k < maxIts; k++)
+      {
+        z = iterationFunction(z, p);
+        t.push_back(z);
+        if(stoppingCriterion(t))
+          break;
+      }
+      img(i, j) = coloringFunction(t);
+    }
+  }
+
+  if(oversample == 1)
+    return img;
+
+
+  // Decimate :
+  rsImage<Color> imgD(w, h);
+  return imgD;
+  // todo: factor out int rsImageProcessor::decimate such we can just do
+  // return rsImageProcessor::decimate(img, oversample, oversample);
 }
 
 

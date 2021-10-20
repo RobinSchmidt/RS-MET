@@ -1803,8 +1803,14 @@ void renderMandelbrot(int w, int h, int numIts = 300)
 void renderNewtonFractal()
 {
   // User parameters:
-  int w = 480;         // image width
-  int h = 480;         // image height
+  double xMin   = -2.0;
+  double xMax   = +2.0;
+  double yMin   = -2.0;
+  double yMax   = +2.0;
+  int    w      =  480;      // image width in pixels
+  int    h      =  480;      // image height
+  int    maxIts =  100;      // maximum number of iterations
+  double tol    =  1.e-14;   // tolerance in convergence test
 
   using Complex = std::complex<double>;
   using Vec2D   = RAPT::rsVector2D<double>;
@@ -1839,25 +1845,48 @@ void renderNewtonFractal()
     return colors[k];
   };
 
+  // Define stopping criterion:
+  auto stopCriterion = [&](const std::vector<Vec2D>& t)
+  {
+    size_t N = t.size();
+    if(N < 2)
+      return false;
+    return rsNorm(t[N-1] - t[N-2]) <= tol; // todo: use squared norm (and squared tolerance)
+  };
+
+
+
   // Set up the renderer:
   rsFractalImageRenderer renderer;
   renderer.setIterationFunction(iterFunc);
   renderer.setColoringFunction(colorFunc);
-  //renderer.setCoordinateRange(-2, +2, -2, +2);
-  //renderer.setMaxIterations(100);
-  //rsImage<rsFloat32x4> img = renderer.render(w, h);
+  renderer.setStoppingCriterion(stopCriterion);
+  renderer.setCoordinateRange(xMin, xMax, yMin, yMax);
+  renderer.setMaxNumIterations(maxIts);
+  renderer.setImageSize(w, h);
 
+  // Render the fractal and post-process the returned raw image by translating the colors to 
+  // 24-Bit RGB, etc. and write the result into a .ppm file:
+  rsImage<Color> img = renderer.render();
 
-  // Idea: maybe composite an image taken from different regions of the same fractal
-
+  // ...
 
   rsPrintLine("Done");
+
+
+  // Ideas:
+  // -make a composited image taken from different regions of the same fractal, maybe use the same
+  //  center but slightly different zoom levels, or shift it a bit left/right/up/down
+  //  ...maybe this can be done as post-processing
+  // -maybe render raw image with some margins to facilitate post-processing without problems at 
+  //  the edges
+
 }
 
 void fractal()
 {
   renderNewtonFractal();
-  //renderMandelbrot(500, 500);
+  renderMandelbrot(500, 500);
   //renderMandelbrot(2000, 2000);
 }
 

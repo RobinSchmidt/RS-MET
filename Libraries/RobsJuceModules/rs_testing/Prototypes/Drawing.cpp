@@ -933,6 +933,7 @@ void rsConvertImage(
   const rsImage<float>& R, const rsImage<float>& G, const rsImage<float>& B, bool clip,
   rsImage<rsPixelRGB>& img)
 {
+  using uchar = unsigned char;
   int w = R.getWidth();
   int h = R.getHeight();
   rsAssert(G.hasShape(w, h));
@@ -940,15 +941,15 @@ void rsConvertImage(
   if(clip) {
     for(int j = 0; j < h; j++) {
       for(int i = 0; i < w; i++) {
-        img(i, j).r = (unsigned char)(255.f * rsClip(R(i, j), 0.f, 1.f));
-        img(i, j).g = (unsigned char)(255.f * rsClip(G(i, j), 0.f, 1.f));
-        img(i, j).b = (unsigned char)(255.f * rsClip(B(i, j), 0.f, 1.f)); }}}
+        img(i, j).r = (uchar)(255.f * rsClip(R(i, j), 0.f, 1.f));
+        img(i, j).g = (uchar)(255.f * rsClip(G(i, j), 0.f, 1.f));
+        img(i, j).b = (uchar)(255.f * rsClip(B(i, j), 0.f, 1.f)); }}}
   else {
     for(int j = 0; j < h; j++) {
       for(int i = 0; i < w; i++) {
-        img(i, j).r = (unsigned char)(255.f * R(i, j));
-        img(i, j).g = (unsigned char)(255.f * G(i, j));
-        img(i, j).b = (unsigned char)(255.f * B(i, j)); }}}
+        img(i, j).r = (uchar)(255.f * R(i, j));
+        img(i, j).g = (uchar)(255.f * G(i, j));
+        img(i, j).b = (uchar)(255.f * B(i, j)); }}}
 }
 
 rsImage<rsPixelRGB> rsConvertImage(
@@ -956,10 +957,11 @@ rsImage<rsPixelRGB> rsConvertImage(
 {
   int w = R.getWidth();
   int h = R.getHeight();
-  //rsAssert(G.hasShape(w, h));
-  //rsAssert(B.hasShape(w, h));
   rsImage<rsPixelRGB> img(w, h);
   rsConvertImage(R, G, B, clip, img);
   return img;
 }
 //template class rsImage<rsPixelRGB>; 
+
+// todo: make a convertImage function that takes an rsImage<rsFloat32x4> as input. maybe we need
+// different variants for interpresting the 4 floats in different ways (RGBA, HSLA, etc.)
