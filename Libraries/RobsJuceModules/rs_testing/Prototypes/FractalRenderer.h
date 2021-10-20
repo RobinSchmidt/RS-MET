@@ -46,7 +46,9 @@ public:
   color should be at each such point according to the user defined iterationFunction, 
   coloringFunctions, etc. */
   std::vector<Color> render(const std::vector<Vec2D> locations, int maxNumIterations);
-  // maybe use rsMatrix instead of std::vector
+  // maybe use rsMatrix instead of std::vector - or just use raw pointers..hmm..no! rsMatrix
+  // seems appropriate...or maybe have a function setRange(xMin, ...)
+  // that seems more convenient
 
 
 

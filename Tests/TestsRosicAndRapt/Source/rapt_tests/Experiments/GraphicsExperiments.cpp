@@ -1802,8 +1802,13 @@ void renderMandelbrot(int w, int h, int numIts = 300)
 
 void renderNewtonFractal()
 {
+  // User parameters:
+  int w = 480;         // image width
+  int h = 480;         // image height
+
   using Complex = std::complex<double>;
   using Vec2D   = RAPT::rsVector2D<double>;
+  using Color   = rsFloat32x4;
 
   // Define iteration function. The function results from applying the Newton iteration rule 
   // zNew = z - f(z)/f'(z) to the function f(z) = z^4 - 1:
@@ -1813,26 +1818,37 @@ void renderNewtonFractal()
     Complex z2 = z*z;
     Complex w  = (3.0*z2*z2-1.0) / (4.0*z2*z); // (3 z^4 - 1) / (4 z^3)
     return Vec2D(w.real(), w.imag());
+    // I think, for f(z) = z^n - 1, we would get zNew = ((n-1) z^n - 1) / (n z^(n-1)) 
+    // -> verify! If correct, implement a function that creates such iterFuncs
   };
 
   // Define coloring function. The parameter t is the trajectory:
-  Complex i(0.0, 1.0);
-  std::vector<Complex> roots({ 1.0, i, -1.0, -i });
-  auto colorFunc = [](const std::vector<Vec2D>& t)
+  // Returns true, iff a is strictly closer to the reference value r than n:
+  auto closer = [](Vec2D a, Vec2D b, Vec2D r)
   {
-    rsFloat32x4 color;
-
-    // ...
-
-    return color;
+    double da = rsNorm(r-a);  // todo: use squared norms to get rid of the sqrt
+    double db = rsNorm(r-b);
+    return da < db;
   };
-
+  std::vector<Vec2D> roots( { Vec2D(1,0), Vec2D(0,1), Vec2D(-1,0), Vec2D(0,-1) });
+  std::vector<Color> colors({ 0.f, 0.25f, 0.75f, 1.f });
+  auto colorFunc = [&](const std::vector<Vec2D>& t)
+  {
+    Vec2D vL = rsLast(t);
+    int k = findBestMatch(&roots[0], (int) roots.size(), vL, closer);
+    return colors[k];
+  };
 
   // Set up the renderer:
   rsFractalImageRenderer renderer;
   renderer.setIterationFunction(iterFunc);
   renderer.setColoringFunction(colorFunc);
+  //renderer.setCoordinateRange(-2, +2, -2, +2);
+  //renderer.setMaxIterations(100);
+  //rsImage<rsFloat32x4> img = renderer.render(w, h);
 
+
+  // Idea: maybe composite an image taken from different regions of the same fractal
 
 
   rsPrintLine("Done");
