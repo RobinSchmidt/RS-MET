@@ -1807,8 +1807,8 @@ void renderNewtonFractal()
   double xMax   = +2.0;
   double yMin   = -2.0;
   double yMax   = +2.0;
-  int    w      =  480;      // image width in pixels
-  int    h      =  480;      // image height
+  int    w      =  512;      // image width in pixels
+  int    h      =  512;      // image height
   int    maxIts =  100;      // maximum number of iterations
   double tol    =  1.e-14;   // tolerance in convergence test
 
@@ -1821,6 +1821,14 @@ void renderNewtonFractal()
   auto iterFunc = [](Vec2D v, Vec2D p)
   {
     Complex z(v.x, v.y);
+
+    // debug:
+    Complex f  = z*z*z*z - 1.0;           // f(z)  = z^4 - 1
+    Complex fp = 4.0 * z*z*z;             // f'(z) = 4 * z^3
+    Complex zn = z - f/fp;                // zNew  = z - f(x) / f'(z)
+    return Vec2D(zn.real(), zn.imag());   // ...ok - this seems to work
+
+    // This does not work - why? It should be algebraically equivalent:
     Complex z2 = z*z;
     Complex w  = (3.0*z2*z2-1.0) / (4.0*z2*z); // (3 z^4 - 1) / (4 z^3)
     return Vec2D(w.real(), w.imag());
@@ -1874,7 +1882,7 @@ void renderNewtonFractal()
 
   rsImage<rsPixelRGB> img = rsConvertImage(imgRaw, true);
   writeImageToFilePPM(img, "NewtonFractalDeg4.ppm");
-  rsPrintLine("Done");
+  rsPrintLine("Newton fractal done");
   // Looks wrong: very noisy and rotated by 45°
 
 
@@ -1884,6 +1892,7 @@ void renderNewtonFractal()
   //  ...maybe this can be done as post-processing
   // -maybe render raw image with some margins to facilitate post-processing without problems at 
   //  the edges
+  // -try it with a higher order polynomial and the permute the roots-array in some way
 
 }
 
