@@ -320,6 +320,12 @@ public:
   // negative signs is something that i have not yet figured out... see:
   // https://en.wikipedia.org/wiki/Vector_calculus#Generalizations
   // https://en.wikipedia.org/wiki/Curl_(mathematics)#Generalizations
+  // We probably should use the definition of the exterior derivative as the proper generalization
+  // ...but is this really equal to the curl in 3D? I think, there may be different sign in the 
+  // z-component or something -> figure out. If so, maybe the function should not be called "curl"
+  // but rather "exterior" or something and it should be documented, how the (trivial) conversion
+  // can be done. Maybe there should be a convenience function that does the conversion internally
+  // ..maybe *that* can then be properly called "curl"
 
   //-----------------------------------------------------------------------------------------------
   // \name Data derivatives

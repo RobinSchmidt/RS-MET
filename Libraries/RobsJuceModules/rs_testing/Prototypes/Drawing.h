@@ -249,6 +249,14 @@ inline bool rsAlmostEqual(const rsPixelRGB& x, const rsPixelRGB& y, const rsPixe
 rsImage<rsPixelRGB> rsConvertImage(
   const rsImage<float>& R, const rsImage<float>& G, const rsImage<float>& B, bool clip);
 
+
 void rsConvertImage(
   const rsImage<float>& R, const rsImage<float>& G, const rsImage<float>& B, bool clip, 
   rsImage<rsPixelRGB>& img);
+
+
+rsImage<rsPixelRGB> rsConvertImage(const rsImage<rsFloat32x4>& in, bool clip = true);
+
+void rsConvertImage(const rsImage<rsFloat32x4>& in, rsImage<rsPixelRGB>& out, bool clip = true);
+// this function has a signature that is not consistent with those above..i think, this here makes
+// more sense...update the functions above and all dependent code

@@ -1867,11 +1867,15 @@ void renderNewtonFractal()
 
   // Render the fractal and post-process the returned raw image by translating the colors to 
   // 24-Bit RGB, etc. and write the result into a .ppm file:
-  rsImage<Color> img = renderer.render();
+  rsImage<Color> imgRaw = renderer.render();
 
-  // ...
+  // ToDo:
+  // -apply some post-processing
 
+  rsImage<rsPixelRGB> img = rsConvertImage(imgRaw, true);
+  writeImageToFilePPM(img, "NewtonFractalDeg4.ppm");
   rsPrintLine("Done");
+  // Looks wrong: very noisy and rotated by 45°
 
 
   // Ideas:
@@ -1886,7 +1890,7 @@ void renderNewtonFractal()
 void fractal()
 {
   renderNewtonFractal();
-  renderMandelbrot(500, 500);
+  //renderMandelbrot(500, 500);
   //renderMandelbrot(2000, 2000);
 }
 

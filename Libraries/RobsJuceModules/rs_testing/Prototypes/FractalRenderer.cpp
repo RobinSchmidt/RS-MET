@@ -2,7 +2,9 @@
 
 rsFractalImageRenderer::rsFractalImageRenderer()
 {
-
+  // todo: 
+  // -set it up in such a way as to render the Madelbrot fractal by calling setPreset with 
+  //  the appropriate setting
 
   int dummy = 0;
 }
@@ -10,23 +12,21 @@ rsFractalImageRenderer::rsFractalImageRenderer()
 
 rsImage<rsFloat32x4> rsFractalImageRenderer::render()
 {
+  rsAssert(oversample == 1, "Oversampling not yet implemented");
+
   int wo = w * oversample;
   int ho = h * oversample;
-  rsImage<Color> img(wo, ho);
-
-
-  std::vector<Vec2D> t;  // trajectory
+  rsImage<Color> img(wo, ho);         // image to render on, may be oversampled
+  std::vector<Vec2D> t;               // trajectory of iterates
   t.reserve(maxIts);
-
-
-  double x, y;
+  //double x, y;
   for(int j = 0; j < ho; j++)
   {
     for(int i = 0; i < wo; i++)
     {
       t.clear();
-      x = rsLinToLin((double)i, 0.0, double(wo-1), xMin, xMax);
-      y = rsLinToLin((double)j, double(ho-1), 0.0, yMin, yMax);
+      double x = rsLinToLin((double)i, 0.0, double(wo-1), xMin, xMax); // optimize!
+      double y = rsLinToLin((double)j, double(ho-1), 0.0, yMin, yMax); // dito
       Vec2D z(x, y);   // vector iterates
       Vec2D p(x, y);   // fixed parameter
       t.push_back(z);  // store 0-th iterate in trajectory
@@ -43,13 +43,15 @@ rsImage<rsFloat32x4> rsFractalImageRenderer::render()
 
   if(oversample == 1)
     return img;
+  //else
+  //  return rsImageProcessor::decimate(img, oversample, oversample, true); // true: use average
 
 
-  // Decimate :
-  rsImage<Color> imgD(w, h);
-  return imgD;
-  // todo: factor out int rsImageProcessor::decimate such we can just do
-  // return rsImageProcessor::decimate(img, oversample, oversample);
+  //// Decimate:
+  //rsImage<Color> imgD(w, h);
+  //return imgD;
+  //// todo: factor out int rsImageProcessor::decimate such we can just do
+  //// return rsImageProcessor::decimate(img, oversample, oversample);
 }
 
 

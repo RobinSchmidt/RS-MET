@@ -936,8 +936,9 @@ void rsConvertImage(
   using uchar = unsigned char;
   int w = R.getWidth();
   int h = R.getHeight();
-  rsAssert(G.hasShape(w, h));
-  rsAssert(B.hasShape(w, h));
+  rsAssert(  G.hasShape(w, h));
+  rsAssert(  B.hasShape(w, h));
+  rsAssert(img.hasShape(w, h));
   if(clip) {
     for(int j = 0; j < h; j++) {
       for(int i = 0; i < w; i++) {
@@ -952,6 +953,34 @@ void rsConvertImage(
         img(i, j).b = (uchar)(255.f * B(i, j)); }}}
 }
 
+
+unsigned char float2uchar(float x, bool clip)
+{
+  if(clip) return (unsigned char) (255.f * rsClip(x, 0.f, 1.f));
+  else     return (unsigned char) (255.f * x);
+}
+
+void rsConvertImage(const rsImage<rsFloat32x4>& in, rsImage<rsPixelRGB>& out, bool clip)
+{
+  using uchar = unsigned char;
+  int w = in.getWidth();
+  int h = in.getHeight();
+  rsAssert(out.hasShape(w, h));
+  rsAssert(out.hasShape(w, h));
+  for(int j = 0; j < h; j++) {
+    for(int i = 0; i < w; i++) {
+      out(i, j).r = float2uchar(in(i, j)[0], clip);
+      out(i, j).g = float2uchar(in(i, j)[1], clip);
+      out(i, j).b = float2uchar(in(i, j)[2], clip); }}
+}
+
+rsImage<rsPixelRGB> rsConvertImage(const rsImage<rsFloat32x4>& in, bool clip)
+{
+  rsImage<rsPixelRGB> out(in.getWidth(), in.getHeight());
+  rsConvertImage(in, out, clip);
+  return out;
+}
+
 rsImage<rsPixelRGB> rsConvertImage(
   const rsImage<float>& R, const rsImage<float>& G, const rsImage<float>& B, bool clip)
 {
@@ -963,5 +992,10 @@ rsImage<rsPixelRGB> rsConvertImage(
 }
 //template class rsImage<rsPixelRGB>; 
 
-// todo: make a convertImage function that takes an rsImage<rsFloat32x4> as input. maybe we need
-// different variants for interpresting the 4 floats in different ways (RGBA, HSLA, etc.)
+// todo: 
+// -make a convertImage function that takes an rsImage<rsFloat32x4> as input. maybe we need
+//  different variants for interpresting the 4 floats in different ways (RGBA, HSLA, etc.)
+// -maybe have functions exctractColoChannels and combineColorChannels that convert between 4
+//  images of float and one image rsFloat32x4
+// -maybe wrap all this functions into a class rsImageConverter
+// -function above could then be static members with names: floatToChar
