@@ -234,6 +234,23 @@ bool colorUnitTest()
   ok &= check(x,y,z, X,Y,Z, tol);
 
 
+  x = 0.0f;
+  y = 0.0f;
+  z = 1.0f;
+  float L;
+  Color::xyz2lab(x, y, z, &L, &a, &b);
+  // (1,0,0) -> (  0,  431,    0)
+  // (0,1,0) -> (100, -431,  127)
+  // (0,0,1) -> (  0,    0, -172)
+
+  L =  70;
+  a =  50;
+  b = -30;
+  Color::lab2xyz(L, a, b, &x, &y, &z);
+  // compare to https://www.nixsensor.com/free-color-converter/
+  // it says that L is in 0..100 and a,b in -128...+128
+
+
   // Test conversion of RGB to hex colors:
   char hex[8];
   using uchar = unsigned char;

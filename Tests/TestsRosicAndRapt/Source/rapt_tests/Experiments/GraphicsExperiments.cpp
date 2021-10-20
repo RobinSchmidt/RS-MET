@@ -36,6 +36,11 @@ void colorGradientHSL()
   }
   writeImageToFilePPM(imgR, imgG, imgB, "GradientLightnessSaturationHSL.ppm");
 
+
+  Color lch(0.8, 0.6, 0.2);
+  Color rgb;
+  Color::lch2rgb(lch.x, lch.y, lch.z, &rgb.x, &rgb.y, &rgb.z);
+
   // Now do a similar thing in LCH (lightness, chroma (~saturation), hue)
   tl.x = 0.f; tl.y = 0.f; tl.z = H;
   tr.x = 1.f; tr.y = 0.f; tr.z = H;
@@ -58,6 +63,11 @@ void colorGradientHSL()
     }
   }
   writeImageToFilePPM(imgR, imgG, imgB, "GradientLightnessChromaLCH.ppm");
+
+
+
+
+  //tl.x = 0.f; tl.y = 0.f; tl.z = H;
 
   // https://de.wikipedia.org/wiki/LCh-Farbraum
 

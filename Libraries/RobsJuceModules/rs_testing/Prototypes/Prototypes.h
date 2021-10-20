@@ -3108,6 +3108,8 @@ void rsColor<T>::lab2xyz(T L, T a, T b, T* X, T* Y, T* Z)
 {
   // input: L, a, b (in 0..1 or in 0..255?)
   // reference white Xr, Yr, Zr taken to be 1, 1, 1 ...nope! that's wrong!
+  // i think, L may be in 0...100 and a,b, in -128...+128?
+
   // Use 
   // Xr = 95.0489, Yr = 100, Zr = 108.8840  for D65, or
   // Xr = 96.4212, Yr = 100, Zr = 82.5188   for D50
@@ -3177,7 +3179,14 @@ template<class T>
 void rsColor<T>::xyz2rgb(T X, T Y, T Z, T* R, T* G, T* B)
 {
   //rsError("not yet ready to use");
+  *R = X * ( 3.2404542) + Y * (-1.5371385) + Z * (-0.4985314);
+  *G = X * (-0.9692660) + Y * ( 1.8760108) + Z * ( 0.0415560);
+  *B = X * ( 0.0556434) + Y * (-0.2040259) + Z * ( 1.0572252);
+  // Numbers taken from the XYZ -> sRGB matrix with D65 from here:
+  // http://www.brucelindbloom.com/index.html?Eqn_RGB_XYZ_Matrix.html
 
+  /*
+  // doesn't work - taken from http://www.easyrgb.com/en/math.php#text8
   *R = X *  3.2406 + Y * -1.5372 + Z * -0.4986;
   *G = X * -0.9689 + Y *  1.8758 + Z *  0.0415;
   *B = X *  0.0557 + Y * -0.2040 + Z *  1.0570;
@@ -3188,9 +3197,11 @@ void rsColor<T>::xyz2rgb(T X, T Y, T Z, T* R, T* G, T* B)
   else               *G = 12.92 * *G;
   if(*B > 0.0031308) *B = 1.055 * pow(*B, (1. / 2.4)) - 0.055;
   else               *B = 12.92 * *B;
+  */
 
   // clean this up!
 }
+// todo: add D65 to the function name, also implement the D50 variant
 // there are many variations, how such a comversion can be done with respect to two things:
 // -which matrix is used
 // -which companding functions is used
@@ -3206,13 +3217,23 @@ void rsColor<T>::xyz2rgb(T X, T Y, T Z, T* R, T* G, T* B)
 // an error that's determined by the single-precision format, even if double precision is used. 
 // maybe write a general function: rsRefineInversion(rsMatrix& M, rsMatrix& Mi) 
 
+// Libraries for color conversions:
+// https://docs.python.org/3/library/colorsys.html
+// https://github.com/python/cpython/blob/3.10/Lib/colorsys.py
+// https://python-colormath.readthedocs.io/en/latest/conversions.html
+
 
 template<class T>
 void rsColor<T>::lab2rgb(T L, T a, T b, T* R, T* G, T* B)
 {
   T X, Y, Z;
-  lab2xyz(L, a, b, &X, &Y, &Z);
-  xyz2rgb(X, Y, Z, R, G, B);
+  lab2xyz(L, a, b, &X, &Y, &Z);  
+  // returns very small values, roundtrip lab -> xyz -> lab has been tested in a unit test
+
+
+  //X *= 100; Y *= 100; Z *= 100;  // ad-hoc test - nah! produces nonsense
+
+  xyz2rgb(X, Y, Z, R, G, B);     // not yet tested
 }
 // https://stackoverflow.com/questions/7880264/convert-lab-color-to-rgb
 // http://www.easyrgb.com/en/math.php#text8
@@ -3223,7 +3244,7 @@ template<class T>
 void rsColor<T>::lch2rgb(T L, T C, T h, T* R, T* G, T* B)
 {
   T a, b;
-  ch2ab(C, h, &a, &b);
+  ch2ab(C, h, &a, &b);        // not yet tested
   lab2rgb(L, a, b, R, G, B);
 }
 

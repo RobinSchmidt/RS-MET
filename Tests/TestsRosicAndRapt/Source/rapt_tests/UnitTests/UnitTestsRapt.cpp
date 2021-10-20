@@ -28,7 +28,7 @@ bool runUnitTestsRapt()
 
   //// these tests should go into UnitTestsRosic.cpp:
   ok &= runUnitTest(&samplerEngineUnitTest,       "rsSamplerEngine");
-  return ok;
+  //return ok;
 
 
 
