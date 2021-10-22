@@ -1959,8 +1959,8 @@ void renderNewtonFractal()
     Vec2D vL = rsLast(t);
     int k = findBestMatch(&roots[0], (int) roots.size(), vL, closer);
     //float H = float(k) / roots.size();
-    float rootIdx = float(k);         // index of root to which it converged
-    float numIts  = float(t.size());  // number of iterations taken
+    float rootIdx = float(k);           // index of root to which it converged
+    float numIts  = float(t.size());    // number of iterations taken
     return rsFloat32x4(rootIdx, numIts, 0.f, 0.f);
 
     //return colors[k];
@@ -1973,7 +1973,7 @@ void renderNewtonFractal()
   // Define post-processing function that translates the raw "color" values produced by coorFunc to
   // actual colors. The raw values returned by colorFunc can have any user-defined meaning. The 
   // renderer has no business in intepreting these values. That's what we do here.
-  auto postProcess = [](rsImage<Color>& img)
+  auto postProcess = [&](rsImage<Color>& img)
   {
     //float maxL = getMaxLightnessHSLA(img);
 
@@ -1988,15 +1988,30 @@ void renderNewtonFractal()
     // colorFunc2 was used, so a is the root index and b the number of iterations taken.
 
     splitChannels(img, a, b, c, d);
-    //float maxL = AT::maxValue(LB.getPixelPointer(0, 0), w*h);
     AT::normalize(b.getPixelPointer(0, 0), w*h);
 
+    float hueScaler = 1.f / roots.size();
+    AT::scale(a.getPixelPointer(0, 0), w*h, hueScaler);
 
-
+    // Now the b-image represents our desired L (lightness) values and the a-image contains our
+    // desired H (hue) values. Now, we compute the corresponding RGB colors and write them back 
+    // into the img as rsFloat32x4:
+    float S  = 1.f;                             // saturation
+    float A  = 1.f;                             // opacity
+    float *H = a.getPixelPointer(0, 0);         // pointer to hues
+    float *L = b.getPixelPointer(0, 0);         // pointer to lightnesses
+    rsFloat32x4* p = img.getPixelPointer(0, 0);
+    for(int i = 0; i < w*h; i++)
+    {
+      float R, G, B;
+      rsColor<float>::hsl2rgb(H[i], S, L[i], &R, &G, &B); 
+      p[i] = rsFloat32x4(R, G, B, A);
+    }
 
     // todo: 
     // -maybe form a histogram of the lighness values and from that determine a nonlinear 
-    //  mapping function to be applied to the lightness values
+    //  mapping function to be applied to the lightness values, maybe it shou duse a smoothed
+    //  histogram
   
     int dummy = 0;
     return;
@@ -2015,8 +2030,8 @@ void renderNewtonFractal()
   // Set up the renderer:
   rsFractalImageRenderer renderer;
   renderer.setIterationFunction(iterFunc);
-  renderer.setColoringFunction(colorFunc);
-  //renderer.setColoringFunction(colorFunc2);
+  //renderer.setColoringFunction(colorFunc);
+  renderer.setColoringFunction(colorFunc2);
   renderer.setPostProcessingFunction(postProcess);
   renderer.setStoppingCriterion(stopCriterion);
   renderer.setCoordinateRange(xMin, xMax, yMin, yMax);

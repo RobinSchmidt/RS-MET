@@ -29,12 +29,13 @@ rsImage<rsFloat32x4> rsFractalImageRenderer::renderRaw()
       Vec2D z(x, y);   // vector iterates
       Vec2D p(x, y);   // fixed parameter
       t.push_back(z);  // store 0-th iterate in trajectory
-      for(int k = 0; k < maxIts; k++)
+      for(int k = 0; k < maxIts-1; k++)
       {
         z = iterationFunction(z, p);
-        t.push_back(z);
         if(stoppingCriterion(t))
           break;
+        else
+          t.push_back(z);
       }
       img(i, j) = coloringFunction(t);
     }
