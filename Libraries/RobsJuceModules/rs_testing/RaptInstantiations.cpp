@@ -108,6 +108,7 @@ template float rsArrayTools::maxDeviation(const float *buffer1, const float *buf
 //template void rsArrayTools::negate(    const float *x, float *y, int N);
 template void rsArrayTools::negateEven(const float *x, float *y, int N);
 template void rsArrayTools::negateOdd( const float *x, float *y, int N);
+template void rsArrayTools::normalize(float*, int, float, bool);
 template int rsArrayTools::maxDeviationIndex(const float *buffer1, const float *buffer2, int length);
 template void rsArrayTools::reverse(const float* x, float* y, int length);
 //template void rsArrayTools::reverse(float* x, int length);

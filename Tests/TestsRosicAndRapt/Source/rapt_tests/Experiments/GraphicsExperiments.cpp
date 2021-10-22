@@ -1847,6 +1847,54 @@ void renderMandelbrot(int w, int h, int numIts = 300)
 // https://math.stackexchange.com/questions/1099/mandelbrot-like-sets-for-functions-other-than-fz-z2c
 // https://math.stackexchange.com/questions/1398218/determine-coordinates-for-mandelbrot-set-zoom/1398356
 
+
+// Returns the maximum lightness value of the given image, assumed to be in HSLA format. That means
+// it returns the maximum value of the 3rd element of the simd-vectors.
+float getMaxLightnessHSLA(const rsImage<rsFloat32x4>& img)
+{
+  float maxL = RS_MIN(float);
+  rsFloat32x4 *p = img.getPixelPointer(0, 0);
+  for(int i = 0; i < img.getNumPixels(); i++)
+  {
+    float L = p[i][2];    // L-value sits in 3rd element (index 2)
+    if(L > maxL)
+      maxL = L;
+  }
+  return maxL;
+}
+// hmm...that's inconvenient. maybe we should split a HSLA image into 4 seperate images for the 4 
+// channels, process them seperately, then recombine
+
+void splitChannels(const rsImage<rsFloat32x4>& img, 
+  rsImage<float>& ch1, rsImage<float>& ch2, rsImage<float>& ch3, rsImage<float>& ch4)
+{
+  int w = img.getWidth();
+  int h = img.getHeight();
+  rsAssert(ch1.hasShape(w, h));
+  rsAssert(ch2.hasShape(w, h));
+  rsAssert(ch3.hasShape(w, h));
+  rsAssert(ch4.hasShape(w, h));
+  rsFloat32x4 *pIn = img.getPixelPointer(0, 0);
+  float *p1 = ch1.getPixelPointer(0, 0);
+  float *p2 = ch2.getPixelPointer(0, 0);
+  float *p3 = ch3.getPixelPointer(0, 0);
+  float *p4 = ch4.getPixelPointer(0, 0);
+  for(int i = 0; i < w*h; i++)
+  {
+    rsFloat32x4 c = pIn[i];  // color
+    p1[i] = c[0];            // 1st channel
+    p2[i] = c[1];            // 2nd channel
+    p3[i] = c[2];            // 3rd channel
+    p4[i] = c[3];            // 4th channel
+  }
+  int dummy = 0;
+};
+// move into Drawing.h/cpp. if this goes into the rapt library, it should not operate directly on
+// the float/rsFloat32x4 types but rather on some type T and rsSimdVector<T, 4>
+
+// todo: combineChannels or merge channels
+
+
 void renderNewtonFractal()
 {
   // User parameters:
@@ -1858,8 +1906,8 @@ void renderNewtonFractal()
   double xMax   = -0.8;
   double yMin   = +0.8;
   double yMax   = +1.9;
-  int    w      =  400;      // image width in pixels
-  int    h      =  400;      // image height
+  int    w      =  200;      // image width in pixels
+  int    h      =  200;      // image height
   int    maxIts =  100;      // maximum number of iterations
   double tol    =  1.e-14;   // tolerance in convergence test
 
@@ -1910,15 +1958,49 @@ void renderNewtonFractal()
   {
     Vec2D vL = rsLast(t);
     int k = findBestMatch(&roots[0], (int) roots.size(), vL, closer);
-    float H = float(k) / roots.size();
-    float L = float(t.size());
-    return colors[k];
+    //float H = float(k) / roots.size();
+    float rootIdx = float(k);         // index of root to which it converged
+    float numIts  = float(t.size());  // number of iterations taken
+    return rsFloat32x4(rootIdx, numIts, 0.f, 0.f);
+
+    //return colors[k];
     // -use k to determine the hue and t.size() to determine the lightness
     // -when using this function, we need to post-process the raw colors - introduce another 
     //  callback for that. it should take an image of type rsFloat32x4 and return an image of
-    //  type rsPixelRGB
+    //  type rsPixelRGB...or maybe it should work on the float32x4 pixels in place
   };
 
+  // Define post-processing function that translates the raw "color" values produced by coorFunc to
+  // actual colors. The raw values returned by colorFunc can have any user-defined meaning. The 
+  // renderer has no business in intepreting these values. That's what we do here.
+  auto postProcess = [](rsImage<Color>& img)
+  {
+    //float maxL = getMaxLightnessHSLA(img);
+
+    using AT = RAPT::rsArrayTools;
+    int w = img.getWidth();
+    int h = img.getHeight();
+
+    //rsImage<float> HR(w,h), SG(w,h), LB(w,h), AA(w,h); // HSLA or RGBA, HR means hue/red etc.
+
+    rsImage<float> a(w,h), b(w,h), c(w,h), d(w,h); 
+    // a,b,c,d are genric "color" or just data channels up to our interpretation. We assume that
+    // colorFunc2 was used, so a is the root index and b the number of iterations taken.
+
+    splitChannels(img, a, b, c, d);
+    //float maxL = AT::maxValue(LB.getPixelPointer(0, 0), w*h);
+    AT::normalize(b.getPixelPointer(0, 0), w*h);
+
+
+
+
+    // todo: 
+    // -maybe form a histogram of the lighness values and from that determine a nonlinear 
+    //  mapping function to be applied to the lightness values
+  
+    int dummy = 0;
+    return;
+  };
 
   // Define stopping criterion:
   auto stopCriterion = [&](const std::vector<Vec2D>& t)
@@ -1934,6 +2016,8 @@ void renderNewtonFractal()
   rsFractalImageRenderer renderer;
   renderer.setIterationFunction(iterFunc);
   renderer.setColoringFunction(colorFunc);
+  //renderer.setColoringFunction(colorFunc2);
+  renderer.setPostProcessingFunction(postProcess);
   renderer.setStoppingCriterion(stopCriterion);
   renderer.setCoordinateRange(xMin, xMax, yMin, yMax);
   renderer.setMaxNumIterations(maxIts);

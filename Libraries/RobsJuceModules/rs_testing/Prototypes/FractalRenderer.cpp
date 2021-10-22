@@ -10,7 +10,7 @@ rsFractalImageRenderer::rsFractalImageRenderer()
 }
 
 
-rsImage<rsFloat32x4> rsFractalImageRenderer::render()
+rsImage<rsFloat32x4> rsFractalImageRenderer::renderRaw()
 {
   rsAssert(oversample == 1, "Oversampling not yet implemented");
 
