@@ -1858,8 +1858,8 @@ void renderNewtonFractal()
   double xMax   = -0.8;
   double yMin   = +0.8;
   double yMax   = +1.9;
-  int    w      = 1000;      // image width in pixels
-  int    h      = 1000;      // image height
+  int    w      =  400;      // image width in pixels
+  int    h      =  400;      // image height
   int    maxIts =  100;      // maximum number of iterations
   double tol    =  1.e-14;   // tolerance in convergence test
 
@@ -1897,13 +1897,28 @@ void renderNewtonFractal()
     return da < db;
   };
   std::vector<Vec2D> roots( { Vec2D(1,0), Vec2D(0,1), Vec2D(-1,0), Vec2D(0,-1) });
-  std::vector<Color> colors({ 0.f, 0.25f, 0.75f, 1.f });
+  std::vector<Color> colors({ 0.f, 0.25f, 0.75f, 1.f }); // get rid
   auto colorFunc = [&](const std::vector<Vec2D>& t)
   {
     Vec2D vL = rsLast(t);
     int k = findBestMatch(&roots[0], (int) roots.size(), vL, closer);
-    return colors[k];
+    // return  float(k) / roots.size();  // darker
+    return  float(k) / (roots.size()-1);
+    //return colors[k]; // maybe just use float(k) / roots.size();
   };
+  auto colorFunc2 = [&](const std::vector<Vec2D>& t)
+  {
+    Vec2D vL = rsLast(t);
+    int k = findBestMatch(&roots[0], (int) roots.size(), vL, closer);
+    float H = float(k) / roots.size();
+    float L = float(t.size());
+    return colors[k];
+    // -use k to determine the hue and t.size() to determine the lightness
+    // -when using this function, we need to post-process the raw colors - introduce another 
+    //  callback for that. it should take an image of type rsFloat32x4 and return an image of
+    //  type rsPixelRGB
+  };
+
 
   // Define stopping criterion:
   auto stopCriterion = [&](const std::vector<Vec2D>& t)
@@ -1942,6 +1957,9 @@ void renderNewtonFractal()
 
 
   // Ideas:
+  // -use the number of iteration for L and the root for H, see the frcatals here:
+  //    https://www.youtube.com/watch?v=blOARV4lnIM
+  //  the white regions are regions of slow convergence
   // -make a composited image taken from different regions of the same fractal, maybe use the same
   //  center but slightly different zoom levels, or shift it a bit left/right/up/down
   //  ...maybe this can be done as post-processing
