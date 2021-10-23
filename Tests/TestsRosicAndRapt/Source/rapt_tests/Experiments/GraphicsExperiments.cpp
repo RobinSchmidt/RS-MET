@@ -768,42 +768,84 @@ void deContourize(const rsImageF& in, rsImageF& out)
 
   int w = in.getWidth();
   int h = in.getHeight();
-
-
+  out = in;                     // initialize output
 
   // Step 1: split the pixels of the image into two disjoint sets: 
   // -(R) the set containing the pixels belonging to flat regions, these are the "region pixels"
   // -(B) those pixel that don't belong to such regions, these are the "boundary pixels"
   using Vec2D = rsVector2D<int>;
   std::vector<Vec2D> R, B;
-  auto isRegionPixel = [](int i, int j, const rsImageF& img)
+  auto getPixelClass = [](int i, int j, const rsImageF& img)
   {
     // Helper function to determine whether a pixel belongs to the region set R or to the boundary
     // set B. ToDo: maybe use a comparison with a tolerance
+    // -maybe use 3 sets: those at the actual image boundary should go into their own set, maybe F
+    //  for: fixed. actually, we don't nee to collect them anywhere bcs we don'T want to touch them
+    //  anyway ...done
     if(i == 0 || j == 0 || i >= img.getWidth() || j >= img.getHeight())
-      return false;
+      return 0;    // pixel is at image boundary
+
     float p = img(i, j);  // pixel value
+
+    // Identify pixels that are not inside flat region:
     if(p != img(i-1,j) || p != img(i+1, j) || p != img(i,j-1) || p != img(i,j+1))
-      return false;
+      return 1;    
     if(p != img(i-1,j-1) || p != img(i-1, j+1) || p != img(i+1,j-1) || p != img(i+1,j+1))
-      return false;
-    return true;    
+      return 1;
+    // todo: maybe we should further distinguish between pixels that are at a boundary of a flat 
+    // region and those that have nothing to do at all with flat regions
+
+    return 2;// pixel is inside a flat region
   };
   for(int j = 0; j < h; j++) {
     for(int i = 0; i < w; i++) {
-      if(isRegionPixel(i, j, in))
+      int c = getPixelClass(i, j, out);
+      if(c == 2)
         R.push_back(Vec2D(i, j));
-      else
+      else if(c == 1)
         B.push_back(Vec2D(i, j));  }}
 
-
-
   // Step 2:
-  // -apply a 3x3 boxcar filter to all pixels in set (B)
+  // -apply a 3x3 boxcar filter to all pixels in set B
+
 
   // Step 3: 
-  // -iteratively modify all the pixels in set (R) by bringing them closer to the average of their
+  // -iteratively modify all the pixels in set R by bringing them closer to the average of their
   //  neighbors, until convergence is reached.
+  float tol    = 1.e-5;  // ad hoc
+  float step   = 1.f;    // update stepsize
+  int   maxIts = 100;
+  int   it;
+  for(it = 0; it < maxIts; it++)
+  {
+    float dMax = 0.f;  // maximum delta applied
+    for(size_t k = 0; k < R.size(); k++)
+    {
+      // Retrieve pixel coordinates:
+      int i = R[k].x;
+      int j = R[k].y;
+
+      // Compute neighborhood average:
+      float avg;
+      avg  = out(i,  j-1) + out(i,   j+1) + out(i-1, j  ) + out(i+1,j  );
+      avg += out(i-1,j-1) + out(i-1, j+1) + out(i+1, j-1) + out(i+1,j+1);
+      avg *= 1.f/8.f;
+
+      // Compute difference to actual pixel value and apply udpate:
+      float d = out(i,j) - avg;
+      out(i,j) -= step * d;
+      dMax = rsMax(d, dMax);
+      int dummy = 0;
+    }
+
+    // Check convergence criterion:
+    if(dMax <= tol)
+      break;
+  }
+  // This does not yet work because we currently classify only those pixels as belonging to R which
+  // are actually *strictly* inside the flat region, so the iteration does nothing. We need to 
+  // include pixels directly at the boundary, too ...or do we? maybe applying the boxcar first will
+  // solve it...
 
 
   int dummy = 0;
