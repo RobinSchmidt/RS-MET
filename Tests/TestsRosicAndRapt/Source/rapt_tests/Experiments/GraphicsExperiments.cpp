@@ -748,12 +748,61 @@ void generateFunctionImageReIm(const function<complex<T>(complex<T>)>& f,
   generateFunctionImage(fi, xMin, xMax, yMin, yMax, imgIm);
 }
 
+void deContourize(const rsImageF& in, rsImageF& out)
+{
+  // Under construction, idea:
+  // Remove regions with flat color (such as those that arise from the contour-filling algorithm)
+  // by replacing them by a color gradient determined by colors taken from pixels at the boundary
+  // of the flat region.
+  // -identify those pixels that belong to a flat region, add them to a list of to-be-modified 
+  //  pixels
+  // -iterate: modify all pixels in the list until convergence in such a way as to bring them 
+  //  closer to the average of their neighbours 
+  //  -this minimizes the Laplacian over the marked region where the pixels outside the region 
+  //   serve as boundary condition
+  //  -it should let the colors from the boundaries to seep in into the flat region until it has
+  //   acquired some fixed color gradient determined by the boundary
+  // -Perhaps we should use a smoothed version of the image for the boundary conditions and apply
+  //  some sort of smoothing to the boudary pixels, too. Rationale
+
+
+  int dummy = 0;
+}
+
+void fillRectangle(rsImageF& img, int x0, int y0, int x1, int y1, float color)
+{
+  rsImageDrawerFFF drawer(&img);
+  drawer.setColor(color);
+  for(int j = y0; j <= y1; j++)
+    for(int i = x0; i <= x1; i++)
+      drawer.plot(i, j, 1.f);
+}
+
+void testDeContourize()
+{
+  int w = 80;               // width in pixels
+  int h = 50;               // height in pixels
+
+  rsImageF imgIn(w, h), imgOut(w, h);
+
+  fillRectangle(imgIn, w/2, 0, w-1, h-1, 1.0f);
+  fillRectangle(imgIn,  20, 10,  60, 40, 0.5f);
+
+  deContourize(imgIn, imgOut);
+
+  writeImageToFilePPM(imgIn,  "DeContourizeIn.ppm");
+  writeImageToFilePPM(imgOut, "DeContourizeOut.ppm");
+}
+
 void contours()
 {
+  testDeContourize();  // preliminary
+
+
   // We plot the 2D function z = f(x,y) = x^2 - y^2 into an image where the height translates
   // to the pixel brightness
 
-  rsAssert(testContourSubPixelStuff());
+  rsAssert(testContourSubPixelStuff()); // maybe move to unit test?
 
   int w = 129;               // width in pixels
   int h = 129;               // height in pixels
@@ -812,6 +861,9 @@ void contours()
   rsImageF imgFills = cp.getContourFills(imgFunc, levels, colors, antiAlias);
   // the highest levels are not white but gray - ah: it was because the painter used the saturating
   // mode - saturating mode should *NOT* be used for filling contours!!!
+
+  // Try to undo the contouring by an experimental decontourize algorithm:
+  // ...
 
   // write images to files:
   writeScaledImageToFilePPM(imgFunc,  "Function.ppm", 1);
@@ -1198,13 +1250,13 @@ void plotFunction(const std::function<TVal(TVal)>& f, rsImage<TPix>& img, TPix c
 
 }
 
-
+/*
 void plotFunction()
 {
   // test function plotting with some example functions
 
 }
-
+*/
 
 
 //-------------------------------------------------------------------------------------------------
@@ -1906,8 +1958,8 @@ void renderNewtonFractal()
   double xMax   = -0.8;
   double yMin   = +0.8;
   double yMax   = +1.9;
-  int    w      =  300;      // image width in pixels
-  int    h      =  300;      // image height
+  int    w      =  100;      // image width in pixels
+  int    h      =  100;      // image height
   int    maxIts =  100;      // maximum number of iterations
   double tol    =  1.e-14;   // tolerance in convergence test
 
@@ -2014,24 +2066,29 @@ void renderNewtonFractal()
     int w = img.getWidth();
     int h = img.getHeight();
 
+    // Extract root index and number of iterations into a,b (c,d ar unused dummies):
     rsImage<float> a(w,h), b(w,h), c(w,h), d(w,h); 
+    splitChannels(img, a, b, c, d);
     // a,b,c,d are genric "color" or just data channels up to our interpretation. We assume that
     // colorFunc2 was used, so a is the root index and b the number of iterations taken.
 
-    splitChannels(img, a, b, c, d);
+    // Process numIterations, to be used for lightness L in HSL:
     float *pb = b.getPixelPointer(0, 0);  // pb: pointer to the lightness channel
     AT::normalize(pb, w*h);
     for(int i = 0; i < w*h; i++) {        // ad hoc to remove ugly white diagonal line, replace
       if(pb[i] == 1.f)                    // it by less obstrusive black line
         pb[i] = 0.f; }
+    //rsPlotArray(pb, w*h);  // for development
     IP::gammaCorrection(b, 0.6f);
+
+    // Process root index, to be used for hue H in HSL:
     float hueScaler = 1.f / roots.size();
     AT::scale(a.getPixelPointer(0, 0), w*h, hueScaler);
 
     // Now the b-image represents our desired L (lightness) values and the a-image contains our
     // desired H (hue) values. Now, we compute the corresponding RGB colors and write them back 
     // into the img as rsFloat32x4:
-    float S  = 1.f;                             // saturation
+    float S  = 1.f;                             // saturation is a fixed value
     float A  = 1.f;                             // opacity
     float *H = a.getPixelPointer(0, 0);         // pointer to hues
     float *L = b.getPixelPointer(0, 0);         // pointer to lightnesses
@@ -2060,6 +2117,14 @@ void renderNewtonFractal()
     // -or maybe we should desaturate the colors near the boundaries, rationale: no hard steps
     //  at boudaries...but maybe we want hard steps
     // -try a higher order polynomial - we want more hues to get a nice rainbow look
+    // -general algo for de-flattening regions with flat color in any image:
+    //  -identify flat color regions by finding pixels whose color is equal to the color of all its
+    //   neighbors
+    //  -for each pixel that belogns to such a flat-color region, assign a new color based on 
+    //   linearly interpolating between colors that are adjacent to to the flat region. Let's say
+    //   the pixel has coordinates (200, 300) and the flat region around the pixel extends 20 
+    //   pixels to the left, 30 to the right, 40 downward and 50 upward, use a bilinear mix between
+    //   the colors of the pixels at these 4 positions
   
     return;
   };
