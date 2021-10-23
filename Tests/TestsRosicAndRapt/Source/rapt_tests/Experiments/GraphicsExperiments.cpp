@@ -1936,8 +1936,19 @@ void renderNewtonFractal()
     // -> verify! If correct, implement a function that creates such iterFuncs
   };
 
-  // Define coloring function. The parameter t is the trajectory:
-  // Returns true, iff a is strictly closer to the reference value r than n:
+  // Define stopping criterion:
+  auto stopCriterion = [&](const std::vector<Vec2D>& t)
+  {
+    size_t N = t.size();
+    if(N < 2)
+      return false;
+    return rsNorm(t[N-1] - t[N-2]) <= tol; // todo: use squared norm (and squared tolerance)
+  };
+
+
+
+  // Helper function for the coloring algorithms. Returns true, iff a is strictly closer to the
+  // reference value r than n:
   auto closer = [](Vec2D a, Vec2D b, Vec2D r)
   {
     double da = rsNorm(r-a);  // todo: use squared norms to get rid of the sqrt
@@ -1945,13 +1956,29 @@ void renderNewtonFractal()
     return da < db;
   };
   std::vector<Vec2D> roots( { Vec2D(1,0), Vec2D(0,1), Vec2D(-1,0), Vec2D(0,-1) });
-  auto colorFunc = [&](const std::vector<Vec2D>& t)
+
+  // Define coloring function. The parameter t is the trajectory. Here, we use a simple grayscale
+  // coloring, target root determines gray value. The coloring is determined by a pair of function,
+  // one that processes that tarjectory to produce a 4-float value at each pixel that is called 
+  // back for each pixel after convegence with the tarjectory as argument and one post-processing
+  // function that takes an image of these previously produced 4-float values and translates them
+  // into actual RGBA values. The split is necessary to allow a post-processor to access global
+  // features such as the total maximum (over all pixels) of iterations taken in order to normalize
+  // things, etc. So, a colorFunc must always be paired with appropriate post-processing function 
+  // that knows, how to intepret the values produced by the colorFunc in terms of RGBA values:
+  auto colorFunc1 = [&](const std::vector<Vec2D>& t)
   {
     Vec2D vL = rsLast(t);
     int k = findBestMatch(&roots[0], (int) roots.size(), vL, closer);
-    // return  float(k) / roots.size();  // darker
     return  float(k) / (roots.size()-1);
   };
+  auto postProcess1 = [&](rsImage<Color>& img)
+  {
+    // Do nothing. The colorFunc1 itself already produces the final RGBA values.
+  };
+
+  // Another coloring strategy using the target root for the hue and the number of iterations for
+  // the lightness, saturation is fixed:
   auto colorFunc2 = [&](const std::vector<Vec2D>& t)
   {
     Vec2D vL = rsLast(t);
@@ -1959,21 +1986,9 @@ void renderNewtonFractal()
     float rootIdx = float(k);           // index of root to which it converged
     float numIts  = float(t.size());    // number of iterations taken
     return rsFloat32x4(rootIdx, numIts, 0.f, 0.f);
-
-    //return colors[k];
-    // -use k to determine the hue and t.size() to determine the lightness
-    // -when using this function, we need to post-process the raw colors - introduce another 
-    //  callback for that. it should take an image of type rsFloat32x4 and return an image of
-    //  type rsPixelRGB...or maybe it should work on the float32x4 pixels in place
   };
-
-  // Define post-processing function that translates the raw "color" values produced by coorFunc to
-  // actual colors. The raw values returned by colorFunc can have any user-defined meaning. The 
-  // renderer has no business in intepreting these values. That's what we do here.
-  auto postProcess = [&](rsImage<Color>& img)
+  auto postProcess2 = [&](rsImage<Color>& img)
   {
-    //float maxL = getMaxLightnessHSLA(img);
-
     using AT = RAPT::rsArrayTools;
     using IP = RAPT::rsImageProcessor<float>;
     int w = img.getWidth();
@@ -2027,26 +2042,21 @@ void renderNewtonFractal()
     //  at boudaries...but maybe we want hard steps
     // -try a higher order polynomial - we want more hues to get a nice rainbow look
   
-    int dummy = 0;
     return;
   };
 
-  // Define stopping criterion:
-  auto stopCriterion = [&](const std::vector<Vec2D>& t)
-  {
-    size_t N = t.size();
-    if(N < 2)
-      return false;
-    return rsNorm(t[N-1] - t[N-2]) <= tol; // todo: use squared norm (and squared tolerance)
-  };
 
 
   // Set up the renderer:
   rsFractalImageRenderer renderer;
   renderer.setIterationFunction(iterFunc);
-  //renderer.setColoringFunction(colorFunc);
+
+  //renderer.setColoringFunction(colorFunc1);
+  //renderer.setPostProcessingFunction(postProcess1);
+
   renderer.setColoringFunction(colorFunc2);
-  renderer.setPostProcessingFunction(postProcess);
+  renderer.setPostProcessingFunction(postProcess2);
+
   renderer.setStoppingCriterion(stopCriterion);
   renderer.setCoordinateRange(xMin, xMax, yMin, yMax);
   renderer.setMaxNumIterations(maxIts);
