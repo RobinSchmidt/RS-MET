@@ -782,7 +782,7 @@ void deContourize(const rsImageF& in, rsImageF& out)
     // -maybe use 3 sets: those at the actual image boundary should go into their own set, maybe F
     //  for: fixed. actually, we don't nee to collect them anywhere bcs we don'T want to touch them
     //  anyway ...done
-    if(i == 0 || j == 0 || i >= img.getWidth() || j >= img.getHeight())
+    if(i <= 0 || j <= 0 || i >= img.getWidth()-1 || j >= img.getHeight()-1)
       return 0;    // pixel is at image boundary
 
     float p = img(i, j);  // pixel value
@@ -805,47 +805,49 @@ void deContourize(const rsImageF& in, rsImageF& out)
       else if(c == 1)
         B.push_back(Vec2D(i, j));  }}
 
+
+  // Helper function. Computes difference of pixel value with respect to neighborhood average and
+  // updates it to get get closer to that average. Returns the computed difference:
+  auto applyFilter = [](rsImageF& img, int i, int j, float amount = 1.f)
+  {
+    float avg;
+    avg  = img(i,  j-1) + img(i,   j+1) + img(i-1, j  ) + img(i+1,j  );
+    avg += img(i-1,j-1) + img(i-1, j+1) + img(i+1, j-1) + img(i+1,j+1);
+    avg *= 1.f/8.f;
+    float d = img(i,j) - avg;
+    img(i,j) -= amount * d;
+    return d;
+  };
+
   // Step 2:
   // -apply a 3x3 boxcar filter to all pixels in set B
-
+  for(size_t k = 0; k < B.size(); k++)
+    applyFilter(out, B[k].x, B[k].y, 1.f);
 
   // Step 3: 
   // -iteratively modify all the pixels in set R by bringing them closer to the average of their
   //  neighbors, until convergence is reached.
   float tol    = 1.e-5;  // ad hoc
   float step   = 1.f;    // update stepsize
-  int   maxIts = 100;
+  int   maxIts = 200;
   int   it;
   for(it = 0; it < maxIts; it++)
   {
     float dMax = 0.f;  // maximum delta applied
     for(size_t k = 0; k < R.size(); k++)
     {
-      // Retrieve pixel coordinates:
       int i = R[k].x;
       int j = R[k].y;
-
-      // Compute neighborhood average:
-      float avg;
-      avg  = out(i,  j-1) + out(i,   j+1) + out(i-1, j  ) + out(i+1,j  );
-      avg += out(i-1,j-1) + out(i-1, j+1) + out(i+1, j-1) + out(i+1,j+1);
-      avg *= 1.f/8.f;
-
-      // Compute difference to actual pixel value and apply udpate:
-      float d = out(i,j) - avg;
-      out(i,j) -= step * d;
+      float d = applyFilter(out, i, j, step);
       dMax = rsMax(d, dMax);
-      int dummy = 0;
     }
 
     // Check convergence criterion:
     if(dMax <= tol)
       break;
   }
-  // This does not yet work because we currently classify only those pixels as belonging to R which
-  // are actually *strictly* inside the flat region, so the iteration does nothing. We need to 
-  // include pixels directly at the boundary, too ...or do we? maybe applying the boxcar first will
-  // solve it...
+  // does not yet work correctly. i think, the boxcar filtering may still be wrong - it needs
+  // to take input pixels always from the original image and should not work in place...maybe
 
 
   int dummy = 0;
