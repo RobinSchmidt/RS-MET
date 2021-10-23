@@ -766,6 +766,46 @@ void deContourize(const rsImageF& in, rsImageF& out)
   //  some sort of smoothing to the boudary pixels, too. Rationale
 
 
+  int w = in.getWidth();
+  int h = in.getHeight();
+
+
+
+  // Step 1: split the pixels of the image into two disjoint sets: 
+  // -(R) the set containing the pixels belonging to flat regions, these are the "region pixels"
+  // -(B) those pixel that don't belong to such regions, these are the "boundary pixels"
+  using Vec2D = rsVector2D<int>;
+  std::vector<Vec2D> R, B;
+  auto isRegionPixel = [](int i, int j, const rsImageF& img)
+  {
+    // Helper function to determine whether a pixel belongs to the region set R or to the boundary
+    // set B. ToDo: maybe use a comparison with a tolerance
+    if(i == 0 || j == 0 || i >= img.getWidth() || j >= img.getHeight())
+      return false;
+    float p = img(i, j);  // pixel value
+    if(p != img(i-1,j) || p != img(i+1, j) || p != img(i,j-1) || p != img(i,j+1))
+      return false;
+    if(p != img(i-1,j-1) || p != img(i-1, j+1) || p != img(i+1,j-1) || p != img(i+1,j+1))
+      return false;
+    return true;    
+  };
+  for(int j = 0; j < h; j++) {
+    for(int i = 0; i < w; i++) {
+      if(isRegionPixel(i, j, in))
+        R.push_back(Vec2D(i, j));
+      else
+        B.push_back(Vec2D(i, j));  }}
+
+
+
+  // Step 2:
+  // -apply a 3x3 boxcar filter to all pixels in set (B)
+
+  // Step 3: 
+  // -iteratively modify all the pixels in set (R) by bringing them closer to the average of their
+  //  neighbors, until convergence is reached.
+
+
   int dummy = 0;
 }
 
