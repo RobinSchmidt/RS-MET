@@ -1906,8 +1906,8 @@ void renderNewtonFractal()
   double xMax   = -0.8;
   double yMin   = +0.8;
   double yMax   = +1.9;
-  int    w      =  200;      // image width in pixels
-  int    h      =  200;      // image height
+  int    w      =  300;      // image width in pixels
+  int    h      =  300;      // image height
   int    maxIts =  100;      // maximum number of iterations
   double tol    =  1.e-14;   // tolerance in convergence test
 
@@ -1945,20 +1945,17 @@ void renderNewtonFractal()
     return da < db;
   };
   std::vector<Vec2D> roots( { Vec2D(1,0), Vec2D(0,1), Vec2D(-1,0), Vec2D(0,-1) });
-  std::vector<Color> colors({ 0.f, 0.25f, 0.75f, 1.f }); // get rid
   auto colorFunc = [&](const std::vector<Vec2D>& t)
   {
     Vec2D vL = rsLast(t);
     int k = findBestMatch(&roots[0], (int) roots.size(), vL, closer);
     // return  float(k) / roots.size();  // darker
     return  float(k) / (roots.size()-1);
-    //return colors[k]; // maybe just use float(k) / roots.size();
   };
   auto colorFunc2 = [&](const std::vector<Vec2D>& t)
   {
     Vec2D vL = rsLast(t);
     int k = findBestMatch(&roots[0], (int) roots.size(), vL, closer);
-    //float H = float(k) / roots.size();
     float rootIdx = float(k);           // index of root to which it converged
     float numIts  = float(t.size());    // number of iterations taken
     return rsFloat32x4(rootIdx, numIts, 0.f, 0.f);
@@ -1978,17 +1975,21 @@ void renderNewtonFractal()
     //float maxL = getMaxLightnessHSLA(img);
 
     using AT = RAPT::rsArrayTools;
+    using IP = RAPT::rsImageProcessor<float>;
     int w = img.getWidth();
     int h = img.getHeight();
-
-    //rsImage<float> HR(w,h), SG(w,h), LB(w,h), AA(w,h); // HSLA or RGBA, HR means hue/red etc.
 
     rsImage<float> a(w,h), b(w,h), c(w,h), d(w,h); 
     // a,b,c,d are genric "color" or just data channels up to our interpretation. We assume that
     // colorFunc2 was used, so a is the root index and b the number of iterations taken.
 
     splitChannels(img, a, b, c, d);
-    AT::normalize(b.getPixelPointer(0, 0), w*h);
+    float *pb = b.getPixelPointer(0, 0);  // pb: pointer to the lightness channel
+    for(int i = 0; i < w*h; i++) {        // ad hoc to remove ugly white diagonal line
+      if(pb[i] == float(maxIts))
+        pb[i] = 0.f; }
+    AT::normalize(pb, w*h);
+    IP::gammaCorrection(b, 0.6f);
 
     float hueScaler = 1.f / roots.size();
     AT::scale(a.getPixelPointer(0, 0), w*h, hueScaler);
@@ -2009,9 +2010,22 @@ void renderNewtonFractal()
     }
 
     // todo: 
+    // -we get w completely white diagonal line
+    //  -maybe when it didn't converge, we should color the pixel black
     // -maybe form a histogram of the lighness values and from that determine a nonlinear 
     //  mapping function to be applied to the lightness values, maybe it shou duse a smoothed
     //  histogram
+    // -increasing contrast and gamma in irfanview seems to help a bit 
+    // -is there a way to get rid of the steps by somehow determining a "fractional part" of the 
+    //  number of iterations - maybe looking at the last two iterates?
+    // -To avoid the stairstep like nature of the lightness, try to find a continuous function that
+    //  is similar to the number of iterations. Maybe the sum of distances to the approached root, 
+    //  maybe divided by the initial distance and/or with initial distance subtracted off. We want 
+    //  smooth color gradients!
+    // -could it make sense to use a smooth hue function, too? how could that look like?
+    // -or maybe we should desaturate the colors near the boundaries, rationale: no hard steps
+    //  at boudaries...but maybe we want hard steps
+    // -try a higher order polynomial - we want more hues to get a nice rainbow look
   
     int dummy = 0;
     return;
