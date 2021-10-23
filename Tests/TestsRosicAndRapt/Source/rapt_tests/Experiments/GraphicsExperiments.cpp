@@ -1987,6 +1987,26 @@ void renderNewtonFractal()
     float numIts  = float(t.size());    // number of iterations taken
     return rsFloat32x4(rootIdx, numIts, 0.f, 0.f);
   };
+  auto colorFunc2_2 = [&](const std::vector<Vec2D>& t)
+  {
+    // doesn't work yet
+
+    Vec2D vL = rsLast(t);
+    int k = findBestMatch(&roots[0], (int) roots.size(), vL, closer);
+    float rootIdx = float(k);           // index of root to which it converged
+    float distSum = 0.f;                // sum of the distances
+    Vec2D root = roots[k];
+    for(int i = 0; i < (int)t.size(); i++)
+      distSum += rsNorm(root - t[i]);
+
+    // maybe normalize the distSum by the initial distance and/or t.size()
+    distSum /= t.size();  // test
+
+    if(t.size() == maxIts)              // set the outliers with huges distance to zero
+      distSum = 0.f;
+
+    return rsFloat32x4(rootIdx, distSum, 0.f, 0.f);
+  };
   auto postProcess2 = [&](rsImage<Color>& img)
   {
     using AT = RAPT::rsArrayTools;
@@ -2000,12 +2020,11 @@ void renderNewtonFractal()
 
     splitChannels(img, a, b, c, d);
     float *pb = b.getPixelPointer(0, 0);  // pb: pointer to the lightness channel
-    for(int i = 0; i < w*h; i++) {        // ad hoc to remove ugly white diagonal line
-      if(pb[i] == float(maxIts))
-        pb[i] = 0.f; }
     AT::normalize(pb, w*h);
+    for(int i = 0; i < w*h; i++) {        // ad hoc to remove ugly white diagonal line, replace
+      if(pb[i] == 1.f)                    // it by less obstrusive black line
+        pb[i] = 0.f; }
     IP::gammaCorrection(b, 0.6f);
-
     float hueScaler = 1.f / roots.size();
     AT::scale(a.getPixelPointer(0, 0), w*h, hueScaler);
 
@@ -2055,6 +2074,7 @@ void renderNewtonFractal()
   //renderer.setPostProcessingFunction(postProcess1);
 
   renderer.setColoringFunction(colorFunc2);
+  //renderer.setColoringFunction(colorFunc2_2);
   renderer.setPostProcessingFunction(postProcess2);
 
   renderer.setStoppingCriterion(stopCriterion);
