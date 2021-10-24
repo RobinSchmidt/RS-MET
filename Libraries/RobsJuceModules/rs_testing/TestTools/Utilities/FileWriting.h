@@ -8,7 +8,7 @@
 
 bool writeImageToFilePPM(const char* path, unsigned char* buf, int w, int h);
 
-
+bool writeImageToFilePPM(const RAPT::rsImage<char>& image, const char* path);
 
 bool writeImageToFilePPM(const RAPT::rsImage<rsPixelRGB>& image, const char* path);
 

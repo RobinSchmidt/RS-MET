@@ -565,6 +565,7 @@ public:
 
   /** Sets all elements in the matrix to the given value. */
   void setAllValues(T value) { rsArrayTools::fillWithValue(dataPointer, getSize(), value); }
+  // maybe rename to fill, or make an alias
 
   /** Initializes all elements with given value. */
   //void init(T value = T(0)) { RAPT::rsArrayTools::fillWithValue(dataPointer, getSize(), value); }

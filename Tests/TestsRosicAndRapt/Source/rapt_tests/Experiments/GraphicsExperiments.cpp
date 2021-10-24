@@ -890,6 +890,61 @@ void deContourize(const rsImageF& in, rsImageF& out)
   //  the same color on both sides of the boundary (which is conceptually between the pixels)
 }
 
+void deContourize2(const rsImageF& in, rsImageF& out)
+{
+  using Vec2D = rsVector2D<int>;
+  int w = in.getWidth();
+  int h = in.getHeight();
+  int i, j, k;                   // loop iteration indices
+  out.convertPixelDataFrom(in);  // initialize output - do we need this?
+
+  // Step 1: Split signal into 4 classes: 0: image edge (E), 1: inside flat region (F), 2: boundary
+  // of flat region (B), 3: all others, the remaining ones (R). We record this information in two 
+  // ways: first as arrays of pixel coordinates to facilitate iterating over the subsets and second
+  // as a matrix of char values that stores for each pixel its class, encoded as 0,1,2,3 as said 
+  // above, to facilitate to access the classification in O(1) during the iteration:
+  //std::vector<Vec2D> E, F, B, R;  // sets of (E)dge, (F)lat, (B)oundary, (R)est
+  std::vector<Vec2D> F, B;        // sets of (F)lat, (B)oundary
+  //rsMatrix<char> C(h, w);         // pixel classification matrix
+  rsImage<char> C(w, h);          // pixel classification matrix
+  // ...but we actually don't need to record the E,R sets. maybe collect only the F,B sets
+
+  // Some symbolic constants used in the code below
+  static const char rest     = 0;
+  static const char flat     = 100;
+  static const char boundary = 200;
+  C.fillAll(rest);  // initially, all are "rest" - that classification will new be updated below
+
+  // In a first pass, we identify the flat regions:
+  auto isFlatSlow = [](int i, int j, const rsImageF& img)
+  {
+    // This is the slow version of the function that needs to be used in the first pass. Later,
+    // we can use the C-matrix to retrieve that information faster.
+    float p = img(i, j);  // pixel value
+    if(p != img(i-1,j) || p != img(i+1, j) || p != img(i,j-1) || p != img(i,j+1))
+      return false;
+    if(p != img(i-1,j-1) || p != img(i-1, j+1) || p != img(i+1,j-1) || p != img(i+1,j+1))
+      return false;
+    return true;
+    // todo: allow tolerance
+  };
+  for(j = 1; j < h-1; j++) {
+    for(i = 1; i < w-1; i++) {
+      if(isFlatSlow(i, j, in)) {
+        F.push_back(Vec2D(i,j));
+        C(i,j) = flat;  }}}  // preliminary - use 1
+  // hmm..this seems to give a different result than in the old implementation above
+
+
+
+  writeImageToFilePPM(C, "FlatRegion.ppm");
+  // that's wrong! there are black pixels in a sort of grid - wtf?
+
+
+  int dummy = 0;
+}
+
+
 void fillRectangle(rsImageF& img, int x0, int y0, int x1, int y1, float color)
 {
   rsImageDrawerFFF drawer(&img);
@@ -909,7 +964,10 @@ void testDeContourize()
   fillRectangle(imgIn, w/2, 0, w-1, h-1, 1.0f);
   fillRectangle(imgIn,  20, 10,  60, 40, 0.5f);
 
-  deContourize(imgIn, imgOut);
+  //deContourize(imgIn, imgOut);
+  deContourize2(imgIn, imgOut);
+
+
 
   writeImageToFilePPM(imgIn,  "DeContourizeIn.ppm");
   writeImageToFilePPM(imgOut, "DeContourizeOut.ppm");
