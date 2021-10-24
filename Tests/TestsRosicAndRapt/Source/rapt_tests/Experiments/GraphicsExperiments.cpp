@@ -768,7 +768,12 @@ void deContourize(const rsImageF& in, rsImageF& out)
 
   int w = in.getWidth();
   int h = in.getHeight();
-  out = in;                     // initialize output
+
+  out.convertPixelDataFrom(in);  // initialize output - do we need this?
+
+  //out = in; // nope nope nope! re-assigns the reference!!! can we somehow disallow this on the
+  // API level?
+
 
   // Step 1: split the pixels of the image into two disjoint sets: 
   // -(R) the set containing the pixels belonging to flat regions, these are the "region pixels"
@@ -808,49 +813,81 @@ void deContourize(const rsImageF& in, rsImageF& out)
 
   // Helper function. Computes difference of pixel value with respect to neighborhood average and
   // updates it to get get closer to that average. Returns the computed difference:
-  auto applyFilter = [](rsImageF& img, int i, int j, float amount = 1.f)
+  auto applyFilter = [](const rsImageF& in, rsImageF& out, int i, int j, float amount = 1.f)
   {
     float avg;
-    avg  = img(i,  j-1) + img(i,   j+1) + img(i-1, j  ) + img(i+1,j  );
-    avg += img(i-1,j-1) + img(i-1, j+1) + img(i+1, j-1) + img(i+1,j+1);
+    avg  = in(i,  j-1) + in(i,   j+1) + in(i-1, j  ) + in(i+1,j  );
+    avg += in(i-1,j-1) + in(i-1, j+1) + in(i+1, j-1) + in(i+1,j+1);
     avg *= 1.f/8.f;
-    float d = img(i,j) - avg;
-    img(i,j) -= amount * d;
+    float d = in(i,j) - avg;
+    out(i,j) = in(i,j) - amount * d;
     return d;
   };
-
-  // Step 2:
-  // -apply a 3x3 boxcar filter to all pixels in set B
-  for(size_t k = 0; k < B.size(); k++)
-    applyFilter(out, B[k].x, B[k].y, 1.f);
-
-  // Step 3: 
-  // -iteratively modify all the pixels in set R by bringing them closer to the average of their
-  //  neighbors, until convergence is reached.
   float tol    = 1.e-5;  // ad hoc
   float step   = 1.f;    // update stepsize
   int   maxIts = 200;
   int   it;
+
+
+  // Step 2:
+  // -apply a 3x3 boxcar filter to all pixels in set B
+  for(size_t k = 0; k < B.size(); k++)
+    applyFilter(in, out, B[k].x, B[k].y, 1.f);
+  // perhaps we should do for the boundary pixel also an iteration, until they have the saem value 
+  // on both sides of the boundary. we actually want the new values of the boundary pixels to be
+  // equal on both sides that the value should be the average of both sides
+  //for(it = 0; it < maxIts; it++)
+  //{
+  //  float dMax = 0.f;                       // maximum delta applied
+  //  for(size_t k = 0; k < B.size(); k++) {
+  //    float d = applyFilter(out, out, B[k].x, B[k].y, step);
+  //    dMax = rsMax(d, dMax);   }
+  //  if(dMax <= tol)                         // Check convergence criterion
+  //    break;
+  //}
+  // maybe for the boundary pixels, we should not average over its full neighborhood but only over
+  // those pixels in its neighborhood which are also boundary pixels. to facilitate this, maybe 
+  // create a matrix of flags that indicate whether a pixel belongs to a boundary or not and use 
+  // that in the filtering. oh - and the pixel itself should probably also be included in this
+  // averaging
+
+  // Step 3: 
+  // -iteratively modify all the pixels in set R by bringing them closer to the average of their
+  //  neighbors, until convergence is reached.
   for(it = 0; it < maxIts; it++)
   {
-    float dMax = 0.f;  // maximum delta applied
-    for(size_t k = 0; k < R.size(); k++)
-    {
-      int i = R[k].x;
-      int j = R[k].y;
-      float d = applyFilter(out, i, j, step);
-      dMax = rsMax(d, dMax);
-    }
-
-    // Check convergence criterion:
-    if(dMax <= tol)
+    float dMax = 0.f;                       // maximum delta applied
+    for(size_t k = 0; k < R.size(); k++) {
+      float d = applyFilter(out, out, R[k].x, R[k].y, step);
+      dMax = rsMax(d, dMax);   }
+    if(dMax <= tol)                         // Check convergence criterion
       break;
   }
-  // does not yet work correctly. i think, the boxcar filtering may still be wrong - it needs
-  // to take input pixels always from the original image and should not work in place...maybe
-
 
   int dummy = 0;
+
+  // doesn't yet work as desired, new plan:
+  // -put each pixel in 1 of 4 classes: 
+  //   0: image boundary - don't touch them (at least not with regular filters)
+  //   1: inside flat region: pixel has same color as all its neighbors (maybe allow for a 
+  //      tolerance)
+  //   2: at boundary of flat region: has not the same color as all its neighbors, but at least 
+  //      one of its neighbors does
+  //   3: all other pixels (we don't need to do anything with them either)
+  // -to find the boundary pixels (set 2), we need to reach back into an already computed matrix of
+  //  flags that are true whenever a pixel is inside a flat region. the creation of set 1 should be 
+  //  completed before attempting to create set 2, in the creating of set 2 we may create another 
+  //  matrix of flags...maybe use just one matrix of char using 1 for flat-region pixels, 2 for 
+  //  boundary pixels and 0 for all others...or maybe use the same encoding with 0,1,2,3 as above
+  // -for all boundary pixels (in set 2), do:
+  //  -replace their colors with an average color, but the average is not taken over the full set 
+  //   of 8 neighbors but only over those neighbors that are themselves a boundary pixel
+  // -for all flat-region pixels (in set 1) do the same iteration as above
+  // -to test it, we first should ensure that the boundary pixels have the right color, i.e. 
+  //  produce an output before entering the iteration and inspect it
+  // -in practice, the algo may benefit from oversampling by a factor of 2, otherwise we will see
+  //  2-pixel thick lines of same color at the former region boundaries, because pixels will get 
+  //  the same color on both sides of the boundary (which is conceptually between the pixels)
 }
 
 void fillRectangle(rsImageF& img, int x0, int y0, int x1, int y1, float color)
@@ -876,6 +913,7 @@ void testDeContourize()
 
   writeImageToFilePPM(imgIn,  "DeContourizeIn.ppm");
   writeImageToFilePPM(imgOut, "DeContourizeOut.ppm");
+  int dummy = 0;
 }
 
 void contours()
