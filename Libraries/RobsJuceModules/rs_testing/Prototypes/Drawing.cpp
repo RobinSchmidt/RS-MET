@@ -929,6 +929,188 @@ int clipTriangleToUnitSquare2(const rsVector2DF& a, const rsVector2DF& b, const 
 
 //=================================================================================================
 
+int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numTrips) 
+{
+  // maybe rename to smoothContours or gradientifyFlatRegions
+
+  using Vec2D = rsVector2D<int>;
+
+  int maxIts = 100;   // make parameter, maybe return the number of iterations taken
+  float tol  = 1.e-5;
+  int w = in.getWidth();
+  int h = in.getHeight();
+  int i, j, k;                   // loop iteration indices
+  out.copyPixelDataFrom(in);     // initialize output - do we need this?
+  //writeImageToFilePPM(out, "AfterInit.ppm");  // for debug
+
+  //...............................................................................................
+  // Step 1: Extract the coordinates of pixels in flat-color regions and on boundaries between such
+  // regions. We record this information in two ways: (1) as arrays of pixel coordinates to 
+  // facilitate iterating over the subsets and (2) as a matrix of char values that stores for each
+  // pixel its class (encoded as symbolic constants defined below), to facilitate to access the 
+  // classification in O(1) during the iteration. Pixels that do not belong into either of these 
+  // classes are of no interest and classified as "rest" and we don't record their coordinates. We
+  // only take pixels into account that are not at the image's edges because we need to work with
+  //  the neighbors of the pixels.
+  std::vector<Vec2D> F, B;           // sets of (F)lat, (B)oundary
+  rsImage<char> C(w, h);             // pixel classification matrix
+  static const char rest     = 0;    // symbolic constants used in the code below
+  static const char flat     = 200;
+  static const char boundary = 100;
+  C.fillAll(rest);                   // initially, all are "rest"
+
+  // In a first pass, we identify the flat regions:
+  auto isFlatSlow = [](int i, int j, const rsImageF& img)
+  {
+    // This is the slow version of the function that needs to be used in the first pass. Later,
+    // we can use the C-matrix to retrieve that information faster.
+    float p = img(i, j);  // pixel value
+    if(p != img(i-1,j) || p != img(i+1, j) || p != img(i,j-1) || p != img(i,j+1))
+      return false;
+    if(p != img(i-1,j-1) || p != img(i-1, j+1) || p != img(i+1,j-1) || p != img(i+1,j+1))
+      return false;
+    return true;
+    // todo: allow tolerance
+  };
+  for(j = 1; j < h-1; j++) {
+    for(i = 1; i < w-1; i++) {
+      if(isFlatSlow(i, j, in)) {
+        F.push_back(Vec2D(i,j));
+        C(i,j) = flat;  }}} 
+  auto isFlat = [&](int i, int j) { return C(i,j) == flat; }; // now faster!
+  // hmm..this seems to give a different result than in the old implementation - but the old one 
+  // was crap anyway. still - this part should actually have worked the same
+
+  // In a second pass, we identify the pixels at the boundary of flat regions;
+  auto hasFlatNeighbor = [&](int i, int j)
+  {
+    if(isFlat(i-1, j  ) || isFlat(i+1, j  )) return true;
+    if(isFlat(i,   j-1) || isFlat(i,   j+1)) return true;
+    if(isFlat(i-1, j-1) || isFlat(i-1, j+1)) return true;
+    if(isFlat(i+1, j-1) || isFlat(i+1, j+1)) return true;
+    return false;
+  };
+  auto isAtBoundarySlow = [&](int i, int j, const rsImageF& img)
+  {
+    return (!isFlat(i, j)) && hasFlatNeighbor(i, j);
+  };
+  for(j = 1; j < h-1; j++) {
+    for(i = 1; i < w-1; i++) {
+      if(isAtBoundarySlow(i, j, in)) {
+        B.push_back(Vec2D(i,j));
+        C(i,j) = boundary;  }}} 
+  auto isAtBoundary = [&](int i, int j) { return C(i,j) == boundary; }; // now faster!
+  writeImageToFilePPM(C, "PixelClasses.ppm");  // for debug - looks good!
+
+  //...............................................................................................
+  // Step 2: For all boundary pixels: replace them by the average of those of their neighbors which
+  // are also boundary pixels. The pixel itself is also included in that average:
+  auto isRelevant = [&](int i, int j) 
+  { 
+    return isAtBoundary(i, j);
+
+    //return !isFlat(i, j);  // test
+
+    //return true;  // may also be useful. maybe provide different modes
+  }; 
+  for(k = 0; k < (int)B.size(); k++)
+  {
+    i = B[k].x;
+    j = B[k].y;
+
+    // Accumulate sum of the relevant neighbors:
+    int   n = 0;    // number of relevant neighbors
+    float s = 0.f;  // sum of colors of relevant neighbors
+    if(isRelevant(i-1, j  )) { s += in(i-1, j  ); n += 1; }
+    if(isRelevant(i+1, j  )) { s += in(i+1, j  ); n += 1; }
+    if(isRelevant(i,   j-1)) { s += in(i,   j-1); n += 1; }
+    if(isRelevant(i,   j+1)) { s += in(i,   j+1); n += 1; }
+    if(isRelevant(i-1, j-1)) { s += in(i-1, j-1); n += 1; }
+    if(isRelevant(i-1, j+1)) { s += in(i-1, j+1); n += 1; }
+    if(isRelevant(i+1, j-1)) { s += in(i+1, j-1); n += 1; }
+    if(isRelevant(i+1, j+1)) { s += in(i+1, j+1); n += 1; }
+
+    // Compute the average, including the pixel at (i,j), and assign it to output image pixel:
+    s += in(i, j);
+    n += 1;
+    float a = s / float(n);  // average
+    out(i, j) = a;
+  }
+  writeImageToFilePPM(out, "AfterStep2.ppm");
+
+  //...............................................................................................
+  // Step 3: Alternatingly do to the flat-region pixels and boundary pixels: iteratively replace 
+  // their values by the average of their neighbors until convergence:
+
+  // Helper function. Computes difference of pixel value with respect to neighborhood average and
+  // updates it to get get closer to that average. Returns the computed difference:
+  auto applyFilter = [](const rsImageF& in, rsImageF& out, int i, int j, float amount = 1.f)
+  {
+    float avg;
+    avg  = in(i,   j-1) + in(i,   j+1) + in(i-1, j  ) + in(i+1, j  );
+    avg += in(i-1, j-1) + in(i-1, j+1) + in(i+1, j-1) + in(i+1, j+1);
+    avg *= 1.f/8.f;
+    float d = in(i,j) - avg;
+    out(i,j) = in(i,j) - amount * d;
+    return d;
+  };
+
+  int maxItsTaken = 0;
+  float step = 1.f;    // may not be needed, maybe get rid - but first, let's experiment with it
+                       // a little bit to see if it can be used to accelerate convergence
+
+  for(int i = 1; i <= numTrips; i++)
+  {
+    int its;
+    float dMax, d;
+
+    for(its = 0; its < maxIts; its++)                 // iteration over flat-region
+    {
+      dMax = 0.f;                                     // maximum delta applied
+      for(k = 0; k < F.size(); k++) {
+        d = applyFilter(out, out, F[k].x, F[k].y, step);
+        dMax = rsMax(d, dMax);   }
+      if(dMax <= tol)                                 // Check convergence criterion
+        break;
+    }
+    maxItsTaken = rsMax(maxItsTaken, its);
+
+    for(its = 0; its < maxIts; its++)                 // iteration over boundary
+    {
+      dMax = 0.f;
+      for(k = 0; k < B.size(); k++) {
+        d = applyFilter(out, out, B[k].x, B[k].y, step);
+        dMax = rsMax(d, dMax);   }
+      if(dMax <= tol)
+        break;
+    }
+    maxItsTaken = rsMax(maxItsTaken, its);
+  }
+
+  return maxItsTaken;
+
+  // -Can we speed up the convergence? maybe it's actually not such a good idea to work in place?
+  //  Try to compute all the updates first and then do all the upates at once. compare convergence
+  //  to what we do now (updating every pixel immediately after the update was computed, such that 
+  //  into computation of the next pixel, the current pixel enters already with updated color)
+  // -It seems to have problems when the boundaries of the flat regions are anti-aliased. When 
+  //  applied to the image generated by contours, it doesn't seem to do much. The flat regions are
+  //  correctly classified. But i think, we have problems with the boundaries because the different
+  //  flat color regions do not border each other directly. There's a thin (1-pixel wide) 
+  //  transition which is either a falt intermediate color (when anti-alias is turned off) or an
+  //  actual gradienty thing that looks like proper anti-aliasing. Even when anti-alias is turned
+  //  off we do some sort of crude, improper transition. Both of them trip up the algo.
+  //  -The classification with and without AA looks almost the same, but there a very few pixels
+  //   that get classified differently in both cases (i spotted just 1 in high zoom - they are 
+  //   *really* rare)
+  //  -I think the iteration doesn't really do very much in these cases because the flat region is
+  //   already at the right color...but wait...no...this makes no sense
+  //  -maybe we need a 3rd class of pixels: transition pixels. these are those which are neither in
+  //   a flat region nor directly at its boundary but within the 1-pixel wide transition zone
+}
+
+//=================================================================================================
+
 void rsConvertImage(
   const rsImage<float>& R, const rsImage<float>& G, const rsImage<float>& B, bool clip,
   rsImage<rsPixelRGB>& img)

@@ -47,6 +47,8 @@ rsImage<rsFloat32x4> rsFractalImageRenderer::renderRaw()
   //  return rsImageProcessor::decimate(img, oversample, oversample, true); // true: use average
 
 
+  return img;
+
   //// Decimate:
   //rsImage<Color> imgD(w, h);
   //return imgD;

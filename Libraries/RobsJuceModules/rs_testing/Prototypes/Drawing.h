@@ -190,6 +190,10 @@ int clipTriangleToUnitSquare(const rsVector2DF& a, const rsVector2DF& b, const r
 
 //=================================================================================================
 
+int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numTrips = 1);
+
+//=================================================================================================
+
 struct rsPixelRGB // maybe rename to rsPixel24BitRGB
 {
   // have constructors that take triples of floats, doubles, etc. they should optionally clip

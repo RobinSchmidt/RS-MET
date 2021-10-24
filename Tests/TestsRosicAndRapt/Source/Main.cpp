@@ -229,6 +229,7 @@ int main(int argc, char* argv[])
   //pixelCoverage();
 
   // Plotting:
+  gradientify();
   contours();
   //complexContours();
   //implicitCurve();

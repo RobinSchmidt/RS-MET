@@ -748,154 +748,8 @@ void generateFunctionImageReIm(const function<complex<T>(complex<T>)>& f,
   generateFunctionImage(fi, xMin, xMax, yMin, yMax, imgIm);
 }
 
-// obsolete, can be deleted
-void deContourize(const rsImageF& in, rsImageF& out)
-{
-  // Under construction, idea:
-  // Remove regions with flat color (such as those that arise from the contour-filling algorithm)
-  // by replacing them by a color gradient determined by colors taken from pixels at the boundary
-  // of the flat region.
-  // -identify those pixels that belong to a flat region, add them to a list of to-be-modified 
-  //  pixels
-  // -iterate: modify all pixels in the list until convergence in such a way as to bring them 
-  //  closer to the average of their neighbours 
-  //  -this minimizes the Laplacian over the marked region where the pixels outside the region 
-  //   serve as boundary condition
-  //  -it should let the colors from the boundaries to seep in into the flat region until it has
-  //   acquired some fixed color gradient determined by the boundary
-  // -Perhaps we should use a smoothed version of the image for the boundary conditions and apply
-  //  some sort of smoothing to the boudary pixels, too. Rationale
-
-
-  int w = in.getWidth();
-  int h = in.getHeight();
-
-  out.convertPixelDataFrom(in);  // initialize output - do we need this?
-
-  //out = in; // nope nope nope! re-assigns the reference!!! can we somehow disallow this on the
-  // API level?
-
-
-  // Step 1: split the pixels of the image into two disjoint sets: 
-  // -(R) the set containing the pixels belonging to flat regions, these are the "region pixels"
-  // -(B) those pixel that don't belong to such regions, these are the "boundary pixels"
-  using Vec2D = rsVector2D<int>;
-  std::vector<Vec2D> R, B;
-  auto getPixelClass = [](int i, int j, const rsImageF& img)
-  {
-    // Helper function to determine whether a pixel belongs to the region set R or to the boundary
-    // set B. ToDo: maybe use a comparison with a tolerance
-    // -maybe use 3 sets: those at the actual image boundary should go into their own set, maybe F
-    //  for: fixed. actually, we don't nee to collect them anywhere bcs we don'T want to touch them
-    //  anyway ...done
-    if(i <= 0 || j <= 0 || i >= img.getWidth()-1 || j >= img.getHeight()-1)
-      return 0;    // pixel is at image boundary
-
-    float p = img(i, j);  // pixel value
-
-    // Identify pixels that are not inside flat region:
-    if(p != img(i-1,j) || p != img(i+1, j) || p != img(i,j-1) || p != img(i,j+1))
-      return 1;    
-    if(p != img(i-1,j-1) || p != img(i-1, j+1) || p != img(i+1,j-1) || p != img(i+1,j+1))
-      return 1;
-    // todo: maybe we should further distinguish between pixels that are at a boundary of a flat 
-    // region and those that have nothing to do at all with flat regions
-
-    return 2;// pixel is inside a flat region
-  };
-  for(int j = 0; j < h; j++) {
-    for(int i = 0; i < w; i++) {
-      int c = getPixelClass(i, j, out);
-      if(c == 2)
-        R.push_back(Vec2D(i, j));
-      else if(c == 1)
-        B.push_back(Vec2D(i, j));  }}
-
-
-  // Helper function. Computes difference of pixel value with respect to neighborhood average and
-  // updates it to get get closer to that average. Returns the computed difference:
-  auto applyFilter = [](const rsImageF& in, rsImageF& out, int i, int j, float amount = 1.f)
-  {
-    float avg;
-    avg  = in(i,  j-1) + in(i,   j+1) + in(i-1, j  ) + in(i+1,j  );
-    avg += in(i-1,j-1) + in(i-1, j+1) + in(i+1, j-1) + in(i+1,j+1);
-    avg *= 1.f/8.f;
-    float d = in(i,j) - avg;
-    out(i,j) = in(i,j) - amount * d;
-    return d;
-  };
-  float tol    = 1.e-5;  // ad hoc
-  float step   = 1.f;    // update stepsize
-  int   maxIts = 200;
-  int   it;
-
-
-  // Step 2:
-  // -apply a 3x3 boxcar filter to all pixels in set B
-  for(size_t k = 0; k < B.size(); k++)
-    applyFilter(in, out, B[k].x, B[k].y, 1.f);
-  // perhaps we should do for the boundary pixel also an iteration, until they have the saem value 
-  // on both sides of the boundary. we actually want the new values of the boundary pixels to be
-  // equal on both sides that the value should be the average of both sides
-  //for(it = 0; it < maxIts; it++)
-  //{
-  //  float dMax = 0.f;                       // maximum delta applied
-  //  for(size_t k = 0; k < B.size(); k++) {
-  //    float d = applyFilter(out, out, B[k].x, B[k].y, step);
-  //    dMax = rsMax(d, dMax);   }
-  //  if(dMax <= tol)                         // Check convergence criterion
-  //    break;
-  //}
-  // maybe for the boundary pixels, we should not average over its full neighborhood but only over
-  // those pixels in its neighborhood which are also boundary pixels. to facilitate this, maybe 
-  // create a matrix of flags that indicate whether a pixel belongs to a boundary or not and use 
-  // that in the filtering. oh - and the pixel itself should probably also be included in this
-  // averaging
-
-  // Step 3: 
-  // -iteratively modify all the pixels in set R by bringing them closer to the average of their
-  //  neighbors, until convergence is reached.
-  for(it = 0; it < maxIts; it++)
-  {
-    float dMax = 0.f;                       // maximum delta applied
-    for(size_t k = 0; k < R.size(); k++) {
-      float d = applyFilter(out, out, R[k].x, R[k].y, step);
-      dMax = rsMax(d, dMax);   }
-    if(dMax <= tol)                         // Check convergence criterion
-      break;
-  }
-
-  int dummy = 0;
-
-  // doesn't yet work as desired, new plan:
-  // -put each pixel in 1 of 4 classes: 
-  //   0: image boundary - don't touch them (at least not with regular filters)
-  //   1: inside flat region: pixel has same color as all its neighbors (maybe allow for a 
-  //      tolerance)
-  //   2: at boundary of flat region: has not the same color as all its neighbors, but at least 
-  //      one of its neighbors does
-  //   3: all other pixels (we don't need to do anything with them either)
-  // -to find the boundary pixels (set 2), we need to reach back into an already computed matrix of
-  //  flags that are true whenever a pixel is inside a flat region. the creation of set 1 should be 
-  //  completed before attempting to create set 2, in the creating of set 2 we may create another 
-  //  matrix of flags...maybe use just one matrix of char using 1 for flat-region pixels, 2 for 
-  //  boundary pixels and 0 for all others...or maybe use the same encoding with 0,1,2,3 as above
-  // -for all boundary pixels (in set 2), do:
-  //  -replace their colors with an average color, but the average is not taken over the full set 
-  //   of 8 neighbors but only over those neighbors that are themselves a boundary pixel
-  // -for all flat-region pixels (in set 1) do the same iteration as above
-  // -to test it, we first should ensure that the boundary pixels have the right color, i.e. 
-  //  produce an output before entering the iteration and inspect it
-  // -in practice, the algo may benefit from oversampling by a factor of 2, otherwise we will see
-  //  2-pixel thick lines of same color at the former region boundaries, because pixels will get 
-  //  the same color on both sides of the boundary (which is conceptually between the pixels). For
-  //  the upsampling we should perhaps use naive resampling by just filling squares of 4 pixels
-  //  with the color from one pixel in the original. for downsampling, maybe taking the average
-  //  of 4 pixels is suitable. however, if the input already is oversampled, this should probably
-  //  not be done
-}
-
-int deContourize2(const rsImageF& in, rsImageF& out, int numTrips = 1) 
+/*
+int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numTrips = 1) 
 {
   // maybe rename to smoothContours or gradientifyFlatRegions
 
@@ -921,8 +775,8 @@ int deContourize2(const rsImageF& in, rsImageF& out, int numTrips = 1)
   std::vector<Vec2D> F, B;           // sets of (F)lat, (B)oundary
   rsImage<char> C(w, h);             // pixel classification matrix
   static const char rest     = 0;    // symbolic constants used in the code below
-  static const char flat     = 100;
-  static const char boundary = 200;
+  static const char flat     = 200;
+  static const char boundary = 100;
   C.fillAll(rest);                   // initially, all are "rest"
 
   // In a first pass, we identify the flat regions:
@@ -966,7 +820,7 @@ int deContourize2(const rsImageF& in, rsImageF& out, int numTrips = 1)
         B.push_back(Vec2D(i,j));
         C(i,j) = boundary;  }}} 
   auto isAtBoundary = [&](int i, int j) { return C(i,j) == boundary; }; // now faster!
-  //writeImageToFilePPM(C, "PixelClasses.ppm");  // for debug - looks good!
+  writeImageToFilePPM(C, "PixelClasses.ppm");  // for debug - looks good!
 
   //...............................................................................................
   // Step 2: For all boundary pixels: replace them by the average of those of their neighbors which
@@ -974,6 +828,9 @@ int deContourize2(const rsImageF& in, rsImageF& out, int numTrips = 1)
   auto isRelevant = [&](int i, int j) 
   { 
     return isAtBoundary(i, j);
+
+    //return !isFlat(i, j);  // test
+
     //return true;  // may also be useful. maybe provide different modes
   }; 
   for(k = 0; k < (int)B.size(); k++)
@@ -999,7 +856,7 @@ int deContourize2(const rsImageF& in, rsImageF& out, int numTrips = 1)
     float a = s / float(n);  // average
     out(i, j) = a;
   }
-  //writeImageToFilePPM(out, "AfterStep2.ppm");  
+  writeImageToFilePPM(out, "AfterStep2.ppm");
 
   //...............................................................................................
   // Step 3: Alternatingly do to the flat-region pixels and boundary pixels: iteratively replace 
@@ -1056,8 +913,23 @@ int deContourize2(const rsImageF& in, rsImageF& out, int numTrips = 1)
   //  Try to compute all the updates first and then do all the upates at once. compare convergence
   //  to what we do now (updating every pixel immediately after the update was computed, such that 
   //  into computation of the next pixel, the current pixel enters already with updated color)
+  // -It seems to have problems when the boundaries of the flat regions are anti-aliased. When 
+  //  applied to the image generated by contours, it doesn't seem to do much. The flat regions are
+  //  correctly classified. But i think, we have problems with the boundaries because the different
+  //  flat color regions do not border each other directly. There's a thin (1-pixel wide) 
+  //  transition which is either a falt intermediate color (when anti-alias is turned off) or an
+  //  actual gradienty thing that looks like proper anti-aliasing. Even when anti-alias is turned
+  //  off we do some sort of crude, improper transition. Both of them trip up the algo.
+  //  -The classification with and without AA looks almost the same, but there a very few pixels
+  //   that get classified differently in both cases (i spotted just 1 in high zoom - they are 
+  //   *really* rare)
+  //  -I think the iteration doesn't really do very much in these cases because the flat region is
+  //   already at the right color...but wait...no...this makes no sense
+  //  -maybe we need a 3rd class of pixels: transition pixels. these are those which are neither in
+  //   a flat region nor directly at its boundary but within the 1-pixel wide transition zone
 }
-// move to prototypes
+*/
+// move to prototypes -  done
 
 void fillRectangle(rsImageF& img, int x0, int y0, int x1, int y1, float color)
 {
@@ -1069,8 +941,10 @@ void fillRectangle(rsImageF& img, int x0, int y0, int x1, int y1, float color)
 }
 // move to prototypes/drawing
 
-void testDeContourize()
+void gradientify()
 {
+  // Tests the "gradientify" algorithm that turns flat regions in an image into smooth gradients.
+
   int w = 80;               // width in pixels
   int h = 50;               // height in pixels
 
@@ -1079,23 +953,24 @@ void testDeContourize()
   fillRectangle(imgIn, w/2, 0, w-1, h-1, 1.0f);
   fillRectangle(imgIn,  20, 10,  60, 40, 0.5f);
 
-  writeImageToFilePPM(imgIn,  "DeContourizeIn.ppm");
+  writeImageToFilePPM(imgIn,  "gradientifyIn.ppm");
 
-  deContourize2(imgIn, imgOut, 1);
-  writeImageToFilePPM(imgOut, "DeContourizeOut1.ppm");
+  gradientifyFlatRegions(imgIn, imgOut, 1);
+  writeImageToFilePPM(imgOut, "gradientifyOut1.ppm");
 
-  deContourize2(imgIn, imgOut, 2);
-  writeImageToFilePPM(imgOut, "DeContourizeOut2.ppm");
+  gradientifyFlatRegions(imgIn, imgOut, 2);
+  writeImageToFilePPM(imgOut, "gradientifyOut2.ppm");
 
-  deContourize2(imgIn, imgOut, 3);
-  writeImageToFilePPM(imgOut, "DeContourizeOut3.ppm");
+  gradientifyFlatRegions(imgIn, imgOut, 3);
+  writeImageToFilePPM(imgOut, "gradientifyOut3.ppm");
 
-  int dummy = 0;
+  // ToDo:
+  // -test it with more complex input images
 }
 
 void contours()
 {
-  testDeContourize();  // preliminary
+  //testDeContourize();  // preliminary
 
 
   // We plot the 2D function z = f(x,y) = x^2 - y^2 into an image where the height translates
@@ -1118,7 +993,7 @@ void contours()
 
   //numColors = 3;  // test
 
-  bool antiAlias = true;
+  bool antiAlias = false;
 
   float xMin = -r;
   float xMax = +r;
@@ -1162,12 +1037,23 @@ void contours()
   // mode - saturating mode should *NOT* be used for filling contours!!!
 
   // Try to undo the contouring by an experimental decontourize algorithm:
-  // ...
+  rsImageF grad1(w, h);
+  gradientifyFlatRegions(imgFills, grad1, 1);
 
   // write images to files:
-  writeScaledImageToFilePPM(imgFunc,  "Function.ppm", 1);
+  writeScaledImageToFilePPM(imgFunc,  "ContourInput.ppm", 1);
   writeScaledImageToFilePPM(imgCont,  "ContourLines.ppm", 1);
   writeScaledImageToFilePPM(imgFills, "ContourFills.ppm", 1);
+  writeScaledImageToFilePPM(grad1,    "ContourGrad1.ppm", 1);
+
+  int dummy = 0;
+
+  // Bugs:
+  // -The antiAlias flag seems to affect only the outlines. The fills look always antialiased.
+  //  ...ah - no - not really, without anti-alias, they have a 1-pixel thick boundary line with
+  //  a mixed-color. this looks a bit smoothish, too - and it trips up the gradientifyFlatRegions
+  //  just as much as proper anti-aliasing
+
 
   // the right column and bottom row has no contour values - no surprise - the loop only goes up 
   // to w-1,h-1

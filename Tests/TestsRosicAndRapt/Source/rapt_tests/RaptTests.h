@@ -78,6 +78,7 @@ void phaseScopeLissajous();
 void splineArc();
 void triangles();
 void pixelCoverage();
+void gradientify();
 void contours();
 void complexContours();
 void implicitCurve();
