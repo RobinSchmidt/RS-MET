@@ -966,11 +966,17 @@ int deContourize2(const rsImageF& in, rsImageF& out)
         B.push_back(Vec2D(i,j));
         C(i,j) = boundary;  }}} 
   auto isAtBoundary = [&](int i, int j) { return C(i,j) == boundary; }; // now faster!
-  writeImageToFilePPM(C, "PixelClasses.ppm");  // for debug - looks good!
+  //writeImageToFilePPM(C, "PixelClasses.ppm");  // for debug - looks good!
 
   //...............................................................................................
   // Step 2: For all boundary pixels: replace them by the average of those of their neighbors which
   // are also boundary pixels. The pixel itself is also included in that average:
+  auto isRelevant = [&](int i, int j) 
+  { 
+    return isAtBoundary(i, j);
+
+    //return true;  // may also be useful. maybe provide different modes
+  }; 
   for(k = 0; k < (int)B.size(); k++)
   {
     i = B[k].x;
@@ -979,14 +985,14 @@ int deContourize2(const rsImageF& in, rsImageF& out)
     // Accumulate sum of the relevant neighbors:
     int   n = 0;    // number of relevant neighbors
     float s = 0.f;  // sum of colors of relevant neighbors
-    if(isAtBoundary(i-1, j  )) { s += in(i-1, j  ); n += 1; }
-    if(isAtBoundary(i+1, j  )) { s += in(i+1, j  ); n += 1; }
-    if(isAtBoundary(i,   j-1)) { s += in(i,   j-1); n += 1; }
-    if(isAtBoundary(i,   j+1)) { s += in(i,   j+1); n += 1; }
-    if(isAtBoundary(i-1, j-1)) { s += in(i-1, j-1); n += 1; }
-    if(isAtBoundary(i-1, j+1)) { s += in(i-1, j+1); n += 1; }
-    if(isAtBoundary(i+1, j-1)) { s += in(i+1, j-1); n += 1; }
-    if(isAtBoundary(i+1, j+1)) { s += in(i+1, j+1); n += 1; }
+    if(isRelevant(i-1, j  )) { s += in(i-1, j  ); n += 1; }
+    if(isRelevant(i+1, j  )) { s += in(i+1, j  ); n += 1; }
+    if(isRelevant(i,   j-1)) { s += in(i,   j-1); n += 1; }
+    if(isRelevant(i,   j+1)) { s += in(i,   j+1); n += 1; }
+    if(isRelevant(i-1, j-1)) { s += in(i-1, j-1); n += 1; }
+    if(isRelevant(i-1, j+1)) { s += in(i-1, j+1); n += 1; }
+    if(isRelevant(i+1, j-1)) { s += in(i+1, j-1); n += 1; }
+    if(isRelevant(i+1, j+1)) { s += in(i+1, j+1); n += 1; }
 
     // Compute the average, including the pixel at (i,j), and assign it to output image pixel:
     s += in(i, j);
@@ -994,7 +1000,9 @@ int deContourize2(const rsImageF& in, rsImageF& out)
     float a = s / float(n);  // average
     out(i, j) = a;
   }
-  writeImageToFilePPM(out, "AfterStep2.ppm");  // for debug - looks also good
+  writeImageToFilePPM(out, "AfterStep2.ppm");  
+  // for debug. looks okay on its own but seems to lead to artifacts in the corners in the final 
+  // output
 
   //...............................................................................................
   // Step 3: For all pixels in flat-color regions: iteratively replace their values by the average
@@ -1011,9 +1019,9 @@ int deContourize2(const rsImageF& in, rsImageF& out)
     out(i,j) = in(i,j) - amount * d;
     return d;
   };
-  int   its  = 0;
+  int   its1 = 0;
   float step = 1.f;
-  for(its = 0; its < maxIts; its++)
+  for(its1 = 0; its1 < maxIts; its1++)
   {
     float dMax = 0.f;                       // maximum delta applied
     for(k = 0; k < F.size(); k++) {
@@ -1022,10 +1030,70 @@ int deContourize2(const rsImageF& in, rsImageF& out)
     if(dMax <= tol)                         // Check convergence criterion
       break;
   }
-  writeImageToFilePPM(out, "AfterStep3.ppm");  // for debug
-  return its;
+  writeImageToFilePPM(out, "AfterStep3.ppm");  
+  // for debug. there are artifacts in the cornes. i think, they are due to the initialization of 
+  // the boundaries in step 2
+
+
+  // Experimental:
+  //...............................................................................................
+  // Step 4: To get rid of the artifacts at the edges, apply the same iteration now also to the 
+  // boundary pixels:
+  int its2 = 0;
+  for(its2 = 0; its2 < maxIts; its2++)
+  {
+    float dMax = 0.f;
+    for(k = 0; k < B.size(); k++) {
+      float d = applyFilter(out, out, B[k].x, B[k].y, step);
+      dMax = rsMax(d, dMax);   }
+    if(dMax <= tol)
+      break;
+  }
+  writeImageToFilePPM(out, "AfterStep4.ppm");  
+  // ok - it gets better, but some less obvious artifacts remain - now in the flat regions near 
+  // corners - maybe we should refine the flat regions by iterating the flat regions again. maybe 
+  // we should alternate between iterating the flat regions and the boundaries
+
+  //...............................................................................................
+  // Step 5:
+  int its3 = 0;
+  for(its3 = 0; its3 < maxIts; its3++)
+  {
+    float dMax = 0.f;
+    for(k = 0; k < F.size(); k++) {
+      float d = applyFilter(out, out, F[k].x, F[k].y, step);
+      dMax = rsMax(d, dMax);   }
+    if(dMax <= tol)
+      break;
+  }
+  writeImageToFilePPM(out, "AfterStep5.ppm"); 
+
+  //...............................................................................................
+  // Step 6:
+  int its4 = 0;
+  for(its4 = 0; its4 < maxIts; its4++)
+  {
+    float dMax = 0.f;
+    for(k = 0; k < B.size(); k++) {
+      float d = applyFilter(out, out, B[k].x, B[k].y, step);
+      dMax = rsMax(d, dMax);   }
+    if(dMax <= tol)
+      break;
+  }
+  writeImageToFilePPM(out, "AfterStep6.ppm");  
+
+
+  // -maybe wrap steps 3 and 4 into a for-loop
+  // -can we speed up the convergence? maybe it's actually not such a good idea to work in place?
+  //  try to compute all the updates first and then do all the upates at once. compare convergence
+  //  to what we do now (updating every pixel immediately after the update was computed, such that 
+  //  into computation of the next pixel, the current pixel enters already with updated color)
+
+  return its1;
 }
 // oookay - we are getting closer. there are some artifacts in the corners, though
+// -maybe after setp 3 is finished, we should add a step 4 that applies a similar iteration to the
+//  boundary pixels
 
 
 void fillRectangle(rsImageF& img, int x0, int y0, int x1, int y1, float color)
