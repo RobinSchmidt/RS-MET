@@ -887,21 +887,26 @@ void deContourize(const rsImageF& in, rsImageF& out)
   //  produce an output before entering the iteration and inspect it
   // -in practice, the algo may benefit from oversampling by a factor of 2, otherwise we will see
   //  2-pixel thick lines of same color at the former region boundaries, because pixels will get 
-  //  the same color on both sides of the boundary (which is conceptually between the pixels)
+  //  the same color on both sides of the boundary (which is conceptually between the pixels). For
+  //  the upsampling we should perhaps use naive resampling by just filling squares of 4 pixels
+  //  with the color from one pixel in the original. for downsampling, maybe taking the average
+  //  of 4 pixels is suitable. however, if the input already is oversampled, this should probably
+  //  not be done
 }
 
-void deContourize2(const rsImageF& in, rsImageF& out) 
+int deContourize2(const rsImageF& in, rsImageF& out) 
 {
   // maybe rename to smoothContours or gradientifyFlatRegions
 
   using Vec2D = rsVector2D<int>;
+
+  int maxIts = 100;   // make parameter, maybe return the number of iterations taken
+  float tol  = 1.e-5;
   int w = in.getWidth();
   int h = in.getHeight();
   int i, j, k;                   // loop iteration indices
   out.copyPixelDataFrom(in);     // initialize output - do we need this?
-
-
-  writeImageToFilePPM(out, "AfterInit.ppm");
+  writeImageToFilePPM(out, "AfterInit.ppm");  // for debug
 
   //...............................................................................................
   // Step 1: Split signal into 4 classes: 0: image edge (E), 1: inside flat region (F), 2: boundary
@@ -989,12 +994,38 @@ void deContourize2(const rsImageF& in, rsImageF& out)
     float a = s / float(n);  // average
     out(i, j) = a;
   }
-  writeImageToFilePPM(out, "AfterStep2.ppm");  // for debug
+  writeImageToFilePPM(out, "AfterStep2.ppm");  // for debug - looks also good
 
-
-
-  int dummy = 0;
+  //...............................................................................................
+  // Step 3: For all pixels in flat-color regions: iteratively replace their values by the average
+  // of their neighbors until convergence:
+  // Helper function. Computes difference of pixel value with respect to neighborhood average and
+  // updates it to get get closer to that average. Returns the computed difference:
+  auto applyFilter = [](const rsImageF& in, rsImageF& out, int i, int j, float amount = 1.f)
+  {
+    float avg;
+    avg  = in(i,   j-1) + in(i,   j+1) + in(i-1, j  ) + in(i+1, j  );
+    avg += in(i-1, j-1) + in(i-1, j+1) + in(i+1, j-1) + in(i+1, j+1);
+    avg *= 1.f/8.f;
+    float d = in(i,j) - avg;
+    out(i,j) = in(i,j) - amount * d;
+    return d;
+  };
+  int   its  = 0;
+  float step = 1.f;
+  for(its = 0; its < maxIts; its++)
+  {
+    float dMax = 0.f;                       // maximum delta applied
+    for(k = 0; k < F.size(); k++) {
+      float d = applyFilter(out, out, F[k].x, F[k].y, step);
+      dMax = rsMax(d, dMax);   }
+    if(dMax <= tol)                         // Check convergence criterion
+      break;
+  }
+  writeImageToFilePPM(out, "AfterStep3.ppm");  // for debug
+  return its;
 }
+// oookay - we are getting closer. there are some artifacts in the corners, though
 
 
 void fillRectangle(rsImageF& img, int x0, int y0, int x1, int y1, float color)
