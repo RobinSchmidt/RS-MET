@@ -898,6 +898,8 @@ void deContourize2(const rsImageF& in, rsImageF& out)
   int i, j, k;                   // loop iteration indices
   out.convertPixelDataFrom(in);  // initialize output - do we need this?
 
+
+  //...............................................................................................
   // Step 1: Split signal into 4 classes: 0: image edge (E), 1: inside flat region (F), 2: boundary
   // of flat region (B), 3: all others, the remaining ones (R). We record this information in two 
   // ways: first as arrays of pixel coordinates to facilitate iterating over the subsets and second
@@ -932,13 +934,36 @@ void deContourize2(const rsImageF& in, rsImageF& out)
     for(i = 1; i < w-1; i++) {
       if(isFlatSlow(i, j, in)) {
         F.push_back(Vec2D(i,j));
-        C(i,j) = flat;  }}}  // preliminary - use 1
+        C(i,j) = flat;  }}} 
+  auto isFlat = [&](int i, int j) { return C(i,j) == flat; }; // now faster!
   // hmm..this seems to give a different result than in the old implementation above
 
+  // In a second pass, we identify the pixels at the boundary of flat regions;
+  auto hasFlatNeighbor = [&](int i, int j)
+  {
+    if(isFlat(i-1, j  ) || isFlat(i+1, j  )) return true;
+    if(isFlat(i,   j-1) || isFlat(i,   j+1)) return true;
+    if(isFlat(i-1, j-1) || isFlat(i-1, j+1)) return true;
+    if(isFlat(i+1, j-1) || isFlat(i+1, j+1)) return true;
+    return false;
+  };
+  auto isAtBoundarySlow = [&](int i, int j, const rsImageF& img)
+  {
+    return (!isFlat(i, j)) && hasFlatNeighbor(i, j);
+  };
+  for(j = 1; j < h-1; j++) {
+    for(i = 1; i < w-1; i++) {
+      if(isAtBoundarySlow(i, j, in)) {
+        B.push_back(Vec2D(i,j));
+        C(i,j) = boundary;  }}} 
+  auto isAtBoundary = [&](int i, int j) { return C(i,j) == boundary; }; // now faster!
+  //writeImageToFilePPM(C, "PixelClasses.ppm");  // for debug - looks good!
+
+  //...............................................................................................
+  // Step 2: For all boundary pixels: replace them by the average of those of their neighbors which
+  // are also boundary pixels. The pixel itself is also included in that average:
 
 
-  writeImageToFilePPM(C, "FlatRegion.ppm");
-  // that's wrong! there are black pixels in a sort of grid - wtf?
 
 
   int dummy = 0;
