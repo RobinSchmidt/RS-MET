@@ -890,14 +890,18 @@ void deContourize(const rsImageF& in, rsImageF& out)
   //  the same color on both sides of the boundary (which is conceptually between the pixels)
 }
 
-void deContourize2(const rsImageF& in, rsImageF& out)
+void deContourize2(const rsImageF& in, rsImageF& out) 
 {
+  // maybe rename to smoothContours or gradientifyFlatRegions
+
   using Vec2D = rsVector2D<int>;
   int w = in.getWidth();
   int h = in.getHeight();
   int i, j, k;                   // loop iteration indices
-  out.convertPixelDataFrom(in);  // initialize output - do we need this?
+  out.copyPixelDataFrom(in);     // initialize output - do we need this?
 
+
+  writeImageToFilePPM(out, "AfterInit.ppm");
 
   //...............................................................................................
   // Step 1: Split signal into 4 classes: 0: image edge (E), 1: inside flat region (F), 2: boundary
@@ -957,12 +961,35 @@ void deContourize2(const rsImageF& in, rsImageF& out)
         B.push_back(Vec2D(i,j));
         C(i,j) = boundary;  }}} 
   auto isAtBoundary = [&](int i, int j) { return C(i,j) == boundary; }; // now faster!
-  //writeImageToFilePPM(C, "PixelClasses.ppm");  // for debug - looks good!
+  writeImageToFilePPM(C, "PixelClasses.ppm");  // for debug - looks good!
 
   //...............................................................................................
   // Step 2: For all boundary pixels: replace them by the average of those of their neighbors which
   // are also boundary pixels. The pixel itself is also included in that average:
+  for(k = 0; k < (int)B.size(); k++)
+  {
+    i = B[k].x;
+    j = B[k].y;
 
+    // Accumulate sum of the relevant neighbors:
+    int   n = 0;    // number of relevant neighbors
+    float s = 0.f;  // sum of colors of relevant neighbors
+    if(isAtBoundary(i-1, j  )) { s += in(i-1, j  ); n += 1; }
+    if(isAtBoundary(i+1, j  )) { s += in(i+1, j  ); n += 1; }
+    if(isAtBoundary(i,   j-1)) { s += in(i,   j-1); n += 1; }
+    if(isAtBoundary(i,   j+1)) { s += in(i,   j+1); n += 1; }
+    if(isAtBoundary(i-1, j-1)) { s += in(i-1, j-1); n += 1; }
+    if(isAtBoundary(i-1, j+1)) { s += in(i-1, j+1); n += 1; }
+    if(isAtBoundary(i+1, j-1)) { s += in(i+1, j-1); n += 1; }
+    if(isAtBoundary(i+1, j+1)) { s += in(i+1, j+1); n += 1; }
+
+    // Compute the average, including the pixel at (i,j), and assign it to output image pixel:
+    s += in(i, j);
+    n += 1;
+    float a = s / float(n);  // average
+    out(i, j) = a;
+  }
+  writeImageToFilePPM(out, "AfterStep2.ppm");  // for debug
 
 
 
