@@ -748,6 +748,7 @@ void generateFunctionImageReIm(const function<complex<T>(complex<T>)>& f,
   generateFunctionImage(fi, xMin, xMax, yMin, yMax, imgIm);
 }
 
+// obsolete, can be deleted
 void deContourize(const rsImageF& in, rsImageF& out)
 {
   // Under construction, idea:
@@ -894,7 +895,7 @@ void deContourize(const rsImageF& in, rsImageF& out)
   //  not be done
 }
 
-int deContourize2(const rsImageF& in, rsImageF& out) 
+int deContourize2(const rsImageF& in, rsImageF& out, int numTrips = 1) 
 {
   // maybe rename to smoothContours or gradientifyFlatRegions
 
@@ -906,25 +907,23 @@ int deContourize2(const rsImageF& in, rsImageF& out)
   int h = in.getHeight();
   int i, j, k;                   // loop iteration indices
   out.copyPixelDataFrom(in);     // initialize output - do we need this?
-  writeImageToFilePPM(out, "AfterInit.ppm");  // for debug
+  //writeImageToFilePPM(out, "AfterInit.ppm");  // for debug
 
   //...............................................................................................
-  // Step 1: Split signal into 4 classes: 0: image edge (E), 1: inside flat region (F), 2: boundary
-  // of flat region (B), 3: all others, the remaining ones (R). We record this information in two 
-  // ways: first as arrays of pixel coordinates to facilitate iterating over the subsets and second
-  // as a matrix of char values that stores for each pixel its class, encoded as 0,1,2,3 as said 
-  // above, to facilitate to access the classification in O(1) during the iteration:
-  //std::vector<Vec2D> E, F, B, R;  // sets of (E)dge, (F)lat, (B)oundary, (R)est
-  std::vector<Vec2D> F, B;        // sets of (F)lat, (B)oundary
-  //rsMatrix<char> C(h, w);         // pixel classification matrix
-  rsImage<char> C(w, h);          // pixel classification matrix
-  // ...but we actually don't need to record the E,R sets. maybe collect only the F,B sets
-
-  // Some symbolic constants used in the code below
-  static const char rest     = 0;
+  // Step 1: Extract the coordinates of pixels in flat-color regions and on boundaries between such
+  // regions. We record this information in two ways: (1) as arrays of pixel coordinates to 
+  // facilitate iterating over the subsets and (2) as a matrix of char values that stores for each
+  // pixel its class (encoded as symbolic constants defined below), to facilitate to access the 
+  // classification in O(1) during the iteration. Pixels that do not belong into either of these 
+  // classes are of no interest and classified as "rest" and we don't record their coordinates. We
+  // only take pixels into account that are not at the image's edges because we need to work with
+  //  the neighbors of the pixels.
+  std::vector<Vec2D> F, B;           // sets of (F)lat, (B)oundary
+  rsImage<char> C(w, h);             // pixel classification matrix
+  static const char rest     = 0;    // symbolic constants used in the code below
   static const char flat     = 100;
   static const char boundary = 200;
-  C.fillAll(rest);  // initially, all are "rest" - that classification will new be updated below
+  C.fillAll(rest);                   // initially, all are "rest"
 
   // In a first pass, we identify the flat regions:
   auto isFlatSlow = [](int i, int j, const rsImageF& img)
@@ -945,7 +944,8 @@ int deContourize2(const rsImageF& in, rsImageF& out)
         F.push_back(Vec2D(i,j));
         C(i,j) = flat;  }}} 
   auto isFlat = [&](int i, int j) { return C(i,j) == flat; }; // now faster!
-  // hmm..this seems to give a different result than in the old implementation above
+  // hmm..this seems to give a different result than in the old implementation - but the old one 
+  // was crap anyway. still - this part should actually have worked the same
 
   // In a second pass, we identify the pixels at the boundary of flat regions;
   auto hasFlatNeighbor = [&](int i, int j)
@@ -974,7 +974,6 @@ int deContourize2(const rsImageF& in, rsImageF& out)
   auto isRelevant = [&](int i, int j) 
   { 
     return isAtBoundary(i, j);
-
     //return true;  // may also be useful. maybe provide different modes
   }; 
   for(k = 0; k < (int)B.size(); k++)
@@ -1000,13 +999,12 @@ int deContourize2(const rsImageF& in, rsImageF& out)
     float a = s / float(n);  // average
     out(i, j) = a;
   }
-  writeImageToFilePPM(out, "AfterStep2.ppm");  
-  // for debug. looks okay on its own but seems to lead to artifacts in the corners in the final 
-  // output
+  //writeImageToFilePPM(out, "AfterStep2.ppm");  
 
   //...............................................................................................
-  // Step 3: For all pixels in flat-color regions: iteratively replace their values by the average
-  // of their neighbors until convergence:
+  // Step 3: Alternatingly do to the flat-region pixels and boundary pixels: iteratively replace 
+  // their values by the average of their neighbors until convergence:
+
   // Helper function. Computes difference of pixel value with respect to neighborhood average and
   // updates it to get get closer to that average. Returns the computed difference:
   auto applyFilter = [](const rsImageF& in, rsImageF& out, int i, int j, float amount = 1.f)
@@ -1019,82 +1017,47 @@ int deContourize2(const rsImageF& in, rsImageF& out)
     out(i,j) = in(i,j) - amount * d;
     return d;
   };
-  int   its1 = 0;
-  float step = 1.f;
-  for(its1 = 0; its1 < maxIts; its1++)
+
+  int maxItsTaken = 0;
+  float step = 1.f;    // may not be needed, maybe get rid - but first, let's experiment with it
+                       // a little bit to see if it can be used to accelerate convergence
+
+  for(int i = 1; i <= numTrips; i++)
   {
-    float dMax = 0.f;                       // maximum delta applied
-    for(k = 0; k < F.size(); k++) {
-      float d = applyFilter(out, out, F[k].x, F[k].y, step);
-      dMax = rsMax(d, dMax);   }
-    if(dMax <= tol)                         // Check convergence criterion
-      break;
+    int its;
+    float dMax, d;
+
+    for(its = 0; its < maxIts; its++)                 // iteration over flat-region
+    {
+      dMax = 0.f;                                     // maximum delta applied
+      for(k = 0; k < F.size(); k++) {
+        d = applyFilter(out, out, F[k].x, F[k].y, step);
+        dMax = rsMax(d, dMax);   }
+      if(dMax <= tol)                                 // Check convergence criterion
+        break;
+    }
+    maxItsTaken = rsMax(maxItsTaken, its);
+
+    for(its = 0; its < maxIts; its++)                 // iteration over boundary
+    {
+      dMax = 0.f;
+      for(k = 0; k < B.size(); k++) {
+        d = applyFilter(out, out, B[k].x, B[k].y, step);
+        dMax = rsMax(d, dMax);   }
+      if(dMax <= tol)
+        break;
+    }
+    maxItsTaken = rsMax(maxItsTaken, its);
   }
-  writeImageToFilePPM(out, "AfterStep3.ppm");  
-  // for debug. there are artifacts in the cornes. i think, they are due to the initialization of 
-  // the boundaries in step 2
 
+  return maxItsTaken;
 
-  // Experimental:
-  //...............................................................................................
-  // Step 4: To get rid of the artifacts at the edges, apply the same iteration now also to the 
-  // boundary pixels:
-  int its2 = 0;
-  for(its2 = 0; its2 < maxIts; its2++)
-  {
-    float dMax = 0.f;
-    for(k = 0; k < B.size(); k++) {
-      float d = applyFilter(out, out, B[k].x, B[k].y, step);
-      dMax = rsMax(d, dMax);   }
-    if(dMax <= tol)
-      break;
-  }
-  writeImageToFilePPM(out, "AfterStep4.ppm");  
-  // ok - it gets better, but some less obvious artifacts remain - now in the flat regions near 
-  // corners - maybe we should refine the flat regions by iterating the flat regions again. maybe 
-  // we should alternate between iterating the flat regions and the boundaries
-
-  //...............................................................................................
-  // Step 5:
-  int its3 = 0;
-  for(its3 = 0; its3 < maxIts; its3++)
-  {
-    float dMax = 0.f;
-    for(k = 0; k < F.size(); k++) {
-      float d = applyFilter(out, out, F[k].x, F[k].y, step);
-      dMax = rsMax(d, dMax);   }
-    if(dMax <= tol)
-      break;
-  }
-  writeImageToFilePPM(out, "AfterStep5.ppm"); 
-
-  //...............................................................................................
-  // Step 6:
-  int its4 = 0;
-  for(its4 = 0; its4 < maxIts; its4++)
-  {
-    float dMax = 0.f;
-    for(k = 0; k < B.size(); k++) {
-      float d = applyFilter(out, out, B[k].x, B[k].y, step);
-      dMax = rsMax(d, dMax);   }
-    if(dMax <= tol)
-      break;
-  }
-  writeImageToFilePPM(out, "AfterStep6.ppm");  
-
-
-  // -maybe wrap steps 3 and 4 into a for-loop
-  // -can we speed up the convergence? maybe it's actually not such a good idea to work in place?
-  //  try to compute all the updates first and then do all the upates at once. compare convergence
+  // -Can we speed up the convergence? maybe it's actually not such a good idea to work in place?
+  //  Try to compute all the updates first and then do all the upates at once. compare convergence
   //  to what we do now (updating every pixel immediately after the update was computed, such that 
   //  into computation of the next pixel, the current pixel enters already with updated color)
-
-  return its1;
 }
-// oookay - we are getting closer. there are some artifacts in the corners, though
-// -maybe after setp 3 is finished, we should add a step 4 that applies a similar iteration to the
-//  boundary pixels
-
+// move to prototypes
 
 void fillRectangle(rsImageF& img, int x0, int y0, int x1, int y1, float color)
 {
@@ -1104,6 +1067,7 @@ void fillRectangle(rsImageF& img, int x0, int y0, int x1, int y1, float color)
     for(int i = x0; i <= x1; i++)
       drawer.plot(i, j, 1.f);
 }
+// move to prototypes/drawing
 
 void testDeContourize()
 {
@@ -1115,13 +1079,17 @@ void testDeContourize()
   fillRectangle(imgIn, w/2, 0, w-1, h-1, 1.0f);
   fillRectangle(imgIn,  20, 10,  60, 40, 0.5f);
 
-  //deContourize(imgIn, imgOut);
-  deContourize2(imgIn, imgOut);
-
-
-
   writeImageToFilePPM(imgIn,  "DeContourizeIn.ppm");
-  writeImageToFilePPM(imgOut, "DeContourizeOut.ppm");
+
+  deContourize2(imgIn, imgOut, 1);
+  writeImageToFilePPM(imgOut, "DeContourizeOut1.ppm");
+
+  deContourize2(imgIn, imgOut, 2);
+  writeImageToFilePPM(imgOut, "DeContourizeOut2.ppm");
+
+  deContourize2(imgIn, imgOut, 3);
+  writeImageToFilePPM(imgOut, "DeContourizeOut3.ppm");
+
   int dummy = 0;
 }
 
