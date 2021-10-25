@@ -952,9 +952,9 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   // the neighbors of the pixels.
   std::vector<Vec2D> F, B;           // sets of (F)lat, (B)oundary
   rsImage<char> C(w, h);             // pixel classification matrix
-  static const char rest     = 0;    // symbolic constants used in the code below
-  static const char flat     = 100;
-  static const char boundary = 175;
+  static const char rest     = 0;    // symbolic constants used in the code below, the values are
+  static const char flat     = 100;  // ..also used as grayscale to encode the classes in an image 
+  static const char boundary = 175;  // ..that can be written to disk for debug purposes
   C.fillAll(rest);                   // initially, all are "rest"
 
   // In a first pass, we identify the flat regions:
@@ -1115,7 +1115,9 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   // -It may also render the alternation between the flat and boundary iterations obsolete.
   // -To find that neutral fiber, we could proceed as follows:
   //  -Initialize a matrix of (half of squared) distances D to the boundary with zeros (or -1, 
-  //   just some special unused value to encode: not yet computed/assigned)
+  //   just some special unused value to encode: not yet computed/assigned, maybe INT_MAX is 
+  //   convenient, because the algo may replace the current value with a min between current and 
+  //   some new computed value)
   //  -Initialize a temp array with F, call it F' - it represents the flat-region pixels that are
   //   still left to be processed. In the process, this will shrink
   //  -For each boundary pixel with coords (i,j), do:
@@ -1128,16 +1130,22 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   //    -remove pixel from F', maybe add it to another array of finished flat pixels, maybe
   //     give it a 3rd coordinate z representing D(i,j)
   //  -when done, go back to start (to "For each pixel in F'")
-  // -Now we have for each pixel in the falt region a distance value. The neutral fiber with each 
+  // -Now we have for each pixel in the flat region a distance value. The neutral fiber within each 
   //  flat region is a path through that region that traverses the max-distance pixels.
   // -but damn! this is an O(N^2) algorithm - this is not practical!
-  // -it could be improved, if we would not have to iterate over F' again and again. The problem is
+  // -It could be improved, if we would not have to iterate over F' again and again. The problem is
   //  that in each iteration, most pixels will not have neighbors with assigned D. Can we make sure
   //  that we visit the pixels in an appropriate order such that we never (or rarely) encounter a 
   //  pixel with unassigned D(i,j) for its neighbors? But even then, the random-access removal from
   //  F' will be O(N) (within an O(N) loop)...maybe that removal can be scrapped, too? Or at least 
   //  turned into O(1) removal, i.e. removal from the back, or maybe a linked list is more 
   //  appropriate here?
+  // -Maybe we should visit the pixels by going along the boundaries, thereby recording 2nd order
+  //  boundaries. Then go along the 2nd order boundaries bulding up 3rd order boundaries and so on.
+  //  This should avoid the O(N^2) scaling behavior. Maybe it needs two passes over each "layer" 
+  //  because in the first pass, we may overestimate the true distance because some of the neighbor
+  //  distances that should enter the min-computation are yet unassigned
+  // -But it may not necessarily be a "fiber". It could also be just a single spot
 }
 
 //=================================================================================================
