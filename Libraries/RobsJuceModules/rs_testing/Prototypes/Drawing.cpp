@@ -961,14 +961,15 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   auto isFlatSlow = [](int i, int j, const rsImageF& img)
   {
     // This is the slow version of the function that needs to be used in the first pass. Later,
-    // we can use the C-matrix to retrieve that information faster.
+    // we can use the C-matrix to retrieve that information faster. A pixel is considered to belong
+    // to a flat region, if it has the same value/color as all of its neighbors (todo: allow 
+    // tolerance).
     float p = img(i, j);  // pixel value
     if(p != img(i-1,j) || p != img(i+1, j) || p != img(i,j-1) || p != img(i,j+1))
       return false;
     if(p != img(i-1,j-1) || p != img(i-1, j+1) || p != img(i+1,j-1) || p != img(i+1,j+1))
       return false;
     return true;
-    // todo: allow tolerance
   };
   for(j = 1; j < h-1; j++) {
     for(i = 1; i < w-1; i++) {
