@@ -1127,6 +1127,8 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
   //    -remove pixel from F', maybe add it to another array of finished flat pixels, maybe
   //     give it a 3rd coordinate z representing D(i,j)
   //  -when done, go back to start (to "For each pixel in F'")
+  // -Now we have for each pixel in the falt region a distance value. The neutral fiber with each 
+  //  flat region is a path through that region that traverses the max-distance pixels.
   // -but damn! this is an O(N^2) algorithm - this is not practical!
   // -it could be improved, if we would not have to iterate over F' again and again. The problem is
   //  that in each iteration, most pixels will not have neighbors with assigned D. Can we make sure
