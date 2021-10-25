@@ -229,13 +229,13 @@ int main(int argc, char* argv[])
   //pixelCoverage();
 
   // Plotting:
-  gradientify();
-  contours();
+  //gradientify();
+  //contours();
   //complexContours();
   //implicitCurve();
   //parametricCurve();
   //spirals();   // move to somewhere else...
-  //fractal();
+  fractal();
   //differentialGeometry();
 
   // just for fun (todo: move to research repo):

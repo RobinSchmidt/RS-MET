@@ -2143,10 +2143,11 @@ void renderNewtonFractal()
   double xMax   = -0.8;
   double yMin   = +0.8;
   double yMax   = +1.9;
-  int    w      =  100;      // image width in pixels
-  int    h      =  100;      // image height
+  int    w      =  800;      // image width in pixels
+  int    h      =  800;      // image height
   int    maxIts =  100;      // maximum number of iterations
   double tol    =  1.e-14;   // tolerance in convergence test
+  int    smooth =  6;        // number of smoothing passes via gradientify
 
   using Complex = std::complex<double>;
   using Vec2D   = RAPT::rsVector2D<double>;
@@ -2264,6 +2265,9 @@ void renderNewtonFractal()
       if(pb[i] == 1.f)                    // it by less obstrusive black line
         pb[i] = 0.f; }
     //rsPlotArray(pb, w*h);  // for development
+    if(smooth != 0) {
+      d.copyPixelDataFrom(b);
+      gradientifyFlatRegions(d, b, smooth); }
     IP::gammaCorrection(b, 0.6f);
 
     // Process root index, to be used for hue H in HSL:
@@ -2310,6 +2314,9 @@ void renderNewtonFractal()
     //   the pixel has coordinates (200, 300) and the flat region around the pixel extends 20 
     //   pixels to the left, 30 to the right, 40 downward and 50 upward, use a bilinear mix between
     //   the colors of the pixels at these 4 positions
+
+    // -Smoothing seems to affect only the outer falt regions, at least with a low-res rendering
+    //  of 100x100 - the inner flat regions get misclassified as "rest"
   
     return;
   };

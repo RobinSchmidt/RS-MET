@@ -190,7 +190,8 @@ int clipTriangleToUnitSquare(const rsVector2DF& a, const rsVector2DF& b, const r
 
 //=================================================================================================
 
-int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numTrips = 1);
+int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses = 1);
+// i think, it can't work in place: in and out must be distinct
 
 //=================================================================================================
 
