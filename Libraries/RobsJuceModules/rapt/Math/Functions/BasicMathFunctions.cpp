@@ -121,6 +121,7 @@ inline bool rsIsPowerOfTwo(unsigned int x)
   return false;
 }
 // ToDo: use an algorithm based on finding the highest bit
+// https://graphics.stanford.edu/~seander/bithacks.html#DetermineIfPowerOf2
 
 inline bool rsIsPowerOfN(unsigned int x, unsigned int N)
 {

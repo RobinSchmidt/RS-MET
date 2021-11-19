@@ -232,10 +232,10 @@ int main(int argc, char* argv[])
   //gradientify();
   //contours();
   //complexContours();
-  //implicitCurve();
+  implicitCurves();
   //parametricCurve();
   //spirals();   // move to somewhere else...
-  fractal();
+  //fractal();
   //differentialGeometry();
 
   // just for fun (todo: move to research repo):

@@ -933,7 +933,7 @@ int gradientifyFlatRegions(const rsImageF& in, rsImageF& out, int numPasses)
 {
   using Vec2D = rsVector2D<int>;
 
-  int maxIts = 100;   // make parameter, maybe return the number of iterations taken
+  int maxIts = 200;   // make parameter, maybe return the number of iterations taken
   float tol  = 1.e-5;
   int w = in.getWidth();
   int h = in.getHeight();

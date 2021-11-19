@@ -81,7 +81,7 @@ void pixelCoverage();
 void gradientify();
 void contours();
 void complexContours();
-void implicitCurve();
+void implicitCurves();
 void parametricCurve();
 void spirals();   // move elsewhere Demos/Examples/Art/...
 void fractal();

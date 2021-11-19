@@ -305,6 +305,8 @@ inline T rsNextPowerOfTwo(T x)
 // https://www.geeksforgeeks.org/find-significant-set-bit-number/
 // it could be adapted by multiplying the result y by 2, unless it is already a power of 2, i.e.
 // unless x==y - this could perhaps be done in a branchless way
+// see also:
+// https://graphics.stanford.edu/~seander/bithacks.html#RoundUpPowerOf2
 
 // general fallback version:
 template<class T>

@@ -497,6 +497,11 @@ void splineArc()
 
 void triangles()
 {
+  // Tests rasterization based drawing of filled polygons via triangles.
+
+  // Setup:
+  bool antiAlias = true;
+
   // create and set up objects and parameters:
   typedef rsVector2DF Vec2;    // for convenience
   typedef rsVector2DF V;       // even shorter - for inlined constructor calls
@@ -505,9 +510,10 @@ void triangles()
   rsImageDrawerFFF drw(&img);  // drawer object
   drw.setBlendMode(rsImageDrawerFFF::BLEND_ADD_CLIP);
 
+
   void (*pDrawTriangle)(rsImageDrawerFFF&, const Vec2&, const Vec2&, const Vec2&, float);
-  pDrawTriangle = &drawTriangle;
-  //pDrawTriangle = &drawTriangleAntiAliasedProto;
+  if(antiAlias) pDrawTriangle = &drawTriangleAntiAliasedProto;
+  else          pDrawTriangle = &drawTriangle;
 
   //void drawTriangle(rsImageDrawerFFF& drw, 
   //  const rsVector2DF& v0, const rsVector2DF& v1, const rsVector2DF& v2, float color);
@@ -568,6 +574,20 @@ void triangles()
   writeScaledImageToFilePPM(img, "PolygonsViaTriangles.ppm", 16);
     // todo: write a function that includes a magnification factor (or maybe two, for x and y
     // separately)
+
+  // ToDo:
+  // -check, if all possible cases are covered
+  // -make it efficient (compare to prototype code in unit test)
+  // -move to library
+  // -compare results of anti-aliased drawing to non-antialiased, oversampled drawing with 
+  //  subsequent downsampling
+
+  // see also:
+  // https://bisqwit.iki.fi/jutut/kuvat/programming_examples/polytut/
+  // https://www.youtube.com/watch?v=PahbNFypubE
+
+  // raylib:
+  // https://gamefromscratch.com/raylib-4-released/
 }
 
 void pixelCoverage()
@@ -1224,7 +1244,7 @@ void drawConicSection(T A, T B, T C, T D, T E, T F, T xMin, T xMax, T yMin, T yM
 }
 // A*x^2 + B*x*y + C*y^2 + D*x + E*y + F = 0.
 
-void implicitCurve()
+void implicitCurvesConic()
 {
   int width  = 800;
   int height = 800;
@@ -1300,13 +1320,17 @@ void implicitCurve()
   // ...what about filling the inside of a curve, i.e points for which f(x,y) <= c
 
   IP::normalize(imgCurve);
-  writeScaledImageToFilePPM(imgCurve, "ImplicitCurves.ppm", 1);
+  writeScaledImageToFilePPM(imgCurve, "ImplicitCurvesConic.ppm", 1);
 
   // -with step = 4 (parameter inside the function), the ellipses are drawn heavier than with 
   //  step = 3 - why? with step = 5, they look as expected again, with 6 they get denser again
   //  (but not as dense as with 4) and here, also the circles have denser dots
   // -also, with step > larger than 1, we begin to see a doubl-drawing of the last pixel again
   //  (maybe we need to scale the weight of the final pixel by 1/step)
+
+  // See also:
+  // https://www.youtube.com/watch?v=6oMZb3yP_H8
+  // https://www.youtube.com/watch?v=yOgIncKp0BE
 }
 // other curves to try:
 // https://en.wikipedia.org/wiki/Pedal_curve
@@ -1315,6 +1339,45 @@ void implicitCurve()
 // https://en.wikipedia.org/wiki/Epicycloid
 // https://en.wikipedia.org/wiki/Hypotrochoid
 // https://en.wikipedia.org/wiki/Epitrochoid
+
+
+
+void implicitCurvesElliptic()
+{
+  int width  = 800;
+  int height = 800;
+  double range = 2.1;
+
+
+  rsImageF imgCurve(width, height);
+  function<double(double, double)> f;
+
+  rsImagePlotter<float, double> ig;
+  ig.setRange(-range, range, -range, range);
+  ig.painter.setDeTwist(false);  // should be only used for single pixel lines
+  ig.painter.setNeighbourWeightsForSimpleDot(0.375, 0.375*sqrt(0.5));
+
+  float color = 0.375f;
+  // looks good with the saturating accumulation in rsImagePainter
+
+  f = [=](double x, double y) { return x*x*x + y*y; }; 
+  ig.plotImplicitCurve(f, 1.0, 1.0, 0.0, imgCurve, color);
+
+  // draw more ..maybe vary the contour line...yeah..maybe we should define this as a 
+  // contour-plotting problem anyway...but we can do both
+
+
+  using IP = rsImageProcessor<float>;
+  IP::normalize(imgCurve);
+  writeScaledImageToFilePPM(imgCurve, "ImplicitCurvesElliptic.ppm", 1);
+}
+
+
+void implicitCurves()
+{
+  //implicitCurvesConic();
+  implicitCurvesElliptic();
+}
 
 
 template<class TPix, class TVal>
@@ -1822,11 +1885,12 @@ bool testColrBHS()
 
 void spirals()
 {
+  // move somewhere else:
   //plotSpiralHeightProfile();
   //testSpiralHeightProfile();
   //testImageEffectFrame(); return;
   //testDistanceMap(); return;
-  testColrBHS(); return;
+  //testColrBHS(); return;
 
   //int size = 1000;
   int w = 1200;
@@ -2143,11 +2207,14 @@ void renderNewtonFractal()
   double xMax   = -0.8;
   double yMin   = +0.8;
   double yMax   = +1.9;
-  int    w      =  800;      // image width in pixels
-  int    h      =  800;      // image height
+  int    w      = 1600;      // image width in pixels
+  int    h      = 1600;      // image height
   int    maxIts =  100;      // maximum number of iterations
   double tol    =  1.e-14;   // tolerance in convergence test
-  int    smooth =  6;        // number of smoothing passes via gradientify
+  int    smooth =  25;       // number of smoothing passes via gradientify
+  // It's actually ok to use a larger number of smoothing passes because the number of iterations 
+  // per pass tends to drop a lot. The first pass tends to take around 100 iterations, then second 
+  // only around 30, etc. Around pass 20, it's only 3 or 2 iterations per pass.
 
   using Complex = std::complex<double>;
   using Vec2D   = RAPT::rsVector2D<double>;
@@ -2163,12 +2230,21 @@ void renderNewtonFractal()
     // Literal Newton iteration formula (uses 1 div, 3 mul, 2 sub):
     Complex f  = z2*z2 - 1.0;             // f(z)  = z^4 - 1
     Complex fp = 4.0 * z2*z;              // f'(z) = 4 * z^3
+
+    //// test with 8 roots - comment out, if you want 4 roots
+    //Complex z4 = z2*z2;
+    //f  = z4*z4 - 1.0;                     // f(z)  = z^8 - 1
+    //fp = 8.0 * z4*z2*z;                   // f'(z) = 8 * z^7
+    // no - this doesn't work because the roots array will not match the function. todo: write
+    // a function that produces the iteration function from a roots array, then create the roots
+    // array programmatically.
+
     Complex zn = z - f/fp;                // zNew  = z - f(x) / f'(z)
     return Vec2D(zn.real(), zn.imag());
 
     // Algebraically equivalent (uses 1 div, 4 mul, 1 add):
-    Complex w = (3.0*z2*z2+1.0) / (4.0*z2*z); // (3 z^4 - 1) / (4 z^3)
-    return Vec2D(w.real(), w.imag());
+    //Complex w = (3.0*z2*z2+1.0) / (4.0*z2*z); // (3 z^4 - 1) / (4 z^3)
+    //return Vec2D(w.real(), w.imag());
 
     // I think, for f(z) = z^n - 1, we would get zNew = ((n-1) z^n + 1) / (n z^(n-1)) 
     // -> verify! If correct, implement a function that creates such iterFuncs

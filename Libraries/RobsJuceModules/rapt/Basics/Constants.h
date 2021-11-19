@@ -76,5 +76,15 @@ static constexpr int firstBitOnly = allBits ^ allBitsButFirst;          // only 
 //static size_t firstBitOnly = allBits - (allBits >> 1);
 //static size_t allBitsButFirst= allBits ^ firstBitOnly;
 
+// for more bit twiddling hacks, see:
+// https://www.youtube.com/watch?v=ZRNO-ewsNcQ
+
+// i once saw a video for the next power of two for some integer via a bit-hack...i think, it was 
+// something about numerical methods in julia, maybe this
+// https://www.youtube.com/watch?v=Q9OLOqEhc64 Tricks and Tips in Numerical Computing | Nick Higham
+//  ..nope...but i think, it was somewhere "near"
+// see also:
+// https://graphics.stanford.edu/~seander/bithacks.html
+
 
 #endif

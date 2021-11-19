@@ -85,6 +85,10 @@ rsFractalImageRenderer:
  -Maybe in this context, it's convenient, when it operates on a vector of (x,y)-coordinates 
   rather than on an image with on-the-fly computation of coordinates
 
+-maybe allow the iteration function to depend explicitly on the iteration number, i.e.
+   x[n+1] = f(x[n], n)
+ this can be used to let the characteristics of the fractal change as function of the zoom level
+
 -Provide some feedback about the state of the computation, maybe in % maybe with 2 decimal digits 
  after the point
 

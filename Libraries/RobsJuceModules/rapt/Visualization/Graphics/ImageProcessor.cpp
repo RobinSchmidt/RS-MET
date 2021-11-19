@@ -320,4 +320,8 @@ Ideas:
   brightness that is controlled by the mean and variance
  -maybe a similar process should be applied to saturation, too (but not to hue)
 
+-implement blob-coloring:
+ https://en.wikipedia.org/wiki/Blob_detection
+ https://www.youtube.com/watch?v=vTUsGzXFmuc
+
 */
