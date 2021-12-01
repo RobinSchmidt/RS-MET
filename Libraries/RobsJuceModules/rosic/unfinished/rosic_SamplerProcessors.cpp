@@ -35,7 +35,7 @@ class rsSamplerProcessors
 
 public:
 
-  class Filter : public rsSamplerEngine::SignalProcessor
+  class Filter : public SignalProcessor
   {
 
   public:
@@ -52,7 +52,7 @@ public:
   };
 
 
-  class WaveShaper : public rsSamplerEngine::SignalProcessor
+  class WaveShaper : public SignalProcessor
   {
 
   public:
@@ -72,6 +72,8 @@ public:
   // -processFrame should work either with 2 floats or rsFloat32x4...or maybe make a class
   //  rsFloat32x2...could be just a synonym for rsFloat32x4 (because that can be simdified), but 
   //  the name makes clear that we use only 2 of the 4 available slots
+  // -can we avoid the need for the boilerplate? ...or at least reduce the amount? maybe with 
+  //  similar strategeis as in romos suing macros?
 
 
 

@@ -87,16 +87,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Internal Helper Classes
 
-  /** Baseclass for signal processors that can be applied to layers while they are the played back.
-  Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
-  class SignalProcessor
-  {
-  public:
-    virtual void processFrame(rsFloat64x2& inOut) = 0;
-    virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
-    virtual void resetState() = 0;
-    virtual void resetSettings() = 0;
-  };
 
   /** Baseclass for modulators that can be applied to parameters of signal processors. Subclasses
   can be envelopes, LFOs, etc. */
@@ -109,6 +99,10 @@ public:
     // todo: processBlock
   };
   // maybe drag them out of the class, maybe make a sub-namespace rosic::Sampler
+
+
+
+
 
   /** A struct that can be returned from midi event handling functions to inform the caller, how
   the event has changed the playback status of the engine. For example, a noteOn event will

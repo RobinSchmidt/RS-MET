@@ -7,12 +7,33 @@ namespace Sampler {
 
 //=================================================================================================
 
+/** Baseclass for signal processors that can be applied to layers while they are the played back.
+Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
+
+class SignalProcessor
+{
+public:
+  virtual void processFrame(rsFloat64x2& inOut) = 0;
+  virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
+  virtual void resetState() = 0;
+  virtual void resetSettings() = 0;
+};
+
+
+//=================================================================================================
+// The DSP classes below are meant to be used in the sampler, but they are nevertheless implemented
+// as pure DSP classes without the infrastructural aspect, i.e. without being a subclass of 
+// Sampler::SignalProcessor. This has been done in order to facilitate dragging them out of the 
+// Sampler sub-namespace to make them available in other contexts as well. The infrastructure is 
+// provided by boilerplate classes that derive from SignalProcessor and the actual core DSP class 
+// via multiple inheritance.
+
 /** A multimode filter that implements not only different filter frequency response types (like
 lowpass, highbpass, bandpass, etc.) but even completely differently structured filters. Depending
 on what mode has been chosen, the internal state and coefficient data may be interpreted in
 different ways.... */
 
-class rsSamplerFilter
+class rsSamplerFilter   // rename to FilterCore - the rs is not needed within this namespace
 {
 
 public:
