@@ -1,11 +1,10 @@
 #ifndef rosic_SamplerData_h
 #define rosic_SamplerData_h
 
-namespace rosic
-{
+namespace rosic {
+namespace Sampler {
 
-
-/** Return codes for the setup functions. We use encodings as negative integers so we can use 
+/** Return codes for the setup functions. We use encodings as negative integers so we can use
 them also for functions which use positive integers as valid return values. */
 enum rsReturnCode
 {
@@ -27,6 +26,7 @@ enum rsReturnCode
 // -maybe include a general code for "failed" 
 // -rename the layerOverload to a general "overload" or ressourcesUsedUp or something - to make the
 //  enum more genrally useful
+// -maybe move it out of the Sampler sub-namespace - it may be more generally useful
 
 
 
@@ -65,10 +65,10 @@ public:
   class Group;
   class Instrument;
 
-  /** Enumeration of the different signal processor types that may be used in the definition of 
+  /** Enumeration of the different signal processor types that may be used in the definition of
   instruments. It's actually not really fundamentally necessary to represent the instrument's data
-  itself because the information about what sorts of processors are used is already implicitly 
-  given in the opcodes. However, to facilitate the actual playback of an instrument in a sampler 
+  itself because the information about what sorts of processors are used is already implicitly
+  given in the opcodes. However, to facilitate the actual playback of an instrument in a sampler
   engine, this small amount of redundancy is convenient (in particular, to build the DSP chain for
   a region player). */
   enum SignalProcessorType
@@ -82,11 +82,11 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** A class to represent various playback settings of a region, group or instrument. Such 
-  settings include constraints for the circumstances under which a particular sample should be 
-  played. Key- and velocity ranges are the obvious primary constraints (and they therefore are 
-  directly baked into the Region class below), but sfz defines many more. But settings don't 
-  need to be playback constraints. Other types are things like envelope settings, filter 
+  /** A class to represent various playback settings of a region, group or instrument. Such
+  settings include constraints for the circumstances under which a particular sample should be
+  played. Key- and velocity ranges are the obvious primary constraints (and they therefore are
+  directly baked into the Region class below), but sfz defines many more. But settings don't
+  need to be playback constraints. Other types are things like envelope settings, filter
   frequencies, etc. */
   class PlaybackSetting  // rename to Setting...or maybe not - it's too generic
   {
@@ -113,11 +113,11 @@ public:
       // ToDo: Width, Position
 
       // Player:
-      Delay, Offset, 
+      Delay, Offset,
       // ToDo: loop-stuff
 
       // Filter:
-      FilterType, FilterCutoff, FilterResonance, 
+      FilterType, FilterCutoff, FilterResonance,
 
       // Some of my own extensions
       // Distortion:
@@ -134,12 +134,12 @@ public:
     enum FilterType
     {
       off, lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6,
-      
+
       numFilterTypes
     };
 
 
-    enum PanRule  
+    enum PanRule
     {
       linear, sinCos,
 
@@ -157,13 +157,15 @@ public:
 
 
     PlaybackSetting(Type type, float value)
-    { this->type = type; this->value = value; }
+    {
+      this->type = type; this->value = value;
+    }
 
     Type getType() const { return type; }
 
-    /** Returns the stored value for this setting. Values are always stored as floats and it is 
+    /** Returns the stored value for this setting. Values are always stored as floats and it is
     understood that in cases, where the corresponding parameter in the sfz spec is defined to be an
-    integer, we just represent it as that integer with all zeros after the decimal dot and the 
+    integer, we just represent it as that integer with all zeros after the decimal dot and the
     caller is supposed to convert to int by writing e.g.:
 
       int intValue = (int)setting.getValue();
@@ -175,10 +177,10 @@ public:
     // they are just represented as text. Maybe for each such choice parameter, we need another 
     // enum to represent its allowed values.
 
-    /** Some settings need to specify an index in addtion to the value. An example is a setting 
+    /** Some settings need to specify an index in addtion to the value. An example is a setting
     involving midi control changes. In the sfz file, they are written as e.g. loccN where the N is
     replaced by the actual controller number, like locc74=20 to indicate, that the sample should
-    only play, if the last received value for CC#74 was >= 20. If indexing not applicable to a 
+    only play, if the last received value for CC#74 was >= 20. If indexing not applicable to a
     particular setting/opcode, this will return -1. */
     int getIndex() const { return index; }
 
@@ -186,7 +188,9 @@ public:
     static float getDefaultValue(Type type);
 
     bool operator==(const PlaybackSetting& rhs) const
-    { return type == rhs.type && value == rhs.value && index == rhs.index; }
+    {
+      return type == rhs.type && value == rhs.value && index == rhs.index;
+    }
 
 
   private:
@@ -201,7 +205,7 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** Baseclass for the 3 organizational levels of the sfz specification, factoring out their 
+  /** Baseclass for the 3 organizational levels of the sfz specification, factoring out their
   commonalities. Subclasses are Region, Group, Instrument. */
   class OrganizationLevel
   {
@@ -211,14 +215,14 @@ public:
     //---------------------------------------------------------------------------------------------
     // \name Setup
 
-    /** Sets the sample to be used for this region. This should be a string that represents the 
-    path of the sample relative to some fixed root directory (typically the directory of the sfz 
+    /** Sets the sample to be used for this region. This should be a string that represents the
+    path of the sample relative to some fixed root directory (typically the directory of the sfz
     file). */
     void setSamplePath(const std::string& newPath) { samplePath = newPath; }
 
     /** Sets up the given setting. This may either add it to our array of settings or overwrite the
     value, if there is already a value stored for the given type. If there are already more values
-    stored for that type (a situation that may arise from badly written sfz files), it will 
+    stored for that type (a situation that may arise from badly written sfz files), it will
     overwrite the last one, because that's the one that actually counts. */
     void setSetting(const PlaybackSetting& s);
 
@@ -231,12 +235,12 @@ public:
 
     /** Removes all the settings of given type. Typically, there should be at most one of any given
     type, but this may not be the case for poorly written sfz files. Returns true, if there was at
-    least one item actually removed, i.e. it returns false only if no such setting was found in the 
+    least one item actually removed, i.e. it returns false only if no such setting was found in the
     array. */
     bool removeSetting(PlaybackSetting::Type type);
 
     void clearSettings() // rename to clear
-    { 
+    {
       settings.clear();
       signalProcessors.clear();
     }
@@ -269,19 +273,19 @@ public:
     /** Returns a const reference to our playback settings. */
     const std::vector<PlaybackSetting>& getSettings() const { return settings; }
 
-    /** Returns the value of the given setting, if present. If not present, it will try to figure 
+    /** Returns the value of the given setting, if present. If not present, it will try to figure
     out the parent's setting and so on all the way up the (3-level) hierarchy. If such a setting is
     found in none of the levels, the default value for that setting will be returned. If accumulate
-    is true, the settings of the different hierarchy levels will be added up, otherwise, the 
+    is true, the settings of the different hierarchy levels will be added up, otherwise, the
     setting in the lower level will override the settimg in the enclosing higher level. */
     float getSettingValue(
       PlaybackSetting::Type type, int index = -1, bool accumulate = false) const;
 
-    /** Tries to find a setting of the given type in our settings array and returns the index of 
-    the last stored setting of given type (and with given index, if applicable - like for 
-    controllers), if a setting of the given type was found or -1 if such a setting wasn't found. 
-    Typically, we want to have only one entry of a particular type in the array, but if for some 
-    reason (like a poorly written sfz file) there is more than one, it's the last one that counts 
+    /** Tries to find a setting of the given type in our settings array and returns the index of
+    the last stored setting of given type (and with given index, if applicable - like for
+    controllers), if a setting of the given type was found or -1 if such a setting wasn't found.
+    Typically, we want to have only one entry of a particular type in the array, but if for some
+    reason (like a poorly written sfz file) there is more than one, it's the last one that counts
     (it will overwrite anything that came before). That's why we return the last index, i.e. we do
     a linear search starting at the end of the array. */
     int findSetting(PlaybackSetting::Type type, int index = -1) const;
@@ -290,7 +294,7 @@ public:
     // settings to see, if it finds it and if not call the same method on the parent or return the
     // default value, if the parent is nullptr.
 
-    /** Returns a pointer to the parent level which encloses this level. In a Region, this would 
+    /** Returns a pointer to the parent level which encloses this level. In a Region, this would
     point to its enclosing Group, in a Group to its enclosing Instrument and in an Instrument, it
     would remain nullptr (unless we introduce an even higher level such as an "Ensemble"). */
     const OrganizationLevel* getParent() const { return parent; }
@@ -308,11 +312,11 @@ public:
     uchar getHiVel() const { return hiVel; }
 
     /** Returns the generic pointer for custom satellite data or objects that are associated with
-    this region. This pointer is intended to be used for some sort of audio stream object that is 
-    used for accessing the sample data. It has been made a generic void pointer to decouple 
-    rsSamplerData from the AudioFileStream class that is used in rsSamplerEngine. The 
-    sampler-engine assigns this pointer with appropriate stream object and when retriveing them, 
-    does an appropriate type cast. ToDo: try to find a better design, maybe move up into 
+    this region. This pointer is intended to be used for some sort of audio stream object that is
+    used for accessing the sample data. It has been made a generic void pointer to decouple
+    rsSamplerData from the AudioFileStream class that is used in rsSamplerEngine. The
+    sampler-engine assigns this pointer with appropriate stream object and when retriveing them,
+    does an appropriate type cast. ToDo: try to find a better design, maybe move up into
     baseclass */
     const void* getCustomPointer() const { return custom; }
     // replaces getSampleStream
@@ -323,18 +327,20 @@ public:
 
 
     const std::vector<SignalProcessorType>& getProcessingChain() const
-    { return signalProcessors; }
-    // This is supposed to return a reference to an array of processor types that is used by the 
-    // engine to build the dsp chain when this region should be played.
-    // ToDo:
-    // -define an enum ProcessorType, containing Filter, Waveshaper, Compressor, etc.
-    // -add a std::vector<ProcessorType> member (that's what this function returns a reference to)
-    // -when setting up an opcode that requires a certain processor that is not already in the list,
-    //  add it
-    // -where necessary, do this addition also in the sfz-parser
-    // -the order in which the processors appear in the chain shoulöd reflect the order in which 
-    //  their opcodes appear in the sfz (or, if setup is done programmatically, the order in which
-    //  the opcodes were added)
+    {
+      return signalProcessors;
+    }
+// This is supposed to return a reference to an array of processor types that is used by the 
+// engine to build the dsp chain when this region should be played.
+// ToDo:
+// -define an enum ProcessorType, containing Filter, Waveshaper, Compressor, etc.
+// -add a std::vector<ProcessorType> member (that's what this function returns a reference to)
+// -when setting up an opcode that requires a certain processor that is not already in the list,
+//  add it
+// -where necessary, do this addition also in the sfz-parser
+// -the order in which the processors appear in the chain shoulöd reflect the order in which 
+//  their opcodes appear in the sfz (or, if setup is done programmatically, the order in which
+//  the opcodes were added)
 
 
 
@@ -350,7 +356,7 @@ public:
     // typecast to any sort of stream...or maybe that coupling makes sense?..hmm - not really.
     // maybe a pointer-to-void named customData should be stored in OrganizationLevel
 
-    std::string samplePath; 
+    std::string samplePath;
     // This is the full (relative) path. ToDo: maybe this should be moved into the baseclass. We'll
     // need to figure out, if the sfz player allows samples to be defined also for groups. The same
     // goes for the loKey,etc. stuff as well. Actually, the string is redundant here when the 
@@ -393,9 +399,9 @@ public:
 
 
   //-----------------------------------------------------------------------------------------------
-  /** A region is the lowest organizational level ins sfz. It contains a sample along with 
-  performance settings including information for which keys and velocities the sample should be 
-  played and optionally other constraints for when the the sample should be played and also 
+  /** A region is the lowest organizational level ins sfz. It contains a sample along with
+  performance settings including information for which keys and velocities the sample should be
+  played and optionally other constraints for when the the sample should be played and also
   settings for pitch, volume, pan, filter, envelopes, etc. */
   class Region : public OrganizationLevel
   {
@@ -406,7 +412,7 @@ public:
 
 
     /** Return a pointer to the group to which this region belongs. */
-    const Group* getGroup() const { return (const Group*) getParent(); }
+    const Group* getGroup() const { return (const Group*)getParent(); }
     // maybe rename to getParentGroup or getEnclosingGroup
 
 
@@ -427,8 +433,8 @@ public:
   };
 
   //-----------------------------------------------------------------------------------------------
-  /** A group organizes a bunch of regions into a single entity for which performance settings can 
-  be set up which will be applicable in cases where the region does not itself define these 
+  /** A group organizes a bunch of regions into a single entity for which performance settings can
+  be set up which will be applicable in cases where the region does not itself define these
   settings, so they act as fallback values. It's the mid-level of organization in sfz. */
   class Group : public OrganizationLevel
   {
@@ -440,7 +446,7 @@ public:
 
     int addRegion(uchar loKey = 0, uchar hiKey = 127);      // todo: removeRegion, etc.
 
-    int addRegion(Region* newRegion); 
+    int addRegion(Region* newRegion);
 
     bool removeRegion(int i);
 
@@ -460,7 +466,7 @@ public:
     int getNumRegions() const { return (int)regions.size(); }
 
     /** Return a pointer to the instrument to which this group belongs. */
-    const Instrument* getInstrument() const { return (const Instrument*) getParent(); }
+    const Instrument* getInstrument() const { return (const Instrument*)getParent(); }
 
     /** Returns a pointer to the region with the given index within the group. */
     Region* getRegion(int i) const;
@@ -484,16 +490,16 @@ public:
   };
 
   //-----------------------------------------------------------------------------------------------
-  /** The instrument is the highest organizational level in sfz. There is actually no section 
+  /** The instrument is the highest organizational level in sfz. There is actually no section
   header in the .sfz file format for the whole instrument that corresponds to this class. The whole
-  content of the sfz file *is* the instrument. But for consistency, we represent it by a class as 
+  content of the sfz file *is* the instrument. But for consistency, we represent it by a class as
   well. Maybe later an additional "Ensemble" or "Orchestra" level can be added on top. */
   class Instrument : public OrganizationLevel
   {
 
   public:
 
-    int getNumGroups() const { return (int) groups.size(); }
+    int getNumGroups() const { return (int)groups.size(); }
 
 
     /** Returns a pointer to the region with the given index within the group. */
@@ -501,10 +507,12 @@ public:
 
 
     const std::vector<PlaybackSetting>& getGroupSettings(int groupIndex) const
-    { return groups[groupIndex]->getSettings(); }
+    {
+      return groups[groupIndex]->getSettings();
+    }
 
 
-    /** Returns true, if the given index i refers to a valid group within this instrument. */
+/** Returns true, if the given index i refers to a valid group within this instrument. */
     bool isGroupIndexValid(int i) const { return i >= 0 && i < (int)groups.size(); }
 
 
@@ -552,10 +560,14 @@ public:
 
 
   void setRegionCustomPointer(int gi, int ri, void* ptr)
-  { instrument.groups[gi]->regions[ri]->setCustomPointer(ptr); }
+  {
+    instrument.groups[gi]->regions[ri]->setCustomPointer(ptr);
+  }
 
   void setRegionSample(int gi, int ri, const std::string& samplePath)
-  { instrument.groups[gi]->regions[ri]->setSamplePath(samplePath); }
+  {
+    instrument.groups[gi]->regions[ri]->setSamplePath(samplePath);
+  }
 
   rsReturnCode setRegionSetting(int gi, int ri, PlaybackSetting::Type type, float value);
 
@@ -578,8 +590,8 @@ public:
 
 
   /** Clears the whole instrument definition. */
-  void clearInstrument() 
-  { 
+  void clearInstrument()
+  {
     instrument.clearGroups();
     //signalProcessors.clear();
   }
@@ -591,7 +603,7 @@ public:
   // \name Inquiry
 
   bool isIndexPairValid(int groupIndex, int regionIndex) const
-  { 
+  {
     int gi = groupIndex, ri = regionIndex;
     return instrument.isGroupIndexValid(gi) && instrument.groups[gi]->isRegionIndexValid(ri);
   }
@@ -610,12 +622,14 @@ public:
 
   const Group* getGroup(int i) const { return instrument.groups[i]; }
 
-  const Region* getRegion(int gi, int ri) const 
-  { return instrument.groups[gi]->regions[ri]; }
+  const Region* getRegion(int gi, int ri) const
+  {
+    return instrument.groups[gi]->regions[ri];
+  }
 
-  /** Returns a const reference to the playback settings if the i-th group. */
-  //const std::vector<PlaybackSetting>& getGroupSettings(size_t i) const 
-  //{ return instrument.getGroupSettings(i); }
+/** Returns a const reference to the playback settings if the i-th group. */
+//const std::vector<PlaybackSetting>& getGroupSettings(size_t i) const 
+//{ return instrument.getGroupSettings(i); }
 
   bool operator==(const rsSamplerData& rhs) const { return instrument == rhs.instrument; }
 
@@ -625,12 +639,12 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Misc
 
-  /** Produces the string that represents the settings in an sfz-file compliant format, i.e. a 
+  /** Produces the string that represents the settings in an sfz-file compliant format, i.e. a
   string that can be written into an .sfz file. */
   std::string getAsSFZ() const;
 
 
-  /** Sets up this data object according to the given string which is supposed to represent the 
+  /** Sets up this data object according to the given string which is supposed to represent the
   contents of an .sfz file. */
   void setFromSFZ(const std::string& sfzFileContents);
   // todo: return a return-code, including unknownOpcode, invalidValue, invalidIndex, ...
@@ -643,7 +657,7 @@ public:
   bool saveToSFZ(const char* path) const;
   // todo: return a return-code, including fileWriteError
 
-  /** Sets up this object according to a given .sfz file. Returns true when the file could be 
+  /** Sets up this object according to a given .sfz file. Returns true when the file could be
   found. ToDo: inform also about parsing success vs errors */
   bool loadFromSFZ(const char* path);
   // todo: 
@@ -655,7 +669,7 @@ public:
 
 //protected:  // preliminarily commented - make protected again later
 
-  Instrument instrument; 
+  Instrument instrument;
   // Maybe we could maintain an array of such instruments that define an ensmeble
 
 protected:
@@ -672,6 +686,7 @@ protected:
 
 };
 
-
 }
+}
+
 #endif

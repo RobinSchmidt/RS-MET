@@ -262,3 +262,19 @@ Colour PlotColourScheme::getCurveColourAlternating(int index) const
   //ColourAHSL tmpColourAHSL = curvesAHSL.withHueOffset(sign*factor*curveHueSpread);
   return curvesAHSL.withHueOffset(sign*factor*curveHueSpread).getAsJuceColour();
 }
+
+
+/*
+
+ToDo:
+
+-maybe introduce a slider to scale the amount of the gradient for the background from
+ -100%...+100%
+-maybe have a similar slider for the plots
+-maybe the sliders/widgets can also have so sort of gradient (but probably not the bilinear one,
+ maybe more some sort of pseudo 3D gradient - maybe vertically from dark to bright to dark, the 
+ buttons maybe with darker outer regions...or maybe generally, the fill-ins should have darker
+ outer regions
+
+
+*/

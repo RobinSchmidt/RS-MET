@@ -1,3 +1,6 @@
+namespace rosic {
+namespace Sampler {
+
 //-------------------------------------------------------------------------------------------------
 // Lifetime:
 
@@ -1189,6 +1192,8 @@ void rsSamplerEngine2::GroupPlayer::removeRegionPlayer(RegionPlayer* player)
   RAPT::rsAssert(RAPT::rsContains(regionPlayers, player)); // ToDo: add and use rsContainsOnce
   RAPT::rsRemoveFirstOccurrence(regionPlayers, player);
 }
+
+}} // namespaces
 
 //=================================================================================================
 

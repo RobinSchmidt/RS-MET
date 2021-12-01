@@ -192,7 +192,7 @@ bool samplerDataUnitTest()
   bool ok = true;
 
   //using SD = rsSamplerData;
-  using SD  = rosic::rsSamplerData;
+  using SD  = rosic::Sampler::rsSamplerData;
   using PST = SD::PlaybackSetting::Type;
 
   SD d1;
@@ -291,11 +291,11 @@ bool samplerDataUnitTest()
 }
 
 /** Fills the outL, outR arrays with the output of the given sampler engine for the given note. */
-void getSamplerNote(rosic::rsSamplerEngine* se, float key, float vel,
+void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
   std::vector<float>& outL, std::vector<float>& outR)
 {
   rsAssert(outL.size() == outR.size());
-  using Ev   = rosic::rsMusicalEvent<float>;
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
   se->handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
   for(int n = 0; n < (int) outL.size(); n++)
@@ -304,12 +304,12 @@ void getSamplerNote(rosic::rsSamplerEngine* se, float key, float vel,
 // should we clear the outL/R arrays first? maybe not, if we want instruments to accumuluate 
 // their outputs in ToolChain
 
-bool testSamplerNote(rosic::rsSamplerEngine* se, float key, float vel, 
+bool testSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel, 
   const std::vector<float>& targetL, const std::vector<float>& targetR, 
   float tol = 0.f, bool plot = false)
 {
   using AT   = RAPT::rsArrayTools;
-  using Ev   = rosic::rsMusicalEvent<float>;
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
 
   int N = (int) targetL.size();
@@ -336,11 +336,11 @@ bool samplerEngineUnitTest1()
 
   using VecF = std::vector<float>;     // vector of sample values in RAM
   using AT   = RAPT::rsArrayTools;
-  using SD   = rosic::rsSamplerData;
-  using SE   = rosic::rsSamplerEngineTest;
-  using RC   = rosic::rsReturnCode;
+  using SD   = rosic::Sampler::rsSamplerData;
+  using SE   = rosic::Sampler::rsSamplerEngineTest;
+  using RC   = rosic::Sampler::rsReturnCode;
   using PST  = SE::PlaybackSetting::Type;
-  using Ev   = rosic::rsMusicalEvent<float>;
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
 
   int maxLayers = 8;  
@@ -734,10 +734,10 @@ bool samplerEngine2UnitTest()
 
   using VecF = std::vector<float>;     // vector of sample values in RAM
   using AT   = RAPT::rsArrayTools;
-  using SE   = rosic::rsSamplerEngine2Test;
-  using RC   = rosic::rsReturnCode;
+  using SE   = rosic::Sampler::rsSamplerEngine2Test;
+  using RC   = rosic::Sampler::rsReturnCode;
   using PST  = SE::PlaybackSetting::Type;
-  using Ev   = rosic::rsMusicalEvent<float>;
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
 
   // Create a sine wave as example sample:
@@ -1121,10 +1121,10 @@ bool samplerEngineUnitTestFileIO()
   bool ok = true;
 
   using VecF = std::vector<float>;     // vector of sample values in RAM
-  using SE   = rosic::rsSamplerEngineTest;
-  using RC   = rosic::rsReturnCode;
+  using SE   = rosic::Sampler::rsSamplerEngineTest;
+  using RC   = rosic::Sampler::rsReturnCode;
   using PST  = SE::PlaybackSetting::Type;
-  using Ev   = rosic::rsMusicalEvent<float>;
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
 
   // Create a sine- and cosine wave-file as example samples:
@@ -1331,7 +1331,7 @@ bool samplerFilterTest()
   ok &= testGetSampleAt(); // preliminary - should go into a rapt unit test
 
   using VecF = std::vector<float>;     // vector of sample values in RAM
-  using SE   = rosic::rsSamplerEngineTest;
+  using SE   = rosic::Sampler::rsSamplerEngineTest;
   using PST  = SE::PlaybackSetting::Type;
 
   // Create a pinkish noise as example sample:
@@ -1393,7 +1393,7 @@ bool samplerWaveShaperTest()
   bool ok = true;
 
   using VecF  = std::vector<float>;
-  using SE    = rosic::rsSamplerEngineTest;
+  using SE    = rosic::Sampler::rsSamplerEngineTest;
   using PST   = SE::PlaybackSetting::Type;
   //using WS    = rosic::Sampler::rsSamplerWaveShaper;
   using Shape = rosic::Sampler::rsSamplerWaveShaper::Shape;

@@ -2,8 +2,7 @@
 #define rosic_SamplerEngine_h
 
 namespace rosic {
-
-//namespace Sampler {
+namespace Sampler {
 
 //=================================================================================================
 
@@ -989,7 +988,7 @@ public:
 };
 
 
-//} // namespace Sampler
+} // namespace Sampler
 } // namespace rosic
 
 #endif

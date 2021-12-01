@@ -1,3 +1,6 @@
+namespace rosic {
+namespace Sampler {
+
 //-------------------------------------------------------------------------------------------------
 // The internal classes
 
@@ -42,16 +45,16 @@ void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
   TP t = s.getType();
 
   // Handle the lo/hi key/vel opcodes as special cases:
-  if(t == TP::LoKey) { loKey = (uchar) s.getValue(); return; }
-  if(t == TP::HiKey) { hiKey = (uchar) s.getValue(); return; }
-  if(t == TP::LoVel) { loVel = (uchar) s.getValue(); return; }
-  if(t == TP::HiVel) { hiVel = (uchar) s.getValue(); return; }
+  if(t == TP::LoKey) { loKey = (uchar)s.getValue(); return; }
+  if(t == TP::HiKey) { hiKey = (uchar)s.getValue(); return; }
+  if(t == TP::LoVel) { loVel = (uchar)s.getValue(); return; }
+  if(t == TP::HiVel) { hiVel = (uchar)s.getValue(); return; }
   // ToDo: maybe we should assert that the value is an integer in the range 0..127
 
   // All other settings are handled by either overwriting the last setting of that type in our 
   // array, if present or by appending the setting, if not present:
   int i = findSetting(t);
-  if(i != -1) 
+  if(i != -1)
     settings[i] = s;
   else
     settings.push_back(s);
@@ -63,7 +66,9 @@ bool rsSamplerData::OrganizationLevel::removeSetting(PlaybackSetting::Type type)
   for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
     if(settings[i].getType() == type) {
       RAPT::rsRemove(settings, i);
-      wasRemoved = true;  }}
+      wasRemoved = true;
+    }
+  }
   return wasRemoved;
   // We can't use size_t for i because the -1 would create an access violation when size() = 0
 }
@@ -105,7 +110,8 @@ int rsSamplerData::OrganizationLevel::findSetting(PlaybackSetting::Type type, in
 {
   for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
     if(settings[i].getType() == type && settings[i].getIndex() == index)
-      return (int) i; }
+      return (int)i;
+  }
   return -1;
 }
 
@@ -119,8 +125,8 @@ void rsSamplerData::Region::copyDataFrom(const Region* src)
   int dummy = 0;
 }
 
-bool rsSamplerData::Region::operator==(const rsSamplerData::Region& rhs) const 
-{ 
+bool rsSamplerData::Region::operator==(const rsSamplerData::Region& rhs) const
+{
   bool equal = settings == rhs.settings;
   equal &= loKey == rhs.loKey;
   equal &= hiKey == rhs.hiKey;
@@ -143,12 +149,12 @@ int rsSamplerData::Group::addRegion(Region* r)
 {
   r->parent = this;
   regions.push_back(r);
-  return ((int) regions.size()) - 1;
+  return ((int)regions.size()) - 1;
 }
 
 bool rsSamplerData::Group::removeRegion(int i)
 {
-  if(i < 0 || i >= (int) regions.size())
+  if(i < 0 || i >= (int)regions.size())
     return false;
   delete regions[i];
   RAPT::rsRemove(regions, i);
@@ -164,7 +170,8 @@ void rsSamplerData::Group::copyDataFrom(const Group* src)
     const rsSamplerData::Region* srcRegion = src->getRegion(i);
     rsSamplerData::Region* dstRegion = new rsSamplerData::Region;
     dstRegion->copyDataFrom(srcRegion);
-    addRegion(dstRegion); }
+    addRegion(dstRegion);
+  }
 }
 
 void rsSamplerData::Group::clearRegions()
@@ -178,7 +185,7 @@ int rsSamplerData::Group::getRegionIndex(const rsSamplerData::Region* region) co
 {
   for(size_t i = 0; i < regions.size(); i++)
     if(regions[i] == region)
-      return (int) i;
+      return (int)i;
   return -1;
 }
 
@@ -186,12 +193,13 @@ rsSamplerData::Region* rsSamplerData::Group::getRegion(int i) const
 {
   if(i < 0 || i >= (int)regions.size()) {
     RAPT::rsError("Invalid region index");
-    return nullptr; }
+    return nullptr;
+  }
   return regions[i];
 }
 
-bool rsSamplerData::Group::operator==(const rsSamplerData::Group& rhs) const 
-{ 
+bool rsSamplerData::Group::operator==(const rsSamplerData::Group& rhs) const
+{
   bool equal = settings == rhs.settings;
   equal &= regions.size() == rhs.regions.size();
   if(!equal) return false;
@@ -210,7 +218,7 @@ int rsSamplerData::Instrument::addGroup(rsSamplerData::Group* g)
 {
   g->parent = this;
   groups.push_back(g);
-  return ((int) groups.size()) - 1;
+  return ((int)groups.size()) - 1;
 }
 
 void rsSamplerData::Instrument::clearGroups()
@@ -220,8 +228,8 @@ void rsSamplerData::Instrument::clearGroups()
   groups.clear();
 }
 
-bool rsSamplerData::Instrument::operator==(const rsSamplerData::Instrument& rhs) const 
-{ 
+bool rsSamplerData::Instrument::operator==(const rsSamplerData::Instrument& rhs) const
+{
   bool equal = settings == rhs.settings;
   equal &= groups.size() == rhs.groups.size();
   if(!equal) return false;
@@ -237,7 +245,8 @@ int rsSamplerData::addRegion(int gi, uchar loKey, uchar hiKey)
 {
   if(gi < 0 || gi >= (int)instrument.groups.size()) {
     RAPT::rsError("Invalid group index");
-    return -1; }
+    return -1;
+  }
   int ri = instrument.groups[gi]->addRegion(loKey, hiKey);  // region index within its group
   return ri;
 }
@@ -246,7 +255,8 @@ bool rsSamplerData::removeRegion(int gi, int ri)
 {
   if(gi < 0 || gi >= (int)instrument.groups.size()) {
     RAPT::rsError("Invalid group index");
-    return false; }
+    return false;
+  }
   return instrument.groups[gi]->removeRegion(ri);
 }
 
@@ -254,9 +264,10 @@ rsReturnCode rsSamplerData::setRegionSetting(int gi, int ri, PlaybackSetting::Ty
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
-    return rsReturnCode::invalidIndex; }
+    return rsReturnCode::invalidIndex;
+  }
 
-  //sfz.setRegionSetting(gi, ri, type, value);
+//sfz.setRegionSetting(gi, ri, type, value);
   instrument.groups[gi]->regions[ri]->settings.push_back(PlaybackSetting(type, value));
   // Preliminary. We need to figure out, if that setting already exists and if so, just change 
   // its value instead of pushing another value for the same parameter. Implement it in way so we 
@@ -269,7 +280,8 @@ rsReturnCode rsSamplerData::removeRegionSetting(int gi, int ri, PlaybackSetting:
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
-    return rsReturnCode::invalidIndex; }
+    return rsReturnCode::invalidIndex;
+  }
   bool wasRemoved = instrument.groups[gi]->regions[ri]->removeSetting(type);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
@@ -279,7 +291,8 @@ rsReturnCode rsSamplerData::setGroupSetting(int gi, PlaybackSetting::Type type, 
 {
   if(!isGroupIndexValid(gi)) {
     RAPT::rsError("Invalid group index");
-    return rsReturnCode::invalidIndex; }
+    return rsReturnCode::invalidIndex;
+  }
 
   instrument.groups[gi]->settings.push_back(PlaybackSetting(type, value));
   // Preliminary. We need to figure out, if that setting already exists and if so, just change 
@@ -292,7 +305,8 @@ rsReturnCode rsSamplerData::removeGroupSetting(int gi, PlaybackSetting::Type typ
 {
   if(!isGroupIndexValid(gi)) {
     RAPT::rsError("Invalid group index");
-    return rsReturnCode::invalidIndex; }
+    return rsReturnCode::invalidIndex;
+  }
   bool wasRemoved = instrument.groups[gi]->removeSetting(type);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
@@ -347,12 +361,12 @@ std::string rsSamplerData::getAsSFZ() const
   {
     auto toStr = [](const uchar c) { return std::to_string(c); }; // uchar to string
     const std::string& samplePath = lvl->getSamplePath();
-    if(!samplePath.empty()   ) str += "sample=" + samplePath + '\n';
+    if(!samplePath.empty()) str += "sample=" + samplePath + '\n';
     if(lvl->getLoKey() !=   0) str += "lokey=" + toStr(lvl->getLoKey()) + '\n';
     if(lvl->getHiKey() != 127) str += "hikey=" + toStr(lvl->getHiKey()) + '\n';
     if(lvl->getLoVel() !=   0) str += "lovel=" + toStr(lvl->getLoVel()) + '\n';
     if(lvl->getHiVel() != 127) str += "hivel=" + toStr(lvl->getHiVel()) + '\n';
-    using SettingsRef = const std::vector<PlaybackSetting>&;
+    using SettingsRef = const std::vector<PlaybackSetting> &;
     SettingsRef settings = lvl->getSettings();
     for(size_t i = 0; i < settings.size(); i++)
       writeSettingToString(settings[i], str);
@@ -365,7 +379,9 @@ std::string rsSamplerData::getAsSFZ() const
     writeSettingsToString(getGroup(gi), str);
     for(int ri = 0; ri < getNumRegions(gi); ri++) {
       str += "<region>\n";
-      writeSettingsToString(getRegion(gi, ri), str); }}
+      writeSettingsToString(getRegion(gi, ri), str);
+    }
+  }
   return str;
 
   // ToDo: write lokey/hikey settings into the string, they are stored directly in the Region 
@@ -392,7 +408,7 @@ void rsSamplerData::setFromSFZ(const std::string& str)
   std::string sep(" \n");  // allowed seperator characters
   auto getToken = [&](const std::string& str, size_t startIndex)
   {
-    int start  = (int) startIndex;
+    int start  = (int)startIndex;
     int length = -1;  // initial value should not matter
     rosic::rsFindToken(str, sep, &start, &length);
     return str.substr(start, length);
@@ -407,7 +423,8 @@ void rsSamplerData::setFromSFZ(const std::string& str)
 
     if(opcode == "sample") {     // needs to be treated in a special way
       lvl->setSamplePath(value);
-      return;  }
+      return;
+    }
 
     PlaybackSetting ps = getSettingFromString(opcode, value);
     lvl->setSetting(ps);
@@ -427,7 +444,7 @@ void rsSamplerData::setFromSFZ(const std::string& str)
     while(true)
     {
       std::string token = getToken(str, start); // extract one token at at time
-      if(token.length() == 0) 
+      if(token.length() == 0)
         break;
       setupSetting(lvl, token);                 // set a setting from this token
       start += token.length() + 1;
@@ -459,9 +476,10 @@ void rsSamplerData::setFromSFZ(const std::string& str)
   {
     if(i1 == endOfFile) {
       allGroupsDone = true;
-      i1 = str.length() - 1; }
+      i1 = str.length() - 1;
+    }
 
-    // Extract substring with group definition and add a new group to the instrument:
+// Extract substring with group definition and add a new group to the instrument:
     std::string groupDef = str.substr(i0, i1-i0); // group definition (ToDo: use string_view)
     int gi = instrument.addGroup();
     Group* g = instrument.getGroup(gi);
@@ -485,9 +503,10 @@ void rsSamplerData::setFromSFZ(const std::string& str)
       j1 = groupDef.find(region, j0+1);
       if(j1 == endOfFile) {
         allRegionsDone = true;
-        j1 = groupDef.length() - 1; }
+        j1 = groupDef.length() - 1;
+      }
 
-      // Extract substring with region definition and add a new region to the group:
+// Extract substring with region definition and add a new region to the group:
       std::string regionDef = groupDef.substr(j0, j1-j0); // region definition (ToDo: use string_view)
       int ri = g->addRegion();
       Region* r = g->getRegion(ri);
@@ -531,7 +550,7 @@ bool rsSamplerData::loadFromSFZ(const char* path)
     std::string sfz(c_str);
     setFromSFZ(sfz);
     free(c_str);
-    return true; 
+    return true;
     // ToDo:
     // Actually, setFromSFZ could also go wrong. This would indicate that the file loading 
     // succeeded but the content of the file could not be parsed (i.e. was malformed or we have a
@@ -565,24 +584,24 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
 
   switch(type)
   {
-  case PST::Volume:          { add(s, "volume",          val);  } break;
-  case PST::Pan:             { add(s, "pan",             val);  } break;
+  case PST::Volume:          { add(s, "volume", val);  } break;
+  case PST::Pan:             { add(s, "pan", val);  } break;
 
   case PST::PitchKeyCenter:  { add(s, "pitch_keycenter", val);  } break;
-  case PST::Transpose:       { add(s, "transpose",       val);  } break;
-  case PST::Tune:            { add(s, "tune",            val);  } break;
+  case PST::Transpose:       { add(s, "transpose", val);  } break;
+  case PST::Tune:            { add(s, "tune", val);  } break;
 
-  case PST::Delay:           { add(s, "delay",           val);  } break;
-  case PST::Offset:          { add(s, "offset",          val);  } break;
+  case PST::Delay:           { add(s, "delay", val);  } break;
+  case PST::Offset:          { add(s, "offset", val);  } break;
 
-  case PST::FilterType:      { add(s, "fil_type",        val);  } break;
-  case PST::FilterCutoff:    { add(s, "cutoff",          val);  } break;
-  case PST::FilterResonance: { add(s, "resonance",       val);  } break;
+  case PST::FilterType:      { add(s, "fil_type", val);  } break;
+  case PST::FilterCutoff:    { add(s, "cutoff", val);  } break;
+  case PST::FilterResonance: { add(s, "resonance", val);  } break;
 
 
   // Extensions:
-  case PST::DistShape:       { add(s, "dist_shape",      val);  } break;
-  case PST::DistDrive:       { add(s, "dist_drive",      val);  } break;
+  case PST::DistShape:       { add(s, "dist_shape", val);  } break;
+  case PST::DistDrive:       { add(s, "dist_drive", val);  } break;
 
 
   default:                  { RAPT::rsError("Unknown Opcode"); }
@@ -610,38 +629,38 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
   // passing it as 3rd parameter to the constructor
 
   // Key range:
-  if(opcode == "lokey")           return PS(PST::LoKey,           val);
-  if(opcode == "hikey")           return PS(PST::HiKey,           val);
-  if(opcode == "lovel")           return PS(PST::LoVel,           val);
-  if(opcode == "hivel")           return PS(PST::HiVel,           val);
+  if(opcode == "lokey")           return PS(PST::LoKey, val);
+  if(opcode == "hikey")           return PS(PST::HiKey, val);
+  if(opcode == "lovel")           return PS(PST::LoVel, val);
+  if(opcode == "hivel")           return PS(PST::HiVel, val);
 
   // Amplitude:
-  if(opcode == "volume")          return PS(PST::Volume,          val);
-  if(opcode == "pan")             return PS(PST::Pan,             val);
+  if(opcode == "volume")          return PS(PST::Volume, val);
+  if(opcode == "pan")             return PS(PST::Pan, val);
 
   // Pitch:
-  if(opcode == "pitch_keycenter") return PS(PST::PitchKeyCenter,  val);
-  if(opcode == "transpose")       return PS(PST::Transpose,       val);
-  if(opcode == "tune")            return PS(PST::Tune,            val);
+  if(opcode == "pitch_keycenter") return PS(PST::PitchKeyCenter, val);
+  if(opcode == "transpose")       return PS(PST::Transpose, val);
+  if(opcode == "tune")            return PS(PST::Tune, val);
   // todo:  pitch_keytrack, pitch_veltrack, bend_up, bend_down, bend_step 
   // maybe: pitch_random
 
   // Sample Player:
-  if(opcode == "delay")           return PS(PST::Delay,           val);
-  if(opcode == "offset")          return PS(PST::Offset,          val);
+  if(opcode == "delay")           return PS(PST::Delay, val);
+  if(opcode == "offset")          return PS(PST::Offset, val);
 
   // todo:  offset, end, count, loop_mode, loop_start, loop_end
   // maybe: delay_random, delay_ccN, offset_random, offset_ccN, sync_beats, sync_offset
 
   // Filter:
-  if(opcode == "fil_type")        return PS(PST::FilterType,      val);
-  if(opcode == "cutoff")          return PS(PST::FilterCutoff,    val);
+  if(opcode == "fil_type")        return PS(PST::FilterType, val);
+  if(opcode == "cutoff")          return PS(PST::FilterCutoff, val);
   if(opcode == "resonance")       return PS(PST::FilterResonance, val);
 
 
   // Extensions:
-  if(opcode == "dist_shape")      return PS(PST::DistShape,       val);
-  if(opcode == "dist_drive")      return PS(PST::DistDrive,       val);
+  if(opcode == "dist_shape")      return PS(PST::DistShape, val);
+  if(opcode == "dist_drive")      return PS(PST::DistDrive, val);
 
 
   // ...more to come...
@@ -657,8 +676,11 @@ void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
     const Group* srcGroup = src.getGroup(i);
     Group* dstGroup = new Group;
     dstGroup->copyDataFrom(srcGroup);
-    dst.addGroup(dstGroup); }
+    dst.addGroup(dstGroup);
+  }
 }
+
+}} // namespaces
 
 /*
 

@@ -60,11 +60,9 @@ protected:
 
   // Shorthands for convenience:
   //using Engine = rosic::rsSamplerEngine;  // old
-  using Engine = rosic::rsSamplerEngine2;   // new
-
-
-  using ReturnCode = rosic::rsReturnCode;
-  using Event = rosic::rsMusicalEvent<float>;
+  using Engine     = rosic::Sampler::rsSamplerEngine2;   // new
+  using ReturnCode = rosic::Sampler::rsReturnCode;
+  using Event      = rosic::Sampler::rsMusicalEvent<float>;
 
   Engine engine;
   //juce::File sfzFile;
