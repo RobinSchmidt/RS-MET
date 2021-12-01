@@ -377,12 +377,16 @@ https://en.wikipedia.org/wiki/Non-analytic_smooth_function
 defined as
   g(x) = f(x) / (f(x) - f(1-x)) where f(x) = exp(-1/x) for x > 0 and 0 for x <= 0
 f(x) is the standard example for a smooth, non-analytic function. A smooth, multi-dimensional bump 
-function can alsobe constructed form f as:
+function can also be constructed form f as:
   h(x) = f( r^2 - |x|^2 )
 where |x| is the Euclidean norm of the vector x and r is the radius of the bump
 
 
-Here's another intersring cheap sigmoid:
+Here's another interesting cheap sigmoid:
 https://www.kvraudio.com/forum/viewtopic.php?f=33&t=521377
+
+
+May also be relevant:
+https://en.wikipedia.org/wiki/Smoothstep
 
 */

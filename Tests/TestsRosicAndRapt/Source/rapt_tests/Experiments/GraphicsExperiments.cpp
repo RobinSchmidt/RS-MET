@@ -1007,33 +1007,48 @@ void contours()
   //w = h = 1025;
   //w = h = 800;
 
-  float r = 18;
+  float r = 18;              // range for x and y: x = -r..+r, y = -r..+r
   int numLevels = 20;
-  int numColors = numLevels + 1;
-
-  //numColors = 3;  // test
-
-  bool antiAlias = false;
-
-  float xMin = -r;
-  float xMax = +r;
-  float yMin = -r;
-  float yMax = +r;
+  bool antiAlias = true;
 
 
   std::function<float(float, float)> f;
 
   // choose your function here:
-  //f = [&] (float x, float y) { return x*x + y*y; };
-  //f = [&] (float x, float y) { return x*x - y*y; };
+  //f = [&] (float x, float y) { return x*x + y*y; };    // Circles
+  //f = [&] (float x, float y) { return x*x - y*y; };    // Hyperbolas
+
+  // Elliptic curves:
+  //f = [&] (float x, float y) { return x*x*x + y*y; }; r = 1.5; numLevels = 40;
+  //f = [&] (float x, float y) { return x*x + y*y*y; }; r = 1.0; numLevels = 40; // Elliptic curve
+
+  // Cassini curves:
+  f = [&] (float x, float y) { return (x*x+y*y)*(x*x+y*y) - 2*(x*x-y*y) + 1; }; r = 1.0; numLevels = 21;
+  // Drawing range is not yet optimal
+  // would perhaps be better to have an x-range from -2..+2 and a y-range from -1..+1
+  // we should make sure that 1 is mong the levels in order to see the lemniskate
+  // https://de.wikipedia.org/wiki/Cassinische_Kurve
+  // https://en.wikipedia.org/wiki/Cassini_oval
+
   //f = [&] (float x, float y) { return x*x - y*y + 2.f*x*y; };
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y; };
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*y*y; };
-  f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
+  //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*x - 0.1f*y*y + 0.1f*y; };
     // try exchanging sin and cos an combining
   //f = [&] (float x, float y) { return (float) pow(spiralRidge(x, y, 0.25), 3.0); };
    // exponent 3 makes for good balance between black and white - but middle gray is 
    // underrepresented - todo: apply expansion of middle gray and compression of black/white values
+
+  // todo: cassini curves
+
+
+  float xMin = -r;
+  float xMax = +r;
+  float yMin = -r;
+  float yMax = +r;
+  int numColors = numLevels + 1;
+  //numColors = 3;  // test
+
 
   rsImageContourPlotter<float, float> cp;
 
@@ -1341,12 +1356,11 @@ void implicitCurvesConic()
 // https://en.wikipedia.org/wiki/Epitrochoid
 
 
-
 void implicitCurvesElliptic()
 {
   int width  = 800;
   int height = 800;
-  double range = 2.1;
+  double range = 4.1;
 
 
   rsImageF imgCurve(width, height);
@@ -1361,8 +1375,17 @@ void implicitCurvesElliptic()
   // looks good with the saturating accumulation in rsImagePainter
 
   f = [=](double x, double y) { return x*x*x + y*y; }; 
-  ig.plotImplicitCurve(f, 1.0, 1.0, 0.0, imgCurve, color);
 
+  ig.plotImplicitCurve(f,  -1.0, -1.0, 0.0, imgCurve, color); 
+  // maybe there's a 2nd component somewhere?
+
+  //ig.plotImplicitCurve(f, 0.0, 0.0, 0.0, imgCurve, color); // infinite loop
+  ig.plotImplicitCurve(f,  +1.0, +1.0, 0.0, imgCurve, color);
+  ig.plotImplicitCurve(f,  +8.0, +2.0, 0.0, imgCurve, color);
+  ig.plotImplicitCurve(f, +27.0, +3.0, 0.0, imgCurve, color);
+  ig.plotImplicitCurve(f, +64.0, +4.0, 0.0, imgCurve, color);
+  //ig.plotImplicitCurve(f, 2.0, 1.0, 1.0, imgCurve, color);
+  //ig.plotImplicitCurve(f, 5.0, 1.0, 2.0, imgCurve, color);
   // draw more ..maybe vary the contour line...yeah..maybe we should define this as a 
   // contour-plotting problem anyway...but we can do both
 
@@ -1372,13 +1395,11 @@ void implicitCurvesElliptic()
   writeScaledImageToFilePPM(imgCurve, "ImplicitCurvesElliptic.ppm", 1);
 }
 
-
 void implicitCurves()
 {
-  //implicitCurvesConic();
+  implicitCurvesConic();
   implicitCurvesElliptic();
 }
-
 
 template<class TPix, class TVal>
 void plotParametricCurve(const std::function<TVal(TVal)>& fx, const std::function<TVal(TVal)>& fy,

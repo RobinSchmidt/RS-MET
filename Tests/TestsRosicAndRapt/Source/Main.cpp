@@ -230,9 +230,9 @@ int main(int argc, char* argv[])
 
   // Plotting:
   //gradientify();
-  //contours();
+  contours();
   //complexContours();
-  implicitCurves();
+  //implicitCurves();
   //parametricCurve();
   //spirals();   // move to somewhere else...
   //fractal();

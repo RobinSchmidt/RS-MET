@@ -592,6 +592,10 @@ void rsSinCosApprox4(double x, double* s, double* c)
 //  Maybe try Chebychev approximation, too (i think, this finds an interpolation polynomial where
 //  the evaluation points are given by the roots of a Chebychev polynomial)
 
+// See also:
+// https://www.kvraudio.com/forum/viewtopic.php?f=33&t=573753
+// for a rational approximation
+
 
 void solveTriDiagGauss(const std::vector<double>& L, std::vector<double>& D, 
   const std::vector<double>& U, std::vector<double>& x, std::vector<double>& b)
@@ -701,7 +705,7 @@ void solveWrappedTriDiag(const std::vector<double>& L, std::vector<double>& D,
   //  resulting matrix will not be tridiagonal, so that may not be useful. I think, only the first 
   //  or second elements and last or second-to-last elements of u and v may be nonzero, so we may 
   //  at most cancel the top-right, and top-almost-right and/or bottom-left and bottom-almost-left
-  //  elements in the matrix without destroying tridigonality.
+  //  elements in the matrix without destroying tridiagonality.
 }
 
 std::vector<double> solvePentaDiagonalSystem(
