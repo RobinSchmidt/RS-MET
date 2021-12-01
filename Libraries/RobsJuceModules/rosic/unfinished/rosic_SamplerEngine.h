@@ -87,23 +87,6 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Internal Helper Classes
 
-
-  /** Baseclass for modulators that can be applied to parameters of signal processors. Subclasses
-  can be envelopes, LFOs, etc. */
-  class Modulator
-  {
-  public:
-    virtual double getSample() = 0;
-    virtual void resetState() = 0;
-    virtual void resetSettings() = 0;
-    // todo: processBlock
-  };
-  // maybe drag them out of the class, maybe make a sub-namespace rosic::Sampler
-
-
-
-
-
   /** A struct that can be returned from midi event handling functions to inform the caller, how
   the event has changed the playback status of the engine. For example, a noteOn event will
   typically result in the start of playback for one or more layers/regions. This will be reflected
@@ -289,15 +272,15 @@ public:
     return sfz.isIndexPairValid(groupIndex, regionIndex);
   }
 
-/** Returns true, iff the given sample index is valid, i.e. a sample with this index actually
-exists our sample pool. */
+  /** Returns true, iff the given sample index is valid, i.e. a sample with this index actually
+  exists our sample pool. */
   bool isSampleIndexValid(int sampleIndex) const
   {
     return samplePool.isSampleIndexValid(sampleIndex);
   }
 
-/** Returns the index of the sample represented by the given string in our sample pool or -1, if
-the sample is not in the pool. */
+  /** Returns the index of the sample represented by the given string in our sample pool or -1, if
+  the sample is not in the pool. */
   int findSampleIndexInPool(const std::string& sample) const;
 
   /** Returns true, if the sample represented by the given string (as relative path with respect to
@@ -307,7 +290,7 @@ the sample is not in the pool. */
     return findSampleIndexInPool(sample) != -1;
   }
 
-/** Returns the maximum number of layers that can play simultaneously. */
+  /** Returns the maximum number of layers that can play simultaneously. */
   int getMaxNumLayers() const { return (int)playerPool.size(); }
 
   /** Returns the number of currently playing layers. */

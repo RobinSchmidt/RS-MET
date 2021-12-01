@@ -1437,8 +1437,10 @@ bool samplerWaveShaperTest()
   //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
   // predictably fails! DSP stuff is not yet implemented...
   // ToDo:
-  // -drag out the SignalProcessor class out of the class rsSamplerEngine
   // -make a class SignalProcessorPool, let the engine maintain such a pool as member 
+  //  -this class should have a function grabProcessor(SignalProcessorType type) that returns
+  //   a pointer to a processor of the desired type or a nullptr if no such processor is available
+  //   anymore...or maybe a pointer to a dummy-processor?
   // -let the RegionPlayer maintain a pointer to it from where it may grab its processors. Maybe 
   //  the RegionPlayer itself may also be dragged out. That may be nice anyway because the 
   //  rsSamplerEngine class is already a bit too big anyway.

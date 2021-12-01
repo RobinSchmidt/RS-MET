@@ -7,9 +7,16 @@ namespace Sampler {
 
 //=================================================================================================
 
+enum SignalProcessorType
+{
+  Filter,
+  WaveShaper,
+
+  Unknown
+};
+
 /** Baseclass for signal processors that can be applied to layers while they are the played back.
 Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
-
 class SignalProcessor
 {
 public:
@@ -17,8 +24,62 @@ public:
   virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
   virtual void resetState() = 0;
   virtual void resetSettings() = 0;
+
+  SignalProcessorType getType() { return type; }
+
+protected:
+
+  SignalProcessorType type = SignalProcessorType::Unknown;
 };
 
+/** Baseclass for modulators that can be applied to parameters of signal processors. Subclasses
+can be envelopes, LFOs, etc. */
+class Modulator
+{
+public:
+  virtual double getSample() = 0;
+  virtual void resetState() = 0;
+  virtual void resetSettings() = 0;
+  // todo: processBlock
+};
+
+//=================================================================================================
+
+/** A class for storing a pool of SignalProcessor objects...tbc... */
+
+class SignalProcessorPool
+{
+
+public:
+
+  SignalProcessorPool();
+
+  ~SignalProcessorPool();
+
+
+
+  /** A client can request a processor of the given type. If a processor of the desired type is 
+  avaible, a pointer to it will returned. If not, a nullptr will be returned. The "client" will 
+  typically be a RegionPlayer and call grabProcessor on noteOn. When no processor of the desired 
+  type is available anymore, the calling code should probably forego the whole RegionPlayer. If
+  the region can't be played correctly due to lack of ressources, it should not play at all. What
+  it certainly should not do is to just replace the non-available processor by a bypass dummy 
+  processor because that could have really bad consequences: imagine a missing attenuation 
+  processor. */
+  SignalProcessor* grabProcessor(SignalProcessorType type);
+
+  /** This function should be called by the client when it doesn't need the processor anymore, for
+  example, because the region for which it was used has stopped playing. The client returns the 
+  processor to the pool so it becomes available again. */
+  void returnProcessor(SignalProcessor* p);
+
+
+protected:
+
+  std::vector<SignalProcessor*> pool;    // pointers to the processors
+  std::vector<bool>             isFree;  // array of flags indicating if pool[i] is available
+
+};
 
 //=================================================================================================
 // The DSP classes below are meant to be used in the sampler, but they are nevertheless implemented

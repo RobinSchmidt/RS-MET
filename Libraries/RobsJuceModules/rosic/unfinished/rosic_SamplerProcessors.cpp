@@ -1,6 +1,46 @@
 namespace rosic {
 namespace Sampler {
 
+
+SignalProcessorPool::SignalProcessorPool()
+{
+  // Fill the array with processors
+
+  int dummy = 0;
+}
+
+SignalProcessorPool::~SignalProcessorPool()
+{
+  // Delete all the processors
+}
+
+SignalProcessor* SignalProcessorPool::grabProcessor(SignalProcessorType type)
+{
+
+  return nullptr;
+}
+// ToDo: 
+// -maybe we should somehow report whether it was successful - if we have no processor of given
+//  type available anymore, we may either return a nullptr or a pointer to some sort of dummy
+//  processor...a dummy should probably mute the output - bypassing could lead to undesirable 
+//  results, like getting a sound through unfiltered or unattenuated which is supposed to be 
+//  attenuated via the processor. Using such a muting dummy would gracefully handle overload. 
+//  The layer would just be muted, if not enough DSP objects are available
+// -maybe somewhere we should let the user control, how many of each processor type should be 
+//  pre-allocated - filters are needed a lot, more exotic processors much less so
+// -hmm - i think, it's better to return a nullptr, if no processor of desired type is available
+//  anymore - the calling code can then forego the whole RegionPlayer
+
+
+void SignalProcessorPool::returnProcessor(SignalProcessor* p)
+{
+
+
+  int dummy = 0;
+}
+
+//=================================================================================================
+
 void rsSamplerFilter::setup(rsSamplerFilter::Type type, float cutoff, float resonance)
 {
 
