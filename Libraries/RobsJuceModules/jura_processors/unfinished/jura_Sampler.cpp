@@ -316,7 +316,7 @@ void SamplerEditor::createWidgets()
 Bugs:
 -on Mac, the colors of ToolChain are wrong - seems like red and blue are swapped or something?
 -when switching the preset while holding a note, it crashes (at least on mac)
- -> maybe we need to acquirre the lock in setStateFromXml (done -> needs tests)
+ -> maybe we need to acquire the lock in setStateFromXml (done -> needs tests)
 -it seems, sometimes the noteOff is not received or handled properly - the layer doesn't 
  immediately stop playing but instead (i think) plays until the end of the sample. It happens when
  triggering at least 5 notes simultaneously 

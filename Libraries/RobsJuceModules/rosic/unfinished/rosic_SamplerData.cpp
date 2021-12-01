@@ -21,6 +21,7 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Type type)
   case TP::Delay:          return 0.f;
   case TP::Offset:         return 0.f;
 
+
   // Filter: the spec says, if the cutoff is not specified, it should deactivate the filter...how
   // can we capture this here? maybe return -1 as code?
 
@@ -372,7 +373,9 @@ std::string rsSamplerData::getAsSFZ() const
   // serialization but that may complicate other things due to the introduced redundancy and 
   // therefore extra care to keep the data consistent. That raises the question, if groups and
   // instruments also can define lokey/hikey settings and how they are interpreted. If so, maybe
-  // these lokey/hikey members should be moved into the OrganizationLevel baseclass. ...done 
+  // these lokey/hikey members should be moved into the OrganizationLevel baseclass. 
+  // ...done ...verify and delete comment
+
   // ToDo: figure out how SFZPlayer behaves with respect to this maybe by defining those opcodes
   // at all 3 levels - i guess, it will use the most restrictive setting of all of them
 }
@@ -459,7 +462,7 @@ void rsSamplerData::setFromSFZ(const std::string& str)
       i1 = str.length() - 1; }
 
     // Extract substring with group definition and add a new group to the instrument:
-    std::string groupDef = str.substr(i0, i1-i0); // group definition (todo: use string_view)
+    std::string groupDef = str.substr(i0, i1-i0); // group definition (ToDo: use string_view)
     int gi = instrument.addGroup();
     Group* g = instrument.getGroup(gi);
     g->parent = &instrument;
@@ -485,7 +488,7 @@ void rsSamplerData::setFromSFZ(const std::string& str)
         j1 = groupDef.length() - 1; }
 
       // Extract substring with region definition and add a new region to the group:
-      std::string regionDef = groupDef.substr(j0, j1-j0); // region definition (todo: use string_view)
+      std::string regionDef = groupDef.substr(j0, j1-j0); // region definition (ToDo: use string_view)
       int ri = g->addRegion();
       Region* r = g->getRegion(ri);
       r->parent = g;
@@ -529,6 +532,7 @@ bool rsSamplerData::loadFromSFZ(const char* path)
     setFromSFZ(sfz);
     free(c_str);
     return true; 
+    // ToDo:
     // Actually, setFromSFZ could also go wrong. This would indicate that the file loading 
     // succeeded but the content of the file could not be parsed (i.e. was malformed or we have a
     // bug in the parser). It could also mean that even though the sfz file itself is ok, we failed
@@ -700,7 +704,19 @@ Refactor:
  sfz opcode string (e.g. "pan"), the default value (e.g. 0.f). That avoids having to change 
  3 places (PlaybackSetting::getDefaultValue, writeSettingToString, getSettingFromString) when 
  adding a new opcode. It will most likely also reduce the overall amount of code. The code in these
- functions is very reptitive anyway.
+ functions is very repetitive anyway. Then, somewhere in the code we need to have an array of such 
+ structs. Disadvantage: The mapping between opcodes indices and their strings must be figured out 
+ at runtime (i.e. linear search?)...or we use something like a std::map or some selfmade 
+ "dictionary" datastructure...but it needs satellite data for the default value. Maybe a data 
+ structure that allows to store an array of pointers to objects (the structs) and additionally 
+ maintains an arbitrary number of arrays of indices into that array which are sorted according to
+ different criteria, for example, using different fields as key. But where and when would we fill
+ that data structure. Maybe it should be some sort of singleton object rsSamplerOpcodeList. Or 
+ maybe an object of that class could be a static member of rsSamplerData. It could have member 
+ functions:
+ rsSamplerData::PlaybackSetting::Type getOpcodeIndex(const::std::string& opcodeString)
+ const::std::string& getOpcodeString(...Type opcodeType)
+ float getDefaultValue(...Type opcodeType)
 
 
 

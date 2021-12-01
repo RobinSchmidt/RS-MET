@@ -1435,15 +1435,16 @@ bool samplerWaveShaperTest()
   se.setRegionSetting(0, 0, PST::DistShape,      float(shape));
   se.setRegionSetting(0, 0, PST::DistDrive,      drive);
   //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
-  // predictably fails! dsp stuff is not yet implemented...i think, i should first refactor by
-  // creating a sub-namespace rosic::Sampler where everything sampler-related goes. then drag out
+  // predictably fails! DSP stuff is not yet implemented...i think, i should first refactor by
+  // creating a sub-namespace rosic::Sampler where everything sampler-related goes. Then drag out
   // the SignalProcessor class out of the class rsSamplerEngine, then make a class 
-  // SignalProcessorPool, let the engine maintian such a pool as member, then let the RegionPlayer
-  // maintain a pointer to it from where it may grab its processors. maybe the RegionPlayer itself
-  // may also be dragged out then
+  // SignalProcessorPool, let the engine maintain such a pool as member, then let the RegionPlayer
+  // maintain a pointer to it from where it may grab its processors. Maybe the RegionPlayer itself
+  // may also be dragged out then. That may be nice anyway because the rsSamplerEngine class is 
+  // already a bit too big anyway.
   // -would be nice, if we could wrap the namespace Sampler around the includes in rosic.h/cpp
   //  but for that, we first need to move all the namespace rosic stuff there, too
-  // -maybe try to do this taks with a python script, see
+  // -maybe try to do this task with a python script, see
   //  https://stackoverflow.com/questions/1120707/using-python-to-execute-a-command-on-every-file-in-a-folder
   //  the answer using pathlib seems to be the simplest way to do it
   // -before that, merge the current update_juce branch to master

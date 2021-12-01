@@ -1030,6 +1030,22 @@ void contours()
   // https://de.wikipedia.org/wiki/Cassinische_Kurve
   // https://en.wikipedia.org/wiki/Cassini_oval
 
+  // A landscape derived from taking the reciprocal of the Cassini curve landscape - has poles 
+  // where the original has zeros:
+  //f = [&] (float x, float y) 
+  //{ 
+  //  float z = (x*x+y*y)*(x*x+y*y) - 2*(x*x-y*y) + 1; 
+  //  return rsMin(pow(1.f/z, 0.3f), 5.f);
+  //}; 
+  //r = 2.0; numLevels = 21;
+  // hmmm..the contouring algo finds a black (i.e. zero valued) contour where we expect maximum 
+  // values. Is there some wrap-around going on? Maybe write a function isNormalized that checks
+  // if the minimum value is zero and the maximum is 1. maybe 
+  // rsArrayTools::spansRange(*x, N, min, max) - returns true, if the min and max of the array is
+  // equal to the desired min/max values - then use an assert to figure out if the max has wrapped 
+  // around
+
+
   //f = [&] (float x, float y) { return x*x - y*y + 2.f*x*y; };
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y; };
   //f = [&] (float x, float y) { return x*sin(y) + y*cos(x) + 0.1f*x*y + 0.1f*x*x - 0.1f*y*y; };
