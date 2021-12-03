@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
@@ -366,9 +366,9 @@ int main(int argc, char* argv[])
   ////experimentalPrototypeM1N2();  // commented in header
   //splitLowFreqFromDC();
   //directFormFreqResp();
-  ladderResonanceGain();
-  ladderTransferFunction();
-  ladderMultipole();
+  //ladderResonanceGain();
+  //ladderTransferFunction();
+  //ladderMultipole();
   //ladderResonanceModeling();
   //ladderResoShape();
   //ladderThresholds();           // maybe remove - this seemed to be a dead end
@@ -389,7 +389,7 @@ int main(int argc, char* argv[])
   //resoSeparationNonlinear();
   //resoReplace();
   //resoReplacePhaseBumping();
-  //resoReplaceScream();
+  resoReplaceScream();
   //fakeResonance();
   //fakeResoLowpassResponse();
   //fakeResoDifferentDelays();

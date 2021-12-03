@@ -616,7 +616,7 @@ void rsResoReplacer<TSig, TPar>::getNonresonantOutputAndResonanceParameters(TSig
   r   = this->attackSmoother.getSample(r);           // attack smoothing filter
 
   // compute magnitude and phase:
-  q     = this->allpass.getSample(r);                // quadrature signal
+  q     = this->allpass.getSample(r);         // quadrature signal
   *mag  = sqrt(r*r + q*q);                    // extract magnitude
   *phs  = atan2(r, q);                        // exctract phase
 

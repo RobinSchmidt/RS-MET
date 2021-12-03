@@ -3449,6 +3449,7 @@ void resoReplacePhaseBumping()
   // hp   = highpass(input);      // turn edges into spikes
   // tmp  = fabs(hp) * (hp-res);  // maintain spikes, when spike and reso are antiphase
   //   or: tmp  = fabs(hp) * (in-res);
+  //   or: tmp  = hp*hp * (hp-res);
   // 
   // tmp  = lowpass1(tmp);        // spike -> exponential decay
   // tmp  = lowpass2(tmp);        // decay -> attack/decay
@@ -3508,8 +3509,8 @@ void resoReplaceScream()
 
   // user parameters:
   double length = 5.0;         // length of the output in seconds
-  double fc1    = 2000;        // cutoff at start
-  double fc2    = 1000;        // cutoff at end
+  double fc1    =   400;       // cutoff at start
+  double fc2    =   100;       // cutoff at end
   double fIn    = 50;          // input sawtooth frequency
   double aIn    = 0.5;         // input sawtooth amplitude
   double fs     = 44100;       // sample rate
@@ -3568,6 +3569,29 @@ void resoReplaceScream()
 
   // write wavefile
   writeToMonoWaveFile("ResoReplaceScream.wav", &y[0], N, (int)fs, 16);
+
+  // Observations:
+  // -For a sweep from 4 kHz to 1 kHz, it seems to work fine.
+  // -For high cutoff frequencies, therea are artifacts - try sweeping from 16 kHz to 1 kHz:
+  //  -the amplitude of the resonance is different from cycle to cycle
+  //  -it looks like there is a linear envelope of the resonance envelope spanning over multiple 
+  //   cycles and restting at some point
+  //  -for a fixed frequency, this artifact manifests itself in having a different overall 
+  //   resonance amplitude as function of cutoff frequency: check, for example outputs with fixed 
+  //   resonance freq of 7 kHz and 6 kHz. At 6, the resopnance is louder than at 7
+  //  -hypothesis: the estimation of instantaneous pahse and amplitude of the resonance fails: we 
+  //   get a mis-attribution as to what the phase and what the amplitude is. idea for a fix: maybe 
+  //   instead etimating instantaneous phase and amplitude form 2 samples, use 3 samples and 
+  //   estimate also instantaneous frequency. Try different formulas for doing the amplitude/phase
+  //   estimation. Currently, we use the allpass/quadrature signal for the amplitude estimation and 
+  //   atan2 for the phase. -> check the phases of original resonance and quadrature part...but 
+  //   amplitude estimation is bound to fail using this method if the freq is too high? Check class
+  //   rsSingleSineModeler (i think, that was the name) for other ways. Try to make the amp/phase 
+  //   attribution work well for high frequencies.
+  // -For low cutoff frequencies (like 200 or 100), the resonance becomes kinda erratic/growly. but
+  //  maybe that's ok - it sounds good actually. Try a sweep from 400 to 100.
+
+
 }
 
 void fakeResonance()

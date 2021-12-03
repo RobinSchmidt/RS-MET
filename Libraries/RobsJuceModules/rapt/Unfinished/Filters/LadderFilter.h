@@ -996,6 +996,7 @@ protected:
   signal reconstruction parameters (i.e. instantaneous amplitude and phase).*/
   virtual void getNonresonantOutputAndResonanceParameters(TSig input, TSig *nonRes,
     TSig *resAmp, TSig *resPhase);
+  // this neeeds a shorter name!!
 
   /** Given an instantaneous amplitude and phase in the range 0..2*PI (or beyond 2*PI, but not below
   0), this function returns the intantaneous value of the reconstructed resonance waveform.  */

@@ -2527,6 +2527,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_ModalSynth.cpp">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_MusiciansFilter.cpp">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_NewSynth.cpp">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClCompile>
@@ -4894,6 +4897,9 @@
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_ModalSynth.h">
+      <Filter>JUCE Modules\rosic\unfinished</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_MusiciansFilter.h">
       <Filter>JUCE Modules\rosic\unfinished</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_NewSynth.h">
