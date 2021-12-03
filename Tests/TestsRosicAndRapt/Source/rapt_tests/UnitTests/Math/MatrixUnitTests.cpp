@@ -749,21 +749,28 @@ bool testMatrixView()
 
 bool testMatrixOperators()
 {
-  bool r = true;  // test result
+  bool ok = true;  // test result
   using Mat = rsMatrix<double>;
   using Vec = std::vector<double>;
 
   Mat A(3, 3, { 2,1,4, 3,10,3, 1,5,1 });
   Mat X(3, 2, {1,4, 2,5, 3,6});
   Mat B = A * X;
-  r &= B == Mat(3, 2, {16,37, 32,80, 14,35});
+  ok &= B == Mat(3, 2, {16,37, 32,80, 14,35});
 
   // test matrix-vector multiplication:
   Vec x, y; x = Vec({1,2,3});
-  A = Mat(2, 3, {1,2,3, 4,5,6});  y = A*x; r &= y == Vec({14,32});
-  A = Mat(3, 2, {1,2, 3,4, 5,6}); y = x*A; r &= y == Vec({22,28});
-  
-  return r;
+  A = Mat(2, 3, {1,2,3, 4,5,6});  y = A*x; ok &= y == Vec({14,32});
+  A = Mat(3, 2, {1,2, 3,4, 5,6}); y = x*A; ok &= y == Vec({22,28});
+
+  // test element-wise +=, *=, -=, /=
+  double tmp;
+  tmp = A(2,1); A(2,1) += 2.0; ok &= A(2,1) == tmp + 2.0;
+  tmp = A(2,1); A(2,1) *= 2.0; ok &= A(2,1) == tmp * 2.0;
+  tmp = A(2,1); A(2,1) -= 2.0; ok &= A(2,1) == tmp - 2.0;
+  tmp = A(2,1); A(2,1) /= 2.0; ok &= A(2,1) == tmp / 2.0;
+
+  return ok;
 }
 
 bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
