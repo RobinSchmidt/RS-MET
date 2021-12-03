@@ -34,16 +34,35 @@ Notes:
   modes (->verify!)
  -waveshape of the resonance. the basic ladder produces a sinusoidal waveshape
  -start-phase of the waveshape
- -the (pseudo)-randomness of that star-phase in different cycles of the input signal
+ -the (pseudo)-randomness of that start-phase in different cycles of the input signal
+ -how the resonance scales with frequency - constant-Q vs constant bandwidth, etc.
 
--the basic setup of the filter is as follows:
+-The basic setup of the filter is as follows:
+ -We use two ladder filters in parallel, one with and one without feedback
+ -We subtract the signal without resonance for the signal with resonance to obtain the pure 
+  resonance signal.
+ -We post-process the resonance signal in various ways
+ -We produce the output as sum of the non-resonant signal and the post-processed resonance signal.
+ 
+The post-processing should include the following
+ -Adjustment of overall amplitude (reso-gain)
+ -Narrowing the bandwidth of the resonance signal (which also amounts to increasing its ringing 
+  time) by passing it through a resonator of bandpass
+ -This resonator/bandpass could be realized using the state-vector filter or the (nonlinear) modal
+  filter
+ -Estimate instantaneous amplitude and phase of the resonance (...should this be done on the raw or
+  narrowed resonance? If the latter, we should make sure that the nonlinearities do not destroy 
+  the sinusoidal shapes - at least not too much)
+  -> The instantaneous phase will be a sawtooth like signal. Maybe we can anti-alias it with a 
+     PolyBlep (we would need to detect the phase wrap-around of the reso-wave between samples)
+  
 
  
  
 
  
  
-Some hypotheses, how the perceptual parameters could correlate to signal features:
+Some hypotheses/speculations, how the perceptual parameters could correlate to signal features:
 -the "silky/smooth/creamy" dimension could be related to the tendency of the resonance to lock into 
  the modes of the input signal - does it happen at all, how quickly, etc. The opposite would be,
  if the filter would just do its own thing (resonate at its own resonance freq, regardless of 
@@ -52,7 +71,30 @@ Some hypotheses, how the perceptual parameters could correlate to signal feature
  transitions smoothly. This can be achieved by passing the resonance through another resonator 
  filter - the narrower that filter is, the less the resonance is affected by the input modes (i 
  think)
--
+-"bubbly" could be related to the frequency envelope of the resonance
+-"growly" could be related to a pseudo-random change of the resonance phase between cycles
+
+User parameters could be:
+-Frequency, Feedback, Reso-Gain, Reso-Bandwidth, waveshape, (micro)env-amount, phase-randomization 
+ (via some nonlinear feedback algo), waveshape as function of input (i.e. somehow derived form the
+ filtered input)
+ 
+-The following signals are readily available: overall input, the output taps of the non-resonating 
+ ladder, the output taps of the resonating ladder, the raw resonance signal, the post-processed 
+ resonance signal (actually, at all stages of the post-processing)
+-The following signals could be made available with relative ease: a quadrature component of the 
+ resonance (via an allpass), the instantaneous amplitude of the raw resonance (uses the quadrature 
+ component and the original reso - square both, add, take sqrt - or maybe use the squared env 
+ directly -> cheaper)
+-The following signals could be made available with some more processing: the input amplitude 
+ (using an envelope follower), ...
+->these signals are the ingredients that we can work with to achieve a desired behavior of the 
+  resonance
+ 
+ToDo:
+-make an efficient version of the Ladder filter using SIMD to compute the resonant and non-resonant
+ part simultaneously - maybe use rsFloat32x4, for stereo...oh - that means, this class should go to 
+ rosic
 
 
 */
