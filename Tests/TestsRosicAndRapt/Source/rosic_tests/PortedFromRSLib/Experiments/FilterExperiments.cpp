@@ -1772,6 +1772,8 @@ void ladderResonanceGain()
   Real B1       = 0.23;    // 0.0: zeroless, 0.5: bilinear, 0.23: good compromise
   bool withGain = false;   // switch from plotting with or without compensation gain applied
 
+  //B1 = 0.22; // test - with 0.22, the curve is nonmonotonic
+
   LDR ldr;
   ldr.setSampleRate(fs);
   ldr.setCutoff(fc);
@@ -1823,7 +1825,8 @@ void ladderResonanceGain()
   //  -at 0.5 (bilinear) all curves meet at the Nyquist freq. The higher order curves bend upward.
   //  -at 0.0 the higher order curves bend downward, indicating a loss of resonance gain towards 
   //   higher frequencies
-  //  -at 0.23, there seems to be the sweet spot where they all are at their flattest
+  //  -at 0.23, there seems to be the sweet spot where they all are at their flattest, with lower 
+  //   values like 0.22, the curve is nonmonotonic
   //  -with > 0.5, they actually cross each other at the Nyquist freq - what does that mean? does
   //   it mean, the gain depends on phase?
   //  -with -0.5, the curves seem to drop to zero at fs/2

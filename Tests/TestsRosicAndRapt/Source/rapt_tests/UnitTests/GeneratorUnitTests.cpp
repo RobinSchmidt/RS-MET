@@ -1434,7 +1434,7 @@ bool samplerWaveShaperTest()
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
   se.setRegionSetting(0, 0, PST::DistShape,      float(shape));
   se.setRegionSetting(0, 0, PST::DistDrive,      drive);
-  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
   // predictably fails! DSP stuff is not yet implemented...
   // ToDo:
   // -make a class SignalProcessorPool, let the engine maintain such a pool as member 
@@ -1444,6 +1444,10 @@ bool samplerWaveShaperTest()
   // -let the RegionPlayer maintain a pointer to it from where it may grab its processors. Maybe 
   //  the RegionPlayer itself may also be dragged out. That may be nice anyway because the 
   //  rsSamplerEngine class is already a bit too big anyway.
+  // -we need to update: rsSamplerEngine::getRegionPlayerFor, 
+
+
+
   // -would be nice, if we could wrap the namespace Sampler around the includes in rosic.h/cpp
   //  but for that, we first need to move all the namespace rosic stuff there, too
   // -maybe try to do this task with a python script, see

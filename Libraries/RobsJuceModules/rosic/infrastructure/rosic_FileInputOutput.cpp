@@ -226,6 +226,12 @@ char* rosic::rsReadStringFromFile(const char *filename)
   // I think, the working directory is not the same as the executable directory
   // I tried to move all the files into the project directory (where the .xcodeproject) file
   // resides) but that didin't help.
+  // ...ok - this is fixed now - i think, this comment can be deleted
+
+  // For figuring out the file-size, see here: https://www.youtube.com/watch?v=ufMDgJY2I8I
+  // ...the fseek method might not be the best way. Maybe try the other method, too. How can we 
+  // compare the efficiency of both methods? Try to devise some performance test for that. Make 
+  // sure that the method is supported in APE, too.
 }
 
 void rosic::writeDataToFile(const char* path, int numValues, double *x, double *y1, double *y2,

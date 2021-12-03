@@ -68,7 +68,7 @@ void rsSamplerFilter::resetState()
 
 //=================================================================================================
 
-/** Class where all the boilerplate for making DSP processors available in the sample goes. */
+/** Class where all the boilerplate for making DSP processors available in the sampler goes. */
 
 class rsSamplerProcessors
 {
@@ -113,7 +113,7 @@ public:
   //  rsFloat32x2...could be just a synonym for rsFloat32x4 (because that can be simdified), but 
   //  the name makes clear that we use only 2 of the 4 available slots
   // -can we avoid the need for the boilerplate? ...or at least reduce the amount? maybe with 
-  //  similar strategeis as in romos suing macros?
+  //  similar strategies as in romos, using macros?
 
 
 

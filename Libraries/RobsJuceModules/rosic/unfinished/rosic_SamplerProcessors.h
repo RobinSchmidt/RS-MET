@@ -59,25 +59,27 @@ public:
 
 
   /** A client can request a processor of the given type. If a processor of the desired type is 
-  avaible, a pointer to it will returned. If not, a nullptr will be returned. The "client" will 
+  available, a pointer to it will returned. If not, a nullptr will be returned. The "client" will 
   typically be a RegionPlayer and call grabProcessor on noteOn. When no processor of the desired 
   type is available anymore, the calling code should probably forego the whole RegionPlayer. If
-  the region can't be played correctly due to lack of ressources, it should not play at all. What
+  the region can't be played correctly due to lack of resources, it should not play at all. What
   it certainly should not do is to just replace the non-available processor by a bypass dummy 
   processor because that could have really bad consequences: imagine a missing attenuation 
-  processor. */
+  processor. Regions are always played back either correctly or not at all but never wrongly. */
   SignalProcessor* grabProcessor(SignalProcessorType type);
 
-  /** This function should be called by the client when it doesn't need the processor anymore, for
+  /** This function should be called by the client when it doesn't need the processor anymore, For
   example, because the region for which it was used has stopped playing. The client returns the 
-  processor to the pool so it becomes available again. */
+  processor to the pool so it becomes available again for playing other notes. */
   void returnProcessor(SignalProcessor* p);
 
 
 protected:
 
   std::vector<SignalProcessor*> pool;    // pointers to the processors
-  std::vector<bool>             isFree;  // array of flags indicating if pool[i] is available
+  std::vector<char>             isFree;  // array of flags indicating if pool[i] is available
+  // isFree is supposed to serve as a vector-of-bool but we don't want to use the idiosyncratic 
+  // implementation, so we use char instead of bool.
 
 };
 
@@ -114,7 +116,7 @@ public:
   {
     // Biquad filter modes:
     Bypass,
-    Lowpass_6,
+    Lowpass_6,   // reanme to BQD_Lowpass_6 etc
     Highpass_6,
 
     // State variable filter modes:
@@ -132,7 +134,8 @@ public:
   // hmm...
   // -maybe split the type into two parts: topology (svf, ladder, etc.), mode (lpf, hpf, etc.)
   // -maybe we can use a bitfield: 2 bits for the topology, 6 bits for the type within the selected
-  //  topology, makes a total of 8 bits to specify the mode in a structured way
+  //  topology, makes a total of 8 bits to specify the mode in a structured way. This is a 
+  //  potential space optimization that may be done later. If done, it should not affect the API.
 
 
   void setup(Type type, float cutoff, float resonance);
@@ -191,6 +194,8 @@ protected:
     StateVars  svf;
     LadderVars ldr;
   };
+  // ToDo: implement reset/getSample etc also in StateVars, etc. all thes structs should provide 
+  // the sample API, but implement it in a way that is suitable to the given filter topology.
 
 
   //-----------------------------------------------------------------------------------------------

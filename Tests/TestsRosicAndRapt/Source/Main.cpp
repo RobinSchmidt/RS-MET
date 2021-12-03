@@ -53,11 +53,14 @@ int main(int argc, char* argv[])
   // -maybe split this into Demos and Research - the demos shall remain in the main RS-MET 
   //  codebase, the research stuff should go into the research repo, eventually, 
   //  research-experiments may be propagated up into main repo
+  // -maybe "override" malloc for debug builds to initialize the allocated memory with garbage as
+  //  explained here https://www.youtube.com/watch?v=RoVD6zlftF0 this will help to detect bugs 
+  //  related to uninitialized memory
 
   //-----------------------------------------------------------------------------------------------
   // Unit tests:
   bool ok = true;
-  ok &= runUnitTestsRapt();
+  //ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
@@ -363,9 +366,9 @@ int main(int argc, char* argv[])
   ////experimentalPrototypeM1N2();  // commented in header
   //splitLowFreqFromDC();
   //directFormFreqResp();
-  //ladderResonanceGain();
-  //ladderTransferFunction();
-  //ladderMultipole();
+  ladderResonanceGain();
+  ladderTransferFunction();
+  ladderMultipole();
   //ladderResonanceModeling();
   //ladderResoShape();
   //ladderThresholds();           // maybe remove - this seemed to be a dead end

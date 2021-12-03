@@ -7,3 +7,5 @@ http://www.abrazol.com/books/filter1/
 and here:
 http://www.exstrom.com/journal/sigproc/
 maybe make a "Hollos" subdirectory
+
+maybe move the code into the research repo. it fits better there

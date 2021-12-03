@@ -659,6 +659,11 @@ protected:
   // some other object that also uses the same sample pool (for example, a DAW that uses the sampler
   // as plugin)
 
+  SignalProcessorPool processorPool;
+  /**< The pool of DSP processors. When a region starts playing, the respective RegionPlayer object
+  may grab objects from this pool such as filters, waveshapers, etc. - whatever it needs to play 
+  the region appropriately. */
+
 
   std::vector<RegionPlayer*> activePlayers;
   /**< Array of pointers to region players that are currently active, i.e. playing. */

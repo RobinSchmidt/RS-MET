@@ -469,6 +469,11 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
   rp->setRegionToPlay(r, sampleRate, groupSettingsOverride, regionSettingsOverride);
   activePlayers.push_back(rp);
   return rp;
+
+  // ToDo: Let setRegionToPlay return a bool to indicate, if it's possible to play the region. It
+  // may fail due to lack of ressources, such as DSP processors and/or modulators. If it returns 
+  // false, roll it back, i.e. move the player back to the idlePlayers array (maybe reset any 
+  // options that have been set such as setKey) and return a nullptr
 }
 
 bool rsSamplerEngine::isSampleUsedIn(
