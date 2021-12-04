@@ -122,6 +122,8 @@ inline bool rsIsPowerOfTwo(unsigned int x)
 }
 // ToDo: use an algorithm based on finding the highest bit
 // https://graphics.stanford.edu/~seander/bithacks.html#DetermineIfPowerOf2
+// see also here, at 32:41
+// https://www.youtube.com/watch?v=ImLFlLjSveM
 
 inline bool rsIsPowerOfN(unsigned int x, unsigned int N)
 {
@@ -343,3 +345,13 @@ inline double rsZeroFunction(double x)
 //  return T(0);
 //}
 
+
+/*
+
+for efficient computation or approximation of elementary functions, see:
+
+https://www.kvraudio.com/forum/viewtopic.php?p=7161124#p7161124 My b^x approximation
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=573753 Improved Taylor/Padé approximation of cos/sin functions
+
+
+*/

@@ -15,7 +15,7 @@ signal from the instantaneous amp/freq/phase arrays and - more importantly - to 
 signal to produce these arrays. To this end, various algorithms are available...tbc...  */
 
 template<class T>
-class rsSingleSineModeler
+class rsSingleSineModeler  // maybe rename to rsSineEstimator
 {
 
 public:

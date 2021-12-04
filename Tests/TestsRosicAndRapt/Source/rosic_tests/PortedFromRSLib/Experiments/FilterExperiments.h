@@ -63,6 +63,8 @@ void resoReplace();
 void resoReplacePhaseBumping();
 void resoReplaceScream();
 
+void resoWave();
+
 void fakeResonance();
 void fakeResoLowpassResponse();
 void fakeResoDifferentDelays();

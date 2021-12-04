@@ -166,6 +166,7 @@ template struct RAPT::rsFilterSpecificationBA<double>;
 
 template class RAPT::rsLadderFilter<double, double>;
 template class RAPT::rsLadderFilter<rsFloat64x2, double>;
+template class RAPT::rsLadderFilter<rsFloat32x4, rsFloat32x4>;
 
 #ifdef _MSC_VER
 template class RAPT::rsLadderFilter<rsFloat64x2, rsFloat64x2>;

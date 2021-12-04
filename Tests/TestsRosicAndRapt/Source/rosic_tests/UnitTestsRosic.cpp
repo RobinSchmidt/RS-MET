@@ -29,18 +29,18 @@ bool runUnitTestsRosic()
 
   std::cout << "Running unit tests for rosic\n";
 
-  ok &= runUnitTest(&testRosicBasics,        "Basics");
-  ok &= runUnitTest(&testRosicFile,          "File");
-  ok &= runUnitTest(&testRosicFilter,        "Filter");
-  ok &= runUnitTest(&testRosicNonRealTime,   "NonRealTime");
-  ok &= runUnitTest(&testRosicEffects,       "Effects");
-  ok &= runUnitTest(&testRosicMath,          "Math");
-  ok &= runUnitTest(&testRosicNumerical,     "Numerical");
-  ok &= runUnitTest(&testRosicString,        "String");            // Fails! reason: double/string roundtrip..see comments in the tests
-  ok &= runUnitTest(&testTypeSizes,          "TypeSizes");
-  ok &= runUnitTest(&testNumberManipulations,"NumberManipulations");
-  ok &= runUnitTest(&testFilterPolynomials,  "FilterPolynomials");
-  ok &= runUnitTest(&testHighOrderFilter,    "HighOrderFilter");   // takes long
+  ok &= runUnitTest(&testRosicBasics,         "Basics");
+  ok &= runUnitTest(&testRosicFile,           "File");
+  ok &= runUnitTest(&testRosicFilter,         "Filter");
+  ok &= runUnitTest(&testRosicNonRealTime,    "NonRealTime");
+  ok &= runUnitTest(&testRosicEffects,        "Effects");
+  ok &= runUnitTest(&testRosicMath,           "Math");
+  ok &= runUnitTest(&testRosicNumerical,      "Numerical");
+  ok &= runUnitTest(&testRosicString,         "String");            // Fails! reason: double/string roundtrip..see comments in the tests
+  ok &= runUnitTest(&testTypeSizes,           "TypeSizes");
+  ok &= runUnitTest(&testNumberManipulations, "NumberManipulations");
+  ok &= runUnitTest(&testFilterPolynomials,   "FilterPolynomials");
+  ok &= runUnitTest(&testHighOrderFilter,     "HighOrderFilter");   // takes long
   ok &= runUnitTest(&testModalFilter2,        "ModalFilter2");
   ok &= runUnitTest(&testModalSynth,          "ModalSynth");     // doesn't do anything useful
   ok &= runUnitTest(&testAutoCorrelationPitchDetector, "AutoCorrPitchDetect");

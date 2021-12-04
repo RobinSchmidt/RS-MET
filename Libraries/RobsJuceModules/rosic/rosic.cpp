@@ -325,6 +325,7 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "generators/rosic_VectorSamplePlayer.cpp"    // needs LowFrequencyOscillator (in modulators)
                                                       // and VectorMixer
 
+#include "unfinished/rosic_MusiciansFilter.cpp"
 #include "unfinished/rosic_Polyphony.cpp"
 #include "unfinished/rosic_EllipseOscillator.cpp"
 #include "unfinished/rosic_QuadSource.cpp"

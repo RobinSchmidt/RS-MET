@@ -3576,6 +3576,8 @@ void resoReplaceScream()
   //  -the amplitude of the resonance is different from cycle to cycle
   //  -it looks like there is a linear envelope of the resonance envelope spanning over multiple 
   //   cycles and restting at some point
+  //  -the frequency doesn't sweep - it's fixed - we clearly have a misattribution between phase 
+  //   and amplitude here
   //  -for a fixed frequency, this artifact manifests itself in having a different overall 
   //   resonance amplitude as function of cutoff frequency: check, for example outputs with fixed 
   //   resonance freq of 7 kHz and 6 kHz. At 6, the resopnance is louder than at 7
@@ -3588,10 +3590,32 @@ void resoReplaceScream()
   //   amplitude estimation is bound to fail using this method if the freq is too high? Check class
   //   rsSingleSineModeler (i think, that was the name) for other ways. Try to make the amp/phase 
   //   attribution work well for high frequencies.
+  //  -Maybe the tuning of the allpass is lagging one sample and this becomes significant at higher
+  //   resonance frequencies?
   // -For low cutoff frequencies (like 200 or 100), the resonance becomes kinda erratic/growly. but
   //  maybe that's ok - it sounds good actually. Try a sweep from 400 to 100.
 
+  // ToDo:
+  // -Make an experiment that tries to estimate sine amplitude and phase via different formulas 
+  //  using an exact sine as input, using a sine with exponential envelope and an approximately 
+  //  exp-enveloped sine that arises from a ladder resonance
+  //  ...see experiments with class rsSingleSineModeler
+}
 
+void resoWave()
+{
+  // User parameters:
+  int   N        = 2000;        // number of samples
+  float fs       = 44100.f;     // sample rate
+  float cutoff   =  1000.f;     // cutoff frequency
+  float resDecay =    10.f;     // resonance decay of ladder in milliseconds
+
+
+  // Create and set up filter object:
+  rosic::rsResoWave flt;
+
+
+  int dummy = 0;
 }
 
 void fakeResonance()
@@ -3609,7 +3633,7 @@ void fakeResonance()
   double att   = 0.01;        // resonance attack, scalefactor k apllied to dec, 0 < k < 1
   double ar    = 1.0;         // resonance amplitude
   double pr    = 0.0*PI;      // resonance start phase in radians
-  double dl    = 1.0;         // resonance delay (as factor for optimal dealy)
+  double dl    = 1.0;         // resonance delay (as factor for optimal delay)
 
   // create and set up the filter object:
   rsFakeResonanceFilterDD flt;

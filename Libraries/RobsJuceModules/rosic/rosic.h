@@ -426,6 +426,7 @@
 #include "instruments/rosic_Workhorse.h"
 
 // unfinished:
+#include "unfinished/rosic_MusiciansFilter.h"
 #include "unfinished/rosic_Polyphony.h"
 #include "unfinished/rosic_EllipseOscillator.h"
 #include "unfinished/rosic_MiscUnfinished.h"

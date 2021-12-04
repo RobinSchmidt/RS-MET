@@ -1,5 +1,22 @@
+rsResoWave::rsResoWave()
+{
 
 
+}
+
+void rsResoWave::setCutoff(float newCutoff)
+{
+
+
+}
+
+void rsResoWave::setResonance(float r)
+{
+  rsFloat32x4 reso(r, r, 0.f, 0.f);
+
+}
+
+//=================================================================================================
 
 /*
 Notes:
@@ -90,11 +107,28 @@ User parameters could be:
  (using an envelope follower), ...
 ->these signals are the ingredients that we can work with to achieve a desired behavior of the 
   resonance
+
+More ideas:
+-Maybe one could use the input signal itself for the resonance waveform? Maybe always buffer the most 
+ recent N samples where N = fc/fs and use that as wavetable?
  
 ToDo:
+-maybe call the filter ResoWave
+-maybe allow (maybe in a subclass) to use single-cycle waveforms for the resonance
+-maybe allow to use a wavetable where the table index is selected by some feature of the input signal
+ like overall amplitude
 -make an efficient version of the Ladder filter using SIMD to compute the resonant and non-resonant
  part simultaneously - maybe use rsFloat32x4, for stereo...oh - that means, this class should go to 
  rosic
+-move the experimental filters from rapt/Unfinished/Filters into prototypes
 
+
+
+
+
+-maybe factor out an rsResoSplitFilter that just as the ladder and does the splitting between 
+ resonant and nonresonant
+-this could actually be dragged to rapt and turned into a template having one template parameter
+ T that can be float or double, we ould then use rsSimdVector<T, 4>
 
 */

@@ -126,6 +126,9 @@ double** rosic::readFromWaveFile(
     return NULL;
   }
 }
+// See also:
+// https://github.com/adamstark/AudioFile
+// https://github.com/mhroth/tinywav
 
 void rosic::writeStringToFile(const char* path, const char* stringToWrite)
 {

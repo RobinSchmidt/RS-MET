@@ -1005,6 +1005,11 @@ int rsSingleSineModeler<T>::newPhaseZone(T pNew, T pOld, T w, int oldZone)
 ToDo:
 -check for edge cases in freqFormula (see unit test - i think, there may be some nan-results for
  certain inputs), phaseAndAmpFormulaBackward - implement and use phaseAndAmpFormulaCentral
+-Figure out and document to which sample instant the instantaneous freq w[n] actually applies. 
+ Maybe it applies to sample n-1 or n or n+1 or n-0.5 or n+0.5? Or maybe it represents the *average* 
+ instantaneous freq for the time interval between two sample instants? I think, it's probably the
+ average inst freq between n and n+1 but i'm not sure...may also be the interval between n-1 and n.
+
 
 Other ideas for phase unreflection:
 -minimize the sum of the distances to left and right neighbour (i think, this may be equivalent to
@@ -1024,6 +1029,5 @@ samples:
 can this be solved for p?
 
 x0 / sin(p) = xR / sin(p+w)
-
 
 */

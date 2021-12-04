@@ -1951,3 +1951,68 @@ void peakPicker()
   // quality - with 9, there are far less medium-scale wiggles
 
 }
+
+void singleSineModel()
+{
+  // We test the algorithm to estimate the instantaneous amplitude, phase and frequency of a pure 
+  // sinusoid using rsSingleSineModeler.
+
+  // User parameters:
+  int    N  =  2000;       // number of samples
+  double fs = 44100;       // sample rate
+  double f0 =   500;       // frequency at start
+  double f1 =  5000;       // frequency at end
+  double a0 =  0.25;       // amplitude at start
+  double a1 =  0.50;       // amplitude at end
+  double freqShape = 1.0;  // shape of freq-env 0.0: exponential, 1.0: linear, in general a power rule
+  double ampShape  = 1.0; 
+
+  // Generate arrays for (true) instantaneous frequency, omega, phase and amplitude:
+  using Vec = std::vector<double>;
+  using AT  = rsArrayTools;
+  Vec f(N), w(N), a(N), p(N);
+  AT::fillWithRange(&f[0], N, f0, f1, freqShape);
+  AT::fillWithRange(&a[0], N, a0, a1,  ampShape);
+  AT::scale(&f[0], &w[0], N, 2*PI/fs);
+  AT::cumulativeSum(&w[0], &p[0], N);  // mayb try different integration scheme (trapezoidal, etc.)
+  //rsPlotVector(f);
+  //rsPlotVector(a);
+  //rsPlotVector(p);
+
+  // Create signal:
+  Vec x(N);
+  for(int n = 0; n < N; n++)
+    x[n] = a[n] * sin(p[n]);
+  rsPlotVector(x);
+
+  // Create and set up the analyzer object:
+  rsSingleSineModeler<double> ssm;
+
+  // Try to retrieve the instantaneous amplitudes and phases from the signal:
+  // ...
+
+
+  // Plot true and measured quantities
+  // ...
+
+
+
+
+  int dummy = 0;
+
+  // ToDo: 
+  // -Use a linear frequency and amplitude envelope and see, how well it can be measured
+  // -Compare it to an approach using an allpass filter to create a quadrature component to 
+  //  estimate the amplitude
+  // -Try to also estimate instantaneous frequency, etc. use different algorithms
+
+  // Maybe use a continuous "exponentiality" parameter that should somehow blend/morph between
+  // linear an exponential. Maybe use (in continuous terms, t = 0..1):
+  //   yL(t) = y0 + t*(y1-y0)           // linear
+  //   yE(t) = y0 * exp(t*log(y1/y0));  // exponential
+  // combine these formuals as follows, using "a" as exponentiality parameter:
+  //   y(t) = y0 * exp(a*t*log(y1/y0)) + (1-a)*t*(y1-y0)
+  // ...verify if this gives a reasonbale morph between linear and exponential. At the moment, we
+  // use the power law
+
+}

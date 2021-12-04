@@ -332,6 +332,7 @@ int main(int argc, char* argv[])
   //zeroCrossingPitchDetectorTwoTones();
   //ropewayAlgo();
   //peakPicker();
+  singleSineModel();
 
   // Delay:
   //basicIntegerDelayLine();
@@ -390,6 +391,7 @@ int main(int argc, char* argv[])
   //resoReplace();
   //resoReplacePhaseBumping();
   resoReplaceScream();
+  resoWave();
   //fakeResonance();
   //fakeResoLowpassResponse();
   //fakeResoDifferentDelays();

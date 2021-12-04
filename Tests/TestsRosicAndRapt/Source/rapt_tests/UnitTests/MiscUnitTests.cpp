@@ -649,6 +649,9 @@ bool testSingleSineFormulas()
   return r;
 }
 
+// This currently doesn't get called. Its supposed to be called somwhere later in 
+// singleSineModelerUnitTest but the function returns early and the repsctive code is commented 
+// out anyway. This feature and the test for it is not yet finished.
 bool testSingleSinePhaseUnreflection(int N, double w1)
 {
   bool r = true;
