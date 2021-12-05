@@ -1991,29 +1991,63 @@ void singleSineModel()
   // Create and set up the analyzer object:
   rsSingleSineModeler<double> ssm;
 
-  // Try to retrieve the instantaneous amplitudes and phases from the signal using the offline 
-  // processing functions:
-  Vec a_1(N), p_1(N);
-  ssm.analyzeAmpAndPhase(&x[0], N, &a_1[0], &p_1[0]);
-  //rsPlotVectors(x, a, a_1);
-  //rsPlotVectors(a_1-a);  // amp estimation error
-  //rsPlotVectors(p_1-p);  // phase estimation error
+  // Now, we do one experiment at a time to try to retrieve the instantaneous amplitudes and 
+  // phases from the signal using different algorithms. We plot the results directly and the 
+  // observations are written down immediately below each experiment. Note that in many cases, its
+  // actually enough to look at the amplitude estimation error. The phase estimation error will 
+  // then be completely determined by that due to the identity resynthesis property of the 
+  // analysis/resythesis scheme.
 
-  // Estimate instantaneous apmlitude and phase using realtime processing:
-  Vec a2(N), p2(N);
+  // Use the offline processing function with default settings (ToDo: explicitly set up the 
+  // settings before the experiment because we may change the defaults later):
+  Vec aE(N), pE(N);  // E stands for "estimated"
+  ssm.analyzeAmpAndPhase(&x[0], N, &aE[0], &pE[0]);
+  //rsPlotVectors(x, a, aE);
+  //rsPlotVectors(aE-a);  // amp estimation error
+  //rsPlotVectors(pE-p);  // phase estimation error
+  // Observations:
+  // -The amplitude errors have a transient phase of large error of around 20 samples, then it is
+  //  close to zero for the lower frequencies and it becomes a bit more "noisy" for higher 
+  //  frequencies, The last sample of the amp error is quite high - this looks like an edge 
+  //  artifact (-> verify).
+  // -The phase errors grows steadily (but in steps). I think, this is due to (un)wrapping which 
+  //  is not taken into account by the analyzer, i.e. the analyzer produces a wrapped phase 
+  //  whereas the original phase data is unwrapped.  
+  // ToDo:
+  // -Figure out the reason for the transient in the error
+
+
+  // Use phaseAndAmpFormulaForward as in realtime processing (the last sample uses the backward 
+  // formula):
   for(int n = 0; n < N-1; n++)
   {
-    ssm.phaseAndAmpFormulaForward(x[n], x[n+1], w[n], &a2[n], &p2[n]);
+    ssm.phaseAndAmpFormulaForward(x[n], x[n+1], w[n], &aE[n], &pE[n]);
     // todo: 
     // -verify, if we should use w[n] - or should it be w[n+1] or (w[n] + w[n+1])/2?
     // -try backward formula
     // -try to estimate it without the known instantaneous freq w
   }
-  //rsPlotVectors(x, a, a2);
-  //rsPlotVectors(a2-a);
-  rsPlotVectors(0.001*x, a2-a); // plot (attenuated) input signal along for reference
-  //rsPlotVectors(p2-p);
-  
+  ssm.phaseAndAmpFormulaBackward(x[N-2], x[N-1], w[N-1], &aE[N-1], &pE[N-1]);
+  //rsPlotVectors(x, a, aE);
+  //rsPlotVectors(aE-a);
+  rsPlotVectors(0.002*x, aE-a); // plot (attenuated) input signal along for reference
+  //rsPlotVectors(pE-p);
+  // Observations:
+  // -This does not show the transient amplitude error but the last sample is also wrong due to
+  //  edge effets (which is normal and OK).
+  // -The amplitude error wiggles in a sinusoidal way with a frequency that is twice the input 
+  //  sinusoid's frequency. The amplitude of the wiggle is higher (around 0.001) at the beginning 
+  //  (at 500Hz) than at the end (at 5kHz - around 0.0006). This seems to have nothing to do with 
+  //  the signal frequency but rather with its amplitude or the interaction of both. For a raising 
+  //  freq env and raising amp env, the error decreases with a shape that looks exponentialish.
+  // ToDo:
+  // -Use linear shapes for both envelopes and invetsigate how that affects the shape of the error
+  // -Try different combinations of rise and fall for freq and amp 
+
+
+
+
+
   // Estimate instantaneous apmlitude using an allpass to create a quadrature component:
   // ...
   // todo: 
@@ -2027,37 +2061,8 @@ void singleSineModel()
 
   int dummy = 0;
 
-  // Observations:
-  //
-  // -Note: its actually enough to look at the amplitude estimation error. The phase estimation 
-  //  error will then be completely determined by that due to the identity resynthesis property of
-  //  the analysis data.
-  //
-  // -Measurement 1, estimating a_1,p_1:
-  //  -The amplitude errors have a transient phase of large error of around 20 samples, then it is
-  //   close to zero for the lower frequencies and it becomes a bit more "noisy" for higher 
-  //   frequencies, The last sample of the amp error is quite high - this looks like an edge 
-  //   artifact (-> verify).
-  //  -The phase errors grows steadily (but in steps). I think, this is due to (un)wrapping which 
-  //   is not taken into account by the analyzer, i.e. the analyzer produces a wrapped phase 
-  //   whereas the original phase data is unwrapped.
-  //
-  // -Measurement 2, estimating a2,p2:
-  //  -This does not show the transient amplitude error but the last sample is also wrong due to
-  //   edge effets (which is normal and OK).
-  //  -The amplitude error wiggles in a sinusoidal way with a frequency that is twice the input 
-  //   sinusoid's frequency. The amplitude of the wiggle is higher (around 0.001) at the beginning 
-  //   (at 500Hz) than at the end (at 5kHz - around 0.0006). This seems to have nothing to do with 
-  //   the signal frequency but rather with its amplitude. The absolute amplitude error seems 
-  //   proportional to the absolute signal amplitude, which makes a lot of sense. So it seems, the
-  //   relative amplitude error is independent from signal frequency, at least for f in the range 
-  //   f = 0.5..5 kHz.
-
-
 
   // ToDo: 
-  // -Maybe interleave the experiment code and the observation comments, re-use the same arrays
-  //  for all tests
   // -Maybe wrap the original synthesis phase. This may also be numerically better.
   // -Instead of calling the offline analysis function analyzeAmpAndPhase, use a realtime 
   //  estimation
