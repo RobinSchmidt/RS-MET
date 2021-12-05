@@ -5,6 +5,14 @@ https://github.com/juce-framework/JUCE/blob/master/docs/CMake%20API.md
 https://forum.juce.com/t/native-built-in-cmake-support-in-juce/38700
 https://forum.juce.com/t/learning-cmake-done-right-with-juce-6/40582/2
 
+Here is a project that contains a .jucer to cmake converter:
+https://github.com/McMartin/FRUT
+
+For the next update: 
+-Retain the folder structure of the original juce repo (last time, i moved some folders into 
+ different places)
+-Use the fork that allows to build LV2 plugins
+
 
 
 ---------------------------------------------------------------------------------------------------

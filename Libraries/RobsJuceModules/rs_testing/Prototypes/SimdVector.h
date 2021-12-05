@@ -599,3 +599,8 @@ inline std::complex<rsSimdVector<T, N>> rsExp(const std::complex<rsSimdVector<T,
 // VCVRack has also a template-based simd solution similar to the idea above:
 // https://github.com/VCVRack/Rack/blob/v1/include/simd/vector.hpp
 // https://github.com/VCVRack/Rack/blob/v1/include/simd/functions.hpp
+
+
+// Adventures in SIMD-Thinking (part 1 of 2) - Bob Steagall - CppCon 2020:
+// https://www.youtube.com/watch?v=qejTqnxQRcw
+// has some interesting operations

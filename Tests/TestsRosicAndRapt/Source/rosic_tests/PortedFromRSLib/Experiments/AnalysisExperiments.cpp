@@ -1979,11 +1979,14 @@ void singleSineModel()
   //rsPlotVector(a);
   //rsPlotVector(p);
 
-  // Create signal:
-  Vec x(N);
+  // Create signal and quadrature component:
+  Vec x(N), q(N);
   for(int n = 0; n < N; n++)
+  {
     x[n] = a[n] * sin(p[n]);
-  //rsPlotVector(x);
+    q[n] = a[n] * cos(p[n]);
+  }
+  //rsPlotVectors(x, q);
 
   // Create and set up the analyzer object:
   rsSingleSineModeler<double> ssm;
@@ -2008,14 +2011,24 @@ void singleSineModel()
   }
   //rsPlotVectors(x, a, a2);
   //rsPlotVectors(a2-a);
-  rsPlotVectors(0.01*x, a2-a); // plot (attenuated) input signal along for reference
+  rsPlotVectors(0.001*x, a2-a); // plot (attenuated) input signal along for reference
   //rsPlotVectors(p2-p);
   
+  // Estimate instantaneous apmlitude using an allpass to create a quadrature component:
+  // ...
+  // todo: 
+  // -try to time-advance/delay setting the allpas freq
+  // -try different allpass topologies - this may matter due to the frequency changes, this should
+  //  be tested with aggressive modulation, like switching the the cutoff within an instant to 
+  //  expose problems best
+  // -
+
 
 
   int dummy = 0;
 
   // Observations:
+  //
   // -Note: its actually enough to look at the amplitude estimation error. The phase estimation 
   //  error will then be completely determined by that due to the identity resynthesis property of
   //  the analysis data.
@@ -2034,13 +2047,17 @@ void singleSineModel()
   //   edge effets (which is normal and OK).
   //  -The amplitude error wiggles in a sinusoidal way with a frequency that is twice the input 
   //   sinusoid's frequency. The amplitude of the wiggle is higher (around 0.001) at the beginning 
-  //   (at 500Hz) than at the end (at 5kHz - around 0.0006). 
-  //   ToDo: 
-  //   -figure out if this remains this way when we remove the amp-env
+  //   (at 500Hz) than at the end (at 5kHz - around 0.0006). This seems to have nothing to do with 
+  //   the signal frequency but rather with its amplitude. The absolute amplitude error seems 
+  //   proportional to the absolute signal amplitude, which makes a lot of sense. So it seems, the
+  //   relative amplitude error is independent from signal frequency, at least for f in the range 
+  //   f = 0.5..5 kHz.
 
 
 
   // ToDo: 
+  // -Maybe interleave the experiment code and the observation comments, re-use the same arrays
+  //  for all tests
   // -Maybe wrap the original synthesis phase. This may also be numerically better.
   // -Instead of calling the offline analysis function analyzeAmpAndPhase, use a realtime 
   //  estimation
