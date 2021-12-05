@@ -1958,10 +1958,10 @@ void singleSineModel()
   // sinusoid using rsSingleSineModeler.
 
   // User parameters:
-  int    N  =  2000;       // number of samples
-  double fs = 44100;       // sample rate
-  double f0 =   500;       // frequency at start
-  double f1 =  5000;       // frequency at end
+  int    N  =   2000;      // number of samples
+  double fs =  44100;      // sample rate
+  double f0 =    500;      // frequency at start
+  double f1 =   5000;      // frequency at end
   double a0 =  0.25;       // amplitude at start
   double a1 =  0.50;       // amplitude at end
   double freqShape = 0.0;  // shape of freq-env, 0: exponential, 1: linear, in general: power rule
@@ -1983,8 +1983,8 @@ void singleSineModel()
   Vec x(N), q(N);
   for(int n = 0; n < N; n++)
   {
-    x[n] = a[n] * sin(p[n]);
-    q[n] = a[n] * cos(p[n]);
+    x[n] =  a[n] * sin(p[n]);
+    q[n] = -a[n] * cos(p[n]);
   }
   //rsPlotVectors(x, q);
 
@@ -2003,7 +2003,7 @@ void singleSineModel()
   Vec aE(N), pE(N);  // E stands for "estimated"
   ssm.analyzeAmpAndPhase(&x[0], N, &aE[0], &pE[0]);
   //rsPlotVectors(x, a, aE);
-  //rsPlotVectors(aE-a);  // amp estimation error
+  rsPlotVectors(aE-a);  // amp estimation error
   //rsPlotVectors(pE-p);  // phase estimation error
   // Observations:
   // -The amplitude errors have a transient phase of large error of around 20 samples, then it is
@@ -2044,20 +2044,35 @@ void singleSineModel()
   // -Use linear shapes for both envelopes and invetsigate how that affects the shape of the error
   // -Try different combinations of rise and fall for freq and amp 
 
-
-
-
-
-  // Estimate instantaneous apmlitude using an allpass to create a quadrature component:
-  // ...
-  // todo: 
-  // -try to time-advance/delay setting the allpas freq
-  // -try different allpass topologies - this may matter due to the frequency changes, this should
-  //  be tested with aggressive modulation, like switching the the cutoff within an instant to 
-  //  expose problems best
-  // -
-
-
+  // Estimate instantaneous amplitude using an allpass to create a quadrature component:
+  rsOnePoleFilter<double, double> apf;
+  apf.setSampleRate(fs);
+  apf.setMode(apf.ALLPASS_BLT);
+  Vec qE(N);  // estimated quadrature component
+  for(int n = 0; n < N-1; n++)
+  {
+    apf.setCutoff(f[n]);
+    qE[n] = apf.getSample(x[n]);
+    aE[n] = sqrt(x[n]*x[n] + qE[n]*qE[n]);
+  }
+  //rsPlotVectors(x, q, qE);
+  rsPlotVectors(0.002*x, aE-a);
+  // Observations:
+  // -After a short transient phase, the estimation of the quadrature component is really close to
+  //  the desired exact quadrature signal.
+  // -It seems like the estimation gets even better towards the higher frequencies at the end. Maybe 
+  //  for higher freqs, the allpass state can adapt faster due to smaller feedback coeff?
+  // -It seems to work well all the way up to fs/2. The same cannot be said about the two 
+  //  algorithms above. So, for high, freqs, the allpass approach is really well suited. Maybe the 
+  //  algos above are better suited for lower freqs where the allpass has too much inertia?
+  // ToDo:
+  // -Try even higher freqs.
+  // -Try to time-advance/delay setting the allpass freq.
+  // -Try different topologies for the allpass (DF1, DF2, TDF1, TDF2) and compare the errors.
+  // -For comparing the topologies, use a more aggressive modulation of freq and/or amp, maybe even
+  //  containing discontinuous jumps. This should expose the differences best.
+  // -Can we somehow fix the allpass'es (supposed) inertia problems by using adifferent topology 
+  //  and/or updating the allpass state on a cutoff change?
 
   int dummy = 0;
 

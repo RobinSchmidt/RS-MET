@@ -8,6 +8,9 @@ https://forum.juce.com/t/learning-cmake-done-right-with-juce-6/40582/2
 Here is a project that contains a .jucer to cmake converter:
 https://github.com/McMartin/FRUT
 
+See also:
+https://github.com/eyalamirmusic/JUCECmakeRepoPrototype
+
 For the next update: 
 -Retain the folder structure of the original juce repo (last time, i moved some folders into 
  different places)
