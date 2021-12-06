@@ -2118,10 +2118,32 @@ void singleSineModelForSineSweep()
 
 }
 
+
+std::vector<double> estimateInstAmpViaAllpass(const std::vector<double>& x, 
+  const std::vector<double>& f, double fs)
+{
+  int N = (int)x.size();
+  rsAssert((int)f.size() == N);
+  std::vector<double> a(N), q(N);
+  rsOnePoleFilter<double, double> apf;
+  apf.setSampleRate(fs);
+  apf.setMode(apf.ALLPASS_BLT);
+  for(int n = 0; n < N-1; n++)
+  {
+    apf.setCutoff(f[n]);
+    q[n] = apf.getSample(x[n]);
+    a[n] = sqrt(x[n]*x[n] + q[n]*q[n]);
+  }
+  rsPlotVectors(x, q, a);
+  return a;
+  // ToDo: 
+  // -have a parameter for selecting the topology
+}
+
 void singleSineModelForResoSweep()
 {
   // Like the function above just that now we use a sweep of a resonator filter applied to an
-  // impulse train instead of a sweep of a perfect sine oscillator. So, in this experimenat, the 
+  // impulse train instead of a sweep of a perfect sine oscillator. So, in this experiment, the 
   // input signal to the estimator deviates already a bit more from the assumptions that the 
   // analysis algo makes about the signal. We want to see, how much the error of the estimates 
   // increases due to that deviation. The desired target values are computed by making use of
@@ -2185,6 +2207,9 @@ void singleSineModelForResoSweep()
   }
   rsPlotVectors(y, q, qE, a, aE);
   rsPlotVectors(0.002*y, aE-a);
+
+
+  aE = estimateInstAmpViaAllpass(y, f, fs);
 
 
 

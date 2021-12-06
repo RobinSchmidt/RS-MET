@@ -384,7 +384,7 @@ display the number of DSP modules...if that makes sense - but i think it doesn't
 on the number of played notes...but maybe we can somehow compute the maximum number that could ever 
 be needed? that could also help with allocating the objects...like MaxNumFilters, 
 MaxNumWaveShapers, etc. we could also display the number of modulation connections. maybe we could 
-do: Regions 3/128, Filters 5/256, etc.
+do: Regions 3/128, Filters 5/256, etc., RAM usage, CPU usage, output level meters
 
 
 */

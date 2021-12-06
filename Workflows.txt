@@ -97,7 +97,14 @@ DeskPins
 
 
 
-ToDo: git/github, Rendering Sample Sets, Images, Videos, updating juce
+ToDo: 
+git: branch,merge,push,pull using GitHub DeskTop and TortoiseGit
+github: create discussions,issues,projects,etc.
+rendering of sample-sets,images,videos, 
+updating juce,
+releasing a ToolChain update,
+render doxygen documentation (html/latex/pdf), ...using doxywizard
+create installers (win/mac/linux)
 
 ---------------------------------------------------------------------------------------------------
 Notes:
