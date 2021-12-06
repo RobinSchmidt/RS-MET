@@ -2119,12 +2119,12 @@ void singleSineModelForSineSweep()
 }
 
 
-std::vector<double> estimateInstAmpViaAllpass(const std::vector<double>& x, 
+std::vector<double> estimateQuadratureViaAllpass(const std::vector<double>& x, 
   const std::vector<double>& f, double fs)
 {
   int N = (int)x.size();
   rsAssert((int)f.size() == N);
-  std::vector<double> a(N), q(N);
+  std::vector<double> q(N);
   rsOnePoleFilter<double, double> apf;
   apf.setSampleRate(fs);
   apf.setMode(apf.ALLPASS_BLT);
@@ -2132,12 +2132,21 @@ std::vector<double> estimateInstAmpViaAllpass(const std::vector<double>& x,
   {
     apf.setCutoff(f[n]);
     q[n] = apf.getSample(x[n]);
-    a[n] = sqrt(x[n]*x[n] + q[n]*q[n]);
   }
-  rsPlotVectors(x, q, a);
-  return a;
+  //rsPlotVectors(x, q);
+  return q;
   // ToDo: 
   // -have a parameter for selecting the topology
+}
+std::vector<double> estimateInstAmpViaAllpass(const std::vector<double>& x, 
+  const std::vector<double>& f, double fs)
+{
+  std::vector<double> q = estimateQuadratureViaAllpass(x, f, fs);
+  std::vector<double> a(q.size());
+  for(size_t n = 0; n < x.size(); n++)
+    a[n] = sqrt(x[n]*x[n] + q[n]*q[n]);
+  //rsPlotVectors(x, q, a);
+  return a;
 }
 
 void singleSineModelForResoSweep()
@@ -2194,22 +2203,13 @@ void singleSineModelForResoSweep()
 
   // Try to generate an estimated quadrature signal qE using y and f as inputs by allpassing y with
   // an allpass adjusted according to f:
-  //Vec qE(N);
-  rsOnePoleFilter<double, double> apf;
-  apf.setSampleRate(fs);
-  apf.setMode(apf.ALLPASS_BLT);
-  Vec qE(N), aE(N);  // estimated quadrature component
-  for(int n = 0; n < N-1; n++)
-  {
-    apf.setCutoff(f[n]);
-    qE[n] = apf.getSample(y[n]);
-    aE[n] = sqrt(y[n]*y[n] + qE[n]*qE[n]);
-  }
+  Vec qE = estimateQuadratureViaAllpass(y, f, fs);
+  Vec aE = estimateInstAmpViaAllpass(   y, f, fs);
   rsPlotVectors(y, q, qE, a, aE);
   rsPlotVectors(0.002*y, aE-a);
 
-
-  aE = estimateInstAmpViaAllpass(y, f, fs);
+  // Try to estimate the instantaneous amp via rsSingleSineModeler:
+  // ...
 
 
 
