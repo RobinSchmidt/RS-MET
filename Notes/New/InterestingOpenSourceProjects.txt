@@ -33,6 +33,11 @@ MorDAW is a cross-platform digital audio workstation built using C++ and the JUC
 https://github.com/mbrucher/AudioTK
 An audio digital processing toolbox based on a workflow/pipeline principle http://matt.eifelle.com/tag/audio-toolkit/
 
+https://github.com/christophhart/HISE
+HISE is a sampler.
+
+todo: surge, APE, IPlug2
+
 SourceForge:
 
 https://sourceforge.net/projects/mda-vst/

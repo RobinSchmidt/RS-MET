@@ -146,4 +146,8 @@ ToDo:
 -this could actually be dragged to rapt and turned into a template having one template parameter
  T that can be float or double, we ould then use rsSimdVector<T, 4>
 
+-Maybe instead of splitting off the resonance, just create it via a modal filter. This allows exact
+ computation of instantaneous amp and phase. Maybe use 2 or 3 modal filters in series and use the 
+ output from the last. This will further smooth the attack of the resonance
+
 */

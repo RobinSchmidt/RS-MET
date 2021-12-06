@@ -1452,6 +1452,7 @@ https://www.youtube.com/watch?v=pUEnO6SvAMo
 
 
 
+
 https://www.youtube.com/watch?v=W2tWOdzgXHA
 std::rotate at 10:30, slide, gather
 

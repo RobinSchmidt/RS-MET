@@ -378,6 +378,13 @@ Don't use the xml preset to store the actual sfz opcodes. Preset loading would b
 process the outer level is the xml and the inner level is the sfz. The GUI should provide an 
 additional set of load/save widgets for the sfz and maybe an sfz editor.
 
+On the GUI, we could also display the number of samples, regions, groups, masters, curves, etc. 
+like sfizz: https://github.com/sfztools/sfizz/  ...what are masters and curves? we could also 
+display the number of DSP modules...if that makes sense - but i think it doesn't because it depends
+on the number of played notes...but maybe we can somehow compute the maximum number that could ever 
+be needed? that could also help with allocating the objects...like MaxNumFilters, 
+MaxNumWaveShapers, etc. we could also display the number of modulation connections. maybe we could 
+do: Regions 3/128, Filters 5/256, etc.
 
 
 */

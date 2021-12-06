@@ -2129,12 +2129,15 @@ void singleSineModelForResoSweep()
   // readily available from which magnitude and phase can be calculated exactly.
 
   // User parameters:
-  using Real = double;
+  using Real    = double;
+  using Complex = std::complex<Real>; 
   int  N   =   2000;      // number of samples
   Real fs  =  44100;      // sample rate
-  Real f0  =    500;      // frequency at start
-  Real f1  =   5000;      // frequency at end
+  Real f0  =   800;       // frequency at start
+  Real f1  =   200;       // frequency at end
   Real fIn = fs/500;      // freq of input impulse train
+  Real dec =  0.009;      // resonance decay in seconds
+  Real phs =  0.0;        // resonance phase (in degrees, i think)
 
 
   // Create input impulse train:
@@ -2143,21 +2146,87 @@ void singleSineModelForResoSweep()
   Vec x(N);
   createWaveform(&x[0], N, 1, fIn, fs, 0.0, true);
   AT::difference(&x[0], N);
-  rsPlotVector(x);
-  // todo: maybe use a naive impulse-train - the anti-aliasing may make things more difficult to 
-  // analyze
+  //rsPlotVector(x);
+  AT::fillWithImpulse(&x[0], N);  // test
 
-
-  // Create and set up resonator filter:
+  // Create resonator filter, create filter cutoff array, filtered signal and arrays of true 
+  // instantaneous amp and phase:
   rsNonlinearModalFilter<Real, Real> mf;
+  Vec f(N), a(N), p(N), y(N), q(N);
+  AT::fillWithRangeExponential(&f[0], N, f0, f1);
+  //rsPlotVector(f);
+  for(int n = 0; n < N; n++)
+  {
+    mf.setModalParameters(f[n], 1.0, dec, phs, fs);
+    Complex z = mf.getComplexSample(Complex(x[n], 0.0));
+
+    y[n] =  z.imag();    // we use the sine component as output
+    q[n] = -z.real();    // this is the true quadrature component
+    a[n] =  abs(z);      // true instantaneous amplitude
+    // todo: true inst phase
+
+    //y[n] = mf.getSample(x[n]);
+    //a[n] = mf.getInstantaneousEnvelope(x[n]);
+  }
+  rsPlotVectors(x, y, q, a);
+
+  // Try to generate an estimated quadrature signal qE using y and f as inputs by allpassing y with
+  // an allpass adjusted according to f:
+  //Vec qE(N);
+  rsOnePoleFilter<double, double> apf;
+  apf.setSampleRate(fs);
+  apf.setMode(apf.ALLPASS_BLT);
+  Vec qE(N), aE(N);  // estimated quadrature component
+  for(int n = 0; n < N-1; n++)
+  {
+    apf.setCutoff(f[n]);
+    qE[n] = apf.getSample(y[n]);
+    aE[n] = sqrt(y[n]*y[n] + qE[n]*qE[n]);
+  }
+  rsPlotVectors(y, q, qE, a, aE);
+  rsPlotVectors(0.002*y, aE-a);
+
+
+
+
+  //rosic::writeToMonoWaveFile("ResoSweep.wav", &y[0], N, fs);
 
 
   int dummy = 0;
+
+  // Observations:
+  // -When using the anti-aliased impulse-train, we get very strange results even for the exact 
+  //  instantaneous amplitude - it looks wiggly. Using a single unit impulse as input does not have
+  //  this problem.
+  // -The estimation of instantaneous amplitude via the allpass technique seems to work well after
+  //  some transient phase. ..i think, this phase might be longer for lower frequencies due to 
+  //  filter inertia?
+  // -The estimated allpass component seems a little bit louder than the exact one for upward 
+  //  sweeps and downward sweeps alike. The error is larger at the start. Maybe this overestimation
+  //  has to do with the fact, that the signal decays? ..yes - the error is a bit larger for 
+  //  shorter decay times. The dependency is not very strong but it is there.
+
+  // ToDo:
+  // -Maybe use a naive impulse-train as input - the anti-aliasing may make things more difficult 
+  //  to analyze
+  // -Write a function generateImpulseTrain(double freq, bool antiAlias) and use it here to 
+  //  generate the input signal
+  // -Try the other algorithms -> factor out a function that estimates instantaneous amplitude, 
+  //  taking as input y and f. have different variants of that function, using different algos: 
+  //  allpass, the algos from rsSingleSineModeler, etc. ...maybe include the allpass method into
+  //  rsSingleSineModeler as well
+  // -Try other allpass topologies
+  // -Maybe try updating the allpass state somehow when changing the alppas freq to reflect the new
+  //  freq. I don't know, if that makes sense or is possible -> figure out...
+
+  // Sidenotes:
+  // -a reso-sweep from 1kHz to 4kHz with dec = 0.01 in 2000 samples sounds like a water drop
+  //  ...i just foudn this by accident
 }
 
 void singleSineModel()
 {
-  singleSineModelForSineSweep();
+  //singleSineModelForSineSweep();
   singleSineModelForResoSweep();
   //singleSineModelForLadderSweep();
 }

@@ -648,6 +648,7 @@ RS_INLINE std::complex<TSig> rsNonlinearModalFilter<TSig, TPar>::getComplexSampl
   z = a*z + in;
   return amplitude * z;
 }
+// ToDo: maybe use rsComplex
 
 template<class TSig, class TPar>
 RS_INLINE TSig rsNonlinearModalFilter<TSig, TPar>::getSample(TSig in)
