@@ -1,3 +1,13 @@
+Create github projects for:
+DSP, DAW, rosic, Plugin Framework, Documentation, Library organization
+DSP: cols: synthesis, analysis, effects, modulation, 
+ musical filters, technical filters, reverb (algo, convo), modulators, synthesis...maybe move
+ snowflake as a card into there
+Documentation: user manuals for ToolChain modules, pdf doc for rapt/rosic rendered by doxygen
+Plugin Framework: parameters: modulation system, automation system
+
+in the research repo, we could have projects for:
+research papers, math book, tutorials ...maybe the latex source should go there
 
 
 

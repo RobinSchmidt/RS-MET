@@ -1,16 +1,31 @@
-rsResoWave::rsResoWave()
+
+
+void rsResoSplitFilter::processFrame(float inL, float inR,
+  float* fltOutL, float* fltOutR, float* resOutL, float* resOutR)
+{
+  rsFloat32x4 x(inL, inR, inL, inR);
+  rsFloat32x4 y = ladder.getSample(x);
+  *fltOutL = y[2];
+  *fltOutR = y[3];
+  *resOutL = y[0] - *fltOutL;
+  *resOutR = y[1] - *fltOutR;
+}
+
+//=================================================================================================
+
+rsResoWaveFilter::rsResoWaveFilter()
 {
 
 
 }
 
-void rsResoWave::setCutoff(float newCutoff)
+void rsResoWaveFilter::setCutoff(float newCutoff)
 {
 
 
 }
 
-void rsResoWave::setResonance(float r)
+void rsResoWaveFilter::setResonance(float r)
 {
   rsFloat32x4 reso(r, r, 0.f, 0.f);
 

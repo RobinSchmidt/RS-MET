@@ -1952,7 +1952,7 @@ void peakPicker()
 
 }
 
-void singleSineModel()
+void singleSineModelForSineSweep()
 {
   // We test the algorithm to estimate the instantaneous amplitude, phase and frequency of a pure 
   // sinusoid using rsSingleSineModeler.
@@ -2073,6 +2073,25 @@ void singleSineModel()
   //  containing discontinuous jumps. This should expose the differences best.
   // -Can we somehow fix the allpass'es (supposed) inertia problems by using adifferent topology 
   //  and/or updating the allpass state on a cutoff change?
+  // -Figure ou why it does not work so well for high frequencies in the context of the ResoWave 
+  //  filter...maybe there's a bug in the code there? maybe a delay by one sample in qudrature 
+  //  component? ...try it with a reso-split filter here (i.e. a filter that wraps the splitting
+  //  off of the resonance for the ladder)
+
+
+  // Now we try estimating the instantaneous phase and amplitude of the resonance of the 
+  // rsResoPlitFilter. This is the important step in the rsResoWaveFilter.
+  rsResoSplitFilter resoSplitter;
+  // maybe move into its own experiment...maybe singleSineModelForReso. resoAnalyzer
+  // ...ot maybe try such an estimation with a resonator filter first because there, we can 
+  // actually compute the correct traget output (at least when we use a phasor-based 
+  // implementation like rsModalFilterNonlinear) 
+  // -Feed an impulse-train into a phasor-based resonator filter
+  // -Compute the exact instantaneous amplitudes and phases from sine and cosine component in
+  //  the filter.
+  // -Try to estimate them using various etchniques, among them, the allpass approach
+  // -Compare estimate to target values
+
 
   int dummy = 0;
 
@@ -2097,4 +2116,48 @@ void singleSineModel()
   // ...verify if this gives a reasonbale morph between linear and exponential. At the moment, we
   // use the power law
 
+}
+
+void singleSineModelForResoSweep()
+{
+  // Like the function above just that now we use a sweep of a resonator filter applied to an
+  // impulse train instead of a sweep of a perfect sine oscillator. So, in this experimenat, the 
+  // input signal to the estimator deviates already a bit more from the assumptions that the 
+  // analysis algo makes about the signal. We want to see, how much the error of the estimates 
+  // increases due to that deviation. The desired target values are computed by making use of
+  // a phasor based implementation of a resonator in which exact sine and cosine components are
+  // readily available from which magnitude and phase can be calculated exactly.
+
+  // User parameters:
+  using Real = double;
+  int  N   =   2000;      // number of samples
+  Real fs  =  44100;      // sample rate
+  Real f0  =    500;      // frequency at start
+  Real f1  =   5000;      // frequency at end
+  Real fIn = fs/500;      // freq of input impulse train
+
+
+  // Create input impulse train:
+  using Vec = std::vector<Real>;
+  using AT  = rsArrayTools;
+  Vec x(N);
+  createWaveform(&x[0], N, 1, fIn, fs, 0.0, true);
+  AT::difference(&x[0], N);
+  rsPlotVector(x);
+  // todo: maybe use a naive impulse-train - the anti-aliasing may make things more difficult to 
+  // analyze
+
+
+  // Create and set up resonator filter:
+  rsNonlinearModalFilter<Real, Real> mf;
+
+
+  int dummy = 0;
+}
+
+void singleSineModel()
+{
+  singleSineModelForSineSweep();
+  singleSineModelForResoSweep();
+  //singleSineModelForLadderSweep();
 }

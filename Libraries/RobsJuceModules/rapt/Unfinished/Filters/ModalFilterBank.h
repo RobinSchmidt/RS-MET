@@ -286,7 +286,7 @@ phasor filters that phase-modulate each other
 */
 
 template<class TSig, class TPar>
-class rsNonlinearModalFilter
+class rsNonlinearModalFilter  // rename to rsModalFilterNonlinear
 {
 
 public:

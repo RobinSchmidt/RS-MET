@@ -11,6 +11,9 @@ https://github.com/McMartin/FRUT
 See also:
 https://github.com/eyalamirmusic/JUCECmakeRepoPrototype
 
+Surge can also be built for LV2:
+https://github.com/surge-synthesizer/surge
+
 For the next update: 
 -Retain the folder structure of the original juce repo (last time, i moved some folders into 
  different places)

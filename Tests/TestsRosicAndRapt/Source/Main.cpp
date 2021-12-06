@@ -370,7 +370,7 @@ int main(int argc, char* argv[])
   //ladderResonanceGain();
   //ladderTransferFunction();
   //ladderMultipole();
-  //ladderResonanceModeling();
+  ladderResonanceModeling();
   //ladderResoShape();
   //ladderThresholds();           // maybe remove - this seemed to be a dead end
   //ladderFeedbackSaturation();

@@ -3612,7 +3612,7 @@ void resoWave()
 
 
   // Create and set up filter object:
-  rosic::rsResoWave flt;
+  rosic::rsResoWaveFilter flt;
 
 
   int dummy = 0;
