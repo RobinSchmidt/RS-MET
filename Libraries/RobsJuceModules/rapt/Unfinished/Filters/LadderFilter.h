@@ -712,13 +712,14 @@ class rsLadderResoShaped
 
 public:
 
-
-  /** \name Construction/Destruction */
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
 
   /** Constructor. */
   rsLadderResoShaped();
 
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Setup */
 
   /** Sets the sample rate. */
@@ -770,7 +771,8 @@ public:
   void setFeedbackSaturationPlace(int newPlace);
 
 
-  /** \name Audio Processing */
+  //-----------------------------------------------------------------------------------------------
+  /** \name Processing */
 
   /** Computes the two parts of the output signal: yf: the filtered signal, yr: the pure resonance
   signal, which when added together, give the final output. */
@@ -779,7 +781,9 @@ public:
   /** Produces an output sample. */
   TSig getSample(TSig in);
 
+  // todo: write a function that outputs also the intermediate signals - for experiments
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Misc */
 
   /** Resets the internal states to zero. */
@@ -788,6 +792,7 @@ public:
 
 protected:
 
+  //-----------------------------------------------------------------------------------------------
   /** \name Internal Functions */
 
   /** Sets up the scaled decay-time according to the parameters: decay, decayByFreq, cutoff and
@@ -989,14 +994,17 @@ public:
   virtual void getSignalParts(TSig in, TSig *yf, TSig *yr);
 
 
-protected:
-
 
   /** Given an input sample, this function computes the nonresonant filter output and the resonance
   signal reconstruction parameters (i.e. instantaneous amplitude and phase).*/
-  virtual void getNonresonantOutputAndResonanceParameters(TSig input, TSig *nonRes,
-    TSig *resAmp, TSig *resPhase);
-  // this neeeds a shorter name!!
+  virtual void getFltAmpPhs(TSig input, TSig *nonRes, TSig *resAmp, TSig *resPhase);
+
+
+protected:
+
+
+
+
 
   /** Given an instantaneous amplitude and phase in the range 0..2*PI (or beyond 2*PI, but not below
   0), this function returns the intantaneous value of the reconstructed resonance waveform.  */

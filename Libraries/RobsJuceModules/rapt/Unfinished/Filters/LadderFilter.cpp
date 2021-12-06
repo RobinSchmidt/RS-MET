@@ -599,13 +599,12 @@ template<class TSig, class TPar>
 void rsResoReplacer<TSig, TPar>::getSignalParts(TSig in, TSig *yf, TSig *yr)
 {
   TSig mag, phs;
-  getNonresonantOutputAndResonanceParameters(in, yf, &mag, &phs);
+  getFltAmpPhs(in, yf, &mag, &phs);
   *yr = getWaveForm(mag, phs);
 }
 
 template<class TSig, class TPar>
-void rsResoReplacer<TSig, TPar>::getNonresonantOutputAndResonanceParameters(TSig in, TSig *yf,
-  TSig *mag, TSig *phs)
+void rsResoReplacer<TSig, TPar>::getFltAmpPhs(TSig in, TSig *yf, TSig *mag, TSig *phs)
 {
   // temporary variables:
   double r, q;
@@ -622,7 +621,11 @@ void rsResoReplacer<TSig, TPar>::getNonresonantOutputAndResonanceParameters(TSig
 
   // manipulate phase (later add phase-modulation):
   *phs += this->phase;  // add static offset
+
+
+  //*phs = rsWrapToInterval(*phs, 0, 2*PI); // test - doesn't seem to make a difference
   *phs += 2*PI;         // rsSqrWave, etc. expects phase in 0...2*PI - get rid when using a wavetable
+  // maybe this needs an if(phs < 0)
 }
 
 template<class TSig, class TPar>
@@ -758,11 +761,11 @@ void rsResoReplacerPhaseBumped<TSig, TPar>::getSignalParts(TSig in, TSig *yf, TS
 
   // copied from baseclass:
   TSig mag, phs;
-  this->getNonresonantOutputAndResonanceParameters(in+ex, yf, &mag, &phs);
-  phs     += bump;                // new, compared to baseclass (maybe, we need to apply wrapToInterval?)
-  mag     += ampOffset;
-  mag      = limitMagnitude(mag);   // new - maybe optimize by inlining (2-level)
-  *yr      = this->getWaveForm(mag, phs); // resonance reconstruction/replacement
+  this->getFltAmpPhs(in+ex, yf, &mag, &phs);
+  phs += bump;                // new, compared to baseclass (maybe, we need to apply wrapToInterval?)
+  mag += ampOffset;
+  mag  = limitMagnitude(mag);   // new - maybe optimize by inlining (2-level)
+  *yr  = this->getWaveForm(mag, phs); // resonance reconstruction/replacement
 
   //*yr *= inputScale(in);        // input based limiting
     // creates too narrow spikes - use lowpassed version instead

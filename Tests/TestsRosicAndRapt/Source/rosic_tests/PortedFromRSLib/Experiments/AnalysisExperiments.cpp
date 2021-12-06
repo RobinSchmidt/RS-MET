@@ -2164,8 +2164,8 @@ void singleSineModelForResoSweep()
   using Complex = std::complex<Real>; 
   int  N   =   2000;      // number of samples
   Real fs  =  44100;      // sample rate
-  Real f0  =   800;       // frequency at start
-  Real f1  =   200;       // frequency at end
+  Real f0  =  10000;       // frequency at start
+  Real f1  =   1000;       // frequency at end
   Real fIn = fs/500;      // freq of input impulse train
   Real dec =  0.009;      // resonance decay in seconds
   Real phs =  0.0;        // resonance phase (in degrees, i think)
@@ -2213,6 +2213,27 @@ void singleSineModelForResoSweep()
 
 
 
+  // Now try it with a ladder resonance:
+  rsLadderFilter<double, double> ldrR, ldrN; // resonant and nonresonant ladder
+  ldrR.setSampleRate(fs);
+  ldrN.setSampleRate(fs);
+  ldrR.setResonance(0.99);
+  ldrN.setResonance(0.0);
+  for(int n = 0; n < N; n++)
+  {
+    ldrR.setCutoff(f[n]);
+    ldrN.setCutoff(f[n]);
+    double yr = ldrR.getSample(x[n]);  // resonant filter output
+    double yn = ldrN.getSample(x[n]);  // nonresonant filter output
+    double r  = yr - yn;               // pure resonance
+    y[n] = r;
+  }
+  qE = estimateQuadratureViaAllpass(y, f, fs);
+  aE = estimateInstAmpViaAllpass(   y, f, fs);
+  rsPlotVectors(y, qE, aE);
+
+
+
 
   //rosic::writeToMonoWaveFile("ResoSweep.wav", &y[0], N, fs);
 
@@ -2230,6 +2251,8 @@ void singleSineModelForResoSweep()
   //  sweeps and downward sweeps alike. The error is larger at the start. Maybe this overestimation
   //  has to do with the fact, that the signal decays? ..yes - the error is a bit larger for 
   //  shorter decay times. The dependency is not very strong but it is there.
+  // -The estimated amplitude for the ladder resonance looks good as well - also for high 
+  //  frequencies.
 
   // ToDo:
   // -Maybe use a naive impulse-train as input - the anti-aliasing may make things more difficult 
@@ -2243,6 +2266,12 @@ void singleSineModelForResoSweep()
   // -Try other allpass topologies
   // -Maybe try updating the allpass state somehow when changing the alppas freq to reflect the new
   //  freq. I don't know, if that makes sense or is possible -> figure out...
+  // -Try the same experiments with a ladder resonance - figure out, why the resoReplaceScream 
+  //  fails at high frequencies. I thought that the instantaneous amplitude and phase are 
+  //  misdetected but that seems unlikely give that the detection via allpass still works nicely 
+  //  for high frequencies...unless there's a bug in the resoReplacer which leads to misdetection.
+  //  ...done - result looks good actually - there must be something elso to blame. Maybe it has to
+  //  do with the nonlinearity? Try driving the filter harder....
 
   // Sidenotes:
   // -a reso-sweep from 1kHz to 4kHz with dec = 0.01 in 2000 samples sounds like a water drop

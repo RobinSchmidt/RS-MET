@@ -3508,9 +3508,9 @@ void resoReplaceScream()
   // with the resoreplace filter. We use a sawtooth input and produce a filter-sweep.
 
   // user parameters:
-  double length = 5.0;         // length of the output in seconds
-  double fc1    =   400;       // cutoff at start
-  double fc2    =   100;       // cutoff at end
+  double length = 10.0;        // length of the output in seconds
+  double fc1    = 15000;       // cutoff at start
+  double fc2    =  1000;       // cutoff at end
   double fIn    = 50;          // input sawtooth frequency
   double aIn    = 0.5;         // input sawtooth amplitude
   double fs     = 44100;       // sample rate
@@ -3557,6 +3557,11 @@ void resoReplaceScream()
   {
     flt.setCutoff(f[n]);
     y[n] = flt.getSample(x[n]);
+
+    // test (when this is used, getSample above must be commented out):
+    //double yf, ra, rp;
+    //flt.getFltAmpPhs(x[n], &yf, &ra, &rp);
+    //y[n] = yf + ra * sin(rp);
   }
 
 
@@ -3576,8 +3581,9 @@ void resoReplaceScream()
   //  -the amplitude of the resonance is different from cycle to cycle
   //  -it looks like there is a linear envelope of the resonance envelope spanning over multiple 
   //   cycles and restting at some point
-  //  -the frequency doesn't sweep - it's fixed - we clearly have a misattribution between phase 
-  //   and amplitude here
+  //  -the frequency doesn't sweep - it's fixed. It seems to want to lock in to specific 
+  //   frequencies. Could this be a misattribution between phase and amplitude in the analysis of 
+  //   the resonance?
   //  -for a fixed frequency, this artifact manifests itself in having a different overall 
   //   resonance amplitude as function of cutoff frequency: check, for example outputs with fixed 
   //   resonance freq of 7 kHz and 6 kHz. At 6, the resopnance is louder than at 7
@@ -3600,6 +3606,7 @@ void resoReplaceScream()
   //  using an exact sine as input, using a sine with exponential envelope and an approximately 
   //  exp-enveloped sine that arises from a ladder resonance
   //  ...see experiments with class rsSingleSineModeler
+  // -call getFltAmpPhs here directly and synthesize the resonance from the analysis data
 }
 
 void resoWave()
