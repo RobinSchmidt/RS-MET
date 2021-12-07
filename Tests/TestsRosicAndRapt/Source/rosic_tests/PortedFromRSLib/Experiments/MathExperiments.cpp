@@ -3220,6 +3220,7 @@ bool dampedSineClass()
   int N = 601;
   double xMin = 0.0;
   double xMax = 3.0;
+  double tol  = 1.e-13;
 
   using Vec = std::vector<double>;
   Vec x = RAPT::rsRangeLinear(xMin, xMax, N);
@@ -3238,17 +3239,34 @@ bool dampedSineClass()
   h = f * g;
   for(int i = 0; i < N; i++)
     yh[i] = h.evaluate(x[i]);
-  rsPlotVectorsXY(x, yh, yf*yg);
-  // nope! is still wrong. amplitude seems to be half of correct and phase inverted?
+  //rsPlotVectorsXY(x, yh, yf*yg);
+  //ok &= yh == yf*yg;  // maybe needs a tolerance
+  ok &= rsIsCloseTo(yh, yf*yg, tol);
+
+  // sin(ax+b)*sin(cx+d) = ( cos((a-c)x+(b-d)) - cos((a+c)x+(b+d)) ) / 2
+  // see:
+  // https://www.wolframalpha.com/input/?i=sin%28a+x+%2B+b%29+*+sin%28c+x+%2B+d%29
 
   //rsPlotVectorsXY(x, yf, yg, yh, yf*yg);
 
+  // ToDo:
+  // -test, if it works with negative frequencies
+  // -output freqs should always be positive when input freqs are positive and should be negative
+  //  when input freqs are negative. if one of the input freqs is positive and the other negative
+  //  the order of +,- should be the same in the output
+  //  ...or maybe have a function "canonicalize" which makes all freqs positive and sorts the 
+  //  partials
+  // -try it with 3 factors and/or with factors that contain more than 1 sine - try 1 factor with 3
+  //  and another with 5 sines - we should get 2 * 3*5 = 30 partials
 
   // Notes:
   // -By multiplying outputs of damped sine oscillators together, i.e. rigmodulating their outputs,
   //  we can quickly obtain a massive number of partials. This could be useful for synthesis. Maybe
   //  try to make an RM synthesizer based on the additive engine - two additive oscs with 64 partials 
   //  each can generate 2*64^2 = 8192 partials with little computational effort.
+  // -Maybe instead of using a*b, use (a+b)^2 = a^2 + b^2 + 2*a*b -> this will make the amplitudes
+  //  and decay factors of the product signal more similar to those of a^2 and b^2 - maybe the 
+  //  signals a,b, should then have longer decay times
   // -what about amplitude modulation instead of ring-mod? this should produce even more partials 
   //  because the input freqs remain...or maybe just add the ringmod-signal to the sum of the 
   //  output that is already there.

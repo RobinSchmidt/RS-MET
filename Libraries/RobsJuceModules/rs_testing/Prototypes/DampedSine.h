@@ -104,30 +104,35 @@ rsDampedSineSum<T> rsDampedSineSum<T>::operator*(const rsDampedSineSum<T>& q) co
 {
   rsDampedSineSum<T> r; 
   r.sines.resize(2 * this->sines.size() * q.sines.size());
-
+  static const T p2 = 0.5*PI;
   size_t k = 0;
   rsDampedSine<T> L, R, S, D; // left and right factor of current pair, sum and difference tone
+
   for(size_t i = 0; i < sines.size(); i++)
   {
     for(size_t j = 0; j < q.sines.size(); j++)
     {
-      L   =   sines[i];       // current left factor
-      R   = q.sines[j];       // current right factor
+      L   =   sines[i];                // current left factor
+      R   = q.sines[j];                // current right factor
 
-      S.w = L.w + R.w;        // sum frequency
-      D.w = L.w - R.w;        // difference frequency
-      S.p = L.p + R.p;        // sum phase
-      D.p = L.p - R.p;        // difference phase
-      S.a = D.a = L.a * R.a;  // amplitudes are both given by the product
-      S.d = D.d = L.d + R.d;  // decay rates are both given by the sum
+      S.w = L.w + R.w;                 // sum frequency
+      D.w = R.w - L.w;                 // difference frequency
+      S.p = L.p + R.p - p2;            // sum phase
+      D.p = R.p - L.p + p2;            // difference phase
+      S.a = D.a = T(0.5) * L.a * R.a;  // amplitudes are both given by the product
+      S.d = D.d = L.d + R.d;           // decay rates are both given by the sum
 
-      r.sines[k]   = S;       // write sum sinusoid to output
-      r.sines[k+1] = D;       // write difference sinusoid to output
+      r.sines[k]   = S;                // write sum sinusoid to output
+      r.sines[k+1] = D;                // write difference sinusoid to output
       k += 2;
     }
   }
   // todo: verify formulas theoretically and experimentally, check especially the signs of the 
   // results of the differences
+  // -we seem to have some freedom with respect to the sign of the difference frequency (which can 
+  //  then be compensated by the sign of the difference phase). Maybe implement it in such a way 
+  //  that when both input freqs are positive, the output freq is also positive..or maybe such that
+  //  the output freq is always positive
 
 
   //rsAppend(r.sines, this->sines);
