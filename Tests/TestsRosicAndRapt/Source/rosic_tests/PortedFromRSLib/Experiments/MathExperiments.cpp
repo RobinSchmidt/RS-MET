@@ -3234,13 +3234,23 @@ bool dampedSineClass()
   //rsPlotVectorsXY(x, yf, yg, yh, yf+yg);
   ok &= yh == yf+yg;
 
-
   // Try multiplication:
   h = f * g;
   for(int i = 0; i < N; i++)
     yh[i] = h.evaluate(x[i]);
-  //rsPlotVectorsXY(x, yh, yf*yg);
+  rsPlotVectorsXY(x, yh, yf*yg);
   ok &= rsIsCloseTo(yh, yf*yg, tol);
+
+  // Composition (just for fun):
+  Vec yfg(N), ygf(N);
+  for(int i = 0; i < N; i++)
+  {
+    yfg[i] = f.evaluate(0.1 * g.evaluate(x[i]));
+    ygf[i] = g.evaluate(0.1 * f.evaluate(x[i]));
+  }
+  rsPlotVectorsXY(x, yfg, ygf);
+  // ..looks FM'ish
+
 
   // sin(ax+b)*sin(cx+d) = ( cos((a-c)x+(b-d)) - cos((a+c)x+(b+d)) ) / 2
   // see:
@@ -3257,6 +3267,10 @@ bool dampedSineClass()
   //  partials
   // -try it with 3 factors and/or with factors that contain more than 1 sine - try 1 factor with 3
   //  and another with 5 sines - we should get 2 * 3*5 = 30 partials
+
+  // -what about composing such functions? that will definitely result in wild functions of totally
+  //  different character - this is not like with prolynomials or rational functions where the 
+  //  composed function is of the same type...maybe make a plot of g(f(x)) and f(g(x))
 
 
   rsAssert(ok);
