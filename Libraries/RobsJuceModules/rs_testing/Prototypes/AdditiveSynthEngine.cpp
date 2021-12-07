@@ -493,6 +493,23 @@ Ideas:
  the mean of the 2 derivative values at start and end which would be used in the cubic case.
  -amplitude de-drift may be more complicated to implement (or maybe not - we'll see)
 
+-Make a multiplicative synthesizer: it first creates 3 components additively, let's call them
+ A,B,C, each with 16 or 32 partials. Then, it forms the 3 products F=AB.G=AC,H=BC. Then, it forms 
+ the products P=FG,Q=FH,R=GH. Then it forms the products: X=PQ,Y=PR,Z=QR. These 4 products of 
+ 3 are mixed seperately each with its own triangular vector mixer using barycentric coordinates. 
+ Finally, the outputs these 4 products are mixed together with a square vector mixer.
+ -By multiplying outputs of damped sine oscillators together, i.e. rigmodulating their outputs,
+  we can quickly obtain a massive number of partials. This could be useful for synthesis. Maybe
+  try to make an RM synthesizer based on the additive engine - two additive oscs with 64 partials 
+  each can generate 2*64^2 = 8192 partials with little computational effort.
+ -Maybe instead of using a*b, use (a+b)^2 = a^2 + b^2 + 2*a*b -> this will make the amplitudes
+  and decay factors of the product signal more similar to those of a^2 and b^2 - maybe the 
+  signals a,b, should then have longer decay times
+ -what about amplitude modulation instead of ring-mod? this should produce even more partials 
+  because the input freqs remain...or maybe just add the ringmod-signal to the sum of the 
+  output that is already there.
+
+
 
 Notes:
 

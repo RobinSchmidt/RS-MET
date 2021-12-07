@@ -3259,27 +3259,80 @@ bool dampedSineClass()
   // -try it with 3 factors and/or with factors that contain more than 1 sine - try 1 factor with 3
   //  and another with 5 sines - we should get 2 * 3*5 = 30 partials
 
-  // Notes:
-  // -By multiplying outputs of damped sine oscillators together, i.e. rigmodulating their outputs,
-  //  we can quickly obtain a massive number of partials. This could be useful for synthesis. Maybe
-  //  try to make an RM synthesizer based on the additive engine - two additive oscs with 64 partials 
-  //  each can generate 2*64^2 = 8192 partials with little computational effort.
-  // -Maybe instead of using a*b, use (a+b)^2 = a^2 + b^2 + 2*a*b -> this will make the amplitudes
-  //  and decay factors of the product signal more similar to those of a^2 and b^2 - maybe the 
-  //  signals a,b, should then have longer decay times
-  // -what about amplitude modulation instead of ring-mod? this should produce even more partials 
-  //  because the input freqs remain...or maybe just add the ringmod-signal to the sum of the 
-  //  output that is already there.
-
-
 
   rsAssert(ok);
   return ok;
 }
 
+void dampedSineClass2()
+{
+  // Tests the class rsDampedSineSum by creating a sum of 3 and another sum of 5 sines and 
+  // multiplying them. This should result in 2 * 3*5 partials. We synthesize and plot the signals.
+
+  using DSS = rsDampedSineSum<double>;
+  DSS f, g, h; 
+
+  // 1st component:
+  f.addSine(100, 0.6, 0.2, 0.3);
+  f.addSine(101, 0.7, 0.3, 0.5);
+  f.addSine(103, 0.4, 0.2, 1.5);
+
+  // 2nd component:
+  g.addSine(152, 0.9, 0.5, 0.7);
+  g.addSine(156, 0.4, 0.9, 0.2);
+  g.addSine(160, 0.5, 0.2, 1.7);
+  g.addSine(165, 0.8, 0.4, 2.4);
+  g.addSine(171, 0.2, 0.7, 2.1);
+
+  // Form the product:
+  h = f * g;
+
+  // Synthesize signal in 2 ways, using h and f*g:
+  int N = 3001;
+  double xMin = 0.0;
+  double xMax = 3.0;
+
+  using Vec = std::vector<double>;
+  Vec x = RAPT::rsRangeLinear(xMin, xMax, N);
+  Vec yf(N), yg(N), yh(N), yfg(N);
+  for(int i = 0; i < N; i++)
+  {
+    yf[i]  = f.evaluate(x[i]);
+    yg[i]  = g.evaluate(x[i]);
+    yfg[i] = yf[i] * yg[i];
+    yh[i]  = h.evaluate(x[i]);
+  }
+  rsPlotVectorsXY(x, yf, yg);
+  rsPlotVectorsXY(x, yh, yfg);
+
+
+  DSS fg2 = (f+g) * (f+g);  // has 128 components
+  Vec yfg2(N);
+  for(int i = 0; i < N; i++)
+  {
+    yfg2[i] = fg2.evaluate(x[i]);
+  }
+  rsPlotVectorsXY(x, yfg2, (yf+yg)*(yf+yg));  // is purely positive as expected.
+  rsPlotVectorsXY(x, yf + yg + yh);           // seems to have DC component? ...verify!
+  rsPlotVectorsXY(x, yf + yg - yh);
+
+  int dummy = 0;
+
+  // Observations:
+  // -We need to be careful with squaring signals to avoid DC components...
+
+  // ToDo:
+  // -For inspection whether or not there are partials with equal frequencies, it's really 
+  //  inconvenient that they are not sorted - maybe add a function canonicalize that sorts the 
+  //  partials and also makes all freqs positive, etc.
+  // -Synthesize some audio output and write to wave files, so we can listen to the results. Maybe
+  //  this sort of "multiplicative synthesis" could be useful.
+}
+
 void dampedSine()
 {
   dampedSineClass();
+  dampedSineClass2();
   dampedSineEnergy();
 }
 
