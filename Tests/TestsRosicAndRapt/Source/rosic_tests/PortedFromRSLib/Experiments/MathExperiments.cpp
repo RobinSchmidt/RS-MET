@@ -3197,6 +3197,56 @@ void dampedSineEnergy()
   plotData(N/2, tAxis, yI);
 }
 
+bool dampedSineClass()
+{
+  // Tests the class rsDampedSine. This is supposed to be turned into a unit test later...
+
+  bool ok = true;
+
+  using DS  = rsDampedSine<double>;
+  using DSS = rsDampedSineSum<double>;
+
+  //DS  ds1;
+  DSS f, g, h; 
+  f.addSine(3 *2*PI, 0.6, 0.2, +PI/4);   // f(x) = 0.6 * exp(-0.2*x) * sin(2*PI* 3*x + PI/4)
+  g.addSine(5 *2*PI, 0.9, 0.5, -PI/4);   // g(x) = 0.9 * exp(-0.5*x) * sin(2*PI* 5*x - PI/4)
+  //h = f + g;                 // h(x) = f(x) + g(x)
+
+  // todo: 
+  // -evaluate f and check result against formula
+  // -evaluate h and check result against evaluating and adding f,g
+  // -set h = f*g and check result in the same way
+
+  int N = 601;
+  double xMin = 0.0;
+  double xMax = 3.0;
+
+  using Vec = std::vector<double>;
+  Vec x = RAPT::rsRangeLinear(xMin, xMax, N);
+  Vec yf(N), yg(N), yh(N);
+  for(int i = 0; i < N; i++)
+  {
+    yf[i] = f.evaluate(x[i]);
+    yg[i] = g.evaluate(x[i]);
+    yh[i] = h.evaluate(x[i]);
+  }
+  rsPlotVectorsXY(x, yf, yg, yh);
+
+
+
+
+
+
+  rsAssert(ok);
+  return ok;
+}
+
+void dampedSine()
+{
+  dampedSineClass();
+  dampedSineEnergy();
+}
+
 void sineIntegral()
 {
   //double test = rsSineIntegral(3.0);
@@ -3212,7 +3262,7 @@ void sineIntegral()
 }
 
 
-double lq(double x)
+double lq(double x) // move as lambda into logarithmQuotient - don't spill the global namespace
 {
   if( fabs(x) < EPS )
     return -1.0;

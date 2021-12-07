@@ -16,7 +16,9 @@ void rsDampedSineFilterCoeffs(
 }
 // i tried to bake the minus sign into the a-coeffs such that the difference equation can be 
 // implemented with all plusses - but that didn't give any performance advantage, so i changed
-// it back for consistency with DSP literature
+// it back for consistency with DSP literature. But maybe when we later use it with simd, using an
+// all-plusses convention could be advantageous...alhtough, we'll probably use the simd to compute
+// a bunch of filters in parallel, not to optimize a single filter...hmmm
 
 template<class T>
 T findDecayScalerLess1(T c)

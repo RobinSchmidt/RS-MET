@@ -7,14 +7,34 @@ class rsDampedSine
 
 public:
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Lifetime */
+
+  rsDampedSine(T radianFreq, T amplitude, T decay, T phase = T(0))
+  { setup(radianFreq, amplitude, decay, phase); }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  /** Sets up the parameters for frequency, amplitude, decay and phase for the function:
+    f(x) = a * exp(-d*x) * sin(w*x + p)
+  The frequency variable w stands for "omega" and is actually the radian frequency, i.e. 
+  w = 2*pi*f. The amplitude a is a raw multiplier. The decay d is 1/tau where tau is the time 
+  constant, i.e. the time it takes to decay to 1/e. The start phase p is in radians. */
+  void setup(T w, T a, T d, T p = T(0)) { this->w = w; this->a = a; this->d = d; this->p = p; }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Evaluation */
+
+  /** Evaluates the function at the given input x. */
+  T evaluate(const T& x) { return a * exp(-d*x) * sin(w*x + p); }
+
 protected:
 
-  T a, d, w, p; 
-  /**< Parameters for amplitude, decay, frequency and phase for the function:
-    f(t) = a * exp(-d*t) * sin(w*t + p)
-  The amplitude a is a raw multiplier. The decay d is 1/tau where tau is the time constant, i.e. 
-  the time it takes to decay to 1/e. The frequency variable w stands for "omega" and is actually 
-  the radian frequency, i.e. w = 2*pi*f. The start phase p is in radians. */
+  T w, a, d, p; 
 
 };
 
@@ -26,6 +46,29 @@ class rsDampedSineSum
 
 public:
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Setup */
+
+  void addSine(T w, T a, T d, T p) { sines.push_back(rsDampedSine<T>(w, a, d, p)); }
+
+
+  //-----------------------------------------------------------------------------------------------
+  /** \name Evaluation */
+
+  /** Evaluates the function at the given input x. */
+  T evaluate(const T& x) 
+  { 
+    T y(0);
+    for(size_t i = 0; i < sines.size(); i++)
+      y += sines[i].evaluate(x);
+    return y;
+  }
+
+
+
+  // ToDo:
+  // implement () operator
   // implement operators +,*. Addition should just concatenate the arrays. Multiplication will 
   // produce for each pair of factors a pair of sines and the sum and difference frequencies with 
   // amplitudes given by the products, decay factors given by the sum, etc....

@@ -290,7 +290,7 @@ int main(int argc, char* argv[])
   //partialFractionExpansion2();
   //partialFractionExpansion3();
   //partialFractionExpansionQuadratic();
-  //dampedSineEnergy();
+  dampedSine();
   //sineIntegral();
   //logarithmQuotient();
   //stirlingNumbers();

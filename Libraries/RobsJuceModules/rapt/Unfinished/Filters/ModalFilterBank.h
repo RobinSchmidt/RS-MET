@@ -27,6 +27,7 @@ template<class TPar, class TCof>
 void rsDampedSineFilterCoeffs(
   TPar w, TPar A, TPar d, TPar p, TCof* b0, TCof* b1, TCof* a1, TCof* a2);
 // have inverse function rsDampedSineFilterParams
+// maybe move as static function into class rsDampedSine (currently still a prototype)
 
 
 

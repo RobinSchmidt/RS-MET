@@ -51,7 +51,7 @@ void partialFractionExpansion3();
 //void partialFractionExpansion4();
 
 void partialFractionExpansionQuadratic();
-void dampedSineEnergy();
+void dampedSine();
 void sineIntegral();
 void logarithmQuotient();
 void stirlingNumbers();
