@@ -123,6 +123,8 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
   TSig tmp2;
 
   y[0]  = in - k*y[4];        // linear
+
+  // experimental - nonlinearity:
   //y[0]  = rsClip(y[0], TSig(-1), TSig(+1));  // cheapest
   y[0] /= TSig(1) + y[0]*y[0]; // nonlinearity applied to input plus feedback signal (division could be interesting with complex signals)
   //y[0]  = rsNormalizedSigmoids<TSig>::softClipHexic(y[0]);  // most expensive

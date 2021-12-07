@@ -332,7 +332,7 @@ int main(int argc, char* argv[])
   //zeroCrossingPitchDetectorTwoTones();
   //ropewayAlgo();
   //peakPicker();
-  singleSineModel();
+  //singleSineModel();
 
   // Delay:
   //basicIntegerDelayLine();

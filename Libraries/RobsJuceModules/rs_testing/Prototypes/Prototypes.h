@@ -26,6 +26,7 @@ using namespace RAPT;
 #include "SineParameterEstimator.h"
 #include "OdeSolver.h"
 #include "MeshStuff.h"
+#include "DampedSine.h"
 #include "AdditiveSynthEngine.h"
 #include "FractalRenderer.h"
 

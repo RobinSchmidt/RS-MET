@@ -594,6 +594,15 @@ void rsBivariatePolynomial<T>::polyaVectorField(const rsPolynomial<std::complex<
 /*
 
 ToDo:
+-rename to rsPolynomial2D
+-factor out the vector-calculus stuff: have free functions in rapt like
+   template<class T, class FIn, class FOut>
+   FOut integral(FIn f, T a, T b, int intVar)
+ where FIn is a general multivariate function and intVar is the integration variable. FOut is the 
+ type of the result function - typically a function with one variable less because its integrated 
+ out. Have explicit specializations for FIn=rsPolynomial2D, FOut=rsPolynomial and
+ FIn=rsPolynomial3D , FOut=rsPolynomial2D. Then implement a class rsVectorCalculus that uses this 
+ integrate function...
 -compute Hessian and its determinant and maybe (squared) eigenvalues and -vectors
 -root finding: find points (x,y) for which p(x,y) = 0. i think, these are in general not 
  isolated points but rather curves - for example, when p(x,y) = x^2 + y^2 - 1, the unit circle

@@ -16,6 +16,7 @@
 #include "SineParameterEstimator.cpp"
 #include "OdeSolver.cpp"
 #include "MeshStuff.cpp"
+#include "DampedSine.cpp"
 #include "AdditiveSynthEngine.cpp"
 #include "FractalRenderer.cpp"
 

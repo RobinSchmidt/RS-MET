@@ -3509,8 +3509,8 @@ void resoReplaceScream()
 
   // user parameters:
   double length = 10.0;        // length of the output in seconds
-  double fc1    = 15000;       // cutoff at start
-  double fc2    =  1000;       // cutoff at end
+  double fc1    = 10000;       // cutoff at start
+  double fc2    =   200;       // cutoff at end
   double fIn    = 50;          // input sawtooth frequency
   double aIn    = 0.5;         // input sawtooth amplitude
   double fs     = 44100;       // sample rate
@@ -3525,6 +3525,7 @@ void resoReplaceScream()
   flt.setFeedbackLowerLimit(-0.2);
   flt.setFeedbackUpperLimit(+0.2);
   flt.setFeedbackSaturationGainAt1(1.0);
+  //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::NOWHERE);
   //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_FB_GAIN);
   flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_INPUT_ADD);
   //flt.setFeedbackSaturationPlace(rsLadderFeedbackSaturatedDD::POST_EACH_STAGE);
@@ -3532,7 +3533,7 @@ void resoReplaceScream()
   //flt.setResonanceAttack(0.0);
   //flt.setResonancePhase(PI); 
   //flt.setResonanceGain(1.0);
-  flt.setResonanceWaveform(2);        // square 
+  flt.setResonanceWaveform(2);        // 2:square 
   flt.setResoCutoffMultiplier(2.0);
   flt.setResoCutoffModulation(0.0);  // maybe this cutoff modulation is useless?
   flt.setInputRange(0.2);             // rename this function (name is nondescriptive)
@@ -3607,6 +3608,10 @@ void resoReplaceScream()
   //  exp-enveloped sine that arises from a ladder resonance
   //  ...see experiments with class rsSingleSineModeler
   // -call getFltAmpPhs here directly and synthesize the resonance from the analysis data
+
+  // Notes:
+  // -The resonant output is generated with rsLadderFilterFeedbackSaturated (just in case, you want
+  //  to modify the code for a test)
 }
 
 void resoWave()
