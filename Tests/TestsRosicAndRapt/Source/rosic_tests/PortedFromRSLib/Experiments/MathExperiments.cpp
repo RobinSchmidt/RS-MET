@@ -3210,7 +3210,7 @@ bool dampedSineClass()
   DSS f, g, h; 
   f.addSine(3 *2*PI, 0.6, 0.2, +PI/4);   // f(x) = 0.6 * exp(-0.2*x) * sin(2*PI* 3*x + PI/4)
   g.addSine(5 *2*PI, 0.9, 0.5, -PI/4);   // g(x) = 0.9 * exp(-0.5*x) * sin(2*PI* 5*x - PI/4)
-  //h = f + g;                 // h(x) = f(x) + g(x)
+  h = f + g;                             // h(x) = f(x) + g(x)
 
   // todo: 
   // -evaluate f and check result against formula
@@ -3230,7 +3230,8 @@ bool dampedSineClass()
     yg[i] = g.evaluate(x[i]);
     yh[i] = h.evaluate(x[i]);
   }
-  rsPlotVectorsXY(x, yf, yg, yh);
+  //rsPlotVectorsXY(x, yf, yg, yh, yf+yg);
+  ok &= yh == yf+yg;
 
 
 

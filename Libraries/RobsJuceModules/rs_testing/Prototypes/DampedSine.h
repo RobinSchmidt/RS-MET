@@ -11,6 +11,8 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
 
+  rsDampedSine() {}
+
   rsDampedSine(T radianFreq, T amplitude, T decay, T phase = T(0))
   { setup(radianFreq, amplitude, decay, phase); }
 
@@ -34,7 +36,7 @@ public:
 
 protected:
 
-  T w, a, d, p; 
+  T w = 0, a = 0, d = 0, p = 0; 
 
 };
 
@@ -65,6 +67,16 @@ public:
     return y;
   }
 
+  /** Adds two damped sine-sums. */
+  rsDampedSineSum<T> operator+(const rsDampedSineSum<T>& q) const 
+  {
+    rsDampedSineSum<T> r; 
+    r.sines.reserve(this->sines.size() + q.sines.size());
+    rsAppend(r.sines, this->sines);
+    rsAppend(r.sines, q.sines);
+    return r;
+  }
+  // maybe optimize
 
 
   // ToDo:
