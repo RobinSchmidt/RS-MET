@@ -38,6 +38,8 @@ protected:
 
   T w = 0, a = 0, d = 0, p = 0; 
 
+
+  template<class U> friend class rsDampedSineSum;
 };
 
 //=================================================================================================
@@ -68,15 +70,11 @@ public:
   }
 
   /** Adds two damped sine-sums. */
-  rsDampedSineSum<T> operator+(const rsDampedSineSum<T>& q) const 
-  {
-    rsDampedSineSum<T> r; 
-    r.sines.reserve(this->sines.size() + q.sines.size());
-    rsAppend(r.sines, this->sines);
-    rsAppend(r.sines, q.sines);
-    return r;
-  }
-  // maybe optimize
+  rsDampedSineSum<T> operator+(const rsDampedSineSum<T>& q) const;
+
+  /** Multiplies two damped sine-sums. */
+  rsDampedSineSum<T> operator*(const rsDampedSineSum<T>& q) const;
+
 
 
   // ToDo:
@@ -90,6 +88,52 @@ protected:
   std::vector<rsDampedSine<T>> sines; /**< The damped sinusoidal components of this function. */
 
 };
+
+template<class T>
+rsDampedSineSum<T> rsDampedSineSum<T>::operator+(const rsDampedSineSum<T>& q) const
+{
+  rsDampedSineSum<T> r; 
+  r.sines.reserve(this->sines.size() + q.sines.size());
+  rsAppend(r.sines, this->sines);
+  rsAppend(r.sines, q.sines);
+  return r;
+}
+
+template<class T>
+rsDampedSineSum<T> rsDampedSineSum<T>::operator*(const rsDampedSineSum<T>& q) const
+{
+  rsDampedSineSum<T> r; 
+  r.sines.resize(2 * this->sines.size() * q.sines.size());
+
+  size_t k = 0;
+  rsDampedSine<T> L, R, S, D; // left and right factor of current pair, sum and difference tone
+  for(size_t i = 0; i < sines.size(); i++)
+  {
+    for(size_t j = 0; j < q.sines.size(); j++)
+    {
+      L   =   sines[i];       // current left factor
+      R   = q.sines[j];       // current right factor
+
+      S.w = L.w + R.w;        // sum frequency
+      D.w = L.w - R.w;        // difference frequency
+      S.p = L.p + R.p;        // sum phase
+      D.p = L.p - R.p;        // difference phase
+      S.a = D.a = L.a * R.a;  // amplitudes are both given by the product
+      S.d = D.d = L.d + R.d;  // decay rates are both given by the sum
+
+      r.sines[k]   = S;       // write sum sinusoid to output
+      r.sines[k+1] = D;       // write difference sinusoid to output
+      k += 2;
+    }
+  }
+  // todo: verify formulas theoretically and experimentally, check especially the signs of the 
+  // results of the differences
+
+
+  //rsAppend(r.sines, this->sines);
+  //rsAppend(r.sines, q.sines);
+  return r;
+}
 
 
 

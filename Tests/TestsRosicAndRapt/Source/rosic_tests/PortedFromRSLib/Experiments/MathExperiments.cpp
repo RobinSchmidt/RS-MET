@@ -3234,7 +3234,24 @@ bool dampedSineClass()
   ok &= yh == yf+yg;
 
 
+  // Try multiplication:
+  h = f * g;
+  for(int i = 0; i < N; i++)
+    yh[i] = h.evaluate(x[i]);
+  rsPlotVectorsXY(x, yh, yf*yg);
+  // nope! is still wrong. amplitude seems to be half of correct and phase inverted?
 
+  //rsPlotVectorsXY(x, yf, yg, yh, yf*yg);
+
+
+  // Notes:
+  // -By multiplying outputs of damped sine oscillators together, i.e. rigmodulating their outputs,
+  //  we can quickly obtain a massive number of partials. This could be useful for synthesis. Maybe
+  //  try to make an RM synthesizer based on the additive engine - two additive oscs with 64 partials 
+  //  each can generate 2*64^2 = 8192 partials with little computational effort.
+  // -what about amplitude modulation instead of ring-mod? this should produce even more partials 
+  //  because the input freqs remain...or maybe just add the ringmod-signal to the sum of the 
+  //  output that is already there.
 
 
 
