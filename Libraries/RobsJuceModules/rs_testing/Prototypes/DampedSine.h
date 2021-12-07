@@ -128,7 +128,8 @@ rsDampedSineSum<T> rsDampedSineSum<T>::operator*(const rsDampedSineSum<T>& q) co
     }
   }
   // todo: verify formulas theoretically and experimentally, check especially the signs of the 
-  // results of the differences
+  // results of the differences ...swap order of arguments for D.w and D.p and compensate by using 
+  // -p2 instead of +p2
   // -we seem to have some freedom with respect to the sign of the difference frequency (which can 
   //  then be compensated by the sign of the difference phase). Maybe implement it in such a way 
   //  that when both input freqs are positive, the output freq is also positive..or maybe such that

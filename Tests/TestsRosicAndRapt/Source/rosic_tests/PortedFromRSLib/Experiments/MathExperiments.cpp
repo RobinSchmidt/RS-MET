@@ -3240,7 +3240,6 @@ bool dampedSineClass()
   for(int i = 0; i < N; i++)
     yh[i] = h.evaluate(x[i]);
   //rsPlotVectorsXY(x, yh, yf*yg);
-  //ok &= yh == yf*yg;  // maybe needs a tolerance
   ok &= rsIsCloseTo(yh, yf*yg, tol);
 
   // sin(ax+b)*sin(cx+d) = ( cos((a-c)x+(b-d)) - cos((a+c)x+(b+d)) ) / 2
