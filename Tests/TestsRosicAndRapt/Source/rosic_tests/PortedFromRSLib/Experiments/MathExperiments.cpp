@@ -3356,22 +3356,27 @@ void dampedSineClass3()  // rename
   using DSS = rsDampedSineSum<double>;
   using Vec = std::vector<double>;
 
-  DSS A, B;  // inputs
+  //DSS A, B;  // inputs
   DSS P;     // product
 
-  A.clear();
-  B.clear();
-  A.addSine(50);
-  B.addSine(150);
-  P = A * B;
-  P.sortPartials();
-  // todo: provide an API for A.addSines({150,250}); ...or make it a small helper function here, 
-  // like add(A, {50,150}) or fill(A, {50,150}) which clears before adding. we could even wrap it 
-  // all into a function P = sineProduct({50,150},{350,650});
-  // maybe in a "canonicalize" function we should make all frequencies positive and potentially 
-  // swap the sign of the amplitude...or maybe add pi to the phase (but that may introduce 
-  // numerical error). maybe have two variants of that function
+  // Helper function to create an rsDampedSineSum object as the product of two with given 
+  // frequencies. The amplitudes, decay-rates and phases are all left at their default values:
+  auto sineProduct = [](Vec A, Vec B)
+  {
+    DSS sa, sb;
+    for(auto & wa : A) sa.addSine(wa);
+    for(auto & wb : B) sb.addSine(wb);
+    DSS sp = sa * sb;
+    sp.canonicalize();
+    // sp.mergeMergablePartials();
+    return sp;
+  };
+  // ToDo: maybe provide a function consolidate or mergePartials which merges partials that have 
+  // the same frequencies and decay-rates into a single partial
 
+
+  P = sineProduct({50}, {150}); // 100,200
+  // maybe make it like a unit-test, too: check, if P has partials with desired frequencies
 
   int dummy = 0;
 }

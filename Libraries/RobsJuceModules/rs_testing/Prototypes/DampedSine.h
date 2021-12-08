@@ -31,6 +31,7 @@ public:
   void setup(T w, T a, T d, T p = T(0)) { this->w = w; this->a = a; this->d = d; this->p = p; }
 
 
+  void canonicalize();
 
   // todo: implement inquiry functions such as getTotalEnergy, getEarlyEnergy, etc...
 
@@ -57,12 +58,21 @@ protected:
   template<class U> friend class rsDampedSineSum;
 };
 
-
-/*
 template<class T>
-rsDampedSineSum<T> rsDampedSineSum<T>::operator-() const 
-{ 
-*/
+void rsDampedSine<T>::canonicalize()
+{
+  if(w < 0)
+  {
+    w = -w;
+    a = -a;
+  }
+  if(a < 0)
+  {
+    a = -a;
+    p = RAPT::rsWrapToInterval(p + PI, -PI, +PI);
+  }
+}
+// todo: test, if this really produces the same sine
 
 template<class T>
 bool rsDampedSine<T>::operator<(const rsDampedSine<T>& r) const
@@ -105,13 +115,14 @@ public:
 
   void addSine(T w, T a=1, T d=0, T p=0) { sines.push_back(rsDampedSine<T>(w, a, d, p)); }
 
-
   void scaleFrequencies(T scale);
   void scaleAmplitudes(T scale);
   void scaleDecayRates(T scale);
   void shiftPhases(T shift);
 
   void sortPartials();
+  void canonicalize();
+
 
   void clear() { sines.clear(); }
 
@@ -196,6 +207,14 @@ void rsDampedSineSum<T>::sortPartials()
 {
   std::sort(sines.begin(), sines.end());
   //RAPT::rsHeapSort(&sines[0], (int)sines.size());
+}
+
+template<class T>
+void rsDampedSineSum<T>::canonicalize()
+{
+  for(auto & s : sines)
+    s.canonicalize();
+  sortPartials();
 }
 
 template<class T>
