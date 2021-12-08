@@ -115,6 +115,10 @@ public:
 
   void addSine(T w, T a=1, T d=0, T p=0) { sines.push_back(rsDampedSine<T>(w, a, d, p)); }
 
+
+  void setSine(T w, T a=1, T d=0, T p=0) { clear(); addSine(w, a, d, p); }
+
+
   void scaleFrequencies(T scale);
   void scaleAmplitudes(T scale);
   void scaleDecayRates(T scale);
@@ -152,7 +156,8 @@ public:
   /** Multiplies two damped sine-sums. */
   rsDampedSineSum<T> operator*(const rsDampedSineSum<T>& q) const;
 
-
+  /** Multiplies a scalar and a damped sine-sum. */
+  rsDampedSineSum<T> operator*(const T& s) const;
 
 
   // unary minus:
@@ -270,6 +275,17 @@ rsDampedSineSum<T> rsDampedSineSum<T>::operator*(const rsDampedSineSum<T>& q) co
   // seemed to be the most natural one to me. We could probably also negate the amplitude for 
   // compensation (ToDo: try it).
 }
+
+template<class T>
+rsDampedSineSum<T> rsDampedSineSum<T>::operator*(const T& s) const
+{
+  rsDampedSineSum<T> r = *this;
+  r.scaleAmplitudes(s);
+  return r;
+}
+// implement * for left argument being a scalar
+
+
 
 // ToDo: move implementation to cpp file
 

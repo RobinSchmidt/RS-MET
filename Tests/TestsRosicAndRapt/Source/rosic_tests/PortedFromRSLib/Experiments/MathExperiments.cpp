@@ -3454,12 +3454,30 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
   P = P + D + P*D;  // multiplier 3
   P.canonicalize();
 
+
+  // This nicely builds a complete harmonic spectrum:
+  A.setSine(100);
+  B.setSine(200);
+  C.setSine(400);
+  D.setSine(800); 
+  P = A;
+  P = P*B*2 + B;  // todo: use multiply from left - looks nicer
+  P = P*C*2 + C;
+  P = P*D*2 + D;
+  P.canonicalize();
+  // OK - this works and this pattern can be continued
+
+
   // ToDo: 
   // -Detune the input freqs slightly. By doing this, we could actually take advantage of the
   //  fact that partial appear mutliple times. We'll get a complex beating - done
   // -Change the order of the factors in applying the recursion. I think, it should produce the 
   //  same frequencies but with different amplitudes?
   // -Render a wavefile for listening
+
+
+
+
 
 
   int dummy = 0;
