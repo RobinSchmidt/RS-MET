@@ -3353,11 +3353,16 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
 {
   // We try to figure out rules for where the partials of products end up ...tbc...
 
-  using DSS = rsDampedSineSum<double>;
-  using Vec = std::vector<double>;
+  using Real = double;
 
-  //DSS A, B;  // inputs
-  DSS P;     // product
+  using DSS = rsDampedSineSum<Real>;
+  using Vec = std::vector<Real>;
+
+  DSS A, B, C, D; // inputs
+  DSS P;          // product
+  DSS I;          // identity
+
+  I.addSine(0, 1, PI/2);  // is 1 all the time
 
   // Helper function to create an rsDampedSineSum object as the product of two with given 
   // frequencies. The amplitudes, decay-rates and phases are all left at their default values:
@@ -3425,11 +3430,49 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
 
 
 
+  // Perfect:
+  //A.addSine(300);
+  //B.addSine(100);
+  //C.addSine( 50);
+  //D.addSine( 25);
+
+  // With detune:
+  A.addSine(301);
+  B.addSine( 98);
+  C.addSine( 51);
+  D.addSine( 25);
+
+  Real k = 0.5;    // use this as factor fo A*B
+  // or maybe use wr,wf,wp as weights for recursive part (P), factor part (B) and product part 
+  // (P*B). We need to implement multiplication operator for a scalar times a sine-sum function
+
+  P = A;            // seed
+  P = P + B + P*B;  // multiplier 1
+  P.canonicalize();
+  P = P + C + P*C;  // multiplier 2
+  P.canonicalize();
+  P = P + D + P*D;  // multiplier 3
+  P.canonicalize();
+
+  // ToDo: 
+  // -Detune the input freqs slightly. By doing this, we could actually take advantage of the
+  //  fact that partial appear mutliple times. We'll get a complex beating - done
+  // -Change the order of the factors in applying the recursion. I think, it should produce the 
+  //  same frequencies but with different amplitudes?
+  // -Render a wavefile for listening
+
+
   int dummy = 0;
 
   // ToDo:
   // -What about using 3 factors? Maybe make a similar helper function that takes 3 vectors of 
   //  frequencies and experiment with that
+  // -Maybe add a convenience function to class rsDampedSineSum makeProduct that takes an arbitrary
+  //  number of std::vectors and forms the product from these to replace sineProduct, sineProduct3.
+  //  ...we also want to create a product of 4 vectors...and more...
+  // -Maybe we shoubd really from the A + B + A*B thing, maybe with scale factors. maybe the rules
+  //  are more easily understoof for that because frequencies that were once created do not
+  //  disappear again
   // -maybe make it like a unit-test, too: check, if P has partials with desired frequencies
   // -Do we have a multiplicative and additive identity...yeah - just a unit-amplitude DC and 
   //  anything with zero amplitude respectively

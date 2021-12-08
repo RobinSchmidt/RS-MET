@@ -386,5 +386,9 @@ be needed? that could also help with allocating the objects...like MaxNumFilters
 MaxNumWaveShapers, etc. we could also display the number of modulation connections. maybe we could 
 do: Regions 3/128, Filters 5/256, etc., RAM usage, CPU usage, output level meters
 
+Another nice project that may help to figure out, how to build and deploy a plugin is Surge:
+https://github.com/surge-synthesizer/surge
+
+
 
 */
