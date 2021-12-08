@@ -3349,7 +3349,7 @@ void dampedSineClass2()
   //  this sort of "multiplicative synthesis" could be useful.
 }
 
-void dampedSineClass3()  // rename
+void dampedSineClass3()  // rename to multiplicativeSynthesis
 {
   // We try to figure out rules for where the partials of products end up ...tbc...
 
@@ -3372,7 +3372,20 @@ void dampedSineClass3()  // rename
     return sp;
   };
   // ToDo: maybe provide a function consolidate or mergePartials which merges partials that have 
-  // the same frequencies and decay-rates into a single partial
+  // the same frequencies and decay-rates into a single partial. It may also throw away partials 
+  // with zero amplitude (after the merge, bcs partial may cancel each other)
+
+  // The same with 3 factors:
+  auto sineProduct3 = [](Vec A, Vec B, Vec C)
+  {
+    DSS sa, sb, sc;
+    for(auto & wa : A) sa.addSine(wa);
+    for(auto & wb : B) sb.addSine(wb);
+    for(auto & wc : C) sc.addSine(wc);
+    DSS sp = sa * sb * sc;
+    sp.canonicalize();
+    return sp;
+  };
 
   // When one of the factors has only one partial, it's easy: to get a harmonic product with all 
   // harmonics present, we choose the single partial to be f0/2 and in the factor with multiple 
@@ -3388,13 +3401,28 @@ void dampedSineClass3()  // rename
   // more a combinations of frequencies in the factors that give us a complete harmonic spectrum, 
   // i.e. all frequencies 100,200,...,700,800
   P = sineProduct({50,150}, {350,650}); // 2,3,4,5(2),6,7,8   missing: 1
-  P = sineProduct({50,150}, {250,650}); // 1,2,3,4,5,6,7,8    success!
   P = sineProduct({50,250}, {350,550}); // 1,3(2),4,5,6(2),8  missing: 2,7
   P = sineProduct({50,350}, {350,450}); // 0,1,3,4(2),5,7,8   missing: 2,6
   P = sineProduct({50,350}, {250,450}); // 1(2),2,3,4,5,6,8   missing: 7
+  P = sineProduct({50,150}, {250,650}); // 1,2,3,4,5,6,7,8    success!
+  // -Are there other combinations that also work?
   // -Can we do this more systematically that just trying random combinations by hand?
   // -Can we find a pattern/rule that will lead to an algorithm how to choose the partial 
   //  frequencies in order to obtain a full harmonic spectrum?
+
+  // A product of 3 factors each with a single partial gives 8 partials:
+  P = sineProduct3({100}, {300}, {900});
+  P = sineProduct3({ 50}, {150}, {300});   // 1,2,4,5
+  P = sineProduct3({ 50}, {150}, {200});   // 0,1,3,4
+  P = sineProduct3({ 50}, {150}, {250});   // 50,150,350,450
+  P = sineProduct3({ 50}, {100}, {250});   // 1,2,3,4 - success!
+  // Works bcs {100} * {250} = {150,350} and we know that {50}*{150,350} works from above. Can we 
+  // somehow find a recursive way to figure out what works? What's the rule to produce something
+  // like {100,250} given the desired fundamental f0=100? Apparently, it's to use f0 and 2.5*f0, 
+  // but why? What's the general idea behind these factors.
+  // 1 stage needs {0.5}, {1.5, 3.5}
+  // 2 stages need {0.5}, {1.0}, {2.5}
+
 
 
   int dummy = 0;
@@ -3403,6 +3431,8 @@ void dampedSineClass3()  // rename
   // -What about using 3 factors? Maybe make a similar helper function that takes 3 vectors of 
   //  frequencies and experiment with that
   // -maybe make it like a unit-test, too: check, if P has partials with desired frequencies
+  // -Do we have a multiplicative and additive identity...yeah - just a unit-amplitude DC and 
+  //  anything with zero amplitude respectively
 }
 
 void dampedSine()

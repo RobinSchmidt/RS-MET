@@ -604,3 +604,12 @@ inline std::complex<rsSimdVector<T, N>> rsExp(const std::complex<rsSimdVector<T,
 // Adventures in SIMD-Thinking (part 1 of 2) - Bob Steagall - CppCon 2020:
 // https://www.youtube.com/watch?v=qejTqnxQRcw
 // has some interesting operations
+
+// CppCon 2018: Jefferson Amstutz “Compute More in Less Time Using C++ Simd Wrapper Libraries”
+// https://www.youtube.com/watch?v=8khWb-Bhhvs
+// says that this:
+// https://github.com/VcDevel/Vc
+// https://github.com/VcDevel/std-simd
+// may make it into the C++ standard, talks also about representing vectorized bools and addressing
+// via []...which he says, we should not do. :-O ..instead use insert()/extract() functions. Talks
+// also about design decisions for such libaries
