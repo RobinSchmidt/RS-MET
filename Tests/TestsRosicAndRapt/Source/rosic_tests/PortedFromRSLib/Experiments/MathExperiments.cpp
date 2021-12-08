@@ -3359,7 +3359,7 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
   using Vec = std::vector<Real>;
 
   DSS A, B, C, D; // inputs
-  DSS P;          // product
+  DSS P, Q, R;    // products
   DSS I;          // identity
 
   I.addSine(0, 1, PI/2);  // is 1 all the time
@@ -3431,16 +3431,16 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
 
 
   // Perfect:
-  //A.addSine(300);
-  //B.addSine(100);
-  //C.addSine( 50);
-  //D.addSine( 25);
+  A.addSine(300);
+  B.addSine(100);
+  C.addSine( 50);
+  D.addSine( 25);
 
   // With detune:
-  A.addSine(301);
-  B.addSine( 98);
-  C.addSine( 51);
-  D.addSine( 25);
+  //A.addSine(301);
+  //B.addSine( 98);
+  //C.addSine( 51);
+  //D.addSine( 25);
 
   Real k = 0.5;    // use this as factor fo A*B
   // or maybe use wr,wf,wp as weights for recursive part (P), factor part (B) and product part 
@@ -3455,7 +3455,7 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
   P.canonicalize();
 
 
-  // This nicely builds a complete harmonic spectrum:
+  // This nicely builds a complete spectrum of 15 harmonics:
   A.setSine(100);
   B.setSine(200);
   C.setSine(400);
@@ -3467,6 +3467,20 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
   P.canonicalize();
   // OK - this works and this pattern can be continued
 
+  // Now, instead of multiplying a result recursively by a single sine, create two intermediate 
+  // products and multiply them together. This has the same number of operations but creates even 
+  // more partials, namely 21:
+  A.setSine( 100);
+  B.setSine( 200);
+  C.setSine( 700);
+  D.setSine(1100); 
+  P = A;
+  Q = C;
+  P = P*B*2 + B;
+  Q = Q*D*2 + D;
+  R = P*Q*2 + Q;
+  R.canonicalize();
+
 
   // ToDo: 
   // -Detune the input freqs slightly. By doing this, we could actually take advantage of the
@@ -3474,6 +3488,7 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
   // -Change the order of the factors in applying the recursion. I think, it should produce the 
   //  same frequencies but with different amplitudes?
   // -Render a wavefile for listening
+  // -Expand the formulas for the end results to see what we get
 
 
 
