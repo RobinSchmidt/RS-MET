@@ -37,6 +37,17 @@ freedom: we can always choose a positive or negative frequency and then compensa
 subtracting pi from the phase. When we flip the sign of the frequency, we need to compensate by a 
 phase-shift of 180°. ToDo: maybe we should always enforce positive frequencies in the result?
 
+Questions:
+-Can we somehow do division (with remainder)? Or factorization? Maybe first we need to search for 
+ partials with equal amplitudes and decay-rates because products alway create such pairs of 
+ partials. If P=A*B and a partial in P occurrd from a product partials from A and B, then the 
+ product's amplitude must be the product of the amplitudes of the factor partials from A and B. 
+-What if we form a product of damped sine filters? Will this still be a filter, i.e. an LTI 
+ system? ...probably not...nope...i don't think so..but maybe some sort of nonlinear "filter"
+-If we want to create a given target spectrum, say, 12 harmonics at 100,200,...,1200 - can we do
+ it by multiplying a sum of 2 and a sum of 3 sines? This will produce 2*2*3=12 partials - but how 
+ do we choose the freqs of the partials to achieve a given target product spectrum?
+
 
 
 */

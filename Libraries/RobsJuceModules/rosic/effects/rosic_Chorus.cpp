@@ -64,3 +64,14 @@ void Chorus::reset()
   yOldL = 0.0;
   yOldR = 0.0;
 }
+
+/*
+
+Ideas:
+-Combine regular chorus techniques based on delayline modulation (i.e. slow frequency modulation) 
+ with ringmodulation, amplitude modulation and single-sideband modulation. Maybe like: RM a signal
+ by 5 Hz and then FM the output of that by 7 Hz or the other way around. And/or maybe try parallel
+ connections.
+
+
+*/

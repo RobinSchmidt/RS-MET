@@ -3210,21 +3210,19 @@ bool dampedSineClass()
   DSS f, g, h; 
   f.addSine(3 *2*PI, 0.6, 0.2, +PI/4);   // f(x) = 0.6 * exp(-0.2*x) * sin(2*PI* 3*x + PI/4)
   g.addSine(5 *2*PI, 0.9, 0.5, -PI/4);   // g(x) = 0.9 * exp(-0.5*x) * sin(2*PI* 5*x - PI/4)
-  h = f + g;                             // h(x) = f(x) + g(x)
 
   // todo: 
   // -evaluate f and check result against formula
-  // -evaluate h and check result against evaluating and adding f,g
-  // -set h = f*g and check result in the same way
 
   int N = 601;
   double xMin = 0.0;
   double xMax = 3.0;
   double tol  = 1.e-13;
-
+  h = f + g;                             // h(x) = f(x) + g(x)
   using Vec = std::vector<double>;
   Vec x = RAPT::rsRangeLinear(xMin, xMax, N);
   Vec yf(N), yg(N), yh(N);
+
   for(int i = 0; i < N; i++)
   {
     yf[i] = f.evaluate(x[i]);
@@ -3238,8 +3236,16 @@ bool dampedSineClass()
   h = f * g;
   for(int i = 0; i < N; i++)
     yh[i] = h.evaluate(x[i]);
-  rsPlotVectorsXY(x, yh, yf*yg);
+  //rsPlotVectorsXY(x, yh, yf*yg);
   ok &= rsIsCloseTo(yh, yf*yg, tol);
+
+  // Subtraction:
+  h = f - g;
+  for(int i = 0; i < N; i++)
+    yh[i] = h.evaluate(x[i]);
+  //rsPlotVectorsXY(x, yh, yf-yg);
+  ok &= rsIsCloseTo(yh, yf-yg, tol);
+
 
   // Composition (just for fun):
   Vec yfg(N), ygf(N);
@@ -3248,7 +3254,7 @@ bool dampedSineClass()
     yfg[i] = f.evaluate(0.1 * g.evaluate(x[i]));
     ygf[i] = g.evaluate(0.1 * f.evaluate(x[i]));
   }
-  rsPlotVectorsXY(x, yfg, ygf);
+  //rsPlotVectorsXY(x, yfg, ygf);
   // ..looks FM'ish
 
 
@@ -3336,14 +3342,43 @@ void dampedSineClass2()
 
   // ToDo:
   // -For inspection whether or not there are partials with equal frequencies, it's really 
-  //  inconvenient that they are not sorted - maybe add a function canonicalize that sorts the 
+  //  inconvenient that they are not sorted - maybe add a function "canonicalize" that sorts the 
   //  partials and also makes all freqs positive, etc.
+  // -Maybe we could also combine partials that have the same frequency
   // -Synthesize some audio output and write to wave files, so we can listen to the results. Maybe
   //  this sort of "multiplicative synthesis" could be useful.
 }
 
+void dampedSineClass3()  // rename
+{
+  // We try to figure out rules for where the partials of products end up ...tbc...
+
+  using DSS = rsDampedSineSum<double>;
+  using Vec = std::vector<double>;
+
+  DSS A, B;  // inputs
+  DSS P;     // product
+
+  A.clear();
+  B.clear();
+  A.addSine(50);
+  B.addSine(150);
+  P = A * B;
+  P.sortPartials();
+  // todo: provide an API for A.addSines({150,250}); ...or make it a small helper function here, 
+  // like add(A, {50,150}) or fill(A, {50,150}) which clears before adding. we could even wrap it 
+  // all into a function P = sineProduct({50,150},{350,650});
+  // maybe in a "canonicalize" function we should make all frequencies positive and potentially 
+  // swap the sign of the amplitude...or maybe add pi to the phase (but that may introduce 
+  // numerical error). maybe have two variants of that function
+
+
+  int dummy = 0;
+}
+
 void dampedSine()
 {
+  dampedSineClass3();
   dampedSineClass();
   dampedSineClass2();
   dampedSineEnergy();
