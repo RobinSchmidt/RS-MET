@@ -1,6 +1,6 @@
 
 template<class T>
-T rsDampedSine<T>::getIntegral(const T& t0, const T& t1)
+T rsDampedSine<T>::getIntegral(const T& t0, const T& t1) const
 {
   T c0 = cos(t0*w + p);
   T s0 = sin(t0*w + p);
@@ -19,7 +19,7 @@ T rsDampedSine<T>::getIntegral(const T& t0, const T& t1)
   // which gives
   //   a*((w*cos(t0*w + p) + d*sin(t0*w + p))/(d^2*e^(d*t0) + w^2*e^(d*t0)) - (w*cos(t1*w + p) 
   //   + d*sin(t1*w + p))/(d^2*e^(d*t1) + w^2*e^(d*t1)))
-  // which was then simplifed by hand.
+  // which was then simplified by hand.
 }
 // ToDo:
 // -use rsSinCos
@@ -32,8 +32,39 @@ T rsDampedSine<T>::getIntegral(const T& t0, const T& t1)
 //  with itself
 // -maybe implement an energy formula that doesn't require to explicitly compute the product
 //  because this requires a memory allocation which we may wnat to avoid in certain contexts
+// -Get a formula for the center of gravity. I think, that just requires to multiply in a t, 
+//  such that f(t) = t * a * exp(-d*t) * sin(w*t + p)
 
 
+// Sage code for center of gravity:
+//   var("t a d w p t0 t1")
+//   f(t) = t * a * exp(-d*t) * sin(w*t + p)
+//   assume(t1 - t0 > 0)
+//   cog = integral(f, t, t0, t1)
+//   cog.full_simplify()
+// gives a quite monstrous result, even with full simplification. ToDo: try to get sage to 
+// simplify it further by manually defining some intermediate variables for subexpressions.
+// See here: https://ask.sagemath.org/question/8403/full-simplify-sage-vs-mathematica/
+// Oh - but wait - we typically don't need the cog of a partial signal! We can replace t0,t1
+// by 0 and inf. Oh yes - that's much better:  
+//   var("t a d w p")
+//   f(t) = t * a * exp(-d*t) * sin(w*t + p)
+//   assume(d > 0)
+//   cog = integral(f, t, 0, oo)
+//   cog.full_simplify()
+// gives:
+//   (2*a*d*w*cos(p) + a*d^2*sin(p) - a*w^2*sin(p))/(d^4 + 2*d^2*w^2 + w^4)
+
+
+
+template<class T>
+T rsDampedSineSum<T>::getIntegral(const T& t0, const T& t1) const
+{
+  T r = T(0);
+  for(const auto & s : sines)
+    r += s.getIntegral(t0, t1);
+  return r;
+}
 
 
 /*

@@ -40,14 +40,14 @@ public:
   /** \name Evaluation */
 
   /** Evaluates the function at the given input x. */
-  T evaluate(const T& x) { return a * exp(-d*x) * sin(w*x + p); }
+  T evaluate(const T& x) const { return a * exp(-d*x) * sin(w*x + p); }
 
   // ToDo:
   // -implement () operator for evaluation
 
   /** Under construction...
   Computes the definite integral of the signal between time instants t0 and t1. */
-  T getIntegral(const T& t0, const T& t1);
+  T getIntegral(const T& t0, const T& t1) const;
 
 
   /** Compares sinusoids for one being less than another. The main criterion here is frequency. 
@@ -141,7 +141,7 @@ public:
   /** \name Evaluation */
 
   /** Evaluates the function at the given input x. */
-  T evaluate(const T& x) 
+  T evaluate(const T& x) const
   { 
     T y(0);
     for(size_t i = 0; i < sines.size(); i++)
@@ -151,7 +151,7 @@ public:
 
   /** Under construction...
   Computes the definite integral of the signal between time instants t0 and t1. */
-  T getIntegral(const T& t0, const T& t1);
+  T getIntegral(const T& t0, const T& t1) const;
 
 
   //-----------------------------------------------------------------------------------------------

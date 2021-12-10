@@ -3197,6 +3197,45 @@ void dampedSineEnergy()
   plotData(N/2, tAxis, yI);
 }
 
+
+void dampedSineFormulas()
+{
+  // We test the formulas implemented in rsDampedSine(Sum) by plotting their results in order to
+  // inspect the plausibility and compare the results to numeric evaluations of the same 
+  // quantities.
+
+  using Real = double;
+  using DSS  = rsDampedSineSum<Real>;
+  using Vec  = std::vector<Real>;
+  using AT   = rsArrayTools;
+  using NI   = rsNumericIntegrator<Real>;
+
+  DSS f; 
+  f.addSine(3 *2*PI, 0.6, 0.4, +0.5);   // f(x) = 0.6 * exp(-0.4*x) * sin(2*PI* 3*x + 0.5)
+
+  int  N    = 1001;
+  Real tMin = 0;
+  Real tMax = 10.0;
+  Vec t = rsRangeLinear(tMin, tMax, N);
+  Vec y(N), yI(N);
+  for(int n = 0; n < N; n++)
+  {
+    y[n]  = f.evaluate(t[n]);
+    yI[n] = f.getIntegral(0.0, t[n]);
+  }
+
+  // Compute integral numerically:
+  Vec yIn(N);
+  rsNumericIntegral(&t[0], &y[0], &yIn[0], N, 0.0); 
+  // todo: move function into class rsNumericIntegrator, rename it into trapezoidal
+
+  rsPlotVectorsXY(t, y, 10.0*yI, 10.0*yIn);
+  // OK - looks plausible
+  
+
+  int dummy = 0;
+}
+
 bool dampedSineClass()
 {
   // Tests the class rsDampedSine. This is supposed to be turned into a unit test later...
@@ -3513,6 +3552,7 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
 
 void dampedSine()
 {
+  dampedSineFormulas();
   dampedSineEnergy();
   dampedSineClass3();
   dampedSineClass();

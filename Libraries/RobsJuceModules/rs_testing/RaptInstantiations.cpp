@@ -650,6 +650,8 @@ template rsBivariatePolynomial<double> rsBivariatePolynomial<double>::getPolyaPo
 
 template class rsTrivariatePolynomial<double>;
 template class rsPiecewisePolynomial<double>;
+template class rsDampedSine<double>;
+template class rsDampedSineSum<double>;
 
 template class rsSineSweeperBankIterative<float, 16>; // 16 is the simd-vector size
 template class rsAdditiveSynthVoice<16>; 

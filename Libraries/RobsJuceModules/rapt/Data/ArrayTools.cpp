@@ -1456,5 +1456,18 @@ https://www.youtube.com/watch?v=pUEnO6SvAMo
 https://www.youtube.com/watch?v=W2tWOdzgXHA
 std::rotate at 10:30, slide, gather
 
+The STL Algorithm Cheat Sheet:
+https://www.youtube.com/watch?v=LMmFpOhcQhA
+https://github.com/codereport/Algorithms/blob/master/CheatSheet/The%20STL%20Algorithm%20Cheat%20Sheet%20v0.0.pdf
+
+105 STL Algorithms in Less Than an Hour:
+https://www.youtube.com/watch?v=bFSnXNIsK4A
+
+
+
+
+
+https://en.cppreference.com/w/cpp/algorithm
+https://medium.com/logicalbee/c-stl-algorithms-cheat-sheet-d92f986abe14
 
 */
