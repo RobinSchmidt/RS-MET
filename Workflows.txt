@@ -65,7 +65,10 @@ Update to a new JUCE version:
 
 
 ---------------------------------------------------------------------------------------------------
-My Programming Environment prefs
+My Programming Environment prefs:
+
+My primary development environment is Microsoft Visual Studio running on a windows machine. On mac,
+I use Xcode and on Linux, I use CodeBlocks.
 
 Editor Font: 
 -Consolas 9pt or 10pt (is default in Visual Studio)
@@ -76,9 +79,9 @@ Editor Font:
 Visual Studio:
 -3 Panes
  -Left: tabs for Solution Explorer, Class View, Team Explorer, Object Browser
- -Mid: Code Editor
+ -Center: Code Editor
  -Right: tabs for: Output, Find Symbol Results, Error List, Call Hierarchy
-  When debugging, split horizotally, 
+  When debugging, split it vertically, 
   top: Locals, Autos, Watches, ...
   bottom: Call Stack, Threads, Diagnostic Tools, Output, Breakpoints, ...
 -Toolbars (in Tools -> Customize): Build, Debug, Standard, Text Editor
@@ -90,13 +93,23 @@ Jupyter Notebook:
 
 Jupyter Lab:
 
-Notepad++
-DeskPins
+Notepad++:
+As lightweight, secondary code- and text editor, I use Notepad++. I have configured it as the
+default program to open .txt, .cpp, .h, etc. files. One nice thing about it is that it has an
+"Always on top" option (in the "View" menu). This is very handy for having another textfile open
+along the main IDE window (for copy-and-paste or reading some documentation). To set up some
+pleasant color scheme, go to:
+Settings -> Style Configurator -> Select theme. I chose one of the following: vim Dark Blue,
+Twilight, Plastic Code Wrap, Monokai, Blackboard (some have an ugly orange color for whitespace 
+-> change "White space symbol" "Foreground color" to some unobtrusive gray)
+
+DeskPins:
+For some programs which do not have such an "Always on top" mode, a tool called DeskPins can be
+used which can add that behavior to any window. This is useful, for example, for having a pdf
+reader open above the main IDE (I use pdf xchange viewer for that).
 
 
-
-
-
+---------------------------------------------------------------------------------------------------
 ToDo: 
 git: branch,merge,push,pull using GitHub DeskTop and TortoiseGit
 github: create discussions,issues,projects,etc.
@@ -105,6 +118,13 @@ updating juce,
 releasing a ToolChain update,
 render doxygen documentation (html/latex/pdf), ...using doxywizard
 create installers (win/mac/linux)
+
+check out valgrind, address sanitizer,
+
+static analysis:
+https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis#C,_C++
+https://www.incredibuild.com/blog/top-9-c-static-code-analysis-tools
+https://cppcheck.sourceforge.io/
 
 ---------------------------------------------------------------------------------------------------
 Notes:

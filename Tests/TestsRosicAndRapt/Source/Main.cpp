@@ -402,8 +402,8 @@ int main(int argc, char* argv[])
   //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
   //attackDecayFilter();  // ...hmm..almost redundant
   //modalTwoModes();
-  //dampedSineFilterDesign();
-  //dampedSineFilterImpResp();
+  dampedSineFilterDesign();
+  dampedSineFilterImpResp();
   //biquadImpulseResponseDesign();
   //modalBankTransient();
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope

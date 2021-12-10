@@ -3513,10 +3513,10 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
 
 void dampedSine()
 {
+  dampedSineEnergy();
   dampedSineClass3();
   dampedSineClass();
   dampedSineClass2();
-  dampedSineEnergy();
 }
 
 void sineIntegral()

@@ -45,6 +45,11 @@ public:
   // ToDo:
   // -implement () operator for evaluation
 
+  /** Under construction...
+  Computes the definite integral of the signal between time instants t0 and t1. */
+  T getIntegral(const T& t0, const T& t1);
+
+
   /** Compares sinusoids for one being less than another. The main criterion here is frequency. 
   When sorting an array of partials, we want the lower frequencies to appear first. ...tbc... */
   bool operator<(const rsDampedSine<T>& q) const;
@@ -143,6 +148,11 @@ public:
       y += sines[i].evaluate(x);
     return y;
   }
+
+  /** Under construction...
+  Computes the definite integral of the signal between time instants t0 and t1. */
+  T getIntegral(const T& t0, const T& t1);
+
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */

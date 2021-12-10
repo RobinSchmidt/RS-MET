@@ -1,16 +1,60 @@
 
+template<class T>
+T rsDampedSine<T>::getIntegral(const T& t0, const T& t1)
+{
+  T c0 = cos(t0*w + p);
+  T s0 = sin(t0*w + p);
+  T c1 = cos(t1*w + p);
+  T s1 = sin(t1*w + p);
+  T e0 = exp(d*t0);
+  T e1 = exp(d*t1);
+  T s  = d*d + w*w;
+  return a*((w*c0 + d*s0)/(s*e0) - (w*c1 + d*s1) / (s*e1));
+  //return a*((w*c0 + d*s0)/(d^2*e0 + w^2*e0) - (w*c1 + d*s1) / (d^2*e1 + w^2*e1));
+
+  // Formula was found with sage via:
+  //   var("t a d w p t0 t1")
+  //   f(t) = a * exp(-d*t) * sin(w*t + p)
+  //   integral(f, t, t0, t1)
+  // which gives
+  //   a*((w*cos(t0*w + p) + d*sin(t0*w + p))/(d^2*e^(d*t0) + w^2*e^(d*t0)) - (w*cos(t1*w + p) 
+  //   + d*sin(t1*w + p))/(d^2*e^(d*t1) + w^2*e^(d*t1)))
+  // which was then simplifed by hand.
+}
+// ToDo:
+// -use rsSinCos
+// -plot result and inspect, if it's plausible
+// -compare formula to numeric result
+// -what happens if t1 = inf? will the formula give the correct result? if not, make it work.
+// -implement the function for rsDampedSineSum - this should just sum of the results for the 
+//  partials
+// -compute energy integral as sum of two components which result from multiplying the signal
+//  with itself
+// -maybe implement an energy formula that doesn't require to explicitly compute the product
+//  because this requires a memory allocation which we may wnat to avoid in certain contexts
+
 
 
 
 /*
 
 ToDo:
--implement addition and multiplication operators
+-rsDampedSine: implement functions to compute: total energy, energy up to time t, 
+ center of gravity. All of these should be available for the whole signal and for the envelope. 
+ Total energy and center of gravity of envelope could be used as sorting criteria in place of
+ amplitude and decay time. In a way, total energy and center of gravity can be seen as a decoupling
+ of amplitude and decay. If we take the values of the whole signal rather than the envelope, it 
+ will also "decouple" the values from freq and phase - but i think, that's not really desirable
+ for sorting. Formulas for some of that can be found in MathExperiments.cpp starting a around line
+ 3000 starting with function rsDampedSineIntegral. Verify the formulas there with sage, drag them
+ into class rsDampedSine and add the sage code to the documentation.
+-Try to find similar formulas also for a sum of damped sines. Maybe the squaring that occurs should
+ first be expressed by turning the product into a sum.
 -implement functions for derivative and integral, if possible, i.e. if the result is again a sum of 
  damped sines (i think so, but i'm not sure). The definite integral is just a number, so it can be
  computed anyway. I think, the integral look like a constant minus a decay (RC loading curve) with a 
  sine-wiggle on top...but no - it's monotonic...at least in the case of the energy integral, which
- is a the integral of a damped sine multiplied by itsefl...we'll see...
+ is a the integral of a damped sine multiplied by itself...we'll see...
 -implement efficient computation of an array of values by means of recursion
  -maybe this function should accumulate into the array, i.e. use +=, because in practice, we may 
   want to work with sums of damped sines

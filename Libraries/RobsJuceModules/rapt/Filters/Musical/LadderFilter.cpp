@@ -162,7 +162,9 @@ inline TSig rsLadderFilter<TSig, TPar>::getSampleNoGain(CRSig in)
   // Maybe try y = b + (x-b) / (1 + a*x^2) with adjustable parameters a and b. "a" adjusts the 
   // amount of signal squasheing whereas "b" introduces asymmetry. This is different from just
   // subtracting b before the nonlinearity and adding it back after it, because the x^2 in 
-  // denominator will be either affected or not
+  // denominator will be either affected or not. But anyway, I think, the most natural default
+  // choice for the feedback nonlinearity would be the hard clipper. It's also the cheapest. But
+  // we need a branchless version of it to allow using the filter with simd.
 
   // ToDo: test reso-modulation. In this case, it's particluarly interesting, if applying the 
   // compensation gain pre- or post-filter is the better way. I guess, pre-filter will smooth out
@@ -223,7 +225,8 @@ TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(
     b0 *= (1+a);
     b1 *= (1+a);
     g2 = (b0*b0 + b1*b1 + 2*b0*b1*cosWc) / (1 + a*a + 2*a*cosWc);
-    // optimize: compute reciprocal of g2....
+    // Optimize: compute reciprocal of g2 by swapping dividend and divisor (also in the upper 
+    // branch above)...
   }
   return fb / (g2*g2); //...then this can be turned into a multiplication
 }
@@ -231,7 +234,7 @@ TPar rsLadderFilter<TSig, TPar>::computeFeedbackFactor(
 template<class TSig, class TPar>
 TPar rsLadderFilter<TSig, TPar>::resonanceDecayToFeedbackGain(CRPar decay, CRPar cutoff)
 {
-  return rsExp(-1/(decay*cutoff)); // does this return 0 for decay == 0? -> test
+  return rsExp(TPar(-1)/(decay*cutoff)); // does this return 0 for decay == 0? -> test
 
   //if(decay > 0.0) // doesn't work with SIMD
   //  return exp(-1/(decay*cutoff));
@@ -267,7 +270,7 @@ void rsLadderFilter<TSig, TPar>::computeCoeffs(CRPar wc, CRPar fb, CRPar s, TPar
   //   dcGain = b0^4 / d = (1+a)^4 / ((1+k) * (1+a)^4) = 1 / (1+k)
   // and the reciprocal is just
   //   g = 1+k
-  // update the pdf to include this and when done, this comment can be deleted
+  // ToDo: Update the pdf to include this. When done, this comment can be deleted.
 }
 
 template<class TSig, class TPar>
