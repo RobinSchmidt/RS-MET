@@ -86,13 +86,18 @@ T rsDampedSine<T>::getEnergyIntegral(const T& t0, const T& t1) const
   T d2   = d*d;
   T w2   = w*w;
   T d2w2 = d2+w2;
-  T D    = 4*d*d2w2;
+  T k    = 1 / (4*d*d2w2);
   T s, c; 
   rsSinCos(2*(p+w*t1), &s, &c);
-  T F1 = (d*w*s-d2*c+d2w2) / (D*exp(2*d*t1)); // F(t1), up to scaling
+  T F1 = k * (d*w*s-d2*c+d2w2) * exp(-2*d*t1); // F(t1), up to scaling
   rsSinCos(2*(p+w*t0), &s, &c);
-  T F0 = (d*w*s-d2*c+d2w2) / (D*exp(2*d*t0)); // F(t0), up to scaling
-  return -a*a * (F1 - F0);
+  T F0 = k * (d*w*s-d2*c+d2w2) * exp(-2*d*t0); // F(t0), up to scaling
+  return a*a * (F0-F1);
+
+  // Formula for the indefinite integral was found with wolfram alpha via:
+  //   Integrate[(a Exp[-(d t)] Sin[w t + p])^2, t]
+  // and simplified by hand. Then the fundamental theorem of calculus was applied to compute the
+  // definite integral.
 }
 /*
 var("t a d w p t0 t1")
