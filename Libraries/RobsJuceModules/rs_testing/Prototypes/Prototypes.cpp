@@ -6,6 +6,7 @@
 #include "FilterDesign/PoleZeroDesignerDigital.cpp"
 #include "FilterDesign/ComplementaryFilters.cpp"
 
+#include "SafeArray.cpp"
 #include "ModalAnalyzer.cpp"
 #include "Probability.cpp"
 #include "Projection3Dto2D.cpp"

@@ -14,6 +14,7 @@ using namespace RAPT;
 #include "FilterDesign/PoleZeroDesignerDigital.h"
 #include "FilterDesign/ComplementaryFilters.h"
 
+#include "SafeArray.h"
 #include "ModalAnalyzer.h"
 #include "ParticleBouncer.h"
 #include "Probability.h"
