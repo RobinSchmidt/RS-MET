@@ -80,14 +80,13 @@ T rsDampedSine<T>::getCompleteEnvelopeIntegral() const
   //   integral(f, t, 0, oo)
 }
 
-
-
 template<class T>
 T rsDampedSine<T>::getCenterOfMass() const
 {
   T d2 = d*d;
   T w2 = w*w;
-  return (2*a*d*w*cos(p) + a*d2*sin(p) - a*w2*sin(p))/(d2*d2 + 2*d2*w2 + w2*w2);
+  T C  = (2*a*d*w*cos(p) + a*d2*sin(p) - a*w2*sin(p))/(d2*d2 + 2*d2*w2 + w2*w2);
+  return C / getCompleteIntegral();  // verify!
   // todo: 
   // -precompute cp, sp as cos(p), sin(p) using rsSinCos
   // -factor out a, then (d2-w2) from sin terms
@@ -112,6 +111,15 @@ T rsDampedSine<T>::getCenterOfMass() const
 //   cog.full_simplify()
 // gives:
 //   (2*a*d*w*cos(p) + a*d^2*sin(p) - a*w^2*sin(p))/(d^4 + 2*d^2*w^2 + w^4)
+//
+// ToDo: nomralize the value by dividing by the complete integral, see:
+//   https://en.wikipedia.org/wiki/Centroid#By_integral_formula
+//   https://en.wikipedia.org/wiki/Center_of_mass
+// wait - isn't this just the mean value?
+//   https://en.wikipedia.org/wiki/Expected_value#Absolutely_continuous_case
+// hmm...there the formula is not normalized by the complete integral - but that may be due to the 
+// fact that this integral is assumed to be 1 anyway, because f is assumed to be a probability 
+// density
 
 // ToDo: Write functions that compute the same quantities for the envelope. That probably more 
 // useful. Just remove the sin(...) factor from the formula that is passed to sage
@@ -128,6 +136,8 @@ T rsDampedSine<T>::getEnvelopeCenterOfMass() const
   // cog = integral(f, t, 0, oo)
   // cog.full_simplify()
 }
+// we should probably be normalized by getCompleteEnvelopeIntegral() ...then the result would just
+// be(a/d^2) / (a/d) = 1/d  ...the time constant - maybe rename to getTimeConstant
 
 //=================================================================================================
 

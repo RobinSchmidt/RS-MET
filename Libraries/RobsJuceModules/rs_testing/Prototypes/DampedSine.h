@@ -37,12 +37,13 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Evaluation */
 
-  /** Evaluates the function at the given input x. */
-  T evaluate(const T& x) const { return a * exp(-d*x) * sin(w*x + p); }
-
   // ToDo:
   // -consistently use t instead of x as input variable
   // -implement () operator for evaluation
+
+
+  /** Evaluates the function at the given input x. */
+  T evaluate(const T& x) const { return a * exp(-d*x) * sin(w*x + p); }
 
   /** Computes the definite integral of the signal between time instants t0 and t1. */
   T getIntegral(const T& t0, const T& t1) const;
@@ -53,12 +54,28 @@ public:
   /** Computes the definite integral of the signal's envelope between time instants t0 and t1. */
   T getEnvelopeIntegral(const T& t0, const T& t1) const;
 
-
+  /** Computes the definite integral of the signal's envelope between time instants zero and 
+  infinity. */
   T getCompleteEnvelopeIntegral() const;
 
+
+  // Implement getEnergyIntegral, getTotalEnergy
+
+
+  /** Computes the center of mass of the signal, i.e. the time instant where most of the "mass" is
+  concentrated, where the function value itself is taken to be a "density". Negative function 
+  values contribute "negative density", so the value can actually come out negative and is 
+  typically close to zero. The notion of what we compute here is typically not really useful in its
+  own right when  applied to a single damped sinuosid. It becomes useful when it's applied to a 
+  squared sum of damped sinusoids ...tbc...   */
   T getCenterOfMass() const;
+
+  /** Computes the center of mass of the envelope, i.e. the time instant where most of the "mass" 
+  is concentrated where the enevlope value is taken to be a density. */
   T getEnvelopeCenterOfMass() const;
-  // maybe rename to get(Envelope)Centroid
+  // maybe rename to get(Envelope)Centroid ...but maybe not - the center of mass takes into account 
+  // the density (here taken as the function value) whereas the centroid does not
+  // maybe rename to getValueCentroid, getEnergyCentroid, getEnvelopeCentroid
 
 
 

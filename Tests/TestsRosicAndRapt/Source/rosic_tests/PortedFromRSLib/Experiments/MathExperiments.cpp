@@ -3255,6 +3255,10 @@ void dampedSineFormulas()
 
   rsAssert(ok);
   int dummy = 0;
+
+  // ToDo:
+  // -Compare results of getIntegral of f2 = f^2 with the old formulas for energy as function of
+  //  time rsDampedSineEarlyEnergy, rsDampedSineTotalEnergy. The results hould be the same.
 }
 
 bool dampedSineClass()
