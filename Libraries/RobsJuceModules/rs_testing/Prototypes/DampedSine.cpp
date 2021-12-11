@@ -81,6 +81,32 @@ T rsDampedSine<T>::getCompleteEnvelopeIntegral() const
 }
 
 template<class T>
+T rsDampedSine<T>::getEnergyIntegral(const T& t0, const T& t1) const
+{
+  rsError("Not yet implemented");
+  return 0; // preliminary
+}
+/*
+var("t a d w p t0 t1")
+f(t) = a * exp(-d*t) * sin(w*t + p)
+assume(t1-t0 > 0)
+I = integral(f^2, t, t0, t1)
+I.simplify_full()
+# give names to common subexpressions:
+var('c2p s2p e0 e1 cs2')
+I = I.subs(cos(2*p)==c2p)
+I = I.subs(sin(2*p)==s2p)
+I = I.subs(e^(2*d*t0)==e0)
+I = I.subs(e^(2*d*t1)==e1)
+I = I.subs(c2p^2 + s2p^2==cs2)
+I
+
+...this gives quite a messy expression...
+perhaps it makes sense to set t0=0
+*/
+
+
+template<class T>
 T rsDampedSine<T>::getCenterOfMass() const
 {
   T d2 = d*d;
@@ -166,13 +192,29 @@ T rsDampedSineSum<T>::getCompleteIntegral() const
 template<class T>
 T rsDampedSineSum<T>::getCenterOfMass() const
 {
+  T weightedSumOfCenters(0);
+  T sumOfWeights(0);
+  for(const auto& s : sines)
+  {
+    T center = s.getCenterOfMass();
+    T weight = s.getCompleteIntegral();
+    weightedSumOfCenters += weight * center;
+    sumOfWeights += weight;
+  }
+  return weightedSumOfCenters / sumOfWeights;
+  // ToDo: verify this formula!
+
+
+
+  /*
   T r(0);
   for(const auto & s : sines)
     r += s.getCenterOfMass();
   return r / getNumSines();
+  */
   // ToDo: verify that the arithmetic mean is actually correct...no, i think, it's not - it should
   // probably be a weighted mean where the weights are given by the respective total mass of the
-  // partial
+  // partial..
 }
 
 
@@ -231,7 +273,17 @@ Questions:
 -If we want to create a given target spectrum, say, 12 harmonics at 100,200,...,1200 - can we do
  it by multiplying a sum of 2 and a sum of 3 sines? This will produce 2*2*3=12 partials - but how 
  do we choose the freqs of the partials to achieve a given target product spectrum?
-
+-What about a generalization including a frequency variation term v, like 
+   f(t) = a * exp(-d*t) * sin(v*t^2 + w*t + p)
+ ...maybe make a class rsDampedSineSweep and rsDampedSineSweepSum. Is a product of such signals
+ again of the same type? Would be nice, but even if not, it may be useful for synthesis. The 
+ algebraic properties are useful for predicting output spectra analytically but are not necessary
+ to build an interesting synthesis scheme. Hmm..it's actually looking good: 
+   https://www.wolframalpha.com/input/?i=sin%28a+x%5E2%29+sin%28b+x%5E2%29
+   sin(a x^2) sin(b x^2) = (1/2) (cos(a x^2 - b x^2) - cos(a x^2 + b x^2))
+ and it generalizes further to arbitray powers:
+   sin(a x^n) sin(b x^n) = (1/2) (cos(a x^n - b x^n) - cos(a x^n + b x^n))
+-What about exponential frequency variation?
 
 
 */

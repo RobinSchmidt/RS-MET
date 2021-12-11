@@ -3076,6 +3076,13 @@ double rsDampedSineEarlyEnergy(double A, double a, double w, double p, double T)
   double F_0  = (a*w*s-a2*c+a2w2) / d;              // F(0), up to scaling
   return -A*A * (F_T - F_0);
 }
+// has this been derived using the indefinite integral?
+// move into rsDampedSine<T>::getEnergyIntegral, adapt to allow nonzero lower integration limit
+// i guess, we can do:
+//   F0  = (a*w*s-a2*c+a2w2) / (d*exp(2*a*t0));
+//   F1  = (a*w*s-a2*c+a2w2) / (d*exp(2*a*t1));
+//   return -A*A * (F1 - F0);  // == A*A * (F0-F1)
+// the division can be replaced by multiplication by using a minus in the exponent
 
 
 
@@ -3210,8 +3217,15 @@ void dampedSineFormulas()
   using AT   = rsArrayTools;
   using NI   = rsNumericIntegrator<Real>;
 
+
+  Real w = 3 *2*PI;
+  Real a = 0.6;
+  Real d = 0.4;
+  Real p = 0.5;
+
   DSS f; 
-  f.addSine(3 *2*PI, 0.6, 0.4, +0.5);   // f(x) = 0.6 * exp(-0.4*x) * sin(2*PI* 3*x + 0.5)
+  //f.addSine(3 *2*PI, 0.6, 0.4, +0.5);   // f(x) = 0.6 * exp(-0.4*x) * sin(2*PI* 3*x + 0.5)
+  f.addSine(w, a, d, p);   // f(x) = 0.6 * exp(-0.4*x) * sin(2*PI* 3*x + 0.5)
 
   int  N    = 1001;
   Real tMin = 0;
@@ -3259,6 +3273,17 @@ void dampedSineFormulas()
   // ToDo:
   // -Compare results of getIntegral of f2 = f^2 with the old formulas for energy as function of
   //  time rsDampedSineEarlyEnergy, rsDampedSineTotalEnergy. The results hould be the same.
+  DSS f2 = f*f;
+  Vec E1(N), E2(N);  // energies computed by various functions
+  for(int n = 0; n < N; n++)
+  {
+    E1[n] = rsDampedSineEarlyEnergy(a, d, w, p, t[n]);
+    E2[n] = f2.getIntegral(0.0, t[n]);
+  }
+  rsPlotVectorsXY(t, E1, E2);
+  // yep - they are the same! success! :-D ...nevertheless - try to rederive the formula in
+  // rsDampedSineEarlyEnergy
+
 }
 
 bool dampedSineClass()

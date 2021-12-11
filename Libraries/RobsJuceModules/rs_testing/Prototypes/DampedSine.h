@@ -40,6 +40,11 @@ public:
   // ToDo:
   // -consistently use t instead of x as input variable
   // -implement () operator for evaluation
+  // -implement getEnergyIntegral, getTotalEnergy, getEnergyCentroid - then also for a sum of sines
+  // -the computed values for the energy-stuff, e.g. getEnergyIntegral, should be the same as the 
+  //  corresponding getIntegral, etc. values when applied to f^2 = f*f -> this can be tested
+  // same functions applied to
+  //  non-squared signals
 
 
   /** Evaluates the function at the given input x. */
@@ -58,8 +63,8 @@ public:
   infinity. */
   T getCompleteEnvelopeIntegral() const;
 
+  T getEnergyIntegral(const T& t0, const T& t1) const;
 
-  // Implement getEnergyIntegral, getTotalEnergy
 
 
   /** Computes the center of mass of the signal, i.e. the time instant where most of the "mass" is
