@@ -160,6 +160,18 @@ T rsDampedSine<T>::getCenterOfMass() const
 // fact that this integral is assumed to be 1 anyway, because f is assumed to be a probability 
 // density
 
+// Let's ty the energy centroid:
+// Trying to compute the integral with wolfram alpha exceeds the standard computation time. 
+// However, we can evaluate the indefinite integral:
+//   Integrate[t (a Exp[-(d t)] Sin[w t + p])^2, t]
+// which gives:
+//   (a^2 e^(-2 d t) (-2 d^2 w (d^2 t + d + t w^2) sin(2 (p + t w)) - (2 d t + 1) (d^2 + w^2)^2 + d^2 (2 d^3 t + d^2 + 2 d t w^2 - w^2) cos(2 (p + t w))))/(8 d^2 (d^2 + w^2)^2) + constant
+// not pretty, but managable. Maybe now we should try inserting the integration bounds manually.
+
+
+
+
+
 // ToDo: Write functions that compute the same quantities for the envelope. That probably more 
 // useful. Just remove the sin(...) factor from the formula that is passed to sage
 

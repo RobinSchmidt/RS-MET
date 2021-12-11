@@ -3229,7 +3229,7 @@ void dampedSineFormulas()
 
   int  N    = 1001;
   Real tMin = 0;
-  Real tMax = 10.0;
+  Real tMax = 15.0;
   Vec t = rsRangeLinear(tMin, tMax, N);
   Vec y(N), yI(N);
   for(int n = 0; n < N; n++)
@@ -3261,8 +3261,6 @@ void dampedSineFormulas()
   // todo: add test that compares numeric with analytic solution (needs a much higher tolerance, of 
   // course)
 
-
-
   rsPlotVectorsXY(t, y, 10.0*yI, 10.0*yIn);
   // OK - looks plausible
   
@@ -3277,17 +3275,36 @@ void dampedSineFormulas()
   Vec E1(N), E2(N), E3(N);  // energies computed by various functions
   for(int n = 0; n < N; n++)
   {
-    E1[n] = rsDampedSineEarlyEnergy(a, d, w, p, t[n]);
-    E2[n] = f2.getIntegral(0.0, t[n]);
-    E3[n] = f.getEnergyIntegral(0.0, t[n]);
+    E1[n] = rsDampedSineEarlyEnergy(a, d, w, p, t[n]);  // old implementation
+    E2[n] = f2.getIntegral(0.0, t[n]);                  // using value-integral of f^2
+    E3[n] = f.getEnergyIntegral(0.0, t[n]);             // new implementation
   }
   rsPlotVectorsXY(t, E1, E2, E3);
   // yep - they are the same! success! :-D ...nevertheless - try to rederive the formula in
   // rsDampedSineEarlyEnergy
 
   // ToDo:
+  // -plot the envelope energy, too - should look similar but without the wiggles
   // -test using t0 != 0
   // -compare energy against numeric evaluation
+
+  // Now let's try to evaluate the center of mass and center of energy. We take either the original
+  // or the squared signal, multiply it by t and integrate the resulting function with respect to 
+  // t. Actually, we need to integrate up to infinity, but a large enough finite value will give a
+  // good approximation.
+  Vec ty(N), ty2(N);  // t*y(t) and t*y(t)^2
+  for(int n = 0; n < N; n++)
+  {
+    ty[n]  = t[n] * y[n];
+    ty2[n] = t[n] * y[n] * y[n];
+  }
+  Vec tyI(N), ty2I(N);
+  rsNumericIntegral(&t[0], &ty[0],  &tyI[0],  N, 0.0);
+  rsNumericIntegral(&t[0], &ty2[0], &ty2I[0], N, 0.0);
+  rsPlotVectorsXY(t, ty, ty2, tyI, ty2I);
+
+  // ToDo: finish the center-of gravity/energy functions
+
 
 }
 
@@ -3525,7 +3542,7 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
 
 
   // Perfect:
-  A.addSine(300);
+  A.addSine(300);  
   B.addSine(100);
   C.addSine( 50);
   D.addSine( 25);
@@ -3536,17 +3553,19 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
   //C.addSine( 51);
   //D.addSine( 25);
 
-  Real k = 0.5;    // use this as factor fo A*B
+  Real k = 1.0;    // use this as factor fo A*B
   // or maybe use wr,wf,wp as weights for recursive part (P), factor part (B) and product part 
   // (P*B). We need to implement multiplication operator for a scalar times a sine-sum function
 
+
   P = A;            // seed
-  P = P + B + P*B;  // multiplier 1
+  P = P + B + P*B*k;  // combinator 1
   P.canonicalize();
-  P = P + C + P*C;  // multiplier 2
+  P = P + C + P*C*k;  // combinator 2
   P.canonicalize();
-  P = P + D + P*D;  // multiplier 3
+  P = P + D + P*D*k;  // combinator 3
   P.canonicalize();
+  // When we use the factor k=2 for the product term, all partials come out with unit amplitude
 
 
   // This nicely builds a complete spectrum of 15 harmonics:
@@ -3559,7 +3578,9 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
   P = P*C*2 + C;
   P = P*D*2 + D;
   P.canonicalize();
-  // OK - this works and this pattern can be continued
+  // OK - this works and this pattern can be continued. This way we can build a massive number of
+  // partials quickly. Each further stage of operator and combinator doubles the number of 
+  // partials.
 
   // Now, instead of multiplying a result recursively by a single sine, create two intermediate 
   // products and multiply them together. This has the same number of operations but creates even 
@@ -3583,9 +3604,47 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
   //  same frequencies but with different amplitudes?
   // -Render a wavefile for listening
   // -Expand the formulas for the end results to see what we get
+  // -Try to figure out, how we can build a cluster of partials witha Gaussian envelope or similar
+
+  P = A;
+  P = P + P*P*2; P.canonicalize();
+  P = P - P*P*2; P.canonicalize();
+  P = P + P*P*2; P.canonicalize();
+  // hmm...this seem useless - many partials have the same freq
 
 
+  // Build basic spectrum:
+  k = 2;
+  A.setSine( 100); P = A;         P.canonicalize();
+  A.setSine( 200); P = P*A*k + A; P.canonicalize();
+  A.setSine( 400); P = P*A*k + A; P.canonicalize();
+  A.setSine( 800); P = P*A*k + A; P.canonicalize();
+  A.setSine(1600); P = P*A*k + A; P.canonicalize();
+  A.setSine(3200); P = P*A*k + A; P.canonicalize();
+  // apply beating:
+  k = 0.75;
+  A.setSine(5); P = P*A*k + P; P.canonicalize();
+  A.setSine(3); P = P*A*k + P; P.canonicalize();
+  A.setSine(2); P = P*A*k + P; P.canonicalize();
+  // Creates clusters of partials around 100,200,300,etc.
 
+
+  // Synthesize the sound (this is horribly inefficient - the point is that we later synthesize 
+  // such sounds with a bunch of sine-oscillators and a couple muls and adds):
+  int  N  = 44100;
+  Real fs = 44100;
+  Vec x(N);
+  for(int n = 0; n < N; n++)
+  {
+    Real tn = n/fs;
+    tn *= 2*PI;
+    x[n] = P.evaluate(tn);
+  }
+  RAPT::rsArrayTools::cumulativeSum(&x[0], &x[0], N);
+  RAPT::rsArrayTools::normalize(&x[0], N);
+  rosic::writeToMonoWaveFile("MultiplicativeSynthesis.wav", &x[0], N, (int)fs);
+
+ 
 
 
 
@@ -3603,15 +3662,17 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
   // -maybe make it like a unit-test, too: check, if P has partials with desired frequencies
   // -Do we have a multiplicative and additive identity...yeah - just a unit-amplitude DC and 
   //  anything with zero amplitude respectively
+  // -Let's call the oscillators "operators" like in FM and the add/mul stages "combinators"
+  // -What about frequency sweeps in the operators
 }
 
 void dampedSine()
 {
-  dampedSineFormulas();
-  dampedSineEnergy();
   dampedSineClass3();
   dampedSineClass();
   dampedSineClass2();
+  dampedSineFormulas();
+  dampedSineEnergy();
 }
 
 void sineIntegral()
