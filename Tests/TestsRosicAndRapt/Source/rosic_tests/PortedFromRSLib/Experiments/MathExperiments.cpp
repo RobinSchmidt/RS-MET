@@ -3616,16 +3616,17 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
   // Build basic spectrum:
   k = 2;
   A.setSine( 100); P = A;         P.canonicalize();
-  A.setSine( 201); P = P*A*k + A; P.canonicalize();
-  A.setSine( 403); P = P*A*k + A; P.canonicalize();
-  A.setSine( 805); P = P*A*k + A; P.canonicalize();
-  A.setSine(1607); P = P*A*k + A; P.canonicalize();
-  A.setSine(3211); P = P*A*k + A; P.canonicalize();
+  A.setSine( 200); P = P*A*k + A; P.canonicalize();
+  A.setSine( 400); P = P*A*k + A; P.canonicalize();
+  A.setSine( 801); P = P*A*k + A; P.canonicalize();
+  A.setSine(1600); P = P*A*k + A; P.canonicalize();
+  A.setSine(3200); P = P*A*k + A; P.canonicalize();
+  A.setSine(6400); P = P*A*k + A; P.canonicalize();
   // apply beating:
   k = 0.125;
-  A.setSine(1.63345); P = P*A*k + P; P.canonicalize();
-  A.setSine(0.62534); P = P*A*k + P; P.canonicalize();
-  A.setSine(0.15239); P = P*A*k + P; P.canonicalize();
+  A.setSine(0.7); P = P*A*k + P; P.canonicalize();
+  A.setSine(0.5); P = P*A*k + P; P.canonicalize();
+  A.setSine(0.3); P = P*A*k + P; P.canonicalize();
   // Creates clusters of partials around 100,200,300,etc.
 
 
@@ -3643,6 +3644,8 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
   RAPT::rsArrayTools::cumulativeSum(&x[0], &x[0], N);
   RAPT::rsArrayTools::normalize(&x[0], N);
   rosic::writeToMonoWaveFile("MultiplicativeSynthesis.wav", &x[0], N, (int)fs);
+  // ok - looks quite interesting. a bit fractalish, but ever changing - try to synthesize it 
+  // efficiently with full bandwidth...the 6400 operator intrdouces strong inharmonicity
 
  
 
