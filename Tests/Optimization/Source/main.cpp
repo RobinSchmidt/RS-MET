@@ -62,3 +62,11 @@ int main(int argc, char* argv[])
 // https://www.youtube.com/watch?v=kIoZDUd5DKw
 // https://www.youtube.com/watch?v=4_HL3PH4wDg
 // https://www.youtube.com/watch?v=1u_ku_OJPDg
+
+/*
+Resources:
+
+https://www.youtube.com/watch?v=o4-CwDo2zpg Fastware - Andrei Alexandrescu
+https://www.youtube.com/watch?v=Qq_WaiwzOtI CppCon 2014: Andrei Alexandrescu "Optimization Tips - Mo' Hustle Mo' Problems"
+
+*/

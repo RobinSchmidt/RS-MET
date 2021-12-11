@@ -1,7 +1,18 @@
-
 template<class T>
 T rsDampedSine<T>::getIntegral(const T& t0, const T& t1) const
 {
+
+  // Handle special case where t1 == inf:
+  if(t1 == RS_INF(T))
+  {
+    T tmp = getCompleteIntegral();
+    if(t0 != T(0))
+      tmp -= getIntegral(T(0), t0);
+    return tmp;
+  }
+  // needs test
+
+  // Handle general case where t0,t1 are both finite numbers:
   T c0 = cos(t0*w + p);
   T s0 = sin(t0*w + p);
   T c1 = cos(t1*w + p);
@@ -10,22 +21,19 @@ T rsDampedSine<T>::getIntegral(const T& t0, const T& t1) const
   T e1 = exp(d*t1);
   T s  = d*d + w*w;
   return a*((w*c0 + d*s0)/(s*e0) - (w*c1 + d*s1) / (s*e1));
-  //return a*((w*c0 + d*s0)/(d^2*e0 + w^2*e0) - (w*c1 + d*s1) / (d^2*e1 + w^2*e1));
 
   // Formula was found with sage via:
   //   var("t a d w p t0 t1")
   //   f(t) = a * exp(-d*t) * sin(w*t + p)
   //   integral(f, t, t0, t1)
-  // which gives
-  //   a*((w*cos(t0*w + p) + d*sin(t0*w + p))/(d^2*e^(d*t0) + w^2*e^(d*t0)) - (w*cos(t1*w + p) 
-  //   + d*sin(t1*w + p))/(d^2*e^(d*t1) + w^2*e^(d*t1)))
-  // which was then simplified by hand.
+  // The result was then simplified by hand.
 }
 // ToDo:
+// -assert t0 is finite, t1 is either finite or +inf but not -inf
 // -use rsSinCos
-// -plot result and inspect, if it's plausible
-// -compare formula to numeric result
-// -what happens if t1 = inf? will the formula give the correct result? if not, make it work.
+// -What happens if t1 = inf? Will the formula give the correct result? If not, make it work. I
+//  guess, e1 will become infinite such that the 2nd term will vanish. maybe fall back to using
+//  getCompleteIntegral - but then subtract the integral from 0 to t0, if t0 is nonzero
 // -implement the function for rsDampedSineSum - this should just sum of the results for the 
 //  partials
 // -compute energy integral as sum of two components which result from multiplying the signal
@@ -35,8 +43,58 @@ T rsDampedSine<T>::getIntegral(const T& t0, const T& t1) const
 // -Get a formula for the center of gravity. I think, that just requires to multiply in a t, 
 //  such that f(t) = t * a * exp(-d*t) * sin(w*t + p)
 
+template<class T>
+T rsDampedSine<T>::getCompleteIntegral() const
+{
+  return (a*w*cos(p) + a*d*sin(p))/(d*d + w*w);
 
-// Sage code for center of gravity:
+  // Formula was found with sage via:
+  //   var("t a d w p")
+  //   f(t) = a * exp(-d*t) * sin(w*t + p)
+  //   assume(d > 0)
+  //   I = integral(f, t, 0, oo)
+  //   I.simplify_full()
+}
+
+
+template<class T>
+T rsDampedSine<T>::getEnvelopeIntegral(const T& t0, const T& t1) const
+{
+  return a*(exp(-d*t0)/d - exp(-d*t1)/d); // ToDo: use only 1 division
+
+  // Formula was found with sage via:
+  //   var("t a d w p t0 t1")
+  //   f(t) = a * exp(-d*t) 
+  //   integral(f, t, t0, t1)
+}
+
+template<class T>
+T rsDampedSine<T>::getCompleteEnvelopeIntegral() const
+{
+  return a / d;
+
+  // Formula was found with sage via:
+  //   var("t a d w p")
+  //   f(t) = a * exp(-d*t)
+  //   assume(d > 0)
+  //   integral(f, t, 0, oo)
+}
+
+
+
+template<class T>
+T rsDampedSine<T>::getCenterOfMass() const
+{
+  T d2 = d*d;
+  T w2 = w*w;
+  return (2*a*d*w*cos(p) + a*d2*sin(p) - a*w2*sin(p))/(d2*d2 + 2*d2*w2 + w2*w2);
+  // todo: 
+  // -precompute cp, sp as cos(p), sin(p) using rsSinCos
+  // -factor out a, then (d2-w2) from sin terms
+  // -simplify denominator using binomial formula: its just (d2+w2)^2
+  // -can the numerator also be simplified?
+}
+// Sage code for center of mass:
 //   var("t a d w p t0 t1")
 //   f(t) = t * a * exp(-d*t) * sin(w*t + p)
 //   assume(t1 - t0 > 0)
@@ -55,15 +113,56 @@ T rsDampedSine<T>::getIntegral(const T& t0, const T& t1) const
 // gives:
 //   (2*a*d*w*cos(p) + a*d^2*sin(p) - a*w^2*sin(p))/(d^4 + 2*d^2*w^2 + w^4)
 
+// ToDo: Write functions that compute the same quantities for the envelope. That probably more 
+// useful. Just remove the sin(...) factor from the formula that is passed to sage
 
+
+
+template<class T>
+T rsDampedSine<T>::getEnvelopeCenterOfMass() const
+{
+  return a / (d*d);
+  // var("t a d")
+  // f(t) = t * a * exp(-d*t)
+  // assume(d > 0)
+  // cog = integral(f, t, 0, oo)
+  // cog.full_simplify()
+}
+
+//=================================================================================================
 
 template<class T>
 T rsDampedSineSum<T>::getIntegral(const T& t0, const T& t1) const
 {
-  T r = T(0);
+  T r(0);
   for(const auto & s : sines)
     r += s.getIntegral(t0, t1);
   return r;
+  // maybe use std::accumulate
+}
+
+template<class T>
+T rsDampedSineSum<T>::getCompleteIntegral() const
+{
+  T r(0);
+  for(const auto & s : sines)
+    r += s.getCompleteIntegral();
+  return r;
+  // maybe use std::accumulate
+}
+
+
+
+template<class T>
+T rsDampedSineSum<T>::getCenterOfMass() const
+{
+  T r(0);
+  for(const auto & s : sines)
+    r += s.getCenterOfMass();
+  return r / getNumSines();
+  // ToDo: verify that the arithmetic mean is actually correct...no, i think, it's not - it should
+  // probably be a weighted mean where the weights are given by the respective total mass of the
+  // partial
 }
 
 

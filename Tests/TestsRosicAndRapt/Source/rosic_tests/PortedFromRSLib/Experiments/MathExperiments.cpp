@@ -3229,10 +3229,31 @@ void dampedSineFormulas()
   rsNumericIntegral(&t[0], &y[0], &yIn[0], N, 0.0); 
   // todo: move function into class rsNumericIntegrator, rename it into trapezoidal
 
+  Real cog = f.getCenterOfMass();
+  // close to zero, slightly negative....hmmm...that could be plausible. but it's not what we 
+  // typically want. we want the center of mass of the envelope or maybe of the squared signal 
+  // because squaring gives power whose integral is the energy
+
+
+  // Check computation of integrals - may go into a unit test later:
+  bool ok  = true;
+  Real tol = 10 * RS_EPS(Real);
+  Real tmp1, tmp2;
+  tmp1 = f.getIntegral(0.0, RS_INF(Real)); 
+  tmp2 = f.getCompleteIntegral(); 
+  ok &= tmp1 == tmp2;
+  tmp1 = f.getIntegral(0.0, 1000.0);
+  ok &= rsIsCloseTo(tmp1, tmp2, tol);
+  // todo: add test that compares numeric with analytic solution (needs a much higher tolerance, of 
+  // course)
+
+
+
   rsPlotVectorsXY(t, y, 10.0*yI, 10.0*yIn);
   // OK - looks plausible
   
 
+  rsAssert(ok);
   int dummy = 0;
 }
 

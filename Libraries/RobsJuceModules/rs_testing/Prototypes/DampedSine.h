@@ -33,8 +33,6 @@ public:
 
   void canonicalize();
 
-  // todo: implement inquiry functions such as getTotalEnergy, getEarlyEnergy, etc...
-
 
   //-----------------------------------------------------------------------------------------------
   /** \name Evaluation */
@@ -43,11 +41,26 @@ public:
   T evaluate(const T& x) const { return a * exp(-d*x) * sin(w*x + p); }
 
   // ToDo:
+  // -consistently use t instead of x as input variable
   // -implement () operator for evaluation
 
-  /** Under construction...
-  Computes the definite integral of the signal between time instants t0 and t1. */
+  /** Computes the definite integral of the signal between time instants t0 and t1. */
   T getIntegral(const T& t0, const T& t1) const;
+
+  /** Computes the definite integral of the signal between time instants zero and infinity. */
+  T getCompleteIntegral() const;
+
+  /** Computes the definite integral of the signal's envelope between time instants t0 and t1. */
+  T getEnvelopeIntegral(const T& t0, const T& t1) const;
+
+
+  T getCompleteEnvelopeIntegral() const;
+
+  T getCenterOfMass() const;
+  T getEnvelopeCenterOfMass() const;
+  // maybe rename to get(Envelope)Centroid
+
+
 
 
   /** Compares sinusoids for one being less than another. The main criterion here is frequency. 
@@ -149,10 +162,22 @@ public:
     return y;
   }
 
-  /** Under construction...
-  Computes the definite integral of the signal between time instants t0 and t1. */
+
+  /** Computes the definite integral of the signal between time instants t0 and t1. */
   T getIntegral(const T& t0, const T& t1) const;
 
+  /** Computes the definite integral of the signal between time instants zero and infinity. */
+  T getCompleteIntegral() const;
+
+
+  T getEnvelopeIntegral(const T& t0, const T& t1) const;
+
+  T getCenterOfMass() const;
+
+  T getEnvelopeCenterOfMass() const;
+
+
+  int getNumSines() const { return (int) sines.size(); }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Operators */

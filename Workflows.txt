@@ -120,6 +120,7 @@ render doxygen documentation (html/latex/pdf), ...using doxywizard
 create installers (win/mac/linux)
 
 check out valgrind, address sanitizer,
+https://github.com/google/sanitizers
 
 static analysis:
 https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis#C,_C++
