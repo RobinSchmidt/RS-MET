@@ -3274,15 +3274,20 @@ void dampedSineFormulas()
   // -Compare results of getIntegral of f2 = f^2 with the old formulas for energy as function of
   //  time rsDampedSineEarlyEnergy, rsDampedSineTotalEnergy. The results hould be the same.
   DSS f2 = f*f;
-  Vec E1(N), E2(N);  // energies computed by various functions
+  Vec E1(N), E2(N), E3(N);  // energies computed by various functions
   for(int n = 0; n < N; n++)
   {
     E1[n] = rsDampedSineEarlyEnergy(a, d, w, p, t[n]);
     E2[n] = f2.getIntegral(0.0, t[n]);
+    E3[n] = f.getEnergyIntegral(0.0, t[n]);
   }
-  rsPlotVectorsXY(t, E1, E2);
+  rsPlotVectorsXY(t, E1, E2, E3);
   // yep - they are the same! success! :-D ...nevertheless - try to rederive the formula in
   // rsDampedSineEarlyEnergy
+
+  // ToDo:
+  // -test using t0 != 0
+  // -compare energy against numeric evaluation
 
 }
 

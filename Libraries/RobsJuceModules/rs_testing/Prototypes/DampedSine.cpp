@@ -83,8 +83,16 @@ T rsDampedSine<T>::getCompleteEnvelopeIntegral() const
 template<class T>
 T rsDampedSine<T>::getEnergyIntegral(const T& t0, const T& t1) const
 {
-  rsError("Not yet implemented");
-  return 0; // preliminary
+  T d2   = d*d;
+  T w2   = w*w;
+  T d2w2 = d2+w2;
+  T D    = 4*d*d2w2;
+  T s, c; 
+  rsSinCos(2*(p+w*t1), &s, &c);
+  T F1 = (d*w*s-d2*c+d2w2) / (D*exp(2*d*t1)); // F(t1), up to scaling
+  rsSinCos(2*(p+w*t0), &s, &c);
+  T F0 = (d*w*s-d2*c+d2w2) / (D*exp(2*d*t0)); // F(t0), up to scaling
+  return -a*a * (F1 - F0);
 }
 /*
 var("t a d w p t0 t1")
@@ -183,6 +191,16 @@ T rsDampedSineSum<T>::getCompleteIntegral() const
   T r(0);
   for(const auto & s : sines)
     r += s.getCompleteIntegral();
+  return r;
+  // maybe use std::accumulate
+}
+
+template<class T>
+T rsDampedSineSum<T>::getEnergyIntegral(const T& t0, const T& t1) const
+{
+  T r(0);
+  for(const auto & s : sines)
+    r += s.getEnergyIntegral(t0, t1);
   return r;
   // maybe use std::accumulate
 }

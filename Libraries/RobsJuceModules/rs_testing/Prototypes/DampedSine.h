@@ -191,6 +191,8 @@ public:
   /** Computes the definite integral of the signal between time instants zero and infinity. */
   T getCompleteIntegral() const;
 
+  T getEnergyIntegral(const T& t0, const T& t1) const;
+
 
   T getEnvelopeIntegral(const T& t0, const T& t1) const;
 
