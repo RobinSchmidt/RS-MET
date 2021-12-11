@@ -3616,22 +3616,22 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
   // Build basic spectrum:
   k = 2;
   A.setSine( 100); P = A;         P.canonicalize();
-  A.setSine( 200); P = P*A*k + A; P.canonicalize();
-  A.setSine( 400); P = P*A*k + A; P.canonicalize();
-  A.setSine( 800); P = P*A*k + A; P.canonicalize();
-  A.setSine(1600); P = P*A*k + A; P.canonicalize();
-  A.setSine(3200); P = P*A*k + A; P.canonicalize();
+  A.setSine( 201); P = P*A*k + A; P.canonicalize();
+  A.setSine( 403); P = P*A*k + A; P.canonicalize();
+  A.setSine( 805); P = P*A*k + A; P.canonicalize();
+  A.setSine(1607); P = P*A*k + A; P.canonicalize();
+  A.setSine(3211); P = P*A*k + A; P.canonicalize();
   // apply beating:
-  k = 0.75;
-  A.setSine(5); P = P*A*k + P; P.canonicalize();
-  A.setSine(3); P = P*A*k + P; P.canonicalize();
-  A.setSine(2); P = P*A*k + P; P.canonicalize();
+  k = 0.125;
+  A.setSine(1.63345); P = P*A*k + P; P.canonicalize();
+  A.setSine(0.62534); P = P*A*k + P; P.canonicalize();
+  A.setSine(0.15239); P = P*A*k + P; P.canonicalize();
   // Creates clusters of partials around 100,200,300,etc.
 
 
   // Synthesize the sound (this is horribly inefficient - the point is that we later synthesize 
   // such sounds with a bunch of sine-oscillators and a couple muls and adds):
-  int  N  = 44100;
+  int  N  = 88200;
   Real fs = 44100;
   Vec x(N);
   for(int n = 0; n < N; n++)
