@@ -2887,17 +2887,15 @@ void multiplicativeSynth()
   using Vec  = std::vector<Real>;
 
   // User parameters:
-  int  N  = 48000;   // number of samples to render
-  Real fs = 48000;   // sample rate
-  Real f0 = 93.75;   // base frequency (fundamental in case of harmonic spectra)
+  int  N  = 48000*4;   // number of samples to render
+  Real fs = 48000;     // sample rate
+  Real f0 = 93.75;     // base frequency (fundamental in case of harmonic spectra)
 
   // Create and set up the multiplicative synthesizer:
   rsMultiplicativeSynth<Real> ms;
   ms.setBaseFrequency(f0);
   ms.setSampleRate(fs);
   Vec freqFactors({1,2,4,8,16,32,64,128});
-  //Vec freqFactors({1,2,4,8,16,32,64});
-  //Vec freqFactors({1,2,4,8,16,32});
   int numOps = (int)freqFactors.size();
   Vec ones   = rsConstantVector(numOps, 1.0);
   Vec wA     = 0.0 * ones;
@@ -2911,8 +2909,20 @@ void multiplicativeSynth()
 
   // Render output and write to file:
   Vec y = ms.renderOutput(N);
-  //rsPlotVector(y);
-  rosic::writeToMonoWaveFile("MultiplicativeSynthesisExample.wav", &y[0], N, (int)fs);
+  rosic::writeToMonoWaveFile("MultiplicativeSawStatic.wav", &y[0], N, (int)fs);
+
+  // Now use a little detuning of the operators. This adds a bit of animation to the sound:
+  freqFactors = Vec({1.0, 2.0017, 4.0013, 8.0032, 16.0023, 32.0054, 64.0073, 128.0097});
+  ms.setOperatorFreqFactors(freqFactors);
+  y = ms.renderOutput(N);
+  rosic::writeToMonoWaveFile("MultiplicativeSaw.wav", &y[0], N, (int)fs);
+
+  // Remove odd harmonics, creating a squarish character:
+  ms.setCombinatorWeightsB(Vec({1,0,0,0,0,0,0,0}));
+  y = ms.renderOutput(N);
+  rosic::writeToMonoWaveFile("MultiplicativeSquare.wav", &y[0], N, (int)fs);
+  // hmm...doesn't have the desired effect. 200 is missing but 400 is there
+
 
   // ToDo:
   // -Use oversampling and anti-aliasing by spectral truncation in the synth engine (just stop 
