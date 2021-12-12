@@ -213,7 +213,8 @@ int main(int argc, char* argv[])
   //triSawOscAntiAlias();
   //xoxosOsc();
   //shepardTone();
-//  additiveEngine();
+  //additiveEngine();
+  multiplicativeSynth();
 
   // Modulators:
   //attackDecayEnvelope();
@@ -390,8 +391,8 @@ int main(int argc, char* argv[])
   //resoSeparationNonlinear();
   //resoReplace();
   //resoReplacePhaseBumping();
-  resoReplaceScream();
-  resoWave();
+  //resoReplaceScream();
+  //resoWave();
   //fakeResonance();
   //fakeResoLowpassResponse();
   //fakeResoDifferentDelays();
@@ -402,8 +403,8 @@ int main(int argc, char* argv[])
   //modalFilterFreqResp();  // frequency response of attack/decay-sine filter - rename
   //attackDecayFilter();  // ...hmm..almost redundant
   //modalTwoModes();
-  dampedSineFilterDesign();
-  dampedSineFilterImpResp();
+  //dampedSineFilterDesign();
+  //dampedSineFilterImpResp();
   //biquadImpulseResponseDesign();
   //modalBankTransient();
   //fourExponentials();  // weighted sum of 4 exponential envelopes - for shaping mode envelope

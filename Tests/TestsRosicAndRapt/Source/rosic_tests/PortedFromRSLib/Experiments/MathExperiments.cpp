@@ -3615,24 +3615,24 @@ void dampedSineClass3()  // rename to multiplicativeSynthesis
 
   // Build basic spectrum:
   k = 2;
-  A.setSine( 100); P = A;         P.canonicalize();
-  A.setSine( 200); P = P*A*k + A; P.canonicalize();
-  A.setSine( 400); P = P*A*k + A; P.canonicalize();
-  A.setSine( 801); P = P*A*k + A; P.canonicalize();
-  A.setSine(1600); P = P*A*k + A; P.canonicalize();
-  A.setSine(3200); P = P*A*k + A; P.canonicalize();
-  A.setSine(6400); P = P*A*k + A; P.canonicalize();
+  A.setSine( 100.0);  P = A;         P.canonicalize();
+  A.setSine( 200.0);  P = P*A*k + A; P.canonicalize();
+  A.setSine( 399.82); P = P*A*k + A; P.canonicalize();
+  A.setSine( 801.07); P = P*A*k + A; P.canonicalize();
+  A.setSine(1599.36); P = P*A*k + A; P.canonicalize();
+  A.setSine(3200.19); P = P*A*k + A; P.canonicalize();
+  A.setSine(6400.0);  P = P*A*k + A; P.canonicalize();
   // apply beating:
-  k = 0.125;
-  A.setSine(0.7); P = P*A*k + P; P.canonicalize();
-  A.setSine(0.5); P = P*A*k + P; P.canonicalize();
-  A.setSine(0.3); P = P*A*k + P; P.canonicalize();
+  //k = 0.125;
+  //A.setSine(0.7); P = P*A*k + P; P.canonicalize();
+  //A.setSine(0.5); P = P*A*k + P; P.canonicalize();
+  //A.setSine(0.3); P = P*A*k + P; P.canonicalize();
   // Creates clusters of partials around 100,200,300,etc.
 
 
   // Synthesize the sound (this is horribly inefficient - the point is that we later synthesize 
   // such sounds with a bunch of sine-oscillators and a couple muls and adds):
-  int  N  = 88200;
+  int  N  = 44100*4;
   Real fs = 44100;
   Vec x(N);
   for(int n = 0; n < N; n++)

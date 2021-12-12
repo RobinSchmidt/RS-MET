@@ -834,14 +834,14 @@ bool samplerEngine2UnitTest()
   se.setRegionSettingsOverride(true);    // not required but anyway
   tgtL = tgtR = sin440;
   rsApplyPan(tgtL, tgtR, regionPan/100);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6, false); 
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6f, false); 
 
   // Now we want to see region and group pan combined:
   se.setRegionSettingsOverride(false);
   tgtL = tgtR = sin440;
   rsApplyPan(tgtL, tgtR, regionPan/100);
   rsApplyPan(tgtL, tgtR, groupPan /100);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6, false);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6f, false);
 
   // Now we want to see region, group and instrument pan combined:
   se.setGroupSettingsOverride(false);
@@ -849,7 +849,7 @@ bool samplerEngine2UnitTest()
   rsApplyPan(tgtL, tgtR, regionPan/100);
   rsApplyPan(tgtL, tgtR, groupPan /100);
   rsApplyPan(tgtL, tgtR, instrPan /100);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6, false);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6f, false);
 
   // ToDo: test it also with constant power pan rule
 

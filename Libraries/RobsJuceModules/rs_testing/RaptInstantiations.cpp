@@ -655,6 +655,7 @@ template class rsDampedSineSum<double>;
 
 template class rsSineSweeperBankIterative<float, 16>; // 16 is the simd-vector size
 template class rsAdditiveSynthVoice<16>; 
+template class rsMultiplicativeSynth<double>; 
 
 //template class std::complex<rsSimdVector<float, 16>>;  
 // test - doesn't compile. the problem are things like _Isnan, _IsInf, etc. std::complex seems to 

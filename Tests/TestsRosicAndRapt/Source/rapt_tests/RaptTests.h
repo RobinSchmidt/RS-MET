@@ -63,6 +63,7 @@ void triSawOscAntiAlias();
 void xoxosOsc();
 void shepardTone();
 void additiveEngine();
+void multiplicativeSynth();
 
 
 // Graphics Experiments:

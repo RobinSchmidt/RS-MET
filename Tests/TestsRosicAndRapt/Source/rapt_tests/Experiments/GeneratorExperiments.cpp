@@ -2877,3 +2877,38 @@ void additiveEngine()
 
   int dummy = 0;
 }
+
+void multiplicativeSynth()
+{
+  // We make some experiments with the multiplicative synthesis engine. We create some outputs and
+  // write them to wave files....tbc...
+
+  using Real = double;
+  using Vec  = std::vector<Real>;
+
+  // User parameters:
+  int  N  = 500;     // number of samples to render
+  Real fs = 44100;   // sample rate
+  Real f0 =   100;   // base frequency (fundamental in case of harmonic spectra)
+
+
+
+  // Create and set up the multiplicative synthesizer:
+  rsMultiplicativeSynth<Real> ms;
+  ms.setBaseFrequency(f0);
+  ms.setSampleRate(fs);
+
+
+
+  Vec y = ms.renderOutput(N);
+  rsPlotVector(y);
+
+
+  //rosic::writeToMonoWaveFile("MultiplicativeSynthesisExample.wav", &y[0], N, (int)fs);
+
+  // ToDo:
+  // -Use oversampling and anti-aliasing by spectral truncation in the synth engine (just stop 
+  //  creating more products, if some limit is reached)
+
+  int dummy = 0;
+}

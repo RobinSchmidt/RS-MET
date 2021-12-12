@@ -2362,6 +2362,9 @@
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ModalAnalyzer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\MultiplicativeSynth.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\OdeSolver.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -3205,6 +3208,7 @@
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\Ideas.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\MeshStuff.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\ModalAnalyzer.h"/>
+    <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\MultiplicativeSynth.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\OdeSolver.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\OscDrivers.h"/>
     <ClInclude Include="..\..\..\..\Libraries\RobsJuceModules\rs_testing\Prototypes\PartialDifferentialEquations.h"/>

@@ -29,6 +29,7 @@ using namespace RAPT;
 #include "MeshStuff.h"
 #include "DampedSine.h"
 #include "AdditiveSynthEngine.h"
+#include "MultiplicativeSynth.h"
 #include "FractalRenderer.h"
 
 /** This file contains prototypical implementations of algorithms. These prototypes are not meant
