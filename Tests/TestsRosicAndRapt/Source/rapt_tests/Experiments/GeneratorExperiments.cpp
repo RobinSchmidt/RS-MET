@@ -2907,21 +2907,44 @@ void multiplicativeSynth()
   ms.setCombinatorWeightsB( wB);
   ms.setCombinatorWeightsP( wP);
 
-  // Render output and write to file:
-  Vec y = ms.renderOutput(N);
-  rosic::writeToMonoWaveFile("MultiplicativeSawStatic.wav", &y[0], N, (int)fs);
+  //Vec y;
 
-  // Now use a little detuning of the operators. This adds a bit of animation to the sound:
-  freqFactors = Vec({1.0, 2.0017, 4.0013, 8.0032, 16.0023, 32.0054, 64.0073, 128.0097});
-  ms.setOperatorFreqFactors(freqFactors);
-  y = ms.renderOutput(N);
-  rosic::writeToMonoWaveFile("MultiplicativeSaw.wav", &y[0], N, (int)fs);
+  // Define a function to synthesize a sound and write it to a file:
+  auto synthesize = [&](const char* name, Vec ff, Vec wA, Vec wB, Vec wP)
+  {
+    ms.setOperatorFreqFactors(ff);
+    ms.setCombinatorWeightsA( wA);
+    ms.setCombinatorWeightsB( wB);
+    ms.setCombinatorWeightsP( wP);
+    Vec y = ms.renderOutput(N);
+    rosic::writeToMonoWaveFile(name, &y[0], N, (int)fs);
+  };
 
-  // Remove odd harmonics, creating a squarish character:
-  ms.setCombinatorWeightsB(Vec({1,0,0,0,0,0,0,0}));
-  y = ms.renderOutput(N);
-  rosic::writeToMonoWaveFile("MultiplicativeSquare.wav", &y[0], N, (int)fs);
-  // hmm...doesn't have the desired effect. 200 is missing but 400 is there
+  // Synthesize various sounds:
+  synthesize("MulSynthSaw.wav", 
+    {1,2,4,8,16,32,64,128}, 
+    0.0*ones, 
+    1.0*ones, 
+    2.0*ones);
+
+  synthesize("MulSynthSqr.wav", 
+    {1,2,4,8,16,32,64,128}, 
+    0.0*ones, 
+    {1,0,0,0,0,0,0,0}, 
+    2.0*ones);
+
+  synthesize("MulSynthSawDet.wav", 
+    {1.0, 2.0017, 4.0013, 8.0032, 16.0023, 32.0054, 64.0073, 128.0097}, 
+    0.0*ones, 
+    1.0*ones, 
+    2.0*ones);
+
+  synthesize("MulSynthSqrDet.wav", 
+    {1.0, 2.0017, 4.0013, 8.0032, 16.0023, 32.0054, 64.0073, 128.0097}, 
+    0.0*ones, 
+    {1,0,0,0,0,0,0,0}, 
+    2.0*ones);
+
 
 
   // ToDo:
