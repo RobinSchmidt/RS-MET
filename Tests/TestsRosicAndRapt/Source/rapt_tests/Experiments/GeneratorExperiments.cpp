@@ -2887,7 +2887,7 @@ void multiplicativeSynth()
   using Vec  = std::vector<Real>;
 
   // User parameters:
-  int  N  = 2000;    // number of samples to render
+  int  N  = 48000;   // number of samples to render
   Real fs = 48000;   // sample rate
   Real f0 = 93.75;   // base frequency (fundamental in case of harmonic spectra)
 
@@ -2895,12 +2895,12 @@ void multiplicativeSynth()
   rsMultiplicativeSynth<Real> ms;
   ms.setBaseFrequency(f0);
   ms.setSampleRate(fs);
-  //Vec freqFactors({1,2,4,8,16,32,64,128});
+  Vec freqFactors({1,2,4,8,16,32,64,128});
   //Vec freqFactors({1,2,4,8,16,32,64});
-  Vec freqFactors({1,2,4,8,16,32});
+  //Vec freqFactors({1,2,4,8,16,32});
   int numOps = (int)freqFactors.size();
   Vec ones   = rsConstantVector(numOps, 1.0);
-  Vec wA     = 1.0 * ones;
+  Vec wA     = 0.0 * ones;
   Vec wB     = 1.0 * ones;
   Vec wP     = 2.0 * ones;
   ms.setBaseFrequency(f0);
@@ -2911,8 +2911,8 @@ void multiplicativeSynth()
 
   // Render output and write to file:
   Vec y = ms.renderOutput(N);
-  rsPlotVector(y);
-  //rosic::writeToMonoWaveFile("MultiplicativeSynthesisExample.wav", &y[0], N, (int)fs);
+  //rsPlotVector(y);
+  rosic::writeToMonoWaveFile("MultiplicativeSynthesisExample.wav", &y[0], N, (int)fs);
 
   // ToDo:
   // -Use oversampling and anti-aliasing by spectral truncation in the synth engine (just stop 

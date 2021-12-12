@@ -355,7 +355,7 @@ public:
   /** Chooses the filter mode. See the enumeration for available modes. */
   void setMode(int newMode);
 
-  /** Sets the cutoff-frequency for this filter. */
+  /** Sets the cutoff-frequency for this filter in Hz. */
   void setCutoff(TPar newCutoff);
 
   /** This will set the time constant 'tau' for the case, when lowpass mode is chosen. This is

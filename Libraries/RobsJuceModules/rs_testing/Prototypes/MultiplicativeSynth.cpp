@@ -31,11 +31,26 @@ std::vector<T> rsMultiplicativeSynth<T>::renderOutput(int numSamples)
   }
   // wrap inner loop into function: getSampleCascadedLoToHi
 
+  // Apply lowpass to obtain 1/f spectrum:
+  RAPT::rsOnePoleFilter<T, T> flt;
+  flt.setMode(flt.LOWPASS_IIT);
+  flt.setCutoff(baseFreq);
+  flt.reset();
+  for(int n = 0; n < numSamples; n++)
+    y[n] = flt.getSample(y[n]);
 
-  // ToDo:
+  // Apply highpass to block DC (but what about subharmonics? maybe the highpass freq should be 
+  // adjustable relative to baseFreq):
+  flt.setMode(flt.HIGHPASS_BLT);
+  flt.setCutoff(baseFreq);
+  flt.reset();
+  for(int n = 0; n < numSamples; n++)
+    y[n] = flt.getSample(y[n]);
+  // maybe the highpass should be optional - instead we could just subtract DC in the normalization
+  // step
 
-  // -post-process (1st order lowpass filter for the 1/f spectrum, 1st order highpass to block DC,
-  //  maybe normalize)
+  // ToDo: normalize or apply a gain factor derived from the weight-arrays
+  RAPT::rsArrayTools::normalize(&y[0], numSamples);
 
 
   return y;
