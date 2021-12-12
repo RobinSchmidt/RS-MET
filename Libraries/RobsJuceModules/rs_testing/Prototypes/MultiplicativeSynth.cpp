@@ -1,8 +1,8 @@
 
 template<class T>
-std::vector<T> rsMultiplicativeSynth<T>::renderOutput(int N)
+std::vector<T> rsMultiplicativeSynth<T>::renderOutput(int numSamples)
 {
-  std::vector<T> y(N);
+  std::vector<T> y(numSamples);
 
   // ToDo:
   // -Create an array of sine-oscillators and set up the frequencies
@@ -10,18 +10,32 @@ std::vector<T> rsMultiplicativeSynth<T>::renderOutput(int N)
   // -post-process (1st order lowpass filter for the 1/f spectrum, 1st order highpass to block DC,
   //  maybe normalize)
 
+  int numPartials = getNumPartials();
+
+  using SineIt = RAPT::rsSineIterator<T>;;
+  std::vector<SineIt> sines;
+
 
   return y;
 }
 
+template<class T>
+int rsMultiplicativeSynth<T>::getNumPartials()
+{
+  size_t n = opFreqFactors.size();
+  n = std::min(n, cmWeightsA.size());
+  n = std::min(n, cmWeightsB.size());
+  n = std::min(n, cmWeightsP.size());
+  return (int) n;
+
+  // ToDo: Write a (variadic template) function that takes an arbitrary number of stdd:vector and
+  // returns the minimum of all of the lengths. maybe rsMinSize(...vectors...). That could be often 
+  // convenient - for example, here. Sdd it to RAPT StandardContainerTools.h
+}
 
 /*
 
 ToDo:
--Write a (variadic template) function that atkes an arbitrary number of stdd:vector and returns
- the minimum of all of the lengths. maybe rsMinSize(...vectors...). That could be often 
- convenient - for example, here.
-
 
 Ideas:
 -Let operators be a bit more complex: let them have also a decay-time, maybe an attack, too. Maybe

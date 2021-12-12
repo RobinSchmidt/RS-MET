@@ -2888,22 +2888,28 @@ void multiplicativeSynth()
 
   // User parameters:
   int  N  = 500;     // number of samples to render
-  Real fs = 44100;   // sample rate
-  Real f0 =   100;   // base frequency (fundamental in case of harmonic spectra)
-
-
+  Real fs = 48000;   // sample rate
+  Real f0 = 93.75;   // base frequency (fundamental in case of harmonic spectra)
 
   // Create and set up the multiplicative synthesizer:
   rsMultiplicativeSynth<Real> ms;
   ms.setBaseFrequency(f0);
   ms.setSampleRate(fs);
+  Vec freqFactors({1,2,4,8,16,32,64,128});
+  int numOps = (int)freqFactors.size();
+  Vec ones   = rsConstantVector(numOps, 1.0);
+  Vec wA     = 1.0 * ones;
+  Vec wB     = 1.0 * ones;
+  Vec wP     = 2.0 * ones;
+  ms.setBaseFrequency(f0);
+  ms.setOperatorFreqFactors(freqFactors);
+  ms.setCombinatorWeightsA( wA);
+  ms.setCombinatorWeightsB( wB);
+  ms.setCombinatorWeightsP( wP);
 
-
-
+  // Render output and write to file:
   Vec y = ms.renderOutput(N);
   rsPlotVector(y);
-
-
   //rosic::writeToMonoWaveFile("MultiplicativeSynthesisExample.wav", &y[0], N, (int)fs);
 
   // ToDo:
