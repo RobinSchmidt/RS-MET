@@ -2909,14 +2909,23 @@ void multiplicativeSynth()
   ms.setGain(1.0);
 
 
+
+
+
+
+
   // Define a function to synthesize a sound and write it to a file:
-  auto renderFile = [&](const char* name, Vec ff, Vec wA, Vec wB, Vec wP)
+  auto render = [&](Vec ff, Vec wA, Vec wB, Vec wP)
   {
     ms.setOperatorFreqFactors(ff);
     ms.setCombinatorWeightsA( wA);
     ms.setCombinatorWeightsB( wB);
     ms.setCombinatorWeightsP( wP);
-    Vec y = ms.renderOutput(N);
+    return ms.renderOutput(N);
+  };
+  auto renderFile = [&](const char* name, Vec ff, Vec wA, Vec wB, Vec wP)
+  {
+    Vec y = render(ff, wA, wB, wP);
     rosic::writeToMonoWaveFile(name, &y[0], N, (int)fs);
   };
 
@@ -2944,6 +2953,42 @@ void multiplicativeSynth()
     0.0*ones, 
     {1,0,0,0,0,0,0,0}, 
     2.0*ones);
+
+
+
+  // Render unison sounds:
+  auto randomize = [](const std::vector<Real> x, RAPT::rsNoiseGenerator<Real>& prng, Real amount)
+  {
+    std::vector<Real> y = x;
+    for(size_t i = 0; i < y.size(); i++)
+      y[i] += amount * prng.getSample();
+    return y;
+  };
+  auto renderUnison = [&](Vec ff, Vec wA, Vec wB, Vec wP, int numVoices, Real detune, int seed)
+  {
+    RAPT::rsNoiseGenerator<Real> prng;
+    prng.setSeed(seed);
+    Vec y(N);
+    for(int i = 0; i < numVoices; i++) {
+      Vec ffr = randomize(ff, prng, detune);
+      y = y + render(ffr, wA, wB, wP);  }
+    y = y *  (1.0 / sqrt(numVoices));
+    return y;
+  };
+  auto renderFileUnison = [&](const char* name, Vec ff, Vec wA, Vec wB, Vec wP, 
+    int numVoices, Real detune, int seed)
+  {
+    Vec y = renderUnison(ff, wA, wB, wP,  numVoices, detune, seed);
+    rosic::writeToMonoWaveFile(name, &y[0], N, (int)fs);
+  };
+
+  renderFileUnison("MulSynthSawUnison_V7_D05_S0.wav", 
+    {1,2,4,8,16,32,64,128}, 
+    0.0*ones, 
+    1.0*ones, 
+    2.0*ones,
+    7, 0.05, 0);
+  // maybe it should start with randomized phases, too
 
 
 
