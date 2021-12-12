@@ -2988,7 +2988,21 @@ void multiplicativeSynth()
     1.0*ones, 
     2.0*ones,
     7, 0.05, 0);
-  // maybe it should start with randomized phases, too
+  renderFileUnison("MulSynthSawUnison_V15_D05_S0.wav", 
+    {1,2,4,8,16,32,64,128}, 
+    0.0*ones, 
+    1.0*ones, 
+    2.0*ones,
+    15, 0.05, 0);
+  renderFileUnison("MulSynthSawUnison_V15_D1_S0.wav", 
+    {1,2,4,8,16,32,64,128}, 
+    0.0*ones, 
+    1.0*ones, 
+    2.0*ones,
+    15, 0.1, 0);
+
+  // -maybe it should start with randomized phases, too
+  // -may be useful for "drone" sounds
 
 
 
