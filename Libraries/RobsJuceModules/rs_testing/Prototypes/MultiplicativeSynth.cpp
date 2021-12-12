@@ -49,12 +49,18 @@ std::vector<T> rsMultiplicativeSynth<T>::renderOutput(int numSamples)
   // maybe the highpass should be optional - instead we could just subtract DC in the normalization
   // step
 
+  // Apply gain (this formula is still a bit ad-hoc - todo: figure out, if it's good):
+  T p = getSumOfSquaresOfWeights();   // power...i think
+  T g = 1 / sqrt(p);
+  RAPT::rsArrayTools::scale(&y[0], numSamples, g*gain);
+
   // ToDo: normalize or apply a gain factor derived from the weight-arrays
-  RAPT::rsArrayTools::normalize(&y[0], numSamples);
+  //RAPT::rsArrayTools::normalize(&y[0], numSamples);
 
 
   return y;
 }
+
 
 
 // rename to getNumStages - a stage is a pair of an operator and a combinator
@@ -70,6 +76,18 @@ int rsMultiplicativeSynth<T>::getNumPartials()
   // ToDo: Write a (variadic template) function that takes an arbitrary number of stdd:vector and
   // returns the minimum of all of the lengths. maybe rsMinSize(...vectors...). That could be often 
   // convenient - for example, here. Sdd it to RAPT StandardContainerTools.h
+}
+
+template<class T>
+T rsMultiplicativeSynth<T>::getSumOfSquaresOfWeights()
+{
+  using AT = RAPT::rsArrayTools;
+  int N = getNumPartials();
+  T sum(0);
+  sum += AT::sumOfSquares(&cmWeightsA[0], N);
+  sum += AT::sumOfSquares(&cmWeightsB[0], N);
+  sum += AT::sumOfSquares(&cmWeightsP[0], N);
+  return sum;
 }
 
 /*

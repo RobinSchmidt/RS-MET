@@ -16,6 +16,8 @@ public:
   void setSampleRate(T newRate) { sampleRate = newRate; }
   void setBaseFrequency(T newFreq) { baseFreq = newFreq; }
 
+  void setGain(T newGain) { gain = newGain; }
+
   void setOperatorFreqFactors(const std::vector<T>& newFactors) { opFreqFactors = newFactors; }
 
   void setCombinatorWeightsA(const std::vector<T>& newWeights) { cmWeightsA = newWeights; }
@@ -30,8 +32,11 @@ public:
 
 protected:
 
+  T getSumOfSquaresOfWeights();
+
   T baseFreq   = 440;
   T sampleRate = 44100;
+  T gain       = 1.0;
 
   std::vector<T> opFreqFactors;  /**< Operator frequency multipliers.       */
   std::vector<T> cmWeightsA;     /**< Combinator weights for input A.       */

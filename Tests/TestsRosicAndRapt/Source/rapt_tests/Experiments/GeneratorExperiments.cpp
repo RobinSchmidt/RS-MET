@@ -2906,11 +2906,11 @@ void multiplicativeSynth()
   ms.setCombinatorWeightsA( wA);
   ms.setCombinatorWeightsB( wB);
   ms.setCombinatorWeightsP( wP);
+  ms.setGain(1.0);
 
-  //Vec y;
 
   // Define a function to synthesize a sound and write it to a file:
-  auto synthesize = [&](const char* name, Vec ff, Vec wA, Vec wB, Vec wP)
+  auto renderFile = [&](const char* name, Vec ff, Vec wA, Vec wB, Vec wP)
   {
     ms.setOperatorFreqFactors(ff);
     ms.setCombinatorWeightsA( wA);
@@ -2920,34 +2920,40 @@ void multiplicativeSynth()
     rosic::writeToMonoWaveFile(name, &y[0], N, (int)fs);
   };
 
-  // Synthesize various sounds:
-  synthesize("MulSynthSaw.wav", 
+  // Render various sounds:
+  renderFile("MulSynthSaw.wav", 
     {1,2,4,8,16,32,64,128}, 
     0.0*ones, 
     1.0*ones, 
     2.0*ones);
 
-  synthesize("MulSynthSqr.wav", 
+  renderFile("MulSynthSqr.wav", 
     {1,2,4,8,16,32,64,128}, 
     0.0*ones, 
     {1,0,0,0,0,0,0,0}, 
     2.0*ones);
 
-  synthesize("MulSynthSawDet.wav", 
+  renderFile("MulSynthSawDet.wav", 
     {1.0, 2.0017, 4.0013, 8.0032, 16.0023, 32.0054, 64.0073, 128.0097}, 
     0.0*ones, 
     1.0*ones, 
     2.0*ones);
 
-  synthesize("MulSynthSqrDet.wav", 
+  renderFile("MulSynthSqrDet.wav", 
     {1.0, 2.0017, 4.0013, 8.0032, 16.0023, 32.0054, 64.0073, 128.0097}, 
     0.0*ones, 
     {1,0,0,0,0,0,0,0}, 
     2.0*ones);
+
+
 
 
 
   // ToDo:
+  // -Sum together multiple of these signals, each with slightly different detunings.
+  //  -we need to find an algo to programmatically set the detunings - maybe using random numbers
+  //  -maybe factor out a render function from renderFile, call it multiple times, each time with
+  //   a slightly modified freq array, sum them up, write to file
   // -Use oversampling and anti-aliasing by spectral truncation in the synth engine (just stop 
   //  creating more products, if some limit is reached)
   // -Try to find a good formula to compute a gain factor form the weight arrays. maybe take the
