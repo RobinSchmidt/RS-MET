@@ -2887,7 +2887,7 @@ void multiplicativeSynth()
   using Vec  = std::vector<Real>;
 
   // User parameters:
-  int  N  = 500;     // number of samples to render
+  int  N  = 2000;    // number of samples to render
   Real fs = 48000;   // sample rate
   Real f0 = 93.75;   // base frequency (fundamental in case of harmonic spectra)
 
@@ -2895,7 +2895,9 @@ void multiplicativeSynth()
   rsMultiplicativeSynth<Real> ms;
   ms.setBaseFrequency(f0);
   ms.setSampleRate(fs);
-  Vec freqFactors({1,2,4,8,16,32,64,128});
+  //Vec freqFactors({1,2,4,8,16,32,64,128});
+  //Vec freqFactors({1,2,4,8,16,32,64});
+  Vec freqFactors({1,2,4,8,16,32});
   int numOps = (int)freqFactors.size();
   Vec ones   = rsConstantVector(numOps, 1.0);
   Vec wA     = 1.0 * ones;
@@ -2915,6 +2917,8 @@ void multiplicativeSynth()
   // ToDo:
   // -Use oversampling and anti-aliasing by spectral truncation in the synth engine (just stop 
   //  creating more products, if some limit is reached)
+  // -Try to find a good formula to compute a gain factor form the weight arrays. maybe take the
+  //  sqrt of the sum of squares of all weights...or maybe of the sum of absolute values
 
   int dummy = 0;
 }
