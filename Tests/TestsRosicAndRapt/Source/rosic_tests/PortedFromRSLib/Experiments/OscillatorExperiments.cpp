@@ -176,6 +176,10 @@ void phaseShapingCurvesRational()
     plt.addDataArrays(N, x, y);
   }
   plt.plot();
+
+  // ToDo:
+  // -Use shaping function y(x) = (a + b*x) / (c + dx) and require: y(0)=0, y(1)=1, y'(0)=y'(1)
+  //  (1) leads to a=0, then (2) leads to b= c+d
 }
 
 vector<double> createPhase(int N, double f, double fs)

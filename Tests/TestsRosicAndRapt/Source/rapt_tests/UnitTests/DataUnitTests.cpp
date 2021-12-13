@@ -199,7 +199,27 @@ bool testTokenize()
   return ok;
 }
 
-bool arrayUnitTest()
+
+
+
+
+template<class T>
+bool rsAreSameSize(const std::vector<T>& a, const std::vector<T>& b) 
+{ 
+  return a.size() == b.size();
+}
+template<class T, class ... Rest>
+bool rsAreSameSize(const std::vector<T>& a, const std::vector<T>& b, Rest ...rest)
+{
+  return rsAreSameSize(a, b) && rsAreSameSize(b, rest...);
+}
+// ToDo: 
+// -implement also rsMinSize that computes the minimum of the sizes of all vectors
+// -maybe generalize from vector to any collection that supports size()
+
+
+
+bool arrayUnitTest()  // maybe rename to stdVectorUnitTest
 {
   bool ok = true;
 
@@ -224,10 +244,20 @@ bool arrayUnitTest()
 
   // int s = sum(3, &u[0]); // sum function doesn't compile
 
+  // Test checking if an arbitrary number of vectors have all the same size:
+  u = {1,2,3};
+  v = {4,5,6};
+  w = {7,8,9};
+  ok &= rsAreSameSize(u, v);
+  ok &= rsAreSameSize(u, v, w);
+  ok &= rsAreSameSize(u, v, w, u);
+  w = {7,8};
+  ok &= !rsAreSameSize(u, v, w);
+  ok &= !rsAreSameSize(u, v, u, w);
+
 
   return ok;
 }
-
 
 template<class T>
 class rsBinaryHeapTest : public rsBinaryHeap<T>

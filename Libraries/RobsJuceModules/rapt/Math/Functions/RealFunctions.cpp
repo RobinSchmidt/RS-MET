@@ -73,6 +73,15 @@ void rsEllipticIntegral(T k, T *K, T *Kprime, int M)
   delete[] v;
   delete[] vp;
 }
+// ToDo: get rid of new/delete - use static sized stack allocated memory or, if possible, try to 
+// convert everything to on-the-fly computations or let the caller pass a workspace. Also, we don't
+// need different arrays for v and vp. We can just reuse v. Maybe we should warp the block from 
+// rsLanden(..) to *K = into a samll lambda function, also rsLanden itself could be an internal
+// lambda
+
+
+// see also:
+// https://github.com/jgaeddert/liquid-dsp/blob/master/src/filter/src/ellip.c
 
 // Computes auxiliary functions f(x) and g(x) needed in the evaluation of Si(x) and Ci(x).
 // This approximation follows "Handbook of mathematical functions" by Abramowitz/Stegun, 

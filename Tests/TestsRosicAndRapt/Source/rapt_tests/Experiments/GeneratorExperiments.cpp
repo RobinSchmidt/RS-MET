@@ -2898,9 +2898,9 @@ void multiplicativeSynth()
   Vec freqFactors({1,2,4,8,16,32,64,128});
   int numOps = (int)freqFactors.size();
   Vec ones   = rsConstantVector(numOps, 1.0);
-  Vec wA     = 0.0 * ones;
-  Vec wB     = 1.0 * ones;
-  Vec wP     = 2.0 * ones;
+  Vec wA     = 0.0 * ones;  // weight for old output (i.e. of previous stage)
+  Vec wB     = 1.0 * ones;  // weight for new oscillator output
+  Vec wP     = 2.0 * ones;  // weight for product
   ms.setBaseFrequency(f0);
   ms.setOperatorFreqFactors(freqFactors);
   ms.setCombinatorWeightsA( wA);
@@ -2929,31 +2929,31 @@ void multiplicativeSynth()
     rosic::writeToMonoWaveFile(name, &y[0], N, (int)fs);
   };
 
-  // Render various sounds:
+  // Render basic sounds:
   renderFile("MulSynthSaw.wav", 
     {1,2,4,8,16,32,64,128}, 
     0.0*ones, 
     1.0*ones, 
     2.0*ones);
-
   renderFile("MulSynthSqr.wav", 
     {1,2,4,8,16,32,64,128}, 
     0.0*ones, 
     {1,0,0,0,0,0,0,0}, 
     2.0*ones);
-
   renderFile("MulSynthSawDet.wav", 
     {1.0, 2.0017, 4.0013, 8.0032, 16.0023, 32.0054, 64.0073, 128.0097}, 
     0.0*ones, 
     1.0*ones, 
     2.0*ones);
-
   renderFile("MulSynthSqrDet.wav", 
     {1.0, 2.0017, 4.0013, 8.0032, 16.0023, 32.0054, 64.0073, 128.0097}, 
     0.0*ones, 
     {1,0,0,0,0,0,0,0}, 
     2.0*ones);
 
+
+  // Render sounds with subharmonics
+  //...
 
 
   // Render unison sounds:
@@ -2988,6 +2988,17 @@ void multiplicativeSynth()
     1.0*ones, 
     2.0*ones,
     7, 0.05, 0);
+
+  renderFileUnison("MulSynthSawPlusUnison_V7_D05_S0.wav", 
+    {1,2,4,8,16,32,64,128}, 
+    1.0*ones, 
+    1.0*ones, 
+    2.0*ones,
+    7, 0.05, 0); 
+    // Clips! Probably due to constructive interference which happens, when the output of the 
+    // previous stage is paased through
+
+
   renderFileUnison("MulSynthSawUnison_V15_D05_S0.wav", 
     {1,2,4,8,16,32,64,128}, 
     0.0*ones, 
@@ -3000,9 +3011,17 @@ void multiplicativeSynth()
     1.0*ones, 
     2.0*ones,
     15, 0.1, 0);
-
+  renderFileUnison("MulSynthSqrUnison_V15_D1_S0.wav", 
+    {1,2,4,8,16,32,64,128}, 
+    0.0*ones, 
+    {1,0,0,0,0,0,0,0}, 
+    2.0*ones,
+    15, 0.1, 0);
   // -maybe it should start with randomized phases, too
   // -may be useful for "drone" sounds
+  // -reminds a little bit of comb-filters driven by noise
+  // -maybe try some waveshaping, maybe a smooth tanh or 1 / (1 + x^2)
+  // -
 
 
 
@@ -3017,6 +3036,19 @@ void multiplicativeSynth()
   //  creating more products, if some limit is reached)
   // -Try to find a good formula to compute a gain factor form the weight arrays. maybe take the
   //  sqrt of the sum of squares of all weights...or maybe of the sum of absolute values
+  // -Try different algorithms, i.e. different connections between oscillators and combinators
+  
+
+  // Ideas:
+  // -When replacing the sine-oscillators with narrow bandpasses, maybe the technique can be used
+  //  to create something similar to a comb filter but with more freedom where to place the 
+  //  frequencies? In particular, "combs" with inharmonic spectra. Maybe call the technique
+  //  "multiplicative filtering". This could be a weird effect, i guess. Maybe it should use
+  //  pre-whitening on the input and post-dewhitening of the output in order to drive all filters
+  //  with roughly equally loud inputs.
+
+  // Notes:
+  //
 
   int dummy = 0;
 }

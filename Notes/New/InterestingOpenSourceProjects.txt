@@ -34,11 +34,31 @@ https://github.com/mbrucher/AudioTK
 An audio digital processing toolbox based on a workflow/pipeline principle http://matt.eifelle.com/tag/audio-toolkit/
 
 https://github.com/christophhart/HISE
-HISE is a sampler.
+HISE is a software sampler (i guess, inspired by NI Kontakt).
 
-todo: surge, APE, IPlug2
+https://github.com/VCVRack/Rack
+VCV Rack is a modular synthesizer inspired by modular hardware
 
-SourceForge:
+https://github.com/surge-synthesizer/surge
+Surge is a software synthesizer
+
+https://bitbucket.org/Mayae/ape/src/master/
+APE (Audio Programming Environment): Audio plugin that allows for C++ scripting
 
 https://sourceforge.net/projects/mda-vst/
 mda VST plug-ins
+
+https://github.com/sfztools/sfizz/
+sfizz is an sfz player made with juce
+
+https://github.com/audacity/audacity
+Audacity is a sample editor
+
+https://github.com/LMMS/lmms
+LMMS is a DAW
+
+todo: IPlug2, tracktion engine, juce forks with lv2
+
+sort this list by relevance
+
+
