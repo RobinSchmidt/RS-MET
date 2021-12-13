@@ -202,21 +202,34 @@ bool testTokenize()
 
 
 
-
+/** Given two containers a,b of the same type, this functions returs true, iff both have the same
+size. */
 template<class T>
-bool rsAreSameSize(const std::vector<T>& a, const std::vector<T>& b) 
+bool rsAreSameSize(const T& a, const T& b) 
 { 
   return a.size() == b.size();
 }
+
+/** Given an arbitrary number of containers a,b,... of the same type, this functions returs true, 
+iff all of them have the same size. */
 template<class T, class ... Rest>
-bool rsAreSameSize(const std::vector<T>& a, const std::vector<T>& b, Rest ...rest)
+bool rsAreSameSize(const T& a, const T& b, Rest ...rest)
 {
   return rsAreSameSize(a, b) && rsAreSameSize(b, rest...);
 }
-// ToDo: 
-// -implement also rsMinSize that computes the minimum of the sizes of all vectors
-// -maybe generalize from vector to any collection that supports size()
 
+template<class T>
+size_t rsMinSize(const T& a, const T& b) 
+{ 
+  return rsMin(a.size(), b.size());
+}
+
+template<class T, class ... Rest>
+size_t rsMinSize(const T& a, const T& b, Rest ...rest)
+{
+  return rsMin(rsMinSize(a, b), rsMinSize(b, rest...));
+}
+// move to rapt and document...
 
 
 bool arrayUnitTest()  // maybe rename to stdVectorUnitTest
@@ -254,6 +267,16 @@ bool arrayUnitTest()  // maybe rename to stdVectorUnitTest
   w = {7,8};
   ok &= !rsAreSameSize(u, v, w);
   ok &= !rsAreSameSize(u, v, u, w);
+
+  // Check finding the smallest size of a bunch of containers
+  u = {1,2};
+  v = {3,4,5};
+  w = {6,7,8,9};
+  ok &= rsMinSize(u, v) == 2;
+  ok &= rsMinSize(v, u) == 2;
+  ok &= rsMinSize(u, v, w) == 2;
+  ok &= rsMinSize(v, w, u) == 2;
+  ok &= rsMinSize(w, u, v) == 2;
 
 
   return ok;
