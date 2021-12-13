@@ -38,13 +38,41 @@ public:
   // functions for compatibility with std::vector
 
 
+  T* data() { return _data; }
+
   size_t size() const { return _numElems; }
 
-  T& operator[](const int i) { return _data[i]; }
-  const T& operator[](const int i) const { return _data[i]; }
+
+
+
 
   // todo: iterators, dereferencing, etc
 
+  class iterator
+  {
+  public:  // try to get rid
+    iterator(T* data, size_t index) : _data(data), _index(index) { }
+  //private:
+    T* _data = nullptr;
+    size_t _index = 0;
+  };
+
+  iterator begin() { return iterator(_data, 0);         }
+  iterator end()   { return iterator(_data, _numElems); }  // or -1?
+
+  // resize can perhaps only be done for shrinking the size...unless the caller passes on 
+  // construction a pointer that points to more allocated memory than N indicates....hmm...
+
+
+  T& operator[](const int i) { return _data[i]; }
+  const T& operator[](const int i) const { return _data[i]; }
+  // todo: overload for size_t and, importantly, iterator
+
+
+  T& operator[](const iterator i) 
+  { 
+    return _data[i._index]; 
+  }
 
 
 
@@ -52,6 +80,8 @@ protected:
 
   T* _data = nullptr;
   size_t _numElems = 0;
+
+
 
 };
 

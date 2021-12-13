@@ -25,11 +25,6 @@ public:
   void setCombinatorWeightsP(const std::vector<T>& newWeights) { cmWeightsP = newWeights; }
 
 
-
-
-  int getNumPartials();
-
-
   std::vector<T> renderOutput(int numSamples);
 
 protected:

@@ -78,37 +78,11 @@ std::vector<T> rsMultiplicativeSynth<T>::renderOutput(int numSamples)
   return y;
 }
 
-
-
-// rename to getNumStages - a stage is a pair of an operator and a combinator
-template<class T>
-int rsMultiplicativeSynth<T>::getNumPartials()  
-{
-  return (int) rsMinSize(opFreqFactors, cmWeightsA, cmWeightsB, cmWeightsP);
-
-  /*
-  size_t n = opFreqFactors.size();
-  n = std::min(n, cmWeightsA.size());
-  n = std::min(n, cmWeightsB.size());
-  n = std::min(n, cmWeightsP.size());
-  return (int) n;
-  */
-
-  // ToDo: Write a (variadic template) function that takes an arbitrary number of stdd:vector and
-  // returns the minimum of all of the lengths. maybe rsMinSize(...vectors...). That could be often 
-  // convenient - for example, here. Sdd it to RAPT StandardContainerTools.h
-
-  // and/or: write a function, that checks, if all vectors have equal length
-  // ...done - maybe we should assert that all vectors have the same size in renderOutput. if not
-  // just return an empty result. This code is only meant to be used for experimenting and testing 
-  // anyway, so error handling by only debug-assertions is acceptable
-}
-
 template<class T>
 T rsMultiplicativeSynth<T>::getSumOfSquaresOfWeights()
 {
   using AT = RAPT::rsArrayTools;
-  int N = getNumPartials();
+  int N = (int) rsMinSize(cmWeightsA, cmWeightsB, cmWeightsP);
   T sum(0);
   sum += AT::sumOfSquares(&cmWeightsA[0], N);
   sum += AT::sumOfSquares(&cmWeightsB[0], N);

@@ -12,6 +12,37 @@ using namespace RAPT;
 //  return accu;
 //}
 
+bool testContainerFuncs()
+{
+  bool ok = true;
+
+  typedef std::vector<int> Vec;
+  Vec u, v, w;
+
+  // Test checking if an arbitrary number of vectors have all the same size:
+  u = {1,2,3};
+  v = {4,5,6};
+  w = {7,8,9};
+  ok &= rsAreSameSize(u, v);
+  ok &= rsAreSameSize(u, v, w);
+  ok &= rsAreSameSize(u, v, w, u);
+  w = {7,8};
+  ok &= !rsAreSameSize(u, v, w);
+  ok &= !rsAreSameSize(u, v, u, w);
+
+  // Check finding the smallest size of a bunch of containers
+  u = {1,2};
+  v = {3,4,5};
+  w = {6,7,8,9};
+  ok &= rsMinSize(u, v) == 2;
+  ok &= rsMinSize(v, u) == 2;
+  ok &= rsMinSize(u, v, w) == 2;
+  ok &= rsMinSize(v, w, u) == 2;
+  ok &= rsMinSize(w, u, v) == 2;
+
+  return ok;
+}
+
 template <class T>
 void movingAverage5pt(const T* x, int N, T* y)
 {
@@ -199,6 +230,46 @@ bool testTokenize()
   return ok;
 }
 
+bool rsArrayViewTest() 
+{
+  bool ok = true;
+
+  using Vec = std::vector<int>;
+  using AV  = rsArrayView<int>;
+
+  Vec vec     = {4,4,7,3,8,6,4,6,4,3};
+  int raw[10] = {4,4,7,3,8,6,4,6,4,3};
+
+  std::sort(vec.begin(), vec.end());
+
+  // Now, let's try to apply std::sort ot our raw array by wrapping it into an rsArrayView which
+  // gives it (partially) the interface of std::vector
+  int N = 10;
+  AV wrapped(raw, N);
+
+  AV::iterator itBegin = wrapped.begin();
+  AV::iterator itEnd   = wrapped.end();    // shall not be dereferenced
+
+  ok &= wrapped[itBegin] == 4;
+
+
+
+
+
+
+
+
+  //std::sort(wrapped.begin(), wrapped.end());
+  // todo: implement begin(), end() - this should return an iterator for rsArrayView which should
+  // just be a size_t
+
+
+
+
+
+  return ok;
+}
+
 bool arrayUnitTest()  // maybe rename to stdVectorUnitTest
 {
   bool ok = true;
@@ -218,32 +289,15 @@ bool arrayUnitTest()  // maybe rename to stdVectorUnitTest
   ok &= a == Vec({ 0,1,2,3, 8,9 });
 
 
+  ok &= testContainerFuncs();
   ok &= testArrayFiltering();
   ok &= testArrayMisc();
   ok &= testTokenize();
+  ok &= rsArrayViewTest();
 
   // int s = sum(3, &u[0]); // sum function doesn't compile
 
-  // Test checking if an arbitrary number of vectors have all the same size:
-  u = {1,2,3};
-  v = {4,5,6};
-  w = {7,8,9};
-  ok &= rsAreSameSize(u, v);
-  ok &= rsAreSameSize(u, v, w);
-  ok &= rsAreSameSize(u, v, w, u);
-  w = {7,8};
-  ok &= !rsAreSameSize(u, v, w);
-  ok &= !rsAreSameSize(u, v, u, w);
 
-  // Check finding the smallest size of a bunch of containers
-  u = {1,2};
-  v = {3,4,5};
-  w = {6,7,8,9};
-  ok &= rsMinSize(u, v) == 2;
-  ok &= rsMinSize(v, u) == 2;
-  ok &= rsMinSize(u, v, w) == 2;
-  ok &= rsMinSize(v, w, u) == 2;
-  ok &= rsMinSize(w, u, v) == 2;
 
 
   return ok;
