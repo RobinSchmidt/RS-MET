@@ -237,8 +237,8 @@ bool rsArrayViewTest()
   using Vec = std::vector<int>;
   using AV  = rsArrayView<int>;
 
-  Vec vec     = {4,5,7,3,8,6,4,6,4,3};
-  int raw[10] = {4,5,7,3,8,6,4,6,4,3};
+  Vec vec     = {4,5,7,3,8,6,4,6,2,3};
+  int raw[10] = {4,5,7,3,8,6,4,6,2,3};
 
   std::sort(vec.begin(), vec.end());
 
@@ -252,20 +252,23 @@ bool rsArrayViewTest()
   ok &= wrapped[itBegin] == 4;
 
   AV::iterator it = itBegin;
-  ok &= wrapped[it] == 4;
-  ++it;
-  ok &= wrapped[it] == 5;
-  ++it;
-  ok &= wrapped[it] == 7;
+  ok &= wrapped[it]   == 4; ++it;
+  ok &= wrapped[it]   == 5; ++it;
+  ok &= wrapped[it]   == 7; it++;
+  ok &= wrapped[it]   == 3; it++;
+  ok &= wrapped[it]   == 8;
+  ok &= wrapped[it++] == 8;
+  ok &= wrapped[it]   == 6;
+  ok &= wrapped[++it] == 4;
+  ok &= wrapped[--it] == 6;
+  ok &= wrapped[it--] == 6;
+  ok &= wrapped[it]   == 8;
 
 
+  std::sort(&raw[0], &raw[10]);  // OK - that works
 
-
-
-
-  //std::sort(wrapped.begin(), wrapped.end());
-  // todo: implement begin(), end() - this should return an iterator for rsArrayView which should
-  // just be a size_t
+  //std::sort(wrapped.begin(), wrapped.end());  // that doesn't yet
+  // todo: implement binary -  for iterator
 
 
 

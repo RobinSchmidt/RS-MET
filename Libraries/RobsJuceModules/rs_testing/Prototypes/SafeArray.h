@@ -53,9 +53,41 @@ public:
   public:  // try to get rid and make as much as possible private
     iterator(T* data, size_t index) : _data(data), _index(index) {}
 
-    iterator& operator++() { _index++; return *this; } // pre-inc
+    iterator& operator++()    { _index++; return *this; }                    // pre-inc
+    iterator  operator++(int) { iterator tmp = *this; ++*this; return tmp; } // post-inc
+    iterator& operator--()    { _index--; return *this; }                    // pre-dec
+    iterator  operator--(int) { iterator tmp = *this; --*this; return tmp; } // post-dec
 
-    // https://docs.microsoft.com/en-us/cpp/cpp/increment-and-decrement-operator-overloading-cpp?view=msvc-170
+
+    //iterator operator+(const iterator& r) const { return iterator(_data, _index + r._index); }
+    //iterator operator-(const iterator& r) const { return iterator(_data, _index - r._index); }
+    // wait..no...that makes no sense: r should be a size_t, not another irterator
+    // std::sort requires a binary - operator that takes two iterators as inputs and returns
+    // some sort of "iterator-difference" type
+    // https://stackoverflow.com/questions/46695349/how-to-handle-iteratordifference-type-when-you-have-no-way-of-measuring-the-di
+    // https://en.cppreference.com/w/cpp/iterator/iterator_traits
+    // https://www.py4u.net/discuss/66628
+
+
+    // hmmm - none of this compiles:
+    //std::ptrdiff_t operator-(const iterator& r) const { return _index - r._index; }
+
+    //size_t operator-(const iterator& r) const { return _index - r._index; }
+
+    //_Iter_diff_t<iterator> operator-(const iterator& r) const { return _index - r._index; }
+
+    //template<class iterator>
+    //std::iterator_traits<iterator>::difference_type 
+    //  operator-(const iterator& r) const { return _index - r._index; }
+
+    //template<class iter>
+    //std::iterator_traits<iter>::difference_type 
+    //  operator-(const iterator& r) const { return _index - r._index; }
+
+
+    // todo: 
+    // -binary +,- and +=, -=
+    // -dereferencing -> (...i think)
 
 
     T* _data = nullptr;
@@ -84,8 +116,6 @@ protected:
   T* _data = nullptr;
   size_t _numElems = 0;
 
-
-
 };
 
 // see:
@@ -94,6 +124,10 @@ protected:
 
 // https://stackoverflow.com/questions/3182843/writing-stl-compatible-iterators
 // https://www.fluentcpp.com/2018/04/24/following-conventions-stl/
+
+// https://docs.microsoft.com/en-us/cpp/cpp/increment-and-decrement-operator-overloading-cpp?view=msvc-170
+
+
 
 //=================================================================================================
 
