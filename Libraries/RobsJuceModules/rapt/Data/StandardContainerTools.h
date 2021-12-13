@@ -5,7 +5,50 @@
 library (STL), such as std::vector, std::map, etc. */
 
 //=================================================================================================
-// Conveniennce functions for std::vector
+// Convenience functions for any sort of container that has a size() function
+
+/** Given two containers a,b of the same type, this functions returns true, iff both have the same
+size. */
+template<class T>
+bool rsAreSameSize(const T& a, const T& b) 
+{ 
+  return a.size() == b.size();
+}
+
+/** Given an arbitrary number of containers a,b,... of the same type, this functions returns true, 
+iff all of them have the same size. */
+template<class T, class ... Rest>
+bool rsAreSameSize(const T& a, const T& b, Rest ...rest)
+{
+  return rsAreSameSize(a, b) && rsAreSameSize(b, rest...);
+}
+
+/** Given two containers a,b of the same type, this function returns the minimum of their two 
+sizes. */
+template<class T>
+size_t rsMinSize(const T& a, const T& b) 
+{ 
+  return rsMin(a.size(), b.size());
+}
+
+/** Given an arbitrary number of containers a,b,... of the same type, this functions returns the
+minimum of all of their sizes. */
+template<class T, class ... Rest>
+size_t rsMinSize(const T& a, const T& b, Rest ...rest)
+{
+  return rsMin(rsMinSize(a, b), rsMinSize(b, rest...));
+}
+
+// ToDo: 
+// -in C++20, use a concept that encapsulates the feature of having a size() function. Maybe 
+//  SizedContainer or just Sized...it coul actually also apply to numbers, in which case we may 
+//  interpret the size as absolute value or norm. But then we would need to replace the method 
+//  calls to size with a free function call to some rsSize function. But maybe "size" is too 
+//  general a term here - what we actually mean is a number of elements...a cardinality - but 
+//  that's too much a math term
+
+//=================================================================================================
+// Convenience functions for std::vector
 // maybe wrap into a class rsStdVectorTools
 
 template<class T>

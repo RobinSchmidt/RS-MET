@@ -1,5 +1,65 @@
+// todo: rename file to rsArrays - we have different variants of arrays here..
 
 
+/** just a STUB at the moment, experimental
+
+An attempt to wrap a raw C-array to give it (partially) the interface of std::vector. The goal
+is to make std::algorithms like std::sort, std::partial_sort, std::transform, std::accumulate, etc.
+available to raw arrays. If you have a C-array in your code like so:
+
+  int N = 10;
+  float *a = malloc(N*sizeof(float));
+  // ...
+
+you could wrap an rsArrayView around it and apply algorithms from the standard library to it:
+
+  rsArrayView<float> v(a, N);
+  std::sort(v.begin(), v.end(), [](float a, float b){ return a < b; });
+
+...that's the goal, at least. The rationale is that much of the time, we have data as raw arrays or
+wrapped in some data structure other than std::vector or similar and we want to harness the 
+std:algorithms in these cases, too. 
+
+Maybe later, I can add my own algorithms, like:
+
+  rsConvolve(const rsArrayView<T>& x, const rsArrayView<T>& h, rsArrayView<T>& y);
+
+*/
+
+template<class T>
+class rsArrayView
+{
+
+public:
+
+  rsArrayView(T* data, size_t numElements) : _data(data), _numElems(numElements) {}
+
+
+  // functions for compatibility with std::vector
+
+
+  size_t size() const { return _numElems; }
+
+  T& operator[](const int i) { return _data[i]; }
+  const T& operator[](const int i) const { return _data[i]; }
+
+  // todo: iterators, dereferencing, etc
+
+
+
+
+protected:
+
+  T* _data = nullptr;
+  size_t _numElems = 0;
+
+};
+
+// see:
+// https://en.cppreference.com/w/cpp/container/vector
+// https://en.cppreference.com/w/cpp/algorithm/sort
+
+//=================================================================================================
 
 template<class T>
 class rsSafeArray1

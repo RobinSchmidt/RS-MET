@@ -199,39 +199,6 @@ bool testTokenize()
   return ok;
 }
 
-
-
-
-/** Given two containers a,b of the same type, this functions returs true, iff both have the same
-size. */
-template<class T>
-bool rsAreSameSize(const T& a, const T& b) 
-{ 
-  return a.size() == b.size();
-}
-
-/** Given an arbitrary number of containers a,b,... of the same type, this functions returs true, 
-iff all of them have the same size. */
-template<class T, class ... Rest>
-bool rsAreSameSize(const T& a, const T& b, Rest ...rest)
-{
-  return rsAreSameSize(a, b) && rsAreSameSize(b, rest...);
-}
-
-template<class T>
-size_t rsMinSize(const T& a, const T& b) 
-{ 
-  return rsMin(a.size(), b.size());
-}
-
-template<class T, class ... Rest>
-size_t rsMinSize(const T& a, const T& b, Rest ...rest)
-{
-  return rsMin(rsMinSize(a, b), rsMinSize(b, rest...));
-}
-// move to rapt and document...
-
-
 bool arrayUnitTest()  // maybe rename to stdVectorUnitTest
 {
   bool ok = true;

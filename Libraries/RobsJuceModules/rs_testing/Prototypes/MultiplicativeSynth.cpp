@@ -2,8 +2,25 @@
 template<class T>
 std::vector<T> rsMultiplicativeSynth<T>::renderOutput(int numSamples)
 {
-  // Create an array of sine-oscillators and set up the frequencies:
-  int numStages = getNumPartials();
+  rsAssert(rsAreSameSize(opFreqFactors, cmWeightsA, cmWeightsB, cmWeightsP), 
+    "All parallel arrays must have the same size" );
+  // In this prototype, we a re using a structure of arrays (SoA) approach to define the 
+  // frequencies of the oscillators, weights of the combinators, etc. That makes it convenient to
+  // programatically set, say, all frequencies at once by passing a vector of frequencies. This
+  // approach requires some care at the cleint's side to make sure that all the parallel arrays 
+  // have the same length. Production code may probably preferably use some sort of array of 
+  // structures (AoS) approach - perhaps with two structures (for osc-params and 
+  // combiantor-params) and having and array of each because that's actaully more natural and in 
+  // production code, we don't want to pass vectors around anyway because of all the copying and
+  // allocs....
+
+  int numStages = rsMinSize(opFreqFactors, cmWeightsA, cmWeightsB, cmWeightsP);
+  // ...well, actually, we can tolerate different length arrays - we just take the shortest of
+  // them here. But it's probably an error at the call site anyway, if the lengths are different.
+  // Oh, and our computed gain factor from getSumOfSquaresOfWeights() will probably come out wrong
+  // in this case - so yeah, you should take care to give the arrays the correct lengths.
+
+
   using SineIt = RAPT::rsSineIterator<T>; // maybe keep that as member
   std::vector<SineIt> sines(numStages);
   for(int i = 0; i < numStages; i++)
@@ -67,17 +84,24 @@ std::vector<T> rsMultiplicativeSynth<T>::renderOutput(int numSamples)
 template<class T>
 int rsMultiplicativeSynth<T>::getNumPartials()  
 {
+  return (int) rsMinSize(opFreqFactors, cmWeightsA, cmWeightsB, cmWeightsP);
+
+  /*
   size_t n = opFreqFactors.size();
   n = std::min(n, cmWeightsA.size());
   n = std::min(n, cmWeightsB.size());
   n = std::min(n, cmWeightsP.size());
   return (int) n;
+  */
 
   // ToDo: Write a (variadic template) function that takes an arbitrary number of stdd:vector and
   // returns the minimum of all of the lengths. maybe rsMinSize(...vectors...). That could be often 
   // convenient - for example, here. Sdd it to RAPT StandardContainerTools.h
 
   // and/or: write a function, that checks, if all vectors have equal length
+  // ...done - maybe we should assert that all vectors have the same size in renderOutput. if not
+  // just return an empty result. This code is only meant to be used for experimenting and testing 
+  // anyway, so error handling by only debug-assertions is acceptable
 }
 
 template<class T>
