@@ -237,8 +237,8 @@ bool rsArrayViewTest()
   using Vec = std::vector<int>;
   using AV  = rsArrayView<int>;
 
-  Vec vec     = {4,4,7,3,8,6,4,6,4,3};
-  int raw[10] = {4,4,7,3,8,6,4,6,4,3};
+  Vec vec     = {4,5,7,3,8,6,4,6,4,3};
+  int raw[10] = {4,5,7,3,8,6,4,6,4,3};
 
   std::sort(vec.begin(), vec.end());
 
@@ -249,10 +249,14 @@ bool rsArrayViewTest()
 
   AV::iterator itBegin = wrapped.begin();
   AV::iterator itEnd   = wrapped.end();    // shall not be dereferenced
-
   ok &= wrapped[itBegin] == 4;
 
-
+  AV::iterator it = itBegin;
+  ok &= wrapped[it] == 4;
+  ++it;
+  ok &= wrapped[it] == 5;
+  ++it;
+  ok &= wrapped[it] == 7;
 
 
 

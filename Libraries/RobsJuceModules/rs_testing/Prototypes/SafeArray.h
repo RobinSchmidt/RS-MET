@@ -50,12 +50,18 @@ public:
 
   class iterator
   {
-  public:  // try to get rid
-    iterator(T* data, size_t index) : _data(data), _index(index) { }
-  //private:
+  public:  // try to get rid and make as much as possible private
+    iterator(T* data, size_t index) : _data(data), _index(index) {}
+
+    iterator& operator++() { _index++; return *this; } // pre-inc
+
+    // https://docs.microsoft.com/en-us/cpp/cpp/increment-and-decrement-operator-overloading-cpp?view=msvc-170
+
+
     T* _data = nullptr;
     size_t _index = 0;
   };
+
 
   iterator begin() { return iterator(_data, 0);         }
   iterator end()   { return iterator(_data, _numElems); }  // or -1?
@@ -69,10 +75,7 @@ public:
   // todo: overload for size_t and, importantly, iterator
 
 
-  T& operator[](const iterator i) 
-  { 
-    return _data[i._index]; 
-  }
+  T& operator[](const iterator i) { return _data[i._index]; }
 
 
 
@@ -88,6 +91,9 @@ protected:
 // see:
 // https://en.cppreference.com/w/cpp/container/vector
 // https://en.cppreference.com/w/cpp/algorithm/sort
+
+// https://stackoverflow.com/questions/3182843/writing-stl-compatible-iterators
+// https://www.fluentcpp.com/2018/04/24/following-conventions-stl/
 
 //=================================================================================================
 
