@@ -32,6 +32,12 @@ class rsArrayView
 
 public:
 
+
+  using difference_type = std::ptrdiff_t;
+
+
+
+
   rsArrayView(T* data, size_t numElements) : _data(data), _numElems(numElements) {}
 
 
@@ -67,9 +73,26 @@ public:
     // https://stackoverflow.com/questions/46695349/how-to-handle-iteratordifference-type-when-you-have-no-way-of-measuring-the-di
     // https://en.cppreference.com/w/cpp/iterator/iterator_traits
     // https://www.py4u.net/discuss/66628
+    // https://www.cplusplus.com/reference/iterator/iterator_traits/
+    // https://www.cplusplus.com/reference/iterator/iterator/
+
+    // https://www.fluentcpp.com/2018/05/08/std-iterator-deprecated/
+
+    // hmmm - none of this make std::sort work with the iterators:
+
+    //typedef std::ptrdiff_t difference_type;
+    //difference_type operator-(const iterator& r) const { return _index - r._index; }
+
+    //using difference_type = size_t;
+    //typedef size_t difference_type;
+    //difference_type operator-(const iterator& r) const { return _index - r._index; }
 
 
-    // hmmm - none of this compiles:
+    using difference_type = std::ptrdiff_t;
+    difference_type operator-(const iterator& r) const { return _data - r._data; }
+    //difference_type operator-(const iterator& r) const { return _index - r._index; }
+
+
     //std::ptrdiff_t operator-(const iterator& r) const { return _index - r._index; }
 
     //size_t operator-(const iterator& r) const { return _index - r._index; }

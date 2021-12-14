@@ -27,4 +27,23 @@ to miss looping over the last element - for example in EasyQ, when the user adds
 ...tbc...
 
 
+
+
+https://medium.com/@vgasparyan1995/how-to-write-an-stl-compatible-container-fc5b994462c6
+https://github.com/vgasparyan1995/prefix_tree/tree/master/include
+
+
+https://stackoverflow.com/questions/5454127/stl-compliant-container
+https://www.codeproject.com/Articles/4736/STL-compliant-container-example
+
+
+https://github.com/electronicarts/EASTL/
+Implementation of the STL that was called "fairly readable" somewhere
+...hmm - vector.h just typedefs iterator as T* and does not actually implement an internal
+class for iterators:
+  https://github.com/electronicarts/EASTL/blob/master/include/EASTL/vector.h
+maybe we should do the same
+
+
+
 */

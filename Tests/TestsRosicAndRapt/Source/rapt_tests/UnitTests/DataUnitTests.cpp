@@ -230,6 +230,13 @@ bool testTokenize()
   return ok;
 }
 
+template<class T>
+void stdSort(T* a, int N)
+{
+  std::sort(a, &a[N]);
+}
+// maybe move into rsArrayTools
+
 bool rsArrayViewTest() 
 {
   bool ok = true;
@@ -265,7 +272,14 @@ bool rsArrayViewTest()
   ok &= wrapped[it]   == 8;
 
 
-  std::sort(&raw[0], &raw[10]);  // OK - that works
+  stdSort(raw, N);
+
+
+
+  //std::sort(&raw[0], &raw[10]);  // OK - that works
+  // can we wrap this into a call like sort(raw, 10) maybe in rsArrayTools, have a function
+  // stdSort(T* x, int N) { std::sort(&x[0], &x[N]); }
+
 
   //std::sort(wrapped.begin(), wrapped.end());  // that doesn't yet
   // todo: implement binary -  for iterator
