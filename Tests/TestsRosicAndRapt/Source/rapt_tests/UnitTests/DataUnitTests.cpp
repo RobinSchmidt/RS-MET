@@ -230,13 +230,6 @@ bool testTokenize()
   return ok;
 }
 
-template<class T>
-void stdSort(T* a, int N)
-{
-  std::sort(a, &a[N]);
-}
-// maybe move into rsArrayTools
-
 bool rsArrayViewTest() 
 {
   bool ok = true;
@@ -272,8 +265,20 @@ bool rsArrayViewTest()
   ok &= wrapped[it]   == 8;
 
 
-  stdSort(raw, N);
+  using AT = rsArrayTools;
+  AT::stdSort(raw, N);
+  ok &= AT::isSortedAscending(raw, N);
 
+
+  // ToDo:
+  // -Wrap and test some more algorithms from std::algorithm, see
+  //  https://en.cppreference.com/w/cpp/algorithm
+  //  https://docs.microsoft.com/en-us/cpp/standard-library/algorithm-functions?view=msvc-170
+  //  https://www.youtube.com/watch?v=bFSnXNIsK4A
+  // -What about algorithms that actually change the size of the container (like remove) or 
+  //  produce a new container as output (like merge)? I think, remove returns an iterator to
+  //  the new end and merge takes an iterator to the output maybe a bit like AT::convolve.
+  //  -> figure out
 
 
   //std::sort(&raw[0], &raw[10]);  // OK - that works
@@ -284,12 +289,33 @@ bool rsArrayViewTest()
   //std::sort(wrapped.begin(), wrapped.end());  // that doesn't yet
   // todo: implement binary -  for iterator
 
+  return ok;
+}
 
+bool rsNonReAllocatingArrayTest()
+{
+  bool ok = true;
 
+  using NAA = rsNonReAllocatingArray<int>;
+
+  NAA a;
+
+  a.reserve(4);
+
+  // The first 4 elements fit in the first chunk:
+  a.push_back(0);
+  a.push_back(1);
+  a.push_back(2);
+  a.push_back(3);
+  // todo: add some checks
+
+  // Now, growth should happen because the capacity of the initial chunk is exceeded:
+  a.push_back(4);
 
 
   return ok;
 }
+
 
 bool arrayUnitTest()  // maybe rename to stdVectorUnitTest
 {
@@ -315,6 +341,7 @@ bool arrayUnitTest()  // maybe rename to stdVectorUnitTest
   ok &= testArrayMisc();
   ok &= testTokenize();
   ok &= rsArrayViewTest();
+  ok &= rsNonReAllocatingArrayTest();
 
   // int s = sum(3, &u[0]); // sum function doesn't compile
 

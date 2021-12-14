@@ -847,6 +847,23 @@ public:
   static inline void weightedSum(const T *buffer1, const T *buffer2, T *result, 
     int length, T weight1, T weight2);
 
+
+  //-----------------------------------------------------------------------------------------------
+  /** From here, we define a couple of convenience wrappers for calling algorithms from the 
+  standard library (specifically, from std::algorithm). Their sole purpose is to adapt the 
+  calling syntax from STL conventions like std::sort(&a[0], &a[N]); to the conventions used in 
+  RAPT like rsArrayTools::stdSort(a, N); That purpose may be questionable but actually. these 
+  wrappers should mostly serve as a reminder, that such a thing is even possible, i.e. it's 
+  easily possible to mix and match functions that operate on raw arrays from rsArrayTools and
+  from std::algorithm. For a long time, I assumed that to work with STL algorithms, your data needs 
+  to be wrapped into a proper, STL-compliant container class with iterators and all that stuff. 
+  Nope! They can work on raw arrays, too! ...well - at least some of them. */
+
+  template<class T> static inline void stdSort(T* a, int N) { std::sort(a, &a[N]); }
+  // ToDo: maybe #define the repititive "template<class T> static inline void" as RS_VOID or
+  // RS_VOID_I at the start of the class and #undef it at the end. For those functions that return
+  // a T or an int make simlar definition.
+
 };
 
 //=================================================================================================

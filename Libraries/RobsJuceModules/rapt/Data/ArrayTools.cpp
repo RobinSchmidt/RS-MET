@@ -1463,11 +1463,28 @@ https://github.com/codereport/Algorithms/blob/master/CheatSheet/The%20STL%20Algo
 105 STL Algorithms in Less Than an Hour:
 https://www.youtube.com/watch?v=bFSnXNIsK4A
 
-
-
-
-
 https://en.cppreference.com/w/cpp/algorithm
 https://medium.com/logicalbee/c-stl-algorithms-cheat-sheet-d92f986abe14
+
+Boost.Algorithms
+https://www.boost.org/doc/libs/1_61_0/libs/algorithm/doc/html/index.html
+
+Adobe Source Library:
+https://github.com/stlab/adobe_source_libraries
+
+
+-We now have wrappers around certain std::algorithms like rsArrayTools::stdSort which wraps 
+ std::sort.
+-What about algorithms that actually change the size of the container (like remove_if) or 
+ produce a new container as output (like merge)? Can we meaningfully wrap them, too? I think,
+ remove_if returns an iterator to the new end and merge takes an iterator to the output maybe a bit
+ like AT::convolve. -> figure out
+
+For inspiration to actually implement an array data-strcuture for cases where std::vector is not 
+suitable for some reason:
+https://github.com/foonathan/array
+...long ago, I sued my own dynamic array class, but at some point switched to using mostly 
+std::vector mainly because it's much easier to debug code with that: the debugger can show the
+contents of the vector without any additional mumbo jumbo
 
 */

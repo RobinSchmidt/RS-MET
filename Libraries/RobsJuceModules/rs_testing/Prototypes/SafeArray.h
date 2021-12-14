@@ -1,6 +1,130 @@
 // todo: rename file to rsArrays - we have different variants of arrays here..
 
 
+
+//=================================================================================================
+
+/** Under Construction
+
+A class that can be used like std::vector but has the feature that it doesn't re-allocate memory 
+when it needs to grow. Instead, the already allocated memory is retained and additional memory is 
+allocated elsewhere. So, the data is not necessarily in a contiguous block of memory. The lack
+of reallcoation is useful for arrays of objects to which a pointer or reference exists elsewhere
+in the program. Re-allocation would require to invalidate all these pointers but with this class, 
+they remain valid ...tbc.... */
+
+template<class T>
+class rsNonReAllocatingArray
+{
+
+public:
+
+
+  rsNonReAllocatingArray() {}
+
+
+
+  size_t size() const { return totalSize; }
+  bool empty() const { return size() == 0; }
+
+  void reserve(size_t numElems);
+
+  void push_back(const T& elem);
+
+
+
+  /** Random access to element at given index i. The complexity is linear in the number of chunks.
+  Try to avoid using this when iterating over all the elements in the array. If possible, use an 
+  iterator which gives constant complexity for sequential access. ...tbc... */
+  T& operator[](const size_t i);
+
+protected:
+
+  /** Converts a flat index as seen by the user to the chunk-index and element index within the
+  chunk */
+  void flatToChunkAndElemIndex(size_t flatIndex, size_t& chunkIndex, size_t& elemIndex) const;
+
+  std::vector<std::vector<T>> chunks;
+  /**< chunks[0] contains the 1st chunk of the whole array, chunks[1] the 2nd and so on. 
+  Initially, there's only 1 chunk. */
+
+  size_t totalSize = 0;
+  /**< Sum of the sizes of the chunks, cached for quick access. */
+
+};
+
+template<class T>
+void rsNonReAllocatingArray<T>::flatToChunkAndElemIndex(size_t i, size_t& j, size_t& k) const
+{
+  j = 0;   // chunk index
+  k = i;   // element index within chunk
+  size_t s = chunks[0].size();
+  if(k >= s)
+  {
+    k -= s;
+    ++j;
+  }
+  while(k >= s)
+  {
+    k -= s;
+    ++j;
+    s *= 2;
+  }
+}
+
+template<class T>
+T& rsNonReAllocatingArray<T>::operator[](const size_t i) 
+{ 
+  RAPT::rsAssert(i < totalSize);
+  size_t j, k;
+  flatToChunkAnElemIndex(i, j, k);
+  return chunks[j][k];
+}
+
+
+template<class T>
+void rsNonReAllocatingArray<T>::reserve(size_t numElems)
+{
+  rsAssert(rsIsPowerOfTwo(numElems));
+  if(numElems <= totalSize)
+    return;  // nothing to do
+  if(chunks.size() == 0)
+  {
+    chunks.resize(1);
+    chunks[0].resize(numElems);
+    //totalSize = numElems;  // nah - that's the total capacity
+  }
+  else
+  {
+    rsError("not yet implemented");
+  }
+}
+// ToDo: 
+// -Maybe the actual capacities of the chunks should always be powers of two, starting from some
+//  initial value like 8
+
+template<class T>
+void rsNonReAllocatingArray<T>::push_back(const T& elem)
+{
+  size_t j, k;
+  flatToChunkAndElemIndex(totalSize, j, k);
+  //if(rsIsPowerOfTwo(k) && k >= chunks[0].size())
+  if(j >= chunks.size() )
+  {
+    // A new chunk needs to be added. The size of the new chunk is equal to the current total size.
+    // This ensures that the capacity is always a power of two.
+    //++j;
+    //k = 0;
+    rsAssert(j == chunks.size() && k == 0);  // if j >= chunks.size() happens, then like that
+    chunks.push_back(std::vector<T>(totalSize));
+  }
+  chunks[j][k] = elem;
+  ++totalSize;
+}
+
+
+//=================================================================================================
+
 /** just a STUB at the moment, experimental
 
 An attempt to wrap a raw C-array to give it (partially) the interface of std::vector. The goal
@@ -149,7 +273,6 @@ protected:
 // https://www.fluentcpp.com/2018/04/24/following-conventions-stl/
 
 // https://docs.microsoft.com/en-us/cpp/cpp/increment-and-decrement-operator-overloading-cpp?view=msvc-170
-
 
 
 //=================================================================================================
