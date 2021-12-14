@@ -292,11 +292,80 @@ bool rsArrayViewTest()
   return ok;
 }
 
+
+
+template<class T>
+class rsNonReAllocArrayTest : public rsNonReAllocatingArray<T>
+{
+
+public:
+
+  static bool testIndexComputation()
+  {
+    bool ok = true;
+
+    rsNonReAllocArrayTest<int> a;
+    a.reserve(4);
+
+    auto test = [&](size_t i, size_t jTarget, size_t kTarget)
+    {
+      size_t j, k;
+      a.flatToChunkAndElemIndex(i, j, k); 
+      return j == jTarget && k == kTarget;
+    };
+    ok &= test( 0, 0,  0);
+    ok &= test( 1, 0,  1);
+    ok &= test( 2, 0,  2);
+    ok &= test( 3, 0,  3);
+
+    ok &= test( 4, 1,  0);
+    ok &= test( 5, 1,  1);
+    ok &= test( 6, 1,  2);
+    ok &= test( 7, 1,  3);
+
+    ok &= test( 8, 2,  0);
+    ok &= test( 9, 2,  1);
+    ok &= test(10, 2,  2);
+    ok &= test(11, 2,  3);
+    // ...
+    ok &= test(15, 2,  7);
+
+    ok &= test(16, 3,  0);
+    ok &= test(17, 3,  1);
+    // ...
+    ok &= test(30, 3, 14);
+    ok &= test(31, 3, 15);
+
+    ok &= test(32, 4,  0);
+    ok &= test(33, 4,  1);
+    // ...
+    ok &= test(62, 4, 30);
+    ok &= test(63, 4, 31);
+
+
+
+    return ok;
+  }
+ 
+
+};
+
+/*
+template<class T>
+class Blah
+{
+
+};
+
+*/
+
+
 bool rsNonReAllocatingArrayTest()
 {
   bool ok = true;
 
-  using NAA = rsNonReAllocatingArray<int>;
+  //using B = Blah<int>;
+  using NAA = rsNonReAllocArrayTest<int>;
 
   NAA a;
 
@@ -311,6 +380,8 @@ bool rsNonReAllocatingArrayTest()
 
   // Now, growth should happen because the capacity of the initial chunk is exceeded:
   a.push_back(4);
+
+  ok &= NAA::testIndexComputation();
 
 
   return ok;
