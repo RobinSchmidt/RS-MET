@@ -325,13 +325,12 @@ rsNonReAllocatingArray<T>::insert(rsNonReAllocatingArray<T>::iterator pos, const
   // Maybe rotate? swap_ranges? move? move_backwards?
   // https://en.cppreference.com/w/cpp/algorithm
 
-  //totalSize++;
-
   // Doesn't compile - std::swap_ranges complains about something about iterator_category:
   //push_back(val);
   //iterator last    = end(); last--;
   //iterator preLast = last;  preLast--;
   //std::swap_ranges(pos, preLast, last);
+  // ...but maybe doing it "by hand" is better anyway?
 
   incrementSize();
   size_t j, k;
@@ -342,13 +341,15 @@ rsNonReAllocatingArray<T>::insert(rsNonReAllocatingArray<T>::iterator pos, const
   iterator itL = itR;   itL--;
   while(itR != pos)
   {
-    // this doesn't work - why? try to get rid of the itL!
+    // This doesn't work - why? Try to get rid of the itL!
     //*(itR--) = *(itR);
     //*itR = *(--itR);
+    // But maybe the version below is more amenable to instruction-level parallelism anyway. Maybe
+    // measure performance, when we get the above version to work...
 
     *itR = *itL;
-    itL--;
-    itR--;
+    --itL;
+    --itR;
   }
 
   (*pos) = val; // insert new value into the gap
@@ -365,8 +366,8 @@ rsNonReAllocatingArray<T>::erase(iterator pos)
   while(itR != end())
   {
     *itL = *itR;
-    itL++;
-    itR++;
+    ++itL;
+    ++itR;
   }
   --totalSize;
   return pos;

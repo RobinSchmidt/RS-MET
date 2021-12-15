@@ -309,6 +309,16 @@ public:
       push_back(T(startValue + i));
   }
 
+  // Checks, whether all values at indices between lo and hi (both inclusive) are equal to val
+  bool valuesEqual(T val, size_t lo, size_t hi)
+  {
+    bool allEqual = true;
+    for(size_t i = lo; i <= hi; i++)
+      allEqual &= (*this)[i] == val;
+    return allEqual;
+  }
+  // ...i guess, we could use std::all_of for that..
+
   static bool testIndexComputation()
   {
     bool ok = true;
@@ -470,7 +480,7 @@ public:
     return ok;
   }
 
-  static bool testInsert()
+  static bool testInsertAndErase()
   {
     bool ok = true;
 
@@ -499,11 +509,19 @@ public:
     ok &= a[2] == 1002;   // should bring back the 1002 that was there before the insert
     ok &= a.size() == N;
 
+    // Insert multiple 42s
+    a.insert(it, 42); ok &= a.size() == N+1 && a.valuesEqual(42, 2, 2);
+    a.insert(it, 42); ok &= a.size() == N+2 && a.valuesEqual(42, 2, 3);
+    a.insert(it, 42); ok &= a.size() == N+3 && a.valuesEqual(42, 2, 4); // triggers growth
+    a.insert(it, 42); ok &= a.size() == N+4 && a.valuesEqual(42, 2, 5); 
+    // maybe use a loop
+
 
     // ToDo: 
     // -insert more elements to trigger growth of capacity, then erase some to trigger 
     //  shrinking of size...should the capacity shrink, too? maybe not....
-
+    // -insert/erase at begin and end, also when the array is empty
+    // -implement insesrting and erasing a whole subrange
 
     // See:
     // https://en.cppreference.com/w/cpp/container/vector/insert
@@ -539,7 +557,7 @@ bool rsNonReAllocatingArrayTest()
   ok &= NAA::testIterator(2, 25);
   ok &= NAA::testIterator(1, 25);
   ok &= NAA::testIterator(8, 95);
-  ok &= NAA::testInsert();
+  ok &= NAA::testInsertAndErase();
 
   // ToDo next:
   // -element insert (may move elements around, should use iterators and rsSwap)
