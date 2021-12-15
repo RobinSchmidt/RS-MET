@@ -436,6 +436,9 @@ public:
       ok &= *it == start + i; 
       it++; 
     }
+    ok &= it == a.end();
+
+
 
     // todo: 
     // -try range-based loop, check if it calls the pre-increment

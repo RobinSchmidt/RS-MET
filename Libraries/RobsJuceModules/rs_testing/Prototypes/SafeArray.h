@@ -54,7 +54,20 @@ public:
   iterator which gives constant complexity for sequential access. ...tbc... */
   T& operator[](const size_t i);
 
+  bool operator==(const rsNonReAllocatingArray<T>& rhs) 
+  { 
+    return rhs.chunks == chunks;
+    // Maybe we should compare totalSize and totalCapacity, too? I think, it would be redundant, 
+    // but maybe if we do these checks first and they are likely to fail, we'll get a speed 
+    // improvement because these checks are faster and may often short-circuit the more expensive 
+    // chunks test....Although, maybe the chunks test is not so expensive after all because it
+    // will itself short-circuit as soon as it sees a difference, which should happen 
+    // immediately. -> needs benchmarks
+  }
+
   // todo: have an init(size_t initialCapacity) function
+
+
 
 
   /** Returns reference to element k in chunk j. */
@@ -79,21 +92,29 @@ public:
 
     iterator& operator++() 
     { 
-      k++;
+      ++k;
       if(k == a.chunks[j].size())
       {
         k = 0;
-        j++;
+        ++j;
       }
       // Can this be optimized, avoiding the call to a.chunks[j].size()? Maybe we could maintain
-      // jSize member. Maybe instead of c0, which we don't seem to need. We'll see....
+      // jSize member. Maybe instead of c0, which we don't seem to need anyway. We'll see....
 
 
       return *this;
     } // pre-inc
 
-    iterator& operator--()    
+    iterator& operator--()
     {
+      if(k == 0)
+      {
+
+      }
+      else
+        --k;
+
+
       rsError("not yet implemented"); 
       return *this;
     } // pre-dec
@@ -104,7 +125,15 @@ public:
 
     // Dereferencing:
     T& operator*()   { return   a.at(j, k);  }
-    T* operator->()  { return &(a.at(j, k)); }
+    T* operator->()  { return &(a.at(j, k)); } // needs test
+
+    // Comparison:
+    bool operator==(const iterator& rhs) { return rhs.k == k && rhs.j == j && rhs.a == a; }
+    //bool operator!=(const iterator& rhs) { return rhs.k != k || rhs.j != j || rhs.a != a; }
+    // what about <,>,<=,>=?
+
+
+
 
 
   private:
@@ -120,7 +149,7 @@ public:
   iterator end() 
   { 
     size_t j, k;
-    flatToChunkAndElemIndex(totalSize);
+    flatToChunkAndElemIndex(totalSize, j, k);
     return iterator(*this, j, k); 
   }
 
