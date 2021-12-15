@@ -486,9 +486,14 @@ public:
     ok &= a.capacity() == 8;
 
     It it = a.begin();
-    it++;
-    it++;
-    //a.insert(it, 2);
+    it++; it++;            // iterator now points to index 2
+    a.insert(it, 102);     // inserts value 102 at index 2
+    ok &= a[2] == 102;
+
+    // ToDo: 
+    // -check the return values of a.insert - it returns an iterator - it it always in a
+    //  consistent state after the call? 
+    // -insert more elements to trigger growth of capacity
 
 
     // See:

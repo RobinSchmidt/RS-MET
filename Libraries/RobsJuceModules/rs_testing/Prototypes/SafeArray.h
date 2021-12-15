@@ -12,8 +12,9 @@ allocated elsewhere. So, the data is not necessarily in a contiguous block of me
 of reallcoation is useful for arrays of objects to which a pointer or reference exists elsewhere
 in the program. Re-allocation would require to invalidate all these pointers but with this class, 
 they remain valid ...wait - no - they don't. After an insert, the pointers may not point to 
-deallocated memory but they will then point to the wrong position within the array...hmmm...could
-this class be useful nonetheless? ...we'll see....tbc.... 
+deallocated memory but they will then point to the wrong position within the array..hmmm...could
+this class be useful nonetheless? ...we'll see....tbc.... push_back should be safe, though, just
+with, insert it will not work
 
 
 
@@ -191,6 +192,11 @@ protected:
   chunk */
   void flatToChunkAndElemIndex(size_t flatIndex, size_t& chunkIndex, size_t& elemIndex) const;
 
+  /** Increments the available size by one element. On return, the totalSize member is one larger
+  and the new last element will be in an uninitialized state. Used internally by push_back and 
+  insert. */
+  void incrementSize();
+
   std::vector<std::vector<T>> chunks;
   /**< chunks[0] contains the 1st chunk of the whole array, chunks[1] the 2nd and so on. 
   Initially, there's only 1 chunk. */
@@ -260,7 +266,7 @@ void rsNonReAllocatingArray<T>::reserve(size_t numElems)
 }
 
 template<class T>
-void rsNonReAllocatingArray<T>::push_back(const T& elem)
+void rsNonReAllocatingArray<T>::incrementSize()
 {
   if(totalCapacity == 0)
     reserve(1);
@@ -278,10 +284,17 @@ void rsNonReAllocatingArray<T>::push_back(const T& elem)
     rsAssert(rsIsPowerOfTwo(totalCapacity));
   }
   ++totalSize;
-  // factor out code above into a "makeSpaceForOneMore" function that we may call from here and 
-  // from insert or incrementSize
+}
 
+template<class T>
+void rsNonReAllocatingArray<T>::push_back(const T& elem)
+{
+  incrementSize();
+  size_t j, k;
+  flatToChunkAndElemIndex(totalSize-1, j, k);
   chunks[j][k] = elem;
+  // suboptimal: we call flatToChunkAndElemIndex twice - once here and then in incrementSize again
+  // -> try to refactor t get rid of the extra call. 
 }
 
 template<class T>
@@ -294,17 +307,31 @@ rsNonReAllocatingArray<T>::insert(rsNonReAllocatingArray<T>::iterator pos, const
 
   //totalSize++;
 
-
   // Doesn't compile - std::swap_ranges complains about something about iterator_category:
   //push_back(val);
   //iterator last    = end(); last--;
   //iterator preLast = last;  preLast--;
   //std::swap_ranges(pos, preLast, last);
 
+  incrementSize();
+  size_t j, k;
+  flatToChunkAndElemIndex(totalSize-1, j, k);
 
+  // Shift elements up to make space:
+  iterator itR = end(); itR--;
+  iterator itL = itR;   itL--;
+  while(itR != pos)
+  {
+    // this doesn't work - why? try to get rid of the itL!
+    //*(itR--) = *(itR);
+    //*itR = *(--itR);
 
+    *itR = *itL;
+    itL--;
+    itR--;
+  }
 
-  rsError("not yet implemented");
+  (*pos) = val;
   return pos;
 }
 
