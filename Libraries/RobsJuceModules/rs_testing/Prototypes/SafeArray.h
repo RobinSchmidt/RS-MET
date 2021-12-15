@@ -79,7 +79,16 @@ public:
 
     iterator& operator++() 
     { 
-      rsError("not yet implemented"); 
+      k++;
+      if(k == a.chunks[j].size())
+      {
+        k = 0;
+        j++;
+      }
+      // Can this be optimized, avoiding the call to a.chunks[j].size()? Maybe we could maintain
+      // jSize member. Maybe instead of c0, which we don't seem to need. We'll see....
+
+
       return *this;
     } // pre-inc
 
@@ -102,7 +111,7 @@ public:
 
     rsNonReAllocatingArray& a; // the array to iterate over
     size_t j, k;               // chunk- and element index within chunk
-    size_t c0;                 // initial capacity
+    size_t c0;                 // initial capacity - not yet sure, if we need it
 
   };
 

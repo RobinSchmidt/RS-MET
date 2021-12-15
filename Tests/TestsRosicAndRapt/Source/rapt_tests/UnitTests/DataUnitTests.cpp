@@ -431,11 +431,16 @@ public:
     a.fill(N, 1000);
 
     It it = a.begin();
-    ok &= *it == start + 0; it++; 
-    ok &= *it == start + 1; it++; // fails! ++ not yet implemented
-    ok &= *it == start + 2;
-    // etc. - put in a loop
-    // todo: implement iterator deref..
+    for(size_t i = 0; i < a.size(); i++)
+    {
+      ok &= *it == start + i; 
+      it++; 
+    }
+
+    // todo: 
+    // -try range-based loop, check if it calls the pre-increment
+    // -try iterating in reverse, starting from the end
+
     // https://www.cplusplus.com/reference/iterator/
 
 
