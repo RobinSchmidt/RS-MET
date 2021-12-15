@@ -425,24 +425,35 @@ public:
     using It  = Arr::iterator;
 
     Arr a;
-    size_t N     = 25;     // length of test array to generate
+    size_t N     = 25;       // length of test array to generate
     size_t start = 1000;
     a.reserve(4);
     a.fill(N, 1000);
+    ok &= a.size() == N;
 
-    It it = a.begin();
-    for(size_t i = 0; i < a.size(); i++)
+    It it = a.begin();                    // get an iterator pointing to the begin
+    for(size_t i = 0; i < a.size(); i++)  // iterate forward manually
     {
       ok &= *it == start + i; 
       it++; 
     }
     ok &= it == a.end();
+    for(size_t i = N; i > 0; i--)
+    {
+      it--;
+      ok &= *it == start + i-1;
+    }
+    ok &= it == a.begin(); // or should it? ...not sure...
 
 
 
-    // todo: 
-    // -try range-based loop, check if it calls the pre-increment
-    // -try iterating in reverse, starting from the end
+    // ToDo: 
+    // -When we decrement a begin() iterator, we get an access violation. Maybe that should be
+    //  expected because decrementing a begin() iterator is a bug anyway? Or should we somehow
+    //  safeguard against that?
+    // -Do the same using pre-increment instead of post
+    // -Try range-based loop, check if it calls the pre-increment
+    // -Try iterating in reverse, starting from the end
 
     // https://www.cplusplus.com/reference/iterator/
 

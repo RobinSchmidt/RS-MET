@@ -109,13 +109,15 @@ public:
     {
       if(k == 0)
       {
-
+        --j;
+        k = a.chunks[j].size() - 1;
+        int dummy = 0;
       }
       else
         --k;
 
 
-      rsError("not yet implemented"); 
+      //rsError("not yet implemented"); 
       return *this;
     } // pre-dec
 
