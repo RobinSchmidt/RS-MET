@@ -33,36 +33,16 @@ class rsNonReAllocatingArray
 
 public:
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime:
 
   rsNonReAllocatingArray() {}
 
 
 
-  size_t size() const { return totalSize; }
 
-  size_t capacity() const { return totalCapacity; }
-
-
-  bool empty() const { return size() == 0; }
-
-  void reserve(size_t numElems);
-
-  void push_back(const T& val);
-
-
-
-
-  void clear() { totalSize = 0; totalCapacity = 0; chunks.clear(); }
-
-
-
-
-
-
-  /** Random access to element at given index i. The complexity is linear in the number of chunks.
-  Try to avoid using this when iterating over all the elements in the array. If possible, use an 
-  iterator which gives constant complexity for sequential access. ...tbc... */
-  T& operator[](const size_t i);
+  //-----------------------------------------------------------------------------------------------
+  // \name Comparison:
 
   bool operator==(const rsNonReAllocatingArray<T>& rhs) 
   { 
@@ -80,15 +60,15 @@ public:
     return !(*this == rhs); // maybe optimize
   }
 
-  // todo: have an init(size_t initialCapacity) function
+  // for std::vector, these operators are actually non-members, so maybe we should do the same
 
 
 
 
-  /** Returns reference to element k in chunk j. */
-  T& at(size_t j, size_t k) { return chunks[j][k]; }
-  // this belongs into the private section! it's only public during development for convenience!
 
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Iterator:
 
   // inc/dec should be done in constant time, +=, -= etc. may be linear in thenumber of chunks
   // ...but maybe it can be made constant time, too? let's at least try it!
@@ -113,6 +93,13 @@ public:
       else {
         c0 = a.chunks[0].size(); }
     }
+
+    //iterator& operator=(const iterator& rhs)    // Copy assignment operator
+    //{ this->a  = rhs.a; this->j  = rhs.j; this->k  = rhs.k; this->c0 = rhs.c0; }
+
+    //iterator& operator=(iterator&& rhs)         // Move assignment operator
+    //{ this->a  = rhs.a; this->j  = rhs.j; this->k  = rhs.k; this->c0 = rhs.c0; }
+
 
     iterator& operator++() 
     { 
@@ -181,8 +168,41 @@ public:
   }
 
 
-  iterator insert(iterator pos, const T& val);
+  //-----------------------------------------------------------------------------------------------
+  // \name Capacity:
 
+  size_t size() const { return totalSize; }
+  size_t capacity() const { return totalCapacity; }
+  bool empty() const { return size() == 0; }
+  void reserve(size_t numElems);
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Modifiers:
+
+  void push_back(const T& val);
+  void clear() { totalSize = 0; totalCapacity = 0; chunks.clear(); }
+  iterator insert(iterator pos, const T& val);
+  iterator erase(iterator pos);
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Access:
+
+  /** Random access to element at given index i. The complexity is linear in the number of chunks.
+  Try to avoid using this when iterating over all the elements in the array. If possible, use an 
+  iterator which gives constant complexity for sequential access. ...tbc... */
+  T& operator[](const size_t i);
+
+  /** Returns reference to element k in chunk j. */
+  T& at(size_t j, size_t k) { return chunks[j][k]; }
+  // this belongs into the private section! it's only public during development for convenience! 
+  // However, we should have a method at() that takes a flat index
+
+
+
+  // todo: front, back, remove, erase
+  // maybe init(size_t initialCapacity) function...but maybe not - can be achieved via 
+  // clear/reserve, so it would be just a convenience function, fattening up the API
 
 protected:
 
@@ -317,7 +337,7 @@ rsNonReAllocatingArray<T>::insert(rsNonReAllocatingArray<T>::iterator pos, const
   size_t j, k;
   flatToChunkAndElemIndex(totalSize-1, j, k);
 
-  // Shift elements up to make space:
+  // Shift elements up to open gap:
   iterator itR = end(); itR--;
   iterator itL = itR;   itL--;
   while(itR != pos)
@@ -331,7 +351,24 @@ rsNonReAllocatingArray<T>::insert(rsNonReAllocatingArray<T>::iterator pos, const
     itR--;
   }
 
-  (*pos) = val;
+  (*pos) = val; // insert new value into the gap
+  return pos;
+}
+
+template<class T>
+typename rsNonReAllocatingArray<T>::iterator 
+rsNonReAllocatingArray<T>::erase(iterator pos)
+{
+  // Shift elements down to close gap:
+  iterator itL = pos;
+  iterator itR = pos; itR++;
+  while(itR != end())
+  {
+    *itL = *itR;
+    itL++;
+    itR++;
+  }
+  --totalSize;
   return pos;
 }
 

@@ -485,15 +485,24 @@ public:
     ok &= a.size() == N;
     ok &= a.capacity() == 8;
 
+    // Insert an element at position 2:
     It it = a.begin();
-    it++; it++;            // iterator now points to index 2
-    a.insert(it, 102);     // inserts value 102 at index 2
+    it++; it++;                     // iterator now points to index 2
+    It it2 = a.insert(it, 102);     // inserts value 102 at index 2
     ok &= a[2] == 102;
+    ok &= it2 == it;
+    ok &= a.size() == N+1;
+
+    // Remove the element that was just inserted:
+    //it2 = a.erase(it);  // doesn't compile, so for the time being...
+    a.erase(it);          // ...we ignore the return value
+    ok &= a[2] == 1002;   // should bring back the 1002 that was there before the insert
+    ok &= a.size() == N;
+
 
     // ToDo: 
-    // -check the return values of a.insert - it returns an iterator - it it always in a
-    //  consistent state after the call? 
-    // -insert more elements to trigger growth of capacity
+    // -insert more elements to trigger growth of capacity, then erase some to trigger 
+    //  shrinking of size...should the capacity shrink, too? maybe not....
 
 
     // See:
