@@ -498,8 +498,8 @@ public:
     // Insert an element at position 2:
     It it = a.begin();
     it++; it++;                     // iterator now points to index 2
-    It it2 = a.insert(it, 102);     // inserts value 102 at index 2
-    ok &= a[2] == 102;
+    It it2 = a.insert(it, 42);      // inserts value 42 at index 2
+    ok &= a[2] == 42;
     ok &= it2 == it;
     ok &= a.size() == N+1;
 
@@ -509,19 +509,39 @@ public:
     ok &= a[2] == 1002;   // should bring back the 1002 that was there before the insert
     ok &= a.size() == N;
 
-    // Insert multiple 42s
-    a.insert(it, 42); ok &= a.size() == N+1 && a.valuesEqual(42, 2, 2);
-    a.insert(it, 42); ok &= a.size() == N+2 && a.valuesEqual(42, 2, 3);
-    a.insert(it, 42); ok &= a.size() == N+3 && a.valuesEqual(42, 2, 4); // triggers growth
-    a.insert(it, 42); ok &= a.size() == N+4 && a.valuesEqual(42, 2, 5); 
-    // maybe use a loop
+    // Insert multiple 42s, 3rd iteration triggers growth:
+    size_t numInserts = 4;
+    for(size_t i = 1; i <= numInserts; i++)
+    {
+      a.insert(it, 42); 
+      ok &= a.size() == N+i; 
+      ok &= a.valuesEqual(42, 2, 2+i-1);
+    }
+
+    // Erase the inserted 42s again:
+    for(size_t i = 1; i <= numInserts; i++)
+    {
+      a.erase(it);
+      ok &= a.size() == N + numInserts - i; 
+    }
+
+
+    it  = a.begin();
+    it2 = a.end();
+    a.insert(it, 42);
+    ok &= (*it) == 42;  // dereference iterator
+    ok &= a[0]  == 42;  // use numeric index
+
+
+    // Insert/erase at begin and end, also when the array is empty
+    a.clear();
+    it = a.begin();
+    //a.insert(it, 42); // crashes
 
 
     // ToDo: 
-    // -insert more elements to trigger growth of capacity, then erase some to trigger 
-    //  shrinking of size...should the capacity shrink, too? maybe not....
-    // -insert/erase at begin and end, also when the array is empty
-    // -implement insesrting and erasing a whole subrange
+    // -implement and test inserting and erasing a whole subrange
+    // -implement push_front, pop_front, pop_back
 
     // See:
     // https://en.cppreference.com/w/cpp/container/vector/insert

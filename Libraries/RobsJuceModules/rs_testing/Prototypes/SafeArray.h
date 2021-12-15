@@ -88,14 +88,17 @@ public:
     iterator(rsNonReAllocatingArray& iteratee, size_t chunkIndex, size_t elemIndex) 
       : a(iteratee), j(chunkIndex), k(elemIndex) 
     {
-      if(a.capacity() == 0) {
-        rsError("not yet implemented"); }
+      if(a.capacity() == 0) 
+      {
+        c0 = 0;  // does this make sense?
+        //rsError("not yet implemented"); 
+      }
       else {
         c0 = a.chunks[0].size(); }
     }
 
-    //iterator& operator=(const iterator& rhs)    // Copy assignment operator
-    //{ this->a  = rhs.a; this->j  = rhs.j; this->k  = rhs.k; this->c0 = rhs.c0; }
+    iterator& operator=(const iterator& rhs)    // Copy assignment operator
+    { this->a  = rhs.a; this->j  = rhs.j; this->k  = rhs.k; this->c0 = rhs.c0; return *this; }
 
     //iterator& operator=(iterator&& rhs)         // Move assignment operator
     //{ this->a  = rhs.a; this->j  = rhs.j; this->k  = rhs.k; this->c0 = rhs.c0; }
@@ -121,7 +124,14 @@ public:
       if(k == 0)
       {
         --j;
+
         k = a.chunks[j].size() - 1;
+        // crashes when j == -1 (wrapped around) which happens when an iterator to begin() is
+        // decremented which happens in insert when inserting at postion 0 into an empty array. 
+        // Maybe try to not call size() here - it's probably inefficient anyway (involves a 
+        // calculation)
+
+
         int dummy = 0;
       }
       else
@@ -143,7 +153,15 @@ public:
     // Comparison:
     bool operator==(const iterator& rhs) { return rhs.k == k && rhs.j == j && rhs.a == a; }
     bool operator!=(const iterator& rhs) { return rhs.k != k || rhs.j != j || rhs.a != a; }
-    // what about <,>,<=,>=?
+    // What about <,>,<=,>=? Do they make any sense in this context? Maybe not.
+    // Maybe we should not compare rhs.a to a but rather the addresses of rhs.a and a. Two 
+    // iterators are equal, iff they refer to the same iteratee - not if the iteratees compare
+    // to be equal by value. We are not interested in whether or not the contents of the arrays are 
+    // equal but rather if their unique identities as objects in memory are equal. Look up, how STL
+    // defines iterator equality...
+
+    // Inquiry:
+    bool isZero() const { return j == 0 && k == 0; }
 
 
   private:
@@ -332,6 +350,8 @@ rsNonReAllocatingArray<T>::insert(rsNonReAllocatingArray<T>::iterator pos, const
   //std::swap_ranges(pos, preLast, last);
   // ...but maybe doing it "by hand" is better anyway?
 
+  //
+
   incrementSize();
   size_t j, k;
   flatToChunkAndElemIndex(totalSize-1, j, k);
@@ -339,18 +359,16 @@ rsNonReAllocatingArray<T>::insert(rsNonReAllocatingArray<T>::iterator pos, const
   // Shift elements up to open gap:
   iterator itR = end(); itR--;
   iterator itL = itR;   itL--;
-  while(itR != pos)
+  while(itR != pos && !itL.isZero())
   {
-    // This doesn't work - why? Try to get rid of the itL!
-    //*(itR--) = *(itR);
-    //*itR = *(--itR);
-    // But maybe the version below is more amenable to instruction-level parallelism anyway. Maybe
-    // measure performance, when we get the above version to work...
-
     *itR = *itL;
     --itL;
     --itR;
   }
+  // ToDo: if we later switch to not using chunks[j].size() in ++ and -- of the iterator, check
+  // if we can safely remove the .isZero check. It has been added to avoid trying decrementing
+  // an iterator to the 0th element which then triggered an access violation trying to access
+  // chunks[-1]
 
   (*pos) = val; // insert new value into the gap
   return pos;
