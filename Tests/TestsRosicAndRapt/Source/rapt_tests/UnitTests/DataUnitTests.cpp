@@ -301,6 +301,8 @@ class rsNonReAllocArrayTest : public rsNonReAllocatingArray<T>
 public:
 
 
+  // Helper function to fill an array with given number of elements, linearly ascending, starting
+  // at given startValue (like std::iota == "increment over the array")
   void fill(size_t numElems, T startValue = T(0))
   {
     for(size_t i = 0; i < numElems; i++)
@@ -365,8 +367,6 @@ public:
     ok &= test( 7, 3,  3);
     ok &= test( 8, 4,  0);
 
-
-
     return ok;
   }
  
@@ -417,7 +417,7 @@ public:
     return ok;
   }
 
-  static bool testIterator()
+  static bool testIterator(int initialCapacity, int length)
   {
     bool ok = true;
 
@@ -425,12 +425,14 @@ public:
     using It  = Arr::iterator;
 
     Arr a;
-    size_t N     = 25;       // length of test array to generate
+    a.reserve(initialCapacity);
+    size_t N     = length;                // length of test array to generate
     size_t start = 1000;
-    a.reserve(4);
     a.fill(N, 1000);
     ok &= a.size() == N;
+    ok &= a.capacity() == RAPT::rsNextPowerOfTwo(length);  // fails!
 
+    // Test manually incrementing and decrementing iterators:
     It it = a.begin();                    // get an iterator pointing to the begin
     for(size_t i = 0; i < a.size(); i++)  // iterate forward manually
     {
@@ -445,7 +447,7 @@ public:
     }
     ok &= it == a.begin(); 
 
-    // Range based loop over all values v in a. This also covers the pre-increment:
+    // Test a range-based loop over all values v in a. This also covers the pre-increment:
     size_t i = 0;
     for(const auto & v : a)
     {
@@ -456,8 +458,6 @@ public:
     // ToDo: 
     // -Implement and test +,-,+=,-= operators -> figure out, how this iterator_difference
     //  thing is supposed to work
-    // -Maybe add tests with different initial capacities (at least 1,2,8). Maybe give the function
-    //  a parameter...or two: one for initial capacity, another for the lengtth N
 
     // Notes:
     // -When we decrement a begin() iterator, we get an access violation. Maybe that should be
@@ -469,6 +469,26 @@ public:
 
     return ok;
   }
+
+  static bool testInsert()
+  {
+    bool ok = true;
+
+    using Arr = rsNonReAllocArrayTest<int>;
+    using It  = Arr::iterator;
+
+    Arr a;
+    a.reserve(4);
+    size_t N = 6;
+    size_t start = 1000;
+    a.fill(N, 1000);
+    ok &= a.size() == N;
+    ok &= a.capacity() == 8;
+
+
+    return ok;
+  }
+
 
 
   // template for copy-and-paste for adding a new test (nothing to do with c++ temaplates):
@@ -493,13 +513,15 @@ bool rsNonReAllocatingArrayTest()
 
   ok &= NAA::testIndexComputation();
   ok &= NAA::testPushBack();
-  ok &= NAA::testIterator();
+  ok &= NAA::testIterator(4, 25);
+  ok &= NAA::testIterator(2, 25);
+  ok &= NAA::testIterator(1, 25);
+  ok &= NAA::testIterator(8, 95);
 
-  // ...ok - index mapping and pushing (with growth) works, next:
-  // -looping over elements with an iterator. the iterator object should consist of j,k and keep
-  //  a pointer to the object to be able to inquire all the chunk-sizes...but maybe it doesn't
-  //  need a pointer for that?
-  // -element insert
+  ok &= NAA::testInsert();
+
+  // ToDo next:
+  // -element insert (may move elements around, should use iterators and rsSwap)
   // -element removal (this may deallocate)
 
 
