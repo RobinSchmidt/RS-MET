@@ -32,7 +32,8 @@ j = l-2 where the -2 comes from log2(4) where 4 is our initial capacity C0. The 
 k = 26-16 = 10 where the 16 comes from 2^(j+1) i think?
 
 -try to make it STL compatible
-
+-what about concatenationg two such arrays? maybe that would need a new datastructure? or maybe we 
+ just appaend copies of the 2nd to the 1st where the 1st may grow?
 
 
 
@@ -87,7 +88,7 @@ class for iterators:
   https://github.com/electronicarts/EASTL/blob/master/include/EASTL/vector.h
 maybe we should do the same
 
-
+https://www.fluentcpp.com/2018/05/08/std-iterator-deprecated/
 
 -implement a non-reallocating dynamic array here
 

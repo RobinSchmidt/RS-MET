@@ -328,6 +328,7 @@ public:
     ok &= test(10, 2,  2);
     ok &= test(11, 2,  3);
     // ...
+    ok &= test(14, 2,  6);
     ok &= test(15, 2,  7);
 
     ok &= test(16, 3,  0);
@@ -343,46 +344,118 @@ public:
     ok &= test(63, 4, 31);
 
 
+    a.clear();
+    ok &= a.chunks.size() == 0;
+    //ok &= test( 0, 0,  0);      // should trigger assert - yep!
+    a.reserve(1);
+    ok &= test( 0, 0,  0);
+    ok &= test( 1, 1,  0);
+    ok &= test( 2, 2,  0);
+    ok &= test( 3, 2,  1);
+    ok &= test( 4, 3,  0);
+    ok &= test( 5, 3,  1);
+    ok &= test( 6, 3,  2);
+    ok &= test( 7, 3,  3);
+    ok &= test( 8, 4,  0);
+
+
 
     return ok;
   }
  
+  static bool testPushBack()
+  {
+    bool ok = true;
+
+    rsNonReAllocArrayTest<int> a;
+    a.reserve(4);
+
+    // The first 4 elements fit in the first chunk:
+    a.push_back(0);
+    a.push_back(1);
+    a.push_back(2);
+    a.push_back(3);
+    ok &= a.chunks.size() == 1;
+
+    // Now, growth should happen because the capacity of the initial chunk is exceeded:
+    a.push_back(4);
+    ok &= a.chunks.size() == 2;
+    a.push_back(5);
+    a.push_back(6);
+    a.push_back(7);
+    ok &= a.chunks.size() == 2;
+
+    // Now, growth should happen for the 2nd time:
+    a.push_back(8);
+    ok &= a.chunks.size() == 3;
+
+    // Test element random access:
+    for(size_t i = 0; i <= 8; i++)
+      ok &= a[i] == i;
+
+    //a[9];  // should trigger assert - yep, does
+
+    a.clear();                   // will put it back into initial state
+    a.push_back(0);              // will reserve only 1 slot
+    ok &= a.chunks.size() == 1;
+    a.push_back(1);
+    ok &= a.chunks.size() == 2;  // now we should have 2 slots of size 1
+    a.push_back(2);
+    ok &= a.chunks.size() == 3; 
+    a.push_back(3);
+    ok &= a.chunks.size() == 3; 
+    a.push_back(4);
+    ok &= a.chunks.size() == 4; 
+
+    return ok;
+  }
+
+  static bool testIterator()
+  {
+    bool ok = true;
+
+
+    return ok;
+  }
+
+
+  // template for copy-and-paste for adding a new test (nothing to do with c++ temaplates):
+  static bool testTemplate()
+  {
+    bool ok = true;
+    return ok;
+  }
+
+
+
+
 
 };
 
-/*
-template<class T>
-class Blah
-{
 
-};
-
-*/
 
 
 bool rsNonReAllocatingArrayTest()
 {
   bool ok = true;
 
-  //using B = Blah<int>;
   using NAA = rsNonReAllocArrayTest<int>;
 
   NAA a;
 
-  a.reserve(4);
-
-  // The first 4 elements fit in the first chunk:
-  a.push_back(0);
-  a.push_back(1);
-  a.push_back(2);
-  a.push_back(3);
-  // todo: add some checks
-
-  // Now, growth should happen because the capacity of the initial chunk is exceeded:
-  a.push_back(4);
-
   ok &= NAA::testIndexComputation();
+  ok &= NAA::testPushBack();
+  ok &= NAA::testIterator();
 
+  // ...ok - index mapping and pushing (with growth) works, next:
+  // -looping over elements with an iterator. the iterator object should consist of j,k and keep
+  //  a pointer to the object to be able to inquire all the chunk-sizes...but maybe it doesn't
+  //  need a pointer for that?
+  // -element insert
+  // -element removal (this may deallocate)
+
+
+  // -try it also with initial capacities of 0,1 and 2
 
   return ok;
 }

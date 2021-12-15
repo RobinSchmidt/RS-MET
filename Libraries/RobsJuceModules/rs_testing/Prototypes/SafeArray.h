@@ -25,6 +25,10 @@ public:
 
 
   size_t size() const { return totalSize; }
+
+  size_t capacity() const { return totalCapacity; }
+
+
   bool empty() const { return size() == 0; }
 
   void reserve(size_t numElems);
@@ -32,11 +36,60 @@ public:
   void push_back(const T& elem);
 
 
+  void clear() { totalSize = 0; totalCapacity = 0; chunks.clear(); }
+
+
 
   /** Random access to element at given index i. The complexity is linear in the number of chunks.
   Try to avoid using this when iterating over all the elements in the array. If possible, use an 
   iterator which gives constant complexity for sequential access. ...tbc... */
   T& operator[](const size_t i);
+
+  // todo: have an init(size_t initialCapacity) function
+
+
+  class iterator
+  {
+  public:  // try to get rid and make as much as possible private
+
+    iterator(const rsNonReAllocatingArray& iteratee, size_t chunkIndex, size_t elemIndex) 
+      : a(iteratee), j(chunkIndex), k(elemIndex) 
+    {
+      if(a.capacity() == 0) {
+        rsError("not yet implemented"); }
+      else {
+        c0 = a.chunks[0].size(); }
+    }
+
+    iterator& operator++() 
+    { 
+      rsError("not yet implemented"); 
+    } // pre-inc
+
+    iterator operator++(int) 
+    { 
+      rsError("not yet implemented"); 
+    } // post-inc
+
+    iterator& operator--()    
+    {
+      rsError("not yet implemented"); 
+    }                    // pre-dec
+
+    iterator operator--(int) 
+    { 
+      rsError("not yet implemented"); 
+    } // post-dec
+
+
+  private:
+
+    const rsNonReAllocatingArray& a; // the array to iterate over
+    size_t j, k;                     // chunk- and element index within chunk
+    size_t c0;                       // initial capacity
+
+  };
+
 
 protected:
 
@@ -49,7 +102,12 @@ protected:
   Initially, there's only 1 chunk. */
 
   size_t totalSize = 0;
-  /**< Sum of the sizes of the chunks, cached for quick access. */
+  /**< Currently used total size. */
+
+  size_t totalCapacity = 0;
+  /**< Sum of the sizes of the chunks, cached for quick access. The internal vectors are always
+  initially resized (and not just reserved) to their desired sizes/capacities, i.e. for the chunks,
+  there's no distinction between their internal size and capacity .*/
 
 };
 
@@ -58,18 +116,14 @@ void rsNonReAllocatingArray<T>::flatToChunkAndElemIndex(size_t i, size_t& j, siz
 {
   j = 0;   // chunk index
   k = i;   // element index within chunk
-  size_t s = chunks[0].size();
-  if(k >= s)
-  {
-    k -= s;
-    ++j;
-  }
-  while(k >= s)
-  {
-    k -= s;
-    ++j;
-    s *= 2;
-  }
+  size_t s = chunks[0].size();            // s is the initial capacity
+  if(   k >= s) { k -= s; ++j; }          // first 2 chunks have size s
+  while(k >= s) { k -= s; ++j; s *= 2; }  // after that, they grow by factor 2
+
+  // If the initial capacity s is 4, the chunk sizes are: 4,4,8,16,32,64,... The next chunk size
+  // is always equal to the sum of the sizes that came before it. That's why the first needs to
+  // violate the 2^k pattern. It has to be *some* power of two that the user can pick via the 
+  // initial call to reserve.
 }
 
 template<class T>
@@ -77,7 +131,7 @@ T& rsNonReAllocatingArray<T>::operator[](const size_t i)
 { 
   RAPT::rsAssert(i < totalSize);
   size_t j, k;
-  flatToChunkAnElemIndex(i, j, k);
+  flatToChunkAndElemIndex(i, j, k);
   return chunks[j][k];
 }
 
@@ -85,36 +139,44 @@ T& rsNonReAllocatingArray<T>::operator[](const size_t i)
 template<class T>
 void rsNonReAllocatingArray<T>::reserve(size_t numElems)
 {
-  rsAssert(rsIsPowerOfTwo(numElems));
-  if(numElems <= totalSize)
+  rsAssert(rsIsPowerOfTwo(numElems), "Must be a power of two!");
+  // todo: relax that - just round up to the next power of two
+
+
+  if(numElems <= totalCapacity)
     return;  // nothing to do
   if(chunks.size() == 0)
   {
+    // This branch is for the initial reservation shortly after creation or before usage.
     chunks.resize(1);
     chunks[0].resize(numElems);
-    //totalSize = numElems;  // nah - that's the total capacity
+    totalCapacity = numElems; 
   }
   else
   {
+    // This branch is for later reservation of more memory than was initially reserved.
+    size_t needed = totalCapacity - numElems;
+
+    // ToDo:
+    // -figure out, how many more chunks are needed - we must follow the pattern: 
+    //  C,C,2C,4C,8C,16C etc. where C is the initial capacity, i.e. chunks[0].size()
+
     rsError("not yet implemented");
   }
 }
-// ToDo: 
-// -Maybe the actual capacities of the chunks should always be powers of two, starting from some
-//  initial value like 8
 
 template<class T>
 void rsNonReAllocatingArray<T>::push_back(const T& elem)
 {
+  if(totalCapacity == 0)
+    reserve(1);
   size_t j, k;
   flatToChunkAndElemIndex(totalSize, j, k);
-  //if(rsIsPowerOfTwo(k) && k >= chunks[0].size())
   if(j >= chunks.size() )
   {
     // A new chunk needs to be added. The size of the new chunk is equal to the current total size.
-    // This ensures that the capacity is always a power of two.
-    //++j;
-    //k = 0;
+    // This ensures that the capacity is always a power of two given that the initial capacity was
+    // a power of two (which we ensure in reserve).
     rsAssert(j == chunks.size() && k == 0);  // if j >= chunks.size() happens, then like that
     chunks.push_back(std::vector<T>(totalSize));
   }
