@@ -358,7 +358,9 @@ rsNonReAllocatingArray<T>::insert(rsNonReAllocatingArray<T>::iterator pos, const
 
   // Shift elements up to open gap:
   iterator itR = end(); itR--;
-  iterator itL = itR;   itL--;
+  iterator itL = itR;
+  if(!itL.isZero())
+    itL--;
   while(itR != pos && !itL.isZero())
   {
     *itR = *itL;

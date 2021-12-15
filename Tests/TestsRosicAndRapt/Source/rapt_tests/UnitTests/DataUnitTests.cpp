@@ -525,18 +525,39 @@ public:
       ok &= a.size() == N + numInserts - i; 
     }
 
-
+    // Insert at begin:
     it  = a.begin();
-    it2 = a.end();
+    //it2 = a.end();
     a.insert(it, 42);
     ok &= (*it) == 42;  // dereference iterator
     ok &= a[0]  == 42;  // use numeric index
 
+    // Erase at begin:
+    // ...
 
-    // Insert/erase at begin and end, also when the array is empty
+    // Insert at end:
+    // ...
+
+    // Erase at end:
+    // ...
+
+    // Insert at begin when the array is empty:
     a.clear();
     it = a.begin();
-    //a.insert(it, 42); // crashes
+    a.insert(it, 42);
+    ok &= a.size() == 1;
+    ok &= (*it) == 42;
+    ok &= a[0]  == 42;
+    a.insert(it, 42);
+    ok &= a.size() == 2;
+
+    // OK - the stuff below still fails:
+    /*
+    ok &= a.valuesEqual(42, 0, 1);  // fails! a[1] == 0, not 42
+    a.insert(it, 42);
+    ok &= a.size() == 3;
+    ok &= a.valuesEqual(42, 0, 2);  // still, only a[0] == 42, all others are 0
+    */
 
 
     // ToDo: 
