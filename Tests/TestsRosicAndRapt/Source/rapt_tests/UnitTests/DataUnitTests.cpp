@@ -300,6 +300,13 @@ class rsNonReAllocArrayTest : public rsNonReAllocatingArray<T>
 
 public:
 
+
+  void fill(size_t numElems, T startValue = T(0))
+  {
+    for(size_t i = 0; i < numElems; i++)
+      push_back(T(startValue + i));
+  }
+
   static bool testIndexComputation()
   {
     bool ok = true;
@@ -413,6 +420,23 @@ public:
   static bool testIterator()
   {
     bool ok = true;
+
+    using Arr = rsNonReAllocArrayTest<int>;
+    using It  = Arr::iterator;
+
+    Arr a;
+    size_t N     = 25;     // length of test array to generate
+    size_t start = 1000;
+    a.reserve(4);
+    a.fill(N, 1000);
+
+    It it = a.begin();
+    ok &= *it == start + 0; i++; 
+    ok &= *it == start + 1; i++;
+    ok &= *it == start + 2;
+    // etc. - put in a loop
+    // todo: implement iterator deref..
+
 
 
     return ok;

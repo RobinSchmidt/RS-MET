@@ -48,6 +48,8 @@ public:
   // todo: have an init(size_t initialCapacity) function
 
 
+  // inc/dec should be done in constant time, +=, -= etc. may be linear in thenumber of chunks
+  // ...but maybe it can be made constant time, too? let's at least try it!
   class iterator
   {
   public:  // try to get rid and make as much as possible private
@@ -90,6 +92,14 @@ public:
 
   };
 
+  iterator begin() { return iterator(*this, 0, 0); }
+
+  iterator end() 
+  { 
+    size_t j, k;
+    flatToChunkAndElemIndex(totalSize);
+    return iterator(*this, j, k); 
+  }
 
 protected:
 
