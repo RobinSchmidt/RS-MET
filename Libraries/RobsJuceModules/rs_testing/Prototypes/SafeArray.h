@@ -251,7 +251,10 @@ void rsNonReAllocatingArray<T>::push_back(const T& elem)
     // This ensures that the capacity is always a power of two given that the initial capacity was
     // a power of two (which we ensure in reserve).
     rsAssert(j == chunks.size() && k == 0);  // if j >= chunks.size() happens, then like that
-    chunks.push_back(std::vector<T>(totalSize));
+    rsAssert(rsIsPowerOfTwo(totalSize));
+    chunks.push_back(std::vector<T>(totalSize)); // maybe use emplace_back?
+    totalCapacity += totalSize;
+    rsAssert(rsIsPowerOfTwo(totalCapacity));
   }
   chunks[j][k] = elem;
   ++totalSize;
