@@ -65,6 +65,11 @@ public:
     // immediately. -> needs benchmarks
   }
 
+  bool operator!=(const rsNonReAllocatingArray<T>& rhs)
+  {
+    return !(*this == rhs); // maybe optimize
+  }
+
   // todo: have an init(size_t initialCapacity) function
 
 
@@ -131,7 +136,7 @@ public:
 
     // Comparison:
     bool operator==(const iterator& rhs) { return rhs.k == k && rhs.j == j && rhs.a == a; }
-    //bool operator!=(const iterator& rhs) { return rhs.k != k || rhs.j != j || rhs.a != a; }
+    bool operator!=(const iterator& rhs) { return rhs.k != k || rhs.j != j || rhs.a != a; }
     // what about <,>,<=,>=?
 
 

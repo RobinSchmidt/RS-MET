@@ -443,20 +443,29 @@ public:
       it--;
       ok &= *it == start + i-1;
     }
-    ok &= it == a.begin(); // or should it? ...not sure...
+    ok &= it == a.begin(); 
 
-
+    // Range based loop over all values v in a. This also covers the pre-increment:
+    size_t i = 0;
+    for(const auto & v : a)
+    {
+      ok &= v == start + i;
+      i++;
+    }
 
     // ToDo: 
+    // -Implement and test +,-,+=,-= operators -> figure out, how this iterator_difference
+    //  thing is supposed to work
+    // -Maybe add tests with different initial capacities (at least 1,2,8). Maybe give the function
+    //  a parameter...or two: one for initial capacity, another for the lengtth N
+
+    // Notes:
     // -When we decrement a begin() iterator, we get an access violation. Maybe that should be
     //  expected because decrementing a begin() iterator is a bug anyway? Or should we somehow
     //  safeguard against that?
-    // -Do the same using pre-increment instead of post
-    // -Try range-based loop, check if it calls the pre-increment
-    // -Try iterating in reverse, starting from the end
 
+    // Ressources:
     // https://www.cplusplus.com/reference/iterator/
-
 
     return ok;
   }
@@ -468,10 +477,6 @@ public:
     bool ok = true;
     return ok;
   }
-
-
-
-
 
 };
 
