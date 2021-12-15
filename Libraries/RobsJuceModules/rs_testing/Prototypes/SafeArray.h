@@ -11,7 +11,11 @@ when it needs to grow. Instead, the already allocated memory is retained and add
 allocated elsewhere. So, the data is not necessarily in a contiguous block of memory. The lack
 of reallcoation is useful for arrays of objects to which a pointer or reference exists elsewhere
 in the program. Re-allocation would require to invalidate all these pointers but with this class, 
-they remain valid ...tbc.... 
+they remain valid ...wait - no - they don't. After an insert, the pointers may not point to 
+deallocated memory but they will then point to the wrong position within the array...hmmm...could
+this class be useful nonetheless? ...we'll see....tbc.... 
+
+
 
 ToDo:
 -Maybe rename to rsRetainedArray. It's not true that it never ever re-allocates. Its just that it 
@@ -42,10 +46,15 @@ public:
 
   void reserve(size_t numElems);
 
-  void push_back(const T& elem);
+  void push_back(const T& val);
+
+
 
 
   void clear() { totalSize = 0; totalCapacity = 0; chunks.clear(); }
+
+
+
 
 
 
@@ -85,6 +94,15 @@ public:
   class iterator
   {
   public:  // try to get rid and make as much as possible private
+
+    // This doesn't seem to work - when we try to invke std::swap_ranges, the compiler barks
+    // 'iterator_category': is not a member of any direct or indirect base class of 
+    // 'std::iterator_traits<_Iter> ...
+    using iterator_category = std::bidirectional_iterator_tag;
+    //using difference_type   = ?;
+    using value_type        = T;
+    using pointer           = T*;  // or also value_type*
+    using reference         = T&;  // or also value_type&
 
     iterator(rsNonReAllocatingArray& iteratee, size_t chunkIndex, size_t elemIndex) 
       : a(iteratee), j(chunkIndex), k(elemIndex) 
@@ -140,14 +158,15 @@ public:
     // what about <,>,<=,>=?
 
 
-
-
-
   private:
 
     rsNonReAllocatingArray& a; // the array to iterate over
     size_t j, k;               // chunk- and element index within chunk
     size_t c0;                 // initial capacity - not yet sure, if we need it
+
+    // see:
+    // https://internalpointers.com/post/writing-custom-iterators-modern-cpp
+    // https://www.geeksforgeeks.org/iterators-c-stl/
 
   };
 
@@ -160,6 +179,8 @@ public:
     return iterator(*this, j, k); 
   }
 
+
+  iterator insert(iterator pos, const T& val);
 
 
 protected:
@@ -256,8 +277,35 @@ void rsNonReAllocatingArray<T>::push_back(const T& elem)
     totalCapacity += totalSize;
     rsAssert(rsIsPowerOfTwo(totalCapacity));
   }
-  chunks[j][k] = elem;
   ++totalSize;
+  // factor out code above into a "makeSpaceForOneMore" function that we may call from here and 
+  // from insert or incrementSize
+
+  chunks[j][k] = elem;
+}
+
+template<class T>
+typename rsNonReAllocatingArray<T>::iterator 
+rsNonReAllocatingArray<T>::insert(rsNonReAllocatingArray<T>::iterator pos, const T& val)
+{
+  // Maybe we could use a std::algorithm to perform shifting the elements one up?
+  // Maybe rotate? swap_ranges? move? move_backwards?
+  // https://en.cppreference.com/w/cpp/algorithm
+
+  //totalSize++;
+
+
+  // Doesn't compile - std::swap_ranges complains about something about iterator_category:
+  //push_back(val);
+  //iterator last    = end(); last--;
+  //iterator preLast = last;  preLast--;
+  //std::swap_ranges(pos, preLast, last);
+
+
+
+
+  rsError("not yet implemented");
+  return pos;
 }
 
 

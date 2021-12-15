@@ -485,6 +485,14 @@ public:
     ok &= a.size() == N;
     ok &= a.capacity() == 8;
 
+    It it = a.begin();
+    it++;
+    it++;
+    //a.insert(it, 2);
+
+
+    // See:
+    // https://en.cppreference.com/w/cpp/container/vector/insert
 
     return ok;
   }
@@ -517,7 +525,6 @@ bool rsNonReAllocatingArrayTest()
   ok &= NAA::testIterator(2, 25);
   ok &= NAA::testIterator(1, 25);
   ok &= NAA::testIterator(8, 95);
-
   ok &= NAA::testInsert();
 
   // ToDo next:
