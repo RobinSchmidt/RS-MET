@@ -34,7 +34,8 @@ k = 26-16 = 10 where the 16 comes from 2^(j+1) i think?
 -try to make it STL compatible
 -what about concatenationg two such arrays? maybe that would need a new datastructure? or maybe we 
  just appaend copies of the 2nd to the 1st where the 1st may grow?
-
+-add a defragment() function - should re-allocate enough memory to fit everything into the 1st 
+ chunk and copy the data over
 
 
 

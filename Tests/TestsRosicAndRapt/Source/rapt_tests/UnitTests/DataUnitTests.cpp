@@ -431,12 +431,12 @@ public:
     a.fill(N, 1000);
 
     It it = a.begin();
-    ok &= *it == start + 0; i++; 
-    ok &= *it == start + 1; i++;
+    ok &= *it == start + 0; it++; 
+    ok &= *it == start + 1; it++; // fails! ++ not yet implemented
     ok &= *it == start + 2;
     // etc. - put in a loop
     // todo: implement iterator deref..
-
+    // https://www.cplusplus.com/reference/iterator/
 
 
     return ok;

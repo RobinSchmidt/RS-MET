@@ -11,7 +11,16 @@ when it needs to grow. Instead, the already allocated memory is retained and add
 allocated elsewhere. So, the data is not necessarily in a contiguous block of memory. The lack
 of reallcoation is useful for arrays of objects to which a pointer or reference exists elsewhere
 in the program. Re-allocation would require to invalidate all these pointers but with this class, 
-they remain valid ...tbc.... */
+they remain valid ...tbc.... 
+
+ToDo:
+-Maybe rename to rsRetainedArray. It's not true that it never ever re-allocates. Its just that it 
+ doesn't implicitly reallocate in push_back when it needs to grow. Later we can add funtions that 
+ explicitly may trigger reallocation such as "defragmentMemory".
+-Maybe then it could make sense to also have a class rsContiguous array which would basically be a
+ re-implementation of std::vector. Maybe not for production use, more as "excercise" and as 
+ reference for implementing more complex STL compliant containers later.
+*/
 
 template<class T>
 class rsNonReAllocatingArray
@@ -48,13 +57,18 @@ public:
   // todo: have an init(size_t initialCapacity) function
 
 
+  /** Returns reference to element k in chunk j. */
+  T& at(size_t j, size_t k) { return chunks[j][k]; }
+  // this belongs into the private section! it's only public during development for convenience!
+
+
   // inc/dec should be done in constant time, +=, -= etc. may be linear in thenumber of chunks
   // ...but maybe it can be made constant time, too? let's at least try it!
   class iterator
   {
   public:  // try to get rid and make as much as possible private
 
-    iterator(const rsNonReAllocatingArray& iteratee, size_t chunkIndex, size_t elemIndex) 
+    iterator(rsNonReAllocatingArray& iteratee, size_t chunkIndex, size_t elemIndex) 
       : a(iteratee), j(chunkIndex), k(elemIndex) 
     {
       if(a.capacity() == 0) {
@@ -66,29 +80,29 @@ public:
     iterator& operator++() 
     { 
       rsError("not yet implemented"); 
+      return *this;
     } // pre-inc
-
-    iterator operator++(int) 
-    { 
-      rsError("not yet implemented"); 
-    } // post-inc
 
     iterator& operator--()    
     {
       rsError("not yet implemented"); 
-    }                    // pre-dec
+      return *this;
+    } // pre-dec
 
-    iterator operator--(int) 
-    { 
-      rsError("not yet implemented"); 
-    } // post-dec
+    iterator  operator++(int) { iterator tmp = *this; ++*this; return tmp; } // post-inc
+    iterator  operator--(int) { iterator tmp = *this; --*this; return tmp; } // post-dec
+
+
+    // Dereferencing:
+    T& operator*()   { return   a.at(j, k);  }
+    T* operator->()  { return &(a.at(j, k)); }
 
 
   private:
 
-    const rsNonReAllocatingArray& a; // the array to iterate over
-    size_t j, k;                     // chunk- and element index within chunk
-    size_t c0;                       // initial capacity
+    rsNonReAllocatingArray& a; // the array to iterate over
+    size_t j, k;               // chunk- and element index within chunk
+    size_t c0;                 // initial capacity
 
   };
 
@@ -101,7 +115,11 @@ public:
     return iterator(*this, j, k); 
   }
 
+
+
 protected:
+
+
 
   /** Converts a flat index as seen by the user to the chunk-index and element index within the
   chunk */
