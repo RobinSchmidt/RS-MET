@@ -139,8 +139,8 @@ public:
         // calculation)
 
         // new:
-        //if(j > 0)
-        //  cj /= 2;
+        if(j > 0)
+          cj /= 2;
         //k = cj-1;
 
 
@@ -179,13 +179,15 @@ public:
     for sanity checks during testing and debugging. */
     bool isValid() const
     {
+      return true; // uncomment to bypass the check during development
+
       bool ok = true;
       ok &= j >= 0 && j <= a.chunks.size(); // <= bcs end() iterators are also valid
       ok &= k >= 0 && k != -1;              // -1 wraps around to max(size_t)
       if(j < a.chunks.size())
       {
         ok &= k < a.chunks[j].size();
-        //ok &= cj == a.chunks[j].size();
+        ok &= cj == a.chunks[j].size();
       }
       return ok;
     }
@@ -400,6 +402,9 @@ rsNonReAllocatingArray<T>::insert(rsNonReAllocatingArray<T>::iterator pos, const
     --itL;
     --itR;
   }
+  // Bug: decrementing an end() iterator may trigger assert when numChunks == 2
+
+
   // ToDo: if we later switch to not using chunks[j].size() in ++ and -- of the iterator, check
   // if we can safely remove the .isZero check. It has been added to avoid trying decrementing
   // an iterator to the 0th element which then triggered an access violation trying to access

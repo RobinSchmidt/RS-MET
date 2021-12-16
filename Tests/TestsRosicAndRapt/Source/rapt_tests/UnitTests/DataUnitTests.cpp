@@ -459,15 +459,46 @@ public:
 
     // Test a range-based loop over all values v in a. This also covers the pre-increment:
     size_t i = 0;
-    for(const auto & v : a)
+    for(const auto & v : a)  // calls a.end() only once, i.e. not per iteration
     {
       ok &= v == start + i;
       i++;
     }
 
+    // Do the same loop manually:
+    i = 0;
+    for(it = a.begin(); it != a.end(); ++it) // calls a.end() per iteration
+    {
+      ok &= *it == start + i;
+      i++;
+    }
+
+    // ...soo - the manual loop has actually a different behavior that a range-based loop when the
+    // loop body changes the size of the array, i.e. invalidates the end() iterator that the 
+    // range-based loop apparently retrieves only once and then caches. The manual loop is more 
+    // robust to such things, but if initializing an end() iterator is expensive, the whole loop
+    // will be expensive. This is something one has to keep in mind!!! Try to make the end() 
+    // iterator initialization cheaper! It calls the expensive flatToChunkAndElemIndex method.
+
+
+
+    // Create array with 2 elements in 2 chunks of size 1:
+    a.clear();
+    a.fill(2, 0);
+    it = a.end();
+    ok &= it.isValid();
+    it--;                 // triggers assert
+    ok &= it.isValid();
+    // fix: a.end() may have to be more careful but will this affect performance? will a loop call
+    // end() repeatedly or will it cache the returned iterator from the 1st call...but nope, that 
+    // would actually be wrong and lead to errors when the array size changes during the loop
+
     // ToDo: 
     // -Implement and test +,-,+=,-= operators -> figure out, how this iterator_difference
     //  thing is supposed to work
+    // -construct arraywith numChunks = 2, retrieve end() iterator and decrement it -> triggers
+    //  assert
+    // -within the loops, add more it.isValid() checks
 
     // Notes:
     // -When we decrement a begin() iterator, we get an access violation. Maybe that should be
