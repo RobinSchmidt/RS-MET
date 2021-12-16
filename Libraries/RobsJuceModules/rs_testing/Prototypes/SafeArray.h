@@ -96,7 +96,10 @@ public:
     }
 
     iterator& operator=(const iterator& rhs)    // Copy assignment operator
-    { this->a  = rhs.a; this->j  = rhs.j; this->k  = rhs.k; this->c0 = rhs.c0; return *this; }
+    { 
+      this->a  = rhs.a; this->j  = rhs.j; this->k  = rhs.k; this->c0 = rhs.c0;
+      this->cj = rhs.cj; return *this; 
+    }
 
     //iterator& operator=(iterator&& rhs)         // Move assignment operator
     //{ this->a  = rhs.a; this->j  = rhs.j; this->k  = rhs.k; this->c0 = rhs.c0; }
@@ -192,7 +195,10 @@ public:
       return ok;
     }
 
-
+    void setToEnd()
+    {
+      rsError("not yet implemented");  
+    }
 
   private:
 
@@ -209,15 +215,35 @@ public:
     // https://internalpointers.com/post/writing-custom-iterators-modern-cpp
     // https://www.geeksforgeeks.org/iterators-c-stl/
 
+    friend class rsNonReAllocatingArray;
   };
 
   iterator begin() { return iterator(*this, 0, 0); }
 
   iterator end() 
   { 
+    // ToDo:
+    // iterator it(*this, 0, 0);
+    // it->setToEnd();
+    // return it;
+
+
     size_t j, k;
     flatToChunkAndElemIndex(totalSize, j, k);
-    return iterator(*this, j, k); 
+    iterator it(*this, j, k);
+
+    it.cj = chunks[j-1].size() * 2;
+    // I think, this is correct only if the array is filled to its fully capacity. Otherwise,
+    // the factor 2 should not be present, I think. This is because when its fully filled up, j
+    // point to a non-existent chunk...it's all a bit messy....
+    // maybe wrap it inot a function it->setToEnd which does all that stuff. Doing it from here
+    // may be not a good idea. the iterator itself "knows" better what the right thing is...
+
+    return it;
+    // Try to make this cheaper! In particular, try to avoid the call to flatToChunkAndElemIndex. 
+    // There should be simpler ways to init j,k
+
+    //return iterator(*this, j, k); 
   }
 
 

@@ -499,6 +499,9 @@ public:
     // -construct arraywith numChunks = 2, retrieve end() iterator and decrement it -> triggers
     //  assert
     // -within the loops, add more it.isValid() checks
+    // -for handling (initializing) the end() iterator correctly, it makes a difference, if the
+    //  array filled up fully (in which case it has j=numChunks, k=0) or not (in which case it has
+    //  j = numChunks-1, k < chunks[j].size).
 
     // Notes:
     // -When we decrement a begin() iterator, we get an access violation. Maybe that should be
@@ -629,6 +632,9 @@ bool rsNonReAllocatingArrayTest()
   ok &= NAA::testIterator(2, 25);
   ok &= NAA::testIterator(1, 25);
   ok &= NAA::testIterator(8, 95);
+  ok &= NAA::testIterator(1, 32);   // its important to check it also when the capacity is filled
+  ok &= NAA::testIterator(2, 32);   // up exactly because the end() iterators have different 
+  ok &= NAA::testIterator(4, 32);   // features in this case
   ok &= NAA::testInsertAndErase();
 
   // ToDo next:
