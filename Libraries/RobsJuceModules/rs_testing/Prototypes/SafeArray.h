@@ -120,6 +120,9 @@ public:
       }
       // Can this be optimized, avoiding the call to a.chunks[j].size()? Maybe we could maintain
       // jSize member. Maybe instead of c0, which we don't seem to need anyway. We'll see....
+      // But maybe the call to a.chunks[j].size() isn'T problematic anyway? Benchmark both versions
+      // to figure out, if it's even worth to avoid it, because that avoidance creates a couple of
+      // other problems...
 
 
       rsAssert(isValid()); // sanity check for debug
@@ -182,7 +185,7 @@ public:
     for sanity checks during testing and debugging. */
     bool isValid() const
     {
-      return true; // uncomment to bypass the check during development
+      //return true; // uncomment to bypass the check during development
 
       bool ok = true;
       ok &= j >= 0 && j <= a.chunks.size(); // <= bcs end() iterators are also valid
@@ -190,14 +193,24 @@ public:
       if(j < a.chunks.size())
       {
         ok &= k < a.chunks[j].size();
-        ok &= cj == a.chunks[j].size();
+        //ok &= cj == a.chunks[j].size();
       }
+      else
+        ok &= k == 0;
       return ok;
     }
 
     void setToEnd()
     {
-      rsError("not yet implemented");  
+      rsError("not yet implemented");
+
+      //j = a.chunks.size()-1;
+      // hmm...perhaps it would be better to use the size() of the individual chunks, i.e. not 
+      // keep all the sizes at full capacity. this makes it easier to retrieve k. This requires
+      // modifications to push_back, insert, erase, reserve, incrementSize. We should also 
+      // introduce a decrementSize function
+
+
     }
 
   private:
@@ -207,9 +220,7 @@ public:
 
 
     size_t c0;                 // initial capacity - not yet sure, if we need it
-
-    // experimental;
-    size_t cj;                 // capacity of chunk j
+    size_t cj;                 // capacity of chunk j, experimental, to avoid using ssize() in inc/dec
 
     // see:
     // https://internalpointers.com/post/writing-custom-iterators-modern-cpp
