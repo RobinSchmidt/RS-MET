@@ -89,12 +89,10 @@ public:
       : a(iteratee), j(chunkIndex), k(elemIndex) 
     {
       if(a.capacity() == 0) 
-      {
         c0 = 0;  // does this make sense?
-        //rsError("not yet implemented"); 
-      }
-      else {
-        c0 = a.chunks[0].size(); }
+      else 
+        c0 = a.chunks[0].size(); 
+      cj = c0;
     }
 
     iterator& operator=(const iterator& rhs)    // Copy assignment operator
@@ -106,30 +104,44 @@ public:
 
     iterator& operator++() 
     { 
+      rsAssert(isValid()); // sanity check for debug
+
       ++k;
-      if(k == a.chunks[j].size())
+      if(k == a.chunks[j].size())  // old
+      //if(k == cj)  // new
       {
         k = 0;
         ++j;
+        if(j > 1)    // also newly added
+          cj *= 2;
       }
       // Can this be optimized, avoiding the call to a.chunks[j].size()? Maybe we could maintain
       // jSize member. Maybe instead of c0, which we don't seem to need anyway. We'll see....
 
 
+      rsAssert(isValid()); // sanity check for debug
       return *this;
     } // pre-inc
 
     iterator& operator--()
     {
+      rsAssert(isValid()); // sanity check for debug
+
       if(k == 0)
       {
         --j;
 
+        // old:
         k = a.chunks[j].size() - 1;
         // crashes when j == -1 (wrapped around) which happens when an iterator to begin() is
         // decremented which happens in insert when inserting at postion 0 into an empty array. 
         // Maybe try to not call size() here - it's probably inefficient anyway (involves a 
         // calculation)
+
+        // new:
+        //if(j > 0)
+        //  cj /= 2;
+        //k = cj-1;
 
 
         int dummy = 0;
@@ -138,7 +150,7 @@ public:
         --k;
 
 
-      //rsError("not yet implemented"); 
+      rsAssert(isValid()); // sanity check for debug
       return *this;
     } // pre-dec
 
@@ -162,6 +174,22 @@ public:
 
     // Inquiry:
     bool isZero() const { return j == 0 && k == 0; }
+
+    /** Checks the invariants that an iterator should always maintain. The function is mostly meant 
+    for sanity checks during testing and debugging. */
+    bool isValid() const
+    {
+      bool ok = true;
+      ok &= j >= 0 && j <= a.chunks.size(); // <= bcs end() iterators are also valid
+      ok &= k >= 0 && k != -1;              // -1 wraps around to max(size_t)
+      if(j < a.chunks.size())
+      {
+        ok &= k < a.chunks[j].size();
+        //ok &= cj == a.chunks[j].size();
+      }
+      return ok;
+    }
+
 
 
   private:
