@@ -1,7 +1,7 @@
 #ifndef RAPT_SORTANDSEARCH_H_INCLUDED
 #define RAPT_SORTANDSEARCH_H_INCLUDED
 
-// move to the "Data" folder ...or maybe int rsArrayTools
+// move into rsArrayTools
 // this file contains functions for sorting arrays, finding elements and related stuff
 // maybe wrap into a class or two classes rsSort, rsSearch
 // todo: rename lessThan, defaultLess, etc to "before" - because x may come before y even if x > y 
@@ -70,6 +70,10 @@ the pattern inside the buffer as a std::vector which is in ascending order. The 
 Knuth-Morris-Pratt algorithm (see: Introduction to Algorithms, 2nd Ed, p. 923) */
 template <class T>
 std::vector<int> rsFindAllOccurencesOf(T* buffer, int bufferLength, T* pattern, int patternLength);
+// What about the Boyer-Moore algorithm? Isn't that supposed to be better? -> figure out!
+// https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
+// https://en.wikipedia.org/wiki/Boyer%E2%80%93Moore_string-search_algorithm
+// -> has C-implementation of BM and pseudocode for KMP
 
 /** Returns the first occurrence of an element in the passed buffer and its index, -1 if the
 element is not found in the buffer. The optional searchStart parameter can be used to skip an

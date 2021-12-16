@@ -168,7 +168,12 @@ public:
 
     rsNonReAllocatingArray& a; // the array to iterate over
     size_t j, k;               // chunk- and element index within chunk
+
+
     size_t c0;                 // initial capacity - not yet sure, if we need it
+
+    // experimental;
+    size_t cj;                 // capacity of chunk j
 
     // see:
     // https://internalpointers.com/post/writing-custom-iterators-modern-cpp

@@ -1089,17 +1089,29 @@ int rsArrayTools::findSplitIndex(const T* A, int N, T key)
     return N;
 
   while( imin < imax ) {
-    int imid = imin/2 + imax/2;
+    int imid = imin/2 + imax/2;  
+    // Maybe use imin + (imax-imin)/2 -> 1 division less. I'm also not quite sure, if it does the
+    // right thing in all possible cases (imin,imax = even,even, even,odd, odd,even, odd,odd)
+    // -> check in unit tests, if all 4 cases are covered
     //rsAssert(imid < imax); // only for debug
+
+
     if( A[imid] < key )
       imin = imid + 1;
     else
       imax = imid;
+    // Maybe this is a fixup for when the code above goes wrong?
+
   }
   return imin;
 }
 // compare to this: https://en.wikipedia.org/wiki/Binary_search_algorithm
 // what about RSLib? look, if we have something like hat there already
+// see also here at around 13:00
+// https://www.youtube.com/watch?v=YoaZzIZFErI
+// \todo add function binarySearch, maybe call it here - noone would find the functionality under 
+// this name
+// compare to std::lower_bound...or maybe just use that
 
 template <class T>
 inline bool rsArrayTools::isAllZeros(const T *buffer, int length)

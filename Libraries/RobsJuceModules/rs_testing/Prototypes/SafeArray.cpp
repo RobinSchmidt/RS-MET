@@ -20,6 +20,8 @@ ToDo:
  ...wait...really - should the right-shift give j? why? i think, we need the position l of the 
  leftmost nonzero bit. this is related to j. i think j = l - log2(C0) where C0 is the inital 
  capacity?
+-Under the code for rsLinearTransforms::fourierRadix2DIF there are some comments about efficient
+ algorithms for log2(int) - check there
 
 Let's look an example where the initial size, i.e. the size of chunk[0] is 4:
  chunk:  0   1   2   3   4   5

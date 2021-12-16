@@ -9,8 +9,8 @@ in general something like a matrix-vector product of the form:
 where x and y are input- and output vectors respectively and A is the matrix that defines the 
 transformation. Many of the important linear transforms used in signal processing do not require 
 the explicit computation of a matrix-vector product, which is an O(N^2) process, but can use more 
-efficient algorithms, due to the special structure of the matrix. The most notable example of 
-these is certainly the fast Fourier transform (FFT), which can be computed by an O(N*log(N)) 
+efficient algorithms due to the special structure of the matrix. The most notable example of 
+these is certainly the fast Fourier transform (FFT) which can be computed by an O(N*log(N)) 
 algorithm. But there are many others, each with its own unique features and application domain. 
 
 Note that the Fourier transforms here are mostly convenience functions with no attempt to be 
@@ -33,7 +33,7 @@ public:
   e^(-2*i*pi/N) for a forward FFT or e^(+2*i*pi/N) for an inverse FFT. I have opted to require 
   client code to pass this primitive N-th root of unity to make it possible to instantiate the 
   routine also unchanged for the case when T is a modular integer type in which case the FFT is 
-  also known NTT as for "number theoretic transform" (but this has not yet been tested). See:
+  also known as NTT for "number theoretic transform". See:
     https://ccrma.stanford.edu/~jos/st/Number_Theoretic_Transform.html
   The algorithm was adapted from algorithm 4.2 in the book "Inside the FFT black box" and then
   simplified. All twiddle factors are computed on the fly via recursion. For a complex FFT, the 
@@ -98,7 +98,7 @@ public:
   The result will again end up in x. The algorithm works in place without allocating heap memory
   and is an adaption of the algorithm used in hadamard(). I don't really know, if "Kronecker 
   transform" is a common name for this kind of transform. I realized, that this "Generalized 
-  Hadamard Transform" can be further generalized, using an NxN (maybe even MxN?) matrix as seed and
+  Hadamard Transform" can be further generalized, using an NxN (or even MxN) matrix as seed and
   I found it appropriate to call the resulting family of transforms (fast) Kronecker transforms, 
   because they are all based on the Kronecker product. Their complexity is generally O(N*log(N)).*/
   template<class T>
