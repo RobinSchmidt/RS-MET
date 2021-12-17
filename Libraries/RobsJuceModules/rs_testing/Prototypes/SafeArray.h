@@ -218,9 +218,11 @@ public:
     rsNonReAllocatingArray& a; // the array to iterate over
     size_t j, k;               // chunk- and element index within chunk
 
-
-    size_t c0;                 // initial capacity - not yet sure, if we need it
-    size_t cj;                 // capacity of chunk j, experimental, to avoid using ssize() in inc/dec
+    // Experimental, to avoid calling size() in inc/dec. I'm not yet sure, it this needs to be 
+    // avoided though. It may turn out to be a premature optimization and it would make other 
+    // things more awkward. -> set up benchmarks first before pursuing this optimization further:
+    size_t c0; // initial capacity - not yet sure, if we need it
+    size_t cj; // capacity of chunk j, 
 
     // see:
     // https://internalpointers.com/post/writing-custom-iterators-modern-cpp

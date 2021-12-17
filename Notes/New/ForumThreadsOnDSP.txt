@@ -95,6 +95,16 @@ http://www.kvraudio.com/forum/viewtopic.php?t=369665
 Plugin-Programming:
 http://www.kvraudio.com/forum/viewtopic.php?f=33&t=423238 Looking for WDL/iPlug tutor
 
+Plugin-Formats:
+https://www.kvraudio.com/forum/viewtopic.php?p=7826063 Our Community Plugin Format
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=561545 Well this is a kick in the nuts: VST2 plug-ins
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=554336 Are VST3 widely adopted now?
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=549009 About CAT
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=547778 VST3 SDK could need some improvement...
+https://www.kvraudio.com/forum/viewtopic.php?f=31&t=574861 About CLAP
+https://www.kvraudio.com/forum/viewtopic.php?f=33&t=574866 Cool new plug in format on the way -- CLAP
+
+
 Misc
 http://www.kvraudio.com/forum/viewtopic.php?t=307408 oversampling - why powers of 2?
 http://www.kvraudio.com/forum/viewtopic.php?t=441525 Antialiasing by limiting rate of change (cont. of "perfect" synthesis)
