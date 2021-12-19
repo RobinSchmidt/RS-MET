@@ -261,6 +261,12 @@ public:
     void setCustomPointer(const void* newPointer) { custom = newPointer; }
 
 
+    /** Sets the parent level, i.e. the enclosing group for regions or the enclosing instrument for
+    groups. */
+    void setParent(OrganizationLevel* newParent) { parent = newParent; }
+
+
+
     void copyDataFrom(const OrganizationLevel* lvl);
 
 
@@ -393,7 +399,7 @@ public:
     std::vector<SignalProcessorType> signalProcessors;
     /** Listing of the types of signal processors used in this instrument in the same order like how
     they should be applied (we assume a serial connection). */
-    // should be member of the region
+    // should be member of the region or OrganizationLevel
 
   };
 
@@ -422,7 +428,9 @@ public:
   private:
 
     friend class Group;  // do we need this? if not, get rid.
-    friend class rsSamplerData;
+    friend class rsSamplerData;  // get rid!
+
+
     // The Region class shall not provide any public functions that can modify the region because
     // those could be used by client code to modify the region behind the back of the 
     // rsSamplerEngine which could mess things up. Client code can modify regions only through the
@@ -536,7 +544,7 @@ public:
     // the implementations of Group and Instrument more consistent but is actually technically not 
     // necessary. So, for the time being, let's keep it an array of direct value objects.
 
-    friend class rsSamplerData;
+    friend class rsSamplerData;  // get rid
   };
 
   //-----------------------------------------------------------------------------------------------

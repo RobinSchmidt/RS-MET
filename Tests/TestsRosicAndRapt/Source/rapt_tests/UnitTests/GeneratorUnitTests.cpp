@@ -1432,11 +1432,14 @@ bool samplerWaveShaperTest()
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
-  se.setRegionSetting(0, 0, PST::DistShape,      float(shape));
-  se.setRegionSetting(0, 0, PST::DistDrive,      drive);
-  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  se.setRegionSetting(0, 0, PST::DistShape, float(shape));
+  se.setRegionSetting(0, 0, PST::DistDrive, drive);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  rsAssert(ok);
   // predictably fails! DSP stuff is not yet implemented...
   // ToDo:
+  // -maybe let testSamplerNote take a plotMode parameter which can be: 0: never plot, 1: always 
+  //  plot, 2: plot when failed
   // -make a class SignalProcessorPool, let the engine maintain such a pool as member 
   //  -this class should have a function grabProcessor(SignalProcessorType type) that returns
   //   a pointer to a processor of the desired type or a nullptr if no such processor is available
@@ -1444,7 +1447,16 @@ bool samplerWaveShaperTest()
   // -let the RegionPlayer maintain a pointer to it from where it may grab its processors. Maybe 
   //  the RegionPlayer itself may also be dragged out. That may be nice anyway because the 
   //  rsSamplerEngine class is already a bit too big anyway.
-  // -we need to update: rsSamplerEngine::getRegionPlayerFor, 
+  // -we need to update:
+  //    in class rsSamplerData::OrganizationLevel getProcessingChain return an emppty array - we 
+  //    need to add elements to it when setRegionSetting(...) is called. we should figure out, to 
+  //    what type of processor the setting appies, check if such an processro is already in the 
+  //    array and if not, add it. we need to do this in OrganizationLevel::setSetting, i think.
+  //    Region,Group,Instrument should unfriend rsSamplerData and rsSamplerData should not be 
+  //    allowed to just push onto the settings array. it must use add/setSetting
+
+  //    in class rsSamplerEngine::RegionPlayer:  
+  //      buildProcessingChain, resetDspState, resetDspSettings, setupDspSettingsFor
 
 
 
