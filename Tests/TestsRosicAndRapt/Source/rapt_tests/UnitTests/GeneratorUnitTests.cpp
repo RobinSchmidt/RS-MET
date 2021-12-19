@@ -1442,10 +1442,10 @@ bool samplerWaveShaperTest()
   rsAssert(ok);
   // predictably fails! DSP stuff is not yet implemented...
   // ToDo:
-  // -Let the RegionPlayer maintain a pointer to the engine
-  // -Implement and call engine->grabProcessor() and engine->returnProcessor or repositProcessor
+  // -set up the DSP objects in RegionPlayer::setupDspSettingsFor::setupDspSettingsFor
+  // -actually invoke the DSP objects for processing
+  // Cosmetics:
   // -Maybe drag out RegionPlayer from rsSamplerEngine
-  //
   // -maybe let testSamplerNote take a plotMode parameter which can be: 0: never plot, 1: always 
   //  plot, 2: plot when failed
   // -make a class SignalProcessorPool, let the engine maintain such a pool as member 

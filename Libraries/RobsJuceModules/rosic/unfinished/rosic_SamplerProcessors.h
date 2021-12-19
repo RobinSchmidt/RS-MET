@@ -301,7 +301,7 @@ public:
   /** This function should be called by the client when it doesn't need the processor anymore, For
   example, because the region for which it was used has stopped playing. The client returns the 
   processor to the pool so it becomes available again for playing other notes. */
-  void returnProcessor(SignalProcessor* p);
+  void repositProcessor(SignalProcessor* p);
   // maybe rename it to repositProcessor
 
 

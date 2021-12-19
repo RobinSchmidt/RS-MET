@@ -735,11 +735,13 @@ void rsSamplerEngine::SignalProcessorChain::processFrame(rsFloat64x2& inOut)
     processors[i]->processFrame(inOut);
 }
 
+/*
 void rsSamplerEngine::SignalProcessorChain::resetState()
 {
   for(size_t i = 0; i < processors.size(); i++)
     processors[i]->resetState();
 }
+*/
 
 //-------------------------------------------------------------------------------------------------
 // rsSamplerEngine::RegionPlayer
@@ -835,7 +837,7 @@ void rsSamplerEngine::RegionPlayer::releaseDspObjects()
 
   // Return the DSP objects to the pool:
   for(int i = 0; i < dspChain.getNumProcessors(); i++)
-    dspPool->processorPool.returnProcessor(dspChain.getProcessor(i));
+    dspPool->processorPool.repositProcessor(dspChain.getProcessor(i));
   dspChain.clear();
 
   // Return the modulators to the pool:
@@ -971,7 +973,11 @@ void rsSamplerEngine::RegionPlayer::resetDspSettings()
   loopEnd    = 0.f;
   loopMode   = 0;
 
-  // ToDo: reset all processors and modulators....
+  dspChain.resetSettings();
+  for(size_t i = 0; i < modulators.size(); i++)
+    modulators[i]->resetSettings();
+
+  // ToDo: maybe reset all modulation connections?
 }
 
 void rsSamplerEngine::RegionPlayer::setupDspSettingsFor(
@@ -1056,6 +1062,13 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
     // Filter settings:
       //case TP::FilterCutoff: { flt.setCutoff(val);  } break;
+
+    case TP::DistDrive:
+    {
+      // rsSamplerProcessors::WaveShaper dst = 
+
+      int dummy = 0;
+    } break;
 
     // Equalizer settings:
     // .....

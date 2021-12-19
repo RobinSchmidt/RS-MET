@@ -366,8 +366,8 @@ protected:
   public:
     void processFrame(rsFloat64x2& inOut);
     void processBlock(rsFloat64x2* inOut, int N);
-    void resetState();
-    void resetSettings();
+    void resetState()    { for(auto & p : processors) p->resetState();    }
+    void resetSettings() { for(auto & p : processors) p->resetSettings(); }
     void reset() { resetState(); resetSettings(); }
 
     void reserve(size_t num) { processors.reserve(num); }

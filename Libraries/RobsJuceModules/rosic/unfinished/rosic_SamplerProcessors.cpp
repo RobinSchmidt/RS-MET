@@ -56,35 +56,41 @@ void SignalProcessorPool::allocateProcessors()
   // objects of each type are needed. The engine should analyze, how many filters, waveshapers, 
   // etc. could be needed in the worst case, fill a suitable data structure with that information
   // and pass it in.
+
+  // Maybe instead of manually resizing everything, do it programmatically, maybe using a
+  // SignalProcessorFactory to create the objects. But then: how do we keep track of the different
+  // kinds of modules?
 }
 
 
-template<class T>
+
+template<class T> // Grow v by given amount
+inline void rsGrow(std::vector<T>& v, size_t amount = 1)
+{
+  v.resize(v.size() + amount);
+}
+template<class T> // Shrink v by given amount
 inline void rsShrink(std::vector<T>& v, size_t amount = 1)
 {
   RAPT::rsAssert(v.size() >= amount);
   v.resize(v.size() - amount);
 }
-template<class T>
-inline T* rsLastAddr(std::vector<T>& v)
+template<class T> // Pointer to last element in v
+inline T* rsLastPointer(std::vector<T>& v)
 {
   RAPT::rsAssert(!v.empty());
   return &v[v.size()-1];
 }
-template<class T>
+template<class T> // Pointer to last element, shrink by 1
 inline T* rsGetLastPtrAndShrink(std::vector<T>& v)
 {
   if(v.empty())
     return nullptr;
-  T* p = rsLastAddr(v);
+  T* p = rsLastPointer(v);
   rsShrink(v);
   return p;
 }
-template<class T>
-inline void rsGrow(std::vector<T>& v, size_t amount = 1)
-{
-  v.resize(v.size() + amount);
-}
+
 // maybe move to rapt
 
 SignalProcessor* SignalProcessorPool::grabProcessor(SignalProcessorType type)
@@ -99,7 +105,7 @@ SignalProcessor* SignalProcessorPool::grabProcessor(SignalProcessorType type)
   return p;
 }
 
-void SignalProcessorPool::returnProcessor(SignalProcessor* p)
+void SignalProcessorPool::repositProcessor(SignalProcessor* p)
 {
   using SPT = SignalProcessorType;
   switch(p->getType())
