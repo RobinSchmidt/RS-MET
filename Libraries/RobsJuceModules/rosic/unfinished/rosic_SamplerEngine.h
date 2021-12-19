@@ -369,10 +369,8 @@ protected:
     void resetState();
     void resetSettings();
     void reset() { resetState(); resetSettings(); }
-
     void clear() { processors.clear(); }
     void addProcessor(SignalProcessor* p) { processors.push_back(p); }
-
     bool isEmpty() const { return processors.empty(); }
   protected:
     std::vector<SignalProcessor*> processors;
@@ -388,7 +386,7 @@ protected:
   };
 
   /** A class for playing back a given Region object. */
-  class RegionPlayer
+  class RegionPlayer  // Maybe move out of the class
   {
 
   public:
@@ -399,7 +397,7 @@ protected:
     the group settings should override the instrument settings (true) or be applied on top of them
     (false). Likewise, regionSettingsOverride = true lets the region settings override the group
     settings. */
-    void setRegionToPlay(const Region* regionToPlay, double outputSampleRate,
+    rsReturnCode setRegionToPlay(const Region* regionToPlay, double outputSampleRate,
       bool groupSettingsOverride, bool regionSettingsOverride);
    // todo: later maybe have default values (false) for the settingsOnTop variables for 
     // convenience - but for implementing the signal-flow stuff, it makes sense to enforce the 
@@ -427,15 +425,26 @@ protected:
     identify players that need to stop, when a noteOff is received. @see setKey */
     uchar getKey() const { return key; }
 
+    /** Releases all resources that were acquired for playback such as signal processors, 
+    modulators, etc. */
+    void releaseRessources();
+
 
   protected:
 
     /** A basic sanity check for the given region. Mostly for catching bugs. */
     bool isPlayable(const Region* region);
 
-    /** Sets up the internal values for the playback settings (including DSP objects) according
-    to the assigned region and resets all DSP objects. */
-    void prepareToPlay(double sampleRate, bool groupSettingsOverride, bool regionSettingsOverride);
+
+
+    /** Acquires the ressources that are required for the playback of the given region such as the
+    required DSPs and modulators, sets up the internal values for the playback settings (including 
+    DSP objects) according to the assigned region and resets all DSP objects. When it returns
+    rsReturnCode::success, it means the player is now ready to play. If it returns anything else,
+    it means that something went wrong  - presumably not enough ressources were available - and the
+    engine should discard the player object, i.e. put it back into the pool. */
+    rsReturnCode prepareToPlay(double sampleRate, bool groupSettingsOverride, 
+      bool regionSettingsOverride);
     // change API to take group/regionSettingsAccumulate as parameters
 
     /** Returns a pointer to a processor of given type, if available, otherwise a nullptr. Used in
@@ -456,6 +465,7 @@ protected:
 
     const Region* region;                 //< The Region object that this object should play
     const AudioFileStream<float>* stream; //< Stream object to get the data from
+
     rsFloat64x2 amp = 1.0;                //< Amplitude (for both channels)
     //int sampleTime = 0;            //< Elapsed time in samples, negative values used for delay
     double sampleTime = 0.0;       //< Time index in the sample. Negative values used for delay.

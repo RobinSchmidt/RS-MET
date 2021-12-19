@@ -130,10 +130,16 @@ int rsSamplerEngine::removeRegion(int gi, int ri)
   RAPT::rsAssert(r != nullptr);
   for(int k = 0; k < numKeys; k++)
     regionsForKey[k].removeRegion(r);
+
+
   for(size_t i = 0; i < activePlayers.size(); i++)
+  {
     if(activePlayers[i]->getRegionToPlay() == r)
+    {
       activePlayers[i]->setRegionToPlay(nullptr, 0.0, groupSettingsOverride, regionSettingsOverride);
       // the idlePlayers are supposed to have a nullptr anyway
+    }
+  }
 
   // Remove region from the rsSamplerData object
   bool success = sfz.removeRegion(gi, ri);
@@ -465,10 +471,23 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
   if(idlePlayers.empty())
     return nullptr;  // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = RAPT::rsGetAndRemoveLast(idlePlayers);
-  rp->setKey(key);
-  rp->setRegionToPlay(r, sampleRate, groupSettingsOverride, regionSettingsOverride);
-  activePlayers.push_back(rp);
-  return rp;
+  //rp->setKey(key);
+
+  rsReturnCode rc = rp->setRegionToPlay(r, sampleRate, groupSettingsOverride, 
+                                        regionSettingsOverride);
+  if(rc == rsReturnCode::success)
+  {
+    rp->setKey(key);
+    activePlayers.push_back(rp);
+    return rp;
+  }
+  else
+  {
+    idlePlayers.push_back(rp);
+    return nullptr;
+  }
+  //activePlayers.push_back(rp);
+  //return rp;
 
   // ToDo: Let setRegionToPlay return a bool to indicate, if it's possible to play the region. It
   // may fail due to lack of ressources, such as DSP processors and/or modulators. If it returns 
@@ -497,9 +516,8 @@ int rsSamplerEngine::stopRegionPlayer(int i)
     return rsReturnCode::invalidIndex; }
   RegionPlayer* p = activePlayers[i];
   RAPT::rsRemove(activePlayers, i);
-  p->setRegionToPlay(nullptr, 0.0, groupSettingsOverride, regionSettingsOverride); 
-    // don't keep the pointer to avoid it dangling when the region is removed
-  idlePlayers.push_back(p);       
+  p->releaseRessources();
+  idlePlayers.push_back(p);
   return rsReturnCode::success;
 }
 
@@ -706,14 +724,16 @@ void rsSamplerEngine::SignalProcessorChain::resetState()
 //-------------------------------------------------------------------------------------------------
 // rsSamplerEngine::RegionPlayer
 
-void rsSamplerEngine::RegionPlayer::setRegionToPlay(const rsSamplerEngine::Region* regionToPlay, 
+rsReturnCode rsSamplerEngine::RegionPlayer::setRegionToPlay(
+  const rsSamplerEngine::Region* regionToPlay, 
   double fs, bool groupSettingsOverride, bool regionSettingsOverride)
-{
+{  
+  releaseRessources();
   region = regionToPlay;
   if(region == nullptr)
-    return;
+    return rsReturnCode::nothingToDo;
   stream = getSampleStreamFor(region);
-  prepareToPlay(fs, groupSettingsOverride, regionSettingsOverride);
+  return prepareToPlay(fs, groupSettingsOverride, regionSettingsOverride);
 }
 
 rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
@@ -789,40 +809,52 @@ bool rsSamplerEngine::RegionPlayer::isPlayable(const Region* region)
   return ok;
 }
 
-void rsSamplerEngine::RegionPlayer::prepareToPlay(
+void rsSamplerEngine::RegionPlayer::releaseRessources()
+{
+  // ToDo:
+  // -Return the DSP objects to the pool
+  // -Return the modulators to the pool
+  // -Return the mod-connections to the pool
+  // 
+
+  // This is required but not enough:
+  modulators.clear();
+  modMatrix.clear();
+  dspChain.clear();
+  // ...we must also return the objects back to the pool to make them available again. Maybe 
+  // something like:
+  //   engine.returnProcessorsToPool(dspChain.processors)
+  //   engine.returnConnectionsToPool(modMatrix);
+  //   engine.returnModulatorsToPool(modulators)
+  // before the calls to clear()
+
+  stream = nullptr;
+  region = nullptr;
+}
+
+rsReturnCode rsSamplerEngine::RegionPlayer::prepareToPlay(
   double fs, bool groupSettingsOverride, bool regionSettingsOverride)
 {
   RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   RAPT::rsAssert(stream != nullptr);   // Ditto.
-
-  bool ok = buildProcessingChain();
-  if(!ok)
-  {
-    //return rsSamplerEngine::rsReturnCode::voiceOverload;  // rename to layerOverload
-    // This should actually not happen in therory (as by the sfz spec, and unlimited number of 
-    // layers is available), but in practice, it may happen in extreme situations like triggering a
-    // whole lot of layers at once or in very short succession while already being close to the 
-    // limit, such that we don't have enough pre-allocated players and/or dsp objects available and 
-    // the required additional allocation of more is not fast enough.
-  }
-
-  ok &= setupModulations();
-  if(!ok)
-  {
-    // Also in this case, we need to roll back and the caller should discard the RegionPlayer...
-  }
-
-  resetDspState();        // Needs to be done after building the chain
-  resetDspSettings();     // Reset all DSP settings to default values
+  if(!buildProcessingChain()) {
+    releaseRessources();
+    return rsReturnCode::layerOverload; }
+  if(!setupModulations()) {
+    releaseRessources();
+    return rsReturnCode::layerOverload; }
+  resetDspState();     // Needs to be done after building the chain
+  resetDspSettings();  // Reset all DSP settings to default values
   setupDspSettingsFor(region, fs, groupSettingsOverride, regionSettingsOverride);
   // todo: move fs before the override parameters for consistency
 
-  // old:
-  //setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, true);
-  //setupDspSettings(region->getGroup()->getSettings(), fs, groupSettingsOverride);
-  //setupDspSettings(region->getSettings(), fs, regionSettingsOverride);
-
-  // return rsSamplerEngine::rsReturnCode::success;
+  return rsReturnCode::success;
+  // Overload should actually not happen in therory (as by the sfz spec, and unlimited number of 
+  // layers is available), but in practice, it may happen in extreme situations like triggering a
+  // whole lot of layers at once or in very short succession while already being close to the 
+  // limit, such that we don't have enough pre-allocated players and/or dsp objects available and 
+  // the required additional allocation of more is not fast enough. In such a case, we don't want 
+  // to play the region at all. The caller should clean up and discard the RegionPlayer object.
 }
 
 bool rsSamplerEngine::RegionPlayer::hasFinished()
@@ -864,18 +896,11 @@ SignalProcessor* rsSamplerEngine::RegionPlayer::getProcessor(SignalProcessorType
 bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
 {
   RAPT::rsAssert(dspChain.isEmpty(), "Someone has not cleaned up after finishing playback!");
-  dspChain.clear(); // ...so we do it here. But this should be fixed!
-
-  // ToDo: 
-  // -Build the chain of DSP processors (...done) 
-  // -Check, if the caller handles failure correctly, i.e. if we return false, the caller should
-  //  discard the whole RegionPlayer and not play the region at all
-
+  dspChain.clear(); // ...so we do it here. But this should be fixed elsewhere!
   using DspType = SignalProcessorType;
   const std::vector<DspType>& dspTypeChain = region->getProcessingChain();
   for(size_t i = 0; i < dspTypeChain.size(); i++) {
-    DspType type = dspTypeChain[i];
-    SignalProcessor* dsp = getProcessor(type);
+    SignalProcessor* dsp = getProcessor(dspTypeChain[i]);
     if(dsp)
       dspChain.addProcessor(dsp);
     else {
