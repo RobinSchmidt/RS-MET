@@ -508,32 +508,34 @@ bool samplerEngineUnitTest1()
   //se2.setupFromSFZ(sfzData2);
   //ok &= se2.matchesInstrumentDefinition(se);
 
-  // Remove the 1st region (sin440) -> cos440 should become 1st region, then re-assign the sample
-  // for 1st region to sine. Do the removal in the middle of playback - desired bevavior: it still 
-  // plays to the end, but the next time the key is triggered, it doesn't start playing anymore. 
-  // This works because in RegionPlayer::getFrame/processBlock, the region pointer is not 
-  // referenced anymore. It's referenced only when the playback starts...but what about noteOff?
-  // At the moment, it also doesn't reference the region pointer, but later we will want to trigger 
-  // the release...maybe we can do that without referencing the region pointer, by setting up the 
-  // envelopes already at the start...but what if a release sample should get triggered?
-  // ...hmmm...that's a mess! I think, the only reasonable thing to do when a region is removed
-  // is to immediately stop all region players that play this region
+  // Remove the 1st region (sin440, on left channel) in the middle of playback. Desired bevavior: 
+  // the playback of the respective region immediately stops, the rest in unaffected.
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  ok &= se.getNumActiveLayers() == 2;
   for(int n = 0; n < N/2; n++)
     se.processFrame(&outL[n], &outR[n]);
-  se.removeRegion(0, 0);
+  ok &= se.getNumActiveLayers() == 2;
+  se.removeRegion(0, 0);               // remove a region in the middle of playback 
+  ok &= se.getNumActiveLayers() == 1;
   for(int n = N/2; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
-  rsPlotVectors(outL, outR); 
-  ok &= outL == (2.f * sin440);
-  ok &= outR == (2.f * cos440);
   ok &= se.getNumActiveLayers() == 0;
+  //rsPlotVectors(outL, outR); 
+  ok &= outR == (2.f * cos440);        // 2nd region (R channel) is unaffected by removeRegion
+  for(int n = 0; n < N/2; n++)         // L channel's 1st half is as always
+    ok &= outL[n] == 2.f * sin440[n];
+  for(int n = N/2; n < N; n++)         // L channel's 2nd half is zero
+    ok &= outL[n] == 0.f;
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
+  ok &= se.getNumActiveLayers() == 1;
   for(int n = 0; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
+  ok &= se.getNumActiveLayers() == 0;
   //rsPlotVectors(outL, outR); 
   ok &= outL == zeros;
   ok &= outR == (2.f * cos440);
+
+  // Re-assign the sample for 1st region to sine:
   se.setRegionSample(0, 0, 0);
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
   for(int n = 0; n < N; n++)

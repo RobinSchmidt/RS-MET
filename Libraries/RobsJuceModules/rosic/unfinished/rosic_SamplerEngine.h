@@ -608,7 +608,7 @@ protected:
   array. This results in the removal of the player from "activePlayers" and adding it back to
   "idlePlayers". The return value is either rsReturnCode::success or rsReturnCode::invalidIndex, if
   the activeIndex was not a valid index into our activePlayers array. */
-  virtual int stopRegionPlayer(int activeIndex);
+  virtual rsReturnCode stopRegionPlayer(int activeIndex);
 
   /** Returns the AudioFileStream object that is used to stream the actual sample data for the
   given region. A pointer to this object is supposed to be stored within the region object
@@ -839,7 +839,7 @@ protected:
 
   PlayStatusChange handleNoteOff(uchar key, uchar vel) override;
 
-  int stopRegionPlayer(int activeIndex) override;
+  rsReturnCode stopRegionPlayer(int activeIndex) override;
 
   /** Returns true, iff the settings are such that the additional features of this subclass are not
   used so we can fall back to the (simpler) baseclass implementations in our overrides. */

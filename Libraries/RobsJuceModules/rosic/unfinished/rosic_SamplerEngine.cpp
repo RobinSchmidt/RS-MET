@@ -124,14 +124,25 @@ int rsSamplerEngine::removeRegion(int gi, int ri)
     RAPT::rsError("Invalid group- and/or region index");
     return rsReturnCode::invalidIndex; }
 
+
   // Delete all our pointers to the region that will be deleted (maybe factor out into 
   // deleteAllPointersTo(r)):
+
+
   Region* r = getRegion(gi, ri);
   RAPT::rsAssert(r != nullptr);
-  for(int k = 0; k < numKeys; k++)
-    regionsForKey[k].removeRegion(r);
 
+  // We must stop all region players that make use of region r:
+  for(int i = (int)activePlayers.size() - 1; i >= 0; i--) 
+  {
+    if(activePlayers[i]->getRegionToPlay() == r) 
+    {
+      rsReturnCode rc = stopRegionPlayer(i);
+      RAPT::rsAssert(rc == rsReturnCode::success); 
+    }
+  }
 
+  /*
   for(size_t i = 0; i < activePlayers.size(); i++)
   {
     if(activePlayers[i]->getRegionToPlay() == r)
@@ -140,6 +151,12 @@ int rsSamplerEngine::removeRegion(int gi, int ri)
       // the idlePlayers are supposed to have a nullptr anyway
     }
   }
+  */
+
+
+  // We must remove all pointers to the region r from our regionsForKey array:
+  for(int k = 0; k < numKeys; k++)
+    regionsForKey[k].removeRegion(r);
 
   // Remove region from the rsSamplerData object
   bool success = sfz.removeRegion(gi, ri);
@@ -471,13 +488,12 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
   if(idlePlayers.empty())
     return nullptr;  // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = RAPT::rsGetAndRemoveLast(idlePlayers);
-  //rp->setKey(key);
-
+  rp->setKey(key);  // why is it not enough to do it inside the "if"
   rsReturnCode rc = rp->setRegionToPlay(r, sampleRate, groupSettingsOverride, 
                                         regionSettingsOverride);
   if(rc == rsReturnCode::success)
   {
-    rp->setKey(key);
+    //rp->setKey(key);
     activePlayers.push_back(rp);
     return rp;
   }
@@ -509,7 +525,7 @@ bool rsSamplerEngine::isSampleUsedIn(
   return false;
 }
 
-int rsSamplerEngine::stopRegionPlayer(int i)
+rsReturnCode rsSamplerEngine::stopRegionPlayer(int i)
 {
   if(i < 0 || i >= activePlayers.size()) {
     RAPT::rsError("Invalid player index");
@@ -1123,7 +1139,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOff(uchar key, uch
   return psc;
 }
 
-int rsSamplerEngine2::stopRegionPlayer(int activeIndex)
+rsReturnCode rsSamplerEngine2::stopRegionPlayer(int activeIndex)
 {
   // ToDo: add code that verifies that rp is in exactly one of the active groupPlayers - maybe have
   // rsAssert(getNumContainingActiveGroupPlayers(rp) == 1) or something like that. that maybe 
