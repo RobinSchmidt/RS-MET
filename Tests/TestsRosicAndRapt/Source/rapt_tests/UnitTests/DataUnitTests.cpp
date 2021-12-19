@@ -640,8 +640,6 @@ bool rsNonReAllocatingArrayTest()
   // ToDo next:
   // -element insert (may move elements around, should use iterators and rsSwap)
   // -element removal (this may deallocate)
-
-
   // -try it also with initial capacities of 0,1 and 2
 
   return ok;
