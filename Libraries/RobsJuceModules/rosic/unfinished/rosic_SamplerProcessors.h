@@ -4,7 +4,6 @@
 namespace rosic {
 namespace Sampler {
 
-
 //=================================================================================================
 
 /** Enumeration of the different signal processor types that may be used in the definition of
@@ -43,6 +42,7 @@ public:
 protected:
 
   SignalProcessorType type = SignalProcessorType::Unknown;
+  //bool busy = false;
 };
 
 /** Baseclass for modulators that can be applied to parameters of signal processors. Subclasses
@@ -57,74 +57,12 @@ public:
 };
 
 //=================================================================================================
-
-/** A class for storing a pool of SignalProcessor objects...tbc... */
-
-class SignalProcessorPool
-{
-
-public:
-
-  SignalProcessorPool();
-
-  ~SignalProcessorPool();
-
-  /** Allocates the processors. */
-  void allocateProcessors();
-  // todo: Let it have an argument that somehwo specifies, how many of each type should be 
-  // allocated. Maybe that could be a reference to the sfz-data itself or something derived from it
-
-  void deAllocateProcessors();
-
-
-
-  /** A client can request a processor of the given type. If a processor of the desired type is 
-  available, a pointer to it will returned. If not, a nullptr will be returned. The "client" will 
-  typically be a RegionPlayer and call grabProcessor on noteOn. When no processor of the desired 
-  type is available anymore, the calling code should probably forego the whole RegionPlayer. If
-  the region can't be played correctly due to lack of resources, it should not play at all. What
-  it certainly should not do is to just replace the non-available processor by a bypass dummy 
-  processor because that could have really bad consequences: imagine a missing attenuation 
-  processor. Regions are always played back either correctly or not at all but never wrongly. */
-  SignalProcessor* grabProcessor(SignalProcessorType type);
-
-  /** This function should be called by the client when it doesn't need the processor anymore, For
-  example, because the region for which it was used has stopped playing. The client returns the 
-  processor to the pool so it becomes available again for playing other notes. */
-  void returnProcessor(SignalProcessor* p);
-  // maybe rename it to repositProcessor
-
-
-protected:
-
-  std::vector<SignalProcessor*> pool;    // pointers to the processors
-  std::vector<char>             isFree;  // array of flags indicating if pool[i] is available
-  // isFree is supposed to serve as a vector-of-bool but we don't want to use the idiosyncratic 
-  // implementation, so we use char instead of bool.
-
-};
-// Maybe templatize, rename funcs to generic grabItem, repositItem. But maybe not - maybe we don't
-// want to store a flat array of SignalProcessors of any kind but maintain different arrays for 
-// different kinds of processors? or maybe keep the processors somehow sorted by type?
-
-//=================================================================================================
-
-/** Structure to consolidate the different kinds of DSP resources */ 
-
-struct DspResourcePool
-{
-  SignalProcessorPool processorPool;
-  //ModulatorPool modulatorPool;
-  //ConnectionPool connectionPool;
-};
-
-//=================================================================================================
 // The DSP classes below are meant to be used in the sampler, but they are nevertheless implemented
 // as pure DSP classes without the infrastructural aspect, i.e. without being a subclass of 
 // Sampler::SignalProcessor. This has been done in order to facilitate dragging them out of the 
 // Sampler sub-namespace to make them available in other contexts as well. The infrastructure is 
 // provided by boilerplate classes that derive from SignalProcessor and the actual core DSP class 
-// via multiple inheritance.
+// via multiple inheritance. Maybe move this pure DSP code elsewhere...
 
 /** A multimode filter that implements not only different filter frequency response types (like
 lowpass, highbpass, bandpass, etc.) but even completely differently structured filters. Depending
@@ -273,6 +211,129 @@ protected:
   // that should apply to a region as a whole?
 
 };
+
+//=================================================================================================
+
+/** Class where all the boilerplate for making DSP processors available in the sampler goes. */
+
+class rsSamplerProcessors
+{
+
+public:
+
+  class Filter : public SignalProcessor
+  {
+
+  public:
+
+    Filter() { type = SignalProcessorType::Filter; }
+    void processFrame(rsFloat64x2& inOut) override {}
+    void processBlock(rsFloat64x2* inOut, int N) override {}
+    void resetState() override { core.resetState(); }
+    void resetSettings() override { core.initCoeffs(); }
+
+  protected:
+
+    rsSamplerFilter core;
+
+  };
+
+
+  class WaveShaper : public SignalProcessor
+  {
+
+  public:
+
+    WaveShaper() { type = SignalProcessorType::WaveShaper; }
+    void processFrame(rsFloat64x2& inOut) override {}
+    void processBlock(rsFloat64x2* inOut, int N) override {}
+    void resetState() override {}
+    void resetSettings() override {}
+
+  protected:
+
+    rsSamplerWaveShaper core;
+
+  };
+
+  // before writing too much boilerplate, fix the API:
+  // -processFrame should work either with 2 floats or rsFloat32x4...or maybe make a class
+  //  rsFloat32x2...could be just a synonym for rsFloat32x4 (because that can be simdified), but 
+  //  the name makes clear that we use only 2 of the 4 available slots
+  // -can we avoid the need for the boilerplate? ...or at least reduce the amount? maybe with 
+  //  similar strategies as in romos, using macros?
+
+};
+
+
+
+//=================================================================================================
+
+/** A class for storing a pool of SignalProcessor objects...tbc... */
+
+class SignalProcessorPool
+{
+
+public:
+
+  SignalProcessorPool();
+
+  ~SignalProcessorPool();
+
+  /** Allocates the processors. */
+  void allocateProcessors();
+  // todo: Let it have an argument that somehwo specifies, how many of each type should be 
+  // allocated. Maybe that could be a reference to the sfz-data itself or something derived from it
+
+
+
+
+  /** A client can request a processor of the given type. If a processor of the desired type is 
+  available, a pointer to it will returned. If not, a nullptr will be returned. The "client" will 
+  typically be a RegionPlayer and call grabProcessor on noteOn. When no processor of the desired 
+  type is available anymore, the calling code should probably forego the whole RegionPlayer. If
+  the region can't be played correctly due to lack of resources, it should not play at all. What
+  it certainly should not do is to just replace the non-available processor by a bypass dummy 
+  processor because that could have really bad consequences: imagine a missing attenuation 
+  processor. Regions are always played back either correctly or not at all but never wrongly. */
+  SignalProcessor* grabProcessor(SignalProcessorType type);
+
+  /** This function should be called by the client when it doesn't need the processor anymore, For
+  example, because the region for which it was used has stopped playing. The client returns the 
+  processor to the pool so it becomes available again for playing other notes. */
+  void returnProcessor(SignalProcessor* p);
+  // maybe rename it to repositProcessor
+
+
+protected:
+
+  using SP = rsSamplerProcessors;
+  std::vector<SP::Filter>     filters;
+  std::vector<SP::WaveShaper> waveShapers;
+
+};
+// Maybe templatize, rename funcs to generic grabItem, repositItem. But maybe not - maybe we don't
+// want to store a flat array of SignalProcessors of any kind but maintain different arrays for 
+// different kinds of processors? or maybe keep the processors somehow sorted by type?
+
+//=================================================================================================
+
+/** Structure to consolidate the different kinds of DSP resources */ 
+
+struct DspResourcePool
+{
+  SignalProcessorPool processorPool;
+  //ModulatorPool modulatorPool;
+  //ConnectionPool connectionPool;
+};
+
+
+
+
+
+
+
+
 
 
 }} // namespaces
