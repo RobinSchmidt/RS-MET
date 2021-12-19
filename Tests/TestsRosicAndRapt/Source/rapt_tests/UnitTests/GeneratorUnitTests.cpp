@@ -1438,19 +1438,21 @@ bool samplerWaveShaperTest()
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
   se.setRegionSetting(0, 0, PST::DistShape, float(shape));
   se.setRegionSetting(0, 0, PST::DistDrive, drive);
-  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
   rsAssert(ok);
   // predictably fails! DSP stuff is not yet implemented...
   // ToDo:
+  // -Let the RegionPlayer maintain a pointer to the engine
+  // -Implement and call engine->grabProcessor() and engine->returnProcessor or repositProcessor
+  // -Maybe drag out RegionPlayer from rsSamplerEngine
+  //
   // -maybe let testSamplerNote take a plotMode parameter which can be: 0: never plot, 1: always 
   //  plot, 2: plot when failed
   // -make a class SignalProcessorPool, let the engine maintain such a pool as member 
   //  -this class should have a function grabProcessor(SignalProcessorType type) that returns
   //   a pointer to a processor of the desired type or a nullptr if no such processor is available
   //   anymore...or maybe a pointer to a dummy-processor?
-  // -let the RegionPlayer maintain a pointer to it from where it may grab its processors. Maybe 
-  //  the RegionPlayer itself may also be dragged out. That may be nice anyway because the 
-  //  rsSamplerEngine class is already a bit too big anyway.
+
   // -we need to update:
   //    in class rsSamplerEngine::RegionPlayer:  
   //      buildProcessingChain (done), resetDspState, resetDspSettings, setupDspSettingsFor

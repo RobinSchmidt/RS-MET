@@ -24,7 +24,11 @@ void rsSamplerEngine::setMaxNumLayers(int newMax)
   idlePlayers.resize(L);
   activePlayers.reserve(L);
   for(int i = 0; i < L; i++)
+  {
+    playerPool[i].setDspResourcePool(&dspPool);
+    playerPool[i].allocateMemory();
     idlePlayers[i] = &playerPool[i];
+  }
 }
 
 void rsSamplerEngine::clearInstrument() 
@@ -532,7 +536,7 @@ rsReturnCode rsSamplerEngine::stopRegionPlayer(int i)
     return rsReturnCode::invalidIndex; }
   RegionPlayer* p = activePlayers[i];
   RAPT::rsRemove(activePlayers, i);
-  p->releaseRessources();
+  p->releaseDspObjects();
   idlePlayers.push_back(p);
   return rsReturnCode::success;
 }
@@ -744,7 +748,7 @@ rsReturnCode rsSamplerEngine::RegionPlayer::setRegionToPlay(
   const rsSamplerEngine::Region* regionToPlay, 
   double fs, bool groupSettingsOverride, bool regionSettingsOverride)
 {  
-  releaseRessources();
+  releaseDspObjects();
   region = regionToPlay;
   if(region == nullptr)
     return rsReturnCode::nothingToDo;
@@ -825,27 +829,36 @@ bool rsSamplerEngine::RegionPlayer::isPlayable(const Region* region)
   return ok;
 }
 
-void rsSamplerEngine::RegionPlayer::releaseRessources()
+void rsSamplerEngine::RegionPlayer::releaseDspObjects()
 {
-  // ToDo:
-  // -Return the DSP objects to the pool
-  // -Return the modulators to the pool
-  // -Return the mod-connections to the pool
-  // 
+  RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
 
-  // This is required but not enough:
-  modulators.clear();
-  modMatrix.clear();
+  // Return the DSP objects to the pool:
+  for(int i = 0; i < dspChain.getNumProcessors(); i++)
+    dspPool->processorPool.returnProcessor(dspChain.getProcessor(i));
   dspChain.clear();
-  // ...we must also return the objects back to the pool to make them available again. Maybe 
-  // something like:
-  //   engine.returnProcessorsToPool(dspChain.processors)
-  //   engine.returnConnectionsToPool(modMatrix);
-  //   engine.returnModulatorsToPool(modulators)
-  // before the calls to clear()
 
+  // Return the modulators to the pool:
+  // ...something to do...
+  //modulators.clear();
+
+  // Return the mod-connections to the pool:
+  // ...something to do...
+  //modMatrix.clear();
+
+  // Invalidate our pointers:
   stream = nullptr;
   region = nullptr;
+}
+
+void rsSamplerEngine::RegionPlayer::allocateMemory()
+{
+  modulators.reserve(8);
+  modMatrix.reserve(32);
+  dspChain.reserve(8);
+  // These values are ad-hoc arbitrarily chosen. Maybe give the function some parameters to choose
+  // how many of each should be pre-allocated. It should be enough to avoid having to allocate more
+  // later
 }
 
 rsReturnCode rsSamplerEngine::RegionPlayer::prepareToPlay(
@@ -854,10 +867,10 @@ rsReturnCode rsSamplerEngine::RegionPlayer::prepareToPlay(
   RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   RAPT::rsAssert(stream != nullptr);   // Ditto.
   if(!buildProcessingChain()) {
-    releaseRessources();
+    releaseDspObjects();
     return rsReturnCode::layerOverload; }
   if(!setupModulations()) {
-    releaseRessources();
+    releaseDspObjects();
     return rsReturnCode::layerOverload; }
   resetDspState();     // Needs to be done after building the chain
   resetDspSettings();  // Reset all DSP settings to default values
@@ -900,13 +913,8 @@ void rsSamplerEngine::RegionPlayer::resetDspState()
 
 SignalProcessor* rsSamplerEngine::RegionPlayer::getProcessor(SignalProcessorType type)
 {
-  // We need a pointer to the outlying rsSamplerEngine object which manages the SignalProcessorPool
-  // or we need a pointer to that pool itself. But later, we'll also need access to a pool of
-  // modulators, the mod-connections, etc. and in order to keep the memory footprint small, we
-  // want to store only one single pointer to give us acces to it all, so maybe the rsSamplerEngine
-  // is suitable fo that
-
-  return nullptr;
+  RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
+  return dspPool->processorPool.grabProcessor(type);
 }
 
 bool rsSamplerEngine::RegionPlayer::buildProcessingChain()

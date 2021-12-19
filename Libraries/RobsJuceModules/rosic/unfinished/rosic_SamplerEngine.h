@@ -369,9 +369,14 @@ protected:
     void resetState();
     void resetSettings();
     void reset() { resetState(); resetSettings(); }
-    void clear() { processors.clear(); }
+
+    void reserve(size_t num) { processors.reserve(num); }
     void addProcessor(SignalProcessor* p) { processors.push_back(p); }
+    void clear() { processors.clear(); }
+
     bool isEmpty() const { return processors.empty(); }
+    size_t getNumProcessors() const { return processors.size(); }
+    SignalProcessor* getProcessor(int i) { return processors[i]; }
   protected:
     std::vector<SignalProcessor*> processors;
   };
@@ -425,17 +430,24 @@ protected:
     identify players that need to stop, when a noteOff is received. @see setKey */
     uchar getKey() const { return key; }
 
+    /** Sets up the pool of DSP resource objects (such as filters, modulators, etc.) from which the
+    player may grab items in order to prepare itself for playing back a region. This should be set
+    up by the engine soon after it has created all its players. */
+    void setDspResourcePool(DspResourcePool* newPool) { dspPool = newPool; }
+
     /** Releases all resources that were acquired for playback such as signal processors, 
     modulators, etc. */
-    void releaseRessources();
+    void releaseDspObjects();
+
+    /** Allocates memory for the pointers to the processors, modulators and modulation 
+    connections. Should be called soon after creation. */
+    void allocateMemory();
 
 
   protected:
 
     /** A basic sanity check for the given region. Mostly for catching bugs. */
     bool isPlayable(const Region* region);
-
-
 
     /** Acquires the ressources that are required for the playback of the given region such as the
     required DSPs and modulators, sets up the internal values for the playback settings (including 
@@ -483,11 +495,12 @@ protected:
 
     // ToDo: arrange members to avoid padding to minimize memory footprint of this object
 
-
-
     std::vector<Modulator*> modulators;
     std::vector<ModulationConnection*> modMatrix;  // not a literal matrix but conceptually
     SignalProcessorChain dspChain;
+
+    DspResourcePool* dspPool = nullptr;
+    /** This should be set by the engine once and for all when it creates it RegionPlayers. */
 
     // We may need a state, too. Can be attack/decay/sustain/release. Or maybe just play/release?
     // Or maybe no state at all but the triggerRelease just triggers the release of all envelopes?
@@ -679,7 +692,12 @@ protected:
   // some other object that also uses the same sample pool (for example, a DAW that uses the sampler
   // as plugin)
 
-  SignalProcessorPool processorPool;
+  DspResourcePool dspPool;
+  /**< The pool of DSP processors, modulators and modulation connection. When a region starts 
+  playing, the respective RegionPlayer object may grab objects from this pool such as filters, 
+  waveshapers, envelopes, etc. - whatever it needs to play the region appropriately. */
+
+  //SignalProcessorPool processorPool;
   /**< The pool of DSP processors. When a region starts playing, the respective RegionPlayer object
   may grab objects from this pool such as filters, waveshapers, etc. - whatever it needs to play 
   the region appropriately. */

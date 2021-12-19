@@ -69,6 +69,13 @@ public:
 
   ~SignalProcessorPool();
 
+  /** Allocates the processors. */
+  void allocateProcessors();
+  // todo: Let it have an argument that somehwo specifies, how many of each type should be 
+  // allocated. Maybe that could be a reference to the sfz-data itself or something derived from it
+
+  void deAllocateProcessors();
+
 
 
   /** A client can request a processor of the given type. If a processor of the desired type is 
@@ -85,6 +92,7 @@ public:
   example, because the region for which it was used has stopped playing. The client returns the 
   processor to the pool so it becomes available again for playing other notes. */
   void returnProcessor(SignalProcessor* p);
+  // maybe rename it to repositProcessor
 
 
 protected:
@@ -94,6 +102,20 @@ protected:
   // isFree is supposed to serve as a vector-of-bool but we don't want to use the idiosyncratic 
   // implementation, so we use char instead of bool.
 
+};
+// Maybe templatize, rename funcs to generic grabItem, repositItem. But maybe not - maybe we don't
+// want to store a flat array of SignalProcessors of any kind but maintain different arrays for 
+// different kinds of processors? or maybe keep the processors somehow sorted by type?
+
+//=================================================================================================
+
+/** Structure to consolidate the different kinds of DSP resources */ 
+
+struct DspResourcePool
+{
+  SignalProcessorPool processorPool;
+  //ModulatorPool modulatorPool;
+  //ConnectionPool connectionPool;
 };
 
 //=================================================================================================

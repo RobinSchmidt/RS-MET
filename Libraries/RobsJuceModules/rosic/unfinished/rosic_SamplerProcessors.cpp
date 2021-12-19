@@ -4,14 +4,20 @@ namespace Sampler {
 
 SignalProcessorPool::SignalProcessorPool()
 {
-  // Fill the array with processors
-
-  int dummy = 0;
+  allocateProcessors();
+  // Maybe don't do this on construction. Maybe client code should explicitly request this
 }
 
 SignalProcessorPool::~SignalProcessorPool()
 {
-  // Delete all the processors
+  deAllocateProcessors();
+}
+
+void SignalProcessorPool::deAllocateProcessors()
+{
+  for(size_t i = 0; i < pool.size(); i++)
+    delete pool[i];
+  pool.clear();
 }
 
 SignalProcessor* SignalProcessorPool::grabProcessor(SignalProcessorType type)
@@ -118,6 +124,36 @@ public:
 
 
 };
+
+
+
+void SignalProcessorPool::allocateProcessors()
+{
+  deAllocateProcessors();    // ...just in case
+
+  // These numbers are preliminary - do something more sensible here:
+  int numFilters     = 128;
+  int numWaveShapers =  64;
+  int numProcessors  = numFilters + numWaveShapers;
+
+
+  // The actual allocation of the DSP objects:
+  using SP = rsSamplerProcessors;
+  pool.reserve(numProcessors);
+  int i;
+  for(i = 0; i < numFilters;     ++i) 
+    pool.push_back(new SP::Filter);
+  for(i = 0; i < numWaveShapers; ++i) 
+    pool.push_back(new SP::WaveShaper);
+
+  int dummy = 0;
+
+  // ToDo: 
+  // -Try to find a better way to allocate the memory. We don't want to allocate each object 
+  //  seperately. Maybe have a bunch of arrays of direct objects of each specific type of 
+  //  processor and the pool only stores pointers to these. we'll see...
+}
+
 
 
 }} // namespaces

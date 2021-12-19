@@ -62,6 +62,7 @@ int main(int argc, char* argv[])
   bool ok = true;
   ok &= runUnitTestsRapt();
   //ok &= runUnitTestsRosic();
+  return 0;
   //ok = ok;  // dummy instruction for setting a debug breakpoint here, if needed
   // ToDo: let the functions take an integer argument that specifies the "level" of exhaustiveness
   // of testing. 0: should be able to do all tests in 5 seconds, 1: 20 seconds, 2: 80 seconds etc.
