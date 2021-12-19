@@ -29,7 +29,32 @@ enum rsReturnCode
 // -maybe move it out of the Sampler sub-namespace - it may be more generally useful
 
 
+//class SignalProcessorType;
 
+//=================================================================================================
+
+/** Enumeration of the different signal processor types that may be used in the definition of
+instruments. What kinds of processors are used within a region is implicitly determined by the sfz 
+opcodes, e.g. the presence of a FilterCutoff opcode dictates the presence of a filter within the 
+respective region. In order to facilitating to build the DSP chain for a region player,
+we also need an explicit representation of the DSP processor types. */
+enum SignalProcessorType
+{
+  SamplePlayer,
+
+  // The modulators:
+  // AmpEnv, FilterEnv, PitchEnv, AmpLFO, ...
+
+  // The actual DSP processors:
+  Filter,
+  WaveShaper,
+
+  Unknown
+};
+
+
+
+//=================================================================================================
 
 /** Data structure to define sample based instruments conforming to the sfz specification. */
 
@@ -54,9 +79,6 @@ public:
 
 
 
-
-
-
   //-----------------------------------------------------------------------------------------------
   // \name Helper Classes
 
@@ -64,22 +86,6 @@ public:
   class Region;
   class Group;
   class Instrument;
-
-  /** Enumeration of the different signal processor types that may be used in the definition of
-  instruments. It's actually not really fundamentally necessary to represent the instrument's data
-  itself because the information about what sorts of processors are used is already implicitly
-  given in the opcodes. However, to facilitate the actual playback of an instrument in a sampler
-  engine, this small amount of redundancy is convenient (in particular, to build the DSP chain for
-  a region player). */
-  enum SignalProcessorType
-  {
-    Filter,
-    Waveshaper,
-    Compressor
-    // ...
-  };
-  // under construction
-
 
   //-----------------------------------------------------------------------------------------------
   /** A class to represent various playback settings of a region, group or instrument. Such
@@ -187,6 +193,10 @@ public:
     /** Returns the default value for a given type of setting. */
     static float getDefaultValue(Type type);
 
+    /** For a given type of opcode, this function returns the type of signal processor to which the
+    opcode applies, e.g. SignalProcessorType::Filter for Type::FilterCutoff. */
+    static SignalProcessorType getTargetProcessorType(Type type);
+
     bool operator==(const PlaybackSetting& rhs) const
     {
       return type == rhs.type && value == rhs.value && index == rhs.index;
@@ -207,7 +217,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** Baseclass for the 3 organizational levels of the sfz specification, factoring out their
   commonalities. Subclasses are Region, Group, Instrument. */
-  class OrganizationLevel
+  class OrganizationLevel  // maybe drag out of the class, name it rsSamplerLevel
   {
 
   public:
@@ -327,27 +337,13 @@ public:
     const void* getCustomPointer() const { return custom; }
     // replaces getSampleStream
 
-
+    /** Returns true, iff this region should be played when the given key is pressed. */
     bool shouldPlayForKey(uchar key) const { return key >= loKey && key <= hiKey; }
-    // todo: later maybe also take loKey/hiKey parent into account, if not nulltpr
+    // ToDo: later maybe also take loKey/hiKey parent into account, if not nulltpr
 
-
-    const std::vector<SignalProcessorType>& getProcessingChain() const
-    {
-      return signalProcessors;
-    }
-// This is supposed to return a reference to an array of processor types that is used by the 
-// engine to build the dsp chain when this region should be played.
-// ToDo:
-// -define an enum ProcessorType, containing Filter, Waveshaper, Compressor, etc.
-// -add a std::vector<ProcessorType> member (that's what this function returns a reference to)
-// -when setting up an opcode that requires a certain processor that is not already in the list,
-//  add it
-// -where necessary, do this addition also in the sfz-parser
-// -the order in which the processors appear in the chain shoulöd reflect the order in which 
-//  their opcodes appear in the sfz (or, if setup is done programmatically, the order in which
-//  the opcodes were added)
-
+    /** Returns a (const) reference to an array of processor types that is used by the engine to 
+    build the dsp chain when this region should be played.*/
+    const std::vector<SignalProcessorType>& getProcessingChain() const { return signalProcessors; }
 
 
   protected:
@@ -427,8 +423,8 @@ public:
 
   private:
 
-    friend class Group;  // do we need this? if not, get rid.
-    friend class rsSamplerData;  // get rid!
+    //friend class Group;  // do we need this? if not, get rid.
+    //friend class rsSamplerData;  // get rid!
 
 
     // The Region class shall not provide any public functions that can modify the region because

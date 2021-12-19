@@ -7,13 +7,26 @@ namespace Sampler {
 
 //=================================================================================================
 
+/** Enumeration of the different signal processor types that may be used in the definition of
+instruments. What kinds of processors are used within a region is implicitly determined by the sfz 
+opcodes, e.g. the presence of a FilterCutoff opcode dictates the presence of a filter within the 
+respective region. In order to facilitating to build the DSP chain for a region player,
+we also need an explicit representation of the DSP processor types. */
+/*
 enum SignalProcessorType
 {
+  SamplePlayer,
+
+  // The modulators:
+  // AmpEnv, FilterEnv, PitchEnv, AmpLFO, ...
+
+  // The actual DSP processors:
   Filter,
   WaveShaper,
 
   Unknown
 };
+*/
 
 /** Baseclass for signal processors that can be applied to layers while they are the played back.
 Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */

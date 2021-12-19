@@ -29,7 +29,7 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Type type)
   // can we capture this here? maybe return -1 as code?
 
   // Extensions:
-  case TP::DistShape:      return 0.f;
+  case TP::DistShape:      return 0.f;  // maybe rename to DistortShape, ...
   case TP::DistDrive:      return 0.f;
   //case TP::DistGain:       return 0.f;
 
@@ -37,6 +37,45 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Type type)
 
   RAPT::rsError("Unknown type of PlaybackSetting, i.e. unknown sfz opcode.");
   return 0.f;  // maybe we should return NaN? but no - that would be evil!
+}
+
+
+SignalProcessorType rsSamplerData::PlaybackSetting::getTargetProcessorType(Type type)
+{
+  //return SignalProcessorType::Unknown;
+
+  using TP = PlaybackSetting::Type;
+  using SP = SignalProcessorType;
+  switch(type)
+  {
+  case TP::LoKey:          return SP::SamplePlayer;
+  case TP::HiKey:          return SP::SamplePlayer;
+  case TP::LoVel:          return SP::SamplePlayer;
+  case TP::HiVel:          return SP::SamplePlayer;
+  case TP::Volume:         return SP::SamplePlayer;
+  case TP::Pan:            return SP::SamplePlayer;
+  case TP::PitchKeyCenter: return SP::SamplePlayer;
+  case TP::Transpose:      return SP::SamplePlayer;
+  case TP::Tune:           return SP::SamplePlayer;
+  case TP::Delay:          return SP::SamplePlayer;
+  case TP::Offset:         return SP::SamplePlayer;
+
+  case TP::FilterType:      return SP::Filter;
+  case TP::FilterCutoff:    return SP::Filter;
+  case TP::FilterResonance: return SP::Filter;    // shorten to FilterReso or FiltReso
+
+  case TP::DistShape:      return SP::WaveShaper;
+  case TP::DistDrive:      return SP::WaveShaper;
+  }
+
+  // Maybe the the amount code can be reduced when we ensure that the TP types are sorted by their
+  // SP in the enum, i.e. we could write:
+  //   if(type < TP::PlayerOpcodesEnd) return SP::SamplePlayer;
+  //   if(type < TP::FilterOpcodesEnd) return SP::Filter;
+  // etc. But this requires discipline when adding new opcodes to respect the ordering.
+
+  RAPT::rsError("Unknown type of PlaybackSetting, i.e. unknown sfz opcode.");
+  return SP::Unknown;
 }
 
 void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
@@ -57,7 +96,19 @@ void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
   if(i != -1)
     settings[i] = s;
   else
+  {
     settings.push_back(s);
+    // We need to do more here:
+    // -When setting up an opcode that requires a certain processor that is not already in our 
+    //  signalProcessors list, add it (this should happen also in the sfz-parser)
+    // -The order in which the processors appear in the chain should reflect the order in which 
+    //  their opcodes appear in the sfz (or, if setup is done programmatically, the order in which
+    //  the opcodes were added). The first opcode applying to a particular kind of processor 
+    //  counts. For example, if the opcodes are added in the order FilterCutoff, DistDrive,
+    //  FilterResonance, the filter appears before the waveshaper in the DSP chain...maybe with 
+    //  some excaptions for opcodes that apply to processors that are at fixed positions in the 
+    //  chain - such as the PlaybackSource
+  }
 }
 
 bool rsSamplerData::OrganizationLevel::removeSetting(PlaybackSetting::Type type)
@@ -147,7 +198,7 @@ int rsSamplerData::Group::addRegion(uchar loKey, uchar hiKey)
 
 int rsSamplerData::Group::addRegion(Region* r)
 {
-  r->parent = this;
+  r->setParent(this);
   regions.push_back(r);
   return ((int)regions.size()) - 1;
 }
@@ -266,9 +317,9 @@ rsReturnCode rsSamplerData::setRegionSetting(int gi, int ri, PlaybackSetting::Ty
     RAPT::rsError("Invalid group- and/or region index");
     return rsReturnCode::invalidIndex;
   }
+  instrument.groups[gi]->regions[ri]->setSetting(PlaybackSetting(type, value));  // new
 
-//sfz.setRegionSetting(gi, ri, type, value);
-  instrument.groups[gi]->regions[ri]->settings.push_back(PlaybackSetting(type, value));
+  //instrument.groups[gi]->regions[ri]->settings.push_back(PlaybackSetting(type, value)); // old
   // Preliminary. We need to figure out, if that setting already exists and if so, just change 
   // its value instead of pushing another value for the same parameter. Implement it in way so we 
   // can call it here as: settings->set(PlaybackSetting::Type type, float value)
@@ -510,7 +561,7 @@ void rsSamplerData::setFromSFZ(const std::string& str)
       std::string regionDef = groupDef.substr(j0, j1-j0); // region definition (ToDo: use string_view)
       int ri = g->addRegion();
       Region* r = g->getRegion(ri);
-      r->parent = g;
+      r->setParent(g);
 
       // Set up region level settings:
       tmp = groupDef.substr(j0+Lr, j1-j0-Lr);

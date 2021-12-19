@@ -849,7 +849,7 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
   // ToDo: build the chain of DSP processors and the set of modulators and wire everything up, as
   // defined by the region settings...
 
-  using DspType = rsSamplerData::SignalProcessorType;
+  using DspType = SignalProcessorType;
   const std::vector<DspType>& dspTypeChain = region->getProcessingChain();
   for(size_t i = 0; i < dspTypeChain.size(); i++)
   {
