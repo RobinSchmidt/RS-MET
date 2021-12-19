@@ -58,69 +58,55 @@ void SignalProcessorPool::allocateProcessors()
   // and pass it in.
 }
 
+
+template<class T>
+inline void rsShrink(std::vector<T>& v, size_t amount = 1)
+{
+  RAPT::rsAssert(v.size() >= amount);
+  v.resize(v.size() - amount);
+}
+template<class T>
+inline T* rsLastAddr(std::vector<T>& v)
+{
+  RAPT::rsAssert(!v.empty());
+  return &v[v.size()-1];
+}
+template<class T>
+inline T* rsGetLastPtrAndShrink(std::vector<T>& v)
+{
+  if(v.empty())
+    return nullptr;
+  T* p = rsLastAddr(v);
+  rsShrink(v);
+  return p;
+}
+template<class T>
+inline void rsGrow(std::vector<T>& v, size_t amount = 1)
+{
+  v.resize(v.size() + amount);
+}
+// maybe move to rapt
+
 SignalProcessor* SignalProcessorPool::grabProcessor(SignalProcessorType type)
 {
   using SPT = SignalProcessorType;
   SignalProcessor* p = nullptr;
-
   switch(type)
   {
-  case SPT::Filter:
-  {
-    if(!filters.empty())
-    {
-      p = &filters[filters.size()-1];
-      filters.resize(filters.size()-1);
-    }
-  }
-  break;
-  case SPT::WaveShaper:
-  {
-    if(!waveShapers.empty())
-    {
-      p = &waveShapers[waveShapers.size()-1];
-      waveShapers.resize(waveShapers.size()-1);
-    }
-  }
-  break;
-
+  case SPT::Filter:     p = rsGetLastPtrAndShrink(filters);     break;
+  case SPT::WaveShaper: p = rsGetLastPtrAndShrink(waveShapers); break;
   };
-  // ToDo: Find a way to reduce the boilerplate! This is unbearable! For each type, we should have
-  // one line of code! ..at most. Maybe with a macro? or maybe a template?
-
   return p;
 }
-// ToDo: 
-// -maybe we should somehow report whether it was successful - if we have no processor of given
-//  type available anymore, we may either return a nullptr or a pointer to some sort of dummy
-//  processor...a dummy should probably mute the output - bypassing could lead to undesirable 
-//  results, like getting a sound through unfiltered or unattenuated which is supposed to be 
-//  attenuated via the processor. Using such a muting dummy would gracefully handle overload. 
-//  The layer would just be muted, if not enough DSP objects are available
-// -maybe somewhere we should let the user control, how many of each processor type should be 
-//  pre-allocated - filters are needed a lot, more exotic processors much less so
-// -hmm - i think, it's better to return a nullptr, if no processor of desired type is available
-//  anymore - the calling code can then forego the whole RegionPlayer
-
 
 void SignalProcessorPool::returnProcessor(SignalProcessor* p)
 {
   using SPT = SignalProcessorType;
   switch(p->getType())
   {
-  case SPT::Filter:     
-  { 
-    filters.resize(filters.size()+1); 
-  } break;
-  case SPT::WaveShaper: 
-  { 
-    waveShapers.resize(waveShapers.size()+1); 
-  } break;
+  case SPT::Filter:     rsGrow(filters);     break;
+  case SPT::WaveShaper: rsGrow(waveShapers); break;
   }
-
-
-  int dummy = 0;
-  // maybe we should return something?
 }
 
 
