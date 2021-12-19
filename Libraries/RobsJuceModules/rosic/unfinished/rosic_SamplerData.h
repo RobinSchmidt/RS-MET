@@ -25,8 +25,9 @@ enum rsReturnCode
 //   meaning: "nothingToDo" is also a kind of "success" (or maybe "workDone" or "workCompleted"
 // -maybe include a general code for "failed" 
 // -rename the layerOverload to a general "overload" or ressourcesUsedUp or something - to make the
-//  enum more genrally useful
+//  enum more genrally useful...maybe just overload
 // -maybe move it out of the Sampler sub-namespace - it may be more generally useful
+// -other possibly useful codes: unavailable, denied
 
 
 //class SignalProcessorType;
@@ -348,6 +349,11 @@ public:
 
   protected:
 
+    /** For an opcode of given type, this function makes sure, that a corresponding signal 
+    processor type is present in our signalProcessors array. It checks, if the right kind of 
+    processor is already there and adds it, if not. */
+    void ensureProcessorPresent(PlaybackSetting::Type opcodeType);
+
     /** Sets the audio stream object that should be used for this region. */
     //void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
 
@@ -392,7 +398,7 @@ public:
     std::vector<PlaybackSetting> settings;
 
 
-    std::vector<SignalProcessorType> signalProcessors;
+    std::vector<SignalProcessorType> signalProcessors;  // rename to dspTypes
     /** Listing of the types of signal processors used in this instrument in the same order like how
     they should be applied (we assume a serial connection). */
     // should be member of the region or OrganizationLevel

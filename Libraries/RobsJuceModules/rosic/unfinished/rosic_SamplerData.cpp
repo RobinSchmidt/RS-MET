@@ -78,6 +78,23 @@ SignalProcessorType rsSamplerData::PlaybackSetting::getTargetProcessorType(Type 
   return SP::Unknown;
 }
 
+//-------------------------------------------------------------------------------------------------
+
+void rsSamplerData::OrganizationLevel::ensureProcessorPresent(PlaybackSetting::Type opcodeType)
+{ 
+  using namespace RAPT;
+  using SPT = SignalProcessorType;
+  SPT dspType = PlaybackSetting::getTargetProcessorType(opcodeType);
+  rsAssert( dspType != SPT::Unknown );
+  if( dspType == SPT::SamplePlayer || dspType == SPT::Unknown )
+    return;
+    // The sample-player at the start of the processing chain doesn't really count as bona-fide DSP
+    // processor. It's always there, there's always exactly one and it behaves quite differently 
+    // from the rest. We need it among the types for consistency, though.
+  if( !rsContains(signalProcessors, dspType) )
+    signalProcessors.push_back(dspType);
+}
+
 void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
 {
   using TP = PlaybackSetting::Type;
@@ -98,16 +115,19 @@ void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
   else
   {
     settings.push_back(s);
-    // We need to do more here:
-    // -When setting up an opcode that requires a certain processor that is not already in our 
-    //  signalProcessors list, add it (this should happen also in the sfz-parser)
-    // -The order in which the processors appear in the chain should reflect the order in which 
-    //  their opcodes appear in the sfz (or, if setup is done programmatically, the order in which
-    //  the opcodes were added). The first opcode applying to a particular kind of processor 
-    //  counts. For example, if the opcodes are added in the order FilterCutoff, DistDrive,
-    //  FilterResonance, the filter appears before the waveshaper in the DSP chain...maybe with 
-    //  some excaptions for opcodes that apply to processors that are at fixed positions in the 
-    //  chain - such as the PlaybackSource
+    ensureProcessorPresent(t);
+    // The order in which the processors appear in the chain should reflect the order in which 
+    // their opcodes appear in the sfz (or, if setup is done programmatically, the order in which
+    // the opcodes were added). The first opcode applying to a particular kind of processor 
+    // counts. For example, if the opcodes are added in the order FilterCutoff, DistDrive,
+    // FilterResonance, the filter appears before the waveshaper in the DSP chain...maybe with 
+    // some exceptions for opcodes that apply to processors that must be at fixed positions in the 
+    // chain such as the SamplePlayer. ...hmm...but what, if we want two processors of the same 
+    // kind? like filter1 -> waveshaper -> filter2. Maybe we could re-use the "index" member
+    // PlaybackSetting (which was originally supposed to indicate a midi controller for 
+    // control-change). But then, the sfz-parser would not only have to look for "cutoff" but also
+    // cutoff1, cutoff2, etc. and translate that into an appropriate PlaybackSetting, i.e. one
+    // with the index variable set. But that seems doable.
   }
 }
 

@@ -369,7 +369,11 @@ protected:
     void resetState();
     void resetSettings();
     void reset() { resetState(); resetSettings(); }
+
     void clear() { processors.clear(); }
+    void addProcessor(SignalProcessor* p) { processors.push_back(p); }
+
+    bool isEmpty() const { return processors.empty(); }
   protected:
     std::vector<SignalProcessor*> processors;
   };
@@ -434,7 +438,13 @@ protected:
     void prepareToPlay(double sampleRate, bool groupSettingsOverride, bool regionSettingsOverride);
     // change API to take group/regionSettingsAccumulate as parameters
 
+    /** Returns a pointer to a processor of given type, if available, otherwise a nullptr. Used in
+    buildProcessingChain. */
+    SignalProcessor* getProcessor(SignalProcessorType type);
+
     bool buildProcessingChain();
+    bool setupModulations();
+
     void resetDspState();
     void resetDspSettings();
     void setupDspSettingsFor(const Region* r, double sampleRate, bool groupSettingsOverride,

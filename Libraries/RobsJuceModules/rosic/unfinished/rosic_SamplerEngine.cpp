@@ -806,6 +806,12 @@ void rsSamplerEngine::RegionPlayer::prepareToPlay(
     // the required additional allocation of more is not fast enough.
   }
 
+  ok &= setupModulations();
+  if(!ok)
+  {
+    // Also in this case, we need to roll back and the caller should discard the RegionPlayer...
+  }
+
   resetDspState();        // Needs to be done after building the chain
   resetDspSettings();     // Reset all DSP settings to default values
   setupDspSettingsFor(region, fs, groupSettingsOverride, regionSettingsOverride);
@@ -844,30 +850,57 @@ void rsSamplerEngine::RegionPlayer::resetDspState()
     modulators[i]->resetState();
 }
 
+SignalProcessor* rsSamplerEngine::RegionPlayer::getProcessor(SignalProcessorType type)
+{
+  // We need a pointer to the outlying rsSamplerEngine object which manages the SignalProcessorPool
+  // or we need a pointer to that pool itself. But later, we'll also need access to a pool of
+  // modulators, the mod-connections, etc. and in order to keep the memory footprint small, we
+  // want to store only one single pointer to give us acces to it all, so maybe the rsSamplerEngine
+  // is suitable fo that
+
+  return nullptr;
+}
+
 bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
 {
-  // ToDo: build the chain of DSP processors and the set of modulators and wire everything up, as
-  // defined by the region settings...
+  RAPT::rsAssert(dspChain.isEmpty(), "Someone has not cleaned up after finishing playback!");
+  dspChain.clear(); // ...so we do it here. But this should be fixed!
+
+  // ToDo: 
+  // -Build the chain of DSP processors (...done) 
+  // -Check, if the caller handles failure correctly, i.e. if we return false, the caller should
+  //  discard the whole RegionPlayer and not play the region at all
 
   using DspType = SignalProcessorType;
   const std::vector<DspType>& dspTypeChain = region->getProcessingChain();
-  for(size_t i = 0; i < dspTypeChain.size(); i++)
-  {
+  for(size_t i = 0; i < dspTypeChain.size(); i++) {
     DspType type = dspTypeChain[i];
+    SignalProcessor* dsp = getProcessor(type);
+    if(dsp)
+      dspChain.addProcessor(dsp);
+    else {
+      dspChain.clear();
+      return false; }}
+  return true;
+  // If false is returned, it means we do not have enough processors of the required types 
+  // available. In this case, the caller should roll back and discard the whole RegionPlayer 
+  // object. We either play a region correctly or not at all. This is an error condition that could
+  // conceivably arise in normal usage (because we did not pre-allocate enough DSPs), so we should 
+  // be able to handle it gracefully. It should actually not happen, i.e. we should make sure to 
+  // always pre-allocate enough DSPs - but that may be impractical to ensure in a 100% airtight 
+  // manner. But let's try at least to make that an exception that occurs only in extreme 
+  // scenarios.
+}
 
-    // ToDo:
-    //SignalProcessor* dsp = getSignalProcessor(type);
-    //dspChain.processors.push_back(dsp);
-    // maybe for getSignalProcessor, we need a pointer to the outlying rsSamplerEngine object or
-    // some sort of rsSamplerProcessorPool object
+bool rsSamplerEngine::RegionPlayer::setupModulations()
+{
+  // ToDo:
+  // -Build the set of modulators, similar as in buildProcessingChain
+  // -Wire up the modulation connections
 
-    int dummy = 0;
-  }
+  // ...something to do...
 
-
-  return true;  
-  // preliminary, maybe should return a ReturnCode, possible values: success, not enough dsp 
-  // objects available
+  return true;
 }
 
 void rsSamplerEngine::RegionPlayer::resetDspSettings()
