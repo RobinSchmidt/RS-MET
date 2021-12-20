@@ -60,7 +60,7 @@ protected:
   const char* name   = "\0";  // shall be assigned to some fixed global list of strings
 
 
-  int   opcode = rsSamplerData::PlaybackSetting::Type::Unknown;
+  Opcode opcode = Opcode::Unknown;
   // todo: move PlaybackSetting::Type out of rsSamplerData, maybe rename to Opcode
 
 

@@ -185,17 +185,17 @@ int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
   return rsReturnCode::success;
 }
 
-int rsSamplerEngine::setRegionSetting(int gi, int ri, PlaybackSetting::Type type, float value)
+int rsSamplerEngine::setRegionSetting(int gi, int ri, Opcode type, float value)
 {
   return sfz.setRegionSetting(gi, ri, type, value);
 }
 
-int rsSamplerEngine::setGroupSetting(int i, PlaybackSetting::Type type, float value)
+int rsSamplerEngine::setGroupSetting(int i, Opcode type, float value)
 {
   return sfz.setGroupSetting(i, type, value);
 }
 
-int rsSamplerEngine::setInstrumentSetting(PlaybackSetting::Type type, float value)
+int rsSamplerEngine::setInstrumentSetting(Opcode type, float value)
 {
   return sfz.setInstrumentSetting(type, value);
 }
@@ -996,7 +996,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettingsFor(
   // between the played key and the sample's rootKey. This is not done in the code above because
   // it makes no sense to accumulate this parameter
   increment *= stream->getSampleRate() / fs;
-  double rootKey = region->getSettingValue(PlaybackSetting::Type::PitchKeyCenter, -1, false);
+  double rootKey = region->getSettingValue(Opcode::PitchKeyCenter, -1, false);
   double pitchOffset = double(key) - rootKey;
   //increment *= RAPT::rsPitchOffsetToFreqFactor(pitchOffset); 
   increment *= pow(2.0, pitchOffset / 12.0);
@@ -1016,7 +1016,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   const std::vector<PlaybackSetting>& settings, double fs, bool overrideOldSetting)
 {
   using PS = PlaybackSetting;
-  using TP = PS::Type;
+  using TP = Opcode;
 
   double amp        = 1.0;  // raw factor, computed "volume" opcode which is given in dB
   double pan        = 0.0;  // -100...+100

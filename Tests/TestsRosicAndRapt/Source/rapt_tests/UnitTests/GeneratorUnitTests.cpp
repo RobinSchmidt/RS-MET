@@ -193,7 +193,7 @@ bool samplerDataUnitTest()
 
   //using SD = rsSamplerData;
   using SD  = rosic::Sampler::rsSamplerData;
-  using PST = SD::PlaybackSetting::Type;
+  using PST = rosic::Sampler::Opcode;
 
   SD d1;
 
@@ -339,7 +339,7 @@ bool samplerEngineUnitTest1()
   using SD   = rosic::Sampler::rsSamplerData;
   using SE   = rosic::Sampler::rsSamplerEngineTest;
   using RC   = rosic::Sampler::rsReturnCode;
-  using PST  = SE::PlaybackSetting::Type;
+  using PST  = rosic::Sampler::Opcode;
   using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
 
@@ -740,7 +740,7 @@ bool samplerEngine2UnitTest()
   using AT   = RAPT::rsArrayTools;
   using SE   = rosic::Sampler::rsSamplerEngine2Test;
   using RC   = rosic::Sampler::rsReturnCode;
-  using PST  = SE::PlaybackSetting::Type;
+  using PST  = rosic::Sampler::Opcode;
   using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
 
@@ -1127,7 +1127,7 @@ bool samplerEngineUnitTestFileIO()
   using VecF = std::vector<float>;     // vector of sample values in RAM
   using SE   = rosic::Sampler::rsSamplerEngineTest;
   using RC   = rosic::Sampler::rsReturnCode;
-  using PST  = SE::PlaybackSetting::Type;
+  using PST  = rosic::Sampler::Opcode;
   using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
 
@@ -1336,7 +1336,7 @@ bool samplerFilterTest()
 
   using VecF = std::vector<float>;     // vector of sample values in RAM
   using SE   = rosic::Sampler::rsSamplerEngineTest;
-  using PST  = SE::PlaybackSetting::Type;
+  using PST  = rosic::Sampler::Opcode;
 
   // Create a pinkish noise as example sample:
   float fs     = 44100.f; // sample rate
@@ -1398,7 +1398,7 @@ bool samplerWaveShaperTest()
 
   using VecF  = std::vector<float>;
   using SE    = rosic::Sampler::rsSamplerEngineTest;
-  using PST   = SE::PlaybackSetting::Type;
+  using PST   = rosic::Sampler::Opcode;
   //using WS    = rosic::Sampler::rsSamplerWaveShaper;
   using Shape = rosic::Sampler::rsSamplerWaveShaper::Shape;
 

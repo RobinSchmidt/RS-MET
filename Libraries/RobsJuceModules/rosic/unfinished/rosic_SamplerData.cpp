@@ -4,9 +4,9 @@ namespace Sampler {
 //-------------------------------------------------------------------------------------------------
 // The internal classes
 
-float rsSamplerData::PlaybackSetting::getDefaultValue(Type type)
+float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type)
 {
-  using TP = PlaybackSetting::Type;
+  using TP = Opcode;
   switch(type)
   {
   case TP::LoKey:          return 0.f;
@@ -40,11 +40,11 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Type type)
 }
 
 
-SignalProcessorType rsSamplerData::PlaybackSetting::getTargetProcessorType(Type type)
+SignalProcessorType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
 {
   //return SignalProcessorType::Unknown;
 
-  using TP = PlaybackSetting::Type;
+  using TP = Opcode;
   using SP = SignalProcessorType;
   switch(type)
   {
@@ -80,7 +80,7 @@ SignalProcessorType rsSamplerData::PlaybackSetting::getTargetProcessorType(Type 
 
 //-------------------------------------------------------------------------------------------------
 
-void rsSamplerData::OrganizationLevel::ensureProcessorPresent(PlaybackSetting::Type opcodeType)
+void rsSamplerData::OrganizationLevel::ensureProcessorPresent(Opcode opcodeType)
 { 
   using namespace RAPT;
   using SPT = SignalProcessorType;
@@ -97,7 +97,7 @@ void rsSamplerData::OrganizationLevel::ensureProcessorPresent(PlaybackSetting::T
 
 void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
 {
-  using TP = PlaybackSetting::Type;
+  using TP = Opcode;
   TP t = s.getType();
 
   // Handle the lo/hi key/vel opcodes as special cases:
@@ -131,7 +131,7 @@ void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
   }
 }
 
-bool rsSamplerData::OrganizationLevel::removeSetting(PlaybackSetting::Type type)
+bool rsSamplerData::OrganizationLevel::removeSetting(Opcode type)
 {
   bool wasRemoved = false;
   for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
@@ -155,7 +155,7 @@ void rsSamplerData::OrganizationLevel::copyDataFrom(const OrganizationLevel* lvl
 }
 
 float rsSamplerData::OrganizationLevel::getSettingValue(
-  PlaybackSetting::Type type, int index, bool accumulate) const
+  Opcode type, int index, bool accumulate) const
 {
   float val = PlaybackSetting::getDefaultValue(type);  // init to global fallback value
   int i = findSetting(type, index);
@@ -177,7 +177,7 @@ float rsSamplerData::OrganizationLevel::getSettingValue(
 // anyway)...but maybe the accumulate feature is not even needed in this function - may get rid of
 // it
 
-int rsSamplerData::OrganizationLevel::findSetting(PlaybackSetting::Type type, int index) const
+int rsSamplerData::OrganizationLevel::findSetting(Opcode type, int index) const
 {
   for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
     if(settings[i].getType() == type && settings[i].getIndex() == index)
@@ -331,7 +331,7 @@ bool rsSamplerData::removeRegion(int gi, int ri)
   return instrument.groups[gi]->removeRegion(ri);
 }
 
-rsReturnCode rsSamplerData::setRegionSetting(int gi, int ri, PlaybackSetting::Type type, float value)
+rsReturnCode rsSamplerData::setRegionSetting(int gi, int ri, Opcode type, float value)
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
@@ -347,7 +347,7 @@ rsReturnCode rsSamplerData::setRegionSetting(int gi, int ri, PlaybackSetting::Ty
   return rsReturnCode::success;
 }
 
-rsReturnCode rsSamplerData::removeRegionSetting(int gi, int ri, PlaybackSetting::Type type)
+rsReturnCode rsSamplerData::removeRegionSetting(int gi, int ri, Opcode type)
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
@@ -358,7 +358,7 @@ rsReturnCode rsSamplerData::removeRegionSetting(int gi, int ri, PlaybackSetting:
   else           return rsReturnCode::nothingToDo;
 }
 
-rsReturnCode rsSamplerData::setGroupSetting(int gi, PlaybackSetting::Type type, float value)
+rsReturnCode rsSamplerData::setGroupSetting(int gi, Opcode type, float value)
 {
   if(!isGroupIndexValid(gi)) {
     RAPT::rsError("Invalid group index");
@@ -372,7 +372,7 @@ rsReturnCode rsSamplerData::setGroupSetting(int gi, PlaybackSetting::Type type, 
   return rsReturnCode::success;
 }
 
-rsReturnCode rsSamplerData::removeGroupSetting(int gi, PlaybackSetting::Type type)
+rsReturnCode rsSamplerData::removeGroupSetting(int gi, Opcode type)
 {
   if(!isGroupIndexValid(gi)) {
     RAPT::rsError("Invalid group index");
@@ -383,7 +383,7 @@ rsReturnCode rsSamplerData::removeGroupSetting(int gi, PlaybackSetting::Type typ
   else           return rsReturnCode::nothingToDo;
 }
 
-rsReturnCode rsSamplerData::setInstrumentSetting(PlaybackSetting::Type type, float value)
+rsReturnCode rsSamplerData::setInstrumentSetting(Opcode type, float value)
 {
   instrument.settings.push_back(PlaybackSetting(type, value));
   // Preliminary. see above
@@ -391,7 +391,7 @@ rsReturnCode rsSamplerData::setInstrumentSetting(PlaybackSetting::Type type, flo
   return rsReturnCode::success;
 }
 
-rsReturnCode rsSamplerData::removeInstrumentSetting(PlaybackSetting::Type type)
+rsReturnCode rsSamplerData::removeInstrumentSetting(Opcode type)
 {
   bool wasRemoved = instrument.removeSetting(type);
   if(wasRemoved) return rsReturnCode::success;
@@ -638,7 +638,7 @@ bool rsSamplerData::loadFromSFZ(const char* path)
 
 void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::string& s)
 {
-  using PST = PlaybackSetting::Type;
+  using PST = Opcode;
   PST  type = setting.getType();
   float val = setting.getValue();
   int index = setting.getIndex();
@@ -693,7 +693,7 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
   const std::string& opcode, const std::string& valStr)
 {
   using PS  = PlaybackSetting;
-  using PST = PS::Type;
+  using PST = Opcode;
   float val = std::stof(valStr);  // maybe use cutom function later
   int   idx = -1;
   // todo: if applicable, exctract the index from the opcode and set it up in the setting by 

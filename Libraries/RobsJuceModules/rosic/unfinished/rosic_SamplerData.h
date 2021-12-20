@@ -50,6 +50,44 @@ enum SignalProcessorType
   Unknown
 };
 
+/** Enumeration of possible types of settings. These types correspond to the opcodes defined
+in the sfz specification. */
+enum class Opcode
+{
+  // Input controls:
+  LoKey, HiKey, LoVel, HiVel,
+  ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
+
+  // Muted: convenient to switch regions or groups off wihthout removing them - check if 
+  // sfz has such a thing
+
+  // Pitch:
+  PitchKeyCenter, Transpose, Tune,
+
+  // Amplitude:
+  Volume, Pan, PanRule,
+  AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
+  // ToDo: Width, Position
+
+  // Player:
+  Delay, Offset,
+  // ToDo: loop-stuff
+
+  // Filter:
+  FilterType, FilterCutoff, FilterResonance,
+
+  // Some of my own extensions
+  // Distortion:
+  DistShape, DistDrive,  // DistGain...may be redundant with Volume
+
+
+  Unknown,
+  NumTypes
+  //...tbc...
+};
+// maybe don't capitalize first letter - make it conistent with other (newer) enums in the 
+// library. see community stadards recommendations...
+
 
 
 
@@ -99,43 +137,7 @@ public:
 
   public:
 
-    /** Enumeration of possible types of settings. These types correspond to the opcodes defined
-    in the sfz specification. */
-    enum Type
-    {
-      // Input controls:
-      LoKey, HiKey, LoVel, HiVel,
-      ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
 
-      // Muted: convenient to switch regions or groups off wihthout removing them - check if 
-      // sfz has such a thing
-
-      // Pitch:
-      PitchKeyCenter, Transpose, Tune,
-
-      // Amplitude:
-      Volume, Pan, PanRule,
-      AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
-      // ToDo: Width, Position
-
-      // Player:
-      Delay, Offset,
-      // ToDo: loop-stuff
-
-      // Filter:
-      FilterType, FilterCutoff, FilterResonance,
-
-      // Some of my own extensions
-      // Distortion:
-      DistShape, DistDrive,  // DistGain...may be redundant with Volume
-
-
-      Unknown,
-      NumTypes
-      //...tbc...
-    };
-    // maybe don't capitalize first letter - make it conistent with other (newer) enums in the 
-    // library
 
     enum FilterType
     {
@@ -162,12 +164,12 @@ public:
     // inconvenient
 
 
-    PlaybackSetting(Type type, float value)
+    PlaybackSetting(Opcode type, float value)
     {
       this->type = type; this->value = value;
     }
 
-    Type getType() const { return type; }
+    Opcode getType() const { return type; }
 
     /** Returns the stored value for this setting. Values are always stored as floats and it is
     understood that in cases, where the corresponding parameter in the sfz spec is defined to be an
@@ -191,11 +193,11 @@ public:
     int getIndex() const { return index; }
 
     /** Returns the default value for a given type of setting. */
-    static float getDefaultValue(Type type);
+    static float getDefaultValue(Opcode type);
 
     /** For a given type of opcode, this function returns the type of signal processor to which the
     opcode applies, e.g. SignalProcessorType::Filter for Type::FilterCutoff. */
-    static SignalProcessorType getTargetProcessorType(Type type);
+    static SignalProcessorType getTargetProcessorType(Opcode type);
 
     bool operator==(const PlaybackSetting& rhs) const
     {
@@ -205,9 +207,9 @@ public:
 
   private:
 
-    Type  type  = Type::Unknown;
-    float value = 0.f;
-    int   index = -1;  //< Used e.g. for conrol-change settings. Is -1, if not applicable.
+    Opcode type  = Opcode::Unknown;  // rename to opcode
+    float  value = 0.f;
+    int    index = -1;  //< Used e.g. for conrol-change settings. Is -1, if not applicable.
   };
   // Maybe rename to Opcode - but no: "opcodes" are the strings that appear in the sfz file, such
   // "lokey". They map to the Type of the playback setting. Maybe this class should provide the
@@ -247,7 +249,7 @@ public:
     type, but this may not be the case for poorly written sfz files. Returns true, if there was at
     least one item actually removed, i.e. it returns false only if no such setting was found in the
     array. */
-    bool removeSetting(PlaybackSetting::Type type);
+    bool removeSetting(Opcode type);
 
     void clearSettings() // rename to clear
     {
@@ -294,8 +296,7 @@ public:
     found in none of the levels, the default value for that setting will be returned. If accumulate
     is true, the settings of the different hierarchy levels will be added up, otherwise, the
     setting in the lower level will override the settimg in the enclosing higher level. */
-    float getSettingValue(
-      PlaybackSetting::Type type, int index = -1, bool accumulate = false) const;
+    float getSettingValue(Opcode type, int index = -1, bool accumulate = false) const;
 
     /** Tries to find a setting of the given type in our settings array and returns the index of
     the last stored setting of given type (and with given index, if applicable - like for
@@ -304,7 +305,7 @@ public:
     reason (like a poorly written sfz file) there is more than one, it's the last one that counts
     (it will overwrite anything that came before). That's why we return the last index, i.e. we do
     a linear search starting at the end of the array. */
-    int findSetting(PlaybackSetting::Type type, int index = -1) const;
+    int findSetting(Opcode type, int index = -1) const;
 
     // todo: float getSetting(PlaybackSetting::Type, int index) this should loop through the 
     // settings to see, if it finds it and if not call the same method on the parent or return the
@@ -351,7 +352,7 @@ public:
     /** For an opcode of given type, this function makes sure, that a corresponding signal 
     processor type is present in our signalProcessors array. It checks, if the right kind of 
     processor is already there and adds it, if not. */
-    void ensureProcessorPresent(PlaybackSetting::Type opcodeType);
+    void ensureProcessorPresent(Opcode opcodeType);
 
     /** Sets the audio stream object that should be used for this region. */
     //void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
@@ -578,17 +579,17 @@ public:
     instrument.groups[gi]->regions[ri]->setSamplePath(samplePath);
   }
 
-  rsReturnCode setRegionSetting(int gi, int ri, PlaybackSetting::Type type, float value);
+  rsReturnCode setRegionSetting(int gi, int ri, Opcode type, float value);
 
-  rsReturnCode setGroupSetting(int gi, PlaybackSetting::Type type, float value);
+  rsReturnCode setGroupSetting(int gi, Opcode type, float value);
 
-  rsReturnCode setInstrumentSetting(PlaybackSetting::Type type, float value);
+  rsReturnCode setInstrumentSetting(Opcode type, float value);
 
-  rsReturnCode removeRegionSetting(int gi, int ri, PlaybackSetting::Type type);
+  rsReturnCode removeRegionSetting(int gi, int ri, Opcode type);
 
-  rsReturnCode removeGroupSetting(int gi, PlaybackSetting::Type type);
+  rsReturnCode removeGroupSetting(int gi, Opcode type);
 
-  rsReturnCode removeInstrumentSetting(PlaybackSetting::Type type);
+  rsReturnCode removeInstrumentSetting(Opcode type);
 
 
   void clearAllRegionSettings();

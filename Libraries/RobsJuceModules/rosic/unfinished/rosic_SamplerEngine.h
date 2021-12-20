@@ -164,24 +164,24 @@ public:
   /** Sets a value for a given type of playback setting a region. Returns either
   rsReturnCode::success or rsReturnCode::invalidIndex, if groupIndex and/or regionIndex was invalid. If
   this happens, it indicates a bug on the call site. */
-  int setRegionSetting(int groupIndex, int regionIdex, PlaybackSetting::Type type, float value);
+  int setRegionSetting(int groupIndex, int regionIdex, Opcode type, float value);
 
-  int setGroupSetting(int groupIndex, PlaybackSetting::Type type, float value);
+  int setGroupSetting(int groupIndex, Opcode type, float value);
 
-  int setInstrumentSetting(PlaybackSetting::Type type, float value);
+  int setInstrumentSetting(Opcode type, float value);
 
 
-  rsReturnCode removeRegionSetting(int groupIndex, int regionIdex, PlaybackSetting::Type type)
+  rsReturnCode removeRegionSetting(int groupIndex, int regionIdex, Opcode type)
   {
     return sfz.removeRegionSetting(groupIndex, regionIdex, type);
   }
 
-  rsReturnCode removeGroupSetting(int groupIndex, PlaybackSetting::Type type)
+  rsReturnCode removeGroupSetting(int groupIndex, Opcode type)
   {
     return sfz.removeGroupSetting(groupIndex, type);
   }
 
-  rsReturnCode removeInstrumentSetting(PlaybackSetting::Type type)
+  rsReturnCode removeInstrumentSetting(Opcode type)
   {
     return sfz.removeInstrumentSetting(type);
   }
