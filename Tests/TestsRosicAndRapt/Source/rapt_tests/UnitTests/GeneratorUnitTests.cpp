@@ -1337,6 +1337,7 @@ bool samplerFilterTest()
   using VecF = std::vector<float>;     // vector of sample values in RAM
   using SE   = rosic::Sampler::rsSamplerEngineTest;
   using PST  = rosic::Sampler::Opcode;
+  using Type = rosic::Sampler::FilterType;
 
   // Create a pinkish noise as example sample:
   float fs     = 44100.f; // sample rate
@@ -1350,16 +1351,14 @@ bool samplerFilterTest()
   noise = createColoredNoise(N, slope);   // maybe use a sawtooth wave instead
   //rsPlotVector(noise);
 
-  // Filter the noise to establish the target signal:
-  RAPT::rsStateVariableFilter<float, float> svf;
-  svf.setSampleRate(fs);
-  svf.setFrequency(cutoff);
-  //svf.setResonance(reso); // we need a conversion formula, resonance is in dB
+  // Filter the noise with a 1st order LPF to establish the target signal:
+  RAPT::rsOnePoleFilter<float, float> flt;
+  flt.setMode(flt.LOWPASS_IIT);
+  flt.setSampleRate(fs);
+  flt.setCutoff(cutoff);
   for(int n = 0; n < N; n++)
-    tgt[n] = svf.getSample(noise[n]);
-  //rsPlotVector(tgt);
-
-
+    tgt[n] = flt.getSample(noise[n]);
+  //rsPlotVectors(noise, tgt);
 
   // Create and set up sampler engine:
   SE se;
@@ -1369,10 +1368,22 @@ bool samplerFilterTest()
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f);
+  se.setRegionSetting(0, 0, PST::FilterType,      (float) Type::lp_6);
   se.setRegionSetting(0, 0, PST::FilterCutoff,    cutoff);
-  se.setRegionSetting(0, 0, PST::FilterResonance, reso);
+  se.setRegionSetting(0, 0, PST::FilterResonance, reso);   //  has no effect for lp_6
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
   // predictably fails! filter is not yet implemented
+
+
+  /*
+  RAPT::rsStateVariableFilter<float, float> svf;
+  svf.setSampleRate(fs);
+  svf.setFrequency(cutoff);
+  //svf.setResonance(reso); // we need a conversion formula, resonance is in dB
+  for(int n = 0; n < N; n++)
+    tgt[n] = svf.getSample(noise[n]);
+  //rsPlotVector(tgt);
+  */
 
   // ToDo
   // -Implement a 1st order lowpass. It think, we should generally use formulas that match the 
@@ -1484,11 +1495,8 @@ bool samplerProcessorsTest()
   //size = sizeof(SP::WaveShaper);
 
 
-
-  ok &= samplerWaveShaperTest();
   ok &= samplerFilterTest();
-
-
+  ok &= samplerWaveShaperTest();
 
 
   rsAssert(ok);

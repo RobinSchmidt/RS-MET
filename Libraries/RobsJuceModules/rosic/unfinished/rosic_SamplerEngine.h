@@ -367,7 +367,7 @@ protected:
 
     void processFrame(rsFloat64x2& inOut);
     void processBlock(rsFloat64x2* inOut, int N);
-    void prepareToPlay() { for(auto & p : processors) p->prepareToPlay(); }
+    void prepareToPlay(double fs) { for(auto & p : processors) p->prepareToPlay(fs); }
     void resetState()    { for(auto & p : processors) p->resetState();    }
     void resetSettings() { for(auto & p : processors) p->resetSettings(); }
     void reset() { resetState(); resetSettings(); }
@@ -474,7 +474,7 @@ protected:
     bool buildProcessingChain();
     bool setupModulations();
 
-    void resetDspState();
+    //void resetDspState();
     void resetDspSettings();
     void setupDspSettingsFor(const Region* r, double sampleRate, bool groupSettingsOverride,
       bool regionSettingsOverride);

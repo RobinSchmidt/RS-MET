@@ -18,9 +18,23 @@ void SignalProcessor::setParameter(Opcode opcode, float value)
 
 //=================================================================================================
 
-void rsSamplerFilter::setup(rsSamplerFilter::Type type, float cutoff, float resonance)
+void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
 {
+  this->type = type;
 
+  using P1Z1 = RAPT::rsOnePoleFilter<float, float>;
+
+  switch(type)
+  {
+  case Type::Lowpass_6:
+  {
+    P1Z1::coeffsLowpassIIT(w, &vars.p1z1.b0, &vars.p1z1.b1, &vars.p1z1.a1);
+  } break;
+
+  }
+
+
+  int dummy = 0;
 }
 
 void rsSamplerFilter::initCoeffs()
@@ -35,12 +49,30 @@ void rsSamplerFilter::updateCoeffs()
 
 void rsSamplerFilter::processFrame(float& L, float& R)
 {
+  TSig io(L, R);
+  switch(type)
+  {
+  case Type::Lowpass_6: io = vars.p1z1.getSample(io); break;
+  };
 
+  // Preliminary - as long as we are abusing rsVector2D for the signal:
+  L = io.x;
+  R = io.y;
+
+  // ...later, we want to use a simd type and retrieve the elements like so:
+  //L = io[0]; R = io[1];
+
+
+  int dummy = 0;
 }
 
 void rsSamplerFilter::resetState()
 {
-
+  switch(type)
+  {
+  case Type::Lowpass_6: { vars.p1z1.resetState(); } break;
+  }
+  int dummy = 0;
 }
 
 //-------------------------------------------------------------------------------------------------

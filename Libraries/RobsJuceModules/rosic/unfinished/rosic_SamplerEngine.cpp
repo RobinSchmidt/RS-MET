@@ -886,15 +886,22 @@ rsReturnCode rsSamplerEngine::RegionPlayer::prepareToPlay(
   if(!setupModulations()) {
     releaseDspObjects();
     return rsReturnCode::layerOverload; }
-  resetDspState();     // Needs to be done after building the chain
+  //resetDspState();     // Needs to be done after building the chain - deprecated
   resetDspSettings();  // Reset all DSP settings to default values
   setupDspSettingsFor(region, fs, groupSettingsOverride, regionSettingsOverride);
   // todo: move fs before the override parameters for consistency
 
   // todo: setup modulators and modulation connections
 
-  dspChain.prepareToPlay();
+  dspChain.prepareToPlay(fs);
   // modulators.prepareToPlay()
+
+  // ToDo:
+  // -resetDspState should reset only the state of the sample-player and be renamed accordingly
+  //  because for the DSP objects that call comes to early, i.e. before setup() for the core
+  //  objects is called. This may lead to wrong reset behavior if this behavior depends on the
+  //  settings (which is the case for the Filter).
+  // -The objects in the dspChain should reset themselves in prepareToPlay
 
   return rsReturnCode::success;
   // Overload should actually not happen in therory (as by the sfz spec, and unlimited number of 
@@ -923,12 +930,15 @@ bool rsSamplerEngine::RegionPlayer::hasFinished()
   return false;
 }
 
+/*
 void rsSamplerEngine::RegionPlayer::resetDspState()
 {
   dspChain.resetState();
   for(size_t i = 0; i < modulators.size(); i++)
     modulators[i]->resetState();
 }
+// deprecated - this should happen in prepareToPlay, if necessary
+*/
 
 SignalProcessor* rsSamplerEngine::RegionPlayer::getProcessor(SignalProcessorType type)
 {

@@ -60,11 +60,12 @@ public:
   // https://stackoverflow.com/questions/21476869/constant-pointer-vs-pointer-to-constant
 
   // Processing:
-  virtual void prepareToPlay() = 0;
+  virtual void prepareToPlay(double sampleRate) = 0;
   virtual void processFrame(rsFloat64x2& inOut) = 0;
   virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
-  virtual void resetState() = 0;
-  virtual void resetSettings() = 0;
+
+  virtual void resetState() = 0;    // maybe remove
+  virtual void resetSettings() = 0; // ditto
 
 protected:
 
@@ -175,6 +176,19 @@ protected:
   // todo: maybe templatize this class and use float for TPar, and rsfloat32x2 for TSig in the 
   // sampler
 
+  struct OnePoleVars    // ToDo: remove the "Vars" from the name
+  {
+    TSig  x1, y1;       // state
+    TCoef b0, b1, a1;   // coeffs
+    void resetState() { x1 = y1 = TSig(0); }
+    void initCoeffs() { b0 = TCoef(1); b1 = a1 = TCoef(0); }
+    TSig getSample(const TSig& in)
+    {
+      TSig y = b0*in + b1*x1 + a1*y1; // compute output
+      x1 = in; y1 = y;                // update state
+      return y;
+    }
+  };
   struct BiquadVars             // biquad filter, using DF2 (todo: try TDF1 -> smaller state)
   {
     TSig  x1, x2, y1, y2;       // state
@@ -203,9 +217,10 @@ protected:
   {
     FilterVars() {}             // without it, msc complains
 
-    BiquadVars bqd;
-    StateVars  svf;
-    LadderVars ldr;
+    OnePoleVars p1z1;           // 1-pole 1-zero
+    BiquadVars  bqd;
+    StateVars   svf;
+    LadderVars  ldr;
   };
   // ToDo: implement reset/getSample etc also in StateVars, etc. all thes structs should provide 
   // the sample API, but implement it in a way that is suitable to the given filter topology.
@@ -215,7 +230,7 @@ protected:
   /** \name Data */
 
   Type type = Type::Bypass;
-  FilterVars vars;
+  FilterVars vars;           // rename to something better
 
   // ToDo: maybe include also a state-vector filter (maybe rename to state phasor filter to avoid
   // name clash in abbreviation)
@@ -302,22 +317,33 @@ public:
       // instead of std::vector...hmm...but the number varies between the subclasses, so the array
       // could not be a baseclass member then...hmm...
     }
-    void prepareToPlay() override 
+    void prepareToPlay(double fs) override 
     { 
       using TypeCore   = rsSamplerFilter::Type; // enum used in the DSP core
       using TypeOpcode = FilterType;            // enum used in the sfz opcode
       TypeCore type = TypeCore::Lowpass_6;      // preliminary
       core.setup(
         type, 
-        params[1].getValue(),                   // maybe *2*PI/sampleRate?
+        params[1].getValue() * float(2*PI/fs),
         params[2].getValue());
+      resetState();
     }
     // ToDo:
     // -try to avoid the translation step between the core-enum and sfz-enum - use a single
     //  enum for both
     // -not ideal that this code depends on the order, how we add the params in the constructor
 
-    void processFrame(rsFloat64x2& inOut) override {}
+    void processFrame(rsFloat64x2& inOut) override 
+    {
+      // ToDo: avoid these conversions - settle for a uniform sample format throughout the sampler,
+      // perhaps rsFloat32x4 for compatibility with the float coeffs that are used in the DSP
+      // core:
+      float L = (float) inOut[0];
+      float R = (float) inOut[1];
+      core.processFrame(L, R);
+      inOut[0] = L;
+      inOut[1] = R;
+    }
     void processBlock(rsFloat64x2* inOut, int N) override {}
     void resetState() override { core.resetState(); }
     void resetSettings() override { core.initCoeffs(); }
@@ -341,7 +367,7 @@ public:
       addParameter(Opcode::DistShape);
       addParameter(Opcode::DistDrive);
     }
-    void prepareToPlay() override
+    void prepareToPlay(double fs) override
     {
       using ShapeCore = rsSamplerWaveShaper::Shape;
       // using ShapeOpcode ...
