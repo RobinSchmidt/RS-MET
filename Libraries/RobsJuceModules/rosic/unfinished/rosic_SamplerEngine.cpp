@@ -1136,10 +1136,35 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
 void rsSamplerEngine::RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
-  //rsSamplerProcessors::WaveShaper* ws = getWaveShaper(setting);
-  //ws->setParameter(setting);
+
+  // Internal helper function to retrieve a pointer to the proccessor within our dspChain to which 
+  // the setting applies. It may at some point be dragged out of this function if it turns out to 
+  // be useful in other places as well:
+  auto getProcessorFor = [](const PlaybackSetting& s)
+  {
+    SignalProcessor* dsp = nullptr;
+
+    // ToDo:
+    // -Scan the dspChain for a suitable processor and assign the pointer accordingly.
+    // -This should take into account the index field of the setting s so we may have several 
+    //  processors of the same kind in our chain.
+  
+    return dsp;
+  };
 
 
+  SignalProcessor* dsp = getProcessorFor(s);
+  if(dsp != nullptr)
+  {
+    //dsp->setParameter(s.getType(), s.getValue());
+  }
+  else
+  {
+    RAPT::rsError("No processor available for DSP opcode");
+    // We could not find a suitable processor in our dspChain to which the given setting could be
+    // applied. If this happens, something went wrong (i.e. we have a bug) in buildDspChain or 
+    // getProcessorFor.
+  }
 
   int dummy = 0;
 }
