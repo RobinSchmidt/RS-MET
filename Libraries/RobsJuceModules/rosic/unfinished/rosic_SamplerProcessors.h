@@ -6,28 +6,6 @@ namespace Sampler {
 
 //=================================================================================================
 
-/** Enumeration of the different signal processor types that may be used in the definition of
-instruments. What kinds of processors are used within a region is implicitly determined by the sfz 
-opcodes, e.g. the presence of a FilterCutoff opcode dictates the presence of a filter within the 
-respective region. In order to facilitating to build the DSP chain for a region player,
-we also need an explicit representation of the DSP processor types. */
-/*
-enum SignalProcessorType
-{
-  SamplePlayer,
-
-  // The modulators:
-  // AmpEnv, FilterEnv, PitchEnv, AmpLFO, ...
-
-  // The actual DSP processors:
-  Filter,
-  WaveShaper,
-
-  Unknown
-};
-// moved into rosic_SamplerData.h
-*/
-
 /** Class to represent parameters of DSP processors and modulators. */
 class Parameter
 {
@@ -36,11 +14,10 @@ public:
 
   // Lifetime:
   //Parameter() {}  // maybe needed later to construct arrays
-  Parameter(const char* name, float defaultValue)
+  Parameter(Opcode opcode)
   {
-    this->name         = name;
-    this->defaultValue = defaultValue;
-    this->value        = defaultValue;
+    this->opcode = opcode;
+    //this->value  = OpcodeDefaultValues[opcode];
   }
 
   // Setup:
@@ -48,24 +25,28 @@ public:
   // maybe later: setName, setDefaultValue
 
   // Inquiry:
-  const char* getName() const { return name; }
+  //const char* getName() const { return name; }
+  Opcode getOpcode() const { return opcode; }
   float getValue() const { return value; }
-  float getDefaultValue() const { return defaultValue; }
+  //float getDefaultValue() const { return defaultValue; }
 
 
 protected:
 
   float value        = 0.f; 
-  float defaultValue = 0.f;
-  const char* name   = "\0";  // shall be assigned to some fixed global list of strings
-
-
   Opcode opcode = Opcode::Unknown;
-  // todo: move PlaybackSetting::Type out of rsSamplerData, maybe rename to Opcode
+  // What about min/max and mapping? actually, we do not need to store these as members. Instead,
+  // by knowing the opcode, we can figure these things out. We could have global tables somwhere 
+  // that store min/max/default for each opcode, to be used like:
+  //   defaultValue = OpcodeDefaultValues[opcode]
+  // or somthing like that
+
+  //const char* name   = "\0";  // shall be assigned to some fixed global list of strings
+  // maybe do not have that member - use opcode instead
 
 
 
-  // what about min/max and mapping?
+
 
 };
 
@@ -96,7 +77,7 @@ public:
 protected:
 
   // Setup:
-  virtual void addParameter(const char* name, float defaultValue); // maybe should return an integer parameter index?
+  virtual void addParameter(Opcode opcode); // maybe should return an integer parameter index?
 
 
 
@@ -288,13 +269,10 @@ public:
     Filter() 
     { 
       type = SignalProcessorType::Filter;
-      addParameter("Cutoff",    1000.f);
-      addParameter("Resonance", 0.f);
-      // Maybe we should use sfz opcode names here and also use the ranges and default values
-      // defined there. Maybe we should somewhere have a global enum with opcode identifiers, then
-      // a table with their names, etc.
+      addParameter(Opcode::FilterType);
+      addParameter(Opcode::FilterCutoff);
+      addParameter(Opcode::FilterResonance);
     }
-
     void processFrame(rsFloat64x2& inOut) override {}
     void processBlock(rsFloat64x2* inOut, int N) override {}
     void resetState() override { core.resetState(); }
@@ -312,7 +290,12 @@ public:
 
   public:
 
-    WaveShaper() { type = SignalProcessorType::WaveShaper; }
+    WaveShaper() 
+    { 
+      type = SignalProcessorType::WaveShaper; 
+      addParameter(Opcode::DistShape);
+      addParameter(Opcode::DistDrive);
+    }
     void processFrame(rsFloat64x2& inOut) override {}
     void processBlock(rsFloat64x2* inOut, int N) override {}
     void resetState() override {}

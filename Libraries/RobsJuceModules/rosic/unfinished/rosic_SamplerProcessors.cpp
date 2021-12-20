@@ -3,7 +3,7 @@ namespace Sampler {
 
 
 
-void SignalProcessor::addParameter(const char* name, float defaultValue)
+void SignalProcessor::addParameter(Opcode opcode)
 {
 
 
@@ -59,8 +59,9 @@ SignalProcessorPool::~SignalProcessorPool()
 
 void SignalProcessorPool::allocateProcessors()
 {
-  filters.resize(128);
-  waveShapers.resize(64);
+                          // Debug  Release  ...these values make sense for development
+  filters.resize(8);      //   8     128
+  waveShapers.resize(4);  //   4      64
   // These numbers are preliminary. We need to do something more sensible here later. Perhaps, this 
   // function should be called when a new sfz is loaded and it should have arguments for how many
   // objects of each type are needed. The engine should analyze, how many filters, waveshapers, 

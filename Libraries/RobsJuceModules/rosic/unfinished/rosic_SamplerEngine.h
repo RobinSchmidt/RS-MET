@@ -472,6 +472,9 @@ protected:
       bool regionSettingsOverride);
     void setupDspSettings(const std::vector<PlaybackSetting>& settings,
       double sampleRate, bool overrideOldSetting);
+    void setupProcessorSetting(const PlaybackSetting& s);
+
+
     // see comment at prepareToPlay - maybe make onTop default to false
     // change API: replace onTop with override
 

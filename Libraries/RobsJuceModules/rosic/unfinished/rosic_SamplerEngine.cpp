@@ -1060,15 +1060,24 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     }  break;
 
 
+
     // Filter settings:
-      //case TP::FilterCutoff: { flt.setCutoff(val);  } break;
+    case TP::FilterType:      { setupProcessorSetting(setting); } break;
+    case TP::FilterCutoff:    { setupProcessorSetting(setting); } break;
+    case TP::FilterResonance: { setupProcessorSetting(setting); } break;
 
-    case TP::DistDrive:
-    {
-      // rsSamplerProcessors::WaveShaper dst = 
+    // Waveshaper settings:
+    case TP::DistShape: { setupProcessorSetting(setting); } break;
+    case TP::DistDrive: { setupProcessorSetting(setting); } break;
 
-      int dummy = 0;
-    } break;
+    // ToDo: order the opcodes in the enum according to their type, such that we can here write
+    // something like: 
+    //   if( type > Opcode::dspStart && type < Opcode:dspEnd )
+    //     setupProcessorSetting(setting);
+    // instead of listing them all one-by-one, we should have tags: playerStart/End, dspStart/End
+    // modulatorsStart/End, modConnectionsStart/End
+
+
 
     // Equalizer settings:
     // .....
@@ -1123,6 +1132,16 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   // -Implement position and width opcodes. Maybe we should maintain a 2x2 gain matrix as member
   //  and all the different amp, pan, width, pos, etc. settings accumulate into this matrix. But 
   //  always compare results to sfz+ which serves as reference engine
+}
+
+void rsSamplerEngine::RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
+{
+  //rsSamplerProcessors::WaveShaper* ws = getWaveShaper(setting);
+  //ws->setParameter(setting);
+
+
+
+  int dummy = 0;
 }
 
 //=================================================================================================
