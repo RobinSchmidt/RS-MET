@@ -793,8 +793,6 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
     }
     return rsFloat64x2(0.0, 0.0); 
   }
-
-
   stream->getFrameStereo((float)sampleTime, &L, &R);  // try to avoid the conversion to float
   // -implement better interpolation methods (sinc, elephant, ...)
   // -keep sample time as combination of int and float to avoid computation of the fractional part
@@ -814,14 +812,13 @@ rsFloat64x2 rsSamplerEngine::RegionPlayer::getFrame()
   //  dummy callback that just stores the desired shift value and we read it out here
   // -apply the DSP processes
 
-
-  //rsFloat64x2
-
-  //for(size_t i = 0; i < dspChain.size(); i++)
-  //  dspChain[i]->processFrame(out);
-
   sampleTime += increment;
-  return this->amp * rsFloat64x2(L, R); 
+  rsFloat64x2 out(L, R);
+  dspChain.processFrame(out);
+  return this->amp * out;
+
+
+  //return this->amp * rsFloat64x2(L, R); 
 }
 
 void rsSamplerEngine::RegionPlayer::processBlock(rsFloat64x2* y, int N)

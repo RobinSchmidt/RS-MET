@@ -1359,6 +1359,8 @@ bool samplerFilterTest()
     tgt[n] = svf.getSample(noise[n]);
   //rsPlotVector(tgt);
 
+
+
   // Create and set up sampler engine:
   SE se;
   float *pSmp = &noise[0];
@@ -1369,24 +1371,19 @@ bool samplerFilterTest()
   se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f);
   se.setRegionSetting(0, 0, PST::FilterCutoff,    cutoff);
   se.setRegionSetting(0, 0, PST::FilterResonance, reso);
-  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
   // predictably fails! filter is not yet implemented
 
-
-
-  // ToDo - Implement filtering in rsSamplerEngine, plan:
-  // -In rsSsamplerData, correctly maintain OrganizationLevel::signalProcessors, i.e. whenever an
-  //  opcode is encountered in add/setSetting that sets a parameter of a DSP object that does not
-  //  yet exist in the array (e.g. PST::FilterCutoff when no SignalProcessorType::Filter) yet 
-  //  exists in the array), add it
+  // ToDo
+  // -Implement a 1st order lowpass. It think, we should generally use formulas that match the 
+  //  magnitude of the analog filter. I think, the algorithms by Martin Vicanek are quite nice:
+  //  use impulse-invariance for the poles and magnitude matching for the zeros. But to get the 
+  //  ball rolling, just use impulse invariance
+  // -Try to replicate the behavior of filters in sfz+ or sfizz
   // -In RegionPlayer::buildProcessingChain, inquire that array, loop through it and add DSPs to
   //  the dspChain as necessary. How to do that exactly should depend on override vs accumulate
-  //  mode setting. in override mode, we only need a dsp chain for the region, etc.
-  // -Maybe after thenDSP has been added to the chain, it should be set up directly. Doing it in
-  //  RegionPlayer::setupDspSettings would be a mess to implement. Then setupDspSettings should
-  //  be renamed to setupPlaybackSettings...but maybe that function should go away entirely..but 
-  //  maybe not...hmmm
-
+  //  mode setting. In override mode, we only need a dsp chain for the region, etc. ..But that
+  //  may be delegated to the subclass - we'll see
 
   rsAssert(ok);
   return ok;
@@ -1438,12 +1435,10 @@ bool samplerWaveShaperTest()
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
   se.setRegionSetting(0, 0, PST::DistShape, float(shape));
   se.setRegionSetting(0, 0, PST::DistDrive, drive);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
   rsAssert(ok);
-  // predictably fails! DSP stuff is not yet implemented...
   // ToDo:
-  // -set up the DSP objects in RegionPlayer::setupDspSettingsFor::setupDspSettingsFor
-  // -actually invoke the DSP objects for processing
+  // -Try different shapes, use different sets of parameters, use DC, postGain, etc.
   // Cosmetics:
   // -Maybe drag out RegionPlayer from rsSamplerEngine
   // -maybe let testSamplerNote take a plotMode parameter which can be: 0: never plot, 1: always 
@@ -1452,12 +1447,6 @@ bool samplerWaveShaperTest()
   //  -this class should have a function grabProcessor(SignalProcessorType type) that returns
   //   a pointer to a processor of the desired type or a nullptr if no such processor is available
   //   anymore...or maybe a pointer to a dummy-processor?
-
-  // -we need to update:
-  //    in class rsSamplerEngine::RegionPlayer:  
-  //      buildProcessingChain (done), resetDspState, resetDspSettings, setupDspSettingsFor
-
-
 
   // -would be nice, if we could wrap the namespace Sampler around the includes in rosic.h/cpp
   //  but for that, we first need to move all the namespace rosic stuff there, too
