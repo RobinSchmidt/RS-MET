@@ -25,21 +25,72 @@ enum SignalProcessorType
 
   Unknown
 };
+// moved into rosic_SamplerData.h
 */
+
+/** Class to represent parameters of DSP processors and modulators. */
+class Parameter
+{
+
+public:
+
+  // Lifetime:
+  //Parameter() {}  // maybe needed later to construct arrays
+  Parameter(const char* name, float defaultValue)
+  {
+    this->name         = name;
+    this->defaultValue = defaultValue;
+    this->value        = defaultValue;
+  }
+
+  // Setup:
+  void setValue(float newValue) { value = newValue; }
+  // maybe later: setName, setDefaultValue
+
+  // Inquiry:
+  const char* getName() const { return name; }
+  float getValue() const { return value; }
+  float getDefaultValue() const { return defaultValue; }
+
+
+protected:
+
+  float value        = 0.f; 
+  float defaultValue = 0.f;
+  const char* name   = "\0";  // shall be assigned to some fixed global list of strings
+
+};
 
 /** Baseclass for signal processors that can be applied to layers while they are the played back.
 Subclasses can be various kinds of filters, equalizers, waveshapers, effects, etc. */
 class SignalProcessor
 {
 public:
+
+  // Inquiry:
+  SignalProcessorType getType() { return type; }
+  virtual int getNumParameters() const { return 0; }
+  virtual const Parameter* getParameter() const { return nullptr; } // maybe relax constness later
+  // check, if that's the right form of constness - we want to disable modfifying the parameter
+  // itself but maybe reassign the pointer - yep, looks right:
+  // https://stackoverflow.com/questions/21476869/constant-pointer-vs-pointer-to-constant
+
+
+
+
+
+  // Processing:
   virtual void processFrame(rsFloat64x2& inOut) = 0;
   virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
   virtual void resetState() = 0;
   virtual void resetSettings() = 0;
 
-  SignalProcessorType getType() { return type; }
-
 protected:
+
+  // Setup:
+  virtual void addParameter(const char* name, float defaultValue); // maybe should return an integer parameter index?
+
+
 
   SignalProcessorType type = SignalProcessorType::Unknown;
   //bool busy = false;
