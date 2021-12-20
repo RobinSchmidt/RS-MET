@@ -43,28 +43,6 @@ public:
 
 
   // Lifetime:
-  /*
-  SignalProcessor()
-  {
-
-    int dummy = 0;
-  }
-  SignalProcessor(const SignalProcessor&)
-  {
-
-    int dummy = 0;
-  }
-  SignalProcessor& operator=(const SignalProcessor&)
-  {
-
-    int dummy = 0;
-  }
-  virtual ~SignalProcessor()
-  {
-
-    int dummy = 0;
-  }
-  */
 
 
 
@@ -82,6 +60,7 @@ public:
   // https://stackoverflow.com/questions/21476869/constant-pointer-vs-pointer-to-constant
 
   // Processing:
+  virtual void prepareToPlay() = 0;
   virtual void processFrame(rsFloat64x2& inOut) = 0;
   virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
   virtual void resetState() = 0;
@@ -174,7 +153,7 @@ public:
 
   void setup(Type type, float cutoff, float resonance);
   void initCoeffs();
-
+  void updateCoeffs();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -261,6 +240,31 @@ public:
     // ...etc.
   };
 
+  void setup(Shape shape, float preGain, float dcOffset, float postGain, float shapePar1,
+    float shapePar2)
+  {
+    this->shape     = shape;
+    this->preGain   = preGain;
+    this->dcOffset  = dcOffset;
+    this->postGain  = postGain;
+    this->shapePar1 = shapePar1;
+    this->shapePar2 = shapePar2;
+  }
+
+  void processFrame(rsFloat64x2& inOut) 
+  {
+    float L = (float) inOut[0];
+    float R = (float) inOut[1];
+    L = postGain * tanh(preGain * L + dcOffset);
+    R = postGain * tanh(preGain * R + dcOffset);
+    inOut[0] = L;
+    inOut[1] = R;
+  }
+  // under construction - optimize this!
+  // -include a switch based on shape
+  // -use a branchless tanh approximation directly operating on rsFloat64x2
+  // -maybe switch to rsFloat32x4 for audio-samples...but maybe that's not advantageous
+  // -implement a buffer-based variant
 
 protected:
 
@@ -270,7 +274,6 @@ protected:
 
   // what about oversampling..but maybe that should be reserved to an advanced variant? or maybe
   // that should apply to a region as a whole?
-
 };
 
 //=================================================================================================
@@ -299,6 +302,21 @@ public:
       // instead of std::vector...hmm...but the number varies between the subclasses, so the array
       // could not be a baseclass member then...hmm...
     }
+    void prepareToPlay() override 
+    { 
+      using TypeCore   = rsSamplerFilter::Type; // enum used in the DSP core
+      using TypeOpcode = FilterType;            // enum used in the sfz opcode
+      TypeCore type = TypeCore::Lowpass_6;      // preliminary
+      core.setup(
+        type, 
+        params[1].getValue(),                   // maybe *2*PI/sampleRate?
+        params[2].getValue());
+    }
+    // ToDo:
+    // -try to avoid the translation step between the core-enum and sfz-enum - use a single
+    //  enum for both
+    // -not ideal that this code depends on the order, how we add the params in the constructor
+
     void processFrame(rsFloat64x2& inOut) override {}
     void processBlock(rsFloat64x2* inOut, int N) override {}
     void resetState() override { core.resetState(); }
@@ -323,7 +341,15 @@ public:
       addParameter(Opcode::DistShape);
       addParameter(Opcode::DistDrive);
     }
-    void processFrame(rsFloat64x2& inOut) override {}
+    void prepareToPlay() override
+    {
+      using ShapeCore = rsSamplerWaveShaper::Shape;
+      // using ShapeOpcode ...
+      ShapeCore shape = ShapeCore::Tanh;      // preliminary
+      core.setup(shape, params[1].getValue(), 0.f, 1.f, 0.f, 0.f);
+      int dummy = 0;
+    }
+    void processFrame(rsFloat64x2& inOut) override { core.processFrame(inOut); }
     void processBlock(rsFloat64x2* inOut, int N) override {}
     void resetState() override {}
     void resetSettings() override {}
@@ -371,6 +397,13 @@ public:
   object lives, but the error detection may be useful. */
   int repositItem(T* item);
 
+  /** Like repositItem(T*) but accepts also pointers that were not declared as pointing to T. 
+  This version is needed when the client uses a pointer to a baseclass of T. */
+  int repositItem(void* item) { return repositItem((T*)item); }
+  // todo: maybe templalize it on some type B and make an assertion that B is baseclass of T, if 
+  // that is possible. That would be a bit more restrictive than accepting void and perhaps
+  // catch more errors at compile time
+
 
   int getNumItems() const { return numUsed + numIdle; }
 
@@ -413,7 +446,7 @@ protected:
 template<class T>
 void rsObjectPool<T>::init(int numItems)
 {
-  rsAssert(numUsed == 0 && isInConsistentState());
+  RAPT::rsAssert(numUsed == 0 && isInConsistentState());
   items.resize(numItems);
   used.resize(numItems);  // will be initialized to zero (that's important!)
   numUsed = 0;
@@ -436,11 +469,11 @@ template<class T>
 int rsObjectPool<T>::repositItem(T* item)
 {
   for(size_t i = 0; i < items.size(); i++) {
-    if(item == items[i]) {
+    if(item == &(items[i]) ) {
       used[i] = 0;
       numUsed--;
       numIdle++;
-      return i; }}
+      return (int)i; }}
   return -1;
 }
 // -grab/reposit have currently linear complexity in the number of stored items. ToDo: try to 
@@ -453,7 +486,7 @@ bool rsObjectPool<T>::isInConsistentState()
   bool ok = items.size() == used.size();
   int count = 0;
   for(const auto& it : used) {
-    if( *it != 0 )
+    if( it != 0 )
       count++; }
   ok &= count == numUsed;
   ok &= numIdle == (int) used.size() - numUsed;
@@ -503,9 +536,11 @@ protected:
 
   using SP = rsSamplerProcessors;
 
+  rsObjectPool<SP::Filter>     filters;
+  rsObjectPool<SP::WaveShaper> waveShapers;
 
-  std::vector<SP::Filter>     filters;
-  std::vector<SP::WaveShaper> waveShapers;
+  //std::vector<SP::Filter>     filters;
+  //std::vector<SP::WaveShaper> waveShapers;
   // todo: use rsObjectPool instead of std::vector
 
 };

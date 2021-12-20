@@ -894,6 +894,11 @@ rsReturnCode rsSamplerEngine::RegionPlayer::prepareToPlay(
   setupDspSettingsFor(region, fs, groupSettingsOverride, regionSettingsOverride);
   // todo: move fs before the override parameters for consistency
 
+  // todo: setup modulators and modulation connections
+
+  dspChain.prepareToPlay();
+  // modulators.prepareToPlay()
+
   return rsReturnCode::success;
   // Overload should actually not happen in therory (as by the sfz spec, and unlimited number of 
   // layers is available), but in practice, it may happen in extreme situations like triggering a

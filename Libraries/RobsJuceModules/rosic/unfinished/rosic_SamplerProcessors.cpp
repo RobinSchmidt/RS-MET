@@ -12,10 +12,9 @@ void SignalProcessor::setParameter(Opcode opcode, float value)
   for(i = 0; i < params.size(); i++) {
     if(params[i].getOpcode() == opcode) {
       params[i].setValue(value);
-      break; }}
-  RAPT::rsAssert(i < params.size(), "Parameter not found in DSP");
+      return; }}
+  RAPT::rsError("Parameter not found in DSP");
 }
-
 
 //=================================================================================================
 
@@ -26,12 +25,12 @@ void rsSamplerFilter::setup(rsSamplerFilter::Type type, float cutoff, float reso
 
 void rsSamplerFilter::initCoeffs()
 {
-  /*
-  switch(type) // use switch type.topology
-  {
 
-  }
-  */
+}
+
+void rsSamplerFilter::updateCoeffs()
+{
+
 }
 
 void rsSamplerFilter::processFrame(float& L, float& R)
@@ -43,6 +42,12 @@ void rsSamplerFilter::resetState()
 {
 
 }
+
+//-------------------------------------------------------------------------------------------------
+
+
+
+
 
 //=================================================================================================
 
@@ -62,9 +67,12 @@ SignalProcessorPool::~SignalProcessorPool()
 
 void SignalProcessorPool::allocateProcessors()
 {
+  filters.init(4);
+  waveShapers.init(4);
+
                           // Debug  Release  ...these values make sense for development
-  waveShapers.resize(4);  //   4      64
-  filters.resize(8);      //   8     128
+  //waveShapers.resize(4);  //   4      64
+  //filters.resize(8);      //   8     128
   // These numbers are preliminary. We need to do something more sensible here later. Perhaps, this 
   // function should be called when a new sfz is loaded and it should have arguments for how many
   // objects of each type are needed. The engine should analyze, how many filters, waveshapers, 
@@ -77,7 +85,7 @@ void SignalProcessorPool::allocateProcessors()
 }
 
 
-
+/*
 template<class T> // Grow v by given amount
 inline void rsGrow(std::vector<T>& v, size_t amount = 1)
 {
@@ -104,6 +112,7 @@ inline T* rsGetLastPtrAndShrink(std::vector<T>& v)
   rsShrink(v);
   return p;
 }
+*/
 // maybe move to rapt
 
 SignalProcessor* SignalProcessorPool::grabProcessor(SignalProcessorType type)
@@ -112,24 +121,22 @@ SignalProcessor* SignalProcessorPool::grabProcessor(SignalProcessorType type)
   SignalProcessor* p = nullptr;
   switch(type)
   {
-  case SPT::Filter:     p = rsGetLastPtrAndShrink(filters);     break;
-  case SPT::WaveShaper: p = rsGetLastPtrAndShrink(waveShapers); break;
+  case SPT::Filter:     p = filters.grabItem();     break;
+  case SPT::WaveShaper: p = waveShapers.grabItem(); break;
   };
   return p;
-  // I think, the shrinking of the vector calls the destructor of the DSP which in turn removes
-  // all its parameters. We need a way to avoid that. Maybe use a custom array based on std::vector
-  // which can have 3 sizes: capacity, fillSize, freeSize. Maybe call it rsObjectPool with methods
-  // grab/reposit ...also init(int size)
 }
 
 void SignalProcessorPool::repositProcessor(SignalProcessor* p)
 {
   using SPT = SignalProcessorType;
+  int i = -1;
   switch(p->getType())
   {
-  case SPT::Filter:     rsGrow(filters);     break;
-  case SPT::WaveShaper: rsGrow(waveShapers); break;
+  case SPT::Filter:     i = filters.repositItem(p);     break;
+  case SPT::WaveShaper: i = waveShapers.repositItem(p); break;
   }
+  RAPT::rsAssert(i != -1, "Reposited processor was not in pool");
 }
 
 

@@ -364,8 +364,10 @@ protected:
   class SignalProcessorChain
   {
   public:
+
     void processFrame(rsFloat64x2& inOut);
     void processBlock(rsFloat64x2* inOut, int N);
+    void prepareToPlay() { for(auto & p : processors) p->prepareToPlay(); }
     void resetState()    { for(auto & p : processors) p->resetState();    }
     void resetSettings() { for(auto & p : processors) p->resetSettings(); }
     void reset() { resetState(); resetSettings(); }
