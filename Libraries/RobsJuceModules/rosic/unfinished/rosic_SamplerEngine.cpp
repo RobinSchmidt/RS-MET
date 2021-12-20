@@ -1152,8 +1152,9 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 void rsSamplerEngine::RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
   using SD = rsSamplerData::PlaybackSetting;
-
-
+  // ToDo: We need to call the static member function getTargetProcessorType of that class. That
+  // function should be moved elsewhere. We want a sort of database to retrieve all sort of info
+  // about opcodes, including to what type of processor they apply
 
   // Internal helper function to retrieve a pointer to the proccessor within our dspChain to which 
   // the setting applies. It may at some point be dragged out of this function if it turns out to 
@@ -1165,22 +1166,14 @@ void rsSamplerEngine::RegionPlayer::setupProcessorSetting(const PlaybackSetting&
     return dsp;
   };
 
-
   SignalProcessor* dsp = getProcessorFor(s);
   if(dsp != nullptr)
-  {
-    //dsp->setParameter(s.getType(), s.getValue());
-    int dummy = 0;
-  }
+    dsp->setParameter(s.getType(), s.getValue());
   else
-  {
     RAPT::rsError("No processor available for DSP opcode");
     // We could not find a suitable processor in our dspChain to which the given setting could be
     // applied. If this happens, something went wrong (i.e. we have a bug) in buildDspChain or 
     // getProcessorFor.
-  }
-
-  int dummy = 0;
 }
 
 //=================================================================================================

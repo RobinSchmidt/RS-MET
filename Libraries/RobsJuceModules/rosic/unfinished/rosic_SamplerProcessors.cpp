@@ -1,13 +1,19 @@
 namespace rosic {
 namespace Sampler {
 
-
-
 void SignalProcessor::addParameter(Opcode opcode)
 {
+  params.push_back(Parameter(opcode));
+}
 
-
-  int dummy = 0;
+void SignalProcessor::setParameter(Opcode opcode, float value)
+{
+  size_t i = 0;
+  for(i = 0; i < params.size(); i++) {
+    if(params[i].getOpcode() == opcode) {
+      params[i].setValue(value);
+      break; }}
+  RAPT::rsAssert(i < params.size(), "Parameter not found in DSP");
 }
 
 
@@ -38,10 +44,7 @@ void rsSamplerFilter::resetState()
 
 }
 
-
-
 //=================================================================================================
-
 
 
 //=================================================================================================
@@ -60,8 +63,8 @@ SignalProcessorPool::~SignalProcessorPool()
 void SignalProcessorPool::allocateProcessors()
 {
                           // Debug  Release  ...these values make sense for development
-  filters.resize(8);      //   8     128
   waveShapers.resize(4);  //   4      64
+  filters.resize(8);      //   8     128
   // These numbers are preliminary. We need to do something more sensible here later. Perhaps, this 
   // function should be called when a new sfz is loaded and it should have arguments for how many
   // objects of each type are needed. The engine should analyze, how many filters, waveshapers, 
@@ -113,6 +116,10 @@ SignalProcessor* SignalProcessorPool::grabProcessor(SignalProcessorType type)
   case SPT::WaveShaper: p = rsGetLastPtrAndShrink(waveShapers); break;
   };
   return p;
+  // I think, the shrinking of the vector calls the destructor of the DSP which in turn removes
+  // all its parameters. We need a way to avoid that. Maybe use a custom array based on std::vector
+  // which can have 3 sizes: capacity, fillSize, freeSize. Maybe call it rsObjectPool with methods
+  // grab/reposit ...also init(int size)
 }
 
 void SignalProcessorPool::repositProcessor(SignalProcessor* p)

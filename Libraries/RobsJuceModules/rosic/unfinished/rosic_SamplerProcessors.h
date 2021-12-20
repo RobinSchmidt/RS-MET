@@ -22,7 +22,6 @@ public:
 
   // Setup:
   void setValue(float newValue) { value = newValue; }
-  // maybe later: setName, setDefaultValue
 
   // Inquiry:
   //const char* getName() const { return name; }
@@ -30,24 +29,10 @@ public:
   float getValue() const { return value; }
   //float getDefaultValue() const { return defaultValue; }
 
-
 protected:
 
-  float value        = 0.f; 
   Opcode opcode = Opcode::Unknown;
-  // What about min/max and mapping? actually, we do not need to store these as members. Instead,
-  // by knowing the opcode, we can figure these things out. We could have global tables somwhere 
-  // that store min/max/default for each opcode, to be used like:
-  //   defaultValue = OpcodeDefaultValues[opcode]
-  // or somthing like that
-
-  //const char* name   = "\0";  // shall be assigned to some fixed global list of strings
-  // maybe do not have that member - use opcode instead
-
-
-
-
-
+  float value = 0.f; 
 };
 
 /** Baseclass for signal processors that can be applied to layers while they are the played back.
@@ -56,17 +41,45 @@ class SignalProcessor
 {
 public:
 
+
+  // Lifetime:
+  /*
+  SignalProcessor()
+  {
+
+    int dummy = 0;
+  }
+  SignalProcessor(const SignalProcessor&)
+  {
+
+    int dummy = 0;
+  }
+  SignalProcessor& operator=(const SignalProcessor&)
+  {
+
+    int dummy = 0;
+  }
+  virtual ~SignalProcessor()
+  {
+
+    int dummy = 0;
+  }
+  */
+
+
+
+  // Setup:
+  void addParameter(Opcode opcode); // maybe should return an integer parameter index?
+  void setParameter(Opcode opcode, float value);
+
   // Inquiry:
   SignalProcessorType getType() { return type; }
-  virtual int getNumParameters() const { return 0; }
-  virtual const Parameter* getParameter() const { return nullptr; } // maybe relax constness later
+  int getNumParameters() const { return (int) params.size(); }
+
+  //virtual const Parameter* getParameter() const { return nullptr; } // maybe relax constness later
   // check, if that's the right form of constness - we want to disable modfifying the parameter
   // itself but maybe reassign the pointer - yep, looks right:
   // https://stackoverflow.com/questions/21476869/constant-pointer-vs-pointer-to-constant
-
-
-
-
 
   // Processing:
   virtual void processFrame(rsFloat64x2& inOut) = 0;
@@ -76,13 +89,21 @@ public:
 
 protected:
 
-  // Setup:
-  virtual void addParameter(Opcode opcode); // maybe should return an integer parameter index?
-
-
-
   SignalProcessorType type = SignalProcessorType::Unknown;
-  //bool busy = false;
+  std::vector<Parameter> params;
+
+  
+//private:  // doesn't compile because subclasses complain...hmm...
+  
+  /*
+  // make uncopyable:
+  SignalProcessor() = default;
+  SignalProcessor(const SignalProcessor&) = delete;
+  SignalProcessor & operator=(const SignalProcessor&) = delete;
+  */
+
+  // ToDo: define a macro for that, see:
+  // https://stackoverflow.com/questions/2173746/how-do-i-make-this-c-object-non-copyable
 };
 
 /** Baseclass for modulators that can be applied to parameters of signal processors. Subclasses
@@ -269,9 +290,14 @@ public:
     Filter() 
     { 
       type = SignalProcessorType::Filter;
+      params.reserve(3);
       addParameter(Opcode::FilterType);
       addParameter(Opcode::FilterCutoff);
       addParameter(Opcode::FilterResonance);
+      // Having to pass a magic number to reserve() is bad and error-prone -> try to find a better
+      // way. The number of parameters is actually known at compile time. Maybe use std::array 
+      // instead of std::vector...hmm...but the number varies between the subclasses, so the array
+      // could not be a baseclass member then...hmm...
     }
     void processFrame(rsFloat64x2& inOut) override {}
     void processBlock(rsFloat64x2* inOut, int N) override {}
@@ -293,6 +319,7 @@ public:
     WaveShaper() 
     { 
       type = SignalProcessorType::WaveShaper; 
+      params.reserve(2);
       addParameter(Opcode::DistShape);
       addParameter(Opcode::DistDrive);
     }
@@ -316,6 +343,122 @@ public:
 
 };
 
+//=================================================================================================
+
+/** Implements a pool of objects from which items can be grabbed and later returned. To "grab" an
+item means to retrieve a pointer to it using grabItem(). The caller can then use the item fro as 
+long as it needs it and when it is finished, it returns the item into the pool by calling
+repositItem(T*) with the pointer. This will make the item available again such that it may be 
+handed out again to other clients (or to the same client again). */
+
+template<class T>
+class rsObjectPool
+{
+
+public:
+
+  /** Initializes the pool by allocating the given number of items. */
+  void init(int numItems);
+
+  /** Returns a pointer to an item or a nullptr if no items are available anymore. */
+  T* grabItem();
+
+  /** Reposits an item into the pool such that it becomes available again. Returns the index in 
+  our array where the item is located or -1, if the item could not be found. The latter condition
+  indicates an error in the client code: you may have tried to return an item that you did 
+  previously grabbed from the pool or you may have re-alloacted the pool while there were still
+  items  in use from the old one. Typically, it is irrelevant for the client, at which index the
+  object lives, but the error detection may be useful. */
+  int repositItem(T* item);
+
+
+  int getNumItems() const { return numUsed + numIdle; }
+
+  int getNumUsedItems() const { return numUsed; }
+
+  int getNumIdleItems() const { return numIdle; }
+  
+
+
+  /** Checks, if the class invariants are satisfied. */
+  bool isInConsistentState();
+
+
+protected:
+
+  std::vector<T> items; 
+  /**< Array of the actual items. */
+
+  std::vector<char> used;  
+  /**< Parallel array of flags indicating, if item[i] is currently used by anyone. If 0 (false),
+  the item is avaible and can be handed out. If true, it can't **/
+
+  int numUsed = 0;  /**< Number of used items */
+  int numIdle = 0;  /**< Number of items available for handing out. */
+
+};
+// todo: 
+// -move to rapt
+// -write unit tests
+// -maybe switch std::vector to rsRetainedArray
+// -in this implementation, the items are assumed to be indsitigu
+// -maybe don't use a std::vector for the items but rather a raw pointer
+// -maybe introduce another level on indirection to enable grab/reposit in constant or at least
+//  log(N) time: always grab objects from the end of a list of available objects, when objects
+//  are reposited, they are appended to the end...hmm...i have to think about it some more - we 
+//  want to avoid having to iterate through the whole used[] array to find an idle item and we also
+//  want to avoid iterating through the list on reposit to find the location where we need to set
+//  the used flag back to false
+
+template<class T>
+void rsObjectPool<T>::init(int numItems)
+{
+  rsAssert(numUsed == 0 && isInConsistentState());
+  items.resize(numItems);
+  used.resize(numItems);  // will be initialized to zero (that's important!)
+  numUsed = 0;
+  numIdle = (int) used.size();
+}
+
+template<class T>
+T* rsObjectPool<T>::grabItem()
+{
+  for(size_t i = 0; i < used.size(); i++) {
+    if(!used[i]) {
+      used[i] = 1;
+      numUsed++;
+      numIdle--;
+      return &(items[i]); }}
+  return nullptr;
+}
+
+template<class T>
+int rsObjectPool<T>::repositItem(T* item)
+{
+  for(size_t i = 0; i < items.size(); i++) {
+    if(item == items[i]) {
+      used[i] = 0;
+      numUsed--;
+      numIdle++;
+      return i; }}
+  return -1;
+}
+// -grab/reposit have currently linear complexity in the number of stored items. ToDo: try to 
+//  reduce it to log or even const - keep this class then as prototype
+// -maybe use range-based loops to later make the switch to rsRetainedArray easier
+
+template<class T>
+bool rsObjectPool<T>::isInConsistentState()
+{
+  bool ok = items.size() == used.size();
+  int count = 0;
+  for(const auto& it : used) {
+    if( *it != 0 )
+      count++; }
+  ok &= count == numUsed;
+  ok &= numIdle == (int) used.size() - numUsed;
+  return ok;
+}
 
 
 //=================================================================================================
@@ -359,8 +502,11 @@ public:
 protected:
 
   using SP = rsSamplerProcessors;
+
+
   std::vector<SP::Filter>     filters;
   std::vector<SP::WaveShaper> waveShapers;
+  // todo: use rsObjectPool instead of std::vector
 
 };
 // Maybe templatize, rename funcs to generic grabItem, repositItem. But maybe not - maybe we don't
