@@ -59,6 +59,14 @@ protected:
   float defaultValue = 0.f;
   const char* name   = "\0";  // shall be assigned to some fixed global list of strings
 
+
+  int   opcode = rsSamplerData::PlaybackSetting::Type::Unknown;
+  // todo: move PlaybackSetting::Type out of rsSamplerData, maybe rename to Opcode
+
+
+
+  // what about min/max and mapping?
+
 };
 
 /** Baseclass for signal processors that can be applied to layers while they are the played back.
@@ -277,7 +285,16 @@ public:
 
   public:
 
-    Filter() { type = SignalProcessorType::Filter; }
+    Filter() 
+    { 
+      type = SignalProcessorType::Filter;
+      addParameter("Cutoff",    1000.f);
+      addParameter("Resonance", 0.f);
+      // Maybe we should use sfz opcode names here and also use the ranges and default values
+      // defined there. Maybe we should somewhere have a global enum with opcode identifiers, then
+      // a table with their names, etc.
+    }
+
     void processFrame(rsFloat64x2& inOut) override {}
     void processBlock(rsFloat64x2* inOut, int N) override {}
     void resetState() override { core.resetState(); }

@@ -29,9 +29,6 @@ enum rsReturnCode
 // -maybe move it out of the Sampler sub-namespace - it may be more generally useful
 // -other possibly useful codes: unavailable, denied
 
-
-//class SignalProcessorType;
-
 //=================================================================================================
 
 /** Enumeration of the different signal processor types that may be used in the definition of
@@ -52,6 +49,8 @@ enum SignalProcessorType
 
   Unknown
 };
+
+
 
 
 

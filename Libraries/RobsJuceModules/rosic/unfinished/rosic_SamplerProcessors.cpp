@@ -1,6 +1,16 @@
 namespace rosic {
 namespace Sampler {
 
+
+
+void SignalProcessor::addParameter(const char* name, float defaultValue)
+{
+
+
+  int dummy = 0;
+}
+
+
 //=================================================================================================
 
 void rsSamplerFilter::setup(rsSamplerFilter::Type type, float cutoff, float resonance)
@@ -90,7 +100,6 @@ inline T* rsGetLastPtrAndShrink(std::vector<T>& v)
   rsShrink(v);
   return p;
 }
-
 // maybe move to rapt
 
 SignalProcessor* SignalProcessorPool::grabProcessor(SignalProcessorType type)
