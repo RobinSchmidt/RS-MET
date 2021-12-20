@@ -735,6 +735,21 @@ void rsSamplerEngine::SignalProcessorChain::processFrame(rsFloat64x2& inOut)
     processors[i]->processFrame(inOut);
 }
 
+SignalProcessor* rsSamplerEngine::SignalProcessorChain::getProcessor(
+  SignalProcessorType type, int index)
+{
+  int count = 0;  // counts, how many DSPs of given type we have iterated over
+  for(int i = 0; i < (int) processors.size(); i++) {
+    SignalProcessor* dsp = getProcessor(i);
+    if(dsp->getType() == type) {
+      if(count == index)
+        return dsp;
+      else
+        count++;   }}
+  return nullptr;
+}
+
+
 /*
 void rsSamplerEngine::SignalProcessorChain::resetState()
 {
@@ -1136,19 +1151,17 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
 void rsSamplerEngine::RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
+  using SD = rsSamplerData::PlaybackSetting;
+
+
 
   // Internal helper function to retrieve a pointer to the proccessor within our dspChain to which 
   // the setting applies. It may at some point be dragged out of this function if it turns out to 
   // be useful in other places as well:
-  auto getProcessorFor = [](const PlaybackSetting& s)
+  auto getProcessorFor = [this](const PlaybackSetting& s)
   {
-    SignalProcessor* dsp = nullptr;
-
-    // ToDo:
-    // -Scan the dspChain for a suitable processor and assign the pointer accordingly.
-    // -This should take into account the index field of the setting s so we may have several 
-    //  processors of the same kind in our chain.
-  
+    SignalProcessorType dspType = SD::getTargetProcessorType(s.getType());
+    SignalProcessor* dsp = dspChain.getProcessor(dspType, RAPT::rsMax(s.getIndex(), 0));
     return dsp;
   };
 
@@ -1157,6 +1170,7 @@ void rsSamplerEngine::RegionPlayer::setupProcessorSetting(const PlaybackSetting&
   if(dsp != nullptr)
   {
     //dsp->setParameter(s.getType(), s.getValue());
+    int dummy = 0;
   }
   else
   {

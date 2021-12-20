@@ -192,6 +192,7 @@ public:
     opcode applies, e.g. SignalProcessorType::Filter for Type::FilterCutoff. */
     static SignalProcessorType getTargetProcessorType(Opcode type);
 
+
     bool operator==(const PlaybackSetting& rhs) const
     {
       return type == rhs.type && value == rhs.value && index == rhs.index;

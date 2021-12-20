@@ -77,6 +77,17 @@ SignalProcessorType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcod
   RAPT::rsError("Unknown type of PlaybackSetting, i.e. unknown sfz opcode.");
   return SP::Unknown;
 }
+// This function should be dragged out of the class. It would be most convenient to have some 
+// sort global or singleton object from which such information about the various relationships
+// between opcode enum indices, their sfz strings, their associated signal processors, etc. can 
+// be retrieved. Something like SfzOpcodeInfo with members like getProcessorForOpcode, 
+// getStringForOpcode, getOpcodeForString, getOpcodesForProcessor. etc. It would act as a kind 
+// of globally available database and could implement efficient mappings. Mapping opcode indices
+// to anything should always be doable in O(1), Mapping opcode sfz-strings to indices may be 
+// doable O(log(N)) where n is the number of opcodes, if we also store an alphabetically sorted
+// list, etc. ...but these are implementation details. The class should document the complexity
+// of each such mapping operation. Mapping the strings to indces could perhaps even be done by 
+// a std::map to get O(1) on average - we'll see....
 
 //-------------------------------------------------------------------------------------------------
 

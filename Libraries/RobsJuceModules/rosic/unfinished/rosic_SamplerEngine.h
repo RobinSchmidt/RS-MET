@@ -377,6 +377,12 @@ protected:
     bool isEmpty() const { return processors.empty(); }
     size_t getNumProcessors() const { return processors.size(); }
     SignalProcessor* getProcessor(int i) { return processors[i]; }
+
+    /** Returns the index-th processor of the given type within the chain or nullptr, if there are
+    not enough (i.e. less than i+1, counting starts at zero) processors of the given type in the 
+    chain. To get the 3rd filter, you would pass type = SignalProcessorType::Filter, index = 2.  */
+    SignalProcessor* getProcessor(SignalProcessorType type, int index);
+
   protected:
     std::vector<SignalProcessor*> processors;
   };
