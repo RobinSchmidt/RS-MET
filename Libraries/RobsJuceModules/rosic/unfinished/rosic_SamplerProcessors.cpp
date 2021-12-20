@@ -21,22 +21,20 @@ void SignalProcessor::setParameter(Opcode opcode, float value)
 void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
 {
   this->type = type;
-
   using P1Z1 = RAPT::rsOnePoleFilter<float, float>;
 
   switch(type)
   {
-  case Type::Lowpass_6:
-  {
-    P1Z1::coeffsLowpassIIT(w, &vars.p1z1.b0, &vars.p1z1.b1, &vars.p1z1.a1);
-  } break;
-
+  case Type::Lowpass_6: P1Z1::coeffsLowpassIIT(w, &vars.p1z1.b0, &vars.p1z1.b1, &vars.p1z1.a1); break;
   }
 
-
-  int dummy = 0;
+  // ToDo:
+  // -Organize the Type enum in such a way that we can retrieve the filter topology from it via 
+  //  bitmasking such that we do not need a branch for every type but only one for every topology.
+  //  This will reduce the boilerplate a lot.
 }
 
+/*
 void rsSamplerFilter::initCoeffs()
 {
 
@@ -46,6 +44,7 @@ void rsSamplerFilter::updateCoeffs()
 {
 
 }
+*/
 
 void rsSamplerFilter::processFrame(float& L, float& R)
 {
@@ -61,28 +60,15 @@ void rsSamplerFilter::processFrame(float& L, float& R)
 
   // ...later, we want to use a simd type and retrieve the elements like so:
   //L = io[0]; R = io[1];
-
-
-  int dummy = 0;
 }
 
 void rsSamplerFilter::resetState()
 {
   switch(type)
   {
-  case Type::Lowpass_6: { vars.p1z1.resetState(); } break;
+  case Type::Lowpass_6: vars.p1z1.resetState(); break;
   }
-  int dummy = 0;
 }
-
-//-------------------------------------------------------------------------------------------------
-
-
-
-
-
-//=================================================================================================
-
 
 //=================================================================================================
 

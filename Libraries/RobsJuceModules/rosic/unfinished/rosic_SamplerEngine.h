@@ -368,9 +368,9 @@ protected:
     void processFrame(rsFloat64x2& inOut);
     void processBlock(rsFloat64x2* inOut, int N);
     void prepareToPlay(double fs) { for(auto & p : processors) p->prepareToPlay(fs); }
-    void resetState()    { for(auto & p : processors) p->resetState();    }
-    void resetSettings() { for(auto & p : processors) p->resetSettings(); }
-    void reset() { resetState(); resetSettings(); }
+    //void resetState()    { for(auto & p : processors) p->resetState();    }
+    //void resetSettings() { for(auto & p : processors) p->resetSettings(); }
+    //void reset() { resetState(); resetSettings(); }
 
     void reserve(size_t num) { processors.reserve(num); }
     void addProcessor(SignalProcessor* p) { processors.push_back(p); }
@@ -475,7 +475,7 @@ protected:
     bool setupModulations();
 
     //void resetDspState();
-    void resetDspSettings();
+    void resetDspSettings();  // rename to resetPlaybackSettings
     void setupDspSettingsFor(const Region* r, double sampleRate, bool groupSettingsOverride,
       bool regionSettingsOverride);
     void setupDspSettings(const std::vector<PlaybackSetting>& settings,

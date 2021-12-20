@@ -41,10 +41,7 @@ class SignalProcessor
 {
 public:
 
-
   // Lifetime:
-
-
 
   // Setup:
   void addParameter(Opcode opcode); // maybe should return an integer parameter index?
@@ -64,8 +61,8 @@ public:
   virtual void processFrame(rsFloat64x2& inOut) = 0;
   virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
 
-  virtual void resetState() = 0;    // maybe remove
-  virtual void resetSettings() = 0; // ditto
+  //virtual void resetState() = 0;    // maybe remove
+  //virtual void resetSettings() = 0; // ditto
 
 protected:
 
@@ -81,7 +78,6 @@ protected:
   SignalProcessor(const SignalProcessor&) = delete;
   SignalProcessor & operator=(const SignalProcessor&) = delete;
   */
-
   // ToDo: define a macro for that, see:
   // https://stackoverflow.com/questions/2173746/how-do-i-make-this-c-object-non-copyable
 };
@@ -153,8 +149,8 @@ public:
 
 
   void setup(Type type, float cutoff, float resonance);
-  void initCoeffs();
-  void updateCoeffs();
+  //void initCoeffs();
+  //void updateCoeffs();
 
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
@@ -326,7 +322,7 @@ public:
         type, 
         params[1].getValue() * float(2*PI/fs),
         params[2].getValue());
-      resetState();
+      core.resetState();
     }
     // ToDo:
     // -try to avoid the translation step between the core-enum and sfz-enum - use a single
@@ -345,8 +341,10 @@ public:
       inOut[1] = R;
     }
     void processBlock(rsFloat64x2* inOut, int N) override {}
-    void resetState() override { core.resetState(); }
-    void resetSettings() override { core.initCoeffs(); }
+
+
+    //void resetState() override { core.resetState(); }
+    //void resetSettings() override { core.initCoeffs(); }
 
   protected:
 
@@ -377,8 +375,8 @@ public:
     }
     void processFrame(rsFloat64x2& inOut) override { core.processFrame(inOut); }
     void processBlock(rsFloat64x2* inOut, int N) override {}
-    void resetState() override {}
-    void resetSettings() override {}
+    //void resetState() override {}
+    //void resetSettings() override {}
 
   protected:
 

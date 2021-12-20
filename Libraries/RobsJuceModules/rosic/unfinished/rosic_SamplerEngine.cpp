@@ -983,6 +983,8 @@ bool rsSamplerEngine::RegionPlayer::setupModulations()
 
 void rsSamplerEngine::RegionPlayer::resetDspSettings()
 {
+  // rename to resetPlayerSettings
+
   // Initialize all values and DSP objects to default values (maybe factor out):
   amp        = 1.0;
   sampleTime = 0.0;
@@ -1000,9 +1002,10 @@ void rsSamplerEngine::RegionPlayer::resetDspSettings()
   loopEnd    = 0.f;
   loopMode   = 0;
 
-  dspChain.resetSettings();
-  for(size_t i = 0; i < modulators.size(); i++)
-    modulators[i]->resetSettings();
+  // This is obsolete - they do the reset now in prepareToPlay
+  //dspChain.resetSettings();
+  //for(size_t i = 0; i < modulators.size(); i++)
+  //  modulators[i]->resetSettings();
 
   // ToDo: maybe reset all modulation connections?
 }
