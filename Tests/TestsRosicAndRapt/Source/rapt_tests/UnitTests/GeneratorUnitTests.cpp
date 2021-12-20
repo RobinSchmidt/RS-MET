@@ -1446,7 +1446,7 @@ bool samplerWaveShaperTest()
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
   se.setRegionSetting(0, 0, PST::DistShape, float(shape));
   se.setRegionSetting(0, 0, PST::DistDrive, drive);
-  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
   rsAssert(ok);
   // ToDo:
   // -Try different shapes, use different sets of parameters, use DC, postGain, etc.

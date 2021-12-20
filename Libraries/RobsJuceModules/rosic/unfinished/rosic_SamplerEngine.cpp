@@ -886,15 +886,14 @@ rsReturnCode rsSamplerEngine::RegionPlayer::prepareToPlay(
   if(!setupModulations()) {
     releaseDspObjects();
     return rsReturnCode::layerOverload; }
-  //resetDspState();     // Needs to be done after building the chain - deprecated
-  resetDspSettings();  // Reset all DSP settings to default values
+  resetPlayerSettings(); 
   setupDspSettingsFor(region, fs, groupSettingsOverride, regionSettingsOverride);
   // todo: move fs before the override parameters for consistency
 
   // todo: setup modulators and modulation connections
 
   dspChain.prepareToPlay(fs);
-  // modulators.prepareToPlay()
+  // modulators.prepareToPlay(fs)
 
   // ToDo:
   // -resetDspState should reset only the state of the sample-player and be renamed accordingly
@@ -929,16 +928,6 @@ bool rsSamplerEngine::RegionPlayer::hasFinished()
 
   return false;
 }
-
-/*
-void rsSamplerEngine::RegionPlayer::resetDspState()
-{
-  dspChain.resetState();
-  for(size_t i = 0; i < modulators.size(); i++)
-    modulators[i]->resetState();
-}
-// deprecated - this should happen in prepareToPlay, if necessary
-*/
 
 SignalProcessor* rsSamplerEngine::RegionPlayer::getProcessor(SignalProcessorType type)
 {
@@ -981,10 +970,8 @@ bool rsSamplerEngine::RegionPlayer::setupModulations()
   return true;
 }
 
-void rsSamplerEngine::RegionPlayer::resetDspSettings()
+void rsSamplerEngine::RegionPlayer::resetPlayerSettings()
 {
-  // rename to resetPlayerSettings
-
   // Initialize all values and DSP objects to default values (maybe factor out):
   amp        = 1.0;
   sampleTime = 0.0;
@@ -1001,13 +988,6 @@ void rsSamplerEngine::RegionPlayer::resetDspSettings()
   loopStart  = 0.f;
   loopEnd    = 0.f;
   loopMode   = 0;
-
-  // This is obsolete - they do the reset now in prepareToPlay
-  //dspChain.resetSettings();
-  //for(size_t i = 0; i < modulators.size(); i++)
-  //  modulators[i]->resetSettings();
-
-  // ToDo: maybe reset all modulation connections?
 }
 
 void rsSamplerEngine::RegionPlayer::setupDspSettingsFor(

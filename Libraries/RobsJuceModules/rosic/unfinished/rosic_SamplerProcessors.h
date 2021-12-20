@@ -24,10 +24,8 @@ public:
   void setValue(float newValue) { value = newValue; }
 
   // Inquiry:
-  //const char* getName() const { return name; }
   Opcode getOpcode() const { return opcode; }
   float getValue() const { return value; }
-  //float getDefaultValue() const { return defaultValue; }
 
 protected:
 
@@ -61,9 +59,6 @@ public:
   virtual void processFrame(rsFloat64x2& inOut) = 0;
   virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
 
-  //virtual void resetState() = 0;    // maybe remove
-  //virtual void resetSettings() = 0; // ditto
-
 protected:
 
   SignalProcessorType type = SignalProcessorType::Unknown;
@@ -88,9 +83,7 @@ class Modulator
 {
 public:
   virtual double getSample() = 0;
-  virtual void resetState() = 0;
-  virtual void resetSettings() = 0;
-  // todo: processBlock
+  // todo: processBlock, prepareToPlay
 };
 
 //=================================================================================================
@@ -342,10 +335,6 @@ public:
     }
     void processBlock(rsFloat64x2* inOut, int N) override {}
 
-
-    //void resetState() override { core.resetState(); }
-    //void resetSettings() override { core.initCoeffs(); }
-
   protected:
 
     rsSamplerFilter core;
@@ -375,8 +364,6 @@ public:
     }
     void processFrame(rsFloat64x2& inOut) override { core.processFrame(inOut); }
     void processBlock(rsFloat64x2* inOut, int N) override {}
-    //void resetState() override {}
-    //void resetSettings() override {}
 
   protected:
 

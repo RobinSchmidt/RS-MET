@@ -475,7 +475,7 @@ protected:
     bool setupModulations();
 
     //void resetDspState();
-    void resetDspSettings();  // rename to resetPlaybackSettings
+    void resetPlayerSettings();
     void setupDspSettingsFor(const Region* r, double sampleRate, bool groupSettingsOverride,
       bool regionSettingsOverride);
     void setupDspSettings(const std::vector<PlaybackSetting>& settings,
