@@ -36,7 +36,7 @@ instruments. What kinds of processors are used within a region is implicitly det
 opcodes, e.g. the presence of a FilterCutoff opcode dictates the presence of a filter within the 
 respective region. In order to facilitating to build the DSP chain for a region player,
 we also need an explicit representation of the DSP processor types. */
-enum SignalProcessorType
+enum class SignalProcessorType
 {
   SamplePlayer,
 
@@ -88,9 +88,28 @@ enum class Opcode
 // maybe don't capitalize first letter - make it conistent with other (newer) enums in the 
 // library. see community stadards recommendations...
 
+enum class FilterType
+{
+  off, lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6,
 
+  numFilterTypes
+};
 
+enum class PanRule
+{
+  linear, sinCos,
 
+  numPanRules
+};
+// Or maybe it should be called PanLaw? Maybe have different variations with respect to total
+// gain - for linear: either factor 2 for hard left/right setting or a factor of 0.5 for a 
+// center setting. The former would imply that with neutral default settings, stereo samples 
+// are played as is. The latter would imply that hard-panned mono samples would be played as is
+// on their respective channel. Both behaviors may be useful, although, it would be a bit 
+// redundant because we also have an overall gain parameter as well which can always be used to 
+// compensate...although a factor of exactly 2 or 0.5 may be hard to achieve because gain is 
+// given in dB, so the sfz file would have to specify +-6.0205999132796239....., which is 
+// inconvenient
 
 //=================================================================================================
 
@@ -115,15 +134,17 @@ public:
   /** Copy assignment operator. */
   rsSamplerData& operator=(const rsSamplerData& d) { if(this != &d) copy(d, *this); return *this; }
 
-
-
   //-----------------------------------------------------------------------------------------------
-  // \name Helper Classes
+  // Forward dcalarations and abbreviations
 
   using uchar = unsigned char;
   class Region;
   class Group;
   class Instrument;
+
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Helper classes (maybe drag out - we'll see)
 
   //-----------------------------------------------------------------------------------------------
   /** A class to represent various playback settings of a region, group or instrument. Such
@@ -138,38 +159,10 @@ public:
   public:
 
 
-
-    enum FilterType
-    {
-      off, lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6,
-
-      numFilterTypes
-    };
-
-
-    enum PanRule
-    {
-      linear, sinCos,
-
-      numPanRules
-    };
-    // Or maybe it should be called PanLaw? Maybe have different variations with respect to total
-    // gain - for linear: either factor 2 for hard left/right setting or a factor of 0.5 for a 
-    // center setting. The former would imply that with neutral default settings, stereo samples 
-    // are played as is. The latter would imply that hard-panned mono samples would be played as is
-    // on their respective channel. Both behaviors may be useful, although, it would be a bit 
-    // redundant because we also have an overall gain parameter as well which can always be used to 
-    // compensate...although a factor of exactly 2 or 0.5 may be hard to achieve because gain is 
-    // given in dB, so the sfz file would have to specify +-6.0205999132796239....., which is 
-    // inconvenient
-
-
-    PlaybackSetting(Opcode type, float value)
-    {
-      this->type = type; this->value = value;
-    }
+    PlaybackSetting(Opcode type, float value) { this->type = type; this->value = value; }
 
     Opcode getType() const { return type; }
+    // rename to getOpcode
 
     /** Returns the stored value for this setting. Values are always stored as floats and it is
     understood that in cases, where the corresponding parameter in the sfz spec is defined to be an
@@ -207,7 +200,7 @@ public:
 
   private:
 
-    Opcode type  = Opcode::Unknown;  // rename to opcode
+    Opcode type  = Opcode::Unknown;  // rename type to opcode
     float  value = 0.f;
     int    index = -1;  //< Used e.g. for conrol-change settings. Is -1, if not applicable.
   };

@@ -1016,15 +1016,15 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   const std::vector<PlaybackSetting>& settings, double fs, bool overrideOldSetting)
 {
   using PS = PlaybackSetting;
-  using TP = Opcode;
+  using TP = Opcode;               // rename to OC
 
-  double amp        = 1.0;  // raw factor, computed "volume" opcode which is given in dB
-  double pan        = 0.0;  // -100...+100
-  double tuneCoarse = 0.0;  // in semitones
-  double tuneFine   = 0.0;  // in cents
-  int    panRule    = PlaybackSetting::PanRule::linear;
+  double  amp        = 1.0;  // raw factor, computed "volume" opcode which is given in dB
+  double  pan        = 0.0;  // -100...+100
+  double  tuneCoarse = 0.0;  // in semitones
+  double  tuneFine   = 0.0;  // in cents
+  PanRule panRule    = PanRule::linear;
   //int    offset     = 0;
-  bool   onTop      = !overrideOldSetting; // maybe get rid 
+  bool   onTop       = !overrideOldSetting; // maybe get rid 
 
   // Loop through the settings of the region and for each setting that is present, change the 
   // value from its default to the stored value:
@@ -1032,14 +1032,14 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   {
 
     PlaybackSetting setting = settings[i];
-    TP type = setting.getType();
+    TP type = setting.getType();                  // rename to opcode
     double val = (double) setting.getValue();
     switch(type)
     {
     // Amp settings:
     case TP::Volume:  { amp      = RAPT::rsDbToAmp(val); } break;
     case TP::Pan:     { pan      = val;                  } break;
-    case TP::PanRule: { panRule  = (int)val;             } break;
+    case TP::PanRule: { panRule  = (PanRule)(int)val;    } break;
 
     // Pitch settings:
     //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
@@ -1086,7 +1086,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
   double t1, t2;  // temporaries
   switch(panRule)
   {
-  case PS::PanRule::linear:
+  case PanRule::linear:
   {
     t1 = (pan/200.0) + 0.5; // -100..+100 -> 0..1
     t2 = 1.0 - t1;
@@ -1095,7 +1095,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     // i'm not sure about the factor 2 -> check against sfz+ ..such a factor might be undesirable
     // in "onTop" mode: when 3 panners pan hard-left or right, we'll actually get a boost of 8
   } break;
-  case PS::PanRule::sinCos:
+  case PanRule::sinCos:
   {
     RAPT::rsError("not yet implemented");
   } break;
