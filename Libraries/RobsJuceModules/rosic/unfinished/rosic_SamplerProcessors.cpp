@@ -25,7 +25,7 @@ void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
 
   switch(type)
   {
-  case Type::Lowpass_6: P1Z1::coeffsLowpassIIT(w, &vars.p1z1.b0, &vars.p1z1.b1, &vars.p1z1.a1); break;
+  case Type::FO_Lowpass: P1Z1::coeffsLowpassIIT(w, &impl.fo.b0, &impl.fo.b1, &impl.fo.a1); break;
   }
 
   // ToDo:
@@ -51,7 +51,7 @@ void rsSamplerFilter::processFrame(float& L, float& R)
   TSig io(L, R);
   switch(type)
   {
-  case Type::Lowpass_6: io = vars.p1z1.getSample(io); break;
+  case Type::FO_Lowpass: io = impl.fo.getSample(io); break;
   };
 
   // Preliminary - as long as we are abusing rsVector2D for the signal:
@@ -66,7 +66,7 @@ void rsSamplerFilter::resetState()
 {
   switch(type)
   {
-  case Type::Lowpass_6: vars.p1z1.resetState(); break;
+  case Type::FO_Lowpass: impl.fo.resetState(); break;
   }
 }
 

@@ -117,28 +117,50 @@ public:
 
   enum class Type // maybe don't use all-caps for the types
   {
-    // Biquad filter modes:
     Bypass,
-    Lowpass_6,   // reanme to BQD_Lowpass_6 etc
-    Highpass_6,
+
+    // 1st order filter modes:
+    // FO_Start = 1 << 24,
+    FO_Lowpass,
+    FO_Highpass,
+    FO_LowShelf,
+    FO_HighShelf,
+    FO_Allpass,
+
+    // Biquad filter modes:
+    // BQ_Start = 2 << 24,
+    BQ_Lowpass,
+    BQ_Highpass,
+    BQ_Bandpass_Skirt,
+    BQ_Bandpass_Peak,
+    BQ_Bandstop,
+    BQ_Bell,
+    BQ_LowShelf,
+    BQ_HighShelf,
+    BQ_Allpass,
 
     // State variable filter modes:
+    // SVF_Start = 3 << 24,
     SVF_Lowpass_12,
     SVF_Lowpass_24,
     SVF_Highpass_12,
     SVF_Highpass_24,
+    //...
 
     // Ladder filter modes:
+    // LDR_Start = 4 << 24,
     LDR_Lowpass_6,
     LDR_Lowpass_12,
     LDR_Lowpass_18,
     LDR_Lowpass_24
+    //...
   };
   // hmm...
   // -maybe split the type into two parts: topology (svf, ladder, etc.), mode (lpf, hpf, etc.)
   // -maybe we can use a bitfield: 2 bits for the topology, 6 bits for the type within the selected
   //  topology, makes a total of 8 bits to specify the mode in a structured way. This is a 
   //  potential space optimization that may be done later. If done, it should not affect the API.
+  //  ...maybe use the 1st 8 bits for topology - retrieve via shift+mask when needed
 
 
   void setup(Type type, float cutoff, float resonance);
@@ -165,7 +187,7 @@ protected:
   // todo: maybe templatize this class and use float for TPar, and rsfloat32x2 for TSig in the 
   // sampler
 
-  struct OnePoleVars    // ToDo: remove the "Vars" from the name
+  struct OnePoleImpl
   {
     TSig  x1, y1;       // state
     TCoef b0, b1, a1;   // coeffs
@@ -178,7 +200,7 @@ protected:
       return y;
     }
   };
-  struct BiquadVars             // biquad filter, using DF2 (todo: try TDF1 -> smaller state)
+  struct BiquadImpl             // biquad filter, using DF2 (todo: try TDF1 -> smaller state)
   {
     TSig  x1, x2, y1, y2;       // state
     TCoef b0, b1, b2, a1, a2;   // coeffs
@@ -191,35 +213,35 @@ protected:
       return y;
     }
   };
-  struct StateVars              // state variable filter (using ZDF)
+  struct SvfImpl                // state variable filter (using ZDF) ..rename to SvfImpl
   {
     TSig  s1, s2;               // state
-    TCoef R;                    // damping(?)
+    TCoef R;                    // damping(?) - what obout the freq-scaling and weights?
   };
-  struct LadderVars             // ladder filter (using UDF)
+  struct LadderImpl             // ladder filter (using UDF)
   {
     TSig  y1, y2, y3, y4;       // state
     TCoef a, k;                 // filter and feedback coeffs
     TCoef c0, c1, c2, c3, c4;   // output gains
   };
-  union FilterVars              // Try to find a better name
+  union FilterImpl              // Try to find a better name
   {
-    FilterVars() {}             // without it, msc complains
+    FilterImpl() {}             // without it, msc complains
 
-    OnePoleVars p1z1;           // 1-pole 1-zero
-    BiquadVars  bqd;
-    StateVars   svf;
-    LadderVars  ldr;
+    OnePoleImpl fo;             // fo: "first order"
+    BiquadImpl  bqd;
+    SvfImpl     svf;
+    LadderImpl  ldr;
   };
-  // ToDo: implement reset/getSample etc also in StateVars, etc. all thes structs should provide 
-  // the sample API, but implement it in a way that is suitable to the given filter topology.
+  // ToDo: implement reset/getSample etc. also in StateVars, etc. all these structs should provide 
+  // the same API, but implement it in a way that is suitable to the given filter topology.
 
 
   //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
   Type type = Type::Bypass;
-  FilterVars vars;           // rename to something better
+  FilterImpl impl;
 
   // ToDo: maybe include also a state-vector filter (maybe rename to state phasor filter to avoid
   // name clash in abbreviation)
@@ -310,7 +332,7 @@ public:
     { 
       using TypeCore   = rsSamplerFilter::Type; // enum used in the DSP core
       using TypeOpcode = FilterType;            // enum used in the sfz opcode
-      TypeCore type = TypeCore::Lowpass_6;      // preliminary
+      TypeCore type = TypeCore::FO_Lowpass;        // preliminary
       core.setup(
         type, 
         params[1].getValue() * float(2*PI/fs),
