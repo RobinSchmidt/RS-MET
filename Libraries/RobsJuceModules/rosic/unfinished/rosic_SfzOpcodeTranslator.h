@@ -121,35 +121,20 @@ public:
 
   SfzOpcodeTranslator();
 
-  // ToDo:
+
   const std::string& opcodeToString(Opcode op);
   Opcode stringToOpcode(const std::string& str);
+  SignalProcessorType opcodeToProcessor(Opcode op);
 
-  //SignalProcessorType opcodeToProcessor(Opcode op);
 
+  // ToDo:
   //const std::string& filterTypeToString(FilterType ft);
   //FilterType stringToFilterType(const std::string& str);
+  // add documentation
 
   // ...etc.
 
 protected:
-
-  /** Adds an opcode to our database. */
-  void addOpcode(Opcode op, OpcodeType type, const std::string& sfzStr, 
-    float minValue, float maxValue, float defaultValue, SignalProcessorType dspType);
-
-  struct OpcodeEntry
-  {                       // Examples
-    Opcode       op;      // Opcode::Cutoff
-    OpcodeType   type;    // OpcodeType::Float
-    std::string  str;     // cutoff
-    float        minVal;  // 20?
-    float        maxVal;  // 20000?
-    float        defVal;  // 1000?
-    SignalProcessorType dsp;
-  };
-
-  std::vector<OpcodeEntry> opcodeEntries;  // find a better name
 
   // Here, we may keep some "dictionary"-like data-structures to facilitate fast translations.
   // For the opcode-to-anything translations we want an O(1) complexity with small factors. It 
@@ -161,6 +146,29 @@ protected:
   // should be used or maybe std::map is suitable which should give expected O(1) at the cost
   // of some memory overhead - it's basically a hash-table (i think). I'm not yet sure how to 
   // implement it best. ...tbc...
+
+
+  /** Adds an opcode to our database to make it available for later lookup. */
+  void addOpcode(Opcode op, OpcodeType type, const std::string& sfzStr, 
+    float minValue, float maxValue, float defaultValue, SignalProcessorType dspType);
+
+  /** Structure for one record in our little database or lookup table. */
+  struct OpcodeEntry
+  {                       // Examples
+    Opcode       op;      // Opcode::Cutoff
+    OpcodeType   type;    // OpcodeType::Float
+    std::string  str;     // cutoff
+    float        minVal;  // 20?
+    float        maxVal;  // 20000?
+    float        defVal;  // 1000?
+    SignalProcessorType dsp;
+  };
+  std::vector<OpcodeEntry> opcodeEntries; /**< Our lookup table of records. */
+
+
+  std::string dummyString;
+  /**< The string-ref returning functions return a reference to this, if they do not find a 
+  suitable actual string to return. */
 
 };
 
