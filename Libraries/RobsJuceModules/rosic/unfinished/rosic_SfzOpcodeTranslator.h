@@ -8,8 +8,10 @@ in the sfz specification. */
 
 enum class Opcode
 {
+  Unknown = 0,
+
   // Input controls:
-  LoKey = 0, HiKey, LoVel, HiVel,
+  LoKey, HiKey, LoVel, HiVel,
   ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
 
   // Muted: convenient to switch regions or groups off wihthout removing them - check if 
@@ -34,9 +36,7 @@ enum class Opcode
   // Distortion:
   DistShape, DistDrive,  // DistGain...may be redundant with Volume
 
-
-  Unknown,
-  NumTypes    // do we need this? if not, remove
+  NumTypes 
   //...tbc...
 };
 // The underlying integers for the opcodes in this enum must start at zero and increment by one.
@@ -46,14 +46,63 @@ enum class Opcode
 // maybe don't capitalize first letter - make it conistent with other (newer) enums in the 
 // library. see community stadards recommendations...
 
-enum class OpcodeType
+
+//-------------------------------------------------------------------------------------------------
+/** Enumeration of the different data formats of the values of the opcode. */
+
+enum class OpcodeType  // maybe rename to OpcodeFormat
 {
+  Unknown = 0,
+
   Float,
   Integer,
   Boolean,
-  String
+  String,
+
+  NumTypes
 };
 
+//-------------------------------------------------------------------------------------------------
+/** Enumeration of the physical units that apply to the value of the opcode. */
+
+enum class OpcodeUnit
+{
+  Unknown = 0,
+
+  Hertz,
+  Semitones,
+  Cents,
+  Decibels,
+  Seconds,
+  Milliseconds,
+  Beats,
+  BeatsOrSeconds,
+  Text,
+  MidiKey,           // i think, it can be a number or text
+  Percent,
+  Index,
+  RawInt,
+  RawFloat,
+
+  NumUnits
+};
+//   // ToDo: have a field for the unit: Hz, cents, semitones, noteNumber, dB, sec, beats, .
+
+//-------------------------------------------------------------------------------------------------
+/** Enumeration of the different specifications in which the respective opcode was defined. */
+
+enum class OpcodeSpec
+{
+  Unknown,
+
+  Sfz,
+  Sfz2,
+  Aria,
+  RsMet,
+  //...etc...
+
+  NumSpecs
+};
 
 //-------------------------------------------------------------------------------------------------
 /** Enumeration of the different signal processor types that may be used in the definition of
@@ -64,6 +113,8 @@ we also need an explicit representation of the DSP processor types. */
 
 enum class SignalProcessorType  // rename to DspType or ProcessorType
 {
+  Unknown,
+
   SamplePlayer,
 
   // The modulators:
@@ -73,7 +124,7 @@ enum class SignalProcessorType  // rename to DspType or ProcessorType
   Filter,
   WaveShaper,
 
-  Unknown
+  NumDsps
 };
 
 //-------------------------------------------------------------------------------------------------
@@ -81,7 +132,7 @@ enum class SignalProcessorType  // rename to DspType or ProcessorType
 
 enum class FilterType
 {
-  off, lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6,
+  off = 0, lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6,
 
   numFilterTypes
 };

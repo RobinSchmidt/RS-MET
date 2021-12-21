@@ -15,7 +15,9 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   addOpcode(OC::HiVel, OT::Integer, "hivel", 0, 127, 127, SP::SamplePlayer);
 
   // Pitch:
-
+  addOpcode(OC::PitchKeyCenter, OT::Integer, "pitch_keycenter", -127, 127, 60, SP::SamplePlayer);
+  addOpcode(OC::Transpose,      OT::Integer, "transpose",       -127, 127,  0, SP::SamplePlayer);
+  addOpcode(OC::Tune,           OT::Integer, "tune",            -100, 100,  0, SP::SamplePlayer);
 
   // Amplitude:
 
@@ -24,6 +26,8 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   // Filter:
   addOpcode(OC::FilterCutoff, OT::Float, "cutoff", 20.f, 20000.f, 1000.f, SP::Filter);
   // verify min/max/def (i made them up!)
+
+  // ToDo: have a field for the unit: Hz, cents, semitones, noteNumber, dB, sec, beats, ...
 
   int dummy = 0;
 }
@@ -82,6 +86,10 @@ SignalProcessorType SfzOpcodeTranslator::opcodeToProcessor(Opcode op)
 /*
 
 ToDo:
+-Add unit and spec fields to the opcode records. Maybe it should be possible to configure 
+ the sampler such that ignores certain kinds of opcodes, e.g. recognizes only sfz1 opcodes. That 
+ way, we could audit how an sfz patch would sound on a sampler that doesn't support one of the
+ extended specifications.
 -Write a unit test that loops through all opcodes and translates them to a string and back. It 
  should also ensure that the op member of the record is equal to the array index. Wrtie similar
  tests for back-and-forth conversion of the string-type parameters.
