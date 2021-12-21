@@ -46,7 +46,7 @@ public:
   void setParameter(Opcode opcode, float value);
 
   // Inquiry:
-  SignalProcessorType getType() { return type; }
+  DspType getType() { return type; }
   int getNumParameters() const { return (int) params.size(); }
 
   //virtual const Parameter* getParameter() const { return nullptr; } // maybe relax constness later
@@ -61,7 +61,7 @@ public:
 
 protected:
 
-  SignalProcessorType type = SignalProcessorType::Unknown;
+  DspType type = DspType::Unknown;
   std::vector<Parameter> params;
 
   
@@ -327,7 +327,7 @@ public:
 
     Filter() 
     { 
-      type = SignalProcessorType::Filter;
+      type = DspType::Filter;
       params.reserve(3);
       addParameter(Opcode::FilterType);
       addParameter(Opcode::FilterCutoff);
@@ -403,7 +403,7 @@ public:
 
     WaveShaper() 
     { 
-      type = SignalProcessorType::WaveShaper; 
+      type = DspType::WaveShaper; 
       params.reserve(2);
       addParameter(Opcode::DistShape);
       addParameter(Opcode::DistDrive);
@@ -588,7 +588,7 @@ public:
   it certainly should not do is to just replace the non-available processor by a bypass dummy 
   processor because that could have really bad consequences: imagine a missing attenuation 
   processor. Regions are always played back either correctly or not at all but never wrongly. */
-  SignalProcessor* grabProcessor(SignalProcessorType type);
+  SignalProcessor* grabProcessor(DspType type);
 
   /** This function should be called by the client when it doesn't need the processor anymore, For
   example, because the region for which it was used has stopped playing. The client returns the 

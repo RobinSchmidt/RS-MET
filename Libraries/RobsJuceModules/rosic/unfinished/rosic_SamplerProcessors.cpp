@@ -161,9 +161,9 @@ inline T* rsGetLastPtrAndShrink(std::vector<T>& v)
 // maybe move to rapt ...hmm...not needed anymore...perhaps delete...not sure, if they are useful
 // enough in general to include in the library
 
-SignalProcessor* SignalProcessorPool::grabProcessor(SignalProcessorType type)
+SignalProcessor* SignalProcessorPool::grabProcessor(DspType type)
 {
-  using SPT = SignalProcessorType;
+  using SPT = DspType;
   SignalProcessor* p = nullptr;
   switch(type)
   {
@@ -175,7 +175,7 @@ SignalProcessor* SignalProcessorPool::grabProcessor(SignalProcessorType type)
 
 void SignalProcessorPool::repositProcessor(SignalProcessor* p)
 {
-  using SPT = SignalProcessorType;
+  using SPT = DspType;
   int i = -1;
   switch(p->getType())
   {

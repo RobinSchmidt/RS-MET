@@ -5,7 +5,7 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   // On construction, we build our database (maybe factor out):
   using OC = Opcode;
   using OT = OpcodeType;
-  using SP = SignalProcessorType;
+  using SP = DspType;
   opcodeEntries.resize((int)Opcode::NumTypes);
 
   // Sample playback:
@@ -39,7 +39,7 @@ inline void rsEnsureSize(std::vector<T>& v, size_t s)
     v.resize(s);
 } // maybe move to rapt
 void SfzOpcodeTranslator::addOpcode(Opcode op, OpcodeType type, const std::string& sfzStr,
-  float minVal, float maxVal, float defVal, SignalProcessorType dspType)
+  float minVal, float maxVal, float defVal, DspType dspType)
 {
   int i = (int)op;
   rsEnsureSize(opcodeEntries, size_t(i+1));
@@ -72,11 +72,11 @@ Opcode SfzOpcodeTranslator::stringToOpcode(const std::string& str)
   // This is called only on patch loading and maybe it's fast enough as is. We'll see.
 }
 
-SignalProcessorType SfzOpcodeTranslator::opcodeToProcessor(Opcode op)
+DspType SfzOpcodeTranslator::opcodeToProcessor(Opcode op)
 {
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
     RAPT::rsError("Unknown opcode in SfzOpcodeTranslator::opcodeToProcessor");
-    return SignalProcessorType::Unknown; 
+    return DspType::Unknown; 
   }
   return opcodeEntries[(int)op].dsp;
 }
@@ -97,6 +97,7 @@ ToDo:
  properties, perhaps sorted by name, dsp-type, etc. This could be used to generate a little 
  textfile as reference manual which would be a convenient thing to have. Maybe it could even be 
  member function here: generateReferenceManual() or something. It could perhaps take a couple of
- parameters to select formatting and sorting options
+ parameters to select formatting and sorting options. Maybe it could also be possible to show
+ all opcodes that belong to a particular DSP or a particular spec, ie. filtering options.
 
 */

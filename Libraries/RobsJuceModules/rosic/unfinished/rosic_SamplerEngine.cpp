@@ -736,7 +736,7 @@ void rsSamplerEngine::SignalProcessorChain::processFrame(rsFloat64x2& inOut)
 }
 
 SignalProcessor* rsSamplerEngine::SignalProcessorChain::getProcessor(
-  SignalProcessorType type, int index)
+  DspType type, int index)
 {
   int count = 0;  // counts, how many DSPs of given type we have iterated over
   for(int i = 0; i < (int) processors.size(); i++) {
@@ -929,7 +929,7 @@ bool rsSamplerEngine::RegionPlayer::hasFinished()
   return false;
 }
 
-SignalProcessor* rsSamplerEngine::RegionPlayer::getProcessor(SignalProcessorType type)
+SignalProcessor* rsSamplerEngine::RegionPlayer::getProcessor(DspType type)
 {
   RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
   return dspPool->processorPool.grabProcessor(type);
@@ -939,7 +939,7 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
 {
   RAPT::rsAssert(dspChain.isEmpty(), "Someone has not cleaned up after finishing playback!");
   dspChain.clear(); // ...so we do it here. But this should be fixed elsewhere!
-  using DspType = SignalProcessorType;
+  using DspType = DspType;
   const std::vector<DspType>& dspTypeChain = region->getProcessingChain();
   for(size_t i = 0; i < dspTypeChain.size(); i++) {
     SignalProcessor* dsp = getProcessor(dspTypeChain[i]);
@@ -1156,7 +1156,7 @@ void rsSamplerEngine::RegionPlayer::setupProcessorSetting(const PlaybackSetting&
   // be useful in other places as well:
   auto getProcessorFor = [this](const PlaybackSetting& s)
   {
-    SignalProcessorType dspType = SD::getTargetProcessorType(s.getType());
+    DspType dspType = SD::getTargetProcessorType(s.getType());
     SignalProcessor* dsp = dspChain.getProcessor(dspType, RAPT::rsMax(s.getIndex(), 0));
     return dsp;
   };

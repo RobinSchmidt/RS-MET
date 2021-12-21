@@ -108,7 +108,7 @@ public:
 
     /** For a given type of opcode, this function returns the type of signal processor to which the
     opcode applies, e.g. SignalProcessorType::Filter for Type::FilterCutoff. */
-    static SignalProcessorType getTargetProcessorType(Opcode type);
+    static DspType getTargetProcessorType(Opcode type);
 
 
     bool operator==(const PlaybackSetting& rhs) const
@@ -256,7 +256,7 @@ public:
 
     /** Returns a (const) reference to an array of processor types that is used by the engine to 
     build the dsp chain when this region should be played.*/
-    const std::vector<SignalProcessorType>& getProcessingChain() const { return signalProcessors; }
+    const std::vector<DspType>& getProcessingChain() const { return signalProcessors; }
 
 
   protected:
@@ -310,7 +310,7 @@ public:
     std::vector<PlaybackSetting> settings;
 
 
-    std::vector<SignalProcessorType> signalProcessors;  // rename to dspTypes
+    std::vector<DspType> signalProcessors;  // rename to dspTypes
     /** Listing of the types of signal processors used in this instrument in the same order like how
     they should be applied (we assume a serial connection). */
     // should be member of the region or OrganizationLevel

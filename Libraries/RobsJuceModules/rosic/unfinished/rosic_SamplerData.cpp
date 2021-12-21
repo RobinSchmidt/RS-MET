@@ -43,12 +43,12 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type)
 }
 
 
-SignalProcessorType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
+DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
 {
   // ToDo: return sfzTranslator.getOpcodeProcessorType(type)
 
   using TP = Opcode;
-  using SP = SignalProcessorType;
+  using SP = DspType;
   switch(type)
   {
   case TP::LoKey:          return SP::SamplePlayer;
@@ -97,7 +97,7 @@ SignalProcessorType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcod
 void rsSamplerData::OrganizationLevel::ensureProcessorPresent(Opcode opcodeType)
 { 
   using namespace RAPT;
-  using SPT = SignalProcessorType;
+  using SPT = DspType;
   SPT dspType = PlaybackSetting::getTargetProcessorType(opcodeType);
   rsAssert( dspType != SPT::Unknown );
   if( dspType == SPT::SamplePlayer || dspType == SPT::Unknown )

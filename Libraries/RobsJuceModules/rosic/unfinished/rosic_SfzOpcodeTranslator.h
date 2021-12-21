@@ -111,7 +111,7 @@ opcodes, e.g. the presence of a FilterCutoff opcode dictates the presence of a f
 respective region. In order to facilitating to build the DSP chain for a region player,
 we also need an explicit representation of the DSP processor types. */
 
-enum class SignalProcessorType  // rename to DspType or ProcessorType
+enum class DspType  // rename to DspType or ProcessorType
 {
   Unknown,
 
@@ -175,7 +175,7 @@ public:
 
   const std::string& opcodeToString(Opcode op);
   Opcode stringToOpcode(const std::string& str);
-  SignalProcessorType opcodeToProcessor(Opcode op);
+  DspType opcodeToProcessor(Opcode op);
 
 
   // ToDo:
@@ -201,18 +201,18 @@ protected:
 
   /** Adds an opcode to our database to make it available for later lookup. */
   void addOpcode(Opcode op, OpcodeType type, const std::string& sfzStr, 
-    float minValue, float maxValue, float defaultValue, SignalProcessorType dspType);
+    float minValue, float maxValue, float defaultValue, DspType dspType);
 
   /** Structure for one record in our little database or lookup table. */
   struct OpcodeEntry
   {                       // Examples
-    Opcode       op;      // Opcode::Cutoff
-    OpcodeType   type;    // OpcodeType::Float
-    std::string  str;     // cutoff
-    float        minVal;  // 20?
-    float        maxVal;  // 20000?
-    float        defVal;  // 1000?
-    SignalProcessorType dsp;
+    Opcode      op;      // Opcode::Cutoff
+    OpcodeType  type;    // OpcodeType::Float
+    std::string str;     // cutoff
+    float       minVal;  // 20?
+    float       maxVal;  // 20000?
+    float       defVal;  // 1000?
+    DspType     dsp;
   };
   std::vector<OpcodeEntry> opcodeEntries; /**< Our lookup table of records. */
 

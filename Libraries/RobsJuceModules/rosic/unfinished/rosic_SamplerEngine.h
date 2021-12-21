@@ -383,7 +383,7 @@ protected:
     /** Returns the index-th processor of the given type within the chain or nullptr, if there are
     not enough (i.e. less than i+1, counting starts at zero) processors of the given type in the 
     chain. To get the 3rd filter, you would pass type = SignalProcessorType::Filter, index = 2.  */
-    SignalProcessor* getProcessor(SignalProcessorType type, int index);
+    SignalProcessor* getProcessor(DspType type, int index);
 
   protected:
     std::vector<SignalProcessor*> processors;
@@ -469,7 +469,7 @@ protected:
 
     /** Returns a pointer to a processor of given type, if available, otherwise a nullptr. Used in
     buildProcessingChain. */
-    SignalProcessor* getProcessor(SignalProcessorType type);
+    SignalProcessor* getProcessor(DspType type);
 
     bool buildProcessingChain();
     bool setupModulations();
