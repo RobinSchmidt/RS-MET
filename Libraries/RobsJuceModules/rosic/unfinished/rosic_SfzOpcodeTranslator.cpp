@@ -4,27 +4,27 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
 {
   // On construction, we build our database (maybe factor out):
   using OC = Opcode;
-  using OT = OpcodeType;
+  using OF = OpcodeFormat;
   using SP = DspType;
   opcodeEntries.resize((int)Opcode::NumTypes);
 
   // Sample playback:
-  addOpcode(OC::LoKey, OT::Integer, "lokey", 0, 127,   0, SP::SamplePlayer);
-  addOpcode(OC::HiKey, OT::Integer, "hikey", 0, 127, 127, SP::SamplePlayer);
-  addOpcode(OC::LoVel, OT::Integer, "lovel", 0, 127,   0, SP::SamplePlayer);
-  addOpcode(OC::HiVel, OT::Integer, "hivel", 0, 127, 127, SP::SamplePlayer);
+  addOpcode(OC::LoKey, OF::Integer, "lokey", 0, 127,   0, SP::SamplePlayer);
+  addOpcode(OC::HiKey, OF::Integer, "hikey", 0, 127, 127, SP::SamplePlayer);
+  addOpcode(OC::LoVel, OF::Integer, "lovel", 0, 127,   0, SP::SamplePlayer);
+  addOpcode(OC::HiVel, OF::Integer, "hivel", 0, 127, 127, SP::SamplePlayer);
 
   // Pitch:
-  addOpcode(OC::PitchKeyCenter, OT::Integer, "pitch_keycenter", -127, 127, 60, SP::SamplePlayer);
-  addOpcode(OC::Transpose,      OT::Integer, "transpose",       -127, 127,  0, SP::SamplePlayer);
-  addOpcode(OC::Tune,           OT::Integer, "tune",            -100, 100,  0, SP::SamplePlayer);
+  addOpcode(OC::PitchKeyCenter, OF::Integer, "pitch_keycenter", -127, 127, 60, SP::SamplePlayer);
+  addOpcode(OC::Transpose,      OF::Integer, "transpose",       -127, 127,  0, SP::SamplePlayer);
+  addOpcode(OC::Tune,           OF::Integer, "tune",            -100, 100,  0, SP::SamplePlayer);
 
   // Amplitude:
 
 
 
   // Filter:
-  addOpcode(OC::FilterCutoff, OT::Float, "cutoff", 20.f, 20000.f, 1000.f, SP::Filter);
+  addOpcode(OC::FilterCutoff, OF::Float, "cutoff", 20.f, 20000.f, 1000.f, SP::Filter);
   // verify min/max/def (i made them up!)
 
   // ToDo: have a field for the unit: Hz, cents, semitones, noteNumber, dB, sec, beats, ...
@@ -38,7 +38,7 @@ inline void rsEnsureSize(std::vector<T>& v, size_t s)
   if(v.size() < s)
     v.resize(s);
 } // maybe move to rapt
-void SfzOpcodeTranslator::addOpcode(Opcode op, OpcodeType type, const std::string& sfzStr,
+void SfzOpcodeTranslator::addOpcode(Opcode op, OpcodeFormat type, const std::string& sfzStr,
   float minVal, float maxVal, float defVal, DspType dspType)
 {
   int i = (int)op;
@@ -54,14 +54,14 @@ const std::string& SfzOpcodeTranslator::opcodeToString(Opcode op)
     RAPT::rsError("Unknown opcode in SfzOpcodeTranslator::opcodeToString");
     return dummyString; 
   }
-  return opcodeEntries[(int)op].str;
+  return opcodeEntries[(int)op].text;
 }
 // needs test
 
 Opcode SfzOpcodeTranslator::stringToOpcode(const std::string& str)
 {
   for(int i = 0; i < opcodeEntries.size(); i++)
-    if(opcodeEntries[i].str == str)
+    if(opcodeEntries[i].text == str)
       return opcodeEntries[i].op;    // op should be equal to i
   RAPT::rsError("Unknown opcode in SfzOpcodeTranslator::stringToOpcode");
   return Opcode::Unknown;

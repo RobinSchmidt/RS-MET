@@ -50,7 +50,7 @@ enum class Opcode
 //-------------------------------------------------------------------------------------------------
 /** Enumeration of the different data formats of the values of the opcode. */
 
-enum class OpcodeType  // maybe rename to OpcodeFormat
+enum class OpcodeFormat  // maybe rename to OpcodeFormat
 {
   Unknown = 0,
 
@@ -95,8 +95,8 @@ enum class OpcodeSpec
 {
   Unknown,
 
-  Sfz,
-  Sfz2,
+  Sfz_1,
+  Sfz_2,
   Aria,
   RsMet,
   //...etc...
@@ -200,19 +200,21 @@ protected:
 
 
   /** Adds an opcode to our database to make it available for later lookup. */
-  void addOpcode(Opcode op, OpcodeType type, const std::string& sfzStr, 
+  void addOpcode(Opcode op, OpcodeFormat type, const std::string& sfzStr, 
     float minValue, float maxValue, float defaultValue, DspType dspType);
 
   /** Structure for one record in our little database or lookup table. */
   struct OpcodeEntry
-  {                       // Examples
-    Opcode      op;      // Opcode::Cutoff
-    OpcodeType  type;    // OpcodeType::Float
-    std::string str;     // cutoff
-    float       minVal;  // 20?
-    float       maxVal;  // 20000?
-    float       defVal;  // 1000?
-    DspType     dsp;
+  {                       // Example
+    Opcode       op;      // Opcode::Cutoff
+    OpcodeFormat format;  // OpcodeFormat::Float
+    std::string  text;     // "cutoff"
+    float        minVal;  // 20?
+    float        maxVal;  // 20000?
+    float        defVal;  // 1000?
+    DspType      dsp;     // DspType::Filter
+    OpcodeUnit   unit;    // OpcodeUnit::Hertz
+    OpcodeSpec   spec;    // OpcodeSpec::Sfz_1
   };
   std::vector<OpcodeEntry> opcodeEntries; /**< Our lookup table of records. */
 
