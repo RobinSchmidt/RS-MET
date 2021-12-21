@@ -382,8 +382,9 @@ public:
       case TO::lp_6:  return TC::FO_Lowpass;
       case TO::hp_6:  return TC::FO_Highpass;
 
-      case TO::lp_12: return TC::BQ_Lowpass;    // ToDo: Use SVF as default implementation
-      case TO::hp_12: return TC::BQ_Highpass;   // for 2nd order filters...maybe...
+      case TO::lp_12:  return TC::BQ_Lowpass;        // ToDo: Use SVF as default implementation
+      case TO::hp_12:  return TC::BQ_Highpass;       // for 2nd order filters...maybe...
+      case TO::bp_6_6: return TC::BQ_Bandpass_Skirt; 
 
       //case TO::lp_12: return TC::SVF_Lowpass_12;
       //case TO::hp_12: return TC::SVF_Highpass_12;

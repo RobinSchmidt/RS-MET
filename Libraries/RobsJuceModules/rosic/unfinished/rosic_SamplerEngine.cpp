@@ -1527,39 +1527,7 @@ Problem:
  the sample-time and compute the envelope without keeping state for each - but these are 
  optimization concerns to be addressed later
 
-SFZ - Resources:
-https://sfzformat.com/legacy/   opcode reference
-https://www.linuxsampler.org/sfz/    has convenient list of opcodes, also for sfz v2
-https://en.wikipedia.org/wiki/SFZ_(file_format)
-https://github.com/sfz/tests/   test sfz files demonstrating various features
-https://sfzformat.com/headers/  reference for section headers in sfz files
-http://www.drealm.info/sfz/plj-sfz.xhtml  description of the sfz format
-https://www.kvraudio.com/forum/viewtopic.php?f=42&t=508861  kvr forum thread with documentation
-https://sfzinstruments.github.io/  collection of sfz instruments
-http://ariaengine.com/overview/sfz-format/
-http://doc.linuxsampler.org/sfz/
-https://noisesculpture.com/cakewalk-synthesizers/
-https://noisesculpture.com/cakewalk-synthesizers-downloads/
 
-
-https://sfzformat.com/software/players/  players (also open source)
-https://plugins4free.com/plugin/217/   sfz by rgcaudio
-
-open source sfz players:
-https://github.com/swesterfeld/liquidsfz/
-https://sfz.tools/sfizz/downloads
-https://github.com/altalogix/SFZero/
-https://github.com/s-oram/Grace/
-
-sfz compatibel samplers
-https://github.com/christophhart/HISE/
-
-deeper into the codebases:
-
-https://github.com/swesterfeld/liquidsfz/tree/master/lib
-https://github.com/swesterfeld/liquidsfz/blob/master/lib/synth.hh
-This seems to do it the simple way: it has a fixed number of voices and if they are used up, no
-more can be added - if i understand it correctly (see alloc_voice, line 230)
 
 
 

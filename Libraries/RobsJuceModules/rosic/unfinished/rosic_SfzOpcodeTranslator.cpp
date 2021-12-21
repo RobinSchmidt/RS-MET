@@ -18,23 +18,42 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   OF Flt  = OF::Float;
   OS Sfz1 = OS::Sfz_1;
 
-  // Sample playback:
+  // Player response control ("Input Control"):
   SP dsp = DspType::SamplePlayer;
-  add(OC::LoKey,          Int, "lokey",              0, 127,   0, dsp, OU::MidiKey,   Sfz1);
-  add(OC::HiKey,          Int, "hikey",              0, 127, 127, dsp, OU::MidiKey,   Sfz1);
-  add(OC::LoVel,          Int, "lovel",              0, 127,   0, dsp, OU::RawInt,    Sfz1);
-  add(OC::HiVel,          Int, "hivel",              0, 127, 127, dsp, OU::RawInt,    Sfz1);
-  add(OC::PitchKeyCenter, Int, "pitch_keycenter", -127, 127,  60, dsp, OU::MidiKey,   Sfz1);
-  add(OC::Transpose,      Int, "transpose",       -127, 127,   0, dsp, OU::Semitones, Sfz1);
-  add(OC::Tune,           Int, "tune",            -100, 100,   0, dsp, OU::Cents,     Sfz1);
+  add(OC::LoKey, Int, "lokey", 0, 127,   0, dsp, OU::MidiKey, Sfz1);
+  add(OC::HiKey, Int, "hikey", 0, 127, 127, dsp, OU::MidiKey, Sfz1);
+  add(OC::LoVel, Int, "lovel", 0, 127,   0, dsp, OU::RawInt,  Sfz1);
+  add(OC::HiVel, Int, "hivel", 0, 127, 127, dsp, OU::RawInt,  Sfz1);
+  // todo: lochan, hichan, etc....
+
+  // Player pitch:
+  add(OC::PitchKeyCenter, Int, "pitch_keycenter", -127, 127, 60, dsp, OU::MidiKey,   Sfz1);
+  add(OC::Transpose,      Int, "transpose",       -127, 127,  0, dsp, OU::Semitones, Sfz1);
+  add(OC::Tune,           Int, "tune",            -100, 100,  0, dsp, OU::Cents,     Sfz1);
+
+  // Player amplifier:
+
 
   // Filter:
   dsp = DspType::Filter;
   add(OC::FilterCutoff, Flt, "cutoff", 20.f, 20000.f, 1000.f, dsp, OU::Hertz, Sfz1);
 
+  // ToDo: 
+  // -verify everything by comparing against the sfz spec
+  // -try to make the calls shorter by using shorter name in the Opcode enum and maybe define 
+  //  abbreviations for the units such as st for OT::Semitones
+  // -maybe split the SamplePlayer opcodes into input-controls, amplitude, pitch, etc. as
+  //  i done the spec...maybe name them PlayerPitch, PlayerAmp, PlayerResponseCtrl
 
-  // ToDo: try to make the calls shorter by:
-  // -use shorter name in the Opcode enum
+  // Filter types:
+  // SFZ 1: lpf_1p, hpf_1p, lpf_2p, hpf_2p, bpf_2p, brf_2p
+  // SFZ 2: lpf_4p, hpr_4p, lpf_6p, hpf_6p, bpf_1p, brf_1p, apf_1p, pkf_2p, lpf_2p_sv, hpf_2p_sv, 
+  //        bpf_2p_sv, brf_2p_sv, comb, pink.
+  // https://sfzformat.com/legacy/
+  // https://www.linuxsampler.org/sfz/
+  // ...it has 6-pole filters! :-O can we realize that with the current filter implementation 
+  // without increasing its memory footprint? maybe using 3 equal biquads in DF2 or TDF1?
+
 
   int dummy = 0;
 }
@@ -107,5 +126,42 @@ ToDo:
  member function here: generateReferenceManual() or something. It could perhaps take a couple of
  parameters to select formatting and sorting options. Maybe it could also be possible to show
  all opcodes that belong to a particular DSP or a particular spec, ie. filtering options.
+
+
+
+SFZ - Resources:
+https://sfzformat.com/legacy/   opcode reference
+https://www.linuxsampler.org/sfz/    has convenient list of opcodes, also for sfz v2
+https://en.wikipedia.org/wiki/SFZ_(file_format)
+https://github.com/sfz/tests/   test sfz files demonstrating various features
+https://sfzformat.com/headers/  reference for section headers in sfz files
+http://www.drealm.info/sfz/plj-sfz.xhtml  description of the sfz format
+https://www.kvraudio.com/forum/viewtopic.php?f=42&t=508861  kvr forum thread with documentation
+https://sfzinstruments.github.io/  collection of sfz instruments
+http://ariaengine.com/overview/sfz-format/
+http://doc.linuxsampler.org/sfz/
+https://noisesculpture.com/cakewalk-synthesizers/
+https://noisesculpture.com/cakewalk-synthesizers-downloads/
+
+
+https://sfzformat.com/software/players/  players (also open source)
+https://plugins4free.com/plugin/217/   sfz by rgcaudio
+
+open source sfz players:
+https://github.com/swesterfeld/liquidsfz/
+https://sfz.tools/sfizz/downloads
+https://github.com/altalogix/SFZero/
+https://github.com/s-oram/Grace/
+
+sfz compatibel samplers
+https://github.com/christophhart/HISE/
+
+deeper into the codebases:
+
+https://github.com/swesterfeld/liquidsfz/tree/master/lib
+https://github.com/swesterfeld/liquidsfz/blob/master/lib/synth.hh
+This seems to do it the simple way: it has a fixed number of voices and if they are used up, no
+more can be added - if i understand it correctly (see alloc_voice, line 230)
+
 
 */

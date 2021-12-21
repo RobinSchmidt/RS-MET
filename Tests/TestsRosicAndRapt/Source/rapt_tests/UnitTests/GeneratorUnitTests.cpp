@@ -1411,12 +1411,13 @@ bool samplerFilterTest()
 
   RAPT::rsStateVariableFilter<float, float> svf;
   svf.setSampleRate(fs);
-  svf.setMode(svf.LOWPASS);
   svf.setFrequency(cutoff);
   svf.setGain(G);  
+
+  svf.setMode(svf.LOWPASS);
+  svf.reset();
   for(int n = 0; n < N; n++)
     tgt[n] = svf.getSample(noise[n]);
-  //rsPlotVectors(noise, tgt);
   se.setRegionSetting(0, 0, PST::FilterType, (float) Type::lp_12);
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
   // We need a higher tolerance here that for the test before. 10^-6...that's about 120 dB SNR.
@@ -1431,8 +1432,22 @@ bool samplerFilterTest()
   se.setRegionSetting(0, 0, PST::FilterType, (float) Type::hp_12);
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
 
+  svf.setMode(svf.BANDPASS_SKIRT);
+  svf.reset();
+  for(int n = 0; n < N; n++)
+    tgt[n] = svf.getSample(noise[n]);
+  se.setRegionSetting(0, 0, PST::FilterType, (float) Type::bp_6_6);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
+
+
+
+
 
   // ToDo
+  // -Reduce the boilerplate by defining a lambda taking e.g. svf.LOWPASS and Type::lp_12
+  // -Implement mapping between filter-types from our enum and their sfz-strings.
+  // -Use that to allow defining filtering in the sfz.
+  // -SFZ 1 supports: lpf_1p, hpf_1p, lpf_2p, hpf_2p, bpf_2p, brf_2p
   // -Support the filter opcodes in the SFZ parser (type and cutoff - later reso). -> add a unit
   //  test to the "...FileIO" test which tests that.
   // -Add more filter modes. Make sure, they behave the same as in sfz+ and/or sfizz with respect

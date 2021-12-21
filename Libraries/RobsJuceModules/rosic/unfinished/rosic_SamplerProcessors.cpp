@@ -39,7 +39,11 @@ void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
     // output params should come last and be passed as pointers.
   case Type::BQ_Lowpass:  BQ::calculateCookbookLowpassCoeffs(
     i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
+
   case Type::BQ_Highpass: BQ::calculateCookbookHighpassCoeffs(
+    i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
+
+  case Type::BQ_Bandpass_Skirt: BQ::calculateCookbookBandpassConstSkirtCoeffsViaQ(
     i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
 
 
@@ -76,8 +80,9 @@ void rsSamplerFilter::processFrame(float& L, float& R)
   case Type::FO_Lowpass:  io = i.fo.getSample(io); break;
   case Type::FO_Highpass: io = i.fo.getSample(io); break;
 
-  case Type::BQ_Lowpass:  io = i.bqd.getSample(io); break;
-  case Type::BQ_Highpass: io = i.bqd.getSample(io); break;
+  case Type::BQ_Lowpass:        io = i.bqd.getSample(io); break;
+  case Type::BQ_Highpass:       io = i.bqd.getSample(io); break;
+  case Type::BQ_Bandpass_Skirt: io = i.bqd.getSample(io); break;
   };
   L = io.x; // Preliminary - as long as we are abusing rsVector2D for the signal
   R = io.y;
@@ -94,8 +99,9 @@ void rsSamplerFilter::resetState()
   case Type::FO_Lowpass:  i.fo.resetState();  return;
   case Type::FO_Highpass: i.fo.resetState();  return;
 
-  case Type::BQ_Lowpass:  i.bqd.resetState(); return;
-  case Type::BQ_Highpass: i.bqd.resetState(); return;
+  case Type::BQ_Lowpass:        i.bqd.resetState(); return;
+  case Type::BQ_Highpass:       i.bqd.resetState(); return;
+  case Type::BQ_Bandpass_Skirt: i.bqd.resetState(); return;
   }
   RAPT::rsError("Unknown filter type in rsSamplerFilter::resetState");
 }
