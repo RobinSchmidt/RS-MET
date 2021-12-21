@@ -22,17 +22,34 @@ void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
 {
   this->type = type;
   using FO = RAPT::rsOnePoleFilter<float, float>;
+  using BQ = RAPT::rsBiquadDesigner;  // maybe it should have a template parameter?
+
+  // Preliminary to cater for the API of rsBiquadDesigner - which should really be changed...
+  static const float s = (1/(2*PI));
+  float Q = sqrt(2.f);  // todo: find a conversion formula reso2q
+
   FilterImpl& i = impl;  // as abbreviation
   switch(type)
   {
-  case Type::FO_Lowpass:  FO::coeffsLowpassIIT( w, &i.fo.b0, &i.fo.b1, &i.fo.a1); break;
-  case Type::FO_Highpass: FO::coeffsHighpassMZT(w, &i.fo.b0, &i.fo.b1, &i.fo.a1); break;
+  case Type::FO_Lowpass:  FO::coeffsLowpassIIT( w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
+  case Type::FO_Highpass: FO::coeffsHighpassMZT(w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
+
+    // This API sucks - fix it! Should take w for the frequency (not freq and sample-rate), name
+    // should be much shorter (i.e. coeffsLowpassRBJ), output params should come last and be
+    // passed as pointers.
+  case Type::BQ_Lowpass: BQ::calculateCookbookLowpassCoeffs(i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1,
+    i.bqd.a2, 1.f, s*w, Q); return;
+
   }
+  RAPT::rsError("Unknown filter type in rsSamplerFilter::setup");
 
   // ToDo:
   // -Organize the Type enum in such a way that we can retrieve the filter topology from it via 
   //  bitmasking such that we do not need a branch for every type but only one for every topology.
   //  This will reduce the boilerplate a lot.
+  // -Make a consistent choice for all of RAPT whether a recursion coeffs of filters should have a 
+  //  minus sign or not and update all code accordingly. Make benchmarks what is faster, ask at KVR
+  //  what others do.
 }
 
 /*
@@ -55,6 +72,9 @@ void rsSamplerFilter::processFrame(float& L, float& R)
   {
   case Type::FO_Lowpass:  io = i.fo.getSample(io); break;
   case Type::FO_Highpass: io = i.fo.getSample(io); break;
+
+  case Type::BQ_Lowpass:  io = i.bqd.getSample(io); break;
+  case Type::BQ_Highpass: io = i.bqd.getSample(io); break;
   };
   L = io.x; // Preliminary - as long as we are abusing rsVector2D for the signal
   R = io.y;
@@ -68,8 +88,13 @@ void rsSamplerFilter::resetState()
   FilterImpl& i = impl;
   switch(type)
   {
-  case Type::FO_Lowpass: i.fo.resetState(); break;
+  case Type::FO_Lowpass:  i.fo.resetState();  return;
+  case Type::FO_Highpass: i.fo.resetState();  return;
+
+  case Type::BQ_Lowpass:  i.bqd.resetState(); return;
+  case Type::BQ_Highpass: i.bqd.resetState(); return;
   }
+  RAPT::rsError("Unknown filter type in rsSamplerFilter::resetState");
 }
 
 //=================================================================================================

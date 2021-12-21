@@ -217,7 +217,7 @@ protected:
     void initCoeffs() { b0 = TCoef(1); b1 = b2 = a1 = a2 = TCoef(0); }
     TSig getSample(const TSig& in)
     {
-      TSig y = b0*in + b1*x1 + b2*x2 - a1*y1 - a2*y2;  // compute output
+      TSig y = b0*in + b1*x1 + b2*x2 + a1*y1 + a2*y2;  // compute output
       x2 = x1; x1 = in; y2 = y1; y1 = y;               // update state
       return y;
     }
@@ -379,9 +379,16 @@ public:
       using TO = FilterType;            // enum used in the sfz opcode
       switch(sfzType)
       {
-      case TO::lp_6: return TC::FO_Lowpass;
-      case TO::hp_6: return TC::FO_Highpass;
+      case TO::lp_6:  return TC::FO_Lowpass;
+      case TO::hp_6:  return TC::FO_Highpass;
+
+      case TO::lp_12: return TC::BQ_Lowpass;    // ToDo: Use SVF as default implementation
+      case TO::hp_12: return TC::BQ_Highpass;   // for 2nd order filters...maybe...
+
+      //case TO::lp_12: return TC::SVF_Lowpass_12;
+      //case TO::hp_12: return TC::SVF_Highpass_12;
       }
+      RAPT::rsError("Unknown filter type in convertTypeEnum.");
       return TC::Unknown;
     }
 

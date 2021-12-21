@@ -1380,29 +1380,36 @@ bool samplerFilterTest()
   se.setRegionSetting(0, 0, PST::FilterType, (float) Type::hp_6);
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
 
+  // ToDo: 1st order allpass, low-shelf, high-shelf
 
-  /*
+  // 2nd order lowpass SVF:
   RAPT::rsStateVariableFilter<float, float> svf;
   svf.setSampleRate(fs);
+  svf.setMode(svf.LOWPASS);
   svf.setFrequency(cutoff);
-  //svf.setResonance(reso); // we need a conversion formula, resonance is in dB
+  //svf.setResonance(reso); // we need a conversion formula, sfz resonance is in dB
   for(int n = 0; n < N; n++)
     tgt[n] = svf.getSample(noise[n]);
-  //rsPlotVector(tgt);
-  */
+  //rsPlotVectors(noise, tgt);
+  se.setRegionSetting(0, 0, PST::FilterType, (float) Type::lp_12);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  // Fails! They look kinda similar though. It seems like one parameter setting is not quite the
+  // same
 
   // ToDo
-  // -Implement a 1st order lowpass. It think, we should generally use formulas that match the 
-  //  magnitude of the analog filter. I think, the algorithms by Martin Vicanek are quite nice:
-  //  use impulse-invariance for the poles and magnitude matching for the zeros. But to get the 
-  //  ball rolling, just use impulse invariance
+  // -Support the filter opcodes in the SFZ parser. -> add a unit test to the "...FileIO" test 
+  //  which tests that.
+  // -I think, we should generally use formulas that match the magnitude of the analog filter. I 
+  //  think, the algorithms by Martin Vicanek are quite nice: use impulse-invariance for the poles
+  //  and magnitude matching for the zeros. But to get the ball rolling, just use impulse 
+  //  invariance.
   // -Try to replicate the behavior of filters in sfz+ or sfizz
-  // -In RegionPlayer::buildProcessingChain, inquire that array, loop through it and add DSPs to
-  //  the dspChain as necessary. How to do that exactly should depend on override vs accumulate
-  //  mode setting. In override mode, we only need a dsp chain for the region, etc. ..But that
-  //  may be delegated to the subclass - we'll see
-  // -Because the resonance is given in dB, it could be re-used as gain for bell-filters. then,
-  //  an additional variable could be the bandwidth (in octaves). but figure out, how sfz does it.
+  // -Because the resonance is given in dB in sfz files, it could be re-used as gain for 
+  //  bell-filters. Then, an additional variable could be the bandwidth (in octaves). but figure 
+  //  out, how sfz does it. ...if it has specs for bell-filters, that is. If not, maybe start a 
+  //  thread on KVR about extending the sfz specs suitably.
+  // -Maybe include a slope filter. Cutoff may be re-interpreted as unit-gain freq, resonance,
+  //  which is in db, may be re-interpreted as dB/oct
 
   rsAssert(ok);
   return ok;
