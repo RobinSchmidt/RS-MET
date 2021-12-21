@@ -1310,6 +1310,27 @@ bool samplerEngineUnitTestFileIO()
   se2.loadFromSFZ("tmp.sfz");
   ok &= se2.isInSameStateAs(se);
 
+  // Test filter opcodes:
+  using FltType = rosic::Sampler::FilterType;
+  se.clearInstrument();
+  si = se.loadSampleToPool("Sin440Hz.wav"); ok &= si == 0;
+  gi = se.addGroup(); ok &= gi == 0;
+  ri = se.addRegion(0); ok &= ri == 0;
+  rc = se.setRegionSample(0, 0, 0); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f); ok &= rc == RC::success;
+  se.setRegionSetting(0, 0, PST::FilterType,   (float) FltType::lp_6);
+  se.setRegionSetting(0, 0, PST::FilterCutoff, 1000.f);
+  se.saveToSFZ("tmp.sfz");
+  se2.loadFromSFZ("tmp.sfz");
+  ok &= se2.isInSameStateAs(se);
+  se2.saveToSFZ("tmp2.sfz");
+  // This test actually passes but shouldn't! Also, tmp2.sfz is indeed equal to tmp.sfz. But:
+  // fil_type is stored as float in the sfz files, i.e. fil_type = 1.0000. What we want is 
+  // something like fil_type = lp_6. We need class SfzOpcodeTranslator which can translate back 
+  // and forth between the enum-values of the opcodes, their string representations, the mapping
+  // to DSP processor types and so on...
+
+
   // ToDo:
   // -maybe make a local function testSaveLoadRoundTrip(se, ...) that saves the state of se and 
   //  loads it into a new instance and produces and compares some output of both engines...it also
@@ -1412,8 +1433,8 @@ bool samplerFilterTest()
 
 
   // ToDo
-  // -Support the filter opcodes in the SFZ parser. -> add a unit test to the "...FileIO" test 
-  //  which tests that.
+  // -Support the filter opcodes in the SFZ parser (type and cutoff - later reso). -> add a unit
+  //  test to the "...FileIO" test which tests that.
   // -Add more filter modes. Make sure, they behave the same as in sfz+ and/or sfizz with respect
   //  to parameter settings.
   // -I think, we should generally use formulas that match the magnitude of the analog filter. I 
