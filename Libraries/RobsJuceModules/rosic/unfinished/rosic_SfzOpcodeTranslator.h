@@ -9,7 +9,7 @@ in the sfz specification. */
 enum class Opcode
 {
   // Input controls:
-  LoKey, HiKey, LoVel, HiVel,
+  LoKey = 0, HiKey, LoVel, HiVel,
   ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
 
   // Muted: convenient to switch regions or groups off wihthout removing them - check if 
@@ -39,8 +39,21 @@ enum class Opcode
   NumTypes    // do we need this? if not, remove
   //...tbc...
 };
+// The underlying integers for the opcodes in this enum must start at zero and increment by one.
+// Dont do something like FilterCutoff = 1000 etc. They must be usable as array indices and we dont
+// want to waste space
+
 // maybe don't capitalize first letter - make it conistent with other (newer) enums in the 
 // library. see community stadards recommendations...
+
+enum class OpcodeType
+{
+  Float,
+  Integer,
+  Boolean,
+  String
+};
+
 
 //-------------------------------------------------------------------------------------------------
 /** Enumeration of the different signal processor types that may be used in the definition of
@@ -49,7 +62,7 @@ opcodes, e.g. the presence of a FilterCutoff opcode dictates the presence of a f
 respective region. In order to facilitating to build the DSP chain for a region player,
 we also need an explicit representation of the DSP processor types. */
 
-enum class SignalProcessorType
+enum class SignalProcessorType  // rename to DspType or ProcessorType
 {
   SamplePlayer,
 
@@ -106,6 +119,8 @@ class SfzOpcodeTranslator // maybe rename to SfzDictionary, SfzTranslator
 
 public:
 
+  SfzOpcodeTranslator();
+
   // ToDo:
   const std::string& opcodeToString(Opcode op);
   Opcode stringToOpcode(const std::string& str);
@@ -118,6 +133,23 @@ public:
   // ...etc.
 
 protected:
+
+  /** Adds an opcode to our database. */
+  void addOpcode(Opcode op, OpcodeType type, const std::string& sfzStr, 
+    float minValue, float maxValue, float defaultValue, SignalProcessorType dspType);
+
+  struct OpcodeEntry
+  {                       // Examples
+    Opcode       op;      // Opcode::Cutoff
+    OpcodeType   type;    // OpcodeType::Float
+    std::string  str;     // cutoff
+    float        minVal;  // 20?
+    float        maxVal;  // 20000?
+    float        defVal;  // 1000?
+    SignalProcessorType dsp;
+  };
+
+  std::vector<OpcodeEntry> opcodeEntries;  // find a better name
 
   // Here, we may keep some "dictionary"-like data-structures to facilitate fast translations.
   // For the opcode-to-anything translations we want an O(1) complexity with small factors. It 

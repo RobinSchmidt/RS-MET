@@ -759,12 +759,8 @@ protected:
   bool groupSettingsOverride  = true;
   bool regionSettingsOverride = true;
 
-
-  // Our pools of DSP objects (under construction):
-  //std::vector<rsSamplerFilter*> idleFilters;
-  //std::vector<rsSamplerFilter>  filterPool;
-
-
+  // This object is used for various translation tasks:
+  SfzOpcodeTranslator sfzTranslator;
 
 
   //int numChannels = 2;
