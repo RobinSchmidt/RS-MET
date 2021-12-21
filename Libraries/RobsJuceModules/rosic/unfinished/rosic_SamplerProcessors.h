@@ -152,8 +152,11 @@ public:
     LDR_Lowpass_6,
     LDR_Lowpass_12,
     LDR_Lowpass_18,
-    LDR_Lowpass_24
+    LDR_Lowpass_24,
     //...
+
+
+    Unknown
   };
   // hmm...
   // -maybe split the type into two parts: topology (svf, ladder, etc.), mode (lpf, hpf, etc.)
@@ -328,26 +331,25 @@ public:
       params.reserve(3);
       addParameter(Opcode::FilterType);
       addParameter(Opcode::FilterCutoff);
-      addParameter(Opcode::FilterResonance);
+      addParameter(Opcode::FilterResonance);   // in sfz, this is a gain in dB
+      //addParameter(Opcode::FilterBandwidth);
       // Having to pass a magic number to reserve() is bad and error-prone -> try to find a better
       // way. The number of parameters is actually known at compile time. Maybe use std::array 
       // instead of std::vector...hmm...but the number varies between the subclasses, so the array
       // could not be a baseclass member then...hmm...
     }
+
     void prepareToPlay(double fs) override 
     { 
-      using TypeCore   = rsSamplerFilter::Type; // enum used in the DSP core
-      using TypeOpcode = FilterType;            // enum used in the sfz opcode
-      TypeCore type = TypeCore::FO_Lowpass;        // preliminary
+      FilterType sfzType = (FilterType)(int)params[0].getValue();
+      rsSamplerFilter::Type coreType = convertTypeEnum(sfzType);
       core.setup(
-        type, 
+        coreType,
         params[1].getValue() * float(2*PI/fs),
         params[2].getValue());
       core.resetState();
     }
     // ToDo:
-    // -try to avoid the translation step between the core-enum and sfz-enum - use a single
-    //  enum for both
     // -not ideal that this code depends on the order, how we add the params in the constructor
 
     void processFrame(rsFloat64x2& inOut) override 
@@ -365,8 +367,25 @@ public:
 
   protected:
 
-    rsSamplerFilter core;
+    rsSamplerFilter::Type convertTypeEnum(FilterType sfzType)
+    {
+      // Conversion of filter type enum values used in the sfz data and those used in the dsp core.
+      // Maybe we should try to avoid the translation step between the core-enum and sfz-enum by 
+      // using a single enum for both. I'm not yet sure, if that's practical - we'll see. It could
+      // turn out to be problematic when we want to use bit-twiddling of the enum-values to switch 
+      // between different filter topologies in the core while the sfz-type number must allow for
+      // lossless roundtrip with a float.
+      using TC = rsSamplerFilter::Type; // enum used in the DSP core
+      using TO = FilterType;            // enum used in the sfz opcode
+      switch(sfzType)
+      {
+      case TO::lp_6: return TC::FO_Lowpass;
+      case TO::hp_6: return TC::FO_Highpass;
+      }
+      return TC::Unknown;
+    }
 
+    rsSamplerFilter core;
   };
 
 

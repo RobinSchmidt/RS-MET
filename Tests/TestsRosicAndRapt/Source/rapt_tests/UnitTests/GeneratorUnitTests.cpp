@@ -1371,8 +1371,14 @@ bool samplerFilterTest()
   se.setRegionSetting(0, 0, PST::FilterType,      (float) Type::lp_6);
   se.setRegionSetting(0, 0, PST::FilterCutoff,    cutoff);
   se.setRegionSetting(0, 0, PST::FilterResonance, reso);   //  has no effect for lp_6
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
-  // predictably fails! filter is not yet implemented
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
+
+  // Now try the same with a 1st order highpass:
+  flt.setMode(flt.HIGHPASS_MZT);
+  for(int n = 0; n < N; n++)
+    tgt[n] = flt.getSample(noise[n]);
+  se.setRegionSetting(0, 0, PST::FilterType, (float) Type::hp_6);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
 
 
   /*
@@ -1395,6 +1401,8 @@ bool samplerFilterTest()
   //  the dspChain as necessary. How to do that exactly should depend on override vs accumulate
   //  mode setting. In override mode, we only need a dsp chain for the region, etc. ..But that
   //  may be delegated to the subclass - we'll see
+  // -Because the resonance is given in dB, it could be re-used as gain for bell-filters. then,
+  //  an additional variable could be the bandwidth (in octaves). but figure out, how sfz does it.
 
   rsAssert(ok);
   return ok;
@@ -1446,7 +1454,7 @@ bool samplerWaveShaperTest()
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
   se.setRegionSetting(0, 0, PST::DistShape, float(shape));
   se.setRegionSetting(0, 0, PST::DistDrive, drive);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
   rsAssert(ok);
   // ToDo:
   // -Try different shapes, use different sets of parameters, use DC, postGain, etc.
@@ -1494,9 +1502,13 @@ bool samplerProcessorsTest()
   //size = sizeof(SP::Filter);
   //size = sizeof(SP::WaveShaper);
 
-
   ok &= samplerFilterTest();
   ok &= samplerWaveShaperTest();
+
+  // ToDo:
+  // -Implement more DSP modules: echo, vibrato, flanger, phaser, chorus, etc., 
+  //  ...delay based algorithms could become a memory-hog when we need to pre-allocate many of 
+  //  them. Maybe let's stay away from them for the moment. How about freq-shifting?
 
 
   rsAssert(ok);
