@@ -21,11 +21,12 @@ void SignalProcessor::setParameter(Opcode opcode, float value)
 void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
 {
   this->type = type;
-  using P1Z1 = RAPT::rsOnePoleFilter<float, float>;
-
+  using FO = RAPT::rsOnePoleFilter<float, float>;
+  FilterImpl& i = impl;  // as abbreviation
   switch(type)
   {
-  case Type::FO_Lowpass: P1Z1::coeffsLowpassIIT(w, &impl.fo.b0, &impl.fo.b1, &impl.fo.a1); break;
+  case Type::FO_Lowpass:  FO::coeffsLowpassIIT( w, &i.fo.b0, &i.fo.b1, &i.fo.a1); break;
+  case Type::FO_Highpass: FO::coeffsHighpassMZT(w, &i.fo.b0, &i.fo.b1, &i.fo.a1); break;
   }
 
   // ToDo:
@@ -49,13 +50,13 @@ void rsSamplerFilter::updateCoeffs()
 void rsSamplerFilter::processFrame(float& L, float& R)
 {
   TSig io(L, R);
+  FilterImpl& i = impl;
   switch(type)
   {
-  case Type::FO_Lowpass: io = impl.fo.getSample(io); break;
+  case Type::FO_Lowpass:  io = i.fo.getSample(io); break;
+  case Type::FO_Highpass: io = i.fo.getSample(io); break;
   };
-
-  // Preliminary - as long as we are abusing rsVector2D for the signal:
-  L = io.x;
+  L = io.x; // Preliminary - as long as we are abusing rsVector2D for the signal
   R = io.y;
 
   // ...later, we want to use a simd type and retrieve the elements like so:
@@ -64,9 +65,10 @@ void rsSamplerFilter::processFrame(float& L, float& R)
 
 void rsSamplerFilter::resetState()
 {
+  FilterImpl& i = impl;
   switch(type)
   {
-  case Type::FO_Lowpass: impl.fo.resetState(); break;
+  case Type::FO_Lowpass: i.fo.resetState(); break;
   }
 }
 
@@ -85,12 +87,9 @@ SignalProcessorPool::~SignalProcessorPool()
 
 void SignalProcessorPool::allocateProcessors()
 {
-  filters.init(4);
-  waveShapers.init(4);
-
-                          // Debug  Release  ...these values make sense for development
-  //waveShapers.resize(4);  //   4      64
-  //filters.resize(8);      //   8     128
+                        // Debug  Release  ...these values make sense for development
+  filters.init(4);      //   4      64
+  waveShapers.init(4);  //   8     128
   // These numbers are preliminary. We need to do something more sensible here later. Perhaps, this 
   // function should be called when a new sfz is loaded and it should have arguments for how many
   // objects of each type are needed. The engine should analyze, how many filters, waveshapers, 
@@ -131,7 +130,8 @@ inline T* rsGetLastPtrAndShrink(std::vector<T>& v)
   return p;
 }
 */
-// maybe move to rapt
+// maybe move to rapt ...hmm...not needed anymore...perhaps delete...not sure, if they are useful
+// enough in general to include in the library
 
 SignalProcessor* SignalProcessorPool::grabProcessor(SignalProcessorType type)
 {
@@ -156,13 +156,6 @@ void SignalProcessorPool::repositProcessor(SignalProcessor* p)
   }
   RAPT::rsAssert(i != -1, "Reposited processor was not in pool");
 }
-
-
-
-
-
-
-
 
 }} // namespaces
 

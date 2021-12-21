@@ -183,7 +183,13 @@ protected:
   these. Then, we declare a member of the union type to store our data. */
 
   using TCoef = float;
-  using TSig  = RAPT::rsVector2D<float>;  // for stereo
+  using TSig  = RAPT::rsVector2D<float>;  
+  // for stereo, preliminary. maybe use rsSimdVector<float, 2> if possible, else 
+  // rsSimdVector<float, 4>...hmm...but that may increase the size of the struct. Maybe keep using
+  // rsVector2D but use simd within the computation, if possible - but let's not do premature
+  // optimizations...
+
+
   // todo: maybe templatize this class and use float for TPar, and rsfloat32x2 for TSig in the 
   // sampler
 
@@ -228,10 +234,10 @@ protected:
   {
     FilterImpl() {}             // without it, msc complains
 
-    OnePoleImpl fo;             // fo: "first order"
-    BiquadImpl  bqd;
-    SvfImpl     svf;
-    LadderImpl  ldr;
+    OnePoleImpl fo;             // first order
+    BiquadImpl  bqd;            // biquad
+    SvfImpl     svf;            // state variable filter
+    LadderImpl  ldr;            // ladder
   };
   // ToDo: implement reset/getSample etc. also in StateVars, etc. all these structs should provide 
   // the same API, but implement it in a way that is suitable to the given filter topology.
