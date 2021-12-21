@@ -201,7 +201,8 @@ protected:
 
   /** Adds an opcode to our database to make it available for later lookup. */
   void addOpcode(Opcode op, OpcodeFormat type, const std::string& sfzStr, 
-    float minValue, float maxValue, float defaultValue, DspType dspType);
+    float minValue, float maxValue, float defaultValue, 
+    DspType dspType, OpcodeUnit unit, OpcodeSpec spec);
 
   /** Structure for one record in our little database or lookup table. */
   struct OpcodeEntry

@@ -6,28 +6,33 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   using OC = Opcode;
   using OF = OpcodeFormat;
   using SP = DspType;
+  using OU = OpcodeUnit;
+  using OS = OpcodeSpec;
   opcodeEntries.resize((int)Opcode::NumTypes);
 
   // Sample playback:
-  addOpcode(OC::LoKey, OF::Integer, "lokey", 0, 127,   0, SP::SamplePlayer);
-  addOpcode(OC::HiKey, OF::Integer, "hikey", 0, 127, 127, SP::SamplePlayer);
-  addOpcode(OC::LoVel, OF::Integer, "lovel", 0, 127,   0, SP::SamplePlayer);
-  addOpcode(OC::HiVel, OF::Integer, "hivel", 0, 127, 127, SP::SamplePlayer);
+  addOpcode(OC::LoKey, OF::Integer, "lokey", 0, 127,   0, SP::SamplePlayer, OU::MidiKey, OS::Sfz_1);
+  addOpcode(OC::HiKey, OF::Integer, "hikey", 0, 127, 127, SP::SamplePlayer, OU::MidiKey, OS::Sfz_1);
+  addOpcode(OC::LoVel, OF::Integer, "lovel", 0, 127,   0, SP::SamplePlayer, OU::RawInt,  OS::Sfz_1);
+  addOpcode(OC::HiVel, OF::Integer, "hivel", 0, 127, 127, SP::SamplePlayer, OU::RawInt,  OS::Sfz_1);
 
   // Pitch:
-  addOpcode(OC::PitchKeyCenter, OF::Integer, "pitch_keycenter", -127, 127, 60, SP::SamplePlayer);
-  addOpcode(OC::Transpose,      OF::Integer, "transpose",       -127, 127,  0, SP::SamplePlayer);
-  addOpcode(OC::Tune,           OF::Integer, "tune",            -100, 100,  0, SP::SamplePlayer);
+  addOpcode(OC::PitchKeyCenter, OF::Integer, "pitch_keycenter", -127, 127, 60, SP::SamplePlayer, OU::MidiKey,   OS::Sfz_1);
+  addOpcode(OC::Transpose,      OF::Integer, "transpose",       -127, 127,  0, SP::SamplePlayer, OU::Semitones, OS::Sfz_1);
+  addOpcode(OC::Tune,           OF::Integer, "tune",            -100, 100,  0, SP::SamplePlayer, OU::Cents,     OS::Sfz_1);
 
   // Amplitude:
 
-
-
   // Filter:
-  addOpcode(OC::FilterCutoff, OF::Float, "cutoff", 20.f, 20000.f, 1000.f, SP::Filter);
+  addOpcode(OC::FilterCutoff, OF::Float, "cutoff", 20.f, 20000.f, 1000.f, SP::Filter, OU::Hertz, OS::Sfz_1);
   // verify min/max/def (i made them up!)
 
-  // ToDo: have a field for the unit: Hz, cents, semitones, noteNumber, dB, sec, beats, ...
+
+  // ToDo: try to make the calls shorter by:
+  // -define a lambda-function add to use in place of addOpcode
+  // -using abbreviations for OF::Integer, etc.
+  // -using abbreviations for SP::SamplePlayer etc. - if we collect the calls belonging to the same
+  //  DspType we can use variable dsp for that which we re-assign before the next round of calls
 
   int dummy = 0;
 }
@@ -39,11 +44,12 @@ inline void rsEnsureSize(std::vector<T>& v, size_t s)
     v.resize(s);
 } // maybe move to rapt
 void SfzOpcodeTranslator::addOpcode(Opcode op, OpcodeFormat type, const std::string& sfzStr,
-  float minVal, float maxVal, float defVal, DspType dspType)
+  float minVal, float maxVal, float defVal, DspType dspType, OpcodeUnit unit, OpcodeSpec spec)
 {
   int i = (int)op;
   rsEnsureSize(opcodeEntries, size_t(i+1));
-  opcodeEntries[i] = OpcodeEntry({ op, type, sfzStr, minVal, maxVal, defVal, dspType });
+  opcodeEntries[i] = 
+    OpcodeEntry({ op, type, sfzStr, minVal, maxVal, defVal, dspType, unit, spec });
   // Actually, storing the "op" is redundant because it's implicitly given by the array index, so
   // maybe remove that field...but maybe it's useful in other contexts
 }
