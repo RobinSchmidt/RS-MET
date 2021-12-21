@@ -1340,14 +1340,14 @@ bool samplerFilterTest()
   using Type = rosic::Sampler::FilterType;
 
   // Create a pinkish noise as example sample:
-  float fs     = 44100.f; // sample rate
-  float cutoff = 1000.f;  // filter cutoff
-  float reso   = 0.f;     // filter resonance
-  float slope  = -3.01;   // spectral slope of the noise
-  int   N      = 500;     // length of sample
-  VecF noise;             // noise sample
-  VecF tgt(N);            // target output in tests
-  VecF outL(N), outR(N);  // for the output signals
+  float fs       = 44100.f; // sample rate
+  float cutoff   = 1000.f;  // filter cutoff
+  float resoGain = 0.f;     // filter resonance gain in dB
+  float slope    = -3.01;   // spectral slope of the noise
+  int   N        = 500;     // length of sample
+  VecF  noise;              // noise sample
+  VecF  tgt(N);             // target output in tests
+  VecF  outL(N), outR(N);   // for the output signals
   noise = createColoredNoise(N, slope);   // maybe use a sawtooth wave instead
   //rsPlotVector(noise);
 
@@ -1370,11 +1370,12 @@ bool samplerFilterTest()
   se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f);
   se.setRegionSetting(0, 0, PST::FilterType,      (float) Type::lp_6);
   se.setRegionSetting(0, 0, PST::FilterCutoff,    cutoff);
-  se.setRegionSetting(0, 0, PST::FilterResonance, reso);   //  has no effect for lp_6
+  se.setRegionSetting(0, 0, PST::FilterResonance, resoGain);   //  has no effect for lp_6
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
 
   // Now try the same with a 1st order highpass:
   flt.setMode(flt.HIGHPASS_MZT);
+  flt.reset();
   for(int n = 0; n < N; n++)
     tgt[n] = flt.getSample(noise[n]);
   se.setRegionSetting(0, 0, PST::FilterType, (float) Type::hp_6);
@@ -1383,22 +1384,38 @@ bool samplerFilterTest()
   // ToDo: 1st order allpass, low-shelf, high-shelf
 
   // 2nd order lowpass SVF:
+  float G = 1.f / sqrt(2.f);  
+  // G is the linear resonance gain for SVF. Later, compute it from the resoGain sfz parameter
+  // which is the resonance gain in dB.
+
   RAPT::rsStateVariableFilter<float, float> svf;
   svf.setSampleRate(fs);
   svf.setMode(svf.LOWPASS);
   svf.setFrequency(cutoff);
-  //svf.setResonance(reso); // we need a conversion formula, sfz resonance is in dB
+  svf.setGain(G);  
   for(int n = 0; n < N; n++)
     tgt[n] = svf.getSample(noise[n]);
   //rsPlotVectors(noise, tgt);
   se.setRegionSetting(0, 0, PST::FilterType, (float) Type::lp_12);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
-  // Fails! They look kinda similar though. It seems like one parameter setting is not quite the
-  // same
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+  // We need a higher tolerance here that for the test before. 10^-6...that's about 120 dB SNR.
+  // ...is this good enough? well, it's a relative SNR - noise is always about 120 dB less than the
+  // actual signal, not the loudest possible signal...so, that should actually be enough...decide 
+  // later... we could use double precision in the whole signal processing chain...we'll see...
+
+  svf.setMode(svf.HIGHPASS);
+  svf.reset();
+  for(int n = 0; n < N; n++)
+    tgt[n] = svf.getSample(noise[n]);
+  se.setRegionSetting(0, 0, PST::FilterType, (float) Type::hp_12);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+
 
   // ToDo
   // -Support the filter opcodes in the SFZ parser. -> add a unit test to the "...FileIO" test 
   //  which tests that.
+  // -Add more filter modes. Make sure, they behave the same as in sfz+ and/or sfizz with respect
+  //  to parameter settings.
   // -I think, we should generally use formulas that match the magnitude of the analog filter. I 
   //  think, the algorithms by Martin Vicanek are quite nice: use impulse-invariance for the poles
   //  and magnitude matching for the zeros. But to get the ball rolling, just use impulse 

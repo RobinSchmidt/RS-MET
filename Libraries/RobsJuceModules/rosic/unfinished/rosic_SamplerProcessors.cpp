@@ -26,7 +26,7 @@ void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
 
   // Preliminary to cater for the API of rsBiquadDesigner - which should really be changed...
   static const float s = (1/(2*PI));
-  float Q = sqrt(2.f);  // todo: find a conversion formula reso2q
+  float Q = 1.f / sqrt(2.f);    // preliminary - todo: find a conversion formula reso2q
 
   FilterImpl& i = impl;  // as abbreviation
   switch(type)
@@ -34,11 +34,14 @@ void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
   case Type::FO_Lowpass:  FO::coeffsLowpassIIT( w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
   case Type::FO_Highpass: FO::coeffsHighpassMZT(w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
 
-    // This API sucks - fix it! Should take w for the frequency (not freq and sample-rate), name
-    // should be much shorter (i.e. coeffsLowpassRBJ), output params should come last and be
-    // passed as pointers.
-  case Type::BQ_Lowpass: BQ::calculateCookbookLowpassCoeffs(i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1,
-    i.bqd.a2, 1.f, s*w, Q); return;
+    // This API sucks - fix it! The functions should take w for the frequency (not freq in Hz and 
+    // sample-rate), their names should be much shorter (e.g. coeffsLowpassRBJ or just lowpassRBJ),
+    // output params should come last and be passed as pointers.
+  case Type::BQ_Lowpass:  BQ::calculateCookbookLowpassCoeffs(
+    i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
+  case Type::BQ_Highpass: BQ::calculateCookbookHighpassCoeffs(
+    i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
+
 
   }
   RAPT::rsError("Unknown filter type in rsSamplerFilter::setup");
