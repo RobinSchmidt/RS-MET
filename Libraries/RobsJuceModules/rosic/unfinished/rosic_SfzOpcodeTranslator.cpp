@@ -10,29 +10,31 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   using OS = OpcodeSpec;
   opcodeEntries.resize((int)Opcode::NumTypes);
 
+  // We need some abbreviations:
+  auto add = [this](OC op, OF fmt, const char* name, float minVal, float maxVal, float defVal,
+    SP dspType, OU unit, OS spec)
+  { addOpcode(op, fmt, name, minVal, maxVal, defVal, dspType, unit, spec); };
+  OF Int  = OF::Integer;
+  OF Flt  = OF::Float;
+  OS Sfz1 = OS::Sfz_1;
+
   // Sample playback:
-  addOpcode(OC::LoKey, OF::Integer, "lokey", 0, 127,   0, SP::SamplePlayer, OU::MidiKey, OS::Sfz_1);
-  addOpcode(OC::HiKey, OF::Integer, "hikey", 0, 127, 127, SP::SamplePlayer, OU::MidiKey, OS::Sfz_1);
-  addOpcode(OC::LoVel, OF::Integer, "lovel", 0, 127,   0, SP::SamplePlayer, OU::RawInt,  OS::Sfz_1);
-  addOpcode(OC::HiVel, OF::Integer, "hivel", 0, 127, 127, SP::SamplePlayer, OU::RawInt,  OS::Sfz_1);
-
-  // Pitch:
-  addOpcode(OC::PitchKeyCenter, OF::Integer, "pitch_keycenter", -127, 127, 60, SP::SamplePlayer, OU::MidiKey,   OS::Sfz_1);
-  addOpcode(OC::Transpose,      OF::Integer, "transpose",       -127, 127,  0, SP::SamplePlayer, OU::Semitones, OS::Sfz_1);
-  addOpcode(OC::Tune,           OF::Integer, "tune",            -100, 100,  0, SP::SamplePlayer, OU::Cents,     OS::Sfz_1);
-
-  // Amplitude:
+  SP dsp = DspType::SamplePlayer;
+  add(OC::LoKey,          Int, "lokey",              0, 127,   0, dsp, OU::MidiKey,   Sfz1);
+  add(OC::HiKey,          Int, "hikey",              0, 127, 127, dsp, OU::MidiKey,   Sfz1);
+  add(OC::LoVel,          Int, "lovel",              0, 127,   0, dsp, OU::RawInt,    Sfz1);
+  add(OC::HiVel,          Int, "hivel",              0, 127, 127, dsp, OU::RawInt,    Sfz1);
+  add(OC::PitchKeyCenter, Int, "pitch_keycenter", -127, 127,  60, dsp, OU::MidiKey,   Sfz1);
+  add(OC::Transpose,      Int, "transpose",       -127, 127,   0, dsp, OU::Semitones, Sfz1);
+  add(OC::Tune,           Int, "tune",            -100, 100,   0, dsp, OU::Cents,     Sfz1);
 
   // Filter:
-  addOpcode(OC::FilterCutoff, OF::Float, "cutoff", 20.f, 20000.f, 1000.f, SP::Filter, OU::Hertz, OS::Sfz_1);
-  // verify min/max/def (i made them up!)
+  dsp = DspType::Filter;
+  add(OC::FilterCutoff, Flt, "cutoff", 20.f, 20000.f, 1000.f, dsp, OU::Hertz, Sfz1);
 
 
   // ToDo: try to make the calls shorter by:
-  // -define a lambda-function add to use in place of addOpcode
-  // -using abbreviations for OF::Integer, etc.
-  // -using abbreviations for SP::SamplePlayer etc. - if we collect the calls belonging to the same
-  //  DspType we can use variable dsp for that which we re-assign before the next round of calls
+  // -use shorter name in the Opcode enum
 
   int dummy = 0;
 }
