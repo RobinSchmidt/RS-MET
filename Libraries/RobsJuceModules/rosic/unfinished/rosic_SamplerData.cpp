@@ -6,6 +6,9 @@ namespace Sampler {
 
 float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type)
 {
+  // todo: use the SfzOpcodeTranslator like:
+  // return sfzTranslator.getOpcodeDefaultValue(type)
+
   using TP = Opcode;
   switch(type)
   {
@@ -42,7 +45,7 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type)
 
 SignalProcessorType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
 {
-  //return SignalProcessorType::Unknown;
+  // ToDo: return sfzTranslator.getOpcodeProcessorType(type)
 
   using TP = Opcode;
   using SP = SignalProcessorType;

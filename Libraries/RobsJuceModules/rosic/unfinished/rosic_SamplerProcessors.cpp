@@ -13,7 +13,7 @@ void SignalProcessor::setParameter(Opcode opcode, float value)
     if(params[i].getOpcode() == opcode) {
       params[i].setValue(value);
       return; }}
-  RAPT::rsError("Parameter not found in DSP");
+  RAPT::rsError("Parameter not found in SignalProcessor::setParameter");
 }
 
 //=================================================================================================
@@ -25,7 +25,7 @@ void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
   using BQ = RAPT::rsBiquadDesigner;  // maybe it should have a template parameter?
 
   // Preliminary to cater for the API of rsBiquadDesigner - which should really be changed...
-  static const float s = (1/(2*PI));
+  static const float s = float(1/(2*PI));
   float Q = 1.f / sqrt(2.f);    // preliminary - todo: find a conversion formula reso2q
 
   FilterImpl& i = impl;  // as abbreviation

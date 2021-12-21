@@ -31,88 +31,6 @@ enum rsReturnCode
 
 //=================================================================================================
 
-/** Enumeration of the different signal processor types that may be used in the definition of
-instruments. What kinds of processors are used within a region is implicitly determined by the sfz 
-opcodes, e.g. the presence of a FilterCutoff opcode dictates the presence of a filter within the 
-respective region. In order to facilitating to build the DSP chain for a region player,
-we also need an explicit representation of the DSP processor types. */
-enum class SignalProcessorType
-{
-  SamplePlayer,
-
-  // The modulators:
-  // AmpEnv, FilterEnv, PitchEnv, AmpLFO, ...
-
-  // The actual DSP processors:
-  Filter,
-  WaveShaper,
-
-  Unknown
-};
-
-/** Enumeration of possible types of settings. These types correspond to the opcodes defined
-in the sfz specification. */
-enum class Opcode
-{
-  // Input controls:
-  LoKey, HiKey, LoVel, HiVel,
-  ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
-
-  // Muted: convenient to switch regions or groups off wihthout removing them - check if 
-  // sfz has such a thing
-
-  // Pitch:
-  PitchKeyCenter, Transpose, Tune,
-
-  // Amplitude:
-  Volume, Pan, PanRule,
-  AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
-  // ToDo: Width, Position
-
-  // Player:
-  Delay, Offset,
-  // ToDo: loop-stuff
-
-  // Filter:
-  FilterType, FilterCutoff, FilterResonance,
-
-  // Some of my own extensions
-  // Distortion:
-  DistShape, DistDrive,  // DistGain...may be redundant with Volume
-
-
-  Unknown,
-  NumTypes
-  //...tbc...
-};
-// maybe don't capitalize first letter - make it conistent with other (newer) enums in the 
-// library. see community stadards recommendations...
-
-enum class FilterType
-{
-  off, lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6,
-
-  numFilterTypes
-};
-
-enum class PanRule
-{
-  linear, sinCos,
-
-  numPanRules
-};
-// Or maybe it should be called PanLaw? Maybe have different variations with respect to total
-// gain - for linear: either factor 2 for hard left/right setting or a factor of 0.5 for a 
-// center setting. The former would imply that with neutral default settings, stereo samples 
-// are played as is. The latter would imply that hard-panned mono samples would be played as is
-// on their respective channel. Both behaviors may be useful, although, it would be a bit 
-// redundant because we also have an overall gain parameter as well which can always be used to 
-// compensate...although a factor of exactly 2 or 0.5 may be hard to achieve because gain is 
-// given in dB, so the sfz file would have to specify +-6.0205999132796239....., which is 
-// inconvenient
-
-//=================================================================================================
-
 /** Data structure to define sample based instruments conforming to the sfz specification. */
 
 class rsSamplerData // todo: move into its own pair of .h/.cpp files, rename to rsSamplerData
@@ -687,6 +605,9 @@ protected:
 
 
 
+  //const SfzOpcodeTranslator& sfzTranslator;
+  // ToDo: Require such a reference to be passed to the constructor. The object should be owned
+  // by the SamplerEngine. Maybe use a pointer.
 
 };
 
