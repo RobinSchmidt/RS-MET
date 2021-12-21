@@ -1437,11 +1437,20 @@ bool samplerFilterTest()
   for(int n = 0; n < N; n++)
     tgt[n] = svf.getSample(noise[n]);
   se.setRegionSetting(0, 0, PST::FilterType, (float) Type::bp_6_6);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+
+  svf.setMode(svf.BANDREJECT);
+  svf.reset();
+  for(int n = 0; n < N; n++)
+    tgt[n] = svf.getSample(noise[n]);
+  se.setRegionSetting(0, 0, PST::FilterType, (float) Type::br_6_6);
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
-
-
-
-
+  // This fails! they look very similar though. Maybe there are different definitions in place for
+  // how to intepret the resoGain parameter. It's questionable anyway, if we have implemented
+  // to correct behavior as sfz wants it. This needs to be verified! Maybe compare to directly
+  // using an RBJ biquad. And/or maybe try using the filters with double precision. Maybe its a 
+  // numerical issue - although the error is visible, so that's perhaps a bit too much for roundoff
+  // errors.
 
   // ToDo
   // -Reduce the boilerplate by defining a lambda taking e.g. svf.LOWPASS and Type::lp_12

@@ -126,7 +126,13 @@ ToDo:
  member function here: generateReferenceManual() or something. It could perhaps take a couple of
  parameters to select formatting and sorting options. Maybe it could also be possible to show
  all opcodes that belong to a particular DSP or a particular spec, ie. filtering options.
-
+-To support the opcodes with an attached "N", i.e. those to which the author can append a number,
+ we should strip off the number in stringToOpcode and maybe return a std::pair<Opcode, int> 
+ instead of just an opcode. In the toString conversion, maybe have an optional index parameter
+ defaulting to -1 and append it to the string when != -1. Test this by trying two filters in 
+ series (maybe highpass and lowpass). Maybe test the following dsp chain: 
+   lowpass -> waveshaper -> lowpass -> waveshaper -> equalizer
+ with 3 filters and 2 waveshapers
 
 
 SFZ - Resources:

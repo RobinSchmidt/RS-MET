@@ -34,18 +34,17 @@ void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
   case Type::FO_Lowpass:  FO::coeffsLowpassIIT( w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
   case Type::FO_Highpass: FO::coeffsHighpassMZT(w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
 
-    // This API sucks - fix it! The functions should take w for the frequency (not freq in Hz and 
-    // sample-rate), their names should be much shorter (e.g. coeffsLowpassRBJ or just lowpassRBJ),
-    // output params should come last and be passed as pointers.
+  // This API sucks - fix it! The functions should take w for the frequency (not freq in Hz and 
+  // sample-rate), their names should be much shorter (e.g. coeffsLowpassRBJ or just lowpassRBJ),
+  // output params should come last and be passed as pointers.
   case Type::BQ_Lowpass:  BQ::calculateCookbookLowpassCoeffs(
     i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
-
   case Type::BQ_Highpass: BQ::calculateCookbookHighpassCoeffs(
     i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
-
   case Type::BQ_Bandpass_Skirt: BQ::calculateCookbookBandpassConstSkirtCoeffsViaQ(
     i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
-
+  case Type::BQ_Bandstop: BQ::calculateCookbookBandrejectCoeffsViaQ(
+    i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
 
   }
   RAPT::rsError("Unknown filter type in rsSamplerFilter::setup");
@@ -83,6 +82,7 @@ void rsSamplerFilter::processFrame(float& L, float& R)
   case Type::BQ_Lowpass:        io = i.bqd.getSample(io); break;
   case Type::BQ_Highpass:       io = i.bqd.getSample(io); break;
   case Type::BQ_Bandpass_Skirt: io = i.bqd.getSample(io); break;
+  case Type::BQ_Bandstop:       io = i.bqd.getSample(io); break;
   };
   L = io.x; // Preliminary - as long as we are abusing rsVector2D for the signal
   R = io.y;
@@ -102,6 +102,7 @@ void rsSamplerFilter::resetState()
   case Type::BQ_Lowpass:        i.bqd.resetState(); return;
   case Type::BQ_Highpass:       i.bqd.resetState(); return;
   case Type::BQ_Bandpass_Skirt: i.bqd.resetState(); return;
+  case Type::BQ_Bandstop:       i.bqd.resetState(); return;
   }
   RAPT::rsError("Unknown filter type in rsSamplerFilter::resetState");
 }

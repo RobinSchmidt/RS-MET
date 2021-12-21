@@ -132,7 +132,7 @@ enum class DspType  // rename to DspType or ProcessorType
 
 enum class FilterType
 {
-  off = 0, lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6,
+  off = 0, lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6, // SFZ 1.0 types
 
   numFilterTypes
 };
