@@ -1373,7 +1373,8 @@ bool samplerFilterTest()
   //rsPlotVector(noise);
 
   // Filter the noise with a 1st order LPF to establish the target signal:
-  RAPT::rsOnePoleFilter<float, float> flt;
+  using OPF =   RAPT::rsOnePoleFilter<float, float>;
+  OPF flt;
   flt.setMode(flt.LOWPASS_IIT);
   flt.setSampleRate(fs);
   flt.setCutoff(cutoff);
@@ -1402,55 +1403,58 @@ bool samplerFilterTest()
   se.setRegionSetting(0, 0, PST::FilterType, (float) Type::hp_6);
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
 
+
+
+
+  // Test the sampler's 1st order modes against the 1-pole-1-zero implementation from RAPT:
+  auto testAgainstOpf = [&](OPF::modes opfMode, Type sfzType, bool plot)
+  {
+    flt.setMode(opfMode);
+    flt.reset();
+    for(int n = 0; n < N; n++)
+      tgt[n] = flt.getSample(noise[n]);
+    se.setRegionSetting(0, 0, PST::FilterType, (float) sfzType);
+    return testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, plot);
+
+  };
+  ok &= testAgainstOpf(flt.LOWPASS_IIT,  Type::lp_6, true);
+  ok &= testAgainstOpf(flt.HIGHPASS_MZT, Type::hp_6, true);
   // ToDo: 1st order allpass, low-shelf, high-shelf
 
-  // 2nd order lowpass SVF:
-  float G = 1.f / sqrt(2.f);  
-  // G is the linear resonance gain for SVF. Later, compute it from the resoGain sfz parameter
-  // which is the resonance gain in dB.
 
-  RAPT::rsStateVariableFilter<float, float> svf;
+  // Test the sampler's 2nd order modes against the SVF implementation from RAPT:
+  using SVF = RAPT::rsStateVariableFilter<float, float>;
+  SVF svf;
   svf.setSampleRate(fs);
   svf.setFrequency(cutoff);
-  svf.setGain(G);  
-
-  svf.setMode(svf.LOWPASS);
-  svf.reset();
-  for(int n = 0; n < N; n++)
-    tgt[n] = svf.getSample(noise[n]);
-  se.setRegionSetting(0, 0, PST::FilterType, (float) Type::lp_12);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
-  // We need a higher tolerance here that for the test before. 10^-6...that's about 120 dB SNR.
-  // ...is this good enough? well, it's a relative SNR - noise is always about 120 dB less than the
-  // actual signal, not the loudest possible signal...so, that should actually be enough...decide 
-  // later... we could use double precision in the whole signal processing chain...we'll see...
-
-  svf.setMode(svf.HIGHPASS);
-  svf.reset();
-  for(int n = 0; n < N; n++)
-    tgt[n] = svf.getSample(noise[n]);
-  se.setRegionSetting(0, 0, PST::FilterType, (float) Type::hp_12);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
-
-  svf.setMode(svf.BANDPASS_SKIRT);
-  svf.reset();
-  for(int n = 0; n < N; n++)
-    tgt[n] = svf.getSample(noise[n]);
-  se.setRegionSetting(0, 0, PST::FilterType, (float) Type::bp_6_6);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
-
-  svf.setMode(svf.BANDREJECT);
-  svf.reset();
-  for(int n = 0; n < N; n++)
-    tgt[n] = svf.getSample(noise[n]);
-  se.setRegionSetting(0, 0, PST::FilterType, (float) Type::br_6_6);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
-  // This fails! they look very similar though. Maybe there are different definitions in place for
+  float G = 1.f / sqrt(2.f); // G is the linear resonance gain for SVF. Later, compute it from the
+  svf.setGain(G);            // resoGain sfz parameter which is the resonance gain in dB.
+  auto testAgainstSvf = [&](SVF::modes svfMode, Type sfzType, bool plot)
+  {
+    svf.setMode(svfMode);
+    svf.reset();
+    for(int n = 0; n < N; n++)
+      tgt[n] = svf.getSample(noise[n]);
+    se.setRegionSetting(0, 0, PST::FilterType, (float) sfzType);
+    return testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, plot);
+    // Tolerance needs to be a bit higher for 2nd order filters. 1/10^6 corresponds to a relative
+    // SNR of 120 dB. It's "relative" in the sense that it is measured against the actual signal 
+    // level and not against the maximum possible signal level (i think).
+  };
+  ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  true);
+  ok &= testAgainstSvf(svf.HIGHPASS,       Type::hp_12,  true);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, true);
+  //ok &= testAgainstSvf(svf.BANDREJECT,     Type::br_6_6, true);
+  // BRF fails! they look very similar though. Maybe there are different definitions in place for
   // how to intepret the resoGain parameter. It's questionable anyway, if we have implemented
   // to correct behavior as sfz wants it. This needs to be verified! Maybe compare to directly
   // using an RBJ biquad. And/or maybe try using the filters with double precision. Maybe its a 
   // numerical issue - although the error is visible, so that's perhaps a bit too much for roundoff
   // errors.
+
+  // ToDo: write and use a similar function testAgainstFirtsOrder
+
+
 
   // ToDo
   // -Reduce the boilerplate by defining a lambda taking e.g. svf.LOWPASS and Type::lp_12

@@ -18,7 +18,7 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   OF Flt  = OF::Float;
   OS Sfz1 = OS::Sfz_1;
 
-  // Player response control ("Input Control"):
+  // Player response constraints (aka "Input Control" in the sfz doc):
   SP dsp = DspType::SamplePlayer;
   add(OC::LoKey, Int, "lokey", 0, 127,   0, dsp, OU::MidiKey, Sfz1);
   add(OC::HiKey, Int, "hikey", 0, 127, 127, dsp, OU::MidiKey, Sfz1);
@@ -27,23 +27,32 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   // todo: lochan, hichan, etc....
 
   // Player pitch:
-  add(OC::PitchKeyCenter, Int, "pitch_keycenter", -127, 127, 60, dsp, OU::MidiKey,   Sfz1);
-  add(OC::Transpose,      Int, "transpose",       -127, 127,  0, dsp, OU::Semitones, Sfz1);
-  add(OC::Tune,           Int, "tune",            -100, 100,  0, dsp, OU::Cents,     Sfz1);
+  add(OC::PitchKeyCenter, Int, "pitch_keycenter", -127, 127, 60, dsp, OU::MidiKey,   Sfz1); // verify!
+  add(OC::Transpose,      Int, "transpose",       -127, 127,  0, dsp, OU::Semitones, Sfz1); // verify!
+  add(OC::Tune,           Int, "tune",            -100, 100,  0, dsp, OU::Cents,     Sfz1); // verify!
 
   // Player amplifier:
 
 
   // Filter:
   dsp = DspType::Filter;
-  add(OC::FilterCutoff, Flt, "cutoff", 20.f, 20000.f, 1000.f, dsp, OU::Hertz, Sfz1);
+  add(OC::FilterType, Flt, "fil_type", (float)FilterType::Unknown + 1.f, 
+    (float)FilterType::numFilterTypes - 1.f, (float)FilterType::lp_6, dsp, OU::Text, Sfz1); // verify!
+  add(OC::FilterCutoff, Flt, "cutoff", 20.f, 20000.f, 1000.f, dsp, OU::Hertz, Sfz1); // probably wrong!
+
+
+
+
 
   // ToDo: 
-  // -verify everything by comparing against the sfz spec
+  // -verify everything (min,max,defaults,etc.) by comparing against the sfz spec
   // -try to make the calls shorter by using shorter name in the Opcode enum and maybe define 
   //  abbreviations for the units such as st for OT::Semitones
   // -maybe split the SamplePlayer opcodes into input-controls, amplitude, pitch, etc. as
   //  i done the spec...maybe name them PlayerPitch, PlayerAmp, PlayerResponseCtrl
+  // -maybe keep a separate list of (yet) unsupported opcodes
+  // -create similar lists for the filter types and other text parameters
+  // -maybe factor out the different table creations into separate functions
 
   // Filter types:
   // SFZ 1: lpf_1p, hpf_1p, lpf_2p, hpf_2p, bpf_2p, brf_2p
