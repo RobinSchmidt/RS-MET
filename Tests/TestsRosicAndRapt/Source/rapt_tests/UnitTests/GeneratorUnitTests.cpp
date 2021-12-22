@@ -1372,16 +1372,6 @@ bool samplerFilterTest()
   noise = createColoredNoise(N, slope);   // maybe use a sawtooth wave instead
   //rsPlotVector(noise);
 
-  // Filter the noise with a 1st order LPF to establish the target signal:
-  using OPF =   RAPT::rsOnePoleFilter<float, float>;
-  OPF flt;
-  flt.setMode(flt.LOWPASS_IIT);
-  flt.setSampleRate(fs);
-  flt.setCutoff(cutoff);
-  for(int n = 0; n < N; n++)
-    tgt[n] = flt.getSample(noise[n]);
-  //rsPlotVectors(noise, tgt);
-
   // Create and set up sampler engine:
   SE se;
   float *pSmp = &noise[0];
@@ -1390,23 +1380,14 @@ bool samplerFilterTest()
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f);
-  se.setRegionSetting(0, 0, PST::FilterType,      (float) Type::lp_6);
   se.setRegionSetting(0, 0, PST::FilterCutoff,    cutoff);
-  se.setRegionSetting(0, 0, PST::FilterResonance, resoGain);   //  has no effect for lp_6
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
+  se.setRegionSetting(0, 0, PST::FilterResonance, resoGain); // affects only 2nd order modes
 
-  // Now try the same with a 1st order highpass:
-  flt.setMode(flt.HIGHPASS_MZT);
-  flt.reset();
-  for(int n = 0; n < N; n++)
-    tgt[n] = flt.getSample(noise[n]);
-  se.setRegionSetting(0, 0, PST::FilterType, (float) Type::hp_6);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
-
-
-
-
-  // Test the sampler's 1st order modes against the 1-pole-1-zero implementation from RAPT:
+  // Test the sampler's 1st order filter modes against the 1-pole-1-zero implementation from RAPT:
+  using OPF = RAPT::rsOnePoleFilter<float, float>;
+  OPF flt;
+  flt.setSampleRate(fs);
+  flt.setCutoff(cutoff);
   auto testAgainstOpf = [&](OPF::modes opfMode, Type sfzType, bool plot)
   {
     flt.setMode(opfMode);
@@ -1417,12 +1398,19 @@ bool samplerFilterTest()
     return testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, plot);
 
   };
-  ok &= testAgainstOpf(flt.LOWPASS_IIT,  Type::lp_6, true);
-  ok &= testAgainstOpf(flt.HIGHPASS_MZT, Type::hp_6, true);
-  // ToDo: 1st order allpass, low-shelf, high-shelf
+  ok &= testAgainstOpf(flt.LOWPASS_IIT,  Type::lp_6, false);
+  ok &= testAgainstOpf(flt.HIGHPASS_MZT, Type::hp_6, false);
+  // ToDo: 
+  // -Add 1st order allpass, low-shelf, high-shelf. These modes are not defined in sfz, maybe 
+  //  define an extension - but first figure out, if there are already suitable extensions in use
+  //  and if not, consult other sampler engine writers KVR to find common standard. Maybe ls_6, 
+  //  hs_6 and ap_6 could be used - although the 6 would be kinda wrong here because in alpasses,
+  //  there's no slope at all and in shelvers there's no asymptotic slope
+  // -Trying to render a note before setting up the filter type will trigger an error because
+  //  the filter's default setting for the type is "Unknown" -> fix this! Use maybe lp_6 as 
+  //  default (check, what sfz prescribes as default and use that)
 
-
-  // Test the sampler's 2nd order modes against the SVF implementation from RAPT:
+  // Test the sampler's 2nd order filter modes against the SVF implementation from RAPT:
   using SVF = RAPT::rsStateVariableFilter<float, float>;
   SVF svf;
   svf.setSampleRate(fs);
@@ -1441,9 +1429,9 @@ bool samplerFilterTest()
     // SNR of 120 dB. It's "relative" in the sense that it is measured against the actual signal 
     // level and not against the maximum possible signal level (i think).
   };
-  ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  true);
-  ok &= testAgainstSvf(svf.HIGHPASS,       Type::hp_12,  true);
-  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, true);
+  ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  false);
+  ok &= testAgainstSvf(svf.HIGHPASS,       Type::hp_12,  false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, false);
   //ok &= testAgainstSvf(svf.BANDREJECT,     Type::br_6_6, true);
   // BRF fails! they look very similar though. Maybe there are different definitions in place for
   // how to intepret the resoGain parameter. It's questionable anyway, if we have implemented
@@ -1452,11 +1440,11 @@ bool samplerFilterTest()
   // numerical issue - although the error is visible, so that's perhaps a bit too much for roundoff
   // errors.
 
-  // ToDo: write and use a similar function testAgainstFirtsOrder
-
-
-
   // ToDo
+  // -Maybe change the default filter type to make it work even the fil_type opcode is missing.
+  //  Currently, we trigger an error when e.g.
+  //    se.setRegionSetting(0, 0, PST::FilterType, (float) Type::lp_6);
+  //  is not being called before playing a note because then, the filter is in "Unknown" mode.
   // -Reduce the boilerplate by defining a lambda taking e.g. svf.LOWPASS and Type::lp_12
   // -Implement mapping between filter-types from our enum and their sfz-strings.
   // -Use that to allow defining filtering in the sfz.
