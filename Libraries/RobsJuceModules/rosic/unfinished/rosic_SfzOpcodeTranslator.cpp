@@ -28,37 +28,62 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   add(OC::HiKey, Nat, "hikey", 0, 127, 127, dsp, OU::MidiKey, Sfz1);
   add(OC::LoVel, Nat, "lovel", 0, 127,   0, dsp, OU::RawInt,  Sfz1);
   add(OC::HiVel, Nat, "hivel", 0, 127, 127, dsp, OU::RawInt,  Sfz1);
-  // todo: lochan, hichan, loccN, hiccN, etc....
 
   // Player playback settings:
   add(OC::Delay,  Flt, "delay",  0,        100, 0, dsp, OU::Seconds, Sfz1);
   add(OC::Offset, Nat, "offset", 0, 4294967296, 0, dsp, OU::Samples, Sfz1);
   add(OC::Count,  Nat, "count",  0, 4294967296, 0, dsp, OU::RawInt,  Sfz1);
+
   add(OC::LoopMode, Txt, "loop_mode",  (float)LoopMode::Unknown + 1.f, 
     (float)LoopMode::numModes - 1.f, (float)LoopMode::no_loop, dsp, OU::Text, Sfz1);
+  // In sfz, the default value depends on whether or not the sample file itself defines a loop,
+  // if yes: continuous, if not: no loop
+
   add(OC::LoopStart, Nat, "loop_start", 0, 4294967296, 0, dsp, OU::Samples, Sfz1);
+  // If not specified, the defined value in the sample will be used, if any, zero otherwise.
+
   add(OC::LoopEnd,   Nat, "loop_end",   0, 4294967296, 0, dsp, OU::Samples, Sfz1);
+  // If not specified, the defined value in the sample will be used, if any.
 
   // Player pitch:
-  add(OC::PitchKeyCenter, Int, "pitch_keycenter", -127, 127, 60, dsp, OU::MidiKey,   Sfz1); // verify!
-  add(OC::Transpose,      Int, "transpose",       -127, 127,  0, dsp, OU::Semitones, Sfz1); // verify!
-  add(OC::Tune,           Int, "tune",            -100, 100,  0, dsp, OU::Cents,     Sfz1); // verify!
-
-  // Player amplifier:
-
+  add(OC::Transpose,      Int, "transpose",       -127, 127,  0, dsp, OU::Semitones, Sfz1);
+  add(OC::Tune,           Int, "tune",            -100, 100,  0, dsp, OU::Cents,     Sfz1);
+  add(OC::PitchKeyCenter, Nat, "pitch_keycenter",    0, 127, 60, dsp, OU::MidiKey,   Sfz1); 
+  // For pitch_keycenter, the spec actually says, -127..127 for the range but also C-1...G9 and 
+  // C-1 would map to 0. So, that's probably a mistake in the sfz documentation and they actually 
+  // mean 0..127. I assume this here but should check what other implementation do. In sfz files, 
+  // keycenter can be given numerically or textually as e.g. c#2, so the parser should support 
+  // midi-note to number conversion.
 
 
   // Filter:
   dsp = DspType::Filter;
   add(OC::FilType, Txt, "fil_type", (float)FilterType::Unknown + 1.f, 
-    (float)FilterType::numFilterTypes - 1.f, (float)FilterType::lp_6, dsp, OU::Text, Sfz1); // verify!
-  add(OC::Cutoff, Flt, "cutoff", 20.f, 20000.f, 1000.f, dsp, OU::Hertz, Sfz1); // probably wrong!
+    (float)FilterType::numFilterTypes - 1.f, (float)FilterType::lp_12, dsp, OU::Text, Sfz1); 
+  // sfz default is lpf_2p - maybe rename our enum values to be consistent with sfz
 
+  add(OC::Cutoff, Flt, "cutoff", 0.f, 22050.f, 22050.f, dsp, OU::Hertz, Sfz1);
+  // Range is 0..fs/2, default is: filter disabled, so perhaps, the default should depend on the 
+  // selected type: fs/2 for a lowpass, 0 for a highpass - figure out what sfz+ does
+
+  add(OC::Resonance, Flt, "resonance", 0.0f, +40.f, 0.f, dsp, OU::Decibels, Sfz1);
+  // In sfz, the resonance is adjusted in terms of the resonance gain in dB. If zero dB is the 
+  // minimum, does that mean there is always some resonance? Because without resonance, the gain
+  // at cutoff would be -3.01 dB, I think. Does the resonance parameter give the gain at the cutoff
+  // freq or at the peak? -> figure out experimentally or by looking at other implementations. 
+  // Maybe I should derive a formula for Q in terms of the resonance gain. The formula for the peak
+  // gain would probably be more complicated.
+
+  // Player amplifier:
+  add(OC::Volume, Flt, "volume", -144.f,   +6.f, 0.f, dsp, OU::Decibels, Sfz1);
+  add(OC::Pan,    Flt, "pan",    -100.f, +100.f, 0.f, dsp, OU::RawFloat, Sfz1);
 
 
 
 
   // ToDo: 
+  // -PanLaw
+  // -maybe rename our enum values to map 1:1 to the sfz opcode names
   // -Our single precision floating point representation of integers will run into issues for very 
   //  large integers like in the "offset" opcode where the range goes all the way up to 2^32. Maybe 
   //  switch to double. Or maybe use a union of float32, int32 and uint32. Maybe it's pointless 
@@ -79,6 +104,7 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   //        bpf_2p_sv, brf_2p_sv, comb, pink.
   // https://sfzformat.com/legacy/
   // https://www.linuxsampler.org/sfz/
+  // http://ariaengine.com/forums/index.php?p=/discussion/4389/arias-custom-opcodes/p1
   // ...it has 6-pole filters! :-O can we realize that with the current filter implementation 
   // without increasing its memory footprint? maybe using 3 equal biquads in DF2 or TDF1?
 
@@ -168,7 +194,7 @@ https://sfzformat.com/legacy/   opcode reference
 https://www.linuxsampler.org/sfz/    has convenient list of opcodes, also for sfz v2
 https://en.wikipedia.org/wiki/SFZ_(file_format)
 https://github.com/sfz/tests/   test sfz files demonstrating various features
-https://sfzformat.com/headers/  reference for section headers in sfz files
+https://sfzformat.com/headers/  reference for organization levels (group/region/...) sfz files
 http://www.drealm.info/sfz/plj-sfz.xhtml  description of the sfz format
 https://www.kvraudio.com/forum/viewtopic.php?f=42&t=508861  kvr forum thread with documentation
 https://sfzinstruments.github.io/  collection of sfz instruments
@@ -176,7 +202,6 @@ http://ariaengine.com/overview/sfz-format/
 http://doc.linuxsampler.org/sfz/
 https://noisesculpture.com/cakewalk-synthesizers/
 https://noisesculpture.com/cakewalk-synthesizers-downloads/
-
 
 https://sfzformat.com/software/players/  players (also open source)
 https://plugins4free.com/plugin/217/   sfz by rgcaudio
@@ -187,11 +212,11 @@ https://sfz.tools/sfizz/downloads
 https://github.com/altalogix/SFZero/
 https://github.com/s-oram/Grace/
 
-sfz compatibel samplers
+sfz compatible samplers
 https://github.com/christophhart/HISE/
+https://github.com/surge-synthesizer/shortcircuit-xt (not sure if it supports sfz)
 
 deeper into the codebases:
-
 https://github.com/swesterfeld/liquidsfz/tree/master/lib
 https://github.com/swesterfeld/liquidsfz/blob/master/lib/synth.hh
 This seems to do it the simple way: it has a fixed number of voices and if they are used up, no

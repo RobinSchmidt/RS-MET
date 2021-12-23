@@ -345,13 +345,13 @@ bool rsSamplerData::removeRegion(int gi, int ri)
   return instrument.groups[gi]->removeRegion(ri);
 }
 
-rsReturnCode rsSamplerData::setRegionSetting(int gi, int ri, Opcode type, float value)
+rsReturnCode rsSamplerData::setRegionSetting(int gi, int ri, Opcode type, float value, int index)
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
     return rsReturnCode::invalidIndex;
   }
-  instrument.groups[gi]->regions[ri]->setSetting(PlaybackSetting(type, value));  // new
+  instrument.groups[gi]->regions[ri]->setSetting(PlaybackSetting(type, value, index));  // new
 
   //instrument.groups[gi]->regions[ri]->settings.push_back(PlaybackSetting(type, value)); // old
   // Preliminary. We need to figure out, if that setting already exists and if so, just change 
@@ -372,14 +372,14 @@ rsReturnCode rsSamplerData::removeRegionSetting(int gi, int ri, Opcode type)
   else           return rsReturnCode::nothingToDo;
 }
 
-rsReturnCode rsSamplerData::setGroupSetting(int gi, Opcode type, float value)
+rsReturnCode rsSamplerData::setGroupSetting(int gi, Opcode type, float value, int index)
 {
   if(!isGroupIndexValid(gi)) {
     RAPT::rsError("Invalid group index");
     return rsReturnCode::invalidIndex;
   }
 
-  instrument.groups[gi]->settings.push_back(PlaybackSetting(type, value));
+  instrument.groups[gi]->settings.push_back(PlaybackSetting(type, value, index));
   // Preliminary. We need to figure out, if that setting already exists and if so, just change 
   // its value instead of pushing another value for the same parameter
 
@@ -397,9 +397,9 @@ rsReturnCode rsSamplerData::removeGroupSetting(int gi, Opcode type)
   else           return rsReturnCode::nothingToDo;
 }
 
-rsReturnCode rsSamplerData::setInstrumentSetting(Opcode type, float value)
+rsReturnCode rsSamplerData::setInstrumentSetting(Opcode type, float value, int index)
 {
-  instrument.settings.push_back(PlaybackSetting(type, value));
+  instrument.settings.push_back(PlaybackSetting(type, value, index));
   // Preliminary. see above
 
   return rsReturnCode::success;

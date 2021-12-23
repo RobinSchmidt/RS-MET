@@ -1465,7 +1465,38 @@ bool samplerFilterTest()
   // numerical issue - although the error is visible, so that's perhaps a bit too much for roundoff
   // errors.
 
+  // Try two filters in series (lowpass then highpass)
+  float cutoff1 = 2000.f;  // lowpass cutoff
+  float cutoff2 =  500.f;  // highpass cutoff
+  se.setRegionSetting(0, 0, PST::FilType, (float)Type::lp_6, 1);
+  se.setRegionSetting(0, 0, PST::Cutoff,  cutoff1, 1);
+  se.setRegionSetting(0, 0, PST::FilType, (float)Type::hp_6, 2);
+  se.setRegionSetting(0, 0, PST::Cutoff,  cutoff2, 2);
+
+  // Create target signal:
+  flt.setCutoff(cutoff1);
+  flt.setMode(flt.LOWPASS_IIT);
+  for(int n = 0; n < N; n++)
+    tgt[n] = flt.getSample(noise[n]);
+  flt.setCutoff(cutoff2);
+  flt.setMode(flt.HIGHPASS_MZT);
+  for(int n = 0; n < N; n++)
+    tgt[n] = flt.getSample(tgt[n]);
+  rsPlotVector(tgt);
+
+  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
+  // triggers "No processor available for DSP opcode" error
+  int dummy = 0;
+
+
+
+
+
+
+
   // ToDo
+  // -Try a series connection of waveshaper and filter in both possible orders - check if the order
+  //  is indeed determined by the first opcode that applies to the given dsp as it should be
   // -Maybe change the default filter type to make it work even the fil_type opcode is missing.
   //  Currently, we trigger an error when e.g.
   //    se.setRegionSetting(0, 0, PST::FilterType, (float) Type::lp_6);

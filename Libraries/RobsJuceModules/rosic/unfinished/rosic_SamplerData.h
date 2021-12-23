@@ -77,7 +77,12 @@ public:
   public:
 
 
-    PlaybackSetting(Opcode type, float value) { this->type = type; this->value = value; }
+    PlaybackSetting(Opcode type, float value, int index = -1) 
+    { 
+      this->type  = type; 
+      this->value = value; 
+      this->index = index;
+    }
 
     Opcode getType() const { return type; }
     // rename to getOpcode
@@ -121,7 +126,10 @@ public:
 
     Opcode type  = Opcode::Unknown;  // rename type to opcode
     float  value = 0.f;
+
     int    index = -1;  //< Used e.g. for conrol-change settings. Is -1, if not applicable.
+    // maybe use 1 as default - if there's only one such setting anyway, that seems appropriate
+    // index should always be a positive real number
   };
   // Maybe rename to Opcode - but no: "opcodes" are the strings that appear in the sfz file, such
   // "lokey". They map to the Type of the playback setting. Maybe this class should provide the
@@ -491,11 +499,12 @@ public:
     instrument.groups[gi]->regions[ri]->setSamplePath(samplePath);
   }
 
-  rsReturnCode setRegionSetting(int gi, int ri, Opcode type, float value);
+  rsReturnCode setRegionSetting(int gi, int ri, Opcode type, float value, int index = -1);
 
-  rsReturnCode setGroupSetting(int gi, Opcode type, float value);
+  rsReturnCode setGroupSetting(int gi, Opcode type, float value, int index = -1);
 
-  rsReturnCode setInstrumentSetting(Opcode type, float value);
+  rsReturnCode setInstrumentSetting(Opcode type, float value, int index = -1);
+  // rename to setGlobalSetting for sfz compliance
 
   rsReturnCode removeRegionSetting(int gi, int ri, Opcode type);
 

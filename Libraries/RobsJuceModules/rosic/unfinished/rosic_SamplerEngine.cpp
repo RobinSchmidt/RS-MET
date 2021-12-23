@@ -185,19 +185,19 @@ int rsSamplerEngine::setRegionSample(int gi, int ri, int si)
   return rsReturnCode::success;
 }
 
-int rsSamplerEngine::setRegionSetting(int gi, int ri, Opcode type, float value)
+int rsSamplerEngine::setRegionSetting(int gi, int ri, Opcode type, float value, int index)
 {
-  return sfz.setRegionSetting(gi, ri, type, value);
+  return sfz.setRegionSetting(gi, ri, type, value, index);
 }
 
-int rsSamplerEngine::setGroupSetting(int i, Opcode type, float value)
+int rsSamplerEngine::setGroupSetting(int i, Opcode type, float value, int index)
 {
-  return sfz.setGroupSetting(i, type, value);
+  return sfz.setGroupSetting(i, type, value, index);
 }
 
-int rsSamplerEngine::setInstrumentSetting(Opcode type, float value)
+int rsSamplerEngine::setInstrumentSetting(Opcode type, float value, int index)
 {
-  return sfz.setInstrumentSetting(type, value);
+  return sfz.setInstrumentSetting(type, value, index);
 }
 
 int rsSamplerEngine::setupFromSFZ(const rsSamplerData& newSfz)
@@ -1049,7 +1049,7 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     // Amp settings:
     case TP::Volume:  { amp      = RAPT::rsDbToAmp(val); } break;
     case TP::Pan:     { pan      = val;                  } break;
-    case TP::PanRule: { panRule  = (PanRule)(int)val;    } break;
+    case TP::PanLaw:  { panRule  = (PanRule)(int)val;    } break;
 
     // Pitch settings:
     //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller

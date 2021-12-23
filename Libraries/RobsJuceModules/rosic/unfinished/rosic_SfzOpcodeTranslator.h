@@ -4,9 +4,10 @@ namespace rosic { namespace Sampler {
 
 //-------------------------------------------------------------------------------------------------
 /** Enumeration of possible types of settings. These types correspond to the opcodes defined
-in the sfz specification. 
+in the sfz specification. At the moment, only a small fraction of the opcodes are supported by the
+engine but I have already integrated the full list into the enum.
 References:
-  https://sfzformat.com/legacy/   */
+  https://sfzformat.com/legacy/     */
 
 enum class Opcode
 {
@@ -16,7 +17,7 @@ enum class Opcode
   Sample,  // includes file extension (e.g. Piano.wav). path is realtive to the .sfz file.
 
   // Response Constraints (aka Input Controls):
-  LoChan, HiChan, LoKey, HiKey, LoVel, HiVel, LoCtrlN, HiCtrlN, LoBend, HiBend, 
+  LoChan, HiChan, LoKey, HiKey, Key, LoVel, HiVel, LoCtrlN, HiCtrlN, LoBend, HiBend, 
   LoChanAft, HiChanAft, LoPolyAft, HiPolyAft, LoRand, HiRand, LoBpm, HiBpm,
   SeqLength, SeqPosition, SwLoKey, SwHiKey, SwLast, SwDown, SwUp, SwPrevious, SwVel,
   Trigger, Group, OffBy, OffMode, OnLoCtrlN, OnHiCtrlN,
@@ -52,37 +53,128 @@ enum class Opcode
   FilLfoDelay, FilLfoFade, FilLfoFreq, FilLfoDepth, FilLfoDepthCtrlN, 
   FilLfoDepthChanAft, FilLfoDepthPolyAft, FilLfoFreqCtrlN, FilLfoFreqChanAft, FilLfoFreqPolyAft,
 
+  // Amplifier:
+  Volume, Pan, Width, Position, AmpKeyTrack, AmpKeyCenter, AmpVelTrack, AmpVelCurveN, AmpRandom,
+  RelTrigDecay, Output, GainCtrlN,
+  FadeInLoKey, FadeInHiKey, FadeOutLoKey, FadeOutHiKey, FadeCurveKey,
+  FadeInLoVel, FadeInHiVel, FadeOutLoVel, FadeOutHiVel, FadeCurveVel,
+  FadeInLoCtrlN, FadeInHiCtrlN, FadeOutLoCtrlN, FadeOutHiCtrlN, FadeCurveCtrl,
+
+  // Amplifier Envelope:
+  AmpEnvDelay, AmpEnvStart, AmpEnvAttack, AmpEnvHold, AmpEnvDecay, AmpEnvSustain,
+  AmpEnvRelease, /*AmpEnvDepth,*/ AmpEnvVel2Delay, AmpEnvVel2Attack, AmpEnvVel2Hold, 
+  AmpEnvVel2Decay, AmpEnvVel2Sustain, AmpEnvVel2Release, /*AmpEnvVel2Depth,*/
+  AmpEnvDelayCtrlN, AmpEnvStartCtrlN, AmpEnvAttackCtrlN, AmpEnvHoldCtrlN, AmpEnvDecayCtrlN, 
+  AmpEnvSustainCtrlN, AmpEnvReleaseCtrlN, 
+  // depth-parameters do not exist in sfz for amp-env. wouldn't make much sense, i guess
+
+    // Amplifier LFO:
+  AmpLfoDelay, AmpLfoFade, AmpLfoFreq, AmpLfoDepth, AmpLfoDepthCtrlN, 
+  AmpLfoDepthChanAft, AmpLfoDepthPolyAft, AmpLfoFreqCtrlN, AmpLfoFreqChanAft, AmpLfoFreqPolyAft,
+
+  // Equalizer:
+  Eq1Freq, Eq2Freq, Eq3Freq, Eq1FreqCtrlN, Eq2FreqCtrlN, Eq3FreqCtrlN, Eq1Vel2Freq, Eq2Vel2Freq, 
+  Eq3Vel2Freq, Eq1Bw, Eq2Bw, Eq3Bw, Eq1BwCtrlN, Eq2BwCtrlN, Eq3BwCtrlN, Eq1Gain, Eq2Gain, Eq3Gain,
+  Eq1GainCtrlN, Eq2GainCtrlN, Eq3GainCtrlN, Eq1Vel2Gain, Eq2Vel2Gain, Eq3Vel2Gain, 
+
+  // Effects:
+  Effect1, Effect2, // Reverb and chorus send levels in percent
+
+
+  // SFZ 2.0:
+  // fil2_type, cutoff2, etc. ...generalize to filN_type, cutoffN, etc.
+  // egN_timeX, egN_levelX
+  // lfoN_freq, lfoN_delay, lfoN_fade, lfoN_phase, lfoN_wave, lfoN_volume
+
+  // ARIA:
+  PanLaw,
 
 
 
-  // Amplitude:
-  Volume, Pan, PanRule,
-  AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
-  // ToDo: Width, Position
 
-
-
-
-
-  // Some of my own extensions
-  // Distortion:
+  // My own extensions - preliminary, for experimentation. Before defining extensions, check what 
+  // is already there in SFZ 2.0 and in other sfz engines with extensions. Try to be compatible 
+  // with the  largest possible range of other engines. Discuss extensions on KVR before 
+  // implementing them in production code:
   DistShape, DistDrive,  // DistGain...may be redundant with Volume
+  // SFZ2 has opcode egN_driveshape but now driveshape as such? same with lfoN_drive. does that 
+  // mean the LFO signal is drive into a saturator?
+  // check: https://www.plogue.com/products/sforzando.html
+
+  // eff1_type, eff2_type (reverb, chorus, echo, convolve)
+  // reverb_time_scale, reverb_density, reverb_size, reverb_time_lo, reverb_time_mid, 
+  // reverb_time_high, reverb_freq_lo, reverb_freq_hi
+  // chorus_voices, chorus_freq, chorus_depth, ...
+  // convolve_sample
+
+  // What about routing?
+  // is an opdoce like lfoN_volume meant to route lfo N to volume? and what isegN_amplitude 
+  // supposed to do? Will the envelope with index N just get added to the already existing amp 
+  // envelope?
 
 
+  // Muted: convenient to switch regions or groups off wihthout removing them - but mayb, we can
+  // just set the volume to -inf ...should be support -inf in the parser? maybe...
 
-  // Muted: convenient to switch regions or groups off wihthout removing them - check if 
-  // sfz has such a thing
-
-  NumTypes 
-  //...tbc...
+  NumTypes  // rename to NumOpcodes
 };
 // The underlying integers for the opcodes in this enum must start at zero and increment by one.
 // Dont do something like FilterCutoff = 1000 etc. They must be usable as array indices and we dont
 // want to waste space
-
+// 
 // maybe don't capitalize first letter - make it conistent with other (newer) enums in the 
-// library. see community stadards recommendations...
+// library. see community stadards recommendations...or maybe use names equal to the sfz opcode
+// names. i think, that would be more convenient
 
+//-------------------------------------------------------------------------------------------------
+/** Enumeration of the different filter types that are available. */
+
+enum class FilterType // maybe rename to fil_type for consistency with sfz
+{
+  Unknown = 0,
+  off,   // maybe remove
+
+  lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6, // SFZ 1.0 types
+  // use lpf_1p, hpf_1p, lpf_2p, hpf_2p, bpf_2p, brf_2p
+
+  numFilterTypes  // rename to numTypes
+};
+
+enum class LoopMode   // maybe rename to loop_mode (as in sfz)
+{
+  Unknown = 0,
+  no_loop,         // play from start to end or until note off
+  one_shot,        // play from start to end, ignore note off,  engaged if count opcode is defined
+  loop_continuous, // when player reaches sample loop point, loop will play until note expiration
+  loop_sustain,    // play loop while note or sustain pedal is held. rest will play after release
+  numModes
+};
+
+enum class PanRule  // maybe rename to pan_law (as in aria engine)
+{
+  linear, sinCos,
+
+  numPanRules
+
+  // Aria engine defines 2 laws: balance and mma:
+  //   https://sfzformat.com/opcodes/pan_law
+  // but here mma is capitalized as MMA:
+  //   http://ariaengine.com/forums/index.php?p=/discussion/4389/arias-custom-opcodes/p1
+  // so we should perhaps be case insensitive in the parser...maybe quite generally so? But what do
+  // these laws actually mean? is balance the sinCos rule and mma the linear? Or the other way 
+  // around? ...measure it! maybe we could provide a continuously adjustabel pan law which is given
+  // as float in dB center attenuation? maybe the opcdoe whould be pan_center_level
+  // https://www.soundonsound.com/sound-advice/q-what-pan-law-setting-should-use
+};
+// Or maybe it should be called PanLaw? Maybe have different variations with respect to total
+// gain - for linear: either factor 2 for hard left/right setting or a factor of 0.5 for a 
+// center setting. The former would imply that with neutral default settings, stereo samples 
+// are played as is. The latter would imply that hard-panned mono samples would be played as is
+// on their respective channel. Both behaviors may be useful, although, it would be a bit 
+// redundant because we also have an overall gain parameter as well which can always be used to 
+// compensate...although a factor of exactly 2 or 0.5 may be hard to achieve because gain is 
+// given in dB, so the sfz file would have to specify +-6.0205999132796239....., which is 
+// inconvenient
 
 //-------------------------------------------------------------------------------------------------
 /** Enumeration of the different data formats of the values of the opcode. */
@@ -166,49 +258,9 @@ enum class DspType  // rename to DspType or ProcessorType
   NumDsps
 };
 
-//-------------------------------------------------------------------------------------------------
-/** Enumeration of the different filter types that are available. */
-
-enum class FilterType
-{
-  Unknown = 0,
-  off,   // maybe remove
-  lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6, // SFZ 1.0 types
-
-  numFilterTypes  // rename to numTypes
-};
-
-enum class LoopMode
-{
-  Unknown = 0,
-
-  no_loop,     // play from start to end or until note off
-  one_shot,    // play from start to end, ignore note off,  engaged if count opcode is defined
-  continuous,  // when player reaches sample loop point, loop will play until note expiration
-  sustain,     // play loop while note or sustain pedal is held. rest will play after release
-
-  numModes
-};
 
 
 
-//-------------------------------------------------------------------------------------------------
-
-enum class PanRule
-{
-  linear, sinCos,
-
-  numPanRules
-};
-// Or maybe it should be called PanLaw? Maybe have different variations with respect to total
-// gain - for linear: either factor 2 for hard left/right setting or a factor of 0.5 for a 
-// center setting. The former would imply that with neutral default settings, stereo samples 
-// are played as is. The latter would imply that hard-panned mono samples would be played as is
-// on their respective channel. Both behaviors may be useful, although, it would be a bit 
-// redundant because we also have an overall gain parameter as well which can always be used to 
-// compensate...although a factor of exactly 2 or 0.5 may be hard to achieve because gain is 
-// given in dB, so the sfz file would have to specify +-6.0205999132796239....., which is 
-// inconvenient
 
 //=================================================================================================
 
