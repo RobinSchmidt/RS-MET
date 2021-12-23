@@ -1318,8 +1318,8 @@ bool samplerEngineUnitTestFileIO()
   ri = se.addRegion(0); ok &= ri == 0;
   rc = se.setRegionSample(0, 0, 0); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f); ok &= rc == RC::success;
-  se.setRegionSetting(0, 0, PST::FilterType, (float) FltType::lp_6);
-  se.setRegionSetting(0, 0, PST::Cutoff,     1000.f);
+  se.setRegionSetting(0, 0, PST::FilType, (float) FltType::lp_6);
+  se.setRegionSetting(0, 0, PST::Cutoff,  1000.f);
   se.saveToSFZ("tmp.sfz");
   se2.loadFromSFZ("tmp.sfz");
   ok &= se2.isInSameStateAs(se);
@@ -1381,7 +1381,7 @@ bool samplerFilterTest()
   se.setRegionSample( 0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f);
   se.setRegionSetting(0, 0, PST::Cutoff,          cutoff);
-  se.setRegionSetting(0, 0, PST::FilterResonance, resoGain); // affects only 2nd order modes
+  se.setRegionSetting(0, 0, PST::Resonance,       resoGain); // affects only 2nd order modes
 
   // Test the sampler's 1st order filter modes against the 1-pole-1-zero implementation from RAPT:
   using OPF = RAPT::rsOnePoleFilter<float, float>;
@@ -1394,7 +1394,7 @@ bool samplerFilterTest()
     flt.reset();
     for(int n = 0; n < N; n++)
       tgt[n] = flt.getSample(noise[n]);
-    se.setRegionSetting(0, 0, PST::FilterType, (float) sfzType);
+    se.setRegionSetting(0, 0, PST::FilType, (float) sfzType);
     return testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, plot);
 
   };
@@ -1448,7 +1448,7 @@ bool samplerFilterTest()
     svf.reset();
     for(int n = 0; n < N; n++)
       tgt[n] = svf.getSample(noise[n]);
-    se.setRegionSetting(0, 0, PST::FilterType, (float) sfzType);
+    se.setRegionSetting(0, 0, PST::FilType, (float) sfzType);
     return testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, plot);
     // Tolerance needs to be a bit higher for 2nd order filters. 1/10^6 corresponds to a relative
     // SNR of 120 dB. It's "relative" in the sense that it is measured against the actual signal 

@@ -63,9 +63,9 @@ DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
   case TP::Delay:          return SP::SamplePlayer;
   case TP::Offset:         return SP::SamplePlayer;
 
-  case TP::FilterType:      return SP::Filter;
-  case TP::Cutoff:          return SP::Filter;
-  case TP::FilterResonance: return SP::Filter;    // shorten to FilterReso or FiltReso
+  case TP::FilType:        return SP::Filter;
+  case TP::Cutoff:         return SP::Filter;
+  case TP::Resonance:      return SP::Filter;    // shorten to FilterReso or FiltReso
 
   case TP::DistShape:      return SP::WaveShaper;
   case TP::DistDrive:      return SP::WaveShaper;
@@ -679,9 +679,9 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   case PST::Delay:           { add(s, "delay", val);  } break;
   case PST::Offset:          { add(s, "offset", val);  } break;
 
-  case PST::FilterType:      { add(s, "fil_type", val);  } break;
+  case PST::FilType:         { add(s, "fil_type", val);  } break;
   case PST::Cutoff:          { add(s, "cutoff", val);  } break;
-  case PST::FilterResonance: { add(s, "resonance", val);  } break;
+  case PST::Resonance:       { add(s, "resonance", val);  } break;
 
 
   // Extensions:
@@ -721,26 +721,26 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
 
   // Amplitude:
   if(opcode == "volume")          return PS(PST::Volume, val);
-  if(opcode == "pan")             return PS(PST::Pan, val);
+  if(opcode == "pan")             return PS(PST::Pan,    val);
 
   // Pitch:
   if(opcode == "pitch_keycenter") return PS(PST::PitchKeyCenter, val);
-  if(opcode == "transpose")       return PS(PST::Transpose, val);
-  if(opcode == "tune")            return PS(PST::Tune, val);
+  if(opcode == "transpose")       return PS(PST::Transpose,      val);
+  if(opcode == "tune")            return PS(PST::Tune,           val);
   // todo:  pitch_keytrack, pitch_veltrack, bend_up, bend_down, bend_step 
   // maybe: pitch_random
 
   // Sample Player:
-  if(opcode == "delay")           return PS(PST::Delay, val);
+  if(opcode == "delay")           return PS(PST::Delay,  val);
   if(opcode == "offset")          return PS(PST::Offset, val);
 
   // todo:  offset, end, count, loop_mode, loop_start, loop_end
   // maybe: delay_random, delay_ccN, offset_random, offset_ccN, sync_beats, sync_offset
 
   // Filter:
-  if(opcode == "fil_type")        return PS(PST::FilterType, val);
-  if(opcode == "cutoff")          return PS(PST::Cutoff,     val);
-  if(opcode == "resonance")       return PS(PST::FilterResonance, val);
+  if(opcode == "fil_type")        return PS(PST::FilType,   val);
+  if(opcode == "cutoff")          return PS(PST::Cutoff,    val);
+  if(opcode == "resonance")       return PS(PST::Resonance, val);
 
 
   // Extensions:

@@ -1072,9 +1072,9 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
 
 
     // Filter settings:
-    case TP::FilterType:      { setupProcessorSetting(setting); } break;
-    case TP::Cutoff:          { setupProcessorSetting(setting); } break;
-    case TP::FilterResonance: { setupProcessorSetting(setting); } break;
+    case TP::FilType:     { setupProcessorSetting(setting); } break;
+    case TP::Cutoff:      { setupProcessorSetting(setting); } break;
+    case TP::Resonance:   { setupProcessorSetting(setting); } break;
 
     // Waveshaper settings:
     case TP::DistShape: { setupProcessorSetting(setting); } break;

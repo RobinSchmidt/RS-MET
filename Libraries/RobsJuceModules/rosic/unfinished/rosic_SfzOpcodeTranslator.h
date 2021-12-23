@@ -39,8 +39,8 @@ enum class Opcode
   PitchLfoDepthChanAft, PitchLfoDepthPolyAft, PitchLfoFreqChanAft, PitchLfoFreqPolyAft,
 
   // Filter:
-  FilterType, Cutoff, 
-  FilterResonance,
+  FilType, Cutoff, CutoffCtrlN, CutoffChanAft, CutoffPolyAft, Resonance,
+  FilKeyTrack, FilKeyCenter, FilVelTrack, FilRandom,
 
 
 
