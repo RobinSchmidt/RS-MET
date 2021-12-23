@@ -4,18 +4,22 @@ namespace rosic { namespace Sampler {
 
 //-------------------------------------------------------------------------------------------------
 /** Enumeration of possible types of settings. These types correspond to the opcodes defined
-in the sfz specification. */
+in the sfz specification. 
+References:
+  https://sfzformat.com/legacy/   */
 
 enum class Opcode
 {
   Unknown = 0,
 
-  // Input controls:
-  LoKey, HiKey, LoVel, HiVel,
-  ControllerRangeLo, ControllerRangeHi, PitchWheelRange,  // 
+  // Sample Definition:
+  // Sample,  // includes file extension (e.g. Piano.wav). path is realtive to the .sfz file.
 
-  // Muted: convenient to switch regions or groups off wihthout removing them - check if 
-  // sfz has such a thing
+  // Response Constraints (aka Input Controls):
+  LoChan, HiChan, LoKey, HiKey, LoVel, HiVel, LoCtrlN, HiCtrlN, LoBend, HiBend, 
+  LoChanAft, HiChanAft, LoPolyAft, HiPolyAft, LoRand, HiRand, LoBpm, HiBpm,
+  SeqLength, SeqPosition, SwLoKey, SwHiKey, SwLast, SwDown, SwUp, SwPrevious, SwVel,
+  Trigger, Group, OffBy, OffMode, OnLoCtrlN, OnHiCtrlN,
 
   // Pitch:
   PitchKeyCenter, Transpose, Tune,
@@ -35,6 +39,11 @@ enum class Opcode
   // Some of my own extensions
   // Distortion:
   DistShape, DistDrive,  // DistGain...may be redundant with Volume
+
+
+
+  // Muted: convenient to switch regions or groups off wihthout removing them - check if 
+  // sfz has such a thing
 
   NumTypes 
   //...tbc...
