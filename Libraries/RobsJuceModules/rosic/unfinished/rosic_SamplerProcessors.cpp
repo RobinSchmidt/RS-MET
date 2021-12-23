@@ -50,12 +50,10 @@ void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
   RAPT::rsError("Unknown filter type in rsSamplerFilter::setup");
 
   // ToDo:
-  // -Organize the Type enum in such a way that we can retrieve the filter topology from it via 
-  //  bitmasking such that we do not need a branch for every type but only one for every topology.
-  //  This will reduce the boilerplate a lot.
-  // -Make a consistent choice for all of RAPT whether a recursion coeffs of filters should have a 
-  //  minus sign or not and update all code accordingly. Make benchmarks what is faster, ask at KVR
-  //  what others do.
+  // -Make a consistent choice for all of RAPT whether recursion coeffs of filters should have a 
+  //  minus sign or not and update all code accordingly. Be careful - this change ripples through 
+  //  all products - maybe introduce new names for the functions and deprecate the old ones instead
+  //  of just changing their code. Make benchmarks what is faster, ask at KVR what others do.
 }
 
 /*
@@ -89,6 +87,11 @@ void rsSamplerFilter::processFrame(float& L, float& R)
 
   // ...later, we want to use a simd type and retrieve the elements like so:
   //L = io[0]; R = io[1];
+
+  // ToDo:
+  // -Organize the Type enum in such a way that we can retrieve the filter topology from it via 
+  //  bitmasking such that we do not need a branch for every type but only one for every topology.
+  //  This will reduce the boilerplate a lot.
 }
 
 void rsSamplerFilter::resetState()

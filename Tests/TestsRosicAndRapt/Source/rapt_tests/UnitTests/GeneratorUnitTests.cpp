@@ -1401,14 +1401,39 @@ bool samplerFilterTest()
   ok &= testAgainstOpf(flt.LOWPASS_IIT,  Type::lp_6, false);
   ok &= testAgainstOpf(flt.HIGHPASS_MZT, Type::hp_6, false);
   // ToDo: 
+  // -Maybe use magnitude matching design formulas, unless they are wildly more expensive (we'll
+  //  later want per-sample updates of the freq via an envelope). Or: maybe use cheap polynomial
+  //  or rational approximations for the coeff computations (and benchmark(!) them against the 
+  //  exact formulas). Or try a fast exp implementation. This will be done in the filter-design
+  //  stage.
   // -Add 1st order allpass, low-shelf, high-shelf. These modes are not defined in sfz, maybe 
   //  define an extension - but first figure out, if there are already suitable extensions in use
-  //  and if not, consult other sampler engine writers KVR to find common standard. Maybe ls_6, 
+  //  and if not, consult other sampler engine writers on KVR to find common standard. Maybe ls_6, 
   //  hs_6 and ap_6 could be used - although the 6 would be kinda wrong here because in alpasses,
-  //  there's no slope at all and in shelvers there's no asymptotic slope
+  //  there's no slope at all and in shelvers there's no asymptotic slope. Maybe lsf_1p, hsf_1p, 
+  //  apf_1p would make more sense and be still consistent with the conventions used for 
+  //  sfz-defined modes. 
   // -Trying to render a note before setting up the filter type will trigger an error because
   //  the filter's default setting for the type is "Unknown" -> fix this! Use maybe lp_6 as 
   //  default (check, what sfz prescribes as default and use that)
+
+  // Under construction:
+  // Test the sampler's 2nd order filter modes against the biquad implementation from RAPT:
+  //using BQD = RAPT::rsBiquad<float>;  
+  //BQD bqd;
+  // ...tbc...
+  // ToDo: 
+  // -Rename rsBiquad to rsBiquadBase. It has only coeffs and no state. We should have 2 subclasses
+  //  that implement DF1/TDF2 and DF2/TDF1 respectively. The DF2/TDF1 variant needs less memory
+  //  for the states. Actually, the DF1/TDF2 variant could provide all 4 modes, so maybe that 
+  //  should get the name rsBiquad and have 4 getSampleXYZ functions where XYZ is one of DF1,DF2
+  //  TDF1,TDF2. The one with lesser memory consumption and lesser flexibility could be called 
+  //  rsBiquadCanonical (the implementations with least possible memory are called like that in 
+  //  the DSP literature)
+  //  https://www.dsprelated.com/freebooks/filters/Four_Direct_Forms.html
+  // -Implement a new function in RAPT::rsBiquadDesigner that computes the biquad coeffs
+  //  from cutoff-freq (as omega) and resonance gain (either in dB or as raw factor - whatever is
+  //  cheaper)
 
   // Test the sampler's 2nd order filter modes against the SVF implementation from RAPT:
   using SVF = RAPT::rsStateVariableFilter<float, float>;

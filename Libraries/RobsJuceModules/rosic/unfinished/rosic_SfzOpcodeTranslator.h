@@ -26,7 +26,7 @@ enum class Opcode
   // ToDo: Width, Position
 
   // Player:
-  Delay, Offset,
+  Delay, Offset, LoopMode, LoopStart, LoopEnd, Count,
   // ToDo: loop-stuff
 
   // Filter:
@@ -54,10 +54,11 @@ enum class OpcodeFormat  // maybe rename to OpcodeFormat
 {
   Unknown = 0,
 
-  Float,
-  Integer,
   Boolean,
-  String,
+  Natural,  // a.k.a. unsigned int
+  Integer,
+  Float,
+  String,    // rename to Text
 
   NumTypes
 };
@@ -74,7 +75,8 @@ enum class OpcodeUnit
   Cents,
   Decibels,
   Seconds,
-  Milliseconds,
+  Samples,
+  //Milliseconds,
   Beats,
   BeatsOrSeconds,
   Text,
@@ -136,8 +138,22 @@ enum class FilterType
   off,   // maybe remove
   lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6, // SFZ 1.0 types
 
-  numFilterTypes
+  numFilterTypes  // rename to numTypes
 };
+
+enum class LoopMode
+{
+  Unknown = 0,
+
+  no_loop,     // play from start to end or until note off
+  one_shot,    // play from start to end, ignore note off,  engaged if count opcode is defined
+  continuous,  // when player reaches sample loop point, loop will play until note expiration
+  sustain,     // play loop while note or sustain pedal is held. rest will play after release
+
+  numModes
+};
+
+
 
 //-------------------------------------------------------------------------------------------------
 

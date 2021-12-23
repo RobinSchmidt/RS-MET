@@ -14,17 +14,30 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   auto add = [this](OC op, OF fmt, const char* name, float minVal, float maxVal, float defVal,
     SP dspType, OU unit, OS spec)
   { addOpcode(op, fmt, name, minVal, maxVal, defVal, dspType, unit, spec); };
+
+  OF Nat  = OF::Natural;
   OF Int  = OF::Integer;
   OF Flt  = OF::Float;
+  OF Txt  = OF::String;
+
   OS Sfz1 = OS::Sfz_1;
 
   // Player response constraints (aka "Input Control" in the sfz doc):
   SP dsp = DspType::SamplePlayer;
-  add(OC::LoKey, Int, "lokey", 0, 127,   0, dsp, OU::MidiKey, Sfz1);
-  add(OC::HiKey, Int, "hikey", 0, 127, 127, dsp, OU::MidiKey, Sfz1);
-  add(OC::LoVel, Int, "lovel", 0, 127,   0, dsp, OU::RawInt,  Sfz1);
-  add(OC::HiVel, Int, "hivel", 0, 127, 127, dsp, OU::RawInt,  Sfz1);
-  // todo: lochan, hichan, etc....
+  add(OC::LoKey, Nat, "lokey", 0, 127,   0, dsp, OU::MidiKey, Sfz1);
+  add(OC::HiKey, Nat, "hikey", 0, 127, 127, dsp, OU::MidiKey, Sfz1);
+  add(OC::LoVel, Nat, "lovel", 0, 127,   0, dsp, OU::RawInt,  Sfz1);
+  add(OC::HiVel, Nat, "hivel", 0, 127, 127, dsp, OU::RawInt,  Sfz1);
+  // todo: lochan, hichan, loccN, hiccN, etc....
+
+  // Player playback settings:
+  add(OC::Delay,  Flt, "delay",  0,        100, 0, dsp, OU::Seconds, Sfz1);
+  add(OC::Offset, Nat, "offset", 0, 4294967296, 0, dsp, OU::Samples, Sfz1);
+  add(OC::Count,  Nat, "count",  0, 4294967296, 0, dsp, OU::RawInt,  Sfz1);
+  add(OC::LoopMode, Txt, "loop_mode",  (float)LoopMode::Unknown + 1.f, 
+    (float)LoopMode::numModes - 1.f, (float)LoopMode::no_loop, dsp, OU::Text, Sfz1);
+  add(OC::LoopStart, Nat, "loop_start", 0, 4294967296, 0, dsp, OU::Samples, Sfz1);
+  add(OC::LoopEnd,   Nat, "loop_end",   0, 4294967296, 0, dsp, OU::Samples, Sfz1);
 
   // Player pitch:
   add(OC::PitchKeyCenter, Int, "pitch_keycenter", -127, 127, 60, dsp, OU::MidiKey,   Sfz1); // verify!
@@ -34,9 +47,10 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   // Player amplifier:
 
 
+
   // Filter:
   dsp = DspType::Filter;
-  add(OC::FilterType, Flt, "fil_type", (float)FilterType::Unknown + 1.f, 
+  add(OC::FilterType, Txt, "fil_type", (float)FilterType::Unknown + 1.f, 
     (float)FilterType::numFilterTypes - 1.f, (float)FilterType::lp_6, dsp, OU::Text, Sfz1); // verify!
   add(OC::FilterCutoff, Flt, "cutoff", 20.f, 20000.f, 1000.f, dsp, OU::Hertz, Sfz1); // probably wrong!
 
@@ -45,6 +59,11 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
 
 
   // ToDo: 
+  // -Our single precision floating point representation of integers will run into issues for very 
+  //  large integers like in the "offset" opcode where the range goes all the way up to 2^32. Maybe 
+  //  switch to double. Or maybe use a union of float32, int32 and uint32. Maybe it's pointless 
+  //  trying to minimize the memory footprint of this - the opcodes are not accessed at sample-rate
+  //  anyway, so using double should probably be fine
   // -verify everything (min,max,defaults,etc.) by comparing against the sfz spec
   // -try to make the calls shorter by using shorter name in the Opcode enum and maybe define 
   //  abbreviations for the units such as st for OT::Semitones
