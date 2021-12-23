@@ -64,7 +64,7 @@ DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
   case TP::Offset:         return SP::SamplePlayer;
 
   case TP::FilterType:      return SP::Filter;
-  case TP::FilterCutoff:    return SP::Filter;
+  case TP::Cutoff:          return SP::Filter;
   case TP::FilterResonance: return SP::Filter;    // shorten to FilterReso or FiltReso
 
   case TP::DistShape:      return SP::WaveShaper;
@@ -680,7 +680,7 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   case PST::Offset:          { add(s, "offset", val);  } break;
 
   case PST::FilterType:      { add(s, "fil_type", val);  } break;
-  case PST::FilterCutoff:    { add(s, "cutoff", val);  } break;
+  case PST::Cutoff:          { add(s, "cutoff", val);  } break;
   case PST::FilterResonance: { add(s, "resonance", val);  } break;
 
 
@@ -739,7 +739,7 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
 
   // Filter:
   if(opcode == "fil_type")        return PS(PST::FilterType, val);
-  if(opcode == "cutoff")          return PS(PST::FilterCutoff, val);
+  if(opcode == "cutoff")          return PS(PST::Cutoff,     val);
   if(opcode == "resonance")       return PS(PST::FilterResonance, val);
 
 

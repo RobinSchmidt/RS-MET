@@ -52,7 +52,7 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   dsp = DspType::Filter;
   add(OC::FilterType, Txt, "fil_type", (float)FilterType::Unknown + 1.f, 
     (float)FilterType::numFilterTypes - 1.f, (float)FilterType::lp_6, dsp, OU::Text, Sfz1); // verify!
-  add(OC::FilterCutoff, Flt, "cutoff", 20.f, 20000.f, 1000.f, dsp, OU::Hertz, Sfz1); // probably wrong!
+  add(OC::Cutoff, Flt, "cutoff", 20.f, 20000.f, 1000.f, dsp, OU::Hertz, Sfz1); // probably wrong!
 
 
 

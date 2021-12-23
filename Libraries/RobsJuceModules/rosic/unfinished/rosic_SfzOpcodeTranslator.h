@@ -13,7 +13,7 @@ enum class Opcode
   Unknown = 0,
 
   // Sample Definition:
-  // Sample,  // includes file extension (e.g. Piano.wav). path is realtive to the .sfz file.
+  Sample,  // includes file extension (e.g. Piano.wav). path is realtive to the .sfz file.
 
   // Response Constraints (aka Input Controls):
   LoChan, HiChan, LoKey, HiKey, LoVel, HiVel, LoCtrlN, HiCtrlN, LoBend, HiBend, 
@@ -21,20 +21,38 @@ enum class Opcode
   SeqLength, SeqPosition, SwLoKey, SwHiKey, SwLast, SwDown, SwUp, SwPrevious, SwVel,
   Trigger, Group, OffBy, OffMode, OnLoCtrlN, OnHiCtrlN,
 
+  // Sample Player:
+  Delay, DelayRandom, DelayCtrlN, Offset, OffsetRandom, OffsetCtrlN,
+  End, Count, LoopMode, LoopStart, LoopEnd, SyncBeats, SyncOffset,
+
   // Pitch:
-  PitchKeyCenter, Transpose, Tune,
+  Transpose, Tune, PitchKeyCenter, PitchKeyTrack, PitchVelTrack, PitchRandom,
+  BendUp, BendDown, BendStep,
+
+  // Pitch Envelope:
+  PitchEnvDelay, PitchEnvStart, PitchEnvAttack, PitchEnvHold, PitchEnvDecay, PitchEnvSustain,
+  PitchEnvRelease, PitchEnvDepth, PitchEnvVel2Delay, PitchEnvVel2Attack, PitchEnveVel2Hold, 
+  PitchEnvVel2Decay, PitchEnvVel2Sustain, PitchEnvVel2Release, PitchEnvVel2Depth,
+
+  // Pitch LFO:
+  PitchLfoDelay, PitchLfoFade, PitchLfoFreq, PitchLfoDepth, PitchLfoDepthCtrlN, 
+  PitchLfoDepthChanAft, PitchLfoDepthPolyAft, PitchLfoFreqChanAft, PitchLfoFreqPolyAft,
+
+  // Filter:
+  FilterType, Cutoff, 
+  FilterResonance,
+
+
+
 
   // Amplitude:
   Volume, Pan, PanRule,
   AmpEnvAttack, AmpEnvDecay, AmpEnvSustain, AmpEnvRelease,
   // ToDo: Width, Position
 
-  // Player:
-  Delay, Offset, LoopMode, LoopStart, LoopEnd, Count,
-  // ToDo: loop-stuff
 
-  // Filter:
-  FilterType, FilterCutoff, FilterResonance,
+
+
 
   // Some of my own extensions
   // Distortion:

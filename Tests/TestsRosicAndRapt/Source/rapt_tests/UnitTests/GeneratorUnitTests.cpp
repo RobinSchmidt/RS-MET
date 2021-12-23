@@ -1318,8 +1318,8 @@ bool samplerEngineUnitTestFileIO()
   ri = se.addRegion(0); ok &= ri == 0;
   rc = se.setRegionSample(0, 0, 0); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f); ok &= rc == RC::success;
-  se.setRegionSetting(0, 0, PST::FilterType,   (float) FltType::lp_6);
-  se.setRegionSetting(0, 0, PST::FilterCutoff, 1000.f);
+  se.setRegionSetting(0, 0, PST::FilterType, (float) FltType::lp_6);
+  se.setRegionSetting(0, 0, PST::Cutoff,     1000.f);
   se.saveToSFZ("tmp.sfz");
   se2.loadFromSFZ("tmp.sfz");
   ok &= se2.isInSameStateAs(se);
@@ -1380,7 +1380,7 @@ bool samplerFilterTest()
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f);
-  se.setRegionSetting(0, 0, PST::FilterCutoff,    cutoff);
+  se.setRegionSetting(0, 0, PST::Cutoff,          cutoff);
   se.setRegionSetting(0, 0, PST::FilterResonance, resoGain); // affects only 2nd order modes
 
   // Test the sampler's 1st order filter modes against the 1-pole-1-zero implementation from RAPT:

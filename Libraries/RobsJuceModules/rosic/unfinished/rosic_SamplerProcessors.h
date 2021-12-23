@@ -330,7 +330,7 @@ public:
       type = DspType::Filter;
       params.reserve(3);
       addParameter(Opcode::FilterType);
-      addParameter(Opcode::FilterCutoff);
+      addParameter(Opcode::Cutoff);
       addParameter(Opcode::FilterResonance);   // in sfz, this is a gain in dB
       //addParameter(Opcode::FilterBandwidth);
       // Having to pass a magic number to reserve() is bad and error-prone -> try to find a better
