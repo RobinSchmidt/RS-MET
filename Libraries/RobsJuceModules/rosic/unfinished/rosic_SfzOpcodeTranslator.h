@@ -31,16 +31,26 @@ enum class Opcode
 
   // Pitch Envelope:
   PitchEnvDelay, PitchEnvStart, PitchEnvAttack, PitchEnvHold, PitchEnvDecay, PitchEnvSustain,
-  PitchEnvRelease, PitchEnvDepth, PitchEnvVel2Delay, PitchEnvVel2Attack, PitchEnveVel2Hold, 
+  PitchEnvRelease, PitchEnvDepth, PitchEnvVel2Delay, PitchEnvVel2Attack, PitchEnvVel2Hold, 
   PitchEnvVel2Decay, PitchEnvVel2Sustain, PitchEnvVel2Release, PitchEnvVel2Depth,
 
   // Pitch LFO:
-  PitchLfoDelay, PitchLfoFade, PitchLfoFreq, PitchLfoDepth, PitchLfoDepthCtrlN, 
-  PitchLfoDepthChanAft, PitchLfoDepthPolyAft, PitchLfoFreqChanAft, PitchLfoFreqPolyAft,
+  PitchLfoDelay, PitchLfoFade, PitchLfoFreq, PitchLfoDepth, PitchLfoDepthCtrlN,  
+  PitchLfoDepthChanAft, PitchLfoDepthPolyAft, PitchLfoFreqCtrlN, PitchLfoFreqChanAft, 
+  PitchLfoFreqPolyAft,
 
   // Filter:
   FilType, Cutoff, CutoffCtrlN, CutoffChanAft, CutoffPolyAft, Resonance,
   FilKeyTrack, FilKeyCenter, FilVelTrack, FilRandom,
+
+  // Filter Envelope:
+  FilEnvDelay, FilEnvStart, FilEnvAttack, FilEnvHold, FilEnvDecay, FilEnvSustain,
+  FilEnvRelease, FilEnvDepth, FilEnvVel2Delay, FilEnvVel2Attack, FilEnvVel2Hold, 
+  FilEnvVel2Decay, FilEnvVel2Sustain, FilEnvVel2Release, FilEnvVel2Depth,
+
+  // Filter LFO:
+  FilLfoDelay, FilLfoFade, FilLfoFreq, FilLfoDepth, FilLfoDepthCtrlN, 
+  FilLfoDepthChanAft, FilLfoDepthPolyAft, FilLfoFreqCtrlN, FilLfoFreqChanAft, FilLfoFreqPolyAft,
 
 
 
