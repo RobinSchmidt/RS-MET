@@ -1640,6 +1640,12 @@ bool samplerDspChainTest()
   se.setRegionSetting(0, 0, PST::Cutoff,  cutoff2, 2);
   //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
   // triggers "No processor available for DSP opcode" error
+  // in rsSamplerEngine::RegionPlayer::getProcessor, the dspTypeChain has only 1 element 
+  // (a Filter). There should be two of them. So an error occurs already in the sfz object, not 
+  // only in the engine
+  // rsSamplerData::OrganizationLevel::ensureProcessorPresent needs to take an integer as 2nd 
+  // parameter to ensure not only that one processor of given kind is present but the given number
+  // of them.
 
   rsAssert(ok);
   return ok;
@@ -1660,15 +1666,14 @@ bool samplerProcessorsTest()
   //size = sizeof(SP::Filter);
   //size = sizeof(SP::WaveShaper);
 
+  ok &= samplerDspChainTest();
   ok &= samplerFilterTest();
   ok &= samplerWaveShaperTest();
-  ok &= samplerDspChainTest();
 
   // ToDo:
   // -Implement more DSP modules: echo, vibrato, flanger, phaser, chorus, etc., 
   //  ...delay based algorithms could become a memory-hog when we need to pre-allocate many of 
   //  them. Maybe let's stay away from them for the moment. How about freq-shifting?
-
 
   rsAssert(ok);
   return ok;

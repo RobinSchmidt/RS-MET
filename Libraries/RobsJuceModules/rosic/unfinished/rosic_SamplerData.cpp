@@ -19,7 +19,7 @@ DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
 
 //-------------------------------------------------------------------------------------------------
 
-void rsSamplerData::OrganizationLevel::ensureProcessorPresent(Opcode opcodeType)
+void rsSamplerData::OrganizationLevel::ensureProcessorPresent(Opcode opcodeType, int howMany)
 { 
   using namespace RAPT;
   using SPT = DspType;
@@ -30,8 +30,9 @@ void rsSamplerData::OrganizationLevel::ensureProcessorPresent(Opcode opcodeType)
     // The sample-player at the start of the processing chain doesn't really count as bona-fide DSP
     // processor. It's always there, there's always exactly one and it behaves quite differently 
     // from the rest. We need it among the types for consistency, though.
-  if( !rsContains(signalProcessors, dspType) )
-    signalProcessors.push_back(dspType);
+
+  if( (int)rsCount(signalProcessors, dspType) < howMany )
+     signalProcessors.push_back(dspType);
 }
 
 void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
@@ -48,13 +49,14 @@ void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
 
   // All other settings are handled by either overwriting the last setting of that type in our 
   // array, if present or by appending the setting, if not present:
-  int i = findSetting(t);
-  if(i != -1)
-    settings[i] = s;
+  int idx = s.getIndex();
+  int foundAt = findSetting(t, idx);
+  if(foundAt != -1)
+    settings[foundAt] = s;
   else
   {
     settings.push_back(s);
-    ensureProcessorPresent(t);
+    ensureProcessorPresent(t, RAPT::rsMax(idx, 1));
     // The order in which the processors appear in the chain should reflect the order in which 
     // their opcodes appear in the sfz (or, if setup is done programmatically, the order in which
     // the opcodes were added). The first opcode applying to a particular kind of processor 
