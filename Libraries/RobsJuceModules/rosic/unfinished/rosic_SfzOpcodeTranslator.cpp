@@ -217,6 +217,8 @@ int SfzOpcodeTranslator::stringToIndex(const std::string& str)
   // extract the 3. Maybe rename it to stringToIndexN and have another function stringToIndexX that
   // would extract the 5 in the 2nd case. N and X are used as placeholders here:
   // https://www.linuxsampler.org/sfz/
+  // It seems like the caller (rsSamplerData::getSettingFromString) knows the opcode represented by
+  // str, so if that's helpful, it could be included as parameter for the function....
 }
 
 const std::string& SfzOpcodeTranslator::filterTypeToString(FilterType ft)

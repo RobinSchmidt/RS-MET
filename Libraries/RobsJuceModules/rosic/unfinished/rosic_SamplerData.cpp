@@ -607,16 +607,13 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
 {
   using PS  = PlaybackSetting;
   using PST = Opcode;
-  float val = std::stof(valStr);  // maybe use cutom function later
-  int   idx = -1;
   SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
-  PST op = t->stringToOpcode(opStr);
-  return PS(op, val);
-
-  // ToDo: 
-  // -If applicable, exctract the index from the opcode and set it up in the setting by 
-  //  passing it as 3rd parameter to the constructor. ...not yet sure, what's the best way to parse
-  //  this.
+  //float val = std::stof(valStr);  // maybe use cutom function later
+  //int   idx = -1;
+  PST   op  = t->stringToOpcode(opStr);
+  float val = t->stringToValue(op, valStr);
+  int   idx = t->stringToIndex(opStr);          // has only preliminary implementation
+  return PS(op, val, idx);
 }
 
 void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
