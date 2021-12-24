@@ -141,7 +141,7 @@ void SfzOpcodeTranslator::addOpcode(Opcode op, OpcodeFormat type, const std::str
   // maybe remove that field...but maybe it's useful in other contexts
 }
 
-const std::string& SfzOpcodeTranslator::opcodeToString(Opcode op)
+const std::string& SfzOpcodeTranslator::opcodeToString(Opcode op) const
 {
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
     RAPT::rsError("Unknown opcode in SfzOpcodeTranslator::opcodeToString");

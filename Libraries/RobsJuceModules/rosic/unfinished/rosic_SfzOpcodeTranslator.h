@@ -276,7 +276,10 @@ public:
   SfzOpcodeTranslator();
 
 
-  const std::string& opcodeToString(Opcode op);
+  const std::string& opcodeToString(Opcode op) const;
+  const char* opcodeToStringC(Opcode op) const { return (opcodeToString(op)).c_str(); }
+
+
   Opcode stringToOpcode(const std::string& str);
   DspType opcodeToProcessor(Opcode op);
   float opcodeDefaultValue(Opcode op);

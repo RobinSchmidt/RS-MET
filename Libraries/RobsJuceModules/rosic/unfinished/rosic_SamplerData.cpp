@@ -675,7 +675,14 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   {
     str += opcodeName + std::string("=") + to_string(value) + "\n";
   };
+  // get rid - not needed anymore
 
+  SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
+  add(s, t->opcodeToStringC(type), val);
+
+
+
+  /*
   switch(type)
   {
   case PST::Volume:          { add(s, "volume", val);  } break;
@@ -700,6 +707,7 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
 
   default:                  { RAPT::rsError("Unknown Opcode"); }
   }
+  */
 
   // ToDo: 
   // -Maybe use custom string conversion functions because the std::to_string just uses a 
