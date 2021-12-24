@@ -174,6 +174,15 @@ DspType SfzOpcodeTranslator::opcodeToProcessor(Opcode op)
   return opcodeEntries[(int)op].dsp;
 }
 
+float SfzOpcodeTranslator::opcodeDefaultValue(Opcode op)
+{
+  if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
+    RAPT::rsError("Unknown opcode in SfzOpcodeTranslator::opcodeDefaultValue");
+    return 0.f;
+  }
+  return opcodeEntries[(int)op].defVal;
+}
+
 SfzOpcodeTranslator* SfzOpcodeTranslator::getInstance()
 {
   RAPT::rsAssert(instance != nullptr);

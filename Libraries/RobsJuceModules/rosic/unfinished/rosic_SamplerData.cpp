@@ -6,9 +6,12 @@ namespace Sampler {
 
 float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type)
 {
-  // todo: use the SfzOpcodeTranslator like:
-  // return sfzTranslator.getOpcodeDefaultValue(type)
+  // New:
+  SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
+  return t->opcodeDefaultValue(type);
 
+
+  /*
   using TP = Opcode;
   switch(type)
   {
@@ -40,6 +43,7 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type)
 
   RAPT::rsError("Unknown type of PlaybackSetting, i.e. unknown sfz opcode.");
   return 0.f;  // maybe we should return NaN? but no - that would be evil!
+  */
 }
 
 DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)

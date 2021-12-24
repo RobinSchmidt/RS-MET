@@ -279,6 +279,9 @@ public:
   const std::string& opcodeToString(Opcode op);
   Opcode stringToOpcode(const std::string& str);
   DspType opcodeToProcessor(Opcode op);
+  float opcodeDefaultValue(Opcode op);
+
+
 
 
   // ToDo:
