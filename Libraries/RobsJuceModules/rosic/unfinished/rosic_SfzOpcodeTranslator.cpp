@@ -67,6 +67,7 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   add(OC::Cutoff, Flt, "cutoff", 0.f, 22050.f, 22050.f, dsp, OU::Hertz, Sfz1);
   // Range is 0..fs/2, default is: filter disabled, so perhaps, the default should depend on the 
   // selected type: fs/2 for a lowpass, 0 for a highpass - figure out what sfz+ does
+  // ...maybe switch the filter into bypass mode, if cutoff is set to zero in the PlaybackSetting
 
   add(OC::Resonance, Flt, "resonance", 0.0f, +40.f, 0.f, dsp, OU::Decibels, Sfz1);
   // In sfz, the resonance is adjusted in terms of the resonance gain in dB. If zero dB is the 

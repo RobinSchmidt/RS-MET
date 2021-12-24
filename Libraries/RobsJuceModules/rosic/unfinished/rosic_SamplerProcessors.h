@@ -379,8 +379,8 @@ public:
       using TO = FilterType;            // enum used in the sfz opcode
       switch(sfzType)
       {
-      case TO::lp_6:  return TC::FO_Lowpass;
-      case TO::hp_6:  return TC::FO_Highpass;
+      case TO::lp_6:   return TC::FO_Lowpass;
+      case TO::hp_6:   return TC::FO_Highpass;
 
       case TO::lp_12:  return TC::BQ_Lowpass;        // ToDo: Use SVF as default implementation
       case TO::hp_12:  return TC::BQ_Highpass;       // for 2nd order filters...maybe...
@@ -391,8 +391,12 @@ public:
       //case TO::lp_12: return TC::SVF_Lowpass_12;
       //case TO::hp_12: return TC::SVF_Highpass_12;
       }
-      RAPT::rsError("Unknown filter type in convertTypeEnum.");
-      return TC::Unknown;
+      //RAPT::rsError("Unknown filter type in convertTypeEnum.");
+      //return TC::Unknown;
+      // This may actually happen when the user only defines cutoff but not fil_type. In this 
+      // case, sfz prescribes that the default mode is lpf_2p.
+
+      return TC::BQ_Lowpass;
     }
 
     rsSamplerFilter core;

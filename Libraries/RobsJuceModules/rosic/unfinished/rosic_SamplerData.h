@@ -158,6 +158,7 @@ public:
     stored for that type (a situation that may arise from badly written sfz files), it will
     overwrite the last one, because that's the one that actually counts. */
     void setSetting(const PlaybackSetting& s);
+    // rename to setOpcode
 
     /** Adds the given setting to our array of settings. */
     void addSetting(const PlaybackSetting& s) { settings.push_back(s); }
@@ -248,6 +249,11 @@ public:
 
     /** Returns the highest velocity at which this region will be played. */
     uchar getHiVel() const { return hiVel; }
+
+    /** Returns the number of signal processors needed to play this region/group/etc. */
+    int getNumProcessors() const { return (int) signalProcessors.size(); }
+
+
 
     /** Returns the generic pointer for custom satellite data or objects that are associated with
     this region. This pointer is intended to be used for some sort of audio stream object that is

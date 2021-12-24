@@ -31,8 +31,11 @@ void rsSamplerData::OrganizationLevel::ensureProcessorPresent(Opcode opcodeType,
     // processor. It's always there, there's always exactly one and it behaves quite differently 
     // from the rest. We need it among the types for consistency, though.
 
-  if( (int)rsCount(signalProcessors, dspType) < howMany )
-     signalProcessors.push_back(dspType);
+  // Insert however many processors of the required kind are missing to the end of the chain:
+  int count   = (int)rsCount(signalProcessors, dspType); // rename to numPresent
+  int missing = howMany - count;                         // rename howMany to numRequired
+  for(int i = 0; i < missing; i++)
+    signalProcessors.push_back(dspType);
 }
 
 void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)

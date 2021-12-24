@@ -20,6 +20,12 @@ void SignalProcessor::setParameter(Opcode opcode, float value)
 
 void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
 {
+  if(type == Type::Unknown || w == 0.f)
+    type = Type::Bypass;
+    // When the cutoff is not defined, it defaults to zero. In this case, we switch into bypass
+    // mode. We also default to bypass if mode is not set...hmm...maybe we should default to
+    // lpf_12 in this case? ...but only if cutoff is nonzero...we'll see...
+
   this->type = type;
   using FO = RAPT::rsOnePoleFilter<float, float>;
   using BQ = RAPT::rsBiquadDesigner;  // maybe it should have a template parameter?
@@ -31,6 +37,9 @@ void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
   FilterImpl& i = impl;  // as abbreviation
   switch(type)
   {
+  case Type::Bypass: FO::coeffsBypass(&i.fo.b0, &i.fo.b1, &i.fo.a1); return;
+    // maybe use this as default branch
+
   case Type::FO_Lowpass:  FO::coeffsLowpassIIT( w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
   case Type::FO_Highpass: FO::coeffsHighpassMZT(w, &i.fo.b0, &i.fo.b1, &i.fo.a1); return;
 
@@ -74,6 +83,8 @@ void rsSamplerFilter::processFrame(float& L, float& R)
   FilterImpl& i = impl;
   switch(type)
   {
+  case Type::Bypass: break;
+
   case Type::FO_Lowpass:  io = i.fo.getSample(io); break;
   case Type::FO_Highpass: io = i.fo.getSample(io); break;
 
@@ -99,6 +110,8 @@ void rsSamplerFilter::resetState()
   FilterImpl& i = impl;
   switch(type)
   {
+  case Type::Bypass: return;
+
   case Type::FO_Lowpass:  i.fo.resetState();  return;
   case Type::FO_Highpass: i.fo.resetState();  return;
 
@@ -126,8 +139,8 @@ SignalProcessorPool::~SignalProcessorPool()
 void SignalProcessorPool::allocateProcessors()
 {
                         // Debug  Release  ...these values make sense for development
-  filters.init(4);      //   4      64
-  waveShapers.init(4);  //   8     128
+  filters.init(8);      //   8      64
+  waveShapers.init(8);  //   8     128
   // These numbers are preliminary. We need to do something more sensible here later. Perhaps, this 
   // function should be called when a new sfz is loaded and it should have arguments for how many
   // objects of each type are needed. The engine should analyze, how many filters, waveshapers, 

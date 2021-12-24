@@ -1697,6 +1697,25 @@ bool samplerDspChainTest()
   updateTgt();
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
 
+  // OK - we currently have 3 filters with a waveshaper between filter 2 and filter 3. Now let's
+  // check the behavior when we try to add a 5th filter without adding a 4th before. The desired 
+  // behavior should be, that the DSP chain actually has 5 filters in it but the 4th one is in its
+  // default setting which means that it is effectively bypassed. For the added filter at index 5,
+  // we don't specify the filter type in which case it should default to lpf_2p.
+  float cutoff5 = 5000.f; 
+  se.setRegionSetting(0, 0, PST::Cutoff, cutoff5, 5);
+  ok &= se.getRegion(0, 0)->getNumProcessors() == 6;  // 5 filters + 1 waveshaper
+  updateTgt();
+  using SVF = RAPT::rsStateVariableFilter<float, float>;
+  SVF svf;
+  svf.setSampleRate(fs);
+  svf.setFrequency(cutoff5);
+  float G = 1.f / sqrt(2.f);
+  svf.setGain(G);
+  for(int n = 0; n < N; n++)
+    tgt[n] = svf.getSample(tgt[n]);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+
   // ToDo: 
   // -maybe write a test that creates a random dsp chain programmatically using lots of filters and 
   //  waveshapers, set the filter parameters in random order, like type3, cutoff1, type2, reso4,
