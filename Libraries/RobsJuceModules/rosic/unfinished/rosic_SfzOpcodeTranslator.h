@@ -132,7 +132,7 @@ enum class Opcode
 enum class FilterType // maybe rename to fil_type for consistency with sfz
 {
   Unknown = 0,
-  off,   // maybe remove
+  off,           // maybe remove - it's not defined in sfz
 
   lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6, // SFZ 1.0 types
   // use lpf_1p, hpf_1p, lpf_2p, hpf_2p, bpf_2p, brf_2p
@@ -263,10 +263,17 @@ enum class DspType  // rename to DspType or ProcessorType
 /** A class to translate between the sfz opcodes in their string representation and their enum 
 values and some additional related "translations" such as the mapping of opcodes to the type of
 signal processor to which they apply, etc. Essentially, it does many of the conversions and 
-mappings that are required within the sampler engine. An object of this class shall be created 
-once when the sampler is created - maybe as global object or as singleton. The creating may be
-somewhat expensive, so it should be done only once and then the object should remain available
-for the whole lifetime of the sampler engine....tbc... */
+mappings that are required within the sampler engine for sfz-parsing or saving the state to an
+sfz-file etc.
+
+We need only one such object for the whole lifetime of the sampler engine and we need convenient 
+access to it from various of its subsystems, so we implement a variation of the singleton pattern 
+here. As opposed to the textbook version where the singleton object is implicitly created on first
+use and never deleted, we give explicit control over the singleton's lifetime via static 
+createInstance()/deleteInstance methods which are called by the sampler engine's constructor and 
+destructor respectively. The sampler engine which actually also does instance counting for itself 
+and creates only for the first instance and deletes only when the last instance is deleted. So, 
+multiple instances of a sampler-engine are no problem either. */
 
 class SfzOpcodeTranslator // maybe rename to SfzDictionary, SfzTranslator
 {
@@ -275,22 +282,29 @@ public:
 
   SfzOpcodeTranslator();
 
-
-  const std::string& opcodeToString(Opcode op) const;
-  const char* opcodeToStringC(Opcode op) const { return (opcodeToString(op)).c_str(); }
-
-
-  Opcode stringToOpcode(const std::string& str);
   DspType opcodeToProcessor(Opcode op);
   float opcodeDefaultValue(Opcode op);
+  const std::string& opcodeToString(Opcode op) const;
+  const char* opcodeToStringC(Opcode op) const { return (opcodeToString(op)).c_str(); }
+  Opcode stringToOpcode(const std::string& str);
+  int stringToIndex(const std::string& str);   // should extract the 74 in cutoff_cc74
+
+
+
+  const std::string& filterTypeToString(FilterType ft);
+  FilterType stringToFilterType(const std::string& str);
+
+
+  std::string valueToString(Opcode op, float value);
+  float stringToValue(Opcode op, const std::string& str);
+  // maybe we could return a string-ref or poniter to char*? that would avoid allocations
 
 
 
 
   // ToDo:
-  //const std::string& filterTypeToString(FilterType ft);
-  //FilterType stringToFilterType(const std::string& str);
-  // add documentation
+  // -opcodeTo
+  // -add documentation
 
   // ...etc.
 
@@ -312,11 +326,17 @@ protected:
   // of some memory overhead - it's basically a hash-table (i think). I'm not yet sure how to 
   // implement it best. ...tbc...
 
-
-  /** Adds an opcode to our database to make it available for later lookup. */
+  /** Adds a record for an sfz-opcode together with some information about the opcode to our 
+  database to make it available for later lookup. */
   void addOpcode(Opcode op, OpcodeFormat type, const std::string& sfzStr, 
     float minValue, float maxValue, float defaultValue, 
     DspType dspType, OpcodeUnit unit, OpcodeSpec spec);
+
+  /** Adds a filter type enum index with its associated sfz-string to our lookupü table for later
+  lookup. */
+  void addFilterType(FilterType type, const std::string& sfzStr);
+
+
 
   /** Structure for one record in our little database or lookup table. */
   struct OpcodeEntry
@@ -333,13 +353,23 @@ protected:
   };
   std::vector<OpcodeEntry> opcodeEntries; /**< Our lookup table of records. */
 
+  /** Simple structure for a record to associate filter type sfz-strings with their enum 
+  values. */
+  struct FilterTypeEntry
+  {
+    FilterType  typeId;   // FilterType::lpf_1p
+    std::string sfzStr;  // "lpf_1p"
+  };
+  std::vector<FilterTypeEntry> filterTypeEntries;  /** Lookup table for the filter types. */
+
+
 
   std::string dummyString;
   /**< The string-ref returning functions return a reference to this, if they do not find a 
   suitable actual string to return. */
 
   static SfzOpcodeTranslator* instance;
-  /** Sole instance of the translator (implementing (a variation of) the singelton pattern). */
+  /** Sole instance of the translator.  */
 
 };
 

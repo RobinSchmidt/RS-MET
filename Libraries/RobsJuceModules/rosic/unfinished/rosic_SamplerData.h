@@ -109,11 +109,11 @@ public:
     int getIndex() const { return index; }
 
     /** Returns the default value for a given type of setting. */
-    static float getDefaultValue(Opcode type);
+    static float getDefaultValue(Opcode op);
 
     /** For a given type of opcode, this function returns the type of signal processor to which the
     opcode applies, e.g. SignalProcessorType::Filter for Type::FilterCutoff. */
-    static DspType getTargetProcessorType(Opcode type);
+    static DspType getTargetProcessorType(Opcode op);
 
 
     bool operator==(const PlaybackSetting& rhs) const

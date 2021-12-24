@@ -83,18 +83,16 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
 
 
 
-  // This is very very preliminary - don't use it yet to define actual instruments - it's going
-  // to change:
+  // This is very very preliminary - don't use it yet to define actual instruments - its behavior
+  // may be going to change:
   dsp = DspType::WaveShaper;
   OS RsMet = OS::RsMet;
   add(OC::DistShape, Nat, "dist_shape", 0.f, 0.f, 0.f, dsp, OU::RawInt,   RsMet);
   add(OC::DistDrive, Flt, "dist_drive", 0.0, 8.0, 1.0, dsp, OU::RawFloat, RsMet);
 
-
-
-
   // ToDo: 
-  // -PanLaw
+  // -PanLaw, introduce fil_bw for bandwidth parameter for bandpass...actually, we need to figure
+  //  out, how the resonance parameter behaves for a bandpass
   // -maybe rename our enum values to map 1:1 to the sfz opcode names
   // -Our single precision floating point representation of integers will run into issues for very 
   //  large integers like in the "offset" opcode where the range goes all the way up to 2^32. Maybe 
@@ -110,6 +108,16 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   // -create similar lists for the filter types and other text parameters
   // -maybe factor out the different table creations into separate functions
 
+
+  // Fill the lookup table with the filter types:
+  using FT = FilterType;
+  filterTypeEntries.resize((int)FT::numFilterTypes);
+  addFilterType(FT::lp_6,   "lpf_1p");
+  addFilterType(FT::hp_6,   "hpf_1p");
+  addFilterType(FT::lp_12,  "lpf_2p");
+  addFilterType(FT::hp_12,  "hpf_2p");
+  addFilterType(FT::bp_6_6, "bpf_2p");
+
   // Filter types:
   // SFZ 1: lpf_1p, hpf_1p, lpf_2p, hpf_2p, bpf_2p, brf_2p
   // SFZ 2: lpf_4p, hpr_4p, lpf_6p, hpf_6p, bpf_1p, brf_1p, apf_1p, pkf_2p, lpf_2p_sv, hpf_2p_sv, 
@@ -119,6 +127,11 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   // http://ariaengine.com/forums/index.php?p=/discussion/4389/arias-custom-opcodes/p1
   // ...it has 6-pole filters! :-O can we realize that with the current filter implementation 
   // without increasing its memory footprint? maybe using 3 equal biquads in DF2 or TDF1?
+  // ...but maybe it would be a better idea to not use one class that does all filter types but
+  // instead have for each filter topology an extra class. This will reduce the memory footprint
+  // when only simple filters are used in a patch and opens the possibility to later include really
+  // fancy filters without blowing up the memory footprint of patches which use only simple 
+  // filters
 
 
   int dummy = 0;
@@ -141,28 +154,11 @@ void SfzOpcodeTranslator::addOpcode(Opcode op, OpcodeFormat type, const std::str
   // maybe remove that field...but maybe it's useful in other contexts
 }
 
-const std::string& SfzOpcodeTranslator::opcodeToString(Opcode op) const
+void SfzOpcodeTranslator::addFilterType(FilterType type, const std::string& sfzStr)
 {
-  if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
-    RAPT::rsError("Unknown opcode in SfzOpcodeTranslator::opcodeToString");
-    return dummyString; 
-  }
-  return opcodeEntries[(int)op].text;
-}
-// needs test
-
-Opcode SfzOpcodeTranslator::stringToOpcode(const std::string& str)
-{
-  for(int i = 0; i < opcodeEntries.size(); i++)
-    if(opcodeEntries[i].text == str)
-      return opcodeEntries[i].op;    // op should be equal to i
-  RAPT::rsError("Unknown opcode in SfzOpcodeTranslator::stringToOpcode");
-  return Opcode::Unknown;
-
-  // This has currently linear complexity in the number of opcodes. Maybe bring this down to at
-  // most O(log(N)) by maintaining a map of indices into the opcodeEntries array that is sorted
-  // lexicographically according to the opcode string. I'm not sure, if it's worth it though.
-  // This is called only on patch loading and maybe it's fast enough as is. We'll see.
+  int i = (int)type;
+  rsEnsureSize(filterTypeEntries, size_t(i+1));
+  filterTypeEntries[i] = FilterTypeEntry({ type, sfzStr });
 }
 
 DspType SfzOpcodeTranslator::opcodeToProcessor(Opcode op)
@@ -181,6 +177,74 @@ float SfzOpcodeTranslator::opcodeDefaultValue(Opcode op)
     return 0.f;
   }
   return opcodeEntries[(int)op].defVal;
+}
+
+const std::string& SfzOpcodeTranslator::opcodeToString(Opcode op) const
+{
+  if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
+    RAPT::rsError("Unknown opcode in SfzOpcodeTranslator::opcodeToString");
+    return dummyString; }
+  return opcodeEntries[(int)op].text;
+}
+// needs test
+
+Opcode SfzOpcodeTranslator::stringToOpcode(const std::string& str)
+{
+  for(int i = 0; i < opcodeEntries.size(); i++)
+    if(opcodeEntries[i].text == str)
+      return opcodeEntries[i].op;    // op should be equal to i
+  RAPT::rsError("Unknown opcode in SfzOpcodeTranslator::stringToOpcode");
+  return Opcode::Unknown;
+
+  // This has currently linear complexity in the number of opcodes. Maybe bring this down to at
+  // most O(log(N)) by maintaining a map of indices into the opcodeEntries array that is sorted
+  // lexicographically according to the opcode string. I'm not sure, if it's worth it though.
+  // This is called only on patch loading and maybe it's fast enough as is. We'll see.
+
+  // ToDo:
+  // -For the opcodes that contain an index (or two), we perhaps need to preprocess the string to
+  //  remove it or to replace it by "N". In sfz 2, there are also opcodes with two indices, like
+  //  egN_timeX. Maybe first scan through the string from the beginning and the first number that
+  //  is found is replaced by N, then do it again and when another number is found, replace it by 
+  //  X. Maybe the 2nd scan could also go backward.
+}
+
+int SfzOpcodeTranslator::stringToIndex(const std::string& str)
+{
+  return -1;  // preliminary
+
+  // This function should, for example, extract the 74 in cutoff_cc74. For eg3_time5, it should 
+  // extract the 3. Maybe rename it to stringToIndexN and have another function stringToIndexX that
+  // would extract the 5 in the 2nd case. N and X are used as placeholders here:
+  // https://www.linuxsampler.org/sfz/
+}
+
+const std::string& SfzOpcodeTranslator::filterTypeToString(FilterType ft)
+{
+  if((int)ft < 0 || (int)ft >= (int)filterTypeEntries.size()) {
+    RAPT::rsError("Unknown type in SfzOpcodeTranslator::filterTypeToString");
+    return dummyString;  }
+  return filterTypeEntries[(int)ft].sfzStr;
+}
+
+FilterType SfzOpcodeTranslator::stringToFilterType(const std::string& str)
+{
+  for(int i = 0; i < filterTypeEntries.size(); i++)
+    if(filterTypeEntries[i].sfzStr == str)
+      return filterTypeEntries[i].typeId;    // should be equal to i
+  RAPT::rsError("Unknown type in SfzOpcodeTranslator::stringToFilterType");
+  return FilterType::Unknown;
+}
+// this code is repetitive! try to refactor!
+
+std::string SfzOpcodeTranslator::valueToString(Opcode op, float val)
+{
+  return to_string(val);  // preliminary
+}
+
+float SfzOpcodeTranslator::stringToValue(Opcode op, const std::string& str)
+{
+  return std::stof(str);  // preliminary
 }
 
 SfzOpcodeTranslator* SfzOpcodeTranslator::getInstance()

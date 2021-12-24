@@ -4,7 +4,6 @@ namespace Sampler {
 //-------------------------------------------------------------------------------------------------
 // The internal classes
 
-// get rid of these - the caller should use the translator himself:
 float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type)
 {
   SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
@@ -14,9 +13,9 @@ DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
 {
   SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
   return t->opcodeToProcessor(type);
-  // try to get rid of this method entirely - let the caller do the stuff directly
-  // ...does not yet work
 }
+// Maybe get rid of these two. The caller should use the translator himself. Or maybe it's more 
+// convenient to keep them as convenience functions? We'll see....
 
 //-------------------------------------------------------------------------------------------------
 
@@ -591,6 +590,8 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   s += t->opcodeToStringC(type) + std::string("=") + to_string(val) + "\n";
 
   // ToDo: 
+  // -Let the translator have a valueToString that takes the opcode type and the value and does
+  //  custom conversions depending on the opcode type. Have also a function that converts back.
   // -Maybe use custom string conversion functions because the std::to_string just uses a 
   //  fixed number of 6 decimal digits after the point. Maybe that's suitable, but maybe not:
   //  https://www.cplusplus.com/reference/string/to_string/

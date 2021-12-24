@@ -1172,14 +1172,14 @@ bool samplerEngineUnitTestFileIO()
   gi = se.addGroup(); ok &= gi == 0;
 
   // Set up region for sine:
-  ri = se.addRegion(0);                                   ok &= ri == 0;
-  rc = se.setRegionSample(0, 0, 0);                       ok &= rc == RC::success;
+  ri = se.addRegion(0);             ok &= ri == 0;
+  rc = se.setRegionSample(0, 0, 0); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 0, PST::Pan, -100.f);          ok &= rc == RC::success;
 
   // Set up region for cosine:
-  ri = se.addRegion(0);                                   ok &= ri == 1;
-  rc = se.setRegionSample(0, 1, 1);                       ok &= rc == RC::success;
+  ri = se.addRegion(0);             ok &= ri == 1;
+  rc = se.setRegionSample(0, 1, 1); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 1, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 1, PST::Pan, +100.f);          ok &= rc == RC::success;
 
