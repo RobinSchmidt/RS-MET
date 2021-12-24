@@ -1469,28 +1469,8 @@ bool samplerFilterTest()
   // numerical issue - although the error is visible, so that's perhaps a bit too much for roundoff
   // errors.
 
-  // Try two filters in series (lowpass then highpass)
-  float cutoff1 = 2000.f;  // lowpass cutoff
-  float cutoff2 =  500.f;  // highpass cutoff
-  se.setRegionSetting(0, 0, PST::FilType, (float)Type::lp_6, 1);
-  se.setRegionSetting(0, 0, PST::Cutoff,  cutoff1, 1);
-  se.setRegionSetting(0, 0, PST::FilType, (float)Type::hp_6, 2);
-  se.setRegionSetting(0, 0, PST::Cutoff,  cutoff2, 2);
 
-  // Create target signal:
-  flt.setCutoff(cutoff1);
-  flt.setMode(flt.LOWPASS_IIT);
-  for(int n = 0; n < N; n++)
-    tgt[n] = flt.getSample(noise[n]);
-  flt.setCutoff(cutoff2);
-  flt.setMode(flt.HIGHPASS_MZT);
-  for(int n = 0; n < N; n++)
-    tgt[n] = flt.getSample(tgt[n]);
-  //rsPlotVector(tgt);
 
-  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
-  // triggers "No processor available for DSP opcode" error
-  int dummy = 0;
 
 
 
@@ -1608,6 +1588,63 @@ bool samplerWaveShaperTest()
   return ok;
 }
 
+bool samplerDspChainTest()
+{
+  bool ok = true;
+
+  using VecF = std::vector<float>;     // vector of sample values in RAM
+  using SE   = rosic::Sampler::rsSamplerEngineTest;
+  using PST  = rosic::Sampler::Opcode;
+  using Type = rosic::Sampler::FilterType;
+
+  // Setup:
+  float fs      = 44100.f;  // sample rate
+  float slope   = -3.01;    // spectral slope of the noise
+  float cutoff1 = 2000.f;   // lowpass cutoff
+  float cutoff2 =  500.f;   // highpass cutoff
+  int   N       = 500;      // length of sample
+
+  // Create a pinkish noise as example sample:
+  VecF  noise;              // noise sample
+  VecF  tgt(N);             // target output in tests
+  VecF  outL(N), outR(N);   // for the output signals
+  noise = createColoredNoise(N, slope);
+
+  // Create target signal using a filter from RAPT:
+  using OPF = RAPT::rsOnePoleFilter<float, float>;
+  OPF flt;
+  flt.setSampleRate(fs);
+  flt.setCutoff(cutoff1);
+  flt.setMode(flt.LOWPASS_IIT);
+  for(int n = 0; n < N; n++)
+    tgt[n] = flt.getSample(noise[n]);
+  flt.setCutoff(cutoff2);
+  flt.setMode(flt.HIGHPASS_MZT);
+  flt.reset();
+  for(int n = 0; n < N; n++)
+    tgt[n] = flt.getSample(tgt[n]);
+  //rsPlotVector(tgt);
+
+  // Build a sampler patch using DSP chain containing two filters, a lowpass and a highpass, let it
+  // produce a note and check it against the target signal:
+  SE se;
+  float *pSmp = &noise[0];
+  se.addSampleToPool(&pSmp, N, 1, fs, "Noise");
+  se.addGroup();
+  se.addRegion(0);
+  se.setRegionSample( 0, 0, 0);
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f);
+  se.setRegionSetting(0, 0, PST::FilType, (float)Type::lp_6, 1);
+  se.setRegionSetting(0, 0, PST::Cutoff,  cutoff1, 1);
+  se.setRegionSetting(0, 0, PST::FilType, (float)Type::hp_6, 2);
+  se.setRegionSetting(0, 0, PST::Cutoff,  cutoff2, 2);
+  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
+  // triggers "No processor available for DSP opcode" error
+
+  rsAssert(ok);
+  return ok;
+}
+
 
 
 bool samplerProcessorsTest()
@@ -1625,6 +1662,7 @@ bool samplerProcessorsTest()
 
   ok &= samplerFilterTest();
   ok &= samplerWaveShaperTest();
+  ok &= samplerDspChainTest();
 
   // ToDo:
   // -Implement more DSP modules: echo, vibrato, flanger, phaser, chorus, etc., 
