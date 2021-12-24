@@ -4,102 +4,19 @@ namespace Sampler {
 //-------------------------------------------------------------------------------------------------
 // The internal classes
 
+// get rid of these - the caller should use the translator himself:
 float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type)
 {
-  // New:
   SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
   return t->opcodeDefaultValue(type);
-
-
-  /*
-  using TP = Opcode;
-  switch(type)
-  {
-  case TP::LoKey:          return 0.f;
-  case TP::HiKey:          return 127.f;
-  case TP::LoVel:          return 0.f;
-  case TP::HiVel:          return 127.f;
-
-  case TP::Volume:         return 0.f;
-  case TP::Pan:            return 0.f;
-
-  case TP::PitchKeyCenter: return 60.f;
-  case TP::Transpose:      return  0.f;
-  case TP::Tune:           return  0.f;
-
-  case TP::Delay:          return 0.f;
-  case TP::Offset:         return 0.f;
-
-
-  // Filter: the spec says, if the cutoff is not specified, it should deactivate the filter...how
-  // can we capture this here? maybe return -1 as code?
-
-  // Extensions:
-  case TP::DistShape:      return 0.f;  // maybe rename to DistortShape, ...
-  case TP::DistDrive:      return 0.f;
-  //case TP::DistGain:       return 0.f;
-
-  }
-
-  RAPT::rsError("Unknown type of PlaybackSetting, i.e. unknown sfz opcode.");
-  return 0.f;  // maybe we should return NaN? but no - that would be evil!
-  */
 }
-
 DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
 {
-  // New: 
   SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
   return t->opcodeToProcessor(type);
   // try to get rid of this method entirely - let the caller do the stuff directly
   // ...does not yet work
-
-  /*
-  using TP = Opcode;
-  using SP = DspType;
-  switch(type)
-  {
-  case TP::LoKey:          return SP::SamplePlayer;
-  case TP::HiKey:          return SP::SamplePlayer;
-  case TP::LoVel:          return SP::SamplePlayer;
-  case TP::HiVel:          return SP::SamplePlayer;
-  case TP::Volume:         return SP::SamplePlayer;
-  case TP::Pan:            return SP::SamplePlayer;
-  case TP::PitchKeyCenter: return SP::SamplePlayer;
-  case TP::Transpose:      return SP::SamplePlayer;
-  case TP::Tune:           return SP::SamplePlayer;
-  case TP::Delay:          return SP::SamplePlayer;
-  case TP::Offset:         return SP::SamplePlayer;
-
-  case TP::FilType:        return SP::Filter;
-  case TP::Cutoff:         return SP::Filter;
-  case TP::Resonance:      return SP::Filter;    // shorten to FilterReso or FiltReso
-
-  case TP::DistShape:      return SP::WaveShaper;
-  case TP::DistDrive:      return SP::WaveShaper;
-  }
-
-  // Maybe the the amount code can be reduced when we ensure that the TP types are sorted by their
-  // SP in the enum, i.e. we could write:
-  //   if(type < TP::PlayerOpcodesEnd) return SP::SamplePlayer;
-  //   if(type < TP::FilterOpcodesEnd) return SP::Filter;
-  // etc. But this requires discipline when adding new opcodes to respect the ordering.
-
-  RAPT::rsError("Unknown type of PlaybackSetting, i.e. unknown sfz opcode.");
-  return SP::Unknown;
-  */
 }
-// This function should be dragged out of the class. It would be most convenient to have some 
-// sort global or singleton object from which such information about the various relationships
-// between opcode enum indices, their sfz strings, their associated signal processors, etc. can 
-// be retrieved. Something like SfzOpcodeInfo with members like getProcessorForOpcode, 
-// getStringForOpcode, getOpcodeForString, getOpcodesForProcessor. etc. It would act as a kind 
-// of globally available database and could implement efficient mappings. Mapping opcode indices
-// to anything should always be doable in O(1), Mapping opcode sfz-strings to indices may be 
-// doable O(log(N)) where n is the number of opcodes, if we also store an alphabetically sorted
-// list, etc. ...but these are implementation details. The class should document the complexity
-// of each such mapping operation. Mapping the strings to indces could perhaps even be done by 
-// a std::map to get O(1) on average - we'll see....
 
 //-------------------------------------------------------------------------------------------------
 
@@ -670,44 +587,8 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   //if(val = PlaybackSetting::getDefaultValue(type))
   //  return; // default values need not to be stored - todo: maybe optionally store them anyway
 
-  // Helper function to add an opcode with value to the string str:
-  auto add = [](std::string& str, const char* opcodeName, float value)
-  {
-    str += opcodeName + std::string("=") + to_string(value) + "\n";
-  };
-  // get rid - not needed anymore
-
   SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
-  add(s, t->opcodeToStringC(type), val);
-
-
-
-  /*
-  switch(type)
-  {
-  case PST::Volume:          { add(s, "volume", val);  } break;
-  case PST::Pan:             { add(s, "pan", val);  } break;
-
-  case PST::PitchKeyCenter:  { add(s, "pitch_keycenter", val);  } break;
-  case PST::Transpose:       { add(s, "transpose", val);  } break;
-  case PST::Tune:            { add(s, "tune", val);  } break;
-
-  case PST::Delay:           { add(s, "delay", val);  } break;
-  case PST::Offset:          { add(s, "offset", val);  } break;
-
-  case PST::FilType:         { add(s, "fil_type", val);  } break;
-  case PST::Cutoff:          { add(s, "cutoff", val);  } break;
-  case PST::Resonance:       { add(s, "resonance", val);  } break;
-
-
-  // Extensions:
-  case PST::DistShape:       { add(s, "dist_shape", val);  } break;
-  case PST::DistDrive:       { add(s, "dist_drive", val);  } break;
-
-
-  default:                  { RAPT::rsError("Unknown Opcode"); }
-  }
-  */
+  s += t->opcodeToStringC(type) + std::string("=") + to_string(val) + "\n";
 
   // ToDo: 
   // -Maybe use custom string conversion functions because the std::to_string just uses a 
@@ -721,63 +602,20 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
 }
 
 rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
-  const std::string& opcode, const std::string& valStr)
+  const std::string& opStr, const std::string& valStr)
 {
   using PS  = PlaybackSetting;
   using PST = Opcode;
   float val = std::stof(valStr);  // maybe use cutom function later
   int   idx = -1;
-
-
   SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
-  PST op = t->stringToOpcode(opcode);  // rename opcode to opStr
+  PST op = t->stringToOpcode(opStr);
   return PS(op, val);
 
   // ToDo: 
   // -If applicable, exctract the index from the opcode and set it up in the setting by 
   //  passing it as 3rd parameter to the constructor. ...not yet sure, what's the best way to parse
   //  this.
-
-  /*
-  // Key range:
-  if(opcode == "lokey")           return PS(PST::LoKey, val);
-  if(opcode == "hikey")           return PS(PST::HiKey, val);
-  if(opcode == "lovel")           return PS(PST::LoVel, val);
-  if(opcode == "hivel")           return PS(PST::HiVel, val);
-
-  // Amplitude:
-  if(opcode == "volume")          return PS(PST::Volume, val);
-  if(opcode == "pan")             return PS(PST::Pan,    val);
-
-  // Pitch:
-  if(opcode == "pitch_keycenter") return PS(PST::PitchKeyCenter, val);
-  if(opcode == "transpose")       return PS(PST::Transpose,      val);
-  if(opcode == "tune")            return PS(PST::Tune,           val);
-  // todo:  pitch_keytrack, pitch_veltrack, bend_up, bend_down, bend_step 
-  // maybe: pitch_random
-
-  // Sample Player:
-  if(opcode == "delay")           return PS(PST::Delay,  val);
-  if(opcode == "offset")          return PS(PST::Offset, val);
-
-  // todo:  offset, end, count, loop_mode, loop_start, loop_end
-  // maybe: delay_random, delay_ccN, offset_random, offset_ccN, sync_beats, sync_offset
-
-  // Filter:
-  if(opcode == "fil_type")        return PS(PST::FilType,   val);
-  if(opcode == "cutoff")          return PS(PST::Cutoff,    val);
-  if(opcode == "resonance")       return PS(PST::Resonance, val);
-
-
-  // Extensions:
-  if(opcode == "dist_shape")      return PS(PST::DistShape, val);
-  if(opcode == "dist_drive")      return PS(PST::DistDrive, val);
-
-
-  // ...more to come...
-
-  return PS(PST::Unknown, 0.f);  // fallback value
-  */
 }
 
 void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
@@ -832,26 +670,6 @@ ToDo:
 
 -In the sfz-spec, it says that the pitch_keycenter opcode can also be specified as e.g. c#4
  -> support that syntax in the sfz parser!
-
-Refactor:
--Maybe make a struct that contains the integer enum index for the opcode (e.g. PST::Pan), the 
- sfz opcode string (e.g. "pan"), the default value (e.g. 0.f). That avoids having to change 
- 3 places (PlaybackSetting::getDefaultValue, writeSettingToString, getSettingFromString) when 
- adding a new opcode. It will most likely also reduce the overall amount of code. The code in these
- functions is very repetitive anyway. Then, somewhere in the code we need to have an array of such 
- structs. Disadvantage: The mapping between opcodes indices and their strings must be figured out 
- at runtime (i.e. linear search?)...or we use something like a std::map or some selfmade 
- "dictionary" datastructure...but it needs satellite data for the default value. Maybe a data 
- structure that allows to store an array of pointers to objects (the structs) and additionally 
- maintains an arbitrary number of arrays of indices into that array which are sorted according to
- different criteria, for example, using different fields as key. But where and when would we fill
- that data structure. Maybe it should be some sort of singleton object rsSamplerOpcodeList. Or 
- maybe an object of that class could be a static member of rsSamplerData. It could have member 
- functions:
- rsSamplerData::PlaybackSetting::Type getOpcodeIndex(const::std::string& opcodeString)
- const::std::string& getOpcodeString(...Type opcodeType)
- float getDefaultValue(...Type opcodeType)
-
 
 
 */
