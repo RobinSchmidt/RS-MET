@@ -1659,44 +1659,51 @@ bool samplerDspChainTest()
     tgt[n] = flt.getSample(tanh(drive * tgt[n]));
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
 
-  // Set the cutoff of the 2nd (highpass) filter to a different value:
+  // Updates the target signal according to new values of cutoff1,2,3 and drive
+  auto updateTgt = [&]()
+  {
+    flt.setMode(flt.LOWPASS_IIT);
+    flt.setCutoff(cutoff1);
+    flt.reset();
+    for(int n = 0; n < N; n++)
+      tgt[n] = flt.getSample(noise[n]);
+    flt.setMode(flt.HIGHPASS_MZT);
+    flt.setCutoff(cutoff2);
+    flt.reset();
+    for(int n = 0; n < N; n++)
+      tgt[n] = flt.getSample(tgt[n]);
+    flt.setMode(flt.LOWPASS_IIT);
+    flt.setCutoff(cutoff3);
+    flt.reset();
+    for(int n = 0; n < N; n++)
+      tgt[n] = flt.getSample(tanh(drive * tgt[n]));
+  };
+
+  // Set the cutoffs of the filters to a different values:
   cutoff2 = 100.f;
   se.setRegionSetting(0, 0, PST::Cutoff, cutoff2, 2);
-
-  // ToDo: wrap this into a lambda, so we can call it with multiple settings:
-  flt.setMode(flt.LOWPASS_IIT);
-  flt.setCutoff(cutoff1);
-  flt.reset();
-  for(int n = 0; n < N; n++)
-    tgt[n] = flt.getSample(noise[n]);
-  flt.setMode(flt.HIGHPASS_MZT);
-  flt.setCutoff(cutoff2);
-  flt.reset();
-  for(int n = 0; n < N; n++)
-    tgt[n] = flt.getSample(tgt[n]);
-  flt.setMode(flt.LOWPASS_IIT);
-  flt.setCutoff(cutoff3);
-  flt.reset();
-  for(int n = 0; n < N; n++)
-    tgt[n] = flt.getSample(tanh(drive * tgt[n]));
-
-
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
-
-
-
+  updateTgt();
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+  cutoff1 = 4000.f;
+  se.setRegionSetting(0, 0, PST::Cutoff, cutoff1, 1);
+  updateTgt();
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+  cutoff3 = 3000.f;
+  se.setRegionSetting(0, 0, PST::Cutoff, cutoff3, 3);
+  updateTgt();
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+  drive = 8.0;
+  se.setRegionSetting(0, 0, PST::DistDrive, drive);
+  updateTgt();
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
 
   // ToDo: 
-  // -try to swap the order of some DSPs...but maybe that's not interesting
-
   // -maybe write a test that creates a random dsp chain programmatically using lots of filters and 
   //  waveshapers, set the filter parameters in random order, like type3, cutoff1, type2, reso4,
-  //  ...
   // -test to include filters into an actual sfz instrument for playing, i.e. if the parsing works
   //  right...well - it certainly won't for more than one filter
   // -test what happens, if 
-  //  -we pass index = 0
-  //  -we pass index = 3 for the 2nd filter 
+  //  -we pass index = 0, -1, 4, -2
   //  -we pass the parameters in interleaved order
   //  -we have not enough DSPs available (the region should not play at all in this case)
 
