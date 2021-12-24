@@ -1169,9 +1169,24 @@ void rsSamplerEngine::RegionPlayer::setupProcessorSetting(const PlaybackSetting&
   auto getProcessorFor = [this](const PlaybackSetting& s)
   {
     DspType dspType = SD::getTargetProcessorType(s.getType());
-    SignalProcessor* dsp = dspChain.getProcessor(dspType, RAPT::rsMax(s.getIndex(), 0));
+
+    int i = RAPT::rsMax(s.getIndex(), 0);
+    // This is still wrong. It works only when s.getIndex() returns -1 or 0. -1 is the default 
+    // encoding "not applicable".
+
+    // maybe introduce a getMappedIndex() function that does the right thing, rename index to 
+    // getSfzIndex to make it clear that this is the index that occurs in the sfz-file. The other
+    // one could then be named getChainIndex or something. ok - for the time beign, let's do it 
+    // directly here:
+    i = s.getIndex();
+    if(i >   0) i--;    // map from 1-based counting to 0-based
+    if(i == -1) i = 0;  // map code for "no index" to 1st
+    SignalProcessor* dsp = dspChain.getProcessor(dspType, i);
     return dsp;
   };
+  // Maybe wrap this whole business into a member function of the dspChain. This class knows best
+  // how to map sfz-indices to the actual processor within the chain
+
 
   SignalProcessor* dsp = getProcessorFor(s);
   if(dsp != nullptr)
