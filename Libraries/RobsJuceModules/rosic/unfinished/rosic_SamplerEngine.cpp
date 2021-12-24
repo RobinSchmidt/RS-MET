@@ -11,7 +11,7 @@ rsSamplerEngine::rsSamplerEngine(int maxNumLayers)
   setMaxNumLayers(maxNumLayers);
   instanceCounter++;
   if(instanceCounter == 1)
-    SfzOpcodeTranslator::createInstance();
+    SfzCodeBook::createInstance();
     // This is a singleton object which is used for various translation tasks from various places.
     // We manage its lifetime here in this rather high-level class and lower level objects who live
     // only inside this one, such as rsSamplerData, will access the instance for various 
@@ -23,7 +23,7 @@ rsSamplerEngine::~rsSamplerEngine()
   instanceCounter--;
   RAPT::rsAssert(instanceCounter >= 0);
   if(instanceCounter == 0)
-    SfzOpcodeTranslator::deleteInstance();
+    SfzCodeBook::deleteInstance();
 }
 
 //-------------------------------------------------------------------------------------------------

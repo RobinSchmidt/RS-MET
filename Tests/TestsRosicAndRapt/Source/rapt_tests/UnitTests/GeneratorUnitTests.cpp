@@ -192,7 +192,7 @@ bool samplerDataUnitTest()
   bool ok = true;
 
   //using SD = rsSamplerData;
-  using SFZT = rosic::Sampler::SfzOpcodeTranslator;
+  using SFZT = rosic::Sampler::SfzCodeBook;
   using SD   = rosic::Sampler::rsSamplerData;
   using PST  = rosic::Sampler::Opcode;
 
@@ -200,7 +200,7 @@ bool samplerDataUnitTest()
   // Normally, this is supposed to be done in the constructor of rsSamplerEngine and objects of 
   // type rsSamplerData are supposed to live only inside the engine. But here in the test, we 
   // create these data objects with having an engine around, so we must take over the 
-  // responsibility for the lifetime of the SfzOpcodeTranslator which is used in the data object.
+  // responsibility for the lifetime of the SfzCodeBook which is used in the data object.
 
   SD d1;
   ok &= d1.getNumGroups() == 0;
@@ -1603,7 +1603,7 @@ bool samplerDspChainTest()
   float slope   = -3.01;    // spectral slope of the noise
   float cutoff1 = 2000.f;   // lowpass cutoff
   float cutoff2 =  500.f;   // highpass cutoff
-  int   N       = 500;      // length of sample
+  int   N       =  500;     // length of sample
 
   // Create a pinkish noise as example sample:
   VecF  noise;              // noise sample
@@ -1720,7 +1720,8 @@ bool samplerDspChainTest()
   // -maybe write a test that creates a random dsp chain programmatically using lots of filters and 
   //  waveshapers, set the filter parameters in random order, like type3, cutoff1, type2, reso4,
   // -test to include filters into an actual sfz instrument for playing, i.e. if the parsing works
-  //  right...well - it certainly won't for more than one filter
+  //  right...well - it certainly won't for more than one filter because this is not yet 
+  //  implemented
   // -test what happens, if 
   //  -we pass index = 0, -1, 4, -2
   //  -we pass the parameters in interleaved order
@@ -1729,8 +1730,6 @@ bool samplerDspChainTest()
   rsAssert(ok);
   return ok;
 }
-
-
 
 bool samplerProcessorsTest()
 {
@@ -1745,9 +1744,9 @@ bool samplerProcessorsTest()
   //size = sizeof(SP::Filter);
   //size = sizeof(SP::WaveShaper);
 
-  ok &= samplerDspChainTest();
-  ok &= samplerFilterTest();
-  ok &= samplerWaveShaperTest();
+  ok &= samplerFilterTest();      // tests the different filter modes
+  ok &= samplerWaveShaperTest();  // tests the wvashaping DSP module
+  ok &= samplerDspChainTest();    // uses multiple filters and a waveshaper in between
 
   // ToDo:
   // -Implement more DSP modules: echo, vibrato, flanger, phaser, chorus, etc., 
@@ -1758,23 +1757,18 @@ bool samplerProcessorsTest()
   return ok;
 }
 
-
-
-
 bool samplerEngineUnitTest()
 {
   bool ok = true;
-
-  // new tests:
-  ok &= samplerProcessorsTest();
-  ok &= samplerEngine2UnitTest(); 
 
   // old tests:
   ok &= samplerDataUnitTest();
   ok &= samplerEngineUnitTest1();
   ok &= samplerEngineUnitTestFileIO();
 
-
+  // new tests:
+  ok &= samplerProcessorsTest();
+  ok &= samplerEngine2UnitTest(); 
 
   //rsAssert(ok, "samplerEngineUnitTest failed");
   return ok;

@@ -759,7 +759,7 @@ protected:
   bool regionSettingsOverride = true;
 
   // This object is used for various translation tasks:
-  //SfzOpcodeTranslator sfzTranslator;
+  //SfzCodeBook sfzTranslator;
 
   static int instanceCounter;
   /** An instance counter which is needed to clean up the SfzTranslator singleton object when the

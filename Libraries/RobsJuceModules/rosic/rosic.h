@@ -439,7 +439,7 @@
 #include "unfinished/rosic_ModalSynth.h"
 
 #include "unfinished/rosic_AudioStream.h"
-#include "unfinished/rosic_SfzOpcodeTranslator.h"
+#include "unfinished/rosic_SfzCodeBook.h"
 #include "unfinished/rosic_SamplerData.h"
 #include "unfinished/rosic_SamplerProcessors.h"
 #include "unfinished/rosic_SamplerEngine.h"

@@ -6,12 +6,12 @@ namespace Sampler {
 
 float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type)
 {
-  SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
+  SfzCodeBook* t = SfzCodeBook::getInstance();
   return t->opcodeDefaultValue(type);
 }
 DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
 {
-  SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
+  SfzCodeBook* t = SfzCodeBook::getInstance();
   return t->opcodeToProcessor(type);
 }
 // Maybe get rid of these two. The caller should use the translator himself. Or maybe it's more 
@@ -591,7 +591,7 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   //if(val = PlaybackSetting::getDefaultValue(type))
   //  return; // default values need not to be stored - todo: maybe optionally store them anyway
 
-  SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
+  SfzCodeBook* t = SfzCodeBook::getInstance();
   s += t->opcodeToStringC(op) + std::string("=") + t->valueToString(op, val)  + "\n";
 
   // ToDo:
@@ -608,7 +608,7 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
 {
   using PS  = PlaybackSetting;
   using PST = Opcode;
-  SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
+  SfzCodeBook* t = SfzCodeBook::getInstance();
   PST   op  = t->stringToOpcode(opStr);
   float val = t->stringToValue(op, valStr);
   int   idx = t->stringToIndex(opStr);          // has only preliminary implementation

@@ -623,8 +623,8 @@ protected:
 
 
   // removed - is now a universally accessible singleton:
-  //SfzOpcodeTranslator* sfzTranslator = nullptr;
-  //const SfzOpcodeTranslator& sfzTranslator;
+  //SfzCodeBook* sfzTranslator = nullptr;
+  //const SfzCodeBook& sfzTranslator;
   // ToDo: Require such a reference to be passed to the constructor. The object should be owned
   // by the SamplerEngine. Maybe use a pointer.
   // ....hmmm...not sure if it's a good idea to have this pointer here - we would have to pass it

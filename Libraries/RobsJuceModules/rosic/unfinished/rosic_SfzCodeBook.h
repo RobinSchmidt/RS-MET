@@ -1,5 +1,5 @@
-#ifndef rosic_SfzOpcodeTranslator_h
-#define rosic_SfzOpcodeTranslator_h
+#ifndef rosic_SfzCodeBook_h
+#define rosic_SfzCodeBook_h
 namespace rosic { namespace Sampler {
 
 //-------------------------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ enum class Opcode
   // with the  largest possible range of other engines. Discuss extensions on KVR before 
   // implementing them in production code:
   DistShape, DistDrive,  // DistGain...may be redundant with Volume
-  // SFZ2 has opcode egN_driveshape but now driveshape as such? same with lfoN_drive. does that 
+  // SFZ2 has opcode egN_driveshape but no driveshape as such? same with lfoN_drive. does that 
   // mean the LFO signal is drive into a saturator?
   // check: https://www.plogue.com/products/sforzando.html
 
@@ -113,7 +113,7 @@ enum class Opcode
   // envelope?
 
 
-  // Muted: convenient to switch regions or groups off wihthout removing them - but mayb, we can
+  // Muted: convenient to switch regions or groups off wihthout removing them - but maybe, we can
   // just set the volume to -inf ...should be support -inf in the parser? maybe...
 
   NumTypes  // rename to NumOpcodes
@@ -275,12 +275,12 @@ destructor respectively. The sampler engine which actually also does instance co
 and creates only for the first instance and deletes only when the last instance is deleted. So, 
 multiple instances of a sampler-engine are no problem either. */
 
-class SfzOpcodeTranslator // maybe rename to SfzDictionary, SfzTranslator
+class SfzCodeBook
 {
 
 public:
 
-  SfzOpcodeTranslator();
+  SfzCodeBook();
 
   DspType opcodeToProcessor(Opcode op);
   float opcodeDefaultValue(Opcode op);
@@ -300,16 +300,12 @@ public:
   // maybe we could return a string-ref or poniter to char*? that would avoid allocations
 
 
-
-
   // ToDo:
-  // -opcodeTo
   // -add documentation
 
-  // ...etc.
 
   // Singleton pattern stuff (a variation of the original pattern, actually):
-  static SfzOpcodeTranslator* getInstance();
+  static SfzCodeBook* getInstance();
   static void createInstance();
   static void deleteInstance();
 
@@ -368,11 +364,11 @@ protected:
   /**< The string-ref returning functions return a reference to this, if they do not find a 
   suitable actual string to return. */
 
-  static SfzOpcodeTranslator* instance;
+  static SfzCodeBook* instance;
   /** Sole instance of the translator.  */
 
 };
 
 
 }}      // namespaces
-#endif  // #ifndef rosic_SfzOpcodeTranslator_h
+#endif  // #ifndef rosic_SfzCodeBook_h

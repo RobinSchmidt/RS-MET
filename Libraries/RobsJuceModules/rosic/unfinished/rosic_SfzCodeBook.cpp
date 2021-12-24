@@ -1,8 +1,8 @@
 namespace rosic { namespace Sampler {
 
-SfzOpcodeTranslator* SfzOpcodeTranslator::instance = nullptr;
+SfzCodeBook* SfzCodeBook::instance = nullptr;
 
-SfzOpcodeTranslator::SfzOpcodeTranslator()
+SfzCodeBook::SfzCodeBook()
 {
   // On construction, we build our database (maybe factor out):
   using OC = Opcode;
@@ -144,7 +144,7 @@ inline void rsEnsureSize(std::vector<T>& v, size_t s)
   if(v.size() < s)
     v.resize(s);
 } // maybe move to rapt
-void SfzOpcodeTranslator::addOpcode(Opcode op, OpcodeFormat type, const std::string& sfzStr,
+void SfzCodeBook::addOpcode(Opcode op, OpcodeFormat type, const std::string& sfzStr,
   float minVal, float maxVal, float defVal, DspType dspType, OpcodeUnit unit, OpcodeSpec spec)
 {
   int i = (int)op;
@@ -155,46 +155,46 @@ void SfzOpcodeTranslator::addOpcode(Opcode op, OpcodeFormat type, const std::str
   // maybe remove that field...but maybe it's useful in other contexts
 }
 
-void SfzOpcodeTranslator::addFilterType(FilterType type, const std::string& sfzStr)
+void SfzCodeBook::addFilterType(FilterType type, const std::string& sfzStr)
 {
   int i = (int)type;
   rsEnsureSize(filterTypeEntries, size_t(i+1));
   filterTypeEntries[i] = FilterTypeEntry({ type, sfzStr });
 }
 
-DspType SfzOpcodeTranslator::opcodeToProcessor(Opcode op)
+DspType SfzCodeBook::opcodeToProcessor(Opcode op)
 {
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
-    RAPT::rsError("Unknown opcode in SfzOpcodeTranslator::opcodeToProcessor");
+    RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeToProcessor");
     return DspType::Unknown; 
   }
   return opcodeEntries[(int)op].dsp;
 }
 
-float SfzOpcodeTranslator::opcodeDefaultValue(Opcode op)
+float SfzCodeBook::opcodeDefaultValue(Opcode op)
 {
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
-    RAPT::rsError("Unknown opcode in SfzOpcodeTranslator::opcodeDefaultValue");
+    RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeDefaultValue");
     return 0.f;
   }
   return opcodeEntries[(int)op].defVal;
 }
 
-const std::string& SfzOpcodeTranslator::opcodeToString(Opcode op) const
+const std::string& SfzCodeBook::opcodeToString(Opcode op) const
 {
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
-    RAPT::rsError("Unknown opcode in SfzOpcodeTranslator::opcodeToString");
+    RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeToString");
     return dummyString; }
   return opcodeEntries[(int)op].text;
 }
 // needs test
 
-Opcode SfzOpcodeTranslator::stringToOpcode(const std::string& str)
+Opcode SfzCodeBook::stringToOpcode(const std::string& str)
 {
   for(int i = 0; i < opcodeEntries.size(); i++)
     if(opcodeEntries[i].text == str)
       return opcodeEntries[i].op;    // op should be equal to i
-  RAPT::rsError("Unknown opcode in SfzOpcodeTranslator::stringToOpcode");
+  RAPT::rsError("Unknown opcode in SfzCodeBook::stringToOpcode");
   return Opcode::Unknown;
 
   // This has currently linear complexity in the number of opcodes. Maybe bring this down to at
@@ -210,7 +210,7 @@ Opcode SfzOpcodeTranslator::stringToOpcode(const std::string& str)
   //  X. Maybe the 2nd scan could also go backward.
 }
 
-int SfzOpcodeTranslator::stringToIndex(const std::string& str)
+int SfzCodeBook::stringToIndex(const std::string& str)
 {
   return -1;  // preliminary
 
@@ -222,25 +222,25 @@ int SfzOpcodeTranslator::stringToIndex(const std::string& str)
   // str, so if that's helpful, it could be included as parameter for the function....
 }
 
-const std::string& SfzOpcodeTranslator::filterTypeToString(FilterType ft)
+const std::string& SfzCodeBook::filterTypeToString(FilterType ft)
 {
   if((int)ft < 0 || (int)ft >= (int)filterTypeEntries.size()) {
-    RAPT::rsError("Unknown type in SfzOpcodeTranslator::filterTypeToString");
+    RAPT::rsError("Unknown type in SfzCodeBook::filterTypeToString");
     return dummyString;  }
   return filterTypeEntries[(int)ft].sfzStr;
 }
 
-FilterType SfzOpcodeTranslator::stringToFilterType(const std::string& str)
+FilterType SfzCodeBook::stringToFilterType(const std::string& str)
 {
   for(int i = 0; i < filterTypeEntries.size(); i++)
     if(filterTypeEntries[i].sfzStr == str)
       return filterTypeEntries[i].typeId;    // should be equal to i
-  RAPT::rsError("Unknown type in SfzOpcodeTranslator::stringToFilterType");
+  RAPT::rsError("Unknown type in SfzCodeBook::stringToFilterType");
   return FilterType::Unknown;
 }
 // this code is repetitive! try to refactor!
 
-std::string SfzOpcodeTranslator::valueToString(Opcode op, float val)
+std::string SfzCodeBook::valueToString(Opcode op, float val)
 {
   if(op == Opcode::FilType)
   {
@@ -258,7 +258,7 @@ std::string SfzOpcodeTranslator::valueToString(Opcode op, float val)
   // Maybe use a switch statement later when we have more such special cases
 }
 
-float SfzOpcodeTranslator::stringToValue(Opcode op, const std::string& str)
+float SfzCodeBook::stringToValue(Opcode op, const std::string& str)
 {
   if(op == Opcode::FilType)
   {
@@ -268,7 +268,7 @@ float SfzOpcodeTranslator::stringToValue(Opcode op, const std::string& str)
   return std::stof(str);
 }
 
-SfzOpcodeTranslator* SfzOpcodeTranslator::getInstance()
+SfzCodeBook* SfzCodeBook::getInstance()
 {
   RAPT::rsAssert(instance != nullptr);
   // Client code is supposed to explicitly create the singleton instance using createInstance() 
@@ -282,17 +282,17 @@ SfzOpcodeTranslator* SfzOpcodeTranslator::getInstance()
   return instance;
 }
 
-void SfzOpcodeTranslator::createInstance()
+void SfzCodeBook::createInstance()
 {
   RAPT::rsAssert(instance == nullptr);
   // Don't create a new instance before deleting the old one. That's a memory leak because the 
   // instance pointer will be overwritten and the old object to which it previously pointed will
   // never be deleted.
 
-  instance = new SfzOpcodeTranslator;
+  instance = new SfzCodeBook;
 }
 
-void SfzOpcodeTranslator::deleteInstance()
+void SfzCodeBook::deleteInstance()
 {
   delete instance;
   instance = nullptr;
@@ -305,8 +305,8 @@ void SfzOpcodeTranslator::deleteInstance()
 
 ToDo:
 -Turn it into a Singleton: 
- -add static member of type SfzOpcodeTranslator*, init it to nullptr -> done
- -add a static getInstance() method returning a pointer to our SfzOpcodeTranslator, creating the
+ -add static member of type SfzCodeBook*, init it to nullptr -> done
+ -add a static getInstance() method returning a pointer to our SfzCodeBook, creating the
   object first, if not yet done -> done
  -provide a cleanup function that deallocates the object -> done
  -create may be called from the constructor and cleanup from the destructor of rsSamplerEngine.
