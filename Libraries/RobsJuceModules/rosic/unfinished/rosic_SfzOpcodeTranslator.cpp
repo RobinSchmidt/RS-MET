@@ -77,8 +77,18 @@ SfzOpcodeTranslator::SfzOpcodeTranslator()
   // gain would probably be more complicated.
 
   // Player amplifier:
+  dsp = DspType::SamplePlayer;  // use Amplifier later
   add(OC::Volume, Flt, "volume", -144.f,   +6.f, 0.f, dsp, OU::Decibels, Sfz1);
   add(OC::Pan,    Flt, "pan",    -100.f, +100.f, 0.f, dsp, OU::RawFloat, Sfz1);
+
+
+
+  // This is very very preliminary - don't use it yet to define actual instruments - it's going
+  // to change:
+  dsp = DspType::WaveShaper;
+  OS RsMet = OS::RsMet;
+  add(OC::DistShape, Nat, "dist_shape", 0.f, 0.f, 0.f, dsp, OU::RawInt,   RsMet);
+  add(OC::DistDrive, Flt, "dist_drive", 0.0, 8.0, 1.0, dsp, OU::RawFloat, RsMet);
 
 
 

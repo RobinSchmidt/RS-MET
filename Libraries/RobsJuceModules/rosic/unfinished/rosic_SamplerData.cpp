@@ -44,9 +44,13 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type)
 
 DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
 {
-  // ToDo: 
-  //return sfzTranslator->getOpcodeProcessorType(type)
+  // New: 
+  SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
+  return t->opcodeToProcessor(type);
+  // try to get rid of this method entirely - let the caller do the stuff directly
+  // ...does not yet work
 
+  /*
   using TP = Opcode;
   using SP = DspType;
   switch(type)
@@ -79,6 +83,7 @@ DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
 
   RAPT::rsError("Unknown type of PlaybackSetting, i.e. unknown sfz opcode.");
   return SP::Unknown;
+  */
 }
 // This function should be dragged out of the class. It would be most convenient to have some 
 // sort global or singleton object from which such information about the various relationships

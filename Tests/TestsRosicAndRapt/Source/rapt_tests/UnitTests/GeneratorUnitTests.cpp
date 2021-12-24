@@ -192,8 +192,15 @@ bool samplerDataUnitTest()
   bool ok = true;
 
   //using SD = rsSamplerData;
-  using SD  = rosic::Sampler::rsSamplerData;
-  using PST = rosic::Sampler::Opcode;
+  using SFZT = rosic::Sampler::SfzOpcodeTranslator;
+  using SD   = rosic::Sampler::rsSamplerData;
+  using PST  = rosic::Sampler::Opcode;
+
+  SFZT::createInstance();
+  // Normally, this is supposed to be done in the constructor of rsSamplerEngine and objects of 
+  // type rsSamplerData are supposed to live only inside the engine. But here in the test, we 
+  // create these data objects with having an engine around, so we must take over the 
+  // responsibility for the lifetime of the SfzOpcodeTranslator which is used in the data object.
 
   SD d1;
   ok &= d1.getNumGroups() == 0;
@@ -284,6 +291,9 @@ bool samplerDataUnitTest()
   // -oh - no - we need to use pointers because of rsSamplerEngine::regionsForKey
   // -actually, we need a pointer array for the groups also because the regions refer back to them
   // 
+
+  SFZT::deleteInstance();
+  // We must clean up what we have created - otherwise, we'll trigger a memleak.
 
   rsAssert(ok);
   return ok;
