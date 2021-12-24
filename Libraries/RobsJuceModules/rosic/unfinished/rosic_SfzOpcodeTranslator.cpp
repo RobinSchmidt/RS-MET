@@ -242,6 +242,13 @@ FilterType SfzOpcodeTranslator::stringToFilterType(const std::string& str)
 std::string SfzOpcodeTranslator::valueToString(Opcode op, float val)
 {
   return to_string(val);  // preliminary
+
+  // Maybe use custom string conversion functions because the std::to_string just uses a 
+  // fixed number of 6 decimal digits after the point. Maybe that's suitable, but maybe not:
+  // https://www.cplusplus.com/reference/string/to_string/
+  // ...well, i think, it's not suitable for int params, but we may convert to int. I think, a 
+  // fixed number (maybe 8 or 9..whatever number ensures lossless roundtrips) of total decimal 
+  // digits is better
 }
 
 float SfzOpcodeTranslator::stringToValue(Opcode op, const std::string& str)
@@ -255,7 +262,8 @@ SfzOpcodeTranslator* SfzOpcodeTranslator::getInstance()
   // Client code is supposed to explicitly create the singleton instance using createInstance() 
   // before using it. It should also clean up by calling deleteInstance(), when the object is not 
   // needed anymore. We need this explicit lifetime management (in particular, the clean up) of 
-  // the singleton to prevent false positives from the memory leak checker...
+  // the singleton to prevent false positives from the memory leak checker. Well, it's actually
+  // a valid positive - the (GoF) textbook version of the pattern doesn't clean up.
 
   if(instance == nullptr)  // ...yeah, ok - just in case...but it's really cleaner to do an 
     createInstance();      // explicit creation somewhere before usage.
@@ -265,7 +273,9 @@ SfzOpcodeTranslator* SfzOpcodeTranslator::getInstance()
 void SfzOpcodeTranslator::createInstance()
 {
   RAPT::rsAssert(instance == nullptr);
-  // Don't create a new instance before deleting the old one. That's a memory leak!
+  // Don't create a new instance before deleting the old one. That's a memory leak because the 
+  // instance pointer will be overwritten and the old object to which it previously pointed will
+  // never be deleted.
 
   instance = new SfzOpcodeTranslator;
 }

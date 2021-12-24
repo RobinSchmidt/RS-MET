@@ -578,26 +578,22 @@ bool rsSamplerData::loadFromSFZ(const char* path)
 void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::string& s)
 {
   using PST = Opcode;
-  PST  type = setting.getType();
+  PST    op = setting.getType();
   float val = setting.getValue();
-  int index = setting.getIndex();
+  int   idx = setting.getIndex();  // not yet used but shall be later
 
   // This makes the unit test fail - why?:
   //if(val = PlaybackSetting::getDefaultValue(type))
   //  return; // default values need not to be stored - todo: maybe optionally store them anyway
 
   SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
-  s += t->opcodeToStringC(type) + std::string("=") + to_string(val) + "\n";
+  s += t->opcodeToStringC(op) + std::string("=") + t->valueToString(op, val)  + "\n";
 
-  // ToDo: 
-  // -Let the translator have a valueToString that takes the opcode type and the value and does
-  //  custom conversions depending on the opcode type. Have also a function that converts back.
-  // -Maybe use custom string conversion functions because the std::to_string just uses a 
-  //  fixed number of 6 decimal digits after the point. Maybe that's suitable, but maybe not:
-  //  https://www.cplusplus.com/reference/string/to_string/
-  //  ...well, i think, it's not suitable for int params, but we may convert to int. I think, a 
-  //  fixed number (maybe 8 or 9..whatever number ensures lossless roundtrips) of total decimal 
-  //  digits is better
+  // ToDo:
+  // -t->opcodeToStringC(op) should also take the index as input and include it into the string,
+  //  if applicable. hmmm...maybe for that purpose, it's indeed useful to have -1 as code for
+  //  "not applicable". Otherwise, we would need some compicated logic there to determine, whether
+  //  it's applicable or not.
   // -Why are the lokey, hikey, lovel, hivel opcodes not handled here? I think, it's because they 
   //  are handled already by the caller because they require special treatment. Document this!
 }
@@ -608,8 +604,6 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
   using PS  = PlaybackSetting;
   using PST = Opcode;
   SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
-  //float val = std::stof(valStr);  // maybe use cutom function later
-  //int   idx = -1;
   PST   op  = t->stringToOpcode(opStr);
   float val = t->stringToValue(op, valStr);
   int   idx = t->stringToIndex(opStr);          // has only preliminary implementation

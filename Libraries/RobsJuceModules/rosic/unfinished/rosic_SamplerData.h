@@ -129,7 +129,8 @@ public:
 
     int    index = -1;  //< Used e.g. for conrol-change settings. Is -1, if not applicable.
     // maybe use 1 as default - if there's only one such setting anyway, that seems appropriate
-    // index should always be a positive real number
+    // index should always be a positive real number. But maybe that's not such a good idea - see
+    // comment in rsSamplerData::writeSettingToString in the cpp file
   };
   // Maybe rename to Opcode - but no: "opcodes" are the strings that appear in the sfz file, such
   // "lokey". They map to the Type of the playback setting. Maybe this class should provide the
