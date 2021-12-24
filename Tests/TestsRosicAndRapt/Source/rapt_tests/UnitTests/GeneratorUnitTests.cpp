@@ -1486,7 +1486,7 @@ bool samplerFilterTest()
   flt.setMode(flt.HIGHPASS_MZT);
   for(int n = 0; n < N; n++)
     tgt[n] = flt.getSample(tgt[n]);
-  rsPlotVector(tgt);
+  //rsPlotVector(tgt);
 
   //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
   // triggers "No processor available for DSP opcode" error

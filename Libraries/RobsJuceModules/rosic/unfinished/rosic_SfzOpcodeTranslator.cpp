@@ -1,5 +1,7 @@
 namespace rosic { namespace Sampler {
 
+SfzOpcodeTranslator* SfzOpcodeTranslator::instance = nullptr;
+
 SfzOpcodeTranslator::SfzOpcodeTranslator()
 {
   // On construction, we build our database (maybe factor out):
@@ -162,11 +164,48 @@ DspType SfzOpcodeTranslator::opcodeToProcessor(Opcode op)
   return opcodeEntries[(int)op].dsp;
 }
 
+SfzOpcodeTranslator* SfzOpcodeTranslator::getInstance()
+{
+  RAPT::rsAssert(instance != nullptr);
+  // Client code is supposed to explicitly create the singleton instance using createInstance() 
+  // before using it. It should also clean up by calling deleteInstance(), when the object is not 
+  // needed anymore. We need this explicit lifetime management (in particular, the clean up) of 
+  // the singleton to prevent false positives from the memory leak checker...
+
+  if(instance == nullptr)  // ...yeah, ok - just in case...but it's really cleaner to do an 
+    createInstance();      // explicit creation somewhere before usage.
+  return instance;
+}
+
+void SfzOpcodeTranslator::createInstance()
+{
+  RAPT::rsAssert(instance == nullptr);
+  // Don't create a new instance before deleting the old one. That's a memory leak!
+
+  instance = new SfzOpcodeTranslator;
+}
+
+void SfzOpcodeTranslator::deleteInstance()
+{
+  delete instance;
+  instance = nullptr;
+}
+
+
 }}
 
 /*
 
 ToDo:
+-Turn it into a Singleton: 
+ -add static member of type SfzOpcodeTranslator*, init it to nullptr -> done
+ -add a static getInstance() method returning a pointer to our SfzOpcodeTranslator, creating the
+  object first, if not yet done -> done
+ -provide a cleanup function that deallocates the object -> done
+ -create may be called from the constructor and cleanup from the destructor of rsSamplerEngine.
+  ...hmm...but that's not good when multiple instance of the sampler engine are openened -> maybe
+  the sampler engine shopuld have an instance counter and only the last of them deallocates?
+ -make constructor and assignment operator protected
 -Add unit and spec fields to the opcode records. Maybe it should be possible to configure 
  the sampler such that ignores certain kinds of opcodes, e.g. recognizes only sfz1 opcodes. That 
  way, we could audit how an sfz patch would sound on a sampler that doesn't support one of the

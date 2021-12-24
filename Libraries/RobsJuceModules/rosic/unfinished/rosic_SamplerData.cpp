@@ -42,10 +42,10 @@ float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type)
   return 0.f;  // maybe we should return NaN? but no - that would be evil!
 }
 
-
 DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
 {
-  // ToDo: return sfzTranslator.getOpcodeProcessorType(type)
+  // ToDo: 
+  //return sfzTranslator->getOpcodeProcessorType(type)
 
   using TP = Opcode;
   using SP = DspType;

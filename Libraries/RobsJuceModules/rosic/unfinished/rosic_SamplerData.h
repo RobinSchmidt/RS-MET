@@ -617,6 +617,8 @@ protected:
   //const SfzOpcodeTranslator& sfzTranslator;
   // ToDo: Require such a reference to be passed to the constructor. The object should be owned
   // by the SamplerEngine. Maybe use a pointer.
+  // ....hmmm...not sure if it's a good idea to have this pointer here - we would have to pass it
+  // through to all sorts of embedded objects. Maybe a singleton is better suited for this
 
 };
 

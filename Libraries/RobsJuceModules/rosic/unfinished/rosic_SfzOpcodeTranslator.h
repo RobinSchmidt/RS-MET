@@ -258,10 +258,6 @@ enum class DspType  // rename to DspType or ProcessorType
   NumDsps
 };
 
-
-
-
-
 //=================================================================================================
 
 /** A class to translate between the sfz opcodes in their string representation and their enum 
@@ -291,6 +287,11 @@ public:
   // add documentation
 
   // ...etc.
+
+  // Singleton pattern stuff:
+  SfzOpcodeTranslator* getInstance();
+  void createInstance();
+  void deleteInstance();
 
 protected:
 
@@ -330,6 +331,9 @@ protected:
   std::string dummyString;
   /**< The string-ref returning functions return a reference to this, if they do not find a 
   suitable actual string to return. */
+
+  static SfzOpcodeTranslator* instance;
+  /** Sole instance of the translator (implementing the singelton pattern). */
 
 };
 
