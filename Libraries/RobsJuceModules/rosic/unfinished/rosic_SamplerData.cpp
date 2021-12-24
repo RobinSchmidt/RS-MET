@@ -727,9 +727,18 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
   using PST = Opcode;
   float val = std::stof(valStr);  // maybe use cutom function later
   int   idx = -1;
-  // todo: if applicable, exctract the index from the opcode and set it up in the setting by 
-  // passing it as 3rd parameter to the constructor
 
+
+  SfzOpcodeTranslator* t = SfzOpcodeTranslator::getInstance();
+  PST op = t->stringToOpcode(opcode);  // rename opcode to opStr
+  return PS(op, val);
+
+  // ToDo: 
+  // -If applicable, exctract the index from the opcode and set it up in the setting by 
+  //  passing it as 3rd parameter to the constructor. ...not yet sure, what's the best way to parse
+  //  this.
+
+  /*
   // Key range:
   if(opcode == "lokey")           return PS(PST::LoKey, val);
   if(opcode == "hikey")           return PS(PST::HiKey, val);
@@ -768,6 +777,7 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
   // ...more to come...
 
   return PS(PST::Unknown, 0.f);  // fallback value
+  */
 }
 
 void rsSamplerData::copy(const rsSamplerData& src, rsSamplerData& dst)
