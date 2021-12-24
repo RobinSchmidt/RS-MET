@@ -195,7 +195,9 @@ bool samplerDataUnitTest()
   using SD  = rosic::Sampler::rsSamplerData;
   using PST = rosic::Sampler::Opcode;
 
-  SD d1;
+  rosic::Sampler::SfzOpcodeTranslator sfzt;
+
+  SD d1(&sfzt);
 
   ok &= d1.getNumGroups() == 0;
 
@@ -499,9 +501,11 @@ bool samplerEngineUnitTest1()
   // Other tests to do: set the root-key differently, set the sample-rates for playback and 
   // audiofile differently, test detuning opcodes
 
+
+  rosic::Sampler::SfzOpcodeTranslator sfzt;
   const SD& sfzData = se.getInstrumentData();
   std::string sfzString = sfzData.getAsSFZ();
-  SD sfzData2;
+  SD sfzData2(&sfzt);
   sfzData2.setFromSFZ(sfzString);
   ok &= sfzData2 == sfzData;
   //SE se2;

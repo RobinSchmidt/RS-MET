@@ -4,7 +4,7 @@ namespace Sampler {
 //-------------------------------------------------------------------------------------------------
 // Lifetime:
 
-rsSamplerEngine::rsSamplerEngine(int maxNumLayers)
+rsSamplerEngine::rsSamplerEngine(int maxNumLayers) : sfz(&sfzTranslator)
 {
   setMaxNumLayers(maxNumLayers);
 }
@@ -251,7 +251,7 @@ bool rsSamplerEngine::saveToSFZ(const char* path, bool pathIsAbsolute) const
 int rsSamplerEngine::loadFromSFZ(const char* path, bool pathIsAbsolute)
 {
   std::string absPath = getAbsolutePath(path, pathIsAbsolute);
-  rsSamplerData newSfz;
+  rsSamplerData newSfz(&sfzTranslator);
   bool wasLoaded = newSfz.loadFromSFZ(absPath.c_str());
   if(!wasLoaded) {
     clearInstrument();
