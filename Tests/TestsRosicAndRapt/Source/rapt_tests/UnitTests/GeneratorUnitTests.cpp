@@ -1641,14 +1641,15 @@ bool samplerDspChainTest()
   se.setRegionSetting(0, 0, PST::Cutoff,  cutoff2, 2);
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
 
-  // Add a waveshaper and after that a 3rd (lowpass) filter into the chain
+  // Add a waveshaper and after that a 3rd (lowpass) filter into the chain, such that 
+  // the chain is now: LPF -> HPF -> WS -> LPF:
   float drive    = 4.0f;
   Shape shape    = Shape::Tanh;
   float cutoff3  = 1000.f; 
   se.setRegionSetting(0, 0, PST::DistShape, float(shape));
   se.setRegionSetting(0, 0, PST::DistDrive, drive);
-  se.setRegionSetting(0, 0, PST::FilType, (float)Type::lp_6, 3);
-  se.setRegionSetting(0, 0, PST::Cutoff,  cutoff3, 3);
+  se.setRegionSetting(0, 0, PST::FilType,   (float)Type::lp_6, 3);
+  se.setRegionSetting(0, 0, PST::Cutoff,    cutoff3, 3);
 
   // Create new target signal and run test:
   flt.setMode(flt.LOWPASS_IIT);
@@ -1658,14 +1659,46 @@ bool samplerDspChainTest()
     tgt[n] = flt.getSample(tanh(drive * tgt[n]));
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
 
+  // Set the cutoff of the 2nd (highpass) filter to a different value:
+  cutoff2 = 100.f;
+  se.setRegionSetting(0, 0, PST::Cutoff, cutoff2, 2);
+
+  // ToDo: wrap this into a lambda, so we can call it with multiple settings:
+  flt.setMode(flt.LOWPASS_IIT);
+  flt.setCutoff(cutoff1);
+  flt.reset();
+  for(int n = 0; n < N; n++)
+    tgt[n] = flt.getSample(noise[n]);
+  flt.setMode(flt.HIGHPASS_MZT);
+  flt.setCutoff(cutoff2);
+  flt.reset();
+  for(int n = 0; n < N; n++)
+    tgt[n] = flt.getSample(tgt[n]);
+  flt.setMode(flt.LOWPASS_IIT);
+  flt.setCutoff(cutoff3);
+  flt.reset();
+  for(int n = 0; n < N; n++)
+    tgt[n] = flt.getSample(tanh(drive * tgt[n]));
+
+
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
+
+
+
+
   // ToDo: 
   // -try to swap the order of some DSPs...but maybe that's not interesting
+
+  // -maybe write a test that creates a random dsp chain programmatically using lots of filters and 
+  //  waveshapers, set the filter parameters in random order, like type3, cutoff1, type2, reso4,
+  //  ...
   // -test to include filters into an actual sfz instrument for playing, i.e. if the parsing works
   //  right...well - it certainly won't for more than one filter
   // -test what happens, if 
   //  -we pass index = 0
   //  -we pass index = 3 for the 2nd filter 
   //  -we pass the parameters in interleaved order
+  //  -we have not enough DSPs available (the region should not play at all in this case)
 
   rsAssert(ok);
   return ok;
