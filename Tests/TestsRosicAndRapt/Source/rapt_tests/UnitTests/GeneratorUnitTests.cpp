@@ -1592,10 +1592,11 @@ bool samplerDspChainTest()
 {
   bool ok = true;
 
-  using VecF = std::vector<float>;     // vector of sample values in RAM
-  using SE   = rosic::Sampler::rsSamplerEngineTest;
-  using PST  = rosic::Sampler::Opcode;
-  using Type = rosic::Sampler::FilterType;
+  using VecF  = std::vector<float>;     // vector of sample values in RAM
+  using SE    = rosic::Sampler::rsSamplerEngineTest;
+  using PST   = rosic::Sampler::Opcode;
+  using Type  = rosic::Sampler::FilterType;
+  using Shape = rosic::Sampler::rsSamplerWaveShaper::Shape;
 
   // Setup:
   float fs      = 44100.f;  // sample rate
@@ -1638,11 +1639,33 @@ bool samplerDspChainTest()
   se.setRegionSetting(0, 0, PST::Cutoff,  cutoff1, 1);
   se.setRegionSetting(0, 0, PST::FilType, (float)Type::hp_6, 2);
   se.setRegionSetting(0, 0, PST::Cutoff,  cutoff2, 2);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
-  // triggers "No processor available for DSP opcode" error
-  // in rsSamplerEngine::RegionPlayer::getProcessor, the dspTypeChain has only 1 element 
-  // (a Filter). There should be two of them. So an error occurs already in the sfz object, not 
-  // only in the engine
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+
+  // Add a waveshaper and after that a 3rd (lowpass) filter into the chain
+  float drive    = 4.0f;
+  Shape shape    = Shape::Tanh;
+  float cutoff3  = 1000.f; 
+  se.setRegionSetting(0, 0, PST::DistShape, float(shape));
+  se.setRegionSetting(0, 0, PST::DistDrive, drive);
+  se.setRegionSetting(0, 0, PST::FilType, (float)Type::lp_6, 3);
+  se.setRegionSetting(0, 0, PST::Cutoff,  cutoff3, 3);
+
+  // Create new target signal and run test:
+  flt.setMode(flt.LOWPASS_IIT);
+  flt.setCutoff(cutoff3);
+  flt.reset();
+  for(int n = 0; n < N; n++)
+    tgt[n] = flt.getSample(tanh(drive * tgt[n]));
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
+
+  // ToDo: 
+  // -try to swap the order of some DSPs...but maybe that's not interesting
+  // -test to include filters into an actual sfz instrument for playing, i.e. if the parsing works
+  //  right...well - it certainly won't for more than one filter
+  // -test what happens, if 
+  //  -we pass index = 0
+  //  -we pass index = 3 for the 2nd filter 
+  //  -we pass the parameters in interleaved order
 
   rsAssert(ok);
   return ok;
