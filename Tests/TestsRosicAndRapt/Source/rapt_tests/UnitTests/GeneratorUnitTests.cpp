@@ -1334,12 +1334,6 @@ bool samplerEngineUnitTestFileIO()
   se2.loadFromSFZ("tmp.sfz");
   ok &= se2.isInSameStateAs(se);
   se2.saveToSFZ("tmp2.sfz");
-  // This test actually passes but shouldn't! Also, tmp2.sfz is indeed equal to tmp.sfz. But:
-  // fil_type is stored as float in the sfz files, i.e. fil_type = 1.0000. What we want is 
-  // something like fil_type = lp_6. We need class SfzOpcodeTranslator which can translate back 
-  // and forth between the enum-values of the opcodes, their string representations, the mapping
-  // to DSP processor types and so on...
-
 
   // ToDo:
   // -maybe make a local function testSaveLoadRoundTrip(se, ...) that saves the state of se and 

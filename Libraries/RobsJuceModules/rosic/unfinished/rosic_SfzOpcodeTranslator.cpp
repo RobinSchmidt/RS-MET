@@ -241,7 +241,12 @@ FilterType SfzOpcodeTranslator::stringToFilterType(const std::string& str)
 
 std::string SfzOpcodeTranslator::valueToString(Opcode op, float val)
 {
-  return to_string(val);  // preliminary
+  if(op == Opcode::FilType)
+  {
+    FilterType ft = (FilterType)(int)val;
+    return filterTypeToString(ft);
+  }
+  return to_string(val);
 
   // Maybe use custom string conversion functions because the std::to_string just uses a 
   // fixed number of 6 decimal digits after the point. Maybe that's suitable, but maybe not:
@@ -249,11 +254,17 @@ std::string SfzOpcodeTranslator::valueToString(Opcode op, float val)
   // ...well, i think, it's not suitable for int params, but we may convert to int. I think, a 
   // fixed number (maybe 8 or 9..whatever number ensures lossless roundtrips) of total decimal 
   // digits is better
+  // Maybe use a switch statement later when we have more such special cases
 }
 
 float SfzOpcodeTranslator::stringToValue(Opcode op, const std::string& str)
 {
-  return std::stof(str);  // preliminary
+  if(op == Opcode::FilType)
+  {
+    FilterType ft = stringToFilterType(str);
+    return (float) ft;
+  }
+  return std::stof(str);
 }
 
 SfzOpcodeTranslator* SfzOpcodeTranslator::getInstance()
