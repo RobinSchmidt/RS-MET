@@ -288,10 +288,10 @@ public:
 
   // ...etc.
 
-  // Singleton pattern stuff:
-  SfzOpcodeTranslator* getInstance();
-  void createInstance();
-  void deleteInstance();
+  // Singleton pattern stuff (a variation of the original pattern, actually):
+  static SfzOpcodeTranslator* getInstance();
+  static void createInstance();
+  static void deleteInstance();
 
 protected:
 
@@ -333,7 +333,7 @@ protected:
   suitable actual string to return. */
 
   static SfzOpcodeTranslator* instance;
-  /** Sole instance of the translator (implementing the singelton pattern). */
+  /** Sole instance of the translator (implementing (a variation of) the singelton pattern). */
 
 };
 

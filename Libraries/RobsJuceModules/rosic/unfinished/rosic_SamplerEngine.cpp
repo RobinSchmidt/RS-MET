@@ -1,17 +1,29 @@
 namespace rosic {
 namespace Sampler {
 
+int rsSamplerEngine::instanceCounter = 0;
+
 //-------------------------------------------------------------------------------------------------
 // Lifetime:
 
-rsSamplerEngine::rsSamplerEngine(int maxNumLayers) : sfz(&sfzTranslator)
+rsSamplerEngine::rsSamplerEngine(int maxNumLayers)
 {
   setMaxNumLayers(maxNumLayers);
+  instanceCounter++;
+  if(instanceCounter == 1)
+    SfzOpcodeTranslator::createInstance();
+    // This is a singleton object which is used for various translation tasks from various places.
+    // We manage its lifetime here in this rather high-level class and lower level objects who live
+    // only inside this one, such as rsSamplerData, will access the instance for various 
+    // operations. We will also take care of the cleanup here.
 }
 
 rsSamplerEngine::~rsSamplerEngine()
 {
-
+  instanceCounter--;
+  RAPT::rsAssert(instanceCounter >= 0);
+  if(instanceCounter == 0)
+    SfzOpcodeTranslator::deleteInstance();
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -251,7 +263,7 @@ bool rsSamplerEngine::saveToSFZ(const char* path, bool pathIsAbsolute) const
 int rsSamplerEngine::loadFromSFZ(const char* path, bool pathIsAbsolute)
 {
   std::string absPath = getAbsolutePath(path, pathIsAbsolute);
-  rsSamplerData newSfz(&sfzTranslator);
+  rsSamplerData newSfz;
   bool wasLoaded = newSfz.loadFromSFZ(absPath.c_str());
   if(!wasLoaded) {
     clearInstrument();

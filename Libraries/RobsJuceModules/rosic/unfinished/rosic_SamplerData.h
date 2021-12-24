@@ -42,7 +42,7 @@ public:
   // \name Lifetime
 
   /** Default constructor. */
-  rsSamplerData(SfzOpcodeTranslator* translator) { this->sfzTranslator = translator; }
+  rsSamplerData() {}
 
   ~rsSamplerData() { clearInstrument(); }
 
@@ -613,7 +613,8 @@ protected:
   static void copy(const rsSamplerData& src, rsSamplerData& dst);
 
 
-  SfzOpcodeTranslator* sfzTranslator = nullptr;
+  // removed - is now a universally accessible singleton:
+  //SfzOpcodeTranslator* sfzTranslator = nullptr;
   //const SfzOpcodeTranslator& sfzTranslator;
   // ToDo: Require such a reference to be passed to the constructor. The object should be owned
   // by the SamplerEngine. Maybe use a pointer.

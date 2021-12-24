@@ -195,10 +195,7 @@ bool samplerDataUnitTest()
   using SD  = rosic::Sampler::rsSamplerData;
   using PST = rosic::Sampler::Opcode;
 
-  rosic::Sampler::SfzOpcodeTranslator sfzt;
-
-  SD d1(&sfzt);
-
+  SD d1;
   ok &= d1.getNumGroups() == 0;
 
   // todo: add some groups/regions and test copy-assignment we need deep copies and that doesn't 
@@ -502,10 +499,9 @@ bool samplerEngineUnitTest1()
   // audiofile differently, test detuning opcodes
 
 
-  rosic::Sampler::SfzOpcodeTranslator sfzt;
   const SD& sfzData = se.getInstrumentData();
   std::string sfzString = sfzData.getAsSFZ();
-  SD sfzData2(&sfzt);
+  SD sfzData2;
   sfzData2.setFromSFZ(sfzString);
   ok &= sfzData2 == sfzData;
   //SE se2;
