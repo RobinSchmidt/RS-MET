@@ -1757,22 +1757,33 @@ bool samplerEqualizerTest()
   Vec outL(N), outR(N);      // for the output signals
   noise = createColoredNoise(N, -3.01f);
 
-  // Define a helper function that takes an input x, applies an arbitrary number of eq stages to
-  // it and writes the result into the output y:
-  auto applyEqs = [](const Vec& x, Vec& y, const Vec& gains, const Vec& freqs, const Vec& bws)
+  // Helper function that takes an input x, applies an arbitrary number of eq stages to it and 
+  // writes the result into the output y:
+  auto applyEqs = [&](const Vec& x, Vec& y, const Vec& gains, const Vec& freqs, const Vec& bws)
   {
+    // Input sanity checks:
     rsAssert(rsAreSameSize(gains, freqs, bws));
     rsAssert(rsAreSameSize(x, y));
-    rsCopy(x, y);
+
+    // Create filter object (we use only the 1st stage):
+    using  TPF = rosic::TwoPoleFilter;
+    using DTPF = rosic::DualTwoPoleFilter;
+    DTPF flt;
+    flt.setSampleRate(fs);
+    flt.setMode1(TPF::PEAK);
+
+    // Apply the filter stages one after another:
     int numStages = (int)gains.size();
-
-    // ToDo: 
-    // -create biquad filter object
-    // -loop over the filter stages i
-    //  -set up the filter to a peak filter using gains[i], freqs[i], bws[i]
-    //  -apply the filter (in place) to y
-
-    int dummy = 0;
+    rsCopy(x, y);
+    for(int i = 0; i < numStages; i++)
+    {
+      flt.setFrequency1(freqs[i]);
+      flt.setGain1(gains[i]);
+      flt.setBandwidth1(bws[i]);
+      flt.reset();
+      for(int n = 0; n < N; n++)
+        y[n] = flt.getSample(y[n]);
+    }
   };
 
   // Create the basic sampler patch with no eq yet:
@@ -1787,28 +1798,35 @@ bool samplerEqualizerTest()
 
   // Add the 3rd eq band. The desired behavior is that we actually get 3 filter stages in the dsp
   // chain but the first two are in neutral setting. We don't specify the center frequency or 
-  // bandwidths. Therefore, the default values should be used which are 5 kHz and 1 octave for
-  // eq3:
+  // bandwidth. Therefore, the default values should be used which are 5 kHz and 1 octave:
   se.setRegionSetting(0, 0, OC::Eq3Gain, gain3); 
   //se.setRegionSetting(0, 0, OC::EqGain, gain3, 3);  // later, we want to write it like this!
   applyEqs(noise, tgt, { gain3 }, { 5000.f }, { 1.f });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
-
-
+  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
 
   // Add band 2. This has a default freq of 500Hz:
-
+  se.setRegionSetting(0, 0, OC::Eq2Gain, gain2); 
+  //se.setRegionSetting(0, 0, OC::EqGain, gain2, 2);  // ...later...
+  applyEqs(noise, tgt, { gain2, gain3 }, { 500.f, 5000.f }, { 1.f, 1.f });
+  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
 
   // Add band 1. This has a default freq of 50Hz:
+  se.setRegionSetting(0, 0, OC::Eq1Gain, gain1); 
+  //se.setRegionSetting(0, 0, OC::EqGain, gain1, 1);  // ...later...
+  applyEqs(noise, tgt, { gain1, gain2, gain3 }, { 50.f, 500.f, 5000.f }, { 1.f, 1.f, 1.f });
+  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
 
 
-
-
-
-
+  // Change settings (frequencies, gains, bandwidths):
+  // ...
 
 
   // ToDo:
+  // -The commented tests still fails because eq opcodes is not yet implemented -> implement them
+  //  uncomment the tests and make them pass!
+  // -Allow calling the setup functions like in the "...later..." comments...maybe it doesn't 
+  //  actually make sense to implement it in other way before, maybe directly implement the syntax
+  //  that we eventually want to use. Maybe that requires changes to the SfzCodeBook first.
   // -Check what happens, if we only define only eq3_gain. The desired behavior is that the dsp 
   //  chain actually has 3 filters but 1 and 2 are in a neutral setting. With only eq2_gain 
   //  defined, there should be 2 filters in the chain.

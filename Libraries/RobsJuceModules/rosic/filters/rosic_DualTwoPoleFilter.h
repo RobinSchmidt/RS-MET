@@ -187,6 +187,14 @@ namespace rosic
     /** Calculates one output stereo sample-frame at a time. */
     INLINE void getSampleFrameStereo(double *inOutL, double *inOutR);
 
+    /** Convenience function to be used when only mono output is desired. */
+    INLINE double getSample(double x)
+    {
+      double dummy (0);
+      getSampleFrameStereo(&x, &dummy);
+      return x;
+    }
+
     //---------------------------------------------------------------------------------------------
     // others:
 
