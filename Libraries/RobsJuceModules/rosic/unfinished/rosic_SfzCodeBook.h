@@ -82,7 +82,13 @@ enum class Opcode
 
 
   // SFZ 2.0:
-  // fil2_type, cutoff2, etc. ...generalize to filN_type, cutoffN, etc.
+  // fil2_type, cutoff2, etc. ...generalize to filN_type, cutoffN, etc. - maybe for translations
+  // and lookup, we'll need a special rule for filter-related parameters that leaves out the 1,
+  // i.e. fil1_type, cutoff1, etc. should not be produced or accepted - instead, we'll use 
+  // fil_type, cutoff, etc. because that's what sfz 1 has. it doesn't have a concept of multiple
+  // filters
+
+
   // egN_timeX, egN_levelX
   // lfoN_freq, lfoN_delay, lfoN_fade, lfoN_phase, lfoN_wave, lfoN_volume
 
@@ -137,7 +143,14 @@ enum class FilterType // maybe rename to fil_type for consistency with sfz
   lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6, // SFZ 1.0 types
   // use lpf_1p, hpf_1p, lpf_2p, hpf_2p, bpf_2p, brf_2p
 
-  numFilterTypes  // rename to numTypes
+
+  // My own additional types: ls stands for "low-shelf", hs for "high-shelf", pk for "peak" aka
+  // bell or sometimes band-shelf. The equalizer opcodes of sfz are realized using the same DSP 
+  // objects as for the filter opcode, just with the pk_2p filter type.
+  ls_1p, ls_2p, hs_1p, hs_2p, pk_2p, 
+
+
+  numTypes
 };
 
 enum class LoopMode   // maybe rename to loop_mode (as in sfz)
@@ -193,31 +206,20 @@ enum class OpcodeFormat  // maybe rename to OpcodeFormat
 };
 
 //-------------------------------------------------------------------------------------------------
-/** Enumeration of the physical units that apply to the value of the opcode. */
+/** Enumeration of the physical (or mathematical) units that apply to the value of the opcode. */
 
 enum class OpcodeUnit
 {
   Unknown = 0,
-
-  Hertz,
-  Semitones,
-  Cents,
-  Decibels,
-  Seconds,
-  Samples,
-  //Milliseconds,
-  Beats,
-  BeatsOrSeconds,
-  Text,
-  MidiKey,           // i think, it can be a number or text
-  Percent,
-  Index,
-  RawInt,
-  RawFloat,
-
+  Text, Index, RawInt, RawFloat,                                 // Raw
+  Hertz, Octaves, Semitones, Cents, MidiKey,                     // Frequency
+  Seconds, Samples, //Beats, //Milliseconds, //BeatsOrSeconds,   // Time
+  Percent, Decibels, //Degrees,                                  // Misc
   NumUnits
+
+  // The MidiKey can be given as midi note number, e.g. 61 or as string e.g. c#4. We need to allow
+  // both syntaxes in the parser (and maybe also C#4 with capital C).
 };
-//   // ToDo: have a field for the unit: Hz, cents, semitones, noteNumber, dB, sec, beats, .
 
 //-------------------------------------------------------------------------------------------------
 /** Enumeration of the different specifications in which the respective opcode was defined. */
@@ -331,6 +333,11 @@ protected:
   /** Adds a filter type enum index with its associated sfz-string to our lookupü table for later
   lookup. */
   void addFilterType(FilterType type, const std::string& sfzStr);
+
+  /** Returns true, if the opcode is related to the filter, i.e. is cutoff, fil_type, resonance, 
+  etc. These opcodes need some special rules for parsing because in sfz, only 1 filter exists which
+  doesn't have any index...tbc... */
+  bool isFilterRelated(Opcode op);
 
 
 

@@ -224,6 +224,16 @@ rsSamplerFilter:
  -Use the filter also for the equalizer opcode. No need to define a different class for that. Maybe
  extend sfz to support 4 instead of 3 bands when we later can realize 2 bands per filter...
 
-
+ToDo:
+-Maybe at some later stage, generalize the dspChain in the sampler engine to a more flexible 
+ dspGraph where the routing is not necessarily fixed to x -> 1 -> 2 -> 3 -> y, say (where x,y stand
+ for input and output and the numbers stand for the dsps). Maybe the routing could be controlled in 
+ the sfz file via a new opcode dsp_graph_... where the ... could be a string like x>1_1>2_2>3_3>y 
+ to build the simple chain. The string x>1_x>2_1>3_2>3_3>y could mean: input goes into 1,2 in 
+ paralell, 1,2 get summed and go into 3, 3 goes to out. Maybe using > could be problematic when 
+ embedding such strings in xml files? maybe use x-1_x-2_1-3_2-3_3-y instead? Or some other symbol?
+ Maybe we need a constraint that the left number (source node) must always be less than the right 
+ number (target node). This will avoid loops and presumably make parsing easier. Maybe the 
+ restriction can be lifted later...
 
 */

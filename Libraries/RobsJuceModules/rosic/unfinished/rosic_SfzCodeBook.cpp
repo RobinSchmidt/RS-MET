@@ -61,7 +61,7 @@ SfzCodeBook::SfzCodeBook()
   // Filter:
   dsp = DspType::Filter;
   add(OC::FilType, Txt, "fil_type", (float)FilterType::Unknown + 1.f, 
-    (float)FilterType::numFilterTypes - 1.f, (float)FilterType::lp_12, dsp, OU::Text, Sfz1); 
+    (float)FilterType::numTypes - 1.f, (float)FilterType::lp_12, dsp, OU::Text, Sfz1); 
   // sfz default is lpf_2p - maybe rename our enum values to be consistent with sfz
 
   add(OC::Cutoff, Flt, "cutoff", 0.f, 22050.f, 22050.f, dsp, OU::Hertz, Sfz1);
@@ -82,6 +82,29 @@ SfzCodeBook::SfzCodeBook()
   add(OC::Volume, Flt, "volume", -144.f,   +6.f, 0.f, dsp, OU::Decibels, Sfz1);
   add(OC::Pan,    Flt, "pan",    -100.f, +100.f, 0.f, dsp, OU::RawFloat, Sfz1);
 
+  // Equalizer - we use the filter DSP for implementing the equalizers as well:
+  dsp = DspType::Filter;
+  add(OC::Eq1Freq, Flt, "eq1_freq",   0.0f, 30000.f,   50.f, dsp, OU::Hertz,    Sfz1);
+  add(OC::Eq2Freq, Flt, "eq2_freq",   0.0f, 30000.f,  500.f, dsp, OU::Hertz,    Sfz1);
+  add(OC::Eq3Freq, Flt, "eq3_freq",   0.0f, 30000.f, 5000.f, dsp, OU::Hertz,    Sfz1);
+  add(OC::Eq1Bw,   Flt, "eq1_bw",     0.001f,   4.f,    1.f, dsp, OU::Octaves,  Sfz1);
+  add(OC::Eq2Bw,   Flt, "eq2_bw",     0.001f,   4.f,    1.f, dsp, OU::Octaves,  Sfz1);
+  add(OC::Eq3Bw,   Flt, "eq3_bw",     0.001f,   4.f,    1.f, dsp, OU::Octaves,  Sfz1);
+  add(OC::Eq1Gain, Flt, "eq1_gain", -96.f,    +24.f,    0.f, dsp, OU::Decibels, Sfz1);
+  add(OC::Eq2Gain, Flt, "eq2_gain", -96.f,    +24.f,    0.f, dsp, OU::Decibels, Sfz1);
+  add(OC::Eq3Gain, Flt, "eq3_gain", -96.f,    +24.f,    0.f, dsp, OU::Decibels, Sfz1);
+  // ToDo:
+  // -Implement the equalizer opcodes so as to allow an arbitrary number of bands, i.e. implement 
+  //  them as eqN_freq, etc. We will need a way to handle different deafult values for different 
+  //  indices.
+  // -The upper limit for equalizer center frequencies in sfz is defined to be 30 kHz. That would 
+  //  fall above the Nyquist limit for 44.1 kHz sample-rate. I guess, we will need design formulas
+  //  that allow this and act as a sort of high-shelver when the cutoff is above fs/2? Agai, we 
+  //  need to figure out what other implementations do - by looking at the code where possible and
+  //  by doing measurements of ths sfz+ (which i regard as reference implementation). 
+  // -The lower limit of 0.001 for the bandwidth is rather low indeed so we need to check, if such
+  //  narrow (i.e. high-Q) filters can actually be implemented in single precision. If not, we need
+  //  to use double for the equalizer.
 
 
   // This is very very preliminary - don't use it yet to define actual instruments - its behavior
@@ -112,7 +135,7 @@ SfzCodeBook::SfzCodeBook()
 
   // Fill the lookup table with the filter types:
   using FT = FilterType;
-  filterTypeEntries.resize((int)FT::numFilterTypes);
+  filterTypeEntries.resize((int)FT::numTypes);
   addFilterType(FT::lp_6,   "lpf_1p");
   addFilterType(FT::hp_6,   "hpf_1p");
   addFilterType(FT::lp_12,  "lpf_2p");
@@ -162,6 +185,15 @@ void SfzCodeBook::addFilterType(FilterType type, const std::string& sfzStr)
   filterTypeEntries[i] = FilterTypeEntry({ type, sfzStr });
 }
 
+bool SfzCodeBook::isFilterRelated(Opcode op)
+{
+  RAPT::rsError("Not yet correctly implemented");
+  return op == Opcode::Cutoff || op == Opcode::Resonance || op == Opcode::FilType;
+  // ...these are not all - there are actually many more! look up, which of these need special
+  // treatment with regard to interpreting absence of a number as 1. Make sure the filter-related
+  // opcodes have contiguous indices and use >= and <= comparison here.
+}
+
 DspType SfzCodeBook::opcodeToProcessor(Opcode op)
 {
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
@@ -178,6 +210,11 @@ float SfzCodeBook::opcodeDefaultValue(Opcode op)
     return 0.f;
   }
   return opcodeEntries[(int)op].defVal;
+
+  // When we switch the equalizer opcodes to using eqN_freq, etc. we'll need a special rule here
+  // to take into account the index because in the sfz spec, the default frequencies are different
+  // for the 3 eq baneds (namely 50, 500, 5000). We'll also need to define sensible default values
+  // for indices > 3.
 }
 
 const std::string& SfzCodeBook::opcodeToString(Opcode op) const
@@ -197,17 +234,21 @@ Opcode SfzCodeBook::stringToOpcode(const std::string& str)
   RAPT::rsError("Unknown opcode in SfzCodeBook::stringToOpcode");
   return Opcode::Unknown;
 
-  // This has currently linear complexity in the number of opcodes. Maybe bring this down to at
-  // most O(log(N)) by maintaining a map of indices into the opcodeEntries array that is sorted
-  // lexicographically according to the opcode string. I'm not sure, if it's worth it though.
-  // This is called only on patch loading and maybe it's fast enough as is. We'll see.
+  // This lookup has currently linear complexity in the number of opcodes. Maybe bring this down 
+  // to at most O(log(N)) by maintaining a map of indices into the opcodeEntries array that is 
+  // sorted lexicographically according to the opcode string. I'm not sure, if it's worth it 
+  // though. This is called only on patch loading and maybe it's fast enough as is. We'll see.
+  // Another option could be to use a hash-table as in std::map.
 
   // ToDo:
   // -For the opcodes that contain an index (or two), we perhaps need to preprocess the string to
   //  remove it or to replace it by "N". In sfz 2, there are also opcodes with two indices, like
   //  egN_timeX. Maybe first scan through the string from the beginning and the first number that
   //  is found is replaced by N, then do it again and when another number is found, replace it by 
-  //  X. Maybe the 2nd scan could also go backward.
+  //  X. Maybe the 2nd scan could also go backward. Oh - but we must be careful - there are 
+  //  opcodes like pitcheg_vel2hold. In this case, the 2 should not be removed. Maybe whenever
+  //  a 2 is prefixed by vel, we should not remove it. This is a messy business with all sorts of
+  //  special cases and needs thorough unit tests!
 }
 
 int SfzCodeBook::stringToIndex(const std::string& str)
@@ -219,7 +260,9 @@ int SfzCodeBook::stringToIndex(const std::string& str)
   // would extract the 5 in the 2nd case. N and X are used as placeholders here:
   // https://www.linuxsampler.org/sfz/
   // It seems like the caller (rsSamplerData::getSettingFromString) knows the opcode represented by
-  // str, so if that's helpful, it could be included as parameter for the function....
+  // str, so if that's helpful, it could be included as parameter for the function. Perhaps that's
+  // useful to implement the special rules for the filter-related params (to interpret cutoff as 
+  // cutoff1, fil_type as fil1_type etc.). Maybe, we should have a function isFilterRelated
 }
 
 const std::string& SfzCodeBook::filterTypeToString(FilterType ft)
@@ -305,14 +348,7 @@ void SfzCodeBook::deleteInstance()
 
 ToDo:
 -Turn it into a Singleton: 
- -add static member of type SfzCodeBook*, init it to nullptr -> done
- -add a static getInstance() method returning a pointer to our SfzCodeBook, creating the
-  object first, if not yet done -> done
- -provide a cleanup function that deallocates the object -> done
- -create may be called from the constructor and cleanup from the destructor of rsSamplerEngine.
-  ...hmm...but that's not good when multiple instance of the sampler engine are openened -> maybe
-  the sampler engine shopuld have an instance counter and only the last of them deallocates?
- -make constructor and assignment operator protected
+ -mostly done, still to do: make constructor and assignment operator protected
 -Add unit and spec fields to the opcode records. Maybe it should be possible to configure 
  the sampler such that ignores certain kinds of opcodes, e.g. recognizes only sfz1 opcodes. That 
  way, we could audit how an sfz patch would sound on a sampler that doesn't support one of the

@@ -222,25 +222,27 @@ protected:
       return y;
     }
   };
-  struct SvfImpl                // state variable filter (using ZDF) ..rename to SvfImpl
+  struct SvfImpl                // state variable filter (using ZDF)
   {
     TSig  s1, s2;               // state
     TCoef R;                    // damping(?) - what obout the freq-scaling and weights?
+    // ...stuff to do...
   };
   struct LadderImpl             // ladder filter (using UDF)
   {
     TSig  y1, y2, y3, y4;       // state
     TCoef a, k;                 // filter and feedback coeffs
     TCoef c0, c1, c2, c3, c4;   // output gains
+    // ...stuff to do...
   };
-  union FilterImpl              // Try to find a better name
+  union FilterImpl
   {
-    FilterImpl() {}             // without it, msc complains
-
+    FilterImpl() {}             // without it, msc complains - why?
     OnePoleImpl fo;             // first order
     BiquadImpl  bqd;            // biquad
     SvfImpl     svf;            // state variable filter
     LadderImpl  ldr;            // ladder
+    //PhasorImpl psr;           // phasor filter
   };
   // ToDo: implement reset/getSample etc. also in StateVars, etc. all these structs should provide 
   // the same API, but implement it in a way that is suitable to the given filter topology.
@@ -252,8 +254,8 @@ protected:
   Type type = Type::Bypass;
   FilterImpl impl;
 
-  // ToDo: maybe include also a state-vector filter (maybe rename to state phasor filter to avoid
-  // name clash in abbreviation)
+  // ToDo: maybe include also a state-vector filter (maybe rename to phasor filter to avoid name 
+  // clash in abbreviation with svf)
 };
 
 //=================================================================================================
