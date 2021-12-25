@@ -109,9 +109,9 @@ enum class Opcode
 
   // eff1_type, eff2_type (reverb, chorus, echo, convolve)
   // reverb_time_scale, reverb_density, reverb_size, reverb_time_lo, reverb_time_mid, 
-  // reverb_time_high, reverb_freq_lo, reverb_freq_hi
+  // reverb_time_high, reverb_freq_lo, reverb_freq_hi, reverb_algo (fdn16, schroeder, ...)
   // chorus_voices, chorus_freq, chorus_depth, ...
-  // convolve_sample
+  // convolve_sample (orv mayb just convo_sample
 
   // What about routing?
   // is an opdoce like lfoN_volume meant to route lfo N to volume? and what isegN_amplitude 

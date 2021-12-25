@@ -1731,22 +1731,120 @@ bool samplerDspChainTest()
   return ok;
 }
 
+bool samplerEqualizerTest()
+{
+  // Tests the support of the eqN_freq, eqN_bw, eqN_gain opcodes where N=1,2,3 in the original sfz
+  // spec, but we want to allow arbitrary N.
+
+  bool ok = true;
+
+  using Vec  = std::vector<float>;
+  using SE   = rosic::Sampler::rsSamplerEngineTest;
+  using OC   = rosic::Sampler::Opcode;
+  using Type = rosic::Sampler::FilterType;
+  using namespace RAPT;
+
+  // Setup:
+  float fs    = 44100.f;     // sample rate
+  float gain1 =     3.0f;    // gain of eq1
+  float gain2 =    -2.0f;    // gain of eq2
+  float gain3 =     5.0f;    // gain of eq3
+  int   N     =   500;       // length of sample
+
+  // Create a pinkish noise as example sample:
+  Vec noise;                 // noise sample
+  Vec tgt(N);                // target output in tests
+  Vec outL(N), outR(N);      // for the output signals
+  noise = createColoredNoise(N, -3.01f);
+
+  // Define a helper function that takes an input x, applies an arbitrary number of eq stages to
+  // it and writes the result into the output y:
+  auto applyEqs = [](const Vec& x, Vec& y, const Vec& gains, const Vec& freqs, const Vec& bws)
+  {
+    rsAssert(rsAreSameSize(gains, freqs, bws));
+    rsAssert(rsAreSameSize(x, y));
+    rsCopy(x, y);
+    int numStages = (int)gains.size();
+
+    // ToDo: 
+    // -create biquad filter object
+    // -loop over the filter stages i
+    //  -set up the filter to a peak filter using gains[i], freqs[i], bws[i]
+    //  -apply the filter (in place) to y
+
+    int dummy = 0;
+  };
+
+  // Create the basic sampler patch with no eq yet:
+  SE se;
+  float *pSmp = &noise[0];
+  se.addSampleToPool(&pSmp, N, 1, fs, "Noise");
+  se.addGroup();
+  se.addRegion(0);
+  se.setRegionSample( 0, 0, 0);
+  se.setRegionSetting(0, 0, OC::PitchKeyCenter,  60.f);
+
+
+  // Add the 3rd eq band. The desired behavior is that we actually get 3 filter stages in the dsp
+  // chain but the first two are in neutral setting. We don't specify the center frequency or 
+  // bandwidths. Therefore, the default values should be used which are 5 kHz and 1 octave for
+  // eq3:
+  se.setRegionSetting(0, 0, OC::Eq3Gain, gain3); 
+  //se.setRegionSetting(0, 0, OC::EqGain, gain3, 3);  // later, we want to write it like this!
+  applyEqs(noise, tgt, { gain3 }, { 5000.f }, { 1.f });
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
+
+
+
+  // Add band 2. This has a default freq of 500Hz:
+
+
+  // Add band 1. This has a default freq of 50Hz:
+
+
+
+
+
+
+
+
+  // ToDo:
+  // -Check what happens, if we only define only eq3_gain. The desired behavior is that the dsp 
+  //  chain actually has 3 filters but 1 and 2 are in a neutral setting. With only eq2_gain 
+  //  defined, there should be 2 filters in the chain.
+  // -Check that it all works also when we have one or more filters (via the actual filter opcode)
+  //  in the chain, i.e. make sure that there isn't any sort of bad interference between equalizers
+  //  nad filters. Check also, what happens, if the eq opcodes are defined before the filter 
+  //  opcodes.
+  // -We currently use the RBJ cookbook design, but that shouldn't be the final word. First of all,
+  //  we may have to support center frequencies above the Nyquist limit because sfz specifies the
+  //  frequency range to be 0..30000. Second, the bilinear cramping is undesirable. I'm not yet 
+  //  sure, if we should use the Orfanidis design or something else. Maybe the Vicanek design could
+  //  be a good choice as well especially, when we want to make the eq modulatable later (because
+  //  the formulas are simpler). ...but these questions can be postponed to a filter design stage.
+
+  rsAssert(ok);
+  return ok;
+}
+
+
 bool samplerProcessorsTest()
 {
   bool ok = true;
 
-  //rosic::rsSamplerFilter flt;
-
-  //using SP = rosic::rsSamplerProcessors;  // doesn't compile
+  // For inspection in the debugger. We want to keep the sizes of these DSP objects small because 
+  // we'll potentially have to pre-allocate a lot of them when a patch is loaded:
   int size;
   size = sizeof(rosic::Sampler::rsSamplerFilter);       // 64
   size = sizeof(rosic::Sampler::rsSamplerWaveShaper);   // 24
   //size = sizeof(SP::Filter);
   //size = sizeof(SP::WaveShaper);
+  // later move this into a (yet to be written) benchmark testbed
 
   ok &= samplerFilterTest();      // tests the different filter modes
   ok &= samplerWaveShaperTest();  // tests the wvashaping DSP module
   ok &= samplerDspChainTest();    // uses multiple filters and a waveshaper in between
+  ok &= samplerEqualizerTest();
 
   // ToDo:
   // -Implement more DSP modules: echo, vibrato, flanger, phaser, chorus, etc., 
@@ -1761,12 +1859,13 @@ bool samplerEngineUnitTest()
 {
   bool ok = true;
 
-  // old tests:
+  // The new test that is currently under construction:
+  ok &= samplerEqualizerTest();
+
+  // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataUnitTest();
   ok &= samplerEngineUnitTest1();
   ok &= samplerEngineUnitTestFileIO();
-
-  // new tests:
   ok &= samplerProcessorsTest();
   ok &= samplerEngine2UnitTest(); 
 
