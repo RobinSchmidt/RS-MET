@@ -82,30 +82,12 @@ SfzCodeBook::SfzCodeBook()
   add(OC::Volume, Flt, "volume", -144.f,   +6.f, 0.f, dsp, OU::Decibels, Sfz1);
   add(OC::Pan,    Flt, "pan",    -100.f, +100.f, 0.f, dsp, OU::RawFloat, Sfz1);
 
-  // Equalizer - we use the filter DSP for implementing the equalizers as well:
-  dsp = DspType::Filter;
-  /*
-  add(OC::Eq1Freq, Flt, "eq1_freq",   0.0f, 30000.f,   50.f, dsp, OU::Hertz,    Sfz1);
-  add(OC::Eq2Freq, Flt, "eq2_freq",   0.0f, 30000.f,  500.f, dsp, OU::Hertz,    Sfz1);
-  add(OC::Eq3Freq, Flt, "eq3_freq",   0.0f, 30000.f, 5000.f, dsp, OU::Hertz,    Sfz1);
-  add(OC::Eq1Bw,   Flt, "eq1_bw",     0.001f,   4.f,    1.f, dsp, OU::Octaves,  Sfz1);
-  add(OC::Eq2Bw,   Flt, "eq2_bw",     0.001f,   4.f,    1.f, dsp, OU::Octaves,  Sfz1);
-  add(OC::Eq3Bw,   Flt, "eq3_bw",     0.001f,   4.f,    1.f, dsp, OU::Octaves,  Sfz1);
-  add(OC::Eq1Gain, Flt, "eq1_gain", -96.f,    +24.f,    0.f, dsp, OU::Decibels, Sfz1);
-  add(OC::Eq2Gain, Flt, "eq2_gain", -96.f,    +24.f,    0.f, dsp, OU::Decibels, Sfz1);
-  add(OC::Eq3Gain, Flt, "eq3_gain", -96.f,    +24.f,    0.f, dsp, OU::Decibels, Sfz1);
-  */
+  // Equalizer:
+  dsp = DspType::Equalizer;
   add(OC::eqN_freq, Flt, "eqN_freq",   0.0f, 30000.f, 1000.f, dsp, OU::Hertz,    Sfz1);
   add(OC::eqN_gain, Flt, "eqN_gain", -96.f,    +24.f,    0.f, dsp, OU::Decibels, Sfz1);
   add(OC::eqN_bw,   Flt, "eqN_bw",     0.001f,   4.f,    1.f, dsp, OU::Octaves,  Sfz1);
-
-
   // ToDo:
-  // -Implement the equalizer opcodes so as to allow an arbitrary number of bands, i.e. implement 
-  //  them as eqN_freq, etc. We will need a way to handle different deafult values for different 
-  //  indices. ...done
-  // -The default value for the freq should depend on N: N=1 -> f=50, N=2 -> f=500, N=3 -> f=5000.
-  //  We need to implement this as a special rule in opcodeDefaultValue
   // -The upper limit for equalizer center frequencies in sfz is defined to be 30 kHz. That would 
   //  fall above the Nyquist limit for 44.1 kHz sample-rate. I guess, we will need design formulas
   //  that allow this and act as a sort of high-shelver when the cutoff is above fs/2? Agai, we 

@@ -18,7 +18,7 @@ void SignalProcessor::setParameter(Opcode opcode, float value)
 
 //=================================================================================================
 
-void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
+void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float reso)
 {
   if(type == Type::Unknown || w == 0.f)
     type = Type::Bypass;
@@ -56,7 +56,7 @@ void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
     i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q); return;
 
   }
-  RAPT::rsError("Unknown filter type in rsSamplerFilter::setup");
+  RAPT::rsError("Unknown filter type in rsSamplerFilter::setupCutRes");
 
   // ToDo:
   // -Make a consistent choice for all of RAPT whether recursion coeffs of filters should have a 
@@ -64,6 +64,14 @@ void rsSamplerFilter::setup(rsSamplerFilter::Type type, float w, float reso)
   //  all products - maybe introduce new names for the functions and deprecate the old ones instead
   //  of just changing their code. Make benchmarks what is faster, ask at KVR what others do.
 }
+
+void rsSamplerFilter::setupGainFreqBw(Type type, float gain, float omega, float bw)
+{
+
+
+  RAPT::rsError("Unknown filter type in rsSamplerFilter::setupGainFreqBw");
+}
+
 
 /*
 void rsSamplerFilter::initCoeffs()
@@ -138,9 +146,9 @@ SignalProcessorPool::~SignalProcessorPool()
 
 void SignalProcessorPool::allocateProcessors()
 {
-                        // Debug  Release  ...these values make sense for development
-  filters.init(8);      //   8      64
-  waveShapers.init(8);  //   8     128
+  filters.init(8);
+  equalizers.init(8); 
+  waveShapers.init(8);
   // These numbers are preliminary. We need to do something more sensible here later. Perhaps, this 
   // function should be called when a new sfz is loaded and it should have arguments for how many
   // objects of each type are needed. The engine should analyze, how many filters, waveshapers, 
@@ -181,8 +189,9 @@ inline T* rsGetLastPtrAndShrink(std::vector<T>& v)
   return p;
 }
 */
-// maybe move to rapt ...hmm...not needed anymore...perhaps delete...not sure, if they are useful
-// enough in general to include in the library
+// Maybe move to rapt ...hmm...not needed anymore...perhaps delete...not sure, if they are useful
+// enough in general to include in the library. Maybe create a file where we can deposit code that
+// may become useful later
 
 SignalProcessor* SignalProcessorPool::grabProcessor(DspType type)
 {
@@ -191,6 +200,7 @@ SignalProcessor* SignalProcessorPool::grabProcessor(DspType type)
   switch(type)
   {
   case SPT::Filter:     p = filters.grabItem();     break;
+  case SPT::Equalizer:  p = equalizers.grabItem();  break;
   case SPT::WaveShaper: p = waveShapers.grabItem(); break;
   };
   return p;
@@ -203,6 +213,7 @@ void SignalProcessorPool::repositProcessor(SignalProcessor* p)
   switch(p->getType())
   {
   case SPT::Filter:     i = filters.repositItem(p);     break;
+  case SPT::Equalizer:  i = equalizers.repositItem(p);  break;
   case SPT::WaveShaper: i = waveShapers.repositItem(p); break;
   }
   RAPT::rsAssert(i != -1, "Reposited processor was not in pool");

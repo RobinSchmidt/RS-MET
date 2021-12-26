@@ -1800,6 +1800,7 @@ bool samplerEqualizerTest()
   // chain but the first two are in neutral setting. We don't specify the center frequency or 
   // bandwidth. Therefore, the default values should be used which are 5 kHz and 1 octave:
   se.setRegionSetting(0, 0, OC::eqN_gain, gain3, 3);
+  ok &= se.getRegion(0, 0)->getNumProcessors() == 3;
   applyEqs(noise, tgt, { gain3 }, { 5000.f }, { 1.f });
   //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
 
@@ -1809,7 +1810,7 @@ bool samplerEqualizerTest()
   //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
 
   // Add band 1. This has a default freq of 50Hz:
-  se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);  // ...later...
+  se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);
   applyEqs(noise, tgt, { gain1, gain2, gain3 }, { 50.f, 500.f, 5000.f }, { 1.f, 1.f, 1.f });
   //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
 
@@ -1821,15 +1822,9 @@ bool samplerEqualizerTest()
   // ToDo:
   // -The commented tests still fails because eq opcodes is not yet implemented -> implement them
   //  uncomment the tests and make them pass!
-  // -Allow calling the setup functions like in the "...later..." comments...maybe it doesn't 
-  //  actually make sense to implement it in other way before, maybe directly implement the syntax
-  //  that we eventually want to use. Maybe that requires changes to the SfzCodeBook first.
-  //  To enable this, we need to do:
-  //  -the eq1_freq, eq2_freq etc. opcodes need to be replaced by an eqN_freq opcode and likewise
-  //   for all other eq parameters
-  //  -opcodeDefaultValue needs to take an index as 2nd parameter and it perhaps needs some special
-  //   rules for the eqN_freq opcode (if i=1: 50, if i=2: 500, if i=2: 5000, else i=defVal, where
-  //   defVal should perhaps be 1000)
+  // -Maybe we need to be the equalize a dsp type in its own right instead of re-using the filter.
+  //  The eq has different parameters so it doesn't really work to use the filter although, from
+  //  an algorithmic point of view, an eq does the same thing as a filter.
   // -Check what happens, if we only define only eq3_gain. The desired behavior is that the dsp 
   //  chain actually has 3 filters but 1 and 2 are in a neutral setting. With only eq2_gain 
   //  defined, there should be 2 filters in the chain.

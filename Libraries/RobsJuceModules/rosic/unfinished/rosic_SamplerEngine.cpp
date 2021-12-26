@@ -1099,10 +1099,14 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     // instead of listing them all one-by-one, we should have tags: playerStart/End, dspStart/End
     // modulatorsStart/End, modConnectionsStart/End
 
-
-
     // Equalizer settings:
-    // .....
+    case TP::eqN_gain: { setupProcessorSetting(setting); } break;
+    case TP::eqN_freq: { setupProcessorSetting(setting); } break;
+    case TP::eqN_bw:   { setupProcessorSetting(setting); } break;
+
+
+
+      // ToDo: Get rid of this repetition! Maybe these can all be caught in a "default" branch?
 
     }
   }

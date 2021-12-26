@@ -261,6 +261,7 @@ enum class DspType  // rename to DspType or ProcessorType
 
   // The actual DSP processors:
   Filter,
+  Equalizer,
   WaveShaper,
 
   NumDsps

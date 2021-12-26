@@ -165,8 +165,16 @@ public:
   //  potential space optimization that may be done later. If done, it should not affect the API.
   //  ...maybe use the 1st 8 bits for topology - retrieve via shift+mask when needed
 
+  /** Sets the filter up in terms of cutoff (or center) frequency as normalized radian frequency 
+  and resonance in decibels. This parametrization is suitable when used to implement the filter
+  opcodes in sfz. */
+  void setupCutRes(Type type, float cutoff, float resonance);
 
-  void setup(Type type, float cutoff, float resonance);
+  /** Sets the filter up in terms of gain (in decibels), frequency (normalized radian) and 
+  bandwidth (in octaves). This parametrization is suitable when used for the equalizer opcodes in 
+  sfz. */
+  void setupGainFreqBw(Type type, float gain, float omega, float bw);
+
   //void initCoeffs();
   //void updateCoeffs();
 
@@ -345,7 +353,7 @@ public:
     { 
       FilterType sfzType = (FilterType)(int)params[0].getValue();
       rsSamplerFilter::Type coreType = convertTypeEnum(sfzType);
-      core.setup(
+      core.setupCutRes(
         coreType,
         params[1].getValue() * float(2*PI/fs),
         params[2].getValue());
@@ -403,6 +411,48 @@ public:
 
     rsSamplerFilter core;
   };
+
+  class Equalizer : public SignalProcessor
+  {
+
+  public:
+
+    Equalizer()
+    {
+      type = DspType::Equalizer;
+      params.reserve(3);
+      addParameter(Opcode::eqN_gain);
+      addParameter(Opcode::eqN_freq);
+      addParameter(Opcode::eqN_bw); 
+    }
+    void prepareToPlay(double fs) override 
+    { 
+      core.setupGainFreqBw(
+        rsSamplerFilter::Type::BQ_Bell,
+        params[1].getValue(),
+        params[2].getValue() * float(2*PI/fs),
+        params[3].getValue()
+      );
+      core.resetState();
+    }
+    void processFrame(rsFloat64x2& inOut) override 
+    {
+      float L = (float) inOut[0];
+      float R = (float) inOut[1];
+      core.processFrame(L, R);
+      inOut[0] = L;
+      inOut[1] = R;
+    }
+    void processBlock(rsFloat64x2* inOut, int N) override {}
+
+  protected:
+
+    rsSamplerFilter core;
+    // ToDo: use a more efficient implementation - it needs to support only a biquad mode. Maybe 
+    // use TDF1
+
+  };
+
 
 
   class WaveShaper : public SignalProcessor
@@ -609,13 +659,9 @@ public:
 protected:
 
   using SP = rsSamplerProcessors;
-
   rsObjectPool<SP::Filter>     filters;
+  rsObjectPool<SP::Equalizer>  equalizers;
   rsObjectPool<SP::WaveShaper> waveShapers;
-
-  //std::vector<SP::Filter>     filters;
-  //std::vector<SP::WaveShaper> waveShapers;
-  // todo: use rsObjectPool instead of std::vector
 
 };
 // Maybe templatize, rename funcs to generic grabItem, repositItem. But maybe not - maybe we don't
