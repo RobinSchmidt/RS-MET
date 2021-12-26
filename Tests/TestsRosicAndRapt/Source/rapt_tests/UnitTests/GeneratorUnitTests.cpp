@@ -1879,6 +1879,17 @@ bool samplerEqualizerTest()
   applyEqs(noise, tgt, { gain1, gain2, gain3 }, { freq1, freq2, freq3 }, { bw1, bw2, bw3 });
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4, false);
 
+  // Add a 5th band with no 4th in between, so we get a dspChain with 5 eqs but the 4th is neutral.
+  // The new eq should be at its default freq of 1000:
+  float gain5 = -3;
+  float bw5   = 1.2;
+  se.setRegionSetting(0, 0, OC::eqN_gain, gain5, 5);
+  se.setRegionSetting(0, 0, OC::eqN_bw,     bw5, 5);
+  r = se.getRegion(0, 0);
+  ok &= r->getNumProcessors() == 5;
+  applyEqs(noise, tgt, { gain1, gain2, gain3, gain5 }, { freq1, freq2, freq3, 1000 }, 
+    { bw1, bw2, bw3, bw5 });
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4, false);
 
   // ToDo:
   // -Check that it all works also when we have one or more filters (via the actual filter opcode)
@@ -1890,6 +1901,7 @@ bool samplerEqualizerTest()
   //  frequency range to be 0..30000. Maybe the Vicanek design could be a good choice as well 
   //  especially, when we want to make the eq modulatable later (because the formulas are 
   //  simpler). ...but these questions can be postponed to a filter design stage.
+  // -Implment and test saving and parsing of eq parameters
 
   rsAssert(ok);
   return ok;
@@ -1928,7 +1940,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  ok &= samplerEqualizerTest();
+  //ok &= samplerEqualizerTest();
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataUnitTest();

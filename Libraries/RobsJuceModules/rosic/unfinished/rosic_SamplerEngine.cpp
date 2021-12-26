@@ -959,7 +959,7 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
     SignalProcessor* dsp = getProcessor(dspType);
     if(dsp)
     {
-      int index = 1;                    // Figure out the index because the deafult value may 
+      int index = 1;                    // Figure out the index because the default value may 
       for(int j = i-1; j >= 0; j--) {   // depend on it
         if(dspTypeChain[j] == dspType)
           index++;  }
