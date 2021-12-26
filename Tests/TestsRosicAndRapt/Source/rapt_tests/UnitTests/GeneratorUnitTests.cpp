@@ -1799,19 +1799,16 @@ bool samplerEqualizerTest()
   // Add the 3rd eq band. The desired behavior is that we actually get 3 filter stages in the dsp
   // chain but the first two are in neutral setting. We don't specify the center frequency or 
   // bandwidth. Therefore, the default values should be used which are 5 kHz and 1 octave:
-  //se.setRegionSetting(0, 0, OC::Eq3Gain, gain3); 
-  se.setRegionSetting(0, 0, OC::eqN_gain, gain3, 3);  // later, we want to write it like this!
+  se.setRegionSetting(0, 0, OC::eqN_gain, gain3, 3);
   applyEqs(noise, tgt, { gain3 }, { 5000.f }, { 1.f });
   //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
 
   // Add band 2. This has a default freq of 500Hz:
-  //se.setRegionSetting(0, 0, OC::Eq2Gain, gain2); 
-  se.setRegionSetting(0, 0, OC::eqN_gain, gain2, 2);  // ...later...
+  se.setRegionSetting(0, 0, OC::eqN_gain, gain2, 2); 
   applyEqs(noise, tgt, { gain2, gain3 }, { 500.f, 5000.f }, { 1.f, 1.f });
   //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
 
   // Add band 1. This has a default freq of 50Hz:
-  //se.setRegionSetting(0, 0, OC::Eq1Gain, gain1); 
   se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);  // ...later...
   applyEqs(noise, tgt, { gain1, gain2, gain3 }, { 50.f, 500.f, 5000.f }, { 1.f, 1.f, 1.f });
   //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);

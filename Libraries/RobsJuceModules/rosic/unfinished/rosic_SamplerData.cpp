@@ -4,10 +4,10 @@ namespace Sampler {
 //-------------------------------------------------------------------------------------------------
 // The internal classes
 
-float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type)
+float rsSamplerData::PlaybackSetting::getDefaultValue(Opcode type, int index)
 {
   SfzCodeBook* t = SfzCodeBook::getInstance();
-  return t->opcodeDefaultValue(type);
+  return t->opcodeDefaultValue(type, index);
 }
 DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
 {
@@ -101,7 +101,7 @@ void rsSamplerData::OrganizationLevel::copyDataFrom(const OrganizationLevel* lvl
 float rsSamplerData::OrganizationLevel::getSettingValue(
   Opcode type, int index, bool accumulate) const
 {
-  float val = PlaybackSetting::getDefaultValue(type);  // init to global fallback value
+  float val = PlaybackSetting::getDefaultValue(type, index);  // init to global fallback value
   int i = findSetting(type, index);
 
   if(i != -1)                        // setting was found 

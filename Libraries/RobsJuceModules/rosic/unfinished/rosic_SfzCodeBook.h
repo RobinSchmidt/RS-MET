@@ -294,7 +294,7 @@ public:
 
   /** Returns the deault value for the given opcode as floating point number. If the format of the
   value is integer or an enum value, you'll need to convert it. */
-  float opcodeDefaultValue(Opcode op);
+  float opcodeDefaultValue(Opcode op, int index);
   // todo: add an optional index parameter because some opcodes have different default vlaues for
   // different indices (like eqN_freq)
 

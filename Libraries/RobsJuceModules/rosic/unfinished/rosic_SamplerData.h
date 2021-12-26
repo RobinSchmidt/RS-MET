@@ -109,7 +109,7 @@ public:
     int getIndex() const { return index; }
 
     /** Returns the default value for a given type of setting. */
-    static float getDefaultValue(Opcode op);
+    static float getDefaultValue(Opcode op, int index);
 
     /** For a given type of opcode, this function returns the type of signal processor to which the
     opcode applies, e.g. SignalProcessorType::Filter for Type::FilterCutoff. */

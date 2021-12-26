@@ -215,18 +215,30 @@ DspType SfzCodeBook::opcodeToProcessor(Opcode op)
   return opcodeEntries[(int)op].dsp;
 }
 
-float SfzCodeBook::opcodeDefaultValue(Opcode op)
+float SfzCodeBook::opcodeDefaultValue(Opcode op, int index)
 {
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
     RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeDefaultValue");
     return 0.f;
   }
-  return opcodeEntries[(int)op].defVal;
 
-  // When we switch the equalizer opcodes to using eqN_freq, etc. we'll need a special rule here
-  // to take into account the index because in the sfz spec, the default frequencies are different
-  // for the 3 eq baneds (namely 50, 500, 5000). We'll also need to define sensible default values
-  // for indices > 3.
+  // For certain opcodes, the default-value depends on the index:
+  using OC = Opcode;
+  switch(op)
+  {
+  case OC::eqN_freq:
+  {
+    switch(index)
+    {
+    case 1: return   50.f;
+    case 2: return  500.f;
+    case 3: return 5000.f;
+    }
+  }
+  }
+
+  // For all others, we return the stored default value:
+  return opcodeEntries[(int)op].defVal;
 }
 
 const std::string& SfzCodeBook::opcodeToString(Opcode op) const
