@@ -1810,9 +1810,8 @@ bool samplerEqualizerTest()
   r = se.getRegion(0, 0);
   ok &= r->getNumProcessors() == 1;
   applyEqs(noise, tgt, { gain1 }, { freq1 }, { bw1 });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-5, true);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-5, false);
   // Tolerance needs to be even higher than in the filter tests
-
 
   // Now we set only the gain of eq1. The freq and bandwidth should default to 50 Hz and 1 oct:
   r->clearSettings();
@@ -1820,71 +1819,77 @@ bool samplerEqualizerTest()
   se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);
   ok &= r->getNumProcessors() == 1;
   applyEqs(noise, tgt, { gain1 }, { 50 }, { 1 });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4, true);
-  // Does not yet work! sampler eq has freq=1500 and bw = 0.3. These are the settings from the test
-  // before! Apparently, the DSP gets grabbed again but its params are not set to their default 
-  // values. Instead, they are in the same state as they were when the DSP was returned to the 
-  // pool. Maybe in rsSamplerEngine::RegionPlayer::resetPlayerSettings, we should loop over
-  // the dspChain and tell each DSP to set its setting to default values. Maybe the DSP object 
-  // itself needs to know its index to do this. Or: Maybe when building the dspChain, i.e. in 
-  // buildDspChain, we call SignalProcessor::resetSettings() directly after adding it. Maybe the 
-  // function should take an index as parameter
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-3, false);
+  // Whoa - here we need a really high tolerance! OK, we have a moderately high Q and high gain and
+  // a low frequency. Settings which are prone to numeric errors. But still, this is actually quite 
+  // bad. Maybe we need to use double precision for filters and equalizers indeed. Or maybe use 
+  // double for the coefficient calculation at least. Wait - no - the Q is actually rather low. And 
+  // sfz allows very high Q settings
 
-
-
-
-  // Add the 3rd eq band. The desired behavior is that we actually get 3 filter stages in the dsp
-  // chain but the first two are in neutral setting. We don't specify the center frequency or 
-  // bandwidth. Therefore, the default values should be used which are 5 kHz and 1 octave:
+  // Now we set only the gain of eq3. The desired behavior is that we actually get 3 filter stages 
+  // in the dsp chain but the first two are in neutral setting. We don't specify the center 
+  // frequency or bandwidth. Therefore, the default values should be used which are 5 kHz and 1 
+  // octave:
+  r->clearSettings();
+  se.setRegionSetting(0, 0, OC::PitchKeyCenter, 60.f);
   se.setRegionSetting(0, 0, OC::eqN_gain, gain3, 3);
-
-  // Preliminary, to make it work because the default values for freq and bw do not yet work:
-  se.setRegionSetting(0, 0, OC::eqN_freq, 5000.f, 3);
-  se.setRegionSetting(0, 0, OC::eqN_bw,      1.f, 3);
-  // ...hmm...even that doesn't seem to solve it...something is still wrong in setting up the
-  // params of the eq dsp.
-
   r = se.getRegion(0, 0);
   ok &= r->getNumProcessors() == 3;
   applyEqs(noise, tgt, { gain3 }, { 5000.f }, { 1.f });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
-  // The default values for freq and bw do not yet work. Both parameters are zero. freq is supposed 
-  // to be 5000 and bw is supposed to be 1.
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
 
   // Add band 2. This has a default freq of 500Hz:
   se.setRegionSetting(0, 0, OC::eqN_gain, gain2, 2); 
   applyEqs(noise, tgt, { gain2, gain3 }, { 500.f, 5000.f }, { 1.f, 1.f });
-  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4, false);
 
   // Add band 1. This has a default freq of 50Hz:
   se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);
   applyEqs(noise, tgt, { gain1, gain2, gain3 }, { 50.f, 500.f, 5000.f }, { 1.f, 1.f, 1.f });
-  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-3, false);
+  // Here, we also need a high tolerance
 
+  // Change settings of band 1 to something more benign from a numeric point of view:
+  freq1 = 1500;
+  gain1 = 5.f;
+  bw1   = 0.5f;
+  se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);
+  se.setRegionSetting(0, 0, OC::eqN_freq, freq1, 1);
+  se.setRegionSetting(0, 0, OC::eqN_bw,     bw1, 1);
+  applyEqs(noise, tgt, { gain1, gain2, gain3 }, { freq1, 500.f, 5000.f }, { bw1, 1.f, 1.f });
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4, false);
 
-  // Change settings (frequencies, gains, bandwidths):
-  // ...
+  // Change settings of band 2:
+  gain2 = -6;
+  float freq2 = 2500;
+  float bw2   = 0.3;
+  se.setRegionSetting(0, 0, OC::eqN_gain, gain2, 2);
+  se.setRegionSetting(0, 0, OC::eqN_freq, freq2, 2);
+  se.setRegionSetting(0, 0, OC::eqN_bw,     bw2, 2);
+  applyEqs(noise, tgt, { gain1, gain2, gain3 }, { freq1, freq2, 5000.f }, { bw1, bw2, 1.f });
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4, false);
+
+  // Change settings of band 3:
+  gain3 = 7;
+  float freq3 = 8000;
+  float bw3   = 2.2;
+  se.setRegionSetting(0, 0, OC::eqN_gain, gain3, 3);
+  se.setRegionSetting(0, 0, OC::eqN_freq, freq3, 3);
+  se.setRegionSetting(0, 0, OC::eqN_bw,     bw3, 3);
+  applyEqs(noise, tgt, { gain1, gain2, gain3 }, { freq1, freq2, freq3 }, { bw1, bw2, bw3 });
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4, false);
 
 
   // ToDo:
-  // -The commented tests still fails because eq opcodes is not yet implemented -> implement them
-  //  uncomment the tests and make them pass!
-  // -Maybe we need to be the equalize a dsp type in its own right instead of re-using the filter.
-  //  The eq has different parameters so it doesn't really work to use the filter although, from
-  //  an algorithmic point of view, an eq does the same thing as a filter.
-  // -Check what happens, if we only define only eq3_gain. The desired behavior is that the dsp 
-  //  chain actually has 3 filters but 1 and 2 are in a neutral setting. With only eq2_gain 
-  //  defined, there should be 2 filters in the chain.
   // -Check that it all works also when we have one or more filters (via the actual filter opcode)
   //  in the chain, i.e. make sure that there isn't any sort of bad interference between equalizers
   //  nad filters. Check also, what happens, if the eq opcodes are defined before the filter 
   //  opcodes.
-  // -We currently use the RBJ cookbook design, but that shouldn't be the final word. First of all,
+  // -We currently use the Orfanidis design, but that shouldn't be the final word. First of all,
   //  we may have to support center frequencies above the Nyquist limit because sfz specifies the
-  //  frequency range to be 0..30000. Second, the bilinear cramping is undesirable. I'm not yet 
-  //  sure, if we should use the Orfanidis design or something else. Maybe the Vicanek design could
-  //  be a good choice as well especially, when we want to make the eq modulatable later (because
-  //  the formulas are simpler). ...but these questions can be postponed to a filter design stage.
+  //  frequency range to be 0..30000. Maybe the Vicanek design could be a good choice as well 
+  //  especially, when we want to make the eq modulatable later (because the formulas are 
+  //  simpler). ...but these questions can be postponed to a filter design stage.
 
   rsAssert(ok);
   return ok;
