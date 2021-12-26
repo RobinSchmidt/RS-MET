@@ -1749,10 +1749,14 @@ bool samplerEqualizerTest()
 
   // Setup:
   float fs    = 44100.f;     // sample rate
-  float gain1 =     3.0f;    // gain of eq1
+  float gain1 =    24.0f;    // gain of eq1
+  float freq1 =  1000.f;
+  float bw1   =     0.3f;
   float gain2 =    -2.0f;    // gain of eq2
   float gain3 =     5.0f;    // gain of eq3
   int   N     =   500;       // length of sample
+  // Don't use bandwidth < 0.25 or > 6 because the reference filter doesn't support them and clips
+  // the values
 
   // Create a pinkish noise as example sample:
   Vec noise;                 // noise sample
@@ -1791,12 +1795,30 @@ bool samplerEqualizerTest()
 
   // Create the basic sampler patch with no eq yet:
   SE se;
+  Region* r;
   float *pSmp = &noise[0];
   se.addSampleToPool(&pSmp, N, 1, fs, "Noise");
   se.addGroup();
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
   se.setRegionSetting(0, 0, OC::PitchKeyCenter,  60.f);
+
+  // Test the simplest case: use only eq1 and specify all 3 parameters:
+  se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);
+  se.setRegionSetting(0, 0, OC::eqN_freq, freq1, 1);
+  se.setRegionSetting(0, 0, OC::eqN_bw,     bw1, 1);
+  r = se.getRegion(0, 0);
+  ok &= r->getNumProcessors() == 1;
+  applyEqs(noise, tgt, { gain1 }, { freq1 }, { bw1 });
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-5, false);
+  // tolerance needs to be even higher than in the filter tests
+
+
+
+
+  // ToDo: clear the region's settings and re-add the key-center opcode
+
+
 
 
   // Add the 3rd eq band. The desired behavior is that we actually get 3 filter stages in the dsp
@@ -1810,7 +1832,7 @@ bool samplerEqualizerTest()
   // ...hmm...even that doesn't seem to solve it...something is still wrong in setting up the
   // params of the eq dsp.
 
-  Region* r = se.getRegion(0, 0);
+  r = se.getRegion(0, 0);
   ok &= r->getNumProcessors() == 3;
   applyEqs(noise, tgt, { gain3 }, { 5000.f }, { 1.f });
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);

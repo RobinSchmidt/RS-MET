@@ -73,21 +73,26 @@ void rsSamplerFilter::setupGainFreqBw(Type type, float gainDb, float w, float bw
   rsAssert( w > 0.f, "Omega must be positive in setupGainFreqBw");
   // ToDo: allow w=0 later
 
-
   this->type = type;
-
   static const float s = float(1/(2*PI));
+  float rawGain = rsDbToAmp(gainDb);
+  FilterImpl& i = impl;  // as abbreviation
+  rsBiquadDesigner::calculatePrescribedNyquistGainEqCoeffs(
+    i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, bw, rawGain, 1.f);
 
+
+  /*
   float k = powf(2.f, 0.5f*bw);
   float Q = k / (k*k - 1.f);       // Q = 2^(bo/2) / (2^bo - 1)
   // ToDo: verify formula - if correct, move to RAPT::rsBandwidthConverter and call it like:
   //float Q = rsBandwidthConverter::octavesToQ(bw);
 
-  float rawGain = rsDbToAmp(gainDb);
+
   using BQ = rsBiquadDesigner;
-  FilterImpl& i = impl;  // as abbreviatio
+
   rsBiquadDesigner::calculateCookbookPeakFilterCoeffsViaQ(
     i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q, rawGain);
+    */
 
   //rsError("Unknown filter type in rsSamplerFilter::setupGainFreqBw");
 }
@@ -120,6 +125,8 @@ void rsSamplerFilter::processFrame(float& L, float& R)
   case Type::BQ_Highpass:       io = i.bqd.getSample(io); break;
   case Type::BQ_Bandpass_Skirt: io = i.bqd.getSample(io); break;
   case Type::BQ_Bandstop:       io = i.bqd.getSample(io); break;
+  case Type::BQ_Bell:           io = i.bqd.getSample(io); break;
+
   };
   L = io.x; // Preliminary - as long as we are abusing rsVector2D for the signal
   R = io.y;
@@ -147,6 +154,8 @@ void rsSamplerFilter::resetState()
   case Type::BQ_Highpass:       i.bqd.resetState(); return;
   case Type::BQ_Bandpass_Skirt: i.bqd.resetState(); return;
   case Type::BQ_Bandstop:       i.bqd.resetState(); return;
+  case Type::BQ_Bell:           i.bqd.resetState(); return;
+
   }
   RAPT::rsError("Unknown filter type in rsSamplerFilter::resetState");
 }
