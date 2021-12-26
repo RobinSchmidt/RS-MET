@@ -59,6 +59,13 @@ public:
   virtual void processFrame(rsFloat64x2& inOut) = 0;
   virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
 
+  /** Resets all parameters to their default values. The caller needs to pass an index because 
+  those default values may depend on that index. For example eq1_freq has 50, eq2_freq has 500 
+  and eq3_freq has 5000 as default. So, the index is the index of a dsp of the particular given 
+  type within the dsp chain. i.e. in the case of the eqs 1,2,3. It's not the index at which point 
+  it sits in the dspChain. Only dsps of the same type count. */
+  virtual void resetSettings(int index);
+
 protected:
 
   DspType type = DspType::Unknown;

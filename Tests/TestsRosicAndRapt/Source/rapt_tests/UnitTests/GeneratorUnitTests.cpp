@@ -1750,7 +1750,7 @@ bool samplerEqualizerTest()
   // Setup:
   float fs    = 44100.f;     // sample rate
   float gain1 =    24.0f;    // gain of eq1
-  float freq1 =  1000.f;
+  float freq1 =  1500.f;
   float bw1   =     0.3f;
   float gain2 =    -2.0f;    // gain of eq2
   float gain3 =     5.0f;    // gain of eq3
@@ -1810,13 +1810,25 @@ bool samplerEqualizerTest()
   r = se.getRegion(0, 0);
   ok &= r->getNumProcessors() == 1;
   applyEqs(noise, tgt, { gain1 }, { freq1 }, { bw1 });
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-5, false);
-  // tolerance needs to be even higher than in the filter tests
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-5, true);
+  // Tolerance needs to be even higher than in the filter tests
 
 
-
-
-  // ToDo: clear the region's settings and re-add the key-center opcode
+  // Now we set only the gain of eq1. The freq and bandwidth should default to 50 Hz and 1 oct:
+  r->clearSettings();
+  se.setRegionSetting(0, 0, OC::PitchKeyCenter, 60.f);
+  se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);
+  ok &= r->getNumProcessors() == 1;
+  applyEqs(noise, tgt, { gain1 }, { 50 }, { 1 });
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-4, true);
+  // Does not yet work! sampler eq has freq=1500 and bw = 0.3. These are the settings from the test
+  // before! Apparently, the DSP gets grabbed again but its params are not set to their default 
+  // values. Instead, they are in the same state as they were when the DSP was returned to the 
+  // pool. Maybe in rsSamplerEngine::RegionPlayer::resetPlayerSettings, we should loop over
+  // the dspChain and tell each DSP to set its setting to default values. Maybe the DSP object 
+  // itself needs to know its index to do this. Or: Maybe when building the dspChain, i.e. in 
+  // buildDspChain, we call SignalProcessor::resetSettings() directly after adding it. Maybe the 
+  // function should take an index as parameter
 
 
 

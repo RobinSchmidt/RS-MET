@@ -16,6 +16,15 @@ void SignalProcessor::setParameter(Opcode opcode, float value)
   RAPT::rsError("Parameter not found in SignalProcessor::setParameter");
 }
 
+void SignalProcessor::resetSettings(int index)
+{
+  SfzCodeBook* cb = SfzCodeBook::getInstance();
+  for(size_t i = 0; i < params.size(); i++) {
+    Opcode op = params[i].getOpcode();
+    float defVal = cb->opcodeDefaultValue(op, index);
+    params[i].setValue(defVal); }
+}
+
 //=================================================================================================
 
 void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float reso)

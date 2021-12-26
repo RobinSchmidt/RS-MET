@@ -953,13 +953,24 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
   dspChain.clear(); // ...so we do it here. But this should be fixed elsewhere!
   using DspType = DspType;
   const std::vector<DspType>& dspTypeChain = region->getProcessingChain();
-  for(size_t i = 0; i < dspTypeChain.size(); i++) {
-    SignalProcessor* dsp = getProcessor(dspTypeChain[i]);
+  for(size_t i = 0; i < dspTypeChain.size(); i++) 
+  {
+    DspType dspType = dspTypeChain[i];
+    SignalProcessor* dsp = getProcessor(dspType);
     if(dsp)
+    {
+      int index = 1;                    // Figure out the index because the deafult value may 
+      for(int j = i-1; j >= 0; j--) {   // depend on it
+        if(dspTypeChain[j] == dspType)
+          index++;  }
+      dsp->resetSettings(index);
       dspChain.addProcessor(dsp);
+    }
     else {
       dspChain.clear();
-      return false; }}
+      return false; 
+    }
+  }
   return true;
   // If false is returned, it means we do not have enough processors of the required types 
   // available. In this case, the caller should roll back and discard the whole RegionPlayer 
@@ -1000,6 +1011,8 @@ void rsSamplerEngine::RegionPlayer::resetPlayerSettings()
   loopStart  = 0.f;
   loopEnd    = 0.f;
   loopMode   = 0;
+
+  //dspChain.resetSettings();
 }
 
 void rsSamplerEngine::RegionPlayer::setupDspSettingsFor(
