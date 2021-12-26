@@ -72,13 +72,19 @@ enum class Opcode
   AmpLfoDelay, AmpLfoFade, AmpLfoFreq, AmpLfoDepth, AmpLfoDepthCtrlN, 
   AmpLfoDepthChanAft, AmpLfoDepthPolyAft, AmpLfoFreqCtrlN, AmpLfoFreqChanAft, AmpLfoFreqPolyAft,
 
-  // Equalizer:
-  Eq1Freq, Eq2Freq, Eq3Freq, Eq1FreqCtrlN, Eq2FreqCtrlN, Eq3FreqCtrlN, Eq1Vel2Freq, Eq2Vel2Freq, 
-  Eq3Vel2Freq, Eq1Bw, Eq2Bw, Eq3Bw, Eq1BwCtrlN, Eq2BwCtrlN, Eq3BwCtrlN, Eq1Gain, Eq2Gain, Eq3Gain,
-  Eq1GainCtrlN, Eq2GainCtrlN, Eq3GainCtrlN, Eq1Vel2Gain, Eq2Vel2Gain, Eq3Vel2Gain, 
+  //// Equalizer (old, sfz style with only 3 bands, each having its own opcode):
+  //Eq1Freq, Eq2Freq, Eq3Freq, Eq1FreqCtrlN, Eq2FreqCtrlN, Eq3FreqCtrlN, Eq1Vel2Freq, Eq2Vel2Freq, 
+  //Eq3Vel2Freq, Eq1Bw, Eq2Bw, Eq3Bw, Eq1BwCtrlN, Eq2BwCtrlN, Eq3BwCtrlN, Eq1Gain, Eq2Gain, Eq3Gain,
+  //Eq1GainCtrlN, Eq2GainCtrlN, Eq3GainCtrlN, Eq1Vel2Gain, Eq2Vel2Gain, Eq3Vel2Gain, 
+
+  // Equalízer (new, allowing arbitrary number of bands):
+  eqN_freq, eqN_gain, eqN_bw,
+  // todo: complete the list, then remove the old opcodes
+
 
   // Effects:
   Effect1, Effect2, // Reverb and chorus send levels in percent
+  // todo: replace by effN just like with eq opcodes
 
 
   // SFZ 2.0:
@@ -107,11 +113,11 @@ enum class Opcode
   // mean the LFO signal is drive into a saturator?
   // check: https://www.plogue.com/products/sforzando.html
 
-  // eff1_type, eff2_type (reverb, chorus, echo, convolve)
+  // eff1_type, eff2_type (can be reverb, chorus, echo, convolution)
   // reverb_time_scale, reverb_density, reverb_size, reverb_time_lo, reverb_time_mid, 
   // reverb_time_high, reverb_freq_lo, reverb_freq_hi, reverb_algo (fdn16, schroeder, ...)
   // chorus_voices, chorus_freq, chorus_depth, ...
-  // convolve_sample (orv mayb just convo_sample
+  // convolve_sample (or maybe just convo_sample)
 
   // What about routing?
   // is an opdoce like lfoN_volume meant to route lfo N to volume? and what isegN_amplitude 
@@ -285,7 +291,14 @@ public:
   SfzCodeBook();
 
   DspType opcodeToProcessor(Opcode op);
+
+  /** Returns the deault value for the given opcode as floating point number. If the format of the
+  value is integer or an enum value, you'll need to convert it. */
   float opcodeDefaultValue(Opcode op);
+  // todo: add an optional index parameter because some opcodes have different default vlaues for
+  // different indices (like eqN_freq)
+
+
   const std::string& opcodeToString(Opcode op) const;
   const char* opcodeToStringC(Opcode op) const { return (opcodeToString(op)).c_str(); }
   Opcode stringToOpcode(const std::string& str);
