@@ -76,3 +76,14 @@ T rsBandwidthConverter::multipassScalerButterworth(int M, int N, T g)
 // maybe compare the energy normalization to the formula above
 // this formula has been implemented in
 // rsPrototypeDesigner<T>::butterworthEnergy
+
+/*
+
+More formulas that need some numeric checks:
+
+fu = fl * 2^bo
+fc = fl * sqrt(2^bo) = fl * 2^(bo/2)
+k  = 2^(bo/2)
+Q  = 2^(bo/2) / (2^bo - 1)
+
+*/

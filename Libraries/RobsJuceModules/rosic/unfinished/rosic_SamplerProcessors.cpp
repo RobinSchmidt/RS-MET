@@ -65,11 +65,31 @@ void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float res
   //  of just changing their code. Make benchmarks what is faster, ask at KVR what others do.
 }
 
-void rsSamplerFilter::setupGainFreqBw(Type type, float gain, float omega, float bw)
+void rsSamplerFilter::setupGainFreqBw(Type type, float gainDb, float w, float bw)
 {
+  using namespace RAPT;
+  rsAssert(type == Type::BQ_Bell);
+  rsAssert(bw > 0.f, "Bandwidth must be positive in setupGainFreqBw");
+  rsAssert( w > 0.f, "Omega must be positive in setupGainFreqBw");
+  // ToDo: allow w=0 later
 
 
-  RAPT::rsError("Unknown filter type in rsSamplerFilter::setupGainFreqBw");
+  this->type = type;
+
+  static const float s = float(1/(2*PI));
+
+  float k = powf(2.f, 0.5f*bw);
+  float Q = k / (k*k - 1.f);       // Q = 2^(bo/2) / (2^bo - 1)
+  // ToDo: verify formula - if correct, move to RAPT::rsBandwidthConverter and call it like:
+  //float Q = rsBandwidthConverter::octavesToQ(bw);
+
+  float rawGain = rsDbToAmp(gainDb);
+  using BQ = rsBiquadDesigner;
+  FilterImpl& i = impl;  // as abbreviatio
+  rsBiquadDesigner::calculateCookbookPeakFilterCoeffsViaQ(
+    i.bqd.b0, i.bqd.b1, i.bqd.b2, i.bqd.a1, i.bqd.a2, 1.f, s*w, Q, rawGain);
+
+  //rsError("Unknown filter type in rsSamplerFilter::setupGainFreqBw");
 }
 
 

@@ -1738,10 +1738,13 @@ bool samplerEqualizerTest()
 
   bool ok = true;
 
-  using Vec  = std::vector<float>;
-  using SE   = rosic::Sampler::rsSamplerEngineTest;
-  using OC   = rosic::Sampler::Opcode;
-  using Type = rosic::Sampler::FilterType;
+  using Vec    = std::vector<float>;
+  using SE     = rosic::Sampler::rsSamplerEngineTest;
+  using OC     = rosic::Sampler::Opcode;
+  using Type   = rosic::Sampler::FilterType;
+  using Region = rosic::Sampler::rsSamplerData::Region;
+
+
   using namespace RAPT;
 
   // Setup:
@@ -1800,9 +1803,19 @@ bool samplerEqualizerTest()
   // chain but the first two are in neutral setting. We don't specify the center frequency or 
   // bandwidth. Therefore, the default values should be used which are 5 kHz and 1 octave:
   se.setRegionSetting(0, 0, OC::eqN_gain, gain3, 3);
-  ok &= se.getRegion(0, 0)->getNumProcessors() == 3;
+
+  // Preliminary, to make it work because the default values for freq and bw do not yet work:
+  se.setRegionSetting(0, 0, OC::eqN_freq, 5000.f, 3);
+  se.setRegionSetting(0, 0, OC::eqN_bw,      1.f, 3);
+  // ...hmm...even that doesn't seem to solve it...something is still wrong in setting up the
+  // params of the eq dsp.
+
+  Region* r = se.getRegion(0, 0);
+  ok &= r->getNumProcessors() == 3;
   applyEqs(noise, tgt, { gain3 }, { 5000.f }, { 1.f });
-  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, true);
+  // The default values for freq and bw do not yet work. Both parameters are zero. freq is supposed 
+  // to be 5000 and bw is supposed to be 1.
 
   // Add band 2. This has a default freq of 500Hz:
   se.setRegionSetting(0, 0, OC::eqN_gain, gain2, 2); 

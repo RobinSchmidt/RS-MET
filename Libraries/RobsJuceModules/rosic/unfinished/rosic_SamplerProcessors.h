@@ -429,9 +429,9 @@ public:
     { 
       core.setupGainFreqBw(
         rsSamplerFilter::Type::BQ_Bell,
-        params[1].getValue(),
-        params[2].getValue() * float(2*PI/fs),
-        params[3].getValue()
+        params[0].getValue(),
+        params[1].getValue() * float(2*PI/fs),
+        params[2].getValue()
       );
       core.resetState();
     }
