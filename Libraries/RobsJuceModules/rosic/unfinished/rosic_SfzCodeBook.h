@@ -41,11 +41,12 @@ enum class Opcode
   PitchLfoFreqPolyAft,
 
   // Filter:
-  FilType, Cutoff, CutoffCtrlN, CutoffChanAft, CutoffPolyAft, Resonance,
+  /*FilType, Cutoff,*/ CutoffCtrlN, CutoffChanAft, CutoffPolyAft, /*Resonance,*/
   FilKeyTrack, FilKeyCenter, FilVelTrack, FilRandom,
 
   // new filter opcodes, adorned with index:
   filN_type, cutoffN, resonanceN,
+  // todo: complete the list, then delete old, unindexed opcodes
 
 
 

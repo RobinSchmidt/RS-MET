@@ -346,9 +346,9 @@ public:
     { 
       type = DspType::Filter;
       params.reserve(3);
-      addParameter(Opcode::FilType);
-      addParameter(Opcode::Cutoff);
-      addParameter(Opcode::Resonance);   // in sfz, this is a gain in dB
+      addParameter(Opcode::filN_type);
+      addParameter(Opcode::cutoffN);
+      addParameter(Opcode::resonanceN);   // in sfz, this is a gain in dB
       //addParameter(Opcode::FilterBandwidth);
       // Having to pass a magic number to reserve() is bad and error-prone -> try to find a better
       // way. The number of parameters is actually known at compile time. Maybe use std::array 

@@ -60,16 +60,16 @@ SfzCodeBook::SfzCodeBook()
 
   // Filter:
   dsp = DspType::Filter;
-  add(OC::FilType, Txt, "fil_type", (float)FilterType::Unknown + 1.f, 
+  add(OC::filN_type, Txt, "filN_type", (float)FilterType::Unknown + 1.f, 
     (float)FilterType::numTypes - 1.f, (float)FilterType::lp_12, dsp, OU::Text, Sfz1); 
   // sfz default is lpf_2p - maybe rename our enum values to be consistent with sfz
 
-  add(OC::Cutoff, Flt, "cutoff", 0.f, 22050.f, 22050.f, dsp, OU::Hertz, Sfz1);
+  add(OC::cutoffN, Flt, "cutoffN", 0.f, 22050.f, 22050.f, dsp, OU::Hertz, Sfz1);
   // Range is 0..fs/2, default is: filter disabled, so perhaps, the default should depend on the 
   // selected type: fs/2 for a lowpass, 0 for a highpass - figure out what sfz+ does
   // ...maybe switch the filter into bypass mode, if cutoff is set to zero in the PlaybackSetting
 
-  add(OC::Resonance, Flt, "resonance", 0.0f, +40.f, 0.f, dsp, OU::Decibels, Sfz1);
+  add(OC::resonanceN, Flt, "resonanceN", 0.0f, +40.f, 0.f, dsp, OU::Decibels, Sfz1);
   // In sfz, the resonance is adjusted in terms of the resonance gain in dB. If zero dB is the 
   // minimum, does that mean there is always some resonance? Because without resonance, the gain
   // at cutoff would be -3.01 dB, I think. Does the resonance parameter give the gain at the cutoff
@@ -182,7 +182,7 @@ void SfzCodeBook::addFilterType(FilterType type, const std::string& sfzStr)
 bool SfzCodeBook::isFilterRelated(Opcode op) const
 {
   RAPT::rsError("Not yet correctly implemented");
-  return op == Opcode::Cutoff || op == Opcode::Resonance || op == Opcode::FilType;
+  return op == Opcode::cutoffN || op == Opcode::resonanceN || op == Opcode::filN_type;
   // ...these are not all - there are actually many more! look up, which of these need special
   // treatment with regard to interpreting absence of a number as 1. Make sure the filter-related
   // opcodes have contiguous indices and use >= and <= comparison here.
@@ -369,7 +369,7 @@ FilterType SfzCodeBook::stringToFilterType(const std::string& str)
 
 std::string SfzCodeBook::valueToString(Opcode op, float val)
 {
-  if(op == Opcode::FilType)
+  if(op == Opcode::filN_type)
   {
     FilterType ft = (FilterType)(int)val;
     return filterTypeToString(ft);
@@ -387,7 +387,7 @@ std::string SfzCodeBook::valueToString(Opcode op, float val)
 
 float SfzCodeBook::stringToValue(Opcode op, const std::string& str)
 {
-  if(op == Opcode::FilType)
+  if(op == Opcode::filN_type)
   {
     FilterType ft = stringToFilterType(str);
     return (float) ft;
@@ -437,15 +437,15 @@ int SfzCodeBook::getIndexAndReplaceByN(std::string& str) const
 
 void SfzCodeBook::makeImplicitIndexExplicit(std::string& str) const
 {
-  return; // code not yet in use
+  //return; // code not yet in use
   if(     str == "fil_type")  str = "fil1_type";
   else if(str == "cutoff")    str = "cutoff1";
   else if(str == "resonance") str = "resonance1";
 }
 void SfzCodeBook::makeExplicitIndexImplicit(std::string& str) const
 {
-  return; // code not yet in use
-  if(     str == "fil1_type")  str = "fil_type1";
+  //return; // code not yet in use
+  if(     str == "fil1_type")  str = "fil_type";
   else if(str == "cutoff1")    str = "cutoff";
   else if(str == "resonance1") str = "resonance";
 }
