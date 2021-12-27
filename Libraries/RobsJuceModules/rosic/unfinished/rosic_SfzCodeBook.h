@@ -304,9 +304,14 @@ public:
   indices (such as eq2_freq), we need to genrate the string dynamically. */
   std::string opcodeToString(Opcode op, int index) const;
 
+  /** Translates an opcode string into the corresponding enum value. Some opcodes contain an index.
+  For these, the index is passed in the "index" output parameter. For opcodes without index, it 
+  will be assigned to -1. */
+  Opcode stringToOpcode(const std::string& str, int* index);
 
-  Opcode stringToOpcode(const std::string& str);
-  int stringToIndex(const std::string& str);   // should extract the 74 in cutoff_cc74
+
+  //int stringToIndex(const std::string& str);   // should extract the 74 in cutoff_cc74
+
 
   const std::string& filterTypeToString(FilterType ft);
   FilterType stringToFilterType(const std::string& str);

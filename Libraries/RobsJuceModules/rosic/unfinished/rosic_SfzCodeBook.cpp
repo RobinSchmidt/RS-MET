@@ -300,7 +300,7 @@ int getIndexAndReplaceByN(std::string& str)
   return num;                                  // return the number
 }
 
-Opcode SfzCodeBook::stringToOpcode(const std::string& strIn)
+Opcode SfzCodeBook::stringToOpcode(const std::string& strIn, int* index)
 {
   // Pre-process the opcode string to handle indexed opcodes. In such a case, we need to translate
   // the concrete opcode string containing the index into its corresponding opcode template, i.e. 
@@ -308,7 +308,8 @@ Opcode SfzCodeBook::stringToOpcode(const std::string& strIn)
   // For example, the string eq13_freq should be turned into eqN_freq and we want to extract the 13
   // as integer:
   std::string str = strIn; // maybe avoid this by taking parameter by value
-  int index = getIndexAndReplaceByN(str);
+  *index = getIndexAndReplaceByN(str);
+  //*indexOut = index;
 
   // Figure out, which opcode (or opcode-template) it is:
   for(int i = 0; i < opcodeEntries.size(); i++)
@@ -335,6 +336,7 @@ Opcode SfzCodeBook::stringToOpcode(const std::string& strIn)
   //  X. Maybe the 2nd scan could also go backward. 
 }
 
+/*
 int SfzCodeBook::stringToIndex(const std::string& str)
 {
   return -1;  // preliminary
@@ -348,6 +350,7 @@ int SfzCodeBook::stringToIndex(const std::string& str)
   // useful to implement the special rules for the filter-related params (to interpret cutoff as 
   // cutoff1, fil_type as fil1_type etc.). Maybe, we should have a function isFilterRelated
 }
+*/
 
 const std::string& SfzCodeBook::filterTypeToString(FilterType ft)
 {

@@ -605,9 +605,9 @@ rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(
   using PS  = PlaybackSetting;
   using PST = Opcode;
   SfzCodeBook* t = SfzCodeBook::getInstance();
-  PST   op  = t->stringToOpcode(opStr);
+  int idx;
+  PST   op  = t->stringToOpcode(opStr, &idx);
   float val = t->stringToValue(op, valStr);
-  int   idx = t->stringToIndex(opStr);          // has only preliminary implementation
   return PS(op, val, idx);
 }
 

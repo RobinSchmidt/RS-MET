@@ -1346,8 +1346,8 @@ bool samplerEngineUnitTestFileIO()
   se.saveToSFZ("tmp.sfz");
   se2.loadFromSFZ("tmp.sfz");
   ok &= se2.isInSameStateAs(se);
-  // Does not yet work because SfzCodeBook::stringToOpcode does not yet return the index. We need
-  // to return it and do something with it
+
+
 
 
   // ToDo:
