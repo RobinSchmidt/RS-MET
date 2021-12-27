@@ -1346,9 +1346,8 @@ bool samplerEngineUnitTestFileIO()
   se.saveToSFZ("tmp.sfz");
   se2.loadFromSFZ("tmp.sfz");
   ok &= se2.isInSameStateAs(se);
-  // Does not yet work because loading triggers an assert. We need to translate the indices 1,2,3
-  // from the opcode to the placeholder N and assign the opcode's index field according to the 
-  // number
+  // Does not yet work because SfzCodeBook::stringToOpcode does not yet return the index. We need
+  // to return it and do something with it
 
 
   // ToDo:

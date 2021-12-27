@@ -292,33 +292,23 @@ int parseNaturalNumber(const std::string& str, int startIndex, int endIndex)
 // this may become a protected member function:
 int getIndexAndReplaceByN(std::string& str)
 {
-  int is = firstDigit(str);           // start position of first found number
-  if(is == -1)
-    return -1;
-  int ie = lastDigitInSeq(str, is);   // end position of the number
-  int num = parseNaturalNumber(str, is, ie);
-
-
-  // ToDo:
-  // -parse the substring str[is...ie] into a number
-  // -replace the substrung str[is...ie] by "N"
-  // -return the parsing result
-
-  return num;  // preliminary
+  int is = firstDigit(str);                    // start position of first found number
+  if(is == -1) return -1;                      // str does not contain an index
+  int ie = lastDigitInSeq(str, is);            // end position of the number
+  int num = parseNaturalNumber(str, is, ie);   // figure out the number
+  str.replace(is, ie-is+1, "N");               // replace number by placeholder "N"
+  return num;                                  // return the number
 }
 
 Opcode SfzCodeBook::stringToOpcode(const std::string& strIn)
 {
   // Pre-process the opcode string to handle indexed opcodes. In such a case, we need to translate
-  // the concrete indeexed opcode string str into its corresponding opcode template, i.e. replace
-  // the index with the placeholder "N" and we also need to figure out, what that index is:
-  // ....
-
-  // Seperate the index (if any) from the opcode:
+  // the concrete opcode string containing the index into its corresponding opcode template, i.e. 
+  // replace the index with the placeholder "N" and we also need to figure out, what that index is.
+  // For example, the string eq13_freq should be turned into eqN_freq and we want to extract the 13
+  // as integer:
   std::string str = strIn; // maybe avoid this by taking parameter by value
   int index = getIndexAndReplaceByN(str);
-  // ...more to do...
-
 
   // Figure out, which opcode (or opcode-template) it is:
   for(int i = 0; i < opcodeEntries.size(); i++)
@@ -334,14 +324,15 @@ Opcode SfzCodeBook::stringToOpcode(const std::string& strIn)
   // Another option could be to use a hash-table as in std::map.
 
   // ToDo:
+  // -We need a way to return the index, too!
+  // -There are opcodes like pitcheg_vel2hold where the 2 is actually not an index!. In this case, 
+  //  the 2 should not be removed. Maybe whenever a 2 is prefixed by vel, we should not remove it.
+  //  This is a messy business with all sorts of special cases and needs thorough unit tests!
   // -For the opcodes that contain an index (or two), we perhaps need to preprocess the string to
   //  remove it or to replace it by "N". In sfz 2, there are also opcodes with two indices, like
   //  egN_timeX. Maybe first scan through the string from the beginning and the first number that
   //  is found is replaced by N, then do it again and when another number is found, replace it by 
-  //  X. Maybe the 2nd scan could also go backward. Oh - but we must be careful - there are 
-  //  opcodes like pitcheg_vel2hold. In this case, the 2 should not be removed. Maybe whenever
-  //  a 2 is prefixed by vel, we should not remove it. This is a messy business with all sorts of
-  //  special cases and needs thorough unit tests!
+  //  X. Maybe the 2nd scan could also go backward. 
 }
 
 int SfzCodeBook::stringToIndex(const std::string& str)
