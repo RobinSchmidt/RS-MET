@@ -246,6 +246,12 @@ std::string SfzCodeBook::opcodeToString(Opcode op, int index) const
 /** Returns true, iff character c is a digit, i.e. one of 0,1,2,3,4,5,6,7,8,9. */
 bool isDigit(char c) { return c >= '0' && c <= '9'; }
 
+int charToInt(char c)
+{
+  RAPT::rsAssert(isDigit(c));
+  return c - '0';
+}
+
 /** Returns the index of the first digit that occurs in the string. For example, if 
 str = "Freq=3520Hz", it would return 5, i.e. the index of the digit 3. If no digit is found in the
 string, it returns -1. */
@@ -270,6 +276,19 @@ int lastDigitInSeq(const std::string& str, int startIndex)
   return i;
 }
 
+int parseNaturalNumber(const std::string& str, int startIndex, int endIndex)
+{
+  int num    = 0;
+  int scaler = 1;
+  for(int i = endIndex; i >= startIndex; i--)
+  {
+    num += scaler * charToInt(str[i]);
+    scaler *= 10;
+  }
+  return num;
+}
+// needs unit tests
+
 // this may become a protected member function:
 int getIndexAndReplaceByN(std::string& str)
 {
@@ -277,13 +296,15 @@ int getIndexAndReplaceByN(std::string& str)
   if(is == -1)
     return -1;
   int ie = lastDigitInSeq(str, is);   // end position of the number
+  int num = parseNaturalNumber(str, is, ie);
+
 
   // ToDo:
   // -parse the substring str[is...ie] into a number
   // -replace the substrung str[is...ie] by "N"
   // -return the parsing result
 
-  return -1;  // preliminary
+  return num;  // preliminary
 }
 
 Opcode SfzCodeBook::stringToOpcode(const std::string& strIn)
