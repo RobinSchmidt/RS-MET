@@ -592,15 +592,11 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   //  return; // default values need not to be stored - todo: maybe optionally store them anyway
 
   SfzCodeBook* t = SfzCodeBook::getInstance();
-  s += t->opcodeToStringC(op) + std::string("=") + t->valueToString(op, val)  + "\n";
+  s += t->opcodeToStringC(op, idx) + std::string("=") + t->valueToString(op, val)  + "\n";
 
   // ToDo:
-  // -t->opcodeToStringC(op) should also take the index as input and include it into the string,
-  //  if applicable. hmmm...maybe for that purpose, it's indeed useful to have -1 as code for
-  //  "not applicable". Otherwise, we would need some compicated logic there to determine, whether
-  //  it's applicable or not.
-  // -Why are the lokey, hikey, lovel, hivel opcodes not handled here? I think, it's because they 
-  //  are handled already by the caller because they require special treatment. Document this!
+  // -Document why the lokey, hikey, lovel, hivel opcodes are not handled here. I think, it's 
+  //  because they are handled already by the caller because they require special treatment.
 }
 
 rsSamplerData::PlaybackSetting rsSamplerData::getSettingFromString(

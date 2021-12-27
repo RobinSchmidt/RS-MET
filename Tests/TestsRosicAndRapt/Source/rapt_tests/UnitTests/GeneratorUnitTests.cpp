@@ -1347,7 +1347,8 @@ bool samplerEngineUnitTestFileIO()
   se2.loadFromSFZ("tmp.sfz");
   ok &= se2.isInSameStateAs(se);
   // Does not yet work because the file contains 3 times eqN_gain instead of eq1_gain, eq2_gain,
-  // eq3_gain. We need to replace the variable N with its value in the string generation.
+  // eq3_gain. We need to replace the variable N with its value in the string generation. We need 
+  // to update: rsSamplerData::writeSettingToString, SfzCodeBook::opcodeToString/C
 
 
   // ToDo:
@@ -1364,7 +1365,7 @@ bool samplerEngineUnitTestFileIO()
   // -make SamplePool, AudioStream, SamplerEngine etc. objects or non-copyable - maybe it's
   //  enough to make AudioStream non-copyable - the feature will then propagate to all aggregates
 
-  //rsAssert(ok);
+  rsAssert(ok);
   return ok;
 }
 

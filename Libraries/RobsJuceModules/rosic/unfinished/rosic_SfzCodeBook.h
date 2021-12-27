@@ -299,9 +299,18 @@ public:
   // todo: add an optional index parameter because some opcodes have different default vlaues for
   // different indices (like eqN_freq)
 
+  /** Returns a string that represents the given opcode op with given index in a format that can be
+  written into an .sfz file. The string is returned by value because for those opcodes that include 
+  indices (such as eq2_freq), we need to genrate the string dynamically. */
+  const std::string& opcodeToString(Opcode op, int index) const;
+  // ToDo: return the string by value because certain opcode strings need to be generated 
+  // dynamically
 
-  const std::string& opcodeToString(Opcode op) const;
-  const char* opcodeToStringC(Opcode op) const { return (opcodeToString(op)).c_str(); }
+  const char* opcodeToStringC(Opcode op, int index) const 
+  { return (opcodeToString(op, index)).c_str(); }
+  // ToDo: get rid of this!
+
+
   Opcode stringToOpcode(const std::string& str);
   int stringToIndex(const std::string& str);   // should extract the 74 in cutoff_cc74
 
@@ -380,6 +389,12 @@ protected:
   std::vector<FilterTypeEntry> filterTypeEntries;  /** Lookup table for the filter types. */
 
 
+
+  std::string tmpString;
+  /** In some situations, we need to dynamically generate a string to represent a given opcode. For 
+  example, for the opcode eq2_freq, the "2" is created dynamically to support an arbitrary number
+  of bands. But because our functions return string references, we...ahh fuck it...let's have them 
+  return the string by value... */
 
   std::string dummyString;
   /**< The string-ref returning functions return a reference to this, if they do not find a 

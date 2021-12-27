@@ -223,14 +223,19 @@ float SfzCodeBook::opcodeDefaultValue(Opcode op, int index)
   return opcodeEntries[(int)op].defVal;
 }
 
-const std::string& SfzCodeBook::opcodeToString(Opcode op) const
+const std::string& SfzCodeBook::opcodeToString(Opcode op, int index) const
 {
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
     RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeToString");
     return dummyString; }
-  return opcodeEntries[(int)op].text;
+  if(index != -1)
+  {
+
+    int dummy = 0;
+  }
+  else
+    return opcodeEntries[(int)op].text;
 }
-// needs test
 
 Opcode SfzCodeBook::stringToOpcode(const std::string& str)
 {
