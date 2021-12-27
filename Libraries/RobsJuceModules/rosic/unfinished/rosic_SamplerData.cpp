@@ -494,7 +494,7 @@ void rsSamplerData::setFromSFZ(const std::string& str)
       i1 = str.length() - 1;
     }
 
-// Extract substring with group definition and add a new group to the instrument:
+    // Extract substring with group definition and add a new group to the instrument:
     std::string groupDef = str.substr(i0, i1-i0); // group definition (ToDo: use string_view)
     int gi = instrument.addGroup();
     Group* g = instrument.getGroup(gi);
@@ -521,7 +521,7 @@ void rsSamplerData::setFromSFZ(const std::string& str)
         j1 = groupDef.length() - 1;
       }
 
-// Extract substring with region definition and add a new region to the group:
+      // Extract substring with region definition and add a new region to the group:
       std::string regionDef = groupDef.substr(j0, j1-j0); // region definition (ToDo: use string_view)
       int ri = g->addRegion();
       Region* r = g->getRegion(ri);
@@ -592,7 +592,7 @@ void rsSamplerData::writeSettingToString(const PlaybackSetting& setting, std::st
   //  return; // default values need not to be stored - todo: maybe optionally store them anyway
 
   SfzCodeBook* t = SfzCodeBook::getInstance();
-  s += t->opcodeToStringC(op, idx) + std::string("=") + t->valueToString(op, val)  + "\n";
+  s += t->opcodeToString(op, idx) + std::string("=") + t->valueToString(op, val)  + "\n";
 
   // ToDo:
   // -Document why the lokey, hikey, lovel, hivel opcodes are not handled here. I think, it's 

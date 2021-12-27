@@ -483,3 +483,17 @@ void rosic::rsFindToken(
     *start  = (int) str.length(); // such that caller can use while(start < length)
     *length = 0; }
 }
+
+void rosic::rsReplace(std::string& subject, const std::string& search, const std::string& replace) 
+{
+  size_t pos = 0;
+  while((pos = subject.find(search, pos)) != std::string::npos) 
+  {
+    subject.replace(pos, search.length(), replace);
+    pos += replace.length();
+  }
+  // Code taken from answer 20 here:
+  // https://stackoverflow.com/questions/4643512/replace-substring-with-another-substring-c
+  // has no unit tests yet -> write some!
+}
+// maybe rename to rsReplaceAll, write also rsReplaceFirst, rsReplaceLast

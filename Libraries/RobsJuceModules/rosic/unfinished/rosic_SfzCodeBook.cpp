@@ -223,16 +223,20 @@ float SfzCodeBook::opcodeDefaultValue(Opcode op, int index)
   return opcodeEntries[(int)op].defVal;
 }
 
-const std::string& SfzCodeBook::opcodeToString(Opcode op, int index) const
+std::string SfzCodeBook::opcodeToString(Opcode op, int index) const
 {
   if((int)op < 0 || (int)op >= (int)opcodeEntries.size()) {
     RAPT::rsError("Unknown opcode in SfzCodeBook::opcodeToString");
     return dummyString; }
-  if(index != -1)
-  {
+  RAPT::rsAssert(index > 0 || index == -1, "Invalid index in SfzCodeBook::opcodeToString");
+  // Either index is actually a valid index in which case must be a positive natural number or 
+  // indexing doesn't apply to the given opcode in which case we use -1 as code to indicate this
+  // situation.
 
-    int dummy = 0;
-  }
+  if(index != -1) {                              // if we are dealing with an indexed opcode...
+    std::string s = opcodeEntries[(int)op].text; //   retrieve opcode template (e.g. eqN_freq)
+    rsReplace(s, "N", std::to_string(index));    //   replace placeholder "N" with actual index
+    return s; }
   else
     return opcodeEntries[(int)op].text;
 }

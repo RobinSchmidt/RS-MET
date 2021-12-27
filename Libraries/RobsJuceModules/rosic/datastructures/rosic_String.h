@@ -307,6 +307,8 @@ private:
 
 };
 
+//=================================================================================================
+
 // functions for std::string:
 void removeChar(std::string& str, const char chr);
 std::vector<std::string> tokenize(const std::string& str, const char splitChar);
@@ -316,6 +318,11 @@ std::vector<std::string> tokenize(const std::string& str, const char splitChar);
 //  output:   index where the next token actually starts
 // length:    length of the token (output only)
 void rsFindToken(const std::string& str, const std::string& seperators, int* start, int* length);
+// maybe move as static function into a class rsStdStringHelpers
+
+/** Replaces all occurences of oldText with newText within the subject. */
+void rsReplace(std::string& subject, const std::string& oldText, const std::string& newText);
+// needs unit tests
 
 
 

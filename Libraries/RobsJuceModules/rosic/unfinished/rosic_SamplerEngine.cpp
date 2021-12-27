@@ -953,7 +953,7 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
   dspChain.clear(); // ...so we do it here. But this should be fixed elsewhere!
   using DspType = DspType;
   const std::vector<DspType>& dspTypeChain = region->getProcessingChain();
-  for(size_t i = 0; i < dspTypeChain.size(); i++) 
+  for(int i = 0; i < (int)dspTypeChain.size(); i++) 
   {
     DspType dspType = dspTypeChain[i];
     SignalProcessor* dsp = getProcessor(dspType);

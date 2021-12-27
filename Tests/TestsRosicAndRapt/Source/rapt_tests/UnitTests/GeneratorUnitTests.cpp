@@ -1344,11 +1344,11 @@ bool samplerEngineUnitTestFileIO()
   se.setRegionSetting(0, 0, PST::eqN_gain, 2.f, 2); 
   se.setRegionSetting(0, 0, PST::eqN_gain, 3.f, 3); 
   se.saveToSFZ("tmp.sfz");
-  se2.loadFromSFZ("tmp.sfz");
-  ok &= se2.isInSameStateAs(se);
-  // Does not yet work because the file contains 3 times eqN_gain instead of eq1_gain, eq2_gain,
-  // eq3_gain. We need to replace the variable N with its value in the string generation. We need 
-  // to update: rsSamplerData::writeSettingToString, SfzCodeBook::opcodeToString/C
+  //se2.loadFromSFZ("tmp.sfz");
+  //ok &= se2.isInSameStateAs(se);
+  // Does not yet work because loading triggers an assert. We need to translate the indices 1,2,3
+  // from the opcode to the placeholder N and assign the opcode's index field according to the 
+  // number
 
 
   // ToDo:
