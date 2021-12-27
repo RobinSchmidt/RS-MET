@@ -277,19 +277,35 @@ sfz-file etc.
 
 We need only one such object for the whole lifetime of the sampler engine and we need convenient 
 access to it from various of its subsystems, so we implement a variation of the singleton pattern 
-here. As opposed to the textbook version where the singleton object is implicitly created on first
-use and never deleted, we give explicit control over the singleton's lifetime via static 
-createInstance()/deleteInstance methods which are called by the sampler engine's constructor and 
-destructor respectively. The sampler engine which actually also does instance counting for itself 
-and creates only for the first instance and deletes only when the last instance is deleted. So, 
-multiple instances of a sampler-engine are no problem either. */
+here.  */
 
 class SfzCodeBook
 {
 
 public:
 
-  SfzCodeBook();
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime. We implement a variation of the singleton pattern.
+
+  /** Creates the sole instance of the class. In contrast to the textbook version of the singleton
+  pattern where the object is implicitly created on first use and never deleted, we give explicit 
+  control over the singleton's creation via this function which is supposed to be called by client
+  code before using the singleton for the first time. We call this in the constructor of the 
+  sampler engine when the first instance is created. */
+  static void createInstance();
+
+  /** Returns a pointer to the sole instance of the class which is assumed to have been previously
+  created by createInstance. If you didn't explicitly create the instance, it will implicitly be 
+  created within this call and in debug builds, you'll hit an assert yelling at you to be more 
+  epxlicit. */
+  static SfzCodeBook* getInstance();
+
+  /** This function is supposed to be called by client code for cleaning up, when the instance is 
+  not needed anymore. The sampler engine does this when its last instance is destroyed. */
+  static void deleteInstance();
+
+  //-----------------------------------------------------------------------------------------------
+  // \name Translations
 
   /** Returns the type of signal processor to which the given opcdoe applies. */
   DspType opcodeToProcessor(Opcode op);
@@ -326,11 +342,6 @@ public:
   representation. */
   float stringToValue(Opcode op, const std::string& str);
 
-
-  // Singleton pattern stuff (a variation of the original pattern, actually):
-  static SfzCodeBook* getInstance();
-  static void createInstance();
-  static void deleteInstance();
 
 protected:
 
@@ -393,6 +404,10 @@ protected:
 
   static SfzCodeBook* instance;
   /** Sole instance of the class.  */
+
+
+  SfzCodeBook();
+  /**< Constructor is protected due to singleton pattern. */
 
 };
 
