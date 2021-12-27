@@ -1344,8 +1344,8 @@ bool samplerEngineUnitTestFileIO()
   se.setRegionSetting(0, 0, PST::eqN_gain, 2.f, 2); 
   se.setRegionSetting(0, 0, PST::eqN_gain, 3.f, 3); 
   se.saveToSFZ("tmp.sfz");
-  //se2.loadFromSFZ("tmp.sfz");
-  //ok &= se2.isInSameStateAs(se);
+  se2.loadFromSFZ("tmp.sfz");
+  ok &= se2.isInSameStateAs(se);
   // Does not yet work because loading triggers an assert. We need to translate the indices 1,2,3
   // from the opcode to the placeholder N and assign the opcode's index field according to the 
   // number

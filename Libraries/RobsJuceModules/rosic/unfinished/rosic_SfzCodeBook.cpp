@@ -241,8 +241,65 @@ std::string SfzCodeBook::opcodeToString(Opcode op, int index) const
     return opcodeEntries[(int)op].text;
 }
 
-Opcode SfzCodeBook::stringToOpcode(const std::string& str)
+// These helpers should be moved to rosic_String.h/cpp:
+
+/** Returns true, iff character c is a digit, i.e. one of 0,1,2,3,4,5,6,7,8,9. */
+bool isDigit(char c) { return c >= '0' && c <= '9'; }
+
+/** Returns the index of the first digit that occurs in the string. For example, if 
+str = "Freq=3520Hz", it would return 5, i.e. the index of the digit 3. If no digit is found in the
+string, it returns -1. */
+int firstDigit(const std::string& str)
 {
+  for(int i = 0; i < (int) str.size(); i++)
+    if(isDigit(str[i]))
+      return i;
+  return -1;
+}
+
+/** Returns the index of the last digit in a sequence of digits (i.e. in a number) starting at the 
+given startIndex. */
+int lastDigitInSeq(const std::string& str, int startIndex)
+{
+  RAPT::rsAssert(isDigit(str[startIndex]));
+  int i = startIndex;
+  while(i < ((int)str.size())-1) {
+    if(!isDigit(str[i+1]))
+      return i;
+    i++; }
+  return i;
+}
+
+// this may become a protected member function:
+int getIndexAndReplaceByN(std::string& str)
+{
+  int is = firstDigit(str);           // start position of first found number
+  if(is == -1)
+    return -1;
+  int ie = lastDigitInSeq(str, is);   // end position of the number
+
+  // ToDo:
+  // -parse the substring str[is...ie] into a number
+  // -replace the substrung str[is...ie] by "N"
+  // -return the parsing result
+
+  return -1;  // preliminary
+}
+
+Opcode SfzCodeBook::stringToOpcode(const std::string& strIn)
+{
+  // Pre-process the opcode string to handle indexed opcodes. In such a case, we need to translate
+  // the concrete indeexed opcode string str into its corresponding opcode template, i.e. replace
+  // the index with the placeholder "N" and we also need to figure out, what that index is:
+  // ....
+
+  // Seperate the index (if any) from the opcode:
+  std::string str = strIn; // maybe avoid this by taking parameter by value
+  int index = getIndexAndReplaceByN(str);
+  // ...more to do...
+
+
+  // Figure out, which opcode (or opcode-template) it is:
   for(int i = 0; i < opcodeEntries.size(); i++)
     if(opcodeEntries[i].text == str)
       return opcodeEntries[i].op;    // op should be equal to i
