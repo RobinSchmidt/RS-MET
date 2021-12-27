@@ -44,6 +44,11 @@ enum class Opcode
   FilType, Cutoff, CutoffCtrlN, CutoffChanAft, CutoffPolyAft, Resonance,
   FilKeyTrack, FilKeyCenter, FilVelTrack, FilRandom,
 
+  // new filter opcodes, adorned with index:
+  filN_type, cutoffN, resonanceN,
+
+
+
   // Filter Envelope:
   FilEnvDelay, FilEnvStart, FilEnvAttack, FilEnvHold, FilEnvDecay, FilEnvSustain,
   FilEnvRelease, FilEnvDepth, FilEnvVel2Delay, FilEnvVel2Attack, FilEnvVel2Hold, 
@@ -356,10 +361,25 @@ protected:
   lookup. */
   void addFilterType(FilterType type, const std::string& sfzStr);
 
+
+  // these could actually be static:
+
   /** Returns true, if the opcode is related to the filter, i.e. is cutoff, fil_type, resonance, 
   etc. These opcodes need some special rules for parsing because in sfz, only 1 filter exists which
   doesn't have any index...tbc... */
-  bool isFilterRelated(Opcode op);
+  bool isFilterRelated(Opcode op) const;
+
+  /** From a string representing an indexed opcode such as "eq2_freq", it extracts the index (here, 
+  the 2) and returns it. It also modifies the passed string to replace the "2" with the placeholder
+  "N". */
+  int getIndexAndReplaceByN(std::string& str) const;
+
+  /** For historical reasons, certain opcode strings such as "cutoff" or "fil_type" are actually 
+  supposed to mean "cutoff1" or "fil1_type" in the context of this extended implementation of sfz. 
+  This function modifies the string in such cases to spell out the implicit index. */
+  void makeImplicitIndexExplicit(std::string& str) const;
+
+  void makeExplicitIndexImplicit(std::string& str) const;
 
 
 

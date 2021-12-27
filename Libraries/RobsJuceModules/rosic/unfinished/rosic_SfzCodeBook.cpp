@@ -179,13 +179,16 @@ void SfzCodeBook::addFilterType(FilterType type, const std::string& sfzStr)
   filterTypeEntries[i] = FilterTypeEntry({ type, sfzStr });
 }
 
-bool SfzCodeBook::isFilterRelated(Opcode op)
+bool SfzCodeBook::isFilterRelated(Opcode op) const
 {
   RAPT::rsError("Not yet correctly implemented");
   return op == Opcode::Cutoff || op == Opcode::Resonance || op == Opcode::FilType;
   // ...these are not all - there are actually many more! look up, which of these need special
   // treatment with regard to interpreting absence of a number as 1. Make sure the filter-related
   // opcodes have contiguous indices and use >= and <= comparison here.
+
+  // Why do we actually need that function? May it be obsolete, once we handle indexed opcodes 
+  // generally?
 }
 
 DspType SfzCodeBook::opcodeToProcessor(Opcode op)
@@ -236,11 +239,13 @@ std::string SfzCodeBook::opcodeToString(Opcode op, int index) const
   if(index != -1) {                              // if we are dealing with an indexed opcode...
     std::string s = opcodeEntries[(int)op].text; //   retrieve opcode template (e.g. eqN_freq)
     rsReplace(s, "N", std::to_string(index));    //   replace placeholder "N" with actual index
+    makeExplicitIndexImplicit(s);                //   turn e.g. fil1_type into fil_type
     return s; }
   else
     return opcodeEntries[(int)op].text;
 }
 
+//-------------------------------------------------------------------------------------------------
 // These helpers should be moved to rosic_String.h/cpp:
 
 /** Returns true, iff character c is a digit, i.e. one of 0,1,2,3,4,5,6,7,8,9. */
@@ -275,7 +280,6 @@ int lastDigitInSeq(const std::string& str, int startIndex)
     i++; }
   return i;
 }
-
 int parseNaturalNumber(const std::string& str, int startIndex, int endIndex)
 {
   int num    = 0;
@@ -289,16 +293,7 @@ int parseNaturalNumber(const std::string& str, int startIndex, int endIndex)
 }
 // needs unit tests
 
-// this may become a protected member function:
-int getIndexAndReplaceByN(std::string& str)
-{
-  int is = firstDigit(str);                    // start position of first found number
-  if(is == -1) return -1;                      // str does not contain an index
-  int ie = lastDigitInSeq(str, is);            // end position of the number
-  int num = parseNaturalNumber(str, is, ie);   // figure out the number
-  str.replace(is, ie-is+1, "N");               // replace number by placeholder "N"
-  return num;                                  // return the number
-}
+//-------------------------------------------------------------------------------------------------
 
 Opcode SfzCodeBook::stringToOpcode(const std::string& strIn, int* index)
 {
@@ -307,9 +302,9 @@ Opcode SfzCodeBook::stringToOpcode(const std::string& strIn, int* index)
   // replace the index with the placeholder "N" and we also need to figure out, what that index is.
   // For example, the string eq13_freq should be turned into eqN_freq and we want to extract the 13
   // as integer:
-  std::string str = strIn; // maybe avoid this by taking parameter by value
+  std::string str = strIn;              // maybe avoid this by taking parameter by value
+  makeImplicitIndexExplicit(str);       // changes e.g. fil_type into fil1_type
   *index = getIndexAndReplaceByN(str);
-  //*indexOut = index;
 
   // Figure out, which opcode (or opcode-template) it is:
   for(int i = 0; i < opcodeEntries.size(); i++)
@@ -429,6 +424,32 @@ void SfzCodeBook::deleteInstance()
   delete instance;
   instance = nullptr;
 }
+
+int SfzCodeBook::getIndexAndReplaceByN(std::string& str) const
+{
+  int is = firstDigit(str);                    // start position of first found number
+  if(is == -1) return -1;                      // str does not contain an index
+  int ie = lastDigitInSeq(str, is);            // end position of the number
+  int num = parseNaturalNumber(str, is, ie);   // figure out the number
+  str.replace(is, ie-is+1, "N");               // replace number by placeholder "N"
+  return num;                                  // return the number
+}
+
+void SfzCodeBook::makeImplicitIndexExplicit(std::string& str) const
+{
+  return; // code not yet in use
+  if(     str == "fil_type")  str = "fil1_type";
+  else if(str == "cutoff")    str = "cutoff1";
+  else if(str == "resonance") str = "resonance1";
+}
+void SfzCodeBook::makeExplicitIndexImplicit(std::string& str) const
+{
+  return; // code not yet in use
+  if(     str == "fil1_type")  str = "fil_type1";
+  else if(str == "cutoff1")    str = "cutoff";
+  else if(str == "resonance1") str = "resonance";
+}
+// Maybe we can do something more clever later...
 
 
 }}
