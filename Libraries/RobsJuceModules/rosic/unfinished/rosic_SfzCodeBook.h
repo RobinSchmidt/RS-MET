@@ -231,6 +231,7 @@ enum class OpcodeSpec
   Unknown,
 
   Sfz_1,
+  Sfz_1_E,      // extended sfz 1, for example with arbitrary number of eq bands
   Sfz_2,
   Aria,
   RsMet,
@@ -380,6 +381,8 @@ protected:
   This function modifies the string in such cases to spell out the implicit index. */
   void makeImplicitIndexExplicit(std::string& str) const;
 
+  /** For those opcodes that should support an implicit index 1, this functions deletes the 
+  explicitly spelled out "1", if present. */
   void makeExplicitIndexImplicit(std::string& str) const;
 
 

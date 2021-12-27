@@ -47,7 +47,7 @@ void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float res
   // Preliminary using a fixed Q - ToDo: find an appropriate conversion formula that takes a 
   // resonance gain in dB (or maybe as raw factor) and converts it to quality factor Q. Implement 
   // it in a function like resoGainToQq(T resoGainDb) and call it here instead of using this 
-  // constant.
+  // constant. Maybe just simply using amp2db(resoGainDb) / sqrt(2) could work? ...do some plots!
 
   FilterImpl& i = impl;  // as abbreviation
   switch(type)

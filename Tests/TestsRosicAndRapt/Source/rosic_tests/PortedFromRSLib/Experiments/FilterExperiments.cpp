@@ -178,6 +178,85 @@ void bandwidthScaling()
   plotData(N, w, p[0], p[1], p[2], p[3], p[4]);
 }
 
+void biquadResoGain()
+{
+  // We try to find the relationship between the resonance gain in dB and the Q of a biquad filter 
+  // because the former is how sfz specifies resonance and the latter is how the RBJ design 
+  // formulas work, so we need a translation formula.
+
+
+  using Vec = std::vector<double>;
+
+  // Setup:
+  int numFreqs      = 1001;
+  double cutoff     = 1000;
+  double sampleRate = 44100;
+  Vec reso({0, 5, 10, 15, 20, 25, 30, 35, 40});  // desired resonance gains
+
+
+  auto resoDbToQ1 =[](double dB) 
+  { 
+    return rsDbToAmp(dB) / sqrt(2.0);   // Maybe it could be as simple as that?
+  };
+  auto resoDbToQ2 =[](double dB) 
+  { 
+    return rsDbToAmp(dB); 
+  };
+  auto resoDbToQ3 =[](double dB) 
+  { 
+    double a = rsDbToAmp(dB);
+    double b = 1.0 / (1.0 + a*a*a*a);
+    double c = 1.0 - b;
+    double d = sqrt(c);
+    return a * d;
+  };
+  auto resoDbToQ4 =[](double dB) 
+  { 
+    double a = rsDbToAmp(dB);
+    double b = 1.0 / (1.0 + a*a*a*a);
+    double c = 1.0 - b;
+    return a * c;
+  };
+
+
+  int K = numFreqs;
+  Vec f(K), w(K), dB(K);
+  rsArrayTools::fillWithRangeExponential(&f[0], K, 250.0, 4000.0);
+  rsArrayTools::scale(&f[0], &w[0], K, 2*PI/sampleRate);
+
+  GNUPlotter plt;
+  using BQD = rsBiquadDesigner;
+  double b0, b1, b2, a1, a2;
+  int numPlots = (int) reso.size();
+  for(int i = 0; i < numPlots; i++)
+  {
+    double r = reso[i];
+    double Q = resoDbToQ4(r);
+    BQD::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1./sampleRate, cutoff, Q);
+    a1 = -a1;
+    a2 = -a2;
+    for(int k = 0; k < K; k++)
+    {
+      double mag = RAPT::biquadMagnitudeAt(b0, b1, b2, a1, a2, w[k]);
+      dB[k] = RAPT::rsAmp2dB(mag);
+    }
+    plt.addDataArrays(K, &f[0], &dB[0]);
+  }
+  plt.setLogScale("x");
+  plt.plot();
+
+  // Observations:
+  // -resoDbToQ1 works well for low resonances, resoDbToQ2 seems to be quite exact for high 
+  //  resonances
+  // -when using resoDbToQ1, the resonance gain for high resonance settings seems exactly 3 dB 
+  //  below the desired value.
+  //
+  // ToDo:
+  // -Try to find a suitable formula that returna 1/sqrt(2) for x=0 and quickly approaches 1 as
+  //  x grows....resoDbToQ3,4 are some ad-hoc attempts
+
+}
+
 void butterworthEnergy()
 {
   int N = 5;  // Butterworth order
@@ -1358,6 +1437,8 @@ void ringingTime()
   // plot:
   plotData(N, 0, 1, h);
 }
+
+
 
 void butterworthSquaredLowHighSum()
 {

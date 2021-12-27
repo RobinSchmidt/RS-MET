@@ -2,6 +2,7 @@
 #define RS_FILTEREXPERIMENTS_H
 
 void bandwidthScaling();
+void biquadResoGain();
 void butterworthEnergy();
 void biDirectionalStateInit();
 void biquadTail();

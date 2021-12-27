@@ -22,7 +22,8 @@ SfzCodeBook::SfzCodeBook()
   OF Flt  = OF::Float;
   OF Txt  = OF::String;
 
-  OS Sfz1 = OS::Sfz_1;
+  OS Sfz1  = OS::Sfz_1;
+  OS Sfz1e = OS::Sfz_1_E;
 
   // Player response constraints (aka "Input Control" in the sfz doc):
   SP dsp = DspType::SamplePlayer;
@@ -61,15 +62,15 @@ SfzCodeBook::SfzCodeBook()
   // Filter:
   dsp = DspType::Filter;
   add(OC::filN_type, Txt, "filN_type", (float)FilterType::Unknown + 1.f, 
-    (float)FilterType::numTypes - 1.f, (float)FilterType::lp_12, dsp, OU::Text, Sfz1); 
+    (float)FilterType::numTypes - 1.f, (float)FilterType::lp_12, dsp, OU::Text, Sfz1e); 
   // sfz default is lpf_2p - maybe rename our enum values to be consistent with sfz
 
-  add(OC::cutoffN, Flt, "cutoffN", 0.f, 22050.f, 22050.f, dsp, OU::Hertz, Sfz1);
+  add(OC::cutoffN, Flt, "cutoffN", 0.f, 22050.f, 22050.f, dsp, OU::Hertz, Sfz1e);
   // Range is 0..fs/2, default is: filter disabled, so perhaps, the default should depend on the 
   // selected type: fs/2 for a lowpass, 0 for a highpass - figure out what sfz+ does
   // ...maybe switch the filter into bypass mode, if cutoff is set to zero in the PlaybackSetting
 
-  add(OC::resonanceN, Flt, "resonanceN", 0.0f, +40.f, 0.f, dsp, OU::Decibels, Sfz1);
+  add(OC::resonanceN, Flt, "resonanceN", 0.0f, +40.f, 0.f, dsp, OU::Decibels, Sfz1e);
   // In sfz, the resonance is adjusted in terms of the resonance gain in dB. If zero dB is the 
   // minimum, does that mean there is always some resonance? Because without resonance, the gain
   // at cutoff would be -3.01 dB, I think. Does the resonance parameter give the gain at the cutoff
@@ -84,9 +85,9 @@ SfzCodeBook::SfzCodeBook()
 
   // Equalizer:
   dsp = DspType::Equalizer;
-  add(OC::eqN_freq, Flt, "eqN_freq",   0.0f, 30000.f, 1000.f, dsp, OU::Hertz,    Sfz1);
-  add(OC::eqN_gain, Flt, "eqN_gain", -96.f,    +24.f,    0.f, dsp, OU::Decibels, Sfz1);
-  add(OC::eqN_bw,   Flt, "eqN_bw",     0.001f,   4.f,    1.f, dsp, OU::Octaves,  Sfz1);
+  add(OC::eqN_freq, Flt, "eqN_freq",   0.0f, 30000.f, 1000.f, dsp, OU::Hertz,    Sfz1e);
+  add(OC::eqN_gain, Flt, "eqN_gain", -96.f,    +24.f,    0.f, dsp, OU::Decibels, Sfz1e);
+  add(OC::eqN_bw,   Flt, "eqN_bw",     0.001f,   4.f,    1.f, dsp, OU::Octaves,  Sfz1e);
   // ToDo:
   // -The upper limit for equalizer center frequencies in sfz is defined to be 30 kHz. That would 
   //  fall above the Nyquist limit for 44.1 kHz sample-rate. I guess, we will need design formulas
@@ -482,7 +483,7 @@ ToDo:
 
 
 SFZ - Resources:
-https://sfzformat.com/legacy/   opcode reference
+https://sfzformat.com/legacy/   opcode reference for sfz 1.0
 https://www.linuxsampler.org/sfz/    has convenient list of opcodes, also for sfz v2
 https://en.wikipedia.org/wiki/SFZ_(file_format)
 https://github.com/sfz/tests/   test sfz files demonstrating various features
