@@ -184,8 +184,8 @@ SignalProcessorPool::~SignalProcessorPool()
 
 void SignalProcessorPool::allocateProcessors()
 {
-  filters.init(8);
-  equalizers.init(8); 
+  filters.init(64);
+  equalizers.init(64); 
   waveShapers.init(8);
   // These numbers are preliminary. We need to do something more sensible here later. Perhaps, this 
   // function should be called when a new sfz is loaded and it should have arguments for how many

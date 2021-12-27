@@ -456,7 +456,9 @@ public:
 
     rsSamplerFilter core;
     // ToDo: use a more efficient implementation - it needs to support only a biquad mode. Maybe 
-    // use TDF1
+    // use TDF1. A patch can use a lot of eq bands, so we may need many eqs, so we should be more
+    // frugal with memory than for the filter opcode where there is typically only one or maybe two
+    // per note. ...but we probably should support shelving modes, too
 
   };
 

@@ -1340,15 +1340,31 @@ bool samplerEngineUnitTestFileIO()
   //using Region = rosic::Sampler::rsSamplerData::Region;
 
   // Set up eq1,2,3 without specifying frequencies or bandwidths (i.e. using the defaults):
-  se.setRegionSetting(0, 0, PST::eqN_gain, 1.f, 1); 
-  se.setRegionSetting(0, 0, PST::eqN_gain, 2.f, 2); 
-  se.setRegionSetting(0, 0, PST::eqN_gain, 3.f, 3); 
+  se.setRegionSetting(0, 0, PST::eqN_gain, 1.f, 1);
+  se.setRegionSetting(0, 0, PST::eqN_gain, 2.f, 2);
+  se.setRegionSetting(0, 0, PST::eqN_gain, 3.f, 3);
   se.saveToSFZ("tmp.sfz");
   se2.loadFromSFZ("tmp.sfz");
   ok &= se2.isInSameStateAs(se);
 
+  // Set up some more eq bands, still without specifying freqs or widths:
+  se.setRegionSetting(0, 0, PST::eqN_gain,  4.f,  4);
+  se.setRegionSetting(0, 0, PST::eqN_gain,  5.f,  5);
+  se.setRegionSetting(0, 0, PST::eqN_gain,  8.f,  8);
+  se.setRegionSetting(0, 0, PST::eqN_gain, 13.f, 13); 
+  se.setRegionSetting(0, 0, PST::eqN_gain, 10.f, 10); 
+  se.saveToSFZ("tmp.sfz");
+  se2.loadFromSFZ("tmp.sfz");
+  ok &= se2.isInSameStateAs(se);
 
-
+  // Set up frequencies and bandwidths of some of the eq bands:
+  se.setRegionSetting(0, 0, PST::eqN_freq, 800.f,  8);
+  se.setRegionSetting(0, 0, PST::eqN_bw,     1.8f, 8);
+  se.setRegionSetting(0, 0, PST::eqN_freq, 500.f,  5);
+  se.setRegionSetting(0, 0, PST::eqN_bw,     1.3f, 3);
+  se.saveToSFZ("tmp.sfz");
+  se2.loadFromSFZ("tmp.sfz");
+  ok &= se2.isInSameStateAs(se);
 
   // ToDo:
   // -maybe make a local function testSaveLoadRoundTrip(se, ...) that saves the state of se and 
