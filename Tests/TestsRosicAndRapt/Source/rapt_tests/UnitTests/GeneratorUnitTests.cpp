@@ -1333,7 +1333,22 @@ bool samplerEngineUnitTestFileIO()
   se.saveToSFZ("tmp.sfz");
   se2.loadFromSFZ("tmp.sfz");
   ok &= se2.isInSameStateAs(se);
-  se2.saveToSFZ("tmp2.sfz");
+  se2.saveToSFZ("tmp2.sfz");                        // For manual inspection 
+  //ok &= rsAreFilesEqual("tmp.sfz", "tmp2.sfz");   // ToDo: write this function
+
+  // Test equalizer opcodes:
+  //using Region = rosic::Sampler::rsSamplerData::Region;
+
+  // Set up eq1,2,3 without specifying frequencies or bandwidths (i.e. using the defaults):
+  se.setRegionSetting(0, 0, PST::eqN_gain, 1.f, 1); 
+  se.setRegionSetting(0, 0, PST::eqN_gain, 2.f, 2); 
+  se.setRegionSetting(0, 0, PST::eqN_gain, 3.f, 3); 
+  se.saveToSFZ("tmp.sfz");
+  se2.loadFromSFZ("tmp.sfz");
+  ok &= se2.isInSameStateAs(se);
+  // Does not yet work because the file contains 3 times eqN_gain instead of eq1_gain, eq2_gain,
+  // eq3_gain. We need to replace the variable N with its value in the string generation.
+
 
   // ToDo:
   // -maybe make a local function testSaveLoadRoundTrip(se, ...) that saves the state of se and 
