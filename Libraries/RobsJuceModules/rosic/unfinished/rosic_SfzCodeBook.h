@@ -11,7 +11,7 @@ References:
 
 enum class Opcode
 {
-  Unknown = 0,
+  Unknown = 0, Unsupported,
 
   // Sample Definition:
   Sample,  // includes file extension (e.g. Piano.wav). path is realtive to the .sfz file.
@@ -72,20 +72,11 @@ enum class Opcode
   AmpLfoDelay, AmpLfoFade, AmpLfoFreq, AmpLfoDepth, AmpLfoDepthCtrlN, 
   AmpLfoDepthChanAft, AmpLfoDepthPolyAft, AmpLfoFreqCtrlN, AmpLfoFreqChanAft, AmpLfoFreqPolyAft,
 
-  //// Equalizer (old, sfz style with only 3 bands, each having its own opcode):
-  //Eq1Freq, Eq2Freq, Eq3Freq, Eq1FreqCtrlN, Eq2FreqCtrlN, Eq3FreqCtrlN, Eq1Vel2Freq, Eq2Vel2Freq, 
-  //Eq3Vel2Freq, Eq1Bw, Eq2Bw, Eq3Bw, Eq1BwCtrlN, Eq2BwCtrlN, Eq3BwCtrlN, Eq1Gain, Eq2Gain, Eq3Gain,
-  //Eq1GainCtrlN, Eq2GainCtrlN, Eq3GainCtrlN, Eq1Vel2Gain, Eq2Vel2Gain, Eq3Vel2Gain, 
-
-  // Equalízer (new, allowing arbitrary number of bands):
-  eqN_freq, eqN_gain, eqN_bw,
-  // todo: complete the list, then remove the old opcodes
-
+  // Equalízer:
+  eqN_freq, eqN_freqccX, eqN_vel2freq, eqN_bw, eqN_bwccX, eqN_gain, eqN_gainccX, eqN_vel2gain,
 
   // Effects:
-  Effect1, Effect2, // Reverb and chorus send levels in percent
-  // todo: replace by effN just like with eq opcodes
-
+  effN,         // effect send levels in percent (eff1: reverb, eff2: chorus)
 
   // SFZ 2.0:
   // fil2_type, cutoff2, etc. ...generalize to filN_type, cutoffN, etc. - maybe for translations
@@ -93,7 +84,6 @@ enum class Opcode
   // i.e. fil1_type, cutoff1, etc. should not be produced or accepted - instead, we'll use 
   // fil_type, cutoff, etc. because that's what sfz 1 has. it doesn't have a concept of multiple
   // filters
-
 
   // egN_timeX, egN_levelX
   // lfoN_freq, lfoN_delay, lfoN_fade, lfoN_phase, lfoN_wave, lfoN_volume
