@@ -291,17 +291,20 @@ public:
 
   SfzCodeBook();
 
+  /** Returns the type of signal processor to which the given opcdoe applies. */
   DspType opcodeToProcessor(Opcode op);
 
-  /** Returns the deault value for the given opcode as floating point number. If the format of the
-  value is integer or an enum value, you'll need to convert it. */
+  /** Returns the default value for the given opcode as floating point number. If the format of the
+  value is integer or an enum value, you'll need to convert the returned value to int and then
+  possibly to the enum. Some opcodes contain an index like eq2_freq. For these, you need to pass 
+  that index too because the default value may actually depend on that index. For example, the 
+  defaults are 50,500,5000 respectively for eq1_freq, eq2_freq, eq3_freq. If indexing is not 
+  applicable to the given opcode, you should pass index = -1. */
   float opcodeDefaultValue(Opcode op, int index);
-  // todo: add an optional index parameter because some opcodes have different default vlaues for
-  // different indices (like eqN_freq)
 
   /** Returns a string that represents the given opcode op with given index in a format that can be
   written into an .sfz file. The string is returned by value because for those opcodes that include 
-  indices (such as eq2_freq), we need to genrate the string dynamically. */
+  indices (such as eq2_freq), we need to generate the string dynamically. */
   std::string opcodeToString(Opcode op, int index) const;
 
   /** Translates an opcode string into the corresponding enum value. Some opcodes contain an index.
@@ -309,21 +312,19 @@ public:
   will be assigned to -1. */
   Opcode stringToOpcode(const std::string& str, int* index);
 
-
-  //int stringToIndex(const std::string& str);   // should extract the 74 in cutoff_cc74
-
-
+  /** Translates a filter type enum value to the string that represents it in an sfz file. */
   const std::string& filterTypeToString(FilterType ft);
+
+  /** Translates a string representing a filter type into its corresponding enum value. */
   FilterType stringToFilterType(const std::string& str);
 
-
+  /** Translates the value of an opcode represented as floating point number into a corresponding
+  string that can be written to an sfz file. */
   std::string valueToString(Opcode op, float value);
+
+  /** Translates a string that represents the value for a given opcode into its floating point 
+  representation. */
   float stringToValue(Opcode op, const std::string& str);
-  // maybe we could return a string-ref or poniter to char*? that would avoid allocations
-
-
-  // ToDo:
-  // -add documentation
 
 
   // Singleton pattern stuff (a variation of the original pattern, actually):

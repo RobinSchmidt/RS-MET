@@ -350,6 +350,8 @@ int SfzCodeBook::stringToIndex(const std::string& str)
   // useful to implement the special rules for the filter-related params (to interpret cutoff as 
   // cutoff1, fil_type as fil1_type etc.). Maybe, we should have a function isFilterRelated
 }
+// may be obsolete because stringToOpcode now extracts both, the opcode-template and the index, so
+// this may not be needed anymore
 */
 
 const std::string& SfzCodeBook::filterTypeToString(FilterType ft)

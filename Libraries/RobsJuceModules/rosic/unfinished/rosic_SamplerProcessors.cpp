@@ -27,7 +27,7 @@ void SignalProcessor::resetSettings(int index)
 
 //=================================================================================================
 
-void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float reso)
+void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float resoGainDb)
 {
   if(type == Type::Unknown || w == 0.f)
     type = Type::Bypass;
@@ -39,9 +39,15 @@ void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float res
   using FO = RAPT::rsOnePoleFilter<float, float>;
   using BQ = RAPT::rsBiquadDesigner;  // maybe it should have a template parameter?
 
-  // Preliminary to cater for the API of rsBiquadDesigner - which should really be changed...
   static const float s = float(1/(2*PI));
-  float Q = 1.f / sqrt(2.f);    // preliminary - todo: find a conversion formula reso2q
+  // Preliminary to cater for the API of rsBiquadDesigner - ToDo: change API (maybe write a new 
+  // class fo that and deprecate the old)
+
+  float Q = 1.f / sqrt(2.f);
+  // Preliminary using a fixed Q - ToDo: find an appropriate conversion formula that takes a 
+  // resonance gain in dB (or maybe as raw factor) and converts it to quality factor Q. Implement 
+  // it in a function like resoGainToQq(T resoGainDb) and call it here instead of using this 
+  // constant.
 
   FilterImpl& i = impl;  // as abbreviation
   switch(type)
@@ -105,7 +111,6 @@ void rsSamplerFilter::setupGainFreqBw(Type type, float gainDb, float w, float bw
 
   //rsError("Unknown filter type in rsSamplerFilter::setupGainFreqBw");
 }
-
 
 /*
 void rsSamplerFilter::initCoeffs()
@@ -272,6 +277,34 @@ rsSamplerFilter:
  -Maybe
  -Use the filter also for the equalizer opcode. No need to define a different class for that. Maybe
  extend sfz to support 4 instead of 3 bands when we later can realize 2 bands per filter...
+
+ -to figure out the correct design formulas, check source code of sfizz and linuxsampler
+  https://github.com/sfztools/sfizz/blob/develop/src/sfizz/dsp/filters/filters_modulable.dsp
+  https://github.com/sfztools/sfizz/blob/develop/src/sfizz/dsp/filters/rbj_filters.dsp
+
+  https://github.com/sfztools/sfizz/blob/develop/src/sfizz/dsp/filters/sfz_filters.dsp
+  sfzGetQFromSlope
+  cutoff = hslider("[01] Cutoff [unit:Hz] [scale:log]", 440.0, 50.0, 10000.0, 1.0) : max(1.0) : min(20000.0);
+  Q = vslider("[02] Resonance [unit:dB]", 0.0, 0.0, 40.0, 0.1) : max(-60.0) : min(60.0) : ba.db2linear;
+  ...
+
+  https://github.com/sfztools/sfizz/blob/develop/src/sfizz/gen/filters/sfzPeq.hxx
+  https://github.com/sfztools/sfizz/blob/develop/src/sfizz/gen/filters/sfzLpf2p.hxx
+  https://github.com/sfztools/sfizz/blob/develop/src/sfizz/gen/filters/sfzHpf2p.hxx
+
+  https://github.com/sfztools/sfizz/blob/develop/src/sfizz/effects/Filter.cpp
+  _filter.prepare(_desc.cutoff, _desc.resonance, _desc.gain);
+  ..look for that function ...  _filter is of class sfz::Filter
+
+  https://github.com/sfztools/sfizz/blob/acd866fd3d247d2fc659593cac96e88e801c29e2/src/sfizz/SfzFilter.h
+  https://github.com/sfztools/sfizz/blob/acd866fd3d247d2fc659593cac96e88e801c29e2/src/sfizz/SfzFilter.cpp
+
+
+  https://www.electronics-tutorials.ws/filter/second-order-filters.html
+
+
+  https://github.com/linuxsampler/linuxsampler/blob/master/src/engines/common/BiquadFilter.h
+
 
 ToDo:
 -Maybe at some later stage, generalize the dspChain in the sampler engine to a more flexible 

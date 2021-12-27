@@ -1980,6 +1980,13 @@ bool samplerEngineUnitTest()
   ok &= samplerProcessorsTest();
   ok &= samplerEngine2UnitTest(); 
 
+  // ToDo:
+  // -Figure out and implement the correct filter design formulas for lpf_2p, hpf_2p, bpf_2p and 
+  //  the equalizers. It's rather interesting that for the filters, the range is 0..fs/2 and for
+  //  equalizers it's 0..30kHz
+
+
+
   //rsAssert(ok, "samplerEngineUnitTest failed");
   return ok;
 }
