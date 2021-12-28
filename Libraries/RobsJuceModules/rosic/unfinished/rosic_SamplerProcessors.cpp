@@ -51,14 +51,6 @@ void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float res
   if(type == Type::BQ_Lowpass || type == Type::BQ_Highpass) // ..low- and highpass filters need..
     Q = rsBandwidthConverter::lowpassResoGainToQ(A);        // ..a more complicated formula
 
-  Q = 1.f / sqrt(2.f);
-  // Preliminary using a fixed Q - ToDo: find an appropriate conversion formula that takes a 
-  // resonance gain in dB (or maybe as raw factor) and converts it to quality factor Q. Implement 
-  // it in a function like resoGainToQq(T resoGainDb) and call it here instead of using this 
-  // constant. Maybe just simply using amp2db(resoGainDb) / sqrt(2) could work? ...do some plots!
-  // ...using the new formula makes unit tests fail - but i think, it's the tests that need to
-  //  be corrected
-
   FilterImpl& i = impl;  // as abbreviation
   switch(type)
   {
@@ -94,6 +86,8 @@ void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float res
   //  and highpass filters. It's quite expensive to compute and the simple identity function that 
   //  works  perfectly for bandpass gives a reasonable approximation for low- and highpass, too, 
   //  especially as Q gets larger. At low Q, it would give a little bit of extra resonance.
+  // -Figure out, if the Q = A formula should also be used for bandreject filters. At the moment,
+  //  we just do it, but i'm not sure, if that's the right thing to do. It seems plausible, though.
 }
 
 void rsSamplerFilter::setupGainFreqBw(Type type, float gainDb, float w, float bw)

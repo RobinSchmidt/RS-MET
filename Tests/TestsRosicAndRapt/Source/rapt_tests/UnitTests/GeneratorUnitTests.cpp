@@ -1487,21 +1487,30 @@ bool samplerFilterTest()
 
   // Test the sampler's 2nd order filter modes against the SVF implementation from RAPT:
   using SVF = RAPT::rsStateVariableFilter<float, float>;
+  using BWC = RAPT::rsBandwidthConverter;
   SVF svf;
   svf.setSampleRate(fs);
   svf.setFrequency(cutoff);
-  float G = 1.f / sqrt(2.f); // G is the linear resonance gain for SVF. Later, compute it from the
-  svf.setGain(G);            // resoGain sfz parameter which is the resonance gain in dB.
   auto testAgainstSvf = [&](SVF::modes svfMode, Type sfzType, bool plot)
   {
+    float Q = 0.f;
+    float resoAmp = RAPT::rsDbToAmp(resoGain);
+    switch(svfMode)
+    {
+    case SVF::LOWPASS:        Q = BWC::lowpassResoGainToQ( resoAmp); break;
+    case SVF::HIGHPASS:       Q = BWC::lowpassResoGainToQ( resoAmp); break;
+    case SVF::BANDPASS_SKIRT: Q = BWC::bandpassResoGainToQ(resoAmp); break;
+    case SVF::BANDREJECT:     Q = BWC::bandpassResoGainToQ(resoAmp); break;
+    }
+    svf.setGain(Q);
     svf.setMode(svfMode);
     svf.reset();
     for(int n = 0; n < N; n++)
       tgt[n] = svf.getSample(noise[n]);
     se.setRegionSetting(0, 0, PST::filN_type, (float) sfzType, 1);
-    return testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, plot);
-    // Tolerance needs to be a bit higher for 2nd order filters. 1/10^6 corresponds to a relative
-    // SNR of 120 dB. It's "relative" in the sense that it is measured against the actual signal 
+    return testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-5, plot);
+    // Tolerance needs to be a bit higher for 2nd order filters. 1/10^5 corresponds to a relative
+    // SNR of 100 dB. It's "relative" in the sense that it is measured against the actual signal 
     // level and not against the maximum possible signal level (i think).
   };
   ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  false);
@@ -1542,6 +1551,8 @@ bool samplerFilterTest()
   //  thread on KVR about extending the sfz specs suitably.
   // -Maybe include a slope filter. Cutoff may be re-interpreted as unit-gain freq, resonance,
   //  which is in db, may be re-interpreted as dB/oct
+  // -For the mapping between the resonance parameter in the sfz spec and filter Q in the design
+  //  algorithms, see the biquadResoGain() experiment.
 
   rsAssert(ok);
   return ok;

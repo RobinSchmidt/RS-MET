@@ -340,7 +340,7 @@ int main(int argc, char* argv[])
 
   // Filter:
   //bandwidthScaling();
-  biquadResoGain();
+  //biquadResoGain();
   //butterworthEnergy();
   //stateVariableFilter();
   //stateVariableFilterMorph();
