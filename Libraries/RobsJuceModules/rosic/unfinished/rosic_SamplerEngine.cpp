@@ -1390,6 +1390,7 @@ void rsSamplerEngine2::GroupPlayer::removeRegionPlayer(RegionPlayer* player)
 /*
 
 Bugs:
+-when loading a preset, the dspTypeChain does not seem to be updated correctly
 -when loading a new instrument while a region is playing, it crashes
 -group volume seems to work now, but instrument volume seems to be ignored...or it even get muted 
  when having a top-level volume. might be an issue with the parser -> check sfz spec

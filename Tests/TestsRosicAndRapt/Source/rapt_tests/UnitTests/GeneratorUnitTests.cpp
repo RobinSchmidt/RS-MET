@@ -1335,6 +1335,9 @@ bool samplerEngineUnitTestFileIO()
   ok &= se2.isInSameStateAs(se);
   se2.saveToSFZ("tmp2.sfz");                        // For manual inspection 
   //ok &= rsAreFilesEqual("tmp.sfz", "tmp2.sfz");   // ToDo: write this function
+  // FAILS! 
+  // -the signalProcessors array of the region in se2 is not the same as in se
+  // i think, in loadFromSFZ, we must make sure to add the appropriate dsp-types to the array
 
   // Test equalizer opcodes:
 
@@ -1528,7 +1531,7 @@ bool samplerFilterTest()
   // numerical issue - although the error is visible, so that's perhaps a bit too much for roundoff
   // errors.
 
-  // Test numerical stability using a filter with a high resonance bandpass. Bandpasses have 
+  // Test numerical stability using a bandpass filter with a high resonance. Bandpasses have 
   // slightly higher Q than low- or highpasses with the same resonance gain. We test it for 
   // frequencies from all the way up to all the way down. For the lower cutoffs, we need higher 
   // tolerances:
@@ -1547,8 +1550,9 @@ bool samplerFilterTest()
 
   // ToDo
   // -Cutoff=0 does not yet work - the svf produces silence and the sampler goes into bypass. Maybe
-  //  we shoul do something different in this case. For a bandpass, it seems to make sense that the
-  //  limiting case is a lowpass -> figure this out!
+  //  we should do something different in this case. For a bandpass, it seems to make sense that 
+  //  the limiting case is a lowpass. For a highpass, the limiting case should indeed be a bypass.
+  //  for a lowpass, we may see the resonance peak at DC?
   // -Try a series connection of waveshaper and filter in both possible orders - check if the order
   //  is indeed determined by the first opcode that applies to the given dsp as it should be
   // -Maybe change the default filter type to make it work even the fil_type opcode is missing.

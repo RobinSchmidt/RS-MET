@@ -451,7 +451,7 @@ public:
     }
 
 
-/** Returns true, if the given index i refers to a valid group within this instrument. */
+    /** Returns true, if the given index i refers to a valid group within this instrument. */
     bool isGroupIndexValid(int i) const { return i >= 0 && i < (int)groups.size(); }
 
 

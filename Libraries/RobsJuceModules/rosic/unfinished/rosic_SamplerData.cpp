@@ -143,6 +143,7 @@ void rsSamplerData::Region::copyDataFrom(const Region* src)
 bool rsSamplerData::Region::operator==(const rsSamplerData::Region& rhs) const
 {
   bool equal = settings == rhs.settings;
+  equal &= signalProcessors == rhs.signalProcessors;
   equal &= loKey == rhs.loKey;
   equal &= hiKey == rhs.hiKey;
   equal &= loVel == rhs.loVel;
@@ -216,6 +217,7 @@ rsSamplerData::Region* rsSamplerData::Group::getRegion(int i) const
 bool rsSamplerData::Group::operator==(const rsSamplerData::Group& rhs) const
 {
   bool equal = settings == rhs.settings;
+  equal &= signalProcessors == rhs.signalProcessors;
   equal &= regions.size() == rhs.regions.size();
   if(!equal) return false;
   for(size_t i = 0; i < regions.size(); i++)
@@ -246,6 +248,7 @@ void rsSamplerData::Instrument::clearGroups()
 bool rsSamplerData::Instrument::operator==(const rsSamplerData::Instrument& rhs) const
 {
   bool equal = settings == rhs.settings;
+  equal &= signalProcessors == rhs.signalProcessors;
   equal &= groups.size() == rhs.groups.size();
   if(!equal) return false;
   for(size_t i = 0; i < groups.size(); i++)
