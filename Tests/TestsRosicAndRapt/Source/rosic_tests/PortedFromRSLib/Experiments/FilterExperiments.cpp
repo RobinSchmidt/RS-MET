@@ -226,6 +226,17 @@ void biquadResoGain()
     // This seems less exact but saves us the sqrt.
   };
 
+  auto resoDbToQ5 =[](double dB)
+  {
+    double a = rsDbToAmp(2*dB);
+    double b = sqrt(a*a - a);
+    double P = 0.5 * (a + b);
+    double Q = sqrt(P);
+    return Q;
+    // This seems to be exaxt for all values of reso. ...done!
+  };
+
+
   int K = numFreqs;
   Vec f(K), w(K), dB(K);
   rsArrayTools::fillWithRangeExponential(&f[0], K, 250.0, 4000.0);
@@ -238,8 +249,10 @@ void biquadResoGain()
   for(int i = 0; i < numPlots; i++)
   {
     double r = reso[i];
-    double Q = resoDbToQ3(r);
+    double Q = resoDbToQ5(r);
     BQD::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1./sampleRate, cutoff, Q);
+    //BQD::calculateCookbookHighpassCoeffs(b0, b1, b2, a1, a2, 1./sampleRate, cutoff, Q);
+    //BQD::calculateCookbookBandpassConstSkirtCoeffsViaQ(b0, b1, b2, a1, a2, 1./sampleRate, cutoff, Q);
     a1 = -a1;
     a2 = -a2;
     for(int k = 0; k < K; k++)
@@ -255,13 +268,34 @@ void biquadResoGain()
   // Observations:
   // -When using resoDbToQ1, the resonance gain for high resonance settings seems exactly 3 dB 
   //  below the desired value.
+  // -It works for lowpass and highpass just the same. Maybe it's also applicable to bandpass?
   //
   // ToDo:
   // -Try to derive a formula more systematically by considering the magnitude response of an
   //  analog biquad lowpass. Compute the frequency where the gain peaks and the (squared) magnitude
-  //  at that frequency. This should lead us to the exact formula for the analog prototype.
+  //  at that frequency. This should lead us to the exact formula for the analog prototype. The 
+  //  formula for the lowpass transfer function is H(s) = 1 / (1 + s/Q + s^2).
   // -Maybe if the formula turns out to be expensive to evaluate, use a polynomial or rational
   //  approximation.
+
+
+  // Sage:
+  // var("s w Q")
+  // s  = I*w
+  // Hp = 1 / (s^2 + s/Q + 1)
+  // Hm = 1 / ((-s)^2 + (-s)/Q + 1)
+  // Msq = Hp * Hm
+  // expand(Msq)
+  // ...hmm..it still contains I - why? it should be real
+
+
+  // But wolfram alpha can do better:
+  //   Msq = Q^2 / (Q^2 (w^2 - 1)^2 + w^2)
+  // Throwing the result at it again (usingx instead of w):
+  //   https://www.wolframalpha.com/input/?i=+Q%5E2+%2F+%28Q%5E2+%28x%5E2+-+1%29%5E2+%2B+x%5E2%29
+  // also gives the maxima:
+  //   (4 Q^4)/(4 Q^2 - 1)  at  x = -1/2 sqrt(4 - 2/Q^2)
+
 }
 
 void butterworthEnergy()
