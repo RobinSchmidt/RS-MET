@@ -35,19 +35,29 @@ void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float res
     // mode. We also default to bypass if mode is not set...hmm...maybe we should default to
     // lpf_12 in this case? ...but only if cutoff is nonzero...we'll see...
 
+  using namespace RAPT;
+
   this->type = type;
-  using FO = RAPT::rsOnePoleFilter<float, float>;
-  using BQ = RAPT::rsBiquadDesigner;  // maybe it should have a template parameter?
+  using FO = rsOnePoleFilter<float, float>;
+  using BQ = rsBiquadDesigner;  // maybe it should have a template parameter?
 
   static const float s = float(1/(2*PI));
   // Preliminary to cater for the API of rsBiquadDesigner - ToDo: change API (maybe write a new 
   // class fo that and deprecate the old)
 
-  float Q = 1.f / sqrt(2.f);
+  // Compute the desired filter quality factor Q from the resonance gain in dB:
+  float A = rsDbToAmp(resoGainDb);  // Raw resonance amplitude
+  float Q = A;                      // This is correct for 2nd order bandpass filters...
+  if(type == Type::BQ_Lowpass || type == Type::BQ_Highpass) // ..low- and highpass filters need..
+    Q = rsBandwidthConverter::lowpassResoGainToQ(A);        // ..a more complicated formula
+
+  Q = 1.f / sqrt(2.f);
   // Preliminary using a fixed Q - ToDo: find an appropriate conversion formula that takes a 
   // resonance gain in dB (or maybe as raw factor) and converts it to quality factor Q. Implement 
   // it in a function like resoGainToQq(T resoGainDb) and call it here instead of using this 
   // constant. Maybe just simply using amp2db(resoGainDb) / sqrt(2) could work? ...do some plots!
+  // ...using the new formula makes unit tests fail - but i think, it's the tests that need to
+  //  be corrected
 
   FilterImpl& i = impl;  // as abbreviation
   switch(type)
@@ -78,6 +88,12 @@ void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float res
   //  minus sign or not and update all code accordingly. Be careful - this change ripples through 
   //  all products - maybe introduce new names for the functions and deprecate the old ones instead
   //  of just changing their code. Make benchmarks what is faster, ask at KVR what others do.
+  // -Optimize: Compute resonance related stuff only when applicable. ...but maybe we should have 
+  //  a separate class for first order filters anyway to save memory
+  // -Figure out, if sfz+ and other implementations also use the exact formula for Q for lowpass 
+  //  and highpass filters. It's quite expensive to compute and the simple identity function that 
+  //  works  perfectly for bandpass gives a reasonable approximation for low- and highpass, too, 
+  //  especially as Q gets larger. At low Q, it would give a little bit of extra resonance.
 }
 
 void rsSamplerFilter::setupGainFreqBw(Type type, float gainDb, float w, float bw)

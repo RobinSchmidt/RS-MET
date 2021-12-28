@@ -82,18 +82,16 @@ T rsBandwidthConverter::lowpassResoGainToQ(T a)
 {
   a *= a;
   T b = sqrt(a*a - a);
-  T P = T(0.5) * (a + b);
+  T P = T(0.5) * (a + b);  // P := Q^2
   return sqrt(P);
 
   // The formula was derived by considering the magnitude response of a 2nd order analog lowpass 
   // with transfer function H(s) = 1 / (1 + s/Q + s^2). The magnitude-squared response of such a 
   // filter is given by: M(w) = Q^2 / (Q^2 (w^2 - 1)^2 + w^2). This function has maxima of height
   // (4 Q^4)/(4 Q^2 - 1) at w = -1/2 sqrt(4 - 2/Q^2). The expression for the height was solved 
-  // for Q.
+  // for Q. We get a quadratic equation for P := Q^2. The correct solution was picked empirically.
+  // It was also observed empirically that the formula also works for highpass filters.
 }
-// ToDo: derive a similar formula for a 2nd order bandpass
-
-
 
 /*
 
