@@ -333,8 +333,14 @@ Bugs:
   -or make the behavior switchable
 
 ToDo:
--show on the GUI, which mode we are in (Override/Accumulate) and let the user change that
--show, which .sfz file is loaded and give the user a text editor to edit it
+-GUI:
+ -show on the GUI, which mode we are in (Override/Accumulate) and let the user change that
+ -show, which .sfz file is loaded and give the user a text editor to edit it
+ -show some data about the loaded patch: number of samples, regions, groups, filters, equalizers, 
+  waveshapers etc.
+ -maybe display also, how many filters, eqs, etc. are allocated and how many are currently in use
+ -maybe show a warning, if the number of dsp objects was exceeded...or somehow prevent that from
+  ever happening
 -optimize by using block-wise processing instead of sample-by-sample
 -maybe instead of opening a message box on load error, show the error message in the load/save
  widget set 

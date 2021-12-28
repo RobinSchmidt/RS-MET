@@ -316,6 +316,16 @@ rsSamplerFilter:
   https://github.com/linuxsampler/linuxsampler/blob/master/src/engines/common/BiquadFilter.h
 
 
+rsSamplerWaveShaper:
+-Try to find a similar parametrization for each of the available shapes.
+-One parameter should be interpretable as "hardness". it should go from 0 to 100% where 100% maps 
+ to a hard-clipper and 0% should perhaps be the default, suing the prototype sigmoid without 
+ modification like using e.g. tanh(drive * x) directly without applying a "hardening" 
+ transformation.
+ -for tanh, maybe try functions like tanh(a*x^b), tanh(a*x+b*x^3), tanh(sinh(a*x)/x), 
+  tanh((a*x+b*x^3)/(c*x+d*x^3))
+
+
 ToDo:
 -Maybe at some later stage, generalize the dspChain in the sampler engine to a more flexible 
  dspGraph where the routing is not necessarily fixed to x -> 1 -> 2 -> 3 -> y, say (where x,y stand

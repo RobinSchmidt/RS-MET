@@ -1411,14 +1411,14 @@ bool samplerFilterTest()
   using Type = rosic::Sampler::FilterType;
 
   // Create a pinkish noise as example sample:
-  float fs       = 44100.f; // sample rate
-  float cutoff   = 1000.f;  // filter cutoff
-  float resoGain = 0.f;     // filter resonance gain in dB
-  float slope    = -3.01;   // spectral slope of the noise
-  int   N        = 500;     // length of sample
-  VecF  noise;              // noise sample
-  VecF  tgt(N);             // target output in tests
-  VecF  outL(N), outR(N);   // for the output signals
+  float fs     = 44100.f;    // sample rate
+  float cutoff = 1000.f;     // filter cutoff
+  float reso   = 0.f;        // filter resonance gain in dB
+  float slope  = -3.01;      // spectral slope of the noise
+  int   N      = 1000;       // length of sample
+  VecF  noise;               // noise sample
+  VecF  tgt(N);              // target output in tests
+  VecF  outL(N), outR(N);    // for the output signals
   noise = createColoredNoise(N, slope);   // maybe use a sawtooth wave instead
   //rsPlotVector(noise);
 
@@ -1430,8 +1430,8 @@ bool samplerFilterTest()
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f);
-  se.setRegionSetting(0, 0, PST::cutoffN,         cutoff,   1);
-  se.setRegionSetting(0, 0, PST::resonanceN,      resoGain, 1); // affects only 2nd order modes
+  se.setRegionSetting(0, 0, PST::cutoffN,         cutoff, 1);
+  se.setRegionSetting(0, 0, PST::resonanceN,      reso,   1); // affects only 2nd order modes
 
   // Test the sampler's 1st order filter modes against the 1-pole-1-zero implementation from RAPT:
   using OPF = RAPT::rsOnePoleFilter<float, float>;
@@ -1491,7 +1491,8 @@ bool samplerFilterTest()
   SVF svf;
   svf.setSampleRate(fs);
   svf.setFrequency(cutoff);
-  auto testAgainstSvf = [&](SVF::modes svfMode, Type sfzType, bool plot)
+  auto testAgainstSvf = [&](SVF::modes svfMode, Type sfzType, float cutoff, float resoGain, 
+    float tol, bool plot)
   {
     float Q = 0.f;
     float resoAmp = RAPT::rsDbToAmp(resoGain);
@@ -1502,20 +1503,23 @@ bool samplerFilterTest()
     case SVF::BANDPASS_SKIRT: Q = BWC::bandpassResoGainToQ(resoAmp); break;
     case SVF::BANDREJECT:     Q = BWC::bandpassResoGainToQ(resoAmp); break;
     }
-    svf.setGain(Q);
     svf.setMode(svfMode);
+    svf.setFrequency(cutoff);
+    svf.setGain(Q);
     svf.reset();
     for(int n = 0; n < N; n++)
       tgt[n] = svf.getSample(noise[n]);
-    se.setRegionSetting(0, 0, PST::filN_type, (float) sfzType, 1);
-    return testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-5, plot);
+    se.setRegionSetting(0, 0, PST::filN_type,  (float) sfzType, 1);
+    se.setRegionSetting(0, 0, PST::cutoffN,    cutoff,          1);
+    se.setRegionSetting(0, 0, PST::resonanceN, resoGain,        1); 
+    return testSamplerNote(&se, 60.f, 127.f, tgt, tgt, tol, plot);
     // Tolerance needs to be a bit higher for 2nd order filters. 1/10^5 corresponds to a relative
     // SNR of 100 dB. It's "relative" in the sense that it is measured against the actual signal 
     // level and not against the maximum possible signal level (i think).
   };
-  ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  false);
-  ok &= testAgainstSvf(svf.HIGHPASS,       Type::hp_12,  false);
-  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, false);
+  ok &= testAgainstSvf(svf.LOWPASS,        Type::lp_12,  cutoff, reso, 1.e-5, false);
+  ok &= testAgainstSvf(svf.HIGHPASS,       Type::hp_12,  cutoff, reso, 1.e-5, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, cutoff, reso, 1.e-5, false);
   //ok &= testAgainstSvf(svf.BANDREJECT,     Type::br_6_6, true);
   // BRF fails! they look very similar though. Maybe there are different definitions in place for
   // how to intepret the resoGain parameter. It's questionable anyway, if we have implemented
@@ -1524,8 +1528,27 @@ bool samplerFilterTest()
   // numerical issue - although the error is visible, so that's perhaps a bit too much for roundoff
   // errors.
 
+  // Test numerical stability using a filter with a high resonance bandpass. Bandpasses have 
+  // slightly higher Q than low- or highpasses with the same resonance gain. We test it for 
+  // frequencies from all the way up to all the way down. For the lower cutoffs, we need higher 
+  // tolerances:
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 22050.f,   40.f, 1.e-4, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 20000.f,   40.f, 1.e-4, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6, 10000.f,   40.f, 1.e-4, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,  1000.f,   40.f, 1.e-4, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,   100.f,   40.f, 1.e-3, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,    10.f,   40.f, 1.e-3, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,     0.1f,  40.f, 1.e-3, false);
+  ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,     0.01f, 40.f, 1.e-3, false);
+  //ok &= testAgainstSvf(svf.BANDPASS_SKIRT, Type::bp_6_6,     0.0f,  40.f, 1.e-3, true);
+  // todo: 
+  // -maybe write a helper function taht goes through these checks als for lowpass and highpass
+  // -maybe we should allow cutoff up to 30000 as in the EQ
 
   // ToDo
+  // -Cutoff=0 does not yet work - the svf produces silence and the sampler goes into bypass. Maybe
+  //  we shoul do something different in this case. For a bandpass, it seems to make sense that the
+  //  limiting case is a lowpass -> figure this out!
   // -Try a series connection of waveshaper and filter in both possible orders - check if the order
   //  is indeed determined by the first opcode that applies to the given dsp as it should be
   // -Maybe change the default filter type to make it work even the fil_type opcode is missing.
