@@ -87,7 +87,11 @@ public:
   static T lowpassResoGainToQ(T resoGainRaw);
   // todo: figure out and document what happens when the gain is less than 1
 
-
+  /** Like lowpassResoGainToQ but for bandpass filters. It turns out that for bandpasses, the 
+  desired function is just the identity function but we implement it as a function anyway to 
+  document that fact. */
+  template<class T>
+  static inline T bandpassResoGainToQ(T resoGainRaw) { return resoGainRaw; }
 
 
   // \todo write a function: absoluteBandwidthToRingingTime

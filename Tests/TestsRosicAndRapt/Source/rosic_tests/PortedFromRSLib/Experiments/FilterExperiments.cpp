@@ -182,24 +182,28 @@ void biquadResoGain()
 {
   // We try to find the relationship between the resonance gain in dB and the Q of a biquad filter 
   // because the former is how sfz specifies resonance and the latter is how the RBJ design 
-  // formulas work, so we need a translation formula.
-
+  // formulas work, so we need a translation formula. ...done! the required formulas are now 
+  // integrated in RAPT::rsBandwidthConverter. Thte plots here now demonstrate that the formula
+  // works.
 
   using Vec = std::vector<double>;
 
   // Setup:
-  int numFreqs      = 1001;
-  double cutoff     = 1000;
   double sampleRate = 44100;
+  double cutoff     = 1000;
   Vec reso({0, 1,2,3,4, 5, 10, 15, 20, 25, 30, 35, 40});  // desired resonance gains
+  int numFreqs = 1001;    // number of frequencies to for plotting
+  double fMin  = 250;     // lower frequency limit for plot
+  double fMax  = 4000;    // upper ...
 
 
+  // Our candidate functions:
   auto resoDbToQ1 =[](double dB) 
   { 
     return rsDbToAmp(dB) / sqrt(2.0);
     // This formula gives the correct result for reso = 0. In this case, the peak frequency is at 
     // DC an its gain is 0 dB. Using Q=1/sqrt(2) in this case produces a 2nd order Butterworth 
-    // filter.
+    // filter. It is also perfect for bandpass filters for all resonance settings.
   };
   auto resoDbToQ2 =[](double dB) 
   { 
@@ -233,20 +237,18 @@ void biquadResoGain()
     double P = 0.5 * (a + b);
     double Q = sqrt(P);
     return Q;
-    // This seems to be exact for all values of reso. ...done! But it works only for 2nd order
-    // lowpass and highpass. Bandpasses will need a different formula.
+    // This is the exact formula for 2nd order lowpass and highpass.
   };
-  // move somewhere into the library ...maybe into class rsBandwidthConverter - maybe that should
-  // be rename into rsFilterParamConverter. the function may be called lowpassResoGainToQ
 
   auto resoDbToQ6 =[](double dB)
   {
     return rsBandwidthConverter::lowpassResoGainToQ(rsDbToAmp(dB));
+    // Uses the library function from RAPT. This realizes the same function as resoDbToQ5.
   };
 
   int K = numFreqs;
   Vec f(K), w(K), dB(K);
-  rsArrayTools::fillWithRangeExponential(&f[0], K, 250.0, 4000.0);
+  rsArrayTools::fillWithRangeExponential(&f[0], K, fMin, fMax);
   rsArrayTools::scale(&f[0], &w[0], K, 2*PI/sampleRate);
 
   GNUPlotter plt;
@@ -256,10 +258,14 @@ void biquadResoGain()
   for(int i = 0; i < numPlots; i++)
   {
     double r = reso[i];
-    double Q = resoDbToQ6(r);
+
+    double Q = resoDbToQ6(r);  // exact for lowpass and highpass
     BQD::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1./sampleRate, cutoff, Q);
     //BQD::calculateCookbookHighpassCoeffs(b0, b1, b2, a1, a2, 1./sampleRate, cutoff, Q);
+
+    //double Q = resoDbToQ2(r);  // exact for bandpass
     //BQD::calculateCookbookBandpassConstSkirtCoeffsViaQ(b0, b1, b2, a1, a2, 1./sampleRate, cutoff, Q);
+
     a1 = -a1;
     a2 = -a2;
     for(int k = 0; k < K; k++)
@@ -270,24 +276,17 @@ void biquadResoGain()
     plt.addDataArrays(K, &f[0], &dB[0]);
   }
   plt.setLogScale("x");
+  plt.setRange(fMin, fMax);
   plt.plot();
 
   // Observations:
   // -When using resoDbToQ1, the resonance gain for high resonance settings seems exactly 3 dB 
   //  below the desired value.
-  // -It works for lowpass and highpass just the same. Maybe it's also applicable to bandpass?
-
   //
   // ToDo:
-  // -Try to derive a formula more systematically by considering the magnitude response of an
-  //  analog biquad lowpass. Compute the frequency where the gain peaks and the (squared) magnitude
-  //  at that frequency. This should lead us to the exact formula for the analog prototype. The 
-  //  formula for the lowpass transfer function is H(s) = 1 / (1 + s/Q + s^2).
-  //  ...done - the result is resoDbToQ5
-  // -Derive a similar formula for the bandpass case
-  // -Maybe if the formula turns out to be expensive to evaluate, use a polynomial or rational
-  //  approximation.
-
+  // -Maybe use a polynomial or rational approximation taking the resoGain in dB as input and 
+  //  giving the Q as output. The lowpass/highpass formulas is quite expensive, requiring one exp
+  //  and two sqrt calls.
 
   // Sage:
   // var("s w Q")
@@ -297,11 +296,9 @@ void biquadResoGain()
   // Msq = Hp * Hm
   // expand(Msq)
   // ...hmm..it still contains I - why? it should be real
-
-
   // But wolfram alpha can do better:
   //   Msq = Q^2 / (Q^2 (w^2 - 1)^2 + w^2)
-  // Throwing the result at it again (usingx instead of w):
+  // Throwing the result at it again (using x instead of w):
   //   https://www.wolframalpha.com/input/?i=+Q%5E2+%2F+%28Q%5E2+%28x%5E2+-+1%29%5E2+%2B+x%5E2%29
   // also gives the maxima:
   //   (4 Q^4)/(4 Q^2 - 1)  at  x = -1/2 sqrt(4 - 2/Q^2)

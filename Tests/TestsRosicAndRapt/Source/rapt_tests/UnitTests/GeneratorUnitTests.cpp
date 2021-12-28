@@ -1991,6 +1991,9 @@ bool samplerEngineUnitTest()
   // -Figure out and implement the correct filter design formulas for lpf_2p, hpf_2p, bpf_2p and 
   //  the equalizers. It's rather interesting that for the filters, the range is 0..fs/2 and for
   //  equalizers it's 0..30kHz
+  // -Test filters with the most extreme Q settings, also at low frequnecies. That's where we 
+  //  should expect numerical precision issues, especially when using single precision. Maybe using
+  //  an SVF implementation can help against this.
 
 
 
