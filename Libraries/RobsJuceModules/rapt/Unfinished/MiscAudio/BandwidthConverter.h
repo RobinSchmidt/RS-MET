@@ -77,6 +77,13 @@ public:
   template<class T>
   static T multipassScalerButterworth(int numPasses, int order = 1, T g = SQRT2_INV);
 
+
+  template<class T>
+  static T lowpassResoGainToQ(T resoGainRaw);
+
+
+
+
   // \todo write a function: absoluteBandwidthToRingingTime
 };
 

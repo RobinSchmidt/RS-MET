@@ -77,6 +77,16 @@ T rsBandwidthConverter::multipassScalerButterworth(int M, int N, T g)
 // this formula has been implemented in
 // rsPrototypeDesigner<T>::butterworthEnergy
 
+template<class T>
+T rsBandwidthConverter::lowpassResoGainToQ(T a)
+{
+  a *= a;
+  T b = sqrt(a*a - a);
+  T P = T(0.5) * (a + b);
+  return sqrt(P);
+}
+
+
 /*
 
 More formulas that need some numeric checks:

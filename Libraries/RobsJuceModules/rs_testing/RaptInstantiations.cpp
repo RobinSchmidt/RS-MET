@@ -487,6 +487,8 @@ template void RAPT::rsNumericDifferentiator<double>::laplacian2D_2(
 template double RAPT::rsBandwidthConverter::bandedgesToCenterFrequency(double fl, double fu);
 template double RAPT::rsBandwidthConverter::bandedgesToAbsoluteBandwidth(double fl, double fu);
 template double RAPT::rsBandwidthConverter::absoluteBandwidthToQ(double fl, double fu);
+template double RAPT::rsBandwidthConverter::lowpassResoGainToQ(double a);
+
 
 // Filters-Basic:
 template class RAPT::rsOnePoleFilter<float, float>;

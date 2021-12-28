@@ -233,9 +233,16 @@ void biquadResoGain()
     double P = 0.5 * (a + b);
     double Q = sqrt(P);
     return Q;
-    // This seems to be exaxt for all values of reso. ...done!
+    // This seems to be exact for all values of reso. ...done! But it works only for 2nd order
+    // lowpass and highpass. Bandpasses will need a different formula.
   };
+  // move somewhere into the library ...maybe into class rsBandwidthConverter - maybe that should
+  // be rename into rsFilterParamConverter. the function may be called lowpassResoGainToQ
 
+  auto resoDbToQ6 =[](double dB)
+  {
+    return rsBandwidthConverter::lowpassResoGainToQ(rsDbToAmp(dB));
+  };
 
   int K = numFreqs;
   Vec f(K), w(K), dB(K);
@@ -249,7 +256,7 @@ void biquadResoGain()
   for(int i = 0; i < numPlots; i++)
   {
     double r = reso[i];
-    double Q = resoDbToQ5(r);
+    double Q = resoDbToQ6(r);
     BQD::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1./sampleRate, cutoff, Q);
     //BQD::calculateCookbookHighpassCoeffs(b0, b1, b2, a1, a2, 1./sampleRate, cutoff, Q);
     //BQD::calculateCookbookBandpassConstSkirtCoeffsViaQ(b0, b1, b2, a1, a2, 1./sampleRate, cutoff, Q);
@@ -269,12 +276,15 @@ void biquadResoGain()
   // -When using resoDbToQ1, the resonance gain for high resonance settings seems exactly 3 dB 
   //  below the desired value.
   // -It works for lowpass and highpass just the same. Maybe it's also applicable to bandpass?
+
   //
   // ToDo:
   // -Try to derive a formula more systematically by considering the magnitude response of an
   //  analog biquad lowpass. Compute the frequency where the gain peaks and the (squared) magnitude
   //  at that frequency. This should lead us to the exact formula for the analog prototype. The 
   //  formula for the lowpass transfer function is H(s) = 1 / (1 + s/Q + s^2).
+  //  ...done - the result is resoDbToQ5
+  // -Derive a similar formula for the bandpass case
   // -Maybe if the formula turns out to be expensive to evaluate, use a polynomial or rational
   //  approximation.
 
