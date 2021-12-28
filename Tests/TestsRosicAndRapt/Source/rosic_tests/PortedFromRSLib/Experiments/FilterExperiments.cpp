@@ -191,17 +191,24 @@ void biquadResoGain()
   int numFreqs      = 1001;
   double cutoff     = 1000;
   double sampleRate = 44100;
-  Vec reso({0, 5, 10, 15, 20, 25, 30, 35, 40});  // desired resonance gains
+  Vec reso({0, 1,2,3,4, 5, 10, 15, 20, 25, 30, 35, 40});  // desired resonance gains
 
 
   auto resoDbToQ1 =[](double dB) 
   { 
-    return rsDbToAmp(dB) / sqrt(2.0);   // Maybe it could be as simple as that?
+    return rsDbToAmp(dB) / sqrt(2.0);
+    // This formula gives the correct result for reso = 0. In this case, the peak frequency is at 
+    // DC an its gain is 0 dB. Using Q=1/sqrt(2) in this case produces a 2nd order Butterworth 
+    // filter.
   };
   auto resoDbToQ2 =[](double dB) 
   { 
-    return rsDbToAmp(dB); 
+    return rsDbToAmp(dB);
+    // This formula seems to give the correct asymptotic behavior when the resonance gets large.
   };
+
+  // ...For the in-between cases, we try some ad-hoc formulas that reduce to formula 1 for reso=0
+  // and approach formula 2 for reso -> inf:
   auto resoDbToQ3 =[](double dB) 
   { 
     double a = rsDbToAmp(dB);
@@ -216,8 +223,8 @@ void biquadResoGain()
     double b = 1.0 / (1.0 + a*a*a*a);
     double c = 1.0 - b;
     return a * c;
+    // This seems less exact but saves us the sqrt.
   };
-
 
   int K = numFreqs;
   Vec f(K), w(K), dB(K);
@@ -231,7 +238,7 @@ void biquadResoGain()
   for(int i = 0; i < numPlots; i++)
   {
     double r = reso[i];
-    double Q = resoDbToQ4(r);
+    double Q = resoDbToQ3(r);
     BQD::calculateCookbookLowpassCoeffs(b0, b1, b2, a1, a2, 1./sampleRate, cutoff, Q);
     a1 = -a1;
     a2 = -a2;
@@ -246,15 +253,15 @@ void biquadResoGain()
   plt.plot();
 
   // Observations:
-  // -resoDbToQ1 works well for low resonances, resoDbToQ2 seems to be quite exact for high 
-  //  resonances
-  // -when using resoDbToQ1, the resonance gain for high resonance settings seems exactly 3 dB 
+  // -When using resoDbToQ1, the resonance gain for high resonance settings seems exactly 3 dB 
   //  below the desired value.
   //
   // ToDo:
-  // -Try to find a suitable formula that returna 1/sqrt(2) for x=0 and quickly approaches 1 as
-  //  x grows....resoDbToQ3,4 are some ad-hoc attempts
-
+  // -Try to derive a formula more systematically by considering the magnitude response of an
+  //  analog biquad lowpass. Compute the frequency where the gain peaks and the (squared) magnitude
+  //  at that frequency. This should lead us to the exact formula for the analog prototype.
+  // -Maybe if the formula turns out to be expensive to evaluate, use a polynomial or rational
+  //  approximation.
 }
 
 void butterworthEnergy()
