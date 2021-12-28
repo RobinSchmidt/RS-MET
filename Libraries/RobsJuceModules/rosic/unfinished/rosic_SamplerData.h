@@ -50,7 +50,8 @@ public:
   rsSamplerData(const rsSamplerData& d) { copy(d, *this); }
 
   /** Copy assignment operator. */
-  rsSamplerData& operator=(const rsSamplerData& d) { if(this != &d) copy(d, *this); return *this; }
+  rsSamplerData& operator=(const rsSamplerData& d) 
+  { if(this != &d)  copy(d, *this); return *this; }
 
   //-----------------------------------------------------------------------------------------------
   // Forward dcalarations and abbreviations
@@ -158,10 +159,9 @@ public:
     stored for that type (a situation that may arise from badly written sfz files), it will
     overwrite the last one, because that's the one that actually counts. */
     void setSetting(const PlaybackSetting& s);
-    // rename to setOpcode
 
     /** Adds the given setting to our array of settings. */
-    void addSetting(const PlaybackSetting& s) { settings.push_back(s); }
+    //void addSetting(const PlaybackSetting& s) { settings.push_back(s); }
     // Maybe we should have a function setSetting that either adds a new setting or overwrites
     // an existing one, we may also need a function cleanUpSettings that keeps only the last 
     // setting of a particular kind in our list
@@ -173,10 +173,11 @@ public:
     array. */
     bool removeSetting(Opcode type);
 
-    void clearSettings() // rename to clear
+    /** Clears all the settings. */
+    void clearSettings()
     {
       settings.clear();
-      signalProcessors.clear();
+      dspTypes.clear();
     }
     // should this also set loKey/hiKey and loVel/hiVel back to their default values of 0/127? 
     // i actually think so...also the signalProcessors
@@ -251,7 +252,7 @@ public:
     uchar getHiVel() const { return hiVel; }
 
     /** Returns the number of signal processors needed to play this region/group/etc. */
-    int getNumProcessors() const { return (int) signalProcessors.size(); }
+    int getNumProcessors() const { return (int) dspTypes.size(); }
 
 
 
@@ -259,7 +260,7 @@ public:
     this region. This pointer is intended to be used for some sort of audio stream object that is
     used for accessing the sample data. It has been made a generic void pointer to decouple
     rsSamplerData from the AudioFileStream class that is used in rsSamplerEngine. The
-    sampler-engine assigns this pointer with appropriate stream object and when retriveing them,
+    sampler-engine assigns this pointer with appropriate stream object and when retrieving them,
     does an appropriate type cast. ToDo: try to find a better design, maybe move up into
     baseclass */
     const void* getCustomPointer() const { return custom; }
@@ -271,7 +272,8 @@ public:
 
     /** Returns a (const) reference to an array of processor types that is used by the engine to 
     build the dsp chain when this region should be played.*/
-    const std::vector<DspType>& getProcessingChain() const { return signalProcessors; }
+    const std::vector<DspType>& getProcessingChain() const { return dspTypes; }
+    // rename to getDspTypeChain
 
 
   protected:
@@ -325,12 +327,12 @@ public:
     //  group setting -> check, how sfzPlayer behaves
 
     std::vector<PlaybackSetting> settings;
+    /**< The settings which applay to this region/group/instrument, i.e. the opcodes along with 
+    their values and, if appliable, index */
 
-
-    std::vector<DspType> signalProcessors;  // rename to dspTypes
-    /** Listing of the types of signal processors used in this instrument in the same order like how
-    they should be applied (we assume a serial connection). */
-    // should be member of the region or OrganizationLevel
+    std::vector<DspType> dspTypes;
+    /**< Listing of the types of signal processors used in this instrument in the same order like 
+    how they should be applied (we assume a serial connection). */
 
   };
 
@@ -432,7 +434,10 @@ public:
   /** The instrument is the highest organizational level in sfz. There is actually no section
   header in the .sfz file format for the whole instrument that corresponds to this class. The whole
   content of the sfz file *is* the instrument. But for consistency, we represent it by a class as
-  well. Maybe later an additional "Ensemble" or "Orchestra" level can be added on top. */
+  well. Maybe later an additional "Ensemble" or "Orchestra" level can be added on top. 
+  
+  Maybe rename to Global (i think, that's what it's called in sfz - and the aria engien has a level
+  in between called master) */
   class Instrument : public OrganizationLevel
   {
 

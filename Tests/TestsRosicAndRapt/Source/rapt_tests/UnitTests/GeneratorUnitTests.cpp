@@ -267,6 +267,18 @@ bool samplerDataUnitTest()
   d2.setFromSFZ(sfz);  // crashes, if we uncomment the setInstrumentSetting call
   ok &= d2 == d3;
 
+  // Set up a feq settings that involve DSPs:
+  d3.setRegionSetting(0, 0, PST::cutoffN,  1000.f, 1);
+  d3.setRegionSetting(0, 0, PST::eqN_gain,    6.f, 3);  // should prodcue 3 eq bands
+  sfz = d3.getAsSFZ(); d2.setFromSFZ(sfz); ok &= d2 == d3;
+
+  d1 = d3;
+  ok &= d1 == d3;
+
+
+
+
+
   // ToDo: make a more complex sfz patch, using more opcodes, samples, etc.
 
 
@@ -1335,9 +1347,6 @@ bool samplerEngineUnitTestFileIO()
   ok &= se2.isInSameStateAs(se);
   se2.saveToSFZ("tmp2.sfz");                        // For manual inspection 
   //ok &= rsAreFilesEqual("tmp.sfz", "tmp2.sfz");   // ToDo: write this function
-  // FAILS! 
-  // -the signalProcessors array of the region in se2 is not the same as in se
-  // i think, in loadFromSFZ, we must make sure to add the appropriate dsp-types to the array
 
   // Test equalizer opcodes:
 

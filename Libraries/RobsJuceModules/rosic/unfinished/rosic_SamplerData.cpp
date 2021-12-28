@@ -32,10 +32,10 @@ void rsSamplerData::OrganizationLevel::ensureProcessorPresent(Opcode opcodeType,
     // from the rest. We need it among the types for consistency, though.
 
   // Insert however many processors of the required kind are missing to the end of the chain:
-  int count   = (int)rsCount(signalProcessors, dspType); // rename to numPresent
-  int missing = howMany - count;                         // rename howMany to numRequired
+  int count   = (int)rsCount(dspTypes, dspType);   // rename to numPresent
+  int missing = howMany - count;                   // rename howMany to numRequired
   for(int i = 0; i < missing; i++)
-    signalProcessors.push_back(dspType);
+    dspTypes.push_back(dspType);
 }
 
 void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
@@ -63,15 +63,11 @@ void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
     // The order in which the processors appear in the chain should reflect the order in which 
     // their opcodes appear in the sfz (or, if setup is done programmatically, the order in which
     // the opcodes were added). The first opcode applying to a particular kind of processor 
-    // counts. For example, if the opcodes are added in the order FilterCutoff, DistDrive,
-    // FilterResonance, the filter appears before the waveshaper in the DSP chain...maybe with 
-    // some exceptions for opcodes that apply to processors that must be at fixed positions in the 
-    // chain such as the SamplePlayer. ...hmm...but what, if we want two processors of the same 
-    // kind? like filter1 -> waveshaper -> filter2. Maybe we could re-use the "index" member
-    // PlaybackSetting (which was originally supposed to indicate a midi controller for 
-    // control-change). But then, the sfz-parser would not only have to look for "cutoff" but also
-    // cutoff1, cutoff2, etc. and translate that into an appropriate PlaybackSetting, i.e. one
-    // with the index variable set. But that seems doable.
+    // counts. For example, if the opcodes are added in the order cutoff, dist_drive, resonance, 
+    // the filter appears before the waveshaper in the DSP chain...maybe with some exceptions for 
+    // opcodes that apply to processors that must be at fixed positions in the chain such as the 
+    // SamplePlayer. ...hmm...but what, if we want two processors of the same kind? like filter1 
+    // -> waveshaper -> filter2. -> document behavior in case of indexed DSPs
   }
 }
 
@@ -86,16 +82,18 @@ bool rsSamplerData::OrganizationLevel::removeSetting(Opcode type)
   }
   return wasRemoved;
   // We can't use size_t for i because the -1 would create an access violation when size() = 0
+  // Maybe it should remove the DSP if it was the last setting that applied to it?
 }
 
 void rsSamplerData::OrganizationLevel::copyDataFrom(const OrganizationLevel* lvl)
 {
   samplePath = lvl->samplePath;
   settings   = lvl->settings;
+  dspTypes   = lvl->dspTypes;
 
   // not sure, if the pointers should be copied - maybe not:
-  //custom = lvl->custom;
-  //parent = lvl->parent;
+  //custom = lvl->custom;  // this one may be, it's the pointer to the audio stream
+  //parent = lvl->parent;  // no, this one definitely not (i think)
 }
 
 float rsSamplerData::OrganizationLevel::getSettingValue(
@@ -143,7 +141,7 @@ void rsSamplerData::Region::copyDataFrom(const Region* src)
 bool rsSamplerData::Region::operator==(const rsSamplerData::Region& rhs) const
 {
   bool equal = settings == rhs.settings;
-  equal &= signalProcessors == rhs.signalProcessors;
+  equal &= dspTypes == rhs.dspTypes;
   equal &= loKey == rhs.loKey;
   equal &= hiKey == rhs.hiKey;
   equal &= loVel == rhs.loVel;
@@ -217,7 +215,7 @@ rsSamplerData::Region* rsSamplerData::Group::getRegion(int i) const
 bool rsSamplerData::Group::operator==(const rsSamplerData::Group& rhs) const
 {
   bool equal = settings == rhs.settings;
-  equal &= signalProcessors == rhs.signalProcessors;
+  equal &= dspTypes == rhs.dspTypes;
   equal &= regions.size() == rhs.regions.size();
   if(!equal) return false;
   for(size_t i = 0; i < regions.size(); i++)
@@ -248,7 +246,7 @@ void rsSamplerData::Instrument::clearGroups()
 bool rsSamplerData::Instrument::operator==(const rsSamplerData::Instrument& rhs) const
 {
   bool equal = settings == rhs.settings;
-  equal &= signalProcessors == rhs.signalProcessors;
+  equal &= dspTypes == rhs.dspTypes;
   equal &= groups.size() == rhs.groups.size();
   if(!equal) return false;
   for(size_t i = 0; i < groups.size(); i++)
@@ -311,8 +309,9 @@ rsReturnCode rsSamplerData::setGroupSetting(int gi, Opcode type, float value, in
     RAPT::rsError("Invalid group index");
     return rsReturnCode::invalidIndex;
   }
-
-  instrument.groups[gi]->settings.push_back(PlaybackSetting(type, value, index));
+  instrument.groups[gi]->setSetting(PlaybackSetting(type, value, index));
+  
+  //instrument.groups[gi]->settings.push_back(PlaybackSetting(type, value, index));
   // Preliminary. We need to figure out, if that setting already exists and if so, just change 
   // its value instead of pushing another value for the same parameter
 
@@ -332,7 +331,9 @@ rsReturnCode rsSamplerData::removeGroupSetting(int gi, Opcode type)
 
 rsReturnCode rsSamplerData::setInstrumentSetting(Opcode type, float value, int index)
 {
-  instrument.settings.push_back(PlaybackSetting(type, value, index));
+  instrument.setSetting(PlaybackSetting(type, value, index));
+
+  //instrument.settings.push_back(PlaybackSetting(type, value, index));
   // Preliminary. see above
 
   return rsReturnCode::success;
