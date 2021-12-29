@@ -221,6 +221,14 @@ public:
   // file(s) exactly failed to load. This is an information that may be eventually displayed to the
   // user on a GUI.
 
+  /** Sets the engine up according to a string representing the contents of an sfz file. It doesn't
+  matter whether or not such an sfz file actually exists. The function is mostly meant for unit
+  testing the sfz-parser with programmatically created sfz-data which doesn't necessarily have to
+  come from a file on disk. */
+  int setFromSFZ(const std::string& sfzFileContents);
+
+
+
   /** Sets the sample-rate, at which this engine should operate. This change will affect only
   RegionPlayer objects that were started after calling this function. It's supposed to be called in
   a suspended state anyway, not in the middle of the processing. */

@@ -15,7 +15,8 @@ enum rsReturnCode
   layerOverload  = -5,  //< Not enough free layers available (in e.g. new noteOn).
   notFound       = -6,  //< A region, group, sample or whatever was not found.
   fileLoadError  = -7,  //< A file could not be loaded (reasons: not found or failed alloc).
-  notImplemented = -8   //< Feature not yet implemented (relevant during development).
+  notImplemented = -8,  //< Feature not yet implemented (relevant during development).
+  failed         = -9   //< General failure report wihtout further specification
 };
 // todo: make it an enum class, maybe include also return codes for inquiry functions such as for
 // "unknown", etc. ...but maybe that's no good idea when we want to use it for functions which
@@ -591,7 +592,7 @@ public:
 
   /** Sets up this data object according to the given string which is supposed to represent the
   contents of an .sfz file. */
-  void setFromSFZ(const std::string& sfzFileContents);
+  rsReturnCode setFromSFZ(const std::string& sfzFileContents);
   // todo: return a return-code, including unknownOpcode, invalidValue, invalidIndex, ...
 
 
@@ -602,13 +603,9 @@ public:
   bool saveToSFZ(const char* path) const;
   // todo: return a return-code, including fileWriteError
 
-  /** Sets up this object according to a given .sfz file. Returns true when the file could be
-  found. ToDo: inform also about parsing success vs errors */
-  bool loadFromSFZ(const char* path);
-  // todo: 
-  // -it currently returns true when the file is found, even when it can't be parsed - that's not 
-  //  good -> return a return-code, including sfzFileNotFound, sampleFileNotFound
-  //
+  /** Sets up this object according to a given .sfz file.   */
+  rsReturnCode loadFromSFZ(const char* path);
+  // todo: document return values - should probably be one of: success, loadError, parseError
 
 
 
@@ -625,15 +622,6 @@ protected:
     const std::string& opcode, const std::string& value);
 
   static void copy(const rsSamplerData& src, rsSamplerData& dst);
-
-
-  // removed - is now a universally accessible singleton:
-  //SfzCodeBook* sfzTranslator = nullptr;
-  //const SfzCodeBook& sfzTranslator;
-  // ToDo: Require such a reference to be passed to the constructor. The object should be owned
-  // by the SamplerEngine. Maybe use a pointer.
-  // ....hmmm...not sure if it's a good idea to have this pointer here - we would have to pass it
-  // through to all sorts of embedded objects. Maybe a singleton is better suited for this
 
 };
 

@@ -4453,6 +4453,9 @@
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_ModalSynth.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_MusiciansFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_NewSynth.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -4466,6 +4469,12 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerEngine.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerProcessors.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SfzCodeBook.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.cpp">
@@ -6082,11 +6091,14 @@
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_ModalFilterBank.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_ModalFilters.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_ModalSynth.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_MusiciansFilter.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_NewSynth.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_Polyphony.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_QuadSource.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerData.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerEngine.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SamplerProcessors.h"/>
+    <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\unfinished\rosic_SfzCodeBook.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosicOld.h"/>
     <ClInclude Include="..\..\..\..\..\Libraries\RobsJuceModules\rosic\rosic.h"/>
     <ClInclude Include="..\..\JuceLibraryCode\AppConfig.h"/>

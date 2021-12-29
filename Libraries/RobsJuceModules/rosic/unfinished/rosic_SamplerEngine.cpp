@@ -264,10 +264,20 @@ int rsSamplerEngine::loadFromSFZ(const char* path, bool pathIsAbsolute)
 {
   std::string absPath = getAbsolutePath(path, pathIsAbsolute);
   rsSamplerData newSfz;
-  bool wasLoaded = newSfz.loadFromSFZ(absPath.c_str());
-  if(!wasLoaded) {
+  rsReturnCode rc = newSfz.loadFromSFZ(absPath.c_str());
+  if(rc != rsReturnCode::success) {
     clearInstrument();
-    return rsReturnCode::fileLoadError; }
+    return rc; }
+  return setupFromSFZ(newSfz);
+}
+
+int rsSamplerEngine::setFromSFZ(const std::string& sfzFileContents)
+{
+  rsSamplerData newSfz;
+  rsReturnCode rc = newSfz.setFromSFZ(sfzFileContents);
+  if(rc != rsReturnCode::success) {
+    clearInstrument();
+    return rc; }
   return setupFromSFZ(newSfz);
 }
 
@@ -1390,7 +1400,6 @@ void rsSamplerEngine2::GroupPlayer::removeRegionPlayer(RegionPlayer* player)
 /*
 
 Bugs:
--when loading a preset, the dspTypeChain does not seem to be updated correctly
 -when loading a new instrument while a region is playing, it crashes
 -group volume seems to work now, but instrument volume seems to be ignored...or it even get muted 
  when having a top-level volume. might be an issue with the parser -> check sfz spec

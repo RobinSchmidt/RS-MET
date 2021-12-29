@@ -415,11 +415,11 @@ std::string rsSamplerData::getAsSFZ() const
   // at all 3 levels - i guess, it will use the most restrictive setting of all of them
 }
 
-void rsSamplerData::setFromSFZ(const std::string& str)
+rsReturnCode rsSamplerData::setFromSFZ(const std::string& str)
 {
   clearInstrument();
   if(str.empty())
-    return;
+    return rsReturnCode::failed;
   size_t endOfFile = std::numeric_limits<size_t>::max();
 
   // Extracts the subtring starting at startIndex up to (and excluding) the next newline '\n' 
@@ -543,7 +543,12 @@ void rsSamplerData::setFromSFZ(const std::string& str)
     int dummy = 0;
   }
 
+  return rsReturnCode::success;
+
   // ToDo: 
+  // -There are actually more points of failure which we may have to report. we need to report some
+  //  sort of "parseError" or something - maybe we could be more specific abotu the kind of parse
+  //  error
   // -The general structure of the nested region is the similar to the enclosing group block 
   //  -> try to refactor to get rid of the duplication (maybe it can be implemented recursively)
   // -Maybe use string_view for the extracted substrings to avoid copying the data:
@@ -557,7 +562,7 @@ bool rsSamplerData::saveToSFZ(const char* path) const
 }
 // this has no safeguards against overwriting an existing file!
 
-bool rsSamplerData::loadFromSFZ(const char* path)
+rsReturnCode rsSamplerData::loadFromSFZ(const char* path)
 {
   // just for debug, to figure out, in which directory the mac expects the sfz file:
   //rsWriteStringToFile("TestFile.sfz", "blablabla");
@@ -567,9 +572,11 @@ bool rsSamplerData::loadFromSFZ(const char* path)
   if(c_str)
   {
     std::string sfz(c_str);
-    setFromSFZ(sfz);
+    rsReturnCode rc = setFromSFZ(sfz);
     free(c_str);
-    return true;
+    return rc;
+
+    //return true;
     // ToDo:
     // Actually, setFromSFZ could also go wrong. This would indicate that the file loading 
     // succeeded but the content of the file could not be parsed (i.e. was malformed or we have a
@@ -579,7 +586,7 @@ bool rsSamplerData::loadFromSFZ(const char* path)
     // success, fileLoadError, sfzParseError
   }
   else
-    return false;
+    return rsReturnCode::fileLoadError;
 
   // This is clearly not elegant. Get rid of the intermediate c-string!
 }

@@ -337,5 +337,13 @@ ToDo:
  Maybe we need a constraint that the left number (source node) must always be less than the right 
  number (target node). This will avoid loops and presumably make parsing easier. Maybe the 
  restriction can be lifted later...
+-We actually already need a similar syntax to specify the wiring of the modulations. Maybe 
+ something like lfo2_to_eq5_freq, eg2_to_cutoff3, etc. ...so, maybe for the DSPs, we should have 
+ one opcode per wire instead of specifying the complete wiring in a single opcode? Maybe something
+ like in_to_fil1=1, fil1_to_fil2=1, fil2_to_out=1 specifies the chain in -> fil1 -> fil2 -> out and 
+ that wiring is implicitly assumed if nothing else is said?
+-Test the computational load incurred by the on-demand assembling of the DSP chain. Maybe 
+ pre-assemble the chains for all notes, if it turns out to be a performance problem. That would 
+ increase the RAM usage beause we would have to keep around all those pre-built DSP chains.
 
 */

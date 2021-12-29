@@ -314,7 +314,13 @@ void SamplerEditor::createWidgets()
 
 /*
 Bugs:
--on Mac, the colors of ToolChain are wrong - seems like red and blue are swapped or something?
+-some old patches now trigger "unknown opcode" error
+ -> create a minimal patch that shows that behavior -> done: Test1.sfz
+    it seems like whenever we have two whitespace characters after an opcode, the parser fails
+ -> try to replicate it in a unit test
+ -> fix it!
+-setting bandpass reso doesn't work
+-setting resonance to 0 triggers assert
 -when switching the preset while holding a note, it crashes (at least on mac)
  -> maybe we need to acquire the lock in setStateFromXml (done -> needs tests)
 -it seems, sometimes the noteOff is not received or handled properly - the layer doesn't 
