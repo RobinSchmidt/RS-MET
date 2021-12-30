@@ -415,12 +415,17 @@ std::string rsSamplerData::getAsSFZ() const
   // at all 3 levels - i guess, it will use the most restrictive setting of all of them
 }
 
-rsReturnCode rsSamplerData::setFromSFZ(const std::string& str)
+rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn)
 {
   clearInstrument();
-  if(str.empty())
+  if(strIn.empty())
     return rsReturnCode::failed;
   size_t endOfFile = std::numeric_limits<size_t>::max();
+
+  // Pre-process the string to make parsing easier: replace newlines with whitespaces and then 
+  // replace sequences of multiple whitespaces with a single whitespace:
+  std::string str = strIn;  // preliminary
+  // ...
 
   // Extracts the subtring starting at startIndex up to (and excluding) the next newline '\n' 
   // charcater. If there is no '\n', it will return the string from startIndex up to its end:
@@ -468,6 +473,11 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& str)
         break;
       setupSetting(lvl, token);                 // set a setting from this token
       start += token.length() + 1;
+      // This may be wrong if there are multiple spaces and/or newlines between the tokens
+      // one possible solution: pre-process the sfz-sring to replace all newlines with spaces and
+      // then replace all multi-paces with single spaces
+
+
       //if(start >= str.length()) break;          // may be superfluous?
     }
   };

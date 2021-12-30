@@ -1455,51 +1455,38 @@ bool samplerParserTest()
   // "sample=Sin440Hz.wav", "volume=35", "pan=79". 
 
 
-  sfzStr = "<group>\n<region>sample=Sin440Hz.wav\n<region>sample=Cos440Hz.wav";
+  sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35   pan=79";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // The prolem seems to occur only in the last region
-  // groupDef and regionDef are already wrong. bot seem to bite off one character at the end
-
-  sfzStr = "<group>\n<region>sample=Sin440Hz.wav";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // Last token is "sample=Sin440Hz.w"
-
-  sfzStr = "<group>\n<region>\nsample=Sin440Hz.wav";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // Last token is "\nsample=Sin440Hz.w"
-
-  sfzStr = "<group>\n<region>sample=Sin440Hz.wav pan=79";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // Last token is "pan="
-
-  sfzStr = "<group>\n<region>sample=Sin440Hz.wav volume=35 pan=79";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // Last token is "pan="
-
-  sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 pan=79";
-  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // Last token is "pan="
-  // the "str" in setupLevel  already has the final characters cut off
+  // thinks that there the is a last opcode "79"
 
   sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35  pan=79";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // Last token is "pan="
+  // thinks that there the is a last opcode "9"
 
+  sfzStr = "<group>\n<region>sample=Sin440Hz.wav\n<region>sample=Cos440Hz.wav";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
+  sfzStr = "<group>\n<region>sample=Sin440Hz.wav";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
+  sfzStr = "<group>\n<region>\nsample=Sin440Hz.wav";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
+  sfzStr = "<group>\n<region>sample=Sin440Hz.wav pan=79";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
+  sfzStr = "<group>\n<region>sample=Sin440Hz.wav volume=35 pan=79";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
+  sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 pan=79";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   sfzStr = "<group>\n\<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 \n";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // works
-
   sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79  ";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // works
-
   sfzStr = "<group>\n\<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79\n";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // Last token is "pan=7" ...the 9 is missed
-
   sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 ";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // Last token is "pan=7" ...the 9 is missed
+  // todo: make a helper function to turn these into one-liners
+
+
+
 
 
   // ToDo: check, if this happens for all regions or onyl the last
