@@ -447,10 +447,9 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn)
   rsReplaceCharacter(str, '\n', ' ');
   rsRemoveRepeats(str, ' ');
 
-  // Extracts the subtring starting at startIndex up to (and excluding) the next newline '\n' 
-  // charcater. If there is no '\n', it will return the string from startIndex up to its end:
-  //std::string sep(" \n");  // allowed seperator characters - old
-  std::string sep(" ");  // allowed seperator characters - new
+  // Extracts the subtring starting at startIndex up to (and excluding) the next separator ' ' 
+  // charcater. If there is no ' ', it will return the string from startIndex up to its end:
+  std::string sep(" ");
   auto getToken = [&](const std::string& str, size_t startIndex)
   {
     int start  = (int)startIndex;
@@ -468,20 +467,11 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn)
     size_t splitIndex = str.find('=', 0);
     std::string opcode = str.substr(0, splitIndex);
     std::string value  = str.substr(splitIndex+1, str.length() - splitIndex - 1);
-
     if(opcode == "sample") {     // needs to be treated in a special way
       lvl->setSamplePath(value);
-      return;
-    }
-
+      return;  }
     PlaybackSetting ps = getSettingFromString(opcode, value);
     lvl->setSetting(ps);
-    //lvl->addSetting(ps); 
-    // The difference between setSetting and addSetting is that setSetting first scans the array
-    // of settings to figure out, if such a setting is already present and if so overwrites it
-    // whereas addSetting just appends the setting no matter what. Clearly the latter is faster but
-    // the former is more fool-proof aginst badly written sfz files. I'm not yet sure, which 
-    // version should be used...we'll see...
   };
 
   // Sets up the given level according to the given string which is supposed to contain one setting
@@ -496,23 +486,14 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn)
         break;
       setupSetting(lvl, token);                 // set a setting from this token
       start += token.length() + 1;
-      // This may be wrong if there are multiple spaces and/or newlines between the tokens
-      // one possible solution: pre-process the sfz-sring to replace all newlines with spaces and
-      // then replace all multi-paces with single spaces
-
-
       //if(start >= str.length()) break;          // may be superfluous?
     }
   };
 
-
-  //std::string group  = "<group>\n";   // not sure, whether we should include the \n
-  //std::string region = "<region>\n";  // ..probably not
   std::string group  = "<group>";
   std::string region = "<region>";
   size_t Lg = group.length();
   size_t Lr = region.length();
-
   std::string tmp;                    // for extracted substrings (maybe use string_view)
 
   // Find start and end index in the string for the first group:
@@ -529,9 +510,7 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn)
   {
     if(i1 == endOfFile) {
       allGroupsDone = true;
-      //i1 = str.length() - 1;   // old
-      i1 = str.length();   // new, test
-    }
+      i1 = str.length(); }
 
     // Extract substring with group definition and add a new group to the instrument:
     std::string groupDef = str.substr(i0, i1-i0); // group definition (ToDo: use string_view)
@@ -557,38 +536,29 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn)
       j1 = groupDef.find(region, j0+1);
       if(j1 == endOfFile) {
         allRegionsDone = true;
-        //j1 = groupDef.length() - 1;  // old
-        j1 = groupDef.length();    // new, test
-      }
+        j1 = groupDef.length(); }
 
       // Extract substring with region definition and add a new region to the group:
-      std::string regionDef = groupDef.substr(j0, j1-j0); // region definition (ToDo: use string_view)
+      //std::string regionDef = groupDef.substr(j0, j1-j0); // region definition (ToDo: use string_view)
       int ri = g->addRegion();
       Region* r = g->getRegion(ri);
       r->setParent(g);
 
       // Set up region level settings:
-      int start  = j0+Lr;       // for debug
-      int length = j1 - start;  // diro
       tmp = groupDef.substr(j0+Lr, j1-j0-Lr);
       setupLevel(r, tmp);
-      int dummy = 0;
-      // We have a bug: sometimes, the string "tmp" is cut off one or two characters too early. I 
-      // think j0 and Lr are probably correct because they also determine the start of the substring
-      // which is correct. -> verify j1. maybe it's off by one or two in certain corner cases?
     }
 
     // Find start and end index of next group defintion:
     i0 = str.find(group, i1);      // start index of the group in the string
     i1 = str.find(group, i0+1);    // end index of the group in the string
-    int dummy = 0;
   }
 
   return rsReturnCode::success;
 
   // ToDo: 
   // -There are actually more points of failure which we may have to report. we need to report some
-  //  sort of "parseError" or something - maybe we could be more specific abotu the kind of parse
+  //  sort of "parseError" or something - maybe we could be more specific about the kind of parse
   //  error
   // -The general structure of the nested region is the similar to the enclosing group block 
   //  -> try to refactor to get rid of the duplication (maybe it can be implemented recursively)
