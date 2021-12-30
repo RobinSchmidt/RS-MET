@@ -496,7 +496,8 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& str)
   {
     if(i1 == endOfFile) {
       allGroupsDone = true;
-      i1 = str.length() - 1;
+      //i1 = str.length() - 1;   // old
+      i1 = str.length();   // new, test
     }
 
     // Extract substring with group definition and add a new group to the instrument:
@@ -523,7 +524,8 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& str)
       j1 = groupDef.find(region, j0+1);
       if(j1 == endOfFile) {
         allRegionsDone = true;
-        j1 = groupDef.length() - 1;
+        //j1 = groupDef.length() - 1;  // old
+        j1 = groupDef.length();    // new, test
       }
 
       // Extract substring with region definition and add a new region to the group:
@@ -533,9 +535,14 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& str)
       r->setParent(g);
 
       // Set up region level settings:
+      int start  = j0+Lr;       // for debug
+      int length = j1 - start;  // diro
       tmp = groupDef.substr(j0+Lr, j1-j0-Lr);
       setupLevel(r, tmp);
       int dummy = 0;
+      // We have a bug: sometimes, the string "tmp" is cut off one or two characters too early. I 
+      // think j0 and Lr are probably correct because they also determine the start of the substring
+      // which is correct. -> verify j1. maybe it's off by one or two in certain corner cases?
     }
 
     // Find start and end index of next group defintion:
