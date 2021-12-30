@@ -1413,7 +1413,9 @@ bool samplerEngineUnitTestFileIO()
 
 bool samplerParserTest()
 {
-  // Tests the sfz parser...tbc...
+  // Tests the sfz parser by manually creating some sfz-strings and throwing them at the sampler
+  // engine. We deliberately introduce some potential stumbling blocks such as repititions of 
+  // seperator characters, etc.
 
   using SE  = rosic::Sampler::rsSamplerEngineTest;
   using RC  = rosic::Sampler::rsReturnCode;
@@ -1449,20 +1451,11 @@ bool samplerParserTest()
   std::string sfzStr;
   SE se2(maxLayers);
 
-
-  // Try to trigger the error with a small patch. Look in the debugger at the token variable in
-  // setupLevel in rsSamplerData::setFromSFZ. It should take on the values:
-  // "sample=Sin440Hz.wav", "volume=35", "pan=79". 
-
-
+  // Some tests that previously have triggered asserts:
   sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35   pan=79";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // thinks that there the is a last opcode "79"
-
   sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35  pan=79";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // thinks that there the is a last opcode "9"
-
   sfzStr = "<group>\n<region>sample=Sin440Hz.wav\n<region>sample=Cos440Hz.wav";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   sfzStr = "<group>\n<region>sample=Sin440Hz.wav";
@@ -1483,18 +1476,7 @@ bool samplerParserTest()
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 ";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  // todo: make a helper function to turn these into one-liners
-
-
-
-
-
-  // ToDo: check, if this happens for all regions or onyl the last
-
-  // Looks like somehow the tokenizer cuts off the last two characters? why did we not yet discover 
-  // that? maybe these were mostly trailing zeros after a decimal point and not so important? Hmm
-  // ...no - not always
-
+  // todo: make a helper function to turn these into one-liners like test("<group>...");
 
   // Test reading an sfz-string where each opcode in on one line. This is the string that would be
   // generated and written into a file by a call to se.saveToSFZ("SinCos.sfz"); Then, a 2nd engine
@@ -1540,12 +1522,10 @@ pitch_keycenter=69.000000    \
 pan=100.000000";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   ok &= se2.isInSameStateAs(se);
-  // FAILS!!! SfzCodeBook::stringToOpcode, rsSamplerData::getSettingFromString receive a "0" as
-  // opcode string. Helper function setupLevel in rsSamplerData::setFromSFZ produces "0" as token.
-  // -> checl getToken and rosic::rsFindToken...hmmm the testTokenize unit test actually passes and
-  // it covers the case with multiple occurences of the separator
 
 
+  // ToDo:
+  // -introduce tests for sfz-strings containing comments
 
   rsAssert(ok);
   return ok;

@@ -449,7 +449,8 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn)
 
   // Extracts the subtring starting at startIndex up to (and excluding) the next newline '\n' 
   // charcater. If there is no '\n', it will return the string from startIndex up to its end:
-  std::string sep(" \n");  // allowed seperator characters
+  //std::string sep(" \n");  // allowed seperator characters - old
+  std::string sep(" ");  // allowed seperator characters - new
   auto getToken = [&](const std::string& str, size_t startIndex)
   {
     int start  = (int)startIndex;
@@ -457,7 +458,9 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn)
     rosic::rsFindToken(str, sep, &start, &length);
     return str.substr(start, length);
   };
-  // todo: check, if it works with arbitrary repititions of the separator characters
+  // todo: maybe use a simpler implementation that uses only one single seperator character and
+  // assumes that it occurs only once - due to our new pre-processing stage for the string, we
+  // can ensure this
 
   // Sets up one setting in lvl given in the format "opcode=value":
   auto setupSetting = [&](OrganizationLevel* lvl, const std::string& str)
