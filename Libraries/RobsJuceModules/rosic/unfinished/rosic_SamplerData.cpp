@@ -432,6 +432,7 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& str)
     rosic::rsFindToken(str, sep, &start, &length);
     return str.substr(start, length);
   };
+  // todo: check, if it works with arbitrary repititions of the separator characters
 
   // Sets up one setting in lvl given in the format "opcode=value":
   auto setupSetting = [&](OrganizationLevel* lvl, const std::string& str)

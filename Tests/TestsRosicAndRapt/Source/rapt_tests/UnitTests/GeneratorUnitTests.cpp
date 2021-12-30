@@ -1446,11 +1446,48 @@ bool samplerParserTest()
   rc = se.setRegionSetting(0, 1, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 1, PST::Pan, +100.f);          ok &= rc == RC::success;
 
+  std::string sfzStr;
+  SE se2(maxLayers);
+
+
+  // Try to trigger the error with a small patch. Look in the debugger at the token variable in
+  // setupLevel in rsSamplerData::setFromSFZ. It should take on the values:
+  // "sample=Sin440Hz.wav", "volume=35", "pan=79". 
+  sfzStr = "<group>\n\<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 \n";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
+
+  sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79  ";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
+
+  sfzStr = "\
+<group>\n\
+<region> \
+sample=Sin440Hz.wav \
+volume=35 \
+cutoff=1234 \
+pan=79 ";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
+  // Last token is "pan=7" ...the 9 is missed
+
+  sfzStr = "\
+<group>\n\
+<region> \
+sample=Sin440Hz.wav \
+volume=35  \
+pan=79";
+  rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
+  // Last token is "pan="
+
+  // Looks like somehow the tokenizer cuts off the last two characters? why did we not yet discover 
+  // that? maybe these were mostly trailing zeros after a decimal point and not so important? Hmm
+  // ...no - not always
+
+
   // Test reading an sfz-string where each opcode in on one line. This is the string that would be
   // generated and written into a file by a call to se.saveToSFZ("SinCos.sfz"); Then, a 2nd engine
   // tries to set itself up according to sfzStr. If all works as it should, se2 should aftwards be
   // in the same state as se:
-  std::string sfzStr = "\
+  sfzStr = "\
 <group>\n\
 <region>\n\
 sample=Sin440Hz.wav\n\
@@ -1460,7 +1497,6 @@ pan=-100.000000\n\
 sample=Cos440Hz.wav\n\
 pitch_keycenter=69.000000\n\
 pan=100.000000";
-  SE se2(maxLayers);
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   ok &= se2.isInSameStateAs(se);
 
@@ -1491,7 +1527,10 @@ pitch_keycenter=69.000000    \
 pan=100.000000";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   ok &= se2.isInSameStateAs(se);
-  // FAILS!!!
+  // FAILS!!! SfzCodeBook::stringToOpcode, rsSamplerData::getSettingFromString receive a "0" as
+  // opcode string. Helper function setupLevel in rsSamplerData::setFromSFZ produces "0" as token.
+  // -> checl getToken and rosic::rsFindToken...hmmm the testTokenize unit test actually passes and
+  // it covers the case with multiple occurences of the separator
 
 
 
