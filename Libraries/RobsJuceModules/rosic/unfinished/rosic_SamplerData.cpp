@@ -415,6 +415,25 @@ std::string rsSamplerData::getAsSFZ() const
   // at all 3 levels - i guess, it will use the most restrictive setting of all of them
 }
 
+void rsReplaceCharacter(std::string& str, char oldChar, char newChar)
+{
+  for(size_t i = 0; i < str.size(); i++) {
+    if(str[i] == oldChar)
+      str[i] = newChar; }
+}
+void rsRemoveRepeats(std::string& s, char c)
+{
+  if(s.size() < 2)
+    return;
+  size_t i = 0, j = 1;                  // i: read index, j: write index
+  for(i = 1; i < s.size(); i++) {
+    if(!(s[i] == c && s[i-1] == c)) {
+      s[j] = s[i]; 
+      j++; }}
+  s.resize(j);
+}
+// move into rosic, write unit test
+
 rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn)
 {
   clearInstrument();
@@ -424,8 +443,9 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn)
 
   // Pre-process the string to make parsing easier: replace newlines with whitespaces and then 
   // replace sequences of multiple whitespaces with a single whitespace:
-  std::string str = strIn;  // preliminary
-  // ...
+  std::string str = strIn;
+  rsReplaceCharacter(str, '\n', ' ');
+  rsRemoveRepeats(str, ' ');
 
   // Extracts the subtring starting at startIndex up to (and excluding) the next newline '\n' 
   // charcater. If there is no '\n', it will return the string from startIndex up to its end:
