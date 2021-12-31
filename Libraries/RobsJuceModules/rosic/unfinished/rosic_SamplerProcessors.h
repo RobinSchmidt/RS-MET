@@ -330,6 +330,60 @@ protected:
 
 //=================================================================================================
 
+/** Envelope generator for the sampler. */
+
+class rsSamplerEnvGen
+{
+
+public:
+
+  /** Time parameters are in seconds. */
+  void setup(float delay, float start, float attack, float hold, float decay, float sustain,
+    float release, float sampleRate);
+
+  float getSample();
+
+  //void processBlock(float* samples, int numSamples); 
+  void reset() { sampleCount = 0; out = 0.f; }
+
+protected:
+
+  RAPT::rsUint32 sampleCount;                          // sample counter
+  RAPT::rsUint32 delay, attack, hold, decay, release;  // time parameters in samples
+  float start, sustain;                                // level parameters 
+  float out;
+
+};
+// -What value is the env supposed to produce during the delay stage? the start value or zero?
+
+//=================================================================================================
+
+
+/** Envelope generator for the sampler. */
+
+class rsSamplerLowFreqOsc
+{
+
+public:
+
+  void setup(float freq, float delay, float fade, float sampleRate);
+
+
+protected:
+
+  float pos;                   // normalized position in the wave in 0..1
+  float inc;                   // per sample increment for pos
+  RAPT::rsUint32 delay, fade;  // delay and fade-in time in samples
+
+};
+// -Maybe we can get rid of delay by initializing pos to -delay and the implementation of "fade"
+//  returns zero for pos < 0
+// -Introduce a start-phase variable
+// -Maybe have a function pointer to a function that produces the actual waveform
+
+
+//=================================================================================================
+
 /** Class where all the boilerplate for making DSP processors available in the sampler goes. */
 
 class rsSamplerProcessors

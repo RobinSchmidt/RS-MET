@@ -269,6 +269,11 @@ int rsSamplerEngine::loadFromSFZ(const char* path, bool pathIsAbsolute)
     clearInstrument();
     return rc; }
   return setupFromSFZ(newSfz);
+
+  // Maybe this function should load the file and then call setFromSFZ instead of using 
+  // newSfz.loadFromSFZ etc. There's a lot of code duplication between this function and 
+  // setFromSFZ. Doing it the other way may require use to duplicate some code from 
+  // newSfz.loadFromSFZ but maybe that's the lesser evil.
 }
 
 int rsSamplerEngine::setFromSFZ(const std::string& sfzFileContents)

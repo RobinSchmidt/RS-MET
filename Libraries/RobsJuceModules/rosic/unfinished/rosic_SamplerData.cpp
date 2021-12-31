@@ -539,7 +539,7 @@ rsReturnCode rsSamplerData::setFromSFZ(const std::string& strIn)
         j1 = groupDef.length(); }
 
       // Extract substring with region definition and add a new region to the group:
-      //std::string regionDef = groupDef.substr(j0, j1-j0); // region definition (ToDo: use string_view)
+      //std::string regionDef = groupDef.substr(j0, j1-j0); // for debug?
       int ri = g->addRegion();
       Region* r = g->getRegion(ri);
       r->setParent(g);

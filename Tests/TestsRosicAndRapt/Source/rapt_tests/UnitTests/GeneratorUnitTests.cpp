@@ -2112,7 +2112,6 @@ bool samplerEqualizerTest()
   return ok;
 }
 
-
 bool samplerProcessorsTest()
 {
   bool ok = true;
@@ -2122,6 +2121,8 @@ bool samplerProcessorsTest()
   int size;
   size = sizeof(rosic::Sampler::rsSamplerFilter);       // 64
   size = sizeof(rosic::Sampler::rsSamplerWaveShaper);   // 24
+  size = sizeof(rosic::Sampler::rsSamplerEnvGen);       // 36
+  size = sizeof(rosic::Sampler::rsSamplerLowFreqOsc);   // 16
   //size = sizeof(SP::Filter);
   //size = sizeof(SP::WaveShaper);
   // later move this into a (yet to be written) benchmark testbed
@@ -2140,12 +2141,30 @@ bool samplerProcessorsTest()
   return ok;
 }
 
+bool samplerModulationsTest()
+{
+  // ToDo:
+  // -Set up a sampler engine with a sample that is just DC and apply an amplitude envelope
+  // -Envelopes in sfz have the parameters: delay, start, attack, hold, decay, sustain, release
+  // -Maybe implement a linear shape first.
+  // -Figure out what shapes sfz+ produces.
+  // -Maybe we should also define shape parameters for the segments, i.e. attack_shape, 
+  //  decay_shape, release_shape
+
+  bool ok = true;
+
+
+
+  rsAssert(ok);
+  return ok;
+}
+
 bool samplerEngineUnitTest()
 {
   bool ok = true;
 
   // The new test that is currently under construction:
-  ok &= samplerParserTest();
+  ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataUnitTest();
@@ -2153,6 +2172,7 @@ bool samplerEngineUnitTest()
   ok &= samplerEngineUnitTestFileIO();
   ok &= samplerParserTest();            // uses some files created by "..FileIO" -> order matters!
   ok &= samplerProcessorsTest();
+  ok &= samplerModulationsTest();
   ok &= samplerEngine2UnitTest(); 
 
   // ToDo:
