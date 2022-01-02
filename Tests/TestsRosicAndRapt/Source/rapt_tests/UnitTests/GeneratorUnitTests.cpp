@@ -1761,18 +1761,41 @@ bool samplerWaveShaperTest()
   se.setRegionSetting(0, 0, PST::DistShape, float(shape));
   se.setRegionSetting(0, 0, PST::DistDrive, drive);
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
-  rsAssert(ok);
+
+  // Set up one region within one group and add a waveshaper to the group. When two notes are being 
+  // played, the waveshaper should be applied to the sum of both notes:
+  se.clearInstrument();  // clears the sample pool as well
+  se.addSampleToPool(&pSmp, N, 1, fs, "Sine440");
+  se.addGroup();   ok &= se.getNumGroups()   == 1;
+  se.addRegion(0); ok &= se.getNumRegions(0) == 1;
+  se.setRegionSample(0, 0, 0);
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
+  se.setGroupSetting(0, PST::DistShape, float(shape));
+  se.setGroupSetting(0, PST::DistDrive, drive);
+
+  // Create the new target signal: we play two notes - one at the root frequency and one at 1.5 
+  // times the root frequency (i.e. a "power chord"):
+  for(int n = 0; n < N; n++)
+    tgt[n] = sin440[n];
+  //rsPlotVector(tgt);
+  for(int n = 0; n < N; n++) {
+    float m = 1.5 * n;
+    if(m >= N) break;  // leads to a somewhat ugly cut-off of the note
+    tgt[n] += getSampleAt(sin440, m); }
+  //rsPlotVector(tgt);
+  for(int n = 0; n < N; n++)
+    tgt[n] = tanh(drive * tgt[n]);
+  rsPlotVector(tgt);
+  // hmm...maybe we should use a 12-TET fifth rather than a perfcet one - or just use an octave
+  // below as 2nd tone
+
+
   // ToDo:
   // -Try different shapes, use different sets of parameters, use DC, postGain, etc.
   // Cosmetics:
   // -Maybe drag out RegionPlayer from rsSamplerEngine
   // -maybe let testSamplerNote take a plotMode parameter which can be: 0: never plot, 1: always 
   //  plot, 2: plot when failed
-  // -make a class SignalProcessorPool, let the engine maintain such a pool as member 
-  //  -this class should have a function grabProcessor(SignalProcessorType type) that returns
-  //   a pointer to a processor of the desired type or a nullptr if no such processor is available
-  //   anymore...or maybe a pointer to a dummy-processor?
-
   // -would be nice, if we could wrap the namespace Sampler around the includes in rosic.h/cpp
   //  but for that, we first need to move all the namespace rosic stuff there, too
   // -maybe try to do this task with a python script, see
@@ -1783,11 +1806,11 @@ bool samplerWaveShaperTest()
   //  https://newbedev.com/how-to-iterate-over-files-in-a-given-directory
   //  https://www.codegrepper.com/code-examples/python/loop+through+all+files+in+a+directory+python
 
-
   // ToDo: 
   // -Figure out, if there is already an existing extension to sfz that defines opcodes for 
   //  waveshaping. If so, use these. Otherwise define opcodes: dist_drive, dist_shape, dist_gain
-  //  ..or maybe distort_ or distortion_
+  //  ..or maybe distort_ or distortion_ ...there is something like eg2drive_shape in sfz2...not 
+  //  sure what that is
 
   rsAssert(ok);
   return ok;

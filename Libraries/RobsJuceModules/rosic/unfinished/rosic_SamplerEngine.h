@@ -114,8 +114,14 @@ public:
   /** Sets the maximum number of layers/regions that can be played simultaneously. */
   virtual void setMaxNumLayers(int newMax);
 
-  /** Clears the sfz instrument definition and the samplePool */
+  /** Clears the sfz instrument definition and the samplePool. */
   void clearInstrument();
+
+  void clearAllSfzSettings() { sfz.clearAllSettings(); }
+  // what's the differece to clearInstrument? seems like clearInstrument() also clears the 
+  // samplePool? -> document this. maybe try to get rid of one of them - it's a bit confusing to 
+  // have both
+
 
   /** Adds a new sample to our pool of samples. After the sample has been added, regions can be
   defined that make use of it. */
@@ -186,10 +192,6 @@ public:
   }
 
 
-  void clearAllSfzSettings()
-  {
-    sfz.clearAllSettings();
-  }
 
 
 

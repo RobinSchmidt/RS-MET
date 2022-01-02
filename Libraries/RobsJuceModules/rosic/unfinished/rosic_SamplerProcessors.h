@@ -351,15 +351,14 @@ protected:
   RAPT::rsUint32 sampleCount;                          // sample counter
   RAPT::rsUint32 delay, attack, hold, decay, release;  // time parameters in samples
   float start, sustain;                                // level parameters 
-  float out;
+  float out;                                           // output signal (stored between calls)
 
 };
 // -What value is the env supposed to produce during the delay stage? the start value or zero?
 
 //=================================================================================================
 
-
-/** Envelope generator for the sampler. */
+/** Low frequency oscillator for the sampler. */
 
 class rsSamplerLowFreqOsc
 {
