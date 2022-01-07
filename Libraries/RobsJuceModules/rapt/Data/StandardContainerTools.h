@@ -122,7 +122,11 @@ std::vector<TDst> rsConvert(const std::vector<TSrc>& x, TDst dummy)
   return y;
 }
 // couldn't we get rid of the dummy by requiring the caller to call it like
-// std::vector<float> floatVec = rsConvert<float>(doubleVec);
+//   std::vector<float> floatVec = rsConvert<float>(doubleVec);
+// That would be more convenient but i have not yet figured out what the right syntax would have to
+// be to write such a convert function (or if it's possible at all). The dummy is ugly.
+
+
 
 /** Copies data from src to dst, where dst will be resized if necessarry. */
 template<class T>

@@ -1773,21 +1773,54 @@ bool samplerWaveShaperTest()
   se.setGroupSetting(0, PST::DistShape, float(shape));
   se.setGroupSetting(0, PST::DistDrive, drive);
 
-  // Create the new target signal: we play two notes - one at the root frequency and one at 1.5 
-  // times the root frequency (i.e. a "power chord"):
+  // The class rsSamplerEngine should treat the group settings as fallback for when there is no
+  // region setting and the DSP should be applied to each region separately:
+  for(int n = 0; n < N; n++) 
+    tgt[n] += tanh(drive * getSampleAt(sin440, 0.5f*n));
+  //rsPlotVector(tgt);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true); 
+  // Triggers error "No processor available for DSP opcode" RegionPlayer::setupProcessorSetting. 
+  // This is not surprising because in RegionPlayer::buildProcessingChain, we are only taking the
+  // region's own DSPs into account. One way to fix it could be to include the group's dspTypes
+  // into the region's on load, maybe with some additional flag to indicate that the DSP came from
+  // the group settings. Or it could also be done in buildProcessingChain itself...but maybe that's
+  // not a good idea - it would require more computation in the realtime thread
+
+
+
+
+
+  /*
+  // Does not yet work - actually, we need to test it in both modes - in fallback mode, it should 
+  // just use the group setting for each region seperately - and unless we use 
+  // rsSamplerEngine2Test, is is supposed to happen anyway
+
+  // Create the new target signal: we play two notes - one at the root frequency and one at 0.5 
+  // times the root frequency (i.e. an octave lower):
   for(int n = 0; n < N; n++)
     tgt[n] = sin440[n];
   //rsPlotVector(tgt);
   for(int n = 0; n < N; n++) {
-    float m = 1.5 * n;
-    if(m >= N) break;  // leads to a somewhat ugly cut-off of the note
+    float m = 0.5 * n;
+    if(m >= N) break;  // needed if the factor is > 1...which currently isn't the case
     tgt[n] += getSampleAt(sin440, m); }
   //rsPlotVector(tgt);
   for(int n = 0; n < N; n++)
     tgt[n] = tanh(drive * tgt[n]);
-  rsPlotVector(tgt);
-  // hmm...maybe we should use a 12-TET fifth rather than a perfcet one - or just use an octave
-  // below as 2nd tone
+  //rsPlotVector(tgt);
+
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
+  //se.set
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 60, 64));  // triggers assert!
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 48, 64));
+  VecF outL(N), outR(N);
+  for(int n = 0; n < N; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  rsPlotVectors(tgt, outL);
+  */
+
+
 
 
   // ToDo:

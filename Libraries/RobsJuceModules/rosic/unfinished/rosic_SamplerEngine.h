@@ -396,6 +396,8 @@ protected:
 
   protected:
     std::vector<SignalProcessor*> processors;
+    // ahh! damn! We need to preallocate (i.e. call reserve) for this somewhere - maybe at patch 
+    // load
   };
 
   class ModulationConnection
@@ -682,6 +684,11 @@ protected:
 
   /** Sets up ourregionsForKey array according to our sfz member. */
   void setupRegionsForKey();
+
+  /** Pre-allocates the memory needed for the DSP objects (filters, equalizers, etc). It's virtual
+  so our subclass rsSamplerEngine2 can override, because it may have different requirement for how 
+  much to allocate and where because it has a different architecture of the DSP chain. */
+  virtual void preAllocateDspMemory();
 
 
   //-----------------------------------------------------------------------------------------------

@@ -219,6 +219,7 @@ int rsSamplerEngine::setupFromSFZ(const rsSamplerData& newSfz)
   sfz = newSfz;                       // replace old sfz instrument definition member with new
   int rc2 = setupAudioStreams();      // connect regions in new sfz with appropriate stream objects
   setupRegionsForKey();               // updates regionsForKey array
+  preAllocateDspMemory();             // allocates memory for the DSP objects, etc.
   if(rc1 >= 0 && rc2 == rsReturnCode::success)
     return rsReturnCode::success;
   else
@@ -751,6 +752,25 @@ void rsSamplerEngine::setupRegionsForKey()
       Region* r = g->getRegion(ri);
       for(uchar k = 0; k < numKeys; k++)
         addRegionForKey(k, r); }}
+}
+
+void rsSamplerEngine::preAllocateDspMemory()
+{
+  RAPT::rsWarning("rsSamplerEngine::preAllocateDspMemory still under construction");
+
+  // ToDo:
+  // -allocate "enough" DSP objects in our dspPool
+  // -allocate enough RegionPlayers in our playerPool
+  // -allocate enough memory for the RegionPlayer's arrays: 
+  //    std::vector<Modulator*> modulators;
+  //    std::vector<ModulationConnection*> modMatrix;
+  //    SignalProcessorChain dspChain;
+  // -to do this, we must make a judgement how much is "enough" - if it later turns out to be not 
+  //  enough, we may either not play back the voice or do the forbidden thing: allocate more memory
+  //  in the audio thread or find some other way to handle the situation. Maybe some strategy that
+  //  detects that we may soon run out of pre-allocated memory and firing up another thread to 
+  //  allocate us some more could work? But that wouldn't be totally foolproof either. We'll see...
+  //  ...see what hise, sfizz and linuxsampler do
 }
 
 //-------------------------------------------------------------------------------------------------
