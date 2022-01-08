@@ -1,4 +1,91 @@
 
+---------------------------------------------------------------------------------------------------
+Some general guidelines:
+
+Make use of parallelism where meaningful - there are (et least) these 4 types to consider:
+-SIMD (single instruction multiple data)
+-instruction level parallelism
+-pipelining
+-Multi-threading
+
+-Avoid expensive calls:
+ -avoid memory de/allocations of heap memory (no-go on audio thread)
+  -prefer pre-allocation over dynamic growth whenever possible, i.e. use reserve or resize on 
+   std::vectors when final size (or an (upper bound like) approximation) is known upfront
+ -avoid mutex un/locking (no-go on audio thread - but i'm still guilty of doing it)
+ -replace calls to pow by calls to exp via a^x = e^(x*ln(a)) 
+ -use exp to compute tanh, sinh, cosh
+ -replace divisions by multiplications with the reciprocal
+ -replace arithmetic computations by but-twiddling
+ -replace runtime computations by compile-time computations (via constexpr or templates)
+ -compute sine/cosine in parallel, if possible, exploit restricted input ranges to reduce work in
+  argument reduction
+ -use polynomial or rational approximations, maybe in combination with Newton steps and/or 
+  bit-twiddling
+  
+-Avoid copying of data by:
+ -passing function arguments as const-references unless the type is a small primitive type - for 
+  templates, reckon with the worst case (think multi-precision numbers etc.)
+ -using move- instead of copy-semantics where possible
+ -multiple return statements and/or using move in return statements may prevent return value 
+  optimization (RVO)...why? https://www.youtube.com/watch?v=EovBkh9wDnM
+ -use emplace_back instead of push_back on vectors (in-place construction, no copy assignment)
+ -use perfect forwarding where possible https://www.modernescpp.com/index.php/perfect-forwarding,
+  https://en.cppreference.com/w/cpp/utility/forward
+
+-Avoid cache misses:
+ -what is used together at the same time should be stored closely together in memory
+ -in traversing multi-dimensional arrays (e.g. matrices), make sure the the fastest changing index
+  (i.e. the one in the innermost loop) has the smallest stride (typically 1) (for example, in 
+  images, let the outer loop run over the y-coordinate and the inner over the x-coordinate)
+ -reduce memory size of structures by: 
+  -avoiding padding by ordering member variables from large to small (i.e. double/pointer/int64/... 
+   before float/int32/... before bool/char/... etc.)
+  -sharing space using using unions or std::variant where it makes sense
+  -use bitsets to consolidate several booleans into one entity
+  -use double precision only when really needed
+
+-Avoid pipeline invalidation:
+ -avoid branches by:
+  -replacing branches by computing the result-values of both branches and forming a "linear 
+   interpolation" using the (type-casted) condition variable as blend-factor
+  -using formulas that can make use of built-in (or selfmade) branchless abs,min,max,sign
+ -make branches more predictable by:
+
+-Enable loop-unrolling and auto-vectorization by
+ -using (compile-time) constant size arrays, when possible
+ -align array/buffer start values to simd-vector sizes (is this needed?)
+ 
+-Enable instruction level parallelism
+ -avoid serial data dependencies (where the result of one computation is needed to start the next)
+
+-Choose the optimal container for the task at hand
+ -std::vector is often the best choice for small to medium sized problems even when the nature of 
+  the problem would suggest otherwise. For example, the theoretical advantages with regard to 
+  asymptotic complexity of std::list become practically relevant only at a much larger size than 
+  one might expect (like several thousands) -> always measure with realistic sizes
+ -for small to medium problem sizes, linear search may outperform binary search (probably due to 
+  cache locality) ...maybe use a dispatcher
+
+
+-Other stuff:
+ -Alignment: certain datatypes are more quickly accessed when their memory locations are aligned to
+  certain quantization grids (like 8 or 16 bytes)
+ -prefer comparisons against zero in conditionals
+
+ 
+
+Ideas from here: https://www.youtube.com/watch?v=NH1Tta7purM
+ -consolidate multiple rarely taken (e.g. error-handling) code-paths into a single one that may 
+  split further in a (non-inlined) function call (13:32)
+ -avoid virtual functions by 
+  -using templates instead (15:45)
+
+
+
+
+---------------------------------------------------------------------------------------------------
+Some resources:
 
 small buffer optimization in std::string
 https://shaharmike.com/cpp/std-string/
@@ -16,3 +103,6 @@ https://akrzemi1.wordpress.com/2014/04/14/common-optimizations/
 
 CppCon 2016: Chandler Carruth “High Performance Code 201: Hybrid Data Structures"
 https://www.youtube.com/watch?v=vElZc6zSIXM
+
+CppCon 2018: Alan Talbot “Moving Faster: Everyday efficiency in modern C++”
+https://www.youtube.com/watch?v=EovBkh9wDnM
