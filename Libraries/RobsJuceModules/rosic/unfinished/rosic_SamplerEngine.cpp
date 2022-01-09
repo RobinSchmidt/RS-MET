@@ -987,32 +987,46 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
   RAPT::rsAssert(dspChain.isEmpty(), "Someone has not cleaned up after finishing playback!");
   dspChain.clear(); // ...so we do it here. But this should be fixed elsewhere!
 
-  using DspType = DspType;
-  const std::vector<DspType>& dspTypeChain = region->getProcessingChain();
+  using DspType   = DspType;
+  using TypeChain = std::vector<DspType>;
 
-  // Factor this loop out into an internal helper function and call it 3 times for the 3 
-  // dspTypeChains of the region, it's enclosing group and instrument. But will this work as 
-  // intended or will it add the group DSPs on top of the region DSPs? Maybe we should use a
-  // dspChain.addIfNotAlreadyThere(dsp, index) function instead. Or: Before calling getProcessor(),
-  // we should figure out, whether ot not we actually need an additional DSP
-  for(int i = 0; i < (int)dspTypeChain.size(); i++) 
+  // But will this work as intended or will it add the group DSPs on top of the region DSPs? Nope!
+  // Maybe we should use a dspChain.addIfNotAlreadyThere(dsp, index) function instead. Or: Before 
+  // calling getProcessor(), we should figure out, whether ot not we actually need an additional 
+  // DSP
+  auto addDspsIfNeeded = [this](const TypeChain& dspTypeChain)
   {
-    DspType dspType = dspTypeChain[i];
-    SignalProcessor* dsp = getProcessor(dspType);
-    if(dsp)
+    for(int i = 0; i < (int)dspTypeChain.size(); i++)
     {
-      int index = 1;                    // Figure out the index because the default value may 
-      for(int j = i-1; j >= 0; j--) {   // depend on it
-        if(dspTypeChain[j] == dspType)
-          index++;  }
-      dsp->resetSettings(index);
-      dspChain.addProcessor(dsp);
+      DspType dspType = dspTypeChain[i];
+      SignalProcessor* dsp = getProcessor(dspType);
+      if(dsp)
+      {
+        int index = 1;                    // Figure out the index because the default value may 
+        for(int j = i-1; j >= 0; j--) {   // depend on it
+          if(dspTypeChain[j] == dspType)
+            index++;
+        }
+        dsp->resetSettings(index);
+        dspChain.addProcessor(dsp);
+      }
+      else {
+        dspChain.clear();
+        return false;
+      }
     }
-    else {
-      dspChain.clear();
-      return false; 
-    }
-  }
+    return true;
+  };
+
+
+  //const TypeChain& dspTypeChain = region->getProcessingChain();
+
+  bool ok;
+  ok &= addDspsIfNeeded(region->getProcessingChain()); 
+  if(!ok) 
+    return false;
+
+  // ...do the same for group and region DSPs...
 
 
   return true;
