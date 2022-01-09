@@ -938,7 +938,18 @@ protected:
 implemented as subclass of rsMatrixView and stores the actual matrix data in a std::vector. Copy-
 and move constructors and -assignment operators have been implemented in order to avoid
 unnecessary heap allocations in arithmetic expressions with matrices (return value copy
-elision). */
+elision). 
+
+The second template parameter allows client code to select the underlying storage container for the
+actual matrix data. It defaults to std::vector and if you want to use anything else, your 
+replacement needs to partially conform to the interface and implementation of std::vector. It needs
+to store the data in a contiguous memory area, it needs to have a resize() method...tbc... 
+
+ToDo: 
+-those member functions that use std::vector for parameters or return types should be changed 
+ to use the template parameter V instead
+
+*/
 
 template<class T, class V = std::vector<T>>
 class rsMatrix : public rsMatrixView<T>
@@ -1297,8 +1308,8 @@ public:
   // constructors and assignment. It's actually the number of *potential* heap-allocations, namely,
   // the number of calls to data.resize() which may or may not re-allocate memory.
   // ToDo: Try to get rid of this and implement the allocation test using a custom allocator or 
-  // maybe have a 2nd template argument TVec for the underlying vector datatype to hold the data 
-  // which defaults to std::vector. In the unit tests use a special rsLoggingVector for that which
+  // maybe have a 2nd template argument V for the underlying vector datatype to hold the data which
+  // defaults to std::vector (done). In the unit tests use a special rsLoggingVector for that which
   // is just a subclass of std::vector but overrides resize (and maybe others) and logs each call
   // to it. Being able to provide the data storgae vector as template argument could have other 
   // benefits as well - maybe the client wants to use another growth or allocation strategy - this
@@ -1320,7 +1331,7 @@ protected:
 
   /** \name Data */
 
-  std::vector<T> data;
+  V data;  // V must be a vector type similar to std::vector
 
 };
 
