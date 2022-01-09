@@ -325,26 +325,31 @@ void getSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel,
 // should we clear the outL/R arrays first? maybe not, if we want instruments to accumuluate 
 // their outputs in ToolChain
 
-bool testSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel, 
-  const std::vector<float>& targetL, const std::vector<float>& targetR, 
+bool testSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
+  const std::vector<float>& targetL, const std::vector<float>& targetR,
   float tol = 0.f, bool plot = false)
 {
-  using AT   = RAPT::rsArrayTools;
-  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
-  using EvTp = Ev::Type;
-
   int N = (int) targetL.size();
   rsAssert((int)targetR.size() == N);
   std::vector<float> outL(N), outR(N);
-
-  se->handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
   for(int n = 0; n < N; n++)
     se->processFrame(&outL[n], &outR[n]);
+  using AT   = RAPT::rsArrayTools;
   float errL = AT::maxDeviation(&outL[0], &targetL[0], N);
   float errR = AT::maxDeviation(&outR[0], &targetR[0], N);
   if(plot)
     rsPlotVectors(targetL, targetR, outL, outR);
   return errL <= tol && errR <= tol;
+}
+
+bool testSamplerNote(rosic::Sampler::rsSamplerEngine* se, float key, float vel, 
+  const std::vector<float>& targetL, const std::vector<float>& targetR, 
+  float tol = 0.f, bool plot = false)
+{
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
+  se->handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
+  return testSamplerOutput(se, targetL, targetR, tol, plot);
 };
 // maybe have a bool resetBefore that optionally resets the engine before playing...but maybe it's
 // better when the caller does the reset directly, if desired - it's not much longer but clearer
@@ -1777,11 +1782,12 @@ bool samplerWaveShaperTest()
   // region setting and the DSP should be applied to each region separately:
   for(int n = 0; n < N; n++) 
     tgt[n] += tanh(drive * getSampleAt(sin440, 0.5f*n));
-  rsPlotVector(tgt);
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
-  // still fails!
-
-
+  //rsPlotVector(tgt);
+  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
+  using EvTp = Ev::Type;
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13, true);
 
 
   /*
