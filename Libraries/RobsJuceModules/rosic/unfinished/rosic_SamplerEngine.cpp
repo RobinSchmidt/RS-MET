@@ -1025,7 +1025,11 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
       // Then, when we pass 4 (the array index), it should return 2 because array index 4 refers
       // to the 2nd equalizer in the desired sfz-effect chain, i.e. the equalizer that is 
       // controlled with opcodes eq2_gain, eq2_freq, eq2_bw. This kind of index-mapping is a bit 
-      // confusing and needs good documentation and unit-tests.
+      // confusing and needs good documentation and unit-tests. But TypeChain is actually not a 
+      // class but just a std::vector of DspType. Maybe make it a class..hmm...not sure if that's
+      // worth it. Maybe make a free helper function getSfzDspIndex(const TypeChain& c, int i).
+      // Could be a static method of SamplerData. Maybe use size_t: init index to 0 and start loop
+      // index j at i
 
       // Figure out, if we actually need to add another DSP to the chain. If not, there's nothing
       // more to do in this iteration:
@@ -1052,16 +1056,14 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
     // both cases, the dspChain is now in the required state so we can report success.
   };
 
-
-  //const TypeChain& dspTypeChain = region->getProcessingChain();
-
+  // Add all the required DSPs (This is ugly! Can we do this in a more elegant way?):
   bool ok;
-  ok &= addDspsIfNeeded(region->getProcessingChain()); 
-  if(!ok) 
-    return false;
-
-  // ...do the same for group and region DSPs...
-
+  ok = addDspsIfNeeded(region->getProcessingChain()); 
+  if(!ok) return false;
+  ok = addDspsIfNeeded(region->getGroup()->getProcessingChain());
+  if(!ok) return false;
+  ok = addDspsIfNeeded(region->getGroup()->getInstrument()->getProcessingChain()); 
+  if(!ok) return false;
 
   return true;
   // If false is returned, it means we do not have enough processors of the required types 

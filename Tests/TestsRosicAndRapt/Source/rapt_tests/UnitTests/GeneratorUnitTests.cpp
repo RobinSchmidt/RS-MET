@@ -1777,15 +1777,9 @@ bool samplerWaveShaperTest()
   // region setting and the DSP should be applied to each region separately:
   for(int n = 0; n < N; n++) 
     tgt[n] += tanh(drive * getSampleAt(sin440, 0.5f*n));
-  //rsPlotVector(tgt);
-  //ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true); 
-  // Triggers error "No processor available for DSP opcode" RegionPlayer::setupProcessorSetting. 
-  // This is not surprising because in RegionPlayer::buildProcessingChain, we are only taking the
-  // region's own DSPs into account. One way to fix it could be to include the group's dspTypes
-  // into the region's on load, maybe with some additional flag to indicate that the DSP came from
-  // the group settings. Or it could also be done in buildProcessingChain itself...but maybe that's
-  // not a good idea - it would require more computation in the realtime thread
-
+  rsPlotVector(tgt);
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  // still fails!
 
 
 
