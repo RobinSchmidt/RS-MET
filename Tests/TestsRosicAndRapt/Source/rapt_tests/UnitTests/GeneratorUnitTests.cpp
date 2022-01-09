@@ -1473,11 +1473,11 @@ bool samplerParserTest()
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 pan=79";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  sfzStr = "<group>\n\<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 \n";
+  sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 \n";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79  ";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
-  sfzStr = "<group>\n\<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79\n";
+  sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79\n";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;
   sfzStr = "<group>\n<region> sample=Sin440Hz.wav volume=35 cutoff=1234 pan=79 ";
   rc = se2.setFromSFZ(sfzStr); ok &= rc == RC::success;

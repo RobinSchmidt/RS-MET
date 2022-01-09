@@ -442,6 +442,7 @@
 #include "unfinished/rosic_SfzCodeBook.h"
 #include "unfinished/rosic_SamplerData.h"
 #include "unfinished/rosic_SamplerProcessors.h"
+#include "unfinished/rosic_SamplerPlayers.h"
 #include "unfinished/rosic_SamplerEngine.h"
 
 // third party:

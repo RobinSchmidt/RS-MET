@@ -865,6 +865,10 @@ public:
     groupSettingsOverride  = !shouldAccumulate;
     reset();  // changing this setting is disruptive - we need a reset
   }
+  // maybe call it setDrumBusMode, maybe call the whole class rsDrumSamplerEngine. It's typical for
+  // Drum patches that each sample is mapped to a particular key and then the drums are combined
+  // to a drum bus to which more FX are applied etc. ...maybe call it groupsAreBusses or something
+  // like that
 
   /** Returns the number of currently playing group players. */
   int getNumActiveGroupPlayers() const { return (int)activeGroupPlayers.size(); }
