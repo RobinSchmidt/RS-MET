@@ -1742,7 +1742,7 @@ bool samplerWaveShaperTest()
 
   // Waveshaper settings:
   float drive1 = 2.0f;
-  Shape shape1 = Shape::Tanh;
+  Shape shape1 = Shape::tanh;
   //float postGain = 0.5f;
   //float dcOffset = 0.0;
 
@@ -1807,23 +1807,42 @@ bool samplerWaveShaperTest()
   se.reset();
   se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
   se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
-  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13, true);
-  rsAssert(ok);
-  // fails! ...handling the shape parameter needs to be implemented in WaveShaper
-
-
-
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13, false);
 
   // Add another region to the group without giving it a distortion setting - it should keep 
-  // falling back to the group setting whereas the old region should keep using the overriden
-  // setting:
-  // ...
+  // falling back to the group setting (linear, drive2) whereas the old region should keep using
+  // the overriden setting (linear, drive1):
+  se.addRegion(0); ok &= se.getNumRegions(0) == 2;
+  se.setRegionSample(0, 1, 0);
+  se.setRegionSetting(0, 1, PST::PitchKeyCenter, 60.f);
+  for(int n = 0; n < N; n++)
+    tgt[n] += (drive1 * sin440[n]) + (drive1 * getSampleAt(sin440, 0.5f*n));
+  se.reset();
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-6, false);
+  // Why do we need such a high tolerance here? This seems wrong! figure out!
+
+  // Start fresh, define the shape on the insrument level, the drive at the group level and the
+  // DC-offset at the region level. Make sure that only 1 waveshaper is present in the chain.
+  float dc1 = 0.125f;
+  se.clearInstrument();
+  se.addSampleToPool(&pSmp, N, 1, fs, "Sine440");
+  se.addGroup();   ok &= se.getNumGroups()   == 1;
+  se.addRegion(0); ok &= se.getNumRegions(0) == 1;
+  se.setRegionSample(0, 0, 0);
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
+  se.setInstrumentSetting(  PST::DistShape,  float(shape1));
+  se.setGroupSetting( 0,    PST::DistDrive,  drive1);
+  se.setRegionSetting(0, 0, PST::DistOffset, dc1);
+  for(int n = 0; n < N; n++)
+    tgt[n] = tanh(drive1 * sin440[n] + dc1);  // maybe include a gain1, too
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
+  // this is wrong!
 
 
-  // Define a second group without dist settings, add a region to it, define instrument wide 
-  // fallback settings - the new region should fall back to these instrument settings:
 
-
+  rsAssert(ok);
 
   /*
   // Does not yet work - actually, we need to test it in both modes - in fallback mode, it should 
@@ -1940,7 +1959,7 @@ bool samplerDspChainTest()
   // Add a waveshaper and after that a 3rd (lowpass) filter into the chain, such that 
   // the chain is now: LPF -> HPF -> WS -> LPF:
   float drive    = 4.0f;
-  Shape shape    = Shape::Tanh;
+  Shape shape    = Shape::tanh;
   float cutoff3  = 1000.f; 
   se.setRegionSetting(0, 0, PST::DistShape, float(shape));
   se.setRegionSetting(0, 0, PST::DistDrive, drive);

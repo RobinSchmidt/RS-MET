@@ -104,7 +104,7 @@ enum class Opcode
   // is already there in SFZ 2.0 and in other sfz engines with extensions. Try to be compatible 
   // with the  largest possible range of other engines. Discuss extensions on KVR before 
   // implementing them in production code:
-  DistShape, DistDrive,  // DistGain...may be redundant with Volume
+  DistShape, DistDrive, DistOffset, // DistGain...may be redundant with Volume
   // SFZ2 has opcode egN_driveshape but no driveshape as such? same with lfoN_drive. does that 
   // mean the LFO signal is drive into a saturator?
   // check: https://www.plogue.com/products/sforzando.html
@@ -190,6 +190,18 @@ enum class PanRule  // maybe rename to pan_law (as in aria engine)
 // compensate...although a factor of exactly 2 or 0.5 may be hard to achieve because gain is 
 // given in dB, so the sfz file would have to specify +-6.0205999132796239....., which is 
 // inconvenient
+
+
+enum class DistortShape
+{
+  Unknown = 0,
+
+  linear, clip, tanh,
+
+  numDistortShapes
+};
+
+
 
 //-------------------------------------------------------------------------------------------------
 /** Enumeration of the different data formats of the values of the opcode. */

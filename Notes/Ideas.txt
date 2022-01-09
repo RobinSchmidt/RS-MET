@@ -107,7 +107,31 @@ CommandQueue:
  for undo, replay, etc.
 -fields for "Command":
  uint32: identifier, std::atomic<uint32> status, void* data
- 
+
+-------------------------------------------------------------------------------
+
+Undo
+-before an edit is made in response to a command, store the current state such 
+ that it can be restored
+-all commands are logged in a history
+-if the state data is large, we may need to employ some clever technique to not
+ store all intermediate states but store them only at coarser granularity and 
+ if needed, go back to a state earlier than the user wants to and then re-apply 
+ the commands that are missing
+-which states should be stored could depend on how long commands take to 
+ execute: if a command is easy to execute, we may not store its post-state 
+ because we can easily compute it again
+-We may want to store at least the previous state directly to make 1-step undo 
+ fast. Older intermediate states could be deleted on demand, when the memory
+ requirements grow too large.
+-The state history would be a bit like "key-frames" (corresponding to stored 
+ states) and command history would provide the "difference-frames" 
+-The initial state and the full command history are always kept so any past 
+ state will be reconstructible. Intermediate states shall be stored in a 
+ somewhat intelligent way to balance memory requirements against state 
+ restauration time. Common actions like undoing/redoing the very last command
+ shall always be fast by directly having the 2 corresponding states cached.
+
 -------------------------------------------------------------------------------
  
 Thread-Safety:

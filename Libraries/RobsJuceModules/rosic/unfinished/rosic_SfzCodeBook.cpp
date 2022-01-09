@@ -99,15 +99,14 @@ SfzCodeBook::SfzCodeBook()
   //  to use double for the equalizer.
 
 
-
-
-
   // This is very very preliminary - don't use it yet to define actual instruments - its behavior
   // may be going to change:
   dsp = DspType::WaveShaper;
   OS RsMet = OS::RsMet;
-  add(OC::DistShape, Nat, "dist_shape", 0.f, 0.f, 0.f, dsp, OU::RawInt,   RsMet);
-  add(OC::DistDrive, Flt, "dist_drive", 0.0, 8.0, 1.0, dsp, OU::RawFloat, RsMet);
+  add(OC::DistShape,  Nat, "dist_shape",  0.f,  0.f, 0.f, dsp, OU::RawInt,   RsMet); // not yet used
+  add(OC::DistDrive,  Flt, "dist_drive",  0.f,  8.f, 1.f, dsp, OU::RawFloat, RsMet);
+  add(OC::DistOffset, Flt, "dist_dc",    -1.f, +1.f, 0.f, dsp, OU::RawFloat, RsMet);
+  // maybe allow negative values for drive like -8...+8
 
   // ToDo: 
   // -PanLaw, introduce fil_bw for bandwidth parameter for bandpass...actually, we need to figure

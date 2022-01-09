@@ -282,6 +282,7 @@ class rsSamplerWaveShaper
 
 public:
 
+  /*
   enum class Shape
   {
     None,
@@ -291,6 +292,9 @@ public:
     SoftClipHexic
     // ...etc.
   };
+  */
+
+  using Shape = DistortShape;
 
   void setup(Shape shape, float preGain, float dcOffset, float postGain, float shapePar1,
     float shapePar2)
@@ -305,22 +309,32 @@ public:
 
   void processFrame(rsFloat64x2& inOut) 
   {
-    float L = (float) inOut[0];
-    float R = (float) inOut[1];
-    L = postGain * tanh(preGain * L + dcOffset);
-    R = postGain * tanh(preGain * R + dcOffset);
-    inOut[0] = L;
-    inOut[1] = R;
+    float L = preGain * ((float) inOut[0]) + dcOffset;
+    float R = preGain * ((float) inOut[1]) + dcOffset;
+
+    //L = postGain * tanh(preGain * L + dcOffset);
+    //R = postGain * tanh(preGain * R + dcOffset);
+
+    switch(shape)
+    {
+    case Shape::tanh: { L = tanh(L);   R = tanh(R);   } break; // todo: use rsTanh based on exp
+    case Shape::clip: { L = RAPT::rsClip(L); R = RAPT::rsClip(R); } break;
+    default: break;
+    }
+
+    inOut[0] = postGain * L;
+    inOut[1] = postGain * R;
   }
-  // under construction - optimize this!
-  // -include a switch based on shape
+  // under construction
+  // -when we remove the RAPT from rsClip we get a compile error: "no matching overload found" ->
+  //  check if there's another non-templated rsClip somehwere else and remove it, if so
   // -use a branchless tanh approximation directly operating on rsFloat64x2
   // -maybe switch to rsFloat32x4 for audio-samples...but maybe that's not advantageous
-  // -implement a buffer-based variant
+  // -implement a block-based variant
 
 protected:
 
-  Shape shape = Shape::None;
+  Shape shape = Shape::linear;
   float preGain, dcOffset, postGain;
   float shapePar1, shapePar2;            // meaning depends on chosen shape
 
@@ -468,6 +482,8 @@ public:
 
       return TC::BQ_Lowpass;
     }
+    // todo: avoid this conversion - use the same enum in both, the sfz codebook and the filter
+    // core just like we do with the distortion shapes
 
     rsSamplerFilter core;
   };
@@ -525,16 +541,15 @@ public:
     WaveShaper() 
     { 
       type = DspType::WaveShaper; 
-      params.reserve(2);
+      params.reserve(3);
       addParameter(Opcode::DistShape);
       addParameter(Opcode::DistDrive);
+      addParameter(Opcode::DistOffset);
     }
     void prepareToPlay(double fs) override
     {
-      using ShapeCore = rsSamplerWaveShaper::Shape;
-      // using ShapeOpcode ...
-      ShapeCore shape = ShapeCore::Tanh;      // preliminary
-      core.setup(shape, params[1].getValue(), 0.f, 1.f, 0.f, 0.f);
+      core.setup((DistortShape)(int)params[0].getValue(), params[1].getValue(), 
+        params[2].getValue(), 1.f, 0.f, 0.f);
       int dummy = 0;
     }
     void processFrame(rsFloat64x2& inOut) override { core.processFrame(inOut); }
