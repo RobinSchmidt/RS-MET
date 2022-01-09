@@ -998,15 +998,32 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
   {
     for(int i = 0; i < (int)dspTypeChain.size(); i++)
     {
+      // Figure out the type of the DSP that may need to be added to the chain:
       DspType dspType = dspTypeChain[i];
+
+      // Figure out the index within the type-chain (i.e. placeholder chain for the actual DSPs) of 
+      // the potentially to-be-added DSP because whether or not we will actually need to add 
+      // another DSP to the chain will depend on that index and the number of alike DSPs already 
+      // present in the chain. Furthermore, the default value may depend on the index as well:
+      int index = 1;
+      for(int j = i-1; j >= 0; j--) {
+        if(dspTypeChain[j] == dspType)
+          index++; }
+      // Maybe factor that out into some dspTypeChain.getSfzIndex(arrayIndex) method. In this call,
+      // the arrayIndex should be the array-index of a DSP of given type within the chain and the 
+      // return value should be the sfz-index. Example: 
+      //   typeChain == { Filter, Equalizer, Filter, Filter, Equalizer, Equalizer, Filter }
+      //   array-index:     0        1         2       3        4          5         6
+      //   sfz-index:       1        1         2       3        2          3         4
+      // Then, when we pass 4 (the array index), it should return 2 because array index 4 refers
+      // to the 2nd equalizer in the desired sfz-effect chain, i.e. the equalizer that is 
+      // controlled with opcodes eq2_gain, eq2_freq, eq2_bw. This kind of index-mapping is a bit 
+      // confusing and needs good documentation and unit-tests.
+
+
       SignalProcessor* dsp = getProcessor(dspType);
       if(dsp)
       {
-        int index = 1;                    // Figure out the index because the default value may 
-        for(int j = i-1; j >= 0; j--) {   // depend on it
-          if(dspTypeChain[j] == dspType)
-            index++;
-        }
         dsp->resetSettings(index);
         dspChain.addProcessor(dsp);
       }
