@@ -782,10 +782,19 @@ void rsSamplerEngine::SignalProcessorChain::processFrame(rsFloat64x2& inOut)
     processors[i]->processFrame(inOut);
 }
 
+size_t rsSamplerEngine::SignalProcessorChain::getNumProcessors(DspType type) const
+{
+  size_t count = 0;
+  for(size_t i = 0; i < processors.size(); i++) {
+    if(processors[i]->getType() == type)
+      count++; }
+  return count;
+}
+
 SignalProcessor* rsSamplerEngine::SignalProcessorChain::getProcessor(
   DspType type, int index)
 {
-  int count = 0;  // counts, how many DSPs of given type we have iterated over
+  int count = 0;  // counts, how many DSPs of given type we have iterated over - why not size_t?
   for(int i = 0; i < (int) processors.size(); i++) {
     SignalProcessor* dsp = getProcessor(i);
     if(dsp->getType() == type) {
@@ -987,13 +996,11 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
   RAPT::rsAssert(dspChain.isEmpty(), "Someone has not cleaned up after finishing playback!");
   dspChain.clear(); // ...so we do it here. But this should be fixed elsewhere!
 
-  using DspType   = DspType;
-  using TypeChain = std::vector<DspType>;
+  using TypeChain = std::vector<DspType>; // maybe rename to DspTypeArray...or get rid
 
-  // But will this work as intended or will it add the group DSPs on top of the region DSPs? Nope!
-  // Maybe we should use a dspChain.addIfNotAlreadyThere(dsp, index) function instead. Or: Before 
-  // calling getProcessor(), we should figure out, whether ot not we actually need an additional 
-  // DSP
+  // Adds the DSPs of the given types to the chain of actual DSP objects, if needed. Adding a 
+  // particular DSP is needed, if no suitable such DSP is already there where "suitable" means:
+  // "with right type and index":
   auto addDspsIfNeeded = [this](const TypeChain& dspTypeChain)
   {
     for(int i = 0; i < (int)dspTypeChain.size(); i++)
@@ -1013,14 +1020,19 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
       // the arrayIndex should be the array-index of a DSP of given type within the chain and the 
       // return value should be the sfz-index. Example: 
       //   typeChain == { Filter, Equalizer, Filter, Filter, Equalizer, Equalizer, Filter }
-      //   array-index:     0        1         2       3        4          5         6
-      //   sfz-index:       1        1         2       3        2          3         4
+      //   array-index:     0         1        2       3         4          5        6
+      //   sfz-index:       1         1        2       3         2          3        4
       // Then, when we pass 4 (the array index), it should return 2 because array index 4 refers
       // to the 2nd equalizer in the desired sfz-effect chain, i.e. the equalizer that is 
       // controlled with opcodes eq2_gain, eq2_freq, eq2_bw. This kind of index-mapping is a bit 
       // confusing and needs good documentation and unit-tests.
 
+      // Figure out, if we actually need to add another DSP to the chain. If not, there's nothing
+      // more to do in this iteration:
+      if(dspChain.getNumProcessors(dspType) >= index)
+        continue;
 
+      // OK - now we actually need to grab another DSP of given type from the pool:
       SignalProcessor* dsp = getProcessor(dspType);
       if(dsp)
       {
@@ -1029,10 +1041,15 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
       }
       else {
         dspChain.clear();
-        return false;
+        return false; 
+        // Not enough DSPs of desired type are available in the pool. We roll back the partial 
+        // chain that we may have built already and report failure.
       }
     }
     return true;
+    // When we arrive here, we have successfully finished the loop which means that we either could
+    // add enough DSPs of the desired types to the chain or they were already present before. In 
+    // both cases, the dspChain is now in the required state so we can report success.
   };
 
 

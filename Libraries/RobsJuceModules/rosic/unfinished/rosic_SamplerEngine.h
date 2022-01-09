@@ -386,7 +386,15 @@ protected:
     void clear() { processors.clear(); }
 
     bool isEmpty() const { return processors.empty(); }
+
+    /** Returns the total number of processors in the chain. */
     size_t getNumProcessors() const { return processors.size(); }
+
+    /** Returns the number of processors of given type in the chain. */
+    size_t getNumProcessors(DspType type) const;
+
+
+  
     SignalProcessor* getProcessor(int i) { return processors[i]; }
 
     /** Returns the index-th processor of the given type within the chain or nullptr, if there are
