@@ -317,9 +317,12 @@ public:
 
     switch(shape)
     {
-    case Shape::tanh: { L = tanh(L);   R = tanh(R);   } break; // todo: use rsTanh based on exp
-    case Shape::clip: { L = RAPT::rsClip(L); R = RAPT::rsClip(R); } break;
-    default: break;
+    case Shape::tanh: { 
+      L = tanh(L);   R = tanh(R);   } break; // todo: use rsTanh based on exp
+    case Shape::clip: { 
+      L = RAPT::rsClip(L); R = RAPT::rsClip(R); } break;
+    default: 
+      break;
     }
 
     inOut[0] = postGain * L;

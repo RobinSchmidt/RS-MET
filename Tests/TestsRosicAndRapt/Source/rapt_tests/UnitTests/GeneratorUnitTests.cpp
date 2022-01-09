@@ -1837,48 +1837,16 @@ bool samplerWaveShaperTest()
   se.setRegionSetting(0, 0, PST::DistOffset, dc1);
   for(int n = 0; n < N; n++)
     tgt[n] = tanh(drive1 * sin440[n] + dc1);  // maybe include a gain1, too
-  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, true);
-  // this is wrong!
-
-
-
-  rsAssert(ok);
-
-  /*
-  // Does not yet work - actually, we need to test it in both modes - in fallback mode, it should 
-  // just use the group setting for each region seperately - and unless we use 
-  // rsSamplerEngine2Test, is is supposed to happen anyway
-
-  // Create the new target signal: we play two notes - one at the root frequency and one at 0.5 
-  // times the root frequency (i.e. an octave lower):
-  for(int n = 0; n < N; n++)
-    tgt[n] = sin440[n];
-  //rsPlotVector(tgt);
-  for(int n = 0; n < N; n++) {
-    float m = 0.5 * n;
-    if(m >= N) break;  // needed if the factor is > 1...which currently isn't the case
-    tgt[n] += getSampleAt(sin440, m); }
-  //rsPlotVector(tgt);
-  for(int n = 0; n < N; n++)
-    tgt[n] = tanh(drive * tgt[n]);
-  //rsPlotVector(tgt);
-
-  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
-  using EvTp = Ev::Type;
-  //se.set
-  se.handleMusicalEvent(Ev(EvTp::noteOn, 60, 64));  // triggers assert!
-  se.handleMusicalEvent(Ev(EvTp::noteOn, 48, 64));
-  VecF outL(N), outR(N);
-  for(int n = 0; n < N; n++)
-    se.processFrame(&outL[n], &outR[n]);
-  rsPlotVectors(tgt, outL);
-  */
-
-
-
+  ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
 
   // ToDo:
   // -Try different shapes, use different sets of parameters, use DC, postGain, etc.
+  // -Try the accumulate mode with both SamplerEngine and SamplerEngine2 with a region and group
+  //  waveshaper. They should behave differently: 1 should apply both waveshapers and then mix 
+  //  whereas 2 should first mix the shaped region output and then apply the group shaper to the 
+  //  mix of both. maybe engine 2 should provide the mix-before-apply mode as 3rd mode. Yes maybe
+  //  that makes sense...hmmm...or maybe 1 should only provide fallback mode and both other types 
+  //  of modes should be implemented by 2? That seems to make more sense.
   // Cosmetics:
   // -Maybe drag out RegionPlayer from rsSamplerEngine
   // -maybe let testSamplerNote take a plotMode parameter which can be: 0: never plot, 1: always 
@@ -1900,6 +1868,7 @@ bool samplerWaveShaperTest()
   //  sure what that is
 
 
+  rsAssert(ok);
   return ok;
 }
 

@@ -45,6 +45,12 @@ void rsSamplerEngine::setMaxNumLayers(int newMax)
 
 void rsSamplerEngine::clearInstrument() 
 { 
+  //RAPT::rsAssert(isMainThread()); 
+  // todo: implement isMainThread and isAudioThread ...not yet sure how - maybe we should have a 
+  // singleton in rosic storing two pointers to threads which are set up on construction maybe
+  // rosic::rsThreadInfo::isMainThread() or something like that
+
+  reset();                // Don't clear while still playing - that would be a crash!
   sfz.clearInstrument(); 
   samplePool.clear();
   setupRegionsForKey();   // clears regionsForKey array
@@ -1196,8 +1202,10 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     case TP::resonanceN:   { setupProcessorSetting(setting); } break;
 
     // Waveshaper settings:
-    case TP::DistShape: { setupProcessorSetting(setting); } break;
-    case TP::DistDrive: { setupProcessorSetting(setting); } break;
+    case TP::DistShape:  { setupProcessorSetting(setting); } break;
+    case TP::DistDrive:  { setupProcessorSetting(setting); } break;
+    case TP::DistOffset: { setupProcessorSetting(setting); } break;
+
 
     // ToDo: order the opcodes in the enum according to their type, such that we can here write
     // something like: 
@@ -1211,9 +1219,10 @@ void rsSamplerEngine::RegionPlayer::setupDspSettings(
     case TP::eqN_freq: { setupProcessorSetting(setting); } break;
     case TP::eqN_bw:   { setupProcessorSetting(setting); } break;
 
-
-
       // ToDo: Get rid of this repetition! Maybe these can all be caught in a "default" branch?
+      // but then what about the modulation settings? i think, we need a 3-way branch based on
+      // whether a setting applies to the sample-player, dsp-chain or a modulator and then branch
+      // further, if needed
 
     }
   }
