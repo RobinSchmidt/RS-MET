@@ -3,7 +3,7 @@
 
 bool testMatrixScalarOperations()
 {
-  bool testResult = true;
+  bool ok = true;
 
   // A = |15 20 26|
   //     |12 18 24|
@@ -14,74 +14,74 @@ bool testMatrixScalarOperations()
   // A = A + 2 = |17 22 28|
   //             |14 20 26|
   A = A + 2.0;
-  testResult &= A(0,0) == 17 && A(0,1) == 22 && A(0,2) == 28;
-  testResult &= A(1,0) == 14 && A(1,1) == 20 && A(1,2) == 26;
+  ok &= A(0,0) == 17 && A(0,1) == 22 && A(0,2) == 28;
+  ok &= A(1,0) == 14 && A(1,1) == 20 && A(1,2) == 26;
 
   // A = A - 2 = |15 20 26|
   //             |12 18 24|
   A = A - 2.0;
-  testResult &= A(0,0) == 15 && A(0,1) == 20 && A(0,2) == 26;
-  testResult &= A(1,0) == 12 && A(1,1) == 18 && A(1,2) == 24;
+  ok &= A(0,0) == 15 && A(0,1) == 20 && A(0,2) == 26;
+  ok &= A(1,0) == 12 && A(1,1) == 18 && A(1,2) == 24;
 
   // A = 2 + A = |17 22 28|
   //             |14 20 26|
   A = 2.0 + A;
-  testResult &= A(0,0) == 17 && A(0,1) == 22 && A(0,2) == 28;
-  testResult &= A(1,0) == 14 && A(1,1) == 20 && A(1,2) == 26;
+  ok &= A(0,0) == 17 && A(0,1) == 22 && A(0,2) == 28;
+  ok &= A(1,0) == 14 && A(1,1) == 20 && A(1,2) == 26;
 
   // A = 30 - A = |13  8  2|
   //              |16 10  4|
   A = 30.0 - A;
-  testResult &= A(0,0) == 13 && A(0,1) ==  8 && A(0,2) ==  2;
-  testResult &= A(1,0) == 16 && A(1,1) == 10 && A(1,2) ==  4;
+  ok &= A(0,0) == 13 && A(0,1) ==  8 && A(0,2) ==  2;
+  ok &= A(1,0) == 16 && A(1,1) == 10 && A(1,2) ==  4;
 
   // A = 2.0 * A = |26 16  4|
   //               |32 20  8|
   A = 2.0 * A;
-  testResult &= A(0,0) == 26 && A(0,1) == 16 && A(0,2) ==  4;
-  testResult &= A(1,0) == 32 && A(1,1) == 20 && A(1,2) ==  8;
+  ok &= A(0,0) == 26 && A(0,1) == 16 && A(0,2) ==  4;
+  ok &= A(1,0) == 32 && A(1,1) == 20 && A(1,2) ==  8;
 
   // A = A / 2.0 = |13  8  2|
   //               |16 10  4|
   A = A / 2.0;
-  testResult &= A(0,0) == 13 && A(0,1) ==  8 && A(0,2) ==  2;
-  testResult &= A(1,0) == 16 && A(1,1) == 10 && A(1,2) ==  4;
+  ok &= A(0,0) == 13 && A(0,1) ==  8 && A(0,2) ==  2;
+  ok &= A(1,0) == 16 && A(1,1) == 10 && A(1,2) ==  4;
 
   // A = A * 2.0 = |26 16  4|
   //               |32 20  8|
   A = A * 2.0;
-  testResult &= A(0,0) == 26 && A(0,1) == 16 && A(0,2) ==  4;
-  testResult &= A(1,0) == 32 && A(1,1) == 20 && A(1,2) ==  8;
+  ok &= A(0,0) == 26 && A(0,1) == 16 && A(0,2) ==  4;
+  ok &= A(1,0) == 32 && A(1,1) == 20 && A(1,2) ==  8;
 
   // A /= 2.0 = |13  8  2|
   //            |16 10  4|
   A /= 2.0;
-  testResult &= A(0,0) == 13 && A(0,1) ==  8 && A(0,2) ==  2;
-  testResult &= A(1,0) == 16 && A(1,1) == 10 && A(1,2) ==  4;
+  ok &= A(0,0) == 13 && A(0,1) ==  8 && A(0,2) ==  2;
+  ok &= A(1,0) == 16 && A(1,1) == 10 && A(1,2) ==  4;
 
   // A *= 2.0 = |26 16  4|
   //            |32 20  8|
   A *= 2.0;
-  testResult &= A(0,0) == 26 && A(0,1) == 16 && A(0,2) ==  4;
-  testResult &= A(1,0) == 32 && A(1,1) == 20 && A(1,2) ==  8;
+  ok &= A(0,0) == 26 && A(0,1) == 16 && A(0,2) ==  4;
+  ok &= A(1,0) == 32 && A(1,1) == 20 && A(1,2) ==  8;
 
   // A += 2.0 = |28 18  6|
   //            |34 22 10|
   A += 2.0;
-  testResult &= A(0,0) == 28 && A(0,1) == 18 && A(0,2) ==  6;
-  testResult &= A(1,0) == 34 && A(1,1) == 22 && A(1,2) == 10;
+  ok &= A(0,0) == 28 && A(0,1) == 18 && A(0,2) ==  6;
+  ok &= A(1,0) == 34 && A(1,1) == 22 && A(1,2) == 10;
 
   // A -= 2.0 = |26 16  4|
   //            |32 20  8|
   A -= 2.0;
-  testResult &= A(0,0) == 26 && A(0,1) == 16 && A(0,2) ==  4;
-  testResult &= A(1,0) == 32 && A(1,1) == 20 && A(1,2) ==  8;
+  ok &= A(0,0) == 26 && A(0,1) == 16 && A(0,2) ==  4;
+  ok &= A(1,0) == 32 && A(1,1) == 20 && A(1,2) ==  8;
 
-  return testResult;
+  return ok;
 }
 bool testMatrixAddSubTransEqual()
 {
-  bool testResult = true;
+  bool ok = true;
 
   // intitalize some test matrices:
   // A = |2  3  5|, B = |17 19 23|
@@ -97,10 +97,10 @@ bool testMatrixAddSubTransEqual()
   rsMatrixDbl C;
 
   // check, if C is properly initialized:
-  testResult &= C.getNumRows()    == 0;
-  testResult &= C.getNumColumns() == 0;
-  //testResult &= C.mFlat == nullptr;
-  //testResult &= C.m     == nullptr;
+  ok &= C.getNumRows()    == 0;
+  ok &= C.getNumColumns() == 0;
+  //ok &= C.mFlat == nullptr;
+  //ok &= C.m     == nullptr;
 
 
 
@@ -109,71 +109,71 @@ bool testMatrixAddSubTransEqual()
   // C = -A = |-2  -3  -5|
   //          |-7 -11 -13|
   C = -A;
-  testResult &= C.getNumRows()    == 2;
-  testResult &= C.getNumColumns() == 3;
-  testResult &= C(0,0) == -2 && C(0,1) ==  -3 && C(0,2) ==  -5;
-  testResult &= C(1,0) == -7 && C(1,1) == -11 && C(1,2) == -13;
+  ok &= C.getNumRows()    == 2;
+  ok &= C.getNumColumns() == 3;
+  ok &= C(0,0) == -2 && C(0,1) ==  -3 && C(0,2) ==  -5;
+  ok &= C(1,0) == -7 && C(1,1) == -11 && C(1,2) == -13;
 
   // test transposition:
   // C = A^T = |2  7|
   //           |3 11|
   //           |5 13|
   C = trans(A);
-  testResult &= C.getNumRows()    == 3;
-  testResult &= C.getNumColumns() == 2;
-  testResult &= C(0,0) ==  2 && C(0,1) ==  7;
-  testResult &= C(1,0) ==  3 && C(1,1) == 11;
-  testResult &= C(2,0) ==  5 && C(2,1) == 13;
+  ok &= C.getNumRows()    == 3;
+  ok &= C.getNumColumns() == 2;
+  ok &= C(0,0) ==  2 && C(0,1) ==  7;
+  ok &= C(1,0) ==  3 && C(1,1) == 11;
+  ok &= C(2,0) ==  5 && C(2,1) == 13;
 
   // test in-place transpostion and equality operator:
   // C = C^T == A
   C.transpose();
-  testResult &= C == A;
+  ok &= C == A;
 
   // test in/equality operators:
   C.transpose();
-  testResult &= (A ==  B) == false;
-  testResult &= (A !=  B) == true;
-  testResult &= (A ==  C) == false;
-  testResult &= (A !=  C) == true;
+  ok &= (A ==  B) == false;
+  ok &= (A !=  B) == true;
+  ok &= (A ==  C) == false;
+  ok &= (A !=  C) == true;
 
   // C = A + B = |19 22 28|
   //             |36 42 50|
   C = A + B;
-  testResult &= C.getNumRows()    == 2;
-  testResult &= C.getNumColumns() == 3;
-  testResult &= C(0,0) == 19 && C(0,1) == 22 && C(0,2) == 28;
-  testResult &= C(1,0) == 36 && C(1,1) == 42 && C(1,2) == 50;
+  ok &= C.getNumRows()    == 2;
+  ok &= C.getNumColumns() == 3;
+  ok &= C(0,0) == 19 && C(0,1) == 22 && C(0,2) == 28;
+  ok &= C(1,0) == 36 && C(1,1) == 42 && C(1,2) == 50;
 
   // C += A = |21 25 33| 
   //          |43 53 63|
   C += A;
-  testResult &= C.getNumRows()    == 2;
-  testResult &= C.getNumColumns() == 3;
-  testResult &= C(0,0) == 21 && C(0,1) == 25 && C(0,2) == 33;
-  testResult &= C(1,0) == 43 && C(1,1) == 53 && C(1,2) == 63;
+  ok &= C.getNumRows()    == 2;
+  ok &= C.getNumColumns() == 3;
+  ok &= C(0,0) == 21 && C(0,1) == 25 && C(0,2) == 33;
+  ok &= C(1,0) == 43 && C(1,1) == 53 && C(1,2) == 63;
 
   // C -= A = |19 22 28|
   //          |36 42 50|
   C -= A;
-  testResult &= C.getNumRows()    == 2;
-  testResult &= C.getNumColumns() == 3;
-  testResult &= C(0,0) == 19 && C(0,1) == 22 && C(0,2) == 28;
-  testResult &= C(1,0) == 36 && C(1,1) == 42 && C(1,2) == 50;
+  ok &= C.getNumRows()    == 2;
+  ok &= C.getNumColumns() == 3;
+  ok &= C(0,0) == 19 && C(0,1) == 22 && C(0,2) == 28;
+  ok &= C(1,0) == 36 && C(1,1) == 42 && C(1,2) == 50;
 
   // C = B - A = |15 16 18|
   //             |22 20 24|
   C = B - A;
-  testResult &= C.getNumRows()    == 2;
-  testResult &= C.getNumColumns() == 3;
-  testResult &= C(0,0) == 15 && C(0,1) == 16 && C(0,2) == 18;
-  testResult &= C(1,0) == 22 && C(1,1) == 20 && C(1,2) == 24;
+  ok &= C.getNumRows()    == 2;
+  ok &= C.getNumColumns() == 3;
+  ok &= C(0,0) == 15 && C(0,1) == 16 && C(0,2) == 18;
+  ok &= C(1,0) == 22 && C(1,1) == 20 && C(1,2) == 24;
 
-  return testResult;
+  return ok;
 }
 bool testMatrixMul()
 {
-  bool testResult = true;
+  bool ok = true;
 
   // intitalize some test matrices:
   // A = |2  3  5|, B = |17 19 23 29|
@@ -193,44 +193,44 @@ bool testMatrixMul()
   // C = A * B = | 362  414  464  492|
   //             |1071 1229 1379 1469|
   C = A * B;
-  testResult &= C.getNumRows()    == 2;
-  testResult &= C.getNumColumns() == 4;
-  testResult &= C(0,0) ==  362 && C(0,1) ==  414 && C(0,2) ==  464 && C(0,3) ==  492;
-  testResult &= C(1,0) == 1071 && C(1,1) == 1229 && C(1,2) == 1379 && C(1,3) == 1469;
+  ok &= C.getNumRows()    == 2;
+  ok &= C.getNumColumns() == 4;
+  ok &= C(0,0) ==  362 && C(0,1) ==  414 && C(0,2) ==  464 && C(0,3) ==  492;
+  ok &= C(1,0) == 1071 && C(1,1) == 1229 && C(1,2) == 1379 && C(1,3) == 1469;
 
   // same with the accumulative multiplier:
   C  = A;
   C *= B;
-  testResult &= C.getNumRows()    == 2;
-  testResult &= C.getNumColumns() == 4;
-  testResult &= C(0,0) ==  362 && C(0,1) ==  414 && C(0,2) ==  464 && C(0,3) ==  492;
-  testResult &= C(1,0) == 1071 && C(1,1) == 1229 && C(1,2) == 1379 && C(1,3) == 1469;
+  ok &= C.getNumRows()    == 2;
+  ok &= C.getNumColumns() == 4;
+  ok &= C(0,0) ==  362 && C(0,1) ==  414 && C(0,2) ==  464 && C(0,3) ==  492;
+  ok &= C(1,0) == 1071 && C(1,1) == 1229 && C(1,2) == 1379 && C(1,3) == 1469;
 
   // B2 = B * B^T = |2020 3420  4932|
   //                |3420 5860  8460|
   //                |4932 8460 12220|
   rsMatrixDbl B2 = B * trans(B);
-  testResult &= B2.getNumRows()    == 3;
-  testResult &= B2.getNumColumns() == 3;
-  testResult &= B2(0,0) == 2020 && B2(0,1) == 3420 && B2(0,2) ==  4932;
-  testResult &= B2(1,0) == 3420 && B2(1,1) == 5860 && B2(1,2) ==  8460;
-  testResult &= B2(2,0) == 4932 && B2(2,1) == 8460 && B2(2,2) == 12220;
+  ok &= B2.getNumRows()    == 3;
+  ok &= B2.getNumColumns() == 3;
+  ok &= B2(0,0) == 2020 && B2(0,1) == 3420 && B2(0,2) ==  4932;
+  ok &= B2(1,0) == 3420 && B2(1,1) == 5860 && B2(1,2) ==  8460;
+  ok &= B2(2,0) == 4932 && B2(2,1) == 8460 && B2(2,2) == 12220;
 
   // C = A * B2 = | 38960  66720  96344|
   //              |115876 198380 286444|
   C = A * B2;
-  testResult &= C.getNumRows()    == 2;
-  testResult &= C.getNumColumns() == 3;
-  testResult &= C(0,0) ==  38960 && C(0,1) ==  66720 && C(0,2) ==  96344;
-  testResult &= C(1,0) == 115876 && C(1,1) == 198380 && C(1,2) == 286444;
+  ok &= C.getNumRows()    == 2;
+  ok &= C.getNumColumns() == 3;
+  ok &= C(0,0) ==  38960 && C(0,1) ==  66720 && C(0,2) ==  96344;
+  ok &= C(1,0) == 115876 && C(1,1) == 198380 && C(1,2) == 286444;
   C  = A;
   C *= B2;
-  testResult &= C.getNumRows()    == 2;
-  testResult &= C.getNumColumns() == 3;
-  testResult &= C(0,0) ==  38960 && C(0,1) ==  66720 && C(0,2) ==  96344;
-  testResult &= C(1,0) == 115876 && C(1,1) == 198380 && C(1,2) == 286444;
+  ok &= C.getNumRows()    == 2;
+  ok &= C.getNumColumns() == 3;
+  ok &= C(0,0) ==  38960 && C(0,1) ==  66720 && C(0,2) ==  96344;
+  ok &= C(1,0) == 115876 && C(1,1) == 198380 && C(1,2) == 286444;
 
-  return testResult;
+  return ok;
 }
 /*
 template<class T>
@@ -300,7 +300,7 @@ bool testSquareMatrixTranspose()
 bool testMatrixVectorMultiply()
 {
   std::string testName = "MatrixVectorMultiply";
-  bool testResult = true;
+  bool ok = true;
 
   // create test-matrix and vector, allocate result vector:
   double A[3][3] = {{1, 2, 3},
@@ -318,9 +318,9 @@ bool testMatrixVectorMultiply()
   // |7 8 9|   |3|   |50|
   rsArrayTools::fillWithValue(y, 3, -1.0);
   rsMatrixTools::matrixVectorMultiply(pA, x, y, 3, 3);
-  testResult &= y[0] == 14;
-  testResult &= y[1] == 32;
-  testResult &= y[2] == 50;
+  ok &= y[0] == 14;
+  ok &= y[1] == 32;
+  ok &= y[2] == 50;
 
   // transposed 3x3-matrix times 3-vector:
   // |1 2 3|^T * |1| = |1 4 7| * |1| = |30|
@@ -328,9 +328,9 @@ bool testMatrixVectorMultiply()
   // |7 8 9|     |3|   |3 6 9|   |3|   |42|
   rsArrayTools::fillWithValue(y, 3, -1.0);
   rsMatrixTools::transposedMatrixVectorMultiply(pA, x, y, 3, 3);
-  testResult &= y[0] == 30;
-  testResult &= y[1] == 36;
-  testResult &= y[2] == 42;
+  ok &= y[0] == 30;
+  ok &= y[1] == 36;
+  ok &= y[2] == 42;
 
   // 3x2-matrix times 2-vector:
   // |1 2| * |1| = | 5|
@@ -338,9 +338,9 @@ bool testMatrixVectorMultiply()
   // |7 8|         |23|
   rsArrayTools::fillWithValue(y, 3, -1.0);
   rsMatrixTools::matrixVectorMultiply(pA, x, y, 3, 2);
-  testResult &= y[0] == 5;
-  testResult &= y[1] == 14;
-  testResult &= y[2] == 23;
+  ok &= y[0] == 5;
+  ok &= y[1] == 14;
+  ok &= y[2] == 23;
 
   // transposed 2x3-matrix times 2-vector:
   // |1 2 3|^T * |1| = |1 4| * |1| = | 9|
@@ -348,9 +348,9 @@ bool testMatrixVectorMultiply()
   //                   |3 6|         |15|
   rsArrayTools::fillWithValue(y, 3, -1.0);
   rsMatrixTools::transposedMatrixVectorMultiply(pA, x, y, 2, 3);
-  testResult &= y[0] == 9;
-  testResult &= y[1] == 12;
-  testResult &= y[2] == 15;
+  ok &= y[0] == 9;
+  ok &= y[1] == 12;
+  ok &= y[2] == 15;
 
   // 2x3-matrix times 3-vector:
   // |1 2 3| * |1| = |14|
@@ -358,9 +358,9 @@ bool testMatrixVectorMultiply()
   //           |3|
   rsArrayTools::fillWithValue(y, 3, -1.0);
   rsMatrixTools::matrixVectorMultiply(pA, x, y, 2, 3);
-  testResult &= y[0] == 14;
-  testResult &= y[1] == 32;
-  testResult &= y[2] == -1;
+  ok &= y[0] == 14;
+  ok &= y[1] == 32;
+  ok &= y[2] == -1;
 
   // transposed 3x2-matrix times 3-vector:
   // |1 2|^T * |1| = |1 4 7| * |1| = |30|
@@ -368,11 +368,11 @@ bool testMatrixVectorMultiply()
   // |7 8|     |3|             |3|
   rsArrayTools::fillWithValue(y, 3, -1.0);
   rsMatrixTools::transposedMatrixVectorMultiply(pA, x, y, 3, 2);
-  testResult &= y[0] == 30;
-  testResult &= y[1] == 36;
-  testResult &= y[2] == -1;
+  ok &= y[0] == 30;
+  ok &= y[1] == 36;
+  ok &= y[2] == -1;
 
-  return testResult;
+  return ok;
 }
 
 bool testMatrixMultiply3x3()
@@ -381,7 +381,7 @@ bool testMatrixMultiply3x3()
   // no index-range exceeds 3. It is called from the more general test function
   // testMatrixMultiply3x3 internally.
 
-  bool testResult = true;
+  bool ok = true;
 
   double A[3][3] = {{1, 2, 3},
   {4, 5, 6},
@@ -404,9 +404,9 @@ bool testMatrixMultiply3x3()
   //           |3 2|
   rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::matrixMultiply(pA, pB, pC, 2, 3, 2);
-  testResult &= C[0][0] == 30 && C[0][1] == 24 && C[0][2] == -1;
-  testResult &= C[1][0] == 84 && C[1][1] == 69 && C[1][2] == -1;
-  testResult &= C[2][0] == -1 && C[2][1] == -1 && C[2][2] == -1;
+  ok &= C[0][0] == 30 && C[0][1] == 24 && C[0][2] == -1;
+  ok &= C[1][0] == 84 && C[1][1] == 69 && C[1][2] == -1;
+  ok &= C[2][0] == -1 && C[2][1] == -1 && C[2][2] == -1;
 
   // 3x2-matrix times 2x3 matrix:
   // |1 2| * |9 8 7| = | 21 18 15|
@@ -414,9 +414,9 @@ bool testMatrixMultiply3x3()
   // |7 8|             |111 96 81|
   rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::matrixMultiply(pA, pB, pC, 3, 2, 3);
-  testResult &= C[0][0] ==  21 && C[0][1] == 18 && C[0][2] == 15;
-  testResult &= C[1][0] ==  66 && C[1][1] == 57 && C[1][2] == 48;
-  testResult &= C[2][0] == 111 && C[2][1] == 96 && C[2][2] == 81;
+  ok &= C[0][0] ==  21 && C[0][1] == 18 && C[0][2] == 15;
+  ok &= C[1][0] ==  66 && C[1][1] == 57 && C[1][2] == 48;
+  ok &= C[2][0] == 111 && C[2][1] == 96 && C[2][2] == 81;
 
   // transposed 3x2-matrix times 3x2 matrix:
   // |1 2|^T * |9 8| = |1 4 7| * |9 8| = |54 42|
@@ -424,9 +424,9 @@ bool testMatrixMultiply3x3()
   // |7 8|     |3 2|             |3 2|
   rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::matrixMultiplyFirstTransposed(pA, pB, pC, 3, 2, 2);
-  testResult &= C[0][0] == 54 && C[0][1] == 42 && C[0][2] == -1;
-  testResult &= C[1][0] == 72 && C[1][1] == 57 && C[1][2] == -1;
-  testResult &= C[2][0] == -1 && C[2][1] == -1 && C[2][2] == -1;
+  ok &= C[0][0] == 54 && C[0][1] == 42 && C[0][2] == -1;
+  ok &= C[1][0] == 72 && C[1][1] == 57 && C[1][2] == -1;
+  ok &= C[2][0] == -1 && C[2][1] == -1 && C[2][2] == -1;
 
   // transposed 2x3-matrix times 2x3 matrix:
   // |1 2 3|^T * |9 8 7| = |1 4| * |9 8 7| = |33 28 23|
@@ -434,9 +434,9 @@ bool testMatrixMultiply3x3()
   //                       |3 6|             |63 54 45|
   rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::matrixMultiplyFirstTransposed(pA, pB, pC, 2, 3, 3);
-  testResult &= C[0][0] == 33 && C[0][1] == 28 && C[0][2] == 23;
-  testResult &= C[1][0] == 48 && C[1][1] == 41 && C[1][2] == 34;
-  testResult &= C[2][0] == 63 && C[2][1] == 54 && C[2][2] == 45;
+  ok &= C[0][0] == 33 && C[0][1] == 28 && C[0][2] == 23;
+  ok &= C[1][0] == 48 && C[1][1] == 41 && C[1][2] == 34;
+  ok &= C[2][0] == 63 && C[2][1] == 54 && C[2][2] == 45;
 
   // 2x3-matrix times transposed 2x3 matrix:
   // |1 2 3| * |9 8 7|^T = |1 2 3| * |9 6| = | 46 28|
@@ -444,9 +444,9 @@ bool testMatrixMultiply3x3()
   //                                 |7 4|
   rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::matrixMultiplySecondTransposed(pA, pB, pC, 2, 3, 2);
-  testResult &= C[0][0] ==  46 && C[0][1] == 28 && C[0][2] == -1;
-  testResult &= C[1][0] == 118 && C[1][1] == 73 && C[1][2] == -1;
-  testResult &= C[2][0] ==  -1 && C[2][1] == -1 && C[2][2] == -1;
+  ok &= C[0][0] ==  46 && C[0][1] == 28 && C[0][2] == -1;
+  ok &= C[1][0] == 118 && C[1][1] == 73 && C[1][2] == -1;
+  ok &= C[2][0] ==  -1 && C[2][1] == -1 && C[2][2] == -1;
 
   // 3x2-matrix times transposed 3x2 matrix:
   // |1 2| * |9 8|^T = |1 2| * |9 6 3| = | 25 16  7|
@@ -454,9 +454,9 @@ bool testMatrixMultiply3x3()
   // |7 8|   |3 2|     |7 8|             |127 82 37|
   rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::matrixMultiplySecondTransposed(pA, pB, pC, 3, 2, 3);
-  testResult &= C[0][0] ==  25 && C[0][1] == 16 && C[0][2] ==  7;
-  testResult &= C[1][0] ==  76 && C[1][1] == 49 && C[1][2] == 22;
-  testResult &= C[2][0] == 127 && C[2][1] == 82 && C[2][2] == 37;
+  ok &= C[0][0] ==  25 && C[0][1] == 16 && C[0][2] ==  7;
+  ok &= C[1][0] ==  76 && C[1][1] == 49 && C[1][2] == 22;
+  ok &= C[2][0] == 127 && C[2][1] == 82 && C[2][2] == 37;
 
   // transposed 2x3-matrix times transposed 3x2 matrix:
   // |1 2 3|^T * |9 8|^T = |1 4| * |9 6 3| = |41 26 11|
@@ -464,9 +464,9 @@ bool testMatrixMultiply3x3()
   //             |3 2|     |3 6|             |75 48 21|
   rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::matrixMultiplyBothTransposed(pA, pB, pC, 2, 3, 3);
-  testResult &= C[0][0] == 41 && C[0][1] == 26 && C[0][2] == 11;
-  testResult &= C[1][0] == 58 && C[1][1] == 37 && C[1][2] == 16;
-  testResult &= C[2][0] == 75 && C[2][1] == 48 && C[2][2] == 21;
+  ok &= C[0][0] == 41 && C[0][1] == 26 && C[0][2] == 11;
+  ok &= C[1][0] == 58 && C[1][1] == 37 && C[1][2] == 16;
+  ok &= C[2][0] == 75 && C[2][1] == 48 && C[2][2] == 21;
 
   // transposed 3x2-matrix times transposed 2x3 matrix:
   // |1 2|^T * |9 8 7|^T = |1 4 7| * |9 6| = | 90 54|
@@ -474,9 +474,9 @@ bool testMatrixMultiply3x3()
   // |7 8|                           |7 4|
   rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::matrixMultiplyBothTransposed(pA, pB, pC, 3, 2, 2);
-  testResult &= C[0][0] ==  90 && C[0][1] == 54 && C[0][2] == -1;
-  testResult &= C[1][0] == 114 && C[1][1] == 69 && C[1][2] == -1;
-  testResult &= C[2][0] ==  -1 && C[2][1] == -1 && C[2][2] == -1;
+  ok &= C[0][0] ==  90 && C[0][1] == 54 && C[0][2] == -1;
+  ok &= C[1][0] == 114 && C[1][1] == 69 && C[1][2] == -1;
+  ok &= C[2][0] ==  -1 && C[2][1] == -1 && C[2][2] == -1;
 
   // 3x3-matrix times 3x3-matrix in place multiplication:
   // |1 2 3| * |9 8 7| = | 30  24 18|
@@ -484,9 +484,9 @@ bool testMatrixMultiply3x3()
   // |7 8 9|   |3 2 1|   |138 114 90|
   rsMatrixTools::copyMatrix(pA, pC, 3, 3);
   rsMatrixTools::matrixInPlaceMultiply(pC, pB, 3, 3);
-  testResult &= C[0][0] ==  30 && C[0][1] ==  24 && C[0][2] == 18;
-  testResult &= C[1][0] ==  84 && C[1][1] ==  69 && C[1][2] == 54;
-  testResult &= C[2][0] == 138 && C[2][1] == 114 && C[2][2] == 90;
+  ok &= C[0][0] ==  30 && C[0][1] ==  24 && C[0][2] == 18;
+  ok &= C[1][0] ==  84 && C[1][1] ==  69 && C[1][2] == 54;
+  ok &= C[2][0] == 138 && C[2][1] == 114 && C[2][2] == 90;
 
   // 2x3-matrix times 3x3-matrix in place multiplication:
   // |1 2 3| * |9 8 7| = | 30  24 18|
@@ -495,17 +495,17 @@ bool testMatrixMultiply3x3()
   rsMatrixTools::initMatrix(pC, 3, 3, -1.0);
   rsMatrixTools::copyMatrix(pA, pC, 2, 3);
   rsMatrixTools::matrixInPlaceMultiply(pC, pB, 2, 3);
-  testResult &= C[0][0] ==  30 && C[0][1] ==  24 && C[0][2] == 18;
-  testResult &= C[1][0] ==  84 && C[1][1] ==  69 && C[1][2] == 54;
-  testResult &= C[2][0] ==  -1 && C[2][1] == -1 && C[2][2] == -1;
+  ok &= C[0][0] ==  30 && C[0][1] ==  24 && C[0][2] == 18;
+  ok &= C[1][0] ==  84 && C[1][1] ==  69 && C[1][2] == 54;
+  ok &= C[2][0] ==  -1 && C[2][1] == -1 && C[2][2] == -1;
 
-  return testResult;
+  return ok;
 }
 
 bool testMatrixMultiply()
 {
   std::string testName = "MatrixMultiply";
-  bool testResult = testMatrixMultiply3x3();
+  bool ok = testMatrixMultiply3x3();
 
   double A[4][4] = {{  2,   3,   5,   7},
   { 11,  13,  17,  19},
@@ -530,10 +530,10 @@ bool testMatrixMultiply()
   //              |97 101 103 107|
   rsMatrixTools::initMatrix(pC, 4, 4, -1.0);
   rsMatrixTools::matrixMultiply(pA, pB, pC, 2, 3, 4);
-  testResult &= C[0][0] ==  822 && C[0][1] ==  864 && C[0][2] ==  898 && C[0][3] ==  944;
-  testResult &= C[1][0] == 3247 && C[1][1] == 3415 && C[1][2] == 3567 && C[1][3] == 3757;
-  testResult &= C[2][0] ==   -1 && C[2][1] ==   -1 && C[2][2] ==   -1 && C[2][3] ==   -1;
-  testResult &= C[3][0] ==   -1 && C[3][1] ==   -1 && C[3][2] ==   -1 && C[3][3] ==   -1;
+  ok &= C[0][0] ==  822 && C[0][1] ==  864 && C[0][2] ==  898 && C[0][3] ==  944;
+  ok &= C[1][0] == 3247 && C[1][1] == 3415 && C[1][2] == 3567 && C[1][3] == 3757;
+  ok &= C[2][0] ==   -1 && C[2][1] ==   -1 && C[2][2] ==   -1 && C[2][3] ==   -1;
+  ok &= C[3][0] ==   -1 && C[3][1] ==   -1 && C[3][2] ==   -1 && C[3][3] ==   -1;
 
   // 2x3 matrix times transposed 3x4 matrix:
   // | 2  3  5| * | 59  61  67|^T = | 636  798 1012 1192|
@@ -542,10 +542,10 @@ bool testMatrixMultiply()
   //              |109 113 127|
   rsMatrixTools::initMatrix(pC, 4, 4, -1.0);
   rsMatrixTools::matrixMultiplySecondTransposed(pA, pB, pC, 2, 3, 4);
-  testResult &= C[0][0] ==  636 && C[0][1] ==  798 && C[0][2] == 1012 && C[0][3] == 1192;
-  testResult &= C[1][0] == 2581 && C[1][1] == 3241 && C[1][2] == 4131 && C[1][3] == 4827;
-  testResult &= C[2][0] ==   -1 && C[2][1] ==   -1 && C[2][2] ==   -1 && C[2][3] ==   -1;
-  testResult &= C[3][0] ==   -1 && C[3][1] ==   -1 && C[3][2] ==   -1 && C[3][3] ==   -1;
+  ok &= C[0][0] ==  636 && C[0][1] ==  798 && C[0][2] == 1012 && C[0][3] == 1192;
+  ok &= C[1][0] == 2581 && C[1][1] == 3241 && C[1][2] == 4131 && C[1][3] == 4827;
+  ok &= C[2][0] ==   -1 && C[2][1] ==   -1 && C[2][2] ==   -1 && C[2][3] ==   -1;
+  ok &= C[3][0] ==   -1 && C[3][1] ==   -1 && C[3][2] ==   -1 && C[3][3] ==   -1;
 
   // transposed 3x2 matrix times 3x4 matrix:
   // | 2  3|^T * |59  61  67  71| = |3152 3314 3416 3582|
@@ -553,10 +553,10 @@ bool testMatrixMultiply()
   // |23 29|     |97 101 103 107|
   rsMatrixTools::initMatrix(pC, 4, 4, -1.0);
   rsMatrixTools::matrixMultiplyFirstTransposed(pA, pB, pC, 3, 2, 4);
-  testResult &= C[0][0] == 3152 && C[0][1] == 3314 && C[0][2] == 3416 && C[0][3] == 3582;
-  testResult &= C[1][0] == 3939 && C[1][1] == 4139 && C[1][2] == 4267 && C[1][3] == 4473;
-  testResult &= C[2][0] ==   -1 && C[2][1] ==   -1 && C[2][2] ==   -1 && C[2][3] ==   -1;
-  testResult &= C[3][0] ==   -1 && C[3][1] ==   -1 && C[3][2] ==   -1 && C[3][3] ==   -1;
+  ok &= C[0][0] == 3152 && C[0][1] == 3314 && C[0][2] == 3416 && C[0][3] == 3582;
+  ok &= C[1][0] == 3939 && C[1][1] == 4139 && C[1][2] == 4267 && C[1][3] == 4473;
+  ok &= C[2][0] ==   -1 && C[2][1] ==   -1 && C[2][2] ==   -1 && C[2][3] ==   -1;
+  ok &= C[3][0] ==   -1 && C[3][1] ==   -1 && C[3][2] ==   -1 && C[3][3] ==   -1;
 
   // transposed 3x2 matrix times transposed 4x3 matrix:
   // | 2  3|^T * | 59  61  67|^T = |2330 2924 3647 4382|
@@ -565,12 +565,12 @@ bool testMatrixMultiply()
   //             |109 113 127|
   rsMatrixTools::initMatrix(pC, 4, 4, -1.0);
   rsMatrixTools::matrixMultiplyBothTransposed(pA, pB, pC, 3, 2, 4);
-  testResult &= C[0][0] == 2330 && C[0][1] == 2924 && C[0][2] == 3674 && C[0][3] == 4382;
-  testResult &= C[1][0] == 2913 && C[1][1] == 3653 && C[1][2] == 4591 && C[1][3] == 5479;
-  testResult &= C[2][0] ==   -1 && C[2][1] ==   -1 && C[2][2] ==   -1 && C[2][3] ==   -1;
-  testResult &= C[3][0] ==   -1 && C[3][1] ==   -1 && C[3][2] ==   -1 && C[3][3] ==   -1;
+  ok &= C[0][0] == 2330 && C[0][1] == 2924 && C[0][2] == 3674 && C[0][3] == 4382;
+  ok &= C[1][0] == 2913 && C[1][1] == 3653 && C[1][2] == 4591 && C[1][3] == 5479;
+  ok &= C[2][0] ==   -1 && C[2][1] ==   -1 && C[2][2] ==   -1 && C[2][3] ==   -1;
+  ok &= C[3][0] ==   -1 && C[3][1] ==   -1 && C[3][2] ==   -1 && C[3][3] ==   -1;
 
-  return testResult;
+  return ok;
 }
 
 
@@ -795,8 +795,8 @@ bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
   // ToDo: use the new rsLoggingVector as new 2nd template argument for rsMatrix and use that for
   // figuring out the number of allocs. Maybe first make a unit test of rsLoggingVector
 
-  bool testResult = true;
-  testResult &= testLoggingVector();  // to ensure that our test-envrionment works as should
+  bool ok = true;
+  ok &= testLoggingVector();  // to ensure that our test-envrionment works as should
 
   using Matrix = rsMatrix<double>;
   using Vector = std::vector<double>;
@@ -806,23 +806,23 @@ bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
   // A = |1 2 3|
   //     |4 5 6|
   Matrix A(2, 3, {1.,2.,3., 4.,5.,6.}); // calls rsMatrix(int, int, std::vector<T>&&)
-  testResult &= A(0,0) == 1 &&  A(0,1) == 2 && A(0,2) == 3;
-  testResult &= A(1,0) == 4 &&  A(1,1) == 5 && A(1,2) == 6;
-  testResult &= allocs == 1;
+  ok &= A(0,0) == 1 &&  A(0,1) == 2 && A(0,2) == 3;
+  ok &= A(1,0) == 4 &&  A(1,1) == 5 && A(1,2) == 6;
+  ok &= allocs == 1;
 
   // B = |1 2| 
   //     |3 4|
   //     |5 6|
   Matrix B(3, 2, {1.,2.,3., 4.,5.,6.}); // calls rsMatrix(int, int, std::vector<T>&&)
-  testResult &= B(0,0) == 1 &&  B(0,1) == 2;
-  testResult &= B(1,0) == 3 &&  B(1,1) == 4;
-  testResult &= B(2,0) == 5 &&  B(2,1) == 6;
-  testResult &= allocs == 2;
+  ok &= B(0,0) == 1 &&  B(0,1) == 2;
+  ok &= B(1,0) == 3 &&  B(1,1) == 4;
+  ok &= B(2,0) == 5 &&  B(2,1) == 6;
+  ok &= allocs == 2;
 
   // matrix-vector multiplication:
   Vector x({1,2,3});
   Vector y = A * x;
-  testResult &= y == Vector({14,32});
+  ok &= y == Vector({14,32});
 
   // matrix multiplication:
   Matrix C = A*B; 
@@ -830,187 +830,187 @@ bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
   //   operator*(const rsMatrix<T>&)
   //     rsMatrix(int numRows, int numColumns)
   //     rsMatrix(rsMatrix&& B)
-  testResult &= allocs == 3;
-  testResult &= C(0,0) == 22 &&  C(0,1) == 28;
-  testResult &= C(1,0) == 49 &&  C(1,1) == 64;
+  ok &= allocs == 3;
+  ok &= C(0,0) == 22 &&  C(0,1) == 28;
+  ok &= C(1,0) == 49 &&  C(1,1) == 64;
 
   C = A;  // calls copy assigment operator
-  testResult &= allocs == 4;
-  testResult &= C == A;
+  ok &= allocs == 4;
+  ok &= C == A;
 
   A = A;  // self copy assignment - should not re-allocate
-  testResult &= allocs == 4;
+  ok &= allocs == 4;
 
   Matrix D = A+A;
-  testResult &= allocs == 5;
-  testResult &= D == Matrix(2, 3, {2.,4.,6., 8.,10.,12.});
-  testResult &= allocs == 6;
-  testResult &= D == A+A;
-  testResult &= allocs == 7;
+  ok &= allocs == 5;
+  ok &= D == Matrix(2, 3, {2.,4.,6., 8.,10.,12.});
+  ok &= allocs == 6;
+  ok &= D == A+A;
+  ok &= allocs == 7;
 
   C = B*A;  // calls move assignment operator
-  testResult &= allocs == 8;   // fails here
-  testResult &= C(0,0) ==  9 &&  C(0,1) == 12 && C(0,2) == 15;
-  testResult &= C(1,0) == 19 &&  C(1,1) == 26 && C(1,2) == 33;
-  testResult &= C(2,0) == 29 &&  C(2,1) == 40 && C(2,2) == 51;
+  ok &= allocs == 8;   // fails here
+  ok &= C(0,0) ==  9 &&  C(0,1) == 12 && C(0,2) == 15;
+  ok &= C(1,0) == 19 &&  C(1,1) == 26 && C(1,2) == 33;
+  ok &= C(2,0) == 29 &&  C(2,1) == 40 && C(2,2) == 51;
 
 
   Matrix E(A+D);  // calls move constructor
-  testResult &= allocs == 9;
-  testResult &= E == A+D;  // temporary A+D needs allocation
-  testResult &= allocs == 10; 
+  ok &= allocs == 9;
+  ok &= E == A+D;  // temporary A+D needs allocation
+  ok &= allocs == 10; 
 
   Matrix F(E);   // calls copy constructor
-  testResult &= allocs == 11;
-  testResult &= F == E;   // no allocation here
-  testResult &= allocs == 11;
+  ok &= allocs == 11;
+  ok &= F == E;   // no allocation here
+  ok &= allocs == 11;
 
   // hmm - these here call move/copy constructors and not move/copy assigment operators - why
   // ..ah - it's because it's not a re-assignment
   Matrix G = A+D; // calls move constructor
-  testResult &= allocs == 12;
-  testResult &= G == A+D;  // temporary A+D needs allocation
-  testResult &= allocs == 13;
+  ok &= allocs == 12;
+  ok &= G == A+D;  // temporary A+D needs allocation
+  ok &= allocs == 13;
 
   Matrix H = G;   // calls copy constructor
-  testResult &= allocs == 14;
-  testResult &= H == G;
-  testResult &= allocs == 14;
+  ok &= allocs == 14;
+  ok &= H == G;
+  ok &= allocs == 14;
 
 
   Matrix I, J;  // no allocations yet
-  testResult &= allocs == 14;
+  ok &= allocs == 14;
   I = A+D;      // move assignment
-  testResult &= allocs == 15;
+  ok &= allocs == 15;
   J = I;        // copy assignment
-  testResult &= allocs == 16;
+  ok &= allocs == 16;
 
 
   // multiplication with a scalar:
   I = 2.0 * A;
-  testResult &= allocs == 17;
-  testResult &=  I == Matrix(2, 3, {2.,4.,6., 8.,10.,12.});
-  testResult &= allocs == 18;
+  ok &= allocs == 17;
+  ok &=  I == Matrix(2, 3, {2.,4.,6., 8.,10.,12.});
+  ok &= allocs == 18;
 
   J = A * 2.0;
-  testResult &= allocs == 19;
-  testResult &= I == J;
-  testResult &= allocs == 19;
+  ok &= allocs == 19;
+  ok &= I == J;
+  ok &= allocs == 19;
 
   // in-place addition and subtraction via +=, -=:
   J += A;
-  testResult &= allocs == 19;
-  testResult &= J == 3.0 * A;
-  testResult &= allocs == 20;
+  ok &= allocs == 19;
+  ok &= J == 3.0 * A;
+  ok &= allocs == 20;
   J -= A;
-  testResult &= allocs == 20;
-  testResult &= J == 2.0 * A;
-  testResult &= allocs == 21;
+  ok &= allocs == 20;
+  ok &= J == 2.0 * A;
+  ok &= allocs == 21;
 
   // the *= operator can't operate in-place:
   J = A;    // should not re-allocate because J already has the right shape
-  testResult &= allocs == 21;
+  ok &= allocs == 21;
   J *= B;   // allocates
-  testResult &= allocs == 22;
-  testResult &= J == A*B;
-  testResult &= allocs == 23;
+  ok &= allocs == 22;
+  ok &= J == A*B;
+  ok &= allocs == 23;
 
   // in-place scaling by a scalar:
   J = A;    
-  testResult &= allocs == 24;
+  ok &= allocs == 24;
   J *= 2.0;
-  testResult &= allocs == 24;
-  testResult &= J == 2.0 * A;
-  testResult &= allocs == 25;
+  ok &= allocs == 24;
+  ok &= J == 2.0 * A;
+  ok &= allocs == 25;
   J /= 2.0;
-  testResult &= allocs == 25;
-  testResult &= J == A;
-  testResult &= allocs == 25;
+  ok &= allocs == 25;
+  ok &= J == A;
+  ok &= allocs == 25;
 
 
   C = Matrix(2, 4, {1,2,3,4, 5,6,7,8});     // 2x4
-  testResult &= allocs == 26;
+  ok &= allocs == 26;
   D = Matrix(4, 2, {1,2, 3,4, 5,6, 7,8});   // 4x2
-  testResult &= allocs == 27;
+  ok &= allocs == 27;
 
   E = B*C;                                  // 3x2 * 2x4 = 3x4
-  testResult &= allocs == 28;
-  testResult &= E.getNumRows()    == 3;
-  testResult &= E.getNumColumns() == 4;
-  testResult &= E(0,0) == 11 && E(0,1) == 14 && E(0,2) == 17 && E(0,3) == 20;
-  testResult &= E(1,0) == 23 && E(1,1) == 30 && E(1,2) == 37 && E(1,3) == 44;
-  testResult &= E(2,0) == 35 && E(2,1) == 46 && E(2,2) == 57 && E(2,3) == 68;
+  ok &= allocs == 28;
+  ok &= E.getNumRows()    == 3;
+  ok &= E.getNumColumns() == 4;
+  ok &= E(0,0) == 11 && E(0,1) == 14 && E(0,2) == 17 && E(0,3) == 20;
+  ok &= E(1,0) == 23 && E(1,1) == 30 && E(1,2) == 37 && E(1,3) == 44;
+  ok &= E(2,0) == 35 && E(2,1) == 46 && E(2,2) == 57 && E(2,3) == 68;
 
   E = D*A;
-  testResult &= allocs == 29;               // 4x2 * 2x3 = 4x3
-  testResult &= E.getNumRows()    == 4;
-  testResult &= E.getNumColumns() == 3;
-  testResult &= E(0,0) ==  9 && E(0,1) == 12 && E(0,2) == 15;
-  testResult &= E(1,0) == 19 && E(1,1) == 26 && E(1,2) == 33;
-  testResult &= E(2,0) == 29 && E(2,1) == 40 && E(2,2) == 51;
-  testResult &= E(3,0) == 39 && E(3,1) == 54 && E(3,2) == 69;
+  ok &= allocs == 29;               // 4x2 * 2x3 = 4x3
+  ok &= E.getNumRows()    == 4;
+  ok &= E.getNumColumns() == 3;
+  ok &= E(0,0) ==  9 && E(0,1) == 12 && E(0,2) == 15;
+  ok &= E(1,0) == 19 && E(1,1) == 26 && E(1,2) == 33;
+  ok &= E(2,0) == 29 && E(2,1) == 40 && E(2,2) == 51;
+  ok &= E(3,0) == 39 && E(3,1) == 54 && E(3,2) == 69;
 
   // move constructor:
   Matrix K(std::move(E));
-  testResult &= allocs == 29;
-  testResult &= K.getNumRows() == 4 && K.getNumColumns() == 3;
-  testResult &= E.getNumRows() == 0 && E.getNumColumns() == 0;
-  testResult &= K.getDataVectorConst().size() == 12;
-  testResult &= E.getDataVectorConst().size() == 0;
-  testResult &= K.getDataPointerConst() != nullptr;
-  testResult &= E.getDataPointerConst() == nullptr;
+  ok &= allocs == 29;
+  ok &= K.getNumRows() == 4 && K.getNumColumns() == 3;
+  ok &= E.getNumRows() == 0 && E.getNumColumns() == 0;
+  ok &= K.getDataVectorConst().size() == 12;
+  ok &= E.getDataVectorConst().size() == 0;
+  ok &= K.getDataPointerConst() != nullptr;
+  ok &= E.getDataPointerConst() == nullptr;
 
   // move assignment operator:
   E = std::move(K);
-  testResult &= allocs == 29;
-  testResult &= E.getNumRows() == 4 && E.getNumColumns() == 3;
-  testResult &= K.getNumRows() == 0 && K.getNumColumns() == 0;
-  testResult &= E.getDataVectorConst().size() == 12;
-  testResult &= K.getDataVectorConst().size() == 0;
-  testResult &= E.getDataPointerConst() != nullptr;
-  testResult &= K.getDataPointerConst() == nullptr;
+  ok &= allocs == 29;
+  ok &= E.getNumRows() == 4 && E.getNumColumns() == 3;
+  ok &= K.getNumRows() == 0 && K.getNumColumns() == 0;
+  ok &= E.getDataVectorConst().size() == 12;
+  ok &= K.getDataVectorConst().size() == 0;
+  ok &= E.getDataPointerConst() != nullptr;
+  ok &= K.getDataPointerConst() == nullptr;
 
   // transposition:
   E = A;
-  testResult &= allocs == 30;
-  testResult &= E.getNumRows() == 2 && E.getNumColumns() == 3;
+  ok &= allocs == 30;
+  ok &= E.getNumRows() == 2 && E.getNumColumns() == 3;
   E.transpose();
-  testResult &= allocs == 31;
-  testResult &= E == Matrix(3, 2, {1,4, 2,5, 3,6});
-  testResult &= allocs == 32;
+  ok &= allocs == 31;
+  ok &= E == Matrix(3, 2, {1,4, 2,5, 3,6});
+  ok &= allocs == 32;
 
   Matrix S4(4, 4, {1,2,3,4, 5,6,7,8, 9,10,11,12, 13,14,15,16});
-  testResult &= allocs == 33;
+  ok &= allocs == 33;
   S4.transpose();
-  testResult &= allocs == 33;
-  testResult &= S4 == Matrix(4, 4, {1,5,9,13, 2,6,10,14, 3,7,11,15, 4,8,12,16});
-  testResult &= allocs == 34;
+  ok &= allocs == 33;
+  ok &= S4 == Matrix(4, 4, {1,5,9,13, 2,6,10,14, 3,7,11,15, 4,8,12,16});
+  ok &= allocs == 34;
 
   Matrix V3(3, 1, {1,2,3});     // a 3D column-vector...
-  testResult &= allocs == 35;
+  ok &= allocs == 35;
   V3.transpose();               // ...becomes a 3D row-vector
-  testResult &= allocs == 35;
-  testResult &= V3 == Matrix(1, 3, {1,2,3});
-  testResult &= allocs == 36;
+  ok &= allocs == 35;
+  ok &= V3 == Matrix(1, 3, {1,2,3});
+  ok &= allocs == 36;
 
   // factory functions:
   E = Matrix::identity(4);
-  testResult &= allocs == 37;
-  testResult &= E == Matrix(4, 4, {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1});
-  testResult &= allocs == 38;
+  ok &= allocs == 37;
+  ok &= E == Matrix(4, 4, {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1});
+  ok &= allocs == 38;
 
   E = Matrix::zero(3, 4);
-  testResult &= allocs == 39;
-  testResult &= E == Matrix(3, 4, {0,0,0,0, 0,0,0,0, 0,0,0,0});
-  testResult &= allocs == 40;
+  ok &= allocs == 39;
+  ok &= E == Matrix(3, 4, {0,0,0,0, 0,0,0,0, 0,0,0,0});
+  ok &= allocs == 40;
 
   // swapping two matrices:
   RAPT::rsSwapNaive(A, B);
-  testResult &= allocs == 43;   // naive swapping causes 3 heap allocations...
+  ok &= allocs == 43;   // naive swapping causes 3 heap allocations...
   RAPT::rsSwapViaMove(A, B);
-  testResult &= allocs == 43;   // ...whereas swapping via std::move causes none
+  ok &= allocs == 43;   // ...whereas swapping via std::move causes none
   RAPT::rsSwap(A, B);
-  testResult &= allocs == 43;   // rsSwap calls rsSwapViaMove
+  ok &= allocs == 43;   // rsSwap calls rsSwapViaMove
 
 
 
@@ -1029,7 +1029,7 @@ bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
 
 
 
-  return testResult;
+  return ok;
 }
 
 bool testKroneckerProduct()
