@@ -1296,7 +1296,14 @@ public:
   // This member is just an instrumentation for unit-testing of the copy elision in copy 
   // constructors and assignment. It's actually the number of *potential* heap-allocations, namely,
   // the number of calls to data.resize() which may or may not re-allocate memory.
-  // ToDo: try to get rid of this and implement the allocation test using a custom allocator
+  // ToDo: Try to get rid of this and implement the allocation test using a custom allocator or 
+  // maybe have a 2nd template argument TVec for the underlying vector datatype to hold the data 
+  // which defaults to std::vector. In the unit tests use a special rsLoggingVector for that which
+  // is just a subclass of std::vector but overrides resize (and maybe others) and logs each call
+  // to it. Being able to provide the data storgae vector as template argument could have other 
+  // benefits as well - maybe the client wants to use another growth or allocation strategy - this
+  // would enable this as well.
+
 
 protected:
 

@@ -234,6 +234,76 @@ bool rsIsPermutation(const std::vector<T>& x, const std::vector<T>& y, T tol)
 }
 
 //=================================================================================================
+
+/** A subclass of std::vector that can be used as drop-in replacement for it and performs some
+additional logging of certain member function calls by intercepting them (via overriding), doing
+the logging and then just forwarding the request to the baseclass implementation. It can be used to
+verify that return value optimzation works as intended for classes that uses std::vector for the 
+underlying data storage by also templatizing them on the vector type to use and pass this type here 
+in the respective unit tests. Note that the overriding only gives compile-time polymorphism because
+the overriden functions are not virtual in the baseclass - but this is good enough for the intended
+purpose. */
+
+template<class T>
+class rsLoggingVector : public std::vector<T>
+{
+
+public:
+
+  using Base = std::vector<T>;
+
+  template<class S> // S: size-type
+  void resize(S newSize) 
+  { 
+    numResizeCalls++; 
+    Base::resize(newSize); 
+  }
+
+  template<class S> 
+  void resize(S newSize, const T& val)
+  {
+    numResizeCalls++; 
+    Base::resize(newSize, val);
+  }
+  // what does this val variable do? it doesn't seem to initialize all elements to val
+
+
+  /*
+  // std::vector::resize looks like this in MSVC:
+
+  void resize(_CRT_GUARDOVERFLOW const size_type _Newsize) {
+  // trim or append value-initialized elements, provide strong guarantee
+  _Resize(_Newsize, _Value_init_tag{});
+  }
+
+  void resize(_CRT_GUARDOVERFLOW const size_type _Newsize, const _Ty& _Val) {
+  // trim or append copies of _Val, provide strong guarantee
+  _Resize(_Newsize, _Val);
+  }
+  */
+
+  //void resize(size_t newSize) { numResizeCalls++; Base::resize(newSize); }
+  //void resize(int    newSize) { numResizeCalls++; Base::resize(newSize); }
+
+  // ToDo:
+  // -check that we override all relevant overloads of resize (for size_t, int, const, etc.) to make
+  //  sure that we really intercept all such calls.
+  // -maybe log also calls to: reserve, shrink_to_fit, copy-assign, copy-construct, etc.
+  //  ...anything that potentially (re)-allocates
+
+  // These logging values are static for two reasons: (1) We want to be able to globally access 
+  // them from the test code because the to-be-tested classes may not expose any interface to their 
+  // underlying data storage vector. (2) We are actually interested in the number of resize calls on
+  // all vectors combined - not just those on a specific one.
+
+  static size_t numResizeCalls;  // number of calls to resize()
+
+};
+
+template<class T> size_t rsLoggingVector<T>::numResizeCalls = 0;
+
+
+//=================================================================================================
 // Convenience functions for matrices:
 
 template<class T>
@@ -282,7 +352,7 @@ rsMatrix<T> rsToMatrixColumnWise(const std::vector<T>& v, int numRows, int numCo
       A(m, n) = v[n*M + m];
   return A;
 }
-// Maybe move into class rsMatrix(View). :aybe the "toVector" functions into matrixView to be
+// Maybe move into class rsMatrix(View). Maybe the "toVector" functions into matrixView to be
 // called like A.toVectorRowWise() and the "toMatrix" functions as static member functions
 // in rsMatrix to be called like rsMatrix<float>::toMatrixRowWise()
 
@@ -306,6 +376,7 @@ rsMatrix<T> fromEigenSystem(const std::vector<T>& vals, const std::vector<T>& ve
   rsAssert((int)vecs.size() == N*N);
   return fromEigenSystem(vals, rsToMatrixColumnWise(vecs, N, N));
 }
+// maybe move to Prototypes and maybe into the rsLinearAlgebra
 
 /** This function checks, if the eigenvalues "vals1" and eigenvectors "vecs1" are compatible with 
 the ones in the vals2, vecs2 arrays. The equivalence relation between the eigensystems is that 

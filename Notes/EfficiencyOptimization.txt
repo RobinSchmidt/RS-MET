@@ -80,6 +80,7 @@ Ideas from here: https://www.youtube.com/watch?v=NH1Tta7purM
   split further in a (non-inlined) function call (13:32)
  -avoid virtual functions by 
   -using templates instead (15:45)
+ -use a pool of pre-allocated objects in favor of allocating on demand
 
 
 
