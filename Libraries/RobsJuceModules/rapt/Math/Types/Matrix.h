@@ -935,9 +935,9 @@ protected:
 //=================================================================================================
 
 /** This is a class for representing matrices and doing mathematical operations with them. It's
-implemented as subclass of rsMatrixView and stores the actual matrix data in a std::vector. Copy-
-and move constructors and -assignment operators have been implemented in order to avoid
-unnecessary heap allocations in arithmetic expressions with matrices (return value copy
+implemented as subclass of rsMatrixView and by default stores the actual matrix data in a 
+std::vector. Copy- and move constructors and -assignment operators have been implemented in order 
+to avoid unnecessary heap allocations in arithmetic expressions with matrices (return value copy
 elision). 
 
 The second template parameter allows client code to select the underlying storage container for the
@@ -947,7 +947,8 @@ to store the data in a contiguous memory area, it needs to have a resize() metho
 
 ToDo: 
 -those member functions that use std::vector for parameters or return types should be changed 
- to use the template parameter V instead
+ to use the template parameter V instead (the transition from hardcoded std::vector and V is not
+ yet complete)
 
 */
 
@@ -993,7 +994,6 @@ public:
   /** Creates matrix from a std::vector.  */
   rsMatrix(int numRows, int numColumns, const std::vector<T>& newData) : data(newData)
   {
-    numHeapAllocations++;   // data(newData) allocates
     rsAssert(numRows*numColumns == newData.size());
     this->numRows = numRows;
     this->numCols = numColumns;
@@ -1005,7 +1005,6 @@ public:
     rsMatrix<double> A(2, 3, {1.,2.,3., 4.,5.,6.});   */
   rsMatrix(int numRows, int numColumns, std::vector<T>&& newData) : data(std::move(newData))
   {
-    numHeapAllocations++;             // we count the allocation that took place in the caller
     rsAssert(newData.size() == 0);
     rsAssert(numRows*numColumns == data.size());
     this->numRows = numRows;
@@ -1015,7 +1014,6 @@ public:
 
   rsMatrix(int numRows, int numColumns, std::initializer_list<T> l) : data(l) 
   {
-    numHeapAllocations++;   // data(l) allocates
     rsAssert(numRows*numColumns == l.size());
     this->numRows = numRows;
     this->numCols = numColumns;
@@ -1108,7 +1106,6 @@ public:
     this->numRows = numRows;
     this->numCols = numColumns;
     data.resize(this->numRows * this->numCols);
-    numHeapAllocations++;                        // data.resize() may have re-allocated heap memory
     updateDataPointer();
     // optionally initialize with zeros
   }
@@ -1133,7 +1130,6 @@ public:
     if(this->isVector()) { rsSwap(this->numRows, this->numCols); return; }
 
     V v(this->getSize());     // the general case needs reallocation...
-    numHeapAllocations++;
     rsMatrixView<T> B(this->numCols, this->numRows, &v[0]);
     rsMatrixView<T>::transpose(*this, &B);
     rsSwap(this->numRows, this->numCols);
@@ -1300,22 +1296,6 @@ public:
     return C;
   }
 
-  //-----------------------------------------------------------------------------------------------
-  /** \name Misc */
-
-  static int numHeapAllocations;
-  // This member is just an instrumentation for unit-testing of the copy elision in copy 
-  // constructors and assignment. It's actually the number of *potential* heap-allocations, namely,
-  // the number of calls to data.resize() which may or may not re-allocate memory.
-  // ToDo: Try to get rid of this and implement the allocation test using a custom allocator or 
-  // maybe have a 2nd template argument V for the underlying vector datatype to hold the data which
-  // defaults to std::vector (done). In the unit tests use a special rsLoggingVector for that which
-  // is just a subclass of std::vector but overrides resize (and maybe others) and logs each call
-  // to it. Being able to provide the data storgae vector as template argument could have other 
-  // benefits as well - maybe the client wants to use another growth or allocation strategy - this
-  // would enable this as well.
-
-
 protected:
 
   /** Updates the data-pointer inherited from rsMatrixView to point to the begin of our std::vector
@@ -1328,14 +1308,12 @@ protected:
       this->dataPointer = nullptr;
   }
 
-
+  //-----------------------------------------------------------------------------------------------
   /** \name Data */
 
   V data;  // V must be a vector type similar to std::vector
 
 };
-
-template<class T, class V> int rsMatrix<T, V>::numHeapAllocations = 0;
 
 /** Multiplies a scalar and a matrix. */
 template<class T, class V>

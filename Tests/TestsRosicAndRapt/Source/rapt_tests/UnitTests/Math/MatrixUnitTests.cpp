@@ -798,12 +798,12 @@ bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
   bool ok = true;
   ok &= testLoggingVector();  // to ensure that our test-envrionment works as should
 
-  using LV = rsLoggingVector<double>;
-  using Matrix = rsMatrix<double, LV>;
+
+
   using Vector = std::vector<double>;   // maybe use LV instead, too
 
-  //int& allocs  = Matrix::numHeapAllocations; 
-
+  using LV = rsLoggingVector<double>;
+  using Matrix = rsMatrix<double, LV>;
   size_t& allocs = LV::numPotentialAllocs; // counts potential re-allocations
   allocs = 0;
 
@@ -1017,10 +1017,6 @@ bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
   ok &= allocs == 43;   // rsSwap calls rsSwapViaMove
 
 
-
-
-
-
   // create diagonal matrix
 
 
@@ -1028,30 +1024,32 @@ bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
   // todo:
   // -maybe add/subtract scalars (in-place and out-of-place)....but maybe not: mathematically, the
   //  space of MxN matrices is a vector space and addition of a scalar and a vector is not a thing
-  //  in vector spaces
-
-
-
+  //  in vector space
 
   return ok;
 }
 
 bool testKroneckerProduct()
 {
-  bool res = true;
-  typedef rsMatrix<double> Matrix;
+  bool ok = true;
 
-  int& allocs  = Matrix::numHeapAllocations;  // to count allocations
+  using LV = rsLoggingVector<double>;
+  using Matrix = rsMatrix<double, LV>;
+  size_t& allocs = LV::numPotentialAllocs; // counts potential re-allocations
+
+  //typedef rsMatrix<double> Matrix;
+  //int& allocs  = Matrix::numHeapAllocations;  // to count allocations
+
   allocs = 0;
 
   Matrix A(2, 3, {1,2,3,4,5,6});
-  res &= allocs == 1;
+  ok &= allocs == 1;
   Matrix B(4, 5, {1,2,3,4,5, 6,7,8,9,10, 11,12,13,14,15, 16,17,18,19,20});
-  res &= allocs == 2;
+  ok &= allocs == 2;
 
   Matrix C = Matrix::getKroneckerProduct(A, B);
-  res &= allocs == 3;
-  res &= C.getNumRows() == 8 && C.getNumColumns() == 15;
+  ok &= allocs == 3;
+  ok &= C.getNumRows() == 8 && C.getNumColumns() == 15;
 
   Matrix T(8, 15,   // target Kronecker product
     { 1, 2, 3, 4, 5, 2, 4, 6, 8, 10, 3,  6,  9, 12, 15,
@@ -1062,8 +1060,8 @@ bool testKroneckerProduct()
      24,28,32,36,40,30,35,40,45, 50,36, 42, 48, 54, 60,
      44,48,52,56,60,55,60,65,70, 75,66, 72, 78, 84, 90,
      64,68,72,76,80,80,85,90,95,100,96,102,108,114,120});
-  res &= allocs == 4;
-  res &= C == T;
+  ok &= allocs == 4;
+  ok &= C == T;
 
   // the following sage code produces the result:
   // A = matrix([[1,2,3],[4,5,6]])
@@ -1071,7 +1069,7 @@ bool testKroneckerProduct()
   // C = A.tensor_product(B)
   // A, B, C
 
-  return res;
+  return ok;
 }
 
 bool testSparseMatrix()
