@@ -1741,14 +1741,14 @@ bool samplerWaveShaperTest()
   //rsPlotVector(sin440);
 
   // Waveshaper settings:
-  float drive  = 4.0f;
+  float drive1 = 2.0f;
+  Shape shape1 = Shape::Tanh;
   //float postGain = 0.5f;
-  float dcOffset = 0.0;
-  Shape shape    = Shape::Tanh;
+  //float dcOffset = 0.0;
 
   // Create target signal:
   for(int n = 0; n < N; n++)
-    tgt[n] = tanh(drive * sin440[n]);
+    tgt[n] = tanh(drive1 * sin440[n]);
   //rsPlotVector(tgt);
   // todo: use a cheap approximation to tanh and/or rsTanh (based on exp), maybe use exp based on
   // 2Dat's code (somewher on the kvr forum)...also implement mystran's "random cheap sigmoid"
@@ -1763,8 +1763,8 @@ bool samplerWaveShaperTest()
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
-  se.setRegionSetting(0, 0, PST::DistShape, float(shape));
-  se.setRegionSetting(0, 0, PST::DistDrive, drive);
+  se.setRegionSetting(0, 0, PST::DistShape, float(shape1));
+  se.setRegionSetting(0, 0, PST::DistDrive, drive1);
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
 
   // Set up one region within one group and add a waveshaper to the group. When two notes are being 
@@ -1775,19 +1775,54 @@ bool samplerWaveShaperTest()
   se.addRegion(0); ok &= se.getNumRegions(0) == 1;
   se.setRegionSample(0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
-  se.setGroupSetting(0, PST::DistShape, float(shape));
-  se.setGroupSetting(0, PST::DistDrive, drive);
+  se.setGroupSetting(0, PST::DistShape, float(shape1));
+  se.setGroupSetting(0, PST::DistDrive, drive1);
 
   // The class rsSamplerEngine should treat the group settings as fallback for when there is no
   // region setting and the DSP should be applied to each region separately:
   for(int n = 0; n < N; n++) 
-    tgt[n] += tanh(drive * getSampleAt(sin440, 0.5f*n));
-  //rsPlotVector(tgt);
+    tgt[n] += tanh(drive1 * getSampleAt(sin440, 0.5f*n));
   using Ev   = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp = Ev::Type;
   se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
   se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13, false);
+
+  // Let the region override the group setting for drive. The shape setting should still come from
+  // the group. We again play two notes at 60 and 48:
+  float drive2 = 2*drive1;
+  se.setRegionSetting(0, 0, PST::DistDrive, drive2);
+  for(int n = 0; n < N; n++)
+    tgt[n] = tanh(drive2 * sin440[n]) + tanh(drive2 * getSampleAt(sin440, 0.5f*n));
+  se.reset();
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13, false);
+
+  // Remove the group setting for the shape - now the waveshaper should use the default shape which
+  // is linear, i.e. no shaping at all. 
+  se.removeGroupSetting(0, PST::DistShape);
+  for(int n = 0; n < N; n++)
+    tgt[n] = (drive2 * sin440[n]) + (drive2 * getSampleAt(sin440, 0.5f*n));
+  se.reset();
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
   ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13, true);
+  rsAssert(ok);
+  // fails! ...handling the shape parameter needs to be implemented in WaveShaper
+
+
+
+
+  // Add another region to the group without giving it a distortion setting - it should keep 
+  // falling back to the group setting whereas the old region should keep using the overriden
+  // setting:
+  // ...
+
+
+  // Define a second group without dist settings, add a region to it, define instrument wide 
+  // fallback settings - the new region should fall back to these instrument settings:
+
 
 
   /*
@@ -1845,7 +1880,7 @@ bool samplerWaveShaperTest()
   //  ..or maybe distort_ or distortion_ ...there is something like eg2drive_shape in sfz2...not 
   //  sure what that is
 
-  rsAssert(ok);
+
   return ok;
 }
 
