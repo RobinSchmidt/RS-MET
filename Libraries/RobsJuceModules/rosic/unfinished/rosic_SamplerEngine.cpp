@@ -986,8 +986,15 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
 {
   RAPT::rsAssert(dspChain.isEmpty(), "Someone has not cleaned up after finishing playback!");
   dspChain.clear(); // ...so we do it here. But this should be fixed elsewhere!
+
   using DspType = DspType;
   const std::vector<DspType>& dspTypeChain = region->getProcessingChain();
+
+  // Factor this loop out into an internal helper function and call it 3 times for the 3 
+  // dspTypeChains of the region, it's enclosing group and instrument. But will this work as 
+  // intended or will it add the group DSPs on top of the region DSPs? Maybe we should use a
+  // dspChain.addIfNotAlreadyThere(dsp, index) function instead. Or: Before calling getProcessor(),
+  // we should figure out, whether ot not we actually need an additional DSP
   for(int i = 0; i < (int)dspTypeChain.size(); i++) 
   {
     DspType dspType = dspTypeChain[i];
@@ -1006,6 +1013,8 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
       return false; 
     }
   }
+
+
   return true;
   // If false is returned, it means we do not have enough processors of the required types 
   // available. In this case, the caller should roll back and discard the whole RegionPlayer 
