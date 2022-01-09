@@ -1483,9 +1483,11 @@ void rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp)
   const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
   gp->addRegionPlayer(rp);
   gp->group = grp;
+
+  gp->buildDspChain(); // ToDo: use boolean return value: if false (unlikely), roll back the RegionPlayer rp
+  //gp->setupDspSettings(); // to do
+
   activeGroupPlayers.push_back(gp);
-  // ToDo: 
-  // -we need to set up the DSP chain for the new gp
 }
 
 int rsSamplerEngine2::stopGroupPlayer(int i)
@@ -1494,6 +1496,7 @@ int rsSamplerEngine2::stopGroupPlayer(int i)
     RAPT::rsError("Invalid player index");
     return rsReturnCode::invalidIndex; }
   GroupPlayer* p = activeGroupPlayers[i];
+  p->clearDspChain();
   RAPT::rsRemove(activeGroupPlayers, i);
   idleGroupPlayers.push_back(p);
   return rsReturnCode::success;
@@ -1528,6 +1531,19 @@ void rsSamplerEngine2::GroupPlayer::removeRegionPlayer(RegionPlayer* player)
   RAPT::rsAssert(RAPT::rsContains(regionPlayers, player)); // ToDo: add and use rsContainsOnce
   RAPT::rsRemoveFirstOccurrence(regionPlayers, player);
 }
+
+bool rsSamplerEngine2::GroupPlayer::buildDspChain()
+{
+  //RAPT::rsError("Not yet implemented");
+  return false;
+}
+
+void rsSamplerEngine2::GroupPlayer::clearDspChain()
+{
+  //RAPT::rsError("Not yet implemented");
+}
+
+
 
 }} // namespaces
 

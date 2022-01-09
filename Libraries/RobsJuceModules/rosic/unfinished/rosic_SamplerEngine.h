@@ -925,6 +925,9 @@ protected:
     /** Returns true, iff this GroupPlayer has no RegionPlayer objects running. */
     bool hasNoRegionPlayers() { return regionPlayers.empty(); }
 
+    bool buildDspChain(); // maybe rename to assembleDspChain
+    void clearDspChain(); // maybe rename to disassembleDspChain, teardown, clearDspChain
+
   protected:
 
     std::vector<RegionPlayer*> regionPlayers;
