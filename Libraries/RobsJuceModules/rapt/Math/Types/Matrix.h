@@ -940,7 +940,7 @@ and move constructors and -assignment operators have been implemented in order t
 unnecessary heap allocations in arithmetic expressions with matrices (return value copy
 elision). */
 
-template<class T>
+template<class T, class V = std::vector<T>>
 class rsMatrix : public rsMatrixView<T>
 {
 
@@ -1030,7 +1030,7 @@ public:
   }
 
   /** Copy assignment operator. Copies data from rhs into this object. */
-  rsMatrix<T>& operator=(const rsMatrix<T>& rhs)
+  rsMatrix<T, V>& operator=(const rsMatrix<T, V>& rhs)
   {
     if(this != &rhs) { // self-assignment check expected
       setShape(rhs.numRows, rhs.numCols);
@@ -1040,7 +1040,7 @@ public:
   }
 
   /** Move assignment operator. Takes over ownership of the data stored in rhs. */
-  rsMatrix<T>& operator=(rsMatrix<T>&& rhs)
+  rsMatrix<T, V>& operator=(rsMatrix<T, V>&& rhs)
   {
     data = std::move(rhs.data);
     rsAssert(rhs.data.size() == 0);
@@ -1069,16 +1069,16 @@ public:
 
 
   /** Creates a zero matrix with given number of rows and columns. */
-  static rsMatrix<T> zero(int numRows, int numColumns)
-  { rsMatrix<T> Z(numRows, numColumns); Z.setToZero(); return Z; }
+  static rsMatrix<T, V> zero(int numRows, int numColumns)
+  { rsMatrix<T, V> Z(numRows, numColumns); Z.setToZero(); return Z; }
 
   /** Creates an identity matrix of given size. */
-  static rsMatrix<T> identity(int size)
-  { rsMatrix<T> E(size, size); E.setToIdentity(); return E; }
+  static rsMatrix<T, V> identity(int size)
+  { rsMatrix<T, V> E(size, size); E.setToIdentity(); return E; }
 
   /** Creates a diagonal matrix of given size with all diagonal values set to d. */
-  static rsMatrix<T> diag(int size, const T& d)
-  { rsMatrix<T> D(size, size); D.setDiagonalValues(d); return D; }
+  static rsMatrix<T, V> diag(int size, const T& d)
+  { rsMatrix<T, V> D(size, size); D.setDiagonalValues(d); return D; }
 
   // todo: diag(int size, T* data), diag(int size, T value)
 
@@ -1160,17 +1160,17 @@ public:
   just 2 indices - it is again a matrix and not some 4-dimensional "block". See here:
   https://en.wikipedia.org/wiki/Kronecker_product
   https://en.wikipedia.org/wiki/Tensor_product     */
-  static rsMatrix<T> getKroneckerProduct(const rsMatrix<T>& A, const rsMatrix<T>& B)
+  static rsMatrix<T, V> getKroneckerProduct(const rsMatrix<T, V>& A, const rsMatrix<T, V>& B)
   {
-    rsMatrix<T> C(A.numRows*B.numRows, A.numCols*B.numCols);
+    rsMatrix<T, V> C(A.numRows*B.numRows, A.numCols*B.numCols);
     rsMatrixView<T>::kroneckerProduct(A, B, &C);
     return C;
   }
 
   /** Returns a matrix that is the element-wise product of this matrix an the right operand. */
-  rsMatrix<T> getElementwiseProduct(const rsMatrixView<T>& rightOperand) const
+  rsMatrix<T, V> getElementwiseProduct(const rsMatrixView<T>& rightOperand) const
   {
-    rsMatrix<T> result(this->numRows, this->numCols);
+    rsMatrix<T, V> result(this->numRows, this->numCols);
     rsMatrixView<T>::elementwiseMultiply(*this, rightOperand, &result);
     return result;
   }
@@ -1181,9 +1181,9 @@ public:
   // todo: getInverse, getTranspose, getConjugate, getConjugateTranspose
 
   /** Returns a transposed version of this matrix. */
-  rsMatrix<T> getTranspose() const
+  rsMatrix<T, V> getTranspose() const
   {
-    rsMatrix<T> t(this->numCols, this->numRows);
+    rsMatrix<T, V> t(this->numCols, this->numRows);
     rsMatrixView<T>::transpose(*this, &t);
     return t;
   }
@@ -1200,7 +1200,7 @@ public:
   /** \name Operators */
 
   /** Compares matrices for equality */
-  bool operator==(const rsMatrix<T>& rhs) const
+  bool operator==(const rsMatrix<T, V>& rhs) const
   {
     if(this->numRows != rhs.numRows || this->numCols != rhs.numCols)
       return false;
@@ -1209,31 +1209,31 @@ public:
   // maybe move to rsMatrixView, if possible
 
   /** Compares matrices for inequality */
-  bool operator!=(const rsMatrix<T>& rhs) const { return !(*this == rhs); }
+  bool operator!=(const rsMatrix<T, V>& rhs) const { return !(*this == rhs); }
 
   /** Returns the negative of this matrix. */
-  rsMatrix<T> operator-()
+  rsMatrix<T, V> operator-()
   {
-    rsMatrix<T> C(this->numRows, this->numCols);
+    rsMatrix<T, V> C(this->numRows, this->numCols);
     for(int i = 0; i < this->getSize(); i++)
       C.dataPointer[i] = -this->dataPointer[i]; // maybe factor out into "neg" function in baseclass
     return C;
   }
 
   /** Adds two matrices: C = A + B. */
-  rsMatrix<T> operator+(const rsMatrix<T>& B) const
-  { rsMatrix<T> C(this->numRows, this->numCols); this->add(*this, B, &C); return C; }
+  rsMatrix<T, V> operator+(const rsMatrix<T, V>& B) const
+  { rsMatrix<T, V> C(this->numRows, this->numCols); this->add(*this, B, &C); return C; }
 
   /** Subtracts two matrices: C = A - B. */
-  rsMatrix<T> operator-(const rsMatrix<T>& B) const
-  { rsMatrix<T> C(this->numRows, this->numCols); this->subtract(*this, B, &C); return C; }
+  rsMatrix<T, V> operator-(const rsMatrix<T, V>& B) const
+  { rsMatrix<T, V> C(this->numRows, this->numCols); this->subtract(*this, B, &C); return C; }
 
   /** Multiplies two matrices: C = A * B. */
-  rsMatrix<T> operator*(const rsMatrix<T>& B) const
+  rsMatrix<T, V> operator*(const rsMatrix<T, V>& B) const
   {
     //if(!areMultiplicable(*this, B))
     //  return rsMatrix<T>(0, 0); // return empty matrix when attempting to multiply incompatible matrices
-    rsMatrix<T> C(this->numRows, B.numCols);
+    rsMatrix<T, V> C(this->numRows, B.numCols);
     this->matrixMultiply(*this, B, &C);
     return C;
   }
@@ -1242,28 +1242,28 @@ public:
 
 
   /** Adds another matrix to this matrix and returns the result. */
-  rsMatrix<T>& operator+=(const rsMatrix<T>& B)
+  rsMatrix<T, V>& operator+=(const rsMatrix<T, V>& B)
   { this->add(*this, B, this); return *this; }
 
   /** Subtracts another matrix from this matrix and returns the result. */
-  rsMatrix<T>& operator-=(const rsMatrix<T>& B)
+  rsMatrix<T, V>& operator-=(const rsMatrix<T, V>& B)
   { this->subtract(*this, B, this); return *this; }
 
   /** Multiplies this matrix by another and returns the result. This is not an in-place process, i.e. it
   will allocate temporary heap-memory. */
-  rsMatrix<T>& operator*=(const rsMatrix<T>& B)
+  rsMatrix<T, V>& operator*=(const rsMatrix<T, V>& B)
   { *this = *this * B; return *this; }
 
   /** Multiplies this matrix with a scalar s: B = A*s. The scalar is to the right of the matrix. */
-  rsMatrix<T> operator*(const T& s) const
-  { rsMatrix<T> B(*this); B.scale(s); return B; }
+  rsMatrix<T, V> operator*(const T& s) const
+  { rsMatrix<T, V> B(*this); B.scale(s); return B; }
 
   /** Multiplies this matrix by a scalar and returns the result. */
-  rsMatrix<T>& operator*=(const T& s)
+  rsMatrix<T, V>& operator*=(const T& s)
   { this->scale(s); return *this; }
 
   /** Divides this matrix by a scalar and returns the result. */
-  rsMatrix<T>& operator/=(const T& s)
+  rsMatrix<T, V>& operator/=(const T& s)
   { this->scale(T(1)/s); return *this; }
 
 
@@ -1282,9 +1282,9 @@ public:
   // needs test - maybe optimize inner loop by avoiding re-computation of row base index
 
   /** Convolves this matrix with matrix B and returns the result. */
-  rsMatrix<T> getConvolutionWith(const rsMatrix<T>& B)
+  rsMatrix<T, V> getConvolutionWith(const rsMatrix<T, V>& B)
   {
-    rsMatrix<T> C(this->numRows + B.numRows - 1, this->numCols + B.numCols - 1);
+    rsMatrix<T, V> C(this->numRows + B.numRows - 1, this->numCols + B.numCols - 1);
     rsMatrixView<T>::convolve(*this, B, &C);
     return C;
   }
@@ -1324,21 +1324,21 @@ protected:
 
 };
 
-template<class T> int rsMatrix<T>::numHeapAllocations = 0;
+template<class T, class V> int rsMatrix<T, V>::numHeapAllocations = 0;
 
 /** Multiplies a scalar and a matrix. */
-template<class T>
-inline rsMatrix<T> operator*(const T& s, const rsMatrix<T>& A)
+template<class T, class V>
+inline rsMatrix<T, V> operator*(const T& s, const rsMatrix<T, V>& A)
 {
-  rsMatrix<T> B(A);
+  rsMatrix<T, V> B(A);
   B.scale(s);
   return B;
 }
 
 /** Multiplies a row vector x with a matrix: y = x * A. The result y is another row vector: 
 (MxN)*(PxQ) = MxQ with M=1 */
-template<class T>
-std::vector<T> operator*(const std::vector<T>& x, const rsMatrix<T>& A)
+template<class T, class V>
+std::vector<T> operator*(const std::vector<T>& x, const rsMatrix<T, V>& A)
 {
   rsAssert((int) x.size() == A.getNumRows(), "vector incompatible for right multiply by matrix");
   std::vector<T> y(A.getNumColumns());
@@ -1350,7 +1350,7 @@ std::vector<T> operator*(const std::vector<T>& x, const rsMatrix<T>& A)
 }
 
 template<class T>
-rsMatrix<T> matrixMagnitudes(const rsMatrix<std::complex<T>>& A)
+rsMatrix<T, std::vector<T>> matrixMagnitudes(const rsMatrix<std::complex<T>>& A)  
 {
   int N = A.getNumRows();
   int M = A.getNumColumns();
@@ -1362,7 +1362,7 @@ rsMatrix<T> matrixMagnitudes(const rsMatrix<std::complex<T>>& A)
 }
 
 template<class T>
-rsMatrix<T> matrixPhases(const rsMatrix<std::complex<T>>& A)
+rsMatrix<T, std::vector<T>> matrixPhases(const rsMatrix<std::complex<T>>& A)
 {
   int N = A.getNumRows();
   int M = A.getNumColumns();
@@ -1372,9 +1372,13 @@ rsMatrix<T> matrixPhases(const rsMatrix<std::complex<T>>& A)
       phases(i, j) = arg(A(i, j));
   return phases;
 }
+// why do we have to be specific in the type of output vector, i.e. have to return a 
+// rsMatrix<T, std::vector<T>> instead of rsMatrix<T, V> for some 2nd template parameter V 
+// specifying the storage for the output? ...maybe because it cannot be deduced? but shouldn't
+// it then fall back to std::vector?
 
 // maybe factor out common code (keeping the above as covenience functions)...maybe something like 
-// applyMatrixFunction with different input and output types for the template parameter:
+// applyMatrixFunction with different input and output types for the template parameter T:
 
 /*
 template<class TIn, class TOut, class F>

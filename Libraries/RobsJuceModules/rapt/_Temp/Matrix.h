@@ -1089,7 +1089,7 @@ inline rsMatrix<T> operator*(const T& s, const rsMatrix<T>& A)
 
 
 
-
+/*
 template<class T>
 rsMatrix<T> matrixMagnitudes(const rsMatrix<std::complex<T>>& A)
 {
@@ -1113,7 +1113,7 @@ rsMatrix<T> matrixPhases(const rsMatrix<std::complex<T>>& A)
       phases(i, j) = arg(A(i, j));
   return phases;
 }
-
+*/
 // maybe factor out common code...maybe something like applyMatrixFunction with different
 // input and output types for the template parameter:
 
