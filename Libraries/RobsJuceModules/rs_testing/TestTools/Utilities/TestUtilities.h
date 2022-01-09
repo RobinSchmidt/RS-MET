@@ -235,7 +235,8 @@ bool rsIsPermutation(const std::vector<T>& x, const std::vector<T>& y, T tol)
 
 //=================================================================================================
 
-/** A subclass of std::vector that can be used as drop-in replacement for it and performs some
+/** Under construction.
+A subclass of std::vector that can be used as drop-in replacement for it and performs some
 additional logging of certain member function calls by intercepting them (via overriding), doing
 the logging and then just forwarding the request to the baseclass implementation. It can be used to
 verify that return value optimzation works as intended for classes that uses std::vector for the 
@@ -264,20 +265,18 @@ public:
     if(s > 0)
       numActualAllocs++;
   }
+  // do we need to templatize on the size-type here like we do in resize()?
 
   rsLoggingVector(std::initializer_list<T> l) : Base(l) 
   {
-    // Constructing with a size may potentially allocate and will actually do so, iff the size of
-    // the list is > 0
+    // Constructing with an initializer list may potentially allocate and will actually do so, 
+    // iff the size of the list is > 0
     numPotentialAllocs++;
     if(l.size() > 0)
       numActualAllocs++;
   }
 
-  // todo: copy/move constructors etc.
-
-
-  template<class S> // S: size-type
+  template<class S> // S: size-type - we want to catch all calls with int, size_t, etc.
   void resize(S newSize) 
   { 
     numPotentialAllocs++;
@@ -315,10 +314,12 @@ public:
   //void resize(int    newSize) { numResizeCalls++; Base::resize(newSize); }
 
   // ToDo:
-  // -check that we override all relevant overloads of resize (for size_t, int, const, etc.) to make
-  //  sure that we really intercept all such calls.
-  // -maybe log also calls to: reserve, shrink_to_fit, copy-assign, copy-construct, etc.
+  // -log also calls to: reserve, shrink_to_fit, copy-assign, copy-construct, etc.
   //  ...anything that potentially (re)-allocates
+  // -maybe also log move-assign/construct calls
+  // -check that we override all relevant overloads (for size_t, int, const, etc.) to make
+  //  sure that we really intercept all such calls.
+
 
   // These logging values are static for two reasons: (1) We want to be able to globally access 
   // them from the test code because the to-be-tested classes may not expose any interface to their 
@@ -330,15 +331,18 @@ public:
   static size_t numPotentialAllocs;  
   // Number of potential (re)-allocations. This counts all calls to resize, reserve, shrink_to_fit,
   // constructors that may allocate, etc. regardless whether or not a re-allocation actually does
-  // occur (resizing below the capacity won't allocate but we'll count it as potential alloc 
-  // anyway)
+  // occur. For example, resizing below the capacity won't allocate but we'll count it as potential 
+  // alloc anyway. That makes sense because allocation is the worst case behavior which is what we 
+  // are usually interested in.
 
   static size_t numActualAllocs;
   // Number of actual (re)-allocations - std::vector reallocates if and only if the capacity grows
   // ..i think...hmm - but it may also re-allocate on shrink_to_fit ...maybe rename to 
-  // numLikelyAllocs - we cannot know for sure because the re-allcoation behavior is not completely
-  // specified in all cases...maybe have a 3rd variable numCertainAllocs - this count's all 
-  // resize/reserve calls above capacity
+  // numLikelyAllocs. We cannot know for sure because the re-allcoation behavior is not completely
+  // specified in all cases: shrink_to_fit may be ignored. Maybe have a 3rd variable 
+  // numCertainAllocs which counts all resize/reserve calls above capacity. Perhaps we can 
+  // know the number of actual allocations, if we use a custom (logging) allocator that can itself 
+  // be inquired for the number of allocations, it did. ....hmmm....
 
 };
 

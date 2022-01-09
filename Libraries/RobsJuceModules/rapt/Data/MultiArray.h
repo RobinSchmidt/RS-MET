@@ -653,7 +653,7 @@ void rsMultiArray<T>::convolve3D(const rsMultiArray<T>& x, const rsMultiArray<T>
               s += h(i, j, k) * x(l-i, m-j, n-k); }}}
         y(l, m, n) = s; }}}
 }
-// How can general nD convolution be implemented?
+// How can general nD convolution be implemented? Maybe it needs to be done recursively?
 
 
 #endif

@@ -60,5 +60,6 @@ coordinates...how about 4D arrays for spacetime simulations?
 -acoustic simulations involve a scalar field in 3D - what about vector-fields, matrix-fields,
  tensor fields? maybe to numerically simulate elastic body dynamics...
 
+-write a unit test similar to testMatrixAlloc to test return value optimization
 
 */

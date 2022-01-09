@@ -645,6 +645,23 @@ bool rsNonReAllocatingArrayTest()
   return ok;
 }
 
+// maybe move into a test that tests the test-utils before running the actual tests of library 
+// code:
+bool testLoggingVector()
+{
+  bool ok = true;
+
+  using LV = rsLoggingVector<double>;
+
+  ok &= LV::numPotentialAllocs == 0;
+  LV v;              ok &= LV::numPotentialAllocs == 0;
+  v.resize(10);      ok &= LV::numPotentialAllocs == 1;
+  v.resize(15);      ok &= LV::numPotentialAllocs == 2;
+  v.resize(12);      ok &= LV::numPotentialAllocs == 3;
+  v.resize(10, 5.0); ok &= LV::numPotentialAllocs == 4;
+
+  return ok;
+}
 
 bool arrayUnitTest()  // maybe rename to stdVectorUnitTest
 {
@@ -671,12 +688,9 @@ bool arrayUnitTest()  // maybe rename to stdVectorUnitTest
   ok &= testTokenize();
   ok &= rsArrayViewTest();
   ok &= rsNonReAllocatingArrayTest();
+  ok &= testLoggingVector(); 
 
   // int s = sum(3, &u[0]); // sum function doesn't compile
-
-
-
-
   return ok;
 }
 

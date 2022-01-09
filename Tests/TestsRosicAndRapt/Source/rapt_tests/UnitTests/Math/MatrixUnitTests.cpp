@@ -773,35 +773,14 @@ bool testMatrixOperators()
   return ok;
 }
 
-// maybe move to array- and vector tests:
-bool testLoggingVector()
-{
-  bool ok = true;
-
-  using LV = rsLoggingVector<double>;
-
-  ok &= LV::numPotentialAllocs == 0;
-  LV v;              ok &= LV::numPotentialAllocs == 0;
-  v.resize(10);      ok &= LV::numPotentialAllocs == 1;
-  v.resize(15);      ok &= LV::numPotentialAllocs == 2;
-  v.resize(12);      ok &= LV::numPotentialAllocs == 3;
-  v.resize(10, 5.0); ok &= LV::numPotentialAllocs == 4;
-
-  return ok;
-}
-
 bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
 {
   // ToDo: use the new rsLoggingVector as new 2nd template argument for rsMatrix and use that for
   // figuring out the number of allocs. Maybe first make a unit test of rsLoggingVector
 
   bool ok = true;
-  ok &= testLoggingVector();  // to ensure that our test-envrionment works as should
 
-
-
-  using Vector = std::vector<double>;   // maybe use LV instead, too
-
+  using Vector = std::vector<double>;
   using LV = rsLoggingVector<double>;
   using Matrix = rsMatrix<double, LV>;
   size_t& allocs = LV::numPotentialAllocs; // counts potential re-allocations

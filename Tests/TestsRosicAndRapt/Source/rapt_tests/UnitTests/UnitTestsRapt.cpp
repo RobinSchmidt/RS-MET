@@ -31,7 +31,10 @@ bool runUnitTestsRapt()
   //return ok;
 
 
-
+  // ToDo:
+  // ok &= runUnitTest(&testUtilsTest, "Test utilities");  
+  // not yet implemented - this is supposed to test the test utility functions and classes such
+  // as rsLoggingVector
 
   // Data:
   ok &= runUnitTest(&arrayUnitTest,            "rsArrayTools and std::vector stuff");

@@ -346,4 +346,53 @@ ToDo:
  pre-assemble the chains for all notes, if it turns out to be a performance problem. That would 
  increase the RAM usage beause we would have to keep around all those pre-built DSP chains.
 
+
+Ideas:
+-Maybe use std::variant for the DSP chain, see here: https://www.youtube.com/watch?v=h-zy1hBqT74
+ towards the end. The same thing should actually also be possible with unions and then maybe with
+ a struct consisting of such a union and a function-pointer (or a bunch of them) for the process
+ etc. functions.
+ -This may let us do away with the pre-allocation of specific DSP devices. We could perhaps use 
+  an array or vector of direct objects for the DSPs instead of pointers (the objects would be the
+  variants or unions). That would also increase the locality of the data used in the DSP chain. 
+  -> good!
+ -But we would perhaps have to commit to a certain maximum length of the DSP chain and the memory 
+  usage of a variant DSP would be dictated by the maximum size of all of them which may be 
+  wasteful. It would also be wasteful because the actual length may always be equal to the maximum
+  length.
+  -> bad!
+-We could also have a general pool of pre-allocated memory and let the DSP chain use a std::vector
+ with a custom allocator tapping into that pool.
+ -That would require to write a custom memory allocator. Such an allocator could pre-allocate a 
+  certain amount of memory (in bytes), then maybe split that into buckets of different sizes
+
+Notes:
+-Different effects have different requirements on the resources. At least two relevant resources
+ to consider are CPU usage and RAM usage mapping to the classical time- and space-requirements in
+ computer science. Here is a table of what I would expect from theoretical considerations:
+
+   DSP Process                        CPU   RAM
+
+   simple filter (biquad, etc.)        L     L     L: low, H: high, M: medium
+   gain, pan, width, tremolo, wah      L     L
+   naive distortion (waveshaping)      L     L
+   flanger, vibrato                    L     M
+   echo, delay                         L     H
+
+   anti-aliased distortion             M     L
+   ringmod, freq-shift, dynamics       M     L
+   chorus, pitch-shift                 M     M
+   dynamics with look-ahead            M     M
+   adaptive filters (LMS, etc)         M     M
+   simple reverb                       M     H
+
+   complex filter (VA, ZDF, etc.)      H     L
+   spectral stuff (FFT)                H     M
+   good reverb, convolution            H     H
+
+-Another thing to consider is the possible introduction of latency and/or the spikeyness of 
+ CPU-load distribution due to block-based processing. Anything with look-ahead will introduce 
+ latency. Pitch-shifters will also. FFT-based stuff also will, except for convolution, if a 
+ zero-delay algo is used.
+
 */

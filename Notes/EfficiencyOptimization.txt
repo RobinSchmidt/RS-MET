@@ -107,3 +107,6 @@ https://www.youtube.com/watch?v=vElZc6zSIXM
 
 CppCon 2018: Alan Talbot “Moving Faster: Everyday efficiency in modern C++”
 https://www.youtube.com/watch?v=EovBkh9wDnM
+
+CppCon 2018: Fedor Pikus “Design for Performance”
+https://www.youtube.com/watch?v=m25p3EtBua4
