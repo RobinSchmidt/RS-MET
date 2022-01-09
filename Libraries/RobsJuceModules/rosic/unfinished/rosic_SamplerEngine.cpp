@@ -948,18 +948,38 @@ void rsSamplerEngine::RegionPlayer::allocateMemory()
 }
 
 rsReturnCode rsSamplerEngine::RegionPlayer::prepareToPlay(
-  double fs, bool groupSettingsOverride, bool regionSettingsOverride)
+  double fs, bool groupsOverride, bool regionsOverride)
 {
   RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   RAPT::rsAssert(stream != nullptr);   // Ditto.
-  if(!buildProcessingChain()) {
+
+  // The DSPs required by the group opcodes need to be in the RegionPlayer, if group-opcodes are
+  // merely fallback values for absent region values which is indicated by the regionsOverride 
+  // flag. So, of that flag is true, it means the group opcodes specify parameters for DSPs on the
+  // RegionPlayer which means we must add the group DSPs here:
+  bool withGroupDsps = regionsOverride;
+
+  // Likewise, the DSPs required by the global instrument opcodes also need to be integrated into 
+  // the RegionPlayer, iff these settings are merely fallback values (as opposed to values for
+  // independent DSPs that are applied to the whole instrument):
+  bool withInstrumDsps = groupsOverride;
+  // At the moment, either both of these flags are true or both are false and i'm not yet sure if 
+  // it will ever make sense to have these adjustable seperately. The behavior when one is false 
+  // and the other true might be complicated to implement and/or understand for the user. And 
+  // within the rsSamplerEngine, they are always both true. It's only in subclass rsSamplerEngine2
+  // where we may switch ot the other kind of behavior (accumulation instead of fallback)
+
+
+  if(!buildProcessingChain(withGroupDsps, withInstrumDsps)) 
+  {
     releaseDspObjects();
-    return rsReturnCode::layerOverload; }
+    return rsReturnCode::layerOverload; 
+  }
   if(!setupModulations()) {
     releaseDspObjects();
     return rsReturnCode::layerOverload; }
   resetPlayerSettings(); 
-  setupDspSettingsFor(region, fs, groupSettingsOverride, regionSettingsOverride);
+  setupDspSettingsFor(region, fs, groupsOverride, regionsOverride);
   // todo: move fs before the override parameters for consistency
 
   // todo: setup modulators and modulation connections
@@ -1007,7 +1027,7 @@ SignalProcessor* rsSamplerEngine::RegionPlayer::getProcessor(DspType type)
   return dspPool->processorPool.grabProcessor(type);
 }
 
-bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
+bool rsSamplerEngine::RegionPlayer::buildProcessingChain(bool withGroupDsps, bool withInstrumDsps)
 {
   RAPT::rsAssert(dspChain.isEmpty(), "Someone has not cleaned up after finishing playback!");
   dspChain.clear(); // ...so we do it here. But this should be fixed elsewhere!
@@ -1076,10 +1096,17 @@ bool rsSamplerEngine::RegionPlayer::buildProcessingChain()
   bool ok;
   ok = addDspsIfNeeded(region->getProcessingChain()); 
   if(!ok) return false;
-  ok = addDspsIfNeeded(region->getGroup()->getProcessingChain());
-  if(!ok) return false;
-  ok = addDspsIfNeeded(region->getGroup()->getInstrument()->getProcessingChain()); 
-  if(!ok) return false;
+
+  if(withGroupDsps)
+  {
+    ok = addDspsIfNeeded(region->getGroup()->getProcessingChain());
+    if(!ok) return false;
+  }
+  if(withInstrumDsps)
+  {
+    ok = addDspsIfNeeded(region->getGroup()->getInstrument()->getProcessingChain());
+    if(!ok) return false;
+  }
 
   return true;
   // If false is returned, it means we do not have enough processors of the required types 

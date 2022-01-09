@@ -490,7 +490,7 @@ protected:
     buildProcessingChain. */
     SignalProcessor* getProcessor(DspType type);
 
-    bool buildProcessingChain();
+    bool buildProcessingChain(bool withGroupDsps, bool withInstrumDsps);
     bool setupModulations();
 
     //void resetDspState();
