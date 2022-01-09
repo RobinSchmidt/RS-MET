@@ -1153,15 +1153,21 @@ void rsSamplerEngine::RegionPlayer::resetPlayerSettings()
 }
 
 void rsSamplerEngine::RegionPlayer::setupDspSettingsFor(
-  const Region* r, double fs, bool groupSettingsOverride, bool regionSettingsOverride)
+  const Region* r, double fs, bool groupsOverride, bool regionsOverride)
 {
   // To set up the settings, we call setupDspSettings 3 times to:
-  // (1) set up the general instrument-wide settings
-  // (2) set up group specific settings (this may override instrument settings)
-  // (3) set up region specific settings (this may override group and/or instrument settings)
-  setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, true);
-  setupDspSettings(region->getGroup()->getSettings(), fs, groupSettingsOverride);
-  setupDspSettings(region->getSettings(), fs, regionSettingsOverride);
+  //   (1) set up the general instrument-wide settings
+  //   (2) set up group specific settings (this may override instrument settings)
+  //   (3) set up region specific settings (this may override group and/or instrument settings)
+  // but only if the respective flags are true. The flag groupsOverride means that the instrument
+  // settings act as fallback settings for group-settings, so the instrument settings must be 
+  // applied before applying group settings. Likewise for the regionsOverride flag: it means the 
+  // group settings act as fallback values for region settings and must be set up before those:
+  if(groupsOverride)
+    setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, true);
+  if(regionsOverride)
+    setupDspSettings(region->getGroup()->getSettings(), fs, groupsOverride);
+  setupDspSettings(region->getSettings(), fs, regionsOverride);
 
   // The code above will have set up the increment assuming that the current key matches the 
   // rootKey of the sample, Now, as final step, we also adjust it according to the difference 

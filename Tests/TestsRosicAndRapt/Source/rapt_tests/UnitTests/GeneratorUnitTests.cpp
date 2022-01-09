@@ -1930,8 +1930,6 @@ bool samplerWaveShaperTest2()
   se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
   se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
   ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13, true);
-  // Triggers error "No processor available for DSP opcode" in RegionPlayer::setupProcessorSetting. 
-  // That's not suprising...i guess...
   // Fails! The signal produced by the sampler is identical to the first mode. The mode setting is
   // not respected. We need to override buildDspChain and setupDspSettings in SE2...but that's a 
   // member of the RegionPlayer...hmmm...maybe in this function we hsould just take a bool in
