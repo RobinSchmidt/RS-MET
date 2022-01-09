@@ -762,11 +762,21 @@ void rsSamplerEngine::setupRegionsForKey()
 
 void rsSamplerEngine::preAllocateDspMemory()
 {
-  RAPT::rsWarning("rsSamplerEngine::preAllocateDspMemory still under construction");
+  //RAPT::rsWarning("rsSamplerEngine::preAllocateDspMemory still under construction");
 
   // ToDo:
-  // -allocate "enough" DSP objects in our dspPool
-  // -allocate enough RegionPlayers in our playerPool
+  // -allocate enough RegionPlayers in our playerPool - how much is enough should depend on how 
+  //  many regions could potentially paly simultaneously. To figure out that number, we need to
+  //  count for each key the number of regions it may play...but it gets more complicated when
+  //  release-samples and overlapping one-shot samples are considered, so maybe that's 
+  //  impractical and we should just use some reasonably large-ish number...like 512 maybe?
+  // -allocate "enough" DSP objects in our dspPool - here, the number will be even more complicated
+  //  to calculate...maybe allocate for each region player 2 filters and 5 equalizers...maybe let
+  //  the user control the amount of "allocation-headroom" and provide feedback about used-up 
+  //  resources. trying to make that bulletproof seems impossible: you can't have "potentially 
+  //  infinite" resources while at the same time guaranteeing no drop-outs to happen ever. We 
+  //  either have to re-allocate if needed or put a fixed upper limit on the resources. But maybe
+  //  we can let the user choose which of the two it should be
   // -allocate enough memory for the RegionPlayer's arrays: 
   //    std::vector<Modulator*> modulators;
   //    std::vector<ModulationConnection*> modMatrix;

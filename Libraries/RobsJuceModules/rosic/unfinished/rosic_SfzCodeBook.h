@@ -196,7 +196,12 @@ enum class DistortShape
 {
   Unknown = 0,
 
-  linear, clip, tanh,
+  linear,           // no distortion at all
+  clip,             // hard-clipper at +-1
+  tanh, 
+  soft_fold,        // x / (1 + x^2)
+
+  // todo: atan, soft_clip, sin, asinh, sinh, sinh(a * asinh(x)/a), asinh(a * sinh(x)/a),
 
   numDistortShapes
 };

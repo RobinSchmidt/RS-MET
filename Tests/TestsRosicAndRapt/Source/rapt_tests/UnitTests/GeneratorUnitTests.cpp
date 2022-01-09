@@ -1844,9 +1844,13 @@ bool samplerWaveShaperTest()
   // -Try the accumulate mode with both SamplerEngine and SamplerEngine2 with a region and group
   //  waveshaper. They should behave differently: 1 should apply both waveshapers and then mix 
   //  whereas 2 should first mix the shaped region output and then apply the group shaper to the 
-  //  mix of both. maybe engine 2 should provide the mix-before-apply mode as 3rd mode. Yes maybe
+  //  mix of both. Maybe engine 2 should provide the mix-before-apply mode as 3rd mode. Yes maybe
   //  that makes sense...hmmm...or maybe 1 should only provide fallback mode and both other types 
-  //  of modes should be implemented by 2? That seems to make more sense.
+  //  of modes should be implemented by 2? That seems to make more sense because 1 is supposed to 
+  //  implement straight sfz - all other "routing modes" shall be delegated to 2. Let there be 3 
+  //  modes: fallback (default, sfz-like), accumulate-before-mix, accumulate-after-mix...maybe the
+  //  3 modes should be selectable separately for group and instrument setting...but maybe that 
+  //  would be too complex to implement
   // Cosmetics:
   // -Maybe drag out RegionPlayer from rsSamplerEngine
   // -maybe let testSamplerNote take a plotMode parameter which can be: 0: never plot, 1: always 
@@ -1866,6 +1870,81 @@ bool samplerWaveShaperTest()
   //  waveshaping. If so, use these. Otherwise define opcodes: dist_drive, dist_shape, dist_gain
   //  ..or maybe distort_ or distortion_ ...there is something like eg2drive_shape in sfz2...not 
   //  sure what that is
+
+
+  rsAssert(ok);
+  return ok;
+}
+
+bool samplerWaveShaperTest2()
+{
+  // Tests the additional routing options of rsSamplerEngine2 using waveshapers
+
+  bool ok = true;
+
+  using VecF  = std::vector<float>;
+  using SE2   = rosic::Sampler::rsSamplerEngine2; 
+  using PST   = rosic::Sampler::Opcode;
+  using Shape = rosic::Sampler::rsSamplerWaveShaper::Shape;
+  using Ev    = rosic::Sampler::rsMusicalEvent<float>;
+  using EvTp  = Ev::Type;
+
+  // Create a sinewave as example sample:
+  float fs = 44100;  // sample rate
+  float f  = 440.0;  // frequency of (co)sinewave sample
+  int   N  = 500;    // length of (co)sinewave sample
+  VecF sin440(N);    // sine wave
+  VecF tgt(N);       // target output in tests
+  float w = (float)(2*PI*f/fs);
+  for(int n = 0; n < N; n++)
+    sin440[n] = sinf(w*n);
+  float *pSmp = &sin440[0];
+
+  // Set up a sampler engine with 1 region within one group where the group has some waveshaper
+  // settings. Play two notes in the 3 possible modes and compare with expected output signals:
+  SE2 se;
+  float driveG = 2.0f;
+  Shape shapeG = Shape::tanh;
+  se.addSampleToPool(&pSmp, N, 1, fs, "Sine440");
+  se.addGroup();
+  se.addRegion(0);
+  se.setRegionSample( 0, 0, 0);
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
+  se.setGroupSetting(0, PST::DistShape, float(shapeG));
+  se.setGroupSetting(0, PST::DistDrive, driveG);
+
+  // Default setting (fallback mode):
+  for(int n = 0; n < N; n++)
+    tgt[n] = tanh(driveG * sin440[n]) + tanh(driveG * getSampleAt(sin440, 0.5f*n));
+  se.reset();
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13, true);
+  // maybe factor this out into testSamplerNotes2
+
+  // Mix-and-accumulate mode:
+  se.setOpcodesAccumulate(true);
+  for(int n = 0; n < N; n++)
+    tgt[n] = tanh(driveG*sin440[n] + driveG*getSampleAt(sin440, 0.5f*n));
+  se.reset();
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-13, true);
+  // Fails! The signal produced by the sampler is identical to the first mode. The mode setting is
+  // not respected.
+
+
+
+
+
+
+
+  // Set up a 2nd waveshaper for the region and do the same test:
+
+
+  // Set up a 3rd waveshaper for the instrument and do the same test:
+
+
 
 
   rsAssert(ok);
@@ -2207,7 +2286,8 @@ bool samplerProcessorsTest()
   // later move this into a (yet to be written) benchmark testbed
 
   ok &= samplerFilterTest();      // tests the different filter modes
-  ok &= samplerWaveShaperTest();  // tests the wvashaping DSP module
+  ok &= samplerWaveShaperTest();  // tests the waveshaping DSP module
+  ok &= samplerWaveShaperTest2(); // tests the different rotung options using waveshaping
   ok &= samplerDspChainTest();    // uses multiple filters and a waveshaper in between
   ok &= samplerEqualizerTest();
 
