@@ -1132,7 +1132,7 @@ public:
     if(this->isSquare()) { rsMatrixView<T>::transposeSquare(this); return; }
     if(this->isVector()) { rsSwap(this->numRows, this->numCols); return; }
 
-    std::vector<T> v(this->getSize());    // the general case needs reallocation...
+    V v(this->getSize());     // the general case needs reallocation...
     numHeapAllocations++;
     rsMatrixView<T> B(this->numCols, this->numRows, &v[0]);
     rsMatrixView<T>::transpose(*this, &B);

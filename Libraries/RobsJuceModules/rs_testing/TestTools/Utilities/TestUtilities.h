@@ -252,17 +252,46 @@ public:
 
   using Base = std::vector<T>;
 
+  rsLoggingVector() : Base() 
+  {
+    // The standard constructor never allocates
+  }
+
+  rsLoggingVector(size_t s) : Base(s) 
+  {
+    // Constructing with a size may potentially allocate and will actually do so, iff size > 0
+    numPotentialAllocs++;
+    if(s > 0)
+      numActualAllocs++;
+  }
+
+  rsLoggingVector(std::initializer_list<T> l) : Base(l) 
+  {
+    // Constructing with a size may potentially allocate and will actually do so, iff the size of
+    // the list is > 0
+    numPotentialAllocs++;
+    if(l.size() > 0)
+      numActualAllocs++;
+  }
+
+  // todo: copy/move constructors etc.
+
+
   template<class S> // S: size-type
   void resize(S newSize) 
   { 
-    numResizeCalls++; 
+    numPotentialAllocs++;
+    if(newSize > capacity())
+      numActualAllocs++;
     Base::resize(newSize); 
   }
 
   template<class S> 
   void resize(S newSize, const T& val)
   {
-    numResizeCalls++; 
+    numPotentialAllocs++;
+    if(newSize > capacity())
+      numActualAllocs++;
     Base::resize(newSize, val);
   }
   // what does this val variable do? it doesn't seem to initialize all elements to val
@@ -296,11 +325,26 @@ public:
   // underlying data storage vector. (2) We are actually interested in the number of resize calls on
   // all vectors combined - not just those on a specific one.
 
-  static size_t numResizeCalls;  // number of calls to resize()
+  //static size_t numResizeCalls;      // number of calls to resize()
+
+  static size_t numPotentialAllocs;  
+  // Number of potential (re)-allocations. This counts all calls to resize, reserve, shrink_to_fit,
+  // constructors that may allocate, etc. regardless whether or not a re-allocation actually does
+  // occur (resizing below the capacity won't allocate but we'll count it as potential alloc 
+  // anyway)
+
+  static size_t numActualAllocs;
+  // Number of actual (re)-allocations - std::vector reallocates if and only if the capacity grows
+  // ..i think...hmm - but it may also re-allocate on shrink_to_fit ...maybe rename to 
+  // numLikelyAllocs - we cannot know for sure because the re-allcoation behavior is not completely
+  // specified in all cases...maybe have a 3rd variable numCertainAllocs - this count's all 
+  // resize/reserve calls above capacity
 
 };
 
-template<class T> size_t rsLoggingVector<T>::numResizeCalls = 0;
+//template<class T> size_t rsLoggingVector<T>::numResizeCalls = 0;
+template<class T> size_t rsLoggingVector<T>::numPotentialAllocs = 0;
+template<class T> size_t rsLoggingVector<T>::numActualAllocs = 0;
 
 
 //=================================================================================================

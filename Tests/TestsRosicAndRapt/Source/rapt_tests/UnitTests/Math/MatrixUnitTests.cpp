@@ -780,12 +780,12 @@ bool testLoggingVector()
 
   using LV = rsLoggingVector<double>;
 
-  ok &= LV::numResizeCalls == 0;
-  LV v;              ok &= LV::numResizeCalls == 0;
-  v.resize(10);      ok &= LV::numResizeCalls == 1;
-  v.resize(15);      ok &= LV::numResizeCalls == 2;
-  v.resize(12);      ok &= LV::numResizeCalls == 3;
-  v.resize(10, 5.0); ok &= LV::numResizeCalls == 4;
+  ok &= LV::numPotentialAllocs == 0;
+  LV v;              ok &= LV::numPotentialAllocs == 0;
+  v.resize(10);      ok &= LV::numPotentialAllocs == 1;
+  v.resize(15);      ok &= LV::numPotentialAllocs == 2;
+  v.resize(12);      ok &= LV::numPotentialAllocs == 3;
+  v.resize(10, 5.0); ok &= LV::numPotentialAllocs == 4;
 
   return ok;
 }
@@ -798,9 +798,13 @@ bool testMatrixAlloc() // rename to testMatrixAllocationAndArithmetic
   bool ok = true;
   ok &= testLoggingVector();  // to ensure that our test-envrionment works as should
 
-  using Matrix = rsMatrix<double>;
-  using Vector = std::vector<double>;
-  int& allocs  = Matrix::numHeapAllocations;  // to count allocations
+  using LV = rsLoggingVector<double>;
+  using Matrix = rsMatrix<double, LV>;
+  using Vector = std::vector<double>;   // maybe use LV instead, too
+
+  //int& allocs  = Matrix::numHeapAllocations; 
+
+  size_t& allocs = LV::numPotentialAllocs; // counts potential re-allocations
   allocs = 0;
 
   // A = |1 2 3|
