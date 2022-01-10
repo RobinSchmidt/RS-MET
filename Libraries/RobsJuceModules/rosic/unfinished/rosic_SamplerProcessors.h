@@ -333,7 +333,7 @@ protected:
 
 /**  */
 
-class rsSamplerWaveShaper
+class WaveshaperCore
 {
 
 public:
@@ -616,7 +616,7 @@ public:
 
   protected:
 
-    rsSamplerWaveShaper core;
+    WaveshaperCore core;
 
   };
 
