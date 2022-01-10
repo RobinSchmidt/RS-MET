@@ -83,6 +83,8 @@ SfzCodeBook::SfzCodeBook()
   add(OC::Volume, Flt, "volume", -144.f,   +6.f, 0.f, dsp, OU::Decibels, Sfz1);
   add(OC::Pan,    Flt, "pan",    -100.f, +100.f, 0.f, dsp, OU::RawFloat, Sfz1);
 
+
+
   // Equalizer:
   dsp = DspType::Equalizer;
   add(OC::eqN_freq, Flt, "eqN_freq",   0.0f, 30000.f, 1000.f, dsp, OU::Hertz,    Sfz1e);

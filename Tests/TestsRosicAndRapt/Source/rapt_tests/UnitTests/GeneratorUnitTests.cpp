@@ -1498,7 +1498,7 @@ pan=100.000000";
   return ok;
 }
 
-bool samplerAmplifierTest()
+bool samplerAmplifierCoreTest()
 {
   bool ok = true;
 
@@ -1537,16 +1537,21 @@ bool samplerAmplifierTest()
   float s = sqrt(0.5f);
   ok &= testAmp(0.f,    0.f, -100.f,    0.f,  0,1,1,0);  // swap L/R
   ok &= testAmp(0.f,    0.f,    0.f,    0.f,  s,s,s,s);  // zero width
-  // It works but i think nevertheless the formula is still wrong - we need something based
+  // It works but i think nevertheless the formula is still wrong - maybe we need something based
   // on sin/cos
 
-
-
-
-
-
   // ToDo:
-  // -figure out, if stereo signals should just ignore width and pos
+  // -Figure out, if stereo signals should just ignore width and pos - i think so, so maybe we
+  //  need a flag to switch behavior
+
+  return ok;
+}
+
+bool samplerAmplifierTest()
+{
+  bool ok = true;
+
+  ok &= samplerAmplifierCoreTest();
 
   return ok;
 }

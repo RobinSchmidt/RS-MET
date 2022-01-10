@@ -66,6 +66,11 @@ enum class Opcode
   FadeInLoVel, FadeInHiVel, FadeOutLoVel, FadeOutHiVel, FadeCurveVel,
   FadeInLoCtrlN, FadeInHiCtrlN, FadeOutLoCtrlN, FadeOutHiCtrlN, FadeCurveCtrl,
 
+  // new amp-opcodes - will make the above ones obsolete:
+  // volumeN, panN, widthN, positionN,
+  // ampN_keytrack, ampN_keycenter, ampN_veltrack,
+  // ampN_velcurve_X /* ? */, ampN_random,
+
   // Amplifier Envelope:
   AmpEnvDelay, AmpEnvStart, AmpEnvAttack, AmpEnvHold, AmpEnvDecay, AmpEnvSustain,
   AmpEnvRelease, /*AmpEnvDepth,*/ AmpEnvVel2Delay, AmpEnvVel2Attack, AmpEnvVel2Hold, 
@@ -274,6 +279,7 @@ enum class DspType  // rename to DspType or ProcessorType
   // AmpEnv, FilterEnv, PitchEnv, AmpLFO, ...
 
   // The actual DSP processors:
+  Amplifier,
   Filter,
   Equalizer,
   WaveShaper,

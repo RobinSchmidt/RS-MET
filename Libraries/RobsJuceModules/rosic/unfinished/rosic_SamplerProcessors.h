@@ -463,10 +463,37 @@ protected:
 
 /** Class where all the boilerplate for making DSP processors available in the sampler goes. */
 
-class rsSamplerProcessors
+class rsSamplerProcessors  // maybe make this a namespace
 {
 
 public:
+
+
+
+  class Amplifier : public SignalProcessor
+  {
+
+  public:
+
+    Amplifier() 
+    { 
+      type = DspType::Amplifier;
+      params.reserve(4);
+      //addParameter(Opcode::volumeN);
+      //addParameter(Opcode::panN);
+      //addParameter(Opcode::widthN);
+      //addParameter(Opcode::positionN);
+      // Having to pass a magic number to reserve() is bad and error-prone -> try to find a better
+      // way. The number of parameters is actually known at compile time. Maybe use std::array 
+      // instead of std::vector...hmm...but the number varies between the subclasses, so the array
+      // could not be a baseclass member then...hmm...
+    }
+
+
+
+  };
+
+
 
   class Filter : public SignalProcessor
   {
@@ -481,10 +508,6 @@ public:
       addParameter(Opcode::cutoffN);
       addParameter(Opcode::resonanceN);   // in sfz, this is a gain in dB
       //addParameter(Opcode::FilterBandwidth);
-      // Having to pass a magic number to reserve() is bad and error-prone -> try to find a better
-      // way. The number of parameters is actually known at compile time. Maybe use std::array 
-      // instead of std::vector...hmm...but the number varies between the subclasses, so the array
-      // could not be a baseclass member then...hmm...
     }
 
     void prepareToPlay(double fs) override 
