@@ -1,4 +1,4 @@
-#ifndef rosic_SamplerPlayers_h
+#ifndef rosic_SamplerPlayers_h  // rename files to SamplePlayers.h/cpp
 #define rosic_SamplerPlayers_h
 
 namespace rosic { namespace Sampler {
@@ -55,9 +55,41 @@ private:
 
 //=================================================================================================
 
+/** Baseclass for RegionPlayer and GroupPlayer to factor out the common stuff. */
+
+class SamplePlayer
+{
+
+public:
+
+  /** Sets up the pool of DSP resource objects (such as filters, modulators, etc.) from which the
+  player may grab items in order to prepare itself for playing back a region. This should be set
+  up by the engine soon after it has created all its players. */
+  void setDspResourcePool(DspResourcePool* newPool) { dspPool = newPool; }
+
+protected:
+
+  /** Returns a pointer to a processor of given type, if available, otherwise a nullptr. Used in
+  buildProcessingChain. */
+  SignalProcessor* getProcessor(DspType type)
+  {
+    RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
+    return dspPool->processorPool.grabProcessor(type);
+  }
+
+  SignalProcessorChain dspChain;
+
+  DspResourcePool* dspPool = nullptr;
+  /** This should be set by the engine once and for all when it creates it RegionPlayers. */
+
+};
+
+
+//=================================================================================================
+
 /** A class for playing back a given Region object. */
 
-class RegionPlayer 
+class RegionPlayer : public SamplePlayer
 {
 
 public:
@@ -103,14 +135,12 @@ public:
   identify players that need to stop, when a noteOff is received. @see setKey */
   uchar getKey() const { return key; }
 
-  /** Sets up the pool of DSP resource objects (such as filters, modulators, etc.) from which the
-  player may grab items in order to prepare itself for playing back a region. This should be set
-  up by the engine soon after it has created all its players. */
-  void setDspResourcePool(DspResourcePool* newPool) { dspPool = newPool; }
+
 
   /** Releases all resources that were acquired for playback such as signal processors, 
   modulators, etc. */
   void releaseDspObjects();
+  // split out function teardownDspChain
 
   /** Allocates memory for the pointers to the processors, modulators and modulation 
   connections. Should be called soon after creation. */
@@ -130,13 +160,16 @@ protected:
   engine should discard the player object, i.e. put it back into the pool. */
   rsReturnCode prepareToPlay(double sampleRate, bool groupSettingsOverride, 
     bool regionSettingsOverride);
-  // change API to take group/regionSettingsAccumulate as parameters
-
-  /** Returns a pointer to a processor of given type, if available, otherwise a nullptr. Used in
-  buildProcessingChain. */
-  SignalProcessor* getProcessor(DspType type);
+  // change API to take busMode as parameter
 
   bool buildProcessingChain(bool withGroupDsps, bool withInstrumDsps);
+  // rename to assembleDspChain, maybe use only one bool called busMode or something...but it's a 
+  // bit more complicated: some group/instrument settings should apply to RegionPlayers even in
+  // busMode or drumMode - namely the settings that affect the sample playback source (delay, 
+  // pitch, etc.). Maybe we should always call all 3 setup functions and pass a busMode flag 
+  // through all the way down
+
+
   bool setupModulations();
 
   //void resetDspState();
@@ -146,7 +179,6 @@ protected:
   void setupDspSettings(const std::vector<PlaybackSetting>& settings,
     double sampleRate, bool overrideOldSetting);
   void setupProcessorSetting(const PlaybackSetting& s);
-
 
   // see comment at prepareToPlay - maybe make onTop default to false
   // change API: replace onTop with override
@@ -166,28 +198,14 @@ protected:
   float loopEnd   = 0;
   uchar loopMode  = 0;  // use an enum class with None
 
-
   uchar key = 0;                 //< Midi note number used for starting this player
-
-  // ToDo: arrange members to avoid padding to minimize memory footprint of this object
 
   std::vector<Modulator*> modulators;
   std::vector<ModulationConnection*> modMatrix;  // not a literal matrix but conceptually
-  SignalProcessorChain dspChain;
 
-  DspResourcePool* dspPool = nullptr;
-  /** This should be set by the engine once and for all when it creates it RegionPlayers. */
-
-  // We may need a state, too. Can be attack/decay/sustain/release. Or maybe just play/release?
-  // Or maybe no state at all but the triggerRelease just triggers the release of all envelopes?
-
-  friend class rsSamplerEngine; // try to get rid!
-
-
-  //using Biquad = RAPT::rsBiquadDF1<rsFloat64x2, double>; // todo: use TDF2
-  //Biquad flt, eq1, eq2, eq3;     //< Filter and equalizers
 
   // ToDo: 
+  // -arrange members to avoid padding to minimize memory footprint of this object
   // -maybe use an int and a float to represent integer and fractional parts of sampleTime 
   //  separately (we need then also 2 increments). This has two advantages:
   //  -we don't need to compute the fractional part at each sample
@@ -212,7 +230,7 @@ only when the group's DSP settings should go on top of the region's settings, i.
 "drum-sampler" mode where the groups map to sub-busses and the instrument maps to the master 
 bus. */
 
-class GroupPlayer
+class GroupPlayer : public SamplePlayer
 {
 
 public:
@@ -244,18 +262,17 @@ protected:
   std::vector<RegionPlayer*> regionPlayers;
   // Pointers to the players for all the regions in this group.
 
-  SignalProcessorChain dspChain;
-  // The chain of additional per-group signal processors that apply to the group as a whole.
 
   const rsSamplerData::Group* group = nullptr;
   // Pointer to the group object which is played back by this player
 
 
-  //class rsSamplerEngine2;
-  friend class rsSamplerEngine2;
+  friend class rsSamplerEngine2;  
+  // Try to get rid! It's only used to set some variables - provide setters for them!
 
-  rsSamplerEngine2* engine = nullptr;
-  // Needed for communication channel with enclosing sampler-engine..can we get rid of this?
+  //rsSamplerEngine2* engine = nullptr;
+  // For communication with enclosing sampler-engine - currently not needed - try to keep it like
+  // that (reduce coupling)
 
 
 };

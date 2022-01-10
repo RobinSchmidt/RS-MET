@@ -231,12 +231,6 @@ bool RegionPlayer::hasFinished()
   return false;
 }
 
-SignalProcessor* RegionPlayer::getProcessor(DspType type)
-{
-  RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
-  return dspPool->processorPool.grabProcessor(type);
-}
-
 bool RegionPlayer::buildProcessingChain(bool withGroupDsps, bool withInstrumDsps)
 {
   RAPT::rsAssert(dspChain.isEmpty(), "Someone has not cleaned up after finishing playback!");
@@ -301,6 +295,7 @@ bool RegionPlayer::buildProcessingChain(bool withGroupDsps, bool withInstrumDsps
     // add enough DSPs of the desired types to the chain or they were already present before. In 
     // both cases, the dspChain is now in the required state so we can report success.
   };
+  // move as member into SamplePlayer
 
   // Add all the required DSPs (This is ugly! Can we do this in a more elegant way?):
   bool ok;
