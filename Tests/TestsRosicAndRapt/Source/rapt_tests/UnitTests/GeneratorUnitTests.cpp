@@ -1526,12 +1526,27 @@ bool samplerAmplifierTest()
     return checkCoeffs(a,b,c,d);
   };
 
+  // Test panorama and position:
   ok &= testAmp(0.f,    0.f,  100.f,    0.f,  1,0,0,1);  // neutral
   ok &= testAmp(0.f, -100.f,  100.f,    0.f,  2,0,0,0);  // pan hard left
   ok &= testAmp(0.f, +100.f,  100.f,    0.f,  0,0,0,2);  // pan hard right
   ok &= testAmp(0.f,    0.f,  100.f, -100.f,  2,0,0,0);  // pos hard left
   ok &= testAmp(0.f,    0.f,  100.f, +100.f,  0,0,0,2);  // pos hard right
 
+  // Test width:
+  float s = sqrt(0.5f);
+  ok &= testAmp(0.f,    0.f, -100.f,    0.f,  0,1,1,0);  // swap L/R
+  ok &= testAmp(0.f,    0.f,    0.f,    0.f,  s,s,s,s);  // zero width
+  // It works but i think nevertheless the formula is still wrong - we need something based
+  // on sin/cos
+
+
+
+
+
+
+  // ToDo:
+  // -figure out, if stereo signals should just ignore width and pos
 
   return ok;
 }

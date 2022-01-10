@@ -36,16 +36,30 @@ void AmplifierCore::setup(float volume, float pan, float width, float pos)
   Mat S(s, 0.f, 0.f, s);
 
   // Construct pan matrix:
-  float p = (0.005*pan) + 0.5;  // -100..+100 -> 0..1
+  float p = (0.005f*pan) + 0.5f;  // -100..+100 -> 0..1
   Mat P(2*(1-p), 0, 0, 2*p);    // verify! maybe use panRule
 
+  /*
   // Construct width (i.e. mid/side mixing) matrix:
   float w = 0.005*width;        // -100..+100 -> -0.5..+0.5
   Mat C(1, 1, 1, -1);           // conversion R/L to M/S (or back), except for factor 1/sqrt(2)
-  Mat A(1-w, 0, 0, w);          // applies gains to mid and side signals
+  Mat A(1-w, 0, 0, w);          // applies gains to mid and side signals ..midGain is wrong
   Mat W = C*A*C;                // convert L/R to M/S, apply M/S gains, convert M/S to L/R
-  // Are we missing a factor of 2 somewhere or does that cancel?
-
+  // Are we missing a factor of 2 somewhere or does that cancel? I think, A must be multiplied
+  // by 2 and C by 1/sqrt(2)...but no, that has no overall effect except for introducing roundoff
+  // error
+  */
+  float w = 0.01f * width;      // -100..+100 -> -1.0..+1.0
+  float m = 2.f - fabs(w);      // gain for mid signal (side gain is w itself)
+  m = sqrt(m);  // test
+  Mat C(1, 1, 1, -1);           // conversion R/L to M/S (or back), except for factor 1/sqrt(2)
+  Mat A(0.5f*m, 0, 0, 0.5f*w);  // gains for mid/side, compensation for missing 1/sqrt(2)
+  Mat W = C*A*C;                // convert L/R to M/S, apply M/S gains, convert M/S to L/R
+  // ...hmmm...i think we should perhpas use a formula based on sin/cos for the M/S gains
+  // -> check what we do in other M/S processors
+  // rosic::StereoWidth uses 
+  // RAPT::rsEqualPowerGainFactors(newRatio, &midGain, &sideGain, 0.0, 1.0);
+   
   // Construct position matrix:
   float q = (0.005*pos) + 0.5;  // -100..+100 -> 0..1
   Mat Q(2*(1-q), 0, 0, 2*q);    // verify! maybe use panRule
