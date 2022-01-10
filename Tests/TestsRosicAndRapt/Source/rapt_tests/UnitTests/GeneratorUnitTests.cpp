@@ -1517,12 +1517,20 @@ bool samplerAmplifierTest()
     return ok;
   };
 
-  amp.setup(0.f,    0.f, 100.f, 0.f);  ok &= checkCoeffs(1,0,0,1);  // neutral
-  amp.setup(0.f, -100.f, 100.f, 0.f);  ok &= checkCoeffs(2,0,0,0);  // pan hard left
-  amp.setup(0.f, +100.f, 100.f, 0.f);  ok &= checkCoeffs(0,0,0,2);  // pan hard right
+  // Helper function to check, if the givne set of parameters leads to the given set of desired
+  // mix coeffs:
+  auto testAmp = [&](float vol, float pan, float width, float pos, 
+    float a, float b, float c, float d, float tol = 0.f)
+  {
+    amp.setup(vol, pan, width, pos);
+    return checkCoeffs(a,b,c,d);
+  };
 
-
-
+  ok &= testAmp(0.f,    0.f,  100.f,    0.f,  1,0,0,1);  // neutral
+  ok &= testAmp(0.f, -100.f,  100.f,    0.f,  2,0,0,0);  // pan hard left
+  ok &= testAmp(0.f, +100.f,  100.f,    0.f,  0,0,0,2);  // pan hard right
+  ok &= testAmp(0.f,    0.f,  100.f, -100.f,  2,0,0,0);  // pos hard left
+  ok &= testAmp(0.f,    0.f,  100.f, +100.f,  0,0,0,2);  // pos hard right
 
 
   return ok;
