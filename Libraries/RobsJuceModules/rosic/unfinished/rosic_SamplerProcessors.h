@@ -165,7 +165,7 @@ lowpass, highbpass, bandpass, etc.) but even completely differently structured f
 on what mode has been chosen, the internal state and coefficient data may be interpreted in
 different ways.... */
 
-class rsSamplerFilter   // rename to FilterCore - the rs is not needed within this namespace
+class FilterCore
 {
 
 public:
@@ -173,10 +173,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Lifetime */
 
-  rsSamplerFilter()
-  {
-
-  }
+  //FilterCore() { }
 
   //-----------------------------------------------------------------------------------------------
   /** \name Setup */
@@ -488,7 +485,7 @@ public:
     void prepareToPlay(double fs) override 
     { 
       FilterType sfzType = (FilterType)(int)params[0].getValue();
-      rsSamplerFilter::Type coreType = convertTypeEnum(sfzType);
+      FilterCore::Type coreType = convertTypeEnum(sfzType);
       core.setupCutRes(
         coreType,
         params[1].getValue() * float(2*PI/fs),
@@ -513,7 +510,7 @@ public:
 
   protected:
 
-    rsSamplerFilter::Type convertTypeEnum(FilterType sfzType)
+    FilterCore::Type convertTypeEnum(FilterType sfzType)
     {
       // Conversion of filter type enum values used in the sfz data and those used in the dsp core.
       // Maybe we should try to avoid the translation step between the core-enum and sfz-enum by 
@@ -521,7 +518,7 @@ public:
       // turn out to be problematic when we want to use bit-twiddling of the enum-values to switch 
       // between different filter topologies in the core while the sfz-type number must allow for
       // lossless roundtrip with a float.
-      using TC = rsSamplerFilter::Type; // enum used in the DSP core
+      using TC = FilterCore::Type;      // enum used in the DSP core
       using TO = FilterType;            // enum used in the sfz opcode
       switch(sfzType)
       {
@@ -544,10 +541,10 @@ public:
 
       return TC::BQ_Lowpass;
     }
-    // todo: avoid this conversion - use the same enum in both, the sfz codebook and the filter
-    // core just like we do with the distortion shapes
+    // todo: avoid this conversion - use the same enum in both, the sfz codebook and the 
+    // FilterCore just like we do with the waveshaper's distortion shapes
 
-    rsSamplerFilter core;
+    FilterCore core;
   };
 
   class Equalizer : public SignalProcessor
@@ -566,7 +563,7 @@ public:
     void prepareToPlay(double fs) override 
     { 
       core.setupGainFreqBw(
-        rsSamplerFilter::Type::BQ_Bell,
+        FilterCore::Type::BQ_Bell,
         params[0].getValue(),
         params[1].getValue() * float(2*PI/fs),
         params[2].getValue()
@@ -585,7 +582,7 @@ public:
 
   protected:
 
-    rsSamplerFilter core;
+    FilterCore core;
     // ToDo: use a more efficient implementation - it needs to support only a biquad mode. Maybe 
     // use TDF1. A patch can use a lot of eq bands, so we may need many eqs, so we should be more
     // frugal with memory than for the filter opcode where there is typically only one or maybe two

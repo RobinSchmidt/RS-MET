@@ -41,7 +41,7 @@ void AmplifierCore::setup(float volume, float pan, float width, float position)
 
 //=================================================================================================
 
-void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float resoGainDb)
+void FilterCore::setupCutRes(FilterCore::Type type, float w, float resoGainDb)
 {
   if(type == Type::Unknown || w == 0.f)
     type = Type::Bypass;
@@ -104,7 +104,7 @@ void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float res
   //  we just do it, but i'm not sure, if that's the right thing to do. It seems plausible, though.
 }
 
-void rsSamplerFilter::setupGainFreqBw(Type type, float gainDb, float w, float bw)
+void FilterCore::setupGainFreqBw(Type type, float gainDb, float w, float bw)
 {
   using namespace RAPT;
   rsAssert(type == Type::BQ_Bell);
@@ -137,18 +137,18 @@ void rsSamplerFilter::setupGainFreqBw(Type type, float gainDb, float w, float bw
 }
 
 /*
-void rsSamplerFilter::initCoeffs()
+void FilterCore::initCoeffs()
 {
 
 }
 
-void rsSamplerFilter::updateCoeffs()
+void FilterCore::updateCoeffs()
 {
 
 }
 */
 
-void rsSamplerFilter::processFrame(float& L, float& R)
+void FilterCore::processFrame(float& L, float& R)
 {
   TSig io(L, R);
   FilterImpl& i = impl;
@@ -178,7 +178,7 @@ void rsSamplerFilter::processFrame(float& L, float& R)
   //  This will reduce the boilerplate a lot.
 }
 
-void rsSamplerFilter::resetState()
+void FilterCore::resetState()
 {
   FilterImpl& i = impl;
   switch(type)
@@ -364,6 +364,11 @@ ToDo:
 -Test the computational load incurred by the on-demand assembling of the DSP chain. Maybe 
  pre-assemble the chains for all notes, if it turns out to be a performance problem. That would 
  increase the RAM usage beause we would have to keep around all those pre-built DSP chains.
+-Maybe for certain effects, we should have an "algo" parameter, for example, for a pitch-shifter,
+ it could have values: granular, spectral, etc. If it makes sense to implement different 
+ algorithms as different DSP objects (because different algos may differ vastly in resource
+ requirements), maybe the sampler-pool should abstract this away in some way - maybe by letting
+ grabProcessor have another integer parameter for selecting the algo
 
 
 Ideas:
