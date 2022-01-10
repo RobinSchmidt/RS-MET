@@ -1498,6 +1498,37 @@ pan=100.000000";
   return ok;
 }
 
+bool samplerAmplifierTest()
+{
+  bool ok = true;
+
+  rosic::Sampler::AmplifierCore amp;
+
+  // Helper function to check, if the gain matrix coeffs of the amp have the desired values:
+  auto checkCoeffs = [&](float a, float b, float c, float d, float tol = 0.f)
+  {
+    float A, B, C, D;
+    amp.getChannelMixCoeffs(&A, &B, &C, &D);
+    bool ok = true;
+    ok &= rsIsCloseTo(a, A, tol);
+    ok &= rsIsCloseTo(b, B, tol);
+    ok &= rsIsCloseTo(c, C, tol);
+    ok &= rsIsCloseTo(d, D, tol);
+    return ok;
+  };
+
+  amp.setup(0.f,    0.f, 100.f, 0.f);  ok &= checkCoeffs(1,0,0,1);  // neutral
+  amp.setup(0.f, -100.f, 100.f, 0.f);  ok &= checkCoeffs(2,0,0,0);  // pan hard left
+  amp.setup(0.f, +100.f, 100.f, 0.f);  ok &= checkCoeffs(0,0,0,2);  // pan hard right
+
+
+
+
+
+  return ok;
+}
+
+
 bool samplerFilterTest()
 {
   bool ok = true;
@@ -1689,7 +1720,7 @@ bool samplerWaveShaperTest()
   using SE    = rosic::Sampler::rsSamplerEngineTest;
   using PST   = rosic::Sampler::Opcode;
   //using WS    = rosic::Sampler::rsSamplerWaveShaper;
-  using Shape = rosic::Sampler::rsSamplerWaveShaper::Shape;
+  using Shape = rosic::Sampler::WaveshaperCore::Shape;
 
   // Create a sinewave as example sample:
   float fs = 44100;  // sample rate
@@ -1847,7 +1878,7 @@ bool samplerWaveShaperTest2()
   using VecF  = std::vector<float>;
   using SE2   = rosic::Sampler::rsSamplerEngine2; 
   using PST   = rosic::Sampler::Opcode;
-  using Shape = rosic::Sampler::rsSamplerWaveShaper::Shape;
+  using Shape = rosic::Sampler::DistortShape;
   using Ev    = rosic::Sampler::rsMusicalEvent<float>;
   using EvTp  = Ev::Type;
 
@@ -1923,7 +1954,7 @@ bool samplerDspChainTest()
   using SE    = rosic::Sampler::rsSamplerEngineTest;
   using PST   = rosic::Sampler::Opcode;
   using Type  = rosic::Sampler::FilterType;
-  using Shape = rosic::Sampler::rsSamplerWaveShaper::Shape;
+  using Shape = rosic::Sampler::DistortShape;
 
   // Setup:
   float fs      = 44100.f;  // sample rate
@@ -2234,6 +2265,7 @@ bool samplerEqualizerTest()
   return ok;
 }
 
+
 bool samplerProcessorsTest()
 {
   bool ok = true;
@@ -2241,14 +2273,16 @@ bool samplerProcessorsTest()
   // For inspection in the debugger. We want to keep the sizes of these DSP objects small because 
   // we'll potentially have to pre-allocate a lot of them when a patch is loaded:
   int size;
-  size = sizeof(rosic::Sampler::rsSamplerFilter);       // 64
-  size = sizeof(rosic::Sampler::rsSamplerWaveShaper);   // 24
+  size = sizeof(rosic::Sampler::AmplifierCore);         // 16
+  size = sizeof(rosic::Sampler::FilterCore);            // 64
+  size = sizeof(rosic::Sampler::WaveshaperCore);        // 24
   size = sizeof(rosic::Sampler::rsSamplerEnvGen);       // 36
   size = sizeof(rosic::Sampler::rsSamplerLowFreqOsc);   // 16
   //size = sizeof(SP::Filter);
   //size = sizeof(SP::WaveShaper);
   // later move this into a (yet to be written) benchmark testbed
 
+  ok &= samplerAmplifierTest();
   ok &= samplerFilterTest();      // tests the different filter modes
   ok &= samplerWaveShaperTest();  // tests the waveshaping DSP module
   ok &= samplerWaveShaperTest2(); // tests the different rotung options using waveshaping

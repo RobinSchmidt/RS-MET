@@ -143,6 +143,11 @@ public:
   //  so we may also model polarity inversions. Or maybe realize this here via an additional 
   //  boolean flag "invertPolarity"
 
+  /** Returns the channel mixing matrix coefficients that determine the scale factors by which both
+  input channels (L,R) go to the output channels. */
+  void getChannelMixCoeffs(float* L2L, float* R2L, float* L2R, float* R2R)
+  { *L2L = gLL; *R2L = gLR; *L2R = gRL; *R2R = gRR; }
+
 
   void processFrame(float& L, float& R)
   {
