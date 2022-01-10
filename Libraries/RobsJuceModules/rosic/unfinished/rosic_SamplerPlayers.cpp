@@ -41,6 +41,65 @@ processors[i]->resetState();
 */
 
 //=================================================================================================
+// SamplePlayer
+
+bool SamplePlayer::addDspsIfNeeded(const std::vector<DspType>& dspTypeChain)
+{
+  for(int i = 0; i < (int)dspTypeChain.size(); i++)
+  {
+    // Figure out the type of the DSP that may need to be added to the chain:
+    DspType dspType = dspTypeChain[i];
+
+    // Figure out the index within the type-chain (i.e. placeholder chain for the actual DSPs) of 
+    // the potentially to-be-added DSP because whether or not we will actually need to add 
+    // another DSP to the chain will depend on that index and the number of alike DSPs already 
+    // present in the chain. Furthermore, the default value may depend on the index as well:
+    int index = 1;
+    for(int j = i-1; j >= 0; j--) {
+      if(dspTypeChain[j] == dspType)
+        index++; }
+    // Maybe factor that out into some dspTypeChain.getSfzIndex(arrayIndex) method. In this call,
+    // the arrayIndex should be the array-index of a DSP of given type within the chain and the 
+    // return value should be the sfz-index. Example: 
+    //   typeChain == { Filter, Equalizer, Filter, Filter, Equalizer, Equalizer, Filter }
+    //   array-index:     0         1        2       3         4          5        6
+    //   sfz-index:       1         1        2       3         2          3        4
+    // Then, when we pass 4 (the array index), it should return 2 because array index 4 refers
+    // to the 2nd equalizer in the desired sfz-effect chain, i.e. the equalizer that is 
+    // controlled with opcodes eq2_gain, eq2_freq, eq2_bw. This kind of index-mapping is a bit 
+    // confusing and needs good documentation and unit-tests. But TypeChain is actually not a 
+    // class but just a std::vector of DspType. Maybe make it a class..hmm...not sure if that's
+    // worth it. Maybe make a free helper function getSfzDspIndex(const TypeChain& c, int i).
+    // Could be a static method of SamplerData. Maybe use size_t: init index to 0 and start loop
+    // index j at i
+
+    // Figure out, if we actually need to add another DSP to the chain. If not, there's nothing
+    // more to do in this iteration:
+    if(dspChain.getNumProcessors(dspType) >= index)
+      continue;
+
+    // OK - now we actually need to grab another DSP of given type from the pool:
+    SignalProcessor* dsp = getProcessor(dspType);
+    if(dsp)
+    {
+      dsp->resetSettings(index);
+      dspChain.addProcessor(dsp);
+    }
+    else {
+      dspChain.clear();
+      return false; 
+      // Not enough DSPs of desired type are available in the pool. We roll back the partial 
+      // chain that we may have built already and report failure.
+    }
+  }
+  return true;
+  // When we arrive here, we have successfully finished the loop which means that we either could
+  // add enough DSPs of the desired types to the chain or they were already present before. In 
+  // both cases, the dspChain is now in the required state so we can report success.
+
+}
+
+//=================================================================================================
 // RegionPlayer
 
 rsReturnCode RegionPlayer::setRegionToPlay(const Region* regionToPlay, 
@@ -236,66 +295,6 @@ bool RegionPlayer::buildProcessingChain(bool withGroupDsps, bool withInstrumDsps
   RAPT::rsAssert(dspChain.isEmpty(), "Someone has not cleaned up after finishing playback!");
   dspChain.clear(); // ...so we do it here. But this should be fixed elsewhere!
 
-  using TypeChain = std::vector<DspType>; // maybe rename to DspTypeArray...or get rid
-
-  // Adds the DSPs of the given types to the chain of actual DSP objects, if needed. Adding a 
-  // particular DSP is needed, if no suitable such DSP is already there where "suitable" means:
-  // "with right type and index":
-  auto addDspsIfNeeded = [this](const TypeChain& dspTypeChain)
-  {
-    for(int i = 0; i < (int)dspTypeChain.size(); i++)
-    {
-      // Figure out the type of the DSP that may need to be added to the chain:
-      DspType dspType = dspTypeChain[i];
-
-      // Figure out the index within the type-chain (i.e. placeholder chain for the actual DSPs) of 
-      // the potentially to-be-added DSP because whether or not we will actually need to add 
-      // another DSP to the chain will depend on that index and the number of alike DSPs already 
-      // present in the chain. Furthermore, the default value may depend on the index as well:
-      int index = 1;
-      for(int j = i-1; j >= 0; j--) {
-        if(dspTypeChain[j] == dspType)
-          index++; }
-      // Maybe factor that out into some dspTypeChain.getSfzIndex(arrayIndex) method. In this call,
-      // the arrayIndex should be the array-index of a DSP of given type within the chain and the 
-      // return value should be the sfz-index. Example: 
-      //   typeChain == { Filter, Equalizer, Filter, Filter, Equalizer, Equalizer, Filter }
-      //   array-index:     0         1        2       3         4          5        6
-      //   sfz-index:       1         1        2       3         2          3        4
-      // Then, when we pass 4 (the array index), it should return 2 because array index 4 refers
-      // to the 2nd equalizer in the desired sfz-effect chain, i.e. the equalizer that is 
-      // controlled with opcodes eq2_gain, eq2_freq, eq2_bw. This kind of index-mapping is a bit 
-      // confusing and needs good documentation and unit-tests. But TypeChain is actually not a 
-      // class but just a std::vector of DspType. Maybe make it a class..hmm...not sure if that's
-      // worth it. Maybe make a free helper function getSfzDspIndex(const TypeChain& c, int i).
-      // Could be a static method of SamplerData. Maybe use size_t: init index to 0 and start loop
-      // index j at i
-
-      // Figure out, if we actually need to add another DSP to the chain. If not, there's nothing
-      // more to do in this iteration:
-      if(dspChain.getNumProcessors(dspType) >= index)
-        continue;
-
-      // OK - now we actually need to grab another DSP of given type from the pool:
-      SignalProcessor* dsp = getProcessor(dspType);
-      if(dsp)
-      {
-        dsp->resetSettings(index);
-        dspChain.addProcessor(dsp);
-      }
-      else {
-        dspChain.clear();
-        return false; 
-        // Not enough DSPs of desired type are available in the pool. We roll back the partial 
-        // chain that we may have built already and report failure.
-      }
-    }
-    return true;
-    // When we arrive here, we have successfully finished the loop which means that we either could
-    // add enough DSPs of the desired types to the chain or they were already present before. In 
-    // both cases, the dspChain is now in the required state so we can report success.
-  };
-  // move as member into SamplePlayer
 
   // Add all the required DSPs (This is ugly! Can we do this in a more elegant way?):
   bool ok;

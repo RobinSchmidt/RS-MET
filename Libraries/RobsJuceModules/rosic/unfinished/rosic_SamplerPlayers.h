@@ -77,6 +77,12 @@ protected:
     return dspPool->processorPool.grabProcessor(type);
   }
 
+  /** Adds the DSPs of the given types to the chain of actual DSP objects, if needed. Adding a 
+  particular DSP is needed, if no suitable such DSP is already there in out dspChain where 
+  "suitable" means: "with right type and index" */
+  bool addDspsIfNeeded(const std::vector<DspType>& dspTypeChain);
+
+
   SignalProcessorChain dspChain;
 
   DspResourcePool* dspPool = nullptr;
