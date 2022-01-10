@@ -99,6 +99,13 @@ bool SamplePlayer::addDspsIfNeeded(const std::vector<DspType>& dspTypeChain)
 
 }
 
+void SamplePlayer::disassembleDspChain()
+{
+  for(int i = 0; i < dspChain.getNumProcessors(); i++)
+    dspPool->processorPool.repositProcessor(dspChain.getProcessor(i));
+  dspChain.clear();
+}
+
 //=================================================================================================
 // RegionPlayer
 
@@ -184,14 +191,12 @@ bool RegionPlayer::isPlayable(const Region* region)
   return ok;
 }
 
-void RegionPlayer::releaseDspObjects()
+void RegionPlayer::releaseDspObjects()  // rename to releaseResources
 {
   RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
 
-  // Return the DSP objects to the pool:
-  for(int i = 0; i < dspChain.getNumProcessors(); i++)
-    dspPool->processorPool.repositProcessor(dspChain.getProcessor(i));
-  dspChain.clear();
+  disassembleDspChain();
+
 
   // Return the modulators to the pool:
   // ...something to do...
@@ -205,6 +210,9 @@ void RegionPlayer::releaseDspObjects()
   stream = nullptr;
   region = nullptr;
 }
+
+
+
 
 void RegionPlayer::allocateMemory()
 {
@@ -322,6 +330,7 @@ bool RegionPlayer::buildProcessingChain(bool withGroupDsps, bool withInstrumDsps
   // manner. But let's try at least to make that an exception that occurs only in extreme 
   // scenarios.
 }
+// rename to assembleDspChain
 
 bool RegionPlayer::setupModulations()
 {

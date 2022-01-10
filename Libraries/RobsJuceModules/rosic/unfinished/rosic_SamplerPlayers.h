@@ -78,18 +78,25 @@ protected:
   }
 
   /** Adds the DSPs of the given types to the chain of actual DSP objects, if needed. Adding a 
-  particular DSP is needed, if no suitable such DSP is already there in out dspChain where 
+  particular DSP is needed, if no suitable such DSP is already there in our dspChain where 
   "suitable" means: "with right type and index" */
   bool addDspsIfNeeded(const std::vector<DspType>& dspTypeChain);
 
+  /** Reposits all the DSP objects back into the dspPool and clears our dspChain. */
+  void disassembleDspChain();
+
 
   SignalProcessorChain dspChain;
+  /** This is the chain of our actual DSP objects. A SignalProcessorChain is basically an array
+  of pointers to polymorphic signal processor classes that can be assembled at runtime,  
+  typically on noteOn. */
 
   DspResourcePool* dspPool = nullptr;
-  /** This should be set by the engine once and for all when it creates it RegionPlayers. */
+  /**< A pool of DSP processor objects from which we can grab some as needed to assemble our DSP
+  chain. The assembly task mostly done in the subclasses making use of addDspsIfNeeded. The pointer
+  should be set by the engine once and for all when it creates its Players. */
 
 };
-
 
 //=================================================================================================
 
