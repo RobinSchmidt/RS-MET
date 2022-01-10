@@ -201,6 +201,8 @@ protected:
   const AudioFileStream<float>* stream; //< Stream object to get the data from
 
   rsFloat64x2 amp = 1.0;         //< Amplitude (for both channels)
+  // maybe remove or replace by channel-matrix gains gLL, gLR, gRL, gRR
+
   //int sampleTime = 0;          //< Elapsed time in samples, negative values used for delay
   double sampleTime = 0.0;       //< Time index in the sample. Negative values used for delay.
   double increment  = 1.0;       //< Increment of sampleTime per sample

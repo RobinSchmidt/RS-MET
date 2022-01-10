@@ -101,6 +101,65 @@ public:
 // provided by boilerplate classes that derive from SignalProcessor and the actual core DSP class 
 // via multiple inheritance. Maybe move this pure DSP code elsewhere...
 
+
+//=================================================================================================
+
+class AmplifierCore
+{
+
+public:
+
+  /** Sets up the internal algo parameters in terms of user parameters defined in the sfz spec.
+  The following descriptions of the parameters are taken from: https://sfzformat.com/legacy/
+  (ToDo: verify, if this is implemented correctly - at the moment, my formulas are a guess)
+
+  volume: -144 to 6 dB
+  The volume for the region, in decibels.
+
+  pan: -100..+100
+  The panoramic position for the region. If a mono sample is used, pan value defines the position 
+  in the stereo image where the sample will be placed. When a stereo sample is used, the pan value 
+  the relative amplitude of one channel respect the other. A value of zero means centered, negative
+  values move the panoramic to the left, positive to the right.
+
+  width: -100% to 100%
+  Only operational for stereo samples, width defines the amount of channel mixing applied to play 
+  the sample. A width value of 0 makes a stereo sample play as if it were mono (adding both 
+  channels and compensating for the resulting volume change). A value of 100 will make the stereo 
+  sample play as original. Any value in between will mix left and right channels with a part of the
+  other, resulting in a narrower stereo field image. Negative width values will reverse left and 
+  right channels.
+
+  position: -100% to 100%
+  Only operational for stereo samples, position defines the position in the stereo field of a 
+  stereo signal, after channel mixing as defined in the width opcode. A value of zero means 
+  centered, negative values move the panoramic to the left, positive to the right. Examples:
+  width=0 position=-100 will mix both channels and play the result at left, width=50 position=30 
+  will make the stereo image narrower and play it slightly right. */
+  void setup(float volume, float pan, float width, float position);
+
+  // ToDo: 
+  // -Maybe provide a different parametrization where the volume is expressed as linear gain, 
+  //  so we may also model polarity inversions. Or maybe realize this here via an additional 
+  //  boolean flag "invertPolarity"
+
+
+  void processFrame(float& L, float& R)
+  {
+    float t = L;            // temporary
+    L = gLL * L + gLR * R;
+    R = gRL * t + gRR * R;
+  }
+
+
+protected:
+
+  float gLL = 1.f, gLR = 0.f, gRL = 0.f, gRR = 1.f;
+
+};
+
+//=================================================================================================
+
 /** A multimode filter that implements not only different filter frequency response types (like
 lowpass, highbpass, bandpass, etc.) but even completely differently structured filters. Depending
 on what mode has been chosen, the internal state and coefficient data may be interpreted in

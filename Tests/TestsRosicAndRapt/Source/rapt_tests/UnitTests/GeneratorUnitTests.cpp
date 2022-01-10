@@ -2296,7 +2296,9 @@ bool samplerEngineUnitTest()
   ok &= samplerParserTest();            // uses some files created by "..FileIO" -> order matters!
   ok &= samplerProcessorsTest();
   ok &= samplerModulationsTest();
-  //ok &= samplerEngine2UnitTest();   // currently fails
+
+  //ok &= samplerEngine2UnitTest();   
+  // currently fails because we switched to the busMode stuff - test needs to be updated
 
   // ToDo:
   // -Write a unit test ofr the sfz-parser where it does not only need to read in data that was 

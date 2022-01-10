@@ -27,6 +27,20 @@ void SignalProcessor::resetSettings(int index)
 
 //=================================================================================================
 
+void AmplifierCore::setup(float volume, float pan, float width, float position)
+{
+
+  // ToDo: 
+  // -Verify, if the formulas are implemented correctly, i.e. correctly resemble the behavior
+  //  of reference sfz implementations. They represent my first guess, i.e. the way I would 
+  //  probably do it.
+  //  -Check the behavior for mono and stereo samples. Maybe we need an isStereo flag to switch 
+  //   between different formulas?
+  // -Optimize the calculations
+}
+
+//=================================================================================================
+
 void rsSamplerFilter::setupCutRes(rsSamplerFilter::Type type, float w, float resoGainDb)
 {
   if(type == Type::Unknown || w == 0.f)
@@ -324,6 +338,11 @@ rsSamplerWaveShaper:
  transformation.
  -for tanh, maybe try functions like tanh(a*x^b), tanh(a*x+b*x^3), tanh(sinh(a*x)/x), 
   tanh((a*x+b*x^3)/(c*x+d*x^3))
+
+rsSamplerAmplifier:
+-internal algo parameters should be gLL, gLR, gRL, gRR - the 4 gains for the channel-mix matrix
+-user params should be: scale (linear overall scale factor), pan, width and as 3rd...dunno - maybe
+ pos? whatever is left to determine the rest.
 
 
 ToDo:
