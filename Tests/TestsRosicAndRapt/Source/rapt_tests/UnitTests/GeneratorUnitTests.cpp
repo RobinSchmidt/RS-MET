@@ -813,39 +813,24 @@ bool samplerEngine2UnitTest()
   ok &= se.getNumActiveLayers() == 0;  // rename to getNumActiveRegions or getNumPlayingRegions
   ok &= se.getNumActiveGroupPlayers() == 0;
 
-  // Set up the engine such that the region settings do not override the group settings but instead
-  // region settings and group settings are combined:
-  se.setRegionSettingsOverride(false);
-  tgt = groupAmp*regionAmp*sin440;
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 0.0f, false);
-  ok &= se.getNumActiveLayers() == 0;
-  ok &= se.getNumActiveGroupPlayers() == 0;
+  // Obsolete - we need to adapt it to use setBusMode - and there are only 2 instead of 4 
+  // behaviors
 
-  // Set up the engine such that the group settings do not override the instrument settings but 
-  // instead group settings and instrument settings are combined. The region settings are combined
-  // into that, too (from the setting before):
-  se.setGroupSettingsOverride(false);
+  // In bus-mode, we want to see all 3 settings applied:
+  se.setBusMode(true);
   tgt = instrAmp*groupAmp*regionAmp*sin440;
   float tol = 1.e-7f;  // why can't we use 0 tolerance?
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, false);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
 
-  // Now set the regionSettingsOverride back to true. That renders the question whether or not 
-  // group settings override instrument settings irrelevant in cases when a region setting is 
-  // available (which is the case here). The region setting will override the combined 
-  // instrument + group setting:
+  // In normal mode, we want to see only the region setting applied:
   //se.reset();
-  se.setRegionSettingsOverride(true);
+  se.setBusMode(false);
   tgt = regionAmp*sin440;
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 0.0, false);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
-
-
-  // ToDo: test behavior when there is no region setting available...maybe test also when there is
-  // only a region and instrument setting
-
 
   //---------------------------------------------------------------------------
   // Test accumulation of pan setting:
@@ -861,21 +846,13 @@ bool samplerEngine2UnitTest()
   se.setInstrumentSetting(  PST::Pan, instrPan);
 
   // We want to see only the region pan:
-  se.setGroupSettingsOverride(true);     // group settings override again
-  se.setRegionSettingsOverride(true);    // not required but anyway
+  se.setBusMode(false);
   tgtL = tgtR = sin440;
   rsApplyPan(tgtL, tgtR, regionPan/100);
   ok &= testSamplerNote(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6f, false); 
 
-  // Now we want to see region and group pan combined:
-  se.setRegionSettingsOverride(false);
-  tgtL = tgtR = sin440;
-  rsApplyPan(tgtL, tgtR, regionPan/100);
-  rsApplyPan(tgtL, tgtR, groupPan /100);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgtL, tgtR, 1.e-6f, false);
-
   // Now we want to see region, group and instrument pan combined:
-  se.setGroupSettingsOverride(false);
+  se.setBusMode(true);
   tgtL = tgtR = sin440;
   rsApplyPan(tgtL, tgtR, regionPan/100);
   rsApplyPan(tgtL, tgtR, groupPan /100);
@@ -897,23 +874,24 @@ bool samplerEngine2UnitTest()
   se.setInstrumentSetting(  PST::Delay, instrDelay  / fs);
 
   // We want to see only the region delay:
-  se.setGroupSettingsOverride(true);
-  se.setRegionSettingsOverride(true); 
+  se.setBusMode(false);
   tgt = sin440;
   rsApplyDelay(tgt, regionDelay);
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
   ok &= se.getNumActiveLayers() == 1;        // it's still playing due to the delay
   ok &= se.getNumActiveGroupPlayers() == 0;  // no group player is/was used due to settings
 
+  /*
   // Now we want to see region and group delay combined:
   se.setRegionSettingsOverride(false);
   tgt = sin440;
   rsApplyDelay(tgt, regionDelay);
   rsApplyDelay(tgt, groupDelay);
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+  */
 
   // Now we want to see region, group and instrument delay combined:
-  se.setGroupSettingsOverride(false);
+  se.setBusMode(true);
   tgt = sin440;
   rsApplyDelay(tgt, regionDelay);
   rsApplyDelay(tgt, groupDelay);
@@ -934,29 +912,20 @@ bool samplerEngine2UnitTest()
   se.setInstrumentSetting(  PST::Offset, instrOffset);
 
   // We want to see only the region offset:
-  se.setGroupSettingsOverride(true);
-  se.setRegionSettingsOverride(true); 
+  se.setBusMode(false);
   tgt = sin440;
   rsApplyDelay(tgt, -regionOffset);  // offset is like a negative delay
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0; 
 
-  // We want to see region and group offset:
-  se.setRegionSettingsOverride(false);
-  tgt = sin440;
-  rsApplyDelay(tgt, -regionOffset); 
-  rsApplyDelay(tgt, -groupOffset); 
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
-
   // We want to see region, group and instrument offset:
-  se.setGroupSettingsOverride(false);
+  se.setBusMode(true);
   tgt = sin440;
   rsApplyDelay(tgt, -regionOffset); 
   rsApplyDelay(tgt, -groupOffset); 
   rsApplyDelay(tgt, -instrOffset); 
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
-
 
   //---------------------------------------------------------------------------
   // Test offset and delay (but only for the region setting):
@@ -1010,12 +979,12 @@ bool samplerEngine2UnitTest()
 
   // Test override mode. We expect to see only the region transpose and tune. That's 
   // 69 + 1 + 10/100 = 70.1
-  se.setGroupSettingsOverride(true);
-  se.setRegionSettingsOverride(true);
+  se.setBusMode(false);
   getSamplerNote(&se, 69.f, 127.f, outL, outR);
   //rsPlotVectors(outL, outR);
   ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 70.1f, tol);
 
+  /*
   // Now we want to see region and group transpose combined. That's
   // 69 + 1 + 2 + 10/100 + 20/100 = 72.3
   se.setRegionSettingsOverride(false);
@@ -1023,10 +992,11 @@ bool samplerEngine2UnitTest()
   //rsPlotVectors(outL, outR);
   ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 72.3f, tol);
   // that works! ...i'm actually surprised that it does -> figure out why
+  */
 
   // Now we want to see region, group and instrument transpose combined. That's
   // 69 + 1 + 2 + 3 + 10/100 + 20/100 + 30/100 = 75.6
-  se.setGroupSettingsOverride(false);
+  se.setBusMode(true);
   getSamplerNote(&se, 69.f, 127.f, outL, outR);
   ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 75.6f, tol);
   // ok - works, too
@@ -1058,6 +1028,7 @@ bool samplerEngine2UnitTest()
   //rsPlotVector(outL);
   ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 74.1f, tol);
 
+  /*
   // Restore the instrument's tune setting and let the group settings override the instrument 
   // settings again. Now we should see for tune the instrument setting combined with the region 
   // setting because the region accumulates and the group has no tune setting. For the transpose,
@@ -1073,15 +1044,9 @@ bool samplerEngine2UnitTest()
   // absence of a tune setting in the group causes the tune to be overriden with 0? i.e. when the 
   // group overrides the instrument, it will also override it with the default value, in case no 
   // value is defined?. why would that happen?
-
-
-
-
-
+  */
 
   // with se.setGroupSetting( 0,    PST::PitchKeyCenter, 50.f) uncommented, the test fails
-
-
 
   // we are in accumulate mode for both, so after that removal, we should see a combinations of
   // instrument and group transpose...but still see the region's tune
@@ -1092,9 +1057,6 @@ bool samplerEngine2UnitTest()
   //  always work in override mode. Check what happens, when the instrument and or group also
   //  defines a pitch keycenter. We currently wouldn't notice any problems with that because the
   //  keycenter is only defined for the region
-
-
-
 
   // Maybe we should also have a detuneHz opcode -> check sfz spec, if such a thing exists 
   // (-> nope, not in sfz 1.0 at least)
@@ -1923,7 +1885,7 @@ bool samplerWaveShaperTest2()
   // maybe factor this out into testSamplerNotes2
 
   // Mix-and-accumulate mode:
-  se.setOpcodesAccumulate(true);
+  se.setBusMode(true);
   for(int n = 0; n < N; n++)
     tgt[n] = tanh(driveG*sin440[n] + driveG*getSampleAt(sin440, 0.5f*n));
   se.reset();

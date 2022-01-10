@@ -594,8 +594,9 @@ protected:
   //
   // Flags to decide if the group- and/or instrument settings and/or modulations should be applied 
   // on top of the region settings/modulations. This is a feature not present in the sfz spec. 
-  bool groupSettingsOverride  = true;
-  bool regionSettingsOverride = true;
+  //bool groupSettingsOverride  = true;
+  //bool regionSettingsOverride = true;
+  bool busMode = false;
 
   // This object is used for various translation tasks:
   //SfzCodeBook sfzTranslator;
@@ -673,16 +674,25 @@ public:
   specifies a volume of -6dB and a region within the group specifies a volume of -3dB, the
   resulting volume of the region in playback will be -9dB in accumulative mode and -3dB in override
   mode. -3dB is what you should get as per the sfz spec [verify!]. */
+  /*
   void setOpcodesAccumulate(bool shouldAccumulate)
   {
     regionSettingsOverride = !shouldAccumulate;
     groupSettingsOverride  = !shouldAccumulate;
     reset();  // changing this setting is disruptive - we need a reset
   }
+  */
   // maybe call it setDrumBusMode, maybe call the whole class rsDrumSamplerEngine. It's typical for
   // Drum patches that each sample is mapped to a particular key and then the drums are combined
   // to a drum bus to which more FX are applied etc. ...maybe call it groupsAreBusses or something
   // like that
+
+  void setBusMode(bool groupsAreBusses) 
+  { 
+    reset();  // changing this setting is disruptive - we need a reset
+    busMode = groupsAreBusses; 
+  }
+
 
   /** Returns the number of currently playing group players. */
   int getNumActiveGroupPlayers() const { return (int)activeGroupPlayers.size(); }
@@ -714,7 +724,7 @@ protected:
 
   /** Returns true, iff the settings are such that the additional features of this subclass are not
   used so we can fall back to the (simpler) baseclass implementations in our overrides. */
-  bool canFallBackToBaseclass() const { return regionSettingsOverride && groupSettingsOverride; }
+  bool canFallBackToBaseclass() const { return !busMode; }
 
   /** Updates our active/idleGroupPlayer arrays according to a status change in the
   active/idleRegionPlayer arrays...tbc... */
@@ -794,20 +804,24 @@ public:
   -6dB gain and only if that would not be defined, it would fall back to the group's -3dB setting.
   The latter behavior is the default in sfz (verify!) but the the former is also often convenient
   and the desired behavior in ModeAudio's drum sampler. */
+  /*
   void setRegionSettingsOverride(bool shouldOverride)
   {
     regionSettingsOverride = shouldOverride;
     reset();  // changing this setting is disruptive - we need a reset
   }
+  */
 
   /** Similar to setRegionSettingsOverride, but for the instrument and group settings, i.e. it
   decides whether the group settings should override the instrument settings or be apllied on top
   of them. */
+  /*
   void setGroupSettingsOverride(bool shouldOverride)
   {
     groupSettingsOverride = shouldOverride;
     reset();
   }
+  */
   // At the moment, it does not yet behave quite right when trying to change these 2 settings 
   // seperately which is why these functions are not yet available for public use in the baseclass. 
   // Client code (which is supposed to use the baseclass) can only change both settings at once via

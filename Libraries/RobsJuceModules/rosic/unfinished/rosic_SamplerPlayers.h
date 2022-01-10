@@ -82,6 +82,11 @@ protected:
   "suitable" means: "with right type and index" */
   bool addDspsIfNeeded(const std::vector<DspType>& dspTypeChain);
 
+  /** This is supposed to be overriden by subclasses to actually assmble the DSP chain they 
+  need. */
+  virtual bool assembleDspChain(bool busMode) = 0;
+  // maybe use an int mode parameter later when more flexibility is needed
+
   /** Reposits all the DSP objects back into the dspPool and clears our dspChain. */
   void disassembleDspChain();
 
@@ -120,12 +125,8 @@ public:
   (false). Likewise, regionSettingsOverride = true lets the region settings override the group
   settings. */
   rsReturnCode setRegionToPlay(const Region* regionToPlay, 
-    const AudioFileStream<float>* sampleStream, double outputSampleRate,
-    bool groupSettingsOverride, bool regionSettingsOverride);
-  // todo: later maybe have default values (false) for the settingsOnTop variables for 
-  // convenience - but for implementing the signal-flow stuff, it makes sense to enforce the 
-  // caller to apps a value
-  // change API to take group/regionSettingsAccumulate as parameters
+    const AudioFileStream<float>* sampleStream, double outputSampleRate, bool busMode);
+  // todo: later maybe have default values (false) for the busMode 
 
   const Region* getRegionToPlay() const { return region; }
 
@@ -152,8 +153,8 @@ public:
 
   /** Releases all resources that were acquired for playback such as signal processors, 
   modulators, etc. */
-  void releaseDspObjects();
-  // split out function teardownDspChain
+  void releaseResources();
+
 
   /** Allocates memory for the pointers to the processors, modulators and modulation 
   connections. Should be called soon after creation. */
@@ -171,26 +172,26 @@ protected:
   rsReturnCode::success, it means the player is now ready to play. If it returns anything else,
   it means that something went wrong  - presumably not enough ressources were available - and the
   engine should discard the player object, i.e. put it back into the pool. */
-  rsReturnCode prepareToPlay(double sampleRate, bool groupSettingsOverride, 
-    bool regionSettingsOverride);
-  // change API to take busMode as parameter
+  rsReturnCode prepareToPlay(double sampleRate, bool busMode);
 
-  bool buildProcessingChain(bool withGroupDsps, bool withInstrumDsps);
-  // rename to assembleDspChain, maybe use only one bool called busMode or something...but it's a 
+
+  //bool assembleDspChain(bool withGroupDsps, bool withInstrumDsps);
+  // maybe use only one bool called busMode or something...but it's a 
   // bit more complicated: some group/instrument settings should apply to RegionPlayers even in
   // busMode or drumMode - namely the settings that affect the sample playback source (delay, 
   // pitch, etc.). Maybe we should always call all 3 setup functions and pass a busMode flag 
   // through all the way down
+
+  bool assembleDspChain(bool busMode) override;
 
 
   bool setupModulations();
 
   //void resetDspState();
   void resetPlayerSettings();
-  void setupDspSettingsFor(const Region* r, double sampleRate, bool groupSettingsOverride,
-    bool regionSettingsOverride);
+  void setupDspSettingsFor(const Region* r, double sampleRate, bool busMode);
   void setupDspSettings(const std::vector<PlaybackSetting>& settings,
-    double sampleRate, bool overrideOldSetting);
+    double sampleRate, bool busMode);
   void setupProcessorSetting(const PlaybackSetting& s);
 
   // see comment at prepareToPlay - maybe make onTop default to false
@@ -251,8 +252,9 @@ public:
   /** Generates one stereo sample frame at a time. */
   rsFloat64x2 getFrame();
 
-  /** Resets the internal state. */
-  void reset();
+  /** Release the resources that were acquired for playback (DSPs, RegionPlayers, etc.). */
+  void releaseResources();
+  // make virtual method in baseclass
 
   /** Adds a new region player to our regionPlayers array. */
   void addRegionPlayer(RegionPlayer* newPlayer);
@@ -267,10 +269,10 @@ public:
   /** Returns true, iff this GroupPlayer has no RegionPlayer objects running. */
   bool hasNoRegionPlayers() { return regionPlayers.empty(); }
 
-  bool buildDspChain(); // maybe rename to assembleDspChain
-  void clearDspChain(); // maybe rename to disassembleDspChain, teardown, clearDspChain
 
 protected:
+
+  bool assembleDspChain(bool busMode) override;
 
   std::vector<RegionPlayer*> regionPlayers;
   // Pointers to the players for all the regions in this group.

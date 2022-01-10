@@ -110,15 +110,14 @@ void SamplePlayer::disassembleDspChain()
 // RegionPlayer
 
 rsReturnCode RegionPlayer::setRegionToPlay(const Region* regionToPlay, 
-  const AudioFileStream<float>* sampleStream, double fs, 
-  bool groupsOverride, bool regionsOverride)
+  const AudioFileStream<float>* sampleStream, double fs, bool busMode)
 {  
-  releaseDspObjects();
+  releaseResources(); // actually, it should not hold any at this point - or should it?
   region = regionToPlay;
   if(region == nullptr)
     return rsReturnCode::nothingToDo;
   stream = sampleStream;
-  return prepareToPlay(fs, groupsOverride, regionsOverride);
+  return prepareToPlay(fs, busMode);
 }
 
 rsFloat64x2 RegionPlayer::getFrame()
@@ -191,12 +190,11 @@ bool RegionPlayer::isPlayable(const Region* region)
   return ok;
 }
 
-void RegionPlayer::releaseDspObjects()  // rename to releaseResources
+void RegionPlayer::releaseResources()
 {
   RAPT::rsAssert(dspPool, "This pointer should be assigned soon after creation");
 
   disassembleDspChain();
-
 
   // Return the modulators to the pool:
   // ...something to do...
@@ -224,8 +222,7 @@ void RegionPlayer::allocateMemory()
   // later
 }
 
-rsReturnCode RegionPlayer::prepareToPlay(
-  double fs, bool groupsOverride, bool regionsOverride)
+rsReturnCode RegionPlayer::prepareToPlay(double fs, bool busMode)
 {
   RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   RAPT::rsAssert(stream != nullptr);   // Ditto.
@@ -234,12 +231,12 @@ rsReturnCode RegionPlayer::prepareToPlay(
   // merely fallback values for absent region values which is indicated by the regionsOverride 
   // flag. So, of that flag is true, it means the group opcodes specify parameters for DSPs on the
   // RegionPlayer which means we must add the group DSPs here:
-  bool withGroupDsps = regionsOverride;
+  //bool withGroupDsps = regionsOverride;
 
   // Likewise, the DSPs required by the global instrument opcodes also need to be integrated into 
   // the RegionPlayer, iff these settings are merely fallback values (as opposed to values for
   // independent DSPs that are applied to the whole instrument):
-  bool withInstrumDsps = groupsOverride;
+  //bool withInstrumDsps = groupsOverride;
   // At the moment, either both of these flags are true or both are false and i'm not yet sure if 
   // it will ever make sense to have these adjustable seperately. The behavior when one is false 
   // and the other true might be complicated to implement and/or understand for the user. And 
@@ -247,16 +244,16 @@ rsReturnCode RegionPlayer::prepareToPlay(
   // where we may switch ot the other kind of behavior (accumulation instead of fallback)
 
 
-  if(!buildProcessingChain(withGroupDsps, withInstrumDsps)) 
+  if(!assembleDspChain(busMode)) 
   {
-    releaseDspObjects();
+    releaseResources();
     return rsReturnCode::layerOverload; 
   }
   if(!setupModulations()) {
-    releaseDspObjects();
+    releaseResources();
     return rsReturnCode::layerOverload; }
   resetPlayerSettings(); 
-  setupDspSettingsFor(region, fs, groupsOverride, regionsOverride);
+  setupDspSettingsFor(region, fs, busMode);
   // todo: move fs before the override parameters for consistency
 
   // todo: setup modulators and modulation connections
@@ -298,7 +295,7 @@ bool RegionPlayer::hasFinished()
   return false;
 }
 
-bool RegionPlayer::buildProcessingChain(bool withGroupDsps, bool withInstrumDsps)
+bool RegionPlayer::assembleDspChain(bool busMode)
 {
   RAPT::rsAssert(dspChain.isEmpty(), "Someone has not cleaned up after finishing playback!");
   dspChain.clear(); // ...so we do it here. But this should be fixed elsewhere!
@@ -309,12 +306,12 @@ bool RegionPlayer::buildProcessingChain(bool withGroupDsps, bool withInstrumDsps
   ok = addDspsIfNeeded(region->getProcessingChain()); 
   if(!ok) return false;
 
-  if(withGroupDsps)
+  if(!busMode)
   {
     ok = addDspsIfNeeded(region->getGroup()->getProcessingChain());
     if(!ok) return false;
   }
-  if(withInstrumDsps)
+  if(!busMode)
   {
     ok = addDspsIfNeeded(region->getGroup()->getInstrument()->getProcessingChain());
     if(!ok) return false;
@@ -365,22 +362,20 @@ void RegionPlayer::resetPlayerSettings()
   //dspChain.resetSettings();
 }
 
-void RegionPlayer::setupDspSettingsFor(
-  const Region* r, double fs, bool groupsOverride, bool regionsOverride)
+void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
 {
   // To set up the settings, we call setupDspSettings 3 times to:
   //   (1) set up the general instrument-wide settings
   //   (2) set up group specific settings (this may override instrument settings)
   //   (3) set up region specific settings (this may override group and/or instrument settings)
-  // but only if the respective flags are true. The flag groupsOverride means that the instrument
-  // settings act as fallback settings for group-settings, so the instrument settings must be 
-  // applied before applying group settings. Likewise for the regionsOverride flag: it means the 
-  // group settings act as fallback values for region settings and must be set up before those:
-  if(groupsOverride)
-    setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, true);
-  if(regionsOverride)
-    setupDspSettings(region->getGroup()->getSettings(), fs, groupsOverride);
-  setupDspSettings(region->getSettings(), fs, regionsOverride);
+  // but only if not in bus-mode in which case the group and instrument settings apply to separate
+  // DSP objects on the groups which map to sub-busses and the instrument which maps to the final
+  // master bus:
+  if(!busMode)
+    setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, busMode);
+  if(!busMode)
+    setupDspSettings(region->getGroup()->getSettings(), fs, busMode);
+  setupDspSettings(region->getSettings(), fs, busMode);
 
   // The code above will have set up the increment assuming that the current key matches the 
   // rootKey of the sample, Now, as final step, we also adjust it according to the difference 
@@ -404,7 +399,7 @@ void RegionPlayer::setupDspSettingsFor(
 }
 
 void RegionPlayer::setupDspSettings(
-  const std::vector<PlaybackSetting>& settings, double fs, bool overrideOldSetting)
+  const std::vector<PlaybackSetting>& settings, double fs, bool busMode)
 {
   using PS = PlaybackSetting;
   using TP = Opcode;               // rename to OC
@@ -415,7 +410,13 @@ void RegionPlayer::setupDspSettings(
   double  tuneFine   = 0.0;  // in cents
   PanRule panRule    = PanRule::linear;
   //int    offset     = 0;
-  bool   onTop       = !overrideOldSetting; // maybe get rid 
+
+  bool onTop = busMode; 
+  // maybe get rid...actually, we need a more complex logic here: some settings should always 
+  // override regardless of bus-mode - namely those that apply to the sample-player, i.e. pitch
+  // stuff etc.
+
+
 
   // Loop through the settings of the region and for each setting that is present, change the 
   // value from its default to the stored value:
@@ -586,11 +587,11 @@ rsFloat64x2 GroupPlayer::getFrame()
   return out;
 }
 
-void GroupPlayer::reset()
+void GroupPlayer::releaseResources() 
 {
+  disassembleDspChain();
   regionPlayers.clear();
-  //dspChain.reset();
-  dspChain.clear();
+  //group = nullptr;
 }
 
 void GroupPlayer::addRegionPlayer(RegionPlayer* newPlayer) 
@@ -605,15 +606,10 @@ void GroupPlayer::removeRegionPlayer(RegionPlayer* player)
   RAPT::rsRemoveFirstOccurrence(regionPlayers, player);
 }
 
-bool GroupPlayer::buildDspChain()
+bool GroupPlayer::assembleDspChain(bool busMode)
 {
   //RAPT::rsError("Not yet implemented");
   return false;
-}
-
-void GroupPlayer::clearDspChain()
-{
-  //RAPT::rsError("Not yet implemented");
 }
 
 

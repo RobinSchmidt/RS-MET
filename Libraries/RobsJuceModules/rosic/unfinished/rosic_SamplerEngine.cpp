@@ -527,8 +527,7 @@ RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
     return nullptr;  // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = RAPT::rsGetAndRemoveLast(idlePlayers);
   rp->setKey(key);  // why is it not enough to do it inside the "if"
-  rsReturnCode rc = rp->setRegionToPlay(r, getSampleStreamFor(r), sampleRate, 
-    groupSettingsOverride, regionSettingsOverride);
+  rsReturnCode rc = rp->setRegionToPlay(r, getSampleStreamFor(r), sampleRate, busMode);
   if(rc == rsReturnCode::success)
   {
     //rp->setKey(key);
@@ -570,7 +569,7 @@ rsReturnCode rsSamplerEngine::stopRegionPlayer(int i)
     return rsReturnCode::invalidIndex; }
   RegionPlayer* p = activePlayers[i];
   RAPT::rsRemove(activePlayers, i);
-  p->releaseDspObjects();
+  p->releaseResources();
   idlePlayers.push_back(p);
   return rsReturnCode::success;
 }
@@ -872,7 +871,7 @@ int rsSamplerEngine2::stopAllPlayers()
   int numRegionPlayersStopped = rsSamplerEngine::stopAllPlayers();
   int numGroupPlayers = (int) activeGroupPlayers.size();
   for(int i = numGroupPlayers-1; i >= 0; i--) {
-    activeGroupPlayers[i]->reset();
+    activeGroupPlayers[i]->releaseResources();
     idleGroupPlayers.push_back(activeGroupPlayers[i]); }
   activeGroupPlayers.clear();
   return numRegionPlayersStopped;
@@ -913,7 +912,7 @@ void rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp)
   gp->addRegionPlayer(rp);
   gp->group = grp;
 
-  gp->buildDspChain(); // ToDo: use boolean return value: if false (unlikely), roll back the RegionPlayer rp
+  gp->assembleDspChain(busMode); // ToDo: use boolean return value: if false (unlikely), roll back the RegionPlayer rp
   //gp->setupDspSettings(); // to do
 
   activeGroupPlayers.push_back(gp);
@@ -925,7 +924,7 @@ int rsSamplerEngine2::stopGroupPlayer(int i)
     RAPT::rsError("Invalid player index");
     return rsReturnCode::invalidIndex; }
   GroupPlayer* p = activeGroupPlayers[i];
-  p->clearDspChain();
+  p->releaseResources();
   RAPT::rsRemove(activeGroupPlayers, i);
   idleGroupPlayers.push_back(p);
   return rsReturnCode::success;
