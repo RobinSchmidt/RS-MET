@@ -27,8 +27,35 @@ void SignalProcessor::resetSettings(int index)
 
 //=================================================================================================
 
-void AmplifierCore::setup(float volume, float pan, float width, float position)
+void AmplifierCore::setup(float volume, float pan, float width, float pos)
 {
+  using Mat = RAPT::rsMatrix2x2<float>;
+
+  // Construct gain/scale matrix:
+  float s = RAPT::rsDbToAmp(volume);
+  Mat S(s, 0.f, 0.f, s);
+
+  // Construct pan matrix:
+  float p = (0.005*pan) + 0.5;  // -100..+100 -> 0..1
+  Mat P(2*(1-p), 0, 0, 2*p);    // verify! maybe use panRule
+
+  // Construct width (i.e. mid/side mixing) matrix:
+  float w = 0.005*width;        // -100..+100 -> -0.5..+0.5
+  Mat C(1, 1, 1, -1);           // conversion R/L to M/S (or back), except for factor 1/sqrt(2)
+  Mat A(1-w, 0, 0, w);          // applies gains to mid and side signals
+  Mat W = C*A*C;                // convert L/R to M/S, apply M/S gains, convert M/S to L/R
+  // Are we missing a factor of 2 somewhere or does that cancel?
+
+  // Construct position matrix:
+  float q = (0.005*pos) + 0.5;  // -100..+100 -> 0..1
+  Mat Q(2*(1-q), 0, 0, 2*q);    // verify! maybe use panRule
+
+  // Combine all 4 matrices and extract coeffs:
+  Mat M = Q*W*P*S;              // application order is right-to-left (scale->pan->width->pos)
+  gLL = M.a; gLR = M.b; gRL = M.c; gRR = M.d;
+
+
+  int dummy = 0;
 
   // ToDo: 
   // -Verify, if the formulas are implemented correctly, i.e. correctly resemble the behavior
@@ -36,7 +63,14 @@ void AmplifierCore::setup(float volume, float pan, float width, float position)
   //  probably do it.
   //  -Check the behavior for mono and stereo samples. Maybe we need an isStereo flag to switch 
   //   between different formulas?
-  // -Optimize the calculations
+  // -Optimize the calculations: obtain expressions for gLL etc. and get rid of using rsMatrix2x2,
+  //  but maybe keep the matrix-based implementation somewhere as prototype for documentation 
+  //  purposes
+  // -Maybe add a panLaw parameter that influences the computation of the P and/or the Q matrix.
+  //  ...or maybe have two seperate parameters - one for each of the matrices.
+  // -Maybe provide a different parametrization where the volume is expressed as linear gain, 
+  //  so we may also model polarity inversions. Or maybe realize this here via an additional 
+  //  boolean flag "invertPolarity"
 }
 
 //=================================================================================================
@@ -368,7 +402,8 @@ ToDo:
  it could have values: granular, spectral, etc. If it makes sense to implement different 
  algorithms as different DSP objects (because different algos may differ vastly in resource
  requirements), maybe the sampler-pool should abstract this away in some way - maybe by letting
- grabProcessor have another integer parameter for selecting the algo
+ grabProcessor have another integer parameter for selecting the algo. For repositing, we may 
+ identify the object class via RTTI (i.e. dynamic_cast or typeid or whatever).
 
 
 Ideas:
