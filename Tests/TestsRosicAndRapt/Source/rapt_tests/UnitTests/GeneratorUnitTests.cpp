@@ -259,8 +259,8 @@ bool samplerDataUnitTest()
 
   // Set volume settings for instrument, group(0), and region(0,0):
   //d3.setInstrumentSetting(  PST::Volume, -2.f);
-  d3.setGroupSetting(0,     PST::Volume, -3.f);
-  d3.setRegionSetting(0, 0, PST::Volume, -5.f);
+  d3.setGroupSetting(0,     PST::volumeN, -3.f, 1);
+  d3.setRegionSetting(0, 0, PST::volumeN, -5.f, 1);
 
   // Test sfz generation and parsing:
   sfz = d3.getAsSFZ();
@@ -471,8 +471,10 @@ bool samplerEngineUnitTest1()
   // -pan the cosine to hard right
   // -expected output: left should be the twice sine, right twice the cosine (the factor two arises
   //  from the pan law)
-  se.setRegionSetting(gi, 0, PST::Pan, -100.f);           // pan sine to hard left
-  se.setRegionSetting(gi, 1, PST::Pan, +100.f);           // pan cosine to hard right
+  se.setRegionSetting(gi, 0, PST::panN, -100.f, 1);           // pan sine to hard left
+  se.setRegionSetting(gi, 1, PST::panN, +100.f, 1);           // pan cosine to hard right
+  //se.setRegionSetting(gi, 0, PST::positionN, -100.f, 1);        // pan sine to hard left
+  //se.setRegionSetting(gi, 1, PST::positionN, +100.f, 1);        // pan cosine to hard right
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
   for(int n = 0; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
@@ -480,6 +482,10 @@ bool samplerEngineUnitTest1()
   ok &= outL == (2.f * sin440);
   ok &= outR == (2.f * cos440);
   ok &= se.getNumActiveLayers() == 0;
+  // ToDo:
+  // -Do the same test with positionN instead of panN
+  // -Figure out, if 100% is really the right default value for the width. The sfz spec says so, 
+  //  but that would be a bad default. It should be 100 because that leaves the sample unchanged.
 
   // Test handling of noteOff. At the moment, we have no amp envelope yet, so a noteOff should 
   // immediately stop the playback of all layers which it applies to.
@@ -575,8 +581,8 @@ bool samplerEngineUnitTest1()
   // Test delay:
   float delaySamples = 10.75f;
   float delaySeconds = delaySamples / fs;
-  se.setRegionSetting(0, 0, PST::Pan, 0.f);              // back to center, makes testing easier
-  se.setRegionSetting(0, 0, PST::Delay, delaySeconds);
+  se.setRegionSetting(0, 0, PST::panN,   0.f, 1);        // back to center, makes testing easier
+  se.setRegionSetting(0, 0, PST::Delay,  delaySeconds);
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));  // the noteOn, again
   for(int n = 0; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
@@ -603,8 +609,8 @@ bool samplerEngineUnitTest1()
   float groupAmp  = 0.25f;
   //float instrumentAmplitude  = 0.75f;
   se.setRegionSetting(0, 0, PST::Delay, 0.f);  // Turn delay off again
-  se.setRegionSetting(0, 0, PST::Volume, rsAmpToDb(regionAmp));
-  se.setGroupSetting( 0,    PST::Volume, rsAmpToDb(groupAmp));
+  se.setRegionSetting(0, 0, PST::volumeN, rsAmpToDb(regionAmp), 1);
+  se.setGroupSetting( 0,    PST::volumeN, rsAmpToDb(groupAmp),  1);
 
 
   auto testNote = [&](
@@ -801,9 +807,9 @@ bool samplerEngine2UnitTest()
   float regionAmp = 0.5f;
   float groupAmp  = 0.25f;
   float instrAmp  = 1.5f;
-  se.setRegionSetting(0, 0, PST::Volume, rsAmpToDb(regionAmp));
-  se.setGroupSetting( 0,    PST::Volume, rsAmpToDb(groupAmp));
-  se.setInstrumentSetting(  PST::Volume, rsAmpToDb(instrAmp));
+  se.setRegionSetting(0, 0, PST::volumeN, rsAmpToDb(regionAmp), 1);
+  se.setGroupSetting( 0,    PST::volumeN, rsAmpToDb(groupAmp),  1);
+  se.setInstrumentSetting(  PST::volumeN, rsAmpToDb(instrAmp),  1);
 
   // In the default setting, the regionAmp should override the instrument and the group setting,
   // so the produced output should only have the region volume applied:
@@ -841,9 +847,9 @@ bool samplerEngine2UnitTest()
   float regionPan = 10.f;   // slightly right, pan range is -100...+100
   float groupPan  = 20.f;
   float instrPan  = 30.f;
-  se.setRegionSetting(0, 0, PST::Pan, regionPan);
-  se.setGroupSetting( 0,    PST::Pan, groupPan);
-  se.setInstrumentSetting(  PST::Pan, instrPan);
+  se.setRegionSetting(0, 0, PST::panN, regionPan, 1);
+  se.setGroupSetting( 0,    PST::panN, groupPan,  1);
+  se.setInstrumentSetting(  PST::panN, instrPan,  1);
 
   // We want to see only the region pan:
   se.setBusMode(false);
@@ -1154,13 +1160,13 @@ bool samplerEngineUnitTestFileIO()
   ri = se.addRegion(0);             ok &= ri == 0;
   rc = se.setRegionSample(0, 0, 0); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
-  rc = se.setRegionSetting(0, 0, PST::Pan, -100.f);          ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 0, PST::panN, -100.f, 1);      ok &= rc == RC::success;
 
   // Set up region for cosine:
   ri = se.addRegion(0);             ok &= ri == 1;
   rc = se.setRegionSample(0, 1, 1); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 1, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
-  rc = se.setRegionSetting(0, 1, PST::Pan, +100.f);          ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 1, PST::panN, +100.f, 1);      ok &= rc == RC::success;
 
   // Let the engine produce the sine and cosine:
   VecF outL(N), outR(N);
@@ -1407,13 +1413,13 @@ bool samplerParserTest()
   ri = se.addRegion(0);             ok &= ri == 0;
   rc = se.setRegionSample(0, 0, 0); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
-  rc = se.setRegionSetting(0, 0, PST::Pan, -100.f);          ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 0, PST::panN, -100.f, 1);      ok &= rc == RC::success;
 
   // Set up region for cosine:
   ri = se.addRegion(0);             ok &= ri == 1;
   rc = se.setRegionSample(0, 1, 1); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 1, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
-  rc = se.setRegionSetting(0, 1, PST::Pan, +100.f);          ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 1, PST::panN, +100.f, 1);      ok &= rc == RC::success;
 
   std::string sfzStr;
   SE se2(maxLayers);

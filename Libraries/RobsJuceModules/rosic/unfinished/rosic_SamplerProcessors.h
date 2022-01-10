@@ -27,6 +27,8 @@ public:
   Opcode getOpcode() const { return opcode; }
   float getValue() const { return value; }
 
+  // provide operator to convert to float to help avoidng boilerplate later
+
 protected:
 
   Opcode opcode = Opcode::Unknown;
@@ -55,7 +57,7 @@ public:
   // https://stackoverflow.com/questions/21476869/constant-pointer-vs-pointer-to-constant
 
   // Processing:
-  virtual void prepareToPlay(double sampleRate) = 0;
+  virtual void prepareToPlay(double sampleRate) = 0; // maybe it needs a flag, if input is stereo
   virtual void processFrame(rsFloat64x2& inOut) = 0;
   virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
 
@@ -479,17 +481,45 @@ public:
     { 
       type = DspType::Amplifier;
       params.reserve(4);
-      //addParameter(Opcode::volumeN);
-      //addParameter(Opcode::panN);
-      //addParameter(Opcode::widthN);
-      //addParameter(Opcode::positionN);
+      addParameter(Opcode::volumeN);
+      addParameter(Opcode::panN);
+      addParameter(Opcode::widthN);
+      addParameter(Opcode::positionN);
       // Having to pass a magic number to reserve() is bad and error-prone -> try to find a better
       // way. The number of parameters is actually known at compile time. Maybe use std::array 
       // instead of std::vector...hmm...but the number varies between the subclasses, so the array
-      // could not be a baseclass member then...hmm...
+      // could not be a baseclass member then...hmm...Maybe SignalProcessor could have an int as
+      // template parameter - but no: then i can't treat them uniformly in the DSP chain
     }
+    void prepareToPlay(double fs) override 
+    { 
+      core.setup(
+        params[0].getValue(),
+        params[1].getValue(),
+        params[2].getValue(),
+        params[3].getValue());
+      // ToDo:
+      // -get rid of the getValue() calls by allowing the params to convert to float
+      // -it's not ideal that this code depends on the order, how we add the params in the 
+      //  constructor - try to avoid that
+    }
+    void processFrame(rsFloat64x2& inOut) override 
+    {
+      float L = (float) inOut[0];
+      float R = (float) inOut[1];
+      core.processFrame(L, R);
+      inOut[0] = L;
+      inOut[1] = R;
+      // ToDo: avoid these conversions - settle for a uniform sample format throughout the sampler,
+      // perhaps rsFloat32x4 for compatibility with the float coeffs that are used in the DSP
+      // core:
+    }
+    void processBlock(rsFloat64x2* inOut, int N) override {}
 
 
+  protected:
+
+    AmplifierCore core;
 
   };
 
@@ -509,7 +539,6 @@ public:
       addParameter(Opcode::resonanceN);   // in sfz, this is a gain in dB
       //addParameter(Opcode::FilterBandwidth);
     }
-
     void prepareToPlay(double fs) override 
     { 
       FilterType sfzType = (FilterType)(int)params[0].getValue();
@@ -520,14 +549,8 @@ public:
         params[2].getValue());
       core.resetState();
     }
-    // ToDo:
-    // -not ideal that this code depends on the order, how we add the params in the constructor
-
     void processFrame(rsFloat64x2& inOut) override 
     {
-      // ToDo: avoid these conversions - settle for a uniform sample format throughout the sampler,
-      // perhaps rsFloat32x4 for compatibility with the float coeffs that are used in the DSP
-      // core:
       float L = (float) inOut[0];
       float R = (float) inOut[1];
       core.processFrame(L, R);
@@ -823,6 +846,7 @@ public:
 protected:
 
   using SP = rsSamplerProcessors;
+  rsObjectPool<SP::Amplifier>  amplifiers;
   rsObjectPool<SP::Filter>     filters;
   rsObjectPool<SP::Equalizer>  equalizers;
   rsObjectPool<SP::WaveShaper> waveShapers;

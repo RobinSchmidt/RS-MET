@@ -79,10 +79,27 @@ SfzCodeBook::SfzCodeBook()
   // gain would probably be more complicated.
 
   // Player amplifier:
-  dsp = DspType::SamplePlayer;  // use Amplifier later
-  add(OC::Volume, Flt, "volume", -144.f,   +6.f, 0.f, dsp, OU::Decibels, Sfz1);
-  add(OC::Pan,    Flt, "pan",    -100.f, +100.f, 0.f, dsp, OU::RawFloat, Sfz1);
+  //dsp = DspType::SamplePlayer;  // use Amplifier later
+  //add(OC::Volume, Flt, "volume", -144.f,   +6.f, 0.f, dsp, OU::Decibels, Sfz1);
+  //add(OC::Pan,    Flt, "pan",    -100.f, +100.f, 0.f, dsp, OU::RawFloat, Sfz1);  // obsolete
 
+  dsp = DspType::Amplifier; 
+  add(OC::volumeN,   Flt, "volumeN",   -144.f,   +6.f,   0.f, dsp, OU::Decibels, Sfz1e);
+  add(OC::panN,      Flt, "panN",      -100.f, +100.f,   0.f, dsp, OU::RawFloat, Sfz1e);
+  add(OC::widthN,    Flt, "widthN",    -100.f, +100.f, 100.f, dsp, OU::Percent,  Sfz1e);
+  add(OC::positionN, Flt, "positionN", -100.f, +100.f,   0.f, dsp, OU::Percent,  Sfz1e);
+  // Wait! The spec says that the default value for width is 0%. 
+  // https://sfzformat.com/legacy/
+  // But that's not a neutral value! It will monoize the samples by default? is that right or is 
+  // that a typo? I have set it to 100% here because I think that's a much saner default.
+  // Maybe, if sfz really turns out to have messed up the defaults, we should have an option to
+  // switch to neutral defaults. Maybe via an opcode: default_values=neutral or something. Maybe
+  // the codebook records need an additional field neutVal. Check behavior of sfz+. Load a stereo
+  // sample maybe using sine-waves with different frequencies for left and right channel. It is 
+  // also a bit inconvenient, that sfz prescrbes a distinction between mono and stereo samples.
+  // Further down the signal chain, a mono sample may be stereoized by some DSP along the way.
+  // Maybe we should not treat the amplifier settings in the sfz way and instead use 
+  // ampN_scale, ampN_pan, ampN_width, ampN_position...or some other parametrization
 
 
   // Equalizer:
@@ -99,7 +116,6 @@ SfzCodeBook::SfzCodeBook()
   // -The lower limit of 0.001 for the bandwidth is rather low indeed so we need to check, if such
   //  narrow (i.e. high-Q) filters can actually be implemented in single precision. If not, we need
   //  to use double for the equalizer.
-
 
   // This is very very preliminary - don't use it yet to define actual instruments - its behavior
   // may be going to change:
@@ -439,17 +455,25 @@ int SfzCodeBook::getIndexAndReplaceByN(std::string& str) const
 
 void SfzCodeBook::makeImplicitIndexExplicit(std::string& str) const
 {
-  //return; // code not yet in use
   if(     str == "fil_type")  str = "fil1_type";
   else if(str == "cutoff")    str = "cutoff1";
   else if(str == "resonance") str = "resonance1";
+
+  else if(str == "volume")    str = "volume1";
+  else if(str == "pan")       str = "pan1";
+  else if(str == "width")     str = "width1";
+  else if(str == "position")  str = "position1";
 }
 void SfzCodeBook::makeExplicitIndexImplicit(std::string& str) const
 {
-  //return; // code not yet in use
   if(     str == "fil1_type")  str = "fil_type";
   else if(str == "cutoff1")    str = "cutoff";
   else if(str == "resonance1") str = "resonance";
+
+  else if(str == "volume1")    str = "volume";
+  else if(str == "pan1")       str = "pan";
+  else if(str == "width1")     str = "width";
+  else if(str == "position1")  str = "position";
 }
 // Maybe we can do something more clever later...
 

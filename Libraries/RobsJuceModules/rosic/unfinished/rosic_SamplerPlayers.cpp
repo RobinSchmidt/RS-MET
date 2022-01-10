@@ -429,8 +429,8 @@ void RegionPlayer::setupDspSettings(
     switch(type)
     {
     // Amp settings:
-    case TP::Volume:  { amp      = RAPT::rsDbToAmp(val); } break;
-    case TP::Pan:     { pan      = val;                  } break;
+    //case TP::Volume:  { amp      = RAPT::rsDbToAmp(val); } break;
+    //case TP::Pan:     { pan      = val;                  } break;
     case TP::PanLaw:  { panRule  = (PanRule)(int)val;    } break;
 
     // Pitch settings:
@@ -452,6 +452,9 @@ void RegionPlayer::setupDspSettings(
     }  break;
 
 
+    // Amplifier settings:
+    case TP::volumeN:      { setupProcessorSetting(setting); } break;
+    case TP::panN:         { setupProcessorSetting(setting); } break;
 
     // Filter settings:
     case TP::filN_type:    { setupProcessorSetting(setting); } break;
@@ -462,6 +465,7 @@ void RegionPlayer::setupDspSettings(
     case TP::DistShape:  { setupProcessorSetting(setting); } break;
     case TP::DistDrive:  { setupProcessorSetting(setting); } break;
     case TP::DistOffset: { setupProcessorSetting(setting); } break;
+      // use distN_shape, etc.
 
 
     // ToDo: order the opcodes in the enum according to their type, such that we can here write

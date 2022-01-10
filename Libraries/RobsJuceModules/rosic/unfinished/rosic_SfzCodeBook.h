@@ -60,14 +60,15 @@ enum class Opcode
   FilLfoDepthChanAft, FilLfoDepthPolyAft, FilLfoFreqCtrlN, FilLfoFreqChanAft, FilLfoFreqPolyAft,
 
   // Amplifier:
-  Volume, Pan, Width, Position, AmpKeyTrack, AmpKeyCenter, AmpVelTrack, AmpVelCurveN, AmpRandom,
+  /*Volume, Pan, Width, Position, */  // replaced by volumeN, etc.
+  AmpKeyTrack, AmpKeyCenter, AmpVelTrack, AmpVelCurveN, AmpRandom,
   RelTrigDecay, Output, GainCtrlN,
   FadeInLoKey, FadeInHiKey, FadeOutLoKey, FadeOutHiKey, FadeCurveKey,
   FadeInLoVel, FadeInHiVel, FadeOutLoVel, FadeOutHiVel, FadeCurveVel,
   FadeInLoCtrlN, FadeInHiCtrlN, FadeOutLoCtrlN, FadeOutHiCtrlN, FadeCurveCtrl,
 
   // new amp-opcodes - will make the above ones obsolete:
-  // volumeN, panN, widthN, positionN,
+  volumeN, panN, widthN, positionN,
   // ampN_keytrack, ampN_keycenter, ampN_veltrack,
   // ampN_velcurve_X /* ? */, ampN_random,
 
@@ -412,16 +413,17 @@ protected:
 
   /** Structure for one record in our little database or lookup table. */
   struct OpcodeEntry
-  {                       // Example
-    Opcode       op;      // Opcode::Cutoff
-    OpcodeFormat format;  // OpcodeFormat::Float
-    std::string  text;     // "cutoff"
-    float        minVal;  // 20?
-    float        maxVal;  // 20000?
-    float        defVal;  // 1000?
-    DspType      dsp;     // DspType::Filter
-    OpcodeUnit   unit;    // OpcodeUnit::Hertz
-    OpcodeSpec   spec;    // OpcodeSpec::Sfz_1
+  {                         // Example
+    Opcode       op;        // Opcode::Cutoff
+    OpcodeFormat format;    // OpcodeFormat::Float
+    std::string  text;      // "cutoff"
+    float        minVal;    // 20?
+    float        maxVal;    // 20000?
+    float        defVal;    // 1000?
+    //float        neutVal; // neutral value (some sfz defaults seem not be neutral like width)
+    DspType      dsp;       // DspType::Filter
+    OpcodeUnit   unit;      // OpcodeUnit::Hertz
+    OpcodeSpec   spec;      // OpcodeSpec::Sfz_1
   };
   std::vector<OpcodeEntry> opcodeEntries; /**< Our lookup table of records. */
 

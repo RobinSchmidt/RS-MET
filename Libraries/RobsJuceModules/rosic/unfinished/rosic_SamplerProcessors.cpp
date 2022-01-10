@@ -53,8 +53,8 @@ void AmplifierCore::setup(float volume, float pan, float width, float pos)
   // but this uses a parametrization via mid/side ratio, not via width in %
    
   // Construct position matrix:
-  float q = (0.005*pos) + 0.5;  // -100..+100 -> 0..1
-  Mat Q(2*(1-q), 0, 0, 2*q);    // verify! maybe use panRule
+  float q = (0.005f*pos) + 0.5f;  // -100..+100 -> 0..1
+  Mat Q(2*(1-q), 0, 0, 2*q);      // verify! maybe use panLaw
 
   // Combine all 4 matrices and extract coeffs:
   Mat M = Q*W*P*S;              // application order is right-to-left (scale->pan->width->pos)
@@ -253,6 +253,7 @@ SignalProcessorPool::~SignalProcessorPool()
 
 void SignalProcessorPool::allocateProcessors()
 {
+  amplifiers.init(64);
   filters.init(64);
   equalizers.init(64); 
   waveShapers.init(8);
@@ -306,6 +307,7 @@ SignalProcessor* SignalProcessorPool::grabProcessor(DspType type)
   SignalProcessor* p = nullptr;
   switch(type)
   {
+  case SPT::Amplifier:  p = amplifiers.grabItem();  break;
   case SPT::Filter:     p = filters.grabItem();     break;
   case SPT::Equalizer:  p = equalizers.grabItem();  break;
   case SPT::WaveShaper: p = waveShapers.grabItem(); break;
@@ -319,6 +321,7 @@ void SignalProcessorPool::repositProcessor(SignalProcessor* p)
   int i = -1;
   switch(p->getType())
   {
+  case SPT::Amplifier:  i = amplifiers.repositItem(p);  break;
   case SPT::Filter:     i = filters.repositItem(p);     break;
   case SPT::Equalizer:  i = equalizers.repositItem(p);  break;
   case SPT::WaveShaper: i = waveShapers.repositItem(p); break;

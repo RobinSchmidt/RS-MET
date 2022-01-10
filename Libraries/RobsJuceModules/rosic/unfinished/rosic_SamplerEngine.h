@@ -175,6 +175,8 @@ public:
   int setGroupSetting(int groupIndex, Opcode type, float value, int index = -1);
 
   int setInstrumentSetting(Opcode type, float value, int index = -1);
+  // maybe remove default value - could lead to bugs when caller forgets it so we should 
+  // enforce it!
 
 
   // They should probably also take an index parameter:
