@@ -44,14 +44,15 @@ processors[i]->resetState();
 // RegionPlayer
 
 rsReturnCode RegionPlayer::setRegionToPlay(const Region* regionToPlay, 
-  double fs, bool groupSettingsOverride, bool regionSettingsOverride)
+  const AudioFileStream<float>* sampleStream, double fs, 
+  bool groupsOverride, bool regionsOverride)
 {  
   releaseDspObjects();
   region = regionToPlay;
   if(region == nullptr)
     return rsReturnCode::nothingToDo;
-  stream = getSampleStreamFor(region);
-  return prepareToPlay(fs, groupSettingsOverride, regionSettingsOverride);
+  stream = sampleStream;
+  return prepareToPlay(fs, groupsOverride, regionsOverride);
 }
 
 rsFloat64x2 RegionPlayer::getFrame()
@@ -146,7 +147,7 @@ void RegionPlayer::releaseDspObjects()
   region = nullptr;
 }
 
-void rsSamplerEngine::RegionPlayer::allocateMemory()
+void RegionPlayer::allocateMemory()
 {
   modulators.reserve(8);
   modMatrix.reserve(32);
@@ -236,7 +237,7 @@ SignalProcessor* RegionPlayer::getProcessor(DspType type)
   return dspPool->processorPool.grabProcessor(type);
 }
 
-bool rsSamplerEngine::RegionPlayer::buildProcessingChain(bool withGroupDsps, bool withInstrumDsps)
+bool RegionPlayer::buildProcessingChain(bool withGroupDsps, bool withInstrumDsps)
 {
   RAPT::rsAssert(dspChain.isEmpty(), "Someone has not cleaned up after finishing playback!");
   dspChain.clear(); // ...so we do it here. But this should be fixed elsewhere!
@@ -569,6 +570,49 @@ void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
     // applied. If this happens, something went wrong (i.e. we have a bug) in buildDspChain or 
     // getProcessorFor.
 }
+
+//=================================================================================================
+// GroupPlayer
+
+rsFloat64x2 GroupPlayer::getFrame()
+{
+  rsFloat64x2 out = 0.0;
+  for(size_t i = 0; i < regionPlayers.size(); i++)
+    out += regionPlayers[i]->getFrame();
+  dspChain.processFrame(out);
+  return out;
+}
+
+void GroupPlayer::reset()
+{
+  regionPlayers.clear();
+  //dspChain.reset();
+  dspChain.clear();
+}
+
+void GroupPlayer::addRegionPlayer(RegionPlayer* newPlayer) 
+{ 
+  RAPT::rsAssert(!RAPT::rsContains(regionPlayers, newPlayer));
+  regionPlayers.push_back(newPlayer); 
+}
+
+void GroupPlayer::removeRegionPlayer(RegionPlayer* player)
+{
+  RAPT::rsAssert(RAPT::rsContains(regionPlayers, player)); // ToDo: add and use rsContainsOnce
+  RAPT::rsRemoveFirstOccurrence(regionPlayers, player);
+}
+
+bool GroupPlayer::buildDspChain()
+{
+  //RAPT::rsError("Not yet implemented");
+  return false;
+}
+
+void GroupPlayer::clearDspChain()
+{
+  //RAPT::rsError("Not yet implemented");
+}
+
 
 
 

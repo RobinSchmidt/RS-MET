@@ -370,12 +370,10 @@ public:
 
 protected:
 
-
-
-
   /** Defines a set of regions. Used to handle note-on/off events efficiently. Not to be confused
   with groups. This class exists for purely technical reasons (i.e. implementation details) and
-  does not map to any user concept. */
+  does not map to any user concept. It holds pointers to all regions that should be played when
+  a particluar key is pressed so we can quickly find them. */
   class RegionSet
   {
 
@@ -603,7 +601,7 @@ protected:
   //SfzCodeBook sfzTranslator;
 
   static int instanceCounter;
-  /** An instance counter which is needed to clean up the SfzTranslator singleton object when the
+  /** An instance counter which is needed to clean up the SfzCodeBook singleton object when the
   last instance of the sampler engine is deleted. */
 
 
@@ -717,54 +715,6 @@ protected:
   /** Returns true, iff the settings are such that the additional features of this subclass are not
   used so we can fall back to the (simpler) baseclass implementations in our overrides. */
   bool canFallBackToBaseclass() const { return regionSettingsOverride && groupSettingsOverride; }
-
-
-  /** A class for collecting all the SignalProcessors that apply to a given group. This is used
-  only when the group's DSP settings should go on top of the region's settings */
-  class GroupPlayer  // maybe rename to GroupPlayer
-  {
-
-  public:
-
-    /** Generates one stereo sample frame at a time. */
-    rsFloat64x2 getFrame();
-
-    /** Resets the internal state. */
-    void reset();
-
-    /** Adds a new region player to our regionPlayers array. */
-    void addRegionPlayer(RegionPlayer* newPlayer);
-
-    /** Removes the given player from our regionPlayers array. */
-    void removeRegionPlayer(RegionPlayer* player);
-
-    /** Returns true, iff the given regionPlayer is part of this GroupPlayer, i.e.  */
-    bool contains(RegionPlayer* rp) { return RAPT::rsContains(regionPlayers, rp); }
-    // ToDo: make parameter rp const - for some reason, it doesn't compile
-
-    /** Returns true, iff this GroupPlayer has no RegionPlayer objects running. */
-    bool hasNoRegionPlayers() { return regionPlayers.empty(); }
-
-    bool buildDspChain(); // maybe rename to assembleDspChain
-    void clearDspChain(); // maybe rename to disassembleDspChain, teardown, clearDspChain
-
-  protected:
-
-    std::vector<RegionPlayer*> regionPlayers;
-    // Pointers to the players for all the regions in this group.
-
-    SignalProcessorChain dspChain;
-    // The chain of additional per-group signal processors that apply to the group as a whole.
-
-    const rsSamplerData::Group* group = nullptr;
-    // Pointer to the group object which is played back by this player
-
-    rsSamplerEngine2* engine = nullptr;
-    // Needed for communication channel with enclosing sampler-engine..can we get rid of this?
-
-    friend class rsSamplerEngine2;
-  };
-
 
   /** Updates our active/idleGroupPlayer arrays according to a status change in the
   active/idleRegionPlayer arrays...tbc... */

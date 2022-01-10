@@ -510,7 +510,7 @@ void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int*
   // this happens, it indicates a bug at the call site.
 }
 
-rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
+RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
   const Region* r, uchar key, uchar vel)
 {
   RAPT::rsAssert(r->getCustomPointer() != nullptr); // No stream connected
@@ -527,8 +527,8 @@ rsSamplerEngine::RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
     return nullptr;  // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = RAPT::rsGetAndRemoveLast(idlePlayers);
   rp->setKey(key);  // why is it not enough to do it inside the "if"
-  rsReturnCode rc = rp->setRegionToPlay(r, sampleRate, groupSettingsOverride, 
-                                        regionSettingsOverride);
+  rsReturnCode rc = rp->setRegionToPlay(r, getSampleStreamFor(r), sampleRate, 
+    groupSettingsOverride, regionSettingsOverride);
   if(rc == rsReturnCode::success)
   {
     //rp->setKey(key);
@@ -789,10 +789,6 @@ void rsSamplerEngine::preAllocateDspMemory()
   //  ...see what hise, sfizz and linuxsampler do
 }
 
-
-
-
-
 //=================================================================================================
 
 rsSamplerEngine2::rsSamplerEngine2(int maxNumLayers)
@@ -932,47 +928,6 @@ int rsSamplerEngine2::stopGroupPlayer(int i)
   RAPT::rsRemove(activeGroupPlayers, i);
   idleGroupPlayers.push_back(p);
   return rsReturnCode::success;
-}
-
-//-------------------------------------------------------------------------------------------------
-
-rsFloat64x2 rsSamplerEngine2::GroupPlayer::getFrame()
-{
-  rsFloat64x2 out = 0.0;
-  for(size_t i = 0; i < regionPlayers.size(); i++)
-    out += regionPlayers[i]->getFrame();
-  dspChain.processFrame(out);
-  return out;
-}
-
-void rsSamplerEngine2::GroupPlayer::reset()
-{
-  regionPlayers.clear();
-  //dspChain.reset();
-  dspChain.clear();
-}
-
-void rsSamplerEngine2::GroupPlayer::addRegionPlayer(rsSamplerEngine::RegionPlayer* newPlayer) 
-{ 
-  RAPT::rsAssert(!RAPT::rsContains(regionPlayers, newPlayer));
-  regionPlayers.push_back(newPlayer); 
-}
-
-void rsSamplerEngine2::GroupPlayer::removeRegionPlayer(RegionPlayer* player)
-{
-  RAPT::rsAssert(RAPT::rsContains(regionPlayers, player)); // ToDo: add and use rsContainsOnce
-  RAPT::rsRemoveFirstOccurrence(regionPlayers, player);
-}
-
-bool rsSamplerEngine2::GroupPlayer::buildDspChain()
-{
-  //RAPT::rsError("Not yet implemented");
-  return false;
-}
-
-void rsSamplerEngine2::GroupPlayer::clearDspChain()
-{
-  //RAPT::rsError("Not yet implemented");
 }
 
 

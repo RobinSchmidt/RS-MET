@@ -74,7 +74,8 @@ public:
   the group settings should override the instrument settings (true) or be applied on top of them
   (false). Likewise, regionSettingsOverride = true lets the region settings override the group
   settings. */
-  rsReturnCode setRegionToPlay(const Region* regionToPlay, double outputSampleRate,
+  rsReturnCode setRegionToPlay(const Region* regionToPlay, 
+    const AudioFileStream<float>* sampleStream, double outputSampleRate,
     bool groupSettingsOverride, bool regionSettingsOverride);
   // todo: later maybe have default values (false) for the settingsOnTop variables for 
   // convenience - but for implementing the signal-flow stuff, it makes sense to enforce the 
@@ -180,6 +181,8 @@ protected:
   // We may need a state, too. Can be attack/decay/sustain/release. Or maybe just play/release?
   // Or maybe no state at all but the triggerRelease just triggers the release of all envelopes?
 
+  friend class rsSamplerEngine; // try to get rid!
+
 
   //using Biquad = RAPT::rsBiquadDF1<rsFloat64x2, double>; // todo: use TDF2
   //Biquad flt, eq1, eq2, eq3;     //< Filter and equalizers
@@ -203,6 +206,63 @@ protected:
 };
 
 //===============================================================================================
+
+/** A class for collecting all the SignalProcessors that apply to a given group. This is used
+only when the group's DSP settings should go on top of the region's settings, i.e. in 
+"drum-sampler" mode where the groups map to sub-busses and the instrument maps to the master 
+bus. */
+
+class GroupPlayer
+{
+
+public:
+
+  /** Generates one stereo sample frame at a time. */
+  rsFloat64x2 getFrame();
+
+  /** Resets the internal state. */
+  void reset();
+
+  /** Adds a new region player to our regionPlayers array. */
+  void addRegionPlayer(RegionPlayer* newPlayer);
+
+  /** Removes the given player from our regionPlayers array. */
+  void removeRegionPlayer(RegionPlayer* player);
+
+  /** Returns true, iff the given regionPlayer is part of this GroupPlayer, i.e.  */
+  bool contains(RegionPlayer* rp) { return RAPT::rsContains(regionPlayers, rp); }
+  // ToDo: make parameter rp const - for some reason, it doesn't compile
+
+  /** Returns true, iff this GroupPlayer has no RegionPlayer objects running. */
+  bool hasNoRegionPlayers() { return regionPlayers.empty(); }
+
+  bool buildDspChain(); // maybe rename to assembleDspChain
+  void clearDspChain(); // maybe rename to disassembleDspChain, teardown, clearDspChain
+
+protected:
+
+  std::vector<RegionPlayer*> regionPlayers;
+  // Pointers to the players for all the regions in this group.
+
+  SignalProcessorChain dspChain;
+  // The chain of additional per-group signal processors that apply to the group as a whole.
+
+  const rsSamplerData::Group* group = nullptr;
+  // Pointer to the group object which is played back by this player
+
+
+  //class rsSamplerEngine2;
+  friend class rsSamplerEngine2;
+
+  rsSamplerEngine2* engine = nullptr;
+  // Needed for communication channel with enclosing sampler-engine..can we get rid of this?
+
+
+};
+
+
+
+
 
 }}
 
