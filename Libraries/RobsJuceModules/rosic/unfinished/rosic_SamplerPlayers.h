@@ -104,11 +104,22 @@ protected:
   /** Reposits all the DSP objects back into the dspPool and clears our dspChain. */
   void disassembleDspChain();
 
-  /** Given a playback setting (i.e. opcode, value, possibly index), it finds the processor in our
-  dspChain to which this setting applies and sets the corresponding parameter in the DSP. It 
-  assumes that a suitable processor exists in our chain - if not, then something went wrong with
-  building the assembling the dspChain in a step before and an assert is triggered. */
+  /** Given a playback setting (i.e. opcode, value, possibly index) that is supposed to be 
+  applicable to the DSP chain, it finds the processor in our dspChain member to which this 
+  setting applies and sets the corresponding parameter in the DSP. It assumes that a suitable 
+  processor exists in our chain - if not, then something went wrong with assembling the 
+  dspChain in a step before and an assert is triggered. */
   virtual void setupProcessorSetting(const PlaybackSetting& s);
+  // rename to setDspOpcode
+
+  /** Given a playback setting (i.e. opcode, value, possibly index) that is supposed to be 
+  applicable to the sample playback source, the overriden version of this function in the 
+  subclasses manipulate the corresponding state of the RegionPlayer, i.e. the lowest level 
+  player that may be managed by higher level players, accordingly. RegionPlayer itself sets
+  up its own member variables, GroupPlayer manipulates one of its embedded RegionPlayers, 
+  etc.  */
+  virtual void setupPlayerSetting(const PlaybackSetting& s) = 0;
+  // rename to setPlayerOpcode
 
 
   virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings,
@@ -225,6 +236,8 @@ protected:
 
   void setupProcessorSetting(const PlaybackSetting& s) override;
 
+  void setupPlayerSetting(const PlaybackSetting& s) override;
+
 
 
   const Region* region;                 //< The Region object that this object should play
@@ -319,6 +332,8 @@ protected:
   void setupDspChain();
   // maybe make this an override of a baseclass method...if possible
 
+  void setupPlayerSetting(const PlaybackSetting& s) override;
+
   std::vector<RegionPlayer*> regionPlayers;
   // Pointers to the players for all the regions in this group.
 
@@ -353,6 +368,8 @@ public:
   // if all 3 subclasses have such a method, introduce a virtual baseclass method
 
 protected:
+
+  void setupPlayerSetting(const PlaybackSetting& s) override;
 
   const rsSamplerData::Instrument* instrum = nullptr;
   // Pointer to the instrument object which is played back by this player

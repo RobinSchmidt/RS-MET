@@ -2383,11 +2383,11 @@ bool samplerProcessorsTest()
   //size = sizeof(SP::WaveShaper);
   // later move this into a (yet to be written) benchmark testbed
 
-  ok &= samplerAmplifierTest();
   ok &= samplerFilterTest();      // tests the different filter modes
   ok &= samplerWaveShaperTest();  // tests the waveshaping DSP module
   ok &= samplerDspChainTest();    // uses multiple filters and a waveshaper in between
   ok &= samplerEqualizerTest();
+  ok &= samplerAmplifierTest();
   ok &= samplerWaveShaperTest2(); // tests the different rotung options using waveshaping
 
 

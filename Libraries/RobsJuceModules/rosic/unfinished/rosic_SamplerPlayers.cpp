@@ -1,4 +1,5 @@
-namespace rosic { namespace Sampler {
+namespace rosic {
+namespace Sampler {
 
 //=================================================================================================
 // rsSamplerEngine::SignalProcessorChain
@@ -14,7 +15,8 @@ size_t SignalProcessorChain::getNumProcessors(DspType type) const
   size_t count = 0;
   for(size_t i = 0; i < processors.size(); i++) {
     if(processors[i]->getType() == type)
-      count++; }
+      count++;
+  }
   return count;
 }
 
@@ -22,13 +24,15 @@ SignalProcessor* SignalProcessorChain::getProcessor(
   DspType type, int index)
 {
   int count = 0;  // counts, how many DSPs of given type we have iterated over - why not size_t?
-  for(int i = 0; i < (int) processors.size(); i++) {
+  for(int i = 0; i < (int)processors.size(); i++) {
     SignalProcessor* dsp = getProcessor(i);
     if(dsp->getType() == type) {
       if(count == index)
         return dsp;
       else
-        count++;   }}
+        count++;
+    }
+  }
   return nullptr;
 }
 
@@ -57,24 +61,25 @@ bool SamplePlayer::addDspsIfNeeded(const std::vector<DspType>& dspTypeChain)
     int index = 1;
     for(int j = i-1; j >= 0; j--) {
       if(dspTypeChain[j] == dspType)
-        index++; }
-    // Maybe factor that out into some dspTypeChain.getSfzIndex(arrayIndex) method. In this call,
-    // the arrayIndex should be the array-index of a DSP of given type within the chain and the 
-    // return value should be the sfz-index. Example: 
-    //   typeChain == { Filter, Equalizer, Filter, Filter, Equalizer, Equalizer, Filter }
-    //   array-index:     0         1        2       3         4          5        6
-    //   sfz-index:       1         1        2       3         2          3        4
-    // Then, when we pass 4 (the array index), it should return 2 because array index 4 refers
-    // to the 2nd equalizer in the desired sfz-effect chain, i.e. the equalizer that is 
-    // controlled with opcodes eq2_gain, eq2_freq, eq2_bw. This kind of index-mapping is a bit 
-    // confusing and needs good documentation and unit-tests. But TypeChain is actually not a 
-    // class but just a std::vector of DspType. Maybe make it a class..hmm...not sure if that's
-    // worth it. Maybe make a free helper function getSfzDspIndex(const TypeChain& c, int i).
-    // Could be a static method of SamplerData. Maybe use size_t: init index to 0 and start loop
-    // index j at i
+        index++;
+    }
+// Maybe factor that out into some dspTypeChain.getSfzIndex(arrayIndex) method. In this call,
+// the arrayIndex should be the array-index of a DSP of given type within the chain and the 
+// return value should be the sfz-index. Example: 
+//   typeChain == { Filter, Equalizer, Filter, Filter, Equalizer, Equalizer, Filter }
+//   array-index:     0         1        2       3         4          5        6
+//   sfz-index:       1         1        2       3         2          3        4
+// Then, when we pass 4 (the array index), it should return 2 because array index 4 refers
+// to the 2nd equalizer in the desired sfz-effect chain, i.e. the equalizer that is 
+// controlled with opcodes eq2_gain, eq2_freq, eq2_bw. This kind of index-mapping is a bit 
+// confusing and needs good documentation and unit-tests. But TypeChain is actually not a 
+// class but just a std::vector of DspType. Maybe make it a class..hmm...not sure if that's
+// worth it. Maybe make a free helper function getSfzDspIndex(const TypeChain& c, int i).
+// Could be a static method of SamplerData. Maybe use size_t: init index to 0 and start loop
+// index j at i
 
-    // Figure out, if we actually need to add another DSP to the chain. If not, there's nothing
-    // more to do in this iteration:
+// Figure out, if we actually need to add another DSP to the chain. If not, there's nothing
+// more to do in this iteration:
     if(dspChain.getNumProcessors(dspType) >= index)
       continue;
 
@@ -86,7 +91,7 @@ bool SamplePlayer::addDspsIfNeeded(const std::vector<DspType>& dspTypeChain)
       dspChain.addProcessor(dsp);
     }
     else {
-      return false; 
+      return false;
       // Not enough DSPs of desired type are available in the pool so we report failure. In such a
       // case, it is the job of the caller to roll back any partially built chain, if needed.
     }
@@ -102,10 +107,12 @@ bool SamplePlayer::assembleDspChain(const std::vector<DspType>& dspTypes)
 {
   if(!dspChain.isEmpty()) {
     RAPT::rsError("Someone has not cleaned up after finishing playback!");
-    disassembleDspChain(); }  // ...so we do it here. But this should be fixed elsewhere!
+    disassembleDspChain();
+  }  // ...so we do it here. But this should be fixed elsewhere!
   if(!addDspsIfNeeded(dspTypes)) {
     disassembleDspChain();    // addDspsIfNeeded may have built a partial chain which we then..
-    return false; }           // ..need to clean up here
+    return false;
+  }           // ..need to clean up here
   return true;
 
   // The fact that addDspsIfNeeded may build a partial chain without cleaning it up itself if
@@ -177,9 +184,9 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
 //=================================================================================================
 // RegionPlayer
 
-rsReturnCode RegionPlayer::setRegionToPlay(const Region* regionToPlay, 
+rsReturnCode RegionPlayer::setRegionToPlay(const Region* regionToPlay,
   const AudioFileStream<float>* sampleStream, double fs, bool busMode)
-{  
+{
   releaseResources(); // actually, it should not hold any at this point - or should it?
   region = regionToPlay;
   if(region == nullptr)
@@ -195,8 +202,8 @@ rsFloat64x2 RegionPlayer::getFrame()
   // Negatively initialized sampleTime implements delay. If we are still "waiting", we just 
   // increment the time and return 0,0. Actual output will be produced as soon as sampleTime 
   // reaches zero. 
-  if(sampleTime < 0.0) 
-  {             
+  if(sampleTime < 0.0)
+  {
     sampleTime += 1.0;
     if(sampleTime >= 0.0)
     {
@@ -206,7 +213,7 @@ rsFloat64x2 RegionPlayer::getFrame()
       //stream->getFrameStereo((float)sampleTime, &L, &R);
       //return this->amp * rsFloat64x2(L, R); 
     }
-    return rsFloat64x2(0.0, 0.0); 
+    return rsFloat64x2(0.0, 0.0);
   }
   stream->getFrameStereo((float)sampleTime, &L, &R);  // try to avoid the conversion to float
   // -implement better interpolation methods (sinc, elephant, ...)
@@ -292,15 +299,16 @@ rsReturnCode RegionPlayer::prepareToPlay(double fs, bool busMode)
   RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   RAPT::rsAssert(stream != nullptr);   // Ditto.
 
-  if(!assembleDspChain(busMode)) 
+  if(!assembleDspChain(busMode))
   {
     releaseResources();
-    return rsReturnCode::layerOverload; 
+    return rsReturnCode::layerOverload;
   }
   if(!setupModulations()) {
     releaseResources();
-    return rsReturnCode::layerOverload; }
-  resetPlayerSettings(); 
+    return rsReturnCode::layerOverload;
+  }
+  resetPlayerSettings();
   setupDspSettingsFor(region, fs, busMode);
   // todo: move fs before the override parameters for consistency
 
@@ -323,7 +331,7 @@ bool RegionPlayer::hasFinished()
   //int numFrames = stream->getNumFrames();
   //int tmp = stream->getNumFrames() - 1;
   //if( sampleTime >= stream->getNumFrames() )  // old
-  if( sampleTime >= endTime )                   // new
+  if(sampleTime >= endTime)                   // new
     return true;
 
   // todo:
@@ -349,10 +357,13 @@ bool RegionPlayer::assembleDspChain(bool busMode)
   if(!busMode) {
     if(!addDspsIfNeeded(region->getGroup()->getProcessingChain())) {
       disassembleDspChain();
-      return false; }
+      return false;
+    }
     if(!addDspsIfNeeded(region->getGroup()->getInstrument()->getProcessingChain())) {
       disassembleDspChain();
-      return false; }}
+      return false;
+    }
+  }
 
   return true;
   // OK - everything went well so we report success. If, on the other hand, false is returned, it
@@ -384,7 +395,7 @@ void RegionPlayer::resetPlayerSettings()
   increment  = 1.0;
   offset     = 0.f;
 
-  endTime    = (float)stream->getNumFrames();  
+  endTime    = (float)stream->getNumFrames();
   // Maybe use -1? That may require updating the unit tests. But maybe it's appropriate to use 
   // numFrames when assuming linear interpolation. I think, for general interpolators, we should 
   // use endTime = numFrames - 1 + kernelSize/2. Test this with very high downshifting factors and
@@ -440,19 +451,8 @@ void RegionPlayer::setupDspSettings(
   using PS = PlaybackSetting;
   using TP = Opcode;               // rename to OC
 
-  double  amp        = 1.0;  // raw factor, computed "volume" opcode which is given in dB
-  double  pan        = 0.0;  // -100...+100
-  double  tuneCoarse = 0.0;  // in semitones
-  double  tuneFine   = 0.0;  // in cents
-  PanRule panRule    = PanRule::linear;
-  //int    offset     = 0;
-
-  bool onTop = busMode; 
-  // maybe get rid...actually, we need a more complex logic here: some settings should always 
-  // override regardless of bus-mode - namely those that apply to the sample-player, i.e. pitch
-  // stuff etc.
-
-
+  double  tuneCoarse = 0.0;        // in semitones
+  double  tuneFine   = 0.0;        // in cents
 
   // Loop through the settings of the region and for each setting that is present, change the 
   // value from its default to the stored value:
@@ -461,7 +461,7 @@ void RegionPlayer::setupDspSettings(
 
     PlaybackSetting setting = settings[i];
     TP type = setting.getType();                  // rename to opcode
-    double val = (double) setting.getValue();
+    double val = (double)setting.getValue();
 
     // todo: 
     // -factor out into virtual function setDspSetting(setting) which is a virtual function
@@ -474,13 +474,9 @@ void RegionPlayer::setupDspSettings(
       continue;
     }
 
-
+    // move these into if(setting.isPlayerSetting())
     switch(type)
     {
-    // Amp settings:
-    //case TP::Volume:  { amp      = RAPT::rsDbToAmp(val); } break;
-    //case TP::Pan:     { pan      = val;                  } break;
-    case TP::PanLaw:  { panRule  = (PanRule)(int)val;    } break;
 
     // Pitch settings:
     //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
@@ -489,15 +485,15 @@ void RegionPlayer::setupDspSettings(
 
     //
     case TP::Delay:
-    { 
-      if(onTop) sampleTime += -val * fs; 
-      else      sampleTime  = -val * fs; 
+    {
+      if(busMode) sampleTime += -val * fs;
+      else        sampleTime  = -val * fs;
     }  break;
 
     case TP::Offset:
-    { 
-      if(onTop) offset += float(val); 
-      else      offset  = float(val); 
+    {
+      if(busMode) offset += float(val);
+      else        offset  = float(val);
     }  break;
 
 
@@ -505,52 +501,9 @@ void RegionPlayer::setupDspSettings(
   }
   double tune   = tuneCoarse + 0.01 * tuneFine;
   double factor = pow(2.0, tune / 12.0);
-  if(onTop) this->increment *= factor;
-  else      this->increment  = factor;
+  if(busMode) this->increment *= factor;
+  else        this->increment  = factor;
 
-
-  // From the computed local amp/pan/panRule variables, compute the amp member (which is
-  // a rsFloat64x2)
-  double t1, t2;  // temporaries
-  switch(panRule)
-  {
-  case PanRule::linear:
-  {
-    t1 = (pan/200.0) + 0.5; // -100..+100 -> 0..1
-    t2 = 1.0 - t1;
-    if(onTop) this->amp *= 2.0 * amp * rsFloat64x2(t2, t1);
-    else      this->amp  = 2.0 * amp * rsFloat64x2(t2, t1);
-    // i'm not sure about the factor 2 -> check against sfz+ ..such a factor might be undesirable
-    // in "onTop" mode: when 3 panners pan hard-left or right, we'll actually get a boost of 8
-  } break;
-  case PanRule::sinCos:
-  {
-    RAPT::rsError("not yet implemented");
-  } break;
-  }
-
-  // ToDo: factor out the repetitive if(onTop)...into a local helper function 
-  // set(double& setting, double value, bool onTop, bool multiplicative = false)
-  // ...or maybe the multiplicative bool should be an int with values: 0: additive, 
-  // 1: multiplicative, 2: dunno yet, ...
-
-  // ToDo: support the "width" opcode. Implement it by a M/S matrix - we need two rsFloat64
-  // members to represent both rows of it. Then, in the realtime processing call, we let the stream
-  // produce the stereo pair, compute the product of that pair with both rows by element-wise 
-  // multiply and summing the whole vector and then assigning the first output to first sum and
-  // the 2nd to the 2nd. But should width be applied before or after the pan? -> test with 
-  // sfzplayer. I would say, width-before-pan makes more sense from a usability perspective. If 
-  // sfz thinks otherwise, maybe provide both options, switched by an additional opcode. sfz also 
-  // has the position opcode. maybe that's post-width and apn pan is pre-width?
-
-  // ToDo:
-  // -Maybe within the switch statement set up some flags that indicate, if a particular setting is
-  //  used. If the flag is false, we may skip the associated DSP process in getFrame/processBlock. 
-  //  We may need inquiry functions such as hasFilter, hasAmpEnv, hasPitchEnv, hasFilterEnv, 
-  //  hasPitchLFO. But this makes things more complicated, so maybe it's not really a good idea.
-  // -Implement position and width opcodes. Maybe we should maintain a 2x2 gain matrix as member
-  //  and all the different amp, pan, width, pos, etc. settings accumulate into this matrix. But 
-  //  always compare results to sfz+ which serves as reference engine
 }
 
 void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
@@ -559,6 +512,12 @@ void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
   // preliminary: todo: catch those settings that apply only to the sample-source, i.e. do not
   // apply to a DSP in the chain. they need different handling
 }
+
+void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s)
+{
+  RAPT::rsError("Not yet implemented");
+}
+
 
 //=================================================================================================
 // GroupPlayer
@@ -572,17 +531,17 @@ rsFloat64x2 GroupPlayer::getFrame()
   return out;
 }
 
-void GroupPlayer::releaseResources() 
+void GroupPlayer::releaseResources()
 {
   disassembleDspChain();
   regionPlayers.clear();
   //group = nullptr;   // why is this commented? seems to make sense to set it to null here
 }
 
-void GroupPlayer::addRegionPlayer(RegionPlayer* newPlayer) 
-{ 
+void GroupPlayer::addRegionPlayer(RegionPlayer* newPlayer)
+{
   RAPT::rsAssert(!RAPT::rsContains(regionPlayers, newPlayer));
-  regionPlayers.push_back(newPlayer); 
+  regionPlayers.push_back(newPlayer);
 }
 
 void GroupPlayer::removeRegionPlayer(RegionPlayer* player)
@@ -593,15 +552,17 @@ void GroupPlayer::removeRegionPlayer(RegionPlayer* player)
 
 bool GroupPlayer::setGroupToPlay(const rsSamplerData::Group* groupToPlay, bool busMode)
 {
-  if(groupToPlay == group) 
+  if(groupToPlay == group)
     return true;               // nothing to do
   disassembleDspChain();
   group = groupToPlay;
   if(group != nullptr) {
     if(!assembleDspChain(busMode)) {
       group = nullptr;
-      return false; }
-    setupDspChain(); }
+      return false;
+    }
+    setupDspChain();
+  }
   return true;
 }
 
@@ -623,6 +584,11 @@ void GroupPlayer::setupDspChain()
   RAPT::rsError("Not yet implemented");
 }
 
+void GroupPlayer::setupPlayerSetting(const PlaybackSetting& s)
+{
+  RAPT::rsError("Not yet implemented");
+}
+
 //=================================================================================================
 // InstrumPlayer
 
@@ -630,6 +596,11 @@ bool InstrumPlayer::assembleDspChain(bool busMode)
 {
   RAPT::rsAssert(busMode == true); // see comment in GroupPlayer::assembleDspChain
   return SamplePlayer::assembleDspChain(instrum->getProcessingChain());
+}
+
+void InstrumPlayer::setupPlayerSetting(const PlaybackSetting& s)
+{
+  RAPT::rsError("Not yet implemented");
 }
 
 
