@@ -474,6 +474,16 @@ void RegionPlayer::setupDspSettings(
       continue;
     }
 
+    /*
+    // new version which should replace the code below
+    if(setting.isPlayerSetting())
+    {
+      setupPlayerSetting(setting, fs);
+      continue;
+    }
+    */
+
+
     // move these into if(setting.isPlayerSetting())
     switch(type)
     {
@@ -513,9 +523,26 @@ void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
   // apply to a DSP in the chain. they need different handling
 }
 
-void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s)
+void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate)
 {
-  RAPT::rsError("Not yet implemented");
+  double tuneCoarse = 0.0;        // in semitones
+  double tuneFine   = 0.0;        // in cents
+  double val = (double)s.getValue();
+  using OC   = Opcode;
+  switch(s.getType())
+  {
+  // Pitch settings:
+  //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
+  case OC::Transpose: { tuneCoarse = val;               } break;
+  case OC::Tune:      { tuneFine   = val;               } break;
+  case OC::Delay:     { sampleTime = -val * sampleRate; } break;
+  case OC::Offset:    { offset     = float(val);        } break;
+  }
+  double tune     = tuneCoarse + 0.01 * tuneFine;
+  double factor   = pow(2.0, tune / 12.0);
+  this->increment = factor;
+
+  //RAPT::rsError("Not yet implemented");
 }
 
 
@@ -584,7 +611,7 @@ void GroupPlayer::setupDspChain()
   RAPT::rsError("Not yet implemented");
 }
 
-void GroupPlayer::setupPlayerSetting(const PlaybackSetting& s)
+void GroupPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate)
 {
   RAPT::rsError("Not yet implemented");
 }
@@ -598,7 +625,7 @@ bool InstrumPlayer::assembleDspChain(bool busMode)
   return SamplePlayer::assembleDspChain(instrum->getProcessingChain());
 }
 
-void InstrumPlayer::setupPlayerSetting(const PlaybackSetting& s)
+void InstrumPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate)
 {
   RAPT::rsError("Not yet implemented");
 }

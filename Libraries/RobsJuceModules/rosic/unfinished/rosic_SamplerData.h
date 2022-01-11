@@ -96,8 +96,17 @@ public:
       DspType dspType = SfzCodeBook::getInstance()->opcodeToProcessor(type);
       return dspType > DspType::_TagDspsStart && dspType < DspType::_TagDspsEnd;
     }
-    // todo: isPlayerSetting, isModulationSetting, etc.
 
+    /** Returns true iff the given opcode applies to the sample playback source such as tune, 
+    delay, offset, etc. */
+    bool isPlayerSetting()
+    {
+      DspType dspType = SfzCodeBook::getInstance()->opcodeToProcessor(type);
+      return dspType == DspType::SamplePlayer;
+    }
+
+    // todo: isModulationSetting, isModulatorSetting  (modulatiON settings define mod-connections,
+    // modulatOR settings parameters of the modulators)
 
 
     /** Returns the stored value for this setting. Values are always stored as floats and it is

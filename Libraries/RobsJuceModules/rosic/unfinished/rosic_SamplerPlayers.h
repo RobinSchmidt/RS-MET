@@ -118,7 +118,7 @@ protected:
   player that may be managed by higher level players, accordingly. RegionPlayer itself sets
   up its own member variables, GroupPlayer manipulates one of its embedded RegionPlayers, 
   etc.  */
-  virtual void setupPlayerSetting(const PlaybackSetting& s) = 0;
+  virtual void setupPlayerSetting(const PlaybackSetting& s, double sampleRate) = 0;
   // rename to setPlayerOpcode
 
 
@@ -236,7 +236,7 @@ protected:
 
   void setupProcessorSetting(const PlaybackSetting& s) override;
 
-  void setupPlayerSetting(const PlaybackSetting& s) override;
+  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate) override;
 
 
 
@@ -332,7 +332,7 @@ protected:
   void setupDspChain();
   // maybe make this an override of a baseclass method...if possible
 
-  void setupPlayerSetting(const PlaybackSetting& s) override;
+  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate) override;
 
   std::vector<RegionPlayer*> regionPlayers;
   // Pointers to the players for all the regions in this group.
@@ -369,7 +369,7 @@ public:
 
 protected:
 
-  void setupPlayerSetting(const PlaybackSetting& s) override;
+  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate) override;
 
   const rsSamplerData::Instrument* instrum = nullptr;
   // Pointer to the instrument object which is played back by this player
