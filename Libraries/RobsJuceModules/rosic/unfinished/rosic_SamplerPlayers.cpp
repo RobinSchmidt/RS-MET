@@ -63,23 +63,28 @@ bool SamplePlayer::addDspsIfNeeded(const std::vector<DspType>& dspTypeChain)
       if(dspTypeChain[j] == dspType)
         index++;
     }
-// Maybe factor that out into some dspTypeChain.getSfzIndex(arrayIndex) method. In this call,
-// the arrayIndex should be the array-index of a DSP of given type within the chain and the 
-// return value should be the sfz-index. Example: 
-//   typeChain == { Filter, Equalizer, Filter, Filter, Equalizer, Equalizer, Filter }
-//   array-index:     0         1        2       3         4          5        6
-//   sfz-index:       1         1        2       3         2          3        4
-// Then, when we pass 4 (the array index), it should return 2 because array index 4 refers
-// to the 2nd equalizer in the desired sfz-effect chain, i.e. the equalizer that is 
-// controlled with opcodes eq2_gain, eq2_freq, eq2_bw. This kind of index-mapping is a bit 
-// confusing and needs good documentation and unit-tests. But TypeChain is actually not a 
-// class but just a std::vector of DspType. Maybe make it a class..hmm...not sure if that's
-// worth it. Maybe make a free helper function getSfzDspIndex(const TypeChain& c, int i).
-// Could be a static method of SamplerData. Maybe use size_t: init index to 0 and start loop
-// index j at i
+    // Maybe factor that out into some dspTypeChain.getSfzIndex(arrayIndex) method. In this call,
+    // the arrayIndex should be the array-index of a DSP of given type within the chain and the 
+    // return value should be the sfz-index. Example: 
+    //   typeChain == { Filter, Equalizer, Filter, Filter, Equalizer, Equalizer, Filter }
+    //   array-index:     0         1        2       3         4          5        6
+    //   sfz-index:       1         1        2       3         2          3        4
+    // Then, when we pass 4 (the array index), it should return 2 because array index 4 refers
+    // to the 2nd equalizer in the desired sfz-effect chain, i.e. the equalizer that is 
+    // controlled with opcodes eq2_gain, eq2_freq, eq2_bw. This kind of index-mapping is a bit 
+    // confusing and needs good documentation and unit-tests. But TypeChain is actually not a 
+    // class but just a std::vector of DspType. Maybe make it a class..hmm...not sure if that's
+    // worth it. Maybe make a free helper function getSfzDspIndex(const TypeChain& c, int i).
+    // Could be a static method of SamplerData. Maybe use size_t: init index to 0 and start loop
+    // index j at i. Maybe it could also be a completely general function defined on std::vector.
+    // maybe size_t rsCountEqualPredecessors(size_t i)...or maybe just use a function like
+    // rsArrayTools::count(&dspTypeChain[0], i, dspType)  maybe have a countBackward function
+    // too - maybe it's sometimes more efficient because the data around index i is initially 
+    // still in cache...dunno. To better express intent, we could have a wrapper around that
+    // with a descriptive name like arrayIndexToSfzIndex or something
 
-// Figure out, if we actually need to add another DSP to the chain. If not, there's nothing
-// more to do in this iteration:
+    // Figure out, if we actually need to add another DSP to the chain. If not, there's nothing
+    // more to do in this iteration:
     if(dspChain.getNumProcessors(dspType) >= index)
       continue;
 
@@ -91,6 +96,7 @@ bool SamplePlayer::addDspsIfNeeded(const std::vector<DspType>& dspTypeChain)
       dspChain.addProcessor(dsp);
     }
     else {
+      //disassembleDspChain(); // later, take over responsibility for this
       return false;
       // Not enough DSPs of desired type are available in the pool so we report failure. In such a
       // case, it is the job of the caller to roll back any partially built chain, if needed.
@@ -107,12 +113,10 @@ bool SamplePlayer::assembleDspChain(const std::vector<DspType>& dspTypes)
 {
   if(!dspChain.isEmpty()) {
     RAPT::rsError("Someone has not cleaned up after finishing playback!");
-    disassembleDspChain();
-  }  // ...so we do it here. But this should be fixed elsewhere!
+    disassembleDspChain();  }  // ...so we do it here. But this should be fixed elsewhere!
   if(!addDspsIfNeeded(dspTypes)) {
     disassembleDspChain();    // addDspsIfNeeded may have built a partial chain which we then..
-    return false;
-  }           // ..need to clean up here
+    return false; }           // ..need to clean up here
   return true;
 
   // The fact that addDspsIfNeeded may build a partial chain without cleaning it up itself if
@@ -187,6 +191,7 @@ void SamplePlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   // cannot be meaningfully achieved by post-processing in the DSP chain but instead must be 
   // applied directly at the playback source. Some of them (like delay) *could* be achieved 
   // also by post-processing with a suitable DSP but it's more efficient to do it at the source.
+  // Others like all tuning related stuff indeed needs to be done at the source.
 
   double val = (double)s.getValue();
   using OC   = Opcode;
@@ -256,10 +261,8 @@ rsFloat64x2 RegionPlayer::getFrame()
   sampleTime += increment;
   rsFloat64x2 out(L, R);
   dspChain.processFrame(out);
-  return this->amp * out;
 
-
-  //return this->amp * rsFloat64x2(L, R); 
+  return out;
 }
 
 void RegionPlayer::processBlock(rsFloat64x2* y, int N)
@@ -409,7 +412,6 @@ bool RegionPlayer::setupModulations()
 void RegionPlayer::resetPlayerSettings()
 {
   // Initialize all values and DSP objects to default values (maybe factor out):
-  amp        = 1.0;
   sampleTime = 0.0;
   increment  = 1.0;
   offset     = 0.f;

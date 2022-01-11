@@ -57,7 +57,11 @@ private:
 
 class RegionPlayer;
 
-/** Baseclass for RegionPlayer and GroupPlayer to factor out the common stuff. */
+/** Baseclass for RegionPlayer, GroupPlayer and InstrumPlayer to factor out the common stuff. The 
+functionality for sample playback is distributed mostly between this baseclass and the subclass 
+RegionPlayer. GroupPlayer and InstrumPlayer are also subclasses of SamplePlayer and their purpose 
+is mostly to sum the signals of their embedded lower level players and apply additional DSP
+processes to these sums. */
 
 class SamplePlayer
 {
@@ -241,17 +245,11 @@ protected:
 
   void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, RegionPlayer* rp) override;
 
-
-
   const Region* region;                 //< The Region object that this object should play
   const AudioFileStream<float>* stream; //< Stream object to get the data from
 
-  rsFloat64x2 amp = 1.0;         //< Amplitude (for both channels)
-  // maybe remove or replace by channel-matrix gains gLL, gLR, gRL, gRR
-
-  //int sampleTime = 0;          //< Elapsed time in samples, negative values used for delay
-  double sampleTime = 0.0;       //< Time index in the sample. Negative values used for delay.
-  double increment  = 1.0;       //< Increment of sampleTime per sample
+  double sampleTime = 0.0;  //< Time index in the sample. Negative values used for delay.
+  double increment  = 1.0;  //< Increment of sampleTime per sample
 
   // new, under construction:
   float offset    = 0;  // maybe rename to startTime or startSample
@@ -268,7 +266,8 @@ protected:
 
   friend class SamplePlayer;
   // So it can accumulate the group and instrument settings into our increment, sampleTime,
-  // etc variable.
+  // etc. variables. (ToDo: maybe provide functions applyAdditionalDelay, applyAdditionalDetune 
+  // later and unfriend the SamplePlayer again)
 
 
   // ToDo: 
@@ -322,15 +321,9 @@ public:
   /** Returns true, iff this GroupPlayer has no RegionPlayer objects running. */
   bool hasNoRegionPlayers() { return regionPlayers.empty(); }
 
-
   const rsSamplerData::Group* getGroupToPlay() const { return group; }
 
   bool setGroupToPlay(const rsSamplerData::Group* groupToPlay, bool busMode);
-
-
-  //void setGroupToPlay(const rsSamplerData::Group* groupToPlay) { group = groupToPlay; }
-  // should do more stuff: assmeble and set up the DSP chain, return a bool to report success or
-  // failure
 
 
 protected:
@@ -340,23 +333,11 @@ protected:
   void setupDspChain();
   // maybe make this an override of a baseclass method...if possible
 
-  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, RegionPlayer* rp) override;
-
   std::vector<RegionPlayer*> regionPlayers;
   // Pointers to the players for all the regions in this group.
 
-
   const rsSamplerData::Group* group = nullptr;
   // Pointer to the group object which is played back by this player
-
-
-  friend class rsSamplerEngine2;  
-  // Try to get rid! We need it because SamplerEmgine2 calls assembleDspChain - maybe we should 
-  // move it to unprotected...or: setGroupToPlay should call it - yes that seems cleaner
-
-  //rsSamplerEngine2* engine = nullptr;
-  // For communication with enclosing sampler-engine - currently not needed - try to keep it like
-  // that (reduce coupling)
 
 };
 
@@ -377,12 +358,14 @@ public:
 
 protected:
 
+  //std::vector<GroupPlayer*> groupPlayers;
+  // maybe we will need this later, but maybe not
+
   const rsSamplerData::Instrument* instrum = nullptr;
   // Pointer to the instrument object which is played back by this player
 
-
 };
-// maybe the implementations can be moved into the baseclass as default implementations
+
 
 
 
