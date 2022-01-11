@@ -1550,8 +1550,18 @@ bool samplerAmplifierCoreTest()
   // meet at (1,1)
 
   // ToDo:
+  // -Figure out if our parameterization makes indeed the fully general set of 2x2 matrices 
+  //  reachable - and if so, how.
+  // -Try to realize the following settings: invert L, invert R, invert both, invert M, invert S. 
+  //  Combine all of them with a channel swap. Document the rules and settings, how to achieve 
+  //  those.
   // -Figure out, if stereo signals should just ignore width and pos - i think so, so maybe we
-  //  need a flag to switch behavior
+  //  need a flag to switch behavior.
+  // -I think, for stereo signals, the "pan" parameter "selects" between the two input channels and
+  //  the "position" distributes the signal to the two output channels. A bit like gather and 
+  //  scatter. So the mental model is: scale -> gather -> mix -> scatter. But the sfz doc suggests
+  //  more that "pan" is the scatter operation because pan applies to mono and stereo signal alike
+  //  whereas position applies only to stereo signals
 
   return ok;
 }

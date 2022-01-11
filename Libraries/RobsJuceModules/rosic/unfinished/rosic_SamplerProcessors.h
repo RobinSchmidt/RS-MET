@@ -112,7 +112,8 @@ class AmplifierCore
 public:
 
   /** Sets up the internal algo parameters in terms of user parameters defined in the sfz spec.
-  The following descriptions of the parameters are taken from: https://sfzformat.com/legacy/
+  The following descriptions of the parameters are taken from: https://sfzformat.com/legacy/ with
+  some additions of my own signified by [square brackets].
   (ToDo: verify, if this is implemented correctly - at the moment, my formulas are a guess)
 
   volume: -144 to 6 dB
@@ -121,16 +122,16 @@ public:
   pan: -100..+100
   The panoramic position for the region. If a mono sample is used, pan value defines the position 
   in the stereo image where the sample will be placed. When a stereo sample is used, the pan value 
-  the relative amplitude of one channel respect the other. A value of zero means centered, negative
-  values move the panoramic to the left, positive to the right.
+  [controls] the relative amplitude of one channel respect the other. A value of zero means 
+  centered, negative values move the panoramic to the left, positive to the right.
 
   width: -100% to 100%
   Only operational for stereo samples, width defines the amount of channel mixing applied to play 
   the sample. A width value of 0 makes a stereo sample play as if it were mono (adding both 
   channels and compensating for the resulting volume change). A value of 100 will make the stereo 
   sample play as original. Any value in between will mix left and right channels with a part of the
-  other, resulting in a narrower stereo field image. Negative width values will reverse left and 
-  right channels.
+  other, resulting in a narrower stereo field image. Negative width values will reverse 
+  [i.e. swap? not negate?] left and right channels.
 
   position: -100% to 100%
   Only operational for stereo samples, position defines the position in the stereo field of a 

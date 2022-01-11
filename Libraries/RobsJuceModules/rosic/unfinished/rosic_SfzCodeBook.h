@@ -120,7 +120,13 @@ enum class Opcode
   // reverb_time_high, reverb_freq_lo, reverb_freq_hi, reverb_algo (fdn16, schroeder, ...)
   // chorus_voices, chorus_freq, chorus_depth, ...
   // convolve_sample (or maybe just convo_sample)
-  // oversample=1..16
+  // sample_dir: default: directory of sfz-file, may contain ../../Samples to move out of the 
+  // sfz-dir...maybe using ../../Samples directly in the sample-path even works already wihtout
+  // doing anything?
+  // oversample=1..16 per region oversampling factor, always has override behavior
+  // extend_ranges=true/false allow extended parameter ranges such a width of 150, volume of +12 dB
+  // etc. or maybe use a param_range=sfz/extended that would allow to later define more specific
+  // extensions
 
   // What about routing?
   // is an opdoce like lfoN_volume meant to route lfo N to volume? and what isegN_amplitude 

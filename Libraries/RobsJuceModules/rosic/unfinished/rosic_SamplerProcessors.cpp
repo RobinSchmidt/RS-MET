@@ -69,8 +69,13 @@ void AmplifierCore::setup(float volume, float pan, float width, float pos)
   // with the uniform scaling as a decomposition of the scaling matrix in SVD? I think, the W
   // matrix is a pure rotation (up to the constant factor of sqrt(2)). So geometrically, we do:
   // scale uniformly -> pan (non-uniform scale) -> rotate -> pan
-  // where the "pan" is a combined stretch-x-squeeze-y operation or vice versa. Maybe that should 
-  // be power-preserving, too - maybe a sin/cos based rule should be used for that, too
+  // where the "pan" is a combined stretch-x-squeeze-y (may let's call it "thinstretching") 
+  // operation or vice versa. Maybe that should be power-preserving, too - maybe a sin/cos based 
+  // rule should be used for that, too. So, leaving out the scaling for a moment, our matrix is
+  // Q*W*P where Q,P are "thinstretchers" and W is a rotation (all power preserving). Maybe we can
+  // equate that to the k*U*S*V of a singular value composition (where k is an additional scalar
+  // scaling factor that accounts for the fact that S is in general not energy-preserving), we have
+  // found a new and potentially interesting matrix decomposition?
 
    
   // Construct position matrix:
