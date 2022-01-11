@@ -89,25 +89,6 @@ public:
     Opcode getType() const { return type; }
     // rename to getOpcode
 
-    /** Returns true iff the given opcode applies to a DSP in the DSP chain like volume, cutoff, 
-    etc. but not pitch_keycenter or tune. */
-    bool isDspSetting()
-    {
-      DspType dspType = SfzCodeBook::getInstance()->opcodeToProcessor(type);
-      return dspType > DspType::_TagDspsStart && dspType < DspType::_TagDspsEnd;
-    }
-
-    /** Returns true iff the given opcode applies to the sample playback source such as tune, 
-    delay, offset, etc. */
-    bool isPlayerSetting()
-    {
-      DspType dspType = SfzCodeBook::getInstance()->opcodeToProcessor(type);
-      return dspType == DspType::SamplePlayer;
-    }
-
-    // todo: isModulationSetting, isModulatorSetting  (modulatiON settings define mod-connections,
-    // modulatOR settings parameters of the modulators)
-
 
     /** Returns the stored value for this setting. Values are always stored as floats and it is
     understood that in cases, where the corresponding parameter in the sfz spec is defined to be an

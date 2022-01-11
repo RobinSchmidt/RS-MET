@@ -467,76 +467,16 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
 void RegionPlayer::setupDspSettings(
   const std::vector<PlaybackSetting>& settings, double fs, bool busMode)
 {
-  //using PS = PlaybackSetting;
-  using TP = Opcode;               // rename to OC
-
-  //double  tuneCoarse = 0.0;        // in semitones
-  //double  tuneFine   = 0.0;        // in cents
-
   // Loop through the settings of the region and for each setting that is present, change the 
   // value from its default to the stored value:
+  SfzCodeBook* codebook = SfzCodeBook::getInstance();
   for(size_t i = 0; i < settings.size(); i++)
   {
-
-    PlaybackSetting setting = settings[i];
-    TP type = setting.getType();                  // rename to opcode
-    //double val = (double)setting.getValue();
-
-    // todo: 
-    // -factor out into virtual function setDspSetting(setting) which is a virtual function
-    //  defined in SamplePlayer and we override it here to ctach the RegionPlayer-sepcific
-    //  opcodes such as delay
-
-    if(setting.isDspSetting())
-    {
-      setupProcessorSetting(setting);
-      continue;
-    }
-    if(setting.isPlayerSetting())
-    {
-      setupPlayerSetting(setting, fs, this);
-      continue;
-    }
-    // optimize: instead of calling isDspSetting in the setting object, use the setting.getType()
-    // and a pointer to an SfzCodebook that has been acquired before the loop (saves some checks
-    // in the aqcuiry of the singleton pointer)
-    
-
-    /*
-    // move these into if(setting.isPlayerSetting())
-    switch(type)
-    {
-
-    // Pitch settings:
-    //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
-    case TP::Transpose:      { tuneCoarse = val; } break;
-    case TP::Tune:           { tuneFine   = val; } break;
-
-    //
-    case TP::Delay:
-    {
-      if(busMode) sampleTime += -val * fs;
-      else        sampleTime  = -val * fs;
-    }  break;
-
-    case TP::Offset:
-    {
-      if(busMode) offset += float(val);
-      else        offset  = float(val);
-    }  break;
-
-
-    }
-    */
+    PlaybackSetting s = settings[i];
+    Opcode op = s.getType();
+    if(     codebook->isDspSetting(op))    { setupProcessorSetting(s);        }
+    else if(codebook->isPlayerSetting(op)) { setupPlayerSetting(s, fs, this); }
   }
-
-  /*
-  double tune   = tuneCoarse + 0.01 * tuneFine;
-  double factor = pow(2.0, tune / 12.0);
-  if(busMode) this->increment *= factor;
-  else        this->increment  = factor;
-  */
-
 }
 
 void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)

@@ -374,6 +374,28 @@ public:
   representation. */
   float stringToValue(Opcode op, const std::string& str);
 
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
+
+  /** Returns true iff the given opcode applies to a DSP in the DSP chain like volume, cutoff, 
+  etc. but not pitch_keycenter or tune. */
+  bool isDspSetting(Opcode op)
+  {
+    DspType dspType = opcodeToProcessor(op);
+    return dspType > DspType::_TagDspsStart && dspType < DspType::_TagDspsEnd;
+  }
+
+  /** Returns true iff the given opcode applies to the sample playback source such as tune, 
+  delay, offset, etc. */
+  bool isPlayerSetting(Opcode op)
+  {
+    DspType dspType = opcodeToProcessor(op);
+    return dspType == DspType::SamplePlayer;
+  }
+
+  // todo: isModulationSetting, isModulatorSetting  (modulatiON settings define mod-connections,
+  // modulatOR settings parameters of the modulators)
+
 
 protected:
 
