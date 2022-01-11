@@ -179,7 +179,26 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
   RAPT::rsError("not yet implemented");
 }
 
+void SamplePlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, RegionPlayer* rp)
+{
+  // We are supposedly a higher level player object like GroupPlayer or InstrumentPlayer but the 
+  // setting in question reaches through to an underlying (embedded) RegionPlayer object and must 
+  // be accumulated into the respective value there. This applies to all kinds of settings that 
+  // cannot be meaningfully achieved by post-processing in the DSP chain but instead must be 
+  // applied directly at the playback source. Some of them (like delay) *could* be achieved 
+  // also by post-processing with a suitable DSP but it's more efficient to do it at the source.
 
+  double val = (double)s.getValue();
+  using OC   = Opcode;
+  switch(s.getType())
+  {
+  case OC::Transpose: { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(val);        } break;
+  case OC::Tune:      { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(0.01 * val); } break;
+  case OC::Delay:     { rp->sampleTime += -val * sampleRate;                           } break;
+  case OC::Offset:    { rp->offset     += float(val);                                  } break;
+  }
+}
+// needs test
 
 //=================================================================================================
 // RegionPlayer
@@ -475,7 +494,7 @@ void RegionPlayer::setupDspSettings(
     }
     if(setting.isPlayerSetting())
     {
-      setupPlayerSetting(setting, fs);
+      setupPlayerSetting(setting, fs, this);
       continue;
     }
     // optimize: instead of calling isDspSetting in the setting object, use the setting.getType()
@@ -527,8 +546,16 @@ void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
   // apply to a DSP in the chain. they need different handling
 }
 
-void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate)
+void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, RegionPlayer* rp)
 {
+  RAPT::rsAssert(rp == this);
+  // For RegionPlayer objects like this, this function is supposed to be called only for the object
+  // itself. The rp pointer is needed here only to conform to the baseclass interface. For 
+  // GroupPlayers and InstrumPlayers, the pointer is supposed to hold the RegionPlayer to which 
+  // this setting should be applied accumulatively in busMode. In default mode, GroupPlayer and 
+  // InstrumPlayer play no role at all.
+
+
   double tuneCoarse = 0.0;        // in semitones
   double tuneFine   = 0.0;        // in cents
   double val = (double)s.getValue();
@@ -613,46 +640,6 @@ void GroupPlayer::setupDspChain()
   RAPT::rsError("Not yet implemented");
 }
 
-void GroupPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate)
-{
-  double val = (double)s.getValue();
-  using OC   = Opcode;
-
-  //RegionPlayer* rp = getSourcePlayer(); ...the RegionPlayer object to which this setting
-  // applies...how can we obtain a pointer to it? Maybe it needs to be passed in a parameter?
-  // ...yeah - that's probably what needs to be done and we can do it in the baseclass
-
-  switch(s.getType())
-  {
-    // Pitch settings:
-  case OC::Transpose:
-  {
-    // accumulate pitchOffsetToFreqFactor(val) into the increment of rp
-  } break;
-
-  case OC::Tune:
-  { 
-    // accumulate pitchOffsetToFreqFactor(0.01 * val) into the increment of rp
-  } break;
-
-  case OC::Delay:     
-  { 
-    //sampleTime = -val * sampleRate; 
-    // accumulate -val * sampleRate into sampleTime of rp
-
-  } break;
-  case OC::Offset:    
-  { 
-    //offset = float(val);
-    // accumulate val into offset of rp
-  } 
-  break;
-  }
-
-
-  //RAPT::rsError("Not yet implemented");
-}
-
 //=================================================================================================
 // InstrumPlayer
 
@@ -661,21 +648,6 @@ bool InstrumPlayer::assembleDspChain(bool busMode)
   RAPT::rsAssert(busMode == true); // see comment in GroupPlayer::assembleDspChain
   return SamplePlayer::assembleDspChain(instrum->getProcessingChain());
 }
-
-void InstrumPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate)
-{
-  RAPT::rsError("Not yet implemented");
-}
-
-
-
-
-
-
-
-
-
-
 
 
 

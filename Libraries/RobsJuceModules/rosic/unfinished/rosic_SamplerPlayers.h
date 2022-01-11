@@ -55,6 +55,8 @@ private:
 
 //=================================================================================================
 
+class RegionPlayer;
+
 /** Baseclass for RegionPlayer and GroupPlayer to factor out the common stuff. */
 
 class SamplePlayer
@@ -118,7 +120,8 @@ protected:
   player that may be managed by higher level players, accordingly. RegionPlayer itself sets
   up its own member variables, GroupPlayer manipulates one of its embedded RegionPlayers, 
   etc.  */
-  virtual void setupPlayerSetting(const PlaybackSetting& s, double sampleRate) = 0;
+  virtual void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
+    RegionPlayer* rp);
   // rename to setPlayerOpcode
 
 
@@ -236,7 +239,7 @@ protected:
 
   void setupProcessorSetting(const PlaybackSetting& s) override;
 
-  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate) override;
+  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, RegionPlayer* rp) override;
 
 
 
@@ -261,6 +264,11 @@ protected:
 
   std::vector<Modulator*> modulators;
   std::vector<ModulationConnection*> modMatrix;  // not a literal matrix but conceptually
+
+
+  friend class SamplePlayer;
+  // So it can accumulate the group and instrument settings into our increment, sampleTime,
+  // etc variable.
 
 
   // ToDo: 
@@ -332,7 +340,7 @@ protected:
   void setupDspChain();
   // maybe make this an override of a baseclass method...if possible
 
-  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate) override;
+  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, RegionPlayer* rp) override;
 
   std::vector<RegionPlayer*> regionPlayers;
   // Pointers to the players for all the regions in this group.
@@ -368,8 +376,6 @@ public:
   // if all 3 subclasses have such a method, introduce a virtual baseclass method
 
 protected:
-
-  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate) override;
 
   const rsSamplerData::Instrument* instrum = nullptr;
   // Pointer to the instrument object which is played back by this player
