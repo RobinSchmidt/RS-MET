@@ -98,6 +98,30 @@ bool SamplePlayer::addDspsIfNeeded(const std::vector<DspType>& dspTypeChain)
 
 }
 
+bool SamplePlayer::assembleDspChain(const std::vector<DspType>& dspTypes)
+{
+  if(!dspChain.isEmpty()) {
+    RAPT::rsError("Someone has not cleaned up after finishing playback!");
+    disassembleDspChain(); }  // ...so we do it here. But this should be fixed elsewhere!
+  if(!addDspsIfNeeded(dspTypes)) {
+    disassembleDspChain();    // addDspsIfNeeded may have built a partial chain which we then..
+    return false; }           // ..need to clean up here
+  return true;
+
+  // The fact that addDspsIfNeeded may build a partial chain without cleaning it up itself if
+  // it can't build the full chain is a bit messy. But just putting the clean-up responsibility
+  // into this function isn't ideal either because then the name doesn't really fit. Maybe rename
+  // it addDspsIfNeededCleanUpWhenFail...but that's a monster of a name...we'll see.... maybe
+  // augmentOrCleanDspChain
+}
+
+void SamplePlayer::disassembleDspChain()
+{
+  for(int i = 0; i < dspChain.getNumProcessors(); i++)
+    dspPool->processorPool.repositProcessor(dspChain.getProcessor(i));
+  dspChain.clear();
+}
+
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
   using SD = rsSamplerData::PlaybackSetting;
@@ -140,29 +164,15 @@ void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
   // getProcessorFor.
 }
 
-bool SamplePlayer::assembleDspChain(const std::vector<DspType>& dspTypes)
+void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings,
+  double sampleRate, bool busMode)
 {
-  if(!dspChain.isEmpty()) {
-    RAPT::rsError("Someone has not cleaned up after finishing playback!");
-    disassembleDspChain(); }  // ...so we do it here. But this should be fixed elsewhere!
-  if(!addDspsIfNeeded(dspTypes)) {
-    disassembleDspChain();    // addDspsIfNeeded may have built a partial chain which we then..
-    return false; }           // ..need to clean up here
-  return true;
 
-  // The fact that addDspsIfNeeded may build a partial chain without cleaning it up itself if
-  // it can't build the full chain is a bit messy. But just putting the clean-up responsibility
-  // into this function isn't ideal either because then the name doesn't really fit. Maybe rename
-  // it addDspsIfNeededCleanUpWhenFail...but that's a monster of a name...we'll see.... maybe
-  // augmentOrCleanDspChain
+
+  RAPT::rsError("not yet implemented");
 }
 
-void SamplePlayer::disassembleDspChain()
-{
-  for(int i = 0; i < dspChain.getNumProcessors(); i++)
-    dspPool->processorPool.repositProcessor(dspChain.getProcessor(i));
-  dspChain.clear();
-}
+
 
 //=================================================================================================
 // RegionPlayer
@@ -424,7 +434,6 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
     sampleTime = offset;
 }
 
-// move into baseclass:
 void RegionPlayer::setupDspSettings(
   const std::vector<PlaybackSetting>& settings, double fs, bool busMode)
 {
@@ -453,6 +462,19 @@ void RegionPlayer::setupDspSettings(
     PlaybackSetting setting = settings[i];
     TP type = setting.getType();                  // rename to opcode
     double val = (double) setting.getValue();
+
+    // todo: 
+    // -factor out into virtual function setDspSetting(setting) which is a virtual function
+    //  defined in SamplePlayer and we override it here to ctach the RegionPlayer-sepcific
+    //  opcodes such as delay
+
+    if(setting.isDspSetting())
+    {
+      setupProcessorSetting(setting);
+      continue;
+    }
+
+
     switch(type)
     {
     // Amp settings:
@@ -478,6 +500,9 @@ void RegionPlayer::setupDspSettings(
       else      offset  = float(val); 
     }  break;
 
+
+    /*
+    // Obsolete - they are now handled all in if(setting.isDspSetting())
 
     // Amplifier settings:
     case TP::volumeN:      { setupProcessorSetting(setting); } break;
@@ -506,6 +531,7 @@ void RegionPlayer::setupDspSettings(
     case TP::eqN_gain: { setupProcessorSetting(setting); } break;
     case TP::eqN_freq: { setupProcessorSetting(setting); } break;
     case TP::eqN_bw:   { setupProcessorSetting(setting); } break;
+    */
 
       // ToDo: Get rid of this repetition! Maybe these can all be caught in a "default" branch?
       // but then what about the modulation settings? i think, we need a 3-way branch based on
@@ -562,6 +588,13 @@ void RegionPlayer::setupDspSettings(
   // -Implement position and width opcodes. Maybe we should maintain a 2x2 gain matrix as member
   //  and all the different amp, pan, width, pos, etc. settings accumulate into this matrix. But 
   //  always compare results to sfz+ which serves as reference engine
+}
+
+void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
+{
+  SamplePlayer::setupProcessorSetting(s);
+  // preliminary: todo: catch those settings that apply only to the sample-source, i.e. do not
+  // apply to a DSP in the chain. they need different handling
 }
 
 //=================================================================================================

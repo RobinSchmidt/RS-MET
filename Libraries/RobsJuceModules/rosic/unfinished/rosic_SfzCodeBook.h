@@ -287,10 +287,14 @@ enum class DspType  // rename to DspType or ProcessorType
   // AmpEnv, FilterEnv, PitchEnv, AmpLFO, ...
 
   // The actual DSP processors:
+  _TagDspsStart,
   Amplifier,
   Filter,
   Equalizer,
   WaveShaper,
+  _TagDspsEnd,
+
+
 
   NumDsps
 };

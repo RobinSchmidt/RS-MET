@@ -85,12 +85,6 @@ protected:
   the desired DSPs was succesful. */
   bool addDspsIfNeeded(const std::vector<DspType>& dspTypeChain);
 
-  /** Given a playback setting (i.e. opcode, value, possibly index), it finds the processor in our
-  dspChain to which this setting applies and sets the corresponding parameter in the DSP. It 
-  assumes that a suitable processor exists in our chain - if not, then something went wrong with
-  building the assembling the dspChain in a step before and an assert is triggered. */
-  void setupProcessorSetting(const PlaybackSetting& s);
-
   /** This is supposed to be overriden by subclasses to actually assemble the DSP chain they 
   need. The implementation should return true, if assembling the chain was successful and false 
   otherwise (when not enough DSPs are available). In the latter case, it is also the job of the 
@@ -109,6 +103,18 @@ protected:
 
   /** Reposits all the DSP objects back into the dspPool and clears our dspChain. */
   void disassembleDspChain();
+
+  /** Given a playback setting (i.e. opcode, value, possibly index), it finds the processor in our
+  dspChain to which this setting applies and sets the corresponding parameter in the DSP. It 
+  assumes that a suitable processor exists in our chain - if not, then something went wrong with
+  building the assembling the dspChain in a step before and an assert is triggered. */
+  virtual void setupProcessorSetting(const PlaybackSetting& s);
+
+
+  virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings,
+    double sampleRate, bool busMode);
+  // maybe return a bool to indicate, if the setting was handled (if flase, the subclass may
+  // want to do somthing in its override)
 
 
   SignalProcessorChain dspChain;
@@ -213,8 +219,11 @@ protected:
   // move to baseclass, if possible and/or maybe have a virtual detupDspSettings function in 
   // baseclass that we override here and in the GroupPlayer:
   void setupDspSettingsFor(const Region* r, double sampleRate, bool busMode);
+
   void setupDspSettings(const std::vector<PlaybackSetting>& settings,
-    double sampleRate, bool busMode);
+    double sampleRate, bool busMode) override;
+
+  void setupProcessorSetting(const PlaybackSetting& s) override;
 
 
 

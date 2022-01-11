@@ -2330,9 +2330,10 @@ bool samplerProcessorsTest()
   ok &= samplerAmplifierTest();
   ok &= samplerFilterTest();      // tests the different filter modes
   ok &= samplerWaveShaperTest();  // tests the waveshaping DSP module
-  ok &= samplerWaveShaperTest2(); // tests the different rotung options using waveshaping
   ok &= samplerDspChainTest();    // uses multiple filters and a waveshaper in between
   ok &= samplerEqualizerTest();
+  ok &= samplerWaveShaperTest2(); // tests the different rotung options using waveshaping
+
 
   // ToDo:
   // -Implement more DSP modules: echo, vibrato, flanger, phaser, chorus, etc., 
