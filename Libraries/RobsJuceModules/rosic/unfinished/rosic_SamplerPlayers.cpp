@@ -171,32 +171,15 @@ void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings,
   double sampleRate, bool busMode)
 {
-
-
-  RAPT::rsError("not yet implemented");
-}
-
-void SamplePlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, RegionPlayer* rp)
-{
-  // We are supposedly a higher level player object like GroupPlayer or InstrumentPlayer but the 
-  // setting in question reaches through to an underlying (embedded) RegionPlayer object and must 
-  // be accumulated into the respective value there. This applies to all kinds of settings that 
-  // cannot be meaningfully achieved by post-processing in the DSP chain but instead must be 
-  // applied directly at the playback source. Some of them (like delay) *could* be achieved 
-  // also by post-processing with a suitable DSP but it's more efficient to do it at the source.
-  // Others like all tuning related stuff indeed needs to be done at the source.
-
-  double val = (double)s.getValue();
-  using OC   = Opcode;
-  switch(s.getType())
+  SfzCodeBook* codebook = SfzCodeBook::getInstance();
+  for(size_t i = 0; i < settings.size(); i++)
   {
-  case OC::Transpose: { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(val);        } break;
-  case OC::Tune:      { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(0.01 * val); } break;
-  case OC::Delay:     { rp->sampleTime += -val * sampleRate;                           } break;
-  case OC::Offset:    { rp->offset     += float(val);                                  } break;
+    PlaybackSetting s = settings[i];
+    Opcode op = s.getType();
+    if(     codebook->isDspSetting(op))    { setupProcessorSetting(s);        }
+    else if(codebook->isPlayerSetting(op)) { setupPlayerSetting(s, sampleRate, this); }
   }
 }
-// needs test
 
 //=================================================================================================
 // RegionPlayer
@@ -454,6 +437,7 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
     sampleTime = offset;
 }
 
+/*
 void RegionPlayer::setupDspSettings(
   const std::vector<PlaybackSetting>& settings, double fs, bool busMode)
 {
@@ -468,6 +452,8 @@ void RegionPlayer::setupDspSettings(
     else if(codebook->isPlayerSetting(op)) { setupPlayerSetting(s, fs, this); }
   }
 }
+// move code to baseclass implementation
+*/
 
 void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
@@ -476,7 +462,8 @@ void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
   // apply to a DSP in the chain. they need different handling
 }
 
-void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, RegionPlayer* rp)
+void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
+  SamplePlayer* rp)
 {
   RAPT::rsAssert(rp == this);
   // For RegionPlayer objects like this, this function is supposed to be called only for the object
@@ -504,6 +491,33 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   this->increment = factor;
 }
 
+//=================================================================================================
+// SampleBusPlayer
+
+void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
+  SamplePlayer* sp)
+{
+  // We are supposedly a higher level player object like GroupPlayer or InstrumentPlayer but the 
+  // setting in question reaches through to an underlying (embedded) RegionPlayer object and must 
+  // be accumulated into the respective value there. This applies to all kinds of settings that 
+  // cannot be meaningfully achieved by post-processing in the DSP chain but instead must be 
+  // applied directly at the playback source. Some of them (like delay) *could* be achieved 
+  // also by post-processing with a suitable DSP but it's more efficient to do it at the source.
+  // Others like all tuning related stuff indeed needs to be done at the source.
+
+  RegionPlayer* rp = dynamic_cast<RegionPlayer*> (sp);
+  RAPT::rsAssert(rp != nullptr);
+  double val = (double)s.getValue();
+  using OC   = Opcode;
+  switch(s.getType())
+  {
+  case OC::Transpose: { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(val);        } break;
+  case OC::Tune:      { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(0.01 * val); } break;
+  case OC::Delay:     { rp->sampleTime += -val * sampleRate;                           } break;
+  case OC::Offset:    { rp->offset     += float(val);                                  } break;
+  }
+}
+// needs test
 
 //=================================================================================================
 // GroupPlayer

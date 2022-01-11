@@ -122,7 +122,7 @@ protected:
   up its own member variables, GroupPlayer manipulates one of its embedded RegionPlayers, 
   etc.  */
   virtual void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-    RegionPlayer* rp);
+    SamplePlayer* rp) = 0;
   // rename to setPlayerOpcode
 
 
@@ -235,12 +235,12 @@ protected:
   // baseclass that we override here and in the GroupPlayer:
   void setupDspSettingsFor(const Region* r, double sampleRate, bool busMode);
 
-  void setupDspSettings(const std::vector<PlaybackSetting>& settings,
-    double sampleRate, bool busMode) override;
+  //void setupDspSettings(const std::vector<PlaybackSetting>& settings,
+  //  double sampleRate, bool busMode) override;
 
   void setupProcessorSetting(const PlaybackSetting& s) override;
 
-  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, RegionPlayer* rp) override;
+  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, SamplePlayer* rp) override;
 
   const Region* region;                 //< The Region object that this object should play
   const AudioFileStream<float>* stream; //< Stream object to get the data from
@@ -261,7 +261,7 @@ protected:
   std::vector<ModulationConnection*> modMatrix;  // not a literal matrix but conceptually
 
 
-  friend class SamplePlayer;
+  friend class SampleBusPlayer;
   // So it can accumulate the group and instrument settings into our increment, sampleTime,
   // etc. variables. (ToDo: maybe provide functions applyAdditionalDelay, applyAdditionalDetune 
   // later and unfriend the SamplePlayer again)
@@ -288,12 +288,24 @@ protected:
 
 //===============================================================================================
 
+class SampleBusPlayer : public SamplePlayer
+{
+
+public:
+
+  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
+    SamplePlayer* rp) override;
+
+};
+
+//===============================================================================================
+
 /** A class for collecting all the SignalProcessors that apply to a given group. This is used
 only when the group's DSP settings should go on top of the region's settings, i.e. in 
 "drum-sampler" mode where the groups map to sub-busses and the instrument maps to the master 
 bus. */
 
-class GroupPlayer : public SamplePlayer
+class GroupPlayer : public SampleBusPlayer
 {
 
 public:
@@ -340,7 +352,7 @@ protected:
 
 //===============================================================================================
 
-class InstrumPlayer : public SamplePlayer
+class InstrumPlayer : public SampleBusPlayer
 {
 
 public:
