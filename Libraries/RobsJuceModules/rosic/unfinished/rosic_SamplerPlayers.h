@@ -332,14 +332,15 @@ public:
 
   const rsSamplerData::Group* getGroupToPlay() const { return group; }
 
-  bool setGroupToPlay(const rsSamplerData::Group* groupToPlay, bool busMode);
+  bool setGroupToPlay(const rsSamplerData::Group* groupToPlay, double sampleRate, 
+    bool busMode);
 
 
 protected:
 
   bool assembleDspChain(bool busMode) override;
 
-  void setupDspChain();
+  //void setupDspChain();
   // maybe make this an override of a baseclass method...if possible
 
   std::vector<RegionPlayer*> regionPlayers;

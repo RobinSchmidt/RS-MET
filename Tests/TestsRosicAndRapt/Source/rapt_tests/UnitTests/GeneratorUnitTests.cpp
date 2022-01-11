@@ -1610,18 +1610,31 @@ bool samplerAmplifierTest()
   // Set amplifier settings for region, group, instrument to 1,2,3 respectively and test it in both
   // modes (busMode and normal). In busMode, the gain should be 1+2+3 = 6dB and in normal mode, it 
   // should be 1dB:
-  //float tol = 1.e-7;
-  se.setRegionSetting(0, 0, PST::volumeN, 1.f, 1);
-  se.setGroupSetting( 0,    PST::volumeN, 2.f, 1);
-  se.setInstrumentSetting(  PST::volumeN, 3.f, 1);
-  se.setBusMode(false);                // it should actually already be in that mode but anyway
-  float g1 = RAPT::rsDbToAmp(1.f);    // only region gain counts
-  ok &= testSamplerNote(&se, 60.f, 127.f, g1*noise, g1*noise, 0.f, true);
+  float tol = 1.e-6;
 
-  float g2 = RAPT::rsDbToAmp(1.f + 2.f + 3.f);  // gains accumulate
+  // gains for region, group and isntrument
+
+  float rVol = 1.f;
+  float gVol = 2.f;
+  float iVol = 0.f;
+
+  se.setRegionSetting(0, 0, PST::volumeN, rVol, 1);
+  se.setGroupSetting( 0,    PST::volumeN, gVol, 1);
+  se.setInstrumentSetting(  PST::volumeN, iVol, 1);
+  se.setBusMode(false);                // it should actually already be in that mode but anyway
+  float g1 = RAPT::rsDbToAmp(rVol);    // only region gain counts
+  ok &= testSamplerNote(&se, 60.f, 127.f, g1*noise, g1*noise, 0.f, false);
+
+  float g2 = RAPT::rsDbToAmp(rVol + gVol + iVol);  // gains accumulate
   se.setBusMode(true); 
-  ok &= testSamplerNote(&se, 60.f, 127.f, g2*noise, g1*noise, 0.f, true);
-  // still fails
+  ok &= testSamplerNote(&se, 60.f, 127.f, g2*noise, g2*noise, tol, false);
+  iVol = 3.f;
+  g2 = RAPT::rsDbToAmp(rVol + gVol + iVol);
+  se.setInstrumentSetting(  PST::volumeN, iVol, 1);
+  ok &= testSamplerNote(&se, 60.f, 127.f, g2*noise, g2*noise, tol, false);
+
+  // still fails when iVol != 0, for iVol == 0, it works. The instrumPlayer is not yet correctly 
+  // set up
 
 
   return ok;

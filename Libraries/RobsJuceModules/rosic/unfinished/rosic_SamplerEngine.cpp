@@ -926,7 +926,7 @@ void rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp)
   const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
   gp->addRegionPlayer(rp);
 
-  bool ok = gp->setGroupToPlay(grp, busMode);
+  bool ok = gp->setGroupToPlay(grp, sampleRate, busMode);
   if(!ok)
   {
     RAPT::rsError("not yet implemented");

@@ -550,7 +550,8 @@ void GroupPlayer::removeRegionPlayer(RegionPlayer* player)
   RAPT::rsRemoveFirstOccurrence(regionPlayers, player);
 }
 
-bool GroupPlayer::setGroupToPlay(const rsSamplerData::Group* groupToPlay, bool busMode)
+bool GroupPlayer::setGroupToPlay(const rsSamplerData::Group* groupToPlay, double sampleRate, 
+  bool busMode)
 {
   if(groupToPlay == group)
     return true;               // nothing to do
@@ -559,10 +560,9 @@ bool GroupPlayer::setGroupToPlay(const rsSamplerData::Group* groupToPlay, bool b
   if(group != nullptr) {
     if(!assembleDspChain(busMode)) {
       group = nullptr;
-      return false;
-    }
-    setupDspChain();
-  }
+      return false;   }
+    setupDspSettings(group->getSettings(), sampleRate, busMode); 
+    dspChain.prepareToPlay(sampleRate); }
   return true;
 }
 
@@ -579,10 +579,12 @@ bool GroupPlayer::assembleDspChain(bool busMode)
   // in busMode, the InstrumentPlayer will take care of the instrument's DSP settings
 }
 
+/*
 void GroupPlayer::setupDspChain()
 {
   RAPT::rsError("Not yet implemented");
 }
+*/
 
 //=================================================================================================
 // InstrumPlayer
