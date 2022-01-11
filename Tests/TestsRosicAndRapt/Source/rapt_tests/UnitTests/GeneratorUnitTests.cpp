@@ -822,19 +822,20 @@ bool samplerEngine2UnitTest()
   // Obsolete - we need to adapt it to use setBusMode - and there are only 2 instead of 4 
   // behaviors
 
-  // In bus-mode, we want to see all 3 settings applied:
-  se.setBusMode(true);
-  tgt = instrAmp*groupAmp*regionAmp*sin440;
   float tol = 1.e-7f;  // why can't we use 0 tolerance?
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, false);
-  ok &= se.getNumActiveLayers() == 0;
-  ok &= se.getNumActiveGroupPlayers() == 0;
 
   // In normal mode, we want to see only the region setting applied:
   //se.reset();
   se.setBusMode(false);
   tgt = regionAmp*sin440;
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 0.0, false);
+  ok &= se.getNumActiveLayers() == 0;
+  ok &= se.getNumActiveGroupPlayers() == 0;
+
+  // In bus-mode, we want to see all 3 settings applied:
+  se.setBusMode(true);
+  tgt = instrAmp*groupAmp*regionAmp*sin440;
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, true);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
 
@@ -1544,7 +1545,9 @@ bool samplerAmplifierCoreTest()
   ok &= testAmp(0.f,    0.f, -100.f,    0.f,  0,1,1,0);  // swap L/R
   ok &= testAmp(0.f,    0.f,    0.f,    0.f,  s,s,s,s);  // zero width
   // It works but i think nevertheless the formula is still wrong - maybe we need something based
-  // on sin/cos
+  // on sin/cos. Maybe sideGain should go like a sine segment from -sqrt(2) to +sqrt(2) in x=-2..+2
+  // and midGain should go like a cosine segment from 0 to sqrt(2) to 0 in -2...+2. both should
+  // meet at (1,1)
 
   // ToDo:
   // -Figure out, if stereo signals should just ignore width and pos - i think so, so maybe we

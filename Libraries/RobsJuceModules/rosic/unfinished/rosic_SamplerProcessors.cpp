@@ -51,6 +51,27 @@ void AmplifierCore::setup(float volume, float pan, float width, float pos)
   // rosic::StereoWidth uses 
   // RAPT::rsEqualPowerGainFactors(newRatio, &midGain, &sideGain, 0.0, 1.0);
   // but this uses a parametrization via mid/side ratio, not via width in %
+
+  // This is the current mid- and side gain as function of w (excluding the 0.5 factor):
+  //   https://www.desmos.com/calculator/iycuh1lvmg   
+  //   y1 = sqrt(2-|x|) and y1 = x
+  // and it's not very nicely behaved. Maybe try this instead:
+  //   https://www.desmos.com/calculator/mzu474syud  
+  //   y1 = s*cos(a), y2 = s*sin(a) where a = pi*x/4, s = sqrt(2)
+  // it's much smoother and will repeat periodically when values go beyond the range. Maybe wrap 
+  // into an rsStereoWidthToMidSideGain function. Maybe provide both variants. The sin/cos based
+  // formula has the power-presverving property, iff L and R are uncorrelated. The squares of both
+  // gains sum to unity, see:
+  //   https://www.desmos.com/calculator/go5awdnxo7
+  // could we achieve polarity inversion by going beyond +-2? At +-4, we would hear only the 
+  // inverted mid-signal on both channels. Can we perhaps think about it in analogy to SVD where
+  // we rotate -> scale along x,y -> rotate again. Could we perhaps view the twe pannings together
+  // with the uniform scaling as a decomposition of the scaling matrix in SVD? I think, the W
+  // matrix is a pure rotation (up to the constant factor of sqrt(2)). So geometrically, we do:
+  // scale uniformly -> pan (non-uniform scale) -> rotate -> pan
+  // where the "pan" is a combined stretch-x-squeeze-y operation or vice versa. Maybe that should 
+  // be power-preserving, too - maybe a sin/cos based rule should be used for that, too
+
    
   // Construct position matrix:
   float q = (0.005f*pos) + 0.5f;  // -100..+100 -> 0..1
@@ -77,6 +98,9 @@ void AmplifierCore::setup(float volume, float pan, float width, float pos)
   // -Maybe provide a different parametrization where the volume is expressed as linear gain, 
   //  so we may also model polarity inversions. Or maybe realize this here via an additional 
   //  boolean flag "invertPolarity"
+
+  // See also:
+  // https://en.wikipedia.org/wiki/Matrix_decoder
 }
 
 //=================================================================================================

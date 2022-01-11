@@ -811,8 +811,12 @@ void rsSamplerEngine2::setMaxNumLayers(int newMax)
 rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, uchar vel)
 {
   PlayStatusChange psc = rsSamplerEngine::handleNoteOn(key, vel);
-  if(!canFallBackToBaseclass())   // Don't update the group players, if they are not used anyway
+  if(!canFallBackToBaseclass()) 
+  { 
+    // Don't update the group players, if they are not used anyway
     updateGroupPlayers(psc);
+
+  }
   return psc;
 }
 
@@ -820,7 +824,9 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOff(uchar key, uch
 {
   PlayStatusChange psc = rsSamplerEngine::handleNoteOff(key, vel);
   if(!canFallBackToBaseclass())
+  {
     updateGroupPlayers(psc);
+  }
   return psc;
 }
 
@@ -880,6 +886,7 @@ int rsSamplerEngine2::stopAllPlayers()
 // -in addition to move the players back into their idle pool, we also need to move the dsp
 //  objects back
 
+
 void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc)
 {
   // Figure out, how many regions were triggered and add pointers to the freshly triggered 
@@ -895,6 +902,10 @@ void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc)
       activeGroupPlayers[gpi]->addRegionPlayer(rp);
     else
       startGroupPlayerFor(rp); }
+
+  // If nothing was playing before, we have to start the instrumPlayer, too:
+  if(numLayersBefore == 0)
+    startInstrumPlayer();
 }
 
 int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const rsSamplerData::Group* group)
@@ -927,7 +938,25 @@ int rsSamplerEngine2::stopGroupPlayer(int i)
   p->releaseResources();
   RAPT::rsRemove(activeGroupPlayers, i);
   idleGroupPlayers.push_back(p);
+
+  if(activeGroupPlayers.size() == 0)  // If nothing is playing anymore...
+    stopInstrumPlayer();              // ...stop the whole instrumPlayer, too
+  // hmmm ...maybe we should allow for a tail ringout?
+
   return rsReturnCode::success;
+}
+
+void rsSamplerEngine2::startInstrumPlayer()
+{
+
+  return;
+}
+
+void rsSamplerEngine2::stopInstrumPlayer()
+{
+
+
+  return;
 }
 
 

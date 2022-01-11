@@ -78,11 +78,13 @@ public:
   static T multipassScalerButterworth(int numPasses, int order = 1, T g = SQRT2_INV);
 
   /** Given a desired resonance gain (as raw amplitude factor) for a 2nd order lowpass filter, this
-  function computes the Q factor for such a filter. For a gain of 1, it returns 1/sqrt(2) which is
-  the highest Q for which the filter's magnitude response is monotonic. This also corresponds to
-  a second order Butterworth filter. For values greater than one the filter will start with 
-  magnitude 1 at DC, go through a peak of the given height and then fall. The function can also
-  be used for highpass filters. */
+  function computes the Q factor that is required for that filter. For a gain of 1, it returns 
+  1/sqrt(2) which is the highest Q for which the filter's magnitude response is monotonic. This 
+  also corresponds to a second order Butterworth filter. For this value, the peak in the frequency
+  response will be at DC. For gain values greater than one, the filter's magnitude response will 
+  start with unit magnitude at DC, go through a peak of the given height and then fall. The 
+  frequency location of the peak quickly approaches the cutoff/resonance frequency of the filter as
+  the gain goes up. The function can also be used for highpass filters. */
   template<class T>
   static T lowpassResoGainToQ(T resoGainRaw);
   // todo: figure out and document what happens when the gain is less than 1

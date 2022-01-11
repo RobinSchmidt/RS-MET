@@ -96,7 +96,7 @@ SfzCodeBook::SfzCodeBook()
   // switch to neutral defaults. Maybe via an opcode: default_values=neutral or something. Maybe
   // the codebook records need an additional field neutVal. Check behavior of sfz+. Load a stereo
   // sample maybe using sine-waves with different frequencies for left and right channel. It is 
-  // also a bit inconvenient, that sfz prescrbes a distinction between mono and stereo samples.
+  // also a bit inconvenient, that sfz prescribes a distinction between mono and stereo samples.
   // Further down the signal chain, a mono sample may be stereoized by some DSP along the way.
   // Maybe we should not treat the amplifier settings in the sfz way and instead use 
   // ampN_scale, ampN_pan, ampN_width, ampN_position...or some other parametrization

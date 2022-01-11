@@ -745,8 +745,14 @@ protected:
   array to the idleGroupPlayers array. */
   int stopGroupPlayer(int activeIndex);
 
+  // under construction
+  void startInstrumPlayer(); 
+  void stopInstrumPlayer();
+
+
 
   // under construction:
+  InstrumPlayer instrumPlayer;  // we only need one of them
   std::vector<GroupPlayer*> activeGroupPlayers;
   std::vector<GroupPlayer*> idleGroupPlayers;
   std::vector<GroupPlayer>  groupPlayerPool;

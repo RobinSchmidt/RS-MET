@@ -89,9 +89,20 @@ T rsBandwidthConverter::lowpassResoGainToQ(T a)
   // with transfer function H(s) = 1 / (1 + s/Q + s^2). The magnitude-squared response of such a 
   // filter is given by: M(w) = Q^2 / (Q^2 (w^2 - 1)^2 + w^2). This function has maxima of height
   // (4 Q^4)/(4 Q^2 - 1) at w = -1/2 sqrt(4 - 2/Q^2). The expression for the height was solved 
-  // for Q. We get a quadratic equation for P := Q^2. The correct solution was picked empirically.
-  // It was also observed empirically that the formula also works for highpass filters.
+  // for Q. We get a quadratic equation for P := Q^2. The correct solution of the two was picked 
+  // empirically. It was also observed empirically that the formula also works for highpass 
+  // filters.
 }
+
+// ToDo: implement a formula, that computes the exact frequency of the resonance peak, i.e. the
+// w at which the derivative of the mag-response is zero. This could be useful, if the filter 
+// designer wants to set the peak-gain frequency rather than the resonance frequency. These two
+// frequencies are different because each pole sits on the skirt of the other. For high Q,
+// they are approximately the same but for low Q, the peak-freq will be appreciably below the 
+// nominal reso-freq in the lowpass case - in fact, for Q <= 1/sqrt(2), the peak will be at DC.
+// A filter design algo could first fix the resonance gain, then compute the Q via the function 
+// above, then compute the peak-freq, then scale the cutoff accordingly, namely by the reciprocal
+// of the computed (normalized) peak-freq.
 
 /*
 

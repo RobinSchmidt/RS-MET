@@ -69,6 +69,8 @@ public:
 
 protected:
 
+  using PlaybackSetting = rsSamplerData::PlaybackSetting;
+
   /** Returns a pointer to a processor of given type, if available, otherwise a nullptr. Used in
   buildProcessingChain. */
   SignalProcessor* getProcessor(DspType type)
@@ -82,7 +84,13 @@ protected:
   "suitable" means: "with right type and index" */
   bool addDspsIfNeeded(const std::vector<DspType>& dspTypeChain);
 
-  /** This is supposed to be overriden by subclasses to actually assmble the DSP chain they 
+  /** Given a playback setting (i.e. opcode, value, possibly index), it finds the processor in our
+  dspChain to which this setting applies and sets the corresponding parameter in the DSP. It 
+  assumes that a suitable processor exists in our chain - if not, then something went wrong with
+  building the assembling the dspChain in a step before and an assert is triggered. */
+  void setupProcessorSetting(const PlaybackSetting& s);
+
+  /** This is supposed to be overriden by subclasses to actually assemble the DSP chain they 
   need. */
   virtual bool assembleDspChain(bool busMode) = 0;
   // maybe use an int mode parameter later when more flexibility is needed
@@ -192,7 +200,7 @@ protected:
   void setupDspSettingsFor(const Region* r, double sampleRate, bool busMode);
   void setupDspSettings(const std::vector<PlaybackSetting>& settings,
     double sampleRate, bool busMode);
-  void setupProcessorSetting(const PlaybackSetting& s);
+  //void setupProcessorSetting(const PlaybackSetting& s);
 
   // see comment at prepareToPlay - maybe make onTop default to false
   // change API: replace onTop with override
@@ -291,9 +299,22 @@ protected:
   // For communication with enclosing sampler-engine - currently not needed - try to keep it like
   // that (reduce coupling)
 
-
 };
 
+//===============================================================================================
+
+class InstrumPlayer : public SamplePlayer
+{
+
+public:
+
+  bool assembleDspChain(bool busMode) override;
+
+protected:
+
+
+};
+// maybe the implementations can be moved into the baseclass as default implementations
 
 
 

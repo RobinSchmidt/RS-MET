@@ -99,6 +99,48 @@ bool SamplePlayer::addDspsIfNeeded(const std::vector<DspType>& dspTypeChain)
 
 }
 
+void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
+{
+  using SD = rsSamplerData::PlaybackSetting;
+  // ToDo: We need to call the static member function getTargetProcessorType of that class. That
+  // function should be moved elsewhere. We want a sort of database to retrieve all sort of info
+  // about opcodes, including to what type of processor they apply
+
+  // Internal helper function to retrieve a pointer to the proccessor within our dspChain to which 
+  // the setting applies. It may at some point be dragged out of this function if it turns out to 
+  // be useful in other places as well:
+  auto getProcessorFor = [this](const PlaybackSetting& s)
+  {
+    DspType dspType = SD::getTargetProcessorType(s.getType());
+
+    int i = RAPT::rsMax(s.getIndex(), 0);
+    // This is still wrong. It works only when s.getIndex() returns -1 or 0. -1 is the default 
+    // encoding "not applicable".
+
+    // maybe introduce a getMappedIndex() function that does the right thing, rename index to 
+    // getSfzIndex to make it clear that this is the index that occurs in the sfz-file. The other
+    // one could then be named getChainIndex or something. ok - for the time beign, let's do it 
+    // directly here:
+    i = s.getIndex();
+    if(i >   0) i--;    // map from 1-based counting to 0-based
+    if(i == -1) i = 0;  // map code for "no index" to 1st
+    SignalProcessor* dsp = dspChain.getProcessor(dspType, i);
+    return dsp;
+  };
+  // Maybe wrap this whole business into a member function of the dspChain. This class knows best
+  // how to map sfz-indices to the actual processor within the chain
+
+
+  SignalProcessor* dsp = getProcessorFor(s);
+  if(dsp != nullptr)
+    dsp->setParameter(s.getType(), s.getValue());
+  else
+    RAPT::rsError("No processor available for DSP opcode");
+  // We could not find a suitable processor in our dspChain to which the given setting could be
+  // applied. If this happens, something went wrong (i.e. we have a bug) in buildDspChain or 
+  // getProcessorFor.
+}
+
 void SamplePlayer::disassembleDspChain()
 {
   for(int i = 0; i < dspChain.getNumProcessors(); i++)
@@ -537,48 +579,6 @@ void RegionPlayer::setupDspSettings(
   //  always compare results to sfz+ which serves as reference engine
 }
 
-void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
-{
-  using SD = rsSamplerData::PlaybackSetting;
-  // ToDo: We need to call the static member function getTargetProcessorType of that class. That
-  // function should be moved elsewhere. We want a sort of database to retrieve all sort of info
-  // about opcodes, including to what type of processor they apply
-
-  // Internal helper function to retrieve a pointer to the proccessor within our dspChain to which 
-  // the setting applies. It may at some point be dragged out of this function if it turns out to 
-  // be useful in other places as well:
-  auto getProcessorFor = [this](const PlaybackSetting& s)
-  {
-    DspType dspType = SD::getTargetProcessorType(s.getType());
-
-    int i = RAPT::rsMax(s.getIndex(), 0);
-    // This is still wrong. It works only when s.getIndex() returns -1 or 0. -1 is the default 
-    // encoding "not applicable".
-
-    // maybe introduce a getMappedIndex() function that does the right thing, rename index to 
-    // getSfzIndex to make it clear that this is the index that occurs in the sfz-file. The other
-    // one could then be named getChainIndex or something. ok - for the time beign, let's do it 
-    // directly here:
-    i = s.getIndex();
-    if(i >   0) i--;    // map from 1-based counting to 0-based
-    if(i == -1) i = 0;  // map code for "no index" to 1st
-    SignalProcessor* dsp = dspChain.getProcessor(dspType, i);
-    return dsp;
-  };
-  // Maybe wrap this whole business into a member function of the dspChain. This class knows best
-  // how to map sfz-indices to the actual processor within the chain
-
-
-  SignalProcessor* dsp = getProcessorFor(s);
-  if(dsp != nullptr)
-    dsp->setParameter(s.getType(), s.getValue());
-  else
-    RAPT::rsError("No processor available for DSP opcode");
-    // We could not find a suitable processor in our dspChain to which the given setting could be
-    // applied. If this happens, something went wrong (i.e. we have a bug) in buildDspChain or 
-    // getProcessorFor.
-}
-
 //=================================================================================================
 // GroupPlayer
 
@@ -617,6 +617,14 @@ bool GroupPlayer::assembleDspChain(bool busMode)
 }
 
 
+//=================================================================================================
+// InstrumPlayer
+
+bool InstrumPlayer::assembleDspChain(bool busMode)
+{
+
+  return false;
+}
 
 
 
