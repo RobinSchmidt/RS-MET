@@ -448,11 +448,11 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
 void RegionPlayer::setupDspSettings(
   const std::vector<PlaybackSetting>& settings, double fs, bool busMode)
 {
-  using PS = PlaybackSetting;
+  //using PS = PlaybackSetting;
   using TP = Opcode;               // rename to OC
 
-  double  tuneCoarse = 0.0;        // in semitones
-  double  tuneFine   = 0.0;        // in cents
+  //double  tuneCoarse = 0.0;        // in semitones
+  //double  tuneFine   = 0.0;        // in cents
 
   // Loop through the settings of the region and for each setting that is present, change the 
   // value from its default to the stored value:
@@ -461,7 +461,7 @@ void RegionPlayer::setupDspSettings(
 
     PlaybackSetting setting = settings[i];
     TP type = setting.getType();                  // rename to opcode
-    double val = (double)setting.getValue();
+    //double val = (double)setting.getValue();
 
     // todo: 
     // -factor out into virtual function setDspSetting(setting) which is a virtual function
@@ -473,17 +473,17 @@ void RegionPlayer::setupDspSettings(
       setupProcessorSetting(setting);
       continue;
     }
-
-    /*
-    // new version which should replace the code below
     if(setting.isPlayerSetting())
     {
       setupPlayerSetting(setting, fs);
       continue;
     }
-    */
+    // optimize: instead of calling isDspSetting in the setting object, use the setting.getType()
+    // and a pointer to an SfzCodebook that has been acquired before the loop (saves some checks
+    // in the aqcuiry of the singleton pointer)
+    
 
-
+    /*
     // move these into if(setting.isPlayerSetting())
     switch(type)
     {
@@ -508,11 +508,15 @@ void RegionPlayer::setupDspSettings(
 
 
     }
+    */
   }
+
+  /*
   double tune   = tuneCoarse + 0.01 * tuneFine;
   double factor = pow(2.0, tune / 12.0);
   if(busMode) this->increment *= factor;
   else        this->increment  = factor;
+  */
 
 }
 
