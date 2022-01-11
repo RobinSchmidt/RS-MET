@@ -545,8 +545,6 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   double tune     = tuneCoarse + 0.01 * tuneFine;
   double factor   = pow(2.0, tune / 12.0);
   this->increment = factor;
-
-  //RAPT::rsError("Not yet implemented");
 }
 
 
@@ -617,7 +615,42 @@ void GroupPlayer::setupDspChain()
 
 void GroupPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate)
 {
-  RAPT::rsError("Not yet implemented");
+  double val = (double)s.getValue();
+  using OC   = Opcode;
+
+  //RegionPlayer* rp = getSourcePlayer(); ...the RegionPlayer object to which this setting
+  // applies...how can we obtain a pointer to it? Maybe it needs to be passed in a parameter?
+  // ...yeah - that's probably what needs to be done and we can do it in the baseclass
+
+  switch(s.getType())
+  {
+    // Pitch settings:
+  case OC::Transpose:
+  {
+    // accumulate pitchOffsetToFreqFactor(val) into the increment of rp
+  } break;
+
+  case OC::Tune:
+  { 
+    // accumulate pitchOffsetToFreqFactor(0.01 * val) into the increment of rp
+  } break;
+
+  case OC::Delay:     
+  { 
+    //sampleTime = -val * sampleRate; 
+    // accumulate -val * sampleRate into sampleTime of rp
+
+  } break;
+  case OC::Offset:    
+  { 
+    //offset = float(val);
+    // accumulate val into offset of rp
+  } 
+  break;
+  }
+
+
+  //RAPT::rsError("Not yet implemented");
 }
 
 //=================================================================================================
