@@ -610,20 +610,41 @@ void GroupPlayer::removeRegionPlayer(RegionPlayer* player)
   RAPT::rsRemoveFirstOccurrence(regionPlayers, player);
 }
 
-bool GroupPlayer::setGroupToPlay(const rsSamplerData::Group* groupToPlay)
+bool GroupPlayer::setGroupToPlay(const rsSamplerData::Group* groupToPlay, bool busMode)
 {
+  if(groupToPlay == group) 
+    return true;               // nothing to do
+  disassembleDspChain();
   group = groupToPlay;
-  // todo: assemble and set up the DSP chain iff group != nullptr, otherwise disassemble
-  // ..or maybe first disassemle anyway...unless the passed group equals the current
-
-
+  if(group != nullptr) {
+    if(!assembleDspChain(busMode)) {
+      group = nullptr;
+      return false; }
+    setupDspChain(); }
   return true;
 }
 
 bool GroupPlayer::assembleDspChain(bool busMode)
 {
-  //RAPT::rsError("Not yet implemented");
+  RAPT::rsAssert(busMode == true);
+  // If we are not in busMode, this function should actually not even get called because only in
+  // busMode, the GroupPlayer's own DSP chain is used. We need to take the busMode parameter 
+  // anyway because this function is an override.
+
+  RAPT::rsError("Not yet implemented");
+
+  // ToDo:
+  // -Assemble the DSP chain using DSPs only from the group setting. The instrument's DSP settings
+  //  can safely be ignored if we are in busMode (which is supposed to be always the case) because 
+  //  in busMode, the InstrumentPlayer will take care of the instrument's DSP settings
+
+
   return false;
+}
+
+void GroupPlayer::setupDspChain()
+{
+  RAPT::rsError("Not yet implemented");
 }
 
 

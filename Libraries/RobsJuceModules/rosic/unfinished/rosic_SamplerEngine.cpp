@@ -919,15 +919,24 @@ int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const rsSamplerData::Group* g
 void rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp)
 {
   GroupPlayer* gp = RAPT::rsGetAndRemoveLast(idleGroupPlayers);
+
+  RAPT::rsAssert(gp);
+  // ToDo: check, if nullptr is returned, if so, return false
+
+
   const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
   gp->addRegionPlayer(rp);
 
+  bool ok = gp->setGroupToPlay(grp, busMode);
+  if(!ok)
+  {
+    RAPT::rsError("not yet implemented");
+    // ToDo: 
+    // -roll back the RegionPlayer rp...or maybe return false and leave the rollback to
+    //  the caller
+    // -write unit tests for this
+  }
 
-  gp->setGroupToPlay(grp);
-// ToDo: use boolean return value: if false (unlikely), roll back the RegionPlayer rp
-
-  gp->assembleDspChain(busMode); 
-  //gp->setupDspSettings(); // to do
 
   activeGroupPlayers.push_back(gp);
 }

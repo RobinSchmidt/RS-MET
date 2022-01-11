@@ -197,13 +197,14 @@ protected:
 
   //void resetDspState();
   void resetPlayerSettings();
+
+  // move to baseclass, if possible and/or maybe have a virtual detupDspSettings function in 
+  // baseclass that we override here and in the GroupPlayer:
   void setupDspSettingsFor(const Region* r, double sampleRate, bool busMode);
   void setupDspSettings(const std::vector<PlaybackSetting>& settings,
     double sampleRate, bool busMode);
-  //void setupProcessorSetting(const PlaybackSetting& s);
 
-  // see comment at prepareToPlay - maybe make onTop default to false
-  // change API: replace onTop with override
+
 
   const Region* region;                 //< The Region object that this object should play
   const AudioFileStream<float>* stream; //< Stream object to get the data from
@@ -282,7 +283,7 @@ public:
 
   const rsSamplerData::Group* getGroupToPlay() const { return group; }
 
-  bool setGroupToPlay(const rsSamplerData::Group* groupToPlay);
+  bool setGroupToPlay(const rsSamplerData::Group* groupToPlay, bool busMode);
 
 
   //void setGroupToPlay(const rsSamplerData::Group* groupToPlay) { group = groupToPlay; }
@@ -293,6 +294,9 @@ public:
 protected:
 
   bool assembleDspChain(bool busMode) override;
+
+  void setupDspChain();
+  // maybe make this an override of a baseclass method...if possible
 
   std::vector<RegionPlayer*> regionPlayers;
   // Pointers to the players for all the regions in this group.
