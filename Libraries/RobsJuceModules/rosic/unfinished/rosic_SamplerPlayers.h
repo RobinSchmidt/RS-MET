@@ -103,6 +103,10 @@ protected:
   // -maybe use an int mode parameter later when more flexibility is needed
   // -maybe provide default argument false for busMode
 
+  /** A helper function that is called from GroupPlayer::assembleDspChain(bool) and
+  InstrumentPlayer::assembleDspChain(bool). */
+  bool assembleDspChain(const std::vector<DspType>& dspTypes);
+
   /** Reposits all the DSP objects back into the dspPool and clears our dspChain. */
   void disassembleDspChain();
 

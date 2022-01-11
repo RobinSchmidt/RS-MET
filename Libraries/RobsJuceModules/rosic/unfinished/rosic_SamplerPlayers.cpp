@@ -140,6 +140,17 @@ void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
   // getProcessorFor.
 }
 
+bool SamplePlayer::assembleDspChain(const std::vector<DspType>& dspTypes)
+{
+  if(!dspChain.isEmpty()) {
+    RAPT::rsError("Someone has not cleaned up after finishing playback!");
+    disassembleDspChain(); } // ...so we do it here. But this should be fixed elsewhere!
+  if(!addDspsIfNeeded(dspTypes)) {
+    disassembleDspChain();
+    return false; }
+  return true;
+}
+
 void SamplePlayer::disassembleDspChain()
 {
   for(int i = 0; i < dspChain.getNumProcessors(); i++)
@@ -631,14 +642,7 @@ bool GroupPlayer::assembleDspChain(bool busMode)
   // busMode, the GroupPlayer's own DSP chain is used. We need to take the busMode parameter 
   // anyway because this function is an override.
 
-  if(!dspChain.isEmpty()) {
-    RAPT::rsError("Someone has not cleaned up after finishing playback!");
-    disassembleDspChain(); } // ...so we do it here. But this should be fixed elsewhere!
-  if(!addDspsIfNeeded(group->getProcessingChain())) {
-    disassembleDspChain();
-    return false; }
-  return true;
-
+  return SamplePlayer::assembleDspChain(group->getProcessingChain());
   // We need only to take into account the group's DSP settings. The instrument's DSP settings
   // can safely be ignored if we are in busMode (which is supposed to be always the case) because 
   // in busMode, the InstrumentPlayer will take care of the instrument's DSP settings
@@ -649,14 +653,13 @@ void GroupPlayer::setupDspChain()
   RAPT::rsError("Not yet implemented");
 }
 
-
 //=================================================================================================
 // InstrumPlayer
 
 bool InstrumPlayer::assembleDspChain(bool busMode)
 {
-
-  return false;
+  RAPT::rsAssert(busMode == true); // see comment in GroupPlayer::assembleDspChain
+  return SamplePlayer::assembleDspChain(instrum->getProcessingChain());
 }
 
 
