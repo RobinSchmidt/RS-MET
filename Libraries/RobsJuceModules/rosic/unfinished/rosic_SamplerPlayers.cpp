@@ -144,11 +144,17 @@ bool SamplePlayer::assembleDspChain(const std::vector<DspType>& dspTypes)
 {
   if(!dspChain.isEmpty()) {
     RAPT::rsError("Someone has not cleaned up after finishing playback!");
-    disassembleDspChain(); } // ...so we do it here. But this should be fixed elsewhere!
+    disassembleDspChain(); }  // ...so we do it here. But this should be fixed elsewhere!
   if(!addDspsIfNeeded(dspTypes)) {
-    disassembleDspChain();
-    return false; }
+    disassembleDspChain();    // addDspsIfNeeded may have built a partial chain which we then..
+    return false; }           // ..need to clean up here
   return true;
+
+  // The fact that addDspsIfNeeded may build a partial chain without cleaning it up itself if
+  // it can't build the full chain is a bit messy. But just putting the clean-up responsibility
+  // into this function isn't ideal either because then the name doesn't really fit. Maybe rename
+  // it addDspsIfNeededCleanUpWhenFail...but that's a monster of a name...we'll see.... maybe
+  // augmentOrCleanDspChain
 }
 
 void SamplePlayer::disassembleDspChain()
@@ -261,9 +267,6 @@ void RegionPlayer::releaseResources()
   region = nullptr;
 }
 
-
-
-
 void RegionPlayer::allocateMemory()
 {
   modulators.reserve(8);
@@ -278,23 +281,6 @@ rsReturnCode RegionPlayer::prepareToPlay(double fs, bool busMode)
 {
   RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   RAPT::rsAssert(stream != nullptr);   // Ditto.
-
-  // The DSPs required by the group opcodes need to be in the RegionPlayer, if group-opcodes are
-  // merely fallback values for absent region values which is indicated by the regionsOverride 
-  // flag. So, of that flag is true, it means the group opcodes specify parameters for DSPs on the
-  // RegionPlayer which means we must add the group DSPs here:
-  //bool withGroupDsps = regionsOverride;
-
-  // Likewise, the DSPs required by the global instrument opcodes also need to be integrated into 
-  // the RegionPlayer, iff these settings are merely fallback values (as opposed to values for
-  // independent DSPs that are applied to the whole instrument):
-  //bool withInstrumDsps = groupsOverride;
-  // At the moment, either both of these flags are true or both are false and i'm not yet sure if 
-  // it will ever make sense to have these adjustable seperately. The behavior when one is false 
-  // and the other true might be complicated to implement and/or understand for the user. And 
-  // within the rsSamplerEngine, they are always both true. It's only in subclass rsSamplerEngine2
-  // where we may switch ot the other kind of behavior (accumulation instead of fallback)
-
 
   if(!assembleDspChain(busMode)) 
   {
@@ -312,13 +298,6 @@ rsReturnCode RegionPlayer::prepareToPlay(double fs, bool busMode)
 
   dspChain.prepareToPlay(fs);
   // modulators.prepareToPlay(fs)
-
-  // ToDo:
-  // -resetDspState should reset only the state of the sample-player and be renamed accordingly
-  //  because for the DSP objects that call comes to early, i.e. before setup() for the core
-  //  objects is called. This may lead to wrong reset behavior if this behavior depends on the
-  //  settings (which is the case for the Filter).
-  // -The objects in the dspChain should reset themselves in prepareToPlay
 
   return rsReturnCode::success;
   // Overload should actually not happen in therory (as by the sfz spec, and unlimited number of 
@@ -349,17 +328,11 @@ bool RegionPlayer::hasFinished()
 
 bool RegionPlayer::assembleDspChain(bool busMode)
 {
-  if(!dspChain.isEmpty()) {
-    RAPT::rsError("Someone has not cleaned up after finishing playback!");
-    disassembleDspChain(); } // ...so we do it here. But this should be fixed elsewhere!
-
   // The DSPs for which the region itself defines settings/opcodes are always needed:
-  if(!addDspsIfNeeded(region->getProcessingChain())) {
-    disassembleDspChain();
-    return false; }
+  bool ok = SamplePlayer::assembleDspChain(region->getProcessingChain());
+  if(!ok)
+    return false;
 
-  // In busMode, additional settings/opcodes defined in the enclosing group and/or instrument are
-  // interpreted
   // If we are not in busMode, the enclosing group and/or enclosing instrument settings act as
   // fallback values for the region so we may require additional DSPs to apply these opcodes
   // to the region, too:
@@ -372,14 +345,14 @@ bool RegionPlayer::assembleDspChain(bool busMode)
       return false; }}
 
   return true;
-  // If false is returned, it means we do not have enough processors of the required types 
-  // available. In this case, the caller should roll back and discard the whole RegionPlayer 
-  // object. We either play a region correctly or not at all. This is an error condition that could
-  // conceivably arise in normal usage (because we did not pre-allocate enough DSPs), so we should 
-  // be able to handle it gracefully. It should actually not happen, i.e. we should make sure to 
-  // always pre-allocate enough DSPs - but that may be impractical to ensure in a 100% airtight 
-  // manner. But let's try at least to make that an exception that occurs only in extreme 
-  // scenarios.
+  // OK - everything went well so we report success. If, on the other hand, false is returned, it
+  // means we do not have enough processors of the required types available. In this case, the 
+  // caller should roll back and discard the whole RegionPlayer object. We either play a region 
+  // correctly or not at all. This is an error condition that could conceivably arise in normal 
+  // usage (because we did not pre-allocate enough DSPs), so we should be able to handle it 
+  // gracefully. It should actually not happen, i.e. we should make sure to always pre-allocate 
+  // enough DSPs but it may be impractical to ensure in a 100% bulletproof manner. But let's 
+  // try at least to make that an exception that occurs only in extreme scenarios.
 }
 
 bool RegionPlayer::setupModulations()
@@ -451,6 +424,7 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
     sampleTime = offset;
 }
 
+// move into baseclass:
 void RegionPlayer::setupDspSettings(
   const std::vector<PlaybackSetting>& settings, double fs, bool busMode)
 {
@@ -606,7 +580,7 @@ void GroupPlayer::releaseResources()
 {
   disassembleDspChain();
   regionPlayers.clear();
-  //group = nullptr;
+  //group = nullptr;   // why is this commented? seems to make sense to set it to null here
 }
 
 void GroupPlayer::addRegionPlayer(RegionPlayer* newPlayer) 
