@@ -86,10 +86,9 @@ bool SamplePlayer::addDspsIfNeeded(const std::vector<DspType>& dspTypeChain)
       dspChain.addProcessor(dsp);
     }
     else {
-      dspChain.clear();
       return false; 
-      // Not enough DSPs of desired type are available in the pool. We roll back the partial 
-      // chain that we may have built already and report failure.
+      // Not enough DSPs of desired type are available in the pool so we report failure. In such a
+      // case, it is the job of the caller to roll back any partially built chain, if needed.
     }
   }
   return true;
@@ -339,25 +338,27 @@ bool RegionPlayer::hasFinished()
 
 bool RegionPlayer::assembleDspChain(bool busMode)
 {
-  RAPT::rsAssert(dspChain.isEmpty(), "Someone has not cleaned up after finishing playback!");
-  dspChain.clear(); // ...so we do it here. But this should be fixed elsewhere!
+  if(!dspChain.isEmpty()) {
+    RAPT::rsError("Someone has not cleaned up after finishing playback!");
+    disassembleDspChain(); } // ...so we do it here. But this should be fixed elsewhere!
 
+  // The DSPs for which the region itself defines settings/opcodes are always needed:
+  if(!addDspsIfNeeded(region->getProcessingChain())) {
+    disassembleDspChain();
+    return false; }
 
-  // Add all the required DSPs (This is ugly! Can we do this in a more elegant way?):
-  bool ok;
-  ok = addDspsIfNeeded(region->getProcessingChain()); 
-  if(!ok) return false;
-
-  if(!busMode)
-  {
-    ok = addDspsIfNeeded(region->getGroup()->getProcessingChain());
-    if(!ok) return false;
-  }
-  if(!busMode)
-  {
-    ok = addDspsIfNeeded(region->getGroup()->getInstrument()->getProcessingChain());
-    if(!ok) return false;
-  }
+  // In busMode, additional settings/opcodes defined in the enclosing group and/or instrument are
+  // interpreted
+  // If we are not in busMode, the enclosing group and/or enclosing instrument settings act as
+  // fallback values for the region so we may require additional DSPs to apply these opcodes
+  // to the region, too:
+  if(!busMode) {
+    if(!addDspsIfNeeded(region->getGroup()->getProcessingChain())) {
+      disassembleDspChain();
+      return false; }
+    if(!addDspsIfNeeded(region->getGroup()->getInstrument()->getProcessingChain())) {
+      disassembleDspChain();
+      return false; }}
 
   return true;
   // If false is returned, it means we do not have enough processors of the required types 
@@ -369,7 +370,6 @@ bool RegionPlayer::assembleDspChain(bool busMode)
   // manner. But let's try at least to make that an exception that occurs only in extreme 
   // scenarios.
 }
-// rename to assembleDspChain
 
 bool RegionPlayer::setupModulations()
 {
@@ -631,15 +631,17 @@ bool GroupPlayer::assembleDspChain(bool busMode)
   // busMode, the GroupPlayer's own DSP chain is used. We need to take the busMode parameter 
   // anyway because this function is an override.
 
-  RAPT::rsError("Not yet implemented");
+  if(!dspChain.isEmpty()) {
+    RAPT::rsError("Someone has not cleaned up after finishing playback!");
+    disassembleDspChain(); } // ...so we do it here. But this should be fixed elsewhere!
+  if(!addDspsIfNeeded(group->getProcessingChain())) {
+    disassembleDspChain();
+    return false; }
+  return true;
 
-  // ToDo:
-  // -Assemble the DSP chain using DSPs only from the group setting. The instrument's DSP settings
-  //  can safely be ignored if we are in busMode (which is supposed to be always the case) because 
-  //  in busMode, the InstrumentPlayer will take care of the instrument's DSP settings
-
-
-  return false;
+  // We need only to take into account the group's DSP settings. The instrument's DSP settings
+  // can safely be ignored if we are in busMode (which is supposed to be always the case) because 
+  // in busMode, the InstrumentPlayer will take care of the instrument's DSP settings
 }
 
 void GroupPlayer::setupDspChain()

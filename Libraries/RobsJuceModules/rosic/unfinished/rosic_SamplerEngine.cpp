@@ -804,8 +804,7 @@ void rsSamplerEngine2::setMaxNumLayers(int newMax)
   activeGroupPlayers.reserve(L);
   for(int i = 0; i < L; i++) {
     idleGroupPlayers[i] = &groupPlayerPool[i];
-    //idleGroupPlayers[i]->engine = this; // backlink to owner (us) currently not needed there
-  }
+    idleGroupPlayers[i]->setDspResourcePool(&dspPool); }
 }
 
 rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, uchar vel)

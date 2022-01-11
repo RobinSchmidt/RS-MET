@@ -689,10 +689,18 @@ public:
   // to a drum bus to which more FX are applied etc. ...maybe call it groupsAreBusses or something
   // like that
 
-  void setBusMode(bool groupsAreBusses) 
+  /** The availability of a bus-mode is the main feature that distinguishes this subclass from the
+  rsSamplerEngine baseclass. The baseclass provides behavior according to the sfz specification 
+  where opcodes defined in an enclosing group and/or instrument define fallback values for region 
+  opcodes. In bus-mode, these group- or instrument-wide settings are not interpreted as fallback 
+  values but instead as values that should be applied additionally on top of the region settings
+  after regions within a group have been mixed together (to form a sub-bus) and after the group
+  sub-busses have been mixed together to form the instrument's master-bus. This function switches
+  to this optional other kind of global behavior. */
+  void setBusMode(bool groupsAreSubBussesInstrumentIsMasterBus) 
   { 
     reset();  // changing this setting is disruptive - we need a reset
-    busMode = groupsAreBusses; 
+    busMode = groupsAreSubBussesInstrumentIsMasterBus; 
   }
 
 

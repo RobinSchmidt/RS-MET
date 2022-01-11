@@ -81,7 +81,8 @@ protected:
 
   /** Adds the DSPs of the given types to the chain of actual DSP objects, if needed. Adding a 
   particular DSP is needed, if no suitable such DSP is already there in our dspChain where 
-  "suitable" means: "with right type and index" */
+  "suitable" means: "with right type and index". The return value informs, whether or not adding
+  the desired DSPs was succesful. */
   bool addDspsIfNeeded(const std::vector<DspType>& dspTypeChain);
 
   /** Given a playback setting (i.e. opcode, value, possibly index), it finds the processor in our
@@ -91,9 +92,16 @@ protected:
   void setupProcessorSetting(const PlaybackSetting& s);
 
   /** This is supposed to be overriden by subclasses to actually assemble the DSP chain they 
-  need. */
+  need. The implementation should return true, if assembling the chain was successful and false 
+  otherwise (when not enough DSPs are available). In the latter case, it is also the job of the 
+  function to clean up any partially built chain if necessary. On return, the dspChain should 
+  either be built completely and correctly (and true be returned) or not at all (and false be 
+  returned). The post-condition should be: the dspChain is either built fully or it is empty. For
+  the meaning of the busMode parameter, see rsSamplerEngine2::setBusMode. For normal sfz-like 
+  behavior, it should be set to false. */
   virtual bool assembleDspChain(bool busMode) = 0;
-  // maybe use an int mode parameter later when more flexibility is needed
+  // -maybe use an int mode parameter later when more flexibility is needed
+  // -maybe provide default argument false for busMode
 
   /** Reposits all the DSP objects back into the dspPool and clears our dspChain. */
   void disassembleDspChain();
@@ -106,8 +114,8 @@ protected:
 
   DspResourcePool* dspPool = nullptr;
   /**< A pool of DSP processor objects from which we can grab some as needed to assemble our DSP
-  chain. The assembly task mostly done in the subclasses making use of addDspsIfNeeded. The pointer
-  should be set by the engine once and for all when it creates its Players. */
+  chain. The assembly task is mostly done in the subclasses making use of addDspsIfNeeded. The 
+  pointer should be set by the engine once and for all when it creates its Players. */
 
 };
 
