@@ -501,43 +501,6 @@ void RegionPlayer::setupDspSettings(
     }  break;
 
 
-    /*
-    // Obsolete - they are now handled all in if(setting.isDspSetting())
-
-    // Amplifier settings:
-    case TP::volumeN:      { setupProcessorSetting(setting); } break;
-    case TP::panN:         { setupProcessorSetting(setting); } break;
-
-    // Filter settings:
-    case TP::filN_type:    { setupProcessorSetting(setting); } break;
-    case TP::cutoffN:      { setupProcessorSetting(setting); } break;
-    case TP::resonanceN:   { setupProcessorSetting(setting); } break;
-
-    // Waveshaper settings:
-    case TP::DistShape:  { setupProcessorSetting(setting); } break;
-    case TP::DistDrive:  { setupProcessorSetting(setting); } break;
-    case TP::DistOffset: { setupProcessorSetting(setting); } break;
-      // use distN_shape, etc.
-
-
-    // ToDo: order the opcodes in the enum according to their type, such that we can here write
-    // something like: 
-    //   if( type > Opcode::dspStart && type < Opcode:dspEnd )
-    //     setupProcessorSetting(setting);
-    // instead of listing them all one-by-one, we should have tags: playerStart/End, dspStart/End
-    // modulatorsStart/End, modConnectionsStart/End
-
-    // Equalizer settings:
-    case TP::eqN_gain: { setupProcessorSetting(setting); } break;
-    case TP::eqN_freq: { setupProcessorSetting(setting); } break;
-    case TP::eqN_bw:   { setupProcessorSetting(setting); } break;
-    */
-
-      // ToDo: Get rid of this repetition! Maybe these can all be caught in a "default" branch?
-      // but then what about the modulation settings? i think, we need a 3-way branch based on
-      // whether a setting applies to the sample-player, dsp-chain or a modulator and then branch
-      // further, if needed
-
     }
   }
   double tune   = tuneCoarse + 0.01 * tuneFine;

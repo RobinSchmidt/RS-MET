@@ -1564,15 +1564,68 @@ bool samplerAmplifierCoreTest()
   return ok;
 }
 
+// Helper function to add a single region for the given sample to the engine. The region is added
+// to the first group, which is added if not already there:
+void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
+  const std::vector<float>& sample, float keyCenter = 60.f)
+{
+  using PST  = rosic::Sampler::Opcode;
+  const float *pSmp = &sample[0];
+  int si = se->addSampleToPool((float**) &pSmp, (int)sample.size(), 1, 44100, "Noise");
+  if(se->getNumGroups() == 0)
+    se->addGroup();
+  int ri = se->addRegion(0);
+  se->setRegionSample( 0, ri, si);
+  se->setRegionSetting(0, ri, PST::PitchKeyCenter, keyCenter);
+  // ToDo: try to get rid of casting ways the const in addSampleToPool((float**) &pSmp,...). 
+  // addSampleToPool does not modify anything - make it const correct...but that my need ugly
+  // and confusing syntax in the function declaration
+}
+
 bool samplerAmplifierTest()
 {
   bool ok = true;
 
   ok &= samplerAmplifierCoreTest();
 
+  int N = 200;
+
+  using VecF = std::vector<float>;
+  using SE   = rosic::Sampler::rsSamplerEngine2Test;
+  using PST  = rosic::Sampler::Opcode;
+
+  // Create and set up sampler engine:
+  VecF noise = createColoredNoise(N, -6.02f);  
+  SE se;
+  addSingleSampleRegion(&se, noise, 60.f);
+
+  // Test panning:
+  ok &= testSamplerNote(&se, 60.f, 127.f, noise, noise, 0.0, false);
+  se.setRegionSetting(0, 0, PST::panN, +100.f, 1);  // hard right
+  ok &= testSamplerNote(&se, 60.f, 127.f, 0.f*noise, 2.f*noise, 0.f, false);
+  se.setRegionSetting(0, 0, PST::panN, -100.f, 1);  // hard left
+  ok &= testSamplerNote(&se, 60.f, 127.f, 2.f*noise, 0.f*noise, 0.f, false);
+  se.setRegionSetting(0, 0, PST::panN, 0.f, 1);     // back to center
+
+  // Set amplifier settings for region, group, instrument to 1,2,3 respectively and test it in both
+  // modes (busMode and normal). In busMode, the gain should be 1+2+3 = 6dB and in normal mode, it 
+  // should be 1dB:
+  //float tol = 1.e-7;
+  se.setRegionSetting(0, 0, PST::volumeN, 1.f, 1);
+  se.setGroupSetting( 0,    PST::volumeN, 2.f, 1);
+  se.setInstrumentSetting(  PST::volumeN, 3.f, 1);
+  se.setBusMode(false);                // it should actually already be in that mode but anyway
+  float g1 = RAPT::rsDbToAmp(1.f);    // only region gain counts
+  ok &= testSamplerNote(&se, 60.f, 127.f, g1*noise, g1*noise, 0.f, true);
+
+  float g2 = RAPT::rsDbToAmp(1.f + 2.f + 3.f);  // gains accumulate
+  se.setBusMode(true); 
+  ok &= testSamplerNote(&se, 60.f, 127.f, g2*noise, g1*noise, 0.f, true);
+  // still fails
+
+
   return ok;
 }
-
 
 bool samplerFilterTest()
 {
@@ -1599,12 +1652,15 @@ bool samplerFilterTest()
 
   // Create and set up sampler engine:
   SE se;
+
   float *pSmp = &noise[0];
   se.addSampleToPool(&pSmp, N, 1, fs, "Noise");
   se.addGroup();
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f);
+  //addSingleSampleRegion(&se, noise, 60.f); // replace code above by that call
+
   se.setRegionSetting(0, 0, PST::cutoffN,         cutoff, 1);
   se.setRegionSetting(0, 0, PST::resonanceN,      reso,   1); // affects only 2nd order modes
 
