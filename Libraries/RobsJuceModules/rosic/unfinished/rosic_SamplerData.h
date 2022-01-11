@@ -142,8 +142,10 @@ public:
 
   //-----------------------------------------------------------------------------------------------
   /** Baseclass for the 3 organizational levels of the sfz specification, factoring out their
-  commonalities. Subclasses are Region, Group, Instrument. */
-  class OrganizationLevel  // maybe drag out of the class, name it rsSamplerLevel
+  commonalities. Subclasses are Region, Group, Instrument. 
+  
+  maybe drag out of the class, name it rsSamplerLevel or HierarchyLevel  */
+  class OrganizationLevel  
   {
 
   public:

@@ -553,6 +553,9 @@ void GroupPlayer::removeRegionPlayer(RegionPlayer* player)
 bool GroupPlayer::setGroupToPlay(const rsSamplerData::Group* groupToPlay, double sampleRate, 
   bool busMode)
 {
+  RAPT::rsAssert(busMode == true);
+  // It makes no sense to use a GroupPlayer when not in busMode. Maybe remove the parameter
+
   if(groupToPlay == group)
     return true;               // nothing to do
   disassembleDspChain();
@@ -579,13 +582,6 @@ bool GroupPlayer::assembleDspChain(bool busMode)
   // in busMode, the InstrumentPlayer will take care of the instrument's DSP settings
 }
 
-/*
-void GroupPlayer::setupDspChain()
-{
-  RAPT::rsError("Not yet implemented");
-}
-*/
-
 //=================================================================================================
 // InstrumPlayer
 
@@ -594,6 +590,24 @@ bool InstrumPlayer::assembleDspChain(bool busMode)
   RAPT::rsAssert(busMode == true); // see comment in GroupPlayer::assembleDspChain
   return SamplePlayer::assembleDspChain(instrum->getProcessingChain());
 }
+
+bool InstrumPlayer::setInstrumToPlay(const rsSamplerData::Instrument* instrumToPlay, 
+  double sampleRate, bool busMode)
+{
+  if(instrumToPlay == instrum)
+    return true; 
+  disassembleDspChain();
+  instrum = instrumToPlay;
+  if(instrum != nullptr){
+    if(!assembleDspChain(busMode)) {
+      instrum = nullptr;
+      return false;   }
+    setupDspSettings(instrum->getSettings(), sampleRate, busMode); 
+    dspChain.prepareToPlay(sampleRate); }
+  return true;
+}
+// almost identical to GroupPlayer::setGroupToPlay - maybe factor out into SampleBusPlayer taking
+// a general SamplerData::OrganizationLevel (rename that to HierarchyLevel - shorter and better)
 
 
 

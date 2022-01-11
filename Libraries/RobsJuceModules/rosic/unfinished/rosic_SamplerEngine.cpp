@@ -805,17 +805,14 @@ void rsSamplerEngine2::setMaxNumLayers(int newMax)
   for(int i = 0; i < L; i++) {
     idleGroupPlayers[i] = &groupPlayerPool[i];
     idleGroupPlayers[i]->setDspResourcePool(&dspPool); }
+  instrumPlayer.setDspResourcePool(&dspPool);
 }
 
 rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, uchar vel)
 {
   PlayStatusChange psc = rsSamplerEngine::handleNoteOn(key, vel);
-  if(!canFallBackToBaseclass()) 
-  { 
-    // Don't update the group players, if they are not used anyway
+  if(!canFallBackToBaseclass()) // Don't update the group players, if they are not used anyway
     updateGroupPlayers(psc);
-
-  }
   return psc;
 }
 
@@ -859,6 +856,9 @@ void rsSamplerEngine2::processFrame(double* left, double* right)
   rsFloat64x2 out = 0.0;
   for(int i = 0; i < (int)activeGroupPlayers.size(); i++)
     out += activeGroupPlayers[i]->getFrame();
+
+  // Apply master DSPs:
+  instrumPlayer.processFrame(out);
 
   // Stop region players that have finished playing:
   for(int i = 0; i < (int)activePlayers.size(); i++) {
@@ -959,15 +959,14 @@ int rsSamplerEngine2::stopGroupPlayer(int i)
 
 void rsSamplerEngine2::startInstrumPlayer()
 {
-  //instrumPlayer.setInstrumentToPlay(...);
-  //instrumPlayer.assembleDspChain(busMode);
-  return;
+  instrumPlayer.setInstrumToPlay(&sfz.instrument , sampleRate, busMode);
+  // todo: use the return value - maybe pass it through to the caller which may need to roolback,
+  // in case of failure
 }
 
 void rsSamplerEngine2::stopInstrumPlayer()
 {
   instrumPlayer.releaseResources();
-  return;
 }
 
 

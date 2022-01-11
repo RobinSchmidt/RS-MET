@@ -1612,12 +1612,10 @@ bool samplerAmplifierTest()
   // should be 1dB:
   float tol = 1.e-6;
 
-  // gains for region, group and isntrument
-
+  // gains for region, group and instrument
   float rVol = 1.f;
   float gVol = 2.f;
-  float iVol = 0.f;
-
+  float iVol = 0.f;   // for the first test, we'll leave that at zero
   se.setRegionSetting(0, 0, PST::volumeN, rVol, 1);
   se.setGroupSetting( 0,    PST::volumeN, gVol, 1);
   se.setInstrumentSetting(  PST::volumeN, iVol, 1);
@@ -1628,14 +1626,13 @@ bool samplerAmplifierTest()
   float g2 = RAPT::rsDbToAmp(rVol + gVol + iVol);  // gains accumulate
   se.setBusMode(true); 
   ok &= testSamplerNote(&se, 60.f, 127.f, g2*noise, g2*noise, tol, false);
+
+  // Now also with instrument-wide gain:
   iVol = 3.f;
   g2 = RAPT::rsDbToAmp(rVol + gVol + iVol);
   se.setInstrumentSetting(  PST::volumeN, iVol, 1);
-  ok &= testSamplerNote(&se, 60.f, 127.f, g2*noise, g2*noise, tol, false);
-
-  // still fails when iVol != 0, for iVol == 0, it works. The instrumPlayer is not yet correctly 
-  // set up
-
+  ok &= testSamplerNote(&se, 60.f, 127.f, g2*noise, g2*noise, tol, true);
+  // The test works only when we set gVal to zero
 
   return ok;
 }
@@ -2451,6 +2448,9 @@ bool samplerEngineUnitTest()
   // currently fails because we switched to the busMode stuff - test needs to be updated
 
   // ToDo:
+  // -Add an overload test that simulates conditions when the engine is running out of resources 
+  //  such as DSPs, players, memory, etc. Make sure that things get cleaned up correctly in cases 
+  //  where a partially assembled RegionPlayer must be rolled back due to lack of resources.
   // -Figure out and implement the correct filter design formulas for lpf_2p, hpf_2p, bpf_2p and 
   //  the equalizers. It's rather interesting that for the filters, the range is 0..fs/2 and for
   //  equalizers it's 0..30kHz (done?)

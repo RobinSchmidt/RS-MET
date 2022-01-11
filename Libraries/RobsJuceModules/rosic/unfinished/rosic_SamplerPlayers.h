@@ -334,14 +334,12 @@ public:
 
   bool setGroupToPlay(const rsSamplerData::Group* groupToPlay, double sampleRate, 
     bool busMode);
+  // busMode is superfluous - whena GroupPlayer is invoked, we are in busMode by definition
 
 
 protected:
 
   bool assembleDspChain(bool busMode) override;
-
-  //void setupDspChain();
-  // maybe make this an override of a baseclass method...if possible
 
   std::vector<RegionPlayer*> regionPlayers;
   // Pointers to the players for all the regions in this group.
@@ -358,21 +356,33 @@ class InstrumPlayer : public SampleBusPlayer
 
 public:
 
-  bool assembleDspChain(bool busMode) override;
+  void processFrame(rsFloat64x2& inOut) 
+  { 
+    dspChain.processFrame(inOut); 
+  }
+  // todo: use float for the signals all the way through
+
+  bool setInstrumToPlay(const rsSamplerData::Instrument* instrumToPlay, double sampleRate, 
+    bool busMode);
 
   void releaseResources()
   {
     disassembleDspChain();
+    instrum = nullptr;
   }
   // if all 3 subclasses have such a method, introduce a virtual baseclass method
+  // obsolete?
 
 protected:
+
+  bool assembleDspChain(bool busMode) override;
+
+  const rsSamplerData::Instrument* instrum = nullptr;
+  // Pointer to the instrument object which is played back by this player
 
   //std::vector<GroupPlayer*> groupPlayers;
   // maybe we will need this later, but maybe not
 
-  const rsSamplerData::Instrument* instrum = nullptr;
-  // Pointer to the instrument object which is played back by this player
 
 };
 
