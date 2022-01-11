@@ -88,17 +88,14 @@ protected:
   /** Adds the DSPs of the given types to the chain of actual DSP objects, if needed. Adding a 
   particular DSP is needed, if no suitable such DSP is already there in our dspChain where 
   "suitable" means: "with right type and index". The return value informs, whether or not adding
-  the desired DSPs was succesful. */
-  bool addDspsIfNeeded(const std::vector<DspType>& dspTypeChain);
+  the desired DSPs was succesful. It may fail due to not having enough DSPs of required types 
+  available. In such cases, any partially assembled dspChain will be disassembled again and 
+  false is returned. This potential disassembly is what is meant by the "or clean-up" part. */
+  bool augmentOrCleanDspChain(const std::vector<DspType>& dspTypeChain);
 
   /** This is supposed to be overriden by subclasses to actually assemble the DSP chain they 
   need. The implementation should return true, if assembling the chain was successful and false 
-  otherwise (when not enough DSPs are available). In the latter case, it is also the job of the 
-  function to clean up any partially built chain if necessary. On return, the dspChain should 
-  either be built completely and correctly (and true be returned) or not at all (and false be 
-  returned). The post-condition should be: the dspChain is either built fully or it is empty. For
-  the meaning of the busMode parameter, see rsSamplerEngine2::setBusMode. For normal sfz-like 
-  behavior, it should be set to false. */
+  otherwise (when not enough DSPs are available).  */
   virtual bool assembleDspChain(bool busMode) = 0;
   // -maybe use an int mode parameter later when more flexibility is needed
   // -maybe provide default argument false for busMode

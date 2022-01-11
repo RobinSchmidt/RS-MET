@@ -47,7 +47,7 @@ processors[i]->resetState();
 //=================================================================================================
 // SamplePlayer
 
-bool SamplePlayer::addDspsIfNeeded(const std::vector<DspType>& dspTypeChain)
+bool SamplePlayer::augmentOrCleanDspChain(const std::vector<DspType>& dspTypeChain)
 {
   for(int i = 0; i < (int)dspTypeChain.size(); i++)
   {
@@ -96,10 +96,10 @@ bool SamplePlayer::addDspsIfNeeded(const std::vector<DspType>& dspTypeChain)
       dspChain.addProcessor(dsp);
     }
     else {
-      //disassembleDspChain(); // later, take over responsibility for this
+      disassembleDspChain();
       return false;
-      // Not enough DSPs of desired type are available in the pool so we report failure. In such a
-      // case, it is the job of the caller to roll back any partially built chain, if needed.
+      // Not enough DSPs of desired type are available in the pool so we roll back any partially 
+      // built chain and report failure. 
     }
   }
   return true;
@@ -114,16 +114,9 @@ bool SamplePlayer::assembleDspChain(const std::vector<DspType>& dspTypes)
   if(!dspChain.isEmpty()) {
     RAPT::rsError("Someone has not cleaned up after finishing playback!");
     disassembleDspChain();  }  // ...so we do it here. But this should be fixed elsewhere!
-  if(!addDspsIfNeeded(dspTypes)) {
-    disassembleDspChain();    // addDspsIfNeeded may have built a partial chain which we then..
-    return false; }           // ..need to clean up here
+  if(!augmentOrCleanDspChain(dspTypes)) 
+    return false;
   return true;
-
-  // The fact that addDspsIfNeeded may build a partial chain without cleaning it up itself if
-  // it can't build the full chain is a bit messy. But just putting the clean-up responsibility
-  // into this function isn't ideal either because then the name doesn't really fit. Maybe rename
-  // it addDspsIfNeededCleanUpWhenFail...but that's a monster of a name...we'll see.... maybe
-  // augmentOrCleanDspChain
 }
 
 void SamplePlayer::disassembleDspChain()
@@ -377,15 +370,10 @@ bool RegionPlayer::assembleDspChain(bool busMode)
   // fallback values for the region so we may require additional DSPs to apply these opcodes
   // to the region, too:
   if(!busMode) {
-    if(!addDspsIfNeeded(region->getGroup()->getProcessingChain())) {
-      disassembleDspChain();
+    if(!augmentOrCleanDspChain(region->getGroup()->getProcessingChain()))
       return false;
-    }
-    if(!addDspsIfNeeded(region->getGroup()->getInstrument()->getProcessingChain())) {
-      disassembleDspChain();
-      return false;
-    }
-  }
+    if(!augmentOrCleanDspChain(region->getGroup()->getInstrument()->getProcessingChain()))
+      return false; }
 
   return true;
   // OK - everything went well so we report success. If, on the other hand, false is returned, it
