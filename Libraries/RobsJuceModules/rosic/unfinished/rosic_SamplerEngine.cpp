@@ -911,7 +911,7 @@ void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc)
 int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const rsSamplerData::Group* group)
 {
   for(size_t i = 0; i < activeGroupPlayers.size(); i++)
-    if(activeGroupPlayers[i]->group == group)
+    if(activeGroupPlayers[i]->getGroupToPlay() == group)
       return (int) i;
   return -1;
 }
@@ -921,8 +921,7 @@ void rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp)
   GroupPlayer* gp = RAPT::rsGetAndRemoveLast(idleGroupPlayers);
   const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
   gp->addRegionPlayer(rp);
-  gp->group = grp;
-
+  gp->setGroupToPlay(grp);
   gp->assembleDspChain(busMode); // ToDo: use boolean return value: if false (unlikely), roll back the RegionPlayer rp
   //gp->setupDspSettings(); // to do
 
@@ -948,14 +947,14 @@ int rsSamplerEngine2::stopGroupPlayer(int i)
 
 void rsSamplerEngine2::startInstrumPlayer()
 {
-
+  //instrumPlayer.setInstrumentToPlay(...);
+  //instrumPlayer.assembleDspChain(busMode);
   return;
 }
 
 void rsSamplerEngine2::stopInstrumPlayer()
 {
-
-
+  instrumPlayer.releaseResources();
   return;
 }
 

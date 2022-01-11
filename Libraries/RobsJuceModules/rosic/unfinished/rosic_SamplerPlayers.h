@@ -280,6 +280,11 @@ public:
   bool hasNoRegionPlayers() { return regionPlayers.empty(); }
 
 
+  const rsSamplerData::Group* getGroupToPlay() const { return group; }
+
+  void setGroupToPlay(const rsSamplerData::Group* groupToPlay) { group = groupToPlay; }
+
+
 protected:
 
   bool assembleDspChain(bool busMode) override;
@@ -293,7 +298,8 @@ protected:
 
 
   friend class rsSamplerEngine2;  
-  // Try to get rid! It's only used to set some variables - provide setters for them!
+  // Try to get rid! We need it because SamplerEmgine2 calls assembleDspChain - maybe we should 
+  // move it to unprotected...or: setGroupToPlay should call it - yes that seems cleaner
 
   //rsSamplerEngine2* engine = nullptr;
   // For communication with enclosing sampler-engine - currently not needed - try to keep it like
@@ -310,7 +316,16 @@ public:
 
   bool assembleDspChain(bool busMode) override;
 
+  void releaseResources()
+  {
+    disassembleDspChain();
+  }
+  // if all 3 subclasses have such a method, introduce a virtual baseclass method
+
 protected:
+
+  const rsSamplerData::Instrument* instrum = nullptr;
+  // Pointer to the instrument object which is played back by this player
 
 
 };
