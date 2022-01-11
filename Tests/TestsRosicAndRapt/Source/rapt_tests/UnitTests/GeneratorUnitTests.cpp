@@ -1613,8 +1613,8 @@ bool samplerAmplifierTest()
   float tol = 1.e-6;
 
   // gains for region, group and instrument
-  float rVol = 1.f;
-  float gVol = 2.f;
+  float rVol = 3.f;
+  float gVol = 6.f;
   float iVol = 0.f;   // for the first test, we'll leave that at zero
   se.setRegionSetting(0, 0, PST::volumeN, rVol, 1);
   se.setGroupSetting( 0,    PST::volumeN, gVol, 1);
@@ -1628,11 +1628,12 @@ bool samplerAmplifierTest()
   ok &= testSamplerNote(&se, 60.f, 127.f, g2*noise, g2*noise, tol, false);
 
   // Now also with instrument-wide gain:
-  iVol = 3.f;
+  iVol = 12.f;
   g2 = RAPT::rsDbToAmp(rVol + gVol + iVol);
+  //se.reset();
   se.setInstrumentSetting(  PST::volumeN, iVol, 1);
-  ok &= testSamplerNote(&se, 60.f, 127.f, g2*noise, g2*noise, tol, true);
-  // The test works only when we set gVal to zero
+  ok &= testSamplerNote(&se, 60.f, 127.f, g2*noise, g2*noise, tol, false);
+
 
   return ok;
 }

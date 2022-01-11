@@ -535,7 +535,7 @@ void GroupPlayer::releaseResources()
 {
   disassembleDspChain();
   regionPlayers.clear();
-  //group = nullptr;   // why is this commented? seems to make sense to set it to null here
+  group = nullptr;
 }
 
 void GroupPlayer::addRegionPlayer(RegionPlayer* newPlayer)
