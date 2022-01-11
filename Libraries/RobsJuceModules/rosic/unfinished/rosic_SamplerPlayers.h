@@ -282,7 +282,12 @@ public:
 
   const rsSamplerData::Group* getGroupToPlay() const { return group; }
 
-  void setGroupToPlay(const rsSamplerData::Group* groupToPlay) { group = groupToPlay; }
+  bool setGroupToPlay(const rsSamplerData::Group* groupToPlay);
+
+
+  //void setGroupToPlay(const rsSamplerData::Group* groupToPlay) { group = groupToPlay; }
+  // should do more stuff: assmeble and set up the DSP chain, return a bool to report success or
+  // failure
 
 
 protected:

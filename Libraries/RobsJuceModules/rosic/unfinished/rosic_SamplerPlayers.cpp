@@ -610,6 +610,16 @@ void GroupPlayer::removeRegionPlayer(RegionPlayer* player)
   RAPT::rsRemoveFirstOccurrence(regionPlayers, player);
 }
 
+bool GroupPlayer::setGroupToPlay(const rsSamplerData::Group* groupToPlay)
+{
+  group = groupToPlay;
+  // todo: assemble and set up the DSP chain iff group != nullptr, otherwise disassemble
+  // ..or maybe first disassemle anyway...unless the passed group equals the current
+
+
+  return true;
+}
+
 bool GroupPlayer::assembleDspChain(bool busMode)
 {
   //RAPT::rsError("Not yet implemented");

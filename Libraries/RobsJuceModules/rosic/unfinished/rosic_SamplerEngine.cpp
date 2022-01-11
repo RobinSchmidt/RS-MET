@@ -921,8 +921,12 @@ void rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp)
   GroupPlayer* gp = RAPT::rsGetAndRemoveLast(idleGroupPlayers);
   const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
   gp->addRegionPlayer(rp);
+
+
   gp->setGroupToPlay(grp);
-  gp->assembleDspChain(busMode); // ToDo: use boolean return value: if false (unlikely), roll back the RegionPlayer rp
+// ToDo: use boolean return value: if false (unlikely), roll back the RegionPlayer rp
+
+  gp->assembleDspChain(busMode); 
   //gp->setupDspSettings(); // to do
 
   activeGroupPlayers.push_back(gp);
