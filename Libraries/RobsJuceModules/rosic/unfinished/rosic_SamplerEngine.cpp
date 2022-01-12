@@ -904,7 +904,17 @@ void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc)
     }
     else
     {
-      startGroupPlayerFor(rp);
+      if(!startGroupPlayerFor(rp))
+      {
+        //RAPT::rsError("not yet impemented");
+        stopRegionPlayer(i);
+        numLayersNow--;
+      }
+
+
+      // Why is this inside the loop? for optimization? Move out and also handle failure
+      // condition - maybe roll backas many of the new ReginPlayers as needed to make it work.
+      // If it fails, roll back one, try again, etc.
       if(numLayersBefore == 0)   // If nothing was playing before, we have to 
         startInstrumPlayer(rp);  // start the instrumPlayer, too
     }
@@ -919,27 +929,21 @@ int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const rsSamplerData::Group* g
   return -1;
 }
 
-void rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp)
+bool rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp)
 {
   GroupPlayer* gp = RAPT::rsGetAndRemoveLast(idleGroupPlayers);
-
-  RAPT::rsAssert(gp);
-  // ToDo: check, if nullptr is returned, if so, return false
+  if(!gp)
+    return false;   // Not enough players available
 
   const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
-  gp->addRegionPlayer(rp);
   bool ok = gp->setGroupToPlay(grp, sampleRate, rp, busMode);
-  if(!ok)
-  {
-    RAPT::rsError("not yet implemented");
-    // ToDo: 
-    // -roll back the RegionPlayer rp...or maybe return false and leave the rollback to
-    //  the caller
-    // -write unit tests for this
-  }
+  if(!ok) {
+    idleGroupPlayers.push_back(gp);
+    return false; } // Not enough resources to start the player. Caller should roll back rp, too
 
-
+  gp->addRegionPlayer(rp);
   activeGroupPlayers.push_back(gp);
+  return true;
 }
 
 int rsSamplerEngine2::stopGroupPlayer(int i)

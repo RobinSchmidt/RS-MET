@@ -746,8 +746,9 @@ protected:
 
   /** This starts a new group player for the given region player. This is used in e.g. handleNoteOn
   when region players were triggered for which we do not already have an active group player in
-  use. */
-  void startGroupPlayerFor(RegionPlayer* regionPlayer);
+  use. Return true, if the player could be started. If it could not be started, the caller may 
+  need to take care of some cleanup (roll back the regionPlayer). */
+  bool startGroupPlayerFor(RegionPlayer* regionPlayer);
 
   /** Stops the groupPlayer with the given activeIndex, i.e. moves it from the activeGroupPlayers
   array to the idleGroupPlayers array. */
