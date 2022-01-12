@@ -815,18 +815,10 @@ bool samplerEngine2UnitTest()
   // In the default setting, the regionAmp should override the instrument and the group setting,
   // so the produced output should only have the region volume applied:
 
-  /*
-  tgt = regionAmp*sin440;
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 0.f, false);
-  ok &= se.getNumActiveLayers() == 0;  // rename to getNumActiveRegions or getNumPlayingRegions
-  ok &= se.getNumActiveGroupPlayers() == 0;
-  // redundant!
-  */
-
   // In bus-mode, we want to see all 3 settings applied:
   se.setBusMode(true);
   tgt = instrAmp*groupAmp*regionAmp*sin440;
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, true);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, false);
   ok &= se.getNumActiveLayers() == 0;
   ok &= se.getNumActiveGroupPlayers() == 0;
 
@@ -886,22 +878,15 @@ bool samplerEngine2UnitTest()
   ok &= se.getNumActiveLayers() == 1;        // it's still playing due to the delay
   ok &= se.getNumActiveGroupPlayers() == 0;  // no group player is/was used due to settings
 
-  /*
-  // Now we want to see region and group delay combined:
-  se.setRegionSettingsOverride(false);
-  tgt = sin440;
-  rsApplyDelay(tgt, regionDelay);
-  rsApplyDelay(tgt, groupDelay);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
-  */
-
   // Now we want to see region, group and instrument delay combined:
   se.setBusMode(true);
   tgt = sin440;
   rsApplyDelay(tgt, regionDelay);
   rsApplyDelay(tgt, groupDelay);
   rsApplyDelay(tgt, instrDelay);
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+  //se.reset();
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true);
+  // fails - output has only the small region delay
 
 
   //---------------------------------------------------------------------------
@@ -1090,6 +1075,7 @@ bool samplerEngine2UnitTest()
 
 
   // ToDo: 
+  // -make tests where triggering a new region doe not start a new GroupPlayer
   // -do the same test for other parameters like delay, pitch, etc.
   // -we need to also try it with processes that do not just modify, what algo parameters the 
   //  RegionPlayers use (this is the case for volume, delay, pitch) but that actually apply two

@@ -46,6 +46,18 @@ processors[i]->resetState();
 //=================================================================================================
 // SamplePlayer
 
+/** Counts the number of occurences of elem in array a of length N. */
+template<class T>
+int rsCount(const T* a, int N, T elem)
+{
+  int c = 0;  // counter
+  for(int i = 0; i < N; i++)
+    if(a[i] == elem)
+      c++;
+  return c;
+}
+// move into rsArrayTools
+
 bool SamplePlayer::augmentOrCleanDspChain(const std::vector<DspType>& dspTypeChain)
 {
   for(int i = 0; i < (int)dspTypeChain.size(); i++)
@@ -53,45 +65,17 @@ bool SamplePlayer::augmentOrCleanDspChain(const std::vector<DspType>& dspTypeCha
     // Figure out the type of the DSP that may need to be added to the chain:
     DspType dspType = dspTypeChain[i];
 
-    // Figure out the index within the type-chain (i.e. placeholder chain for the actual DSPs) of 
-    // the potentially to-be-added DSP because whether or not we will actually need to add 
-    // another DSP to the chain will depend on that index and the number of alike DSPs already 
-    // present in the chain. Furthermore, the default value may depend on the index as well:
-    int index = 1;
-    for(int j = i-1; j >= 0; j--) {
-      if(dspTypeChain[j] == dspType)
-        index++;
-    }
-    // Maybe factor that out into some dspTypeChain.getSfzIndex(arrayIndex) method. In this call,
-    // the arrayIndex should be the array-index of a DSP of given type within the chain and the 
-    // return value should be the sfz-index. Example: 
-    //   typeChain == { Filter, Equalizer, Filter, Filter, Equalizer, Equalizer, Filter }
-    //   array-index:     0         1        2       3         4          5        6
-    //   sfz-index:       1         1        2       3         2          3        4
-    // Then, when we pass 4 (the array index), it should return 2 because array index 4 refers
-    // to the 2nd equalizer in the desired sfz-effect chain, i.e. the equalizer that is 
-    // controlled with opcodes eq2_gain, eq2_freq, eq2_bw. This kind of index-mapping is a bit 
-    // confusing and needs good documentation and unit-tests. But TypeChain is actually not a 
-    // class but just a std::vector of DspType. Maybe make it a class..hmm...not sure if that's
-    // worth it. Maybe make a free helper function getSfzDspIndex(const TypeChain& c, int i).
-    // Could be a static method of SamplerData. Maybe use size_t: init index to 0 and start loop
-    // index j at i. Maybe it could also be a completely general function defined on std::vector.
-    // maybe size_t rsCountEqualPredecessors(size_t i)...or maybe just use a function like
-    // rsArrayTools::count(&dspTypeChain[0], i, dspType)  maybe have a countBackward function
-    // too - maybe it's sometimes more efficient because the data around index i is initially 
-    // still in cache...dunno. To better express intent, we could have a wrapper around that
-    // with a descriptive name like arrayIndexToSfzIndex or something
-
     // Figure out, if we actually need to add another DSP to the chain. If not, there's nothing
     // more to do in this iteration:
-    if(dspChain.getNumProcessors(dspType) >= index)
+    int sfzIndex = rsCount(&dspTypeChain[0], i, dspType) + 1;
+    if(dspChain.getNumProcessors(dspType) >= sfzIndex)
       continue;
 
     // OK - now we actually need to grab another DSP of given type from the pool:
     SignalProcessor* dsp = getProcessor(dspType);
     if(dsp)
     {
-      dsp->resetSettings(index);
+      dsp->resetSettings(sfzIndex);
       dspChain.addProcessor(dsp);
     }
     else {
@@ -458,7 +442,11 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double sample
   // Others like all tuning related stuff indeed needs to be done at the source.
 
   RegionPlayer* rp = dynamic_cast<RegionPlayer*> (sp);
+  //if(!rp) return;  
+    // happens because baseclass call it with itself, i.e. the this pointer
   RAPT::rsAssert(rp != nullptr);
+
+
   double val = (double)s.getValue();
   using OC   = Opcode;
   switch(s.getType())
