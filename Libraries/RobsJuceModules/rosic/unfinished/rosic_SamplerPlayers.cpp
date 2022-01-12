@@ -154,24 +154,15 @@ rsFloat64x2 RegionPlayer::getFrame()
 
   // Negatively initialized sampleTime implements delay. If we are still "waiting", we just 
   // increment the time and return 0,0. Actual output will be produced as soon as sampleTime 
-  // reaches zero. 
-  if(sampleTime < 0.0)
-  {
+  // reaches zero. It actually sucks to have to do this per sample just to support offset. Try to
+  // implement offset differently...but how?
+  if(sampleTime < 0.0) {
     sampleTime += 1.0;
     if(sampleTime >= 0.0)
-    {
-      sampleTime += offset;   // old
-      //sampleTime += offset - 1; // new
-
-      //stream->getFrameStereo((float)sampleTime, &L, &R);
-      //return this->amp * rsFloat64x2(L, R); 
-    }
-    return rsFloat64x2(0.0, 0.0);
-  }
-  // try to add the offset if(sampleTime <= 0 && sampleTime + increment > 0) and remove the offset
-  // bsuiness from setupDspSettingsFor. It actually sucks to have to do this per sample just to 
-  // support offset. Try to implement offset differently...but how?
-
+      sampleTime += offset;
+    return rsFloat64x2(0.0, 0.0); }
+  if(sampleTime == 0.0)
+    sampleTime = offset;
 
   stream->getFrameStereo((float)sampleTime, &L, &R);  // try to avoid the conversion to float
   // -implement better interpolation methods (sinc, elephant, ...)
@@ -391,8 +382,8 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
   // If there is no delay to be considered, we advance the sample time into the sample by the 
   // desired offset. Otherwise, sampleTime will have been initialized to -delaySamples and we leave
   // it at that. In this case, the offset will be handled in getFrame etc.:
-  if(sampleTime >= 0.0 && !busMode)
-    sampleTime = offset;
+  //if(sampleTime >= 0.0 && !busMode)
+  //  sampleTime = offset;
   // Doesn't work in busMode - but that's dirty! We should handle both modes uniformly here. Find
   // a better way to handle the offset. Dont' touch it here!
 }

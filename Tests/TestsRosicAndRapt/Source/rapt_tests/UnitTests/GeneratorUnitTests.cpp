@@ -577,15 +577,22 @@ bool samplerEngineUnitTest1()
   ok &= outR == (2.f * sin440);
   //rsPlotVectors(outL, outR); 
 
-
   // Test delay:
   float delaySamples = 10.75f;
   float delaySeconds = delaySamples / fs;
   se.setRegionSetting(0, 0, PST::panN,   0.f, 1);        // back to center, makes testing easier
   se.setRegionSetting(0, 0, PST::Delay,  delaySeconds);
+  VecF tgt = sin440;
+  float tol = 1.e-7f;  // ~= 140 dB SNR
+  rsApplyDelay(tgt, delaySamples);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, false); 
+
+  /*
+  // old:
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));  // the noteOn, again
   for(int n = 0; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
+  rsPlotVector(outL);
   for(int n = 0; n < delaySamples; n++) {
     ok &= outL[n] == 0.f;
     ok &= outR[n] == 0.f;  }
@@ -600,6 +607,7 @@ bool samplerEngineUnitTest1()
   VecF tgt = sin440;
   rsApplyDelay(tgt, delaySamples);
   //rsPlotVectors(tgt, outL); 
+  */
 
 
   // move this into samplerEngine2UnitTest
@@ -613,6 +621,9 @@ bool samplerEngineUnitTest1()
   se.setGroupSetting( 0,    PST::volumeN, rsAmpToDb(groupAmp),  1);
 
 
+
+  /*
+  // obsolete:
   auto testNote = [&](
     float key, float vel, const VecF& targetL, const VecF& targetR, float tol = 0.f)
   {
@@ -623,6 +634,7 @@ bool samplerEngineUnitTest1()
     float errR = AT::maxDeviation(&outR[0], &targetR[0], N);
     return errL <= tol && errR <= tol;
   };
+  */
   // ToDo: move up and use it to reduce boilerplate for many other tests as well - maybe make it
   // a free function, taking the engine as reference argument...or a pointer
   // done: testSamplerNote ...use that function in the tests above to reduce the boilerplate
@@ -912,15 +924,7 @@ bool samplerEngine2UnitTest()
   rsApplyDelay(tgt, -regionOffset); 
   rsApplyDelay(tgt, -groupOffset); 
   rsApplyDelay(tgt, -instrOffset); 
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true);
-  rsAssert(ok);
-  // fails! we get only the region- and group offset 10 and 20 accumulated into the 
-  // RegionPlayer's offset variable
-  // sampleTime starts at 10 an we'll never hit the branch where the offset is added
-  // in RegionPlayer::prepareToPlay, sampleTime is first reset to 0 via the call to 
-  // resetPlayerSettings as it should, but after the call to setupDspSettingsFor, it's
-  // suddenly 10 - where does this 10 come from? it's clearly wrong! It's set in
-  // RegionPlayer::setupDspSettingsFor at the bottom!
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
 
   //---------------------------------------------------------------------------
   // Test offset and delay (but only for the region setting):
