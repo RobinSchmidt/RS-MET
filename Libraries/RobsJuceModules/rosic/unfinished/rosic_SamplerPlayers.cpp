@@ -407,32 +407,46 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   // this setting should be applied accumulatively in busMode. In default mode, GroupPlayer and 
   // InstrumPlayer play no role at all.
 
-  double tuneCoarse = 0.0;        // in semitones
-  double tuneFine   = 0.0;        // in cents
+  //double tuneCoarse = 0.0;        // in semitones
+  //double tuneFine   = 0.0;        // in cents
   double val = (double)s.getValue();
   using OC   = Opcode;
   switch(s.getType())
   {
   // Pitch settings:
   //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
-  case OC::Transpose: { 
-    tuneCoarse = val;               } break;
+  case OC::Transpose: 
+  { 
+    //tuneCoarse = val;
+    increment *= pow(2.0, val / 12.0);
+  } break;
   case OC::Tune:      { 
-    tuneFine   = val;               } break;
+    //tuneFine   = val;
+    increment *= pow(2.0, 0.01 * val / 12.0);
+  } break;
   case OC::Delay:     { sampleTime = -val * sampleRate; } break;
   case OC::Offset:    
   { 
     offset     = float(val);
   } break;
   }
-  double tune     = tuneCoarse + 0.01 * tuneFine;
-  double factor   = pow(2.0, tune / 12.0);
-  this->increment = factor;
+  //double tune     = tuneCoarse + 0.01 * tuneFine;
+  //double factor   = pow(2.0, tune / 12.0);
+  //this->increment = factor;
 
   //this->increment *= factor;
   // i think, we need to do accumulate because we want to accumulate coarse and fine tuning - but 
   // maybe we need to do it directly in the switch?
 }
+// ...actually, if we can assume that all values start at neutral values, we can always accumulate
+// and the distinction between this implementation and the one in SampleBusPlayer becomes identical
+// and can therfore be moved into the baseclass..or..well - not quite: SampleBusPlayer applies 
+// everything to rp and we to "this" - but "this" equals rp...hmmm..but no - that accumulation 
+// business thwarts the override behavior! We receive call from the (maybe) instrum, then (maybe) 
+// group, then (maybe) region. Each of these is optional but when a call happens, it should 
+// override the current setting. i think, we need members for tranpose and tune in the 
+// RegionPlayer, set these and then in RegionPlayer::setupDspSettingsFor calculate the increment
+// once.
 
 //=================================================================================================
 // SampleBusPlayer
