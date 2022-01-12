@@ -1859,8 +1859,8 @@ bool samplerWaveShaperTest()
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f, -1);
-  se.setRegionSetting(0, 0, PST::DistShape, float(shape1), 1);
-  se.setRegionSetting(0, 0, PST::DistDrive, drive1, 1);
+  se.setRegionSetting(0, 0, PST::distortN_shape, float(shape1), 1);
+  se.setRegionSetting(0, 0, PST::distortN_drive, drive1, 1);
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
 
   // Set up one region within one group and add a waveshaper to the group. When two notes are being 
@@ -1871,8 +1871,8 @@ bool samplerWaveShaperTest()
   se.addRegion(0); ok &= se.getNumRegions(0) == 1;
   se.setRegionSample(0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f, -1);
-  se.setGroupSetting(0, PST::DistShape, float(shape1), 1);
-  se.setGroupSetting(0, PST::DistDrive, drive1, 1);
+  se.setGroupSetting(0, PST::distortN_shape, float(shape1), 1);
+  se.setGroupSetting(0, PST::distortN_drive, drive1, 1);
 
   // The class rsSamplerEngine should treat the group settings as fallback for when there is no
   // region setting and the DSP should be applied to each region separately:
@@ -1887,7 +1887,7 @@ bool samplerWaveShaperTest()
   // Let the region override the group setting for drive. The shape setting should still come from
   // the group. We again play two notes at 60 and 48:
   float drive2 = 2*drive1;
-  se.setRegionSetting(0, 0, PST::DistDrive, drive2, 1);
+  se.setRegionSetting(0, 0, PST::distortN_drive, drive2, 1);
   for(int n = 0; n < N; n++)
     tgt[n] = tanh(drive2 * sin440[n]) + tanh(drive2 * getSampleAt(sin440, 0.5f*n));
   se.reset();
@@ -1897,7 +1897,7 @@ bool samplerWaveShaperTest()
 
   // Remove the group setting for the shape - now the waveshaper should use the default shape which
   // is linear, i.e. no shaping at all. 
-  se.removeGroupSetting(0, PST::DistShape, -1);
+  se.removeGroupSetting(0, PST::distortN_shape, -1);
   for(int n = 0; n < N; n++)
     tgt[n] = (drive2 * sin440[n]) + (drive2 * getSampleAt(sin440, 0.5f*n));
   se.reset();
@@ -1928,9 +1928,9 @@ bool samplerWaveShaperTest()
   se.addRegion(0); ok &= se.getNumRegions(0) == 1;
   se.setRegionSample(0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f, -1);
-  se.setInstrumentSetting(  PST::DistShape,  float(shape1), 1);
-  se.setGroupSetting( 0,    PST::DistDrive,  drive1, 1);
-  se.setRegionSetting(0, 0, PST::DistOffset, dc1, 1);
+  se.setInstrumentSetting(  PST::distortN_shape,  float(shape1), 1);
+  se.setGroupSetting( 0,    PST::distortN_drive,  drive1, 1);
+  se.setRegionSetting(0, 0, PST::distortN_dc, dc1, 1);
   for(int n = 0; n < N; n++)
     tgt[n] = tanh(drive1 * sin440[n] + dc1);  // maybe include a gain1, too
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
@@ -2006,8 +2006,8 @@ bool samplerWaveShaperTest2()
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f, -1);
-  se.setGroupSetting(0, PST::DistShape, float(shapeG), -1);
-  se.setGroupSetting(0, PST::DistDrive, driveG, -1);
+  se.setGroupSetting(0, PST::distortN_shape, float(shapeG), -1);
+  se.setGroupSetting(0, PST::distortN_drive, driveG, -1);
 
   // Default setting (fallback mode):
   for(int n = 0; n < N; n++)
@@ -2107,8 +2107,8 @@ bool samplerDspChainTest()
   float drive    = 4.0f;
   Shape shape    = Shape::tanh;
   float cutoff3  = 1000.f; 
-  se.setRegionSetting(0, 0, PST::DistShape, float(shape), -1);
-  se.setRegionSetting(0, 0, PST::DistDrive, drive, -1);
+  se.setRegionSetting(0, 0, PST::distortN_shape, float(shape), -1);
+  se.setRegionSetting(0, 0, PST::distortN_drive, drive, -1);
   se.setRegionSetting(0, 0, PST::filN_type, (float)Type::lp_6, 3);
   se.setRegionSetting(0, 0, PST::cutoffN,   cutoff3, 3);
 
@@ -2154,7 +2154,7 @@ bool samplerDspChainTest()
   updateTgt();
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
   drive = 8.0;
-  se.setRegionSetting(0, 0, PST::DistDrive, drive, -1);
+  se.setRegionSetting(0, 0, PST::distortN_drive, drive, -1);
   updateTgt();
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
 

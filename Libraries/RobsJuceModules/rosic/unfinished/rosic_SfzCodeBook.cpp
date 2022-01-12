@@ -121,10 +121,11 @@ SfzCodeBook::SfzCodeBook()
   // may be going to change:
   dsp = DspType::WaveShaper;
   OS RsMet = OS::RsMet;
-  add(OC::DistShape,  Nat, "dist_shape",  0.f,  0.f, 0.f, dsp, OU::RawInt,   RsMet); // not yet used
-  add(OC::DistDrive,  Flt, "dist_drive",  0.f,  8.f, 1.f, dsp, OU::RawFloat, RsMet);
-  add(OC::DistOffset, Flt, "dist_dc",    -1.f, +1.f, 0.f, dsp, OU::RawFloat, RsMet);
-  // maybe allow negative values for drive like -8...+8
+  add(OC::distortN_shape,  Nat, "distortN_shape",  0.f,  0.f, 0.f, dsp, OU::RawInt,   RsMet); // not yet used
+  add(OC::distortN_drive,  Flt, "distortN_drive",  0.f,  8.f, 1.f, dsp, OU::RawFloat, RsMet);
+  add(OC::distortN_dc,     Flt, "distortN_dc",    -1.f, +1.f, 0.f, dsp, OU::RawFloat, RsMet);
+  // maybe allow negative values for drive like -8...+8...maybe that can be an additional scale
+  // parameter - rename opcodes to distortN_shape, etc.
 
   // ToDo: 
   // -PanLaw, introduce fil_bw for bandwidth parameter for bandpass...actually, we need to figure

@@ -653,9 +653,9 @@ public:
     { 
       type = DspType::WaveShaper; 
       params.reserve(3);
-      addParameter(Opcode::DistShape);
-      addParameter(Opcode::DistDrive);
-      addParameter(Opcode::DistOffset);
+      addParameter(Opcode::distortN_shape);
+      addParameter(Opcode::distortN_drive);
+      addParameter(Opcode::distortN_dc);
     }
     void prepareToPlay(double fs) override
     {

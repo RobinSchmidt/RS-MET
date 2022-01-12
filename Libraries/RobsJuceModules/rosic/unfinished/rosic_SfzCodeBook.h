@@ -110,7 +110,11 @@ enum class Opcode
   // is already there in SFZ 2.0 and in other sfz engines with extensions. Try to be compatible 
   // with the  largest possible range of other engines. Discuss extensions on KVR before 
   // implementing them in production code:
-  DistShape, DistDrive, DistOffset, // DistGain...may be redundant with Volume
+    
+  distortN_shape, distortN_drive, distortN_dc, 
+  //distortN_shape, distortN_drive, distortN_dc, // DistGain...may be redundant with Volume
+
+
   // SFZ2 has opcode egN_driveshape but no driveshape as such? same with lfoN_drive. does that 
   // mean the LFO signal is drive into a saturator?
   // check: https://www.plogue.com/products/sforzando.html
