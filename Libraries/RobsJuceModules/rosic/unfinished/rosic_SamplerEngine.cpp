@@ -879,6 +879,7 @@ int rsSamplerEngine2::stopAllPlayers()
     activeGroupPlayers[i]->releaseResources();
     idleGroupPlayers.push_back(activeGroupPlayers[i]); }
   activeGroupPlayers.clear();
+  instrumPlayer.releaseResources();
   return numRegionPlayersStopped;
 }
 // ToDo: 
@@ -892,31 +893,30 @@ void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc)
   // new one from the idle ones and add it to the active ones:
   int numLayersNow    = getNumActiveLayers();
   int numLayersBefore = numLayersNow - psc.numLayersStarted;
-  for(int i = numLayersBefore; i < numLayersNow; i++) 
-  {
+  for(int i = numLayersBefore; i < numLayersNow; i++) {
     RegionPlayer* rp = activePlayers[i];
     const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
     int gpi = getActiveGroupPlayerIndexFor(grp);
-    if(gpi != -1)
-    {
+    if(gpi != -1) {
       activeGroupPlayers[gpi]->addRegionPlayer(rp);
-      instrumPlayer.addRegionPlayer(rp);
-    }
-    else
-    {
-      if(!startGroupPlayerFor(rp))
-      {
-        //RAPT::rsError("not yet impemented");
+      instrumPlayer.addRegionPlayer(rp); }
+    else  {
+      if(!startGroupPlayerFor(rp)) {
         stopRegionPlayer(i);
-        numLayersNow--;
+        numLayersNow--;  }
+      if(numLayersBefore == 0)           // If nothing was playing before, we have to 
+      {
+        if(!startInstrumPlayerFor(rp));  // start the instrumPlayer, too
+        {
+          //reset(); return; 
+          // Failure to start the instrumPlayer should actually be an extremely rare and 
+          // exceptional sitution. We have somehow managed to trigger an overload with a single
+          // noteOn coming from a silent state where nothing at all was playing. We handle this
+          // quite brutally by a total reset and early return. That actually makes some sense
+          // because it means we were silent before and remain silent after the event.
+          // ...but it breaks the unit tests - why?
+        }
       }
-
-
-      // Why is this inside the loop? for optimization? Move out and also handle failure
-      // condition - maybe roll backas many of the new ReginPlayers as needed to make it work.
-      // If it fails, roll back one, try again, etc.
-      if(numLayersBefore == 0)   // If nothing was playing before, we have to 
-        startInstrumPlayer(rp);  // start the instrumPlayer, too
     }
   }
 }
@@ -963,11 +963,9 @@ int rsSamplerEngine2::stopGroupPlayer(int i)
   return rsReturnCode::success;
 }
 
-void rsSamplerEngine2::startInstrumPlayer(RegionPlayer* rp)
+bool rsSamplerEngine2::startInstrumPlayerFor(RegionPlayer* rp)
 {
-  instrumPlayer.setInstrumToPlay(&sfz.instrument , sampleRate, rp, busMode);
-  // todo: use the return value - maybe pass it through to the caller which may need to roolback,
-  // in case of failure
+  return instrumPlayer.setInstrumToPlay(&sfz.instrument , sampleRate, rp, busMode);
 }
 
 void rsSamplerEngine2::stopInstrumPlayer()

@@ -360,7 +360,10 @@ public:
   // todo: return a PlayStatusChange
 
   /** Calls stopAllPlayers. Function is for consistency with the rest of the library. */
-  void reset() { stopAllPlayers(); }
+  virtual void reset() { stopAllPlayers(); }
+  // make virtual - subclass must reset additional stuff..hmm - it overrides stopAllPayers instead
+  // maybe it would be better to have a stopAllRegionPlayers function and subclass overrides reset
+  // and ther calls also stopAllGroupPlayers and stops the instrument player
 
   /** Handles a musical (i.e. midi) event. This will typically change the playback status of the
   engine, for example by triggering the playback of one or more layers/region. If this status
@@ -755,7 +758,7 @@ protected:
   int stopGroupPlayer(int activeIndex);
 
   // under construction
-  void startInstrumPlayer(RegionPlayer* regionPlayer); 
+  bool startInstrumPlayerFor(RegionPlayer* regionPlayer); 
   void stopInstrumPlayer();
 
 
