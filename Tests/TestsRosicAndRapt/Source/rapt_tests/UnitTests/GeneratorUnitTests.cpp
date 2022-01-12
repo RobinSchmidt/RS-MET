@@ -2497,9 +2497,13 @@ bool samplerOverloadTest()
 
   // Remove 2 filters from the first group and do the same test. Now, it should work because the 
   // 2nd note needs only the 3 filters for the RegionPlayer and 1 for the GroupPlayer:
-  se.removeGroupSetting(0, OC::cutoffN, 1);
-
-
+  se.removeGroupSetting(0, OC::cutoffN, 2);
+  se.removeGroupSetting(0, OC::cutoffN, 3);
+  ok &= testNote(70, 1, 4);  // uses 2/2 filters
+  ok &= testNote(60, 2, 8);  // uses 3/1 filters
+  // fails  - check SamplePlayer::augmentOrCleanDspChain - i think, the removeGroupSetting does not
+  // remove the setting from the dspTypeChain so it still thinks that it has 3 filters. -> fix
+  // removeSetting...ok done - but now the DSP array is completely empty
 
 
 

@@ -19,7 +19,7 @@ DspType rsSamplerData::PlaybackSetting::getTargetProcessorType(Opcode type)
 
 //-------------------------------------------------------------------------------------------------
 
-void rsSamplerData::OrganizationLevel::ensureProcessorPresent(Opcode opcodeType, int howMany)
+void rsSamplerData::OrganizationLevel::ensureDspsPresent(Opcode opcodeType, int howMany)
 { 
   using namespace RAPT;
   using SPT = DspType;
@@ -36,6 +36,18 @@ void rsSamplerData::OrganizationLevel::ensureProcessorPresent(Opcode opcodeType,
   int missing = howMany - count;                   // rename howMany to numRequired
   for(int i = 0; i < missing; i++)
     dspTypes.push_back(dspType);
+}
+
+void rsSamplerData::OrganizationLevel::updateDspsArray()
+{
+  dspTypes.clear();
+  for(size_t i = 0; i < settings.size(); i++)
+  {
+    Opcode op = settings[i].getType();
+    int idx   = settings[i].getIndex();
+    if(idx != -1)  // opcodes that apply to the DSP array don't have index -1
+      ensureDspsPresent(op, RAPT::rsMax(idx, 1));
+  }
 }
 
 void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
@@ -59,7 +71,7 @@ void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
   else
   {
     settings.push_back(s);
-    ensureProcessorPresent(t, RAPT::rsMax(idx, 1));
+    ensureDspsPresent(t, RAPT::rsMax(idx, 1));
     // The order in which the processors appear in the chain should reflect the order in which 
     // their opcodes appear in the sfz (or, if setup is done programmatically, the order in which
     // the opcodes were added). The first opcode applying to a particular kind of processor 
@@ -84,6 +96,7 @@ bool rsSamplerData::OrganizationLevel::removeSetting(Opcode type, int index)
       if(settings[i].getType() == type && settings[i].getIndex() == index) {
         RAPT::rsRemove(settings, i);
         wasRemoved = true; }}}
+  updateDspsArray();
   return wasRemoved;
   // We can't use size_t for i because the -1 would create an access violation when size() = 0
   // Maybe it should remove the DSP if it was the last setting that applied to it?

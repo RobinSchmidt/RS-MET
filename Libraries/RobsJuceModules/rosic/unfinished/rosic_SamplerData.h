@@ -291,8 +291,13 @@ public:
     processor type is present in our signalProcessors array. It checks, if the right kind of 
     processor is already there and adds it, if not. You can also pass a parameter to require than
     more than one such processor must be present. */
-    void ensureProcessorPresent(Opcode opcodeType, int howMany = 1);
-    // maybe rename to ensureProcessorsPresent
+    void ensureDspsPresent(Opcode opcodeType, int howMany = 1);
+
+    /** Updates our dspTypes array from scratch from the settings array. */
+    void updateDspsArray();
+
+
+
 
     /** Sets the audio stream object that should be used for this region. */
     //void setSampleStream(const AudioFileStream* newStream) { sampleStream = newStream; }
