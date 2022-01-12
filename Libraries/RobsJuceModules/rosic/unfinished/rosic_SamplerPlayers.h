@@ -55,7 +55,7 @@ private:
 
 //=================================================================================================
 
-class RegionPlayer;
+//class RegionPlayer;
 
 /** Baseclass for RegionPlayer, GroupPlayer and InstrumPlayer to factor out the common stuff. The 
 functionality for sample playback is distributed mostly between this baseclass and the subclass 
@@ -347,27 +347,21 @@ public:
   /** Returns true, iff this GroupPlayer has no RegionPlayer objects running. */
   bool hasNoRegionPlayers() { return regionPlayers.empty(); }
 
+  /** Returns a pointer to the group to play. If there is currently no group assigned to this 
+  player, this is a nullptr. */
   const rsSamplerData::Group* getGroupToPlay() const 
-  { 
-    return (const rsSamplerData::Group*) grpOrInstr;
-    //return dynamic_cast<const rsSamplerData::Group*> (grpOrInstr);
-    //return group; 
-  }
+  { return (const rsSamplerData::Group*) grpOrInstr; }
 
+  /** Sets the group that should be played back by this player. */
   bool setGroupToPlay(const rsSamplerData::Group* groupToPlay, double sampleRate, 
-    bool busMode);
-
-
+    bool busMode)
+  { return setGroupOrInstrumToPlay(groupToPlay, sampleRate, busMode); }
+    // ...it's just a convenience function to make the call site look nicer.
 
 protected:
 
-  //bool assembleDspChain(bool busMode) override;
-
   std::vector<RegionPlayer*> regionPlayers;
   // Pointers to the players for all the regions in this group.
-
-  //const rsSamplerData::Group* group = nullptr;
-  // Pointer to the group object which is played back by this player
 
 };
 
@@ -378,42 +372,15 @@ class InstrumPlayer : public SampleBusPlayer
 
 public:
 
-  void processFrame(rsFloat64x2& inOut) 
-  { 
-    dspChain.processFrame(inOut); 
-  }
+  void processFrame(rsFloat64x2& inOut) { dspChain.processFrame(inOut);  }
   // todo: use float for the signals all the way through
 
   bool setInstrumToPlay(const rsSamplerData::Instrument* instrumToPlay, double sampleRate, 
-    bool busMode);
-
-  /*
-  void releaseResources()
-  {
-    disassembleDspChain();
-    grpOrInstr = nullptr;
-  }
-  */
-  // move to baseclass
-  // if all 3 subclasses have such a method, introduce a virtual baseclass method
-  // obsolete?
-
-protected:
-
-  //bool assembleDspChain(bool busMode) override;
-
-  //const rsSamplerData::Instrument* instrum = nullptr;
-  // Pointer to the instrument object which is played back by this player
-
-  //std::vector<GroupPlayer*> groupPlayers;
-  // maybe we will need this later, but maybe not
-
+    bool busMode)
+  { return setGroupOrInstrumToPlay(instrumToPlay, sampleRate, busMode); }
+    // Convenience function to make the call site look nicer.
 
 };
-
-
-
-
 
 }}
 

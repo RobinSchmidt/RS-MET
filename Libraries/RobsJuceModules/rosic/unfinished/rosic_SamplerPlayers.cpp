@@ -437,24 +437,6 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
     sampleTime = offset;
 }
 
-/*
-void RegionPlayer::setupDspSettings(
-  const std::vector<PlaybackSetting>& settings, double fs, bool busMode)
-{
-  // Loop through the settings of the region and for each setting that is present, change the 
-  // value from its default to the stored value:
-  SfzCodeBook* codebook = SfzCodeBook::getInstance();
-  for(size_t i = 0; i < settings.size(); i++)
-  {
-    PlaybackSetting s = settings[i];
-    Opcode op = s.getType();
-    if(     codebook->isDspSetting(op))    { setupProcessorSetting(s);        }
-    else if(codebook->isPlayerSetting(op)) { setupPlayerSetting(s, fs, this); }
-  }
-}
-// move code to baseclass implementation
-*/
-
 void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
   SamplePlayer::setupProcessorSetting(s);
@@ -471,7 +453,6 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   // GroupPlayers and InstrumPlayers, the pointer is supposed to hold the RegionPlayer to which 
   // this setting should be applied accumulatively in busMode. In default mode, GroupPlayer and 
   // InstrumPlayer play no role at all.
-
 
   double tuneCoarse = 0.0;        // in semitones
   double tuneFine   = 0.0;        // in cents
@@ -571,9 +552,6 @@ void GroupPlayer::releaseResources()
 {
   SampleBusPlayer::releaseResources();
   regionPlayers.clear();
-
-  //disassembleDspChain();
-  //grpOrInstr = nullptr;
 }
 
 void GroupPlayer::addRegionPlayer(RegionPlayer* newPlayer)
@@ -587,79 +565,5 @@ void GroupPlayer::removeRegionPlayer(RegionPlayer* player)
   RAPT::rsAssert(RAPT::rsContains(regionPlayers, player)); // ToDo: add and use rsContainsOnce
   RAPT::rsRemoveFirstOccurrence(regionPlayers, player);
 }
-
-bool GroupPlayer::setGroupToPlay(const rsSamplerData::Group* groupToPlay, double sampleRate, 
-  bool busMode)
-{
-  return setGroupOrInstrumToPlay(groupToPlay, sampleRate, busMode);
-
-  /*
-  RAPT::rsAssert(busMode == true);
-  // It makes no sense to use a GroupPlayer when not in busMode. Maybe remove the parameter
-
-  if(groupToPlay == group)
-    return true;               // nothing to do
-  disassembleDspChain();
-  group = groupToPlay;
-  if(group != nullptr) {
-    if(!assembleDspChain(busMode)) {
-      group = nullptr;
-      return false;   }
-    setupDspSettings(group->getSettings(), sampleRate, busMode); 
-    dspChain.prepareToPlay(sampleRate); }
-  return true;
-  */
-}
-
-/*
-bool GroupPlayer::assembleDspChain(bool busMode)
-{
-  RAPT::rsAssert(busMode == true);
-  // If we are not in busMode, this function should actually not even get called because only in
-  // busMode, the GroupPlayer's own DSP chain is used. We need to take the busMode parameter 
-  // anyway because this function is an override.
-
-  return SamplePlayer::assembleDspChain(group->getProcessingChain());
-  // We need only to take into account the group's DSP settings. The instrument's DSP settings
-  // can safely be ignored if we are in busMode (which is supposed to be always the case) because 
-  // in busMode, the InstrumentPlayer will take care of the instrument's DSP settings
-}
-*/
-
-//=================================================================================================
-// InstrumPlayer
-
-/*
-bool InstrumPlayer::assembleDspChain(bool busMode)
-{
-  RAPT::rsAssert(busMode == true); // see comment in GroupPlayer::assembleDspChain
-  return SamplePlayer::assembleDspChain(instrum->getProcessingChain());
-}
-*/
-
-bool InstrumPlayer::setInstrumToPlay(const rsSamplerData::Instrument* instrumToPlay, 
-  double sampleRate, bool busMode)
-{
-  return setGroupOrInstrumToPlay(instrumToPlay, sampleRate, busMode);
-
-  /*
-  if(instrumToPlay == instrum)
-    return true; 
-  disassembleDspChain();
-  instrum = instrumToPlay;
-  if(instrum != nullptr){
-    if(!assembleDspChain(busMode)) {
-      instrum = nullptr;
-      return false;   }
-    setupDspSettings(instrum->getSettings(), sampleRate, busMode); 
-    dspChain.prepareToPlay(sampleRate); }
-  return true;
-  */
-}
-// almost identical to GroupPlayer::setGroupToPlay - maybe factor out into SampleBusPlayer taking
-// a general SamplerData::OrganizationLevel (rename that to HierarchyLevel - shorter and better)
-
-
-
 
 }}
