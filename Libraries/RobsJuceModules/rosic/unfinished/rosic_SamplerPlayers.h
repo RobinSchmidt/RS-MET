@@ -61,7 +61,7 @@ private:
 
 //=================================================================================================
 
-//class RegionPlayer;
+class RegionPlayer;
 
 /** Baseclass for RegionPlayer, GroupPlayer and InstrumPlayer to factor out the common stuff. The 
 functionality for sample playback is distributed mostly between this baseclass and the subclass 
@@ -128,12 +128,12 @@ protected:
   up its own member variables, GroupPlayer manipulates one of its embedded RegionPlayers, 
   etc.  */
   virtual void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-    SamplePlayer* rp) = 0;
+    RegionPlayer* rp) = 0;
   // rename to setPlayerOpcode
 
 
   virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings,
-    double sampleRate, bool busMode);
+    double sampleRate, RegionPlayer* regionPlayer, bool busMode);
   // maybe return a bool to indicate, if the setting was handled (if flase, the subclass may
   // want to do somthing in its override)
 
@@ -239,7 +239,8 @@ protected:
 
   //void setupProcessorSetting(const PlaybackSetting& s) override;
 
-  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, SamplePlayer* rp) override;
+  void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
+    RegionPlayer* rp) override;
 
   const Region* region;                 //< The Region object that this object should play
   const AudioFileStream<float>* stream; //< Stream object to get the data from
@@ -290,10 +291,10 @@ class SampleBusPlayer : public SamplePlayer
 public:
 
   void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-    SamplePlayer* rp) override;
+    RegionPlayer* rp) override;
 
   bool setGroupOrInstrumToPlay(const rsSamplerData::OrganizationLevel* thingToPlay, 
-    double sampleRate, bool busMode);
+    double sampleRate, RegionPlayer* regionPlayer, bool busMode);
   // busMode is superfluous - when a SampleBusPlayer is invoked, we are in busMode by definition
 
   virtual void releaseResources()
@@ -350,8 +351,8 @@ public:
 
   /** Sets the group that should be played back by this player. */
   bool setGroupToPlay(const rsSamplerData::Group* groupToPlay, double sampleRate, 
-    bool busMode)
-  { return setGroupOrInstrumToPlay(groupToPlay, sampleRate, busMode); }
+    RegionPlayer* rp, bool busMode)
+  { return setGroupOrInstrumToPlay(groupToPlay, sampleRate, rp, busMode); }
     // ...it's just a convenience function to make the call site look nicer.
 
 protected:
@@ -368,12 +369,14 @@ class InstrumPlayer : public SampleBusPlayer
 
 public:
 
+  void addRegionPlayer(RegionPlayer* newPlayer);
+
   void processFrame(rsFloat64x2& inOut) { dspChain.processFrame(inOut);  }
   // todo: use float for the signals all the way through
 
   bool setInstrumToPlay(const rsSamplerData::Instrument* instrumToPlay, double sampleRate, 
-    bool busMode)
-  { return setGroupOrInstrumToPlay(instrumToPlay, sampleRate, busMode); }
+    RegionPlayer* rp, bool busMode)
+  { return setGroupOrInstrumToPlay(instrumToPlay, sampleRate, rp, busMode); }
     // Convenience function to make the call site look nicer.
 
 };

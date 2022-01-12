@@ -885,7 +885,6 @@ int rsSamplerEngine2::stopAllPlayers()
 // -in addition to move the players back into their idle pool, we also need to move the dsp
 //  objects back
 
-
 void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc)
 {
   // Figure out, how many regions were triggered and add pointers to the freshly triggered 
@@ -893,18 +892,23 @@ void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc)
   // new one from the idle ones and add it to the active ones:
   int numLayersNow    = getNumActiveLayers();
   int numLayersBefore = numLayersNow - psc.numLayersStarted;
-  for(int i = numLayersBefore; i < numLayersNow; i++) {
+  for(int i = numLayersBefore; i < numLayersNow; i++) 
+  {
     RegionPlayer* rp = activePlayers[i];
     const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
     int gpi = getActiveGroupPlayerIndexFor(grp);
     if(gpi != -1)
+    {
       activeGroupPlayers[gpi]->addRegionPlayer(rp);
+      instrumPlayer.addRegionPlayer(rp);
+    }
     else
-      startGroupPlayerFor(rp); }
-
-  // If nothing was playing before, we have to start the instrumPlayer, too:
-  if(numLayersBefore == 0)
-    startInstrumPlayer();
+    {
+      startGroupPlayerFor(rp);
+      if(numLayersBefore == 0)   // If nothing was playing before, we have to 
+        startInstrumPlayer(rp);  // start the instrumPlayer, too
+    }
+  }
 }
 
 int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const rsSamplerData::Group* group)
@@ -922,11 +926,9 @@ void rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp)
   RAPT::rsAssert(gp);
   // ToDo: check, if nullptr is returned, if so, return false
 
-
   const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
   gp->addRegionPlayer(rp);
-
-  bool ok = gp->setGroupToPlay(grp, sampleRate, busMode);
+  bool ok = gp->setGroupToPlay(grp, sampleRate, rp, busMode);
   if(!ok)
   {
     RAPT::rsError("not yet implemented");
@@ -957,9 +959,9 @@ int rsSamplerEngine2::stopGroupPlayer(int i)
   return rsReturnCode::success;
 }
 
-void rsSamplerEngine2::startInstrumPlayer()
+void rsSamplerEngine2::startInstrumPlayer(RegionPlayer* rp)
 {
-  instrumPlayer.setInstrumToPlay(&sfz.instrument , sampleRate, busMode);
+  instrumPlayer.setInstrumToPlay(&sfz.instrument , sampleRate, rp, busMode);
   // todo: use the return value - maybe pass it through to the caller which may need to roolback,
   // in case of failure
 }

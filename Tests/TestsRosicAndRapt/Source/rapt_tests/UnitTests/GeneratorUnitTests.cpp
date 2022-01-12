@@ -884,10 +884,7 @@ bool samplerEngine2UnitTest()
   rsApplyDelay(tgt, regionDelay);
   rsApplyDelay(tgt, groupDelay);
   rsApplyDelay(tgt, instrDelay);
-  //se.reset();
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true);
-  // fails - output has only the small region delay
-
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
 
   //---------------------------------------------------------------------------
   // Test offset accumulation:
@@ -915,7 +912,8 @@ bool samplerEngine2UnitTest()
   rsApplyDelay(tgt, -regionOffset); 
   rsApplyDelay(tgt, -groupOffset); 
   rsApplyDelay(tgt, -instrOffset); 
-  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, false);
+  ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true);
+  // fails!
 
   //---------------------------------------------------------------------------
   // Test offset and delay (but only for the region setting):

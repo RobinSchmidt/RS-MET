@@ -754,7 +754,7 @@ protected:
   int stopGroupPlayer(int activeIndex);
 
   // under construction
-  void startInstrumPlayer(); 
+  void startInstrumPlayer(RegionPlayer* regionPlayer); 
   void stopInstrumPlayer();
 
 

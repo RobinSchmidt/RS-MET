@@ -122,15 +122,15 @@ void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 }
 
 void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings,
-  double sampleRate, bool busMode)
+  double sampleRate, RegionPlayer* rp, bool busMode)
 {
   SfzCodeBook* codebook = SfzCodeBook::getInstance();
   for(size_t i = 0; i < settings.size(); i++)
   {
     PlaybackSetting s = settings[i];
     Opcode op = s.getType();
-    if(     codebook->isDspSetting(op))    { setupProcessorSetting(s);        }
-    else if(codebook->isPlayerSetting(op)) { setupPlayerSetting(s, sampleRate, this); }
+    if(     codebook->isDspSetting(op))    { setupProcessorSetting(s);              }
+    else if(codebook->isPlayerSetting(op)) { setupPlayerSetting(s, sampleRate, rp); }
   }
 }
 
@@ -364,10 +364,10 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
   // DSP objects on the groups which map to sub-busses and the instrument which maps to the final
   // master bus:
   if(!busMode)
-    setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, busMode);
+    setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, this, busMode);
   if(!busMode)
-    setupDspSettings(region->getGroup()->getSettings(), fs, busMode);
-  setupDspSettings(region->getSettings(), fs, busMode);
+    setupDspSettings(region->getGroup()->getSettings(), fs, this, busMode);
+  setupDspSettings(region->getSettings(), fs, this, busMode);
 
   // The code above will have set up the increment assuming that the current key matches the 
   // rootKey of the sample, Now, as final step, we also adjust it according to the difference 
@@ -400,7 +400,7 @@ void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
 */
 
 void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-  SamplePlayer* rp)
+  RegionPlayer* rp)
 {
   RAPT::rsAssert(rp == this);
   // For RegionPlayer objects like this, this function is supposed to be called only for the object
@@ -431,7 +431,7 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
 // SampleBusPlayer
 
 void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-  SamplePlayer* sp)
+  RegionPlayer* rp)
 {
   // We are supposedly a higher level player object like GroupPlayer or InstrumentPlayer but the 
   // setting in question reaches through to an underlying (embedded) RegionPlayer object and must 
@@ -441,12 +441,7 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double sample
   // also by post-processing with a suitable DSP but it's more efficient to do it at the source.
   // Others like all tuning related stuff indeed needs to be done at the source.
 
-  RegionPlayer* rp = dynamic_cast<RegionPlayer*> (sp);
-  //if(!rp) return;  
-    // happens because baseclass call it with itself, i.e. the this pointer
   RAPT::rsAssert(rp != nullptr);
-
-
   double val = (double)s.getValue();
   using OC   = Opcode;
   switch(s.getType())
@@ -460,7 +455,7 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double sample
 // needs test
 
 bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationLevel* thingToPlay,
-  double sampleRate, bool busMode)
+  double sampleRate, RegionPlayer* rp, bool busMode)
 {
   RAPT::rsAssert(busMode == true);
   // It makes no sense to use a GroupPlayer when not in busMode. Maybe remove the parameter
@@ -470,14 +465,20 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationL
   // isInstrument so we can here do rsAssert(thingToPlay->isGroup() || thingToPlay->isInstrument())
 
   if(thingToPlay == grpOrInstr)
-    return true;               // nothing to do
+    return true;               
+    // nothing to do - actually, this also gets called when a new region is triggered to be played 
+    // within an existing GroupPlayer in which case we may the group's and instrumet's delay etc.
+    // settings ...maybe we need a function addRegionPlayer - we already have one in GroupPlayer
+    // ...hmm...
+
+
   disassembleDspChain();
   grpOrInstr = thingToPlay;
   if(grpOrInstr != nullptr) {
     if(!assembleDspChain(busMode)) {
       grpOrInstr = nullptr;
       return false;   }
-    setupDspSettings(grpOrInstr->getSettings(), sampleRate, busMode); 
+    setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode);
     dspChain.prepareToPlay(sampleRate); }
   return true;
 }
@@ -524,5 +525,14 @@ void GroupPlayer::removeRegionPlayer(RegionPlayer* player)
   RAPT::rsAssert(RAPT::rsContains(regionPlayers, player)); // ToDo: add and use rsContainsOnce
   RAPT::rsRemoveFirstOccurrence(regionPlayers, player);
 }
+
+void InstrumPlayer::addRegionPlayer(RegionPlayer* newPlayer)
+{
+  RAPT::rsError("not yet implemented");
+  // we may nee to accumulate into the region players delay, pitch etc. variables. a partial
+  // DSP setup only for those opcodes thataffect the source
+
+}
+
 
 }}
