@@ -904,21 +904,16 @@ void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc)
       if(!startGroupPlayerFor(rp)) {
         stopRegionPlayer(i);
         numLayersNow--;  }
-      if(numLayersBefore == 0)           // If nothing was playing before, we have to 
-      {
-        if(!startInstrumPlayerFor(rp));  // start the instrumPlayer, too
-        {
-          //reset(); return; 
+      if(numLayersBefore == 0) {          // If nothing was playing before, we have to 
+        if(!startInstrumPlayerFor(rp)) {  // start the instrumPlayer, too
+          reset(); return; }}
           // Failure to start the instrumPlayer should actually be an extremely rare and 
           // exceptional sitution. We have somehow managed to trigger an overload with a single
           // noteOn coming from a silent state where nothing at all was playing. We handle this
           // quite brutally by a total reset and early return. That actually makes some sense
           // because it means we were silent before and remain silent after the event.
-          // ...but it breaks the unit tests - why?
-        }
-      }
-    }
-  }
+    } 
+  } // end for i
 }
 
 int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const rsSamplerData::Group* group)
