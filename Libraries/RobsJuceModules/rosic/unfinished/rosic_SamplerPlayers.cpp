@@ -420,7 +420,10 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   case OC::Transpose: { tuneCoarse = val;               } break;
   case OC::Tune:      { tuneFine   = val;               } break;
   case OC::Delay:     { sampleTime = -val * sampleRate; } break;
-  case OC::Offset:    { offset     = float(val);        } break;
+  case OC::Offset:    
+  { 
+    offset     = float(val);
+  } break;
   }
   double tune     = tuneCoarse + 0.01 * tuneFine;
   double factor   = pow(2.0, tune / 12.0);
@@ -449,7 +452,9 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double sample
   case OC::Transpose: { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(val);        } break;
   case OC::Tune:      { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(0.01 * val); } break;
   case OC::Delay:     { rp->sampleTime += -val * sampleRate;                           } break;
-  case OC::Offset:    { rp->offset     += float(val);                                  } break;
+  case OC::Offset:    
+  { 
+    rp->offset     += float(val);                                  } break;
   }
 }
 // needs test
@@ -460,18 +465,17 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationL
   RAPT::rsAssert(busMode == true);
   // It makes no sense to use a GroupPlayer when not in busMode. Maybe remove the parameter
 
-  // Maybe make some dynamic casts to Group or Instrument and verify that one of them works for debug 
-  // sanity checks. Maybe rsSamplerData should have inquiry functions like isRegion, isGroup, 
-  // isInstrument so we can here do rsAssert(thingToPlay->isGroup() || thingToPlay->isInstrument())
+  if(thingToPlay == grpOrInstr) {
+    setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode);
+    return true;  }
+    // This is not a new group or restart of the whole InstrumPlayer so we may only need to set up
+    // those settings that affect the RegionPlayer, i.e. offset, delay, inc, etc. The other 
+    // settings are actually already all set up. Maybe split out a setupPlayerSettings such that we
+    // can call only that and don't need to loop throgh all the settings that don't change...but 
+    // maybe that's too complicated to do because the settings are not ordered by type
 
-  if(thingToPlay == grpOrInstr)
-    return true;               
-    // nothing to do - actually, this also gets called when a new region is triggered to be played 
-    // within an existing GroupPlayer in which case we may the group's and instrumet's delay etc.
-    // settings ...maybe we need a function addRegionPlayer - we already have one in GroupPlayer
-    // ...hmm...
-
-
+  // A GroupPlayer needs to play back a new group or the InstrumPlayer was triggered anew. In such 
+  // a case, we need to assemble the DSP chain first:
   disassembleDspChain();
   grpOrInstr = thingToPlay;
   if(grpOrInstr != nullptr) {
@@ -528,7 +532,7 @@ void GroupPlayer::removeRegionPlayer(RegionPlayer* player)
 
 void InstrumPlayer::addRegionPlayer(RegionPlayer* newPlayer)
 {
-  RAPT::rsError("not yet implemented");
+  //RAPT::rsError("not yet implemented");
   // we may nee to accumulate into the region players delay, pitch etc. variables. a partial
   // DSP setup only for those opcodes thataffect the source
 

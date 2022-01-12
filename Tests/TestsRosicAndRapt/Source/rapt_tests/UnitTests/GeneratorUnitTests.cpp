@@ -913,7 +913,9 @@ bool samplerEngine2UnitTest()
   rsApplyDelay(tgt, -groupOffset); 
   rsApplyDelay(tgt, -instrOffset); 
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, 1.e-7, true);
-  // fails!
+  rsAssert(ok);
+  // fails! we get only the region- and group offset 10 and 20 accumulated into the 
+  // RegionPlayer's offset variable
 
   //---------------------------------------------------------------------------
   // Test offset and delay (but only for the region setting):
