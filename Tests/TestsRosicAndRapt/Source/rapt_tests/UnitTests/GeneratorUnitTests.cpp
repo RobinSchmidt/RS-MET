@@ -2472,11 +2472,40 @@ bool samplerOverloadTest()
   ok &= testNote(60, 1);
   ok &= testNote(61, 1);
 
+  // Restrict the key-range for the region to 60..69 and add a second group and add a region to 
+  // this group. The second region responds to key-range 70..79. Both group and region have two
+  // filters. When we play one note in this 2nd region, 4 filters are consumed. If we then try to
+  // trigger a 3rd note in the 1st region, it fails because it would need another 6 filters:
+  se.setRegionSetting(0, 0, OC::LoKey, 60);
+  se.setRegionSetting(0, 0, OC::HiKey, 69);
+  se.addGroup();
+  se.addRegion(1, 70, 79);
+  se.setRegionSample(1, 0, 0);
+  se.setGroupSetting(    1, OC::cutoffN, 110.f, 1);
+  se.setGroupSetting(    1, OC::cutoffN, 220.f, 2);
+  se.setRegionSetting(1, 0, OC::cutoffN, 100.f, 1);
+  se.setRegionSetting(1, 0, OC::cutoffN, 200.f, 2);
+  se.reset();
+  ok &= testNote(70, 1);  // 2nd group
+  ok &= testNote(71, 2);  // 2nd group
+  ok &= testNote(60, 2);  // 1st group - should not play
+  // this test passes - but actually shouldn't yet - why?
+
+
+
+
+
+  
+  
+  // Remove filters from the first group and do the same test. Now, it should work because the 2nd
+  // note needs only the 3 filters for the RegionPlayer:
+
+
 
   // ToDo: 
-  // -Test running out of RegionPlayers and GroupPlayers
   // -Try it with multiple groups where we run out when a new group must start but not not when
   //  a new region within an already playing group must start
+  // -Test running out of RegionPlayers and GroupPlayers
   // -Test it in busMode - in this mode also test it when some of the filters should be on the bus
   //  or instrument
 
