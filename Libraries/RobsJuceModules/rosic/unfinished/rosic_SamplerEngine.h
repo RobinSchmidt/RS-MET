@@ -170,11 +170,11 @@ public:
   /** Sets a value for a given type of playback setting a region. Returns either
   rsReturnCode::success or rsReturnCode::invalidIndex, if groupIndex and/or regionIndex was invalid. If
   this happens, it indicates a bug on the call site. */
-  int setRegionSetting(int groupIndex, int regionIdex, Opcode type, float value, int index = -1);
+  int setRegionSetting(int groupIndex, int regionIdex, Opcode type, float value, int index);
 
-  int setGroupSetting(int groupIndex, Opcode type, float value, int index = -1);
+  int setGroupSetting(int groupIndex, Opcode type, float value, int index);
 
-  int setInstrumentSetting(Opcode type, float value, int index = -1);
+  int setInstrumentSetting(Opcode type, float value, int index);
   // maybe remove default value - could lead to bugs when caller forgets it so we should 
   // enforce it!
 

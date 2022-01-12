@@ -197,7 +197,7 @@ void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
     se->addGroup();
   int ri = se->addRegion(0);
   se->setRegionSample( 0, ri, si);
-  se->setRegionSetting(0, ri, PST::PitchKeyCenter, keyCenter);
+  se->setRegionSetting(0, ri, PST::PitchKeyCenter, keyCenter, -1);
   // ToDo: try to get rid of casting ways the const in addSampleToPool((float**) &pSmp,...). 
   // addSampleToPool does not modify anything - make it const correct...but that my need ugly
   // and confusing syntax in the function declaration
@@ -431,7 +431,7 @@ bool samplerEngineUnitTest1()
 
   int rc = se.setRegionSample(gi, ri, si);           // rc: return code
   ok &= rc == RC::success;
-  rc = se.setRegionSetting(gi, ri, PST::PitchKeyCenter, 69.f); // key = 69 is A4 at 440 Hz
+  rc = se.setRegionSetting(gi, ri, PST::PitchKeyCenter, 69.f, -1); // key = 69 is A4 at 440 Hz
   ok &= rc == RC::success;
 
   // Now the engine is set up with the sinewave sample in a single region that spans the whole
@@ -470,7 +470,7 @@ bool samplerEngineUnitTest1()
   ok &= ri == 1;
   rc = se.setRegionSample(gi, ri, si);                    // set region sample to cosine
   ok &= rc == RC::success;
-  se.setRegionSetting(gi, ri, PST::PitchKeyCenter, 69.f);   // cosine is also at A4 = 440 Hz
+  se.setRegionSetting(gi, ri, PST::PitchKeyCenter, 69.f, -1);   // cosine is also at A4 = 440 Hz
   ok &= se.getNumIdleLayers()   == maxLayers;
   ok &= se.getNumActiveLayers() == 0;
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
@@ -599,7 +599,7 @@ bool samplerEngineUnitTest1()
   float delaySamples = 10.75f;
   float delaySeconds = delaySamples / fs;
   se.setRegionSetting(0, 0, PST::panN,   0.f, 1);        // back to center, makes testing easier
-  se.setRegionSetting(0, 0, PST::Delay,  delaySeconds);
+  se.setRegionSetting(0, 0, PST::Delay,  delaySeconds, -1);
   VecF tgt = sin440;
   float tol = 1.e-7f;  // ~= 140 dB SNR
   rsApplyDelay(tgt, delaySamples);
@@ -634,7 +634,7 @@ bool samplerEngineUnitTest1()
   float regionAmp = 0.5f;
   float groupAmp  = 0.25f;
   //float instrumentAmplitude  = 0.75f;
-  se.setRegionSetting(0, 0, PST::Delay, 0.f);  // Turn delay off again
+  se.setRegionSetting(0, 0, PST::Delay, 0.f, -1);  // Turn delay off again
   se.setRegionSetting(0, 0, PST::volumeN, rsAmpToDb(regionAmp), 1);
   se.setGroupSetting( 0,    PST::volumeN, rsAmpToDb(groupAmp),  1);
 
@@ -828,7 +828,7 @@ bool samplerEngine2UnitTest()
   int gi = se.addGroup();                                      ok &= gi == 0;
   int ri = se.addRegion(gi);                                   ok &= ri == 0;
   int rc = se.setRegionSample(gi, ri, si);                     ok &= rc == RC::success;
-  rc = se.setRegionSetting(gi, ri, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
+  rc = se.setRegionSetting(gi, ri, PST::PitchKeyCenter, 69.f, -1); ok &= rc == RC::success;
 
   //---------------------------------------------------------------------------
   // Test accumulation of amp setting:
@@ -863,7 +863,7 @@ bool samplerEngine2UnitTest()
   // Test accumulation of pan setting:
 
   se.clearAllSfzSettings();                                   // remove all the amp settings
-  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);  // restore the rootkey setting
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f, -1);  // restore the rootkey setting
   ok &= rc == RC::success;
   float regionPan = 10.f;   // slightly right, pan range is -100...+100
   float groupPan  = 20.f;
@@ -892,13 +892,13 @@ bool samplerEngine2UnitTest()
   // Test delay accumulation:
 
   se.clearAllSfzSettings();                                   // remove all the amp settings
-  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);  // restore the rootkey setting
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f, -1);  // restore the rootkey setting
   int regionDelay = 10;   // in samples - todo: use float
   int groupDelay  = 20;
   int instrDelay  = 40;
-  se.setRegionSetting(0, 0, PST::Delay, regionDelay / fs);
-  se.setGroupSetting( 0,    PST::Delay, groupDelay  / fs);
-  se.setInstrumentSetting(  PST::Delay, instrDelay  / fs);
+  se.setRegionSetting(0, 0, PST::Delay, regionDelay / fs, -1);
+  se.setGroupSetting( 0,    PST::Delay, groupDelay  / fs, -1);
+  se.setInstrumentSetting(  PST::Delay, instrDelay  / fs, -1);
 
   // We want to see only the region delay:
   se.setBusMode(false);
@@ -923,10 +923,10 @@ bool samplerEngine2UnitTest()
   float groupOffset  = 20;
   float instrOffset  = 40;
   se.clearAllSfzSettings();
-  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);
-  se.setRegionSetting(0, 0, PST::Offset, regionOffset);
-  se.setGroupSetting( 0,    PST::Offset, groupOffset);
-  se.setInstrumentSetting(  PST::Offset, instrOffset);
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f, -1);
+  se.setRegionSetting(0, 0, PST::Offset, regionOffset, -1);
+  se.setGroupSetting( 0,    PST::Offset, groupOffset, -1);
+  se.setInstrumentSetting(  PST::Offset, instrOffset, -1);
 
   // We want to see only the region offset:
   se.setBusMode(false);
@@ -948,9 +948,9 @@ bool samplerEngine2UnitTest()
   // Test offset and delay (but only for the region setting):
 
   se.clearAllSfzSettings();
-  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);
-  se.setRegionSetting(0, 0, PST::Offset, regionOffset);
-  se.setRegionSetting(0, 0, PST::Delay,  regionDelay / fs);
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f, -1);
+  se.setRegionSetting(0, 0, PST::Offset, regionOffset, -1);
+  se.setRegionSetting(0, 0, PST::Delay,  regionDelay / fs, -1);
   tgt = sin440;
   rsApplyDelay(tgt, -regionOffset); 
   rsApplyDelay(tgt,  regionDelay);
@@ -982,14 +982,14 @@ bool samplerEngine2UnitTest()
   float instrTune   = 30;
   //regionTune = groupTune = instrTune = 0;  // for debug
   se.clearAllSfzSettings();                               // remove all the amp settings
-  se.setGroupSetting( 0,    PST::PitchKeyCenter, 50.f);   // should always be overriden
-  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);   // restore the rootkey setting
-  se.setRegionSetting(0, 0, PST::Transpose, regionTrans);
-  se.setGroupSetting( 0,    PST::Transpose, groupTrans);
-  se.setInstrumentSetting(  PST::Transpose, instrTrans);
-  se.setRegionSetting(0, 0, PST::Tune,      regionTune);
-  se.setGroupSetting( 0,    PST::Tune,      groupTune);
-  se.setInstrumentSetting(  PST::Tune,      instrTune);
+  se.setGroupSetting( 0,    PST::PitchKeyCenter, 50.f, -1);   // should always be overriden
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f, -1);   // restore the rootkey setting
+  se.setRegionSetting(0, 0, PST::Transpose, regionTrans, -1);
+  se.setGroupSetting( 0,    PST::Transpose, groupTrans, -1);
+  se.setInstrumentSetting(  PST::Transpose, instrTrans, -1);
+  se.setRegionSetting(0, 0, PST::Tune,      regionTune, -1);
+  se.setGroupSetting( 0,    PST::Tune,      groupTune, -1);
+  se.setInstrumentSetting(  PST::Tune,      instrTune, -1);
 
   float pitch;  
   tol = 0.02f; 
@@ -1167,13 +1167,13 @@ bool samplerEngineUnitTestFileIO()
   // Set up region for sine:
   ri = se.addRegion(0);             ok &= ri == 0;
   rc = se.setRegionSample(0, 0, 0); ok &= rc == RC::success;
-  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f, -1); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 0, PST::panN, -100.f, 1);      ok &= rc == RC::success;
 
   // Set up region for cosine:
   ri = se.addRegion(0);             ok &= ri == 1;
   rc = se.setRegionSample(0, 1, 1); ok &= rc == RC::success;
-  rc = se.setRegionSetting(0, 1, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 1, PST::PitchKeyCenter, 69.f, -1); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 1, PST::panN, +100.f, 1);      ok &= rc == RC::success;
 
   // Let the engine produce the sine and cosine:
@@ -1279,7 +1279,7 @@ bool samplerEngineUnitTestFileIO()
   gi = se.addGroup();   ok &= gi == 0;
   ri = se.addRegion(0); ok &= ri == 0;
   rc = se.setRegionSample(0, 0, 0); ok &= rc == RC::success;
-  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f, -1); ok &= rc == RC::success;
   se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
   ok &= se.getNumIdleLayers()   == maxLayers-1;
   ok &= se.getNumActiveLayers() == 1;
@@ -1305,10 +1305,10 @@ bool samplerEngineUnitTestFileIO()
   gi = se.addGroup(); ok &= gi == 0;
   ri = se.addRegion(0, 59, 61); ok &= ri == 0;
   rc = se.setRegionSample(0, 0, 0); ok &= rc == RC::success;
-  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f, -1); ok &= rc == RC::success;
   ri = se.addRegion(0, 69, 71); ok &= ri == 1;
   rc = se.setRegionSample(0, 1, 1); ok &= rc == RC::success;
-  rc = se.setRegionSetting(0, 1, PST::PitchKeyCenter, 70.f); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 1, PST::PitchKeyCenter, 70.f, -1); ok &= rc == RC::success;
   se.saveToSFZ("tmp.sfz");
   se2.loadFromSFZ("tmp.sfz");
   ok &= se2.isInSameStateAs(se);
@@ -1320,7 +1320,7 @@ bool samplerEngineUnitTestFileIO()
   gi = se.addGroup(); ok &= gi == 0;
   ri = se.addRegion(0); ok &= ri == 0;
   rc = se.setRegionSample(0, 0, 0); ok &= rc == RC::success;
-  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f, -1); ok &= rc == RC::success;
   se.setRegionSetting(0, 0, PST::filN_type, (float) FltType::lp_6, 1);
   se.setRegionSetting(0, 0, PST::cutoffN,  1000.f, 1);
   se.saveToSFZ("tmp.sfz");
@@ -1420,13 +1420,13 @@ bool samplerParserTest()
   // Set up region for sine:
   ri = se.addRegion(0);             ok &= ri == 0;
   rc = se.setRegionSample(0, 0, 0); ok &= rc == RC::success;
-  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f, -1); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 0, PST::panN, -100.f, 1);      ok &= rc == RC::success;
 
   // Set up region for cosine:
   ri = se.addRegion(0);             ok &= ri == 1;
   rc = se.setRegionSample(0, 1, 1); ok &= rc == RC::success;
-  rc = se.setRegionSetting(0, 1, PST::PitchKeyCenter, 69.f); ok &= rc == RC::success;
+  rc = se.setRegionSetting(0, 1, PST::PitchKeyCenter, 69.f, -1); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 1, PST::panN, +100.f, 1);      ok &= rc == RC::success;
 
   std::string sfzStr;
@@ -1660,7 +1660,7 @@ bool samplerFilterTest()
   se.addGroup();
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
-  se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f);
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f, -1);
   //addSingleSampleRegion(&se, noise, 60.f); // replace code above by that call
 
   se.setRegionSetting(0, 0, PST::cutoffN,         cutoff, 1);
@@ -1858,9 +1858,9 @@ bool samplerWaveShaperTest()
   se.addGroup();
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
-  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
-  se.setRegionSetting(0, 0, PST::DistShape, float(shape1));
-  se.setRegionSetting(0, 0, PST::DistDrive, drive1);
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f, -1);
+  se.setRegionSetting(0, 0, PST::DistShape, float(shape1), 1);
+  se.setRegionSetting(0, 0, PST::DistDrive, drive1, 1);
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
 
   // Set up one region within one group and add a waveshaper to the group. When two notes are being 
@@ -1870,9 +1870,9 @@ bool samplerWaveShaperTest()
   se.addGroup();   ok &= se.getNumGroups()   == 1;
   se.addRegion(0); ok &= se.getNumRegions(0) == 1;
   se.setRegionSample(0, 0, 0);
-  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
-  se.setGroupSetting(0, PST::DistShape, float(shape1));
-  se.setGroupSetting(0, PST::DistDrive, drive1);
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f, -1);
+  se.setGroupSetting(0, PST::DistShape, float(shape1), 1);
+  se.setGroupSetting(0, PST::DistDrive, drive1, 1);
 
   // The class rsSamplerEngine should treat the group settings as fallback for when there is no
   // region setting and the DSP should be applied to each region separately:
@@ -1887,7 +1887,7 @@ bool samplerWaveShaperTest()
   // Let the region override the group setting for drive. The shape setting should still come from
   // the group. We again play two notes at 60 and 48:
   float drive2 = 2*drive1;
-  se.setRegionSetting(0, 0, PST::DistDrive, drive2);
+  se.setRegionSetting(0, 0, PST::DistDrive, drive2, 1);
   for(int n = 0; n < N; n++)
     tgt[n] = tanh(drive2 * sin440[n]) + tanh(drive2 * getSampleAt(sin440, 0.5f*n));
   se.reset();
@@ -1910,7 +1910,7 @@ bool samplerWaveShaperTest()
   // the overriden setting (linear, drive1):
   se.addRegion(0); ok &= se.getNumRegions(0) == 2;
   se.setRegionSample(0, 1, 0);
-  se.setRegionSetting(0, 1, PST::PitchKeyCenter, 60.f);
+  se.setRegionSetting(0, 1, PST::PitchKeyCenter, 60.f, -1);
   for(int n = 0; n < N; n++)
     tgt[n] += (drive1 * sin440[n]) + (drive1 * getSampleAt(sin440, 0.5f*n));
   se.reset();
@@ -1927,10 +1927,10 @@ bool samplerWaveShaperTest()
   se.addGroup();   ok &= se.getNumGroups()   == 1;
   se.addRegion(0); ok &= se.getNumRegions(0) == 1;
   se.setRegionSample(0, 0, 0);
-  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
-  se.setInstrumentSetting(  PST::DistShape,  float(shape1));
-  se.setGroupSetting( 0,    PST::DistDrive,  drive1);
-  se.setRegionSetting(0, 0, PST::DistOffset, dc1);
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f, -1);
+  se.setInstrumentSetting(  PST::DistShape,  float(shape1), 1);
+  se.setGroupSetting( 0,    PST::DistDrive,  drive1, 1);
+  se.setRegionSetting(0, 0, PST::DistOffset, dc1, 1);
   for(int n = 0; n < N; n++)
     tgt[n] = tanh(drive1 * sin440[n] + dc1);  // maybe include a gain1, too
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-7, false);
@@ -2005,9 +2005,9 @@ bool samplerWaveShaperTest2()
   se.addGroup();
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
-  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f);
-  se.setGroupSetting(0, PST::DistShape, float(shapeG));
-  se.setGroupSetting(0, PST::DistDrive, driveG);
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter, 60.f, -1);
+  se.setGroupSetting(0, PST::DistShape, float(shapeG), -1);
+  se.setGroupSetting(0, PST::DistDrive, driveG, -1);
 
   // Default setting (fallback mode):
   for(int n = 0; n < N; n++)
@@ -2095,7 +2095,7 @@ bool samplerDspChainTest()
   se.addGroup();
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
-  se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f);
+  se.setRegionSetting(0, 0, PST::PitchKeyCenter,  60.f, -1);
   se.setRegionSetting(0, 0, PST::filN_type, (float)Type::lp_6, 1);
   se.setRegionSetting(0, 0, PST::cutoffN,   cutoff1, 1);
   se.setRegionSetting(0, 0, PST::filN_type, (float)Type::hp_6, 2);
@@ -2107,8 +2107,8 @@ bool samplerDspChainTest()
   float drive    = 4.0f;
   Shape shape    = Shape::tanh;
   float cutoff3  = 1000.f; 
-  se.setRegionSetting(0, 0, PST::DistShape, float(shape));
-  se.setRegionSetting(0, 0, PST::DistDrive, drive);
+  se.setRegionSetting(0, 0, PST::DistShape, float(shape), -1);
+  se.setRegionSetting(0, 0, PST::DistDrive, drive, -1);
   se.setRegionSetting(0, 0, PST::filN_type, (float)Type::lp_6, 3);
   se.setRegionSetting(0, 0, PST::cutoffN,   cutoff3, 3);
 
@@ -2154,7 +2154,7 @@ bool samplerDspChainTest()
   updateTgt();
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
   drive = 8.0;
-  se.setRegionSetting(0, 0, PST::DistDrive, drive);
+  se.setRegionSetting(0, 0, PST::DistDrive, drive, -1);
   updateTgt();
   ok &= testSamplerNote(&se, 60.f, 127.f, tgt, tgt, 1.e-6, false);
 
@@ -2262,7 +2262,7 @@ bool samplerEqualizerTest()
   se.addGroup();
   se.addRegion(0);
   se.setRegionSample( 0, 0, 0);
-  se.setRegionSetting(0, 0, OC::PitchKeyCenter,  60.f);
+  se.setRegionSetting(0, 0, OC::PitchKeyCenter,  60.f, -1);
 
   // Test the simplest case: use only eq1 and specify all 3 parameters:
   se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);
@@ -2276,7 +2276,7 @@ bool samplerEqualizerTest()
 
   // Now we set only the gain of eq1. The freq and bandwidth should default to 50 Hz and 1 oct:
   r->clearSettings();
-  se.setRegionSetting(0, 0, OC::PitchKeyCenter, 60.f);
+  se.setRegionSetting(0, 0, OC::PitchKeyCenter, 60.f, -1);
   se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);
   ok &= r->getNumProcessors() == 1;
   applyEqs(noise, tgt, { gain1 }, { 50 }, { 1 });
@@ -2292,7 +2292,7 @@ bool samplerEqualizerTest()
   // frequency or bandwidth. Therefore, the default values should be used which are 5 kHz and 1 
   // octave:
   r->clearSettings();
-  se.setRegionSetting(0, 0, OC::PitchKeyCenter, 60.f);
+  se.setRegionSetting(0, 0, OC::PitchKeyCenter, 60.f, -1);
   se.setRegionSetting(0, 0, OC::eqN_gain, gain3, 3);
   r = se.getRegion(0, 0);
   ok &= r->getNumProcessors() == 3;
@@ -2480,8 +2480,8 @@ bool samplerOverloadTest()
   // this group. The second region responds to key-range 70..79. Both group and region have two
   // filters. When we play one note in this 2nd region, 4 filters are consumed. If we then try to
   // trigger a 3rd note in the 1st region, it fails because it would need another 6 filters:
-  se.setRegionSetting(0, 0, OC::LoKey, 60);
-  se.setRegionSetting(0, 0, OC::HiKey, 69);
+  se.setRegionSetting(0, 0, OC::LoKey, 60, -1);
+  se.setRegionSetting(0, 0, OC::HiKey, 69, -1);
   se.addGroup();
   se.addRegion(1, 70, 79);
   se.setRegionSample(1, 0, 0);
