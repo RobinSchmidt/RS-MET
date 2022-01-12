@@ -2443,18 +2443,22 @@ bool samplerOverloadTest()
   se.setRegionSetting(0, 0, OC::cutoffN, 3000.f, 3);
 
   // Helper function that triggers a note and returns true, iff after triggering, the number of 
-  // active RegionPlayers in the engine is equal to expectedLayers
-  auto testNote = [&](int note, int expectedLayers)
+  // active RegionPlayers in the engine is equal to expectedLayers and the number of used filters
+  // is equal to expectedFilters:
+  auto testNote = [&](int note, int expectedLayers, int expectedFilters)
   {
     se.handleMusicalEvent(Ev(EvTp::noteOn, note, 127));
-    return se.getNumActiveLayers() == expectedLayers;
+    bool ok = true;
+    ok &= se.getNumActiveLayers() == expectedLayers;
+    ok &= se.getNumUsedFilters()  == expectedFilters;
+    return ok;
   };
 
   // Try to trigger notes. The first and second should play but the third should not due to not 
   // enough filters available:
-  ok &= testNote(60, 1);
-  ok &= testNote(61, 2);
-  ok &= testNote(62, 2);
+  ok &= testNote(60, 1, 3);
+  ok &= testNote(61, 2, 6);
+  ok &= testNote(62, 2, 6);
 
   // Now put also cutoff settings for 3 filters into the group. In normal mode, this should make
   // no difference because the group merely defines a fallback value:
@@ -2462,15 +2466,15 @@ bool samplerOverloadTest()
   se.setGroupSetting(0, OC::cutoffN, 1100.f, 1);
   se.setGroupSetting(0, OC::cutoffN, 1200.f, 2);
   se.setGroupSetting(0, OC::cutoffN, 1300.f, 3);
-  ok &= testNote(60, 1);
-  ok &= testNote(61, 2);
-  ok &= testNote(62, 2);
+  ok &= testNote(60, 1, 3);
+  ok &= testNote(61, 2, 6);
+  ok &= testNote(62, 2, 6);
 
   // Now switch to busMode in which case the group sub-bus needs an additional filter so the
   // first not already consumes 6 filters. A second note should not play:
   se.setBusMode(true);  // calls reset
-  ok &= testNote(60, 1);
-  ok &= testNote(61, 1);
+  ok &= testNote(60, 1, 6);
+  ok &= testNote(61, 1, 6);
 
   // Restrict the key-range for the region to 60..69 and add a second group and add a region to 
   // this group. The second region responds to key-range 70..79. Both group and region have two
@@ -2481,18 +2485,24 @@ bool samplerOverloadTest()
   se.addGroup();
   se.addRegion(1, 70, 79);
   se.setRegionSample(1, 0, 0);
-  se.setGroupSetting(    1, OC::cutoffN, 110.f, 1);
-  se.setGroupSetting(    1, OC::cutoffN, 220.f, 2);
+  se.setGroupSetting( 1,    OC::cutoffN, 110.f, 1);
+  se.setGroupSetting( 1,    OC::cutoffN, 220.f, 2);
   se.setRegionSetting(1, 0, OC::cutoffN, 100.f, 1);
   se.setRegionSetting(1, 0, OC::cutoffN, 200.f, 2);
   se.reset();
-  ok &= testNote(70, 1);  // 2nd group
-  ok &= testNote(71, 2);  // 2nd group
-  ok &= testNote(60, 2);  // 1st group - should not play
+  ok &= testNote(70, 1, 4);  // 2nd group
+  ok &= testNote(60, 1, 4);  // 1st group
+
+
+  //ok &= testNote(71, 1, 6);  // 2nd group
+  //ok &= testNote(60, 2, 8);  // 1st group - should not play
   // this test passes - but actually shouldn't yet - why?
 
 
 
+  se.reset();
+  ok &= testNote(70, 1, 4); 
+  ok &= testNote(71, 2, 6);  // 2nd group
 
 
   

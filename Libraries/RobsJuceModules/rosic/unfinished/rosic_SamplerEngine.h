@@ -813,6 +813,8 @@ public:
 
   void setMaxNumFilters(int newMax) { dspPool.processorPool.setMaxNumFilters(newMax); }
 
+  int getNumUsedFilters() const { return dspPool.processorPool.getNumUsedFilters(); }
+
 
 
 

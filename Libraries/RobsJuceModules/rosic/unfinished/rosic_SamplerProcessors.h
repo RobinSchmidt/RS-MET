@@ -850,6 +850,10 @@ public:
   void setMaxNumFilters(int newMax) { filters.init(newMax); }
 
 
+  int getNumUsedFilters() const { return filters.getNumUsedItems(); }
+  // also to facilitate testing
+
+
 protected:
 
   using SP = rsSamplerProcessors;
