@@ -811,37 +811,10 @@ public:
 
   using rsSamplerEngine2::rsSamplerEngine2;  // inherit constructors
 
+  void setMaxNumFilters(int newMax) { dspPool.processorPool.setMaxNumFilters(newMax); }
 
-  /** Decides if the region settings should override the group (and instrument) settings (true) or
-  be applied on top of those settings (false). To override them means that the group settings are
-  just used as fallback values for when a region doesn't define them. The "on top" mode means that
-  if a region defines a gain of -6dB and its enclosing group defines a gain of -3dB, the total gain
-  of the region will be -9dB. The "fallback" mode means that the region will just use it's defined
-  -6dB gain and only if that would not be defined, it would fall back to the group's -3dB setting.
-  The latter behavior is the default in sfz (verify!) but the the former is also often convenient
-  and the desired behavior in ModeAudio's drum sampler. */
-  /*
-  void setRegionSettingsOverride(bool shouldOverride)
-  {
-    regionSettingsOverride = shouldOverride;
-    reset();  // changing this setting is disruptive - we need a reset
-  }
-  */
 
-  /** Similar to setRegionSettingsOverride, but for the instrument and group settings, i.e. it
-  decides whether the group settings should override the instrument settings or be apllied on top
-  of them. */
-  /*
-  void setGroupSettingsOverride(bool shouldOverride)
-  {
-    groupSettingsOverride = shouldOverride;
-    reset();
-  }
-  */
-  // At the moment, it does not yet behave quite right when trying to change these 2 settings 
-  // seperately which is why these functions are not yet available for public use in the baseclass. 
-  // Client code (which is supposed to use the baseclass) can only change both settings at once via
-  // setOpcodesAccumulate which seems to behave as desired.
+
 
 };
 

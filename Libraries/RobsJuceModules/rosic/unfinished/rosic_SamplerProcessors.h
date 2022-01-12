@@ -821,7 +821,7 @@ public:
 
   /** Allocates the processors. */
   void allocateProcessors();
-  // todo: Let it have an argument that somehwo specifies, how many of each type should be 
+  // todo: Let it have an argument that somehow specifies, how many of each type should be 
   // allocated. Maybe that could be a reference to the sfz-data itself or something derived from it
 
 
@@ -842,6 +842,12 @@ public:
   processor to the pool so it becomes available again for playing other notes. */
   void repositProcessor(SignalProcessor* p);
   // maybe rename it to repositProcessor
+
+
+  /** This is currently only meant to facilitate unit testing overload conditions. In such tests,
+  we want a well defined and small number of filters to be available so we can simulate conditions
+  where the engine is running out of filters in a controlled way. */
+  void setMaxNumFilters(int newMax) { filters.init(newMax); }
 
 
 protected:

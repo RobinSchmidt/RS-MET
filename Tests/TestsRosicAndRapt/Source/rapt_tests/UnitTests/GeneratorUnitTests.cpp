@@ -185,6 +185,24 @@ std::vector<T> createColoredNoise(int N, T spectralSlope, int seed = 0)
 }
 // move to test tools
 
+// Helper function to add a single region for the given sample to the engine. The region is added
+// to the first group, which is added if not already there:
+void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
+  const std::vector<float>& sample, float keyCenter = 60.f)
+{
+  using PST  = rosic::Sampler::Opcode;
+  const float *pSmp = &sample[0];
+  int si = se->addSampleToPool((float**) &pSmp, (int)sample.size(), 1, 44100, "Sample");
+  if(se->getNumGroups() == 0)
+    se->addGroup();
+  int ri = se->addRegion(0);
+  se->setRegionSample( 0, ri, si);
+  se->setRegionSetting(0, ri, PST::PitchKeyCenter, keyCenter);
+  // ToDo: try to get rid of casting ways the const in addSampleToPool((float**) &pSmp,...). 
+  // addSampleToPool does not modify anything - make it const correct...but that my need ugly
+  // and confusing syntax in the function declaration
+}
+
 //=================================================================================================
 
 bool samplerDataUnitTest()
@@ -1555,24 +1573,6 @@ bool samplerAmplifierCoreTest()
   return ok;
 }
 
-// Helper function to add a single region for the given sample to the engine. The region is added
-// to the first group, which is added if not already there:
-void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
-  const std::vector<float>& sample, float keyCenter = 60.f)
-{
-  using PST  = rosic::Sampler::Opcode;
-  const float *pSmp = &sample[0];
-  int si = se->addSampleToPool((float**) &pSmp, (int)sample.size(), 1, 44100, "Noise");
-  if(se->getNumGroups() == 0)
-    se->addGroup();
-  int ri = se->addRegion(0);
-  se->setRegionSample( 0, ri, si);
-  se->setRegionSetting(0, ri, PST::PitchKeyCenter, keyCenter);
-  // ToDo: try to get rid of casting ways the const in addSampleToPool((float**) &pSmp,...). 
-  // addSampleToPool does not modify anything - make it const correct...but that my need ugly
-  // and confusing syntax in the function declaration
-}
-
 bool samplerAmplifierTest()
 {
   bool ok = true;
@@ -2420,12 +2420,54 @@ bool samplerModulationsTest()
   return ok;
 }
 
+bool samplerOverloadTest()
+{
+  bool ok = true;
+
+  using Vec    = std::vector<float>;
+  using SE2    = rosic::Sampler::rsSamplerEngine2Test;
+  using OC     = rosic::Sampler::Opcode;
+  using Region = rosic::Sampler::rsSamplerData::Region;
+  using Ev     = rosic::Sampler::rsMusicalEvent<float>;
+  using EvTp   = Ev::Type;
+
+  int N = 200;
+  Vec noise = createColoredNoise(N, -3.01f);
+
+  // Create an engine which has only 8 filters available and add a region using 3 filters:
+  SE2 se;
+  se.setMaxNumFilters(8);
+  addSingleSampleRegion(&se, noise, 60.f);
+  se.setRegionSetting(0, 0, OC::cutoffN, 1000.f, 1);
+  se.setRegionSetting(0, 0, OC::cutoffN, 2000.f, 2);
+  se.setRegionSetting(0, 0, OC::cutoffN, 3000.f, 3);
+
+  // Try to trigger notes. The first and second should play but the third should not due to not 
+  // enough filters available:
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 60, 127));
+  ok &= se.getNumActiveLayers() == 1;
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 61, 127));
+  ok &= se.getNumActiveLayers() == 2;
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 62, 127)); // triggers filter overload
+  ok &= se.getNumActiveLayers() == 2;               // the 3rd region should not start
+
+  // ToDo: 
+  // -Test running out of RegionPlayers and GroupPlayers
+  // -Test it in busMode - in this mode also test it when some of the filters should be on the bus
+  //  or instrument
+
+  rsAssert(ok);
+  return ok;
+}
+
+
+
 bool samplerEngineUnitTest()
 {
   bool ok = true;
 
   // The new test that is currently under construction:
-  //ok &= samplerEngine2UnitTest();
+  ok &= samplerOverloadTest();
   //ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
@@ -2435,11 +2477,12 @@ bool samplerEngineUnitTest()
   ok &= samplerParserTest();            // uses some files created by "..FileIO" -> order matters!
   ok &= samplerProcessorsTest();
   ok &= samplerModulationsTest();
-
   ok &= samplerEngine2UnitTest();   
-  // currently fails because we switched to the busMode stuff - test needs to be updated
+  ok &= samplerOverloadTest();
 
   // ToDo:
+  // -Test to define the sample opcode on instrument and group level. We can have various regions
+  //  in a group that use the same sample
   // -Add an overload test that simulates conditions when the engine is running out of resources 
   //  such as DSPs, players, memory, etc. Make sure that things get cleaned up correctly in cases 
   //  where a partially assembled RegionPlayer must be rolled back due to lack of resources.
