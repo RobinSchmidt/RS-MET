@@ -71,15 +71,19 @@ void rsSamplerData::OrganizationLevel::setSetting(const PlaybackSetting& s)
   }
 }
 
-bool rsSamplerData::OrganizationLevel::removeSetting(Opcode type)
+bool rsSamplerData::OrganizationLevel::removeSetting(Opcode type, int index)
 {
   bool wasRemoved = false;
-  for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
-    if(settings[i].getType() == type) {
-      RAPT::rsRemove(settings, i);
-      wasRemoved = true;
-    }
-  }
+  if(index == -1) {
+    for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
+      if(settings[i].getType() == type) {
+        RAPT::rsRemove(settings, i);
+        wasRemoved = true; }}}
+  else {
+    for(int i = ((int)settings.size()) - 1; i >= 0; i--) {
+      if(settings[i].getType() == type && settings[i].getIndex() == index) {
+        RAPT::rsRemove(settings, i);
+        wasRemoved = true; }}}
   return wasRemoved;
   // We can't use size_t for i because the -1 would create an access violation when size() = 0
   // Maybe it should remove the DSP if it was the last setting that applied to it?
@@ -292,13 +296,13 @@ rsReturnCode rsSamplerData::setRegionSetting(int gi, int ri, Opcode type, float 
   return rsReturnCode::success;
 }
 
-rsReturnCode rsSamplerData::removeRegionSetting(int gi, int ri, Opcode type)
+rsReturnCode rsSamplerData::removeRegionSetting(int gi, int ri, Opcode type, int index)
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
     return rsReturnCode::invalidIndex;
   }
-  bool wasRemoved = instrument.groups[gi]->regions[ri]->removeSetting(type);
+  bool wasRemoved = instrument.groups[gi]->regions[ri]->removeSetting(type, index);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
 }
@@ -318,13 +322,13 @@ rsReturnCode rsSamplerData::setGroupSetting(int gi, Opcode type, float value, in
   return rsReturnCode::success;
 }
 
-rsReturnCode rsSamplerData::removeGroupSetting(int gi, Opcode type)
+rsReturnCode rsSamplerData::removeGroupSetting(int gi, Opcode type, int index)
 {
   if(!isGroupIndexValid(gi)) {
     RAPT::rsError("Invalid group index");
     return rsReturnCode::invalidIndex;
   }
-  bool wasRemoved = instrument.groups[gi]->removeSetting(type);
+  bool wasRemoved = instrument.groups[gi]->removeSetting(type, index);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
 }
@@ -339,9 +343,9 @@ rsReturnCode rsSamplerData::setInstrumentSetting(Opcode type, float value, int i
   return rsReturnCode::success;
 }
 
-rsReturnCode rsSamplerData::removeInstrumentSetting(Opcode type)
+rsReturnCode rsSamplerData::removeInstrumentSetting(Opcode type, int index)
 {
-  bool wasRemoved = instrument.removeSetting(type);
+  bool wasRemoved = instrument.removeSetting(type, index);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
 }

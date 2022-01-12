@@ -444,7 +444,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleMusicalEvent(
   }
 }
 
-int rsSamplerEngine::stopAllPlayers()
+int rsSamplerEngine::stopAllRegionPlayers()
 {
   int numPlayers = (int) activePlayers.size();
   for(int i = numPlayers-1; i >= 0; i--) {       // just seems nicer to stop them in reverse order
@@ -873,7 +873,7 @@ void rsSamplerEngine2::processFrame(double* left, double* right)
 
 int rsSamplerEngine2::stopAllPlayers()
 {
-  int numRegionPlayersStopped = rsSamplerEngine::stopAllPlayers();
+  int numRegionPlayersStopped = rsSamplerEngine::stopAllRegionPlayers();
   int numGroupPlayers = (int) activeGroupPlayers.size();
   for(int i = numGroupPlayers-1; i >= 0; i--) {
     activeGroupPlayers[i]->releaseResources();

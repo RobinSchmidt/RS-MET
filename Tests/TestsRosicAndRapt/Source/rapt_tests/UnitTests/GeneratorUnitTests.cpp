@@ -1021,22 +1021,22 @@ bool samplerEngine2UnitTest()
   // Remove the transpose setting for the region. We expect to see a combination of transpose
   // settings of instrument and group and a combination of the tune settings of all 3, so the pitch
   // should be: 69 + 2 + 3 + 0.1 + 0.2 + 0.3 = 74.6
-  ok &= se.removeRegionSetting(0, 0, PST::Transpose) == RC::success;
-  ok &= se.removeRegionSetting(0, 0, PST::Transpose) == RC::nothingToDo;
+  ok &= se.removeRegionSetting(0, 0, PST::Transpose, -1) == RC::success;
+  ok &= se.removeRegionSetting(0, 0, PST::Transpose, -1) == RC::nothingToDo;
   //se.reset();  // what happens if we don't reset? seems to make no difference
   getSamplerNote(&se, 69.f, 127.f, outL, outR);
   ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 74.6f, tol);
 
   // Remove tune setting from group. p = 69 + 2 + 3 + 0.1 + 0.3 = 74.4
-  ok &= se.removeGroupSetting(0, PST::Tune) == RC::success;
-  ok &= se.removeGroupSetting(0, PST::Tune) == RC::nothingToDo;
+  ok &= se.removeGroupSetting(0, PST::Tune, -1) == RC::success;
+  ok &= se.removeGroupSetting(0, PST::Tune, -1) == RC::nothingToDo;
   getSamplerNote(&se, 69.f, 127.f, outL, outR);
   //rsPlotVector(outL);
   ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 74.4f, tol);
 
   // Remove tune setting from instrument. p = 69 + 2 + 3 + 0.1 = 74.1
-  ok &= se.removeInstrumentSetting(PST::Tune) == RC::success;
-  ok &= se.removeInstrumentSetting(PST::Tune) == RC::nothingToDo;
+  ok &= se.removeInstrumentSetting(PST::Tune, -1) == RC::success;
+  ok &= se.removeInstrumentSetting(PST::Tune, -1) == RC::nothingToDo;
   getSamplerNote(&se, 69.f, 127.f, outL, outR);
   //rsPlotVector(outL);
   ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 74.1f, tol);
@@ -1897,7 +1897,7 @@ bool samplerWaveShaperTest()
 
   // Remove the group setting for the shape - now the waveshaper should use the default shape which
   // is linear, i.e. no shaping at all. 
-  se.removeGroupSetting(0, PST::DistShape);
+  se.removeGroupSetting(0, PST::DistShape, -1);
   for(int n = 0; n < N; n++)
     tgt[n] = (drive2 * sin440[n]) + (drive2 * getSampleAt(sin440, 0.5f*n));
   se.reset();
@@ -2491,24 +2491,15 @@ bool samplerOverloadTest()
   se.setRegionSetting(1, 0, OC::cutoffN, 200.f, 2);
   se.reset();
   ok &= testNote(70, 1, 4);  // 2nd group
-  ok &= testNote(60, 1, 4);  // 1st group
-
-
-  //ok &= testNote(71, 1, 6);  // 2nd group
-  //ok &= testNote(60, 2, 8);  // 1st group - should not play
-  // this test passes - but actually shouldn't yet - why?
-
-
-
+  ok &= testNote(60, 1, 4);  // 1st group - can't play
+  ok &= testNote(71, 2, 6);  // 2nd group - can play bcs uses less filters
   se.reset();
-  ok &= testNote(70, 1, 4); 
-  ok &= testNote(71, 2, 6);  // 2nd group
+
+  // Remove 2 filters from the first group and do the same test. Now, it should work because the 
+  // 2nd note needs only the 3 filters for the RegionPlayer and 1 for the GroupPlayer:
+  se.removeGroupSetting(0, OC::cutoffN, 1);
 
 
-  
-  
-  // Remove filters from the first group and do the same test. Now, it should work because the 2nd
-  // note needs only the 3 filters for the RegionPlayer:
 
 
 

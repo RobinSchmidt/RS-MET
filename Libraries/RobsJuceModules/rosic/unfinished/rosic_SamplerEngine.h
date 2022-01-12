@@ -180,17 +180,17 @@ public:
 
 
   // They should probably also take an index parameter:
-  rsReturnCode removeRegionSetting(int groupIndex, int regionIdex, Opcode type)
+  rsReturnCode removeRegionSetting(int groupIndex, int regionIdex, Opcode type, int index)
   {
-    return sfz.removeRegionSetting(groupIndex, regionIdex, type);
+    return sfz.removeRegionSetting(groupIndex, regionIdex, type, index);
   }
-  rsReturnCode removeGroupSetting(int groupIndex, Opcode type)
+  rsReturnCode removeGroupSetting(int groupIndex, Opcode type, int index)
   {
-    return sfz.removeGroupSetting(groupIndex, type);
+    return sfz.removeGroupSetting(groupIndex, type, index);
   }
-  rsReturnCode removeInstrumentSetting(Opcode type)
+  rsReturnCode removeInstrumentSetting(Opcode type, int index)
   {
-    return sfz.removeInstrumentSetting(type);
+    return sfz.removeInstrumentSetting(type, index);
   }
 
 
@@ -356,14 +356,11 @@ public:
   reset which may be appropriate to call when a midi reset message is received or before loading a
   new patch. It returns the number of players that were affected, i.e. the number of players that
   were in active state before the call. */
-  virtual int stopAllPlayers();
+  int stopAllRegionPlayers();
   // todo: return a PlayStatusChange
 
-  /** Calls stopAllPlayers. Function is for consistency with the rest of the library. */
-  virtual void reset() { stopAllPlayers(); }
-  // make virtual - subclass must reset additional stuff..hmm - it overrides stopAllPayers instead
-  // maybe it would be better to have a stopAllRegionPlayers function and subclass overrides reset
-  // and ther calls also stopAllGroupPlayers and stops the instrument player
+  /** Calls stopAllRegionPlayers. Function is for consistency with the rest of the library. */
+  virtual void reset() { stopAllRegionPlayers(); }
 
   /** Handles a musical (i.e. midi) event. This will typically change the playback status of the
   engine, for example by triggering the playback of one or more layers/region. If this status
@@ -719,11 +716,12 @@ public:
 
   // void processFrameVoice, processBlockVoice
 
-  /** Overriden from baseclass. Stops the playback of all currently active RegionPlayers
-  immediately - just as in the baseclass implementation. The overriden function also takes care of
-  moving the active groiup players back into their idle state. The returned integer is still the
-  number of stopped region players, just as in the baseclass implementation. */
-  int stopAllPlayers() override;
+  /** Stops the playback of all currently active RegionPlayers, GroupPlayers and the 
+  instrumPlayer and takes care of rolling back all acquired resources inot idle state. The 
+  returned integer is the number of stopped region players. */
+  int stopAllPlayers();
+
+  virtual void reset() override { stopAllPlayers(); }
 
 
 protected:

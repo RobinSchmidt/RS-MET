@@ -175,11 +175,12 @@ public:
     // setting of a particular kind in our list
     // todo: deprecate this in favor of setSetting - this should treat loKey, etc specially
 
-    /** Removes all the settings of given type. Typically, there should be at most one of any given
-    type, but this may not be the case for poorly written sfz files. Returns true, if there was at
-    least one item actually removed, i.e. it returns false only if no such setting was found in the
-    array. */
-    bool removeSetting(Opcode type);
+    /** Removes all the settings of given type and index. If the index is -1, it will be ignored, 
+    so if it is an indexed opcode, the function can be used to remove all of them. Typically, 
+    there should be at most one of any given type, but this may not be the case for poorly 
+    written sfz files. Returns true, if there was at least one item actually removed, i.e. it 
+    returns false only if no such setting was found in the array. */
+    bool removeSetting(Opcode type, int index);
 
     /** Clears all the settings. */
     void clearSettings()
@@ -528,11 +529,11 @@ public:
   rsReturnCode setInstrumentSetting(Opcode type, float value, int index = -1);
   // rename to setGlobalSetting for sfz compliance
 
-  rsReturnCode removeRegionSetting(int gi, int ri, Opcode type);
+  rsReturnCode removeRegionSetting(int gi, int ri, Opcode type, int index);
 
-  rsReturnCode removeGroupSetting(int gi, Opcode type);
+  rsReturnCode removeGroupSetting(int gi, Opcode type, int index);
 
-  rsReturnCode removeInstrumentSetting(Opcode type);
+  rsReturnCode removeInstrumentSetting(Opcode type, int index);
 
 
   void clearAllRegionSettings();
