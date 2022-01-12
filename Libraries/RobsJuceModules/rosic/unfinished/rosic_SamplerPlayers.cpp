@@ -20,10 +20,9 @@ size_t SignalProcessorChain::getNumProcessors(DspType type) const
   return count;
 }
 
-SignalProcessor* SignalProcessorChain::getProcessor(
-  DspType type, int index)
+SignalProcessor* SignalProcessorChain::getProcessor(DspType type, int index)
 {
-  RAPT::rsAssert(index >= 1);
+  RAPT::rsAssert(index >= 1 || index == -1);
   index = RAPT::rsMax(index-1, 0);
   int count = 0;  // counts, how many DSPs of given type we have iterated over - why not size_t?
   for(int i = 0; i < (int)processors.size(); i++) {
@@ -128,34 +127,14 @@ void SamplePlayer::disassembleDspChain()
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
-  using SD = rsSamplerData::PlaybackSetting;
-  // ToDo: We need to call the static member function getTargetProcessorType of that class. That
-  // function should be moved elsewhere. We want a sort of database to retrieve all sort of info
-  // about opcodes, including to what type of processor they apply
-
-
-
-  // Internal helper function to retrieve a pointer to the proccessor within our dspChain to which 
-  // the setting applies. It may at some point be dragged out of this function if it turns out to 
-  // be useful in other places as well:
-  auto getProcessorFor = [this](const PlaybackSetting& s)
-  {
-    //DspType dspType = SD::getTargetProcessorType(s.getType()); 
-    // get rid, use s.getDspType() directly in the call below
-    //SignalProcessor* dsp = dspChain.getProcessor(dspType, s.getIndex());
-
-    SignalProcessor* dsp = dspChain.getProcessor(s.getTargetDspType(), s.getIndex());
-    return dsp;
-  };
-
-  SignalProcessor* dsp = getProcessorFor(s);
+  SignalProcessor* dsp = dspChain.getProcessor(s.getTargetDspType(), s.getIndex());
   if(dsp != nullptr)
     dsp->setParameter(s.getType(), s.getValue());
   else
     RAPT::rsError("No processor available for DSP opcode");
-  // We could not find a suitable processor in our dspChain to which the given setting could be
-  // applied. If this happens, something went wrong (i.e. we have a bug) in buildDspChain or 
-  // getProcessorFor.
+    // We could not find a suitable processor in our dspChain to which the given setting could be
+    // applied. If this happens, something went wrong (i.e. we have a bug) in assembleDspChain or 
+    // dspChain.getProcessor.
 }
 
 void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings,

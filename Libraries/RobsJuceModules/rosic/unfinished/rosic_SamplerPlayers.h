@@ -36,7 +36,10 @@ public:
   /** Returns the index-th processor of the given type within the chain or nullptr, if there are
   not enough (i.e. less than i) processors of the given type in the chain. This is a 1-based index
   as it occurs in the sfz files. To get the 3rd filter, you would pass 
-  type = SignalProcessorType::Filter, index = 3.  */
+  type = SignalProcessorType::Filter, index = 3. For certain opcodes, an index is not applicable. 
+  We usually encode this by setting the value to -1 in the data-record. Such a -1 will then be
+  interpreted as "first-and-only" and in this case, it doesn't really matter, if the caller
+  passes -1 or +1 into this function. */
   SignalProcessor* getProcessor(DspType type, int sfzIndex);
 
 protected:
