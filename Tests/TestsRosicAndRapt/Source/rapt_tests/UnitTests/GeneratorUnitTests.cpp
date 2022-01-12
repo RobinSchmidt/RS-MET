@@ -2451,17 +2451,18 @@ bool samplerOverloadTest()
   se.handleMusicalEvent(Ev(EvTp::noteOn, 62, 127)); // triggers filter overload
   ok &= se.getNumActiveLayers() == 2;               // the 3rd region should not start
 
-  // Now put also a cutoff setting for filter1 into the group. In normal mode, this should make
+  // Now put also a cutoff settings for 3 filters into the group. In normal mode, this should make
   // no difference because the group merely defines a fallback value:
   se.reset();
   se.setGroupSetting(0, OC::cutoffN, 1100.f, 1);
+  se.setGroupSetting(0, OC::cutoffN, 1200.f, 2);
+  se.setGroupSetting(0, OC::cutoffN, 1300.f, 3);
   se.handleMusicalEvent(Ev(EvTp::noteOn, 60, 127));
   ok &= se.getNumActiveLayers() == 1;
   se.handleMusicalEvent(Ev(EvTp::noteOn, 61, 127));
   ok &= se.getNumActiveLayers() == 2;
   se.handleMusicalEvent(Ev(EvTp::noteOn, 62, 127));
   ok &= se.getNumActiveLayers() == 2;  
-
 
   // Now switch to busMode in which case the group sub-bus needs an additional filter so the
   // first not already consumes 6 filters. A second note should not play:

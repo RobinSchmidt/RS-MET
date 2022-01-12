@@ -447,12 +447,12 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleMusicalEvent(
 int rsSamplerEngine::stopAllPlayers()
 {
   int numPlayers = (int) activePlayers.size();
-  for(int i = numPlayers-1; i >= 0; i--)        // just seems nicer to stop them in reverse order
-    idlePlayers.push_back(activePlayers[i]);
+  for(int i = numPlayers-1; i >= 0; i--) {       // just seems nicer to stop them in reverse order
+    activePlayers[i]->releaseResources();
+    idlePlayers.push_back(activePlayers[i]); }
   activePlayers.clear();
   return numPlayers;
 }
-
 
 //-------------------------------------------------------------------------------------------------
 // Internal:
