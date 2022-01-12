@@ -962,6 +962,7 @@ bool samplerEngine2UnitTest()
   float regionTune  = 10;  // "tune" opcode (in cents)
   float groupTune   = 20;
   float instrTune   = 30;
+  //regionTune = groupTune = instrTune = 0;  // for debug
   se.clearAllSfzSettings();                               // remove all the amp settings
   se.setGroupSetting( 0,    PST::PitchKeyCenter, 50.f);   // should always be overriden
   se.setRegionSetting(0, 0, PST::PitchKeyCenter, 69.f);   // restore the rootkey setting
@@ -972,6 +973,7 @@ bool samplerEngine2UnitTest()
   se.setGroupSetting( 0,    PST::Tune,      groupTune);
   se.setInstrumentSetting(  PST::Tune,      instrTune);
 
+  float pitch;  
   tol = 0.02f; 
   // The error of the pitch estimation is around 2 cents...that's quite a large error actually.
   // Try to improve this at some point!I think, the algo should give better results!
@@ -980,25 +982,19 @@ bool samplerEngine2UnitTest()
   // 69 + 1 + 10/100 = 70.1
   se.setBusMode(false);
   getSamplerNote(&se, 69.f, 127.f, outL, outR);
+  pitch = rsEstimateMidiPitch(outL, fs);
   //rsPlotVectors(outL, outR);
   ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 70.1f, tol);
+  // its 69.08 ~= 69.1 so it's about 1 semitone too low
 
-  /*
-  // Now we want to see region and group transpose combined. That's
-  // 69 + 1 + 2 + 10/100 + 20/100 = 72.3
-  se.setRegionSettingsOverride(false);
-  getSamplerNote(&se, 69.f, 127.f, outL, outR);
-  //rsPlotVectors(outL, outR);
-  ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 72.3f, tol);
-  // that works! ...i'm actually surprised that it does -> figure out why
-  */
 
   // Now we want to see region, group and instrument transpose combined. That's
   // 69 + 1 + 2 + 3 + 10/100 + 20/100 + 30/100 = 75.6
   se.setBusMode(true);
   getSamplerNote(&se, 69.f, 127.f, outL, outR);
+  pitch = rsEstimateMidiPitch(outL, fs);
   ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 75.6f, tol);
-  // ok - works, too
+  // pitch = 74.58 - again 1 semitone too low
 
   // ToDo: check what happens when region setting and/or group setting and/or instrument setting
   // are removed and if it behaves as expected. we may need functionality to delete particular 

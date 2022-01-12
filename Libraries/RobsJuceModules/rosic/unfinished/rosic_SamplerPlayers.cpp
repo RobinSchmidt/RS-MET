@@ -415,8 +415,10 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   {
   // Pitch settings:
   //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
-  case OC::Transpose: { tuneCoarse = val;               } break;
-  case OC::Tune:      { tuneFine   = val;               } break;
+  case OC::Transpose: { 
+    tuneCoarse = val;               } break;
+  case OC::Tune:      { 
+    tuneFine   = val;               } break;
   case OC::Delay:     { sampleTime = -val * sampleRate; } break;
   case OC::Offset:    
   { 
@@ -426,6 +428,10 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   double tune     = tuneCoarse + 0.01 * tuneFine;
   double factor   = pow(2.0, tune / 12.0);
   this->increment = factor;
+
+  //this->increment *= factor;
+  // i think, we need to do accumulate because we want to accumulate coarse and fine tuning - but 
+  // maybe we need to do it directly in the switch?
 }
 
 //=================================================================================================
@@ -450,9 +456,7 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double sample
   case OC::Transpose: { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(val);        } break;
   case OC::Tune:      { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(0.01 * val); } break;
   case OC::Delay:     { rp->sampleTime += -val * sampleRate;                           } break;
-  case OC::Offset:    
-  { 
-    rp->offset     += float(val);                                  } break;
+  case OC::Offset:    { rp->offset     += float(val);                                  } break;
   }
 }
 // needs test
