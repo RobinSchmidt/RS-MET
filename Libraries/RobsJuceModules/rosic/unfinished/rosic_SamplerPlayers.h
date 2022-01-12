@@ -35,6 +35,14 @@ public:
   not enough (i.e. less than i+1, counting starts at zero) processors of the given type in the 
   chain. To get the 3rd filter, you would pass type = SignalProcessorType::Filter, index = 2.  */
   SignalProcessor* getProcessor(DspType type, int index);
+  // todo: pass in an index as specified in rsSamplerData::PlaybackSetting. call the parameter 
+  // sfzIndex to make it clear thata 1-based index is meant - so when 3 is passed, it returns the 
+  // 3rd filter
+
+
+  /** Maps the index that occurs in rsSamplerData::PlaybackSetting...tbc...actually, we should get
+rid of the reuirement to do such a mapping - it's confusing  */
+  static int mapIndex(int i) { return RAPT::rsMax(i-1, 0); }
 
 protected:
 
@@ -216,13 +224,6 @@ protected:
   rsReturnCode prepareToPlay(double sampleRate, bool busMode);
 
 
-  //bool assembleDspChain(bool withGroupDsps, bool withInstrumDsps);
-  // maybe use only one bool called busMode or something...but it's a 
-  // bit more complicated: some group/instrument settings should apply to RegionPlayers even in
-  // busMode or drumMode - namely the settings that affect the sample playback source (delay, 
-  // pitch, etc.). Maybe we should always call all 3 setup functions and pass a busMode flag 
-  // through all the way down
-
   bool assembleDspChain(bool busMode) override;
 
 
@@ -238,7 +239,7 @@ protected:
   //void setupDspSettings(const std::vector<PlaybackSetting>& settings,
   //  double sampleRate, bool busMode) override;
 
-  void setupProcessorSetting(const PlaybackSetting& s) override;
+  //void setupProcessorSetting(const PlaybackSetting& s) override;
 
   void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, SamplePlayer* rp) override;
 
@@ -280,10 +281,7 @@ protected:
   //  stream. This is not the same thing due to possible delay and looping.
   // -maybe use a different implementation structure (SVF) for the time-varying filter
   // -try to optimize ram and/or cpu usage by re-ordering
-  // -env-generators need as state variables: stage (int), time-into-stage (float/double),
-  //  LFO need just phase
-  // -Why are so many functions declared virtual? there are not supposed to be any subclasses.
-  //  -> remove the virtual declarations
+
 };
 
 //===============================================================================================

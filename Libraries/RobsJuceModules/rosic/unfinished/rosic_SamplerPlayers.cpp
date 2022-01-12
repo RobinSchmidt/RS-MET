@@ -133,30 +133,21 @@ void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
   // function should be moved elsewhere. We want a sort of database to retrieve all sort of info
   // about opcodes, including to what type of processor they apply
 
+
+
   // Internal helper function to retrieve a pointer to the proccessor within our dspChain to which 
   // the setting applies. It may at some point be dragged out of this function if it turns out to 
   // be useful in other places as well:
   auto getProcessorFor = [this](const PlaybackSetting& s)
   {
     DspType dspType = SD::getTargetProcessorType(s.getType());
+    int i = dspChain.mapIndex(s.getIndex());
+    // get rid of this! pass s.getIndex directly into dspChain.getProcessor. The function itself 
+    // should be responsible for the mapping
 
-    int i = RAPT::rsMax(s.getIndex(), 0);
-    // This is still wrong. It works only when s.getIndex() returns -1 or 0. -1 is the default 
-    // encoding "not applicable".
-
-    // maybe introduce a getMappedIndex() function that does the right thing, rename index to 
-    // getSfzIndex to make it clear that this is the index that occurs in the sfz-file. The other
-    // one could then be named getChainIndex or something. ok - for the time beign, let's do it 
-    // directly here:
-    i = s.getIndex();
-    if(i >   0) i--;    // map from 1-based counting to 0-based
-    if(i == -1) i = 0;  // map code for "no index" to 1st
     SignalProcessor* dsp = dspChain.getProcessor(dspType, i);
     return dsp;
   };
-  // Maybe wrap this whole business into a member function of the dspChain. This class knows best
-  // how to map sfz-indices to the actual processor within the chain
-
 
   SignalProcessor* dsp = getProcessorFor(s);
   if(dsp != nullptr)
@@ -437,12 +428,14 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
     sampleTime = offset;
 }
 
+/*
 void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
   SamplePlayer::setupProcessorSetting(s);
   // preliminary: todo: catch those settings that apply only to the sample-source, i.e. do not
   // apply to a DSP in the chain. they need different handling
 }
+*/
 
 void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
   SamplePlayer* rp)
