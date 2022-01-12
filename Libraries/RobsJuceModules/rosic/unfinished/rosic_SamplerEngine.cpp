@@ -926,16 +926,14 @@ int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const rsSamplerData::Group* g
 
 bool rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp)
 {
+  if(idleGroupPlayers.empty())
+    return false;
   GroupPlayer* gp = RAPT::rsGetAndRemoveLast(idleGroupPlayers);
-  if(!gp)
-    return false;   // Not enough players available
-
   const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
   bool ok = gp->setGroupToPlay(grp, sampleRate, rp, busMode);
   if(!ok) {
     idleGroupPlayers.push_back(gp);
     return false; } // Not enough resources to start the player. Caller should roll back rp, too
-
   gp->addRegionPlayer(rp);
   activeGroupPlayers.push_back(gp);
   return true;

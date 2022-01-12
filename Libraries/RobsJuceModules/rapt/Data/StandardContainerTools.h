@@ -439,6 +439,7 @@ inline void rsAppendIfNotAlreadyThere(std::vector<T>& v, T newElement)
 template<class T>
 inline T rsGetAndRemoveLast(std::vector<T>& v)
 {
+  rsAssert(!v.empty(), "v is assumed to be non-empty");
   T result = v[v.size()-1];
   v.pop_back();
   return result;
