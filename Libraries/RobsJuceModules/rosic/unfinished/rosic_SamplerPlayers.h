@@ -250,6 +250,8 @@ protected:
 
   // new, under construction:
   float offset    = 0;  // maybe rename to startTime or startSample
+  float tune      = 0;
+  float transpose = 0;
   float endTime   = 0;
   float loopStart = 0;
   float loopEnd   = 0;

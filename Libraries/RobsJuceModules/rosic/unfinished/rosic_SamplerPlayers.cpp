@@ -335,7 +335,8 @@ void RegionPlayer::resetPlayerSettings()
   sampleTime = 0.0;
   increment  = 1.0;
   offset     = 0.f;
-
+  tune       = 0.f;
+  transpose  = 0.f;
   endTime    = (float)stream->getNumFrames();
   // Maybe use -1? That may require updating the unit tests. But maybe it's appropriate to use 
   // numFrames when assuming linear interpolation. I think, for general interpolators, we should 
@@ -346,6 +347,9 @@ void RegionPlayer::resetPlayerSettings()
   loopStart  = 0.f;
   loopEnd    = 0.f;
   loopMode   = 0;
+
+  // what about key?
+
 
   //dspChain.resetSettings();
 }
@@ -369,6 +373,10 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
   // rootKey of the sample, Now, as final step, we also adjust it according to the difference 
   // between the played key and the sample's rootKey. This is not done in the code above because
   // it makes no sense to accumulate this parameter
+
+  // optimize this - one call to pow is enough:
+  double totalTune  = transpose + 0.01 * tune;
+  increment = pow(2.0, totalTune / 12.0);
   increment *= stream->getSampleRate() / fs;
   double rootKey = region->getSettingValue(Opcode::PitchKeyCenter, -1, false);
   double pitchOffset = double(key) - rootKey;
@@ -407,36 +415,17 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   // this setting should be applied accumulatively in busMode. In default mode, GroupPlayer and 
   // InstrumPlayer play no role at all.
 
-  //double tuneCoarse = 0.0;        // in semitones
-  //double tuneFine   = 0.0;        // in cents
   double val = (double)s.getValue();
   using OC   = Opcode;
   switch(s.getType())
   {
   // Pitch settings:
   //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
-  case OC::Transpose: 
-  { 
-    //tuneCoarse = val;
-    increment *= pow(2.0, val / 12.0);
-  } break;
-  case OC::Tune:      { 
-    //tuneFine   = val;
-    increment *= pow(2.0, 0.01 * val / 12.0);
-  } break;
+  case OC::Transpose: { transpose  = val;               } break;
+  case OC::Tune:      { tune       = val;               } break;
   case OC::Delay:     { sampleTime = -val * sampleRate; } break;
-  case OC::Offset:    
-  { 
-    offset     = float(val);
-  } break;
+  case OC::Offset:    { offset     = float(val);        } break;
   }
-  //double tune     = tuneCoarse + 0.01 * tuneFine;
-  //double factor   = pow(2.0, tune / 12.0);
-  //this->increment = factor;
-
-  //this->increment *= factor;
-  // i think, we need to do accumulate because we want to accumulate coarse and fine tuning - but 
-  // maybe we need to do it directly in the switch?
 }
 // ...actually, if we can assume that all values start at neutral values, we can always accumulate
 // and the distinction between this implementation and the one in SampleBusPlayer becomes identical
