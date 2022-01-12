@@ -348,10 +348,8 @@ void RegionPlayer::resetPlayerSettings()
   loopEnd    = 0.f;
   loopMode   = 0;
 
-  // what about key?
-
-
-  //dspChain.resetSettings();
+  // What about key?
+  // key = 0;   // ...breaks unit tests - figure out and document why
 }
 
 void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
@@ -369,41 +367,26 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
     setupDspSettings(region->getGroup()->getSettings(), fs, this, busMode);
   setupDspSettings(region->getSettings(), fs, this, busMode);
 
-  // The code above will have set up the increment assuming that the current key matches the 
-  // rootKey of the sample, Now, as final step, we also adjust it according to the difference 
-  // between the played key and the sample's rootKey. This is not done in the code above because
-  // it makes no sense to accumulate this parameter
-
-  // optimize this - one call to pow is enough:
-  double totalTune  = transpose + 0.01 * tune;
-  increment = pow(2.0, totalTune / 12.0);
-  increment *= stream->getSampleRate() / fs;
+  // Besides other things, the calls above will have set up our transpose and tune variables. From 
+  // those (and other variables) we can now compute per-sample increment for our sampleTime 
+  // variable:
   double rootKey = region->getSettingValue(Opcode::PitchKeyCenter, -1, false);
-  double pitchOffset = double(key) - rootKey;
-  //increment *= RAPT::rsPitchOffsetToFreqFactor(pitchOffset); 
-  increment *= pow(2.0, pitchOffset / 12.0);
-  // The formula using rsPitchOffsetToFreqFactor is imprecise: when we have a pitchOffset of 
+  double pitchOffset = double(key) - rootKey + transpose + 0.01 * tune;
+  increment = pow(2.0, pitchOffset / 12.0) * stream->getSampleRate() / fs;
+  // The formula using rsPitchOffsetToFreqFactor is too imprecise: when we have a pitchOffset of 
   // exactly -12, for example, we want the increment be multiplied by exactly 0.5, but using this
   // function, the factor comes out as 0.49999..., so we use the more precise (and more 
   // expensive) call to pow. It's not per-sample here code anyway, so we may afford that.
 
-  // If there is no delay to be considered, we advance the sample time into the sample by the 
-  // desired offset. Otherwise, sampleTime will have been initialized to -delaySamples and we leave
-  // it at that. In this case, the offset will be handled in getFrame etc.:
-  //if(sampleTime >= 0.0 && !busMode)
-  //  sampleTime = offset;
-  // Doesn't work in busMode - but that's dirty! We should handle both modes uniformly here. Find
-  // a better way to handle the offset. Dont' touch it here!
+  // ToDo:
+  // -Can we avoid the inquiry for the rootKey? This may be a bit expensive. Maybe the RegionPlayer
+  //  should have a rootKey member? That may be messy to deal with in busMode. Maybe try to treat
+  //  the pitch_keycenter opcode somehow like the transpose opcode. What would actually be a 
+  //  meaningful "accumulative" behavior of a setting like that? Maybe accumulate differences to
+  //  the default or something? Maybe keep a rootKeyShift member that is by default zero, 
+  //  accumulates th differences of the pitch_keycenter opcode with respce to 60 (the default)?
+  //  Try this and write unit tests..
 }
-
-/*
-void RegionPlayer::setupProcessorSetting(const PlaybackSetting& s)
-{
-  SamplePlayer::setupProcessorSetting(s);
-  // preliminary: todo: catch those settings that apply only to the sample-source, i.e. do not
-  // apply to a DSP in the chain. they need different handling
-}
-*/
 
 void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
   RegionPlayer* rp)
@@ -433,9 +416,7 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
 // everything to rp and we to "this" - but "this" equals rp...hmmm..but no - that accumulation 
 // business thwarts the override behavior! We receive call from the (maybe) instrum, then (maybe) 
 // group, then (maybe) region. Each of these is optional but when a call happens, it should 
-// override the current setting. i think, we need members for tranpose and tune in the 
-// RegionPlayer, set these and then in RegionPlayer::setupDspSettingsFor calculate the increment
-// once.
+// override the current setting. 
 
 //=================================================================================================
 // SampleBusPlayer
@@ -462,7 +443,6 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double sample
   case OC::Offset:    { rp->offset     += float(val);                                  } break;
   }
 }
-// needs test
 
 bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationLevel* thingToPlay,
   double sampleRate, RegionPlayer* rp, bool busMode)
