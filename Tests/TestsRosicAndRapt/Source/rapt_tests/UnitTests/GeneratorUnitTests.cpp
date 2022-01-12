@@ -2451,8 +2451,37 @@ bool samplerOverloadTest()
   se.handleMusicalEvent(Ev(EvTp::noteOn, 62, 127)); // triggers filter overload
   ok &= se.getNumActiveLayers() == 2;               // the 3rd region should not start
 
+  // Now put also a cutoff setting for filter1 into the group. In normal mode, this should make
+  // no difference because the group merely defines a fallback value:
+  se.reset();
+  se.setGroupSetting(0, OC::cutoffN, 1100.f, 1);
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 60, 127));
+  ok &= se.getNumActiveLayers() == 1;
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 61, 127));
+  ok &= se.getNumActiveLayers() == 2;
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 62, 127));
+  ok &= se.getNumActiveLayers() == 2;  
+
+
+  // Now switch to busMode in which case the group sub-bus needs an additional filter so the
+  // first not already consumes 6 filters. A second note should not play:
+  se.setBusMode(true);  // calls reset
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 60, 127));
+  ok &= se.getNumActiveLayers() == 1;
+  se.handleMusicalEvent(Ev(EvTp::noteOn, 61, 127));
+  ok &= se.getNumActiveLayers() == 1;
+  // fails!
+
+
+
+
+
   // ToDo: 
+  // -write a helper function to reduce boilerplate that we can call like
+  //    ok &= testNote(60, 1);  // 60 is the nore, 1 the expected number of activel layers
   // -Test running out of RegionPlayers and GroupPlayers
+  // -Try it with multiple groups where we run out when a new group must start but not not when
+  //  a new region within an already playing group must start
   // -Test it in busMode - in this mode also test it when some of the filters should be on the bus
   //  or instrument
 
