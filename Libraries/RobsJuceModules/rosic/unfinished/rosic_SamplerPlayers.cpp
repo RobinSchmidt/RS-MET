@@ -23,6 +23,8 @@ size_t SignalProcessorChain::getNumProcessors(DspType type) const
 SignalProcessor* SignalProcessorChain::getProcessor(
   DspType type, int index)
 {
+  RAPT::rsAssert(index >= 1);
+  index = RAPT::rsMax(index-1, 0);
   int count = 0;  // counts, how many DSPs of given type we have iterated over - why not size_t?
   for(int i = 0; i < (int)processors.size(); i++) {
     SignalProcessor* dsp = getProcessor(i);
@@ -30,9 +32,7 @@ SignalProcessor* SignalProcessorChain::getProcessor(
       if(count == index)
         return dsp;
       else
-        count++;
-    }
-  }
+        count++; }}
   return nullptr;
 }
 
@@ -140,12 +140,11 @@ void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
   // be useful in other places as well:
   auto getProcessorFor = [this](const PlaybackSetting& s)
   {
-    DspType dspType = SD::getTargetProcessorType(s.getType());
-    int i = dspChain.mapIndex(s.getIndex());
-    // get rid of this! pass s.getIndex directly into dspChain.getProcessor. The function itself 
-    // should be responsible for the mapping
+    //DspType dspType = SD::getTargetProcessorType(s.getType()); 
+    // get rid, use s.getDspType() directly in the call below
+    //SignalProcessor* dsp = dspChain.getProcessor(dspType, s.getIndex());
 
-    SignalProcessor* dsp = dspChain.getProcessor(dspType, i);
+    SignalProcessor* dsp = dspChain.getProcessor(s.getTargetDspType(), s.getIndex());
     return dsp;
   };
 

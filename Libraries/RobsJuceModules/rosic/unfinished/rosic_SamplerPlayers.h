@@ -30,19 +30,14 @@ public:
 
 
   SignalProcessor* getProcessor(int i) { return processors[i]; }
+  // is this needed? it's confusing to have this and the function below because the indices mean
+  // different things in both cases
 
   /** Returns the index-th processor of the given type within the chain or nullptr, if there are
-  not enough (i.e. less than i+1, counting starts at zero) processors of the given type in the 
-  chain. To get the 3rd filter, you would pass type = SignalProcessorType::Filter, index = 2.  */
-  SignalProcessor* getProcessor(DspType type, int index);
-  // todo: pass in an index as specified in rsSamplerData::PlaybackSetting. call the parameter 
-  // sfzIndex to make it clear thata 1-based index is meant - so when 3 is passed, it returns the 
-  // 3rd filter
-
-
-  /** Maps the index that occurs in rsSamplerData::PlaybackSetting...tbc...actually, we should get
-rid of the reuirement to do such a mapping - it's confusing  */
-  static int mapIndex(int i) { return RAPT::rsMax(i-1, 0); }
+  not enough (i.e. less than i) processors of the given type in the chain. This is a 1-based index
+  as it occurs in the sfz files. To get the 3rd filter, you would pass 
+  type = SignalProcessorType::Filter, index = 3.  */
+  SignalProcessor* getProcessor(DspType type, int sfzIndex);
 
 protected:
 

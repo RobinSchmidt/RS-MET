@@ -117,6 +117,10 @@ public:
     /** For a given type of opcode, this function returns the type of signal processor to which the
     opcode applies, e.g. SignalProcessorType::Filter for Type::FilterCutoff. */
     static DspType getTargetProcessorType(Opcode op);
+    // rename to getTargetDspType
+
+
+    DspType getTargetDspType() const { return getTargetProcessorType(type); }
 
 
     bool operator==(const PlaybackSetting& rhs) const
