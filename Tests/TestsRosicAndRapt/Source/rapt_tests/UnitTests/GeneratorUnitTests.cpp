@@ -2501,18 +2501,45 @@ bool samplerOverloadTest()
   se.removeGroupSetting(0, OC::cutoffN, 3);
   ok &= testNote(70, 1, 4);  // uses 2/2 filters
   ok &= testNote(60, 2, 8);  // uses 3/1 filters
-  // fails  - check SamplePlayer::augmentOrCleanDspChain - i think, the removeGroupSetting does not
-  // remove the setting from the dspTypeChain so it still thinks that it has 3 filters. -> fix
-  // removeSetting...ok done - but now the DSP array is completely empty
+  se.reset();
+  ok &= testNote(60, 1, 4);  // uses 3/1 filters
+  ok &= testNote(61, 2, 7);  // uses 6/1 filters
+
+  // OK - let's start fresh with regard to the settings. Then give each region just one filter
+  // and each group again 3 filters:
+  se.clearAllSfzSettings(); 
+  se.setRegionSetting(0, 0, OC::cutoffN, 100.f,  1);
+  se.setRegionSetting(1, 0, OC::cutoffN, 200.f,  1);
+  se.setGroupSetting( 0,    OC::cutoffN, 1100.f, 1);
+  se.setGroupSetting( 0,    OC::cutoffN, 1200.f, 2);
+  se.setGroupSetting( 0,    OC::cutoffN, 1300.f, 3);
+  se.setGroupSetting( 1,    OC::cutoffN, 110.f,  1);
+  se.setGroupSetting( 1,    OC::cutoffN, 120.f,  2);
+  se.setGroupSetting( 1,    OC::cutoffN, 130.f,  3);
+  se.reset();
+  ok &= testNote(60, 1, 4);  // uses 3/1 filters
+  ok &= testNote(61, 2, 5);  // also 3/1 but only the 1 is new
+  ok &= testNote(70, 2, 5);  // also 3/1 but all would be new
+
+  // Test running out of RegionPlayers and GroupPlayers:
+  se.clearAllSfzSettings();        // no filters anymore!
+  se.setMaxNumRegions(5);
+  se.setMaxNumGroups( 2);
+  se.addGroup();
+  se.addRegion(2, 80, 89);
+  se.setRegionSample(2, 0, 0);
+  se.reset();
+  ok &= testNote(60, 1, 0);
+  ok &= testNote(70, 2, 0);
+  ok &= testNote(80, 2, 0);   // we don't have enough GroupPlayers
 
 
 
   // ToDo: 
-  // -Try it with multiple groups where we run out when a new group must start but not not when
-  //  a new region within an already playing group must start
-  // -Test running out of RegionPlayers and GroupPlayers
-  // -Test it in busMode - in this mode also test it when some of the filters should be on the bus
-  //  or instrument
+  // -
+  //  -add a 3rd group from 80..89
+  //  -play 3 notes, 1 from each region - the 3rd should fail doe to unavailable GroupPlayer
+  //  -play 3 notes but only from 2 of th groups - this should work
 
   rsAssert(ok);
   return ok;

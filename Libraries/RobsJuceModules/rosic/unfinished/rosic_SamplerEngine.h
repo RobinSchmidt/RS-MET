@@ -120,7 +120,8 @@ public:
   void clearAllSfzSettings() { sfz.clearAllSettings(); }
   // what's the differece to clearInstrument? seems like clearInstrument() also clears the 
   // samplePool? -> document this. maybe try to get rid of one of them - it's a bit confusing to 
-  // have both
+  // have both. does it also clear the sample opcode? i don't think so. document this. maybe rename
+  // the function to something that conveys this information
 
 
   /** Adds a new sample to our pool of samples. After the sample has been added, regions can be
@@ -804,6 +805,14 @@ public:
 
 //=================================================================================================
 
+template<class T>
+void rsSetupPointers(std::vector<T>& objectArray, std::vector<T*>& pointerArray)
+{
+  pointerArray.resize(objectArray.size());
+  for(size_t i = 0; i < objectArray.size(); i++)
+    pointerArray[i] = &objectArray[i];
+}
+// move to library, maybe use it in the production code, too
 
 class rsSamplerEngine2Test : public rsSamplerEngine2
 {
@@ -812,7 +821,26 @@ public:
 
   using rsSamplerEngine2::rsSamplerEngine2;  // inherit constructors
 
-  void setMaxNumFilters(int newMax) { dspPool.processorPool.setMaxNumFilters(newMax); }
+  void setMaxNumFilters(int newMax) 
+  { 
+    reset();
+    dspPool.processorPool.setMaxNumFilters(newMax); 
+  }
+
+  void setMaxNumRegions(int newMax) 
+  {
+    reset();
+    playerPool.resize(newMax); // maybe rename to regionPlayerPool
+    rsSetupPointers(playerPool, idlePlayers);
+  }
+
+  void setMaxNumGroups(int newMax) 
+  {
+    reset();
+    groupPlayerPool.resize(newMax);
+    rsSetupPointers(groupPlayerPool, idleGroupPlayers);
+  }
+
 
   int getNumUsedFilters() const { return dspPool.processorPool.getNumUsedFilters(); }
 
