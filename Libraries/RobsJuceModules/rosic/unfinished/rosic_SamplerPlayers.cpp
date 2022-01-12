@@ -168,6 +168,11 @@ rsFloat64x2 RegionPlayer::getFrame()
     }
     return rsFloat64x2(0.0, 0.0);
   }
+  // try to add the offset if(sampleTime <= 0 && sampleTime + increment > 0) and remove the offset
+  // bsuiness from setupDspSettingsFor. It actually sucks to have to do this per sample just to 
+  // support offset. Try to implement offset differently...but how?
+
+
   stream->getFrameStereo((float)sampleTime, &L, &R);  // try to avoid the conversion to float
   // -implement better interpolation methods (sinc, elephant, ...)
   // -keep sample time as combination of int and float to avoid computation of the fractional part
@@ -386,8 +391,10 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
   // If there is no delay to be considered, we advance the sample time into the sample by the 
   // desired offset. Otherwise, sampleTime will have been initialized to -delaySamples and we leave
   // it at that. In this case, the offset will be handled in getFrame etc.:
-  if(sampleTime >= 0.0)
+  if(sampleTime >= 0.0 && !busMode)
     sampleTime = offset;
+  // Doesn't work in busMode - but that's dirty! We should handle both modes uniformly here. Find
+  // a better way to handle the offset. Dont' touch it here!
 }
 
 /*

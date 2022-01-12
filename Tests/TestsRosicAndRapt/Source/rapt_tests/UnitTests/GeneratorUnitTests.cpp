@@ -916,6 +916,11 @@ bool samplerEngine2UnitTest()
   rsAssert(ok);
   // fails! we get only the region- and group offset 10 and 20 accumulated into the 
   // RegionPlayer's offset variable
+  // sampleTime starts at 10 an we'll never hit the branch where the offset is added
+  // in RegionPlayer::prepareToPlay, sampleTime is first reset to 0 via the call to 
+  // resetPlayerSettings as it should, but after the call to setupDspSettingsFor, it's
+  // suddenly 10 - where does this 10 come from? it's clearly wrong! It's set in
+  // RegionPlayer::setupDspSettingsFor at the bottom!
 
   //---------------------------------------------------------------------------
   // Test offset and delay (but only for the region setting):
