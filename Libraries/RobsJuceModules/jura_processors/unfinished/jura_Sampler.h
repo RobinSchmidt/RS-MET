@@ -102,7 +102,7 @@ protected:
 
   jura::RTextField *instrumentLabel;
   //jura::RTextField *numLayersLabel, *numLayersField; // numLayersField may become obsolete
-  jura::MeteringDisplay *layersMeter;
+  jura::MeteringDisplayWithText *layersMeter;
 
   /*
   FileSelectionBox *sfzFileLoader;

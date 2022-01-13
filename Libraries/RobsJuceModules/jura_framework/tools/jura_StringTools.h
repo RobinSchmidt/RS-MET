@@ -1,6 +1,8 @@
 #ifndef jura_StringTools_h
 #define jura_StringTools_h
 
+// maybe wrap them as static functions into a class:
+
 /** Converts a juce::String into an old school zero terminated c-string - the caller must take
 care to free the memory associated with the pointer via delete[], when the c-string is not needed  
 anymore.  */
@@ -73,5 +75,10 @@ JUCE_API juce::String valueToString5(double value);
 JUCE_API juce::String valueToStringTotal5(double value);
 JUCE_API juce::String valueToStringWithSign0(double value);
 JUCE_API juce::String valueToStringWithSign1(double value);
+
+// Functions that take a value and a maxValue to display resource usgae such as 13/64 when 13 of 64
+// available objects are used up
+JUCE_API juce::String portionToString(double value, double maxValue);
+
 
 #endif   

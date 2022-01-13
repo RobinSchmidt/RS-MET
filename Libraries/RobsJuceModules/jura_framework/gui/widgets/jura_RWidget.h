@@ -18,6 +18,7 @@ public:
 
   /** Constructor. */
   RWidget(const juce::String& newDescription = juce::String(""));
+  // remove the description parameter. it's not clear that a constructor should take a description 
 
   /** Destructor. */
   virtual ~RWidget();
@@ -153,7 +154,7 @@ protected:
   Parameter* assignedParameter = nullptr;
 
   /** A pointer to the function which converts a value into a juce::String. */
-  juce::String (*stringConversionFunction) (double valueToConvert);
+  juce::String (*stringConversionFunction) (double valueToConvert) = nullptr;
 
   juce::Array<RWidget*> childWidgets;
 

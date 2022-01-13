@@ -777,3 +777,9 @@ String valueToStringWithSign1(double value)
 {
   return getSignAsString(value) + valueToString1(fabs(value));
 }
+
+JUCE_API juce::String portionToString(double value, double maxValue)
+{
+  return String((int) round(value)) + "/" + String((int) round(maxValue));
+}
+

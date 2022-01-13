@@ -223,6 +223,9 @@ void RSlider::updateWidgetFromAssignedParameter(bool sendChangeMessage)
 void RSlider::setStringConversionFunction(String (*newConversionFunction) 
                                           (double valueToBeConverted) )
 {
+  jassert(MessageManager::getInstance()->isThisTheMessageThread());
+  // this function is supposed to be called on the message thread
+
   stringConversionFunction = newConversionFunction;
   repaint();
 }

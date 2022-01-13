@@ -79,6 +79,9 @@ public:
   function will be used to convert the slider-value into a string for display. */
   virtual void setStringConversionFunction(
     juce::String (*newConversionFunction) (double valueToBeConverted));
+  // maybe rename to setStringConversion - the current name is too long and that it's a function 
+  // pointer is clear from the parameter type anyway and in MeteringDisplayWithText we also use
+  // the shorter version already so it would be good to make that consistent
 
   /** Switches the slider into vertical mode of operation - the default mode is horizontal. */
   //virtual void setVertical(bool shouldBeVertical);

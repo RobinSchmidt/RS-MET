@@ -299,40 +299,21 @@ void SamplerEditor::createWidgets()
   //addWidgetSet(sfzFileLoader = new FileSelectionBox("", this) );
   // causes a crash on destruction
 
-  /*
-  addWidget(numLayersLabel = new RTextField);
-  numLayersLabel->setText("Layers:");
-  numLayersLabel->setDescription("Number of currently playing layers");
-  numLayersLabel->setDescriptionField(infoField);
-
-  // May become obsolete when the meter is complete
-  addWidget(numLayersField = new RTextField);
-  numLayersField->setText("0");
-  numLayersField->setDescription("Number of currently playing layers");
-  numLayersField->setDescriptionField(infoField);
-  */
-
-
-  layersMeter = new MeteringDisplay("Layers");
+  layersMeter = new MeteringDisplayWithText();
+  layersMeter->setMeasurementName("Layers");
   layersMeter->setDescription("Number of currently playing layers");
   layersMeter->setDescriptionField(infoField);
-  layersMeter->setMeterStyle(MeteringDisplay::horizontalRatio);
+  //layersMeter->setMeterStyle(MeteringDisplay::horizontalRatio);  // is the default anyway
   layersMeter->setRange(0, 16);  // should change dynamically on xml load
   //layersMeter->setReferenceValue(0.0);
   //layersMeter->setCurrentValue(0.0);
   addWidget(layersMeter);
 
-
-
-
-
+  // todo: add an overload warning lamp and a slider to adjust the maximum. maybe the slider should
+  // be a Draggable number and doubleas warning lamp - it should become red, when the number was 
+  // exceeded
 
   /*
-  addWidget(numLayersOfLabel = new RTextField);
-  numLayersOfLabel->setText("of");
-  numLayersOfLabel->setDescription("Number of currently playing layers");
-  numLayersOfLabel->setDescriptionField(infoField);
-
   addWidget(maxNumLayersSlider = new RDraggableNumber);
   //maxNumLayersSlider->assignParameter( samplerModule->getParameterByName("MaxNumLayers") );
   maxNumLayersSlider->setValue(16);  // preliminary
@@ -369,6 +350,8 @@ void SamplerEditor::createWidgets()
 Bugs:
 -when switching the preset while holding a note, it crashes (at least on mac)
  -> maybe we need to acquire the lock in setStateFromXml (done -> needs tests)
+ -> it's apparently an access violation due to removing samples from the pool in the gui-thread
+    while playing them in the audio thread.
 -it seems, sometimes the noteOff is not received or handled properly - the layer doesn't 
  immediately stop playing but instead (i think) plays until the end of the sample. It happens when
  triggering at least 5 notes simultaneously 
@@ -383,6 +366,10 @@ Bugs:
    internally
   -or somehow route layers belonging to different notes to different voice outputs
   -or make the behavior switchable
+-Not sure if this should be considered a bug: when we run out of RegionPlayers on a noteOn that
+ triggers multiple layers, the engine plays as many layers/regions as it can for the given voice.
+ Maybe we should not play the voice at all in such a case? Maybe on noteOn, we should make sure 
+ that all layers are triggered succesfully or not play the note.
 
 ToDo:
 -On xml-load, update the widgets to reflect the new maximum settings for layers etc.
@@ -392,6 +379,12 @@ ToDo:
   may produce more than one playback layer, if we allow notes to be retriggered while the old ones
   are still releasing (like in single-shot mode where the sample is always played fully, 
   overlapping with itself - regions may overlap with themselves in playback)
+-When an xml file does not specify and sfz file, just load the new engine parameters and keep
+ the old sfz file
+-Maybe also show a list of the loaded samples. maybe in the left section, a widget to load sfz
+ files, belwo it a list of samples showing also the ram usage for them. maybe have also a sort of
+ TreeView that represents the SFZ and may allows to edit it
+
 -GUI:
  -show on the GUI, which mode we are in (Override/Accumulate) and let the user change that
  -show, which .sfz file is loaded and give the user a text editor to edit it

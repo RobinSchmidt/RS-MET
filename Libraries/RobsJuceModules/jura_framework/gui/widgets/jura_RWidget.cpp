@@ -1,8 +1,3 @@
-//#include "rojue_RWidget.h"
-//#include "rojue_RTextField.h"
-//#include "../editors/rojue_ColourSchemeComponent.h"
-//using namespace rojue;
-
 const BitmapFont* RWidget::font = &BitmapFontRoundedBoldA10D0::instance;
 
 //-------------------------------------------------------------------------------------------------

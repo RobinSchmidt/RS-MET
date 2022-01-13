@@ -121,7 +121,7 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   leftLevelLabel->setDescription(juce::String(("Level of left channel")));
   leftLevelLabel->setDescriptionField(infoField);
 
-  addWidget( leftLevelMeter = new MeteringDisplay(juce::String(("L"))) );
+  addWidget( leftLevelMeter = new MeteringDisplay() );
   leftLevelMeter->setDescription(leftLevelLabel->getDescription());
   leftLevelMeter->setDescriptionField(infoField);
   leftLevelMeter->setMeterStyle(MeteringDisplay::levelMeterStyle);
@@ -133,7 +133,7 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   rightLevelLabel->setDescription(juce::String(("Level of right channel")));
   rightLevelLabel->setDescriptionField(infoField);
 
-  addWidget( rightLevelMeter = new MeteringDisplay(juce::String(("R"))) );
+  addWidget( rightLevelMeter = new MeteringDisplay() );
   rightLevelMeter->setDescription(rightLevelLabel->getDescription());
   rightLevelMeter->setDescriptionField(infoField);
   rightLevelMeter->setMeterStyle(MeteringDisplay::levelMeterStyle);
@@ -145,7 +145,7 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   midLevelLabel->setDescription(juce::String(("Level of mid channel")));
   midLevelLabel->setDescriptionField(infoField);
 
-  midLevelMeter = new MeteringDisplay(juce::String(("M")) );
+  midLevelMeter = new MeteringDisplay();
   midLevelMeter->setDescription(midLevelLabel->getDescription());
   midLevelMeter->setDescriptionField(infoField);
   midLevelMeter->setMeterStyle(MeteringDisplay::levelMeterStyle);
@@ -159,7 +159,7 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   sideLevelLabel->setDescriptionField(infoField);
   addWidget(sideLevelLabel);
 
-  sideLevelMeter = new MeteringDisplay(juce::String(("S")) );
+  sideLevelMeter = new MeteringDisplay();
   sideLevelMeter->setDescription(sideLevelLabel->getDescription());
   sideLevelMeter->setDescriptionField(infoField);
   sideLevelMeter->setMeterStyle(MeteringDisplay::levelMeterStyle);
@@ -173,7 +173,7 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   correlationLabel->setDescriptionField(infoField);
   addWidget(correlationLabel);
 
-  correlationMeter = new MeteringDisplay(juce::String(("C")) );
+  correlationMeter = new MeteringDisplay();
   correlationMeter->setDescription(correlationLabel->getDescription());
   correlationMeter->setDescriptionField(infoField);
   correlationMeter->setMeterStyle(MeteringDisplay::triangularPointerStyle);
