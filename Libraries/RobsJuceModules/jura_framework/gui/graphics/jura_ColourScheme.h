@@ -194,7 +194,10 @@ public:
     updateColours(); 
   }
 
-  Colour background, outline, handle, text, special; // \todo define mouseOverOutline colour
+  Colour background, outline, handle, text, weakHighlight, strongHighlight,
+    special; 
+  // \todo define mouseOverOutline colour, get rid of special, introduce weakHighlight, 
+  // strongHighlight
 
   juce_UseDebuggingNewOperator;
 

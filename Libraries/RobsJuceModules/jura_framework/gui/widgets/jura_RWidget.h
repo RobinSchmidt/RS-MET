@@ -67,10 +67,14 @@ public:
   /** Returns true when this widget has a parameter assigned to it, false otherwise. */
   inline bool hasAssignedParameter() { return getAssignedParameter() != nullptr; }
 
-  virtual Colour getBackgroundColour() const { return colourScheme.background.withMultipliedAlpha(alphaMultiplier); };
-  virtual Colour getOutlineColour()    const { return colourScheme.outline.withMultipliedAlpha(alphaMultiplier); };
-  virtual Colour getHandleColour()     const { return colourScheme.handle.withMultipliedAlpha(alphaMultiplier); };
-  virtual Colour getTextColour()       const { return colourScheme.text.withMultipliedAlpha(alphaMultiplier); };
+  virtual Colour getBackgroundColour()      const { return colourScheme.background.withMultipliedAlpha(alphaMultiplier); };
+  virtual Colour getOutlineColour()         const { return colourScheme.outline.withMultipliedAlpha(alphaMultiplier); };
+  virtual Colour getHandleColour()          const { return colourScheme.handle.withMultipliedAlpha(alphaMultiplier); };
+  virtual Colour getTextColour()            const { return colourScheme.text.withMultipliedAlpha(alphaMultiplier); };
+  virtual Colour getWeakHighlightColour()   const { return colourScheme.weakHighlight.withMultipliedAlpha(alphaMultiplier); };
+  virtual Colour getStrongHighlightColour() const { return colourScheme.strongHighlight.withMultipliedAlpha(alphaMultiplier); };
+
+
   //virtual Colour getTextColour()       const { return colourScheme.text;                                            };
   virtual Colour getSpecialColour1()   const { return colourScheme.special.withMultipliedAlpha(alphaMultiplier); };
   //virtual Colour getSpecialColour2()   const { return colourScheme.specialColour2;   };

@@ -152,12 +152,12 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   midLevelMeter->setRange(rangeMin, rangeMax);
   midLevelMeter->setReferenceValue(0.0);
   midLevelMeter->setCurrentValue(0.0);
-  addAndMakeVisible(midLevelMeter);
+  addWidget(midLevelMeter);
 
   sideLevelLabel = new RTextField(juce::String(("S")) );
   sideLevelLabel->setDescription(juce::String(("Level of side channel")));
   sideLevelLabel->setDescriptionField(infoField);
-  addAndMakeVisible(sideLevelLabel);
+  addWidget(sideLevelLabel);
 
   sideLevelMeter = new MeteringDisplay(juce::String(("S")) );
   sideLevelMeter->setDescription(sideLevelLabel->getDescription());
@@ -166,12 +166,12 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   sideLevelMeter->setRange(rangeMin, rangeMax);
   sideLevelMeter->setReferenceValue(0.0);
   sideLevelMeter->setCurrentValue(0.0);
-  addAndMakeVisible(sideLevelMeter);
+  addWidget(sideLevelMeter);
 
   correlationLabel = new RTextField(juce::String(("C")) );
   correlationLabel->setDescription(juce::String(("L/R cross-correlation")));
   correlationLabel->setDescriptionField(infoField);
-  addAndMakeVisible(correlationLabel);
+  addWidget(correlationLabel);
 
   correlationMeter = new MeteringDisplay(juce::String(("C")) );
   correlationMeter->setDescription(correlationLabel->getDescription());
@@ -180,7 +180,7 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   correlationMeter->setRange(-1.0, 1.0);
   correlationMeter->setReferenceValue(0.0);
   correlationMeter->setCurrentValue(0.0);
-  addAndMakeVisible(correlationMeter);
+  addWidget(correlationMeter);
 
   // set up the widgets:
   updateWidgetsAccordingToState();
@@ -351,6 +351,8 @@ void TrackMeterModuleEditor::timerCallback()
 /*
 
 Bugs:
--info of mid/side/correlation meter is not shown
+-when playing notes with the sampler, it hickups on note-off
+-VU and PPM buttons don't flash on click
+-PPM button too far down
 
 */

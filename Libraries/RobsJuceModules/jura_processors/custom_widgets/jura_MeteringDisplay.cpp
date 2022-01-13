@@ -3,12 +3,7 @@
 
 MeteringDisplay::MeteringDisplay(const juce::String &componentName) : RWidget(componentName)
 {
-  //style          = levelMeterStyle;
-  //verticalMode   = true;
-  //minValue       = -48.0;
-  //maxValue       = +6.0;
-  //currentValue   = +0.0;
-  //referenceValue = 0.0;
+
 }
 
 MeteringDisplay::~MeteringDisplay()
@@ -56,58 +51,51 @@ void MeteringDisplay::paint(Graphics &g)
 {
   g.fillAll(Colours::black);
 
-  int x = 0;
-  int y = 0;
-  int w = getWidth();
-  int h = getHeight();
-
-  // Factor out into drawVertically(g)
-  // calculate the positions of the reference- and the current value in component coordinates:
-  //double referencePosition = h * (referenceValue-minValue) / (maxValue-minValue);
+  float x = 0.f;
+  float y = 0.f;
+  float w = (float) getWidth();
+  float h = (float) getHeight();
 
   float relVal = (currentValue-minValue) / (maxValue-minValue); // relative value
-  
+
   switch( style )
   {
   case levelMeterStyle:
     {
       // Create and paint the gradient:
-      ColourGradient gradient = ColourGradient(Colours::green, (float) w, (float) h,
-        Colours::magenta, (float) x, (float) y, false);
+      ColourGradient gradient = ColourGradient(Colours::green, w,h, Colours::magenta, x,y, false);
       gradient.addColour(     (referenceValue-minValue) / (maxValue-minValue), Colours::red);
       gradient.addColour(0.75*(referenceValue-minValue) / (maxValue-minValue), Colours::yellow);
       FillType fill(gradient);
       g.setFillType(fill);
       g.fillAll();
 
-      // draw a black rectangle over some part of the gradient:
+      // Cover some some part of the gradient with the background color:
       float top = h * relVal;
-      g.setColour(Colours::black);
-      g.fillRect((float) x, (float) y, (float) w,
-        jlimit((float) x, (float) h, (float) (h-top)) );
+      g.setColour(getBackgroundColour());
+      g.fillRect(x, y, w, jlimit(x, h, h-top));
     }
     break;
   case triangularPointerStyle:
     {
+      // Fill the background:
+      g.setColour(getBackgroundColour());
+      g.fillRect(x, y, w, h);
+
+      // Draw the indicator:
       float pos = h * relVal;
-
-      g.setColour(Colours::blue.brighter(2.0f)); // use some color from the widget-colorscheme
-
-      drawTriangle(g, (float) x, (float) (h-pos-w/2),
-                      (float) x, (float) (h-pos+w/2),
-                      (float) w, (float) (h-pos), true);
-
-      g.setColour(Colours::white);  // ...here too
-      g.drawLine((float) x, (float) (h-pos), (float) w, (float) (h-pos));
+      g.setColour(getWeakHighlightColour()); 
+      drawTriangle(g, x, h-pos-w/2.f, x, h-pos+w/2.f, w, h-pos, true);
+      g.setColour(getStrongHighlightColour());
+      g.drawLine(x, h-pos, w, h-pos);
     }
     break;
   case horizontalRatio:
   {
-
+    // under construction....
   }
   break;
 
 
   } // end of switch(style)
 }
-

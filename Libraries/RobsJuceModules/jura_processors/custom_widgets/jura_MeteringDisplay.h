@@ -67,6 +67,9 @@ protected:
 
 
   float minValue = -48., maxValue = +6., currentValue = 0., referenceValue = 0.; 
+  // these are not good defaults - mabe use 0,1,0.5
+
+
   int style = levelMeterStyle;
 
   juce_UseDebuggingNewOperator;

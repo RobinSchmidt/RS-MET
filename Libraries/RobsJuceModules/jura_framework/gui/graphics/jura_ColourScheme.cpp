@@ -94,58 +94,60 @@ void EditorColourScheme::updateColours()
 
 void WidgetColourScheme::updateColours()
 {
-  ColourAHSL backgroundAHSL, outlineAHSL, handleAHSL, textAHSL, specialAHSL;
+  ColourAHSL backgroundAHSL, outlineAHSL, handleAHSL, textAHSL, 
+    weakHighlightAHSL, strongHighlightAHSL;
 
   switch( appearance )
   {
   case DARK_ON_BRIGHT:
     {
       backgroundAHSL.setLuminance(0.9375);
-      outlineAHSL.setLuminance(   0.5);
-      //handleAHSL.setLuminance(    0.625);
+      outlineAHSL.setLuminance(   0.625);
       handleAHSL.setLuminance(    0.6875);
-      //handleAHSL.setLuminance(    0.75);
       textAHSL.setLuminance(      0.f);
       textAHSL.setAlpha(          0.8125f);
-      specialAHSL.setLuminance(   1.f); // preliminary
+      weakHighlightAHSL.setLuminance(0.5f);
+      strongHighlightAHSL.setLuminance(0.0f);
     }
     break;
   case BRIGHT_ON_DARK:
     {
-      backgroundAHSL.setLuminance(0.0);
-      outlineAHSL.setLuminance(   0.5);
-      handleAHSL.setLuminance(    0.435f);
-      textAHSL.setLuminance(      1.f);
-      textAHSL.setAlpha(          0.8125f);
-      specialAHSL.setLuminance(   1.f); // preliminary
-
-      //outlineAHSL.setHue(-0.0625);  // experimental
-      //handleAHSL.setHue( +0.0625);
+      backgroundAHSL.setLuminance(     0.0);
+      outlineAHSL.setLuminance(        0.5);
+      handleAHSL.setLuminance(         0.435f);
+      textAHSL.setLuminance(           1.f);
+      textAHSL.setAlpha(               0.8125f);
+      weakHighlightAHSL.setLuminance(  0.75f);
+      strongHighlightAHSL.setLuminance(1.0f);
     }
     break;
   }
 
   // saturations (preliminary):
-  backgroundAHSL.setSaturation(1.0);
-  outlineAHSL.setSaturation(   1.0);
-  handleAHSL.setSaturation(    1.0);
-  textAHSL.setSaturation(      1.0);
-  specialAHSL.setSaturation(   1.0);
+  backgroundAHSL.setSaturation(     1.0);
+  outlineAHSL.setSaturation(        1.0);
+  handleAHSL.setSaturation(         1.0);
+  textAHSL.setSaturation(           1.0);
+  weakHighlightAHSL.setSaturation(  1.0);
+  strongHighlightAHSL.setSaturation(1.0);
 
   float ch = centralHue;
   float sm = saturationMultiplier;
   float bg = brightnessGamma;
-  backgroundAHSL = backgroundAHSL.withModifiersApplied(ch, sm, bg);
-  outlineAHSL    = outlineAHSL.withModifiersApplied(   ch, sm, bg);
-  handleAHSL     = handleAHSL.withModifiersApplied(    ch, sm, bg);
-  textAHSL       = textAHSL.withModifiersApplied(      ch, sm, bg);
-  specialAHSL    = specialAHSL.withModifiersApplied(   ch, sm, bg);
+  backgroundAHSL      = backgroundAHSL.withModifiersApplied(     ch, sm, bg);
+  outlineAHSL         = outlineAHSL.withModifiersApplied(        ch, sm, bg);
+  handleAHSL          = handleAHSL.withModifiersApplied(         ch, sm, bg);
+  textAHSL            = textAHSL.withModifiersApplied(           ch, sm, bg);
+  weakHighlightAHSL   = weakHighlightAHSL.withModifiersApplied(  ch, sm, bg);
+  strongHighlightAHSL = strongHighlightAHSL.withModifiersApplied(ch, sm, bg);
 
-  background = backgroundAHSL.getAsJuceColour();
-  outline    = outlineAHSL.getAsJuceColour();
-  handle     = handleAHSL.getAsJuceColour();
-  text       = textAHSL.getAsJuceColour();
-  special    = specialAHSL.getAsJuceColour();
+  background      = backgroundAHSL.getAsJuceColour();
+  outline         = outlineAHSL.getAsJuceColour();
+  handle          = handleAHSL.getAsJuceColour();
+  text            = textAHSL.getAsJuceColour();
+  weakHighlight   = weakHighlightAHSL.getAsJuceColour();
+  strongHighlight = strongHighlightAHSL.getAsJuceColour();
+  special         = strongHighlight; // get rid
 }
 
 void PlotColourScheme::updateColours()
