@@ -110,6 +110,9 @@ public:
   /** Returns the colour used for the top-left corner. */
   virtual Colour getTopLeftColour() const { return editorColourScheme.topLeft; }
 
+  /** Returns the color used for regular text on the editor. */
+  virtual Colour getTextColour() const { return editorColourScheme.text; }
+
   //-----------------------------------------------------------------------------------------------
   // callbacks:
 

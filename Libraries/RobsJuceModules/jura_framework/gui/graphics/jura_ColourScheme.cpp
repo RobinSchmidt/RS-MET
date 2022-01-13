@@ -24,7 +24,7 @@ juce::String ColourScheme::getAppearanceString() const
 void EditorColourScheme::updateColours()
 {
   ColourAHSL backgroundAHSL, topLeftAHSL, topRightAHSL, bottomLeftAHSL, bottomRightAHSL,
-      outlineAHSL, headlineAHSL, headlineOutlineAHSL;
+      outlineAHSL, headlineAHSL, headlineOutlineAHSL, textAHSL;
 
   switch( appearance )
   {
@@ -39,6 +39,7 @@ void EditorColourScheme::updateColours()
       outlineAHSL.setLuminance(        0.5);
       headlineAHSL.setLuminance(       0.3125);
       headlineOutlineAHSL.setLuminance(1.0);
+      textAHSL.setLuminance(           0.25);
     }
     break;
   case BRIGHT_ON_DARK:
@@ -52,6 +53,7 @@ void EditorColourScheme::updateColours()
       outlineAHSL.setLuminance(        0.5);
       headlineAHSL.setLuminance(       0.8125);
       headlineOutlineAHSL.setLuminance(0.0);
+      textAHSL.setLuminance(           0.75);
     }
     break;
   }
@@ -64,6 +66,7 @@ void EditorColourScheme::updateColours()
   outlineAHSL.setSaturation(        1.0);
   headlineAHSL.setSaturation(       1.0);
   headlineOutlineAHSL.setSaturation(1.0);
+  textAHSL.setSaturation(1.0);
 
   // apply global modifiers (macro parameters):
   float ch = centralHue;
@@ -76,6 +79,7 @@ void EditorColourScheme::updateColours()
   outlineAHSL         = outlineAHSL.withModifiersApplied(        ch, sm, bg);
   headlineAHSL        = headlineAHSL.withModifiersApplied(       ch, sm, bg);
   headlineOutlineAHSL = headlineOutlineAHSL.withModifiersApplied(ch, sm, bg);
+  textAHSL            = textAHSL.withModifiersApplied(ch, sm, bg);
 
   // convert to ARGB and store in members::
   topLeft         = topLeftAHSL.getAsJuceColour();
@@ -85,6 +89,7 @@ void EditorColourScheme::updateColours()
   outline         = outlineAHSL.getAsJuceColour();
   headline        = headlineAHSL.getAsJuceColour();
   headlineOutline = headlineOutlineAHSL.getAsJuceColour();
+  text            = textAHSL.getAsJuceColour();
 }
 
 void WidgetColourScheme::updateColours()

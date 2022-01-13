@@ -89,30 +89,30 @@ TrackMeterModuleEditor::TrackMeterModuleEditor(CriticalSection *newPlugInLock,
   rangeMax = +6.0;
 
   // create the widgets and assign the automatable parameters to them:
-  addWidget( riseSlider = new RSlider (("RiseSlider")) );
-  riseSlider->assignParameter( trackMeterModuleToEdit->getParameterByName(("RiseTime")) );
-  riseSlider->setSliderName(juce::String(("Rise")));
-  riseSlider->setDescription(juce::String(("Rise/Attack time-constant")));
+  addWidget( riseSlider = new RSlider("RiseSlider") );
+  riseSlider->assignParameter( trackMeterModuleToEdit->getParameterByName("RiseTime") );
+  riseSlider->setSliderName(juce::String("Rise"));
+  riseSlider->setDescription(juce::String("Rise/Attack time-constant"));
   riseSlider->setDescriptionField(infoField);
   riseSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( fallSlider = new RSlider (("FallSlider")) );
-  fallSlider->assignParameter( trackMeterModuleToEdit->getParameterByName(("FallTime")) );
-  fallSlider->setSliderName(juce::String(("Fall")));
-  fallSlider->setDescription(juce::String(("Fall/Release time-constant")));
+  addWidget( fallSlider = new RSlider ("FallSlider") );
+  fallSlider->assignParameter( trackMeterModuleToEdit->getParameterByName("FallTime") );
+  fallSlider->setSliderName(juce::String("Fall"));
+  fallSlider->setDescription(juce::String("Fall/Release time-constant"));
   fallSlider->setDescriptionField(infoField);
   fallSlider->setStringConversionFunction(&millisecondsToStringWithUnit2);
 
-  addWidget( vuButton = new RButton(juce::String(("VU"))) );
+  addWidget( vuButton = new RButton("VU") );
   //vuButton->assignParameter( trackMeterModuleToEdit->getParameterByName(("VU")) );
-  vuButton->setDescription(juce::String(("Set ballistics to VU mode")));
+  vuButton->setDescription(juce::String("Set ballistics to VU mode"));
   vuButton->setDescriptionField(infoField);
   vuButton->setClickingTogglesState(false);
   vuButton->addRButtonListener(this);
 
-  addWidget( ppmButton = new RButton(juce::String(("PPM"))) );
+  addWidget( ppmButton = new RButton("PPM") );
   //ppmButton->assignParameter( trackMeterModuleToEdit->getParameterByName(("PPM")) );
-  ppmButton->setDescription(juce::String(("Set ballistics to PPM mode")));
+  ppmButton->setDescription(juce::String("Set ballistics to PPM mode"));
   ppmButton->setDescriptionField(infoField);
   ppmButton->setClickingTogglesState(false);
   ppmButton->addRButtonListener(this);
@@ -215,7 +215,7 @@ void TrackMeterModuleEditor::rButtonClicked(RButton* buttonThatWasClicked)
 
     // calculate the fall-time:
     time    = 2.8;    
-    level   = 1.0-RAPT::rsDbToAmp(-24.0);    
+    level   = 1.0-RAPT::rsDbToAmp(-24.0);
     tauFall = -time / log(1.0-level);
   }
 
@@ -289,13 +289,28 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
   double stepSize = 6.0;
   double yStep    = stepSize * leftLevelMeter->getHeight() / (rangeMax - rangeMin);
   int    numSteps = roundToInt( (rangeMax-rangeMin) / stepSize ) + 1;
+
+  //juce::Colour textColor = Colours::grey;
+
+  //juce::Colour textColor = widgetColourScheme.text; // use getTextColor
+
+
+  juce::Colour textColor = getTextColour();
+  g.setColour(textColor);
+
+
+  // for the ticks - maybe darken for bright-on-dark schemes and brighten for dark-on-bright schemes
+  // maybe have a function in widgetColourScheme tonedDown that darkens or brightens and can be used
+  // 
+
+
   for(i=1; i<=numSteps; i++)
   {
     g.drawLine(x1, (float) y, x2, (float) y, 2.f); 
     numberString = valueToStringWithSign0(rangeMax-(i-1)*stepSize);
     //g.drawText(numberjuce::String, (int) (x1-24), (int) (y-8), 24, 16, Justification::centredRight, false);
     drawBitmapFontText(g, (int) x1 - 8, (int) y, numberString, font, 
-      Colours::black, -1, Justification::centredRight);
+      textColor, -1, Justification::centredRight);
     y += yStep;
   }
 
@@ -312,7 +327,7 @@ void TrackMeterModuleEditor::drawMeterScales(Graphics &g)
     numberString = valueToStringWithSign1(1.0-(i-1)*stepSize);
     //g.drawText(numberjuce::String, (int) x2, (int) (y-8), 30, 16, Justification::centredLeft, false);
     drawBitmapFontText(g, (int) x1 + 28, (int) y, numberString, font, 
-      Colours::black, -1, Justification::centredLeft);
+      textColor, -1, Justification::centredLeft);
     y += yStep;
   }
 }
@@ -332,3 +347,10 @@ void TrackMeterModuleEditor::timerCallback()
   sideLevelMeter->setCurrentValue(measures.sideLevel);
   correlationMeter->setCurrentValue(measures.crossCorrelation);
 }
+
+/*
+
+Bugs:
+-info of mid/side/correlation meter is not shown
+
+*/

@@ -21,9 +21,13 @@ void SamplerModule::createParameters()
   addObservedParameter(p);
   p->setValueChangeCallback<SM>(this, &SM::setGain);
 
-  p = new Param("OpcodesAccumulate", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
+  p = new Param("BusMode", 0.0, 1.0, 0.0, Parameter::BOOLEAN);
   addObservedParameter(p);
-  p->setValueChangeCallback<SM>(this, &SM::setOpcodeAccumulationMode);
+  p->setValueChangeCallback<SM>(this, &SM::setBusMode);
+
+  // ToDo: InterpolationMethod (Linear, LagrangeCubic, HermiteCubic, Sinc), SincLength (2-512), 
+  // Oversample (1-16), MaxLayers (16-8192), MaxFilters (16-8192), MaxEqualizers, MaxWaveshapers,
+
 }
 
 void SamplerModule::setupDirectories()
@@ -61,9 +65,9 @@ bool SamplerModule::doesSfzFileExist(const juce::String& relativePath)
   return sfzFile.existsAsFile();
 }
 
-void SamplerModule::setOpcodeAccumulationMode(bool shouldAccumulate)
+void SamplerModule::setBusMode(bool shouldAccumulate)
 {
-  engine.setOpcodesAccumulate(shouldAccumulate);
+  engine.setBusMode(shouldAccumulate);
 }
 
 AudioModuleEditor* SamplerModule::createEditor(int type)
@@ -248,7 +252,9 @@ void SamplerEditor::timerCallback()
   jassert(samplerModule != nullptr);
 
   int num = samplerModule->getNumActiveLayers();
-  numLayersField->setText(juce::String(num));
+
+  layersMeter->setCurrentValue(num);
+  //numLayersField->setText(juce::String(num));
 
   // see: TrackMeterModuleEditor::timerCallback
 }
@@ -257,15 +263,19 @@ void SamplerEditor::resized()
 {
   ScopedLock scopedLock(*lock);  // do we actually nee the lock here?
   AudioModuleEditor::resized();
-  int x = 2;
+  int x = 0;
   int y = getPresetSectionBottom()+4;
   int w = getWidth();
   int h = getHeight() - y;
+  int m = 4;      // margin
 
   // Status info widgets
-  numLayersLabel->setBounds(x, y, 48, 16);
-  x = numLayersLabel->getRight();
-  numLayersField->setBounds(x, y, 32, 16);
+  layersMeter->setBounds(x+m, y, w/2-2*m, 16);
+
+  //numLayersLabel->setBounds(x, y, 48, 16);
+  //x = numLayersLabel->getRight();
+  //numLayersField->setBounds(x, y, 32, 16);
+
   //x = numLayersField->getRight();
   //numLayersOfLabel->setBounds(x, y, 16, 16);
   //x = numLayersOfLabel->getRight();
@@ -275,7 +285,7 @@ void SamplerEditor::resized()
   y += 20;
   x  = 2;
   //instrumentLabel->setBounds(x, y, 68, 16);
-  x = instrumentLabel->getRight()+2;
+  //x = instrumentLabel->getRight()+2;
   //sfzFileLoader->setBounds(x, y, w-x-4, 16);
 }
 
@@ -289,26 +299,69 @@ void SamplerEditor::createWidgets()
   //addWidgetSet(sfzFileLoader = new FileSelectionBox("", this) );
   // causes a crash on destruction
 
+  /*
   addWidget(numLayersLabel = new RTextField);
   numLayersLabel->setText("Layers:");
   numLayersLabel->setDescription("Number of currently playing layers");
   numLayersLabel->setDescriptionField(infoField);
 
-  addWidget(numLayersOfLabel = new RTextField);
-  numLayersOfLabel->setText("of");
-  numLayersOfLabel->setDescription("Number of currently playing layers");
-  numLayersOfLabel->setDescriptionField(infoField);
-
+  // May become obsolete when the meter is complete
   addWidget(numLayersField = new RTextField);
   numLayersField->setText("0");
   numLayersField->setDescription("Number of currently playing layers");
   numLayersField->setDescriptionField(infoField);
+  */
+
+
+  layersMeter = new MeteringDisplay("Layers");
+  layersMeter->setDescription("Number of currently playing layers");
+  layersMeter->setDescriptionField(infoField);
+  layersMeter->setMeterStyle(MeteringDisplay::horizontalRatio);
+  layersMeter->setRange(0, 16);  // should change dynamically on xml load
+  //layersMeter->setReferenceValue(0.0);
+  //layersMeter->setCurrentValue(0.0);
+  addWidget(layersMeter);
+
+
+
+
+
+
+  /*
+  addWidget(numLayersOfLabel = new RTextField);
+  numLayersOfLabel->setText("of");
+  numLayersOfLabel->setDescription("Number of currently playing layers");
+  numLayersOfLabel->setDescriptionField(infoField);
 
   addWidget(maxNumLayersSlider = new RDraggableNumber);
   //maxNumLayersSlider->assignParameter( samplerModule->getParameterByName("MaxNumLayers") );
   maxNumLayersSlider->setValue(16);  // preliminary
   maxNumLayersSlider->setDescription("Number of available layers. Drag up/down to adjust.");
   maxNumLayersSlider->setDescriptionField(infoField);
+  */
+
+  // ToDo: have display widgets for monitoring the system activity and load: CPU and RAM usage, the 
+  // latter for samples and DSP objects seperately, show how many DSP resources are available and 
+  // how they are used - like with horizontal meters like:
+
+  //  CPU:         #############         47%           # CPU load
+  //  Sample-RAM:  ####               270MB/4GB        # RAM used for samples
+  //  Process-RAM: ##                 140MB/4GB        # RAM used for DSPs
+  //
+  //  Layers:      #####               352/2048        # active region players
+  //  Voices:      ######               23/64          # midi active notes
+  //
+  //  Filters:     #############       467/1024        # used filters
+  //  Equalizers:  #######             234/1024        # used equalizers
+  //  Amplifiers:
+  //  Envelopes:
+  //  LowFreqOscs:
+  //  etc.
+  //
+  // Maybe add threads, disk-load, etc. later when we implement such features. Maybe have (sticky) 
+  // warning lamps for overloads. maybe have a total-ram display, too? maybe that should inquire
+  // the ram-suage of the process from the OS like int the system monitor? maybe we can also 
+  // display information about the smoothness/speikeyness of the CPU load?
 }
 
 
@@ -332,6 +385,13 @@ Bugs:
   -or make the behavior switchable
 
 ToDo:
+-On xml-load, update the widgets to reflect the new maximum settings for layers etc.
+ -loading an xml may also have to update the max-number of group players - in this case, i think,
+  the total number of groups in the patch is a strict upper limit for how many players will ever be
+  needed - the saem cannot be said about the relation of regions and layers because a single region
+  may produce more than one playback layer, if we allow notes to be retriggered while the old ones
+  are still releasing (like in single-shot mode where the sample is always played fully, 
+  overlapping with itself - regions may overlap with themselves in playback)
 -GUI:
  -show on the GUI, which mode we are in (Override/Accumulate) and let the user change that
  -show, which .sfz file is loaded and give the user a text editor to edit it

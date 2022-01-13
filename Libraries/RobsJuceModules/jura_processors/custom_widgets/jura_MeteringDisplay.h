@@ -2,9 +2,7 @@
 #define jura_MeteringDisplay_h
 
 
-/** A component for showing measurent values auch as the current level.
-
-\todo: ovrride resized instead of setBounds  */
+/** A component for showing measurent values auch as the current level. */
 
 class MeteringDisplay : public RWidget
 {
@@ -13,14 +11,29 @@ public:
 
   enum meterStyles
   {
-    levelMeterStyle = 0,
-    triangularPointerStyle,
+    levelMeterStyle = 0,    
+    // rename to verticalLevelMeter, used for volume metring in dB
+
+    triangularPointerStyle, 
+    // rename to bipolar/verticalTriangularPointer - used for correlation meter
+
+    horizontalRatio,
+    // Horizontal bar with display of the ratio of current/maximum on the right like 37/128.
+    // Used for displaying resource usage.
+
+    // horizontalPercent
+    // Like horizontalRatio but instead of prints something like 37/128, it prints 29%.
+    // ...maybe they should both use the same drawing code and the used provides a function to 
+    // convert the val/max pair into a string. That flexibility is need to allow units to be 
+    // displyed like 270MB/16GB for a RAM-usage meter, for example. The call both horizontalBar.
+    // The stringify function by default returns an empty string.
+
 
     numMeterStyles
   };
 
   //-----------------------------------------------------------------------------------------------
-  // construction/destruction:
+  // \name Lifetime
 
   /** Constructor. */
   MeteringDisplay(const juce::String &componentName);
@@ -29,34 +42,32 @@ public:
   virtual ~MeteringDisplay();
 
   //-----------------------------------------------------------------------------------------------
-  // setup:
+  // \name Setup:
 
   /** Chooses one of the styles for displaying the value. */
   virtual void setMeterStyle(int newMeterStyle);
 
-  /** Set the up the lower and upper value for the meter. */
-  virtual void setRange(double newMinimum, double newMaximum);
+  /** Sets the up the lower and upper value for the meter. */
+  virtual void setRange(float newMinimum, float newMaximum);
 
-  /** Set the up the reference value which maps to the neutral position fo the meter. */
-  virtual void setReferenceValue(double newReferenceValue);
+  /** Sets the up the reference value which maps to the neutral position fo the meter. */
+  virtual void setReferenceValue(float newReferenceValue);
 
-  /** Set the up the current value for the meter. */
-  virtual void setCurrentValue(double newValue);
+  /** Sets the up the current value for the meter. */
+  virtual void setCurrentValue(float newValue);
 
   //-----------------------------------------------------------------------------------------------
-  // overrides:
+  // \name Overrides:
 
   /** Overrides paint(). */
-  virtual void paint(Graphics &g);
+  void paint(Graphics &g) override;
 
-  /** Overrides setBounds(). */
-  virtual void setBounds(int x, int y, int width, int height);
 
 protected:
 
-  int    style;
-  bool   verticalMode;
-  double minValue, maxValue, currentValue, referenceValue;
+
+  float minValue = -48., maxValue = +6., currentValue = 0., referenceValue = 0.; 
+  int style = levelMeterStyle;
 
   juce_UseDebuggingNewOperator;
 };

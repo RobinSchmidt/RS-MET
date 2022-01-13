@@ -56,7 +56,7 @@ protected:
   relative with respect to our "sfzRootDir" member. */
   virtual bool doesSfzFileExist(const juce::String& path);
 
-  void setOpcodeAccumulationMode(bool shouldAccumulate);
+  void setBusMode(bool shouldAccumulate);
 
   // Shorthands for convenience:
   //using Engine = rosic::rsSamplerEngine;  // old
@@ -90,24 +90,34 @@ public:
   SamplerEditor(SamplerModule* samplerToEdit);
 
   // Overrides                                   // overriden from...
-  bool loadFile(const juce::File& f) override;   // FileManager
-  bool saveToFile(const juce::File& f) override; // FileManager
-  void timerCallback() override;                 // Timer
-  void resized() override;                       // AudioModuleEditor
+  bool loadFile(const juce::File& f) override;   //   FileManager
+  bool saveToFile(const juce::File& f) override; //   FileManager
+  void timerCallback() override;                 //   Timer
+  void resized() override;                       //   AudioModuleEditor
 
 protected:
 
   virtual void createWidgets();
 
-  RTextField *instrumentLabel;
-  FileSelectionBox *sfzFileLoader;
 
-  RTextField *numLayersLabel, *numLayersOfLabel, *numLayersField;
+  jura::RTextField *instrumentLabel;
+  //jura::RTextField *numLayersLabel, *numLayersField; // numLayersField may become obsolete
+  jura::MeteringDisplay *layersMeter;
+
+  /*
+  FileSelectionBox *sfzFileLoader;
+  RTextField *numLayersLabel, *numLayersOfLabel, ;
   RDraggableNumber *maxNumLayersSlider;
 
   RTextField *cpuLoadLabel, *cpuLoadField, *ramLoadLabel, *ramLoadField;  
   // todo: diskLoad - maybe ram should also show the total occupation (by all apps) and the 
   // remaining available
+  */
+
+
+
+
+
 
 
   SamplerModule* samplerModule = nullptr;

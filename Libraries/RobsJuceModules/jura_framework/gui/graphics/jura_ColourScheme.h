@@ -168,7 +168,7 @@ public:
     updateColours(); 
   }
 
-  Colour topLeft, topRight, bottomLeft, bottomRight, outline, headline, headlineOutline;
+  Colour topLeft, topRight, bottomLeft, bottomRight, outline, headline, headlineOutline, text;
 
   juce_UseDebuggingNewOperator;
 
