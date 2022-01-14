@@ -2375,6 +2375,22 @@ bool samplerLoopTest()
   float f  = 440.0;  // frequency of sinewave to generate
   int   N  = 1000;   // number of samples to generate
 
+  // Set up the engine:
+  SE se;
+  double f0 = fs/cycleLength;  // fundamental freq of the sample
+  double rootKey = RAPT::rsFreqToPitch(f0);
+  addSingleSampleRegion(&se, sinTable, (float)rootKey);
+
+  // Produce output:
+  Vec outL(N), outR(N);
+  se.handleNoteOn(60, 127);
+  for(int n = 0; n < N; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  rsPlotVectors(outL, outR);
+  // is cut off after the 3 cycles - todo: implement and use looping such that it extends over the
+  // whole length N
+
+
   rsAssert(ok);
   return ok;
 }

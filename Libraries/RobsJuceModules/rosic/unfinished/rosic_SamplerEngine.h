@@ -818,6 +818,16 @@ public:
   function to keep track of its size in the tests. */
   static int getRegionPlayerSize() { return sizeof(RegionPlayer); }
 
+
+  PlayStatusChange handleNoteOn(uchar key, uchar vel) override
+  {
+    return rsSamplerEngine::handleNoteOn(key, vel);
+    // The purpose of this override is to make it public. It's protected in the baseclass because
+    // in production, client code is supposed to use the more general midi-event handler. But in
+    // tests, it's sometimes more convenient to be able to call this directly.
+  }
+
+
 };
 
 //=================================================================================================
