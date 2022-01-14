@@ -605,9 +605,9 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOn(uchar key, uchar
     const Region* r  = regionsForKey[key].getRegion(i);
     if(!shouldRegionPlay(r, key, vel))                   // Check response constraints
       continue;
-    RegionPlayer* rp = getRegionPlayerFor(r, key, vel);  // Try to allcoare player for layer.
-    if(rp == nullptr) {                                  // In case of failure, roll back all the
-      stopMostRecentLayers(psc.numLayersStarted);        // players allocated so far and abort. 
+    RegionPlayer* rp = getRegionPlayerFor(r, key, vel);  // Try to create player for the new layer.
+    if(rp == nullptr) {                                  // When it fails, roll back all the
+      stopMostRecentLayers(psc.numLayersStarted);        // players created so far and abort. 
       psc.numLayersStarted = 0;                          // We failed to trigger the note.
       return psc;
       // It seems to roll back one too many. Write a unit test to figure out why that is and then

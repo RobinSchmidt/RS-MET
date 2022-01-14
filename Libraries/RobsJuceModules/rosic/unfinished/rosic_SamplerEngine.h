@@ -837,10 +837,13 @@ public:
     dspPool.processorPool.setMaxNumFilters(newMax); 
   }
 
-  void setMaxNumRegions(int newMax) 
+  // move into baseclass - jura::Sampler will need it:
+  void setMaxNumLayers(int newMax) 
   {
     reset();
     playerPool.resize(newMax); // maybe rename to regionPlayerPool
+    for(auto & p : playerPool)
+      p.setDspResourcePool(&dspPool);
     rsSetupPointers(playerPool, idlePlayers);
   }
 
@@ -848,6 +851,8 @@ public:
   {
     reset();
     groupPlayerPool.resize(newMax);
+    for(auto & p : groupPlayerPool)
+      p.setDspResourcePool(&dspPool);
     rsSetupPointers(groupPlayerPool, idleGroupPlayers);
   }
 

@@ -398,24 +398,24 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   // this setting should be applied accumulatively in busMode. In default mode, GroupPlayer and 
   // InstrumPlayer play no role at all.
 
-  double val = (double)s.getValue();
-  using OC   = Opcode;
+  float val = s.getValue();
+  using OC  = Opcode;
   switch(s.getType())
   {
   // Pitch settings:
   //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
-  case OC::Transpose: { transpose  = val;               } break;
-  case OC::Tune:      { tune       = val;               } break;
+  case OC::Transpose: { transpose  =  val;              } break;
+  case OC::Tune:      { tune       =  val;              } break;
   case OC::Delay:     { sampleTime = -val * sampleRate; } break;
-  case OC::Offset:    { offset     = float(val);        } break;
+  case OC::Offset:    { offset     =  val;              } break;
   }
 }
 // ...actually, if we can assume that all values start at neutral values, we can always accumulate
 // and the distinction between this implementation and the one in SampleBusPlayer becomes identical
 // and can therfore be moved into the baseclass..or..well - not quite: SampleBusPlayer applies 
 // everything to rp and we to "this" - but "this" equals rp...hmmm..but no - that accumulation 
-// business thwarts the override behavior! We receive call from the (maybe) instrum, then (maybe) 
-// group, then (maybe) region. Each of these is optional but when a call happens, it should 
+// business thwarts the override behavior! We receive calls from (maybe) the instrum, then (maybe) 
+// the group, then (maybe) the region. Each of these is optional but when a call happens, it should 
 // override the current setting. 
 
 //=================================================================================================

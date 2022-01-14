@@ -2453,6 +2453,10 @@ bool samplerOverloadTest()
     ok &= se.getNumUsedFilters()  == expectedFilters;
     return ok;
   };
+  // Maybe rename to testLayersAndFilters and write also helpers like testGroupsAndLayers, 
+  // testVoicesAndLayers etc...or maybe just add 2 further parameters expectedGroups, 
+  // expectedVoices to the function...yeah - always testing everything gives greater test coverage.
+  // But expectedGroups would always be zero unless in busMode
 
   // Try to trigger notes. The first and second should play but the third should not due to not 
   // enough filters available:
@@ -2521,9 +2525,9 @@ bool samplerOverloadTest()
   ok &= testNote(61, 2, 5);  // also 3/1 but only the 1 is new
   ok &= testNote(70, 2, 5);  // also 3/1 but all would be new
 
-  // Test running out of RegionPlayers and GroupPlayers:
+  // Test running out of GroupPlayers:
   se.clearAllSfzSettings();        // no filters anymore!
-  se.setMaxNumRegions(5);
+  se.setMaxNumLayers(5);
   se.setMaxNumGroups( 2);
   se.addGroup();
   se.addRegion(2, 80, 89);
@@ -2533,13 +2537,26 @@ bool samplerOverloadTest()
   ok &= testNote(70, 2, 0);
   ok &= testNote(80, 2, 0);   // we don't have enough GroupPlayers
 
+  // Test running out of RegionPlayers. Allow a maximum of 8 layers, create a Region with 3 layers,
+  // trigger 3 notes. The 3rd note should not trigger because 6 RegionPlayers are already used up 
+  // by the other two notes and the 3rd would need 3 more but only 2 are left:
+  se.clearInstrument();                    // start fresh with clean slate
+  se.setMaxNumLayers(8);
+  se.setBusMode(false);                    // group limitations shouldn't play a role here
+  addSingleSampleRegion(&se, noise, 60.f); // add sample and 1 region
+  se.addRegion(0);                         // add 2nd region
+  se.setRegionSample(0, 1, 0);             // ...and set up its sample
+  se.addRegion(0);                         // add 3rd region
+  se.setRegionSample(0, 2, 0);             // ...and set up its sample
+  ok &= testNote(60, 3, 0);
+  ok &= testNote(61, 6, 0);
+  ok &= testNote(62, 6, 0);  // rolls back to 4 active players
+
 
 
   // ToDo: 
-  // -
-  //  -add a 3rd group from 80..89
-  //  -play 3 notes, 1 from each region - the 3rd should fail doe to unavailable GroupPlayer
-  //  -play 3 notes but only from 2 of th groups - this should work
+  // 
+
 
   rsAssert(ok);
   return ok;
@@ -2566,8 +2583,11 @@ bool samplerEngineUnitTest()
   ok &= samplerOverloadTest();
 
   // ToDo:
+  // -implement loop mode
+  // -clean up codebase and fix warnings
   // -Test to define the sample opcode on instrument and group level. We can have various regions
-  //  in a group that use the same sample
+  //  in a group that use the same sample, test what happens when a region has no sample defined
+  //  (it should be silent, of course)
   // -Add an overload test that simulates conditions when the engine is running out of resources 
   //  such as DSPs, players, memory, etc. Make sure that things get cleaned up correctly in cases 
   //  where a partially assembled RegionPlayer must be rolled back due to lack of resources.
