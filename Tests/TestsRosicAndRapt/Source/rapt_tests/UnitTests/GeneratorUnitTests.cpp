@@ -2374,7 +2374,7 @@ bool samplerLoopTest()
   // Playback settings:
   float fs = 44100;  // playback sample rate
   float f  = 440.0;  // frequency of sinewave to generate
-  int   N  = 1000;   // number of samples to generate
+  int   N  = 2000;   // number of samples to generate
 
   // Set up the engine:
   SE se;
@@ -2385,20 +2385,47 @@ bool samplerLoopTest()
   se.setRegionSetting(0,0, OC::LoopStart, 0,               -1);
   se.setRegionSetting(0,0, OC::LoopEnd,   0 + cycleLength, -1);
 
-  // Produce output:
-  Vec outL(N), outR(N);
-  se.handleNoteOn(60, 127);
-  for(int n = 0; n < N; n++)
-    se.processFrame(&outL[n], &outR[n]);
-  rsPlotVectors(outL, outR);
-  // looks good! implement ok &= ...
+  // Helper function to produce the error signal between the ideal sinewave of given frequency and
+  // the signal produced by the sampler engine for given key:
+  auto getError = [&](int key, double freq)
+  {
+  // Produce target signal:
+    Vec tgt(N);
+    w = 2*PI*freq/fs;
+    for(int n = 0; n < N; n++)
+      tgt[n] = (float)sin(w*n);
+
+    // Produce output and return error:
+    Vec outL(N), outR(N);
+    se.reset();
+    se.handleNoteOn(key, 127);
+    for(int n = 0; n < N; n++)
+      se.processFrame(&outL[n], &outR[n]);
+    rsAssert(outR == outL);
+    return tgt - outL;
+  };
+
+  // We expect some error due to the linear interpolation:  
+  float tol = 1.e-3;
+  Vec err = getError(69, 440);
+  rsPlotVector(err);
+  ok &= rsMaxAbs(err) <= tol;
+  // Error is between +-0.0005. That's an SNR of about 66 dB. Actually not that bad for not even
+  // trying to imlement decent interpolation. But it will probably get a lot worse for higher 
+  // frequencies. The error has strange discontinuities in the derivative - why? Try loopLengths 
+  // of twice and thrice the cycle-length. Without these sharp corners, the error might perhaps
+  // be less annyoing?
+
 
   // ToDo:
   // -Test with loopEnd = sinTable.size()
   // -Test what happens when loopEnd is <= loopStart. I guess, it jumps forward by loopLength 
   //  every sample after reaching loopEnd. We should probably ensure that this doesn't happen
   //  maybe use loopStart = min(loopStart, loopEnd). Then, the loop would just be ignored. That may
-  //  actually be the most reasonable behavior in such a case
+  //  actually be the most reasonable behavior in such a case.
+  // -Check, if the behavior is correct with respect to sustain, note-off, etc. I think, in 
+  //  loop_sustain modewe should do the warp around conditionally if the note is being held
+  // -Later when better interpolation is implemented, do similar tests with less tolerance.
 
   rsAssert(ok);
   return ok;
