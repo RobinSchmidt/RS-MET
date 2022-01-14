@@ -396,6 +396,9 @@ FilterType SfzCodeBook::stringToFilterType(const std::string& str)
   RAPT::rsError("Unknown type in SfzCodeBook::stringToFilterType");
   return FilterType::Unknown;
 }
+
+
+
 // this code is repetitive! try to refactor!
 
 std::string SfzCodeBook::valueToString(Opcode op, float val)

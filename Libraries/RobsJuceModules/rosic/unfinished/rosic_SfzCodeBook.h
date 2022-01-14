@@ -364,12 +364,6 @@ public:
   will be assigned to -1. */
   Opcode stringToOpcode(const std::string& str, int* index);
 
-  /** Translates a filter type enum value to the string that represents it in an sfz file. */
-  const std::string& filterTypeToString(FilterType ft);
-
-  /** Translates a string representing a filter type into its corresponding enum value. */
-  FilterType stringToFilterType(const std::string& str);
-
   /** Translates the value of an opcode represented as floating point number into a corresponding
   string that can be written to an sfz file. */
   std::string valueToString(Opcode op, float value);
@@ -377,6 +371,16 @@ public:
   /** Translates a string that represents the value for a given opcode into its floating point 
   representation. */
   float stringToValue(Opcode op, const std::string& str);
+
+  /** Translates a filter type enum value to the string that represents it in an sfz file. */
+  const std::string& filterTypeToString(FilterType ft);
+
+  /** Translates a string representing a filter type into its corresponding enum value. */
+  FilterType stringToFilterType(const std::string& str);
+
+
+  LoopMode stringToLoopMode(const std::string& str);
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry

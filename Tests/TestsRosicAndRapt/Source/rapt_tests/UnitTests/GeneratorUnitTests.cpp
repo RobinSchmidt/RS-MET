@@ -1758,7 +1758,7 @@ bool samplerWaveShaperTest()
   se.reset();
   se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
   se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
-  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-5, true);
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-5, false);
   // Why do we need such a high tolerance here? This seems wrong! figure out!
 
   // Start fresh, define the shape on the insrument level, the drive at the group level and the
@@ -1877,15 +1877,8 @@ bool samplerWaveShaperTest2()
   //  SamplerEngine2 - move them into a file SamplerPlayers.h/cpp
   // -Factor out a baseclass with the common stuff (dspChain, etc.)
 
-
-
   // Set up a 2nd waveshaper for the region and do the same test:
-
-
   // Set up a 3rd waveshaper for the instrument and do the same test:
-
-
-
 
   rsAssert(ok);
   return ok;
@@ -2460,6 +2453,11 @@ bool samplerLoopTest()
   //  a freq of 22.5 Hz at fs = 44100 gives a clean cycleLength of 1960. Maybe use that for
   //  single-cycle waves for ths sampler. 1960 is divisble by 8 but not 16 it's then also 
   //  divisible by 5 and 7
+  //  goals: we want to achieve an frequency that is exactly representable as integer midi-key 
+  //  without detune - so we must choose an A
+  //  tableSize = L = 2048, rootKey is an A so we don't need any detune, fs = 44000, freq=fs/L
+  //  maybe we want 2048 represent 27.5Hz - what sampleRate do wo need: fs = 56320 which 
+  //  corresponds exaclty to midi key 21
 
   rsAssert(ok);
   return ok;

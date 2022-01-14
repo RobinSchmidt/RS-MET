@@ -205,12 +205,20 @@ void SamplerModule::processBlock(double **inOutBuffer, int numChannels, int numS
 {
   jassert(numChannels == 2);
   for(int n = 0; n < numSamples; n++)
-    engine.processFrame(&inOutBuffer[0][n], &inOutBuffer[1][n]);
+  {
+    float fL, fR;
+    engine.processFrame(&fL, &fR);
+    inOutBuffer[0][n] = fL;
+    inOutBuffer[1][n] = fR;
+  }
 }
 
 void SamplerModule::processStereoFrame(double *dL, double *dR)
 {
-  engine.processFrame(dL, dR);
+  float fL, fR;
+  engine.processFrame(&fL, &fR);
+  *dL = fL;
+  *dR = fR;
 }
 
 void SamplerModule::reset()

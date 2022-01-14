@@ -68,7 +68,14 @@ present, override the group settings (i think - verify!). At the highest level i
 "instrument" itself. Just like groups provide fallback settings for regions, the whole instrument
 can provide fallback settings for all the groups it contains. If some performance parameter isn't
 defined anywhere (neither in the instrument, group or region), a neutrally behaving default value
-will be used, which means the corresponding feature is not used, i.e. bypassed.  */
+will be used, which means the corresponding feature is not used, i.e. bypassed.  
+
+References:
+  https://sfzformat.com/
+  https://sfzformat.com/opcodes/?v=1
+  https://sfzformat.com/legacy/
+
+*/
 
 class rsSamplerEngine
 {

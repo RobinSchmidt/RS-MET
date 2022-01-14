@@ -822,6 +822,13 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOff(uchar key, uch
 
 rsReturnCode rsSamplerEngine2::stopRegionPlayer(int activeIndex)
 {
+  if(activeIndex < 0 || activeIndex > (int)activePlayers.size()-1)
+  {
+    RAPT::rsError("Invalid RegionPlayer index in rsSamplerEngine2::stopRegionPlayer");
+    reset();  // something went very wrong - we better reset ourselves to a clean state
+    return rsReturnCode::invalidIndex;
+  }
+
   // ToDo: add code that verifies that rp is in exactly one of the active groupPlayers - maybe have
   // rsAssert(getNumContainingActiveGroupPlayers(rp) == 1) or something like that. that maybe 
   // useful to call in other places, too
@@ -1007,7 +1014,9 @@ Goals:
 ToDo:
 -implement some sfz2 stuff, see https://www.linuxsampler.org/sfz/, in particular:
  <control> Header Directives
- default_path ...then do: default_path=../Samples
+ default_path ...then do: default_path=../Samples/  see:
+   https://sfzformat.com/opcodes/default_path
+ support .flac
 -The GUI should show a warning message, when the maximum number of voices is exceeded. SFZ 
  specifies a practically infinite number of voices, so in order to be compliant to the spec, we 
  should always have enough voices available. The original SFZ.exe by rgcaudio has 256 voices, 

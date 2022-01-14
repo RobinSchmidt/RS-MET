@@ -36,7 +36,9 @@ public:
     *left  = (T(1)-f) * xL0 + f * xL1;
     *right = (T(1)-f) * xR0 + f * xR1;
 
-    // ToDo: 
+    // ToDo:
+    // -maybe use double for the samplePosition because that's what the sampler engine uses for 
+    //  it's sampleCounter. It makes sense to use double for that to avoid accumulation
     // -Make a function that takes sampleIndex and frac as separate arguments
     // -Make an unsafe version that avoids the isValidFrameIndex checks
     // -Write a function that fills a whole buffer instead of producing one sample at a time. That
