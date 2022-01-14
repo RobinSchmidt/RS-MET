@@ -367,13 +367,14 @@ std::string rsSamplerEngine::getAbsolutePath(const char* path, bool pathIsAbsolu
 
 //-------------------------------------------------------------------------------------------------
 // Processing:
-
+/*
+// obsolete:
 void rsSamplerEngine::processFrame(double* left, double* right)
 {
-  rsFloat64x2 out = 0.0;
+  //rsFloat64x2 out = 0.0;
 
   for(int i = 0; i < (int)activePlayers.size(); i++) {
-    out += activePlayers[i]->getFrame();
+    out += activePlayers[i]->processFrame(L, R);
     if(activePlayers[i]->hasFinished()) {
       stopRegionPlayer(i);
       i--;  }}
@@ -410,19 +411,27 @@ void rsSamplerEngine::processFrame(double* left, double* right)
   //  activeGroupPlayers just has a length of 1). But then, the (then empty) GroupPlayer's 
   //  dspChain wil always be applied...but maybe with block-processing, the cost will be negligible
 }
+*/
 
-void rsSamplerEngine::processFrame(float* left, float* right)
+void rsSamplerEngine::processFrame(float* L, float* R)
 {
-  double L, R;
-  processFrame(&L, &R);
-  *left  = (float) L;
-  *right = (float) R;
+  *L = *R = 0.f;
+  for(int i = 0; i < (int)activePlayers.size(); i++) {
+    float tmpL, tmpR;
+    activePlayers[i]->processFrame(&tmpL, &tmpR);
+    *L += tmpL;
+    *R += tmpR;
+    if(activePlayers[i]->hasFinished()) {
+      stopRegionPlayer(i);
+      i--;  }}
 }
 
 void rsSamplerEngine::processBlock(float** block, int numFrames)
 {
-
+  for(int n = 0; n < numFrames; n++)
+    processFrame(&block[0][n], &block[1][n]);
 }
+// needs test
 
 rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleMusicalEvent(
   const rsMusicalEvent<float>& ev)
@@ -578,9 +587,9 @@ void rsSamplerEngine::stopMostRecentLayers(int number)
 {
   RAPT::rsAssert(number <= activePlayers.size());
   for(int j = 0; j < number; j++) 
-    stopRegionPlayer(activePlayers.size()-1);
+    stopRegionPlayer((int)activePlayers.size()-1);
   // In think, this function is only called in one place (handleNoteOn), so maybe we should get
-  // rid of it and move the code there. But maybe we'll later call it form other places, too (like
+  // rid of it and move the code there. But maybe we'll later call it from other places, too (like
   // handleNoteOff when it nneds to trigger release-samples)
 }
 
@@ -831,29 +840,30 @@ rsReturnCode rsSamplerEngine2::stopRegionPlayer(int activeIndex)
   return rsSamplerEngine::stopRegionPlayer(activeIndex);
 }
 
-void rsSamplerEngine2::processFrame(double* left, double* right)
+void rsSamplerEngine2::processFrame(float* L, float* R)
 {
   // Fall back to more efficient (because simpler) baseclass code, if possible:
   if(canFallBackToBaseclass()) { 
-    rsSamplerEngine::processFrame(left, right); return; } 
+    rsSamplerEngine::processFrame(L, R); return; } 
 
   // Accumulate output from the group players:
-  rsFloat64x2 out = 0.0;
+  *L = *R = 0.f;
   for(int i = 0; i < (int)activeGroupPlayers.size(); i++)
-    out += activeGroupPlayers[i]->getFrame();
+  {
+    float tmpL, tmpR;
+    activeGroupPlayers[i]->processFrame(&tmpL, &tmpR);
+    *L += tmpL;
+    *R += tmpR;
+  }
 
   // Apply master DSPs:
-  instrumPlayer.processFrame(out);
+  instrumPlayer.processFrame(L, R);
 
   // Stop region players that have finished playing:
   for(int i = 0; i < (int)activePlayers.size(); i++) {
     if(activePlayers[i]->hasFinished()) {
       stopRegionPlayer(i);
       i--; }}
-
-  // Assign outputs:
-  *left  = out[0];
-  *right = out[1];
 }
 
 int rsSamplerEngine2::stopAllPlayers()

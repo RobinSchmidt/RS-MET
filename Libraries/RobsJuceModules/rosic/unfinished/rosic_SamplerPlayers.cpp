@@ -4,10 +4,16 @@ namespace Sampler {
 //=================================================================================================
 // rsSamplerEngine::SignalProcessorChain
 
-void SignalProcessorChain::processFrame(rsFloat64x2& inOut)
+void SignalProcessorChain::processFrame(float* L, float* R)
 {
   for(size_t i = 0; i < processors.size(); i++)
-    processors[i]->processFrame(inOut);
+    processors[i]->processFrame(L, R);
+}
+
+void SignalProcessorChain::processBlock(float* L, float* R, int N)
+{
+  for(int n = 0; n < N; n++)
+    processFrame(L, R);
 }
 
 size_t SignalProcessorChain::getNumProcessors(DspType type) const
@@ -148,10 +154,8 @@ rsReturnCode RegionPlayer::setRegionToPlay(const Region* regionToPlay,
   return prepareToPlay(fs, busMode);
 }
 
-rsFloat64x2 RegionPlayer::getFrame()
+void RegionPlayer::processFrame(float* L, float* R)
 {
-  float L, R;                        // left and right output
-
   // Negatively initialized sampleTime implements delay. If we are still "waiting", we just 
   // increment the time and return 0,0. Actual output will be produced as soon as sampleTime 
   // reaches zero. It actually sucks to have to do this per sample just to support offset. Try to
@@ -160,12 +164,12 @@ rsFloat64x2 RegionPlayer::getFrame()
     sampleTime += 1.0;
     if(sampleTime >= 0.0)
       sampleTime += offset;
-    return rsFloat64x2(0.0, 0.0); }
+    *L = *R = 0.f;
+    return;  }
   if(sampleTime == 0.0)
     sampleTime = offset;
 
-
-  stream->getFrameStereo((float)sampleTime, &L, &R);  
+  stream->getFrameStereo((float)sampleTime, L, R);  
   // try to avoid the conversion to float - use a 2nd template parameter for the time
 
   // Update our sampleTime counter:
@@ -176,11 +180,8 @@ rsFloat64x2 RegionPlayer::getFrame()
       sampleTime -= (loopEnd - loopStart);
   }
 
-
-
-  rsFloat64x2 out(L, R);       // avoid this - let dspChain take pointers to float
-  dspChain.processFrame(out);
-  return out;                  // we should ourselves take pointer to float for i/o
+  // Apply the DSP chain:
+  dspChain.processFrame(L, R);
 
 
   // ToDo:
@@ -202,16 +203,10 @@ rsFloat64x2 RegionPlayer::getFrame()
   //  noteOffs differently (the handling is preliminary anyway)
 }
 
-void RegionPlayer::processBlock(rsFloat64x2* y, int N)
+void RegionPlayer::processBlock(float* L, float* R, int N)
 {
   for(int n = 0; n < N; n++)
-    y[n] = getFrame();
-  // preliminary - todo: run the different DSP processes, one after another, over the whole block,
-  // using in-place processing, the steps are (in that order)
-  // -fill y with pitch envelope (including pitch LFO)
-  // -fill y with interpolated raw sample values (or: maybe compute pitch envelope on the fly)
-  // -apply filter (maybe the filter envelope can be computed on the fly)
-  // -apply amp-envelope
+    processFrame(&L[n], &R[n]);
 }
 
 bool RegionPlayer::isPlayable(const Region* region)
@@ -510,13 +505,15 @@ bool SampleBusPlayer::assembleDspChain(bool busMode)
 //=================================================================================================
 // GroupPlayer
 
-rsFloat64x2 GroupPlayer::getFrame()
+void GroupPlayer::processFrame(float* L, float* R)
 {
-  rsFloat64x2 out = 0.0;
-  for(size_t i = 0; i < regionPlayers.size(); i++)
-    out += regionPlayers[i]->getFrame();
-  dspChain.processFrame(out);
-  return out;
+  *L = *R = 0.f;
+  for(size_t i = 0; i < regionPlayers.size(); i++) {
+    float tmpL, tmpR;
+    regionPlayers[i]->processFrame(&tmpL, &tmpR);
+    *L += tmpL; 
+    *R += tmpR; }
+  dspChain.processFrame(L, R);
 }
 
 void GroupPlayer::releaseResources()

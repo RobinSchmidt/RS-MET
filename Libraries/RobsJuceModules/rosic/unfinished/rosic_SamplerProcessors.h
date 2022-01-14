@@ -58,8 +58,8 @@ public:
 
   // Processing:
   virtual void prepareToPlay(double sampleRate) = 0; // maybe it needs a flag, if input is stereo
-  virtual void processFrame(rsFloat64x2& inOut) = 0;
-  virtual void processBlock(rsFloat64x2* inOut, int N) = 0;
+  virtual void processFrame(float* L, float* R) = 0;
+  virtual void processBlock(float* L, float* R, int N) = 0;
 
   /** Resets all parameters to their default values. The caller needs to pass an index because 
   those default values may depend on that index. For example eq1_freq has 50, eq2_freq has 500 
@@ -91,7 +91,7 @@ can be envelopes, LFOs, etc. */
 class Modulator
 {
 public:
-  virtual double getSample() = 0;
+  virtual float getSample() = 0;
   // todo: processBlock, prepareToPlay
 };
 
@@ -152,11 +152,11 @@ public:
   { *L2L = gLL; *R2L = gLR; *L2R = gRL; *R2R = gRR; }
 
 
-  void processFrame(float& L, float& R)
+  void processFrame(float* L, float* R)
   {
-    float t = L;            // temporary
-    L = gLL * L + gLR * R;
-    R = gRL * t + gRR * R;
+    float t = *L;            // temporary
+    *L = gLL * *L + gLR * *R;
+    *R = gRL *  t + gRR * *R;
   }
 
 
@@ -252,7 +252,7 @@ public:
   //-----------------------------------------------------------------------------------------------
   /** \name Processing */
 
-  void processFrame(float& L, float& R);
+  void processFrame(float* L, float* R);
   void resetState();
 
 
@@ -371,26 +371,20 @@ public:
     this->shapePar2 = shapePar2;
   }
 
-  void processFrame(rsFloat64x2& inOut) 
+  void processFrame(float* L, float* R) 
   {
-    float L = preGain * ((float) inOut[0]) + dcOffset;
-    float R = preGain * ((float) inOut[1]) + dcOffset;
-
-    //L = postGain * tanh(preGain * L + dcOffset);
-    //R = postGain * tanh(preGain * R + dcOffset);
-
+    *L = preGain * *L + dcOffset;
+    *R = preGain * *R + dcOffset;
+    using namespace RAPT;
     switch(shape)
     {
-    case Shape::tanh: { 
-      L = tanh(L);   R = tanh(R);   } break; // todo: use rsTanh based on exp
-    case Shape::clip: { 
-      L = RAPT::rsClip(L); R = RAPT::rsClip(R); } break;
+    case Shape::tanh: { *L = tanh(*L);   *R = tanh(*R);   } break; // todo: use rsTanh based on exp
+    case Shape::clip: { *L = rsClip(*L); *R = rsClip(*R); } break;
     default: 
       break;
     }
-
-    inOut[0] = postGain * L;
-    inOut[1] = postGain * R;
+    *L *= postGain;
+    *R *= postGain;
   }
   // under construction
   // -when we remove the RAPT from rsClip we get a compile error: "no matching overload found" ->
@@ -504,18 +498,16 @@ public:
       // -it's not ideal that this code depends on the order, how we add the params in the 
       //  constructor - try to avoid that
     }
-    void processFrame(rsFloat64x2& inOut) override 
+    void processFrame(float* L, float* R) override 
     {
-      float L = (float) inOut[0];
-      float R = (float) inOut[1];
       core.processFrame(L, R);
-      inOut[0] = L;
-      inOut[1] = R;
-      // ToDo: avoid these conversions - settle for a uniform sample format throughout the sampler,
-      // perhaps rsFloat32x4 for compatibility with the float coeffs that are used in the DSP
-      // core:
     }
-    void processBlock(rsFloat64x2* inOut, int N) override {}
+
+    void processBlock(float* L, float* R, int N) override 
+    {
+      for(int n = 0; n < N; n++)
+        processFrame(&L[n], &R[n]);
+    }
 
 
   protected:
@@ -550,15 +542,12 @@ public:
         params[2].getValue());
       core.resetState();
     }
-    void processFrame(rsFloat64x2& inOut) override 
+    void processFrame(float* L, float* R) override { core.processFrame(L, R); }
+    void processBlock(float* L, float* R, int N) override 
     {
-      float L = (float) inOut[0];
-      float R = (float) inOut[1];
-      core.processFrame(L, R);
-      inOut[0] = L;
-      inOut[1] = R;
+      for(int n = 0; n < N; n++)
+        processFrame(&L[n], &R[n]);
     }
-    void processBlock(rsFloat64x2* inOut, int N) override {}
 
   protected:
 
@@ -622,15 +611,12 @@ public:
       );
       core.resetState();
     }
-    void processFrame(rsFloat64x2& inOut) override 
+    void processFrame(float* L, float* R) override { core.processFrame(L, R); }
+    void processBlock(float* L, float* R, int N) override 
     {
-      float L = (float) inOut[0];
-      float R = (float) inOut[1];
-      core.processFrame(L, R);
-      inOut[0] = L;
-      inOut[1] = R;
+      for(int n = 0; n < N; n++)
+        processFrame(&L[n], &R[n]);
     }
-    void processBlock(rsFloat64x2* inOut, int N) override {}
 
   protected:
 
@@ -663,8 +649,12 @@ public:
         params[2].getValue(), 1.f, 0.f, 0.f);
       int dummy = 0;
     }
-    void processFrame(rsFloat64x2& inOut) override { core.processFrame(inOut); }
-    void processBlock(rsFloat64x2* inOut, int N) override {}
+    void processFrame(float* L, float* R) override { core.processFrame(L, R); }
+    void processBlock(float* L, float* R, int N) override 
+    {
+      for(int n = 0; n < N; n++)
+        processFrame(&L[n], &R[n]);
+    }
 
   protected:
 

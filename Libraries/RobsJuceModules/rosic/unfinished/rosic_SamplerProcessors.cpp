@@ -217,17 +217,19 @@ void FilterCore::updateCoeffs()
 }
 */
 
-void FilterCore::processFrame(float& L, float& R)
+void FilterCore::processFrame(float* L, float* R)
 {
-  TSig io(L, R);
+  TSig io(*L, *R);
   FilterImpl& i = impl;
   switch(type)
   {
   case Type::Bypass: break;
 
-  case Type::FO_Lowpass:  io = i.fo.getSample(io); break;
-  case Type::FO_Highpass: io = i.fo.getSample(io); break;
+  // 1st order filters:
+  case Type::FO_Lowpass:        io = i.fo.getSample(io); break;
+  case Type::FO_Highpass:       io = i.fo.getSample(io); break;
 
+  // Biquads:
   case Type::BQ_Lowpass:        io = i.bqd.getSample(io); break;
   case Type::BQ_Highpass:       io = i.bqd.getSample(io); break;
   case Type::BQ_Bandpass_Skirt: io = i.bqd.getSample(io); break;
@@ -235,8 +237,8 @@ void FilterCore::processFrame(float& L, float& R)
   case Type::BQ_Bell:           io = i.bqd.getSample(io); break;
 
   };
-  L = io.x; // Preliminary - as long as we are abusing rsVector2D for the signal
-  R = io.y;
+  *L = io.x; // Preliminary - as long as we are abusing rsVector2D for the signal
+  *R = io.y;
 
   // ...later, we want to use a simd type and retrieve the elements like so:
   //L = io[0]; R = io[1];

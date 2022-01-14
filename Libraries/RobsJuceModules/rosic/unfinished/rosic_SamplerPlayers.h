@@ -9,8 +9,8 @@ class SignalProcessorChain
 {
 public:
 
-  void processFrame(rsFloat64x2& inOut);
-  void processBlock(rsFloat64x2* inOut, int N);
+  void processFrame(float* L, float* R);
+  void processBlock(float* L, float* R, int N);
   void prepareToPlay(double fs) { for(auto & p : processors) p->prepareToPlay(fs); }
   //void resetState()    { for(auto & p : processors) p->resetState();    }
   //void resetSettings() { for(auto & p : processors) p->resetSettings(); }
@@ -183,11 +183,11 @@ public:
   void setKey(uchar newKey) { key = newKey; }
 
   /** Generates one stereo sample frame at a time. */
-  rsFloat64x2 getFrame();
+  void processFrame(float* L, float* R);
   // use float pointers for signals consistently
 
   /** Writes a block of given length into the outBuffer. */
-  void processBlock(rsFloat64x2* outBuffer, int length);
+  void processBlock(float* L, float* R, int length);
 
   /** Returns true, iff this player has finished its playback job, for example by having reached
   the end of the sample stream and/or amplitude envelope. */
@@ -332,7 +332,9 @@ class GroupPlayer : public SampleBusPlayer
 public:
 
   /** Generates one stereo sample frame at a time. */
-  rsFloat64x2 getFrame();
+  void processFrame(float* L, float* R);
+
+  // implement processBlock
 
   /** Release the resources that were acquired for playback (DSPs, RegionPlayers, etc.). */
   void releaseResources() override;
@@ -378,8 +380,9 @@ public:
 
   void addRegionPlayer(RegionPlayer* newPlayer);
 
-  void processFrame(rsFloat64x2& inOut) { dspChain.processFrame(inOut);  }
-  // todo: use float for the signals all the way through
+  void processFrame(float* L, float* R) { dspChain.processFrame(L, R);  }
+
+  // implement processBlock
 
   bool setInstrumToPlay(const rsSamplerData::Instrument* instrumToPlay, double sampleRate, 
     RegionPlayer* rp, bool busMode)

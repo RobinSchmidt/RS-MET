@@ -1758,7 +1758,7 @@ bool samplerWaveShaperTest()
   se.reset();
   se.handleMusicalEvent(Ev(EvTp::noteOn, 48.f, 127.f));
   se.handleMusicalEvent(Ev(EvTp::noteOn, 60.f, 127.f));
-  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-6, false);
+  ok &= testSamplerOutput(&se, tgt, tgt, 1.e-5, true);
   // Why do we need such a high tolerance here? This seems wrong! figure out!
 
   // Start fresh, define the shape on the insrument level, the drive at the group level and the

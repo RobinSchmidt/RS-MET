@@ -351,7 +351,7 @@ public:
 
 
 
-  virtual void processFrame(double* left, double* right);
+  //virtual void processFrame(double* left, double* right);
 
   virtual void processFrame(float* left, float* right);
 
@@ -725,7 +725,7 @@ public:
   int getNumActiveGroupPlayers() const { return (int)activeGroupPlayers.size(); }
 
 
-  void processFrame(double* left, double* right) override;
+  void processFrame(float* left, float* right) override;
 
   //void processFrame(float* left, float* right) override;
 
