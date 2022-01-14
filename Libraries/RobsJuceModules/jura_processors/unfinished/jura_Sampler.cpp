@@ -369,7 +369,8 @@ Bugs:
 -Not sure if this should be considered a bug: when we run out of RegionPlayers on a noteOn that
  triggers multiple layers, the engine plays as many layers/regions as it can for the given voice.
  Maybe we should not play the voice at all in such a case? Maybe on noteOn, we should make sure 
- that all layers are triggered succesfully or not play the note.
+ that all layers are triggered succesfully or not play the note. actually, in 
+ rsSamplerEngine::handleNoteOn there's code that should do the rollback already - mayb it'S bugy?
 
 ToDo:
 -On xml-load, update the widgets to reflect the new maximum settings for layers etc.

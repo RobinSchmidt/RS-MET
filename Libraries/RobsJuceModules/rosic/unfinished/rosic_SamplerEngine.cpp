@@ -574,6 +574,15 @@ rsReturnCode rsSamplerEngine::stopRegionPlayer(int i)
   return rsReturnCode::success;
 }
 
+void rsSamplerEngine::stopMostRecentLayers(int number)
+{
+  RAPT::rsAssert(number <= activePlayers.size());
+  for(int j = 0; j < number; j++) { 
+    stopRegionPlayer(activePlayers.size()-1);    
+    RegionPlayer* rp = RAPT::rsGetAndRemoveLast(activePlayers); 
+    idlePlayers.push_back(rp); } 
+}
+
 const AudioFileStream<float>* rsSamplerEngine::getSampleStreamFor(const Region* r)
 {
   //return r->getSampleStream();
@@ -594,39 +603,20 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOn(uchar key, uchar
   for(int i = 0; i < regionsForKey[key].getNumRegions(); i++) 
   {
     const Region* r  = regionsForKey[key].getRegion(i);
-    if(!shouldRegionPlay(r, key, vel))
+    if(!shouldRegionPlay(r, key, vel))                   // Check response constraints
       continue;
-    RegionPlayer* rp = getRegionPlayerFor(r, key, vel);
-    if(rp == nullptr) {
-      // Roll back the addition of all players so far to the activePlayers and move them back into
-      // the idlePlayers again. We don't really want notes to play with an incomplete set of 
-      // samples. It's all or nothing - either all regions for the given key get triggered or none
-      // of them:
-      for(int j = 0; i < psc.numLayersStarted; j++) {
-        rp = RAPT::rsGetAndRemoveLast(activePlayers);
-        idlePlayers.push_back(rp); }
-      psc.numLayersStarted = 0;
+    RegionPlayer* rp = getRegionPlayerFor(r, key, vel);  // Try to allcoare player for layer.
+    if(rp == nullptr) {                                  // In case of failure, roll back all the
+      stopMostRecentLayers(psc.numLayersStarted);        // players allocated so far and abort. 
+      psc.numLayersStarted = 0;                          // We failed to trigger the note.
+      return psc;
+      // It seems to roll back one too many. Write a unit test to figure out why that is and then
+      // fix it!
     }
     else
-    {
-      //rp->setKey(key);
       psc.numLayersStarted++;
-    }
   }
   return psc;
-
-
-  //return rsReturnCode::success;
-  // Another possibility for the return value would have been to return the number of layers that
-  // have been triggered, but we don't do that because then it would be not quite clear what we
-  // should return from noteOff to make the functions somewhat consistent. In noteOff, we could
-  // either return the number of released regions or the number of triggered release samples. Both
-  // would make just as much sense. So, for unambiguous consistency, we let both just return a 
-  // success or failure report.
-
-  // ToDo: 
-  // -maybe introduce a sort of PlayStatusChange struct, containing fields for: numLayersStarted,
-  //  numLayersStopped
 }
 
 rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOff(uchar key, uchar vel)

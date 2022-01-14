@@ -468,6 +468,16 @@ protected:
   "idlePlayers". The return value is either rsReturnCode::success or rsReturnCode::invalidIndex, if
   the activeIndex was not a valid index into our activePlayers array. */
   virtual rsReturnCode stopRegionPlayer(int activeIndex);
+  // maybe rename to stopLayer
+
+  /** Stops the given number of most recently started layers (i.e. RegionPlayers). This is used
+  to roll back RegionPlayers that have been started in noteOn when it is later discovered that
+  some more RegionPlayers that would be needed for the same not could not be made available due
+  to lack of resources like RegionPlayers themselves, required DSP objects, etc. In such a case
+  we need to roll back the starts of all players started so far for the note. We don't want 
+  notes to play with an incomplete set of layers. It's all or nothing - either all lyers for the
+  given note will play or none. We either do it right or not at all! */
+  virtual void stopMostRecentLayers(int number);
 
   /** Returns the AudioFileStream object that is used to stream the actual sample data for the
   given region. A pointer to this object is supposed to be stored within the region object
