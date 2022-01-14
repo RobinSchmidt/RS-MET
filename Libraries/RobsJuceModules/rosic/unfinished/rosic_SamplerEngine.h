@@ -244,9 +244,16 @@ public:
   /** Returns the number of groups in the instrument. */
   int getNumGroups() const { return sfz.getNumGroups(); }
 
+
+
+
   /** Returns the number of regions in the group with given groupIndex. */
   int getNumRegions(int groupIndex) const { return sfz.getNumRegions(groupIndex); }
   // todo: maybe assert the groupIndex is valid - if not, return invalidIndex
+
+  /** Returns a pointer to the index-th group. Assumes that the index is valid. If it isn't, you'll
+  get an access violation, so be careful! */ 
+  const Group* getGroup(int index) { return sfz.instrument.getGroup(index); }
 
   /** Returns a pointer to the region object with the given group- and region index or a nullptr
   if the combination of indices is invalid. If the client wants to edit the region, it can do so

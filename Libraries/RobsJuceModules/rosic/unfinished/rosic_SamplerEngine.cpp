@@ -578,7 +578,10 @@ void rsSamplerEngine::stopMostRecentLayers(int number)
 {
   RAPT::rsAssert(number <= activePlayers.size());
   for(int j = 0; j < number; j++) 
-    stopRegionPlayer(activePlayers.size()-1);    
+    stopRegionPlayer(activePlayers.size()-1);
+  // In think, this function is only called in one place (handleNoteOn), so maybe we should get
+  // rid of it and move the code there. But maybe we'll later call it form other places, too (like
+  // handleNoteOff when it nneds to trigger release-samples)
 }
 
 const AudioFileStream<float>* rsSamplerEngine::getSampleStreamFor(const Region* r)
@@ -596,10 +599,8 @@ const AudioFileStream<float>* rsSamplerEngine::getSampleStreamFor(const Region* 
 rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
 {
   if(vel == 0) { return handleNoteOff(key, vel); }
-
   PlayStatusChange psc;
-  for(int i = 0; i < regionsForKey[key].getNumRegions(); i++) 
-  {
+  for(int i = 0; i < regionsForKey[key].getNumRegions(); i++) {
     const Region* r  = regionsForKey[key].getRegion(i);
     if(!shouldRegionPlay(r, key, vel))                   // Check response constraints
       continue;
@@ -607,13 +608,9 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOn(uchar key, uchar
     if(rp == nullptr) {                                  // When it fails, roll back all the
       stopMostRecentLayers(psc.numLayersStarted);        // players created so far and abort. 
       psc.numLayersStarted = 0;                          // We failed to trigger the note.
-      return psc;
-      // It seems to roll back one too many. Write a unit test to figure out why that is and then
-      // fix it!
-    }
+      return psc; }
     else
-      psc.numLayersStarted++;
-  }
+      psc.numLayersStarted++; }
   return psc;
 }
 

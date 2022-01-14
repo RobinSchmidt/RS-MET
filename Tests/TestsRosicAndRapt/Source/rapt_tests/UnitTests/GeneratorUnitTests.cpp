@@ -428,11 +428,18 @@ bool samplerEngineUnitTest1()
   ok &= gi == 0;
   int ri = se.addRegion(gi);  // add new region to group gi, ri: region index
   ok &= ri == 0;
-
   int rc = se.setRegionSample(gi, ri, si);           // rc: return code
   ok &= rc == RC::success;
   rc = se.setRegionSetting(gi, ri, PST::PitchKeyCenter, 69.f, -1); // key = 69 is A4 at 440 Hz
   ok &= rc == RC::success;
+
+  // Try retrieving Group and Region pointers. The pointers need to be const because we are not 
+  // allowed to modify these things behind the back of the SamplerEngine. All mutations have to use
+  // member functions of the engine:
+  const SE::Group*  grp = se.getGroup(0);
+  const SE::Region* rgn = se.getRegion(0, 0);
+  ok &= rgn->getGroup() == grp;
+  //rgn->setSetting(SD::PlaybackSetting(PST::LoKey, 0.f, -1); // should not compile
 
   // Now the engine is set up with the sinewave sample in a single region that spans the whole
   // keyboard. We trigger a note at the original PitchCenterKey with maximum velocity and let the
@@ -605,104 +612,7 @@ bool samplerEngineUnitTest1()
   rsApplyDelay(tgt, delaySamples);
   ok &= testSamplerNote(&se, 69.f, 127.f, tgt, tgt, tol, false); 
 
-  /*
-  // old:
-  se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));  // the noteOn, again
-  for(int n = 0; n < N; n++)
-    se.processFrame(&outL[n], &outR[n]);
-  rsPlotVector(outL);
-  for(int n = 0; n < delaySamples; n++) {
-    ok &= outL[n] == 0.f;
-    ok &= outR[n] == 0.f;  }
-  float tol = 1.e-7f;  // ~= 140 dB SNR
-  for(int n = (int) delaySamples; n < N; n++) 
-  {
-    float tgt = getSampleAt(sin440, n-delaySamples);
-    ok &= rsIsCloseTo(outL[n], tgt, tol);
-    ok &= rsIsCloseTo(outR[n], tgt, tol);
-  }
-  //rsPlotVectors(sin440, outL);
-  VecF tgt = sin440;
-  rsApplyDelay(tgt, delaySamples);
-  //rsPlotVectors(tgt, outL); 
-  */
-
-
-  // move this into samplerEngine2UnitTest
-  // Test setGroupSettingsOnTop: We set the volume of the group and the region and check the 
-  // behavior in both modes:
-  float regionAmp = 0.5f;
-  float groupAmp  = 0.25f;
-  //float instrumentAmplitude  = 0.75f;
-  se.setRegionSetting(0, 0, PST::Delay, 0.f, -1);  // Turn delay off again
-  se.setRegionSetting(0, 0, PST::volumeN, rsAmpToDb(regionAmp), 1);
-  se.setGroupSetting( 0,    PST::volumeN, rsAmpToDb(groupAmp),  1);
-
-
-
-  /*
-  // obsolete:
-  auto testNote = [&](
-    float key, float vel, const VecF& targetL, const VecF& targetR, float tol = 0.f)
-  {
-    se.handleMusicalEvent(Ev(EvTp::noteOn, key, vel));
-    for(int n = 0; n < N; n++)
-      se.processFrame(&outL[n], &outR[n]);
-    float errL = AT::maxDeviation(&outL[0], &targetL[0], N);
-    float errR = AT::maxDeviation(&outR[0], &targetR[0], N);
-    return errL <= tol && errR <= tol;
-  };
-  */
-  // ToDo: move up and use it to reduce boilerplate for many other tests as well - maybe make it
-  // a free function, taking the engine as reference argument...or a pointer
-  // done: testSamplerNote ...use that function in the tests above to reduce the boilerplate
-
-
-  /*
-  // todo - goes into another test, maybe samplerEngineRoutingUnitTest:
-  se.setGroupSettingsOnTop(false);
-  se.reset();
-  ok &= testNote(69.f, 127.f, regionAmp*sin440, regionAmp*sin440);
-
-  se.setGroupSettingsOnTop(true);
-  se.reset();
-  ok &= testNote(69.f, 127.f, groupAmp*regionAmp*sin440, groupAmp*regionAmp*sin440);
-
-  se.unsetRegionSetting(0, 0, PST::Volume);
-  se.reset();
-  ok &= testNote(69.f, 127.f, groupAmp*sin440, groupAmp*sin440);
-
-  se.setGroupSettingsOnTop(false);
-  se.reset();
-  ok &= testNote(69.f, 127.f, groupAmp*sin440, groupAmp*sin440);
-  */
-
-
-
-
-  //se.handleMusicalEvent(Ev(EvTp::noteOn, 69.f, 127.f));
-  //for(int n = 0; n < N; n++)
-  //  se.processFrame(&outL[n], &outR[n]);
-  //ok &= outL == 0.5f * sin440;
-  //ok &= outR == 0.5f * sin440;
-  // maybe factor this out into a function: 
-  //   testNoteOutput(69.f, 127.f, 0.5f * sin440, 0.5f* sin440)
-  // which returns a bool. use it to reduce the boilerplate in the tests. it should take the key 
-  // and vel and expected left and right signals (and maybe a tolerance)
-
-
-  // ToDo: We also need a unsetRegionSetting, unsetGroupSetting, etc. Maybe before implementing, 
-  // them it would indeed make sense to refactor such that the error conditions are detected in 
-  // rsSamplerData...that requires to define the rsReturnCodes somewhere else....
-
-
-  int dummy = 0;
-
   // ToDo:
-  // -implement the signal flow: regions -> groups -> instrument, introduce 2 switches in the 
-  //  engine: groupSettingsAccumulate, instrumentSettingsAccumulate - test, if fallback vs 
-  //  accumulate works as intended ...check, if fallback is actually indeed the sfz behavior, i 
-  //  just assumed so
   // -implement and test opcodes for key- and vel-tracking for:
   //  pitch, volume, pan, delay
   // -write a performance test for the sampler
@@ -710,48 +620,6 @@ bool samplerEngineUnitTest1()
   //  if this improves performance...even if not, it's still better because it doesn't lose 
   //  precision for later samples
   // -implement opcodes: pos, width, start, loop_start/end, loop_mode
-
-
-  // -Implement and test loadFromFile/saveToFile
-  //  -may have an option whether or not to save the samples, too (and if so, where)
-  // -Test with more complex instruments, featuring:
-  //  -multiple groups (with their own settings)
-  //  -instrument-wide settings
-  // Maybe provide comparison functions with different degrees of strictness, with respect to
-  // in which order the opcodes in the settings occur, the handling of the "custom" pointer in the 
-  // region, etc. Maybe also have a function to "clean up" a data object by keeping only the very 
-  // last setting of a particular kind (the last one would overwrite all others anyway). Maybe it 
-  // should return, how many settings had to be removed. Ideally, we would like to always keep only
-  // at most one setting of each kind.
-
-  /*
-  // Test exporting the instrument-definition related state ins an .sfz-file compliant string:
-  using Loader = rsSamplerEngineLoaderSFZ;
-  //rsSamplerData sfzData = se.getInstrumentData();
-  //rsSamplerData& sfzData = se.getInstrumentData();
-  const rsSamplerData& sfzData = se.getInstrumentData();
-  // This creates actually a copy - this is good to test (deep) copying of these objects, too.
-  // Oh - it's empty. OK, yes - it's because the rsSamplerEngine still has this 
-  // std::vector<Group> groups; which should actually go into the instrument in rsSamplerData. This 
-  // needs to be refactored first. ok - done, but we need to protect some variables again...
-  // ...also, i think, we have a shallow copy here now which would actually allow use to change
-  // instrument settings behind the back of the engine. Find some way to make that impossible.
-  // Maybe implement deep copying for the rsSamplerData class such that all region-pointers in the 
-  // groups actually point to new region objects. Or make rsSamplerData non-copyable to force using a
-  // const reference like:
-  // const rsSamplerData& sfzData = se.getInstrumentData();
-  // ok, done - but using a const reference is not enforced yet - either enforce it or indeed 
-  // implement deep copying - or both
-  std::string sfzFile = Loader::getAsSFZ(sfzData);
-  */
-
-
-
-  // ToDo: 
-  // -implement and test sfz export/import
-  //  -maybe retrive the current instrument settings, set up a 2nd engine object with the same
-  //   settings and compare, if both engines are in the same state with respect to these instrument
-  //   settings, maybe rsSamplerEngineTest should provide such a comparison function
   // -implement and test better realtime resampling (linear interpolation at first, later cubic and
   //  sinc, maybe some sort of "Elephant" interpolation, too - although, they are supposed to work 
   //  with 2x oversampling) 
@@ -761,34 +629,8 @@ bool samplerEngineUnitTest1()
   //  -should the played note affect the delay?...nah - i don't think so. maybe sfz had an opcode 
   //   for controlling this? in some situations, that may makes sense, in others not so much
 
-  // -add a SFZPlayer-like simple GUI, so we can import and test actual sfz files
-  // -Check, how the sfz player handles the amp/pan parameters with respect to total gain. 
-  //  Should there be a factor of 2 for hard left/right settings or a factor of 0.5 for a center 
-  //  setting? Make sure to match the behavior of the reference player. I actually would tend to 
-  //  prefer the former because it implies that with the neutral default settings, samples are 
-  //  played back as is as opposed to having acquired a gain of 0.5. Maybe if sfz behaves the other
-  //  way, we could provide both options by introducing additional pan rules.
-
-  // todo:
-  //const SE::Group* group1 = se.getGroup(0);
-  //const SE::Group* group2 = region.getGroup();
-  //ok &= group1 == group2;
-
-  // todo: take the settings member of rsSamplerEngine into an instrument call inside
-  // rsInstrumentDataSFZ..or maybe don't create an "Instrument" nested class
-
-  // ToDo: 
-  // -set up performance tests, too
-
-
-
-  int regionPlayerSize = SE::getRegionPlayerSize();
-  // -Currently at 176
-  // -With virtual functions, it had 16 bytes more. Apparently, that's what the vftable take.
-  // -Move this into some performance test function
 
   rsAssert(ok);
-
   return ok;
 }
 
@@ -2369,56 +2211,6 @@ bool samplerEqualizerTest()
 }
 
 
-bool samplerProcessorsTest()
-{
-  bool ok = true;
-
-  // For inspection in the debugger. We want to keep the sizes of these DSP objects small because 
-  // we'll potentially have to pre-allocate a lot of them when a patch is loaded:
-  int size;
-  size = sizeof(rosic::Sampler::AmplifierCore);         // 16
-  size = sizeof(rosic::Sampler::FilterCore);            // 64
-  size = sizeof(rosic::Sampler::WaveshaperCore);        // 24
-  size = sizeof(rosic::Sampler::rsSamplerEnvGen);       // 36
-  size = sizeof(rosic::Sampler::rsSamplerLowFreqOsc);   // 16
-  //size = sizeof(SP::Filter);
-  //size = sizeof(SP::WaveShaper);
-  // later move this into a (yet to be written) benchmark testbed
-
-  ok &= samplerFilterTest();      // tests the different filter modes
-  ok &= samplerWaveShaperTest();  // tests the waveshaping DSP module
-  ok &= samplerDspChainTest();    // uses multiple filters and a waveshaper in between
-  ok &= samplerEqualizerTest();
-  ok &= samplerAmplifierTest();
-  ok &= samplerWaveShaperTest2(); // tests the different rotung options using waveshaping
-
-
-  // ToDo:
-  // -Implement more DSP modules: echo, vibrato, flanger, phaser, chorus, etc., 
-  //  ...delay based algorithms could become a memory-hog when we need to pre-allocate many of 
-  //  them. Maybe let's stay away from them for the moment. How about freq-shifting?
-
-  rsAssert(ok);
-  return ok;
-}
-
-bool samplerModulationsTest()
-{
-  // ToDo:
-  // -Set up a sampler engine with a sample that is just DC and apply an amplitude envelope
-  // -Envelopes in sfz have the parameters: delay, start, attack, hold, decay, sustain, release
-  // -Maybe implement a linear shape first.
-  // -Figure out what shapes sfz+ produces.
-  // -Maybe we should also define shape parameters for the segments, i.e. attack_shape, 
-  //  decay_shape, release_shape
-
-  bool ok = true;
-
-
-
-  rsAssert(ok);
-  return ok;
-}
 
 bool samplerOverloadTest()
 {
@@ -2550,18 +2342,97 @@ bool samplerOverloadTest()
   se.setRegionSample(0, 2, 0);             // ...and set up its sample
   ok &= testNote(60, 3, 0);
   ok &= testNote(61, 6, 0);
-  ok &= testNote(62, 6, 0);  // rolls back to 4 active players
-
-
+  ok &= testNote(62, 6, 0);
 
   // ToDo: 
   // 
-
 
   rsAssert(ok);
   return ok;
 }
 
+bool samplerLoopTest()
+{
+  // Tests the looping feature of the sampler engine
+
+  bool ok = true;
+
+  using Vec = std::vector<float>;
+  using SE  = rosic::Sampler::rsSamplerEngineTest;
+  using OC  = rosic::Sampler::Opcode;
+
+  // Create a sinewave with 3 cycles as example sample:
+  int cycleLength = 101;    // length of the sienwave cycle
+  int numCycles   = 3;      // number of cycles in the sample
+  Vec sinTable(numCycles*cycleLength); // sine wave sample 
+  double w = 2*PI/cycleLength; 
+  for(size_t n = 0; n < sinTable.size(); n++)
+    sinTable[n] = sinf(w*n);
+  rsPlotVector(sinTable);
+
+  // Playback settings:
+  float fs = 44100;  // playback sample rate
+  float f  = 440.0;  // frequency of sinewave to generate
+  int   N  = 1000;   // number of samples to generate
+
+  rsAssert(ok);
+  return ok;
+}
+
+bool samplerProcessorsTest()
+{
+  bool ok = true;
+
+  // For inspection in the debugger. We want to keep the sizes of these DSP objects small because 
+  // we'll potentially have to pre-allocate a lot of them when a patch is loaded:
+  //using Sampler = rosic::Sampler;
+  int size;
+  size = sizeof(rosic::Sampler::AmplifierCore);         // 16
+  size = sizeof(rosic::Sampler::FilterCore);            // 64
+  size = sizeof(rosic::Sampler::WaveshaperCore);        // 24
+  size = sizeof(rosic::Sampler::rsSamplerEnvGen);       // 36
+  size = sizeof(rosic::Sampler::rsSamplerLowFreqOsc);   // 16
+  //size = sizeof(SP::Filter);
+  //size = sizeof(SP::WaveShaper);
+  // later move this into a (yet to be written) benchmark testbed
+  int regionPlayerSize = rosic::Sampler::rsSamplerEngineTest::getRegionPlayerSize();
+  // -Currently at 176
+  // -With virtual functions, it had 16 bytes more. Apparently, that's what the vftable take.
+  // -Move this into some performance test function
+
+
+  ok &= samplerFilterTest();      // tests the different filter modes
+  ok &= samplerWaveShaperTest();  // tests the waveshaping DSP module
+  ok &= samplerDspChainTest();    // uses multiple filters and a waveshaper in between
+  ok &= samplerEqualizerTest();
+  ok &= samplerAmplifierTest();
+  ok &= samplerWaveShaperTest2(); // tests the different rotung options using waveshaping
+
+
+  // ToDo:
+  // -Implement more DSP modules: echo, vibrato, flanger, phaser, chorus, etc., 
+  //  ...delay based algorithms could become a memory-hog when we need to pre-allocate many of 
+  //  them. Maybe let's stay away from them for the moment. How about freq-shifting?
+
+  rsAssert(ok);
+  return ok;
+}
+
+bool samplerModulationsTest()
+{
+  // ToDo:
+  // -Set up a sampler engine with a sample that is just DC and apply an amplitude envelope
+  // -Envelopes in sfz have the parameters: delay, start, attack, hold, decay, sustain, release
+  // -Maybe implement a linear shape first.
+  // -Figure out what shapes sfz+ produces.
+  // -Maybe we should also define shape parameters for the segments, i.e. attack_shape, 
+  //  decay_shape, release_shape
+
+  bool ok = true;
+
+  rsAssert(ok);
+  return ok;
+}
 
 
 bool samplerEngineUnitTest()
@@ -2569,21 +2440,25 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  ok &= samplerOverloadTest();
+  ok &= samplerLoopTest();
   //ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
   ok &= samplerDataUnitTest();
-  ok &= samplerEngineUnitTest1();
-  ok &= samplerEngineUnitTestFileIO();
+  ok &= samplerEngineUnitTest1();       // rename to something more descriptive
+  ok &= samplerEngineUnitTestFileIO();  // rename to samplerSaveLoadTest
   ok &= samplerParserTest();            // uses some files created by "..FileIO" -> order matters!
   ok &= samplerProcessorsTest();
   ok &= samplerModulationsTest();
-  ok &= samplerEngine2UnitTest();   
   ok &= samplerOverloadTest();
+  ok &= samplerLoopTest();
+  ok &= samplerEngine2UnitTest();
 
   // ToDo:
   // -implement loop mode
+  // -maybe keep tests for the basic SamplerEngine and samplerEngine2 (supporting busMode) in 
+  //  seperate functions. We may want to be able to easily seperate out the basic implementation
+  //  along with its test, if needed.
   // -clean up codebase and fix warnings
   // -Test to define the sample opcode on instrument and group level. We can have various regions
   //  in a group that use the same sample, test what happens when a region has no sample defined

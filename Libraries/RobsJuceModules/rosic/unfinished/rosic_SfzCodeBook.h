@@ -398,7 +398,10 @@ public:
   }
 
   // todo: isModulationSetting, isModulatorSetting  (modulatiON settings define mod-connections,
-  // modulatOR settings parameters of the modulators)
+  // modulatOR settings parameters of the modulators), hasIndex..but this may be expensive to 
+  // implement - we may go through the opcode string and try to find an 'N'. Not too bad for 
+  // non-realtime code but perhaps not good to call in realtime. Or, maybe, if we need that at 
+  // realtime add another field to the OpcodeEntry record. maybe a set of flags
 
 
 protected:

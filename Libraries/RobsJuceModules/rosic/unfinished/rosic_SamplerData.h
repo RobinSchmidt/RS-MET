@@ -85,6 +85,8 @@ public:
       this->value = value; 
       this->index = index;
     }
+    // maybe remove the -1 default argument. callers should be explicit...maybe...or: check with an
+    // assert that no index applies to the givne Opcode when index == -1
 
     Opcode getType() const { return type; }
     // rename to getOpcode
@@ -461,7 +463,7 @@ public:
 
 
     /** Returns a pointer to the region with the given index within the group. */
-    Group* getGroup(int i) { return groups[i]; }
+    Group* getGroup(int i) { RAPT::rsAssert(i >= 0 && i < (int)groups.size()); return groups[i]; }
 
 
     const std::vector<PlaybackSetting>& getGroupSettings(int groupIndex) const

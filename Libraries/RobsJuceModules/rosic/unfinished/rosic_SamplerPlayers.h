@@ -245,6 +245,7 @@ protected:
   const Region* region;                 //< The Region object that this object should play
   const AudioFileStream<float>* stream; //< Stream object to get the data from
 
+  // Maybe we should use some sort of fixed-point format for this instead?
   double sampleTime = 0.0;  //< Time index in the sample. Negative values used for delay.
   double increment  = 1.0;  //< Increment of sampleTime per sample
 
@@ -252,11 +253,14 @@ protected:
   float offset    = 0;  // maybe rename to startTime or startSample
   float tune      = 0;
   float transpose = 0;
+
+  // maybe these should be int?
   float endTime   = 0;
   float loopStart = 0;
   float loopEnd   = 0;
-  uchar loopMode  = 0;  // use an enum class with None
 
+
+  uchar loopMode  = 0;  // use an enum class with None
   uchar key = 0;                 //< Midi note number used for starting this player
 
   std::vector<Modulator*> modulators;
