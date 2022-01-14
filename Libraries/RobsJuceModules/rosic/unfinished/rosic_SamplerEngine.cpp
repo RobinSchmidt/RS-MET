@@ -577,10 +577,8 @@ rsReturnCode rsSamplerEngine::stopRegionPlayer(int i)
 void rsSamplerEngine::stopMostRecentLayers(int number)
 {
   RAPT::rsAssert(number <= activePlayers.size());
-  for(int j = 0; j < number; j++) { 
+  for(int j = 0; j < number; j++) 
     stopRegionPlayer(activePlayers.size()-1);    
-    RegionPlayer* rp = RAPT::rsGetAndRemoveLast(activePlayers); 
-    idlePlayers.push_back(rp); } 
 }
 
 const AudioFileStream<float>* rsSamplerEngine::getSampleStreamFor(const Region* r)
