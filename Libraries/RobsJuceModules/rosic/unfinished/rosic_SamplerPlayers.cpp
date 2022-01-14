@@ -164,24 +164,9 @@ rsFloat64x2 RegionPlayer::getFrame()
   if(sampleTime == 0.0)
     sampleTime = offset;
 
-  stream->getFrameStereo((float)sampleTime, &L, &R);  // try to avoid the conversion to float
-  // -implement better interpolation methods (sinc, elephant, ...)
-  // -keep sample time as combination of int and float to avoid computation of the fractional part
-  //  at each sample and to avoid losing precision for the fractional part when the integer part
-  //  is large (thereby eating up significant digits).
-  // -the interpolation should probably be handled by the AudioStream class to make it re-usable
-  //  also for resampled audio playback in other contexts. Maybe here, we should just call
-  //  stream->getFrameStereo(sampleTimeInt, sampleTimeFrac, &L, &R);
-  // -it should probably also receive the increment in order to make a decision for time-scaling
-  //  the sinc, if necessary for anti-aliasing
 
-  // more stuff to do:
-  // -apply pitch envelope and lfo - these should affect (scale?) the effective increment that we 
-  //  add to sampleTime - but our increment *member* should not be modified, instead, do something
-  //  like sampleTime += increment * incScaler; where incScaler is computed from the pitch 
-  //  modifiers. Maybe create a subclass of SignalProcessor called PitchShifter that has just a
-  //  dummy callback that just stores the desired shift value and we read it out here
-  // -apply the DSP processes
+  stream->getFrameStereo((float)sampleTime, &L, &R);  
+  // try to avoid the conversion to float - use a 2nd template parameter for the time
 
   // Update our sampleTime counter:
   sampleTime += increment;
@@ -192,9 +177,29 @@ rsFloat64x2 RegionPlayer::getFrame()
   }
 
 
+
   rsFloat64x2 out(L, R);       // avoid this - let dspChain take pointers to float
   dspChain.processFrame(out);
   return out;                  // we should ourselves take pointer to float for i/o
+
+
+  // ToDo:
+  // -implement better interpolation methods (sinc, elephant, ...)
+  // -keep sample time as combination of int and float to avoid computation of the fractional part
+  //  at each sample and to avoid losing precision for the fractional part when the integer part
+  //  is large (thereby eating up significant digits).
+  // -the interpolation should probably be handled by the AudioStream class to make it re-usable
+  //  also for resampled audio playback in other contexts. Maybe here, we should just call
+  //  stream->getFrameStereo(sampleTimeInt, sampleTimeFrac, &L, &R);
+  // -it should probably also receive the increment in order to make a decision for time-scaling
+  //  the sinc, if necessary for anti-aliasing
+  // -apply pitch envelope and lfo - these should affect (scale?) the effective increment that we 
+  //  add to sampleTime - but our increment *member* should not be modified, instead, do something
+  //  like sampleTime += increment * incScaler; where incScaler is computed from the pitch 
+  //  modifiers. Maybe create a subclass of SignalProcessor called PitchShifter that has just a
+  //  dummy callback that just stores the desired shift value and we read it out here
+  // -Implement loop_sustain and all the other modes. The one_shot mode requires us to hanlde
+  //  noteOffs differently (the handling is preliminary anyway)
 }
 
 void RegionPlayer::processBlock(rsFloat64x2* y, int N)

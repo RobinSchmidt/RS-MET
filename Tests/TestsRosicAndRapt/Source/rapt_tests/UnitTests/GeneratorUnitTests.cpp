@@ -2407,14 +2407,40 @@ bool samplerLoopTest()
 
   // We expect some error due to the linear interpolation:  
   float tol = 1.e-3;
-  Vec err = getError(69, 440);
-  rsPlotVector(err);
-  ok &= rsMaxAbs(err) <= tol;
+  Vec err1 = getError(69, 440);
+  ok &= rsMaxAbs(err1) <= tol;
+
+
+  // Set the loop length to 2 cycles - this should make no difference up to roundoff:  
+  se.setRegionSetting(0,0, OC::LoopEnd, 2*cycleLength, -1);
+  Vec err2 = getError(69, 440);
+  ok &= rsMaxAbs(err2) <= tol;
+
+  // Set the loop length to all 3 cycles and therefore equal to the total length of the sample:
+  se.setRegionSetting(0,0, OC::LoopEnd, sinTable.size(), -1);
+  Vec err3 = getError(69, 440);
+  ok &= rsMaxAbs(err3) <= tol;
+
+  // Plot error signals:
+  //rsPlotVectors(err1, err2, err3);
   // Error is between +-0.0005. That's an SNR of about 66 dB. Actually not that bad for not even
   // trying to imlement decent interpolation. But it will probably get a lot worse for higher 
-  // frequencies. The error has strange discontinuities in the derivative - why? Try loopLengths 
-  // of twice and thrice the cycle-length. Without these sharp corners, the error might perhaps
-  // be less annyoing?
+  // frequencies. The error has strange discontinuities in the derivative - why? I tried without 
+  // loop and the corners are still there. This seems to be a feature of the linear interpolator
+  // and is not related to the loop implementation.
+
+  // Let's have a look ad the difference of the error. We expect it to be nonzero due to different
+  // roundoff errors when one is in the loop while the other one isn't:
+  //rsPlotVectors(err1 - err2);
+  //rsPlotVectors(err1 - err3);
+  //rsPlotVectors(err2 - err3);
+  // The error difference is zero for 100 samples, the nonzero at a level of about 10^-6 for the 
+  // rest of the longer loop, then zero again when they are again "in phase", etc. That's quite 
+  // interesting actually. Shouldn't the 2nd and 3rd cycle contain exactly the same data as the 
+  // 1st?
+
+
+
 
 
   // ToDo:
@@ -2426,6 +2452,14 @@ bool samplerLoopTest()
   // -Check, if the behavior is correct with respect to sustain, note-off, etc. I think, in 
   //  loop_sustain modewe should do the warp around conditionally if the note is being held
   // -Later when better interpolation is implemented, do similar tests with less tolerance.
+  // -Implement the default_dir (or whatever it is called) opcode and write some patches using
+  //  the CyclePack. Maybe wite a patch using mip-mapped cycles? ...but we don't have any in the 
+  //  CyclePack - maybe add Saw_1024, Saw_512, Saw_256, Saw_128, ... Maybe make a SuperSaw patch
+  //  from 7 of them using one filter for the whole group...should also have some highpass.
+  //  ...use key-crossfading...oh - and the files are in flac format which is not (yet?) supported.
+  //  a freq of 22.5 Hz at fs = 44100 gives a clean cycleLength of 1960. Maybe use that for
+  //  single-cycle waves for ths sampler. 1960 is divisble by 8 but not 16 it's then also 
+  //  divisible by 5 and 7
 
   rsAssert(ok);
   return ok;

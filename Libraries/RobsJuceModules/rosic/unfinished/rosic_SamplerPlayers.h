@@ -184,6 +184,7 @@ public:
 
   /** Generates one stereo sample frame at a time. */
   rsFloat64x2 getFrame();
+  // use float pointers for signals consistently
 
   /** Writes a block of given length into the outBuffer. */
   void processBlock(rsFloat64x2* outBuffer, int length);
@@ -254,6 +255,7 @@ protected:
   float  offset     = 0;    // maybe rename to startTime or startSample
   float  tune       = 0;
   float  transpose  = 0;
+  float  amplitude  = 1;    // determined by key/vel crossfades, etc.
 
   // todo: bendUp, bendDown
 
