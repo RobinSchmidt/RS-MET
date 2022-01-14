@@ -183,11 +183,18 @@ rsFloat64x2 RegionPlayer::getFrame()
   //  dummy callback that just stores the desired shift value and we read it out here
   // -apply the DSP processes
 
+  // Update our sampleTime counter:
   sampleTime += increment;
-  rsFloat64x2 out(L, R);
-  dspChain.processFrame(out);
+  if(loopMode == LoopMode::loop_continuous)
+  {
+    if(sampleTime >= loopEnd)
+      sampleTime -= (loopEnd - loopStart);
+  }
 
-  return out;
+
+  rsFloat64x2 out(L, R);       // avoid this - let dspChain take pointers to float
+  dspChain.processFrame(out);
+  return out;                  // we should ourselves take pointer to float for i/o
 }
 
 void RegionPlayer::processBlock(rsFloat64x2* y, int N)
@@ -281,9 +288,12 @@ bool RegionPlayer::hasFinished()
   if(sampleTime >= endTime)                   // new
     return true;
 
-  // todo:
-  // -check also, if the amplitude envelope has reached its end
-  // -hmm - maybe, if we allow the frequency envelope to go negative, we could also move 
+  // ToDo:
+  // -Make sure that this function is inlined - it's called per sample.
+  // -Check also, if the amplitude envelope has reached its end and/or filter and interpolator 
+  //  ringout is finished. Maybe we need a function dspChain.getRingoutTime() that we can call
+  //  on initialization. Maybe endTime should not be a member after all. not sure yet
+  // -Maybe, if we allow the frequency envelope to go negative, we could also move 
   //  backward through the sample, so having reached the end of the stream may not actually be an
   //  appropriate condition. Or maybe, we should allow more general time-warping envelopes. 
   //  We'll see
@@ -334,6 +344,9 @@ void RegionPlayer::resetPlayerSettings()
   // Initialize all values and DSP objects to default values (maybe factor out):
   sampleTime = 0.0;
   increment  = 1.0;
+  loopStart  = 0.0;
+  loopEnd    = 0.0;
+  loopMode   = LoopMode::no_loop;
   offset     = 0.f;
   tune       = 0.f;
   transpose  = 0.f;
@@ -344,12 +357,8 @@ void RegionPlayer::resetPlayerSettings()
   // maybe with a sample that is just 1 sample long with a value of 1. We should see the 
   // interpolation kernel as output.
 
-  loopStart  = 0.f;
-  loopEnd    = 0.f;
-  loopMode   = 0;
-
   // What about key?
-  // key = 0;   // ...breaks unit tests - figure out and document why
+  // key = 0;   // uncommenting breaks unit tests - figure out why and document
 }
 
 void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
@@ -404,10 +413,13 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   {
   // Pitch settings:
   //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
-  case OC::Transpose: { transpose  =  val;              } break;
-  case OC::Tune:      { tune       =  val;              } break;
-  case OC::Delay:     { sampleTime = -val * sampleRate; } break;
-  case OC::Offset:    { offset     =  val;              } break;
+  case OC::Transpose: { transpose  =  val;                } break;
+  case OC::Tune:      { tune       =  val;                } break;
+  case OC::Delay:     { sampleTime = -val * sampleRate;   } break;
+  case OC::Offset:    { offset     =  val;                } break;
+  case OC::LoopMode:  { loopMode   = (LoopMode)(int) val; } break;  
+  case OC::LoopStart: { loopStart  =  val;                } break;
+  case OC::LoopEnd:   { loopEnd    =  val;                } break;
   }
 }
 // ...actually, if we can assume that all values start at neutral values, we can always accumulate
@@ -442,6 +454,11 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double sample
   case OC::Delay:     { rp->sampleTime += -val * sampleRate;                           } break;
   case OC::Offset:    { rp->offset     += float(val);                                  } break;
   }
+
+  // Maybe the default branch should call rp->setupPlayerSetting(s, sampleRate, val). That would 
+  // revert the behavior to override mode which may make most sense for most settings - certainly
+  // for stuff like loop_mode, loop_start, etc. - there is no meaningful way for this setting to
+  // accumulate
 }
 
 bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationLevel* thingToPlay,

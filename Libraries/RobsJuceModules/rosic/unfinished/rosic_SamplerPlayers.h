@@ -248,23 +248,22 @@ protected:
   // Maybe we should use some sort of fixed-point format for this instead?
   double sampleTime = 0.0;  //< Time index in the sample. Negative values used for delay.
   double increment  = 1.0;  //< Increment of sampleTime per sample
+  double loopStart  = 0;
+  double loopEnd    = 0;
+  float  endTime    = 0;    // maybe it should be int? or maybe double to ease comparison?
+  float  offset     = 0;    // maybe rename to startTime or startSample
+  float  tune       = 0;
+  float  transpose  = 0;
 
-  // new, under construction:
-  float offset    = 0;  // maybe rename to startTime or startSample
-  float tune      = 0;
-  float transpose = 0;
+  // todo: bendUp, bendDown
 
-  // maybe these should be int?
-  float endTime   = 0;
-  float loopStart = 0;
-  float loopEnd   = 0;
-
-
-  uchar loopMode  = 0;  // use an enum class with None
+  LoopMode loopMode = LoopMode::no_loop;
   uchar key = 0;                 //< Midi note number used for starting this player
 
   std::vector<Modulator*> modulators;
   std::vector<ModulationConnection*> modMatrix;  // not a literal matrix but conceptually
+
+
 
 
   friend class SampleBusPlayer;

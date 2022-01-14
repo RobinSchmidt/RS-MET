@@ -2357,6 +2357,7 @@ bool samplerLoopTest()
 
   bool ok = true;
 
+  using namespace rosic::Sampler;
   using Vec = std::vector<float>;
   using SE  = rosic::Sampler::rsSamplerEngineTest;
   using OC  = rosic::Sampler::Opcode;
@@ -2368,7 +2369,7 @@ bool samplerLoopTest()
   double w = 2*PI/cycleLength; 
   for(size_t n = 0; n < sinTable.size(); n++)
     sinTable[n] = sinf(w*n);
-  rsPlotVector(sinTable);
+  //rsPlotVector(sinTable);
 
   // Playback settings:
   float fs = 44100;  // playback sample rate
@@ -2380,6 +2381,9 @@ bool samplerLoopTest()
   double f0 = fs/cycleLength;  // fundamental freq of the sample
   double rootKey = RAPT::rsFreqToPitch(f0);
   addSingleSampleRegion(&se, sinTable, (float)rootKey);
+  se.setRegionSetting(0,0, OC::LoopMode,  (float)LoopMode::loop_continuous, -1);
+  se.setRegionSetting(0,0, OC::LoopStart, 0,               -1);
+  se.setRegionSetting(0,0, OC::LoopEnd,   0 + cycleLength, -1);
 
   // Produce output:
   Vec outL(N), outR(N);
@@ -2387,9 +2391,14 @@ bool samplerLoopTest()
   for(int n = 0; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
   rsPlotVectors(outL, outR);
-  // is cut off after the 3 cycles - todo: implement and use looping such that it extends over the
-  // whole length N
+  // looks good! implement ok &= ...
 
+  // ToDo:
+  // -Test with loopEnd = sinTable.size()
+  // -Test what happens when loopEnd is <= loopStart. I guess, it jumps forward by loopLength 
+  //  every sample after reaching loopEnd. We should probably ensure that this doesn't happen
+  //  maybe use loopStart = min(loopStart, loopEnd). Then, the loop would just be ignored. That may
+  //  actually be the most reasonable behavior in such a case
 
   rsAssert(ok);
   return ok;
@@ -2412,7 +2421,7 @@ bool samplerProcessorsTest()
   //size = sizeof(SP::WaveShaper);
   // later move this into a (yet to be written) benchmark testbed
   int regionPlayerSize = rosic::Sampler::rsSamplerEngineTest::getRegionPlayerSize();
-  // -Currently at 176
+  // -Currently at 184
   // -With virtual functions, it had 16 bytes more. Apparently, that's what the vftable take.
   // -Move this into some performance test function
 

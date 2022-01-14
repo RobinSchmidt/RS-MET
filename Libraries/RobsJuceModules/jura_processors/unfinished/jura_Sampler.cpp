@@ -387,13 +387,21 @@ ToDo:
  TreeView that represents the SFZ and may allows to edit it
 
 -GUI:
- -show on the GUI, which mode we are in (Override/Accumulate) and let the user change that
  -show, which .sfz file is loaded and give the user a text editor to edit it
  -show some data about the loaded patch: number of samples, regions, groups, filters, equalizers, 
   waveshapers etc.
  -maybe display also, how many filters, eqs, etc. are allocated and how many are currently in use
  -maybe show a warning, if the number of dsp objects was exceeded...or somehow prevent that from
   ever happening
+ -Have 2 views: one for performing and one for editing the patch. the edit view may have largei'sh
+  sample editor view (which might even be expanded into its own window). There, we can actually do
+  destructive edits on samples with undo/save/etc. But maybe such edits could also be 
+  non-destructive? the sampler just stores all actions and when the patch is loaded, re-applies 
+  them? ...in this context, we may also develop a GUI for the sinusoidal models.
+ 
+  
+ 
+  
 -optimize by using block-wise processing instead of sample-by-sample
 -maybe instead of opening a message box on load error, show the error message in the load/save
  widget set 

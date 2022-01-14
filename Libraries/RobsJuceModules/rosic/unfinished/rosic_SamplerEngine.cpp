@@ -995,7 +995,9 @@ Goals:
  (which has only integer loop points (i think -> verify))
 
 ToDo:
-
+-implement some sfz2 stuff, see https://www.linuxsampler.org/sfz/, in particular:
+ <control> Header Directives
+ default_path ...then do: default_path=../Samples
 -The GUI should show a warning message, when the maximum number of voices is exceeded. SFZ 
  specifies a practically infinite number of voices, so in order to be compliant to the spec, we 
  should always have enough voices available. The original SFZ.exe by rgcaudio has 256 voices, 

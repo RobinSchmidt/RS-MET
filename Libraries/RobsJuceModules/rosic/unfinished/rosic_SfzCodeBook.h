@@ -176,7 +176,7 @@ enum class LoopMode   // maybe rename to loop_mode (as in sfz)
 {
   Unknown = 0,
   no_loop,         // play from start to end or until note off
-  one_shot,        // play from start to end, ignore note off,  engaged if count opcode is defined
+  one_shot,        // play from start to end, ignore note off, engaged if count opcode is defined
   loop_continuous, // when player reaches sample loop point, loop will play until note expiration
   loop_sustain,    // play loop while note or sustain pedal is held. rest will play after release
   numModes

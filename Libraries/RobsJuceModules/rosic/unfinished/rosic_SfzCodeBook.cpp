@@ -48,6 +48,13 @@ SfzCodeBook::SfzCodeBook()
   add(OC::LoopEnd,   Nat, "loop_end",   0, 4294967296, 0, dsp, OU::Samples, Sfz1);
   // If not specified, the defined value in the sample will be used, if any.
 
+  // ToDo:
+  // -allow floating point numbers for loop-start and end (double precision)
+  // -introduce opcode for loop-crossfading (in samples), maybe loop_xfade,
+  // maybe another opcode could control the blend-function continuously between linear and 
+  // constant power - maybe use a cubic approximation that fades the derivative at 1 from
+  // 1 to 0 (for the fade-in function)...see also xf_keycurve...maybe use loop_xf
+
   // Player pitch:
   add(OC::Transpose,      Int, "transpose",       -127, 127,  0, dsp, OU::Semitones, Sfz1);
   add(OC::Tune,           Int, "tune",            -100, 100,  0, dsp, OU::Cents,     Sfz1);
@@ -121,11 +128,13 @@ SfzCodeBook::SfzCodeBook()
   // may be going to change:
   dsp = DspType::WaveShaper;
   OS RsMet = OS::RsMet;
-  add(OC::distortN_shape,  Nat, "distortN_shape",  0.f,  0.f, 0.f, dsp, OU::RawInt,   RsMet); // not yet used
-  add(OC::distortN_drive,  Flt, "distortN_drive",  0.f,  8.f, 1.f, dsp, OU::RawFloat, RsMet);
-  add(OC::distortN_dc,     Flt, "distortN_dc",    -1.f, +1.f, 0.f, dsp, OU::RawFloat, RsMet);
+  add(OC::distortN_shape, Nat, "distortN_shape",  0.f,  0.f, 0.f, dsp, OU::RawInt,   RsMet); // not yet used
+  add(OC::distortN_drive, Flt, "distortN_drive",  0.f,  8.f, 1.f, dsp, OU::RawFloat, RsMet);
+  add(OC::distortN_dc,    Flt, "distortN_dc",    -1.f, +1.f, 0.f, dsp, OU::RawFloat, RsMet);
   // maybe allow negative values for drive like -8...+8...maybe that can be an additional scale
-  // parameter - rename opcodes to distortN_shape, etc.
+  // parameter - rename opcodes to distortN_shape, etc. cakewalk has some disto_... opcodes defined
+  // -> figure out how they work - there's depth, tone, etc. maybe rename opdcodes to something
+  // with waveshaper or wvshpr...hmm...naaah
 
   // ToDo: 
   // -PanLaw, introduce fil_bw for bandwidth parameter for bandpass...actually, we need to figure
@@ -240,6 +249,9 @@ float SfzCodeBook::opcodeDefaultValue(Opcode op, int index)
     }
   }
   }
+
+  // ToDo: for loop_mode, the default value actually depends on whether or not the sample-file 
+  // defines a loop...that should probably be handled by the caller as special case
 
   // For all others, we return the stored default value:
   return opcodeEntries[(int)op].defVal;
