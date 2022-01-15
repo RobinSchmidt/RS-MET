@@ -116,12 +116,20 @@ protected:
   /** A struct to hold intermediate values that arise in the calculation of the Player's member
   variables to control certain playback aspects such as pitch, amplitude etc. There are often 
   multiple opcodes that influence such a setting and we must override or accumulate them all 
-  seperately before we can compute the resulting member variable. To facilitat this, we pass
-  a pointer to such a struct to setupPlayerSetting. */
+  seperately before we can compute the final resulting member variable (such as the per-sample 
+  time increment or the final amplitude scaler). To facilitate this, we pass a pointer to such a
+  struct to setupPlayerSetting. */
   struct PlayerIntermediates
   {
     double transpose = 0;
     double tune = 0;
+    //double offset = 0; // maybe this should also be here
+    // We use double not mainly because we expect a lot of error accumulation in our computations
+    // (although that may be the case as well) but rather because we can easily afford it. This 
+    // struct is not used anywhere where minimizing space requirement matters anyway. Its just 
+    // created on the stack on note-on and then a pointer to is is passed around to all functions 
+    // that need it until the event has been fully consumed and the struct goes out of scope again.
+    // We don't store arrays of these things or anything like that anywhere.
   };
 
   using PlaybackSetting = rsSamplerData::PlaybackSetting; // for convenience
@@ -134,9 +142,8 @@ protected:
   up its own member variables, GroupPlayer manipulates one of its embedded RegionPlayers, 
   etc.  */
   virtual void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-    RegionPlayer* rp) = 0;
+    RegionPlayer* rp, PlayerIntermediates* iv) = 0;
   // rename to setPlayerOpcode
-
 
   /** Given a playback setting (i.e. opcode, value, possibly index) that is supposed to be 
   applicable to the DSP chain, it finds the processor in our dspChain member to which this 
@@ -147,10 +154,10 @@ protected:
   // rename to setDspOpcode
 
   /** ToDo: add documentation */
-  virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings,
-    double sampleRate, RegionPlayer* regionPlayer, bool busMode);
-  // maybe return a bool to indicate, if the setting was handled (if flase, the subclass may
-  // want to do somthing in its override)
+  virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings, double sampleRate, 
+    RegionPlayer* rp, bool busMode, PlayerIntermediates* iv);
+  // Maybe return a bool to indicate, if the setting was handled (if false, the subclass may
+  // want to do something in its override)...??? comment obsolete?
 
 
   SignalProcessorChain dspChain;
@@ -248,7 +255,8 @@ protected:
 
   // move to baseclass, if possible and/or maybe have a virtual detupDspSettings function in 
   // baseclass that we override here and in the GroupPlayer:
-  void setupDspSettingsFor(const Region* r, double sampleRate, bool busMode);
+  void setupDspSettingsFor(const Region* r, double sampleRate, bool busMode, 
+    PlayerIntermediates* iv);
 
   //void setupDspSettings(const std::vector<PlaybackSetting>& settings,
   //  double sampleRate, bool busMode) override;
@@ -256,7 +264,7 @@ protected:
   //void setupProcessorSetting(const PlaybackSetting& s) override;
 
   void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-    RegionPlayer* rp) override;
+    RegionPlayer* rp, PlayerIntermediates* iv) override;
 
   const Region* region;                 //< The Region object that this object should play
   const AudioFileStream<float>* stream; //< Stream object to get the data from
@@ -313,7 +321,7 @@ class SampleBusPlayer : public SamplePlayer
 public:
 
   void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-    RegionPlayer* rp) override;
+    RegionPlayer* rp, PlayerIntermediates* iv) override;
 
   bool setGroupOrInstrumToPlay(const rsSamplerData::OrganizationLevel* thingToPlay, 
     double sampleRate, RegionPlayer* regionPlayer, bool busMode);

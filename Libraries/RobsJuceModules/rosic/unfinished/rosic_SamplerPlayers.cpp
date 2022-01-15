@@ -128,7 +128,7 @@ void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 }
 
 void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings,
-  double sampleRate, RegionPlayer* rp, bool busMode)
+  double sampleRate, RegionPlayer* rp, bool busMode, PlayerIntermediates* iv)
 {
   SfzCodeBook* codebook = SfzCodeBook::getInstance();
   for(size_t i = 0; i < settings.size(); i++)
@@ -136,7 +136,7 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
     PlaybackSetting s = settings[i];
     Opcode op = s.getType();
     if(     codebook->isDspSetting(op))    { setupProcessorSetting(s);              }
-    else if(codebook->isPlayerSetting(op)) { setupPlayerSetting(s, sampleRate, rp); }
+    else if(codebook->isPlayerSetting(op)) { setupPlayerSetting(s, sampleRate, rp, iv); }
   }
 }
 
@@ -266,8 +266,9 @@ rsReturnCode RegionPlayer::prepareToPlay(double fs, bool busMode)
     return rsReturnCode::layerOverload;
   }
   resetPlayerSettings();
-  setupDspSettingsFor(region, fs, busMode);
-  // todo: move fs before the override parameters for consistency
+
+  PlayerIntermediates iv;
+  setupDspSettingsFor(region, fs, busMode, &iv);
 
   // todo: setup modulators and modulation connections
 
@@ -364,7 +365,8 @@ void RegionPlayer::resetPlayerSettings()
   // key = 0;   // uncommenting breaks unit tests - figure out why and document
 }
 
-void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
+void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode, 
+  PlayerIntermediates* iv)
 {
   // To set up the settings, we call setupDspSettings 3 times to:
   //   (1) set up the general instrument-wide settings
@@ -373,11 +375,12 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
   // but only if not in bus-mode in which case the group and instrument settings apply to separate
   // DSP objects on the groups which map to sub-busses and the instrument which maps to the final
   // master bus:
+  //PlayerIntermediates iv;
   if(!busMode)
-    setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, this, busMode);
+    setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, this, busMode, iv);
   if(!busMode)
-    setupDspSettings(region->getGroup()->getSettings(), fs, this, busMode);
-  setupDspSettings(region->getSettings(), fs, this, busMode);
+    setupDspSettings(region->getGroup()->getSettings(), fs, this, busMode, iv);
+  setupDspSettings(region->getSettings(), fs, this, busMode, iv);
 
   // Besides other things, the calls above will have set up our transpose and tune variables. From 
   // those (and other variables) we can now compute per-sample increment for our sampleTime 
@@ -408,7 +411,7 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
 }
 
 void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-  RegionPlayer* rp)
+  RegionPlayer* rp, PlayerIntermediates* iv)
 {
   RAPT::rsAssert(rp == this);
   // For RegionPlayer objects like this, this function is supposed to be called only for the object
@@ -449,7 +452,7 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
 // SampleBusPlayer
 
 void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
-  RegionPlayer* rp)
+  RegionPlayer* rp, PlayerIntermediates* iv)
 {
   // We are supposedly a higher level player object like GroupPlayer or InstrumentPlayer but the 
   // setting in question reaches through to an underlying (embedded) RegionPlayer object and must 
@@ -482,8 +485,10 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationL
   RAPT::rsAssert(busMode == true);
   // It makes no sense to use a GroupPlayer when not in busMode. Maybe remove the parameter
 
+  PlayerIntermediates dummy;
+
   if(thingToPlay == grpOrInstr) {
-    setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode);
+    setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, &dummy);
     return true;  }
     // This is not a new group or restart of the whole InstrumPlayer so we may only need to set up
     // those settings that affect the RegionPlayer, i.e. offset, delay, inc, etc. The other 
@@ -499,7 +504,7 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationL
     if(!assembleDspChain(busMode)) {
       grpOrInstr = nullptr;
       return false;   }
-    setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode);
+    setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, &dummy);
     dspChain.prepareToPlay(sampleRate); }
   return true;
 }
