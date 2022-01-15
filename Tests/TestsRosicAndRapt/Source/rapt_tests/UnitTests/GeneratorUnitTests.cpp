@@ -969,11 +969,12 @@ bool samplerEngineUnitTestFileIO()
 
   bool ok = true;
 
+  using namespace rosic::Sampler;
   using VecF = std::vector<float>;     // vector of sample values in RAM
-  using SE   = rosic::Sampler::rsSamplerEngineTest;
-  using RC   = rosic::Sampler::rsReturnCode;
-  using PST  = rosic::Sampler::Opcode;
-  using Ev   = rosic::Sampler::rsMusicalEvent<float>;
+  using SE   = rsSamplerEngineTest;
+  using RC   = rsReturnCode;
+  using PST  = Opcode;
+  using Ev   = rsMusicalEvent<float>;
   using EvTp = Ev::Type;
 
   // Create a sine- and cosine wave-file as example samples:
@@ -1140,6 +1141,16 @@ bool samplerEngineUnitTestFileIO()
   nr = se3.getNumSamplesRemoved(); ok &= nr == 2;
   nf = se3.getNumSamplesFailed();  ok &= nf == 0;
 
+  // Helper function to save the state of se into a file and load it into se2 and compare their 
+  // states. Returns true when both states are equal which indicates that the load/save roundtrip
+  // has worked as expected:
+  auto testSaveLoadRoundtrip = [&]()
+  {
+    se.saveToSFZ("tmp.sfz");
+    se2.loadFromSFZ("tmp.sfz");
+    return se2.isInSameStateAs(se);
+  };
+
   // Test hikey/lokey opcodes by defining 2 regions:
   se.clearInstrument();
   si = se.loadSampleToPool("Sin440Hz.wav"); ok &= si == 0;
@@ -1151,9 +1162,7 @@ bool samplerEngineUnitTestFileIO()
   ri = se.addRegion(0, 69, 71); ok &= ri == 1;
   rc = se.setRegionSample(0, 1, 1); ok &= rc == RC::success;
   rc = se.setRegionSetting(0, 1, PST::PitchKeyCenter, 70.f, -1); ok &= rc == RC::success;
-  se.saveToSFZ("tmp.sfz");
-  se2.loadFromSFZ("tmp.sfz");
-  ok &= se2.isInSameStateAs(se);
+  ok &= testSaveLoadRoundtrip();
 
   // Test filter opcodes:
   using FltType = rosic::Sampler::FilterType;
@@ -1177,9 +1186,7 @@ bool samplerEngineUnitTestFileIO()
   se.setRegionSetting(0, 0, PST::eqN_gain, 1.f, 1);
   se.setRegionSetting(0, 0, PST::eqN_gain, 2.f, 2);
   se.setRegionSetting(0, 0, PST::eqN_gain, 3.f, 3);
-  se.saveToSFZ("tmp.sfz");
-  se2.loadFromSFZ("tmp.sfz");
-  ok &= se2.isInSameStateAs(se);
+  ok &= testSaveLoadRoundtrip();
 
   // Set up some more eq bands, still without specifying freqs or widths:
   se.setRegionSetting(0, 0, PST::eqN_gain,  4.f,  4);
@@ -1187,23 +1194,16 @@ bool samplerEngineUnitTestFileIO()
   se.setRegionSetting(0, 0, PST::eqN_gain,  8.f,  8);
   se.setRegionSetting(0, 0, PST::eqN_gain, 13.f, 13); 
   se.setRegionSetting(0, 0, PST::eqN_gain, 10.f, 10); 
-  se.saveToSFZ("tmp.sfz");
-  se2.loadFromSFZ("tmp.sfz");
-  ok &= se2.isInSameStateAs(se);
+  ok &= testSaveLoadRoundtrip();
 
   // Set up frequencies and bandwidths of some of the eq bands:
   se.setRegionSetting(0, 0, PST::eqN_freq, 800.f,  8);
   se.setRegionSetting(0, 0, PST::eqN_bw,     1.8f, 8);
   se.setRegionSetting(0, 0, PST::eqN_freq, 500.f,  5);
   se.setRegionSetting(0, 0, PST::eqN_bw,     1.3f, 3);
-  se.saveToSFZ("tmp.sfz");
-  se2.loadFromSFZ("tmp.sfz");
-  ok &= se2.isInSameStateAs(se);
+  ok &= testSaveLoadRoundtrip();
 
   // Clear the region's settings, then set up 3 filters:
-  //using Region = rosic::Sampler::rsSamplerData::Region;
-  //Region* r = se.getRegion(0, 0);
-  //r->clearSettings();
   se.clearRegionSettings(0, 0);
   se.setRegionSetting(0, 0, PST::filN_type,  (float) FltType::hp_12, 1);
   se.setRegionSetting(0, 0, PST::cutoffN,    200.f,                  1);
@@ -1213,10 +1213,14 @@ bool samplerEngineUnitTestFileIO()
   se.setRegionSetting(0, 0, PST::resonanceN, 15.f,                   2);
   se.setRegionSetting(0, 0, PST::filN_type,  (float) FltType::lp_6,  3);
   se.setRegionSetting(0, 0, PST::cutoffN,    5000.f,                 3);
-  se.saveToSFZ("tmp.sfz");
-  se2.loadFromSFZ("tmp.sfz");
-  ok &= se2.isInSameStateAs(se);
+  ok &= testSaveLoadRoundtrip();
 
+  // Test save and recall of loop settings:
+  se.clearRegionSettings(0, 0);
+  se.setRegionSetting(0, 0, PST::LoopMode,  (float) LoopMode::loop_continuous, -1);
+  se.setRegionSetting(0, 0, PST::LoopStart, 0.f, -1);
+  se.setRegionSetting(0, 0, PST::LoopEnd,   9.f, -1);
+  ok &= testSaveLoadRoundtrip();
 
 
   // ToDo:
