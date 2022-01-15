@@ -61,6 +61,41 @@ private:
 
 //=================================================================================================
 
+/** UNDER CONSTRUCTION
+
+A struct to hold intermediate values that arise in the calculation of the Player's member
+variables to control certain playback aspects such as pitch, amplitude etc. There are often 
+multiple opcodes that influence such a setting and we must override or accumulate them all 
+seperately before we can compute the final resulting member variable (such as the per-sample 
+time increment or the final amplitude scaler). To facilitate this, we pass a pointer to such a
+struct to setupPlayerSetting. */
+
+struct PlayerIntermediates
+{
+  double transpose = 0;
+  double tune = 0;
+  //double offset = 0; // maybe this should also be here
+  // We use double not mainly because we expect a lot of error accumulation in our computations
+  // (although that may be the case as well) but rather because we can easily afford it. This 
+  // struct is not used anywhere where minimizing space requirement matters anyway. Its just 
+  // created on the stack on note-on and then a pointer to is is passed around to all functions 
+  // that need it until the event has been fully consumed and the struct goes out of scope again.
+  // We don't store arrays of these things or anything like that anywhere. ...Or maybe the engine
+  // should have a member variable of the type that is re-used whenever a new note is triggered
+
+  void reset()
+  {
+    transpose = 0;
+    tune = 0;
+  }
+  // maybe needed when we don't create it on the stack but rather re-use a member
+
+};
+// rename to SetupIntermediates and include also intermediates for the DSPs...hmm...but there's
+// an indefinite number of them...we'll see
+
+//=================================================================================================
+
 class RegionPlayer;
 
 /** Baseclass for RegionPlayer, GroupPlayer and InstrumPlayer to factor out the common stuff. The 
@@ -113,24 +148,7 @@ protected:
   void disassembleDspChain();
 
 
-  /** A struct to hold intermediate values that arise in the calculation of the Player's member
-  variables to control certain playback aspects such as pitch, amplitude etc. There are often 
-  multiple opcodes that influence such a setting and we must override or accumulate them all 
-  seperately before we can compute the final resulting member variable (such as the per-sample 
-  time increment or the final amplitude scaler). To facilitate this, we pass a pointer to such a
-  struct to setupPlayerSetting. */
-  struct PlayerIntermediates
-  {
-    double transpose = 0;
-    double tune = 0;
-    //double offset = 0; // maybe this should also be here
-    // We use double not mainly because we expect a lot of error accumulation in our computations
-    // (although that may be the case as well) but rather because we can easily afford it. This 
-    // struct is not used anywhere where minimizing space requirement matters anyway. Its just 
-    // created on the stack on note-on and then a pointer to is is passed around to all functions 
-    // that need it until the event has been fully consumed and the struct goes out of scope again.
-    // We don't store arrays of these things or anything like that anywhere.
-  };
+
 
   using PlaybackSetting = rsSamplerData::PlaybackSetting; // for convenience
   // mayb rename to OpcodeSetting

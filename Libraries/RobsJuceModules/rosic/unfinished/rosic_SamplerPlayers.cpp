@@ -451,7 +451,7 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
 //=================================================================================================
 // SampleBusPlayer
 
-void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
+void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs, 
   RegionPlayer* rp, PlayerIntermediates* iv)
 {
   // We are supposedly a higher level player object like GroupPlayer or InstrumentPlayer but the 
@@ -471,9 +471,12 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double sample
   case OC::Tune:      { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(0.01 * val); } break;
     // accumulate into iv->transpose, iv->tune instead!
 
+  //case OC::Transpose: { iv->transpose  += val;        } break;
+  //case OC::Tune:      { iv->tune       += val;        } break;
+    // using these instead of the code above breaks samplerEngine2UnitTest 
 
-  case OC::Delay:     { rp->sampleTime += -val * sampleRate;                           } break;
-  case OC::Offset:    { rp->offset     += float(val);                                  } break;
+  case OC::Delay:     { rp->sampleTime += -val * fs;  } break;
+  case OC::Offset:    { rp->offset     += float(val); } break;
   }
 
   // Maybe the default branch should call rp->setupPlayerSetting(s, sampleRate, val). That would 
@@ -488,8 +491,7 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationL
   RAPT::rsAssert(busMode == true);
   // It makes no sense to use a GroupPlayer when not in busMode. Maybe remove the parameter
 
-  PlayerIntermediates dummy;
-
+  PlayerIntermediates dummy;  // i think, this is false and breaks the test?
   if(thingToPlay == grpOrInstr) {
     setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, &dummy);
     return true;  }
@@ -508,6 +510,14 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationL
       grpOrInstr = nullptr;
       return false;   }
     setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, &dummy);
+    // passing the dummy here makes the busMode test fail, whe we only set the 
+    // iv->tune, iv->transpose fields in SampleBusPlayer::setupPlayerSetting...i think, we should
+    // drag out the PlayerIntermediates of the SamplePlayer, make it globally visible, use it also
+    // for all other variables that may accumulate or override and then pass it directly to 
+    // RegionPlayer::prepareToPlay (and all related functions. RegionPlayer::setRegionToPlay should
+    // receive a pointer to such a struct
+
+
     dspChain.prepareToPlay(sampleRate); }
   return true;
 }

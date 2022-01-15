@@ -853,7 +853,6 @@ bool samplerEngine2UnitTest()
   // 69 + 1 + 10/100 = 70.1
   se.setBusMode(false);
   getSamplerNote(&se, 69.f, 127.f, outL, outR);
-  pitch = rsEstimateMidiPitch(outL, fs);
   //rsPlotVectors(outL, outR);
   ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 70.1f, tol);
   // its 69.08 ~= 69.1 so it's about 1 semitone too low
