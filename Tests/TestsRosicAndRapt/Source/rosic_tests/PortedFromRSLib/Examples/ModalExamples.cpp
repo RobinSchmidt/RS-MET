@@ -646,6 +646,13 @@ void createSamplerWaveforms()
   // it by just suing averages of successive samples:
   Vec w8192(8192);
   SWR::renderSawWaveform(&w8192[0], 8192); //rsPlotVector(w8192);
+  rsScale(w8192, 0.8125); //
+  // Some nicely representable approximation to the scaling by the Wilbraham-Gibbs constant to 
+  // avoid clipping due to Gibb's overshoot 
+  // https://en.wikipedia.org/wiki/Gibbs_phenomenon
+  // https://mathworld.wolfram.com/Wilbraham-GibbsConstant.html
+
+
   Vec w4096 = rsDecimateViaMean(w8192, 2); //rsPlotVector(w4096);
   Vec w2048 = rsDecimateViaMean(w4096, 2); //rsPlotVector(w2048);
 
@@ -668,7 +675,7 @@ void createSamplerWaveforms()
   for(int i = 0; i < mipMap.getNumLevels(); i++)
   {
     mipMap.copyDataTo(&tmp[0], 0, i);
-    fileName = waveName + "_K" + std::to_string(key) +  " .wav";
+    fileName = waveName + "_K" + std::to_string(key) +  ".wav";
     rosic::writeToMonoWaveFile(fileName.c_str(), &tmp[0], 2048, 56320, 16);
     key += 12;
     //rsPlotVector(tmp);
