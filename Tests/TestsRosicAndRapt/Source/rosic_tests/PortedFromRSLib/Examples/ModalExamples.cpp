@@ -638,6 +638,7 @@ void createSamplerWaveforms()
   using Vec = std::vector<double>;
   using SWR = StandardWaveformRenderer;
   using namespace RAPT;
+  using namespace rosic;
 
   std::string waveName = "Saw";  // name of the waveform as it appears in the .wav files
 
@@ -648,19 +649,30 @@ void createSamplerWaveforms()
   Vec w4096 = rsDecimateViaMean(w8192, 2); //rsPlotVector(w4096);
   Vec w2048 = rsDecimateViaMean(w4096, 2); //rsPlotVector(w2048);
 
+  std::string fileName;
+  fileName = waveName + "_K9.wav";
+  rosic::writeToMonoWaveFile(fileName.c_str(), &w4096[0], 4096, 56320, 16);
+
+  //fileName = waveName + "_K21.wav";
+  //rosic::writeToMonoWaveFile(fileName.c_str(), &w2048[0], 2048, 56320, 16);
+  // seems like we don't need the 8192 version..
+
+
   // From the waveform of length 2048, we create the mip-map using the FFT/iFFT technique:
-  rosic::MipMappedWaveTableStereo mipMap;
+  MipMappedWaveTableStereo mipMap;
   double* pWave[2];
   pWave[0] = pWave[1] = &w2048[0];
   mipMap.setWaveform(pWave, 2048);
   Vec tmp(mipMap.getTableLength());  // temp buffer for the succesive mip-map levels
+  int key = 21;
   for(int i = 0; i < mipMap.getNumLevels(); i++)
   {
     mipMap.copyDataTo(&tmp[0], 0, i);
-    rsPlotVector(tmp);
+    fileName = waveName + "_K" + std::to_string(key) +  " .wav";
+    rosic::writeToMonoWaveFile(fileName.c_str(), &tmp[0], 2048, 56320, 16);
+    key += 12;
+    //rsPlotVector(tmp);
   }
-
-
 
   // Observations:
   // -In the 0th mip-map, it seems like the Nyquist freq is missing?
@@ -669,6 +681,8 @@ void createSamplerWaveforms()
   //
   // ToDo:
   // -Figure out (and maybe fix) the missing Nyquist freq in the 0th mip-map level.
+  //  -Commenting out the "Truncate the spectrum for the next iteration" part doesn't fix it.
+  //  -Maybe it has to do with the weird encoding of DC and Nyquist gain in the 0th spectral bin?
   // -Looks like we could have one more level...but it will consume more memory
   // -Write the different rendered levels to wavefiles with a meaningfully formatted way, such as
   //  Saw_K21 for the w2048 wave.

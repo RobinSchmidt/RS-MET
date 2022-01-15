@@ -319,7 +319,7 @@ void MipMappedWaveTableStereo::renderMipMap()
 
   int t, k, n; // indices for the channel, table and position
 
-  // allocate some memory for temporary storage:
+  // Allocate some memory for temporary storage:
   Complex* inSpectrumL  = new Complex[prototypeWaveNumSamples];
   Complex* inSpectrumR  = new Complex[prototypeWaveNumSamples];
   Complex* tmpSpectrumL = new Complex[tableLength];
@@ -327,7 +327,7 @@ void MipMappedWaveTableStereo::renderMipMap()
   double*  tmpTableL    = new double[tableLength];
   double*  tmpTableR    = new double[tableLength];
 
-  // copy the prototype waveform into the complex array which is going to used for the forward FFT,
+  // Copy the prototype waveform into the complex array which is going to used for the forward FFT,
   // thereby apply time-domain manipulations of the waveform:
   double signFactor = 1.0;
   double readPhase;
@@ -370,18 +370,18 @@ void MipMappedWaveTableStereo::renderMipMap()
     }
   }
 
-  // set the forward transfrom object to the size of the new data-array and transform the
+  // Set the forward transfrom object to the size of the new data-array and transform the
   // prototypes into the frequency domain:
   forwardTransformer.setBlockSize(prototypeWaveNumSamples);
   forwardTransformer.transformComplexBufferInPlace(inSpectrumL);
   forwardTransformer.transformComplexBufferInPlace(inSpectrumR);
 
-  // calculate the number of FFT-bins to fill (including the redundant bins):
+  // Calculate the number of FFT-bins to fill (including the redundant bins):
   int m = RAPT::rsMin(prototypeWaveNumSamples, tableLength);
   if( RAPT::rsIsOdd(m) )
     m -= 1;
 
-  // convert the real/imaginary representation of the spectrum into magnitude/phase and find the
+  // Convert the real/imaginary representation of the spectrum into magnitude/phase and find the
   // peak magnitude (required array size would be m/2+1, however allocating arrays of size m seems
   // to be much better performance wise):
   double  maxMagnitude = 0.0;
@@ -401,7 +401,7 @@ void MipMappedWaveTableStereo::renderMipMap()
       maxMagnitude = magSpectrumR[k];
   }
 
-  // calculate some weighting factors:
+  // Calculate some weighting factors:
   double contrastNormalizer = maxMagnitude / pow(maxMagnitude, spectralContrast);
 
   double slopeNormalizer = 1.0;
@@ -430,11 +430,11 @@ void MipMappedWaveTableStereo::renderMipMap()
   double weight   = 1.0;
   for(k=1; k <= m/2; k++)
   {
-    // apply contrast function to spectral magnitudes:
+    // Apply contrast function to spectral magnitudes:
     magSpectrumL[k] = pow(magSpectrumL[k], spectralContrast);
     magSpectrumR[k] = pow(magSpectrumR[k], spectralContrast);
 
-    // calculate weight for the magnitude at this bin:
+    // Calculate weight for the magnitude at this bin:
     weight = contrastNormalizer * slopeNormalizer * RAPT::rsDbToAmp(spectralSlope*log2(k));
     if( RAPT::rsIsEven(k) )
     {
@@ -451,19 +451,22 @@ void MipMappedWaveTableStereo::renderMipMap()
     if( k < lowestHarmonicToKeep || k > highestHarmonicToKeep )
       weight = 0.0;
 
-    // apply magnitude weighting:
+    // For debug - should hold when no modifications are applied:
+    //RAPT::rsAssert(weight == 1 && phi == 0 && phiL == 0 && phiR == 0);
+
+    // Apply magnitude weighting:
     magSpectrumL[k] *= weight;
     magSpectrumR[k] *= weight;
 
-    // apply phase modifications:
+    // Apply phase modifications:
     phsSpectrumL[k] = phaseScale*phsSpectrumL[k] + phi + phiL;
     phsSpectrumR[k] = phaseScale*phsSpectrumR[k] + phi + phiR;
 
-    // establish the complex spectral value from the magnitude and phase:
+    // Establish the complex spectral value from the magnitude and phase:
     tmpSpectrumL[k].setRadiusAndAngle(magSpectrumL[k], phsSpectrumL[k]);
     tmpSpectrumR[k].setRadiusAndAngle(magSpectrumR[k], phsSpectrumR[k]);
 
-    // convert the L/R input data into sum and difference, if this option is chosen:
+    // Convert the L/R input data into sum and difference, if this option is chosen:
     if( channelSumAndDifferenceMode )
     {
       Complex tmpS    = tmpSpectrumL[k]+tmpSpectrumR[k];
@@ -472,39 +475,39 @@ void MipMappedWaveTableStereo::renderMipMap()
       tmpSpectrumR[k] = tmpD;
     }
 
-    // symmetrize:
+    // Symmetrize:
     tmpSpectrumL[tableLength-k] = tmpSpectrumL[k];
     tmpSpectrumR[tableLength-k] = tmpSpectrumR[k];
   }
 
-  // progressively truncate spectrum and render waveform via iFFT:
+  // Progressively truncate spectrum and render waveform via iFFT:
   int highBin = tableLength/2;
   int lowBin  = tableLength/4;
   for(t=0; t<numTables; t++)
   {
-    // write the inverse fourier transform of the current spectrum into the temporary tables:
+    // Write the inverse fourier transform of the current spectrum into the temporary tables:
     inverseTransformer.transformSymmetricSpectrum(tmpSpectrumL, tmpTableL);
     inverseTransformer.transformSymmetricSpectrum(tmpSpectrumR, tmpTableR);
 
-    // copy the temporary table into the member, thereby typecast:
+    // Copy the temporary table into the member, thereby typecast:
     for(k=0; k<tableLength; k++)
     {
       tableSet[t][k][0] = (float) tmpTableL[k];
       tableSet[t][k][1] = (float) tmpTableR[k];
     }
 
-    // repeat some samples form the beginning for the interpolator:
-    tableSet[t][tableLength][0]   = tableSet[t][0][0];
+    // Repeat some samples form the beginning for the interpolator:
+    tableSet[t][tableLength+0][0] = tableSet[t][0][0];
     tableSet[t][tableLength+1][0] = tableSet[t][1][0];
     tableSet[t][tableLength+2][0] = tableSet[t][2][0];
     tableSet[t][tableLength+3][0] = tableSet[t][3][0];
 
-    tableSet[t][tableLength][1]   = tableSet[t][0][1];
+    tableSet[t][tableLength+0][1] = tableSet[t][0][1];
     tableSet[t][tableLength+1][1] = tableSet[t][1][1];
     tableSet[t][tableLength+2][1] = tableSet[t][2][1];
     tableSet[t][tableLength+3][1] = tableSet[t][3][1];
 
-    // truncate the spectrum for the next iteration:
+    // Truncate the spectrum for the next iteration:
     for(k = lowBin+1; k <= highBin; k++)
     {
       tmpSpectrumL[k]             = 0.0;
@@ -516,7 +519,7 @@ void MipMappedWaveTableStereo::renderMipMap()
     lowBin  /= 2;
   }
 
-  // free temporary allocated memory:
+  // Free temporary allocated memory:
   delete[] inSpectrumL;
   delete[] inSpectrumR;
   delete[] tmpSpectrumL;
