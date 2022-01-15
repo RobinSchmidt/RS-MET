@@ -76,5 +76,9 @@ Ideas:
  transient/release separation before the chorus unit ad feed a use adjustable mix of it into the 
  chorus. At default settings, both components have a gain of 1. That could be useful for other
  effects, too
+-Maybe before applying any sort of effect we should first:
+ -convert L/R to M/S
+ -split low from high frequencies
+ -split both into attack and sustain/release (with longer settings for the bass part)
 
 */

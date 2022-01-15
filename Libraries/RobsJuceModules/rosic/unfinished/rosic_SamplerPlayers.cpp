@@ -193,7 +193,10 @@ void RegionPlayer::processFrame(float* L, float* R)
   //  also for resampled audio playback in other contexts. Maybe here, we should just call
   //  stream->getFrameStereo(sampleTimeInt, sampleTimeFrac, &L, &R);
   // -it should probably also receive the increment in order to make a decision for time-scaling
-  //  the sinc, if necessary for anti-aliasing
+  //  the sinc, if necessary for anti-aliasing. Maybe it should implement various anti-aliasing
+  //  algorithms: sinc-interpolation, mip-mapping, integrate -> interpolate -> differentiate, 
+  //  oversample etc. ... and maybe combinations of them...maybe have an opcode resample=sinc
+  //  etc....but maybe handle that in the xml
   // -apply pitch envelope and lfo - these should affect (scale?) the effective increment that we 
   //  add to sampleTime - but our increment *member* should not be modified, instead, do something
   //  like sampleTime += increment * incScaler; where incScaler is computed from the pitch 
@@ -436,6 +439,11 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
 // business thwarts the override behavior! We receive calls from (maybe) the instrum, then (maybe) 
 // the group, then (maybe) the region. Each of these is optional but when a call happens, it should 
 // override the current setting. 
+
+// Maybe tune and transpose do not need to be members of RegionPlayer if we give the function 
+// another parameter which is a pointer to a struct that holds all the temporary intermediate
+// values. This will become more relevant when more and more parameters are controlled by opcodes
+// which all influence a final value
 
 //=================================================================================================
 // SampleBusPlayer

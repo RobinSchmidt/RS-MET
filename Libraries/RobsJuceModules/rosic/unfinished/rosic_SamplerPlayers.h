@@ -81,7 +81,6 @@ public:
 
 protected:
 
-  using PlaybackSetting = rsSamplerData::PlaybackSetting;
 
   /** Returns a pointer to a processor of given type, if available, otherwise a nullptr. Used in
   buildProcessingChain. */
@@ -113,13 +112,20 @@ protected:
   /** Reposits all the DSP objects back into the dspPool and clears our dspChain. */
   void disassembleDspChain();
 
-  /** Given a playback setting (i.e. opcode, value, possibly index) that is supposed to be 
-  applicable to the DSP chain, it finds the processor in our dspChain member to which this 
-  setting applies and sets the corresponding parameter in the DSP. It assumes that a suitable 
-  processor exists in our chain - if not, then something went wrong with assembling the 
-  dspChain in a step before and an assert is triggered. */
-  virtual void setupProcessorSetting(const PlaybackSetting& s);
-  // rename to setDspOpcode
+
+  /** A struct to hold intermediate values that arise in the calculation of the Player's member
+  variables to control certain playback aspects such as pitch, amplitude etc. There are often 
+  multiple opcodes that influence such a setting and we must override or accumulate them all 
+  seperately before we can compute the resulting member variable. To facilitat this, we pass
+  a pointer to such a struct to setupPlayerSetting. */
+  struct PlayerIntermediates
+  {
+    double transpose = 0;
+    double tune = 0;
+  };
+
+  using PlaybackSetting = rsSamplerData::PlaybackSetting; // for convenience
+  // mayb rename to OpcodeSetting
 
   /** Given a playback setting (i.e. opcode, value, possibly index) that is supposed to be 
   applicable to the sample playback source, the overriden version of this function in the 
@@ -132,6 +138,15 @@ protected:
   // rename to setPlayerOpcode
 
 
+  /** Given a playback setting (i.e. opcode, value, possibly index) that is supposed to be 
+  applicable to the DSP chain, it finds the processor in our dspChain member to which this 
+  setting applies and sets the corresponding parameter in the DSP. It assumes that a suitable 
+  processor exists in our chain - if not, then something went wrong with assembling the 
+  dspChain in a step before and an assert is triggered. */
+  virtual void setupProcessorSetting(const PlaybackSetting& s);
+  // rename to setDspOpcode
+
+  /** ToDo: add documentation */
   virtual void setupDspSettings(const std::vector<PlaybackSetting>& settings,
     double sampleRate, RegionPlayer* regionPlayer, bool busMode);
   // maybe return a bool to indicate, if the setting was handled (if flase, the subclass may

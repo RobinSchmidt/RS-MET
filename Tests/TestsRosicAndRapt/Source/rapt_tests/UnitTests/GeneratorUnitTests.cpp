@@ -188,11 +188,11 @@ std::vector<T> createColoredNoise(int N, T spectralSlope, int seed = 0)
 // Helper function to add a single region for the given sample to the engine. The region is added
 // to the first group, which is added if not already there:
 void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
-  const std::vector<float>& sample, float keyCenter = 60.f)
+  const std::vector<float>& sample, float keyCenter = 60.f, double sampleRate = 44100)
 {
   using PST  = rosic::Sampler::Opcode;
   const float *pSmp = &sample[0];
-  int si = se->addSampleToPool((float**) &pSmp, (int)sample.size(), 1, 44100, "Sample");
+  int si = se->addSampleToPool((float**) &pSmp, (int)sample.size(), 1, sampleRate, "Sample");
   if(se->getNumGroups() == 0)
     se->addGroup();
   int ri = se->addRegion(0);
@@ -201,6 +201,17 @@ void addSingleSampleRegion(rosic::Sampler::rsSamplerEngine* se,
   // ToDo: try to get rid of casting ways the const in addSampleToPool((float**) &pSmp,...). 
   // addSampleToPool does not modify anything - make it const correct...but that my need ugly
   // and confusing syntax in the function declaration
+}
+
+// Helper funtion to set up the sampler engine with single a sinewave region:
+void setupForSineWave(rosic::Sampler::rsSamplerEngine* se)
+{
+  int N = 2048;
+  std::vector<float> sineWave(N);
+  for(int n = 0; n < N; n++)
+    sineWave[n] = sin(2*PI*n/N);
+  se->clearInstrument();
+  addSingleSampleRegion(se, sineWave, 21, 56320);
 }
 
 //=================================================================================================
@@ -2213,8 +2224,6 @@ bool samplerEqualizerTest()
   return ok;
 }
 
-
-
 bool samplerOverloadTest()
 {
   bool ok = true;
@@ -2469,6 +2478,53 @@ bool samplerLoopTest()
   return ok;
 }
 
+bool samplerKeyVelTrackTest()
+{
+  // Tests the key- and velocity tracking opcodes.
+
+  bool ok = true;
+
+  using Vec = std::vector<float>;
+  using SE  = rosic::Sampler::rsSamplerEngineTest;
+  using OC  = rosic::Sampler::Opcode;
+
+  int N = 1000;
+
+  Vec noise = createColoredNoise(N, -10.f);
+  //rsPlotVector(noise);
+
+  SE se;
+  addSingleSampleRegion(&se, noise);
+  //ok &= testSamplerNote(&se, 60, 127, noise, noise, 0.f, false);
+
+  // Set up velocity tracking of the volume:
+  se.setRegionSetting(0, 0, OC::AmpVelTrack, 100.f, -1);
+  // unit is percent, formula is dB = 20 log (127^2 / Velocity^2) ..i think, that's the change in
+  // dB at 100%? range is -100...+100 ..so it's 40 log (127/Velocity)
+
+  // Reset veltrack and set up keytrack:
+  se.setRegionSetting(0, 0, OC::AmpVelTrack,  0.f, -1);  // no vletrack anymore
+  se.setRegionSetting(0, 0, OC::AmpKeyTrack, -1.f, -1);  // -1 dB/key (rnage: -96..+12)
+  se.setRegionSetting(0, 0, OC::AmpKeyCenter, 60,  -1);  // neutral at A4
+
+  // sfz opcode names:
+  // amp_keytrack, amp_keycenter, 
+  // amp_veltrack: 
+
+
+
+
+
+
+
+  // ToDo:
+  // -Implement and test key/vel to volume, pitch, cutoffN
+
+
+  rsAssert(ok);
+  return ok;
+}
+
 bool samplerProcessorsTest()
 {
   bool ok = true;
@@ -2486,7 +2542,7 @@ bool samplerProcessorsTest()
   //size = sizeof(SP::WaveShaper);
   // later move this into a (yet to be written) benchmark testbed
   int regionPlayerSize = rosic::Sampler::rsSamplerEngineTest::getRegionPlayerSize();
-  // -Currently at 184
+  // -Currently at 192
   // -With virtual functions, it had 16 bytes more. Apparently, that's what the vftable take.
   // -Move this into some performance test function
 
@@ -2530,7 +2586,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  ok &= samplerLoopTest();
+  //ok &= samplerKeyVelTrackTest();
   //ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:
@@ -2541,6 +2597,7 @@ bool samplerEngineUnitTest()
   ok &= samplerProcessorsTest();
   ok &= samplerModulationsTest();
   ok &= samplerOverloadTest();
+  //ok &= samplerKeyVelTrackTest();
   ok &= samplerLoopTest();
   ok &= samplerEngine2UnitTest();
 
@@ -2585,6 +2642,9 @@ ToDo:
  resources:
  http://sfzformat.com/legacy/           basic opcode reference
  http://drealm.info/sfz/plj-sfz.xhtml   explanantions and some unofficial opcodes
+
+
+ https://github.com/sfz/opcode-suggestions/issues
 
 maybe open a thread at kvr..something like SFZ: interpreting and extending the format specification
 
