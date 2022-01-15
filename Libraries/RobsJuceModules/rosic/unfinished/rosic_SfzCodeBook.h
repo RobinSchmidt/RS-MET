@@ -381,6 +381,9 @@ public:
 
   LoopMode stringToLoopMode(const std::string& str);
 
+  std::string loopModeToString(LoopMode loopMode);
+
+
 
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry

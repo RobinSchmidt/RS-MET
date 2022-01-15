@@ -2545,7 +2545,10 @@ bool samplerEngineUnitTest()
   ok &= samplerEngine2UnitTest();
 
   // ToDo:
-  // -implement loop mode
+  // -implement key/vel crossfade
+  // -implement key/vel tracking for pitch/amp/cutoff
+  // -implement loop mode (done: loop_continuous, todo: one_shot, loop_sustain)
+  //  -> if these features are done, we can actually start writing some cool sfz patches
   // -maybe keep tests for the basic SamplerEngine and samplerEngine2 (supporting busMode) in 
   //  seperate functions. We may want to be able to easily seperate out the basic implementation
   //  along with its test, if needed.

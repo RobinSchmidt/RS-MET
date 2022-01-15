@@ -396,19 +396,46 @@ FilterType SfzCodeBook::stringToFilterType(const std::string& str)
   RAPT::rsError("Unknown type in SfzCodeBook::stringToFilterType");
   return FilterType::Unknown;
 }
-
-
-
 // this code is repetitive! try to refactor!
+
+LoopMode SfzCodeBook::stringToLoopMode(const std::string& str)
+{
+  if(str == "no_loop")         return LoopMode::no_loop;
+  if(str == "loop_continuous") return LoopMode::loop_continuous;
+  return LoopMode::Unknown;
+}
+
+std::string SfzCodeBook::loopModeToString(LoopMode lm)
+{
+  if(lm == LoopMode::no_loop)         return "no_loop";
+  if(lm == LoopMode::loop_continuous) return "loop_continuous";
+  return "unknown";
+}
 
 std::string SfzCodeBook::valueToString(Opcode op, float val)
 {
+  switch(op)
+  {
+  case Opcode::filN_type: return filterTypeToString((FilterType)(int)val);
+  case Opcode::LoopMode:  return loopModeToString(  (LoopMode)  (int)val);
+  default: return to_string(val);
+  }
+
+  /*
   if(op == Opcode::filN_type)
   {
-    FilterType ft = (FilterType)(int)val;
-    return filterTypeToString(ft);
+    FilterType i = (FilterType)(int)val;
+    return filterTypeToString(i);
   }
-  return to_string(val);
+  if(op == Opcode::LoopMode)
+  {
+    LoopMode i = (LoopMode)(int)val;
+    return loopModeToString(i);
+  }
+  */
+
+
+  //return to_string(val);
 
   // Maybe use custom string conversion functions because the std::to_string just uses a 
   // fixed number of 6 decimal digits after the point. Maybe that's suitable, but maybe not:
@@ -421,12 +448,22 @@ std::string SfzCodeBook::valueToString(Opcode op, float val)
 
 float SfzCodeBook::stringToValue(Opcode op, const std::string& str)
 {
+  switch(op)
+  {
+  case Opcode::filN_type: return (float) stringToFilterType(str);
+  case Opcode::LoopMode:  return (float) stringToLoopMode(str);
+  default: return std::stof(str);
+  }
+
+
+  /*
   if(op == Opcode::filN_type)
   {
     FilterType ft = stringToFilterType(str);
     return (float) ft;
   }
   return std::stof(str);
+  */
 }
 
 SfzCodeBook* SfzCodeBook::getInstance()
