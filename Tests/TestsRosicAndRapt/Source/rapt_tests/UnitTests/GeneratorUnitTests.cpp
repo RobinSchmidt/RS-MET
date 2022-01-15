@@ -2518,6 +2518,10 @@ bool samplerKeyVelTrackTest()
 
   // ToDo:
   // -Implement and test key/vel to volume, pitch, cutoffN
+  //  -Uncomment the new code in SampleBusPlayer::setupPlayerSetting and make the unit tests pass
+  //   with it. I think, we need to pass a PlayerIntermediates struct around all the way from 
+  //   SamplerEngine::startRegionPlayer or something. SampleBusPlayer::setGroupOrInstrumToPlay 
+  //   should (probably) not create a dummy
 
 
   rsAssert(ok);

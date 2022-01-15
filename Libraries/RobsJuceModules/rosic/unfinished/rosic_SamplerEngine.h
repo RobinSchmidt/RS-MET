@@ -70,10 +70,13 @@ can provide fallback settings for all the groups it contains. If some performanc
 defined anywhere (neither in the instrument, group or region), a neutrally behaving default value
 will be used, which means the corresponding feature is not used, i.e. bypassed.  
 
-References:
-  https://sfzformat.com/
-  https://sfzformat.com/opcodes/?v=1
-  https://sfzformat.com/legacy/
+SFZ-Links:
+  https://sfzformat.com/  https://sfzformat.com/opcodes/?v=1  https://sfzformat.com/legacy/
+  https://github.com/sfzformat
+  https://github.com/sfzformat/sfzformat.github.io
+  https://github.com/sfz  https://github.com/sfz/opcode-suggestions/issues
+  https://www.kvraudio.com/forum/viewtopic.php?f=42&t=508861
+
 
 */
 

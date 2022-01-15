@@ -491,15 +491,20 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationL
   RAPT::rsAssert(busMode == true);
   // It makes no sense to use a GroupPlayer when not in busMode. Maybe remove the parameter
 
-  PlayerIntermediates dummy;  // i think, this is false and breaks the test?
+  PlayerIntermediates dummy;  
+  // I think, using a dummy is wrong an this is what and breaks the test. Yes - this seems to be 
+  // the case. I guess, we need to take a PlayerIntermediates parameter that must be owned 
+  // somehwere higher up
+
+
   if(thingToPlay == grpOrInstr) {
     setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, &dummy);
     return true;  }
     // This is not a new group or restart of the whole InstrumPlayer so we may only need to set up
     // those settings that affect the RegionPlayer, i.e. offset, delay, inc, etc. The other 
     // settings are actually already all set up. Maybe split out a setupPlayerSettings such that we
-    // can call only that and don't need to loop throgh all the settings that don't change...but 
-    // maybe that's too complicated to do because the settings are not ordered by type
+    // can call only that and don't need to loop through all the settings that don't change...but 
+    // maybe that's too complicated to do because the settings are not ordered by type.
 
   // A GroupPlayer needs to play back a new group or the InstrumPlayer was triggered anew. In such 
   // a case, we need to assemble the DSP chain first:
