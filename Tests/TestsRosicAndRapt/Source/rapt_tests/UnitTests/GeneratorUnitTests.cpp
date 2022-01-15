@@ -2443,11 +2443,7 @@ bool samplerLoopTest()
   // 1st?
 
 
-
-
-
   // ToDo:
-  // -Test with loopEnd = sinTable.size()
   // -Test what happens when loopEnd is <= loopStart. I guess, it jumps forward by loopLength 
   //  every sample after reaching loopEnd. We should probably ensure that this doesn't happen
   //  maybe use loopStart = min(loopStart, loopEnd). Then, the loop would just be ignored. That may

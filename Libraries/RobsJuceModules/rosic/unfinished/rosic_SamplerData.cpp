@@ -278,8 +278,7 @@ int rsSamplerData::addRegion(int gi, uchar loKey, uchar hiKey)
 {
   if(gi < 0 || gi >= (int)instrument.groups.size()) {
     RAPT::rsError("Invalid group index");
-    return -1;
-  }
+    return -1; }
   int ri = instrument.groups[gi]->addRegion(loKey, hiKey);  // region index within its group
   return ri;
 }
@@ -288,8 +287,7 @@ bool rsSamplerData::removeRegion(int gi, int ri)
 {
   if(gi < 0 || gi >= (int)instrument.groups.size()) {
     RAPT::rsError("Invalid group index");
-    return false;
-  }
+    return false; }
   return instrument.groups[gi]->removeRegion(ri);
 }
 
@@ -297,15 +295,8 @@ rsReturnCode rsSamplerData::setRegionSetting(int gi, int ri, Opcode type, float 
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
-    return rsReturnCode::invalidIndex;
-  }
-  instrument.groups[gi]->regions[ri]->setSetting(PlaybackSetting(type, value, index));  // new
-
-  //instrument.groups[gi]->regions[ri]->settings.push_back(PlaybackSetting(type, value)); // old
-  // Preliminary. We need to figure out, if that setting already exists and if so, just change 
-  // its value instead of pushing another value for the same parameter. Implement it in way so we 
-  // can call it here as: settings->set(PlaybackSetting::Type type, float value)
-
+    return rsReturnCode::invalidIndex; }
+  instrument.groups[gi]->regions[ri]->setSetting(PlaybackSetting(type, value, index));
   return rsReturnCode::success;
 }
 
@@ -313,8 +304,7 @@ rsReturnCode rsSamplerData::removeRegionSetting(int gi, int ri, Opcode type, int
 {
   if(!isIndexPairValid(gi, ri)) {
     RAPT::rsError("Invalid group- and/or region index");
-    return rsReturnCode::invalidIndex;
-  }
+    return rsReturnCode::invalidIndex; }
   bool wasRemoved = instrument.groups[gi]->regions[ri]->removeSetting(type, index);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
@@ -326,20 +316,15 @@ rsReturnCode rsSamplerData::clearRegionSettings(int gi, int ri)
     RAPT::rsError("Invalid group- and/or region index");
     return rsReturnCode::invalidIndex; }
   instrument.groups[gi]->regions[ri]->clearSettings();
+  return rsReturnCode::success;
 }
 
 rsReturnCode rsSamplerData::setGroupSetting(int gi, Opcode type, float value, int index)
 {
   if(!isGroupIndexValid(gi)) {
     RAPT::rsError("Invalid group index");
-    return rsReturnCode::invalidIndex;
-  }
+    return rsReturnCode::invalidIndex; }
   instrument.groups[gi]->setSetting(PlaybackSetting(type, value, index));
-  
-  //instrument.groups[gi]->settings.push_back(PlaybackSetting(type, value, index));
-  // Preliminary. We need to figure out, if that setting already exists and if so, just change 
-  // its value instead of pushing another value for the same parameter
-
   return rsReturnCode::success;
 }
 
@@ -347,8 +332,7 @@ rsReturnCode rsSamplerData::removeGroupSetting(int gi, Opcode type, int index)
 {
   if(!isGroupIndexValid(gi)) {
     RAPT::rsError("Invalid group index");
-    return rsReturnCode::invalidIndex;
-  }
+    return rsReturnCode::invalidIndex; }
   bool wasRemoved = instrument.groups[gi]->removeSetting(type, index);
   if(wasRemoved) return rsReturnCode::success;
   else           return rsReturnCode::nothingToDo;
@@ -357,10 +341,6 @@ rsReturnCode rsSamplerData::removeGroupSetting(int gi, Opcode type, int index)
 rsReturnCode rsSamplerData::setInstrumentSetting(Opcode type, float value, int index)
 {
   instrument.setSetting(PlaybackSetting(type, value, index));
-
-  //instrument.settings.push_back(PlaybackSetting(type, value, index));
-  // Preliminary. see above
-
   return rsReturnCode::success;
 }
 
@@ -387,7 +367,6 @@ void rsSamplerData::clearAllGroupSettings()
 void rsSamplerData::clearAllInstrumentSettings()
 {
   instrument.clearSettings();
-  //instrument.settings.clear();
 }
 
 void rsSamplerData::clearAllSettings()
@@ -397,7 +376,6 @@ void rsSamplerData::clearAllSettings()
   clearAllInstrumentSettings();
 }
 // needs test
-
 
 std::string rsSamplerData::getAsSFZ() const
 {
@@ -423,9 +401,7 @@ std::string rsSamplerData::getAsSFZ() const
     writeSettingsToString(getGroup(gi), str);
     for(int ri = 0; ri < getNumRegions(gi); ri++) {
       str += "<region>\n";
-      writeSettingsToString(getRegion(gi, ri), str);
-    }
-  }
+      writeSettingsToString(getRegion(gi, ri), str); }}
   return str;
 
   // ToDo: write lokey/hikey settings into the string, they are stored directly in the Region 

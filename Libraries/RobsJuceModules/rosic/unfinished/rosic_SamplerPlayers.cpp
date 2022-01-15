@@ -387,6 +387,13 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode)
   // function, the factor comes out as 0.49999..., so we use the more precise (and more 
   // expensive) call to pow. It's not per-sample here code anyway, so we may afford that.
 
+  // Sanity-check the loop boundaries:
+  loopStart = RAPT::rsMax(loopStart, 0.0);
+  loopEnd   = RAPT::rsClip(loopEnd, loopStart, (double)stream->getNumFrames());
+
+
+
+
   // ToDo:
   // -Can we avoid the inquiry for the rootKey? This may be a bit expensive. Maybe the RegionPlayer
   //  should have a rootKey member? That may be messy to deal with in busMode. Maybe try to treat
