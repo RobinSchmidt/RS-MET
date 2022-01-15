@@ -639,46 +639,39 @@ void createSamplerWaveforms()
   using SWR = StandardWaveformRenderer;
   using namespace RAPT;
 
-  // Render prototype sawtooth wave:
+  std::string waveName = "Saw";  // name of the waveform as it appears in the .wav files
+
+  // Render prototype sawtooth wave of length 8192 and obtain the first two decimated versions of
+  // it by just suing averages of successive samples:
   Vec w8192(8192);
-  SWR::renderSawWaveform(&w8192[0], 8192);
-  //rsPlotVector(w8192);
-  Vec w4096 = rsDecimateViaMean(w8192, 2);
-  //rsPlotVector(w4096);
-  Vec w2048 = rsDecimateViaMean(w4096, 2);
+  SWR::renderSawWaveform(&w8192[0], 8192); //rsPlotVector(w8192);
+  Vec w4096 = rsDecimateViaMean(w8192, 2); //rsPlotVector(w4096);
+  Vec w2048 = rsDecimateViaMean(w4096, 2); //rsPlotVector(w2048);
 
-  Vec w = w2048;
-  //rsPlotVector(w);
-
-  Vec wd = w;
-
-  // do this in a loop until the length of wd is very small...like 8 or 4:
-
-  double factor = 0.5;
-  while(wd.size() >= 8)
+  // From the waveform of length 2048, we create the mip-map using the FFT/iFFT technique:
+  rosic::MipMappedWaveTableStereo mipMap;
+  double* pWave[2];
+  pWave[0] = pWave[1] = &w2048[0];
+  mipMap.setWaveform(pWave, 2048);
+  Vec tmp(mipMap.getTableLength());  // temp buffer for the succesive mip-map levels
+  for(int i = 0; i < mipMap.getNumLevels(); i++)
   {
-    wd = rsDecimateViaMean(wd, 2);
-    rsResampler<double, double>::transposeLinear(
-      &wd[0], (int)wd.size(), &w[0], (int)w.size(), factor);
-    rsPlotVector(w);
-    factor *= 0.5;
+    mipMap.copyDataTo(&tmp[0], 0, i);
+    rsPlotVector(tmp);
   }
-  // nooo - that's ugly! maybe make use of an FFT/iFFT approach, maybe use the code from the
-  // wavetable osc - but instead of a hard brickwall filter, let the user define a tapering 
-  // function with (maxFreqWithFullAmp, minFreqWithZeroAmp, transitionShape) which for the 
-  // brickwall would be (numBins/2, numBins/2+1, whatever)
-
-  //rsInterpolateLinear(wd, &w2048, 
 
 
 
-
+  // Observations:
+  // -In the 0th mip-map, it seems like the Nyquist freq is missing?
+  // -Allow the user to specify a tapering function such that we do not necessarily have to use
+  //  hard brickwall filters with all of their strong ringing
   //
-
-  //Vec w1024 = rsDecimateViaMean(w2048, 2);
-  //Vec w512  = rsDecimateViaMean(w1024, 2);
-
-
+  // ToDo:
+  // -Figure out (and maybe fix) the missing Nyquist freq in the 0th mip-map level.
+  // -Looks like we could have one more level...but it will consume more memory
+  // -Write the different rendered levels to wavefiles with a meaningfully formatted way, such as
+  //  Saw_K21 for the w2048 wave.
 
 
   int dummy = 0;

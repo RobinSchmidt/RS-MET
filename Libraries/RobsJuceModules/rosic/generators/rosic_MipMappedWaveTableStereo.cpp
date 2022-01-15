@@ -262,7 +262,7 @@ void MipMappedWaveTableStereo::setAutomaticMipMapReRendering(bool shouldAutomati
 }
 
 //-------------------------------------------------------------------------------------------------
-// inquiry:
+// Inquiry:
 /*
 double** MipMappedWaveTableStereo::getPrototypeWaveform()
 {
@@ -270,7 +270,7 @@ double** MipMappedWaveTableStereo::getPrototypeWaveform()
 }
 */
 
-int MipMappedWaveTableStereo::getPrototypeNumSamples()
+int MipMappedWaveTableStereo::getPrototypeNumSamples() /*const*/
 {
   mutex.lock();
   int result = prototypeWaveNumSamples;
@@ -279,6 +279,18 @@ int MipMappedWaveTableStereo::getPrototypeNumSamples()
   return result;
 }
 
+void MipMappedWaveTableStereo::copyDataTo(double* buffer, int channel, int level) /*const*/
+{
+  RAPT::rsAssert(channel >= 0 && channel < 2);
+  RAPT::rsAssert(level   >= 0 && level   < getNumLevels());
+  mutex.lock();
+  for(int i = 0; i < getTableLength(); i++)
+    buffer[i] = tableSet[level][i][channel];
+  mutex.unlock();
+}
+
+
+/*
 double MipMappedWaveTableStereo::getFullWavePhaseWarp()
 {
   return fullWavePhaseWarp;
@@ -293,6 +305,7 @@ bool MipMappedWaveTableStereo::isMipMapAutoReRenderingActive()
 {
   return autoReRenderMipMap;
 }
+*/
 
 //-------------------------------------------------------------------------------------------------
 // internal functions:

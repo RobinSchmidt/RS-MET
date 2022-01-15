@@ -6,7 +6,12 @@ namespace rosic
 {
 
 /** This is a class for storing a stereo waveform, mip-mapping it for anti-aliasing and retrieve
-anti-aliased values from it.
+anti-aliased values from it. We do not decimate the versions of the table with less 
+high-frequency content. All levels are at the same internal resolution, just with less and less
+spectral content.
+
+References:
+  https://en.wikipedia.org/wiki/Mipmap
 
 todo: 
 -factor out:
@@ -15,17 +20,15 @@ todo:
 -make a class MultiWaveTable that can crossfade between an arbitrary number of "prototype"
  waveforms (each of them with the same manipulations applied and each of them mip-mapped)
 -maybe make some time-domain manipulations realtime modulatable, i.e. don't render them into 
- the wavetable(s)
-
-*/
+ the wavetable(s)  */
 
 class MipMappedWaveTableStereo
 {
 
 public:
 
-  //---------------------------------------------------------------------------------------------
-  // \name Construction/Destruction:
+  //-----------------------------------------------------------------------------------------------
+  // \name Lifetime
 
   /** Constructor. */
   MipMappedWaveTableStereo();
@@ -33,15 +36,15 @@ public:
   /** Destructor. */
   ~MipMappedWaveTableStereo();
 
-  //---------------------------------------------------------------------------------------------
-  // \name Setup:
+  //-----------------------------------------------------------------------------------------------
+  // \name Setup
 
   /** Copies the values in newWaveform into the internal buffers and renders various bandlimited
   versions via FFT/iFFT. The newWaveform array is expected to be an array of two pointers to
   doubles each of which representing one channel. That is: newWaveform[0][0] must be the first
   sample of the left channel data and newWaveform[1][0] must be the first sample of the right
   channel. Similarly, newWaveform[0][lengthInSamples-1] and newWaveform[1][lengthInSamples-1]
-  must be the last samples for the two channels. The 'lengthInSamples' can be arbitrary - the
+  must be the last samples for the two channels. The "lengthInSamples" can be arbitrary. The
   data will be interpolated to the internal table-sizes anyway by means of forward and inverse
   FFTs, where for the forward transform a Bluestein algorithm will be used to accomodate for
   the arbitrary length. The internal length is a power of two, so a radix-2 algorithm can be
@@ -133,11 +136,19 @@ public:
   in recalling a preset, to avoid the table to be re-rendered multiple times. */
   void setAutomaticMipMapReRendering(bool shouldAutomaticallyReRender);
 
-  //---------------------------------------------------------------------------------------------
-  // inquiry:
+  //-----------------------------------------------------------------------------------------------
+  // \name Inquiry
 
   /** Returns the length of the table. */
   int getTableLength() const { return tableLength; }
+
+  /** Returns the number of stored levels of detail. */
+  int getNumLevels() const { return numTables; }
+
+  /** Copies the content of the given channel and mip-mapping level into the given buffer where 
+  the buffer must have a length of at least getTableLength(), channel must be 0 or 1 and level 
+  must be < getNumLevels(). Useful for visualizing the different levels of the mip-map. */
+  void copyDataTo(double* buffer, int channel, int level) /*const*/;
 
   /** Returns the name (i.e. the relative path) of the sample as a zero-terminated string. */
   char* getSampleName() const { return sampleName; }
@@ -149,10 +160,10 @@ public:
   bool isPolarityInverted() const { return polarityInverted; }
 
   /** Return the 'a' coefficient in the phase warping formula. @see: setFullWavePhaseWarp() */
-  double getFullWavePhaseWarp();
+  double getFullWavePhaseWarp() const { return fullWavePhaseWarp; }
 
   /** Return the 'b' coefficient in the phase warping formula. @see: setHalfWavePhaseWarp() */
-  double getHalfWavePhaseWarp();
+  double getHalfWavePhaseWarp() const { return halfWavePhaseWarp; }
 
   /** Returns the harmonic to which the comb is tuned. */
   double getCombHarmonic() const { return combHarmonic; }
@@ -163,12 +174,15 @@ public:
   /** Returns the amplitude of the added duplicate of the waveform (in percent). */
   double getCombAmount() const { return combAmount; }
 
-  /** Returns a pointer to a pointer to the prototype wavetable. Use getNumSamples() to retrieve
-  the lengths of the arrays poited to. */
-  double** getPrototypeWaveform() { return prototypeWave; }
+  /** Returns a constant pointer to a pointer to the prototype wavetable. Concpetuall, it's a 
+  double** where you can't modify the contents of the arrays. Use getPrototypeNumSamples() to 
+  retrieve the lengths of the arrays pointed to. */
+  const double* const * getPrototypeWaveform() const { return prototypeWave; }
+  // ToDo: verify that this is the correct kind of constness. Maybe we should have a 3rd const in 
+  // between double and *? And/or maybe the 1st const is not needed? What about thread-safety?
 
   /** Returns the number of samples in the prototype waveform. */
-  int getPrototypeNumSamples();
+  int getPrototypeNumSamples() /*const*/;
 
   /** Returns the ratio between even and odd harmonics. */
   double getEvenOddRatio() const { return evenOddRatio; }
@@ -207,10 +221,10 @@ public:
 
   /** Informs, whether or not the mip-map is automatically re-rendered whenever a parameter
   changes which invalidates the current mip-map.  */
-  bool isMipMapAutoReRenderingActive();
+  bool isMipMapAutoReRenderingActive() const { return autoReRenderMipMap; }
 
-  //---------------------------------------------------------------------------------------------
-  // audio processing:
+  //-----------------------------------------------------------------------------------------------
+  // \name Processing:
 
   /** Returns the value at 'position' of table 'tableIndex' with interpolation. */
   INLINE double getValue(int channel, int tableIndex, double position);
@@ -223,8 +237,8 @@ public:
   with interpolation without safety checks - it is therefore faster but less secure. */
   INLINE double getValueFast(int channel, int tableIndex, int positionInt, double positionFrac);
 
-  //---------------------------------------------------------------------------------------------
-  // others:
+  //-----------------------------------------------------------------------------------------------
+  // \name Misc
 
   /** Generates a mip-mapped multisample from the prototype tables, where each of the
   successive tables contains one half of the spectrum of the previous one. */
@@ -248,7 +262,7 @@ protected:
   With a table-size of 8192 and a sample-sample rate of 44100, the 12th table will have a
   fundamental frequency (the frequency where the increment is 1) of 11025 which is good for
   the highest frequency. */
-  static const intA numTables = 10;
+  static const intA numTables = 10;    // rename to numLevels
   //static const intA numTables = 12;
 
   /** Length of the lookup-table. The actual length of the allocated memory is 4 samples longer,
@@ -287,10 +301,8 @@ protected:
 
 };
 
-//-----------------------------------------------------------------------------------------------
-// from here: definitions of the functions to be inlined, i.e. all functions
-// which are supposed to be called at audio-rate (they can't be put into
-// the .cpp file):
+//-------------------------------------------------------------------------------------------------
+// inlined functions:
 
 INLINE double MipMappedWaveTableStereo::getValue(int channel, int tableIndex, double position)
 {
