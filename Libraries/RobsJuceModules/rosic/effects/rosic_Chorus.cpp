@@ -72,6 +72,9 @@ Ideas:
  with ringmodulation, amplitude modulation and single-sideband modulation. Maybe like: RM a signal
  by 5 Hz and then FM the output of that by 7 Hz or the other way around. And/or maybe try parallel
  connections.
-
+-Add a fade-in parameter. The goal is to leave the transients dry. Or maybe do a 
+ transient/release separation before the chorus unit ad feed a use adjustable mix of it into the 
+ chorus. At default settings, both components have a gain of 1. That could be useful for other
+ effects, too
 
 */

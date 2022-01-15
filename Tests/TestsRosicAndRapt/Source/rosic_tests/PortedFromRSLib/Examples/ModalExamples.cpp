@@ -616,8 +616,73 @@ void createPiano1()
   int dummy = 0;
 }
 
+void createSamplerWaveforms()
+{
+  // Create mip-mapped multisamples for single-cycle waveforms that can be used in the sampler 
+  // engine. Most tables are of length 2048 except the bottom two which are of length 4096 and 
+  // 8192 respectively. We want a cycle length that is a power of two and we want the samples
+  // to have a rootKey that is exactly a midi note. All midi notes except for the As have 
+  // irrational frequencies. So let's choose an A as rootKey. A4 at 440Hz is midi-key 69. When
+  // we use key=21 (27.5 Hz) for the table of length 2048, we need to choose a sample-rate of 
+  // 56320 to make it all work out. The formula for the frequency is: sampleRate/cycleLength, 
+  // so we get 56320/2048 = 27.5
+
+  // ToDo:
+  // -Create prototype wave of length 8192
+  // -Create various filtered versions moving average filters...the goal is to preserve the 
+  //  time domain waveform as closely as possible ...maybe use a 
+  //  filter -> decimate -> interpolate procedure for the higher tables
+  //  ...maybe to avoid boudary artifacts from the MA filters, we should use 3 cycles for the
+  //  filtering and then etract the middle one
+
+  using Vec = std::vector<double>;
+  using SWR = StandardWaveformRenderer;
+  using namespace RAPT;
+
+  // Render prototype sawtooth wave:
+  Vec w8192(8192);
+  SWR::renderSawWaveform(&w8192[0], 8192);
+  //rsPlotVector(w8192);
+  Vec w4096 = rsDecimateViaMean(w8192, 2);
+  //rsPlotVector(w4096);
+  Vec w2048 = rsDecimateViaMean(w4096, 2);
+
+  Vec w = w2048;
+  //rsPlotVector(w);
+
+  Vec wd = w;
+
+  // do this in a loop until the length of wd is very small...like 8 or 4:
+
+  double factor = 0.5;
+  while(wd.size() >= 8)
+  {
+    wd = rsDecimateViaMean(wd, 2);
+    rsResampler<double, double>::transposeLinear(
+      &wd[0], (int)wd.size(), &w[0], (int)w.size(), factor);
+    rsPlotVector(w);
+    factor *= 0.5;
+  }
+  // nooo - that's ugly! maybe make use of an FFT/iFFT approach, maybe use the code from the
+  // wavetable osc - but instead of a hard brickwall filter, let the user define a tapering 
+  // function with (maxFreqWithFullAmp, minFreqWithZeroAmp, transitionShape) which for the 
+  // brickwall would be (numBins/2, numBins/2+1, whatever)
+
+  //rsInterpolateLinear(wd, &w2048, 
 
 
+
+
+  //
+
+  //Vec w1024 = rsDecimateViaMean(w2048, 2);
+  //Vec w512  = rsDecimateViaMean(w1024, 2);
+
+
+
+
+  int dummy = 0;
+}
 
 void createBass1()
 {
@@ -996,6 +1061,7 @@ void testHighPluck()
 }
 // ToDo: make it possible to write such rendering scripts in python
 
+
 void insertionSortSound(double *cycle, int cycleLength, double *signal, int signalLength)
 { 
   rsFillWithZeros(signal, signalLength);
@@ -1086,7 +1152,6 @@ void selectionSortBackwardSound(double *cycle, int cycleLength, double *signal, 
   }
 }
 
-
 void createInsertionSortSound()
 {
   static const int cycleLength = 512;
@@ -1117,8 +1182,6 @@ void createInsertionSortSound()
 
   delete[] signal;
 }
-
-
 
 /*
 void createBubbleSortSound()

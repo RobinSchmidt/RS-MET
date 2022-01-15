@@ -7,15 +7,20 @@
 void createModalFilterExamples();
 void createModalFilterBankExamples();
 
-// single sample creations:
+// Single sample creations:
 void createPiano1();
 
-// sample-map creations:
+// Multisample creations
+void createSamplerWaveforms();
+
+// Multisample + sfz sample-map creations:
 void createBass1();
 void createGong1();
 void createPluck1();
 
+// Experimental:
 void testHighPluck();
+// todo: make the sort sounds available (at the bottom of the .cpp file)
 
 
 

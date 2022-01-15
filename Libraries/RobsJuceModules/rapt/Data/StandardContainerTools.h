@@ -495,6 +495,7 @@ std::vector<T> rsAmpToDb(const std::vector<T>& a, T floorDb = -std::numeric_limi
   return db;
 }
 
+// Maybe move into class rsResampler:
 template<class T>
 std::vector<T> rsDecimate(const std::vector<T>& x, int factor)
 {
@@ -503,7 +504,6 @@ std::vector<T> rsDecimate(const std::vector<T>& x, int factor)
   RAPT::rsArrayTools::decimate(&x[0], (int)x.size(), &y[0], factor);
   return y;
 }
-
 template<class T>
 std::vector<T> rsDecimateViaMean(const std::vector<T>& x, int factor)
 {
