@@ -462,8 +462,14 @@ public:
     int getNumGroups() const { return (int)groups.size(); }
 
 
-    /** Returns a pointer to the region with the given index within the group. */
-    Group* getGroup(int i) { RAPT::rsAssert(i >= 0 && i < (int)groups.size()); return groups[i]; }
+    /** Returns a pointer to the region with the given index i within the group or a nullptr if the
+    index is invalid. */
+    Group* getGroup(int i) 
+    { 
+      if(i < 0 && i >= (int)groups.size())
+        return nullptr;
+      return groups[i]; 
+    }
 
 
     const std::vector<PlaybackSetting>& getGroupSettings(int groupIndex) const
@@ -538,6 +544,8 @@ public:
 
   rsReturnCode removeRegionSetting(int gi, int ri, Opcode type, int index);
 
+  rsReturnCode clearRegionSettings(int gi, int ri);
+
   rsReturnCode removeGroupSetting(int gi, Opcode type, int index);
 
   rsReturnCode removeInstrumentSetting(Opcode type, int index);
@@ -583,10 +591,9 @@ public:
 
   const Group* getGroup(int i) const { return instrument.groups[i]; }
 
-  const Region* getRegion(int gi, int ri) const
-  {
-    return instrument.groups[gi]->regions[ri];
-  }
+  const Region* getRegion(int gi, int ri) const { return instrument.groups[gi]->regions[ri]; }
+
+  Region* getRegionMutable(int gi, int ri) const { return instrument.groups[gi]->regions[ri]; }
 
 /** Returns a const reference to the playback settings if the i-th group. */
 //const std::vector<PlaybackSetting>& getGroupSettings(size_t i) const 

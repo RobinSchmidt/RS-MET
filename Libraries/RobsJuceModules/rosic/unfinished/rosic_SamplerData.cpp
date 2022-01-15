@@ -320,6 +320,14 @@ rsReturnCode rsSamplerData::removeRegionSetting(int gi, int ri, Opcode type, int
   else           return rsReturnCode::nothingToDo;
 }
 
+rsReturnCode rsSamplerData::clearRegionSettings(int gi, int ri)
+{
+  if(!isIndexPairValid(gi, ri)) {
+    RAPT::rsError("Invalid group- and/or region index");
+    return rsReturnCode::invalidIndex; }
+  instrument.groups[gi]->regions[ri]->clearSettings();
+}
+
 rsReturnCode rsSamplerData::setGroupSetting(int gi, Opcode type, float value, int index)
 {
   if(!isGroupIndexValid(gi)) {

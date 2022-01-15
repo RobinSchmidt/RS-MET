@@ -1201,9 +1201,10 @@ bool samplerEngineUnitTestFileIO()
   ok &= se2.isInSameStateAs(se);
 
   // Clear the region's settings, then set up 3 filters:
-  using Region = rosic::Sampler::rsSamplerData::Region;
-  Region* r = se.getRegion(0, 0);
-  r->clearSettings();
+  //using Region = rosic::Sampler::rsSamplerData::Region;
+  //Region* r = se.getRegion(0, 0);
+  //r->clearSettings();
+  se.clearRegionSettings(0, 0);
   se.setRegionSetting(0, 0, PST::filN_type,  (float) FltType::hp_12, 1);
   se.setRegionSetting(0, 0, PST::cutoffN,    200.f,                  1);
   se.setRegionSetting(0, 0, PST::resonanceN, 10.f,                   1);
@@ -1216,8 +1217,11 @@ bool samplerEngineUnitTestFileIO()
   se2.loadFromSFZ("tmp.sfz");
   ok &= se2.isInSameStateAs(se);
 
+
+
   // ToDo:
-  // -maybe make a local function testSaveLoadRoundTrip(se, ...) that saves the state of se and 
+  // -Test save/load of loop settings
+  // -Maybe make a local function testSaveLoadRoundTrip(se, ...) that saves the state of se and 
   //  loads it into a new instance and produces and compares some output of both engines...it also
   //  needs a list of events that should be used to produce the output...or maybe it should loop
   //  all keys and velocities within some range and produce a couple of samples for each
@@ -2091,7 +2095,7 @@ bool samplerEqualizerTest()
 
   // Create the basic sampler patch with no eq yet:
   SE se;
-  Region* r;
+  const Region* r;
   float *pSmp = &noise[0];
   se.addSampleToPool(&pSmp, N, 1, fs, "Noise");
   se.addGroup();
@@ -2110,7 +2114,8 @@ bool samplerEqualizerTest()
   // Tolerance needs to be even higher than in the filter tests
 
   // Now we set only the gain of eq1. The freq and bandwidth should default to 50 Hz and 1 oct:
-  r->clearSettings();
+  //r->clearSettings();
+  se.clearRegionSettings(0, 0);
   se.setRegionSetting(0, 0, OC::PitchKeyCenter, 60.f, -1);
   se.setRegionSetting(0, 0, OC::eqN_gain, gain1, 1);
   ok &= r->getNumProcessors() == 1;
@@ -2126,7 +2131,8 @@ bool samplerEqualizerTest()
   // in the dsp chain but the first two are in neutral setting. We don't specify the center 
   // frequency or bandwidth. Therefore, the default values should be used which are 5 kHz and 1 
   // octave:
-  r->clearSettings();
+  //r->clearSettings();
+  se.clearRegionSettings(0, 0);
   se.setRegionSetting(0, 0, OC::PitchKeyCenter, 60.f, -1);
   se.setRegionSetting(0, 0, OC::eqN_gain, gain3, 3);
   r = se.getRegion(0, 0);

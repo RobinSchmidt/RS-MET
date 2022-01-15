@@ -107,7 +107,7 @@ int rsSamplerEngine::unUseSample(int i)
   StreamPtr stream = samplePool.getSampleStream(i);
   for(int gi = 0; gi < getNumGroups(); gi++) {
     for(int ri = 0; ri < getNumRegions(gi); ri++) {
-      Region* r = getRegion(gi, ri);
+      Region* r = getRegionMutable(gi, ri);
       StreamPtr regionStream = (StreamPtr) r->getCustomPointer();
       if(regionStream == stream) {
         r->setCustomPointer(nullptr);
@@ -134,7 +134,7 @@ int rsSamplerEngine::addRegion(int gi, uchar loKey, uchar hiKey)
   int ri = sfz.addRegion(gi, loKey, hiKey);
   if(ri == -1)
     return rsReturnCode::invalidIndex;    // gi was an invalid group index
-  Region* r = getRegion(gi, ri);
+  const Region* r = getRegion(gi, ri);
   for(uchar k = loKey; k <= hiKey; k++)
     addRegionForKey(k, r);
   return ri;
@@ -151,7 +151,7 @@ int rsSamplerEngine::removeRegion(int gi, int ri)
   // deleteAllPointersTo(r)):
 
 
-  Region* r = getRegion(gi, ri);
+  const Region* r = getRegion(gi, ri);
   RAPT::rsAssert(r != nullptr);
 
   // We must stop all region players that make use of region r:
@@ -295,8 +295,8 @@ int rsSamplerEngine::setFromSFZ(const std::string& sfzFileContents)
 
 //-------------------------------------------------------------------------------------------------
 // Inquiry:
-
-rsSamplerEngine::Region* rsSamplerEngine::getRegion(int groupIndex, int regionIndex)
+/*
+const rsSamplerEngine::Region* rsSamplerEngine::getRegion(int groupIndex, int regionIndex)
 {
   int gi = groupIndex, ri = regionIndex;
   if(gi < 0 || gi >= (int)sfz.instrument.groups.size()) {
@@ -304,6 +304,7 @@ rsSamplerEngine::Region* rsSamplerEngine::getRegion(int groupIndex, int regionIn
     return nullptr; }
   return sfz.instrument.groups[gi]->getRegion(ri);
 }
+*/
 
 int rsSamplerEngine::getNumRegionsUsing(int i) const
 {
@@ -315,14 +316,14 @@ int rsSamplerEngine::getNumRegionsUsing(int i) const
   StreamPtr stream = samplePool.getSampleStream(i);
   for(int gi = 0; gi < getNumGroups(); gi++){
     for(int ri = 0; ri < getNumRegions(gi); ri++) {
-      const Region* r = getRegionConst(gi, ri);
+      const Region* r = getRegion(gi, ri);
       StreamPtr regionStream = (StreamPtr) r->getCustomPointer();
       if(regionStream == stream)
         numRegions++; }}
   return numRegions;
-
-  // todo: maybe try to implement a sort of "forAllRegions" macro that implements the boildplate to
-  // loop over all regions once and for all
+  // ToDo: 
+  // -Maybe try to implement a sort of "forAllRegions" macro that implements the boilerplate to
+  //  loop over all regions once and for all
 }
 
 int rsSamplerEngine::getNumRegionsUsing(const std::string& samplePath) const
@@ -336,23 +337,6 @@ int rsSamplerEngine::getNumRegionsUsing(const std::string& samplePath) const
 int rsSamplerEngine::findSampleIndexInPool(const std::string& sample) const
 {
   return samplePool.findSample(sample);
-
-  /*
-  for(int i = 0; i < samplePool.getNumSamples(); i++)
-  {
-    //const std::string& poolSample = samplePool.getSamplePath(i);
-    std::string poolSample = samplePool.getSamplePath(i);
-    if(sample == poolSample)
-      return i;
-  }
-  return -1;
-  */
-  // ToDo: 
-  // -factor out the implementation into the SamplePool class, so we can just do:
-  //  return samplePool.findSample(sample) 
-  // -Maybe keep the samplePool sorted, so we can use binary search here. That requires to
-  //  reorder it when new samples are added, but addition of new samples is costly anyway due to 
-  //  disk access, so that probably doesn't really matter.
 }
 
 std::string rsSamplerEngine::getAbsolutePath(const char* path, bool pathIsAbsolute) const
@@ -367,51 +351,6 @@ std::string rsSamplerEngine::getAbsolutePath(const char* path, bool pathIsAbsolu
 
 //-------------------------------------------------------------------------------------------------
 // Processing:
-/*
-// obsolete:
-void rsSamplerEngine::processFrame(double* left, double* right)
-{
-  //rsFloat64x2 out = 0.0;
-
-  for(int i = 0; i < (int)activePlayers.size(); i++) {
-    out += activePlayers[i]->processFrame(L, R);
-    if(activePlayers[i]->hasFinished()) {
-      stopRegionPlayer(i);
-      i--;  }}
-    // ToDo: Test, if it's more efficient to loop through the activePlayers array backwards. Then, 
-    // the i-- in the loop body could be removed, but that's not the main point. The main point is 
-    // that the deactivation/removal would need less data copying.
-
-
-  // probably obsolete - that stuff is handled in the subclass:
-  //if(groupSettingsOnTop)
-  //{
-  //  for(int i = 0; i < (int)activeGroupPlayers.size(); i++)
-  //    out += activeGroupPlayers[i]->getFrame();
-  //}
-  //else
-  //{
-  //  for(int i = 0; i < (int)activePlayers.size(); i++) {
-  //    out += activePlayers[i]->getFrame();
-  //    if(activePlayers[i]->hasFinished()) {
-  //      deactivateRegionPlayer(i);
-  //      i--;  }}
-  //  // ToDo: Test, if it's more efficient to loop through the activePlayers array backwards. Then, 
-  //  // the i-- in the loop body could be removed, but that's not the main point. The main point is 
-  //  // that the deactivation/removal would need less data copying.
-  //}
-
-
-  *left  = out[0];
-  *right = out[1];
-
-  // ToDo:
-  // -Try to get rid of the conditional by always using the groupPlayers array. If we are in
-  //  non-on-top mode, just use always just a single active GroupPlayer (i.e. the 
-  //  activeGroupPlayers just has a length of 1). But then, the (then empty) GroupPlayer's 
-  //  dspChain wil always be applied...but maybe with block-processing, the cost will be negligible
-}
-*/
 
 void rsSamplerEngine::processFrame(float* L, float* R)
 {

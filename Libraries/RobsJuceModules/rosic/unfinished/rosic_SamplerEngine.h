@@ -186,18 +186,29 @@ public:
 
 
 
-  // They should probably also take an index parameter:
+  // ToDo: These functions are currently used only in test code. I think, they are not yet ready
+  // for production because for certain removals, we may have to take additional actions such as 
+  // updating our regionsForKey array
+
+  /** NOT YET READY FOR PRODUCTION. */
   rsReturnCode removeRegionSetting(int groupIndex, int regionIdex, Opcode type, int index)
   {
     return sfz.removeRegionSetting(groupIndex, regionIdex, type, index);
   }
+  /** NOT YET READY FOR PRODUCTION. */
   rsReturnCode removeGroupSetting(int groupIndex, Opcode type, int index)
   {
     return sfz.removeGroupSetting(groupIndex, type, index);
   }
+  /** NOT YET READY FOR PRODUCTION. */
   rsReturnCode removeInstrumentSetting(Opcode type, int index)
   {
     return sfz.removeInstrumentSetting(type, index);
+  }
+  /** NOT YET READY FOR PRODUCTION. */
+  rsReturnCode clearRegionSettings(int groupIndex, int regionIdex)
+  {
+    return sfz.clearRegionSettings(groupIndex, regionIdex);
   }
 
 
@@ -248,43 +259,38 @@ public:
   //-----------------------------------------------------------------------------------------------
   // \name Inquiry
 
+  /** Returns the number of regions in the group with given groupIndex. */
+  int getNumRegions(int groupIndex) const { return sfz.getNumRegions(groupIndex); }
+  // todo: maybe assert the groupIndex is valid - if not, return invalidIndex, maybe rename to 
+  // getNumRegionsInGroup, getNumRegions should have no parameter and return the total number
+
+  /** Returns const a pointer to the region object with the given group- and region index or a 
+  nullptr if the combination of indices is invalid. The client can use the pointer to inquire the
+  region in some more detail, perhaps for GUI purposes, but it can't edit the region's state 
+  because that should never happen behind the back of the sampler engine because the engine may 
+  have to take additional actions when certain aspects of a region change. If the client wants to 
+  edit the region, it needs to use the appropriate region-editing functions of the rsSamplerEngine 
+  object. */
+  const Region* getRegion(int gi, int ri) const  { return sfz.getRegion(gi, ri); }
+
   /** Returns the number of groups in the instrument. */
   int getNumGroups() const { return sfz.getNumGroups(); }
 
-
-
-
-  /** Returns the number of regions in the group with given groupIndex. */
-  int getNumRegions(int groupIndex) const { return sfz.getNumRegions(groupIndex); }
-  // todo: maybe assert the groupIndex is valid - if not, return invalidIndex
-
-  /** Returns a pointer to the index-th group. Assumes that the index is valid. If it isn't, you'll
-  get an access violation, so be careful! */ 
+  /** Returns a pointer to the index-th group or a nullptr if the index is invalid. */ 
   const Group* getGroup(int index) { return sfz.instrument.getGroup(index); }
 
-  /** Returns a pointer to the region object with the given group- and region index or a nullptr
-  if the combination of indices is invalid. If the client wants to edit the region, it can do so
-  only by using appropriate region-editing functions of the rsSamplerEngine object from which it
-  has requested the region pointer, for example:
-
-    rsSamplerEngine::Region* r = se.getRegion(gi, ri);   // se is the sampler engine object
-    using PST = rsSamplerEngine::PlaybackSetting::Type;
-    se.setRegionSetting(r, PST::PitchKeyCenter, 69.f);
-
-  The idea is that client code should not modify the settings of a Region object behind the sampler
-  engine's back because the engine may have to take additional actions when certain aspects of a
-  region change. This is actually enforced by the fact that Region provides no public setters. */
-  Region* getRegion(int groupIndex, int regionIndex);
-
-  const Region* getRegionConst(int gi, int ri) const { return sfz.getRegion(gi, ri); }
+  /** Returns the number of regions in the instrument definition that use the sample with the given
+  path. The path is interpreted to be relative to the sample-path which is by default the directory
+  where the sfz file resides. */
+  int getNumRegionsUsing(const std::string& samplePath) const;
 
   /** Returns the number of regions in the instrument definition that use the sample with the given
   index in our samplePool or rsReturnCode::invalidIndex, if the given sampleIndex is invalid. */
   int getNumRegionsUsing(int sampleIndex) const;
-  int getNumRegionsUsing(const std::string& samplePath) const;
+  // ToDo: move to protected - client code has nothing to do with the innards of our sample pool
 
-  // getGroup, getRegion, getStateAsSFZ, isSampleInPool, getNumGroups, getNumRegionsInGroup(int)
-  // getNumRegions(), getSampleIndex(const string& uniqueName) ..or maybe it should take a pointer
+
+  // getStateAsSFZ, getSampleIndex(const string& uniqueName) ..or maybe it should take a pointer
   // to a SampleMetaData object
 
   /** Returns true, iff the given group index is valid, i.e. >= 0 and < numGroups. */
@@ -385,6 +391,10 @@ public:
   //===============================================================================================
 
 protected:
+
+  /** Returns a pointer to a region that allows modification of the region settings. */
+  Region* getRegionMutable(int gi, int ri) const  { return sfz.getRegionMutable(gi, ri); }
+
 
   /** Defines a set of regions. Used to handle note-on/off events efficiently. Not to be confused
   with groups. This class exists for purely technical reasons (i.e. implementation details) and

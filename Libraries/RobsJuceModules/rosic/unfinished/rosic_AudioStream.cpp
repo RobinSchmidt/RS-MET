@@ -60,6 +60,10 @@ int SamplePool<T>::findSample(const std::string& path) const
     if(samples[i]->getPath() == path)
       return (int) i; }
   return -1;
+  // ToDo: 
+  // -Maybe keep the samplePool sorted, so we can use binary search here. That requires to
+  //  reorder it when new samples are added, but addition of new samples is costly anyway due to 
+  //  disk access, so that probably doesn't really matter.
 }
 
 template<class T>
