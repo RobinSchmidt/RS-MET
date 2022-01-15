@@ -276,8 +276,8 @@ protected:
   double loopEnd    = 0;
   float  endTime    = 0;    // maybe it should be int? or maybe double to ease comparison?
   float  offset     = 0;    // maybe rename to startTime or startSample
-  float  tune       = 0;
-  float  transpose  = 0;
+  //float  tune       = 0;
+  //float  transpose  = 0;
   float  amplitude  = 1;    // determined by key/vel crossfades, etc.
 
   // todo: bendUp, bendDown

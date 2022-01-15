@@ -352,8 +352,8 @@ void RegionPlayer::resetPlayerSettings()
   loopEnd    = 0.0;
   loopMode   = LoopMode::no_loop;
   offset     = 0.f;
-  tune       = 0.f;
-  transpose  = 0.f;
+  //tune       = 0.f;
+  //transpose  = 0.f;
   endTime    = (float)stream->getNumFrames();
   // Maybe use -1? That may require updating the unit tests. But maybe it's appropriate to use 
   // numFrames when assuming linear interpolation. I think, for general interpolators, we should 
@@ -386,7 +386,7 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode,
   // those (and other variables) we can now compute per-sample increment for our sampleTime 
   // variable:
   double rootKey = region->getSettingValue(Opcode::PitchKeyCenter, -1, false);
-  double pitchOffset = double(key) - rootKey + transpose + 0.01 * tune;
+  double pitchOffset = double(key) - rootKey + iv->transpose + 0.01 * iv->tune;
   increment = pow(2.0, pitchOffset / 12.0) * stream->getSampleRate() / fs;
   // The formula using rsPitchOffsetToFreqFactor is too imprecise: when we have a pitchOffset of 
   // exactly -12, for example, we want the increment be multiplied by exactly 0.5, but using this
@@ -426,13 +426,13 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   {
   // Pitch settings:
   //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
-  case OC::Transpose: { transpose  =  val;                } break;
-  case OC::Tune:      { tune       =  val;                } break;
-  case OC::Delay:     { sampleTime = -val * sampleRate;   } break;
-  case OC::Offset:    { offset     =  val;                } break;
-  case OC::LoopMode:  { loopMode   = (LoopMode)(int) val; } break;  
-  case OC::LoopStart: { loopStart  =  val;                } break;
-  case OC::LoopEnd:   { loopEnd    =  val;                } break;
+  case OC::Transpose: { iv->transpose =  val;                } break;
+  case OC::Tune:      { iv->tune      =  val;                } break;
+  case OC::Delay:     { sampleTime    = -val * sampleRate;   } break;
+  case OC::Offset:    { offset        =  val;                } break;
+  case OC::LoopMode:  { loopMode      = (LoopMode)(int) val; } break;  
+  case OC::LoopStart: { loopStart     =  val;                } break;
+  case OC::LoopEnd:   { loopEnd       =  val;                } break;
   }
 }
 // ...actually, if we can assume that all values start at neutral values, we can always accumulate
@@ -469,6 +469,9 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double sample
   {
   case OC::Transpose: { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(val);        } break;
   case OC::Tune:      { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(0.01 * val); } break;
+    // accumulate into iv->transpose, iv->tune instead!
+
+
   case OC::Delay:     { rp->sampleTime += -val * sampleRate;                           } break;
   case OC::Offset:    { rp->offset     += float(val);                                  } break;
   }

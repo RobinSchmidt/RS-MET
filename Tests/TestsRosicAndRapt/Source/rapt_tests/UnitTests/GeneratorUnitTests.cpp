@@ -2542,7 +2542,7 @@ bool samplerProcessorsTest()
   //size = sizeof(SP::WaveShaper);
   // later move this into a (yet to be written) benchmark testbed
   int regionPlayerSize = rosic::Sampler::rsSamplerEngineTest::getRegionPlayerSize();
-  // -Currently at 192
+  // -Currently at 192...184
   // -With virtual functions, it had 16 bytes more. Apparently, that's what the vftable take.
   // -Move this into some performance test function
 
