@@ -127,6 +127,9 @@ https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis#C,_C++
 https://www.incredibuild.com/blog/top-9-c-static-code-analysis-tools
 https://cppcheck.sourceforge.io/
 
+set up jupyter notebook for c++:
+https://learnopencv.com/xeus-cling-run-c-code-in-jupyter-notebook/
+
 ---------------------------------------------------------------------------------------------------
 Notes:
 

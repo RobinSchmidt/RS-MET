@@ -703,7 +703,12 @@ void createBassdrums()
   // times for a sine-sweepdown. Create also overtones at twice and thrice the frequency, maybe let
   // them have an attack/decay and an attack envelope respectively
 
-  // Parameters:
+  // Rendering parameters:
+  int fs = 44100;
+  int N  = 44100*2;
+  bool plot = false;  // if true, we plot stuff, if false, we render a wavefile
+
+  // Frequency envelope parameters:
   double freqDecay1  =   10;    // in ms
   double freqDecay2  =   80;
   double freqDecay3  =  240;
@@ -712,15 +717,34 @@ void createBassdrums()
   double freqWeight3 =  1.0;
   double freqFloor   =  0.0;
   double freqCeil    =  900;
-  int fs = 44100;
-  int N  = 88200;
 
-  RAPT::rsAttackDecayEnvelope<double> eg1, eg2, eg3;
+  // Amplitude envelope parameters:
+  double ampDecay1  =   20;
+  double ampDecay2  =  100;
+  double ampDecay3  =  400;
+  double ampWeight1 =  0.75;
+  double ampWeight2 = -1.0;
+  double ampWeight3 =  1.0;
+
+
+  int plotDecimate = 20;
+  if(plot)
+  {
+    fs /= plotDecimate;
+    N  /= plotDecimate;
+  }
+
+
+  // Create frequency envelope:
+  using AT = RAPT::rsArrayTools;
+  RAPT::rsAttackDecayEnvelope<double> eg1, eg2, eg3; // a simple decay env would suffice
+
+
   eg1.setAttackSamples(0);
-  eg1.setDecaySamples(freqDecay1 * 0.001 * fs);
   eg2.setAttackSamples(0);
-  eg2.setDecaySamples(freqDecay2 * 0.001 * fs);
   eg3.setAttackSamples(0);
+  eg1.setDecaySamples(freqDecay1 * 0.001 * fs);
+  eg2.setDecaySamples(freqDecay2 * 0.001 * fs);
   eg3.setDecaySamples(freqDecay3 * 0.001 * fs);
   using Vec = std::vector<double>;
   Vec env1(N), env2(N), env3(N), env(N);
@@ -734,9 +758,10 @@ void createBassdrums()
     env3[n] = eg3.getSample();
     env[n]  =  freqWeight1*env1[n] + freqWeight2*env2[n] + freqWeight3*env3[n];
   }
-  //rsPlotVectors(env1, env2, env3, env);
+  if(plot) rsPlotVectors(env1, env2, env3, env);
 
-  RAPT::rsArrayTools::normalize(&env[0], N);
+  // Create the raw sine-sweep:
+  AT::normalize(&env[0], N);
   Vec x(N);
   double phi = 0;  // phase
   for(int n = 0; n < N; n++)
@@ -746,8 +771,36 @@ void createBassdrums()
     double w = 2*PI*f/fs;
     phi += w;
   }
+  if(plot) rsPlotVectors(x);
 
-  rosic::writeToMonoWaveFile("Bassdrum.wav", &x[0], N, (int)fs);
+  // Create and apply amplitude enevlope:
+  eg1.setDecaySamples(ampDecay1 * 0.001 * fs);
+  eg2.setDecaySamples(ampDecay2 * 0.001 * fs);
+  eg3.setDecaySamples(ampDecay3 * 0.001 * fs);
+  eg1.reset(); eg1.noteOn(60, 100);
+  eg2.reset(); eg2.noteOn(60, 100);
+  eg3.reset(); eg3.noteOn(60, 100);
+  for(int n = 0; n < N; n++)
+  {
+    env1[n] = eg1.getSample();
+    env2[n] = eg2.getSample();
+    env3[n] = eg3.getSample();
+    env[n]  =  ampWeight1*env1[n] + ampWeight2*env2[n] + ampWeight3*env3[n];
+  }
+  if(plot) rsPlotVectors(env1, env2, env3, env);
+
+
+  AT::normalize(&env[0], N);
+  for(int n = 0; n < N; n++)
+  {
+    x[n] *= env[n];
+  }
+  if(plot) rsPlotVectors(x);
+
+
+
+  if(!plot)
+    rosic::writeToMonoWaveFile("Bassdrum.wav", &x[0], N, (int)fs);
 
   // -Apply an amp-env that goes down-up-down to emphasize transient and body
   // -Mix with a short, quickly decaying noise-burst for the transient
@@ -757,8 +810,17 @@ void createBassdrums()
 
 
   // ToDo: 
+  // -Add an emp env that goes down, then back up a little, then fully decays. Maybe an 
+  //  attack/decay shape mixed with a quick decay
+  // -Maybe produce stereo output by using +-45° phase shift for left/right
+  // -Mix in a very short noise-burst to the attack (might have settings for: decay, HP, LP, color, seed)
+  //  -maybe it should have a filter env
+  //  -maybe clip or saturate sweep+noise
   // -Add an envelope generator to ToolChain that implements a weighted sum of exponential decays
   // -Maybe give ToolChain a rendering functionality
+  // -Maybe write this as an APE script
+  //  -Give the user just a single choice parameter to select the preset, settings are encoded in 
+  //   the code...but maybe give some macro-parameters to the user
 
 
   int dummy = 0;
