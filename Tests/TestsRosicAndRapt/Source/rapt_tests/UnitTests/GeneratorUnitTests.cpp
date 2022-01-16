@@ -2450,8 +2450,45 @@ bool samplerLoopTest()
   // interesting actually. Shouldn't the 2nd and 3rd cycle contain exactly the same data as the 
   // 1st?
 
+  // To test the one-shot mode, we create a sample of an exponential decay and trigger the same 
+  // note 3 times with note-offs in between the note-ons. The note-offs should be ignored and the 
+  // sample should alway play until the end is reached:
+  int L      = 500;    // length of decay-sample
+  int start2 = 200;    // start time of 2nd note
+  int start3 = 300;    // start time of 3rd note
+
+  // Render and set up "shot" sample:
+  Vec decay(L);
+  for(int n = 0; n < L; n++)
+    decay[n] = exp(-0.01*n);
+  //rsPlotVector(decay);
+  se.clearInstrument();
+  addSingleSampleRegion(&se, decay, 60);
+  se.setRegionSetting(0,0, OC::LoopMode,  (float)LoopMode::one_shot, -1);
+
+  // Produce the output:
+  Vec outL(N), outR(N);
+  se.handleNoteOn(60, 100);
+  for(int n = 0; n < start2; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  se.handleNoteOn(60, 0);   // noteOff
+  se.handleNoteOn(60, 100);
+  for(int n = start2; n < start3; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  se.handleNoteOn(60, 0); 
+  se.handleNoteOn(60, 100);
+  for(int n = start3; n < N; n++)
+    se.processFrame(&outL[n], &outR[n]);
+  rsPlotVectors(outL, outR);
+  // This is still wrong - the sample gets retriggered but it should be overlapped with itself!
+
+  // Produce target output:
+
+
+
 
   // ToDo:
+  // -Test one-shot mode
   // -Test what happens when loopEnd is <= loopStart. I guess, it jumps forward by loopLength 
   //  every sample after reaching loopEnd. We should probably ensure that this doesn't happen
   //  maybe use loopStart = min(loopStart, loopEnd). Then, the loop would just be ignored. That may

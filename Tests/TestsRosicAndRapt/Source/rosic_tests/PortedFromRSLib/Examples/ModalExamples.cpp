@@ -697,7 +697,7 @@ void createSamplerWaveforms()
   int dummy = 0;
 }
 
-void createBassdrums()
+void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
 {
   // Create a bassdrum sample using a weighted sum of exponential envelopes with different decay
   // times for a sine-sweepdown. Create also overtones at twice and thrice the frequency, maybe let
@@ -707,7 +707,7 @@ void createBassdrums()
   int fs = 44100;
   //int N  = 44100*2;
   int N = rsPowInt(2, 16); // maybe have special function rsPowerOf2
-  bool plot = false;  // if true, we plot stuff, if false, we render a wavefile
+  //bool plot = false;  // if true, we plot stuff, if false, we render a wavefile
 
   // Frequency envelope parameters:
   double freqDecay1  =   10;    // in ms
@@ -718,7 +718,7 @@ void createBassdrums()
   double freqWeight3 =  1.0;
   double freqFloor   =  0.0;
   double freqCeil    =  800;
-  double freqScale   = 1.0;    // 1: fundamental, 2,3,4,etc: overtones
+  //double freqScale   = 1.0;    // 1: fundamental, 2,3,4,etc: overtones
 
   // Amplitude envelope parameters:
   double ampDecay1  =   20;
@@ -801,6 +801,7 @@ void createBassdrums()
   RAPT::rsFadeOut(&xR[0], N-N/8, N-1);
 
   // Create ambience sample:
+  // ...
 
   // Plot final result or write to wvaefile: 
   if(plot)  rsPlotVectors(xL, xR);
@@ -814,13 +815,9 @@ void createBassdrums()
     if(freqScale == 4.0) fileName += "_Octave2";
     fileName += ".wav";
     rosic::writeToStereoWaveFile(fileName.c_str(), &xL[0], &xR[0], N, (int)fs);
+
+    // Write ambience sample to file
   }
-
-  // -Apply an amp-env that goes down-up-down to emphasize transient and body
-  // -Mix with a short, quickly decaying noise-burst for the transient
-  // -Apply reverb
-
-  //rsPlotVector(x);
 
   // ToDo: 
   // -Maybe remove the normalization of the freq-env. it leads to the effect that increasing 
@@ -840,7 +837,15 @@ void createBassdrums()
   int dummy = 0;
 }
 
-
+void createBassdrumPsy1Samples()
+{
+  bool plot = false;
+  createBassdrumPsy1Sample(1.0, plot);
+  createBassdrumPsy1Sample(1.5, plot);
+  createBassdrumPsy1Sample(2.0, plot);
+  createBassdrumPsy1Sample(3.0, plot);
+  createBassdrumPsy1Sample(4.0, plot);
+}
 
 void createBass1()
 {
