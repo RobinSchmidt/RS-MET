@@ -571,7 +571,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOff(uchar key, ucha
   PlayStatusChange psc;
   for(int i = int(activePlayers.size()) - 1; i >= 0; i--)
   {
-    if(activePlayers[i]->getKey() == key)
+    if(activePlayers[i]->getKey() == key && activePlayers[i]->getLoopMode() != LoopMode::one_shot)
     {
       stopRegionPlayer(size_t(i));
       psc.numLayersStopped++;
@@ -721,6 +721,8 @@ void rsSamplerEngine::preAllocateDspMemory()
   //  detects that we may soon run out of pre-allocated memory and firing up another thread to 
   //  allocate us some more could work? But that wouldn't be totally foolproof either. We'll see...
   //  ...see what hise, sfizz and linuxsampler do
+  // -Maybe just let the used decide this in the xml file - with sane defaults.
+  // -We also need to make sure that the arrays in PlayerIntermediates are large enough
 }
 
 //=================================================================================================

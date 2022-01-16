@@ -2479,16 +2479,18 @@ bool samplerLoopTest()
   se.handleNoteOn(60, 100);
   for(int n = start3; n < N; n++)
     se.processFrame(&outL[n], &outR[n]);
-  rsPlotVectors(outL, outR);
-  // This is still wrong - the sample gets retriggered but it should be overlapped with itself!
 
   // Produce target output:
-
-
+  Vec tgt(N);
+  using AT = RAPT::rsArrayTools;
+  AT::addInto(&tgt[0], N-0,      &decay[0], L, 0);
+  AT::addInto(&tgt[0], N-start2, &decay[0], L, start2);
+  AT::addInto(&tgt[0], N-start3, &decay[0], L, start3);
+  ok &= outL == tgt && outR == tgt;
+  //rsPlotVectors(tgt, outL, outR);
 
 
   // ToDo:
-  // -Test one-shot mode
   // -add reverse playback mode...maybe this should be one of the loop_modes? or do we need an extra 
   //  opcode for that?
   // -Test what happens when loopEnd is <= loopStart. I guess, it jumps forward by loopLength 
@@ -2536,18 +2538,27 @@ bool samplerKeyVelTrackTest()
   //ok &= testSamplerNote(&se, 60, 127, noise, noise, 0.f, false);
 
   // Set up velocity tracking of the volume:
-  se.setRegionSetting(0, 0, OC::ampN_veltrack, 100.f, 1);
+  float vel = 100;            // velocity for note to play
+  float vel_track = -100.f;   // in %
+  se.setRegionSetting(0, 0, OC::ampN_veltrack, vel_track, 1);
+
+  // Compute target amplitude for given settings of velocity and vel_track:
+  float dB  = 40 * log10(127.f/vel);    // change of volume at given velocity
+  float amp = RAPT::rsDbToAmp(0.01f * vel_track * dB);
   // unit is percent, formula is dB = 20 log (127^2 / Velocity^2) ..i think, that's the change in
   // dB at 100%? range is -100...+100 ..so it's 40 log (127/Velocity)
 
+  ok &= testSamplerNote(&se, 60, vel, amp*noise, amp*noise, 1.e-7, true);
+
   // Reset veltrack and set up keytrack:
-  se.setRegionSetting(0, 0, OC::ampN_veltrack,  0.f, 1);  // no vletrack anymore
-  se.setRegionSetting(0, 0, OC::ampN_keytrack, -1.f, 1);  // -1 dB/key (rnage: -96..+12)
-  se.setRegionSetting(0, 0, OC::ampN_keycenter, 60,  1);  // neutral at A4
+  //se.setRegionSetting(0, 0, OC::ampN_veltrack,  0.f, 1);  // no vletrack anymore
+  //se.setRegionSetting(0, 0, OC::ampN_keytrack, -1.f, 1);  // -1 dB/key (rnage: -96..+12)
+  //se.setRegionSetting(0, 0, OC::ampN_keycenter, 60,  1);  // neutral at A4
 
 
 
   // ToDo:
+  // -Verify the formula for vel_tracking of amplitude against some reference implemenetation (sfz+)
   // -Implement and test key/vel to volume, pitch, cutoffN
   //  -Uncomment the new code in SampleBusPlayer::setupPlayerSetting and make the unit tests pass
   //   with it. I think, we need to pass a PlayerIntermediates struct around all the way from 

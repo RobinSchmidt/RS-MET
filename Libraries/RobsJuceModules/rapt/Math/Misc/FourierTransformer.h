@@ -67,7 +67,7 @@ public:
   /** Transforms a buffer of complex numbers into its (forward or inverse) fourier transform.
   The inBuffer will remain intact. Both, inBuffer and outBuffer must be of the size which was
   specified when setting up the blockSize with setBlockSize(). */
-  void transformComplexBuffer(std::complex<T> *inBuffer, std::complex<T> *outBuffer);
+  void transformComplexBuffer(const std::complex<T> *inBuffer, std::complex<T> *outBuffer);
 
   /** Does the same thing as transformComplexBuffer but performes in-place calculation
   (overwrites the input buffer). */
@@ -78,7 +78,7 @@ public:
   an array of Ts of length N, the output array will be an array of complex numbers (class
   Complex) of length N/2 with the (purely real) transform value of bin N/2 stored in the
   imaginary part of the first array entry (outSpectrum[0].im = real(N/2)). */
-  void transformRealSignal(T *inSignal, std::complex<T> *outSpectrum);
+  void transformRealSignal(const T *inSignal, std::complex<T> *outSpectrum);
 
   /** Calculates real and imaginary part of the spectrum as interleaved T buffer:
   buf[2]=re[1], buf[3]=im[1], buf[4]=re[2], buf[5]=im[2],... in general: buf[2*k]=re[k],
@@ -87,34 +87,34 @@ public:
   coefficient for the Nyquist frequency. The other fields contain the real and imaginary parts of
   the positive frequencies only (interleaved) because the negative frequencies are redundant
   (they are conjugate symmetric). */
-  void transformRealSignal(T *signal, T *reAndIm);
+  void transformRealSignal(const T *signal, T *reAndIm);
 
   /** Calculates spectral magnitudes and phases from a signal, where *signal should be of
   length N, where N is the block-size as chosen with setBlockSize() *magnitudes and *phases
   should be of length N/2. The first values of the output arrays have a special meaning:
   magnitudes[0] is the (purely real) DC and phases[0] is the (purely real) coefficient for the
   Nyquist frequency. */
-  void getRealSignalMagnitudesAndPhases(T *signal, T *magnitudes, T *phases);
+  void getRealSignalMagnitudesAndPhases(const T *signal, T *magnitudes, T *phases);
     // hmm...this is a somewhat odd convention
 
   /** Calculates the magnitudes only from a signal (useful for analyzer-stuff). */
-  void getRealSignalMagnitudes(T *signal, T *magnitudes);
+  void getRealSignalMagnitudes(const T *signal, T *magnitudes);
 
   /** Transforms a complex conjugate symmetric spectrum (i.e. a spectrum of a real signal) into
   the corresponding real signal. */
-  void transformSymmetricSpectrum(std::complex<T> *inSpectrum, T *outSignal);
+  void transformSymmetricSpectrum(const std::complex<T> *inSpectrum, T *outSignal);
 
   /** Calculates a time signal from and interleaved buffer containing the real and imaginary
   parts of the positive frequencies (the negative frequencies are assumed to be conjugate
   symmetric). */
-  void transformSymmetricSpectrum(T *reAndIm, T *signal);
+  void transformSymmetricSpectrum(const T *reAndIm, T *signal);
 
   /** Calculates a real time signal from its magnitudes and phases, *magnitudes and *phases
   should be of length N/2, *signal is of length N where N is the block-size as chosen with
   setBlockSize(). The first values of the input arrays have a special meaning: magnitudes[0] is
   the (purely real) DC and phases[0] is the (purely real) coefficient for the Nyquist
   frequency. */
-  void getRealSignalFromMagnitudesAndPhases(T *magnitudes, T *phases, T *signal);
+  void getRealSignalFromMagnitudesAndPhases(const T *magnitudes, const T *phases, T *signal);
 
 
   /** \name Static Member Functions */

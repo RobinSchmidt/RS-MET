@@ -409,6 +409,7 @@ LoopMode SfzCodeBook::stringToLoopMode(const std::string& str)
 {
   if(str == "no_loop")         return LoopMode::no_loop;
   if(str == "loop_continuous") return LoopMode::loop_continuous;
+  if(str == "one_shot")        return LoopMode::one_shot;
   return LoopMode::Unknown;
 }
 
@@ -416,6 +417,7 @@ std::string SfzCodeBook::loopModeToString(LoopMode lm)
 {
   if(lm == LoopMode::no_loop)         return "no_loop";
   if(lm == LoopMode::loop_continuous) return "loop_continuous";
+  if(lm == LoopMode::one_shot)        return "one_shot";
   return "unknown";
 }
 
@@ -461,7 +463,10 @@ float SfzCodeBook::stringToValue(Opcode op, const std::string& str)
   case Opcode::LoopMode:  return (float) stringToLoopMode(str);
   default: return std::stof(str);
   }
-
+  // in the default path, we must first check, if the string represents a number - implement an 
+  // rsStringToDouble function (may already exist), that is safe: it should return a sane default 
+  // value when the string is not parsable as a number (the default value should be passed in and
+  // default to zero)
 
   /*
   if(op == Opcode::filN_type)

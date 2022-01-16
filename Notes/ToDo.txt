@@ -9,6 +9,25 @@ Plugin Framework: parameters: modulation system, automation system
 in the research repo, we could have projects for:
 research papers, math book, tutorials ...maybe the latex source should go there
 
+-write a commandline tool that makes advanced textual replacements in a bunch of files
+-uses std::regex and std::filesystem to implement its functionality
+-takes as commandline parameter a name of a script file, the script contains
+ -a section that specifies which files should be edited based on
+  -their names given as (one or more) regex expression(s), e.g. *.*
+  -the patterns to search for together with their respective replacements
+-it should create a new folder to write the modified files into, e.g. "_SourceTmp"
+-after all files are finished, it renames the original folder to e.g. "SourceOld" and the temp
+ folder into e.g. "Source"
+-the use can the manually delet the "Old" folder after he has verified that the modifications did 
+ not break anything (otherwise, he can just restore the old version by deleting the modified folder
+ and renaming the original folder back to its original name
+-use it to apply codebase-wide edits such as replacing all occurences of "rosic" with "RAMP" in all
+ .h and .cpp files in rosic
+-maybe also allow to rename the files in the process
+-can be used to edit xml, sfz, h, cpp, etc. files
+-maybe it could also somehow allow for numeric conversion like XmlBatchProcessor
+-maybe make a GUI version or better: a GUI that invokes the commandline tool
+ -maybe write it with wxWidgets
 
 
 

@@ -428,18 +428,24 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   // InstrumPlayer play no role at all.
 
   float val = s.getValue();
+  int   N   = s.getIndex();
   using OC  = Opcode;
   switch(s.getType())
   {
-  // Pitch settings:
+  // Player:
   //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
-  case OC::Transpose: { iv->transpose =  val;                } break;
-  case OC::Tune:      { iv->tune      =  val;                } break;
-  case OC::Delay:     { sampleTime    = -val * sampleRate;   } break;
-  case OC::Offset:    { offset        =  val;                } break;
-  case OC::LoopMode:  { loopMode      = (LoopMode)(int) val; } break;  
-  case OC::LoopStart: { loopStart     =  val;                } break;
-  case OC::LoopEnd:   { loopEnd       =  val;                } break;
+  case OC::Transpose:     { iv->transpose =  val;                } break;
+  case OC::Tune:          { iv->tune      =  val;                } break;
+  case OC::Delay:         { sampleTime    = -val * sampleRate;   } break;
+  case OC::Offset:        { offset        =  val;                } break;
+  case OC::LoopMode:      { loopMode      = (LoopMode)(int) val; } break;  
+  case OC::LoopStart:     { loopStart     =  val;                } break;
+  case OC::LoopEnd:       { loopEnd       =  val;                } break;
+
+  // Tracking:
+  case OC::ampN_veltrack: { 
+    iv->ampN_veltrack[N] = val;          } break;
+    // ToDo: make sure that ampN_veltrack has large enough size!!!
   }
 }
 // ...actually, if we can assume that all values start at neutral values, we can always accumulate
@@ -471,19 +477,20 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
 
   RAPT::rsAssert(rp != nullptr);
   double val = (double)s.getValue();
+  int    N   = s.getIndex();
   using OC   = Opcode;
   switch(s.getType())
   {
-  //case OC::Transpose: { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(val);        } break;
-  //case OC::Tune:      { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(0.01 * val); } break;
-    // accumulate into iv->transpose, iv->tune instead!
-
+  // Player:
   case OC::Transpose: { iv->transpose  += val;        } break;
   case OC::Tune:      { iv->tune       += val;        } break;
-    // using these instead of the code above breaks samplerEngine2UnitTest 
-
   case OC::Delay:     { rp->sampleTime += -val * fs;  } break;
   case OC::Offset:    { rp->offset     += float(val); } break;
+
+    // Tracking:
+  case OC::ampN_veltrack: { 
+    iv->ampN_veltrack[N] += val; } break;
+    // ToDo: make sure that ampN_veltrack has large enough size!!!
   }
 
   // Maybe the default branch should call rp->setupPlayerSetting(s, sampleRate, val). That would 

@@ -127,8 +127,8 @@ void rsFourierTransformerRadix2<T>::transformComplexBufferInPlace(std::complex<T
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::transformComplexBuffer(std::complex<T> *inBuffer,
-                                                        std::complex<T> *outBuffer)
+void rsFourierTransformerRadix2<T>::transformComplexBuffer(
+  const std::complex<T> *inBuffer, std::complex<T> *outBuffer)
 {
   // retrieve the adresses of the real part of the first array entries in order to treat the
   // Complex arrays as arrays of two successive T-numbers:
@@ -160,7 +160,8 @@ void rsFourierTransformerRadix2<T>::transformComplexBuffer(std::complex<T> *inBu
 // convenience functions for real signals:
 
 template<class T>
-void rsFourierTransformerRadix2<T>::transformRealSignal(T *inSignal, std::complex<T> *outSpectrum)
+void rsFourierTransformerRadix2<T>::transformRealSignal(
+  const T *inSignal, std::complex<T> *outSpectrum)
 {
   setDirection(FORWARD);
 
@@ -191,7 +192,7 @@ void rsFourierTransformerRadix2<T>::transformRealSignal(T *inSignal, std::comple
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::transformRealSignal(T *signal, T *reAndIm)
+void rsFourierTransformerRadix2<T>::transformRealSignal(const T *signal, T *reAndIm)
 {
   std::complex<T>* c_reAndIm = (std::complex<T>*) &(reAndIm[0]);
   transformRealSignal(signal, c_reAndIm);
@@ -199,7 +200,7 @@ void rsFourierTransformerRadix2<T>::transformRealSignal(T *signal, T *reAndIm)
 
 template<class T>
 void rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases(
-  T *signal, T *magnitudes, T *phases)
+  const T *signal, T *magnitudes, T *phases)
 {
   transformRealSignal(signal, tmpBuffer);
 
@@ -228,7 +229,7 @@ void rsFourierTransformerRadix2<T>::getRealSignalMagnitudesAndPhases(
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::getRealSignalMagnitudes(T *signal, T *magnitudes)
+void rsFourierTransformerRadix2<T>::getRealSignalMagnitudes(const T *signal, T *magnitudes)
 {
   transformRealSignal(signal, tmpBuffer);
   magnitudes[0] = tmpBuffer[0].real();
@@ -245,8 +246,8 @@ void rsFourierTransformerRadix2<T>::getRealSignalMagnitudes(T *signal, T *magnit
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(std::complex<T> *inSpectrum,
-                                                            T *outSignal)
+void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(
+  const std::complex<T> *inSpectrum, T *outSignal)
 {
   setDirection(INVERSE);
 
@@ -277,16 +278,15 @@ void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(std::complex<T> *
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(T *reAndIm, T *signal)
+void rsFourierTransformerRadix2<T>::transformSymmetricSpectrum(const T *reAndIm, T *signal)
 {
   std::complex<T>* c_reAndIm = (std::complex<T>*) &(reAndIm[0]);
   transformSymmetricSpectrum(c_reAndIm, signal);
 }
 
 template<class T>
-void rsFourierTransformerRadix2<T>::getRealSignalFromMagnitudesAndPhases(T *magnitudes,
-                                                                      T *phases,
-                                                                      T *signal)
+void rsFourierTransformerRadix2<T>::getRealSignalFromMagnitudesAndPhases(
+  const T *magnitudes, const T *phases, T *signal)
 {
   tmpBuffer[0].real(magnitudes[0]);
   tmpBuffer[0].real(phases[0]);      // ?BUG? should it be assigned to imag?

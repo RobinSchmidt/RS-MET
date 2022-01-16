@@ -632,7 +632,7 @@ int main(int argc, char* argv[])
   //createModalFilterBankExamples(); // takes long
   //createPiano1();
   //createSamplerWaveforms();
-  //createBassdrumPsy1Samples();
+  createBassdrumPsy1Samples();
 
   // sample-map creations (they take long):
   //createBass1();

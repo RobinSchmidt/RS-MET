@@ -97,6 +97,8 @@ template rsUint32 rsArrayTools::maxValue(const rsUint32 *x, int length);
 template void rsArrayTools::convolve(const rsUint64 *x, int Lx, const rsUint64 *h, int Lh, rsUint64 *y);
 
 // rsArrayTools<float>
+
+template void rsArrayTools::addInto(float *x, const int N, const float *y, int L, int n);
 template void rsArrayTools::fillWithRange(float* x, int N, float min, float max, float shape);
 template void rsArrayTools::fillWithRandomValues(float* x, int N, double min, double max, int seed); // ?why the mix of float and double?
 template void rsArrayTools::fillWithRandomIntegers(double* x, int N, int min, int max, int seed);

@@ -86,21 +86,25 @@ public:
   // should have a member variable of the type that is re-used whenever a new note is triggered
   // ...hmmmm - we'll get a lot more settings - maybe switch to float
 
-  std::vector<float> amp_veltrack;
+  std::vector<float> ampN_veltrack; // ampN_keytrack, pitchN_veltrack, pitchN_keytrack
 
 private:
 
   PlayerIntermediates()
   {
     int dummy = 0;
+    ampN_veltrack.resize(5);  // preliminary: ToDo: in SamplerEngine::preAllocateDspMemory, allocate
+    // as many as needed in the maximum case defined by the region/group/instrument that uses the 
+    // largest number of amplifiers
   }
   // todo: make copy/move constructors/assignments unavailable
 
   void reset()
   {
+    using namespace RAPT;
     transpose = 0;
     tune = 0;
-    //offset = 0;
+    rsFill(ampN_veltrack, 0.f);
   }
   // maybe needed when we don't create it on the stack but rather re-use a member
 
@@ -254,6 +258,8 @@ public:
   identify players that need to stop, when a noteOff is received. @see setKey */
   uchar getKey() const { return key; }
 
+  /** Returns the loop mode that this player is in. */
+  LoopMode getLoopMode() const { return loopMode; }
 
 
   /** Releases all resources that were acquired for playback such as signal processors, 
@@ -311,8 +317,8 @@ protected:
 
   float  endTime    = 0;
   // Maybe it should be int? Or maybe double to ease comparison? I actually think, we should get
-  // rid of it and inquire the info from the stream. We nee one double -> int conversion anyway
-  // for the interpolator. That can be compared to the length of the stream
+  // rid of it and inquire the info from the stream. We need one double -> int conversion anyway
+  // for the interpolator. The result of that can be compared to the length of the stream
 
   float  offset     = 0;    //< Start offset into the sample
   // maybe rename to startTime or startSample

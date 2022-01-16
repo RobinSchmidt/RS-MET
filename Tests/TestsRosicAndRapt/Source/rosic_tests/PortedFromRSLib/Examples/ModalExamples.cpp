@@ -367,8 +367,8 @@ rsModalBankParametersD modalParametersPiano110Hz()
 
 /*
 Sounddesign Notes:
--with stretched partial ratios and sligned intial phases, zap-like transients can be created
--also, with attacks that decrease with frequency (i.e. high partial reach their peak amplitude 
+-with stretched partial ratios and aligned intial phases, zap-like transients can be created
+-also, with attacks that decrease with frequency (i.e. high partials reach their peak amplitude 
  earlier)
 
 */
@@ -697,6 +697,31 @@ void createSamplerWaveforms()
   int dummy = 0;
 }
 
+std::vector<double> randomizePhases(const std::vector<double>& x, int seed, double amount)
+{
+  int N = (int)x.size();
+  RAPT::rsAssert(RAPT::rsIsPowerOfTwo(N), "Works only for power of 2 lengths");
+
+  // Do forward transform:
+  std::vector<double> y(N), a(N), p(N);
+  using FT = RAPT::rsFourierTransformerRadix2<double>;   // todo: use Bluestein later
+  FT ft;
+  ft.setBlockSize(N);
+  ft.getRealSignalMagnitudesAndPhases(&x[0], &a[0], &p[0]);
+
+  // Randomize phases:
+  RAPT::rsNoiseGenerator<double> ng;
+  ng.setSeed(seed);
+  ng.setRange(0.0, amount * 2*PI);
+  for(int k = 1; k < N; k++) {    // DC is unaffected
+    p[k] += ng.getSample();
+    p[k] =  RAPT::rsWrapToInterval(p[k], -PI, +PI); }
+
+  // Do inverse transform and return result:
+  ft.getRealSignalFromMagnitudesAndPhases(&a[0], &p[0], &y[0]);
+  return y;
+}
+
 void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
 {
   // Create a bassdrum sample using a weighted sum of exponential envelopes with different decay
@@ -801,7 +826,8 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   RAPT::rsFadeOut(&xR[0], N-N/8, N-1);
 
   // Create ambience sample:
-  // ...
+  Vec amb = randomizePhases(xL+xR, 2, 1.0);
+  rsNormalize(&amb[0], N, 1.0);
 
   // Plot final result or write to wvaefile: 
   if(plot)  rsPlotVectors(xL, xR);
@@ -813,13 +839,23 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
     if(freqScale == 2.0) fileName += "_Octave1";
     if(freqScale == 3.0) fileName += "_Fifth2";
     if(freqScale == 4.0) fileName += "_Octave2";
-    fileName += ".wav";
-    rosic::writeToStereoWaveFile(fileName.c_str(), &xL[0], &xR[0], N, (int)fs);
+    std::string nameWithExt = fileName + ".wav";
+    rosic::writeToStereoWaveFile(nameWithExt.c_str(), &xL[0], &xR[0], N, (int)fs);
 
-    // Write ambience sample to file
+    fileName += "_Ambience";
+    nameWithExt = fileName + ".wav";
+    rosic::writeToMonoWaveFile(nameWithExt.c_str(), &amb[0], N, (int)fs);
   }
 
-  // ToDo: 
+  // ToDo:
+  // -Have an envelop for the waveshape. it should control the amount of feedback PM:
+  //  y[n] = sin(phi + fb*y[n])  -> nonlinear -> needs implicit solver maybe using y[n-1] as 
+  //  initial guess, Newton iteration: f(y) = y - sin(phi + fb*y), f'(y) = 1 - fb*cos(phi + fb*y)
+  //  -maybe have also PM by a 2nd independent signal...maybe a sine at twice the 
+  //  freq? I want something that turns a sine into a square - the self-feedback leads to a 
+  //  sawtooth shape...or maybe make it squarish by waveshaping maybe use something like
+  //  tanh(d*x) / d except when d == 0 which is treated as special case returning just x...have a
+  //  drive envelope for d
   // -Maybe remove the normalization of the freq-env. it leads to the effect that increasing 
   //  freqWeight1 increases the overall freq but we want it to affect only the initial freq
   // -Maybe produce stereo output by using +-45° phase shift for left/right
@@ -833,12 +869,31 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   // -Maybe write this as an APE script
   //  -Give the user just a single choice parameter to select the preset, settings are encoded in 
   //   the code...but maybe give some macro-parameters to the user
+  //  -but APE does not yet support midi - maybe trigger the drum with an input impulse
 
   // ToDo:
-  // -render some goasque creaking sounds and make an sfz (use pan-envelopes)
+  // -render some goasque creaking sounds and make an sfz (use pan-envelopes)...but how? maybe using a 
+  //  percussive sound with echo using a delay-length corresponding to a note and a lot of feedback?
   // -render some multiplicative synthesis lead sounds
   // -render some swooshes and reversed sounds ...maybe a noise with filter env
-  // -create a goa-bass that harmonizes well with this bassdrum
+  // -create a bouncy goa-bass that harmonizes well with this bassdrum...maby they need to also to 
+  //  the one_shot thing? but the we must take care of interference...maybe only the amp-envs 
+  //  should get added on to of each other - the oscs just keep playing
+  // -maybe wrap bassdrum and bass into a single instrument using keyranges - the wen can also 
+  //  apply some dynamics processing to their mix (if bus_mode is active)
+  
+  // -For dubstep sounds, try to use a percussive sample like a snare, set up a loop and modify its 
+  //  location via midi-cc, maybe have a second one an octave below going on. maybe change the loop 
+  //  length (while adjusting the increment accordingly), maybe also when moving loop_start and 
+  //  loop_end simultaneously, adapt the increment to account for the fact that the loop point is
+  //  receding or approaching ...but maybe not
+  // -it has often very formantish stuff going on, try also comb-filters and sync-stuff
+  // -LFOs are important for modulating the position - their frequency should be midi controlled
+  // -use MSEGs, attacks should be normal, decays should use "anti-analog" shape
+  // -speed should speed up or down in step of simple ratios (like doubling, tripling, halving, ..)
+  // -distortion and bitcrushing also helps
+  // -Maybe a multiplicative synthesis sample could also be used as basis
+  // https://www.youtube.com/watch?v=dknbNrr4EDo&list=RDQM6d8Vubj1zMg&start_radio=1
 
 
   int dummy = 0;

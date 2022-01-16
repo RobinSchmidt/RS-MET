@@ -1433,5 +1433,12 @@ ToDo:
  piano envelopes (fast early ecay, slower late decay), Maybe call it BiExponential. This could have
  3 shape parameters: Exponentiality: -20..+20, DecaySpread, DecayMix
  
+-Maybe implement smoothing: apply a (series of) 1st order filter(s) with adjustable time-constant 
+ as overall post-processing stage. When higher order filters (i.e. multiple stages) are used, 
+ compensate the time-constant, such that the (maybe squared) unit step response always goes through
+ 0.5 at the same instant (decouples order from time parameter) - not sure, if that's solvable 
+ analytically... Maybe on note-on initialize the state of these filters to the start value such 
+ that the intial breakpoint will be hit exactly. This will help to mitigate the hard corners and 
+ will make the env sound "rounder"
 
 */
