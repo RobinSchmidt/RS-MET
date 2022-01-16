@@ -2548,7 +2548,7 @@ bool samplerKeyVelTrackTest()
   // unit is percent, formula is dB = 20 log (127^2 / Velocity^2) ..i think, that's the change in
   // dB at 100%? range is -100...+100 ..so it's 40 log (127/Velocity)
 
-  ok &= testSamplerNote(&se, 60, vel, amp*noise, amp*noise, 1.e-7, true);
+  //ok &= testSamplerNote(&se, 60, vel, amp*noise, amp*noise, 1.e-7, true);
 
   // Reset veltrack and set up keytrack:
   //se.setRegionSetting(0, 0, OC::ampN_veltrack,  0.f, 1);  // no vletrack anymore
@@ -2576,19 +2576,43 @@ bool samplerProcessorsTest()
 
   // For inspection in the debugger. We want to keep the sizes of these DSP objects small because 
   // we'll potentially have to pre-allocate a lot of them when a patch is loaded:
-  //using Sampler = rosic::Sampler;
+  using namespace rosic::Sampler;
   int size;
-  size = sizeof(rosic::Sampler::AmplifierCore);         // 16
-  size = sizeof(rosic::Sampler::FilterCore);            // 64
-  size = sizeof(rosic::Sampler::WaveshaperCore);        // 24
-  size = sizeof(rosic::Sampler::rsSamplerEnvGen);       // 36
-  size = sizeof(rosic::Sampler::rsSamplerLowFreqOsc);   // 16
+
+  // Sizes of DSP cores:
+  size = sizeof(AmplifierCore);          // 16
+  size = sizeof(FilterCore);             // 64
+  size = sizeof(WaveshaperCore);         // 24
+  size = sizeof(rsSamplerEnvGen);        // 36
+  size = sizeof(rsSamplerLowFreqOsc);    // 16
+  // FilterCore is quite large - try to reduce it - maybe by defining different kinds of filters 
+  // because many filter types do not use all variables. See below
+
+  // Sizes of infrastructural classes:
+  size = sizeof(RegionPlayer);           // 184
+  size = sizeof(SignalProcessor);        //  48
+  size = sizeof(Parameter);              //   8
+
+  // Sizes of some basic underlying data structures:
+  size = sizeof(std::vector<Parameter>); // 32
+  //std::cout << sizeof(std::vector<Parameter>) << '\n'; // 24 in release mode
+  // Whoa! 32? that's twice as much as i expected! Two pointers of 64 bit (8 byte) size should take 
+  // only 16 byte! Maybe when we optimize the memory usage later, switch to a hand-rolled vector 
+  // replacement that has smaller overhead use a using Vector = std::vector directive somewhere 
+  // where we can switch between the two (std::vector is nice for debugging). Hmm..in release mode,
+  // it's only 24 - but that's still 8 too much
+
+  // Sizes of some DSP classes from RAPT:
+  size = sizeof(RAPT::rsFirstOrderFilterBase<float, float>);  // 20
+  // It takes less than one third of the memory (0.3125x as much) of what FilterCore takes and 
+  // first order filters are used a lot in my patches, so this may have a big impact to use a 
+  // different class for simpler filters. First order filters are good for processing the layers
+  // statically. The full blown filter is good for processing the mix of layers
+
   //size = sizeof(SP::Filter);
   //size = sizeof(SP::WaveShaper);
   // later move this into a (yet to be written) benchmark testbed
-  int regionPlayerSize = rosic::Sampler::rsSamplerEngineTest::getRegionPlayerSize();
-  // -Currently at 192...184
-  // -With virtual functions, it had 16 bytes more. Apparently, that's what the vftable take.
+
   // -Move this into some performance test function
 
 

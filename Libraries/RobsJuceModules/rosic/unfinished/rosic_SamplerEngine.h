@@ -842,7 +842,7 @@ public:
 
   /** Returns the byte size of the RegionPlayer class. We want to keep this small so we use this
   function to keep track of its size in the tests. */
-  static int getRegionPlayerSize() { return sizeof(RegionPlayer); }
+  //static int getRegionPlayerSize() { return sizeof(RegionPlayer); }
 
 
   PlayStatusChange handleNoteOn(uchar key, uchar vel) override

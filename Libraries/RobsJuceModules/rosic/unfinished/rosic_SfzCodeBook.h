@@ -176,10 +176,20 @@ enum class FilterType // maybe rename to fil_type for consistency with sfz
 enum class LoopMode   // maybe rename to loop_mode (as in sfz)
 {
   Unknown = 0,
+
+  // SFZ1:
   no_loop,         // play from start to end or until note off
   one_shot,        // play from start to end, ignore note off, engaged if count opcode is defined
   loop_continuous, // when player reaches sample loop point, loop will play until note expiration
   loop_sustain,    // play loop while note or sustain pedal is held. rest will play after release
+
+  // RS-MET:
+  //single_cycle,
+  // Interacts with modulation of loop_start/loop_end to preserve pitch when these are modulated. 
+  // Maybe we should also be able to say, how many cycles the loop represents, i.e. support 
+  // multi_cycle. Maybe in this mode, pitch_keycenter should be ignored
+
+
   numModes
 };
 

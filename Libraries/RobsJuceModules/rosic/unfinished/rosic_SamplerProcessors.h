@@ -57,7 +57,8 @@ public:
   // https://stackoverflow.com/questions/21476869/constant-pointer-vs-pointer-to-constant
 
   // Processing:
-  virtual void prepareToPlay(double sampleRate) = 0; // maybe it needs a flag, if input is stereo
+  virtual void prepareToPlay(double sampleRate) = 0;  // maybe it needs to receive the key, vel
+
   virtual void processFrame(float* L, float* R) = 0;
   virtual void processBlock(float* L, float* R, int N) = 0;
 
@@ -70,8 +71,14 @@ public:
 
 protected:
 
-  DspType type = DspType::Unknown;
   std::vector<Parameter> params;
+  DspType type = DspType::Unknown;
+  unsigned char key = 0, vel = 0;
+
+  // For response to midi control:
+  // MidiStatus midiStatus;
+  // bool dirty = false;
+  // clean, transitional
 
   
 //private:  // doesn't compile because subclasses complain...hmm...
@@ -494,6 +501,8 @@ public:
         params[2].getValue(),
         params[3].getValue());
       // ToDo:
+      // -let it take key/vel parameters and compute the actual parameter values to use here, 
+      //  taking key/vel into account
       // -get rid of the getValue() calls by allowing the params to convert to float
       // -it's not ideal that this code depends on the order, how we add the params in the 
       //  constructor - try to avoid that
@@ -501,6 +510,17 @@ public:
     void processFrame(float* L, float* R) override 
     {
       core.processFrame(L, R);
+      // ToDo:
+      // -Let the baseclass maintain a pointer to some sort of MidiStatus object which contains a 
+      //  "dirty" flag which is set whenever the status changes, for example because a 
+      //  control-change was received.
+      // -Inspect the flag here, if it is dirty, we have two options:
+      //  -Recalculate out coeffs immediately, taking into account the new settings of controllers
+      //   etc, or:
+      // -Set up this object for a parameter transition (smoothing) by initializing a sampleCounter
+      //  to numSmoothingSamples and checking that counter in each sample and if it nonzero, do an 
+      //  update step and count down - when zero is reached, we have reached the new target 
+      //  parameters
     }
 
     void processBlock(float* L, float* R, int N) override 

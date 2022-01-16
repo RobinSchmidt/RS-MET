@@ -74,6 +74,11 @@ class PlayerIntermediates
 {
 public:
 
+
+
+
+  //-----------------------------------------------------------------------------------------------
+
   double transpose = 666;
   double tune = 666;
   // todo: bendUp, bendDown
@@ -97,7 +102,7 @@ private:
     // as many as needed in the maximum case defined by the region/group/instrument that uses the 
     // largest number of amplifiers
   }
-  // todo: make copy/move constructors/assignments unavailable
+  
 
   void reset()
   {
@@ -108,11 +113,28 @@ private:
   }
   // maybe needed when we don't create it on the stack but rather re-use a member
 
-  friend class rsSamplerEngine;
+  friend class rsSamplerEngine; 
+  // rsSamplerEngine has an object of this class as member, so it needs to be able to call the 
+  // (private) constructor. This class is a bit like a singleton, but it doesn't live in the 
+  // global scope but is a member of the sampler engine. It doesn't make sense to have objects 
+  // of that class anywhere else. ToDo: make copy/move constructors/assignments unavailable
+  // Can we restrict the friendship further to only the constructor of rsSamplerEngine such that
+  // we don't accidiently do something wron inside rsSamplerEngine?
 
 };
-// rename to SetupIntermediates and include also intermediates for the DSPs...hmm...but there's
-// an indefinite number of them...we'll see
+// -rename to SetupIntermediates and include also intermediates for the DSPs...hmm...but there's
+//  an indefinite number of them...we'll see
+// -Maybe this class should also contain all the information about the most recently received
+//  controller, pitch_wheel etc. and maybe each SignalProcessor should maintain a pointer to the 
+//  (single) object. Maybe it should be called SamplerMidiStatus. Maybe it should maintain an 
+//  std::atomic<bool> dirty flag which is set to true in noteOn (or handleMidiEvent), inspected in
+//  the DSPs, if true, they recalc their coeffs and we set it to to false at the end of 
+//  processFrame. Some mechanism like this is needed anyway to support midi-cc.  Maybe this flag
+//  could make the preparToPlay call in the DSPs superfluous...but maybe not - the preparation may 
+//  actually do more than just recalc coeffs (such as resetting buffers). It doesn't realy need to
+//  be atomic because we expect to receive midi on the audio thread anyway but it would kinda 
+//  communicate that this flag is used as information channel from the midi to the audio side of 
+//  things.
 
 //=================================================================================================
 
