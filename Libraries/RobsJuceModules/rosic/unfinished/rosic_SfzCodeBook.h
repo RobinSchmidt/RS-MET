@@ -61,15 +61,15 @@ enum class Opcode
 
   // Amplifier:
   /*Volume, Pan, Width, Position, */  // replaced by volumeN, etc.
-  AmpKeyTrack, AmpKeyCenter, AmpVelTrack, AmpVelCurveN, AmpRandom,
+  /*AmpKeyTrack, AmpKeyCenter, AmpVelTrack,*/ AmpVelCurveN, AmpRandom,
   RelTrigDecay, Output, GainCtrlN,
   FadeInLoKey, FadeInHiKey, FadeOutLoKey, FadeOutHiKey, FadeCurveKey,
   FadeInLoVel, FadeInHiVel, FadeOutLoVel, FadeOutHiVel, FadeCurveVel,
   FadeInLoCtrlN, FadeInHiCtrlN, FadeOutLoCtrlN, FadeOutHiCtrlN, FadeCurveCtrl,
 
   // new amp-opcodes - will make the above ones obsolete:
-  volumeN, panN, widthN, positionN,
-  // ampN_keytrack, ampN_keycenter, ampN_veltrack,
+  volumeN, panN, widthN, positionN, 
+  ampN_keytrack, ampN_keycenter, ampN_veltrack,
   // ampN_velcurve_X /* ? */, ampN_random,
 
   // Amplifier Envelope:
@@ -131,6 +131,7 @@ enum class Opcode
   // extend_ranges=true/false allow extended parameter ranges such a width of 150, volume of +12 dB
   // etc. or maybe use a param_range=sfz/extended that would allow to later define more specific
   // extensions
+  // add: loop_start_ccN, loop_end_ccN
 
   // What about routing?
   // is an opdoce like lfoN_volume meant to route lfo N to volume? and what isegN_amplitude 
@@ -250,7 +251,7 @@ enum class OpcodeUnit
   Text, Index, RawInt, RawFloat,                                 // Raw
   Hertz, Octaves, Semitones, Cents, MidiKey,                     // Frequency
   Seconds, Samples, //Beats, //Milliseconds, //BeatsOrSeconds,   // Time
-  Percent, Decibels, //Degrees,                                  // Misc
+  Percent, Decibels, DecibelPerKey, //Degrees,                        // Misc
   NumUnits
 
   // The MidiKey can be given as midi note number, e.g. 61 or as string e.g. c#4. We need to allow
@@ -281,7 +282,7 @@ opcodes, e.g. the presence of a FilterCutoff opcode dictates the presence of a f
 respective region. In order to facilitating to build the DSP chain for a region player,
 we also need an explicit representation of the DSP processor types. */
 
-enum class DspType  // rename to DspType or ProcessorType
+enum class DspType  // rename to DspType or ProcessorType or OpcodeType
 {
   Unknown,
 
@@ -297,6 +298,11 @@ enum class DspType  // rename to DspType or ProcessorType
   Equalizer,
   WaveShaper,
   _TagDspsEnd,
+
+  // Opcodes for controlling key- and velocity tracking:
+  Tracking,
+  //_TagTackingStart,
+  //_TagTrackingEnd,
 
 
 

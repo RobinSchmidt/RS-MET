@@ -2497,22 +2497,14 @@ bool samplerKeyVelTrackTest()
   //ok &= testSamplerNote(&se, 60, 127, noise, noise, 0.f, false);
 
   // Set up velocity tracking of the volume:
-  se.setRegionSetting(0, 0, OC::AmpVelTrack, 100.f, -1);
+  se.setRegionSetting(0, 0, OC::ampN_veltrack, 100.f, 1);
   // unit is percent, formula is dB = 20 log (127^2 / Velocity^2) ..i think, that's the change in
   // dB at 100%? range is -100...+100 ..so it's 40 log (127/Velocity)
 
   // Reset veltrack and set up keytrack:
-  se.setRegionSetting(0, 0, OC::AmpVelTrack,  0.f, -1);  // no vletrack anymore
-  se.setRegionSetting(0, 0, OC::AmpKeyTrack, -1.f, -1);  // -1 dB/key (rnage: -96..+12)
-  se.setRegionSetting(0, 0, OC::AmpKeyCenter, 60,  -1);  // neutral at A4
-
-  // sfz opcode names:
-  // amp_keytrack, amp_keycenter, 
-  // amp_veltrack: 
-
-
-
-
+  se.setRegionSetting(0, 0, OC::ampN_veltrack,  0.f, 1);  // no vletrack anymore
+  se.setRegionSetting(0, 0, OC::ampN_keytrack, -1.f, 1);  // -1 dB/key (rnage: -96..+12)
+  se.setRegionSetting(0, 0, OC::ampN_keycenter, 60,  1);  // neutral at A4
 
 
 
@@ -2589,7 +2581,7 @@ bool samplerEngineUnitTest()
   bool ok = true;
 
   // The new test that is currently under construction:
-  //ok &= samplerKeyVelTrackTest();
+  ok &= samplerKeyVelTrackTest();
   //ok &= samplerModulationsTest();
 
   // The tests, that already pass and are supposed to continue to do so:

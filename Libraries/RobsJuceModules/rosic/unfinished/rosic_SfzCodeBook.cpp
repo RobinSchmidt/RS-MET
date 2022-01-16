@@ -136,6 +136,13 @@ SfzCodeBook::SfzCodeBook()
   // -> figure out how they work - there's depth, tone, etc. maybe rename opdcodes to something
   // with waveshaper or wvshpr...hmm...naaah
 
+  dsp = DspType::Tracking;
+  add(OC::ampN_keytrack,  Flt, "ampN_keytrack", -96.0f, 12.f, 0.f, dsp, OU::DecibelPerKey, Sfz1);
+  add(OC::ampN_keycenter, Flt, "ampN_keycenter", 0.0f, 127.f, 60.f, dsp, OU::MidiKey, Sfz1);
+  add(OC::ampN_veltrack,  Flt, "ampN_veltrack", -100.0f, 100.f, 0.f, dsp, OU::Percent, Sfz1);
+
+
+
   // ToDo: 
   // -PanLaw, introduce fil_bw for bandwidth parameter for bandpass...actually, we need to figure
   //  out, how the resonance parameter behaves for a bandpass

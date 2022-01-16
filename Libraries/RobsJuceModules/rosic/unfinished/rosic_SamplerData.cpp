@@ -25,7 +25,9 @@ void rsSamplerData::OrganizationLevel::ensureDspsPresent(Opcode opcodeType, int 
   using SPT = DspType;
   SPT dspType = PlaybackSetting::getTargetProcessorType(opcodeType);
   rsAssert( dspType != SPT::Unknown );
-  if( dspType == SPT::SamplePlayer || dspType == SPT::Unknown )
+
+  // use: SfzCodeBook::isDspSetting:
+  if(dspType == SPT::SamplePlayer || dspType == SPT::Unknown || dspType == SPT::Tracking)
     return;
     // The sample-player at the start of the processing chain doesn't really count as bona-fide DSP
     // processor. It's always there, there's always exactly one and it behaves quite differently 

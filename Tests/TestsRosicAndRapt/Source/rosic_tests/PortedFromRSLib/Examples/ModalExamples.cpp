@@ -694,6 +694,72 @@ void createSamplerWaveforms()
   // -Write the different rendered levels to wavefiles with a meaningfully formatted way, such as
   //  Saw_K21 for the w2048 wave.
 
+  int dummy = 0;
+}
+
+void createBassdrums()
+{
+  // Create a bassdrum sample using a weighted sum of exponential envelopes with different decay
+  // times for a sine-sweepdown. Create also overtones at twice and thrice the frequency, maybe let
+  // them have an attack/decay and an attack envelope respectively
+
+  // Parameters:
+  double freqDecay1  =   10;    // in ms
+  double freqDecay2  =   80;
+  double freqDecay3  =  240;
+  double freqWeight1 =  6.0;
+  double freqWeight2 = -1.0;
+  double freqWeight3 =  1.0;
+  double freqFloor   =  0.0;
+  double freqCeil    =  900;
+  int fs = 44100;
+  int N  = 88200;
+
+  RAPT::rsAttackDecayEnvelope<double> eg1, eg2, eg3;
+  eg1.setAttackSamples(0);
+  eg1.setDecaySamples(freqDecay1 * 0.001 * fs);
+  eg2.setAttackSamples(0);
+  eg2.setDecaySamples(freqDecay2 * 0.001 * fs);
+  eg3.setAttackSamples(0);
+  eg3.setDecaySamples(freqDecay3 * 0.001 * fs);
+  using Vec = std::vector<double>;
+  Vec env1(N), env2(N), env3(N), env(N);
+  eg1.noteOn(60, 100);
+  eg2.noteOn(60, 100);
+  eg3.noteOn(60, 100);
+  for(int n = 0; n < N; n++)
+  {
+    env1[n] = eg1.getSample();
+    env2[n] = eg2.getSample();
+    env3[n] = eg3.getSample();
+    env[n]  =  freqWeight1*env1[n] + freqWeight2*env2[n] + freqWeight3*env3[n];
+  }
+  //rsPlotVectors(env1, env2, env3, env);
+
+  RAPT::rsArrayTools::normalize(&env[0], N);
+  Vec x(N);
+  double phi = 0;  // phase
+  for(int n = 0; n < N; n++)
+  {
+    x[n] = sin(phi);
+    double f = freqFloor + (freqCeil - freqFloor) * env[n];
+    double w = 2*PI*f/fs;
+    phi += w;
+  }
+
+  rosic::writeToMonoWaveFile("Bassdrum.wav", &x[0], N, (int)fs);
+
+  // -Apply an amp-env that goes down-up-down to emphasize transient and body
+  // -Mix with a short, quickly decaying noise-burst for the transient
+  // -Apply reverb
+
+  //rsPlotVector(x);
+
+
+  // ToDo: 
+  // -Add an envelope generator to ToolChain that implements a weighted sum of exponential decays
+  // -Maybe give ToolChain a rendering functionality
+
 
   int dummy = 0;
 }

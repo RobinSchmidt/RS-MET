@@ -76,7 +76,7 @@ public:
 
   double transpose = 666;
   double tune = 666;
-  //double offset = 0; // maybe this should also be here
+  // todo: bendUp, bendDown
   // We use double not mainly because we expect a lot of error accumulation in our computations
   // (although that may be the case as well) but rather because we can easily afford it. This 
   // struct is not used anywhere where minimizing space requirement matters anyway. Its just 
@@ -84,19 +84,23 @@ public:
   // that need it until the event has been fully consumed and the struct goes out of scope again.
   // We don't store arrays of these things or anything like that anywhere. ...Or maybe the engine
   // should have a member variable of the type that is re-used whenever a new note is triggered
+  // ...hmmmm - we'll get a lot more settings - maybe switch to float
+
+  std::vector<float> amp_veltrack;
 
 private:
 
   PlayerIntermediates()
   {
-
     int dummy = 0;
   }
+  // todo: make copy/move constructors/assignments unavailable
 
   void reset()
   {
     transpose = 0;
     tune = 0;
+    //offset = 0;
   }
   // maybe needed when we don't create it on the stack but rather re-use a member
 
@@ -291,13 +295,6 @@ protected:
 
   void setupFromIntemediates(const PlayerIntermediates& iv, double sampleRate);
 
-
-
-  //void setupDspSettings(const std::vector<PlaybackSetting>& settings,
-  //  double sampleRate, bool busMode) override;
-
-  //void setupProcessorSetting(const PlaybackSetting& s) override;
-
   void setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
     RegionPlayer* rp, PlayerIntermediates* iv) override;
 
@@ -307,15 +304,24 @@ protected:
   // Maybe we should use some sort of fixed-point format for this instead?
   double sampleTime = 0.0;  //< Time index in the sample. Negative values used for delay.
   double increment  = 1.0;  //< Increment of sampleTime per sample
-  double loopStart  = 0;
-  double loopEnd    = 0;
-  float  endTime    = 0;    // maybe it should be int? or maybe double to ease comparison?
-  float  offset     = 0;    // maybe rename to startTime or startSample
-  //float  tune       = 0;
-  //float  transpose  = 0;
-  float  amplitude  = 1;    // determined by key/vel crossfades, etc.
+  double loopStart  = 0;    //< Start of loop in samples
+  double loopEnd    = 0;    //< End of loop in samples
 
-  // todo: bendUp, bendDown
+
+
+  float  endTime    = 0;
+  // Maybe it should be int? Or maybe double to ease comparison? I actually think, we should get
+  // rid of it and inquire the info from the stream. We nee one double -> int conversion anyway
+  // for the interpolator. That can be compared to the length of the stream
+
+  float  offset     = 0;    //< Start offset into the sample
+  // maybe rename to startTime or startSample
+
+  float  amplitude  = 1;    
+  // This amplitude factor is determined by key/vel crossfades, etc. but not by key/veltrack 
+  // because these are is done by the Amplifier DSP
+
+
 
   LoopMode loopMode = LoopMode::no_loop;
   uchar key = 0;                 //< Midi note number used for starting this player
@@ -345,6 +351,8 @@ protected:
   //  stream. This is not the same thing due to possible delay and looping.
   // -maybe use a different implementation structure (SVF) for the time-varying filter
   // -try to optimize ram and/or cpu usage by re-ordering
+  // -ways to save space (if that should be necessary): use float instead of double, isnteda of
+  //  using std::vector, use a hand-rolled dynamic array of indices (could be short int)
 
 };
 

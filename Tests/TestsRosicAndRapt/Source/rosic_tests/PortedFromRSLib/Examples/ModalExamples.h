@@ -12,6 +12,7 @@ void createPiano1();
 
 // Multisample creations
 void createSamplerWaveforms();
+void createBassdrums();
 
 // Multisample + sfz sample-map creations:
 void createBass1();
