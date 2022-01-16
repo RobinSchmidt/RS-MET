@@ -705,7 +705,8 @@ void createBassdrums()
 
   // Rendering parameters:
   int fs = 44100;
-  int N  = 44100*2;
+  //int N  = 44100*2;
+  int N = rsPowInt(2, 16); // maybe have special function rsPowerOf2
   bool plot = false;  // if true, we plot stuff, if false, we render a wavefile
 
   // Frequency envelope parameters:
@@ -716,7 +717,8 @@ void createBassdrums()
   double freqWeight2 = -1.0;
   double freqWeight3 =  1.0;
   double freqFloor   =  0.0;
-  double freqCeil    =  900;
+  double freqCeil    =  800;
+  double freqScale   = 1.0;    // 1: fundamental, 2,3,4,etc: overtones
 
   // Amplitude envelope parameters:
   double ampDecay1  =   20;
@@ -727,18 +729,16 @@ void createBassdrums()
   double ampWeight3 =  1.0;
 
 
-  int plotDecimate = 20;
+  int plotDecimate = 16;
   if(plot)
   {
     fs /= plotDecimate;
     N  /= plotDecimate;
   }
 
-
   // Create frequency envelope:
   using AT = RAPT::rsArrayTools;
   RAPT::rsAttackDecayEnvelope<double> eg1, eg2, eg3; // a simple decay env would suffice
-
 
   eg1.setAttackSamples(0);
   eg2.setAttackSamples(0);
@@ -762,18 +762,19 @@ void createBassdrums()
 
   // Create the raw sine-sweep:
   AT::normalize(&env[0], N);
-  Vec x(N);
+  Vec xL(N), xR(N);
   double phi = 0;  // phase
   for(int n = 0; n < N; n++)
   {
-    x[n] = sin(phi);
+    xL[n] = sin(phi - PI/4);
+    xR[n] = sin(phi + PI/4);
     double f = freqFloor + (freqCeil - freqFloor) * env[n];
-    double w = 2*PI*f/fs;
+    double w = freqScale * 2*PI*f/fs;
     phi += w;
   }
-  if(plot) rsPlotVectors(x);
+  if(plot) rsPlotVectors(xL, xR);
 
-  // Create and apply amplitude enevlope:
+  // Create amplitude envelope:
   eg1.setDecaySamples(ampDecay1 * 0.001 * fs);
   eg2.setDecaySamples(ampDecay2 * 0.001 * fs);
   eg3.setDecaySamples(ampDecay3 * 0.001 * fs);
@@ -789,18 +790,31 @@ void createBassdrums()
   }
   if(plot) rsPlotVectors(env1, env2, env3, env);
 
-
+  // Apply amplitude envelope and fade-out:
   AT::normalize(&env[0], N);
   for(int n = 0; n < N; n++)
   {
-    x[n] *= env[n];
+    xL[n] *= env[n];
+    xR[n] *= env[n];
   }
-  if(plot) rsPlotVectors(x);
+  RAPT::rsFadeOut(&xL[0], N-N/8, N-1);
+  RAPT::rsFadeOut(&xR[0], N-N/8, N-1);
 
+  // Create ambience sample:
 
-
+  // Plot final result or write to wvaefile: 
+  if(plot)  rsPlotVectors(xL, xR);
   if(!plot)
-    rosic::writeToMonoWaveFile("Bassdrum.wav", &x[0], N, (int)fs);
+  {
+    std::string fileName = "BassdrumPsy1";
+    if(freqScale == 1.0) fileName += "_Prime";
+    if(freqScale == 1.5) fileName += "_Fifth1";
+    if(freqScale == 2.0) fileName += "_Octave1";
+    if(freqScale == 3.0) fileName += "_Fifth2";
+    if(freqScale == 4.0) fileName += "_Octave2";
+    fileName += ".wav";
+    rosic::writeToStereoWaveFile(fileName.c_str(), &xL[0], &xR[0], N, (int)fs);
+  }
 
   // -Apply an amp-env that goes down-up-down to emphasize transient and body
   // -Mix with a short, quickly decaying noise-burst for the transient
@@ -808,23 +822,25 @@ void createBassdrums()
 
   //rsPlotVector(x);
 
-
   // ToDo: 
-  // -Add an emp env that goes down, then back up a little, then fully decays. Maybe an 
-  //  attack/decay shape mixed with a quick decay
+  // -Maybe remove the normalization of the freq-env. it leads to the effect that increasing 
+  //  freqWeight1 increases the overall freq but we want it to affect only the initial freq
   // -Maybe produce stereo output by using +-45° phase shift for left/right
   // -Mix in a very short noise-burst to the attack (might have settings for: decay, HP, LP, color, seed)
   //  -maybe it should have a filter env
   //  -maybe clip or saturate sweep+noise
+  // -Apply reverb - maybe using a phase-randomization algorithm: do one big FFT (maybe 
+  //  length = 2^16 = 65536), randomize phases, iFFT ...this need its own amp-env
   // -Add an envelope generator to ToolChain that implements a weighted sum of exponential decays
   // -Maybe give ToolChain a rendering functionality
   // -Maybe write this as an APE script
   //  -Give the user just a single choice parameter to select the preset, settings are encoded in 
   //   the code...but maybe give some macro-parameters to the user
 
-
   int dummy = 0;
 }
+
+
 
 void createBass1()
 {
