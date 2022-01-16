@@ -2489,6 +2489,8 @@ bool samplerLoopTest()
 
   // ToDo:
   // -Test one-shot mode
+  // -add reverse playback mode...maybe this should be one of the loop_modes? or do we need an extra 
+  //  opcode for that?
   // -Test what happens when loopEnd is <= loopStart. I guess, it jumps forward by loopLength 
   //  every sample after reaching loopEnd. We should probably ensure that this doesn't happen
   //  maybe use loopStart = min(loopStart, loopEnd). Then, the loop would just be ignored. That may

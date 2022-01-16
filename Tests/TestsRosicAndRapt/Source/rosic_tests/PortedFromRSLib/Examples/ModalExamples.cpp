@@ -834,6 +834,13 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   //  -Give the user just a single choice parameter to select the preset, settings are encoded in 
   //   the code...but maybe give some macro-parameters to the user
 
+  // ToDo:
+  // -render some goasque creaking sounds and make an sfz (use pan-envelopes)
+  // -render some multiplicative synthesis lead sounds
+  // -render some swooshes and reversed sounds ...maybe a noise with filter env
+  // -create a goa-bass that harmonizes well with this bassdrum
+
+
   int dummy = 0;
 }
 
