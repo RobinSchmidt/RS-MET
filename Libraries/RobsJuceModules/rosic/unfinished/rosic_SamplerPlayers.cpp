@@ -144,14 +144,14 @@ void SamplePlayer::setupDspSettings(const std::vector<PlaybackSetting>& settings
 // RegionPlayer
 
 rsReturnCode RegionPlayer::setRegionToPlay(const Region* regionToPlay,
-  const AudioFileStream<float>* sampleStream, double fs, bool busMode)
+  const AudioFileStream<float>* sampleStream, double fs, bool busMode, PlayerIntermediates* iv)
 {
   releaseResources(); // actually, it should not hold any at this point - or should it?
   region = regionToPlay;
   if(region == nullptr)
     return rsReturnCode::nothingToDo;
   stream = sampleStream;
-  return prepareToPlay(fs, busMode);
+  return prepareToPlay(fs, busMode, iv);
 }
 
 void RegionPlayer::processFrame(float* L, float* R)
@@ -251,7 +251,7 @@ void RegionPlayer::allocateMemory()
   // later
 }
 
-rsReturnCode RegionPlayer::prepareToPlay(double fs, bool busMode)
+rsReturnCode RegionPlayer::prepareToPlay(double fs, bool busMode, PlayerIntermediates* iv)
 {
   RAPT::rsAssert(isPlayable(region));  // This should not happen. Something is wrong.
   RAPT::rsAssert(stream != nullptr);   // Ditto.
@@ -267,8 +267,7 @@ rsReturnCode RegionPlayer::prepareToPlay(double fs, bool busMode)
   }
   resetPlayerSettings();
 
-  PlayerIntermediates iv;
-  setupDspSettingsFor(region, fs, busMode, &iv);
+  setupDspSettingsFor(region, fs, busMode, iv);
 
   // todo: setup modulators and modulation connections
 
@@ -382,22 +381,8 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode,
     setupDspSettings(region->getGroup()->getSettings(), fs, this, busMode, iv);
   setupDspSettings(region->getSettings(), fs, this, busMode, iv);
 
-  // Besides other things, the calls above will have set up our transpose and tune variables. From 
-  // those (and other variables) we can now compute per-sample increment for our sampleTime 
-  // variable:
-  double rootKey = region->getSettingValue(Opcode::PitchKeyCenter, -1, false);
-  double pitchOffset = double(key) - rootKey + iv->transpose + 0.01 * iv->tune;
-  increment = pow(2.0, pitchOffset / 12.0) * stream->getSampleRate() / fs;
-  // The formula using rsPitchOffsetToFreqFactor is too imprecise: when we have a pitchOffset of 
-  // exactly -12, for example, we want the increment be multiplied by exactly 0.5, but using this
-  // function, the factor comes out as 0.49999..., so we use the more precise (and more 
-  // expensive) call to pow. It's not per-sample here code anyway, so we may afford that.
-
-  // Sanity-check the loop boundaries:
-  loopStart = RAPT::rsMax(loopStart, 0.0);
-  loopEnd   = RAPT::rsClip(loopEnd, loopStart, (double)stream->getNumFrames());
-
-
+  // Compute the final member variables from the intemediates:
+  setupFromIntemediates(*iv, fs);
 
 
   // ToDo:
@@ -408,6 +393,28 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode,
   //  the default or something? Maybe keep a rootKeyShift member that is by default zero, 
   //  accumulates th differences of the pitch_keycenter opcode with respce to 60 (the default)?
   //  Try this and write unit tests..
+}
+
+void RegionPlayer::setupFromIntemediates(const PlayerIntermediates& iv, double fs)
+{
+  // We can call it from the GroupPlayer
+  // (this may imply that i gets called twice on noteon in busMode but maybe we need to do it that
+  // way...)
+
+  // Besides other things, the calls above will have set up our transpose and tune variables. From 
+  // those (and other variables) we can now compute per-sample increment for our sampleTime 
+  // variable:
+  double rootKey = region->getSettingValue(Opcode::PitchKeyCenter, -1, false);
+  double pitchOffset = double(key) - rootKey + iv.transpose + 0.01 * iv.tune;
+  increment = pow(2.0, pitchOffset / 12.0) * stream->getSampleRate() / fs;
+  // The formula using rsPitchOffsetToFreqFactor is too imprecise: when we have a pitchOffset of 
+  // exactly -12, for example, we want the increment be multiplied by exactly 0.5, but using this
+  // function, the factor comes out as 0.49999..., so we use the more precise (and more 
+  // expensive) call to pow. It's not per-sample here code anyway, so we may afford that.
+
+  // Sanity-check the loop boundaries:
+  loopStart = RAPT::rsMax(loopStart, 0.0);
+  loopEnd   = RAPT::rsClip(loopEnd, loopStart, (double)stream->getNumFrames());
 }
 
 void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 
@@ -467,12 +474,12 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
   using OC   = Opcode;
   switch(s.getType())
   {
-  case OC::Transpose: { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(val);        } break;
-  case OC::Tune:      { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(0.01 * val); } break;
+  //case OC::Transpose: { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(val);        } break;
+  //case OC::Tune:      { rp->increment  *= RAPT::rsPitchOffsetToFreqFactor(0.01 * val); } break;
     // accumulate into iv->transpose, iv->tune instead!
 
-  //case OC::Transpose: { iv->transpose  += val;        } break;
-  //case OC::Tune:      { iv->tune       += val;        } break;
+  case OC::Transpose: { iv->transpose  += val;        } break;
+  case OC::Tune:      { iv->tune       += val;        } break;
     // using these instead of the code above breaks samplerEngine2UnitTest 
 
   case OC::Delay:     { rp->sampleTime += -val * fs;  } break;
@@ -486,19 +493,19 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
 }
 
 bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationLevel* thingToPlay,
-  double sampleRate, RegionPlayer* rp, bool busMode)
+  double sampleRate, RegionPlayer* rp, bool busMode, PlayerIntermediates* intermediates)
 {
   RAPT::rsAssert(busMode == true);
   // It makes no sense to use a GroupPlayer when not in busMode. Maybe remove the parameter
 
-  PlayerIntermediates dummy;  
+  //PlayerIntermediates dummy;  
   // I think, using a dummy is wrong an this is what and breaks the test. Yes - this seems to be 
   // the case. I guess, we need to take a PlayerIntermediates parameter that must be owned 
   // somehwere higher up
 
 
   if(thingToPlay == grpOrInstr) {
-    setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, &dummy);
+    setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, intermediates);
     return true;  }
     // This is not a new group or restart of the whole InstrumPlayer so we may only need to set up
     // those settings that affect the RegionPlayer, i.e. offset, delay, inc, etc. The other 
@@ -514,16 +521,10 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationL
     if(!assembleDspChain(busMode)) {
       grpOrInstr = nullptr;
       return false;   }
-    setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, &dummy);
-    // passing the dummy here makes the busMode test fail, whe we only set the 
-    // iv->tune, iv->transpose fields in SampleBusPlayer::setupPlayerSetting...i think, we should
-    // drag out the PlayerIntermediates of the SamplePlayer, make it globally visible, use it also
-    // for all other variables that may accumulate or override and then pass it directly to 
-    // RegionPlayer::prepareToPlay (and all related functions. RegionPlayer::setRegionToPlay should
-    // receive a pointer to such a struct
-
-
-    dspChain.prepareToPlay(sampleRate); }
+    setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, intermediates);
+    dspChain.prepareToPlay(sampleRate); 
+    rp->setupFromIntemediates(*intermediates, sampleRate); // We need to do this again
+  }
   return true;
 }
 

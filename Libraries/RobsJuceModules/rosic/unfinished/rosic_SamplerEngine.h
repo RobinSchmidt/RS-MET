@@ -484,7 +484,7 @@ protected:
   activePlayers. If no player is available (i.e. idle), this will return a nullptr. The caller
   should interpret that as a layerOverload condition and return the appropriate return code to
   its caller. */
-  RegionPlayer* getRegionPlayerFor(const Region* r, uchar key, uchar vel);
+  RegionPlayer* getRegionPlayerFor(const Region* r, uchar key, uchar vel, PlayerIntermediates* iv);
 
   /** Returns true, iff the given sample is used in the instrument definition represented by the
   given sfz */
@@ -608,6 +608,12 @@ protected:
   // todo: use a sort of multi-threaded, speculatively pre-allocating, non-deallocating dynamic 
   // array data structure for that later. The same strategy should then later be used for DSP 
   // objects as well
+
+  PlayerIntermediates intermediates;  // find a better name
+  /**< Intermediate variables used for the computation of things like per-sample increment, final 
+  amplitude etc. according to key, vel, keytrack, veltrack, tune, transpose, etc. We need to pass 
+  around such a struct from noteOn to have a place into which we can accumulate all the modifiers
+  such that the RegionPlayer itself needs ot store only the final values. */
 
   double sampleRate = 44100.0;
   /**< Sample rate at which this object runs. */
@@ -776,7 +782,7 @@ protected:
 
   /** Updates our active/idleGroupPlayer arrays according to a status change in the
   active/idleRegionPlayer arrays...tbc... */
-  void updateGroupPlayers(PlayStatusChange psc);
+  void updateGroupPlayers(PlayStatusChange psc, PlayerIntermediates* intermediates);
 
   /** Returns the index within our activeGroupPlayers array at which the group player for the given
   group is located or -1 if there is no currently active player for the given group. */
@@ -786,7 +792,7 @@ protected:
   when region players were triggered for which we do not already have an active group player in
   use. Return true, if the player could be started. If it could not be started, the caller may 
   need to take care of some cleanup (roll back the regionPlayer). */
-  bool startGroupPlayerFor(RegionPlayer* regionPlayer);
+  bool startGroupPlayerFor(RegionPlayer* regionPlayer, PlayerIntermediates* intermediates);
 
   /** Stops the groupPlayer with the given activeIndex, i.e. moves it from the activeGroupPlayers
   array to the idleGroupPlayers array. */

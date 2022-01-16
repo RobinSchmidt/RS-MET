@@ -458,8 +458,8 @@ void rsSamplerEngine::findRegion(const rsSamplerEngine::Region* r, int* gi, int*
   // this happens, it indicates a bug at the call site.
 }
 
-RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
-  const Region* r, uchar key, uchar vel)
+RegionPlayer* rsSamplerEngine::getRegionPlayerFor(const Region* r, uchar key, uchar vel, 
+  PlayerIntermediates* iv)
 {
   RAPT::rsAssert(r->getCustomPointer() != nullptr); // No stream connected
 
@@ -475,7 +475,7 @@ RegionPlayer* rsSamplerEngine::getRegionPlayerFor(
     return nullptr;  // Maybe we should implement more elaborate voice stealing?
   RegionPlayer* rp = RAPT::rsGetAndRemoveLast(idlePlayers);
   rp->setKey(key);  // why is it not enough to do it inside the "if"
-  rsReturnCode rc = rp->setRegionToPlay(r, getSampleStreamFor(r), sampleRate, busMode);
+  rsReturnCode rc = rp->setRegionToPlay(r, getSampleStreamFor(r), sampleRate, busMode, iv);
   if(rc == rsReturnCode::success)
   {
     //rp->setKey(key);
@@ -547,15 +547,17 @@ const AudioFileStream<float>* rsSamplerEngine::getSampleStreamFor(const Region* 
 rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOn(uchar key, uchar vel)
 {
   if(vel == 0) { return handleNoteOff(key, vel); }
+  intermediates.reset();
   PlayStatusChange psc;
   for(int i = 0; i < regionsForKey[key].getNumRegions(); i++) {
     const Region* r  = regionsForKey[key].getRegion(i);
-    if(!shouldRegionPlay(r, key, vel))                   // Check response constraints
+    if(!shouldRegionPlay(r, key, vel))              // Check response constraints
       continue;
-    RegionPlayer* rp = getRegionPlayerFor(r, key, vel);  // Try to create player for the new layer.
-    if(rp == nullptr) {                                  // When it fails, roll back all the
-      stopMostRecentLayers(psc.numLayersStarted);        // players created so far and abort. 
-      psc.numLayersStarted = 0;                          // We failed to trigger the note.
+    // Try to create player for the new layer:
+    RegionPlayer* rp = getRegionPlayerFor(r, key, vel, &intermediates);  
+    if(rp == nullptr) {                             // When it fails, roll back all the
+      stopMostRecentLayers(psc.numLayersStarted);   // players created so far and abort. 
+      psc.numLayersStarted = 0;                     // We failed to trigger the note.
       return psc; }
     else
       psc.numLayersStarted++; }
@@ -565,7 +567,7 @@ rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOn(uchar key, uchar
 rsSamplerEngine::PlayStatusChange rsSamplerEngine::handleNoteOff(uchar key, uchar vel)
 {
   // Note-off events may also trigger the playback of regions (note-off samples are a thing)...
-  //int numRegions = 0;
+  //intermediates.reset();  
   PlayStatusChange psc;
   for(int i = int(activePlayers.size()) - 1; i >= 0; i--)
   {
@@ -743,19 +745,19 @@ void rsSamplerEngine2::setMaxNumLayers(int newMax)
 
 rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOn(uchar key, uchar vel)
 {
+  //intermediates.reset();
   PlayStatusChange psc = rsSamplerEngine::handleNoteOn(key, vel);
   if(!canFallBackToBaseclass()) // Don't update the group players, if they are not used anyway
-    updateGroupPlayers(psc);
+    updateGroupPlayers(psc, &intermediates);
   return psc;
 }
 
 rsSamplerEngine::PlayStatusChange rsSamplerEngine2::handleNoteOff(uchar key, uchar vel)
 {
+  //intermediates.reset();
   PlayStatusChange psc = rsSamplerEngine::handleNoteOff(key, vel);
   if(!canFallBackToBaseclass())
-  {
-    updateGroupPlayers(psc);
-  }
+    updateGroupPlayers(psc, &intermediates);
   return psc;
 }
 
@@ -827,7 +829,7 @@ int rsSamplerEngine2::stopAllPlayers()
 // -in addition to move the players back into their idle pool, we also need to move the dsp
 //  objects back
 
-void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc)
+void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc, PlayerIntermediates* iv)
 {
   // Figure out, how many regions were triggered and add pointers to the freshly triggered 
   // RegionPlayers to an appropriate GroupPlayer - either to one that is already playing or grab a 
@@ -842,7 +844,7 @@ void rsSamplerEngine2::updateGroupPlayers(PlayStatusChange psc)
       activeGroupPlayers[gpi]->addRegionPlayer(rp);
       instrumPlayer.addRegionPlayer(rp); }
     else  {
-      if(!startGroupPlayerFor(rp)) {
+      if(!startGroupPlayerFor(rp, iv)) {
         stopRegionPlayer(i);
         numLayersNow--;  }
       if(numLayersBefore == 0) {          // If nothing was playing before, we have to 
@@ -865,13 +867,13 @@ int rsSamplerEngine2::getActiveGroupPlayerIndexFor(const rsSamplerData::Group* g
   return -1;
 }
 
-bool rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp)
+bool rsSamplerEngine2::startGroupPlayerFor(RegionPlayer* rp, PlayerIntermediates* intermediates)
 {
   if(idleGroupPlayers.empty())
     return false;
   GroupPlayer* gp = RAPT::rsGetAndRemoveLast(idleGroupPlayers);
   const rsSamplerData::Group* grp = rp->getRegionToPlay()->getGroup();
-  bool ok = gp->setGroupToPlay(grp, sampleRate, rp, busMode);
+  bool ok = gp->setGroupToPlay(grp, sampleRate, rp, busMode, intermediates);
   if(!ok) {
     idleGroupPlayers.push_back(gp);
     return false; } // Not enough resources to start the player. Caller should roll back rp, too
@@ -899,7 +901,7 @@ int rsSamplerEngine2::stopGroupPlayer(int i)
 
 bool rsSamplerEngine2::startInstrumPlayerFor(RegionPlayer* rp)
 {
-  return instrumPlayer.setInstrumToPlay(&sfz.instrument , sampleRate, rp, busMode);
+  return instrumPlayer.setInstrumToPlay(&sfz.instrument , sampleRate, rp, busMode, &intermediates);
 }
 
 void rsSamplerEngine2::stopInstrumPlayer()
@@ -917,9 +919,6 @@ void rsSamplerEngine2::stopInstrumPlayer()
 
 Bugs:
 -when loading a new instrument while a region is playing, it crashes
--group volume seems to work now, but instrument volume seems to be ignored...or it even get muted 
- when having a top-level volume. might be an issue with the parser -> check sfz spec
-
 
 Goals: 
 -Implement (a subset of) the feature set of the sfz specification, perhaps with some extensions 

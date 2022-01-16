@@ -70,10 +70,12 @@ seperately before we can compute the final resulting member variable (such as th
 time increment or the final amplitude scaler). To facilitate this, we pass a pointer to such a
 struct to setupPlayerSetting. */
 
-struct PlayerIntermediates
+class PlayerIntermediates
 {
-  double transpose = 0;
-  double tune = 0;
+public:
+
+  double transpose = 666;
+  double tune = 666;
   //double offset = 0; // maybe this should also be here
   // We use double not mainly because we expect a lot of error accumulation in our computations
   // (although that may be the case as well) but rather because we can easily afford it. This 
@@ -83,12 +85,22 @@ struct PlayerIntermediates
   // We don't store arrays of these things or anything like that anywhere. ...Or maybe the engine
   // should have a member variable of the type that is re-used whenever a new note is triggered
 
+private:
+
+  PlayerIntermediates()
+  {
+
+    int dummy = 0;
+  }
+
   void reset()
   {
     transpose = 0;
     tune = 0;
   }
   // maybe needed when we don't create it on the stack but rather re-use a member
+
+  friend class rsSamplerEngine;
 
 };
 // rename to SetupIntermediates and include also intermediates for the DSPs...hmm...but there's
@@ -212,7 +224,8 @@ public:
   (false). Likewise, regionSettingsOverride = true lets the region settings override the group
   settings. */
   rsReturnCode setRegionToPlay(const Region* regionToPlay, 
-    const AudioFileStream<float>* sampleStream, double outputSampleRate, bool busMode);
+    const AudioFileStream<float>* sampleStream, double outputSampleRate, bool busMode, 
+    PlayerIntermediates* iv);
   // todo: later maybe have default values (false) for the busMode 
 
   const Region* getRegionToPlay() const { return region; }
@@ -260,7 +273,7 @@ protected:
   rsReturnCode::success, it means the player is now ready to play. If it returns anything else,
   it means that something went wrong  - presumably not enough ressources were available - and the
   engine should discard the player object, i.e. put it back into the pool. */
-  rsReturnCode prepareToPlay(double sampleRate, bool busMode);
+  rsReturnCode prepareToPlay(double sampleRate, bool busMode, PlayerIntermediates* iv);
 
 
   bool assembleDspChain(bool busMode) override;
@@ -275,6 +288,10 @@ protected:
   // baseclass that we override here and in the GroupPlayer:
   void setupDspSettingsFor(const Region* r, double sampleRate, bool busMode, 
     PlayerIntermediates* iv);
+
+  void setupFromIntemediates(const PlayerIntermediates& iv, double sampleRate);
+
+
 
   //void setupDspSettings(const std::vector<PlaybackSetting>& settings,
   //  double sampleRate, bool busMode) override;
@@ -342,7 +359,8 @@ public:
     RegionPlayer* rp, PlayerIntermediates* iv) override;
 
   bool setGroupOrInstrumToPlay(const rsSamplerData::OrganizationLevel* thingToPlay, 
-    double sampleRate, RegionPlayer* regionPlayer, bool busMode);
+    double sampleRate, RegionPlayer* regionPlayer, bool busMode, 
+    PlayerIntermediates* intermediates);
   // busMode is superfluous - when a SampleBusPlayer is invoked, we are in busMode by definition
 
   virtual void releaseResources()
@@ -401,8 +419,8 @@ public:
 
   /** Sets the group that should be played back by this player. */
   bool setGroupToPlay(const rsSamplerData::Group* groupToPlay, double sampleRate, 
-    RegionPlayer* rp, bool busMode)
-  { return setGroupOrInstrumToPlay(groupToPlay, sampleRate, rp, busMode); }
+    RegionPlayer* rp, bool busMode, PlayerIntermediates* intermediates)
+  { return setGroupOrInstrumToPlay(groupToPlay, sampleRate, rp, busMode, intermediates); }
     // ...it's just a convenience function to make the call site look nicer.
 
 protected:
@@ -426,8 +444,8 @@ public:
   // implement processBlock
 
   bool setInstrumToPlay(const rsSamplerData::Instrument* instrumToPlay, double sampleRate, 
-    RegionPlayer* rp, bool busMode)
-  { return setGroupOrInstrumToPlay(instrumToPlay, sampleRate, rp, busMode); }
+    RegionPlayer* rp, bool busMode, PlayerIntermediates* intermediates)
+  { return setGroupOrInstrumToPlay(instrumToPlay, sampleRate, rp, busMode, intermediates); }
     // Convenience function to make the call site look nicer.
 
 };
