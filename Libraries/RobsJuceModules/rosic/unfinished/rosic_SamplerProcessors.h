@@ -82,6 +82,8 @@ protected:
   // MidiStatus midiStatus;
   // bool dirty = false;
   // clean, transitional
+  // uchar voice; // maybe needed for cutoff_polyaft etc. - should be passed into prepareToPlay
+  // uchar chan;  // maybe needed for cutoff_chanaft
 
   
 //private:  // doesn't compile because subclasses complain...hmm...

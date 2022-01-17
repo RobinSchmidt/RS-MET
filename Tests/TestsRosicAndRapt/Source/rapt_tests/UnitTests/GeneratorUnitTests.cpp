@@ -2581,13 +2581,9 @@ bool samplerKeyVelTrackTest()
   using FT  = rosic::Sampler::FilterType;
 
   int N = 1000;
-
-  Vec noise = createColoredNoise(N, -10.f);
-  //rsPlotVector(noise);
-
   SE se;
+  Vec noise = createColoredNoise(N, -10.f);
   addSingleSampleRegion(&se, noise);
-  //ok &= testSamplerNote(&se, 60, 127, noise, noise, 0.f, false);
 
   // Set up velocity tracking of the volume:
   float vel = 100;            // velocity for note to play
@@ -2622,7 +2618,6 @@ bool samplerKeyVelTrackTest()
 
   // Test filter keytracking by creating a sort filter-whistle patch:
   se.clearRegionSettings(0, 0); 
-  //key_track = 100.f;  // 100 cents per key
   se.setRegionSetting(0, 0, OC::filN_type, (float)FT::bp_6_6, 1);
   se.setRegionSetting(0, 0, OC::PitchKeyTrack,    0.f, -1);  // pitch shall not track key
   se.setRegionSetting(0, 0, OC::filN_keytrack,  100.f,  1);  // cutoff shall track key 100%
@@ -2645,15 +2640,8 @@ bool samplerKeyVelTrackTest()
   // be unmodified and at vel=1, the cutoff should be reduced by 1200 cents, i.e. 12 semitones, 
   // i.e. 1 octave
 
-
-
   // ToDo:
   // -Verify the formula for vel_tracking of amplitude against some reference implemenetation (sfz+)
-  // -Implement and test key/vel to volume, pitch, cutoffN
-  //  -Uncomment the new code in SampleBusPlayer::setupPlayerSetting and make the unit tests pass
-  //   with it. I think, we need to pass a PlayerIntermediates struct around all the way from 
-  //   SamplerEngine::startRegionPlayer or something. SampleBusPlayer::setGroupOrInstrumToPlay 
-  //   should (probably) not create a dummy
 
   rsAssert(ok);
   return ok;
@@ -2761,9 +2749,11 @@ bool samplerEngineUnitTest()
 
   // ToDo:
   // -implement key/vel crossfade
-  // -implement key/vel tracking for pitch/amp/cutoff
-  // -implement loop mode (done: loop_continuous, todo: one_shot, loop_sustain)
-  //  -> if these features are done, we can actually start writing some cool sfz patches
+  // -implement cutoff_ccN ..or actually cutoffN_ccX
+  //  -extend the PlayerIntermediates class to a MidiStatus class that provides the info about 
+  //   controllers, pitch-wheel, etc.
+
+  // -implement loop_mode=loop_sustain
   // -maybe keep tests for the basic SamplerEngine and samplerEngine2 (supporting busMode) in 
   //  seperate functions. We may want to be able to easily seperate out the basic implementation
   //  along with its test, if needed.

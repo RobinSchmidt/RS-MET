@@ -1,0 +1,37 @@
+The RS-MET sampler engine is built around popular sfz which is a text-based file format to specify 
+sample-based instruments.
+
+
+
+Opcode support
+##############
+
+
+
+SFZ v1
+======
+
+Player
+------
+
+sample, lokey, hikey, lovel, hivel, delay, offset, loop_mode (partial), transpose, tune, 
+pitch_keycenter, pitch_keytrack
+
+Filters
+-------
+filN_type (partial), cutoffN, resonanceN, filN_keytrack, filN_keycenter, filN_veltrack, eqN_gain,
+eqN_freq, eqN_bw
+
+Amplifiers
+----------
+
+Notes
+-----
+
+For some opcodes that include an index such as eqN_gain, cutoffN, etc. the N is optional when N=1 
+to cater for the fact that sfz1 only allowed one of those devices. These are:
+
+filN_type, cutoffN, resonanceN, filN_keytrack, filN_keycenter, filN_veltrack, volumeN, panN, 
+widthN, positionN
+
+

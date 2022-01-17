@@ -35,7 +35,7 @@ SfzCodeBook::SfzCodeBook()
   // Player playback settings:
   add(OC::Delay,  Flt, "delay",  0,        100, 0, dsp, OU::Seconds, Sfz1);
   add(OC::Offset, Nat, "offset", 0, 4294967296, 0, dsp, OU::Samples, Sfz1);
-  add(OC::Count,  Nat, "count",  0, 4294967296, 0, dsp, OU::RawInt,  Sfz1);
+  //add(OC::Count,  Nat, "count",  0, 4294967296, 0, dsp, OU::RawInt,  Sfz1);
 
   add(OC::LoopMode, Txt, "loop_mode",  (float)LoopMode::Unknown + 1.f, 
     (float)LoopMode::numModes - 1.f, (float)LoopMode::no_loop, dsp, OU::Text, Sfz1);
@@ -599,6 +599,19 @@ To add support for a new opcode, the following things need to be done:
 
 To add a new DSP class, the following things need to be done:
 ...tbc...
+
+
+Ideas for more opcodes:
+-param_mode: switch the behavior of what happens when instrument, group, region all define the same
+ parameter. The default mode specified by sfz is: "override". We could have also "accumulate" and
+ "levels_are_busses". We already have the first and last. Maybe implement also "accumulate". In 
+ this mode, for example, there is no such thing as a group filter but the cutoff specified in the 
+ group gets (somehow) accumulated into the cutoff specified by the region. Maybe simple addition
+ is indeed appropriate.
+-param_range: "sfz1", "free": decide, whether or not parameters should be restricted to the range
+ specified by sfz
+-param_quantize: some of the parameters that sfz wants to be integer can easily also admit float 
+ values. Examples: tune, transpose, loop_start, loop_end
 
 
 

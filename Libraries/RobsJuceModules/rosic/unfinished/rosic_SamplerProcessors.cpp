@@ -318,11 +318,9 @@ void rsSamplerProcessors::Amplifier::prepareToPlay(uchar key, uchar vel, double 
   float ampN_keytrack  = params[5].getValue();
   float ampN_keycenter = params[6].getValue();
 
-
   // Apply modifiers:
-  //float dB  = 40 * log10f(127.f/(float)vel);    // change of volume at given velocity
   volume += ampN_veltrack * 0.01f * 40 * log10f(127.f/(float)vel);
-  volume += ampN_keytrack * (key - ampN_keycenter);
+  volume += ampN_keytrack * ((float)key - ampN_keycenter);
   // Unit of veltrack is percent and the formula is dB = 20 log (127^2 / Velocity^2). Keytracking 
   // is adjusted in dB per key. See https://sfzformat.com/legacy/
 
@@ -520,6 +518,20 @@ void SignalProcessorPool::repositProcessor(SignalProcessor* p)
 /*
 
 Notes:
+
+Modulators should be stereo. Stereo LFOs should have a parameter for the phase offset between 
+modulator for left and right channel. For envelopes, maybe a delay would be more appropriate.
+
+Maybe use rsFloat32x4 to pass around signals. We could use the 4 channels for L/R/M/S and process
+all simultaneously. ...but for delayline based effects, that may imply to double the memory 
+requirements. If a filter is modulated by a stereo LFO, it would also need stereo fields for its
+coeffs. For the state vars, this is needed anyway. Or maybe all effects should have an opcode
+stereo_mode with options: linked, left_right, mid_side. How would we realize a mid/side eq, for 
+example? Maybe we need opcodes eqN_gain_left, eqN_gain_right, eqN_gain_mid, eqN_gain_side which
+accumulate to the global eqN_gain opcode? But how would that work for a cutoff of a lowpass?
+Maybe we should have stereo and/or 4 channels versions of the effects and select from those 
+options according to which opcodes are defined.
+
 
 rsSamplerFilter:
  -Maybe make also a struct for very basic 1-pole/1-zero filter. It can be realized by the biquad 

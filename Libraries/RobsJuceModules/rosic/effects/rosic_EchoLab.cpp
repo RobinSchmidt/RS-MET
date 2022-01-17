@@ -422,6 +422,12 @@ double EchoLab::getDelayLineParameterThreadSafe(int parameterIndex, int delayLin
   return result;
 }
 
+/*
 
+Ideas:
+-Instead of allowing only feedback of a delayline to itself, allow crossfeedback between all 
+ delaylines. Use a (sparse) feedback matrix of coeffs and filters.
+
+*/
 
 
