@@ -325,23 +325,21 @@ public:
 
 //=================================================================================================
 
-/** A class for storing a pool of SignalProcessor objects...tbc... */
+/** A class for storing a pool of Effect objects...tbc... */
 
-class SignalProcessorPool  // rename to EffectPool
+class EffectPool  // rename to EffectPool
 {
 
 public:
 
-  SignalProcessorPool();
+  EffectPool();
 
-  ~SignalProcessorPool();
+  ~EffectPool();
 
   /** Allocates the processors. */
   void allocateProcessors();
   // todo: Let it have an argument that somehow specifies, how many of each type should be 
   // allocated. Maybe that could be a reference to the sfz-data itself or something derived from it
-
-
 
 
   /** A client can request a effect of the given type. If a effect of the desired type is 
@@ -390,7 +388,7 @@ protected:
 
 struct DspResourcePool
 {
-  SignalProcessorPool processorPool;  // rename to EffectPool
+  EffectPool processorPool;  // rename to effectPool
   //ModulatorPool modulatorPool;
   //ConnectionPool connectionPool;
 };

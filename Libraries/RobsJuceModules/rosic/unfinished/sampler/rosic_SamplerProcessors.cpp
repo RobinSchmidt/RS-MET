@@ -178,18 +178,18 @@ void rsSamplerEffects::Filter::processBlock(float* L, float* R, int N)
 
 //=================================================================================================
 
-SignalProcessorPool::SignalProcessorPool()
+EffectPool::EffectPool()
 {
   allocateProcessors();
   // Maybe don't do this on construction. Maybe client code should explicitly request this
 }
 
-SignalProcessorPool::~SignalProcessorPool()
+EffectPool::~EffectPool()
 {
 
 }
 
-void SignalProcessorPool::allocateProcessors()
+void EffectPool::allocateProcessors()
 {
   amplifiers.init(64);
   filters.init(64);
@@ -207,39 +207,9 @@ void SignalProcessorPool::allocateProcessors()
 }
 
 
-/*
-template<class T> // Grow v by given amount
-inline void rsGrow(std::vector<T>& v, size_t amount = 1)
-{
-  v.resize(v.size() + amount);
-}
-template<class T> // Shrink v by given amount
-inline void rsShrink(std::vector<T>& v, size_t amount = 1)
-{
-  RAPT::rsAssert(v.size() >= amount);
-  v.resize(v.size() - amount);
-}
-template<class T> // Pointer to last element in v
-inline T* rsLastPointer(std::vector<T>& v)
-{
-  RAPT::rsAssert(!v.empty());
-  return &v[v.size()-1];
-}
-template<class T> // Pointer to last element, shrink by 1
-inline T* rsGetLastPtrAndShrink(std::vector<T>& v)
-{
-  if(v.empty())
-    return nullptr;
-  T* p = rsLastPointer(v);
-  rsShrink(v);
-  return p;
-}
-*/
-// Maybe move to rapt ...hmm...not needed anymore...perhaps delete...not sure, if they are useful
-// enough in general to include in the library. Maybe create a file where we can deposit code that
-// may become useful later
 
-Effect* SignalProcessorPool::grabProcessor(DspType type)
+
+Effect* EffectPool::grabProcessor(DspType type)
 {
   using SPT = DspType;
   Effect* p = nullptr;
@@ -253,7 +223,7 @@ Effect* SignalProcessorPool::grabProcessor(DspType type)
   return p;
 }
 
-void SignalProcessorPool::repositProcessor(Effect* p)
+void EffectPool::repositProcessor(Effect* p)
 {
   using SPT = DspType;
   int i = -1;

@@ -137,7 +137,36 @@ bool rsObjectPool<T>::isInConsistentState()
 }
 
 
-
+/*
+template<class T> // Grow v by given amount
+inline void rsGrow(std::vector<T>& v, size_t amount = 1)
+{
+  v.resize(v.size() + amount);
+}
+template<class T> // Shrink v by given amount
+inline void rsShrink(std::vector<T>& v, size_t amount = 1)
+{
+  RAPT::rsAssert(v.size() >= amount);
+  v.resize(v.size() - amount);
+}
+template<class T> // Pointer to last element in v
+inline T* rsLastPointer(std::vector<T>& v)
+{
+  RAPT::rsAssert(!v.empty());
+  return &v[v.size()-1];
+}
+template<class T> // Pointer to last element, shrink by 1
+inline T* rsGetLastPtrAndShrink(std::vector<T>& v)
+{
+  if(v.empty())
+    return nullptr;
+  T* p = rsLastPointer(v);
+  rsShrink(v);
+  return p;
+}
+*/
+// Not used anymore and I'm not sure, if they are useful enough in general to include in the 
+// library.
 
 
 }
