@@ -155,6 +155,22 @@ std::vector<T> rsApplyResampling(std::vector<T>& x, T readSpeed)
   return y;
 }
 
+std::vector<float> rsApplyFilter(std::vector<float>& x, rosic::Sampler::FilterType type, 
+  float cutoff, float sampleRate, float resonance)
+{
+  int N = (int)x.size();
+  std::vector<float> y(N);
+  using FilterDsp  = rosic::Sampler::rsSamplerProcessors::Filter;
+  using FilterCore = rosic::Sampler::FilterCore;
+  FilterCore flt;
+  float omega = float(2*PI) * cutoff / sampleRate;
+  flt.setupCutRes(FilterDsp::convertTypeEnum(type), omega, resonance);
+  for(int n = 0; n < N; n++) {
+    y[n] = x[n]; float dummy;
+    flt.processFrame(&y[n], &dummy); }
+  return y;
+}
+
 template<class T>
 T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
 {
@@ -378,7 +394,7 @@ bool testSamplerOutput(rosic::Sampler::rsSamplerEngine* se,
   float errL = AT::maxDeviation(&outL[0], &targetL[0], N);
   float errR = AT::maxDeviation(&outR[0], &targetR[0], N);
   if(plot)
-    rsPlotVectors(targetL, targetR, outL, outR);
+    rsPlotVectors(targetL, targetR, outL, outR, targetL-outL, targetR-outR);
   return errL <= tol && errR <= tol;
 }
 
@@ -2602,7 +2618,7 @@ bool samplerKeyVelTrackTest()
   key_track = 50.f;              // 50 cents per key
   se.setRegionSetting(0, 0, OC::PitchKeyTrack, key_track, -1);
   Vec tgt = rsApplyResampling(noise, 2.f);
-  ok &= testSamplerNote(&se, 84, vel, tgt, tgt, 0.f, false);  // 60 + 2*12 = 84
+  ok &= testSamplerNote(&se, 84, vel, tgt, tgt, 0.f, false);  // 84 = 60 + 2*12
 
   // Test filter keytracking by creating a sort filter-whistle patch:
   se.clearRegionSettings(0, 0); 
@@ -2613,10 +2629,13 @@ bool samplerKeyVelTrackTest()
   se.setRegionSetting(0, 0, OC::filN_keycenter,  69.f,  1);  // A4 is the neutral key
   se.setRegionSetting(0, 0, OC::cutoffN,        440.f,  1);  // at A4, cutoff is 440
   se.setRegionSetting(0, 0, OC::resonanceN,      40.f,  1);  // we use high resonance
-  //tgt = rsApplyFilter(noise, FT::bp_6_6, 880.f, 40.f);  // to be written
-  Vec outL(N), outR(N);
-  getSamplerNote(&se, 81, vel, outL, outR);
-  rsPlotVector(outL);
+  float fs = (float)se.getOutputSampleRate();
+  tgt = rsApplyFilter(noise, FT::bp_6_6, 880.f, fs, 40.f); 
+  ok &= testSamplerNote(&se, 81, vel, tgt, tgt, 2.e-5, false); // 81 = 69 + 12
+
+  //Vec outL(N), outR(N);
+  //getSamplerNote(&se, 81, vel, outL, outR);
+  //rsPlotVector(outL);
 
 
   // ToDo:

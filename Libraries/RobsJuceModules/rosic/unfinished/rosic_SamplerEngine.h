@@ -360,7 +360,8 @@ public:
   the given path is relative and prepends the sfzDir in the returned string */
   std::string getAbsolutePath(const char* path, bool pathIsAbsolute = false) const;
 
-
+  /** Returns the sample rate at which this engine runs, i.e. produces its output. */
+  double getOutputSampleRate() const { return sampleRate; }
 
   //-----------------------------------------------------------------------------------------------
   // \name Processing

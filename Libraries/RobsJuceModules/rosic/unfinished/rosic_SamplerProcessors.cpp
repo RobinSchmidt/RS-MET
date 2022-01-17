@@ -393,9 +393,20 @@ void rsSamplerProcessors::Filter::prepareToPlay(uchar key, uchar vel, double fs)
   float veltrack  = params[5].getValue();
 
   // Apply modifiers to cutoff:
-  float pitchOffset = ((float)key - keycenter) * keytrack * 0.01;
+  float pitchOffset = ((float)key - keycenter) * keytrack * 0.01f;
+
+  // ToDo: implement velocity tracking - figure out the formula
+  //pitchOffset += veltrack * 
+  // range is -9600 to 9600 cents...maybe when the velocity is 1, the cutoff should be changed by
+  // this many cents? sfz seem to use full velocity as reference value (at least for amplitude).
+  // So we need a function that produces 0 for 127 and 1 for 1
+  float scl = 1.f - (vel/127.f);          // just a guess...or maybe (vel-1)/(127-1)
+  pitchOffset += veltrack * 0.01f * scl;   // ...this too
+  // i have no idea, if that's the right formula - it may be totally wrong
+  // refer to this:
+  //volume += ampN_veltrack * 0.01f * 40 * log10f(127.f/(float)vel);
+
   cutoff *= RAPT::rsPitchOffsetToFreqFactor(pitchOffset);
-  //cutoff *= ... // apply veltrack
 
   // Set up core:
   core.setupCutRes(coreType, cutoff*float(2*PI/fs), resonance);

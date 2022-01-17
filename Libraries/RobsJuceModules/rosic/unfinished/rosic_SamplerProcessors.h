@@ -249,7 +249,7 @@ public:
   /** Sets the filter up in terms of cutoff (or center) frequency as normalized radian frequency 
   and resonance in decibels. This parametrization is suitable when used to implement the filter
   opcodes in sfz. */
-  void setupCutRes(Type type, float cutoff, float resonance);
+  void setupCutRes(Type type, float cutoffOmega, float resonance);
 
   /** Sets the filter up in terms of gain (in decibels), frequency (normalized radian) and 
   bandwidth (in octaves). This parametrization is suitable when used for the equalizer opcodes in 
@@ -494,34 +494,12 @@ public:
   public:
 
     Filter();
-    //{ 
-    //  type = DspType::Filter;
-    //  params.reserve(3);
-    //  addParameter(Opcode::filN_type);
-    //  addParameter(Opcode::cutoffN);
-    //  addParameter(Opcode::resonanceN);   // in sfz, this is a gain in dB
-    //  //addParameter(Opcode::FilterBandwidth);
-    //}
     void prepareToPlay(uchar key, uchar vel, double fs) override;
-    //{ 
-    //  FilterType sfzType = (FilterType)(int)params[0].getValue();
-    //  FilterCore::Type coreType = convertTypeEnum(sfzType);
-    //  core.setupCutRes(
-    //    coreType,
-    //    params[1].getValue() * float(2*PI/fs),
-    //    params[2].getValue());
-    //  core.resetState();
-    //}
     void processFrame(float* L, float* R) override; //{ core.processFrame(L, R); }
     void processBlock(float* L, float* R, int N) override;
-    //{
-    //  for(int n = 0; n < N; n++)
-    //    processFrame(&L[n], &R[n]);
-    //}
+ 
 
-  protected:
-
-    FilterCore::Type convertTypeEnum(FilterType sfzType)
+    static FilterCore::Type convertTypeEnum(FilterType sfzType)
     {
       // Conversion of filter type enum values used in the sfz data and those used in the dsp core.
       // Maybe we should try to avoid the translation step between the core-enum and sfz-enum by 
@@ -554,6 +532,8 @@ public:
     }
     // todo: avoid this conversion - use the same enum in both, the sfz codebook and the 
     // FilterCore just like we do with the waveshaper's distortion shapes
+
+  protected:
 
     FilterCore core;
   };
