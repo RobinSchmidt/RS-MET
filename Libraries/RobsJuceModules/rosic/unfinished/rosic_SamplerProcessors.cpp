@@ -357,6 +357,10 @@ void rsSamplerProcessors::Amplifier::processBlock(float* L, float* R, int N)
     processFrame(&L[n], &R[n]);
 }
 
+//-------------------------------------------------------------------------------------------------
+
+
+
 //=================================================================================================
 
 SignalProcessorPool::SignalProcessorPool()

@@ -42,10 +42,12 @@ enum class Opcode
 
   // Filter:
   /*FilType, Cutoff,*/ CutoffCtrlN, CutoffChanAft, CutoffPolyAft, /*Resonance,*/
-  FilKeyTrack, FilKeyCenter, FilVelTrack, FilRandom,
+  /*FilKeyTrack, FilKeyCenter, FilVelTrack,*/ FilRandom,
 
   // new filter opcodes, adorned with index:
   filN_type, cutoffN, resonanceN,
+  filN_keytrack, filN_keycenter, filN_veltrack, 
+
   // todo: complete the list, then delete old, unindexed opcodes
 
 
@@ -161,7 +163,7 @@ enum class FilterType // maybe rename to fil_type for consistency with sfz
   off,           // maybe remove - it's not defined in sfz
 
   lp_6, lp_12, hp_6, hp_12, bp_6_6, br_6_6, // SFZ 1.0 types
-  // use lpf_1p, hpf_1p, lpf_2p, hpf_2p, bpf_2p, brf_2p
+  // use lpf_1p, hpf_1p, lpf_2p, hpf_2p, bpf_2p, brf_2p  as in sfz spec
 
 
   // My own additional types: ls stands for "low-shelf", hs for "high-shelf", pk for "peak" aka
@@ -476,17 +478,18 @@ protected:
 
   /** Structure for one record in our little database of sfz opcodes. */
   struct OpcodeEntry
-  {                         // Example
-    Opcode       op;        // Opcode::volume
-    OpcodeFormat format;    // OpcodeFormat::Float
-    std::string  text;      // "volume"
-    float        minVal;    // -144
-    float        maxVal;    //   +6
-    float        defVal;    //    0
-    //float        neutVal; //    0 neutral value (some sfz defaults, like width, seem not to be)
-    DspType      dsp;       // DspType::Amplifier
-    OpcodeUnit   unit;      // OpcodeUnit::Decibels
-    OpcodeSpec   spec;      // OpcodeSpec::Sfz_1
+  {                           // Example    ...maybe use width opcode as example
+    Opcode       op;          // Opcode::volume
+    OpcodeFormat format;      // OpcodeFormat::Float
+    std::string  text;        // "volume"
+    float        minVal;      // -144
+    float        maxVal;      //  +12
+    float        defVal;      //    0
+    //float        neutVal;   //    0 neutral value (some sfz defaults, like width, seem not to be)
+    DspType      dsp;         // DspType::Amplifier
+    OpcodeUnit   unit;        // OpcodeUnit::Decibels
+    OpcodeSpec   spec;        // OpcodeSpec::Sfz_1
+    //std::string  comment;   // "Maximum in sfz spec is 6dB. We extend it to +12 dB."
   };
   std::vector<OpcodeEntry> opcodeEntries; /**< Our lookup table of records. */
 

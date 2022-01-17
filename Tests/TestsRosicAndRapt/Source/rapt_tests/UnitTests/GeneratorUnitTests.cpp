@@ -2562,6 +2562,7 @@ bool samplerKeyVelTrackTest()
   using Vec = std::vector<float>;
   using SE  = rosic::Sampler::rsSamplerEngineTest;
   using OC  = rosic::Sampler::Opcode;
+  using FT  = rosic::Sampler::FilterType;
 
   int N = 1000;
 
@@ -2598,14 +2599,23 @@ bool samplerKeyVelTrackTest()
   // Test pitch-keytracking by setting it to 50% (or 50 cents per key), triggering a note 2 octaves
   // above the pitch_keycenter and verify that it gets transposed only by one octave:
   se.clearRegionSettings(0, 0);  // resets keycenter to the default of 60, removes veltrack stuff
-  se.setRegionSetting(0, 0, OC::PitchKeyTrack, 50.f, -1);
+  key_track = 50.f;              // 50 cents per key
+  se.setRegionSetting(0, 0, OC::PitchKeyTrack, key_track, -1);
   Vec tgt = rsApplyResampling(noise, 2.f);
   ok &= testSamplerNote(&se, 84, vel, tgt, tgt, 0.f, false);  // 60 + 2*12 = 84
 
-  // Test filter keytracking:
+  // Test filter keytracking by creating a sort filter-whistle patch:
   se.clearRegionSettings(0, 0); 
-
-  //rsPlotVector(tgt);
+  key_track = 100.f;  // 100 cents per key
+  se.setRegionSetting(0, 0, OC::filN_type, (float)FT::bp_6_6, 1);
+  se.setRegionSetting(0, 0, OC::filN_keytrack, key_track, 1);
+  se.setRegionSetting(0, 0, OC::filN_keycenter,     69.f, 1);
+  se.setRegionSetting(0, 0, OC::cutoffN,           440.f, 1);
+  se.setRegionSetting(0, 0, OC::resonanceN,         40.f, 1);
+  //tgt = rsApplyFilter(noise, FT::bp_6_6, 440.f, 40.f);  // to be written
+  Vec outL(N), outR(N);
+  getSamplerNote(&se, 81, vel, outL, outR);
+  rsPlotVector(outL);
 
 
   // ToDo:

@@ -89,19 +89,25 @@ SfzCodeBook::SfzCodeBook()
   // Maybe I should derive a formula for Q in terms of the resonance gain. The formula for the peak
   // gain would probably be more complicated.
 
-  // Player amplifier:
-  //dsp = DspType::SamplePlayer;  // use Amplifier later
-  //add(OC::Volume, Flt, "volume", -144.f,   +6.f, 0.f, dsp, OU::Decibels, Sfz1);
-  //add(OC::Pan,    Flt, "pan",    -100.f, +100.f, 0.f, dsp, OU::RawFloat, Sfz1);  // obsolete
+  add(OC::filN_keytrack,  Int, "filN_keytrack",     0.f, 1200.f,  0.f, dsp, OU::CentPerKey, Sfz1);
+  add(OC::filN_keycenter, Int, "filN_keycenter",    0.f,  127.f, 60.f, dsp, OU::MidiKey,     Sfz1);
+  add(OC::filN_veltrack,  Int, "filN_veltrack", -9600.f, 9600.f,  0.f, dsp, OU::Cents,       Sfz1);
+  // ToDo: allow floating point values and use -1200 as min for keytrack...actually, we do not need
+  // to do anything for this - there is no enforcement of limits anywhere in the code anyway...but
+  // maybe there should be? but maybe that can be switched off by another opcode like
+  // param_limits=sfz1, param_limits=none, param_limits
 
+
+
+  // Player amplifier:
   dsp = DspType::Amplifier; 
   add(OC::volumeN,   Flt, "volumeN",   -144.f,   +6.f,   0.f, dsp, OU::Decibels, Sfz1e);
   add(OC::panN,      Flt, "panN",      -100.f, +100.f,   0.f, dsp, OU::RawFloat, Sfz1e);
   add(OC::widthN,    Flt, "widthN",    -100.f, +100.f, 100.f, dsp, OU::Percent,  Sfz1e);
   add(OC::positionN, Flt, "positionN", -100.f, +100.f,   0.f, dsp, OU::Percent,  Sfz1e);
-  add(OC::ampN_keytrack,  Flt, "ampN_keytrack", -96.0f, 12.f, 0.f, dsp, OU::DecibelPerKey, Sfz1);
-  add(OC::ampN_keycenter, Flt, "ampN_keycenter", 0.0f, 127.f, 60.f, dsp, OU::MidiKey, Sfz1);
-  add(OC::ampN_veltrack,  Flt, "ampN_veltrack", -100.0f, 100.f, 0.f, dsp, OU::Percent, Sfz1);
+  add(OC::ampN_keytrack,  Flt, "ampN_keytrack", -96.0f, 12.f, 0.f, dsp, OU::DecibelPerKey, Sfz1e);
+  add(OC::ampN_keycenter, Flt, "ampN_keycenter", 0.0f, 127.f, 60.f, dsp, OU::MidiKey, Sfz1e);
+  add(OC::ampN_veltrack,  Flt, "ampN_veltrack", -100.0f, 100.f, 0.f, dsp, OU::Percent, Sfz1e);
   // Wait! The spec says that the default value for width is 0%. 
   // https://sfzformat.com/legacy/
   // But that's not a neutral value! It will monoize the samples by default? is that right or is 
@@ -589,6 +595,7 @@ To add support for a new opcode, the following things need to be done:
 -If the opcode's values are of textual type, new enums for the possible choices have to be defined 
  and appropriate conversion functions need to be added to SfzCodeBook, see enum LoopMode, 
  SfzCodeBook::stringToLoopMode, SfzCodeBook::loopModeToString
+-Probably a unit test should be written and added to the suite
 
 To add a new DSP class, the following things need to be done:
 ...tbc...
