@@ -2576,8 +2576,10 @@ bool samplerKeyVelTrackTest()
   se.clearRegionSettings(0, 0);  // resets keycenter to the default of 60, removes veltrack stuff
   se.setRegionSetting(0, 0, OC::PitchKeyTrack, 50.f, -1);
   Vec tgt = rsApplyResampling(noise, 2.f);
-  ok &= testSamplerNote(&se, 84, vel, tgt, tgt, 0.f, true);  // 60 + 2*12 = 84
-  // does not yet work
+  ok &= testSamplerNote(&se, 84, vel, tgt, tgt, 0.f, false);  // 60 + 2*12 = 84
+
+  // Test filter keytracking:
+  se.clearRegionSettings(0, 0); 
 
   //rsPlotVector(tgt);
 
@@ -2589,7 +2591,6 @@ bool samplerKeyVelTrackTest()
   //   with it. I think, we need to pass a PlayerIntermediates struct around all the way from 
   //   SamplerEngine::startRegionPlayer or something. SampleBusPlayer::setGroupOrInstrumToPlay 
   //   should (probably) not create a dummy
-
 
   rsAssert(ok);
   return ok;

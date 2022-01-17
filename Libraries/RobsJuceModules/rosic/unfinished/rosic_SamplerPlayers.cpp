@@ -380,11 +380,11 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode,
   // but only if not in bus-mode in which case the group and instrument settings apply to separate
   // DSP objects on the groups which map to sub-busses and the instrument which maps to the final
   // master bus:
-  if(!busMode)
-    setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, this, busMode, iv);
-  if(!busMode)
-    setupDspSettings(region->getGroup()->getSettings(), fs, this, busMode, iv);
+  if(!busMode) {
+    setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, this, busMode, iv);  
+    setupDspSettings(region->getGroup()->getSettings(), fs, this, busMode, iv); }
   setupDspSettings(region->getSettings(), fs, this, busMode, iv);
+  // Works for accumulative setting but not for those that should awlays override
 
   // Compute the final member variables from the intemediates:
   setupFromIntemediates(*iv, fs);
@@ -398,13 +398,13 @@ void RegionPlayer::setupFromIntemediates(const PlayerIntermediates& iv, double f
   // This may get called twice on noteOn in busMode -> verify and try to avoid the first call
 
   // Compute the per-sample increment:
-  float pitch_keycenter = region->getSettingValue(Opcode::PitchKeyCenter, -1, false);
-  // get rid - use iv.pitch_keycenter
 
   // old:
+  //float pitch_keycenter = region->getSettingValue(Opcode::PitchKeyCenter, -1, false);
   //double pitchOffset = double(key) - pitch_keycenter + iv.transpose + 0.01 * iv.tune; 
 
   // new:
+  float pitch_keycenter = iv.pitch_keycenter;
   double pitchOffset = 0.01 * iv.pitch_keytrack * (double(key) - pitch_keycenter) 
     + iv.transpose + 0.01 * iv.tune;
 
@@ -448,15 +448,15 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   switch(s.getType())
   {
   // Player:
-  //case TP::PitchKeyCenter: { rootKey    = val; } break;  // done by caller
-  case OC::PitchKeyTrack: { iv->pitch_keytrack =  val;           } break;
-  case OC::Transpose:     { iv->transpose      =  val;           } break;
-  case OC::Tune:          { iv->tune           =  val;           } break;
-  case OC::Delay:         { sampleTime    = -val * sampleRate;   } break;
-  case OC::Offset:        { offset        =  val;                } break;
-  case OC::LoopMode:      { loopMode      = (LoopMode)(int) val; } break;  
-  case OC::LoopStart:     { loopStart     =  val;                } break;
-  case OC::LoopEnd:       { loopEnd       =  val;                } break;
+  case OC::PitchKeyCenter: { iv->pitch_keycenter = val;           } break; // was done by caller before
+  case OC::PitchKeyTrack:  { iv->pitch_keytrack  = val;           } break;
+  case OC::Transpose:      { iv->transpose       = val;           } break;
+  case OC::Tune:           { iv->tune            = val;           } break;
+  case OC::Delay:          { sampleTime    = -val * sampleRate;   } break;
+  case OC::Offset:         { offset        =  val;                } break;
+  case OC::LoopMode:       { loopMode      = (LoopMode)(int) val; } break;  
+  case OC::LoopStart:      { loopStart     =  val;                } break;
+  case OC::LoopEnd:        { loopEnd       =  val;                } break;
 
   // Tracking:
   case OC::ampN_veltrack: { 
@@ -501,6 +501,17 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
   switch(s.getType())
   {
   // Player:
+  /*
+  case OC::PitchKeyCenter: 
+  { 
+    // keycenter needs different handling - we can't just add values to accumulate
+    float delta = val - iv->pitch_keycenter;
+    iv->pitch_keycenter += delta;
+    // todo: verify, if that works as intended - define pitch_keycenter only for the group and see, 
+    // if that works as intended - i'm not sure, if that makes sense at all
+  } break;
+  */
+
   case OC::PitchKeyTrack: { iv->pitch_keytrack += val;        } break;
   case OC::Transpose:     { iv->transpose      += val;        } break;
   case OC::Tune:          { iv->tune           += val;        } break;
@@ -517,6 +528,21 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
   // revert the behavior to override mode which may make most sense for most settings - certainly
   // for stuff like loop_mode, loop_start, etc. - there is no meaningful way for this setting to
   // accumulate
+
+  // hmmm...the PitchKeyCenter stuff doesn't work. the probelm is that in busMode, we call
+  // RegionPlayer::setupPlayerSetting for the region first and *then* call 
+  // SampleBusPlayer::setupPlayerSetting for the Group and Instrument, so if we would just set the
+  // value here, we would override the region's settings - exactly the opposite of what should 
+  // happen. Maybe we could fix this always calling in RegionPlayer::setupDspSettingsFor all 3
+  // setup functions without using the if(!busMode) conditional. Then, for any setting that should 
+  // always override (and never accumulate), we just leave out the respective branch here. ...We
+  // really need to call all 3 in any case to make sure that a pitch_keycenter defined in a group 
+  // becomes effective as fallback value, even when in busMode...but what if for some opcode the
+  // region has no definition? Then the group-value will be applied twice, i.e. it will accumulate
+  // to itself...maybe we need a second pass. seems like in busMode, we need the following call 
+  // sequence:
+  //  (1) set all parameters to their defaults
+  //
 }
 
 bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationLevel* thingToPlay,

@@ -321,7 +321,7 @@ void rsSamplerProcessors::Amplifier::prepareToPlay(uchar key, uchar vel, double 
 
   // Apply modifiers:
   //float dB  = 40 * log10f(127.f/(float)vel);    // change of volume at given velocity
-  volume += ampN_veltrack * 0.01 * 40 * log10f(127.f/(float)vel);
+  volume += ampN_veltrack * 0.01f * 40 * log10f(127.f/(float)vel);
   volume += ampN_keytrack * (key - ampN_keycenter);
   // Unit of veltrack is percent and the formula is dB = 20 log (127^2 / Velocity^2). Keytracking 
   // is adjusted in dB per key. See https://sfzformat.com/legacy/

@@ -17,7 +17,7 @@ public:
   Parameter(Opcode opcode)
   {
     this->opcode = opcode;
-    //this->value  = OpcodeDefaultValues[opcode];
+    //this->value  = SfzCodeBook::getInstance()->getDefaultValue(opcode); // maybe do this later
   }
 
   // Setup:
@@ -32,7 +32,8 @@ public:
 protected:
 
   Opcode opcode = Opcode::Unknown;
-  float value = 0.f; 
+  float value = 0.f;        // maybe rename to nominalValue, maybe init to 666
+  // float modulatedValue;  // ...later, for modulation
 };
 
 /** Baseclass for signal processors that can be applied to layers while they are the played back.
