@@ -400,9 +400,11 @@ void rsSamplerProcessors::Filter::prepareToPlay(uchar key, uchar vel, double fs)
   // range is -9600 to 9600 cents...maybe when the velocity is 1, the cutoff should be changed by
   // this many cents? sfz seem to use full velocity as reference value (at least for amplitude).
   // So we need a function that produces 0 for 127 and 1 for 1
-  float scl = 1.f - (vel/127.f);          // just a guess...or maybe (vel-1)/(127-1)
+  //float scl = 1.f - (vel/127.f);          // just a guess...or maybe (vel-1)/(127-1)
+  float scl = 1.f - ((vel-1)/126.f);       // 0 at vel = 127, 1 at vel = 1
   pitchOffset += veltrack * 0.01f * scl;   // ...this too
   // i have no idea, if that's the right formula - it may be totally wrong
+  // -1200 should lead to the cutoff being halved when velocity = 1
   // refer to this:
   //volume += ampN_veltrack * 0.01f * 40 * log10f(127.f/(float)vel);
 
@@ -576,6 +578,8 @@ rsSamplerWaveShaper:
  transformation.
  -for tanh, maybe try functions like tanh(a*x^b), tanh(a*x+b*x^3), tanh(sinh(a*x)/x), 
   tanh((a*x+b*x^3)/(c*x+d*x^3))
+ -try tanh(asinh(a*x)/a) or asinh(tanh(a*x)/a)  
+  https://www.desmos.com/calculator/uiobrmwgyy, https://www.desmos.com/calculator/go7o7j6eil
 
 rsSamplerAmplifier:
 -internal algo parameters should be gLL, gLR, gRL, gRR - the 4 gains for the channel-mix matrix

@@ -2633,9 +2633,18 @@ bool samplerKeyVelTrackTest()
   tgt = rsApplyFilter(noise, FT::bp_6_6, 880.f, fs, 40.f); 
   ok &= testSamplerNote(&se, 81, vel, tgt, tgt, 2.e-5, false); // 81 = 69 + 12
 
-  //Vec outL(N), outR(N);
-  //getSamplerNote(&se, 81, vel, outL, outR);
-  //rsPlotVector(outL);
+  // Test vel-tracking:
+  vel_track = -1200.f;  // -12 semitones reduction at min-vel, i.e. vel=1
+  se.setRegionSetting(0, 0, OC::filN_veltrack, vel_track,  1); 
+  tgt = rsApplyFilter(noise, FT::bp_6_6, 440.f, fs, 40.f); 
+  ok &= testSamplerNote(&se, 69, 127, tgt, tgt, 4.e-5, false);  // at key=69, keytrack should be neutral
+  tgt = rsApplyFilter(noise, FT::bp_6_6, 220.f, fs, 40.f); 
+  ok &= testSamplerNote(&se, 69, 1, tgt, tgt, 0.00015, false);
+  // We need quite high tolerances here. I'm not sure about the veltrack formula - it's just a 
+  // guess based on what i think, the behavior should be. I think, at vel = 127, the cutoff should 
+  // be unmodified and at vel=1, the cutoff should be reduced by 1200 cents, i.e. 12 semitones, 
+  // i.e. 1 octave
+
 
 
   // ToDo:
