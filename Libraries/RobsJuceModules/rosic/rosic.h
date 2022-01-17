@@ -439,11 +439,12 @@
 #include "unfinished/rosic_ModalSynth.h"
 
 #include "unfinished/rosic_AudioStream.h"
-#include "unfinished/rosic_SfzCodeBook.h"
-#include "unfinished/rosic_SamplerData.h"
-#include "unfinished/rosic_SamplerProcessors.h"
-#include "unfinished/rosic_SamplerPlayers.h"
-#include "unfinished/rosic_SamplerEngine.h"
+
+#include "unfinished/sampler/rosic_SfzCodeBook.h"
+#include "unfinished/sampler/rosic_SamplerData.h"
+#include "unfinished/sampler/rosic_SamplerProcessors.h"
+#include "unfinished/sampler/rosic_SamplerPlayers.h"
+#include "unfinished/sampler/rosic_SamplerEngine.h"
 
 // third party:
 #include "_third_party/SampleTailExtender/SampleTailExtender.h"

@@ -1104,7 +1104,9 @@ Problem:
  the sample-time and compute the envelope without keeping state for each - but these are 
  optimization concerns to be addressed later
 
-
+ToDo:
+-Maybe factor out from rosic into its own module, just like was done with romos. Maybe call it 
+ rosa, rose or rosae or Rob's Sampler Engine... i think, i like rose
 
 
 

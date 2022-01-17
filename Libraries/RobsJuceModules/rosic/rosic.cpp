@@ -336,12 +336,12 @@ rosic: rs_dsp (this should never depend on any juce class/module)
 #include "unfinished/rosic_ModalFilterBank.cpp"
 #include "unfinished/rosic_ModalSynth.cpp"
 
-#include "unfinished/rosic_AudioStream.cpp"
-#include "unfinished/rosic_SfzCodeBook.cpp"
-#include "unfinished/rosic_SamplerData.cpp"
-#include "unfinished/rosic_SamplerProcessors.cpp"
-#include "unfinished/rosic_SamplerPlayers.cpp"
-#include "unfinished/rosic_SamplerEngine.cpp"
+#include "unfinished/sampler/rosic_AudioStream.cpp"
+#include "unfinished/sampler/rosic_SfzCodeBook.cpp"
+#include "unfinished/sampler/rosic_SamplerData.cpp"
+#include "unfinished/sampler/rosic_SamplerProcessors.cpp"
+#include "unfinished/sampler/rosic_SamplerPlayers.cpp"
+#include "unfinished/sampler/rosic_SamplerEngine.cpp"
 
 
 // third party:
