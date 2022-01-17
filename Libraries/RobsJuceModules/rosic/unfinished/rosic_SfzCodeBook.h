@@ -261,7 +261,7 @@ enum class OpcodeUnit
   Text, Index, RawInt, RawFloat,                                 // Raw
   Hertz, Octaves, Semitones, Cents, MidiKey,                     // Frequency
   Seconds, Samples, //Beats, //Milliseconds, //BeatsOrSeconds,   // Time
-  Percent, Decibels, DecibelPerKey, //Degrees,                        // Misc
+  Percent, Decibels, DecibelPerKey, CentPerKey, //Degrees,       // Misc
   NumUnits
 
   // The MidiKey can be given as midi note number, e.g. 61 or as string e.g. c#4. We need to allow
@@ -474,18 +474,18 @@ protected:
 
 
 
-  /** Structure for one record in our little database or lookup table. */
+  /** Structure for one record in our little database of sfz opcodes. */
   struct OpcodeEntry
   {                         // Example
-    Opcode       op;        // Opcode::Cutoff
+    Opcode       op;        // Opcode::volume
     OpcodeFormat format;    // OpcodeFormat::Float
-    std::string  text;      // "cutoff"
-    float        minVal;    // 20?
-    float        maxVal;    // 20000?
-    float        defVal;    // 1000?
-    //float        neutVal; // neutral value (some sfz defaults seem not be neutral like width)
-    DspType      dsp;       // DspType::Filter
-    OpcodeUnit   unit;      // OpcodeUnit::Hertz
+    std::string  text;      // "volume"
+    float        minVal;    // -144
+    float        maxVal;    //   +6
+    float        defVal;    //    0
+    //float        neutVal; //    0 neutral value (some sfz defaults, like width, seem not to be)
+    DspType      dsp;       // DspType::Amplifier
+    OpcodeUnit   unit;      // OpcodeUnit::Decibels
     OpcodeSpec   spec;      // OpcodeSpec::Sfz_1
   };
   std::vector<OpcodeEntry> opcodeEntries; /**< Our lookup table of records. */
@@ -502,7 +502,10 @@ protected:
 
   std::string dummyString;
   /**< The string-ref returning functions return a reference to this, if they do not find a 
-  suitable actual string to return. */
+  suitable actual string to return. 
+  \todo: is this still needed? I think, we don't return string-refs anymore but actual string
+  objects */
+
 
   static SfzCodeBook* instance;
   /** Sole instance of the class.  */

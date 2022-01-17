@@ -380,7 +380,6 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode,
   // but only if not in bus-mode in which case the group and instrument settings apply to separate
   // DSP objects on the groups which map to sub-busses and the instrument which maps to the final
   // master bus:
-  //PlayerIntermediates iv;
   if(!busMode)
     setupDspSettings(region->getGroup()->getInstrument()->getSettings(), fs, this, busMode, iv);
   if(!busMode)
@@ -389,27 +388,16 @@ void RegionPlayer::setupDspSettingsFor(const Region* r, double fs, bool busMode,
 
   // Compute the final member variables from the intemediates:
   setupFromIntemediates(*iv, fs);
-
-
-  // ToDo:
-  // -Can we avoid the inquiry for the rootKey? This may be a bit expensive. Maybe the RegionPlayer
-  //  should have a rootKey member? That may be messy to deal with in busMode. Maybe try to treat
-  //  the pitch_keycenter opcode somehow like the transpose opcode. What would actually be a 
-  //  meaningful "accumulative" behavior of a setting like that? Maybe accumulate differences to
-  //  the default or something? Maybe keep a rootKeyShift member that is by default zero, 
-  //  accumulates th differences of the pitch_keycenter opcode with respce to 60 (the default)?
-  //  Try this and write unit tests..
+  // maybe call this only when not in busMode because in busMode, it will get called again later 
+  // and we don't want to call it twice. It will not do anything wrong, but it does the computation
+  // at the first time for nothing....
 }
 
-void RegionPlayer::setupFromIntemediates(const PlayerIntermediates& iv, double fs)
+void RegionPlayer::setupFromIntemediates(const PlayerIntermediates& iv, double fs) // fix typo!
 {
-  // We can call it from the GroupPlayer
-  // (this may imply that i gets called twice on noteon in busMode but maybe we need to do it that
-  // way...)
+  // This may get called twice on noteOn in busMode -> verify and try to avoid the first call
 
-  // Besides other things, the calls above will have set up our transpose and tune variables. From 
-  // those (and other variables) we can now compute per-sample increment for our sampleTime 
-  // variable:
+  // Compute the per-sample increment:
   double rootKey = region->getSettingValue(Opcode::PitchKeyCenter, -1, false);
   double pitchOffset = double(key) - rootKey + iv.transpose + 0.01 * iv.tune;
   increment = pow(2.0, pitchOffset / 12.0) * stream->getSampleRate() / fs;
@@ -421,6 +409,17 @@ void RegionPlayer::setupFromIntemediates(const PlayerIntermediates& iv, double f
   // Sanity-check the loop boundaries:
   loopStart = RAPT::rsMax(loopStart, 0.0);
   loopEnd   = RAPT::rsClip(loopEnd, loopStart, (double)stream->getNumFrames());
+
+  // ToDo:
+  // -Take into account pitch_keytrack, pitch_veltrack...maybe we need to take key,vel params or we
+  //  add such fields to PlayerIntermediates...which should be extended to a "MidiStatus" anyway.
+  // -Can we avoid the inquiry for the rootKey? This may be a bit expensive. Maybe the RegionPlayer
+  //  should have a rootKey member? That may be messy to deal with in busMode. Maybe try to treat
+  //  the pitch_keycenter opcode somehow like the transpose opcode. What would actually be a 
+  //  meaningful "accumulative" behavior of a setting like that? Maybe accumulate differences to
+  //  the default or something? Maybe keep a rootKeyShift member that is by default zero, 
+  //  accumulates th differences of the pitch_keycenter opcode with respce to 60 (the default)?
+  //  Try this and write unit tests..
 }
 
 void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRate, 

@@ -145,6 +145,17 @@ void rsApplyDelay(std::vector<T>& x, T delay)
 }
 
 template<class T>
+std::vector<T> rsApplyResampling(std::vector<T>& x, T readSpeed)
+{
+  int Nx= (int)x.size();
+  int Ny= (int) ceil(Nx / readSpeed);
+  std::vector<T> y(Ny);
+  for(int n = 0; n < Ny; n++)
+    y[n] = getSampleAt(x, T(readSpeed*n));
+  return y;
+}
+
+template<class T>
 T rsEstimateMidiPitch(const std::vector<T>& x, T sampleRate)
 {
   std::vector<double> xd = rsConvert(x, double());
@@ -2545,16 +2556,30 @@ bool samplerKeyVelTrackTest()
   // Compute target amplitude for given settings of velocity and vel_track:
   float dB  = 40 * log10(127.f/vel);    // change of volume at given velocity
   float amp = RAPT::rsDbToAmp(0.01f * vel_track * dB);
+  ok &= testSamplerNote(&se, 60, vel, amp*noise, amp*noise, 0.f, false);
   // unit is percent, formula is dB = 20 log (127^2 / Velocity^2) ..i think, that's the change in
   // dB at 100%? range is -100...+100 ..so it's 40 log (127/Velocity)
 
-  ok &= testSamplerNote(&se, 60, vel, amp*noise, amp*noise, 0.f, false);
-
   // Reset veltrack and set up keytrack:
-  //se.setRegionSetting(0, 0, OC::ampN_veltrack,  0.f, 1);  // no vletrack anymore
-  //se.setRegionSetting(0, 0, OC::ampN_keytrack, -1.f, 1);  // -1 dB/key (rnage: -96..+12)
-  //se.setRegionSetting(0, 0, OC::ampN_keycenter, 60,  1);  // neutral at A4
+  char key = 65;
+  float key_track = -2.f;
+  dB  = key_track * (key-60);
+  amp = RAPT::rsDbToAmp(dB);
+  se.setRegionSetting(0, 0, OC::ampN_veltrack,  0.f,        1);  // no vletrack anymore
+  se.setRegionSetting(0, 0, OC::ampN_keytrack,  key_track,  1);  // -1 dB/key (range: -96..+12)
+  se.setRegionSetting(0, 0, OC::ampN_keycenter, 60,         1);  // neutral at A4
+  se.setRegionSetting(0, 0, OC::PitchKeyCenter, key,       -1);  // to avoid transposition
+  ok &= testSamplerNote(&se, key, vel, amp*noise, amp*noise, 0.f, false);
 
+  // Test pitch-keytracking by setting it to 50% (or 50 cents per key), triggering a note 2 octaves
+  // above the pitch_keycenter and verify that it gets transposed only by one octave:
+  se.clearRegionSettings(0, 0);  // resets keycenter to the default of 60, removes veltrack stuff
+  se.setRegionSetting(0, 0, OC::PitchKeyTrack, 50.f, -1);
+  Vec tgt = rsApplyResampling(noise, 2.f);
+  ok &= testSamplerNote(&se, 84, vel, tgt, tgt, 0.f, true);  // 60 + 2*12 = 84
+  // does not yet work
+
+  //rsPlotVector(tgt);
 
 
   // ToDo:
@@ -2666,7 +2691,7 @@ bool samplerEngineUnitTest()
   ok &= samplerProcessorsTest();
   ok &= samplerModulationsTest();
   ok &= samplerOverloadTest();
-  //ok &= samplerKeyVelTrackTest();
+  ok &= samplerKeyVelTrackTest();
   ok &= samplerLoopTest();
   ok &= samplerEngine2UnitTest();
 

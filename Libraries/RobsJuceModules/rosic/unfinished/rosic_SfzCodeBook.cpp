@@ -56,14 +56,18 @@ SfzCodeBook::SfzCodeBook()
   // 1 to 0 (for the fade-in function)...see also xf_keycurve...maybe use loop_xf
 
   // Player pitch:
-  add(OC::Transpose,      Int, "transpose",       -127, 127,  0, dsp, OU::Semitones, Sfz1);
-  add(OC::Tune,           Int, "tune",            -100, 100,  0, dsp, OU::Cents,     Sfz1);
-  add(OC::PitchKeyCenter, Nat, "pitch_keycenter",    0, 127, 60, dsp, OU::MidiKey,   Sfz1); 
+  add(OC::Transpose,      Int, "transpose",        -127,   127,   0, dsp, OU::Semitones,  Sfz1);
+  add(OC::Tune,           Int, "tune",             -100,   100,   0, dsp, OU::Cents,      Sfz1);
+  add(OC::PitchKeyCenter, Nat, "pitch_keycenter",  -127,   127,  60, dsp, OU::MidiKey,    Sfz1); 
+  add(OC::PitchKeyTrack,  Int, "pitch_keytrack",  -1200, +1200, 100, dsp, OU::CentPerKey, Sfz1); 
   // For pitch_keycenter, the spec actually says, -127..127 for the range but also C-1...G9 and 
   // C-1 would map to 0. So, that's probably a mistake in the sfz documentation and they actually 
   // mean 0..127. I assume this here but should check what other implementation do. In sfz files, 
   // keycenter can be given numerically or textually as e.g. c#2, so the parser should support 
-  // midi-note to number conversion.
+  // midi-note to number conversion. ...or well...it actually may make sense to have keycenters 
+  // well in the subaudio range...these are heavily oversampled. Although there is no midi-key 
+  // lower than0, a sample's pitch keycenter is not subject to such a restriction...so yeah, we
+  // allow the specified range
 
 
   // Filter:
@@ -400,7 +404,8 @@ FilterType SfzCodeBook::stringToFilterType(const std::string& str)
   RAPT::rsError("Unknown type in SfzCodeBook::stringToFilterType");
   return FilterType::Unknown;
 }
-// this code is repetitive! try to refactor!
+// this code is repetitive! try to refactor! ...or use an implementation similar to the one for 
+// LoopMode
 
 LoopMode SfzCodeBook::stringToLoopMode(const std::string& str)
 {

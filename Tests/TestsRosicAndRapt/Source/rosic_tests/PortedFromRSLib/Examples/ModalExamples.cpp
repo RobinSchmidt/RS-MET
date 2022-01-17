@@ -856,6 +856,9 @@ void createBassdrumPsy1Sample(double freqScale = 1.0, bool plot = false)
   //  sawtooth shape...or maybe make it squarish by waveshaping maybe use something like
   //  tanh(d*x) / d except when d == 0 which is treated as special case returning just x...have a
   //  drive envelope for d
+  // -create a difference between a signal with and without the waveshaping and phasemodulation 
+  //  applied - the difference gives us an "overtones" signal that we can mix with the fundamental
+  //  signal to taste
   // -Maybe remove the normalization of the freq-env. it leads to the effect that increasing 
   //  freqWeight1 increases the overall freq but we want it to affect only the initial freq
   // -Maybe produce stereo output by using +-45° phase shift for left/right

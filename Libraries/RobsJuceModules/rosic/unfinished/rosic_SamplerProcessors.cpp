@@ -274,8 +274,15 @@ void FilterCore::resetState()
 rsSamplerProcessors::Amplifier::Amplifier()
 {
   type = DspType::Amplifier;
+  params.reserve(7);                      // index
+  addParameter(Opcode::volumeN);          //   0
+  addParameter(Opcode::panN);             //   1
+  addParameter(Opcode::widthN);           //   2
+  addParameter(Opcode::positionN);        //   3
+  addParameter(Opcode::ampN_veltrack);    //   4
+  addParameter(Opcode::ampN_keytrack);    //   5
+  addParameter(Opcode::ampN_keycenter);   //   6
 
-  params.reserve(5); 
   // Having to pass a magic number to reserve() is bad and error-prone -> try to find a better
   // way. The number of parameters is actually known at compile time. Maybe use std::array 
   // instead of std::vector...hmm...but the number varies between the subclasses, so the array
@@ -283,15 +290,11 @@ rsSamplerProcessors::Amplifier::Amplifier()
   // template parameter - but no: then i can't treat them uniformly in the DSP chain...ok, then 
   // maybe try to set up a unit test that fires when we reserve the wrong size here. Maybe we can 
   // use an initializer list. But it's actually quite useful to have a more verbose textual "list" 
-  // here to refer to to figure out the indices of the parameters
-
-                                          // index
-  addParameter(Opcode::volumeN);          // 0
-  addParameter(Opcode::panN);             // 1
-  addParameter(Opcode::widthN);           // 2
-  addParameter(Opcode::positionN);        // 3
-
-  addParameter(Opcode::ampN_veltrack);    // 4
+  // here to refer to to figure out the indices of the parameters. Storing the parameters on the 
+  // heap may actually be beneficial for the memory layout of the DSPs because then they don't 
+  // share the same memory with the algo-parameters. The params are only accessed occasionally 
+  // during processing (in case of handling midi controllers) but most of the time, it's good that 
+  // they don't intefere with the algo params (stored directly in the DSP objects).
 }
 
 void rsSamplerProcessors::Amplifier::prepareToPlay(uchar key, uchar vel, double fs)
@@ -305,24 +308,26 @@ void rsSamplerProcessors::Amplifier::prepareToPlay(uchar key, uchar vel, double 
   // events
 
   // Extract nominal values from the parameters:
-  //                                         Opcode
-  float vol = params[0].getValue();       // volumeN
-  float pan = params[1].getValue();       // panN
-  float wd  = params[2].getValue();       // widthN
-  float pos = params[3].getValue();       // positionN
+  float volume   = params[0].getValue();
+  float pan      = params[1].getValue();
+  float width    = params[2].getValue();
+  float position = params[3].getValue();
 
   // Extract key/vel modifiers:
-  float volByVel = params[4].getValue();  // ampN_veltrack
+  float ampN_veltrack  = params[4].getValue();
+  float ampN_keytrack  = params[5].getValue();
+  float ampN_keycenter = params[6].getValue();
+
 
   // Apply modifiers:
-  float dB  = 40 * log10f(127.f/(float)vel);    // change of volume at given velocity
-  vol += 0.01 * volByVel * dB;
-  // Unit is percent, formula is dB = 20 log (127^2 / Velocity^2) ..i think, that's the change in
-  // dB at 100%? range is -100...+100 ..so it's 40 log (127/Velocity)
+  //float dB  = 40 * log10f(127.f/(float)vel);    // change of volume at given velocity
+  volume += ampN_veltrack * 0.01 * 40 * log10f(127.f/(float)vel);
+  volume += ampN_keytrack * (key - ampN_keycenter);
+  // Unit of veltrack is percent and the formula is dB = 20 log (127^2 / Velocity^2). Keytracking 
+  // is adjusted in dB per key. See https://sfzformat.com/legacy/
 
   // Set up the core:
-  core.setup(vol, pan, wd, pos);
-
+  core.setup(volume, pan, width, position);
 
   // ToDo:
   // -get rid of the getValue() calls by allowing the params to convert to float
