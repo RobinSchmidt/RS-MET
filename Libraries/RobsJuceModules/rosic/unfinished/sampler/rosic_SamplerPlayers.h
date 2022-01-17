@@ -5,7 +5,7 @@ namespace rosic { namespace Sampler {
 
 //=================================================================================================
 
-class SignalProcessorChain  // rename to EffectChain
+class EffectChain
 {
 public:
 
@@ -48,6 +48,9 @@ public:
 protected:
 
   std::vector<Effect*> processors;  // rename to effects
+  // Where is this allocated, i.e. where do we call resize on this? I mean the vector itself, not
+  // the pointed-to objects. This is not yet well defined, i think. It should probably also happen
+  // on sfz load
 
 };
 
@@ -231,10 +234,10 @@ protected:
   // want to do something in its override)...??? comment obsolete?
 
 
-  SignalProcessorChain dspChain;  // rename to effectChain or fxChain
-  /** This is the chain of our actual DSP objects. A SignalProcessorChain is basically an array
-  of pointers to polymorphic signal processor classes that can be assembled at runtime,  
-  typically on noteOn. */
+  EffectChain effectChain;
+  /** This is the chain of our effect processor objects. An EffectChain is basically an array
+  of pointers to polymorphic effect classes (i.e. subclasses of the Effect baseclass) that can be 
+  assembled at runtime, typically on noteOn. */
 
   DspResourcePool* dspPool = nullptr;
   /**< A pool of DSP processor objects from which we can grab some as needed to assemble our DSP
@@ -489,7 +492,7 @@ public:
 
   void addRegionPlayer(RegionPlayer* newPlayer);
 
-  void processFrame(float* L, float* R) { dspChain.processFrame(L, R);  }
+  void processFrame(float* L, float* R) { effectChain.processFrame(L, R);  }
 
   // implement processBlock
 

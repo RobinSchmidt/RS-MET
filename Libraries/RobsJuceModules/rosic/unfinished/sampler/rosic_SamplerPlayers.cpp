@@ -4,19 +4,19 @@ namespace Sampler {
 //=================================================================================================
 // rsSamplerEngine::SignalProcessorChain
 
-void SignalProcessorChain::processFrame(float* L, float* R)
+void EffectChain::processFrame(float* L, float* R)
 {
   for(size_t i = 0; i < processors.size(); i++)
     processors[i]->processFrame(L, R);
 }
 
-void SignalProcessorChain::processBlock(float* L, float* R, int N)
+void EffectChain::processBlock(float* L, float* R, int N)
 {
   for(int n = 0; n < N; n++)
     processFrame(L, R);
 }
 
-size_t SignalProcessorChain::getNumProcessors(DspType type) const
+size_t EffectChain::getNumProcessors(DspType type) const
 {
   size_t count = 0;
   for(size_t i = 0; i < processors.size(); i++) {
@@ -26,7 +26,7 @@ size_t SignalProcessorChain::getNumProcessors(DspType type) const
   return count;
 }
 
-Effect* SignalProcessorChain::getProcessor(DspType type, int index)
+Effect* EffectChain::getProcessor(DspType type, int index)
 {
   RAPT::rsAssert(index >= 1 || index == -1);
   index = RAPT::rsMax(index-1, 0);
@@ -74,7 +74,7 @@ bool SamplePlayer::augmentOrCleanDspChain(const std::vector<DspType>& dspTypeCha
     // Figure out, if we actually need to add another DSP to the chain. If not, there's nothing
     // more to do in this iteration:
     int sfzIndex = rsCount(&dspTypeChain[0], i, dspType) + 1;
-    if(dspChain.getNumProcessors(dspType) >= sfzIndex)
+    if(effectChain.getNumProcessors(dspType) >= sfzIndex)
       continue;
 
     // OK - now we actually need to grab another DSP of given type from the pool:
@@ -82,7 +82,7 @@ bool SamplePlayer::augmentOrCleanDspChain(const std::vector<DspType>& dspTypeCha
     if(eff)
     {
       eff->resetSettings(sfzIndex);
-      dspChain.addProcessor(eff);
+      effectChain.addProcessor(eff);
     }
     else {
       disassembleDspChain();
@@ -100,7 +100,7 @@ bool SamplePlayer::augmentOrCleanDspChain(const std::vector<DspType>& dspTypeCha
 
 bool SamplePlayer::assembleDspChain(const std::vector<DspType>& dspTypes)
 {
-  if(!dspChain.isEmpty()) {
+  if(!effectChain.isEmpty()) {
     RAPT::rsError("Someone has not cleaned up after finishing playback!");
     disassembleDspChain();  }  // ...so we do it here. But this should be fixed elsewhere!
   if(!augmentOrCleanDspChain(dspTypes)) 
@@ -110,14 +110,14 @@ bool SamplePlayer::assembleDspChain(const std::vector<DspType>& dspTypes)
 
 void SamplePlayer::disassembleDspChain()
 {
-  for(int i = 0; i < dspChain.getNumProcessors(); i++)
-    dspPool->processorPool.repositEffect(dspChain.getProcessor(i));
-  dspChain.clear();
+  for(int i = 0; i < effectChain.getNumProcessors(); i++)
+    dspPool->processorPool.repositEffect(effectChain.getProcessor(i));
+  effectChain.clear();
 }
 
 void SamplePlayer::setupProcessorSetting(const PlaybackSetting& s)
 {
-  Effect* dsp = dspChain.getProcessor(s.getTargetDspType(), s.getIndex());
+  Effect* dsp = effectChain.getProcessor(s.getTargetDspType(), s.getIndex());
   if(dsp != nullptr)
     dsp->setParameter(s.getType(), s.getValue());
   else
@@ -182,7 +182,7 @@ void RegionPlayer::processFrame(float* L, float* R)
   }
 
   // Apply the DSP chain:
-  dspChain.processFrame(L, R);
+  effectChain.processFrame(L, R);
 
 
   // ToDo:
@@ -248,7 +248,7 @@ void RegionPlayer::allocateMemory()
 {
   modulators.reserve(8);
   modMatrix.reserve(32);
-  dspChain.reserve(8);
+  effectChain.reserve(8);
   // These values are ad-hoc arbitrarily chosen. Maybe give the function some parameters to choose
   // how many of each should be pre-allocated. It should be enough to avoid having to allocate more
   // later
@@ -277,7 +277,7 @@ rsReturnCode RegionPlayer::prepareToPlay(uchar key, uchar vel, double fs, bool b
 
   // todo: setup modulators and modulation connections
 
-  dspChain.prepareToPlay(key, vel, fs);
+  effectChain.prepareToPlay(key, vel, fs);
   // modulators.prepareToPlay(fs)
 
   return rsReturnCode::success;
@@ -582,7 +582,7 @@ bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationL
       grpOrInstr = nullptr;
       return false;   }
     setupDspSettings(grpOrInstr->getSettings(), sampleRate, rp, busMode, intermediates);
-    dspChain.prepareToPlay(key, vel, sampleRate); 
+    effectChain.prepareToPlay(key, vel, sampleRate); 
     rp->setupFromIntemediates(*intermediates, sampleRate); // We need to do this again
   }
   return true;
@@ -612,7 +612,7 @@ void GroupPlayer::processFrame(float* L, float* R)
     regionPlayers[i]->processFrame(&tmpL, &tmpR);
     *L += tmpL; 
     *R += tmpR; }
-  dspChain.processFrame(L, R);
+  effectChain.processFrame(L, R);
 }
 
 void GroupPlayer::releaseResources()
