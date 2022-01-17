@@ -310,7 +310,7 @@ enum class DspType  // rename to DspType or ProcessorType or OpcodeType
   _TagDspsEnd,
 
   // Opcodes for controlling key- and velocity tracking:
-  Tracking,           // no - we don't need this - the tracking parameters bleong into the same
+  //Tracking,           // no - we don't need this - the tracking parameters bleong into the same
   //_TagTackingStart, // category as their target parameters
   //_TagTrackingEnd,
 

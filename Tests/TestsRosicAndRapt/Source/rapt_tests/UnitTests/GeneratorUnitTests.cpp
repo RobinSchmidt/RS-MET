@@ -2548,7 +2548,7 @@ bool samplerKeyVelTrackTest()
   // unit is percent, formula is dB = 20 log (127^2 / Velocity^2) ..i think, that's the change in
   // dB at 100%? range is -100...+100 ..so it's 40 log (127/Velocity)
 
-  ok &= testSamplerNote(&se, 60, vel, amp*noise, amp*noise, 1.e-7, true);
+  ok &= testSamplerNote(&se, 60, vel, amp*noise, amp*noise, 0.f, false);
 
   // Reset veltrack and set up keytrack:
   //se.setRegionSetting(0, 0, OC::ampN_veltrack,  0.f, 1);  // no vletrack anymore
