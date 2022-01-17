@@ -905,6 +905,30 @@ bool samplerEngine2UnitTest()
   ok &= rsIsCloseTo(rsEstimateMidiPitch(outL, fs), 74.1f, tol);
 
   /*
+  // Test behavior of pitch_keycenter when it's only defined on the instrument level:
+  se.clearAllSfzSettings();
+  //se.setInstrumentSetting(PST::PitchKeyCenter, 48.f, -1); 
+  getSamplerNote(&se, 60.f, 127.f, outL, outR);
+  pitch = rsEstimateMidiPitch(outL, fs);    // 69
+  rsPlotVector(outL);
+  */
+
+
+
+
+
+  // Test behavior of pitch_keycenter when it's only defined on the group level:
+
+  // Test behavior of pitch_keycenter when it's only defined on the instrument and group and level. 
+  // In this case, the group setting should override the instrument setting:
+
+  // Test behavior of pitch_keycenter when it's defined on all 3 levels. The region setting should
+  // override both:
+
+
+
+
+  /*
   // Restore the instrument's tune setting and let the group settings override the instrument 
   // settings again. Now we should see for tune the instrument setting combined with the region 
   // setting because the region accumulates and the group has no tune setting. For the transpose,
@@ -2694,7 +2718,7 @@ bool samplerEngineUnitTest()
   ok &= samplerOverloadTest();
   ok &= samplerKeyVelTrackTest();
   ok &= samplerLoopTest();
-  ok &= samplerEngine2UnitTest();
+  ok &= samplerEngine2UnitTest();  // rename to samplerEngineBusModeTest
 
   // ToDo:
   // -implement key/vel crossfade

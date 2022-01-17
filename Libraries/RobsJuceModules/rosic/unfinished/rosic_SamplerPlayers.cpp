@@ -400,13 +400,13 @@ void RegionPlayer::setupFromIntemediates(const PlayerIntermediates& iv, double f
   // Compute the per-sample increment:
 
   // old:
-  //float pitch_keycenter = region->getSettingValue(Opcode::PitchKeyCenter, -1, false);
-  //double pitchOffset = double(key) - pitch_keycenter + iv.transpose + 0.01 * iv.tune; 
+  float pitch_keycenter = region->getSettingValue(Opcode::PitchKeyCenter, -1, false);
+  double pitchOffset = 0.01 * iv.pitch_keytrack * (double(key) - pitch_keycenter) 
+    + iv.transpose + 0.01 * iv.tune; 
 
   // new:
-  float pitch_keycenter = iv.pitch_keycenter;
-  double pitchOffset = 0.01 * iv.pitch_keytrack * (double(key) - pitch_keycenter) 
-    + iv.transpose + 0.01 * iv.tune;
+  //double pitchOffset = 0.01 * iv.pitch_keytrack * (double(key) - iv.pitch_keycenter) 
+  //  + iv.transpose + 0.01 * iv.tune;
 
   increment = pow(2.0, pitchOffset / 12.0) * stream->getSampleRate() / fs;
   // The formula using rsPitchOffsetToFreqFactor is too imprecise: when we have a pitchOffset of 
@@ -419,8 +419,8 @@ void RegionPlayer::setupFromIntemediates(const PlayerIntermediates& iv, double f
   loopEnd   = RAPT::rsClip(loopEnd, loopStart, (double)stream->getNumFrames());
 
   // ToDo:
-  // -Take into account pitch_keytrack, pitch_veltrack...maybe we need to take key,vel params or we
-  //  add such fields to PlayerIntermediates...which should be extended to a "MidiStatus" anyway.
+  // -Take into account pitch_veltrack...maybe we need to take an addition vel parameter or we
+  //  add such a fields to PlayerIntermediates...which should be extended to a "MidiStatus" anyway.
   // -Verify the formulas
 
   // -Can we avoid the inquiry for the rootKey? This may be a bit expensive. Maybe the RegionPlayer
@@ -448,13 +448,13 @@ void RegionPlayer::setupPlayerSetting(const PlaybackSetting& s, double sampleRat
   switch(s.getType())
   {
   // Player:
-  case OC::PitchKeyCenter: { iv->pitch_keycenter = val;           } break; // was done by caller before
+  //case OC::PitchKeyCenter: { iv->pitch_keycenter = val;           } break; // was done by caller before
   case OC::PitchKeyTrack:  { iv->pitch_keytrack  = val;           } break;
   case OC::Transpose:      { iv->transpose       = val;           } break;
   case OC::Tune:           { iv->tune            = val;           } break;
   case OC::Delay:          { sampleTime    = -val * sampleRate;   } break;
   case OC::Offset:         { offset        =  val;                } break;
-  case OC::LoopMode:       { loopMode      = (LoopMode)(int) val; } break;  
+  case OC::LoopMode:       { loopMode      = (LoopMode)(int) val; } break;
   case OC::LoopStart:      { loopStart     =  val;                } break;
   case OC::LoopEnd:        { loopEnd       =  val;                } break;
 
@@ -541,8 +541,13 @@ void SampleBusPlayer::setupPlayerSetting(const PlaybackSetting& s, double fs,
   // region has no definition? Then the group-value will be applied twice, i.e. it will accumulate
   // to itself...maybe we need a second pass. seems like in busMode, we need the following call 
   // sequence:
-  //  (1) set all parameters to their defaults
-  //
+  //   (1) set all parameters to their defaults
+  //   (2) set instrum settings that should always override
+  //   (3) set group settings that should always override
+  //   (4) set region settings (all of them)
+  //   (5) set group settings that should accumulate
+  //   (6) set isntrum settings that should accumulate
+  // the order of 5 and 6 can be swapped because accumulation is commutative
 }
 
 bool SampleBusPlayer::setGroupOrInstrumToPlay(const rsSamplerData::OrganizationLevel* thingToPlay,
